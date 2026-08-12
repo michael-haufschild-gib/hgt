@@ -290,19 +290,138 @@ This does not yet prove RH. At degree change,
  ={2F_n-(2n+1)(\alpha_n+\alpha_{n+1})\over F_nF_{n+1}},  \tag{LAR.22}
 \]
 
-whose sign is not fixed by positive moment geometry. Sparse schedule can reset scalar clock
-unless cumulative negative jumps are charged to a degree-monotone account.
+whose sign is not fixed by positive moment geometry. Sparse schedule can reset scalar clock.
+The natural first conjecture was that ordinary weighted variance or Gauss spread pays those
+jumps. Sections 8--9 kill that conjecture at exact positive-moment level and identify missing
+metric factor.
 
-Exact next conjecture is:
+## 8. Exact adjacent-mean transport and denominator barrier [PROVED HERE]
 
-> **Discrete reset conjecture.** Total negative part of adjacent-clock jumps (LAR.22) along
-> canonical strict-frontier schedule is bounded by increase of normalized weighted trace variance
-> or hard Gauss spread.
+Keep \(c=2n+1\), and define weighted packet mean and centered square sum
 
-Online-variance identity (LAR.2) is only current cross-degree positive account with right source
-provenance. Proving or killing this jump-charge inequality is now hard synchronization problem.
+\[
+ \mu_n={F_n\over c},\qquad
+ E_n={V_n\over c}
+ =2\sum_{j<n}(\alpha_j-\mu_n)^2+(\alpha_n-\mu_n)^2.       \tag{LAR.23}
+\]
 
-## 8. Conjecture -> proof/failure -> pivot
+Passing from degree \(n\) to \(n+1\) adds one extra copy of \(\alpha_n\) and one new observation
+\(\alpha_{n+1}\). Put
+
+\[
+ q_n={\alpha_n+\alpha_{n+1}\over2},\qquad
+ \delta_n=\mu_{n+1}-\mu_n.
+\]
+
+The two-observation online-variance identity is
+
+\[
+ \boxed{
+ E_{n+1}-E_n
+ ={(\alpha_n-\alpha_{n+1})^2\over2}
+  +{2c\over c+2}(q_n-\mu_n)^2,
+ \qquad
+ \delta_n={2(q_n-\mu_n)\over c+2}.}                     \tag{LAR.24}
+\]
+
+In particular,
+
+\[
+ E_{n+1}-E_n\ge {c(c+2)\over2}\delta_n^2.               \tag{LAR.25}
+\]
+
+If \(\mu_n,\mu_{n+1}>0\), write \(x^-=\max\{-x,0\}\). Since scalar projective clock is
+\(\mathcal G_n=1/\mu_n-y\), (LAR.25) gives exact generic reset estimate
+
+\[
+ \boxed{
+ (\mathcal G_{n+1}-\mathcal G_n)^-
+ ={(\delta_n)^+\over\mu_n\mu_{n+1}}
+ \le {1\over\mu_n\mu_{n+1}}
+ \sqrt{{2(E_{n+1}-E_n)\over c(c+2)}}.}                  \tag{LAR.26}
+\]
+
+Thus Euclidean variance controls Euclidean mean displacement, while reciprocal-clock motion sees
+singular metric \(d\mu/\mu^2\). Any reset theorem omitting denominator is structurally false.
+
+### Proof
+
+For weighted packet of total mass \(c\), mean \(\mu_n\), and centered square sum \(E_n\), adding
+two unit observations \(x,z\) changes centered square sum by
+
+\[
+ {1\over2}(x-z)^2+{2c\over c+2}\left({x+z\over2}-\mu_n\right)^2.
+\]
+
+This follows by expanding both centered sums, or by decomposing new packet into old packet and
+two-point packet. Substitute \(x=\alpha_n\), \(z=\alpha_{n+1}\). Mean update is direct;
+substitution into between-packet term gives (LAR.25). Finally
+
+\[
+ {1\over\mu_{n+1}}-{1\over\mu_n}
+ =-{\delta_n\over\mu_n\mu_{n+1}},
+\]
+
+which proves (LAR.26).
+
+## 9. Exact positive-Jacobi counterfamily [FALSIFIES ORDINARY RESET CHARGE]
+
+Fix \(a,b>0\), \(0<\varepsilon\le1\), and degree \(n=2\). Choose Jacobi diagonal data
+
+\[
+ \alpha_0=a,\qquad
+ \alpha_1={\varepsilon\over4}-a,\qquad
+ \alpha_2=\alpha_3={\varepsilon\over2},                 \tag{LAR.27}
+\]
+
+and positive edges
+
+\[
+ \beta_1=b,\qquad \beta_2=\varepsilon^2,
+\]
+
+with arbitrary positive bounded continuation. Such data are realized by spectral measure of
+bounded infinite Jacobi matrix; positivity of every edge makes its moment Hankel blocks strictly
+positive definite.
+
+Exact substitution gives
+
+\[
+ F_2=\varepsilon,\qquad F_3=2\varepsilon,
+\qquad
+ \mathcal G_3-\mathcal G_2=-{3\over2\varepsilon}.       \tag{LAR.28}
+\]
+
+But ordinary variance and root-spread increments are
+
+\[
+ E_3-E_2={9\over70}\varepsilon^2,
+ \qquad
+ G_3-G_2={67\over32}\varepsilon^2.                     \tag{LAR.29}
+\]
+
+Moreover \(E_2\to4a^2\) and \(G_2\to2a^2+2b\). Hence negative reset diverges while both
+increments vanish and both total accounts stay bounded. No uniform linear/coercive charge by
+ordinary weighted variance or Gauss spread can hold; more strongly, no locally bounded function
+of these four total accounts can bound reset. This failure persists with fixed positive low-edge
+anchor \((\alpha_0,\beta_1)=(a,b)\).
+
+This does not falsify Xi-specific theorem with extra arithmetic input. It proves exactly what
+that input must do: control denominator in (LAR.26), or directly control hyperbolic reset action
+
+\[
+ \mathcal H_n={E_{n+1}-E_n\over\mu_n^2\mu_{n+1}^2}.      \tag{LAR.30}
+\]
+
+Two sufficient corrected Route-U mechanisms to seek on canonical strict frontier are:
+
+1. scale-correct normalized-flux floor strong enough to reduce (LAR.26) to summable Euclidean
+   variance budget; or
+2. literal prime--Gamma/global-Xi upper budget on cumulative hyperbolic action (LAR.30).
+
+Ordinary root spread and angular outlier energy do not supply either statement.
+
+## 10. Conjecture -> proof/failure -> pivot
 
 1. **Conjecture:** retained hard-root spread may collapse absolutely on cofinal diagonal.
    **FALSIFIED** by (LAR.6)--(LAR.11). Fixed low Jacobi edges accumulate before degree limit and
@@ -314,11 +433,12 @@ provenance. Proving or killing this jump-charge inequality is now hard synchroni
    \((\alpha_0,\beta_1)\) gives sharp anchor (LAR.17).
 4. **Conjecture:** harmonic continuous work alone telescopes across degree renewals.
    **FAILED AS AN INFERENCE.** Exact reset (LAR.22) has no generic sign.
-5. **Pivot:** charge negative discrete resets to strictly increasing spread account, or replace
-   scalar clock by joint mean--variance potential whose continuous and discrete increments are
-   both positive.
+5. **Conjecture:** normalized variance or Gauss-spread increase pays negative reciprocal-clock
+   resets. **FALSIFIED** by (LAR.27)--(LAR.29), even with fixed positive low-edge anchor.
+6. **Pivot:** price degree transport in reciprocal-mean geometry. Exact survivor is (LAR.26);
+   remaining arithmetic target is normalized-flux floor or cumulative hyperbolic-action budget.
 
-## 9. Higher universal principle
+## 11. Higher universal principle
 
 Projective arithmetic surplus is coefficient-of-variation energy of growing weighted empirical
 Jacobi packet, plus positive edge inventory. Mass transport dissipates its mean; degree transport
@@ -335,32 +455,41 @@ these two views. They are continuous and discrete parts of one mean--variance pr
  \text{degree motion}\\[-1mm]
  G_{n+1}-G_n=
  {n\over n+1}(\alpha_n-\bar\alpha_n)^2+2\beta_n.
-\end{array}                                               \tag{LAR.23}
+\end{array}                                               \tag{LAR.31}
 \]
 
 Scalar clocks kept failing because they retain mean but discard variance capital that pays for
-changing dimension.
+changing dimension. Reset no-go sharpens this: even retained Euclidean variance does not pay
+motion after reciprocal projection. Projectivization changes metric. Correct discrete capital is
+variance weighted by inverse fourth mean scale, exactly (LAR.30). Obstruction is not missing
+positivity lemma; it is mismatch between Euclidean Jacobi transport and hyperbolic projective
+observation.
 
-## 10. Corpus, literature, and Lean audit
+## 12. Corpus, literature, and Lean audit
 
-- **Corpus.** Existing projective-renewal modules prove positivity and exact root-spread
-  decomposition. Searches found no degree-update identity (LAR.2), cofinal divergence theorem
-  (LAR.6), low-edge anchor (LAR.17), or uniform harmonic clock bound (LAR.21).
+- **Corpus.** Existing projective-renewal modules prove positivity, exact root-spread
+  decomposition, and failure of adjacent-clock sign. Existing angular-energy theorem prices
+  outlier count by ordinary spread but does not control reciprocal-mean resets. Searches found no
+  degree-update identity (LAR.2), cofinal divergence theorem (LAR.6), low-edge anchor (LAR.17),
+  uniform harmonic clock bound (LAR.21), exact reset barrier (LAR.26), or counterfamily
+  (LAR.27)--(LAR.29).
 - **Classical parentage.** Online variance updates and finite Jacobi trace identities are
   classical. Literature on recurrence coefficients and zero distributions, including Hardy,
   *Polynomial Ensembles and Recurrence Coefficients* (arXiv:1709.01287), studies global
   asymptotics under recurrence hypotheses. Located literature does not supply shifted-Xi
   fixed-prefix/cofinal argument or literal projective source bound.
-- **Novelty status.** No priority is claimed for (LAR.2) or (LAR.16) as abstract algebra.
-  Candidate-new content is source-specific fusion with shifted-Xi recession, yielding (LAR.6),
-  (LAR.11), and degree-uniform literal bound (LAR.21).
-- **Lean status.** No declaration is added yet. Theorem is literal and formalizable using existing
-  Jacobi/root-spread modules, but formal work is gated until discrete reset conjecture is proved or
-  falsified. Adding isolated algebraic wrappers now would not close synchronization wall and
-  would violate no-theatre rule.
+- **Novelty status.** No priority is claimed for (LAR.2), (LAR.16), or (LAR.24) as abstract
+  algebra. Candidate-new content is source-specific fusion with shifted-Xi recession, yielding
+  (LAR.6), (LAR.11), and degree-uniform literal bound (LAR.21), plus exact identification of
+  hyperbolic reset action as remaining projective synchronization invariant.
+- **Lean status.** No declaration is added. Discrete reset conjecture is now falsified at generic
+  positive-moment level. Formalizing finite algebra in isolation would not provide Xi-specific
+  denominator control identified in (LAR.30), so it remains gated by no-theatre rule.
 
-## 11. Log
+## 13. Log
 
 - 2026-08-12 — degree-renewal spread identity, rate-free cofinal divergence, low-edge projective
-  anchor, and uniform harmonic work bound proved; discrete reset isolated as sole surviving
-  synchronization obstruction.
+  anchor, and uniform harmonic work bound proved.
+- 2026-08-12 — ordinary variance/spread reset-charge conjecture falsified by exact positive-Jacobi
+  counterfamily; denominator-weighted hyperbolic action isolated as corrected synchronization
+  invariant. No Lean added.

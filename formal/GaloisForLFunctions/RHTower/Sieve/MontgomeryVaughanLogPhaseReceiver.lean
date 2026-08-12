@@ -26,6 +26,31 @@ def routeTLogPhaseIntervalSum (C : ℕ) (t : ℝ) : ℂ :=
   ∑ n ∈ Finset.Ioc (routeTLogReceiverLength C) (2 * routeTLogReceiverLength C),
     routeTLogPhase t n
 
+def routeTLogPhasePartialIntervalSum (C N' : ℕ) (t : ℝ) : ℂ :=
+  ∑ n ∈ Finset.Ioc (routeTLogReceiverLength C) N', routeTLogPhase t n
+
+theorem routeTLogPhasePartialIntervalSum_eq_block
+    {C N' : ℕ} (hN' : N' ≤ 2 * routeTLogReceiverLength C) (t : ℝ) :
+    routeTLogPhasePartialIntervalSum C N' t =
+      mvPhaseBlockSum (routeTLogReceiverCutoff C)
+        (routeTLogReceiverLength C) N' (routeTLogPhase t) := by
+  have hN'K : N' < routeTLogReceiverCutoff C := by
+    unfold routeTLogReceiverCutoff
+    omega
+  unfold routeTLogPhasePartialIntervalSum mvPhaseBlockSum
+  rw [Fin.sum_univ_eq_sum_range
+    (fun n => routeTLogPhase t n *
+      if routeTLogReceiverLength C < n ∧ n ≤ N' then 1 else 0)
+    (routeTLogReceiverCutoff C)]
+  simp_rw [mul_ite, mul_one, mul_zero]
+  rw [← Finset.sum_filter]
+  congr 1
+  ext n
+  simp only [Finset.mem_Ioc, Finset.mem_filter, Finset.mem_range]
+  change (routeTLogReceiverLength C < n ∧ n ≤ N') ↔
+    n < routeTLogReceiverCutoff C ∧ routeTLogReceiverLength C < n ∧ n ≤ N'
+  omega
+
 theorem routeTLogPhaseIntervalSum_eq_block (C : ℕ) (t : ℝ) :
     routeTLogPhaseIntervalSum C t =
       mvPhaseBlockSum (routeTLogReceiverCutoff C)
@@ -195,8 +220,10 @@ theorem routeTLog_receiver_scales
 /-- Exact MV24.10 specialization.  Only `hsmall` remains as a transparent elementary scale
 condition: the Route-T twisted saving must be no larger than the coefficient block length. -/
 theorem routeTLogPhase_receiver_inequality
-    {u C : ℕ} {t : ℝ} (hu : 141 ≤ u)
+    {u C N' : ℕ} {t : ℝ} (hu : 141 ≤ u)
     (hC : routeTLogBaseThreshold u ≤ 2 * C)
+    (hNN' : routeTLogReceiverLength C < N')
+    (hN' : N' ≤ 2 * routeTLogReceiverLength C)
     (ht : 0 < t)
     (hbottom : (((((2 * C) ^ routeTLogCentreExponent) ^
       (4 * u - 4) : ℕ) : ℝ)) ≤ t)
@@ -208,9 +235,9 @@ theorem routeTLogPhase_receiver_inequality
         ((routeTLogHalfBlock C : ℕ) : ℝ) ^ 2) :
     (((routeTLogHalfBlock C : ℕ) : ℝ) ^ 2 / 64) *
         ‖mvPhaseBlockSum (routeTLogReceiverCutoff C)
-          (routeTLogReceiverLength C) (2 * routeTLogReceiverLength C)
+          (routeTLogReceiverLength C) N'
           (routeTLogPhase t)‖ ≤
-      ((routeTLogHalfBlock C) ^ 2 + 2 * routeTLogReceiverLength C : ℕ) *
+      ((routeTLogHalfBlock C) ^ 2 + N' : ℕ) *
         (7 * Real.sqrt
             (((routeTLogHalfBlock C : ℕ) : ℝ) ^ 2 *
               (2 * (((((2 * C) ^ routeTLogHalfLengthExponent : ℕ) : ℝ)) ^
@@ -231,12 +258,13 @@ theorem routeTLogPhase_receiver_inequality
   have hKprod : 4 * Q ^ 2 < K := by
     unfold K routeTLogReceiverCutoff
     omega
-  have hmax : 2 * Q ^ 2 + 2 * N < K := by
+  have hmax : 2 * Q ^ 2 + N' < K := by
     unfold K routeTLogReceiverCutoff
     omega
   have hreceiver := norm_mvCoefficientBlockSum_mul_mvPhaseBlockSum_le
-    (K := K) (Q := Q) (M := Q ^ 2) (N := N) (N' := 2 * N)
-    (hQ := by omega) (hM := by nlinarith) hQN (by omega) (by omega) hmax
+    (K := K) (Q := Q) (M := Q ^ 2) (N := N) (N' := N')
+    (hQ := by omega) (hM := by nlinarith) hQN
+    (by simpa only [N] using hNN') (by simpa only [N] using hN') hmax
     (routeTProductMultiplicity hKprod) (routeTLogPhase t)
     (norm_routeTProductMultiplicity_le (by omega) hKprod)
     (by
@@ -257,32 +285,34 @@ theorem routeTLogPhase_receiver_inequality
       · exact_mod_cast (show r ≤ 4 * N by omega))
   have hcoeff := routeTProductMultiplicity_block_lower hQ8 hKprod
   have hfactor : 0 ≤
-      ‖mvPhaseBlockSum K N (2 * N) (routeTLogPhase t)‖ := norm_nonneg _
+      ‖mvPhaseBlockSum K N N' (routeTLogPhase t)‖ := norm_nonneg _
   calc
     ((Q : ℝ) ^ 2 / 64) *
-        ‖mvPhaseBlockSum K N (2 * N) (routeTLogPhase t)‖ ≤
+        ‖mvPhaseBlockSum K N N' (routeTLogPhase t)‖ ≤
       ‖mvCoefficientBlockSum K (Q ^ 2) (routeTProductMultiplicity hKprod)‖ *
-        ‖mvPhaseBlockSum K N (2 * N) (routeTLogPhase t)‖ :=
+        ‖mvPhaseBlockSum K N N' (routeTLogPhase t)‖ :=
       mul_le_mul_of_nonneg_right hcoeff hfactor
     _ = ‖mvCoefficientBlockSum K (Q ^ 2) (routeTProductMultiplicity hKprod) *
-        mvPhaseBlockSum K N (2 * N) (routeTLogPhase t)‖ := by rw [norm_mul]
-    _ ≤ (Q ^ 2 + 2 * N : ℕ) *
+        mvPhaseBlockSum K N N' (routeTLogPhase t)‖ := by rw [norm_mul]
+    _ ≤ (Q ^ 2 + N' : ℕ) *
         (7 * Real.sqrt ((Q : ℝ) ^ 2 * S) + 3 * Q + 7) := by
       simpa only [Nat.cast_add, Nat.cast_mul, Nat.cast_ofNat, Nat.cast_pow, S]
         using hreceiver
 
 /-- First unconditional one-dimensional consequence of Route T: a strict power saving for the
 logarithmic phase on the full dyadic receiver block. -/
-theorem norm_routeTLogPhaseBlock_le_powerSaving
-    {u C : ℕ} {t : ℝ} (hu : 141 ≤ u)
+theorem norm_routeTLogPhasePartialBlock_le_powerSaving
+    {u C N' : ℕ} {t : ℝ} (hu : 141 ≤ u)
     (hC : routeTLogReceiverBaseThreshold u ≤ 2 * C)
+    (hNN' : routeTLogReceiverLength C < N')
+    (hN' : N' ≤ 2 * routeTLogReceiverLength C)
     (ht : 0 < t)
     (hbottom : (((((2 * C) ^ routeTLogCentreExponent) ^
       (4 * u - 4) : ℕ) : ℝ)) ≤ t)
     (htop : t ≤ (((((2 * C) ^ routeTLogCentreExponent) ^
       (4 * u) : ℕ) : ℝ))) :
     ‖mvPhaseBlockSum (routeTLogReceiverCutoff C)
-        (routeTLogReceiverLength C) (2 * routeTLogReceiverLength C)
+        (routeTLogReceiverLength C) N'
         (routeTLogPhase t)‖ ≤
       6912 * routeTLogReceiverLength C *
         (((((2 * C) ^ routeTLogHalfLengthExponent : ℕ) : ℝ)) ^
@@ -296,7 +326,13 @@ theorem norm_routeTLogPhaseBlock_le_powerSaving
   have hbase : routeTLogBaseThreshold u ≤ 2 * C :=
     routeTLogReceiverBaseThreshold_ge_base hC
   have hsmall := routeTLogReceiverBaseThreshold_small hu hC
-  have hrecv := routeTLogPhase_receiver_inequality hu hbase ht hbottom htop hsmall
+  have hNposNat : 0 < N := by
+    have hB2 := routeTLogBaseThreshold_ge_two hbase
+    unfold N routeTLogReceiverLength
+    positivity
+  have hrecv := routeTLogPhase_receiver_inequality (N' := N')
+    hu hbase (by simpa only [N] using hNN') (by simpa only [N] using hN')
+    ht hbottom htop hsmall
   obtain ⟨hQ8, hscale⟩ := routeTLog_receiver_scales hbase
   have hQN : Q ^ 2 ≤ N := by
     have : 16 * Q ^ 2 ≤ N := by simpa only [Q, N] using hscale
@@ -342,16 +378,16 @@ theorem norm_routeTLogPhaseBlock_le_powerSaving
     have hseven : (7 : ℝ) ≤ Q * R :=
       (show (7 : ℝ) ≤ 8 by norm_num).trans hQR8
     nlinarith
-  have houter : (((Q ^ 2 + 2 * N : ℕ) : ℝ)) ≤ 3 * N := by
-    exact_mod_cast (show Q ^ 2 + 2 * N ≤ 3 * N by omega)
+  have houter : (((Q ^ 2 + N' : ℕ) : ℝ)) ≤ 3 * N := by
+    exact_mod_cast (show Q ^ 2 + N' ≤ 3 * N by omega)
   have hweighted :
       ((Q : ℝ) ^ 2 / 64) *
-          ‖mvPhaseBlockSum K N (2 * N) (routeTLogPhase t)‖ ≤
+          ‖mvPhaseBlockSum K N N' (routeTLogPhase t)‖ ≤
         54 * N * Q * R := by
     calc
       ((Q : ℝ) ^ 2 / 64) *
-          ‖mvPhaseBlockSum K N (2 * N) (routeTLogPhase t)‖ ≤
-        (((Q ^ 2 + 2 * N : ℕ) : ℝ)) *
+          ‖mvPhaseBlockSum K N N' (routeTLogPhase t)‖ ≤
+        (((Q ^ 2 + N' : ℕ) : ℝ)) *
           (7 * Real.sqrt ((Q : ℝ) ^ 2 *
               (2 * (P : ℝ) ^ (2 - δ))) + 3 * Q + 7) := by
         simpa only [Q, N, K, P, δ, Nat.cast_pow] using hrecv
@@ -370,16 +406,14 @@ theorem norm_routeTLogPhaseBlock_le_powerSaving
   apply le_of_mul_le_mul_left (a := ((Q : ℝ) ^ 2 / 64)) (a0 := hcoeffpos)
   calc
     ((Q : ℝ) ^ 2 / 64) *
-        ‖mvPhaseBlockSum K N (2 * N) (routeTLogPhase t)‖ ≤
+        ‖mvPhaseBlockSum K N N' (routeTLogPhase t)‖ ≤
       54 * N * Q * R := hweighted
     _ = ((Q : ℝ) ^ 2 / 64) *
         (6912 * N * (P : ℝ) ^ (-δ / 2)) := by
       rw [hRsplit, hPcast]
       ring
 
-/-- Same saving in the natural one-dimensional scale `N=(2C)^200`; its exponent is strictly
-below one by `routeTLogOneDimensionalSavingExponent_pos`. -/
-theorem norm_routeTLogPhaseBlock_le_rpow
+theorem norm_routeTLogPhaseBlock_le_powerSaving
     {u C : ℕ} {t : ℝ} (hu : 141 ≤ u)
     (hC : routeTLogReceiverBaseThreshold u ≤ 2 * C)
     (ht : 0 < t)
@@ -390,6 +424,32 @@ theorem norm_routeTLogPhaseBlock_le_rpow
     ‖mvPhaseBlockSum (routeTLogReceiverCutoff C)
         (routeTLogReceiverLength C) (2 * routeTLogReceiverLength C)
         (routeTLogPhase t)‖ ≤
+      6912 * routeTLogReceiverLength C *
+        (((((2 * C) ^ routeTLogHalfLengthExponent : ℕ) : ℝ)) ^
+          (-vinogradovRouteTPowerSavingExponent u / 2)) := by
+  have hbase := routeTLogReceiverBaseThreshold_ge_base hC
+  have hNpos : 0 < routeTLogReceiverLength C := by
+    unfold routeTLogReceiverLength
+    have hB2 := routeTLogBaseThreshold_ge_two hbase
+    positivity
+  exact norm_routeTLogPhasePartialBlock_le_powerSaving hu hC
+    (by omega) (by omega) ht hbottom htop
+
+/-- Same saving in the natural one-dimensional scale `N=(2C)^200`; its exponent is strictly
+below one by `routeTLogOneDimensionalSavingExponent_pos`. -/
+theorem norm_routeTLogPhasePartialBlock_le_rpow
+    {u C N' : ℕ} {t : ℝ} (hu : 141 ≤ u)
+    (hC : routeTLogReceiverBaseThreshold u ≤ 2 * C)
+    (hNN' : routeTLogReceiverLength C < N')
+    (hN' : N' ≤ 2 * routeTLogReceiverLength C)
+    (ht : 0 < t)
+    (hbottom : (((((2 * C) ^ routeTLogCentreExponent) ^
+      (4 * u - 4) : ℕ) : ℝ)) ≤ t)
+    (htop : t ≤ (((((2 * C) ^ routeTLogCentreExponent) ^
+      (4 * u) : ℕ) : ℝ))) :
+    ‖mvPhaseBlockSum (routeTLogReceiverCutoff C)
+        (routeTLogReceiverLength C) N'
+        (routeTLogPhase t)‖ ≤
       6912 * (((routeTLogReceiverLength C : ℕ) : ℝ) ^
         (1 - routeTLogOneDimensionalSavingExponent u)) := by
   let B := 2 * C
@@ -397,7 +457,8 @@ theorem norm_routeTLogPhaseBlock_le_rpow
   let N := routeTLogReceiverLength C
   let δ := vinogradovRouteTPowerSavingExponent u
   let ε := routeTLogOneDimensionalSavingExponent u
-  have hraw := norm_routeTLogPhaseBlock_le_powerSaving hu hC ht hbottom htop
+  have hraw := norm_routeTLogPhasePartialBlock_le_powerSaving hu hC hNN' hN'
+    ht hbottom htop
   have hBpos : (0 : ℝ) < B := by
     have hbase := routeTLogReceiverBaseThreshold_ge_base hC
     exact_mod_cast (lt_of_lt_of_le (by positivity : 0 < 2)
@@ -424,12 +485,49 @@ theorem norm_routeTLogPhaseBlock_le_rpow
       _ = (N : ℝ) ^ (1 - ε) := by ring_nf
   calc
     ‖mvPhaseBlockSum (routeTLogReceiverCutoff C)
-        (routeTLogReceiverLength C) (2 * routeTLogReceiverLength C)
+        (routeTLogReceiverLength C) N'
         (routeTLogPhase t)‖ ≤
       6912 * (N : ℝ) * (P : ℝ) ^ (-δ / 2) := by
         simpa only [N, P, B, δ] using hraw
     _ = 6912 * (N : ℝ) * (N : ℝ) ^ (-ε) := by rw [hPN]
     _ = 6912 * (N : ℝ) ^ (1 - ε) := by rw [mul_assoc, hcombine]
+
+theorem norm_routeTLogPhaseBlock_le_rpow
+    {u C : ℕ} {t : ℝ} (hu : 141 ≤ u)
+    (hC : routeTLogReceiverBaseThreshold u ≤ 2 * C)
+    (ht : 0 < t)
+    (hbottom : (((((2 * C) ^ routeTLogCentreExponent) ^
+      (4 * u - 4) : ℕ) : ℝ)) ≤ t)
+    (htop : t ≤ (((((2 * C) ^ routeTLogCentreExponent) ^
+      (4 * u) : ℕ) : ℝ))) :
+    ‖mvPhaseBlockSum (routeTLogReceiverCutoff C)
+        (routeTLogReceiverLength C) (2 * routeTLogReceiverLength C)
+        (routeTLogPhase t)‖ ≤
+      6912 * (((routeTLogReceiverLength C : ℕ) : ℝ) ^
+        (1 - routeTLogOneDimensionalSavingExponent u)) := by
+  have hbase := routeTLogReceiverBaseThreshold_ge_base hC
+  have hNpos : 0 < routeTLogReceiverLength C := by
+    unfold routeTLogReceiverLength
+    have hB2 := routeTLogBaseThreshold_ge_two hbase
+    positivity
+  exact norm_routeTLogPhasePartialBlock_le_rpow hu hC
+    (by omega) (by omega) ht hbottom htop
+
+theorem norm_routeTLogPhasePartialIntervalSum_le_rpow
+    {u C N' : ℕ} {t : ℝ} (hu : 141 ≤ u)
+    (hC : routeTLogReceiverBaseThreshold u ≤ 2 * C)
+    (hNN' : routeTLogReceiverLength C < N')
+    (hN' : N' ≤ 2 * routeTLogReceiverLength C)
+    (ht : 0 < t)
+    (hbottom : (((((2 * C) ^ routeTLogCentreExponent) ^
+      (4 * u - 4) : ℕ) : ℝ)) ≤ t)
+    (htop : t ≤ (((((2 * C) ^ routeTLogCentreExponent) ^
+      (4 * u) : ℕ) : ℝ))) :
+    ‖routeTLogPhasePartialIntervalSum C N' t‖ ≤
+      6912 * (((routeTLogReceiverLength C : ℕ) : ℝ) ^
+        (1 - routeTLogOneDimensionalSavingExponent u)) := by
+  rw [routeTLogPhasePartialIntervalSum_eq_block hN']
+  exact norm_routeTLogPhasePartialBlock_le_rpow hu hC hNN' hN' ht hbottom htop
 
 theorem norm_routeTLogPhaseIntervalSum_le_rpow
     {u C : ℕ} {t : ℝ} (hu : 141 ≤ u)

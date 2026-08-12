@@ -1,6 +1,6 @@
 # Mass-shifted nodal adaptive source landing
 
-- **Status:** IN PROGRESS
+- **Status:** FORMALISED IN LEAN 4
 - **Route:** mass-shifted spectral face / Route U
 - **Target:** source-first arithmetic producer
 - **Opened:** 2026-08-12
@@ -106,5 +106,18 @@ New rational-node density reduces this to countable family indexed by
 Module:
 `RHTower.XiShiftedNodalAdaptiveArithmeticSourceLanding`.
 
-Direct `lake env lean` passes. Umbrella import added. Remaining: axiom audit, formal lint, targeted
-module build.
+Direct `lake env lean` passes. Umbrella import added. Targeted module build passes
+(`12122` cached/transitive jobs). Axiom audit of ten capstones reports only `propext`,
+`Classical.choice`, and `Quot.sound`. Placeholder scan and `git diff --check` pass.
+
+Repository-wide `scripts/formal_tools.py lint` currently fails only on concurrently added,
+unrelated unreachable Bourgain/Sieve/HTGeometry modules; it does not report this module. New
+module itself is umbrella-wired and placeholder-free.
+
+## Log
+
+- 2026-08-12 — conjectured source-selected division-free successor and proved paper identities.
+- 2026-08-12 — hostile audit retained moving-admission connection rather than freezing it.
+- 2026-08-12 — combined nodal and rational-node descent with literal completed arithmetic landing.
+- 2026-08-12 — formalized all capstones, wired umbrella, passed direct Lean, targeted build, axiom,
+  placeholder, and diff audits.

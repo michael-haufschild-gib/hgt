@@ -143,22 +143,23 @@ theorem tendsto_sub_one_mul_squarefreeFixedCurrent_complexPath
     have hone : Tendsto (fun _ : ℝ => (1 : ℂ)) l (nhds 1) :=
       tendsto_const_nhds
     simpa using hpath.sub hone
-  have htwoFlux : Tendsto (fun sigma : ℝ =>
-      infinitePrimeFlux
-        (2 * soninComplexCriticalPath u sigma)) l
+  have htwoFlux : Tendsto
+      ((fun z : ℂ => infinitePrimeFlux (2 * z)) ∘
+        soninComplexCriticalPath u) l
       (nhds (infinitePrimeFlux (2 : ℂ))) := by
     have hcont := (GaloisForLFunctions.differentiableAt_infinitePrimeFlux_two_mul
       (s := (1 : ℂ)) (by norm_num)).continuousAt.tendsto
-    have hcomp := hcont.comp hpath
-    change Tendsto (fun sigma : ℝ => infinitePrimeFlux
-      (2 * soninComplexCriticalPath u sigma)) l
-      (nhds (infinitePrimeFlux (2 : ℂ))) at hcomp
-    exact hcomp
+    simpa only [mul_one] using hcont.comp hpath
   have hcorrection : Tendsto (fun sigma : ℝ =>
       (soninComplexCriticalPath u sigma - 1) *
         (2 * infinitePrimeFlux
           (2 * soninComplexCriticalPath u sigma))) l (nhds 0) := by
-    have htwo := tendsto_const_nhds.mul htwoFlux
+    have htwoConst : Tendsto (fun _ : ℝ => (2 : ℂ)) l (nhds 2) :=
+      tendsto_const_nhds
+    have htwo : Tendsto (fun sigma : ℝ =>
+        2 * infinitePrimeFlux (2 * soninComplexCriticalPath u sigma)) l
+        (nhds (2 * infinitePrimeFlux (2 : ℂ))) := by
+      simpa only [Function.comp_apply] using htwoConst.mul htwoFlux
     simpa using hsub.mul htwo
   have hnormalized : Tendsto (fun sigma : ℝ =>
       (soninComplexCriticalPath u sigma - 1) *
@@ -233,16 +234,8 @@ theorem tendsto_squarefreeBoundaryOverlap_complexCritical
       (sigma : ℂ) := by
     push_cast
     ring
-  change (((sigma - 1 : ℝ) : ℂ) *
-      GaloisForLFunctions.squarefreePartition
-        (1 + (1 + u) * ((sigma - 1 : ℝ) : ℂ))) /
-      (((sigma - 1 : ℝ) : ℂ) *
-        GaloisForLFunctions.squarefreePartition
-          (1 + (1 + (0 : ℂ)) * ((sigma - 1 : ℝ) : ℂ))) =
-    GaloisForLFunctions.squarefreePartition
-        (1 + (1 + u) * ((sigma - 1 : ℝ) : ℂ)) /
-      GaloisForLFunctions.squarefreePartition (sigma : ℂ)
-  rw [hzeroPath]
+  simp only [Pi.div_apply]
+  rw [hpath, hzeroPath]
   field_simp [heps, hpart]
 
 /-- Full holomorphic squarefree Fisher profile at the critical boundary. -/
@@ -297,5 +290,239 @@ theorem tendsto_squarefreeFisherScore_complexCritical
     ring
   rw [hpath, soninComplexCriticalPath_zero]
   ring
+
+/-- Actual complex phase-damped Hilbert coefficient has the same holomorphic critical profile. -/
+theorem tendsto_inner_fisherTangent_complexDamped_criticalSequence
+    {u : ℂ} (hu : 0 ≤ u.re) :
+    Tendsto (fun j : ℕ =>
+      inner ℂ
+        (infiniteMobiusCriticalFisherTangentLp
+          (soninMobiusCriticalSigmaSequence j)
+          (soninMobiusCriticalSigmaSequence_gt_one j))
+        (infiniteMobiusCriticalComplexDampedSignedWeightLp
+          (soninMobiusCriticalSigmaSequence j) u
+          (soninMobiusCriticalSigmaSequence_gt_one j) hu))
+      atTop (nhds (2 * u / (1 + u) ^ 2)) := by
+  have hscore := (tendsto_squarefreeFisherScore_complexCritical hu).comp
+    tendsto_soninMobiusCriticalSigmaSequence
+  refine Tendsto.congr' ?_ hscore
+  filter_upwards with j
+  have hsigma := soninMobiusCriticalSigmaSequence_gt_one j
+  have hshift : 1 <
+      (((soninMobiusCriticalSigmaSequence j : ℝ) : ℂ) +
+        u * (((soninMobiusCriticalSigmaSequence j - 1 : ℝ) : ℂ))).re := by
+    simp only [add_re, mul_re, ofReal_re, ofReal_im]
+    nlinarith
+  simpa only [Function.comp_apply] using
+    (inner_fisherTangent_complexDamped_eq_squarefreeFisherScore
+      hsigma hu hshift).symm
+
+/-- Fixed complex Hardy-node score survives the non-equivariant Sonin pullback. -/
+theorem tendsto_soninCofinal_complexFisherScore
+    (a c d r : ℝ) (ha : 0 < a) (hc : 0 < c) (hcd : c < d)
+    (hda : d < a) (hr : 1 < r) (harc : a < r * c)
+    (sigma : ℝ) (u : ℂ) (hsigma : 1 < sigma) (hu : 0 ≤ u.re) :
+    Tendsto (fun N =>
+      inner ℂ
+        (soninCofinalSourceCorner a c d r hc hcd hr N
+          (infiniteMobiusCriticalFisherTangentLp sigma hsigma))
+        (soninCofinalSourceCorner a c d r hc hcd hr N
+          (infiniteMobiusCriticalComplexDampedSignedWeightLp
+            sigma u hsigma hu)))
+      atTop
+      (nhds (inner ℂ
+        (infiniteMobiusCriticalFisherTangentLp sigma hsigma)
+        (infiniteMobiusCriticalComplexDampedSignedWeightLp
+          sigma u hsigma hu))) := by
+  simp_rw [inner_soninCofinalSourceCorner_eq_pullback]
+  have hpull : Tendsto (fun N =>
+      soninCofinalPositiveSourcePullback a c d r hc hcd hr N
+        (infiniteMobiusCriticalComplexDampedSignedWeightLp sigma u hsigma hu))
+      atTop (nhds
+        (infiniteMobiusCriticalComplexDampedSignedWeightLp sigma u hsigma hu)) := by
+    apply tendsto_iff_norm_sub_tendsto_zero.mpr
+    exact tendsto_norm_soninCofinalPositiveSourcePullback_sub
+      a c d r ha hc hcd hda hr harc
+        (infiniteMobiusCriticalComplexDampedSignedWeightLp sigma u hsigma hu)
+  exact Filter.Tendsto.inner (𝕜 := ℂ)
+    (tendsto_const_nhds : Tendsto
+      (fun _ : ℕ => infiniteMobiusCriticalFisherTangentLp sigma hsigma)
+      atTop (nhds (infiniteMobiusCriticalFisherTangentLp sigma hsigma)))
+    hpull
+
+/-- Finite Sonin score at one critical level and one complex phase. -/
+def soninCofinalCriticalComplexFisherScore
+    (a c d r : ℝ) (hc : 0 < c) (hcd : c < d) (hr : 1 < r)
+    (u : ℂ) (hu : 0 ≤ u.re) (j N : ℕ) : ℂ :=
+  inner ℂ
+    (soninCofinalSourceCorner a c d r hc hcd hr N
+      (infiniteMobiusCriticalFisherTangentLp
+        (soninMobiusCriticalSigmaSequence j)
+        (soninMobiusCriticalSigmaSequence_gt_one j)))
+    (soninCofinalSourceCorner a c d r hc hcd hr N
+      (infiniteMobiusCriticalComplexDampedSignedWeightLp
+        (soninMobiusCriticalSigmaSequence j) u
+        (soninMobiusCriticalSigmaSequence_gt_one j) hu))
+
+/-- One cofinal Sonin diagonal retains an arbitrary inward complex phase and
+converges to its full holomorphic Fisher profile. -/
+theorem exists_soninCofinalCriticalComplexFisherScore_diagonal
+    (a c d r : ℝ) (ha : 0 < a) (hc : 0 < c) (hcd : c < d)
+    (hda : d < a) (hr : 1 < r) (harc : a < r * c)
+    (u : ℂ) (hu : 0 ≤ u.re) :
+    ∃ Nseq : ℕ → ℕ,
+      (∀ j, j < Nseq j) ∧
+      Tendsto (fun j => soninCofinalCriticalComplexFisherScore
+        a c d r hc hcd hr u hu j (Nseq j))
+        atTop (nhds (2 * u / (1 + u) ^ 2)) := by
+  let sourceScore : ℕ → ℂ := fun j =>
+    inner ℂ
+      (infiniteMobiusCriticalFisherTangentLp
+        (soninMobiusCriticalSigmaSequence j)
+        (soninMobiusCriticalSigmaSequence_gt_one j))
+      (infiniteMobiusCriticalComplexDampedSignedWeightLp
+        (soninMobiusCriticalSigmaSequence j) u
+        (soninMobiusCriticalSigmaSequence_gt_one j) hu)
+  let F : ℕ → ℕ → ℝ := fun j N =>
+    dist (soninCofinalCriticalComplexFisherScore
+      a c d r hc hcd hr u hu j N) (sourceScore j)
+  have happrox : ∀ j : ℕ, ∀ ε > 0, ∃ M, j < M ∧ F j M < ε := by
+    intro j ε hε
+    have hfixed := tendsto_soninCofinal_complexFisherScore
+      a c d r ha hc hcd hda hr harc
+      (soninMobiusCriticalSigmaSequence j) u
+      (soninMobiusCriticalSigmaSequence_gt_one j) hu
+    rw [Metric.tendsto_atTop] at hfixed
+    obtain ⟨N, hN⟩ := hfixed ε hε
+    refine ⟨max N (j + 1), by omega, ?_⟩
+    exact hN _ (le_max_left _ _)
+  obtain ⟨Nseq, hcofinal, herror⟩ :=
+    GaloisForLFunctions.RHTower.exists_diagonal_lt happrox
+  refine ⟨Nseq, hcofinal, ?_⟩
+  have hsource : Tendsto sourceScore atTop
+      (nhds (2 * u / (1 + u) ^ 2)) := by
+    exact tendsto_inner_fisherTangent_complexDamped_criticalSequence hu
+  exact GaloisForLFunctions.RHTower.tendsto_of_dist_lt_inv hsource herror
+
+/-- Reflection-odd complex-phase Fisher profile. -/
+def soninCriticalPhaseOddFisherProfile (t : ℝ) : ℂ :=
+  4 * I * t * (1 - t ^ 2) / (1 + t ^ 2) ^ 2
+
+theorem soninCriticalPhaseOddFisherProfile_eq_difference (t : ℝ) :
+    soninCriticalPhaseOddFisherProfile t =
+      2 * (I * t) / (1 + I * t) ^ 2 -
+        2 * (-I * t) / (1 - I * t) ^ 2 := by
+  rw [soninCriticalPhaseOddFisherProfile]
+  have hplus : (1 : ℂ) + I * t ≠ 0 := by
+    intro h
+    have hre := congrArg Complex.re h
+    simp at hre
+  have hminus : (1 : ℂ) - I * t ≠ 0 := by
+    intro h
+    have hre := congrArg Complex.re h
+    simp at hre
+  have hreal : (1 + (t : ℂ) ^ 2) ≠ 0 := by
+    exact ofReal_ne_zero.mpr (by positivity)
+  push_cast
+  field_simp [hplus, hminus, hreal]
+  rw [I_sq]
+  ring
+
+theorem soninCriticalPhaseOddFisherProfile_eq_zero_iff
+    {t : ℝ} (ht : |t| < 1) :
+    soninCriticalPhaseOddFisherProfile t = 0 ↔ t = 0 := by
+  rw [soninCriticalPhaseOddFisherProfile]
+  have hden : (((1 + t ^ 2) ^ 2 : ℝ) : ℂ) ≠ 0 := by
+    exact ofReal_ne_zero.mpr (by positivity)
+  rw [div_eq_zero_iff]
+  simp only [mul_eq_zero, ofReal_eq_zero, I_ne_zero, OfNat.ofNat_ne_zero,
+    false_or]
+  constructor
+  · intro h
+    rcases h with h | h
+    · exact h
+    · have hsquare : t ^ 2 = 1 := by linarith
+      have habs : |t| = 1 := by
+        nlinarith [sq_abs t]
+      linarith
+  · intro h
+    exact Or.inl h
+  exact hden
+
+/-- Shared-depth signed score retaining the two complex phase orientations. -/
+def soninCofinalCriticalPhaseOddFisherScore
+    (a c d r : ℝ) (hc : 0 < c) (hcd : c < d) (hr : 1 < r)
+    (t : ℝ) (j N : ℕ) : ℂ :=
+  soninCofinalCriticalComplexFisherScore
+      a c d r hc hcd hr (I * t) (by simp) j N -
+    soninCofinalCriticalComplexFisherScore
+      a c d r hc hcd hr (-I * t) (by simp) j N
+
+/-- SOURCE-ORIENTATION PRODUCER: one common cofinal finite Sonin schedule
+retains both reflection orientations and converges to the explicit odd
+horizontal profile.  In the retained strip this profile annihilates exactly
+the neutral class. -/
+theorem exists_soninCofinalCriticalPhaseOddFisherScore_diagonal
+    (a c d r : ℝ) (ha : 0 < a) (hc : 0 < c) (hcd : c < d)
+    (hda : d < a) (hr : 1 < r) (harc : a < r * c)
+    (t : ℝ) :
+    ∃ Nseq : ℕ → ℕ,
+      (∀ j, j < Nseq j) ∧
+      Tendsto (fun j => soninCofinalCriticalPhaseOddFisherScore
+        a c d r hc hcd hr t j (Nseq j))
+        atTop (nhds (soninCriticalPhaseOddFisherProfile t)) := by
+  let plusSource : ℕ → ℂ := fun j =>
+    inner ℂ
+      (infiniteMobiusCriticalFisherTangentLp
+        (soninMobiusCriticalSigmaSequence j)
+        (soninMobiusCriticalSigmaSequence_gt_one j))
+      (infiniteMobiusCriticalComplexDampedSignedWeightLp
+        (soninMobiusCriticalSigmaSequence j) (I * t)
+        (soninMobiusCriticalSigmaSequence_gt_one j) (by simp))
+  let minusSource : ℕ → ℂ := fun j =>
+    inner ℂ
+      (infiniteMobiusCriticalFisherTangentLp
+        (soninMobiusCriticalSigmaSequence j)
+        (soninMobiusCriticalSigmaSequence_gt_one j))
+      (infiniteMobiusCriticalComplexDampedSignedWeightLp
+        (soninMobiusCriticalSigmaSequence j) (-I * t)
+        (soninMobiusCriticalSigmaSequence_gt_one j) (by simp))
+  let sourceOdd : ℕ → ℂ := fun j => plusSource j - minusSource j
+  let F : ℕ → ℕ → ℝ := fun j N =>
+    dist (soninCofinalCriticalPhaseOddFisherScore
+      a c d r hc hcd hr t j N) (sourceOdd j)
+  have happrox : ∀ j : ℕ, ∀ ε > 0, ∃ M, j < M ∧ F j M < ε := by
+    intro j ε hε
+    have hplus := tendsto_soninCofinal_complexFisherScore
+      a c d r ha hc hcd hda hr harc
+      (soninMobiusCriticalSigmaSequence j) (I * t)
+      (soninMobiusCriticalSigmaSequence_gt_one j) (by simp)
+    have hminus := tendsto_soninCofinal_complexFisherScore
+      a c d r ha hc hcd hda hr harc
+      (soninMobiusCriticalSigmaSequence j) (-I * t)
+      (soninMobiusCriticalSigmaSequence_gt_one j) (by simp)
+    have hodd : Tendsto (fun N =>
+        soninCofinalCriticalPhaseOddFisherScore
+          a c d r hc hcd hr t j N) atTop (nhds (sourceOdd j)) := by
+      exact hplus.sub hminus
+    rw [Metric.tendsto_atTop] at hodd
+    obtain ⟨N, hN⟩ := hodd ε hε
+    refine ⟨max N (j + 1), by omega, ?_⟩
+    exact hN _ (le_max_left _ _)
+  obtain ⟨Nseq, hcofinal, herror⟩ :=
+    GaloisForLFunctions.RHTower.exists_diagonal_lt happrox
+  refine ⟨Nseq, hcofinal, ?_⟩
+  have hplusSource : Tendsto plusSource atTop
+      (nhds (2 * (I * t) / (1 + I * t) ^ 2)) :=
+    tendsto_inner_fisherTangent_complexDamped_criticalSequence (by simp)
+  have hminusSource : Tendsto minusSource atTop
+      (nhds (2 * (-I * t) / (1 - I * t) ^ 2)) := by
+    convert tendsto_inner_fisherTangent_complexDamped_criticalSequence
+      (u := -I * t) (by simp) using 1 <;> ring
+  have hsourceOdd : Tendsto sourceOdd atTop
+      (nhds (soninCriticalPhaseOddFisherProfile t)) := by
+    rw [soninCriticalPhaseOddFisherProfile_eq_difference]
+    exact hplusSource.sub hminusSource
+  exact GaloisForLFunctions.RHTower.tendsto_of_dist_lt_inv hsourceOdd herror
 
 end RHTower
