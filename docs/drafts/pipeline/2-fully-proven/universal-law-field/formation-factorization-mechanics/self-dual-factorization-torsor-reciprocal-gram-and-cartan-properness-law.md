@@ -519,9 +519,39 @@ The unconditional algebraic/properness core is formalized in
 
 This certificate is deliberately more abstract than the Hilbert-space presentation: it proves the
 torsor/reversal/Gram laws in every involutive star-group, then proves the properness selector for a
-finite real Cartan packet. The finite-dimensional matrix compact-sublevel theorem, singular-value
-formula, and compact unitary recurrence statement remain paper-only and are not claimed as Lean
-certified by this card.
+finite real Cartan packet.
+
+The matrix-level content of Theorem 6.1 is certified in
+`GaloisForLFunctions.HTGeometry.CartanWorkProperness`, also wired into the umbrella:
+
+- `trace_inv_eq_sum_inv_eigenvalues` — for a Hermitian matrix with nonvanishing spectrum the trace
+  of the inverse is the sum of the inverse eigenvalues, through the spectral congruence;
+- `posDef_conjTranspose_mul_self` — `SᴴS` is positive definite for invertible `S`;
+- `cartanWork`, `cartanWork_eq_sum` — **`(CT.19)`** in the form that avoids a singular-value API:
+  with `μ` the eigenvalues of `SᴴS`, the work is `∑ⱼ (μⱼ − 1)²/μⱼ`.  This is the same quantity as
+  `∑ (σⱼ − σⱼ⁻¹)²` since `μⱼ = σⱼ²`, but it is provable from mathlib's Hermitian spectral theorem
+  alone;
+- `cartanWork_nonneg`, `cartanWork_eq_zero_iff` — nonnegativity and the exact zero locus
+  `μ ≡ 1`, which is unitarity of `S`;
+- `trace_le_of_cartanWork_le` — **`(CT.20)`**, the sublevel bound: bounding the work bounds both
+  Hilbert–Schmidt energies, which is the boundedness half of properness.
+
+Every declaration audits to `propext`, `Classical.choice`, `Quot.sound`.
+
+The compact-sublevel theorem is certified in its quantitative form, which is exactly what the
+paper proof uses:
+
+- `trace_conjTranspose_mul_self_re` — the trace of `SᴴS` is the Hilbert–Schmidt energy `∑|Sᵢⱼ|²`;
+- `sum_norm_sq_le_of_cartanWork_le` — **boundedness** of the sublevel: `W(S) ≤ C` bounds every
+  entry energy by `C + 2r`;
+- `eigenvalue_bounds_of_cartanWork_le` — the spectrum of `SᴴS` on the sublevel is trapped in
+  `[(C+2r)⁻¹, C+2r]`, both bounds uniform in `S`;
+- `det_ge_of_cartanWork_le` — **no kernel in the limit**: `det(SᴴS) ≥ (C+2r)^{−r}` uniformly, so
+  the closure of the sublevel cannot meet the singular locus.
+
+Together these are the bounded-and-bounded-away-from-degeneracy content of the compactness proof;
+what remains is only the Heine–Borel packaging of those two bounds into `IsCompact`, together with
+the compact unitary recurrence statement of Theorem 7.1.
 
 ## Log
 
@@ -531,3 +561,9 @@ certified by this card.
 - 2026-08-12 — recurrent-phase/open-radial-history theorem proved.
 - 2026-08-12 — exact gauge classification, adjoint fixed locus, reciprocal-Gram conservation, and
   finite-packet bounded-work selection formalized in Lean and wired into the ULF umbrella.
+- 2026-08-12 — the matrix Cartan work formula, its zero locus, and the sublevel bound certified
+  in Lean (`CartanWorkProperness`), using the eigenvalue form `∑ (μ−1)²/μ` rather than a
+  singular-value API mathlib does not provide.
+- 2026-08-12 — the sublevel Hilbert-Schmidt bound, the uniform two-sided spectral bound, and the
+  uniform determinant lower bound certified; the compact-sublevel theorem is reduced to Heine-Borel
+  packaging.

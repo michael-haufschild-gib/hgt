@@ -1,10 +1,11 @@
 # Polarized incidence--Stokes and Route-E/Mass capacity-phase law
 
 - **ID:** `polarized-incidence-stokes-and-e-mass-capacity-phase-law`
-- **Stage:** 2 — fully proven on paper
-- **Status:** `[PAPER-PROVED] [CROSS-ROUTE BRIDGE]`
+- **Stage:** 3-formalized
+- **Status:** `[LEAN COMPLETE] [UNCONDITIONAL] [NO SORRY] [NO NEW AXIOMS]`
+  `[PAPER-PROVED] [CROSS-ROUTE BRIDGE]`
   `[PATH-LOCAL MASS CAPACITY IDENTIFICATION FALSIFIED] [CORPUS PRIORITY UNVERIFIED]`
-  `[EXTERNAL NOVELTY UNVERIFIED] [NOT RH] [NO LEAN WRITTEN]`
+  `[EXTERNAL NOVELTY UNVERIFIED] [NOT RH]`
 - **Scope:** Finite labeled bipartite incidence, the finite symmetric opposite-sign Route-E
   conductance sector, and finite ordered-prime paths. No limiting source estimate, prime-gap
   hypothesis, PNT, or RH premise.
@@ -372,12 +373,13 @@ external priority for this precise interface remain unverified.
 
 ## Lean-return note
 
-- No Lean code was written or built.
-- Likely later reuse:
-  `formal/GaloisForLFunctions/RHTower/MobiusBoundaryOppositeSignTransport.lean`,
-  `formal/GaloisForLFunctions/RHTower/XiMassFullAdjacentPrimeGraph.lean`, and
-  `formal/GaloisForLFunctions/RHTower/XiMassCriticalOutgoingCurrent.lean`.
-- Formalization should separate generic graph theorem from the two arithmetic instantiations.
+Formalized in
+`formal/GaloisForLFunctions/HTGeometry/ConstraintRelativity/PolarizedIncidenceStokes.lean`
+(wired into `GaloisForLFunctions.HTGeometry`).  Theorems A--D, the connected degree-zero quotient
+and the unused-capacity bound are green and unconditional, with the generic graph layer separated
+from the ordered-prime instantiation as suggested; the declaration-by-equation map and the axiom
+audit are in the companion card
+`polarized-incidence-stokes-and-e-mass-capacity-phase-law-formalized.md`.
 
 ## Gates
 
@@ -388,6 +390,7 @@ external priority for this precise interface remain unverified.
 - [x] path-local Mass capacity no-go proved
 - [x] strongest positive survivor extracted
 - [x] independent hostile audit repaired
+- [x] Lean formalization
 - [ ] external priority verification
 
 ## Log

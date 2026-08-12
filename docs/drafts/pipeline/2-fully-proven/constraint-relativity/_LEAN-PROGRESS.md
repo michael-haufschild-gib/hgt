@@ -15,6 +15,7 @@ Working note for the promotion sweep.  Not a card.
 | `two-endpoint-prime-orbit-stokes-moduli-and-infinite-coinvariant-law` | `RHTower/CCMRationalAdelicTwoEndpointStokesModuli.lean` |
 | `residue-preserving-law-promotion-anomaly-trilemma` | `HTGeometry/ConstraintRelativity/ResiduePromotionAnomaly.lean` |
 | `provenance-admission-connecting-law-and-flat-completion-cube` | `HTGeometry/ConstraintRelativity/ProvenanceAdmissionCube.lean` |
+| `polarized-incidence-stokes-and-e-mass-capacity-phase-law` | `HTGeometry/ConstraintRelativity/PolarizedIncidenceStokes.lean` |
 
 All modules are wired into their area umbrella, build green, and every listed declaration returns
 only `[propext, Classical.choice, Quot.sound]`.
@@ -24,7 +25,6 @@ only `[propext, Classical.choice, Quot.sound]`.
 - `banach-two-boundary-observer-radical-and-horizon-layer-duality`
 - `factor-framed-tensor-jacobian-defect-law`
 - `passive-relation-triangle-energy-and-interaction-cross-fibre-law`
-- `polarized-incidence-stokes-and-e-mass-capacity-phase-law`
 - `resource-filtered-relation-typicality-and-recurrence-no-go`
 
 ## Scouting notes
@@ -62,3 +62,19 @@ normal acceleration `h''(0) = 2‖(I−P)Ax‖²`) are elementary.  Theorem 2.1 
 measure zero"; mathlib has the identity theorem (empty interior) but no Lebesgue-measure-zero
 statement for real-analytic zero sets, and Corollary 2.2 additionally needs Haar-measure zero of a
 proper analytic subset of a compact Lie group.  Both must be built.
+
+### `passive-relation-triangle-energy-and-interaction-cross-fibre-law` — scouted
+
+Section 3 is elementary Hilbert-space geometry and should go first: Theorem 3.1 `(3.1)`–`(3.4)`
+(leak decomposition, `W = ‖x‖² − ‖Hx‖²`, the holonomy quadratic, and `‖Ωx‖² ≤ 3W`) is three
+Pythagoras steps plus Cauchy–Schwarz; Proposition 2.1's covariance clause is gauge cancellation;
+Corollary 3.3 is a limit; Theorem 3.5 is an explicit `ℂ²` computation with `u₂^± = (1, ±i)/√2`.
+Proposition 2.1's cyclic-spectrum clause needs `det(1 − tAB) = det(1 − tBA)`.
+
+Section 5 is the obstacle.  Theorem 5.1 needs the Hilbert–Schmidt orthogonal decomposition
+`Herm(A⊗B) = Herm₀(A)⊗I ⊕ I⊗Herm₀(B) ⊕ Herm₀(A)⊗_ℝ Herm₀(B) ⊕ ℝI`, i.e. a traceless Hermitian
+orthogonal basis (generalized Gell-Mann) and partial traces.  mathlib has `Matrix.trace`,
+`selfAdjoint`, `Matrix.kroneckerMap`, but no partial trace and no Hermitian orthogonal basis, so
+both must be built before Theorem 5.2 (the first-order locality classifier) and Corollary 5.3.
+
+### `factor-framed-tensor-jacobian-defect-law` — not yet scouted

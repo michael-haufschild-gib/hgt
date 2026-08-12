@@ -75,12 +75,12 @@ def polarization : (V → ℂ) →ₗ[ℂ] (V → ℂ) where
     simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply]
     ring
 
-omit [Fintype V] in
+omit [Fintype V] [DecidableEq E] in
 @[simp] theorem signlessIncidence_apply (q : E → ℂ) (v : V) :
     signlessIncidence s t q v =
       ∑ e : E, q e * ((if s e = v then 1 else 0) + (if t e = v then 1 else 0)) := rfl
 
-omit [Fintype V] in
+omit [Fintype V] [DecidableEq E] in
 @[simp] theorem orientedBoundary_apply (q : E → ℂ) (v : V) :
     orientedBoundary s t q v =
       ∑ e : E, q e * ((if s e = v then 1 else 0) - (if t e = v then 1 else 0)) := rfl
@@ -89,7 +89,7 @@ omit [Fintype V] [DecidableEq V] in
 @[simp] theorem polarization_apply (w : V → ℂ) (v : V) :
     polarization eps w v = eps v * w v := rfl
 
-omit [Fintype V] in
+omit [Fintype V] [DecidableEq E] in
 /-- **Theorem A, card `(2)` boxed.**  Möbius polarization identifies signless endpoint incidence
 with the ordinary oriented boundary. -/
 theorem polarization_comp_signlessIncidence
@@ -135,7 +135,7 @@ theorem polarization_restrict (A : Set V) (w : V → ℂ) (v : A) :
 def capacityResidual (w : V → ℂ) (q : E → ℂ) : V → ℂ :=
   w - signlessIncidence s t q
 
-omit [Fintype V] in
+omit [Fintype V] [DecidableEq E] in
 /-- **Theorem B, card `(5)` boxed.**  The polarized discrete Stokes law. -/
 theorem polarized_stokes (hs : ∀ e : E, eps (s e) = 1) (ht : ∀ e : E, eps (t e) = -1)
     (w : V → ℂ) (q : E → ℂ) :
@@ -148,6 +148,7 @@ theorem polarized_stokes (hs : ∀ e : E, eps (s e) = 1) (ht : ∀ e : E, eps (t
   rw [← hA]
   ring
 
+omit [DecidableEq E] in
 /-- Augmentation kills oriented boundaries. -/
 theorem sum_orientedBoundary (q : E → ℂ) : ∑ v : V, orientedBoundary s t q v = 0 := by
   have hval : ∀ v : V, orientedBoundary s t q v =
@@ -163,6 +164,7 @@ theorem sum_orientedBoundary (q : E → ℂ) : ∑ v : V, orientedBoundary s t q
     Finset.sum_ite_eq Finset.univ (t e) (fun _ => q e),
     if_pos (Finset.mem_univ _), if_pos (Finset.mem_univ _), sub_self]
 
+omit [DecidableEq E] in
 /-- Pairing an oriented boundary with a cut cochain is the signed cut flux. -/
 theorem sum_orientedBoundary_mul (q : E → ℂ) (chi : V → ℂ) :
     ∑ v : V, orientedBoundary s t q v * chi v =
@@ -184,6 +186,7 @@ theorem sum_orientedBoundary_mul (q : E → ℂ) (chi : V → ℂ) :
     if_pos (Finset.mem_univ _), if_pos (Finset.mem_univ _)]
   ring
 
+omit [DecidableEq E] in
 /-- **Theorem B, card `(6)`.**  The polarized source charge equals the polarized residual charge. -/
 theorem polarized_charge (hs : ∀ e : E, eps (s e) = 1) (ht : ∀ e : E, eps (t e) = -1)
     (w : V → ℂ) (q : E → ℂ) :
@@ -194,6 +197,7 @@ theorem polarized_charge (hs : ∀ e : E, eps (s e) = 1) (ht : ∀ e : E, eps (t
   rw [Finset.sum_add_distrib, sum_orientedBoundary, zero_add] at hsum
   exact hsum
 
+omit [DecidableEq E] in
 /-- **Theorem B, card `(7)` boxed.**  The polarized cut-pairing law: polarized source charge is
 signed cut flux plus unmatched residual. -/
 theorem polarized_cut_flux (hs : ∀ e : E, eps (s e) = 1) (ht : ∀ e : E, eps (t e) = -1)
@@ -207,6 +211,7 @@ theorem polarized_cut_flux (hs : ∀ e : E, eps (s e) = 1) (ht : ∀ e : E, eps 
   rw [Finset.sum_add_distrib, sum_orientedBoundary_mul] at hpair
   exact hpair
 
+omit [DecidableEq E] in
 /-- **Card `(9)`.**  Under the capacity hypotheses the polarized charge is bounded by the total
 unused capacity. -/
 theorem abs_polarized_charge_le (hs : ∀ e : E, eps (s e) = 1) (ht : ∀ e : E, eps (t e) = -1)
@@ -233,11 +238,13 @@ def augmentation : (V → ℂ) →ₗ[ℂ] ℂ where
     simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply]
     rw [Finset.mul_sum]
 
+omit [DecidableEq V] [DecidableEq E] in
 @[simp] theorem augmentation_apply (w : V → ℂ) : augmentation w = ∑ v : V, w v := rfl
 
 /-- The edge relation of the multigraph. -/
 def edgeRel (u v : V) : Prop := ∃ e : E, (s e = u ∧ t e = v) ∨ (s e = v ∧ t e = u)
 
+omit [Fintype V] in
 /-- The oriented boundary of a single edge is the difference of its endpoint indicators. -/
 theorem orientedBoundary_single (e : E) (v : V) :
     orientedBoundary s t (Pi.single e (1 : ℂ)) v =
@@ -249,6 +256,7 @@ theorem orientedBoundary_single (e : E) (v : V) :
   · intro hne
     exact absurd (Finset.mem_univ e) hne
 
+omit [Fintype V] in
 /-- Vertex indicator differences along edges are boundaries. -/
 theorem indicator_sub_mem_range_of_edgeRel {u v : V} (h : edgeRel s t u v) :
     (fun x : V => (if u = x then (1 : ℂ) else 0) - (if v = x then 1 else 0)) ∈
@@ -262,6 +270,7 @@ theorem indicator_sub_mem_range_of_edgeRel {u v : V} (h : edgeRel s t u v) :
     rw [map_neg, Pi.neg_apply, orientedBoundary_single, he.1, he.2]
     ring
 
+omit [Fintype V] in
 /-- Vertex indicator differences along paths are boundaries. -/
 theorem indicator_sub_mem_range_of_reachable {u v : V}
     (h : Relation.ReflTransGen (edgeRel s t) u v) :

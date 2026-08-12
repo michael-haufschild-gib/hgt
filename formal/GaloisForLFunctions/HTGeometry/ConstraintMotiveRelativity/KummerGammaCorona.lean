@@ -146,9 +146,10 @@ theorem diagMulLin_mem_iff_bounded (m : CoefSpace) :
       intro n
       simp only [Function.comp_apply, diagMulLin_apply, norm_mul, hxq, hnormu]
       have h2 : (0 : ℝ) < ((n : ℝ) + 1) := by positivity
+      have hne : ((n : ℝ) + 1) ≠ 0 := by positivity
       calc ((n : ℝ) + 1) = ((n : ℝ) + 1) ^ 3 * (((n : ℝ) + 1) ^ 2)⁻¹ := by
-            field_simp
-            try ring
+            rw [← div_eq_mul_inv, eq_div_iff (pow_ne_zero 2 hne)]
+            ring
         _ ≤ ‖m (q n)‖ * (((n : ℝ) + 1) ^ 2)⁻¹ := by
             gcongr
             exact hlarge n
@@ -314,7 +315,8 @@ theorem bockstein_not_mem_of_pos {s : ℝ} (hs : 0 < s) : bockstein s ∉ corona
     rw [norm_bockstein]
     have hd := inv_four_mul_le_dCoef p
     have h1 : (s * Real.log 2 / 4) * (1 / (p : ℝ)) = (4 * (p : ℝ))⁻¹ * (s * Real.log 2) := by
-      field_simp
+      rw [mul_inv, one_div, div_eq_mul_inv]
+      ring
     rw [h1]
     exact mul_le_mul hd habs (by positivity) (dCoef_pos p).le
   have hnn : ∀ p : Nat.Primes, 0 ≤ (s * Real.log 2 / 4) * (1 / (p : ℝ)) := by
@@ -325,7 +327,8 @@ theorem bockstein_not_mem_of_pos {s : ℝ} (hs : 0 < s) : bockstein s ∉ corona
     hcon.of_nonneg_of_le hnn hlow
   refine Nat.Primes.not_summable_one_div ?_
   have hc : (s * Real.log 2 / 4) ≠ 0 := by positivity
-  exact (hs2.mul_left (s * Real.log 2 / 4)⁻¹).congr fun p => by field_simp
+  exact (hs2.mul_left (s * Real.log 2 / 4)⁻¹).congr fun p => by
+    rw [← mul_assoc, inv_mul_cancel₀ hc, one_mul]
 
 /-- **`(3)`.**  The corona class of the Bockstein vanishes only at the neutral grade. -/
 theorem bockstein_mem_coronaIdeal_iff (t : ℝ) : bockstein t ∈ coronaIdeal ↔ t = 0 := by
