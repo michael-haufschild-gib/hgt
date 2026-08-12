@@ -435,19 +435,42 @@ information-neutral; it cannot manufacture the missing renewal budget.
 Use the common-recovery KL isometry and exact observer recovery already proved in
 `ConstitutiveFunctionalEquationPacketLift`.
 
-## 6. Source-horizontal consequence and exact open gate
+### Corollary 5.3 — arbitrary packet interventions do not create a loophole
 
-Suppose the canonical source-horizontal aperture can be realized as one pairwise-disjoint tower
-inside a single probability source law, with forward or reverse exponential rates proved in the
-parent card.  Then every single global renewal of finite KL has finite first aperture moment.
-Since adaptive Jeffreys work is linear in grade, Corollary 4.2 forces its total admitted current to
-be summable.  A nonsummable or uniformly positive source-horizontal current is therefore
-impossible.
+The companion theorem
+`horizontal-vertical-packet-renewal-budget-and-cofinal-properness-law.md` removes the split-law
+hypothesis.  For every arbitrary joint renewal `Q` relative to `mu tensor K`, observer projection
+gives
 
-The condition in the first sentence is now the exact arithmetic formation gate.  Existing cards
-construct each aperture and its class-law mass, but they do not yet embed the entire cofinal family
-as pairwise-disjoint events of one fixed source law.  Claiming this embedding without construction
-would be theatre.
+```text
+D(pi_*Q||mu) <= D(Q||mu tensor K).
+```
+
+Hence finite total packet action still forces the same cofinal moment and work threshold.  Under
+standard-Borel disintegration, the difference is exactly the nonnegative conditional KL from the
+renewed history kernel to `K`.  Vertical history consumes action; it cannot replenish horizontal
+aperture mass.
+
+## 6. Literal source-horizontal formation is closed
+
+The companion theorem
+`source-horizontal-disjoint-class-law-global-renewal-properness-and-current-evacuation.md`
+proves that the canonical source-horizontal apertures already form one pairwise-disjoint tower in
+each fixed abelian class law.  The proof uses the exact order and socle invariants of
+
+```text
+A_N=(Z/pZ)^(N+1),       B_N=Z/p^(2N)Z.
+```
+
+It obtains the sharp available exponential rates `(2-a)log p` in the forward law and `2log p` in
+the reverse law.  Therefore every single global renewal of finite KL has finite first aperture
+moment.  Since adaptive Jeffreys work is linear in grade, Corollary 4.2 forces its total admitted
+current to be summable.  A nonsummable or uniformly positive source-horizontal current is
+impossible under every finite-action absolutely continuous renewal.
+
+The remaining arithmetic gate is no longer formation of the tower.  It is construction of one
+source-native renewal and proof that the same renewed current lands naturally in at least two
+other organs.
 
 ## 7. Five-organ fusion
 
@@ -484,8 +507,9 @@ entrance wall on every persistent cofinal current.
    cubic renewal.
 7. **Evacuation shape is irrelevant.** False.  The exact critical surface is `d=gamma+1` for
    stretched-exponential degree `gamma`.
-8. **The source-horizontal tower is already a single disjoint source partition.** Not proved.
-   Constructing that formation is the next arithmetic gate.
+8. **The source-horizontal tower requires an artificial product source.** False.  The literal
+   abelian class space already contains a pairwise-disjoint tower under one fixed law per
+   orientation; the companion theorem closes this gate.
 
 ## 9. Literature boundary
 
@@ -518,3 +542,5 @@ a future Stage-2-to-Stage-3 pass.
   properness.
 - 2026-08-12 — proved sharp global cubic threshold and compatibility with functional equation and
   common recovery.
+- 2026-08-13 — literal source-horizontal class invariants were re-audited; they close the previously
+  stated disjoint-formation gate and yield unconditional finite-KL global current evacuation.

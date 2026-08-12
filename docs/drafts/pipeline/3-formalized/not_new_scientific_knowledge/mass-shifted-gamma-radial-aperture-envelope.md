@@ -1,9 +1,9 @@
 # Mass-shifted Gamma radial aperture envelope
 
 - **ID:** `mass-shifted-gamma-radial-aperture-envelope`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Route:** U, C43-Y `(24.136)` / PDH.6
-- **Scientific status:** `[BRIDGE] [PAPER-PROVED] [LEAN-PENDING] [UNCONDITIONAL]`
+- **Scientific status:** `[BRIDGE] [FORMALIZED] [UNCONDITIONAL]`
 - **Depends on:** `mass-shifted-polynomial-gaussian-local-concentration`;
   `HardyZPhaseAsymptotic`
 
@@ -100,3 +100,24 @@ an identified new parent-theory theorem.
 Choosing any radius beyond the corpus's unique positive zero of `g` yields universal positive
 `c_0` and finite `C_0`, hence C43-Y `(24.136)` exactly. Keeping `R` free exposes a variational
 aperture profile that can later be optimized when the prime face is assembled.
+
+## Lean closure
+
+Formalized in
+`formal/GaloisForLFunctions/RHTower/PolynomialGaussianGammaRadialEnvelope.lean` as
+`RHTower.integral_norm_routeUPolynomialGaussianDensity_mul_gammaHardyPhaseRate_ge`.
+
+The implementation does not rely on the convention that an undefined integral is zero. It builds
+the native density as a scaled pointwise product of Schwartz functions, proves both unweighted and
+Gamma-weighted integrability, proves the two radial sign inequalities from exact evenness and
+strict monotonicity, splits the line into `[-R,R]` and its complement, then imports the already
+formalized local-concentration theorem.
+
+Audit on 2026-08-13:
+
+- `lake env lean GaloisForLFunctions/RHTower/PolynomialGaussianGammaRadialEnvelope.lean`: pass;
+- umbrella import added to `formal/GaloisForLFunctions/RHTower.lean`;
+- `lake build GaloisForLFunctions.RHTower.PolynomialGaussianGammaRadialEnvelope`: pass
+  (`9218/9218`);
+- `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`;
+- forbidden-token scan and `scripts/formal_tools.py lint`: pass.

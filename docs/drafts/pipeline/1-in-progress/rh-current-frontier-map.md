@@ -346,7 +346,7 @@ existing route.
 | R | open only at an external positive-polar/compression handoff | construct a nonfunctorial polar reduction selected by the full numerical Euler--Gamma source and identify its norm/self-product/compression trace with the fixed physical Xi fibre and modular anomaly square. Lean formally closes the complete intrinsic pre-polar contract: fixed-fibre hyperbolic naturality, gauge-invariant orbit selection, reflection-even completion counterterms, and prime-clock linear/cubic symmetrization cannot be coefficient-faithful annihilators. Existence of the external handoff is itself equivalent to RH. The neutral-jet/nonlinear profile handoff reaches T but supplies no polar datum |
 | S | upstream | source algebraicity or divisor-preserving dynamics with typed Xi handoff |
 | T | open, sharply narrowed | The committed unwired chain discharges the polynomial threshold, assembles hybrid zeta blocks, proves near-one polylogarithmic growth, a subunit zero-free region, reciprocal-zeta control, and a four-edge Perron contour. `RouteTMoebiusSharp.lean` proves sharp twisted prefixes plus the cancellation-preserving dyadic Abel bridge. `RouteTZetaAsymptotics.lean` replaces binary shell, Landau-radius, growth, zero-free-budget, zero-free-width, and contour-edge parameters by explicit monotone continuous log-height envelopes. None is umbrella-reachable. Remaining arithmetic handoff is propagation through the literal Heath--Brown/Maynard boxes to exclude every long Möbius factor with required amplitude-cell uniformity. The Wold chart separately requires a signed pole-preserving landing; positive or absolute closure is impossible. |
-| U | open, two source frontiers | Umbrella Lean gives the uniform resolvent mass budget `sum ||u_q(X)|| <= 198/3175`, ray-jet tail bounds, and relative nodal equivalence. A committed unwired floor theorem proves every atom above `1/(X+259/4)` lies on line and therefore removes the relative criterion's line-placement premise at that explicit scale; the remaining polynomial nonvanishing/nodal-sign hypothesis is still RH-bearing. Terminal-frontier zero phase is RH-equivalent; unconditional cofinal positive schedules retire recession positivity. Filtered Gamma transmutation, sharp Hermite derivative energy, coefficient-uniform complex Gaussian translation, exact Fourier aperture, and native polynomial--Gaussian local concentration close finite-dimensional imaginary-shift and small-ball control. The local estimate is obtained from oscillator energy plus one-dimensional Sobolev evaluation, so no Mehler projector is needed. The strengthened Christoffel wall proves reciprocal blow-up, nonintegrable local action, and a cofinal nonintegrable-wall phase equivalent to false RH; that is a sharp disproof receiver, not an unconditional exclusion. Live cores are: sign the explicit floor-scale rational-nodal landing, or prove the completed prime--Gamma assembly and global lower/tail estimates excluding the finite nonzero parabolic boundary state. |
+| U | open, two source frontiers | Umbrella Lean gives the uniform resolvent mass budget `sum ||u_q(X)|| <= 198/3175`, ray-jet tail bounds, and relative nodal equivalence. A committed unwired floor theorem proves every atom above `1/(X+259/4)` lies on line and therefore removes the relative criterion's line-placement premise at that explicit scale; the remaining polynomial nonvanishing/nodal-sign hypothesis is still RH-bearing. Terminal-frontier zero phase is RH-equivalent; unconditional cofinal positive schedules retire recession positivity. Filtered Gamma transmutation, sharp Hermite derivative energy, coefficient-uniform complex Gaussian translation, exact Fourier aperture, native polynomial--Gaussian local concentration, exact every-radius Gamma lower envelope `(24.136)`, exact complete prime tail `(24.138)`, and a canonical typed Gamma-minus-absolute-prime strict wedge `(24.139)` close the coefficient-uniform parabolic comparison. The prime tail uses the fixed convergent mass `sum Lambda(n)n^(-2)`, not a shell-count placeholder; the strict wedge uses an explicit positive minimum of Fourier, Gamma-leakage, and prime-suppression budgets. The strengthened Christoffel wall proves reciprocal blow-up, nonintegrable local action, and a cofinal nonintegrable-wall phase equivalent to false RH; that is a sharp disproof receiver, not an unconditional exclusion. Live cores are: sign the explicit floor-scale rational-nodal landing, or prove the literal completed-source explicit-formula assembly and PDH global lower envelope excluding the finite nonzero parabolic boundary state. |
 
 The live independent count is eleven lettered routes plus CCM-FU. This count is conditional only
 on current corpus identification: future comparison could merge routes, and a constructed
@@ -2432,11 +2432,17 @@ rational-Witt carrier. More generally,
 integral Teichmüller vectors forces `A` to be integrally closed. Route L must therefore use a
 corrected normal-domain descent theorem; unrestricted domain descent is retired, not an open Lean
 gap. Umbrella-reachable `DeningerRationalWittNormalDomainGaloisIntersection.lean` now proves that
-correction: over every integrally closed domain with perfect fraction field, the Galois-fixed
-literal rational-Witt vectors coming from the absolute normalization are exactly the vectors
-coming from the base domain. Its proof descends canonical positive/negative atom polynomials and
-uses normality only to return integral fraction-field coefficients to the base. This closes the
-perfect-field source-descent repair but does not touch Route L's singular source-to-physical
+correction. `DeningerRationalWittInseparabilityDescent.lean` now closes the missing imperfect-field
+core: for every field `K`, the image of `W_rat(K)` in the algebraic closure consists exactly of
+absolute-Galois-invariant integral atom vectors whose coefficient at `a` is divisible by the
+inseparability degree of `K(a)/K`. The proof identifies exact repeated-root multiplicity in each
+minimal-polynomial orbit block, peels invariant divisible multisets, and proves the converse by
+minimal-polynomial division and root multiplicity. The downstream umbrella theorem
+`deningerRationalWittNormalDomain_galoisInvariant_insepDivisible_normalization_iff_exists_base`
+removes the perfectness hypothesis entirely: over every integrally closed domain, Galois
+invariance, inseparability divisibility, and normalization incidence are equivalent to descent
+from the base. Normality is used only to return integral fraction-field coefficients to the base.
+This closes corrected source descent but does not touch Route L's singular source-to-physical
 comparison. The committed umbrella suite separately closes the literal rational-Witt source and ring,
 algebraically closed comparison, perfect-field Galois descent, algebraic-integer domain
 comparison, field intersection/equalizer, nilpotent-kernel classification, Fatou intersection, and
@@ -2477,6 +2483,15 @@ the coefficient ring. Therefore full arbitrary-ring big-Witt algebra and its nil
 faithfulness are closed in the committed module; they are no longer an open
 foundation item. This protects and strengthens coefficient provenance but does not solve the
 singular source-to-physical specialization below.
+
+`DeningerBigWittCanonicity.lean` now closes the remaining literature-level meaning of
+"canonical." It derives finite universal integer-polynomial dependence of every coefficient from
+functoriality, truncates at actual variable support, proves finite Euler-product uniqueness by
+injective algebraic-closure splitting, and concludes that every distributive functorial
+Teichmüller multiplication law equals the constructed gcd--lcm product over every commutative ring,
+including nonreduced rings. This removes ambiguity in source multiplication; it does not move
+Route L's analytic RH frontier, which remains singular source-to-physical admission and positivity
+rather than Witt-ring construction.
 
 A committed but not yet umbrella-reachable adiabatic chain now closes substantially more source
 analysis provisionally. It proves strong convergence of the exponential gauge in Meyer's
@@ -5745,8 +5760,43 @@ positive completed-source crossing proves required shifted-Hankel positivity and
     one-dimensional Gallagher--Sobolev inequality, giving the pointwise law
     `|P(x)exp(-pi*x^2)|^2 <= 9*sqrt(deg(P)+1)*||P exp(-pi*x^2)||_2^2`. Thus the claimed finite
     Mehler-projector dependency was a shadow, not a wall: C43-Y's local small-ball estimate is
-    umbrella-formal without it. Remaining parabolic work is literal completed-source
-    prime/archimedean assembly, global lower envelope, and Gamma-tail domination.
+    umbrella-formal without it. `PolynomialGaussianGammaRadialEnvelope.lean` now realizes the
+    native heat density as a scaled Schwartz product, proves Gamma-weighted integrability, and
+    upgrades the small-ball estimate to the exact every-radius lower envelope
+
+    ~~~
+    integral f_Q,t(x) g(x) dx
+      >= [g(R)-18*R*(g(R)-g(0))*sqrt(t*(natDegree(Q)+1))] M_Q(t).
+    ~~~
+
+    This closes C43-Y `(24.136)` without a chosen cutoff, a nonzero-polynomial premise, or
+    unproved integral existence. `PolynomialGaussianPrimeTail.lean` also closes `(24.138)` in the
+    exact wedge `t*(natDegree(Q)+1)<=(log 2)^2/256`. Instead of integer shell counting, it spends
+    the phase-space reserve twice and lands on the fixed convergent Dirichlet mass
+    `sum Lambda(n)*n^(-2)`:
+
+    ~~~
+    sum Lambda(n)/sqrt(n) * |Fhat_Q,t(log n)|
+      <= (sum Lambda(n)*n^(-2)) * M_Q(t) * exp(-(log 2)^2/(16t)).
+    ~~~
+
+    The literal left series is formally summable. Umbrella-formal
+    `PolynomialGaussianCompletedPrimeGammaWedge.lean` then chooses the unique positive zero `T_*`
+    of the exact Gamma rate, fixes `R_*=T_*+1`, and intersects three explicit positive budgets:
+    the Fourier aperture, Gamma leakage, and prime suppression. It proves for every polynomial in
+    the resulting typed wedge
+
+    ~~~
+    (g(R_*)/2)*M_Q(t)
+      <= integral f_Q,t(x)g(x) dx
+           - sum Lambda(n)/sqrt(n) * |Fhat_Q,t(log n)|.
+    ~~~
+
+    Native mass is formally strictly positive for every typed nonzero polynomial, so the right
+    side is strictly positive. This closes `(24.139)` unconditionally, without mass division or
+    numerical threshold computation. Remaining parabolic work is the literal completed-source
+    explicit-formula assembly and the PDH global lower envelope; the analytic Gamma/prime
+    comparison itself is no longer open.
 
 80. Umbrella-formal `XiResolventMassBudget.lean` removes the unknown total-mass constant from the
     stationary supply chart. The sector geometry of every shifted spectral square gives

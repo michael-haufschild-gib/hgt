@@ -158,3 +158,24 @@ base, and transfer of algebraic closedness through the fraction-field equivalenc
   direct module check and targeted build passed. Axiom audit reports only `propext`,
   `Classical.choice`, and `Quot.sound`. Repository lint finds no defect in this module but remains
   nonzero because seven unrelated Route-T/Suzuki modules are not reachable from the umbrella.
+
+## Imperfect-field strengthening (2026-08-13)
+
+The perfectness restriction is now removed by
+`DeningerRationalWittInseparabilityNormalDomainDescent.lean`. For every integrally closed domain
+`A`, without assuming `Frac(A)` perfect, the exact corrected statement is:
+
+```text
+absolute-Galois invariance
+and d(a) divides every integral atom coefficient
+and incidence from the absolute normalization
+  iff
+descent from W_rat(A).
+```
+
+Here `d(a)` is finite inseparability degree of `Frac(A)(a)/Frac(A)`. Capstone:
+`deningerRationalWittNormalDomain_galoisInvariant_insepDivisible_normalization_iff_exists_base`.
+Its field engine is
+`deningerRationalWittIntegralGaloisInvariantInsepDivisible_iff_exists_base`. The earlier perfect-
+field theorem remains a convenient specialization; it is no longer frontier. Classification
+remains literature parity/source correction, not RH progress.

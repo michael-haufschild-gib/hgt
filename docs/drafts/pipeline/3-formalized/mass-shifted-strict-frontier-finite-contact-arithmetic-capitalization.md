@@ -1,7 +1,7 @@
 # Mass-shifted strict-frontier finite-contact arithmetic capitalization
 
 - **ID:** `mass-shifted-strict-frontier-finite-contact-arithmetic-capitalization`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** `docs/reports/mass-shifted-spectral-trace-route.md` · §9.3 Exact open core
 - **Statement:** Every occupied physical strict frontier has a finite first Padé normal contact; order one is the negative first omitted remainder, while every order at least two is a nonzero admission-selected bilinear rational–Gamma-minus–von-Mangoldt source with the alternating sign forced by the positive chamber.
@@ -16,7 +16,7 @@ remaining global obstruction as contact-degree escape rather than infinite local
 
 - [x] 0 → 1 in-progress: exact claim, source-pure producer, falsifiers, and corpus dependencies identified
 - [x] 1 → 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3 formalized: exact Lean theorem, targeted build and axiom gate green
+- [x] 2 → 3 formalized: exact Lean theorem, targeted build and axiom gate green
 - [ ] 3 → 4 publication-ready: standalone proof and independent priority review
 
 ## Approach
@@ -35,8 +35,10 @@ arithmetic source `(2m+d) delta_(2m+d)` before aggregation.
    punctured sides remain positive definite.
 2. `[PAPER-PROVED]` Infinite-order local flatness is impossible and every surviving
    higher contact is a literal bilinear arithmetic source.
-3. `[OPEN CORE]` Determine exact arbitrary-order Christoffel wall residue, then decide whether
-   contact degree can escape cofinally or its source prices are globally nonsummable.
+3. `[LEAN-PROVED]` Exact Schur factorization and arbitrary-order newborn-norm residue; moving
+   admission contributes no hidden leading correction.
+4. `[OPEN CORE]` Quotient by wall numerator and decide whether contact degree can escape cofinally
+   or explicit all-order source prices are globally nonsummable.
 
 ## External audit
 
@@ -84,3 +86,7 @@ is used.  QED.
 
 - 2026-08-12 — card opened after strict-frontier odd-contact conjecture failed; finite all-contact arithmetic survivor frozen.
 - 2026-08-12 — dependency-closed paper proof completed; moved to Stage 2.
+- 2026-08-13 — exact all-contact local law and premise-free cofinal phase formalized in
+  `XiShiftedStrictFrontierAllContactArithmeticSource.lean`; direct Lean and axiom audit green.
+- 2026-08-13 — exact Schur determinant/admission-norm factorization and arbitrary-order strict-
+  frontier norm residue formalized; conjectural binomial price upgraded to `[LEAN-PROVED]`.

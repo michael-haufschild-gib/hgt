@@ -46,7 +46,12 @@ closes the missing localized-rational-function carrier.  It also constructs coef
 functoriality, proves identity/composition and Teichmüller naturality, proves preservation of
 monomorphisms, and gives the literal injective inclusion into `1+TA[[T]]`.  The ambient canonical
 big-Witt multiplication is now supplied over every commutative ring by
-`DeningerBigWittRing.lean`, including rings with nilpotents.
+`DeningerBigWittRing.lean`, including rings with nilpotents. The literature-level word
+"canonical" is no longer only a label: `DeningerBigWittCanonicity.lean` proves Lenstra's global
+uniqueness theorem. Every functorial multiplication distributive for literal series multiplication
+and satisfying `[a][b]=[ab]` equals the constructed gcd--lcm product. Naturality itself yields a
+finite universal integer polynomial for each output coefficient, so no continuity or target ghost
+injectivity premise is imported.
 `DeningerRationalWittCanonicalMultiplication.lean` now proves the formerly missing distinct hard
 statement: the literal rational subcarrier is closed under ambient multiplication over every
 commutative ring.  It constructs an explicit fixed-degree resultant product, descends its
@@ -251,13 +256,20 @@ the missing rational-Witt comparison is logically prior.
 
 ## Formalization order
 
-1. Treat the imperfect-quotient-field inseparability-divisibility subring and valid
-   localization/integral-closure consequences.  Corrected perfect-quotient-field normal-domain
-   descent is now closed.
+1. **Closed.** Imperfect-field inseparability-divisibility classification and its sharp
+   normal-domain/normalization descent consequence are Lean-formalized. No perfectness hypothesis
+   remains in the corrected theorem.
 2. Replace presentation-only claims in finite packet modules by comparison maps to the constructed
    rational-Witt ring, then formalize sheaf and correspondence theorems in source order.
 
 ## Log
+
+- 2026-08-13 — closed the imperfect-field clause. Minimal-polynomial roots form complete absolute-
+  Galois orbit blocks with multiplicity exactly the finite inseparability degree; invariant
+  divisible multisets peel into reversed-minimal-polynomial factors. Conversely every mapped
+  base polynomial has root multiplicities divisible by that degree. This yields the exact
+  field-image classification and, after normalization incidence plus normality, a corrected
+  arbitrary-characteristic domain theorem with no perfectness assumption.
 
 - 2026-08-11 — primary arXiv search located this 2025 paper; existing Route-L map did not cite it.
   Initial audit found that the corpus names a rational-Witt presentation but does not construct
@@ -325,6 +337,12 @@ the missing rational-Witt comparison is logically prior.
   nilpotence.  Proposition 1.1 now reduces to proving that normalized rational functions form a
   subring of this ambient construction and that coefficient localization is the corresponding
   Teichmüller localization.
+- 2026-08-13 — closed the missing canonicity half of Lenstra's theorem. Lean packages arbitrary
+  natural distributive Teichmüller multiplication laws, proves each output coefficient is the
+  evaluation of a finite universal integer polynomial, truncates beyond its actual variable
+  support, splits finite Euler polynomials after an injective algebraic-closure map, and proves the
+  law type is a subsingleton over arbitrary commutative rings. Nilpotent targets enter only by
+  universal evaluation and are not reduced or embedded into fields.
 - 2026-08-12 — closed the first half of that reduction.  Fixed-degree resultants multiply
   normalized polynomials without degree-specialization failure; algebraically closed splitting,
   universal integer-polynomial descent, and coefficient evaluation prove compatibility over

@@ -14,16 +14,18 @@ For every integer `n >= 2`, let `r_n` be the coefficient-one source anomaly of n
 integer translation. Prove:
 
 1. `r_n` is an honest nonzero vector of `L1(R) intersection L2(R)`; `[LEAN-PROVED upstream]`
-2. its unitary Fourier profile is almost everywhere
+2. its unitary Fourier profile is almost everywhere `[LEAN-PROVED]`
 
    ```text
    shiftMultiplier(n,-2 pi t) XiC(-2 pi t);
    ```
 
 3. that profile is nonzero almost everywhere, because both zero sets are countable;
+   `[LEAN-PROVED]`
 4. the complete real-translation orbit of `r_n` is cyclic in Haar `L2(R)`;
+   `[LEAN-PROVED]`
 5. consequently every continuous linear quotient on a carrier with dense Haar-`L2` image that
-   kills all translates of `r_n` is zero.
+   kills all translates of `r_n` is zero. `[LEAN-PROVED]`
 
 At every retained Xi divisor, the same nonzero `r_n` is killed by the divisor conormal. Thus the
 divisor reporter cannot extend continuously to the forced Haar carrier. The common-forcing
@@ -63,13 +65,16 @@ Hilbert-quotient variants of the response-identification proposal at once.
 
 - [x] prior Route P, Haar cyclicity, and bilateral no-point-spectrum corpus audited
 - [x] conjecture frozen
-- [ ] exact L1/L2 Fourier profile proved
-- [ ] multiplier zero set proved countable/null
-- [ ] anomaly translation orbit proved cyclic
-- [ ] continuous quotient collapse proved
+- [x] exact L1/L2 Fourier profile proved
+- [x] multiplier zero set proved countable/null
+- [x] anomaly translation orbit proved cyclic
+- [x] continuous quotient collapse proved
 - [ ] umbrella, direct Lean, lint, and axiom audits pass
 
 ## Lean status
 
-Planned module:
-`formal/GaloisForLFunctions/RHTower/HedenmalmThetaPrimeAnomalyHaarCyclicity.lean`.
+Umbrella-wired module
+`formal/GaloisForLFunctions/RHTower/HedenmalmThetaPrimeAnomalyHaarCyclicity.lean` proves the exact
+Fourier profile, countability/nullity of its complete zero set, physical translation cyclicity,
+and continuous-quotient collapse. Direct Lean check passes; final lint, axiom, and exact module
+build remain.

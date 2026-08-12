@@ -1,6 +1,6 @@
 # Canonical big-Witt multiplication over arbitrary rings
 
-Status: formalized in Lean 4 (2026-08-12)
+Status: formalized in Lean 4 (2026-08-13)
 
 ## Exact target
 
@@ -75,6 +75,12 @@ natural under coefficient-ring maps.
    descends equality. Nilpotents are therefore included without a separate case.
 8. Transport operations to `Additive (DeningerBigWittAdditive A)` and prove functoriality,
    multiplicative unit `1-T`, and `[a][b]=[ab]`.
+9. Prove Lenstra canonicity without assuming continuity. Package an arbitrary multiplication law
+   with functoriality, distributivity, and the Teichmüller rule. Its value on two universal Euler
+   vectors has coefficients in a free integer polynomial ring, so each coefficient sees only
+   finitely many variables. Kill the remaining variables, inject the finite Euler polynomials into
+   an algebraic closure, split them into linear Teichmüller factors, and descend the forced equality
+   to every commutative target ring.
 
 ## Failure conditions
 
@@ -96,6 +102,9 @@ Formal modules:
   absorption, and distributivity to arbitrary commutative rings; literal `CommRing`, functorial ring
   maps, Teichmüller multiplication, positive ghost-component ring homomorphisms, injectivity of the
   Teichmüller map, and exact preservation/reflection of every vanishing power and nilpotence.
+- `DeningerBigWittCanonicity.lean`: automatic universal-polynomial dependence of every natural
+  candidate multiplication coefficient, finite Euler splitting, and the unconditional theorem
+  that the type of functorial distributive Teichmüller multiplication laws is a subsingleton.
 
 All target theorems quantify only over `[CommRing A]`. Target ghost injectivity, reducedness,
 torsion-freeness, characteristic zero, and field hypotheses are absent. The only torsion-free use is
@@ -110,8 +119,20 @@ IsNilpotent [a]  ↔  IsNilpotent a.
 
 Thus the construction neither reduces the coefficient ring nor silently kills its nilradical.
 
+Canonicity is now certified internally as well. For every candidate law `law`, every commutative
+ring `A`, and all `x,y`, Lean proves
+
+```text
+law.mul A x y = deningerBigWittMul x y.
+```
+
+Equivalently, `DeningerBigWittMultiplicationLaw` is a subsingleton. The proof does not add
+T-adic continuity as a premise: `coeff_eq_eval_universalPolynomial` derives finite polynomial
+dependence coefficientwise from naturality itself.
+
 Verification: direct foreground Lean checks passed for every module; targeted final build of
-`GaloisForLFunctions.RHTower.DeningerBigWittRing` passed. The whole-repository formal lint finds no
-proof debt or wiring error in these modules, but exits nonzero on unrelated pre-existing unreachable
-modules in the Bourgain, adiabatic Deninger, Sieve/Maynard, and HTGeometry areas. Axiom audit reports
-only standard `propext`, `Classical.choice`, and `Quot.sound` dependencies.
+`GaloisForLFunctions.RHTower.DeningerBigWittCanonicity` passed, thereby rebuilding the construction
+chain through the uniqueness capstone without a full build. The whole-repository formal lint finds
+no proof debt or wiring error in these modules, but exits nonzero on unrelated pre-existing
+unreachable modules. Axiom audit reports only standard `propext`, `Classical.choice`, and
+`Quot.sound` dependencies.

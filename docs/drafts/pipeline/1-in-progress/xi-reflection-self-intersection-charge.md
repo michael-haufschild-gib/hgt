@@ -3,7 +3,7 @@
 - **ID:** `xi-reflection-self-intersection-charge`
 - **Stage:** 1-in-progress
 - **Type:** FRANKENSTEIN BRIDGE / PRODUCER SPECIFICATION
-- **Status:** `[PAPER-PROVED CORE] [LEAN IN PROGRESS] [NOT RH]`
+- **Status:** `[PAPER-PROVED CORE] [LEAN-PROVED] [DIRECT CHECK PASS] [NOT RH]`
 - **Target:**
   `formal/GaloisForLFunctions/RHTower/XiReflectionSelfIntersectionCharge.lean`
 
@@ -74,7 +74,7 @@ same-height collisions.
 
 ### C3 — local square is literal XiZeroCopy reflection incidence
 
-`[PAPER-PROVED] [LEAN PLANNED]` For divisor-support point `rho`, let
+`[PAPER-PROVED] [LEAN-PROVED]` For divisor-support point `rho`, let
 
 ```text
 I_rho = Fiber(rho) x Fiber(1-conj(rho)).
@@ -90,7 +90,53 @@ card(I_rho) = m_rho^2.
 The factor two in `R(T)` records both orientations of forced horizontal incidence.  This is
 coefficient-faithful: no synthetic copies, tensor powers, or zero replication are introduced.
 
-### C4 — source law kills reflection-copy incidence
+### C4 — Haar-translate amplification makes incidence rank beat source moments
+
+`[FALSIFIED]` New quantile Haar carrier is sigma-finite and invariant under prime translation,
+but it does not evade spectral-scale wall.  Unitarily normalized independent translates have
+linear norm and Frobenius cost.  Half-density translates whose amplitudes decay give arbitrarily
+large raw inertia at sublinear cost, but this is exactly already formalized moment-neutral packet:
+rank--trace prices every nonzero positive-index unit, regardless of scale.  Finite-invariant-measure
+no-go does not apply to actual infinite Haar carrier.  Haar completion changes admissibility, not
+sign of rank--trace amplification.
+
+### C5 — quadratic failure of linear source cancellation
+
+`[PAPER-PROVED] [LEAN-PROVED]` Fix one ordinary prime `p` and write `a_rho(p)` for retained
+prime-labelled horizontal carrier coefficient.  On every literal incidence `(q,r) in I_rho`,
+line reflection gives
+
+```text
+a_q(p) + a_r(p) = 0,
+-a_q(p) a_r(p) = a_rho(p)^2.
+```
+
+Thus complete linear incidence trace vanishes unconditionally, including off line, while
+quadratic incidence energy is
+
+```text
+E_p(rho) = m_rho^2 * a_rho(p)^2 >= 0.
+```
+
+It is reflection invariant and vanishes exactly on critical line.  Away from line,
+`a_rho(p) != 0`, and exact coefficient-faithful reconstruction holds:
+
+```text
+E_p(rho) / a_rho(p)^2 = card(I_rho) = m_rho^2.
+```
+
+Consequently, at any one fixed ordinary prime,
+
+```text
+RH <-> forall rho in Xi divisor support, E_p(rho)=0.
+```
+
+This proves higher principle shadowed by prior failures: all linear reflection observers erase
+off-line orientation automatically; canonical horizontal charge is their nonzero quadratic
+self-intersection.  Recovering integral charge from prime energy necessarily divides by same
+coefficient that vanishes at desired radical, exposing singular-normalization wall exactly.
+
+### C6 — source law kills reflection-copy incidence
 
 `[OPEN CORE] [PRODUCER]` Existing source-horizontal carrier is odd under copy-level line
 reflection.  Oddness exchanges the two orientations but does not make either orientation vanish.
@@ -109,29 +155,31 @@ cardinality then gives RH through C2.
 
 This is stronger and more local than estimating `O(T)`: one forbidden right-half incidence is
 enough.  A normalized density estimate, signed index, or ordinary tensor amplification does not
-supply C4.
+supply C6.
 
-## No-go closure for C1
+## No-go closure for C1/C4
 
 - **Exact killing mechanism:** full horizontal fibre contains all zeros at one ordinate, whereas
   source involution selects only `rho -> 1-conj(rho)`.
 - **Strongest positive survivor:** canonical reflection charge `R(T)`, exact decomposition
-  `O(T)=R(T)+A(T)`, and literal `XiZeroCopy` incidence interpretation.
+  `O(T)=R(T)+A(T)`, literal `XiZeroCopy` incidence interpretation, and prime-labelled quadratic
+  energy `E_p(rho)`.
 - **New insight:** quadratic charge is self-intersection of multiplicity fibres, not signed
   Fredholm index.  Linear unsigned escape energy records copies; canonical incidence records their
   Cartesian square.
-- **Status:** C2 and C3 dependency-closed on paper.  C2/C3 Lean formalization in progress.  C4 is
-  exact source-level open core.
+- **Status:** C2, C3, and C5 dependency-closed and Lean-proved.  C6 is exact source-level open core.
 
 ## Gates
 
 - [x] 0 -> 1: well-posed, source-pure endpoint, failed equality classified
 - [x] C2 dependency-closed paper proof
 - [x] C3 dependency-closed paper proof
-- [ ] C2/C3 unconditional Lean theorem and audits
-- [ ] C4 coefficient-faithful source incidence annihilation
+- [x] C2/C3/C5 unconditional direct Lean elaboration
+- [ ] exact leaf build and axiom/lint audits
+- [ ] C6 coefficient-faithful source incidence annihilation
 - [ ] unconditional formal RH
 
 ## Log
 
 - 2026-08-12 — C1 falsified; C2/C3 extracted as positive survivor; Lean implementation started.
+- 2026-08-13 — Haar amplifier C4 falsified; quadratic source-incidence C5 extracted and Lean-proved.

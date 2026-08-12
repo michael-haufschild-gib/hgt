@@ -1280,3 +1280,49 @@ direct-check clean and emitted to the local olean cache.  Active core moves down
 this endpoint emptiness with the non-endpoint Maynard alternatives to prove the unconditional
 `11/8` consecutive-prime-gap prefix moment, then audit whether Route T's residual continuation or
 another source law supplies the remaining RH implication.
+
+### C31. Fixed divisor moments remove the fictitious moving-energy obstruction `[PROVED / FORMALIZED]`
+
+The arbitrary-`rho` energy theorem is the wrong endpoint interface.  Route T never raises an
+unbounded-degree factor: degree 60 gives at most 120 grouped factors and the selected raising
+power is at most 51.  `MaynardFixedDivisorMoment.lean` proves the exact fixed-order estimate
+
+```text
+sum_(n<=N) d(n)^K <= N (1+log N)^(2^K-1).
+```
+
+Consequently every selected coefficient energy is length times one fixed polylogarithm, with no
+`N^rho` loss and no constant depending on a moving `rho`.  The Route-T endpoint envelope satisfies
+
+```text
+(mu-2*1367/2160)(1-alpha) >= (73/1080) D(T),
+```
+
+and C28's surviving tenth-power proves that `D(T) log T` absorbs every fixed logarithmic power.
+`MaynardFixedPolylogEnergy.lean`, `MaynardFixedPolylogSelectedEnergy.lean`,
+`MaynardFixedPolylogAmplitudeCount.lean`, and `MaynardFixedPolylogEndpointAbsorption.lean`
+formalize this replacement.  This is the higher principle behind the earlier obstruction:
+bounded algebraic degree generates fixed logarithmic entropy, so shrinking analytic reserve must
+be compared with `D(T) log T`, not encoded as a shrinking power-loss parameter.
+
+### C32. Sum labels before spending reserve `[PROVED / FORMALIZED]`
+
+Paying the moving reserve fibre-by-fibre would leave a color factor outside the target.  The exact
+degree-60 label count is only `(log T)^120`; summing all fibres first makes it part of the same
+fixed-polylog entropy.  `MaynardFixedPolylogAmplitudeFibre.lean` proves the literal selected-fibre
+Huxley count, while `MaynardFixedPolylogGlobalCount.lean` absorbs coefficient energy and the full
+label space in one reserve payment.
+
+Finally `MaynardRouteTHighAmplitudeCount.lean` composes that global count with C30 endpoint
+emptiness.  For every high-amplitude Perron selection, either
+
+```text
+alpha <= 1-D(T)  ==>  |S| <= harmonicFactor*T^(mu*(1-alpha)),
+alpha >  1-D(T)  ==>  S = empty.
+```
+
+Thus the complete high-amplitude Maynard first alternative is unconditional and direct-check
+clean.  The near-one endpoint card's stated mathematical obstruction is closed.  Remaining Route-T
+arithmetic work is no longer endpoint analysis: connect the low-amplitude complementary
+Montgomery estimates and this high-amplitude alternative to the literal smooth-window prime-gap
+moment.

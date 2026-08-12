@@ -67,7 +67,8 @@ private theorem routeUDensitySchwartz_apply
   simp only [div_eq_mul_inv]
   ring
 
-private theorem integrable_norm_routeUPolynomialGaussianDensity
+/-- The native Route-U density has finite total mass. -/
+theorem integrable_norm_routeUPolynomialGaussianDensity
     (Q : Polynomial ℝ) (t : {t : ℝ // 0 < t}) :
     Integrable (fun x : ℝ => ‖routeUPolynomialGaussianDensity Q t x‖) := by
   exact (routeUDensitySchwartz Q t).integrable.norm.congr

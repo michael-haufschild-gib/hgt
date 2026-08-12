@@ -3,12 +3,18 @@
 - **ID:** ULF-CRG-FIELD
 - **Stage:** 1-in-progress
 - **Type:** UNIVERSAL MECHANISM PROGRAMME
-- **Status:** `[MECHANISM NOT OBJECT] [FIRST GLOBAL LAW PAPER-PROVED] [SOURCE FORMATION OPEN]`
-  `[NOT RH] [DO NOT PROMOTE]`
+- **Status:** `[MECHANISM NOT OBJECT] [GLOBAL LAW PAPER-PROVED]`
+  `[ABELIAN DISJOINT FORMATION CLOSED] [CROSS-ORGAN CURRENT OPEN] [NOT RH] [DO NOT PROMOTE]`
 - **Stage-2 anchor:**
   `../../../2-fully-proven/universal-law-field/cofinal-renewal-geometry/exponential-aperture-polynomial-work-renewal-action-threshold-law.md`
 - **Global Stage-2 anchor:**
   `../../../2-fully-proven/universal-law-field/cofinal-renewal-geometry/disjoint-aperture-global-renewal-moment-properness-and-cubic-threshold-law.md`
+- **Literal-source Stage-2 anchor:**
+  `../../../2-fully-proven/universal-law-field/cofinal-renewal-geometry/source-horizontal-disjoint-class-law-global-renewal-properness-and-current-evacuation.md`
+- **Packet-budget Stage-2 anchor:**
+  `../../../2-fully-proven/universal-law-field/cofinal-renewal-geometry/horizontal-vertical-packet-renewal-budget-and-cofinal-properness-law.md`
+- **Fourth-organ Stage-2 anchor:**
+  `../../../2-fully-proven/universal-law-field/cofinal-renewal-geometry/hasse-geometric-history-global-renewal-properness-and-cubic-work-wall.md`
 
 ## 1. Pivot
 
@@ -129,6 +135,26 @@ An exponentially evacuated source has a finite height partition function, hence 
 finite first aperture moment.  This one-law theorem recovers the cubic entrance wall without
 summing unrelated scale-wise divergences.
 
+### Law VIII — horizontal--vertical packet budget
+
+For an arbitrary renewed packet `Q` relative to a formed reference `P=mu tensor K`, observer
+projection gives
+
+```text
+D(pi_*Q||mu) <= D(Q||P).
+```
+
+Under standard-Borel disintegration `Q=nu tensor L`, the exact conservation law is
+
+```text
+D(Q||mu tensor K)
+ = D(nu||mu)+integral D(L_x||K_x)dnu(x).
+```
+
+Thus vertical history intervention never subsidizes horizontal renewal.  It consumes a nonnegative
+part of the same action budget.  Common recovery `L=K` is the unique least-action packet lift of a
+fixed observer renewal.
+
 ## 4. First theorem and new leverage
 
 The first Stage-2 anchor proves Laws I--V and the sharpness of Law IV.  Its source-horizontal corollary
@@ -143,6 +169,29 @@ global renewal shows sharpness for `d>2`.  More generally it proves the exact
 `work degree = evacuation degree + 1` phase diagram for stretched-exponential gauges.  It also
 proves functional-equation and common-recovery neutrality of this properness law.
 
+The literal-source anchor closes the first arithmetic formation gate.  In each fixed abelian class
+law, the canonical classes
+
+```text
+A_N=(Z/pZ)^(N+1),       B_N=Z/p^(2N)Z
+```
+
+form pairwise-disjoint events across all grades.  Their exact class-law masses give one finite
+height partition function.  Hence every absolutely continuous global renewal of finite KL action
+has summable admitted adaptive Jeffreys current.  The obstruction now quantifies over all
+finite-action renewals, not only the native class law.
+
+The packet-budget anchor closes a second loophole.  The properness theorem now applies to arbitrary
+correlated observer--history renewals, not only split packets.  Any latent recurrence, holonomy, or
+edge-mode deviation contributes a positive vertical KL term and tightens the horizontal formation
+bound.
+
+The fourth-organ anchor verifies a prediction in the literal Hasse history kernel.  Its geometric
+generation law has a uniform exponential partition function for every `lambda<log 2`.  Therefore
+every arbitrary finite-KL joint renewal has finite mean generation depth and cannot sustain
+persistent history work of degree at most two.  A one-atom observer example proves cubic entrance
+is class-sharp.  This is independent of the finite-group class-space realization.
+
 This changes the frontier:
 
 - another fixed finite observer cannot work;
@@ -156,9 +205,9 @@ This changes the frontier:
 
 ### CRG-A — source-generated finite-action renewal
 
-The completed pre-zero arithmetic coefficient source canonically determines one global source law
-`mu`, a pairwise-disjoint cofinal aperture tower `(A_n)`, and one renewed law `nu` satisfying all of
-the following before Xi specialization:
+The completed pre-zero arithmetic coefficient source canonically determines one renewed law `nu`
+over the now-constructed abelian source law and disjoint cofinal tower, satisfying all of the
+following before Xi specialization:
 
 1. coefficient fidelity, prime labels, and divisor multiplicities are retained;
 2. functional-equation reversal transports the renewal history without changing total action;
@@ -177,7 +226,8 @@ a conservation identity, and a global properness certificate.
 
 - `nu_n` depends on a chosen Xi zero or on the statement `Re rho=1/2`;
 - global action finiteness is postulated rather than derived from source coefficients;
-- apertures are declared disjoint without a source-native formation map;
+- a different aperture tower is substituted for the literal disjoint abelian tower without a
+  source-native comparison;
 - functional-equation compatibility holds only after scalar specialization;
 - the common current is obtained by matching formulas rather than a natural comparison;
 - a source-derived counterexample has finite action and nonzero linear/quadratic current.
@@ -190,12 +240,14 @@ Search coefficient operations that genuinely change aperture mass: normalized co
 prime-infinity transfer, signed/source-star transport, or a non-mass-preserving cobordism.  Fixed
 flags, ordinary Gamma-six multiplication, and Big-Witt relocation are already ruled out.
 
-### Gate B — build one disjoint source tower
+### Gate B — one disjoint source tower `[CLOSED IN THE ABELIAN ORGAN]`
 
-Embed all cofinal apertures as pairwise-disjoint events of one source probability law and prove the
-exact exponential height-moment bound.  This is stronger and cleaner than declaring a sum of
-independent local actions.  If disjointness is impossible, replace it by a stopping-time or marked
-path-space construction and prove the corresponding occupation formula.
+The literal class space and each fixed forward/reverse class law already contain the pairwise-
+disjoint tower.  Exact order/socle invariants prove disjointness; exact singleton weights prove the
+formation partition bound.  No artificial product source or stopping-time replacement is needed.
+
+This closes formation only in the abelian organ.  Transporting the same tower or its renewal into
+projective and Stokes organs belongs to Gate C.
 
 ### Gate C — identify one current in three organs
 
@@ -207,10 +259,20 @@ Construct natural maps from the same source renewal into:
 
 Prove one exact balance, not three numerical analogies.
 
-### Gate D — predict and verify a fourth organ
+The packet-budget theorem already supplies the only allowed sign for every recovery/history leg:
+its conditional information appears positively.  Gate C must now construct the literal comparison
+kernels and prove that the claimed route currents are horizontal images of the same renewed law;
+it may not use vertical history as an unpriced replenishment term.
 
-The current theorem predicts a cubic entrance wall.  Test whether a genuinely source-derived cubic
-prolongation carries finite action; do not infer this from the existence of a cubic observable.
+### Gate D — predict and verify a fourth organ `[FIRST TEST CLOSED]`
+
+The packet-budget theorem predicted a cubic entrance wall for any certified recovery kernel with a
+uniform exponential history moment.  The literal Hasse geometric kernel verifies it, including a
+class-sharp finite-KL cubic renewal.
+
+This closes one prediction test, not the full gate.  The next test must concern a non-Markov or
+indefinite organ—Stokes, projective curvature, or Mass boundary—where failure of the probability
+packet hypotheses is itself informative.
 
 ### Gate E — selection
 
@@ -243,3 +305,11 @@ the source renewal and measure its action, or kill the programme.
 - 2026-08-12 — pivoted from local packet information isometry to cofinal renewal action.
 - 2026-08-12 — local KL chain rule rejected as field core; sharp global degree threshold survived.
 - 2026-08-12 — CRG-A frozen before source-construction attempts.
+- 2026-08-13 — Gate B closed: the canonical abelian apertures are already a literal one-law
+  disjoint tower; global finite-KL adaptive-current evacuation promoted to Stage 2.
+- 2026-08-13 — arbitrary correlated packet renewals classified: exact horizontal--vertical KL
+  budget proved; common recovery is the unique least-action lift and latent history cannot subsidize
+  cofinal admission.
+- 2026-08-13 — fourth-organ prediction verified: the literal Hasse geometric history kernel has
+  finite exponential depth partition, global finite-KL history properness, and a sharp cubic work
+  entrance wall.
