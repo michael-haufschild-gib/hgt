@@ -1,11 +1,13 @@
 # Finite-reporter admission, hyperbolic reduction, and composition law
 
 - **ID:** `cmr-finite-reporter-admission-hyperbolic-composition`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [CHU TRANSITION LAW]`
   `[SERIAL COMPOSITION] [PRIME-PORT INSTANTIATION] [NOT RH]`
-  `[NO LEAN WRITTEN OR BUILT]`
+  `[LEAN-FORMALIZED UNCONDITIONALLY]`
+- **Formalized companion:** `finite-reporter-admission-hyperbolic-reduction-composition-law-formalized.md`
+  (same directory).
 - **Parent field:**
   `../../1-in-progress/constraint-motive-relativity/polarized-constraint-duality-geometry.md`.
 - **Corpus parent:** `prime-port-algebraic-continuous-separation-law.md`.
@@ -402,7 +404,7 @@ or retain an unrepresented multicell. No closed composite is fabricated.
   a perfect hyperbolic pair.
 - **Strongest positive survivor:** the Chu mate `(rho_X,iota_X)` and serial exact loss filtration
   give a coordinate-free, composable doctrine-transition law.
-- **Status:** dependency-closed paper proof; no Lean written or built.
+- **Status:** dependency-closed paper proof; formalized unconditionally in Lean 4.
 
 ## Log
 

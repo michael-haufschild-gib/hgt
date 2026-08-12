@@ -477,3 +477,41 @@ after the Stage-2 audit.  Required formal components are:
 - 2026-08-11 — finite-depth completeness falsified by a far-tail rank-one perturbation; eventual
   finite detection retained as sharp positive survivor.
 
+
+## 14. Formalization state (2026-08-12)
+
+Module: `GaloisForLFunctions.HTGeometry.LocalExponentialTestClosure`, wired into
+`GaloisForLFunctions.HTGeometry.UniversalLawField` (foreground umbrella build: 11,858 jobs).
+
+Closed so far — the analytic heart of Theorem 2.1:
+
+- `eventuallyEq_zero_of_iteratedDeriv_eq_zero`: an analytic germ with a vanishing jet vanishes
+  near the point (via `analyticOrderAt_eq_top`).
+- `momentStrip`, `momentStrip_convex`, `zero_mem_momentStrip`, `mul_I_mem_momentStrip`,
+  `momentStrip_subset_interior`: the open vertical strip of half-width `a`, its convexity, and its
+  inclusion in the interior of the exponential-integrability set.
+- `measure_eq_of_forall_moment_eq`: **local-exponential moment determinacy**.  Two finite measures
+  on `R` whose exponential-integrability sets both contain `(-a,a)` and whose moments all agree are
+  equal.  The proof runs the card's `(LEF.4)`/`(LEF.5)` argument on mathlib's `complexMGF`: it is
+  analytic on the strip, its jet at the origin is the moment sequence, the identity theorem
+  propagates the vanishing difference across the strip, and on the imaginary axis the strip value
+  is the characteristic function, so `Measure.ext_of_charFun` applies.
+
+Axiom prints: only `propext`, `Classical.choice`, `Quot.sound`.
+
+Remaining Lean surface, in dependency order:
+
+1. Theorem 2.1 as stated: if `f` is in `L^2(mu)` and every moment `int x^n f dmu` vanishes, then
+   `f = 0` a.e.  Route: split `f = f^+ - f^-`, form `mu.withDensity` of each, check that both
+   inherit the exponential window by Cauchy-Schwarz against `e^{a|x|}`, and apply
+   `measure_eq_of_forall_moment_eq`.
+2. Polynomial density in `L^2(mu)` as a Hilbert-space statement (trivial orthogonal complement
+   implies dense closure), and its vector-valued form for `L^2(mu; C^d)`.
+3. Theorem 3.1 and Corollary 3.2: the bounded Hermitian multiplier sign cone through block Hankel
+   sections `(LEF.9)`/`(LEF.10)`/`(LEF.13)`.
+4. Lemma 4.1 and Theorem 4.2: rational-phase density and the phase/Hankel/source fusion `(LEF.15)`.
+5. Theorem 5.1: feasible-set and sharp-gauge conservation `(LEF.18)`/`(LEF.19)` — a formal
+   consequence of 4.
+6. Theorem 6.1: the literal Euler-shell specialization `(LEF.20)`-`(LEF.22)`.
+7. Theorem 7.1: no uniform finite depth `(LEF.23)`-`(LEF.25)` — finite linear algebra plus the
+   far-tail rank-one perturbation bound.

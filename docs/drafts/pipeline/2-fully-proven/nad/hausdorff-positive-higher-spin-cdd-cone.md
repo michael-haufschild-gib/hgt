@@ -512,3 +512,34 @@ as `hausdorffSource_eq_of_moments_eq`.
 
 Everything above is finite algebra plus one weak-compactness step; no entire-function theory and no
 missing mathlib area is involved.
+
+### Log — the algebraic core of the Hausdorff converse is formalized `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/HausdorffQuadratureWeights.lean`, axiom-clean, wired:
+
+- `hausdorffCoeff b N k = (-1)^(N-k) * (fwdDiff 1)^[N-k] b k`,
+  `hausdorffWeight b N k = (N.choose k) * hausdorffCoeff b N k`;
+- `hausdorffCoeff_nonneg`, `hausdorffWeight_nonneg` from `HausdorffCompletelyMonotone`;
+- **`hausdorffCoeff_refine`** — `T(N,k) = T(N+1,k) + T(N+1,k+1)` for `k <= N`, the forward-difference
+  recursion with its sign folded in;
+- `sum_hausdorffWeight_succ`, **`sum_hausdorffWeight`** — every level has total mass `b 0`.
+  The refinement identity plus Pascal's rule makes this a one-line induction, so no double sum and
+  no triangle reindexing is needed;
+- `hausdorffCoeff_shift` — `hausdorffCoeff b N (m+l) = hausdorffCoeff (b shifted by m) (N-m) l`,
+  from `fwdDiff_iter_comp_add`;
+- `choose_mul_descFactorial_shift` — `C(N,m+l)*(m+l)_m = (N)_m * C(N-m,l)`, from `Nat.choose_mul`;
+- **`sum_hausdorffWeight_descFactorial`** — for `m <= N`,
+
+  ```text
+  sum over k in range (N+1) of hausdorffWeight b N k * (k.descFactorial m)
+    = (N.descFactorial m) * b m.
+  ```
+
+  The two lemmas above turn this into the mass identity for the shifted sequence, so it needs no
+  separate induction either.
+
+What remains of the converse is analytic, not algebraic: the atomic measures
+`sum_k ENNReal.ofReal (hausdorffWeight b N k) * dirac (k/N)` on `[0,1]`, the elementary estimate
+`|(k/N)^m - (k.descFactorial m)/(N.descFactorial m)| <= C(m)/N` uniformly in `k <= N`, and one
+weak-compactness extraction in `ProbabilityMeasure [0,1]` (compact metrizable), after normalising by
+`b 0` and treating `b 0 = 0` separately.  Uniqueness is already `hausdorffSource_eq_of_moments_eq`.

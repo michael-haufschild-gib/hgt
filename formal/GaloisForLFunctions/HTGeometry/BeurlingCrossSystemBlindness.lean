@@ -566,3 +566,189 @@ theorem regularized_jet_limit_eq {S S' : ℝ → ℝ} {C M C' M' : ℝ} {c : ℝ
     (tendsto_jetIntegral_ratio hmono hbound k) (tendsto_jetIntegral_ratio hmono' hbound' k) hc hc'
 
 end GaloisForLFunctions.HTGeometry.Beurling
+
+namespace GaloisForLFunctions.HTGeometry.Beurling
+
+open Filter Topology intervalIntegral MeasureTheory Set
+
+/-! ## From the Gram sum to the layer-cake integral
+
+Writing `(log t)^{k+1} = ∫_0^{L} (k+1)u^k · [u < log t] du` for `1 ≤ t ≤ N` and exchanging the
+finite sum with the integral turns the Gram entry of a Beurling system into the layer-cake integral
+of the previous section.  The exchange is legitimate because each atom's integrand is a monotone
+indicator times a polynomial, hence interval integrable. -/
+
+/-- The layer-cake integrand of a single atom is interval integrable: a monotone indicator times a
+polynomial. -/
+theorem intervalIntegrable_layer_atom (k : ℕ) (a x y : ℝ) :
+    IntervalIntegrable (fun u : ℝ => ((k : ℝ) + 1) * u ^ k * (if u < a then (1 : ℝ) else 0))
+      volume x y := by
+  have hanti : Antitone (fun u : ℝ => if u < a then (1 : ℝ) else 0) := by
+    intro s t hst
+    show (if t < a then (1 : ℝ) else 0) ≤ (if s < a then (1 : ℝ) else 0)
+    by_cases ht : t < a
+    · rw [if_pos ht, if_pos (lt_of_le_of_lt hst ht)]
+    · rw [if_neg ht]
+      split_ifs <;> norm_num
+  exact hanti.intervalIntegrable.continuousOn_mul (by fun_prop)
+
+/-- **The layer-cake weight of one atom.**  An atom of magnitude `exp a` with `0 ≤ a ≤ L`
+contributes exactly `a^{k+1}` to the layer-cake integral over `[0, L]`. -/
+theorem integral_layer_atom (k : ℕ) {a L : ℝ} (ha : 0 ≤ a) (haL : a ≤ L) :
+    (∫ u in (0 : ℝ)..L, ((k : ℝ) + 1) * u ^ k * (if u < a then (1 : ℝ) else 0))
+      = a ^ (k + 1) := by
+  rw [← intervalIntegral.integral_add_adjacent_intervals
+    (intervalIntegrable_layer_atom k a 0 a) (intervalIntegrable_layer_atom k a a L)]
+  have h1 : (∫ u in (0 : ℝ)..a, ((k : ℝ) + 1) * u ^ k * (if u < a then (1 : ℝ) else 0))
+      = ∫ u in (0 : ℝ)..a, ((k : ℝ) + 1) * u ^ k := by
+    refine intervalIntegral.integral_congr_ae ?_
+    filter_upwards [MeasureTheory.compl_mem_ae_iff.mpr (measure_singleton a)] with u hu hmem
+    have hle : u ≤ a := by
+      rcases Set.mem_uIoc.mp hmem with ⟨_, h2⟩ | ⟨h1, h2⟩
+      · exact h2
+      · exact absurd (lt_of_lt_of_le h1 (le_trans h2 ha)) (lt_irrefl a)
+    have hne : u ≠ a := by simpa using hu
+    rw [if_pos (lt_of_le_of_ne hle hne), mul_one]
+  have h2 : (∫ u in a..L, ((k : ℝ) + 1) * u ^ k * (if u < a then (1 : ℝ) else 0)) = 0 := by
+    rw [intervalIntegral.integral_congr (g := fun _ : ℝ => (0 : ℝ)) ?_,
+      intervalIntegral.integral_zero]
+    intro u hu
+    rw [Set.uIcc_of_le haL] at hu
+    show ((k : ℝ) + 1) * u ^ k * (if u < a then (1 : ℝ) else 0) = 0
+    rw [if_neg (not_lt.mpr hu.1), mul_zero]
+  rw [h1, h2, add_zero, intervalIntegral.integral_const_mul, integral_pow]
+  have hk1 : ((k : ℝ) + 1) ≠ 0 := by positivity
+  simp
+  field_simp
+
+/-- A Beurling system: generalized prime powers of magnitude at least one, carrying nonnegative
+weights, with finitely many atoms below every threshold. -/
+structure System (ι : Type*) where
+  /-- The magnitude of a generalized prime power. -/
+  mag : ι → ℝ
+  /-- Its weight, `Λ(n)/n` for the rational primes. -/
+  weight : ι → ℝ
+  one_le_mag : ∀ i, 1 ≤ mag i
+  weight_nonneg : ∀ i, 0 ≤ weight i
+  finite_below : ∀ x : ℝ, {i | mag i ≤ x}.Finite
+
+namespace System
+
+variable {ι : Type*} (B : System ι)
+
+/-- The aperture: the atoms of magnitude at most `x`. -/
+noncomputable def aperture (x : ℝ) : Finset ι := (B.finite_below x).toFinset
+
+theorem mem_aperture {x : ℝ} {i : ι} : i ∈ B.aperture x ↔ B.mag i ≤ x := by
+  rw [aperture, Set.Finite.mem_toFinset]
+  rfl
+
+theorem aperture_subset {x y : ℝ} (hxy : x ≤ y) : B.aperture x ⊆ B.aperture y := by
+  intro i hi
+  rw [mem_aperture] at hi ⊢
+  exact le_trans hi hxy
+
+/-- The Mertens sum of the system at aperture `x`. -/
+noncomputable def mertens (x : ℝ) : ℝ := ∑ i ∈ B.aperture x, B.weight i
+
+/-- The prime log-jet Gram entry of exponent `k+1` at aperture `x`. -/
+noncomputable def jet (k : ℕ) (x : ℝ) : ℝ :=
+  ∑ i ∈ B.aperture x, B.weight i * Real.log (B.mag i) ^ (k + 1)
+
+theorem monotone_mertens : Monotone B.mertens := by
+  intro x y hxy
+  exact Finset.sum_le_sum_of_subset_of_nonneg (B.aperture_subset hxy)
+    (fun i _ _ => B.weight_nonneg i)
+
+/-- The Mertens increment between two apertures counts exactly the atoms in between. -/
+theorem mertens_sub {N u : ℝ} (hu : Real.exp u ≤ N) :
+    B.mertens N - B.mertens (Real.exp u)
+      = ∑ i ∈ B.aperture N,
+          B.weight i * (if u < Real.log (B.mag i) then (1 : ℝ) else 0) := by
+  classical
+  have hsub : B.aperture (Real.exp u) ⊆ B.aperture N := B.aperture_subset hu
+  rw [mertens, mertens, ← Finset.sum_sdiff_eq_sub hsub]
+  have hset : B.aperture N \ B.aperture (Real.exp u)
+      = (B.aperture N).filter (fun i => u < Real.log (B.mag i)) := by
+    ext i
+    simp only [Finset.mem_sdiff, Finset.mem_filter, mem_aperture]
+    have hmag : 0 < B.mag i := lt_of_lt_of_le zero_lt_one (B.one_le_mag i)
+    constructor
+    · rintro ⟨hiN, hnot⟩
+      exact ⟨hiN, (Real.lt_log_iff_exp_lt hmag).mpr (not_le.mp hnot)⟩
+    · rintro ⟨hiN, hlt⟩
+      exact ⟨hiN, not_le.mpr ((Real.lt_log_iff_exp_lt hmag).mp hlt)⟩
+  rw [hset, Finset.sum_filter]
+  exact Finset.sum_congr rfl fun i _ => by split_ifs <;> ring
+
+/-- **The Gram entry is the layer-cake integral.**  For every aperture `N ≥ 1` the prime log-jet
+Gram entry of exponent `k+1` equals the layer-cake integral of the Mertens sum. -/
+theorem jet_eq_jetIntegral (k : ℕ) {N : ℝ} (hN : 1 ≤ N) :
+    B.jet k N = jetIntegral B.mertens k N := by
+  classical
+  have hNpos : (0 : ℝ) < N := lt_of_lt_of_le zero_lt_one hN
+  have hL : (0 : ℝ) ≤ Real.log N := Real.log_nonneg hN
+  have hjet : B.jet k N = ∑ i ∈ B.aperture N, B.weight i * Real.log (B.mag i) ^ (k + 1) := rfl
+  rw [hjet, jetIntegral]
+  have hcongr : EqOn
+      (fun u : ℝ => ((k : ℝ) + 1) * u ^ k * (B.mertens N - B.mertens (Real.exp u)))
+      (fun u : ℝ => ∑ i ∈ B.aperture N,
+        B.weight i * (((k : ℝ) + 1) * u ^ k
+          * (if u < Real.log (B.mag i) then (1 : ℝ) else 0)))
+      (uIcc 0 (Real.log N)) := by
+    intro u hu
+    rw [Set.uIcc_of_le hL] at hu
+    have hexpu : Real.exp u ≤ N := by
+      rw [← Real.exp_log hNpos]
+      exact Real.exp_le_exp.mpr hu.2
+    simp only
+    rw [B.mertens_sub hexpu, Finset.mul_sum]
+    exact Finset.sum_congr rfl fun i _ => by ring
+  rw [intervalIntegral.integral_congr hcongr,
+    intervalIntegral.integral_finsetSum
+      (fun i _ => (intervalIntegrable_layer_atom k (Real.log (B.mag i)) 0 (Real.log N)).const_mul _)]
+  refine Finset.sum_congr rfl fun i hi => ?_
+  have hmag1 : 1 ≤ B.mag i := B.one_le_mag i
+  have ha : 0 ≤ Real.log (B.mag i) := Real.log_nonneg hmag1
+  have haL : Real.log (B.mag i) ≤ Real.log N :=
+    Real.log_le_log (lt_of_lt_of_le zero_lt_one hmag1) ((B.mem_aperture).mp hi)
+  rw [intervalIntegral.integral_const_mul, integral_layer_atom k ha haL]
+
+/-- **Lemma 2.1.**  For a Mertens-normal Beurling system the Gram entry of exponent `k+1` equals
+`L^{k+2}/(k+2)` up to `2M L^{k+1}`, where `M` bounds the Mertens defect. -/
+theorem jet_sub_main_abs_le {C M : ℝ}
+    (hbound : ∀ x : ℝ, 1 ≤ x → |B.mertens x - Real.log x - C| ≤ M) (k : ℕ) {N : ℝ} (hN : 1 ≤ N) :
+    |B.jet k N - (Real.log N) ^ (k + 2) / ((k : ℝ) + 2)| ≤ 2 * M * (Real.log N) ^ (k + 1) := by
+  rw [B.jet_eq_jetIntegral k hN]
+  exact jetIntegral_sub_main_abs_le B.monotone_mertens hbound k hN
+
+/-- **The normalized Gram limit of a Mertens-normal Beurling system is `1/(k+2)`.**  It depends on
+the exponent alone: not on the system, not on its Mertens constant, not on its defect. -/
+theorem tendsto_jet_ratio {C M : ℝ}
+    (hbound : ∀ x : ℝ, 1 ≤ x → |B.mertens x - Real.log x - C| ≤ M) (k : ℕ) :
+    Tendsto (fun N => B.jet k N / (Real.log N) ^ (k + 2)) atTop (𝓝 (1 / ((k : ℝ) + 2))) := by
+  have hmain := tendsto_jetIntegral_ratio B.monotone_mertens hbound k
+  refine hmain.congr' ?_
+  filter_upwards [eventually_ge_atTop (1 : ℝ)] with N hN
+  rw [B.jet_eq_jetIntegral k hN]
+
+end System
+
+/-- **Theorem 3.1, cross-system blindness of multiplicative regularization.**  Let `B` and `B'` be
+Mertens-normal Beurling systems, and let a single multiplicative regularization `c` make both prime
+log-jet Gram entries of exponent `k+1` converge.  Then the two limits are equal.  The limit is
+therefore a function of the normalizer alone and carries no information distinguishing the two
+systems. -/
+theorem regularized_jet_limit_eq_of_systems {ι ι' : Type*} (B : System ι) (B' : System ι')
+    {C M C' M' : ℝ} {c : ℝ → ℝ} {ℓ ℓ' : ℝ}
+    (hbound : ∀ x : ℝ, 1 ≤ x → |B.mertens x - Real.log x - C| ≤ M)
+    (hbound' : ∀ x : ℝ, 1 ≤ x → |B'.mertens x - Real.log x - C'| ≤ M')
+    (k : ℕ)
+    (hc : Tendsto (fun N => c N * B.jet k N) atTop (𝓝 ℓ))
+    (hc' : Tendsto (fun N => c N * B'.jet k N) atTop (𝓝 ℓ')) :
+    ℓ = ℓ' := by
+  have hA : (1 : ℝ) / ((k : ℝ) + 2) ≠ 0 := by positivity
+  exact regularized_limit_eq hA (B.jet k) (B'.jet k) c (fun N => (Real.log N) ^ (k + 2))
+    (B.tendsto_jet_ratio hbound k) (B'.tendsto_jet_ratio hbound' k) hc hc'
+
+end GaloisForLFunctions.HTGeometry.Beurling

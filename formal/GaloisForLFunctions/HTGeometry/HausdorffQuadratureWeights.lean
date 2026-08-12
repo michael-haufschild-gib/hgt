@@ -104,4 +104,71 @@ theorem sum_hausdorffWeight (b : ℕ → ℝ) (N : ℕ) :
   | zero => simp [hausdorffWeight, hausdorffCoeff]
   | succ N ih => rw [sum_hausdorffWeight_succ b N, ih]
 
+/-! ## The exact moment identity -/
+
+/-- Shifting the sequence shifts the coefficient array. -/
+theorem hausdorffCoeff_shift (b : ℕ → ℝ) (N m l : ℕ) :
+    hausdorffCoeff b N (m + l) = hausdorffCoeff (fun n => b (n + m)) (N - m) l := by
+  have hsub : N - (m + l) = N - m - l := by omega
+  rw [hausdorffCoeff, hausdorffCoeff, hsub,
+    fwdDiff_iter_comp_add (1 : ℕ) b m (N - m - l) l]
+  rw [show m + l = l + m by omega]
+
+/-- The binomial identity behind the moment computation. -/
+theorem choose_mul_descFactorial_shift (N m l : ℕ) :
+    N.choose (m + l) * (m + l).descFactorial m = N.descFactorial m * (N - m).choose l := by
+  have hle : m ≤ m + l := Nat.le_add_right m l
+  have hkey := Nat.choose_mul (n := N) (k := m + l) (s := m) hle
+  rw [Nat.descFactorial_eq_factorial_mul_choose, Nat.descFactorial_eq_factorial_mul_choose]
+  have hsimp : m + l - m = l := by omega
+  calc
+    N.choose (m + l) * (Nat.factorial m * (m + l).choose m)
+        = Nat.factorial m * (N.choose (m + l) * (m + l).choose m) := by ring
+    _ = Nat.factorial m * (N.choose m * (N - m).choose (m + l - m)) := by rw [hkey]
+    _ = Nat.factorial m * N.choose m * (N - m).choose l := by rw [hsimp]; ring
+
+/-- **The exact moment identity.**  The level-`N` quadrature reproduces the `m`-th falling-factorial
+moment of the sequence for every `m ≤ N`. -/
+theorem sum_hausdorffWeight_descFactorial (b : ℕ → ℝ) {N m : ℕ} (hm : m ≤ N) :
+    ∑ k ∈ range (N + 1), hausdorffWeight b N k * (k.descFactorial m : ℝ)
+      = (N.descFactorial m : ℝ) * b m := by
+  have hsubset : Finset.Ico m (N + 1) ⊆ range (N + 1) := by
+    intro k hk
+    exact Finset.mem_range.mpr (Finset.mem_Ico.mp hk).2
+  have hvanish : ∀ k ∈ range (N + 1), k ∉ Finset.Ico m (N + 1) →
+      hausdorffWeight b N k * (k.descFactorial m : ℝ) = 0 := by
+    intro k hk hnot
+    have hlt : k < m := by
+      rcases Nat.lt_or_ge k m with h | h
+      · exact h
+      · exact absurd (Finset.mem_Ico.mpr ⟨h, Finset.mem_range.mp hk⟩) hnot
+    have : k.descFactorial m = 0 := Nat.descFactorial_eq_zero_iff_lt.mpr hlt
+    rw [this]
+    simp
+  rw [← Finset.sum_subset hsubset hvanish, Finset.sum_Ico_eq_sum_range]
+  have hlen : N + 1 - m = (N - m) + 1 := by omega
+  rw [hlen]
+  have hterm : ∀ l ∈ range (N - m + 1),
+      hausdorffWeight b N (m + l) * (((m + l).descFactorial m : ℕ) : ℝ)
+        = (N.descFactorial m : ℝ) * hausdorffWeight (fun n => b (n + m)) (N - m) l := by
+    intro l _
+    have hchoose := choose_mul_descFactorial_shift N m l
+    have hcast : ((N.choose (m + l) * (m + l).descFactorial m : ℕ) : ℝ)
+        = ((N.descFactorial m * (N - m).choose l : ℕ) : ℝ) := by
+      exact_mod_cast congrArg (fun n : ℕ => (n : ℝ)) hchoose
+    push_cast at hcast
+    rw [hausdorffWeight, hausdorffWeight, hausdorffCoeff_shift b N m l]
+    calc
+      (N.choose (m + l) : ℝ) * hausdorffCoeff (fun n => b (n + m)) (N - m) l *
+          ((m + l).descFactorial m : ℝ)
+          = ((N.choose (m + l) : ℝ) * ((m + l).descFactorial m : ℝ)) *
+              hausdorffCoeff (fun n => b (n + m)) (N - m) l := by ring
+      _ = ((N.descFactorial m : ℝ) * ((N - m).choose l : ℝ)) *
+              hausdorffCoeff (fun n => b (n + m)) (N - m) l := by rw [hcast]
+      _ = (N.descFactorial m : ℝ) *
+              (((N - m).choose l : ℝ) * hausdorffCoeff (fun n => b (n + m)) (N - m) l) := by ring
+  rw [Finset.sum_congr rfl hterm, ← Finset.mul_sum,
+    sum_hausdorffWeight (fun n => b (n + m)) (N - m)]
+  simp
+
 end GaloisForLFunctions.HTGeometry

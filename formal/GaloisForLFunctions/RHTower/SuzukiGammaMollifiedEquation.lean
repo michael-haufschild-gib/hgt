@@ -34,8 +34,9 @@ namespace GaloisForLFunctions.RHTower
 /-- The smooth unit-mass base profile of width one. -/
 noncomputable def suzukiBaseMollifier : ℝ → ℝ := bumpMollifier one_pos
 
-theorem contDiff_suzukiBaseMollifier : ContDiff ℝ ∞ suzukiBaseMollifier :=
-  ContDiffBump.contDiff_normed
+theorem contDiff_suzukiBaseMollifier : ContDiff ℝ ∞ suzukiBaseMollifier := by
+  unfold suzukiBaseMollifier bumpMollifier
+  exact (widthBump one_pos).contDiff_normed (n := ⊤)
 
 theorem suzukiBaseMollifier_nonneg (t : ℝ) : 0 ≤ suzukiBaseMollifier t :=
   nonneg_bumpMollifier one_pos t
@@ -52,7 +53,7 @@ noncomputable def suzukiMollifier (ε : ℝ) : ℝ → ℝ := scaledMollifier su
 theorem suzukiMollifier_def (ε t : ℝ) :
     suzukiMollifier ε t = ε⁻¹ * suzukiBaseMollifier (t / ε) := rfl
 
-theorem contDiff_suzukiMollifier {ε : ℝ} (hε : 0 < ε) : ContDiff ℝ ∞ (suzukiMollifier ε) := by
+theorem contDiff_suzukiMollifier (ε : ℝ) : ContDiff ℝ ∞ (suzukiMollifier ε) := by
   have h1 : ContDiff ℝ ∞ fun t : ℝ => suzukiBaseMollifier (t / ε) :=
     contDiff_suzukiBaseMollifier.comp (contDiff_id.div_const ε)
   exact contDiff_const.mul h1
@@ -81,16 +82,16 @@ theorem integral_suzukiMollifier {ε : ℝ} (hε : 0 < ε) : (∫ t, suzukiMolli
   rw [suzukiMollifier, integral_scaledMollifier hε, integral_suzukiBaseMollifier]
 
 theorem integrable_suzukiMollifier {ε : ℝ} (hε : 0 < ε) : Integrable (suzukiMollifier ε) :=
-  ((contDiff_suzukiMollifier hε).continuous).integrable_of_hasCompactSupport
+  ((contDiff_suzukiMollifier ε).continuous).integrable_of_hasCompactSupport
     (hasCompactSupport_suzukiMollifier hε)
 
-theorem hasDerivAt_suzukiMollifier {ε : ℝ} (hε : 0 < ε) (t : ℝ) :
+theorem hasDerivAt_suzukiMollifier (ε : ℝ) (t : ℝ) :
     HasDerivAt (suzukiMollifier ε) (deriv (suzukiMollifier ε) t) t :=
-  (((contDiff_suzukiMollifier hε).differentiable one_ne_zero) t).hasDerivAt
+  (((contDiff_suzukiMollifier ε).differentiable (by simp)) t).hasDerivAt
 
-theorem contDiff_deriv_suzukiMollifier {ε : ℝ} (hε : 0 < ε) :
+theorem contDiff_deriv_suzukiMollifier (ε : ℝ) :
     ContDiff ℝ ∞ (deriv (suzukiMollifier ε)) :=
-  (contDiff_infty_iff_deriv.mp (contDiff_suzukiMollifier hε)).2
+  (contDiff_infty_iff_deriv.mp (contDiff_suzukiMollifier ε)).2
 
 theorem hasCompactSupport_deriv_suzukiMollifier {ε : ℝ} (hε : 0 < ε) :
     HasCompactSupport (deriv (suzukiMollifier ε)) :=
@@ -112,7 +113,7 @@ theorem tsupport_suzukiMollifier_subset {ε : ℝ} (hε : 0 < ε) :
 
 theorem deriv_suzukiMollifier_eq_zero {ε : ℝ} (hε : 0 < ε) {t : ℝ} (ht : ε < |t|) :
     deriv (suzukiMollifier ε) t = 0 := by
-  refine deriv_eq_zero_of_notMem_tsupport (fun u => hasDerivAt_suzukiMollifier hε u) ?_
+  refine deriv_eq_zero_of_notMem_tsupport (fun u => hasDerivAt_suzukiMollifier ε u) ?_
   intro hmem
   have hmem' := tsupport_suzukiMollifier_subset hε hmem
   rw [mem_Icc] at hmem'
@@ -162,10 +163,13 @@ theorem shiftedGammaJump_neg_comp_sub (σ : ℝ) (ρ : ℝ → ℝ) (x t : ℝ) 
       = shiftedSecondDifference σ ρ (x - t) s * gammaTransportKernel s
   congr 1
   unfold shiftedSecondDifference
-  have h1 : x - (t + s) = x - t - s := by ring
-  have h2 : x - (t - s) = x - t + s := by ring
-  rw [h1, h2]
-  ring_nf
+  show 2 * ρ (x - t) - Real.exp (-(-σ * s)) * ρ (x - (t + s))
+        - Real.exp (-σ * s) * ρ (x - (t - s))
+      = 2 * ρ (x - t) - Real.exp (-(σ * s)) * ρ (x - t + s)
+        - Real.exp (σ * s) * ρ (x - t - s)
+  rw [show x - (t + s) = x - t - s from by ring, show x - (t - s) = x - t + s from by ring,
+    show -(-σ * s) = σ * s from by ring, show -σ * s = -(σ * s) from by ring]
+  ring
 
 /-- The jump of a negated profile is the negated jump. -/
 theorem shiftedGammaJump_neg_profile (σ : ℝ) (ρ : ℝ → ℝ) (t : ℝ) :
@@ -207,14 +211,14 @@ theorem shiftedSecondDifference_eq_zero {g : ℝ → ℝ} {R : ℝ}
     refine hsupp _ ?_
     have h2 : |y| ≤ |y + s| + |s| := by
       calc |y| = |y + s + -s| := by ring_nf
-        _ ≤ |y + s| + |-s| := abs_add _ _
+        _ ≤ |y + s| + |-s| := abs_add_le _ _
         _ = |y + s| + |s| := by rw [abs_neg]
     linarith
   have h2 : g (y - s) = 0 := by
     refine hsupp _ ?_
     have h3 : |y| ≤ |y - s| + |s| := by
       calc |y| = |y - s + s| := by ring_nf
-        _ ≤ |y - s| + |s| := abs_add _ _
+        _ ≤ |y - s| + |s| := abs_add_le _ _
     linarith
   unfold shiftedSecondDifference
   rw [h0, h1, h2]
@@ -337,7 +341,7 @@ theorem integral_mul_shiftedGammaJump_comp_sub {g V : ℝ → ℝ} {K R σ : ℝ
       rw [hH, Real.norm_eq_abs]
       show |V t * (shiftedSecondDifference σ g (x - t) s * gammaTransportKernel s)|
           = |V t * shiftedSecondDifference σ g (x - t) s| * gammaTransportKernel s
-      rw [abs_mul, abs_mul, abs_of_pos hkpos]
+      simp only [abs_mul, abs_of_pos hkpos]
       ring
     have hCS : (∫ t, |V t * shiftedSecondDifference σ g (x - t) s|)
         ≤ CV * gammaJumpL2Majorant C₁ C₂ σ s := by
@@ -420,8 +424,11 @@ theorem integral_mul_shiftedGammaJump_comp_sub {g V : ℝ → ℝ} {K R σ : ℝ
     · have hmaj : Integrable (fun s => CV * gammaJumpScaleWeight C₁ C₂ σ s) μs := by
         rw [hμs]
         exact (integrableOn_gammaJumpScaleWeight hC₁.le hC₂.le hσ0 hσ1).const_mul CV
-      have haesm : AEStronglyMeasurable (fun s => ∫ t, ‖H (t, s)‖) μs :=
-        hHm.norm.integral_prod_left'
+      have haesm : AEStronglyMeasurable (fun s => ∫ t, ‖H (t, s)‖) μs := by
+        have hswapm : AEStronglyMeasurable (fun q : ℝ × ℝ => ‖H (q.2, q.1)‖)
+            (μs.prod volume) :=
+          hHm.norm.comp_measurePreserving Measure.measurePreserving_swap
+        exact hswapm.integral_prod_right'
       refine Integrable.mono' hmaj haesm ?_
       rw [hμs]
       filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with s hs
@@ -480,13 +487,309 @@ theorem integral_mul_shiftedGammaJump_comp_sub {g V : ℝ → ℝ} {K R σ : ℝ
         rw [e1, e2]
         ring
       rw [hexpand]
-      rw [integral_sub (((hint1.const_mul 2)).sub (hint2.const_mul _)) (hint3.const_mul _),
-        integral_sub (hint1.const_mul 2) (hint2.const_mul _),
-        integral_const_mul, integral_const_mul, integral_const_mul]
-      rw [hflipmul g hgc hgcs x, hflipmul g hgc hgcs (x + s), hflipmul g hgc hgcs (x - s)]
-      unfold shiftedSecondDifference
-      ring
+      have hi1 : Integrable fun t => 2 * (V t * g (x - t)) := hint1.const_mul 2
+      have hi2 : Integrable fun t => Real.exp (-(σ * s)) * (V t * g (x + s - t)) :=
+        hint2.const_mul _
+      have hi3 : Integrable fun t => Real.exp (σ * s) * (V t * g (x - s - t)) :=
+        hint3.const_mul _
+      have hi12 : Integrable fun t => 2 * (V t * g (x - t))
+          - Real.exp (-(σ * s)) * (V t * g (x + s - t)) := hi1.sub hi2
+      calc (∫ t, 2 * (V t * g (x - t)) - Real.exp (-(σ * s)) * (V t * g (x + s - t))
+              - Real.exp (σ * s) * (V t * g (x - s - t)))
+          = (∫ t, 2 * (V t * g (x - t)) - Real.exp (-(σ * s)) * (V t * g (x + s - t)))
+              - ∫ t, Real.exp (σ * s) * (V t * g (x - s - t)) := integral_sub hi12 hi3
+        _ = ((∫ t, 2 * (V t * g (x - t)))
+              - ∫ t, Real.exp (-(σ * s)) * (V t * g (x + s - t)))
+              - ∫ t, Real.exp (σ * s) * (V t * g (x - s - t)) := by
+            rw [integral_sub hi1 hi2]
+        _ = 2 * (∫ t, V t * g (x - t))
+              - Real.exp (-(σ * s)) * (∫ t, V t * g (x + s - t))
+              - Real.exp (σ * s) * ∫ t, V t * g (x - s - t) := by
+            rw [integral_const_mul, integral_const_mul, integral_const_mul]
+        _ = shiftedSecondDifference σ (lineConvolution g V) x s := by
+            rw [hflipmul g hgc hgcs x, hflipmul g hgc hgcs (x + s),
+              hflipmul g hgc hgcs (x - s)]
+            unfold shiftedSecondDifference
+            ring
     rw [hsplit, hinner]
   rw [hLHS, hswap, hRHS]
+
+/-! ## The mollified objects -/
+
+/-- The mollified weak derivative `U_ε = (ρ_ε′ − σρ_ε) ⋆ V`. -/
+noncomputable def suzukiMollifiedDeriv (σ ε : ℝ) (V : ℝ → ℝ) : ℝ → ℝ :=
+  lineConvolution (fun u => deriv (suzukiMollifier ε) u - σ * suzukiMollifier ε u) V
+
+/-- The position-commutator defect `W_ε = (k_ε′ − σk_ε) ⋆ V`, `k_ε(u) = u ρ_ε(u)`. -/
+noncomputable def suzukiMollifiedDefect (σ ε : ℝ) (V : ℝ → ℝ) : ℝ → ℝ :=
+  lineConvolution (fun u => deriv (firstMomentKernel (suzukiMollifier ε)) u
+    - σ * firstMomentKernel (suzukiMollifier ε) u) V
+
+/-- The convolution is linear across a kernel combination `g₁ − c·g₂`. -/
+theorem lineConvolution_kernel_sub_mul {g₁ g₂ V : ℝ → ℝ} {c y : ℝ}
+    (h1 : Integrable fun t => g₁ t * V (y - t))
+    (h2 : Integrable fun t => g₂ t * V (y - t)) :
+    lineConvolution (fun u => g₁ u - c * g₂ u) V y
+      = lineConvolution g₁ V y - c * lineConvolution g₂ V y := by
+  unfold lineConvolution
+  calc (∫ t, (g₁ t - c * g₂ t) * V (y - t))
+      = ∫ t, g₁ t * V (y - t) - c * (g₂ t * V (y - t)) := by
+        refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+        show (g₁ t - c * g₂ t) * V (y - t)
+            = g₁ t * V (y - t) - c * (g₂ t * V (y - t))
+        ring
+    _ = (∫ t, g₁ t * V (y - t)) - ∫ t, c * (g₂ t * V (y - t)) :=
+        integral_sub h1 (h2.const_mul c)
+    _ = (∫ t, g₁ t * V (y - t)) - c * ∫ t, g₂ t * V (y - t) := by
+        rw [integral_const_mul]
+
+/-! ## The pointwise mollified equation -/
+
+/-- **The mollified equation, pointwise.**  Testing the weak equation against the translated
+scaled mollifier and running the kernel algebra gives, at every base point `x`:
+
+`2x U_ε(x) − 2W_ε(x) + (R_σ U_ε)(x) − τ U_ε(x) + V_ε(x) = G_ε(x)`. -/
+theorem suzukiGamma_mollified_equation {σ τ ε : ℝ} {V G : ℝ → ℝ}
+    (heq : SuzukiGammaTestedEquation σ τ V G)
+    (hVmm : Measurable V) (hV2 : Integrable (fun t => V t ^ 2))
+    (hσ0 : 0 ≤ σ) (hσ1 : σ < 1) (hε : 0 < ε) (x : ℝ) :
+    2 * x * suzukiMollifiedDeriv σ ε V x - 2 * suzukiMollifiedDefect σ ε V x
+      + shiftedGammaJump σ (suzukiMollifiedDeriv σ ε V) x
+      - τ * suzukiMollifiedDeriv σ ε V x
+      + lineConvolution (suzukiMollifier ε) V x
+      = lineConvolution (suzukiMollifier ε) G x := by
+  set ρ : ℝ → ℝ := suzukiMollifier ε with hρdef
+  set ρd : ℝ → ℝ := deriv (suzukiMollifier ε) with hρddef
+  set kk : ℝ → ℝ := firstMomentKernel (suzukiMollifier ε) with hkkdef
+  set kkd : ℝ → ℝ := deriv (firstMomentKernel (suzukiMollifier ε)) with hkkddef
+  have hVm : AEStronglyMeasurable V volume := hVmm.aestronglyMeasurable
+  have hVloc : LocallyIntegrable V volume := locallyIntegrable_of_sq_integrable hVm hV2
+  -- kernel regularity
+  have hρc : Continuous ρ := (contDiff_suzukiMollifier ε).continuous
+  have hρcs : HasCompactSupport ρ := hasCompactSupport_suzukiMollifier hε
+  have hρdc : Continuous ρd := (contDiff_deriv_suzukiMollifier ε).continuous
+  have hρdcs : HasCompactSupport ρd := hasCompactSupport_deriv_suzukiMollifier hε
+  have hkkc : Continuous kk := by
+    have : Continuous fun t : ℝ => t * suzukiMollifier ε t := continuous_id.mul hρc
+    exact this
+  have hkkcs : HasCompactSupport kk := by
+    have := hρcs.mul_left (f := fun t : ℝ => t)
+    exact this
+  have hkkderiv : ∀ y : ℝ, HasDerivAt kk (ρ y + y * ρd y) y := by
+    intro y
+    have := hasDerivAt_firstMomentKernel
+      (ρ := suzukiMollifier ε) (ρ' := fun u => deriv (suzukiMollifier ε) u)
+      (fun u => hasDerivAt_suzukiMollifier ε u) y
+    simpa [firstMomentDeriv] using this
+  have hkkdeq : kkd = fun y => ρ y + y * ρd y := funext fun y => (hkkderiv y).deriv
+  have hkkdc : Continuous kkd := by
+    rw [hkkdeq]
+    exact hρc.add (continuous_id.mul hρdc)
+  have hkkdcs : HasCompactSupport kkd := hkkcs.deriv
+  -- integrability instances
+  have hsqI : ∀ (h : ℝ → ℝ), Continuous h → HasCompactSupport h →
+      Integrable fun u => h u ^ 2 := fun h hc hcs =>
+    (hc.pow 2).integrable_of_hasCompactSupport (hasCompactSupport_sq hcs)
+  have hI : ∀ (h : ℝ → ℝ), Continuous h → HasCompactSupport h → ∀ z : ℝ,
+      Integrable fun t => V t * h (z - t) := fun h hc hcs z =>
+    integrable_mul_kernel_comp_sub hc.aestronglyMeasurable (hsqI h hc hcs) hVm hV2 z
+  have hIdir : ∀ (h : ℝ → ℝ), Continuous h → HasCompactSupport h → ∀ z : ℝ,
+      Integrable fun t => h t * V (z - t) := fun h hc hcs z =>
+    integrable_kernel_mul_sq hc.aestronglyMeasurable (hsqI h hc hcs) hVm hV2 z
+  have hflipmul : ∀ (h : ℝ → ℝ) (z : ℝ),
+      (∫ t, V t * h (z - t)) = lineConvolution h V z := by
+    intro h z
+    rw [lineConvolution_flip]
+    refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+    show V t * h (z - t) = h (z - t) * V t
+    ring
+  -- the test function
+  set φx : ℝ → ℝ := fun t => ρ (x - t) with hφxdef
+  have hφxsmooth : ContDiff ℝ ∞ φx :=
+    (contDiff_suzukiMollifier ε).comp (contDiff_const.sub contDiff_id)
+  have hφxsupp : HasCompactSupport φx := by
+    refine HasCompactSupport.intro (isCompact_Icc (a := x - ε) (b := x + ε)) fun t ht => ?_
+    show ρ (x - t) = 0
+    refine suzukiMollifier_eq_zero hε ?_
+    rw [mem_Icc, not_and_or] at ht
+    rcases ht with ht | ht
+    · rw [not_le] at ht
+      calc ε < x - t := by linarith
+        _ ≤ |x - t| := le_abs_self _
+    · rw [not_le] at ht
+      calc ε < -(x - t) := by linarith
+        _ ≤ |x - t| := neg_le_abs _
+  have hφxd : ∀ t, HasDerivAt φx (-ρd (x - t)) t := by
+    intro t
+    have hb : HasDerivAt (fun t : ℝ => x - t) (-1) t := by
+      simpa using (hasDerivAt_id t).const_sub x
+    have hcomp : HasDerivAt (suzukiMollifier ε ∘ fun t : ℝ => x - t)
+        (deriv (suzukiMollifier ε) (x - t) * (-1)) t :=
+      HasDerivAt.comp t (hasDerivAt_suzukiMollifier ε (x - t)) hb
+    have hcomp' : HasDerivAt φx (deriv (suzukiMollifier ε) (x - t) * (-1)) t := hcomp
+    simpa using hcomp'
+  have hderiv_φx : deriv φx = fun t => -ρd (x - t) := funext fun t => (hφxd t).deriv
+  -- instantiate the tested equation
+  have E := heq φx hφxsmooth hφxsupp
+  -- the data identities
+  have hTV : (∫ t, V t * φx t) = lineConvolution ρ V x := hflipmul ρ x
+  have hTG : (∫ t, G t * φx t) = lineConvolution ρ G x := by
+    rw [lineConvolution_flip]
+    refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+    show G t * ρ (x - t) = ρ (x - t) * G t
+    ring
+  have hTdφ : (∫ t, V t * deriv φx t) = -lineConvolution ρd V x := by
+    rw [hderiv_φx]
+    calc (∫ t, V t * -ρd (x - t)) = ∫ t, -(V t * ρd (x - t)) := by
+          refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+          show V t * -ρd (x - t) = -(V t * ρd (x - t))
+          ring
+      _ = -∫ t, V t * ρd (x - t) := integral_neg _
+      _ = -lineConvolution ρd V x := by rw [hflipmul ρd x]
+  have hTtφ : (∫ t, V t * (t * φx t))
+      = x * lineConvolution ρ V x - lineConvolution kk V x := by
+    calc (∫ t, V t * (t * φx t))
+        = ∫ t, x * (V t * ρ (x - t)) - V t * kk (x - t) := by
+          refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+          show V t * (t * ρ (x - t)) = x * (V t * ρ (x - t)) - V t * kk (x - t)
+          have hk : kk (x - t) = (x - t) * ρ (x - t) := rfl
+          rw [hk]
+          ring
+      _ = (∫ t, x * (V t * ρ (x - t))) - ∫ t, V t * kk (x - t) :=
+          integral_sub ((hI ρ hρc hρcs x).const_mul x) (hI kk hkkc hkkcs x)
+      _ = x * lineConvolution ρ V x - lineConvolution kk V x := by
+          rw [integral_const_mul, hflipmul ρ x, hflipmul kk x]
+  have hTtdφ : (∫ t, V t * (t * deriv φx t))
+      = -(x * lineConvolution ρd V x) + lineConvolution kkd V x
+        - lineConvolution ρ V x := by
+    rw [hderiv_φx]
+    calc (∫ t, V t * (t * (fun t => -ρd (x - t)) t))
+        = ∫ t, -(x * (V t * ρd (x - t))) + V t * kkd (x - t) - V t * ρ (x - t) := by
+          refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+          show V t * (t * -ρd (x - t))
+              = -(x * (V t * ρd (x - t))) + V t * kkd (x - t) - V t * ρ (x - t)
+          have hk : kkd (x - t) = ρ (x - t) + (x - t) * ρd (x - t) := by rw [hkkdeq]
+          rw [hk]
+          ring
+      _ = (∫ t, -(x * (V t * ρd (x - t))) + V t * kkd (x - t))
+            - ∫ t, V t * ρ (x - t) :=
+          integral_sub (((hI ρd hρdc hρdcs x).const_mul x).neg.add (hI kkd hkkdc hkkdcs x))
+            (hI ρ hρc hρcs x)
+      _ = ((∫ t, -(x * (V t * ρd (x - t)))) + ∫ t, V t * kkd (x - t))
+            - ∫ t, V t * ρ (x - t) := by
+          have hIneg : Integrable fun t => -(x * (V t * ρd (x - t))) :=
+            ((hI ρd hρdc hρdcs x).const_mul x).neg
+          rw [integral_add hIneg (hI kkd hkkdc hkkdcs x)]
+      _ = -(x * lineConvolution ρd V x) + lineConvolution kkd V x
+            - lineConvolution ρ V x := by
+          rw [integral_neg, integral_const_mul, hflipmul ρd x, hflipmul kkd x, hflipmul ρ x]
+  have hTsum : (∫ t, V t * (φx t + t * deriv φx t))
+      = (∫ t, V t * φx t) + ∫ t, V t * (t * deriv φx t) := by
+    have hint2 : Integrable fun t => V t * (t * deriv φx t) := by
+      rw [hderiv_φx]
+      refine ((((hI ρd hρdc hρdcs x).const_mul x).neg.add
+        (hI kkd hkkdc hkkdcs x)).sub (hI ρ hρc hρcs x)).congr ?_
+      filter_upwards with t
+      show -(x * (V t * ρd (x - t))) + V t * kkd (x - t) - V t * ρ (x - t)
+          = V t * (t * (fun t => -ρd (x - t)) t)
+      have hk : kkd (x - t) = ρ (x - t) + (x - t) * ρd (x - t) := by rw [hkkdeq]
+      rw [hk]
+      ring
+    calc (∫ t, V t * (φx t + t * deriv φx t))
+        = ∫ t, V t * φx t + V t * (t * deriv φx t) := by
+          refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+          show V t * (φx t + t * deriv φx t) = V t * φx t + V t * (t * deriv φx t)
+          ring
+      _ = (∫ t, V t * φx t) + ∫ t, V t * (t * deriv φx t) :=
+          integral_add (hI ρ hρc hρcs x) hint2
+  -- jump identities
+  have hJdφ : ∀ t, shiftedGammaJump (-σ) (deriv φx) t = -shiftedGammaJump σ ρd (x - t) := by
+    intro t
+    rw [hderiv_φx]
+    calc shiftedGammaJump (-σ) (fun u => -ρd (x - u)) t
+        = -shiftedGammaJump (-σ) (fun u => ρd (x - u)) t :=
+          shiftedGammaJump_neg_profile (-σ) (fun u => ρd (x - u)) t
+      _ = -shiftedGammaJump σ ρd (x - t) := by
+          rw [shiftedGammaJump_neg_comp_sub σ ρd x t]
+  -- Lipschitz and support data for the two Fubini exchanges
+  obtain ⟨M₁, hM₁0, hM₁⟩ := exists_abs_le_of_hasCompactSupport hρdc hρdcs
+  have hρK : ∀ u v : ℝ, |ρ u - ρ v| ≤ M₁ * |u - v| := fun u v =>
+    abs_sub_le_of_deriv_bound ((contDiff_suzukiMollifier ε).of_le (by exact_mod_cast le_top)) hM₁ u v
+  have hρddc : Continuous (deriv ρd) :=
+    (contDiff_infty_iff_deriv.mp (contDiff_deriv_suzukiMollifier ε)).2.continuous
+  have hρddcs : HasCompactSupport (deriv ρd) := hρdcs.deriv
+  obtain ⟨M₂, hM₂0, hM₂⟩ := exists_abs_le_of_hasCompactSupport hρddc hρddcs
+  have hρdK : ∀ u v : ℝ, |ρd u - ρd v| ≤ M₂ * |u - v| := fun u v =>
+    abs_sub_le_of_deriv_bound ((contDiff_deriv_suzukiMollifier ε).of_le (by exact_mod_cast le_top)) hM₂ u v
+  have hρsupp : ∀ u : ℝ, ε < |u| → ρ u = 0 := fun u hu => suzukiMollifier_eq_zero hε hu
+  have hρdsupp : ∀ u : ℝ, ε < |u| → ρd u = 0 := fun u hu =>
+    deriv_suzukiMollifier_eq_zero hε hu
+  have hFub1 : (∫ t, V t * shiftedGammaJump σ ρd (x - t))
+      = shiftedGammaJump σ (lineConvolution ρd V) x :=
+    integral_mul_shiftedGammaJump_comp_sub hρdc hρdK hρdsupp hε.le hVmm hV2 hσ0 hσ1 x
+  have hFub2 : (∫ t, V t * shiftedGammaJump σ ρ (x - t))
+      = shiftedGammaJump σ (lineConvolution ρ V) x :=
+    integral_mul_shiftedGammaJump_comp_sub hρc hρK hρsupp hε.le hVmm hV2 hσ0 hσ1 x
+  have hTJdφ : (∫ t, V t * shiftedGammaJump (-σ) (deriv φx) t)
+      = -shiftedGammaJump σ (lineConvolution ρd V) x := by
+    calc (∫ t, V t * shiftedGammaJump (-σ) (deriv φx) t)
+        = ∫ t, -(V t * shiftedGammaJump σ ρd (x - t)) := by
+          refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+          show V t * shiftedGammaJump (-σ) (deriv φx) t
+              = -(V t * shiftedGammaJump σ ρd (x - t))
+          rw [hJdφ t]
+          ring
+      _ = -∫ t, V t * shiftedGammaJump σ ρd (x - t) := integral_neg _
+      _ = -shiftedGammaJump σ (lineConvolution ρd V) x := by rw [hFub1]
+  have hTJφ : (∫ t, V t * shiftedGammaJump (-σ) φx t)
+      = shiftedGammaJump σ (lineConvolution ρ V) x := by
+    calc (∫ t, V t * shiftedGammaJump (-σ) φx t)
+        = ∫ t, V t * shiftedGammaJump σ ρ (x - t) := by
+          refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+          show V t * shiftedGammaJump (-σ) φx t = V t * shiftedGammaJump σ ρ (x - t)
+          rw [hφxdef]
+          rw [shiftedGammaJump_neg_comp_sub σ ρ x t]
+      _ = shiftedGammaJump σ (lineConvolution ρ V) x := hFub2
+  -- the mollified objects in convolution atoms
+  have hUval : ∀ y : ℝ, suzukiMollifiedDeriv σ ε V y
+      = lineConvolution ρd V y - σ * lineConvolution ρ V y := by
+    intro y
+    unfold suzukiMollifiedDeriv
+    exact lineConvolution_kernel_sub_mul (hIdir ρd hρdc hρdcs y) (hIdir ρ hρc hρcs y)
+  have hWval : suzukiMollifiedDefect σ ε V x
+      = lineConvolution kkd V x - σ * lineConvolution kk V x := by
+    unfold suzukiMollifiedDefect
+    exact lineConvolution_kernel_sub_mul (hIdir kkd hkkdc hkkdcs x) (hIdir kk hkkc hkkcs x)
+  -- the jump of the mollified derivative
+  have hjump1 : IntegrableOn (fun s =>
+      shiftedSecondDifference σ (lineConvolution ρd V) x s * gammaTransportKernel s)
+      (Ioi 0) := by
+    refine integrableOn_shiftedSecondDifference_mul_kernel
+      (continuous_lineConvolution hρdc hρdcs hVloc).measurable
+      (fun u v => abs_lineConvolution_sub_le
+        ((contDiff_deriv_suzukiMollifier ε).of_le (by exact_mod_cast le_top)) hρdcs hVm hV2 u v)
+      (fun z => abs_lineConvolution_le hρdc.aestronglyMeasurable
+        (hsqI ρd hρdc hρdcs) hVm hV2 z) hσ0 hσ1 x
+  have hjump2 : IntegrableOn (fun s =>
+      shiftedSecondDifference σ (lineConvolution ρ V) x s * gammaTransportKernel s)
+      (Ioi 0) := by
+    refine integrableOn_shiftedSecondDifference_mul_kernel
+      (continuous_lineConvolution hρc hρcs hVloc).measurable
+      (fun u v => abs_lineConvolution_sub_le
+        ((contDiff_suzukiMollifier ε).of_le (by exact_mod_cast le_top)) hρcs hVm hV2 u v)
+      (fun z => abs_lineConvolution_le hρc.aestronglyMeasurable
+        (hsqI ρ hρc hρcs) hVm hV2 z) hσ0 hσ1 x
+  have hUjump : shiftedGammaJump σ (suzukiMollifiedDeriv σ ε V) x
+      = shiftedGammaJump σ (lineConvolution ρd V) x
+        - σ * shiftedGammaJump σ (lineConvolution ρ V) x := by
+    have hfun : suzukiMollifiedDeriv σ ε V
+        = fun y => lineConvolution ρd V y - σ * lineConvolution ρ V y :=
+      funext fun y => hUval y
+    rw [hfun]
+    exact shiftedGammaJump_sub_smul hjump1 hjump2
+  -- assemble
+  rw [hTsum, hTV, hTG, hTdφ, hTtφ, hTtdφ, hTJdφ, hTJφ] at E
+  rw [hUval x, hWval, hUjump]
+  linear_combination E
 
 end GaloisForLFunctions.RHTower

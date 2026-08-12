@@ -1,8 +1,8 @@
 # Deninger--Möbius prime-normal successor blow-up
 
-- **Stage:** 2 — dependency-closed paper proof
+- **Stage:** 3-formalized
 - **Type:** SOURCE CONSTRUCTION / SINGULAR CROSS-PRIME TRANSPORT / ROUTE-L FRONTIER ADVANCE
-- **Status:** `[PAPER-PROVED] [NO LEAN WORK DURING CORPUS REFACTOR]`
+- **Status:** `[FORMALIZED]`
 - **Corpus inputs:**
   `MobiusThetaPhysicalSourceToXiLanding.lean`,
   `MobiusThetaInternalJetPrimeNormalComplexGraph.lean`
@@ -200,3 +200,58 @@ equivalent to imposing the critical line and is forbidden.
   reflection anomaly (12) remains nonzero off the wall.
 - The result is project-specific new knowledge: it is an exact identity between the corpus's
   complete prime-normal theta packets, not a relabeling of standard Möbius inversion.
+
+## Lean status
+
+`formal/GaloisForLFunctions/RHTower/DeningerMobiusPrimeNormalSuccessorBlowup.lean` and
+`DeningerMobiusSuccessorAmplitude.lean`, on the corpus inputs
+`MobiusThetaPhysicalSourceToXiLanding.lean` and
+`MobiusThetaInternalJetPrimeNormalComplexGraph.lean`.  Axiom audit for every declaration:
+`propext, Classical.choice, Quot.sound`.
+
+### Done
+
+- **The Möbius successor.** `exists_mobius_ne_zero_gt` (there is always a larger prime, hence a
+  larger nonzero Möbius coefficient), `mobiusSuccessor`, `lt_mobiusSuccessor`,
+  `moebius_mobiusSuccessor_ne_zero`, `moebius_eq_zero_of_lt_mobiusSuccessor`, and
+  `mobiusSuccessor_two : mobiusSuccessor 2 = 3`.
+- **`(3)`, `(4)`: the exact successor transport.**  `mobiusThetaSuccessorBlowup` and its bounded
+  form `mobiusThetaSuccessorBlowupCLM`, with `summable_mobiusThetaPrimeNormalTailTerm`,
+  `mobiusThetaSuccessorBlowup_tail_head`, `mobiusThetaSuccessorBlowup_tail_succ`,
+  `mobiusThetaPrimeNormalTailTerm_eq_zero_before_successor`, and
+  **`mobiusTheta_successor_transport`**.
+- **`(5)`: the `2 → 3` case.**  `mobiusThetaTwoThreeSuccessorBlowup` and
+  **`mobiusTheta_two_three_successor_transport`**.
+- **`(6)`: the scalar Fourier--Laplace shadow.**  `DeningerMobiusSuccessorAmplitude.lean`:
+  `mobiusThetaPrimeNormalAmplitude` is `M_{p,m}(s)`, `lSeriesSummable_moebius_of_one_lt_re`
+  gives absolute convergence on `1 < Re(ms)` (so `m ≥ 3` on the critical line is inside the
+  domain), `mobiusThetaPrimeNormalAmplitude_head` identifies the head term as `μ(p)`,
+  `mobiusSuccessor_indicator_eq` kills every index strictly between `p` and its successor, and
+  **`mobiusThetaPrimeNormalAmplitude_successor`** is the identity
+  `(r/p)^{ms}(M_{p,m}(s) - μ(p)) = M_{r,m}(s)`.
+- **`(7)`: the conormal pair at a divisor.**  `mobiusThetaInternalJetRawHeadConormalPair` and
+  `mobiusThetaInternalJetRawHeadConormalPair_at_divisor` in the jet module.
+- **`(8)`, `(9)`: forced nonclosability.**  `mobiusThetaTwoThreeCofinalSource`,
+  `mobiusThetaTwoThreeCofinalTarget`, `tendsto_mobiusThetaTwoThreeCofinalSource_zero`,
+  `tendsto_mobiusThetaTwoThreeCofinalTarget`, `xiThetaSourceL2_ne_zero`,
+  **`MobiusThetaTwoThreeGraphExtension.not_sequentiallyClosable`**, together with
+  `norm_mobiusThetaSuccessorBlowupCLM` and
+  **`tendsto_norm_mobiusThetaSuccessorBlowupCLM_atTop`**, which is the explicit exponential
+  divergence `(r/p)^{m/2} → ∞`.
+- **`(10)`, `(11)`: the reflection anomaly.**  `mobiusThetaSuccessorSpectralNormalizer`,
+  `mobiusThetaSuccessorReflectedSpectralNormalizer`,
+  **`mobiusThetaSuccessorSpectralNormalizer_norm_ratio`** (the radial ratio is
+  `(r/p)^{m(2 Re s - 1)}`) and **`mobiusThetaSuccessorSpectralNormalizer_norm_ratio_eq_one_iff`**,
+  which is exactly `Re s = 1/2`.
+
+## Gates
+
+- [x] 1 → 2 fully-proven: dependency-closed paper proof `(1)`--`(12)`
+- [x] 2 → 3 formalized: `(3)`--`(11)` proved unconditionally (see *Lean status*)
+- [ ] 3 → 4 publication-ready
+
+## Log
+
+- 2026-08-12 — Audited the corpus against the card: the source transport, nonclosability, norm
+  divergence and reflection anomaly were already built; added the missing scalar shadow `(6)` and
+  wired the module into the umbrella.  Card moved to stage 3.
