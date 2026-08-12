@@ -20,6 +20,10 @@ def routeTLogArbitraryCutoff (X : ℕ) : ℕ := 4 * X + 1
 def routeTLogArbitraryPhasePartialSum (X X' : ℕ) (t : ℝ) : ℂ :=
   ∑ n ∈ Finset.Ioc X X', routeTLogPhase t n
 
+def routeTLogArbitraryWeightedPartialSum (X X' : ℕ) (σ t : ℝ) : ℂ :=
+  ∑ n ∈ Finset.Ioc X X',
+    ((((n : ℕ) : ℝ) ^ (-σ) : ℝ) : ℂ) * routeTLogPhase t n
+
 def routeTLogRootHalfBase (X : ℕ) : ℕ :=
   Nat.nthRoot routeTLogCentreExponent X / 2
 
@@ -28,6 +32,9 @@ def routeTLogRootBase (X : ℕ) : ℕ :=
 
 def routeTLogShellIndex (X T : ℕ) : ℕ :=
   Nat.clog ((routeTLogRootBase X ^ routeTLogCentreExponent) ^ 4) T
+
+def routeTLogRealShellIndex (X : ℕ) (t : ℝ) : ℕ :=
+  routeTLogShellIndex X ⌈t⌉₊
 
 theorem routeTLogShellIndex_bounds
     {X T : ℕ} (hB2 : 2 ≤ routeTLogRootBase X) (hT : 1 < T) :
@@ -52,10 +59,12 @@ theorem routeTLogShellIndex_bounds
     calc
       B0 ^ (4 * u - 4) = B0 ^ (4 * (u - 1)) := by congr 1; omega
       _ = (B0 ^ 4) ^ (u - 1) := by rw [pow_mul]
-      _ < T := by simpa [A, u, Nat.pred_eq_sub_one] using hlower
+      _ < T := by
+        simpa only [u, routeTLogShellIndex, B0, A, Nat.pred_eq_sub_one] using hlower
   · change T ≤ B0 ^ (4 * u)
     calc
-      T ≤ (B0 ^ 4) ^ u := by simpa [A, u] using hupper
+      T ≤ (B0 ^ 4) ^ u := by
+        simpa only [u, routeTLogShellIndex, B0, A] using hupper
       _ = B0 ^ (4 * u) := by rw [pow_mul]
 
 theorem routeTLogShellIndex_ge
@@ -68,9 +77,31 @@ theorem routeTLogShellIndex_ge
     exact one_lt_pow₀ (by omega) (by norm_num [routeTLogCentreExponent])
   have hA : 1 < B0 ^ 4 := one_lt_pow₀ hB0 (by omega)
   have hlarge' : (B0 ^ 4) ^ v < T := by
-    rw [pow_mul]
+    rw [← pow_mul]
     simpa only [B0] using hlarge
   exact (Nat.lt_clog_iff_pow_lt hA).mpr hlarge'
+
+theorem routeTLogRealShellIndex_bounds
+    {X : ℕ} {t : ℝ} (hB2 : 2 ≤ routeTLogRootBase X) (ht : 1 < t) :
+    (((routeTLogRootBase X ^ routeTLogCentreExponent) ^
+          (4 * routeTLogRealShellIndex X t - 4) : ℕ) : ℝ) < t ∧
+      t ≤ (((routeTLogRootBase X ^ routeTLogCentreExponent) ^
+          (4 * routeTLogRealShellIndex X t) : ℕ) : ℝ) := by
+  have ht' : ((1 : ℕ) : ℝ) < t := by norm_num at ht ⊢; exact ht
+  have hceil : 1 < ⌈t⌉₊ := Nat.lt_ceil.mpr ht'
+  obtain ⟨hlower, hupper⟩ := routeTLogShellIndex_bounds
+    (X := X) (T := ⌈t⌉₊) hB2 hceil
+  constructor
+  · exact Nat.lt_ceil.mp (by simpa only [routeTLogRealShellIndex] using hlower)
+  · exact Nat.ceil_le.mp (by simpa only [routeTLogRealShellIndex] using hupper)
+
+theorem routeTLogRealShellIndex_ge
+    {X v : ℕ} {t : ℝ} (hB2 : 2 ≤ routeTLogRootBase X)
+    (hlarge : (((routeTLogRootBase X ^ routeTLogCentreExponent) ^
+      (4 * v) : ℕ) : ℝ) < t) :
+    v < routeTLogRealShellIndex X t := by
+  apply routeTLogShellIndex_ge hB2
+  exact Nat.lt_ceil.mpr hlarge
 
 theorem routeTLogRootBase_cell
     {X : ℕ} (hB2 : 2 ≤ routeTLogRootBase X) :
@@ -365,6 +396,100 @@ theorem norm_routeTLogArbitraryPhasePartialSum_le_rootSaving
     hu hthreshold hlower hupper hXX' hX' ht
     (by simpa only [hB] using hbottom) (by simpa only [hB] using htop)
   simpa only [hB] using hbound
+
+/-- Every sufficiently high real frequency selects its own logarithmic shell.  This removes the
+height-band parameter from the arbitrary-centre receiver. -/
+theorem norm_routeTLogArbitraryPhasePartialSum_le_automaticShell
+    {X X' : ℕ} {t : ℝ}
+    (hroot : routeTLogReceiverBaseThreshold (routeTLogRealShellIndex X t) + 1 ≤
+      Nat.nthRoot routeTLogCentreExponent X)
+    (hlarge : (((routeTLogRootBase X ^ routeTLogCentreExponent) ^
+      (4 * 141) : ℕ) : ℝ) < t)
+    (hXX' : X < X') (hX' : X' ≤ 2 * X) :
+    ‖routeTLogArbitraryPhasePartialSum X X' t‖ ≤
+      6912 * X *
+        ((((routeTLogRootBase X ^ routeTLogHalfLengthExponent : ℕ) : ℝ)) ^
+          (-vinogradovRouteTPowerSavingExponent (routeTLogRealShellIndex X t) / 2)) := by
+  let u := routeTLogRealShellIndex X t
+  have hthreshold : routeTLogReceiverBaseThreshold u ≤ routeTLogRootBase X :=
+    routeTLogRootBase_ge_threshold hroot
+  have hbase : routeTLogBaseThreshold u ≤ routeTLogRootBase X :=
+    routeTLogReceiverBaseThreshold_ge_base hthreshold
+  have hB2 : 2 ≤ routeTLogRootBase X := routeTLogBaseThreshold_ge_two hbase
+  have hu : 141 ≤ u := by
+    have := routeTLogRealShellIndex_ge (v := 141) hB2 hlarge
+    omega
+  have ht1 : 1 < t := by
+    have hone : (1 : ℝ) ≤
+        ((routeTLogRootBase X ^ routeTLogCentreExponent) ^ (4 * 141) : ℕ) := by
+      have hinner : 1 ≤ routeTLogRootBase X ^ routeTLogCentreExponent :=
+        one_le_pow₀ (by omega)
+      exact_mod_cast (one_le_pow₀ hinner :
+        1 ≤ (routeTLogRootBase X ^ routeTLogCentreExponent) ^ (4 * 141))
+    linarith
+  obtain ⟨hbottom, htop⟩ := routeTLogRealShellIndex_bounds hB2 ht1
+  exact norm_routeTLogArbitraryPhasePartialSum_le_rootSaving hu hroot hXX' hX'
+    (by linarith) hbottom.le htop
+
+/-- Abel transport of the arbitrary-centre estimate.  Prefix uniformity is retained while the
+shell and floor-root choices remain fixed by the left endpoint. -/
+theorem norm_routeTLogArbitraryWeightedPartialSum_le_automaticShell
+    {X X' : ℕ} {σ t : ℝ}
+    (hroot : routeTLogReceiverBaseThreshold (routeTLogRealShellIndex X t) + 1 ≤
+      Nat.nthRoot routeTLogCentreExponent X)
+    (hlarge : (((routeTLogRootBase X ^ routeTLogCentreExponent) ^
+      (4 * 141) : ℕ) : ℝ) < t)
+    (hXX' : X < X') (hX' : X' ≤ 2 * X) (hσ : 0 ≤ σ) :
+    ‖routeTLogArbitraryWeightedPartialSum X X' σ t‖ ≤
+      (6912 * X *
+        ((((routeTLogRootBase X ^ routeTLogHalfLengthExponent : ℕ) : ℝ)) ^
+          (-vinogradovRouteTPowerSavingExponent (routeTLogRealShellIndex X t) / 2))) *
+        ((((X + 1 : ℕ) : ℝ)) ^ (-σ)) := by
+  let M := X' + 1
+  let P : ℝ := 6912 * X *
+    ((((routeTLogRootBase X ^ routeTLogHalfLengthExponent : ℕ) : ℝ)) ^
+      (-vinogradovRouteTPowerSavingExponent (routeTLogRealShellIndex X t) / 2))
+  have hXM : X + 1 ≤ M := by unfold M; omega
+  have hP0 : 0 ≤ P := by unfold P; positivity
+  have hpref : ∀ m, X + 1 ≤ m → m ≤ M →
+      ‖∑ n ∈ Finset.Ico (X + 1) m, routeTLogPhase t n‖ ≤ P := by
+    intro m hmX hmM
+    rcases eq_or_lt_of_le hmX with rfl | hmXlt
+    · simp only [Finset.Ico_self, Finset.sum_empty, norm_zero]
+      exact hP0
+    · have hendLower : X < m - 1 := by omega
+      have hendUpper : m - 1 ≤ 2 * X := by
+        unfold M at hmM
+        omega
+      have hbound := norm_routeTLogArbitraryPhasePartialSum_le_automaticShell
+        hroot hlarge hendLower hendUpper
+      have hsum : (∑ n ∈ Finset.Ico (X + 1) m, routeTLogPhase t n) =
+          routeTLogArbitraryPhasePartialSum X (m - 1) t := by
+        unfold routeTLogArbitraryPhasePartialSum
+        congr 1
+        ext n
+        simp only [Finset.mem_Ico, Finset.mem_Ioc]
+        omega
+      rw [hsum]
+      simpa only [P] using hbound
+  have hanti : ∀ m, X + 1 ≤ m → m < M →
+      (((m + 1 : ℕ) : ℝ) ^ (-σ)) ≤ (((m : ℕ) : ℝ) ^ (-σ)) := by
+    intro m hm _
+    have hm0 : (0 : ℝ) < m := by exact_mod_cast (show 0 < m by omega)
+    exact Real.rpow_le_rpow_of_nonpos hm0 (by push_cast; linarith) (by linarith)
+  have hM0 : (0 : ℝ) ≤ (M : ℝ) ^ (-σ) := Real.rpow_nonneg (by positivity) _
+  have hab := abel_block_bound (routeTLogPhase t)
+    (fun n => (n : ℝ) ^ (-σ)) (X + 1) M hXM hM0 hanti P hpref
+  have hsum : routeTLogArbitraryWeightedPartialSum X X' σ t =
+      ∑ n ∈ Finset.Ico (X + 1) M,
+        ((((n : ℕ) : ℝ) ^ (-σ) : ℝ) : ℂ) * routeTLogPhase t n := by
+    unfold routeTLogArbitraryWeightedPartialSum M
+    congr 1
+    ext n
+    simp only [Finset.mem_Ioc, Finset.mem_Ico]
+    omega
+  rw [hsum]
+  simpa only [P] using hab
 
 end
 

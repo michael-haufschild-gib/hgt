@@ -1144,3 +1144,57 @@ parametrized by angle gap θ where the first negative even minor index grows lik
 `1/‖V²−1‖` — the Cesàro partial sums of `V^{2n+1}` remain above `−C` until `n ≈ 1/‖V²−1‖`,
 so the master estimate's `CP2/g` term is attained up to constants. Would certify the `S²/g`
 shape of the step-39 window as optimal. Numeric pre-certification first (runpod if needed).
+
+## Step 43 — (B) window optimality: the delay dichotomy [PAPER-PROVED → Lean]
+
+**Discovery 1 (no-delay for bare pairs — AM–GM obstruction).** For a level consisting of
+conjugate pairs only, EVERY Turán minor index is negative: with two pairs at angles θ₁, θ₂ and
+weights a, b the bracket is `a²sin²θ₁ + b²sin²θ₂ + 2ab sin²(η/2)cos(σ(n+2)+φ) +
+2ab sin²(σ/2)cos(η(n+2)−φ)` and the resonant diagonal dominates every cross coefficient by
+AM–GM (`a²sin²θ₁ + b²sin²θ₂ ≥ 2ab sin²((θ₁+θ₂)/2)` up to the η-corrections) — the bracket is
+strictly positive at every index. Detection is immediate; oscillation between pairs can never
+mask. In particular for a SINGLE pair, `M(n)M(n+2) − M(n+1)² = −4|W|²|w|^{2n+2}Im(w)² < 0` at
+every n (substitute `W ↦ wⁿW` in the pair identity).
+
+**Discovery 2 (delay ~ 1/g via a level REAL atom).** A real atom at the level carries no
+resonant self-penalty, so its cross term with a phased pair can dominate: config = real atom
+`ℓ = 1` (weight c) + pair `e^{±iθ}` (weights `be^{±iφ}`): bracket
+`= b²sin²θ + 2cb sin²(θ/2)cos(θ(n+2)+φ)`; choosing `φ` to enter the favorable arc at `n = 0`,
+minors stay ≥ 0 for all `n < N` with `N ≈ arccos-arc/θ ~ c₀/g` (`g = |e^{2iθ}−1| = 2 sinθ`).
+NUMERICALLY CERTIFIED: `N·g ≈ 5.7` constant for `θ = π/8 … π/256` (three orders of magnitude)
+— the `1/g` factor of the step-39 window is attained; the window shape is optimal in `g` at
+fixed masses.
+
+**Exact rational instance (for Lean).** Atoms `1` (weight 14), `(12±5i)/13` (weights `1±2i`) —
+all at level 1, conj-symmetric, off-line pair present. Closed form: the pair expansion
+collapses to `2·minor_n = (2c/169)·2Re(ζ·w^{n+1}) − 1000/169`, `ζ = (1+2i)(1−w)²·169 = −4−58i`;
+the integer chain `z_k = ζ(12+5i)^k` satisfies `7·Re(z_{n+1}) ≥ 125·13^{n+1}` exactly for
+`n = 0..6` and fails at `n = 7`: minors `0..6` are positive rationals
+(`minor₀ = 3588/28561`, …), minor at `n = 7` is negative. DETECTION DELAY = 7 with an off-line
+copy — a constant-size window is impossible; combined with Discovery 1, delay requires level
+real atoms (the dichotomy).
+
+**Step 43 status: [LEAN-PROVED].** Module `HTGeometry/TuranMinorDetectionDelay.lean`, both
+theorems auditing to [propext, Classical.choice, Quot.sound], olean-built, wired
+(HTGeometry.lean EOF append):
+- `pair_minor_re_neg_at_index` — bare-pair zero delay: every index detects, via `W ↦ wⁿW` in
+  the pair identity (`rw [map_mul, map_pow]; ring` shape bridge, then the fixed-index lemma).
+- `exists_offline_config_minors_nonneg_below_seven` — the delay-7 instance: level = unit
+  circle, real atom weight 14, pair `(12±5i)/13` weights `1±2i`; minors `n = 0..6`
+  nonnegative (exact rationals, e.g. `minor₀ = 3588/28561`), off-line copy present with
+  nonzero weight. Proof: Gaussian-rational moment chain `hy_k : Wp·vv^k = x_k + y_k·I`
+  (recursion `pow_succ` + `linear_combination (5·y_k/13)·I_sq`), conj side by `map_pow/map_mul`,
+  a uniform `hMof` assembler for the real moment values, then 7 `norm_num` minor checks
+  (denominators up to 13⁹).
+
+Together: the step-39 window's dependence on level data is NOT removable (no constant window),
+its `1/g` factor is attained (numerically certified `N·g ≈ 5.7` across `θ = π/8..π/256`), and
+the delay mechanism is classified — real atoms at the level are necessary and sufficient for
+masking (AM–GM kills bare-pair oscillation). The asymptotic `1/g` family as an exact Lean
+theorem (trig-arc formalization) remains open; recorded as a stretch item, not the frontier.
+
+**Next frontier.** With the arc 36–43 closed (criterion sharpened to countable rational-nodal
+form, effective windows, supply pricing, order no-go, delay dichotomy), the deepest open item
+returns to arithmetic supply: prove the mass inequality of the supply theorem for the ACTUAL
+ξ spectrum at a concrete shift `X` and scale `δ` from corpus-ownable inputs (zero-counting/
+mass bounds for `Σ 1/|α_q² + X|`), turning the first rational-nodal data unconditional.

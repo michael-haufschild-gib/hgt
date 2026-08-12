@@ -853,3 +853,51 @@ saving produced by Route T.
 Active core: rewrite `P^(-delta_u/2)` as
 `N^(-99 delta_u/400)` and carry this exponent through the Maynard/Huxley near-one zero-free
 receiver.  The convolution obstacle itself is closed.
+
+### C22. Floor-root cells and logarithmic shells remove both discretization obstructions
+
+The perfect-power centre `N=B^200` was not a harmless presentation choice: zeta partial
+summation needs cancellation on arbitrary dyadic intervals.  The exact replacement is the even
+floor-root base
+
+```text
+R(X) = 2 floor(floor(X^(1/200))/2).
+```
+
+For `R(X)>=2`, Lean now proves the non-asymptotic cell law
+
+```text
+R(X)^200 <= X <= 2^200 R(X)^200.
+```
+
+The upper factor propagates through the convolution centre.  Widening the Taylor centre cone once
+to `x <= 2^202 B^200` absorbs it without changing `delta_u`; the resulting factor is included in
+the symbolic base threshold.  Hence every arbitrary interval `X<X'<=2X` inherits the exact Route-T
+receiver and the same saving
+
+```text
+|sum_(X<n<=X') exp(i t log n)|
+  <= 6912 X R(X)^(-99 delta_u/2).
+```
+
+The second discretization obstruction was height.  A shell of width four in the logarithmic
+exponent is not merely sufficient but tile-compatible.  With
+
+```text
+u(X,t) = clog_(R(X)^(800)) (ceil t),
+```
+
+the real/integer rounding bridge proves exactly
+
+```text
+R(X)^(200(4u-4)) < t <= R(X)^(800u).
+```
+
+If `R(X)^(800*141)<t`, then `u(X,t)>=141`; no externally chosen height band remains.  Abel
+summation is also closed at arbitrary centres, uniformly for every prefix, transporting the phase
+saving to weights `n^(-sigma)` for `sigma>=0`.
+
+These results are formalized in `MontgomeryVaughanArbitraryLogPhaseReceiver.lean`, direct-check
+clean, unconditional, and computation-free.  The surviving obstruction is now quantitative rather
+than geometric: control the growth in `u` of the symbolic receiver threshold strongly enough that
+floor-root eligibility and the quartic saving can coexist at the zeta-optimization scale.
