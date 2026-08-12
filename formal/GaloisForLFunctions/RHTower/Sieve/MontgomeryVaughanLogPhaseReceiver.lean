@@ -22,6 +22,36 @@ def routeTLogReceiverCutoff (C : ℕ) : ℕ :=
 def routeTLogPhase (t : ℝ) (n : ℕ) : ℂ :=
   finitePhaseChar (t / (2 * Real.pi) * Real.log n)
 
+def routeTLogPhaseIntervalSum (C : ℕ) (t : ℝ) : ℂ :=
+  ∑ n ∈ Finset.Ioc (routeTLogReceiverLength C) (2 * routeTLogReceiverLength C),
+    routeTLogPhase t n
+
+theorem routeTLogPhaseIntervalSum_eq_block (C : ℕ) (t : ℝ) :
+    routeTLogPhaseIntervalSum C t =
+      mvPhaseBlockSum (routeTLogReceiverCutoff C)
+        (routeTLogReceiverLength C) (2 * routeTLogReceiverLength C)
+        (routeTLogPhase t) := by
+  let N := routeTLogReceiverLength C
+  let K := routeTLogReceiverCutoff C
+  have hNK : 2 * N < K := by
+    unfold N K routeTLogReceiverCutoff
+    omega
+  unfold routeTLogPhaseIntervalSum mvPhaseBlockSum
+  rw [Fin.sum_univ_eq_sum_range
+    (fun n => routeTLogPhase t n *
+      if routeTLogReceiverLength C < n ∧ n ≤ 2 * routeTLogReceiverLength C
+      then 1 else 0)
+    (routeTLogReceiverCutoff C)]
+  simp_rw [mul_ite, mul_one, mul_zero]
+  rw [← Finset.sum_filter]
+  congr 1
+  ext n
+  simp only [Finset.mem_Ioc, Finset.mem_filter, Finset.mem_range]
+  change (routeTLogReceiverLength C < n ∧ n ≤ 2 * routeTLogReceiverLength C) ↔
+    n < routeTLogReceiverCutoff C ∧
+      routeTLogReceiverLength C < n ∧ n ≤ 2 * routeTLogReceiverLength C
+  omega
+
 def routeTLogReceiverBaseThreshold (u : ℕ) : ℕ :=
   max (routeTLogBaseThreshold u)
     (8 ^ (4 * vinogradovRouteTMoment (4 * u) ^ 2))
@@ -169,7 +199,7 @@ theorem routeTLogPhase_receiver_inequality
     (hC : routeTLogBaseThreshold u ≤ 2 * C)
     (ht : 0 < t)
     (hbottom : (((((2 * C) ^ routeTLogCentreExponent) ^
-      (4 * u - 1) : ℕ) : ℝ)) ≤ t)
+      (4 * u - 4) : ℕ) : ℝ)) ≤ t)
     (htop : t ≤ (((((2 * C) ^ routeTLogCentreExponent) ^
       (4 * u) : ℕ) : ℝ)))
     (hsmall :
@@ -248,7 +278,7 @@ theorem norm_routeTLogPhaseBlock_le_powerSaving
     (hC : routeTLogReceiverBaseThreshold u ≤ 2 * C)
     (ht : 0 < t)
     (hbottom : (((((2 * C) ^ routeTLogCentreExponent) ^
-      (4 * u - 1) : ℕ) : ℝ)) ≤ t)
+      (4 * u - 4) : ℕ) : ℝ)) ≤ t)
     (htop : t ≤ (((((2 * C) ^ routeTLogCentreExponent) ^
       (4 * u) : ℕ) : ℝ))) :
     ‖mvPhaseBlockSum (routeTLogReceiverCutoff C)
@@ -354,7 +384,7 @@ theorem norm_routeTLogPhaseBlock_le_rpow
     (hC : routeTLogReceiverBaseThreshold u ≤ 2 * C)
     (ht : 0 < t)
     (hbottom : (((((2 * C) ^ routeTLogCentreExponent) ^
-      (4 * u - 1) : ℕ) : ℝ)) ≤ t)
+      (4 * u - 4) : ℕ) : ℝ)) ≤ t)
     (htop : t ≤ (((((2 * C) ^ routeTLogCentreExponent) ^
       (4 * u) : ℕ) : ℝ))) :
     ‖mvPhaseBlockSum (routeTLogReceiverCutoff C)
@@ -400,6 +430,20 @@ theorem norm_routeTLogPhaseBlock_le_rpow
         simpa only [N, P, B, δ] using hraw
     _ = 6912 * (N : ℝ) * (N : ℝ) ^ (-ε) := by rw [hPN]
     _ = 6912 * (N : ℝ) ^ (1 - ε) := by rw [mul_assoc, hcombine]
+
+theorem norm_routeTLogPhaseIntervalSum_le_rpow
+    {u C : ℕ} {t : ℝ} (hu : 141 ≤ u)
+    (hC : routeTLogReceiverBaseThreshold u ≤ 2 * C)
+    (ht : 0 < t)
+    (hbottom : (((((2 * C) ^ routeTLogCentreExponent) ^
+      (4 * u - 4) : ℕ) : ℝ)) ≤ t)
+    (htop : t ≤ (((((2 * C) ^ routeTLogCentreExponent) ^
+      (4 * u) : ℕ) : ℝ))) :
+    ‖routeTLogPhaseIntervalSum C t‖ ≤
+      6912 * (((routeTLogReceiverLength C : ℕ) : ℝ) ^
+        (1 - routeTLogOneDimensionalSavingExponent u)) := by
+  rw [routeTLogPhaseIntervalSum_eq_block]
+  exact norm_routeTLogPhaseBlock_le_rpow hu hC ht hbottom htop
 
 end
 

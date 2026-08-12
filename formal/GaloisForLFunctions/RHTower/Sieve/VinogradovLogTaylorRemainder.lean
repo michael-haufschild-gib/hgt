@@ -256,7 +256,7 @@ theorem norm_routeTLogRatioBilinearSum_le_of_shell
     (hC : routeTLogBaseThreshold u ≤ 2 * C)
     (ht : 0 < t)
     (hbottom : (((((2 * C) ^ routeTLogCentreExponent) ^
-      (4 * u - 1) : ℕ) : ℝ)) ≤ t)
+      (4 * u - 4) : ℕ) : ℝ)) ≤ t)
     (htop : t ≤ (((((2 * C) ^ routeTLogCentreExponent) ^
       (4 * u) : ℕ) : ℝ)))
     (hxlower : ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ)) ≤ x)
@@ -368,7 +368,7 @@ theorem norm_routeTLogRatioBilinearSum_le_two_rpow_of_shell
     (hC : routeTLogBaseThreshold u ≤ 2 * C)
     (ht : 0 < t)
     (hbottom : (((((2 * C) ^ routeTLogCentreExponent) ^
-      (4 * u - 1) : ℕ) : ℝ)) ≤ t)
+      (4 * u - 4) : ℕ) : ℝ)) ≤ t)
     (htop : t ≤ (((((2 * C) ^ routeTLogCentreExponent) ^
       (4 * u) : ℕ) : ℝ)))
     (hxlower : ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ)) ≤ x)
@@ -440,7 +440,7 @@ theorem norm_routeTLogShiftBilinearSum_le_two_rpow_of_shell
     (hC : routeTLogBaseThreshold u ≤ 2 * C)
     (ht : 0 < t)
     (hbottom : (((((2 * C) ^ routeTLogCentreExponent) ^
-      (4 * u - 1) : ℕ) : ℝ)) ≤ t)
+      (4 * u - 4) : ℕ) : ℝ)) ≤ t)
     (htop : t ≤ (((((2 * C) ^ routeTLogCentreExponent) ^
       (4 * u) : ℕ) : ℝ)))
     (hxlower : ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ)) ≤ x)
@@ -553,7 +553,7 @@ theorem norm_routeTLogTwistedRatioBilinearSum_le_two_rpow_of_shell
     (hC : routeTLogBaseThreshold u ≤ 2 * C)
     (ht : 0 < t)
     (hbottom : (((((2 * C) ^ routeTLogCentreExponent) ^
-      (4 * u - 1) : ℕ) : ℝ)) ≤ t)
+      (4 * u - 4) : ℕ) : ℝ)) ≤ t)
     (htop : t ≤ (((((2 * C) ^ routeTLogCentreExponent) ^
       (4 * u) : ℕ) : ℝ)))
     (hxlower : ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ)) ≤ x)
@@ -646,7 +646,7 @@ theorem norm_routeTLogTwistedShiftBilinearSum_le_two_rpow_of_shell
     (hC : routeTLogBaseThreshold u ≤ 2 * C)
     (ht : 0 < t)
     (hbottom : (((((2 * C) ^ routeTLogCentreExponent) ^
-      (4 * u - 1) : ℕ) : ℝ)) ≤ t)
+      (4 * u - 4) : ℕ) : ℝ)) ≤ t)
     (htop : t ≤ (((((2 * C) ^ routeTLogCentreExponent) ^
       (4 * u) : ℕ) : ℝ)))
     (hxlower : ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ)) ≤ x)

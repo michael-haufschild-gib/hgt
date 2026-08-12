@@ -51,7 +51,7 @@ theorem routeTLog_upperWindow_exponent_compatible
     {u : ℕ} (hu : 141 ≤ u)
     (j : Fin (vinogradovRouteTOrder (4 * u)))
     (hj : vinogradovUsefulCoordinate u j) :
-    200 * ((j.val + 1) - (4 * u - 1)) + 3 ≤
+    200 * ((j.val + 1) - (4 * u - 4)) + 3 ≤
       198 * ((j.val + 1) - vinogradovCoordinateSavingExponent j) := by
   have hd := vinogradovUsefulCoordinate_degree_bounds j hj
   have he := vinogradovCoordinateSavingExponent_mul_le_degree j
@@ -237,7 +237,7 @@ theorem routeTLog_upper_window_of_shell
     {u B : ℕ} {t x : ℝ} (hu : 141 ≤ u)
     (hB : routeTLogWindowThreshold u ≤ B)
     (ht : 0 < t)
-    (hbottom : ((((B ^ routeTLogCentreExponent) ^ (4 * u - 1) : ℕ) : ℝ)) ≤ t)
+    (hbottom : ((((B ^ routeTLogCentreExponent) ^ (4 * u - 4) : ℕ) : ℝ)) ≤ t)
     (hx0 : 0 < x)
     (hx : x ≤ 4 * (((B ^ routeTLogCentreExponent : ℕ) : ℝ)))
     (j : Fin (vinogradovRouteTOrder (4 * u)))
@@ -247,15 +247,15 @@ theorem routeTLog_upper_window_of_shell
         (2 * ((j.val + 1) - vinogradovCoordinateSavingExponent j)) : ℕ) : ℝ)) := by
   let d := j.val + 1
   let e := vinogradovCoordinateSavingExponent j
-  let A := 200 * (d - (4 * u - 1))
+  let A := 200 * (d - (4 * u - 4))
   have hB2 : 2 ≤ B := routeTLogWindowThreshold_ge_two hB
   have hd : 200 * u ≤ d := (vinogradovUsefulCoordinate_degree_bounds j hj).1
-  have hdu : 4 * u - 1 ≤ d := by omega
+  have hdu : 4 * u - 4 ≤ d := by omega
   have hbottomPow :
-      ((((B ^ routeTLogCentreExponent) ^ (4 * u - 1) : ℕ) : ℝ)) =
-        (B : ℝ) ^ (200 * (4 * u - 1)) := by
+      ((((B ^ routeTLogCentreExponent) ^ (4 * u - 4) : ℕ) : ℝ)) =
+        (B : ℝ) ^ (200 * (4 * u - 4)) := by
     simpa [routeTLogCentreExponent, mul_comm, mul_left_comm, mul_assoc] using
-      cast_pow_pow B 200 (4 * u - 1)
+      cast_pow_pow B 200 (4 * u - 4)
   have hxpow : x ^ d ≤ (4 : ℝ) ^ d * (B : ℝ) ^ (200 * d) := by
     have h := pow_le_pow_left₀ (by positivity : (0 : ℝ) ≤ x) hx d
     calc
@@ -272,7 +272,7 @@ theorem routeTLog_upper_window_of_shell
         gcongr
       _ = _ := by ring
   have hproduct :
-      (B : ℝ) ^ A * (B : ℝ) ^ (200 * (4 * u - 1)) =
+      (B : ℝ) ^ A * (B : ℝ) ^ (200 * (4 * u - 4)) =
         (B : ℝ) ^ (200 * d) := by
     rw [← pow_add]
     congr 1
@@ -284,12 +284,12 @@ theorem routeTLog_upper_window_of_shell
     calc
       _ ≤ (4 * Real.pi * d * (4 : ℝ) ^ d) * (B : ℝ) ^ (200 * d) := hnum
       _ = (4 * Real.pi * d * (4 : ℝ) ^ d) *
-          ((B : ℝ) ^ A * (B : ℝ) ^ (200 * (4 * u - 1))) := by rw [hproduct]
+          ((B : ℝ) ^ A * (B : ℝ) ^ (200 * (4 * u - 4))) := by rw [hproduct]
       _ ≤ (4 * Real.pi * d * (4 : ℝ) ^ d) * (B : ℝ) ^ A * t := by
         rw [hbottomPow] at hbottom
         calc
           _ = ((4 * Real.pi * d * (4 : ℝ) ^ d) * (B : ℝ) ^ A) *
-              (B : ℝ) ^ (200 * (4 * u - 1)) := by ring
+              (B : ℝ) ^ (200 * (4 * u - 4)) := by ring
           _ ≤ ((4 * Real.pi * d * (4 : ℝ) ^ d) * (B : ℝ) ^ A) * t :=
             mul_le_mul_of_nonneg_left hbottom (by positivity)
           _ = _ := by ring
@@ -360,7 +360,7 @@ theorem exists_routeT_logTaylor_approximants_of_shell
     {u B : ℕ} {t x : ℝ} (hu : 141 ≤ u)
     (hB : routeTLogBaseThreshold u ≤ B)
     (ht : 0 < t)
-    (hbottom : ((((B ^ routeTLogCentreExponent) ^ (4 * u - 1) : ℕ) : ℝ)) ≤ t)
+    (hbottom : ((((B ^ routeTLogCentreExponent) ^ (4 * u - 4) : ℕ) : ℝ)) ≤ t)
     (htop : t ≤ ((((B ^ routeTLogCentreExponent) ^ (4 * u) : ℕ) : ℝ)))
     (hxlower : (((B ^ routeTLogCentreExponent : ℕ) : ℝ)) ≤ x)
     (hxupper : x ≤ 4 * (((B ^ routeTLogCentreExponent : ℕ) : ℝ))) :
@@ -422,7 +422,7 @@ theorem norm_routeTLogUpperHalfBilinearSum_le_rpow_of_shell
     (hC : routeTLogBaseThreshold u ≤ 2 * C)
     (ht : 0 < t)
     (hbottom : (((((2 * C) ^ routeTLogCentreExponent) ^
-      (4 * u - 1) : ℕ) : ℝ)) ≤ t)
+      (4 * u - 4) : ℕ) : ℝ)) ≤ t)
     (htop : t ≤ (((((2 * C) ^ routeTLogCentreExponent) ^
       (4 * u) : ℕ) : ℝ)))
     (hxlower : ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ)) ≤ x)
@@ -493,7 +493,7 @@ theorem norm_routeTLogTwistedUpperHalfBilinearSum_le_rpow_of_shell
     (hC : routeTLogBaseThreshold u ≤ 2 * C)
     (ht : 0 < t)
     (hbottom : (((((2 * C) ^ routeTLogCentreExponent) ^
-      (4 * u - 1) : ℕ) : ℝ)) ≤ t)
+      (4 * u - 4) : ℕ) : ℝ)) ≤ t)
     (htop : t ≤ (((((2 * C) ^ routeTLogCentreExponent) ^
       (4 * u) : ℕ) : ℝ)))
     (hxlower : ((((2 * C) ^ routeTLogCentreExponent : ℕ) : ℝ)) ≤ x)

@@ -66,14 +66,13 @@ the reciprocal-gap spectral map. Global inverse incidence mixes prime coordinate
 moments weight each label by powers of its node. Therefore one scalar can preserve covariance
 normalization but cannot simultaneously calibrate spectral moments.
 
-Any viable Schur transfer must be node-dependent (equivalently prime-depth-dependent), positive,
-and derived before compact spectral pushforward. First moment demands much stronger attenuation of
-the high-node prime-two shell than zeroth mass does. This is the strongest positive law exposed by
-the obstruction.
+This obstruction first forced node dependence. P-G90 subsequently proves that node dependence is
+still insufficient for every nonnegative diagonal transfer inheriting physical packet residuals.
+The surviving requirement is genuinely non-diagonal coupling before compact spectral pushforward,
+so poles move rather than only residues changing on the original nodes.
 
 ## No-go closure audit
 
 Negative statement, quantitative residual floor, explicit offending atom, finite compact carrier,
 and positive replacement principle are all formalized. Do not re-attempt uniform scalar transfer.
-Next route must construct a node-dependent physical Schur transfer and test all moments.
-
+P-G90 records closure of its diagonal successor class.

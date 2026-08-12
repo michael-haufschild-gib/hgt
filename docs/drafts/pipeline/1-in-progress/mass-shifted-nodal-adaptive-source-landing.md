@@ -43,3 +43,68 @@ bilinear source selected from `(p,Q_{y,p})` before reflection aggregation. For n
 4. Bridge resolvent `xiPolyMoment` to shifted real moment functional.
 5. Prove nodal landing criterion equivalent to RH.
 6. Wire umbrella; direct Lean, axiom, lint, and targeted module-build audits.
+
+## Paper proof
+
+Write `C=L_y((Xp)^2)`. Bilinearity gives
+
+\[
+ L_y(pQ)=A B-B A=0,
+ \qquad
+ L_y(pXQ)=A C-B^2.
+\]
+
+Expanding the successor energy gives
+
+\[
+ L_y(Q^2)=A(A C-B^2).
+\]
+
+The generic bounded atomic-source bridge identifies
+
+\[
+ \bigl(L_y(X^kp^2):\mathbb C\bigr)=\operatorname{xiPolyMoment}(p,k,y).
+\]
+
+For the coefficient packet of `pQ`, the base-one completed aggregate is `L_y(pXQ)`.
+At `y=w²`, completed-source formation splits it before reflection aggregation into the
+rational--Gamma continuum formation minus the von-Mangoldt labelwise formation, using one common
+adaptive radial kernel.
+
+For actual moving admission define source rates `S_A=-A'`, `S_B=-B'`, `S_C=-C'`.
+Bilinear source expansion and product differentiation give
+
+\[
+ \mathcal A_{\rm bil}(p,Q)=A S_C-BS_B,
+ \qquad
+ D'=-(\mathcal A_{\rm bil}+S_AC-S_BB).
+\]
+
+Thus exact admission connection is retained.
+
+New nodal descent gives
+
+\[
+ RH\iff \forall R,m,\ \mathcal L_w^\sharp
+   \left(X^m\prod_{r\in R}(X-r)\right)\ge0.
+\]
+
+New rational-node density reduces this to countable family indexed by
+`(j,m,c : Fin j → ℚ)`.
+
+## Novelty audit
+
+- Corpus search found general diagonal and bilinear completed-source connectors, nodal resolvent
+  descent, and rational-node density, but no source-selected degree-one successor, exact Turan
+  mixed landing, moving connection law, or arithmetic nodal RH criterion.
+- This is project-level new synthesis. External priority remains unverified.
+- No sign is inferred from equivalence. Remaining theorem is cumulative covariant source sign or
+  its forced collision with existing hard-boundary alternatives.
+
+## Lean status
+
+Module:
+`RHTower.XiShiftedNodalAdaptiveArithmeticSourceLanding`.
+
+Direct `lake env lean` passes. Umbrella import added. Remaining: axiom audit, formal lint, targeted
+module build.

@@ -205,6 +205,8 @@ theorem not_gammaSewnCriticalPhysicalDiagonalMomentIdentification
     gammaSewnCriticalPhysicalDiagonalPrimeTwoDepthZero_firstMoment_lower hfloor
   have hcompleted := RHTower.normalizedPrimeArchMoment_one_lt_nine_over_fiftyThousand
   rw [hsource] at hcompleted
-  exact (not_lt_of_ge hselected) (hexcess.trans hcompleted)
+  have htooLarge : (9 / 50000 : ℝ) < ∑' pk, f pk :=
+    hexcess.trans_le hselected
+  exact (not_lt_of_ge (le_of_lt htooLarge)) hcompleted
 
 end RHTower.HedenmalmThetaSource
