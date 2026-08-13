@@ -392,7 +392,7 @@ existing route.
 | Q | open, secondary | direct Cassini--Jensen/jet saturation, or a source-derived label-sensitive plateau quotient; the selected continuous power-reciprocal carrier is retired by the all-degree support no-go |
 | R | terminalized as independent producer | The intrinsic pre-polar annihilator type is empty. Lean exhausts the surviving audited interfaces—external positive polar comparison, pointwise two-orientation non-amplification, collective compactness of the fixed `(2,3)` receiver, singular Xi/Calkin factorization, compact first-Xi-jet principal coefficient, and loss-zero fixed Fisher landing—and proves each branch, and their disjunction, equivalent to RH. Hyperbolic-gauge quadratic positivity is universally zero; the surviving quartic amplitude equals the physical Stokes excess but its annihilation is RH-equivalent. Finite Kunneth/Bockstein enlargement, Poisson theta shear, local anomaly cancellation, positive invariant means, Gamma-corona globalization, bounded multipliers, and compact counterterms do not produce annihilation. |
 | S | upstream | source algebraicity or divisor-preserving dynamics with typed Xi handoff |
-| T | open, sharply narrowed | Polynomial threshold, Vinogradov/Montgomery--Vaughan phase saving, hybrid zeta/Perron chain, endpoint exclusion, physical-window recut, coloring, receiver margin, and explicit Möbius power saving are umbrella-formal. Selected-cell alternatives cover every amplitude on `mu<=19/9`, but full Perron audit exposed the omitted band `19/9<mu<=8`. Direct-checked worktree modules prove positive-line pole cancellation, fixed-polylog packet bounds, the wide-reference Mellin-bandwidth no-go, exact weighted Kuzmin--Landau loss, and derivative--count duality. Remaining Maynard theorem is literal complementary finite-set composition on the low-ordinate boundary, followed by prime-gap/current composition. Wold chart still requires signed pole-preserving continuation; positive or absolute closure is impossible. |
+| T | open, sharply narrowed | Polynomial threshold, Vinogradov/Montgomery--Vaughan phase saving, hybrid zeta/Perron chain, endpoint exclusion, physical-window recut, coloring, receiver margin, and explicit Möbius power saving are umbrella-formal. Selected-cell alternatives cover every amplitude on `mu<=19/9`, but full Perron audit exposed the omitted band `19/9<mu<=8`. Direct-checked modules now close literal derivative-excised finite-set composition and all fixed costs, but also retract the supposed fixed reserve: giant length `r>1` does not imply complement length `s>=1`. Exact moving-reserve rigidity shows its sole zero is the scale-saturated one-factor mode with complement Dirichlet polynomial exactly `1`. Thus remaining producer is signed pole-annihilating control of that mode through the intermediate Mellin band, followed by prime-gap/current composition. Wide-reference calibration alone is bandwidth-insufficient; positive or absolute closure is impossible. |
 | U | open, one global terminal-capital core | Parabolic positivity, finite carrier/witness, strict all-contact source, radial Christoffel top-edge law, contact orientation, projective/compact phase reversals, Wronskian renewal, vacuum-curvature cancellation, and integer holonomy are formal. The adaptive mixed source strictly pays hyperbolic reset, is the exact derivative/integral metric of cumulative flux, generates a reciprocal clock, pays every lower-degree connector from one top account, and isolates strict-frontier contact in `4(N+1) beta_(N+1)` with positive contact-order residue. False RH forces these charges and arcsine-centered non-`L1` wall germs cofinally. Raw clock is not tail-integrable and fixed-degree monotonic phase laws are false. First source theorem is a pole-free, shallow-admission normalized terminal-pulse or determinant-line capital bound that makes cofinally many indivisible contacts impossible. |
 
 The live independent count is ten lettered routes plus CCM-FU. This count is conditional only
@@ -5650,22 +5650,35 @@ it by a uniform `9/80` length deficit. It proves each over-height zeta/log atom 
 from exact height-weighted amplitude, window relevance gives total exponent `tau<=mu`, and
 derivative excision plus one complementary mean square has exponents
 `-1+2tau(1-alpha)-s` and `-2+2tau(1-alpha)`. The literal cutoff gives a stronger rigidity law:
-for `mu<=8`, every Möbius atom is strictly sub-height, so every over-height giant is zeta/log and
-has `s>=1`. Throughout `alpha>=19/25`, both derivative exponents then lie `2/25` inside first
-receiver; after arbitrary fixed-polylog normalization a strict `1/25` reserve remains. This
-removes the former equality obstruction at `mu(1-alpha)=1`.
+for `mu<=8`, every Möbius atom is strictly sub-height, so every over-height giant is zeta/log.
+However, the earlier conclusion `s>=1` was a variable-role error: `s` is complement length, while
+the giant condition applies to excised length `r`. The actual seam has `r>1` and `0<=s<1`.
+Lean now contains a closed counterexample to the claimed fixed `2/25` reserve.
 
 `MaynardLowOrdinateDerivativeReceiver.lean` proves the exact unraised complement energy with
 polylog exponent `2w+2^(2w)-1`, nonempty erase-complement, literal box factorization, derivative-
-excised Montgomery count, and exact power identities reducing that count to the two canonical
-exponents. Both modules direct-check and imports are wired; final umbrella build remains pending.
+excised Montgomery count, exact dyadic geometry, and full reduction to the two canonical
+exponents. It also proves uniform absorption of the actual fixed analytic cost. The corrected
+reserve is moving:
+
+```text
+d = 1 - mu(1-alpha) + s.
+```
+
+Zero reserve is rigid: `mu(1-alpha)=tau(1-alpha)=1` and `s=0`. At that point every complement
+dyadic exponent is zero and the entire complement is exactly the constant Dirichlet polynomial
+`1`. Thus the residual obstruction is precisely one long zeta/log pole mode. Both modules
+direct-check and imports are wired; final umbrella build remains pending.
 
 **Open core.** Route T has two equivalent live analytic charts, but only one current first
 producer.
 
-- In the Maynard chart, absorb the now-explicit derivative-complement width/energy polylog into
-  the formal `1/25` reserve, sum literal labels on `19/9<mu<=8`, and join historical all-amplitude
-  count. Then compose full low/middle/high count with literal consecutive-prime-gap moment and
+- In the Maynard chart, use the moving derivative reserve away from its zero set. At the rigid
+  zero-reserve boundary—and any transition layer too thin to absorb fixed costs—retain the signed
+  normalized target--reference packet so its common pole mode cancels before box selection. The
+  remaining hard estimate is signed oscillatory control on the intermediate Mellin band; wide
+  PNT reference calibration alone cannot reach it. Only after that may one sum labels on
+  `19/9<mu<=8`, join historical count, and compose with the consecutive-prime-gap moment and
   centered Route-T current. Sharp Möbius propagation, endpoint-long exclusion,
   window relevance, coloring, normalized-band count alternatives, polynomial threshold, zeta
   growth, zero-free region, inverse-zeta bound, and Perron packaging are no longer gaps.

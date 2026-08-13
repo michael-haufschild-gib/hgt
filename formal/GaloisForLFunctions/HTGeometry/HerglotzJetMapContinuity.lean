@@ -23,7 +23,7 @@ noncomputable section
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 
 /-- The exponential is Lipschitz on unit-length increments, with constant twice its base value. -/
-theorem abs_exp_sub_exp_le {a b : ℝ} (h : |a - b| ≤ 1) :
+theorem abs_exp_sub_exp_le_of_abs_sub_le_one {a b : ℝ} (h : |a - b| ≤ 1) :
     |Real.exp a - Real.exp b| ≤ 2 * Real.exp b * |a - b| := by
   have hfac : Real.exp a - Real.exp b = Real.exp b * (Real.exp (a - b) - 1) := by
     rw [mul_sub, mul_one, ← Real.exp_add]
@@ -66,7 +66,7 @@ theorem norm_herglotzJetMap_sub_le (μ : Measure ℝ)
       rw [← this]
       simpa [Real.norm_eq_abs] using ht
     have hone : |u t - u₀ t| ≤ 1 := le_trans hdiff hclose
-    have hexp := abs_exp_sub_exp_le hone
+    have hexp := abs_exp_sub_exp_le_of_abs_sub_le_one hone
     have hker := norm_cauchyJetKernel_le x hne n s t
     have hfac : ((Real.exp (u t) * w t : ℝ) : ℂ) * cauchyJetKernel x n t s -
         ((Real.exp (u₀ t) * w t : ℝ) : ℂ) * cauchyJetKernel x n t s =

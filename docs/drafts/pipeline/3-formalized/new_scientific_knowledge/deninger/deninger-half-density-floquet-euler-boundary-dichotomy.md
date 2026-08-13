@@ -1,7 +1,7 @@
 # Half-density Floquet source and Euler-boundary dichotomy
 
 - **ID:** `deninger-half-density-floquet-euler-boundary-dichotomy`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** SOURCE CONSTRUCTION / WEIGHT-ONE ENERGY / EXACT BOUNDARY OBSTRUCTION
 - **Labels:**
   - `DAC_DENINGER_HALF_DENSITY_FLOQUET_EXACT_SEQUENCE`;
@@ -681,9 +681,8 @@ declaration: `propext, Classical.choice, Quot.sound`.
 
 - [x] 0 → 1 in-progress: half-density Floquet source and boundary falsifiers fixed
 - [x] 1 → 2 fully-proven: dependency-closed proofs `(5)`--`(29)`
-- [ ] 2 → 3 formalized: §1 `(1)`--`(7)`, §3 `(13)`, §4 `(14)`--`(15)`, §5 `(19)`--`(19d)`, `(20)`,
-  `(22)` and §6's `(24)` proved unconditionally; `(23)` as a measure, `(26)`--`(28)` and §7 remain
-  (see *Lean status*)
+- [x] 2 → 3 formalized: §1 `(1)`--`(7)`, §3 `(13)`, §4 `(14)`--`(15)`, §5 `(19)`--`(19d)`, `(20)`,
+  `(22)`, §6's `(23)`--`(28)` and §7 all proved unconditionally (see *Lean status*)
 - [ ] 3 → 4 publication-ready
 
 ## Log
@@ -702,3 +701,91 @@ declaration: `propext, Classical.choice, Quot.sound`.
   Classified its closed Poisson quotient as the exact critical-line prime-lattice resonance
   subspace. Isolated joint corrected Floquet trace before Hilbert closure as concrete Route-L
   relative-Hodge frontier.
+
+### §6 `(23)` as a measure and `(26)` the unitary identification `[NEW]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerFloquetLatticeMeasure.lean`,
+`DeningerFloquetMeasureEnergy.lean`, `DeningerFloquetAtomicMeasure.lean`,
+`DeningerSourceModulation.lean`, `DeningerFloquetGaussianAtom.lean`, `DeningerFloquetHilbert.lean`.
+Axiom audit for every declaration: `propext, Classical.choice, Quot.sound`.
+
+- **`(23)` as an actual `Measure`.**  `deningerFloquetMeasure` is
+  `∑_q (q^{-2}/log q) ∑_{m ∈ ℤ} δ_{m/log q}`, built as an iterated `Measure.sum` of scaled Dirac
+  masses; `lintegral_deningerFloquetMeasure` turns integration against it into the arithmetic
+  double sum.  Its three structural properties are proved:
+  `deningerFloquetNode_eq_iff` — **no nonzero node is shared by two primes**, because a
+  coincidence `m/log p = n/log q` is a nontrivial rational relation between two prime logarithms;
+  `deningerFloquetMeasure_compl_support` — the measure lives on the countable node set;
+  `deningerFloquetMeasure_Icc_le` — **at most linear mass growth**, `μ_Fl[-T,T] ≤ ∑_q q^{-2}(2T +
+  3/log q)`, whence `IsFiniteMeasureOnCompacts`.
+- **`(24)` against the measure.**  `lintegral_deningerFloquetSample_normSq` :
+  `∫ ‖𝓕(e^{t/2}h)‖² dμ_Fl = E_Fl(h)`.  The Fourier sample replaces the circle trace by
+  `deningerFourierSample_hasSum`, the `HasSum` form of the prime-circle Parseval identity.
+- **The Gaussian atom.**  `deningerModulate` — multiplication by the unimodular character
+  `e^{2πict}` preserves the source, at no cost in exponential weight, so the source contains the
+  modulated Gaussians.  `deningerFloquetAtom ξ₀ σ` is the cochain whose half-density
+  trivialization is `√σ e^{2πiξ₀t}e^{-πσt²}`, and `deningerFloquetSample_atom` computes its
+  Mellin sample exactly: `e^{-π(ξ-ξ₀)²/σ}`.  This is the analytic input that separates the atoms.
+- **`(26)`.**  `deningerFloquetSample_memLp` — the sample is square integrable for `μ_Fl`;
+  `deningerFloquetSample_integral_normSq` — **the sampling map is isometric**,
+  `∫‖𝓕(e^{t/2}h)‖²dμ_Fl = E_Fl(h)`; `deningerFloquetLp_span_topologicalClosure` — **its range
+  spans a dense subspace of `L²(μ_Fl)`**.  Density is proved without tempered distributions: the
+  Gaussian atom concentrates at a node as `σ → 0`, dominated by the `σ = 1` atom, so a vector
+  orthogonal to every sample has zero integral against every node indicator; every node is an atom
+  of positive finite mass (`deningerFloquetMeasure_singleton_pos`) and the complement of the node
+  set is null, so the vector vanishes almost everywhere.  Isometry plus dense range is exactly the
+  statement that the Hilbert completion of the source for `E_Fl` is `L²(μ_Fl)`.
+
+Still open on this card: `(27)`, `(28)` and §7.
+
+### §6 `(27)`--`(28)` and §7 `[NEW]` — the card is fully formalized
+
+`formal/GaloisForLFunctions/RHTower/DeningerFloquetPoissonSample.lean`,
+`DeningerFloquetPoissonFlow.lean`, `DeningerFloquetPoissonClosure.lean`,
+`DeningerFloquetPoissonCompleteness.lean`, `DeningerFloquetBoundedCorrection.lean`,
+`DeningerFloquetDepletedCorrection.lean`, and the reusable
+`formal/GaloisForLFunctions/HTGeometry/OrthogonalClosureCriterion.lean`.
+Axiom audit for every declaration: `propext, Classical.choice, Quot.sound`.
+
+- **`(29)` on the sampling map.**  `deningerFloquetSample_eq_strongLogMellin` — the Mellin sample
+  is the two-sided Mellin transform evaluated at `s = 1/2 - 2πiξ`, because
+  `e^{(1/2-2πiξ)t} = e^{t/2}e^{-2πiξt}`.  Composing with the corpus's Poisson--Mellin
+  factorization gives **`deningerFloquetSample_poissonSource`**:
+  `𝓕(e^{t/2}Zf)(ξ) = ζ(1/2-2πiξ)·M f(1/2-2πiξ)`.  Hence
+  `deningerFloquetSample_poissonSource_eq_zero`: every Poisson boundary has vanishing sample at
+  every *resonant node* `deningerFloquetResonance = {ξ ∈ supp μ_Fl : ζ(1/2-2πiξ) = 0}`.
+- **`(27)`.**  `deningerFloquetBoundary` is the span of the Poisson-boundary samples and
+  `deningerFloquetResonanceSpan` the span of the resonant node indicators.  One inclusion,
+  `deningerFloquetBoundary_le`, is the factorization above.  The converse is
+  **`deningerFloquetFlow_orthogonal_inf_eq_bot`**: scaling a Meyer test function by `e^{-c}`
+  multiplies its critical-line Mellin sample by `e^{c/2}e^{-2πicξ}`
+  (`mellin_deningerMeyerCapFlow`, `deningerFloquetSample_capFlow`), so a vector orthogonal to all
+  Poisson boundaries has vanishing Fourier coefficient at *every* frequency against the fixed
+  weight `ζ·M`; averaging those relations against a Gaussian in the scaling parameter and swapping
+  the order of integration produces a Gaussian concentrating at a single node
+  (`deningerGaussianCharacter_integral`), and the node is an atom, so the vector vanishes there
+  whenever `ζ` does not.  The corpus's explicit Poisson test function has Mellin transform
+  vanishing only at `s = 1`, hence nowhere on the critical line
+  (`deningerFloquetProfile_ne_zero`), which is what makes the weight usable.  With the general
+  Hilbert criterion `submodule_topologicalClosure_eq_of_orthogonal_inf_eq_bot` this gives
+  **`deningerFloquetBoundary_topologicalClosure`**: the closed Poisson-boundary space is exactly
+  the annihilator of the resonant nodes.
+- **`(28)`.**  `deningerFloquetBoundary_closure_orthogonal`: the orthogonal complement of the
+  closed boundary is the closed span of the resonant node indicators — the exact critical-line
+  prime-lattice resonance subspace, and nothing else.
+- **§7.**  `deningerFloquetBoundedCorrection_vanishing` — a bounded operator annihilating every
+  Poisson boundary annihilates the whole closed boundary space;
+  **`deningerFloquetBoundedCorrection_factors`** — it therefore equals its composition with the
+  orthogonal projection onto the resonance subspace, i.e. it factors through the resonance-only
+  quotient; **`deningerFloquetBoundedCorrection_unique`** — the factorization is unique, since such
+  an operator is determined by its values on the resonant node indicators.
+- **§7 on the depleted sector.**  `deningerMeyerCapDepletion` is `1 - τ_L` on Meyer's space;
+  `mellin_deningerMeyerCapDepletion` shows it multiplies the Mellin transform by `1 - e^{-Ls}`,
+  which has modulus bounded away from `1` on the critical line for `L > 0`, hence never vanishes
+  (`deningerCriticalLine_depletionFactor_ne_zero`).  The scaled depleted test functions therefore
+  satisfy the same hypotheses, so **`deningerFloquetDepletedBoundary_topologicalClosure`** — the
+  depleted boundaries have the *same* closure — and
+  **`deningerFloquetDepletedCorrection_factors`** — the no-go holds verbatim on every depleted
+  sector.
+
+Nothing on this card remains unformalized.

@@ -6048,3 +6048,61 @@ receive a new title and an independent significance audit.
   onset, monotonicity, or a ramp anchored at `t=0`.  Exact paper proof and hostile boundary:
   `../2-fully-proven/capacitary-observer-sector-excision-law.md`.  Lean remained read only during
   shared refactoring.
+- 2026-08-13 -- Removed the pre-return decline as an independent theorem obligation.  For Choi
+  trace distance and every inverse-closed gate dictionary, an autonomous return with projective
+  defect `delta_R` obeys the exact interlacing
+  `C_(epsilon+delta_R)(U_t)<=C_epsilon(U_(R-t))` and
+  `C_(epsilon+delta_R)(U_(R-t))<=C_epsilon(U_t)`.  At an exact projective return the complete robust
+  complexity history is therefore palindromic about `R/2`.  Every proved forward growth lower
+  envelope and simulation upper envelope is reflected into the last pre-return interval with only
+  additive resolution loss.  This does not prove forward growth, plateau duration, or the first
+  recurrence time; it is a bridge that sharpens the full Brown target to a one-sided first-cut law
+  plus quantitative recurrence timing.  Paper proof and hostile boundary:
+  `../2-fully-proven/autonomous-return-complexity-reflection-law.md`.  Lean remained read only during
+  shared refactoring.
+- 2026-08-13 -- Strengthened return reflection from the shortest word to the entire circuit
+  incidence spectrum.  Word inversion is a length-preserving bijection, so an autonomous return of
+  defect `delta_R` interlaces, at every exact depth `ell`, the normalized number of circuit words
+  entering the `epsilon`-tube at `t` and `R-t`, with only the radius replacement
+  `epsilon -> epsilon+delta_R`.  Every nonnegative length partition function, including the Abel
+  endpoint-accessibility profile, obeys the same law; at an exact projective return each depth shell
+  and every such free energy are exactly palindromic.  This does not reflect first-entrance path mass,
+  because word reversal exchanges prefixes with suffixes.  The result reinforces that no separate
+  recurrence-side incidence estimate is needed, while leaving finite-scale centralizer
+  undistortion/first-cut growth untouched.  Proof:
+  `../2-fully-proven/autonomous-return-complexity-reflection-law.md`.  Lean remained read only during
+  shared refactoring.
+- 2026-08-13 -- Extended recurrence reflection beyond closed systems.  For every CPTP semigroup and
+  every full-channel diamond return defect `delta_R`, the remaining segment `Lambda_(R-t)` is an
+  explicit `delta_R`-recovery channel for `Lambda_t` at every `0<=t<=R`; ancilla-assisted trace
+  distinguishability can have lost at most that relative amount anywhere in the cycle.  If a
+  length-`ell` unitary circuit approximates one intermediate channel within `epsilon`, its inverse
+  word approximates the reflected channel within `epsilon+delta_R`.  Hence robust channel
+  complexity, every exact circuit-length incidence shell, and every positive Abel partition
+  function obey the same return reflection as the closed Choi law.  At an exact full-channel
+  return, every intermediate channel has a CPTP inverse and is therefore unitary, so genuine
+  Markovian dissipation and exact full-channel recurrence are incompatible.  Classical input is
+  CPTP-inverse rigidity; candidate advance is its quantitative all-intermediate recovery and
+  circuit-incidence composition.  This broadens the recurrence law but does not change the static
+  first-cut obstruction.  Paper proof and hostile boundary:
+  `../2-fully-proven/markovian-return-recovery-complexity-reflection-law.md`.  Lean remained read
+  only during shared refactoring.
+- 2026-08-13 -- Replaced raw local-gate word entropy by intrinsic heap entropy on bounded-degree
+  hardware.  Quotient words only by exact swaps of disjoint-support gates.  For an alphabet of
+  size `M` whose dependence graph has maximum degree `Delta`, pair projections of the resulting
+  trace monoid give
+  `h_ell <= binom(M+ell-1,ell) 2^(Delta ell)`.  The associated positive heap Green reporter has
+  partition function at most `(1-2^Delta z)^(-M)` and detects every depth-`s` shortcut with the
+  optimized penalty
+  `2^(Delta s)(1+M/s)^s(1+s/M)^M`.  For a fixed nearest-neighbour gate alphabet,
+  `M=O(n)`, `Delta=O(1)`, and `s=Theta(D)`, the logarithmic capacity is at most
+  `Delta s log 2+o(D)`, not the raw bound `s log M=Theta(s log n)`.  Composing with the proved
+  uniform Choi phase cap upgrades the completed-phase and all-late fixed-shell plateau lower bound
+  from depth `Omega(D/log n)` to `Omega(D)`, while the permanent local/Haar separator remains
+  unchanged.  This does not prove
+  first growth.  It sharpens the remaining quenched target to dependency-normalized heap incidence
+  after return/carrier excision and removes one spurious `log n` from its entropy budget.  Trace
+  monoids and their use in circuit enumeration are classical; priority is assigned, provisionally,
+  only to the heap Green/static-capacity composition.  Paper proof and hostile audit:
+  `../2-fully-proven/local-circuit-heap-capacity-law.md`.  Lean remained read only during the shared
+  refactor.

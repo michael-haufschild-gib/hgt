@@ -1882,44 +1882,78 @@ Remaining analytic obligation is not another scalar inequality: compose derivati
 the literal complementary finite-set mean square below this boundary, retain exact polylog costs
 at `mu(1-alpha)=1`, then join the already-formal selected-cell count above it.
 
-### C53. Over-height type rigidity gives uniform low-ordinate receiver reserve `[PROVED / FORMALIZED]`
+### C53. Over-height type rigidity; fixed-reserve inference retracted `[CORRECTED / FORMALIZED]`
 
-The apparent fixed-polylog equality obstruction at `mu(1-alpha)=1` was caused by weakening the
-literal giant condition from `s>=1` to `s>=0`.  On the complete Perron range `mu<=8`, every
-Möbius factor has exponent at most
+On the complete Perron range `mu<=8`, every Möbius factor has exponent at most
 
 ```text
 2t = mu/60 <= 2/15 < 1.
 ```
 
 Therefore every over-height factor is necessarily zeta or logarithmic and carries the exact
-Kuzmin--Landau `T^(-1)` gain.  In the complementary band `alpha>=19/25`, retaining the literal
-`s>=1` gives
+Kuzmin--Landau `T^(-1)` gain.  But the former inference to a uniform reserve was wrong: in
+`E_h=-1+2 tau(1-alpha)-s`, `s` is **complement length**, whereas over-height type rigidity concerns
+the excised length `r`. C49's actual giant seam has
+
+```text
+r>1,    0<=s<1.
+```
+
+It does not supply `s>=1`. The conditional statement
 
 ```text
 E_h <= mu(1-alpha)-2/25,
 E_l <= mu(1-alpha)-2/25,
 ```
 
-because `mu(1-alpha)<=8(6/25)=48/25`.  Thus arbitrary fixed-polylog and receiver costs may spend
-`1/25` while a strict `1/25` first-alternative reserve remains.  No boundary equality survives.
+is mathematically valid when the complement itself has height mass, but it does not close the
+single-giant seam. `MaynardDerivativeCountDuality.lean` now contains a closed counterexample to
+that inference at `mu=tau=r=5`, `alpha=4/5`, `s=0`: the height exponent equals the first receiver,
+so even the claimed `2/25` reserve fails before analytic costs.
 
-`MaynardDerivativeCountDuality.lean` formalizes over-height type rigidity, both `2/25` exponent
-bounds, the common-cost count theorem, and the normalized `1/25` receiver theorem.
-`MaynardLowOrdinateDerivativeReceiver.lean` closes the literal finite-set layer: the erase-one-
-factor complement is nonempty; its unraised coefficient square-energy has the sharper exact
-fixed-polylog exponent
+### C54. Exact moving reserve and zero-mode rigidity identify the survivor `[PROVED / FORMALIZED]`
+
+The correct height reserve is not fixed. Under `tau<=mu` and `alpha<=1`, Lean proves
+
+```text
+E_h <= mu(1-alpha) - d,
+d = 1 - mu(1-alpha) + s.
+```
+
+In the derivative branch `mu(1-alpha)<=1`, `d>=0`. Equality is rigid: it forces simultaneously
+
+```text
+mu(1-alpha)=1,    tau(1-alpha)=1,    s=0.
+```
+
+Thus every nonzero complement has a strict moving reserve; the only zero-reserve point saturates
+both ambient and box scales and has zero complement mass. The dyadic realization sharpens this
+further. At `T>1`, zero dyadic logarithmic mass is equivalent to exponent zero. For a nonzero
+literal Heath--Brown box every exponent-zero Möbius/zeta atom is exactly the unit and the log atom
+cannot occur. Hence Lean proves that the whole zero-mass erase-complement is the constant
+Dirichlet polynomial `1`.
+
+This identifies the obstruction universally: the zero-reserve boundary is one long zeta/log
+factor carrying its nonoscillatory integral (zeta-pole) mode. It is not a complementary
+large-values problem. Absolute box selection necessarily loses the cancellation needed there;
+the normalized signed target--reference packet is the correct survivor.
+
+`MaynardLowOrdinateDerivativeReceiver.lean` also completes everything that remains valid away
+from this boundary: the erase-complement is nonempty; its unraised coefficient square-energy has
+the sharper exact fixed-polylog exponent
 
 ```text
 2w + 2^(2w) - 1
 ```
 
-rather than the generic raised bound with `w+1`; the box norm factors exactly into distinguished
-atom times complement; and derivative excision composes with Montgomery on the actual separated
-finite set.  Two exact power identities then cancel `c`, excised length, and total length to the
-canonical `E_h,E_l` powers.  Direct `lake env lean` checks pass.
+rather than the generic raised bound with `w+1`; exact dyadic identities give `D=T^tau`, `N=T^r`,
+`A=T^s`, and `tau=r+s`; and the literal finite-set Montgomery count composes all the way to the
+canonical `E_h,E_l` powers. The actual width, derivative constant, and enormous but fixed energy
+exponent are uniformly absorbed by `T^(1/25)`. Direct `lake env lean` checks pass.
 
-Remaining Maynard obligation is now packaging, not a new estimate: bound the displayed width and
-energy factor by one fixed power cost, apply the `1/25` normalized receiver, sum finite labels,
-and join historical `mu<=19/9` count.  Then compose all-height count with the literal prime-gap
-moment/current landing.
+Remaining obligation is no longer routine packaging. Away from `d=0`, use the moving reserve and
+literal receiver. At `d=0` (and any transition layer too thin to absorb costs), retain the signed
+pole-annihilating packet from `MaynardNormalizedReferenceTargetPerron.lean`; do not take absolute
+values box-by-box. The intermediate Mellin band remains the hard analytic core because the wide
+PNT reference has insufficient bandwidth. A solution must provide oscillatory signed control or
+pole-preserving continuation there before the prime-gap/current landing.

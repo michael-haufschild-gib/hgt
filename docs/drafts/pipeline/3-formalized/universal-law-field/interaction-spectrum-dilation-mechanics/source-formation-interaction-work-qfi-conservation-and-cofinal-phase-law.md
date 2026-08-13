@@ -1,9 +1,9 @@
 # Source-formation interaction work, QFI conservation, and cofinal phase law
 
 - **ID:** ULF-ISDM-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** UNIVERSAL FORMATION / INTERACTION / PASSIVITY / INFORMATION MECHANICS
-- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [LEAN-PROVED CORE] [MECHANISM, NOT ROUTE]
+- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [LEAN-FORMALIZED] [MECHANISM, NOT ROUTE]
   [FINITE RECONSTRUCTION] [EXACT WORK--QFI CONSERVATION]
   [COFINAL PROPERNESS PHASE] [LITERAL PRIME SPECIALIZATION] [NOT RH]
 - **Lean:** `HTGeometry.ConstitutiveInteractionSpectrumMechanics`
@@ -342,15 +342,29 @@ forced by the Euler-shell product source.
 - [x] fourth-organ QFI prediction and proof
 - [x] cofinal tight/escaping properness phase
 - [x] reciprocal phase classifier
-- [x] Lean finite formation, reconstruction, passivity, work--QFI, prime phase, and reflection core
+- [x] Lean biased-Walsh orthonormality, exact reconstruction, Parseval, passive contraction,
+      exact band-defect composition, and parity coefficient formula `(ISD.1)--(ISD.13)`
+- [x] Lean genuine covariance-form pure-state QFI realization and exact hidden-work conservation
+      `(ISD.14)--(ISD.16)`
+- [x] Lean finite formation, reconstruction, passivity, prime phase, and reflection classifier
 - [x] Lean analytic core of the cofinal fixed-degree escape limit `(ISD.22)`:
       `GaloisForLFunctions.HTGeometry.InteractionDegreeEscape.tendsto_mean_div_gap_sq` certifies
       that the Chebyshev bound `mu/(mu-D)^2` vanishes as the mean diverges, for every fixed degree
       threshold `D`, by the gap estimate `mu - D >= mu/2` past `mu >= 2D`
-- [ ] Lean probabilistic wrapper of `(ISD.22)--(ISD.23)`: `P(K_n <= D) <= Var K_n/(mu_n - D)^2`
-      together with the critical-value statement at `sigma = 1`
-- [ ] source-native reflection comparison preserving formation phase
-- [ ] RH selection consequence
+- [x] Lean probabilistic wrapper of `(ISD.22)--(ISD.23)`: exact variance,
+      `P(K_n <= D) <= Var K_n/(mu_n - D)^2`, fixed-degree escape for every
+      `0 < sigma <= 1`, and critical empty/full/visible QFI limits at `sigma = 1`
+- [x] Lean uniform tightness `(ISD.21)` over every finite prime aperture for `sigma > 1`
+- [x] Unproved source-native reflection producer and conditional RH executor excluded from this
+      theorem card and preserved separately in Stage 1 at
+      `interaction-spectrum-dilation-mechanics/source-native-reflection-comparison-and-rh-selection-interface.md`
 
 - 2026-08-12 — the analytic core of the fixed-degree escape limit certified in Lean; only the
   probabilistic wrapper remains on this card.
+- 2026-08-13 — exact Lean surface closed: biased-Walsh basis/reconstruction/Parseval, passive
+  filtration, genuine QFI bridge, Poisson-binomial variance/Chebyshev wrapper, uniform tightness,
+  cofinal escape, and critical QFI limits. Unproved source-native comparison split to Stage 1.
+
+## Log
+
+- 2026-08-13 — Exact paper surface closed in Lean: biased-Walsh reconstruction/Parseval and passive filtration, realized pure-state QFI conservation, finite variance/Chebyshev, uniform tightness, cofinal escape, critical QFI limits, and reciprocal phase classification; open producer split to Stage 1.

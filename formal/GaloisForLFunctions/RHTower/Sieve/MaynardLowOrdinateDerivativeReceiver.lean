@@ -1,5 +1,7 @@
 import GaloisForLFunctions.RHTower.Sieve.MaynardDerivativeCountDuality
 import GaloisForLFunctions.RHTower.Sieve.MaynardFixedPolylogEnergy
+import GaloisForLFunctions.RHTower.Sieve.MaynardZeroExponentTrimming
+import GaloisForLFunctions.RHTower.BurnolPrimeLogSummability
 
 /-!
 # Literal low-ordinate derivative receiver
@@ -365,6 +367,62 @@ theorem heathBrownBox_totalExponent_eq_factor_add_complement
       (heathBrownBoxFactorExponent box.a box.b box.q i))
     (Finset.mem_univ j)).symm
 
+/-- At base `T>1`, zero dyadic logarithmic mass is equivalent to exponent zero. -/
+theorem dyadicLogExponent_eq_zero_iff
+    {T : ℝ} (hT : 1 < T) (q : ℕ) :
+    dyadicLogExponent T q = 0 ↔ q = 0 := by
+  constructor
+  · intro hq
+    have hr := rpow_dyadicLogExponent hT q
+    rw [hq, Real.rpow_zero] at hr
+    have hnat : 2 ^ q = 1 := by exact_mod_cast hr.symm
+    simpa using (Nat.pow_eq_one.mp hnat)
+  · rintro rfl
+    simp [dyadicLogExponent, Real.logb]
+
+/-- Zero complement mass forces every retained dyadic exponent to be zero. -/
+theorem heathBrownBox_complement_factorExponent_eq_zero_of_mass_eq_zero
+    {L X k : ℕ} {T : ℝ} (box : HeathBrownBoxChoice L X k)
+    (j : HeathBrownBoxFactorIndex k box.m) (hT : 1 < T)
+    (hzero : (∑ i ∈ (Finset.univ.erase j),
+      dyadicLogExponent T
+        (heathBrownBoxFactorExponent box.a box.b box.q i)) = 0) :
+    ∀ i ∈ (Finset.univ.erase j),
+      heathBrownBoxFactorExponent box.a box.b box.q i = 0 := by
+  intro i hi
+  have hterm : dyadicLogExponent T
+      (heathBrownBoxFactorExponent box.a box.b box.q i) = 0 := by
+    exact (Finset.sum_eq_zero_iff_of_nonneg
+      (fun a _ha => dyadicLogExponent_nonneg hT
+        (heathBrownBoxFactorExponent box.a box.b box.q a))).mp hzero i hi
+  exact (dyadicLogExponent_eq_zero_iff hT _).mp hterm
+
+/-- **Zero-mass complement classification.**  For a nonzero literal box, the entire zero-mass
+erase-complement is the constant Dirichlet polynomial `1`.  Thus the unique zero-reserve case is
+not a genuine complementary large-value problem: all ordinate dependence lies in the one
+distinguished zeta/log factor. -/
+theorem heathBrownBox_complement_value_eq_one_of_mass_eq_zero
+    {L X k : ℕ} {T : ℝ} (box : HeathBrownBoxChoice L X k)
+    (j : HeathBrownBoxFactorIndex k box.m)
+    (hL : 1 <= L) (hX : 1 <= X) (hlog : 1 <= box.q)
+    (hT : 1 < T)
+    (hzero : (∑ i ∈ (Finset.univ.erase j),
+      dyadicLogExponent T
+        (heathBrownBoxFactorExponent box.a box.b box.q i)) = 0)
+    (z : ℂ) :
+    (∏ i : {i : HeathBrownBoxFactorIndex k box.m //
+        i ∈ (Finset.univ.erase j)},
+      LSeries (complexCoeff (arithmeticDyadicBlock
+        (heathBrownFactorBase L X (heathBrownBoxFactorKind k box.m i))
+        (heathBrownBoxFactorExponent box.a box.b box.q i))) z) = 1 := by
+  apply Finset.prod_eq_one
+  intro i _hi
+  simpa [heathBrownBoxFactorValue] using
+    heathBrownBoxFactorValue_eq_one_of_exponent_eq_zero
+      box hL hX hlog z i
+        (heathBrownBox_complement_factorExponent_eq_zero_of_mass_eq_zero
+          box j hT hzero i i.property)
+
 /-- Fixed width of every degree-60 erase-complement. -/
 def maynardLowOrdinateComplementWidthConstant : ℝ := ((2 ^ 120 : ℕ) : ℝ)
 
@@ -590,5 +648,273 @@ theorem derivativeExcised_montgomery_to_canonical
           (T * (T ^ s) ^ (1 - 2 * c) +
             (T ^ s) ^ (2 - 2 * c)) := by rw [hAeq]
   exact derivativeExcised_count_to_canonical_powers hT0 hC htau hcount'
+
+/-- **Literal degree-60 box receiver.**  Excising one distinguished atom from a Heath--Brown
+box, applying the sharp unraised Montgomery energy, and using exact dyadic length geometry gives
+the canonical derivative-complement count.  This closes the former giant-seam conversion at
+finite-set level; only the displayed fixed polylogarithmic cost remains to absorb. -/
+theorem derivativeExcised_montgomery_heathBrownBox_to_canonical
+    {L X : ℕ} (box : HeathBrownBoxChoice L X 60)
+    (j : HeathBrownBoxFactorIndex 60 box.m)
+    {c : ℝ} (hc : 0 <= c)
+    {S : Finset ℕ} {lam : ℕ → ℝ} {delta H : ℝ}
+    {T C alpha : ℝ}
+    (hdelta : 1 <= delta) (hH0 : 0 <= H) (hH : H <= 3 * T)
+    (hgap : ∀ i, lam i + delta <= lam (i + 1))
+    (hband : ∀ n ∈ S, delta / 2 <= lam n ∧ lam n + delta / 2 <= H)
+    (hT : 1 < T) (hC : 0 < C)
+    (hlong : ∀ n ∈ S,
+      ‖heathBrownBoxFactorValue L X 60 box
+          ((c : ℂ) + (lam n : ℝ) * Complex.I) j‖ <=
+        C / T *
+          (((2 ^ heathBrownBoxFactorExponent box.a box.b box.q j : ℕ) : ℝ)) ^
+            (1 - c))
+    (hlarge : ∀ n ∈ S,
+      (((groupedDyadicLower
+        (heathBrownBoxFactorExponent box.a box.b box.q) : ℕ) : ℝ)) ^
+          (alpha - c) <=
+        ‖heathBrownDyadicCoreProduct L X 60 box.m box.a box.b box.q
+          ((c : ℂ) + (lam n : ℝ) * Complex.I)‖) :
+    let I := {i : HeathBrownBoxFactorIndex 60 box.m //
+      i ∈ (Finset.univ.erase j)}
+    let q : I → ℕ := fun i =>
+      heathBrownBoxFactorExponent box.a box.b box.q i
+    let U : ℝ := (groupedDyadicUpper q : ℝ)
+    let E : ℕ := 2 * Fintype.card I + (2 ^ (2 * Fintype.card I) - 1)
+    let tau : ℝ := heathBrownBoxTotalExponent L X 60 T box
+    let s : ℝ := ∑ i ∈ (Finset.univ.erase j),
+      dyadicLogExponent T
+        (heathBrownBoxFactorExponent box.a box.b box.q i)
+    (S.card : ℝ) <=
+      (C ^ 2 * (12 * maynardLowOrdinateComplementWidthConstant ^ 2 *
+        (1 + Real.log U) ^ (E + 2))) *
+        (T ^ maynardDerivativeComplementHeightExponent tau alpha s +
+          T ^ maynardDerivativeComplementLengthExponent tau alpha) := by
+  let comp : Finset (HeathBrownBoxFactorIndex 60 box.m) := Finset.univ.erase j
+  let I := ↥comp
+  letI : Fintype I := Subtype.fintype fun i => i ∈ comp
+  let q : I → ℕ := fun i =>
+    heathBrownBoxFactorExponent box.a box.b box.q i
+  let U : ℝ := (groupedDyadicUpper q : ℝ)
+  let E : ℕ := 2 * Fintype.card I + (2 ^ (2 * Fintype.card I) - 1)
+  let tau : ℝ := heathBrownBoxTotalExponent L X 60 T box
+  let r : ℝ := dyadicLogExponent T
+    (heathBrownBoxFactorExponent box.a box.b box.q j)
+  let s : ℝ := ∑ i ∈ (Finset.univ.erase j),
+    dyadicLogExponent T
+      (heathBrownBoxFactorExponent box.a box.b box.q i)
+  let A : ℝ := (groupedDyadicLower q : ℝ)
+  let W : ℝ := maynardLowOrdinateComplementWidthConstant
+  have hTpos : 0 < T := zero_lt_one.trans hT
+  have hdeltaPos : 0 < delta := zero_lt_one.trans_le hdelta
+  have hD : 0 <
+      ((groupedDyadicLower
+        (heathBrownBoxFactorExponent box.a box.b box.q) : ℕ) : ℝ) := by
+    exact_mod_cast one_le_groupedDyadicLower
+      (heathBrownBoxFactorExponent box.a box.b box.q)
+  have hN : 0 <
+      (((2 ^ heathBrownBoxFactorExponent box.a box.b box.q j : ℕ) : ℝ)) := by
+    positivity
+  have hcount := derivativeExcised_montgomery_heathBrownBox_fixedPolylog
+    box j hc hdeltaPos hH0 hgap hband hD hN hTpos hC hlong hlarge
+  have hDpow :
+      ((groupedDyadicLower
+        (heathBrownBoxFactorExponent box.a box.b box.q) : ℕ) : ℝ) =
+        T ^ tau := by
+    dsimp only [tau]
+    simpa [heathBrownBoxTotalExponent, groupedDyadicLower] using
+      (cast_prod_twoPow_eq_rpow_sum_dyadicLogExponent hT
+        (heathBrownBoxFactorExponent box.a box.b box.q)
+        (Finset.univ : Finset (HeathBrownBoxFactorIndex 60 box.m)))
+  have hNpow :
+      (((2 ^ heathBrownBoxFactorExponent box.a box.b box.q j : ℕ) : ℝ)) =
+        T ^ r := by
+    dsimp only [r]
+    exact (rpow_dyadicLogExponent hT
+      (heathBrownBoxFactorExponent box.a box.b box.q j)).symm
+  have hApow : A = T ^ s := by
+    dsimp only [A, s, q, I, comp]
+    exact heathBrownBoxFactor_complement_lower_eq_rpow box j hT
+  have htau : tau = r + s := by
+    dsimp only [tau, r, s]
+    exact heathBrownBox_totalExponent_eq_factor_add_complement box j
+  have hA : 1 <= A := by
+    dsimp only [A]
+    exact_mod_cast one_le_groupedDyadicLower q
+  have hU : 1 <= U := by
+    dsimp only [U]
+    exact_mod_cast one_le_groupedDyadicUpper q
+  have hW : 1 <= W := by
+    exact maynardLowOrdinateComplementWidthConstant_one_le
+  have hwidth : U <= W * A := by
+    dsimp only [U, W, A, q, I, comp]
+    exact heathBrownBoxFactor_complement_upper_le_width_mul_lower box j
+  have hcount' :
+      (S.card : ℝ) * (((T / C) * (T ^ tau) ^ (alpha - c) *
+          (T ^ r) ^ (c - 1)) ^ 2) <=
+        (H + 4 * U * (1 + Real.log U)) *
+          (1 / delta + 2 * Real.log U) *
+          (((A ^ (-c)) ^ 2) *
+            (U * (1 + Real.log U) ^ E)) := by
+    simpa only [I, comp, q, U, E, A, hDpow, hNpow] using hcount
+  have hcanonical := derivativeExcised_montgomery_to_canonical
+    hT.le hH hdelta hA hU hW hwidth hC htau hApow hcount'
+  simpa only [I, comp, q, U, E, tau, r, s, W] using hcanonical
+
+/-- **Uniform fixed-cost absorption for the derivative receiver.**  The actual Kuzmin--Landau
+constant `C <= 600 log T`, degree-60 complement width, sharp unraised energy exponent, and any
+fixed receiver logarithm together cost at most `T^(1/25)`.  The astronomically large divisor
+moment exponent is harmless because it is fixed independently of `T`. -/
+theorem eventually_maynardLowOrdinateDerivative_fixedCost_absorbed (q : ℕ) :
+    ∀ᶠ T : ℝ in Filter.atTop,
+      ∀ C U : ℝ, ∀ E : ℕ,
+      0 <= C → C <= 600 * Real.log T →
+      1 <= U → U <= maynardLowOrdinateComplementWidthConstant * T ^ (8 : ℕ) →
+      E <= maynardLowOrdinateComplementPolylogExponent →
+      (2 * (C ^ 2 * (12 * maynardLowOrdinateComplementWidthConstant ^ 2 *
+          (1 + Real.log U) ^ (E + 2)))) * (Real.log T) ^ q <=
+        T ^ (1 / 25 : ℝ) := by
+  let W : ℝ := maynardLowOrdinateComplementWidthConstant
+  let E0 : ℕ := maynardLowOrdinateComplementPolylogExponent + 2
+  let B0 : ℝ := 9 + |Real.log W|
+  let K0 : ℝ := 24 * 600 ^ 2 * W ^ 2 * B0 ^ E0
+  let eps : ℝ := 1 / 50
+  have heps : 0 < eps := by norm_num [eps]
+  have hW : 1 <= W := maynardLowOrdinateComplementWidthConstant_one_le
+  have hWpos : 0 < W := zero_lt_one.trans_le hW
+  have hB0 : 1 <= B0 := by
+    dsimp only [B0]
+    linarith [abs_nonneg (Real.log W)]
+  have hK0 : 0 < K0 := by
+    dsimp only [K0]
+    positivity
+  have hconst : ∀ᶠ T : ℝ in Filter.atTop, K0 <= T ^ eps :=
+    (tendsto_rpow_atTop heps).eventually_ge_atTop K0
+  filter_upwards [RHTower.burnolEventually_log_pow_le_rpow heps (q + E0 + 2),
+    hconst, Real.tendsto_log_atTop.eventually_ge_atTop 1,
+    Filter.eventually_ge_atTop (1 : ℝ)] with T hlogPow hconstT hlogT hT
+  intro C U E hC0 hC hU hUscale hE
+  have hTpos : 0 < T := zero_lt_one.trans_le hT
+  have hlog0 : 0 <= Real.log T := zero_le_one.trans hlogT
+  have hUpos : 0 < U := zero_lt_one.trans_le hU
+  have hT8pos : 0 < T ^ (8 : ℕ) := pow_pos hTpos _
+  have hlogU : Real.log U <= Real.log W + 8 * Real.log T := by
+    calc
+      Real.log U <= Real.log (W * T ^ (8 : ℕ)) :=
+        Real.log_le_log hUpos hUscale
+      _ = Real.log W + Real.log (T ^ (8 : ℕ)) := by
+        rw [Real.log_mul hWpos.ne' hT8pos.ne']
+      _ = Real.log W + 8 * Real.log T := by
+        rw [Real.log_pow]
+        norm_num
+  have hbase : 1 + Real.log U <= B0 * Real.log T := by
+    have hlogW : Real.log W <= |Real.log W| * Real.log T := by
+      calc
+        Real.log W <= |Real.log W| := le_abs_self _
+        _ <= |Real.log W| * Real.log T := by
+          nlinarith [abs_nonneg (Real.log W)]
+    dsimp only [B0]
+    nlinarith
+  have hbase1 : 1 <= 1 + Real.log U := by
+    linarith [Real.log_nonneg hU]
+  have hBLog1 : 1 <= B0 * Real.log T :=
+    one_le_mul_of_one_le_of_one_le hB0 hlogT
+  have hE2 : E + 2 <= E0 := by
+    dsimp only [E0]
+    omega
+  have hpowBase : (1 + Real.log U) ^ (E + 2) <=
+      (B0 * Real.log T) ^ E0 := by
+    calc
+      (1 + Real.log U) ^ (E + 2) <= (B0 * Real.log T) ^ (E + 2) :=
+        pow_le_pow_left₀ (zero_le_one.trans hbase1) hbase _
+      _ <= (B0 * Real.log T) ^ E0 := pow_le_pow_right₀ hBLog1 hE2
+  have hCsq : C ^ 2 <= (600 * Real.log T) ^ 2 :=
+    pow_le_pow_left₀ hC0 hC 2
+  have hpoly :
+      (2 * (C ^ 2 * (12 * W ^ 2 *
+          (1 + Real.log U) ^ (E + 2)))) * (Real.log T) ^ q <=
+        K0 * (Real.log T) ^ (q + E0 + 2) := by
+    calc
+      (2 * (C ^ 2 * (12 * W ^ 2 *
+          (1 + Real.log U) ^ (E + 2)))) * (Real.log T) ^ q <=
+        (2 * ((600 * Real.log T) ^ 2 *
+          (12 * W ^ 2 * (B0 * Real.log T) ^ E0))) *
+            (Real.log T) ^ q := by gcongr
+      _ = K0 * (Real.log T) ^ (q + E0 + 2) := by
+        dsimp only [K0]
+        rw [show (600 * Real.log T) ^ 2 =
+          600 ^ 2 * (Real.log T) ^ 2 by rw [mul_pow]]
+        rw [show (B0 * Real.log T) ^ E0 =
+          B0 ^ E0 * (Real.log T) ^ E0 by rw [mul_pow]]
+        rw [show (Real.log T) ^ (q + E0 + 2) =
+          (Real.log T) ^ q * (Real.log T) ^ E0 *
+            (Real.log T) ^ 2 by rw [pow_add, pow_add]]
+        ring
+  have hpowNonneg : 0 <= T ^ eps := Real.rpow_nonneg hTpos.le _
+  calc
+    (2 * (C ^ 2 * (12 * W ^ 2 *
+        (1 + Real.log U) ^ (E + 2)))) * (Real.log T) ^ q <=
+      K0 * (Real.log T) ^ (q + E0 + 2) := hpoly
+    _ <= T ^ eps * T ^ eps :=
+      mul_le_mul hconstT hlogPow (pow_nonneg hlog0 _) hpowNonneg
+    _ = T ^ (1 / 25 : ℝ) := by
+      rw [← Real.rpow_add hTpos]
+      dsimp only [eps]
+      congr 1
+      norm_num
+
+/-- A window-relevant degree-60 complement has upper edge at most the fixed width times `T^8`.
+This derives the scale needed by fixed-cost absorption from box geometry; it is not an added
+analytic hypothesis. -/
+theorem windowRelevant_heathBrownBox_complement_upper_le_width_mul_T8
+    {L X : ℕ} {T mu N0 : ℝ} (box : HeathBrownBoxChoice L X 60)
+    (j : HeathBrownBoxFactorIndex 60 box.m)
+    (hT : 1 < T) (hmu : mu <= 8)
+    (hXscale : (X : ℝ) <= T ^ mu)
+    (hbox : IsHeathBrownBoxWindowRelevant N0 X 60 box) :
+    let I := {i : HeathBrownBoxFactorIndex 60 box.m //
+      i ∈ (Finset.univ.erase j)}
+    let q : I → ℕ := fun i =>
+      heathBrownBoxFactorExponent box.a box.b box.q i
+    (groupedDyadicUpper q : ℝ) <=
+      maynardLowOrdinateComplementWidthConstant * T ^ (8 : ℕ) := by
+  let comp : Finset (HeathBrownBoxFactorIndex 60 box.m) := Finset.univ.erase j
+  let I := ↥comp
+  letI : Fintype I := Subtype.fintype fun i => i ∈ comp
+  let q : I → ℕ := fun i =>
+    heathBrownBoxFactorExponent box.a box.b box.q i
+  let A : ℝ := (groupedDyadicLower q : ℝ)
+  let tau : ℝ := heathBrownBoxTotalExponent L X 60 T box
+  let r : ℝ := dyadicLogExponent T
+    (heathBrownBoxFactorExponent box.a box.b box.q j)
+  let s : ℝ := ∑ i ∈ (Finset.univ.erase j),
+    dyadicLogExponent T
+      (heathBrownBoxFactorExponent box.a box.b box.q i)
+  have htau : tau = r + s := by
+    dsimp only [tau, r, s]
+    exact heathBrownBox_totalExponent_eq_factor_add_complement box j
+  have hr0 : 0 <= r := by
+    dsimp only [r]
+    exact dyadicLogExponent_nonneg hT _
+  have hstau : s <= tau := by linarith
+  have htaumu : tau <= mu :=
+    windowRelevant_heathBrownBox_totalExponent_le hT hXscale box hbox
+  have hs8 : s <= 8 := hstau.trans (htaumu.trans hmu)
+  have hApow : A = T ^ s := by
+    dsimp only [A, s, q, I, comp]
+    exact heathBrownBoxFactor_complement_lower_eq_rpow box j hT
+  have hA8 : A <= T ^ (8 : ℕ) := by
+    rw [hApow, ← Real.rpow_natCast]
+    exact Real.rpow_le_rpow_of_exponent_le hT.le hs8
+  have hwidth := heathBrownBoxFactor_complement_upper_le_width_mul_lower box j
+  change (groupedDyadicUpper q : ℝ) <=
+    maynardLowOrdinateComplementWidthConstant * T ^ (8 : ℕ)
+  calc
+    (groupedDyadicUpper q : ℝ) <=
+        maynardLowOrdinateComplementWidthConstant * A := by
+      simpa [A, q, I, comp] using hwidth
+    _ <= maynardLowOrdinateComplementWidthConstant * T ^ (8 : ℕ) :=
+      mul_le_mul_of_nonneg_left hA8
+        (zero_le_one.trans maynardLowOrdinateComplementWidthConstant_one_le)
 
 end RHTower.Sieve

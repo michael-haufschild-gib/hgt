@@ -1,7 +1,7 @@
 # A Hausdorff positivity cone for higher-spin CDD interaction laws
 
 - **ID:** `hausdorff-positive-higher-spin-cdd-cone`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized
 - **Type:** CANDIDATE THEOREM / INTEGRABLE-QFT SOURCE CLASSIFICATION / POSITIVITY LAW
 - **Scientific status:** `[PROVED HERE] [COMPLETE-CHARGE FLOW PARENT AUDITED]`
   `[NOVELTY UNVERIFIED] [SIGNIFICANCE GATE OPEN]`
@@ -713,3 +713,32 @@ Choquet-type statement about the cone, independent of the CDD material.  The car
 (global regularity for non-atomic measures, quasilocal density and compact-local QFT flow,
 universality from locality and unitarity) are research items the card itself lists as extensions, not
 formalization gates.
+
+### Log — the extreme-ray dictionary `(18)` is formalized `[PROVED]`
+
+The last unformalized numbered statement is closed.
+
+- `HTGeometry/PositiveMeasureExtremeRays.lean` — `IsExtremeRayMeasure`,
+  `eq_smul_dirac_of_compl_singleton_null`, `isExtremeRayMeasure_smul_dirac`,
+  `measure_eq_zero_or_eq_univ_of_isExtremeRayMeasure`,
+  `exists_smul_dirac_of_isExtremeRayMeasure`, and the classification
+  **`isExtremeRayMeasure_iff_smul_dirac`**: a finite positive measure spans an extreme ray of the
+  positive cone iff it is a nonzero finite multiple of a point mass.  Mechanism: extremality makes
+  every measurable set carry either no mass or the total mass, and a two-valued finite measure on a
+  Hausdorff second-countable space has a one-point support, since two distinct support points would
+  carry disjoint open sets of full mass.
+- `HTGeometry/HausdorffCddExtremeRays.lean` — `isExtremeRayMeasure_iff_hausdorffAtomSource`,
+  `exists_shell_hausdorffCDDPhase_of_isExtremeRayMeasure` (`(18)`: extreme source ray = one
+  elementary paired-shell phase ray), `hausdorffCDDPhase_zeroShell` and
+  `exp_I_hausdorffCDDPhase_zeroShell` (`(18a)`, `(18b)`: the `y = 0` ray is ordinary `T T̄`),
+  and `hausdorffCDDPhase_finiteAtomicSource` (finite atomic source = finite shell-germ sum).
+
+Both modules axiom-clean and wired into `GaloisForLFunctions.HTGeometry`.  With Theorem A
+(Hausdorff's moment theorem with uniqueness), Theorem B (`(11) = (13)`), the strict cone
+inequalities and the q-ladder instance already formalized, every numbered statement of the card is
+an unconditional Lean theorem.  Promoted to `3-formalized/nad`.
+
+The three remaining unchecked gates are open *mathematics* the card does not claim to have proved —
+global regularity classification for non-atomic measures, an explicit exponentially quasilocal
+density with compact-local QFT flow, and a universality theorem deriving the cone from locality and
+unitarity — plus the external formula-level novelty audit.

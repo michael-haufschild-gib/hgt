@@ -70,7 +70,7 @@ theorem norm_nodeJet_sub_le_uniform (μ : Measure ℝ)
       rw [← heq]
       simpa [Real.norm_eq_abs] using ht
     have hone : |u t - u₀ t| ≤ 1 := le_trans hdiff hclose
-    have hexp := abs_exp_sub_exp_le hone
+    have hexp := abs_exp_sub_exp_le_of_abs_sub_le_one hone
     have hfac : ((Real.exp (u t) * w t : ℝ) : ℂ) *
           (((t : ℝ) : ℂ) - z)⁻¹ ^ (k + 1) -
         ((Real.exp (u₀ t) * w t : ℝ) : ℂ) * (((t : ℝ) : ℂ) - z)⁻¹ ^ (k + 1) =

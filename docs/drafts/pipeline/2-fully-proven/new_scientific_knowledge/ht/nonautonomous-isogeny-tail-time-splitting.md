@@ -1572,3 +1572,180 @@ lattice-periodic; and an even lattice-periodic function with poles only on the l
 polynomial in `℘`, by descending induction on its pole order at the origin — even because the
 function is even — cancelling the leading Laurent term with a multiple of `℘ ^ k` and finishing with
 elliptic Liouville.  No divisor-degree count, residue theorem, or Jensen formula is used.
+
+## The elliptic column: carrier, deck identity and tail — PROVED
+
+The abelian-variety column at dimension one now has a concrete carrier and its deck identity, with
+no degree count, no addition theorem and no hypothesis on the protocol.
+
+`HTGeometry/MeromorphicPlaneField.lean` — **the field of meromorphic functions on `ℂ`**, as germs
+along the codiscrete filter:
+
+    planeCodiscrete, mem_planeCodiscrete, eventuallyEq_planeCodiscrete_iff
+    isOpen_of_mem_planeCodiscrete        a codiscrete set of the plane is open
+    meromorphicPlaneSubring, exists_inv_of_ne_zero, isField_meromorphicPlane
+    MeromorphicPlane                     with its `Field` instance
+    ofMeromorphic, ofMeromorphic_eq_iff, MeromorphicPlane.exists_rep
+    weierstrassPElement, derivWeierstrassPElement
+
+Unlike a fraction field of entire functions this carrier contains every meromorphic function
+directly, so `℘` is an element of it with no factorisation theorem.
+
+`HTGeometry/MeromorphicPlaneDifferential.lean` — differentiation descends to those germs, because a
+codiscrete set is open, and satisfies the Leibniz rule, because two meromorphic functions are
+simultaneously analytic on a codiscrete set:
+
+    planeGermDeriv, meromorphicPlaneDeriv, meromorphicPlaneDerivation
+    instance : Differential MeromorphicPlane
+
+`HTGeometry/MeromorphicPlaneTranslation.lean` — the translation action:
+
+    planeTranslate, planeTranslateEquiv (a field automorphism), planeTranslate_deriv
+
+`HTGeometry/MeromorphicPlaneAlgebra.lean` — the constants and polynomial evaluation:
+
+    constPlane, instance : Algebra ℂ MeromorphicPlane, aeval_ofMeromorphic
+
+`HTGeometry/EllipticPlaneSubfield.lean` — the phase fields, computed:
+
+    periodic_toMeromorphicNFOn_of_eventuallyEq   germ periodicity becomes pointwise periodicity
+    ellipticSubfield L : IntermediateField ℂ MeromorphicPlane
+    eval_weierstrassP_ne_zero                    `℘` is transcendental over the constants
+    ellipticSubfield_eq_adjoin :
+      **the `L`-elliptic functions are exactly `ℂ⟮℘[L], ℘'[L]⟯`**
+
+`HTGeometry/EllipticIsogenyDeck.lean` — the depthwise deck identity:
+
+    planeScale m           the pullback along the isogeny `z ↦ m z`, a field automorphism
+    planeScale_planeScale, planeScale_planeTranslate
+    exists_mem_ellipticSubfield_planeScale_iff :
+      **`x` is the pullback of an `L`-elliptic function along `z ↦ m z` exactly when every
+      translation `t` with `m·t ∈ Λ` fixes `x`** — the deck group of the isogeny is exactly its
+      group of division points
+
+`HTGeometry/EllipticIsogenyTailPlane.lean` — the deck closure:
+
+    eq_const_of_forall_mem_range_planeScale :
+      **for accumulated degrees of unbounded norm, an element that is a pullback at every depth is
+      constant** — the union of the prefix kernels is dense, so the phase tail is its invariant
+      field
+
+All wired into `GaloisForLFunctions.HTGeometry`, all `[propext, Classical.choice, Quot.sound]`.
+
+This is card item `(1)` for the elliptic column, in the analytic presentation: the phase tail equals
+the total deck invariant field.  What the presentation does not yet carry is a *differential-generic*
+point, because the tautological point `(℘, ℘')` has Maurer–Cartan velocity `1` there; items `(2)`,
+`(6)`, `(7)` need the generic reparametrisation of this differential field, which is the next
+construction.
+
+## The generic reparametrisation — the differential-generic carrier, PROVED
+
+A point of an algebraic group whose coordinates are actual functions is never differential-generic:
+its Maurer–Cartan velocity is `1`.  The construction that repairs this without changing the group is
+the generic reparametrisation of the variable, and it is now formal.
+
+`HTGeometry/CoefficientDerivation.lean` (wired, axiom-clean):
+
+    coeffGraphHom       the dual-number graph `a ↦ a + (δ a)ε` of the coefficient derivation
+    coeffEval           evaluation of a polynomial through it
+    coeffEval_fst       its first component is the polynomial itself
+    coeffDerivFun_C, coeffDerivFun_X, coeffDerivFun_mul
+    coeffDerivation     **differentiation of the coefficients of a multivariate polynomial**
+
+The Leibniz rule is not proved by hand: it is the multiplicativity of `eval₂Hom` read in the `ε`
+component, where the product of `TrivSqZeroExt` is exactly the Leibniz formula.
+
+`HTGeometry/GenericReparametrization.lean` (wired, axiom-clean):
+
+    ReparamPoly K, ReparamField K       rational functions in the reparametrisation jets over `K`
+    polyDerivation, fieldDerivation     the chain-rule derivation
+    instance : Differential (ReparamField K)
+    deriv_jet          `(u^{(i)})′ = u^{(i+1)}`
+    deriv_algebraMap   **`(a)′ = (δ a)·u′` for every `a` of the base** — the chain rule
+
+`HTGeometry/ReparametrizationAutomorphism.lean` (wired, axiom-clean):
+
+    mvPolynomial_derivation_ext   two integer derivations agreeing on constants and variables agree
+    polyEquiv, fieldEquiv         a base automorphism acts, fixing every jet
+    fieldEquiv_jet, fieldEquiv_base, fieldEquiv_symm_jet, fieldEquiv_symm_base
+    conjDerivation                its conjugate of the chain-rule derivation
+    fieldEquiv_deriv :
+      **a derivation-preserving automorphism of the base extends to a derivation-preserving
+      automorphism of the generic reparametrisation**
+
+Applied to the plane this says: the deck transformations of the elliptic column — the translations
+`f ↦ f(· + c)`, which commute with `d/dz` — act on the generic reparametrisation, with no formula
+for their action on the coordinates of the curve.  No `℘` addition theorem is needed anywhere.
+
+## Card item `(6)` for the elliptic column — PROVED
+
+On the generic reparametrisation of the meromorphic plane field the elliptic protocol has a
+differential-generic point, and its phase tail is exactly the Maurer--Cartan velocity field.
+
+`HTGeometry/ReparametrizationDescent.lean` (wired, axiom-clean) — the minimal-denominator descent:
+
+    IsJetDenom, isJetDenom_sub, isJetDenom_smul, isJetDenom_polyEquiv
+    coeff_polyEquiv, support_polyEquiv
+    exists_invariant_representation :
+      an element invariant under a family of base automorphisms is a ratio of jet polynomials
+      whose coefficients are themselves invariant
+    exists_representation_coeff_mem :
+      with the invariants of the family lying in a subfield, the coefficients lie in that subfield
+
+The mechanism is the classical minimal-denominator argument: present the element as `p/q` with `q`
+of the fewest monomials, normalised at one of them; the twisted difference `q - e·q` is again a
+denominator and has lost that monomial, so minimality forces it to vanish.
+
+`HTGeometry/EllipticReparamProtocolTail.lean` (wired, axiom-clean):
+
+    planeTranslateEquiv_deriv
+    exists_const_coeff_representation_of_forall_deck_fixed :
+      invariance under every deck translation of every depth forces constant coefficients
+
+`HTGeometry/EllipticVelocityTail.lean` (wired, axiom-clean):
+
+    deriv_constPlane, planeTranslate_constPlane
+    Algebra ℂ (ReparamField MeromorphicPlane), IsScalarTower, DifferentialAlgebra ℂ …
+    differentialJet_jet_zero        the jets are the derivatives of the velocity
+    velocityField                   `C⟨u′⟩`
+    jet_mem_velocityField, algebraMap_mem_velocityField_of_const_coeff
+    deckInvariantField              the invariants of every deck translation of every depth
+    derivationClosed_deckInvariantField
+    deckInvariantField_eq_velocityField :
+      **`T_i = C⟨ℓ_i(g_i)⟩`** — the phase tail of a degree-expanding elliptic isogeny protocol is
+      exactly the differential rational functions of the Maurer--Cartan velocity
+
+This is card item `(6)` for the elliptic column, with no hypothesis beyond `‖M n‖ → ∞`: the
+accumulated isogeny degrees are unbounded.  Item `(7)` additionally needs the differential
+transcendence of the velocity, and item `(2)` the reversible-quotient half.
+
+## Card item `(7)` for the elliptic column — PROVED
+
+Added to `HTGeometry/EllipticVelocityTail.lean` (wired, axiom-clean):
+
+    algebraicIndependent_jet            the jet coordinates are algebraically independent over the
+                                        base
+    differentialIndependent_jet_zero    **the velocity is differentially transcendental over the
+                                        constants**, so `dtrdeg_C T_i = 1 = dim G_i`
+    velocityField_eq_adjoin_range_jet   the velocity field is generated by the jets
+    aeval_jet_eq_algebraMap             a complex jet polynomial is the image of its
+                                        constant-coefficient lift
+    eq_constPlane_of_algebraMap_mem_velocityField :
+      **`T_i ∩ C(G_i) = C`** — an element of the base lying in the velocity field is a constant
+
+Both halves of `(7)` are therefore formal for the elliptic column: the tail has differential
+transcendence degree equal to the dimension of the group, and it meets the function field of the
+group only in the constants.  In the degree-expanding branch the erased sector is everything, so the
+reversible quotient of `(2)` is trivial and `(2)` coincides with `(6)`.
+
+### Card status by item, updated again
+
+| item | general `G` | `G_m` | `G_m^r` | elliptic curve |
+|---|---|---|---|---|
+| (1) deck closure | bridge, conditional on one degree bound | proved | proved | **proved** |
+| (2) position + velocity | needs the Lie functor | proved | prefix identity proved | **proved (expanding branch)** |
+| (3) `a^{-1}(H_(i+1)) = H_i` | proved | proved | proved | proved |
+| (4) `q_i : Q_i ≅ Q_(i+1)` | proved | instantiated | instantiated | instantiated |
+| (5) velocity transport | needs the Lie functor | proved | proved | **proved** |
+| (6) purely expanding | needs the Lie functor | proved | proved | **proved** |
+| (7) dtrdeg and `T ∩ C(G) = C` | needs the Lie functor | proved | proved | **proved** |

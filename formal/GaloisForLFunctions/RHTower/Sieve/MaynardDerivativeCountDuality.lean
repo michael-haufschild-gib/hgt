@@ -732,13 +732,14 @@ theorem lowOrdinate_factorKind_eq_zeta_or_log_of_overHeight
   | zeta => exact Or.inl rfl
   | log => exact Or.inr rfl
 
-/-- **Uniform low-ordinate seam reserve.**  Once the excised factor is genuinely over height
-(`s >= 1`), both derivative--complement terms lie `2/25` inside the first receiver throughout
-the complementary amplitude band `alpha >= 19/25`.  The endpoint is sharp for this argument:
+/-- **Conditional low-ordinate reserve away from the giant seam.**  Here `s` is the logarithmic
+length of the *complement*, not the excised factor.  If that complement itself has at least one
+full height of mass, both derivative--complement terms lie `2/25` inside the first receiver
+throughout the amplitude band `alpha >= 19/25`.  The endpoint is sharp for this argument:
 `8 * (1 - 19/25) = 48/25`, leaving `2 - 48/25 = 2/25`.
 
-This removes the apparent fixed-polylog obstruction at `mu * (1-alpha) = 1`: that obstruction
-came from weakening the literal over-height condition to `s >= 0`. -/
+The single-giant seam instead has complement mass below height, so its hypotheses do not supply
+`s >= 1`; see `not_giantSeam_implies_twoTwentyFifth_heightReserve`. -/
 theorem lowOrdinate_derivativeComplement_exponents_le_first_sub_reserve
     {mu tau alpha s : ℝ}
     (hmuHi : mu <= 8)
@@ -820,6 +821,65 @@ theorem lowOrdinate_derivativeComplement_normalized_first
       rw [← Real.rpow_add hT0]
       congr 1
       ring
+
+/-- **Exact moving reserve.**  Without a lower bound on complement mass, the height term retains
+precisely the available boundary distance `1 - mu*(1-alpha)` plus complement mass `s`.  This is
+the correct invariant for the single-giant seam. -/
+theorem derivativeComplementHeight_le_first_sub_movingReserve
+    {mu tau alpha s : ℝ}
+    (halpha : alpha <= 1) (htau : tau <= mu) :
+    maynardDerivativeComplementHeightExponent tau alpha s <=
+      mu * (1 - alpha) - (1 - mu * (1 - alpha) + s) := by
+  have hdelta : 0 <= 1 - alpha := by linarith
+  have hmul : tau * (1 - alpha) <= mu * (1 - alpha) :=
+    mul_le_mul_of_nonneg_right htau hdelta
+  dsimp only [maynardDerivativeComplementHeightExponent]
+  linarith
+
+/-- **Zero-reserve rigidity.**  In the derivative branch, equality with the first receiver can
+occur only at simultaneous scale saturation, exact trivial-count boundary, and zero complement
+mass.  Hence every nondegenerate complement has a strict (possibly moving) power reserve. -/
+theorem derivativeComplementHeight_eq_first_boundary_rigidity
+    {mu tau alpha s : ℝ}
+    (halpha : alpha <= 1) (htau : tau <= mu) (hs : 0 <= s)
+    (hthreshold : mu * (1 - alpha) <= 1)
+    (heq : maynardDerivativeComplementHeightExponent tau alpha s =
+      mu * (1 - alpha)) :
+    mu * (1 - alpha) = 1 ∧ s = 0 ∧ tau * (1 - alpha) = 1 := by
+  have hdelta : 0 <= 1 - alpha := by linarith
+  have hmul : tau * (1 - alpha) <= mu * (1 - alpha) :=
+    mul_le_mul_of_nonneg_right htau hdelta
+  dsimp only [maynardDerivativeComplementHeightExponent] at heq
+  constructor
+  · linarith
+  constructor <;> linarith
+
+/-- The three boundary equalities are also sufficient for zero reserve. -/
+theorem derivativeComplementHeight_eq_first_of_boundary
+    {mu tau alpha s : ℝ}
+    (hmu : mu * (1 - alpha) = 1) (hs : s = 0)
+    (htau : tau * (1 - alpha) = 1) :
+    maynardDerivativeComplementHeightExponent tau alpha s =
+      mu * (1 - alpha) := by
+  dsimp only [maynardDerivativeComplementHeightExponent]
+  linarith
+
+/-- **Closed falsifier for the former C53 inference.**  Single-giant geometry (`r>1`, complement
+`0<=s<1`) does not imply a uniform `2/25` height reserve.  At the fully admissible scalar point
+`mu=tau=r=5`, `alpha=4/5`, `s=0`, the derivative height exponent equals the first receiver
+exactly.  Thus over-height type rigidity cannot pay fixed polylogarithms by itself. -/
+theorem not_giantSeam_implies_twoTwentyFifth_heightReserve :
+    ¬ ∀ mu tau alpha r s : ℝ,
+      19 / 9 < mu → mu <= 8 →
+      19 / 25 <= alpha → alpha <= 997 / 1000 →
+      tau <= mu → tau = r + s → 1 < r → 0 <= s → s < 1 →
+      maynardDerivativeComplementHeightExponent tau alpha s <=
+        mu * (1 - alpha) - 2 / 25 := by
+  intro h
+  have hbad := h 5 5 (4 / 5) 5 0
+    (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+    (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  norm_num [maynardDerivativeComplementHeightExponent] at hbad
 
 /-- Exact scalar excision of a pointwise derivative-bounded factor.  The factor's `T⁻¹` saving
 appears as `T / C` in the complementary product threshold and is not weakened to a fixed local

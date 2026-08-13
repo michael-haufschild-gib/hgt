@@ -569,3 +569,41 @@ bound `|V^m| <= |V|_HS^m / sqrt(m!)` generates `exp(c|z|^2)`, order two rather t
 small-tail split only improves the constant.  The route that remains is entire-function theoretic
 (real zeros with summable reciprocals, then a genus-zero Hadamard product), and Hadamard
 factorization is absent from mathlib.
+
+## Log — the conditional-expectation identity and polynomial blindness are formalized `[PROVED]`
+
+New module `HTGeometry/BoundaryConditionalExpectation.lean` (wired, axiom-clean).  It works with the
+measure-level barycenter `NevanlinnaBoundaryFamily.measureBarycenter` and its disintegration.
+
+- `leafKernel`, `leafAverage`, `markovAverage` — the leaf kernel as a genuine `Kernel`, the leaf
+  average as a function of the projective parameter, and the constraint average on the line;
+  `stronglyMeasurable_leafAverage` from `StronglyMeasurable.integral_kernel`.
+- `ae_projectiveLabel_eq` — almost every point of a leaf carries that leaf's own label.
+- `integral_measureBarycenter` — the carrier integral is the parameter integral of leaf integrals
+  (through the corpus `integral_bind_real`).
+- **`integral_comp_projectiveLabel_mul_barycenter`** — equation `(4)`: a label-measurable factor
+  cannot distinguish an observable from its leaf average.
+- **`markovAverage_ae_eq_condExp`** — equation `(5)`: `P_s = E_ν[· | σ(π)]` for the σ-algebra
+  `labelSigmaAlgebra = comap π`, proved through `ae_eq_condExp_of_forall_setIntegral_eq`.
+- **`leafAverage_eval`** — equation `(10)`: `P_s p = L_s(p)·1`, from `momentFunctional_eq_integral`.
+- **`leafAverage_eval_sub_const`** — equation `(11)`: centered polynomials are vertical.
+- **`integral_eval_mul_comp_projectiveLabel`** — equations `(12)`--`(13)`: every mean-zero label
+  observable annihilates every polynomial against the carrier.
+
+Still open for Stage 3: the `L²` orthogonal splitting `(6)`--`(8)` as a statement about
+`H_hor`/`H_ver` subspaces, resolvent completeness `(14)`--`(21)` (whose analytic core is uniform
+density of `span({1} ∪ {Φ_z})` in `C(T)` by Stieltjes uniqueness and the open mapping theorem), and
+the three-layer Pick–Gram splitting `(21a)`--`(21i)` with its exact ranks.
+
+### Log — the orthogonal splitting `(6)`--`(8)` is formalized in integral form `[PROVED]`
+
+- `integral_comp_projectiveLabel_mul_eq_parameter` — pairing an observable with a label observable
+  is the parameter integral of its leaf averages, `⟨f, G∘π⟩ = ∫_T G·(P_s f) dη`.
+- **`forall_integral_comp_projectiveLabel_mul_eq_zero_iff`** — equations `(7)`--`(8)`: a bounded
+  observable is orthogonal to *every* bounded label observable exactly when almost every leaf
+  average vanishes.  The forward direction pairs against the sign of the leaf average, so the
+  vertical space is exactly the kernel of leaf averaging and the horizontal space is exactly the
+  closed span of the label observables.
+
+Remaining: resolvent completeness `(14)`--`(21)` and the three-layer Pick--Gram splitting
+`(21a)`--`(21i)`.

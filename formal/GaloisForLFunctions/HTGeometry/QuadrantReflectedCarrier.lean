@@ -39,9 +39,8 @@ theorem isClosed_rect (a b c d : ℝ) : IsClosed (rect a b c d) := by
   exact (isClosed_Icc.preimage Complex.continuous_re).inter
     (isClosed_Icc.preimage Complex.continuous_im)
 
-theorem isBounded_rect (a b c d : ℝ) : Bornology.IsBounded (rect a b c d) := by
-  refine (Metric.isBounded_iff_subset_closedBall 0).2
-    ⟨(|a| + |b|) + (|c| + |d|), fun z hz => ?_⟩
+theorem norm_le_of_mem_rect {a b c d : ℝ} {z : ℂ} (hz : z ∈ rect a b c d) :
+    ‖z‖ ≤ (|a| + |b|) + (|c| + |d|) := by
   rw [mem_rect] at hz
   obtain ⟨⟨h1, h2⟩, h3, h4⟩ := hz
   have hre : |z.re| ≤ |a| + |b| := by
@@ -63,8 +62,12 @@ theorem isBounded_rect (a b c d : ℝ) : Bornology.IsBounded (rect a b c d) := b
       have h6 : -c ≤ |c| := neg_le_abs c
       linarith [abs_nonneg d]
   have := Complex.norm_le_abs_re_add_abs_im z
-  simp only [Metric.mem_closedBall, dist_zero_right]
   linarith
+
+theorem isBounded_rect (a b c d : ℝ) : Bornology.IsBounded (rect a b c d) :=
+  (Metric.isBounded_iff_subset_closedBall 0).2
+    ⟨(|a| + |b|) + (|c| + |d|), fun _ hz => by
+      simpa [Metric.mem_closedBall, dist_zero_right] using norm_le_of_mem_rect hz⟩
 
 theorem isCompact_rect (a b c d : ℝ) : IsCompact (rect a b c d) :=
   Metric.isCompact_of_isClosed_isBounded (isClosed_rect a b c d) (isBounded_rect a b c d)
@@ -215,5 +218,88 @@ theorem midStrip_subset_compl_doubledRect {a b c d : ℝ} :
 theorem midStrip_subset_compl_rect {a b c d : ℝ} : midStrip c ⊆ (rect a b c d)ᶜ :=
   fun _ hz => fun hcon => (midStrip_subset_compl_doubledRect hz)
     (rect_subset_doubledRect a b c d hcon)
+
+theorem compl_doubledRect_eq {a b c d : ℝ} (hc : 0 < c) (hcd : c ≤ d) :
+    (doubledRect a b c d)ᶜ
+      = ((((({z : ℂ | z.re < a} ∪ {z : ℂ | z.im < -d})) ∪ {z : ℂ | b < z.re})
+          ∪ {z : ℂ | -c < z.im ∧ z.im < c}) ∪ {z : ℂ | d < z.im}) := by
+  ext z
+  simp only [Set.mem_compl_iff, mem_doubledRect, Set.mem_union, Set.mem_setOf_eq, not_and_or,
+    not_le]
+  constructor
+  · intro h
+    rcases h with h | h
+    · rcases h with h | h
+      · exact Or.inl (Or.inl (Or.inl (Or.inl h)))
+      · exact Or.inl (Or.inl (Or.inr h))
+    · push Not at h
+      obtain ⟨h1, h2⟩ := h
+      rcases lt_or_ge z.im (-d) with hlt | hge
+      · exact Or.inl (Or.inl (Or.inl (Or.inr hlt)))
+      · have hnc : -c < z.im := h1 hge
+        rcases lt_or_ge z.im c with hlt' | hge'
+        · exact Or.inl (Or.inr ⟨hnc, hlt'⟩)
+        · exact Or.inr (h2 hge')
+  · intro h
+    rcases h with h | h
+    · rcases h with h | h
+      · rcases h with h | h
+        · rcases h with h | h
+          · exact Or.inl (Or.inl h)
+          · refine Or.inr ?_
+            push Not
+            exact ⟨fun hge => absurd h (not_lt.mpr hge), fun hge => by linarith⟩
+        · exact Or.inl (Or.inr h)
+      · refine Or.inr ?_
+        push Not
+        exact ⟨fun _ => by linarith [h.1], fun hge => by linarith [h.2]⟩
+    · refine Or.inr ?_
+      push Not
+      exact ⟨fun _ => by linarith, fun _ => h⟩
+
+/-- **The complement of a doubled rectangle is preconnected.** -/
+theorem isPreconnected_compl_doubledRect {a b c d : ℝ} (hc : 0 < c) (hcd : c ≤ d) :
+    IsPreconnected ((doubledRect a b c d)ᶜ) := by
+  have h1 : IsPreconnected {z : ℂ | z.re < a} := (convex_halfSpace_re_lt a).isPreconnected
+  have h3 : IsPreconnected {z : ℂ | z.im < -d} := (convex_halfSpace_im_lt (-d)).isPreconnected
+  have h2 : IsPreconnected {z : ℂ | b < z.re} := (convex_halfSpace_re_gt b).isPreconnected
+  have h4 : IsPreconnected {z : ℂ | -c < z.im ∧ z.im < c} := (convex_midStrip c).isPreconnected
+  have h5 : IsPreconnected {z : ℂ | d < z.im} := (convex_halfSpace_im_gt d).isPreconnected
+  have p13 : IsPreconnected ({z : ℂ | z.re < a} ∪ {z : ℂ | z.im < -d}) := by
+    refine IsPreconnected.union (((a - 1 : ℝ) : ℂ) + ((-d - 1 : ℝ) : ℂ) * I) ?_ ?_ h1 h3 <;>
+      · simp only [Set.mem_setOf_eq, Complex.add_re, Complex.add_im, Complex.ofReal_re,
+          Complex.ofReal_im, Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im]
+        linarith
+  have p132 : IsPreconnected (({z : ℂ | z.re < a} ∪ {z : ℂ | z.im < -d}) ∪ {z : ℂ | b < z.re}) := by
+    refine IsPreconnected.union (((b + 1 : ℝ) : ℂ) + ((-d - 1 : ℝ) : ℂ) * I) ?_ ?_ p13 h2
+    · right
+      simp only [Set.mem_setOf_eq, Complex.add_im, Complex.ofReal_im, Complex.mul_im,
+        Complex.ofReal_re, Complex.I_re, Complex.I_im]
+      linarith
+    · simp only [Set.mem_setOf_eq, Complex.add_re, Complex.ofReal_re, Complex.mul_re,
+        Complex.ofReal_im, Complex.I_re, Complex.I_im]
+      linarith
+  have p1324 : IsPreconnected ((({z : ℂ | z.re < a} ∪ {z : ℂ | z.im < -d}) ∪ {z : ℂ | b < z.re})
+      ∪ {z : ℂ | -c < z.im ∧ z.im < c}) := by
+    refine IsPreconnected.union (((b + 1 : ℝ) : ℂ) + ((0 : ℝ) : ℂ) * I) ?_ ?_ p132 h4
+    · right
+      simp only [Set.mem_setOf_eq, Complex.add_re, Complex.ofReal_re, Complex.mul_re,
+        Complex.ofReal_im, Complex.I_re, Complex.I_im]
+      linarith
+    · simp only [Set.mem_setOf_eq, Complex.add_im, Complex.ofReal_im, Complex.mul_im,
+        Complex.ofReal_re, Complex.I_re, Complex.I_im]
+      constructor <;> linarith
+  have p13245 : IsPreconnected (((({z : ℂ | z.re < a} ∪ {z : ℂ | z.im < -d}) ∪ {z : ℂ | b < z.re})
+      ∪ {z : ℂ | -c < z.im ∧ z.im < c}) ∪ {z : ℂ | d < z.im}) := by
+    refine IsPreconnected.union (((a - 1 : ℝ) : ℂ) + ((d + 1 : ℝ) : ℂ) * I) ?_ ?_ p1324 h5
+    · left; left; left
+      simp only [Set.mem_setOf_eq, Complex.add_re, Complex.ofReal_re, Complex.mul_re,
+        Complex.ofReal_im, Complex.I_re, Complex.I_im]
+      linarith
+    · simp only [Set.mem_setOf_eq, Complex.add_im, Complex.ofReal_im, Complex.mul_im,
+        Complex.ofReal_re, Complex.I_re, Complex.I_im]
+      linarith
+  rw [compl_doubledRect_eq hc hcd]
+  exact p13245
 
 end GaloisForLFunctions.HTGeometry

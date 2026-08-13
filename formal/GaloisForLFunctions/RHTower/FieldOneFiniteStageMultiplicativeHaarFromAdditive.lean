@@ -429,6 +429,45 @@ theorem fieldOneFiniteStageIdeleMultiplicative_fundamentalScalar_pos
       (fieldOneFiniteStageIdeleFundamentalHaarMeasure S) :=
   haarScalarFactor_pos_of_isHaarMeasure _ _
 
+/-- Multiplication by the module cancels the Radon--Nikodym factor
+`d* a = da / |a|`. -/
+theorem fieldOneFiniteStageIdeleMultiplicative_lintegral_module_mul
+    (S : Finset (HeightOneSpectrum ℤ))
+    (G : FieldOneFiniteStageIdele S → ℝ≥0∞) (hG : Measurable G) :
+    (∫⁻ u, (fieldOneFiniteStageModule S u : ℝ≥0∞) * G u
+        ∂fieldOneFiniteStageIdeleMultiplicativeFromAdditive S) =
+      ∫⁻ u, G u ∂fieldOneFiniteStageIdeleAdditivePullbackMeasure S := by
+  rw [fieldOneFiniteStageIdeleMultiplicativeFromAdditive,
+    lintegral_withDensity_eq_lintegral_mul
+      (fieldOneFiniteStageIdeleAdditivePullbackMeasure S)
+      (fieldOneFiniteStageIdeleModuleInvDensity_continuous S).measurable]
+  apply lintegral_congr
+  intro u
+  rw [Pi.mul_apply, fieldOneFiniteStageIdeleModuleInvDensity]
+  have hmod0 : (fieldOneFiniteStageModule S u : ℝ≥0∞) ≠ 0 :=
+    ENNReal.coe_ne_zero.2 (fieldOneFiniteStageModule_ne_zero S u)
+  have hmodTop : (fieldOneFiniteStageModule S u : ℝ≥0∞) ≠ ∞ :=
+    ENNReal.coe_ne_top
+  rw [ENNReal.coe_inv (fieldOneFiniteStageModule_ne_zero S u),
+    ← mul_assoc, ENNReal.inv_mul_cancel hmod0 hmodTop, one_mul]
+  exact (fieldOneFiniteStageModule_continuous S).measurable.coe_nnreal_ennreal.mul hG
+
+/-- Pulled-back additive Haar integrates a measurable adelic function exactly
+as full additive Haar, because the idele locus is conull. -/
+theorem fieldOneFiniteStageIdeleAdditivePullback_lintegral_comp_val
+    (S : Finset (HeightOneSpectrum ℤ))
+    (H : FieldOneFiniteStageAdele S → ℝ≥0∞) (hH : Measurable H) :
+    (∫⁻ u, H (fieldOneFiniteStageIdeleVal S u)
+        ∂fieldOneFiniteStageIdeleAdditivePullbackMeasure S) =
+      ∫⁻ a, H a ∂fieldOneFiniteStageProductAddHaar S := by
+  have hmap := (fieldOneFiniteStageIdeleVal_isOpenEmbedding S).measurableEmbedding
+    |>.lintegral_map (μ := fieldOneFiniteStageIdeleAdditivePullbackMeasure S) H
+  rw [fieldOneFiniteStageIdeleAdditivePullbackMeasure,
+    (fieldOneFiniteStageIdeleVal_isOpenEmbedding S).measurableEmbedding.map_comap,
+    fieldOneFiniteStageIdeleVal_range,
+    Measure.restrict_eq_self_of_ae_mem (fieldOneFiniteStageIdeleLocus_ae S)] at hmap
+  exact hmap.symm
+
 /-- Exact Tonelli unfolding over the literal diagonal `S`-unit lattice and canonical idele-class
 fundamental domain.  This is the nonnegative measure identity underlying Connes--Marcolli
 equations (2.250)--(2.251). -/

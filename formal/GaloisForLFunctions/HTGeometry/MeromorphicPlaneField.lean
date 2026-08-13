@@ -84,7 +84,7 @@ theorem exists_inv_of_ne_zero {g : Germ planeCodiscrete ℂ}
     have hall : ∀ x : ℂ, meromorphicOrderAt f x = ⊤ := by
       intro x
       by_contra hx
-      exact htop (hmerOn.meromorphicOrderAt_ne_top_of_isPreconnected isPreconnected_univ
+      exact absurd htop (hmerOn.meromorphicOrderAt_ne_top_of_isPreconnected isPreconnected_univ
         (Set.mem_univ x) (Set.mem_univ z) hx)
     have hzero : (f : Germ planeCodiscrete ℂ) = ((0 : ℂ → ℂ) : Germ planeCodiscrete ℂ) := by
       refine Germ.coe_eq.mpr (eventuallyEq_planeCodiscrete_iff.mpr fun x => ?_)
@@ -155,6 +155,35 @@ theorem ofMeromorphic_eq_iff {f g : ℂ → ℂ} (hf : ∀ z, MeromorphicAt f z)
     refine MeromorphicPlane.germ_injective ?_
     rw [germ_ofMeromorphic, germ_ofMeromorphic]
     exact Germ.coe_eq.mpr (eventuallyEq_planeCodiscrete_iff.mpr h)
+
+@[simp] theorem germ_zero :
+    (0 : MeromorphicPlane).germ = ((0 : ℂ → ℂ) : Germ planeCodiscrete ℂ) := rfl
+
+@[simp] theorem germ_one :
+    (1 : MeromorphicPlane).germ = ((1 : ℂ → ℂ) : Germ planeCodiscrete ℂ) := rfl
+
+@[simp] theorem germ_add (x y : MeromorphicPlane) : (x + y).germ = x.germ + y.germ := rfl
+
+@[simp] theorem germ_mul (x y : MeromorphicPlane) : (x * y).germ = x.germ * y.germ := rfl
+
+theorem ofMeromorphic_add {f g : ℂ → ℂ} (hf : ∀ z, MeromorphicAt f z)
+    (hg : ∀ z, MeromorphicAt g z) :
+    ofMeromorphic f hf + ofMeromorphic g hg = ofMeromorphic (f + g) (fun z => (hf z).add (hg z)) :=
+  rfl
+
+theorem ofMeromorphic_mul {f g : ℂ → ℂ} (hf : ∀ z, MeromorphicAt f z)
+    (hg : ∀ z, MeromorphicAt g z) :
+    ofMeromorphic f hf * ofMeromorphic g hg = ofMeromorphic (f * g) (fun z => (hf z).mul (hg z)) :=
+  rfl
+
+/-- Every element of the meromorphic plane field is the germ of a meromorphic function. -/
+theorem MeromorphicPlane.exists_rep (x : MeromorphicPlane) :
+    ∃ (f : ℂ → ℂ) (hf : ∀ z, MeromorphicAt f z), x = ofMeromorphic f hf := by
+  obtain ⟨f, hf, hcoe⟩ := (show (meromorphicPlaneSubring : Type) from x).2
+  refine ⟨f, hf, MeromorphicPlane.germ_injective ?_⟩
+  show MeromorphicPlane.germ x = (ofMeromorphic f hf).germ
+  rw [germ_ofMeromorphic]
+  exact hcoe.symm
 
 /-- The Weierstrass `℘` of a period lattice, as an element of the meromorphic plane field. -/
 noncomputable def weierstrassPElement (L : PeriodPair) : MeromorphicPlane :=

@@ -85,8 +85,17 @@ theorem cauchyTransform_eq (A : C(K, ℂ) →L[ℂ] ℂ) {v : ℂ} (hv : v ∉ K
 
 /-! ## Holomorphy off the carrier -/
 
-theorem differentiableAt_cauchyTransform (A : C(K, ℂ) →L[ℂ] ℂ) {v : ℂ} (hv : v ∉ K) :
-    DifferentiableAt ℂ (cauchyTransform A) v := by
+/-- The resolvent inverse, as a map into the continuous functions on the carrier. -/
+def resolventInv (K : Set ℂ) [CompactSpace K] (v : ℂ) : C(K, ℂ) :=
+  Ring.inverse (resolventElt K v)
+
+theorem resolventInv_eq {v : ℂ} (hv : v ∉ K) : resolventInv K v = kernelFun K hv := by
+  have hunit : resolventElt K v = ((resolventUnit K hv : (C(K, ℂ))ˣ) : C(K, ℂ)) := rfl
+  rw [resolventInv, hunit, Ring.inverse_unit]
+  rfl
+
+theorem differentiableAt_resolventInv {v : ℂ} (hv : v ∉ K) :
+    DifferentiableAt ℂ (resolventInv K) v := by
   have haff : DifferentiableAt ℂ (fun u : ℂ => resolventElt K u) v := by
     have : Differentiable ℂ fun u : ℂ => u • (1 : C(K, ℂ)) - coordMap K :=
       (differentiable_id.smul_const (1 : C(K, ℂ))).sub_const (coordMap K)
@@ -94,7 +103,17 @@ theorem differentiableAt_cauchyTransform (A : C(K, ℂ) →L[ℂ] ℂ) {v : ℂ}
   have hinv : DifferentiableAt ℂ Ring.inverse (resolventElt K v) := by
     have h := hasFDerivAt_ringInverse (𝕜 := ℂ) (resolventUnit K hv)
     exact h.differentiableAt
-  exact A.differentiableAt.comp v (hinv.comp v haff)
+  exact hinv.comp v haff
+
+theorem continuousOn_resolventInv : ContinuousOn (resolventInv K) Kᶜ := fun _v hv =>
+  (differentiableAt_resolventInv hv).continuousAt.continuousWithinAt
+
+theorem cauchyTransform_eq_apply_resolventInv (A : C(K, ℂ) →L[ℂ] ℂ) (v : ℂ) :
+    cauchyTransform A v = A (resolventInv K v) := rfl
+
+theorem differentiableAt_cauchyTransform (A : C(K, ℂ) →L[ℂ] ℂ) {v : ℂ} (hv : v ∉ K) :
+    DifferentiableAt ℂ (cauchyTransform A) v :=
+  A.differentiableAt.comp v (differentiableAt_resolventInv hv)
 
 theorem differentiableOn_cauchyTransform (A : C(K, ℂ) →L[ℂ] ℂ) :
     DifferentiableOn ℂ (cauchyTransform A) Kᶜ := fun _v hv =>
@@ -181,6 +200,8 @@ theorem tsum_geometricKernel_eq {v : ℂ} {r : ℝ} (hr : 0 ≤ r) (hKr : ∀ z 
   have hsum := summable_geometricKernel (K := K) hr hKr hv
   ext z
   have heval := (ContinuousMap.evalCLM ℂ z).map_tsum hsum
+  change (ContinuousMap.evalCLM ℂ z) (∑' m : ℕ, ((v⁻¹) ^ (m + 1)) • (coordMap K ^ m))
+    = (kernelFun K hvK) z
   rw [heval]
   have hz : ‖(z : ℂ)‖ < ‖v‖ := lt_of_le_of_lt (hKr z z.2) hv
   have hterm : ∀ m : ℕ,

@@ -1,7 +1,7 @@
 # Completed Suzuki zero modes have an exact high-frequency rigged Wiener carrier
 
 - **ID:** `suzuki-exterior-residual-rigged-wiener-realization`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** SOURCE-DOMAIN THEOREM / HIGH-FREQUENCY CARRIER REALIZATION
 - **Scientific status:** `[PROVED HERE] [NEW SCIENTIFIC KNOWLEDGE]`
   `[NOVELTY UNVERIFIED] [NOT RH]`
@@ -303,6 +303,33 @@ Suzuki completed eigenmode boundedness
 was not found in the corpus or targeted literature search.  The claimed new content is the
 source-domain theorem `(1)`--`(27)`; priority remains unverified.
 
+## 9. Lean status
+
+Formalized unconditionally:
+
+```text
+formal/GaloisForLFunctions/HTGeometry/LogKernelExteriorL2.lean
+formal/GaloisForLFunctions/RHTower/SuzukiExteriorSymbolBounds.lean
+formal/GaloisForLFunctions/RHTower/SuzukiExteriorWienerAlphabet.lean
+formal/GaloisForLFunctions/RHTower/SuzukiExteriorHardyAmplitudes.lean
+formal/GaloisForLFunctions/RHTower/SuzukiValuationEvaluationAlgebra.lean
+formal/GaloisForLFunctions/RHTower/SuzukiExteriorRiggedRealization.lean
+```
+
+together with the pre-existing Wiener stack (`HTGeometry/DiscreteL1Convolution.lean`,
+`RHTower/SuzukiWienerNeumannMajorant.lean`, `RHTower/SuzukiWienerMixedNormCarrier.lean`,
+`RHTower/SuzukiWienerNuclearBoundaryCarrier.lean`).
+
+`(6)`--`(8)` are the log-kernel exterior estimates; `(9)`--`(11)` are the port splitting, its
+`L²` membership, Plancherel for the translated ports, and the opposite boundary phases;
+`(13)`, `(18)` are `suzukiWienerAtoms` and `discreteMass_enorm_suzukiWienerAtoms` (exact mass
+`2 ∑ (log p) p^{-j/2}`, from injectivity of the oriented atoms); `(17)` is
+`exists_bound_suzukiSymbolRemainder`; `(15)`--`(16)` are `suzukiWienerEval_atoms` and
+`suzukiWienerEval_highPassElement` (so `κ = 1`); `(19)` is `exists_suzukiExteriorThreshold`;
+`(21)`--`(22)` are `discreteConv_suzukiHighPass_inverse` and
+`tsum_enorm_suzukiExteriorInverse_le`; `(23)`--`(25)` are `suzukiWienerEval_inverse_mul` and
+`suzukiWienerEval_carrier`.  Every theorem audits to `[propext, Classical.choice, Quot.sound]`.
+
 ## Gates
 
 - [x] prove completed exterior residual lies in `L2`
@@ -310,6 +337,7 @@ source-domain theorem `(1)`--`(27)`; priority remains unverified.
 - [x] source-check exact Suzuki multiplier and prove `kappa=1`
 - [x] construct exact high-frequency `ell1(L2) subset L2(ell1) subset L2(ell2)` carrier
 - [x] prove absolute evaluation reconstructs the completed mode at high frequency
+- [x] formalize `(6)`--`(11)`, `(13)`, `(15)`--`(19)`, `(21)`--`(25)` unconditionally in Lean 4
 - [ ] construct global-to-support-pruned logarithmic carrier intertwiner
 - [ ] realize exact cutoff equation in the middle `ell2` space
 - [ ] apply Gamma wall and weighted-tail coercivity

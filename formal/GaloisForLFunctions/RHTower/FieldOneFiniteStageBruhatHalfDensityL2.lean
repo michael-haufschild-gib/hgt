@@ -95,12 +95,42 @@ theorem fieldOneFiniteStageBruhatLogPeriodization_measurable
   intro q
   exact (fieldOneFiniteStageBruhatOrbit_log_continuous S x q).measurable
 
+/-- Absolute orbit periodization.  Unlike the norm of `Σ(f)`, this retains
+the termwise information needed for Tonelli in Connes--Marcolli Lemma 2.32. -/
+def fieldOneFiniteStageBruhatLogAbsolutePeriodization
+    (S : Finset (HeightOneSpectrum ℤ))
+    (x : FieldOneFiniteStageBruhatSchwartz S)
+    (z : FieldOneFiniteStageModuleOneClass S × ℝ) : ℝ :=
+  ∑' q : fieldOneSUnitSubgroup S,
+    ‖fieldOneFiniteStageBruhatOrbit S x
+      (fieldOneFiniteStageBruhatLogRayIdele S
+        (fun v => (fieldOneFiniteStageAngularTorusRepresentative S z.1 v).1) z.2) q‖
+
+theorem fieldOneFiniteStageBruhatLogAbsolutePeriodization_measurable
+    (S : Finset (HeightOneSpectrum ℤ))
+    (x : FieldOneFiniteStageBruhatSchwartz S) :
+    Measurable (fieldOneFiniteStageBruhatLogAbsolutePeriodization S x) := by
+  letI : Countable ℚˣ := Units.val_injective.countable
+  letI : Countable (fieldOneSUnitSubgroup S) := Subtype.countable
+  apply Measurable.tsum
+  intro q
+  exact (fieldOneFiniteStageBruhatOrbit_log_continuous S x q).norm.measurable
+
 /-- Source half-density in logarithmic module coordinates. -/
 def fieldOneFiniteStageBruhatLogHalfDensity
     (S : Finset (HeightOneSpectrum ℤ))
     (x : FieldOneFiniteStageBruhatSchwartz S)
     (z : FieldOneFiniteStageModuleOneClass S × ℝ) : ℂ :=
   (Real.exp (z.2 / 2) : ℂ) * fieldOneFiniteStageBruhatLogPeriodization S x z
+
+/-- Absolute half-density: `|x|^(1/2)` times the sum of the absolute values
+of all orbit terms. -/
+def fieldOneFiniteStageBruhatLogAbsoluteHalfDensity
+    (S : Finset (HeightOneSpectrum ℤ))
+    (x : FieldOneFiniteStageBruhatSchwartz S)
+    (z : FieldOneFiniteStageModuleOneClass S × ℝ) : ℝ :=
+  Real.exp (z.2 / 2) *
+    fieldOneFiniteStageBruhatLogAbsolutePeriodization S x z
 
 theorem fieldOneFiniteStageBruhatLogHalfDensity_measurable
     (S : Finset (HeightOneSpectrum ℤ))
@@ -109,6 +139,13 @@ theorem fieldOneFiniteStageBruhatLogHalfDensity_measurable
   exact (Complex.measurable_ofReal.comp
       (Real.measurable_exp.comp (measurable_snd.div_const 2))).mul
     (fieldOneFiniteStageBruhatLogPeriodization_measurable S x)
+
+theorem fieldOneFiniteStageBruhatLogAbsoluteHalfDensity_measurable
+    (S : Finset (HeightOneSpectrum ℤ))
+    (x : FieldOneFiniteStageBruhatSchwartz S) :
+    Measurable (fieldOneFiniteStageBruhatLogAbsoluteHalfDensity S x) := by
+  exact (Real.measurable_exp.comp (measurable_snd.div_const 2)).mul
+    (fieldOneFiniteStageBruhatLogAbsolutePeriodization_measurable S x)
 
 /-- Product of probability Haar on the angular factor and Lebesgue measure on log-module. -/
 def fieldOneFiniteStageSplitLogHaarMeasure
@@ -254,12 +291,100 @@ theorem fieldOneFiniteStageBruhatLogHalfDensity_memLp
       rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
       exact hbound z
 
+private theorem fieldOneFiniteStageBruhatLogAbsoluteHalfDensity_sq_le_majorant
+    (S : Finset (HeightOneSpectrum ℤ))
+    (x : FieldOneFiniteStageBruhatSchwartz S) :
+    ∃ C D : ℝ, 0 ≤ C ∧ 0 ≤ D ∧
+      ∀ z : FieldOneFiniteStageModuleOneClass S × ℝ,
+        ‖fieldOneFiniteStageBruhatLogAbsoluteHalfDensity S x z‖ ^ 2 ≤
+          fieldOneFiniteStageBruhatHalfDensitySquareMajorant S C D z.2 := by
+  obtain ⟨C, hC, hsmall⟩ :=
+    fieldOneFiniteStageBruhatTensor_norm_tsum_uniform_logGrowth S x
+  obtain ⟨D, hD, hlarge⟩ :=
+    fieldOneFiniteStageBruhatTensor_norm_tsum_uniform_rapidDecay S x 1
+  refine ⟨C, D, hC, hD, fun z => ?_⟩
+  let k := fieldOneFiniteStageAngularTorusRepresentative S z.1
+  let P := fieldOneFiniteStageBruhatLogAbsolutePeriodization S x z
+  have hP0 : 0 ≤ P := by
+    exact tsum_nonneg fun _ => norm_nonneg _
+  have hhalf :
+      ‖fieldOneFiniteStageBruhatLogAbsoluteHalfDensity S x z‖ ^ 2 =
+        Real.exp z.2 * P ^ 2 := by
+    rw [fieldOneFiniteStageBruhatLogAbsoluteHalfDensity, Real.norm_eq_abs,
+      abs_of_nonneg (mul_nonneg (Real.exp_pos _).le hP0), mul_pow]
+    congr 1
+    rw [pow_two, ← Real.exp_add]
+    congr 1
+    ring
+  rw [hhalf]
+  by_cases ht : z.2 ≤ 0
+  · rw [fieldOneFiniteStageBruhatHalfDensitySquareMajorant, if_pos ht]
+    have hP : P ≤ C * (-z.2 + 2) ^ Fintype.card ↥S :=
+      hsmall k z.2 ht
+    have hsq : P ^ 2 ≤ (C * (-z.2 + 2) ^ Fintype.card ↥S) ^ 2 :=
+      pow_le_pow_left₀ hP0 hP 2
+    calc
+      Real.exp z.2 * P ^ 2 ≤
+          Real.exp z.2 * (C * (-z.2 + 2) ^ Fintype.card ↥S) ^ 2 :=
+        mul_le_mul_of_nonneg_left hsq (Real.exp_pos _).le
+      _ = C ^ 2 *
+          (Real.exp z.2 * (-z.2 + 2) ^ (2 * Fintype.card ↥S)) := by
+        rw [mul_pow, ← pow_mul]
+        ring
+  · rw [fieldOneFiniteStageBruhatHalfDensitySquareMajorant, if_neg ht]
+    have ht0 : 0 ≤ z.2 := le_of_lt (lt_of_not_ge ht)
+    have hP : P ≤ D * Real.exp z.2 ^ (-(1 : ℝ)) :=
+      hlarge k z.2 ht0
+    have hsq : P ^ 2 ≤ (D * Real.exp z.2 ^ (-(1 : ℝ))) ^ 2 :=
+      pow_le_pow_left₀ hP0 hP 2
+    calc
+      Real.exp z.2 * P ^ 2 ≤
+          Real.exp z.2 * (D * Real.exp z.2 ^ (-(1 : ℝ))) ^ 2 :=
+        mul_le_mul_of_nonneg_left hsq (Real.exp_pos _).le
+      _ = D ^ 2 * Real.exp (-z.2) := by
+        rw [Real.rpow_neg_one, ← Real.exp_neg, mul_pow]
+        have hexp : Real.exp z.2 * Real.exp (-z.2) = 1 := by
+          rw [← Real.exp_add]
+          simp
+        calc
+          Real.exp z.2 * (D ^ 2 * Real.exp (-z.2) ^ 2) =
+              D ^ 2 * Real.exp (-z.2) *
+                (Real.exp z.2 * Real.exp (-z.2)) := by ring
+          _ = D ^ 2 * Real.exp (-z.2) := by rw [hexp, mul_one]
+
+/-- The termwise-absolute logarithmic half-density is square-integrable. -/
+theorem fieldOneFiniteStageBruhatLogAbsoluteHalfDensity_memLp
+    (S : Finset (HeightOneSpectrum ℤ))
+    (x : FieldOneFiniteStageBruhatSchwartz S) :
+    MemLp (fieldOneFiniteStageBruhatLogAbsoluteHalfDensity S x) 2
+      (fieldOneFiniteStageSplitLogHaarMeasure S) := by
+  rw [memLp_two_iff_integrable_sq_norm
+    (fieldOneFiniteStageBruhatLogAbsoluteHalfDensity_measurable S x).aestronglyMeasurable]
+  obtain ⟨C, D, hC, hD, hbound⟩ :=
+    fieldOneFiniteStageBruhatLogAbsoluteHalfDensity_sq_le_majorant S x
+  have hmajor :=
+    (fieldOneFiniteStageBruhatHalfDensitySquareMajorant_integrable S C D).comp_snd
+      (fieldOneFiniteStageModuleOneProbabilityHaarMeasure S)
+  apply hmajor.mono'
+  · exact ((fieldOneFiniteStageBruhatLogAbsoluteHalfDensity_measurable S x).norm.pow_const 2).aestronglyMeasurable
+  · exact Filter.Eventually.of_forall fun z => by
+      rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
+      exact hbound z
+
 /-- Half-density on the split class carrier, defined by exact logarithmic pullback. -/
 def fieldOneFiniteStageBruhatSplitHalfDensity
     (S : Finset (HeightOneSpectrum ℤ))
     (x : FieldOneFiniteStageBruhatSchwartz S)
     (z : FieldOneFiniteStageModuleOneClass S × ℝ≥0ˣ) : ℂ :=
   fieldOneFiniteStageBruhatLogHalfDensity S x
+    (z.1, fieldOnePositiveUnitsExpHomeomorph.symm z.2)
+
+/-- Termwise-absolute half-density on the split idele-class carrier. -/
+def fieldOneFiniteStageBruhatSplitAbsoluteHalfDensity
+    (S : Finset (HeightOneSpectrum ℤ))
+    (x : FieldOneFiniteStageBruhatSchwartz S)
+    (z : FieldOneFiniteStageModuleOneClass S × ℝ≥0ˣ) : ℝ :=
+  fieldOneFiniteStageBruhatLogAbsoluteHalfDensity S x
     (z.1, fieldOnePositiveUnitsExpHomeomorph.symm z.2)
 
 private theorem fieldOneFiniteStageSplitExpSymm_measurePreserving
@@ -290,6 +415,30 @@ theorem fieldOneFiniteStageBruhatSplitHalfDensity_memLp
           fieldOnePositiveUnitsLogHaarMeasure) := by
     change MemLp (fun z : FieldOneFiniteStageModuleOneClass S × ℝ≥0ˣ =>
       fieldOneFiniteStageBruhatLogHalfDensity S x
+        (z.1, fieldOnePositiveUnitsExpHomeomorph.symm z.2)) 2
+      ((fieldOneFiniteStageModuleOneProbabilityHaarMeasure S).prod
+        fieldOnePositiveUnitsLogHaarMeasure) at hlog
+    exact hlog
+  rw [fieldOneFiniteStageSplitProductHaarMeasure,
+    fieldOnePositiveUnitsHaar_eq_smul_logHaar, Measure.prod_smul_right]
+  exact hlog'.smul_measure (by simp)
+
+/-- The termwise-absolute split half-density belongs to the literal quotient
+`L²`; this is the analytic input required for absolute correlation summability. -/
+theorem fieldOneFiniteStageBruhatSplitAbsoluteHalfDensity_memLp
+    (S : Finset (HeightOneSpectrum ℤ))
+    (x : FieldOneFiniteStageBruhatSchwartz S) :
+    MemLp (fieldOneFiniteStageBruhatSplitAbsoluteHalfDensity S x) 2
+      (fieldOneFiniteStageSplitProductHaarMeasure S) := by
+  have hlog :=
+    (fieldOneFiniteStageBruhatLogAbsoluteHalfDensity_memLp S x).comp_measurePreserving
+      (fieldOneFiniteStageSplitExpSymm_measurePreserving S)
+  have hlog' :
+      MemLp (fieldOneFiniteStageBruhatSplitAbsoluteHalfDensity S x) 2
+        ((fieldOneFiniteStageModuleOneProbabilityHaarMeasure S).prod
+          fieldOnePositiveUnitsLogHaarMeasure) := by
+    change MemLp (fun z : FieldOneFiniteStageModuleOneClass S × ℝ≥0ˣ =>
+      fieldOneFiniteStageBruhatLogAbsoluteHalfDensity S x
         (z.1, fieldOnePositiveUnitsExpHomeomorph.symm z.2)) 2
       ((fieldOneFiniteStageModuleOneProbabilityHaarMeasure S).prod
         fieldOnePositiveUnitsLogHaarMeasure) at hlog

@@ -1312,7 +1312,7 @@ ensemble.  It is still exponentially demanding by (11bq).
 
 ### Theorem K (all-late same-Hamiltonian hardening shoulder)
 
-Fix `0<epsilon_-<epsilon_+` and put `gamma=epsilon_+-epsilon_-`.  For the fixed-shell Hamiltonian
+Fix `0<epsilon_-<epsilon_+<1/2` and put `gamma=epsilon_+-epsilon_-`.  For the fixed-shell Hamiltonian
 `H(theta)` of Corollary I.3, define the uniform simulation envelope
 
 \[
@@ -1798,3 +1798,9 @@ component to estimate.
 ## Log
 
 - 2026-08-11 -- conjectured, duplicate-audited, hostile-tested, and paper-proved
+- 2026-08-13 -- proved completed-phase accessibility plateau, optimized fugacity, fixed-shell
+  all-late transfer, quantitative carrier soft-min law, and hostile scale correction between state
+  and Choi branches.
+- 2026-08-13 -- duplicate audit identified Theorem J's renewal core in the named parent; novelty
+  attribution corrected.  Proved Theorem K by composing the all-late Choi plateau with the
+  deterministic local-simulation cone, obtaining a no-mesh same-Hamiltonian backward shoulder.

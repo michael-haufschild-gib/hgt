@@ -1,7 +1,7 @@
 # Zero trace does not put Suzuki's Carleman cutoff port in any positive Gamma strip
 
 - **ID:** `suzuki-carleman-flat-port-weighted-strip-barrier`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** SHARP COUNTEREXAMPLE / E1--E3 COUPLING THEOREM
 - **Scientific status:** `[PAPER-PROVED] [UNCONDITIONAL] [NEW SCIENTIFIC KNOWLEDGE]`
   `[NOVELTY UNVERIFIED] [NOT RH]`
@@ -264,12 +264,30 @@ This is not a restatement of the earlier generic principal-Volterra flat example
 compute the response of the literal cross-boundary operator newly isolated by the closed graph
 relation.
 
-## 8. Lean decision
+## 8. Lean status
 
-Faithful formalization needs improper integration, the physical \(s=e^{-L}\) chart, the Carleman
-kernel, and the logistic approximate-identity asymptotic.  None of these source objects exists in
-the Lean tree.  A discrete statement that `exp(sigma*n-sqrt n)` diverges would not certify the
-operator counterexample and is rejected as a wrapper.  No Lean module is added.
+Formalized unconditionally:
+
+```text
+formal/GaloisForLFunctions/RHTower/SuzukiCarlemanFlatPortProfile.lean
+formal/GaloisForLFunctions/RHTower/SuzukiCarlemanFlatPortChart.lean
+formal/GaloisForLFunctions/RHTower/SuzukiCarlemanFlatPortResponse.lean
+formal/GaloisForLFunctions/RHTower/SuzukiCarlemanFlatPortAsymptotic.lean
+formal/GaloisForLFunctions/RHTower/SuzukiCarlemanFlatPortBarrier.lean
+formal/GaloisForLFunctions/RHTower/SuzukiCarlemanFlatPortGap.lean
+```
+
+`(3)` is `tendsto_sqrt_mul_flatPortProfile`; `(17)` is `integral_Ioi_flatPortProfile`, from the
+closed antiderivative `-2(√v+1)e^{-√v}`; `(14)` and `(13)` are `integrableOn_flatPortValueDensity`
+and `not_integrableOn_flatPortDerivativeDensity` (the second because
+`L - 2√L - log L → ∞`); `(15)`, `(20)`, `(21)` are `carlemanLogResponse`,
+`hasDerivAt_carlemanLogResponse` (differentiation under the integral sign against the `1/4`
+majorant) and `logisticKernel`; `(22)` is `integral_logisticKernel`; `(7)` is
+`tendsto_carlemanLogResponseDeriv_div`, by dominated convergence in the shifted chart with
+majorant `e^{-|y|/2}`; `(6)` is `tendsto_carlemanLogResponse_gap`, from the tail identity
+`B_∞ - B(L) = ∫_{M>L} B'` and the tail-ratio comparison; `(8)`/`(25)` is
+`not_integrableOn_weighted_carlemanLogResponseDeriv`, for every `σ > 0` and every ray.  Every
+theorem audits to `[propext, Classical.choice, Quot.sound]`.
 
 ## Gates
 
@@ -279,6 +297,7 @@ operator counterexample and is rejected as a wrapper.  No Lean module is added.
 - [x] prove flat Carleman remainder asymptotic
 - [x] prove derivative asymptotic by logistic approximate identity
 - [x] exclude every positive Gamma strip
+- [x] formalize `(3)`, `(6)`--`(8)`, `(13)`--`(14)`, `(17)`, `(20)`--`(22)` unconditionally in Lean 4
 - [x] merge trace-zero regularity with exterior two-port return
 - [ ] prove `SUZUKI-CLOSED-TWO-PORT-RETURN`
 - [ ] prove completed Evans injectivity

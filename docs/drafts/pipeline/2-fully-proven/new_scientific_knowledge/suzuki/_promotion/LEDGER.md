@@ -5639,3 +5639,70 @@ inequality is `abs_add_le`, not `abs_add`; `field_simp` leaves `(-1 + a^4)⁻¹`
 hypothesis is in the *normalized* `a ^ 4` shape, so state both sign variants; `integral_const` and
 `integral_congr_ae` are ambiguous between the `intervalIntegral` and `MeasureTheory` namespaces;
 `(hasDerivAt_id t).neg` produces the Pi form `-id` — use `hasDerivAt_neg`.
+
+## FO. 90/103 — `suzuki-exterior-residual-rigged-wiener-realization` promoted
+
+FM's log-kernel exterior core plus five new modules:
+
+```text
+RHTower/SuzukiExteriorSymbolBounds.lean        q_a bounded on the whole line: the vertical digamma
+                                               tube bound for |ξ| ≥ 2, continuity+compactness near
+                                               0 (abscissa 1/4 keeps ψ regular), digamma_conj for
+                                               ξ < 0; polar block ≤ its L¹ norm
+RHTower/SuzukiExteriorWienerAlphabet.lean      t_a as a valuation Wiener element; oriented atoms
+                                               injective (visible steps have positive coordinate);
+                                               EXACT mass 2∑(log p)p^{-j/2}; Ev(t_a) = Suzuki's
+                                               cosine sum
+RHTower/SuzukiExteriorHardyAmplitudes.lean     port splitting, L² membership of both ports and
+                                               their origin translates, Plancherel norms, opposite
+                                               boundary phases
+RHTower/SuzukiValuationEvaluationAlgebra.lean  unit characters; Ev(x ⋆ y) = Ev x · Ev y when x is
+                                               ℓ¹ and y finitely supported
+RHTower/SuzukiExteriorRiggedRealization.lean   aperture alphabet, h_ξ, symbol, κ=1, threshold (19)
+                                               unconditional, (21) inverse, (22) margin bound,
+                                               (25) Ev(c)·p_a = Ev(s)
+```
+
+The evaluation step is the one that was previously only paper: multiplicativity of `Ev` needs only
+the finitely supported side to be finite, which is exactly Suzuki's configuration, so no
+vector-valued Plancherel and no `ℓ²` evaluation appears.
+
+Traps: `Nat.Primes` is a `def`, so `Finset.subtype … : Finset {n // n.Prime}` does not `rw`-match
+`Finset (Nat.Primes × ℕ)` — use term-mode `Finset.mem_filter.mp`/`mem_product.mp` instead of `rw`;
+`𝓕` on `ℝ → ℂ` is the *VectorFourier* instance (`innerₗ ℝ`), not `Fourier.fourierIntegral`, so the
+translation lemma must be `VectorFourier.fourierIntegral_comp_add_right` and the inner product
+rewritten to `-(a*ξ)`; `Complex.cos` unfolds to `exp (-z*I) + exp (z*I)`, so a `ring` step needs the
+exponent written as `-↑x * I`, not `-(↑x * I)`; the finite-sum/`tsum` exchange is
+`Summable.tsum_finsetSum`; `summable_of_tsum_enorm_ne_top` gives `Summable f`, not summability of
+the norms — the latter goes through `ENNReal.tsum_coe_ne_top_iff_summable` + `NNReal.summable_coe`.
+
+## FP. 91/103 — `suzuki-carleman-flat-port-weighted-strip-barrier` promoted
+
+Six modules build the counterexample outright:
+
+```text
+SuzukiCarlemanFlatPortProfile.lean     F = e^{-√v}; closed antiderivative -2(√v+1)e^{-√v}; exact
+                                       tail 2(√L+1)e^{-√L}; a function tending to ∞ is not
+                                       integrable on a ray
+SuzukiCarlemanFlatPortChart.lean       physical-chart densities: e^{-2√L}e^{-L} integrable,
+                                       e^{L-2√L}/L not (L-2√L-log L → ∞ via log L ≤ 2√L);
+                                       logistic kernel and its primitive -(1+e^y)⁻¹
+SuzukiCarlemanFlatPortResponse.lean    B(L) = ∫_{v>1} F(v)/(1+e^{v-L}) dv; differentiation under
+                                       the integral against the 1/4 kernel bound
+SuzukiCarlemanFlatPortAsymptotic.lean  ∫k = 1; √L-√(L+y) ≤ |y|/2 for L ≥ 4; ratio → 1 pointwise
+SuzukiCarlemanFlatPortBarrier.lean     (7) B'/F → 1 by dominated convergence with majorant
+                                       e^{-|y|/2}; (8) no σ>0 weight is square integrable
+SuzukiCarlemanFlatPortGap.lean         B_∞-B(L) = ∫_{M>L}B'; tail-ratio comparison lemma;
+                                       (6) gap/(2√L F(L)) → 1
+```
+
+The reusable general lemmas are `not_integrableOn_Ioi_of_tendsto_atTop` and
+`tendsto_tail_integral_ratio` (two positive densities with ratio → 1 have tail integrals with
+ratio → 1).
+
+Traps: `Real.sqrt_atTop` is `Real.tendsto_sqrt_atTop`; `x*e^{-x} → 0` is
+`Real.tendsto_pow_mul_exp_neg_atTop_nhds_zero 1`; `integrableOn_Ioi_deriv_of_nonneg` wants
+`ContinuousWithinAt g (Ici a) a` at the single endpoint, not a `∀`; a `def` whose body is a lambda
+resists `rw` — use `simp only [name]` or a `show`; `integral_union` is `setIntegral_union` and
+`integral_univ` is `setIntegral_univ`; `Metric.tendsto_atTop.mp` already yields the `∃ N, ∀ n ≥ N`
+form.

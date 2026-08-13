@@ -1,4 +1,6 @@
 import Mathlib.NumberTheory.SumPrimeReciprocals
+import GaloisForLFunctions.HTGeometry.BiasedWalshInteractionMechanics
+import GaloisForLFunctions.HTGeometry.InteractionDegreeEscape
 
 /-!
 # Constitutive interaction-spectrum mechanics
@@ -43,6 +45,51 @@ theorem directParityInteractionSq_eq_interactionWorkWeight
   apply Finset.prod_congr rfl
   intro i hi
   ring
+
+/-- The literal biased-Walsh parity coefficient has the source-side squared formula. -/
+theorem sq_biasedWalshCoefficient_parity_eq_directParityInteractionSq
+    {I : Type*} [Fintype I] [DecidableEq I]
+    {q : I → ℝ} (hq0 : ∀ i, 0 < q i) (hq1 : ∀ i, q i < 1)
+    (S : Finset I) :
+    (biasedWalshCoefficient q biasedWalshParity S) ^ 2 =
+      directParityInteractionSq q S := by
+  rw [biasedWalshCoefficient_parity hq0 hq1]
+  unfold directParityInteractionSq
+  calc
+    ((∏ i ∈ S, -2 * Real.sqrt (biasedBernoulliVariance q i)) *
+        ∏ i ∈ Sᶜ, (1 - 2 * q i)) ^ 2 =
+        ((∏ i ∈ S, -2 * Real.sqrt (biasedBernoulliVariance q i)) ^ 2) *
+          ((∏ i ∈ Sᶜ, (1 - 2 * q i)) ^ 2) := by ring
+    _ = (∏ i ∈ S,
+          (-2 * Real.sqrt (biasedBernoulliVariance q i)) ^ 2) *
+        ∏ i ∈ Sᶜ, (1 - 2 * q i) ^ 2 := by
+      simp only [pow_two]
+      rw [← Finset.prod_mul_distrib, ← Finset.prod_mul_distrib]
+    _ = (∏ i ∈ S, 4 * q i * (1 - q i)) *
+        ∏ i ∈ Sᶜ, (1 - 2 * q i) ^ 2 := by
+      congr 1
+      apply Finset.prod_congr rfl
+      intro i hi
+      have hvariance : 0 ≤ biasedBernoulliVariance q i := by
+        unfold biasedBernoulliVariance
+        exact mul_nonneg (hq0 i).le (sub_nonneg.mpr (hq1 i).le)
+      calc
+        (-2 * Real.sqrt (biasedBernoulliVariance q i)) ^ 2 =
+            4 * Real.sqrt (biasedBernoulliVariance q i) ^ 2 := by ring
+        _ = 4 * biasedBernoulliVariance q i := by rw [Real.sq_sqrt hvariance]
+        _ = 4 * q i * (1 - q i) := by
+          unfold biasedBernoulliVariance
+          ring
+
+/-- Literal parity coefficient energy is exactly the product interaction-work law. -/
+theorem sq_biasedWalshCoefficient_parity_eq_interactionWorkWeight
+    {I : Type*} [Fintype I] [DecidableEq I]
+    {q : I → ℝ} (hq0 : ∀ i, 0 < q i) (hq1 : ∀ i, q i < 1)
+    (S : Finset I) :
+    (biasedWalshCoefficient q biasedWalshParity S) ^ 2 =
+      interactionWorkWeight (fun i => interactionActivation (q i)) S := by
+  rw [sq_biasedWalshCoefficient_parity_eq_directParityInteractionSq hq0 hq1]
+  exact directParityInteractionSq_eq_interactionWorkWeight q S
 
 /-- The full interaction ledger has total work one. -/
 theorem sum_interactionWorkWeight_eq_one
@@ -95,6 +142,62 @@ theorem sum_interactionWorkWeight_of_mem_eq
       simp [g]
     rw [hz, mul_zero]
 
+/-- Joint marginal on an arbitrary prescribed interaction support. -/
+theorem sum_interactionWorkWeight_of_subset_eq
+    {I : Type*} [Fintype I] [DecidableEq I]
+    (a : I → ℝ) (T : Finset I) :
+    (∑ S : Finset I, if T ⊆ S then interactionWorkWeight a S else 0) =
+      ∏ i ∈ T, a i := by
+  classical
+  let g : I → ℝ := fun j => if j ∈ T then 0 else 1 - a j
+  have hprod : (∏ j, (a j + g j)) = ∏ j ∈ T, a j := by
+    calc
+      ∏ j, (a j + g j) = ∏ j, if j ∈ T then a j else 1 := by
+        apply Finset.prod_congr rfl
+        intro j hj
+        by_cases hjT : j ∈ T <;> simp [g, hjT]
+      _ = ∏ j ∈ T, a j := by simp
+  have hsum := Fintype.prod_add a g
+  rw [hprod] at hsum
+  rw [hsum]
+  apply Finset.sum_congr rfl
+  intro S hS
+  by_cases hTS : T ⊆ S
+  · rw [if_pos hTS]
+    unfold interactionWorkWeight
+    congr 1
+    apply Finset.prod_congr rfl
+    intro j hj
+    have hjT : j ∉ T := fun hjT => Finset.mem_compl.mp hj (hTS hjT)
+    simp [g, hjT]
+  · rw [if_neg hTS]
+    obtain ⟨i, hiT, hiS⟩ := Finset.not_subset.mp hTS
+    have hic : i ∈ Sᶜ := Finset.mem_compl.mpr hiS
+    have hz : ∏ j ∈ Sᶜ, g j = 0 := by
+      apply Finset.prod_eq_zero hic
+      simp [g, hiT]
+    rw [hz, mul_zero]
+
+/-- Two-coordinate marginal of the product interaction-work law. -/
+theorem sum_interactionWorkWeight_of_pair_mem_eq
+    {I : Type*} [Fintype I] [DecidableEq I]
+    (a : I → ℝ) (i j : I) :
+    (∑ S : Finset I,
+        if i ∈ S ∧ j ∈ S then interactionWorkWeight a S else 0) =
+      if i = j then a i else a i * a j := by
+  classical
+  calc
+    (∑ S : Finset I,
+        if i ∈ S ∧ j ∈ S then interactionWorkWeight a S else 0) =
+        ∏ k ∈ ({i, j} : Finset I), a k := by
+      simpa [Finset.insert_subset_iff] using
+        (sum_interactionWorkWeight_of_subset_eq a {i, j})
+    _ = if i = j then a i else a i * a j := by
+      by_cases hij : i = j
+      · subst j
+        simp
+      · simp [hij]
+
 /-- Mean interaction degree of the work ledger. -/
 def meanInteractionDegree {I : Type*} [Fintype I] [DecidableEq I]
     (a : I → ℝ) : ℝ :=
@@ -124,6 +227,99 @@ theorem meanInteractionDegree_eq_sum
       apply Finset.sum_congr rfl
       intro i hi
       exact sum_interactionWorkWeight_of_mem_eq a i
+
+/-- Variance of interaction degree under the product work ledger. -/
+def interactionDegreeVariance {I : Type*} [Fintype I] [DecidableEq I]
+    (a : I → ℝ) : ℝ :=
+  ∑ S : Finset I,
+    interactionWorkWeight a S * ((S.card : ℝ) - meanInteractionDegree a) ^ 2
+
+/-- Poisson-binomial variance is the sum of the local Bernoulli variances. -/
+theorem interactionDegreeVariance_eq_sum
+    {I : Type*} [Fintype I] [DecidableEq I]
+    (a : I → ℝ) :
+    interactionDegreeVariance a = ∑ i, a i * (1 - a i) := by
+  classical
+  have hsecond :
+      (∑ S : Finset I, interactionWorkWeight a S * (S.card : ℝ) ^ 2) =
+        ∑ i : I, ∑ j : I, if i = j then a i else a i * a j := by
+    calc
+      ∑ S : Finset I, interactionWorkWeight a S * (S.card : ℝ) ^ 2 =
+          ∑ S : Finset I, ∑ i : I, ∑ j : I,
+            if i ∈ S ∧ j ∈ S then interactionWorkWeight a S else 0 := by
+        apply Finset.sum_congr rfl
+        intro S hS
+        have hcard : (S.card : ℝ) = ∑ i : I, if i ∈ S then 1 else 0 := by simp
+        rw [hcard, pow_two, Finset.sum_mul]
+        rw [Finset.mul_sum]
+        simp_rw [Finset.mul_sum]
+        apply Finset.sum_congr rfl
+        intro i hi
+        apply Finset.sum_congr rfl
+        intro j hj
+        by_cases hiS : i ∈ S <;> by_cases hjS : j ∈ S <;> simp [hiS, hjS]
+      _ = ∑ i : I, ∑ j : I, ∑ S : Finset I,
+            if i ∈ S ∧ j ∈ S then interactionWorkWeight a S else 0 := by
+        rw [Finset.sum_comm]
+        apply Finset.sum_congr rfl
+        intro i hi
+        rw [Finset.sum_comm]
+      _ = ∑ i : I, ∑ j : I, if i = j then a i else a i * a j := by
+        apply Finset.sum_congr rfl
+        intro i hi
+        apply Finset.sum_congr rfl
+        intro j hj
+        exact sum_interactionWorkWeight_of_pair_mem_eq a i j
+  have hsecondClosed :
+      (∑ i : I, ∑ j : I, if i = j then a i else a i * a j) =
+        (∑ i, a i) ^ 2 + ∑ i, a i * (1 - a i) := by
+    calc
+      (∑ i : I, ∑ j : I, if i = j then a i else a i * a j) =
+          ∑ i : I, ((∑ j : I, a i * a j) + (a i - a i * a i)) := by
+        apply Finset.sum_congr rfl
+        intro i hi
+        calc
+          ∑ j : I, (if i = j then a i else a i * a j) =
+              ∑ j : I, (a i * a j + (if i = j then a i - a i * a i else 0)) := by
+            apply Finset.sum_congr rfl
+            intro j hj
+            by_cases hij : i = j <;> simp [hij]
+          _ = (∑ j : I, a i * a j) + (a i - a i * a i) := by
+            rw [Finset.sum_add_distrib]
+            simp
+      _ = (∑ i, a i) ^ 2 + ∑ i, a i * (1 - a i) := by
+        rw [Finset.sum_add_distrib, Finset.sum_sub_distrib]
+        rw [← Finset.sum_mul_sum]
+        simp_rw [mul_sub, mul_one]
+        rw [Finset.sum_sub_distrib]
+        ring
+  unfold interactionDegreeVariance
+  calc
+    ∑ S : Finset I,
+        interactionWorkWeight a S * ((S.card : ℝ) - meanInteractionDegree a) ^ 2 =
+        ∑ S : Finset I,
+          (interactionWorkWeight a S * (S.card : ℝ) ^ 2 -
+            2 * meanInteractionDegree a *
+              (interactionWorkWeight a S * (S.card : ℝ)) +
+            meanInteractionDegree a ^ 2 * interactionWorkWeight a S) := by
+      apply Finset.sum_congr rfl
+      intro S hS
+      ring
+    _ = (∑ S : Finset I, interactionWorkWeight a S * (S.card : ℝ) ^ 2) -
+          2 * meanInteractionDegree a *
+            (∑ S : Finset I, interactionWorkWeight a S * (S.card : ℝ)) +
+          meanInteractionDegree a ^ 2 *
+            (∑ S : Finset I, interactionWorkWeight a S) := by
+      rw [Finset.sum_add_distrib, Finset.sum_sub_distrib]
+      rw [Finset.mul_sum, Finset.mul_sum]
+    _ = (∑ i, a i) ^ 2 + ∑ i, a i * (1 - a i) -
+          2 * (∑ i, a i) ^ 2 + (∑ i, a i) ^ 2 := by
+      rw [hsecond, hsecondClosed, meanInteractionDegree_eq_sum]
+      rw [show ∑ S : Finset I, interactionWorkWeight a S * (S.card : ℝ) =
+          ∑ i, a i by simpa [meanInteractionDegree] using meanInteractionDegree_eq_sum a]
+      rw [sum_interactionWorkWeight_eq_one]
+      ring
+    _ = ∑ i, a i * (1 - a i) := by ring
 
 /-- Work visible to an observer of interaction degree at most `D`. -/
 def visibleInteractionWork {I : Type*} [Fintype I] [DecidableEq I]
@@ -205,6 +401,89 @@ theorem visibleInteractionWork_le_one
   have hhidden := hiddenInteractionWork_nonneg ha0 ha1 D
   linarith
 
+/-- Visible work is nonnegative for activation probabilities. -/
+theorem visibleInteractionWork_nonneg
+    {I : Type*} [Fintype I] [DecidableEq I]
+    {a : I → ℝ} (ha0 : ∀ i, 0 ≤ a i) (ha1 : ∀ i, a i ≤ 1)
+    (D : ℕ) :
+    0 ≤ visibleInteractionWork a D := by
+  unfold visibleInteractionWork
+  exact Finset.sum_nonneg fun S hS => by
+    by_cases h : S.card ≤ D
+    · simp [h, interactionWorkWeight_nonneg ha0 ha1 S]
+    · simp [h]
+
+/-- The interaction-degree variance is bounded by its mean. -/
+theorem interactionDegreeVariance_le_mean
+    {I : Type*} [Fintype I] [DecidableEq I]
+    (a : I → ℝ) :
+    interactionDegreeVariance a ≤ meanInteractionDegree a := by
+  rw [interactionDegreeVariance_eq_sum, meanInteractionDegree_eq_sum]
+  apply Finset.sum_le_sum
+  intro i hi
+  nlinarith [sq_nonneg (a i)]
+
+/-- Finite Chebyshev bound for remaining below a fixed interaction degree. -/
+theorem visibleInteractionWork_le_variance_div_gap_sq
+    {I : Type*} [Fintype I] [DecidableEq I]
+    {a : I → ℝ} (ha0 : ∀ i, 0 ≤ a i) (ha1 : ∀ i, a i ≤ 1)
+    (D : ℕ) (hD : (D : ℝ) < meanInteractionDegree a) :
+    visibleInteractionWork a D ≤
+      interactionDegreeVariance a / (meanInteractionDegree a - (D : ℝ)) ^ 2 := by
+  have hgap : 0 < meanInteractionDegree a - (D : ℝ) := sub_pos.mpr hD
+  rw [visibleInteractionWork, interactionDegreeVariance]
+  apply (le_div_iff₀ (sq_pos_of_pos hgap)).2
+  rw [Finset.sum_mul]
+  apply Finset.sum_le_sum
+  intro S hS
+  have hweight := interactionWorkWeight_nonneg ha0 ha1 S
+  by_cases hcard : S.card ≤ D
+  · rw [if_pos hcard]
+    have hcardR : (S.card : ℝ) ≤ (D : ℝ) := by exact_mod_cast hcard
+    have hsq : (meanInteractionDegree a - (D : ℝ)) ^ 2 ≤
+        ((S.card : ℝ) - meanInteractionDegree a) ^ 2 := by
+      nlinarith
+    exact mul_le_mul_of_nonneg_left hsq hweight
+  · rw [if_neg hcard, zero_mul]
+    positivity
+
+/-- Chebyshev bound with variance replaced by its mean. -/
+theorem visibleInteractionWork_le_mean_div_gap_sq
+    {I : Type*} [Fintype I] [DecidableEq I]
+    {a : I → ℝ} (ha0 : ∀ i, 0 ≤ a i) (ha1 : ∀ i, a i ≤ 1)
+    (D : ℕ) (hD : (D : ℝ) < meanInteractionDegree a) :
+    visibleInteractionWork a D ≤
+      meanInteractionDegree a / (meanInteractionDegree a - (D : ℝ)) ^ 2 := by
+  exact (visibleInteractionWork_le_variance_div_gap_sq ha0 ha1 D hD).trans
+    (div_le_div_of_nonneg_right (interactionDegreeVariance_le_mean a) (sq_nonneg _))
+
+/-- Fixed-degree visible work vanishes whenever mean interaction degree escapes to infinity. -/
+theorem tendsto_visibleInteractionWork_zero_of_mean_tendsto_atTop
+    {I : ℕ → Type*} [∀ n, Fintype (I n)] [∀ n, DecidableEq (I n)]
+    (a : ∀ n, I n → ℝ)
+    (ha0 : ∀ n i, 0 ≤ a n i) (ha1 : ∀ n i, a n i ≤ 1)
+    (hmean : Filter.Tendsto (fun n => meanInteractionDegree (a n))
+      Filter.atTop Filter.atTop)
+    (D : ℕ) :
+    Filter.Tendsto (fun n => visibleInteractionWork (a n) D)
+      Filter.atTop (nhds 0) := by
+  apply squeeze_zero'
+  · exact Filter.Eventually.of_forall fun n =>
+      visibleInteractionWork_nonneg (ha0 n) (ha1 n) D
+  · filter_upwards [hmean.eventually_gt_atTop (D : ℝ)] with n hn
+    exact visibleInteractionWork_le_mean_div_gap_sq (ha0 n) (ha1 n) D hn
+  · exact (tendsto_mean_div_gap_sq (D : ℝ)).comp hmean
+
+/-- Degree-zero visible work is exactly the empty-support coefficient energy. -/
+theorem visibleInteractionWork_zero_eq_empty
+    {I : Type*} [Fintype I] [DecidableEq I] (a : I → ℝ) :
+    visibleInteractionWork a 0 = interactionWorkWeight a ∅ := by
+  classical
+  unfold visibleInteractionWork
+  apply Fintype.sum_eq_single ∅
+  intro S hS
+  simp [Finset.card_eq_zero, hS]
+
 /-- Pure-state coherent QFI of the complete parity ledger. -/
 def fullInteractionQFI {I : Type*} [Fintype I] [DecidableEq I]
     (a : I → ℝ) : ℝ :=
@@ -224,6 +503,60 @@ theorem fullInteractionQFI_sub_visibleInteractionQFI
   have hsplit := visibleInteractionWork_add_hiddenInteractionWork a D
   unfold fullInteractionQFI visibleInteractionQFI
   linarith
+
+/-- Parity energy visible through degree `D` is exactly visible interaction work. -/
+theorem biasedWalshNormSq_parityProjection_eq_visibleInteractionWork
+    {I : Type*} [Fintype I] [DecidableEq I]
+    {q : I → ℝ} (hq0 : ∀ i, 0 < q i) (hq1 : ∀ i, q i < 1)
+    (D : ℕ) :
+    biasedWalshNormSq q (biasedWalshProjection q biasedWalshParity D) =
+      visibleInteractionWork (fun i => interactionActivation (q i)) D := by
+  rw [biasedWalshNormSq_projection hq0 hq1]
+  unfold visibleInteractionWork
+  apply Finset.sum_congr rfl
+  intro S hS
+  by_cases hSD : S.card ≤ D
+  · simp only [hSD, if_true]
+    exact sq_biasedWalshCoefficient_parity_eq_interactionWorkWeight hq0 hq1 S
+  · simp [hSD]
+
+/-- The abstract full interaction QFI is the genuine pure-state QFI of parity. -/
+theorem biasedWalshPureStateQFI_parity_eq_fullInteractionQFI
+    {I : Type*} [Fintype I] [DecidableEq I]
+    {q : I → ℝ} (hq0 : ∀ i, 0 < q i) (hq1 : ∀ i, q i < 1) :
+    biasedWalshPureStateQFI q (biasedWalshParity : Finset I → ℝ) =
+      fullInteractionQFI (fun i => interactionActivation (q i)) := by
+  rw [biasedWalshPureStateQFI_eq_four_mul_variance,
+    biasedWalshNormSq_parity, ← biasedWalshCoefficient_empty]
+  rw [sq_biasedWalshCoefficient_parity_eq_interactionWorkWeight hq0 hq1]
+  rfl
+
+/-- The abstract visible interaction QFI is the genuine pure-state QFI of projected parity. -/
+theorem biasedWalshPureStateQFI_parityProjection_eq_visibleInteractionQFI
+    {I : Type*} [Fintype I] [DecidableEq I]
+    {q : I → ℝ} (hq0 : ∀ i, 0 < q i) (hq1 : ∀ i, q i < 1)
+    (D : ℕ) :
+    biasedWalshPureStateQFI q (biasedWalshProjection q biasedWalshParity D) =
+      visibleInteractionQFI (fun i => interactionActivation (q i)) D := by
+  rw [biasedWalshPureStateQFI_eq_four_mul_variance,
+    biasedWalshNormSq_parityProjection_eq_visibleInteractionWork hq0 hq1]
+  rw [← biasedWalshCoefficient_empty,
+    biasedWalshCoefficient_projection hq0 hq1]
+  simp only [Finset.card_empty, Nat.zero_le, if_true]
+  rw [sq_biasedWalshCoefficient_parity_eq_interactionWorkWeight hq0 hq1]
+  rfl
+
+/-- Genuine pure-state QFI loss under degree observation is four times hidden parity work. -/
+theorem biasedWalshPureStateQFI_parity_sub_projection_eq_four_mul_hiddenWork
+    {I : Type*} [Fintype I] [DecidableEq I]
+    {q : I → ℝ} (hq0 : ∀ i, 0 < q i) (hq1 : ∀ i, q i < 1)
+    (D : ℕ) :
+    biasedWalshPureStateQFI q (biasedWalshParity : Finset I → ℝ) -
+        biasedWalshPureStateQFI q (biasedWalshProjection q biasedWalshParity D) =
+      4 * hiddenInteractionWork (fun i => interactionActivation (q i)) D := by
+  rw [biasedWalshPureStateQFI_parity_eq_fullInteractionQFI hq0 hq1,
+    biasedWalshPureStateQFI_parityProjection_eq_visibleInteractionQFI hq0 hq1,
+    fullInteractionQFI_sub_visibleInteractionQFI]
 
 /-- The marked lower Bernoulli chamber makes the activation packet source-faithful. -/
 theorem interactionActivation_injective_on_lower_half
@@ -281,6 +614,17 @@ theorem primeInteractionActivation_nonneg (σ : ℝ) (p : Nat.Primes) :
   unfold primeInteractionActivation
   positivity
 
+/-- Every prime interaction activation is at most one. -/
+theorem primeInteractionActivation_le_one (σ : ℝ) (p : Nat.Primes) :
+    primeInteractionActivation σ p ≤ 1 := by
+  let x : ℝ := (p : ℝ) ^ (-σ)
+  have hx : 0 < x := Real.rpow_pos_of_pos (by exact_mod_cast p.2.pos) _
+  have hden : 0 < (1 + x) ^ 2 := sq_pos_of_pos (by linarith)
+  rw [primeInteractionActivation]
+  change 4 * x / (1 + x) ^ 2 ≤ 1
+  apply (div_le_iff₀ hden).2
+  nlinarith [sq_nonneg (x - 1)]
+
 /-- The interaction formation is summable exactly above exponent one. -/
 theorem summable_primeInteractionActivation_iff {σ : ℝ} (hσ : 0 ≤ σ) :
     Summable (primeInteractionActivation σ) ↔ 1 < σ := by
@@ -300,6 +644,144 @@ theorem summable_primeInteractionActivation_iff {σ : ℝ} (hσ : 0 ≤ σ) :
       (fun p => primeInteractionActivation_nonneg σ p)
       (fun p => (prime_rpow_le_interactionActivation_le hσ p).2)
       (hmodel.mul_left 4)
+
+/-- Prime activation on the canonical aperture of primes below `n`. -/
+def primeApertureInteractionActivation (σ : ℝ) (n : ℕ) :
+    {p : ℕ // p ∈ Nat.primesBelow n} → ℝ :=
+  fun p => primeInteractionActivation σ
+    ⟨p.1, Nat.prime_of_mem_primesBelow p.2⟩
+
+theorem primeApertureInteractionActivation_nonneg (σ : ℝ) (n : ℕ)
+    (p : {p : ℕ // p ∈ Nat.primesBelow n}) :
+    0 ≤ primeApertureInteractionActivation σ n p :=
+  primeInteractionActivation_nonneg σ _
+
+theorem primeApertureInteractionActivation_le_one (σ : ℝ) (n : ℕ)
+    (p : {p : ℕ // p ∈ Nat.primesBelow n}) :
+    primeApertureInteractionActivation σ n p ≤ 1 :=
+  primeInteractionActivation_le_one σ _
+
+private theorem tendsto_sum_one_div_primesBelow_atTop :
+    Filter.Tendsto
+      (fun n : ℕ => ∑ p ∈ Nat.primesBelow n, (1 / p : ℝ))
+      Filter.atTop Filter.atTop := by
+  have h :=
+    (not_summable_iff_tendsto_nat_atTop_of_nonneg
+      (f := Set.indicator {p : ℕ | p.Prime} (fun p => (1 / p : ℝ)))
+      (fun p => Set.indicator_nonneg (fun _ _ => by positivity) _)).mp
+      not_summable_one_div_on_primes
+  simpa [Nat.primesBelow, Set.indicator_apply, Finset.sum_filter] using h
+
+/-- For `0 < σ ≤ 1`, mean degree on canonical prime apertures diverges. -/
+theorem tendsto_primeApertureMean_atTop
+    {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ ≤ 1) :
+    Filter.Tendsto
+      (fun n => meanInteractionDegree (primeApertureInteractionActivation σ n))
+      Filter.atTop Filter.atTop := by
+  have hrecipSubtype :
+      Filter.Tendsto
+        (fun n => ∑ p : {p : ℕ // p ∈ Nat.primesBelow n}, (1 / (p.1 : ℝ)))
+        Filter.atTop Filter.atTop := by
+    have hsum (n : ℕ) :
+        (∑ p : {p : ℕ // p ∈ Nat.primesBelow n}, (1 / (p.1 : ℝ))) =
+          ∑ p ∈ Nat.primesBelow n, (1 / p : ℝ) := by
+      exact (Finset.sum_subtype (Nat.primesBelow n) (fun _ => Iff.rfl)
+        (fun p => (1 / p : ℝ))).symm
+    simpa only [hsum] using tendsto_sum_one_div_primesBelow_atTop
+  apply Filter.tendsto_atTop_mono (fun n => ?_) hrecipSubtype
+  rw [meanInteractionDegree_eq_sum]
+  apply Finset.sum_le_sum
+  intro p hp
+  let pp : Nat.Primes := ⟨p.1, Nat.prime_of_mem_primesBelow p.2⟩
+  have hbase : (1 : ℝ) ≤ (pp : ℝ) := by exact_mod_cast pp.2.one_le
+  have hrpow : (pp : ℝ) ^ (-1 : ℝ) ≤ (pp : ℝ) ^ (-σ) :=
+    Real.rpow_le_rpow_of_exponent_le hbase (by linarith)
+  have hlower := (prime_rpow_le_interactionActivation_le hσ0.le pp).1
+  simpa [primeApertureInteractionActivation, pp, one_div, Real.rpow_neg_one] using
+    hrpow.trans hlower
+
+/-- For `0 < σ ≤ 1`, every fixed-degree window loses all work cofinally. -/
+theorem tendsto_primeApertureVisibleInteractionWork_zero
+    {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ ≤ 1) (D : ℕ) :
+    Filter.Tendsto
+      (fun n => visibleInteractionWork (primeApertureInteractionActivation σ n) D)
+      Filter.atTop (nhds 0) := by
+  exact tendsto_visibleInteractionWork_zero_of_mean_tendsto_atTop
+    (primeApertureInteractionActivation σ)
+    (primeApertureInteractionActivation_nonneg σ)
+    (primeApertureInteractionActivation_le_one σ)
+    (tendsto_primeApertureMean_atTop hσ0 hσ1) D
+
+/-- At the critical exponent, empty-support work vanishes. -/
+theorem tendsto_criticalPrimeApertureEmptyWork_zero :
+    Filter.Tendsto
+      (fun n => interactionWorkWeight (primeApertureInteractionActivation 1 n) ∅)
+      Filter.atTop (nhds 0) := by
+  simpa only [visibleInteractionWork_zero_eq_empty] using
+    (tendsto_primeApertureVisibleInteractionWork_zero
+      (σ := 1) zero_lt_one le_rfl 0)
+
+/-- At the critical exponent, full coherent interaction QFI tends to four. -/
+theorem tendsto_criticalPrimeApertureFullInteractionQFI_four :
+    Filter.Tendsto
+      (fun n => fullInteractionQFI (primeApertureInteractionActivation 1 n))
+      Filter.atTop (nhds 4) := by
+  have hone : Filter.Tendsto (fun _n : ℕ => (1 : ℝ))
+      Filter.atTop (nhds 1) := tendsto_const_nhds
+  simpa [fullInteractionQFI] using
+    (hone.sub tendsto_criticalPrimeApertureEmptyWork_zero).const_mul (4 : ℝ)
+
+/-- At the critical exponent, QFI in every fixed-degree window vanishes. -/
+theorem tendsto_criticalPrimeApertureVisibleInteractionQFI_zero (D : ℕ) :
+    Filter.Tendsto
+      (fun n => visibleInteractionQFI (primeApertureInteractionActivation 1 n) D)
+      Filter.atTop (nhds 0) := by
+  have hvisible := tendsto_primeApertureVisibleInteractionWork_zero
+    (σ := 1) zero_lt_one le_rfl D
+  simpa [visibleInteractionQFI] using
+    (hvisible.sub tendsto_criticalPrimeApertureEmptyWork_zero).const_mul (4 : ℝ)
+
+/-- Prime activation on an arbitrary finite prime aperture. -/
+def finitePrimeInteractionActivation (σ : ℝ) (F : Finset Nat.Primes) :
+    F → ℝ :=
+  fun p => primeInteractionActivation σ p.1
+
+/-- For `σ > 1`, hidden work above one finite degree is uniformly small over all finite
+prime apertures. -/
+theorem primeFormation_uniform_tight
+    {σ : ℝ} (hσ : 1 < σ) {ε : ℝ} (hε : 0 < ε) :
+    ∃ D : ℕ, ∀ F : Finset Nat.Primes,
+      hiddenInteractionWork (finitePrimeInteractionActivation σ F) D < ε := by
+  have hsummable : Summable (primeInteractionActivation σ) :=
+    (summable_primeInteractionActivation_iff (by linarith : 0 ≤ σ)).2 hσ
+  let M : ℝ := ∑' p : Nat.Primes, primeInteractionActivation σ p
+  have hM0 : 0 ≤ M := tsum_nonneg fun p => primeInteractionActivation_nonneg σ p
+  obtain ⟨D, hD⟩ := exists_nat_gt (M / ε)
+  refine ⟨D, fun F => ?_⟩
+  have hmean : meanInteractionDegree (finitePrimeInteractionActivation σ F) ≤ M := by
+    rw [meanInteractionDegree_eq_sum]
+    change (∑ p : F, primeInteractionActivation σ p.1) ≤ M
+    rw [← Finset.sum_subtype F (fun _ => Iff.rfl)
+      (primeInteractionActivation σ)]
+    exact hsummable.sum_le_tsum F
+      (fun p hp => primeInteractionActivation_nonneg σ p)
+  have hmarkov := natCast_succ_mul_hiddenInteractionWork_le_mean
+    (a := finitePrimeInteractionActivation σ F)
+    (fun p => primeInteractionActivation_nonneg σ p.1)
+    (fun p => primeInteractionActivation_le_one σ p.1) D
+  have hden : (0 : ℝ) < ((D + 1 : ℕ) : ℝ) := by positivity
+  have hhidden :
+      hiddenInteractionWork (finitePrimeInteractionActivation σ F) D ≤
+        M / ((D + 1 : ℕ) : ℝ) := by
+    apply (le_div_iff₀ hden).2
+    simpa [mul_comm] using hmarkov.trans hmean
+  apply hhidden.trans_lt
+  apply (div_lt_iff₀ hden).2
+  have hMε : M < (D : ℝ) * ε :=
+    (div_lt_iff₀ hε).mp hD
+  have hcast : (D : ℝ) < ((D + 1 : ℕ) : ℝ) := by
+    exact_mod_cast Nat.lt_succ_self D
+  nlinarith [mul_lt_mul_of_pos_right hcast hε]
 
 /-- **Reciprocal formation-phase classifier.**  Reflection `σ ↦ 2-σ` preserves the
 summable/escaping phase only at its fixed point. -/
