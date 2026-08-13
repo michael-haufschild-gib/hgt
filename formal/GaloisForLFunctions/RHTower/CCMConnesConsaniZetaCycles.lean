@@ -163,7 +163,8 @@ theorem mellin_meyerPoissonTestSource_ne_zero {s : ℂ}
 
 abbrev CCMZetaCircleLength := {L : ℝ // 0 < L}
 
-instance (L : CCMZetaCircleLength) : Fact (0 < (L : ℝ)) := ⟨L.property⟩
+instance factZetaCircleLengthPos (L : CCMZetaCircleLength) :
+    Fact (0 < (L : ℝ)) := ⟨L.property⟩
 
 theorem liftIoc_eq_periodic_lift {B : Type*} (L : CCMZetaCircleLength)
     (g : ℝ → B) (hg : Function.Periodic g (L : ℝ)) :

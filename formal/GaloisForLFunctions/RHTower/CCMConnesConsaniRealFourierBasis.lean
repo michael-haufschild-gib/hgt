@@ -21,7 +21,7 @@ noncomputable section
 
 namespace RHTower
 
-abbrev CCMCircleL2 (T : ℝ) [Fact (0 < T)] :=
+abbrev CCMConnesConsaniCircleL2 (T : ℝ) [Fact (0 < T)] :=
   Lp ℂ 2 (AddCircle.haarAddCircle (T := T))
 
 abbrev CCMRealFourierIndex (N : ℕ) := Option (Fin N ⊕ Fin N)
@@ -50,19 +50,19 @@ theorem ccmRealFourierScale_sq (n : ℕ) :
     field_simp <;> simpa only [pow_two] using hsqrtC.symm
 
 def ccmCircleCosineMode (T : ℝ) [Fact (0 < T)] {N : ℕ}
-    (n : Fin N) : CCMCircleL2 T :=
+    (n : Fin N) : CCMConnesConsaniCircleL2 T :=
   ccmRealFourierScale (n.1 + 1) •
     (fourierLp 2 (ccmPositiveFrequency n) +
       fourierLp 2 (-ccmPositiveFrequency n))
 
 def ccmCircleNegativeSineMode (T : ℝ) [Fact (0 < T)] {N : ℕ}
-    (n : Fin N) : CCMCircleL2 T :=
+    (n : Fin N) : CCMConnesConsaniCircleL2 T :=
   (ccmRealFourierScale (n.1 + 1) * Complex.I) •
     (fourierLp 2 (ccmPositiveFrequency n) -
       fourierLp 2 (-ccmPositiveFrequency n))
 
 def ccmCircleRealFourierMode (T : ℝ) [Fact (0 < T)] {N : ℕ} :
-    CCMRealFourierIndex N → CCMCircleL2 T
+    CCMRealFourierIndex N → CCMConnesConsaniCircleL2 T
   | none => fourierLp 2 0
   | some (Sum.inl n) => ccmCircleCosineMode T n
   | some (Sum.inr n) => ccmCircleNegativeSineMode T n
@@ -259,7 +259,7 @@ theorem orthonormal_ccmCircleRealFourierMode
 /-! ## Exact equality with the Laurent section -/
 
 def ccmCircleLaurentSection (T : ℝ) [Fact (0 < T)] (N : ℕ) :
-    Submodule ℂ (CCMCircleL2 T) :=
+    Submodule ℂ (CCMConnesConsaniCircleL2 T) :=
   Submodule.span ℂ
     ((fun k : ℤ => fourierLp (T := T) 2 k) '' {k : ℤ | k.natAbs ≤ N})
 
@@ -313,7 +313,7 @@ private theorem neg_scale_mul_I_mul_scale_mul_I (n : ℕ) :
 
 private theorem fourierLp_positive_eq_real_modes
     (T : ℝ) [Fact (0 < T)] {N : ℕ} (n : Fin N) :
-    (fourierLp (T := T) 2 (ccmPositiveFrequency n) : CCMCircleL2 T) =
+    (fourierLp (T := T) 2 (ccmPositiveFrequency n) : CCMConnesConsaniCircleL2 T) =
       ccmRealFourierScale (n.1 + 1) • ccmCircleCosineMode T n +
         (-(ccmRealFourierScale (n.1 + 1) * Complex.I)) •
           ccmCircleNegativeSineMode T n := by
@@ -324,7 +324,7 @@ private theorem fourierLp_positive_eq_real_modes
 
 private theorem fourierLp_negative_eq_real_modes
     (T : ℝ) [Fact (0 < T)] {N : ℕ} (n : Fin N) :
-    (fourierLp (T := T) 2 (-ccmPositiveFrequency n) : CCMCircleL2 T) =
+    (fourierLp (T := T) 2 (-ccmPositiveFrequency n) : CCMConnesConsaniCircleL2 T) =
       ccmRealFourierScale (n.1 + 1) • ccmCircleCosineMode T n +
         (ccmRealFourierScale (n.1 + 1) * Complex.I) •
           ccmCircleNegativeSineMode T n := by
@@ -355,7 +355,7 @@ theorem span_ccmCircleRealFourierMode_eq_laurentSection
             let j : Fin N := ⟨n, hnN⟩
             rw [show ((Int.ofNat (n + 1)) : ℤ) = ccmPositiveFrequency j by
               simp [ccmPositiveFrequency, j]]
-            change (fourierLp (T := T) 2 (ccmPositiveFrequency j) : CCMCircleL2 T) ∈
+            change (fourierLp (T := T) 2 (ccmPositiveFrequency j) : CCMConnesConsaniCircleL2 T) ∈
               Submodule.span ℂ (Set.range (ccmCircleRealFourierMode T (N := N)))
             rw [fourierLp_positive_eq_real_modes T j]
             exact Submodule.add_mem _
@@ -369,7 +369,7 @@ theorem span_ccmCircleRealFourierMode_eq_laurentSection
         rw [show (Int.negSucc n : ℤ) = -ccmPositiveFrequency j by
           simp only [ccmPositiveFrequency, j]
           omega]
-        change (fourierLp (T := T) 2 (-ccmPositiveFrequency j) : CCMCircleL2 T) ∈
+        change (fourierLp (T := T) 2 (-ccmPositiveFrequency j) : CCMConnesConsaniCircleL2 T) ∈
           Submodule.span ℂ (Set.range (ccmCircleRealFourierMode T (N := N)))
         rw [fourierLp_negative_eq_real_modes T j]
         exact Submodule.add_mem _

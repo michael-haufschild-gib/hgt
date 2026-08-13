@@ -1,12 +1,12 @@
 # Coordinate-intrinsic fusion--Kolchin principal-filter law
 
 - **ID:** `coordinate-intrinsic-fusion-kolchin-principal-filter-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** GENERAL HT MASTER THEOREM / COMPLETION CLASSIFICATION
 - **Scientific status:** `[PROVED HERE ON PAPER] [NOVELTY PROVISIONAL: HIGH]`
 - **Parents:**
-  `../../3-formalized/new_scientific_knowledge/prime-valuation-fusion-completion-lower-bound.md`,
-  `../../3-formalized/new_scientific_knowledge/analytic-dirichlet-observable-field-correspondence.md`
+  `../prime-valuation-fusion-completion-lower-bound.md`,
+  `../analytic-dirichlet-observable-field-correspondence.md`
 - **Statement:** Over the genuine embedded coordinate field `C(s)`, the complete valuation carrier
   family is countably jointly differentially independent, its finite depth filtration has exact
   rank growth `d * product_i |A_i|`, and the derivation-closed fusion completions form precisely
@@ -229,7 +229,7 @@ The capstones are
 `pairwiseCoprimePrimeResidueValuationUpperEndCoordinateFusionCompletionLaw`.  Direct module and
 `HTGeometry` umbrella checks pass.  A combined scratch axiom audit uses only `propext`,
 `Classical.choice`, and `Quot.sound`.  The Stage-3 formalization certificate is
-`../../3-formalized/new_scientific_knowledge/coordinate-intrinsic-fusion-kolchin-principal-filter-law.md`.
+`../coordinate-intrinsic-fusion-kolchin-principal-filter-law.md`.
 
 ## Log
 

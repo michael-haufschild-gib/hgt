@@ -461,3 +461,45 @@ K_theta  subset  { g * f : f in C[z] }      for one nowhere-zero g,
 after which `hasPolynomialFunctionalProjectiveBoundary_of_subset_mul_polynomial` discharges
 `neutralGammaRatio_twoStageBoundary` in one line.  That inclusion is exactly the Poincare expansion
 `(13)` together with the Bezout gcd normalization of section 4 — no other analytic input remains.
+
+### Update — the Gamma-ratio class realizes the interface `[PROVED]` — card closed
+
+The planned literal inclusion `K_theta ⊆ g·ℂ[z]` is unrealizable for any class carrying the actual
+Gamma ratio: as a total function, `G_θ = Γ(s+iθ)/Γ(s)` vanishes on the encoded pole lattice
+(`s ∈ -ℕ` and `s ∈ -ℕ - iθ`), so `G_θ·p` has infinitely many zeros while every `g·q` with `g`
+nowhere zero has finitely many.  The correct discharge is the direct one, and it is now proved:
+
+`formal/GaloisForLFunctions/HTGeometry/NeutralGammaRatioProjectiveBoundary.lean` defines
+
+```text
+neutralGammaRatio θ s              = Γ(s + iθ)/Γ(s)          (mathlib Complex.Gamma)
+neutralGammaRatioRationalClass θ   = { G_θ · p/q : p, q ∈ ℂ[z], q ≠ 0 }
+```
+
+and proves, for every `θ ≥ 0`,
+
+```text
+hasPolynomialFunctionalProjectiveBoundary_neutralGammaRatioRationalClass :
+  HasPolynomialFunctionalProjectiveBoundary (neutralGammaRatioRationalClass θ)
+neutralGammaRatio_twoStageBoundary_rationalClass :
+  the full two-stage boundary K_θ-class → ℂ[z] → ℂ, unconditional
+```
+
+The proof is exactly the §4 mechanism: for a finite tuple `G_θ·p_j/q_j`, the one common meromorphic
+functional normalization `(iT)^{-d} · G_θ(z+iT)^{-1} · ∏_l q_l(z+iT)` restores the cleared common
+denominator, and each member becomes the scaled vertical translate of its cleared numerator
+`p_j·∏_{l≠j} q_l`.  Above a height determined by each compact set the Gamma ratio has no zeros
+(`Γ` vanishes only on the two horizontal pole lines) and the finitely many denominator roots are
+left below, so the identification holds eventually on every compact set, and the locally uniform
+polynomial one-point recession supplies the nonzero polynomial limit tuple.  Moving poles are
+included (arbitrary `q`), every polynomial degree is realized (arbitrary `p`), and the limit vector
+is nonzero at the common degree bound.
+
+Axioms: `propext`, `Classical.choice`, `Quot.sound` on all six new declarations; module wired into
+`GaloisForLFunctions.HTGeometry`.
+
+The realized class is the single-`G_θ`-power rational stratum of `K_theta`.  Higher strata (mixed
+powers of `G_θ`, `Ψ`-jets) would need the vertical Tricomi--Erdelyi asymptotics `G_θ(s) ~ s^{iθ}`,
+which no longer carries any of the card's stated obligations: the card's remaining formalization
+obligation was the non-vacuous Gamma-ratio realization of the interface, and that is discharged
+with genuine `Complex.Gamma` data.

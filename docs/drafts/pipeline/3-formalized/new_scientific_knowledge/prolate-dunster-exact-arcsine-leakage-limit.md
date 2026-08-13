@@ -1,8 +1,8 @@
 # Exact prolate density converges to the arcsine leakage law
 
 - **ID:** prolate-dunster-exact-arcsine-leakage-limit
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean source-checked)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper; Lean-proved)
 - **Source:** Frankenstein corpus synthesis: Prolate Dunster transfer + CCM radial leakage
 - **Statement:** Every endpoint-normalized exact radial prolate family with `c -> +infinity` and `s -> 0` has exterior tail mass converging to the positive arcsine leakage tail.
 
@@ -12,7 +12,7 @@ Compose the corpus's global exact-to-Bessel `L1` estimate with its Bessel weak l
 ## Gates
 - [x] 0 -> 1 in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 -> 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 -> 3 formalized: final exact-module `lake build` intentionally deferred to dependency-closed RH audit
+- [x] 2 -> 3 formalized: `lake build GaloisForLFunctions.RHTower.ProlateCCMArcsineWeakLimit` completed successfully (2026-08-13); axiom audit `[propext, Classical.choice, Quot.sound]`
 - [ ] 3 -> 4 publication-ready: standalone paper + novelty audit
 
 ## Approach
@@ -38,3 +38,4 @@ The integral triangle inequality therefore gives the same limit for `E_i`. The i
 ## Log
 - 2026-08-07 — C9 degree-tail conjecture falsified as an exact RH equivalent. C10 originated from newly added corpus modules.
 - 2026-08-07 — Concurrent corpus addition supplied exact prolate weak limit; added missing direct CCM leakage identification and completed hostile audit.
+- 2026-08-13 — Final exact-module build audit completed (`lake build GaloisForLFunctions.RHTower.ProlateCCMArcsineWeakLimit`, 8831 jobs, success). Axiom audit clean. Promoted to 3-formalized.

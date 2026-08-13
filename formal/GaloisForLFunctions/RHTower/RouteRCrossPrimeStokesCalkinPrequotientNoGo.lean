@@ -20,7 +20,7 @@ namespace RHTower
 
 noncomputable section
 
-noncomputable local instance :
+noncomputable local instance decEqCrossPrimePacketIndexPrequotient :
     DecidableEq DeningerCalderonWittCrossPrimePacketIndex :=
   Classical.decEq _
 

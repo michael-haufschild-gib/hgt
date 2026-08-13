@@ -67,8 +67,9 @@ information satisfies
   \tag{FRM.2}
 \]
 
-Hellinger affinity gives a theorem without absolute-continuity assumptions.  KL, Jeffreys, and
-Fisher information give sharper faces when defined.  A sufficient macropacket realizes equality in
+Hellinger affinity gives a theorem without absolute-continuity assumptions.  The full classical
+Rényi family gives an additive **formation-capital spectrum**; KL, Jeffreys, and Fisher information
+give further limiting/local faces when defined.  A sufficient macropacket realizes equality in
 every face because statistic and common recovery make it Blackwell-equivalent to the independent
 sample.
 
@@ -80,8 +81,8 @@ The dependency-closed theorem is in
 ### FRM-I — fixed-source capital law
 
 No Markov formation increases any data-processing distinguishability.  Independent tensor depth is
-additive for logarithmic affinity, relative entropy, Jeffreys work, and Fisher information.  Hence
-one fixed overlapping source has finite nonneutral formation depth.
+additive for the Rényi capital spectrum, relative entropy, Jeffreys work, and Fisher information.
+Hence one fixed overlapping source has finite nonneutral formation depth.
 
 ### FRM-II — sufficient saturation law
 
@@ -216,9 +217,16 @@ Primary sources:
 - H. Barnum et al., *Cloning and Broadcasting in Generic Probabilistic Theories*,
   <https://arxiv.org/abs/quant-ph/0611295>.
 
-The abstract ingredients are not claimed as new.  The corpus delta is the exact source-to-target
-capital inequality, its cofinal neutral/singular classification, its sufficient-statistic saturation,
-and the unconditional separation of theta nondivisibility from theta packet formation.
+The hostile audit found an even closer parent: resource theories of asymmetric and symmetric
+distinguishability already study channel conversion of state pairs and asymptotic tensor rates.  See
+X. Wang--M. Wilde, <https://arxiv.org/abs/1905.11629>, and R. Salzmann et al.,
+<https://arxiv.org/abs/2102.12512>.  Therefore the abstract capital inequality, by itself, is
+`[OCCUPIED MACHINERY]`, not a new field theorem.
+
+The corpus delta is narrower: source-normal coupling of that machinery to common recovery,
+functional-equation action, cofinal formation properness, and the unconditional separation of theta
+nondivisibility from theta packet formation.  Formation resource mechanics remains a candidate
+field mechanism only until literal functors from non-statistical organs are constructed.
 
 ## Log
 

@@ -1,7 +1,7 @@
 # Torsion-Universal Phase Languages Force Polynomial-Magnitude Hypertranscendence
 
 - **ID:** `torsion-universal-phase-polynomial-magnitude-hypertranscendence`
-- **Stage:** 2-fully-proven / needs scientific-novelty audit
+- **Stage:** 3-formalized / needs scientific-novelty audit
 - **Type:** THEOREM CANDIDATE / GENERAL HT PHASE-LANGUAGE LAW
 - **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED] [SIGNIFICANT]`
 - **Statement:** If `beta>2` and the Taylor phases recurrently contain every finite
@@ -319,7 +319,7 @@ The exact owning builds and `HTGeometry` umbrella are green.  Scratch `#print ax
 phase, defect, literal series, HT, and existence capstones report only `propext`,
 `Classical.choice`, and `Quot.sound`; the forbidden-token scans are clean.  The Stage-3
 formalization certificate is
-`../../3-formalized/new_scientific_knowledge/torsion-universal-phase-polynomial-magnitude-hypertranscendence.md`.
+`../torsion-universal-phase-polynomial-magnitude-hypertranscendence.md`.
 
 ## Gates
 

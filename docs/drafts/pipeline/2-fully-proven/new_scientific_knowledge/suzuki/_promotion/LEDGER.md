@@ -5426,3 +5426,33 @@ sum (`suzukiSeamHilbert_norm_sq_eq_sum`, via `lp.inner_eq_tsum` + `tsum_eq_sum`)
 
 Trap: `lp.single`/`Pi.single` standalone need the function-type ascription
 `(Pi.single q (1:ℂ) : SuzukiSeamVertex → ℂ)` or the family metavariable sticks.
+
+## FH. 84/103 — `suzuki-neumann-dominated-shift-cone-obstruction` promoted
+
+The one open gate half — the triangle instantiation — is closed in
+`RHTower/SuzukiScrewShiftConeAssembly.lean`:
+
+```text
+xiLineScrewPrimitive                  ∫₀^s xiLineScrewSeries, with FTC derivative and P(0) = 0
+suzukiScrewIntervalEdgeData           edge data on L²[-a,a]: compact harmonic coordinate, pairing
+                                      vectors = L² elements of the named edge weights, primitive
+                                      = the critical-ordinate screw primitive
+suzukiScrewEdgeJet                    the normalized edge jet as a real function of the shift
+tendsto_suzukiScrewEdgeJet_atBot      its limit at -∞ is the screw Cesàro mean — the card's (10)
+                                      realised on this data
+suzukiScrewShiftCone_obstruction      Theorem C's conclusion WITH NO HYPOTHESIS: some positive
+                                      aperture puts every sufficiently negative dyadic shift pair
+                                      above the Xi curvature threshold
+```
+
+All audit to `[propext, Classical.choice, Quot.sound]`.  Card + certificate moved; umbrella wired;
+three stale inbound links (which pointed at the flat 2-fully-proven path that no longer existed)
+repaired to the stage-3 location.
+
+The card's own log had already discharged everything else across ten modules ((2) as
+`tendsto_resolventFamily_id` with no unbounded operator; (4)–(8) as integral identities and the
+assembled quotient; (9) dyadic intercept; (11) unconditional for the actual critical ordinates;
+the countable Hilbert basis of L²[-a,a] replacing mathlib's missing Lp separability).  What
+remains on the card is source matching only — exhibiting Suzuki's own restricted resolvent and
+physical functionals in place of the constructed data — the folder's shared open-research core,
+recorded in the certificate's Open boundary.

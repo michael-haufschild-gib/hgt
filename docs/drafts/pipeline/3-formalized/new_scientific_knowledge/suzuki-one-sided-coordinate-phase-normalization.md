@@ -177,7 +177,7 @@ to zero at small aperture, strictly above the fixed negative Xi curvature.  Thus
 negative dyadic pairs at sufficiently small aperture cannot yield a Herglotz jump quotient.
 The restored route requires an intrinsic non-escaping shift-selection law; uniformity over all
 admissible pairs is false.  Full proof is in
-`../2-fully-proven/new_scientific_knowledge/suzuki-neumann-dominated-shift-cone-obstruction.md`.
+`./suzuki/suzuki-neumann-dominated-shift-cone-obstruction.md`.
 
 ## Actual reopened frontier
 

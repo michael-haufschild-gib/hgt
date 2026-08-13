@@ -69,7 +69,8 @@ theorem eventually_card_le_maynard_first_or_second_of_selected_cell_coloring_mid
       maynardLabelPolylogConstant * (Real.log T) ^ 120 := by
     simpa only [nlabels, maynardLabelPolylogConstant] using hlabel
   have hlabelAbsorbedRaw := hlabelCost 1 0 (by norm_num)
-    (one_le_pow₀ hT.le) (by omega : 0 ≤ maynardMontgomeryFixedPolylogExponentBound)
+    (by exact_mod_cast one_le_pow₀ (n := 90) hT.le)
+    (by omega : 0 ≤ maynardMontgomeryFixedPolylogExponentBound)
   have hlabelAbsorbed :
       maynardLabelPolylogConstant * (Real.log T) ^ 120 ≤ T ^ (d / 4000) := by
     norm_num [d] at hlabelAbsorbedRaw ⊢
@@ -88,7 +89,7 @@ theorem eventually_card_le_maynard_first_or_second_of_selected_cell_coloring_mid
           (maynardHarmonicFactor K delta *
             T ^ (mu * (1 - alpha) - d / 2000)) = B1 := by
     dsimp only [B1]
-    rw [← Real.rpow_add hT0]
+    rw [mul_left_comm, ← Real.rpow_add hT0]
     congr 1
     ring
   have hpowMerge2 :
@@ -97,7 +98,7 @@ theorem eventually_card_le_maynard_first_or_second_of_selected_cell_coloring_mid
             T ^ (1 + mu * (1 + routeTGapMomentNu - 2 * alpha) - d / 2000)) =
         B2 := by
     dsimp only [B2]
-    rw [← Real.rpow_add hT0]
+    rw [mul_left_comm, ← Real.rpow_add hT0]
     congr 1
     ring
   have hfibres : ∀ label : HeathBrownSelectionLabel L X 60,

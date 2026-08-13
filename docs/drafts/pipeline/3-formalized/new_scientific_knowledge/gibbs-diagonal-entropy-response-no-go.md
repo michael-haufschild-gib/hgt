@@ -1,7 +1,7 @@
 # Gibbs diagonal entropy-response no-go
 
 - **ID:** `gibbs-diagonal-entropy-response-no-go`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / NO-GO CLOSURE
 - **Conjecture label:** C14
 - **Inputs:** `GibbsAntiscaleFirstTraceFrame`, `ThermodynamicAffinityHolonomy`,
@@ -56,5 +56,7 @@ carrier.
 
 `GaloisForLFunctions.HTGeometry.ThermodynamicDiagonalResponseNoGo` proves both intensity and
 response vanishing, is wired into `HTGeometry.lean`, and passes exact `lake env lean` source
-verification. Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`. No umbrella
-build was run.
+verification. Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`. Final
+module build audit passed 2026-08-13
+(`lake build GaloisForLFunctions.HTGeometry.ThermodynamicDiagonalResponseNoGo`), axiom audit
+re-verified clean on both vanishing theorems.

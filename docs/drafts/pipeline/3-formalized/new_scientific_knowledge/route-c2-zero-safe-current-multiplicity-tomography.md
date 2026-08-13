@@ -5,7 +5,7 @@
 - **Type:** THEOREM (paper + Lean) / ROUTE-CLOSURE SURVIVOR
 - **Scientific status:** `[BRIDGE] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Paper proof:**
-  `../../2-fully-proven/new_scientific_knowledge/other/route-c2-zero-safe-current-multiplicity-tomography.md`
+  `other/route-c2-zero-safe-current-multiplicity-tomography.md`
 - **Statement:** Completed theta-cusp current has an exact zero-safe odd divisor factorization at
   every Xi zero, recovers multiplicity from transverse order, and has an exact planar leading cone
   with a higher coefficient vanishing at the divisor.

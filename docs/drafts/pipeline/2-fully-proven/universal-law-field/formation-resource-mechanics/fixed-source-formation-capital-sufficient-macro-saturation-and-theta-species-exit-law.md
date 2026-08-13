@@ -5,7 +5,8 @@
 - **Type:** ROUTE-INDEPENDENT FORMATION-CAPITAL THEOREM + SUFFICIENT-STATISTIC FUSION LAW
 - **Source:** `../../../1-in-progress/universal-law-field/formation-resource-mechanics/field-programme.md`
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [UNCONDITIONAL] [FINITE CORE]`
-  `[STANDARD-BOREL THETA COROLLARY] [FOUR-ORGAN FUSION] [LEAN PENDING] [NOT RH]`
+  `[STANDARD-BOREL THETA COROLLARY] [FOUR-ORGAN FUSION] [BRIDGE]`
+  `[OCCUPIED RESOURCE-THEORY PARENT] [LEAN PENDING] [NOT RH]`
 - **Statement:** A fixed binary source experiment can form independent target depth only by
   spending additive distinguishability capital; arbitrary exact depth forces a neutral target or a
   singular source, while sufficient macropackets attain every information bound exactly and allow
@@ -83,7 +84,11 @@ When `0<a<1` and `0<c<=1`, every exact formation depth satisfies
 Equivalently, with extended Bhattacharyya capital
 
 \[
- C_H(u,v)=-\log A(u,v),
+ C_H(u,v)=
+ \begin{cases}
+  -\log A(u,v),&A(u,v)>0,\\
+  +\infty,&A(u,v)=0,
+ \end{cases}
  \tag{FCAP.9}
 \]
 
@@ -140,6 +145,57 @@ Product additivity and `(FCAP.4)` identify the right side with `dD(p_0||p_1)`.  
 marks and add to obtain Jeffreys.  QED.
 
 The Hellinger theorem remains nontrivial when one or both directed KL divergences are infinite.
+
+### Theorem 2.3 — Rényi formation-capital spectrum
+
+For `0<alpha<1`, define
+
+\[
+ Q_\alpha(u,v)=\sum_z u(z)^\alpha v(z)^{1-\alpha},
+ \qquad
+ C_\alpha(u,v)=
+ \begin{cases}
+  -\log Q_\alpha(u,v),&Q_\alpha(u,v)>0,\\
+  +\infty,&Q_\alpha(u,v)=0.
+ \end{cases}
+ \tag{FCAP.13a}
+\]
+
+Every exact depth-`d` formation satisfies
+
+\[
+ \boxed{
+ Q_\alpha(r_0,r_1)\le Q_\alpha(p_0,p_1)^d,
+ \qquad
+ C_\alpha(r_0,r_1)\ge dC_\alpha(p_0,p_1).}
+ \tag{FCAP.13b}
+\]
+
+Thus a source carries not one capital number but the profile
+
+\[
+ \alpha\longmapsto C_\alpha(r_0,r_1).
+ \tag{FCAP.13c}
+\]
+
+### Proof
+
+For each output `y`, concavity of the weighted geometric mean on the positive cone gives
+
+\[
+ \left(\sum_xr_0(x)K(x,y)\right)^\alpha
+ \left(\sum_xr_1(x)K(x,y)\right)^{1-\alpha}
+ \ge
+ \sum_xr_0(x)^\alpha r_1(x)^{1-\alpha}K(x,y).
+\]
+
+Summing in `y` and using the Markov row sums proves data processing
+`Q_alpha(r_0K,r_1K)>=Q_alpha(r_0,r_1)`.  Direct factorization proves
+`Q_alpha(p_0^tensor d,p_1^tensor d)=Q_alpha(p_0,p_1)^d`.  Apply `(FCAP.4)` and take negative
+logarithms, using the extended convention `-log 0=+infinity`.  QED.
+
+At `alpha=1/2`, this is Theorem 2.1.  The profile is still not a complete one-shot Blackwell
+coordinate; Section 4 remains load-bearing.
 
 ## 3. Cofinal classification and approximate properness
 
@@ -405,8 +461,17 @@ Finally, the one-packet score is `T-E_theta T`.  The macro score is
 `t-d E_theta T`.  Under the macro law, `t` is the sum of `d` independent copies of `T`; its variance
 is therefore `d Var_theta(T)`.  This is `(FCAP.35)`.  QED.
 
-Equations `(FCAP.33)`--`(FCAP.35)` are the fusion identity: positive/Hellinger, entropy/KL, and
-moment/Fisher organs measure one conserved formation capital in different grades.
+The same two-way data processing proves
+
+\[
+ C_\alpha(m_{d,\theta},m_{d,\phi})
+ =dC_\alpha(p_\theta,p_\phi)
+ \qquad(0<\alpha<1).
+ \tag{FCAP.35a}
+\]
+
+Equations `(FCAP.33)`--`(FCAP.35a)` are the fusion identity: positive/Hellinger, Rényi spectrum,
+entropy/KL, and moment/Fisher organs measure one conserved formation capital in different grades.
 
 ## 7. Functional-equation equivariance of sufficient formation
 
@@ -514,9 +579,9 @@ Therefore
  \tag{FCAP.44}
 \]
 
-For `d=2`, `M_{2,B}` has a nonzero atom at `6`, although `P_B` has none.  Hence exact sufficient
-formation exists, but the macro law necessarily exits the original one-particle theta support
-species.  This separates formation from infinite divisibility unconditionally.
+For `d=2`, `M_{2,B}` has a nonzero atom at `6`, although `P_B` has no atom there.  Hence exact
+sufficient formation exists, but the macro law necessarily exits the original one-particle theta
+**atomic-support** species.  This separates formation from infinite divisibility unconditionally.
 
 ### Proof
 
@@ -619,16 +684,20 @@ packet.  Declaring the product packet by hand is circular.
 ## 12. Parent audit and corpus delta
 
 Blackwell comparison, f-divergence monotonicity, Fisher--Neyman sufficiency, Chentsov geometry,
-probabilistic no-cloning, and generalized data thinning are established mathematics.  Relevant
-primary sources are:
+probabilistic no-cloning, generalized data thinning, and distinguishability resource theories are
+established mathematics.  Relevant primary sources are:
 
 - <https://arxiv.org/abs/1908.07021>
 - <https://arxiv.org/abs/2303.12931>
 - <https://arxiv.org/abs/2301.07276>
 - <https://arxiv.org/abs/1701.08895>
 - <https://arxiv.org/abs/quant-ph/0611295>
+- <https://arxiv.org/abs/1905.11629>
+- <https://arxiv.org/abs/2102.12512>
 
-The unconditional corpus delta is the combined theorem:
+The generic fixed-source capital theorem is a classical/quantum resource-theory bridge and is not
+claimed as external novelty.  The unconditional corpus delta is the combined source-specific
+theorem:
 
 - arbitrary fixed-source rather than self-cloning capital;
 - cofinal neutral/singular classification;
@@ -644,13 +713,18 @@ The paper theorem is dependency-closed.  Under current research-mode instruction
 but no Lean file was written or built in this pass.  The finite target module should formalize:
 
 1. arbitrary-source affinity capital `A(source)<=A(target)^d`;
-2. arbitrary-depth neutral/singular classification;
-3. the explicit likelihood-ratio counterexample;
-4. finite exponential sufficient recovery and affinity conservation;
-5. finite functional-equation equivariance.
+2. the Rényi capital spectrum;
+3. arbitrary-depth neutral/singular classification;
+4. the explicit likelihood-ratio counterexample;
+5. finite exponential sufficient recovery and information conservation;
+6. finite functional-equation equivariance.
 
-The standard-Borel theta disintegration should be formalized only after the finite core and the
-existing regular-conditional API have been audited; no new axiom or placeholder is permitted.
+Lean audit found the required existing infrastructure in
+`Mathlib/Probability/Kernel/Disintegration/StandardBorel.lean`: `Measure.condKernel`, its Markov
+instance, and `Measure.compProd_fst_condKernel`.  The theta proof will additionally need a measurable
+coordinate change from `R^d` to `(sum, fibre coordinate)` and transport of the baseline conditional
+kernel under the fibre-constant exponential tilt.  No Lean file was written or built in this pass,
+and no new axiom or placeholder is permitted.
 
 ## Log
 

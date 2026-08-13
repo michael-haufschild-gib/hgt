@@ -1,7 +1,7 @@
 # Gibbs batch entropy-production nullspace lift
 
 - **ID:** `gibbs-batch-entropy-production-nullspace-lift`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM
 - **Conjecture label:** C15
 - **Inputs:** `GibbsAntiscaleFirstTraceFrame`, `ThermodynamicAffinityHolonomy`
@@ -63,4 +63,6 @@ that the abstract physical mechanism is literature-new.
 edge positivity classification, total-production zero classification, and exact equivalence with
 Route E pairwise-dispersion vanishing. Exact `lake env lean` verification passes; axiom audit
 reports only `propext`, `Classical.choice`, and `Quot.sound`. Module is wired into `RHTower.lean`.
-No umbrella build was run.
+Final module build audit passed 2026-08-13
+(`lake build GaloisForLFunctions.RHTower.GibbsBatchEntropyProductionLift`), axiom audit re-verified
+clean on the intensity classification and both total-production zero classifications.

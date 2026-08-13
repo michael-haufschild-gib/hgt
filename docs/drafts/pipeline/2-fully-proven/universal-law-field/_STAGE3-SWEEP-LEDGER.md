@@ -111,3 +111,55 @@ Reusable infrastructure built during this sweep, corpus-wide: `HermitianInertia`
 for complex Hermitian matrices), `CompleteAtomicInertiaFusion`, `QuotientFusionProjectionGenesis`,
 `CartanWorkProperness`, `FormationCompletionExchangeCalibration`, `InteractionDegreeEscape`,
 `CrystallineShadowTransversality`, and the `AbelianZetaGas` socle layer.
+
+## Scope extension (2026-08-13, /goal directive)
+
+The sweep now owns **every** card under `universal-law-field/` **including subfolders** (74 cards).
+The 2026-08-12 top-level-only scope correction is superseded by the user's 2026-08-13 goal.
+Working rules restated: unconditional closed Lean only (no premises/hypotheses/axioms), corpus-first
+search before any new lemma, foreground builds, one Lean process, `lake env lean` per file and
+`lake build <module>` for the final audit, wire every module into its umbrella, promote with
+`scratchpad/promote.py`.
+
+Concurrency note: another session is active in `formation-resource-mechanics/` (card + 
+`1-in-progress` programme file git-modified, 09:57 mtimes) and in several `RHTower/*` modules.
+Do not touch in-flight files; skip that card until the other session goes idle.
+
+### Subfolder roster (initial audit from card self-declarations, 2026-08-13)
+
+| Folder | Cards | Initial state |
+|---|---|---|
+| amplified-generative-response-mechanics | 1 | no boundary marker — audit |
+| cofinal-renewal-geometry | 5 | no marker — audit (memory: threshold work 2026-08-12) |
+| conservative-repair-genealogy-mechanics | 3 | LEAN PENDING |
+| endogenous-relaxation-mechanics | 1 | no marker — audit |
+| failure-kernel-transversal-mechanics | 1 | core certified; arbitrary-finite-chain leg pending |
+| formation-chirality-reversal-mechanics | 2 | no marker — audit |
+| formation-cloning-mechanics | 1 | Hellinger triangle API pending |
+| formation-depth-properness-mechanics | 1 | no marker — audit |
+| formation-factorization-mechanics | 1 | sublevel boundedness pending |
+| formation-holonomy-mechanics | 2 | no marker — audit |
+| formation-laplacian-properness-mechanics | 3 | LEAN PENDING |
+| formation-resource-mechanics | 1 | LEAN PENDING — **other session in flight, skip** |
+| formation-transfer-germ-mechanics | 1 | core certified; Poisson asymptotics pending |
+| generative-response-mechanics | 4 | mixed; audit each |
+| interaction-spectrum-dilation-mechanics | 1 | no marker — audit |
+| law-control-mechanics | 1 | no marker — audit |
+| law-saturation-mechanics | 1 | §10 paper-only clauses pending |
+| local-exponential-test-closure-mechanics | 1 | LEAN PENDING |
+| orbit-induction-selection-mechanics | 6 | LEAN-PENDING |
+| packet-formation-mechanics | 2 | audit; hasse-packet has paper-level remains |
+| polarized-contact-formation-geometry | 3 | LEAN PENDING |
+| polarized-response-completion-mechanics | 3 | LEAN PENDING |
+| primitive-formation-rigidity-mechanics | 4 | audit; prime-jet has open clause |
+| reciprocal-character-real-form-mechanics | 1 | has Lean section — audit |
+| reciprocal-fusion-topology-mechanics | 1 | LEAN PENDING |
+| recovery-cocycle-mechanics | 2 | one LEAN PENDING — audit both |
+| reflection-formation-cocycle-mechanics | 1 | no marker — audit |
+| reversible-formation-dilation-mechanics | 3 | mixed remains — audit each |
+| species-relative-formation-mechanics | 5 | LEAN PENDING |
+
+Order of attack: (1) top-level dependency chain per the 2026-08-12 handoff
+(critical-locus-hessian Θ-package first, then its two dependents), (2) subfolder cards with small
+declared remainders, (3) full LEAN-PENDING folders, (4) formation-resource-mechanics last (in
+flight elsewhere).

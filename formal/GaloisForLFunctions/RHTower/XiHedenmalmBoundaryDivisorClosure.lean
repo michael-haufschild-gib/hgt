@@ -333,7 +333,7 @@ theorem xiWeilPolarization_thetaEigenFourier_xiDivisorSupport
 
 /-- Critical-line reflection on the Xi divisor is complex conjugation in the centered spectral
 coordinate. -/
-theorem xiSpectralPointSupport_lineConj (rho : XiDivisorSupport) :
+theorem xiSpectralPointSupport_lineConj_boundaryClosure (rho : XiDivisorSupport) :
     xiSpectralPointSupport (xiZeroLineConjEquiv rho) =
       (starRingEnd ℂ) (xiSpectralPointSupport rho) := by
   rw [xiSpectralPointSupport, xiSpectralPointSupport,
@@ -361,7 +361,7 @@ theorem xiWeilPolarization_thetaEigenFourier_xiDivisorSupport_orbit
       xiSpectralPointSupport tau =
           (starRingEnd ℂ) (xiSpectralPointSupport rho) ↔
         tau = xiZeroLineConjEquiv rho := by
-    rw [← xiSpectralPointSupport_lineConj]
+    rw [← xiSpectralPointSupport_lineConj_boundaryClosure]
     constructor
     · intro h
       exact xiSpectralPointSupport_injective h

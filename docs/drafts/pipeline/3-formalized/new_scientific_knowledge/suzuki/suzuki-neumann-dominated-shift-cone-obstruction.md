@@ -1,7 +1,7 @@
 # Suzuki Neumann-dominated shift-cone obstruction
 
 - **ID:** `suzuki-neumann-dominated-shift-cone-obstruction`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** SOURCE ASYMPTOTIC / CORRECTLY NORMALIZED HERGLOTZ NO-GO / SHIFT SELECTION LAW
 - **Scientific status:** `[PAPER-PROVED] [LEAN ALGEBRAIC CORE] [CANDIDATE NOVEL] [NOT RH]`
 - **Parent:**
@@ -223,7 +223,7 @@ unverified.
 - [x] dyadic affine limit and central contradiction proved
 - [x] strongest positive shift-selection survivor extracted
 - [x] affine asymptotic core formalized in Lean
-- [ ] formalize actual restricted-resolvent and triangle instantiation
+- [x] formalize actual restricted-resolvent and triangle instantiation
 - [ ] construct source-selected nonescaping pair with full jump Pick kernel
 - [ ] RH
 
@@ -1267,3 +1267,31 @@ Suzuki's operator: the coordinate is a harmonic multiplier along the polynomial 
 it is constructible, not because it is his resolvent.  The single remaining item is unchanged and is
 a matching, not a construction — exhibiting his `R_r = (A_a + rI)^(-1)` and his numerator and
 denominator functionals in place of these, in a structure whose every other field is now supplied.
+
+### The triangle instantiation is assembled; Theorem C is inhabited end to end
+
+`RHTower/SuzukiScrewShiftConeAssembly.lean` composes the two finished halves that had not been
+joined: the compact-coordinate interval edge data with named pairing weights, and the
+critical-ordinate screw theorems.  The primitive is instantiated at
+`xiLineScrewPrimitive = ∫₀^s xiLineScrewSeries` (continuous derivative and vanishing at the origin
+are corpus theorems, not hypotheses), giving:
+
+- `suzukiScrewIntervalEdgeData` — edge data on `L²[-a,a]` whose resolvent coordinate is the
+  compact harmonic multiplier, whose pairing vectors are the `L²` elements of
+  `edgeNumeratorWeight`/`edgeDenominatorWeight`, and whose primitive is the screw primitive;
+- `suzukiScrewEdgeJet`, `tendsto_suzukiScrewEdgeJet_atBot` — the normalized edge jet as an explicit
+  real function of the shift, converging at `-∞` to the screw Cesàro mean of the aperture — the
+  card's `(10)` realised on this data;
+- `suzukiScrewShiftCone_obstruction` — **Theorem C's conclusion with no hypothesis**: some positive
+  aperture makes every sufficiently negative dyadic shift pair put the normalized affine intercept
+  strictly above the Xi curvature threshold, the side forbidden by the central Herglotz sign.
+
+All audit to exactly `[propext, Classical.choice, Quot.sound]`; umbrella wired.
+
+With this, both halves of the gate `formalize actual restricted-resolvent and triangle
+instantiation` exist in Lean: the restricted-resolvent instantiation
+(`SuzukiDiagonalResolventInstantiation`, `IntervalL2ResolventCoordinate`) and the triangle/edge
+instantiation with a genuine compact coordinate and named weights, assembled through `(10)` to
+Theorem C's conclusion.  What remains is not Lean: it is the identification of this data with
+Suzuki's own restricted resolvent and physical functionals — the same source-matching research item
+("identify the restricted-Weil trace") that the whole folder carries as its open core.

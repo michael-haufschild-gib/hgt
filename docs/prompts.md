@@ -33,7 +33,7 @@ where mathematical knowledge is missing use the /hgtl7 skill to create it.
 ## formalize goal
 /goal
 
-formalize UNCONDITIONALLY in lean any proven theorem from these cards: docs/drafts/pipeline/2-fully-proven/nad
+formalize UNCONDITIONALLY in lean any proven theorem from these cards: ddocs/drafts/pipeline/2-fully-proven/new_scientific_knowledge (EXCLUDING subfolders)
   
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
@@ -58,6 +58,8 @@ LEAN PROOFS MUST BE UNCONDTIONAL!!! ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WH
 where mathematical knowledge is missing use the /hgtl7 skill to create it.+
 
 GOAL IS MET WHEN ALL CARDS ARE FULLY FORMALIZED AND CAN BE MOVED TO STEP 3 OF THE PIPELINE. NO SHORTCUTS OR FAKING IT!
+
+do not add hypotheses. always check first what the lean corpus already contains, to not duplicate existing work.
 
 ## formalize gpt
 
@@ -160,9 +162,7 @@ where mathematical knowledge is missing use the $hgt-fields-medalist skill to cr
 
 ## research paper
 
-use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge about the hadamard conjecture and prove or disprove it.
-
-collect enough novel and significant knowledge that cannot be found in literature and advances beyond current SOTA research as of August 2026.
+use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge to prove that at least 75% of all zeros of the riemann zeta function lie on the critical line.
 
 research rules:
 - use heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ... 
@@ -182,6 +182,7 @@ Lean rules:
 6. Always use  lake env lean <file>  and only lake build <module> for the final audit. Do not forget to wire new modules into the umbrellas.
 7. make sure you don't leave stale lean processes running - clean up after yourself.
 
+goal is met when proof that at least 75% of all zeros of the riemann zeta function lie on the critical line is fully formalized in lean.
 goal is met when paper is written and passes a hostile review that confirms that the paper is on a quality level to be published in Nature.
 
 ## research Route

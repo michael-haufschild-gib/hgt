@@ -60,7 +60,7 @@ theorem suzukiPositiveHalfLineUnitary_logEven_symm_ae (q : SoninL2) :
 /-! ## Exponential substitution for Bochner integrals -/
 
 /-- Exact Bochner-integral substitution `y = exp t` on the positive ray. -/
-theorem integral_Ioi_eq_integral_exp_smul (F : ℝ → ℂ) :
+theorem integral_Ioi_eq_integral_exp_smul_hankel (F : ℝ → ℂ) :
     (∫ y : ℝ in Ioi (0 : ℝ), F y) =
       ∫ t : ℝ, Real.exp t • F (Real.exp t) := by
   have hcov := MeasureTheory.integral_image_eq_integral_abs_deriv_smul
@@ -174,7 +174,7 @@ theorem suzuki2012_lemma_four_one_positive_half_line_ae_kernel
   have hinExp := realExp_quasiMeasurePreserving.ae hinWhole
   filter_upwards [hout, ae_restrict_mem measurableSet_Ioi] with x hxout hxpos
   rw [hxout]
-  rw [integral_Ioi_eq_integral_exp_smul]
+  rw [integral_Ioi_eq_integral_exp_smul_hankel]
   have hrhs :
       (∫ t : ℝ, Real.exp t •
         (suzukiSourceHFinite omega (x * Real.exp t) *

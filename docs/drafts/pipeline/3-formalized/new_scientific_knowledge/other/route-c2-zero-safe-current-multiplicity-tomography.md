@@ -1,7 +1,7 @@
 # Route C2 zero-safe current multiplicity tomography
 
 - **ID:** `route-c2-zero-safe-current-multiplicity-tomography`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** CANDIDATE / ROUTE-CLOSURE SURVIVOR
 - **Scientific status:** `[PAPER-PROVED] [BRIDGE] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Parent:** `rh-current-frontier-map.md`, Route C2

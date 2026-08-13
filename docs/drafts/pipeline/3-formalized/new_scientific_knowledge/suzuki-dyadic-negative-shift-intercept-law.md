@@ -5,7 +5,7 @@
 - **Type:** THEOREM (Lean) / SOURCE-ASYMPTOTIC CONSUMER
 - **Scientific status:** `[LEAN-PROVED] [UNCONDITIONAL] [NOT RH]`
 - **Paper parent:**
-  `../../2-fully-proven/new_scientific_knowledge/suzuki-neumann-dominated-shift-cone-obstruction.md`
+  `./suzuki/suzuki-neumann-dominated-shift-cone-obstruction.md`
 - **RH used:** no
 - **Computation used:** no
 

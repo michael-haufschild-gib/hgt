@@ -9,7 +9,7 @@
   - `../not_new_scientific_knowledge/wold-depth-xi-essential-amplification-law.md`;
   - `../../1-in-progress/reflected-character-singular-splitting-bockstein-law.md`;
   - `gamma-copoisson-sonin-full-quotient-flatness-syzygy.md`;
-  - `../../../3-formalized/new_scientific_knowledge/prime-first-trace-essential-normal-bockstein.md`.
+  - `../../prime-first-trace-essential-normal-bockstein.md`.
 - **Formal modules:**
   `formal/GaloisForLFunctions/RHTower/XiDepthSuccessorStokesNormalLayer.lean`;
   `formal/GaloisForLFunctions/RHTower/XiDepthMobiusGammaOuterInnerWeld.lean`.

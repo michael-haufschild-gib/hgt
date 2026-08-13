@@ -1,7 +1,7 @@
 # Gaussian Torsion-Language Universality Forces Hypertranscendence
 
 - **ID:** `gaussian-torsion-language-hypertranscendence`
-- **Stage:** 2-fully-proven / needs scientific-novelty audit
+- **Stage:** 3-formalized / needs scientific-novelty audit
 - **Type:** THEOREM CANDIDATE / GENERAL HT GAUSSIAN-FACE LAW
 - **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED] [SIGNIFICANT]`
 - **Statement:** If the Taylor phases recurrently contain every finite word over every finite
@@ -271,7 +271,7 @@ The leaf module is umbrella-reachable through
 `formal/GaloisForLFunctions/HTGeometry.lean`; direct Lean verification and the final targeted
 module build pass.  Combined scratch `#print axioms` checks of the public capstones report only
 `propext`, `Classical.choice`, and `Quot.sound`.  Stage-3 certificate:
-`../../3-formalized/new_scientific_knowledge/gaussian-torsion-language-hypertranscendence.md`.
+`../gaussian-torsion-language-hypertranscendence.md`.
 
 ## Gates
 

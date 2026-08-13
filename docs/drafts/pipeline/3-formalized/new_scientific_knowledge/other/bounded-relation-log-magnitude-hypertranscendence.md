@@ -1,7 +1,7 @@
 # Bounded-Relation Log-Magnitudes Force Hypertranscendence
 
 - **ID:** `bounded-relation-log-magnitude-hypertranscendence`
-- **Stage:** 2-fully-proven / complete theorem surface Lean-proved / final integration gate pending
+- **Stage:** 3-formalized / complete theorem surface Lean-proved / final integration gate pending
 - **Type:** THEOREM CANDIDATE / GENERAL HT ARITHMETIC-VALUATION LAW / Lean formalization complete
 - **Scientific status:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`, provisional pending independent
   expert verification of the proof and literature claim.
@@ -415,7 +415,7 @@ The exact owning target and `HTGeometry` umbrella build green.  A combined scrat
 the public capstones uses only `propext`, `Classical.choice`, and `Quot.sound`; the forbidden-token
 and whitespace checks are clean.  No missing analytic or arithmetic parent is passed in as a
 hypothesis.  The Stage-3 formalization certificate is
-`../../3-formalized/new_scientific_knowledge/bounded-relation-log-magnitude-hypertranscendence.md`.
+`../bounded-relation-log-magnitude-hypertranscendence.md`.
 
 ## Gates
 

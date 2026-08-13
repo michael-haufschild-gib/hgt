@@ -1,7 +1,7 @@
 # The double-sine logarithmic derivative has augmentation-ideal translation annihilator
 
 - **ID:** `double-sine-translation-annihilator`
-- **Stage:** 2-fully-proven / needs independent audit
+- **Stage:** 3-formalized / needs independent audit
 - **Type:** THEOREM (paper)
 - **Scientific status:** `[NOVELTY UNVERIFIED]` -- the proof is complete modulo the already-stated
   several-translation telescoping theorem, but multiple-sine and generalized Holder literature has

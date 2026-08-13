@@ -3,7 +3,7 @@
 - **ID:** `double-sine-translation-annihilator`
 - **Stage:** 3-formalized
 - **Paper proof:**
-  `../../2-fully-proven/new_scientific_knowledge/other/double-sine-translation-annihilator.md`
+  `other/double-sine-translation-annihilator.md`
 - **Lean module:**
   `formal/GaloisForLFunctions/HTGeometry/DoubleSineImaginaryRayAnnihilator.lean`
 - **Umbrella:** `formal/GaloisForLFunctions/HTGeometry.lean`

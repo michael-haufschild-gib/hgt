@@ -73,7 +73,7 @@ Neumann slope cancels.  Since `g` is continuous and `g(0)=0`, right side of `(2)
 `a -> 0+`, while `XiC''(0)/XiC(0)<0`.  Hence all sufficiently negative dyadic pairs at every
 sufficiently small aperture violate the central Herglotz threshold.  Scalar jump positivity can
 only use a source-selected pair outside this Neumann-dominated escape cone.  See
-`../2-fully-proven/new_scientific_knowledge/suzuki-neumann-dominated-shift-cone-obstruction.md`.
+`../3-formalized/new_scientific_knowledge/suzuki/suzuki-neumann-dominated-shift-cone-obstruction.md`.
 
 Independently, useful source observable is
 

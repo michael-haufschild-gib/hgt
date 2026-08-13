@@ -2,7 +2,7 @@
 
 - **ID:** `von-mangoldt-toeplitz-countertrace-regularity-no-go`
 - **Stage:** 3-formalized
-- **Type:** THEOREM (Lean) / SOURCE-SPECIFIC FAILED CLASS
+- **Type:** THEOREM (paper + Lean) / SOURCE-SPECIFIC FAILED CLASS
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Source:** `../../1-in-progress/von-mangoldt-weighted-density-boundary-anomaly.md`
 - **Statement:** The canonical Toeplitz countertrace coefficients for the cofinal von Mangoldt

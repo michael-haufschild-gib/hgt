@@ -1,7 +1,7 @@
 # A charged scalar HT core is a multiplicative torsor over a fixed current field
 
 - **ID:** `charged-scalar-core-fixed-current-torsor`
-- **Stage:** 2-fully-proven / complete theorem surface Lean-proved / final integration gate pending
+- **Stage:** 3-formalized / complete theorem surface Lean-proved / final integration gate pending
 - **Type:** THEOREM (paper) / Lean formalization complete
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** Every positive-clock-character scalar persistent core is a rank-one
@@ -314,7 +314,7 @@ finite cover `C<q^N>` with `mu_N(C)` through
 axiom audit of all five theorem clauses pass; every audited capstone depends only on `propext`,
 `Classical.choice`, and `Quot.sound`.  No placeholder axiom or conditional theorem wrapper is used.
 The Stage-3 formalization certificate is
-`../../3-formalized/new_scientific_knowledge/charged-scalar-core-fixed-current-torsor.md`.
+`../charged-scalar-core-fixed-current-torsor.md`.
 
 ## Gates
 

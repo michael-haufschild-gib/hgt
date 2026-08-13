@@ -3,7 +3,7 @@
 - **ID:** `coordinate-intrinsic-fusion-kolchin-principal-filter-law`
 - **Stage:** 3-formalized
 - **Paper proof:**
-  `../../2-fully-proven/new_scientific_knowledge/other/coordinate-intrinsic-fusion-kolchin-principal-filter-law.md`
+  `other/coordinate-intrinsic-fusion-kolchin-principal-filter-law.md`
 - **Lean module:**
   `formal/GaloisForLFunctions/HTGeometry/PrimeValuationCoordinateFusionCompletion.lean`
 - **Umbrella:** `formal/GaloisForLFunctions/HTGeometry.lean`

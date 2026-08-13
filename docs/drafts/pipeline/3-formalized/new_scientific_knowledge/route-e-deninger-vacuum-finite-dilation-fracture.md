@@ -1,7 +1,7 @@
 # Route E Deninger vacuum finite-dilation fracture
 
 - **ID:** `ROUTE-E-DENINGER-VACUUM-FINITE-DILATION-FRACTURE-001`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** EXACT DOMAIN CLASSIFICATION / NO-GO WITH POSITIVE COLLAR DECOMPOSITION
 - **Parent:** `route-e-cofinal-parity-energy-covariance-accumulation.md`
 - **Source:** `OPEN-SOURCE-001`
@@ -12,8 +12,12 @@
   `RHTower/RouteEDeningerVacuumFiniteDilationFracture.lean`; Section 2's complete finite-aperture
   jet was already formalized; Section 3 is in
   `RHTower/RouteEDeningerVacuumCollarDecomposition.lean`. Claim-complete Stage 3 children certify
-  finite-dilation fracture and positive collar decomposition separately; this parent remains the
-  Stage 2 synthesis card.
+  finite-dilation fracture and positive collar decomposition separately. 2026-08-13 promotion
+  audit: both modules `lake build` green, and all section claims re-audited clean
+  (`exists_deningerExpSchwartz_shiftedVacuum_iff`, both log-pull classifications,
+  `iteratedDeriv_finitePrimeParityPartition_zero_eq_prod`,
+  `routeE_mobiusVacuum_easyTail_hardCollar_decomposition`, strong log decay of the Meyer tail,
+  collar summability and finite tsum; axioms `[propext, Classical.choice, Quot.sound]`).
 
 ## 1. The finite-dilation theorem
 

@@ -3,7 +3,7 @@
 - **ID:** `torsion-universal-phase-polynomial-magnitude-hypertranscendence`
 - **Stage:** 3-formalized
 - **Paper proof:**
-  `../../2-fully-proven/new_scientific_knowledge/other/torsion-universal-phase-polynomial-magnitude-hypertranscendence.md`
+  `other/torsion-universal-phase-polynomial-magnitude-hypertranscendence.md`
 - **Umbrella:** `formal/GaloisForLFunctions/HTGeometry.lean`
 - **Status:** `[UNCONDITIONAL LEAN] [NOT RH]`
 
