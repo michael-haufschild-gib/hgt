@@ -1,10 +1,10 @@
 # Integral saturation of the universal Hankel determinantal ideal
 
 - **ID:** `deninger-hazewinkel-integral-saturation`
-- **Stage:** 2-fully-proven
+- **Stage:** 1-in-progress
 - **Type:** THEOREM / exact literature frontier
 - **Route:** L — rational-Witt source foundation
-- **Scientific status:** `[PROVED HERE] [LITERATURE THEOREM] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
+- **Scientific status:** `[LITERATURE THEOREM] [PRINTED PROOF GAP FOUND] [REPAIR IN PROGRESS] [NOT AN RH PROOF]`
 - **Primary source:** Hazewinkel, *Operations in the K-theory of endomorphisms* (1983),
   Appendix A.2--A.3.
 - **Target:** For every positive `n`, multiplication by the leading determinant `D_n` is
@@ -56,15 +56,21 @@ This clears high variables after multiplying by powers of `D_n`, but does not by
 the resulting power. One still needs independence of products of the tail special minors on the
 prime divisor `D_n=0`.
 
-### C4 — triangular clearing plus tail-leading-monomial separation: proved on paper below
+### C4 — triangular clearing plus tail-leading-monomial separation: fails at exponent descent
 
-This is Hazewinkel's exact mechanism. After clearing high coefficient variables, choose an
-expression with minimal power of `D_n`, group powers of the first special minor into low
-coefficients, restrict to `D_n=0`, and use distinct lexicographic leading monomials of the remaining
-special-minor products. The coefficients vanish on a dense open of the irreducible divisor
-`V(D_n)`, hence are divisible by `D_n`, contradicting minimality. For formalization, the
-topological density sentence is replaced by the stronger algebraic observation that `E_n g_J`
-vanishes on all of `V(D_n)`.
+This is Hazewinkel's printed mechanism. It does prove that each grouped coefficient `g_J` is
+divisible by `D_n` in the ambient polynomial ring. It does **not** prove that the quotient remains
+in the restricted coefficient algebra needed to contradict minimality. Concretely,
+
+```text
+g = D_n X_(2n)  lies in  Z[low, D_n X_(2n)]  and is divisible by D_n,
+g / D_n = X_(2n) does not lie in Z[low, D_n X_(2n)].
+```
+
+Thus the claimed exponent reduction exits the admissible class of cleared representations.
+Hazewinkel Appendix A.2 makes the same step without a closure lemma. Current repair target is a
+monic Hankel Gröbner/straightening normal form: finite Hankel primeness over fields plus integral
+monic normal forms imply coefficient saturation over `Z`, avoiding this division entirely.
 
 ## Exact proof obligations before Lean
 
@@ -89,13 +95,11 @@ vanishes on all of `V(D_n)`.
   `D_n=0` and `E_n≠0`. At a point with `E_n=0`, the product `E_n h_J` vanishes tautologically;
   therefore `E_n h_J` vanishes on all of `V(D_n)`. Finite-variable Nullstellensatz puts
   `E_n h_J` in `(D_n)`. Since `D_n` is prime and `D_n∤E_n`, `D_n∣h_J`, hence `D_n∣g_J`.
-- [x] **S6 — integral contraction.** Explicit primitivity of `D_n` contracts divisibility from
-  `Q`/`C` to `Z`; divide every `g_J` by `D_n` and lower the minimal exponent.
-- [x] **S7 — paper capstones.** Saturation gives regularity in the quotient; combined with the
-  localized domain theorem it gives all-positive-stage primeness and discharges the already
-  formalized multiplication descent with no new premise. Lean realization remains open.
+- [ ] **S6 — valid exponent descent or replacement normal form.** Integral contraction gives
+  ambient divisibility but does not preserve the cleared coefficient algebra.
+- [ ] **S7 — paper capstones.** Awaiting a valid repair of S6.
 
-## Dependency-closed paper proof of S1--S6
+## Former proof attempt S1--S6 (S6 is invalid)
 
 Write `a_0=1` and `a_r=X_(r-1)` for `r>0`. For `n≥2`, set
 
@@ -244,11 +248,13 @@ The last equality uses primeness of `D` after scalar extension, already proved b
 determinant argument. By (2), prime cancellation gives `D|h_J` over `Q`; (6) then gives `D|g_J`
 over `Q`.
 
-### S6 — return to integers and lower the exponent
+### S6 — return to integers and attempted exponent descent (gap)
 
 The integral `D` is primitive. The corpus Gauss-contraction theorem
 `MvPolynomialPrimitive.dvd_of_fraction_map_dvd` therefore contracts each rational divisibility
-`D|g_J` to `Z`. Write `g_J=D b_J`.
+`D|g_J` to `Z`. Write `g_J=D b_J`. At this point `b_J` is only known to lie in the ambient
+polynomial ring. It need not lie in the cleared coefficient ring `(6)`; `g_J=D a_(2n)` is the
+minimal counterexample.
 
 If `J` is nonempty, `b_Jm_J` still contains a special-minor factor. If `J` is empty, construction
 of the grouping shows `g_∅=m_n c`. Also `D∤m_n`: specialize `a_0=1`, `a_(n+1)=1`, and all other
@@ -257,11 +263,10 @@ of the grouping shows `g_∅=m_n c`. Also `D∤m_n`: specialize `a_0=1`, `a_(n+1
 it is a unit. Since `D` is prime, `D|m_nc` and `D∤m_n` imply `D|c`; hence `b_∅` also retains an
 `m_n` factor.
 
-Substituting `g_J=Db_J` into (5) and cancelling nonzero `D` in the ambient integer polynomial
-domain produces an admissible representation with exponent `k-1`, contradicting minimality if
-`k>0`. Thus `k=0`, and the ungrouped form (4), whose products all contain a special minor, gives
-`P∈K_n⊆J_n`. Therefore `(J_n:D_n)=J_n` for `n≥2`. Stage `n=1` is already prime in the corpus and
-is saturated separately.
+Substitution and cancellation produce an ambient special-ideal membership at exponent `k-1`, but
+not a new representation in the restricted low/coefficient form on which the boundary argument
+can be iterated. Minimality was taken among restricted representations, so no contradiction
+follows. The saturation conclusion is therefore not established by this argument.
 
 ## Hostile constraints
 
@@ -281,5 +286,6 @@ is saturated separately.
   isolated as C4.
 - 2026-08-13 — replaced dense-open topology by the algebraic `E_n g_J` vanishing trick;
   dependency-closed paper proof of S1--S6 completed. Lean formalization remains S7.
-- 2026-08-13 — hostile audit passed; saturation, regularity, and primeness consequences closed on
-  paper; moved to Stage 2.
+- 2026-08-13 — later hostile re-audit found the coefficient-algebra division gap above in both
+  this proof and Hazewinkel Appendix A.2; card returned to Stage 1. Modern monic
+  Gröbner/straightening repair opened.

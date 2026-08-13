@@ -5,7 +5,7 @@
 - **Type:** THEOREM (paper) / FIXED OPERATOR LANDING
 - **Parent:** `route-r-cross-prime-stokes-homotopy-curvature-polarization.md`
 - **Status:** `[PAPER-PROVED] [PRE-QUOTIENT SOURCE LIFT PROVED]
-  [CORONA/BOUNDED DESCENT IMPOSSIBLE] [LEAN DEFERRED DURING REFACTOR]
+  [CORONA/BOUNDED DESCENT IMPOSSIBLE] [LEAN-PROVED RECEIVER AND FIXED-ATOM NO-GO]
   [COMPACTNESS OPEN] [NOT RH]`
 - **Statement:** The forward/reflected two-prime Stokes curvature has a canonical landing as the
   orientation commutator of the fixed Sonin-compressed Euler source.  Its Calkin distance is
@@ -179,18 +179,34 @@ out every continuous Hausdorff descent, and infinite Calkin injectivity rules ou
 an operator-norm summable all-prime tail.  Hence existing source exactness cannot prove `(9)`.
 Full proof: `route-r-cross-prime-stokes-calkin-prequotient-comparison.md`.
 
-## Lean reuse plan after refactor
+## Lean realization
 
-No new functional analysis should be built.  Reuse:
+`RHTower/RouteRCrossPrimeStokesCalkinPolarHandoff.lean` now supplies the regularized scalar
+curvature, its exact odd normal form, degree-six BV--Green modular-square identity, literal
+`Fin 2` packet, fixed Sonin commutator, exact compactness classification, quantitative essential
+norm lower bound, and global-compactness/RH equivalence.  The fixed arithmetic-atom lift and its
+singular-corona no-factorization are formalized in
+`RHTower/RouteRCrossPrimeStokesCalkinPrequotientNoGo.lean`.
+
+The realization reuses:
 
 - `SemilocalCompressedEulerOrientation` for `(1)` and compactness classification;
 - `SoninPrimeGramCompression` for `(3)`--`(5)`;
 - `SoninEulerFiniteGramLower` for rescaling and unitary transport;
 - the parent scalar-curvature module for `(6)`.
 
-Required new Lean content is a `Fin 2` packet adapter, the closed-form `Omega/Delta` definitions,
-the two-term energy calculation, and assembly of existing theorems.  Lean work stays deferred
-until shared refactor is declared stable.
+Remaining Lean content is not receiver construction.  It is an independent theorem proving
+compactness from a genuinely renormalized, non-corona, non-norm-summable multi-place source law.
+
+Topology and tightness are now classified completely. Every bounded operator, including the
+nonneutral receiver, is a pointwise strong limit of explicit compact Hilbert-basis truncations.
+For an arbitrary operator topology, compact approximation can imply compactness only when the
+compact ideal is closed; therefore no topology alone can both approximate the nonneutral receiver
+and preserve the desired conclusion. The exact positive survivor is compact escape: the canonical
+truncations' unit-ball images escape every common compact subset at every nonzero grade, while a
+common compact envelope exists exactly at grade zero. Hence no hidden strong/weak/intermediate
+topology or collective-tightness argument remains. C4 must prove physical compactness directly
+from divisor-sensitive source structure.
 
 ## Log
 
@@ -199,3 +215,14 @@ until shared refactor is declared stable.
 - 2026-08-11 -- pre-quotient arithmetic lift proved; singular-corona, bounded-completion, and
   norm-summable-tail descents dependency-closed impossible.  Compactness must come from a new
   cutoff-dependent/unbounded multi-place Poisson self-product law.
+- 2026-08-13 -- Explicit polar receiver, essential-norm bound, compactness/RH equivalence, literal
+  `(2,3)` arithmetic lift, and exact/mod-compact singular-corona no-factorization formalized;
+  targeted builds and axiom audits green.
+- 2026-08-13 -- `RouteRNormConvergentCalkinCoefficientRigidity.lean` removes absolute summability
+  from the all-prime no-cancellation theorem: every coherent rectangular exhaustion with compact
+  operator-norm limit has zero coefficient matrix.  Any surviving producer must use a genuinely
+  non-operator-norm-convergent renormalization.
+- 2026-08-13 -- arbitrary operator topology and collective compactness classified in
+  `RouteROperatorTopologyCompactnessDichotomy.lean` and
+  `RouteRStrongApproximationCompactEscape.lean`.  Nonneutral canonical truncations escape every
+  common compact unit-ball envelope; targeted builds and axiom audits green.

@@ -69,6 +69,58 @@ theorem routeT_overweight_huxley_with_reserve_first_or_second
     dsimp only [delta, d] at hscaled hmargin hdsmall ⊢
     linarith
 
+set_option maxHeartbeats 300000 in
+/-- **Literal overweight packing law.**  The actual witnessed packing has the larger cap
+`beta < 1 + mu/60`.  Its order-three factor deficit confines this branch to `alpha <= 983/1000`.
+Those two sharp facts exactly restore overlap between Route T's receivers; `mu = 207/100` is a
+rational interior split with enough room for the fixed analytic cost. -/
+theorem routeT_overweight_literal_cap_with_reserve_first_or_second
+    {mu alpha beta : ℝ}
+    (hmuLo : 4 / 3 ≤ mu) (hmuHi : mu ≤ 19 / 9)
+    (halphaLo : 3 / 4 ≤ alpha) (halphaHi : alpha ≤ 983 / 1000)
+    (hbetaHi : beta ≤ 1 + mu / 60) :
+    beta * (2 - 2 * alpha) + maynardLongGlobalAmplitudeDeficit / 1000 ≤
+          mu * (1 - alpha) ∨
+      beta * (2 - 2 * alpha) + maynardLongGlobalAmplitudeDeficit / 1000 ≤
+          1 + mu * (1 + routeTGapMomentNu - 2 * alpha) := by
+  let d := maynardLongGlobalAmplitudeDeficit
+  let delta := 1 - alpha
+  have hd : 0 < d := maynardLongGlobalAmplitudeDeficit_pos
+  have hdsmall : d < (1 / 1000000 : ℝ) :=
+    maynardLongGlobalAmplitudeDeficit_lt_one_millionth
+  have hmu0 : 0 ≤ mu := by linarith
+  have hdeltaLo : (17 / 1000 : ℝ) ≤ delta := by
+    dsimp only [delta]
+    linarith
+  have hdelta0 : 0 ≤ delta := (by norm_num : (0 : ℝ) ≤ 17 / 1000).trans hdeltaLo
+  have hscaled : beta * (2 * delta) ≤ (1 + mu / 60) * (2 * delta) :=
+    mul_le_mul_of_nonneg_right hbetaHi (by positivity)
+  by_cases hmuSplit : mu ≤ 207 / 100
+  · right
+    have hcoef0 : 0 ≤ 2 * mu - 2 - mu / 30 := by linarith
+    have hdeltaCoef := mul_le_mul_of_nonneg_right hdeltaLo hcoef0
+    have hmud : mu * d ≤ (207 / 100 : ℝ) * (1 / 1000000 : ℝ) := by
+      calc
+        mu * d ≤ (207 / 100 : ℝ) * d :=
+          mul_le_mul_of_nonneg_right hmuSplit hd.le
+        _ ≤ (207 / 100 : ℝ) * (1 / 1000000 : ℝ) :=
+          mul_le_mul_of_nonneg_left hdsmall.le (by norm_num)
+    dsimp only [routeTGapMomentNu]
+    dsimp only [delta, d] at hscaled hdeltaCoef hmud ⊢
+    linarith
+  · left
+    have hmuSplit' : 207 / 100 ≤ mu := le_of_not_ge hmuSplit
+    have hcoefLo : (1 / 1000 : ℝ) ≤ mu - 2 - mu / 30 := by linarith
+    have hmargin : (17 / 1000 : ℝ) * (1 / 1000) ≤
+        delta * (mu - 2 - mu / 30) := by
+      calc
+        (17 / 1000 : ℝ) * (1 / 1000) ≤ delta * (1 / 1000) :=
+          mul_le_mul_of_nonneg_right hdeltaLo (by norm_num)
+        _ ≤ delta * (mu - 2 - mu / 30) :=
+          mul_le_mul_of_nonneg_left hcoefLo hdelta0
+    dsimp only [delta, d] at hscaled hmargin hdsmall ⊢
+    linarith
+
 /-- Away from the last `3/1000` of the amplitude interval, the exact adjacent-power Huxley cap
 has enough receiver room to pay the fixed `d/100` coefficient loss. -/
 theorem routeT_adjacent_optimizer_with_reserve_of_amplitude_le_997

@@ -69,6 +69,50 @@ theorem routeT_tunedMontgomery_with_polylog_le_second_alternative
   dsimp only [q] at hmuq
   nlinarith
 
+/-- **Wide-cell lower-strip Montgomery law.**  The selected-cell construction only gives
+`beta < 1 + mu/60` when a long atom is present.  First crossing of `4/5` can therefore overshoot
+far beyond the old robust bound `19/270`.  Nevertheless, through amplitude `19/25`, both raw
+Montgomery exponents still fit Route T's second alternative after paying a fixed `T^(1/100)`
+cost.  This removes the lower zero-reserve triple point without a zeta twelfth moment. -/
+theorem routeT_wide_tunedMontgomery_exponents_with_polylog_le_second
+    {mu alpha beta r : ℝ}
+    (_hmuLo : 4 / 3 ≤ mu) (hmuHi : mu ≤ 19 / 9)
+    (halphaLo : (1 + routeTGapMomentNu) / 2 ≤ alpha)
+    (halphaHi : alpha ≤ 19 / 25)
+    (_hbetaLo : mu / 120 ≤ beta) (hbetaHi : beta < 1 + mu / 60)
+    (hrLo : 4 / 5 ≤ r) (hrHi : r < 4 / 5 + beta) :
+    r * (2 - 2 * alpha) + 1 / 100 ≤
+        1 + mu * (1 + routeTGapMomentNu - 2 * alpha) ∧
+      1 + r * (1 - 2 * alpha) + 1 / 100 ≤
+        1 + mu * (1 + routeTGapMomentNu - 2 * alpha) := by
+  let d : ℝ := maynardLongGlobalAmplitudeDeficit
+  let q : ℝ := 1 + routeTGapMomentNu - 2 * alpha
+  have hd : 0 < d := maynardLongGlobalAmplitudeDeficit_pos
+  have hdsmall : d < 1 / 100 :=
+    maynardLongGlobalAmplitudeDeficit_lt_one_hundredth
+  have hq : q ≤ 0 := by
+    dsimp only [q]
+    linarith
+  have hmuq : (19 / 9 : ℝ) * q ≤ mu * q :=
+    mul_le_mul_of_nonpos_right hmuHi hq
+  have hbeta : beta < 559 / 540 := by linarith
+  have hr : r < 991 / 540 := by linarith
+  have halphaLower : 149 / 200 < alpha := by
+    dsimp only [routeTGapMomentNu] at halphaLo
+    linarith
+  have hwidth : r * (2 - 2 * alpha) + 1 / 100 ≤
+      1 + (19 / 9 : ℝ) * q := by
+    dsimp only [q, routeTGapMomentNu, d]
+    nlinarith
+  have hheight : 1 + r * (1 - 2 * alpha) + 1 / 100 ≤
+      1 + (19 / 9 : ℝ) * q := by
+    have hcoef : 1 - 2 * alpha < 0 := by linarith
+    have hmul := mul_le_mul_of_nonpos_right hrLo hcoef.le
+    dsimp only [q, routeTGapMomentNu, d]
+    nlinarith
+  dsimp only [q] at hmuq
+  exact ⟨hwidth.trans (by linarith), hheight.trans (by linarith)⟩
+
 /-- First Huxley length term after crossing its optimizer `T^(1/(4 alpha-2))` with maximal
 robust-group overshoot.  The second Huxley length term decreases under this overshoot. -/
 def maynardTunedHuxleyCountExponent (alpha : ℝ) : ℝ :=

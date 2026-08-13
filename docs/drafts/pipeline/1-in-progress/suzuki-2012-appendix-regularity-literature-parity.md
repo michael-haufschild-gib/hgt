@@ -57,14 +57,15 @@ derived from the literal kernel and the already-proved signed-resolvent invertib
 - `SuzukiCanonicalL1Translation.lean`: exact strongly continuous measure-preserving translation
   action on `L¹(ℝ)`, using mathlib's joint `Lp.compMeasurePreserving` continuity theorem.
 
-## Current open core: `lem_ad2` differentiability
+## Current open core: equations (406)--(413)
 
-The continuity half and exact smoothed moving-cutoff derivative are closed. Remaining seam is the
-literal boundary-source derivative in `L¹`: prove the translation-differentiation theorem for the
-already-formalized logarithmic `W^{1,1}` kernel, transport it to the fixed physical window, then
-differentiate the resolvent equation. Suzuki's printed Fredholm-minor proof suppresses this
-topology change. Derivative fields are generally only `L¹` at arithmetic cusps when merely
-`omega > 1`; an `L²` shortcut would silently strengthen the theorem and is forbidden.
+Both halves of `lem_ad2` are closed at the exact printed strength. The remaining literature-parity
+seam is Suzuki's coupled differential system. Equation (406) follows from the proved strong `L¹`
+aperture derivative and the genuine moving-endpoint law. Equations (407)--(409) require a genuine
+spatial Euler derivative and an integration-by-parts theorem for the literal arithmetic-cusp
+kernel; defining an auxiliary field by the desired identity would be circular and does not count.
+Equations (410)--(413) then require the opposite-sign resolvent uniqueness argument and exact
+endpoint coefficient `mu(a)`.
 
 ## Approach
 
@@ -131,3 +132,9 @@ Work on one fixed larger physical window `B` around an aperture `a0`.
   the single missing derivative-module `.olean` was built successfully. Remaining exact parity
   obligation is the word **continuously** in `lem_ad2`: prove continuity of the derivative field
   on `{a>1} \ {n/x,sqrt(n)}`, then close equations (406)--(413).
+- 2026-08-13 — Closed the remaining `C¹` obligation. `SuzukiCanonicalHankelLemmaAd2C1.lean`
+  constructs continuous derivative curves in `L¹` and after literal Hankel smoothing, proves the
+  exact global pointwise `C¹` statement on `{a>1} \ {n/x,sqrt(n)}`, and packages the unconditional
+  universal theorem `suzuki_lemma_ad2`. No differentiability, resolvent, or Fredholm-minor premise
+  is assumed. Direct `lake env lean` passes. Literature parity now advances to the genuinely new
+  formal seam (406)--(413), beginning with the spatial Euler/integration-by-parts identity.

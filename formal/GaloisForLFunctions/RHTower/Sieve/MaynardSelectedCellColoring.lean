@@ -28,7 +28,7 @@ def IsMaynardSelectedCellBranch {L X : ℕ} (T mu alpha : ℝ)
           heathBrownBoxFactorKind 60 label.1.m j = .log) ∧
         beta - 2 * (mu / 120) < dyadicLogExponent T
           (heathBrownBoxFactorExponent label.1.a label.1.b label.1.q j)) ∨
-    (1 ≤ beta ∧ alpha ≤ 99 / 100 ∧
+    (1 ≤ beta ∧ alpha ≤ 983 / 1000 ∧
       ∃ j ∈ label.2,
         (heathBrownBoxFactorKind 60 label.1.m j = .zeta ∨
           heathBrownBoxFactorKind 60 label.1.m j = .log) ∧

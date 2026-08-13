@@ -46,6 +46,39 @@ theorem exists_maynard_tuned_raise_multiplier
   rw [add_mul, hcancel, one_mul] at hover
   linarith
 
+/-- First crossing of an arbitrary target by a selected sub-height cell.  Unlike the robust-group
+version above, the overshoot is retained as the actual cell exponent.  This is the correct lower
+Route-T interface: cells may contain one long atom, but their exponent is still below
+`1 + mu / 60`. -/
+theorem exists_maynard_wide_tuned_raise_multiplier
+    {beta theta : ℝ}
+    (hbeta_lo : 1 / 90 ≤ beta)
+    (htheta : 0 < theta) (hthetaOne : theta ≤ 1) :
+    ∃ ell : ℕ, 0 < ell ∧ ell ≤ 90 ∧
+      theta ≤ (ell : ℝ) * beta ∧
+        (ell : ℝ) * beta < theta + beta := by
+  have hbeta : 0 < beta := lt_of_lt_of_le (by norm_num) hbeta_lo
+  let ell : ℕ := ⌈theta / beta⌉₊
+  have harg0 : 0 ≤ theta / beta := by positivity
+  have hello : theta / beta ≤ (ell : ℝ) := Nat.le_ceil _
+  have helhi : (ell : ℝ) < theta / beta + 1 := Nat.ceil_lt_add_one harg0
+  have hel90 : ell ≤ 90 := by
+    rw [Nat.ceil_le, div_le_iff₀ hbeta]
+    have hone : (1 : ℝ) ≤ 90 * beta := by nlinarith
+    exact hthetaOne.trans hone
+  have hcross := mul_le_mul_of_nonneg_right hello hbeta.le
+  have hover := mul_lt_mul_of_pos_right helhi hbeta
+  have hcross' : theta ≤ (ell : ℝ) * beta := by
+    rw [div_mul_cancel₀ _ hbeta.ne'] at hcross
+    simpa [mul_comm] using hcross
+  have hover' : (ell : ℝ) * beta < theta + beta := by
+    rw [add_mul, div_mul_cancel₀ _ hbeta.ne', one_mul] at hover
+    simpa [mul_comm] using hover
+  have helpos : 0 < ell := by
+    have helposR : (0 : ℝ) < (ell : ℝ) := by nlinarith
+    exact_mod_cast helposR
+  exact ⟨ell, helpos, hel90, hcross', hover'⟩
+
 /-- Tuned crossing for an actual lower edge `A=T^beta`. -/
 theorem exists_maynard_tuned_raised_length
     {T A beta theta : ℝ} (hT : 1 ≤ T) (hA : A = T ^ beta)

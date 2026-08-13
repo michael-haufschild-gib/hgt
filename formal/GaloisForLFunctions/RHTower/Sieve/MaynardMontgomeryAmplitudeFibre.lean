@@ -16,6 +16,81 @@ namespace RHTower.Sieve
 
 open Finset ArithmeticFunction Complex
 
+/-- Exact Perron-abscissa cancellation when both Montgomery length terms are retained.  The first
+term is height-dominated and leaves `H * Y^(1-2*alpha)`; the second is length-dominated and leaves
+`Y^(2-2*alpha)`.  Keeping this sum is essential at Route T's lower `3/4` boundary. -/
+theorem montgomery_amplitude_two_term_cancellation
+    {R Y c alpha C G H W D B PL : ℝ}
+    (hY : 0 < Y) (hG0 : 0 ≤ G) (hH0 : 0 ≤ H)
+    (hW0 : 0 ≤ W) (hD0 : 0 ≤ D) (hB0 : 0 ≤ B) (hPL0 : 0 ≤ PL)
+    (hC : C ≤ (H + W * Y * D) * B) (hG : G ≤ W * Y * PL)
+    (hraw : R * (Y ^ (alpha - c)) ^ 2 ≤
+      C * (Y ^ (-c)) ^ 2 * G) :
+    R ≤ W * B * PL *
+      (H * Y ^ (1 - 2 * alpha) + W * D * Y ^ (2 - 2 * alpha)) := by
+  have hY0 : 0 ≤ Y := hY.le
+  have hV : 0 < (Y ^ (alpha - c)) ^ 2 := by positivity
+  have hheightPower : Y * (Y ^ (-c)) ^ 2 =
+      Y ^ (1 - 2 * alpha) * (Y ^ (alpha - c)) ^ 2 := by
+    have hneg : (Y ^ (-c)) ^ 2 = Y ^ (-2 * c) := by
+      calc
+        (Y ^ (-c)) ^ 2 = (Y ^ (-c)) ^ (2 : ℝ) :=
+          (Real.rpow_natCast _ 2).symm
+        _ = Y ^ ((-c) * 2) := (Real.rpow_mul hY0 _ _).symm
+        _ = Y ^ (-2 * c) := by congr 1; ring
+    have hamp : (Y ^ (alpha - c)) ^ 2 = Y ^ (2 * (alpha - c)) := by
+      calc
+        (Y ^ (alpha - c)) ^ 2 = (Y ^ (alpha - c)) ^ (2 : ℝ) :=
+          (Real.rpow_natCast _ 2).symm
+        _ = Y ^ ((alpha - c) * 2) := (Real.rpow_mul hY0 _ _).symm
+        _ = Y ^ (2 * (alpha - c)) := by congr 1; ring
+    rw [hneg, hamp]
+    calc
+      Y * Y ^ (-2 * c) = Y ^ (1 : ℝ) * Y ^ (-2 * c) := by simp
+      _ = Y ^ (1 - 2 * c) := by
+        rw [← Real.rpow_add hY]
+        congr 1
+        ring
+      _ = Y ^ (1 - 2 * alpha) * Y ^ (2 * (alpha - c)) := by
+        rw [← Real.rpow_add hY]
+        congr 1
+        ring
+  have hlengthPower : Y * Y * (Y ^ (-c)) ^ 2 =
+      Y ^ (2 - 2 * alpha) * (Y ^ (alpha - c)) ^ 2 := by
+    calc
+      Y * Y * (Y ^ (-c)) ^ 2 = Y * (Y * (Y ^ (-c)) ^ 2) := by ring
+      _ = Y * (Y ^ (1 - 2 * alpha) * (Y ^ (alpha - c)) ^ 2) := by
+        rw [hheightPower]
+      _ = (Y ^ (1 : ℝ) * Y ^ (1 - 2 * alpha)) *
+          (Y ^ (alpha - c)) ^ 2 := by rw [Real.rpow_one]; ring
+      _ = Y ^ (2 - 2 * alpha) * (Y ^ (alpha - c)) ^ 2 := by
+        rw [← Real.rpow_add hY]
+        congr 2
+        ring
+  have hC0 : 0 ≤ (H + W * Y * D) * B := by positivity
+  have hupper : C * (Y ^ (-c)) ^ 2 * G ≤
+      ((H + W * Y * D) * B) * (Y ^ (-c)) ^ 2 * (W * Y * PL) := by
+    gcongr
+  have htarget :
+      ((H + W * Y * D) * B) * (Y ^ (-c)) ^ 2 * (W * Y * PL) =
+        (W * B * PL *
+          (H * Y ^ (1 - 2 * alpha) + W * D * Y ^ (2 - 2 * alpha))) *
+            (Y ^ (alpha - c)) ^ 2 := by
+    calc
+      ((H + W * Y * D) * B) * (Y ^ (-c)) ^ 2 * (W * Y * PL) =
+          W * B * PL *
+            (H * (Y * (Y ^ (-c)) ^ 2) +
+              W * D * (Y * Y * (Y ^ (-c)) ^ 2)) := by ring
+      _ = W * B * PL *
+          (H * (Y ^ (1 - 2 * alpha) * (Y ^ (alpha - c)) ^ 2) +
+            W * D * (Y ^ (2 - 2 * alpha) * (Y ^ (alpha - c)) ^ 2)) := by
+        rw [hheightPower, hlengthPower]
+      _ = (W * B * PL *
+          (H * Y ^ (1 - 2 * alpha) + W * D * Y ^ (2 - 2 * alpha))) *
+            (Y ^ (alpha - c)) ^ 2 := by ring
+  apply (mul_le_mul_iff_right₀ hV).mp
+  simpa [mul_comm] using hraw.trans (hupper.trans_eq htarget)
+
 /-- Exact cancellation of the Perron abscissa in a height-dominated Montgomery mean square. -/
 theorem montgomery_amplitude_cancellation
     {R Y c alpha C G W B PL : ℝ}

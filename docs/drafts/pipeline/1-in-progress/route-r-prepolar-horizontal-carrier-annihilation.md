@@ -2317,7 +2317,14 @@ with the opposite graded contribution.
 **Verdict:** the boundedness qualifier in C25 was inessential.  No honest closed positive
 homological completion can be Route R's quadratic producer.
 
-**Status:** paper proof complete; Lean formalization deferred during corpus refactor.
+**Status:** paper proof and Lean formalization complete.  Module
+`RHTower/RouteRClosedPositiveCoinvariantCompletionNoGo.lean` proves fixed-vector rigidity and dense
+range for the actual rational CCM prime-dilation coinvariant, derives dense boundary range from a
+dense coefficient-faithful source embedding, and proves graph-norm closure forces the full
+sesquilinear form to vanish by complex polarization.  The Lean theorem is stronger than the paper
+statement: positivity and Hermitian symmetry are recorded by the completion interface but the
+collapse itself needs only exact graph-norm identity and diagonal boundary nullity.  Consequently
+all closed graph-form producers are excluded, not only bounded or positive GNS realizations.
 
 ## C30. One Hilbert--Schmidt trace defect is the complete quadratic endpoint
 
@@ -2422,4 +2429,13 @@ coefficient-faithful squared explicit-formula/relative-index source whose conjug
 \(A_\Xi\), and prove its source Stokes law identifies it with (C30.4).  No other GNS or
 all-test infrastructure is needed.
 
-**Status:** paper proof complete; Lean formalization deferred during corpus refactor.
+**Status:** paper proof and Lean formalization complete.  Module
+`RHTower/RouteRReciprocalHilbertSchmidtTraceDefect.lean` realizes the multiplicity-exact diagonal
+operator, proves
+\(\operatorname{Tr}(T^*T)=A_\Xi\),
+\(\operatorname{Tr}(T^2)=H_\Xi=-\Xi_C''(0)/\Xi_C(0)\), and
+\(A_\Xi-H_\Xi=\frac12\lVert T-T^*\rVert_{\mathrm{HS}}^2\), with the scalar defect also expanded
+as \(2\sum_q(\Im\alpha_q)^2/|\alpha_q|^4\).  Vanishing of the skew Hilbert--Schmidt norm and both
+trace equalities are proved equivalent to `RiemannHypothesis`.  This closes the operator/trace
+normal form only; source-side reverse inequality or conjugate-diagonal identification remains the
+open producer burden.

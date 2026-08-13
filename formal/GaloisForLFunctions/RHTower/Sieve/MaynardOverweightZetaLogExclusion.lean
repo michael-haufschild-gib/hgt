@@ -240,9 +240,10 @@ theorem maynard_overweight_heathBrownBox_factor_relative_length
     dyadic_length_ge_twentySixTwentySeven_root_of_overweight hT hmuHi hover
   exact hraise.trans (hmiddle.trans hNroot)
 
-/-- **Overweight-cell amplitude capstone.**  The order-three local gap, weighted over the full
-eligible box, forces the global amplitude below `99/100`. -/
-theorem maynard_heathBrownBox_overweight_global_amplitude_le_ninetyNine_div_hundred
+/-- **Sharp rational overweight-cell amplitude capstone.**  The order-three `1/25` local gap
+occupies at least `9/20` of the eligible box; after the global slack budget this confines the
+amplitude below `983/1000`. -/
+theorem maynard_heathBrownBox_overweight_global_amplitude_le_nineEightyThree_div_thousand
     {L X k : ℕ} (box : HeathBrownBoxChoice L X k)
     {T mu c y alpha : ℝ}
     (hready : IsMaynardLongScaleReady T)
@@ -277,7 +278,7 @@ theorem maynard_heathBrownBox_overweight_global_amplitude_le_ninetyNine_div_hund
         (heathBrownBoxFactorExponent box.a box.b box.q) : ℕ) : ℝ) ^ (alpha - c) ≤
         ‖heathBrownDyadicCoreProduct L X k box.m box.a box.b box.q
           ((c : ℂ) + (y : ℝ) * Complex.I)‖) :
-    alpha ≤ 99 / 100 := by
+    alpha ≤ 983 / 1000 := by
   let s : ℂ := (c : ℂ) + (y : ℝ) * Complex.I
   let qj := heathBrownBoxFactorExponent box.a box.b box.q j
   have hNbase : T ^ (26 / 27 : ℝ) ≤ (((2 ^ qj : ℕ) : ℝ)) :=
@@ -327,8 +328,8 @@ theorem maynard_heathBrownBox_overweight_global_amplitude_le_ninetyNine_div_hund
   norm_num at hglobal ⊢
   linarith
 
-/-- Every Perron-relevant overweight witness is eventually confined below amplitude `99/100`. -/
-theorem eventually_maynard_perronRelevant_overweight_global_amplitude_le_ninetyNine_div_hundred :
+/-- Every Perron-relevant overweight witness is eventually confined below amplitude `983/1000`. -/
+theorem eventually_maynard_perronRelevant_overweight_global_amplitude_le_nineEightyThree_div_thousand :
     ∀ᶠ T : ℝ in Filter.atTop,
       ∀ X : ℕ, 1 ≤ X → ∀ mu : ℝ, 4 / 3 ≤ mu → mu ≤ 19 / 9 →
         (X : ℝ) ≤ T ^ mu →
@@ -346,7 +347,7 @@ theorem eventually_maynard_perronRelevant_overweight_global_amplitude_le_ninetyN
                   (alpha - c) ≤
                 ‖heathBrownDyadicCoreProduct L X k box.m box.a box.b box.q
                   ((c : ℂ) + (y : ℝ) * Complex.I)‖ →
-              alpha ≤ 99 / 100 := by
+              alpha ≤ 983 / 1000 := by
   filter_upwards [eventually_isMaynardLongScaleReady,
     eventually_maynard_long_box_amplitude_slack_ready,
     eventually_maynard_overweight_factor_amplitude_ready]
@@ -357,7 +358,7 @@ theorem eventually_maynard_perronRelevant_overweight_global_amplitude_le_ninetyN
     ((c : ℂ) + (y : ℝ) * Complex.I) hlarge
   have hslackMass := hslack X hX mu hmuLo hmuHi hXscale L k box hq helig
   have hsize' := hsize X hX mu hmuHi hXscale L k box j hkind hover
-  exact maynard_heathBrownBox_overweight_global_amplitude_le_ninetyNine_div_hundred
+  exact maynard_heathBrownBox_overweight_global_amplitude_le_nineEightyThree_div_thousand
     box hready hmuLo hmuHi hL hX hXscale hc hylo hyupper
       (perronRelevant_heathBrownBox_coreLower_le hrel) j hkind hover hsize'
       hslackMass hlarge

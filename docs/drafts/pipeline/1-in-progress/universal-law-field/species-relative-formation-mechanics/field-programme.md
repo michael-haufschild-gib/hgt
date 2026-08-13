@@ -1,6 +1,6 @@
 # Species-relative formation mechanics: field programme
 
-**Status:** `[STAGE 1] [FIELD PROGRAMME] [ONE EXACT CHAMBER] [LEAN GATE OPEN] [NOT RH]`
+**Status:** `[STAGE 1] [FIELD PROGRAMME] [TWO EXACT CHAMBERS] [GATES III--V PAPER-CLOSED] [LEAN GATE OPEN] [GATE VI OPEN] [NOT RH]`
 
 ## 1. Higher pivot
 
@@ -21,7 +21,46 @@ The additive chamber is closed by ULF-SRFM-1:
 
 These laws uniquely force Poisson formation. Common stochastic marking is an exact information-neutral lift through recovery. Applied to the Gamma-six source packet, the functional equation exchanges two extensive formations that have identical normalized shape but are globally mutually singular off-centre.
 
-This is a genuine law-to-formation theorem. It is not yet a fusion theorem across species.
+This is a genuine law-to-formation theorem.
+
+The first cross-species chamber is now paper-closed by ULF-SRFM-2.  A Poisson count splits
+bijectively into Boolean occupancy plus conditional excess-arrival history, with exact KL and
+Jeffreys conservation.  On the reflected prime family, the history reserve satisfies
+
+\[
+ R_p(t)\sim t(\log p)p^{-2(1-t)}
+\]
+
+and is globally summable exactly for \(t<1/2\).  ULF-SRFM-3 then passes the withheld fourth-organ
+test: for every fixed Stokes valuation depth \(e\),
+
+\[
+ p^{2+2se}T_s(p,e)\longrightarrow
+ \frac{1-s}{\sqrt2(e+1)^2}.
+\]
+
+This upgrades the existing Stokes majorant to a sharp asymptotic. Both results remain paper-only;
+they do not close the selection gate.
+
+ULF-SRFM-4 now closes global properness for this chamber. Native independent Poisson
+superposition supplies formation depth. Boolean work tends to zero under depth saturation, while
+recovered history action obeys
+
+\[
+ \frac{H_m(\alpha,\beta)}m
+ \longrightarrow(\alpha-\beta)\log(\alpha/\beta).
+\]
+
+Consequently every off-diagonal source lift has infinite relaxed action at common saturated
+observer boundary, and bounded extensive formation plus bounded vertical action has compact source
+lift. Remaining gate is pre-zero source conservation producing required uniform bound; reflection
+alone does not provide it.
+
+ULF-SRFM-5 attacks that producer class. Zero total mass, reflection oddness, uniformly bounded
+variation, Hellinger, Jensen--Shannon, and saturated Boolean information all coexist with linearly
+divergent recovered-history action. The least surviving positive target is a uniform source bound
+on logarithmic likelihood/modular cocycle under formation depth. Such a bound dominates history
+action and invokes ULF-SRFM-4; it is not yet constructed for the literal spectral source.
 
 ## 3. Ontology
 
@@ -63,7 +102,11 @@ The literal pre-zero HGT coefficient source carries a finite set of native forma
 5. infinite formation is proper relative to source history;
 6. functional-equation action lifts to the comparison system and is fixed-label quasi-invariant exactly at the neutral locus.
 
-Only clause 2 is proved in the additive Poisson chamber, and only for common marking/recovery. The conjecture as a whole is open.
+Clauses 2--5 now hold in the specific Poisson--Boolean--history chamber: marked split reconstructs
+count law, information is exactly conserved, exponent ledger predicts and proves a sharp Stokes
+theorem, and source superposition makes recovered history globally proper. No coherence with all
+other formation species and no source conservation producer for bounded-history premise is proved.
+Conjecture as a whole remains open.
 
 ## 6. Research programme and acceptance gates
 
@@ -81,31 +124,73 @@ Prove a source-law characterization of exterior/hard-core formation, analogous t
 
 Falsifier: same stated native laws admit nonisomorphic exterior and symmetric formations.
 
-### Gate III — first genuine fusion law
+### Gate III — first genuine fusion law `[PAPER-CLOSED IN ONE CHAMBER]`
 
 Construct a nonidentity comparison between at least three structurally different organs—for example additive Poisson formation, exterior Boolean formation, and group/history formation. Prove joint reconstruction or an exact conservation identity.
 
 The comparison cannot be a shared scalar statistic. It must transport source interventions and recover a common ledger.
 
-### Gate IV — fourth-organ prediction
+ULF-SRFM-2 closes this gate for additive Poisson count, exterior Boolean occupancy, and conditional
+renewal history.  The count-to-marked-packet map is bijective and carries interventions; KL obeys an
+exact horizontal--vertical conservation law.  This does not yet compare Witt, jet, or Tate species.
+
+### Gate IV — fourth-organ prediction `[PAPER-CLOSED FOR THE FIRST FUSION]`
 
 Use the fusion identity to predict a theorem in a fourth organ not used to define the comparison. Prove it independently. Until this happens, the framework is organizational theatre.
 
-### Gate V — formation/properness theorem
+ULF-SRFM-3 closes this gate for the first fusion: the complementary exponent ledger predicted a
+nonzero sharp Stokes prime--valuation asymptotic, proved independently from the exact Stokes source
+formulas.
+
+### Gate V — formation/properness theorem `[PAPER-CLOSED FOR THE FIRST FUSION]`
 
 Prove that bounded observer formation plus bounded action has compact source-lift set, or equivalently that every new completion-boundary history has infinite relaxed action. This must be source-derived, not imposed by a chosen metric.
+
+ULF-SRFM-4 closes this gate for Poisson--Boolean--history chamber. Repeated native superposition
+drives every positive Boolean pair to same compact boundary point, but recovered history action
+grows linearly off rate diagonal. Its normalized density reconstructs full one-copy Poisson
+Jeffreys information. Proper action is therefore forced by exact information conservation and
+source superposition, not selected externally.
 
 ### Gate VI — selection
 
 Only after Gates I--V, prove that the lifted functional-equation action is fixed-label quasi-invariant or proper precisely at its neutral locus. ULF-SRFM-1 already proves that this implication would select the centre in its Gamma-six Poisson chart; it does not produce the premise.
 
+ULF-SRFM-5 proves an exact producer classification for the first fusion. Bounded normalized
+conservation laws cannot supply the premise. Uniform integrability or uniformly bounded centered
+oscillation of the formed logarithmic Radon--Nikodym cocycle does supply it. Constructing that
+modular bound from the literal source before zero specialization remains open.
+
+The formation-transfer-germ programme sharpens this conclusion.  A modular bound is not the only
+possible higher mechanism, and treating it as the field core is a regression: the corpus already
+formalizes several implications from such bounds to equality.  ULF-FTGM-1 instead retains the
+complete information current across superposition scales.  In the Poisson--Boolean chamber its
+vanishing cofinal germ reconstructs both source rates, and its two directed components reconstruct
+their order, even though every bounded Boolean observer converges to the same point.  The selection
+gate may therefore be stated more intrinsically:
+
+> construct a source-normal global formation law that annihilates the oriented cofinal transfer
+> germ, or prove an equivalent source comparison identifying its two functional-equation legs.
+
+This target contains the modular-bound route as one sufficient implementation but does not assume
+boundedness is the missing universal idea.
+
 ## 7. Immediate next theorem
 
-The next load-bearing result is not another Poisson identity:
+The next load-bearing result is no longer another properness theorem or another generic
+likelihood-bound criterion:
 
-> Characterize finite hard-core/exterior formation from vacuum, disjoint union, deletion/contraction, and a source-native repeated-occupancy law; then construct a common marked recovery comparison with the Poisson chamber and prove what source data the pair jointly reconstructs.
+> Construct the literal pre-zero source comparison on the reflected packet's oriented cofinal
+> transfer germ and prove that its global formation law forces the two directed germs to agree.
 
-Required hostile test: symmetric, exterior, and interacting countermodels must be run against the proposed axioms. If uniqueness fails, strengthen only with a literal source operation.
+ULF-FTGM-1 proves that the full directed germ is source-faithful and that functional equation
+exchanges its two components.  Equality of those components at every cofinal scale forces the
+neutral rate pair, but no present theorem makes that equality source-normal before Xi
+specialization.  ULF-SRFM-4 and ULF-SRFM-5 remain valid sufficient properness/modular
+implementations.  Required hostile tests include correlated histories, mass escape, label
+permutation, completion tails, and nonneutral functional-equation orbits. Earlier hard-core
+uniqueness remains open as a parallel Gate-II problem, but it no longer blocks Gate VI in the
+constructed fusion chamber.
 
 ## 8. Why this may explain route stagnation
 

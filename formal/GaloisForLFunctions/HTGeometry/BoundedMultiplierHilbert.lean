@@ -57,6 +57,29 @@ theorem lpBoundedMulCLM_inner_general (hφ : Measurable φ) (hC0 : 0 ≤ C) (hC 
   rw [h1, h2, RCLike.inner_apply', RCLike.inner_apply', map_mul, hreal]
   ring
 
+/-- **The adjoint of a complex multiplication operator is multiplication by the pointwise
+conjugate.**  This is the complex-symbol form of `lpBoundedMulCLM_inner_general`; unlike the
+real-symbol specialization, it supplies the involution law needed by represented smooth
+function algebras. -/
+theorem lpBoundedMulCLM_eq_adjoint_conj_general
+    {psi : α → ℂ} {D : ℝ}
+    (hφ : Measurable φ) (hC0 : 0 ≤ C) (hC : ∀ x, ‖φ x‖ ≤ C)
+    (hpsi : Measurable psi) (hD0 : 0 ≤ D) (hD : ∀ x, ‖psi x‖ ≤ D)
+    (hconj : ∀ x, psi x = (starRingEnd ℂ) (φ x)) :
+    lpBoundedMulCLM (p := 2) (μ := μ) hpsi hD0 hD =
+      ContinuousLinearMap.adjoint
+        (lpBoundedMulCLM (p := 2) (μ := μ) hφ hC0 hC) := by
+  rw [ContinuousLinearMap.eq_adjoint_iff]
+  intro f g
+  rw [MeasureTheory.L2.inner_def, MeasureTheory.L2.inner_def]
+  refine integral_congr_ae ?_
+  filter_upwards [lpBoundedMulCLM_coeFn (p := 2) (μ := μ) hpsi hD0 hD f,
+    lpBoundedMulCLM_coeFn (p := 2) (μ := μ) hφ hC0 hC g] with x h1 h2
+  rw [h1, h2, RCLike.inner_apply', RCLike.inner_apply', map_mul, hconj]
+  have hinv : (starRingEnd ℂ) ((starRingEnd ℂ) (φ x)) = φ x := star_star (φ x)
+  rw [hinv]
+  ring
+
 /-- **A multiplication operator with a nowhere vanishing symbol is injective.** -/
 theorem lpBoundedMulCLM_injective_general {p : ℝ≥0∞} [Fact (1 ≤ p)] (hφ : Measurable φ)
     (hC0 : 0 ≤ C) (hC : ∀ x, ‖φ x‖ ≤ C) (hne : ∀ x, φ x ≠ 0) :

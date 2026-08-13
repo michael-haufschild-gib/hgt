@@ -3,9 +3,10 @@
 - **ID:** `xi-reflection-self-intersection-charge`
 - **Stage:** 1-in-progress
 - **Type:** FRANKENSTEIN BRIDGE / PRODUCER SPECIFICATION
-- **Status:** `[PAPER-PROVED CORE] [LEAN-PROVED] [DIRECT CHECK PASS] [NOT RH]`
-- **Target:**
-  `formal/GaloisForLFunctions/RHTower/XiReflectionSelfIntersectionCharge.lean`
+- **Status:** `[PAPER-PROVED CORE] [LEAN-PROVED] [DIRECT CHECK PASS] [LEAF BUILDS PASS] [AXIOM-AUDITED] [GLOBAL LINT BLOCKED BY UNRELATED UNWIRED MODULES] [NOT RH]`
+- **Targets:**
+  `formal/GaloisForLFunctions/RHTower/XiReflectionSelfIntersectionCharge.lean`;
+  `formal/GaloisForLFunctions/RHTower/XiReflectionIncidenceSchattenSpectrum.lean`
 
 ## Goal
 
@@ -157,17 +158,79 @@ This is stronger and more local than estimating `O(T)`: one forbidden right-half
 enough.  A normalized density estimate, signed index, or ordinary tensor amplification does not
 supply C6.
 
+### C7 — literal incidence has an exact variable Schatten spectrum
+
+`[PAPER-PROVED] [LEAN-PROVED]` Retain every one of the `m_rho^2` literal incidence copies and put
+
+```text
+S_q(rho,p) = card(I_rho) * |a_rho(p)|^q.
+```
+
+Then `S_2(rho,p)=E_p(rho)` prime by prime, and line reflection preserves `S_q` without erasing
+either incidence orientation.  Because `card(I_rho)=m_rho^2>0` is finite and independent of `p`,
+the exact cofinal Gamma wall gives
+
+```text
+sum_p S_q(rho,p) < infinity
+  iff t_rho=0 or 1 < q(1-|t_rho|).
+```
+
+Thus membership for every `q>1` is equivalent to `t_rho=0`.  Globally, all-order admission of the
+literal reflection-incidence carrier is equivalent to RH.  This is a coefficient-faithful splice
+between canonical horizontal charge, source Bockstein, and Schatten routes; it is a reader, not
+an admission proof.
+
+### C8 — endpoint nuclearity is the fixed-ideal transport equality
+
+`[PAPER-PROVED] [LEAN-PROVED]` At the endpoint `q=1`, the open fixed-order window disappears:
+
+```text
+sum_p S_1(rho,p) < infinity  iff  t_rho=0.
+```
+
+Lean proves this same proposition equivalent to each of the following source statements:
+
+```text
+primeGammaCofinalBockstein(t_rho)=0;
+both Gamma orientations normalize the same fixed first-trace ideal;
+ccmRationalAdelicPrimeFixedXiGammaBockstein(p,rho)=0, for any retained prime p.
+```
+
+The last class is the difference of the two actual fixed-Xi transports of the same period-one
+rational-adelic source class.  Hence endpoint nuclearity is not another parallel receiver: it is
+exactly the coefficient-faithful, non-equivariant transport identification requested in C6.
+The sharpened producer is one loss-zero source theorem placing this raw incidence carrier in the
+fixed `S_1` ideal simultaneously in both orientations.
+
+### C9 — generic source nuclearity or quantum amplification supplies endpoint nuclearity
+
+`[FALSIFIED; PIVOT]` Nuclearity of the rapid prime-log-height Köthe source permits a shift to a
+stronger source seminorm.  The positive-chamber Stokes operators are continuous with a proved
+two-height-step loss even at nonneutral grade, while fixed first-trace normalization fails in one
+orientation there.  Frechet nuclearity therefore cannot discharge C8; the missing word is
+*loss-zero on one fixed ideal*.
+
+Quantum amplitude amplification also does not manufacture that fixed source law.  Its start-state
+reflection depends on the prepared aperture state.  Using separate forward/reflected preparation
+unitaries breaks the common-source absolute-continuity premise; controlling them by an orientation
+register makes the two branches orthogonal before measurement.  A common unitary preserves their
+overlap and cannot replenish one orientation while evacuating the other.  Positive survivor:
+coherent amplification could only help after constructing the same missing common, loss-zero
+source reflection; it cannot construct that reflection from the evacuated conditional laws.
+
 ## No-go closure for C1/C4
 
 - **Exact killing mechanism:** full horizontal fibre contains all zeros at one ordinate, whereas
   source involution selects only `rho -> 1-conj(rho)`.
 - **Strongest positive survivor:** canonical reflection charge `R(T)`, exact decomposition
-  `O(T)=R(T)+A(T)`, literal `XiZeroCopy` incidence interpretation, and prime-labelled quadratic
-  energy `E_p(rho)`.
+  `O(T)=R(T)+A(T)`, literal `XiZeroCopy` incidence interpretation, prime-labelled quadratic
+  energy `E_p(rho)`, and endpoint nuclear mass `S_1` identified with the actual fixed-Xi source
+  transport defect.
 - **New insight:** quadratic charge is self-intersection of multiplicity fibres, not signed
   Fredholm index.  Linear unsigned escape energy records copies; canonical incidence records their
   Cartesian square.
-- **Status:** C2, C3, and C5 dependency-closed and Lean-proved.  C6 is exact source-level open core.
+- **Status:** C2, C3, C5, C7, and C8 dependency-closed and Lean-proved.  C6/C8 loss-zero source
+  admission is exact open core.
 
 ## Gates
 
@@ -175,11 +238,18 @@ supply C6.
 - [x] C2 dependency-closed paper proof
 - [x] C3 dependency-closed paper proof
 - [x] C2/C3/C5 unconditional direct Lean elaboration
-- [ ] exact leaf build and axiom/lint audits
-- [ ] C6 coefficient-faithful source incidence annihilation
+- [x] exact leaf build and axiom audit for canonical charge leaf
+- [x] exact leaf build and axiom audit for incidence Schatten leaf
+- [x] local forbidden-token and diff checks
+- [ ] repository lint (fails only on unrelated concurrent unwired modules; neither target named)
+- [ ] C6/C8 coefficient-faithful loss-zero source incidence admission
 - [ ] unconditional formal RH
 
 ## Log
 
 - 2026-08-12 — C1 falsified; C2/C3 extracted as positive survivor; Lean implementation started.
 - 2026-08-13 — Haar amplifier C4 falsified; quadratic source-incidence C5 extracted and Lean-proved.
+- 2026-08-13 — C7/C8 proved: literal incidence Schatten spectrum, endpoint nuclear criterion, fixed
+  ideal normalization, cofinal quotient, and actual rational-adelic transport defect are one law.
+- 2026-08-13 — both exact leaf builds and standard-axiom audits pass. Repository lint reaches only
+  pre-existing/concurrent umbrella-wiring failures outside these targets.

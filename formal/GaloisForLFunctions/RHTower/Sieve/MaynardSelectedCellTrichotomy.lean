@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.Sieve.MaynardOverweightZetaLogExclusion
 
 Every large window-relevant aggregate now selects exactly one of three analytically closed cell
 types: a small cell with fixed adjacent-power reserve, a moderate cell excluded from the last
-`3/1000` of amplitude by order four, or an overweight cell excluded above `99/100` by order three.
+`3/1000` of amplitude by order four, or an overweight cell excluded above `983/1000` by order three.
 -/
 
 noncomputable section
@@ -72,7 +72,7 @@ theorem eventually_exists_windowRelevant_subHeight_cell_trichotomy :
                         heathBrownBoxFactorKind 60 box.m j = .log) ∧
                       beta - 2 * (mu / 120) < dyadicLogExponent T
                         (heathBrownBoxFactorExponent box.a box.b box.q j)) ∨
-                  (1 ≤ beta ∧ alpha ≤ 99 / 100 ∧
+                  (1 ≤ beta ∧ alpha ≤ 983 / 1000 ∧
                     ∃ j ∈ u,
                       (heathBrownBoxFactorKind 60 box.m j = .zeta ∨
                         heathBrownBoxFactorKind 60 box.m j = .log) ∧
@@ -80,7 +80,7 @@ theorem eventually_exists_windowRelevant_subHeight_cell_trichotomy :
                         (heathBrownBoxFactorExponent box.a box.b box.q j))) := by
   filter_upwards [eventually_exists_windowRelevant_subHeight_group,
     eventually_maynard_perronRelevant_moderate_global_amplitude_le_997,
-    eventually_maynard_perronRelevant_overweight_global_amplitude_le_ninetyNine_div_hundred]
+    eventually_maynard_perronRelevant_overweight_global_amplitude_le_nineEightyThree_div_thousand]
       with T hselect hmoderate hoverweight
   intro X hX mu hmuLo hmuHi hXscale L hL c y alpha V N0 hc hylo hyupper
     halpha hV hmobius haggregate hreserve
@@ -119,10 +119,10 @@ theorem eventually_exists_windowRelevant_subHeight_cell_trichotomy :
     · have hbetaOne : 1 ≤ beta := le_of_not_gt hregular
       rcases hheight with hfalse | ⟨j, hju, hkind, hjweight⟩
       · exact (hregular hfalse).elim
-      · have halpha99 := hoverweight X hX mu hmuLo hmuHi hXscale L hL 60 box
+      · have halpha983 := hoverweight X hX mu hmuLo hmuHi hXscale L hL 60 box
           helig hrel.1 c y alpha hc hylo hyupper j hkind hjweight hcore
         exact ⟨box, helig, hrel, hcore, u, hune, husub, hbetaLo, hbetaHi,
           hlength, hlarge, Or.inr (Or.inr
-            ⟨hbetaOne, halpha99, j, hju, hkind, hjweight⟩)⟩
+            ⟨hbetaOne, halpha983, j, hju, hkind, hjweight⟩)⟩
 
 end RHTower.Sieve

@@ -1458,3 +1458,92 @@ fibre dephasing identity `(HB2)`.
   `XiWardCubicHeightBohrFiber.lean`.
 - **Status:** `CUBIC-RECIPROCAL-BOHR-SOURCE-TRACE` is retired.  Open core pivots from invariant
   Bohr dephasing to a non-invariant connected prime--Gamma vertical resolvent estimate.
+
+## Fixed-translation energy successor
+
+`[OWN CONJECTURE SURVIVES FINITE AUDIT] [LEAN-FORMALIZED] [NO 75% CLAIM] [NO COMPUTATION]`
+
+The reciprocal-codiagonal no-go does not exhaust fixed source translations.  It applies to one
+linear invariant joint-depth coefficient.  A nonlinear two-scale energy observable on a single
+Hedenmalm conormal fibre has different covariance.
+
+For the fixed normalized real translation
+
+```text
+T_L f(x)=exp(-L/2) f(x+L),
+ell_z(T_L f)=exp(-L(1/2+i z)) ell_z(f),                 (SG1)
+```
+
+define its centered energy gain
+
+```text
+G_L(z)=exp(L)|exp(-L(1/2+i z))|^2=exp(2L Im z).         (SG2)
+```
+
+At `rho=1/2+a+i gamma`, the centered spectral point is `z=gamma-i a`, so the fixed source
+energy difference at scales `r/2` and `r` is
+
+```text
+G_(r/2)(z)-G_r(z)=exp(-a r)-exp(-2a r).                 (SG3)
+```
+
+Thus the cubic Hellinger feature is not a post-divisor insertion and not a zero-adapted
+normalization.  It is an exact difference of two fixed source-energy measurements.  It vanishes
+identically for `a=0`, is positive for every `a,r>0`, and its `r^2 dr` Gram is exactly the cubic
+kernel `C(a,b)`.  In particular its self-charge remains `115/(864a^3)>=115/108` throughout the
+strict-right half-strip.
+
+The vertical phase has a second fixed-source realization.  Apply one normalized integer shift on
+each of the line-conjugate evaluation fibres `(z,conj z)` and multiply by `n`.  Horizontal
+magnitudes cancel exactly and the gain is
+
+```text
+exp(-2 i Re(z) log n)=exp(-2 i gamma log n).            (SG4)
+```
+
+Logarithmic harmonic correlation of `(SG4)` converges to the equality projector on ordinates.
+For every finite packet, the combined cubic trace therefore converges to
+
+```text
+sum_(j,k: gamma_j=gamma_k) m_j m_k C(a_j,a_k).          (SG5)
+```
+
+Every term in `(SG5)` is nonnegative and its diagonal gives
+
+```text
+(115/108) sum_j m_j <= (SG5).                           (SG6)
+```
+
+This construction evades both prior no-go theorems for a precise reason: `(SG3)` is nonlinear in
+the conormal evaluation, and `(SG4)` uses two line-conjugate evaluation fibres rather than the
+invariant Krein codiagonal.  It does not claim a bounded linear landing at the critical boundary.
+
+### Exact remaining gate
+
+The finite mechanism is not yet an unconditional density theorem.  Required source statement is
+now a concrete four-leg correlation theorem:
+
+```text
+[OPEN SOURCE-GENERATED CUBIC TRACE BUDGET]
+Construct a completed dyadic Euler--Gamma trace, before divisor expansion, whose divisor landing
+is `(SG5)`, prove its critical-rigging closure, and prove
+
+(108/115) E_T <= N(T,2T)/8+o(N(T,2T)).                 (SG7)
+```
+
+The previously proved summable Euler diagonal is necessary but does not supply the nonlinear
+trace identity, Gamma-baseline cancellation, or `(SG7)`.  No arithmetic upper bound has been
+assumed or encoded as an interface.
+
+Lean modules:
+
+- `XiWardCubicTranslationEnergySeparator.lean` proves `(SG1)`--`(SG3)` and the exact cubic Gram;
+- `XiWardCubicIntegerHarmonicDephasing.lean` proves `(SG4)` and the harmonic projector, including
+  actual Xi-ordinate specialization;
+- `XiWardCubicSourceGeneratedHarmonicSeparator.lean` proves `(SG5)`, `(SG6)`, nonnegativity, and
+  the exact 75% receiver.
+
+- 2026-08-13 — replaced the false invariant-codiagonal successor by fixed translation-energy and
+  line-conjugate tensor observables.  Horizontal and vertical separator factors now have exact
+  pre-divisor source origins.  The only unproved density input is the completed four-leg
+  Euler--Gamma trace construction and quantitative dyadic budget `(SG7)`.

@@ -205,7 +205,7 @@ structure MvPolynomialPseudoReductionAt
 /-- Honest multivariable pseudo-division at one variable, obtained by transporting the recursive
 univariate construction. -/
 noncomputable def mvPolynomialPseudoReductionAt
-    {K σ : Type*} [Field K] (i : σ) (Q D : MvPolynomial σ K)
+    {K σ : Type*} [CommRing K] [IsDomain K] (i : σ) (Q D : MvPolynomial σ K)
     (hDdegree : MvPolynomial.degreeOf i D ≠ 0) :
     MvPolynomialPseudoReductionAt i Q D := by
   classical
@@ -260,7 +260,7 @@ noncomputable def mvPolynomialPseudoReductionAt
 form is used below because, unlike a bare transport through an equivalence, its syntax also makes
 variable-support preservation transparent. -/
 theorem mvPolynomialPseudoDivision_step_degree_lt
-    {K σ : Type*} [Field K] (i : σ) {Q D : MvPolynomial σ K}
+    {K σ : Type*} [CommRing K] [IsDomain K] (i : σ) {Q D : MvPolynomial σ K}
     (h : MvPolynomial.degreeOf i D ≤ MvPolynomial.degreeOf i Q ∧ Q ≠ 0)
     (hDdegree : MvPolynomial.degreeOf i D ≠ 0) :
     MvPolynomial.degreeOf i
@@ -347,7 +347,7 @@ structure SupportedMvPolynomialPseudoReductionAt
 the original multivariable ring, so its support bounds are proved at every cancellation step and
 do not rely on an unstated naturality property of transported univariate division. -/
 noncomputable def supportedMvPolynomialPseudoReductionAt
-    {K σ : Type*} [Field K] [DecidableEq σ] (i : σ) :
+    {K σ : Type*} [CommRing K] [IsDomain K] [DecidableEq σ] (i : σ) :
     ∀ (Q D : MvPolynomial σ K), MvPolynomial.degreeOf i D ≠ 0 →
       SupportedMvPolynomialPseudoReductionAt i Q D
   | Q, D, hDdegree => by
