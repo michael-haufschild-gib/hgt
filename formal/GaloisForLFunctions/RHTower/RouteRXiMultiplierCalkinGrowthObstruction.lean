@@ -126,6 +126,148 @@ theorem no_bounded_XiHorizontalMultiplier_compactFactorization
       _ = C * M * Real.exp (-(δ * t)) := by ring
   exact (not_le_of_gt hc) hc0
 
+/-- The boundedness no-go is quantitative: every multiplier in a nonneutral compact-corrected
+factorization must escape to infinite operator norm along the horizontal ray. -/
+theorem tendsto_norm_XiHorizontalMultiplier_atTop_of_compactFactorization
+    {A B δ a b : ℝ} (hA : 0 < A) (hB : B < 1) (hδ : 0 < δ)
+    (hδstrip : 2 * δ < Real.pi / 2) (hb : |b| ≤ B) (ha : a ≠ 0)
+    (S K : ℝ → RouteRPhysicalOperator)
+    (hK : ∀ t : ℝ, IsCompactOperator (K t))
+    (hfactor : ∀ t : ℝ,
+      routeRTwoThreeStokesSoninCommutator A a =
+        XiC ((t : ℂ) + (b : ℂ) * Complex.I) • S t + K t) :
+    Tendsto (fun t : ℝ ↦ ‖S t‖) atTop atTop := by
+  obtain ⟨C, hC, hXi⟩ :=
+    exists_norm_XiC_horizontal_le hB hδ.le hδstrip
+  let c : ℝ := |routeRCrossPrimeStokesOddCurvature 2 3 a| / Real.sqrt 6
+  have hcurvature : routeRCrossPrimeStokesOddCurvature 2 3 a ≠ 0 :=
+    (routeRCrossPrimeStokesOddCurvature_eq_zero_iff
+      (p := 2) (q := 3) (by norm_num) (by norm_num) a).not.mpr ha
+  have hc : 0 < c :=
+    div_pos (abs_pos.mpr hcurvature) (Real.sqrt_pos.2 (by norm_num))
+  have hpoint : ∀ t : ℝ,
+      c ≤ ‖XiC ((t : ℂ) + (b : ℂ) * Complex.I)‖ * ‖S t‖ := by
+    intro t
+    exact routeRTwoThreeStokesCalkinFactorization_forces_multiplier_product
+      hA a _ (S t) (K t) (hK t) (hfactor t)
+  have harg : Tendsto (fun t : ℝ ↦ -(δ * t)) atTop atBot := by
+    exact tendsto_neg_atTop_atBot.comp
+      (Tendsto.const_mul_atTop hδ tendsto_id)
+  refine tendsto_atTop.2 fun R ↦ ?_
+  by_cases hR : R ≤ 0
+  · exact Eventually.of_forall fun t ↦ hR.trans (norm_nonneg (S t))
+  · have hRpos : 0 < R := lt_of_not_ge hR
+    have hzero : Tendsto (fun t : ℝ ↦ C * R * Real.exp (-(δ * t)))
+        atTop (nhds 0) := by
+      simpa using (Real.tendsto_exp_atBot.comp harg).const_mul (C * R)
+    filter_upwards [hzero.eventually_lt_const hc,
+      eventually_ge_atTop (0 : ℝ)] with t hsmall ht
+    have hXi' := hXi t b hb
+    rw [abs_of_nonneg ht] at hXi'
+    have hproductPos : 0 <
+        ‖XiC ((t : ℂ) + (b : ℂ) * Complex.I)‖ * ‖S t‖ :=
+      hc.trans_le (hpoint t)
+    have hXiPos : 0 < ‖XiC ((t : ℂ) + (b : ℂ) * Complex.I)‖ :=
+      by
+        rcases (mul_pos_iff.mp hproductPos) with hpos | hneg
+        · exact hpos.1
+        · exact False.elim ((not_lt_of_ge (norm_nonneg _)) hneg.1)
+    apply le_of_not_gt
+    intro hnorm
+    have hcontra : c < c := calc
+      c ≤ ‖XiC ((t : ℂ) + (b : ℂ) * Complex.I)‖ * ‖S t‖ := hpoint t
+      _ < ‖XiC ((t : ℂ) + (b : ℂ) * Complex.I)‖ * R :=
+        mul_lt_mul_of_pos_left hnorm hXiPos
+      _ ≤ (C * Real.exp (-(δ * t))) * R :=
+        mul_le_mul_of_nonneg_right hXi' hRpos.le
+      _ = C * R * Real.exp (-(δ * t)) := by ring
+      _ < c := hsmall
+    exact (lt_irrefl c hcontra)
+
+/-! ## Canonical singular quotient and its removable Calkin defect -/
+
+/-- The canonical punctured Xi quotient of the fixed physical receiver.  This quotient is
+available for every grade, so its mere existence contains no horizontal information. -/
+def routeRTwoThreeXiPuncturedMultiplier (A a : ℝ) (z : ℂ) :
+    RouteRPhysicalOperator :=
+  (XiC z)⁻¹ • routeRTwoThreeStokesSoninCommutator A a
+
+/-- The exact defect left when the punctured quotient is multiplied back by `XiC`. -/
+def routeRTwoThreeXiPuncturedCalkinDefect (A a : ℝ) (z : ℂ) :
+    RouteRPhysicalOperator :=
+  routeRTwoThreeStokesSoninCommutator A a -
+    XiC z • routeRTwoThreeXiPuncturedMultiplier A a z
+
+/-- Away from the divisor, the singular quotient tautologically factors every receiver. -/
+theorem XiC_smul_routeRTwoThreeXiPuncturedMultiplier
+    (A a : ℝ) {z : ℂ} (hz : XiC z ≠ 0) :
+    XiC z • routeRTwoThreeXiPuncturedMultiplier A a z =
+      routeRTwoThreeStokesSoninCommutator A a := by
+  rw [routeRTwoThreeXiPuncturedMultiplier, smul_smul,
+    mul_inv_cancel₀ hz, one_smul]
+
+@[simp] theorem routeRTwoThreeXiPuncturedCalkinDefect_eq_zero
+    (A a : ℝ) {z : ℂ} (hz : XiC z ≠ 0) :
+    routeRTwoThreeXiPuncturedCalkinDefect A a z = 0 := by
+  rw [routeRTwoThreeXiPuncturedCalkinDefect,
+    XiC_smul_routeRTwoThreeXiPuncturedMultiplier A a hz, sub_self]
+
+/-- At a divisor point the ordinary product cannot see the principal part: the entire physical
+receiver is the removable defect. -/
+theorem routeRTwoThreeXiPuncturedCalkinDefect_eq_receiver
+    (A a : ℝ) {z : ℂ} (hz : XiC z = 0) :
+    routeRTwoThreeXiPuncturedCalkinDefect A a z =
+      routeRTwoThreeStokesSoninCommutator A a := by
+  simp [routeRTwoThreeXiPuncturedCalkinDefect, hz]
+
+/-- **Sharp singular-quotient classification.**  The canonical punctured factorization has a
+compact removable defect exactly off the divisor or at neutral grade.  Hence analytic
+continuation of the punctured identity is not the missing source theorem: compact removability at
+the divisor is precisely the original physical obligation. -/
+theorem routeRTwoThreeXiPuncturedCalkinDefect_isCompactOperator_iff
+    {A : ℝ} (hA : 0 < A) (a : ℝ) (z : ℂ) :
+    IsCompactOperator (routeRTwoThreeXiPuncturedCalkinDefect A a z) ↔
+      XiC z ≠ 0 ∨ a = 0 := by
+  by_cases hz : XiC z = 0
+  · rw [routeRTwoThreeXiPuncturedCalkinDefect_eq_receiver A a hz,
+      routeRTwoThreeStokesSoninCommutator_isCompactOperator_iff hA,
+      or_iff_right (not_not.mpr hz)]
+  · rw [routeRTwoThreeXiPuncturedCalkinDefect_eq_zero A a hz]
+    exact iff_of_true isCompactOperator_zero (Or.inl hz)
+
+/-- On an actual Xi fibre, compact removability of the canonical singular quotient is exactly
+critical-line placement of that fibre. -/
+theorem routeRTwoThreeXiPuncturedCalkinDefect_at_divisor_isCompactOperator_iff
+    {A : ℝ} (hA : 0 < A) (rho : XiDivisorSupport) :
+    IsCompactOperator
+        (routeRTwoThreeXiPuncturedCalkinDefect A
+          (primeDepthBVWoldXiCenteredRate rho)
+          (xiSpectralPointSupport rho)) ↔
+      (rho : ℂ).re = 1 / 2 := by
+  rw [routeRTwoThreeXiPuncturedCalkinDefect_isCompactOperator_iff hA,
+    XiC_xiSpectralPointSupport_eq_zero,
+    primeDepthBVWoldXiCenteredRate_eq_zero_iff]
+  simp
+
+/-- Global compact removability of the canonical singular Xi quotient is equivalent to RH. -/
+theorem routeRTwoThreeXiPuncturedCalkinDefect_globalCompact_iff_riemannHypothesis
+    {A : ℝ} (hA : 0 < A) :
+    (∀ rho : XiDivisorSupport,
+      IsCompactOperator
+        (routeRTwoThreeXiPuncturedCalkinDefect A
+          (primeDepthBVWoldXiCenteredRate rho)
+          (xiSpectralPointSupport rho))) ↔
+      RiemannHypothesis := by
+  rw [riemannHypothesis_iff_xi_zero_re_eq_half]
+  constructor
+  · intro h z hz
+    let rho : XiDivisorSupport := ⟨z, mem_xi_divisor_support_of_eq_zero hz⟩
+    exact (routeRTwoThreeXiPuncturedCalkinDefect_at_divisor_isCompactOperator_iff
+      hA rho).mp (h rho)
+  · intro h rho
+    exact (routeRTwoThreeXiPuncturedCalkinDefect_at_divisor_isCompactOperator_iff
+      hA rho).mpr (h (rho : ℂ) (xi_eq_zero_of_mem_divisor_support rho))
+
 /-- Divisor-specialized source-to-Xi Calkin landing closes the existing explicit Route R RH
 endpoint.  All remaining mathematical content is construction of this factorization from the
 pre-divisor Euler--Gamma--Stokes source. -/

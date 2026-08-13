@@ -1547,3 +1547,96 @@ Lean modules:
   line-conjugate tensor observables.  Horizontal and vertical separator factors now have exact
   pre-divisor source origins.  The only unproved density input is the completed four-leg
   Euler--Gamma trace construction and quantitative dyadic budget `(SG7)`.
+
+## Five-shift prime-gap Euler--Gamma separator
+
+`[OWN CONJECTURE LEAN-PROVED POINTWISE] [EXACT WEIL--KREIN LANDING]`
+`[COMPLETE CRITICAL-KERNEL PRIME--GAMMA POLARIZATION] [DENSITY BUDGET OPEN]`
+
+The cubic route used a positive horizontal Gram but failed one-variable holomorphic source
+compatibility.  A different construction starts from the literal gap between the first two Euler
+frequencies.  For `r>0`, set
+
+```text
+q=e^(-2r),  t=e^(-(6/5)r),  u=e^(-(21/10)r),  x=e^(-2ar),
+P_r(a)=x(1-x)(x-t)(x-q)(x-u).                           (FS1)
+```
+
+The strict inequalities
+
+```text
+3/5 < log 2 < 1 < 21/20 < log 3
+```
+
+make `(FS1)` positive on every zeta displacement `0<a<=1/2`, zero at `a=0`, and nonpositive at
+every Euler depth `a=log n`, `n>=2`.  Coefficient expansion also gives two exact moment
+cancellations: ordinary coefficient sum zero and `e^(-2r)`-weighted sum zero.  These are the two
+Gamma-tail cancellations missing from the earlier four-shift attempt.
+
+Functional-equation pairing gives
+
+```text
+D_r(a)=-(P_r(a)+P_r(-a)),
+R_r(a)=a^(-2)D_r(a),
+R_1(a)>=1/81  for 0<a<=1/2,      R_1(0)=0.              (FS2)
+```
+
+On every actual Xi multiplicity copy, `D_r(a)` is exactly one weighted combination of the five
+reflection-difference norm squares
+
+```text
+||F_(kr)(lambda)-F_(kr)(conj lambda)||^2, k=1,...,5.    (FS3)
+```
+
+Thus `(FS2)` has an unconditional multiplicity-exact Weil--Krein landing.  It gives the exact
+finite `75%` receiver once an arithmetic bound `81E<=N/8` is supplied; that bound is not assumed.
+
+The pointwise critical rigging is also explicit.  For a real-centered Hedenmalm feature,
+
+```text
+ell_z(k_t)=2/[1+(z-t)^2]
+          = i C_(t-i)(z)-i C_(t+i)(z).                 (FS4)
+```
+
+Both Cauchy poles are in Deninger's strict absolute-Euler sectors.  Cross terms in the Weil
+polarization are exact Deninger source cups.  The initially suspected missing same-orientation
+terms are not genuinely continued-source terms: oddness of `XiC'/XiC` folds them to lower
+absolute-Euler divided differences at the opposite real center.  Consequently Lean proves a
+complete four-term prime--Gamma formula for the polarization of `(FS4)`.
+
+This does not yet Hermitianize `(FS3)`.  Weil polarization is holomorphic/Krein; `(FS3)` is a
+Euclidean negative-sector energy.  The remaining theorem is therefore precise:
+
+```text
+[OPEN FIVE-SHIFT HERMITIAN SOURCE BUDGET]
+Construct a height-local, source-native inverse-Green or rank--trace current whose zero landing is
+the normalized pair-difference charge `(FS2)`--`(FS3)`, and prove its dyadic arithmetic cost is at
+most N(T,2T)/8.
+```
+
+Boundary rigidity is now proved: `R_1` cannot be continuous at zero, and no continuous
+diagonal-vanishing source coefficient can agree with it on the positive half-strip.  Any completion
+must therefore retain an unbounded tangent/Green graph or discontinuous index channel; a bounded
+regular source operator is ruled out.
+
+Lean modules are umbrella-wired:
+
+- `XiWardFiveShiftEulerGammaPrimeGap.lean`;
+- `XiWardFiveShiftEulerGammaQuantitative.lean`;
+- `XiWardFiveShiftPairedSubmicroscopicSeparator.lean`;
+- `XiWardFiveShiftWeilKreinLanding.lean`;
+- `HedenmalmCriticalFeatureKernel.lean`;
+- `HedenmalmCriticalFeaturePrimeGammaDecomposition.lean`;
+- `XiWardFiveShiftCriticalEvaluationLanding.lean`;
+- `XiWardFiveShiftBoundaryRigidity.lean`.
+
+Important guardrail: the theorem giving Euler nonpositivity under `-Im z=log n` inside the
+critical-evaluation module has incompatible strip hypotheses for `n>=2`.  It is a valid formal
+implication but not a literal critical-rigging Euler sample.  Euler sign belongs to polynomial
+symbol `(FS1)` until a genuine source trace evaluates it.
+
+- 2026-08-13 — conjectured the five-shift prime-gap polynomial, proved its zeta/Euler sign split,
+  two Gamma-tail cancellations, quantitative inverse-square quantum, exact Weil--Krein landing,
+  explicit nonvanishing Hedenmalm kernel, complete four-term absolute-Euler prime--Gamma
+  polarization, and forced boundary discontinuity.  No unconditional density improvement is
+  claimed; open core is the height-local Hermitian source budget above.

@@ -289,3 +289,13 @@ follows. The saturation conclusion is therefore not established by this argument
 - 2026-08-13 — later hostile re-audit found the coefficient-algebra division gap above in both
   this proof and Hazewinkel Appendix A.2; card returned to Stage 1. Modern monic
   Gröbner/straightening repair opened.
+- 2026-08-13 — finite generic maximal Hankel minors proved integrally monic for lex and Nam's
+  degree-lex order, including exact diagonal coefficient and repeated-index Leibniz terms;
+  formalized in `DeningerHankelDiagonalMonicity.lean`. Remaining repair is now sharply the
+  Conca--Nam Gröbner-basis theorem plus finite field primeness and the homogeneous-to-`a_0=1`
+  bridge, not coefficient monicity.
+- 2026-08-13 — Nam's rank-one (`2 × 2` minor) Gröbner base case closed in Lean over every
+  commutative coefficient ring, including rings with nilpotents. Exact toric kernel
+  `span(B_N)=ker(X_i↦UT^i)`, degree-lex Gröbner basis, domain primeness, and integral primeness are
+  formalized in `DeningerHankelRankOneGroebner.lean`. Higher-rank c-chain Gröbner theory and the
+  homogeneous-to-`a_0=1` bridge remain open.
