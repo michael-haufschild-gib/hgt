@@ -125,7 +125,7 @@ theorem degreeCenteredShear_smul (c : ℝ) (n : ℕ) (Q : Polynomial ℝ) :
 
 /-- Coordinate dilation covariance of degree-centered shear. -/
 theorem degreeCenteredShear_comp_C_mul_X
-    {d : ℝ} (_hd : d ≠ 0) (n : ℕ) (Q : Polynomial ℝ) :
+    {d : ℝ} (n : ℕ) (Q : Polynomial ℝ) :
     d ^ 2 • xiShiftedBoundaryDegreeCenteredShearPolynomial n
         (Q.comp (Polynomial.C d * X)) =
       (xiShiftedBoundaryDegreeCenteredShearPolynomial n Q).comp
@@ -149,7 +149,7 @@ theorem degreeCenteredShear_sourceCoordinateDilation
           (Polynomial.C (w ^ 2) * X) := by
   have hw2 : w ^ 2 ≠ 0 := pow_ne_zero _ hw
   rw [degreeCenteredShear_smul]
-  have hcomp := degreeCenteredShear_comp_C_mul_X hw2 n Q
+  have hcomp := degreeCenteredShear_comp_C_mul_X n Q
   have hscalar : (w ^ (2 * n))⁻¹ ^ 2 =
       (w ^ (4 * n + 4))⁻¹ * (w ^ 2) ^ 2 := by
     field_simp [hw]

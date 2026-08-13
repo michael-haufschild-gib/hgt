@@ -22,7 +22,7 @@ card has been moved into `docs/drafts/pipeline/3-formalized/universal-law-field/
 | 10 | `parity-duality-rg-shell-splitting-and-multiplicative-resolution-cap-law.md` | NEEDS-LEAN — signed-sector and organ-scope law |
 | 11 | `pole-purchase-escape-and-collision-gap-law.md` | **DONE 2026-08-13** — promoted to `3-formalized/`.  The (INV3.2) log-derivative identity closed in `RHTower/PolePurchaseLogDerivIdentity.lean` (mathlib `LSeries_vonMangoldt_eq_deriv_riemannZeta_div` + `VonMangoldtLineSeriesSwap` kernels); axiom-clean |
 | 12 | `route-q-ratio-gate-decision.md` | BLOCKED-ON-NUMERICS — gate mechanism certified (DivisorHeightRatioGate: height damping, unconditional geometric decay, `9 < c` implies the gate); remaining inputs are gamma_1 > 9 (verified-zero computation) and a signed-moment lower bound (zero-location input) |
-| 13 | `specification-consistency-polarization-independence-and-cusp-concentration-law.md` | NEEDS-LEAN — consistency and independence metatheorem for the inverse-theory axioms |
+| 13 | `specification-consistency-polarization-independence-and-cusp-concentration-law.md` | **DONE 2026-08-13** — promoted to `3-formalized/`.  Theorem B's independence witness fully certified (`RHTower/InverseTheoryGraphWitness.lean`: prism `C₁₆×K₂`, Rayleigh data by root-of-unity sampling, eigenvalue strictly inside `(2√2, 3)`, Perron pair, capstone `prism_independence_witness`); A/C/D recorded as cited-classical / in-tree-cited / synthesis per the card's own claims |
 
 Completed and promoted:
 
@@ -213,3 +213,23 @@ subspace `𝟙⊥` (invariance from symmetry + `A𝟙 = 3𝟙`); `λ < 3` from t
 `⟨(3I−A)v, v⟩ = ∑_{edges}(v_x − v_y)²` — a 3-eigenvector in `𝟙⊥` is edge-constant, and
 edge-constancy on the prism forces global constancy by explicit `ZMod`-induction along the
 cycle plus one rung (no `SimpleGraph.Connected` machinery); `λ > 0` rules out `−3`.
+
+## Progress — ULF-INV-5 witness Phase 1 (2026-08-13)
+
+`RHTower/InverseTheoryGraphWitness.lean` (wired into `GaloisForLFunctions.RHTower`, build
+green, capstones axiom-clean): the prism `C₁₆ × K₂` as a `SimpleGraph` with certified
+3-regularity; the mean-zero cosine vector with exact Rayleigh data
+(`prismNormSq = 16`, `prismEnergy = (2cos(π/8)+1)·16`) via the de-privatized discrete
+sampling lemmas of `FiniteAmplifierFrame` (+ new phase-shifted variant); and the strict
+Ramanujan margin `2√2 < 2cos(π/8)+1` (`50 > 49`).  Capstone `prism_rayleigh_witness`.
+Phase 2 **DONE 2026-08-13**: `prismOp` (funLeft-composition operator), `prismOp_isSymmetric`,
+`prism_laplacian_identity` (`3⟨v,v⟩ − ⟨Av,v⟩` = edge-difference energy), `prism_energy_le`,
+`prism_constant_of_edge_zero` (explicit cycle+rung constancy), the mean-zero hyperplane with
+both membership directions and invariance, and the capstones `prism_nonRamanujan_eigenvalue`
+/ `prism_graph_violates_ramanujan`: an eigenvalue `μ` with `2√2 < μ < 3` of the prism
+adjacency endomorphism, via `hasEigenvalue_iSup_of_finiteDimensional` on the restriction,
+the witness Rayleigh lower bound, and the `μ = 3` equality kill.  All axiom-clean; module
+build green.  Left for the card: Theorem B packaging (N-clause satisfaction lemmas with the
+vacuity caveat) and the Theorems A/C/D citation-audit disposition; then promote.
+
+- `specification-consistency-polarization-independence-and-cusp-concentration-law.md` — **DONE 2026-08-13** — promoted: Theorem B's independence witness fully certified (RHTower/InverseTheoryGraphWitness.lean - prism C16xK2, 3-regularity, exact Rayleigh data by root-of-unity sampling, Ramanujan margin 50>49, symmetric operator, Laplacian equality analysis, eigenvalue strictly inside (2sqrt2, 3), Perron pair, bundled capstone prism_independence_witness, all axiom-clean); Theorems A/C/D recorded as cited-classical / in-tree-cited / synthesis per the card's own claims

@@ -1,9 +1,27 @@
 # Route R reciprocal-log Fisher half-density entrance wall
 
 - **ID:** `route-r-reciprocal-log-fisher-half-density-entrance-wall`
-- **Stage:** 2 — fully proved on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM / ONE-VECTOR DOMAIN SELECTOR / SOURCE-PURE PRODUCER INTERFACE
-- **Scientific status:** `[PAPER-PROVED] [CORPUS-NEW] [NOVELTY UNVERIFIED] [NOT RH]`
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [CORPUS-NEW] [NOVELTY UNVERIFIED] [NOT RH]`
+- **Lean status:** complete in `RHTower/RouteRReciprocalLogFisherEntranceWall.lean` on the new
+  reusable tail module `RHTower/Sieve/PrimeLogPowerTail.lean`
+  (`summable_primes_one_div_mul_log_rpow`: `∑ₚ 1/(p (log p)^s) < ∞` for every `s > 0`, by dyadic
+  blocks against the Brun–Titchmarsh/Chebyshev count `π(N) = O(N/log N)` from `PNTPlus`).
+  Theorem 1 is `summable_fisher_fractional_logDomain` (every strict fractional domain, all
+  `α < 1`) plus `not_summable_fisherDensity` (the wall at `α = 1`, from `Fₚ ≥ 1/(4p)` and
+  Euler divergence). Theorem 2 is `summable_physical_transport_sq_iff`
+  (`V_t v ∈ ℓ² ⟺ t ≤ 0`, the divergent side by cofinite domination of `1/p` once
+  `p^t/(log p)² ≥ 4`), with `(10)` as `summable_both_orientations_iff`. The Hilbert-carrier
+  statements are literal: `memℓp_two_physical_transport_iff` (membership in the fixed `ℓ²`
+  prime carrier) and the exhaustion-free Cauchy criterion
+  `cauchySeq_physical_truncation_iff` over the net of all finite prime sets (subsuming every
+  increasing exhaustion). The Route R classification `(14)` is
+  `memℓp_two_xiDivisor_coefficient_iff`, stated for every nonzero scalar (hence for the
+  multiplicity-leading Xi Cartier coefficient) and every `ρ : XiDivisorSupport`:
+  `c·p^{ρ-1/2}·√Fₚ/log p ∈ ℓ²(ℙ) ⟺ Re ρ ≤ 1/2`. Module build passes (2026-08-13); axiom
+  audit `[propext, Classical.choice, Quot.sound]` on all eight theorems. The one-vector
+  physical Cauchy landing `(15)` remains the open producer, exactly as §5 states.
 - **Statement:** The inverse prime-log potential of the positive Euler--Fisher half-density is a
   genuine `ell^2` vector, lies exactly at the first prime-log form wall, and admits the physical
   fixed-orientation half-density transport precisely on the nonpositive centered-grade side.  Thus
@@ -270,10 +288,13 @@ asserting `(15)` from algebraic coefficient fidelity would be theatre.
 - [x] dependency-closed proof of maximal regularity and the exact entrance wall
 - [x] exact interface to the Burnol-current endpoint
 - [ ] prove the one-vector physical Cauchy landing `(15)` from source Stokes structure
-- [ ] formalize after corpus refactor
+- [x] formalize after corpus refactor (2026-08-13; all proven statements unconditional in Lean)
 - [ ] RH
 
 ## Log
 
 - 2026-08-08 — fixed-Hilbert Fisher and raw-half-density attempts killed; inverse-log Cartier
   potential discovered and exact one-sided entrance wall proved.
+- 2026-08-13 — Theorems 1–2, Corollary 3, and the Xi-divisor classification `(14)` formalized
+  unconditionally; new reusable prime-log tail module built on Brun–Titchmarsh. All audits clean.
+  Open producer `(15)` unchanged. Promoted to 3-formalized.

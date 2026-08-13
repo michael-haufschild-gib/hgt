@@ -59,13 +59,13 @@ theorem shift_unbounded (M : ℝ) : ∃ lam : ℝ, 0 < lam ∧ M < 2 * Real.log 
 
 /-- **The frequencies stay integral only for integer dilations.**  `k · log n = log (n^k)`, so the
 dilated prime frequencies are again logarithms of integers exactly in that case. -/
-theorem frequency_dilation (n k : ℕ) (_hn : 0 < n) :
+theorem frequency_dilation (n k : ℕ) :
     (k : ℝ) * Real.log n = Real.log ((n : ℝ) ^ k) := by
   rw [Real.log_pow]
 
 /-- **The weights change abscissa.**  Pushing the frequencies to `log(n^k)` turns the weight
 `Λ(n) n^{-1/2}` into `Λ(n) n^{-k/2}`: the Weil form at abscissa `1/2` becomes the one at `k/2`. -/
-theorem weight_abscissa_shift {L n : ℝ} (_hn : 0 < n) (k : ℕ) :
+theorem weight_abscissa_shift {L n : ℝ} (k : ℕ) :
     L / (n ^ ((k : ℝ) / 2)) = L * (n ^ ((k : ℝ) / 2))⁻¹ := by
   rw [div_eq_mul_inv]
 

@@ -137,7 +137,6 @@ theorem
       (fun q => q.2.2)
       attachment hattachmentHermitian
       (fun q : Σ s : S, Layer => crossProbe q.1 q.2)
-      (fun q => hcrossProbeHermitian q.1 q.2)
       (fun q : Σ s : S, Layer => crossSource q.1 q.2)
       (fun q : Σ s : S, Layer => crossMiddle q.1 q.2)
       (fun q : Σ s : S, Layer => crossTarget q.1 q.2)

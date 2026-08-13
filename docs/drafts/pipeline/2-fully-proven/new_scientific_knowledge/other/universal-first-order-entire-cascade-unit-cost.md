@@ -9889,3 +9889,49 @@ bound `pow_sub_one_dvd_differentIdeal` pins `ord_Q(𝔡) = e − 1`.  What is le
 instantiation: producing `h`, `g` and the multiplicity `e` for a given prime `Q` from mathlib's
 `normalizedFactorsMapEquivNormalizedFactorsMinPolyMk` and
 `emultiplicity_factors_map_eq_emultiplicity`.
+
+### Log — the algebraic model, part 13: the derivation bound at every place, closed
+
+Item 2 of the frontier is complete.  Three modules, all umbrella-wired, targeted-build green and
+axiom-clean (`propext`, `Classical.choice`, `Quot.sound`).
+
+`HTGeometry/IntegralGeneratorDerivationClearing.lean` — the clearing at an arbitrary generator.
+For `S` a subring of a field `K` stable under a derivation `D`, `L` a `K`-algebra with a derivation
+`D'` extending `D`, and `α : L` annihilated by a polynomial `q` with coefficients in `S`:
+`aeval_derivative_mul_deriv_mem_adjoin` — `q'(α)·D'f ∈ S[α]` for every `f ∈ S[α]`.  This
+generalises the `AdjoinRoot` clearing to the abstract monogenic generator of the full integral
+closure produced in part 10.
+
+`HTGeometry/PlaceDerivationValuationDrop.lean` — the drop itself, over any Dedekind domain `R`
+with fraction field `K` and height-one prime `Q`.  If `c` clears `D` at the place
+(`c·D x` integral for `x ∈ R`), then `v_Q(c·D f) ≤ v_Q(f)·exp 1` for every `f ∈ K`
+(`valuation_mul_fun_le`; ideal-power induction on `Q^{n+1} = Q^n·Q`, quotient rule for the
+fraction field), and removing the clearing factor costs its order:
+`valuation_fun_le_of_not_mem_pow` — `c ∉ Qᵉ` gives `v_Q(D f) ≤ v_Q(f)·exp e`.  The working
+statements take a plain function with additivity and Leibniz hypotheses; `Derivation` wrappers are
+provided.  (Stating them for `Derivation A K K` directly makes every application at the concrete
+model identify two transitive instance paths to the same semiring structure through the whole
+`FractionRing`/`OreLocalization` tower — the plain-function form removes that seam.)
+
+`HTGeometry/AlgebraicCascadeDifferentDrop.lean` — the cascade instantiation.
+`exists_monogenic_clearing`: the integral closure `algCascadeInt m p` is monogenic over
+`topInt m` (part 10), and the derivative of the generator's minimal polynomial is nonzero
+(separability in characteristic zero, via `minpoly.isIntegrallyClosed_eq_field_fractions`) and
+clears the extended derivation `algLaw p (uDeriv m)` at every place.  Capstones:
+
+```text
+exists_pos_valuation_algLaw_uDeriv_le :
+  ∀ Q, ∃ e ≥ 1, ∀ f, v_Q(δ f) ≤ v_Q(f)·exp e,
+valuation_algLaw_uDeriv_le_of_normalizedFactor :
+  Q over the degree at infinity with Kummer–Dedekind multiplicity e
+    ⇒ ∀ f, v_Q(δ f) ≤ v_Q(f)·exp e.
+```
+
+The second is the tame bound: combining part 12's `ord_Q(minpoly'(α)) ≤ e − 1` with the clearing,
+the extended derivation lowers the order at a place of ramification index `e` by at most `e` — one
+degree in the coordinate `u = 1/X_m`.  Supporting instances proved here: the residue field of
+`topInt m` has characteristic zero (nonzero integers are units of the valuation ring), the closure
+is a finite torsion-free `topInt m`-module, and the extended maximal ideal is nonzero.
+
+**The frontier is now item 3 alone**: the restatement of the peel over the extended datum, and
+Reduction I's analytic selection of the place.

@@ -158,7 +158,7 @@ theorem summable_primeIndicatorRpow {s : ℝ} (hs : 1 < s) :
     · exact le_rfl
     · exact Real.rpow_nonneg (Nat.cast_nonneg n) _
 
-theorem tsum_primeIndicatorRpow {s : ℝ} (_hs : 1 < s) :
+theorem tsum_primeIndicatorRpow {s : ℝ} :
     (∑' n : ℕ, if n.Prime then ((n : ℝ)) ^ (-s) else 0) = primeZeta s := by
   rw [primeZeta]
   have hsupp : Function.support (fun n : ℕ => if n.Prime then ((n : ℝ)) ^ (-s) else 0) ⊆
@@ -254,7 +254,7 @@ theorem primeZeta_eq_abel_integral {δ : ℝ} (hδ : 0 < δ) :
         ∑ k ∈ Finset.range (n + 1), (if k.Prime then ((k : ℝ)) ^ (-(1 + δ)) else 0)) atTop
         (nhds (∑' n : ℕ, if n.Prime then ((n : ℝ)) ^ (-(1 + δ)) else 0)) :=
       h.comp (tendsto_add_atTop_nat 1)
-    rw [tsum_primeIndicatorRpow hs] at hshift
+    rw [tsum_primeIndicatorRpow] at hshift
     refine hshift.congr fun n => ?_
     rw [sum_rpowNeg_mul_primeRecipWeight]
     congr 1

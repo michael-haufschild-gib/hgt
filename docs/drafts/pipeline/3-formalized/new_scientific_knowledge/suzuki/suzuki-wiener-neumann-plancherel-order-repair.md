@@ -1,7 +1,7 @@
 # Uniform Wiener domination repairs the \(\ell^1\)--Plancherel order in Suzuki's global carrier
 
 - **ID:** `suzuki-wiener-neumann-plancherel-order-repair`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** EXACT RIGGING REPAIR / VECTOR-VALUED FOURIER NO-GO AND SOURCE-SPECIFIC SURVIVOR
 - **Scientific status:** `[PAPER-PROVED] [UNCONDITIONAL] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Route:** completed Evans/logarithmic-seam branch of Connes/CCM
@@ -297,7 +297,45 @@ Formalizing only the scalar geometric series would not certify `(4)`.
 - [x] transfer by scalar Plancherel
 - [x] prove physical \(L^2_x(\ell^1)\) and legal evaluation
 - [x] preserve exact low-frequency port
-- [ ] formalize full mixed-norm theorem in Lean
+- [x] formalize full mixed-norm theorem in Lean
 - [ ] compose repaired carrier with paired Carleman normal form
 - [ ] prove trace-zero weighted root derivative
 - [ ] prove RH or genuine whole-Connes no-go
+
+### The full mixed-norm theorem EXISTS — every layer of Section 9's target is formal
+
+Four modules close the card end to end, all `[propext, Classical.choice, Quot.sound]`:
+
+- `HTGeometry/DiscreteL1Convolution.lean` — discrete convolution on an additive group with its
+  quantitative layer in `ℝ≥0∞`: coefficientwise domination `|α ⋆ β| ≤ |α| ⋆ |β|`, the discrete
+  Young identity with **equality** (`discreteMass_discreteEConv`), majorant powers of mass
+  exactly `M^k`, the Neumann kernel of mass exactly `(1-M)⁻¹`, and the alternating Neumann series
+  proved to be an actual **two-sided convolution inverse** of `δ₀ + r`
+  (`discreteConv_delta_add_neumannSeries`) — the geometric `ℓ¹` resolvent.
+- `RHTower/SuzukiWienerNeumannMajorant.lean` — Section 3 at its literal structure: the high-pass
+  symbol `h = Lδ₀ + qδ₀ + t` factors as `L(δ₀ + r)` (`wienerHighPassSymbol_eq`); the
+  coefficientwise domination `(15)` (`enorm_wienerRelativeKernel_le`); the exact majorant mass
+  `(14)` `‖r_*‖₁ = (C+M)/L₀` with the `< 1/2` threshold form; the Neumann inverse `(16)` with the
+  inverse identity (`discreteConv_wienerHighPassSymbol_neumannInverse`); the frequency-independent
+  coefficient bound `(17)` (`enorm_wienerNeumannInverse_le`); and the exact inverse-kernel mass
+  `(18)` (`discreteMass_wienerInverseKernel`).
+- `RHTower/SuzukiWienerMixedNormCarrier.lean` — Section 4: the weighted two-term `L²` bound
+  `(20)`→per-coordinate, the `ℓ¹(L²)` mixed-norm bound `(21)`
+  (`tsum_eLpNorm_le_twoKernel`), and — via **mathlib's `L²` Fourier isometry**
+  (`Lp.fourierTransformₗᵢ`), which now supplies scalar Plancherel `(22)` as a lookup — the
+  position carrier `(22)`–`(24)`: `suzukiWienerTwoRootCarrier` gives absolute summability in
+  `L²_x` with the same two-kernel bound.  Section 6's `(26)` is
+  `summable_tsum_norm_clm_comp`: bounded componentwise operators preserve the legal `ℓ¹`
+  evaluation.
+- `RHTower/SuzukiWienerOrderSwapCounterexample.lean` — Section 2's explicit counterexample:
+  `swapFreqFamily n ξ = (n+1)⁻¹ ψ(ξ-n)` for the concrete bump `ψ` has finite `L²(ℓ¹)` frequency
+  norm (`lintegral_sq_tsum_swapFreqFamily`, the card's `(7)` via disjoint supports and
+  translation invariance), while each position coordinate is a unimodular modulation of the fixed
+  profile (`norm_swapPositionFamily`, the card's `(8)`) whose `ℓ¹` sums diverge on a set of
+  positive measure (`measurePos_not_summable_swapPositionFamily`, the card's `(9)`).  Capstone:
+  `suzukiWiener_orderSwap_counterexample` — the general order swap is `[FALSIFIED]` by an
+  explicit obstruction, exactly as Section 2 demands.
+
+Umbrellas wired.  Section 5's representation-change legality (the widened low port stays entire
+of finite exponential type, hence Gamma-subcritical) is the qualitative context consumed by the
+downstream carrier cards and stays a scope note.

@@ -17,7 +17,7 @@ noncomputable section
 
 /-- Prime-harmonic mass below `X+1` dominates prime-counting rank divided by `X`. -/
 theorem primeCounting_div_le_primesBelow_primeHarmonicSum
-    (X : ℕ) (_hX : 2 ≤ X) :
+    (X : ℕ) :
     (Nat.primeCounting' (X + 1) : ℝ) / (X : ℝ) ≤
       ∑ p ∈ Nat.primesBelow (X + 1), ((p : ℝ))⁻¹ := by
   let S := Nat.primesBelow (X + 1)
@@ -45,27 +45,27 @@ theorem primeCounting_div_le_primesBelow_primeHarmonicSum
 /-- Critical finite-prime Möbius distortion dominates one plus four times phase-budget rank per
 cutoff. -/
 theorem one_add_four_mul_primeCounting_div_le_primesBelow_phaseDistortion
-    (X : ℕ) (hX : 2 ≤ X) :
+    (X : ℕ) :
     1 + 4 * ((Nat.primeCounting' (X + 1) : ℝ) / (X : ℝ)) ≤
       finiteCriticalPrimeMobiusPhaseDistortion (Nat.primesBelow (X + 1)) := by
   have hprime : ∀ p ∈ Nat.primesBelow (X + 1), p.Prime :=
     fun p hp => Nat.prime_of_mem_primesBelow hp
-  have hsum := primeCounting_div_le_primesBelow_primeHarmonicSum X hX
+  have hsum := primeCounting_div_le_primesBelow_primeHarmonicSum X
   have hdist := one_add_four_mul_primeHarmonicSum_le_phaseDistortion hprime
   nlinarith
 
-/-- **Prime-log rank/Möbius-distortion universality law.**  Every cutoff `X ≥ 2` carries an
+/-- **Prime-log rank/Möbius-distortion universality law.**  Every cutoff `X` carries an
 integer-linearly independent prime-log phase family of exact prime-counting cardinality, while
 the critical antipodal/vacuum distortion of the same packet is bounded below by that rank per
 cutoff. -/
 theorem primeLogRank_and_mobiusPhaseDistortion
-    (X : ℕ) (hX : 2 ≤ X) :
+    (X : ℕ) :
     LinearIndependent ℤ
         (fun p : ((X + 1).primesBelow : Finset ℕ) => Real.log (p : ℕ)) ∧
       1 + 4 * ((Nat.primeCounting' (X + 1) : ℝ) / (X : ℝ)) ≤
         finiteCriticalPrimeMobiusPhaseDistortion (Nat.primesBelow (X + 1)) := by
   exact ⟨GaloisForLFunctions.primeLog_primesBelow_linearIndependent (X + 1),
-    one_add_four_mul_primeCounting_div_le_primesBelow_phaseDistortion X hX⟩
+    one_add_four_mul_primeCounting_div_le_primesBelow_phaseDistortion X⟩
 
 end
 

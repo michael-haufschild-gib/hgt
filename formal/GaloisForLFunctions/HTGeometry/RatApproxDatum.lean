@@ -82,7 +82,7 @@ theorem exists_hasShiftTubeDatum_of_ratApprox {f : ℂ → ℂ} (hf : HasRatAppr
   have hMM' : M ≤ M' := le_max_left _ _
   have hnot' : ¬ IsTubeBigO M' N f := fun hb => hnot (hb.mono_tube (le_max_right _ _))
   obtain ⟨p, q, C, T, hq, hC, hT, hb⟩ := hf M' hM'pos N
-  obtain ⟨cq, Tq, hcq, hTq, hlow⟩ := exists_lower_bound_polyEval hM'pos hq
+  obtain ⟨cq, Tq, hcq, hTq, hlow⟩ := exists_lower_bound_polyEval hq
   obtain ⟨Cp, hCp, hup⟩ := exists_norm_polynomial_le p
   -- the approximant is nonzero
   have hp : p ≠ 0 := by

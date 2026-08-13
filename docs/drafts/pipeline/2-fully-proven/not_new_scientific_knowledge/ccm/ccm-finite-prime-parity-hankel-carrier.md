@@ -74,7 +74,7 @@ used, by form-core density.
 
 ## Exact finite-prime carrier
 
-Away from the prime-power atoms, `ccm-screw-kernel-positivity-improving-breakdown.md` proves
+Away from the prime-power atoms, `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm/ccm-screw-kernel-positivity-improving-breakdown.md` proves
 
 ```text
 K_reg(t)=e^(t/2)-e^(-5t/2)/(1-e^(-2t)),   t>0.         (6)
@@ -263,7 +263,7 @@ finite-prime boundary Hankel inequality `(14)`.
 ## Lean status
 
 **Superseded, 2026-08-03.**  The "no screw distribution" premise of the previous decision is now
-false.  `ccm-screw-kernel-positivity-improving-breakdown.md` built, unconditionally:
+false.  `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm/ccm-screw-kernel-positivity-improving-breakdown.md` built, unconditionally:
 
 - `RHTower/SuzukiExplicitScrewRegularKernel.lean` — Suzuki's explicit screw function `screwFn`,
   the hinge sum `screwPrimeSum` with its off-atom local affineness, the archimedean Lerch tail, and
@@ -327,7 +327,7 @@ All statements are unconditional: `#print axioms` returns only
 Not formalizable at this card's level: the passage from a kernel that is a genuine distribution
 (Suzuki's `-g''`, whose Toeplitz part is singular on the diagonal) to the closed parity forms.  The
 card itself only claims this "by form-core density"; the Lean statements above are the exact
-integrable-kernel content, and `ccm-screw-kernel-positivity-improving-breakdown.md` supplies the
+integrable-kernel content, and `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm/ccm-screw-kernel-positivity-improving-breakdown.md` supplies the
 distributional identification `-∫ g φ'' = ∫ K φ` on atom-free intervals.
 
 ## Gates

@@ -1551,3 +1551,13 @@ the averaging mechanism; frame axiom (P3) sharpened to the two-sided channel bou
 patterns.  All capstones axiom-clean; module build green; card promoted to `3-formalized/` with
 Fejér's exact extremal value and f.g.-abelian residual finiteness recorded as cited-classical
 inputs per the card's own disclaimers.
+
+## Session 2026-08-13 addition (inverse-theory graph witness)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-INV-5 Thm B | The non-Ramanujan independence witness: the prism `C₁₆ × K₂` with certified 3-regularity, exact mean-zero cosine Rayleigh data, the `50 > 49` margin, operator symmetry, the Laplacian square identity with its equality analysis, an adjacency eigenvalue strictly inside `(2√(d−1), d)`, the Perron pair, and the bundled capstone | `RHTower.InverseTheoryGraphWitness` |
+
+Card promoted to `3-formalized/` with Theorems A/C/D recorded as cited-classical /
+in-tree-cited / synthesis per the card's own claim boundaries.  Third promotion of
+2026-08-13.

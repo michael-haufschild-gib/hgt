@@ -1,19 +1,19 @@
 import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.Analysis.InnerProductSpace.Projection.Basic
 import Mathlib.Analysis.SpecialFunctions.Exponential
 import Mathlib.Analysis.Calculus.Deriv.Mul
 import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.Order.Lattice.Nat
+import GaloisForLFunctions.HTGeometry.ConstraintRelativity.BipartiteMatrixDecomposition
 
 /-!
 # Resource-filtered relation rank, recurrence, and tidal acceleration
 
-This module formalizes the algebraic rank floor, its attained generic value, the exact recurrence
-obstruction to a monotone continuous observable, and the initial normal acceleration of an
-operator-exponential orbit.  These are the dependency-closed parts of the
-resource-filtered-relation card that do not depend on the still-missing real-analytic zero-set
-measure theorem or bipartite matrix cross-fibre infrastructure.
+This module formalizes resource rank, recurrence obstruction, exact normal acceleration, and the
+finite bipartite tidal classifier.  Determinantal typicality and aggregate tomography are developed
+below independently so their heavier analytic and Casimir dependencies remain isolated.
 -/
 
 namespace HTGeometry.ConstraintRelativity
@@ -178,6 +178,24 @@ section Tidal
 
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℝ H] [CompleteSpace H]
 
+/-- Reporter tidal form: squared normal component of the infinitesimal generator. -/
+noncomputable def reporterTidalForm (L : Submodule ℝ H) [L.HasOrthogonalProjection]
+    (A : H →L[ℝ] H) (x : H) : ℝ := ‖Lᗮ.starProjection (A x)‖ ^ 2
+
+theorem reporterTidalForm_nonneg (L : Submodule ℝ H) [L.HasOrthogonalProjection]
+    (A : H →L[ℝ] H) (x : H) : 0 ≤ reporterTidalForm L A x := by
+  exact sq_nonneg _
+
+/-- Tidal form vanishes exactly when the generator is tangent to the reporter sector. -/
+theorem reporterTidalForm_eq_zero_iff (L : Submodule ℝ H) [L.HasOrthogonalProjection]
+    (A : H →L[ℝ] H) (x : H) : reporterTidalForm L A x = 0 ↔ A x ∈ L := by
+  rw [reporterTidalForm, sq_eq_zero_iff, norm_eq_zero]
+  rw [Submodule.starProjection_orthogonal]
+  change A x - L.starProjection (A x) = 0 ↔ A x ∈ L
+  rw [sub_eq_zero]
+  exact ⟨fun h => Submodule.starProjection_eq_self_iff.mp h.symm,
+    fun h => (Submodule.starProjection_eq_self_iff.mpr h).symm⟩
+
 /-- The bounded-generator orbit `e^{tA}x`. -/
 noncomputable def operatorOrbit (A : H →L[ℝ] H) (x : H) (t : ℝ) : H :=
   NormedSpace.exp (t • A) x
@@ -235,6 +253,14 @@ theorem normalAcceleration (L : Submodule ℝ H) [L.HasOrthogonalProjection]
 /-- Intrinsic skew-adjointness condition for a bounded real Hilbert-space generator. -/
 def IsSkewAdjointGenerator (A : H →L[ℝ] H) : Prop :=
   ∀ u v, inner ℝ (A u) v = -inner ℝ u (A v)
+
+/-- Every bounded operator has a canonical skew-adjoint part. -/
+theorem isSkewAdjointGenerator_sub_adjoint (A : H →L[ℝ] H) :
+    IsSkewAdjointGenerator (A - A.adjoint) := by
+  intro u v
+  simp only [sub_apply, inner_sub_left, inner_sub_right]
+  rw [ContinuousLinearMap.adjoint_inner_left, ContinuousLinearMap.adjoint_inner_right]
+  ring
 
 /-- A bounded skew-adjoint generator preserves squared norm along its exponential orbit. -/
 theorem operatorOrbit_norm_sq_eq (A : H →L[ℝ] H) (hA : IsSkewAdjointGenerator A)

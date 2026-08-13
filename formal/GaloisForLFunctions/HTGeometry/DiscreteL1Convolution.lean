@@ -307,3 +307,12 @@ theorem discreteConv_neumannSeries_delta_add {r : G → ℂ}
   exact discreteConv_delta_add_neumannSeries hr
 
 end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+/-- Mass is translation invariant. -/
+theorem discreteMass_comp_sub {G : Type*} [AddCommGroup G] (s : G → ENNReal) (ρ : G) :
+    discreteMass (fun ν => s (ν - ρ)) = discreteMass s :=
+  (Equiv.subRight ρ).tsum_eq s
+
+end GaloisForLFunctions.HTGeometry

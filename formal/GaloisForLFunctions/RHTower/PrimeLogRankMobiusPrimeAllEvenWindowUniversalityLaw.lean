@@ -96,7 +96,7 @@ Möbius distortion, exact Steinhaus `2k`-moment diagonal, full reciprocal-prime 
 deterministic finite-window survival, with the long-window average converging to the exact random
 moment. -/
 theorem primeLogRank_mobiusDistortion_primeAllEvenWindow
-    (N k : ℕ) (hN : 2 ≤ N) (hk : k ≠ 0) (T : ℝ) (hT : 0 < T) :
+    (N k : ℕ) (hk : k ≠ 0) (T : ℝ) (hT : 0 < T) :
     LinearIndependent ℤ
         (fun p : ((N + 1).primesBelow : Finset ℕ) => Real.log (p : ℕ)) ∧
       1 + 4 * ((Nat.primeCounting' (N + 1) : ℝ) / (N : ℝ)) ≤
@@ -187,7 +187,7 @@ theorem primeLogRank_mobiusDistortion_primeAllEvenWindow
     have hlower := neg_le_of_abs_le herrorShifted
     rw [hrandom] at hlower
     linarith
-  have hpacket := primeLogRank_and_mobiusPhaseDistortion N hN
+  have hpacket := primeLogRank_and_mobiusPhaseDistortion N
   have hbohr :=
     tendsto_evenMoment_average_steinhaus
       (primeEvenMomentCoeff k) P hpositive k

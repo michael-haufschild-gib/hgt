@@ -1,7 +1,7 @@
 # Suzuki's Wiener carrier is nuclear in position but loses the physical log measure
 
 - **ID:** `suzuki-wiener-nuclear-boundary-carrier`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** SOURCE-SPECIFIC FUNCTION-SPACE UPGRADE / SHARP MEASURE OBSTRUCTION
 - **Scientific status:** `[PROVED HERE] [NEW SCIENTIFIC KNOWLEDGE]`
   `[NOVELTY UNVERIFIED] [NOT RH]`
@@ -382,3 +382,33 @@ high part.  This is the exact analytic implication used to reject the old sequen
 - [ ] apply physical-tail coercivity to trace-zero completed state
 - [ ] prove corona no-return and raw Evans injectivity
 - [ ] RH
+
+### The nuclear theorem, the unitary chart, and the sharp obstruction are all formal
+
+`RHTower/SuzukiWienerNuclearBoundaryCarrier.lean`, on top of the Wiener stack
+(`HTGeometry/DiscreteL1Convolution.lean`, `RHTower/SuzukiWienerNeumannMajorant.lean`,
+`RHTower/SuzukiWienerMixedNormCarrier.lean`) and mathlib's `L²` Fourier isometry:
+
+- `tsum_eLpNorm_wienerSingleRoot_le` — **`(1)`–`(3)`**: the valuation sum of `L²` norms of the
+  Neumann-inverse single-root carrier is at most `(L₀ - (C+M))⁻¹ ‖B‖₂` — the exact constant, via
+  `discreteConv_single_atom` (a one-atom source reads the kernel at the shifted coefficient),
+  the frequency-independent Neumann coefficient bound, translation invariance of the kernel mass,
+  and the exact arithmetic `wienerInverseMass_eq`
+  (`L₀⁻¹(1-(C+M)/L₀)⁻¹ = (L₀-(C+M))⁻¹`).
+- `tsum_eLpNorm_wienerTwoRoot_le` — **`(4)`**: two oriented roots pay the inverse margin once
+  each.  The word expansion behind both is the stack's `enorm_discreteConvPow_le` — exactly the
+  card's `(8)`–`(9)` majorant with `∑_ν (μ^{⋆k})_ν = (C+M)^k` an equality
+  (`discreteMass_discreteEConvPow`), and the grade/coordinate interchange is Tonelli in `ℝ≥0∞`.
+- `integral_sq_fullLogChart` — **`(13)`–`(14)`**: the half weight `e^{-L/2}` makes `r = e^{-L}`
+  an `L²` isometry of the whole positive axis onto `L²(dL)` — the unitarily weighted oriented
+  boundary-log chart.  With the norm-preserving steps (Plancherel `Lp.fourierTransformₗᵢ`,
+  translation) this gives `(12)`–`(17)`'s norm chain; the `ℓ¹(L²) ⊂ L²(ℓ¹) ⊂ L²(ℓ²)` inclusions
+  are the stack's `summable`/`norm_tsum` layer.
+- `lintegral_div_highBandPosition_eq_top` — **`(17b)`**: the unit frequency band at any height
+  `Ξ` has an inverse transform that is continuous (`continuous_highBandPosition`) with value one
+  at the origin (`highBandPosition_zero`), so its squared modulus against `dr/r` diverges on
+  `(0, ε)`.  **The free-standing high-tail `dr/r` upgrade is false**, exactly as the card
+  states; only the coupled boundary-moment lock (already formal in
+  `SuzukiPhysicalLogBoundaryMomentLock.lean`) can supply the physical measure.
+
+All audit to `[propext, Classical.choice, Quot.sound]`; umbrella wired.

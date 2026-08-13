@@ -1,4 +1,5 @@
 import GaloisForLFunctions.QuantumAlg.Util.MatrixExpInvolution
+import GaloisForLFunctions.HTGeometry.ConstraintRelativity.BipartiteMatrixDecomposition
 import Mathlib.Analysis.Matrix.Normed
 import Mathlib.LinearAlgebra.Matrix.Kronecker
 import Mathlib.Tactic.NoncommRing
@@ -84,6 +85,21 @@ abbrev TwoQubitMatrix := Matrix (Fin 2 × Fin 2) (Fin 2 × Fin 2) ℂ
 def pauliX : QubitMatrix := !![0, 1; 1, 0]
 def pauliY : QubitMatrix := !![0, -Complex.I; Complex.I, 0]
 def pauliZ : QubitMatrix := !![1, 0; 0, -1]
+
+@[simp] theorem pauliX_trace : pauliX.trace = 0 := by
+  norm_num [pauliX, Matrix.trace, Fin.sum_univ_two]
+
+@[simp] theorem pauliY_trace : pauliY.trace = 0 := by
+  norm_num [pauliY, Matrix.trace, Fin.sum_univ_two]
+
+@[simp] theorem pauliZ_trace : pauliZ.trace = 0 := by
+  norm_num [pauliZ, Matrix.trace, Fin.sum_univ_two]
+
+/-- The oriented interaction term is invisible to both boundary partial traces. -/
+theorem pauliY_kronecker_pauliZ_mem_cross :
+    Matrix.kronecker pauliY pauliZ ∈
+      matrixCrossFibre (m := Fin 2) (n := Fin 2) := by
+  exact kronecker_mem_matrixCrossFibre pauliY_trace pauliZ_trace
 
 attribute [local instance] Matrix.linftyOpNormedRing Matrix.linftyOpNormedAlgebra
 

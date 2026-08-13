@@ -141,7 +141,7 @@ theorem eulerQuadrantLaplace_eq {z w : ℝ} (hz : 0 < z) (hw : 0 < w) (hzw : w -
     rw [integral_segment_exp hzw]
     rw [exp_neg_mul_log_eq_rpow hprime z ((k : ℝ) + 1),
       exp_neg_mul_log_eq_rpow hprime w ((k : ℝ) + 1),
-      pow_rpow_neg_eq hprime z k, pow_rpow_neg_eq hprime w k]
+      pow_rpow_neg_eq z k, pow_rpow_neg_eq w k]
     have hk : ((k : ℝ) + 1) ≠ 0 := by positivity
     field_simp
   rw [tsum_congr hterm, tsum_div_const, (hzsum.sub hwsum).tsum_eq]

@@ -114,11 +114,6 @@ theorem xiThermalNode_pos (q : XiZeroCopy) : 0 < xiThermalNode q := by
         Complex.normSq ((q.1 : ℂ) - ((1 / 2 : ℝ) : ℂ)) ^ 2 by ring]
   exact div_pos hnum hden'
 
-/-- Backward-compatible RH-specialized form of unconditional thermal-node positivity. -/
-theorem xiThermalNode_pos_of_rh (_hRH : RiemannHypothesis) (q : XiZeroCopy) :
-    0 < xiThermalNode q :=
-  xiThermalNode_pos q
-
 /-- Under RH the real thermal node recovers the full complex reciprocal-square coordinate. -/
 theorem xiThermalNode_complex_of_rh (hRH : RiemannHypothesis) (q : XiZeroCopy) :
     (xiThermalNode q : ℂ) = xiZeroCopyReciprocalSquare q := by
@@ -744,12 +739,6 @@ theorem sequenceTraceHankelNonnegative_xiThermalPositiveMoment :
     (fun N => finiteKMSWightmanMomentSequence_finiteThermalKrylov
       (finiteKMSWightmanMomentSequence_xiThermalTruncation N))
     tendsto_xiThermalTruncation_positiveMoment
-
-/-- Backward-compatible RH-specialized form of unconditional finite KMS realizability. -/
-theorem finiteKMSWightmanMomentSequence_xiThermalTruncation_of_rh
-    (_hRH : RiemannHypothesis) (N : ℕ) :
-    FiniteKMSWightmanMomentSequence (xiThermalTruncation N) :=
-  finiteKMSWightmanMomentSequence_xiThermalTruncation N
 
 /-- Pointwise convergence of the unconditional finite KMS tower to the complete prime--Gamma
 moment tower is equivalent to RH. -/

@@ -495,3 +495,47 @@ the parabolic condition already formal (`parabolicSphereSignature_of_pole_orders
 `parabolic_triple_classification` and `hyperbolic_signature_gap`), §3 of the proof is complete:
 late weights quantize, the pole orders sum to `2ℓ`, and the resulting signature is one of the six
 Euclidean ones.
+
+## Lean progress — every deck fixed field is identified, uniformization-free
+
+The "parabolic-orbifold uniformization" half of the open gate is now discharged for every
+signature, in the same uniformization-free differential-deck model that closed the cusp branch.
+Three new modules (wired into `GaloisForLFunctions.HTGeometry`, all
+`[propext, Classical.choice, Quot.sound]`):
+
+    RootOfUnityScalingFixedField.lean
+      mem_differentialAdjoin_pow_of_rootOfUnity_invariant
+      setOf_rootOfUnityScaling_invariant… :
+        **the invariant field of a scaling by a root of unity of exact order n on the free
+        rank-one differential field is C⟨vⁿ⟩** — the rotation layer of every parabolic deck
+        group, by the rank-1 torus invariant theorem plus v′/v = (vⁿ)′/(n·vⁿ)
+
+    TranslationRotationDeckFixedField.lean
+      mem_derivativeField_of_translation_invariant     unit translation ⟹ membership in C⟨u′⟩
+      setOf_translation_rotation_invariant_eq_differentialAdjoin_derivPow :
+        **the deck fixed field of a compact signature is exactly C⟨(u′)ⁿ⟩**, n ∈ {2,3,4,6} the
+        rotation order — translations collapse to the velocity field by the additive torsor
+        theorem, the rotation then scales the free velocity generator
+      setOf_forall_fixed_eq_differentialAdjoin_derivPow :
+        the same for ANY family of deck maps containing the two generators — the complete tail
+        of an affine deck tower of any depth profile
+
+    DihedralInversionFixedField.lean
+      inversionAutomorphism, inversionAutomorphism_logDeriv    w ↦ w⁻¹ negates the current
+      setOf_scaling_inversion_invariant_eq_differentialAdjoin_sqCurrent :
+        **the dihedral (2,2,∞) deck fixed field is exactly C⟨(w′/w)²⟩**
+      setOf_forall_fixed_eq_differentialAdjoin_sqCurrent       the tower form
+
+With `iInter_powAdjoin_eq_logDerivField` (the cusp) and the six transported-current identities
+(`ChebyshevQuadraticCurrent`, `EuclideanOrbifoldCurrents`), the "finite-holonomy invariant
+Maurer–Cartan field" of every parabolic signature is now a computed object: `C⟨(u′)ⁿ⟩` on the
+cover, equal to the rational current downstairs by the proved identities.  No uniformization
+theorem enters: translations use the scalar additive torsor, rotations the rank-one torus
+invariant theory, and the inversion the free palette equivalence.
+
+What remains of the gate is the complete-tail identification *in the protocol presentation* for
+the compact signatures: exhibiting the elliptic phase fields concretely (the elliptic-curve
+column of the nonautonomous isogeny-tail card) so that the phase-tail equals these deck fixed
+fields through the depthwise deck identity, as already done for the `G_m` and torus columns.
+Mathlib now carries the analytic Weierstrass `℘` (`Mathlib.Analysis.SpecialFunctions.Elliptic.
+Weierstrass`), which supplies the uniformizing witness for that presentation.

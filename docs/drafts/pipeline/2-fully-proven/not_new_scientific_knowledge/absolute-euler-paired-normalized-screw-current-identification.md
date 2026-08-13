@@ -6,7 +6,7 @@
 - **Scientific status:** `[PROVED HERE] [BRIDGE] [NOT AN RH PROOF]`
 - **Parents:**
   `absolute-euler-paired-cumulative-critical-error-current-law.md`,
-  `ccm-screw-kernel-positivity-improving-breakdown.md`, and
+  `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm/ccm-screw-kernel-positivity-improving-breakdown.md`, and
   `formal/GaloisForLFunctions/RHTower/CCMCriticalMellinCompletedError.lean`, and
   `formal/GaloisForLFunctions/RHTower/XiShiftPrimeExposure.lean`
 - **Statement:** On the complete rational damped-sine core, the compensated digamma form and the
@@ -164,7 +164,7 @@ Using `(9)`, the regular part of `J_Xi_screw'` is
 ```
 
 The right side of `(20)` is exactly the regular kernel `K_reg` computed from Suzuki's screw
-function in `ccm-screw-kernel-positivity-improving-breakdown.md`.  Hence
+function in `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm/ccm-screw-kernel-positivity-improving-breakdown.md`.  Hence
 
 ```text
 J_Xi_screw'
@@ -307,7 +307,7 @@ content is instead the classical integrability and exact current normalization i
   integration-by-parts provider used by the parent current card.
 - `XiShiftPrimeExposure.lean` proves the exact even-shift rational/filtered-prime value relation
   identified with `(23)--(25)`.
-- `ccm-screw-kernel-positivity-improving-breakdown.md` derives `(20)` from Masatoshi Suzuki,
+- `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm/ccm-screw-kernel-positivity-improving-breakdown.md` derives `(20)` from Masatoshi Suzuki,
   *Weil's quadratic form via the screw function*, arXiv:2606.09096.
 - Suzuki's framework turns the distributional Weil quadratic into restricted self-adjoint
   operators and continuous screw kernels; it does not assert their cofinal positivity without RH.

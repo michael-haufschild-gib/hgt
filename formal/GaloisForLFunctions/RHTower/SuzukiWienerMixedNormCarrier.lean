@@ -22,20 +22,21 @@ namespace GaloisForLFunctions.RHTower
 open MeasureTheory GaloisForLFunctions.HTGeometry
 open scoped ENNReal
 
-variable {G : Type*}
+variable {G : Type*} {μ : Measure ℝ}
 
 /-- **The weighted two-term `L²` bound**: an a.e. domination by two scaled amplitudes bounds the
 `L²` norm by the scaled `L²` norms. -/
 theorem eLpNorm_le_two_kernel {f a b : ℝ → ℂ} {ka kb : ℝ≥0∞}
-    (ha : AEStronglyMeasurable a volume) (hb : AEStronglyMeasurable b volume)
+    (ha : AEStronglyMeasurable a μ) (hb : AEStronglyMeasurable b μ)
     (hka : ka ≠ ⊤) (hkb : kb ≠ ⊤)
-    (hdom : ∀ᵐ ξ ∂volume, ‖f ξ‖ₑ ≤ ka * ‖a ξ‖ₑ + kb * ‖b ξ‖ₑ) :
-    eLpNorm f 2 volume ≤ ka * eLpNorm a 2 volume + kb * eLpNorm b 2 volume := by
+    (hdom : ∀ᵐ ξ ∂μ, ‖f ξ‖ₑ ≤ ka * ‖a ξ‖ₑ + kb * ‖b ξ‖ₑ) :
+    eLpNorm f 2 μ ≤ ka * eLpNorm a 2 μ + kb * eLpNorm b 2 μ := by
   have h2 : ((2 : ℝ≥0∞)).toReal = (2 : ℝ) := by norm_num
   rw [eLpNorm_eq_lintegral_rpow_enorm_toReal (by norm_num) (by norm_num),
     eLpNorm_eq_lintegral_rpow_enorm_toReal (by norm_num) (by norm_num),
     eLpNorm_eq_lintegral_rpow_enorm_toReal (by norm_num) (by norm_num), h2]
-  have hmono : (∫⁻ ξ, ‖f ξ‖ₑ ^ (2 : ℝ)) ≤ ∫⁻ ξ, (ka * ‖a ξ‖ₑ + kb * ‖b ξ‖ₑ) ^ (2 : ℝ) := by
+  have hmono : (∫⁻ ξ, ‖f ξ‖ₑ ^ (2 : ℝ) ∂μ)
+      ≤ ∫⁻ ξ, (ka * ‖a ξ‖ₑ + kb * ‖b ξ‖ₑ) ^ (2 : ℝ) ∂μ := by
     refine lintegral_mono_ae ?_
     filter_upwards [hdom] with ξ hξ
     exact ENNReal.rpow_le_rpow hξ (by norm_num)
@@ -44,9 +45,9 @@ theorem eLpNorm_le_two_kernel {f a b : ℝ → ℂ} {ka kb : ℝ≥0∞}
     (f := fun ξ => ka * ‖a ξ‖ₑ) (g := fun ξ => kb * ‖b ξ‖ₑ)
     (ha.enorm.const_mul ka) (hb.enorm.const_mul kb) (by norm_num : (1 : ℝ) ≤ 2)
   refine le_trans hmink ?_
-  have hpull : ∀ (k : ℝ≥0∞) (g : ℝ → ℂ), AEMeasurable (fun ξ => ‖g ξ‖ₑ) volume → k ≠ ⊤ →
-      (∫⁻ ξ, (k * ‖g ξ‖ₑ) ^ (2 : ℝ)) ^ ((1 : ℝ) / 2)
-        = k * (∫⁻ ξ, ‖g ξ‖ₑ ^ (2 : ℝ)) ^ ((1 : ℝ) / 2) := by
+  have hpull : ∀ (k : ℝ≥0∞) (g : ℝ → ℂ), AEMeasurable (fun ξ => ‖g ξ‖ₑ) μ → k ≠ ⊤ →
+      (∫⁻ ξ, (k * ‖g ξ‖ₑ) ^ (2 : ℝ) ∂μ) ^ ((1 : ℝ) / 2)
+        = k * (∫⁻ ξ, ‖g ξ‖ₑ ^ (2 : ℝ) ∂μ) ^ ((1 : ℝ) / 2) := by
     intro k g hg hk
     have h1 : ∀ ξ, (k * ‖g ξ‖ₑ) ^ (2 : ℝ) = k ^ (2 : ℝ) * ‖g ξ‖ₑ ^ (2 : ℝ) := fun ξ =>
       ENNReal.mul_rpow_of_nonneg _ _ (by norm_num)
@@ -62,18 +63,18 @@ theorem eLpNorm_le_two_kernel {f a b : ℝ → ℂ} {ka kb : ℝ≥0∞}
 /-- **The `ℓ¹(L²)` mixed-norm bound** — the card's `(21)`: summing the coordinatewise bound over
 the lattice pays the kernel masses once. -/
 theorem tsum_eLpNorm_le_twoKernel {chat : G → ℝ → ℂ} {Bm Bp : ℝ → ℂ} {Km Kp : G → ℝ≥0∞}
-    (hBm : AEStronglyMeasurable Bm volume) (hBp : AEStronglyMeasurable Bp volume)
+    (hBm : AEStronglyMeasurable Bm μ) (hBp : AEStronglyMeasurable Bp μ)
     (hKm : discreteMass Km ≠ ⊤) (hKp : discreteMass Kp ≠ ⊤)
-    (hdom : ∀ ν, ∀ᵐ ξ ∂volume, ‖chat ν ξ‖ₑ ≤ Km ν * ‖Bm ξ‖ₑ + Kp ν * ‖Bp ξ‖ₑ) :
-    (∑' ν, eLpNorm (chat ν) 2 volume)
-      ≤ discreteMass Km * eLpNorm Bm 2 volume + discreteMass Kp * eLpNorm Bp 2 volume := by
-  calc ∑' ν, eLpNorm (chat ν) 2 volume
-      ≤ ∑' ν, (Km ν * eLpNorm Bm 2 volume + Kp ν * eLpNorm Bp 2 volume) := by
+    (hdom : ∀ ν, ∀ᵐ ξ ∂μ, ‖chat ν ξ‖ₑ ≤ Km ν * ‖Bm ξ‖ₑ + Kp ν * ‖Bp ξ‖ₑ) :
+    (∑' ν, eLpNorm (chat ν) 2 μ)
+      ≤ discreteMass Km * eLpNorm Bm 2 μ + discreteMass Kp * eLpNorm Bp 2 μ := by
+  calc ∑' ν, eLpNorm (chat ν) 2 μ
+      ≤ ∑' ν, (Km ν * eLpNorm Bm 2 μ + Kp ν * eLpNorm Bp 2 μ) := by
         refine ENNReal.tsum_le_tsum fun ν => ?_
         exact eLpNorm_le_two_kernel hBm hBp
           (ne_top_of_le_ne_top hKm (le_discreteMass Km ν))
           (ne_top_of_le_ne_top hKp (le_discreteMass Kp ν)) (hdom ν)
-    _ = discreteMass Km * eLpNorm Bm 2 volume + discreteMass Kp * eLpNorm Bp 2 volume := by
+    _ = discreteMass Km * eLpNorm Bm 2 μ + discreteMass Kp * eLpNorm Bp 2 μ := by
         rw [ENNReal.tsum_add, ENNReal.tsum_mul_right, ENNReal.tsum_mul_right]
         rfl
 
@@ -125,5 +126,19 @@ theorem suzukiWienerTwoRootCarrier
     exact tsum_congr fun ν => Lp.norm_def (chat ν)
   rw [h1]
   exact ENNReal.toReal_mono hfin htot
+
+/-- **Bounded componentwise operators preserve the legal `ℓ¹` evaluation** — the card's `(26)`:
+`∑_ν ‖A c_ν‖ ≤ ‖A‖ ∑_ν ‖c_ν‖`, so the physical cutoff, the Carleman and logistic cross blocks,
+and every bounded prime-coordinate operation keep the carrier in `ℓ¹(L²)`. -/
+theorem summable_tsum_norm_clm_comp {c : G → Lp ℂ 2 (volume : Measure ℝ)}
+    (A : Lp ℂ 2 (volume : Measure ℝ) →L[ℂ] Lp ℂ 2 (volume : Measure ℝ))
+    (hc : Summable fun ν => ‖c ν‖) :
+    (Summable fun ν => ‖A (c ν)‖)
+      ∧ (∑' ν, ‖A (c ν)‖) ≤ ‖A‖ * ∑' ν, ‖c ν‖ := by
+  have hle : ∀ ν, ‖A (c ν)‖ ≤ ‖A‖ * ‖c ν‖ := fun ν => A.le_opNorm (c ν)
+  have hgs : Summable fun ν => ‖A‖ * ‖c ν‖ := hc.mul_left _
+  have hfs : Summable fun ν => ‖A (c ν)‖ :=
+    Summable.of_nonneg_of_le (fun ν => norm_nonneg _) hle hgs
+  exact ⟨hfs, le_trans (hfs.tsum_mono hgs hle) (le_of_eq tsum_mul_left)⟩
 
 end GaloisForLFunctions.RHTower

@@ -76,7 +76,7 @@ Steinhaus fourth-moment convolution diagonal, reciprocal-prime mass in that rand
 moment, and the same mass in every positive symmetric deterministic fourth-moment window after
 subtracting only the explicit convolution sinc-collision energy. -/
 theorem primeLogRank_mobiusDistortion_primeQuarterFourthWindow
-    (N : ℕ) (hN : 2 ≤ N) (T : ℝ) (hT : 0 < T) :
+    (N : ℕ) (T : ℝ) (hT : 0 < T) :
     LinearIndependent ℤ
         (fun p : ((N + 1).primesBelow : Finset ℕ) => Real.log (p : ℕ)) ∧
       1 + 4 * ((Nat.primeCounting' (N + 1) : ℝ) / (N : ℝ)) ≤
@@ -123,7 +123,7 @@ theorem primeLogRank_mobiusDistortion_primeQuarterFourthWindow
       primeQuarterCoeff primeQuarterCoeff P P hpositive hpositive
       (P := P) (δ := 1) (m := 2) two_ne_zero zero_le_one
       hsupport hvalue T hT
-  have hpacket := primeLogRank_and_mobiusPhaseDistortion N hN
+  have hpacket := primeLogRank_and_mobiusPhaseDistortion N
   exact ⟨hpacket.1, hpacket.2, by simpa only [P, one_pow, one_mul] using hwindow⟩
 
 end

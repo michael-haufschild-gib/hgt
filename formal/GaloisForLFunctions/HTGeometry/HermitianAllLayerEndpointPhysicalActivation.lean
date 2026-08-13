@@ -425,7 +425,6 @@ theorem
     (attachment : Matrix I I ℂ)
     (hattachmentHermitian : attachment.IsHermitian)
     (observer : J → Matrix I I ℂ)
-    (_hobserverHermitian : ∀ q, (observer q).IsHermitian)
     (a g b : J → I)
     (hag : ∀ q, a q ≠ g q)
     (hgb : ∀ q, g q ≠ b q)
@@ -637,7 +636,6 @@ theorem
     (attachment : Matrix I I ℂ)
     (hattachmentHermitian : attachment.IsHermitian)
     (observer : J → Matrix I I ℂ)
-    (hobserverHermitian : ∀ q, (observer q).IsHermitian)
     (a g b : J → I)
     (hag : ∀ q, a q ≠ g q)
     (hgb : ∀ q, g q ≠ b q)
@@ -704,7 +702,7 @@ theorem
     exists_eventually_allLayerCrossSesquilinearProbes_ne_zero_of_isHermitian
       energy hmax anchor layer hlayer
       attachment hattachmentHermitian
-      observer hobserverHermitian
+      observer
       a g b hag hgb hattachment hobserver
   refine ⟨n, branch, hinj, hbranchAnalytic,
     hbranchBase, hbranchRoot, ?_⟩

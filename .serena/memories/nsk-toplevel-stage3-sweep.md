@@ -14,6 +14,33 @@ wire umbrellas.
 - gibbs-diagonal-entropy-response-no-go — 2026-08-13, module build + audit clean.
 - route-e-deninger-vacuum-finite-dilation-fracture — 2026-08-13, both modules rebuilt, all
   section claims re-audited clean.
+- mass-shifted-projective-low-edge-anchor-cofinal-spread — 2026-08-13, sections 8–9 formalized
+  (XiShiftedProjectiveAdjacentMeanResetBarrier.lean + Favard), 13 theorems audit clean.
+- hedenmalm-finite-source-port-obstruction — 2026-08-13,
+  XiHedenmalmFiniteSourcePortObstruction.lean, audit clean.
+- hedenmalm-root-flux-modular-charge-faithfulness — 2026-08-13,
+  HedenmalmRootFluxModularChargeFaithfulness.lean (energy positivity via interior continuity +
+  root ODE; faithful law; full neutrality equivalence), audit clean.
+- rank-two-commutator-parity-multiplicity-balance — 2026-08-13,
+  RankTwoCommutatorParityMultiplicityBalance.lean (abstract balance + floor simplicity + gap
+  current + literal truncated model on EuclideanSpace), 9 theorems audit clean.
+- route-r-reciprocal-log-fisher-half-density-entrance-wall — 2026-08-13,
+  RouteRReciprocalLogFisherEntranceWall.lean + new reusable
+  Sieve/PrimeLogPowerTail.lean (∑ₚ 1/(p logˢp) < ∞ ∀ s>0 via BrunTitchmarsh Chebyshev BigO),
+  8 theorems audit clean. Open producer (15) unchanged.
+
+## Reusable lessons this sweep (also for lean-elaboration-traps)
+- New WithLp structure API: EuclideanSpace elements build via `WithLp.toLp 2 fun i => ...`,
+  read via application `x i` (PiLp app simp lemmas: PiLp.add_apply etc.), extensionality `ext i`
+  (PiLp.ext). Raw Pi lambdas in toFun no longer typecheck.
+- v4.32 renames hit: div_le_div_iff → div_le_div_iff₀; push_neg deprecated → `push Not`;
+  Real.summable_one_div_nat_rpow (iff, needs full Mathlib import — PNTPlus cone lacks it);
+  Nat.Primes.not_summable_one_div; isLittleO_log_rpow_rpow_atTop (log^r =o x^s, s>0);
+  tendsto_inv_nhdsGT_zero; summable_of_isBigO (cofinite, general index) /
+  summable_of_isBigO_nat (atTop); memℓp_gen_iff (0 < p.toReal); Nat.lt_ceil.
+- degree_sub_lt / Monic.add_of_left need explicit `have hd : ... .degree = ... .degree`
+  ascriptions — inline `by rw` args mis-elaborate with metavariable q.
+- linear_combination fails across `set` bindings (atoms differ); avoid set in ring-normal goals.
 
 ## New infrastructure built this sweep
 - HTGeometry/FavardJacobiMomentRealization.lean — constructive Favard: favardPoly, favardMoment,
@@ -90,6 +117,27 @@ wire umbrellas.
   Order of attack if attempted: paley-wiener first (everything depends on it).
 - hedenmalm-finite-source-port-obstruction, hedenmalm-root-flux-modular-charge-faithfulness —
   "exact Lean theorem and axiom/lint gates" open; check what exact statements need.
+
+## Active card: route-e-whole-anchor-capacity-displacement-conservation-law (task 8)
+Finite core done in RHTower/MobiusWholeAnchorCapacityDisplacement.lean (reservoir band, E3
+packet, powerset mass = Euler product `wholeAnchor_fullReservoirMass_eq_eulerProduct`,
+row-stochastic (4)/(9)). Remaining plan:
+1. NEW Sieve/AlmostPrimeGlobalCount.lean:
+   - primePiCount N := ((range (N+1)).filter Prime).card; ∃C ∀N≥2 effective Chebyshev from
+     BrunTitchmarsh.card_range_filter_prime_isBigO (finite small-N max absorb).
+   - E_k sets: (Icc 1 N).filter (Squarefree ∧ primeFactors.card = k), k = 2, 3.
+   - minFac decomposition: squarefree ω=k ⇒ minFac^k ≤ m; m ↦ (minFac, m/minFac) into
+     biUnion over {p prime : p*p*p ≤ N} (avoids real cube roots; ∑ 1/p ≤ mertensS N);
+     coprime split via Nat.Coprime.primeFactors_mul; card_biUnion_le.
+   - Mertens upper: mertensS N ≤ Sieve.logLog N + K, K := meisselMertensConst +
+     (2*mertensFirstConst + 1/2)/Real.log 2, from abs_mertensS_sub_logLog_sub_const_le.
+   - E₂(N) ≤ C N (logLog N + K)/log N; E₃(N) ≤ C' N (logLog N + K)²/log N (∃C ∀N≥2 form,
+     small N crude count ≤ N; log(N/p ℕdiv) lower bound via p³ ≤ N ⇒ N/p ≥ N^{2/3}).
+2. Extend/sibling module for the card: terminal universe def (⋃_{R ⊆ band} t_R·E₃ ∩ [cX,CX]),
+   (11) per-t window count from E₃ bound, (12) ≤ ∑_powerset 1/t_R · bound = Euler product ·
+   bound, (13) ∏_{W<p≤Z}(1+1/p) ≤ (log Z/log W)·e^{K'} via log(1+u)≤u + sharp Mertens both
+   ends, (14)/(2) assembly, (3) o(1) corollary, (5)/(6) specialization.
+3. Wire, audit, promote card.
 
 ## Working discipline reminders
 - 6 concurrent peer sessions in this repo; check mtimes/git status before touching any module.

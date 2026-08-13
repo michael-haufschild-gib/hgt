@@ -33,9 +33,9 @@ theorem pos_of_mem_nearOneWindow {t : ℝ} (ht : t ∈ nearOneWindow) : 0 < t :=
   have := ht.1
   linarith
 
-/-- **Spectral localization near the identity.**  A self-adjoint operator within `1/2` of the
-identity has real spectrum inside the window. -/
-theorem spectrum_subset_nearOneWindow {A : N →L[ℂ] N} (_hA : IsSelfAdjoint A)
+/-- **Spectral localization near the identity.**  An operator within `1/2` of the identity has
+real spectrum inside the window. -/
+theorem spectrum_subset_nearOneWindow {A : N →L[ℂ] N}
     (hnorm : ‖A - 1‖ ≤ 1 / 2) : spectrum ℝ A ⊆ nearOneWindow := by
   intro t ht
   have hmapone : (algebraMap ℝ (N →L[ℂ] N)) 1 = 1 := map_one _
@@ -68,7 +68,7 @@ theorem isSelfAdjoint_invSqrtNearOne (A : N →L[ℂ] N) :
 theorem invSqrtNearOne_mul_mul {A : N →L[ℂ] N} (hA : IsSelfAdjoint A)
     (hnorm : ‖A - 1‖ ≤ 1 / 2) :
     invSqrtNearOne A * A * invSqrtNearOne A = 1 := by
-  have hspec := spectrum_subset_nearOneWindow hA hnorm
+  have hspec := spectrum_subset_nearOneWindow hnorm
   have hcont : ContinuousOn (fun t : ℝ => t ^ (-(1 : ℝ) / 2)) (spectrum ℝ A) :=
     continuousOn_invSqrtFun.mono hspec
   have hid : ContinuousOn (fun t : ℝ => t) (spectrum ℝ A) := continuousOn_id
@@ -107,7 +107,7 @@ theorem tendsto_invSqrtNearOne {ι : Type*} {l : Filter ι} {A : ι → N →L[�
   have hcontOn := continuousOn_cfc (𝕜 := ℝ) (N →L[ℂ] N) isCompact_nearOneWindow
     (fun t : ℝ => t ^ (-(1 : ℝ) / 2)) continuousOn_invSqrtFun
   have hmem : ∀ i, A i ∈ {a : N →L[ℂ] N | IsSelfAdjoint a ∧ spectrum ℝ a ⊆ nearOneWindow} :=
-    fun i => ⟨hsa i, spectrum_subset_nearOneWindow (hsa i) (hnorm i)⟩
+    fun i => ⟨hsa i, spectrum_subset_nearOneWindow (hnorm i)⟩
   have hsa1 : IsSelfAdjoint (1 : N →L[ℂ] N) := star_one _
   have hspec1 : spectrum ℝ (1 : N →L[ℂ] N) ⊆ nearOneWindow := by
     rw [spectrum.one_eq]

@@ -108,7 +108,7 @@ theorem sourceFunctional_eq_sqrt_mass_mul_pinnedMean
 
 /-- Exact quantile image of the universal integer-translation anomaly. -/
 theorem quantileTransform_integerAnomaly_eq_primeBoundaryDisplacement
-    {n : ℕ} (_hn : 0 < n) {t : ℝ} (ht : t ∈ Ioo (0 : ℝ) 1) :
+    {n : ℕ} {t : ℝ} (ht : t ∈ Ioo (0 : ℝ) 1) :
     quantileTransform thetaSource (integerAnomaly thetaSource n) t =
       Complex.I * thetaIntegerShiftScale n *
         (Real.sqrt thetaSource.mass : ℂ) *
@@ -153,7 +153,7 @@ theorem quantileTransform_thetaIntegerCovariantSourceInverse_eq_primePinned
   rw [quantileTransform_sub_apply,
     quantileTransform_const_mul_apply,
     quantileTransform_sourceInverse_eq_pinned thetaSource f ht,
-    quantileTransform_integerAnomaly_eq_primeBoundaryDisplacement hn ht,
+    quantileTransform_integerAnomaly_eq_primeBoundaryDisplacement ht,
     sourceFunctional_eq_sqrt_mass_mul_pinnedMean]
   rw [pinnedVolterraFun]
   have hsqrtSq : (Real.sqrt thetaSource.mass : ℂ) ^ 2 =

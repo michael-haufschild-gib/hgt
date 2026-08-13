@@ -105,6 +105,10 @@ set_option synthInstance.maxHeartbeats 1000000
 
 variable (m : ℕ) (p : Polynomial CascadeField) [Fact (Irreducible p)]
 
+instance charZero_topInt_quotient :
+    CharZero ((topInt m) ⧸ IsLocalRing.maximalIdeal (topInt m)) :=
+  charZero_residueField_topInt m
+
 /-! ## The closure is a finite torsion-free module -/
 
 theorem algebraMap_algCascadeInt_injective :
@@ -285,5 +289,57 @@ theorem valuation_algLaw_uDeriv_le_of_normalizedFactor
     (hclear Q) ?_ f
   exact not_mem_pow_aeval_derivative (maximalIdeal.isMaximal _)
     (topInt_maximalIdeal_ne_bot m) hgen hint hQ he
+
+end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+open GaloisForLFunctions Polynomial IsDedekindDomain IsDedekindDomain.HeightOneSpectrum
+open IsLocalRing WithZero UniqueFactorizationMonoid
+
+variable (m : ℕ) (p : Polynomial CascadeField) [Fact (Irreducible p)]
+
+/-- **The coordinate's exact weight at a place.**  At a place of Kummer–Dedekind multiplicity `e`
+over the degree at infinity, the coordinate `X_m` has valuation exactly `exp e`: the base
+uniformiser `1/X_m` picks up the full ramification index.  Together with the derivation drop this
+says differentiating in the coordinate costs exactly one coordinate degree at every place. -/
+theorem valuation_fx_at_place (Q : HeightOneSpectrum (algCascadeInt m p))
+    {e : ℕ} (he : emultiplicity Q.asIdeal
+      ((maximalIdeal (topInt m)).map (algebraMap (topInt m) (algCascadeInt m p)))
+      = (e : ℕ∞)) :
+    Q.valuation (AlgCascadeField p)
+      (algebraMap CascadeField (AlgCascadeField p) (fx m)) = exp (e : ℤ) := by
+  set u : topInt m := ⟨(fx m)⁻¹, inv_fx_mem_topInt m⟩ with hu
+  set w : algCascadeInt m p := algebraMap (topInt m) (algCascadeInt m p) u with hw
+  have hu0 : u ≠ 0 := by
+    intro h0
+    have : ((fx m)⁻¹ : CascadeField) = 0 := by
+      rw [← show (u : CascadeField) = (fx m)⁻¹ from rfl, h0]
+      rfl
+    exact inv_ne_zero (fx_ne_zero m) this
+  have hw0 : w ≠ 0 := by
+    intro h0
+    exact hu0 (algebraMap_algCascadeInt_injective m p (by rw [← hw, h0, map_zero]))
+  have hspan : (maximalIdeal (topInt m)).map (algebraMap (topInt m) (algCascadeInt m p))
+      = Ideal.span {w} := by
+    rw [topInt_maximalIdeal_eq_span, Ideal.map_span, Set.image_singleton]
+  rw [hspan] at he
+  have hmult : multiplicity Q.asIdeal (Ideal.span {w}) = e := by
+    obtain ⟨hdvd, hndvd⟩ := emultiplicity_eq_coe.mp he
+    exact multiplicity_eq_of_dvd_of_not_dvd hdvd hndvd
+  have hint : Q.intValuation w = exp (-(e : ℤ)) := by
+    rw [Q.intValuation_eq_exp_neg_multiplicity hw0, hmult]
+  have hfield : algebraMap (algCascadeInt m p) (AlgCascadeField p) w
+      = algebraMap CascadeField (AlgCascadeField p) (fx m)⁻¹ := by
+    rw [hw, ← IsScalarTower.algebraMap_apply,
+      IsScalarTower.algebraMap_apply (topInt m) CascadeField (AlgCascadeField p)]
+    rfl
+  have hval : Q.valuation (AlgCascadeField p)
+      (algebraMap CascadeField (AlgCascadeField p) (fx m)⁻¹) = exp (-(e : ℤ)) := by
+    rw [← hfield, valuation_of_algebraMap, hint]
+  rw [map_inv₀, Valuation.map_inv] at hval
+  have := congrArg (fun t : ℤᵐ⁰ => t⁻¹) hval
+  simp only [inv_inv] at this
+  rw [this, ← exp_neg, neg_neg]
 
 end GaloisForLFunctions.HTGeometry

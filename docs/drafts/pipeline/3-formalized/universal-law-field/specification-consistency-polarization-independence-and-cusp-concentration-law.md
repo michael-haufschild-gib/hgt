@@ -1,7 +1,7 @@
 # Specification consistency, polarization independence, and cusp concentration
 
 - **ID:** ULF-INV-5
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** METATHEOREM (paper) / CONSISTENCY + INDEPENDENCE FOR THE INVERSE-THEORY AXIOMS
 - **Source:** the charter's §5 gate (rigidity/consistency required); executed via the two
   calibration worlds
@@ -118,3 +118,64 @@ assembled inside the moment/majorant/block categories can substitute for it.
 - 2026-08-09 — created to discharge the charter's consistency/rigidity gate: consistency by the
   Castelnuovo model, independence of polarization by the non-Ramanujan witness, rigidity cited
   from the corpus's Deninger layer, difficulty concentrated in {N5, N7, N2} joint modeling.
+
+## Lean certification — Theorem B witness (2026-08-13)
+
+Module `RHTower/InverseTheoryGraphWitness.lean` (wired into `GaloisForLFunctions.RHTower`,
+build green, `#print axioms` on all capstones exactly `[propext, Classical.choice,
+Quot.sound]`).  The concrete non-Ramanujan structure demanded by Theorem B is certified
+hypothesis-free on the prism `C₁₆ × K₂` (3-regular, 32 vertices — a poorly expanding
+3-regular graph in the spirit of the card's two-block construction):
+
+| Clause | Lean name |
+|---|---|
+| the graph, symmetry/irreflexivity, neighbor triple | `prismAdj`, `prismRel_iff` |
+| 3-regularity | `prismAdj_degree` |
+| the mean-zero cosine vector and its exact Rayleigh data (`‖v‖² = 16`, `⟨Av,v⟩ = 16(2cos(π/8)+1)`) | `prismVec`, `prismNormSq_value`, `prismVec_mean_zero`, `prismEnergy_value`, `prism_rayleigh_witness` |
+| the Ramanujan margin `2√2 < 2cos(π/8)+1` (`50 > 49`) | `prism_margin` |
+| adjacency operator, symmetry, Laplacian square identity, `⟨Av,v⟩ ≤ 3⟨v,v⟩` | `prismOp`, `prismOp_isSymmetric`, `prism_laplacian_identity`, `prism_energy_le` |
+| edge-constancy ⟹ global constancy (explicit cycle+rung induction) | `prism_constant_of_edge_zero` |
+| **an eigenvalue `μ` with `2√(d−1) < μ < d`** | **`prism_nonRamanujan_eigenvalue`**, capstone `prism_graph_violates_ramanujan` |
+
+The discrete sampling sums reuse `HTGeometry.FiniteAmplifierFrame`'s root-of-unity
+averaging.  Remaining for stage 3: the Theorem B satisfaction packaging (N1–N6 graph-form
+clauses, with §3's vacuous-satisfaction caveat kept verbatim) and the recorded disposition
+of Theorem A (clause-by-clause discharge table of the classical Castelnuovo proof —
+citation-grade by the card's own "no clause requires new mathematics"), Theorem C (cited
+corpus theorem `riemannHypothesis_iff_xiWeilPolarization_nonneg`, in-tree), and Theorem D
+(synthesis).
+
+## Certification completion and per-theorem disposition (2026-08-13)
+
+**Theorem B — certified.**  Beyond the witness table above, the module now carries the
+Perron pair and the bundled independence capstone:
+
+| Clause | Lean name |
+|---|---|
+| `A𝟙 = 3𝟙` and `𝟙 ≠ 0` (N6's consumed pole, the Perron eigenvalue `d`) | `prismOp_onePE`, `onePE_ne_zero`, `prism_perron_eigenvalue` |
+| **the bundled independence witness** (symmetry + Perron `3` + 3-regularity + an eigenvalue in `(2√2, 3)`) | **`prism_independence_witness`** |
+
+`#print axioms` on all capstones: exactly `[propext, Classical.choice, Quot.sound]`.  The
+witness realizes the card's §3 statement: the graph-world axioms hold (N2/N5 vacuously in
+finite dimension — the card's recorded caveat stands verbatim; N3 is the spectral theorem
+for the certified symmetric operator; N6 is the certified Perron pair; N1/N4 in their graph
+forms) while the RH-conclusion fails through a certified eigenvalue strictly inside
+`(2√(d−1), d)`.  The meta-quantification "no theorem of the form N1–N6 ⟹ RH-grade
+positivity exists in any formulation transferring to graph analogues" is the standard
+model-theoretic reading of the witness, as the card states it.
+
+**Theorem A — cited-classical by design.**  The card's own proof text: "QED (by the cited
+classical proofs; no clause requires new mathematics — that is the point)."  The
+clause-by-clause discharge table is a reading of the classical Weil/Castelnuovo proof
+against the clause list; it remains a citation record (Hartshorne V.1.9–1.10, Milne), in
+the same certified-corpus precedent as Fejér's extremal value and de Bruijn–Erdős.
+
+**Theorem C — cited corpus theorem, in-tree.**  `riemannHypothesis_iff_xiWeilPolarization_nonneg`
+is Lean-closed in the corpus (`DeningerClosedGeneratorHodgeWeilPurityUniversalityLaw.lean`,
+`XiHurwitzOrientationEnergyConsumers.lean`); the card claims nothing new here.
+
+**Theorem D — exact synthesis of A–C** given the above; prose, no separate Lean gate.
+
+With Theorem B's full certification and A/C/D's recorded dispositions, the card's displayed
+surface is closed at its own declared precision.
+- 2026-08-13 — promoted: Theorem B's independence witness fully certified (RHTower/InverseTheoryGraphWitness.lean - prism C16xK2, 3-regularity, exact Rayleigh data by root-of-unity sampling, Ramanujan margin 50>49, symmetric operator, Laplacian equality analysis, eigenvalue strictly inside (2sqrt2, 3), Perron pair, bundled capstone prism_independence_witness, all axiom-clean); Theorems A/C/D recorded as cited-classical / in-tree-cited / synthesis per the card's own claims

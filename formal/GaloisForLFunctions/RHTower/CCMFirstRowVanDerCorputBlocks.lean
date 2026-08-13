@@ -64,7 +64,7 @@ theorem xiSpeedDeriv_eq {s t : ℝ} (hs1 : s ≤ 1) (ht : 1 < t) :
 of size `k^8`, so after squaring the far one is smaller by `k^{-2}`. -/
 private theorem window_polynomial_bounds {s k x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k)
     (hdpos : 0 < x ^ 2 - 1) (hd1 : 1 / 4 ≤ k ^ 2 * (x ^ 2 - 1)) (hd2 : k ^ 2 * (x ^ 2 - 1) ≤ 2)
-    (_hx1 : 1 ≤ x) (hxsq : x ^ 2 ≤ 3 / 2) :
+    (hxsq : x ^ 2 ≤ 3 / 2) :
     k ^ 6 * (x ^ 2 - 1) ^ 3 * (x ^ 2 - s) ≤ 12
       ∧ 1 / 128 ≤ k ^ 6 * (x ^ 2 - 1) ^ 3 * (x ^ 2 - s)
       ∧ 48 ≤ ((k * x) ^ 2 - 1) ^ 3 * ((k * x) ^ 2 - s) := by
@@ -156,7 +156,7 @@ theorem abs_xiDiffSecond_window_bounds {s k x : ℝ} (hs0 : 0 ≤ s) (hs1 : s �
   have hkx : (1 : ℝ) < k * x := by nlinarith
   have hkxsq : (0 : ℝ) < (k * x) ^ 2 - 1 := by nlinarith
   obtain ⟨hpoly1, hpoly2, hpoly3⟩ :=
-    window_polynomial_bounds hs0 hs1 hk hdpos hd1 hd2 hx.le hxsq
+    window_polynomial_bounds hs0 hs1 hk hdpos hd1 hd2 hxsq
   set P : ℝ := Real.sqrt (x ^ 2 - 1) with hPdef
   set Q : ℝ := Real.sqrt (x ^ 2 - s) with hQdef
   set R : ℝ := Real.sqrt ((k * x) ^ 2 - 1) with hRdef
@@ -432,7 +432,7 @@ theorem xiAmplitude_mul_eq {s k x : ℝ} (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) (hx 
 
 /-- The amplitude is bounded by `2 k^{-1/2}` from the window on: the two far factors contribute `k²`
 and the near ones a constant. -/
-theorem ampFourthRoot_le {s k x : ℝ} (_hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) (hx : 1 < x)
+theorem ampFourthRoot_le {s k x : ℝ} (hs1 : s ≤ 1 / 2) (hk : 2 ≤ k) (hx : 1 < x)
     (hlow : 1 / (4 * k ^ 2) ≤ x ^ 2 - 1) : ampFourthRoot s k x ≤ 2 / Real.sqrt k := by
   have hk0 : (0 : ℝ) < k := by linarith
   have hksq : (4 : ℝ) ≤ k ^ 2 := by nlinarith
@@ -1004,7 +1004,7 @@ theorem norm_integral_window_block_le {s c k a b : ℝ} (hs0 : 0 ≤ s) (hs1 : s
   refine hmain.trans ?_
   -- the amplitude at the left endpoint
   have hA : ampFourthRoot s k a ≤ 2 / Real.sqrt k :=
-    ampFourthRoot_le hs0 hs1 hk ha (hwin a Set.left_mem_uIcc).1
+    ampFourthRoot_le hs1 hk ha (hwin a Set.left_mem_uIcc).1
   have hks : (0 : ℝ) < Real.sqrt k := Real.sqrt_pos.mpr hk0
   have hlamsqrt : Real.sqrt lam = Real.sqrt c * Real.sqrt (k ^ 3) / 4 := by
     rw [hlamdef, Real.sqrt_div' _ (by norm_num : (0 : ℝ) ≤ 16), Real.sqrt_mul hc.le,
@@ -1095,7 +1095,7 @@ theorem norm_integral_outer_block_le {s c k a b : ℝ} (hs0 : 0 ≤ s) (hs1 : s 
     hg hg' hg''c hg'lb hg''nn
   refine hmain.trans ?_
   have hA : ampFourthRoot s k a ≤ 2 / Real.sqrt k := by
-    refine ampFourthRoot_le hs0 hs1 hk ha ?_
+    refine ampFourthRoot_le hs1 hk ha ?_
     have h := hout a Set.left_mem_uIcc
     have hstep : 1 / (4 * k ^ 2) ≤ 2 / k ^ 2 := by
       rw [div_le_div_iff₀ (by positivity) (by positivity)]

@@ -79,7 +79,7 @@ theorem not_isVerticallyNegligible_polyEval {q : Polynomial ℂ} (hq : q ≠ 0) 
 
 
 /-- **A nonzero polynomial is bounded below by a power of the height on every tube.** -/
-theorem exists_lower_bound_polyEval {M : ℝ} (_hM : 0 < M) {q : Polynomial ℂ} (hq : q ≠ 0) :
+theorem exists_lower_bound_polyEval {M : ℝ} {q : Polynomial ℂ} (hq : q ≠ 0) :
     ∃ c T : ℝ, 0 < c ∧ 2 ≤ T ∧ ∀ σ t : ℝ, 0 < σ → σ ≤ M → T ≤ t →
       c * t ^ q.natDegree ≤ ‖q.eval ((σ : ℂ) + (t : ℂ) * Complex.I)‖ := by
   obtain ⟨hlc, htube⟩ := hasShiftTubeDatum_poly (M := M) (lam := 0) hq
@@ -121,7 +121,7 @@ theorem hasTubePolyGrowth_ratEval (p : Polynomial ℂ) {q : Polynomial ℂ} (hq 
     HasTubePolyGrowth (fun z => p.eval z / q.eval z) := by
   intro M hM
   obtain ⟨m, C, T₁, hC, hT₁, hb⟩ := hasTubePolyGrowth_polyEval p M hM
-  obtain ⟨c, T₂, hc, hT₂, hlow⟩ := exists_lower_bound_polyEval hM hq
+  obtain ⟨c, T₂, hc, hT₂, hlow⟩ := exists_lower_bound_polyEval hq
   refine ⟨m, C / c, max T₁ T₂, by positivity, le_trans hT₁ (le_max_left _ _),
     fun σ t hσ hσM ht => ?_⟩
   have ht₁ : T₁ ≤ t := le_trans (le_max_left _ _) ht

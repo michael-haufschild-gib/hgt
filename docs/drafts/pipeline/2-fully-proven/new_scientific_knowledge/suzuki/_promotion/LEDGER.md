@@ -5517,3 +5517,90 @@ module into the umbrella.  Card + certificate moved.  The open residue is the ca
 Trap: `Nat.succ_mul_centralBinom_succ` is the exact recurrence for `(13b)`; after `field_simp;
 push_cast` the closing step is `linear_combination (-4 * (8:ℝ)^k) * hcast` (the residual is
 `4·8^k` times the recurrence; sign from field_simp's normalization).
+
+## FK. 87/103 — `suzuki-wiener-neumann-plancherel-order-repair` promoted
+
+The Wiener stack is built, closing all four named layers ("discrete convolution absolute-value
+domination, geometric ℓ¹ resolvent, mixed-norm Minkowski, coordinatewise Plancherel"):
+
+```text
+HTGeometry/DiscreteL1Convolution.lean            discrete conv on any additive group; ℝ≥0∞
+                                                 majorant layer (Young with EQUALITY, powers of
+                                                 mass M^k, Neumann kernel of mass (1-M)⁻¹); the
+                                                 alternating Neumann series IS a two-sided
+                                                 convolution inverse of δ₀ + r
+RHTower/SuzukiWienerNeumannMajorant.lean         (10)-(18) at the literal symbol structure,
+                                                 frequency-independent coefficient bound, exact
+                                                 inverse-kernel mass
+RHTower/SuzukiWienerMixedNormCarrier.lean        (19)-(24): weighted two-term L² bound, ℓ¹(L²)
+                                                 mixed norm, position carrier via MATHLIB'S NEW
+                                                 L² FOURIER ISOMETRY (Lp.fourierTransformₗᵢ —
+                                                 scalar Plancherel is now a lookup); (26)
+RHTower/SuzukiWienerOrderSwapCounterexample.lean (5)-(9): the explicit counterexample, capstone
+                                                 suzukiWiener_orderSwap_counterexample
+                                                 (divergence on positive measure)
+```
+
+All audit to `[propext, Classical.choice, Quot.sound]`; umbrellas wired; card + certificate
+moved; the mixed-norm gate ticked.
+
+**This stack unblocks `suzuki-exterior-residual-rigged-wiener-realization` and
+`suzuki-wiener-nuclear-boundary-carrier`**, whose Lean debt was exactly "valuation convolution,
+infinite Neumann series, scalar Plancherel".
+
+Traps: ℝ≥0∞ has no ContinuousMul — use `Measurable.pow_const`, never `Continuous.pow`, after
+`.enorm`; real tsum monotonicity is `Summable.tsum_mono`, the bare `tsum_le_tsum`/`le_tsum` are
+ENNReal-protected now; `push_neg` is deprecated (warning = lint failure) — use `push Not`;
+`Real.fourierInv_eq` (𝓕⁻ f w = ∫ 𝐞⟪v,w⟫ • f v) + `integral_add_right_eq_self` gives frequency
+translation without any modulation lemma; `HasCompactSupport.toSchwartzMap` + `ContDiffBump`
+manufactures band-limited Schwartz witnesses; the Fourier CLE is now typeclass-based
+(`FourierTransform.fourierEquiv ℂ 𝓢(ℝ,ℂ)`, injectivity via `LinearEquiv.map_eq_zero_iff`).
+
+## FL. 88/103 — `suzuki-wiener-nuclear-boundary-carrier` promoted
+
+`RHTower/SuzukiWienerNuclearBoundaryCarrier.lean` on top of FK's Wiener stack:
+
+```text
+discreteConv_single_atom               a one-atom source reads the kernel at the shift
+wienerInverseMass_eq                   L₀⁻¹(1-(C+M)/L₀)⁻¹ = (L₀-(C+M))⁻¹ (toReal transfer)
+tsum_eLpNorm_wienerSingleRoot_le       (3) with the EXACT constant (L₀-(C+M))⁻¹
+tsum_eLpNorm_wienerTwoRoot_le          (4): two roots pay the margin once each
+integral_sq_fullLogChart               (13)-(14): e^{-L/2} is the whole-ray L² isometry weight
+highBandPosition_zero / continuous_…   the far band's inverse transform is 1 at the origin
+lintegral_div_highBandPosition_eq_top  (17b): dr/r energy diverges — the free-standing
+                                       high-tail upgrade is FALSE, as the card states
+```
+
+All audit to `[propext, Classical.choice, Quot.sound]`; umbrella wired; card + certificate moved.
+The boundary-moment lock half was already formal (`SuzukiPhysicalLogBoundaryMomentLock.lean`).
+
+Traps: `integrable_indicator_iff` + `continuousOn_const.integrableOn_compact` replaces the
+IsFiniteMeasure-demanding `integrable_const.indicator`; `integral_indicator_const` needs the
+indicator's function written as `fun _ => c`, not `1`; near-zero rpow non-integrability is
+`intervalIntegral.integrableOn_Ioo_rpow_iff` (s = -1 fails); `𝓕⁻` continuity via
+`Real.fourierInv_eq_fourier_neg` + `VectorFourier.fourierIntegral_continuous`; un-beta-reduced
+congr goals still need `show` (twice this round).
+
+## FM. `suzuki-exterior-residual-rigged-wiener-realization` — section 2's analytic core built
+
+`HTGeometry/LogKernelExteriorL2.lean` (umbrella-wired, standard axioms):
+
+```text
+integral_inv_sub_kernel        ∫_{-a}^a dt/(x-t) = log((x+a)/(x-a)) for x > a — the exact
+                               off-support integral behind (6)
+abs_integral_kernel_le         |∫ u(t)/(x-t) dt| ≤ M log((x+a)/(x-a)) for bounded measurable u
+integrableOn_log_collar_sq     (7): ∫₀¹ log((r+c)/r)² dr < ∞, via log(1/r) ≤ 4 r^{-1/4}
+integrableOn_log_tail_sq       the long-range tail: log(1+c/(x-a)) ≤ c/(x-a), square
+                               integrable past the unit collar
+```
+
+Together these make the log-kernel image of a bounded compactly supported profile square
+integrable off the support — the card's (5)-(8) core for the logarithmic block; the translated
+and polar blocks are bounded with compact support and contribute trivially.
+
+Remaining for this card: (17) ‖q_a‖_∞ from the digamma vertical bound (the corpus already owns
+`re_digamma_vertical_bound_uncond` in `HTGeometry/DigammaAsymptotic` — a sup-norm assembly, not
+new analysis), (18) the t_a mass (the same prime-power weights as FJ's `suzukiWordMass`), the
+Hardy-amplitude qualification (B_± ∈ L² is Plancherel of the L² pieces — mathlib's isometry),
+and the (25) evaluation tie to the literal `suzukiRestrictedWeilForm`.  Sections 5's (20)-(24)
+are verbatim instances of FK/FL's stack.

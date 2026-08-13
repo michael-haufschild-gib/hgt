@@ -82,7 +82,6 @@ complete characterwise Fourier wall-crossing law. -/
 theorem countableTemporalPhase_completeFourierLaw
     {I : Type*} [Countable I]
     (omega : ℝ → I → ℝ)
-    (_hcomplete : HasCompleteCountableCharacterBirthProfiles omega)
     (r : ℕ) {τ : ℝ} (hτ : 0 < τ)
     (μ : ProbabilityMeasure (I → UnitAddCircle))
     (hμ :
@@ -244,9 +243,6 @@ theorem existsUnique_countableObserverTimeFourierValuationAtlas
     {τ : ℝ} (hτ : 0 < τ) :
     ∃! atlas : ℕ → ProbabilityMeasure (I → UnitAddCircle),
       IsCountableObserverTimeFourierValuationAtlas omega τ atlas := by
-  have hcomplete :=
-    hasCompleteCountableCharacterBirthProfiles_of_analytic
-      energy series henergy omega hreal
   let atlas : ℕ → ProbabilityMeasure (I → UnitAddCircle) :=
     fun r =>
       Classical.choose
@@ -268,7 +264,7 @@ theorem existsUnique_countableObserverTimeFourierValuationAtlas
     exact
       ⟨hatlasLimit r,
         countableTemporalPhase_completeFourierLaw
-          omega hcomplete r hτ (atlas r) (hatlasLimit r)⟩
+          omega r hτ (atlas r) (hatlasLimit r)⟩
   · intro other hother
     funext r
     exact tendsto_nhds_unique (hother r).1 (hatlasLimit r)
@@ -305,9 +301,6 @@ theorem existsUnique_completeCountableObserverTimeFourierValuationAtlas
           ProbabilityMeasure (I → UnitAddCircle),
       IsCompleteCountableObserverTimeFourierValuationAtlas
         omega atlas := by
-  have hcomplete :=
-    hasCompleteCountableCharacterBirthProfiles_of_analytic
-      energy series henergy omega hreal
   let atlas :
       ℕ → PositiveObservationPrefactor →
         ProbabilityMeasure (I → UnitAddCircle) :=
@@ -331,7 +324,7 @@ theorem existsUnique_completeCountableObserverTimeFourierValuationAtlas
     exact
       ⟨hatlasLimit r τ,
         countableTemporalPhase_completeFourierLaw
-          omega hcomplete r τ.2
+          omega r τ.2
           (atlas r τ) (hatlasLimit r τ)⟩
   · intro other hother
     funext r τ

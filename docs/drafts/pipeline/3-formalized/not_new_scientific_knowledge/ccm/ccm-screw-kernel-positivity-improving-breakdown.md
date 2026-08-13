@@ -1,7 +1,7 @@
 # Large-aperture CCM simplicity requires sign-indefinite spectral geometry
 
 - **ID:** `ccm-screw-kernel-positivity-improving-breakdown`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / NECESSITY THEOREM / `[BRIDGE]`
 - **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent source:** Masatoshi Suzuki, *Weil's quadratic form via the screw function*,

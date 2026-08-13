@@ -857,3 +857,56 @@ Plan: new module `NevanlinnaTransferMinimalType.lean`:
 2. increment identities for `nevAtruncC…nevDtruncC` (partial-sum one-step, definitional);
 3. scalar product bound `m_n(z) ≤ ∏(1+|z|c_j)` and the ε-tail split;
 4. `hasMinimalExponentialType_nevBinf` (+ A, C, D for free) via `tendsto_nev*truncC`.
+
+## M. RIESZ IS PROVED — BOTTLENECK 1 INTERFACE CLOSED `[PROVED]` (2026-08-13)
+
+Two new modules, both axiom-clean, both wired.
+
+### `HTGeometry/NevanlinnaTransferMinimalType.lean`
+
+- Increments `nev{A,B,C,D}truncC_succ` (one-step partial sums).
+- **Transfer identities** (the Duhamel comparisons at `(0, z)` — corpus `monicOrthoC_duhamel`,
+  `secondKindC_duhamel` did all the analytic work):
+  `p_n(z) = q_n(0)·D_n(z) − p_n(0)·B_n(z)`, `q_n(z) = q_n(0)·C_n(z) − p_n(0)·A_n(z)`,
+  plus the level-down versions (top cross terms cancel by rank-one antisymmetry).
+- `truncEntryMax_succ_le`: the four-entry maximum obeys `m_{n+1} ≤ m_n(1 + ‖z‖·c_{n+1})`,
+  `c_j = (h₀/h_j)(‖p_j(0)‖+‖q_j(0)‖)²` (`transferStepBound`); `truncEntryMax_le_prod`.
+- `summable_transferStepBound` from `BoundedKernel s 0` (generic
+  `summable_normSq_div_of_kernelRoot_le`).
+- `exists_prod_le_exp_of_summable`: the tail-split — for every `A > 0`,
+  `∏(1+r·c_j) ≤ C_A·exp(A r)` uniformly in length (tail sum ≤ A/2 via
+  `exists_forall_Ico_sum_le`; head via `1+rc ≤ (1+2Nc/A)(1+Ar/2N)` per factor).
+- **`nev{A,B,C,D}inf_hasMinimalExponentialType`** — M. Riesz's theorem, all four limiting
+  entries, unconditional under `PositiveMomentForm + BoundedKernel s 0`.
+
+### `HTGeometry/AnalyticNevanlinnaMaximalTranslationInputs.lean`
+
+- `analyticNevCarrierFamily_minimalExponentialType` (the `c = B` field).
+- **`analyticNevCarrierFamilyMaximalTranslationInputs`** — the COMPLETE
+  `MaximalTranslationInputs` term: minimal type (M. Riesz), no common zero, zero point,
+  regular point `i`, lower→upper Weyl map.  Nothing left open.
+- **`analyticNevCarrierFamily_maximalTranslationPhase_dense_residual`** (+ full-rank version) —
+  the ten-card capstone: the dense residual maximal-translation phase on every infinite closed
+  boundary face of the constructed family, under `PositiveMomentForm s`, `BoundedKernel s 0`,
+  `s 0 = 1` and nothing else.
+
+`KernelMinimalExponentialType` (kernel-root form) was NOT needed: the field only consumes the `B`
+entry.  The earlier "needs Hadamard" no-go stands corrected by the Simon transfer route.
+
+**Bottleneck 1 status**: interface fully closed.  Remaining for the ten moment-fibre cards is
+per-card assembly (each card's own statements on top of the capstone) and the optional leaf/label
+covariance polish.
+
+### Card 21 twist implementation note (2026-08-13)
+
+For the PSL₂(ℝ) normalization twist, mathlib supplies the `GL (Fin 2) K` Möbius action on
+`OnePoint K` (`Mathlib.Topology.Compactification.OnePoint.ProjectiveLine`: `instGLAction`,
+`smul_some_eq_ite`, `smul_infty_eq_ite`) with group laws free; its continuity is a mathlib TODO.
+Cheap route to continuity: on the finite chart the action IS a `NevanlinnaMatrixData ℝ`
+projective label — take `W_g` with `a := const g₁₀`, `b := const (−g₀₀)`, `c τ := g₁₀τ + g₁₁`,
+`d τ := −(g₀₀τ + g₀₁)` (pointwise det = det g = 1), so chart continuity is the corpus's
+`continuous_projectiveLabel`; only the point `∞` needs a direct coclosedCompact limit (two cases
+`g₁₀ = 0` / `≠ 0`).  Then the family twist `leaf' σ := leaf (g • σ)`, `matrix' = matrix·g`, fiber
+and label covariance by the `c'τ+d' = c(g₀₀τ+g₀₁) + d(g₁₀τ+g₁₁)` factorization, and the endpoint
+`(F.twist g).carrierProjector = F.carrierProjector` via
+`carrierProjector_eq_of_leaf_label_covariance` at `e := (g⁻¹ • ·)`.

@@ -363,6 +363,39 @@ theorem setOf_translation_rotation_invariant_eq_differentialAdjoin_derivPow
         rw [hpow, map_one, one_mul]
       exact scalingAutomorphism_fixes_differentialAdjoin hF (Units.ne_zero ζ) hyq hgen hfix hx
 
+set_option maxHeartbeats 800000 in
+/-- **The complete tail of any affine deck tower through the two generators.**  For a family of
+deck transformations that contains the unit translation and the order-`n` rotation and whose
+members all fix the current field pointwise, the common invariants are exactly the differential
+rational functions of `(q′)^n`.  A parabolic orbifold tower of any depth profile instantiates the
+family by its accumulated deck maps. -/
+theorem setOf_forall_fixed_eq_differentialAdjoin_derivPow
+    (hconst : ∀ c : F, c′ = 0) (hF : ∀ a : F, (algebraMap F T a)′ = 0)
+    {q : T} (hq : HypertranscendentalOver F q)
+    (hgen : differentialAdjoin F ({q} : Set T) = ⊤)
+    {ζ : Fˣ} {n : ℕ} (hn : 0 < n) (hord : orderOf ζ = n)
+    {ι : Type v} (σs : ι → (T ≃ₐ[F] T)) (i₀ i₁ : ι)
+    (h₀ : σs i₀ = scalarDifferentialTranslationEquiv q hq hgen 1)
+    (h₁ : σs i₁ = scalingAutomorphism hF (Units.ne_zero ζ)
+      ((hypertranscendentalOver_iff_differentialIndependent_singleton F q).mp hq) hgen)
+    (hfix : ∀ i : ι, ∀ z ∈ differentialAdjoin F ({q′ ^ n} : Set T), σs i z = z) :
+    {x : T | ∀ i : ι, σs i x = x}
+      = (differentialAdjoin F ({q′ ^ n} : Set T) : Set T) := by
+  ext x
+  constructor
+  · intro hx
+    have hxt : scalarDifferentialTranslationEquiv q hq hgen 1 x = x := by
+      rw [← h₀]
+      exact hx i₀
+    have hxρ : scalingAutomorphism hF (Units.ne_zero ζ)
+        ((hypertranscendentalOver_iff_differentialIndependent_singleton F q).mp hq) hgen x = x := by
+      rw [← h₁]
+      exact hx i₁
+    exact mem_differentialAdjoin_derivPow_of_translation_rotation_invariant hconst hF hq hgen
+      hn hord hxt hxρ
+  · intro hx i
+    exact hfix i x hx
+
 end
 
 end GaloisForLFunctions.HTGeometry

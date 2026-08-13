@@ -199,4 +199,90 @@ theorem lintegral_sq_tsum_swapFreqFamily :
   rw [← ENNReal.ofReal_tsum_of_nonneg (fun n => by positivity) hsummable]
   exact ENNReal.ofReal_lt_top
 
+/-! ## The position family diverges in `ℓ¹` on a set of positive measure -/
+
+open scoped RealInnerProductSpace
+
+/-- The position family: the coordinatewise inverse Fourier transform. -/
+def swapPositionFamily (n : ℕ) : ℝ → ℂ := 𝓕⁻ (swapFreqFamily n)
+
+/-- **Each position coordinate is a unimodular modulation of the fixed profile** — the card's
+`(8)`: frequency translation contributes only a phase, so the norm is the amplitude times the
+profile norm. -/
+theorem norm_swapPositionFamily (n : ℕ) (x : ℝ) :
+    ‖swapPositionFamily n x‖ = ((n : ℝ) + 1)⁻¹ * ‖swapPositionProfile x‖ := by
+  rw [swapPositionFamily, Real.fourierInv_eq]
+  have hshift : (∫ ξ, 𝐞 ⟪ξ, x⟫ • swapFreqFamily n ξ)
+      = ∫ η, 𝐞 ⟪η + (n : ℝ), x⟫ • swapFreqFamily n (η + n) :=
+    (integral_add_right_eq_self (fun ξ => 𝐞 ⟪ξ, x⟫ • swapFreqFamily n ξ) (n : ℝ)).symm
+  rw [hshift]
+  have hint : ∀ η : ℝ, 𝐞 ⟪η + (n : ℝ), x⟫ • swapFreqFamily n (η + n)
+      = ((𝐞 ⟪(n : ℝ), x⟫ : Circle) : ℂ)
+          * ((((n : ℝ) + 1)⁻¹ : ℝ) • (𝐞 ⟪η, x⟫ • swapFreqProfile η)) := by
+    intro η
+    rw [swapFreqFamily]
+    have hadd : ⟪η + (n : ℝ), x⟫ = ⟪η, x⟫ + ⟪(n : ℝ), x⟫ := inner_add_left _ _ _
+    rw [hadd, AddChar.map_add_eq_mul]
+    have harg : η + (n : ℝ) - n = η := by ring
+    rw [harg]
+    simp only [Circle.smul_def, Circle.coe_mul, Complex.real_smul]
+    ring
+  simp_rw [hint]
+  rw [integral_const_mul, norm_mul, Circle.norm_coe, one_mul, integral_smul, norm_smul]
+  congr 1
+  · rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+  · have hcoe : (swapPositionProfile : ℝ → ℂ) x = 𝓕⁻ (swapFreqProfile : ℝ → ℂ) x := by
+      rw [swapPositionProfile]
+      exact congrFun (SchwartzMap.fourierInv_coe swapFreqProfile) x
+    rw [hcoe, Real.fourierInv_eq]
+
+/-- **The pointwise `ℓ¹` divergence** — the card's `(9)`: wherever the profile does not vanish,
+the amplitudes sum to the harmonic series. -/
+theorem not_summable_norm_swapPositionFamily {x : ℝ}
+    (hx : swapPositionProfile x ≠ 0) :
+    ¬ Summable fun n : ℕ => ‖swapPositionFamily n x‖ := by
+  intro hsum
+  have hc : ‖swapPositionProfile x‖ ≠ 0 := norm_ne_zero_iff.mpr hx
+  have h1 : Summable fun n : ℕ => ((n : ℝ) + 1)⁻¹ * ‖swapPositionProfile x‖ :=
+    hsum.congr fun n => norm_swapPositionFamily n x
+  have h2 : Summable fun n : ℕ => ((n : ℝ) + 1)⁻¹ := by
+    have h3 := h1.mul_right (‖swapPositionProfile x‖⁻¹)
+    refine h3.congr fun n => ?_
+    rw [mul_assoc, mul_inv_cancel₀ hc, mul_one]
+  have h4 : Summable fun n : ℕ => 1 / ((n + 1 : ℕ) : ℝ) := by
+    refine h2.congr fun n => ?_
+    rw [one_div]
+    push_cast
+    ring
+  have h5 : Summable fun n : ℕ => 1 / (n : ℝ) := (summable_nat_add_iff 1).mp h4
+  exact Real.not_summable_one_div_natCast h5
+
+/-- The divergence set has positive measure. -/
+theorem measurePos_not_summable_swapPositionFamily :
+    0 < volume {x : ℝ | ¬ Summable fun n : ℕ => ‖swapPositionFamily n x‖} := by
+  obtain ⟨x₀, hx₀⟩ : ∃ x, swapPositionProfile x ≠ 0 := by
+    by_contra hall
+    push Not at hall
+    refine swapPositionProfile_ne_zero ?_
+    ext x
+    simpa using hall x
+  have hopen : IsOpen {x : ℝ | swapPositionProfile x ≠ 0} := by
+    have h1 : {x : ℝ | swapPositionProfile x ≠ 0}
+        = (swapPositionProfile : ℝ → ℂ) ⁻¹' ({0}ᶜ) := rfl
+    rw [h1]
+    exact (isOpen_compl_singleton).preimage (SchwartzMap.continuous _)
+  have hsub : {x : ℝ | swapPositionProfile x ≠ 0}
+      ⊆ {x : ℝ | ¬ Summable fun n : ℕ => ‖swapPositionFamily n x‖} :=
+    fun x hx => not_summable_norm_swapPositionFamily hx
+  exact lt_of_lt_of_le (hopen.measure_pos volume ⟨x₀, hx₀⟩) (measure_mono hsub)
+
+/-- **The explicit counterexample to the `L²(ℓ¹)` order swap**: a frequency family with finite
+`L²(ℓ¹)` mixed norm whose coordinatewise inverse Fourier transforms fail pointwise `ℓ¹`
+summability on a set of positive measure.  Frequency-side `L²(ℓ¹)` control does not transport to
+position space; only the `ℓ¹(L²)` order is legal. -/
+theorem suzukiWiener_orderSwap_counterexample :
+    (∫⁻ ξ, (∑' n : ℕ, ‖swapFreqFamily n ξ‖ₑ) ^ 2) < ⊤ ∧
+      0 < volume {x : ℝ | ¬ Summable fun n : ℕ => ‖𝓕⁻ (swapFreqFamily n) x‖} :=
+  ⟨lintegral_sq_tsum_swapFreqFamily, measurePos_not_summable_swapPositionFamily⟩
+
 end GaloisForLFunctions.RHTower

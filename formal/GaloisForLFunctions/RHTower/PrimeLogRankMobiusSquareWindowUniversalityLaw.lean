@@ -20,12 +20,12 @@ open SteinhausModel
 
 noncomputable section
 
-/-- **Prime-log rank/Möbius square-window universality law.**  Every cutoff `X ≥ 2` determines one
+/-- **Prime-log rank/Möbius square-window universality law.**  Every cutoff `X` determines one
 prime packet whose logarithms are integer-linearly independent, whose critical Möbius phase
 distortion is bounded below by rank per cutoff, and whose square-dilated Möbius realization
 simultaneously has exact Steinhaus diagonal and deterministic finite-window prime-mass survival. -/
 theorem primeLogRank_mobiusDistortion_sqrtQuarterSquareWindow
-    (N : ℕ) (hN : 2 ≤ N) (T : ℝ) (hT : 0 < T) :
+    (N : ℕ) (T : ℝ) (hT : 0 < T) :
     LinearIndependent ℤ
         (fun p : ((N + 1).primesBelow : Finset ℕ) => Real.log (p : ℕ)) ∧
       1 + 4 * ((Nat.primeCounting' (N + 1) : ℝ) / (N : ℝ)) ≤
@@ -43,7 +43,7 @@ theorem primeLogRank_mobiusDistortion_sqrtQuarterSquareWindow
             sqrtQuarterWindowCoeff (Finset.Icc 1 (N ^ 2)) T ≤
         (∫ t in (-T)..T,
           ‖dpoly sqrtQuarterWindowCoeff (Finset.Icc 1 (N ^ 2)) t‖ ^ 2) / (2 * T) := by
-  have hrank := primeLogRank_and_mobiusPhaseDistortion N hN
+  have hrank := primeLogRank_and_mobiusPhaseDistortion N
   have hwindow :=
     sqrtQuarterWindow_primeMass_randomExact_deterministicWindowLowerBound
       (N ^ 2) T hT

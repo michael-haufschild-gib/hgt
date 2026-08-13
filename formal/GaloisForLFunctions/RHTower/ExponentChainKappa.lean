@@ -81,7 +81,7 @@ theorem no_finite_kappa_suffices {kappa : ℝ} (h : 0 < kappa) : unitExponent ka
   ne_of_lt (unitExponent_lt_one h)
 
 /-- The gap to the hypothesis at exponent `κ` is exactly `1/κ`. -/
-theorem gap_to_hypothesis {kappa : ℝ} (_h : kappa ≠ 0) : 1 - unitExponent kappa = 1 / kappa := by
+theorem gap_to_hypothesis {kappa : ℝ} : 1 - unitExponent kappa = 1 / kappa := by
   unfold unitExponent; ring
 
 /-- At the Vinogradov–Korobov value the remaining gap is `2/3`, matching the earlier count. -/

@@ -363,7 +363,7 @@ theorem matrixSemicircleCovariancePowerSeries_diagonal_of_subsingletonColumns
 
 omit [DecidableEq K] in
 theorem matrixDysonResolventSeries_coordinate_eq
-    (A : K → Matrix I I ℂ) (_hA : ∀ k, (A k)ᴴ = A k)
+    (A : K → Matrix I I ℂ)
     (hmono : MatrixFamilyHasSubsingletonColumns A) (i : I) :
     matrixDysonResolventSeries A i i = 1 + PowerSeries.X ^ 2 *
       (∑ j : I, PowerSeries.C ((matrixFamilySquaredEntryWeight A i j : ℝ) : ℂ) *
@@ -506,7 +506,7 @@ theorem freeFockCoordinateMGF_dyson
     apply (hasSum_single 0 (fun n hn => ?_)).summable
     simp [PowerSeries.coeff_one, hn]
   have hEq := congrArg (fun f : PowerSeries ℂ ↦ f.absoluteEval u)
-    (matrixDysonResolventSeries_coordinate_eq A hA hmono i)
+    (matrixDysonResolventSeries_coordinate_eq A hmono i)
   rw [PowerSeries.absoluteEval_add hOne
       (((PowerSeries.X_absoluteSummableAt u).pow 2).mul hsum |>.mul (hR i)),
     show (1 : PowerSeries ℂ).absoluteEval u = 1 by

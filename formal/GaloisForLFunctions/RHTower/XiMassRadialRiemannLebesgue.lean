@@ -55,13 +55,13 @@ theorem xiMassRadialFrequency_inverse {a y : ℝ} (ha : 0 < a) (hy : a < y) :
 theorem xiMassRadialInverse_frequency {a x : ℝ} (ha : 0 < a) (hx : 0 < x) :
     xiMassRadialInverse a (xiMassRadialFrequency a x) = x := by
   rw [xiMassRadialInverse]
-  have hfreq := xiMassRadialFrequency_sq ha x
+  have hfreq := xiMassRadialFrequency_sq x
   rw [hfreq, show x ^ 2 + a ^ 2 - a ^ 2 = x ^ 2 by ring,
     Real.sqrt_sq hx.le]
 
 theorem xiMassRadialFrequency_gt_mass {a x : ℝ} (ha : 0 < a) (hx : 0 < x) :
     a < xiMassRadialFrequency a x := by
-  have hfreq := xiMassRadialFrequency_sq ha x
+  have hfreq := xiMassRadialFrequency_sq x
   have hnonneg : 0 ≤ xiMassRadialFrequency a x := Real.sqrt_nonneg _
   nlinarith [sq_pos_of_pos hx]
 
