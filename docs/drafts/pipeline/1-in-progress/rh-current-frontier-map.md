@@ -9322,6 +9322,57 @@ zeta self-recurrence is Bagchi's RH-equivalent strong recurrence, while Voronin 
 zero-target blind.  Existing source-horizontal, Gamma-six, Wold, and rank amplifiers create source
 blocks rather than new Xi divisor points.
 
+Umbrella-wired `XiHorizontalCollisionTwoPrimeCesaroCarrier.lean` now turns abstract collision
+charge into an explicit coefficient-faithful fixed-prime observable. For prime labels `2,3` and
+independent depths `a,b`, it retains local multiplicity and both line-reflection orientations:
+
+```text
+P_T(a,b)=sum_rho m_rho
+  [chi_2(rho)chi_2(1-conj rho)]^a
+  [chi_3(rho)chi_3(1-conj rho)]^b.
+```
+
+Each bracket is source phase `exp(i (2 Im rho) log p)`. Irrationality of `log 2/log 3` makes
+two-clock map globally injective on ordinates, so exact two-dimensional Cesaro orthogonality gives
+
+```text
+(1/N^2) sum_(a,b<N) |P_T(a,b)|^2 - sum_rho m_rho^2  -->  O(T).
+```
+
+Lean proves RH equivalent to vanishing of these centered limits, and proves RH from any eventual
+absolute upper bound `C_T<2`. Direct Lean, exact leaf build, and axiom audit pass; only `propext`,
+`Classical.choice`, and `Quot.sound` occur. This closes source-carrier construction, not producer:
+pencil remains indexed by Xi divisor. Missing theorem is pre-divisor prime--Gamma estimate forcing
+centered energy below two. Triangle/Cauchy bounds scale with total divisor mass, normalized
+`o(N(T))` bounds miss permanent reflected pair, and existing two-prime seam determinant/common-
+forcing machinery supplies no unconditional response equality.
+
+`XiHorizontalCollisionPrimeCayleyInformationLoss.lean` resolves that carrier's equivariance loss
+without changing coefficients. It adds one unit phase: Cayley transform of actual BV/Wold
+source-horizontal rate `2 Re(rho)-1`. Cayley depth zero is exactly previous `(2,3)` prime pencil;
+inside each fixed ordinate fibre, Cayley injectivity separates every distinct Xi point. Lean proves
+the iterated source-frame limits
+
+```text
+two-prime average at depth c
+  --> sum_gamma |sum_(Im rho=gamma) m_rho Cayley(rate_rho)^c|^2,
+Cayley-depth average
+  --> sum_rho m_rho^2.
+```
+
+Therefore reflection-quotient information loss converges exactly to
+
+```text
+sum_gamma H_gamma^2 - sum_rho m_rho^2 = O(T).
+```
+
+This is requested coefficient-faithful non-equivariant identification of both transports on same
+carrier: prime labels, divisor multiplicity, both reflection orientations, and signed horizontal
+rate survive before scalarization. RH is equivalent to zero loss, and eventual absolute loss below
+two implies RH. Direct Lean, exact leaf build, and axiom audit pass with only `propext`,
+`Classical.choice`, and `Quot.sound`. Remaining theorem is no longer carrier equality: derive a
+pre-divisor prime--Gamma contraction/trace law bounding this concrete quotient loss below two.
+
 Umbrella-wired `XiReflectionSelfIntersectionCharge.lean` removes accidental same-ordinate
 collisions from the endpoint. Its canonical charge is
 
@@ -9933,6 +9984,154 @@ These are the current research walls. More receiver equivalences, finite positiv
 renormalizations, topology changes, seed asymptotics, amplitude subcases, or generic source
 classification do not cross them.
 
+### Route P / five-shift seam: height-local critical-feature frame
+
+`HedenmalmCriticalFeatureHeightLocalFrame.lean` rejects shellwise Ward-cone aggregation at its
+exact phase-cancellation wall: componentwise Gamma control gives only an `O(|Xi|)` current bound,
+whereas zero exclusion needs `O(|Xi|^2)`. The successful pivot uses real-centered Hedenmalm
+critical features, whose evaluations do not inherit Xi cancellation. Lean proves the exact energy
+
+```text
+|ell_z(k_t)|^2 =
+  4 / ((1+(Re z-t)^2-(Im z)^2)^2 + (2(Re z-t)Im z)^2).
+```
+
+For nearest integer `t=round(Re z)` and every `|Im z|<1/2`, this is at least `64/25`. After
+functional-equation pairing and forced inverse-square transverse normalization, every strict-right
+Xi multiplicity copy therefore carries at least
+
+```text
+(64/25)*(1/81)=64/2025
+```
+
+in one member of a fixed countable critical-feature family, uniformly in height and aperture. This
+removes height escape and reporter degeneration from the singular five-shift landing problem.
+Remaining obstruction is source-trace realization of inverse-square Green normalization: existing
+boundary rigidity forbids a bounded continuous diagonal-vanishing coefficient, so next producer
+must retain an unbounded tangent/Green graph or an intrinsically discontinuous index channel.
+
+### Route P / Ward seam: transverse Green weight is inverse Euclidean defect
+
+`HedenmalmWardDefectTransverseGreenSource.lean` supplies the source origin missing from P-G148.
+The Euclidean energy hidden by same-fibre Ward cancellation obeys, on every Xi copy,
+
+```text
+WardEnergy(q) = 2 Im(z_q)^2 WardMass(q)^2.
+```
+
+Define the transverse Green weight before mentioning spectral displacement:
+
+```text
+G_W(q) = 2 WardMass(q)^2 / WardEnergy(q).
+```
+
+Strict positivity of Ward mass and totalized inversion give the unconditional exact identity
+
+```text
+G_W(q) = Im(z_q)^(-2).
+```
+
+Its kernel is exactly the critical line; off the kernel it satisfies the inverse-graph law
+`G_W WardEnergy = 2 WardMass^2`. Replacing P-G148's inserted inverse square by `G_W` reproduces
+the singular critical-feature current coefficient-for-coefficient, so every strict-right copy
+retains nearest-integer charge at least `64/2025`.
+
+This identifies a higher universal principle behind P-G123--P-G148: signed Ward conservation
+creates a positive Euclidean defect, and the RH-bearing separator lives on that defect's unbounded
+Green inverse graph. Source origin and kernel are now closed. Remaining Route-P theorem is an
+arithmetic trace ceiling for this Ward--Green graph in the height-local feature frame; bounded
+scalar replacement is impossible because it destroys the inverse law.
+
+### Route P / Ward seam: singular Green graph has legal fixed-feature trace
+
+`HedenmalmWardGreenCriticalFeatureTrace.lean` proves P-G149's unbounded inverse graph is compatible
+with absolute divisor summation. For every reflection mode `1<=k<=5` and `|a|<=1/2`, the exact
+amplitude identity and mean-value estimate give
+
+```text
+exp(2ka)+exp(-2ka)-2 = 4 sinh(ka)^2,
+a^(-2)(exp(2ka)+exp(-2ka)-2) <= 4 k^2 cosh(5/2)^2.
+```
+
+Dropping the two negative five-shift legs produces one explicit finite constant `C_W` bounding
+every normalized Krein scalar. The Ward--Green feature current then factors as
+
+```text
+current_t(q)=renormalizedKreinDefect(q)*|ell_q(k_t)|^2,
+0<=current_t(q)<=C_W |ell_q(k_t)|^2.
+```
+
+The critical feature is a sum of two square-summable Cauchy tests, so `current_t` is absolutely
+summable for every fixed real center `t`. Its evaluation never vanishes, while the scalar defect
+vanishes exactly on the critical line. Lean therefore proves the exact global criterion
+
+```text
+sum_q current_t(q)=0  <->  RH
+```
+
+for every `t`. Singular normalization, source origin, kernel, height-independent scalar control,
+and trace-classness are now closed simultaneously. Remaining obstruction is arithmetic evaluation
+of this concrete Hermitian trace. Existing four-term prime--Gamma formulas evaluate holomorphic
+Weil polarization; the live producer must supply same-copy Hermitian source trace or a source
+inequality comparing it to that prime--Gamma value.
+
+### Route P / Ward seam: complete Plancherel is exact reconstruction, not producer
+
+`HedenmalmCriticalFeatureWardGreenPlancherelFracture.lean` tests the strongest obvious completion
+of P-G150: integrate over every real critical-feature center. General source Plancherel already
+existed in the corpus, so the new content is the exact critical-feature Hermitian--holomorphic
+fracture. For every `z` in the critical strip, Lean proves
+
+```text
+integral_t |ell_z(k_t)|^2 = 2 pi/(1-Im(z)^2),
+integral_t ell_z(k_t)^2   = 2 pi,
+HermitianExcess(z)        = 2 pi Im(z)^2/(1-Im(z)^2).
+```
+
+Off the Ward kernel, multiplication by `G_W(z)=Im(z)^(-2)` reconstructs the whole Hermitian mass.
+On the kernel, Hermitian mass remains `2 pi`, while both excess and totalized Green reconstruction
+vanish. Thus Green inversion does not manufacture an arithmetic same-copy trace: it unsuppresses
+exactly the nonholomorphic fracture that holomorphic prime--Gamma polarization cannot see.
+
+The full-frame integral of one P-G150 copy is nevertheless exact:
+
+```text
+integral_t current_t(q)
+  = renormalizedKreinDefect(q) * 2 pi/(1-Im(z_q)^2).
+```
+
+Every strict-right multiplicity copy deposits at least `2 pi/81`, but complete-frame averaging
+erases height and its arithmetic phase. Continuous positive-frame completion is therefore retired
+as Route P's producer. Next conjecture must retain signed source phase before Hermitianization or
+use a genuinely bivariate source coupling whose diagonal limit remains prime--Gamma evaluable.
+
+### Route P / Ward seam: Green singularity is one critical-line spectral atom
+
+`HedenmalmWardGreenRemovableExtensionKernelProjection.lean` identifies the exact obstruction left
+by P-G148--P-G151. The inverse-square coefficient is not analytically singular: every exponential
+pair has a canonical continuous `sinh(x)/x` extension, and the five-shift scalar inherits a
+continuous removable extension. Lean proves the totalized scalar identity
+
+~~~
+WardGreenScalar(a)
+  = RemovableScalar(a) - jumpConstant * 1_{a=0},
+jumpConstant >= 1/81.
+~~~
+
+After multiplication by critical-feature energy and absolute Xi summation, no remainder appears:
+
+~~~
+WardGreenTrace(t)
+  = RemovableTrace(t)
+    - jumpConstant * CriticalLineFeatureEnergyTrace(t).
+~~~
+
+The critical-line trace equals full Hermitian energy exactly iff RH. Thus the discontinuity,
+Plancherel information loss, and missing same-copy arithmetic trace are one phenomenon: totalized
+Green inversion subtracts a positive spectral projector supported precisely on the transverse
+kernel. More scalar regularization is retired. Remaining producer must recover this projector by a
+source boundary value/residue/index, or cancel it before scalarization in a signed source identity.
+
 ### Route U update: completed radial Christoffel energy has only top-edge flux
 
 `XiShiftedCanonicalAdmissionCharacteristicApexChristoffelEnergy.lean` reinterprets the three
@@ -10004,3 +10203,227 @@ can reset the local orientation. Route U needs a source-specific global projecti
 law, cumulative pole-crossing budget, or equivalent cofinal boundary winding control. More local
 contact transversality or generic interlacing repeats already-formal information and cannot close
 RH.
+
+### Route U update: characteristic projective flow reverses between contacts and infinity
+
+`XiShiftedCanonicalAdmissionCharacteristicApexProjectivePhaseReversal.lean` closes the adjacent-
+degree Riccati law exactly. With `A_n=P_n(y,1/y)` and `R_n=A_n/A_(n+1)`, umbrella-formal Lean proves
+the denominator-free Wronskian identity and, in every nonvanishing chart,
+
+```text
+R_n' = -2n + ((2n+1)/y-(2n-1)alpha_n)R_n
+             -2(n+1)beta_(n+1)R_n^2.
+```
+
+Fixed-degree shifted-Chebyshev recession then gives
+
+```text
+R_n(w^2)/w^2 -> 4,
+R_n'(w^2) -> 4,
+eventually R_n'(w^2)>0.
+```
+
+This is opposite to the previously formalized contact law `R_n'=-2n<0`. Lean also proves that the
+scaled Riccati discriminant tends to `2n+9/4` and is eventually positive, so the projective
+quadratic is genuinely asymptotically indefinite. Global decreasing-ratio and positivity-only
+phase arguments are therefore false for the literal shifted-Xi source, not merely blocked by
+missing estimates.
+
+Direct Lean and targeted `lake build` pass (`12013/12013`); all 13 theorem audits use only
+`[propext, Classical.choice, Quot.sound]`; forbidden-declaration scan is clean. Revised Route-U
+wall: construct a pole-free signed projective action that measures forward-to-backward sector
+transitions and compare its accumulated charge with the existing hyperbolic reset/arithmetic
+budget. Mere pole compactification cannot restore monotonicity; its signed angular velocity must
+be quantified.
+
+### Route U update: compact projective angular velocity reverses without poles
+
+`XiShiftedCanonicalAdmissionCharacteristicApexCompactAngularPhaseReversal.lean` performs the pole
+compactification rather than merely proposing it. Define
+
+```text
+Omega_n=(A_(n+1)A_n'-A_n A_(n+1)')/(A_n^2+A_(n+1)^2).
+```
+
+Finite shifted-Xi positivity and adjacent no-common-root make the denominator strictly positive.
+Umbrella-formal Lean proves the exact axis laws
+
+```text
+A_n=0       -> Omega_n=-2n<0,
+A_(n+1)=0   -> Omega_n=-2(n+1)beta_(n+1)<0,
+```
+
+and, off the denominator axis, `Omega_n=R_n'/(1+R_n^2)`. Far-right recession gives the opposite
+orientation:
+
+```text
+w^4 Omega_n(w^2) -> 1/4,
+eventually Omega_n(w^2)>0.
+```
+
+Thus poles are not the source of the reversal: the continuous compact projective line itself has
+backward velocity at both coordinate axes and forward velocity at infinity. Any successful phase
+argument must use signed variation, winding cancellation, or transition charge; no monotone lift
+exists for the literal local velocity.
+
+Direct Lean and targeted build pass (`12014/12014`); all eight theorem audits use only
+`[propext, Classical.choice, Quot.sound]`; forbidden scan is clean. Next exact wall is no longer
+definition of a pole-free phase. It is quantitative: force and count sector transitions under the
+false-RH nodal/contact cascade, then compare their signed variation with the already-formal
+hyperbolic reset and arithmetic-surplus budget.
+
+### Route U update: degree renewal has an exact projective-curvature source
+
+`XiShiftedCanonicalAdmissionCharacteristicApexProjectiveWronskianRenewal.lean` connects the
+pole-free angular law to degree transfer. For
+
+```text
+W_n=A_(n+1)A_n'-A_nA_(n+1)',
+```
+
+umbrella-formal Lean first proves the literal shifted-Xi apex recurrence
+
+```text
+A_(n+2)=(y^(-1)-alpha_(n+1))A_(n+1)-beta_(n+1)A_n,
+```
+
+then differentiates it inside the positive chamber to obtain
+
+```text
+W_(n+1)=beta_(n+1)W_n
+        +beta_(n+1)'A_nA_(n+1)
+        +(y^(-2)+alpha_(n+1)')A_(n+1)^2.
+```
+
+This law is homogeneous and remains defined at both projective axes. It proves that positive
+Jacobi-edge transport is not the whole degree evolution: a signed coefficient-motion curvature
+source controls every possible orientation change. Therefore neither raw edge positivity nor
+compactification can produce an all-degree monotone phase. Existing arithmetic and hyperbolic
+reset actions must control the cumulative signed source, not merely the individual `W_n`.
+
+Direct Lean and targeted build pass (`12027/12027`); both public theorem audits use only
+`[propext, Classical.choice, Quot.sound]`; forbidden scan is clean. No numerical computation enters
+the proof. Revised open core: identify the curvature source with, or dominate its signed cumulative
+action by, the literal strict-frontier arithmetic source. No false-RH contact count has yet been
+proved, so inferring projective-axis crossings from false RH remains invalid.
+
+### Route U update: arcsine vacuum is projectively flat
+
+`XiShiftedCanonicalAdmissionCharacteristicApexProjectiveVacuumCurvatureCancellation.lean`
+resolves the leading curvature/source comparison exactly. Writing
+
+```text
+C_m=beta_(m+1)' A_m/A_(m+1)+y^(-2)+alpha_(m+1)',
+```
+
+umbrella-formal Lean proves, unconditionally for every fixed positive degree,
+
+```text
+w^6 beta_(m+1)'(w^2) -> -1/8,
+w^4 alpha_(m+1)'(w^2) -> -1/2,
+w^4 C_m(w^2) -> 0.
+```
+
+The first term contributes `(-1/8)*4=-1/2`; moving-apex and diagonal terms contribute
+`1-1/2=1/2`. Thus the positive-floor conjecture is false by exact cancellation, not missing
+estimates. The same module identifies `C_m` eventually with the normalized Wronskian renewal
+defect and proves
+
+```text
+w^4 source_(m+1)(w) -> (2m+3)/2 > 0,
+C_m(w^2)/source_(m+1)(w) -> 0.
+```
+
+Direct Lean and targeted build pass (`12030/12030`); all nine public declarations audit to only
+`[propext, Classical.choice, Quot.sound]`; forbidden-declaration and computation scans are clean.
+Route-U consequence: raw positive arithmetic source cannot orient projective renewal at leading
+order because the arcsine recession fixed point is projectively flat. Revised open core is the
+first nonzero vacuum-renormalized correction, controlled uniformly on the parabolic degree scale
+and coupled to false-RH transition count. Any proof spending the raw source floor directly on
+fixed-degree curvature is now formally ruled out.
+
+### Frankenstein update: Ward--Green exterior dephasing removes line tax and spectral collapse
+
+`XiHorizontalCollisionWardGreenCayleyQuantum.lean` and
+`XiHorizontalCollisionWardGreenExteriorSourceCarrier.lean` combine four formerly separate corpus
+mechanisms: horizontal collision charge, non-equivariant source Cayley phase, Hedenmalm adjacent
+exterior determinants, and absolute-Euler prime--Gamma critical-feature tests.
+
+Raw Cayley reflection gap collapses like `x^2` for horizontal rate `x=2 Re(rho)-1`. Ward transverse
+Green contributes exactly `4/x^2`; their product is `64/(1+x^2)^2>16` off line and remains zero on
+line. More importantly, replacing same-copy diagonal energy by two fixed adjacent exterior
+channels removes critical-line tax. After division by centered transverse coordinate `y`, every
+off-line support point has uniform energy at least
+
+```text
+4(96/145)^2,
+```
+
+while every on-line point contributes exactly zero. Both adjacent determinants are literally
+exterior squares of the critical-feature Cauchy tests already carrying explicit four-term
+prime--Gamma polarizations.
+
+For any finite Xi divisor packet, a literal source pencil now retains multiplicity, prime labels
+`2,3`, both reflected Burnol factors, both adjacent orientations, and horizontal Cayley depth.
+Two-prime Cesaro dephasing first isolates ordinate fibres; Cayley dephasing then isolates support
+points and returns exactly the multiplicity-square exterior packet energy. Lean proves both
+
+```text
+RH <-> every finite dephased exterior packet energy tends to zero,
+
+eventual packet bound < 4(96/145)^2  -> RH.
+```
+
+This rules out two prior dead ends at once: global exterior determinant is contaminated by
+cross-zero Cauchy--Binet minors, while same-copy Ward trace is contaminated by critical-line mass.
+The new carrier has neither defect. Exact remaining producer is a four-leg prime--Gamma estimate
+on this dephased local exterior pencil below its indivisible quantum. No density-normalized
+`o(N)` estimate suffices; target is absolute and packet-local.
+
+Direct Lean, exact leaf builds only, umbrella wiring, and axiom audits pass. Audited declarations
+use only `[propext, Classical.choice, Quot.sound]`; no umbrella build was run.
+
+### Route U update: strict-frontier contact order is integer logarithmic holonomy
+
+`XiShiftedStrictFrontierIntegerHolonomy.lean` moves Route U from regular projective curvature to
+singular norm-gauge boundary. For strict frontier `y=T_(n+1)`, newborn degree `m=n+2`, and first
+finite Padé contact order `d>0`, Lean proves exactly
+
+```text
+u * logDeriv (N_m(y+·)) u -> d,
+u * E_m(y+u)              -> -d                         as u -> 0+.
+```
+
+Here `N_m` is actual canonical admission norm and `E_m` its effectivity rate. Proof does not use
+numerical computation. New analytic infrastructure proves arbitrary-order residue, identifies
+newborn determinant order from existing vanishing/nonvanishing jets, then transfers it through
+exact Schur quotient. A genuine indexing obstruction was closed rather than ignored: previous
+effectivity theorem required positivity two blocks ahead, unavailable at newborn face. New sharp
+flow theorem needs only one successor block,
+
+```text
+H_(m+1)>0  ->  N_m'=-E_m N_m,
+```
+
+which is exactly what right side of terminal frontier supplies.
+
+Same witness `d` already carries positive arithmetic source-wall amplitude. Lean packages both as
+two intrinsic coordinates `(positive real amplitude, positive integer holonomy)` and proves closed
+dichotomy
+
+```text
+RiemannHypothesis ∨ XiShiftedCofinalIntegerHolonomyPhase.
+```
+
+Thus false RH forces cofinally many contacts each with indivisible charge `d>=1`; shrinking source
+magnitude cannot erase local charge. This is not yet contradiction: different finite minors lack
+proved common determinant line or finite total holonomy budget. Revised exact open core is global:
+construct arcsine-vacuum-renormalized degree--mass determinant line (or equivalent trace-class sum
+rule) whose total holonomy is finite, then cofinal integer charges contradict false RH. Generic
+order/residue fact is classical; shifted-Xi amplitude/holonomy synthesis is corpus-new with
+external novelty unverified.
+
+Direct Lean and targeted build pass (`11826/11826`); all eleven public declarations audit to only
+`[propext, Classical.choice, Quot.sound]`; forbidden declaration/computation scan is clean. One
+repository-wide lint attempt was externally terminated with exit `143` and no diagnostics, so no
+repo-wide lint pass is claimed.

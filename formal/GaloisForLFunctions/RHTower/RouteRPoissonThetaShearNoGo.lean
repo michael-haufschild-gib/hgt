@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.CCMRationalArchimedeanSchwartzPoisson
 import GaloisForLFunctions.RHTower.CCMRationalAdelicMoritaTraceFormula
 import GaloisForLFunctions.RHTower.CCMRationalAdelicPrimeIsotropyObserverFreedom
+import GaloisForLFunctions.RHTower.CCMRationalAdelicBruhatSchwartzSpace
 import GaloisForLFunctions.RHTower.DeningerGaussianEndpointCore
 import GaloisForLFunctions.HTGeometry.HermiteFourierEigen
 
@@ -153,7 +154,7 @@ theorem routeRPoissonThetaShearLatticeTrace_poisson_fixed :
 /-- Actual rational-adelic Bruhat source vector carrying the theta shear. -/
 def routeRPoissonThetaShearAdelic : CCMRationalAdelicBruhatSimpleTensor :=
   routeRPoissonThetaShearArchimedean ⊗ₜ[ℂ]
-    ccmRationalIntegralFiniteAdelesBruhat
+    _root_.RHTower.ccmRationalIntegralFiniteAdelesBruhat
 
 /-- Fixed-point endpoint of the actual adelic witness vanishes. -/
 theorem routeRPoissonThetaShearAdelic_zeroEval :
@@ -167,7 +168,7 @@ theorem routeRPoissonThetaShearAdelic_integral :
   have harch : ccmRationalArchimedeanSchwartzIntegral
       routeRPoissonThetaShearArchimedean = 0 := by
     rw [ccmRationalArchimedeanSchwartzIntegral_apply,
-      ← deningerFourier_zero]
+      ← _root_.RHTower.deningerFourier_zero]
     exact fourier_routeRPoissonThetaShearArchimedean_zero
   rw [routeRPoissonThetaShearAdelic,
     ccmRationalAdelicBruhatIntegral_tmul, harch]
@@ -190,7 +191,8 @@ theorem routeRPoissonThetaShearAdelic_ne_zero :
     (fun t => ccmRationalAdelicBruhatEval t ((1 : ℝ), (0 : CCMRationalFiniteAdele))) h
   rw [routeRPoissonThetaShearAdelic,
     ccmRationalAdelicBruhatEval_tmul,
-    ccmRationalIntegralFiniteAdelesBruhat_apply, if_pos hzero] at heval
+    _root_.RHTower.ccmRationalIntegralFiniteAdelesBruhat_apply,
+    if_pos hzero] at heval
   simp [harch] at heval
 
 /-- Every rationally scaled witness remains in the simultaneous endpoint kernel. -/

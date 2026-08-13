@@ -1561,3 +1561,35 @@ inputs per the card's own disclaimers.
 Card promoted to `3-formalized/` with Theorems A/C/D recorded as cited-classical /
 in-tree-cited / synthesis per the card's own claim boundaries.  Third promotion of
 2026-08-13.
+
+## Session 2026-08-13 addition (positive-face compression)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-RFM-PFC | Fixed positive Gram rays are pointwise bounded exactly when the leading composite vanishes; full subleading energy then survives; simultaneous-family and injective-leading boundaries; explicit divergent diagonal fourth-branch witness | `HTGeometry.PositiveFaceCompression` |
+
+This theorem falsifies the frozen regularization trilemma by an unconditional positive fourth
+branch: carrier compression to a leading null face. Direct elaboration and the 8,655-job leaf build
+pass. The module is wired into `HTGeometry.UniversalLawField`; final foreground umbrella build
+completes 11,861 jobs. Project lint passes. Scratch axiom prints report only `propext`,
+`Classical.choice`, and `Quot.sound`. No RH premise or route-specific specialization occurs.
+
+## Session 2026-08-13 addition (entropic alternating formation mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-EAFM-1 | Common-conditional marginal repair, exact KL Pythagoras, arbitrary finite-history action conservation, exact and approximate recurrent stationarity, functional repair reflection, and exact positive gauge radical | `HTGeometry.ConstitutiveEntropicAlternatingFormation` |
+
+Lean certifies an exact Sinkhorn/Bregman bridge across allocation, information, reflection, recurrence,
+and quotient properness. Failure-driven repairs accumulate an exact nonnegative KL action; a closed
+finite history with finite target divergence forces every repair step to be stationary. Positive
+bipartite formation has exactly one global potential gauge. More generally, any cofinally
+approximately recurrent real formation potential with nonnegative exact step action has zero action
+at every step. Formation transposition exchanges its two repair laws while preserving energy.
+Whole-corpus hostile audit subsequently demoted the interpretation from first field mechanism to
+`[BRIDGE] [NOT FIELD CORE]`: the earlier abelian-relaxation theorem already gives a stronger
+source-endogenous legality/repair/completion/history/work mechanism. The Lean result itself is
+unchanged.
+Direct leaf build completes 3,492 jobs; the wired `HTGeometry.UniversalLawField` umbrella completes
+11,862 jobs. No RH
+premise, route endpoint, computation certificate, added axiom, or enlarged heartbeat occurs.

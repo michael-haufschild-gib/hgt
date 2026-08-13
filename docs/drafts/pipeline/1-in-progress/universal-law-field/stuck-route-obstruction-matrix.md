@@ -6,7 +6,8 @@
 - **Source:** user correction 2026-08-09: the field must engage the corpus's stuck RH routes, not
   free-float; assembled from `rh-producer-map-corpus.md` §§14–23, the lane-elimination and
   five-lanes records, and the criterion classification
-- **Status:** [DRIVER] [HONEST GAPS MARKED] [CENTRAL-LAW CANDIDATE FROZEN] [NOT RH] [NO LEAN]
+- **Status:** [DRIVER] [HONEST GAPS MARKED] [FORMER CENTRAL LAW FALSIFIED 2026-08-13]
+  [POSITIVE SURVIVOR PROMOTED] [NOT RH]
 
 ## 1. The walls, as the corpus has actually proved them
 
@@ -53,7 +54,7 @@ entries `∑ Λ(n)/n·Δ(logⁱn)·logʲn` converge while every direction of `B`
 the complement collapses to the uncancelled successor Gram (`β=0` branch). The nonlinear escape
 buys nothing. To be proved cleanly before it is cited as closed.
 
-## 3. Frozen central-law candidate: the regularization trilemma
+## 3. Retired central-law candidate: the regularization trilemma
 
 The corpus has proved, lane by lane, instances of one unstated general law. Freeze it as the
 field's central conjecture:
@@ -71,7 +72,16 @@ field's central conjecture:
 > (b) = the weld trilemma §21, GAS-3's modulus budget; (c) = §22's Hamburger circularity, the
 > group-3 classification.
 
-`[OPEN CORE]` State and prove (a)/(b)/(c) as one theorem at a generality that *contains* the three
+`[FALSIFIED 2026-08-13]` The requested fourth branch exists.  For the divergent positive pencil
+`G_t=diag(t,1)`, compression to the second coordinate is exactly `1`: finite, positive, and fully
+sensitive to the subleading coordinate, with no leading normalization, signed subtraction, or
+limiting-measure certificate.  More generally, a fixed Gram compression of
+`t B^*B + D^*D` is pointwise bounded exactly when its carrier lies in `ker B`, and then the full
+subleading compressed Gram survives unchanged.  See the failed card
+`regularization-face-mechanics/regularization-trilemma-falsified-by-positive-face-compression.md`
+and its Stage-2 positive survivor.
+
+The original open request was to state and prove (a)/(b)/(c) at a generality that *contains* the three
 corpus instances as corollaries — i.e., a single hypothesis set (divergent positive cofinal Gram +
 finiteness of the observer) with the trichotomy as conclusion, not three analogies. First
 unprovable point: a definition of "observer rendering finite" wide enough to cover multiplicative,
@@ -84,15 +94,60 @@ procedure for every future regularization proposal in every lane (check which br
 and its failure yields a constructive fourth shape. Either outcome moves route search. It still
 creates no positivity; W8 (the UV model) remains the only constructive target.
 
-## 4. Queue (ordered)
+## 4. Alternating-formation collision and exact survivor
 
-1. Attack the trilemma's open core (§3): general statement + proof or fourth-branch witness.
-2. Read `RHTower`'s UV-corner modules (`archimedeanPrimeEulerQuadraticCorner*`) lane-deep; only
-   then ask whether the gas's trace-class depth-≥2 sector bears on W8 at all — no claim before
-   reading.
-3. Prove the §2 Schur-complement degeneracy cleanly (small, closes the last nonlinear gap of W3).
-4. W9's second-jet test (the elimination map's named next test for the Lee–Yang lane).
-5. Keep ULF-GAS-5's moment-horizon question parked behind its collision audit.
+Static receivers and static obstruction classes were the wrong level. A candidate mechanism was
+**failure-driven alternating formation**:
+
+\[
+ \text{marginal failure}
+ \longrightarrow \text{unique multiplicative repair}
+ \longrightarrow \text{transverse failure}
+ \longrightarrow \text{next repair}.
+\]
+
+It comes with one exact global law. If `Phi_n` is formation mismatch and `A_n>=0` is generated
+repair action, then
+
+\[
+ \Phi_0=\Phi_N+\sum_{n<N}A_n.
+\]
+
+Lean now proves both finite-history KL conservation and its route-independent properness
+consequence: cofinal approximate recurrence of `Phi_n` forces every `A_n=0`. Functional reflection
+exchanges the two repair types, while positive bipartite formation has exactly one invisible gauge
+direction and is proper after quotienting it.
+
+Hostile audit killed the claim that this is the first surviving field mechanism. The earlier
+abelian-relaxation theorem already generates state-dependent legality, least repair, canonical
+completion, recurrent observation, open lineage, and proper Green work from one source Laplacian.
+Alternating marginal repair is narrower: `(r,c)` and the update schedule are supplied before the
+recursion. It is therefore a Sinkhorn/Bregman **bridge**, not the field core.
+
+The exact positive survivor remains useful: the Lean theorem proves finite-history action
+conservation and the route-independent statement that cofinal approximate recurrence of a real
+potential with nonnegative exact step action forces every action to vanish. The next field gate is
+strictly higher: construct a cofinal source history whose own completion/admission failure generates
+both the next legal operation and its work topology.
+
+Paper and Lean:
+`entropic-alternating-formation-mechanics/alternating-marginal-repair-action-gauge-properness-and-recurrent-selection-law.md`
+and `HTGeometry.ConstitutiveEntropicAlternatingFormation`.
+
+## 5. Queue (ordered)
+
+1. ~~Attack the trilemma's open core.~~ Closed by a fourth-branch witness. Formalize the positive
+   face-compression classification, then ask only for **source-generated face motion** not already
+   covered by formation-Laplacian mechanics.
+2. ~~Read `RHTower`'s UV-corner modules lane-deep.~~ Closed negatively: finite prime quadratic
+   corners are matrix-injective modulo compacts, so the compact face is zero. Test only genuinely
+   infinite, nonlinear, smoothed, or repolarized successors.
+3. Audit whether cofinal completion/admission itself can generate the next legal operation and its
+   work, rather than receiving a supplied target or certificate sequence.
+4. Require one source-generated history that simultaneously carries derived topology, work, and
+   noncommuting charge transport before divisor specialization.
+5. Keep route-local Schur, W9 second-jet, and moment-horizon tests parked until this higher formation
+   gate either succeeds or is mathematically falsified.
 
 ## Log
 
@@ -100,3 +155,12 @@ creates no positivity; W8 (the UV model) remains the only constructive target.
   tabulated from proved corpus records; gas layer honestly re-scoped as instances, not
   explanations; trilemma frozen as the field's central-law candidate; rediscovery incident
   recorded.
+- 2026-08-13 — frozen trilemma falsified by positive compression to a leading null face; strongest
+  survivor promoted as a complete fixed-Gram classification; field search pivoted from static
+  regularization types to source-generated carrier/face formation.
+- 2026-08-13 — UV audit completed: finite distinct-prime quadratic corners are matrix-injective in
+  the Calkin quotient, so no nonzero finite compact face exists. W8 now forces an infinite,
+  nonlinear, smoothed, or repolarized mechanism rather than another finite carrier choice.
+- 2026-08-13 — first mechanism-level successor proved and formalized: alternating marginal failure
+  generates unique transverse repairs; exact action telescopes; cofinal approximate recurrence
+  forces stationarity; reflection exchanges repairs; positivity is proper modulo one forced gauge.

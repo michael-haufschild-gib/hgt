@@ -1,6 +1,8 @@
 import GaloisForLFunctions.RHTower.RouteRPrepolarTerminalNoGo
+import GaloisForLFunctions.RHTower.RouteRHyperbolicGaugePositivePolarUniversalityNoGo
 import GaloisForLFunctions.RHTower.RouteRStrongApproximationCompactEscape
 import GaloisForLFunctions.RHTower.RouteRXiMultiplierCalkinGrowthObstruction
+import GaloisForLFunctions.RHTower.RouteRXiJetPrincipalCalkinNonErasure
 import GaloisForLFunctions.RHTower.RouteRReciprocalLogFisherEntranceWall
 import GaloisForLFunctions.RHTower.XiCriticalLineIntegrality
 
@@ -11,9 +13,11 @@ The intrinsic pre-polar producer category is empty.  The only surviving interfac
 frontier audit are:
 
 1. the external positive polar comparison;
-2. collective compactness of the fixed `(2,3)` receiver;
-3. a singular coefficient-faithful Xi/Calkin factorization;
-4. loss-zero landing of the fixed inverse-log Fisher vector.
+2. source-selected pointwise two-orientation positive non-amplification;
+3. collective compactness of the fixed `(2,3)` receiver;
+4. a singular coefficient-faithful Xi/Calkin factorization;
+5. a compact first-Xi-jet principal coefficient modulo the compact ideal;
+6. loss-zero landing of the fixed inverse-log Fisher vector.
 
 This module proves that every one of those surviving interfaces is equivalent to RH.  Their
 disjunction is therefore not a weaker source theorem and supplies no independent producer.  This
@@ -93,6 +97,9 @@ interfaces, not hidden assumptions. -/
 inductive RouteRSurvivingProducer where
   | intrinsic : RouteRPrepolarIntrinsicAnnihilator → RouteRSurvivingProducer
   | externalPositivePolar : RouteRExternalPositivePolarHandoff → RouteRSurvivingProducer
+  | pointwiseTwoOrientationPositivePolar :
+      RouteRPointwiseTwoOrientationPositivePolarHandoff →
+        RouteRSurvivingProducer
   | collectiveCompactness :
       (∀ rho : XiDivisorSupport,
         IsCollectivelyCompactStronglyApproximable
@@ -100,6 +107,8 @@ inductive RouteRSurvivingProducer where
             (primeDepthBVWoldXiCenteredRate rho))) →
       RouteRSurvivingProducer
   | singularXiCalkin : RouteRXiCalkinFactorization → RouteRSurvivingProducer
+  | singularXiJetPrincipal :
+      RouteRCompactXiJetPrincipalLanding 1 → RouteRSurvivingProducer
   | lossZeroFisher : RouteRLossZeroFisherPhysicalLanding → RouteRSurvivingProducer
 
 /-- **Terminal Route R theorem.**  The audited producer category is inhabited exactly when RH is
@@ -114,11 +123,16 @@ theorem nonempty_routeRSurvivingProducer_iff_riemannHypothesis :
         exact False.elim
           (routeRPrepolarIntrinsicProducer_cannot_annihilate_horizontalCarrier ⟨P⟩)
     | externalPositivePolar P => exact P.riemannHypothesis
+    | pointwiseTwoOrientationPositivePolar P =>
+        exact routeRPointwiseTwoOrientationPositivePolarHandoff_iff_rh.mp P
     | collectiveCompactness P =>
         exact (routeRTwoThreeStokesSoninCommutator_globalCollectivelyCompactStronglyApproximable_iff_rh
           (by norm_num)).1 P
     | singularXiCalkin P =>
         exact routeRXiCalkinFactorization_iff_riemannHypothesis.mp P
+    | singularXiJetPrincipal P =>
+        exact (routeRCompactXiJetPrincipalLanding_iff_rh
+          (A := 1) (by norm_num)).mp P
     | lossZeroFisher P =>
         exact routeRLossZeroFisherPhysicalLanding_iff_riemannHypothesis.mp P
   · intro hRH

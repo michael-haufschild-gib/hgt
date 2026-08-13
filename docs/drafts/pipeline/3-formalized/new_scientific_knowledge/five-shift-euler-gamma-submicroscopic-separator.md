@@ -68,6 +68,13 @@ feature throughout `0<a<=1/2` exists.  Thus a successful global landing cannot b
 regular matrix coefficient.  It must use an unbounded inverse-Green/tangent graph, a discontinuous
 index channel, or a completed four-leg correlation.
 
+A legal square-summable rectangular window preserves strict positive off-line charge and gives a
+global nonnegative multiplicity-exact sum that vanishes exactly under RH.  But its
+coefficient-faithful holomorphic Weil-pair combination is identically zero: all five prime modes
+collapse to the same window square and the coefficient sum cancels it.  Lean consequently proves
+that pointwise identification of this Hermitian charge with that holomorphic source is itself
+equivalent to RH.  Windowing alone therefore cannot be the missing unconditional source estimate.
+
 ## Lean modules
 
 - `XiWardFiveShiftEulerGammaPrimeGap.lean`
@@ -78,6 +85,7 @@ index channel, or a completed four-leg correlation.
 - `HedenmalmCriticalFeaturePrimeGammaDecomposition.lean`
 - `XiWardFiveShiftCriticalEvaluationLanding.lean`
 - `XiWardFiveShiftBoundaryRigidity.lean`
+- `XiWardFiveShiftWindowedKreinCharge.lean`
 
 Headline declarations include:
 
@@ -88,6 +96,8 @@ Headline declarations include:
 - `criticalEvaluation_criticalFeature_eq`
 - `xiWeilPolarization_criticalFeatureCauchyKernelTest_eq_primeGammaSource`
 - `not_exists_continuous_boundaryLanding_fiveShiftEulerGamma`
+- `riemannHypothesis_iff_fiveShiftEulerGammaWindowedGlobalKreinCharge_eq_zero`
+- `riemannHypothesis_iff_fiveShiftWindowedHermitianSourceIdentification`
 
 ## Exact open core
 

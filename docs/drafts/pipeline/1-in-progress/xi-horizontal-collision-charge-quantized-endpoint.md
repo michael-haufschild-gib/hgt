@@ -5,7 +5,9 @@
 - **Type:** FRANKENSTEIN BRIDGE / PRODUCER SPECIFICATION
 - **Status:** `[PAPER-PROVED ENDPOINT] [LEAN-PROVED] [AXIOM-AUDITED] [NOT RH]`
 - **Target:**
-  `formal/GaloisForLFunctions/RHTower/XiHorizontalCollisionChargeEndpoint.lean`
+  `formal/GaloisForLFunctions/RHTower/XiHorizontalCollisionChargeEndpoint.lean`,
+  `formal/GaloisForLFunctions/RHTower/XiHorizontalCollisionTwoPrimeCesaroCarrier.lean`,
+  `formal/GaloisForLFunctions/RHTower/XiHorizontalCollisionPrimeCayleyInformationLoss.lean`
 
 ## Conjecture loop
 
@@ -99,6 +101,124 @@ law remains a legitimate but currently unproved producer.  Sources: Bagchi,
 and the effective Voronin theorem of
 [Lamzouri--Lester--Radziwill](https://arxiv.org/abs/1611.10325).
 
+### C5 — two fixed prime characters resolve every horizontal fibre without losing coefficients
+
+`[PAPER-PROVED] [LEAN-PROVED] [AXIOM-AUDITED]` A single prime phase can alias two ordinates. The
+pair of prime clocks at `2` and `3` is globally injective because `log 2 / log 3` is irrational.
+For each strip zero `rho`, retain local order, both line-reflection orientations, both prime
+labels, and independent prime-power depths:
+
+```text
+P_T(a,b) = sum_rho m_rho
+  [chi_2(rho) chi_2(1-conj rho)]^a
+  [chi_3(rho) chi_3(1-conj rho)]^b.
+```
+
+Reflected character product is exactly unit phase `exp(i (2 Im rho) log p)`. Grouping pencil by
+ordinates gives coefficient `H_gamma`, and two-dimensional Cesaro orthogonality proves
+
+```text
+(1/N^2) sum_(a,b<N) |P_T(a,b)|^2  -->  sum_gamma H_gamma^2.
+```
+
+After subtracting local square census, limit is exactly `O(T)`. Hence
+
+```text
+RH <-> for every T, centered source excess --> 0,
+```
+
+and any eventual absolute upper bound `C_T<2` for that excess proves RH. This is first
+coefficient-faithful prime-labelled carrier for complete horizontal collision charge. It remains
+divisor-indexed: remaining producer must estimate its energy from a prime--Gamma law before
+specializing to Xi divisor. Triangle/Cauchy estimates give total-mass-scale bounds and cannot
+approach absolute two-unit threshold.
+
+### C6 — collision charge is exactly source-horizontal information lost under reflection quotient
+
+`[PAPER-PROVED] [LEAN-PROVED] [AXIOM-AUDITED]` Add to C5's same prime-labelled pencil the unit
+Cayley phase of the actual BV/Wold source-horizontal rate `2 Re(rho)-1`. At Cayley depth zero this
+is definitionally C5's reflected `(2,3)` carrier. Inside one fixed ordinate fibre, Cayley
+injectivity separates every distinct Xi point. Therefore the iterated mean-square laws are
+
+```text
+prime-depth average at fixed Cayley depth c
+  --> sum_gamma |sum_(Im rho=gamma) m_rho Cayley(rate_rho)^c|^2,
+
+Cayley-depth average of that resolved energy
+  --> sum_rho m_rho^2.
+```
+
+Depth zero is `sum_gamma H_gamma^2`. Hence information loss between quotient depth zero and full
+source-horizontal resolution converges exactly to
+
+```text
+sum_gamma H_gamma^2 - sum_rho m_rho^2 = O(T).
+```
+
+This is coefficient-faithful and non-equivariant before scalarization: prime labels, local
+multiplicity, both reflection orientations, and signed horizontal rate remain on one carrier.
+It proves RH equivalent to zero asymptotic information loss, and any eventual absolute loss bound
+below two proves RH. It does not yet prove that bound; it removes ambiguity about which two
+transports a producer must compare.
+
+### C7 — Ward--Green normalization cancels Cayley spectral collapse
+
+`[OWN CONJECTURE LEAN-PROVED] [AXIOM-AUDITED]` Put `x=2 Re(rho)-1`. Exact Cayley algebra gives
+
+```text
+|Cayley(x)-Cayley(-x)|^2 = 16 x^2/(1+x^2)^2.
+```
+
+The Ward transverse Green weight is `4/x^2` off line and zero on line. Their product is therefore
+
+```text
+64/(1+x^2)^2 > 16                         (|x|<1),
+0                                         (x=0).
+```
+
+Thus the singular Green normalization does not merely rescale an old detector: it removes the
+entire submicroscopic collapse while preserving the exact critical-line kernel. Summed with local
+multiplicity squares, the resulting finite-window energy dominates `16 O_reflection(T)`. Any
+uniform source bound below `32` proves RH. Remaining issue at C7 alone was source realization:
+ordinary fixed-feature diagonal trace also charges critical-line zeros.
+
+### C8 — exterior prime/Cayley carrier removes the critical-line tax
+
+`[OWN CONJECTURE LEAN-PROVED] [AXIOM-AUDITED]` Combine C7 with the adjacent Hedenmalm exterior
+determinant and retain both fixed orientations `t+1` and `t-1`, where `t` is nearest integer to
+centered height. Divide each determinant by the transverse spectral coordinate before taking its
+norm square. Numerator and coordinate both reverse under critical-line reflection, so the two
+orientations do not annihilate; on-line coefficients remain exactly zero. Existing adjacent-
+feature algebra yields the pointwise quantum
+
+```text
+4(96/145)^2 <= |D_+(rho)/y_rho|^2 + |D_-(rho)/y_rho|^2
+```
+
+for every off-line divisor point, uniformly as `y_rho -> 0`. Both `D_+` and `D_-` are proved
+literally equal to exterior squares of critical-feature Cauchy tests, whose polarizations have the
+explicit four-term absolute-Euler prime--Gamma source formula.
+
+For every finite divisor packet `S`, the new literal carrier retains analytic multiplicity,
+prime labels `2,3`, both reflected Burnol-character factors, both adjacent exterior orientations,
+and Cayley depth. Exact iterated Cesaro laws prove
+
+```text
+two-prime depth average at fixed c  --> exact ordinate-fibre energy,
+Cayley-depth average                --> sum_(rho in S) m_rho^2 E_ext(rho).
+```
+
+Therefore packet energy dominates `4(96/145)^2` times the complete off-line multiplicity-square
+census. RH is equivalent to zero dephased energy for every finite packet, and any eventual packet
+bound strictly below `4(96/145)^2` proves RH. This is the first current carrier that simultaneously
+removes the critical-line tax, defeats submicroscopic collapse, retains multiplicity squares,
+and has literal prime labels before scalarization.
+
+Open producer is now narrower: derive the strict sub-quantum bound from the four-leg prime--Gamma
+source expression itself. The determinant of the global source matrix is insufficient because
+Cauchy--Binet adds cross-zero minors; the required estimate must apply to the dephased local
+exterior carrier proved here.
+
 ## Paper proof details
 
 For `rho in S_T`, the exact-height finset contains `rho`; positivity of analytic order gives
@@ -128,8 +248,15 @@ Prove from a literal prime/Gamma/source identity, without assuming divisor reali
 O(T) < 2 on one cofinal family of cutoffs
 ```
 
-or the C3 replication dichotomy by a charge-specific source recurrence strictly weaker in premise
-than zeta self-approximation.  An estimate `O(T)=o(N(T))` is not enough.
+or, equivalently for the fixed-prime carrier, an eventual bound
+
+```text
+centered_two_prime_energy(T,N) <= C_T < 2
+```
+
+for every cutoff in a cofinal family; alternatively prove C3 replication dichotomy by a
+charge-specific source recurrence strictly weaker in premise than zeta self-approximation. An
+estimate `O(T)=o(N(T))` is not enough.
 
 ## Lean realization
 
@@ -143,11 +270,43 @@ than zeta self-approximation.  An estimate `O(T)=o(N(T))` is not enough.
 - `RH <-> forall T, O(T)<2 <-> forall T, O(T)=0`;
 - natural, arbitrary cofinal, and eventual strict-two endpoints.
 
-Direct `lake env lean` and exact leaf
-`lake build GaloisForLFunctions.RHTower.XiHorizontalCollisionChargeEndpoint` pass.  `#print axioms`
-reports only `propext`, `Classical.choice`, and `Quot.sound`.  Repository lint reaches this wired
-module and finds no local forbidden declaration; the global lint remains red only because seven
-unrelated concurrent modules are not yet umbrella-reachable.
+`XiHorizontalCollisionTwoPrimeCesaroCarrier.lean` proves unconditionally:
+
+- generic finite two-phase Cesaro mean-square orthogonality;
+- exact Burnol-character/reflected-phase identity for every positive prime label;
+- global injectivity of fixed `(2,3)` phase pair on ordinates;
+- exact coefficient-preserving grouping of source pencil by horizontal fibres;
+- convergence of centered source energy to `O(T)`;
+- RH equivalence with zero source-excess limits and with eventual absolute bounds below two.
+
+`XiHorizontalCollisionPrimeCayleyInformationLoss.lean` proves unconditionally:
+
+- source-rate Cayley phase has unit norm and separates same-ordinate Xi points;
+- Cayley depth zero is exactly the earlier two-prime source pencil;
+- two prime clocks land at fixed-depth horizontal-fibre energy;
+- Cayley-depth Cesaro averaging lands at local multiplicity-square energy;
+- quotient-minus-resolved information loss converges exactly to `O(T)`;
+- zero-loss and eventual strict-two loss criteria are equivalent to RH.
+
+`XiHorizontalCollisionWardGreenCayleyQuantum.lean` proves unconditionally:
+
+- exact reflected-Cayley gap and its Ward--Green cancellation law;
+- strict uniform quantum above `16` for each off-line copy and zero on line;
+- finite-window energy domination of `16` times reflection self-intersection charge;
+- absolute energy threshold `32` implies RH.
+
+`XiHorizontalCollisionWardGreenExteriorSourceCarrier.lean` proves unconditionally:
+
+- both normalized adjacent determinants are literal critical-feature Cauchy exterior channels;
+- local two-orientation energy is exactly four times transverse exterior energy;
+- pointwise uniform off-line quantum `4(96/145)^2` and exact on-line zero;
+- finite packet domination of the multiplicity-square off-line census;
+- exact literal `(2,3)` prime-source dephasing and exact Cayley resolution;
+- strict sub-quantum source bound implies RH;
+- RH iff every finite dephased packet energy tends to zero.
+
+Direct `lake env lean`, exact leaf builds, and `#print axioms` audits pass. Audited
+theorems use only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Gates
 
@@ -156,4 +315,8 @@ unrelated concurrent modules are not yet umbrella-reachable.
 - [x] C2 Lean formalization, exact leaf build, and axiom audit
 - [x] C3 existing-corpus replication handoff falsified
 - [x] C4 finite-phase/self-recurrence shortcut classified
-- [ ] source-derived strict two-unit estimate or literal divisor replication
+- [x] C5 coefficient-faithful two-prime divisor-source carrier and exact energy limit
+- [x] C6 same-carrier source-Cayley resolution and exact information-loss identity
+- [x] C7 Ward--Green cancellation of submicroscopic Cayley collapse
+- [x] C8 dephased exterior prime/Cayley carrier with zero critical-line tax
+- [ ] four-leg prime--Gamma estimate forcing dephased packet energy below `4(96/145)^2`

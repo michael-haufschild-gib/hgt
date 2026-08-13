@@ -4,6 +4,8 @@ import GaloisForLFunctions.RHTower.RouteRPrimeClockCubicSymmetrizationNoGo
 import GaloisForLFunctions.RHTower.RouteRAdelicDefectCharacterBlindness
 import GaloisForLFunctions.RHTower.RouteRPrimeChainHochschildCycleWall
 import GaloisForLFunctions.RHTower.RouteRDegreeSixGammaCoronaLocalGlobalFracture
+import GaloisForLFunctions.RHTower.RouteRPhysicalBocksteinHomologicalNonErasure
+import GaloisForLFunctions.RHTower.RouteRPreDivisorGammaCoronaGlobalizationNoGo
 
 /-!
 # Route R intrinsic prepolar terminal no-go
@@ -93,6 +95,12 @@ inductive RouteRPrepolarIntrinsicAnnihilator where
   | primeClockInvariantLinear :
       RouteRPrimeClockInvariantLinearSelector →
       RouteRPrepolarIntrinsicAnnihilator
+  | finiteKunnethBockstein :
+      RouteRFiniteKunnethPhysicalBocksteinAnnihilator →
+      RouteRPrepolarIntrinsicAnnihilator
+  | preDivisorGammaCoronaGlobalization :
+      RouteRPreDivisorGammaCoronaGlobalizer →
+      RouteRPrepolarIntrinsicAnnihilator
 
 /-- **Intrinsic Route-R terminal theorem.** No source-natural prepolar branch
 can both retain the horizontal atom and annihilate it. -/
@@ -108,6 +116,10 @@ theorem routeRPrepolarIntrinsicProducer_cannot_annihilate_horizontalCarrier :
       exact routeR_no_reflectionEvenCountertermAnnihilator ⟨P⟩
   | primeClockInvariantLinear P =>
       exact routeR_no_primeClockInvariantLinearSelector ⟨P⟩
+  | finiteKunnethBockstein P =>
+      exact routeR_no_finiteKunnethPhysicalBocksteinAnnihilator ⟨P⟩
+  | preDivisorGammaCoronaGlobalization P =>
+      exact routeR_no_preDivisorGammaCoronaGlobalizer ⟨P⟩
 
 /-- Surviving non-intrinsic Gate-II interface.  Full numerical Euler--Gamma
 source data must produce a positive source energy, prove it exact, and compare

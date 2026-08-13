@@ -1619,6 +1619,13 @@ diagonal-vanishing source coefficient can agree with it on the positive half-str
 must therefore retain an unbounded tangent/Green graph or discontinuous index channel; a bounded
 regular source operator is ruled out.
 
+Rectangular windowing gives a legal square-summable global charge without weakening the zero-side
+separation: it is nonnegative and vanishes exactly under RH.  However, the matching holomorphic
+five-shift Weil-pair source vanishes identically, because every prime mode reduces to the same
+window square.  The pointwise Hermitian/source identification is formally equivalent to RH.
+Therefore ordinary window regularization cannot supply the open budget; the source current must
+retain genuinely Hermitian/rank--trace information absent from holomorphic polarization.
+
 Lean modules are umbrella-wired:
 
 - `XiWardFiveShiftEulerGammaPrimeGap.lean`;
@@ -1629,6 +1636,7 @@ Lean modules are umbrella-wired:
 - `HedenmalmCriticalFeaturePrimeGammaDecomposition.lean`;
 - `XiWardFiveShiftCriticalEvaluationLanding.lean`;
 - `XiWardFiveShiftBoundaryRigidity.lean`.
+- `XiWardFiveShiftWindowedKreinCharge.lean`.
 
 Important guardrail: the theorem giving Euler nonpositivity under `-Im z=log n` inside the
 critical-evaluation module has incompatible strip hypotheses for `n>=2`.  It is a valid formal

@@ -1,10 +1,10 @@
 # Shifted-Xi characteristic-apex projective phase reversal
 
 - **ID:** `shifted-xi-characteristic-apex-projective-phase-reversal`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Route:** U
 - **Type:** THEOREM + NO-GO + POSITIVE SURVIVOR
-- **Status:** `[PAPER-PROVED] [CORPUS-NOVEL] [NOVELTY UNVERIFIED] [NOT RH]`
+- **Status:** `[LEAN-FORMALIZED] [UMBRELLA-WIRED] [CORPUS-NOVEL] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Depends on:** characteristic-apex transport, finite orthogonal no-common-root, reciprocal-mass
   gauge equivalence, and fixed-degree shifted-Chebyshev recession.
 
@@ -137,7 +137,7 @@ The denominator is eventually nonzero because its normalized value tends to the 
    ```
 
    The phase form is asymptotically indefinite; positivity cannot make it globally negative.
-3. **Stronger positive survivor:** `[PAPER-PROVED]` the exact Riccati law and source-specific
+3. **Stronger positive survivor:** `[LEAN-FORMALIZED]` the exact Riccati law and source-specific
    reversal (PAR.1)--(PAR.4). They classify the failure and show that any successful global phase
    invariant must renormalize or charge turning sectors, not merely compactify poles.
 
@@ -168,3 +168,29 @@ These parent theories explain Riccati and ratio mechanisms. None of the inspecte
 states (PAR.1) for the completed-Xi moving characteristic apex, the opposite contact/far-right
 orientations, or the exact limiting slope `4`. External priority remains unverified pending expert
 review.
+
+## Lean formalization
+
+Module:
+
+```text
+formal/GaloisForLFunctions/RHTower/
+XiShiftedCanonicalAdmissionCharacteristicApexProjectivePhaseReversal.lean
+```
+
+Lean proves the pole-free Wronskian identity (PAR.2), chart Riccati law (PAR.1), exact
+source-coordinate gauge, fixed-degree ratio recession, coefficient recession, derivative limit
+and eventual positive derivative. It also defines the Riccati discriminant and proves
+
+```text
+w^4 D_n(w^2) -> 2n+9/4
+eventually 0 < D_n(w^2).
+```
+
+The module is imported by `GaloisForLFunctions.RHTower`. Direct `lake env lean` and targeted
+`lake build GaloisForLFunctions.RHTower.XiShiftedCanonicalAdmissionCharacteristicApexProjectivePhaseReversal`
+both pass; the targeted build completes `12013/12013` jobs. All 13 public theorem audits depend
+only on `[propext, Classical.choice, Quot.sound]`. Forbidden-declaration scan is clean. Global
+lint reaches this module through the umbrella; its only errors are unrelated unwired modules
+elsewhere in the dirty worktree.
+
