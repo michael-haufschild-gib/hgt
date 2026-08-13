@@ -349,7 +349,7 @@ theorem weight_nonpos_of_detector (F : ℂ → ℂ) (γ : ℝ)
 
 private theorem iteratedDeriv_two_sub_const (Φ : ℂ → ℂ) (c : ℂ) :
     iteratedDeriv 2 (fun τ : ℂ => Φ τ - c) 0 = iteratedDeriv 2 Φ 0 := by
-  rw [iteratedDeriv_two_eq_deriv_deriv]
+  rw [iteratedDeriv_two_eq_deriv_deriv, iteratedDeriv_two_eq_deriv_deriv]
   have h1 : deriv (fun τ : ℂ => Φ τ - c) = deriv Φ := by
     funext τ
     exact deriv_sub_const c
@@ -358,8 +358,8 @@ private theorem iteratedDeriv_two_sub_const (Φ : ℂ → ℂ) (c : ℂ) :
 private theorem iteratedDeriv_two_scaled (Φ : ℂ → ℂ) (hA : AnalyticAt ℂ Φ 0) (c : ℂ) :
     iteratedDeriv 2 (fun τ : ℂ => Φ (c * τ)) 0 = c ^ 2 * iteratedDeriv 2 Φ 0 := by
   have hmul : Filter.Tendsto (fun τ : ℂ => c * τ) (nhds 0) (nhds 0) := by
-    have := (continuous_const.mul continuous_id (M₀ := ℂ)).tendsto 0
-    simpa using this
+    have hc : Continuous (fun τ : ℂ => c * τ) := by fun_prop
+    simpa using hc.tendsto 0
   have hEv : ∀ᶠ τ : ℂ in nhds 0, AnalyticAt ℂ Φ (c * τ) :=
     hmul.eventually hA.eventually_analyticAt
   have hd1 : ∀ᶠ τ : ℂ in nhds 0,
@@ -454,7 +454,7 @@ private theorem pi_single_eq_smul {n : ℕ} (i : Fin n) (c : ℝ) :
   funext j
   by_cases h : j = i
   · subst h; simp
-  · simp [Pi.single_apply, h]
+  · simp [h]
 
 /-- **Composite criteria (Θ2(v)).**  On a one-parameter stratum through the critical locus
 every component first derivative vanishes, so the second derivative of a smooth composite
@@ -516,7 +516,7 @@ theorem deriv_deriv_comp_of_first_derivs_zero {n : ℕ}
     have happly : DifferentiableAt ℝ
         (fun L : (Fin n → ℝ) →L[ℝ] ℝ => L (Pi.single i 1)) (fderiv ℝ g (φ 0)) :=
       (ContinuousLinearMap.apply ℝ ℝ (Pi.single i 1)).differentiableAt
-    exact (happly.comp _ (hfder.comp _ hφ0))
+    exact ((happly.comp (φ 0) hfder).comp 0 hφ0)
   have hD2 : ∀ i : Fin n, DifferentiableAt ℝ (deriv (fun y => φ y i)) 0 :=
     fun i => (hφ i).deriv.differentiableAt
   have hterm : ∀ i ∈ Finset.univ, HasDerivAt
@@ -528,11 +528,19 @@ theorem deriv_deriv_comp_of_first_derivs_zero {n : ℕ}
     have hPi : HasDerivAt (fun x => fderiv ℝ g (φ x) (Pi.single i 1))
         (deriv (fun x => fderiv ℝ g (φ x) (Pi.single i 1)) 0) 0 :=
       (hPdiff i).hasDerivAt
-    have := hDi.mul hPi
-    rw [hcrit i] at this
-    simpa using this
+    have hmul := hDi.mul hPi
+    rw [hcrit i, zero_mul, add_zero] at hmul
+    exact hmul
   have hsum := HasDerivAt.sum hterm
+  have hfe : (∑ i : Fin n, fun x : ℝ =>
+        deriv (fun y => φ y i) x * fderiv ℝ g (φ x) (Pi.single i 1))
+      = fun x : ℝ => ∑ i : Fin n,
+        deriv (fun y => φ y i) x * fderiv ℝ g (φ x) (Pi.single i 1) := by
+    funext x
+    simp [Finset.sum_apply]
+  rw [hfe] at hsum
   rw [hψeq.deriv_eq, hsum.deriv]
+  exact Finset.sum_congr rfl fun i _ => mul_comm _ _
 
 /-- **Composite per-zero necessity.**  A smooth composite of stratum functionals that is
 locally maximal at the critical locus has nonpositive gradient-weighted total weight:
@@ -598,16 +606,21 @@ theorem relativeQuadrupleValue_lineTestTransform (h : ℝ → ℂ) (hc : Continu
     show (1 / 2 - γ * I) - (0 : ℂ) = 1 / 2 + -(γ * I) by ring,
     show (1 : ℂ) / 2 + γ * I = 1 / 2 + γ * I from rfl, lineTestTransform_shift,
     lineTestTransform_shift]
+  have Iadd : ∀ f g : ℝ → ℂ, Integrable f → Integrable g →
+      Integrable (fun x : ℝ => f x + g x) := fun _ _ hf hg => hf.add hg
+  have Idisp := Iadd _ _ (Iadd _ _ (Iadd _ _ (I₀ (t + γ * I)) (I₀ (-t + γ * I)))
+    (I₀ (t - γ * I))) (I₀ (-t - γ * I))
+  have Iund := Iadd _ _ (Iadd _ _ (Iadd _ _ (I₀ (γ * I)) (I₀ (γ * I))) (I₀ (-(γ * I))))
+    (I₀ (-(γ * I)))
   rw [← integral_add (I₀ (t + γ * I)) (I₀ (-t + γ * I)),
-    ← integral_add ((I₀ (t + γ * I)).add (I₀ (-t + γ * I))) (I₀ (t - γ * I)),
-    ← integral_add (((I₀ (t + γ * I)).add (I₀ (-t + γ * I))).add (I₀ (t - γ * I)))
+    ← integral_add (Iadd _ _ (I₀ (t + γ * I)) (I₀ (-t + γ * I))) (I₀ (t - γ * I)),
+    ← integral_add (Iadd _ _ (Iadd _ _ (I₀ (t + γ * I)) (I₀ (-t + γ * I))) (I₀ (t - γ * I)))
       (I₀ (-t - γ * I)),
     ← integral_add (I₀ (γ * I)) (I₀ (γ * I)),
-    ← integral_add ((I₀ (γ * I)).add (I₀ (γ * I))) (I₀ (-(γ * I))),
-    ← integral_add (((I₀ (γ * I)).add (I₀ (γ * I))).add (I₀ (-(γ * I)))) (I₀ (-(γ * I))),
-    ← integral_sub
-      ((((I₀ (t + γ * I)).add (I₀ (-t + γ * I))).add (I₀ (t - γ * I))).add (I₀ (-t - γ * I)))
-      ((((I₀ (γ * I)).add (I₀ (γ * I))).add (I₀ (-(γ * I)))).add (I₀ (-(γ * I))))]
+    ← integral_add (Iadd _ _ (I₀ (γ * I)) (I₀ (γ * I))) (I₀ (-(γ * I))),
+    ← integral_add (Iadd _ _ (Iadd _ _ (I₀ (γ * I)) (I₀ (γ * I))) (I₀ (-(γ * I))))
+      (I₀ (-(γ * I))),
+    ← integral_sub Idisp Iund]
   refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
   have hq := quadrupleExp_sub_undisplaced γ t (x : ℂ)
   have hp := exp_line_pair γ (x : ℂ)
@@ -649,10 +662,10 @@ theorem multiSplitting_shadow_integral {ι : Type*} [Fintype ι] (h : ℝ → �
     intro j _
     refine Continuous.integrable_of_hasCompactSupport ?_ hs.mul_right
     exact hc.mul (by fun_prop)
-  rw [← MeasureTheory.integral_finset_sum Finset.univ hint]
+  rw [← MeasureTheory.integral_finsetSum Finset.univ hint]
   refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
   unfold shadowDensity
-  rw [Finset.mul_sum, Finset.mul_sum]
+  simp only [Finset.mul_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   ring
 
