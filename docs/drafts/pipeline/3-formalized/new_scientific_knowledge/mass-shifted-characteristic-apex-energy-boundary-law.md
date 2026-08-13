@@ -10,8 +10,12 @@
   (`e_n' = b_n + f_(n-1) - f_n`), telescoped finite budget
   `hasDerivAt_xiShiftedCanonicalAdmissionApexEnergy`
   (`(sum e_n)' = sum b_n + f_0 - f_N`), skew-Jacobi averaged transport, and both nonnegativity
-  laws. Module build passes (2026-08-13); axiom audit `[propext, Classical.choice, Quot.sound]`
-  on all five theorems.
+  laws. The source-native capstone
+  `hasDerivAt_xiShiftedCanonicalAdmissionApexEnergy_of_parabolicDegreeHorizon` discharges the
+  finite `PosDef` premise from the unconditional Route-U parabolic horizon. Final targeted build
+  passes `12009/12009` (2026-08-13); axiom audit `[propext, Classical.choice, Quot.sound]` on all
+  six theorems. Formal lint reaches this module; repository-wide exit remains nonzero only for
+  unrelated unwired module `RHTower.FieldOneFiniteStageBruhatOrbitSummability`.
 
 ## Frozen theorem
 
@@ -60,6 +64,10 @@ This gives `e_n'=b_n+f_(n-1)-f_n`. Summing from `1` through `N` telescopes every
 No limiting argument, infinite moment representation, RH premise, computation, or added axiom is
 used.
 
+Finally, `XiShiftedParabolicDegreeHorizon` proves the degree-matched block positive definite from
+the literal completed-Xi source whenever `K(N+2)^2 <= y`. Substitution yields the same finite
+energy balance throughout that source-derived parabolic region without a Hankel-positivity premise.
+
 ## Conjecture / failure / pivot ledger
 
 1. **Triangular apex ODE alone controls cofinal escape.** `[FAILED]` A finite cascade has no
@@ -86,4 +94,3 @@ separately, but no apex-square continuity law or telescoping finite energy. Curr
 search found general time-dependent orthogonal-polynomial/Toda evolution, but no completed-Xi
 moving-apex energy with this degree/norm normalization and boundary balance. External priority
 remains provisional.
-

@@ -68,7 +68,7 @@ theorem eventually_card_le_maynard_second_of_selected_cell_coloring_low_amplitud
       (∀ r ∈ S, IsMaynardWindowRelevantSelectedCell
         L X T mu N0 c (lam r) alpha (color r)) →
       (S.card : ℝ) ≤ maynardHarmonicFactor K delta *
-        T ^ (1 + mu * (1 + routeTGapMomentNu - 2 * alpha)) := by
+        T ^ (1 + mu * (1 + routeTGapMomentNu - 2 * alpha) - 1 / 200) := by
   filter_upwards [
     eventually_maynardWindowRelevantSelectedCell_scaled_fibre_second_of_low_amplitude,
     eventually_maynardLabelCost_absorbed_four_hundred,
@@ -79,7 +79,7 @@ theorem eventually_card_le_maynard_second_of_selected_cell_coloring_low_amplitud
   classical
   let nlabels : ℝ := Fintype.card (HeathBrownSelectionLabel L X 60)
   let B : ℝ := maynardHarmonicFactor K delta *
-    T ^ (1 + mu * (1 + routeTGapMomentNu - 2 * alpha))
+    T ^ (1 + mu * (1 + routeTGapMomentNu - 2 * alpha) - 1 / 200)
   have hT0 : 0 < T := zero_lt_one.trans hT
   have hnlabelsPos : 0 < nlabels := by
     dsimp only [nlabels]

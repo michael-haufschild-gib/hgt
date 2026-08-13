@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.XiShiftedCanonicalAdmissionCharacteristicApexTransport
+import GaloisForLFunctions.RHTower.XiShiftedTerminalFrontierParabolicSynchronization
 
 /-!
 # Finite characteristic-apex energy and exact degree-boundary flux
@@ -214,6 +215,27 @@ theorem hasDerivAt_xiShiftedCanonicalAdmissionApexEnergy
         ring]
   rw [sum_range_degreeFlux_sub_succ]
   ring
+
+/-- **Unconditional parabolic characteristic-energy law.**  The explicit source-derived degree
+horizon discharges finite positivity, so the exact boundary balance requires no Hankel-positivity
+premise on the parabolic region. -/
+theorem hasDerivAt_xiShiftedCanonicalAdmissionApexEnergy_of_parabolicDegreeHorizon
+    {y : ℝ} (N : ℕ)
+    (hy : routeUParabolicDegreeHorizon * (((N + 2 : ℕ) : ℝ) ^ 2) ≤ y) :
+    HasDerivAt (fun v => xiShiftedCanonicalAdmissionApexEnergy v N)
+      ((∑ i ∈ Finset.range N,
+          xiShiftedCanonicalAdmissionApexBulkProduction y (i + 1)) +
+        xiShiftedCanonicalAdmissionApexDegreeFlux y 0 -
+        xiShiftedCanonicalAdmissionApexDegreeFlux y N) y := by
+  have hy0 : 0 < y := lt_of_lt_of_le
+    (mul_pos routeUParabolicDegreeHorizon_pos (sq_pos_of_pos (by positivity))) hy
+  have hH : (HTGeometry.momentHankelMatrix
+      (fun k => (xiShiftedReciprocalMoment y k).re) (N + 2)).PosDef := by
+    have hH' := xiShiftedMomentHankelMatrix_posDef_of_parabolicDegreeHorizon N hy
+    change (HTGeometry.momentHankelMatrix
+      (fun k => (xiShiftedReciprocalMoment y k).re) (N + 2)).PosDef at hH'
+    exact hH'
+  exact hasDerivAt_xiShiftedCanonicalAdmissionApexEnergy hy0 N hH
 
 end
 

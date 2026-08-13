@@ -351,7 +351,7 @@ theorem eventually_maynardWindowRelevantSelectedCell_scaled_fibre_second_of_low_
       (∀ r ∈ S, IsMaynardWindowRelevantSelectedCell
         L X T mu N0 c (lam r) alpha label) →
       M * (S.card : ℝ) ≤ maynardHarmonicFactor K delta *
-        T ^ (1 + mu * (1 + routeTGapMomentNu - 2 * alpha)) := by
+        T ^ (1 + mu * (1 + routeTGapMomentNu - 2 * alpha) - 1 / 200) := by
   filter_upwards [eventually_maynardMontgomery_fibre_cost_absorbed,
     eventually_gt_atTop (1 : ℝ)] with T hcost hT
   intro L X K mu N0 c alpha delta hmuLo hmuHi hc halphaLo halphaHi
@@ -563,13 +563,13 @@ theorem eventually_maynardWindowRelevantSelectedCell_scaled_fibre_second_of_low_
       _ = T ^ (r * (2 - 2 * alpha)) := hYpow
   have hbudget : (1 / 400 : ℝ) + 1 / 400 ≤ 1 / 100 := by norm_num
   have hUfinal : T ^ (1 / 400 : ℝ) * T ^ (1 / 400 : ℝ) * U ≤
-      T ^ target := by
+      T ^ (target - 1 / 200) := by
     rw [hUeq, ← Real.rpow_add hT0, ← Real.rpow_add hT0]
     apply Real.rpow_le_rpow_of_exponent_le hT.le
     dsimp only [target]
     linarith
   have hVfinal : T ^ (1 / 400 : ℝ) * T ^ (1 / 400 : ℝ) * V ≤
-      T ^ target := by
+      T ^ (target - 1 / 200) := by
     rw [hVeq, ← Real.rpow_add hT0, ← Real.rpow_add hT0]
     apply Real.rpow_le_rpow_of_exponent_le hT.le
     dsimp only [target]
@@ -596,11 +596,12 @@ theorem eventually_maynardWindowRelevantSelectedCell_scaled_fibre_second_of_low_
     _ = HF * (1 / 2 : ℝ) *
         ((T ^ (1 / 400 : ℝ) * T ^ (1 / 400 : ℝ) * U) +
           (T ^ (1 / 400 : ℝ) * T ^ (1 / 400 : ℝ) * V)) := by ring
-    _ ≤ HF * (1 / 2 : ℝ) * (T ^ target + T ^ target) := by
+    _ ≤ HF * (1 / 2 : ℝ) *
+        (T ^ (target - 1 / 200) + T ^ (target - 1 / 200)) := by
       exact mul_le_mul_of_nonneg_left (add_le_add hUfinal hVfinal)
         (mul_nonneg hHFpos.le (by norm_num))
     _ = maynardHarmonicFactor K delta *
-        T ^ (1 + mu * (1 + routeTGapMomentNu - 2 * alpha)) := by
+        T ^ (1 + mu * (1 + routeTGapMomentNu - 2 * alpha) - 1 / 200) := by
       dsimp only [HF, target]
       ring
 

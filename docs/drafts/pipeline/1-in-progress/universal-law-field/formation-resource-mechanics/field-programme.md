@@ -5,7 +5,7 @@
 - **Type:** FIELD MECHANISM PROGRAMME + HOSTILE CONJECTURE LEDGER
 - **Source:** whole-corpus constitutive-experiment programme, packet formation, clone fracture,
   functional-equation recovery, and species-relative thinning
-- **Status:** `[LIVE FIELD MECHANISM] [ONE STAGE-2 SURVIVOR] [NOT YET UNIVERSAL] [NOT RH]`
+- **Status:** `[LIVE FIELD MECHANISM] [THREE STAGE-2 SURVIVORS] [NOT YET UNIVERSAL] [NOT RH]`
 - **Statement:** Treat a source law as a finite information budget for producing independent law
   depth; Markov formation spends that budget, sufficient recovery conserves it exactly, functional
   equation transports it isometrically, and cofinal exact formation is possible only at a neutral
@@ -76,6 +76,13 @@ sample.
 The dependency-closed theorem is in
 `fixed-source-formation-capital-sufficient-macro-saturation-and-theta-species-exit-law.md`.
 
+A second dependency-closed theorem operationalizes source-coherent quotient--fusion genesis as a
+canonical Gaussian experiment. On that experiment chain the capital bound is complete: source
+signal budget `b` forms `d` genesis packets of squared norm `Q` exactly when `b>=dQ`. Cofinal
+formation therefore forces synchronization, and a trivial synchronization equalizer selects
+neutral displacement. See
+`gaussian-quotient-fusion-capital-exact-depth-and-testing-properness-law.md`.
+
 ## 3. Proposed field laws
 
 ### FRM-I — fixed-source capital law
@@ -107,6 +114,20 @@ or history coordinates of the macro law record formed depth.
 If a fixed source with overlapping marked laws forms arbitrarily large independent target depth,
 the target experiment is neutral.  The only alternative is a singular source that already reveals
 the hidden mark perfectly.
+
+### FRM-VI — operational genesis law
+
+Whenever source coherence supplies a Hilbert response packet, quotient--fusion genesis is the
+independent Gaussian signal discarded by local quotienting. Its squared norm simultaneously is
+Jeffreys work, eight times Bhattacharyya capital, and the Gaussian testing exponent. A fixed finite
+source budget therefore admits an exact maximum coherent depth.
+
+### FRM-VII — intensive capital-density law
+
+For a growing source array, total information is not the selection variable. Exact formation of
+`d_n` independent descendants forces target capital below source capital divided by `d_n`.
+Vanishing density selects a neutral target; Gaussian quotient--fusion realizes the bound exactly.
+This is the varying-source global properness law.
 
 ## 4. Conjecture/proof/failure ledger
 
@@ -161,6 +182,30 @@ experiment capital.
 **Live successor.**  Construct a source-normal comparison from a hypertranscendental prolongation
 tower to a sufficient macropacket tower and test whether its capital grows with depth.  Without that
 map, the slogan is ill-typed.
+
+### Loop G — positive quotient--fusion genesis already selects neutrality
+
+**Conjecture.** Since genesis is nonnegative and vanishes exactly at synchronized local gauges,
+positivity alone is a selection law.
+
+**Failure.** Every `Q>0` Gaussian genesis packet is formable at each finite depth
+`d<=floor(b/Q)` from a sufficiently informative finite source `G_b`. Nothing contradicts a
+nonzero finite packet.
+
+**Survivor.** Exact producer is cofinal formation: one fixed finite source cannot form unbounded
+independent genesis depth unless `Q=0`. Selection is properness of a production map, not positivity
+of one target value.
+
+### Loop H — unbounded total source information prevents selection
+
+**Conjecture.** If source capital diverges with aperture, no fixed-budget properness theorem can
+apply and information theory loses selection leverage.
+
+**Failure.** Formation spends capital per independent copy. Even `C(E_n)->infinity` selects
+neutrality when `C(E_n)/d_n->0` and exact depth `d_n` is formed.
+
+**Survivor.** Capital density, not total capital, is intensive selection coordinate. See
+`cofinal-capital-density-selection-and-gaussian-rate-region-law.md`.
 
 ## 5. Cross-organ reach and limit
 
@@ -232,3 +277,9 @@ field mechanism only until literal functors from non-statistical organs are cons
 
 - 2026-08-13 — infinite-divisibility producer conjecture killed; fixed-source capital survivor
   extracted and promoted to Stage 2 on paper.
+- 2026-08-13 — quotient--fusion genesis operationalized as Gaussian experiment; exact Gaussian
+  Blackwell depth, cofinal synchronization selection, and testing exponent promoted to Stage 2 on
+  paper.
+- 2026-08-13 — fixed-source law extended to varying sources by capital-density profile; vanishing
+  density selection, exact Gaussian rate region, and testing-blindness prediction promoted to Stage
+  2 on paper.
