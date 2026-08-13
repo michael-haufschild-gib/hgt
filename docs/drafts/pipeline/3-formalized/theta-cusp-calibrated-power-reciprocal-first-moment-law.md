@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM / THETA LIKELIHOOD / POSITIVE MEASURES / MOMENT CALIBRATION
 - **Paper proof:**
-  `../2-fully-proven/new_scientific_knowledge/other/theta-cusp-calibrated-power-reciprocal-first-moment-law.md`
+  `new_scientific_knowledge/other/theta-cusp-calibrated-power-reciprocal-first-moment-law.md`
 - **Lean module:**
   `formal/GaloisForLFunctions/RHTower/ThetaCuspCalibratedPowerReciprocalMomentLaw.lean`
 - **Status:** unconditional quantitative no-go and unique positive power-reciprocal survivor.

@@ -3,7 +3,7 @@
 - **ID:** `split-source-boundary-universality`
 - **Stage:** 3-formalized
 - **Paper proof:**
-  `../../2-fully-proven/new_scientific_knowledge/other/split-source-boundary-universality.md`
+  `other/split-source-boundary-universality.md`
 - **Umbrella:** `formal/GaloisForLFunctions/HTGeometry.lean`
 - **Status:** `[UNCONDITIONAL LEAN] [NOT RH]`
 

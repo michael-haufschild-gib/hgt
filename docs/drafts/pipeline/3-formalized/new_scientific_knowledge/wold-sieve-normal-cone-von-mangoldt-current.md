@@ -3,7 +3,7 @@
 - **ID:** `wold-sieve-normal-cone-von-mangoldt-current`
 - **Stage:** 3-formalized
 - **Paper proof:**
-  `../../2-fully-proven/new_scientific_knowledge/other/wold-sieve-normal-cone-von-mangoldt-current.md`
+  `other/wold-sieve-normal-cone-von-mangoldt-current.md`
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
 - **Status:** `[UNCONDITIONAL LEAN] [NOT RH]`
 

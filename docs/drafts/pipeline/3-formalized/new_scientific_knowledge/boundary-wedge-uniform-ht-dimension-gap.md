@@ -3,7 +3,7 @@
 - **ID:** `boundary-wedge-uniform-ht-dimension-gap`
 - **Stage:** 3-formalized
 - **Paper proof:**
-  `../../2-fully-proven/new_scientific_knowledge/other/boundary-wedge-uniform-ht-dimension-gap.md`
+  `other/boundary-wedge-uniform-ht-dimension-gap.md`
 - **Umbrella:** `formal/GaloisForLFunctions/HTGeometry.lean`
 - **Status:** `[UNCONDITIONAL LEAN]`
 

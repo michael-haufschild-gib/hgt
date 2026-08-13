@@ -12,7 +12,7 @@
   - `source-curved-prime-torus-conormal-temperedness.md`;
   - `singular-infinite-source-pointed-common-test-factorization.md`;
   - `../2-fully-proven/prime-sieve-wold-gamma-bv-relative-character.md`;
-  - `../2-fully-proven/new_scientific_knowledge/other/primitive-fibre-modular-renormalization-law.md`;
+  - `../3-formalized/new_scientific_knowledge/other/primitive-fibre-modular-renormalization-law.md`;
   - `formal/GaloisForLFunctions/RHTower/CompleteResolutionSourceCharacterSelectionLaw.lean`;
   - `formal/GaloisForLFunctions/RHTower/DeningerRamifiedTopConormalFiniteStageCocone.lean`.
 

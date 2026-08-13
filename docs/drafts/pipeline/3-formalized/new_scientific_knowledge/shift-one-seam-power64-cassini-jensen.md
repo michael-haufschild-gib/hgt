@@ -3,7 +3,7 @@
 - **ID:** `shift-one-seam-power64-cassini-jensen`
 - **Stage:** 3-formalized
 - **Paper proof:**
-  `../../2-fully-proven/new_scientific_knowledge/other/shift-one-seam-power64-cassini-jensen.md`
+  `other/shift-one-seam-power64-cassini-jensen.md`
 - **Lean module:**
   `formal/GaloisForLFunctions/RHTower/XiSquaredSeamCassiniGlobalJensenLaw.lean`
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`

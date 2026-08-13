@@ -1,7 +1,7 @@
 # Theta-cusp calibrated power-reciprocal first-moment law
 
 - **ID:** `theta-cusp-calibrated-power-reciprocal-first-moment-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** `THEOREM (paper)` · `[PROVED HERE]` · `[CORPUS-NOVEL EXACT SYNTHESIS]`
 - **Source:** Lean theorem bodies in
   `ThetaCuspCassiniMarkovBoundaryTransport.lean`,

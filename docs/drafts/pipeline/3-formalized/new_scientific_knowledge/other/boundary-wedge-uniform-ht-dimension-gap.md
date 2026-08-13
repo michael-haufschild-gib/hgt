@@ -1,7 +1,7 @@
 # Wedges of simplex boundaries have uniform intrinsic HT dimension two and faithful dimension four
 
 - **ID:** `boundary-wedge-uniform-ht-dimension-gap`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / INFINITE FAMILY OF HT CONSTRAINT GEOMETRIES
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** For every `r,s>=2`, the simplicial wedge
@@ -227,8 +227,14 @@ facet-evaluation row PP-admissible, excludes dimensions zero and one from two di
 integral values and global `Q`-independence, and exports
 `boundaryWedge_ppDim_eq_two` for every `r,s>=2`.
 
-The remaining Lean work before stage 3 is therefore only the analytic bridge defining the full
-intrinsic `htDim` realization and proving its equality with the already formalized `ppDim=2` value.
+The analytic bridge is now closed.  `BoundaryWedgeExponentialRealization.lean` builds the entire
+two-dimensional exponential realization (`boundaryWedgeHTRealizable_two_uncond`), and
+`BoundaryWedgeUniformHTDimensionGap.lean` proves `boundaryWedge_htDim_eq_two` and assembles the
+combined capstone `boundaryWedge_uniformHTDimensionGap`: for every `r,s>=2`,
+`htDim = ppDim = 2 < ffsDim = 4`.  Together with `boundaryWedge_geometry`
+(`BoundaryWedgeTwoThick.lean`: facet antichain, two-thickness, purity exactly when `r = s`),
+the full card statement is formalized unconditionally; targeted `lake build` and scratch
+`#print axioms` pass with only `propext`, `Classical.choice`, `Quot.sound` (2026-08-13).
 
 ## Parent-theory and novelty boundary
 

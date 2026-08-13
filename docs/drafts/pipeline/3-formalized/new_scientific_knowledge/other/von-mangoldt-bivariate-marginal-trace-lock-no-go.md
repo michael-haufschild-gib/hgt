@@ -1,7 +1,7 @@
 # Von Mangoldt bivariate marginal trace-lock no-go
 
 - **ID:** `von-mangoldt-bivariate-marginal-trace-lock-no-go`
-- **Stage:** 2 — fully proved on paper
+- **Stage:** 3-formalized
 - **Parent:** `SR-41`; `von-mangoldt-successor-transport-inertia-law.md`
 - **Type:** `[UNIVERSAL MARGINAL LAW] [SOURCE-SPECIFIC CLASS NO-GO]`
 - **Scientific status:** `[PROVED] [UNCONDITIONAL] [NOVELTY UNVERIFIED] [NOT RH]`

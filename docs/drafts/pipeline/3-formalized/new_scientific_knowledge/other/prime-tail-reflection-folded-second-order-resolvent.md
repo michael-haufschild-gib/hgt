@@ -1,7 +1,7 @@
 # Prime-tail reflection-folded second-order resolvent
 
 - **ID:** `prime-tail-reflection-folded-second-order-resolvent`
-- **Stage:** 2-fully-proven / complete theorem surface Lean-proved
+- **Stage:** 3-formalized / complete theorem surface Lean-proved
 - **Type:** THEOREM (paper) / SOURCE--DIVISOR BRIDGE
 - **Scientific status:** `[PROVED HERE] [CORPUS-NEW EXACT BRIDGE]`
   `[EXTERNAL NOVELTY PROVISIONAL] [NOT RH]`

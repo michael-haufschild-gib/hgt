@@ -20,8 +20,7 @@ Two rounds are reported:
 Both directions are approximations, so every row is a nomination to be checked by hand: a producer
 whose conclusion is a *container* of the interface, or an instance, stays invisible.
 -/
-import GaloisForLFunctions.HTGeometry
-import GaloisForLFunctions.RHTower
+import GaloisForLFunctions.MainTheorems
 
 open Lean Meta Elab Command
 
@@ -126,8 +125,8 @@ run_cmd liftTermElabM do
   logInfo m!"constants {nthm}; propDefs {propDefs.size}; consumed {consumers.size}; \
 never-concluded {s1.size}; ungrounded {s2.size}"
   logInfo m!"--- never concluded ---"
-  for r in s1[0:60] do
+  for r in s1 do
     logInfo m!"{r.1}  {r.2}   [{defMod.getD r.2 `_}]"
   logInfo m!"--- ungrounded (fixpoint) ---"
-  for r in s2[0:60] do
+  for r in s2 do
     logInfo m!"{r.1}  {r.2}   [{defMod.getD r.2 `_}]"

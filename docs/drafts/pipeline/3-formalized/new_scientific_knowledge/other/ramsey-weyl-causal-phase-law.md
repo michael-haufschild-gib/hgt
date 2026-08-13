@@ -1,7 +1,7 @@
 # Ramsey--Weyl causal phase law
 
 - **ID:** `ramsey-weyl-causal-phase-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / QUANTUM CLOCKS / CAUSAL PROPAGATOR / NONPERTURBATIVE MEASUREMENT
 - **Parent:** `../../1-in-progress/continuum-chronometric-equivalence-theorem.md`
 - **Status:** paper-proved; central-phase, Ramsey reconstruction, and branch-free phase-generator

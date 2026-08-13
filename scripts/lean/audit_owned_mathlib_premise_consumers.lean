@@ -10,8 +10,7 @@ Run from `formal/`:
 
     lake env lean ../scripts/lean/audit_owned_mathlib_premise_consumers.lean
 -/
-import GaloisForLFunctions.RHTower
-import GaloisForLFunctions.HTGeometry
+import GaloisForLFunctions.MainTheorems
 
 open Lean Meta Elab Command
 
@@ -106,6 +105,7 @@ run_cmd liftTermElabM do
   let env ← getEnv
   let mut rhtPremises : Std.HashMap PremiseKey (Array Name) := {}
   let mut htPremises : Std.HashMap PremiseKey (Array Name) := {}
+  let mut hmPremises : Std.HashMap PremiseKey (Array Name) := {}
   let mut produced : Std.HashSet PremiseKey := {}
   let mut declarations : Nat := 0
   for (name, info) in env.constants.toList do
@@ -119,13 +119,19 @@ run_cmd liftTermElabM do
       for key in result.1 do rhtPremises := addConsumer rhtPremises key name
     if (`GaloisForLFunctions.HTGeometry).isPrefixOf moduleName then
       for key in result.1 do htPremises := addConsumer htPremises key name
+    if (`GaloisForLFunctions.HilbertMetric).isPrefixOf moduleName then
+      for key in result.1 do hmPremises := addConsumer hmPremises key name
     for key in result.2 do produced := produced.insert key
   let rhtRows := unproducedRows rhtPremises produced
   let htRows := unproducedRows htPremises produced
+  let hmRows := unproducedRows hmPremises produced
   logInfo m!"scanned {declarations}; conclusionKeys {produced.size}"
   logInfo m!"=== RHTower: premiseKeys {rhtPremises.size}; unproduced {rhtRows.size} ==="
   for row in rhtRows do
     logInfo m!"{row.1.size}  {row.2.1}  {row.2.2}  <- {row.1}"
   logInfo m!"=== HTGeometry: premiseKeys {htPremises.size}; unproduced {htRows.size} ==="
   for row in htRows do
+    logInfo m!"{row.1.size}  {row.2.1}  {row.2.2}  <- {row.1}"
+  logInfo m!"=== HilbertMetric: premiseKeys {hmPremises.size}; unproduced {hmRows.size} ==="
+  for row in hmRows do
     logInfo m!"{row.1.size}  {row.2.1}  {row.2.2}  <- {row.1}"

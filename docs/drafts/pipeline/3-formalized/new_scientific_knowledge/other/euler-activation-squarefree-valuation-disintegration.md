@@ -24,9 +24,9 @@
 - **Parents:**
   - `../wold-shell-euler-activation-square.md`;
   - `../mobius-fixed-current-von-mangoldt-critical-transport-weld.md`;
-  - `../../3-formalized/needs-audit/xi-mobius-schur-valuation-marking.md`;
+  - `../../needs-audit/xi-mobius-schur-valuation-marking.md`;
   - `../needs-audit/xi-transverse-gamma-valuation-schur-translation.md`;
-  - `../../3-formalized/squarefree-fixed-current-right-half-ward-localization.md`.
+  - `../../squarefree-fixed-current-right-half-ward-localization.md`.
 - **Statement:** On the diagonal \(h=s\), the Wold--Euler activation holonomy is the positive
   squarefree partition function.  Primewise, its full valuation law is a canonical
   Bernoulli--geometric disintegration: radical/occupancy has the squarefree Gibbs law, while the

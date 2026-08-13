@@ -1,70 +1,73 @@
 # new_scientific_knowledge/other stage-3 sweep — ledger
 
-Goal (session-scoped stop hook): every card in
-`docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/other/` fully formalized
-unconditionally in Lean and moved to stage 3. 65 cards at start; 53 remain.
+Goal (session stop hook): every card in `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/other/`
+fully formalized unconditionally in Lean and moved to stage 3. 65 at start; **23 promoted 2026-08-13; 42 remain**.
 
-Promotion procedure (executed for Phase A, keep using):
-1. verify card's Lean modules exist + umbrella-reachable (transitive import OK);
-2. one batched foreground `lake build <mod1> <mod2> …` (26 modules → green, 10512 jobs);
-3. `#print axioms` scratch via `lake env lean` on capstones → must be ⊆ {propext, Classical.choice, Quot.sound};
-4. sed Stage line `2-fully-proven` → `3-formalized` (qualifiers kept);
-5. `git mv` card → `3-formalized/new_scientific_knowledge/other/`;
-6. if certificate `<name>.md` already occupies that name there, `git mv` cert → `<name>-formalized.md`;
-7. fix links: certs' `Paper proof:` old `../../2-fully-proven/nsk/other/X.md` → `other/X.md` (certs in nsk/) or `X.md` (certs in nsk/other/); moved cards' `../../3-formalized/new_scientific_knowledge/` → `../`.
-Namespaces vary per module: check `grep '^namespace'` before #print axioms
-(some use GaloisForLFunctions, some GaloisForLFunctions.HTGeometry, some RHTower).
-`formal lint passed` repo-wide on 2026-08-13.
+Promotion procedure that worked (Phase A + tranche 2): batched `lake build <mods>` foreground →
+`#print axioms` scratch on capstones (⊆ propext/Classical.choice/Quot.sound) → sed Stage line →
+`git mv` to 3-formalized/new_scientific_knowledge/other/ → rename clashing cert `<name>-formalized.md`
+→ fix Paper-proof/relative links (`grep -rn '2-fully-proven/new_scientific_knowledge/other/'` must
+come back clean). Namespaces vary (GaloisForLFunctions / GaloisForLFunctions.HTGeometry / RHTower /
+RHTower.Sieve / GaloisForLFunctions.UniformBoundaryWedge); check `grep '^namespace'` first.
 
-## DONE (moved to stage 3, 2026-08-13)
-bounded-relation-log-magnitude-hypertranscendence, charged-scalar-core-fixed-current-torsor,
-double-sine-defect-coset-differential-matroid, gaussian-torsion-language-hypertranscendence,
-torsion-universal-phase-polynomial-magnitude-hypertranscendence, complete-scalar-persistent-gauge-reduction,
-coordinate-intrinsic-fusion-kolchin-principal-filter-law, route-c2-zero-safe-current-multiplicity-tomography,
-scalar-differential-inversive-core-projective-law, von-mangoldt-toeplitz-countertrace-regularity-no-go,
-nonreal-factorial-slope-formal-hypertranscendence, double-sine-translation-annihilator
-(all: build green, capstone axioms clean; open boxes on cards are 3→4/novelty-audit only;
-double-sine-translation-annihilator's unchecked "Barnes reflection" box is an off-critical-path
-independent asset, main capstone daTranslationAnnihilator_doubleSine_imaginaryRay closed).
+## DONE (23): Phase A 12 = bounded-relation-log-magnitude-ht, charged-scalar-core, double-sine-defect-coset,
+gaussian-torsion-language, torsion-universal-phase, complete-scalar-persistent, coordinate-intrinsic-fusion,
+route-c2-zero-safe, scalar-differential-inversive, von-mangoldt-toeplitz, nonreal-factorial-slope,
+double-sine-translation-annihilator. Tranche2 11 = barnes-differential-source-face, split-source-boundary,
+primitive-fibre-modular, von-mangoldt-bivariate, wold-sieve-normal-cone, ramsey-weyl, shift-one-seam-power64,
+theta-cusp-calibrated, boundary-wedge-uniform-ht (stale para fixed, boundaryWedge_geometry is in ns
+GaloisForLFunctions.UniformBoundaryWedge), projective-prime-weyl-leakage, prime-tail-reflection-folded.
 
-## Tranche 2 — certificate exists at stage 3, gate not closed on paper card (verify then promote)
-- [ ] barnes-differential-source-face-matrix-factorization (cert s3/other; stage says exact theorem Lean-formalized)
-- [ ] split-source-boundary-universality (cert s3; stage: Lean-proved / final integration gate pending)
-- [ ] primitive-fibre-modular-renormalization-law (cert s3)
-- [ ] von-mangoldt-bivariate-marginal-trace-lock-no-go (cert s3 top-level)
-- [ ] wold-sieve-normal-cone-von-mangoldt-current (cert s3)
-- [ ] ramsey-weyl-causal-phase-law (cert s3 top-level; cert status "unconditional algebraic and phase-germ core" — check completeness vs card)
-- [ ] shift-one-seam-power64-cassini-jensen (cert s3)
-- [ ] theta-cusp-calibrated-power-reciprocal-first-moment-law (cert s3 top-level)
-- [ ] boundary-wedge-uniform-ht-dimension-gap (cert s3)
-- [ ] projective-prime-weyl-leakage-fock-normal-cone (stage: Lean-proved, external novelty audit preliminary — no cert found yet, check)
-- [ ] prime-tail-reflection-folded-second-order-resolvent (stage: Lean-proved)
+## ACTIVE CARD: universal-first-order-entire-cascade-unit-cost
+653KB work-log card. Frontier (from log parts 3–12, all 2026-08-09):
+- Item 1 (place above infinity): DONE — AlgebraicCascadePlace.exists_heightOneSpectrum_over_topInt.
+- Item 2' (ord_Q(minpoly'(α)) = e−1, the tame different at the place): parts 5–12 built
+  SeparableFactorDerivativeOrder (not_pow_dvd_derivative), IdealQuotientTransport
+  (mem_pow_iff_dvd_of_quotEquiv, not_mem_pow_of_deriv), DedekindOrderMonogenic
+  (exists_adjoin_eq_top_of_dedekind_finite), QuotientPowerMonogenic, ProductMonogenic,
+  DedekindLocalUniformizer. **REMAINING: the instantiation** — produce `h, g, e` for a given prime Q
+  from mathlib `KummerDedekind.normalizedFactorsMapEquivNormalizedFactorsMinPolyMk` +
+  `emultiplicity_factors_map_eq_emultiplicity`, i.e. close `ord_Q(𝔡) = e−1`, then the derivation
+  bound `w(∂_{X_m} f) ≥ w(f) + e`.
+- Item 3: restate the peel over the extended datum + Reduction I analytic place-selection
+  (Wiman–Valiron layer: MaximumTermCentralIndex, MaximumTermLogarithmicDerivative,
+  CircleMaximumCriticality, DiscreteJensenExp, MeanIndexComparison, BorelGrowthLemma exist).
+- REUSE: corpus already owns `DifferentExponentTame.differentIdeal_eq_span_pow` (tame different for
+  finite DVR extensions, trivial residue ext) + `RingOrdRamification.lean` (Ring.ord bridge) from the
+  stable-coframe campaign (memories research/tame_different_exponent_assembled_2026_08_06,
+  research/ring_ord_ramification_bridge_2026_08_06). Check whether item 2' closes by DVR-localising
+  at Q and applying differentIdeal_eq_span_pow instead of the Kummer–Dedekind route.
+- Open gate box line ~465: observability (helim) on a general cascade (Reduction III w/ algebraic law).
 
-## Tranche 3 — cards documenting partial/unknown Lean (read each, close gaps)
-all-depth-pair-face-signature-completeness, all-order-multiple-sine-stanley-reisner-differential-matroid,
-gauss-component-quasi-inner-residue-hierarchy, all-depth-compatible-pair-face-differential-matroid
-(explicitly: unconditional Lean proof OPEN), irrational-triptic-source-effectivity-character (3 open lean boxes),
-bessel-order-intensity-hypertranscendence (2 open), prime-valuation-dyadic-fermion-normal-cone-law,
-finite-archimedean-gamma-product-boundary-law, active-quasi-abelian-palette-exact-ht-dimension-classification,
-almost-periodic-autonomous-ade-finite-frequency-law, almost-periodic-implicit-ade-relative-frequency-law,
-archimedean-relative-prime-cocycle-curvature, critical-half-density-prime-tail-resolvent-law,
-noncompact-period-quotient-facet-escape-law, periodic-pencil-intrinsic-ht-dimension-two,
-prime-wold-accelerated-type-modular-drift-law, torusless-quasi-abelian-fixed-factor-all-order-jet-ampleness,
-universal-first-order-entire-cascade-unit-cost, fixed-divisor-full-complex-translation-freeness,
-prescribed-gap-process-order-one-maximal-ht-profield, symmetry-caged-fixed-divisor-full-orbit-freeness,
-abelian-multiplication-tail-manin-horizon, eigenplurivolume-log-crepant-orbifold,
-embedded-manin-horizon-isogeny-reconstruction, isogeny-tail-maurer-cartan-holography,
-prime-completion-annihilates-hypertranscendence-at-even-temperature,
-rational-coarse-graining-orbifold-tail-classification, toric-log-calabi-yau-tail,
-additive-heat-aperture-shifted-zeta-echo-ladder, power-canonical-product-exact-moment-borel-lattice-law,
-prime-occupation-polarized-gamma-phase-survival, prime-tail-hedenmalm-wiener-hopf-transgression
-
-## Tranche 4 — no Lean signal (likely full formalization needed)
-additive-heat-aperture-zeta-zero-echo, prime-euler-unit-tangent-completeness,
-differential-variational-building-balance-law, floquet-orbifold-tail-emergence,
-jet-horizon-translation-gauge-classification, nonlinear-rational-observation-curve-horizon-reconstruction,
-orbifold-tail-holographic-reconstruction, scalar-ht-horizon-celestial-sphere,
-prime-modulated-weyl-idealizer-collapse-on-xi-sampling, weighted-euler-tangent-global-graph-decoupling
+## Attack order for the remaining 42
+Bounded gaps (do first): universal-first-order-entire-cascade (ACTIVE), weighted-euler-tangent
+(construct 2nd factor: Fréchet O(Q₊)_R as LCS + instantiate pair-criterion; LpSingleAnnihilator etc.
+exist), power-canonical-product (Barnes-tail identification of the formalized transform theory),
+additive-heat-aperture-shifted-zeta-echo-ladder (Jonquière expansion + Gaussian asymptotic),
+gauss-component-quasi-inner (open core (T) m≥2, full proof plan written at card tail: band split
+J=⌊n/4⌋, finite Parseval; m=1 closed), all-order-multiple-sine (lower face layers (10)–(11)
+descent bookkeeping; 1 open box line 1078), prime-euler-unit-tangent (two-carrier separation Runge:
+compact set w/ connected complement; corpus has half-plane Runge oneGeneratorRungeDense_holoAlgebra,
+pole-pushing tendstoUniformlyOn_cauchyKernel_poly), noncompact-period-quotient (Siegel bound compact
+complex tori, d≥2), prime-modulated-weyl (needs: smooth jet interpolation, superlinear aperiodicity
+lemma, and an unconditional infinite-critical-zeros input — try Hardy's theorem instead of Conrey),
+floquet-orbifold-tail (needs parent classification below for Tail(R_i)=C).
+Deep/new-theory: rational-coarse-graining-orbifold-tail (Casale classification + Zariski-dense
+translation-deck (8) + jet transport), orbifold-tail-holographic (assemble w/ tail interface),
+all-depth-pair-face + irrational-triptic (elliptic principal parts + triptic DA-completeness; card
+warns formalizing shell alone is 'theatre'), abelian-multiplication-tail-manin + embedded-manin +
+isogeny-tail-maurer-cartan + jet-horizon (diff algebraic groups/Kolchin/Manin/DCF layer),
+differential-variational-building (Ore localization + buildings), eigenplurivolume (pluricanonical),
+toric-log-calabi-yau (toric + stable-field equality), bessel-order (Dreyfus DA-to-periodic-exponential
+special case), critical-half-density (atomic measure + distributional jump), almost-periodic ×2,
+archimedean-relative-prime-cocycle, active-quasi-abelian (full surface), torusless-quasi-abelian
+(Poincaré estimates), prescribed-gap-process, fixed-divisor-full-complex, symmetry-caged-fixed-divisor,
+prime-completion-annihilates, prime-occupation-polarized, prime-valuation-dyadic-fermion,
+prime-wold-accelerated, prime-tail-hedenmalm, additive-heat-aperture-zeta-zero-echo (polylog boundary
+asymptotics; card says formalize after audits — goal overrides), scalar-ht-horizon (exact meet + H³),
+nonlinear-rational-observation (depth-one inversion + arbitrary-depth branch separation assembly),
+differential-variational, jet-horizon, universal cards remaining in tranche 4.
 
 ## Session log
-- 2026-08-13: ledger created; Phase A (12 cards) audited and promoted; links reconciled; 53 remain.
+- 2026-08-13: ledger; Phase A 12 promoted; tranche2 11 promoted; links clean; started
+  universal-first-order-entire-cascade item 2' instantiation.

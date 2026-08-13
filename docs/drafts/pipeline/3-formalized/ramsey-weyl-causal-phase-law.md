@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM / QUANTUM CLOCKS / CAUSAL PROPAGATOR / NONPERTURBATIVE MEASUREMENT
 - **Paper proof:**
-  `../2-fully-proven/new_scientific_knowledge/other/ramsey-weyl-causal-phase-law.md`
+  `new_scientific_knowledge/other/ramsey-weyl-causal-phase-law.md`
 - **Lean:** `formal/GaloisForLFunctions/HTGeometry/ContinuumChronometricGravity.lean`
 - **Status:** unconditional algebraic and phase-germ core.
 

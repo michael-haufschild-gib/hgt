@@ -1,7 +1,7 @@
 # Split source-boundary universality
 
 - **ID:** `split-source-boundary-universality`
-- **Stage:** 2-fully-proven / complete theorem surface Lean-proved / final integration gate pending
+- **Stage:** 3-formalized / complete theorem surface Lean-proved / final integration gate pending
 - **Type:** THEOREM (paper) / Lean formalization complete
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** For observables valued in any split commutative group
@@ -280,7 +280,7 @@ capstone `automorphismFamily_mixedRaw_differentialFamilyMatroid_eRk_finset` is e
 every finite mixed packet.  The owning target, `HTGeometry` umbrella, and a scratch `#print axioms`
 audit pass using only `propext`, `Classical.choice`, and `Quot.sound`.  No theorem assumes the
 quotient representation or rank equality as input.  The Stage-3 formalization certificate is
-`../../3-formalized/new_scientific_knowledge/split-source-boundary-universality.md`.
+`../split-source-boundary-universality.md`.
 
 ## References checked
 

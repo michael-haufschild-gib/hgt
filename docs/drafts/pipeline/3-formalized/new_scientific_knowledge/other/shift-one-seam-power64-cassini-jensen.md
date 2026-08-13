@@ -1,7 +1,7 @@
 # Shift-one seam power-64 Cassini--Jensen source law
 
 - **ID:** `shift-one-seam-power64-cassini-jensen`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / new right-to-left source coordinate
 - **Scientific status:** `[PROVED HERE] [NEW SOURCE WELD] [NOT AN RH PROOF]`
 - **Lean consumers:**
@@ -179,4 +179,4 @@ The exact backward chain is
 
 The unchecked source inequality and RH are consumers of theorem `(3)`, not hypotheses or omitted
 parts of its equivalence.  Exact certificate:
-`../../3-formalized/new_scientific_knowledge/shift-one-seam-power64-cassini-jensen.md`.
+`../shift-one-seam-power64-cassini-jensen.md`.

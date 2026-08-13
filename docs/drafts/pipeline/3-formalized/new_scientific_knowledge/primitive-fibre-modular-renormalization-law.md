@@ -3,7 +3,7 @@
 - **ID:** `primitive-fibre-modular-renormalization-law`
 - **Stage:** 3-formalized
 - **Paper proof:**
-  `../../2-fully-proven/new_scientific_knowledge/other/primitive-fibre-modular-renormalization-law.md`
+  `other/primitive-fibre-modular-renormalization-law.md`
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
 - **Status:** `[UNCONDITIONAL LEAN] [NOT RH] [NO COMPUTATION]`
 

@@ -52,8 +52,8 @@ theorem laurentCoeff_shiftDiff_logDeriv_add_tau
     linear_combination hu
   have hmeroShift : MeromorphicAt (fun z ↦ logDeriv Y (z + τ + σ) - logDeriv Y (z + τ)) w := by
     have h₁ : MeromorphicAt (fun z ↦ logDeriv Y (z + τ + σ)) w := by
-      have h := meromorphicAt_comp_add (f := logDeriv Y) (z := w) (h := τ + σ)
-      have h' := h.mpr (hFmero (w + (τ + σ)) (Set.mem_univ _))
+      have h' : MeromorphicAt (fun z ↦ logDeriv Y (z + (τ + σ))) w :=
+        meromorphicAt_comp_add.mpr (hFmero (w + (τ + σ)) (Set.mem_univ _))
       have hfun : (fun z ↦ logDeriv Y (z + (τ + σ))) = fun z ↦ logDeriv Y (z + τ + σ) := by
         funext z
         rw [show z + (τ + σ) = z + τ + σ by ring]
@@ -170,7 +170,8 @@ theorem exists_lattice_reduction (hτ : 0 < τ.im) (x : ℂ) :
   set y : ℂ := x + (d : ℂ) * τ with hy
   have hyim : 0 ≤ y.im ∧ y.im ≤ τ.im := by
     have him : y.im = x.im - (⌊x.im / τ.im⌋ : ℝ) * τ.im := by
-      simp [hy, hd, Complex.add_im, Complex.mul_im, Complex.intCast_re, Complex.intCast_im]
+      simp only [hy, hd, Complex.add_im, Complex.mul_im, Complex.neg_re, Complex.neg_im,
+        Complex.intCast_re, Complex.intCast_im, Int.cast_neg]
       ring
     constructor
     · rw [him]
@@ -183,7 +184,7 @@ theorem exists_lattice_reduction (hτ : 0 < τ.im) (x : ℂ) :
   set v : ℂ := y + (c : ℂ) with hv
   have hvre : 0 ≤ v.re ∧ v.re ≤ 1 := by
     have hre : v.re = y.re - (⌊y.re⌋ : ℝ) := by
-      simp [hv, hc, Complex.add_re, Complex.intCast_re]
+      simp only [hv, hc, Complex.add_re, Complex.neg_re, Complex.intCast_re, Int.cast_neg]
       ring
     constructor
     · rw [hre]
@@ -204,9 +205,8 @@ theorem exists_lattice_reduction (hτ : 0 < τ.im) (x : ℂ) :
         have h₁ : |v.re| ≤ 1 := abs_le.mpr ⟨by linarith [hvre.1], hvre.2⟩
         have h₂ : |v.im| ≤ ‖τ‖ := by
           rw [hvim]
-          have : |y.im| ≤ τ.im := abs_le.mpr ⟨by linarith [hyim.1], hyim.2⟩
-          exact this.trans ((abs_le_self_of_nonneg (abs_nonneg τ.im) ▸ le_abs_self τ.im).trans
-            (Complex.abs_im_le_norm τ))
+          have hy₂ : |y.im| ≤ τ.im := abs_le.mpr ⟨by linarith [hyim.1], hyim.2⟩
+          exact hy₂.trans ((le_abs_self τ.im).trans (Complex.abs_im_le_norm τ))
         linarith
 
 /-- **The transported charge has finite support.**  Every charged class has a representative with
@@ -240,17 +240,13 @@ theorem finite_support_tripticChargeClass (hY : TripticMultiplicativeSource τ �
       shiftOrder_add_tau_of_source hY r
     have h₁ : shiftOrder Y σ (p + (m : ℂ) * σ + (c : ℂ) + (d : ℂ) * τ)
         = shiftOrder Y σ (p + (m : ℂ) * σ + (c : ℂ)) :=
-      eq_of_add_zsmul (f := fun r ↦ shiftOrder Y σ (r + 0)) (p := τ) (by
-        intro r
-        simpa using hτinv r) (p + (m : ℂ) * σ + (c : ℂ)) d |>.symm ▸ by
-          have := eq_of_add_zsmul (f := fun r ↦ shiftOrder Y σ r) (p := τ) hτinv
-            (p + (m : ℂ) * σ + (c : ℂ)) d
-          simpa using this
+      eq_of_add_zsmul (f := fun r ↦ shiftOrder Y σ r) (p := τ) hτinv
+        (p + (m : ℂ) * σ + (c : ℂ)) d
     have h₂ : shiftOrder Y σ (p + (m : ℂ) * σ + (c : ℂ))
         = shiftOrder Y σ (p + (m : ℂ) * σ) := by
-      have := eq_of_add_zsmul (f := fun r ↦ shiftOrder Y σ r) (p := 1) hone
+      have h₂' := eq_of_add_zsmul (f := fun r ↦ shiftOrder Y σ r) (p := 1) hone
         (p + (m : ℂ) * σ) c
-      simpa using this
+      rwa [mul_one] at h₂'
     rw [hv, h₁, h₂]
     exact hm
   refine ⟨v, ⟨?_, hvorder⟩, ?_⟩

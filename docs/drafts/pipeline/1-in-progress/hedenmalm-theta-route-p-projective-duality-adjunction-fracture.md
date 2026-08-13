@@ -6,7 +6,7 @@
 - **Status:** `[PAPER-PROVED] [LEAN DIRECT GREEN] [UMBRELLA-WIRED] [NOT RH]`
 - **Parent:** `hedenmalm-theta-mobius-prime-cell-squarefree-current.md`
 - **Corpus parents:**
-  - `../../2-fully-proven/new_scientific_knowledge/other/projective-prime-weyl-leakage-fock-normal-cone.md`;
+  - `../../3-formalized/new_scientific_knowledge/other/projective-prime-weyl-leakage-fock-normal-cone.md`;
   - `../../5-failed/hedenmalm-prime-normal-jordan-grade-separation.md`.
 
 ## Conjecture

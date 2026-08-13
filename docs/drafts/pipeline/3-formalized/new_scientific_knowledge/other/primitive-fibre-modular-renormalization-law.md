@@ -1,7 +1,7 @@
 # Primitive–fibre modular renormalization law
 
 - **ID:** `primitive-fibre-modular-renormalization-law`
-- **Stage:** 2 — dependency-closed paper proof
+- **Stage:** 3-formalized
 - **Type:** universal source law / exact RH-frontier classification
 - **Status:** `[PROVED HERE] [NO RH ASSUMPTION] [NO COMPUTATION]`
 - **Novelty:** `[CORPUS-NEW EXACT CROSS-FACTORIZATION] [EXTERNAL PRIORITY UNVERIFIED]`

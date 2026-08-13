@@ -11,8 +11,7 @@ Three ways a real producer hid from the first version, all measured this session
 This version emits the extra conclusion keys for the first two, so the nomination list is closer to
 genuine debt.  The premise side is unchanged.
 -/
-import GaloisForLFunctions.HTGeometry
-import GaloisForLFunctions.RHTower
+import GaloisForLFunctions.MainTheorems
 
 open Lean Meta Elab Command
 
@@ -78,7 +77,10 @@ partial def conclKeys (e : Expr) : MetaM (Array (Name × List Name)) := do
   | some h => return #[(h, projConsts e)]
   | none => return #[]
 
-def inArea (m : Name) : Bool := (`GaloisForLFunctions.RHTower).isPrefixOf m
+def inArea (m : Name) : Bool :=
+  (`GaloisForLFunctions.HilbertMetric).isPrefixOf m ||
+  (`GaloisForLFunctions.HTGeometry).isPrefixOf m ||
+  (`GaloisForLFunctions.RHTower).isPrefixOf m
 
 def scanOne (ty : Expr) (isInside : Bool) :
     MetaM (Array (Name × List Name) × Array (Name × List Name)) :=

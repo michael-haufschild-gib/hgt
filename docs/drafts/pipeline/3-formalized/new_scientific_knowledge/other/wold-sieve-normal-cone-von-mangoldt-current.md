@@ -1,7 +1,7 @@
 # The von Mangoldt current is the first normal stratum of the all-prime Wold sieve
 
 - **ID:** `wold-sieve-normal-cone-von-mangoldt-current`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** SOURCE OPERATOR/NORMAL-CONE THEOREM
 - **Scientific status:** `[PAPER PROOF COMPLETE] [NOT RH]`
   `[CORPUS-NEW SOURCE BRIDGE] [EXTERNAL NOVELTY PROVISIONAL]`

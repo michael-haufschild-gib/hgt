@@ -1,7 +1,7 @@
 # Projective-prime Weyl leakage realizes the squarefree Fock normal cone
 
 - **ID:** `projective-prime-weyl-leakage-fock-normal-cone`
-- **Stage:** 2-fully-proven / complete theorem surface Lean-proved, external novelty audit preliminary
+- **Stage:** 3-formalized / complete theorem surface Lean-proved, external novelty audit preliminary
 - **Type:** EXACT FINITE PRODUCER--REPORTER COMPARISON / ALL-PRIME NORMAL-CONE LIMIT
 - **Scientific status:** `[PAPER PROOF COMPLETE] [SOURCE-PURE] [NOT RH]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [SIGNIFICANCE PASS]`
