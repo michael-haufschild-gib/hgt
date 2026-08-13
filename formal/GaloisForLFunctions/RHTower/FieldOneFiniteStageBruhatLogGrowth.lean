@@ -54,15 +54,17 @@ private theorem tsum_finset_subtype_const
   rw [tsum_fintype]
   simp [nsmul_eq_mul]
 
-/-- Uniform sharp logarithmic growth for a pure Bruhat--Schwartz tensor. -/
-theorem fieldOneFiniteStageBruhatPureTensor_uniform_logGrowth
+/-- Uniform sharp logarithmic growth for the absolute orbit sum of a pure
+Bruhat--Schwartz tensor. -/
+theorem fieldOneFiniteStageBruhatPureTensor_norm_tsum_uniform_logGrowth
     (S : Finset (HeightOneSpectrum ℤ))
     (f : SchwartzMap ℝ ℂ)
     (phi : FieldOneFiniteStageFiniteBruhatSchwartz S) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (k : FieldOneFiniteStageNormOneTorus S) (t : ℝ), t ≤ 0 →
-      ‖fieldOneFiniteStageBruhatPeriodization S (f ⊗ₜ[ℂ] phi)
-          (fieldOneFiniteStageBruhatLogRayIdele S (fun v => (k v).1) t)‖ ≤
+      (∑' q : fieldOneSUnitSubgroup S,
+        ‖fieldOneFiniteStageBruhatPureTensorOrbit S f phi
+          (fieldOneFiniteStageBruhatLogRayIdele S (fun v => (k v).1) t) q‖) ≤
         C * (-t + 2) ^ Fintype.card ↥S := by
   classical
   obtain ⟨Bphi, hBphi⟩ :=
@@ -373,9 +375,7 @@ theorem fieldOneFiniteStageBruhatPureTensor_uniform_logGrowth
       hGsum).trans
     exact hGtsum
   have hsplit := hFsummable.sum_add_tsum_subtype_compl HF
-  have hnorm := norm_tsum_le_tsum_norm hFsummable
-  change ‖∑' q, F q‖ ≤ _
-  apply hnorm.trans
+  change (∑' q, ‖F q‖) ≤ _
   rw [← hsplit]
   calc
     (∑ q ∈ HF, ‖F q‖) + ∑' q : {q // q ∉ HF}, ‖F q.1‖ =
@@ -387,6 +387,69 @@ theorem fieldOneFiniteStageBruhatPureTensor_uniform_logGrowth
     _ = C * (-t + 2) ^ Fintype.card ↥S := by
       dsimp [C, B, s]
       ring
+
+/-- Uniform sharp logarithmic growth for a pure Bruhat--Schwartz tensor. -/
+theorem fieldOneFiniteStageBruhatPureTensor_uniform_logGrowth
+    (S : Finset (HeightOneSpectrum ℤ))
+    (f : SchwartzMap ℝ ℂ)
+    (phi : FieldOneFiniteStageFiniteBruhatSchwartz S) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∀ (k : FieldOneFiniteStageNormOneTorus S) (t : ℝ), t ≤ 0 →
+      ‖fieldOneFiniteStageBruhatPeriodization S (f ⊗ₜ[ℂ] phi)
+          (fieldOneFiniteStageBruhatLogRayIdele S (fun v => (k v).1) t)‖ ≤
+        C * (-t + 2) ^ Fintype.card ↥S := by
+  obtain ⟨C, hC, hbound⟩ :=
+    fieldOneFiniteStageBruhatPureTensor_norm_tsum_uniform_logGrowth S f phi
+  refine ⟨C, hC, fun k t ht => ?_⟩
+  rw [fieldOneFiniteStageBruhatPeriodization]
+  exact (norm_tsum_le_tsum_norm
+    (fieldOneFiniteStageBruhatPureTensorOrbit_summable S f phi
+      (fieldOneFiniteStageBruhatLogRayIdele S (fun v => (k v).1) t))).trans
+    (hbound k t ht)
+
+/-- Uniform sharp logarithmic growth for the absolute orbit sum of every
+finite-stage Bruhat--Schwartz tensor. -/
+theorem fieldOneFiniteStageBruhatTensor_norm_tsum_uniform_logGrowth
+    (S : Finset (HeightOneSpectrum ℤ))
+    (x : FieldOneFiniteStageBruhatSchwartz S) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∀ (k : FieldOneFiniteStageNormOneTorus S) (t : ℝ), t ≤ 0 →
+      (∑' q : fieldOneSUnitSubgroup S,
+        ‖fieldOneFiniteStageBruhatOrbit S x
+          (fieldOneFiniteStageBruhatLogRayIdele S (fun v => (k v).1) t) q‖) ≤
+        C * (-t + 2) ^ Fintype.card ↥S := by
+  induction x using TensorProduct.induction_on with
+  | zero =>
+      refine ⟨0, le_rfl, fun k t ht => ?_⟩
+      simp [fieldOneFiniteStageBruhatOrbit]
+  | tmul f phi =>
+      simpa only [fieldOneFiniteStageBruhatOrbit_tmul] using
+        fieldOneFiniteStageBruhatPureTensor_norm_tsum_uniform_logGrowth S f phi
+  | add x y hx hy =>
+      obtain ⟨Cx, hCx, hxbound⟩ := hx
+      obtain ⟨Cy, hCy, hybound⟩ := hy
+      refine ⟨Cx + Cy, add_nonneg hCx hCy, fun k t ht => ?_⟩
+      let u := fieldOneFiniteStageBruhatLogRayIdele S (fun v => (k v).1) t
+      have hsx := fieldOneFiniteStageBruhatOrbit_summable S x u
+      have hsy := fieldOneFiniteStageBruhatOrbit_summable S y u
+      have hsxy := fieldOneFiniteStageBruhatOrbit_summable S (x + y) u
+      calc
+        (∑' q, ‖fieldOneFiniteStageBruhatOrbit S (x + y) u q‖) ≤
+            ∑' q, (‖fieldOneFiniteStageBruhatOrbit S x u q‖ +
+              ‖fieldOneFiniteStageBruhatOrbit S y u q‖) := by
+          apply hsxy.tsum_le_tsum
+          · intro q
+            simpa [fieldOneFiniteStageBruhatOrbit] using
+              norm_add_le (fieldOneFiniteStageBruhatOrbit S x u q)
+                (fieldOneFiniteStageBruhatOrbit S y u q)
+          · exact hsx.add hsy
+        _ = (∑' q, ‖fieldOneFiniteStageBruhatOrbit S x u q‖) +
+              ∑' q, ‖fieldOneFiniteStageBruhatOrbit S y u q‖ :=
+          hsx.tsum_add hsy
+        _ ≤ Cx * (-t + 2) ^ Fintype.card ↥S +
+              Cy * (-t + 2) ^ Fintype.card ↥S :=
+          add_le_add (hxbound k t ht) (hybound k t ht)
+        _ = (Cx + Cy) * (-t + 2) ^ Fintype.card ↥S := by ring
 
 /-- Uniform sharp logarithmic growth for every finite-stage Bruhat--Schwartz
 tensor.  This is the full small-module assertion of Connes--Marcolli

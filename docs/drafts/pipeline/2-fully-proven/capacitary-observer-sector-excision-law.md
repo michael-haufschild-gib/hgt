@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper)
 - **Source:** `first-entrance-gate-capacity-discrepancy-law.md`, `first-entrance-gate-renewal-prefix-law.md`
-- **Statement:** Circuit complexity is logarithmic loss of a capacity-normalized gate-accessibility likelihood; every subexponential observer sector sees only target-capacity mass, while estimating the global likelihood requires growing replica order.
+- **Statement:** Circuit complexity is logarithmic loss of a capacity-normalized gate-accessibility likelihood; every subexponential observer sector sees only target-capacity mass, while the full nonlinear reporter is equivalent at exponential scale to one linear Abel average of circuit incidence.
 
 ## Goal
 
@@ -13,7 +13,10 @@ ensembles can remain efficiently distinguishable from Haar at every time, wherea
 complexity is expected to become maximal.  The theorem below proves that these statements are not
 in tension: every gate-invariant observer sector with subexponential resolvent kernel is invisible
 at the exponentially small capacity scale relevant to the complete circuit union.  Only the
-complementary high-mode Bellman remainder can obstruct growth.
+complementary high-mode Bellman remainder can obstruct growth in that decomposition.  Theorem J
+then proves that the same unresolved content has an equivalent-scale linear occupation-resolvent
+form, so growing replicas and nonlinear Bellman control are possible methods rather than mandatory
+invariants.
 
 ## Gates
 
@@ -888,6 +891,537 @@ alone is insufficient: an easy component pays its rarity only through `log(1/w)`
 carrier below the threshold (11ao) may remain in the ensemble without changing the Brown exponent.
 This replaces an informal exceptional-set instruction by a quantitative source-mixture law.
 
+### Theorem I (completed-phase accessibility plateau)
+
+Let `(Z,mu)` be a compact probability space, `Phi:Z->X` continuous, and assume the uniform circuit
+target bound
+
+\[
+ \mu\{z:d(\Phi(z),W\chi)\le\epsilon\}\le B
+ \tag{11ap}
+\]
+
+for every gate word `W`, including the empty word.  Then the discounted first-entrance potential
+obeys
+
+\[
+ \boxed{
+ \int_Zh_{A_\epsilon}(\Phi(z))\,d\mu(z)
+ \le {B\over1-a}.}
+ \tag{11aq}
+\]
+
+Consequently, for every `theta>0`,
+
+\[
+ \boxed{
+ \mu\{z:h_{A_\epsilon}(\Phi(z))\ge\theta\}
+ \le {B\over(1-a)\theta},}
+ \tag{11ar}
+\]
+
+and for every circuit depth `s`,
+
+\[
+ \boxed{
+ \mu\{z:C_\epsilon(\Phi(z))\le s\}
+ \le{B\over1-a}\left({M\over a}\right)^s.}
+ \tag{11as}
+\]
+
+#### Proof
+
+For each word `W` of length `ell`, the inverse-word identity gives
+
+\[
+ W^{-1}\Phi(z)\in A_\epsilon
+ \quad\Longleftrightarrow\quad
+ d(\Phi(z),W\chi)\le\epsilon.
+\]
+
+Dropping the first-hit restriction only increases the discounted path sum, so pointwise
+
+\[
+ h_{A_\epsilon}(\Phi(z))
+ \le\sum_{\ell\ge0}\sum_{|W|=\ell}
+ \left({a\over M}\right)^\ell
+ \mathbf1_{\{d(\Phi(z),W\chi)\le\epsilon\}}.
+ \tag{11at}
+\]
+
+Tonelli, (11ap), and at most `M^ell` words of length `ell` give
+
+\[
+ \int h_A\,d\mu
+ \le\sum_{\ell\ge0}M^\ell(a/M)^\ell B
+ =B\sum_{\ell\ge0}a^\ell={B\over1-a}.
+\]
+
+Markov proves (11ar).  If `C_epsilon(Phi(z))<=s`, one shortest successful word contributes at
+least `(a/M)^s` to first-entrance mass, so (11ar) with `theta=(a/M)^s` proves (11as).  QED.
+
+### Corollary I.1 (static phase completion and recurrence)
+
+Apply Theorem I to the equal-weight spectral phase torus of a `D`-level Choi trajectory.  The
+formally proved phase-coherence target theorem supplies, for `0<delta<1/2`,
+
+\[
+ B=B_D(\delta)
+ :=D e^{D/2}
+ \left({\pi(1-\sqrt{1-4\delta^2})\over2}\right)^{(D-1)/2}.
+ \tag{11au}
+\]
+
+Hence
+
+\[
+ \boxed{
+ \int_{\mathbb T^D}h_{A_\delta}(\Phi(z))\,dz
+ \le{B_D(\delta)\over1-a}.}
+ \tag{11av}
+\]
+
+If the projective spectral gaps are rationally independent, unique ergodicity transfers the same
+upper bound to completed physical time:
+
+\[
+ \boxed{
+ \limsup_{T\to\infty}{1\over2T}
+ \int_{-T}^T h_{A_\delta}(\Phi_H(t))\,dt
+ \le{B_D(\delta)\over1-a}.}
+ \tag{11aw}
+\]
+
+At every `delta`-return time, `h_(A_delta)(Phi_H(t))=1`.  If
+`B_D(delta)/(1-a)<theta<1`, accessibility below `theta` occurs syndetically: there is a finite
+`L` such that every interval of length `L` contains a time with `h_(A_delta)(Phi_H(t))<theta`.
+
+#### Proof
+
+Only the physical-time transfer and syndetic claim remain.  Truncate the right side of (11at) at
+word length `N`.  It is a finite positive sum of indicators of closed phase-torus sets, hence an
+upper-semicontinuous bounded function.  Portmanteau for the uniquely ergodic phase flow bounds its
+upper time average by its torus integral.  The omitted tail is uniformly at most
+
+\[
+ \sum_{\ell>N}a^\ell={a^{N+1}\over1-a}.
+\]
+
+Letting `N->infinity` proves (11aw).  The infinite all-word majorant in (11at) is the uniform limit
+of upper-semicontinuous functions and is therefore upper semicontinuous.  Its torus mean is at most
+`B_D(delta)/(1-a)<theta`, so its strict sublevel set at `theta` is nonempty and open.  Minimality of
+the projective phase rotation makes visits to every nonempty open set syndetic.  Since `h_A` is
+bounded above by this majorant, each visit has `h_A<theta`.  The return statement is the boundary
+condition `h_A=1` on `A`.  QED.
+
+Corollary I.1 is an unconditional completed-time accessibility plateau plus exact recurrence
+reamplification statement.  It contains no circuitwise maximum, design approximation, Haar-random
+eigenbasis, or stochastic drive.  It does not prove growth: it neither locates the first
+accessibility drop nor gives its Brown-rate time dependence.
+
+### Corollary I.2 (zero-loss exponential compression of the circuit union)
+
+For every integer `s>=1`, choose
+
+\[
+ a_s={s\over s+1}.
+ \tag{11ax}
+\]
+
+Then Theorem I gives
+
+\[
+ \boxed{
+ \mu\{C_\epsilon(\Phi(z))\le s\}
+ \le (s+1)\left(1+{1\over s}\right)^sM^sB
+ \le e(s+1)M^sB.}
+ \tag{11ay}
+\]
+
+Moreover `a_s` minimizes `a^{-s}/(1-a)` over `0<a<1`.
+
+#### Proof
+
+Insert (11ax) into (11as).  The elementary inequality `(1+1/s)^s<=e` gives the second bound.
+For optimality, differentiate
+
+\[
+ -s\log a-\log(1-a).
+\]
+
+Its derivative vanishes exactly at `a=s/(s+1)`, and its second derivative is positive.  QED.
+
+Thus one accessibility reporter at an optimized fugacity replaces the complete depth-`s` circuit
+union while losing only `log(s+1)+1` in the exponent.  The direct union remains sharper in its
+prefactor; accessibility is stronger as a representation because the same scalar also has exact
+return value, capacity normalization, observer-sector decomposition, and a physical-time plateau.
+
+### Corollary I.3 (all-late-time fixed-shell accessibility plateau)
+
+Let `H(theta)` be the unit coefficient-sphere nearest-neighbour two-local Pauli ensemble from
+`fixed-shell-angular-dephasing-static-local-plateau-law.md`, and let `Phi_(H(theta))(t)` be its Choi
+trajectory.  Then
+
+\[
+ \boxed{
+ \limsup_{t\to\infty}
+ \mathbb E_{\theta}
+ h_{A_\delta}(\Phi_{H(\theta)}(t))
+ \le{B_D(\delta)\over1-a}.}
+ \tag{11az}
+\]
+
+Consequently, for every `theta_0>0`,
+
+\[
+ \boxed{
+ \limsup_{t\to\infty}
+ \Pr_\theta\!\left\{
+ h_{A_\delta}(\Phi_{H(\theta)}(t))\ge\theta_0
+ \right}
+ \le{B_D(\delta)\over(1-a)\theta_0},}
+ \tag{11ba}
+\]
+
+and
+
+\[
+ \boxed{
+ \limsup_{t\to\infty}
+ \Pr_\theta\{C_\delta(\Phi_{H(\theta)}(t))\le s\}
+ \le{B_D(\delta)\over1-a}\left({M\over a}\right)^s.}
+ \tag{11bb}
+\]
+
+The same-time local conserved-source witness remains nonzero for every member of the shell and
+every time.  Thus every sufficiently late common time has an accessibility plateau and exponential
+circuit hardness with high shell probability while the ensemble remains efficiently distinguishable
+from Haar.
+
+#### Proof
+
+The fixed-shell angular-dephasing theorem proves weak convergence of the joint angular--projective
+phase law to spherical angular measure times projective Haar phase measure.  Use the word-length
+`N` truncation of the all-word majorant (11at) on each simple-spectrum eigenchart.  It is a bounded
+upper-semicontinuous function of the angular--phase pair.  Portmanteau bounds its limiting upper
+expectation by its product-measure integral.  The universal phase-target estimate (11au) is uniform
+in the eigenbasis and every circuit target, so Theorem I bounds that product integral by
+`B_D(delta)/(1-a)`.  The omitted tail is uniformly at most `a^(N+1)/(1-a)`.  Exhaust the null
+spectral discriminant by compact simple-spectrum charts and let `N->infinity`; this proves (11az).
+Markov gives (11ba), and the pointwise implication
+`C_delta<=s => h_(A_delta)>=(a/M)^s` gives (11bb).  The local-witness statement is the exact
+all-time conserved-source theorem already proved for this shell.  QED.
+
+Corollary I.3 is stronger than radial Gaussian mixing: every Hamiltonian has the same normalized
+interaction strength.  It is also stronger than a late subsequence: the `limsup` controls every
+sufficiently late common time.  Its threshold is non-effective in `D`, so it does not solve Brown
+onset.
+
+### Imported Theorem J (renewal-linearized circuit-incidence law)
+
+This is Corollaries 2.2--2.4 of `first-entrance-gate-renewal-prefix-law.md`, restated here because
+its linear form becomes load-bearing after Theorem I.  The renewal identity itself is not new.
+
+Define the linear discounted occupation resolvent
+
+\[
+ g_{A,a}:=(I-aP)^{-1}\mathbf1_A
+ =\sum_{\ell\ge0}a^\ell P^\ell\mathbf1_A.
+ \tag{11bc}
+\]
+
+For every starting point,
+
+\[
+ \boxed{
+ (1-a)g_{A,a}(x)\le h_A(x)\le g_{A,a}(x).}
+ \tag{11bd}
+\]
+
+More precisely, if `X_tau_A` is the first entrance point, then
+
+\[
+ \boxed{
+ g_{A,a}(x)
+ =\mathbb E_x\!\left[
+   a^{\tau_A}g_{A,a}(X_{\tau_A})
+   \mathbf1_{\{\tau_A<\infty\}}
+  \right].}
+ \tag{11be}
+\]
+
+For every finite positive endpoint measure `nu`, put
+
+\[
+ b_\ell(\nu,A):=\int P^\ell\mathbf1_A\,d\nu,
+ \qquad
+ Z_a(\nu,A):=\sum_{\ell\ge0}a^\ell b_\ell(\nu,A).
+ \tag{11bf}
+\]
+
+For the uniform inverse-gate walk,
+
+\[
+ b_\ell(\nu,A)
+ ={1\over M^\ell}\sum_{|W|=\ell}\nu(WA),
+ \tag{11bg}
+\]
+
+with the harmless inverse convention determined by the chosen action.  Therefore
+
+\[
+ \boxed{
+ (1-a)Z_a(\nu,A)
+ \le\int h_A\,d\nu
+ \le Z_a(\nu,A).}
+ \tag{11bh}
+\]
+
+If `C_epsilon(x)` is finite, then the linear reporter satisfies
+
+\[
+ \boxed{
+ \left({a\over M}\right)^{C_\epsilon(x)}
+ \le g_{A_\epsilon,a}(x)
+ \le {a^{C_\epsilon(x)}\over1-a}.}
+ \tag{11bi}
+\]
+
+Consequently
+
+\[
+ \boxed{
+ \nu\{C_\epsilon\le s\}
+ \le\left({M\over a}\right)^s Z_a(\nu,A_\epsilon).}
+ \tag{11bj}
+\]
+
+This scale is reversible: if `p=nu{C_epsilon<=s}`, then
+
+\[
+ \boxed{
+ Z_a(\nu,A_\epsilon)
+ \ge p\left({a\over M}\right)^s.}
+ \tag{11bk}
+\]
+
+Finally, every eigenfunction in (3) obeys the exact linear source law
+
+\[
+ \boxed{
+ \langle g_{A,a},\phi_j\rangle_\pi
+ ={\langle\mathbf1_A,\phi_j\rangle_\pi
+   \over1-a\lambda_j},
+ \qquad
+ \int g_{A,a}\,d\pi={\pi(A)\over1-a}.}
+ \tag{11bl}
+\]
+
+#### Proof
+
+The Neumann series in (11bc) converges monotonically and is the expected discounted occupation
+time
+
+\[
+ g_{A,a}(x)=\mathbb E_x\sum_{\ell\ge0}a^\ell\mathbf1_A(X_\ell).
+\]
+
+There is no contribution before `tau_A`.  The strong Markov property at `tau_A` therefore gives
+(11be).  On `A`, the `ell=0` term gives `g_(A,a)>=1`, while the geometric series gives
+`g_(A,a)<=1/(1-a)`.  Substitution in (11be) proves (11bd).  Tonelli and the uniform word expansion
+of `P^ell` give (11bf)--(11bg); integration of (11bd) proves (11bh).
+
+The lower half of (11bi) follows from `g>=h` and (11b).  Before a shortest successful word of
+length `C_epsilon(x)` no occupation is possible, so every term in (11bc) has
+`ell>=C_epsilon(x)`; summing the remaining geometric tail proves the upper half.  On
+`{C_epsilon<=s}`, the lower half of (11bi) is at least `(a/M)^s`.  Integrating gives both
+(11bj) and (11bk).  Applying `(I-aP)g_(A,a)=1_A` against each eigenfunction proves the first
+identity in (11bl); the constant eigenfunction gives the second.  QED.
+
+### Corollary J.1 (one geometric-circuit collision replaces the complete union)
+
+Let `L` be independent of `x` with
+
+\[
+ \Pr\{L=\ell\}=(1-a)a^\ell,
+ \qquad \ell=0,1,\ldots,
+ \tag{11bn}
+\]
+
+and, conditional on `L=ell`, let `W_L` be one uniformly random length-`ell` gate word.  For
+`x` drawn from the normalized endpoint law `nu`, define
+
+\[
+ p_{\rm coll}(\nu,A;a)
+ :=\Pr\{W_L^{-1}x\in A\}.
+\]
+
+Then
+
+\[
+ \boxed{
+ p_{\rm coll}=(1-a)Z_a(\nu,A),
+ \qquad
+ p_{\rm coll}\le\int h_A\,d\nu
+ \le{p_{\rm coll}\over1-a}.}
+ \tag{11bo}
+\]
+
+Consequently
+
+\[
+ \boxed{
+ \nu\{C_\epsilon\le s\}
+ \le {1\over1-a}\left({M\over a}\right)^s
+ p_{\rm coll}(\nu,A_\epsilon;a),}
+ \tag{11bp}
+\]
+
+and the reverse scale bound is
+
+\[
+ \boxed{
+ p_{\rm coll}(\nu,A_\epsilon;a)
+ \ge(1-a)\nu\{C_\epsilon\le s\}
+       \left({a\over M}\right)^s.}
+ \tag{11bq}
+\]
+
+At the depth-optimal fugacity `a_s=s/(s+1)`, the geometric circuit has exact mean length
+`E L=s`, and
+
+\[
+ \boxed{
+ \nu\{C_\epsilon\le s\}
+ \le e(s+1)M^s
+ p_{\rm coll}(\nu,A_\epsilon;a_s).}
+ \tag{11br}
+\]
+
+#### Proof
+
+Expand the collision probability first in `L` and then in its uniform word.  Equations
+(11bf)--(11bg) give `p_coll=(1-a)Z_a`.  Substitute this identity in (11bh), (11bj), and (11bk).
+For `a_s=s/(s+1)`, the geometric mean is `a_s/(1-a_s)=s`, while
+`(1+1/s)^s<=e`; this proves (11br).  QED.
+
+Thus optimal fugacity is not merely a calculus choice: it matches the tested shortcut depth to the
+mean length of one independent random circuit.  The remaining ordinary-static theorem can be
+stated as anti-collision between the physical endpoint and that single geometric random-circuit
+ensemble.  It is still exponentially demanding by (11bq).
+
+### Theorem K (all-late same-Hamiltonian hardening shoulder)
+
+Fix `0<epsilon_-<epsilon_+` and put `gamma=epsilon_+-epsilon_-`.  For the fixed-shell Hamiltonian
+`H(theta)` of Corollary I.3, define the uniform simulation envelope
+
+\[
+ S_n(u,\gamma)
+ :=\sup_\theta\min\left\{|w|:
+ \|W_w-(e^{-iuH(\theta)}\otimes I)\|_{\rm op}\le\gamma
+ \right\}.
+ \tag{11bs}
+\]
+
+For every `U>=0`, integer `s>=0`, and `0<a<1`,
+
+\[
+ \boxed{
+ \begin{aligned}
+ \limsup_{T\to\infty}\Pr_\theta\bigl\{\exists u\in[0,U]:\;&
+ C_{\epsilon_-}(\Phi_{H(\theta)}(T-u))\\
+ &\le s-S_n(u,\gamma)\bigr\}
+ \le {B_D(\epsilon_+)\over1-a}
+       \left({M\over a}\right)^s .
+ \end{aligned}}
+ \tag{11bt}
+\]
+
+In particular, put
+
+\[
+ U_n(s,\gamma)
+ :=\sup\left\{U\ge0:
+   \sup_{0\le u\le U}S_n(u,\gamma)\le{s\over2}
+  \right\}.
+ \tag{11bu}
+\]
+
+Then
+
+\[
+ \boxed{
+ \limsup_{T\to\infty}\Pr_\theta\left\{
+  \inf_{0\le u\le U_n(s,\gamma)}
+  C_{\epsilon_-}(\Phi_{H(\theta)}(T-u))\le{s\over2}
+ \right\}
+ \le {B_D(\epsilon_+)\over1-a}
+       \left({M\over a}\right)^s.}
+ \tag{11bv}
+\]
+
+For a polynomial-size local gate dictionary and fixed `a`, choose
+
+\[
+ s_D=\left\lfloor{\beta D\over\log(M_n/a)}\right\rfloor
+\]
+
+with `beta` below the positive completed-phase exponent of `B_D(epsilon_+)`.  Equivalently, at
+optimized fugacity choose `s_D=Theta(D/log M_n)` with
+`s_D log(M_n/a_(s_D))<=beta D`.  Standard time-independent local-Hamiltonian simulation,
+uniformly on the fixed coefficient shell, gives
+
+\[
+ U_n(s_D,\gamma)\ge2^{n(1-o(1))},
+\]
+
+while the right side of (11bv) is `exp[-Omega(D)]` for fixed `a`, or for the optimized
+`a=a_(s_D)`.  Throughout the same shoulder the exact conserved local-source witness remains
+nonzero.
+
+#### Proof
+
+The deterministic hardening-cone inequality from
+`fixed-shell-transversality-onset-hardening-cone-law.md` says
+
+\[
+ C_{\epsilon_+}(\Phi_H(T))
+ \le C_{\epsilon_-}(\Phi_H(T-u))+S_n(u,\gamma).
+ \tag{11bw}
+\]
+
+Hence the event inside (11bt), even though it quantifies over a continuum of times, is contained
+in `{C_(epsilon_+)(Phi_H(T))<=s}`.  Corollary I.3 with `delta=epsilon_+` proves (11bt), with no time
+mesh and no union loss.  Definition (11bu) gives (11bv).  The shell has `O(n)` bounded local Pauli
+terms.  The uniform fixed-accuracy simulation theorem used by the hardening-cone parent bounds
+`S_n(u,gamma)` by `(n(1+u))^(1+o(1))`; inserting `s_D=Theta(D/log M_n)` yields the stated
+`2^(n(1-o(1)))` shoulder.  The phase-cap exponent and the condition on `beta` make the probability
+exponent negative.  The all-time local witness is unchanged by restricting to this event.  QED.
+
+Theorem K proves a Brown-scale *backward lower envelope* attached to every sufficiently late common
+endpoint time.  It is pathwise for each Hamiltonian selected by that endpoint event and costs no
+continuum union.  It does not locate the first plateau time, force monotonicity above the envelope,
+or anchor a ramp at `t=0`; recurrence forbids replacing the time-dependent high-probability set by
+one fixed set valid for all late times.
+
+Imported Theorem J is the exact incidence-normalized survivor.  It counts circuit words with their true
+multiplicity in (11bg), retains every repeated occupation sheet in `g_(A,a)`, and removes those
+repetitions by first entrance only through the sharp universal factor in (11bd).  The nonlinear
+Bellman reporter and the linear Abel incidence profile therefore carry the same exponential
+information.  At Brown depth, proving
+
+\[
+ \boxed{
+ Z_a(\nu_t,A_\epsilon)
+ \le\exp\!\left[-s_D(t)\log(M/a)-\kappa D\right]}
+ \tag{11bm}
+\]
+
+is sufficient for an `exp(-kappa D)` complete-shortcut bound, and (11bk) shows that this exponent
+cannot be improved without additional information.  The open object is now one length-averaged,
+positive incidence profile, not a maximum over targets, a growing-replica pseudodeterminant, or an
+unknown equilibrium charge.  Equation (11bm) itself is not proved here.
+
 ## 4. Brown-scale blindness of subexponential observers
 
 Consider a sequence with Hilbert-space dimension `D->infinity`.  Suppose
@@ -909,7 +1443,8 @@ for fixed `a`, `alpha>0`, and `beta>=0`.  If
 \]
 
 then the entire observer-sector term on the right of (11) is exponentially vanishing.  Thus only
-`R^+_{E_D,a}` can prevent a Brown-depth lower bound.
+`R^+_{E_D,a}` can prevent a Brown-depth lower bound through Theorem B; Theorem J supplies the
+alternative linear Abel-incidence route.
 
 In particular, the `k(D)`-copy unitary observer sector in Corollary A.3 has
 
@@ -993,14 +1528,25 @@ An easy carrier of endpoint-law mass `w` enters source-relative surprisal at cos
 entropy as in (11ao).  Polynomial-codimension rarity cannot be silently discarded from an
 exponential-tail theorem.
 
-### C7. The high-mode Bellman remainder has Brown-rate decay for ordinary static-local dynamics
+### C7. Completed phase controls only individual circuit layers
 
-Verdict: `[FROZEN PRIMARY CONJECTURE; OPEN]`.
+Verdict: `[FALSIFIED; STRONGER SURVIVOR PROVED]` by Theorem I.
 
-For the Gaussian coefficient ensemble on the full nearest-neighbour two-local Pauli shell, fix
-`a<1/M`.  On the prescribed geometric Brown skeleton, after the target-independent spectral-return
-excision and the named capacity-compatible fast-forwardable-carrier excision already defined in the
-parent programme, freeze the following scale-correct pair.
+Discounted path weights cancel gate-word branching exactly after phase averaging.  The entire
+first-entrance accessibility reporter has completed-phase mean at most `B_D(delta)/(1-a)`, not only
+each finite circuit layer.  Unique ergodicity transfers this to completed physical time, and
+accessibility drops are syndetic.  The theorem closes the plateau/recurrence reporter law but gives
+no first-drop time.
+
+### C8. The high-mode Bellman remainder has Brown-rate decay for ordinary static-local dynamics
+
+Verdict: `[OPEN SUFFICIENT FORM; SUPERSEDED AS PRIMARY BY C9]`.
+
+For the Gaussian coefficient ensemble on the full nearest-neighbour two-local Pauli shell, use
+either a fixed `0<a<1` or the depth-optimal fugacity `a_D=s_D/(s_D+1)` from Corollary I.2.  On the
+prescribed geometric Brown skeleton, after the target-independent spectral-return excision and the
+named capacity-compatible fast-forwardable-carrier excision already defined in the parent programme,
+freeze the following scale-correct pair.
 
 For the projective-state branch, where `Q_D=Theta(D)`,
 
@@ -1010,7 +1556,7 @@ For the projective-state branch, where `Q_D=Theta(D)`,
  \mathbb E_H\!\left[
   \mathbf1_{R_D(H,t)}\mathfrak A_{A_D,a}(V_{H,t})
  \right]=\exp[o(D)].}
- \tag{C6-S}
+ \tag{C8-S}
 \]
 
 For a Choi/unitary branch, no bound on `X_D` alone is frozen.  The scale-correct claim is instead
@@ -1020,7 +1566,7 @@ For a Choi/unitary branch, no bound on `X_D` alone is frozen.  The scale-correct
  \inf_{t\in\mathcal T_D}
  \left(Q_D^{\mathrm{eff}}(t)-s_D(t)\log(M/a)\right)
  \ge\kappa D}
- \tag{C6-C}
+ \tag{C8-C}
 \]
 
 for one `kappa>0` at the intended Brown depth.  This allows `X_D=Theta(D^2)` when it pays only the
@@ -1028,8 +1574,8 @@ ambient-to-static-support codimension.
 
 At the first certified recurrence window, pointwise accessibility returns to its
 reciprocal-capacity value, so the unexcised pointwise accessibility surprisal `-log h_A` collapses
-to zero on the recurrent coefficient set.  Statements (C6-S)--(C6-C) are frozen as the truth-hunch;
-their shape is not chosen around a visible proof route.
+to zero on the recurrent coefficient set.  Statements (C8-S)--(C8-C) remain a scale-correct
+sufficient truth-hunch; Theorem J shows that they are not the unique invariant a proof must control.
 
 The remaining core is now strictly smaller:
 
@@ -1043,18 +1589,45 @@ on the geometric Brown skeleton, after the common return and fast-forwardable-ca
 Unlike global Haar convergence, (15) asks only that source-relative accessibility surprisal beat
 circuit entropy.  Theorem G proves that this pays the entire complete circuit union.  Any future
 growing-replica or Bellman argument should be centered against `Pi_E` before estimating this
-normalized quantity.  In the projective-state branch, (C6-S) is one sufficient way to prove (15);
+normalized quantity.  In the projective-state branch, (C8-S) is one sufficient way to prove (15);
 it is not imposed on the Choi branch.
+
+### C9. Brown escape requires targetwise or growing-replica coarea control
+
+Verdict: `[FALSIFIED AS A NECESSITY; EXISTING LINEAR SURVIVOR REEXPOSED]` by imported Theorem J.
+
+The exact Brown-scale target is the return/carrier-excised Abel incidence bound (11bm), with `nu_t`
+allowed to be the corresponding subprobability law.  It averages the occupied image over all words
+at each length before summing lengths, preserves word multiplicity, and is linearly generated by
+`1_A`.  Thus a targetwise pseudodeterminant lower tail is one possible sufficient method, not the
+mathematical invariant that must be estimated.  A proof of (11bm) may instead use cancellation,
+geometry, or circuit-distribution structure visible only after the word average.
+
+This does not make the remaining estimate easy.  The factor `(M/a)^s` in (11bj) is sharp by
+(11bk), so `Z_a` still has to reach the full capacity exponent on the Brown skeleton.  The gain is
+structural: the open core is a single positive linear resolvent matrix coefficient rather than a
+complete circuit union or nonlinear first-entrance remainder.
+
+### C10. An all-late annealed plateau cannot yield a same-Hamiltonian time interval without a mesh
+
+Verdict: `[FALSIFIED; STRONGER SURVIVOR PROVED]` by Theorem K.
+
+One hard endpoint deterministically casts the entire backward simulation-cost cone.  Therefore the
+same high-probability Hamiltonian set selected at time `T` is hard on a continuum of preceding times,
+with no grid union and no probability loss.  The survivor is a Brown-scale backward lower envelope,
+not monotone growth from the laboratory origin.
 
 ## 6. Hostile audit
 
 1. **Classical core.**  Equilibrium charge, spectral calculus, and reproducing kernels are standard.
    Novelty is claimed only for the observer-excised complete-circuit reduction and its exact
    locality--complexity consequence.
-2. **No Brown growth yet.**  Theorem B isolates but does not bound (15).  It removes the permanent
-   locality sector from the open core; it does not solve the high-mode static reuse problem.
-3. **Fixed fugacity.**  If `a` approaches one exponentially fast, `(1-a)^-1` may erase the gain.
-   Brown tropicalization uses fixed `a`, for which this issue is absent.
+2. **No Brown growth yet.**  Theorems B and G isolate but do not prove (15).  Theorem I closes
+   completed-time accessibility plateau and recurrence, not first-drop time or a linear ramp.
+   Theorem J gives the equivalent-scale linear target (11bm), but does not prove it for ordinary
+   local-Hamiltonian ensembles.
+3. **Fugacity scale.**  If `a` approaches one exponentially fast, `(1-a)^-1` may erase the gain.
+   Fixed `a` is safe; the depth-optimal `a=s/(s+1)` costs only the polynomial factor `s+1`.
 4. **Observer sector must be identified.**  Corollary A.2 makes dimension sufficient for
    homogeneous invariant sectors, and Corollary A.3 covers the standard `k`-copy unitary
    matrix-coefficient space.  An arbitrary efficient experiment must still be represented in a
@@ -1086,7 +1659,17 @@ it is not imposed on the Choi branch.
    `-log cap=Theta(D^2)` while its static phase support has only `Theta(D)` effective target
    surprisal.  The accessibility excess `X_D` absorbs this codimension; imposing `X_D=o(D)` there
    would be false or needlessly strong.
-13. **Lean boundary.**  No theorem from this card may enter a final manuscript until its exact
+13. **Reporter compression does not sharpen the direct union prefactor.**  Equation (11as) has
+   factors `a^(-s)/(1-a)`.  Corollary I.2 reduces this to `e(s+1)`, preserving the exponential
+   rate but not improving direct circuit counting.  Its gain is one reporter that simultaneously
+   encodes every depth, capacity, plateau, and recurrence.
+14. **Linearization is not anti-concentration.**  Renewal removes repeated-return and Bellman
+   bookkeeping only.  It supplies no numerical upper bound on the averaged incidence coefficients
+   `b_ell(nu_t,A)` at Brown time.
+15. **Backward shoulder is not initial Brown growth.**  Theorem K attaches a deterministic lower
+   envelope to a late hard endpoint.  It neither bounds first plateau entry nor excludes earlier
+   complexity fluctuations and incubation.
+16. **Lean boundary.**  No theorem from this card may enter a final manuscript until its exact
    finite-dimensional form is formalized and audited.  Lean work is intentionally deferred during
    the active corpus refactor.
 
@@ -1094,6 +1677,12 @@ it is not imposed on the Choi branch.
 
 - Gaudilliere--Landim, *A Dirichlet principle for non reversible Markov chains and some recurrence
   theorems*, arXiv:1111.2445, represents the classical capacity/Poisson background.
+- The strong-Markov decomposition of a Green occupation kernel through first entrance is classical;
+  see Proposition 6.4 in Singh's *Advanced Probability Theory* notes and the occupation identities
+  in Aldous--Fill, *Reversible Markov Chains and Random Walks on Graphs*.  No novelty is claimed for
+  (11be) alone.  The candidate advance is its scale-sharp composition with gate-word incidence,
+  robust word complexity, return multiplicity, and the Brown circuit-entropy threshold
+  (11bf)--(11bm).
 - Kunisky--Wein--Bandeira, *Notes on Computational Hardness of Hypothesis Testing: Predictions
   using the Low-Degree Likelihood Ratio*, arXiv:1907.11636, studies low-degree projection as a
   predictor of statistical computational hardness.  It does not derive the exact
@@ -1111,6 +1700,20 @@ it is not imposed on the Choi branch.
   arXiv:1710.02625, obtains steady complexity growth for a specially engineered universal static
   Hamiltonian under computational assumptions.  It does not give the unconditional ordinary-shell
   high-mode estimate (15).
+- Oszmaniec--Kotowski--Horodecki--Hunter-Jones, *Saturation and recurrence of quantum complexity in
+  random local quantum dynamics*, arXiv:2205.09734, proves saturation and recurrence for random
+  circuits and stochastic Hamiltonians through high designs.  It does not treat the deterministic
+  static spectral phase orbit or the first-entrance accessibility reporter (11av)--(11aw).
+- Balasubramanian--Caputa--Magan--Wu, *Quantum chaos and the complexity of spread of states*,
+  arXiv:2202.06957, relates a Krylov/spread complexity to survival amplitude and spectral
+  statistics.  That complexity is not gate word complexity, and its survival amplitude is not the
+  gate first-entrance likelihood used here.
+- Haferkamp--Faist--Kothakonda--Eisert--Yunger Halpern, *Linear growth of quantum circuit
+  complexity*, proves forward growth for refreshed random circuits.  Hamiltonian-simulation theory
+  supplies the upper simulator used in (11bw).  Targeted search located neither an all-late
+  fixed-strength static-local Choi plateau nor its no-mesh same-Hamiltonian backward-shoulder
+  composition.  This absence is not priority evidence; Theorem K's external novelty remains
+  provisional pending specialist review.
 
 ## 8. Exact frontier change
 
@@ -1122,7 +1725,7 @@ Before this theorem, the open problem mixed two logically different effects:
  \text{failure to hit short-circuit targets}.
 \]
 
-After Theorem B they separate exactly:
+After Theorem B they separate exactly at the nonlinear level:
 
 \[
  \boxed{
@@ -1131,7 +1734,7 @@ After Theorem B they separate exactly:
  \text{capacity-suppressed and harmless},
  \qquad
  \text{high-mode Bellman remainder}
- =\text{sole static shortcut core}.}
+ =\text{remaining nonlinear shortcut core}.}
 \]
 
 Theorem D adds the quantitative uncertainty principle
@@ -1142,9 +1745,11 @@ Theorem D adds the quantitative uncertainty principle
  \le {\operatorname{cap}_a(A)\times\text{observer dimension}\over(1-a)^2}.}
 \]
 
-Exponential recurrence capacity therefore forces growing replica order before any static-dynamics
-estimate begins.  For projective-state `epsilon`-balls this identifies the order-`D/log D` observer
-scale as intrinsic rather than a union-bound artifact; no identical Choi scaling is asserted.
+Exponential recurrence capacity therefore forces growing replica order for any observer-sector
+representation of the global reporter.  For projective-state `epsilon`-balls this identifies the
+order-`D/log D` observer scale as intrinsic rather than a union-bound artifact; no identical Choi
+scaling is asserted.  Theorem J later shows that growing replicas are not mandatory for the
+dynamical estimate itself.
 
 Theorems E--F then identify the missing universal primitive:
 
@@ -1162,6 +1767,29 @@ Theorems E--F then identify the missing universal primitive:
 The accessibility likelihood is globally exponentially non-Haar yet asymptotically absent from
 every polynomial-copy sector.  Complexity therefore measures loss of gate accessibility, not
 production of Haar randomness.
+
+Theorem J then linearizes the remaining frontier without losing its exponent:
+
+\[
+ \boxed{
+ Z_a(\nu,A)
+ =\sum_{\ell\ge0}{a^\ell\over M^\ell}
+   \sum_{|W|=\ell}\nu(WA),
+ \qquad
+ (1-a)Z_a\le\int h_A\,d\nu\le Z_a.}
+\]
+
+Thus the exact ordinary-static target is a Brown-rate upper bound on one positive Abel average of
+occupied circuit incidence.  Complete targetwise coarea, growing replicas, and nonlinear Bellman
+control remain possible proof methods, but none is logically necessary.  Theorem J does not prove
+that Brown-rate estimate.
+
+Theorem K supplies the complementary time geometry already available unconditionally: once any
+late endpoint reaches the phase-cap plateau, local simulation forces the same Hamiltonian to carry
+a nearly linear backward lower envelope over `2^(n(1-o(1)))` physical time, with the endpoint's
+full high probability and no time-net loss.  The unproved part of Brown growth is therefore the
+laboratory-time anchor/first escape, not the existence of a long local ramp shoulder adjacent to a
+certified plateau endpoint.
 
 This is the positive advance.  It proves that locality's permanent visibility is compatible with
 maximal complexity without appealing to Haar randomness, and it tells the next proof exactly which

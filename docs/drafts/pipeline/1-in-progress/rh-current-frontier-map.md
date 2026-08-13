@@ -5649,18 +5649,24 @@ narrow target through bandwidth `N/H` by moment matching.
 it by a uniform `9/80` length deficit. It proves each over-height zeta/log atom subtracts `9/10`
 from exact height-weighted amplitude, window relevance gives total exponent `tau<=mu`, and
 derivative excision plus one complementary mean square has exponents
-`-1+2tau(1-alpha)-s` and `-2+2tau(1-alpha)`. Both enter first receiver when
-`mu(1-alpha)<=1`; trivial cardinality enters it when `mu(1-alpha)>=1`. Literal box selection is
-closed above `alpha>1-(89/100)/mu`. Modules direct-check and imports are wired; final umbrella
-build remains pending.
+`-1+2tau(1-alpha)-s` and `-2+2tau(1-alpha)`. The literal cutoff gives a stronger rigidity law:
+for `mu<=8`, every Möbius atom is strictly sub-height, so every over-height giant is zeta/log and
+has `s>=1`. Throughout `alpha>=19/25`, both derivative exponents then lie `2/25` inside first
+receiver; after arbitrary fixed-polylog normalization a strict `1/25` reserve remains. This
+removes the former equality obstruction at `mu(1-alpha)=1`.
+
+`MaynardLowOrdinateDerivativeReceiver.lean` proves the exact unraised complement energy with
+polylog exponent `2w+2^(2w)-1`, nonempty erase-complement, literal box factorization, derivative-
+excised Montgomery count, and exact power identities reducing that count to the two canonical
+exponents. Both modules direct-check and imports are wired; final umbrella build remains pending.
 
 **Open core.** Route T has two equivalent live analytic charts, but only one current first
 producer.
 
-- In the Maynard chart, first compose derivative-factor excision with the literal complementary
-  finite-set mean square on `19/9<mu<=8`, retaining exact fixed-polylog costs at boundary
-  `mu(1-alpha)=1`. Then compose full low/middle/high count with literal consecutive-prime-gap
-  moment and centered Route-T current. Sharp Möbius propagation, endpoint-long exclusion,
+- In the Maynard chart, absorb the now-explicit derivative-complement width/energy polylog into
+  the formal `1/25` reserve, sum literal labels on `19/9<mu<=8`, and join historical all-amplitude
+  count. Then compose full low/middle/high count with literal consecutive-prime-gap moment and
+  centered Route-T current. Sharp Möbius propagation, endpoint-long exclusion,
   window relevance, coloring, normalized-band count alternatives, polynomial threshold, zeta
   growth, zero-free region, inverse-zeta bound, and Perron packaging are no longer gaps.
 - In the Wold/Deninger chart, establish signed or distributional continuation of the
@@ -10653,3 +10659,60 @@ Direct Lean and named module build pass (`11977/11977`); the module is wired int
 umbrella. All public theorems audit to only `[propext, Classical.choice, Quot.sound]`; forbidden
 declaration/computation scan is clean. Repository lint was attempted and failed only on unrelated
 pre-existing/untracked modules unreachable from `GaloisForLFunctions.RHTower`.
+
+### Frankenstein exterior lane: mixed reflection projector now has a source-native horizontal clock
+
+`HedenmalmPrimeGammaExteriorReflectionProjector.lean` proves the exact ordered Cauchy--Binet
+expansion and a mixed-covariance three-clock projector. Prime clocks are contragredient while the
+horizontal clock is covariant, so Cesaro averaging selects exactly
+
+```text
+sigma = 1 - conj(rho).
+```
+
+This removes every global cross-zero minor before scalarization. The two ordered reflected minors
+collapse to one half of a Pluecker square. With the Abel row weight and two fixed adjacent critical
+features, the square is positive norm energy, and summing reporter fibres plus both orientations
+lands exactly on `xiWardGreenExteriorPacketEnergy`.
+
+`HedenmalmExteriorCayleyAbelGreenLanding.lean` independently closes Green-factor provenance. For
+horizontal rate `x` and `u=realCayley(x)`, finite source-orbit polynomials converge for `|R|<1` to
+
+```text
+2 i (1-u)/(1+R u),
+```
+
+whose `R=1` boundary is `-2/x`, the required transverse reciprocal. The line pole is removable
+because the adjacent exterior determinant is already zero at `x=0`.
+
+The further module `HedenmalmExteriorSourceNativePrimeWardClock.lean` removes the remaining
+abstract-clock provenance defect. One literal normalized integer translation of the fixed
+Hedenmalm source has squared gain `A=p^(2 Re(rho)-1)`. Existing source Julia theory identifies
+
+```text
+C_p=(A-1)/(A+1)
+```
+
+as its Ward half-plane Cayley coordinate. The new unit clock `U_p=realCayley(C_p)` has norm one,
+is reciprocal under critical-line reflection, and is injective in horizontal position. Two prime
+ordinate clocks plus this fixed-source clock still select exactly the reflected partner. Lean then
+rebuilds the complete determinant and proves
+
+```text
+source-native three-clock determinant packet
+  -> xiWardGreenExteriorPacketEnergy S.
+```
+
+This is a genuine cross-route closure: theta prime translation supplies the clock, Ward Julia
+geometry makes it bounded, mixed exterior covariance removes cross minors, and Cayley--Abel
+boundary supplies Green normalization. Direct Lean and exact leaf builds pass (`12992/12992` for
+the projector and `12997/12997` for the source-native clock); audited public theorems use only
+`[propext, Classical.choice, Quot.sound]`; both modules are umbrella-wired. No umbrella build was
+run.
+
+Exact remaining producer is narrower but still open. Finite packet restriction and divisor row
+assembly must be commuted through the unconditional Weil/absolute-Euler prime--Gamma expansion,
+yielding an actual four-leg source expression for every finite approximant. That expression then
+needs an absolute bound below the indivisible quantum `4*(96/145)^2`. Calling the present
+divisor-finite determinant itself a prime--Gamma estimate would be theatre; no such bound or RH is
+claimed.

@@ -1,7 +1,7 @@
 # Singular maximal-HT carriers saturate the canonical Toeplitz weld graph
 
 - **ID:** `singular-maximal-ht-toeplitz-weld-graph-saturation`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized
 - **Type:** THEOREM / COFINAL CARRIER-GRAPH PHASE LAW
 - **Lane:** general hypertranscendence; singular Herglotz carriers; operator-relation geometry
 - **Scientific status:** `[CIRCLE GRAPH/UNITARY LAW FORMALIZED UNCONDITIONALLY; REAL-LINE NEVANLINNA/TRANSVERSALITY INPUTS REMAIN] [NOVELTY UNVERIFIED]`
@@ -534,3 +534,16 @@ bound `|V^m| <= |V|_HS^m / sqrt(m!)` generates `exp(c|z|^2)`, order two rather t
 small-tail split only improves the constant.  The route that remains is entire-function theoretic
 (real zeros with summable reciprocals, then a genus-zero Hadamard product), and Hadamard
 factorization is absent from mathlib.
+
+## Log — the real-line Nevanlinna gate is closed `[PROVED]`
+
+The card's last formalization gate ("unconditional Nevanlinna-family construction for the residual
+real-line phase") is discharged by `HTGeometry.nevExtremalFamily` together with
+`HTGeometry.analyticNevCarrierFamilyMaximalTranslationInputs`; the residual-phase capstone is
+stated without a structure argument in
+`HTGeometry/AnalyticNevCofinalCholeskyUnconditional.lean`.  The circle graph-saturation, unitary
+repair, Gram reconstruction and weld-bound capstones are already unconditional
+(`pureSingularCarrier_trichotomy`, `exists_circleCanonicalCarrierUnitary`,
+`circleToeplitzGram_bernsteinSzegoMoment_eq`,
+`bernsteinSzego_polynomial_weld_quadratic_bounds`).  Promoted to `3-formalized/nad`; the remaining
+gates are external literature audits.

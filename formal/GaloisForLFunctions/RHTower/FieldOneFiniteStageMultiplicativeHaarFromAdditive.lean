@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.FieldOneFiniteStageIdeleFundamentalDomain
 import GaloisForLFunctions.RHTower.FieldOneFiniteStageIdeleLocusMeasure
+import GaloisForLFunctions.RHTower.FieldOneFiniteStageIdeleClassHaarSplitting
 import Mathlib.MeasureTheory.Measure.Haar.Unique
 import Mathlib.MeasureTheory.Measure.WithDensity
 
@@ -222,11 +223,21 @@ def fieldOneFiniteStageIdeleModuleInvDensity
     (u : FieldOneFiniteStageIdele S) : ℝ≥0∞ :=
   ((fieldOneFiniteStageModule S u)⁻¹ : ℝ≥0)
 
+theorem fieldOneFiniteStageModule_ne_zero
+    (S : Finset (HeightOneSpectrum ℤ))
+    (u : FieldOneFiniteStageIdele S) :
+    fieldOneFiniteStageModule S u ≠ 0 := by
+  intro hu
+  have h := map_mul_eq_one (fieldOneFiniteStageModule S) (mul_inv_cancel u)
+  rw [hu, zero_mul] at h
+  exact zero_ne_one h
+
 theorem fieldOneFiniteStageIdeleModuleInvDensity_continuous
     (S : Finset (HeightOneSpectrum ℤ)) :
     Continuous (fieldOneFiniteStageIdeleModuleInvDensity S) := by
   exact ENNReal.continuous_coe.comp
-    (continuous_inv₀.comp (fieldOneFiniteStageModule_continuous S))
+    ((fieldOneFiniteStageModule_continuous S).inv₀
+      (fieldOneFiniteStageModule_ne_zero S))
 
 theorem fieldOneFiniteStageIdeleModuleInvDensity_mul_left
     (S : Finset (HeightOneSpectrum ℤ))
@@ -234,15 +245,8 @@ theorem fieldOneFiniteStageIdeleModuleInvDensity_mul_left
     fieldOneFiniteStageIdeleModuleInvDensity S (u⁻¹ * x) =
       (fieldOneFiniteStageModule S u : ℝ≥0∞) *
         fieldOneFiniteStageIdeleModuleInvDensity S x := by
-  simp only [fieldOneFiniteStageIdeleModuleInvDensity, map_mul]
-  have hu : fieldOneFiniteStageModule S u ≠ 0 :=
-    (map_ne_zero_iff (fieldOneFiniteStageModule S)).2 (Units.ne_zero <|
-      (fieldOneFiniteStageModule S).toHomUnits u)
-  rw [show fieldOneFiniteStageModule S u⁻¹ =
-      (fieldOneFiniteStageModule S u)⁻¹ by
-    exact map_inv₀ (fieldOneFiniteStageModule S) hu]
-  rw [inv_mul, inv_inv]
-  norm_cast
+  simp [fieldOneFiniteStageIdeleModuleInvDensity, map_mul,
+    MonoidHom.map_inv, mul_comm]
 
 /-- Multiplicative measure obtained by dividing pulled-back additive Haar by the module. -/
 def fieldOneFiniteStageIdeleMultiplicativeFromAdditive
@@ -262,9 +266,12 @@ instance fieldOneFiniteStageIdeleMultiplicativeFromAdditive_isMulLeftInvariant
         (u * ·) := rfl
     have hesymm : (e.symm : FieldOneFiniteStageIdele S →
         FieldOneFiniteStageIdele S) = (u⁻¹ * ·) := rfl
+    have hdensityMeas : Measurable
+        (fieldOneFiniteStageIdeleModuleInvDensity S) :=
+      (fieldOneFiniteStageIdeleModuleInvDensity_continuous S).measurable
     rw [fieldOneFiniteStageIdeleMultiplicativeFromAdditive,
       ← he, map_withDensity_measurableEquiv e _ _
-        (fieldOneFiniteStageIdeleModuleInvDensity_continuous S).measurable,
+        hdensityMeas,
       he, fieldOneFiniteStageIdeleAdditivePullback_map_mul_left,
       withDensity_smul_measure, hesymm]
     have hdensity :
@@ -273,18 +280,218 @@ instance fieldOneFiniteStageIdeleMultiplicativeFromAdditive_isMulLeftInvariant
             fieldOneFiniteStageIdeleModuleInvDensity S := by
       funext x
       exact fieldOneFiniteStageIdeleModuleInvDensity_mul_left S u x
-    rw [hdensity, withDensity_smul,
+    rw [hdensity, withDensity_smul _ hdensityMeas,
       smul_smul]
     have hu0 : (fieldOneFiniteStageModule S u : ℝ≥0∞) ≠ 0 := by
-      simp
+      exact ENNReal.coe_ne_zero.2 (fieldOneFiniteStageModule_ne_zero S u)
     have huTop : (fieldOneFiniteStageModule S u : ℝ≥0∞) ≠ ∞ :=
       ENNReal.coe_ne_top
     rw [show (fieldOneFiniteStageModule S u⁻¹ : ℝ≥0∞) =
         (fieldOneFiniteStageModule S u : ℝ≥0∞)⁻¹ by
-      rw [map_inv₀]
-      · exact ENNReal.coe_inv (by simp)
-      · simp,
+      rw [MonoidHom.map_inv]
+      exact ENNReal.coe_inv (fieldOneFiniteStageModule_ne_zero S u),
       ENNReal.inv_mul_cancel hu0 huTop, one_smul]
+
+theorem fieldOneFiniteStageIdeleMultiplicativeFromAdditive_open_pos
+    (S : Finset (HeightOneSpectrum ℤ))
+    {U : Set (FieldOneFiniteStageIdele S)}
+    (hU : IsOpen U) (hne : U.Nonempty) :
+    fieldOneFiniteStageIdeleMultiplicativeFromAdditive S U ≠ 0 := by
+  rw [fieldOneFiniteStageIdeleMultiplicativeFromAdditive,
+    withDensity_apply _ hU.measurableSet]
+  apply ne_of_gt
+  rw [setLIntegral_pos_iff
+    (fieldOneFiniteStageIdeleModuleInvDensity_continuous S).measurable]
+  have hsupport : Function.support
+      (fieldOneFiniteStageIdeleModuleInvDensity S) = Set.univ := by
+    ext x
+    simp only [Function.mem_support, Set.mem_univ, iff_true]
+    exact ENNReal.coe_ne_zero.2 <|
+      inv_ne_zero (fieldOneFiniteStageModule_ne_zero S x)
+  rw [hsupport, Set.univ_inter]
+  exact pos_iff_ne_zero.2 <| IsOpenPosMeasure.open_pos U hU hne
+
+theorem fieldOneFiniteStageIdeleMultiplicativeFromAdditive_compact_lt_top
+    (S : Finset (HeightOneSpectrum ℤ))
+    {K : Set (FieldOneFiniteStageIdele S)} (hK : IsCompact K) :
+    fieldOneFiniteStageIdeleMultiplicativeFromAdditive S K < ∞ := by
+  let dNN : FieldOneFiniteStageIdele S → ℝ≥0 := fun u =>
+    (fieldOneFiniteStageModule S u)⁻¹
+  have hdNN : Continuous dNN :=
+    (fieldOneFiniteStageModule_continuous S).inv₀
+      (fieldOneFiniteStageModule_ne_zero S)
+  obtain ⟨C, hC⟩ := (hK.bddAbove_image hdNN.continuousOn)
+  have hbound : ∀ x ∈ K,
+      fieldOneFiniteStageIdeleModuleInvDensity S x ≤ (C : ℝ≥0∞) := by
+    intro x hx
+    exact ENNReal.coe_le_coe.2 (hC ⟨x, hx, rfl⟩)
+  calc
+    fieldOneFiniteStageIdeleMultiplicativeFromAdditive S K =
+        ∫⁻ x in K, fieldOneFiniteStageIdeleModuleInvDensity S x
+          ∂fieldOneFiniteStageIdeleAdditivePullbackMeasure S := by
+      rw [fieldOneFiniteStageIdeleMultiplicativeFromAdditive,
+        withDensity_apply _ hK.measurableSet]
+    _ ≤ ∫⁻ _x in K, (C : ℝ≥0∞)
+        ∂fieldOneFiniteStageIdeleAdditivePullbackMeasure S :=
+      setLIntegral_mono measurable_const hbound
+    _ = (C : ℝ≥0∞) * fieldOneFiniteStageIdeleAdditivePullbackMeasure S K :=
+      setLIntegral_const K (C : ℝ≥0∞)
+    _ < ∞ := ENNReal.mul_lt_top ENNReal.coe_lt_top hK.measure_lt_top
+
+instance fieldOneFiniteStageIdeleMultiplicativeFromAdditive_isHaar
+    (S : Finset (HeightOneSpectrum ℤ)) :
+    IsHaarMeasure
+      (fieldOneFiniteStageIdeleMultiplicativeFromAdditive S) where
+  lt_top_of_isCompact := by
+    intro K hK
+    exact fieldOneFiniteStageIdeleMultiplicativeFromAdditive_compact_lt_top S hK
+  open_pos := by
+    intro U hU hne
+    exact fieldOneFiniteStageIdeleMultiplicativeFromAdditive_open_pos S hU hne
+
+/-! ## Fundamental-domain product Haar and uniqueness -/
+
+noncomputable instance fieldOneFiniteStageSUnitImageCountable
+    (S : Finset (HeightOneSpectrum ℤ)) :
+    Countable (fieldOneFiniteStageSUnitImage S) := by
+  letI : Countable ℚˣ := Units.val_injective.countable
+  letI : Countable (fieldOneSUnitSubgroup S) := Subtype.countable
+  let f : fieldOneSUnitSubgroup S → fieldOneFiniteStageSUnitImage S :=
+    fun q => ⟨fieldOneFiniteStageDiagonalUnit S q.1,
+      fieldOneFiniteStageDiagonalUnit_mem_sUnitImage S q⟩
+  apply Function.Surjective.countable (f := f)
+  intro u
+  have hu := u.2
+  change u.1 ∈ Subgroup.map
+    (fieldOneFiniteStageDiagonalUnit S) (fieldOneSUnitSubgroup S) at hu
+  rw [Subgroup.mem_map] at hu
+  obtain ⟨q, hq, hqu⟩ := hu
+  exact ⟨⟨q, hq⟩, Subtype.ext hqu⟩
+
+instance fieldOneFiniteStageSUnitImageCount_isOpenPos
+    (S : Finset (HeightOneSpectrum ℤ)) :
+    IsOpenPosMeasure (count : Measure (fieldOneFiniteStageSUnitImage S)) where
+  open_pos U _hU hne := Measure.count_ne_zero hne
+
+instance fieldOneFiniteStageSUnitImageCount_isHaar
+    (S : Finset (HeightOneSpectrum ℤ)) :
+    IsHaarMeasure (count : Measure (fieldOneFiniteStageSUnitImage S)) where
+  lt_top_of_isCompact := by
+    intro K hK
+    rw [Measure.count_apply_finite K hK.finite_of_discrete]
+    exact ENNReal.natCast_lt_top _
+
+/-- Counting measure on the diagonal lattice times the exact split Haar fundamental domain. -/
+def fieldOneFiniteStageIdeleFundamentalProductMeasure
+    (S : Finset (HeightOneSpectrum ℤ)) :
+    Measure (fieldOneFiniteStageSUnitImage S ×
+      (FieldOneFiniteStageModuleOneClass S × NNRealˣ)) :=
+  (count : Measure (fieldOneFiniteStageSUnitImage S)).prod
+    (fieldOneFiniteStageSplitProductHaarMeasure S)
+
+instance fieldOneFiniteStageIdeleFundamentalProduct_isHaar
+    (S : Finset (HeightOneSpectrum ℤ)) :
+    IsHaarMeasure (fieldOneFiniteStageIdeleFundamentalProductMeasure S) := by
+  change IsHaarMeasure
+    ((count : Measure (fieldOneFiniteStageSUnitImage S)).prod
+      (fieldOneFiniteStageSplitProductHaarMeasure S))
+  infer_instance
+
+/-- Product fundamental-domain Haar transported to the literal idele group. -/
+def fieldOneFiniteStageIdeleFundamentalHaarMeasure
+    (S : Finset (HeightOneSpectrum ℤ)) :
+    Measure (FieldOneFiniteStageIdele S) :=
+  Measure.map (fieldOneFiniteStageIdeleImageFundamentalContinuousMulEquiv S)
+    (fieldOneFiniteStageIdeleFundamentalProductMeasure S)
+
+instance fieldOneFiniteStageIdeleFundamentalHaar_isHaar
+    (S : Finset (HeightOneSpectrum ℤ)) :
+    IsHaarMeasure (fieldOneFiniteStageIdeleFundamentalHaarMeasure S) :=
+  (fieldOneFiniteStageIdeleImageFundamentalContinuousMulEquiv S).isHaarMeasure_map
+    (fieldOneFiniteStageIdeleFundamentalProductMeasure S)
+
+/-- Exact global form of `d* a = da / |a|`: the multiplicative measure derived from additive Haar
+is a finite positive scalar multiple of counting measure on `Q_S^*` times Haar on the canonical
+fundamental domain.  No quotient-measure premise is used. -/
+theorem fieldOneFiniteStageIdeleMultiplicativeFromAdditive_eq_fundamentalHaar
+    (S : Finset (HeightOneSpectrum ℤ)) :
+    fieldOneFiniteStageIdeleMultiplicativeFromAdditive S =
+      haarScalarFactor
+          (fieldOneFiniteStageIdeleMultiplicativeFromAdditive S)
+          (fieldOneFiniteStageIdeleFundamentalHaarMeasure S) •
+        fieldOneFiniteStageIdeleFundamentalHaarMeasure S :=
+  isMulLeftInvariant_eq_smul _ _
+
+theorem fieldOneFiniteStageIdeleMultiplicative_fundamentalScalar_pos
+    (S : Finset (HeightOneSpectrum ℤ)) :
+    0 < haarScalarFactor
+      (fieldOneFiniteStageIdeleMultiplicativeFromAdditive S)
+      (fieldOneFiniteStageIdeleFundamentalHaarMeasure S) :=
+  haarScalarFactor_pos_of_isHaarMeasure _ _
+
+/-- Exact Tonelli unfolding over the literal diagonal `S`-unit lattice and canonical idele-class
+fundamental domain.  This is the nonnegative measure identity underlying Connes--Marcolli
+equations (2.250)--(2.251). -/
+theorem fieldOneFiniteStageIdeleMultiplicative_lintegral_fundamental
+    (S : Finset (HeightOneSpectrum ℤ))
+    (F : FieldOneFiniteStageIdele S → ℝ≥0∞) (hF : Measurable F) :
+    (∫⁻ u, F u ∂fieldOneFiniteStageIdeleMultiplicativeFromAdditive S) =
+      (haarScalarFactor
+          (fieldOneFiniteStageIdeleMultiplicativeFromAdditive S)
+          (fieldOneFiniteStageIdeleFundamentalHaarMeasure S) : ℝ≥0∞) *
+        ∫⁻ z,
+          ∑' h : fieldOneFiniteStageSUnitImage S,
+            F (h.1 * fieldOneFiniteStageIdeleFundamentalSection S z)
+          ∂fieldOneFiniteStageSplitProductHaarMeasure S := by
+  let c := haarScalarFactor
+    (fieldOneFiniteStageIdeleMultiplicativeFromAdditive S)
+    (fieldOneFiniteStageIdeleFundamentalHaarMeasure S)
+  change (∫⁻ u, F u
+      ∂fieldOneFiniteStageIdeleMultiplicativeFromAdditive S) =
+    (c : ℝ≥0∞) * _
+  have hmeasure :=
+    fieldOneFiniteStageIdeleMultiplicativeFromAdditive_eq_fundamentalHaar S
+  change fieldOneFiniteStageIdeleMultiplicativeFromAdditive S =
+      c • fieldOneFiniteStageIdeleFundamentalHaarMeasure S at hmeasure
+  conv_lhs => rw [hmeasure]
+  rw [lintegral_smul_measure]
+  change (c : ℝ≥0∞) •
+      (∫⁻ u, F u ∂fieldOneFiniteStageIdeleFundamentalHaarMeasure S) = _
+  rw [fieldOneFiniteStageIdeleFundamentalHaarMeasure]
+  simp only [smul_eq_mul]
+  have hmap := lintegral_map
+    (μ := fieldOneFiniteStageIdeleFundamentalProductMeasure S)
+    hF (fieldOneFiniteStageIdeleImageFundamentalContinuousMulEquiv S).measurable
+  have hfun :
+      (fieldOneFiniteStageIdeleImageFundamentalContinuousMulEquiv S :
+        _ → FieldOneFiniteStageIdele S) =
+      (fieldOneFiniteStageIdeleImageFundamentalContinuousMulEquiv S).toHomeomorph := by
+    funext x
+    rfl
+  have hmap' :
+      (∫⁻ u, F u
+        ∂Measure.map
+          (fieldOneFiniteStageIdeleImageFundamentalContinuousMulEquiv S :
+            _ → FieldOneFiniteStageIdele S)
+          (fieldOneFiniteStageIdeleFundamentalProductMeasure S)) =
+        ∫⁻ x,
+          F (fieldOneFiniteStageIdeleImageFundamentalContinuousMulEquiv S x)
+          ∂fieldOneFiniteStageIdeleFundamentalProductMeasure S := by
+    rw [hfun]
+    exact hmap
+  rw [hmap']
+  change (c : ℝ≥0∞) *
+      (∫⁻ x,
+        F (fieldOneFiniteStageIdeleImageFundamentalMap S x)
+        ∂fieldOneFiniteStageIdeleFundamentalProductMeasure S) = _
+  rw [fieldOneFiniteStageIdeleFundamentalProductMeasure,
+    lintegral_prod_symm']
+  · congr 2
+    funext z
+    rw [lintegral_count]
+    rfl
+  · exact hF.comp
+      (fieldOneFiniteStageIdeleImageFundamentalMap_continuous S).measurable
 
 end
 

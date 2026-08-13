@@ -185,6 +185,28 @@ packet their exact total capital is
 The functional equation therefore does not select `delta=0`; it symmetrizes the causal financing
 law and forces a common delay budget.
 
+Common extra delay is a gauge inside the admitted chamber. For `c>=0`, let `S_c` denote the
+right-shift isometry on `L^2(0,infinity)`, extended by zero before `c`. Then
+
+\[
+ h_{\delta,b+c,T}=S_ch_{\delta,b,T},
+ \qquad
+ \Phi_{\delta,b+c,T}(z)=e^{-cz}\Phi_{\delta,b,T}(z),
+ \tag{CDW.15a}
+\]
+
+and
+
+\[
+ \boxed{
+ \|h_{\delta,b+c,T}\|_2^2
+ =\|h_{\delta,b,T}\|_2^2.}
+ \tag{CDW.15b}
+\]
+
+Hence absolute delay after admission carries no work information. The invariant is the entrance
+threshold `max(0,delta)` on one orientation and `|delta|` on the reflected pair.
+
 ## 5. Work cusp versus smooth information
 
 Retain the same Euler-shell source. For real `u` near zero, define its Gibbs tilt
@@ -305,9 +327,12 @@ Therefore
  \tag{CDW.29}
 \]
 
-This is an exact selection theorem: **causal anchoring + finite capital + reflection forces the
-neutral locus.** Unlike per-zero finite-capital admission, the anchoring premise can in principle be
-proved globally from a source formation law. It remains open for the literal HGT source.
+This is an exact conditional selection theorem: **causal anchoring + finite capital + reflection
+forces the neutral locus.** The condition is not yet an independent HGT source law. In the actual
+Hedenmalm source formalization, source involution fixedness is already proved equivalent to
+critical-line placement. Substituting that fixedness for `(CDW.26)` would therefore be circular.
+The live problem is to derive a zero-slack causal formation from a parameter-free operation before
+divisor specialization, not to rename source fixedness as an anchor.
 
 ## 7. Countermodels and load-bearing hypotheses
 
@@ -339,6 +364,13 @@ formation loses the cancellation that defines radial drift.
 Changing the origin of source time changes the admissible delay chamber. The theorem does not call
 zero delay canonical; it identifies that canonicity as the exact missing source datum.
 
+### 7.5 Source origin does not imply radial zero slack
+
+A source theory may have a canonical origin while a particular defect begins after a positive
+latency. The corpus's Hedenmalm source-origin theorem and its fixed-flow classifier exhibit exactly
+this distinction. Origin marks the causal boundary; it does not prove that the RH-bearing drift
+history touches it.
+
 ## 8. Parent boundary and hostile verdict
 
 The shifted-box Laplace transform and its `L^2` norm are elementary signal/control theory. Hardy
@@ -351,7 +383,8 @@ Its corpus leverage is the joint law:
 3. least work has an exact nonsmooth cusp;
 4. functional equation forces a common delay, not zero drift;
 5. smooth information geometry provably underprices formation near the center;
-6. a global zero-delay source anchor would select the neutral locus.
+6. a global zero-slack source formation would select the neutral locus, but source fixedness is an
+   RH-equivalent substitute and is forbidden.
 
 - [x] causal admission iff proved;
 - [x] exact least-work formula proved;
@@ -360,7 +393,7 @@ Its corpus leverage is the joint law:
 - [x] zero-delay reflection selection theorem proved;
 - [x] delay countermodel supplied;
 - [ ] Lean formalization in later pass;
-- [ ] literal source proof of zero-delay anchoring;
+- [ ] parameter-free source proof of zero-slack radial formation;
 - [ ] RH consequence.
 
 No Lean was written or built during this research pass.

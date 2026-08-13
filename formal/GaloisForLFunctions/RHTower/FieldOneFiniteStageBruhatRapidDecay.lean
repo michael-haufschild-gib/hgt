@@ -128,7 +128,7 @@ theorem fieldOneFiniteStageFiniteBruhat_exists_uniformNormOneIntegerDenominator
     (v := v) (algebraMap ℤ ℚ d * (q.1 : ℚ))]
   exact hlocalMem
 
-private theorem fieldOneFiniteStageBruhatPureTensor_logRay_large_bound_of_denominator
+private theorem fieldOneFiniteStageBruhatPureTensor_norm_tsum_logRay_large_bound_of_denominator
     (S : Finset (HeightOneSpectrum ℤ))
     (f : SchwartzMap ℝ ℂ)
     (phi : FieldOneFiniteStageFiniteBruhatSchwartz S)
@@ -142,8 +142,9 @@ private theorem fieldOneFiniteStageBruhatPureTensor_logRay_large_bound_of_denomi
       algebraMap ℤ ℚ d * (q.1 : ℚ) ∈ (algebraMap ℤ ℚ).range)
     (N : ℕ) :
     ∀ t : ℝ,
-    ‖fieldOneFiniteStageBruhatPeriodization S (f ⊗ₜ[ℂ] phi)
-        (fieldOneFiniteStageBruhatLogRayIdele S b t)‖ ≤
+    (∑' q : fieldOneSUnitSubgroup S,
+      ‖fieldOneFiniteStageBruhatPureTensorOrbit S f phi
+        (fieldOneFiniteStageBruhatLogRayIdele S b t) q‖) ≤
       (B * ccmRationalArchimedeanDecayConstant f N *
           ((d * d : ℤ) : ℝ) ^ ccmRationalArchimedeanDecayExponent N) /
         Real.exp t ^ ccmRationalArchimedeanDecayExponent N := by
@@ -208,11 +209,11 @@ private theorem fieldOneFiniteStageBruhatPureTensor_logRay_large_bound_of_denomi
     intro hz
     rcases hz with ⟨q, hq⟩
     exact hn_ne_zero q hq
-  have htrace (t : ℝ) :
-      fieldOneFiniteStageBruhatPeriodization S (f ⊗ₜ[ℂ] phi)
-          (fieldOneFiniteStageBruhatLogRayIdele S b t) =
-        ccmRationalBoundedWeightedLatticeTrace v f
-          (Real.exp t / (D : ℝ)) := by
+  have htraceNorm (t : ℝ) :
+      (∑' q : fieldOneSUnitSubgroup S,
+        ‖fieldOneFiniteStageBruhatPureTensorOrbit S f phi
+          (fieldOneFiniteStageBruhatLogRayIdele S b t) q‖) =
+        ∑' z : ℤ, ‖v z * f ((Real.exp t / (D : ℝ)) * (z : ℝ))‖ := by
     let F : fieldOneSUnitSubgroup S → ℂ := fun q =>
       fieldOneFiniteStageBruhatPureTensorOrbit S f phi
         (fieldOneFiniteStageBruhatLogRayIdele S b t) q
@@ -231,10 +232,14 @@ private theorem fieldOneFiniteStageBruhatPureTensor_logRay_large_bound_of_denomi
           algebraMap ℚ (z.1.adicCompletion ℚ) (q.1 : ℚ) *
             (b z : z.1.adicCompletion ℚ)) = 0
       rw [hphi, mul_zero]
-    rw [fieldOneFiniteStageBruhatPeriodization]
-    change (∑' q, F q) = _
-    rw [(tsum_subtype_eq_of_support_subset hsupport).symm]
-    let G : ℤ → ℂ := fun z => v z * f ((Real.exp t / (D : ℝ)) * (z : ℝ))
+    have hsupportNorm : Function.support (fun q => ‖F q‖) ⊆ P := by
+      intro q hq
+      apply hsupport
+      intro hFq
+      exact hq (by simp [hFq])
+    change (∑' q, ‖F q‖) = _
+    rw [(tsum_subtype_eq_of_support_subset hsupportNorm).symm]
+    let G : ℤ → ℝ := fun z => ‖v z * f ((Real.exp t / (D : ℝ)) * (z : ℝ))‖
     have hGsupport : Function.support G ⊆ Set.range n := by
       intro z hz
       by_contra hnot
@@ -242,31 +247,31 @@ private theorem fieldOneFiniteStageBruhatPureTensor_logRay_large_bound_of_denomi
         exact Function.extend_apply' (f := n) w (0 : ℤ → ℂ) z hnot
       exact hz (by simp [G, hvz])
     calc
-      (∑' q : P, F q.1) = ∑' q : P, G (n q) := by
+      (∑' q : P, ‖F q.1‖) = ∑' q : P, G (n q) := by
         apply tsum_congr
         intro q
         have hnReal : (n q : ℝ) = (D : ℝ) * ((q.1.1 : ℚ) : ℝ) := by
           exact_mod_cast hn q
         change
-          f (Real.exp t * (((q.1.1 : ℚ) : ℝ))) * w q =
-            v (n q) * f ((Real.exp t / (D : ℝ)) * (n q : ℝ))
+          ‖f (Real.exp t * (((q.1.1 : ℚ) : ℝ))) * w q‖ =
+            ‖v (n q) * f ((Real.exp t / (D : ℝ)) * (n q : ℝ))‖
         rw [show v (n q) = w q from hnInjective.extend_apply w 0 q]
         rw [mul_comm]
-        congr 1
+        congr 2
         rw [hnReal]
         have hDR : (D : ℝ) ≠ 0 := by exact_mod_cast hD0
         field_simp
       _ = ∑' z : ℤ, G z := hnInjective.tsum_eq hGsupport
-      _ = ccmRationalBoundedWeightedLatticeTrace v f
-          (Real.exp t / (D : ℝ)) := rfl
+      _ = ∑' z : ℤ,
+          ‖v z * f ((Real.exp t / (D : ℝ)) * (z : ℝ))‖ := rfl
   let p := ccmRationalArchimedeanDecayExponent N
   intro t
   have ha : 0 < Real.exp t / (D : ℝ) := div_pos (Real.exp_pos t) (by exact_mod_cast hD)
-  rw [htrace]
-  have hlarge := ccmRationalBoundedWeightedLatticeTrace_large_bound
+  rw [htraceNorm]
+  have hlarge := ccmRationalBoundedWeightedLatticeTrace_norm_tsum_large_bound
     v B hv f (by rw [hv0, zero_mul]) N ha
   calc
-    ‖ccmRationalBoundedWeightedLatticeTrace v f (Real.exp t / (D : ℝ))‖ ≤
+    (∑' z : ℤ, ‖v z * f ((Real.exp t / (D : ℝ)) * (z : ℝ))‖) ≤
         B * ccmRationalArchimedeanDecayConstant f N /
           (Real.exp t / (D : ℝ)) ^ p := hlarge
     _ = (B * ccmRationalArchimedeanDecayConstant f N *
@@ -276,15 +281,43 @@ private theorem fieldOneFiniteStageBruhatPureTensor_logRay_large_bound_of_denomi
       rw [div_pow]
       field_simp
 
-theorem fieldOneFiniteStageBruhatPureTensor_logRay_exists_large_bound
+private theorem fieldOneFiniteStageBruhatPureTensor_logRay_large_bound_of_denominator
+    (S : Finset (HeightOneSpectrum ℤ))
+    (f : SchwartzMap ℝ ℂ)
+    (phi : FieldOneFiniteStageFiniteBruhatSchwartz S)
+    (b : (v : ↥S) → (v.1.adicCompletion ℚ)ˣ)
+    (B : ℝ) (hB : ∀ x, ‖phi.1 x‖ ≤ B)
+    (d : ℤ) (hd : d ≠ 0)
+    (hden : ∀ q : fieldOneSUnitSubgroup S,
+      phi.1 (fun v =>
+        algebraMap ℚ (v.1.adicCompletion ℚ) (q.1 : ℚ) *
+          (b v : v.1.adicCompletion ℚ)) ≠ 0 →
+      algebraMap ℤ ℚ d * (q.1 : ℚ) ∈ (algebraMap ℤ ℚ).range)
+    (N : ℕ) :
+    ∀ t : ℝ,
+    ‖fieldOneFiniteStageBruhatPeriodization S (f ⊗ₜ[ℂ] phi)
+        (fieldOneFiniteStageBruhatLogRayIdele S b t)‖ ≤
+      (B * ccmRationalArchimedeanDecayConstant f N *
+          ((d * d : ℤ) : ℝ) ^ ccmRationalArchimedeanDecayExponent N) /
+        Real.exp t ^ ccmRationalArchimedeanDecayExponent N := by
+  intro t
+  rw [fieldOneFiniteStageBruhatPeriodization]
+  exact (norm_tsum_le_tsum_norm
+    (fieldOneFiniteStageBruhatPureTensorOrbit_summable S f phi
+      (fieldOneFiniteStageBruhatLogRayIdele S b t))).trans
+    (fieldOneFiniteStageBruhatPureTensor_norm_tsum_logRay_large_bound_of_denominator
+      S f phi b B hB d hd hden N t)
+
+theorem fieldOneFiniteStageBruhatPureTensor_norm_tsum_logRay_exists_large_bound
     (S : Finset (HeightOneSpectrum ℤ))
     (f : SchwartzMap ℝ ℂ)
     (phi : FieldOneFiniteStageFiniteBruhatSchwartz S)
     (b : (v : ↥S) → (v.1.adicCompletion ℚ)ˣ)
     (N : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ t : ℝ,
-      ‖fieldOneFiniteStageBruhatPeriodization S (f ⊗ₜ[ℂ] phi)
-          (fieldOneFiniteStageBruhatLogRayIdele S b t)‖ ≤
+      (∑' q : fieldOneSUnitSubgroup S,
+        ‖fieldOneFiniteStageBruhatPureTensorOrbit S f phi
+          (fieldOneFiniteStageBruhatLogRayIdele S b t) q‖) ≤
         C / Real.exp t ^ ccmRationalArchimedeanDecayExponent N := by
   obtain ⟨B, hB⟩ := fieldOneFiniteStageFiniteBruhat_exists_norm_bound S phi
   let u0 : FieldOneFiniteStageIdele S := (1, b)
@@ -298,8 +331,53 @@ theorem fieldOneFiniteStageBruhatPureTensor_logRay_exists_large_bound
     (mul_nonneg hB0 (ccmRationalArchimedeanDecayConstant_nonneg f N))
     (pow_nonneg hdd _)
   refine ⟨C, hC, fun t => ?_⟩
-  exact fieldOneFiniteStageBruhatPureTensor_logRay_large_bound_of_denominator
+  exact fieldOneFiniteStageBruhatPureTensor_norm_tsum_logRay_large_bound_of_denominator
     S f phi b B hB d hd (by simpa [u0] using hden) N t
+
+theorem fieldOneFiniteStageBruhatPureTensor_logRay_exists_large_bound
+    (S : Finset (HeightOneSpectrum ℤ))
+    (f : SchwartzMap ℝ ℂ)
+    (phi : FieldOneFiniteStageFiniteBruhatSchwartz S)
+    (b : (v : ↥S) → (v.1.adicCompletion ℚ)ˣ)
+    (N : ℕ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ t : ℝ,
+      ‖fieldOneFiniteStageBruhatPeriodization S (f ⊗ₜ[ℂ] phi)
+          (fieldOneFiniteStageBruhatLogRayIdele S b t)‖ ≤
+        C / Real.exp t ^ ccmRationalArchimedeanDecayExponent N := by
+  obtain ⟨C, hC, hbound⟩ :=
+    fieldOneFiniteStageBruhatPureTensor_norm_tsum_logRay_exists_large_bound
+      S f phi b N
+  refine ⟨C, hC, fun t => ?_⟩
+  rw [fieldOneFiniteStageBruhatPeriodization]
+  exact (norm_tsum_le_tsum_norm
+    (fieldOneFiniteStageBruhatPureTensorOrbit_summable S f phi
+      (fieldOneFiniteStageBruhatLogRayIdele S b t))).trans (hbound t)
+
+/-- A single arbitrary-power bound holds over the whole compact norm-one
+fundamental domain. -/
+theorem fieldOneFiniteStageBruhatPureTensor_norm_tsum_uniform_exists_large_bound
+    (S : Finset (HeightOneSpectrum ℤ))
+    (f : SchwartzMap ℝ ℂ)
+    (phi : FieldOneFiniteStageFiniteBruhatSchwartz S)
+    (N : ℕ) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∀ (k : FieldOneFiniteStageNormOneTorus S) (t : ℝ),
+      (∑' q : fieldOneSUnitSubgroup S,
+        ‖fieldOneFiniteStageBruhatPureTensorOrbit S f phi
+          (fieldOneFiniteStageBruhatLogRayIdele S (fun v => (k v).1) t) q‖) ≤
+        C / Real.exp t ^ ccmRationalArchimedeanDecayExponent N := by
+  obtain ⟨B, hB⟩ := fieldOneFiniteStageFiniteBruhat_exists_norm_bound S phi
+  obtain ⟨d, hd, hden⟩ := fieldOneFiniteStageFiniteBruhat_exists_uniformNormOneIntegerDenominator S phi
+  let C := B * ccmRationalArchimedeanDecayConstant f N *
+    ((d * d : ℤ) : ℝ) ^ ccmRationalArchimedeanDecayExponent N
+  have hB0 : 0 ≤ B := (norm_nonneg (phi.1 0)).trans (hB 0)
+  have hdd : 0 ≤ ((d * d : ℤ) : ℝ) := by exact_mod_cast (mul_self_nonneg d)
+  have hC : 0 ≤ C := mul_nonneg
+    (mul_nonneg hB0 (ccmRationalArchimedeanDecayConstant_nonneg f N))
+    (pow_nonneg hdd _)
+  refine ⟨C, hC, fun k t => ?_⟩
+  exact fieldOneFiniteStageBruhatPureTensor_norm_tsum_logRay_large_bound_of_denominator
+    S f phi (fun v => (k v).1) B hB d hd (hden k) N t
 
 /-- A single arbitrary-power bound holds over the whole compact norm-one
 fundamental domain. -/
@@ -313,18 +391,15 @@ theorem fieldOneFiniteStageBruhatPureTensor_uniform_exists_large_bound
       ‖fieldOneFiniteStageBruhatPeriodization S (f ⊗ₜ[ℂ] phi)
           (fieldOneFiniteStageBruhatLogRayIdele S (fun v => (k v).1) t)‖ ≤
         C / Real.exp t ^ ccmRationalArchimedeanDecayExponent N := by
-  obtain ⟨B, hB⟩ := fieldOneFiniteStageFiniteBruhat_exists_norm_bound S phi
-  obtain ⟨d, hd, hden⟩ := fieldOneFiniteStageFiniteBruhat_exists_uniformNormOneIntegerDenominator S phi
-  let C := B * ccmRationalArchimedeanDecayConstant f N *
-    ((d * d : ℤ) : ℝ) ^ ccmRationalArchimedeanDecayExponent N
-  have hB0 : 0 ≤ B := (norm_nonneg (phi.1 0)).trans (hB 0)
-  have hdd : 0 ≤ ((d * d : ℤ) : ℝ) := by exact_mod_cast (mul_self_nonneg d)
-  have hC : 0 ≤ C := mul_nonneg
-    (mul_nonneg hB0 (ccmRationalArchimedeanDecayConstant_nonneg f N))
-    (pow_nonneg hdd _)
+  obtain ⟨C, hC, hbound⟩ :=
+    fieldOneFiniteStageBruhatPureTensor_norm_tsum_uniform_exists_large_bound
+      S f phi N
   refine ⟨C, hC, fun k t => ?_⟩
-  exact fieldOneFiniteStageBruhatPureTensor_logRay_large_bound_of_denominator
-    S f phi (fun v => (k v).1) B hB d hd (hden k) N t
+  rw [fieldOneFiniteStageBruhatPeriodization]
+  exact (norm_tsum_le_tsum_norm
+    (fieldOneFiniteStageBruhatPureTensorOrbit_summable S f phi
+      (fieldOneFiniteStageBruhatLogRayIdele S (fun v => (k v).1) t))).trans
+    (hbound k t)
 
 theorem fieldOneFiniteStageBruhatPureTensor_logRay_rapidDecay
     (S : Finset (HeightOneSpectrum ℤ))
@@ -385,6 +460,72 @@ theorem fieldOneFiniteStageBruhatTensor_logRay_rapidDecay
       · exact Filter.Eventually.of_forall fun t =>
           (fieldOneFiniteStageBruhatPeriodization_add S x y (fieldOneFiniteStageBruhatLogRayIdele S b t)).symm
       · exact Filter.EventuallyEq.rfl
+
+/-- Uniform rapid decay of the absolute orbit sum over the literal compact
+norm-one fundamental domain. -/
+theorem fieldOneFiniteStageBruhatTensor_norm_tsum_uniform_rapidDecay
+    (S : Finset (HeightOneSpectrum ℤ))
+    (x : FieldOneFiniteStageBruhatSchwartz S)
+    (a : ℝ) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∀ (k : FieldOneFiniteStageNormOneTorus S) (t : ℝ), 0 ≤ t →
+      (∑' q : fieldOneSUnitSubgroup S,
+        ‖fieldOneFiniteStageBruhatOrbit S x
+          (fieldOneFiniteStageBruhatLogRayIdele S (fun v => (k v).1) t) q‖) ≤
+        C * Real.exp t ^ (-a) := by
+  induction x using TensorProduct.induction_on with
+  | zero =>
+      refine ⟨0, le_rfl, fun k t ht => ?_⟩
+      simp [fieldOneFiniteStageBruhatOrbit]
+  | tmul f phi =>
+      let N : ℕ := ⌈max a 0⌉₊
+      let p : ℕ := ccmRationalArchimedeanDecayExponent N
+      obtain ⟨C, hC, hbound⟩ :=
+        fieldOneFiniteStageBruhatPureTensor_norm_tsum_uniform_exists_large_bound
+          S f phi N
+      have hap : a ≤ (p : ℝ) := by
+        have hceil : max a 0 ≤ (N : ℝ) := Nat.le_ceil _
+        have hNp : (N : ℝ) ≤ (p : ℝ) := by
+          have hnat : N ≤ ccmRationalArchimedeanDecayExponent N := by
+            simp [ccmRationalArchimedeanDecayExponent]
+            omega
+          exact_mod_cast hnat
+        exact (le_max_left a 0).trans (hceil.trans hNp)
+      refine ⟨C, hC, fun k t ht => ?_⟩
+      have hx : 1 ≤ Real.exp t := Real.one_le_exp ht
+      have hrpow : Real.exp t ^ (-(p : ℝ)) ≤ Real.exp t ^ (-a) :=
+        Real.rpow_le_rpow_of_exponent_le hx (neg_le_neg hap)
+      have hrewrite : C / Real.exp t ^ p =
+          C * Real.exp t ^ (-(p : ℝ)) := by
+        rw [div_eq_mul_inv, ← Real.rpow_natCast,
+          ← Real.rpow_neg (Real.exp_pos t).le]
+      simpa only [fieldOneFiniteStageBruhatOrbit_tmul] using
+        (hbound k t).trans_eq hrewrite |>.trans
+          (mul_le_mul_of_nonneg_left hrpow hC)
+  | add x y hx hy =>
+      obtain ⟨Cx, hCx, hxbound⟩ := hx
+      obtain ⟨Cy, hCy, hybound⟩ := hy
+      refine ⟨Cx + Cy, add_nonneg hCx hCy, fun k t ht => ?_⟩
+      let u := fieldOneFiniteStageBruhatLogRayIdele S (fun v => (k v).1) t
+      have hsx := fieldOneFiniteStageBruhatOrbit_summable S x u
+      have hsy := fieldOneFiniteStageBruhatOrbit_summable S y u
+      have hsxy := fieldOneFiniteStageBruhatOrbit_summable S (x + y) u
+      calc
+        (∑' q, ‖fieldOneFiniteStageBruhatOrbit S (x + y) u q‖) ≤
+            ∑' q, (‖fieldOneFiniteStageBruhatOrbit S x u q‖ +
+              ‖fieldOneFiniteStageBruhatOrbit S y u q‖) := by
+          apply hsxy.tsum_le_tsum
+          · intro q
+            simpa [fieldOneFiniteStageBruhatOrbit] using
+              norm_add_le (fieldOneFiniteStageBruhatOrbit S x u q)
+                (fieldOneFiniteStageBruhatOrbit S y u q)
+          · exact hsx.add hsy
+        _ = (∑' q, ‖fieldOneFiniteStageBruhatOrbit S x u q‖) +
+              ∑' q, ‖fieldOneFiniteStageBruhatOrbit S y u q‖ :=
+          hsx.tsum_add hsy
+        _ ≤ Cx * Real.exp t ^ (-a) + Cy * Real.exp t ^ (-a) :=
+          add_le_add (hxbound k t ht) (hybound k t ht)
+        _ = (Cx + Cy) * Real.exp t ^ (-a) := by ring
 
 /-- Uniform rapid decay over the literal compact norm-one fundamental
 domain.  This is the full large-module assertion of Connes--Marcolli

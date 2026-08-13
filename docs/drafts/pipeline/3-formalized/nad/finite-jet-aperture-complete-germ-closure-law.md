@@ -1,7 +1,7 @@
 # Finite jets retain maximal HT; one complete germ closes the boundary modulus
 
 - **ID:** `finite-jet-aperture-complete-germ-closure-law`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized
 - **Type:** THEOREM / ANALYTIC SELECTION THRESHOLD LAW
 - **Lane:** general hypertranscendence; indeterminate moment carriers; analytic constraints
 - **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED]`
@@ -5969,3 +5969,23 @@ bound `|V^m| <= |V|_HS^m / sqrt(m!)` generates `exp(c|z|^2)`, order two rather t
 small-tail split only improves the constant.  The route that remains is entire-function theoretic
 (real zeros with summable reciprocals, then a genus-zero Hadamard product), and Hadamard
 factorization is absent from mathlib.
+
+## Log — the Nevanlinna family is constructed; the residual half is unconditional `[PROVED]`
+
+The card's last Lean gate ("Until the Nevanlinna family is constructed in Lean, the residual-HT half
+of the card is not unconditional") is discharged.  `HTGeometry.nevExtremalFamily` and
+`HTGeometry.exists_classicalAnalyticNevanlinnaCarrierFamily` construct the family from
+`PositiveMomentForm s`, `BoundedKernel s 0`, `s 0 = 1`, and
+`HTGeometry.analyticNevCarrierFamilyMaximalTranslationInputs` supplies exactly the five analytic
+hypotheses of the relation-free capstones.
+
+New module `HTGeometry/AnalyticNevRelationFreeUnconditional.lean` (wired, axiom-clean):
+
+- `analyticNevCarrier_positiveActualCarrier_hypertranscendental_dense_residual`;
+- `analyticNevCarrier_positiveSingularContinuousCarrier_hypertranscendental_dense_residual`
+  (label null-preimage discharged by real analyticity of the lower row).
+
+Together with `exists_closedEmbeddedHilbertCube_in_exactCayleyFrameFiber_of_infiniteSupport`
+(positive aperture at the exact finite jet level) and `measure_eq_of_completeCauchyJet_eq`
+(complete-germ closure), the finite/infinite threshold is fully formalized.  Promoted to
+`3-formalized/nad`; the remaining gates are external literature audits.

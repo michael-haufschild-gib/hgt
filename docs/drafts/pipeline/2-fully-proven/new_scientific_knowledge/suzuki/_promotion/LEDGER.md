@@ -5604,3 +5604,38 @@ new analysis), (18) the t_a mass (the same prime-power weights as FJ's `suzukiWo
 Hardy-amplitude qualification (B_± ∈ L² is Plancherel of the L² pieces — mathlib's isometry),
 and the (25) evaluation tie to the literal `suzukiRestrictedWeilForm`.  Sections 5's (20)-(24)
 are verbatim instances of FK/FL's stack.
+
+## FN. 89/103 — `suzuki-polar-remainder-lipschitz-gamma-subcriticality` promoted
+
+The corpus already owned the literal kernel (`suzukiWeilRemainderSecondDerivative`,
+`suzukiWeilRemainderKernel`, removable value `-7/4`, continuity, aperture boundedness).  What the
+card adds is the *modulus*, and it is now formal:
+
+```text
+HTGeometry/ExponentialDividedDifference.lean   expDivOne x = ∫₀¹ e^{tx}dt, expDivTwo x = ∫₀¹(1-t)e^{tx}dt
+                                               closed forms off 0, [e^x,1] and [e^x/2,1/2] traps on
+                                               Iic 0, 1-Lipschitz there, abs_exp_sub_exp_le
+RHTower/SuzukiPolarRemainderLipschitz.lean     suzukiPolarCore = (expDivTwo(-2s) - expDivOne(-s/2)/4)
+                                               / expDivOne(-2s); = e^{s/2}/(2 sinh s) - 1/(2s) for
+                                               s>0, = 1/4 at 0; r'' t = -2cosh(t/2)+core|t|;
+                                               abs_suzukiWeilRemainderKernel_sub_le (the card's (1))
+RHTower/SuzukiPolarConvolutionRate.lean        K_a u; sup and Lipschitz bounds on the collar
+                                               |x| ≤ a+1 with literal constants; Cauchy–Schwarz
+                                               (18); boundary rate (6); |deriv G| ≤ C e^{-L} at
+                                               every L>0 (7); e^{σL}G' ∈ L² for σ<1 (8)
+```
+
+Method note worth keeping: the removable singularity is handled *structurally*, not by l'Hôpital —
+both blocks factor through the two exponential divided differences, so `h` becomes a quotient of
+Lipschitz functions with denominator ≥ `e^{-2T}`.  That is what upgrades continuity to a Lipschitz
+modulus, which no limit argument at the origin can give.
+
+`(7)` needs no Rademacher theorem: mathlib's `deriv` is zero at non-differentiability points, so
+the slope comparison against `L ↦ e^{-L}` (`hasDerivAt_iff_tendsto_slope` plus
+`le_of_tendsto_of_tendsto`) proves the bound at *every* `L > 0` unconditionally.
+
+Traps this round: nested `|…|` bars do not parse (`|f |t||`) — write `abs (…)`; the triangle
+inequality is `abs_add_le`, not `abs_add`; `field_simp` leaves `(-1 + a^4)⁻¹` unless the `≠ 0`
+hypothesis is in the *normalized* `a ^ 4` shape, so state both sign variants; `integral_const` and
+`integral_congr_ae` are ambiguous between the `intervalIntegral` and `MeasureTheory` namespaces;
+`(hasDerivAt_id t).neg` produces the Pi form `-id` — use `hasDerivAt_neg`.

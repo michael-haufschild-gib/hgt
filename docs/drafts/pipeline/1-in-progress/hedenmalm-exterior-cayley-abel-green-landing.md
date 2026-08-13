@@ -57,11 +57,11 @@ source-horizontal Cayley phase.
 
 ## Lean target
 
-- [ ] finite Cayley polynomial has the Abel-resolvent limit for `|R|<1`;
-- [ ] Cayley boundary multiplier equals inverse transverse coordinate off line;
-- [ ] exterior product has removable critical-line kernel;
-- [ ] forward and backward normalized exterior coefficients are exact Abel boundary values;
-- [ ] direct Lean check, exact leaf build, axiom audit, umbrella wiring.
+- [x] finite Cayley polynomial has the Abel-resolvent limit for `|R|<1`;
+- [x] Cayley boundary multiplier equals inverse transverse coordinate off line;
+- [x] exterior product has removable critical-line kernel;
+- [x] forward and backward normalized exterior coefficients are exact Abel boundary values;
+- [x] direct Lean check, exact leaf build, axiom audit, umbrella wiring.
 
 ## Remaining producer after this card
 

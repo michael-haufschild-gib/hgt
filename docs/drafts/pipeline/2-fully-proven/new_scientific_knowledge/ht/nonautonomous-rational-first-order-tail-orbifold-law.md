@@ -539,3 +539,44 @@ column of the nonautonomous isogeny-tail card) so that the phase-tail equals the
 fields through the depthwise deck identity, as already done for the `G_m` and torus columns.
 Mathlib now carries the analytic Weierstrass `℘` (`Mathlib.Analysis.SpecialFunctions.Elliptic.
 Weierstrass`), which supplies the uniformizing witness for that presentation.
+
+## Lean progress — the elliptic function field theorem is proved
+
+The uniformizing witness the previous section names is now a theorem of this tree, not a plan.  Four
+new modules (wired into `GaloisForLFunctions.HTGeometry`, all `[propext, Classical.choice,
+Quot.sound]`):
+
+    EllipticMeromorphicOrderTools.lean
+      meromorphicOrderAt_lt_sub_of_trailingCoeff_eq   equal order and equal trailing coefficient
+                                                      make the difference vanish to higher order
+      even_meromorphicOrderAt_of_neg_eq               an even meromorphic function has even order
+      exists_const_eventuallyEq_of_lattice_periodic   elliptic Liouville in meromorphic form, via
+                                                      the canonical normal form
+
+    EllipticEvenPolynomialWeierstrass.lean
+      meromorphicOrderAt_weierstrassP_pow_zero        `℘ ^ k` has pole order exactly `2k`
+      exists_polynomial_eval_weierstrassP_of_even :
+        **an even lattice-periodic meromorphic function analytic off the lattice is a polynomial
+        in `℘`** — descending induction on the even pole order, cancelling the leading Laurent term
+        by a multiple of `℘ ^ k`
+
+    EllipticEvenRationalWeierstrass.lean
+      exists_pole_representative_weierstrassP         every pole is congruent to a pole of the
+                                                      fundamental parallelogram, with the same
+                                                      order and the same value of `℘`
+      exists_rational_eval_weierstrassP_of_even :
+        **every even elliptic function is rational in `℘`** — multiply by the monic product of the
+        `(℘ - ℘(a))` over the poles `a` of the parallelogram, raised to the pole orders
+
+    EllipticFunctionFieldWeierstrass.lean
+      meromorphicOrderAt_derivWeierstrassP_zero       `℘'` has a triple pole at the origin
+      eventually_derivWeierstrassP_ne_zero            hence `℘'` is nowhere locally zero
+      exists_rational_weierstrass_representation :
+        **every elliptic function lies in `ℂ(℘, ℘')`**:
+          `C(℘)·f = A(℘) + ℘'·B(℘)` with `C` monic, as germs at every point
+
+No divisor-degree theorem, no residue theorem and no Jensen formula is used: the even part and the
+`℘'`-quotient of the odd part are both even, and the pole-clearing product plus elliptic Liouville
+finish the induction.  This is the classical generation theorem for elliptic function fields, which
+mathlib does not carry, and it is the concrete presentation of the compact-signature phase fields
+that this card's gate calls for.

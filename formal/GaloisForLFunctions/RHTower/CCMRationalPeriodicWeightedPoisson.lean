@@ -141,11 +141,11 @@ theorem ccmRationalBoundedWeightedLatticeTrace_summable
   exact mul_le_mul_of_nonneg_right (hv n) (norm_nonneg _)
 
 set_option maxHeartbeats 500000 in
-theorem ccmRationalBoundedWeightedLatticeTrace_large_bound
+theorem ccmRationalBoundedWeightedLatticeTrace_norm_tsum_large_bound
     (v : ℤ → ℂ) (B : ℝ) (hv : ∀ n, ‖v n‖ ≤ B)
     (f : CCMRationalArchimedeanSchwartz) (hzero : v 0 * f 0 = 0)
     (N : ℕ) {a : ℝ} (ha : 0 < a) :
-    ‖ccmRationalBoundedWeightedLatticeTrace v f a‖ ≤
+    (∑' n : ℤ, ‖v n * f (a * (n : ℝ))‖) ≤
       B * ccmRationalArchimedeanDecayConstant f N /
         a ^ ccmRationalArchimedeanDecayExponent N := by
   let p := ccmRationalArchimedeanDecayExponent N
@@ -208,10 +208,7 @@ theorem ccmRationalBoundedWeightedLatticeTrace_large_bound
         _ = (B * C) *
             ccmRationalArchimedeanPSeriesKernel N n := by ring
   calc
-    ‖ccmRationalBoundedWeightedLatticeTrace v f a‖ ≤
-        ∑' n : ℤ, ‖v n * f (a * (n : ℝ))‖ :=
-      norm_tsum_le_tsum_norm hnorm
-    _ ≤ ∑' n : ℤ,
+    (∑' n : ℤ, ‖v n * f (a * (n : ℝ))‖) ≤ ∑' n : ℤ,
         (B * C) * ccmRationalArchimedeanPSeriesKernel N n :=
       Summable.tsum_mono hnorm hmajor hpoint
     _ = B * ccmRationalArchimedeanDecayConstant f N /
@@ -219,6 +216,21 @@ theorem ccmRationalBoundedWeightedLatticeTrace_large_bound
       rw [tsum_mul_left]
       simp only [C, S, p, ccmRationalArchimedeanDecayConstant]
       ring
+
+theorem ccmRationalBoundedWeightedLatticeTrace_large_bound
+    (v : ℤ → ℂ) (B : ℝ) (hv : ∀ n, ‖v n‖ ≤ B)
+    (f : CCMRationalArchimedeanSchwartz) (hzero : v 0 * f 0 = 0)
+    (N : ℕ) {a : ℝ} (ha : 0 < a) :
+    ‖ccmRationalBoundedWeightedLatticeTrace v f a‖ ≤
+      B * ccmRationalArchimedeanDecayConstant f N /
+        a ^ ccmRationalArchimedeanDecayExponent N := by
+  have hnorm :
+      Summable (fun n : ℤ => ‖v n * f (a * (n : ℝ))‖) :=
+    summable_norm_iff.mpr
+      (ccmRationalBoundedWeightedLatticeTrace_summable v B hv f ha.ne')
+  exact (norm_tsum_le_tsum_norm hnorm).trans
+    (ccmRationalBoundedWeightedLatticeTrace_norm_tsum_large_bound
+      v B hv f hzero N ha)
 
 set_option maxHeartbeats 800000 in
 theorem ccmRationalPeriodicWeightedTrace_poisson

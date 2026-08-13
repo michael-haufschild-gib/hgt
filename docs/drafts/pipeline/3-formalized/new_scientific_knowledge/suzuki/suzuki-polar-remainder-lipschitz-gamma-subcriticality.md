@@ -1,7 +1,7 @@
 # Suzuki's polar remainder is Lipschitz at the normal level and Gamma-subcritical
 
 - **ID:** `suzuki-polar-remainder-lipschitz-gamma-subcriticality`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** LITERAL SOURCE REGULARITY / FLAT-ESCAPE EXCLUSION
 - **Scientific status:** `[PROVED HERE] [NEW SCIENTIFIC KNOWLEDGE]`
   `[NOVELTY UNVERIFIED] [NOT RH]`
@@ -310,12 +310,29 @@ Suzuki states \(r\in C^2\) and uses boundedness of the compact convolution; the 
 record `(1)`, `(7)`, or `(29)`.  Targeted Route-O corpus search found no prior proof.  External
 priority remains unverified.
 
-## 9. Lean decision
+## 9. Lean status
 
-The formal tree does not yet contain Suzuki's literal polar kernel or the completed convolution
-operator.  Formalizing a generic Lipschitz convolution lemma without those objects would not
-certify the source statement `(29)`.  The correct Lean target follows the completed-source normal
-intertwiner, where the exact kernel formula `(10)` can be represented without an analytic axiom.
+Formalized unconditionally.  Suzuki's literal polar kernel is
+`RHTower.suzukiWeilRemainderKernel` (the even extension of
+`-2 cosh(t/2) + e^{t/2}/(2 sinh t) - 1/(2t)`), already in the tree; this card adds its sharp
+regularity and the convolution operator:
+
+```text
+formal/GaloisForLFunctions/HTGeometry/ExponentialDividedDifference.lean
+formal/GaloisForLFunctions/RHTower/SuzukiPolarRemainderLipschitz.lean
+formal/GaloisForLFunctions/RHTower/SuzukiPolarConvolutionRate.lean
+```
+
+The removable singularity `(11)`--`(14)` is realized by the exact identity
+`suzukiPolarCore s = e^{s/2}/(2 sinh s) - 1/(2s)` for `s > 0`, where `suzukiPolarCore` is the
+pole-free quotient of the two exponential divided differences
+`∫₀¹ e^{tx} dt` and `∫₀¹ (1-t) e^{tx} dt`; `(1)` is
+`abs_suzukiWeilRemainderKernel_sub_le`, `(3)`--`(4)` are
+`abs_suzukiPolarConvolution_le` and `abs_suzukiPolarConvolution_sub_le` with the literal constants,
+`(18)` is `sq_integral_abs_le`, `(6)` is `abs_suzukiPolarBoundaryTrace_sub_le`, `(7)` is
+`abs_deriv_suzukiPolarBoundaryTrace_le`, and `(8)`/`(23)` is
+`integrableOn_sq_expMul_deriv_suzukiPolarBoundaryTrace`.  Every theorem audits to
+`[propext, Classical.choice, Quot.sound]`.
 
 ## Gates
 
@@ -325,6 +342,7 @@ intertwiner, where the exact kernel formula `(10)` can be represented without an
 - [x] prove exponential boundary-log rate for the differentiated polar source
 - [x] place scalar/eigenvalue term inside homogeneous self-adjoint \(T\)
 - [x] exclude polar inverse-log-flat forcing
+- [x] formalize `(1)`, `(3)`--`(8)`, `(10)`--`(14)`, `(18)`--`(23)` unconditionally in Lean 4
 - [ ] construct completed-mode valuation normal family
 - [ ] prove exact cutoff intertwining for `(25)`
 - [ ] close weighted trace-zero source gate

@@ -5987,9 +5987,64 @@ receive a new title and an independent significance audit.
   high-mode complement; persistent low locality modes stay capacity-small throughout.  It does not
   prove Brown growth.  Exact remaining core is now a **source-relative accessibility budget**
   after common return and fast-forwardable-carrier removal.  Frozen primary conjecture: for the
-  Gaussian full nearest-neighbour Pauli shell and fixed `a<1/M`, projective-state accessibility is
-  `exp(o(D))` uniformly on the geometric Brown skeleton; for a Choi branch the scale-correct claim
+  Gaussian full nearest-neighbour Pauli shell and either fixed fugacity or the depth-optimal
+  `a_D=s_D/(s_D+1)`, projective-state accessibility is `exp(o(D))` uniformly on the geometric
+  Brown skeleton; for a Choi branch the scale-correct claim
   is instead `Q_eff-s log(M/a)>=kappa D`.  At recurrence the unexcised pointwise surprisal
   `-log h_A` returns to zero.  Dependency-closed proved reduction and hostile audit:
   `../2-fully-proven/capacitary-observer-sector-excision-law.md`.  Lean remained read only during
   corpus refactoring.
+- 2026-08-13 -- Closed the completed-phase accessibility plateau and quantified carrier excision.
+  If every circuit target tube has phase-torus mass at most `B`, summing the discounted inverse-gate
+  paths and dropping first-hit restrictions gives
+  `int h_A dmu <= sum_ell M^ell(a/M)^ell B=B/(1-a)`: gate-word branching cancels exactly.  Markov
+  then bounds the whole accessibility tail, and `C_epsilon<=s` has phase mass at most
+  `(M/a)^s B/(1-a)`.  The depth-optimal fugacity `a=s/(s+1)` recovers the direct circuit-union
+  exponent with only the factor `e(s+1)`.  For the Lean-proved Choi phase target bound `B_D(delta)`,
+  unique ergodicity transfers the same reporter bound to completed physical time.  Accessibility
+  drops below every `theta>B_D(delta)/(1-a)` syndetically, while every recurrence restores it
+  exactly to one.  This proves the accessibility plateau/recurrence law but not first-drop time or
+  Brown growth.  Separately, source-relative accessibility surprisal obeys the exact mixture
+  soft-min law `exp(-Q(sum w_i nu_i))=sum w_i exp(-Q(nu_i))`.  An easy carrier of mass `w` costs
+  only `log(1/w)` and is harmless at depth `s` only when its rarity pays `s log(M/a)` plus the
+  desired tail exponent.  Thus carrier excision is now a quantitative theorem, not an informal
+  exception.  Internal duplicate search found no prior completed-phase all-word accessibility
+  plateau theorem; the first-entrance/Green renewal law itself already existed in the parent card.
+  Targeted external search found random/stochastic complexity saturation and Krylov-spread laws,
+  not this static completed-phase composition.  Exact paper proof remains in
+  `../2-fully-proven/capacitary-observer-sector-excision-law.md`; Lean remains deferred during the
+  shared refactor.
+- 2026-08-13 -- Reintegrated the parent renewal law into the accessibility plateau without losing
+  Brown exponent.  For `g_(A,a)=(I-aP)^(-1)1_A`, strong Markov renewal gives the sharp comparison
+  `(1-a)g_(A,a)<=h_A<=g_(A,a)`.  Against any endpoint sublaw `nu`, its expectation is exactly the
+  Abel profile
+  `Z_a(nu,A)=sum_(ell>=0) a^ell M^(-ell) sum_(|W|=ell) nu(WA)`, so
+  `(1-a)Z_a<=int h_A dnu<=Z_a`.  Word multiplicity and repeated occupation sheets are retained;
+  first entrance removes them only through the factor `1-a`.  Robust complexity obeys
+  `(a/M)^C<=g_(A,a)<=a^C/(1-a)`, hence
+  `Pr_nu{C<=s}<=(M/a)^s Z_a`, with the reverse scale bound
+  `Z_a>=Pr_nu{C<=s}(a/M)^s`.  Therefore the exact Brown target can be stated as one positive linear
+  Abel-incidence estimate
+  `Z_a<=exp[-s log(M/a)-kappa D]` after return/carrier excision.  Complete targetwise coarea,
+  growing replicas, and nonlinear Bellman control are sufficient proof methods but no longer
+  logically mandatory invariants.  Duplicate audit found the Green/hitting comparison already
+  proved in `first-entrance-gate-renewal-prefix-law.md`; it is an imported re-expression, not new
+  mathematics.  Its new role is to expose the exact positive linear target after the completed-phase
+  theorem.  No Brown-rate bound on `Z_a` for ordinary local Hamiltonians is yet proved.  Paper proof
+  and hostile audit:
+  `../2-fully-proven/capacitary-observer-sector-excision-law.md`.  Lean remained read only during
+  shared refactoring.
+- 2026-08-13 -- Proved an all-late same-Hamiltonian hardening shoulder with no continuum union
+  loss.  Combine the new all-late fixed-shell Choi accessibility plateau with the existing
+  deterministic simulation cone
+  `C_(epsilon_+)(Phi_H(T))<=C_(epsilon_-)(Phi_H(T-u))+S_n(u,gamma)`.  For every sufficiently late
+  endpoint time `T`, the same high-probability Hamiltonian set obeys the entire backward envelope
+  `C_(epsilon_-)(Phi_H(T-u))>s-S_n(u,gamma)` simultaneously for all `u` in a prescribed interval.
+  No time mesh or union factor appears because failure anywhere in the continuum would contradict
+  hardness at the single endpoint.  At depth `s=Theta(D/log M_n)`, uniform local-Hamiltonian
+  simulation makes the half-height shoulder length `2^(n(1-o(1)))`; its failure probability is
+  `exp[-Omega(D)]`, and the conserved local-source witness remains nonzero throughout.  This is a
+  Brown-scale backward lower envelope adjacent to every certified late plateau endpoint, not first
+  onset, monotonicity, or a ramp anchored at `t=0`.  Exact paper proof and hostile boundary:
+  `../2-fully-proven/capacitary-observer-sector-excision-law.md`.  Lean remained read only during
+  shared refactoring.

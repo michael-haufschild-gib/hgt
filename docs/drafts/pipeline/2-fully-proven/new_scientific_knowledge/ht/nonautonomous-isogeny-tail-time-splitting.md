@@ -1544,3 +1544,31 @@ The one-line mechanism: an invariant's numerator and denominator are eigenvector
 group with a common eigen-character, so dividing both by any one monomial of that character class
 turns them into combinations of monomials of trivial character; conversely such monomials are fixed
 because their character is one.
+
+## The elliptic function field theorem — PROVED
+
+The abelian-variety column at dimension one needs the phase fields concretely.  They are now
+computed: a meromorphic function on `ℂ` invariant under a period lattice is a rational function of
+`℘` and `℘'` of that lattice.
+
+    HTGeometry/EllipticMeromorphicOrderTools.lean
+      meromorphicOrderAt_lt_sub_of_trailingCoeff_eq, even_meromorphicOrderAt_of_neg_eq,
+      exists_const_eventuallyEq_of_lattice_periodic
+    HTGeometry/EllipticEvenPolynomialWeierstrass.lean
+      meromorphicOrderAt_weierstrassP_pow_zero, exists_polynomial_eval_weierstrassP_of_even
+    HTGeometry/EllipticEvenRationalWeierstrass.lean
+      exists_pole_representative_weierstrassP, exists_rational_eval_weierstrassP_of_even
+    HTGeometry/EllipticFunctionFieldWeierstrass.lean
+      meromorphicOrderAt_derivWeierstrassP_zero, eventually_derivWeierstrassP_ne_zero,
+      exists_rational_weierstrass_representation :
+        `C(℘)·f = A(℘) + ℘'·B(℘)`, `C` monic, as an identity of germs at every point
+
+All wired into `GaloisForLFunctions.HTGeometry`, all `[propext, Classical.choice, Quot.sound]`.
+
+The mechanism: the even part of `f`, and the quotient of its odd part by `℘'`, are even elliptic
+functions; multiplying an even elliptic function by the monic product of `(℘ - ℘(a))^{m_a}` over the
+poles `a` in the fundamental parallelogram clears every pole off the lattice, because `℘` is
+lattice-periodic; and an even lattice-periodic function with poles only on the lattice is a
+polynomial in `℘`, by descending induction on its pole order at the origin — even because the
+function is even — cancelling the leading Laurent term with a multiple of `℘ ^ k` and finishing with
+elliptic Liouville.  No divisor-degree count, residue theorem, or Jensen formula is used.

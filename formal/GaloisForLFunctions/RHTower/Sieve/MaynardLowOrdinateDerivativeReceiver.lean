@@ -99,7 +99,9 @@ theorem heathBrownBoxFactor_complement_nonempty
   have hcard : 1 < Fintype.card I := by
     change 1 < Fintype.card (HeathBrownBoxFactorIndex k (box.1 : ℕ))
     rw [card_heathBrownBoxFactorIndex box.1.isLt]
-    have hdiff : 1 ≤ k - box.m := Nat.one_le_iff_ne_zero.mpr (Nat.sub_ne_zero.mpr box.1.isLt)
+    have hdiff : 1 ≤ k - (box.1 : ℕ) := by
+      have hm : (box.1 : ℕ) < k := box.1.isLt
+      omega
     omega
   obtain ⟨a, b, hab⟩ := Fintype.one_lt_card_iff.mp hcard
   by_cases hja : j = a
@@ -156,8 +158,6 @@ theorem derivativeExcised_montgomery_heathBrownBox_fixedPolylog
         ((c : ℂ) + (lam r : ℝ) * Complex.I)‖) :
     let I := {i : HeathBrownBoxFactorIndex k box.m //
       i ∈ (Finset.univ.erase j)}
-    let kind : I → HeathBrownFactorKind := fun i =>
-      heathBrownBoxFactorKind k box.m i
     let q : I → ℕ := fun i =>
       heathBrownBoxFactorExponent box.a box.b box.q i
     let U : ℕ := groupedDyadicUpper q
@@ -168,8 +168,9 @@ theorem derivativeExcised_montgomery_heathBrownBox_fixedPolylog
         (1 / delta + 2 * Real.log U) *
         (((groupedDyadicLower q : ℝ) ^ (-c)) ^ 2 *
           ((U : ℝ) * (1 + Real.log (U : ℝ)) ^ E)) := by
-  let I := {i : HeathBrownBoxFactorIndex k box.m //
-    i ∈ (Finset.univ.erase j)}
+  let comp : Finset (HeathBrownBoxFactorIndex k box.m) := Finset.univ.erase j
+  let I := ↥comp
+  letI : Fintype I := Subtype.fintype fun i => i ∈ comp
   let kind : I → HeathBrownFactorKind := fun i =>
     heathBrownBoxFactorKind k box.m i
   let q : I → ℕ := fun i =>
@@ -181,7 +182,7 @@ theorem derivativeExcised_montgomery_heathBrownBox_fixedPolylog
   have henergy : ∑ n : Fin (groupedDyadicUpper q),
       ‖groupedDyadicCoeffVector
         (fun i => heathBrownFactorBase L X (kind i)) q n‖ ^ 2 <= G := by
-    simpa [G, U, E, I, kind, q] using
+    simpa [G, U, E, I, comp, kind, q] using
       sum_normSq_heathBrownGrouped_le_fixed_polylog L X kind q
   have hlarge' : ∀ r ∈ S, D ^ (alpha - c) <=
       ‖heathBrownBoxFactorValue L X k box
@@ -191,8 +192,31 @@ theorem derivativeExcised_montgomery_heathBrownBox_fixedPolylog
             (heathBrownFactorBase L X (kind i)) (q i)))
             ((c : ℂ) + (lam r : ℝ) * Complex.I)‖ := by
     intro r hr
-    have hfactor := norm_heathBrownBox_core_eq_factor_mul_complement box j
-      ((c : ℂ) + (lam r : ℝ) * Complex.I)
+    let s : ℂ := (c : ℂ) + (lam r : ℝ) * Complex.I
+    let z : HeathBrownBoxFactorIndex k box.m → ℂ := fun i =>
+      heathBrownBoxFactorValue L X k box s i
+    have hfull : (∏ i, z i) =
+        heathBrownDyadicCoreProduct L X k box.m box.a box.b box.q s := by
+      simpa [z, heathBrownBoxFactorValue] using
+        heathBrownBoxFactorProduct_eq_core L X k box.m box.a box.b box.q s
+    have herase : z j * ∏ i ∈ (Finset.univ.erase j), z i = ∏ i, z i :=
+      Finset.mul_prod_erase Finset.univ z (Finset.mem_univ j)
+    have hlocal :
+        (∏ i : I, LSeries
+          (complexCoeff (arithmeticDyadicBlock
+            (heathBrownFactorBase L X (kind i)) (q i))) s) =
+          ∏ i ∈ (Finset.univ.erase j), z i := by
+      symm
+      simpa [I, comp, kind, q, z, heathBrownBoxFactorValue] using
+        (Finset.prod_subtype (F := inferInstance) (Finset.univ.erase j)
+          (fun i => Iff.rfl) (fun i => z i))
+    have hfactorLocal :
+        ‖heathBrownDyadicCoreProduct L X k box.m box.a box.b box.q s‖ =
+          ‖z j‖ *
+            ‖∏ i : I, LSeries
+              (complexCoeff (arithmeticDyadicBlock
+                (heathBrownFactorBase L X (kind i)) (q i))) s‖ := by
+      rw [← hfull, ← herase, norm_mul, hlocal]
     calc
       D ^ (alpha - c) <=
           ‖heathBrownDyadicCoreProduct L X k box.m box.a box.b box.q
@@ -203,12 +227,368 @@ theorem derivativeExcised_montgomery_heathBrownBox_fixedPolylog
             (complexCoeff (arithmeticDyadicBlock
               (heathBrownFactorBase L X (kind i)) (q i)))
               ((c : ℂ) + (lam r : ℝ) * Complex.I)‖ := by
-        simpa [I, kind, q, Finset.prod_attach] using hfactor
+        simpa [s, z] using hfactorLocal
   have hcount := derivativeExcised_montgomery_heathBrown_grouped_finset
     L X kind q hc henergy hdelta hH hgap hband hD hN hT0 hC
       (fun r => ‖heathBrownBoxFactorValue L X k box
         ((c : ℂ) + (lam r : ℝ) * Complex.I) j‖)
       hlong hlarge'
-  simpa [I, kind, q, U, E, G] using hcount
+  simpa [I, comp, kind, q, U, E, G] using hcount
+
+/-- Exact height-term normalization after derivative excision.  All dependence on Perron
+abscissa `c`, excised length `r`, and total length `tau` cancels to the canonical exponent. -/
+theorem derivativeComplement_height_power_identity
+    {T C tau r s alpha c : ℝ}
+    (hT : 0 < T) (hC : 0 < C) (htau : tau = r + s) :
+    (C ^ 2 * T ^ maynardDerivativeComplementHeightExponent tau alpha s) *
+        (((T / C) * (T ^ tau) ^ (alpha - c) *
+          (T ^ r) ^ (c - 1)) ^ 2) =
+      T * (T ^ s) ^ (1 - 2 * c) := by
+  rw [← Real.rpow_mul hT.le, ← Real.rpow_mul hT.le, ← Real.rpow_mul hT.le]
+  rw [pow_two]
+  dsimp only [maynardDerivativeComplementHeightExponent]
+  rw [htau]
+  field_simp [hC.ne']
+  simp_rw [← Real.rpow_natCast]
+  simp_rw [← Real.rpow_mul hT.le]
+  nth_rewrite 2 [← Real.rpow_one T]
+  rw [← Real.rpow_add hT, ← Real.rpow_add hT, ← Real.rpow_add hT]
+  congr 1
+  norm_num
+  ring
+
+/-- Exact length-term normalization after derivative excision. -/
+theorem derivativeComplement_length_power_identity
+    {T C tau r s alpha c : ℝ}
+    (hT : 0 < T) (hC : 0 < C) (htau : tau = r + s) :
+    (C ^ 2 * T ^ maynardDerivativeComplementLengthExponent tau alpha) *
+        (((T / C) * (T ^ tau) ^ (alpha - c) *
+          (T ^ r) ^ (c - 1)) ^ 2) =
+      (T ^ s) ^ (2 - 2 * c) := by
+  rw [← Real.rpow_mul hT.le, ← Real.rpow_mul hT.le, ← Real.rpow_mul hT.le]
+  rw [pow_two]
+  dsimp only [maynardDerivativeComplementLengthExponent]
+  rw [htau]
+  field_simp [hC.ne']
+  simp_rw [← Real.rpow_natCast]
+  simp_rw [← Real.rpow_mul hT.le]
+  rw [← Real.rpow_add hT, ← Real.rpow_add hT, ← Real.rpow_add hT]
+  congr 1
+  norm_num
+  ring
+
+/-- **Canonicalization of the literal derivative count.**  Once analytic width and energy costs
+are collected in `P`, the exact finite-set inequality becomes the two canonical powers used by
+the `2/25` seam reserve.  This theorem proves the cancellation rather than assuming an exponent
+heuristic. -/
+theorem derivativeExcised_count_to_canonical_powers
+    {R P T C tau r s alpha c : ℝ}
+    (hT : 0 < T) (hC : 0 < C)
+    (htau : tau = r + s)
+    (hcount :
+      R * (((T / C) * (T ^ tau) ^ (alpha - c) *
+          (T ^ r) ^ (c - 1)) ^ 2) <=
+        P * (T * (T ^ s) ^ (1 - 2 * c) +
+          (T ^ s) ^ (2 - 2 * c))) :
+    R <= (C ^ 2 * P) *
+      (T ^ maynardDerivativeComplementHeightExponent tau alpha s +
+        T ^ maynardDerivativeComplementLengthExponent tau alpha) := by
+  let V : ℝ := (T / C) * (T ^ tau) ^ (alpha - c) *
+    (T ^ r) ^ (c - 1)
+  let B : ℝ := (C ^ 2 * P) *
+    (T ^ maynardDerivativeComplementHeightExponent tau alpha s +
+      T ^ maynardDerivativeComplementLengthExponent tau alpha)
+  have hV : 0 < V := by
+    dsimp only [V]
+    positivity
+  have hheight := derivativeComplement_height_power_identity hT hC htau
+      (alpha := alpha) (c := c)
+  have hlength := derivativeComplement_length_power_identity hT hC htau
+      (alpha := alpha) (c := c)
+  have hnormalize : B * V ^ 2 =
+      P * (T * (T ^ s) ^ (1 - 2 * c) +
+        (T ^ s) ^ (2 - 2 * c)) := by
+    calc
+      B * V ^ 2 = P *
+          ((C ^ 2 * T ^ maynardDerivativeComplementHeightExponent tau alpha s) *
+              V ^ 2 +
+            (C ^ 2 * T ^ maynardDerivativeComplementLengthExponent tau alpha) *
+              V ^ 2) := by
+        dsimp only [B]
+        ring
+      _ = P * (T * (T ^ s) ^ (1 - 2 * c) +
+          (T ^ s) ^ (2 - 2 * c)) := by
+        rw [show V = (T / C) * (T ^ tau) ^ (alpha - c) *
+          (T ^ r) ^ (c - 1) by rfl, hheight, hlength]
+  have hscaled : R * V ^ 2 <= B * V ^ 2 := by
+    rw [hnormalize]
+    simpa only [V] using hcount
+  exact (mul_le_mul_iff_of_pos_right (sq_pos_of_pos hV)).mp hscaled
+
+/-- The erase-complement lower edge is exactly `T` raised to its dyadic logarithmic mass. -/
+theorem heathBrownBoxFactor_complement_lower_eq_rpow
+    {L X k : ℕ} {T : ℝ} (box : HeathBrownBoxChoice L X k)
+    (j : HeathBrownBoxFactorIndex k box.m) (hT : 1 < T) :
+    let I := {i : HeathBrownBoxFactorIndex k box.m //
+      i ∈ (Finset.univ.erase j)}
+    let q : I → ℕ := fun i =>
+      heathBrownBoxFactorExponent box.a box.b box.q i
+    ((groupedDyadicLower q : ℕ) : ℝ) =
+      T ^ ∑ i ∈ (Finset.univ.erase j),
+        dyadicLogExponent T
+          (heathBrownBoxFactorExponent box.a box.b box.q i) := by
+  dsimp only
+  simp only [groupedDyadicLower]
+  rw [← Finset.prod_subtype (Finset.univ.erase j)
+    (fun _ => Iff.rfl)
+    (fun i => 2 ^ heathBrownBoxFactorExponent box.a box.b box.q i)]
+  exact cast_prod_twoPow_eq_rpow_sum_dyadicLogExponent
+    hT (heathBrownBoxFactorExponent box.a box.b box.q)
+      (Finset.univ.erase j)
+
+/-- Exact additive decomposition of box length into distinguished factor and erase-complement. -/
+theorem heathBrownBox_totalExponent_eq_factor_add_complement
+    {L X k : ℕ} {T : ℝ} (box : HeathBrownBoxChoice L X k)
+    (j : HeathBrownBoxFactorIndex k box.m) :
+    heathBrownBoxTotalExponent L X k T box =
+      dyadicLogExponent T
+          (heathBrownBoxFactorExponent box.a box.b box.q j) +
+        ∑ i ∈ (Finset.univ.erase j),
+          dyadicLogExponent T
+            (heathBrownBoxFactorExponent box.a box.b box.q i) := by
+  change (∑ i : HeathBrownBoxFactorIndex k box.m,
+      dyadicLogExponent T
+        (heathBrownBoxFactorExponent box.a box.b box.q i)) = _
+  rw [add_comm]
+  exact (Finset.sum_erase_add (Finset.univ)
+    (fun i => dyadicLogExponent T
+      (heathBrownBoxFactorExponent box.a box.b box.q i))
+    (Finset.mem_univ j)).symm
+
+/-- Fixed width of every degree-60 erase-complement. -/
+def maynardLowOrdinateComplementWidthConstant : ℝ := ((2 ^ 120 : ℕ) : ℝ)
+
+/-- Fixed unraised divisor-moment exponent of every degree-60 erase-complement. -/
+def maynardLowOrdinateComplementPolylogExponent : ℕ :=
+  2 * 120 + (2 ^ (2 * 120) - 1)
+
+theorem maynardLowOrdinateComplementWidthConstant_one_le :
+    1 <= maynardLowOrdinateComplementWidthConstant := by
+  dsimp only [maynardLowOrdinateComplementWidthConstant]
+  exact_mod_cast Nat.one_le_two_pow
+
+/-- The erase-complement retains at most all `120` degree-60 coordinates. -/
+theorem heathBrownBoxFactor_complement_card_le_oneTwenty
+    {L X : ℕ} (box : HeathBrownBoxChoice L X 60)
+    (j : HeathBrownBoxFactorIndex 60 box.m) :
+    Fintype.card {i : HeathBrownBoxFactorIndex 60 box.m //
+      i ∈ (Finset.univ.erase j)} <= 120 := by
+  rw [Fintype.card_coe]
+  exact (Finset.card_le_univ _).trans
+    (by simpa using card_heathBrownBoxFactorIndex_le_two_mul box)
+
+theorem heathBrownBoxFactor_complement_polylogExponent_le
+    {L X : ℕ} (box : HeathBrownBoxChoice L X 60)
+    (j : HeathBrownBoxFactorIndex 60 box.m) :
+    let I := {i : HeathBrownBoxFactorIndex 60 box.m //
+      i ∈ (Finset.univ.erase j)}
+    2 * Fintype.card I + (2 ^ (2 * Fintype.card I) - 1) <=
+      maynardLowOrdinateComplementPolylogExponent := by
+  let I := {i : HeathBrownBoxFactorIndex 60 box.m //
+    i ∈ (Finset.univ.erase j)}
+  have hw : Fintype.card I <= 120 := by
+    dsimp only [I]
+    rw [Fintype.card_coe]
+    exact (Finset.card_le_univ _).trans
+      (by simpa using card_heathBrownBoxFactorIndex_le_two_mul box)
+  have hdouble : 2 * Fintype.card I <= 2 * 120 := Nat.mul_le_mul_left 2 hw
+  have hpow : 2 ^ (2 * Fintype.card I) <= 2 ^ (2 * 120) :=
+    Nat.pow_le_pow_right (by norm_num) hdouble
+  dsimp only [maynardLowOrdinateComplementPolylogExponent]
+  exact Nat.add_le_add hdouble (Nat.sub_le_sub_right hpow 1)
+
+/-- Exact dyadic width gives a uniform constant comparison between complement upper and lower
+edges. -/
+theorem heathBrownBoxFactor_complement_upper_le_width_mul_lower
+    {L X : ℕ} (box : HeathBrownBoxChoice L X 60)
+    (j : HeathBrownBoxFactorIndex 60 box.m) :
+    let I := {i : HeathBrownBoxFactorIndex 60 box.m //
+      i ∈ (Finset.univ.erase j)}
+    let q : I → ℕ := fun i =>
+      heathBrownBoxFactorExponent box.a box.b box.q i
+    (groupedDyadicUpper q : ℝ) <=
+      maynardLowOrdinateComplementWidthConstant *
+        (groupedDyadicLower q : ℝ) := by
+  dsimp only
+  let I := {i : HeathBrownBoxFactorIndex 60 box.m //
+    i ∈ (Finset.univ.erase j)}
+  let q : I → ℕ := fun i =>
+    heathBrownBoxFactorExponent box.a box.b box.q i
+  let w : ℕ := Fintype.card I
+  have hw : w <= 120 := heathBrownBoxFactor_complement_card_le_oneTwenty box j
+  have hpow : 2 ^ w <= 2 ^ 120 := Nat.pow_le_pow_right (by norm_num) hw
+  have hwidth := groupedDyadicUpper_eq_lower_mul_twoPow q
+  change (groupedDyadicUpper q : ℝ) <=
+    maynardLowOrdinateComplementWidthConstant * (groupedDyadicLower q : ℝ)
+  rw [hwidth, Nat.cast_mul]
+  dsimp only [maynardLowOrdinateComplementWidthConstant]
+  have hpowR : ((2 ^ w : ℕ) : ℝ) <= ((2 ^ 120 : ℕ) : ℝ) := by
+    exact_mod_cast hpow
+  calc
+    (groupedDyadicLower q : ℝ) * ((2 ^ w : ℕ) : ℝ) <=
+        (groupedDyadicLower q : ℝ) * ((2 ^ 120 : ℕ) : ℝ) :=
+      mul_le_mul_of_nonneg_left hpowR (by positivity)
+    _ = ((2 ^ 120 : ℕ) : ℝ) * (groupedDyadicLower q : ℝ) := by ring
+
+/-- Generic Montgomery width-energy factor in canonical derivative-complement form.  It is a
+pure inequality: fixed multiplicative width converts the height term and length term into exactly
+the two powers appearing in the derivative-count duality. -/
+theorem montgomery_unraised_factor_le_canonical
+    {H T U A W c : ℝ} {E : ℕ} {delta : ℝ}
+    (hT : 1 <= T) (hH : H <= 3 * T)
+    (hdelta : 1 <= delta)
+    (hA : 1 <= A) (hU : 1 <= U) (hW : 1 <= W)
+    (hwidth : U <= W * A) :
+    (H + 4 * U * (1 + Real.log U)) *
+        (1 / delta + 2 * Real.log U) *
+        (A ^ (-2 * c) *
+          (U * (1 + Real.log U) ^ E)) <=
+      (12 * W ^ 2 * (1 + Real.log U) ^ (E + 2)) *
+        (T * A ^ (1 - 2 * c) + A ^ (2 - 2 * c)) := by
+  let Z : ℝ := A ^ (-2 * c)
+  let Q : ℝ := 1 + Real.log U
+  have hT0 : 0 <= T := zero_le_one.trans hT
+  have hA0 : 0 < A := zero_lt_one.trans_le hA
+  have hU0 : 0 < U := zero_lt_one.trans_le hU
+  have hW0 : 0 <= W := zero_le_one.trans hW
+  have hlog0 : 0 <= Real.log U := Real.log_nonneg hU
+  have hQ : 1 <= Q := by dsimp only [Q]; linarith
+  have hQ0 : 0 <= Q := zero_le_one.trans hQ
+  have hdelta0 : 0 < delta := zero_lt_one.trans_le hdelta
+  have hinv : delta⁻¹ <= 1 := (inv_le_one₀ hdelta0).2 hdelta
+  have hsecond : 1 / delta + 2 * Real.log U <= 3 * Q := by
+    rw [one_div]
+    dsimp only [Q]
+    linarith
+  have hUL : U * Q <= (W * A) * Q :=
+    mul_le_mul_of_nonneg_right hwidth hQ0
+  have hWL : 1 <= W * Q := one_le_mul_of_one_le_of_one_le hW hQ
+  have hthreeT : 3 * T <= 4 * W * Q * T := by
+    have hcoef : (3 : ℝ) <= 4 * (W * Q) := by nlinarith
+    simpa [mul_assoc] using mul_le_mul_of_nonneg_right hcoef hT0
+  have hfirst : H + 4 * U * Q <= 4 * W * Q * (T + A) := by
+    have hfourRaw := mul_le_mul_of_nonneg_left hUL
+      (show (0 : ℝ) <= 4 by norm_num)
+    have hfour : 4 * U * Q <= 4 * (W * A) * Q := by
+      simpa [mul_assoc] using hfourRaw
+    calc
+      H + 4 * U * Q <= 3 * T + 4 * (W * A) * Q := by
+        exact add_le_add hH hfour
+      _ <= 4 * W * Q * T + 4 * W * Q * A := by
+        have hsecondTerm : 4 * (W * A) * Q = 4 * W * Q * A := by ring
+        rw [hsecondTerm]
+        exact add_le_add hthreeT le_rfl
+      _ = 4 * W * Q * (T + A) := by ring
+  have hZ0 : 0 <= Z := Real.rpow_nonneg hA0.le _
+  have henergy : U * Q ^ E <= (W * A) * Q ^ E :=
+    mul_le_mul_of_nonneg_right hwidth (pow_nonneg hQ0 E)
+  have hraw :
+      (H + 4 * U * Q) * (1 / delta + 2 * Real.log U) *
+          (Z * (U * Q ^ E)) <=
+        (4 * W * Q * (T + A)) * (3 * Q) *
+          (Z * ((W * A) * Q ^ E)) := by
+    exact mul_le_mul
+      (mul_le_mul hfirst hsecond
+        (by positivity) (by positivity))
+      (mul_le_mul_of_nonneg_left henergy hZ0)
+      (mul_nonneg hZ0 (by positivity))
+      (by positivity)
+  have hZA : Z * A = A ^ (1 - 2 * c) := by
+    dsimp only [Z]
+    calc
+      A ^ (-2 * c) * A = A ^ (-2 * c) * A ^ (1 : ℝ) := by rw [Real.rpow_one]
+      _ = A ^ ((-2 * c) + 1) := by rw [← Real.rpow_add hA0]
+      _ = A ^ (1 - 2 * c) := by congr 1; ring
+  have hZA2 : Z * A ^ (2 : ℕ) = A ^ (2 - 2 * c) := by
+    dsimp only [Z]
+    rw [← Real.rpow_natCast, ← Real.rpow_add hA0]
+    congr 1
+    norm_num
+    ring
+  calc
+    (H + 4 * U * (1 + Real.log U)) *
+        (1 / delta + 2 * Real.log U) *
+        (A ^ (-2 * c) * (U * (1 + Real.log U) ^ E)) =
+      (H + 4 * U * Q) * (1 / delta + 2 * Real.log U) *
+        (Z * (U * Q ^ E)) := by rfl
+    _ <= (4 * W * Q * (T + A)) * (3 * Q) *
+          (Z * ((W * A) * Q ^ E)) := hraw
+    _ = (12 * W ^ 2 * Q ^ (E + 2)) *
+        (T * (Z * A) + Z * A ^ (2 : ℕ)) := by
+      rw [pow_add]
+      ring
+    _ = (12 * W ^ 2 * Q ^ (E + 2)) *
+        (T * A ^ (1 - 2 * c) + A ^ (2 - 2 * c)) := by
+      rw [hZA, hZA2]
+    _ = (12 * W ^ 2 * (1 + Real.log U) ^ (E + 2)) *
+        (T * A ^ (1 - 2 * c) + A ^ (2 - 2 * c)) := by rfl
+
+/-- Squaring a real power is exact at a positive dyadic lower edge. -/
+theorem rpow_neg_sq_eq_rpow_neg_two_mul
+    {A c : ℝ} (hA : 0 < A) :
+    (A ^ (-c)) ^ 2 = A ^ (-2 * c) := by
+  rw [← Real.rpow_natCast]
+  rw [← Real.rpow_mul hA.le]
+  congr 1
+  norm_num
+  ring
+
+/-- **Closed analytic-to-canonical bridge.**  A literal derivative-excised Montgomery count,
+with a fixed-width unraised complement and its exact base-`T` length, lands in the two canonical
+derivative-complement powers.  Every width, energy, and Kuzmin--Landau constant remains explicit;
+there is no amplitude discretization or hidden exponent loss. -/
+theorem derivativeExcised_montgomery_to_canonical
+    {R H T U A W C tau r s alpha c delta : ℝ} {E : ℕ}
+    (hT : 1 <= T) (hH : H <= 3 * T)
+    (hdelta : 1 <= delta)
+    (hA : 1 <= A) (hU : 1 <= U) (hW : 1 <= W)
+    (hwidth : U <= W * A) (hC : 0 < C)
+    (htau : tau = r + s) (hAeq : A = T ^ s)
+    (hcount :
+      R * (((T / C) * (T ^ tau) ^ (alpha - c) *
+          (T ^ r) ^ (c - 1)) ^ 2) <=
+        (H + 4 * U * (1 + Real.log U)) *
+          (1 / delta + 2 * Real.log U) *
+          (((A ^ (-c)) ^ 2) *
+            (U * (1 + Real.log U) ^ E))) :
+    R <=
+      (C ^ 2 * (12 * W ^ 2 * (1 + Real.log U) ^ (E + 2))) *
+        (T ^ maynardDerivativeComplementHeightExponent tau alpha s +
+          T ^ maynardDerivativeComplementLengthExponent tau alpha) := by
+  have hT0 : 0 < T := zero_lt_one.trans_le hT
+  have hfactor := montgomery_unraised_factor_le_canonical
+    hT hH hdelta hA hU hW hwidth (c := c) (E := E)
+  have hpow : (A ^ (-c)) ^ 2 = A ^ (-2 * c) :=
+    rpow_neg_sq_eq_rpow_neg_two_mul (zero_lt_one.trans_le hA)
+  have hcount' :
+      R * (((T / C) * (T ^ tau) ^ (alpha - c) *
+          (T ^ r) ^ (c - 1)) ^ 2) <=
+        (12 * W ^ 2 * (1 + Real.log U) ^ (E + 2)) *
+          (T * (T ^ s) ^ (1 - 2 * c) +
+            (T ^ s) ^ (2 - 2 * c)) := by
+    calc
+      R * (((T / C) * (T ^ tau) ^ (alpha - c) *
+          (T ^ r) ^ (c - 1)) ^ 2) <=
+          (H + 4 * U * (1 + Real.log U)) *
+            (1 / delta + 2 * Real.log U) *
+            (A ^ (-2 * c) *
+              (U * (1 + Real.log U) ^ E)) := by
+        simpa only [hpow] using hcount
+      _ <= (12 * W ^ 2 * (1 + Real.log U) ^ (E + 2)) *
+          (T * A ^ (1 - 2 * c) + A ^ (2 - 2 * c)) := hfactor
+      _ = (12 * W ^ 2 * (1 + Real.log U) ^ (E + 2)) *
+          (T * (T ^ s) ^ (1 - 2 * c) +
+            (T ^ s) ^ (2 - 2 * c)) := by rw [hAeq]
+  exact derivativeExcised_count_to_canonical_powers hT0 hC htau hcount'
 
 end RHTower.Sieve

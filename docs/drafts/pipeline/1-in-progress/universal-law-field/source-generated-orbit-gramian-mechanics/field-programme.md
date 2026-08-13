@@ -159,9 +159,10 @@ Phase cancellation can regularize only after abandoning positivity or retaining 
 ### Law XII — drift consumes causal delay
 
 Width-`T` radial drift `delta` is formable exactly after delay `b>=max(0,delta)`, with work
-`2 min(|delta|,T)/T^2`. Functional-equation pairing requires common delay `|delta|`. Work has a
-linear cusp while Jeffreys information is quadratic, so smooth information cannot finance source
-formation. A source-canonical zero-time anchor plus reflection would force `delta=0`.
+`2 min(|delta|,T)/T^2`. Functional-equation pairing requires common entrance latency `|delta|`.
+Common extra delay is gauge. Work has a linear cusp while Jeffreys information is quadratic, so
+smooth information cannot finance source formation. Zero entrance latency plus reflection would
+force `delta=0`, but source origin alone does not supply it.
 
 ## 4. Exact fusion across structurally different organs
 
@@ -380,4 +381,5 @@ weight does not answer it.
   proved finite-capital exactly on the neutral line, reducing RH selection to one source-history
   production implication.
 - 2026-08-13 — delayed smoothing classified exactly; functional equation shown to require common
-  delay, and zero-delay causal anchoring isolated as the first noncircular selection mechanism.
+  entrance latency. Source-origin-to-zero-delay inference killed against the formal Hedenmalm
+  classifier; zero-slack global formation remains open.

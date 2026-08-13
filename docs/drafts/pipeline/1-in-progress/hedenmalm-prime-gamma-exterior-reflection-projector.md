@@ -50,10 +50,10 @@ removable after exteriorization because the reflected Pluecker coordinate is alr
 
 ## Target theorem chain
 
-- [ ] exact finite exterior determinant Cauchy--Binet expansion with oriented phase rows;
-- [ ] three-clock Cesaro projector onto reflection pairs;
-- [ ] ordered reflected minors equal negative Pluecker norm square;
-- [ ] Abel/Cayley resolvent limit equals exact transverse-normalized exterior packet energy;
+- [x] exact finite exterior determinant Cauchy--Binet expansion with oriented phase rows;
+- [x] three-clock Cesaro projector onto reflection pairs;
+- [x] ordered reflected minors equal negative Pluecker norm square;
+- [x] Abel/Cayley resolvent limit equals exact transverse-normalized exterior packet energy;
 - [ ] every finite approximant is an explicit prime--Gamma four-leg source expression;
 - [ ] absolute source bound below `4 * (96 / 145)^2`;
 - [ ] unconditional closed Lean proof of RH.
@@ -67,8 +67,7 @@ Cayley-source resolvent, with exterior vanishing providing the exact removable-k
 
 ## Verification gates
 
-- [ ] `lake env lean formal/GaloisForLFunctions/RHTower/HedenmalmPrimeGammaExteriorReflectionProjector.lean`
-- [ ] `lake build GaloisForLFunctions.RHTower.HedenmalmPrimeGammaExteriorReflectionProjector`
-- [ ] `#print axioms` audit
-- [ ] umbrella import
-
+- [x] `lake env lean formal/GaloisForLFunctions/RHTower/HedenmalmPrimeGammaExteriorReflectionProjector.lean`
+- [x] `lake build GaloisForLFunctions.RHTower.HedenmalmPrimeGammaExteriorReflectionProjector`
+- [x] `#print axioms` audit
+- [x] umbrella import

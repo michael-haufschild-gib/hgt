@@ -1,7 +1,7 @@
 # Every spectral type carries maximal translation HT inside one complete moment fiber
 
 - **ID:** `spectral-type-stratified-moment-fiber-maximal-ht`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized
 - **Type:** THEOREM / SPECTRAL-TYPE-HT ORTHOGONALITY LAW
 - **Lane:** general hypertranscendence; indeterminate Hamburger moments; Herglotz spectral type
 - **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED]`
@@ -427,3 +427,31 @@ bound `|V^m| <= |V|_HS^m / sqrt(m!)` generates `exp(c|z|^2)`, order two rather t
 small-tail split only improves the constant.  The route that remains is entire-function theoretic
 (real zeros with summable reciprocals, then a genus-zero Hadamard product), and Hadamard
 factorization is absent from mathlib.
+
+## Log — the spectral disintegration is replaced by direct type transports `[PROVED]`
+
+The card's remaining Lean gate was "the Hamburger moment problem and Nevanlinna extremal family
+together with the source-faithful measurable spectral disintegration used in `(6)`--`(9)`".
+
+- Family and moment preservation: `HTGeometry.nevExtremalFamily` and
+  `boundaryBarycenter_hasHamburgerMoments` (already unconditional).
+- `(6)`: `map_projectiveLabel_measureBarycenter` — the barycenter reads back its parameter law.
+- Pure point: `HTGeometry.nevBarycenter_countableCarrier`.  The label level sets are the
+  denominator fibers and those are countable (`NevFiberCountable`), so a countably carried
+  parameter law gives a countably carried carrier.
+- `(7)`: atomlessness transport, `boundaryBarycenter_noAtoms`.
+- `(8)`: `HTGeometry.nevBarycenter_absolutelyContinuous_volume`.  The analytic content is Luzin's
+  property (N) for the real-analytic label `-d/c`, formalized as
+  `volume_image_eq_zero_of_differentiableOn`; a Lebesgue-null carrier set is therefore visible only
+  to a Lebesgue-null set of parameters.
+- `(9)`: `HTGeometry.nevBarycenter_isSingularContinuous`, via the null-preimage theorem for the
+  real-analytic lower row.
+- `(16)`--`(18)`: `HTGeometry.nevBarycenter_mixture_spectralProfile`.  Barycentring is additive and
+  positively homogeneous and preserves mutual singularity
+  (`measureBarycenter_mutuallySingular`), so a mixture of the three pure types keeps exactly its
+  mass vector.
+
+New module `HTGeometry/BoundaryBarycenterSpectralTransport.lean`, wired into
+`GaloisForLFunctions.HTGeometry`, all axiom-clean.  With the maximal-translation capstone already
+unconditional, the card is promoted to `3-formalized/nad`; the remaining gates are external
+literature audits.

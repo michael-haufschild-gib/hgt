@@ -1,7 +1,7 @@
 # Canonical Schur truncations cross from rational DA interior to singular maximal-HT boundary only cofinally
 
 - **ID:** `singular-maximal-ht-schur-defect-collapse-law`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized
 - **Type:** THEOREM / COFINAL DOUBLE-BOUNDARY LAW
 - **Lane:** general hypertranscendence; singular Herglotz carriers; Schur geometry
 - **Scientific status:** `[CIRCLE LAW FORMALIZED UNCONDITIONALLY; REAL-LINE NEVANLINNA/TRANSVERSALITY INPUTS REMAIN] [NOVELTY UNVERIFIED]`
@@ -590,3 +590,15 @@ bound `|V^m| <= |V|_HS^m / sqrt(m!)` generates `exp(c|z|^2)`, order two rather t
 small-tail split only improves the constant.  The route that remains is entire-function theoretic
 (real zeros with summable reciprocals, then a genus-zero Hadamard product), and Hadamard
 factorization is absent from mathlib.
+
+## Log — the real-line Nevanlinna gate is closed `[PROVED]`
+
+The card's last formalization gate ("unconditional Nevanlinna-family construction for the residual
+real-line phase") is discharged.  `HTGeometry.nevExtremalFamily` constructs the classical
+N-extremal family from `PositiveMomentForm s`, `BoundedKernel s 0`, `s 0 = 1` alone, and
+`HTGeometry.analyticNevCarrierFamilyMaximalTranslationInputs` supplies the complete input term, so
+`HTGeometry/AnalyticNevCofinalCholeskyUnconditional.lean` states the residual singular-continuous
+maximal-translation phase with no structure argument.  With the circle double boundary already
+unconditional (`singularSchurDefect_doubleBoundary_of_mutuallySingular`,
+`pureSingularCarrier_trichotomy`), both halves of the card are now unconditional and axiom-clean.
+Promoted to `3-formalized/nad`; the remaining gates are external literature audits.

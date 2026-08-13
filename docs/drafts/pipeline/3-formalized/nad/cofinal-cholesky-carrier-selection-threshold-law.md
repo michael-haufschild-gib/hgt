@@ -1,7 +1,7 @@
 # Finite Cholesky frames retain maximal HT; the complete divergent tower selects the carrier
 
 - **ID:** `cofinal-cholesky-carrier-selection-threshold-law`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized
 - **Type:** THEOREM / COFINAL FRAME-SELECTION GEOMETRY
 - **Lane:** general hypertranscendence; indeterminate moment carriers; OPUC frame geometry
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED]`
@@ -1205,3 +1205,24 @@ bound `|V^m| <= |V|_HS^m / sqrt(m!)` generates `exp(c|z|^2)`, order two rather t
 small-tail split only improves the constant.  The route that remains is entire-function theoretic
 (real zeros with summable reciprocals, then a genus-zero Hadamard product), and Hadamard
 factorization is absent from mathlib.
+
+## Log — the Nevanlinna-family gate is closed; the capstone is unconditional `[PROVED]`
+
+The last formalization gate ("unconditional construction of the classical N-extremal Nevanlinna
+family") is discharged.  `HTGeometry.nevExtremalFamily` and
+`HTGeometry.exists_classicalAnalyticNevanlinnaCarrierFamily` construct the family from
+`PositiveMomentForm s`, `BoundedKernel s 0`, `s 0 = 1` alone, and
+`HTGeometry.analyticNevCarrierFamilyMaximalTranslationInputs` supplies the complete input term
+(M. Riesz minimal exponential type through Simon's transfer route, no common lower-row zero, a
+zero and a regular point, and the Weyl half-plane map).
+
+`HTGeometry/AnalyticNevCofinalCholeskyUnconditional.lean` therefore states the card's capstone with
+no structure argument:
+
+- `analyticNevCarrierFamily_cofinalCholeskyResidualPhase_dense_gdelta_residual`;
+- `analyticNevCarrierFamily_cofinalPhase_isSingularContinuous_maximalTranslation`;
+- `analyticNevCarrierFamily_carrierRange_maximalTranslationPhase_dense`.
+
+All axiom-clean, wired into `GaloisForLFunctions.HTGeometry`.  Promoted to `3-formalized/nad` with
+companion `cofinal-cholesky-carrier-selection-threshold-law-formalized.md`.  The remaining gates
+are external literature audits.

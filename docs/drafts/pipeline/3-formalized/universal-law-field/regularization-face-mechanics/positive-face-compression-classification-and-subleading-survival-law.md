@@ -1,7 +1,7 @@
 # Positive-face compression classification and subleading-survival law
 
 - **ID:** `ulf-rfm-positive-face-compression`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / POSITIVE SURVIVOR OF A FAILED FIELD CONJECTURE
 - **Source:** `docs/drafts/pipeline/1-in-progress/universal-law-field/stuck-route-obstruction-matrix.md`
 - **Status:** `[PAPER-PROVED] [LEAN-PROVED] [DEPENDENCY-CLOSED] [FOURTH REGULARIZATION BRANCH]`
@@ -234,3 +234,7 @@ subleading energy, and the explicit diagonal fourth branch. It is wired into
   paper proof closed; external collision audit downgrades the mechanism to bridge/survivor.
 - 2026-08-13 — tested against the Sonin UV organ; finite Calkin-packet injectivity forces the
   compact face to be zero, so the fourth branch cannot solve W8 at finite prime-quadratic level.
+
+## Log
+
+- 2026-08-13 — Exact paper surface closed in Lean: real/complex scalar scope, range/kernel classification, nonzero subleading survival, heterogeneous direct-sum analysis, unchanged family energies, and formation-Laplacian radical; direct source, targeted module build, umbrella source, and axiom audits pass.

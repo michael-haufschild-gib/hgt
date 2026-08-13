@@ -233,3 +233,5 @@ build green.  Left for the card: Theorem B packaging (N-clause satisfaction lemm
 vacuity caveat) and the Theorems A/C/D citation-audit disposition; then promote.
 
 - `specification-consistency-polarization-independence-and-cusp-concentration-law.md` — **DONE 2026-08-13** — promoted: Theorem B's independence witness fully certified (RHTower/InverseTheoryGraphWitness.lean - prism C16xK2, 3-regularity, exact Rayleigh data by root-of-unity sampling, Ramanujan margin 50>49, symmetric operator, Laplacian equality analysis, eigenvalue strictly inside (2sqrt2, 3), Perron pair, bundled capstone prism_independence_witness, all axiom-clean); Theorems A/C/D recorded as cited-classical / in-tree-cited / synthesis per the card's own claims
+
+- `regularization-face-mechanics/positive-face-compression-classification-and-subleading-survival-law.md` — **DONE 2026-08-13** — Exact paper surface closed in Lean: real/complex scalar scope, range/kernel classification, nonzero subleading survival, heterogeneous direct-sum analysis, unchanged family energies, and formation-Laplacian radical; direct source, targeted module build, umbrella source, and axiom audits pass.
