@@ -467,8 +467,9 @@ theorem suzukiHankelPhiContinuous_real
         suzukiHankelPhi epsilon omega a homegaHalf ha y :=
       Complex.conj_eq_iff_im.mpr hy
     rw [hphi]
-  rw [map_sub, conj_suzukiSourceHFinite, map_mul,
-    SuzukiHankelSign.star_coeff, hIntegral]
+  have hcoeff : (starRingEnd ℂ) epsilon.coeff = epsilon.coeff := by
+    simpa only [starRingEnd_apply] using SuzukiHankelSign.star_coeff epsilon
+  rw [map_sub, conj_suzukiSourceHFinite, map_mul, hcoeff, hIntegral]
 
 /-- **Suzuki (2012), Lemma 4.5, exact bundled form.** -/
 theorem suzuki2012_lemma_four_five

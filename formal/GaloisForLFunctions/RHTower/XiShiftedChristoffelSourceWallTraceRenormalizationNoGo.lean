@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.XiShiftedStrictFrontierAllContactSourceWallResidue
+import GaloisForLFunctions.RHTower.XiShiftedCanonicalAdmissionGaussEdgeArithmeticSource
 
 /-!
 # Raw Christoffel source walls cannot form a finite positive trace
@@ -124,6 +125,103 @@ theorem xiShiftedCanonicalAdmissionRenormalizedChristoffelSourceWall_pos
     0 < xiShiftedCanonicalAdmissionRenormalizedChristoffelSourceWall y n := by
   rw [xiShiftedCanonicalAdmissionRenormalizedChristoffelSourceWall]
   exact sub_pos.mpr (xiShiftedChristoffelSourceWallDimensionTax_lt hn hH)
+
+/-- **Canonical counterterm identification.**  The renormalized wall is exactly the adaptive
+Gaussian-visible source selected by the same admission, divided by the complete newborn norm.
+Thus the universal dimension tax is not an arbitrary subtraction: it is precisely the sole
+one-coordinate Gaussian observer defect. -/
+theorem
+    xiShiftedCanonicalAdmissionRenormalizedChristoffelSourceWall_eq_adaptiveGaussAggregate_div_nextNorm
+    {y : ℝ} {n : ℕ} (hn : 0 < n)
+    (hH : (HTGeometry.momentHankelMatrix
+      (fun k => (xiShiftedReciprocalMoment y k).re) (n + 2)).PosDef) :
+    xiShiftedCanonicalAdmissionRenormalizedChristoffelSourceWall y n =
+      HTGeometry.adaptiveOrthoGaussAggregate
+          (fun k => (xiShiftedReciprocalMoment y k).re) n /
+        (16 * HTGeometry.monicOrthoNormSq
+          (fun k => (xiShiftedReciprocalMoment y k).re) (n + 1)) := by
+  let s : ℕ → ℝ := fun k => (xiShiftedReciprocalMoment y k).re
+  let hbelow := HTGeometry.positiveMomentFormBelow_of_hankelPosDef hH
+  have hwall :=
+    xiShiftedCanonicalAdmissionChristoffelSourceWall_eq_jacobiEnergy_div_beta
+      hn hH
+  have haggregate := HTGeometry.adaptiveOrthoGaussAggregate_eq_visibleJacobiEnergy
+    hbelow hn (le_refl (n + 2))
+  have hedge := HTGeometry.monicOrthoNormSq_mul_nextBeta
+    hbelow (by omega : n + 1 < n + 2)
+  have hnorm : 0 < HTGeometry.monicOrthoNormSq s n :=
+    HTGeometry.monicOrtho_inner_self_pos_below hbelow (by omega)
+  have hbeta : 0 < HTGeometry.monicOrthoBeta s (n + 1) :=
+    HTGeometry.monicOrthoBeta_pos_below hbelow (by omega) (by omega)
+  rw [xiShiftedCanonicalAdmissionRenormalizedChristoffelSourceWall, hwall]
+  unfold xiShiftedChristoffelSourceWallDimensionTax
+  change
+    HTGeometry.adaptiveOrthoJacobiEnergy s n /
+          (16 * HTGeometry.monicOrthoBeta s (n + 1)) -
+        (n + 1 : ℝ) / 16 =
+      HTGeometry.adaptiveOrthoGaussAggregate s n /
+        (16 * HTGeometry.monicOrthoNormSq s (n + 1))
+  dsimp only [s] at haggregate hedge hnorm hbeta ⊢
+  rw [haggregate, ← hedge]
+  field_simp [ne_of_gt hnorm, ne_of_gt hbeta]
+
+/-- Square-root-mass form of the canonical identification.  Numerator is the literal adaptive
+mixed/completed `P^sharp` Gaussian bulk, formed from current shifted-Xi admission before any
+reflection aggregation. -/
+theorem
+    xiShiftedCanonicalAdmissionRenormalizedChristoffelSourceWall_eq_literalGaussBulk_div_nextNorm
+    {w : ℝ} {n : ℕ} (hn : 0 < n)
+    (hH : (HTGeometry.momentHankelMatrix
+      (xiShiftedRealMomentSequence w) (n + 2)).PosDef) :
+    xiShiftedCanonicalAdmissionRenormalizedChristoffelSourceWall (w ^ 2) n =
+      xiShiftedAdaptiveGaussArithmeticBulk w n /
+        (32 * HTGeometry.monicOrthoNormSq
+          (xiShiftedRealMomentSequence w) (n + 1)) := by
+  rw [xiShiftedCanonicalAdmissionRenormalizedChristoffelSourceWall_eq_adaptiveGaussAggregate_div_nextNorm
+    hn hH]
+  unfold xiShiftedAdaptiveGaussArithmeticBulk xiShiftedRealMomentSequence
+  ring
+
+/-- **Literal arithmetic source partition.**  Raw Christoffel wall is universal Gaussian observer
+defect plus the admission-selected rational--Gamma/von-Mangoldt source remainder.  Source is formed
+first; subtraction only removes its exact newborn-norm coordinate. -/
+theorem xiShiftedCanonicalAdmissionChristoffelSourceWall_eq_dimensionTax_add_literalSourceRemainder
+    {w : ℝ} (hw : 1 / 2 < w) {n : ℕ} (hn : 0 < n)
+    (hH : (HTGeometry.momentHankelMatrix
+      (xiShiftedRealMomentSequence w) (n + 2)).PosDef) :
+    xiShiftedCanonicalAdmissionChristoffelSourceWall (w ^ 2) n =
+      xiShiftedChristoffelSourceWallDimensionTax n +
+        (xiShiftedAdaptiveMixedCompletedArithmeticSource w
+              (HTGeometry.monicOrtho (xiShiftedRealMomentSequence w) n) -
+            2 * (n + 1 : ℝ) * HTGeometry.monicOrthoNormSq
+              (xiShiftedRealMomentSequence w) (n + 1)) /
+          (32 * HTGeometry.monicOrthoNormSq
+            (xiShiftedRealMomentSequence w) (n + 1)) := by
+  have hsplit :=
+    xiShiftedAdaptiveMixedCompletedArithmeticSource_eq_gaussBulk_add_nextEdge
+      hw hn hH
+  have hren :=
+    xiShiftedCanonicalAdmissionRenormalizedChristoffelSourceWall_eq_literalGaussBulk_div_nextNorm
+      hn hH
+  calc
+    xiShiftedCanonicalAdmissionChristoffelSourceWall (w ^ 2) n =
+        xiShiftedChristoffelSourceWallDimensionTax n +
+          xiShiftedCanonicalAdmissionRenormalizedChristoffelSourceWall (w ^ 2) n := by
+      unfold xiShiftedCanonicalAdmissionRenormalizedChristoffelSourceWall
+      ring
+    _ = xiShiftedChristoffelSourceWallDimensionTax n +
+        xiShiftedAdaptiveGaussArithmeticBulk w n /
+          (32 * HTGeometry.monicOrthoNormSq
+            (xiShiftedRealMomentSequence w) (n + 1)) := by rw [hren]
+    _ = xiShiftedChristoffelSourceWallDimensionTax n +
+        (xiShiftedAdaptiveMixedCompletedArithmeticSource w
+              (HTGeometry.monicOrtho (xiShiftedRealMomentSequence w) n) -
+            2 * (n + 1 : ℝ) * HTGeometry.monicOrthoNormSq
+              (xiShiftedRealMomentSequence w) (n + 1)) /
+          (32 * HTGeometry.monicOrthoNormSq
+            (xiShiftedRealMomentSequence w) (n + 1)) := by
+      rw [hsplit]
+      ring
 
 /-- **Raw positive-trace no-go.** If every finite shifted-Xi moment block at one mass is positive
 definite, raw source walls diverge with degree. -/

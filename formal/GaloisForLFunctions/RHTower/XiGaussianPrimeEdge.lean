@@ -21,7 +21,7 @@ def xiGaussianHermiteFourier (t : ℝ) (k : ℕ) (w : ℝ) : ℂ :=
   ∫ x : ℝ, xiGaussianTestC t k (x : ℂ) *
     Complex.exp (-(I * (w : ℂ) * (x : ℂ)))
 
-private theorem integrable_xiGaussianTestC_fourier_horizontal
+theorem integrable_xiGaussianTestC_fourier_horizontal
     {t : ℝ} (ht : 0 < t) (k : ℕ) (w y : ℝ) :
     Integrable (fun x : ℝ =>
       xiGaussianTestC t k ((x : ℂ) + (y : ℂ) * I) *
@@ -206,6 +206,157 @@ theorem integral_xiGaussianTestC_fourier_horizontal_shift
   have heq : (∫ x : ℝ, F ((x : ℂ) - (c : ℂ) * I)) = ∫ x : ℝ, F (x : ℂ) :=
     sub_eq_zero.mp (by simpa using huniq)
   simpa only [F, xiGaussianHermiteFourier] using heq
+
+/-- One literal von-Mangoldt atom on the Gaussian bottom edge. -/
+def xiGaussianBottomPrimeAtomIntegrand
+    (t : ℝ) (k : ℕ) (c : ℝ) (n : ℕ) (x : ℝ) : ℂ :=
+  xiGaussianTestC t k ((x : ℂ) - (c : ℂ) * I) *
+    LSeries.term (fun m => (ArithmeticFunction.vonMangoldt m : ℂ))
+      (xiMassBottomEulerPoint c x) n
+
+/-- Depth-free critical half-density atom read by the Gaussian Fourier transform. -/
+def xiGaussianCenteredPrimeAtom
+    (t : ℝ) (k : ℕ) (n : ℕ) : ℂ :=
+  LSeries.term (fun m => (ArithmeticFunction.vonMangoldt m : ℂ)) (1 / 2 : ℂ) n *
+    xiGaussianHermiteFourier t k (Real.log n)
+
+/-- Full literal von-Mangoldt series on the Gaussian bottom edge. -/
+def xiGaussianBottomPrimeIntegrand
+    (t : ℝ) (k : ℕ) (c : ℝ) (x : ℝ) : ℂ :=
+  xiGaussianTestC t k ((x : ℂ) - (c : ℂ) * I) *
+    LSeries (fun m => (ArithmeticFunction.vonMangoldt m : ℂ))
+      (xiMassBottomEulerPoint c x)
+
+/-- Exact atomwise Euler-depth erasure for every Gaussian--Hermite degree. -/
+theorem integral_xiGaussianBottomPrimeAtom_eq_centered
+    {t c : ℝ} (ht : 0 < t) (hc : 0 ≤ c) (k n : ℕ) :
+    (∫ x : ℝ, xiGaussianBottomPrimeAtomIntegrand t k c n x) =
+      xiGaussianCenteredPrimeAtom t k n := by
+  rcases eq_or_ne n 0 with rfl | hn
+  · simp [xiGaussianBottomPrimeAtomIntegrand, xiGaussianCenteredPrimeAtom,
+      LSeries.term_zero]
+  · let F : ℂ → ℂ := fun z =>
+      xiGaussianTestC t k z * Complex.exp (-(I * (Real.log n : ℂ) * z))
+    have hshift := integral_xiGaussianTestC_fourier_horizontal_shift
+      ht k hc (Real.log n)
+    have hpoint (x : ℝ) :
+        xiGaussianBottomPrimeAtomIntegrand t k c n x =
+          LSeries.term (fun m => (ArithmeticFunction.vonMangoldt m : ℂ))
+              (1 / 2 : ℂ) n * F ((x : ℂ) - (c : ℂ) * I) := by
+      rw [xiGaussianBottomPrimeAtomIntegrand,
+        xiMassBottomLSeriesTerm_eq_centered_mul_fourierPhase hn]
+      dsimp only [F]
+      ring
+    rw [integral_congr_ae (Filter.Eventually.of_forall hpoint),
+      MeasureTheory.integral_const_mul, hshift]
+    rfl
+
+private theorem integrable_xiGaussianBottomPrimeAtomIntegrand
+    {t c : ℝ} (ht : 0 < t) (k n : ℕ) :
+    Integrable (xiGaussianBottomPrimeAtomIntegrand t k c n) := by
+  rcases eq_or_ne n 0 with rfl | hn
+  · rw [show xiGaussianBottomPrimeAtomIntegrand t k c 0 = fun _ : ℝ => (0 : ℂ) by
+      funext x
+      rw [xiGaussianBottomPrimeAtomIntegrand, LSeries.term_zero, mul_zero]]
+    exact integrable_zero ℝ ℂ MeasureTheory.volume
+  · let F : ℝ → ℂ := fun x =>
+      xiGaussianTestC t k ((x : ℂ) - (c : ℂ) * I) *
+        Complex.exp (-(I * (Real.log n : ℂ) * ((x : ℂ) - (c : ℂ) * I)))
+    have hF : Integrable F := by
+      have hbase := integrable_xiGaussianTestC_fourier_horizontal ht k (Real.log n) (-c)
+      apply hbase.congr
+      filter_upwards with x
+      dsimp only [F]
+      congr 2 <;> push_cast <;> ring
+    have hpoint (x : ℝ) :
+        xiGaussianBottomPrimeAtomIntegrand t k c n x =
+          LSeries.term (fun m => (ArithmeticFunction.vonMangoldt m : ℂ))
+              (1 / 2 : ℂ) n * F x := by
+      rw [xiGaussianBottomPrimeAtomIntegrand,
+        xiMassBottomLSeriesTerm_eq_centered_mul_fourierPhase hn]
+      dsimp only [F]
+      ring
+    apply (hF.const_mul
+      (LSeries.term (fun m => (ArithmeticFunction.vonMangoldt m : ℂ))
+        (1 / 2 : ℂ) n)).congr
+    filter_upwards with x
+    exact (hpoint x).symm
+
+private theorem norm_xiGaussianBottomPrimeAtomIntegrand
+    {t c : ℝ} (k n : ℕ) (x : ℝ) :
+    ‖xiGaussianBottomPrimeAtomIntegrand t k c n x‖ =
+      xiMassBottomPrimeAtomWeight c n *
+        ‖xiGaussianTestC t k ((x : ℂ) - (c : ℂ) * I)‖ := by
+  rw [xiGaussianBottomPrimeAtomIntegrand, norm_mul, mul_comm]
+  congr 1
+  unfold xiMassBottomPrimeAtomWeight
+  rw [LSeries.norm_term_eq, LSeries.norm_term_eq]
+  simp [xiMassBottomEulerPoint, Complex.mul_re]
+
+private theorem summable_integral_norm_xiGaussianBottomPrimeAtomIntegrand
+    {t c : ℝ} (hhalf : 1 / 2 < c) (k : ℕ) :
+    Summable (fun n : ℕ =>
+      ∫ x : ℝ, ‖xiGaussianBottomPrimeAtomIntegrand t k c n x‖) := by
+  let J : ℝ := ∫ x : ℝ,
+    ‖xiGaussianTestC t k ((x : ℂ) - (c : ℂ) * I)‖
+  have hnormIntegral (n : ℕ) :
+      (∫ x : ℝ, ‖xiGaussianBottomPrimeAtomIntegrand t k c n x‖) =
+        xiMassBottomPrimeAtomWeight c n * J := by
+    rw [show (fun x : ℝ => ‖xiGaussianBottomPrimeAtomIntegrand t k c n x‖) =
+        fun x : ℝ => xiMassBottomPrimeAtomWeight c n *
+          ‖xiGaussianTestC t k ((x : ℂ) - (c : ℂ) * I)‖ by
+      funext x
+      exact norm_xiGaussianBottomPrimeAtomIntegrand k n x,
+      MeasureTheory.integral_const_mul]
+  rw [show (fun n : ℕ =>
+      ∫ x : ℝ, ‖xiGaussianBottomPrimeAtomIntegrand t k c n x‖) =
+        fun n => xiMassBottomPrimeAtomWeight c n * J by
+    funext n
+    exact hnormIntegral n]
+  exact (summable_xiMassBottomPrimeAtomWeight hhalf).mul_right J
+
+/-- The critical half-density Gaussian--Hermite prime atoms are absolutely summable for every
+positive heat time. -/
+theorem summable_xiGaussianCenteredPrimeAtom
+    {t : ℝ} (ht : 0 < t) (k : ℕ) :
+    Summable (xiGaussianCenteredPrimeAtom t k) := by
+  have hmajor := summable_integral_norm_xiGaussianBottomPrimeAtomIntegrand
+    (t := t) (c := (1 : ℝ)) (by norm_num) k
+  refine Summable.of_norm_bounded hmajor fun n => ?_
+  rw [← integral_xiGaussianBottomPrimeAtom_eq_centered
+    ht (by norm_num : (0 : ℝ) ≤ 1) k n]
+  exact norm_integral_le_integral_norm _
+
+/-- **Exact full Gaussian prime edge.**  The literal Euler-line von-Mangoldt integral equals the
+absolutely convergent depth-free half-density Fourier series. -/
+theorem integral_xiGaussianBottomPrimeIntegrand_eq_tsum_centered
+    {t c : ℝ} (ht : 0 < t) (hhalf : 1 / 2 < c) (k : ℕ) :
+    (∫ x : ℝ, xiGaussianBottomPrimeIntegrand t k c x) =
+      ∑' n : ℕ, xiGaussianCenteredPrimeAtom t k n := by
+  let F : ℕ → ℝ → ℂ := fun n x => xiGaussianBottomPrimeAtomIntegrand t k c n x
+  have hc : 0 ≤ c := (lt_trans (by norm_num) hhalf).le
+  have hFint : ∀ n, Integrable (F n) := fun n =>
+    integrable_xiGaussianBottomPrimeAtomIntegrand ht k n
+  have hFsum : Summable (fun n => ∫ x : ℝ, ‖F n x‖) :=
+    summable_integral_norm_xiGaussianBottomPrimeAtomIntegrand hhalf k
+  have hinterchange := integral_tsum_of_summable_integral_norm hFint hFsum
+  rw [show (fun x : ℝ => ∑' n, F n x) =
+      xiGaussianBottomPrimeIntegrand t k c by
+    funext x
+    have hsum : LSeriesSummable
+        (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
+          (xiMassBottomEulerPoint c x) :=
+      ArithmeticFunction.LSeriesSummable_vonMangoldt (by
+        simp [xiMassBottomEulerPoint]
+        linarith)
+    dsimp only [F, xiGaussianBottomPrimeAtomIntegrand,
+      xiGaussianBottomPrimeIntegrand]
+    rw [LSeries, ← tsum_mul_left]] at hinterchange
+  rw [show (fun n : ℕ => ∫ x : ℝ, F n x) =
+      xiGaussianCenteredPrimeAtom t k by
+    funext n
+    exact integral_xiGaussianBottomPrimeAtom_eq_centered ht hc k n] at hinterchange
+  exact hinterchange.symm
 
 end
 

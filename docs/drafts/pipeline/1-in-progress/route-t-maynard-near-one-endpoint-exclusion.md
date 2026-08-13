@@ -1326,3 +1326,461 @@ clean.  The near-one endpoint card's stated mathematical obstruction is closed. 
 arithmetic work is no longer endpoint analysis: connect the low-amplitude complementary
 Montgomery estimates and this high-amplitude alternative to the literal smooth-window prime-gap
 moment.
+
+### C33. Deficit-matched gap exponent makes the intermediate alternative obsolete `[PROVED / FORMALIZED]`
+
+Maynard's fixed choice `nu=1/4` optimizes the prime-gap exponent, but Route T only needs an exponent
+strictly below `3/2`.  Let `d` be the fixed long-factor deficit from C31--C32 and choose
+
+```text
+nu_T = 1/2-d/2.
+```
+
+Then balanced Montgomery interpolation covers every amplitude
+`alpha <= 1/2+nu_T = 1-d/2`, while C32 covers every `alpha>1-d`.  These intervals overlap, so every
+amplitude satisfies the first count alternative; Maynard's intermediate `R*` cases are unnecessary.
+Moreover `d>0` gives `1+nu_T<3/2`, and `d<1/100` gives `nu_T>=29/120`, the lower bound used by the
+smooth-window receiver.  `MaynardRouteTAmplitudeOverlap.lean` proves all inequalities and composes
+the balanced-Montgomery exponent at `nu_T`.  Remaining seam is literal: derive the complementary
+Montgomery hypotheses for each low-amplitude colored Heath--Brown box, then feed the resulting
+global first-alternative count into the exact Perron window.
+
+### C34. Adjacent windows impose two-sided support relevance `[PROVED / FORMALIZED]`
+
+The earlier Perron recut removed boxes whose lower support edge exceeded the upper prefix cutoff,
+but retained boxes whose upper support edge lay below the physical window start.  Those boxes are
+also null: both adjacent smooth-prefix weights equal one on their full support, so their
+contributions cancel coefficient-by-coefficient before any absolute-value estimate.
+
+`MaynardWindowRelevantAggregate.lean` introduces the exact two-sided predicate and proves that every
+surviving degree-`k` box has
+
+```text
+N / 2^(2k) < groupedLower <= X.
+```
+
+`MaynardWindowRelevantPerron.lean` constructs the corresponding arithmetic packet, proves its
+L-series identity and summability, proves coefficient equality with the old packet above `N`, and
+then proves the exact adjacent Perron formula with only two-sided-relevant boxes.  For `k=60`, total
+box length is therefore within the fixed factor `2^120` of the physical prime window.  This is the
+missing scale law for complementary Montgomery: negative powers may now transfer between literal
+box length and physical window scale at fixed cost, rather than failing because one only knew the
+one-sided inequality `groupedLower<=X`.
+
+In parallel, `DirichletFiniteSetLargeValues.lean` proves exact sorted-fibre Montgomery reindexing,
+and `MaynardMontgomeryFiniteSet.lean` applies it directly to literal grouped Heath--Brown products,
+including the Perron-abscissa coefficient weight.  Remaining low-amplitude seam is finite amplitude
+coloring plus complementary split; the analytic and physical-scale estimates it consumes are now
+closed.
+
+### C35. Count/energy conservation at the `75/76` barrier `[PROVED / FORMALIZED]`
+
+C33's interval overlap did not prove its claimed count dichotomy: complementary Montgomery only
+gives the stated bound when both height terms dominate, which fails for arbitrary length splits
+when `mu>2`.  `MaynardRouteTAmplitudeOverlap.lean` now states only this conditional implication.
+
+The failed claim exposed an exact structural law.  At the longest receiver scale `mu=19/9`, every
+moment parameter `nu<1/2` makes the second-alternative exponent negative at
+
+```text
+sigma >= 75/76.
+```
+
+Hence a nonempty fibre cannot satisfy that alternative: its proposed upper bound is strictly below
+one.  `MaynardRouteTSecondAlternativeBarrier.lean` proves this no-go and proves that the fixed
+long-factor endpoint begins strictly above the barrier, so endpoint overlap alone leaves a genuine
+strip.
+
+The same boundary is exactly where the fourth-moment alternative changes role.  Diagonal additive
+energy gives `R^2 <= R*`; therefore
+
+```text
+R* <= T x^(3+nu-4 sigma)
+```
+
+implies the first alternative `R <= x^(1-sigma)` whenever
+
+```text
+sigma >= (1+nu)/2 + 1/(2 mu).
+```
+
+`MaynardRStarFirstAlternative.lean` proves this transfer for arbitrary real scales and then for the
+literal finite-set energy `maynardRStar`.  At `mu=19/9`, `nu<=1/2`, the transition is precisely
+`75/76`.  Thus `R*` cannot simply be deleted from the proof: below the transition it carries genuine
+fourth-moment information, while above it collapses automatically into the first count alternative.
+This conservation law removes the apparent near-one gap and identifies the correct remaining task:
+formalize only the sub-barrier Maynard triple-alternative geometry, then let diagonal energy close
+the entire super-barrier range.
+
+### C36. Global energy exponents replace Maynard's high-amplitude case tree `[PROVED / FORMALIZED]`
+
+Set `d=maynardLongGlobalAmplitudeDeficit` and `nu_T=1/2-d/2`.  The receiver ranges admit an exact
+four-piece partition:
+
+```text
+sigma <= (1+nu_T)/2       : R<=T gives alternative (ii);
+(1+nu_T)/2 <= sigma<=3/4  : HB3 global R* exponent gives (iii);
+3/4 <= sigma <= 1-d       : HB4 global R* exponent gives (i) or (iii);
+1-d < sigma               : Route-T endpoint gives (i).
+```
+
+The third line is not a numerical coincidence.  Writing `delta=1-sigma`, the HB4 exponent is
+`12 delta/(4 sigma-1)`.  If `mu>=6/(4 sigma-1)`, diagonal energy square-roots it into
+`x^(1-sigma)`.  If `mu<6/(4 sigma-1)`, the same exponent is at most the third-alternative target.
+At the transition the surviving margin is
+
+```text
+(8 delta-3d)/(4 sigma-1) >= 5d/(4 sigma-1) > 0.
+```
+
+`MaynardRouteTGlobalRStarCoverage.lean` formalizes every exponent inequality, height-to-ambient
+conversion, and the complete abstract triple-alternative capstone.  Complementary Montgomery,
+amplitude coloring, and Maynard's published multi-part length case tree are not receiver
+requirements once these global energy bounds are available.
+
+### C37. Above `3/4`, even global `R*` analysis is unnecessary `[PROVED / FORMALIZED]`
+
+Heath--Brown's upper global count exponent is
+
+```text
+g(sigma)=4(1-sigma)/(4 sigma-1).
+```
+
+It obeys the sharper dichotomy
+
+```text
+g(sigma) <= mu(1-sigma)
+or
+3g(sigma) <= 1+mu(3+nu_T-4sigma).
+```
+
+The first branch is alternative (i) directly.  In the second, the universal additive-energy bound
+`R*<=R^3` turns the same count estimate into alternative (iii).  At the transition
+`mu=4/(4sigma-1)`, the exponent margin is `(1-2d)/(4sigma-1)>0`.
+
+The same Lean module proves this count/cube dichotomy and a stronger full capstone.  Genuine
+Heath--Brown `R*` input is now confined to the vanishingly thin strip
+
+```text
+(1+nu_T)/2 < sigma <= 3/4,
+```
+
+while all `sigma>3/4` need only the global count theorem plus the already-formalized universal
+energy cube and endpoint exclusion.  This is the current minimal analytic import surface.
+
+### C38. The final `R*` strip is a Montgomery count strip `[PROVED / FORMALIZED]`
+
+The interval between the trivial threshold and `3/4` has width only `d/4`.  On it Montgomery's
+global count exponent
+
+```text
+m(sigma)=3(1-sigma)/(2-sigma)
+```
+
+is at most `2/3`, whereas the Route-T second-alternative height exponent is at least
+
+```text
+1-(19/18)d > 2/3.
+```
+
+Therefore Montgomery count directly supplies alternative (ii) throughout this strip.  Combining
+this with C37 yields a count-only global capstone:
+
+```text
+low sigma       : trivial R<=T;
+through 3/4     : global Montgomery count;
+3/4 through 1  : global Heath--Brown count, either (i) or cube-to-(iii);
+above 1         : Route-T endpoint emptiness/first alternative.
+```
+
+`MaynardRouteTGlobalRStarCoverage.lean` proves the strip inequality, height-scale conversion, and
+the full count-only triple alternative.  No nontrivial upper estimate for `R*`, complementary
+Montgomery split, or high-dimensional Maynard length case tree remains in the receiver.  The only
+analytic count input is now the published global count dichotomy: unless first alternative already
+holds, Montgomery's exponent applies below `3/4` and Heath--Brown's exponent applies above it.
+
+### C39. Height-crossing Montgomery is exact but cannot replace the upper count `[PROVED / FORMALIZED / NO-GO]`
+
+For every robust selected exponent `beta in [1/90,19/270]`, the first natural power crossing the
+height uses `1 <= ell <= 90` and has raised length in
+
+```text
+[T,T^(289/270)].
+```
+
+`MaynardMontgomeryHeightRaise.lean`, `MaynardRaisedMontgomeryFiniteSet.lean`,
+`MaynardMontgomeryFixedPolylogEnergy.lean`, and `MaynardMontgomeryAmplitudeFibre.lean` prove the
+literal fixed-fibre theorem, exact Perron-abscissa cancellation, and fixed-polylog coefficient
+energy.  This yields a valid rho-free Montgomery count.  It is not a replacement for the upper
+global theorem: its exponent is always a positive multiple of `1-alpha`, while the receiver's
+second-alternative target is subunit beyond `alpha=75/76`.  This branch is retained as analytic
+input, but retired as a complete upper-strip route.
+
+### C40. Over-height zeta/log atoms obey a full first-derivative amplitude law `[PROVED / FORMALIZED]`
+
+The earlier fixed high-derivative estimate discarded the decisive geometry.  On a dyadic block
+with lower edge `N>=T` and ordinate `t in [T,2T]`, Kuzmin--Landau plus Abel summation gives
+
+```text
+|Z_N(c+it)| <= (6*pi+1) T^(-1) N^(1-c),
+|L_N(c+it)| <= 2(6*pi+1) E(X) T^(-1) N^(1-c),
+E(X)=1+log(2(X+1)).
+```
+
+Since `N<=T^(19/9)` and the common prefactor is eventually at most `T^(1/10)`, the height saving
+becomes the exact length saving `N^(-81/190)`.  Therefore every positive over-height zeta or log
+atom has local Maynard amplitude at most
+
+```text
+1-81/190 = 109/190.
+```
+
+`MaynardKuzminLandauFactor.lean` and `MaynardKuzminLandauAmplitude.lean` prove this uniformly and
+unconditionally.  The theorem is substantially stronger than the old near-one derivative deficit.
+Its direct global weighted consequence alone stops near amplitude `0.798`, so it cannot by itself
+supply the count at `3/4`; that failure forces a selected-polynomial rather than one-factor pivot.
+
+### C41. Robust groups can be raised to any optimizer with bounded algebraic degree `[PROVED / FORMALIZED]`
+
+The first-crossing law is universal.  For every target `theta in (0,1]` and every robust group
+exponent `beta in [1/90,19/270]`, `MaynardTunedRaise.lean` constructs `1<=ell<=90` with
+
+```text
+theta <= ell*beta <= theta+19/270.
+```
+
+The literal selected-product threshold is preserved at every ordinate of a fixed fibre.  Thus the
+large-values polynomial can be placed at the optimizer of the inequality being used; crossing the
+height `theta=1` was an unnecessarily rigid special case.
+
+### C42. Receiver-tailored tuned counts supersede both published exponent shapes `[PROVED / FORMALIZED SCALAR CORE]`
+
+Below `3/4`, choose `theta=4/5`.  The Montgomery width and height terms have exponents
+
+```text
+(47/54)(2-2 alpha),
+1+(4/5)(1-2 alpha),
+```
+
+and both are at most `2/3` throughout Route T's thin lower strip.  Even an additional `T^(1/100)`
+fixed-polylog cost remains inside alternative (ii).
+
+Above `3/4`, choose the Huxley optimizer `theta=1/(4 alpha-2)`.  With maximal robust overshoot, the
+only increasing term has exponent
+
+```text
+e_H(alpha)=(1/(4 alpha-2)+19/270)(2-2 alpha).
+```
+
+After paying the endpoint-proportional reserve `d/100`, `MaynardTunedCountExponents.lean` proves
+unconditionally that this exponent either lies in alternative (i), or its cube lies in alternative
+(iii), for every `3/4<=alpha<=1-d`.  Hence Route T does not require the exact published Montgomery
+or Heath--Brown exponent functions.  Remaining analytic seam is literal rather than scalar:
+construct the generalized selected-polynomial coloring when long atoms are present, then compose
+the tuned finite-set Montgomery/Huxley inequalities and absorb their fixed-polylog label costs.
+
+### C43. Two adjacent powers recover the exact Huxley optimizer for every sub-height exponent `[PROVED / FORMALIZED]`
+
+First crossing can overshoot the Huxley optimizer by a full atom, but its predecessor undershoots
+by less than the same atom.  For every
+
+```text
+3/4 <= alpha < 1,       1/90 <= beta <= 1,
+theta = 1/(4 alpha-2), K = 2(1-alpha)/alpha,
+```
+
+let `n` be the first integer with `n beta >= theta`.  If the crossing width is at most `K`, use
+`n`.  Otherwise `n beta > 1/alpha`; because `n>=2`, the predecessor obeys
+
+```text
+(n-1) beta > 1/(2 alpha),   (n-1) beta < theta <= 1/alpha.
+```
+
+The two inequalities bound the predecessor's decreasing height term and increasing width term by
+`K`.  Thus one of `n,n-1` always has full local Huxley exponent at most `K`, uniformly in `beta`.
+Route T then has the exact dichotomy
+
+```text
+K <= mu(1-alpha)
+or
+K <= 1+mu(1+nu_T-2alpha),
+```
+
+split only at `mu alpha=2`.  This removes the published global Huxley exponent at exponent level;
+no fourth- or twelfth-moment import is needed for any selected polynomial of exponent at most the
+height.  `MaynardAdjacentOptimizerRaise.lean` proves both the adjacent-power theorem and the Route-T
+first/second scalar law with `1<=ell<=90`.
+
+### C44. The residual overweight group is a low-order derivative cell `[CONJECTURED / NUMERICALLY PRECERTIFIED]`
+
+The generalized selector's upper bound `beta<1+2t` is genuinely too large for C43: if
+`beta>1/alpha`, every positive power misses `K`.  Repairing this by stronger bin packing is
+impossible (`0.999+0.009` at threshold `0.01` is an exact counterexample).
+
+Repartition instead at cap `1-2t`.  All regular greedy cells then have exponent in `[t,1)`.  There
+is at most one residual cell, formed by merging total residue `<t` into a singleton atom of exponent
+`>1-2t`; its exponent is `<1+t`.  Such a long singleton cannot be Möbius because every Möbius atom
+has exponent at most `2t`, so it is zeta or log.  Its length is comparable to the height, and the
+correct derivative order is `k0=3`, not the old uniform order `47`: the order-three upper window is
+already valid once `N>T^(1-2t)`, giving local power deficit `1/24` and amplitude deficit `1/48` after
+absorbing its fixed constant.  Weighted over the residual cell this forces a fixed global amplitude
+gap, safely `alpha<=99/100`.
+
+On that fixed strip, direct numerical precertification shows the unraised Huxley exponent for every
+`beta<=1+mu/120` has a uniform positive gap from the maximum of Route-T alternatives (i) and (ii);
+the minimum occurs near their crossing (`mu≈2.0411`, `alpha=0.99`) and is about `7.09e-5`.  This gap
+is vastly larger than the endpoint loss `d`.  Active proof obligation: formalize the capped packing,
+the unique order-three spill cell, and the exact rational scalar margin.  This reinterprets the old
+overweight obstruction as an adaptive phase-resolution law rather than a missing global moment.
+
+### C45. Minimal-cell witnesses close every selected exponent and coefficient seam `[PROVED / FORMALIZED]`
+
+The stronger invariant is not uniqueness of an overweight spill.  Every cell produced by recursive
+minimal-threshold packing contains a distinguished atom satisfying
+
+```text
+w_j > beta - 2t,
+```
+
+where `beta` is that cell's total exponent.  `MaynardWitnessedSubHeightPacking.lean` proves this for
+every output cell and preserves it through multiplicative large-group selection.
+
+This yields an exact three-way classification.
+
+1. `beta <= 5/12`.  Two adjacent powers leave a fixed Huxley reserve:
+
+   ```text
+   H(alpha,beta) <= (19/10)(1-alpha)/alpha.
+   ```
+
+   The missing `1/10` fraction pays `d/100` even at the endpoint/triple equality.
+
+2. `5/12 < beta < 1`.  The witness has exponent above
+
+   ```text
+   5/12 - 2(19/1080) = 103/270.
+   ```
+
+   It cannot be Möbius, so it is zeta/log.  Derivative order four is exactly sufficient because
+   `(103/270)(4-4/3)=412/405>1`.  After absorbing its polylog constant, local amplitude is at most
+   `49/50`.  The atom occupies at least `9/50` of full box length, forcing global
+   `alpha<=997/1000`.  On that strip the exact adjacent-power cap plus `d/100` lies in Route-T
+   alternative (i) or (ii).
+
+3. `beta >= 1`.  The witness has exponent above `1-2t>=26/27`.  Derivative order three gives local
+   amplitude at most `24/25`; its `9/20` relative box length forces global `alpha<=99/100`.  The
+   unraised Huxley exponent for every `beta<1+mu/60`, plus `d/100`, then lies in alternative (i) or
+   (ii).
+
+Formal modules:
+
+```text
+MaynardWitnessedSubHeightPacking.lean
+MaynardSubHeightGroupSelection.lean
+MaynardSubHeightColoring.lean
+MaynardAdjacentOptimizerRaise.lean
+MaynardOverweightCountExponents.lean
+MaynardOverweightZetaLogExclusion.lean
+MaynardSelectedCellTrichotomy.lean
+```
+
+The pointwise trichotomy is unconditional and literal: it starts from the actual window-relevant
+Heath--Brown aggregate, retains the selected product threshold, and proves the appropriate global
+amplitude exclusion from the same selected box.  Published global fourth/twelfth-moment counts,
+the old all-short hypothesis, overweight bin-packing repair, and the zero-reserve triple point are
+all eliminated.  Remaining work is finite-label coloring followed by the already-formalized
+finite-set Huxley receiver and prime-gap moment composition.
+
+### C46. Optimizer crossing, not its predecessor, is the universal endpoint scale `[PROVED / FORMALIZED]`
+
+The adjacent-power theorem exposed a false analytic shortcut.  Although the predecessor of the
+first optimizer crossing has a good scalar count exponent, it can lie below the square-root length
+needed by the Huxley energy inequality.  Therefore the predecessor is not a valid receiver scale.
+At endpoint amplitude the first crossing alone is enough.  For
+
+```text
+alpha >= 99/100,  1/90 <= beta <= 5/12,
+theta(alpha)=1/(4 alpha-2),
+```
+
+`MaynardAdjacentOptimizerRaise.lean` constructs `1<=ell<=51` with
+
+```text
+theta(alpha) <= ell beta < theta(alpha)+beta,
+H(alpha,ell beta) <= (19/10)(1-alpha)/alpha.
+```
+
+`MaynardOptimizerHuxley.lean` extracts the invariant behind all earlier fixed schedules: if the
+raised length reaches `T^theta(alpha0)`, then any fixed coefficient-energy cost paid by
+`Y^(2(alpha-alpha0))` closes the canonical Huxley square scale.  The former `9/16` schedule was one
+coarse point on this continuous optimizer--amplitude law, not a structural threshold.
+
+`MaynardSelectedCellFibreHuxley.lean` applies this law to the literal selected-cell predicate.
+Above `997/1000`, the formal trichotomy eliminates moderate and overweight cells, selects the
+first crossing, raises the actual selected product at every ordinate of one label fibre, and
+produces the canonical finite-set Huxley bound without the legacy eligible-selection interface.
+
+### C47. Exact moving-endpoint crossing law closes each literal fibre `[PROVED / FORMALIZED]`
+
+A fixed long-amplitude deficit cannot be used in the moving endpoint strip.  The correct scalar
+law retains the exact crossing overshoot.  Put
+
+```text
+d = routeTEndpointGlobalDeficit(A,T),
+alpha0 = alpha-(1-alpha)/100,
+r = ell beta < theta(alpha0)+beta.
+```
+
+For `alpha>=997/1000`, `d<=1-alpha`, and `beta<=5/12`,
+`MaynardOptimizerEndpointAbsorption.lean` proves
+
+```text
+2r(1-alpha)+d/100 <= mu(1-alpha)
+or
+2r(1-alpha)+d/100 <= 1+mu(1+nu_T-2alpha).
+```
+
+If the first inequality fails, crossing geometry forces `mu<1.87`; that upper bound supplies a
+fixed positive margin in the second target.  This is stronger and more faithful than comparing a
+generic `2(1-alpha)/alpha` cap to a nonexistent fixed endpoint reserve.
+
+The same module now proves that an arbitrary fixed `log(T)^q` cost is absorbed by any explicit
+fraction `d/m`.  `MaynardSelectedCellFibreCount.lean` uses `d/400` for coefficient energy and a
+second `d/400` for an external multiplier.  The crossing law supplies `d/100`, so half remains as
+a strict receiver reserve.  Thus for every literal nonempty fixed-label fibre `S_label` and every
+`0<=M<=T^(d/400)`,
+
+```text
+M #S_label <= HF T^(mu(1-alpha)-d/200)
+or
+M #S_label <= HF T^(1+mu(1+nu_T-2alpha)-d/200).
+```
+
+### C48. Phase-resolution duality survives complete finite coloring `[PROVED / FORMALIZED]`
+
+Complete degree-`60` label multiplicity is at most
+`C_label (log T)^120`, hence eventually at most `T^(d/400)`.  Multiply every fibre by the full
+label count before summing.  Local fibres may choose different Maynard alternatives, but one global
+comparison orders the two targets; every scaled fibre is bounded by the larger target.  Summing
+over all labels and cancelling the positive label count gives the corresponding global
+alternative with no residual color factor and preserves exponent reserve `d/200`.
+
+`MaynardSelectedCellGlobalCount.lean` formalizes this argument.  The resulting universal principle
+is **phase-resolution duality**: minimal packing supplies a local phase witness; derivative order
+adapts to cell scale; optimizer crossing adapts raising length to amplitude; exact overshoot selects
+the count alternative; and one moving endpoint reserve pays both analytic complexity and finite
+entropy.
+
+`MaynardSelectedCellRouteTCount.lean` then composes the theorem with the literal window-relevant
+selector and canonical Möbius cutoff.  Below the moving endpoint it yields the exact global first
+or second Maynard count for every `alpha>997/1000`.  Above the endpoint, any selected box directly
+contradicts the all-kind endpoint amplitude theorem, so the entire ordinate set is empty.  No
+coloring, selected box, endpoint case, long-Möbius premise, or fixed energy constant remains in its
+conclusion.  Remaining route work is to attach this closed high-amplitude producer to the lower
+amplitude/prime-gap receiver and then to Route T's signed pole-preserving continuation.
+
+`MaynardReceiverMargin.lean` spends only `d/400` of that remaining reserve on the exact harmonic
+factor and every fixed receiver logarithm.  It therefore delivers the strict
+`(log x)^(-4k-2)` normalization in Maynard alternative (i), or preserves a strict `d/400` power
+margin in alternative (ii).  High-amplitude counting is now receiver-complete rather than merely
+an exponent-level comparison.

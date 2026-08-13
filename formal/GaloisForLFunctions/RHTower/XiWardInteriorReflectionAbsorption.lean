@@ -238,6 +238,78 @@ private theorem left_tsum_le_nonright_complement
       · rw [Set.indicator_of_notMem hc])
     (hsumF.indicator L) (hsumF.indicator Rᶜ)
 
+/-- The nonright complement contains the reflected strict-left divisor and any disjoint selected
+critical-line stratum.  Keeping the latter instead of discarding it is the source-side form of
+separating positive real shifts from diagonal critical multiplicity. -/
+private theorem left_tsum_add_critical_tsum_le_nonright_complement
+    {w : ℂ} (hw : 1 / 2 < w.re) (hz : XiC (I * w) ≠ 0)
+    (C : Set XiZeroCopy)
+    (hcritical : ∀ q, q ∈ C → (I * xiSpectralPoint q).re = 0) :
+    (∑' q : XiLeftZeroCopy,
+        (2 * I * xiRelativeResolventTerm (I * w) q.1).re) +
+      ∑' q : C,
+        (2 * I * xiRelativeResolventTerm (I * w) q.1).re ≤
+      ∑' q : ↑{q : XiZeroCopy |
+          0 < (I * xiSpectralPoint q).re}ᶜ,
+        (2 * I * xiRelativeResolventTerm (I * w) q.1).re := by
+  let F : XiZeroCopy → ℝ := fun q =>
+    (2 * I * xiRelativeResolventTerm (I * w) q).re
+  let L : Set XiZeroCopy := {q | (I * xiSpectralPoint q).re < 0}
+  let R : Set XiZeroCopy := {q | 0 < (I * xiSpectralPoint q).re}
+  have hsumFComplex := summable_xiRelativeResolventTerm hz
+  have hsumF : Summable F :=
+    (Complex.hasSum_re
+      (hsumFComplex.mul_left (2 * I)).hasSum).summable
+  have hsumL : Summable (L.indicator F) := hsumF.indicator L
+  have hsumC : Summable (C.indicator F) := hsumF.indicator C
+  have hsumR : Summable (Rᶜ.indicator F) := hsumF.indicator Rᶜ
+  have hz₀ : 1 / 2 < (I * w).im := by
+    simpa only [Complex.mul_im, Complex.I_re, zero_mul,
+      Complex.I_im, one_mul, zero_add] using hw
+  have hpoint : ∀ q : XiZeroCopy,
+      L.indicator F q + C.indicator F q ≤ Rᶜ.indicator F q := by
+    intro q
+    by_cases hl : q ∈ L
+    · have hnc : q ∉ C := by
+        intro hc
+        have hzero := hcritical q hc
+        change (I * xiSpectralPoint q).re < 0 at hl
+        linarith
+      have hrc : q ∈ Rᶜ := by
+        change ¬ 0 < (I * xiSpectralPoint q).re
+        change (I * xiSpectralPoint q).re < 0 at hl
+        linarith
+      simp only [Set.indicator_of_mem hl, Set.indicator_of_notMem hnc,
+        Set.indicator_of_mem hrc, add_zero]
+      exact le_rfl
+    · by_cases hc : q ∈ C
+      · have hrc : q ∈ Rᶜ := by
+          change ¬ 0 < (I * xiSpectralPoint q).re
+          rw [hcritical q hc]
+          norm_num
+        simp only [Set.indicator_of_notMem hl, Set.indicator_of_mem hc,
+          Set.indicator_of_mem hrc, zero_add]
+        exact le_rfl
+      · simp only [Set.indicator_of_notMem hl, Set.indicator_of_notMem hc,
+          zero_add]
+        by_cases hrc : q ∈ Rᶜ
+        · rw [Set.indicator_of_mem hrc]
+          have hq : (I * xiSpectralPoint q).re ≤ 0 := by
+            change ¬ 0 < (I * xiSpectralPoint q).re at hrc
+            exact not_lt.mp hrc
+          exact re_two_I_mul_relativeResolventTerm_nonneg hq hz₀
+        · rw [Set.indicator_of_notMem hrc]
+  change (∑' q : ↑L, F q.1) + (∑' q : C, F q.1) ≤
+    ∑' q : ↑Rᶜ, F q.1
+  rw [tsum_subtype, tsum_subtype, tsum_subtype]
+  calc
+    (∑' q : XiZeroCopy, L.indicator F q) +
+        ∑' q : XiZeroCopy, C.indicator F q =
+        ∑' q : XiZeroCopy, (L.indicator F q + C.indicator F q) :=
+      (hsumL.tsum_add hsumC).symm
+    _ ≤ ∑' q : XiZeroCopy, Rᶜ.indicator F q :=
+      Summable.tsum_le_tsum hpoint (hsumL.add hsumC) hsumR
+
 set_option maxHeartbeats 800000 in
 theorem re_two_I_logDeriv_nonright_eq_complement_tsum
     {w : ℂ} (hz : XiC (I * w) ≠ 0) :
@@ -317,6 +389,25 @@ theorem re_xiAntiCausalWardBoundarySelfSymbol_le_two_I_logDeriv_nonright
           xiNonrightCanonicalProduct (I * w)).re :=
       (re_two_I_logDeriv_nonright_eq_complement_tsum hz).symm
 
+/-- **Critical-line-retaining reflection absorption.**  The complementary factor pays both the
+strict-right boundary self-symbol and every selected critical-line divisor contribution.  The
+usual source majorant is the special case where the critical set is empty. -/
+theorem re_boundary_add_critical_tsum_le_two_I_logDeriv_nonright
+    {w : ℂ} (hw : 1 / 2 < w.re) (hz : XiC (I * w) ≠ 0)
+    (C : Set XiZeroCopy)
+    (hcritical : ∀ q, q ∈ C → (I * xiSpectralPoint q).re = 0) :
+    (xiAntiCausalWardBoundarySelfSymbol).re +
+        ∑' q : C,
+          (2 * I * xiRelativeResolventTerm (I * w) q.1).re ≤
+      (2 * I * logDeriv xiNonrightCanonicalProduct (I * w)).re := by
+  have hboundary := re_boundary_le_left_tsum hw hz
+  have hcriticalAbsorb :=
+    left_tsum_add_critical_tsum_le_nonright_complement hw hz C hcritical
+  have htrace := re_two_I_logDeriv_nonright_eq_complement_tsum
+    (w := w) hz
+  rw [htrace]
+  linarith
+
 theorem xiWard_interior_XiC_ne_zero
     {w : ℂ} (hw : 1 / 2 < w.re) :
     XiC (I * w) ≠ 0 := by
@@ -355,6 +446,30 @@ theorem re_continuedXiAntiCausalWardResponse_le_sourceArithmetic
   have habsorb :=
     re_xiAntiCausalWardBoundarySelfSymbol_le_two_I_logDeriv_nonright
       hw hz
+  have hre := congrArg Complex.re hid
+  rw [Complex.add_re, Complex.sub_re] at hre
+  unfold xiWardInteriorSourceArithmeticBound
+  linarith [hre, habsorb]
+
+/-- **Euler--Gamma source estimate with critical diagonal retained.**  Any selected critical-line
+stratum can be moved to the left side of the source inequality.  Hence strict positive real
+shifts and diagonal critical multiplicity are separated before the arithmetic majorant is read;
+no RH, simplicity, or zero-selection hypothesis is used. -/
+theorem re_continued_add_critical_tsum_le_sourceArithmetic
+    {w : ℂ} (hw : 1 / 2 < w.re)
+    (C : Set XiZeroCopy)
+    (hcritical : ∀ q, q ∈ C → (I * xiSpectralPoint q).re = 0) :
+    (continuedXiAntiCausalWardResponse w).re +
+        ∑' q : C,
+          (2 * I * xiRelativeResolventTerm (I * w) q.1).re ≤
+      xiWardInteriorSourceArithmeticBound w := by
+  have hz := xiWard_interior_XiC_ne_zero hw
+  have hid := continuedXiAntiCausalWardResponse_eq_arithmetic hw hz
+  have hquot := logDeriv_xiHadamardQuotient_eq_zero (I * w)
+  rw [hquot, mul_zero, sub_zero] at hid
+  have habsorb :=
+    re_boundary_add_critical_tsum_le_two_I_logDeriv_nonright
+      hw hz C hcritical
   have hre := congrArg Complex.re hid
   rw [Complex.add_re, Complex.sub_re] at hre
   unfold xiWardInteriorSourceArithmeticBound

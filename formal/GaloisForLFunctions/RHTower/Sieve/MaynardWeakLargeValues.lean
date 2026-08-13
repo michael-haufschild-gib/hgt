@@ -97,6 +97,65 @@ theorem maynard_balanced_montgomery_routeT
   simpa only [show (1 : ℝ) + 49 / 100 = 149 / 100 by norm_num] using
     maynard_balanced_montgomery_of_split hR hT hM hN hx hx1 hscale hRM hRN hσ'
 
+/-- The complementary coefficient energies when both Montgomery estimates are length-dominated. -/
+theorem maynard_pair_length_energy_identity
+    {M N x α β σ : ℝ} (hM : 0 < M) (hN : 0 < N) (hx : x = M * N)
+    (hscale : x ^ σ = M ^ α * N ^ β) :
+    M ^ (2 - 2 * α) * N ^ (2 - 2 * β) = x ^ (2 - 2 * σ) := by
+  have hx0 : 0 < x := by rw [hx]; positivity
+  have hpair := maynard_pair_energy_identity hM hN hx hscale
+  rw [show (2 : ℝ) - 2 * α = 1 + (1 - 2 * α) by ring,
+    show (2 : ℝ) - 2 * β = 1 + (1 - 2 * β) by ring,
+    Real.rpow_add hM, Real.rpow_add hN, Real.rpow_one, Real.rpow_one]
+  calc
+    M * M ^ (1 - 2 * α) * (N * N ^ (1 - 2 * β)) =
+        (M * N) * (M ^ (1 - 2 * α) * N ^ (1 - 2 * β)) := by ring
+    _ = x * x ^ (1 - 2 * σ) := by rw [← hx, hpair]
+    _ = x ^ (1 : ℝ) * x ^ (1 - 2 * σ) := by rw [Real.rpow_one]
+    _ = x ^ (1 + (1 - 2 * σ)) := (Real.rpow_add hx0 _ _).symm
+    _ = x ^ (2 - 2 * σ) := by congr 1; ring
+
+/-- **Length-balanced Montgomery interpolation.**  Two complementary length-dominated
+second-moment estimates give Maynard's first alternative exactly.  This is the dual of
+`maynard_balanced_montgomery`: two factors below the height close the second alternative, while
+two factors above the height close the first. -/
+theorem maynard_balanced_length_montgomery
+    {R C x σ A B : ℝ} (hR : 0 ≤ R) (hC : 0 ≤ C) (hx : 1 ≤ x)
+    (hA : 0 ≤ A) (hRA : R ≤ C * A) (hRB : R ≤ C * B)
+    (hAB : A * B = x ^ (2 - 2 * σ)) :
+    R ≤ C * x ^ (1 - σ) := by
+  have hx0 : 0 ≤ x := le_trans (by norm_num) hx
+  have hCA : 0 ≤ C * A := mul_nonneg hC hA
+  have hmul : R * R ≤ (C * A) * (C * B) :=
+    mul_le_mul hRA hRB hR hCA
+  have hpow : (x ^ (1 - σ)) ^ 2 = x ^ (2 - 2 * σ) := by
+    rw [← Real.rpow_natCast, ← Real.rpow_mul hx0]
+    norm_num
+    ring_nf
+  have hsq : R ^ 2 ≤ (C * x ^ (1 - σ)) ^ 2 := by
+    calc
+      R ^ 2 = R * R := by ring
+      _ ≤ (C * A) * (C * B) := hmul
+      _ = C ^ 2 * (A * B) := by ring
+      _ = C ^ 2 * x ^ (2 - 2 * σ) := by rw [hAB]
+      _ = C ^ 2 * (x ^ (1 - σ)) ^ 2 := by rw [hpow]
+      _ = (C * x ^ (1 - σ)) ^ 2 := by ring
+  have htarget : 0 ≤ C * x ^ (1 - σ) :=
+    mul_nonneg hC (Real.rpow_nonneg hx0 _)
+  nlinarith
+
+/-- Length-balanced interpolation stated directly for a complementary factorisation. -/
+theorem maynard_balanced_length_montgomery_of_split
+    {R C M N x α β σ : ℝ} (hR : 0 ≤ R) (hC : 0 ≤ C)
+    (hM : 0 < M) (hN : 0 < N) (hx : x = M * N) (hx1 : 1 ≤ x)
+    (hscale : x ^ σ = M ^ α * N ^ β)
+    (hRM : R ≤ C * M ^ (2 - 2 * α))
+    (hRN : R ≤ C * N ^ (2 - 2 * β)) :
+    R ≤ C * x ^ (1 - σ) := by
+  exact maynard_balanced_length_montgomery hR hC hx1
+    (Real.rpow_nonneg hM.le _) hRM hRN
+    (maynard_pair_length_energy_identity hM hN hx hscale)
+
 /-- The mixed coefficient energies in the unbalanced Montgomery case. -/
 theorem maynard_unbalanced_energy_identity
     {M N x α β σ : ℝ} (hM : 0 < M) (hN : 0 < N) (hx : x = M * N)

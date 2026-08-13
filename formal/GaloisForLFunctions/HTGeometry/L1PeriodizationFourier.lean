@@ -255,6 +255,72 @@ theorem integral_centered_scaled_l1Periodization_mul_fourier_eq
   rw [integral_centered_l1Periodization_mul_fourier_eq (hf.comp_div ha.ne') m]
   rw [fourier_comp_div_eq_abs_smul ha.ne' m, abs_of_pos ha]
 
+/-- Periodization of an arbitrary complex `L¹` function at circumference `L`.  Unlike the
+Schwartz periodizations used elsewhere in the project, this definition makes no pointwise
+regularity assumption. -/
+def l1PeriodizationAtScale (f : ℝ → ℂ) (L t : ℝ) : ℂ :=
+  ∑' k : ℤ, f (t + (k : ℝ) * L)
+
+/-- Rescaling a circumference-`L` periodization to the unit circle gives the ordinary integer
+periodization of the correspondingly rescaled real-line function. -/
+theorem l1PeriodizationAtScale_mul_eq_l1Periodization
+    (f : ℝ → ℂ) {L : ℝ} (hL : 0 < L) (y : ℝ) :
+    l1PeriodizationAtScale f L (y * L) =
+      l1Periodization (fun u : ℝ => f (u / (1 / L))) y := by
+  rw [l1PeriodizationAtScale, l1Periodization]
+  refine tsum_congr fun k => ?_
+  congr 1
+  field_simp
+
+/-- **Circumference-`L` L1 periodization coefficient theorem.**  No continuity or pointwise
+absolute convergence is assumed: integrability alone identifies every circle coefficient with
+the corresponding Euclidean Fourier sample. -/
+theorem fourierCoeffOn_l1PeriodizationAtScale
+    {f : ℝ → ℂ} (hf : Integrable f) {L : ℝ} (hL : 0 < L) (m : ℤ) :
+    fourierCoeffOn hL (l1PeriodizationAtScale f L) m =
+      (1 / L) • 𝓕 f ((1 / L) * (m : ℝ)) := by
+  have hLne : L ≠ 0 := ne_of_gt hL
+  have hunit := integral_unit_scaled_l1Periodization_mul_fourier_eq
+    (f := f) hf (a := 1 / L) (by positivity) m
+  rw [fourierCoeffOn_eq_integral]
+  simp only [sub_zero]
+  congr 1
+  refine (intervalIntegral.integral_congr (g := fun x : ℝ =>
+    fourier (-m) ((x / L : ℝ) : UnitAddCircle) •
+      l1PeriodizationAtScale f L x) fun x _ => ?_).trans ?_
+  · simp only [fourier_coe_apply, smul_eq_mul]
+    congr 2
+    push_cast
+    ring
+  have hcomp := intervalIntegral.integral_comp_mul_left
+    (fun x : ℝ => fourier (-m) ((x / L : ℝ) : UnitAddCircle) •
+      l1PeriodizationAtScale f L x) hLne (a := (0 : ℝ)) (b := 1)
+  have hfun :
+      (fun y : ℝ => fourier (-m) (((L * y) / L : ℝ) : UnitAddCircle) •
+        l1PeriodizationAtScale f L (L * y)) =
+      fun y : ℝ => fourier (-m) ((y : ℝ) : UnitAddCircle) •
+        l1PeriodizationAtScale f L (y * L) := by
+    funext y
+    have hy : L * y / L = y := by field_simp
+    rw [hy, mul_comm L y]
+  rw [hfun, mul_zero, mul_one] at hcomp
+  have hcell :
+      (∫ y in (0 : ℝ)..1, fourier (-m) ((y : ℝ) : UnitAddCircle) •
+        l1PeriodizationAtScale f L (y * L)) =
+      ∫ y in Set.Ioc (0 : ℝ) 1,
+        fourier (-m) ((y : ℝ) : UnitAddCircle) *
+          l1Periodization (fun u : ℝ => f (u / (1 / L))) y := by
+    rw [intervalIntegral.integral_of_le zero_le_one]
+    refine setIntegral_congr_fun measurableSet_Ioc fun y _ => ?_
+    rw [smul_eq_mul, l1PeriodizationAtScale_mul_eq_l1Periodization f hL y]
+  rw [hcell, hunit] at hcomp
+  have hscaled :
+      (∫ x in (0 : ℝ)..L, fourier (-m) ((x / L : ℝ) : UnitAddCircle) •
+        l1PeriodizationAtScale f L x) =
+      L • ((1 / L) • 𝓕 f ((1 / L) * (m : ℝ))) := by
+    rw [hcomp, smul_smul, mul_inv_cancel₀ hLne, one_smul]
+  rw [hscaled, smul_smul, mul_one_div, div_self hLne, one_smul]
+
 /-- The real-valued L1 periodization used by Poisson--Muntz sampling. -/
 def realL1Periodization (f : ℝ → ℝ) (x : ℝ) : ℝ :=
   ∑' k : ℤ, f (x + k)

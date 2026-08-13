@@ -191,6 +191,93 @@ in literal `W_rat(A)`, `p(a)` is nonzero in the reduced monoid algebra, and `p[a
 deduces noninjectivity of both the comparison and `p`-multiplication; all quotient nonvanishing
 claims are proved coefficientwise.
 
+`DeningerDeterminantalLaplace.lean` and `DeningerHazewinkelHankelDescent.lean` close the next hard
+§2 block.  A division-free exterior-product proof establishes `I_(r+s) <= I_r I_s` and
+`I_(n*k) <= I_n^k` for arbitrary infinite matrices over arbitrary commutative rings.  Applied to
+the universal Hankel matrix, it proves Lemma 2.2 exactly:
+`J_(n*k-1) <= J_(n-1)^k`.  For every ring map with `(ker f)^k=0`, the same containment proves the
+rank bound `rank H(map f w)<n -> rank H(w)<n*k` and finite-Hankel-rank cartesianity.  Explicit
+coefficient lifts along surjective ring maps then prove formal smoothness of `W_J`, while subtype
+uniqueness proves the formal-étale unique lifting property of `W_J -> W`.  Thus Proposition
+2.1(c,d) is now unconditional Lean over nonreduced rings; no ghost-injectivity or reduced-target
+shortcut is used.
+
+`DeningerRationalWittHazewinkelHankel.lean` closes Proposition 2.1(a) and Proposition 2.10.  Every
+normalized rational fraction now produces an explicit eventual coefficient recurrence; strong
+induction converts it into finite Hankel-column generation, and rectangular matrix factorization
+annihilates the next minor over every commutative ring.  Hence the literal inclusion
+`W_rat(A) ⊆ W_J(A)` no longer relies on a domain reduction or Kronecker as a black box.  For a
+nilpotent kernel `(ker f)^k=0`, a separate Leibniz proof shows every `(k+1)` Hankel minor of a
+big-Witt kernel vector vanishes: every determinant monomial has at least `k` positive-index kernel
+factors, with repeated selectors dispatched by alternatingness.  Lean packages the resulting
+equalities `W(ker f)=W_J(ker f)=W_J^{≤k}(ker f)` together with Hazewinkel-map surjectivity, and
+specializes them to the nilradical quotient.  This is exact §2 literature parity, not an RH
+advance; it removes another source-algebra infrastructure ambiguity before returning to the
+singular source-to-physical frontier.
+
+The next source claim cannot be formalized as written.  Equation (15), Lemma 2.6, and Theorem 2.8
+place both Witt addition and Witt multiplication of stages `(n,m)` in stage `n+m`.
+`DeningerHazewinkelStageBoundCounterexample.lean` proves this false over `ℤ`.  If `E_r` is the
+Witt-additive sum of `r` copies of `[1]`, then its literal series is `(1-T)^r`, its exact
+Hazewinkel stage is `r+1`, and `E_r⊙E_s=E_(rs)`.  Hence stage-`3` `E_2` times stage-`5` `E_4`
+has exact stage `9`, not the asserted target stage `8`.  The nonzero top minor is proved
+symbolically by row reversal and triangularity.  The qualitative ind-subring conclusion may
+survive with a corrected multiplicative stage function; its published `n+m` multiplication
+factorization and corresponding ideal containment do not.  This is recorded as a failed-route
+card with the exact packet-stage law as formalized positive survivor.
+
+The corrected qualitative closure has now been reduced to its exact commutative-algebra core.
+`DeningerHazewinkelCorrectedRationalStage.lean` constructs a rational presentation of the product
+and proves the uniform stage bound
+
+`B(n,m) = (n-1)(m-1) + nm + 1`
+
+over every commutative ring, including nilpotent rings. `DeningerKroneckerFieldStage.lean` proves
+the full field Kronecker equivalence between Hankel rank `< n` and a normalized rational
+presentation of stage `n`, then derives the corrected field multiplication bound.
+`DeningerHazewinkelReducedMultiplication.lean` descends through all prime quotients: over an
+arbitrary ring every corrected-size product minor is nilpotent, and over a reduced ring it
+vanishes. These are new closed theorems; none imports Deninger's false additive stage estimate.
+
+For nonreduced targets, `DeningerHazewinkelUniversalMultiplicationDescent.lean` constructs the
+two-block universal coordinate ring and proves that reducedness of its quotient forces the exact
+corrected multiplication rank after evaluation into every target ring, nilpotents included.
+`DeningerHazewinkelUniversalQuotient.lean` proves positive-stage characteristic zero directly from
+tail containment. Finally, `DeningerHazewinkelPairTensorEquiv.lean` gives explicit mutually inverse
+ring maps and the canonical equivalence
+
+`ℤ[X,Y]/(J_n(X)+J_m(Y)) ≃+* (ℤ[X]/J_n) ⊗_ℤ (ℤ[Y]/J_m)`.
+
+It also proves reducedness equivalent across this isomorphism. Consequently no Witt, descent, or
+nilpotent-target ambiguity remains. `DeningerCharacteristicZeroTensorReduced.lean` now removes the
+entire tensor-product input: it proves that tensor products of arbitrary field extensions over a
+perfect field are reduced, then proves that `A ⊗_ℤ B` is reduced for arbitrary characteristic-zero
+domains `A,B`. The proof handles non-finitely-generated field extensions by finitely generated
+subalgebra descent and handles finitely generated extensions by a separating transcendence basis.
+`DeningerHazewinkelPrimeReduction.lean` consequently reduces corrected multiplication over every
+commutative ring, nilpotents included, to one theorem only:
+
+`∀ n > 0, (deningerHazewinkelIdeal n).IsPrime`.
+
+The first positive case is closed in `DeningerHazewinkelStageOnePrime.lean`: `J₁` is identified
+exactly with the kernel of `X_j ↦ T^(j+1)` into `ℤ[T]`. This also gives the unconditional stage-one
+product law `rank(H(u))<2 ∧ rank(H(v))<2 ⇒ rank(H(u⊙v))<3` over every commutative ring.
+`DeningerHazewinkelLeadingLocalization.lean` formalizes the next all-stage localization layer. An
+explicit equal-weight `n`-atomic rational moment sequence annihilates `J_n`; its leading minor is a
+product of two Vandermonde determinants and a nonzero diagonal determinant. Hence Hazewinkel's
+leading determinant `D_n` survives in `ℤ[X]/J_n` for every `n>0`. The module also proves the exact
+localization criterion: regularity of `D_n mod J_n`, together with integrality after inversion,
+implies primeness. The remaining §2 core is therefore neither tensor reducedness nor mere
+nonvanishing. `DeningerHazewinkelLocalizedCoordinates.lean`,
+`DeningerHazewinkelLocalizedRetraction.lean`, and
+`DeningerHazewinkelLocalizedEquivalence.lean` construct the finite coefficient chart, prove both
+coordinate composites, and identify the localized universal stage with an explicit localized
+polynomial domain. The sole remaining §2 core is Hazewinkel's integral Sylvester saturation theorem
+`(J_n : D_n) = J_n` for general `n`. Appendix A.1 is now formal: the Cramer/adjugate form of
+Sylvester exchange yields the special-minor containment
+`D_n J_n^fixed ≤ K_n ≤ J_n^fixed ≤ J_n`. Appendix A.2 still requires the realization-theoretic
+equality `J_n^fixed = J_n` and integral saturation of that fixed-row ideal.
+
 ## Falsified source theorem: arbitrary-domain perfect Galois descent
 
 The perfect-quotient-field assertion in displayed Theorem 1.2 (source label `t1.1`, equation label
@@ -256,13 +343,55 @@ the missing rational-Witt comparison is logically prior.
 
 ## Formalization order
 
-1. **Closed.** Imperfect-field inseparability-divisibility classification and its sharp
+1. **Open hard §2 core.** Prove Hazewinkel's integral Sylvester saturation
+   `(J_n : D_n) = J_n`, specifically fixed-row generation plus saturation after the now-formal
+   Sylvester exchange containment; then close `J_n.IsPrime` for every positive `n`. Localized
+   coordinate-domain theorem, tensor reducedness, and stage `n=1` are already closed.
+2. **Closed.** Imperfect-field inseparability-divisibility classification and its sharp
    normal-domain/normalization descent consequence are Lean-formalized. No perfectness hypothesis
    remains in the corrected theorem.
-2. Replace presentation-only claims in finite packet modules by comparison maps to the constructed
+3. Replace presentation-only claims in finite packet modules by comparison maps to the constructed
    rational-Witt ring, then formalize sheaf and correspondence theorems in source order.
 
 ## Log
+
+- 2026-08-13 — removed the characteristic-zero tensor-product premise completely. Lean proves
+  reducedness of arbitrary field tensor products over perfect fields and of `A ⊗_ℤ B` for all
+  characteristic-zero domains. General corrected multiplication now depends only on one-stage
+  Hazewinkel primeness. Proved `J₁` prime by an exact monomial-moment kernel presentation and
+  obtained unconditional stage-one multiplication over arbitrary rings. For every positive `n`,
+  constructed an explicit rational rank-`n` moment evaluation annihilating `J_n` and proved the
+  leading determinant survives by Vandermonde factorization. Formalized the regular-element
+  localization implication. Constructed the finite localized coefficient chart, derived the
+  universal recurrence from arbitrary Hankel minors by a Schur complement, proved both coordinate
+  composites, and obtained a ring equivalence with an explicit localized polynomial domain. Exact
+  open theorem is now only integral Sylvester saturation/regularity of the surviving determinant.
+  Formalized Appendix A.1 as a general determinant-exchange identity and its Hankel application:
+  `K_n ≤ J_n^fixed ≤ J_n` and `D_n J_n^fixed ≤ K_n`. This separates remaining A.2 into
+  fixed-row generation and saturation, with neither assumed.
+
+- 2026-08-13 — proved the corrected rational multiplication bound, field Kronecker equivalence,
+  nilpotence of corrected product minors over arbitrary rings, and exact vanishing over reduced
+  rings. Constructed the universal two-block quotient and proved its arbitrary-target descent.
+  Explicit inverse maps now identify that quotient with
+  `(ℤ[X]/J_n) ⊗_ℤ (ℤ[Y]/J_m)` and transport reducedness both ways. At that checkpoint §2 source
+  core was Hazewinkel primeness plus reducedness of characteristic-zero field tensor products; the
+  next log entry records elimination of the latter.
+
+- 2026-08-13 — refuted the published additive stage bound for Witt multiplication in equation
+  (15), Lemma 2.6, and Theorem 2.8.  Lean proves the general exact law
+  `stage(E_r)=r+1`, `E_r⊙E_s=E_(rs)` and the concrete stage `3 × 5 -> 9`, contradicting claimed
+  stage `3+5=8`.  Corrected qualitative ind-ring closure remains open.
+
+- 2026-08-13 — closed Proposition 2.1(a) and Proposition 2.10 over arbitrary commutative rings.
+  Normalized fractions yield explicit recurrences and rectangular Hankel factorizations; nilpotent
+  big-Witt kernels satisfy the sharp rank-at-most-`k` bound by a formal Leibniz ideal-power count.
+  Exact kernel equalities, surjectivity, and the nilradical specialization are umbrella-reachable.
+
+- 2026-08-13 — formalized generalized Laplace containment without factorial division, specialized
+  it to Hazewinkel's universal Hankel ideals to prove `J_(nk-1) <= J_(n-1)^k`, and derived
+  Deninger's nilpotent-kernel rank multiplication, cartesian square, formal smoothness, and formal
+  étaleness.  All targets are arbitrary commutative rings, including nilpotents.
 
 - 2026-08-13 — closed the imperfect-field clause. Minimal-polynomial roots form complete absolute-
   Galois orbit blocks with multiplicity exactly the finite inseparability degree; invariant

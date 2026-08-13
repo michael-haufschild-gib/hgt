@@ -346,7 +346,7 @@ existing route.
 | R | open only at an external positive-polar/compression handoff | construct a nonfunctorial polar reduction selected by the full numerical Euler--Gamma source and identify its norm/self-product/compression trace with the fixed physical Xi fibre and modular anomaly square. Lean formally closes the complete intrinsic pre-polar contract: fixed-fibre hyperbolic naturality, gauge-invariant orbit selection, reflection-even completion counterterms, and prime-clock linear/cubic symmetrization cannot be coefficient-faithful annihilators. Existence of the external handoff is itself equivalent to RH. The neutral-jet/nonlinear profile handoff reaches T but supplies no polar datum |
 | S | upstream | source algebraicity or divisor-preserving dynamics with typed Xi handoff |
 | T | open, sharply narrowed | The committed unwired chain discharges the polynomial threshold, assembles hybrid zeta blocks, proves near-one polylogarithmic growth, a subunit zero-free region, reciprocal-zeta control, and a four-edge Perron contour. `RouteTMoebiusSharp.lean` proves sharp twisted prefixes plus the cancellation-preserving dyadic Abel bridge. `RouteTZetaAsymptotics.lean` replaces binary shell, Landau-radius, growth, zero-free-budget, zero-free-width, and contour-edge parameters by explicit monotone continuous log-height envelopes. None is umbrella-reachable. Remaining arithmetic handoff is propagation through the literal Heath--Brown/Maynard boxes to exclude every long Möbius factor with required amplitude-cell uniformity. The Wold chart separately requires a signed pole-preserving landing; positive or absolute closure is impossible. |
-| U | open, two source frontiers | Umbrella Lean gives the uniform resolvent mass budget `sum ||u_q(X)|| <= 198/3175`, ray-jet tail bounds, and relative nodal equivalence. A committed unwired floor theorem proves every atom above `1/(X+259/4)` lies on line and therefore removes the relative criterion's line-placement premise at that explicit scale; the remaining polynomial nonvanishing/nodal-sign hypothesis is still RH-bearing. Terminal-frontier zero phase is RH-equivalent; unconditional cofinal positive schedules retire recession positivity. Filtered Gamma transmutation, sharp Hermite derivative energy, coefficient-uniform complex Gaussian translation, exact Fourier aperture, native polynomial--Gaussian local concentration, exact every-radius Gamma lower envelope `(24.136)`, exact complete prime tail `(24.138)`, and a canonical typed Gamma-minus-absolute-prime strict wedge `(24.139)` close the coefficient-uniform parabolic comparison. The prime tail uses the fixed convergent mass `sum Lambda(n)n^(-2)`, not a shell-count placeholder; the strict wedge uses an explicit positive minimum of Fourier, Gamma-leakage, and prime-suppression budgets. The strengthened Christoffel wall proves reciprocal blow-up, nonintegrable local action, and a cofinal nonintegrable-wall phase equivalent to false RH; that is a sharp disproof receiver, not an unconditional exclusion. Live cores are: sign the explicit floor-scale rational-nodal landing, or prove the literal completed-source explicit-formula assembly and PDH global lower envelope excluding the finite nonzero parabolic boundary state. |
+| U | open, two source frontiers | Umbrella Lean gives the uniform resolvent mass budget `sum ||u_q(X)|| <= 198/3175`, ray-jet tail bounds, and relative nodal equivalence. A committed unwired floor theorem proves every atom above `1/(X+259/4)` lies on line and therefore removes the relative criterion's line-placement premise at that explicit scale; the remaining polynomial nonvanishing/nodal-sign hypothesis is still RH-bearing. Terminal-frontier zero phase is RH-equivalent; unconditional cofinal positive schedules retire recession positivity. Filtered Gamma transmutation, sharp Hermite derivative energy, coefficient-uniform complex Gaussian translation, exact Fourier aperture, native polynomial--Gaussian local concentration, exact every-radius Gamma lower envelope `(24.136)`, exact complete wedge prime tail `(24.138)`, exact polynomial-square completed-source formula, and an unrestricted global source envelope now close all non-scalar ingredients of the parabolic comparison in Lean. The global envelope spends the fixed convergent mass `sum Lambda(n)n^(-2)` and bounds the full prime source by `exp(8*(degree+t)) M_Q(t)` without shell counting. The strengthened Christoffel wall proves reciprocal blow-up, nonintegrable local action, and a cofinal nonintegrable-wall phase equivalent to false RH; that is a sharp disproof receiver, not an unconditional exclusion. Live cores are: sign the explicit floor-scale rational-nodal landing, or prove the remaining scalar filtered-Gamma tail domination yielding the parabolic degree horizon and then exclude the finite nonzero hard-edge boundary state. |
 
 The live independent count is eleven lettered routes plus CCM-FU. This count is conditional only
 on current corpus identification: future comparison could merge routes, and a constructed
@@ -2493,6 +2493,47 @@ including nonreduced rings. This removes ambiguity in source multiplication; it 
 Route L's analytic RH frontier, which remains singular source-to-physical admission and positivity
 rather than Witt-ring construction.
 
+The next Deninger--Hazewinkel §2 obstruction is also Lean-closed.
+`DeningerDeterminantalLaplace.lean` proves the division-free generalized Laplace containments
+`I_(r+s) <= I_r I_s` and `I_(nk) <= I_n^k` over arbitrary commutative rings.
+`DeningerHazewinkelHankelDescent.lean` specializes this to the universal Hankel matrix, proving
+`J_(nk-1) <= J_(n-1)^k`, then derives exact nilpotent-kernel finite-rank cartesianity, explicit
+formal smoothness of `W_J`, and the formal-étale unique lifting property of `W_J -> W`.
+`DeningerRationalWittHazewinkelHankel.lean` additionally closes Proposition 2.1(a) directly:
+normalized `P/Q` gives an eventual recurrence, finite column generation, and a rectangular
+factorization annihilating all sufficiently large Hankel minors over arbitrary rings.  Its sharp
+Leibniz ideal-power theorem closes Proposition 2.10, including
+`W(I)=W_J(I)=W_J^{<=k}(I)`, the surjective exact-sequence package, and nilradical specialization
+when `I^k=0`.  Nonreduced rings are handled directly.  This removes rational-to-Hazewinkel
+incidence and nilpotent Hazewinkel kernels from Route L's infrastructure frontier; it still does
+not supply the singular source-to-fixed-physical comparison or positivity producer.
+
+The subsequent published quantitative ind-ring stage bound is not available because it is false.
+`DeningerHazewinkelStageBoundCounterexample.lean` proves over `ℤ` that the packet `E_r=(1-T)^r`
+has exact Hazewinkel stage `r+1` and satisfies `E_r⊙E_s=E_(rs)`.  Thus stage-`3` and stage-`5`
+points can multiply to exact stage `9`, contradicting equation (15), Lemma 2.6, and Theorem 2.8's
+asserted stage `3+5=8`.  The exact packet law is umbrella-reachable positive salvage.  Qualitative
+closure of `W_J` under Witt multiplication may still hold, but now requires a corrected
+multiplicative stage function and a new universal determinantal containment; the published
+`J_(n+m)` comultiplication containment cannot be used.
+
+**Corrected Hazewinkel multiplication status.** The replacement stage function
+`B(n,m)=(n-1)(m-1)+nm+1` is now Lean-closed. Universal two-block descent identifies its coordinate
+quotient with `(ℤ[X]/J_n) ⊗_ℤ (ℤ[Y]/J_m)`. `DeningerCharacteristicZeroTensorReduced.lean` proves
+that tensor products of arbitrary field extensions over a perfect field are reduced and deduces
+reducedness of integer tensor products of arbitrary characteristic-zero domains. Thus general
+corrected multiplication over all commutative targets, nilpotents included, depends only on
+Hazewinkel primeness of individual `J_n`; no tensor-reducedness premise remains.
+`DeningerHazewinkelStageOnePrime.lean` closes `J₁` by the exact kernel
+`X_j ↦ T^(j+1)` and yields the unconditional rank-`<2` product law. For every `n>0`,
+`DeningerHazewinkelLeadingLocalization.lean` gives an explicit rational rank-`n` moment point,
+proves all `J_n` relations there by rectangular factorization, and proves the leading determinant
+nonzero by Vandermonde factorization. Exact remaining algebraic literature core is not
+nonvanishing: it is integral Sylvester saturation `(J_n:D_n)=J_n` and localized coordinate-domain
+identification for general `n`. This source-algebra gap is independent of Route L's analytic RH
+open core below; closing it completes Deninger's corrected ind-ring infrastructure but cannot by
+itself select the physical Burnol/Deninger coefficient.
+
 A committed but not yet umbrella-reachable adiabatic chain now closes substantially more source
 analysis provisionally. It proves strong convergence of the exponential gauge in Meyer's
 projective topology; constructs the full all-integer inverse
@@ -3992,6 +4033,201 @@ R split current is constant `-2` along the entire curve. Thus P's Julia saturati
 external polar-gauge wall are one obstruction. Intrinsic conserved current cannot select zero
 rapidity; literal Euler--Gamma data must break this orbit in the fixed source-positive frame.
 
+**Fixed-prime/completed-work equivalence, formal.** For centered rate `t=2 Re(q)-1`, reflected
+prime-translation excess is exactly `D_p(q)=2(cosh(t log p)-1)`. Multiplying by the exact completed
+first-divided Xi mode energy and comparing with completed radial source work `W(q)` gives
+
+~~~
+4(log p)^2 W(q) <= D_p(q)||f_q||^2
+~~~
+
+at every ordinary prime. In the submicroscopic window `|t log p|<=1` the reverse bound holds with
+constant `8(log p)^2`; every actual Xi divisor copy lies in this window at prime two. Hence
+
+~~~
+4(log 2)^2 W(q) <= D_2(q)||f_q||^2 <= 8(log 2)^2 W(q).
+~~~
+
+Prime-two translation excess therefore vanishes exactly when completed radial work vanishes.
+Together with the Ward/radial-work bridge, this proves fixed-prime translation, completed Dirac
+work, and Ward/Krein energy are one universal positive horizontal-dissipation class. They cannot
+neutralize one another. Remaining source law must act on signed Bockstein/Green orientation before
+radial action and positive scalarization; diagonal critical rigging and symmetric pinned rank-two
+repair are already excluded.
+
+**Local radial work/cofinal Sonin Lyapunov identity, formal.** Every off-line Xi multiplicity copy
+has a canonical critical-line-conjugate orientation whose completed divisor point lies in the
+strict right half strip. At that literal Xi support, Burnol's completed-Mellin Sonin evaluation
+vector along apertures `a r^(-N)` has exact logarithmic norm-growth rate
+
+~~~
+lambda(q)=|Im(xiSpectralPoint(q))|.
+~~~
+
+The completed Hedenmalm radial work obeys the coefficient-exact identity
+
+~~~
+W(q)=lambda(q)^2 ||completedXiFirstDividedL2(q)||^2.
+~~~
+
+Thus finite prime/Ward/Dirac dissipation is the quadratic local shadow of actual cofinal Sonin
+escape. Positive completion does not supply an independent restoring channel: it propagates the
+same displacement from finite hyperbolic excess into aperture Lyapunov growth. Route P's missing
+producer must therefore precede both radial scalarization and Hilbert completion, as a source-level
+null trace or saturation law; bounded post-radial repair and ordinary positive completion are one
+closed obstruction class.
+
+**Two-sided Sonin analytic-gauge cusp no-go, formal.** Exact scalar cancellation of positive-rate
+Sonin escape on both sides of the critical wall would require transverse modulus
+
+~~~
+exp(-c |x|),  c>0.
+~~~
+
+No complex scalar gauge differentiable at the wall can have this modulus. Its value at the wall
+would be nonzero; restriction to the transverse real line, norm, and logarithm would therefore all
+remain differentiable. Dividing log modulus by `-c` would make `|x|` differentiable at zero, which
+is impossible. In particular this applies to every nontrivial geometric aperture coefficient
+`c=N log r`, `N>0`, `r>1`.
+
+This retires an entire mechanism class: no regular holomorphic Euler--Gamma scalar normalization
+can sew the two Sonin orientations by uniformly cancelling their exact escape. Strongest survivor
+is necessarily vector-valued, singular at the wall, or defined only on discrete Xi support. A
+rank-two orientation bundle is the next target: matrix entries may remain analytic while an
+extremal singular value acquires a cusp after minimization.
+
+**Sonin Cartan/Weyl escape reconstruction, formal.** The vector-valued survivor exists and is the
+actual Burnol orientation pair. Define
+
+~~~
+C(z)=(exp z,exp(-z)).
+~~~
+
+This is an entire determinant-one Cartan orbit; on its real axis it is literally the Route-R
+horizontal gauge. Burnol's forward/inverse Mellin characters satisfy coefficient-exactly
+
+~~~
+(chi_r(w),chi_r(w)^-1)=C(log(r)(w-1/2)).
+~~~
+
+Weyl-chamber reduction produces the scalar cusp:
+
+~~~
+min(||C_+(z)||,||C_-(z)||)=exp(-|Re z|).
+~~~
+
+On canonically right-oriented actual Xi support, smaller gain is
+`exp(-log(r) lambda(q))`, and completed radial work is exactly squared normalized negative log of
+this smaller gain times `||completedXiFirstDividedL2(q)||^2`. Thus cusp is not irregularity of
+pre-scalarized source data; it is created by forgetting orientation through Weyl minimization.
+
+Rank-two holomorphic repair is therefore classified, not left speculative. It still does not prove
+RH: determinant is identically one along every off-wall Cartan orbit. Remaining arithmetic source
+producer must force **neutral Cartan saturation**, equivalently lower gain one, before Weyl
+reduction. Any determinant/exterior-square law alone is retired; a second independent trace, sum,
+or positive-frame constraint is necessary.
+
+**Sonin Cartan/Gamma-six mass shell, formal.** The apparent second constraint is not independent.
+For squared norms `u,v` of the literal forward/inverse Burnol Mellin legs, set
+
+~~~
+K=u+v-2,   J=u-v.
+~~~
+
+Then `uv=1`, `K` is exactly Gamma-six opposite-boundary curvature at rapidity
+`log(r)(2 Re(w)-1)`, and `J` is exactly the coefficient of Burnol's actual signed bilateral
+aperture-defect energy. They obey
+
+~~~
+(K+2)^2-J^2=4,   K(K+4)=J^2.
+~~~
+
+Thus positive curvature and signed holonomy are Lorentz coordinates on one determinant-one Cartan
+mass shell. Their zero loci coincide with `Re(w)=1/2` and lower gain one; `K` is strictly positive
+off wall. On actual right-oriented Xi support,
+`K=2(cosh(2 log(r) lambda(q))-1)`, so it measures the same escape rate already isolated in P-G129.
+
+This retires proposals that combine Gamma-six curvature and Burnol holonomy as separate source
+constraints: their relation is kinematic and permits every rapidity. Remaining producer must be
+transverse to Cartan norm data--a singular source boundary invariant, discrete-divisor rigidity
+with a uniform growth/type budget, or an arithmetic trace not determined by the orientation-leg
+norms.
+
+**Finite-divisor analytic gauge flexibility, formal.** The discrete-divisor escape from the scalar
+cusp no-go has no finite-level rigidity. For every finite packet `S` of the literal centered Xi
+divisor and every rate `c`, Lagrange interpolation gives an explicit entire polynomial `g_S` of
+degree `< |S|` satisfying
+
+~~~
+|g_S(xiSpectralPointSupport(rho))|
+  = exp(-c |Im(xiSpectralPointSupport(rho))|),  rho in S,
+~~~
+
+with nonzero value at every node. This applies coefficient-exactly to every geometric Sonin rate
+`c=N log(r)>0`. More strongly, arbitrary complex target values on every finite Xi-support packet
+admit an entire interpolant.
+
+Hence no finite family of discrete holomorphic-gauge conditions can force the critical wall; the
+condition is locally vacuous even on actual Xi data. The only analytic discrete survivor is
+genuinely cofinal: one single interpolant must obey a packet-independent order, exponential-type,
+norm, or source-normalization budget. The degree bound exposes the missing compactness--complexity
+may grow with packet size. Route P must now derive such a uniform budget from arithmetic source
+geometry or abandon analytic discrete gauges for a singular arithmetic trace.
+
+**Cofinal reciprocal Sonin-gauge rigidity, formal.** A sharper cofinal compatibility replaces the
+generic growth/type proposal. Functional-equation reflection sends the centered Xi coordinate to
+its negative. The actual Weyl lower gain is reflection-even, and its reflected product is
+
+~~~
+G_r(reflect(rho)) G_r(rho)
+  = exp(-2 log(r) |Re(rho)-1/2|).
+~~~
+
+This product is one exactly on the critical line and strictly below one off line. Therefore unit
+reflected product at every Xi support point is equivalent to RH. More generally, for every `c>0`,
+existence of one entire scalar gauge satisfying both
+
+~~~
+g(-z)g(z)=1,
+|g(xiSpectralPointSupport(rho))|=exp(-c |Im(xiSpectralPointSupport(rho))|)
+~~~
+
+on the full divisor is equivalent to RH. Forward implication uses no growth estimate: reciprocal
+determinant-one transport is already incompatible with reflection-even positive escape away from
+the wall.
+
+This identifies scalarization as exact remaining obstruction. Burnol's vector legs preserve
+determinant one by retaining orientation; Weyl minimization produces required cancellation but
+forgets which leg must invert. Route P must construct a source-derived scalar channel retaining
+both laws. P-G134 proves such construction closes RH; it does not assume that construction.
+
+**Singular Green/Weyl sewing weld, formal.** The singular Calderón--Witt survivor is not an
+independent mechanism. For prime clocks `p,q`, valuation depth `n`, and modular displacement `a`,
+the two actual reflection sewing costs are reciprocal. Their Weyl lower envelope is
+
+~~~
+min(S(a),S(-a))
+  = exp(-2 |a| (log p + log q)(n+1)),
+~~~
+
+exactly the Sonin escape-cancelling modulus with source-fixed coefficient
+`2(log p+log q)(n+1)`. The lower envelope is reflection-even, and its reflected product is
+
+~~~
+exp(-4 |a| (log p + log q)(n+1)),
+~~~
+
+unit exactly at `a=0`. At the Riemann boundary fracture
+`a=2(Re(rho)-1/2)`, this is coefficient-exact Sonin cancellation in horizontal distance. Unit
+Weyl reciprocity defect at every actual Xi support point is equivalent to RH for every fixed
+prime pair and depth.
+
+Thus singular Green sewing and Hedenmalm--Sonin escape are the same Cartan pair before and after
+Weyl reduction. Raw source transport retains reciprocity but one leg grows; choosing the decaying
+leg on both reflected fibres cancels escape but loses reciprocity. Remaining producer must force
+oriented no-amplification on the raw pair or construct a source-canonical scalarization retaining
+orientation. Ordinary Hodge admission states that missing law but does not prove it.
+
 **P-G79--P-G97 umbrella-formal source and spectral advance.** The umbrella chain extends hostile-cell chirality to every
 ordered prime pair and valuation depth, assembles arbitrary finite packets, proves complete-graph
 overlap nonsummable, and constructs the summable adjacent-prime survivor. It then proves local edge
@@ -5281,13 +5517,12 @@ positive completed-source crossing proves required shifted-Hankel positivity and
     Hankel block `H_N(y)` is strictly positive definite whenever `y>=K N^2`. Hence any first
     contact at shift `y` has `N>sqrt(y/K)`. The proof filters by the actual reciprocal polynomial
     before Gamma averaging, obtains a coefficient-free global source lower envelope, and uses an
-    exponential Gamma-tail separation. It is paper-proved in
-    `mass-shifted-parabolic-degree-horizon`. Lean now proves one sharp load-bearing component:
-    `HermitePolynomialDerivativeEnergy.lean` establishes for every real polynomial `P`
-    `‖P' exp(-pi*x^2)‖_2^2 <= 4*pi*natDegree(P)*‖P exp(-pi*x^2)‖_2^2`, with exact equality on
-    every Hermite mode. This is C43-Y's coefficient-uniform differentiation generator after
-    Gaussian cancellation; full imaginary translation, Mehler concentration, source formula,
-    prime-shell sum, and Gamma-tail comparison remain.
+    exponential Gamma-tail separation. It is fully formalized in
+    `XiShiftedParabolicDegreeHorizon.lean`. Lean proves the explicit universal horizon, mass
+    monotonicity, shifted-filter nonvanishing, positive ultraviolet interval, unrestricted global
+    source envelope, entropy tail bound, exact filtered-Gamma integral positivity, and capstone
+    `xiShiftedReciprocalHankelQuadratic_pos_of_parabolic`. Named module build passes. No scalar,
+    coefficient-geometry, shell-count, or source-assembly placeholder remains in this theorem.
 43. Hard-edge Chebyshev packets now close the opposite scale inequality. Every even
     Paley--Wiener divisor test is the complete-divisor limit of reciprocal polynomials of degree
     `O(sqrt(y))`. If RH is false, Fourier truncation of an existing negative Gaussian test gives
@@ -5728,9 +5963,10 @@ positive completed-source crossing proves required shifted-Hankel positivity and
     shifted-Xi Hankel quadratic. `XiShiftedFilteredGammaTransmutation.lean` proves shifted-reversal
     evaluation, exact divisor-level power cancellation, absolute integral-norm summability,
     integral--divisor interchange, complex and real transmutations, and the normalized PDH.4
-    identity. No RH premise or abstract analytic hypothesis enters. Exact remaining parabolic
-    work is coefficient-uniform ultraviolet lower bound, global lower envelope, and Gamma-tail
-    domination for these literal kernels; identity alone supplies no sign and no RH proof.
+    identity. No RH premise or abstract analytic hypothesis enters. Coefficient-uniform ultraviolet
+    positivity and the unrestricted global completed-source lower envelope are now also Lean-closed.
+    Exact remaining parabolic work is scalar Gamma-time tail domination for these literal kernels;
+    the identity and pointwise bounds alone supply no global sign and no RH proof.
 
 79. The first sharp coefficient-uniform analytic estimate inside the ultraviolet bound is now
     unconditional Lean. `HermitePolynomialDerivativeEnergy.lean` proves finite Hermite degree
@@ -5794,9 +6030,18 @@ positive completed-source crossing proves required shifted-Hankel positivity and
 
     Native mass is formally strictly positive for every typed nonzero polynomial, so the right
     side is strictly positive. This closes `(24.139)` unconditionally, without mass division or
-    numerical threshold computation. Remaining parabolic work is the literal completed-source
-    explicit-formula assembly and the PDH global lower envelope; the analytic Gamma/prime
-    comparison itself is no longer open.
+    numerical threshold computation. `XiPolynomialGaussianExplicitFormula.lean` now supplies the
+    literal completed-source assembly. `PolynomialGaussianGlobalCompletedSourceEnvelope.lean`
+    proves unrestricted prime-source summability and
+
+    ~~~
+    pi*trace_Q(t)
+      >= [g(0)-C_Lambda*exp(8*(natDegree(Q)+t))] M_Q(t)
+    ~~~
+
+    at every positive heat time. Its named module build and axiom audit pass. Thus PDH.7 is no
+    longer open; remaining parabolic work is the scalar incomplete-Gamma domination that combines
+    the strict ultraviolet wedge with this exponentially costly global tail.
 
 80. Umbrella-formal `XiResolventMassBudget.lean` removes the unknown total-mass constant from the
     stationary supply chart. The sector geometry of every shifted spectral square gives
@@ -8024,7 +8269,16 @@ Frankenstein seam are umbrella-formal; P's first open theorem is the completed p
 two-sided Ward law, not assembly, admission, spectrum, or post hoc boundary transfer. Route L's
 complete source, Wold coface, Gibbs reader, coface classification, critical-edge rigidity,
 cyclotomic admission, and generic rational-Witt multiplication are formal; the singular source-to-
-fixed-physical comparison remains open. Route G has the literal compressed Suzuki operator in
+fixed-physical comparison remains open. The separate Deninger--Hazewinkel §2 parity audit has now
+reduced arbitrary-ring stage multiplication to one exact algebraic input:
+Hazewinkel primeness of every `J_n`. The universal pair quotient/tensor equivalence, corrected
+stage bound, field Kronecker converse, nilpotent-target descent, and characteristic-zero
+field-tensor reducedness are formal. The leading determinant survives, and after its inversion the
+universal stage is formally isomorphic to an explicit localized polynomial domain. Exact remaining
+source-literature core is the unlocalized Sylvester saturation `(J_n : D_n) = J_n`; no localized
+coordinate theorem remains open. Appendix A.1 determinant exchange is also formal, including
+`D_n J_n^fixed ≤ K_n ≤ J_n^fixed ≤ J_n`; remaining A.2 work is fixed-row generation and integral
+saturation. Route G has the literal compressed Suzuki operator in
 formal status and the exact CCM Friedrichs/ground/antitonicity chain in committed unwired status;
 spectral-kernel equality and whole-ground source selection remain open. Route U has formal numeric
 mass and ray-jet tail control, relative nodal descent, filtered Gamma transmutation, and cofinal-

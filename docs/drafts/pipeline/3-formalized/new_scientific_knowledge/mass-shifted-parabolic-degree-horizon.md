@@ -1,9 +1,9 @@
 # Mass-shifted parabolic degree horizon
 
 - **ID:** `mass-shifted-parabolic-degree-horizon`
-- **Stage:** 2-fully-proven / needs specialist audit
+- **Stage:** 3-formalized / needs specialist novelty audit
 - **Route:** U, mass-shifted reciprocal-Hankel propagation
-- **Scientific status:** `[PAPER PROOF COMPLETE] [NOVELTY UNVERIFIED] [LEAN PARTIAL]`
+- **Scientific status:** `[PAPER PROOF COMPLETE] [NOVELTY UNVERIFIED] [LEAN COMPLETE]`
 - **Depends on:** `mass-xi-finite-true-prime-cone`, especially C43-Y and C43-BA
 
 ## Result
@@ -166,36 +166,79 @@ By (PDH.7), for `y>A`,
        \int_T^\infty t^{2d}e^{-(y-A)t}\,dt.             \tag{PDH.12}
 \]
 
-It remains only to compare two scalar Gamma tails. Write `r=2d`,
+The original Poisson-tail wording hid the constants needed by Lean. The following equivalent
+entropy-tail proof is explicit and avoids incomplete-Gamma recurrences.
+
+Write `n=d+1`, `r=2d`, and use the scale `u=yt/n`. Let `a>0` be the wedge coefficient and let
+`D>0` satisfy the global bound
 
 \[
- Y=yT,\qquad Z=(y-A)T.
+ \Re\mathcal H_Q(t)\ge-D e^{8(d+t)}M_Q(t).               \tag{PDH.13}
 \]
 
-For integer `r`,
+One may take
 
 \[
- \begin{aligned}
- \int_0^Tt^re^{-yt}\,dt
- &=\frac{r!}{y^{r+1}}
-   \left(1-e^{-Y}\sum_{j=0}^r\frac{Y^j}{j!}\right),\\
- \int_T^\infty t^re^{-(y-A)t}\,dt
- &=\frac{r!}{(y-A)^{r+1}}
-   e^{-Z}\sum_{j=0}^r\frac{Z^j}{j!}.                    \tag{PDH.13}
- \end{aligned}
+ a=\frac{\vartheta_\infty(R_*)}{2\pi},\qquad
+ D=\frac{|\vartheta_\infty(0)|+C_\Lambda+1}{\pi}.
 \]
 
-If `y>=K(d+1)^2`, then `Y,Z` are at least a fixed multiple of `K(d+1)`, whereas
-`r<=2(d+1)`. For sufficiently large universal `K`, the lower Poisson tail obeys
+Put `s=n/y`. If `y eta/n^2>=256`, then `[s,2s]` lies inside `[0,T]`. On this interval,
+`t^r>=s^r` and `exp(-yt)>=exp(-2n)`, so the positive part is at least
 
 \[
- e^{-Z}\sum_{j=0}^r\frac{Z^j}{j!}\le e^{-Z/8},           \tag{PDH.14}
+ aM_Q(T)s^{r+1}e^{-2n}.                                 \tag{PDH.14}
 \]
 
-the parenthesis in the first line of (PDH.13) is at least `1/2`, and
-`(y/(y-A))^(r+1)` is bounded universally. Increase `K` once more so that the decay in (PDH.14)
-dominates `Ae^(A(d+1))` and leaves less than `a/2` of (PDH.11). Then (PDH.11) plus (PDH.12) is
-strictly positive. Since `M_Q(T)>0`, (PDH.4) proves (PDH.1).
+For the tail `t>=T`, put `u=yt/n`. Then `u>=256`. The elementary inequality
+
+\[
+ \log u\le 2\sqrt u\le u/8\qquad(u\ge256)
+\]
+
+gives
+
+\[
+ u^{2d}\le e^{nu/4}.
+\]
+
+If also `y>=16`, then `y-8>=y/2`, hence
+
+\[
+ t^r e^{-(y-8)t}
+ \le s^r e^{-yt/4}.
+\]
+
+Therefore the magnitude of the negative tail is at most
+
+\[
+ 4D e^{8d}M_Q(T)s^{r+1}n^{-1}e^{-yT/4}.                 \tag{PDH.15}
+\]
+
+Set
+
+\[
+ R=4D/a,\qquad L=\log(R+1)+1,
+\]
+
+and choose
+
+\[
+ K=\max\!\left(16,\frac{256}{\eta},
+                   \frac{4(10+L)}{\eta}\right).         \tag{PDH.16}
+\]
+
+For `y>=Kn^2`, the ratio of (PDH.15) to (PDH.14) is at most
+
+\[
+ \frac{R}{n}\exp\!\left(8d+2n-\frac{y\eta}{4n}\right)
+ \le R e^{-Ln}<1.
+\]
+
+The last strict inequality follows from `n>=1` and
+`e^{-L}<1/(R+1)`. Thus positive interval strictly dominates the whole negative tail. Since
+`M_Q(T)>0`, the filtered integral in (PDH.4) is strictly positive, proving (PDH.1). Every constant
+in this proof is now a literal expression in already-formal positive Route U constants.
 
 ## 5. Route U consequence and exact limit
 
@@ -243,16 +286,25 @@ priority claim is made without specialist audit.
 
 ## Lean status
 
-Two load-bearing pieces are now unconditional Lean:
+Fully formalized unconditionally in
+`GaloisForLFunctions/RHTower/XiShiftedParabolicDegreeHorizon.lean`, umbrella-reachable from
+`GaloisForLFunctions/RHTower.lean`.
 
-1. `XiShiftedFilteredGammaTransmutation.lean` proves exact literal filtered Gamma identity
-   (PDH.4).
-2. `HermitePolynomialDerivativeEnergy.lean` proves sharp coefficient-uniform generator estimate
-   `‖P' exp(-pi*x^2)‖_2^2 <= 4*pi*natDegree(P)*‖P exp(-pi*x^2)‖_2^2`, with equality on Hermite
-   modes. This is derivative-norm input for imaginary translation in (PDH.9).
+The module proves, rather than assumes:
 
-Remaining formalization: integrate generator to full complex-translation exponential, prove finite
-Hermite projector/Mehler concentration, instantiate completed-source formula and prime-shell sum,
-then close Gamma-tail comparison for literal Xi objects. An abstract theorem taking (PDH.6) or
-(PDH.7) as hypotheses would violate route's unconditional-proof requirement and is intentionally
-not being added.
+1. polynomial-Gaussian mass monotonicity;
+2. quantitative completed ultraviolet-wedge lower bound;
+3. arbitrary-time coefficient-free global lower envelope;
+4. shifted reversed-polynomial degree control and nonvanishing for nonzero coefficient vectors;
+5. elementary entropy/power tail domination and exact exponential-tail integrals;
+6. strict positivity of the literal filtered Gamma integral above the explicit quadratic horizon;
+7. strict positivity of the shifted-Xi reciprocal Hankel quadratic form:
+   `xiShiftedReciprocalHankelQuadratic_pos_of_parabolic`.
+
+Verification:
+
+- `lake env lean GaloisForLFunctions/RHTower/XiShiftedParabolicDegreeHorizon.lean` passed;
+- `lake build GaloisForLFunctions.RHTower.XiShiftedParabolicDegreeHorizon` passed (`9892/9892`);
+- both capstones depend only on standard Lean axioms `propext`, `Classical.choice`, and
+  `Quot.sound`;
+- new module contains no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration.
