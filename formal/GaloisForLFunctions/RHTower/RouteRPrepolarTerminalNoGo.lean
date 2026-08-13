@@ -6,6 +6,7 @@ import GaloisForLFunctions.RHTower.RouteRPrimeChainHochschildCycleWall
 import GaloisForLFunctions.RHTower.RouteRDegreeSixGammaCoronaLocalGlobalFracture
 import GaloisForLFunctions.RHTower.RouteRPhysicalBocksteinHomologicalNonErasure
 import GaloisForLFunctions.RHTower.RouteRPreDivisorGammaCoronaGlobalizationNoGo
+import GaloisForLFunctions.RHTower.RouteRSourceTopologyObserverDichotomy
 
 /-!
 # Route R intrinsic prepolar terminal no-go
@@ -101,6 +102,9 @@ inductive RouteRPrepolarIntrinsicAnnihilator where
   | preDivisorGammaCoronaGlobalization :
       RouteRPreDivisorGammaCoronaGlobalizer →
       RouteRPrepolarIntrinsicAnnihilator
+  | preDivisorGaugeInvariantCoronaObserver :
+      RouteRPreDivisorGaugeInvariantCoronaObserver →
+      RouteRPrepolarIntrinsicAnnihilator
 
 /-- **Intrinsic Route-R terminal theorem.** No source-natural prepolar branch
 can both retain the horizontal atom and annihilate it. -/
@@ -120,6 +124,8 @@ theorem routeRPrepolarIntrinsicProducer_cannot_annihilate_horizontalCarrier :
       exact routeR_no_finiteKunnethPhysicalBocksteinAnnihilator ⟨P⟩
   | preDivisorGammaCoronaGlobalization P =>
       exact routeR_no_preDivisorGammaCoronaGlobalizer ⟨P⟩
+  | preDivisorGaugeInvariantCoronaObserver P =>
+      exact routeR_no_preDivisorGaugeInvariantCoronaObserver ⟨P⟩
 
 /-- Surviving non-intrinsic Gate-II interface.  Full numerical Euler--Gamma
 source data must produce a positive source energy, prove it exact, and compare

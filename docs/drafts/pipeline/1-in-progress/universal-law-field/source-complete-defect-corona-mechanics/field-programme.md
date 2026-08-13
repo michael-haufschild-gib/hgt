@@ -9,6 +9,8 @@
   `[PAPER THEOREM CLOSED] [LEAN PENDING] [NOT RH]`
 - **Failure audit:**
   `../../../5-failed/universal-law-field/source-complete-defect-corona-mechanics/source-complete-defect-corona-is-the-universal-field.md`
+- **Properness-generation successor:**
+  `../source-generated-orbit-gramian-mechanics/field-programme.md`
 
 ## 1. Retrospective public sentence
 
@@ -17,8 +19,10 @@ force every finite-energy copy of that defect to leave all compact charts, after
 source cost excludes the only remaining boundary.
 
 This sentence is mathematically correct but does not found the missing field.  The mechanism assumes
-rather than generates complete observation and proper cost.  Stronger versions of both already
-exist in the Lean-certified corpus.
+rather than generates complete observation and proper cost. The orbit-Gramian successor now proves
+that one compact-resolvent label and one full-support seed generate both the scalar-commutant
+reporter pair and a canonical proper inverse cost. The remaining missing datum is no longer an
+arbitrary cost: it is a source factorization of the literal defect through that orbit formation.
 
 ## 2. Ontological reversal
 

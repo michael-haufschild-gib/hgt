@@ -89,11 +89,12 @@ theorem suzukiPositiveLogUnitary_interval_real_ae
         rw [← mul_assoc, hweight, one_mul]
       _ = _ := by rw [← hcoord', hinput']
   rw [hrep]
-  simp [Complex.mul_im, hreal]
+  rw [Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, hreal]
+  ring
 
 /-- The canonical logarithmic Hankel image of real interval data is real almost everywhere. -/
 theorem suzukiCanonicalLogHankel_interval_real_ae
-    {omega a : ℝ} (homega : 1 / 2 < omega) (ha : 0 < a)
+    {omega a : ℝ} (homega : 1 / 2 < omega) (ha : 1 < a)
     (f : IntervalL2 0 a)
     (hf : ∀ᵐ x : ClosedInterval 0 a ∂volume, (f x).im = 0) :
     ∀ᵐ t : ℝ ∂volume,
@@ -154,7 +155,7 @@ theorem suzukiHankelPhiSumHankelLog_real_ae
       (l2MeasurableRep
         (suzukiHankelPhiSumHankelLog omega a homega ha) t).im = 0 := by
   exact suzukiCanonicalLogHankel_interval_real_ae
-    (show 1 / 2 < omega by linarith) (show 0 < a by linarith)
+    (show 1 / 2 < omega by linarith) ha
       (suzukiHankelPhiSum omega a homega ha)
       (suzukiHankelPhiSum_real_ae homega ha)
 
@@ -183,7 +184,6 @@ theorem conj_suzukiCompactL2Fourier_conj
   rw [← Complex.exp_conj]
   congr 1
   simp
-  ring
 
 /-! ## Schwarz reflection of the completed entire pair -/
 
@@ -193,7 +193,6 @@ theorem conj_suzukiHankelAiz_conj (a : ℝ) (z : ℂ) :
   rw [suzukiHankelAiz, suzukiHankelAiz, ← Complex.exp_conj]
   congr 1
   simp
-  ring
 
 theorem conj_suzukiCanonicalE_conj (omega : ℝ) (z : ℂ) :
     (starRingEnd ℂ) (suzukiCanonicalE omega ((starRingEnd ℂ) z)) =
@@ -220,8 +219,10 @@ theorem conj_suzukiHankelTildeECleared_conj_eq_starCleared
       (suzukiHankelPhiSumHankelLog omega a homega ha), hpRep] with t hrep hreal
     rw [← hrep]
     exact hreal
-  have hq := conj_suzukiCompactL2Fourier_conj hqCoe
-  have hp := conj_suzukiCompactL2Fourier_conj hpCoe
+  have hq := conj_suzukiCompactL2Fourier_conj
+    (A := Real.log a) hqCoe
+  have hp := conj_suzukiCompactL2Fourier_conj
+    (A := Real.log a) hpCoe
   have hE := conj_suzukiCanonicalE_conj omega z
   have hEneg := conj_suzukiCanonicalE_conj omega (-z)
   have hAiz := conj_suzukiHankelAiz_conj a z
@@ -239,16 +240,26 @@ theorem conj_suzukiHankelTildeEStarCleared_conj_eq_ECleared
     (starRingEnd ℂ)
         (suzukiHankelTildeEStarCleared omega a homega ha ((starRingEnd ℂ) z)) =
       suzukiHankelTildeECleared omega a homega ha z := by
-  rw [suzukiHankelTildeEStarCleared_eq_ECleared_neg homega ha]
-  simpa only [map_neg] using
-    conj_suzukiHankelTildeECleared_conj_eq_starCleared homega ha (-z)
+  calc
+    (starRingEnd ℂ)
+        (suzukiHankelTildeEStarCleared omega a homega ha
+          ((starRingEnd ℂ) z)) =
+        (starRingEnd ℂ)
+          (suzukiHankelTildeECleared omega a homega ha
+            (-((starRingEnd ℂ) z))) := by
+      rw [suzukiHankelTildeEStarCleared_eq_ECleared_neg homega ha]
+    _ = suzukiHankelTildeEStarCleared omega a homega ha (-z) := by
+      simpa only [map_neg] using
+        conj_suzukiHankelTildeECleared_conj_eq_starCleared homega ha (-z)
+    _ = suzukiHankelTildeECleared omega a homega ha z := by
+      rw [suzukiHankelTildeEStarCleared_eq_ECleared_neg homega ha, neg_neg]
 
 theorem conj_suzukiHankelTildeACleared_conj
     {omega a : ℝ} (homega : 1 < omega) (ha : 1 < a) (z : ℂ) :
     (starRingEnd ℂ)
         (suzukiHankelTildeACleared omega a homega ha ((starRingEnd ℂ) z)) =
       suzukiHankelTildeACleared omega a homega ha z := by
-  rw [suzukiHankelTildeACleared, map_div, map_add,
+  rw [suzukiHankelTildeACleared, map_div₀, map_add,
     conj_suzukiHankelTildeECleared_conj_eq_starCleared homega ha,
     conj_suzukiHankelTildeEStarCleared_conj_eq_ECleared homega ha]
   norm_num
@@ -259,7 +270,7 @@ theorem conj_suzukiHankelTildeBCleared_conj
     (starRingEnd ℂ)
         (suzukiHankelTildeBCleared omega a homega ha ((starRingEnd ℂ) z)) =
       suzukiHankelTildeBCleared omega a homega ha z := by
-  rw [suzukiHankelTildeBCleared, map_div, map_sub, map_mul,
+  rw [suzukiHankelTildeBCleared, map_div₀, map_sub, map_mul,
     conj_suzukiHankelTildeEStarCleared_conj_eq_ECleared homega ha,
     conj_suzukiHankelTildeECleared_conj_eq_starCleared homega ha]
   simp only [map_ofNat, Complex.conj_I]
@@ -270,7 +281,7 @@ theorem conj_suzukiHankelCompletedA_conj
     (starRingEnd ℂ)
         (suzukiHankelCompletedA omega a homega ha ((starRingEnd ℂ) z)) =
       suzukiHankelCompletedA omega a homega ha z := by
-  rw [suzukiHankelCompletedA, map_mul,
+  rw [suzukiHankelCompletedA, suzukiHankelCompletedA, map_mul,
     conj_suzukiHankelTildeACleared_conj homega ha]
   simp
 
@@ -279,7 +290,7 @@ theorem conj_suzukiHankelCompletedB_conj
     (starRingEnd ℂ)
         (suzukiHankelCompletedB omega a homega ha ((starRingEnd ℂ) z)) =
       suzukiHankelCompletedB omega a homega ha z := by
-  rw [suzukiHankelCompletedB, map_mul, map_inv₀,
+  rw [suzukiHankelCompletedB, suzukiHankelCompletedB, map_mul, map_inv₀,
     conj_suzukiHankelTildeBCleared_conj homega ha]
   simp
 

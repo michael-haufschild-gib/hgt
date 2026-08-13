@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.Sieve.MaynardComplementaryMontgomeryScalar
 import GaloisForLFunctions.RHTower.Sieve.MaynardWindowRelevantAggregate
+import GaloisForLFunctions.RHTower.Sieve.MaynardLowOrdinateKuzminLandauAmplitude
 
 /-!
 # Derivative--count duality on the low-ordinate Route-T band
@@ -20,7 +21,8 @@ height saving to a fixed local amplitude before counting.
 noncomputable section
 namespace RHTower.Sieve
 
-open Finset
+open Finset ArithmeticFunction
+open scoped zeta
 
 /-- A physical-window-relevant box has total base-`T` logarithmic length at most `mu` whenever
 the physical cutoff is at most `T^mu`.  This is the exact upper scale needed by the duality
@@ -96,6 +98,524 @@ theorem maynardAmplitude_mul_heightWeight_le_sub_of_height_saving
             (add_le_add_left hlogUpper (c * (w * Real.log T)))
       _ = (w - (1 - eps)) * Real.log T := by ring
   exact le_of_mul_le_mul_right hscaled (Real.log_pos hT)
+
+/-- Full low-ordinate zeta law with the Kuzmin--Landau saving retained in exact height weight.
+Every over-height atom subtracts `9/10` from the weighted amplitude sum, independently of its
+length. -/
+theorem eventually_maynard_lowOrdinate_overHeight_zeta_weighted_deficit :
+    ∀ᶠ T : ℝ in Filter.atTop,
+      ∀ X : ℕ, 1 <= X → ∀ mu : ℝ, mu <= 8 → (X : ℝ) <= T ^ mu →
+        ∀ q : ℕ, q <= Nat.log 2 X → ∀ c y : ℝ, 0 <= c → T <= y → y <= 2 * T →
+          T <= ((2 ^ q : ℕ) : ℝ) →
+          0 < ‖LSeries (complexCoeff
+            (arithmeticDyadicBlock
+              (coeffTrunc (zeta : ArithmeticFunction ℝ) X) q))
+                ((c : ℂ) + (y : ℂ) * Complex.I)‖ →
+          maynardAmplitude c (((2 ^ q : ℕ) : ℝ))
+              ‖LSeries (complexCoeff
+                (arithmeticDyadicBlock
+                  (coeffTrunc (zeta : ArithmeticFunction ℝ) X) q))
+                    ((c : ℂ) + (y : ℂ) * Complex.I)‖ *
+              dyadicLogExponent T q <=
+            dyadicLogExponent T q - 9 / 10 := by
+  filter_upwards [eventually_maynardLowOrdinateKuzminLandau_polylog_absorbed] with T hready
+  intro X hX mu hmu hXscale q hq c y hc hylo hyhi hTN hV
+  let N : ℝ := (((2 ^ q : ℕ) : ℝ))
+  let C : ℝ := 2 * (6 * Real.pi + 1) * maynardLongPolylogEnvelope X
+  let w : ℝ := dyadicLogExponent T q
+  have hr := rpow_dyadicLogExponent hready.1 q
+  have hNeq : N = T ^ w := by simpa [N, w] using hr.symm
+  have hw : 1 <= w := by
+    apply (Real.strictMono_rpow_of_base_gt_one hready.1).le_iff_le.mp
+    rw [Real.rpow_one, ← hNeq]
+    exact hTN
+  have hraw := norm_LSeries_zetaDyadicBlock_le_over_height
+    hX hq (lt_trans zero_lt_one hready.1) hc hylo hyhi hTN
+  have hE : 1 <= maynardLongPolylogEnvelope X :=
+    one_le_maynardLongPolylogEnvelope X
+  have hbaseC : 6 * Real.pi + 1 <= C := by
+    dsimp [C]
+    nlinarith [Real.pi_pos]
+  have hbound :
+      ‖LSeries (complexCoeff
+        (arithmeticDyadicBlock (coeffTrunc (zeta : ArithmeticFunction ℝ) X) q))
+          ((c : ℂ) + (y : ℂ) * Complex.I)‖ <=
+        C / T * N ^ (1 - c) := by
+    simpa [N] using hraw.trans (mul_le_mul_of_nonneg_right
+      (div_le_div_of_nonneg_right hbaseC
+        (lt_trans zero_lt_one hready.1).le)
+      (Real.rpow_nonneg (by positivity : 0 <= N) _))
+  have hweighted := maynardAmplitude_mul_heightWeight_le_sub_of_height_saving
+    hready.1 hw hNeq (hready.2 X hX mu hmu hXscale) hV hbound
+  norm_num at hweighted ⊢
+  simpa [N, w] using hweighted
+
+/-- Full low-ordinate logarithmic-factor law in the same exact height-weighted form. -/
+theorem eventually_maynard_lowOrdinate_overHeight_log_weighted_deficit :
+    ∀ᶠ T : ℝ in Filter.atTop,
+      ∀ X : ℕ, 1 <= X → ∀ mu : ℝ, mu <= 8 → (X : ℝ) <= T ^ mu →
+        ∀ q : ℕ, q <= Nat.log 2 X → ∀ c y : ℝ, 0 <= c → T <= y → y <= 2 * T →
+          T <= ((2 ^ q : ℕ) : ℝ) →
+          0 < ‖LSeries (complexCoeff
+            (arithmeticDyadicBlock (coeffTrunc ArithmeticFunction.log X) q))
+              ((c : ℂ) + (y : ℂ) * Complex.I)‖ →
+          maynardAmplitude c (((2 ^ q : ℕ) : ℝ))
+              ‖LSeries (complexCoeff
+                (arithmeticDyadicBlock (coeffTrunc ArithmeticFunction.log X) q))
+                  ((c : ℂ) + (y : ℂ) * Complex.I)‖ *
+              dyadicLogExponent T q <=
+            dyadicLogExponent T q - 9 / 10 := by
+  filter_upwards [eventually_maynardLowOrdinateKuzminLandau_polylog_absorbed] with T hready
+  intro X hX mu hmu hXscale q hq c y hc hylo hyhi hTN hV
+  let N : ℝ := (((2 ^ q : ℕ) : ℝ))
+  let C : ℝ := 2 * (6 * Real.pi + 1) * maynardLongPolylogEnvelope X
+  let w : ℝ := dyadicLogExponent T q
+  have hr := rpow_dyadicLogExponent hready.1 q
+  have hNeq : N = T ^ w := by simpa [N, w] using hr.symm
+  have hw : 1 <= w := by
+    apply (Real.strictMono_rpow_of_base_gt_one hready.1).le_iff_le.mp
+    rw [Real.rpow_one, ← hNeq]
+    exact hTN
+  have hbound := norm_LSeries_logDyadicBlock_le_over_height
+    hX hq (lt_trans zero_lt_one hready.1) hc hylo hyhi hTN
+  have hweighted := maynardAmplitude_mul_heightWeight_le_sub_of_height_saving
+    hready.1 hw hNeq (hready.2 X hX mu hmu hXscale) hV (by
+      simpa [C, N] using hbound)
+  norm_num at hweighted ⊢
+  simpa [N, w] using hweighted
+
+/-- Additive-height version of the sub-height mass principle.  If every over-height atom removes
+the same amount `eta` from amplitude-times-height weight, failure of the requested sub-height mass
+produces at least one such atom and hence the full additive penalty `eta`. -/
+theorem subHeight_mass_ge_of_additive_height_penalty
+    {ι : Type*} [Fintype ι]
+    (w a slack : ι → ℝ) {t eta E alpha mu : ℝ}
+    (ht : 0 < t) (hmu : 0 < mu) (hetaE : E < eta)
+    (hw : ∀ i, 0 <= w i)
+    (htotalLo : t <= ∑ i, w i) (htotalHi : ∑ i, w i <= mu)
+    (hslack : ∀ i, 0 <= slack i)
+    (hall : ∀ i, a i <= 1 + slack i)
+    (hover : ∀ i, 1 <= w i → a i * w i <= w i - eta)
+    (hslackMass : ∑ i, slack i * w i <= E)
+    (hglobal : alpha * ∑ i, w i <= ∑ i, a i * w i)
+    (halpha : 1 - (eta - E) / mu < alpha) :
+    t <= ∑ i ∈ (Finset.univ.filter fun i => w i < 1), w i := by
+  classical
+  let good : Finset ι := Finset.univ.filter fun i => w i < 1
+  let high : Finset ι := Finset.univ.filter fun i => ¬w i < 1
+  by_contra hnot
+  have hgood : ∑ i ∈ good, w i < t := by
+    exact lt_of_not_ge (by simpa [good] using hnot)
+  have hsplit : ∑ i, w i = (∑ i ∈ good, w i) + ∑ i ∈ high, w i := by
+    dsimp only [good, high]
+    exact (Finset.sum_filter_add_sum_filter_not Finset.univ
+      (fun i => w i < 1) w).symm
+  have hhighNonempty : high.Nonempty := by
+    by_contra hempty
+    have hhighEmpty : high = ∅ := Finset.not_nonempty_iff_eq_empty.mp hempty
+    rw [hhighEmpty, sum_empty, add_zero] at hsplit
+    linarith
+  obtain ⟨j, hj⟩ := hhighNonempty
+  have hwj : 1 <= w j := le_of_not_gt (by
+    simpa [high] using (Finset.mem_filter.mp hj).2)
+  have hjpenalty : a j * w j <= w j - eta := hover j hwj
+  have hterm : ∀ i, a i * w i <=
+      w i + slack i * w i - (if i = j then eta else 0) := by
+    intro i
+    by_cases hij : i = j
+    · subst i
+      simp only [ite_true]
+      have hslackTerm : 0 <= slack j * w j :=
+        mul_nonneg (hslack j) (hw j)
+      linarith
+    · simp only [if_neg hij, sub_zero]
+      calc
+        a i * w i <= (1 + slack i) * w i :=
+          mul_le_mul_of_nonneg_right (hall i) (hw i)
+        _ = w i + slack i * w i := by ring
+  have hsum := Finset.sum_le_sum fun i (_hi : i ∈ Finset.univ) => hterm i
+  have hpenalty : ∑ i, (if i = j then eta else 0) = eta := by simp
+  have hupper : ∑ i, a i * w i <= ∑ i, w i + E - eta := by
+    calc
+      ∑ i, a i * w i <=
+          (∑ i, w i) + (∑ i, slack i * w i) -
+            ∑ i, (if i = j then eta else 0) := by
+        simpa [Finset.sum_add_distrib, Finset.sum_sub_distrib] using hsum
+      _ <= ∑ i, w i + E - eta := by rw [hpenalty]; linarith
+  have hdeficit : eta - E <= (1 - alpha) * ∑ i, w i := by
+    linarith
+  have htotalPos : 0 < ∑ i, w i := ht.trans_le htotalLo
+  have halphaOne : alpha < 1 := by
+    nlinarith
+  have hscaled : (1 - alpha) * ∑ i, w i <= (1 - alpha) * mu :=
+    mul_le_mul_of_nonneg_left htotalHi (by linarith)
+  have hratio : 1 - alpha < (eta - E) / mu := by linarith
+  have hstrict : (1 - alpha) * mu < eta - E :=
+    (lt_div_iff₀ hmu).mp hratio
+  linarith
+
+/-- Literal positive-length Heath--Brown box form of the additive height-penalty principle. -/
+theorem maynard_heathBrownBox_subHeight_mass_of_additive_height_penalty
+    {L X k : ℕ} (box : HeathBrownBoxChoice L X k)
+    (hL : 1 <= L) (hX : 1 <= X)
+    {T t c y alpha eta E mu : ℝ}
+    (hT : 1 < T) (ht : 0 < t) (hmu : 0 < mu) (hetaE : E < eta)
+    (hc : 0 <= c)
+    (htotalLo : t <= ∑ i : PositiveHeathBrownBoxFactorIndex box,
+      dyadicLogExponent T
+        (heathBrownBoxFactorExponent box.a box.b box.q i))
+    (htotalHi : (∑ i : PositiveHeathBrownBoxFactorIndex box,
+      dyadicLogExponent T
+        (heathBrownBoxFactorExponent box.a box.b box.q i)) <= mu)
+    (hover : ∀ i : PositiveHeathBrownBoxFactorIndex box,
+      1 <= dyadicLogExponent T
+        (heathBrownBoxFactorExponent box.a box.b box.q i) →
+      maynardAmplitude c
+          (((2 ^ heathBrownBoxFactorExponent box.a box.b box.q i : ℕ) : ℝ))
+          ‖heathBrownBoxFactorValue L X k box
+              ((c : ℂ) + (y : ℝ) * Complex.I) i‖ *
+            dyadicLogExponent T
+              (heathBrownBoxFactorExponent box.a box.b box.q i) <=
+        dyadicLogExponent T
+          (heathBrownBoxFactorExponent box.a box.b box.q i) - eta)
+    (hslackMass :
+      ∑ i : HeathBrownBoxFactorIndex k box.m,
+          heathBrownFactorAmplitudeSlack (heathBrownBoxFactorKind k box.m i)
+            (heathBrownBoxFactorExponent box.a box.b box.q i) *
+            Real.log
+              (((2 ^ heathBrownBoxFactorExponent box.a box.b box.q i : ℕ) : ℝ)) <=
+        E * Real.log T)
+    (hlarge :
+      ((groupedDyadicLower
+        (heathBrownBoxFactorExponent box.a box.b box.q) : ℕ) : ℝ) ^
+          (alpha - c) <=
+        ‖heathBrownDyadicCoreProduct L X k box.m box.a box.b box.q
+          ((c : ℂ) + (y : ℝ) * Complex.I)‖)
+    (halpha : 1 - (eta - E) / mu < alpha) :
+    t <= ∑ i ∈ (Finset.univ.filter
+        fun i : PositiveHeathBrownBoxFactorIndex box =>
+          dyadicLogExponent T
+            (heathBrownBoxFactorExponent box.a box.b box.q i) < 1),
+      dyadicLogExponent T
+        (heathBrownBoxFactorExponent box.a box.b box.q i) := by
+  classical
+  let s : ℂ := (c : ℂ) + (y : ℝ) * Complex.I
+  have hlog : 1 <= box.q :=
+    heathBrownBox_log_exponent_pos_of_large_core box s (by simpa [s] using hlarge)
+  let I := PositiveHeathBrownBoxFactorIndex box
+  let q : I → ℕ := fun i => heathBrownBoxFactorExponent box.a box.b box.q i
+  let kind : I → HeathBrownFactorKind := fun i => heathBrownBoxFactorKind k box.m i
+  let N : I → ℝ := fun i => (((2 ^ q i : ℕ) : ℝ))
+  let Z : I → ℂ := fun i => heathBrownBoxFactorValue L X k box s i
+  let W : I → ℝ := fun i => ‖Z i‖
+  let slack : I → ℝ := fun i => heathBrownFactorAmplitudeSlack (kind i) (q i)
+  let w : I → ℝ := fun i => dyadicLogExponent T (q i)
+  let a : I → ℝ := fun i => maynardAmplitude c (N i) (W i)
+  let logIndex : I := ⟨Sum.inr (Sum.inr ()), hlog⟩
+  letI : Nonempty I := ⟨logIndex⟩
+  have hN : ∀ i, 1 < N i := by
+    intro i
+    dsimp [N, q]
+    exact_mod_cast (show 1 < 2 ^
+        heathBrownBoxFactorExponent box.a box.b box.q
+          (i : HeathBrownBoxFactorIndex k box.m) by
+      exact pow_lt_pow_right₀ (by norm_num) i.property)
+  have hNprod : (∏ i, N i) =
+      ((groupedDyadicLower
+        (heathBrownBoxFactorExponent box.a box.b box.q) : ℕ) : ℝ) := by
+    change (∏ i : I, (((2 ^ q i : ℕ) : ℝ))) =
+      ((groupedDyadicLower
+        (heathBrownBoxFactorExponent box.a box.b box.q) : ℕ) : ℝ)
+    norm_cast
+    exact prod_positive_heathBrownBoxFactorLength_eq_groupedLower box
+  have hZprod : (∏ i, Z i) =
+      heathBrownDyadicCoreProduct L X k box.m box.a box.b box.q s := by
+    simpa [Z, I] using
+      prod_positive_heathBrownBoxFactorValue_eq_core box hL hX hlog s
+  have hWprod : (∏ i, W i) =
+      ‖heathBrownDyadicCoreProduct L X k box.m box.a box.b box.q s‖ := by
+    rw [← hZprod]
+    simp [W]
+  have hNprodPos : 0 < ∏ i, N i :=
+    Finset.prod_pos fun i _ => (hN i).trans' zero_lt_one
+  have hthreshold : 0 < (∏ i, N i) ^ (alpha - c) :=
+    Real.rpow_pos_of_pos hNprodPos _
+  have hWprodPos : 0 < ∏ i, W i := by
+    rw [hWprod]
+    exact hthreshold.trans_le (by simpa [hNprod, s] using hlarge)
+  have hW : ∀ i, 0 < W i := by
+    intro i
+    by_contra hi
+    have hi0 : W i = 0 := le_antisymm (le_of_not_gt hi) (norm_nonneg _)
+    have hzero : ∏ r, W r = 0 := Finset.prod_eq_zero (Finset.mem_univ i) hi0
+    rw [hzero] at hWprodPos
+    exact (lt_irrefl 0) hWprodPos
+  have hw : ∀ i, 0 <= w i := fun i => dyadicLogExponent_nonneg hT (q i)
+  have hslack : ∀ i, 0 <= slack i := by
+    intro i
+    exact heathBrownFactorAmplitudeSlack_nonneg (kind i) i.property
+  have hall : ∀ i, a i <= 1 + slack i := by
+    intro i
+    exact maynard_heathBrownFactor_amplitude_le_one_add_slack
+      L X (q i) (kind i) hc i.property (hW i)
+  have hover' : ∀ i, 1 <= w i → a i * w i <= w i - eta := by
+    intro i hi
+    simpa [a, w, N, W, Z, q, s] using hover i (by simpa [w, q] using hi)
+  have hlogNw : ∀ i, Real.log (N i) = w i * Real.log T := by
+    intro i
+    have hr := rpow_dyadicLogExponent hT (q i)
+    calc
+      Real.log (N i) = Real.log (T ^ dyadicLogExponent T (q i)) := by rw [hr]
+      _ = dyadicLogExponent T (q i) * Real.log T := by
+        rw [Real.log_rpow (by linarith)]
+      _ = w i * Real.log T := by rfl
+  have hslackScaled :
+      (∑ i, slack i * w i) * Real.log T <= E * Real.log T := by
+    calc
+      (∑ i, slack i * w i) * Real.log T =
+          ∑ i, slack i * Real.log (N i) := by
+        simp_rw [hlogNw]
+        rw [Finset.sum_mul]
+        apply Finset.sum_congr rfl
+        intro i _
+        ring
+      _ = ∑ i : HeathBrownBoxFactorIndex k box.m,
+          heathBrownFactorAmplitudeSlack (heathBrownBoxFactorKind k box.m i)
+            (heathBrownBoxFactorExponent box.a box.b box.q i) *
+            Real.log
+              (((2 ^ heathBrownBoxFactorExponent box.a box.b box.q i : ℕ) : ℝ)) := by
+        have htrim := sum_positive_heathBrownBoxFactorAmplitudeSlack_eq box hlog
+        simpa [slack, N, q, kind, I] using htrim
+      _ <= E * Real.log T := hslackMass
+  have hslackMass' : ∑ i, slack i * w i <= E :=
+    le_of_mul_le_mul_right hslackScaled (Real.log_pos hT)
+  have hweighted := maynardGlobalAmplitude_weighted_mean (c := c) N W hN hW rfl rfl
+  have hNprodOne : 1 < ∏ i, N i := by
+    calc
+      1 = ∏ _i : I, (1 : ℝ) := by simp
+      _ < ∏ i, N i := Finset.prod_lt_prod_of_nonempty
+        (fun _i _hi => by norm_num) (fun i _hi => hN i) Finset.univ_nonempty
+  have hglobalAmp : alpha <= maynardGlobalAmplitude c (∏ i, N i) (∏ i, W i) := by
+    apply le_maynardAmplitude_of_rpow_le
+    · exact hNprodOne
+    · rw [hNprod, hWprod]
+      simpa [s] using hlarge
+  have hglobalLog :
+      alpha * Real.log (∏ i, N i) <= ∑ i, a i * Real.log (N i) := by
+    have hmul := mul_le_mul_of_nonneg_right hglobalAmp
+      (Real.log_nonneg hNprodOne.le)
+    rw [hweighted] at hmul
+    simpa [a] using hmul
+  have hlogTotal : Real.log (∏ i, N i) = (∑ i, w i) * Real.log T := by
+    rw [Real.log_prod (fun i _ => ne_of_gt (lt_trans zero_lt_one (hN i)))]
+    simp_rw [hlogNw]
+    rw [Finset.sum_mul]
+  have hglobalScaled :
+      (alpha * ∑ i, w i) * Real.log T <=
+        (∑ i, a i * w i) * Real.log T := by
+    calc
+      (alpha * ∑ i, w i) * Real.log T =
+          alpha * Real.log (∏ i, N i) := by rw [hlogTotal]; ring
+      _ <= ∑ i, a i * Real.log (N i) := hglobalLog
+      _ = (∑ i, a i * w i) * Real.log T := by
+        simp_rw [hlogNw]
+        rw [Finset.sum_mul]
+        apply Finset.sum_congr rfl
+        intro i _
+        ring
+  have hglobal : alpha * ∑ i, w i <= ∑ i, a i * w i :=
+    le_of_mul_le_mul_right hglobalScaled (Real.log_pos hT)
+  have hmass := subHeight_mass_ge_of_additive_height_penalty
+    w a slack ht hmu hetaE hw (by simpa [w, q] using htotalLo)
+      (by simpa [w, q] using htotalHi) hslack hall hover'
+      hslackMass' hglobal halpha
+  simpa [w, q, I] using hmass
+
+/-- `log(12 log T)` is eventually below every fixed positive fraction of `log T`. -/
+theorem eventually_log_twelve_mul_log_le {eps : ℝ} (heps : 0 < eps) :
+    ∀ᶠ T : ℝ in Filter.atTop,
+      Real.log (12 * Real.log T) <= eps * Real.log T := by
+  have hU : Filter.Tendsto (fun T : ℝ => 12 * Real.log T)
+      Filter.atTop Filter.atTop :=
+    Filter.Tendsto.const_mul_atTop (by norm_num) Real.tendsto_log_atTop
+  have hsmall := (Real.isLittleO_log_id_atTop.comp_tendsto hU).def
+    (show 0 < eps / 12 by positivity)
+  filter_upwards [hsmall, Real.tendsto_log_atTop.eventually_ge_atTop 0] with T hs hlog
+  have hU0 : 0 <= 12 * Real.log T := mul_nonneg (by norm_num) hlog
+  change |Real.log (12 * Real.log T)| <= (eps / 12) * |12 * Real.log T| at hs
+  rw [abs_of_nonneg hU0] at hs
+  calc
+    Real.log (12 * Real.log T) <= |Real.log (12 * Real.log T)| := le_abs_self _
+    _ <= (eps / 12) * (12 * Real.log T) := hs
+    _ = eps * Real.log T := by ring
+
+/-- Low-ordinate analogue of the logarithmic slack estimate, uniform for `X <= T^mu`,
+`mu <= 8`. -/
+theorem eventually_log_maynardLongPolylogEnvelope_le_lowOrdinate
+    {eps : ℝ} (heps : 0 < eps) :
+    ∀ᶠ T : ℝ in Filter.atTop,
+      ∀ X : ℕ, 1 <= X → ∀ mu : ℝ, mu <= 8 → (X : ℝ) <= T ^ mu →
+        Real.log (maynardLongPolylogEnvelope X) <= eps * Real.log T := by
+  filter_upwards [eventually_log_twelve_mul_log_le heps,
+    Filter.eventually_gt_atTop (0 : ℝ),
+    Real.tendsto_log_atTop.eventually_ge_atTop 1] with T hsmall hT hlogT
+  intro X hX mu hmu hXscale
+  have hE := maynardLongPolylogEnvelope_le_twelve_log_of_mu_le_eight
+    hX hT hlogT hmu hXscale
+  have hEpos : 0 < maynardLongPolylogEnvelope X :=
+    lt_of_lt_of_le zero_lt_one (one_le_maynardLongPolylogEnvelope X)
+  have hlogE : Real.log (maynardLongPolylogEnvelope X) <=
+      Real.log (12 * Real.log T) := Real.log_le_log hEpos hE
+  exact hlogE.trans hsmall
+
+/-- Complete literal-box logarithmic slack remains `o(log T)` throughout the full low-ordinate
+band. -/
+theorem eventually_sum_heathBrownBoxFactorAmplitudeSlack_mul_log_le_lowOrdinate
+    {eps : ℝ} (heps : 0 < eps) :
+    ∀ᶠ T : ℝ in Filter.atTop,
+      ∀ X : ℕ, 1 <= X → ∀ mu : ℝ, mu <= 8 → (X : ℝ) <= T ^ mu →
+        ∀ L k : ℕ, ∀ box : HeathBrownBoxChoice L X k, 1 <= box.q →
+          ∑ i : HeathBrownBoxFactorIndex k box.m,
+              heathBrownFactorAmplitudeSlack (heathBrownBoxFactorKind k box.m i)
+                (heathBrownBoxFactorExponent box.a box.b box.q i) *
+                Real.log
+                  (((2 ^ heathBrownBoxFactorExponent box.a box.b box.q i : ℕ) : ℝ)) <=
+            eps * Real.log T := by
+  filter_upwards [eventually_log_maynardLongPolylogEnvelope_le_lowOrdinate heps] with T hT
+  intro X hX mu hmu hXscale L k box hq
+  rw [sum_heathBrownBoxFactorAmplitudeSlack_mul_log box.a box.b hq]
+  exact (log_heathBrown_log_trivialConstant_le_log_polylogEnvelope box hX hq).trans
+    (hT X hX mu hmu hXscale)
+
+/-- Full low-ordinate literal-box sub-height selection above the exact additive-height boundary.
+The old uniform `9/80` local deficit is not used: one over-height zeta/log atom contributes the
+full `9/10` height penalty, while the logarithmic atom's total slack costs only `1/100`. -/
+theorem eventually_maynard_lowOrdinate_box_subHeight_mass_of_high_amplitude :
+    ∀ᶠ T : ℝ in Filter.atTop,
+      ∀ X : ℕ, 1 <= X → ∀ mu : ℝ, 4 / 3 <= mu → mu <= 8 →
+        (X : ℝ) <= T ^ mu →
+        ∀ L : ℕ, 1 <= L →
+        ∀ box : HeathBrownBoxChoice L X 60,
+          IsHeathBrownBoxEligible L X 60 T (mu / 120) box →
+          IsHeathBrownBoxWindowRelevant (X / (2 ^ 120 : ℝ)) X 60 box →
+          (∀ i : HeathBrownBoxFactorIndex 60 box.m,
+            heathBrownBoxFactorKind 60 box.m i = .moebius →
+              dyadicLogExponent T
+                (heathBrownBoxFactorExponent box.a box.b box.q i) <=
+                  2 * (mu / 120)) →
+          ∀ c y alpha : ℝ, 0 <= c → T <= y → y <= 2 * T →
+          1 - (89 / 100 : ℝ) / mu < alpha →
+          ((groupedDyadicLower
+            (heathBrownBoxFactorExponent box.a box.b box.q) : ℕ) : ℝ) ^
+              (alpha - c) <=
+            ‖heathBrownDyadicCoreProduct L X 60 box.m box.a box.b box.q
+              ((c : ℂ) + (y : ℝ) * Complex.I)‖ →
+          mu / 120 <= ∑ i ∈ (Finset.univ.filter
+              fun i : PositiveHeathBrownBoxFactorIndex box =>
+                dyadicLogExponent T
+                  (heathBrownBoxFactorExponent box.a box.b box.q i) < 1),
+            dyadicLogExponent T
+              (heathBrownBoxFactorExponent box.a box.b box.q i) := by
+  filter_upwards [eventually_maynard_lowOrdinate_overHeight_zeta_weighted_deficit,
+    eventually_maynard_lowOrdinate_overHeight_log_weighted_deficit,
+    eventually_sum_heathBrownBoxFactorAmplitudeSlack_mul_log_le_lowOrdinate
+      (by norm_num : (0 : ℝ) < 1 / 100),
+    Filter.eventually_gt_atTop (1 : ℝ)] with T hzeta hlogFactor hslack hT
+  intro X hX mu hmuLo hmuHi hXscale L hL box helig hwindow hmobius
+    c y alpha hc hylo hyhi halpha hlarge
+  let s : ℂ := (c : ℂ) + (y : ℝ) * Complex.I
+  have hqlog : 1 <= box.q :=
+    heathBrownBox_log_exponent_pos_of_large_core box s (by simpa [s] using hlarge)
+  let Z : HeathBrownBoxFactorIndex 60 box.m → ℂ := fun i =>
+    heathBrownBoxFactorValue L X 60 box s i
+  have hD0 : 0 <
+      ((groupedDyadicLower
+        (heathBrownBoxFactorExponent box.a box.b box.q) : ℕ) : ℝ) := by
+    exact lt_of_lt_of_le zero_lt_one (by
+      exact_mod_cast one_le_groupedDyadicLower
+        (heathBrownBoxFactorExponent box.a box.b box.q))
+  have hcorePos : 0 <
+      ‖heathBrownDyadicCoreProduct L X 60 box.m box.a box.b box.q s‖ := by
+    have hthreshold : 0 <
+        ((groupedDyadicLower
+          (heathBrownBoxFactorExponent box.a box.b box.q) : ℕ) : ℝ) ^
+            (alpha - c) := Real.rpow_pos_of_pos hD0 _
+    exact hthreshold.trans_le (by simpa [s] using hlarge)
+  have hprodZ : (∏ i, Z i) =
+      heathBrownDyadicCoreProduct L X 60 box.m box.a box.b box.q s := by
+    simpa [Z, heathBrownBoxFactorValue] using heathBrownBoxFactorProduct_eq_core
+      L X 60 box.m box.a box.b box.q s
+  have hfactorPos : ∀ i : HeathBrownBoxFactorIndex 60 box.m, 0 < ‖Z i‖ := by
+    intro i
+    have hZi : Z i ≠ 0 := by
+      intro hzero
+      have hpzero : ∏ j, Z j = 0 :=
+        Finset.prod_eq_zero (Finset.mem_univ i) hzero
+      rw [hprodZ] at hpzero
+      rw [hpzero, norm_zero] at hcorePos
+      exact (lt_irrefl 0) hcorePos
+    exact norm_pos_iff.mpr hZi
+  have hover : ∀ i : PositiveHeathBrownBoxFactorIndex box,
+      1 <= dyadicLogExponent T
+        (heathBrownBoxFactorExponent box.a box.b box.q i) →
+      maynardAmplitude c
+          (((2 ^ heathBrownBoxFactorExponent box.a box.b box.q i : ℕ) : ℝ))
+          ‖heathBrownBoxFactorValue L X 60 box s i‖ *
+            dyadicLogExponent T
+              (heathBrownBoxFactorExponent box.a box.b box.q i) <=
+        dyadicLogExponent T
+          (heathBrownBoxFactorExponent box.a box.b box.q i) - 9 / 10 := by
+    intro i hi
+    let qi : ℕ := heathBrownBoxFactorExponent box.a box.b box.q i
+    have hkind : heathBrownBoxFactorKind 60 box.m i = .zeta ∨
+        heathBrownBoxFactorKind 60 box.m i = .log := by
+      cases hk : heathBrownBoxFactorKind 60 box.m i with
+      | moebius =>
+          have hshort := hmobius i hk
+          have : 2 * (mu / 120) < 1 := by linarith
+          exact (not_lt_of_ge hi (hshort.trans_lt this)).elim
+      | zeta => exact Or.inl rfl
+      | log => exact Or.inr rfl
+    have hqiX := box.factorExponent_le_log_X_of_zeta_or_log i hkind
+    have hTN : T <= (((2 ^ qi : ℕ) : ℝ)) := by
+      have hpow := Real.rpow_le_rpow_of_exponent_le hT.le hi
+      have hr := rpow_dyadicLogExponent hT qi
+      simpa [Real.rpow_one, qi] using hpow.trans_eq hr
+    have hV : 0 < ‖heathBrownBoxFactorValue L X 60 box s i‖ := by
+      simpa [Z] using hfactorPos i
+    rcases hkind with hkind | hkind
+    · have hz := hzeta X hX mu hmuHi hXscale qi
+        (by simpa [qi] using hqiX) c y hc hylo hyhi
+        (by simpa [qi] using hTN)
+      simpa [s, qi, heathBrownBoxFactorValue, heathBrownFactorBase, hkind] using
+        hz (by simpa [s, qi, heathBrownBoxFactorValue,
+          heathBrownFactorBase, hkind] using hV)
+    · have hl := hlogFactor X hX mu hmuHi hXscale qi
+        (by simpa [qi] using hqiX) c y hc hylo hyhi
+        (by simpa [qi] using hTN)
+      simpa [s, qi, heathBrownBoxFactorValue, heathBrownFactorBase, hkind] using
+        hl (by simpa [s, qi, heathBrownBoxFactorValue,
+          heathBrownFactorBase, hkind] using hV)
+  have htotalLo : mu / 120 <=
+      ∑ i : PositiveHeathBrownBoxFactorIndex box,
+        dyadicLogExponent T
+          (heathBrownBoxFactorExponent box.a box.b box.q i) := by
+    rw [sum_positive_dyadicLogExponent_eq_heathBrownBoxTotalExponent box]
+    simpa [IsHeathBrownBoxEligible] using helig
+  have htotalHi :
+      (∑ i : PositiveHeathBrownBoxFactorIndex box,
+        dyadicLogExponent T
+          (heathBrownBoxFactorExponent box.a box.b box.q i)) <= mu := by
+    rw [sum_positive_dyadicLogExponent_eq_heathBrownBoxTotalExponent box]
+    exact windowRelevant_heathBrownBox_totalExponent_le hT hXscale box hwindow
+  have hslackMass := hslack X hX mu hmuHi hXscale L 60 box hqlog
+  apply maynard_heathBrownBox_subHeight_mass_of_additive_height_penalty
+    (eta := (9 / 10 : ℝ)) (E := (1 / 100 : ℝ)) (mu := mu)
+    box hL hX hT (by linarith : 0 < mu / 120) (by linarith : 0 < mu)
+      (by norm_num : (1 / 100 : ℝ) < 9 / 10) hc htotalLo htotalHi
+      (by simpa [s] using hover) hslackMass hlarge
+  norm_num at halpha ⊢
+  exact halpha
 
 /-- Height-dominated term after excising one Kuzmin--Landau factor and applying one complementary
 mean square. -/
@@ -209,5 +729,51 @@ theorem derivativeFactor_excision
     _ = R := by
       rw [← Real.rpow_add hN]
       simp
+
+/-- Literal finite-set composition of derivative-factor excision with Montgomery mean square for
+the complementary Heath--Brown product.  This theorem retains every analytic constant and the
+full `T0 / C` gain; no amplitude coloring or fixed-deficit conversion intervenes. -/
+theorem derivativeExcised_montgomery_heathBrown_grouped_finset
+    {ι : Type*} [Fintype ι] [Nonempty ι]
+    (L X : ℕ) (kind : ι → HeathBrownFactorKind) (q : ι → ℕ)
+    {c G : ℝ} (hc : 0 <= c)
+    (henergy : ∑ j : Fin (groupedDyadicUpper q),
+      ‖groupedDyadicCoeffVector
+        (fun i => heathBrownFactorBase L X (kind i)) q j‖ ^ 2 <= G)
+    {S : Finset ℕ} {lam : ℕ → ℝ} {delta H : ℝ}
+    (hdelta : 0 < delta) (hH : 0 <= H)
+    (hgap : ∀ i, lam i + delta <= lam (i + 1))
+    (hband : ∀ r ∈ S, delta / 2 <= lam r ∧ lam r + delta / 2 <= H)
+    {D N T0 C alpha : ℝ}
+    (hD : 0 < D) (hN : 0 < N) (hT0 : 0 < T0) (hC : 0 < C)
+    (W : ℕ → ℝ)
+    (hlong : ∀ r ∈ S, W r <= C / T0 * N ^ (1 - c))
+    (hlarge : ∀ r ∈ S,
+      D ^ (alpha - c) <= W r *
+        ‖∏ i, LSeries
+          (complexCoeff (arithmeticDyadicBlock
+            (heathBrownFactorBase L X (kind i)) (q i)))
+            ((c : ℂ) + (lam r : ℝ) * Complex.I)‖) :
+    (S.card : ℝ) *
+        (((T0 / C) * D ^ (alpha - c) * N ^ (c - 1)) ^ 2) <=
+      (H + 4 * (groupedDyadicUpper q : ℝ) *
+          (1 + Real.log (groupedDyadicUpper q))) *
+        (1 / delta + 2 * Real.log (groupedDyadicUpper q)) *
+        (((groupedDyadicLower q : ℝ) ^ (-c)) ^ 2 * G) := by
+  let V : ℝ := (T0 / C) * D ^ (alpha - c) * N ^ (c - 1)
+  have hV : 0 < V := by
+    dsimp [V]
+    positivity
+  have hcomplement : ∀ r ∈ S, V <=
+      ‖∏ i, LSeries
+        (complexCoeff (arithmeticDyadicBlock
+          (heathBrownFactorBase L X (kind i)) (q i)))
+          ((c : ℂ) + (lam r : ℝ) * Complex.I)‖ := by
+    intro r hr
+    exact derivativeFactor_excision hN hT0 hC (norm_nonneg _)
+      (hlong r hr) (hlarge r hr)
+  have hcount := montgomery_heathBrown_grouped_large_values_finset
+    L X kind q hc henergy hdelta hH hV hgap hband hcomplement
+  simpa [V] using hcount
 
 end RHTower.Sieve

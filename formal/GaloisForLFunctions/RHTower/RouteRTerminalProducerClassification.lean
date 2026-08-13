@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.RouteRPrepolarTerminalNoGo
 import GaloisForLFunctions.RHTower.RouteRHyperbolicGaugePositivePolarUniversalityNoGo
+import GaloisForLFunctions.RHTower.RouteRSourceTopologyObserverDichotomy
 import GaloisForLFunctions.RHTower.RouteRStrongApproximationCompactEscape
 import GaloisForLFunctions.RHTower.RouteRXiMultiplierCalkinGrowthObstruction
 import GaloisForLFunctions.RHTower.RouteRXiJetPrincipalCalkinNonErasure
@@ -14,10 +15,11 @@ frontier audit are:
 
 1. the external positive polar comparison;
 2. source-selected pointwise two-orientation positive non-amplification;
-3. collective compactness of the fixed `(2,3)` receiver;
-4. a singular coefficient-faithful Xi/Calkin factorization;
-5. a compact first-Xi-jet principal coefficient modulo the compact ideal;
-6. loss-zero landing of the fixed inverse-log Fisher vector.
+3. divisor-specialized gauge-invariant prime-isotropy observer selection;
+4. collective compactness of the fixed `(2,3)` receiver;
+5. a singular coefficient-faithful Xi/Calkin factorization;
+6. a compact first-Xi-jet principal coefficient modulo the compact ideal;
+7. loss-zero landing of the fixed inverse-log Fisher vector.
 
 This module proves that every one of those surviving interfaces is equivalent to RH.  Their
 disjunction is therefore not a weaker source theorem and supplies no independent producer.  This
@@ -100,6 +102,10 @@ inductive RouteRSurvivingProducer where
   | pointwiseTwoOrientationPositivePolar :
       RouteRPointwiseTwoOrientationPositivePolarHandoff →
         RouteRSurvivingProducer
+  | gaugeInvariantPrimeIsotropyObserver :
+      (∀ rho : XiDivisorSupport,
+        RouteRPrimeIsotropyGaugeInvariantPhysicalObserver rho) →
+      RouteRSurvivingProducer
   | collectiveCompactness :
       (∀ rho : XiDivisorSupport,
         IsCollectivelyCompactStronglyApproximable
@@ -125,6 +131,8 @@ theorem nonempty_routeRSurvivingProducer_iff_riemannHypothesis :
     | externalPositivePolar P => exact P.riemannHypothesis
     | pointwiseTwoOrientationPositivePolar P =>
         exact routeRPointwiseTwoOrientationPositivePolarHandoff_iff_rh.mp P
+    | gaugeInvariantPrimeIsotropyObserver P =>
+        exact global_routeRPrimeIsotropyGaugeInvariantPhysicalObserver_iff_rh.mp P
     | collectiveCompactness P =>
         exact (routeRTwoThreeStokesSoninCommutator_globalCollectivelyCompactStronglyApproximable_iff_rh
           (by norm_num)).1 P

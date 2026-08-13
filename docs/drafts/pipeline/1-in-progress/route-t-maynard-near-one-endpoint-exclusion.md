@@ -1784,3 +1784,100 @@ factor and every fixed receiver logarithm.  It therefore delivers the strict
 `(log x)^(-4k-2)` normalization in Maynard alternative (i), or preserves a strict `d/400` power
 margin in alternative (ii).  High-amplitude counting is now receiver-complete rather than merely
 an exponent-level comparison.
+
+### C49. Complementary Cauchy isolates one exact giant seam `[PROVED / FORMALIZED]`
+
+Amplitude coloring is unnecessary for a product split.  If `V<=|F(t)G(t)|` on a separated finite
+set, Cauchy gives
+
+```text
+(#S V)^2 <= (sum_S |F|^2)(sum_S |G|^2).
+```
+
+`MaynardComplementaryMontgomeryFiniteSet.lean` proves this for literal grouped Heath--Brown
+products with both coefficient energies explicit.  The scalar exponent is
+
+```text
+E_mix=(1+r+mu(1-2alpha))/2.
+```
+
+`MaynardComplementaryMontgomeryScalar.lean` proves that every failure of both Route-T receivers
+through `alpha<=997/1000` lies in one geometry only:
+
+```text
+r>1,    mu-r<1.
+```
+
+Thus the low-ordinate obstruction is not a diffuse sixth-moment problem.  It is a single
+over-height factor with sub-height complement.  Direct sixth-moment and fixed-order derivative
+substitutions were audited and fail quantitatively on this seam.
+
+### C50. Positive-line Perron and fixed divisor averaging expose exact pole cancellation `[PROVED / FORMALIZED]`
+
+Because the window-relevant Heath--Brown packet is finite, termwise Mellin inversion is valid on
+every line `Re(s)=sigma>0`; the former `sigma>1` restriction was artificial.  The normalized
+reference-minus-target identity annihilates the common pole mode exactly.  On a low band its
+kernel defect gains
+
+```text
+(R/N)(|sigma-1|+|t|).
+```
+
+The packet's old `N^epsilon` vertical estimate was too weak against the reference scale.  Summing
+the fixed divisor moment first gives a fixed-polylog coefficient bound and hence a fixed-polylog
+vertical bound at `sigma=1`.  `MaynardWindowRelevantPacketBound.lean` and
+`MaynardNormalizedReferenceTargetPerron.lean` formalize the two-sided physical support, fixed
+divisor-moment sum, positive-line Perron identity, pole-annihilating discrepancy, prime-free
+physical lower bound, signed integral lower bound, and fixed-polylog low-frequency defect.
+
+### C51. Reference calibration obeys a Mellin superresolution barrier `[PROVED / NO-GO]`
+
+A PNT-calibrated reference of width
+
+```text
+R >= N exp(-c log(N)^(1/10))
+```
+
+has normalized Mellin bandwidth only `N/R`.  The prime-gap target is much narrower and retains
+bandwidth `N/H`.  Moment matching improves the error inside common bandwidth but cannot extend
+that bandwidth.  Therefore the wide physical reference cannot control the complete target
+integral by pole cancellation plus smooth-kernel decay alone.  The intermediate band is a genuine
+uncertainty/superresolution obstruction, not missing constants.  Any complete proof must either
+retain signed pole-preserving continuation or use oscillatory large-value information in that
+band.
+
+### C52. Derivative--count duality removes the giant seam at power level `[PROVED / FORMALIZED CORE]`
+
+The `9/80` low-ordinate amplitude deficit discarded decisive information.  Kuzmin--Landau gives
+the exact factor `T^(-1)`.  In base-`T` logarithmic weights, after absorbing the common
+polylogarithm, every over-height zeta/log atom satisfies
+
+```text
+amplitude_i * weight_i <= weight_i - 9/10.
+```
+
+The loss is additive and independent of factor length.  Excising that factor before one
+complementary mean square produces exponents
+
+```text
+E_h = -1 + 2 tau(1-alpha) - s,
+E_l = -2 + 2 tau(1-alpha),
+```
+
+where `tau<=mu` is total box length and `s>=0` is complement length.  If
+`mu(1-alpha)<=1`, both are at most the first receiver `mu(1-alpha)`.  If
+`mu(1-alpha)>=1`, literal cardinality `#S<=T` is already the same receiver.  Both branches meet
+at the exact boundary; no amplitude strip remains at power level.
+
+`MaynardDerivativeCountDuality.lean` proves this dichotomy, exact derivative-factor excision,
+the window-relevant bound `tau<=mu`, full `mu<=8` weighted zeta/log laws, full low-ordinate
+logarithmic-slack law, and the literal box theorem
+
+```text
+alpha > 1 - (89/100)/mu
+  -> sub-height mass >= mu/120.
+```
+
+Remaining analytic obligation is not another scalar inequality: compose derivative excision with
+the literal complementary finite-set mean square below this boundary, retain exact polylog costs
+at `mu(1-alpha)=1`, then join the already-formal selected-cell count above it.

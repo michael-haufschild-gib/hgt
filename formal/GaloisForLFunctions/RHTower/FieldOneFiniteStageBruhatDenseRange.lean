@@ -515,9 +515,10 @@ def fieldOneFiniteStageSplitLogExpL2Equiv
     have hfun :
         (Prod.map id fieldOnePositiveUnitsExpHomeomorph.symm ∘
           Prod.map id fieldOnePositiveUnitsExpHomeomorph) =
-        (id : (FieldOneFiniteStageModuleOneClass S × ℝ) → _) := by
+        (id : (FieldOneFiniteStageModuleOneClass S × ℝ) →
+          (FieldOneFiniteStageModuleOneClass S × ℝ)) := by
       funext z
-      simp
+      apply Prod.ext <;> simp
     simpa only [hfun] using Lp.compMeasurePreserving_id_apply f
   right_inv f := by
     change Lp.compMeasurePreserving
@@ -532,9 +533,10 @@ def fieldOneFiniteStageSplitLogExpL2Equiv
     have hfun :
         (Prod.map id fieldOnePositiveUnitsExpHomeomorph ∘
           Prod.map id fieldOnePositiveUnitsExpHomeomorph.symm) =
-        (id : (FieldOneFiniteStageModuleOneClass S × ℝ≥0ˣ) → _) := by
+        (id : (FieldOneFiniteStageModuleOneClass S × NNRealˣ) →
+          (FieldOneFiniteStageModuleOneClass S × NNRealˣ)) := by
       funext z
-      simp
+      apply Prod.ext <;> simp
     simpa only [hfun] using Lp.compMeasurePreserving_id_apply f
 
 theorem fieldOneFiniteStageSplitProductHaar_le_logScalar
@@ -544,9 +546,37 @@ theorem fieldOneFiniteStageSplitProductHaar_le_logScalar
           fieldOnePositiveUnitsLogHaarMeasure : ℝ≥0∞) •
         ((fieldOneFiniteStageModuleOneProbabilityHaarMeasure S).prod
           fieldOnePositiveUnitsLogHaarMeasure) := by
-  rw [fieldOneFiniteStageSplitProductHaarMeasure,
-    fieldOnePositiveUnitsHaar_eq_smul_logHaar,
-    Measure.prod_smul_right]
+  have hpositive : fieldOnePositiveUnitsHaarMeasure =
+      haarScalarFactor fieldOnePositiveUnitsHaarMeasure
+          fieldOnePositiveUnitsLogHaarMeasure •
+        fieldOnePositiveUnitsLogHaarMeasure :=
+    fieldOnePositiveUnitsHaar_eq_smul_logHaar
+  calc
+    fieldOneFiniteStageSplitProductHaarMeasure S =
+        (fieldOneFiniteStageModuleOneProbabilityHaarMeasure S).prod
+          fieldOnePositiveUnitsHaarMeasure := rfl
+    _ = (fieldOneFiniteStageModuleOneProbabilityHaarMeasure S).prod
+          (haarScalarFactor fieldOnePositiveUnitsHaarMeasure
+            fieldOnePositiveUnitsLogHaarMeasure •
+              fieldOnePositiveUnitsLogHaarMeasure) := by
+      exact congrArg
+        (fun μ : Measure NNRealˣ =>
+          (fieldOneFiniteStageModuleOneProbabilityHaarMeasure S).prod μ)
+        hpositive
+    _ = (haarScalarFactor fieldOnePositiveUnitsHaarMeasure
+          fieldOnePositiveUnitsLogHaarMeasure : ℝ≥0∞) •
+          ((fieldOneFiniteStageModuleOneProbabilityHaarMeasure S).prod
+            fieldOnePositiveUnitsLogHaarMeasure) := by
+      rw [Measure.prod_smul_right]
+      exact (Measure.coe_nnreal_smul
+        (haarScalarFactor fieldOnePositiveUnitsHaarMeasure
+          fieldOnePositiveUnitsLogHaarMeasure)
+        ((fieldOneFiniteStageModuleOneProbabilityHaarMeasure S).prod
+          fieldOnePositiveUnitsLogHaarMeasure)).symm
+    _ ≤ (haarScalarFactor fieldOnePositiveUnitsHaarMeasure
+          fieldOnePositiveUnitsLogHaarMeasure : ℝ≥0∞) •
+          ((fieldOneFiniteStageModuleOneProbabilityHaarMeasure S).prod
+            fieldOnePositiveUnitsLogHaarMeasure) := le_rfl
 
 /-- Change only the positive-Haar normalization, preserving representatives pointwise. -/
 def fieldOneFiniteStagePositiveLogToCanonicalL2
@@ -556,7 +586,7 @@ def fieldOneFiniteStagePositiveLogToCanonicalL2
   Lp.LpToLpOfMeasureLeSMul
     (c := (haarScalarFactor fieldOnePositiveUnitsHaarMeasure
       fieldOnePositiveUnitsLogHaarMeasure : ℝ≥0∞))
-    (by simp)
+    (by exact ENNReal.coe_ne_top)
     (fieldOneFiniteStageSplitProductHaar_le_logScalar S)
 
 theorem fieldOneFiniteStagePositiveLogToCanonicalL2_ae
@@ -567,7 +597,7 @@ theorem fieldOneFiniteStagePositiveLogToCanonicalL2_ae
   Lp.coeFn_LpToLpOfMeasureLeSMul
     (c := (haarScalarFactor fieldOnePositiveUnitsHaarMeasure
       fieldOnePositiveUnitsLogHaarMeasure : ℝ≥0∞))
-    (by simp)
+    (by exact ENNReal.coe_ne_top)
     (fieldOneFiniteStageSplitProductHaar_le_logScalar S) f
 
 theorem fieldOneFiniteStagePositiveLogToCanonicalL2_surjective
@@ -575,12 +605,15 @@ theorem fieldOneFiniteStagePositiveLogToCanonicalL2_surjective
     Surjective (fieldOneFiniteStagePositiveLogToCanonicalL2 S) := by
   intro f
   have hfLog : MemLp (f :
-      FieldOneFiniteStageModuleOneClass S × ℝ≥0ˣ → ℂ) 2
+      (FieldOneFiniteStageModuleOneClass S × NNRealˣ) → ℂ) 2
       ((fieldOneFiniteStageModuleOneProbabilityHaarMeasure S).prod
         fieldOnePositiveUnitsLogHaarMeasure) := by
     have hf := Lp.memLp f
-    rw [fieldOneFiniteStageSplitProductHaarMeasure,
-      fieldOnePositiveUnitsLogHaar_eq_smul_haar,
+    change MemLp (f :
+      (FieldOneFiniteStageModuleOneClass S × NNRealˣ) → ℂ) 2
+      ((fieldOneFiniteStageModuleOneProbabilityHaarMeasure S).prod
+        fieldOnePositiveUnitsHaarMeasure) at hf
+    rw [fieldOnePositiveUnitsLogHaar_eq_smul_haar,
       Measure.prod_smul_right]
     exact hf.smul_measure (by simp)
   let g : FieldOneFiniteStageSplitPositiveLogL2 S :=
@@ -621,24 +654,44 @@ theorem fieldOneFiniteStageLogToCanonicalL2_halfDensity
     fieldOneFiniteStageLogToCanonicalL2 S
         (fieldOneFiniteStageBruhatLogHalfDensityLinearMap S x) =
       fieldOneFiniteStageBruhatHalfDensityLinearMap S x := by
+  change fieldOneFiniteStagePositiveLogToCanonicalL2 S
+      (fieldOneFiniteStageSplitLogExpL2Equiv S
+        (fieldOneFiniteStageBruhatLogHalfDensityLinearMap S x)) =
+    fieldOneFiniteStageBruhatHalfDensityL2 S x
   apply Lp.ext
-  let F : FieldOneFiniteStageModuleOneClass S × ℝ≥0ˣ →
+  let F : FieldOneFiniteStageModuleOneClass S × NNRealˣ →
       FieldOneFiniteStageModuleOneClass S × ℝ :=
     Prod.map id fieldOnePositiveUnitsExpHomeomorph.symm
   let hF := fieldOneFiniteStageSplitLogExpSymm_measurePreserving S
-  have hlogPull := hF.quasiMeasurePreserving.ae_eq_comp
+  have hlogPullPositive := hF.quasiMeasurePreserving.ae_eq_comp
     (fieldOneFiniteStageBruhatLogHalfDensityLinearMap_ae S x)
+  have hcanonAC : fieldOneFiniteStageSplitProductHaarMeasure S ≪
+      (fieldOneFiniteStageModuleOneProbabilityHaarMeasure S).prod
+        fieldOnePositiveUnitsLogHaarMeasure :=
+    Measure.absolutelyContinuous_of_le_smul
+      (fieldOneFiniteStageSplitProductHaar_le_logScalar S)
+  have hlogPull := hcanonAC.ae_eq hlogPullPositive
+  have hexpPositive := Lp.coeFn_compMeasurePreserving
+    (fieldOneFiniteStageBruhatLogHalfDensityLinearMap S x) hF
+  change (fieldOneFiniteStageSplitLogExpL2Equiv S
+      (fieldOneFiniteStageBruhatLogHalfDensityLinearMap S x) :
+        (FieldOneFiniteStageModuleOneClass S × NNRealˣ) → ℂ) =ᵐ[
+      (fieldOneFiniteStageModuleOneProbabilityHaarMeasure S).prod
+        fieldOnePositiveUnitsLogHaarMeasure]
+    (fieldOneFiniteStageBruhatLogHalfDensityLinearMap S x :
+        (FieldOneFiniteStageModuleOneClass S × ℝ) → ℂ) ∘
+      Prod.map id fieldOnePositiveUnitsExpHomeomorph.symm at hexpPositive
+  have hexpCanonical := hcanonAC.ae_eq hexpPositive
   filter_upwards [
     fieldOneFiniteStagePositiveLogToCanonicalL2_ae S
       ((fieldOneFiniteStageSplitLogExpL2Equiv S)
         (fieldOneFiniteStageBruhatLogHalfDensityLinearMap S x)),
-    Lp.coeFn_compMeasurePreserving
-      (fieldOneFiniteStageBruhatLogHalfDensityLinearMap S x) hF,
+    hexpCanonical,
     hlogPull,
     fieldOneFiniteStageBruhatHalfDensityL2_ae S x]
       with z hscalar hexp hlog hcanonical
   rw [hscalar, hexp]
-  simp only [Function.comp_apply] at hlog
+  simp only [Function.comp_apply] at hlog ⊢
   rw [hlog, hcanonical]
   rfl
 

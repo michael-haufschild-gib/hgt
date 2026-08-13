@@ -1,10 +1,10 @@
 # Integral saturation of the universal Hankel determinantal ideal
 
 - **ID:** `deninger-hazewinkel-integral-saturation`
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM / exact literature frontier
 - **Route:** L — rational-Witt source foundation
-- **Scientific status:** `[LITERATURE THEOREM] [PRINTED PROOF GAP FOUND] [REPAIR IN PROGRESS] [NOT AN RH PROOF]`
+- **Scientific status:** `[LITERATURE THEOREM] [PRINTED PROOF GAP REPAIRED] [LEAN CLOSED] [NOT AN RH PROOF]`
 - **Primary source:** Hazewinkel, *Operations in the K-theory of endomorphisms* (1983),
   Appendix A.2--A.3.
 - **Target:** For every positive `n`, multiplication by the leading determinant `D_n` is
@@ -14,10 +14,10 @@
   (J_n : D_n) = J_n.
   ```
 
-  Together with the formalized localized-coordinate domain theorem, this makes `J_n` prime for
-  every positive stage.
+  The closed proof first establishes `J_n` prime by homogeneous projective-chart descent, then
+  obtains this saturation by prime cancellation against `D_n notin J_n`.
 
-## Why this is the exact remaining theorem
+## Closed theorem
 
 Corpus now proves:
 
@@ -28,8 +28,11 @@ Corpus now proves:
 4. after inverting the class of `D_n`, the stage quotient is explicitly isomorphic to a
    localization of a finite integer polynomial ring and hence is a domain.
 
-Thus no existence, field-descent, or fixed-row-generation gap remains. The only missing map is
-injectivity into that localization, exactly the saturation statement above.
+The former injectivity gap is now closed without localization descent. The homogeneous generic
+Hankel secant ideal is identified with an ordered-atom parameterization kernel, hence is prime
+over `Z`; projective-chart dehomogenization at the surviving zeroth moment carries it exactly to
+the normalized Hazewinkel ideal. Primeness and the already formalized `D_n notin J_n` give
+saturation by prime cancellation.
 
 ## Conjecture / failure loop
 
@@ -68,9 +71,9 @@ g / D_n = X_(2n) does not lie in Z[low, D_n X_(2n)].
 ```
 
 Thus the claimed exponent reduction exits the admissible class of cleared representations.
-Hazewinkel Appendix A.2 makes the same step without a closure lemma. Current repair target is a
-monic Hankel Gröbner/straightening normal form: finite Hankel primeness over fields plus integral
-monic normal forms imply coefficient saturation over `Z`, avoiding this division entirely.
+Hazewinkel Appendix A.2 makes the same step without a closure lemma. Closed replacement is a
+monic Hankel Gröbner/straightening normal form followed by homogeneous projective-chart descent;
+it avoids this division entirely.
 
 ## Exact proof obligations before Lean
 
@@ -95,9 +98,13 @@ monic normal forms imply coefficient saturation over `Z`, avoiding this division
   `D_n=0` and `E_n≠0`. At a point with `E_n=0`, the product `E_n h_J` vanishes tautologically;
   therefore `E_n h_J` vanishes on all of `V(D_n)`. Finite-variable Nullstellensatz puts
   `E_n h_J` in `(D_n)`. Since `D_n` is prime and `D_n∤E_n`, `D_n∣h_J`, hence `D_n∣g_J`.
-- [ ] **S6 — valid exponent descent or replacement normal form.** Integral contraction gives
-  ambient divisibility but does not preserve the cleared coefficient algebra.
-- [ ] **S7 — paper capstones.** Awaiting a valid repair of S6.
+- [x] **S6 — replacement normal form.** Arbitrary-rank finite c-chain normal forms prove the
+  generic Hankel determinantal ideal equals the ordered-atom secant kernel over every commutative
+  coefficient ring; no coefficient-algebra division occurs.
+- [x] **S7 — projective specialization and capstones.** Homogeneous prime descent through the
+  `a_0=1` chart identifies the image with `J_n`, proving integral primeness, exact saturation,
+  reduced stage tensors/pair quotients, and corrected finite-rank multiplication over arbitrary
+  commutative rings, including rings with nilpotents.
 
 ## Former proof attempt S1--S6 (S6 is invalid)
 
@@ -299,3 +306,39 @@ follows. The saturation conclusion is therefore not established by this argument
   `span(B_N)=ker(X_i↦UT^i)`, degree-lex Gröbner basis, domain primeness, and integral primeness are
   formalized in `DeningerHankelRankOneGroebner.lean`. Higher-rank c-chain Gröbner theory and the
   homogeneous-to-`a_0=1` bridge remain open.
+- 2026-08-13 — arbitrary-rank c-chain theory closed in
+  `DeningerHankelChainSecant.lean`, `DeningerHankelReducedSecantSeparation.lean`,
+  `DeningerFiniteHankelSecantSeparation.lean`, and `DeningerHankelHigherRankGroebner.lean`.
+  The finite generic determinantal ideal equals the ordered-atom kernel over every commutative
+  ring, its maximal minors form the required degree-lex Gröbner basis, and it is prime over
+  domains.
+- 2026-08-13 — finite-support contraction to countably many moments and homogeneous integral
+  primeness closed in `DeningerHankelGlobalSecantPrime.lean`. General projective-chart prime
+  descent over arbitrary nontrivial commutative rings closed in
+  `MvPolynomialProjectiveChartPrime.lean`.
+- 2026-08-13 — normalized specialization closed in
+  `DeningerHazewinkelIntegralSaturation.lean`. Lean proves the projective affine image is exactly
+  `J_n`, every positive `J_n` is prime, `(J_n:D_n)=J_n`, positive stage tensors and pair quotients
+  are reduced, and canonical big-Witt multiplication obeys the corrected finite-Hankel-rank bound
+  over arbitrary commutative targets, nilpotents included. Direct Lean, exact leaf build, umbrella
+  wiring, and axiom audit pass; public capstones depend only on `propext`, `Classical.choice`, and
+  `Quot.sound`.
+
+## Formal certificate
+
+Core declarations:
+
+- `deningerGenericHankelIdeal_eq_secantParameterization_ker`
+- `deningerGenericHankelIdeal_isPrime`
+- `GaloisForLFunctions.Ideal.IsPrime.map_optionHeadDehomogenize`
+- `deningerHankelProjectiveAffineIdeal_eq_hazewinkel`
+- `deningerHazewinkelIdeal_isPrime`
+- `deningerHazewinkelIdeal_colon_leading_eq`
+- `deningerHazewinkelStageTensor_isReduced`
+- `deningerHazewinkelPairQuotient_isReduced`
+- `deninger_hankelRankLT_mul_corrected`
+
+No field, reducedness, torsion-freeness, target characteristic, computation, added axiom, or
+RH-equivalent premise occurs in these capstones. This card closes Deninger/Hazewinkel algebraic
+infrastructure only. Route L's RH-bearing singular source-to-fixed-physical comparison remains
+open.
