@@ -87,6 +87,25 @@ theorem suzukiWordCoefficient_nonneg (k : ℕ) (ν : Fin k → (Nat.Primes × �
   mul_nonneg (le_of_lt (suzukiPrimeNormalGradeFactor_pos k))
     (Finset.prod_nonneg fun i _ => suzukiPrimePowerWeight_nonneg (ν i).1)
 
+/-- **The closed central-binomial form of the Volterra factor**:
+`θ k = binom(2k, k) / 8^k`.  The recursion factor `(2k+1)/(4k+4)` is exactly the central
+binomial recurrence `(k+1) · binom(2k+2, k+1) = 2(2k+1) · binom(2k, k)` divided by `8`. -/
+theorem suzukiPrimeNormalGradeFactor_eq_centralBinom (k : ℕ) :
+    suzukiPrimeNormalGradeFactor k = (Nat.centralBinom k : ℝ) / 8 ^ k := by
+  induction k with
+  | zero => simp [Nat.centralBinom]
+  | succ k ih =>
+    rw [suzukiPrimeNormalGradeFactor_succ, ih]
+    have h := Nat.succ_mul_centralBinom_succ k
+    have hcast : ((k : ℝ) + 1) * (Nat.centralBinom (k + 1) : ℝ)
+        = 2 * (2 * (k : ℝ) + 1) * (Nat.centralBinom k : ℝ) := by
+      exact_mod_cast h
+    have h8 : (8 : ℝ) ^ k ≠ 0 := by positivity
+    have hk4 : (4 : ℝ) * k + 4 ≠ 0 := by positivity
+    field_simp
+    push_cast
+    linear_combination (-4 * (8 : ℝ) ^ k) * hcast
+
 /-! ## The grade profile and its exact tail energy -/
 
 /-- The grade-`k` physical profile with coefficient `c`: `c · L^{-(k+1/2)}`. -/

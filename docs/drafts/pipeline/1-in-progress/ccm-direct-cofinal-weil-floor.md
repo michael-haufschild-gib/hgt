@@ -77,7 +77,8 @@ the negative Weil spectral mass evacuates in operator norm:
 ||N_(lambda_j)||->0.                                            (5)
 ```
 
-But `ccm-negative-spectrum-no-evacuation-law.md` proves that the restricted floors are
+But `../3-formalized/not_new_scientific_knowledge/ccm/ccm-negative-spectrum-no-evacuation-law.md`
+proves that the restricted floors are
 nonincreasing. Hence `||N_lambda||` is nondecreasing: `(5)` can hold only when
 
 ```text

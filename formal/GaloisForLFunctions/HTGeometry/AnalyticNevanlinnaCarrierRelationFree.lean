@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.AnalyticNevanlinnaCarrierBridge
 import GaloisForLFunctions.HTGeometry.PolynomialCoefficientDifferentialFreeness
 import GaloisForLFunctions.HTGeometry.DigammaHypertranscendental
+import GaloisForLFunctions.HTGeometry.SingularContinuousLawWitnesses
 
 /-!
 # Residual relation freeness for actual analytic Nevanlinna carriers
@@ -781,7 +782,6 @@ theorem positiveSingularContinuousCarrier_hypertranscendental_dense_residual
     (hupperf : ∀ i, 0 < (F.quotient (zf i)).im)
     (nf : ιf → ℕ)
     (eta : ProbabilityMeasure (OnePoint ℝ))
-    (hetaInfinite : (eta : Measure (OnePoint ℝ)).support.Infinite)
     (hetaSC : eta ∈ projectiveSingularContinuousProbabilityLaws)
     (hnull : ∀ E : Set (OnePoint ℝ), MeasurableSet E →
       (projectiveLebesgueProbability : Measure (OnePoint ℝ)) E = 0 →
@@ -807,6 +807,7 @@ theorem positiveSingularContinuousCarrier_hypertranscendental_dense_residual
           IsProbabilityMeasure carrier ∧ NullSingletonClass carrier ∧
           carrier ⟂ₘ (volume : Measure ℝ) ∧ HasHamburgerMoments s carrier := by
   dsimp only
+  have hetaInfinite := projectiveSingularContinuousProbabilityLaw_support_infinite eta hetaSC
   let mu : Measure (OnePoint ℝ) := eta
   let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
     (fun i => F.quotient (zf i)) nf mu hupperf

@@ -140,7 +140,7 @@ should therefore target this weighted energy before attempting the stronger unif
    gate shows that no uniform remainder is necessary.
 6. `[REJECTED]` Cofinal-order scalar extrapolation from positive shifts does not cross the half-unit
    seam at subpower cost.  The theorem
-   `../2-fully-proven/not_new_scientific_knowledge/ccm-half-unit-linear-extrapolation-cost-law.md`
+   `../3-formalized/not_new_scientific_knowledge/ccm/ccm-half-unit-linear-extrapolation-cost-law.md`
    proves that any linear combination reproducing the half-unit atom at aperture `n` has
    coefficient `l1` mass at least `n^(1/2)`, regardless of the number or placement of shifts.
 7. `[LIVE, POSITIVE DUAL]` Allow cofinal order only inside a non-diagonal source covariance,

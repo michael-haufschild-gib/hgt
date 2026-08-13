@@ -5,7 +5,7 @@
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parents:** Suzuki's 2026 deficiency-index construction and
-  `ccm-negative-spectrum-no-evacuation-law.md`
+  `../../../3-formalized/not_new_scientific_knowledge/ccm/ccm-negative-spectrum-no-evacuation-law.md`
 
 ## Statement
 

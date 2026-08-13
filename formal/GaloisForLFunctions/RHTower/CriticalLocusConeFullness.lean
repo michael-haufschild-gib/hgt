@@ -113,7 +113,7 @@ theorem criticalLocus_move_cone_fullness
     (∑ i, w i * (-2 * (F i (1 / 2 + (α : ℂ) * I)).re) < 0) ∨
     (∃ γ : ℝ, ∑ i, w i * (4 * (F i (1 / 2 + (tstar : ℂ) + (γ : ℂ) * I)).re) < 0) := by
   by_contra hcontra
-  push_neg at hcontra
+  push Not at hcontra
   obtain ⟨h1, h2, h3⟩ := hcontra
   -- the combined test and its harmonic real part
   set Fw : ℂ → ℂ := fun s => ∑ i, (w i : ℂ) * F i s with hFw
@@ -203,7 +203,7 @@ theorem criticalLocus_move_cone_fullness
   have hUpos : ∀ z ∈ Ω, 0 ≤ Uw z := by
     intro z hz
     by_contra hneg
-    push_neg at hneg
+    push Not at hneg
     set ε : ℝ := -Uw z / 2 with hε
     have hεpos : 0 < ε := by simp only [hε]; linarith
     -- strip decay of the combined test
@@ -303,7 +303,7 @@ theorem criticalLocus_move_cone_fullness
       obtain ⟨hre, him⟩ := hclosR hscl
       have hcases : |s.re - 1 / 2| = tstar ∨ |s.im| = T' := by
         by_contra hno
-        push_neg at hno
+        push Not at hno
         exact hsnotR ⟨lt_of_le_of_ne hre hno.1, lt_of_le_of_ne him hno.2⟩
       rcases hcases with hvert | hhoriz
       · -- on the vertical boundary lines the function is nonnegative

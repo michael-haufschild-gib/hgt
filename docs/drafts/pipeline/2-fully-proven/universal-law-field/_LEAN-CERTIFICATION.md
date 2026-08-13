@@ -1517,3 +1517,25 @@ builds pass.  Modules are wired into `HTGeometry.UniversalLawField`; final foreg
 build completes 11,848 jobs.  Scratch axiom prints for capstones report only `propext`,
 `Classical.choice`, and `Quot.sound`.  Scoped scans contain no forbidden declaration.  No RH premise
 or zero specialization occurs; literal source-generated bounded-work conservation remains open.
+
+## Session 2026-08-13 additions (critical-locus Hessian classification, Θ4 cone engine, Law 6, INV3.2)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-FIELD-2 Θ2(i)–(v) | Exact multi-splitting separation; general and real weight with the conjugation bridge; per-zero detector necessity; diagonal Hessian and second-order determination; composite chain law and composite necessity | `RHTower.CriticalLocusHessianClassification` |
+| ULF-FIELD-2 Θ3.1 | The explicit-formula line kernel as a Lean integral and the shadow pairing `⟨Δν,h⟩ = ∫ h·4cos(γx)(cosh(tx)−1)`, single/real/multi forms against `shadowDensity` | `RHTower.CriticalLocusHessianClassification` |
+| ULF-FIELD-2 Θ4-A | Cone fullness of the configuration moves (insertions/deletion/quadruples) by strip Phragmén–Lindelöf + harmonic minimum principle; σκ collapse of pair and quadruple values | `RHTower.CriticalLocusConeFullness` |
+| ULF-MECH-1 Law 6 | Self-closure: outputs factoring through displacement-even configuration families are even; odd factoring functionals vanish; quadruple/multi-splitting instantiations; no-detector corollary | `RHTower.OddCoordinateSelfClosure` |
+| ULF-INV-3 (INV3.2) | The 3–4–1 log-derivative identity and its termwise nonnegativity | `RHTower.PolePurchaseLogDerivIdentity` |
+
+All four modules wired into `GaloisForLFunctions.RHTower`; final module builds green (11,558
+jobs); forbidden-token scans clean; `#print axioms` on all 25 audited capstones reports exactly
+`[propext, Classical.choice, Quot.sound]`.  The `ring`-related notes in the build log are
+pre-existing info-level messages in unrelated replayed modules.
+
+Card movements: `pole-purchase-escape-and-collision-gap-law.md` promoted to
+`3-formalized/universal-law-field/` (2026-08-13).  ULF-FIELD-2 stays at stage 2 pending Θ4's
+exact-hitting research (hostile audit found the recorded Step 1/Step 2 proof gaps; repair route
+and residual open point recorded on the card).  New reusable infrastructure: the reality-symmetry
+conjugation bridge for `deriv`/`iteratedDeriv 2`/`AnalyticAt`, and the harmonic cone-fullness
+pattern over the Bottcher min/max principle layer.

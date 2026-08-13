@@ -35,7 +35,7 @@
   - `../3-formalized/not_new_scientific_knowledge/ccm-critical-mellin-volterra-haar-mode-faithfulness.md`;
   - `../2-fully-proven/not_new_scientific_knowledge/ccm-rectangular-critical-mellin-tent-floor-law.md`;
   - `../2-fully-proven/not_new_scientific_knowledge/ccm-universal-boundary-laplace-frame-saturation-law.md`;
-  - `../2-fully-proven/not_new_scientific_knowledge/ccm-half-unit-linear-extrapolation-cost-law.md`;
+  - `../3-formalized/not_new_scientific_knowledge/ccm/ccm-half-unit-linear-extrapolation-cost-law.md`;
   - `../2-fully-proven/not_new_scientific_knowledge/shifted-euler-quotient-finite-tangent-prime-support-filtration.md`.
 - **Statement:** The surviving parent mathematics is oriented additive--multiplicative cofinal
   transgression: nested additive sampling apertures carry multiplicative acyclic Boolean complexes,

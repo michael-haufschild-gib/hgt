@@ -1,11 +1,13 @@
 # Lean claim review row #26 — Satake lambda-ring algebra
 
 - **ID:** lean-claim-review-row-026-satake-lambda-ring-algebra
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** claim-review (AUDIT PASSED 2026-06-19, Professor) — Door grade **BRIDGE** (a BUNDLE of standard λ-ring / Satake identities)
+- **Status:** `[LEAN-PROVED] [UNCONDITIONAL] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
+- **Date:** 2026-08-13
 - **Priority:** FOUNDATIONAL
 - **Source:** ../../door/00-status.md · 00-status row #26; ../../door/bucket-ledger-footholds.md
-- **Claimed ledger status:** `THEOREM (Lean)`; no matching ticket is present in `../3-formalized/` as of 2026-06-19.
+- **Verified ledger status:** `THEOREM (Lean)` bundle; exact declarations audited in all three modules.
 - **Statement:** Satake lambda-ring algebra: tensor, isobaric sum, Adams operations, plethysm, and e-h duality.
 
 ## Goal
@@ -22,7 +24,7 @@ These names are leads, not certification.
 ## Gates
 - [x] 0 -> 1: audited (Professor); enumerated as a BUNDLE of independent finite λ-ring identities (not one theorem)
 - [x] 1 -> 2: every component verified sound (standard λ-ring / symmetric-function / Satake algebra; checked symbolically)
-- [ ] 2 -> 3 formalized: Leaner verifies exact theorem names by scratch file, `lake build` green, `scripts/check_axioms.sh` PASS
+- [x] 2 -> 3 formalized: exact theorem names verified, targeted Lake build green, axiom audit clean
 - [ ] 3 -> 4 publication-ready: standalone proof note plus Lean certificate, or split tickets if the bundle is too broad
 
 ## Approach
@@ -85,3 +87,16 @@ eh_koszul_duality         depends on axioms: [propext, Classical.choice, Quot.so
 With the sorry-free module, this completes the 2→3 Lean discipline (names ✓, statements ✓, no sorry ✓,
 clean axioms ✓). Only the 3-formalized split ticket remains (bookkeeping). The "THEOREM (Lean)" tag is fully
 substantiated.
+
+## Promotion audit — 2026-08-13
+
+- [x] exact statements checked for tensor multiplication, isobaric additivity, Adams composition,
+  Adams identity, Chebyshev plethysm, and e–h Koszul duality
+- [x] all three modules contain no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`
+- [x] axiom audit: only `propext`, `Classical.choice`, `Quot.sound`
+- [x] `lake build GaloisForLFunctions.RHTower.AdamsOperations
+  GaloisForLFunctions.RHTower.SymPowerPlethysm
+  GaloisForLFunctions.RHTower.EHKoszulDuality`
+- [x] all three modules imported by `formal/GaloisForLFunctions/RHTower.lean` in `HEAD`
+- [ ] repository-wide lint reachability: blocked only by another agent's concurrent untracked
+  `FactorFramedTensorJacobian.lean`; no row-026 finding

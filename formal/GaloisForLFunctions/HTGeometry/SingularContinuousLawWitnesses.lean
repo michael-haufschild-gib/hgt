@@ -53,6 +53,26 @@ theorem exists_mem_projectiveSingularContinuousProbabilityLaws :
       eta ∈ projectiveSingularContinuousProbabilityLaws :=
   projectiveSingularContinuousProbabilityLaws_nonempty
 
+/-- A singular-continuous projective probability law automatically has infinite topological
+support, so downstream carrier theorems need no separate support hypothesis. -/
+theorem projectiveSingularContinuousProbabilityLaw_support_infinite
+    (eta : ProbabilityMeasure (OnePoint ℝ))
+    (heta : eta ∈ projectiveSingularContinuousProbabilityLaws) :
+    ((eta : ProbabilityMeasure (OnePoint ℝ)) : Measure (OnePoint ℝ)).support.Infinite := by
+  letI : SecondCountableTopology (OnePoint ℝ) :=
+    (onePointEquivSphereOfFinrankEq (V := ℝ) (ι := Fin 2) (by simp)).secondCountableTopology
+  letI : NullSingletonClass (eta : Measure (OnePoint ℝ)) := heta.1
+  intro hfinite
+  have hs : (eta : Measure (OnePoint ℝ)) (eta : Measure (OnePoint ℝ)).support = 0 :=
+    hfinite.measure_zero _
+  have hc : (eta : Measure (OnePoint ℝ))
+      ((eta : Measure (OnePoint ℝ)).support)ᶜ = 0 :=
+    Measure.measure_compl_support
+  have hu : (eta : Measure (OnePoint ℝ)) Set.univ = 0 := by
+    rw [← Set.union_compl_self (eta : Measure (OnePoint ℝ)).support]
+    exact measure_union_null hs hc
+  simp at hu
+
 /-! ## In the Nevanlinna carrier simplex -/
 
 namespace NevanlinnaBoundaryFamily

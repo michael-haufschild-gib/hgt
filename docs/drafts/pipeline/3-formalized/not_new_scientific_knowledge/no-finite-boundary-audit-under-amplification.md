@@ -1,8 +1,11 @@
 # No Finite Boundary Audit Under Amplification
 
 - **ID:** no-finite-boundary-audit-under-amplification
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3 — formalized in Lean 4
+- **Type:** THEOREM (Lean 4)
+- **Status:** `[LEAN-PROVED] [UNCONDITIONAL] [NOT NEW SCIENTIFIC KNOWLEDGE]`
+- **Date:** 2026-08-13
+- **Module:** `formal/GaloisForLFunctions/HTGeometry/FiniteBoundaryAmplificationNoGo.lean`
 - **Source:** docs/consolidated/gpt/proof-route.md, source-built `kappa_-` boundary-extension layer
 - **Statement:** A finite-scale boundary audit cannot certify `kappa_-=0` for a scale-dependent boundary extension unless a source theorem supplies a uniform amplification bound or a scale-independent PSD boundary Weyl inequality.
 
@@ -14,7 +17,7 @@ Strengthen the finite-rank boundary Schur reduction. The static reduction says b
 
 - [x] 0 -> 1 in-progress: well-posed, source-pure, attack idea
 - [x] 1 -> 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 -> 3 formalized: Lean theorem `<name>`, `lake build` green, `check_axioms.sh` PASS
+- [x] 2 -> 3 formalized: explicit rank-one crossing witness, targeted build, and axiom audit pass
 - [ ] 3 -> 4 publication-ready: standalone note if needed
 
 ## Proof
@@ -86,3 +89,29 @@ A valid source-built index proof needs both ingredients: the correct Schur matri
 ## 2026-06-24 summable all-channel measure is still not enough
 
 `summable-exterior-boundary-measure-rh-strength.md` separates two issues. Finite checks cannot certify a scale-dependent boundary family; moreover, even the full exterior channel set does not soften the all-order target if it enters only as a finite-total-variation measure. Source-uniform control must therefore come from a stronger semilocal operator theorem, not merely from including more summable exterior channels.
+
+## Lean formalization — 2026-08-13
+
+The one-dimensional Hilbert instance is already a rank-one boundary family and is sufficient for
+the no-go. Lean defines
+
+```text
+epsilon = exp(-kappa (T+1)),
+lambda(t) = 1 - epsilon exp(kappa t),
+```
+
+then proves `lambda(t)>0` for every `0<=t<=T`, `lambda(T+1)=0`, and
+`lambda(T+1+delta)<0` for every `delta>0`. Principal declarations:
+
+- `finiteAuditBoundaryAmplitude_pos`
+- `finiteAuditBoundaryEigenvalue_eq`
+- `finiteAuditBoundaryEigenvalue_pos_of_le`
+- `finiteAuditBoundaryEigenvalue_crossing`
+- `finiteAuditBoundaryEigenvalue_neg_after`
+- `noFiniteBoundaryAudit_under_exponentialAmplification`
+
+Audit: direct Lean compile and targeted Lake build pass; all declarations depend only on
+`propext`, `Classical.choice`, and `Quot.sound`; module contains no `sorry`, `admit`, `axiom`,
+`opaque`, or `unsafe`; area umbrella import is present. Repository-wide lint remains blocked only
+by another agent's concurrent untracked `FactorFramedTensorJacobian.lean`, with no finding in this
+module.

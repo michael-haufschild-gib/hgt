@@ -1,7 +1,7 @@
 # Low-edge anchoring forces cofinal Gauss spread and harmonic projective work
 
 - **ID:** mass-shifted-projective-low-edge-anchor-cofinal-spread
-- **Stage:** 2-fully-proven / needs independent specialist audit
+- **Stage:** 3-formalized
 - **Route:** U, cofinal projective curvature renewal
 - **Type:** THEOREM + FRONTIER REDUCTION (paper)
 - **Scientific status:** [PAPER-PROVED] [CORPUS-NOVEL] [EXTERNAL NOVELTY UNVERIFIED] [LEAN-PROVED SURVIVOR] [NOT RH]
@@ -482,13 +482,28 @@ observation.
   algebra. Candidate-new content is source-specific fusion with shifted-Xi recession, yielding
   (LAR.6), (LAR.11), and degree-uniform literal bound (LAR.21), plus exact identification of
   hyperbolic reset action as remaining projective synchronization invariant.
-- **Lean status.** The positive survivor—degree renewal, cofinal spread under positive-block
-  admission, and uniform harmonic source work—is formalized in
-  `XiShiftedCanonicalAdmissionProjectiveCofinalSpread.lean`. Targeted `lake build` and axiom audit
-  pass. The cofinal theorem remains an implication from positive Hankel blocks; Lean does not prove
-  those blocks, a normalized-flux floor, the hyperbolic-action budget, or RH. The generic reset
-  counterfamily and Xi-specific denominator obstruction remain paper-only because formalizing that
-  negative algebra would not close the source gap.
+- **Lean status.** Complete. The positive survivor—degree renewal, cofinal spread under
+  positive-block admission, and uniform harmonic source work—is formalized in
+  `XiShiftedCanonicalAdmissionProjectiveCofinalSpread.lean`. Sections 8–9 are now also fully
+  formalized (2026-08-13) in `XiShiftedProjectiveAdjacentMeanResetBarrier.lean`: the
+  two-observation online-variance identity (LAR.24, `projectiveAdmissionPacketEnergy_succ_sub`
+  and `projectiveAdmissionPacketMean_succ_sub`), the variance–displacement bound (LAR.25,
+  `projectiveAdmissionPacketEnergy_succ_sub_ge`), the exact reset barrier (LAR.26,
+  `projectiveAdmissionScalarClock_reset_barrier`, plus its hyperbolic-action form for LAR.30,
+  `projectiveAdmissionScalarClock_reset_barrier_action`), and the exact positive-Jacobi
+  counterfamily (LAR.27–LAR.29): `resetCounter_clock_step` (`𝒢₃−𝒢₂ = −3/(2ε)`),
+  `resetCounter_energy_step` (`= 9ε²/70`), `resetCounter_spread_step` (`= 67ε²/32`), the total
+  accounts, all five limit statements, and the packaged falsification
+  `resetCounter_no_locally_bounded_reset_charge` (no function of the four ordinary accounts that
+  is bounded on bounded boxes dominates the negative reset). The counterfamily is realized as a
+  genuine positive moment sequence through the new reusable constructive Favard module
+  `HTGeometry/FavardJacobiMomentRealization.lean` (`exists_positiveMomentForm_of_jacobiData`);
+  its Hankel blocks of every size are positive definite, so the falsification quantifies over
+  honest admissible data. Both modules are umbrella-wired; module builds pass; axiom audit
+  `[propext, Classical.choice, Quot.sound]` on all thirteen leading declarations. Lean still does
+  not prove the shifted-Xi positive Hankel blocks themselves, a normalized-flux floor, the
+  hyperbolic-action budget, or RH — those remain the open Route-U arithmetic target, exactly as
+  Section 9 isolates.
 
 ## 13. Log
 
@@ -499,3 +514,7 @@ observation.
   invariant.
 - 2026-08-12 — positive survivor formalized and built; semantic positive-block premise and
   denominator-weighted synchronization gap remain explicit.
+- 2026-08-13 — Sections 8–9 formalized unconditionally: adjacent-mean transport, reset barrier,
+  hyperbolic-action form, and the exact positive-Jacobi counterfamily with genuine moment
+  realization via the new constructive Favard module. Falsification packaged as
+  `resetCounter_no_locally_bounded_reset_charge`. All audits clean. Promoted to 3-formalized.

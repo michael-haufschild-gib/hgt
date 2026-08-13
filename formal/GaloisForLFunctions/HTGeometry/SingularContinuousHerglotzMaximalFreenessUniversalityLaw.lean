@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.BoundaryCarrierTranslationFreeness
 import GaloisForLFunctions.HTGeometry.CarrierHerglotzPresentationFree
 import GaloisForLFunctions.HTGeometry.CauchyHerglotzLocalGlobalHypertranscendenceUniversalityLaw
 import GaloisForLFunctions.HTGeometry.NevanlinnaPositiveCarrierCapstone
+import GaloisForLFunctions.HTGeometry.SingularContinuousLawWitnesses
 
 /-!
 # Singular-continuous Herglotz maximal-freeness universality
@@ -199,7 +200,6 @@ theorem
     (hupperf : ∀ i, 0 < (F.quotient (zf i)).im)
     (nf : ιf → ℕ)
     (eta : ProbabilityMeasure (OnePoint ℝ))
-    (hetaInfinite : (eta : Measure (OnePoint ℝ)).support.Infinite)
     (hetaSC : eta ∈ projectiveSingularContinuousProbabilityLaws)
     (hnull : ∀ E : Set (OnePoint ℝ), MeasurableSet E →
       (projectiveLebesgueProbability : Measure (OnePoint ℝ)) E = 0 →
@@ -228,6 +228,7 @@ theorem
         ∀ M : ℂ, Hypertranscendental
           (fun z => z * M + (1 + z ^ 2) * cauchyTransform carrier z) := by
   dsimp only
+  have hetaInfinite := projectiveSingularContinuousProbabilityLaw_support_infinite eta hetaSC
   let mu : Measure (OnePoint ℝ) := eta
   let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
     (fun i => F.quotient (zf i)) nf mu hupperf

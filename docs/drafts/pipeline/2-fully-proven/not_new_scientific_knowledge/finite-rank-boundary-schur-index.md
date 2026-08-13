@@ -5,7 +5,7 @@
 - **Type:** THEOREM (paper) / proof-route guardrail
 - **Source:** `finite-rank-one-selector-no-free-lunch.md`,
   `finite-rank-counterterm-kernel-visibility.md`,
-  `no-finite-boundary-audit-under-amplification.md`,
+  `../../3-formalized/not_new_scientific_knowledge/no-finite-boundary-audit-under-amplification.md`,
   `docs/consolidated/gpt/48.md`
 - **Statement:** For an invertible Hermitian bulk form and an invertible
   finite-rank boundary extension, the negative index of the repaired form is

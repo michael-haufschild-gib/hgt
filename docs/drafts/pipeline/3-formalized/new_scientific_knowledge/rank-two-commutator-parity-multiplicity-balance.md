@@ -1,10 +1,28 @@
 # Rank-two commutator parity-multiplicity balance
 
 - **ID:** `rank-two-commutator-parity-multiplicity-balance`
-- **Stage:** 2-fully-proven / needs independent specialist audit
+- **Stage:** 3-formalized
 - **Route:** U, full restricted-Weil parity descent
-- **Type:** THEOREM + FRONTIER REDUCTION (paper)
-- **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [LEAN NOT STARTED]`
+- **Type:** THEOREM + FRONTIER REDUCTION (paper + Lean)
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [NOVELTY UNVERIFIED]`
+- **Lean status:** complete in `RHTower/RankTwoCommutatorParityMultiplicityBalance.lean`,
+  umbrella-wired. The balance `(PMB.4)` is `finrank_evenEigenspace_le` and
+  `finrank_oddEigenspace_le` (both directions of `|dim E⁺ − dim E⁻| ≤ 1`), proved exactly by the
+  card's mechanism: the frequency map carries an eigenvector killed by one source functional to
+  the opposite parity (`frequency_maps_even_to_odd` / `frequency_maps_odd_to_even`), one
+  functional kernel loses at most one dimension (`finrank_inf_ker_functional_ge`), and the
+  literal kernel conditions of §2 enter as the two injectivity hypotheses. The strict
+  parity-floor corollary `(PMB.11)` is `evenEigenspace_eq_bot_of_lt_floor` +
+  `finrank_oddEigenspace_eq_one_of_lt_evenFloor`; the exact gap current `(PMB.16)` is
+  `rankTwo_gap_current` (`⟪Df,g⟫ = ⟪f,Dg⟫ = −1/λ`). The literal truncated model `(PMB.1)`
+  (`D e_j = j e_j`, `Γ e_j = e_{−j}` on `j ∈ [−N,N]`) is constructed as `truncatedFrequency` /
+  `truncatedReflection` on `EuclideanSpace ℝ (Fin (2N+1))`, its anticommutation and both kernel
+  conditions are proved (`truncatedFrequency_anticommutes`, `truncatedFrequency_odd_injective`,
+  `truncatedFrequency_even_center_injective`), and the packaged
+  `truncated_parity_multiplicity_balance` instantiates `(PMB.4)` for every symmetric rank-two
+  commutator on the literal truncated space. Module build passes (2026-08-13); axiom audit
+  `[propext, Classical.choice, Quot.sound]` on all nine theorems. No hard-edge operator claim is
+  made: this certifies §§1–2 and §4 exactly, not the open Route-U odd-sector admission wall.
 - **External parent:** Connes--van Suijlekom,
   [Quadratic Forms, Real Zeros and Echoes of the Spectral Action](https://arxiv.org/abs/2511.23257)
 - **Statement:** For every eigenvalue of a reflection-invariant divided-difference operator with
@@ -198,3 +216,6 @@ not close Route U.
 ## Log
 
 - 2026-08-11 — multiplicity balance and gap-current law proved; odd-degeneracy escape closed.
+- 2026-08-13 — PMB.4, PMB.11, PMB.16 and the literal truncated model formalized unconditionally
+  in `RHTower/RankTwoCommutatorParityMultiplicityBalance.lean`; module build and axiom audit
+  clean on all nine theorems. Promoted to 3-formalized.

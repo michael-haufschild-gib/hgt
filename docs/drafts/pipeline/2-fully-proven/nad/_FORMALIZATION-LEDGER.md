@@ -761,3 +761,67 @@ inhabitable.  The sign error is specific to the carrier family's projective quot
 mixed universality laws (both `SingularContinuous…` HTGeometry modules and both RHTower ones) take
 the flipped `hupperMap` on the carrier side and are already sed-flipped; their Herglotz side is
 untouched.
+
+## Bottleneck 1 sign repair — EXECUTED AND GREEN `[PROVED]` (2026-08-13)
+
+The half-plane flip is complete, compiled, and axiom-clean end to end.
+
+- All eight plan steps executed: lower-rows existence, atlas rename+flip
+  (`noncriticalProjectiveLowerGood…`), compact-patch flip, bridge generalization to `z.im ≠ 0`
+  (structure fields `finite_cauchy`/`infinity_cauchy` now off-axis;
+  `integrable_cauchyKernel_(pow_)of_im_ne_zero`), lower packet-placement detectors
+  (`exists_placed_lower_packet_all_rows_nondegenerate`), shared prop flips, and the
+  `MaximalTranslationInputs.upperMap` field now reads `∀ z, z.im < 0 → 0 < (F.quotient z).im`.
+- **`NevanlinnaEntryConjugation.lean`** (new, wired): `secondKindC_conj`, `nevBinf_conj`,
+  `nevDinf_conj`, `nevInf_quotient_im_pos_of_im_neg`, and
+  **`analyticNevCarrierFamily_lowerMap`** — the corrected field is *inhabited by the constructed
+  family, unconditionally*.  Axioms: `propext`, `Classical.choice`, `Quot.sound`.
+- Verified green: bridge, compact patch, RelationFree, TranslationFreeness,
+  HerglotzPresentationFree, `NevanlinnaBoundaryFaceMaximalTranslation`
+  (`boundaryCarrierFace_maximalTranslationPhase_dense_residual` axiom-clean), both HTGeometry
+  SingularContinuous laws, both RHTower SingularContinuous laws, the Cofinal laws,
+  `PatternRelationWitnesses`, `FullRankWitnessInhabitation`, construction + half-plane consumers.
+- The parallel Herglotz/canonical/evenCanonical chains need **no** flip (no Möbius pole there);
+  see the correction note above.
+
+Remaining fields of `MaximalTranslationInputs` for the canonical family:
+1. `minimalExponentialType` — via `KernelMinimalExponentialType s` (M. Riesz; needs
+   Hadamard/Weierstrass factorization, absent from mathlib);
+2. `phase_isGδ : IsGδ {ν | MaximalTranslationDifferentialFree ν}`;
+(3. `noCommonZero`/`zeroPoint`/`regularPoint` already done in `NevanlinnaCarrierDenominatorRow`.)
+Then leaf/label covariance, then the ten per-card assemblies.
+
+## Bottleneck 1, item `phase_isGδ` — PROVED UNCONDITIONALLY, FIELD ELIMINATED `[PROVED]` (2026-08-13)
+
+New module `HTGeometry/NevanlinnaFullRankPhaseGdelta.lean` (wired, axiom-clean).  The
+`phase_isGδ` field is DELETED from `MaximalTranslationInputs`: what it postulated is now a
+theorem, twice over.
+
+- **`isGδ_maximalTranslationFullRankWitness`** and **`isGδ_maximalTranslationDifferentialFree`**
+  — both phases are Gδ in the weak topology of `ProbabilityMeasure ℝ`, unconditionally.
+- Mechanism: patterns are countable; the shift space is exhausted by the compact sets
+  `shiftExhaustion` (bounded nodes + quantified separation); on each compact piece the universal
+  section of a jointly open certificate set is open (`isOpen_forall_compact_section`, singleton
+  tube lemma).  Joint openness comes from `continuousOn_cauchyPowerTransform` — the Cauchy power
+  transform is jointly continuous in (measure, node) via the kernel difference identity
+  `(x−z)⁻¹ − (x−w)⁻¹ = (z−w)(x−z)⁻¹(x−w)⁻¹` and per-kernel weak continuity
+  (`tendsto_cauchyPowerTransform_of_tendsto`).
+- For the free phase the finite certificate is a **stacked packet tuple**
+  (`stackedEvaluationMatrix`): all-coefficient death at one shift ⟺ finitely many simultaneously
+  admissible packets stack to an injective evaluation matrix
+  (`forall_relation_coeff_zero_iff_exists_stacked_witness`), by Artinian finite kernel extraction
+  (`exists_finset_inf_eq_bot_of_iInf_eq_bot`).
+- `NevanlinnaBoundaryFaceMaximalTranslation.lean`: field removed; new
+  `boundaryCarrierFaceMaximalTranslationFullRankPhase` + dense-residual theorem; the free-phase
+  dense-residual theorem keeps its exact statement (superset monotonicity).
+- `CofinalCholeskyResidualPhase.lean`: `carrierRange_maximalTranslationPhase_isGdelta` no longer
+  takes inputs; `cofinalCholeskyResidualPhase_dense_gdelta_residual` keeps its exact statement.
+  All downstream (SingularSchurDefectCollapse, both HTGeometry + both RHTower SingularContinuous
+  laws, RHTower Cofinal classifier law, FullRankWitnessInhabitation) green and axiom-clean.
+
+**`MaximalTranslationInputs` is now**: `minimalExponentialType`, `noCommonZero`,
+`zeroPoint(+spec)`, `regularPoint(+spec)`, `upperMap` — and every field except
+`minimalExponentialType` is discharged for the constructed family
+(`NevanlinnaCarrierDenominatorRow` + `analyticNevCarrierFamily_lowerMap`).  Bottleneck 1 has
+exactly two open items left: **M. Riesz (`KernelMinimalExponentialType`, needs Hadamard
+factorization)** and the leaf/label covariance upgrade; then the ten per-card assemblies.

@@ -54,7 +54,7 @@ theorem differentialIndependent_const_add (hF : ∀ a : F, (algebraMap F E a)′
       rcases p with ⟨u, n⟩
       cases n with
       | zero =>
-          simp only [differentialJetEval, AlgHom.comp_apply, MvPolynomial.aeval_X, if_pos rfl,
+          simp only [differentialJetEval, AlgHom.comp_apply, MvPolynomial.aeval_X,
             map_add, MvPolynomial.aeval_C, if_true, differentialJet_zero]
       | succ n =>
           simp only [differentialJetEval, AlgHom.comp_apply, MvPolynomial.aeval_X,

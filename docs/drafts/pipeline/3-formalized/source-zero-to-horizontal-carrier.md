@@ -1,8 +1,10 @@
 # Source-zero to horizontal cofinal carrier
 
 - **ID:** SOURCE-ZERO-TO-HORIZONTAL-CARRIER
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3 — formalized in Lean 4
+- **Type:** THEOREM (Lean 4)
+- **Status:** [LEAN-PROVED] [UNCONDITIONAL] [NOT RH]
+- **Date:** 2026-08-13
 - **Source:** `rh-current-frontier-map.md`, common R/L/CCM open operation
 - **Statement:** Complete-resolution reflection displacement and full prime-labelled Gamma
   Bockstein family form one multiplicity-exact, reflection-odd pre-scalar carrier; ordered
@@ -20,7 +22,7 @@ annihilation and therefore does not prove RH.
 
 - [x] 0 → 1: source is actual complete-resolution vector; attack uses ordered cofinal ratios
 - [x] 1 → 2: dependency-closed proof below
-- [ ] 2 → 3: final targeted Lean build, axiom audit, and lint pending
+- [x] 2 → 3: exact Lean surface, targeted build, and capstone axiom audit verified
 - [ ] 3 → 4: external novelty audit and standalone exposition pending
 
 ## Heavy conjecture loop
@@ -129,7 +131,21 @@ Principal declarations:
 - `sourceZeroHorizontalPrimeCarrier_realification_eq_physicalCorona`
 - `sourceZeroHorizontalCarrierVanishes_iff_riemannHypothesis`
 
+## Formal audit
+
+- [x] `lake env lean GaloisForLFunctions/RHTower/SourceZeroHorizontalCarrier.lean`
+- [x] all nine principal declarations found with matching source, prime-label, reflection, sign,
+  realification, and RH-equivalence content
+- [x] axiom audit: only `propext`, `Classical.choice`, `Quot.sound`
+- [x] `lake build GaloisForLFunctions.RHTower.SourceZeroHorizontalCarrier`
+- [x] module forbidden-token scan: no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`
+- [x] imported by `formal/GaloisForLFunctions/RHTower.lean` in `HEAD`
+- [ ] repository-wide lint reachability: blocked only by another agent's concurrent untracked
+  `FactorFramedTensorJacobian.lean`; no SourceZero finding
+
 ## Log
 
 - 2026-08-09 — four conjecture failures closed; ordered cofinal pivot proved on paper and in Lean;
   final formal audit pending.
+- 2026-08-13 — exact theorem surface audited; direct Lean compile, capstone axiom audit, and targeted
+  Lake build passed; promoted to Stage 3.

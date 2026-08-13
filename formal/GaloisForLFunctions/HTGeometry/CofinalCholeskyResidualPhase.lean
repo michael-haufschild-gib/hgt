@@ -65,14 +65,13 @@ theorem carrierRange_maximalTranslationPhase_dense
     inputs Set.univ isClosed_univ Set.infinite_univ
   simpa [BF, F.base.toBoundaryFamily.boundaryCarrierFace_univ] using h
 
-/-- The maximal-translation locus is a relative `G_delta` on the complete carrier range, by the
-parent relation-detector theorem. -/
-theorem carrierRange_maximalTranslationPhase_isGdelta
-    (inputs : F.MaximalTranslationInputs) :
+/-- The maximal-translation locus is a relative `G_delta` on the complete carrier range: the
+ambient free phase is a countable intersection of open certificate sections. -/
+theorem carrierRange_maximalTranslationPhase_isGdelta :
     IsGδ ({nu : F.base.toBoundaryFamily.carrierRange |
       MaximalTranslationDifferentialFree nu.1} :
         Set F.base.toBoundaryFamily.carrierRange) := by
-  exact IsGδ.preimage continuous_subtype_val inputs.phase_isGδ
+  exact IsGδ.preimage continuous_subtype_val isGδ_maximalTranslationDifferentialFree
 
 /-- The singular-continuous maximal-translation phase is dense `G_delta`, hence residual, in the
 entire canonical Nevanlinna carrier simplex. -/
@@ -97,7 +96,7 @@ theorem cofinalCholeskyResidualPhase_dense_gdelta_residual
   have hsingularDense : Dense singularPhase := by
     simpa [singularPhase] using BF.singularContinuousParameterCarrierPhase_dense
   have hmaximalG : IsGδ maximalPhase := by
-    simpa [maximalPhase, BF] using F.carrierRange_maximalTranslationPhase_isGdelta inputs
+    simpa [maximalPhase, BF] using F.carrierRange_maximalTranslationPhase_isGdelta
   have hmaximalDense : Dense maximalPhase := by
     simpa [maximalPhase, BF] using F.carrierRange_maximalTranslationPhase_dense inputs
   have hdense : Dense (singularPhase ∩ maximalPhase) :=

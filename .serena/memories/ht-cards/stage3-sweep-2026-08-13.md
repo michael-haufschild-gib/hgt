@@ -1,59 +1,55 @@
 # ht/ folder stage-3 sweep (goal: formalize all 7 cards in 2-fully-proven/new_scientific_knowledge/ht)
 
-## Session state 2026-08-13
+## Status 2026-08-13 (afternoon)
 
-### Card 1 triptic-kummer — NEARLY CLOSED (new modules this session)
-Five new modules written, first four elaborate clean via `lake env lean`:
-1. `HTGeometry/TripticMultiplicativeSourceClass.lean` — structure `TripticMultiplicativeSource τ σ Y Cst`
-   (mero univ, finOrd, pointwise 1-periodic, `MixedConstGerm (logDeriv Y) τ σ Cst`); closure `.mul .div
-   .pow .zpow`, `tripticMultiplicativeSource_one`, gamma-translate membership
-   `tripticMultiplicativeSource_ellipticGammaConeTranslate` (Cst = −2πi). BUILT ok.
-2. `HTGeometry/TripticSourceDivisorFinsupp.lean` — `laurentCoeff_shiftDiff_logDeriv_add_tau/_add_one`,
-   `shiftOrder_add_tau_of_source`, `finiteShiftSupport_of_source` (germ-mixed versions),
-   `tripticPeriodGroup τ σ : AddSubgroup ℂ` (carrier = PeriodGroupMem), `tripticChargeClass` (via
-   Quotient.out, hypothesis-free), `tripticChargeClass_mk`, `exists_lattice_reduction` (floor reduction
-   into closedBall 0 (1+‖τ‖)), `finite_support_tripticChargeClass`, `tripticDivisor` (Finsupp via
-   ofSupportFinite), `tripticDivisor_mk`. BUILT ok.
-3. `HTGeometry/TripticGammaProductRealization.lean` — charge of 1/zpow/finsetProd, translate indicator
-   (`..._of_mem`/`..._of_notMem`), `periodGroupMem_sub_out_iff`, `gammaDivisorSource` (∏ translates ^ E g
-   over E.support with Quotient.out reps), membership + `tripticOrbitCharge_gammaDivisorSource = E ⟦p⟧`.
-   BUILT ok.
-4. `HTGeometry/TripticKummerRootClassification.lean` — germ kernel variant
-   `differentiallyAlgebraic_logDeriv_of_vanishing_orbitCharge_source`, forward
-   `tripticOrbitCharge_eq_zero_of_differentiallyAlgebraic_source`, `HasTripticSourceRoot` (∃ Z CstZ,
-   class ∧ DA(NF(logDeriv (Y/Z^m)))), `hasTripticSourceRoot_iff_dvd_charge`, `tripticSourceRoot_unique`,
-   `hasTripticSourceRoot_iff_content_dvd`, `hasTripticSourceRoot_content`,
-   `tripticSource_maximal_root_order`. Elaborated clean; lake build in flight at save time.
-5. `HTGeometry/TripticSourceClassGroup.lean` — germ group over `Filter.codiscreteWithin univ`:
-   `mem_codiscreteWithin_univ_iff`, `tripticOrbitCharge_congr` (germ invariance), `tripticDivisor_mul`,
-   `tripticSourceUnit` (unit with pointwise 1/Y inverse), `tripticSourceUnitClass :
-   Subgroup (Germ L ℂ)ˣ`, `tripticGermRep/Cst` (choice), `tripticDivisorHom : Additive M →+ ℤ[ℂ⧸H₃]`,
-   `tripticDivisorHom_single`, `tripticSourceQuotientEquiv` (= card's M/M_DA ≅ ℤ[G] via
-   sourceQuotientEquiv), `tripticSource_hasSourceRootModuloKernel_iff_content_dvd` (verbatim abstract),
-   `tripticSource_root_unique_mod_kernel`, `mem_ker_tripticDivisorHom_iff` (kernel = DA). NOT YET
-   CHECKED (queued behind build).
-REMAINING for card 1: check module 5, wire all 5 into `GaloisForLFunctions/HTGeometry.lean` umbrella,
-`#print axioms` audit via /tmp scratch, `scripts/formal_tools.py lint`, update card text, `git mv` card
-to 3-formalized + companion note. Key existing assets used: TripticMultiplicativeKernel(Converse),
-TripticChargeClassFunction, TripticCornerAccumulation (finite_setOf_laurentCoeff_ne_zero_orbit),
-EllipticGammaConeDivisor/Order (periodPoint + notMem charges), MinimalHTCompletionArchitecture
-(abstract Kummer), SourceDivisorSurjectivity (single ⟹ surjective).
+### Card 1 triptic-kummer — ✅ DONE, PROMOTED TO STAGE 3
+Six new modules, all built, all `[propext, Classical.choice, Quot.sound]`, wired into the
+HTGeometry umbrella, lint gate passed (`formal_tools.py lint` exit 0, indexes regenerated):
+`TripticMultiplicativeSourceClass`, `TripticSourceDivisorFinsupp`,
+`TripticGammaProductRealization`, `TripticKummerRootClassification`, `TripticSourceReciprocity`,
+`TripticSourceClassGroup`.
+Card git-mv'd to `3-formalized/new_scientific_knowledge/ht/` with Stage set to 3-formalized, a new
+companion `triptic-ht-kummer-content-root-classification-formalized.md` (module list + theorem
+chain + verification block), relative link fixed, Formalized-companion pointer added.
+Everything in the card is formal: divisor in ℤ[ℂ/H₃] (τ-invariance from germ constraint; finite
+class support by fundamental-parallelogram reduction), reciprocity D_σ=D_τ on the class, kernel =
+DA both directions (germ forms), gamma-product realization of every divisor, root theorem
+(charge + content forms) + uniqueness + exact max root order, germ-unit group packaging with
+`tripticSourceQuotientEquiv : M/ker D ≃+ ℤ[ℂ/H₃]` and verbatim abstract Kummer application.
+NOTE: another concurrent agent session repaired two of my modules mid-flight (lemma names/tactics)
+and prebuilt them — cooperative concurrency worked; check file mtimes before editing shared files.
 
-### Key discoveries for other cards
-- Cards 4/5 (orbifold tails): mathlib NOW HAS analytic Weierstrass ℘:
-  `Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass` — `PeriodPair.weierstrassP`,
-  `derivWeierstrassP`, `g₂ g₃`, ODE, lattice/basis. Corpus module
-  `WeierstrassPDifferentiallyAlgebraic.lean` already consumes it. This unblocks the compact-signature
-  complete-tail identification (uniformizing coordinate exists).
-- Card 3 (isogeny tail): `HTGeometry/AbelianVariety.lean` (38KB, scheme-level Over (Spec K) + GrpObj)
-  and `AbelianVarietyIsogenyTail.lean` exist; tail theorem is conditional on hfinite/hfiniteDimensional/
-  hdegree (isogeny degree = card of kernel for [m^n]) — that degree data is the real frontier.
-- Card 2 (pair-localization): parent all-depth card is at
-  2-fully-proven/new_scientific_knowledge/other/all-depth-pair-face-signature-completeness.md (NOT in
-  ht/). Polynomial core `PairFacePrivateSector.lean` done. Remaining: canonical carrier
-  F_e = ∏_{k∉e} Δ_{τ_k} Ψ_{d−1} HT + signatures + noncompression (analytic), exact-image realization.
-- Card 7 (Gevrey): large Barnes layer exists (BarnesDoubleZeta*, BarnesKernelExpansion,
-  BarnesConeKernelRemainderBound, BarnesMellinRepresentation…) + NewtonPuiseux* modules. Remaining:
-  Barnes derivative-compatible expansion (4)–(6) for H_s and Sibuya–Ramis exact Gevrey order.
-- Build discipline: other agents run concurrent lake builds; lake serializes via lock — expect long
-  waits; ONE build process at a time for me; lake env lean needs imports' oleans built first.
+### Card 4 (nonautonomous-rational-first-order-tail-orbifold-law) — IN PROGRESS
+Plan in `mem:ht-cards/card4-complete-tail-plan`. Already built this session:
+`FreeDifferentialTranslationAutomorphism.lean` (u ↦ c + u differential automorphism of free
+C⟨u⟩; jets unchanged in positive degrees; adjunction invariance) — built, wired, axiom-clean.
+Next steps:
+1. `DerivativeTranslationFixedField.lean` — additive mirror of LogarithmicDerivativeFixedField:
+   C⟨u⟩ = C⟨u′⟩(u) (jets n≥1 lie in C⟨u′⟩ since jet(n+1)u = jet n (u′)); u transcendental over
+   C⟨u′⟩ (translation orbit c+u infinite, mirror transcendental_over_logDerivField);
+   invariant ⟹ ∈ C⟨u′⟩ via RatFunc translation transport + existing
+   `ratFuncTranslation_fixed_eq_constant` (RatFuncTranslationFixedField.lean; needs CharZero base
+   via charZero_of_injective_algebraMap); final `fixedField_translation_eq_derivField`.
+   NOTE ALSO: `FreeJetTranslationFixedField.lean` already proves the model-side version
+   (fixed field of depth-0 coordinate translations = tail-coordinate field) — check reuse before
+   writing; `ScalarAdditiveDifferentialTorsor.fixedField_zpowers_scalarDifferentialTranslation_one`
+   proves "unit translation fixes exactly F⟨q′⟩" via `scalarDerivativeField` — POSSIBLY ALREADY THE
+   WHOLE ADDITIVE LAYER: its carrier T with q hypertranscendental, hgen top. Verify whether that
+   theorem + rotation layer suffices without my new fixed-field module.
+2. Rotation layer: rank-1 instance of `fixedField_torusScaleRep_eq_torusInvariantMonomialField`
+   (TorusProtocolMonomialTail.lean) with S = ⟨ζ⟩ (ζ primitive n-th root, n ∈ {2,3,4,6}) on the
+   subfield C⟨u′⟩-as-field (plumbing via DifferentialSubfieldTransfer adjoinLift); simplify
+   C⟨v′/v, vⁿ⟩ = C⟨vⁿ⟩ via v′/v = (vⁿ)′/(n vⁿ).
+3. (2,2,∞): inversion w ↦ w⁻¹ via paletteEndo (independence of inverse palette via
+   `DifferentialIndependentTransfer.differentialIndependent_of_range_subset_closure`); acts by
+   ℓ ↦ −ℓ on ℓ = w′/w; rank-1 scaling machinery with S = {−1} gives C⟨ℓ²⟩;
+   `logDeriv_sq_eq_chebyshev_current` identifies downstairs.
+4. Protocol assembly per signature mirroring MultiplicativeProtocolLogCurrentTail /
+   TorusProtocolMonomialTail; then card-4 promotion (its §§1–3 already formal per card text).
+
+### Cards 2,3,5,6,7 — recon notes unchanged (see earlier sections of this memory’s history and
+`mem:ht-cards/card4-complete-tail-plan`): card 3 = abelian-variety degree data
+(AbelianVarietyIsogenyTail.lean conditional bridge exists); card 2 = canonical carrier +
+all-depth exact image (parent card in other/); card 6 = Pong/Andersson/Saksman–Webb (large formal
+Dirichlet DA layer exists: PrimeDirichletDifferentialField etc.); card 7 = Barnes (4)–(6) +
+Sibuya–Ramis (large Barnes layer exists: BarnesDoubleZeta*, BarnesKernelExpansion, NewtonPuiseux*).

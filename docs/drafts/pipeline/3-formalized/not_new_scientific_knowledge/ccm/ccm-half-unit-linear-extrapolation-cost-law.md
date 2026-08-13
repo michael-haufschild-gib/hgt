@@ -1,9 +1,11 @@
 # Linear extrapolation across the CCM half-unit seam costs a square-root power
 
 - **ID:** `ccm-half-unit-linear-extrapolation-cost-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM / NO-GO WITH POSITIVE DUAL, `[BRIDGE]`
-- **Scientific status:** `[PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
+- **Scientific status:** `[LEAN-PROVED] [UNCONDITIONAL] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
+- **Date:** 2026-08-13
+- **Module:** `formal/GaloisForLFunctions/RHTower/CCMHalfUnitExtrapolationCost.lean`
 - **Parents:** the invariant half-unit weighted-domain seam, positive-shift Euler--Möbius
   contractivity, and the rectangular subpower lower RH gate
 
@@ -140,6 +142,12 @@ Nothing of the card's proved content is left out.  What remains open is the posi
 source-coupled non-diagonal cancellation — which is by construction outside the scalar class the
 theorem excludes.
 
+Current audit: direct Lean compile passed; all seven principal theorem declarations depend only on
+`propext`, `Classical.choice`, and `Quot.sound`; targeted Lake build passed; module has no `sorry`,
+`admit`, `axiom`, `opaque`, or `unsafe`; `RHTower.lean` imports it in `HEAD`. Repository-wide lint
+remains blocked only by another agent's concurrent untracked `FactorFramedTensorJacobian.lean`, with
+no CCM half-unit finding.
+
 ## Gates
 
 - [x] arbitrary node count and node placement included
@@ -149,6 +157,7 @@ theorem excludes.
 - [x] Lean: exact and approximate costs `(2)`, `(4)` unconditional for arbitrary node families
 - [x] Lean: square-root aperture form and unbounded condition number
 - [x] Lean: sharpness witness, so the no-go is not vacuous
+- [x] Stage 3 promotion audit complete
 - [ ] construct the source-coupled cancellation which evades scalar extrapolation
 - [ ] prove its remaining boundary loss is subpower
 - [ ] RH

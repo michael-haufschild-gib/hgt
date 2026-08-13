@@ -39,7 +39,6 @@ theorem singularContinuousFullTranslation_primeArchHankelUniversality
     (hupperf : ∀ i, 0 < (F.quotient (zf i)).im)
     (nf : ιf → ℕ)
     (eta : ProbabilityMeasure (OnePoint ℝ))
-    (hetaInfinite : (eta : Measure (OnePoint ℝ)).support.Infinite)
     (hetaSC : eta ∈ projectiveSingularContinuousProbabilityLaws)
     (hnull : ∀ E : Set (OnePoint ℝ), MeasurableSet E →
       (projectiveLebesgueProbability : Measure (OnePoint ℝ)) E = 0 →
@@ -130,7 +129,7 @@ theorem singularContinuousFullTranslation_primeArchHankelUniversality
   have hfull :=
     F.singularContinuousCarrier_fullTranslationFamilyFreeness_denseResidual
       hCmin hnoCommon hCp hCc hupperMap zf hqf_inj hupperf nf eta
-        hetaInfinite hetaSC hnull
+        hetaSC hnull
   let w0 : positiveChart := ⟨0, by simp [positiveChart]⟩
   obtain ⟨_, _, _, _, _, _, _, hstrict, _, _, _, _⟩ := hfull.2.2.2 w0
   have hsCone : RiemannHypothesis ↔ PrimeArchStrictHankelRayAdjoiningCone s := by

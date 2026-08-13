@@ -1,7 +1,7 @@
 # Suzuki arithmetic tangent and inverse-moment holography
 
 - **ID:** `suzuki-arithmetic-tangent-inverse-moment-holography`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM / RESTRICTED-WEIL SOURCE RESPONSE / SPECTRAL RECONSTRUCTION
 - **Scientific status:** `[PAPER-PROVED] [UNCONDITIONAL] [NOVELTY UNVERIFIED]`
   `[GENERIC PERTURBATION AND MOMENT DETERMINACY CLASSICAL] [NOT AN RH PROOF]`
@@ -433,3 +433,42 @@ remains is supplying the nonvanishing side conditions `F_0(±z) ≠ 0` from the 
 The Cayley--Herglotz differential layer is now complete in both directions: derivative,
 differentiability, and chain rule for each of `herglotzOfCayley` and `cayleyOfHerglotz`. Any of
 `(16)`--`(18)`'s manipulations can be assembled from these plus mathlib's `logDeriv_div`.
+
+### Section 9's module EXISTS — all six targets formal, and Theorem A's determinacy is end to end
+
+`RHTower/SuzukiArithmeticTangentHolography.lean` now carries the card's entire dependency-closed
+analytic core.  The six named targets:
+
+- `iteratedDeriv_suzukiDonoghueTransform_odd_zero` — **`(5)`**: for a spectral probability with a
+  gap `δ` about the origin, `m^{(2n+1)}(0) = (2n+1)! (q_n + q_{n+1})`.  The route is `(13)` as
+  `hasDerivAt_suzukiCauchyPow`/`iteratedDeriv_suzukiCauchyPow` (differentiation under the Cauchy
+  transform on the half-gap disc, dominated by the constant `(2/δ)^{j+1}`), then the Leibniz
+  ladder `iteratedDeriv_succ_succ_suzukiDonoghueTransform` in which only the zeroth and second
+  derivatives of `z²+1` survive.
+- `suzukiInverseMomentReconstruction_eq` — **`(6)`**, the two-term recursion.
+- `suzukiProjectiveMomentShape_geometricScale` — **`(8)`**: `κ_n` is invariant under every
+  dilation `t ↦ ct`, `c ≠ 0`, via `suzukiInverseEvenMoment_dilation` (`q_n ↦ c^{-2n} q_n`).
+- `hasDerivAt_suzukiFourierLivsic_freeBoundary` — **`(17)`/`(25)`**: the free-boundary tangent of
+  the Livšic quotient is the quotient times the anti-reflected logarithmic derivative
+  `Δ(z) = H(-z)/F(-z) - H(z)/F(z)`.
+- `hasDerivAt_suzukiUpperCayleyInv_parameter` — the `2i/(1-w)²` transport factor of `(18)`.
+- `hasDerivAt_suzukiHerglotz_freeBoundary` — **`(18)`**: `ṁ = 2i Θ_free Δ/(1-Θ_free)²`.
+
+Beyond the six, the module closes what Section 9 had parked as "measure pushforward determinacy"
+**completely**, not only for the pushforward:
+
+- `suzukiInverseMoment_pushforward` — **`(7)`**: the moments of `ν.map (t ↦ (t²)⁻¹)` are the `q_n`.
+- `map_invSq_eq_of_suzukiInverseMoments` — equal `q_n` identify the pushforward, through the
+  compact interval `[0, δ⁻²]` and `HTGeometry/CompactMomentDeterminacy.ext_of_forall_integral_pow_eq`
+  (subtype transfer by `MeasurableEmbedding.subtype_coe` both ways).
+- `ext_of_even_of_map_invSq_eq` — **evenness recovers `ν`**: the preimage of a positive set under
+  `t ↦ |t|` splits into two reflected copies of equal mass, so two even measures vanishing at the
+  origin with the same `(t²)⁻¹`-pushforward are equal.
+- `suzukiInverseMoment_determinacy` — **Theorem A's determinacy claim as one theorem**: an even
+  finite measure with a spectral gap is determined by its inverse even moments.
+
+All audit to exactly `[propext, Classical.choice, Quot.sound]`; umbrella wired.  What stays
+paper-level is exactly what Section 9 says must not be wrapped: the concrete operator expansion
+`(15)` (whose convergence half is already `tendsto_neumannShiftFamily_id`, leaving only the
+domain fact `e^x ∈ Dom(A_a)` as source data) and Theorem B's identification with Suzuki's
+operator — the folder's shared open-research core.

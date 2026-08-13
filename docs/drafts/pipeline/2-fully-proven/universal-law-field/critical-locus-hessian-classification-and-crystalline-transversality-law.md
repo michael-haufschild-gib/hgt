@@ -260,12 +260,43 @@ period all the cosines are positive while every `cosh(t_j x) − 1` is strictly 
 is.  The exponential-independence route of the paper proof is therefore not needed at all, and
 `HurwitzExp.expLin_linearIndependent` is not consumed.
 
-Not formalized (recorded honestly): Θ2's per-zero necessity and mixture statements (their
-natural formalization requires a detector-predicate layer), Θ3.1's passage from the kernel identity to
-the paired integral against `h` (needs the explicit-formula kernel as a Lean integral),
-Θ4 (needs a configuration-family IFT layer), and the other stage-2 cards (ULF-MECH-3/4
-are assemblies over large existing layers; ULF-MECH-5's gate needs in-Lean zero enclosures,
-i.e. computation, excluded by the session's Lean rules).
+Certified 2026-08-13 in `RHTower/CriticalLocusHessianClassification.lean` (wired into
+`GaloisForLFunctions.RHTower`, axiom prints exactly `[propext, Classical.choice, Quot.sound]`):
+
+- Θ2(i) exact separation — `multiQuadruple_map_sum`, `multiQuadruple_relative_separation`
+  (multiset-join additivity; cross-terms identically zero), with the relative functional
+  `relativeQuadrupleValue` and its evenness;
+- Θ2(ii) the weight, in general form — `iteratedDeriv_two_criticalQuadrupleSum`
+  (`= 2(F″(1/2+iγ) + F″(1/2−iγ))` for `F` analytic at the two conjugate points) and the real
+  weight `iteratedDeriv_two_criticalQuadrupleSum_re` (`= 4 Re F″(1/2+iγ)`), via a new
+  conjugation bridge (`hasDerivAt_conj_of_eventually_conj`, `analyticAt_conj_point`,
+  `iteratedDeriv_two_conj_eq`) proved from the slope characterization;
+- Θ2(iii) per-zero necessity — `re_iteratedDeriv_two_nonpos_of_detector` and
+  `weight_nonpos_of_detector`: the detector property on one real splitting parameter forces
+  `Re F″(1/2+iγ) ≤ 0`, by real restriction plus the corpus's second-derivative test at a
+  local maximum;
+- Θ2(iv) mixture/determination — `iteratedDeriv_two_multiSplitting` (the diagonal Hessian
+  `∑_j t_j² w_j` on scaled strata) and `secondOrder_jets_eq_iff_weights_eq` (second-order
+  equivalence at every real ordinate ⟺ equal real weight functions);
+- Θ2(v) composite criteria — `deriv_deriv_comp_of_first_derivs_zero` (the stratum second
+  derivative of a smooth composite is `∑ ∂ᵢg·φᵢ″(0)`: the finite-rank chain-rule correction
+  dies on strata) and `composite_detector_necessity`;
+- Θ3.1 integral packaging — `lineTestTransform` (the explicit-formula kernel
+  `F_h(ρ) = ∫ h(x)e^{(ρ−1/2)x} dx` as a Lean integral), with
+  `relativeQuadrupleValue_lineTestTransform` (`⟨Δν, h⟩ = ∫ h·4cos(γx)(cosh(tx)−1)`),
+  its real form, and `multiSplitting_shadow_integral` pairing the total shadow with
+  `shadowDensity` — Θ3.1 and Θ3.2 now meet in one certified object.
+
+Additionally certified in `RHTower/CriticalLocusConeFullness.lean`: the symmetry collapse of
+pair/quadruple raw sums (`pair_sum_eq_two_re`, `quad_sum_eq_four_re`) and
+`criticalLocus_move_cone_fullness` — Step A of the repaired Θ4 (every nonzero direction sees
+a strictly negative configuration move; proof by strip Phragmén–Lindelöf, the harmonic
+minimum principle, and line independence).
+
+Still not formalized (recorded honestly): Θ4's final exact-hitting assembly (open research —
+see the 2026-08-13 log entries), and the other stage-2 cards (ULF-MECH-3/4 are assemblies
+over large existing layers; ULF-MECH-5's gate needs in-Lean zero enclosures, i.e.
+computation, excluded by the session's Lean rules).
 
 - 2026-08-12 — Θ3.2 certified in Lean by a local positivity certificate, which replaces the
   paper proof's exponential-independence argument entirely.- 2026-08-12 — Θ3.1's kernel identity certified; only its integral packaging remains.

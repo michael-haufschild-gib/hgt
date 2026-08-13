@@ -37,7 +37,6 @@ theorem singularContinuous_jointMaximalFullTranslation_primeArchHankelUniversali
     (hupperf : ∀ i, 0 < (F.quotient (zf i)).im)
     (nf : ιf → ℕ)
     (eta : ProbabilityMeasure (OnePoint ℝ))
-    (hetaInfinite : (eta : Measure (OnePoint ℝ)).support.Infinite)
     (hetaSC : eta ∈ projectiveSingularContinuousProbabilityLaws)
     (hnull : ∀ E : Set (OnePoint ℝ), MeasurableSet E →
       (projectiveLebesgueProbability : Measure (OnePoint ℝ)) E = 0 →
@@ -159,6 +158,7 @@ theorem singularContinuous_jointMaximalFullTranslation_primeArchHankelUniversali
         p.coefficientDegree p.orders (carrierPatternExponent p) shift coeff →
       ∀ col, coeff col = 0}
   let jointPhase : Set positiveChart := maximalPhase ∩ fullPhase
+  have hetaInfinite := projectiveSingularContinuousProbabilityLaw_support_infinite eta hetaSC
   obtain ⟨_hmaxDense, hmaxResidual, hmaxAll⟩ :=
     F.singularContinuousCarrier_maximalTranslation_cauchyHerglotzFreeness_denseResidual
       hCmin hnoCommon hCp hCc hupperMap zf hqf_inj hupperf nf eta
@@ -166,7 +166,7 @@ theorem singularContinuous_jointMaximalFullTranslation_primeArchHankelUniversali
   obtain ⟨hfull, hrh, hreconstruction, hsonin, hhedenmalm⟩ :=
     singularContinuousFullTranslation_primeArchHankelUniversality
       F hCmin hnoCommon hCp hCc hupperMap zf hqf_inj hupperf nf eta
-        hetaInfinite hetaSC hnull
+        hetaSC hnull
   obtain ⟨_hfullDense, hfullResidual, hleaf, hfullAll⟩ := hfull
   have hjointResidual : jointPhase ∈ residual positiveChart := by
     simpa only [jointPhase] using Filter.inter_mem hmaxResidual hfullResidual

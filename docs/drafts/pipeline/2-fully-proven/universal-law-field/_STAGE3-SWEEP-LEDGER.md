@@ -13,14 +13,14 @@ card has been moved into `docs/drafts/pipeline/3-formalized/universal-law-field/
 | 1 | `beurling-cross-system-blindness-of-multiplicative-regularization-law.md` | **DONE 2026-08-12** — promoted to `3-formalized/`.  New modules `HTGeometry/BeurlingCrossSystemBlindness.lean` (38 decls) and `RHTower/BeurlingRationalPrimeSystem.lean` (13 decls); all axiom-clean |
 | 2 | `c1-o-open-core-reduction-theorem.md` | NEEDS-LEAN — assembly card flagged [NO LEAN — user directive]; components are in-tree |
 | 3 | `condensed-phase-probabilistic-death-modulus-budget-and-gaussian-fluctuation-law.md` | NEEDS-LEAN — audit which clauses already have modules |
-| 4 | `critical-locus-hessian-classification-and-crystalline-transversality-law.md` | IN PROGRESS — Theta1 certified, Theta2 second-jet identity, Theta3.2 and Theta3.1 kernel identity certified (CriticalLocusQuadrupleEvenness, CrystallineShadowTransversality). Left: Theta2 per-zero necessity/mixture (detector-predicate layer), Theta3.1 integral packaging, Theta4 (configuration-family IFT layer) |
+| 4 | `critical-locus-hessian-classification-and-crystalline-transversality-law.md` | IN PROGRESS — Θ1, Θ2(i)–(v), Θ3.1 (packaged), Θ3.2 all certified (CriticalLocusQuadrupleEvenness, CrystallineShadowTransversality, CriticalLocusHessianClassification); Θ4 Step A certified (CriticalLocusConeFullness). Left: Θ4 exact-hitting assembly — OPEN RESEARCH, hostile audit + repair route + residual open point on the card (2026-08-13 log) |
 | 5 | `eigen-pair-prime-identification-derivation.md` | PAPER-INCOMPLETE — card states D3–D6 open; only D1–D2 are derived, so full formalization is blocked on the paper proof |
-| 6 | `finite-amplifier-width-cap-and-fejer-ratio-barrier-law.md` | NEEDS-LEAN — frame-level discharge of ULF-INV-4 open core |
+| 6 | `finite-amplifier-width-cap-and-fejer-ratio-barrier-law.md` | NEAR-DONE 2026-08-13 — `HTGeometry/FiniteAmplifierFrame.lean`: Thm 1 (master bound/exclusion/width cap), Thm 1′ (multi-σ + averaging), Thm 2 (threshold, ratio form, ρ-finiteness on circle + every finite abelian Γ), Page anchor; §8 literature gate discharged (2504.05606 audited, no ceiling found).  Left: 2.1.1 for mixed `ℤ^r × F` supports (torus-sampling reduction, named on card) |
 | 7 | `g-u-structure-admission-split-law.md` | NEEDS-LEAN — typing-grade split law flagged [NO LEAN — directive] |
 | 8 | `nonvacuous-independence-and-polarization-import-law.md` | BLOCKED-ON-PREREQ — quantitative core certified (SelbergSpectralParameter); the rest is citation-level and needs a hyperbolic-surface spectral layer (Laplace spectrum, Eisenstein series, Maass-Selberg truncation, Selberg trace formula and zeta) absent from mathlib and the corpus |
 | 9 | `odd-coordinate-mechanism-universal-law-set.md` | NEEDS-LEAN — law set; Law 6 proved here |
 | 10 | `parity-duality-rg-shell-splitting-and-multiplicative-resolution-cap-law.md` | NEEDS-LEAN — signed-sector and organ-scope law |
-| 11 | `pole-purchase-escape-and-collision-gap-law.md` | IN PROGRESS — new module `RHTower/PolePurchaseCollisionGap.lean`: Thm 2.1 (the certified modulus-collided gap) closed both ways, modulus collision, falsity of the strengthened cap, and both ends of (INV3.2).  Left: the (INV3.2) log-derivative identity `3(−ζ'/ζ)(σ) + 4Re(−ζ'/ζ)(σ+it) + Re(−ζ'/ζ)(σ+2it) = ∑ Λ(n)n^{−σ}(3+4cos+cos2)` — needs `L(Λ,s) = −ζ'/ζ(s)` on `Re s > 1` plus the real-part interchange |
+| 11 | `pole-purchase-escape-and-collision-gap-law.md` | **DONE 2026-08-13** — promoted to `3-formalized/`.  The (INV3.2) log-derivative identity closed in `RHTower/PolePurchaseLogDerivIdentity.lean` (mathlib `LSeries_vonMangoldt_eq_deriv_riemannZeta_div` + `VonMangoldtLineSeriesSwap` kernels); axiom-clean |
 | 12 | `route-q-ratio-gate-decision.md` | BLOCKED-ON-NUMERICS — gate mechanism certified (DivisorHeightRatioGate: height damping, unconditional geometric decay, `9 < c` implies the gate); remaining inputs are gamma_1 > 9 (verified-zero computation) and a signed-moment lower bound (zero-location input) |
 | 13 | `specification-consistency-polarization-independence-and-cusp-concentration-law.md` | NEEDS-LEAN — consistency and independence metatheorem for the inverse-theory axioms |
 
@@ -190,3 +190,5 @@ exact-hitting assembly is open research — analysis recorded on the ULF-FIELD-2
 log entries).  Queue map of every subfolder card's declared gap:
 session scratchpad `subfolder-gaps.md` (regenerate with the grep in this ledger's history if
 lost — one grep over the card set).
+
+- `pole-purchase-escape-and-collision-gap-law.md` — **DONE 2026-08-13** — promoted: (INV3.2) log-derivative identity certified (RHTower/PolePurchaseLogDerivIdentity.lean, axiom-clean); full displayed surface now Lean-closed

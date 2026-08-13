@@ -1,7 +1,7 @@
 # Pole-purchase escape and the collision-gap law
 
 - **ID:** ULF-INV-3
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / NECESSITY AXIOM N6 + AMPLIFICATION-GAP OPENING
 - **Source:** lane-deep read of `RHTower/Sieve/CoefficientFreeCap.lean` executed against
   ULF-INV-2's open core
@@ -14,7 +14,7 @@
   poles of amplified objects. Necessity axiom N6: any engine beating the caps must consume pole
   data; the frozen barrier conjecture: bounded amplification degree bounds what poles can buy.
 - **Status:** [PAPER-PROVED CORE] [CAP CLASSES READ FROM LEAN SOURCE] [N6 EXTRACTED]
-  [BARRIER CONJECTURE FROZEN] [CLASSICAL COMPONENTS DISCLAIMED] [NOT RH] [LEAN PARTIAL — Thm 2.1 certified; (INV3.2) identity open]
+  [BARRIER CONJECTURE FROZEN] [CLASSICAL COMPONENTS DISCLAIMED] [NOT RH] [LEAN CERTIFIED]
 
 ## 1. The cap laws, as formalized
 
@@ -178,15 +178,27 @@ Module: `formal/GaloisForLFunctions/RHTower/PolePurchaseCollisionGap.lean`
 it with `(σ−1)‖L(1, σ)‖` on the half-plane of absolute convergence, so the functional really is the
 card's `Φ_σ` evaluated at `g = 1`.
 
-**Not yet formalized.**  The middle of (INV3.2) — the identity
+**Closed 2026-08-13.**  The middle of (INV3.2) — the identity
 
 `3(−ζ'/ζ)(σ) + 4 Re(−ζ'/ζ)(σ+it) + Re(−ζ'/ζ)(σ+2it) = ∑_n Λ(n) n^{−σ} (3 + 4cos(t log n) + cos(2t log n))`
 
-— is not in the module.  Its positive input and its conclusion both are; what is missing is the
-Dirichlet-series bookkeeping (`L(Λ, s) = −ζ'(s)/ζ(s)` on `Re s > 1`, the real part of each term, and
-the interchange of `Re` with the sum).  The card labels Theorem 2.2 "classical, retyped", and its
-conclusion is mathlib's `riemannZeta_ne_zero_of_one_le_re`; the identity is nevertheless a displayed
-statement of this card and the card stays at stage 2 until it is closed.
+— is certified in `RHTower/PolePurchaseLogDerivIdentity.lean` (wired into
+`GaloisForLFunctions.RHTower`):
+
+| Clause | Lean name |
+|---|---|
+| real part of one von Mangoldt line term `Λ(n) n^{−σ} cos(t log n)` | `re_vonMangoldt_line_term` |
+| cosine-weighted summability at `σ > 1` | `summable_vonMangoldt_cos_weight` |
+| `Re L(Λ, σ+it)` as the cosine-weighted series | `re_LSeries_vonMangoldt` |
+| **the (INV3.2) identity itself** | **`vallee_poussin_log_deriv_identity`** |
+| termwise nonnegativity of the 3–4–1 combination | `vallee_poussin_log_deriv_nonneg` |
+
+The Dirichlet-series input is mathlib's `LSeries_vonMangoldt_eq_deriv_riemannZeta_div`; the line
+kernels reuse `VonMangoldtLineSeriesSwap`.  `#print axioms` on every declaration reports only
+`propext`, `Classical.choice`, `Quot.sound`.  With this the card's entire displayed Lean surface is
+closed: §3 is calibration with citations, §4 (ULF-INV-4) is a frozen conjecture with a declared
+open core — neither is a Lean gate.
 
 §3 is calibration with literature citations, not proof.  §4 (ULF-INV-4) is a frozen conjecture with
 a declared `[OPEN CORE]` and is a research frontier, not a Lean gate.
+- 2026-08-13 — promoted: (INV3.2) log-derivative identity certified (RHTower/PolePurchaseLogDerivIdentity.lean, axiom-clean); full displayed surface now Lean-closed

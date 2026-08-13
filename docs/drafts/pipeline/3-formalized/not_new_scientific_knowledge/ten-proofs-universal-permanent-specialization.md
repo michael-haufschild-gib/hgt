@@ -1,8 +1,11 @@
 # Universal permanent specialization of the differential fiber symbol
 
 - **ID:** ten-proofs-cross-corpus-bridge-audit
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3 — formalized in Lean 4
+- **Type:** THEOREM (Lean 4)
+- **Status:** `[LEAN-PROVED] [UNCONDITIONAL] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
+- **Date:** 2026-08-13
+- **Module:** `formal/GaloisForLFunctions/HTGeometry/UniversalPermanentSpecialization.lean`
 - **Source:** OpenAI `ten-proofs`, commit `6fefffdbab0dfa726fcfde6cefae23aa7a1888f3`
 - **Statement:** `[PAPER-PROVED]` The complex cast of the local falling-factorial symbol `permSymbolPoly μ` is the specialization of `PermanentRollout.permanent r` obtained by sending its matrix variable `(i,j)` to the complex cast of `(descPochhammer ℤ (μ j))` evaluated at `X i`; consequently every local injective antidiagonal fiber weight is the evaluation of that universal permanent specialization.
 
@@ -17,7 +20,7 @@ transported without replacing the local symbol or assuming its nonvanishing.
 
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem `<name>`, `lake build` green, axiom audit PASS
+- [x] 2 → 3  formalized: exact specialization and fiber-value bridge built and axiom-audited
 - [ ] 3 → 4  publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## Approach
@@ -97,10 +100,25 @@ not scientific novelty; the surviving identity is classified `[BRIDGE]`.
   corollary.
 - **New insight:** Local differential fiber nonvanishing is carried by a specialization of the
   universal matrix permanent, not merely an ad hoc permutation sum.
-- **Status:** internal audit complete; paper proof dependency-closed; Lean formalization pending.
+- **Status:** internal audit complete; paper proof and exact Lean formalization dependency-closed.
+
+## Formal audit
+
+- [x] `universalPermanent_specialization` proves exact polynomial specialization
+- [x] `eval_universalPermanent_specialization` proves scale-tuple evaluation identity
+- [x] `fiber_weight_eq_eval_universalPermanent` proves injective antidiagonal fiber bridge
+- [x] direct Lean compile passed
+- [x] axiom audit: only `propext`, `Classical.choice`, `Quot.sound`
+- [x] `lake build GaloisForLFunctions.HTGeometry.UniversalPermanentSpecialization`
+- [x] module has no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`
+- [x] imported by `formal/GaloisForLFunctions/HTGeometry.lean` in `HEAD`
+- [ ] repository-wide lint reachability: blocked only by another agent's concurrent untracked
+  `FactorFramedTensorJacobian.lean`; no universal-permanent finding
 
 ## Log
 
 - 2026-08-01 — created in `1-in-progress`; upstream commit and three acceptance modes frozen.
 - 2026-08-01 — all ten proof families audited; permanent specialization survives hostile review.
 - 2026-08-01 — complete paper proof closed; promoted to `2-fully-proven` as `[BRIDGE]`, scientific novelty not claimed.
+- 2026-08-13 — exact three-theorem Lean surface, axioms, umbrella reachability, and targeted build
+  verified; promoted to Stage 3.

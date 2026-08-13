@@ -243,3 +243,45 @@ audit of 2504.05606 is the named precondition for promotion out of stage 2.
   ratio anchor and the circle witness are already certified in
   `HTGeometry.FiniteAmplifierPatternCap`; Fejér's exact extremal value in Theorem 3.1 remains a
   cited classical result, per the card's own "nothing new claimed about the values").
+
+## Lean certification (2026-08-13)
+
+Modules: `HTGeometry/FiniteAmplifierPatternCap.lean` (pre-existing) and the new
+`HTGeometry/FiniteAmplifierFrame.lean`, wired into `GaloisForLFunctions.HTGeometry`.
+Final module build green; `#print axioms` on every capstone reports exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+| Card statement | Lean name |
+|---|---|
+| Thm 1, the master derivation from (P1)–(P3) at `σ = 1+a/𝔏` | `frame_master_bound` |
+| Thm 1, the derived exclusion `β < 1−δ` | `frame_zero_exclusion` |
+| Thm 1, (INV7.1) the width cap `δ𝔏 < C(Q)` | `frame_width_of_exclusion` (+ engine `width_cap`) |
+| Thm 2.2, (INV7.3) the threshold `c_e < c_{g₀}m` | `frame_threshold_necessity` |
+| Thm 2.3, the constant capped by the ratio | `frame_width_ratio_form` |
+| Thm 1′, finite multi-σ stability | `multi_sigma_width_cap` |
+| Thm 1′, positive-average stability | `averaged_exclusion_pointwise`, `averaged_width_cap` |
+| Thm 2.1, ρ finite — circle/ℤ supports (`\|a_k\| ≤ 2a₀`) | `cosine_pattern_coeff_bound`, `cosine_pattern_ratio_finite` |
+| Thm 2.1, ρ finite — every finite abelian Γ | `finite_pattern_coeff_bound` (+ `sum_addChar_eq_ite` dual orthogonality) |
+| Thm 3.2, Page `ρ(ℤ/2) = 1` | `twoPoint_pattern_cap`, `twoPoint_pattern_cap_tight` |
+| circle witness `3+4cosθ+cos2θ ≥ 0`, ratio `4/3 > 1` | `circle_pattern_nonneg`, `circle_pattern_ratio_exceeds_one` |
+
+**Corrections found by formalization (recorded honestly):**
+
+1. Theorem 2.1.1's recorded proof ("compactness of the constraint set") is insufficient as
+   stated: nonnegativity plus normalization does not exhibit boundedness of the coefficient
+   set without an averaging argument.  The certified mechanism is dual averaging against the
+   nonnegative kernels `1 ± Re χ(g₀)` (discrete root-of-unity sampling on the circle; exact
+   character orthogonality on finite abelian groups).
+2. The frame's (P3) "every other channel satisfies `h_g ≤ A𝔏`" must be two-sided
+   (`|h_g| ≤ A𝔏`) for signed patterns; the classical inputs satisfy the two-sided form, and
+   the Lean frame states it that way.
+
+**Remaining leg (named):** Theorem 2.1.1 for mixed finitely-generated supports
+(`ℤ^r × F`, `r ≥ 1` with torsion, e.g. the sym-power truncations of Theorem 3.3) — reduces
+to `finite_pattern_coeff_bound` by torus sampling through a finite quotient injective on
+`S`; the reduction plumbing (structure-theorem coordinates + character pullback) is routine
+but unformalized, and the arbitrary-discrete-Γ display additionally needs character
+extension along subgroups (divisible-target injectivity — a mathlib gap).  Card stays at
+stage 2 until this leg lands; every other displayed statement is Lean-closed.  Fejér's
+exact extremal value in Theorem 3.1 remains a cited classical result per the card's own
+"nothing new is claimed about the values".

@@ -1,9 +1,12 @@
 import Mathlib.Algebra.DirectSum.Basic
+import Mathlib.Algebra.Group.Fin.Basic
 import Mathlib.Data.DFinsupp.FiniteInfinite
 import Mathlib.Data.ENNReal.Operations
 import Mathlib.Topology.Algebra.GroupCompletion
 import Mathlib.Topology.Compactness.Compact
 import Mathlib.Topology.Constructions
+import Mathlib.Topology.Instances.Discrete
+import Mathlib.Topology.UniformSpace.DiscreteUniformity
 
 /-!
 # Weighted history completion and boundary action
@@ -148,6 +151,126 @@ theorem restrictedHistory_compactObserver_openHistory
     weightedHistoryInclusion_not_isClosed_of_infinite_nontrivial Gamma hGamma hInfinite⟩
 
 end Completion
+
+/-! ## Closed binary source witness -/
+
+section BinaryRestrictedHistory
+
+local instance : UniformSpace (Fin 2) := ⊥
+
+/-- Nonidentity element of the binary compact coordinate group. -/
+def binaryHistoryOne : Fin 2 := ⟨1, by omega⟩
+
+theorem binaryHistoryOne_ne_zero : binaryHistoryOne ≠ 0 := by decide
+
+/-- Dense binary coordinate subgroup; it is the whole compact group. -/
+abbrev binaryRestrictedGamma (_ : ℕ) : AddSubgroup (Fin 2) := ⊤
+
+/-- Partial history with the first `N` binary coordinates activated. -/
+def binaryRestrictedHistory (N : ℕ) : ⨁ j : ℕ, binaryRestrictedGamma j :=
+  DirectSum.mk (fun j => binaryRestrictedGamma j) (Finset.range N) fun _ =>
+    ⟨binaryHistoryOne, Set.mem_univ _⟩
+
+theorem binaryRestrictedHistory_apply_of_lt (N j : ℕ) (hj : j < N) :
+    ((binaryRestrictedHistory N j : binaryRestrictedGamma j) : Fin 2) = binaryHistoryOne := by
+  rw [binaryRestrictedHistory, DirectSum.mk_apply_of_mem (Finset.mem_range.mpr hj)]
+
+theorem binaryRestrictedHistory_apply_of_le (N j : ℕ) (hj : N ≤ j) :
+    ((binaryRestrictedHistory N j : binaryRestrictedGamma j) : Fin 2) = 0 := by
+  simp [binaryRestrictedHistory, DirectSum.mk, not_lt_of_ge hj]
+
+/-- Support of the `N`-th partial history is exactly the first `N` coordinates. -/
+theorem binaryRestrictedHistory_support (N : ℕ) :
+    (binaryRestrictedHistory N).support = Finset.range N := by
+  ext j
+  rw [DFinsupp.mem_support_iff, Finset.mem_range]
+  constructor
+  · intro hj
+    by_contra hn
+    exact hj (Subtype.ext
+      (binaryRestrictedHistory_apply_of_le N j (Nat.le_of_not_gt hn)))
+  · intro hj hz
+    have hvalue := binaryRestrictedHistory_apply_of_lt N j hj
+    rw [hz] at hvalue
+    exact binaryHistoryOne_ne_zero hvalue.symm
+
+/-- Exact support cost of the partial history. -/
+theorem binaryRestrictedHistory_supportCost (N : ℕ) :
+    (binaryRestrictedHistory N).support.card = N := by
+  rw [binaryRestrictedHistory_support, Finset.card_range]
+
+/-- Every fixed finite-coordinate observer is eventually the constant activated packet. -/
+theorem binaryRestrictedHistory_finiteObserver_eventually_constant (F : Finset ℕ) :
+    ∃ N, ∀ M, N ≤ M → ∀ j ∈ F,
+      ((binaryRestrictedHistory M j : binaryRestrictedGamma j) : Fin 2) = binaryHistoryOne := by
+  refine ⟨∑ j ∈ F, (j + 1), fun M hM j hj =>
+    binaryRestrictedHistory_apply_of_lt M j ?_⟩
+  have hjN : j + 1 ≤ ∑ i ∈ F, (i + 1) :=
+    Finset.single_le_sum (fun i _ => Nat.zero_le (i + 1)) hj
+  omega
+
+/-- Partial histories converge coordinatewise, hence in the compact product, to the constant
+infinite-support history. -/
+theorem binaryRestrictedHistory_tendsto_infiniteHistory :
+    Tendsto
+      (fun N => weightedHistoryInclusion binaryRestrictedGamma (binaryRestrictedHistory N))
+      atTop (𝓝 fun _ : ℕ => binaryHistoryOne) := by
+  apply tendsto_pi_nhds.2
+  intro j
+  refine tendsto_const_nhds.congr' ?_
+  filter_upwards [eventually_ge_atTop (j + 1)] with N hN
+  exact (binaryRestrictedHistory_apply_of_lt N j (by omega)).symm
+
+/-- The binary limit has infinite support and is not a restricted history. -/
+theorem binaryInfiniteHistory_not_mem_range :
+    (fun _ : ℕ => binaryHistoryOne) ∉
+      Set.range (weightedHistoryInclusion binaryRestrictedGamma) := by
+  rintro ⟨x, hx⟩
+  have hall : ∀ j : ℕ, j ∈ x.support := by
+    intro j
+    rw [DFinsupp.mem_support_iff]
+    intro hz
+    have hj := congrFun hx j
+    simp only [weightedHistoryInclusion] at hj
+    rw [hz] at hj
+    exact binaryHistoryOne_ne_zero hj.symm
+  have hsub : Set.univ ⊆ (x.support : Set ℕ) := fun j _ => by
+    simpa using hall j
+  exact Set.infinite_univ (x.support.finite_toSet.subset hsub)
+
+/-- Unconditional binary source capstone for compact observers and open lifted history. -/
+theorem binaryRestrictedHistory_compactObserver_openHistory :
+    DenseRange (weightedHistoryInclusion binaryRestrictedGamma) ∧
+      ¬ Function.Surjective (weightedHistoryInclusion binaryRestrictedGamma) ∧
+      ¬ IsClosed (Set.range (weightedHistoryInclusion binaryRestrictedGamma)) ∧
+      (∀ F : Finset ℕ, ∃ N, ∀ M, N ≤ M → ∀ j ∈ F,
+        ((binaryRestrictedHistory M j : binaryRestrictedGamma j) : Fin 2) =
+          binaryHistoryOne) ∧
+      (∀ N, (binaryRestrictedHistory N).support.card = N) ∧
+      Tendsto
+        (fun N => weightedHistoryInclusion binaryRestrictedGamma (binaryRestrictedHistory N))
+        atTop (𝓝 fun _ : ℕ => binaryHistoryOne) ∧
+      (fun _ : ℕ => binaryHistoryOne) ∉
+        Set.range (weightedHistoryInclusion binaryRestrictedGamma) := by
+  have hDense : ∀ j, Dense (binaryRestrictedGamma j : Set (Fin 2)) := by
+    intro j
+    simpa only [binaryRestrictedGamma, AddSubgroup.coe_top] using
+      (dense_univ : Dense (Set.univ : Set (Fin 2)))
+  have hInfinite : Set.Infinite {j | Nontrivial (binaryRestrictedGamma j)} := by
+    have hnontrivial : ∀ j : ℕ, Nontrivial (binaryRestrictedGamma j) := fun _ => inferInstance
+    have hset : {j | Nontrivial (binaryRestrictedGamma j)} = Set.univ := by
+      exact Set.eq_univ_of_forall fun j => hnontrivial j
+    rw [hset]
+    exact Set.infinite_univ
+  obtain ⟨hdense, hproper, hnonclosed⟩ :=
+    restrictedHistory_compactObserver_openHistory binaryRestrictedGamma hDense hInfinite
+  exact ⟨hdense, hproper, hnonclosed,
+    binaryRestrictedHistory_finiteObserver_eventually_constant,
+    binaryRestrictedHistory_supportCost,
+    binaryRestrictedHistory_tendsto_infiniteHistory,
+    binaryInfiniteHistory_not_mem_range⟩
+
+end BinaryRestrictedHistory
 
 section Action
 
@@ -386,6 +509,62 @@ theorem weightedHistory_completion_boundary_law
     fun x hx => D.weightedHistoryRelaxation_eq_top_of_not_mem_range hx⟩
 
 end WeightedHistoryDatum
+
+/-! ## Unconditional weighted binary source -/
+
+section BinaryWeightedHistory
+
+local instance : UniformSpace (Fin 2) := ⊥
+local instance : UniformSpace (⨁ j : ℕ, binaryRestrictedGamma j) :=
+  weightedHistoryUniformSpace binaryRestrictedGamma
+
+/-- Proper symmetric binary coordinate length. -/
+def binaryHistoryLength {j : ℕ} (x : binaryRestrictedGamma j) : ℕ :=
+  if x = 0 then 0 else 1
+
+/-- Closed weighted-history datum with linearly growing positive weights. -/
+def binaryWeightedHistoryDatum : WeightedHistoryDatum binaryRestrictedGamma where
+  weight j := j + 1
+  length _ := binaryHistoryLength
+  weight_pos j := by
+    exact_mod_cast Nat.succ_pos j
+  weight_sublevel_finite R := by
+    refine (Set.finite_Iic ⌊(R : ℝ)⌋₊).subset ?_
+    intro j hj
+    apply Nat.le_floor
+    have hjR : (j : ℝ≥0) ≤ R := by
+      exact le_trans (by norm_num) hj
+    exact_mod_cast hjR
+  length_zero _ := by simp [binaryHistoryLength]
+  length_pos _ x hx := by simp [binaryHistoryLength, hx]
+  length_ball_finite _ _ := Set.toFinite _
+  length_add_le _ x y := by
+    by_cases hx : x = 0 <;> by_cases hy : y = 0 <;>
+      simp [binaryHistoryLength, hx, hy]
+    split <;> omega
+  length_neg _ x := by simp [binaryHistoryLength]
+
+/-- Unconditional exact completion-boundary action law on the binary compact product. -/
+theorem binaryWeightedHistory_completion_boundary_law :
+    DenseRange (weightedHistoryInclusion binaryRestrictedGamma) ∧
+      (∀ R, {x | binaryWeightedHistoryDatum.weightedHistoryAction x ≤ R}.Finite) ∧
+      (∀ R, IsCompact
+        {x | binaryWeightedHistoryDatum.weightedHistoryAction x ≤ R}) ∧
+      (∀ x y, binaryWeightedHistoryDatum.weightedHistoryAction (x + y) ≤
+        binaryWeightedHistoryDatum.weightedHistoryAction x +
+          binaryWeightedHistoryDatum.weightedHistoryAction y) ∧
+      (∀ h, binaryWeightedHistoryDatum.weightedHistoryRelaxation
+          (weightedHistoryInclusion binaryRestrictedGamma h) =
+        binaryWeightedHistoryDatum.weightedHistoryAction h) ∧
+      (∀ x, x ∉ Set.range (weightedHistoryInclusion binaryRestrictedGamma) →
+        binaryWeightedHistoryDatum.weightedHistoryRelaxation x = ∞) := by
+  have hDense : ∀ j, Dense (binaryRestrictedGamma j : Set (Fin 2)) := by
+    intro j
+    simpa only [binaryRestrictedGamma, AddSubgroup.coe_top] using
+      (dense_univ : Dense (Set.univ : Set (Fin 2)))
+  exact binaryWeightedHistoryDatum.weightedHistory_completion_boundary_law hDense
+
+end BinaryWeightedHistory
 
 end Action
 

@@ -1,9 +1,18 @@
 # Finite source ports cannot homogenize the Hedenmalm theta system
 
 - **ID:** `hedenmalm-finite-source-port-obstruction`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
-- **Scientific status:** `[PAPER-PROVED] [BRIDGE] [NOVELTY UNVERIFIED] [NOT RH]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper + Lean)
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [BRIDGE] [NOVELTY UNVERIFIED] [NOT RH]`
+- **Lean status:** complete in `RHTower/XiHedenmalmFiniteSourcePortObstruction.lean`,
+  umbrella-wired. `xiHedenmalm_coordinateStable_sourcePort_not_finiteDimensional` proves the
+  exact C4 statement: every complex subspace of `ℂ → ℂ` containing `XiC` and stable under
+  `xiCoordinateMultiplication` is not finite-dimensional. Injectivity of the source-orbit map
+  `P ↦ P·XiC` (`xiHedenmalmSourceOrbitMap_injective`) comes from the literal nonzero analytic
+  germ (`XiC_analytic`, `XiC_zero_ne`) and polynomial root finiteness; orbit membership comes
+  from the corpus minimality theorem
+  `eval_mul_XiC_mem_of_coordinateMultiplication_stable`. Module build passes (2026-08-13);
+  axiom audit `[propext, Classical.choice, Quot.sound]`.
 - **Statement:** Every complex function subspace containing the actual completed theta source
   `XiC` and stable under spectral-coordinate multiplication is infinite-dimensional. Hence no
   rank-two or fixed finite-dimensional compensating port can remove the affine Hedenmalm source
@@ -116,7 +125,7 @@ the infinite cyclic source orbit.
 
 - [x] 0 -> 1: actual-source statement, exact failed bridge, and hostile test identified
 - [x] 1 -> 2: complete dependency-closed paper proof
-- [ ] 2 -> 3: exact Lean theorem and axiom/lint gates
+- [x] 2 -> 3: exact Lean theorem and axiom/lint gates (2026-08-13)
 - [ ] 3 -> 4: publication-ready
 
 ## Log
@@ -125,3 +134,7 @@ the infinite cyclic source orbit.
   different carriers, and no conservative descent exists in the corpus.
 - 2026-08-07 — C4 extracted as positive survivor and proved from the nonzero central Xi germ,
   polynomial root finiteness, coordinate stability, and the finite-rank bound. Promoted to Stage 2.
+
+- 2026-08-13 — C4 formalized unconditionally in
+  `RHTower/XiHedenmalmFiniteSourcePortObstruction.lean`; module build and axiom audit clean.
+  Promoted to 3-formalized.

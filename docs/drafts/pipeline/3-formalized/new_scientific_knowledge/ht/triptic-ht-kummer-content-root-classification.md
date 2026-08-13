@@ -1,11 +1,12 @@
 # Triptic HT classes have an exact Kummer-content root classification
 
 - **ID:** `triptic-ht-kummer-content-root-classification`
-- **Stage:** 2-fully-proven / needs independent audit with parent
+- **Stage:** 3-formalized / needs independent priority audit
 - **Type:** THEOREM (paper) / POSITIVE SOURCE-EFFECTIVITY MODEL
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
   `[LEAN-FORMALIZED INTEGRAL CORE] [PARENT ATOMIC AUDIT PENDING] [NOT AN RH RESULT]`
 - **Lean:** `formal/GaloisForLFunctions/HTGeometry/MinimalHTCompletionArchitecture.lean`
+- **Formalized companion:** `triptic-ht-kummer-content-root-classification-formalized.md`
 - **Parent:** `triptic-orbit-residue-reciprocity.md`
 - **Statement:** In the multiplicative triptic HT class, existence and uniqueness of an `m`-th
   root modulo differentially algebraic factors are equivalent to coefficientwise divisibility by
@@ -134,7 +135,7 @@ class modulo DA factors.
 After tensoring `(6)` with `C`, every divisor is divisible by every nonzero integer because
 `C[G]` is a vector space.  The root spectrum `(9)` therefore disappears under complexification.
 The real-conjugacy counterexample in
-`../../3-formalized/source-producer-integral-realization-minimality.md` proves the same loss at the
+`../../source-producer-integral-realization-minimality.md` proves the same loss at the
 operator level: even the complete real conjugacy class does not recover integral cokernel exponent.
 
 > **[NO-GO]** No field theory retaining only complex analytic, spectral, polarized, or derived
@@ -665,3 +666,64 @@ These are the "integer powers provide signed multiplicities" and "quotients subt
 card's surjectivity argument, in the integral channel.  With `tripticOrbitCharge_mul` they give the
 charge of an arbitrary finite product of translated gamma functions with integer exponents, written
 as a quotient of two natural-power products.
+
+## Lean progress — the class is packaged, and the root classification is closed
+
+The remaining structural step — packaging the class `M` as a group with `D` an additive
+homomorphism into `ℤ[G]` so the abstract Kummer classification applies verbatim — is done, and the
+card's theorem is now formal on the concrete meromorphic class, unconditionally.  Six modules, all
+wired into `GaloisForLFunctions.HTGeometry`, all `[propext, Classical.choice, Quot.sound]`:
+
+    TripticMultiplicativeSourceClass.lean
+      TripticMultiplicativeSource            the class: meromorphic on ℂ, finite order everywhere,
+                                             1-periodic, mixed logDeriv coboundary a constant germ
+      .mul .div .pow .zpow, tripticMultiplicativeSource_one
+      tripticMultiplicativeSource_ellipticGammaConeTranslate    every gamma translate is a member
+
+    TripticSourceDivisorFinsupp.lean
+      shiftOrder_add_tau_of_source           the mixed germ constraint makes the shift order
+                                             τ-invariant (the last well-definedness input)
+      finiteShiftSupport_of_source           germ-form finite orbit support
+      tripticPeriodGroup, tripticChargeClass, tripticChargeClass_mk
+      finite_support_tripticChargeClass      finitely many charged classes, by reduction of the
+                                             1/τ-invariant shift support into one compact
+                                             fundamental parallelogram
+      tripticDivisor, tripticDivisor_mk      **D_Y ∈ ℤ[ℂ/H₃]**
+
+    TripticGammaProductRealization.lean
+      gammaDivisorSource                     ∏ Γ(· − g)^{E g} over the support of E
+      tripticMultiplicativeSource_gammaDivisorSource
+      tripticOrbitCharge_gammaDivisorSource  **every finite integral divisor is realized in class**
+
+    TripticKummerRootClassification.lean
+      HasTripticSourceRoot                   ∃ Z in class with Y/Z^m differentially algebraic
+      hasTripticSourceRoot_iff_dvd_charge    root ⟺ m ∣ charge on every orbit
+      hasTripticSourceRoot_iff_content_dvd   root ⟺ m ∣ Kummer content of D_Y
+      tripticSourceRoot_unique               root class unique modulo DA
+      hasTripticSourceRoot_content, tripticSource_maximal_root_order
+                                             **κ_K(Y) is the exact maximum root order**
+
+    TripticSourceReciprocity.lean
+      tripticOrbitCharge_reciprocity_source  the σ- and τ-side charges agree on the germ class
+
+    TripticSourceClassGroup.lean
+      tripticSourceUnitClass                 M as a subgroup of the units of the codiscrete-germ
+                                             ring of ℂ; class membership by representative
+      tripticDivisorHom                      D : M →+ ℤ[ℂ/H₃], germ-independent by
+                                             tripticOrbitCharge_congr
+      tripticDivisorHom_single               every class [g] realized by a gamma-translate unit
+      tripticSourceQuotientEquiv             **the effective quotient M/ker D ≅ ℤ[ℂ/H₃]** — (6)
+      tripticSource_hasSourceRootModuloKernel_iff_content_dvd
+                                             the abstract classification, verbatim on M
+      tripticSource_root_unique_mod_kernel
+      mem_ker_tripticDivisorHom_iff          **ker D = the differentially algebraic members** — (4)
+
+The backward direction of the root criterion realizes the quotient divisor `D_Y/m` by an explicit
+gamma product and identifies the remaining factor as differentially algebraic through the kernel
+theorem; the forward direction is the kernel converse plus additivity.  The kernel theorems are
+used in their germ form (`MixedConstGerm`), which the gamma translates actually satisfy, so no
+member of the hypothesis class is fictitious: the class conditions are the data of the class only.
+
+Verification: each module elaborates under `lake env lean` and builds by
+`lake build GaloisForLFunctions.HTGeometry.<Module>`; `#print axioms` on every named declaration
+reports `[propext, Classical.choice, Quot.sound]`.

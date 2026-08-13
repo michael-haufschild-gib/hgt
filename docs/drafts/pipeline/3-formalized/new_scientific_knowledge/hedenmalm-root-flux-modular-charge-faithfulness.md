@@ -1,9 +1,17 @@
 # Hedenmalm root flux faithfully reads the reflected modular charge
 
 - **ID:** `hedenmalm-root-flux-modular-charge-faithfulness`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
-- **Scientific status:** `[PAPER-PROVED] [BRIDGE] [NOVELTY UNVERIFIED] [NOT RH]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper + Lean)
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [BRIDGE] [NOVELTY UNVERIFIED] [NOT RH]`
+- **Lean status:** complete in `RHTower/HedenmalmRootFluxModularChargeFaithfulness.lean`,
+  umbrella-wired. `hedenmalmRootQuantileEnergy_pos` proves `0 < E(z)` (interior-continuity
+  upgrade of the a.e. zero-energy escape, then the pinned root ODE `h' = -izq·h - 1` forces
+  derivative `-1` at an interior zero); `hedenmalmRootOrderedFlux_eq_neg_half_entropy_mul_energy`
+  is the faithful law `(3)`; `hedenmalmRootOrderedFlux_eq_zero_iff_entropy`,
+  `riemannReflectedSourceEntropy_eq_zero_iff_im` and `hedenmalmRootOrderedFlux_eq_zero_iff_im`
+  are the full equivalence `(4)`. Module build passes (2026-08-13); axiom audit
+  `[propext, Classical.choice, Quot.sound]` on all five theorems.
 - **Statement:** At every zero `z` of the completed theta transform in `|Im z| < 1`, the
   Hedenmalm quantile-root energy is strictly positive and its ordered-correlation flux is
   `-1/2` times the reflected Riemann source entropy times that energy. Consequently flux
@@ -148,7 +156,7 @@ unproved source connector is used.
 
 - [x] 0 → 1: well-posed actual-source claim; exact hostile attack stated
 - [x] 1 → 2: paper proof survives dependency audit
-- [ ] 2 → 3: exact Lean theorem and axiom/lint gates
+- [x] 2 → 3: exact Lean theorem and axiom/lint gates (2026-08-13)
 - [ ] 3 → 4: publication-ready
 
 ## Log
@@ -157,3 +165,6 @@ unproved source connector is used.
   shared modular-charge obstruction and paper proof written for hostile audit.
 - 2026-08-07 — C2 survived hostile dependency audit. Interior continuity rules out an a.e.
   zero-energy escape; the forced `-1` in the root ODE rules out pointwise zero. Promoted to Stage 2.
+- 2026-08-13 — Faithful law and full neutrality equivalence formalized unconditionally in
+  `RHTower/HedenmalmRootFluxModularChargeFaithfulness.lean`; module build and axiom audit clean.
+  Promoted to 3-formalized.

@@ -168,7 +168,7 @@ theorem tripticGermRep_coe (x : ↥(tripticSourceUnitClass τ σ)) :
 
 /-- Any class representative of a germ-subgroup member has the divisor of the chosen one. -/
 theorem tripticDivisor_rep_congr (x : ↥(tripticSourceUnitClass τ σ))
-    {Z : ℂ → ℂ} {CZ : ℂ} (hZ : TripticMultiplicativeSource τ σ Z CZ)
+    {Z : ℂ → ℂ} {CZ : ℂ} (_hZ : TripticMultiplicativeSource τ σ Z CZ)
     (hcoe : ((x : ((Filter.codiscreteWithin (Set.univ : Set ℂ)).Germ ℂ)ˣ) :
       (Filter.codiscreteWithin (Set.univ : Set ℂ)).Germ ℂ) = ↑Z)
     (hfinx : (Function.support (tripticChargeClass (tripticGermRep x) τ σ)).Finite)

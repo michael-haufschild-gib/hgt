@@ -1,7 +1,7 @@
 # Suzuki inverse-log grades are nuclear directly in the physical Gamma measure
 
 - **ID:** `suzuki-physical-log-grade-nuclear-summability`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** EXACT CARRIER SUMMABILITY THEOREM / SOURCE-ARCHITECTURE REPLACEMENT
 - **Scientific status:** `[PROVED HERE] [NEW SCIENTIFIC KNOWLEDGE]`
   `[NOVELTY UNVERIFIED] [NOT RH]`
@@ -334,3 +334,35 @@ No prior corpus card or targeted source search identified `(18)`.  Priority rema
 - [ ] apply Gamma coercivity and prove trace-zero \(H^1\)
 - [ ] prove corona and raw Evans injectivity
 - [ ] RH
+
+### The terminal summability theorem for the concrete series EXISTS — Section 7's boundary is met
+
+Section 7 said formalization should begin when "the exact physical word-profile object and its
+coefficient recursion exist; then `(4)` becomes the terminal summability theorem for that concrete
+series."  Both now exist, in `RHTower/SuzukiPhysicalLogGradeNuclearSummability.lean`, built on the
+corpus's own `suzukiPrimePowerWeight` (the card's `(10)`) and `suzukiPrimeNormalGradeFactor` (the
+Volterra recursion of `(13a)`):
+
+- `sum_prod_suzukiWordWeights` — **`(1)` with equality**: the length-`k` word sum is exactly
+  `M_a^k` (the multinomial expansion, so collisions can only help);
+- `suzukiPrimeNormalGradeFactor_eq_centralBinom` — **`(13b)`'s closed form**
+  `θ_k = binom(2k,k)/8^k`, by the central-binomial recurrence, with the corpus's `θ_k ≤ 2^{-k}`;
+- `sum_suzukiWordCoefficient_le` / `sum_suzukiWordCoefficient_subtype_le` — **`(13d)`**: total
+  grade coefficient `= θ_k M_a^k ≤ (M_a/2)^k`;
+- `integral_sq_suzukiGradeProfile`, `norm_suzukiGradeProfileLp` — **`(7)`–`(8)` exactly**: the
+  grade profile's tail energy is `c² L₀^{-2k}/(2k)` and its `L²(dL)` norm is
+  `|c| L₀^{-k}/√(2k)`;
+- `suzukiVolterraInverse_integral` — **`(13)`**: the trace-zero Volterra inverse of the
+  differentiated power source is exactly `α/(2α+1) · A · L^{-α-1}`;
+- `sum_norm_suzukiWordProfileLp_le`, `summable_norm_suzukiWordProfileLp`,
+  `tsum_norm_suzukiWordProfileLp_le` — **`(4)` at the improved threshold `(13e)`**: for
+  `L₀ > M_a/2` the norm series over all positive grades and all words is summable with the exact
+  bound `C/√2 · q/(1-q)`, `q = M_a/(2L₀)`;
+- `summable_suzukiWordProfileLp` — **`(5)`'s Hilbert-carrier content**: the grade-word profiles
+  are absolutely summable in `L²(dL)` itself, so the descendant state exists in the physical
+  Gamma measure with no `dr/r` upgrade anywhere.
+
+All audit to exactly `[propext, Classical.choice, Quot.sound]`; umbrella wired.  What remains
+open is exactly what the card names: the uniform majorant `(16)` for the actual recursively
+forced weak solution, which is the correct-E1-target research conjecture, not a summability
+lemma.

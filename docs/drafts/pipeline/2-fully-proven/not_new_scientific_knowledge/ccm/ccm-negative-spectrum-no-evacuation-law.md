@@ -1,9 +1,11 @@
 # Negative restricted-Weil spectrum cannot evacuate cofinally
 
 - **ID:** `ccm-negative-spectrum-no-evacuation-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM (paper), `[BRIDGE]`
-- **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
+- **Scientific status:** `[LEAN-PROVED] [UNCONDITIONAL] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
+- **Date:** 2026-08-13
+- **Module:** `formal/GaloisForLFunctions/RHTower/CCMNestedFloorNoEvacuation.lean`
 - **Parent theories:** nested Rayleigh quotients and Suzuki's compact generalized eigenvalue
   formulation
 - **Statement:** The lowest restricted-Weil floor is nonincreasing with aperture. Once it is
@@ -153,6 +155,13 @@ needed at all.  The energy is the two-variable kernel form `diffBilinForm K v v`
 All statements are unconditional: `#print axioms` returns only
 `[propext, Classical.choice, Quot.sound]` for every theorem above.
 
+Current audit: direct Lean compile and targeted Lake build pass; ten capstones covering floor
+antitonicity, witness persistence, negative-part monotonicity, cofinal evacuation, repair threshold,
+concrete aperture monotonicity, and nonvacuity depend only on the standard axiom trio. Module has no
+`sorry`, `admit`, `axiom`, `opaque`, or `unsafe`; `RHTower.lean` imports it in `HEAD`. Repository-wide
+lint remains blocked only by another agent's concurrent untracked `FactorFramedTensorJacobian.lean`,
+with no nested-floor finding.
+
 Not formalized: Suzuki's published generalized eigenvalue identity `(6)` itself, which converts
 `QW(v,v)` and `||v||²` into `<G_a u,u>` and `<K_a u,u>` for `u = Dv`.  That is an analytic input of
 the source, not a theorem of this card; the abstract statements above are stated for an arbitrary
@@ -169,3 +178,4 @@ energy/mass pair, so they apply verbatim to either presentation.
 - [x] Lean: evacuation theorem `(5)` unconditional
 - [x] Lean: repair threshold `(8)`--`(10)` identified with the negative part, unconditional
 - [x] Lean: aperture-domain instantiation with nonempty trial set at every positive aperture
+- [x] Stage 3 promotion audit complete

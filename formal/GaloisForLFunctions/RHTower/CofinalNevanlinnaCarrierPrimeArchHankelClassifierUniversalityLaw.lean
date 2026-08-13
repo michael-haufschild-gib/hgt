@@ -20,6 +20,13 @@ open scoped ENNReal OnePoint Topology
 
 noncomputable section
 
+/-- Density of the cofinal Cholesky phase supplies an actual carrier in that phase. -/
+theorem cofinalNevanlinnaCarrier_primeArchHankelClassifierUniversality_nonemptyPhase
+    {s : ℕ → ℝ} (F : ClassicalAnalyticNevanlinnaCarrierFamily s)
+    (inputs : F.MaximalTranslationInputs) :
+    F.cofinalCholeskyResidualPhase.Nonempty :=
+  (F.cofinalCholeskyResidualPhase_dense_gdelta_residual inputs).1.nonempty
+
 /-- **Cofinal Nevanlinna-carrier prime--archimedean Hankel-classifier universality law.** The
 complete cofinal carrier phase is dense `G_delta` and residual; every member is simultaneously
 singular-continuous, maximally translation free, Cauchy--Herglotz hypertranscendental, a strict

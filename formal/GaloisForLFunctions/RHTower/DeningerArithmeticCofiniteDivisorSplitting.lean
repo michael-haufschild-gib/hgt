@@ -1,5 +1,7 @@
 import Mathlib.Algebra.Exact.Basic
+import Mathlib.GroupTheory.GroupExtension.Defs
 import Mathlib.LinearAlgebra.Finsupp.Defs
+import Mathlib.RepresentationTheory.Homological.GroupCohomology.Functoriality
 
 /-!
 # Cofinite divisor splitting for Deninger arithmetic cohomology
@@ -123,5 +125,112 @@ theorem deningerOutsideResidue_comp_insideDivisorEmbedding :
   exact (deningerCofiniteDivisor_exact (R := R) S).apply_apply_eq_zero x
 
 end CofiniteDivisorSplitting
+
+section FixedPrimeEulerClass
+
+/-- Integral divisor subgroup supported on one ordinary prime. -/
+abbrev FixedPrimeKernel (p : Nat.Primes) :=
+  DeningerInsidePrime (fun q : Nat.Primes => q = p) →₀ ℤ
+
+/-- Integral divisor group away from one ordinary prime. -/
+abbrev FixedPrimeQuotient (p : Nat.Primes) :=
+  DeningerOutsidePrime (fun q : Nat.Primes => q = p) →₀ ℤ
+
+/-- The fixed-prime divisor sequence as an additive group extension. -/
+noncomputable def deningerFixedPrimeExtension (p : Nat.Primes) :
+    AddGroupExtension (FixedPrimeKernel p) (Nat.Primes →₀ ℤ) (FixedPrimeQuotient p) where
+  inl := (deningerInsideDivisorEmbedding (R := ℤ) (fun q : Nat.Primes => q = p)).toAddMonoidHom
+  rightHom := (deningerOutsideResidue (R := ℤ) (fun q : Nat.Primes => q = p)).toAddMonoidHom
+  inl_injective := deningerInsideDivisorEmbedding_injective (R := ℤ) _
+  range_inl_eq_ker_rightHom := by
+    ext x
+    change x ∈ LinearMap.range _ ↔ x ∈ LinearMap.ker _
+    rw [LinearMap.exact_iff.mp (deningerCofiniteDivisor_exact (R := ℤ) _)]
+  rightHom_surjective := deningerOutsideResidue_surjective (R := ℤ) _
+
+/-- Extension by zero away from `p` is a canonical homomorphic splitting. -/
+noncomputable def deningerFixedPrimeSplitting (p : Nat.Primes) :
+    (deningerFixedPrimeExtension p).Splitting where
+  __ := (deningerOutsideResidueSection (R := ℤ)
+    (fun q : Nat.Primes => q = p)).toAddMonoidHom
+  rightInverse_rightHom := deningerOutsideResidue_section (R := ℤ) _
+
+/-- The one-prime divisor kernel is canonically the additive group `ℤ`. -/
+noncomputable def fixedPrimeKernelEquivInt (p : Nat.Primes) :
+    FixedPrimeKernel p ≃+ ℤ where
+  toFun x := x ⟨p, rfl⟩
+  invFun z := Finsupp.single ⟨p, rfl⟩ z
+  left_inv x := by
+    apply Finsupp.ext
+    intro q
+    have hq : q = ⟨p, rfl⟩ := Subtype.ext q.property
+    subst q
+    simp
+  right_inv z := by simp
+  map_add' x y := by simp
+
+/-- Factor-set defect of the canonical fixed-prime section. -/
+noncomputable def fixedPrimeSectionDefect (p : Nat.Primes)
+    (g h : FixedPrimeQuotient p) : FixedPrimeKernel p :=
+  Function.invFun (deningerFixedPrimeExtension p).inl
+    (deningerFixedPrimeSplitting p g + deningerFixedPrimeSplitting p h -
+      deningerFixedPrimeSplitting p (g + h))
+
+/-- A homomorphic section has identically zero factor-set defect. -/
+theorem fixedPrimeSectionDefect_eq_zero (p : Nat.Primes)
+    (g h : FixedPrimeQuotient p) : fixedPrimeSectionDefect p g h = 0 := by
+  have hinv := Function.leftInverse_invFun
+    (deningerFixedPrimeExtension p).inl_injective (0 : FixedPrimeKernel p)
+  simpa [fixedPrimeSectionDefect] using hinv
+
+/-- Integral Euler factor set associated to the fixed-prime extension. -/
+noncomputable def fixedPrimeEulerFactor (p : Nat.Primes) :
+    Multiplicative (FixedPrimeQuotient p) × Multiplicative (FixedPrimeQuotient p) → ℤ :=
+  fun gh => fixedPrimeKernelEquivInt p
+    (fixedPrimeSectionDefect p gh.1.toAdd gh.2.toAdd)
+
+@[simp]
+theorem fixedPrimeEulerFactor_eq_zero (p : Nat.Primes)
+    (g h : Multiplicative (FixedPrimeQuotient p)) :
+    fixedPrimeEulerFactor p (g, h) = 0 := by
+  simp [fixedPrimeEulerFactor, fixedPrimeSectionDefect_eq_zero]
+
+/-- The factor set as a degree-two cocycle with trivial integral coefficients. -/
+noncomputable def fixedPrimeEulerCocycle (p : Nat.Primes) :
+    groupCohomology.cocycles₂
+      (Rep.trivial ℤ (Multiplicative (FixedPrimeQuotient p)) ℤ) := by
+  refine ⟨fixedPrimeEulerFactor p, ?_⟩
+  rw [groupCohomology.mem_cocycles₂_iff]
+  simp
+
+theorem fixedPrimeEulerCocycle_eq_zero (p : Nat.Primes) :
+    fixedPrimeEulerCocycle p = 0 := by
+  ext g h
+  exact fixedPrimeEulerFactor_eq_zero p g h
+
+/-- Fixed-prime extension/Euler class in mathlib's group cohomology. -/
+noncomputable def fixedPrimeEulerClass (p : Nat.Primes) :
+    groupCohomology.H2
+      (Rep.trivial ℤ (Multiplicative (FixedPrimeQuotient p)) ℤ) :=
+  groupCohomology.H2π _ (fixedPrimeEulerCocycle p)
+
+/-- The split fixed-prime extension has zero Euler class. -/
+theorem fixedPrimeEulerClass_eq_zero (p : Nat.Primes) :
+    fixedPrimeEulerClass p = 0 := by
+  rw [fixedPrimeEulerClass, fixedPrimeEulerCocycle_eq_zero]
+  exact map_zero _
+
+/-- Every trivial-coefficient pushforward of the fixed-prime Euler class remains zero. -/
+theorem fixedPrimeEulerClass_pushforward_eq_zero
+    (p : Nat.Primes) {M : Type} [AddCommGroup M] [Module ℤ M]
+    (φ : Rep.res (MonoidHom.id (Multiplicative (FixedPrimeQuotient p)))
+        (Rep.trivial ℤ (Multiplicative (FixedPrimeQuotient p)) ℤ) ⟶
+      Rep.trivial ℤ (Multiplicative (FixedPrimeQuotient p)) M) :
+    groupCohomology.map (MonoidHom.id (Multiplicative (FixedPrimeQuotient p))) φ 2
+        (fixedPrimeEulerClass p) = 0 := by
+  rw [fixedPrimeEulerClass_eq_zero]
+  exact map_zero _
+
+end FixedPrimeEulerClass
 
 end RHTower

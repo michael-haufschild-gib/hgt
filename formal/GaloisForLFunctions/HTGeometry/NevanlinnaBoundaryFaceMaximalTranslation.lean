@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.BoundaryCarrierTranslationFreeness
 import GaloisForLFunctions.HTGeometry.AtomlessProjectiveFrameFiber
+import GaloisForLFunctions.HTGeometry.NevanlinnaFullRankPhaseGdelta
 
 /-!
 # Maximal translation rank on every infinite Nevanlinna boundary face
@@ -30,8 +31,6 @@ structure MaximalTranslationInputs where
   regularPoint : ℂ
   regularPoint_spec : F.c regularPoint ≠ 0
   upperMap : ∀ z, z.im < 0 → 0 < (F.quotient z).im
-  phase_isGδ : IsGδ {nu : ProbabilityMeasure ℝ |
-    MaximalTranslationDifferentialFree nu}
 
 /-- An infinite-support parameter barycenter lies in the weak closure of carriers with simultaneous
 full-rank packet certificates inside every projective face carrying it. -/
@@ -194,7 +193,42 @@ def boundaryCarrierFaceMaximalTranslationPhase
       nu ∈ F.base.toBoundaryFamily.boundaryCarrierFace K} :=
   {nu | MaximalTranslationDifferentialFree nu.1}
 
-/-- Every infinite closed boundary face carries a dense residual maximal-translation phase. -/
+/-- Full-rank witness points of one boundary face, with the relative weak topology. -/
+def boundaryCarrierFaceMaximalTranslationFullRankPhase
+    (K : Set (OnePoint ℝ)) :
+    Set {nu : ProbabilityMeasure ℝ //
+      nu ∈ F.base.toBoundaryFamily.boundaryCarrierFace K} :=
+  {nu | MaximalTranslationFullRankWitness nu.1}
+
+/-- Every infinite closed boundary face carries a dense residual full-rank witness phase.  The
+Gδ half is the unconditional countable-certificate theorem; only the density half consumes the
+analytic inputs. -/
+theorem boundaryCarrierFace_maximalTranslationFullRankPhase_dense_residual
+    (inputs : F.MaximalTranslationInputs)
+    (K : Set (OnePoint ℝ)) (hKclosed : IsClosed K) (hK : K.Infinite) :
+    Dense (F.boundaryCarrierFaceMaximalTranslationFullRankPhase K) ∧
+      F.boundaryCarrierFaceMaximalTranslationFullRankPhase K ∈
+        residual {nu : ProbabilityMeasure ℝ //
+          nu ∈ F.base.toBoundaryFamily.boundaryCarrierFace K} := by
+  have hdense : Dense (F.boundaryCarrierFaceMaximalTranslationFullRankPhase K) := by
+    rw [Subtype.dense_iff]
+    have himage :
+        ((↑) : {nu : ProbabilityMeasure ℝ //
+          nu ∈ F.base.toBoundaryFamily.boundaryCarrierFace K} → ProbabilityMeasure ℝ) ''
+            F.boundaryCarrierFaceMaximalTranslationFullRankPhase K =
+          {nu : ProbabilityMeasure ℝ | MaximalTranslationFullRankWitness nu} ∩
+            F.base.toBoundaryFamily.boundaryCarrierFace K := by
+      ext nu
+      simp [boundaryCarrierFaceMaximalTranslationFullRankPhase]
+    rw [himage]
+    exact F.boundaryCarrierFace_subset_closure_maximalTranslationFullRankWitness
+      inputs K hKclosed hK
+  refine ⟨hdense, residual_of_dense_Gδ ?_ hdense⟩
+  exact IsGδ.preimage continuous_subtype_val isGδ_maximalTranslationFullRankWitness
+
+/-- Every infinite closed boundary face carries a dense residual maximal-translation phase.  The
+free phase contains the dense residual full-rank phase, so density and residuality are inherited
+by monotonicity. -/
 theorem boundaryCarrierFace_maximalTranslationPhase_dense_residual
     (inputs : F.MaximalTranslationInputs)
     (K : Set (OnePoint ℝ)) (hKclosed : IsClosed K) (hK : K.Infinite) :
@@ -202,21 +236,14 @@ theorem boundaryCarrierFace_maximalTranslationPhase_dense_residual
       F.boundaryCarrierFaceMaximalTranslationPhase K ∈
         residual {nu : ProbabilityMeasure ℝ //
           nu ∈ F.base.toBoundaryFamily.boundaryCarrierFace K} := by
-  have hdense : Dense (F.boundaryCarrierFaceMaximalTranslationPhase K) := by
-    rw [Subtype.dense_iff]
-    have himage :
-        ((↑) : {nu : ProbabilityMeasure ℝ //
-          nu ∈ F.base.toBoundaryFamily.boundaryCarrierFace K} → ProbabilityMeasure ℝ) ''
-            F.boundaryCarrierFaceMaximalTranslationPhase K =
-          {nu : ProbabilityMeasure ℝ | MaximalTranslationDifferentialFree nu} ∩
-            F.base.toBoundaryFamily.boundaryCarrierFace K := by
-      ext nu
-      simp [boundaryCarrierFaceMaximalTranslationPhase]
-    rw [himage]
-    exact F.boundaryCarrierFace_subset_closure_maximalTranslationDifferentialFree
+  obtain ⟨hdense, hres⟩ :=
+    F.boundaryCarrierFace_maximalTranslationFullRankPhase_dense_residual
       inputs K hKclosed hK
-  refine ⟨hdense, residual_of_dense_Gδ ?_ hdense⟩
-  exact IsGδ.preimage continuous_subtype_val inputs.phase_isGδ
+  have hsub : F.boundaryCarrierFaceMaximalTranslationFullRankPhase K ⊆
+      F.boundaryCarrierFaceMaximalTranslationPhase K := by
+    intro nu hnu
+    exact maximalTranslationDifferentialFree_of_fullRankWitness hnu
+  exact ⟨hdense.mono hsub, Filter.mem_of_superset hres hsub⟩
 
 end ClassicalAnalyticNevanlinnaCarrierFamily
 

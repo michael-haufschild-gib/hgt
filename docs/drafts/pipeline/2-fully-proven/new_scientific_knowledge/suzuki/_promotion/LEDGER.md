@@ -5456,3 +5456,64 @@ the countable Hilbert basis of L²[-a,a] replacing mathlib's missing Lp separabi
 remains on the card is source matching only — exhibiting Suzuki's own restricted resolvent and
 physical functionals in place of the constructed data — the folder's shared open-research core,
 recorded in the certificate's Open boundary.
+
+## FI. 85/103 — `suzuki-arithmetic-tangent-inverse-moment-holography` promoted
+
+Section 9's module `RHTower/SuzukiArithmeticTangentHolography.lean` is built, with all six named
+targets and more:
+
+```text
+hasDerivAt_suzukiCauchyPow                       (13): differentiation under the Cauchy transform
+iteratedDeriv_suzukiCauchyPow                    on the half-gap disc, dominated by (2/δ)^{j+1}
+iteratedDeriv_suzukiDonoghueTransform_odd_zero   (5): m^{(2n+1)}(0) = (2n+1)!(q_n + q_{n+1})
+suzukiInverseMomentReconstruction_eq             (6)
+suzukiInverseMoment_pushforward                  (7)
+suzukiInverseMoment_determinacy                  Theorem A determinacy END TO END: compact moment
+                                                 determinacy on [0, δ⁻²] + even recovery
+                                                 (ext_of_even_of_map_invSq_eq)
+suzukiProjectiveMomentShape_geometricScale       (8) dilation invariance
+hasDerivAt_suzukiFourierLivsic_freeBoundary      (17)/(25)
+hasDerivAt_suzukiUpperCayleyInv_parameter        (18)'s transport factor
+hasDerivAt_suzukiHerglotz_freeBoundary           (18)
+```
+
+All audit to `[propext, Classical.choice, Quot.sound]`.  Card + certificate moved; umbrella wired.
+
+Traps this round: `.pow`/`.inv`/`.mul`/`.add`/`.const_mul` on `HasDerivAt` produce Pi-operation
+function forms — bind every intermediate with an explicitly ascribed `have` (defeq accepts the
+lambda; `rw` does not) and mirror the produced VALUE exactly, including `((j+1 : ℕ) : ℂ)` casts
+(Nat.cast is not defeq to numeral literals) and multiplication association.  `ae_map_iff` +
+`measurableSet_Icc` unfolds `y ∈ Icc` to a conjunction in the rw pattern — `simp only
+[Set.mem_Icc]` first.  `le_or_lt` is gone; use `le_total` with `abs_of_nonpos`.
+`Measurable.inv`/`.pow_const` also produce Pi-forms — ascribe the lambda type at the `have`.
+
+The remaining 20 in section B minus this and FH's = 20 cards.  `(15)`'s operator expansion and
+Theorem B's identification stay paper-level per the card's own Section 9 (the convergence half is
+`tendsto_neumannShiftFamily_id`; the rest is the folder's shared source-matching core).
+
+## FJ. 86/103 — `suzuki-physical-log-grade-nuclear-summability` promoted
+
+Section 7's boundary is met: the concrete word-profile object and coefficient recursion exist, so
+`(4)` is the terminal summability theorem for that concrete series, in
+`RHTower/SuzukiPhysicalLogGradeNuclearSummability.lean`:
+
+```text
+sum_prod_suzukiWordWeights                      (1) with equality: word sum = M_a^k
+suzukiPrimeNormalGradeFactor_eq_centralBinom    (13b) closed form θ_k = binom(2k,k)/8^k
+sum_suzukiWordCoefficient_le                    (13d): ≤ (M_a/2)^k
+integral_sq_suzukiGradeProfile                  (7): tail energy c² L₀^{-2k}/(2k)
+norm_suzukiGradeProfileLp                       (8): exact L² norm |c| L₀^{-k}/√(2k)
+suzukiVolterraInverse_integral                  (13): the trace-zero inverse of a power source
+summable_norm_suzukiWordProfileLp               (4) summability at L₀ > M_a/2 = (13e)
+tsum_norm_suzukiWordProfileLp_le                (4) exact bound C/√2 · q/(1-q), q = M_a/(2L₀)
+summable_suzukiWordProfileLp                    (5): absolute summability in L²(dL) itself
+```
+
+Built on `suzukiPrimePowerWeight` ((10)) and `suzukiPrimeNormalGradeFactor` ((13a)); all audit to
+`[propext, Classical.choice, Quot.sound]`; another session's index pass had already wired the
+module into the umbrella.  Card + certificate moved.  The open residue is the card's own `(16)`
+(uniform physical word majorant) — research, not Lean.
+
+Trap: `Nat.succ_mul_centralBinom_succ` is the exact recurrence for `(13b)`; after `field_simp;
+push_cast` the closing step is `linear_combination (-4 * (8:ℝ)^k) * hcast` (the residual is
+`4·8^k` times the recurrence; sign from field_simp's normalization).

@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.MovingCanonicalFullTranslationRankGenerici
 import GaloisForLFunctions.HTGeometry.MovingEvenCanonicalFullTranslationFreeness
 import GaloisForLFunctions.HTGeometry.HerglotzFullTranslationRankGenericity
 import GaloisForLFunctions.HTGeometry.NevanlinnaBoundaryFaceMaximalTranslation
+import GaloisForLFunctions.HTGeometry.SingularContinuousLawWitnesses
 
 /-!
 # Inhabitation of expanded full-rank interfaces
@@ -111,6 +112,16 @@ theorem exists_maximalTranslationFullRankWitness
   apply closure_mono Set.inter_subset_left
   exact F.barycenter_mem_closure_maximalTranslationFullRankWitness_inter_face
     inputs K eta hetaK hetaInfinite
+
+/-- The analytic maximal-translation inputs alone produce an intrinsic full-rank carrier:
+singular-continuous projective laws supply all boundary-carrier side conditions. -/
+theorem exists_maximalTranslationFullRankWitness_of_inputs
+    (inputs : F.MaximalTranslationInputs) :
+    ∃ nu : ProbabilityMeasure ℝ, MaximalTranslationFullRankWitness nu := by
+  obtain ⟨eta, hetaSC⟩ := exists_mem_projectiveSingularContinuousProbabilityLaws
+  apply F.exists_maximalTranslationFullRankWitness inputs Set.univ eta
+  · simp [probabilityLawsCarriedBy]
+  · exact projectiveSingularContinuousProbabilityLaw_support_infinite eta hetaSC
 
 end ClassicalAnalyticNevanlinnaCarrierFamily
 
