@@ -800,6 +800,14 @@ theorem preserves_matrixLocalReporter_iff_localForm
     intro L hL
     exact matrixCommutator_localForm_mem A B c hL
 
+/-- The cross projection vanishes on every local reporter. -/
+theorem crossMatrixPart_eq_zero_of_mem_matrixLocalReporter
+    {X : Matrix (m × n) (m × n) ℂ}
+    (hX : X ∈ matrixLocalReporter (m := m) (n := n)) :
+    crossMatrixPart X = 0 := by
+  exact (crossMatrixPart_eq_zero_iff_preserves_local X).2 fun L hL =>
+    matrixCommutator_local_mem hX hL
+
 /-! ## Exact boundary/cross direct sum on the traceless joint sector -/
 
 /-- Joint traceless matrix sector, the complexification of `Herm₀(A ⊗ B)`. -/
@@ -842,6 +850,20 @@ theorem jointTracelessMatrices_eq_local_sup_cross :
     refine ⟨leftLocalPart X + rightLocalPart X, hlocal, crossMatrixPart X, hcross, ?_⟩
     simpa [hscalar, add_assoc] using (bipartite_decomposition X).symm
   · exact sup_le matrixLocalReporter_le_jointTraceless matrixCrossFibre_le_jointTraceless
+
+/-- On the traceless joint sector, zero cross projection is exactly local membership. -/
+theorem crossMatrixPart_eq_zero_iff_mem_matrixLocalReporter_of_trace_zero
+    {X : Matrix (m × n) (m × n) ℂ} (htrace : X.trace = 0) :
+    crossMatrixPart X = 0 ↔ X ∈ matrixLocalReporter (m := m) (n := n) := by
+  constructor
+  · intro hcross
+    rw [mem_matrixLocalReporter_iff]
+    refine ⟨leftReducedComponent X, leftReducedComponent_trace X,
+      rightReducedComponent X, rightReducedComponent_trace X, ?_⟩
+    have hscalar : scalarMatrixPart X = 0 := by
+      simp [scalarMatrixPart, bipartiteScalarCoeff, htrace]
+    simpa [leftLocalPart, rightLocalPart, hscalar, hcross] using bipartite_decomposition X
+  · exact crossMatrixPart_eq_zero_of_mem_matrixLocalReporter
 
 
 end Decomposition

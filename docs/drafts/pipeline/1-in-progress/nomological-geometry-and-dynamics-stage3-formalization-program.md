@@ -39,7 +39,10 @@ one foreground compiler/build process owned by this task.
 - Split-prime bounded shear: implemented in
   `HTGeometry/BoundedLogarithmicPrimeInfinityShear.lean`; existing divisor, inverse-monodromy, and
   coframe modules cover other algebraic components.
-- Descent, odd Euler comb, five-shadow, and positive-observer exact source wrappers remain open.
+- Odd Euler comb: literal all-parameter `D'`, exact signed-measure admission threshold, admitted
+  `S'` realization, endpoint variation, Route-L wall, and torque nonadmission implemented and
+  promoted in `HTGeometry/OddEulerCombTemperedAdmissionWall.lean`.
+- Descent, five-shadow, and remaining positive-observer source wrappers remain open.
 
 ## No-go closure
 
@@ -50,3 +53,5 @@ be promoted only with those survivors represented by named Lean capstones.
 
 - 2026-08-13 — created after source/corpus inventory; weighted-history and three-organ modules pass
   direct focused checks.
+- 2026-08-13 — odd Euler-comb card promoted to Stage 3 after direct Lean, exact leaf build, axiom
+  audit, authoritative lint, and umbrella wiring.

@@ -3,7 +3,7 @@
 - **ID:** infinite-half-turn-frequency-source-admissibility-split
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper) / source-transfer splitter
-- **Source:** `finite-half-turn-repaired-packets-not-markov.md`;
+- **Source:** `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/finite-half-turn-repaired-packets-not-markov.md`;
   `seam-log-markov-pick-rh-equivalence.md`
 
 ## Statement
@@ -117,7 +117,7 @@ source category explicitly permits a zero-frequency reservoir. ∎
 ## Consequence for the RH Route
 
 This theorem is the infinite counterpart of
-`finite-half-turn-repaired-packets-not-markov.md`.
+`docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/finite-half-turn-repaired-packets-not-markov.md`.
 
 Finite positive repaired packets fail because the top frequency eventually
 dominates. Infinite positive repaired measures split into two sharply different

@@ -8,10 +8,25 @@
 - **RH used:** no
 - **Computation used:** no
 - **Lean target:** RHTower/MobiusWholeAnchorCapacityDisplacement.lean
-- **Lean status:** target module now formalizes exact finite core: E3 breadth addition, reservoir
+- **Lean status:** target module formalizes the exact finite core: E3 breadth addition, reservoir
   band decoding, opposite-sign/displacement packet, full-subset reciprocal Euler mass, and sharp
-  row-stochastic capacity inequalities. Global E3 counting, reciprocal-prime Mertens transport,
-  and moving-parameter asymptotics `(2)`--`(6)` remain paper-only.
+  row-stochastic capacity inequalities (`(4)`, `(9)`). As of 2026-08-13 the global layers are also
+  formalized, unconditional and umbrella-wired: `Sieve/AlmostPrimeGlobalCount.lean` proves the
+  effective Chebyshev bound, the Mertens upper bound `∑_{p≤N} 1/p ≤ log log N + K`, the
+  least-factor count recursion, and the fixed-order Hardy–Ramanujan bounds
+  (`exists_squarefreeOmegaCount_two_bound`, `exists_squarefreeOmegaCount_three_bound` = `(10)`);
+  `MobiusWholeAnchorGlobalTerminalCapacity.lean` defines the literal terminal universe
+  (all window integers `t_R·m` over band-reservoir subsets of bounded product and squarefree
+  three-prime tokens), proves the label split `(11)`/`(12)`
+  (`wholeAnchorTerminalUniverse_card_le_sum` + per-label Hardy–Ramanujan window bound), the
+  Mertens band product bound `(13)` (`bandPrimes_eulerProduct_le`,
+  `∏_{W<p≤Z}(1+1/p) ≤ K₂ log Z/log W` from the sharp second Mertens theorem), and the boxed
+  capacity bounds `(2)`/`(14)`: `exists_wholeAnchorTerminalUniverse_card_le` (Euler-product form)
+  and `exists_wholeAnchorTerminalUniverse_card_le_theta` (θ form, with the band floor
+  `A·(log log b + K) ≤ log W` as the exact `W ≥ (log X)^A` regime hypothesis). Module builds pass;
+  axiom audits `[propext, Classical.choice, Quot.sound]` on all nine leading theorems. Remaining
+  for stage 3: the `o(1)` sequence corollary `(3)`, the kernel-composition corollary combining
+  `(2)` with `(4)`, and the proposed-band specialization `(5)`/`(6)`.
 
 ## 1. Statement
 

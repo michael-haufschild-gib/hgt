@@ -118,7 +118,31 @@ wire umbrellas.
 - hedenmalm-finite-source-port-obstruction, hedenmalm-root-flux-modular-charge-faithfulness —
   "exact Lean theorem and axiom/lint gates" open; check what exact statements need.
 
+## Promoted this session additionally (see card statuses)
+- route-r-reciprocal-log-fisher-half-density-entrance-wall (with new Sieve/PrimeLogPowerTail.lean)
+- rank-two-commutator-parity-multiplicity-balance
+- hedenmalm-root-flux-modular-charge-faithfulness
+Total promoted 2026-08-13: 10 cards; 28 top-level stage-2 cards remain.
+
 ## Active card: route-e-whole-anchor-capacity-displacement-conservation-law (task 8)
+STATE 2026-08-13 end of session: steps 1–2 of the plan below are COMPLETE, wired, built, audited:
+- Sieve/AlmostPrimeGlobalCount.lean: primePiCount + exists_primePiCount_le (effective Chebyshev),
+  mertensUpperConst + mertensS_le_logLog_add, squarefreeOmegaCount k, minFac_pow_le_of_squarefree,
+  primeFactors_card_div_minFac, squarefreeOmegaCount_succ_le,
+  exists_squarefreeOmegaCount_{one,two,three}_bound (Hardy–Ramanujan (10)).
+- MobiusWholeAnchorGlobalTerminalCapacity.lean: wholeAnchorBandPrimes,
+  wholeAnchorTerminalUniverse, card_window_fixed_label_le,
+  wholeAnchorTerminalUniverse_card_le_sum ((11)/(12) split), log_natDiv_ge_of_sq_le,
+  logLog_sub_le_mertensS, sum_one_div_bandPrimes, mertensBandProductConst,
+  bandPrimes_eulerProduct_le ((13)), exists_wholeAnchorTerminalUniverse_card_le ((12)→(2)
+  Euler form), exists_wholeAnchorTerminalUniverse_card_le_theta ((2)/(14) θ form).
+REMAINING for promotion (step 3): (a) o(1) sequence corollary (3) via squeeze from θ form;
+(b) kernel composition corollary: P.exists_average_le_column (FiniteRowStochasticKernel in
+MobiusReciprocalAllocationJacobian.lean:179, Target := ↥(wholeAnchorTerminalUniverse ...),
+Fintype.card_coe) chained with the θ bound → column ≥ #Anchor/(C·θ·b);
+(c) proposed-band (5)/(6): hypotheses exp(√(logLog b)) ≤ log W and log Z·(logLog b)² ≤ log b
+give card ≤ C·b·exp(−√(logLog b)) (needs logLog b ≥ 1 from b ≥ 16 via log 2 > 0.693 bounds);
+then update card + git mv to 3-formalized.
 Finite core done in RHTower/MobiusWholeAnchorCapacityDisplacement.lean (reservoir band, E3
 packet, powerset mass = Euler product `wholeAnchor_fullReservoirMass_eq_eulerProduct`,
 row-stochastic (4)/(9)). Remaining plan:

@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.RealDirichletSeries
 import GaloisForLFunctions.RHTower.VonMangoldtGammaJetBoundaryConvergence
 import Mathlib.Analysis.Distribution.Distribution
 import Mathlib.Analysis.Distribution.TemperedDistribution
+import Mathlib.Analysis.Normed.Operator.Mul
 import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 import Mathlib.MeasureTheory.Integral.Bochner.SumMeasure
 import Mathlib.NumberTheory.LSeries.PrimesInAP
@@ -20,8 +21,8 @@ threshold `b >= 1`, construct the admitted odd tempered distribution, and retain
 distribution for every real `b`.
 -/
 
-open Filter MeasureTheory Set Topology
-open scoped ENNReal NNReal Real SchwartzMap
+open Filter MeasureTheory Module Set TopologicalSpace Topology
+open scoped Distributions ENNReal NNReal Real SchwartzMap
 
 namespace HTGeometry
 
@@ -413,7 +414,7 @@ theorem oddEulerPositiveMeasure_isFiniteMeasure_iff (b : ℝ) :
     have hint : Integrable (fun _ : ℝ => (1 : ℝ)) (oddEulerPositiveMeasure b) :=
       integrable_const (1 : ℝ)
     have hdamped : Integrable (fun x : ℝ => (1 + ‖x‖) ^ (-((0 : ℕ) : ℝ)))
-        (oddEulerPositiveMeasure b) := by simpa using hint
+        (oddEulerPositiveMeasure b) := by simp
     have hsum := (integrable_oddEulerPositiveMeasure_iff b 0).1 hdamped
     rw [oddEulerTemperedTerm_zero_fun] at hsum
     exact hsum
@@ -434,7 +435,7 @@ theorem oddEulerNegativeMeasure_isFiniteMeasure_iff (b : ℝ) :
     have hint : Integrable (fun _ : ℝ => (1 : ℝ)) (oddEulerNegativeMeasure b) :=
       integrable_const (1 : ℝ)
     have hdamped : Integrable (fun x : ℝ => (1 + ‖x‖) ^ (-((0 : ℕ) : ℝ)))
-        (oddEulerNegativeMeasure b) := by simpa using hint
+        (oddEulerNegativeMeasure b) := by simp
     have hsum := (integrable_oddEulerNegativeMeasure_iff b 0).1 hdamped
     rw [oddEulerTemperedTerm_zero_fun] at hsum
     exact hsum
@@ -570,6 +571,10 @@ def oddEulerTorquePositiveMeasure : Measure ℝ :=
   Measure.sum fun n : ℕ =>
     ENNReal.ofReal (oddEulerTorqueWeight n) • Measure.dirac (Real.log n)
 
+def oddEulerTorqueNegativeMeasure : Measure ℝ :=
+  Measure.sum fun n : ℕ =>
+    ENNReal.ofReal (oddEulerTorqueWeight n) • Measure.dirac (-Real.log n)
+
 theorem integrable_oddEulerTorquePositiveMeasure_iff (k : ℕ) :
     Integrable (fun x : ℝ => (1 + ‖x‖) ^ (-(k : ℝ)))
         oddEulerTorquePositiveMeasure ↔
@@ -590,13 +595,41 @@ theorem oddEulerTorquePositiveMeasure_not_hasTemperateGrowth :
   exact not_summable_oddEulerTorqueTemperedTerm k
     ((integrable_oddEulerTorquePositiveMeasure_iff k).1 hk)
 
+theorem integrable_oddEulerTorqueNegativeMeasure_iff (k : ℕ) :
+    Integrable (fun x : ℝ => (1 + ‖x‖) ^ (-(k : ℝ)))
+        oddEulerTorqueNegativeMeasure ↔
+      Summable (oddEulerTorqueTemperedTerm k) := by
+  rw [oddEulerTorqueNegativeMeasure,
+    integrable_sum_dirac_iff (fun n : ℕ => ENNReal.ofReal_ne_top)]
+  apply summable_congr
+  intro n
+  rw [ENNReal.toReal_ofReal (oddEulerTorqueWeight_nonneg n)]
+  simp only [Real.norm_eq_abs, oddEulerTorqueTemperedTerm, abs_neg]
+  rw [abs_of_nonneg (Real.rpow_nonneg (by positivity) _)]
+
+theorem oddEulerTorqueNegativeMeasure_not_hasTemperateGrowth :
+    ¬ oddEulerTorqueNegativeMeasure.HasTemperateGrowth := by
+  intro hgrowth
+  rcases hgrowth.exists_integrable with ⟨k, hk⟩
+  exact not_summable_oddEulerTorqueTemperedTerm k
+    ((integrable_oddEulerTorqueNegativeMeasure_iff k).1 hk)
+
+def OddEulerTorqueTemperedAdmission : Prop :=
+  oddEulerTorquePositiveMeasure.HasTemperateGrowth ∧
+    oddEulerTorqueNegativeMeasure.HasTemperateGrowth
+
+/-- Full signed torque current is not admitted to `S'`. -/
+theorem oddEulerTorque_not_tempered : ¬ OddEulerTorqueTemperedAdmission := by
+  intro h
+  exact oddEulerTorquePositiveMeasure_not_hasTemperateGrowth h.1
+
 /-- Every left ray has finite positive-half mass, without any restriction on `b`. -/
 theorem oddEulerPositiveMeasure_Iio_lt_top (b y : ℝ) :
     oddEulerPositiveMeasure b (Iio y) < ∞ := by
   rw [oddEulerPositiveMeasure, Measure.sum_apply _ measurableSet_Iio]
   let N : ℕ := ⌈Real.exp y⌉₊ + 1
   rw [tsum_eq_sum (s := Finset.range N) (fun n hn => by
-    have hnN : N ≤ n := Finset.notMem_range.mp hn
+    have hnN : N ≤ n := Nat.le_of_not_gt (fun h => hn (Finset.mem_range.mpr h))
     have hceil : Real.exp y ≤ (⌈Real.exp y⌉₊ : ℝ) := Nat.le_ceil (Real.exp y)
     have hexp : Real.exp y < (n : ℝ) := by
       calc
@@ -607,11 +640,14 @@ theorem oddEulerPositiveMeasure_Iio_lt_top (b y : ℝ) :
         _ ≤ (n : ℕ) := by exact_mod_cast hnN
     have hlog : y < Real.log (n : ℝ) := by
       rw [← Real.log_exp y]
-      exact Real.strictMonoOn_log (Real.exp_pos y) hexp
-    simp [Measure.smul_apply, MeasurableSet_Iio, not_lt_of_ge hlog.le])]
+      exact Real.strictMonoOn_log (Real.exp_pos y)
+        (lt_trans (Real.exp_pos y) hexp) hexp
+    simp [Measure.smul_apply, measurableSet_Iio, not_lt_of_ge hlog.le])]
   rw [ENNReal.sum_lt_top]
   intro n hn
-  simp [Measure.smul_apply, MeasurableSet_Iio]
+  apply ENNReal.mul_lt_top
+  · exact ENNReal.ofReal_lt_top
+  · by_cases h : Real.log (n : ℝ) ∈ Iio y <;> simp [Set.indicator, h]
 
 /-- Every right ray has finite reflected-half mass, without any restriction on `b`. -/
 theorem oddEulerNegativeMeasure_Ioi_lt_top (b y : ℝ) :
@@ -619,7 +655,7 @@ theorem oddEulerNegativeMeasure_Ioi_lt_top (b y : ℝ) :
   rw [oddEulerNegativeMeasure, Measure.sum_apply _ measurableSet_Ioi]
   let N : ℕ := ⌈Real.exp (-y)⌉₊ + 1
   rw [tsum_eq_sum (s := Finset.range N) (fun n hn => by
-    have hnN : N ≤ n := Finset.notMem_range.mp hn
+    have hnN : N ≤ n := Nat.le_of_not_gt (fun h => hn (Finset.mem_range.mpr h))
     have hceil : Real.exp (-y) ≤ (⌈Real.exp (-y)⌉₊ : ℝ) := Nat.le_ceil (Real.exp (-y))
     have hexp : Real.exp (-y) < (n : ℝ) := by
       calc
@@ -630,12 +666,15 @@ theorem oddEulerNegativeMeasure_Ioi_lt_top (b y : ℝ) :
         _ ≤ (n : ℕ) := by exact_mod_cast hnN
     have hlog : -y < Real.log (n : ℝ) := by
       rw [← Real.log_exp (-y)]
-      exact Real.strictMonoOn_log (Real.exp_pos (-y)) hexp
+      exact Real.strictMonoOn_log (Real.exp_pos (-y))
+        (lt_trans (Real.exp_pos (-y)) hexp) hexp
     have hnot : ¬ y < -Real.log (n : ℝ) := by linarith
-    simp [Measure.smul_apply, MeasurableSet_Ioi, hnot])]
+    simp [Measure.smul_apply, measurableSet_Ioi, hnot])]
   rw [ENNReal.sum_lt_top]
   intro n hn
-  simp [Measure.smul_apply, MeasurableSet_Ioi]
+  apply ENNReal.mul_lt_top
+  · exact ENNReal.ofReal_lt_top
+  · by_cases h : -Real.log (n : ℝ) ∈ Ioi y <;> simp [Set.indicator, h]
 
 theorem oddEulerPositiveMeasure_isLocallyFinite (b : ℝ) :
     IsLocallyFiniteMeasure (oddEulerPositiveMeasure b) := by
@@ -646,6 +685,168 @@ theorem oddEulerNegativeMeasure_isLocallyFinite (b : ℝ) :
     IsLocallyFiniteMeasure (oddEulerNegativeMeasure b) := by
   refine ⟨fun x => ⟨Ioi (x - 1), Ioi_mem_nhds (by linarith), ?_⟩⟩
   exact oddEulerNegativeMeasure_Ioi_lt_top b (x - 1)
+
+/-- Positive half as a genuine distribution on all of `R`, for every real `b`. -/
+def oddEulerPositiveDistribution (b : ℝ) : 𝓓'((⊤ : Opens ℝ), ℝ) := by
+  letI : IsLocallyFiniteMeasure (oddEulerPositiveMeasure b) :=
+    oddEulerPositiveMeasure_isLocallyFinite b
+  exact TestFunction.integralAgainstBilinCLM (ContinuousLinearMap.lsmul ℝ ℝ)
+    (oddEulerPositiveMeasure b) (fun _ : ℝ => (1 : ℝ))
+
+/-- Reflected half as a genuine distribution on all of `R`, for every real `b`. -/
+def oddEulerNegativeDistribution (b : ℝ) : 𝓓'((⊤ : Opens ℝ), ℝ) := by
+  letI : IsLocallyFiniteMeasure (oddEulerNegativeMeasure b) :=
+    oddEulerNegativeMeasure_isLocallyFinite b
+  exact TestFunction.integralAgainstBilinCLM (ContinuousLinearMap.lsmul ℝ ℝ)
+    (oddEulerNegativeMeasure b) (fun _ : ℝ => (1 : ℝ))
+
+/-- Literal odd locally finite Euler comb `D_b` in `D'(R)`, for every real `b`. -/
+def oddEulerDistribution (b : ℝ) : 𝓓'((⊤ : Opens ℝ), ℝ) :=
+  oddEulerPositiveDistribution b - oddEulerNegativeDistribution b
+
+theorem oddEulerPositiveDistribution_apply
+    (b : ℝ) (f : 𝓓((⊤ : Opens ℝ), ℝ)) :
+    oddEulerPositiveDistribution b f = ∫ x, f x ∂oddEulerPositiveMeasure b := by
+  letI : IsLocallyFiniteMeasure (oddEulerPositiveMeasure b) :=
+    oddEulerPositiveMeasure_isLocallyFinite b
+  change TestFunction.integralAgainstBilinCLM (ContinuousLinearMap.lsmul ℝ ℝ)
+    (oddEulerPositiveMeasure b) (fun _ : ℝ => (1 : ℝ)) f = _
+  rw [TestFunction.integralAgainstBilinCLM_eq_integral
+    (locallyIntegrableOn_const (1 : ℝ))]
+  simp
+
+theorem oddEulerNegativeDistribution_apply
+    (b : ℝ) (f : 𝓓((⊤ : Opens ℝ), ℝ)) :
+    oddEulerNegativeDistribution b f = ∫ x, f x ∂oddEulerNegativeMeasure b := by
+  letI : IsLocallyFiniteMeasure (oddEulerNegativeMeasure b) :=
+    oddEulerNegativeMeasure_isLocallyFinite b
+  change TestFunction.integralAgainstBilinCLM (ContinuousLinearMap.lsmul ℝ ℝ)
+    (oddEulerNegativeMeasure b) (fun _ : ℝ => (1 : ℝ)) f = _
+  rw [TestFunction.integralAgainstBilinCLM_eq_integral
+    (locallyIntegrableOn_const (1 : ℝ))]
+  simp
+
+theorem oddEulerDistribution_apply
+    (b : ℝ) (f : 𝓓((⊤ : Opens ℝ), ℝ)) :
+    oddEulerDistribution b f =
+      (∫ x, f x ∂oddEulerPositiveMeasure b) -
+        ∫ x, f x ∂oddEulerNegativeMeasure b := by
+  change oddEulerPositiveDistribution b f - oddEulerNegativeDistribution b f = _
+  rw [oddEulerPositiveDistribution_apply, oddEulerNegativeDistribution_apply]
+
+theorem oddEulerPositiveTest_summable
+    (b : ℝ) (f : 𝓓((⊤ : Opens ℝ), ℝ)) :
+    Summable fun n : ℕ => oddEulerWeight b n * f (Real.log n) := by
+  letI : IsLocallyFiniteMeasure (oddEulerPositiveMeasure b) :=
+    oddEulerPositiveMeasure_isLocallyFinite b
+  have hlocal : LocallyIntegrableOn (fun _ : ℝ => (1 : ℝ)) (⊤ : Opens ℝ)
+      (oddEulerPositiveMeasure b) := locallyIntegrableOn_const (1 : ℝ)
+  have hf : Integrable f (oddEulerPositiveMeasure b) :=
+    f.integrable hlocal
+  rw [oddEulerPositiveMeasure] at hf
+  have hnorm := (integrable_sum_dirac_iff
+    (f := fun x : ℝ => f x)
+    (c := fun n : ℕ => ENNReal.ofReal (oddEulerWeight b n))
+    (x := fun n : ℕ => Real.log n)
+    (fun _ => ENNReal.ofReal_ne_top)).1 hf
+  apply Summable.of_norm
+  convert hnorm using 1
+  ext n
+  rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (oddEulerWeight_nonneg b n),
+    ENNReal.toReal_ofReal (oddEulerWeight_nonneg b n)]
+  rw [Real.norm_eq_abs]
+
+theorem oddEulerNegativeTest_summable
+    (b : ℝ) (f : 𝓓((⊤ : Opens ℝ), ℝ)) :
+    Summable fun n : ℕ => oddEulerWeight b n * f (-Real.log n) := by
+  letI : IsLocallyFiniteMeasure (oddEulerNegativeMeasure b) :=
+    oddEulerNegativeMeasure_isLocallyFinite b
+  have hlocal : LocallyIntegrableOn (fun _ : ℝ => (1 : ℝ)) (⊤ : Opens ℝ)
+      (oddEulerNegativeMeasure b) := locallyIntegrableOn_const (1 : ℝ)
+  have hf : Integrable f (oddEulerNegativeMeasure b) :=
+    f.integrable hlocal
+  rw [oddEulerNegativeMeasure] at hf
+  have hnorm := (integrable_sum_dirac_iff
+    (f := fun x : ℝ => f x)
+    (c := fun n : ℕ => ENNReal.ofReal (oddEulerWeight b n))
+    (x := fun n : ℕ => -Real.log n)
+    (fun _ => ENNReal.ofReal_ne_top)).1 hf
+  apply Summable.of_norm
+  convert hnorm using 1
+  ext n
+  rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (oddEulerWeight_nonneg b n),
+    ENNReal.toReal_ofReal (oddEulerWeight_nonneg b n)]
+  rw [Real.norm_eq_abs]
+
+/-- Exact locally finite distribution pairing, with no condition on `b`. -/
+theorem oddEulerDistribution_eq_odd_tsum
+    (b : ℝ) (f : 𝓓((⊤ : Opens ℝ), ℝ)) :
+    oddEulerDistribution b f =
+      ∑' n : ℕ, oddEulerWeight b n *
+        (f (Real.log n) - f (-Real.log n)) := by
+  rw [oddEulerDistribution_apply]
+  letI : IsLocallyFiniteMeasure (oddEulerPositiveMeasure b) :=
+    oddEulerPositiveMeasure_isLocallyFinite b
+  letI : IsLocallyFiniteMeasure (oddEulerNegativeMeasure b) :=
+    oddEulerNegativeMeasure_isLocallyFinite b
+  have hposLocal : LocallyIntegrableOn (fun _ : ℝ => (1 : ℝ)) (⊤ : Opens ℝ)
+      (oddEulerPositiveMeasure b) := locallyIntegrableOn_const (1 : ℝ)
+  have hnegLocal : LocallyIntegrableOn (fun _ : ℝ => (1 : ℝ)) (⊤ : Opens ℝ)
+      (oddEulerNegativeMeasure b) := locallyIntegrableOn_const (1 : ℝ)
+  have hposInt : Integrable f (oddEulerPositiveMeasure b) := f.integrable hposLocal
+  have hnegInt : Integrable f (oddEulerNegativeMeasure b) := f.integrable hnegLocal
+  have hposNorm : Summable fun n : ℕ =>
+      (ENNReal.ofReal (oddEulerWeight b n)).toReal * ‖f (Real.log n)‖ := by
+    rw [oddEulerPositiveMeasure] at hposInt
+    exact (integrable_sum_dirac_iff (fun _ => ENNReal.ofReal_ne_top)).1 hposInt
+  have hnegNorm : Summable fun n : ℕ =>
+      (ENNReal.ofReal (oddEulerWeight b n)).toReal * ‖f (-Real.log n)‖ := by
+    rw [oddEulerNegativeMeasure] at hnegInt
+    exact (integrable_sum_dirac_iff (fun _ => ENNReal.ofReal_ne_top)).1 hnegInt
+  rw [oddEulerPositiveMeasure,
+    integral_sum_dirac_eq_tsum (fun _ => ENNReal.ofReal_ne_top) hposNorm,
+    oddEulerNegativeMeasure,
+    integral_sum_dirac_eq_tsum (fun _ => ENNReal.ofReal_ne_top) hnegNorm]
+  simp_rw [ENNReal.toReal_ofReal (oddEulerWeight_nonneg b _), smul_eq_mul]
+  rw [← (oddEulerPositiveTest_summable b f).tsum_sub
+    (oddEulerNegativeTest_summable b f)]
+  apply tsum_congr
+  intro n
+  ring
+
+/-- Standard signed-Radon-measure admission condition: both Jordan halves have polynomially
+weighted finite mass.  For this odd comb the halves are reflections with disjoint nonzero support,
+so this is exactly temperateness of its total variation. -/
+def OddEulerCombTemperedAdmission (b : ℝ) : Prop :=
+  (oddEulerPositiveMeasure b).HasTemperateGrowth ∧
+    (oddEulerNegativeMeasure b).HasTemperateGrowth
+
+/-- Exact sharp admission wall for the literal odd Euler comb. -/
+theorem oddEulerCombTemperedAdmission_iff (b : ℝ) :
+    OddEulerCombTemperedAdmission b ↔ 1 ≤ b := by
+  rw [OddEulerCombTemperedAdmission,
+    oddEulerPositiveMeasure_hasTemperateGrowth_iff,
+    oddEulerNegativeMeasure_hasTemperateGrowth_iff,
+    and_self]
+
+/-- Full Card-2 capstone: local `D'` object exists for every `b`; its signed-measure total
+variation is tempered exactly at `b >= 1`; every admitted parameter has the literal `S'`
+realization and exact odd atomic pairing. -/
+theorem oddEulerComb_exact_admission_wall (b : ℝ) :
+    (∃ D : 𝓓'((⊤ : Opens ℝ), ℝ),
+      ∀ f : 𝓓((⊤ : Opens ℝ), ℝ),
+        D f = ∑' n : ℕ, oddEulerWeight b n *
+          (f (Real.log n) - f (-Real.log n))) ∧
+    (OddEulerCombTemperedAdmission b ↔ 1 ≤ b) ∧
+    (∀ _hb : 1 ≤ b, ∃ T : TemperedDistribution ℝ ℂ,
+      ∀ f : SchwartzMap ℝ ℂ,
+        T f = ∑' n : ℕ, (oddEulerWeight b n : ℂ) *
+          (f (Real.log n) - f (-Real.log n))) := by
+  refine ⟨⟨oddEulerDistribution b, oddEulerDistribution_eq_odd_tsum b⟩,
+    oddEulerCombTemperedAdmission_iff b, ?_⟩
+  intro hb
+  exact ⟨oddEulerTemperedDistribution b hb,
+    oddEulerTemperedDistribution_eq_odd_tsum b hb⟩
 
 end
 

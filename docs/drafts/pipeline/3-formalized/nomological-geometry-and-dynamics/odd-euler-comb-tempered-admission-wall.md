@@ -1,9 +1,9 @@
 # Odd Euler comb: sharp tempered-admission wall
 
 - **ID:** `ngd-odd-euler-comb-tempered-admission-wall`
-- **Stage:** 2 — fully proved on paper
+- **Stage:** 3 — formalised in Lean 4
 - **Status:** `[PAPER-PROVED] [ADMISSION HORIZON] [USES PNT] [NOT RH]`
-  `[NO LEAN WRITTEN]`
+  `[FORMALIZED] [LEAN-CHECKED] [AXIOM-AUDITED]`
 
 ## 1. Statement
 
@@ -158,6 +158,30 @@ curvature object.
 
 ## 5. Formalization notes
 
-No Lean was written or built. Existing formal PNT/Chebyshev files can support `(3)` and `(4)`.
-Formalization should first state polynomial-growth equivalence for discrete measures on the log
-axis, then instantiate it with the von Mangoldt partial sums.
+Formalized in
+`formal/GaloisForLFunctions/HTGeometry/OddEulerCombTemperedAdmissionWall.lean`.
+
+Closed gates:
+
+1. literal coefficients `Lambda(n)n^{-b}` and positive/reflected logarithmic atom measures;
+2. local finiteness and an exact `D'(R)` odd distribution for every real `b`;
+3. exact atomic integration and test-function/Schwartz pairing formulas;
+4. polynomial-growth equivalence for the atomic measures and sharp threshold `b >= 1`;
+5. actual `S'(R)` realization for every admitted parameter;
+6. finite total variation for `b > 1`, tempered infinite variation at `b = 1`;
+7. Route-L threshold `a >= 1/2`, strict finite-variation side, endpoint, and subcritical failure;
+8. full signed torque-current nonadmission.
+
+The formal nonadmission proof uses the existing unconditional divergence of a prime
+residue-class subseries of `sum Lambda(n)/n`, together with the fact that every fixed logarithmic
+power is eventually dominated by `n^(1-b)`. This is stronger arithmetic infrastructure than the
+paper's PNT block argument and uses no RH input.
+
+Verification:
+
+- `lake env lean GaloisForLFunctions/HTGeometry/OddEulerCombTemperedAdmissionWall.lean`
+- `lake build +GaloisForLFunctions.HTGeometry.OddEulerCombTemperedAdmissionWall`
+- `scripts/formal_tools.py lint`
+- `#print axioms` on capstones: only `propext`, `Classical.choice`, `Quot.sound`
+
+Wired through `formal/GaloisForLFunctions/HTGeometry.lean`.

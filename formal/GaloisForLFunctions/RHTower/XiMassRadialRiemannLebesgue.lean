@@ -52,16 +52,16 @@ theorem xiMassRadialFrequency_inverse {a y : ℝ} (ha : 0 < a) (hy : a < y) :
   have hy0 : 0 ≤ y := le_of_lt (lt_trans ha hy)
   rw [show y ^ 2 - a ^ 2 + a ^ 2 = y ^ 2 by ring, Real.sqrt_sq hy0]
 
-theorem xiMassRadialInverse_frequency {a x : ℝ} (ha : 0 < a) (hx : 0 < x) :
+theorem xiMassRadialInverse_frequency {a x : ℝ} (hx : 0 < x) :
     xiMassRadialInverse a (xiMassRadialFrequency a x) = x := by
   rw [xiMassRadialInverse]
-  have hfreq := xiMassRadialFrequency_sq x
+  have hfreq := xiMassRadialFrequency_sq (a := a) x
   rw [hfreq, show x ^ 2 + a ^ 2 - a ^ 2 = x ^ 2 by ring,
     Real.sqrt_sq hx.le]
 
 theorem xiMassRadialFrequency_gt_mass {a x : ℝ} (ha : 0 < a) (hx : 0 < x) :
     a < xiMassRadialFrequency a x := by
-  have hfreq := xiMassRadialFrequency_sq x
+  have hfreq := xiMassRadialFrequency_sq (a := a) x
   have hnonneg : 0 ≤ xiMassRadialFrequency a x := Real.sqrt_nonneg _
   nlinarith [sq_pos_of_pos hx]
 
@@ -73,7 +73,7 @@ theorem image_xiMassRadialInverse_Ioi {a : ℝ} (ha : 0 < a) :
     exact xiMassRadialInverse_pos ha hy
   · intro hx
     refine ⟨xiMassRadialFrequency a x, xiMassRadialFrequency_gt_mass ha hx, ?_⟩
-    exact xiMassRadialInverse_frequency ha hx
+    exact xiMassRadialInverse_frequency hx
 
 theorem injOn_xiMassRadialInverse_Ioi {a : ℝ} (ha : 0 < a) :
     InjOn (xiMassRadialInverse a) (Ioi a) := by

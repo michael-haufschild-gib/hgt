@@ -1,7 +1,7 @@
 # Finite half-turn repaired packets are never Markov
 
 - **ID:** finite-half-turn-repaired-packets-not-markov
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / source-transfer guardrail
 - **Source:** `half-turn-repaired-frequency-not-markov.md`;
   `bounded-half-turn-frequency-packets-fail-hankel.md`;
@@ -36,9 +36,16 @@ and let `C>0` be the total weight at `R`. Then
 
 `M_k = C R^k (1+epsilon_k)`,
 
-where `epsilon_k -> 0` exponentially fast. Hence
+where `epsilon_k -> 0` exponentially fast. In particular, for each fixed
+`d=0,1,2`,
 
-`M_k M_(k+2)/M_(k+1)^2 -> 1`.
+`k epsilon_(k+d) -> 0`, so
+
+`k (M_k M_(k+2)/M_(k+1)^2 - 1) -> 0`.
+
+Thus, for all sufficiently large `k`,
+
+`M_k M_(k+2)/M_(k+1)^2 < 1 + 1/k`.
 
 Now compute
 
@@ -50,9 +57,15 @@ Now compute
 `= (M_k M_(k+2)/M_(k+1)^2)
    * ((2k)(2k+1)/((2k+2)(2k+3)))`.
 
-The factorial factor is strictly less than `1` for every `k` and tends to `1`
-from below. Since the moment ratio tends to `1`, the product is strictly less
-than `1` for all sufficiently large `k`. Therefore
+The rate is essential: convergence to `1` alone would not control a second
+factor also tending to `1`. For `k>=1`, the exact comparison is
+
+`(1+1/k) * (2k)(2k+1)/((2k+2)(2k+3))`
+
+`= (2k+1)/(2k+3) < 1`.
+
+Hence the product is strictly less than `1` for all sufficiently large `k`.
+Therefore
 
 `U_k U_(k+2) < U_(k+1)^2`
 
@@ -114,13 +127,32 @@ For any proposed repaired-frequency RH proof:
 The proof is elementary. Its significance is route control: it closes the broad
 finite-packet escape left open by the sharp first-gate threshold.
 
+## Lean Formalization
+
+Module:
+`formal/GaloisForLFunctions/HTGeometry/FiniteHalfTurnRepairedPacketNoGo.lean`.
+
+Principal declarations:
+
+- `eventually_finitePositivePacketMoment_weighted_gap` formalizes dominant-node
+  asymptotics with the rate needed to beat the factorial correction;
+- `halfTurnRepaired_det_neg_of_weighted_gap` converts the weighted gap into the
+  adjacent repaired Hankel determinant inequality;
+- `finitePositivePacket_halfTurn_det_eventually_neg` proves eventual strict
+  negativity;
+- `finitePositivePacket_halfTurn_not_stieltjes` rules out a Stieltjes
+  representation of the shifted sequence `n |-> U_(n+1)`.
+
+Verification: targeted module build passes. Axiom audit reports only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
 ## Gates
 
 - [x] 0 -> 1 in-progress: broad finite repaired-packet loophole isolated.
 - [x] 1 -> 2 fully-proven: eventual adjacent-Hankel failure proved by
   top-frequency asymptotics.
-- [ ] 2 -> 3 formalized: finite-support asymptotic ratio lemma and adjacent
-  Hankel negativity not formalized.
+- [x] 2 -> 3 formalized: finite-support asymptotic rate, adjacent Hankel
+  negativity, and Stieltjes no-representation theorem proved in Lean.
 
 ## 2026-06-24 infinite-source sequel
 

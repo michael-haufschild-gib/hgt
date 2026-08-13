@@ -66,7 +66,7 @@ theorem adaptiveShear_sourceCoordinateDilation
           (Polynomial.C (w ^ 2) * X) := by
   have hw2 : w ^ 2 ≠ 0 := pow_ne_zero _ hw
   rw [adaptiveShear_smul]
-  have hcomp := adaptiveShear_comp_C_mul_X Q
+  have hcomp := adaptiveShear_comp_C_mul_X (d := w ^ 2) Q
   have hscalar : (w ^ (2 * n))⁻¹ ^ 2 =
       (w ^ (4 * n + 4))⁻¹ * (w ^ 2) ^ 2 := by
     field_simp [hw]

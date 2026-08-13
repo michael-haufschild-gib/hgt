@@ -723,7 +723,7 @@ Consequence: the repaired-packet route is not killed by the first gate once broa
 
 ## 2026-06-24 finite repaired packets are closed; infinity needs admissibility
 
-`../2-fully-proven/finite-half-turn-repaired-packets-not-markov.md` upgrades the repaired-packet obstruction from first-gate calibration to a full finite-support no-go: every finite positive half-turn repaired packet fails an eventual adjacent shifted Hankel gate by top-frequency domination.
+`docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/finite-half-turn-repaired-packets-not-markov.md` upgrades the repaired-packet obstruction from first-gate calibration to a full finite-support no-go: every finite positive half-turn repaired packet fails an eventual adjacent shifted Hankel gate by top-frequency domination.
 
 `../2-fully-proven/infinite-half-turn-frequency-source-admissibility-split.md` shows why the infinite escape is not automatically live. Unrestricted sigma-finite zero-frequency mass can manufacture any Stieltjes target, while `../2-fully-proven/locally-infinite-repaired-frequency-source-for-compact-markov.md` shows that every source realizing a compact Markov target not supported only at `0` is forced to have infinite mass in every zero-frequency neighborhood. Therefore the live route is not positive repaired-frequency summation; it is a source-built admissibility law or a boundary/index positivity object.
 

@@ -226,7 +226,7 @@ Therefore a Markov/Pick source proof cannot be: positive frequency expansion plu
 
 ## 2026-06-24 finite repaired packets closed; infinite repaired sources need a source gate
 
-`finite-half-turn-repaired-packets-not-markov.md` shows that finite positive repaired packets never reach the Markov/Stieltjes cone: top-frequency domination eventually makes an adjacent shifted Hankel determinant negative. `infinite-half-turn-frequency-source-admissibility-split.md` shows that arbitrary infinite repaired sources are too flexible, because sigma-finite mass at zero frequency can realize any Stieltjes target. The Markov/Pick source theorem must therefore be a source-admissibility or boundary/index theorem, not a positive repaired-frequency packet construction.
+`docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/finite-half-turn-repaired-packets-not-markov.md` shows that finite positive repaired packets never reach the Markov/Stieltjes cone: top-frequency domination eventually makes an adjacent shifted Hankel determinant negative. `infinite-half-turn-frequency-source-admissibility-split.md` shows that arbitrary infinite repaired sources are too flexible, because sigma-finite mass at zero frequency can realize any Stieltjes target. The Markov/Pick source theorem must therefore be a source-admissibility or boundary/index theorem, not a positive repaired-frequency packet construction.
 
 ## 2026-06-24 repaired-frequency infinity is local at the zero-frequency border
 

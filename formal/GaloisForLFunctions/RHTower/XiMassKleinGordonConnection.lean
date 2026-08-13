@@ -289,7 +289,7 @@ theorem xiMassTemporal_sub_spatial_second_eq_mass
             Complex.exp (-(I * (h : ℂ) * x))) := by
       apply integral_congr_ae
       filter_upwards with x
-      have hrSq := xiMassRadialFrequency_sq x
+      have hrSq := xiMassRadialFrequency_sq (a := a) x
       have hrSqC : (xiMassRadialFrequency a x : ℂ) ^ 2 =
           (x : ℂ) ^ 2 + (a : ℂ) ^ 2 := by
         exact_mod_cast hrSq

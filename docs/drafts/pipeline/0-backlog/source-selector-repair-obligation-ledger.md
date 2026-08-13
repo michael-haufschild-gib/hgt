@@ -405,7 +405,7 @@ Thus broad positive repaired packets can pass gate one. Rows A3--A7 must now exp
 
 ## 2026-06-24 finite repaired packets closed; infinite repaired sources split
 
-`../2-fully-proven/finite-half-turn-repaired-packets-not-markov.md` closes the finite positive half-turn repaired packet route. Broad finite packets can pass the first shifted Hankel gate, but finite support eventually has a top frequency, so `M_kM_(k+2)/M_(k+1)^2 -> 1` while the factorial repair requires a ratio above `1`; an adjacent shifted Hankel determinant is eventually negative.
+`docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/finite-half-turn-repaired-packets-not-markov.md` closes the finite positive half-turn repaired packet route. Broad finite packets can pass the first shifted Hankel gate, but finite support eventually has a top frequency, so `M_kM_(k+2)/M_(k+1)^2 -> 1` while the factorial repair requires a ratio above `1`; an adjacent shifted Hankel determinant is eventually negative.
 
 `../2-fully-proven/infinite-half-turn-frequency-source-admissibility-split.md` records the infinite counterpart. Unrestricted sigma-finite mass accumulating at zero frequency can realize any Stieltjes target, hence has no selecting power. `../2-fully-proven/locally-infinite-repaired-frequency-source-for-compact-markov.md` shows that for compact Markov targets not supported only at `0`, every realizing positive repaired source is forced to have infinite mass in every zero-frequency neighborhood; equivalently, finite or locally finite border sources cannot realize the target through this model.
 

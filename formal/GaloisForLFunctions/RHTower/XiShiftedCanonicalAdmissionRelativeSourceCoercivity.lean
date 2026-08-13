@@ -428,7 +428,7 @@ theorem adaptiveShear_coordinateDilatedAmplitude_comp
         (coordinateDilatedAmplitude r n)).comp (Polynomial.C r * X) =
       r ^ (2 * n + 2) •
         xiShiftedBoundaryAdaptiveShearPolynomial (amplitude n) := by
-  have h := XiShiftedCanonicalAdmission.adaptiveShear_comp_C_mul_X
+  have h := XiShiftedCanonicalAdmission.adaptiveShear_comp_C_mul_X (d := r)
     (coordinateDilatedAmplitude r n)
   rw [coordinateDilatedAmplitude_comp hr n,
     XiShiftedCanonicalAdmission.adaptiveShear_smul] at h
