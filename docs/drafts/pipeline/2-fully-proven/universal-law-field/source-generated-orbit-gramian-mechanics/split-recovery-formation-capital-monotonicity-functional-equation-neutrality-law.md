@@ -245,6 +245,18 @@ Equation `(RCN.19)` is the properness counterpart of KL information neutrality. 
 recovery preserves both the statistical separation of packet laws and the exact source work needed
 to form their defect.
 
+In particular, the atomic-refinement wall from `ULF-SGOGM-1` is invariant under every injective
+recovery and functional-equation transport:
+
+\[
+ \mathfrak c_{EAW}(EAv)=+\infty,
+ \qquad
+ \mathfrak c_{EAW}(EAx_T)=q_G(x_T)\longrightarrow+\infty.
+ \tag{RCN.19a}
+\]
+
+Common recovery can move the wall but cannot regularize it.
+
 ## 6. Common Markov recovery
 
 Let `mu,nu` be probability measures on a standard Borel observer space `X`, and let `K(x,dh)` be a
@@ -324,7 +336,7 @@ bounded-capital premise of the corona-selection theorem.
 
 ### 7.3 Parameter-dependent kernels are outside the theorem
 
-If two packets use different recovery kernels, `(RCN.20)` can become a strict data-processing
+If two packets use different recovery kernels, `(RCN.21)` can become a strict data-processing
 inequality, and their linear recovery embeddings need not share one left inverse. Such a change is
 a new constitutive operation, not common recovery.
 
@@ -335,14 +347,14 @@ same source formation is transported, not when a new cost is fitted after observ
 
 ## 8. Selection consequence and new field gate
 
-Let `(T_n)` be positive defects with `T_n=X_nX_n*` satisfying the source-commutator condition of
-`ULF-SGOGM-1`. If `R` is a common split recovery and `A` is a functional-equation isomorphism, then
+Let `(T_n)` be positive defects with `T_n=X_nX_n*`. If `E` is a common split recovery and `A` is a
+functional-equation isomorphism, then, on the closed recovered carrier,
 
 \[
  \sup_n\mathcal E_G(T_n)<\infty
  \iff
  \sup_n\mathcal E_{EAG A^*E^*}(EAX_nX_n^*A^*E^*)<\infty.
- \tag{RCN.26}
+ \tag{RCN.27}
 \]
 
 Therefore neither operation can supply the missing bounded-capital premise by transport alone.

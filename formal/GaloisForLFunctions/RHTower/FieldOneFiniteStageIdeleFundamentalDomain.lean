@@ -284,6 +284,64 @@ def fieldOneFiniteStageIdeleImageFundamentalHomeomorph
     (fieldOneFiniteStageIdeleSUnitResidual_continuous S).prodMk
       (fieldOneFiniteStageIdeleSplitCoordinate_continuous S)
 
+/-- The canonical split representative respects multiplication. -/
+def fieldOneFiniteStageIdeleFundamentalSectionMonoidHom
+    (S : Finset (HeightOneSpectrum ℤ)) :
+    (FieldOneFiniteStageModuleOneClass S × NNRealˣ) →*
+      FieldOneFiniteStageIdele S where
+  toFun := fieldOneFiniteStageIdeleFundamentalSection S
+  map_one' := by
+    apply Prod.ext
+    · simp [fieldOneFiniteStageIdeleFundamentalSection]
+    · funext v
+      apply Units.ext
+      simp [fieldOneFiniteStageIdeleFundamentalSection]
+  map_mul' z w := by
+    change
+      fieldOneFiniteStageNormOneTorusIdele S
+          ((fieldOneFiniteStageNormOneTorusContinuousMulEquiv S).symm (z.1 * w.1)) *
+          fieldOneFiniteStagePositiveRealIdeleSection S (z.2 * w.2) =
+        (fieldOneFiniteStageNormOneTorusIdele S
+            ((fieldOneFiniteStageNormOneTorusContinuousMulEquiv S).symm z.1) *
+            fieldOneFiniteStagePositiveRealIdeleSection S z.2) *
+          (fieldOneFiniteStageNormOneTorusIdele S
+              ((fieldOneFiniteStageNormOneTorusContinuousMulEquiv S).symm w.1) *
+            fieldOneFiniteStagePositiveRealIdeleSection S w.2)
+    rw [map_mul, map_mul, map_mul]
+    ac_rfl
+
+/-- The topological fundamental-domain map as a multiplicative equivalence. -/
+def fieldOneFiniteStageIdeleImageFundamentalMulEquiv
+    (S : Finset (HeightOneSpectrum ℤ)) :
+    (fieldOneFiniteStageSUnitImage S ×
+      (FieldOneFiniteStageModuleOneClass S × NNRealˣ)) ≃*
+      FieldOneFiniteStageIdele S where
+  toEquiv := (fieldOneFiniteStageIdeleImageFundamentalHomeomorph S).toEquiv
+  map_mul' x y := by
+    change (x.1 * y.1).1 *
+          fieldOneFiniteStageIdeleFundamentalSection S (x.2 * y.2) =
+        (x.1.1 * fieldOneFiniteStageIdeleFundamentalSection S x.2) *
+          (y.1.1 * fieldOneFiniteStageIdeleFundamentalSection S y.2)
+    have hsection := map_mul
+      (fieldOneFiniteStageIdeleFundamentalSectionMonoidHom S) x.2 y.2
+    change fieldOneFiniteStageIdeleFundamentalSection S (x.2 * y.2) =
+      fieldOneFiniteStageIdeleFundamentalSection S x.2 *
+        fieldOneFiniteStageIdeleFundamentalSection S y.2 at hsection
+    rw [hsection]
+    ac_rfl
+
+/-- Continuous multiplicative equivalence realizing
+`A_S^* ≃ Q_S^* × K_S × R_+^*`. -/
+def fieldOneFiniteStageIdeleImageFundamentalContinuousMulEquiv
+    (S : Finset (HeightOneSpectrum ℤ)) :
+    (fieldOneFiniteStageSUnitImage S ×
+      (FieldOneFiniteStageModuleOneClass S × NNRealˣ)) ≃ₜ*
+      FieldOneFiniteStageIdele S where
+  toMulEquiv := fieldOneFiniteStageIdeleImageFundamentalMulEquiv S
+  continuous_toFun := fieldOneFiniteStageIdeleImageFundamentalMap_continuous S
+  continuous_invFun :=
+    (fieldOneFiniteStageIdeleImageFundamentalHomeomorph S).symm.continuous
+
 end
 
 end GaloisForLFunctions.RHTower

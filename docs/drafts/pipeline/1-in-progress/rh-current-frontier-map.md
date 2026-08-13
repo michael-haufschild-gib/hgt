@@ -6616,12 +6616,13 @@ the fourth power. A genuine positive-Jacobi/Favard counterfamily keeps all ordin
 Gauss-spread accounts bounded while reset diverges, so no locally bounded function of those
 Euclidean accounts can close Route U.
 
-First source theorem is therefore one shifted-Xi **normalized-flux floor or cumulative hyperbolic-
-action/boundary budget** on a cofinal parabolic degree--mass family. It must control the adjacent
-connector, native contact weights, interior production, and terminal degree flux with one common
-finite capital. Stationary rational-nodal sign remains the alternate chart of this same orientation
-problem. More local transversality, unweighted spread, positive normalization, or fixed-mass
-persistence cannot advance the route.
+The later adaptive-source chain supersedes this formulation. One top source account now pays the
+adjacent connectors, interior production, hyperbolic reset, and terminal Jacobi mass exactly. The
+first source theorem is a **pole-free shallow-admission normalized terminal-pulse/determinant-line
+capital law** on a cofinal parabolic degree--mass family. It must make the now-formal cofinal
+positive integer contact residues incompatible with finite total capital. More local
+transversality, unweighted spread, raw reciprocal clocks, positive normalization, or quotient-wall
+singularities cannot advance the route.
 
 **Earlier equivalent structural formulation.** In the degenerate/root-sign branch, items
 55--58 replace unspecified odd descent by a literal Padé spectral-measure and source-capacity
@@ -7343,6 +7344,17 @@ four-organ selection grammar--formation, observer, reversal, hidden fibre--but n
 is proved sufficient and reversible, and the abstract chronology interface is not instantiated by
 the Abelian-zeta source. It therefore sharpens the needed handoff without creating Route V.
 
+The latest umbrella-formal universal-law tests close two generic interpretations without creating
+a route. `ConstitutiveEntropicAlternatingFormation.lean` proves exact KL marginal-repair
+Pythagoras, recurrence-annihilation of nonnegative repair action, row/column transpose symmetry,
+and a one-dimensional bipartite gauge radical. The formation schedule and target marginals are
+inputs, so this is calibration inside a declared protocol, not source generation of the protocol.
+`PositiveFaceCompression.lean` proves a fourth regularization branch: a divergent positive Gram
+pencil has a finite positive compression exactly when the carrier lies in the leading feature
+kernel, with the subleading Gram surviving unchanged. This falsifies the proposed three-way
+regularization trilemma. The surviving Route-V question is source formation and controlled motion
+of such faces, not another static classification of normalization versus subtraction.
+
 ### Relative formation-completion current [ROUTE-V CANDIDATE — NOT INSTANTIATED]
 
 A dependency-closed paper theorem now identifies the exact information lost by centered reflection
@@ -7739,11 +7751,7 @@ open. Numerical evidence is not accepted as proof or disproof.
    vector/resolvent convergence are insufficient.
 9. **D2:** obtain a literal high-frequency ceiling for the continued prime--Gamma source. Route N
    is a terminalized receiver, not a parallel live task.
-10. **P/Q:** for P, construct a completed pre-zero source-canonical signed scalarization that
-    retains determinant-one reciprocity while cancelling the exact Sonin escape modulus before
-    positive radial work; finite divisor gauges are flexible and the cofinal reciprocal gauge
-    premise is RH-equivalent. Alternatively construct P's compact positive carrier from that law.
-    For Q, prove direct Cassini--Jensen/jet saturation. Q's selected continuous power-reciprocal
+10. **Q:** prove direct Cassini--Jensen/jet saturation. Q's selected continuous power-reciprocal
     carrier is retired; any reuse requires a source-derived discontinuous plateau quotient.
 
 ### Work unlikely to move frontier
@@ -7759,11 +7767,13 @@ open. Numerical evidence is not accepted as proof or disproof.
 - more fixed-height/PNT-Abel or rough-number estimates for Route E without entering the remaining
   prime off-diagonal Ramaré/Halász range;
 - more full-allocation whole-anchor transport: global terminal capacity is formally insufficient;
-- more Route R frames, corona quotients, bounded Xi multipliers, or strong/weak compact
-  approximations without source-specific collective compactness or one-vector Cauchy landing;
-- more Route U positive carriers, local contact signs, ordinary spread bounds, or Euclidean energy
-  accounts without a normalized-flux floor or cumulative hyperbolic-action budget;
-- more Route T amplitude estimates: every required low/middle/high regime is already formal;
+- more Route R frames, corona quotients, compactness, singular Xi-factorization, first-jet, or
+  Fisher-landings as independent producers: the terminal classifier proves every admitted branch
+  RH-equivalent;
+- more Route U local contact signs, projective monotonicity, raw reciprocal-clock capital, or
+  quotient-wall singularities without a pole-free shallow-admission terminal-pulse budget;
+- more Route T fixed local amplitude deficits without exact derivative--complement finite-set
+  composition and the signed prime-gap/current landing;
 - builds or formalization of conjectures whose mathematical source theorem is not proved.
 
 ## 11. Principal Lean anchors
@@ -8123,6 +8133,8 @@ Euler-depleted-kernel, Meyer-topology, and continuous-moment files receive forma
 - formal/GaloisForLFunctions/RHTower/DeningerBigWittMultiplication.lean
 - formal/GaloisForLFunctions/RHTower/DeningerBigWittRing.lean
 - formal/GaloisForLFunctions/RHTower/DeningerBigWittCanonicity.lean
+- formal/GaloisForLFunctions/RHTower/DeningerHankelDiagonalMonicity.lean
+- formal/GaloisForLFunctions/RHTower/DeningerHankelRankOneGroebner.lean
 - formal/GaloisForLFunctions/RHTower/DeningerHankelChainSecant.lean
 - formal/GaloisForLFunctions/RHTower/DeningerHankelSecantParameterization.lean
 - formal/GaloisForLFunctions/RHTower/DeningerHankelReducedSecantSeparation.lean
@@ -8152,6 +8164,18 @@ Euler-depleted-kernel, Meyer-topology, and continuous-moment files receive forma
 - formal/GaloisForLFunctions/RHTower/RouteRStrongCompactApproximationBlindness.lean
 - formal/GaloisForLFunctions/RHTower/RouteRStrongApproximationCompactEscape.lean
 - formal/GaloisForLFunctions/RHTower/RouteROperatorTopologyCompactnessDichotomy.lean
+- formal/GaloisForLFunctions/RHTower/RouteRCartierHermitianPolarizationNoGo.lean
+- formal/GaloisForLFunctions/RHTower/RouteRCausalHodgeGreenUnitSourceNoGo.lean
+- formal/GaloisForLFunctions/RHTower/RouteRLocalRelativeAnomalyCancellationNoGo.lean
+- formal/GaloisForLFunctions/RHTower/RouteRBurnolLocalProducerNoGo.lean
+- formal/GaloisForLFunctions/RHTower/RouteRPoissonThetaShearNoGo.lean
+- formal/GaloisForLFunctions/RHTower/RouteRPreDivisorGammaCoronaGlobalizationNoGo.lean
+- formal/GaloisForLFunctions/RHTower/RouteRPhysicalBocksteinHomologicalNonErasure.lean
+- formal/GaloisForLFunctions/RHTower/RouteRHyperbolicGaugePositivePolarUniversalityNoGo.lean
+- formal/GaloisForLFunctions/RHTower/RouteRHyperbolicGaugeQuarticPhysicalProducer.lean
+- formal/GaloisForLFunctions/RHTower/RouteRPositiveInvariantMeanPrimeAtomNoGo.lean
+- formal/GaloisForLFunctions/RHTower/RouteRXiJetPrincipalCalkinNonErasure.lean
+- formal/GaloisForLFunctions/RHTower/RouteRTerminalProducerClassification.lean
 
 ### O
 
@@ -8186,6 +8210,29 @@ Euler-depleted-kernel, Meyer-topology, and continuous-moment files receive forma
 - formal/GaloisForLFunctions/RHTower/HedenmalmStokesOrientedFirstTraceQuantizedJump.lean
 - formal/GaloisForLFunctions/RHTower/HedenmalmRootFluxModularChargeFaithfulness.lean
 - formal/GaloisForLFunctions/RHTower/XiHedenmalmFiniteSourcePortObstruction.lean
+- formal/GaloisForLFunctions/RHTower/HedenmalmStokesCurvatureNormalizedFluxBudget.lean
+- formal/GaloisForLFunctions/RHTower/HedenmalmStokesCurvatureBudgetCentralBand.lean
+- formal/GaloisForLFunctions/RHTower/HedenmalmStokesFourthTraceCurvatureBudgetBand.lean
+- formal/GaloisForLFunctions/RHTower/HedenmalmStokesCurvatureTailFiniteCeiling.lean
+- formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureKernel.lean
+- formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeaturePrimeGammaDecomposition.lean
+- formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureHeightLocalFrame.lean
+- formal/GaloisForLFunctions/RHTower/HedenmalmAdjacentFeatureKreinIndexSeparator.lean
+- formal/GaloisForLFunctions/RHTower/HedenmalmOrientedAdjacentTransverseDeterminantQuantum.lean
+- formal/GaloisForLFunctions/RHTower/HedenmalmWardDefectTransverseGreenSource.lean
+- formal/GaloisForLFunctions/RHTower/HedenmalmWardGreenCriticalFeatureTrace.lean
+- formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureHolomorphicSectorCoercivity.lean
+- formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureWardGreenPlancherelFracture.lean
+- formal/GaloisForLFunctions/RHTower/HedenmalmWardGreenRemovableExtensionKernelProjection.lean
+- formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureExteriorPrimeGammaSource.lean
+- formal/GaloisForLFunctions/RHTower/XiWardFiveShiftBoundaryRigidity.lean
+- formal/GaloisForLFunctions/RHTower/XiWardFiveShiftCriticalEvaluationLanding.lean
+- formal/GaloisForLFunctions/RHTower/XiWardFiveShiftWeilKreinLanding.lean
+- formal/GaloisForLFunctions/RHTower/XiWardFiveShiftWindowedKreinCharge.lean
+- formal/GaloisForLFunctions/RHTower/XiHorizontalCollisionTwoPrimeCesaroCarrier.lean
+- formal/GaloisForLFunctions/RHTower/XiHorizontalCollisionPrimeCayleyInformationLoss.lean
+- formal/GaloisForLFunctions/RHTower/XiHorizontalCollisionWardGreenCayleyQuantum.lean
+- formal/GaloisForLFunctions/RHTower/XiHorizontalCollisionWardGreenExteriorSourceCarrier.lean
 
 ### Q
 
@@ -8387,6 +8434,21 @@ umbrella-reachable; their listed declarations receive formal credit.
 - formal/GaloisForLFunctions/RHTower/XiShiftedCanonicalAdmissionCharacteristicApexEnergy.lean
 - formal/GaloisForLFunctions/RHTower/XiShiftedProjectiveAdjacentMeanResetBarrier.lean
 - formal/GaloisForLFunctions/RHTower/XiShiftedTerminalFrontierParabolicSynchronization.lean
+- formal/GaloisForLFunctions/RHTower/XiShiftedCanonicalAdmissionCharacteristicApexChristoffelEnergy.lean
+- formal/GaloisForLFunctions/RHTower/XiShiftedCanonicalAdmissionCharacteristicApexContactOrientation.lean
+- formal/GaloisForLFunctions/RHTower/XiShiftedCanonicalAdmissionCharacteristicApexProjectivePhaseReversal.lean
+- formal/GaloisForLFunctions/RHTower/XiShiftedCanonicalAdmissionCharacteristicApexCompactAngularPhaseReversal.lean
+- formal/GaloisForLFunctions/RHTower/XiShiftedCanonicalAdmissionCharacteristicApexProjectiveWronskianRenewal.lean
+- formal/GaloisForLFunctions/RHTower/XiShiftedCanonicalAdmissionCharacteristicApexProjectiveVacuumCurvatureCancellation.lean
+- formal/GaloisForLFunctions/RHTower/XiShiftedStrictFrontierIntegerHolonomy.lean
+- formal/GaloisForLFunctions/RHTower/XiShiftedCanonicalAdmissionAdaptiveMixedSourceHyperbolicReset.lean
+- formal/GaloisForLFunctions/RHTower/XiShiftedCanonicalAdmissionAdaptiveMixedSourceParabolicFloor.lean
+- formal/GaloisForLFunctions/RHTower/XiShiftedCanonicalAdmissionAdaptiveMixedSourceIntegralLaw.lean
+- formal/GaloisForLFunctions/RHTower/XiShiftedCanonicalAdmissionAdaptiveMixedSourceReciprocalClock.lean
+- formal/GaloisForLFunctions/RHTower/XiShiftedCanonicalAdmissionAdaptiveMixedSourceTailDegreeLaw.lean
+- formal/GaloisForLFunctions/RHTower/XiShiftedCanonicalAdmissionAdaptiveMixedSourceAllDegreeCapital.lean
+- formal/GaloisForLFunctions/RHTower/XiShiftedCanonicalAdmissionAdaptiveMixedSourceTerminalContactCharge.lean
+- formal/GaloisForLFunctions/RHTower/XiShiftedArcsineCenteredSourceWallNonintegrability.lean
 
 ### Route S and cross-cutting arithmetic source infrastructure
 
@@ -8663,6 +8725,8 @@ ratio-weighted `m>=2` translation estimate, are umbrella-reachable at this cutof
 - formal/GaloisForLFunctions/HTGeometry/ConstitutiveRelativeFormationCompletion.lean
 - formal/GaloisForLFunctions/HTGeometry/ConstitutiveHassePacketFormation.lean
 - formal/GaloisForLFunctions/HTGeometry/ConstitutiveFunctionalEquationPacketLift.lean
+- formal/GaloisForLFunctions/HTGeometry/ConstitutiveEntropicAlternatingFormation.lean
+- formal/GaloisForLFunctions/HTGeometry/PositiveFaceCompression.lean
 
 ### Committed certification queue excluded from formal status
 
@@ -9217,21 +9281,20 @@ source to the fixed Gamma/co-Poisson target, not another source normal, compact 
 scalar diagonal form. Route O now has two internal producer branches: true restricted-Weil
 whole-ground control beyond the paper-closed full constrained-prolate leakage optimizer and gap,
 and the completed-zero-mode-to-support-pruned-carrier intertwiner beyond the closed weak Gamma and
-root-port steps. Route P has umbrella-formal source/spectral realization through P-G97 and the
-first-trace/root-flux chain; it now lacks an oriented completed Ward/passivity law before squaring
-and after polar-residue cancellation. Route R has explicit `(2,3)` Calkin and one-vector Fisher
-receivers; it lacks source-specific collective compactness/singular factorization or loss-zero
-physical Cauchy landing.
+root-port steps. Route P's curvature-normalized tail and dephased Ward--Green exterior carrier are
+umbrella-formal; its two source budgets are a finite positive-tail ceiling or a strict sub-quantum
+four-leg prime--Gamma packet estimate. Route R's `(2,3)` Calkin, first-jet, positive-polar, and
+Fisher interfaces are all terminal RH-equivalent receivers; no independent producer remains.
 Route T's Wold-side wall is a signed/distributional pole-preserving landing; its arithmetic wall has
 moved past Perron relevance, finite incidence formation, recurrence solution, actual-interval
 embedding, logarithmic windows, Taylor control, finite convolution, arbitrary-centre Abel phase
 saving, hybrid zeta/Perron transport, and explicit Möbius power saving. Low, middle, and high
 Maynard amplitude regimes, coloring, window relevance, and receiver margin are all formal; one
 all-regime composition with the literal prime-gap moment/current is the first arithmetic wall.
-Route U's parabolic horizon, finite witness, source action, characteristic apex energy, strict
-degree capital, harmonic work floor, and reset barrier are formal. Its terminal wall is a
-normalized-flux floor or cumulative hyperbolic-action/boundary budget; the rational-nodal sign is
-the stationary chart of the same orientation problem.
+Route U's parabolic horizon, finite witness, characteristic/projective laws, adaptive all-degree
+source account, reciprocal clock, terminal contact charge, and cofinal centered-wall
+nonintegrability are formal. Its terminal wall is a pole-free, shallow-admission finite normalized
+pulse/determinant-line capital law.
 
 The coalitional/collective-repair/cofinal-viability laws, primitive-degree escape, and observer
 execution-gap laws expose a second route-design primitive, but no arithmetic repair family or Xi
@@ -10503,6 +10566,45 @@ Direct Lean and targeted build pass (`11826/11826`); all eleven public declarati
 `[propext, Classical.choice, Quot.sound]`; forbidden declaration/computation scan is clean. One
 repository-wide lint attempt was externally terminated with exit `143` and no diagnostics, so no
 repo-wide lint pass is claimed.
+
+### Route U mechanism: one adaptive source account pays reset and all lower degrees
+
+`XiShiftedCanonicalAdmissionAdaptiveMixedSourceHyperbolicReset.lean` through
+`XiShiftedCanonicalAdmissionAdaptiveMixedSourceAllDegreeCapital.lean` identify the literal
+drift-removed adaptive mixed/completed `P^sharp` source as a producer rather than a reporter. On
+every complete positive chamber, umbrella-formal Lean proves:
+
+```text
+J_n = -F_n',
+integral_a^b J_n = F_n(a)-F_n(b),
+(F_n/(2n+1))^(-1)' = 1 + positive projective surplus,
+2 J_N = all-lower-degree connector energy + strict Jacobi reserve.
+```
+
+The same account strictly pays the corrected hyperbolic reset and gives finite `L2` capital for
+every internal degree connector. A universal parabolic floor prevents source collapse and forces
+renormalized action to diverge on every cofinal positive-block schedule. The raw reciprocal clock
+is nevertheless not tail-integrable and tends to the forced arcsine-vacuum value two; any global
+budget must subtract that vacuum before summation. This retires ordinary energy/spread accounts,
+raw reciprocal-clock capital, and repeated pairwise connector estimates.
+
+### Route U mechanism: terminal contact is an exact source charge, not hidden reserve
+
+`XiShiftedCanonicalAdmissionAdaptiveMixedSourceTerminalContactCharge.lean` splits the terminal
+Jacobi mass from the all-degree reserve. In a positive chamber the distinguished charge is
+
+```text
+T_N = 4(N+1) beta_(N+1) = 4(N+1) h_(N+1)/h_N.
+```
+
+At a strict frontier, every finite first contact order `d>0` has an exact positive scaled residue
+in this channel, and false RH forces such charges cofinally. The companion
+`XiShiftedArcsineCenteredSourceWallNonintegrability.lean` proves the literal and vacuum-centered
+quotient walls are outside local `L1` at every such contact. That singularity is not itself the
+contradiction: it comes from a collapsing norm and survives bounded subtraction. The exact open
+core is a pole-free source-paid normalized terminal pulse, or a vacuum-renormalized determinant
+line with finite total capital, proved using only the shallow positive block available immediately
+to the right of each frontier.
 
 ### Route U mechanism: false-RH hard-edge witnesses have explicit cofinal linear dimension
 

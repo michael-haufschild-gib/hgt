@@ -123,7 +123,8 @@ theorem suzukiCanonicalLogHankel_interval_real_ae
     filter_upwards [hf] with y hy
     rw [map_mul, conj_suzukiSourceHFinite,
       Complex.conj_eq_iff_im.mpr hy]
-  simp [Complex.mul_im, hIntegral]
+  rw [Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, hIntegral]
+  ring
 
 /-- The finite Fredholm sum is real almost everywhere. -/
 theorem suzukiHankelPhiSum_real_ae
@@ -228,11 +229,13 @@ theorem conj_suzukiHankelTildeECleared_conj_eq_starCleared
   have hAiz := conj_suzukiHankelAiz_conj a z
   have hpz := hp z
   have hqneg := hq (-z)
+  have hcoeff : (starRingEnd ℂ) (suzukiHankelTildeCoefficient a) =
+      suzukiHankelTildeCoefficient a := by
+    simp [suzukiHankelTildeCoefficient, map_ofNat]
   simp only [map_neg, neg_neg] at hEneg hqneg
-  rw [suzukiHankelTildeECleared, suzukiHankelTildeERegularPart,
-    suzukiHankelTildeEThetaPart, map_add, map_mul, map_add, map_mul,
-    map_mul, map_neg, map_mul, hE, hEneg, hAiz, hpz, hqneg]
-  simp only [map_ofNat, ofReal_div, ofReal_sqrt, ofReal_neg]
+  simp only [suzukiHankelTildeECleared, suzukiHankelTildeEStarCleared,
+    suzukiHankelTildeERegularPart, suzukiHankelTildeEThetaPart,
+    map_add, map_mul, map_neg, hE, hEneg, hAiz, hpz, hqneg, hcoeff]
   ring
 
 theorem conj_suzukiHankelTildeEStarCleared_conj_eq_ECleared
@@ -259,10 +262,11 @@ theorem conj_suzukiHankelTildeACleared_conj
     (starRingEnd ℂ)
         (suzukiHankelTildeACleared omega a homega ha ((starRingEnd ℂ) z)) =
       suzukiHankelTildeACleared omega a homega ha z := by
-  rw [suzukiHankelTildeACleared, map_div₀, map_add,
+  unfold suzukiHankelTildeACleared
+  rw [map_div₀, map_add,
     conj_suzukiHankelTildeECleared_conj_eq_starCleared homega ha,
     conj_suzukiHankelTildeEStarCleared_conj_eq_ECleared homega ha]
-  norm_num
+  simp only [map_ofNat]
   ring
 
 theorem conj_suzukiHankelTildeBCleared_conj
@@ -270,7 +274,8 @@ theorem conj_suzukiHankelTildeBCleared_conj
     (starRingEnd ℂ)
         (suzukiHankelTildeBCleared omega a homega ha ((starRingEnd ℂ) z)) =
       suzukiHankelTildeBCleared omega a homega ha z := by
-  rw [suzukiHankelTildeBCleared, map_div₀, map_sub, map_mul,
+  unfold suzukiHankelTildeBCleared
+  rw [map_div₀, map_sub, map_mul,
     conj_suzukiHankelTildeEStarCleared_conj_eq_ECleared homega ha,
     conj_suzukiHankelTildeECleared_conj_eq_starCleared homega ha]
   simp only [map_ofNat, Complex.conj_I]

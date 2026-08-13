@@ -47,16 +47,11 @@ theorem tendsto_sourceCayleyAbelGreenPolynomial
     rw [norm_neg, norm_mul, Complex.norm_real, Real.norm_eq_abs, hu, mul_one]
     exact hR
   have hgeom := (hasSum_geometric_of_norm_lt_one hratio).tendsto_sum_nat
-  have hmul := tendsto_const_nhds.mul hgeom
-  convert hmul using 1
-  · funext K
-    simp only [sourceCayleyAbelGreenPolynomial, u]
-  · rw [sourceCayleyAbelGreenMultiplier]
-    change 2 * I * (1 - u) * (1 - -((R : ℂ) * u))⁻¹ =
-      2 * I * (1 - u) / (1 + (R : ℂ) * u)
-    rw [div_eq_mul_inv]
-    congr 2
-    ring
+  have hconst : Tendsto (fun _ : ℕ => 2 * I * (1 - u)) atTop
+      (nhds (2 * I * (1 - u))) := tendsto_const_nhds
+  have hmul := hconst.mul hgeom
+  simpa only [sourceCayleyAbelGreenPolynomial,
+    sourceCayleyAbelGreenMultiplier, u, div_eq_mul_inv, sub_neg_eq_add] using hmul
 
 /-- The Cayley denominator at the Abel boundary is nonzero away from the reflection fixed point. -/
 theorem one_add_realCayley_ne_zero {x : ℝ} (hx : x ≠ 0) :
@@ -115,9 +110,10 @@ theorem xiExteriorCayleyAbelGreenMultiplier_one_eq_inv_im
   rw [xiExteriorCayleyAbelGreenMultiplier,
     sourceCayleyAbelGreenMultiplier_one_eq hx,
     xiSpectralPointSupport_im]
+  rw [show 1 / 2 - (rho : ℂ).re =
+      -(2 * (rho : ℂ).re - 1) / 2 by ring]
   push_cast
   field_simp [hx]
-  ring
 
 /-- Abel-normalized forward adjacent exterior coefficient. -/
 def xiExteriorCayleyAbelPlusCoefficient
@@ -269,9 +265,16 @@ theorem tendsto_xiExteriorCayleyAbelPlusCoefficient_one
       linarith
     have hcont : ContinuousAt
         (fun R : ℝ => xiExteriorCayleyAbelPlusCoefficient R rho) 1 := by
-      rw [xiExteriorCayleyAbelPlusCoefficient,
-        xiExteriorCayleyAbelGreenMultiplier,
-        xiExteriorCayleyAbelGreenMultiplier]
+      change ContinuousAt
+        (fun R : ℝ =>
+          (2 * I *
+              (1 - GaloisForLFunctions.HTGeometry.realCayley
+                (2 * (rho : ℂ).re - 1)) /
+            (1 + (R : ℂ) * GaloisForLFunctions.HTGeometry.realCayley
+              (2 * (rho : ℂ).re - 1))) *
+            adjacentCriticalFeatureEvaluationDet (xiExteriorReporterCenter rho)
+              (xiSpectralPointSupport rho)
+              (abs_xiSpectralPointSupport_im_lt_half_exteriorCarrier rho)) 1
       fun_prop
     rw [← xiExteriorCayleyAbelPlusCoefficient_one_eq rho]
     exact hcont.tendsto.mono_left inf_le_left
@@ -303,9 +306,16 @@ theorem tendsto_xiExteriorCayleyAbelMinusCoefficient_one
       linarith
     have hcont : ContinuousAt
         (fun R : ℝ => xiExteriorCayleyAbelMinusCoefficient R rho) 1 := by
-      rw [xiExteriorCayleyAbelMinusCoefficient,
-        xiExteriorCayleyAbelGreenMultiplier,
-        xiExteriorCayleyAbelGreenMultiplier]
+      change ContinuousAt
+        (fun R : ℝ =>
+          (2 * I *
+              (1 - GaloisForLFunctions.HTGeometry.realCayley
+                (2 * (rho : ℂ).re - 1)) /
+            (1 + (R : ℂ) * GaloisForLFunctions.HTGeometry.realCayley
+              (2 * (rho : ℂ).re - 1))) *
+            adjacentCriticalFeatureEvaluationDet (xiExteriorReporterCenter rho - 1)
+              (xiSpectralPointSupport rho)
+              (abs_xiSpectralPointSupport_im_lt_half_exteriorCarrier rho)) 1
       fun_prop
     rw [← xiExteriorCayleyAbelMinusCoefficient_one_eq rho]
     exact hcont.tendsto.mono_left inf_le_left

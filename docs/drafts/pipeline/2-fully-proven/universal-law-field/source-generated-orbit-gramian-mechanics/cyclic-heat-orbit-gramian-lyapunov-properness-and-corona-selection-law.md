@@ -304,6 +304,52 @@ Thus finite endogenous cost is exactly finite source-formation capital, and the 
 least capital among all histories producing the defect. This removes the independent proper-cost
 premise rather than merely bounding it.
 
+#### VIII. Atomic-refinement capital wall
+
+For `T>0`, define the normalized source-window packet
+
+\[
+ x_T={1\over T}\int_0^T S_tv\,dt.
+ \tag{OG.22f}
+\]
+
+Then
+
+\[
+ x_T\longrightarrow v,
+ \qquad
+ q_G(x_T)\le {1\over T},
+ \qquad
+ \boxed{q_G(v)=+\infty,\quad q_G(x_T)\longrightarrow+\infty\ (T\downarrow0).}
+ \tag{OG.22g}
+\]
+
+Thus every positive-width average is source-formable, but the exact injected atom is not. Atomic
+refinement has an endogenous divergent price even though the packets converge in the ambient
+Hilbert norm.
+
+#### IX. Positive aggregation cannot regularize capital
+
+Let `(X_r:U_r->H)_(r>=1)` be Hilbert--Schmidt and let `w_r>=0`. Assume
+
+\[
+ T=\sum_{r\ge1}w_rX_rX_r^*
+ \tag{OG.22h}
+\]
+
+converges in trace norm. Then
+
+\[
+ \boxed{
+ \mathcal E_G(T)
+ =\sum_{r\ge1}w_r\mathcal E_G(X_rX_r^*)}
+ \tag{OG.22i}
+\]
+
+as an identity in `[0,infinity]`. In particular, one positive-weight infinite-capital component
+forces infinite capital for the aggregate. Positive formation permits no cancellation of source
+work.
+
 ## 4. Proof
 
 ### 4.1 Trace-class formation
@@ -520,6 +566,57 @@ This proves `(OG.22a)`--`(OG.22c)` and uniqueness of the least-capital factor. I
 `(OG.35a)` is infinite, no Hilbert--Schmidt factorization can exist by `(OG.35c)`. The selection
 corollary is Theorem 3.1.V applied with `M=sup_n||B_n||_HS^2`.
 
+### 4.8 Atomic-refinement wall
+
+Strong continuity gives `x_T->v`. Since
+
+\[
+ x_T=W\left(T^{-1}\mathbf1_{[0,T]}\right),
+ \qquad
+ \left\|T^{-1}\mathbf1_{[0,T]}\right\|_{L^2}^2={1\over T},
+ \tag{OG.35g}
+\]
+
+the minimum-energy identity `(OG.16)` gives `q_G(x_T)<=1/T`.
+
+Suppose `v=Wh` for some `h in L^2(0,infinity)`. Since every `v_j` is nonzero, the `j`th coordinate
+would give
+
+\[
+ 1=\int_0^\infty h(t)e^{-\lambda_jt}dt.
+ \tag{OG.35h}
+\]
+
+But Cauchy--Schwarz gives
+
+\[
+ \left|\int_0^\infty h(t)e^{-\lambda_jt}dt\right|
+ \le {\|h\|_{L^2}\over\sqrt{2\lambda_j}}
+ \longrightarrow0,
+ \tag{OG.35i}
+\]
+
+a contradiction. Hence `v` is not in `Ran W=Dom(G^(-1/2))`, so `q_G(v)=+infinity`.
+
+If `q_G(x_T)` did not tend to infinity, some sequence `T_n downarrow 0` would remain in one compact
+sublevel `(OG.14)`. A subsequence would converge inside that sublevel, but `x_(T_n)->v`; closedness
+of the sublevel would force `q_G(v)<infinity`. This proves `(OG.22g)`.
+
+### 4.9 Positive aggregation
+
+For the finite partial sums `T_N`, the spectral definition gives
+
+\[
+ \mathcal E_G(T_N)
+ =\sum_k\gamma_k^{-1}\sum_{r\le N}w_r\|X_r^*f_k\|^2
+ =\sum_{r\le N}w_r\mathcal E_G(X_rX_r^*).
+ \tag{OG.35j}
+\]
+
+All summands are nonnegative. Monotone convergence in `N` and then Tonelli in `(r,k)` prove
+`(OG.22i)`. Trace-norm convergence ensures that `(OG.22h)` defines the advertised positive
+trace-class operator; the energy identity itself is extended-valued.
+
 ## 5. Sharp countermodels and load-bearing hypotheses
 
 ### 5.1 Properness cannot be omitted
@@ -617,6 +714,50 @@ sequence `t_r->infinity` with
  \tag{OG.42}
 \]
 
+The Euler-shell reachability map is injective. To prove this, suppose `Wh=0` and form the Laplace
+transform
+
+\[
+ \mathcal Lh(z)=\int_0^\infty h(t)e^{-zt}dt,
+ \qquad \Re z>0.
+ \tag{OG.43}
+\]
+
+Paley--Wiener theory puts `Lh` in the Hardy space `H^2(C_+)`. Since every shell coordinate of `v`
+is nonzero, `Wh=0` implies
+
+\[
+ \mathcal Lh(\log n)=0
+ \qquad(n\in A_m).
+ \tag{OG.44}
+\]
+
+For every odd prime `p`, the integer `2^m p` belongs to `A_m`. A nonzero Hardy function on the
+right half-plane has a Blaschke zero set, hence its positive real zeros `(z_r)` must satisfy
+
+\[
+ \sum_r{z_r\over1+z_r^2}<\infty.
+ \tag{OG.45}
+\]
+
+But `z_p=log(2^m p)` violates `(OG.45)`: for all large `p`,
+
+\[
+ {z_p\over1+z_p^2}\ge {1\over2z_p}\ge {c_m\over p},
+ \tag{OG.46}
+\]
+
+and Euler's theorem gives `sum_p 1/p=infinity`. Thus `Lh=0`; injectivity of the Laplace transform
+gives `h=0`. Consequently the control in `(OG.35g)` is unique, and the shell atomic-refinement law
+is exact:
+
+\[
+ \boxed{
+ q_{G_{m,\sigma}}(x_T)={1\over T}
+ \qquad(T>0).}
+ \tag{OG.47}
+\]
+
 One literal source now has five exact faces.
 
 | organ | face of the same source law |
@@ -632,6 +773,11 @@ the same complex orbit. Equation `(OG.10)` is their exact conservation identity.
 organ prediction is `(OG.37)`: every normalized approximately source-invariant shell defect must
 have divergent orbit-synthesis energy. More sharply, no such persistent defect can factor through
 the shell reachability map with uniformly bounded Hilbert--Schmidt formation capital.
+
+The same source also predicts an exact atomic-refinement wall. The shell seed
+`v_(m,sigma)` has infinite formation capital, while its normalized real-time averages have finite
+capital `1/T` and converge to it. Hence ambient convergence, common recovery, and phase recurrence
+do not control the cost of forming the limiting atom.
 
 ## 7. Literature and corpus boundary
 

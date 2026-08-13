@@ -70,7 +70,7 @@ theorem integral_norm_suzukiCutoff_sq_le
         rw [hx, indicator_of_notMem hmem]
       rw [indicator_of_notMem hmem, hgzero, norm_zero]
   have hE : (∫ x in Icc (-a) a, ‖g x‖ ^ 2) = ‖g‖ ^ 2 := by
-    rw [← norm_sq_lp_eq_integral_norm_sq g]
+    rw [norm_sq_lp_eq_integral_norm_sq g]
     rw [← integral_indicator measurableSet_Icc]
     apply integral_congr_ae
     filter_upwards [indicatorCutoff_ae (Icc (-a) a) measurableSet_Icc f] with x hx
@@ -83,7 +83,8 @@ theorem integral_norm_suzukiCutoff_sq_le
   rw [← hL1, hE] at hCS
   have hnorm := norm_suzukiCutoff_le a f
   have hfac : 0 ≤ 2 * a := by positivity
-  exact hCS.trans (mul_le_mul_of_nonneg_left (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).2 hnorm hfac)
+  exact hCS.trans (mul_le_mul_of_nonneg_left
+    ((sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).2 hnorm) hfac)
 
 /-- Zero extension into a larger physical interval preserves the `L²` norm. -/
 theorem norm_suzukiPhysicalIntervalInclusion
@@ -322,5 +323,361 @@ theorem tendstoUniformlyOn_suzukiHankelFourierRight_zero
         _ < (epsilon / D) * D := mul_lt_mul_of_pos_right hL1 hD
         _ = epsilon := div_mul_cancel₀ epsilon hD.ne'
     simpa [suzukiHankelPhiSumHankelFourierRight, ha, dist_eq_norm] using hnormlt
+
+/-! ## Compact-open algebra and elementary endpoint limits -/
+
+/-- Multiplication preserves uniform convergence on a compact set for continuous complex-valued
+families.  Multiplication is not globally uniformly continuous on `ℂ × ℂ`; compact-open
+continuity is the correct infrastructure here. -/
+theorem tendstoUniformlyOn_mul_of_compact
+    {ι : Type*} {l : Filter ι} {F G : ι → ℂ → ℂ} {f g : ℂ → ℂ}
+    {K : Set ℂ} (hK : IsCompact K)
+    (hFc : ∀ i, ContinuousOn (F i) K) (hGc : ∀ i, ContinuousOn (G i) K)
+    (hfc : ContinuousOn f K) (hgc : ContinuousOn g K)
+    (hF : TendstoUniformlyOn F f l K) (hG : TendstoUniformlyOn G g l K) :
+    TendstoUniformlyOn (fun i z => F i z * G i z) (fun z => f z * g z) l K := by
+  letI : CompactSpace K := isCompact_iff_compactSpace.mp hK
+  let FC : ι → C(K, ℂ) := fun i =>
+    ⟨fun z => F i z, continuousOn_iff_continuous_restrict.mp (hFc i)⟩
+  let GC : ι → C(K, ℂ) := fun i =>
+    ⟨fun z => G i z, continuousOn_iff_continuous_restrict.mp (hGc i)⟩
+  let fc : C(K, ℂ) :=
+    ⟨fun z => f z, continuousOn_iff_continuous_restrict.mp hfc⟩
+  let gc : C(K, ℂ) :=
+    ⟨fun z => g z, continuousOn_iff_continuous_restrict.mp hgc⟩
+  have hFC : Tendsto FC l (𝓝 fc) := by
+    rw [ContinuousMap.tendsto_iff_tendstoUniformly]
+    simpa [FC, fc] using
+      (tendstoUniformlyOn_iff_tendstoUniformly_comp_coe.mp hF)
+  have hGC : Tendsto GC l (𝓝 gc) := by
+    rw [ContinuousMap.tendsto_iff_tendstoUniformly]
+    simpa [GC, gc] using
+      (tendstoUniformlyOn_iff_tendstoUniformly_comp_coe.mp hG)
+  rw [tendstoUniformlyOn_iff_tendstoUniformly_comp_coe]
+  simpa [FC, GC, fc, gc] using
+    (ContinuousMap.tendsto_iff_tendstoUniformly.mp (hFC.mul hGC))
+
+theorem continuous_suzukiHankelPhiSumFourierRight
+    (omega : ℝ) (homega : 1 < omega) (a : ℝ) :
+    Continuous (suzukiHankelPhiSumFourierRight omega homega a) := by
+  unfold suzukiHankelPhiSumFourierRight
+  split_ifs with ha
+  · exact (differentiable_suzukiCompactL2Fourier (Real.log_pos ha).le _).continuous
+  · exact continuous_const
+
+theorem continuous_suzukiHankelPhiSumHankelFourierRight
+    (omega : ℝ) (homega : 1 < omega) (a : ℝ) :
+    Continuous (suzukiHankelPhiSumHankelFourierRight omega homega a) := by
+  unfold suzukiHankelPhiSumHankelFourierRight
+  split_ifs with ha
+  · exact (differentiable_suzukiCompactL2Fourier (Real.log_pos ha).le _).continuous
+  · exact continuous_const
+
+private theorem tendstoUniformlyOn_comp_neg_of_compact
+    {ι : Type*} {l : Filter ι} {F : ι → ℂ → ℂ} {f : ℂ → ℂ}
+    {K : Set ℂ} (hK : IsCompact K)
+    (hF : TendstoUniformlyOn F f l ((fun z : ℂ => -z) '' K)) :
+    TendstoUniformlyOn (fun i z => F i (-z)) (fun z => f (-z)) l K := by
+  rw [Metric.tendstoUniformlyOn_iff] at hF ⊢
+  intro epsilon hepsilon
+  filter_upwards [hF epsilon hepsilon] with i hi z hz
+  exact hi (-z) ⟨z, hz, rfl⟩
+
+/-- The elementary exponential `a^(iz)` tends to one uniformly on every compact spectral set. -/
+theorem tendstoUniformlyOn_suzukiHankelAiz_one
+    {K : Set ℂ} (hK : IsCompact K) :
+    TendstoUniformlyOn (fun a z => suzukiHankelAiz a z) (fun _ => 1)
+      (𝓝[Ioi (1 : ℝ)] 1) K := by
+  letI : CompactSpace K := isCompact_iff_compactSpace.mp hK
+  let F : ℝ → K → ℂ := fun a z => suzukiHankelAiz a z
+  have hlog : ContinuousOn (fun p : ℝ × K => Real.log p.1)
+      (Ioi (0 : ℝ) ×ˢ (univ : Set K)) :=
+    Real.continuousOn_log.comp continuousOn_fst (fun p hp => hp.1)
+  have harg : ContinuousOn (fun p : ℝ × K =>
+      I * (p.2 : ℂ) * (Real.log p.1 : ℂ))
+      (Ioi (0 : ℝ) ×ˢ (univ : Set K)) :=
+    (continuousOn_const.mul continuousOn_snd).mul
+      (Complex.continuous_ofReal.comp_continuousOn hlog)
+  have hFcont : ContinuousOn ↿F
+      (Ioi (0 : ℝ) ×ˢ (univ : Set K)) := by
+    simpa [F, suzukiHankelAiz] using
+      Complex.continuous_exp.comp_continuousOn harg
+  have hfull : TendstoUniformly F (F 1) (𝓝 (1 : ℝ)) :=
+    hFcont.tendstoUniformly (Ioi_mem_nhds zero_lt_one)
+  have hright : TendstoUniformly F (F 1) (𝓝[Ioi (1 : ℝ)] 1) :=
+    tendstoUniformly_iff_tendstoUniformlyOnFilter.mpr
+      (hfull.tendstoUniformlyOnFilter.mono_left inf_le_left)
+  rw [tendstoUniformlyOn_iff_tendstoUniformly_comp_coe]
+  simpa [F, suzukiHankelAiz] using hright
+
+theorem tendsto_suzukiHankelTildeCoefficient_right
+    : Tendsto suzukiHankelTildeCoefficient (𝓝[Ioi (1 : ℝ)] 1)
+        (𝓝 ((1 / 2 : ℝ) : ℂ)) := by
+  have hcont : ContinuousAt suzukiHankelTildeCoefficient 1 := by
+    unfold suzukiHankelTildeCoefficient
+    exact Complex.continuous_ofReal.continuousAt.comp
+      (Real.continuous_sqrt.continuousAt.div_const 2)
+  have h := hcont.mono_left inf_le_left
+  simpa using h
+
+/-! ## Total right representatives of the cleared and completed pairs -/
+
+def suzukiHankelTildeEClearedRight
+    (omega : ℝ) (homega : 1 < omega) (a : ℝ) (z : ℂ) : ℂ :=
+  suzukiCanonicalE omega z *
+      (suzukiHankelAiz a z + suzukiHankelTildeCoefficient a *
+        suzukiHankelPhiSumHankelFourierRight omega homega a z) +
+    suzukiCanonicalE omega (-z) *
+      (-suzukiHankelTildeCoefficient a *
+        suzukiHankelPhiSumFourierRight omega homega a (-z))
+
+def suzukiHankelTildeEStarClearedRight
+    (omega : ℝ) (homega : 1 < omega) (a : ℝ) (z : ℂ) : ℂ :=
+  suzukiCanonicalE omega z *
+      (-suzukiHankelTildeCoefficient a *
+        suzukiHankelPhiSumFourierRight omega homega a z) +
+    suzukiCanonicalE omega (-z) *
+      (suzukiHankelAiz a (-z) + suzukiHankelTildeCoefficient a *
+        suzukiHankelPhiSumHankelFourierRight omega homega a (-z))
+
+def suzukiHankelCompletedARight
+    (omega : ℝ) (homega : 1 < omega) (a : ℝ) (z : ℂ) : ℂ :=
+  (suzukiHankelM omega homega a : ℂ) *
+    ((suzukiHankelTildeEClearedRight omega homega a z +
+      suzukiHankelTildeEStarClearedRight omega homega a z) / 2)
+
+def suzukiHankelCompletedBRight
+    (omega : ℝ) (homega : 1 < omega) (a : ℝ) (z : ℂ) : ℂ :=
+  (suzukiHankelM omega homega a : ℂ)⁻¹ *
+    ((suzukiHankelTildeEStarClearedRight omega homega a z -
+      suzukiHankelTildeEClearedRight omega homega a z) / (2 * I))
+
+theorem suzukiHankelTildeEClearedRight_of_one_lt
+    {omega a : ℝ} (homega : 1 < omega) (ha : 1 < a) :
+    suzukiHankelTildeEClearedRight omega homega a =
+      suzukiHankelTildeECleared omega a homega ha := by
+  funext z
+  simp [suzukiHankelTildeEClearedRight, suzukiHankelTildeECleared,
+    suzukiHankelTildeERegularPart, suzukiHankelTildeEThetaPart,
+    suzukiHankelPhiSumFourierRight,
+    suzukiHankelPhiSumHankelFourierRight, ha]
+
+theorem suzukiHankelTildeEStarClearedRight_of_one_lt
+    {omega a : ℝ} (homega : 1 < omega) (ha : 1 < a) :
+    suzukiHankelTildeEStarClearedRight omega homega a =
+      suzukiHankelTildeEStarCleared omega a homega ha := by
+  funext z
+  simp [suzukiHankelTildeEStarClearedRight, suzukiHankelTildeEStarCleared,
+    suzukiHankelPhiSumFourierRight,
+    suzukiHankelPhiSumHankelFourierRight, ha]
+
+theorem suzukiHankelCompletedARight_of_one_lt
+    {omega a : ℝ} (homega : 1 < omega) (ha : 1 < a) :
+    suzukiHankelCompletedARight omega homega a =
+      suzukiHankelCompletedA omega a homega ha := by
+  funext z
+  rw [suzukiHankelCompletedARight, suzukiHankelCompletedA,
+    suzukiHankelTildeACleared,
+    suzukiHankelTildeEClearedRight_of_one_lt homega ha,
+    suzukiHankelTildeEStarClearedRight_of_one_lt homega ha]
+
+theorem suzukiHankelCompletedBRight_of_one_lt
+    {omega a : ℝ} (homega : 1 < omega) (ha : 1 < a) :
+    suzukiHankelCompletedBRight omega homega a =
+      suzukiHankelCompletedB omega a homega ha := by
+  funext z
+  rw [suzukiHankelCompletedBRight, suzukiHankelCompletedB,
+    suzukiHankelTildeBCleared,
+    suzukiHankelTildeEClearedRight_of_one_lt homega ha,
+    suzukiHankelTildeEStarClearedRight_of_one_lt homega ha]
+
+theorem continuous_suzukiHankelTildeEClearedRight
+    (omega : ℝ) (homega : 1 < omega) (a : ℝ) :
+    Continuous (suzukiHankelTildeEClearedRight omega homega a) := by
+  unfold suzukiHankelTildeEClearedRight
+  fun_prop
+
+theorem continuous_suzukiHankelTildeEStarClearedRight
+    (omega : ℝ) (homega : 1 < omega) (a : ℝ) :
+    Continuous (suzukiHankelTildeEStarClearedRight omega homega a) := by
+  unfold suzukiHankelTildeEStarClearedRight
+  fun_prop
+
+/-! ## Compact-uniform convergence of the two cleared numerators -/
+
+theorem tendstoUniformlyOn_suzukiHankelClearedRight
+    {omega : ℝ} (homega : 1 < omega) {K : Set ℂ} (hK : IsCompact K) :
+    TendstoUniformlyOn (suzukiHankelTildeEClearedRight omega homega)
+        (suzukiCanonicalE omega) (𝓝[Ioi (1 : ℝ)] 1) K ∧
+      TendstoUniformlyOn (suzukiHankelTildeEStarClearedRight omega homega)
+        (fun z => suzukiCanonicalE omega (-z)) (𝓝[Ioi (1 : ℝ)] 1) K := by
+  let l : Filter ℝ := 𝓝[Ioi (1 : ℝ)] 1
+  have hfourier := tendstoUniformlyOn_suzukiHankelFourierRight_zero homega hK
+  have hKneg : IsCompact ((fun z : ℂ => -z) '' K) := hK.image continuous_neg
+  have hfourierNeg := tendstoUniformlyOn_suzukiHankelFourierRight_zero homega hKneg
+  have hq : TendstoUniformlyOn (suzukiHankelPhiSumFourierRight omega homega)
+      (fun _ => 0) l K := hfourier.1
+  have hp : TendstoUniformlyOn (suzukiHankelPhiSumHankelFourierRight omega homega)
+      (fun _ => 0) l K := hfourier.2
+  have hqNeg : TendstoUniformlyOn
+      (fun a z => suzukiHankelPhiSumFourierRight omega homega a (-z))
+      (fun _ => 0) l K := by
+    simpa using tendstoUniformlyOn_comp_neg_of_compact hK hfourierNeg.1
+  have hpNeg : TendstoUniformlyOn
+      (fun a z => suzukiHankelPhiSumHankelFourierRight omega homega a (-z))
+      (fun _ => 0) l K := by
+    simpa using tendstoUniformlyOn_comp_neg_of_compact hK hfourierNeg.2
+  have hAiz := tendstoUniformlyOn_suzukiHankelAiz_one hK
+  have hAizNeg : TendstoUniformlyOn (fun a z => suzukiHankelAiz a (-z))
+      (fun _ => 1) l K := by
+    have hbase := tendstoUniformlyOn_suzukiHankelAiz_one hKneg
+    simpa using tendstoUniformlyOn_comp_neg_of_compact hK hbase
+  have hcoeff : TendstoUniformlyOn
+      (fun a (_ : ℂ) => suzukiHankelTildeCoefficient a)
+      (fun _ => ((1 / 2 : ℝ) : ℂ)) l K :=
+    tendsto_suzukiHankelTildeCoefficient_right.tendstoUniformlyOn_const K
+  have hE : TendstoUniformlyOn
+      (fun _ z => suzukiCanonicalE omega z) (suzukiCanonicalE omega) l K :=
+    tendsto_const_nhds.tendstoUniformlyOn_const K
+  have hEneg : TendstoUniformlyOn
+      (fun _ z => suzukiCanonicalE omega (-z))
+      (fun z => suzukiCanonicalE omega (-z)) l K :=
+    tendsto_const_nhds.tendstoUniformlyOn_const K
+  have hcoeffP := tendstoUniformlyOn_mul_of_compact hK
+    (fun _ => continuous_const.continuousOn)
+    (fun a => (continuous_suzukiHankelPhiSumHankelFourierRight omega homega a).continuousOn)
+    continuous_const.continuousOn continuous_const.continuousOn hcoeff hp
+  have hcoeffQ := tendstoUniformlyOn_mul_of_compact hK
+    (fun _ => continuous_const.continuousOn)
+    (fun a => (continuous_suzukiHankelPhiSumFourierRight omega homega a).continuousOn)
+    continuous_const.continuousOn continuous_const.continuousOn hcoeff hq
+  have hcoeffPNeg := tendstoUniformlyOn_mul_of_compact hK
+    (fun _ => continuous_const.continuousOn)
+    (fun a => ((continuous_suzukiHankelPhiSumHankelFourierRight omega homega a).comp
+      continuous_neg).continuousOn)
+    continuous_const.continuousOn continuous_const.continuousOn hcoeff hpNeg
+  have hcoeffQNeg := tendstoUniformlyOn_mul_of_compact hK
+    (fun _ => continuous_const.continuousOn)
+    (fun a => ((continuous_suzukiHankelPhiSumFourierRight omega homega a).comp
+      continuous_neg).continuousOn)
+    continuous_const.continuousOn continuous_const.continuousOn hcoeff hqNeg
+  have hreg := hAiz.add hcoeffP
+  have hregNeg := hAizNeg.add hcoeffPNeg
+  have hEreg := tendstoUniformlyOn_mul_of_compact hK
+    (fun _ => (differentiable_suzukiCanonicalE omega).continuous.continuousOn)
+    (fun a => ((differentiable_suzukiHankelAiz a).continuous.add
+      (continuous_const.mul
+        (continuous_suzukiHankelPhiSumHankelFourierRight omega homega a))).continuousOn)
+    (differentiable_suzukiCanonicalE omega).continuous.continuousOn
+    continuous_const.continuousOn hE hreg
+  have hEregNeg := tendstoUniformlyOn_mul_of_compact hK
+    (fun _ => ((differentiable_suzukiCanonicalE omega).continuous.comp
+      continuous_neg).continuousOn)
+    (fun a => (((differentiable_suzukiHankelAiz a).continuous.comp continuous_neg).add
+      (continuous_const.mul
+        ((continuous_suzukiHankelPhiSumHankelFourierRight omega homega a).comp
+          continuous_neg))).continuousOn)
+    ((differentiable_suzukiCanonicalE omega).continuous.comp continuous_neg).continuousOn
+    continuous_const.continuousOn hEneg hregNeg
+  have hEQNeg := tendstoUniformlyOn_mul_of_compact hK
+    (fun _ => ((differentiable_suzukiCanonicalE omega).continuous.comp
+      continuous_neg).continuousOn)
+    (fun a => (continuous_const.mul
+      ((continuous_suzukiHankelPhiSumFourierRight omega homega a).comp
+        continuous_neg)).continuousOn)
+    ((differentiable_suzukiCanonicalE omega).continuous.comp continuous_neg).continuousOn
+    continuous_const.continuousOn hEneg hcoeffQNeg.neg
+  have hEQ := tendstoUniformlyOn_mul_of_compact hK
+    (fun _ => (differentiable_suzukiCanonicalE omega).continuous.continuousOn)
+    (fun a => (continuous_const.mul
+      (continuous_suzukiHankelPhiSumFourierRight omega homega a)).continuousOn)
+    (differentiable_suzukiCanonicalE omega).continuous.continuousOn
+    continuous_const.continuousOn hE hcoeffQ.neg
+  constructor
+  · simpa [suzukiHankelTildeEClearedRight] using hEreg.add hEQNeg
+  · simpa [suzukiHankelTildeEStarClearedRight] using hEQ.add hEregNeg
+
+/-! ## Suzuki's published Lemma 4.10 -/
+
+theorem tendstoUniformlyOn_suzukiHankelCompletedARight
+    {omega : ℝ} (homega : 1 < omega) {K : Set ℂ} (hK : IsCompact K) :
+    TendstoUniformlyOn (suzukiHankelCompletedARight omega homega)
+      (suzukiCanonicalA omega) (𝓝[Ioi (1 : ℝ)] 1) K := by
+  let l : Filter ℝ := 𝓝[Ioi (1 : ℝ)] 1
+  have hcleared := tendstoUniformlyOn_suzukiHankelClearedRight homega hK
+  have hsum := hcleared.1.add hcleared.2
+  have hhalf : TendstoUniformlyOn
+      (fun _ (_ : ℂ) => ((2 : ℂ)⁻¹)) (fun _ => ((2 : ℂ)⁻¹)) l K :=
+    tendsto_const_nhds.tendstoUniformlyOn_const K
+  have havg := tendstoUniformlyOn_mul_of_compact hK
+    (fun a => ((continuous_suzukiHankelTildeEClearedRight omega homega a).add
+      (continuous_suzukiHankelTildeEStarClearedRight omega homega a)).continuousOn)
+    (fun _ => continuous_const.continuousOn)
+    ((differentiable_suzukiCanonicalE omega).continuous.add
+      ((differentiable_suzukiCanonicalE omega).continuous.comp continuous_neg)).continuousOn
+    continuous_const.continuousOn hsum hhalf
+  have hmComplex : Tendsto (fun a => (suzukiHankelM omega homega a : ℂ)) l (𝓝 1) :=
+    Complex.continuous_ofReal.continuousAt.tendsto.comp
+      (tendsto_suzukiHankelM_right_one homega)
+  have hm := hmComplex.tendstoUniformlyOn_const (α := ℂ) K
+  have hmul := tendstoUniformlyOn_mul_of_compact hK
+    (fun _ => continuous_const.continuousOn)
+    (fun a => (((continuous_suzukiHankelTildeEClearedRight omega homega a).add
+      (continuous_suzukiHankelTildeEStarClearedRight omega homega a)).div_const 2).continuousOn)
+    continuous_const.continuousOn
+    ((differentiable_suzukiCanonicalE omega).continuous.add
+      ((differentiable_suzukiCanonicalE omega).continuous.comp continuous_neg) |>.div_const 2
+      |>.continuousOn) hm havg
+  simpa [suzukiHankelCompletedARight,
+    suzukiCanonicalA_eq_E_ESharp_average, suzukiCanonicalESharp_eq_E_neg,
+    div_eq_mul_inv] using hmul
+
+theorem tendstoUniformlyOn_suzukiHankelCompletedBRight
+    {omega : ℝ} (homega : 1 < omega) {K : Set ℂ} (hK : IsCompact K) :
+    TendstoUniformlyOn (suzukiHankelCompletedBRight omega homega)
+      (suzukiCanonicalB omega) (𝓝[Ioi (1 : ℝ)] 1) K := by
+  let l : Filter ℝ := 𝓝[Ioi (1 : ℝ)] 1
+  have hcleared := tendstoUniformlyOn_suzukiHankelClearedRight homega hK
+  have hdiff := hcleared.2.sub hcleared.1
+  have hden : (2 * I : ℂ) ≠ 0 := by norm_num [Complex.I_ne_zero]
+  have hinvDen : TendstoUniformlyOn
+      (fun _ (_ : ℂ) => (2 * I : ℂ)⁻¹) (fun _ => (2 * I : ℂ)⁻¹) l K :=
+    tendsto_const_nhds.tendstoUniformlyOn_const K
+  have hquot := tendstoUniformlyOn_mul_of_compact hK
+    (fun a => ((continuous_suzukiHankelTildeEStarClearedRight omega homega a).sub
+      (continuous_suzukiHankelTildeEClearedRight omega homega a)).continuousOn)
+    (fun _ => continuous_const.continuousOn)
+    (((differentiable_suzukiCanonicalE omega).continuous.comp continuous_neg).sub
+      (differentiable_suzukiCanonicalE omega).continuous).continuousOn
+    continuous_const.continuousOn hdiff hinvDen
+  have hmComplex : Tendsto (fun a => (suzukiHankelM omega homega a : ℂ)) l (𝓝 1) :=
+    Complex.continuous_ofReal.continuousAt.tendsto.comp
+      (tendsto_suzukiHankelM_right_one homega)
+  have hmInv : Tendsto (fun a => (suzukiHankelM omega homega a : ℂ)⁻¹) l (𝓝 1) := by
+    simpa using hmComplex.inv₀ (by norm_num : (1 : ℂ) ≠ 0)
+  have hm := hmInv.tendstoUniformlyOn_const (α := ℂ) K
+  have hmul := tendstoUniformlyOn_mul_of_compact hK
+    (fun _ => continuous_const.continuousOn)
+    (fun a => (((continuous_suzukiHankelTildeEStarClearedRight omega homega a).sub
+      (continuous_suzukiHankelTildeEClearedRight omega homega a)).div_const (2 * I)).continuousOn)
+    continuous_const.continuousOn
+    ((((differentiable_suzukiCanonicalE omega).continuous.comp continuous_neg).sub
+      (differentiable_suzukiCanonicalE omega).continuous).div_const (2 * I)).continuousOn
+    hm hquot
+  simpa [suzukiHankelCompletedBRight,
+    suzukiCanonicalB_eq_E_ESharp_difference, suzukiCanonicalESharp_eq_E_neg,
+    div_eq_mul_inv, hden] using hmul
+
+/-- **Suzuki (2012), Lemma 4.10, closed theorem.**  The exact completed Fredholm pair converges
+to the shifted-Xi pair as `a -> 1+`, uniformly on every compact subset of `ℂ`. -/
+theorem suzuki2012_lemma_four_ten :
+    ∀ (omega : ℝ) (homega : 1 < omega) (K : Set ℂ), IsCompact K →
+      TendstoUniformlyOn (suzukiHankelCompletedARight omega homega)
+        (suzukiCanonicalA omega) (𝓝[Ioi (1 : ℝ)] 1) K ∧
+      TendstoUniformlyOn (suzukiHankelCompletedBRight omega homega)
+        (suzukiCanonicalB omega) (𝓝[Ioi (1 : ℝ)] 1) K := by
+  intro omega homega K hK
+  exact ⟨tendstoUniformlyOn_suzukiHankelCompletedARight homega hK,
+    tendstoUniformlyOn_suzukiHankelCompletedBRight homega hK⟩
 
 end RHTower

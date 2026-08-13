@@ -697,6 +697,130 @@ theorem routeT_trivial_or_derivativeComplement_first
   · exact Or.inr (derivativeComplement_exponents_le_first_of_supertrivial
       halpha htau hs (le_of_not_ge hthreshold))
 
+/-- On the full low-ordinate Perron range every Möbius atom is strictly below height.  The
+degree-60 cutoff has exponent `mu / 60`, while `mu <= 8`; hence an over-height giant can only be a
+zeta or logarithmic atom. -/
+theorem lowOrdinate_moebius_factor_strictly_subHeight
+    {L X k : ℕ} {T t mu : ℝ} (box : HeathBrownBoxChoice L X k)
+    (hT : 1 < T) (hL : 1 <= L) (hcut : (L : ℝ) <= T ^ (2 * t))
+    (hmu : mu <= 8) (ht : t = mu / 120)
+    (i : HeathBrownBoxFactorIndex k box.m)
+    (hkind : heathBrownBoxFactorKind k box.m i = .moebius) :
+    dyadicLogExponent T
+        (heathBrownBoxFactorExponent box.a box.b box.q i) < 1 := by
+  have hshort := box.moebius_factor_dyadicLogExponent_le
+    hT hL hcut i hkind
+  rw [ht] at hshort
+  linarith
+
+/-- Exact kind classification for a low-ordinate over-height atom.  No analytic estimate enters:
+it follows only from the Heath--Brown cutoff geometry. -/
+theorem lowOrdinate_factorKind_eq_zeta_or_log_of_overHeight
+    {L X k : ℕ} {T t mu : ℝ} (box : HeathBrownBoxChoice L X k)
+    (hT : 1 < T) (hL : 1 <= L) (hcut : (L : ℝ) <= T ^ (2 * t))
+    (hmu : mu <= 8) (ht : t = mu / 120)
+    (i : HeathBrownBoxFactorIndex k box.m)
+    (hlong : 1 <= dyadicLogExponent T
+      (heathBrownBoxFactorExponent box.a box.b box.q i)) :
+    heathBrownBoxFactorKind k box.m i = .zeta ∨
+      heathBrownBoxFactorKind k box.m i = .log := by
+  cases hkind : heathBrownBoxFactorKind k box.m i with
+  | moebius =>
+      have hshort := lowOrdinate_moebius_factor_strictly_subHeight
+        box hT hL hcut hmu ht i hkind
+      exact (not_lt_of_ge hlong hshort).elim
+  | zeta => exact Or.inl rfl
+  | log => exact Or.inr rfl
+
+/-- **Uniform low-ordinate seam reserve.**  Once the excised factor is genuinely over height
+(`s >= 1`), both derivative--complement terms lie `2/25` inside the first receiver throughout
+the complementary amplitude band `alpha >= 19/25`.  The endpoint is sharp for this argument:
+`8 * (1 - 19/25) = 48/25`, leaving `2 - 48/25 = 2/25`.
+
+This removes the apparent fixed-polylog obstruction at `mu * (1-alpha) = 1`: that obstruction
+came from weakening the literal over-height condition to `s >= 0`. -/
+theorem lowOrdinate_derivativeComplement_exponents_le_first_sub_reserve
+    {mu tau alpha s : ℝ}
+    (hmuHi : mu <= 8)
+    (halphaLo : 19 / 25 <= alpha) (halphaHi : alpha <= 1)
+    (htau : tau <= mu) (hs : 1 <= s) :
+    maynardDerivativeComplementHeightExponent tau alpha s <=
+        mu * (1 - alpha) - 2 / 25 /\
+      maynardDerivativeComplementLengthExponent tau alpha <=
+        mu * (1 - alpha) - 2 / 25 := by
+  have hdelta0 : 0 <= 1 - alpha := by linarith
+  have hdeltaHi : 1 - alpha <= 6 / 25 := by linarith
+  have htaudelta : tau * (1 - alpha) <= mu * (1 - alpha) :=
+    mul_le_mul_of_nonneg_right htau hdelta0
+  have hmudelta : mu * (1 - alpha) <= 8 * (6 / 25 : ℝ) :=
+    mul_le_mul hmuHi hdeltaHi hdelta0 (by norm_num)
+  constructor <;>
+    dsimp only [maynardDerivativeComplementHeightExponent,
+      maynardDerivativeComplementLengthExponent] <;> linarith
+
+/-- Receiver form of the seam reserve.  Any literal analytic argument which produces the two
+canonical derivative--complement powers may keep an arbitrary common cost `Q`; both powers are
+simultaneously dominated before that cost is absorbed. -/
+theorem lowOrdinate_derivativeComplement_count_le_first_sub_reserve
+    {R Q T mu tau alpha s : ℝ}
+    (hT : 1 <= T) (hQ : 0 <= Q)
+    (hmuHi : mu <= 8)
+    (halphaLo : 19 / 25 <= alpha) (halphaHi : alpha <= 1)
+    (htau : tau <= mu) (hs : 1 <= s)
+    (hcount : R <= Q *
+      (T ^ maynardDerivativeComplementHeightExponent tau alpha s +
+        T ^ maynardDerivativeComplementLengthExponent tau alpha)) :
+    R <= (2 * Q) * T ^ (mu * (1 - alpha) - 2 / 25) := by
+  obtain ⟨hheight, hlength⟩ :=
+    lowOrdinate_derivativeComplement_exponents_le_first_sub_reserve
+      hmuHi halphaLo halphaHi htau hs
+  have hheightPow := Real.rpow_le_rpow_of_exponent_le hT hheight
+  have hlengthPow := Real.rpow_le_rpow_of_exponent_le hT hlength
+  calc
+    R <= Q *
+        (T ^ maynardDerivativeComplementHeightExponent tau alpha s +
+          T ^ maynardDerivativeComplementLengthExponent tau alpha) := hcount
+    _ <= Q *
+        (T ^ (mu * (1 - alpha) - 2 / 25) +
+          T ^ (mu * (1 - alpha) - 2 / 25)) := by gcongr
+    _ = (2 * Q) * T ^ (mu * (1 - alpha) - 2 / 25) := by ring
+
+/-- After one fixed-polylog absorption, the low-ordinate derivative branch enters the normalized
+first receiver with a still-strict `1/25` power margin.  This is the exact boundary statement
+needed by `IsRouteTMaynardTwoAlternative`; no equality case survives. -/
+theorem lowOrdinate_derivativeComplement_normalized_first
+    {R Q T mu tau alpha s : ℝ} {q : ℕ}
+    (hT : 1 <= T) (hQ : 0 <= Q)
+    (hmuHi : mu <= 8)
+    (halphaLo : 19 / 25 <= alpha) (halphaHi : alpha <= 1)
+    (htau : tau <= mu) (hs : 1 <= s)
+    (hcount : R <= Q *
+      (T ^ maynardDerivativeComplementHeightExponent tau alpha s +
+        T ^ maynardDerivativeComplementLengthExponent tau alpha))
+    (hcost : (2 * Q) * (Real.log T) ^ q <= T ^ (1 / 25 : ℝ)) :
+    R * (Real.log T) ^ q <=
+      T ^ (mu * (1 - alpha) - 1 / 25) := by
+  have hT0 : 0 < T := lt_of_lt_of_le zero_lt_one hT
+  have hlog0 : 0 <= Real.log T := Real.log_nonneg hT
+  have hraw := lowOrdinate_derivativeComplement_count_le_first_sub_reserve
+    hT hQ hmuHi halphaLo halphaHi htau hs hcount
+  have hpow0 : 0 <= T ^ (mu * (1 - alpha) - 2 / 25) :=
+    Real.rpow_nonneg hT0.le _
+  calc
+    R * (Real.log T) ^ q <=
+        ((2 * Q) * T ^ (mu * (1 - alpha) - 2 / 25)) *
+          (Real.log T) ^ q :=
+      mul_le_mul_of_nonneg_right hraw (pow_nonneg hlog0 q)
+    _ = ((2 * Q) * (Real.log T) ^ q) *
+        T ^ (mu * (1 - alpha) - 2 / 25) := by ring
+    _ <= T ^ (1 / 25 : ℝ) *
+        T ^ (mu * (1 - alpha) - 2 / 25) :=
+      mul_le_mul_of_nonneg_right hcost hpow0
+    _ = T ^ (mu * (1 - alpha) - 1 / 25) := by
+      rw [← Real.rpow_add hT0]
+      congr 1
+      ring
+
 /-- Exact scalar excision of a pointwise derivative-bounded factor.  The factor's `T⁻¹` saving
 appears as `T / C` in the complementary product threshold and is not weakened to a fixed local
 amplitude deficit. -/
