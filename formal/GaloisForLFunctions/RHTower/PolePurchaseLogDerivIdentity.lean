@@ -1,5 +1,7 @@
 import Mathlib
+import GaloisForLFunctions.RHTower.DeningerCriticalFloquetVonMangoldtWall
 import GaloisForLFunctions.RHTower.PolePurchaseCollisionGap
+import GaloisForLFunctions.RHTower.VonMangoldtLineSeriesSwap
 
 /-!
 # The coupled-purchase log-derivative identity
@@ -57,10 +59,13 @@ theorem summable_vonMangoldt_cos_weight {σ : ℝ} (hσ : 1 < σ) (t : ℝ) :
   intro n
   rw [Real.norm_eq_abs, abs_mul]
   have h1 : |(vonMangoldt n : ℝ) * (n : ℝ) ^ (-σ)| = (vonMangoldt n : ℝ) * (n : ℝ) ^ (-σ) :=
-    abs_of_nonneg (mul_nonneg vonMangoldt_nonneg (Real.rpow_nonneg (Nat.cast_nonneg n) _))
+    abs_of_nonneg (mul_nonneg (vonMangoldt_nonneg (n := n))
+      (Real.rpow_nonneg (Nat.cast_nonneg n) _))
   rw [h1]
   have h2 : |Real.cos (t * Real.log n)| ≤ 1 := Real.abs_cos_le_one _
-  nlinarith [mul_nonneg vonMangoldt_nonneg (Real.rpow_nonneg (Nat.cast_nonneg n) (-σ))]
+  have h3 : (0 : ℝ) ≤ (vonMangoldt n : ℝ) * (n : ℝ) ^ (-σ) :=
+    mul_nonneg (vonMangoldt_nonneg (n := n)) (Real.rpow_nonneg (Nat.cast_nonneg n) (-σ))
+  nlinarith [h3]
 
 /-- The real part of the von Mangoldt L-series on a vertical line is the cosine-weighted
 prime-power series. -/
@@ -96,7 +101,7 @@ theorem vallee_poussin_log_deriv_identity {σ : ℝ} (hσ : 1 < σ) (t : ℝ) :
   rw [hL 0] at e0
   rw [hL t] at et
   rw [hL (2 * t)] at e2t
-  rw [h0, ← e0, ← et, ← e2t]
+  rw [et, e2t, h0, e0]
   have s0 := summable_vonMangoldt_cos_weight hσ 0
   have st := summable_vonMangoldt_cos_weight hσ t
   have s2t := summable_vonMangoldt_cos_weight hσ (2 * t)
@@ -104,7 +109,7 @@ theorem vallee_poussin_log_deriv_identity {σ : ℝ} (hσ : 1 < σ) (t : ℝ) :
   rw [← Summable.tsum_add (s0.mul_left 3) (st.mul_left 4)]
   rw [← Summable.tsum_add ((s0.mul_left 3).add (st.mul_left 4)) s2t]
   refine tsum_congr fun n => ?_
-  simp only [Real.cos_zero]
+  simp only [zero_mul, Real.cos_zero]
   ring
 
 /-- The right side of the identity is nonnegative: the source cone `Λ ≥ 0` against the

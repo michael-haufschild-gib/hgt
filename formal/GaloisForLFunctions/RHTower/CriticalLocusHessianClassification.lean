@@ -103,28 +103,24 @@ theorem multiQuadruple_relative_separation {ι : Type*} (s : Finset ι) (gam t :
 /-- The quadruple functional of a test analytic at the two conjugate line points is
 analytic at the critical locus. -/
 theorem analyticAt_criticalQuadrupleSum (F : ℂ → ℂ) (γ : ℂ)
-    (h₊ : AnalyticAt ℂ F (1 / 2 + γ * I)) (h₋ : AnalyticAt ℂ F (1 / 2 - γ * I)) :
+    (hplus : AnalyticAt ℂ F (1 / 2 + γ * I)) (hminus : AnalyticAt ℂ F (1 / 2 - γ * I)) :
     AnalyticAt ℂ (criticalQuadrupleSum F γ) 0 := by
   have a₁ : AnalyticAt ℂ (fun t : ℂ => F (t + (1 / 2 + γ * I))) 0 := by
-    have inner : AnalyticAt ℂ (fun t : ℂ => t + (1 / 2 + γ * I)) 0 :=
+    have hin : AnalyticAt ℂ (fun t : ℂ => t + (1 / 2 + γ * I)) 0 :=
       analyticAt_id.add analyticAt_const
-    have houter : AnalyticAt ℂ F ((fun t : ℂ => t + (1 / 2 + γ * I)) 0) := by simpa using h₊
-    simpa [Function.comp_def] using houter.comp inner
+    simpa [Function.comp_def] using hplus.comp_of_eq hin (by simp)
   have a₂ : AnalyticAt ℂ (fun t : ℂ => F ((1 / 2 + γ * I) - t)) 0 := by
-    have inner : AnalyticAt ℂ (fun t : ℂ => (1 / 2 + γ * I) - t) 0 :=
+    have hin : AnalyticAt ℂ (fun t : ℂ => (1 / 2 + γ * I) - t) 0 :=
       analyticAt_const.sub analyticAt_id
-    have houter : AnalyticAt ℂ F ((fun t : ℂ => (1 / 2 + γ * I) - t) 0) := by simpa using h₊
-    simpa [Function.comp_def] using houter.comp inner
+    simpa [Function.comp_def] using hplus.comp_of_eq hin (by simp)
   have a₃ : AnalyticAt ℂ (fun t : ℂ => F (t + (1 / 2 - γ * I))) 0 := by
-    have inner : AnalyticAt ℂ (fun t : ℂ => t + (1 / 2 - γ * I)) 0 :=
+    have hin : AnalyticAt ℂ (fun t : ℂ => t + (1 / 2 - γ * I)) 0 :=
       analyticAt_id.add analyticAt_const
-    have houter : AnalyticAt ℂ F ((fun t : ℂ => t + (1 / 2 - γ * I)) 0) := by simpa using h₋
-    simpa [Function.comp_def] using houter.comp inner
+    simpa [Function.comp_def] using hminus.comp_of_eq hin (by simp)
   have a₄ : AnalyticAt ℂ (fun t : ℂ => F ((1 / 2 - γ * I) - t)) 0 := by
-    have inner : AnalyticAt ℂ (fun t : ℂ => (1 / 2 - γ * I) - t) 0 :=
+    have hin : AnalyticAt ℂ (fun t : ℂ => (1 / 2 - γ * I) - t) 0 :=
       analyticAt_const.sub analyticAt_id
-    have houter : AnalyticAt ℂ F ((fun t : ℂ => (1 / 2 - γ * I) - t) 0) := by simpa using h₋
-    simpa [Function.comp_def] using houter.comp inner
+    simpa [Function.comp_def] using hminus.comp_of_eq hin (by simp)
   exact ((a₁.add a₂).add a₃).add a₄
 
 /-! ## The weight: the second central jet -/
@@ -149,47 +145,47 @@ private theorem iteratedDeriv_two_reflect (F : ℂ → ℂ) (c : ℂ) :
   have h6 := congrFun (iteratedDeriv_comp_add_const 2 F c) 0
   simp only [zero_add] at h6
   rw [h6]
-  simp [neg_one_sq]
+  simp
 
 /-- **The weight (Θ2(ii)).**  The second central jet of the quadruple functional of a test
 analytic at the two conjugate line points is twice the sum of the second derivatives
 there. -/
 theorem iteratedDeriv_two_criticalQuadrupleSum (F : ℂ → ℂ) (γ : ℂ)
-    (h₊ : AnalyticAt ℂ F (1 / 2 + γ * I)) (h₋ : AnalyticAt ℂ F (1 / 2 - γ * I)) :
+    (hplus : AnalyticAt ℂ F (1 / 2 + γ * I)) (hminus : AnalyticAt ℂ F (1 / 2 - γ * I)) :
     iteratedDeriv 2 (criticalQuadrupleSum F γ) 0
       = 2 * (iteratedDeriv 2 F (1 / 2 + γ * I) + iteratedDeriv 2 F (1 / 2 - γ * I)) := by
   have a₁ : AnalyticAt ℂ (fun t : ℂ => F (t + (1 / 2 + γ * I))) 0 := by
-    have inner : AnalyticAt ℂ (fun t : ℂ => t + (1 / 2 + γ * I)) 0 :=
+    have hin : AnalyticAt ℂ (fun t : ℂ => t + (1 / 2 + γ * I)) 0 :=
       analyticAt_id.add analyticAt_const
-    have houter : AnalyticAt ℂ F ((fun t : ℂ => t + (1 / 2 + γ * I)) 0) := by simpa using h₊
-    simpa [Function.comp_def] using houter.comp inner
+    simpa [Function.comp_def] using hplus.comp_of_eq hin (by simp)
   have a₂ : AnalyticAt ℂ (fun t : ℂ => F ((1 / 2 + γ * I) - t)) 0 := by
-    have inner : AnalyticAt ℂ (fun t : ℂ => (1 / 2 + γ * I) - t) 0 :=
+    have hin : AnalyticAt ℂ (fun t : ℂ => (1 / 2 + γ * I) - t) 0 :=
       analyticAt_const.sub analyticAt_id
-    have houter : AnalyticAt ℂ F ((fun t : ℂ => (1 / 2 + γ * I) - t) 0) := by simpa using h₊
-    simpa [Function.comp_def] using houter.comp inner
+    simpa [Function.comp_def] using hplus.comp_of_eq hin (by simp)
   have a₃ : AnalyticAt ℂ (fun t : ℂ => F (t + (1 / 2 - γ * I))) 0 := by
-    have inner : AnalyticAt ℂ (fun t : ℂ => t + (1 / 2 - γ * I)) 0 :=
+    have hin : AnalyticAt ℂ (fun t : ℂ => t + (1 / 2 - γ * I)) 0 :=
       analyticAt_id.add analyticAt_const
-    have houter : AnalyticAt ℂ F ((fun t : ℂ => t + (1 / 2 - γ * I)) 0) := by simpa using h₋
-    simpa [Function.comp_def] using houter.comp inner
+    simpa [Function.comp_def] using hminus.comp_of_eq hin (by simp)
   have a₄ : AnalyticAt ℂ (fun t : ℂ => F ((1 / 2 - γ * I) - t)) 0 := by
-    have inner : AnalyticAt ℂ (fun t : ℂ => (1 / 2 - γ * I) - t) 0 :=
+    have hin : AnalyticAt ℂ (fun t : ℂ => (1 / 2 - γ * I) - t) 0 :=
       analyticAt_const.sub analyticAt_id
-    have houter : AnalyticAt ℂ F ((fun t : ℂ => (1 / 2 - γ * I) - t) 0) := by simpa using h₋
-    simpa [Function.comp_def] using houter.comp inner
+    simpa [Function.comp_def] using hminus.comp_of_eq hin (by simp)
+  have hadd : ∀ f g : ℂ → ℂ, ContDiffAt ℂ 2 f 0 → ContDiffAt ℂ 2 g 0 →
+      iteratedDeriv 2 (fun t : ℂ => f t + g t) 0
+        = iteratedDeriv 2 f 0 + iteratedDeriv 2 g 0 :=
+    fun _ _ hf hg => iteratedDeriv_add hf hg
   have hfun : criticalQuadrupleSum F γ
-      = ((fun t : ℂ => F (t + (1 / 2 + γ * I))) + fun t : ℂ => F ((1 / 2 + γ * I) - t))
-        + ((fun t : ℂ => F (t + (1 / 2 - γ * I))) + fun t : ℂ => F ((1 / 2 - γ * I) - t)) := by
+      = fun t : ℂ => (F (t + (1 / 2 + γ * I)) + F ((1 / 2 + γ * I) - t))
+          + (F (t + (1 / 2 - γ * I)) + F ((1 / 2 - γ * I) - t)) := by
     funext t
-    simp only [criticalQuadrupleSum, Pi.add_apply]
+    simp only [criticalQuadrupleSum]
     ring
   have c₁ : ContDiffAt ℂ 2 (fun t : ℂ => F (t + (1 / 2 + γ * I))) 0 := a₁.contDiffAt
   have c₂ : ContDiffAt ℂ 2 (fun t : ℂ => F ((1 / 2 + γ * I) - t)) 0 := a₂.contDiffAt
   have c₃ : ContDiffAt ℂ 2 (fun t : ℂ => F (t + (1 / 2 - γ * I))) 0 := a₃.contDiffAt
   have c₄ : ContDiffAt ℂ 2 (fun t : ℂ => F ((1 / 2 - γ * I) - t)) 0 := a₄.contDiffAt
-  rw [hfun, iteratedDeriv_add (c₁.add c₂) (c₃.add c₄), iteratedDeriv_add c₁ c₂,
-    iteratedDeriv_add c₃ c₄, iteratedDeriv_two_shift, iteratedDeriv_two_reflect,
+  rw [hfun, hadd _ _ (c₁.add c₂) (c₃.add c₄), hadd _ _ c₁ c₂, hadd _ _ c₃ c₄,
+    iteratedDeriv_two_shift, iteratedDeriv_two_reflect,
     iteratedDeriv_two_shift, iteratedDeriv_two_reflect]
   ring
 
@@ -223,7 +219,7 @@ theorem hasDerivAt_conj_of_eventually_conj {F : ℂ → ℂ} {z d : ℂ}
   filter_upwards [hpull] with w hw
   rw [Complex.conj_conj] at hw
   rw [slope_def_field, slope_def_field, map_div₀, map_sub, map_sub, ← hw, hz,
-    Complex.conj_conj, Complex.conj_conj]
+    Complex.conj_conj]
 
 /-- Value form of the conjugation bridge for an analytic point. -/
 theorem deriv_conj_eq_of_eventually_conj {F : ℂ → ℂ} {z : ℂ}
@@ -264,7 +260,7 @@ theorem iteratedDeriv_two_conj_eq {F : ℂ → ℂ} {z : ℂ}
     exact deriv_conj_eq_of_eventually_conj (Filter.Eventually.of_forall hκ) hw
   have h2 : HasDerivAt (deriv F) (conj (deriv (deriv F) z)) (conj z) :=
     hasDerivAt_conj_of_eventually_conj hder hA.deriv.differentiableAt.hasDerivAt
-  rw [iteratedDeriv_two_eq_deriv_deriv, iteratedDeriv_two_eq_deriv_deriv]
+  rw [iteratedDeriv_two_eq_deriv_deriv]
   exact h2.deriv
 
 /-- **The real weight.**  For a reality-symmetric test analytic at `1/2 + iγ` with `γ`
@@ -272,17 +268,17 @@ real, the second central jet of the quadruple functional is the real number
 `4 Re F''(1/2 + iγ)` — the weight `w_F(γ)` of the Hessian classification. -/
 theorem iteratedDeriv_two_criticalQuadrupleSum_re (F : ℂ → ℂ) (γ : ℝ)
     (hκ : ∀ s, F (conj s) = conj (F s))
-    (h₊ : AnalyticAt ℂ F (1 / 2 + (γ : ℂ) * I)) :
+    (hplus : AnalyticAt ℂ F (1 / 2 + (γ : ℂ) * I)) :
     iteratedDeriv 2 (criticalQuadrupleSum F (γ : ℂ)) 0
       = ((4 * (iteratedDeriv 2 F (1 / 2 + (γ : ℂ) * I)).re : ℝ) : ℂ) := by
   have hpt : ((1 : ℂ) / 2 - (γ : ℂ) * I) = conj (1 / 2 + (γ : ℂ) * I) := by
     simp [Complex.ext_iff]
-  have h₋ : AnalyticAt ℂ F (1 / 2 - (γ : ℂ) * I) := by
-    rw [hpt]; exact analyticAt_conj_point hκ h₊
-  rw [iteratedDeriv_two_criticalQuadrupleSum F (γ : ℂ) h₊ h₋]
+  have hminus : AnalyticAt ℂ F (1 / 2 - (γ : ℂ) * I) := by
+    rw [hpt]; exact analyticAt_conj_point hκ hplus
+  rw [iteratedDeriv_two_criticalQuadrupleSum F (γ : ℂ) hplus hminus]
   have hconj2 : iteratedDeriv 2 F (1 / 2 - (γ : ℂ) * I)
       = conj (iteratedDeriv 2 F (1 / 2 + (γ : ℂ) * I)) := by
-    rw [hpt]; exact iteratedDeriv_two_conj_eq hκ h₊
+    rw [hpt]; exact iteratedDeriv_two_conj_eq hκ hplus
   rw [hconj2, Complex.add_conj]
   push_cast
   ring
@@ -294,12 +290,12 @@ locally maximal at the undisplaced configuration along the real splitting parame
 detector property on one admissible splitting — then the second central jet has
 nonpositive real part.  Detection is per-zero of necessity. -/
 theorem re_iteratedDeriv_two_nonpos_of_detector (F : ℂ → ℂ) (γ : ℂ)
-    (h₊ : AnalyticAt ℂ F (1 / 2 + γ * I)) (h₋ : AnalyticAt ℂ F (1 / 2 - γ * I))
+    (hplus : AnalyticAt ℂ F (1 / 2 + γ * I)) (hminus : AnalyticAt ℂ F (1 / 2 - γ * I))
     (hdet : ∀ᶠ x : ℝ in nhds 0,
       (criticalQuadrupleSum F γ (x : ℂ)).re ≤ (criticalQuadrupleSum F γ 0).re) :
     (iteratedDeriv 2 (criticalQuadrupleSum F γ) 0).re ≤ 0 := by
   set Φ := criticalQuadrupleSum F γ with hΦdef
-  have hA : AnalyticAt ℂ Φ 0 := analyticAt_criticalQuadrupleSum F γ h₊ h₋
+  have hA : AnalyticAt ℂ Φ 0 := analyticAt_criticalQuadrupleSum F γ hplus hminus
   set g : ℝ → ℝ := fun x => (Φ (x : ℂ)).re with hgdef
   have hofReal : Filter.Tendsto (fun x : ℝ => (x : ℂ)) (nhds 0) (nhds 0) := by
     simpa using Complex.continuous_ofReal.tendsto 0
@@ -323,7 +319,8 @@ theorem re_iteratedDeriv_two_nonpos_of_detector (F : ℂ → ℂ) (γ : ℂ)
     simpa [hgdef] using hx
   have hcont : ContinuousAt g 0 := by
     have hΦc : ContinuousAt (fun x : ℝ => Φ (x : ℂ)) 0 := by
-      have := hA.continuousAt.comp (Complex.continuous_ofReal.continuousAt (x := (0 : ℝ)))
+      have := hA.continuousAt.comp_of_eq
+        (Complex.continuous_ofReal.continuousAt (x := (0 : ℝ))) (by simp)
       simpa [Function.comp_def] using this
     exact Complex.continuous_re.continuousAt.comp hΦc
   have hsuzuki := suzukiSecondDeriv_nonpos_of_isLocalMax hmax hcont
@@ -335,16 +332,16 @@ theorem re_iteratedDeriv_two_nonpos_of_detector (F : ℂ → ℂ) (γ : ℂ)
 weight `Re F''(1/2 + iγ) ≤ 0` at every real ordinate where it penalizes the splitting. -/
 theorem weight_nonpos_of_detector (F : ℂ → ℂ) (γ : ℝ)
     (hκ : ∀ s, F (conj s) = conj (F s))
-    (h₊ : AnalyticAt ℂ F (1 / 2 + (γ : ℂ) * I))
+    (hplus : AnalyticAt ℂ F (1 / 2 + (γ : ℂ) * I))
     (hdet : ∀ᶠ x : ℝ in nhds 0,
       (criticalQuadrupleSum F (γ : ℂ) (x : ℂ)).re ≤ (criticalQuadrupleSum F (γ : ℂ) 0).re) :
     (iteratedDeriv 2 F (1 / 2 + (γ : ℂ) * I)).re ≤ 0 := by
   have hpt : ((1 : ℂ) / 2 - (γ : ℂ) * I) = conj (1 / 2 + (γ : ℂ) * I) := by
     simp [Complex.ext_iff]
-  have h₋ : AnalyticAt ℂ F (1 / 2 - (γ : ℂ) * I) := by
-    rw [hpt]; exact analyticAt_conj_point hκ h₊
-  have hnec := re_iteratedDeriv_two_nonpos_of_detector F (γ : ℂ) h₊ h₋ hdet
-  rw [iteratedDeriv_two_criticalQuadrupleSum_re F γ hκ h₊] at hnec
+  have hminus : AnalyticAt ℂ F (1 / 2 - (γ : ℂ) * I) := by
+    rw [hpt]; exact analyticAt_conj_point hκ hplus
+  have hnec := re_iteratedDeriv_two_nonpos_of_detector F (γ : ℂ) hplus hminus hdet
+  rw [iteratedDeriv_two_criticalQuadrupleSum_re F γ hκ hplus] at hnec
   simp only [Complex.ofReal_re] at hnec
   linarith
 
@@ -352,7 +349,7 @@ theorem weight_nonpos_of_detector (F : ℂ → ℂ) (γ : ℝ)
 
 private theorem iteratedDeriv_two_sub_const (Φ : ℂ → ℂ) (c : ℂ) :
     iteratedDeriv 2 (fun τ : ℂ => Φ τ - c) 0 = iteratedDeriv 2 Φ 0 := by
-  rw [iteratedDeriv_two_eq_deriv_deriv, iteratedDeriv_two_eq_deriv_deriv]
+  rw [iteratedDeriv_two_eq_deriv_deriv]
   have h1 : deriv (fun τ : ℂ => Φ τ - c) = deriv Φ := by
     funext τ
     exact deriv_sub_const c
@@ -398,8 +395,8 @@ the critical locus is an element of the simplicial cone spanned by the single-or
 forms. -/
 theorem iteratedDeriv_two_multiSplitting {ι : Type*} (s : Finset ι) (F : ℂ → ℂ)
     (gam t : ι → ℂ)
-    (h₊ : ∀ j ∈ s, AnalyticAt ℂ F (1 / 2 + gam j * I))
-    (h₋ : ∀ j ∈ s, AnalyticAt ℂ F (1 / 2 - gam j * I)) :
+    (hplus : ∀ j ∈ s, AnalyticAt ℂ F (1 / 2 + gam j * I))
+    (hminus : ∀ j ∈ s, AnalyticAt ℂ F (1 / 2 - gam j * I)) :
     iteratedDeriv 2 (fun τ : ℂ => ∑ j ∈ s, relativeQuadrupleValue F (gam j) (t j * τ)) 0
       = ∑ j ∈ s, (t j) ^ 2 * iteratedDeriv 2 (criticalQuadrupleSum F (gam j)) 0 := by
   classical
@@ -407,7 +404,7 @@ theorem iteratedDeriv_two_multiSplitting {ι : Type*} (s : Finset ι) (F : ℂ �
       (fun τ : ℂ => relativeQuadrupleValue F (gam j) (t j * τ)) 0 := by
     intro j hj
     have hAj : AnalyticAt ℂ (criticalQuadrupleSum F (gam j)) 0 :=
-      analyticAt_criticalQuadrupleSum F (gam j) (h₊ j hj) (h₋ j hj)
+      analyticAt_criticalQuadrupleSum F (gam j) (hplus j hj) (hminus j hj)
     have hinner : AnalyticAt ℂ (fun τ : ℂ => t j * τ) 0 :=
       analyticAt_const.mul analyticAt_id
     have hcomp : AnalyticAt ℂ (fun τ : ℂ => criticalQuadrupleSum F (gam j) (t j * τ)) 0 := by
@@ -422,7 +419,7 @@ theorem iteratedDeriv_two_multiSplitting {ι : Type*} (s : Finset ι) (F : ℂ �
   rw [hfun, iteratedDeriv_sum hterm]
   refine Finset.sum_congr rfl fun j hj => ?_
   have hAj : AnalyticAt ℂ (criticalQuadrupleSum F (gam j)) 0 :=
-    analyticAt_criticalQuadrupleSum F (gam j) (h₊ j hj) (h₋ j hj)
+    analyticAt_criticalQuadrupleSum F (gam j) (hplus j hj) (hminus j hj)
   have hsub : (fun τ : ℂ => relativeQuadrupleValue F (gam j) (t j * τ))
       = fun τ : ℂ => (fun σ : ℂ => criticalQuadrupleSum F (gam j) (t j * σ)) τ
           - criticalQuadrupleSum F (gam j) 0 := rfl

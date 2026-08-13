@@ -127,18 +127,18 @@ theorem favardMoment_succ (α β : ℕ → ℝ) (n : ℕ) :
     (fun i => (favardPoly α β (n + 1)).coeff i * favardMoment α β i)]
 
 /-- Scalars pass through the moment functional. -/
-theorem momentFunctional_C_mul (s : ℕ → ℝ) (c : ℝ) (p : Polynomial ℝ) :
+theorem momentFunctional_C_mul_favard (s : ℕ → ℝ) (c : ℝ) (p : Polynomial ℝ) :
     momentFunctional s (Polynomial.C c * p) = c * momentFunctional s p := by
   rw [← Polynomial.smul_eq_C_mul, momentFunctional_smul]
 
 /-- Constants evaluate to multiples of the zeroth moment. -/
-theorem momentFunctional_C (s : ℕ → ℝ) (c : ℝ) :
+theorem momentFunctional_C_favard (s : ℕ → ℝ) (c : ℝ) :
     momentFunctional s (Polynomial.C c) = c * s 0 := by
   rw [← Polynomial.monomial_zero_left, momentFunctional_monomial]
 
 /-- The functional of the constant one is the zeroth moment. -/
 theorem momentFunctional_one (s : ℕ → ℝ) : momentFunctional s 1 = s 0 := by
-  rw [← Polynomial.C_1, momentFunctional_C, one_mul]
+  rw [← Polynomial.C_1, momentFunctional_C_favard, one_mul]
 
 /-- The Favard functional annihilates every positive-degree recurrence polynomial. -/
 theorem momentFunctional_favardPoly (α β : ℕ → ℝ) (n : ℕ) :
@@ -184,7 +184,7 @@ theorem momentFunctional_X_pow_mul_favardPoly (α β : ℕ → ℝ) :
                 rw [X_mul_favardPoly α β (i + 1)]
           _ = _ := by ring
       rw [hsplit, momentFunctional_add, momentFunctional_add,
-        momentFunctional_C_mul, momentFunctional_C_mul,
+        momentFunctional_C_mul_favard, momentFunctional_C_mul_favard,
         ih (i + 3) (by omega), ih (i + 2) (by omega), ih (i + 1) (by omega)]
       ring
 
@@ -210,7 +210,7 @@ theorem momentFunctional_X_pow_mul_favardPoly_self (α β : ℕ → ℝ) :
                 rw [X_mul_favardPoly α β k]
           _ = _ := by ring
       rw [hsplit, momentFunctional_add, momentFunctional_add,
-        momentFunctional_C_mul, momentFunctional_C_mul,
+        momentFunctional_C_mul_favard, momentFunctional_C_mul_favard,
         momentFunctional_X_pow_mul_favardPoly α β k (k + 2) (by omega),
         momentFunctional_X_pow_mul_favardPoly α β k (k + 1) (by omega),
         ih, Finset.prod_range_succ]
@@ -230,7 +230,7 @@ theorem momentFunctional_mul_favardPoly_eq_zero (α β : ℕ → ℝ) {q : Polyn
       Polynomial.le_degree_of_ne_zero (Polynomial.mem_support_iff.mp hi)
     have hlt := lt_of_le_of_lt hle hq
     exact_mod_cast hlt
-  rw [← Polynomial.C_mul_X_pow_eq_monomial, mul_assoc, momentFunctional_C_mul,
+  rw [← Polynomial.C_mul_X_pow_eq_monomial, mul_assoc, momentFunctional_C_mul_favard,
     momentFunctional_X_pow_mul_favardPoly α β i k hik, mul_zero]
 
 /-- Exact diagonal norm: `L(Pₖ Pₖ) = β₁ ⋯ βₖ`. -/
@@ -264,11 +264,11 @@ theorem momentFunctional_mul_self_pos (α β : ℕ → ℝ) (hβ : ∀ n : ℕ, 
       intro p hp
       have hpc := Polynomial.eq_C_of_natDegree_le_zero hp
       constructor
-      · rw [hpc, ← Polynomial.C_mul, momentFunctional_C, favardMoment_zero, mul_one]
+      · rw [hpc, ← Polynomial.C_mul, momentFunctional_C_favard, favardMoment_zero, mul_one]
         exact mul_self_nonneg _
       · intro hne
         have hc : p.coeff 0 ≠ 0 := fun h0 => hne (by rw [hpc, h0, Polynomial.C_0])
-        rw [hpc, ← Polynomial.C_mul, momentFunctional_C, favardMoment_zero, mul_one]
+        rw [hpc, ← Polynomial.C_mul, momentFunctional_C_favard, favardMoment_zero, mul_one]
         exact mul_self_pos.mpr hc
   | succ d ih =>
       intro p hp
@@ -308,7 +308,7 @@ theorem momentFunctional_mul_self_pos (α β : ℕ → ℝ) (hβ : ∀ n : ℕ, 
             c * (c * (∏ j ∈ Finset.range (d + 1), β (j + 1))) +
               momentFunctional (favardMoment α β) (r * r) := by
           rw [hprod, momentFunctional_add, momentFunctional_add, momentFunctional_add,
-            momentFunctional_C_mul, momentFunctional_C_mul, momentFunctional_C_mul,
+            momentFunctional_C_mul_favard, momentFunctional_C_mul_favard, momentFunctional_C_mul_favard,
             hPP, hrP]
           ring
         constructor

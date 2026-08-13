@@ -64,6 +64,15 @@ def upperHalfPlane : Set ℂ := {z | 0 < z.im}
 theorem isOpen_upperHalfPlane : IsOpen upperHalfPlane := by
   exact isOpen_lt continuous_const Complex.continuous_im
 
+/-- The open complex lower half-plane, where the noncritical projective row packets are placed. -/
+def lowerHalfPlane : Set ℂ := {z | z.im < 0}
+
+theorem isOpen_lowerHalfPlane : IsOpen lowerHalfPlane := by
+  exact isOpen_lt Complex.continuous_im continuous_const
+
+theorem im_ne_zero_of_mem_lowerHalfPlane {z : ℂ} (hz : z ∈ lowerHalfPlane) : z.im ≠ 0 :=
+  ne_of_lt hz
+
 /-- A discrete Cauchy series with absolutely summable weights converges locally uniformly on the
 upper half-plane. -/
 theorem summableLocallyUniformlyOn_discreteHerglotz

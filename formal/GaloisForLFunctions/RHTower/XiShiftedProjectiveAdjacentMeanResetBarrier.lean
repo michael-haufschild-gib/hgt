@@ -66,31 +66,26 @@ theorem projectiveAdmissionPacketEnergy_eq (s : ℕ → ℝ) (n : ℕ) :
         HTGeometry.monicOrthoAlpha s n ^ 2) -
       projectiveAdmissionPacketFlux s n ^ 2 / (2 * (n : ℝ) + 1) := by
   have hc : (2 * (n : ℝ) + 1) ≠ 0 := by positivity
-  set μ := projectiveAdmissionPacketMean s n with hμ
   have hexpand : (∑ j ∈ Finset.range n,
-      (HTGeometry.monicOrthoAlpha s j - μ) ^ 2) =
+      (HTGeometry.monicOrthoAlpha s j - projectiveAdmissionPacketMean s n) ^ 2) =
       (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j ^ 2) -
-        2 * μ * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) +
-        (n : ℝ) * μ ^ 2 := by
+        2 * projectiveAdmissionPacketMean s n *
+          (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) +
+        (n : ℝ) * projectiveAdmissionPacketMean s n ^ 2 := by
     simp_rw [sub_sq]
     rw [Finset.sum_add_distrib, Finset.sum_sub_distrib]
-    have hmid : (∑ x ∈ Finset.range n, 2 * HTGeometry.monicOrthoAlpha s x * μ) =
-        2 * μ * ∑ x ∈ Finset.range n, HTGeometry.monicOrthoAlpha s x := by
+    have hmid : (∑ x ∈ Finset.range n,
+        2 * HTGeometry.monicOrthoAlpha s x * projectiveAdmissionPacketMean s n) =
+        2 * projectiveAdmissionPacketMean s n *
+          ∑ x ∈ Finset.range n, HTGeometry.monicOrthoAlpha s x := by
       rw [Finset.mul_sum]
       exact Finset.sum_congr rfl fun x _ => by ring
     rw [hmid]
     simp [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
-  have hFμ : projectiveAdmissionPacketFlux s n = (2 * (n : ℝ) + 1) * μ := by
-    rw [hμ, projectiveAdmissionPacketMean]
-    field_simp
-  rw [projectiveAdmissionPacketEnergy, hexpand, hFμ]
-  have hμF : μ * (2 * (n : ℝ) + 1) =
-      2 * (∑ j ∈ Finset.range n, HTGeometry.monicOrthoAlpha s j) +
-        HTGeometry.monicOrthoAlpha s n := by
-    rw [hμ, projectiveAdmissionPacketMean, projectiveAdmissionPacketFlux]
-    field_simp
+  rw [projectiveAdmissionPacketEnergy, hexpand, projectiveAdmissionPacketMean,
+    projectiveAdmissionPacketFlux]
   field_simp
-  nlinarith [hμF]
+  ring
 
 /-- Exact mean displacement under one degree renewal. -/
 theorem projectiveAdmissionPacketMean_succ_sub (s : ℕ → ℝ) (n : ℕ) :
@@ -135,7 +130,6 @@ theorem projectiveAdmissionPacketEnergy_succ_sub_ge (s : ℕ → ℝ) (n : ℕ) 
       (2 * q / (2 * (n : ℝ) + 3)) ^ 2 =
       2 * (2 * (n : ℝ) + 1) / (2 * (n : ℝ) + 3) * q ^ 2 := by
     field_simp
-    ring
   rw [hkey]
   have hdisp : 0 ≤ (HTGeometry.monicOrthoAlpha s n -
       HTGeometry.monicOrthoAlpha s (n + 1)) ^ 2 / 2 := by positivity
@@ -222,7 +216,6 @@ theorem projectiveAdmissionScalarClock_reset_barrier_action (y : ℝ) (s : ℕ �
   have hc1 : (2 * (n : ℝ) + 1) ≠ 0 := by positivity
   have hc3 : (2 * (n : ℝ) + 3) ≠ 0 := by positivity
   field_simp
-  ring
 
 /-! ## The bounded positive-Jacobi reset counterfamily -/
 
@@ -310,7 +303,8 @@ theorem resetCounter_energy_step (a : ℝ) {b ε : ℝ} (hb : 0 < b) (hε : 0 < 
   rw [projectiveAdmissionPacketEnergy_succ_sub (resetCounterMoment a b ε) 2]
   unfold projectiveAdmissionPacketMean
   rw [resetCounter_flux_two a hb hε]
-  simp only [resetCounterMoment_alpha a hb hε, resetCounterAlpha_two, resetCounterAlpha_three]
+  simp only [show (2 : ℕ) + 1 = 3 from rfl, resetCounterMoment_alpha a hb hε,
+    resetCounterAlpha_two, resetCounterAlpha_three]
   push_cast
   field_simp
   ring
@@ -346,7 +340,7 @@ theorem resetCounter_spread_two (a : ℝ) {b ε : ℝ} (hb : 0 < b) (hε : 0 < �
   rw [projectiveGaussRootSpread_eq_alphaDispersion_add_betaInventory
     (resetCounterMoment_formBelow a hb hε 4) (le_refl 2) (by omega : (2 : ℕ) < 4)]
   unfold projectiveJacobiLowerAlphaDispersion
-  simp only [Finset.sum_range_succ, Finset.sum_range_one]
+  simp only [Finset.sum_range_succ]
   rw [resetCounterMoment_beta a hb hε (by omega : 0 < 1)]
   simp only [resetCounterMoment_alpha a hb hε, resetCounterAlpha_zero,
     resetCounterAlpha_one, resetCounterBeta_one]
@@ -377,7 +371,7 @@ theorem resetCounter_tendsto_energy_two (a : ℝ) {b : ℝ} (hb : 0 < b) :
   have hcont : ContinuousAt (fun ε : ℝ =>
       2 * ((a - ε / 5) ^ 2 + (ε / 4 - a - ε / 5) ^ 2) + (ε / 2 - ε / 5) ^ 2) 0 := by
     fun_prop
-  have hf := hcont.tendsto.mono_left nhdsWithin_le_nhds
+  have hf := hcont.tendsto.mono_left (nhdsWithin_le_nhds (s := Set.Ioi (0 : ℝ)))
   rw [show (2 * ((a - (0 : ℝ) / 5) ^ 2 + ((0 : ℝ) / 4 - a - (0 : ℝ) / 5) ^ 2) +
       ((0 : ℝ) / 2 - (0 : ℝ) / 5) ^ 2) = 4 * a ^ 2 by ring] at hf
   refine hf.congr' ?_
@@ -392,7 +386,7 @@ theorem resetCounter_tendsto_energy_three (a : ℝ) {b : ℝ} (hb : 0 < b) :
   have hq : Tendsto (fun ε : ℝ => 9 * ε ^ 2 / 70) (nhdsWithin (0 : ℝ) (Set.Ioi 0))
       (nhds 0) := by
     have hcont : ContinuousAt (fun ε : ℝ => 9 * ε ^ 2 / 70) 0 := by fun_prop
-    have hf := hcont.tendsto.mono_left nhdsWithin_le_nhds
+    have hf := hcont.tendsto.mono_left (nhdsWithin_le_nhds (s := Set.Ioi (0 : ℝ)))
     rwa [show (9 * (0 : ℝ) ^ 2 / 70) = 0 by norm_num] at hf
   have hsum := h2.add hq
   rw [add_zero] at hsum
@@ -407,7 +401,7 @@ theorem resetCounter_tendsto_spread_two (a : ℝ) {b : ℝ} (hb : 0 < b) :
       (nhdsWithin 0 (Set.Ioi 0)) (nhds (2 * a ^ 2 + 2 * b)) := by
   have hcont : ContinuousAt (fun ε : ℝ =>
       a ^ 2 + (ε / 4 - a) ^ 2 - (ε / 4) ^ 2 / 2 + 2 * b) 0 := by fun_prop
-  have hf := hcont.tendsto.mono_left nhdsWithin_le_nhds
+  have hf := hcont.tendsto.mono_left (nhdsWithin_le_nhds (s := Set.Ioi (0 : ℝ)))
   rw [show (a ^ 2 + ((0 : ℝ) / 4 - a) ^ 2 - ((0 : ℝ) / 4) ^ 2 / 2 + 2 * b) =
       2 * a ^ 2 + 2 * b by ring] at hf
   refine hf.congr' ?_
@@ -422,7 +416,7 @@ theorem resetCounter_tendsto_spread_three (a : ℝ) {b : ℝ} (hb : 0 < b) :
   have hq : Tendsto (fun ε : ℝ => 67 * ε ^ 2 / 32) (nhdsWithin (0 : ℝ) (Set.Ioi 0))
       (nhds 0) := by
     have hcont : ContinuousAt (fun ε : ℝ => 67 * ε ^ 2 / 32) 0 := by fun_prop
-    have hf := hcont.tendsto.mono_left nhdsWithin_le_nhds
+    have hf := hcont.tendsto.mono_left (nhdsWithin_le_nhds (s := Set.Ioi (0 : ℝ)))
     rwa [show (67 * (0 : ℝ) ^ 2 / 32) = 0 by norm_num] at hf
   have hsum := h2.add hq
   rw [add_zero] at hsum
@@ -455,7 +449,7 @@ theorem resetCounter_no_locally_bounded_reset_charge (a : ℝ) {b : ℝ} (hb : 0
       ∀ᶠ ε in nhdsWithin (0 : ℝ) (Set.Ioi 0), |f ε| ≤ R := by
     intro f L hLR hf
     filter_upwards [hf (Metric.ball_mem_nhds L one_pos)] with ε hε
-    rw [Metric.mem_ball, Real.dist_eq] at hε
+    rw [Set.mem_preimage, Metric.mem_ball, Real.dist_eq] at hε
     have htri : |f ε| ≤ |f ε - L| + |L| := by
       calc |f ε| = |(f ε - L) + L| := by rw [sub_add_cancel]
         _ ≤ |f ε - L| + |L| := abs_add_le _ _

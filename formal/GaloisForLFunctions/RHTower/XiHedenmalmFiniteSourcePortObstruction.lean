@@ -58,12 +58,13 @@ theorem xiHedenmalmSourceOrbitMap_injective :
         exact_mod_cast congrArg Complex.re hmn
       have hm2 : (0 : ℝ) < m + 2 := by positivity
       have hn2 : (0 : ℝ) < n + 2 := by positivity
-      have : (m + 2 : ℝ) = (n + 2 : ℝ) := by
-        field_simp at hre
-        rcases hre with h | h
-        · linarith [h]
-        · exact absurd h hr.ne'
-      exact_mod_cast by linarith [this]
+      have heq : (m + 2 : ℝ) = (n + 2 : ℝ) := by
+        have h1 : r / (m + 2 : ℝ) * ((m + 2 : ℝ) * (n + 2 : ℝ))
+            = r / (n + 2 : ℝ) * ((m + 2 : ℝ) * (n + 2 : ℝ)) := by rw [hre]
+        field_simp at h1
+        linarith
+      have : (m : ℝ) = (n : ℝ) := by linarith
+      exact_mod_cast this
     have hmem : ∀ n : ℕ, ((r / (n + 2) : ℝ) : ℂ) ∈ Metric.ball (0 : ℂ) r := by
       intro n
       rw [Metric.mem_ball, dist_zero_right]
@@ -71,8 +72,8 @@ theorem xiHedenmalmSourceOrbitMap_injective :
         have : (0 : ℝ) ≤ n := Nat.cast_nonneg n
         linarith
       have hpos : 0 < r / (n + 2 : ℝ) := by positivity
-      rw [Complex.norm_real, abs_of_pos hpos]
-      rw [div_lt_iff (by positivity : (0 : ℝ) < n + 2)]
+      rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos hpos]
+      rw [div_lt_iff₀ (by positivity : (0 : ℝ) < n + 2)]
       nlinarith
     exact Set.infinite_of_injective_forall_mem hinj fun n => hsub (hmem n)
   exact Polynomial.eq_zero_of_infinite_isRoot P hroots
@@ -109,7 +110,7 @@ theorem xiHedenmalm_coordinateStable_sourcePort_not_finiteDimensional
         (⟨fun z : ℂ => ((Polynomial.X : Polynomial ℂ) ^ (k : ℕ)).eval z * XiC z,
           hmem (k : ℕ)⟩ : S)) := by
     apply LinearIndependent.of_comp S.subtype
-    convert hfin using 1
+    exact hfin
   have hcard := hSfam.fintype_card_le_finrank
   rw [Fintype.card_fin] at hcard
   omega

@@ -2,6 +2,7 @@ import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Analysis.InnerProductSpace.Projection.Basic
 import Mathlib.Analysis.SpecialFunctions.Exponential
 import Mathlib.Analysis.Calculus.Deriv.Mul
+import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.Order.Lattice.Nat
 
@@ -112,6 +113,21 @@ theorem genericAccessibleRank_eq_lowerBound_of_exists_transverse [Nonempty M]
 
 end RelationRank
 
+/-! ## Continuous visibility -/
+
+/-- Finite-dimensional soft visibility `Tr(P_R(x) P_Q)` in orthonormal coordinates. -/
+def softVisibility {X n : Type*} [Fintype n] [DecidableEq n]
+    (P_R : X → Matrix n n ℝ) (P_Q : Matrix n n ℝ) (x : X) : ℝ :=
+  Matrix.trace (P_R x * P_Q)
+
+/-- **Card §3.** Soft visibility is continuous whenever the moving projection is continuous. -/
+theorem continuous_softVisibility
+    {X n : Type*} [TopologicalSpace X] [Fintype n] [DecidableEq n]
+    (P_R : X → Matrix n n ℝ) (P_Q : Matrix n n ℝ) (hP : Continuous P_R) :
+    Continuous (softVisibility P_R P_Q) := by
+  unfold softVisibility
+  fun_prop
+
 /-! ## Recurrence forbids a nonconstant monotone law -/
 
 /-- **Card Theorem 4.1.** On a recurrent forward orbit, a continuous observable that is monotone
@@ -215,6 +231,53 @@ theorem normalAcceleration (L : Submodule ℝ H) [L.HasOrthogonalProjection]
     (Lᗮ.starProjection (A (A x)))
     (hasDerivAt_normalOrbit L A x) hp (normalOrbit_zero L A hx)
   simpa [operatorOrbit] using h
+
+/-- Intrinsic skew-adjointness condition for a bounded real Hilbert-space generator. -/
+def IsSkewAdjointGenerator (A : H →L[ℝ] H) : Prop :=
+  ∀ u v, inner ℝ (A u) v = -inner ℝ u (A v)
+
+/-- A bounded skew-adjoint generator preserves squared norm along its exponential orbit. -/
+theorem operatorOrbit_norm_sq_eq (A : H →L[ℝ] H) (hA : IsSkewAdjointGenerator A)
+    (x : H) (t : ℝ) : ‖operatorOrbit A x t‖ ^ 2 = ‖x‖ ^ 2 := by
+  let f : ℝ → ℝ := fun s => ‖operatorOrbit A x s‖ ^ 2
+  have hf : Differentiable ℝ f := fun s => (hasDerivAt_operatorOrbit A x s).norm_sq.differentiableAt
+  have hderiv : ∀ s, deriv f s = 0 := by
+    intro s
+    rw [(hasDerivAt_operatorOrbit A x s).norm_sq.deriv]
+    have hzero : inner ℝ (operatorOrbit A x s) (A (operatorOrbit A x s)) = 0 := by
+      have hskew := hA (operatorOrbit A x s) (operatorOrbit A x s)
+      have hsymm : inner ℝ (operatorOrbit A x s) (A (operatorOrbit A x s)) =
+          inner ℝ (A (operatorOrbit A x s)) (operatorOrbit A x s) :=
+        real_inner_comm _ _
+      linarith [hskew, hsymm]
+    rw [hzero, mul_zero]
+  have hconst := is_const_of_deriv_eq_zero hf hderiv t 0
+  simpa [f, operatorOrbit] using hconst
+
+/-- Visible component `P e^{tA}x`. -/
+noncomputable def visibleOrbit (L : Submodule ℝ H) [L.HasOrthogonalProjection]
+    (A : H →L[ℝ] H) (x : H) (t : ℝ) : H :=
+  L.starProjection (operatorOrbit A x t)
+
+/-- **Card Theorem 5.1, `(5.3)`.** Visible weight has negative twice-normal acceleration for a
+skew-adjoint generator. -/
+theorem visibleAcceleration (L : Submodule ℝ H) [L.HasOrthogonalProjection]
+    (A : H →L[ℝ] H) (hA : IsSkewAdjointGenerator A) {x : H} (hx : x ∈ L) :
+    deriv (deriv (fun t => ‖visibleOrbit L A x t‖ ^ 2)) 0 =
+      -2 * ‖Lᗮ.starProjection (A x)‖ ^ 2 := by
+  have hvisible :
+      (fun t => ‖visibleOrbit L A x t‖ ^ 2) =
+        fun t => ‖x‖ ^ 2 - ‖normalOrbit L A x t‖ ^ 2 := by
+    funext t
+    have hpyth := L.norm_sq_eq_add_norm_sq_starProjection (operatorOrbit A x t)
+    have hnorm := operatorOrbit_norm_sq_eq A hA x t
+    dsimp [visibleOrbit, normalOrbit]
+    linarith
+  rw [hvisible, deriv_const_sub']
+  change deriv (-(deriv (fun t => ‖normalOrbit L A x t‖ ^ 2))) 0 = _
+  rw [deriv.neg]
+  rw [normalAcceleration L A hx]
+  ring
 
 end Tidal
 

@@ -232,7 +232,7 @@ def actualNevanlinnaExpandedFullRankWitness
     (S : Submodule ℝ (Lp ℝ (⊤ : ENNReal) mu))
     (w : S) (shift : InjectiveShiftConfiguration ι) : Prop :=
   ∃ packet : InjectiveProjectiveRowPacket row,
-    (∀ x, 0 < (combinedProjectiveRowShiftPacket packet shift x).im) ∧
+    (∀ x, (combinedProjectiveRowShiftPacket packet shift x).im < 0) ∧
       Function.Injective
         (expandedDifferentialEvaluationMatrix degree
           (Fintype.card (Σ i, Fin (orders i))) packet.1 exponent
@@ -251,7 +251,7 @@ def actualNevanlinnaExpandedPatternRelationHolds
     (w : S) (shift : InjectiveShiftConfiguration ι)
     (coeff : κ × Fin (degree + 1) → ℂ) : Prop :=
   ∀ packet : InjectiveProjectiveRowPacket row,
-    (∀ x, 0 < (combinedProjectiveRowShiftPacket packet shift x).im) →
+    (∀ x, (combinedProjectiveRowShiftPacket packet shift x).im < 0) →
     ∀ r, ∑ col, coeff col *
       expandedDifferentialEvaluationMatrix degree
         (Fintype.card (Σ i, Fin (orders i))) packet.1 exponent

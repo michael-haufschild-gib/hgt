@@ -140,6 +140,12 @@ def commonUpperTranslationDomain {m : ℕ}
     (shift : InjectiveShiftConfiguration (Fin m)) : Set ℂ :=
   {z | ∀ i, 0 < (z + shift.1 i).im}
 
+/-- Common translation domain for the lower-placed boundary-carrier packets: every translate of a
+point of the domain has strictly negative imaginary part. -/
+def commonLowerTranslationDomain {m : ℕ}
+    (shift : InjectiveShiftConfiguration (Fin m)) : Set ℂ :=
+  {z | ∀ i, (z + shift.1 i).im < 0}
+
 /-- Family relation pattern after injecting its components into an arbitrary shift palette. -/
 def codedFamilyPatternOfRelation {Γ : Type*} {m n : ℕ}
     (shiftCode : Fin m → Γ) (hshiftCode : Function.Injective shiftCode)
@@ -238,7 +244,7 @@ theorem
     ¬ FamilyDifferentiallyAlgebraicOn
       (fun i z => cauchyTransform
         (weightedBoundaryCarrier F.base.toBoundaryFamily eta density) (z + shift.1 i))
-      (commonUpperTranslationDomain shift) := by
+      (commonLowerTranslationDomain shift) := by
   intro hDA
   obtain ⟨n, P, hPne, hPzero⟩ := hDA
   let shiftCode : Fin m → ℕ := naturalFamilyShiftCode m
@@ -295,10 +301,10 @@ theorem
       simp [coeff, patternCoeff, patternDegree, patternExponent, z]
       ring
     rw [hsum]
-    have hdomain : z ∈ commonUpperTranslationDomain shift := by
+    have hdomain : z ∈ commonLowerTranslationDomain shift := by
       intro i
       have hi := hupper (r, i)
-      simpa [commonUpperTranslationDomain, combinedProjectiveRowShiftPacket,
+      simpa [commonLowerTranslationDomain, combinedProjectiveRowShiftPacket,
         z, shiftP, p, codedFamilyPatternOfRelation] using hi
     calc
       (∑ b : PatternRow p,
@@ -339,13 +345,13 @@ theorem
       (fun i z => (z + shift.1 i) * M + (1 + (z + shift.1 i) ^ 2) *
         cauchyTransform
           (weightedBoundaryCarrier F.base.toBoundaryFamily eta density) (z + shift.1 i))
-      (commonUpperTranslationDomain shift) := by
+      (commonLowerTranslationDomain shift) := by
   intro hrel
   apply F.not_familyDifferentiallyAlgebraicOn_translatedCauchy_of_allFinitePatterns_relationFree
     eta density hfree shift
   exact familyDifferentiallyAlgebraicOn_translatedCauchy_of_presentation
     (weightedBoundaryCarrier F.base.toBoundaryFamily eta density) M shift.1
-    (fun z hz i => ne_of_gt (hz i)) hrel
+    (fun z hz i => ne_of_lt (hz i)) hrel
 
 /-- **Residual singular-continuous full-translation family-freeness law.**  One dense residual
 positive phase excludes every mixed differential relation among every finite family of distinct
@@ -413,12 +419,12 @@ theorem singularContinuousCarrier_fullTranslationFamilyFreeness_denseResidual
             (∀ (m : ℕ) (shift : InjectiveShiftConfiguration (Fin m)),
                 (¬ FamilyDifferentiallyAlgebraicOn
                   (fun i z => cauchyTransform carrier (z + shift.1 i))
-                  (commonUpperTranslationDomain shift)) ∧
+                  (commonLowerTranslationDomain shift)) ∧
                 ∀ M : ℂ,
                   ¬ FamilyDifferentiallyAlgebraicOn
                     (fun i z => (z + shift.1 i) * M + (1 + (z + shift.1 i) ^ 2) *
                       cauchyTransform carrier (z + shift.1 i))
-                    (commonUpperTranslationDomain shift)) ∧
+                    (commonLowerTranslationDomain shift)) ∧
               Hypertranscendental (cauchyTransform carrier) ∧
               ∀ M : ℂ, Hypertranscendental
                 (fun z => z * M + (1 + z ^ 2) * cauchyTransform carrier z)) := by
@@ -496,12 +502,12 @@ theorem singularContinuousCarrier_fullTranslationFamilyFreeness_denseResidual
   have hfamily : ∀ (m : ℕ) (shift : InjectiveShiftConfiguration (Fin m)),
       (¬ FamilyDifferentiallyAlgebraicOn
         (fun i z => cauchyTransform carrier (z + shift.1 i))
-        (commonUpperTranslationDomain shift)) ∧
+        (commonLowerTranslationDomain shift)) ∧
       ∀ M : ℂ,
         ¬ FamilyDifferentiallyAlgebraicOn
           (fun i z => (z + shift.1 i) * M + (1 + (z + shift.1 i) ^ 2) *
             cauchyTransform carrier (z + shift.1 i))
-          (commonUpperTranslationDomain shift) := by
+          (commonLowerTranslationDomain shift) := by
     intro m shift
     have hcauchy :=
       F.not_familyDifferentiallyAlgebraicOn_translatedCauchy_of_allFinitePatterns_relationFree
@@ -510,7 +516,7 @@ theorem singularContinuousCarrier_fullTranslationFamilyFreeness_denseResidual
         ¬ FamilyDifferentiallyAlgebraicOn
           (fun i z => (z + shift.1 i) * M + (1 + (z + shift.1 i) ^ 2) *
             cauchyTransform carrier (z + shift.1 i))
-          (commonUpperTranslationDomain shift) :=
+          (commonLowerTranslationDomain shift) :=
       fun M =>
         F.not_familyDifferentiallyAlgebraicOn_translatedHerglotz_of_allFinitePatterns_relationFree
           mu density hfree shift M
@@ -522,7 +528,7 @@ theorem singularContinuousCarrier_fullTranslationFamilyFreeness_denseResidual
   have hlocal :=
     F.not_differentiallyAlgebraicOn_cauchyTransform_weightedBoundaryCarrier
       mu density hfreeUnit
-  exact cauchyHerglotz_upperHalfPlane_globalHypertranscendence carrier hlocal
+  exact cauchyHerglotz_lowerHalfPlane_globalHypertranscendence carrier hlocal
 
 end ClassicalAnalyticNevanlinnaCarrierFamily
 

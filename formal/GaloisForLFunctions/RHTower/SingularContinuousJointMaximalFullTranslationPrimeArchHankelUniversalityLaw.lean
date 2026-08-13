@@ -58,7 +58,7 @@ theorem singularContinuous_jointMaximalFullTranslation_primeArchHankelUniversali
         ∀ col, coeff col = 0} ∩
       {w | ¬ DifferentiallyAlgebraicOn
         (cauchyTransform (weightedBoundaryCarrier F.base.toBoundaryFamily mu
-          (linftyOne mu + w.1.1))) upperHalfPlane}
+          (linftyOne mu + w.1.1))) lowerHalfPlane}
     let fullPhase : Set positiveChart := {w | ∀
       (p : FiniteDifferentialPattern ℕ)
       (shift : InjectiveShiftConfiguration (CarrierPatternShift p))
@@ -102,20 +102,20 @@ theorem singularContinuous_jointMaximalFullTranslation_primeArchHankelUniversali
               MaximalTranslationDifferentialFree
                 (weightedBoundaryProbabilityCarrier F.base.toBoundaryFamily
                   mu density hpositive hintegral)) ∧
-            (¬ DifferentiallyAlgebraicOn (cauchyTransform carrier) upperHalfPlane) ∧
+            (¬ DifferentiallyAlgebraicOn (cauchyTransform carrier) lowerHalfPlane) ∧
             (∀ M : ℂ,
               ¬ DifferentiallyAlgebraicOn
                 (fun z => z * M + (1 + z ^ 2) * cauchyTransform carrier z)
-                upperHalfPlane) ∧
+                lowerHalfPlane) ∧
             (∀ (m : ℕ) (shift : InjectiveShiftConfiguration (Fin m)),
                 (¬ FamilyDifferentiallyAlgebraicOn
                   (fun i z => cauchyTransform carrier (z + shift.1 i))
-                  (commonUpperTranslationDomain shift)) ∧
+                  (commonLowerTranslationDomain shift)) ∧
                 ∀ M : ℂ,
                   ¬ FamilyDifferentiallyAlgebraicOn
                     (fun i z => (z + shift.1 i) * M + (1 + (z + shift.1 i) ^ 2) *
                       cauchyTransform carrier (z + shift.1 i))
-                    (commonUpperTranslationDomain shift)) ∧
+                    (commonLowerTranslationDomain shift)) ∧
             Hypertranscendental (cauchyTransform carrier) ∧
             ∀ M : ℂ, Hypertranscendental
               (fun z => z * M + (1 + z ^ 2) * cauchyTransform carrier z))) ∧
@@ -149,7 +149,7 @@ theorem singularContinuous_jointMaximalFullTranslation_primeArchHankelUniversali
       ∀ col, coeff col = 0} ∩
     {w | ¬ DifferentiallyAlgebraicOn
       (cauchyTransform (weightedBoundaryCarrier F.base.toBoundaryFamily mu
-        (linftyOne mu + w.1.1))) upperHalfPlane}
+        (linftyOne mu + w.1.1))) lowerHalfPlane}
   let fullPhase : Set positiveChart := {w | ∀
     (p : FiniteDifferentialPattern ℕ)
     (shift : InjectiveShiftConfiguration (CarrierPatternShift p))

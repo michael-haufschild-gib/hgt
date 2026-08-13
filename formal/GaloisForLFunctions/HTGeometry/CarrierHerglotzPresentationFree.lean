@@ -36,12 +36,12 @@ theorem not_differentiallyAlgebraicOn_cauchyTransform_weightedBoundaryCarrier
         ∀ col, coeff col = 0) :
     ¬ DifferentiallyAlgebraicOn
       (cauchyTransform (weightedBoundaryCarrier F.base.toBoundaryFamily eta density))
-      upperHalfPlane := by
+      lowerHalfPlane := by
   intro h
   obtain ⟨n, P, hP, hrel⟩ := h
   exact
     F.not_differentiallyAlgebraicOn_weightedBoundaryCarrierCauchy_of_allFinitePatterns_relationFree
-      eta density hfree ⟨n, P, hP, fun z hz => hrel z hz⟩
+      eta density hfree ⟨n, P, hP, fun z hz => hrel z (Set.mem_setOf_eq ▸ hz)⟩
 
 /-- **The Herglotz presentation of a pattern-free carrier admits no differential relation.**  For
 any mass constant, the normalized presentation `z * M + (1 + z ^ 2) * C` of a carrier avoiding every
@@ -60,8 +60,9 @@ theorem not_differentiallyAlgebraicOn_herglotzPresentation_weightedBoundaryCarri
     ¬ DifferentiallyAlgebraicOn
       (fun z => z * M + (1 + z ^ 2) *
         cauchyTransform (weightedBoundaryCarrier F.base.toBoundaryFamily eta density) z)
-      upperHalfPlane :=
-  not_differentiallyAlgebraicOn_herglotzPresentation_upperHalfPlane _ M
+      lowerHalfPlane :=
+  not_differentiallyAlgebraicOn_herglotzPresentation _ M isOpen_lowerHalfPlane
+    (fun _ hz => im_ne_zero_of_mem_lowerHalfPlane hz)
     (F.not_differentiallyAlgebraicOn_cauchyTransform_weightedBoundaryCarrier eta density hfree)
 
 /-- **A dense residual family of carriers is relation-free on the half-plane.**  The same dense
@@ -85,7 +86,7 @@ theorem countablePatterns_actualNevanlinna_notDifferentiallyAlgebraicOn_dense_re
     let notDAOnCarrier : Set positiveChart := {w |
       ¬ DifferentiallyAlgebraicOn
         (cauchyTransform (weightedBoundaryCarrier F.base.toBoundaryFamily eta
-          (linftyOne eta + w.1.1))) upperHalfPlane}
+          (linftyOne eta + w.1.1))) lowerHalfPlane}
     Dense notDAOnCarrier ∧ notDAOnCarrier ∈ residual positiveChart := by
   dsimp only
   obtain ⟨hdense, hres, _⟩ :=

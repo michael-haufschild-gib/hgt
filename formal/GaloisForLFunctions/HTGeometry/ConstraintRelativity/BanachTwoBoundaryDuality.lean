@@ -11,9 +11,11 @@ relative pairing under continuous linear coordinate changes.
 
 namespace HTGeometry.ConstraintRelativity
 
+local notation "𝕜" => ℂ
+
 section TwoBoundary
 
-variable {𝕜 E : Type*} [RCLike 𝕜] [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
 /-- The two-boundary quotient map `x ↦ ([x]ₗ, [x]ᵣ)`. -/
 noncomputable def twoBoundaryQuotient (Yₗ Yᵣ : Submodule 𝕜 E) :
@@ -47,15 +49,16 @@ end TwoBoundary
 
 section ContinuousObservers
 
-variable {𝕜 E : Type*} [RCLike 𝕜] [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
 /-- Continuous annihilator of a linear subspace. -/
-abbrev continuousAnnihilator (Y : Submodule 𝕜 E) : Submodule 𝕜 (StrongDual 𝕜 E) :=
+noncomputable abbrev continuousAnnihilator (Y : Submodule 𝕜 E) :
+    Submodule 𝕜 (StrongDual 𝕜 E) :=
   StrongDual.polarSubmodule 𝕜 Y
 
 theorem mem_continuousAnnihilator {Y : Submodule 𝕜 E} {φ : StrongDual 𝕜 E} :
     φ ∈ continuousAnnihilator Y ↔ ∀ y ∈ Y, φ y = 0 :=
-  StrongDual.mem_polarSubmodule Y φ
+  StrongDual.mem_polarSubmodule 𝕜 Y φ
 
 /-- Restriction of a continuous functional to a subspace. -/
 noncomputable def continuousRestrict (Y : Submodule 𝕜 E) :
@@ -109,7 +112,9 @@ noncomputable def twoBoundaryObserverRestriction (Yₗ Yᵣ : Submodule 𝕜 E) 
     twoBoundaryObserverQuotient Yₗ Yᵣ →ₗ[𝕜] StrongDual 𝕜 (Yₗ ⊓ Yᵣ : Submodule 𝕜 E) :=
   (continuousAnnihilator Yₗ ⊔ continuousAnnihilator Yᵣ).liftQ
     (continuousRestrict (Yₗ ⊓ Yᵣ))
-    (sup_continuousAnnihilator_le_inf Yₗ Yᵣ)
+    (by
+      rw [ker_continuousRestrict]
+      exact sup_continuousAnnihilator_le_inf Yₗ Yᵣ)
 
 @[simp] theorem twoBoundaryObserverRestriction_mk (Yₗ Yᵣ : Submodule 𝕜 E)
     (φ : StrongDual 𝕜 E) (x : (Yₗ ⊓ Yᵣ : Submodule 𝕜 E)) :
@@ -143,31 +148,22 @@ theorem ker_twoBoundaryObserverRestriction (Yₗ Yᵣ : Submodule 𝕜 E) :
       · rintro ⟨ψ, hψ, hq⟩
         rw [← hq]
         change continuousRestrict (Yₗ ⊓ Yᵣ) ψ = 0
+        change ψ ∈ LinearMap.ker (continuousRestrict (Yₗ ⊓ Yᵣ))
         rw [ker_continuousRestrict]
         exact hψ
 
-/-- Topological descent radical `(Yₗ ∩ Yᵣ)⊥ /(Yₗ⊥ + Yᵣ⊥)`. -/
-abbrev topologicalDescentRadical (Yₗ Yᵣ : Submodule 𝕜 E) : Type _ :=
-  continuousAnnihilator (Yₗ ⊓ Yᵣ) ⧸
-    (continuousAnnihilator Yₗ ⊔ continuousAnnihilator Yᵣ).comap
-      (continuousAnnihilator (Yₗ ⊓ Yᵣ)).subtype
+/-- Topological descent radical `(Yₗ ∩ Yᵣ)⊥ /(Yₗ⊥ + Yᵣ⊥)`, realized canonically as the image of
+`(Yₗ ∩ Yᵣ)⊥` in the ambient observer quotient. -/
+noncomputable abbrev topologicalDescentRadical (Yₗ Yᵣ : Submodule 𝕜 E) : Type _ :=
+  Submodule.map
+    (continuousAnnihilator Yₗ ⊔ continuousAnnihilator Yᵣ).mkQ
+    (continuousAnnihilator (Yₗ ⊓ Yᵣ))
 
 /-- The radical quotient is canonically the kernel term in `(BHR.7)`. -/
 noncomputable def topologicalDescentRadicalEquivKernel (Yₗ Yᵣ : Submodule 𝕜 E) :
     topologicalDescentRadical Yₗ Yᵣ ≃ₗ[𝕜]
-      LinearMap.ker (twoBoundaryObserverRestriction Yₗ Yᵣ) := by
-  let f : continuousAnnihilator (Yₗ ⊓ Yᵣ) →ₗ[𝕜]
-      twoBoundaryObserverQuotient Yₗ Yᵣ :=
-    (continuousAnnihilator Yₗ ⊔ continuousAnnihilator Yᵣ).mkQ.comp
-      (continuousAnnihilator (Yₗ ⊓ Yᵣ)).subtype
-  have hker : LinearMap.ker f =
-      (continuousAnnihilator Yₗ ⊔ continuousAnnihilator Yᵣ).comap
-        (continuousAnnihilator (Yₗ ⊓ Yᵣ)).subtype := by
-    ext φ
-    simp [f, Submodule.Quotient.mk_eq_zero]
-  exact (Submodule.quotEquivOfEq _ _ hker).trans <|
-    f.quotKerEquivRange.trans <|
-      LinearEquiv.ofEq _ _ (ker_twoBoundaryObserverRestriction Yₗ Yᵣ).symm
+      LinearMap.ker (twoBoundaryObserverRestriction Yₗ Yᵣ) :=
+  LinearEquiv.ofEq _ _ (ker_twoBoundaryObserverRestriction Yₗ Yᵣ).symm
 
 /-- Every boundary-descending observer vanishes on every common retained law. -/
 theorem boundaryObserver_vanishes_on_common
@@ -184,13 +180,10 @@ theorem exists_detecting_nondescending_observer
     ∃ φ : StrongDual 𝕜 E,
       φ x ≠ 0 ∧ φ ∉ continuousAnnihilator Yₗ ⊔ continuousAnnihilator Yᵣ := by
   obtain ⟨φ, _, hφx⟩ := exists_dual_vector 𝕜 x (norm_ne_zero_iff.mpr hx0)
-  refine ⟨φ, ?_, ?_⟩
-  · rw [hφx, RCLike.ofReal_ne_zero]
+  have hφne : φ x ≠ 0 := by
+    rw [hφx, RCLike.ofReal_ne_zero]
     exact norm_ne_zero_iff.mpr hx0
-  · intro hdesc
-    exact (boundaryObserver_vanishes_on_common hdesc hx) (by
-      rw [hφx, RCLike.ofReal_ne_zero]
-      exact norm_ne_zero_iff.mpr hx0)
+  exact ⟨φ, hφne, fun hdesc => hφne (boundaryObserver_vanishes_on_common hdesc hx)⟩
 
 end ContinuousObservers
 
@@ -198,7 +191,7 @@ end ContinuousObservers
 
 section Covariance
 
-variable {𝕜 E : Type*} [RCLike 𝕜] [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
 /-- Contragradient transport of a continuous observer. -/
 noncomputable def transportObserver (T : E ≃L[𝕜] E) (φ : StrongDual 𝕜 E) :
@@ -218,5 +211,114 @@ theorem transportObserver_pairing (T : E ≃L[𝕜] E) (φ : StrongDual 𝕜 E) 
   simp [transportObserver]
 
 end Covariance
+
+/-! ## Nested cut layer -/
+
+section NestedCut
+
+variable {M : Type*} [AddCommGroup M] [Module ℂ M]
+
+/-- **Card `(BHR.12)`.** For nested cuts `M(b) ≤ M(a)`, the comparison-map kernel is the
+literal intermediate quotient layer `M(a)/M(b)`, realized as its canonical image in `M/M(b)`. -/
+theorem nestedCut_ker {Ma Mb : Submodule ℂ M} (h : Mb ≤ Ma) :
+    LinearMap.ker (persistenceMap h) = Submodule.map Mb.mkQ Ma :=
+  ker_persistenceMap h
+
+end NestedCut
+
+/-! ## Finite thermofield countermodel -/
+
+section FiniteThermofield
+
+/-- Standard finite thermofield carrier `H ⊗ H̄`, in matrix coordinates. -/
+abbrev ThermofieldSpace (n : ℕ) := (Fin n × Fin n) → ℂ
+
+/-- Left boundary sector with first coordinate fixed at `i`. -/
+def thermofieldLeftBoundary {n : ℕ} (i : Fin n) :
+    Submodule ℂ (ThermofieldSpace n) where
+  carrier := {x | ∀ p, p.1 ≠ i → x p = 0}
+  zero_mem' := by simp
+  add_mem' hx hy p hp := by simp [hx p hp, hy p hp]
+  smul_mem' c x hx p hp := by simp [hx p hp]
+
+/-- Right boundary sector with second coordinate fixed at `j`. -/
+def thermofieldRightBoundary {n : ℕ} (j : Fin n) :
+    Submodule ℂ (ThermofieldSpace n) where
+  carrier := {x | ∀ p, p.2 ≠ j → x p = 0}
+  zero_mem' := by simp
+  add_mem' hx hy p hp := by simp [hx p hp, hy p hp]
+  smul_mem' c x hx p hp := by simp [hx p hp]
+
+/-- Matrix unit `eᵢ ⊗ ēⱼ`. -/
+noncomputable def thermofieldBasis {n : ℕ} (i j : Fin n) : ThermofieldSpace n :=
+  Pi.single (i, j) 1
+
+/-- **Card `(BHR.23)`.** The two coordinate boundary sectors intersect in exactly one line. -/
+theorem thermofield_boundary_intersection {n : ℕ} (i j : Fin n) :
+    thermofieldLeftBoundary i ⊓ thermofieldRightBoundary j =
+      ℂ ∙ thermofieldBasis i j := by
+  apply le_antisymm
+  · intro x hx
+    rw [Submodule.mem_span_singleton]
+    refine ⟨x (i, j), ?_⟩
+    funext p
+    by_cases hp : p = (i, j)
+    · subst p
+      simp [thermofieldBasis]
+    · have hcoord : p.1 ≠ i ∨ p.2 ≠ j := by
+        by_cases hleft : p.1 = i
+        · exact Or.inr fun hright => hp (Prod.ext hleft hright)
+        · exact Or.inl hleft
+      rcases hcoord with hleft | hright
+      · have hz := hx.1 p hleft
+        simp [thermofieldBasis, hp, hz]
+      · have hz := hx.2 p hright
+        simp [thermofieldBasis, hp, hz]
+  · intro x hx
+    obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.mp hx
+    constructor
+    · intro p hp
+      have hpair : p ≠ (i, j) := fun h => hp (congrArg Prod.fst h)
+      simp [thermofieldBasis, hpair]
+    · intro p hp
+      have hpair : p ≠ (i, j) := fun h => hp (congrArg Prod.snd h)
+      simp [thermofieldBasis, hpair]
+
+/-- Diagonal modular flow associated to positive density eigenvalues `rᵢ`. -/
+noncomputable def thermofieldModularFlow {n : ℕ} (r : Fin n → ℝ) (t : ℝ) :
+    ThermofieldSpace n →ₗ[ℂ] ThermofieldSpace n where
+  toFun x p :=
+    Complex.exp (Complex.I * (t : ℂ) *
+      ((Real.log (r p.1) : ℂ) - (Real.log (r p.2) : ℂ))) * x p
+  map_add' x y := by ext p; simp [mul_add]
+  map_smul' c x := by ext p; simp [mul_assoc, mul_left_comm]
+
+/-- **Card `(BHR.24)`.** Every retained thermofield line is an exact modular eigenline with
+frequency `log rᵢ - log rⱼ`. -/
+theorem thermofieldModularFlow_basis {n : ℕ} (r : Fin n → ℝ) (t : ℝ) (i j : Fin n) :
+    thermofieldModularFlow r t (thermofieldBasis i j) =
+      Complex.exp (Complex.I * (t : ℂ) *
+        ((Real.log (r i) : ℂ) - (Real.log (r j) : ℂ))) • thermofieldBasis i j := by
+  funext p
+  by_cases hp : p = (i, j)
+  · subst p
+    simp [thermofieldModularFlow, thermofieldBasis]
+  · simp [thermofieldModularFlow, thermofieldBasis, hp]
+
+/-- Both boundary quotients erase the thermofield matrix unit. -/
+theorem thermofieldBasis_erased {n : ℕ} (i j : Fin n) :
+    (Submodule.Quotient.mk (thermofieldBasis i j) :
+        ThermofieldSpace n ⧸ thermofieldLeftBoundary i) = 0 ∧
+      (Submodule.Quotient.mk (thermofieldBasis i j) :
+        ThermofieldSpace n ⧸ thermofieldRightBoundary j) = 0 := by
+  constructor <;> rw [Submodule.Quotient.mk_eq_zero]
+  · intro p hp
+    have hpair : p ≠ (i, j) := fun h => hp (congrArg Prod.fst h)
+    simp [thermofieldBasis, hpair]
+  · intro p hp
+    have hpair : p ≠ (i, j) := fun h => hp (congrArg Prod.snd h)
+    simp [thermofieldBasis, hpair]
+
+end FiniteThermofield
 
 end HTGeometry.ConstraintRelativity

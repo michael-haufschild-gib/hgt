@@ -45,11 +45,10 @@ theorem nevBinf_conj (s : ℕ → ℝ) (z : ℂ) :
   congr 1
   · simp
   · congr 1
-    rw [← tsum_star]
+    rw [Complex.conj_tsum]
     refine tsum_congr fun k => ?_
-    rw [starRingEnd_apply] at *
-    rw [← starRingEnd_apply, map_div₀, map_mul, monicOrthoC_conj,
-      conj_secondKindC_zero, Complex.conj_ofReal, starRingEnd_apply]
+    rw [map_div₀, map_mul, monicOrthoC_conj, conj_secondKindC_zero,
+      Complex.conj_ofReal]
 
 /-- `D` commutes with conjugation. -/
 theorem nevDinf_conj (s : ℕ → ℝ) (z : ℂ) :
@@ -57,10 +56,10 @@ theorem nevDinf_conj (s : ℕ → ℝ) (z : ℂ) :
   unfold nevDinf
   rw [map_mul, map_mul, Complex.conj_ofReal]
   congr 1
-  rw [← tsum_star]
+  rw [Complex.conj_tsum]
   refine tsum_congr fun k => ?_
-  rw [← starRingEnd_apply, map_div₀, map_mul, monicOrthoC_conj,
-    conj_monicOrthoC_zero, Complex.conj_ofReal, mul_comm, starRingEnd_apply]
+  rw [map_div₀, map_mul, monicOrthoC_conj, conj_monicOrthoC_zero,
+    Complex.conj_ofReal, mul_comm]
 
 /-- **The Weyl-disc pole lies strictly above the real axis over the lower half-plane.** -/
 theorem nevInf_quotient_im_pos_of_im_neg (h : PositiveMomentForm s) (h0b : BoundedKernel s 0)

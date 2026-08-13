@@ -130,7 +130,9 @@ theorem criticalLocus_move_cone_fullness
       intro i _
       exact analyticAt_const.mul
         ((hhol i).analyticAt ((isOpen_criticalStrip θ).mem_nhds hz))
-    exact Finset.analyticAt_sum Finset.univ hterm
+    have h := Finset.analyticAt_sum Finset.univ hterm
+    rw [Finset.sum_fn] at h
+    exact h
   -- nonnegativity on the line
   have hline : ∀ τ : ℝ, 0 ≤ Uw (1 / 2 + (τ : ℂ) * I) := by
     intro τ
@@ -176,6 +178,7 @@ theorem criticalLocus_move_cone_fullness
     have harg : (1 : ℂ) - starRingEnd ℂ (1 / 2 + (tstar : ℂ) + (γ : ℂ) * I)
         = 1 / 2 - (tstar : ℂ) + (γ : ℂ) * I := by
       simp [Complex.ext_iff]
+      ring
     have := hUsym (1 / 2 + (tstar : ℂ) + (γ : ℂ) * I)
     rw [harg] at this
     rw [this]
@@ -222,7 +225,7 @@ theorem criticalLocus_move_cone_fullness
       have hnorm : ‖Fw s‖ ≤ ∑ i, |w i| * ε' := by
         refine le_trans (norm_sum_le _ _) ?_
         refine Finset.sum_le_sum fun i _ => ?_
-        rw [norm_mul, Complex.norm_ofReal]
+        rw [norm_mul, Complex.norm_real]
         exact mul_le_mul_of_nonneg_left (hbound i) (abs_nonneg _)
       have hfin : ∑ i, |w i| * ε' = (∑ i, |w i|) * ε' := by
         rw [Finset.sum_mul]
@@ -268,7 +271,7 @@ theorem criticalLocus_move_cone_fullness
       intro s hs
       rw [Metric.mem_ball, dist_zero_right]
       have h1' : |s.re| ≤ |s.re - 1 / 2| + 1 / 2 := by
-        have h2' := abs_add (s.re - 1 / 2) (1 / 2)
+        have h2' := abs_add_le (s.re - 1 / 2) (1 / 2)
         have h3' : |s.re| = |(s.re - 1 / 2) + 1 / 2| := by norm_num
         rw [h3']
         exact le_trans h2' (by norm_num)
@@ -345,10 +348,10 @@ theorem criticalLocus_move_cone_fullness
         exact lt_of_le_of_lt hre hθ
       exact ((hUharmAt s hsstrip).1.continuousAt.neg).continuousWithinAt
     have hzR : z ∈ R := ⟨hz, hT'z⟩
-    have := harmonic_le_of_frontier_le_of_isPreconnected hRopen hRbounded
+    have := Bottcher.harmonic_le_of_frontier_le_of_isPreconnected hRopen hRbounded
       hRconvex.isPreconnected hharmneg hcont hfrontier z hzR
     -- −Uw z = 2ε > ε: contradiction
-    rw [hε] at this ⊢
+    rw [hε] at this
     linarith
   -- the minimum principle on the substrip
   have hΩopen : IsOpen Ω := isOpen_criticalStrip tstar

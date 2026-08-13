@@ -38,6 +38,21 @@ theorem cauchyHerglotz_upperHalfPlane_globalHypertranscendence
   exact hypertranscendental_of_not_differentiallyAlgebraicOn
     (not_differentiallyAlgebraicOn_herglotzPresentation_upperHalfPlane ν M hC)
 
+/-- **Lower-half-plane form of the Cauchy--Herglotz local/global law.**  The noncritical
+projective row packets are placed in the lower half-plane, so relation-freeness there is the
+hypothesis the packet argument supplies; the conclusion is the same global hypertranscendence. -/
+theorem cauchyHerglotz_lowerHalfPlane_globalHypertranscendence
+    (ν : Measure ℝ) [IsFiniteMeasure ν]
+    (hC : ¬ DifferentiallyAlgebraicOn (cauchyTransform ν) lowerHalfPlane) :
+    Hypertranscendental (cauchyTransform ν) ∧
+      ∀ M : ℂ, Hypertranscendental
+        (fun z => z * M + (1 + z ^ 2) * cauchyTransform ν z) := by
+  refine ⟨hypertranscendental_of_not_differentiallyAlgebraicOn hC, ?_⟩
+  intro M
+  exact hypertranscendental_of_not_differentiallyAlgebraicOn
+    (not_differentiallyAlgebraicOn_herglotzPresentation ν M isOpen_lowerHalfPlane
+      (fun _ hz => im_ne_zero_of_mem_lowerHalfPlane hz) hC)
+
 end
 
 end GaloisForLFunctions.HTGeometry

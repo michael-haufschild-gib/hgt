@@ -282,7 +282,7 @@ theorem countablePatterns_positiveActualCarrier_relationFree_dense_residual
       (row := row n) F.background F.amplitude F.quotient
         (degree n) (orders n) (exponent n) eta (linftyOne eta) S w shift coeff →
       ∀ col, coeff col = 0}
-  have hupperMap' : ∀ z, 0 < z.im →
+  have hupperMap' : ∀ z, z.im < 0 →
       0 < (projectiveNevanlinnaQuotient F.c F.d z).im := by
     simpa [quotient, projectiveNevanlinnaQuotient] using hupperMap
   have hqf_inj' : Function.Injective
@@ -349,7 +349,7 @@ theorem allFinitePatterns_abstractCarrier_fullRankWitness_dense_residual
         (ι := CarrierPatternShift p)
         F.background F.amplitude F.quotient p.coefficientDegree p.orders
           (carrierPatternExponent p) eta (linftyOne eta) S w shift}
-  have hupperMap' : ∀ z, 0 < z.im →
+  have hupperMap' : ∀ z, z.im < 0 →
       0 < (projectiveNevanlinnaQuotient F.c F.d z).im := by
     simpa [quotient, projectiveNevanlinnaQuotient] using hupperMap
   have hqf_inj' : Function.Injective
@@ -574,7 +574,7 @@ theorem not_differentiallyAlgebraicOn_weightedBoundaryCarrierCauchy_of_allFinite
           (carrierPatternExponent p) shift coeff →
         ∀ col, coeff col = 0) :
     ¬ ∃ (n : ℕ) (P : MvPolynomial (Fin (n + 2)) ℂ), P ≠ 0 ∧
-        ∀ z : ℂ, 0 < z.im →
+        ∀ z : ℂ, z.im < 0 →
           MvPolynomial.eval
             (Fin.cons z (fun j : Fin (n + 1) => iteratedDeriv (j : ℕ)
               (fun w => ∫ x, ((x : ℂ) - w)⁻¹

@@ -37,10 +37,10 @@ theorem cofinalNevanlinnaCarrier_primeArchHankelClassifierUniversality
           (nu.1 : Measure ℝ) ⟂ₘ (volume : Measure ℝ) ∧
           MaximalTranslationDifferentialFree nu.1 ∧
           (¬ DifferentiallyAlgebraicOn
-            (cauchyTransform (nu.1 : Measure ℝ)) upperHalfPlane) ∧
+            (cauchyTransform (nu.1 : Measure ℝ)) lowerHalfPlane) ∧
           (∀ M : ℂ, ¬ DifferentiallyAlgebraicOn
             (fun z => z * M + (1 + z ^ 2) *
-              cauchyTransform (nu.1 : Measure ℝ) z) upperHalfPlane) ∧
+              cauchyTransform (nu.1 : Measure ℝ) z) lowerHalfPlane) ∧
           Hypertranscendental (cauchyTransform (nu.1 : Measure ℝ)) ∧
           (∀ M : ℂ, Hypertranscendental
             (fun z => z * M + (1 + z ^ 2) *

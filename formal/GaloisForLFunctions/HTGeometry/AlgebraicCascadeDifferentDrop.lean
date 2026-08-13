@@ -54,8 +54,10 @@ theorem isUnit_natCast_topInt {n : ℕ} (hn : n ≠ 0) : IsUnit ((n : ℕ) : top
         = topOrd m ((n : ℕ) : CascadeField)⁻¹ from zero_add _] at this
   have hmemn : ((n : ℕ) : CascadeField) ∈ topInt m := by
     rw [mem_topInt, hordn]
+    exact le_rfl
   have hmeminv : ((n : ℕ) : CascadeField)⁻¹ ∈ topInt m := by
     rw [mem_topInt, hordinv]
+    exact le_rfl
   refine isUnit_iff_exists_inv.mpr ⟨⟨_, hmeminv⟩, ?_⟩
   have hval : (((n : ℕ) : topInt m) : CascadeField) = ((n : ℕ) : CascadeField) := by
     push_cast

@@ -53,7 +53,7 @@ theorem exists_placed_relation_forcing_zeroSet
   refine ⟨z, hz, hupper, ?_⟩
   intro r
   refine ⟨hnondeg r, ?_⟩
-  have hadm : ∀ x, 0 < (combinedProjectiveRowShiftPacket ⟨z, hz⟩ shift x).im := by
+  have hadm : ∀ x, (combinedProjectiveRowShiftPacket ⟨z, hz⟩ shift x).im < 0 := by
     intro x
     exact hupper x.1 x.2
   have hrow := hrel ⟨z, hz⟩ hadm r

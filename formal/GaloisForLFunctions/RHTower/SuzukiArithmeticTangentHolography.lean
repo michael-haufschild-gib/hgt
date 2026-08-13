@@ -566,7 +566,6 @@ theorem map_invSq_ae_mem_Icc {nu : Measure ℝ} {δ : ℝ} (hδ : 0 < δ)
       have h2 := sq_abs t
       nlinarith [abs_nonneg t]
     gcongr
-    · positivity
 
 /-- **Equal inverse moments identify the compact pushforward.**  Two gapped finite measures with
 the same inverse even moments have the same pushforward under `t ↦ (t²)⁻¹`, by compact moment

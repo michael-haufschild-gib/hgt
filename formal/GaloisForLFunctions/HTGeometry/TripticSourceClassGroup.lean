@@ -37,12 +37,13 @@ theorem mem_codiscreteWithin_univ_iff {S : Set ℂ} :
   · have hx := h x (Set.mem_univ x)
     rw [Filter.disjoint_principal_right] at hx
     have hcompl : (Set.univ \ S)ᶜ = S := by
-      rw [Set.univ_diff, compl_compl]
+      rw [← Set.compl_eq_univ_sdiff, compl_compl]
     rwa [hcompl] at hx
   · rw [Filter.disjoint_principal_right]
     have hcompl : (Set.univ \ S)ᶜ = S := by
-      rw [Set.univ_diff, compl_compl]
-    rwa [hcompl]
+      rw [← Set.compl_eq_univ_sdiff, compl_compl]
+    rw [hcompl]
+    exact h x
 
 /-- Germ equality along the codiscrete filter is punctured-local equality at every point. -/
 theorem eventuallyEq_nhdsNE_of_codiscrete {Y₁ Y₂ : ℂ → ℂ}
@@ -241,12 +242,14 @@ theorem tripticDivisorHom_single (hτ : 0 < τ.im) (hσ : 0 < σ.im) (hindep : I
     (g : ℂ ⧸ tripticPeriodGroup τ σ) :
     ∃ x : Additive ↥(tripticSourceUnitClass τ σ),
       tripticDivisorHom hτ hindep x = Finsupp.single g 1 := by
+  classical
   have hmem := tripticMultiplicativeSource_ellipticGammaConeTranslate
     (τ := τ) (σ := σ) hτ hσ (Quotient.out g)
-  refine ⟨Additive.ofMul ⟨tripticSourceUnit hmem,
+  have hclass : tripticSourceUnit hmem ∈ tripticSourceUnitClass τ σ :=
     ⟨ellipticGammaConeTranslate τ σ (Quotient.out g), -(2 * (Real.pi : ℂ) * Complex.I),
-      hmem, rfl⟩⟩, ?_⟩
-  have hcoe : ((((⟨tripticSourceUnit hmem, _⟩ : ↥(tripticSourceUnitClass τ σ))) :
+      hmem, rfl⟩
+  refine ⟨Additive.ofMul ⟨tripticSourceUnit hmem, hclass⟩, ?_⟩
+  have hcoe : ((((⟨tripticSourceUnit hmem, hclass⟩ : ↥(tripticSourceUnitClass τ σ))) :
       ((Filter.codiscreteWithin (Set.univ : Set ℂ)).Germ ℂ)ˣ) :
       (Filter.codiscreteWithin (Set.univ : Set ℂ)).Germ ℂ)
       = ↑(ellipticGammaConeTranslate τ σ (Quotient.out g)) := rfl

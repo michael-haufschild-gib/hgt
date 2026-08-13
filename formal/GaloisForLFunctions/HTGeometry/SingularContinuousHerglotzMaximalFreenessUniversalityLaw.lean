@@ -59,7 +59,7 @@ theorem singularContinuousCarrier_maximalTranslation_cauchyHerglotzFreeness_dens
         ∀ col, coeff col = 0} ∩
       {w | ¬ DifferentiallyAlgebraicOn
         (cauchyTransform (weightedBoundaryCarrier F.base.toBoundaryFamily mu
-          (linftyOne mu + w.1.1))) upperHalfPlane}
+          (linftyOne mu + w.1.1))) lowerHalfPlane}
     Dense universalPhase ∧ universalPhase ∈ residual positiveChart ∧
       ∀ w : positiveChart,
         let density := linftyOne mu + w.1.1
@@ -74,11 +74,11 @@ theorem singularContinuousCarrier_maximalTranslation_cauchyHerglotzFreeness_dens
               MaximalTranslationDifferentialFree
                 (weightedBoundaryProbabilityCarrier F.base.toBoundaryFamily
                   mu density hpositive hintegral)) ∧
-            (¬ DifferentiallyAlgebraicOn (cauchyTransform carrier) upperHalfPlane) ∧
+            (¬ DifferentiallyAlgebraicOn (cauchyTransform carrier) lowerHalfPlane) ∧
             ∀ M : ℂ,
               ¬ DifferentiallyAlgebraicOn
                 (fun z => z * M + (1 + z ^ 2) * cauchyTransform carrier z)
-                upperHalfPlane) := by
+                lowerHalfPlane) := by
   dsimp only
   let mu : Measure (OnePoint ℝ) := eta
   let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
@@ -95,7 +95,7 @@ theorem singularContinuousCarrier_maximalTranslation_cauchyHerglotzFreeness_dens
       ∀ col, coeff col = 0} ∩
     {w | ¬ DifferentiallyAlgebraicOn
       (cauchyTransform (weightedBoundaryCarrier F.base.toBoundaryFamily mu
-        (linftyOne mu + w.1.1))) upperHalfPlane}
+        (linftyOne mu + w.1.1))) lowerHalfPlane}
   letI : IsProbabilityMeasure mu := eta.prop
   have hrelationPhase :
       Dense {w : positiveChart | ∀
@@ -124,10 +124,10 @@ theorem singularContinuousCarrier_maximalTranslation_cauchyHerglotzFreeness_dens
   have hcauchyPhase :
       Dense {w : positiveChart | ¬ DifferentiallyAlgebraicOn
         (cauchyTransform (weightedBoundaryCarrier F.base.toBoundaryFamily mu
-          (linftyOne mu + w.1.1))) upperHalfPlane} ∧
+          (linftyOne mu + w.1.1))) lowerHalfPlane} ∧
         {w : positiveChart | ¬ DifferentiallyAlgebraicOn
           (cauchyTransform (weightedBoundaryCarrier F.base.toBoundaryFamily mu
-            (linftyOne mu + w.1.1))) upperHalfPlane} ∈ residual positiveChart := by
+            (linftyOne mu + w.1.1))) lowerHalfPlane} ∈ residual positiveChart := by
     simpa [positiveChart, frozen, S, mu] using
       (F.countablePatterns_actualNevanlinna_notDifferentiallyAlgebraicOn_dense_residual
         hCmin hnoCommon hCp hCc hupperMap
@@ -172,16 +172,16 @@ theorem singularContinuousCarrier_maximalTranslation_cauchyHerglotzFreeness_dens
     exact F.maximalTranslationDifferentialFree_weightedBoundaryProbabilityCarrier
       mu density hp hi hfree
   have hcauchy :
-      ¬ DifferentiallyAlgebraicOn (cauchyTransform carrier) upperHalfPlane := by
+      ¬ DifferentiallyAlgebraicOn (cauchyTransform carrier) lowerHalfPlane := by
     simpa only [carrier, density] using! hw.2
   letI : IsProbabilityMeasure carrier := hstructure.1
   have hpresentation : ∀ M : ℂ,
       ¬ DifferentiallyAlgebraicOn
         (fun z => z * M + (1 + z ^ 2) * cauchyTransform carrier z)
-        upperHalfPlane := by
+        lowerHalfPlane := by
     intro M
-    exact not_differentiallyAlgebraicOn_herglotzPresentation_upperHalfPlane
-      carrier M hcauchy
+    exact not_differentiallyAlgebraicOn_herglotzPresentation carrier M isOpen_lowerHalfPlane
+      (fun _ hz => im_ne_zero_of_mem_lowerHalfPlane hz) hcauchy
   exact ⟨hmaximal, hcauchy, hpresentation⟩
 
 /-- **Residual singular-continuous global Cauchy--Herglotz universality law.**  Every point of
@@ -220,7 +220,7 @@ theorem
         ∀ col, coeff col = 0} ∩
       {w | ¬ DifferentiallyAlgebraicOn
         (cauchyTransform (weightedBoundaryCarrier F.base.toBoundaryFamily mu
-          (linftyOne mu + w.1.1))) upperHalfPlane}
+          (linftyOne mu + w.1.1))) lowerHalfPlane}
     ∀ w : positiveChart, w ∈ universalPhase →
       let density := linftyOne mu + w.1.1
       let carrier := weightedBoundaryCarrier F.base.toBoundaryFamily mu density
@@ -243,7 +243,7 @@ theorem
       ∀ col, coeff col = 0} ∩
     {w | ¬ DifferentiallyAlgebraicOn
       (cauchyTransform (weightedBoundaryCarrier F.base.toBoundaryFamily mu
-        (linftyOne mu + w.1.1))) upperHalfPlane}
+        (linftyOne mu + w.1.1))) lowerHalfPlane}
   obtain ⟨_hdense, _hresidual, hall⟩ :=
     F.singularContinuousCarrier_maximalTranslation_cauchyHerglotzFreeness_denseResidual
       hCmin hnoCommon hCp hCc hupperMap zf hqf_inj hupperf nf eta
@@ -255,7 +255,7 @@ theorem
       _hmoments, hphase⟩ := hall w
   obtain ⟨_hmaximal, hcauchy, _hherglotz⟩ := hphase hw
   letI : IsProbabilityMeasure carrier := hprobability
-  exact cauchyHerglotz_upperHalfPlane_globalHypertranscendence carrier hcauchy
+  exact cauchyHerglotz_lowerHalfPlane_globalHypertranscendence carrier hcauchy
 
 end ClassicalAnalyticNevanlinnaCarrierFamily
 

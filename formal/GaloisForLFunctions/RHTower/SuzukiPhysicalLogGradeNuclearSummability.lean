@@ -118,7 +118,6 @@ theorem integral_sq_suzukiGradeProfile {L0 : ℝ} (hL0 : 0 < L0) (c : ℝ) (k : 
   rw [hne]
   have hk2 : (2 * (k : ℝ)) ≠ 0 := by linarith
   field_simp
-  ring
 
 /-- The grade profile is square integrable on the tail. -/
 theorem memLp_two_suzukiGradeProfile {L0 : ℝ} (hL0 : 0 < L0) (c : ℝ) (k : ℕ) (hk : 1 ≤ k) :
@@ -126,8 +125,7 @@ theorem memLp_two_suzukiGradeProfile {L0 : ℝ} (hL0 : 0 < L0) (c : ℝ) (k : �
   have hklow : (1 : ℝ) ≤ (k : ℝ) := Nat.one_le_cast.mpr hk
   have hmeas : AEStronglyMeasurable (suzukiGradeProfile c k)
       (volume.restrict (Ioi L0)) := by
-    have hm : Measurable fun L : ℝ => c * L ^ (-((k : ℝ) + 1 / 2)) :=
-      (measurable_id.rpow_const _).const_mul c
+    have hm : Measurable fun L : ℝ => c * L ^ (-((k : ℝ) + 1 / 2)) := by fun_prop
     exact hm.aestronglyMeasurable
   rw [memLp_two_iff_integrable_sq hmeas]
   have hint : IntegrableOn (fun L : ℝ => c ^ 2 * L ^ (-(2 * (k : ℝ)) - 1)) (Ioi L0) :=
@@ -164,8 +162,9 @@ theorem suzukiVolterraInverse_integral {α A L : ℝ} (hα : 0 < α) (hL : 0 < L
   rw [hsplit]
   have hden : (2 : ℝ) * α + 1 ≠ 0 := by linarith
   have hhalf : -α - 1 / 2 ≠ 0 := by linarith
+  have hne : (-1 - α * 2 : ℝ) ≠ 0 := by intro h; exact hden (by linarith)
   field_simp
-  ring
+  linear_combination A * mul_inv_cancel₀ hne
 
 /-! ## The `L²` element of a grade profile and its exact norm -/
 
@@ -305,7 +304,6 @@ theorem sum_norm_suzukiWordProfileLp_le (S : Finset ((Nat.Primes × ℕ) × Bool
         have h1 : (L0 : ℝ) ^ (k + 1) ≠ 0 := pow_ne_zero _ (ne_of_gt hL0)
         have h2 : Real.sqrt 2 ≠ 0 := by positivity
         field_simp
-        ring
 
 /-- **The physical grade-word carrier is nuclear in `L²(dL)`** — the summability half of the
 card's `(4)`: for `L₀ > M/2` the norm series over all positive grades and all words is
@@ -355,16 +353,16 @@ theorem tsum_norm_suzukiWordProfileLp_le (S : Finset ((Nat.Primes × ℕ) × Boo
       (C / Real.sqrt 2 * (suzukiWordMass S / 2 / L0))).congr fun k => ?_
     rw [pow_succ]
     ring
-  rw [tsum_sigma hsum]
-  have hle := tsum_le_tsum (f := fun k : ℕ =>
+  rw [Summable.tsum_sigma hsum]
+  have hle := Summable.tsum_mono (f := fun k : ℕ =>
       ∑' ν : Fin (k + 1) → S,
         ‖suzukiGradeProfileLp hL0
             (C * suzukiWordCoefficient (k + 1)
               (fun i => ((ν i : (Nat.Primes × ℕ) × Bool))))
             (k + 1) (Nat.le_add_left 1 k)‖)
-    (fun k => by
+    hpair.2 hgeo (Pi.le_def.mpr fun k => by
       rw [tsum_fintype]
-      exact sum_norm_suzukiWordProfileLp_le S hL0 hC k) hpair.2 hgeo
+      exact sum_norm_suzukiWordProfileLp_le S hL0 hC k)
   refine le_trans hle ?_
   have hval : (∑' k : ℕ,
       C / Real.sqrt 2 * (suzukiWordMass S / 2 / L0) ^ (k + 1))

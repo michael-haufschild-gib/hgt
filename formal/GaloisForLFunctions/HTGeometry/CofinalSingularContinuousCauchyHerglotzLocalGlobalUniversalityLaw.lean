@@ -35,10 +35,10 @@ theorem
       (nu.1 : Measure ℝ) ⟂ₘ (volume : Measure ℝ) ∧
       MaximalTranslationDifferentialFree nu.1 ∧
       (¬ DifferentiallyAlgebraicOn
-        (cauchyTransform (nu.1 : Measure ℝ)) upperHalfPlane) ∧
+        (cauchyTransform (nu.1 : Measure ℝ)) lowerHalfPlane) ∧
       (∀ M : ℂ, ¬ DifferentiallyAlgebraicOn
         (fun z => z * M + (1 + z ^ 2) *
-          cauchyTransform (nu.1 : Measure ℝ) z) upperHalfPlane) ∧
+          cauchyTransform (nu.1 : Measure ℝ) z) lowerHalfPlane) ∧
       Hypertranscendental (cauchyTransform (nu.1 : Measure ℝ)) ∧
       ∀ M : ℂ, Hypertranscendental
         (fun z => z * M + (1 + z ^ 2) *
@@ -81,17 +81,18 @@ theorem
       mu (linftyOne mu) hactual
   have hcauchy :
       ¬ DifferentiallyAlgebraicOn
-        (cauchyTransform (nu.1 : Measure ℝ)) upperHalfPlane := by
+        (cauchyTransform (nu.1 : Measure ℝ)) lowerHalfPlane := by
     rw [← hcarrier]
     exact hcauchyWeighted
   have hlocalH : ∀ M : ℂ, ¬ DifferentiallyAlgebraicOn
       (fun z => z * M + (1 + z ^ 2) *
-        cauchyTransform (nu.1 : Measure ℝ) z) upperHalfPlane := by
+        cauchyTransform (nu.1 : Measure ℝ) z) lowerHalfPlane := by
     intro M
-    exact not_differentiallyAlgebraicOn_herglotzPresentation_upperHalfPlane
-      (nu.1 : Measure ℝ) M hcauchy
+    exact not_differentiallyAlgebraicOn_herglotzPresentation
+      (nu.1 : Measure ℝ) M isOpen_lowerHalfPlane
+      (fun _ hz => im_ne_zero_of_mem_lowerHalfPlane hz) hcauchy
   have hglobal :=
-    cauchyHerglotz_upperHalfPlane_globalHypertranscendence
+    cauchyHerglotz_lowerHalfPlane_globalHypertranscendence
       (nu.1 : Measure ℝ) hcauchy
   exact ⟨hstructure.1, hstructure.2.1, hstructure.2.2,
     hcauchy, hlocalH, hglobal⟩

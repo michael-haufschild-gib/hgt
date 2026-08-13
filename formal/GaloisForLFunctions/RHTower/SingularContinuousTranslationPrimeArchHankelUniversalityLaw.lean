@@ -90,12 +90,12 @@ theorem singularContinuousFullTranslation_primeArchHankelUniversality
             (∀ (m : ℕ) (shift : InjectiveShiftConfiguration (Fin m)),
                 (¬ FamilyDifferentiallyAlgebraicOn
                   (fun i z => cauchyTransform carrier (z + shift.1 i))
-                  (commonUpperTranslationDomain shift)) ∧
+                  (commonLowerTranslationDomain shift)) ∧
                 ∀ M : ℂ,
                   ¬ FamilyDifferentiallyAlgebraicOn
                     (fun i z => (z + shift.1 i) * M + (1 + (z + shift.1 i) ^ 2) *
                       cauchyTransform carrier (z + shift.1 i))
-                    (commonUpperTranslationDomain shift)) ∧
+                    (commonLowerTranslationDomain shift)) ∧
               Hypertranscendental (cauchyTransform carrier) ∧
               ∀ M : ℂ, Hypertranscendental
                 (fun z => z * M + (1 + z ^ 2) * cauchyTransform carrier z))) ∧
