@@ -561,11 +561,11 @@ theorem xiExteriorAbelRowWeight_one_lineConj (rho : XiDivisorSupport) :
     sourceCayleyAbelGreenMultiplier_one_eq_totalized,
     xiZeroLineConjEquiv_apply]
   simp only [Complex.sub_re, Complex.one_re, Complex.conj_re]
-  push_cast
-  congr 1
   rw [show 2 * (1 - (rho : ℂ).re) - 1 =
     -(2 * (rho : ℂ).re - 1) by ring]
-  simp
+  push_cast
+  rw [div_neg]
+  ring
 
 /-- Boundary row weight is real despite its Cayley-resolvent presentation. -/
 theorem star_xiExteriorAbelRowWeight_one (rho : XiDivisorSupport) :
@@ -580,7 +580,7 @@ theorem sq_conj_wedge_eq_neg_normSq (a b : ℂ) :
     (a * star b - star a * b) ^ 2 =
       -((Complex.normSq (a * star b - star a * b) : ℝ) : ℂ) := by
   rw [Complex.normSq_eq_conj_mul_self]
-  simp only [map_sub, map_mul, star_star]
+  simp only [starRingEnd_apply, star_sub, star_mul, star_star]
   ring
 
 /-- Odd real Green weight turns the negative reflected Pluecker square into positive energy. -/
@@ -601,9 +601,9 @@ theorem xiExteriorBoundaryReflectedMinor_eq_normSq
   rw [xiExteriorAbelRowWeight_one_lineConj,
     xiCriticalFeatureSpectralValue_lineConj,
     xiCriticalFeatureSpectralValue_lineConj,
-    Complex.normSq_eq_conj_mul_self, map_mul,
-    star_xiExteriorAbelRowWeight_one]
-  simp only [map_sub, map_mul, star_star]
+    Complex.normSq_eq_conj_mul_self]
+  simp only [starRingEnd_apply, star_sub, star_mul, star_star]
+  rw [star_xiExteriorAbelRowWeight_one]
   ring
 
 /-- Fixed-center Abel-normalized adjacent exterior coefficient. -/
@@ -660,15 +660,15 @@ theorem tendsto_xiPrimeGammaExteriorAbelDeterminant_one
     (xiCriticalFeatureSpectralValue t)
     (xiCriticalFeatureSpectralValue (t + 1))
   convert hlim using 1
-  apply congrArg nhds
-  rw [xiExteriorCayleyAbelFixedPacketEnergy]
-  push_cast
-  rw [Finset.mul_sum]
-  apply Finset.sum_congr rfl
-  intro rho hrho
-  rw [xiExteriorBoundaryReflectedMinor_eq_normSq,
-    xiExteriorAbelRowWeight_mul_wedge_eq_fixedCoefficient]
-  ring
+  · rfl
+  · apply congrArg nhds
+    rw [xiExteriorCayleyAbelFixedPacketEnergy]
+    push_cast
+    rw [Finset.mul_sum, Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro rho hrho
+    rw [xiExteriorBoundaryReflectedMinor_eq_normSq,
+      xiExteriorAbelRowWeight_mul_wedge_eq_fixedCoefficient]
 
 theorem xiExteriorReporterCenter_lineConj (rho : XiDivisorSupport) :
     xiExteriorReporterCenter (xiZeroLineConjEquiv rho) =
@@ -824,13 +824,20 @@ theorem tendsto_xiPrimeGammaExteriorAbelPacketCesaro_one
     (tendsto_xiPrimeGammaExteriorAbelDeterminant_one
       (xiExteriorReporterBlock S t)
       (xiExteriorReporterBlock_lineConj_closed S hclosed t) (t - 1))
-  have hscaled := tendsto_const_nhds.mul hsum
+  have htwo : Tendsto (fun _ : ℕ => (2 : ℂ)) atTop (nhds 2) :=
+    tendsto_const_nhds
+  have hscaled := htwo.mul hsum
   convert hscaled using 1
   · rfl
   · apply congrArg nhds
-    rw [← Complex.ofReal_sum, ← Complex.ofReal_mul,
-      sum_xiExteriorCayleyAbelFixedPacketEnergy_eq_packetEnergy]
-    norm_num
+    rw [← sum_xiExteriorCayleyAbelFixedPacketEnergy_eq_packetEnergy S]
+    push_cast
+    dsimp [G]
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro t ht
+    push_cast
+    ring
 
 end
 

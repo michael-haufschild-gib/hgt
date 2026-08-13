@@ -9,6 +9,8 @@
   `../../../2-fully-proven/universal-law-field/source-generated-orbit-gramian-mechanics/split-recovery-formation-capital-monotonicity-functional-equation-neutrality-law.md`
 - **Hardy admission/radial wall theorem:**
   `../../../2-fully-proven/universal-law-field/source-generated-orbit-gramian-mechanics/spectral-hardy-trace-formation-admission-and-radial-capital-wall-law.md`
+- **Causal delay/drift/work theorem:**
+  `../../../2-fully-proven/universal-law-field/source-generated-orbit-gramian-mechanics/causal-delay-radial-drift-work-cusp-and-information-undercapacity-law.md`
 - **Failed field-core claim:**
   `../../../5-failed/universal-law-field/source-generated-orbit-gramian-mechanics/controllability-gramian-is-the-universal-law-field.md`
 - **Status:** `[LIVE FIELD PROGRAMME] [ONE DEPENDENCY-CLOSED BRIDGE]`
@@ -153,6 +155,13 @@ this classification.
 Endogenous energy is additive on positive defect sums. A functional-equation pair, divisor average,
 or completed positive packet has finite capital only when every positive-weight component does.
 Phase cancellation can regularize only after abandoning positivity or retaining oriented lift data.
+
+### Law XII — drift consumes causal delay
+
+Width-`T` radial drift `delta` is formable exactly after delay `b>=max(0,delta)`, with work
+`2 min(|delta|,T)/T^2`. Functional-equation pairing requires common delay `|delta|`. Work has a
+linear cusp while Jeffreys information is quadratic, so smooth information cannot finance source
+formation. A source-canonical zero-time anchor plus reflection would force `delta=0`.
 
 ## 4. Exact fusion across structurally different organs
 
@@ -338,6 +347,7 @@ names for controllability.
 - [x] Hardy trace admission and exact radial finite-capital wall proved;
 - [x] per-zero finite-capital selector killed as RH-equivalent;
 - [x] positive divisor aggregation proved unable to hide off-neutral infinite capital;
+- [x] causal delay/drift/work law and information-undercapacity cusp proved;
 - [x] Euler-shell five-organ realization constructed from one source pair;
 - [ ] second structurally different literal source realization;
 - [ ] one route defect factored through its source orbit;
@@ -369,3 +379,5 @@ weight does not answer it.
 - 2026-08-13 — source reachability identified with Hardy trace admission; Euler-shell radial defect
   proved finite-capital exactly on the neutral line, reducing RH selection to one source-history
   production implication.
+- 2026-08-13 — delayed smoothing classified exactly; functional equation shown to require common
+  delay, and zero-delay causal anchoring isolated as the first noncircular selection mechanism.

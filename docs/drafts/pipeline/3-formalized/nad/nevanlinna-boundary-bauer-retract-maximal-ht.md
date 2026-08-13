@@ -1,7 +1,7 @@
 # The Nevanlinna boundary is a canonical Bauer retract carrying maximal translation HT
 
 - **ID:** `nevanlinna-boundary-bauer-retract-maximal-ht`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized
 - **Type:** THEOREM / UNIVERSAL CONSTRAINT-FIBER GEOMETRY LAW
 - **Lane:** general hypertranscendence; indeterminate Hamburger moments; convex carrier geometry
 - **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED]`
@@ -586,3 +586,26 @@ bound `|V^m| <= |V|_HS^m / sqrt(m!)` generates `exp(c|z|^2)`, order two rather t
 small-tail split only improves the constant.  The route that remains is entire-function theoretic
 (real zeros with summable reciprocals, then a genus-zero Hadamard product), and Hadamard
 factorization is absent from mathlib.
+
+## Log — the last formalization gate is closed `[PROVED]`
+
+The normalization-independence section `(14)`--`(16)` is now an unconditional Lean theorem, and
+with it the card's whole numbered list.
+
+- `HTGeometry/NevanlinnaNormalizationTwist.lean`: the matrix twist `W · g` for `g in SL(2,R)`, the
+  denominator factorization `c'(x)sigma+d'(x)=c(x)(g00 sigma+g01)+d(x)(g10 sigma+g11)`, the label
+  covariance `(W·g).projectiveLabel = g^(-1) . W.projectiveLabel`, fiber covariance in both
+  charts, and the twisted boundary family of the *same* moment sequence.
+- `HTGeometry/NevTwistUnconditional.lean`: `nevCarrierProjector_twist` and
+  `nevBarycenter_range_twist` for the constructed family — the retraction `R_s` and the simplex
+  `K_s` do not depend on the chosen determinant-one Nevanlinna matrix.
+
+Together with `analyticNevCarrierFamilyMaximalTranslationInputs` (M. Riesz through Simon's
+transfer route) and the unconditional `G_delta` phase detector, the residual maximal-translation
+law `(25)`--`(27)` is `analyticNevCarrierFamily_maximalTranslationPhase_dense_residual`, with no
+analytic hypothesis left.
+
+Twenty-two audited declarations, `propext` / `Classical.choice` / `Quot.sound` only.  Promoted to
+`3-formalized/nad` with companion `nevanlinna-boundary-bauer-retract-maximal-ht-formalized.md`.
+The two open gates are external audits (specialist proof audit, primary-source priority audit) and
+are not formalization obligations.
