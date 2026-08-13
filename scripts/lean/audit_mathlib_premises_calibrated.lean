@@ -106,6 +106,7 @@ run_cmd liftTermElabM do
   let mut nthm : Nat := 0
   for (n, ci) in env.constants.toList do
     if n.isInternal then continue
+    unless isProj n do continue
     let some idx := env.getModuleIdxFor? n | continue
     let m := env.header.moduleNames[idx.toNat]!
     unless (`GaloisForLFunctions).isPrefixOf m do continue

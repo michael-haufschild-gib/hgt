@@ -228,3 +228,18 @@ audit of 2504.05606 is the named precondition for promotion out of stage 2.
 - 2026-08-09 — literature pass executed; nearest neighbor (metric/pretentious abstraction,
   arXiv:2504.05606) recorded with demotion condition; no ceiling-form meta-theorem found;
   promotion precondition named.
+
+## Log (continued)
+
+- 2026-08-13 — the §8 promotion precondition executed: deep audit of arXiv:2504.05606 (metric/
+  pretentious abstraction of the positivity method).  Full-text scan found: no impossibility or
+  optimality meta-theorem bounding derivable zero-free-region width; no extremal-ratio
+  `sup c_{g₀}/c₁` discussion, finiteness, or `ρ > 1` threshold; no treatment of Page/Siegel as a
+  ratio-degeneracy; no Fejér-extremal cap on the method's constant.  The paper abstracts the
+  POSITIVE side of the method (new proofs of zero-free regions for `L(s,π)`, `L(s,π×π′)` under
+  self-duality) — refinement, not ceiling.  The demotion condition fails: the width-cap frame
+  stands as a new-in-formulation impossibility statement.  Cite 2504.05606 as nearest neighbor
+  on promotion.  Remaining gate for stage 3: Lean certification of Theorems 1, 1′, 2 (the Page
+  ratio anchor and the circle witness are already certified in
+  `HTGeometry.FiniteAmplifierPatternCap`; Fejér's exact extremal value in Theorem 3.1 remains a
+  cited classical result, per the card's own "nothing new claimed about the values").

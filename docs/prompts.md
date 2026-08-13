@@ -33,8 +33,8 @@ where mathematical knowledge is missing use the /hgtl7 skill to create it.
 ## formalize goal
 /goal
 
-formalize UNCONDITIONALLY in lean any proven theorem from these cards: ddocs/drafts/pipeline/2-fully-proven/new_scientific_knowledge (EXCLUDING subfolders)
-  
+formalize UNCONDITIONALLY in lean any proven theorem from these cards:  docs/drafts/pipeline/2-fully-proven (EXCLUDING subfolders)
+
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
 Lean rules:
@@ -60,6 +60,11 @@ where mathematical knowledge is missing use the /hgtl7 skill to create it.+
 GOAL IS MET WHEN ALL CARDS ARE FULLY FORMALIZED AND CAN BE MOVED TO STEP 3 OF THE PIPELINE. NO SHORTCUTS OR FAKING IT!
 
 do not add hypotheses. always check first what the lean corpus already contains, to not duplicate existing work.
+
+optimize lean code. only build what is necessary. you can yourself only
+    start 1 build procress at a time. be mindful that you are not the only
+    agent working on the lean codebase right now.
+
 
 ## formalize gpt
 

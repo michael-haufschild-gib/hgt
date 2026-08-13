@@ -1,4 +1,9 @@
-import Mathlib
+import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.InnerProductSpace.Projection.Basic
+import Mathlib.Analysis.SpecialFunctions.Exponential
+import Mathlib.Analysis.Calculus.Deriv.Mul
+import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
+import Mathlib.Order.Lattice.Nat
 
 /-!
 # Resource-filtered relation rank, recurrence, and tidal acceleration
@@ -24,7 +29,15 @@ theorem finrank_inf_lower_bound
   have hdim := Submodule.finrank_sup_add_finrank_inf_eq R Q
   have hsup : Module.finrank K (R ⊔ Q : Submodule K V) ≤ Module.finrank K V :=
     Submodule.finrank_le _
-  omega
+  rw [Nat.sub_le_iff_le_add]
+  calc
+    Module.finrank K R + Module.finrank K Q =
+        Module.finrank K (R ⊔ Q : Submodule K V) +
+          Module.finrank K (R ⊓ Q : Submodule K V) := hdim.symm
+    _ ≤ Module.finrank K V + Module.finrank K (R ⊓ Q : Submodule K V) :=
+      Nat.add_le_add_right hsup _
+    _ = Module.finrank K (R ⊓ Q : Submodule K V) + Module.finrank K V :=
+      Nat.add_comm _ _
 
 section RelationRank
 
@@ -59,6 +72,7 @@ theorem accessibleRelationRank_lower_bound (U : M → V ≃ₗ[K] V)
   rw [accessibleRelationRank, ← finrank_transportedRelation U R₀ x]
   exact finrank_inf_lower_bound (transportedRelation U R₀ x) Q
 
+omit [FiniteDimensional K V] in
 /-- The minimum defining `genericAccessibleRank` is attained. -/
 theorem exists_accessibleRelationRank_eq_generic [Nonempty M]
     (U : M → V ≃ₗ[K] V) (R₀ Q : Submodule K V) :

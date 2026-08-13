@@ -13,32 +13,32 @@
 - **Field constitution:** `FIELD_CONSTITUTION.md`.
 - **Route-independent predictions:** `ROUTE_INDEPENDENT_PREDICTIONS.md`.
 - **Exact foundation:**
-  `../../2-fully-proven/nomological-homotopy-geometry/minimal-law-curvature-gauge-invariance-and-observer-irreversibility-law.md`;
-  `../../2-fully-proven/nomological-homotopy-geometry/observer-holonomy-boundary-and-prolongation-horizon-law.md`;
-  `../../2-fully-proven/nomological-homotopy-geometry/flat-law-superconnection-curvature-nullhomotopy-and-holonomy-law.md`;
-  `../../2-fully-proven/nomological-homotopy-geometry/strict-nilpotent-ambrose-singer-spencer-and-flat-monodromy-separation-law.md`;
-  `../../2-fully-proven/nomological-homotopy-geometry/structured-morita-curvature-and-prolongation-invariance-law.md`;
-  `../../2-fully-proven/nomological-homotopy-geometry/abelian-differential-character-higher-holonomy-and-transgression-law.md`;
-  `../../2-fully-proven/nomological-homotopy-geometry/cyclic-law-action-euler-lagrange-and-higher-noether-law.md`;
-  `../../2-fully-proven/nomological-homotopy-geometry/gauge-orbit-nonproperness-and-reduced-coercivity-law.md`;
-  `../../2-fully-proven/nomological-homotopy-geometry/universal-observer-descent-and-nomological-grothendieck-topology-law.md`;
-  `../../2-fully-proven/nomological-homotopy-geometry/crossed-module-fake-curvature-kernel-and-closed-surface-holonomy-law.md`;
-  `../../2-fully-proven/nomological-homotopy-geometry/twisted-module-higher-ambrose-singer-spencer-law.md`;
-  `../../2-fully-proven/nomological-homotopy-geometry/fake-flat-kernel-local-system-and-surface-ambrose-singer-law.md`;
-  `../../2-fully-proven/nomological-homotopy-geometry/semistrict-two-term-kernel-local-system-and-higher-period-law.md`;
-  `../../2-fully-proven/nomological-homotopy-geometry/leading-curvature-cohomology-descent-and-period-generation-law.md`;
-  `../../2-fully-proven/nomological-homotopy-geometry/secondary-curvature-obstruction-spectrum-and-partial-flattening-law.md`;
-  `../../2-fully-proven/nomological-homotopy-geometry/observer-curvature-false-flatness-and-serial-irreversibility-law.md`;
-  `../../2-fully-proven/nomological-homotopy-geometry/cross-gram-polar-reconstruction-and-relative-phase-law.md`;
-  `../../2-fully-proven/nomological-homotopy-geometry/cyclic-a-infinity-law-moduli-and-dual-number-event-realization.md`;
-  `../../2-fully-proven/nomological-homotopy-geometry/cyclic-law-gauge-holonomy-and-master-action-law.md`;
-  `../../2-fully-proven/nomological-homotopy-geometry/cartan-polarization-moduli-compact-gauge-and-properness-boundary-law.md`;
-  `../../2-fully-proven/nomological-homotopy-geometry/gauge-spectral-flow-rigidity-and-law-crossing-index-law.md`;
-  `../../2-fully-proven/nomological-homotopy-geometry/kolchin-spencer-inverse-limit-noncompactness-and-observer-tail-law.md`;
-  `../../2-fully-proven/nomological-homotopy-geometry/nomological-gauss-codazzi-relative-observer-fibre-law.md`;
-  `../../2-fully-proven/nomological-homotopy-geometry/flat-cartan-holonomy-recurrence-and-open-polar-history-law.md`;
-  `../../2-fully-proven/nomological-homotopy-geometry/relative-law-fibre-serial-composition-and-source-loss-irreversibility-law.md`;
-  `../../2-fully-proven/nomological-homotopy-geometry/split-l-infinity-observer-extension-field-and-nonlinear-gauss-codazzi-law.md`.
+  `../../3-formalized/nomological-homotopy-geometry/minimal-law-curvature-gauge-invariance-and-observer-irreversibility-law.md`;
+  `../../3-formalized/nomological-homotopy-geometry/observer-holonomy-boundary-and-prolongation-horizon-law.md`;
+  `../../3-formalized/nomological-homotopy-geometry/flat-law-superconnection-curvature-nullhomotopy-and-holonomy-law.md`;
+  `../../3-formalized/nomological-homotopy-geometry/strict-nilpotent-ambrose-singer-spencer-and-flat-monodromy-separation-law.md`;
+  `../../3-formalized/nomological-homotopy-geometry/structured-morita-curvature-and-prolongation-invariance-law.md`;
+  `../../3-formalized/nomological-homotopy-geometry/abelian-differential-character-higher-holonomy-and-transgression-law.md`;
+  `../../3-formalized/nomological-homotopy-geometry/cyclic-law-action-euler-lagrange-and-higher-noether-law.md`;
+  `../../3-formalized/nomological-homotopy-geometry/gauge-orbit-nonproperness-and-reduced-coercivity-law.md`;
+  `../../3-formalized/nomological-homotopy-geometry/universal-observer-descent-and-nomological-grothendieck-topology-law.md`;
+  `../../3-formalized/nomological-homotopy-geometry/crossed-module-fake-curvature-kernel-and-closed-surface-holonomy-law.md`;
+  `../../3-formalized/nomological-homotopy-geometry/twisted-module-higher-ambrose-singer-spencer-law.md`;
+  `../../3-formalized/nomological-homotopy-geometry/fake-flat-kernel-local-system-and-surface-ambrose-singer-law.md`;
+  `../../3-formalized/nomological-homotopy-geometry/semistrict-two-term-kernel-local-system-and-higher-period-law.md`;
+  `../../3-formalized/nomological-homotopy-geometry/leading-curvature-cohomology-descent-and-period-generation-law.md`;
+  `../../3-formalized/nomological-homotopy-geometry/secondary-curvature-obstruction-spectrum-and-partial-flattening-law.md`;
+  `../../3-formalized/nomological-homotopy-geometry/observer-curvature-false-flatness-and-serial-irreversibility-law.md`;
+  `../../3-formalized/nomological-homotopy-geometry/cross-gram-polar-reconstruction-and-relative-phase-law.md`;
+  `../../3-formalized/nomological-homotopy-geometry/cyclic-a-infinity-law-moduli-and-dual-number-event-realization.md`;
+  `../../3-formalized/nomological-homotopy-geometry/cyclic-law-gauge-holonomy-and-master-action-law.md`;
+  `../../3-formalized/nomological-homotopy-geometry/cartan-polarization-moduli-compact-gauge-and-properness-boundary-law.md`;
+  `../../3-formalized/nomological-homotopy-geometry/gauge-spectral-flow-rigidity-and-law-crossing-index-law.md`;
+  `../../3-formalized/nomological-homotopy-geometry/kolchin-spencer-inverse-limit-noncompactness-and-observer-tail-law.md`;
+  `../../3-formalized/nomological-homotopy-geometry/nomological-gauss-codazzi-relative-observer-fibre-law.md`;
+  `../../3-formalized/nomological-homotopy-geometry/flat-cartan-holonomy-recurrence-and-open-polar-history-law.md`;
+  `../../3-formalized/nomological-homotopy-geometry/relative-law-fibre-serial-composition-and-source-loss-irreversibility-law.md`;
+  `../../3-formalized/nomological-homotopy-geometry/split-l-infinity-observer-extension-field-and-nonlinear-gauss-codazzi-law.md`.
 
 ## 0. Field thesis
 

@@ -751,3 +751,13 @@ Bottom-up steps (node-side only; every pole-side `0 < (q ·).im` stays):
 Parallel chain note: `cauchyUpperGood…` (CompactCauchyRowPacketAtlas) and
 `evenCanonicalUpperGood…` feed `MovingCanonical…`/`Herglotz…FullTranslationRankGenericity`; same
 flip needed there when those capstones are instantiated — separate pass.
+
+### Correction to the parallel-chain note (2026-08-13, same session)
+
+The `cauchyUpperGood…` / `evenCanonicalUpperGood…` / `movingCanonical…` / `herglotz…` chains do
+**not** need the half-plane flip.  They evaluate Cauchy jets of real measures directly at their
+packet nodes — there is no Möbius/Weyl pole in those chains, so upper nodes are consistent and
+inhabitable.  The sign error is specific to the carrier family's projective quotient `−d/c`.  The
+mixed universality laws (both `SingularContinuous…` HTGeometry modules and both RHTower ones) take
+the flipped `hupperMap` on the carrier side and are already sed-flipped; their Herglotz side is
+untouched.

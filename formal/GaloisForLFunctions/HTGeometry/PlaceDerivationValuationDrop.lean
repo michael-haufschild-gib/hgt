@@ -48,43 +48,43 @@ theorem valuation_mul_deriv_le_exp_of_mem_pow (D : Derivation A K K) {c : K}
       exact exp_le_exp.mpr (by norm_num)
   | succ n ih =>
       rw [pow_succ] at ha
-      induction ha using Submodule.mul_induction_on with
-      | mem_mul_mem x hx y hy =>
-          have hsplit : c * D (algebraMap R K (x * y))
+      refine Submodule.mul_induction_on ha ?_ ?_
+      · intro x hx y hy
+        have hsplit : c * D (algebraMap R K (x * y))
               = algebraMap R K x * (c * D (algebraMap R K y))
                 + algebraMap R K y * (c * D (algebraMap R K x)) := by
             rw [map_mul, Derivation.leibniz]
             simp only [smul_eq_mul]
             ring
-          rw [hsplit]
-          refine le_trans (Valuation.map_add _ _ _) (max_le ?_ ?_)
-          · rw [Valuation.map_mul]
-            have h1 : v.valuation K (algebraMap R K x) ≤ exp (-(n : ℤ)) := by
-              rw [valuation_of_algebraMap]
-              exact (intValuation_le_pow_iff_mem v x n).mpr hx
-            have h2 : v.valuation K (c * D (algebraMap R K y)) ≤ 1 := hclear y
-            calc v.valuation K (algebraMap R K x) * v.valuation K (c * D (algebraMap R K y))
-                ≤ exp (-(n : ℤ)) * 1 := mul_le_mul' h1 h2
-              _ = exp (1 - ((n + 1 : ℕ) : ℤ)) := by
-                  rw [mul_one]
-                  congr 1
-                  push_cast
-                  ring
-          · rw [Valuation.map_mul]
-            have h1 : v.valuation K (algebraMap R K y) ≤ exp (-(1 : ℤ)) := by
-              rw [valuation_of_algebraMap]
-              exact (intValuation_le_pow_iff_mem v y 1).mpr (by rwa [pow_one])
-            have h2 := ih hy
-            calc v.valuation K (algebraMap R K y) * v.valuation K (c * D (algebraMap R K x))
-                ≤ exp (-(1 : ℤ)) * exp (1 - (n : ℤ)) := mul_le_mul' h1 h2
-              _ = exp (1 - ((n + 1 : ℕ) : ℤ)) := by
-                  rw [← exp_add]
-                  congr 1
-                  push_cast
-                  ring
-      | add x y hx hy ihx ihy =>
-          rw [map_add, map_add, mul_add]
-          exact le_trans (Valuation.map_add _ _ _) (max_le ihx ihy)
+        rw [hsplit]
+        refine le_trans (Valuation.map_add _ _ _) (max_le ?_ ?_)
+        · rw [Valuation.map_mul]
+          have h1 : v.valuation K (algebraMap R K x) ≤ exp (-(n : ℤ)) := by
+            rw [valuation_of_algebraMap]
+            exact (intValuation_le_pow_iff_mem v x n).mpr hx
+          have h2 : v.valuation K (c * D (algebraMap R K y)) ≤ 1 := hclear y
+          calc v.valuation K (algebraMap R K x) * v.valuation K (c * D (algebraMap R K y))
+              ≤ exp (-(n : ℤ)) * 1 := mul_le_mul' h1 h2
+            _ = exp (1 - ((n + 1 : ℕ) : ℤ)) := by
+                rw [mul_one]
+                congr 1
+                push_cast
+                ring
+        · rw [Valuation.map_mul]
+          have h1 : v.valuation K (algebraMap R K y) ≤ exp (-(1 : ℤ)) := by
+            rw [valuation_of_algebraMap]
+            exact (intValuation_le_pow_iff_mem v y 1).mpr (by rwa [pow_one])
+          have h2 := ih hx
+          calc v.valuation K (algebraMap R K y) * v.valuation K (c * D (algebraMap R K x))
+              ≤ exp (-(1 : ℤ)) * exp (1 - (n : ℤ)) := mul_le_mul' h1 h2
+            _ = exp (1 - ((n + 1 : ℕ) : ℤ)) := by
+                rw [← exp_add]
+                congr 1
+                push_cast
+                ring
+      · intro x y ihx ihy
+        rw [map_add, map_add, mul_add]
+        exact le_trans (Valuation.map_add _ _ _) (max_le ihx ihy)
 
 /-- **The relative drop on `R`.** -/
 theorem valuation_mul_deriv_algebraMap_le (D : Derivation A K K) {c : K}
@@ -93,7 +93,7 @@ theorem valuation_mul_deriv_algebraMap_le (D : Derivation A K K) {c : K}
       ≤ v.valuation K (algebraMap R K a) * exp (1 : ℤ) := by
   rcases eq_or_ne a 0 with rfl | ha
   · rw [map_zero, map_zero, mul_zero, Valuation.map_zero]
-    exact zero_le'
+    exact zero_le
   · have hval : v.intValuation a
         = exp (-(multiplicity v.asIdeal (Ideal.span {a}) : ℤ)) :=
       v.intValuation_eq_exp_neg_multiplicity ha
@@ -132,14 +132,16 @@ theorem valuation_mul_deriv_le (D : Derivation A K K) {c : K}
             * (v.valuation K (algebraMap R K a) * exp (1 : ℤ)) :=
             mul_le_mul' le_rfl (valuation_mul_deriv_algebraMap_le v D hclear a)
         _ = v.valuation K (algebraMap R K a) * v.valuation K (algebraMap R K b)
-            * exp (1 : ℤ) := by ring
+            * exp (1 : ℤ) := by
+            rw [mul_left_comm, ← mul_assoc]
     · rw [Valuation.map_mul]
       calc v.valuation K (algebraMap R K a) * v.valuation K (c * D (algebraMap R K b))
           ≤ v.valuation K (algebraMap R K a)
             * (v.valuation K (algebraMap R K b) * exp (1 : ℤ)) :=
             mul_le_mul' le_rfl (valuation_mul_deriv_algebraMap_le v D hclear b)
         _ = v.valuation K (algebraMap R K a) * v.valuation K (algebraMap R K b)
-            * exp (1 : ℤ) := by ring
+            * exp (1 : ℤ) := by
+            rw [← mul_assoc]
   calc (v.valuation K (algebraMap R K b))⁻¹ ^ 2
       * v.valuation K
         (algebraMap R K b * (c * D (algebraMap R K a))
@@ -148,9 +150,10 @@ theorem valuation_mul_deriv_le (D : Derivation A K K) {c : K}
         * (v.valuation K (algebraMap R K a) * v.valuation K (algebraMap R K b)
           * exp (1 : ℤ)) := mul_le_mul' le_rfl hnum
     _ = v.valuation K (algebraMap R K a / algebraMap R K b) * exp (1 : ℤ) := by
-        rw [Valuation.map_div]
-        field_simp
-        ring
+        rw [Valuation.map_div, pow_two, div_eq_mul_inv]
+        rw [show ∀ u w x e' : ℤᵐ⁰, u * u * (x * w * e') = x * u * (u * w * e') from
+          fun u w x e' => by simp only [mul_comm, mul_left_comm]]
+        rw [inv_mul_cancel₀ hvb, one_mul]
 
 /-- **Removing the clearing factor costs its order.**  If the clearing element avoids `Qᵉ`, the
 derivation itself lowers the valuation at the place by at most `e`. -/
@@ -166,29 +169,22 @@ theorem valuation_deriv_le_of_not_mem_pow (D : Derivation A K K) {c : R}
     v.intValuation_eq_exp_neg_multiplicity hc0
   have hne : n < e := by
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     refine hce ?_
     have hmem : c ∈ v.asIdeal ^ n :=
       (intValuation_le_pow_iff_mem v c n).mp (le_of_eq hval)
     exact Ideal.pow_le_pow_right hcon hmem
   have hvc : v.valuation K (algebraMap R K c) = exp (-(n : ℤ)) := by
     rw [valuation_of_algebraMap, hval]
-  have hvcne : v.valuation K (algebraMap R K c) ≠ 0 := by
-    rw [hvc]
-    exact exp_ne_zero _
   have hmain := valuation_mul_deriv_le v D hclear f
   rw [Valuation.map_mul, hvc] at hmain
-  have hstep : exp (-(n : ℤ)) * v.valuation K (D f) ≤ v.valuation K f * exp (1 : ℤ) →
-      v.valuation K (D f) ≤ v.valuation K f * exp (1 + (n : ℤ)) := by
-    intro h
-    have h2 := mul_le_mul' (le_refl (exp (n : ℤ))) h
-    rw [← mul_assoc, ← exp_add] at h2
-    simp only [add_neg_cancel, exp_zero, one_mul] at h2
-    calc v.valuation K (D f) ≤ exp (n : ℤ) * (v.valuation K f * exp (1 : ℤ)) := h2
-      _ = v.valuation K f * exp (1 + (n : ℤ)) := by
-          rw [exp_add]
-          ring
-  refine le_trans (hstep hmain) ?_
-  exact mul_le_mul' le_rfl (exp_le_exp.mpr (by omega))
+  have h2 := mul_le_mul' (le_refl (exp (n : ℤ))) hmain
+  rw [← mul_assoc, ← exp_add] at h2
+  simp only [add_neg_cancel, exp_zero, one_mul] at h2
+  calc v.valuation K (D f) ≤ exp (n : ℤ) * (v.valuation K f * exp (1 : ℤ)) := h2
+    _ = v.valuation K f * exp ((n : ℤ) + 1) := by
+        rw [exp_add, ← mul_assoc, mul_comm (exp (n : ℤ)), mul_assoc]
+    _ ≤ v.valuation K f * exp (e : ℤ) :=
+        mul_le_mul' le_rfl (exp_le_exp.mpr (by omega))
 
 end GaloisForLFunctions.HTGeometry

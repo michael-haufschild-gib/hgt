@@ -110,6 +110,7 @@ run_cmd liftTermElabM do
   let mut declarations : Nat := 0
   for (name, info) in env.constants.toList do
     if name.isInternal then continue
+    unless isProjectConstant name do continue
     let some index := env.getModuleIdxFor? name | continue
     let moduleName := env.header.moduleNames[index.toNat]!
     unless (`GaloisForLFunctions).isPrefixOf moduleName do continue

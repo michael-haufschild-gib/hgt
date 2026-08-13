@@ -12,6 +12,30 @@ wire umbrellas.
   XiShiftedCanonicalAdmissionCharacteristicApexEnergy built, 5 theorems audit clean.
 - gibbs-batch-entropy-production-nullspace-lift — 2026-08-13, module build + audit clean.
 - gibbs-diagonal-entropy-response-no-go — 2026-08-13, module build + audit clean.
+- route-e-deninger-vacuum-finite-dilation-fracture — 2026-08-13, both modules rebuilt, all
+  section claims re-audited clean.
+
+## New infrastructure built this sweep
+- HTGeometry/FavardJacobiMomentRealization.lean — constructive Favard: favardPoly, favardMoment,
+  orthogonality, positivity, monicOrtho identification, exists_positiveMomentForm_of_jacobiData.
+  Compiles clean, wired into HTGeometry umbrella (2026-08-13).
+- RHTower/XiShiftedProjectiveAdjacentMeanResetBarrier.lean (in progress) — packet flux/mean/
+  energy/clock defs, LAR.23-26 identities + reset barrier + hyperbolic action form, plus
+  resetCounter* counterfamily (LAR.27-29) with Tendsto divergence/boundedness and
+  no-locally-bounded-charge falsification. Build of cone pending under peer contention.
+
+## Interface notes (verified)
+- eval_mul_XiC_mem_of_coordinateMultiplication_stable (XiHedenmalmInvariantHomogenization.lean:78),
+  xiCoordinateMultiplication (XiHedenmalmMultiplicityChain.lean:269), XiC_analytic
+  (XiHadamardFactorization.lean:209), XiC_zero_ne (:320) — hedenmalm obstruction inputs.
+- XiDivisorSupport = ↥(MeromorphicOn.divisor xi Set.univ).support (XiCanonicalProduct.lean:21);
+  burnolCartierDividedShiftHeadFlux (BurnolCartierHeadEnergyStokesFlux.lean:34).
+- not_summable_one_div_on_primes used in StieltjesLaneCutoffDivergence.lean; Cauchy condensation
+  in mathlib PSeries (summable_condensed_iff_of_nonneg); prime dyadic tail for
+  ∑ 1/(p (log p)^s), s>0 must be built (Chebyshev/π(x) route, PNTPlus.BrunTitchmarsh available).
+- rank-two-commutator card: PMB.1-16 are literal finite linear algebra, formalizable as stated.
+- parity-free card: finite odd theorem (PF.1-14) bounded work; §4 infinite theorem is a program
+  (truncated convolution on L², min-max, Hurwitz).
 
 ## Near (partial Lean exists; finish exact remaining content)
 - mass-shifted-projective-low-edge-anchor-cofinal-spread — survivor formalized+built

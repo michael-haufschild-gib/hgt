@@ -56,6 +56,8 @@ Promotion recipe:
 | `burnol-cofinite-cartier-wall-trace-horizon` | all of `(CH1)`--`(CH23)` | `RHTower/BurnolCofiniteHorizonGerm` (new), `RHTower/BurnolPrimeCartierWallTrace` |
 | `burnol-prime-two-causal-cartier-collar-law` | all of `(3)`--`(25)` | `RHTower/BurnolGammaSteinCollarKernel`, `RHTower/BurnolGammaSteinMoments`, `RHTower/BurnolCollarKernelSeries`, `RHTower/BurnolPrimeTwoCollarSymbol` (all new) |
 
+| `nomological-homotopy-geometry` (26-card field batch) | exact theorem witness for every card; new finite-dimensional gauge spectral-flow invariance/pure-gauge rigidity; missing minimal-law umbrella wiring | `HTGeometry/NomologicalHomotopyGeometry/*`, `HilbertMetric/NomologicalCrossGram` |
+
 ## New reusable infrastructure built during the sweep
 
 - `HTGeometry/BinomialTailBetaThreshold` — Hoeffding's lemma for a two-point variable

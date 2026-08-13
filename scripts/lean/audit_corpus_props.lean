@@ -7,7 +7,8 @@ Run from `formal/` after editing the import to the theorem-area umbrella of inte
 
 For every project constant the statement is telescoped (non-reducing).  A `Prop` binder whose head
 is itself a project constant is a *consumed interface*.  A conclusion contributes *produced*
-interfaces through `∃`, `Nonempty`, `∧`, both sides of `↔`, and under leading binders.
+interfaces through `∃`, `Nonempty`, `∧`, and under leading binders.  An `↔` alone establishes
+neither side, so it is deliberately not a producer.
 
 Two rounds are reported:
 
@@ -20,11 +21,19 @@ Two rounds are reported:
 Both directions are approximations, so every row is a nomination to be checked by hand: a producer
 whose conclusion is a *container* of the interface, or an instance, stays invisible.
 -/
+import GaloisForLFunctions.HTGeometry
+import GaloisForLFunctions.RHTower
 import GaloisForLFunctions.HilbertMetric
 
 open Lean Meta Elab Command
 
 def isProj (n : Name) : Bool := (`GaloisForLFunctions).isPrefixOf n
+
+/-- `P (x : α) : Prop` has constant type `∀ x, Prop`; recognizing that shape needs no elaboration. -/
+partial def isInterfaceType : Expr → Bool
+  | .forallE _ _ body _ => isInterfaceType body
+  | .sort .zero => true
+  | _ => false
 
 /-- Split a conclusion into the atoms it actually asserts. -/
 partial def conclAtoms (e : Expr) : MetaM (Array Expr) := do
@@ -50,29 +59,25 @@ partial def conclAtoms (e : Expr) : MetaM (Array Expr) := do
         return (← conclAtoms args[0]!) ++ (← conclAtoms args[1]!)
       else return #[e]
   | some ``Iff =>
-      let args := e.getAppArgs
-      if args.size ≥ 2 then
-        return (← conclAtoms args[0]!) ++ (← conclAtoms args[1]!)
-      else return #[e]
+      return #[]
   | _ => return #[e]
 
 /-- The project-`Prop` heads consumed as hypotheses, and the project heads asserted. -/
-def scanOne (ty : Expr) : MetaM (Array Name × Array Name) :=
+def scanOne (propDefs : Std.HashSet Name) (ty : Expr) : MetaM (Array Name × Array Name) :=
   forallTelescope ty fun xs body => do
-    let mut ps : Array Name := #[]
+    let mut premiseSet : Std.HashSet Name := {}
     for x in xs do
       let t ← inferType x
       if (← isProp t) then
-        match t.getAppFn.constName? with
-        | some h => if isProj h then ps := ps.push h
-        | none => pure ()
+        for h in t.getUsedConstants do
+          if propDefs.contains h then premiseSet := premiseSet.insert h
     let atoms ← conclAtoms body
-    let mut pr : Array Name := #[]
+    let mut conclusionSet : Std.HashSet Name := {}
     for a in atoms do
       match a.getAppFn.constName? with
-      | some h => if isProj h then pr := pr.push h
+      | some h => if propDefs.contains h then conclusionSet := conclusionSet.insert h
       | none => pure ()
-    return (ps, pr)
+    return (premiseSet.toList.toArray, conclusionSet.toList.toArray)
 
 run_cmd liftTermElabM do
   let env ← getEnv
@@ -85,18 +90,26 @@ run_cmd liftTermElabM do
   let mut producerNames : Std.HashMap Name (Array Name) := {}
   let mut nthm : Nat := 0
   let mut propDefs : Std.HashSet Name := {}
-  for (n, ci) in env.constants.toList do
+  let constants := env.constants.toList
+  -- First identify interfaces.  The second pass can then reject irrelevant declarations without
+  -- invoking the meta elaborator and can see interfaces nested inside compound hypotheses.
+  for (n, ci) in constants do
     if n.isInternal then continue
+    unless isProj n do continue
     let some idx := env.getModuleIdxFor? n | continue
     let m := env.header.moduleNames[idx.toNat]!
     unless (`GaloisForLFunctions).isPrefixOf m do continue
     defMod := defMod.insert n m
     nthm := nthm + 1
-    -- is `n` itself a `Prop`-valued definition (an interface)?
-    let isInterface ← forallTelescope ci.type fun _ b => do
-      return b.isSort && b == .sort .zero
-    if isInterface then propDefs := propDefs.insert n
-    let r ← (try scanOne ci.type catch _ => pure (#[], #[]))
+    if isInterfaceType ci.type then propDefs := propDefs.insert n
+  for (n, ci) in constants do
+    if n.isInternal then continue
+    unless isProj n do continue
+    let some idx := env.getModuleIdxFor? n | continue
+    let m := env.header.moduleNames[idx.toNat]!
+    unless (`GaloisForLFunctions).isPrefixOf m do continue
+    unless ci.type.getUsedConstants.any propDefs.contains do continue
+    let r ← (try scanOne propDefs ci.type catch _ => pure (#[], #[]))
     for k in r.1 do
       consumers := consumers.insert k ((consumers.getD k #[]).push n)
     for k in r.2 do

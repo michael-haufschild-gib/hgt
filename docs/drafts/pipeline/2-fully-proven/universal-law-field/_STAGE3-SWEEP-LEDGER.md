@@ -163,3 +163,30 @@ Order of attack: (1) top-level dependency chain per the 2026-08-12 handoff
 (critical-locus-hessian Θ-package first, then its two dependents), (2) subfolder cards with small
 declared remainders, (3) full LEAN-PENDING folders, (4) formation-resource-mechanics last (in
 flight elsewhere).
+
+## Session 2026-08-13 state (full-scope sweep, first leg)
+
+In flight: `critical-locus-hessian-…` (ULF-FIELD-2).  New modules written, elaboration pending
+on the cone rebuild (the shared tree churned, so the import cone of
+`CriticalLocusQuadrupleEvenness`/`CrystallineShadowTransversality`/`SuzukiInteriorExcursion…`
+is rebuilding in one foreground `lake build`):
+
+- `RHTower/CriticalLocusHessianClassification.lean` — Θ2(i) exact separation (multiset join),
+  Θ2(ii) general weight `2(F″(c₊)+F″(c₋))` + κ-conjugation bridge + real weight `4·Re F″`,
+  Θ2(iii) per-zero necessity (via `suzukiSecondDeriv_nonpos_of_isLocalMax`), Θ2(iv) diagonal
+  Hessian + determination iff, Θ2(v) composite chain law + composite necessity, Θ3.1 integral
+  packaging (`lineTestTransform`, single/real/multi forms against `shadowDensity`).
+- `RHTower/CriticalLocusConeFullness.lean` — Θ4 Step A: symmetry collapse of pair/quadruple
+  values; cone fullness of the move families by the strip PL + harmonic minimum principle
+  (consumes `Bottcher/HarmonicMinPrinciple`, `Bottcher/HarmonicMaxPrinciple`).
+- `RHTower/OddCoordinateSelfClosure.lean` — ULF-MECH-1 Law 6 (self-closure): odd factoring
+  functionals vanish; quadruple and multi-splitting instantiations.
+- `RHTower/PolePurchaseLogDerivIdentity.lean` — ULF-INV-3's last gap: the (INV3.2) identity
+  `3(−ζ′/ζ)(σ)+4Re(−ζ′/ζ)(σ+it)+Re(−ζ′/ζ)(σ+2it) = ∑Λ(n)n^{−σ}(3+4cos+cos2)` + nonnegativity
+  (mathlib `LSeries_vonMangoldt_eq_deriv_riemannZeta_div` + corpus `VonMangoldtLineSeriesSwap`).
+
+None of the four is wired into an umbrella yet (parked as leaves until green).  Θ4's final
+exact-hitting assembly is open research — analysis recorded on the ULF-FIELD-2 card (2026-08-13
+log entries).  Queue map of every subfolder card's declared gap:
+session scratchpad `subfolder-gaps.md` (regenerate with the grep in this ledger's history if
+lost — one grep over the card set).

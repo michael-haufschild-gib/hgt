@@ -1,94 +1,119 @@
 import GaloisForLFunctions.RHTower.XiHedenmalmInvariantHomogenization
-import GaloisForLFunctions.RHTower.XiHadamardFactorization
 
 /-!
-# Infinite-dimensional obstruction for Hedenmalm source ports
+# Finite source ports cannot homogenize the Hedenmalm theta system
 
-The minimal coordinate-stable port containing the actual theta source cannot be finite
-dimensional.  The completed source is nonzero on a neighbourhood of the spectral centre, so
-multiplication by it embeds the polynomial ring into the function space.  Coordinate stability
-then places an arbitrarily large independent polynomial orbit inside every honest source port.
+Every complex function subspace containing the completed theta source `XiC` and stable under
+spectral-coordinate multiplication contains the whole polynomial orbit `XiC·ℂ[z]`.  Because `XiC`
+is analytic and nonzero at the spectral centre, multiplication by `XiC` is injective on
+polynomials — a polynomial vanishing on a punctured neighbourhood of zero has infinitely many
+roots — so the orbit vectors are linearly independent and the subspace cannot be
+finite-dimensional.  No rank-two or fixed finite-rank compensating port can remove the affine
+Hedenmalm source while retaining its descended generator.
 -/
 
-open Complex Filter Set
+open Complex Polynomial
 
 noncomputable section
 
 namespace RHTower
 
-/-- Polynomial coordinate orbit of the actual completed theta source. -/
-def xiPolynomialSourceOrbit : Polynomial ℂ →ₗ[ℂ] (ℂ → ℂ) where
+/-- The polynomial source-orbit map `P ↦ P·XiC` of the Hedenmalm system. -/
+def xiHedenmalmSourceOrbitMap : Polynomial ℂ →ₗ[ℂ] (ℂ → ℂ) where
   toFun P := fun z => P.eval z * XiC z
   map_add' P Q := by
     funext z
     simp [add_mul]
-  map_smul' a P := by
+  map_smul' c P := by
     funext z
-    simp [Pi.smul_apply, smul_eq_mul, mul_assoc]
+    simp [smul_eq_mul, mul_assoc]
 
-/-- Multiplication by `XiC` is injective on complex polynomials.  Global cancellation in the
-pointwise function ring is unavailable because `XiC` has zeros; the nonzero analytic germ at zero
-instead supplies infinitely many cancellation points. -/
-theorem xiPolynomialSourceOrbit_injective :
-    Function.Injective xiPolynomialSourceOrbit := by
-  intro P Q hPQ
-  have hXi_ne : {z : ℂ | XiC z ≠ 0} ∈ nhds 0 :=
-    (XiC_analytic 0 (Set.mem_univ 0)).continuousAt.eventually_ne XiC_zero_ne
-  have hinfinite : Set.Infinite {z : ℂ | XiC z ≠ 0} :=
-    infinite_of_mem_nhds 0 hXi_ne
-  have hroots : {z : ℂ | XiC z ≠ 0} ⊆
-      {z : ℂ | Polynomial.IsRoot (P - Q) z} := by
-    intro z hz
-    change Polynomial.eval z (P - Q) = 0
-    rw [Polynomial.eval_sub, sub_eq_zero]
-    apply mul_right_cancel₀ hz
-    exact congrFun hPQ z
-  have hzero : P - Q = 0 :=
-    Polynomial.eq_zero_of_infinite_isRoot (P - Q) (hinfinite.mono hroots)
-  exact sub_eq_zero.mp hzero
+@[simp] theorem xiHedenmalmSourceOrbitMap_apply (P : Polynomial ℂ) (z : ℂ) :
+    xiHedenmalmSourceOrbitMap P z = P.eval z * XiC z := rfl
 
-/-- The full spectral-coordinate orbit `z^n XiC(z)` is linearly independent. -/
-theorem xiCoordinateOrbit_linearIndependent :
-    LinearIndependent ℂ (fun n : ℕ => fun z : ℂ => z ^ n * XiC z) := by
-  have hX : LinearIndependent ℂ
-      (fun n : ℕ => (Polynomial.X : Polynomial ℂ) ^ n) := by
-    have hb := (Polynomial.basisMonomials ℂ).linearIndependent
-    rw [Polynomial.coe_basisMonomials] at hb
-    simpa [Polynomial.X_pow_eq_monomial] using hb
-  have hmap := hX.map' xiPolynomialSourceOrbit
-    (LinearMap.ker_eq_bot.mpr xiPolynomialSourceOrbit_injective)
-  simpa [Function.comp_def, xiPolynomialSourceOrbit] using hmap
+/-- `XiC` is nonzero on a full metric ball around the spectral centre. -/
+theorem exists_ball_XiC_ne_zero :
+    ∃ r : ℝ, 0 < r ∧ ∀ z ∈ Metric.ball (0 : ℂ) r, XiC z ≠ 0 := by
+  have hcont : ContinuousAt XiC 0 := (XiC_analytic 0 (Set.mem_univ _)).continuousAt
+  have hev : ∀ᶠ z in nhds (0 : ℂ), XiC z ≠ 0 := hcont.eventually_ne XiC_zero_ne
+  obtain ⟨r, hr, hball⟩ := Metric.eventually_nhds_iff_ball.mp hev
+  exact ⟨r, hr, hball⟩
 
-/-- Every coordinate-stable port containing `XiC` contains independent families of arbitrary
-finite size. -/
-theorem exists_linearIndependent_mem_coordinateStableXiSourcePort
-    (S : Submodule ℂ (ℂ → ℂ)) (hXi : XiC ∈ S)
-    (hstab : ∀ F ∈ S, xiCoordinateMultiplication F ∈ S) (n : ℕ) :
-    ∃ v : Fin n → (ℂ → ℂ),
-      (∀ i, v i ∈ S) ∧ LinearIndependent ℂ v := by
-  let v : Fin n → (ℂ → ℂ) := fun i z => z ^ (i : ℕ) * XiC z
-  refine ⟨v, ?_, ?_⟩
-  · intro i
-    simpa [v] using eval_mul_XiC_mem_of_coordinateMultiplication_stable
-      S hXi hstab ((Polynomial.X : Polynomial ℂ) ^ (i : ℕ))
-  · exact xiCoordinateOrbit_linearIndependent.comp
-      (fun i : Fin n => (i : ℕ)) Fin.val_injective
+/-- Multiplication by the theta source is injective on polynomials: the source germ is nonzero
+at the centre, so a cancelled polynomial has infinitely many roots. -/
+theorem xiHedenmalmSourceOrbitMap_injective :
+    Function.Injective xiHedenmalmSourceOrbitMap := by
+  rw [injective_iff_map_eq_zero]
+  intro P hP
+  obtain ⟨r, hr, hball⟩ := exists_ball_XiC_ne_zero
+  have hroots : {z : ℂ | P.IsRoot z}.Infinite := by
+    have hsub : Metric.ball (0 : ℂ) r ⊆ {z : ℂ | P.IsRoot z} := by
+      intro z hz
+      have hz0 : P.eval z * XiC z = 0 := congrFun hP z
+      have hXi : XiC z ≠ 0 := hball z hz
+      exact mul_eq_zero.mp hz0 |>.resolve_right hXi
+    have hinj : Function.Injective (fun n : ℕ => ((r / (n + 2) : ℝ) : ℂ)) := by
+      intro m n hmn
+      have hre : (r / (m + 2) : ℝ) = (r / (n + 2) : ℝ) := by
+        exact_mod_cast congrArg Complex.re hmn
+      have hm2 : (0 : ℝ) < m + 2 := by positivity
+      have hn2 : (0 : ℝ) < n + 2 := by positivity
+      have : (m + 2 : ℝ) = (n + 2 : ℝ) := by
+        field_simp at hre
+        rcases hre with h | h
+        · linarith [h]
+        · exact absurd h hr.ne'
+      exact_mod_cast by linarith [this]
+    have hmem : ∀ n : ℕ, ((r / (n + 2) : ℝ) : ℂ) ∈ Metric.ball (0 : ℂ) r := by
+      intro n
+      rw [Metric.mem_ball, dist_zero_right]
+      have hn2 : (1 : ℝ) < n + 2 := by
+        have : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+        linarith
+      have hpos : 0 < r / (n + 2 : ℝ) := by positivity
+      rw [Complex.norm_real, abs_of_pos hpos]
+      rw [div_lt_iff (by positivity : (0 : ℝ) < n + 2)]
+      nlinarith
+    exact Set.infinite_of_injective_forall_mem hinj fun n => hsub (hmem n)
+  exact Polynomial.eq_zero_of_infinite_isRoot P hroots
 
-/-- **Finite-source-port obstruction.**  No finite-dimensional complex function subspace can
-contain the actual completed theta source and remain stable under spectral-coordinate
-multiplication. -/
-theorem not_finiteDimensional_coordinateStableXiSourcePort
+/-- **Finite source ports cannot homogenize the Hedenmalm theta system.**  Every complex
+function subspace containing the completed theta source and stable under spectral-coordinate
+multiplication is infinite-dimensional. -/
+theorem xiHedenmalm_coordinateStable_sourcePort_not_finiteDimensional
     (S : Submodule ℂ (ℂ → ℂ)) (hXi : XiC ∈ S)
     (hstab : ∀ F ∈ S, xiCoordinateMultiplication F ∈ S) :
     ¬ FiniteDimensional ℂ S := by
-  intro hfin
-  obtain ⟨v, hvmem, hvind⟩ :=
-    exists_linearIndependent_mem_coordinateStableXiSourcePort S hXi hstab
-      (Module.finrank ℂ S + 1)
-  have hv'ind : LinearIndependent ℂ (fun i => (⟨v i, hvmem i⟩ : S)) :=
-    LinearIndependent.of_comp S.subtype hvind
-  have hcard := hv'ind.fintype_card_le_finrank
-  simp only [Fintype.card_fin] at hcard
+  intro hfd
+  set n := Module.finrank ℂ S + 1 with hn
+  have hmem : ∀ k : ℕ, (fun z : ℂ => (Polynomial.X ^ k : Polynomial ℂ).eval z * XiC z) ∈ S :=
+    fun k => eval_mul_XiC_mem_of_coordinateMultiplication_stable S hXi hstab (Polynomial.X ^ k)
+  -- linear independence of the full monomial orbit
+  have hmono : LinearIndependent ℂ fun k : ℕ => (Polynomial.X : Polynomial ℂ) ^ k := by
+    have hb := (Polynomial.basisMonomials ℂ).linearIndependent
+    have hXp : (fun k : ℕ => (Polynomial.X : Polynomial ℂ) ^ k) =
+        fun k : ℕ => Polynomial.monomial k (1 : ℂ) := by
+      funext k
+      rw [Polynomial.X_pow_eq_monomial]
+    rwa [hXp]
+  have horbit : LinearIndependent ℂ
+      (fun k : ℕ => xiHedenmalmSourceOrbitMap ((Polynomial.X : Polynomial ℂ) ^ k)) :=
+    hmono.map' xiHedenmalmSourceOrbitMap
+      (LinearMap.ker_eq_bot.mpr xiHedenmalmSourceOrbitMap_injective)
+  have hfin : LinearIndependent ℂ
+      (fun k : Fin n => xiHedenmalmSourceOrbitMap ((Polynomial.X : Polynomial ℂ) ^ (k : ℕ))) :=
+    horbit.comp (fun k : Fin n => (k : ℕ)) Fin.val_injective
+  -- transport the family into the submodule
+  have hSfam : LinearIndependent ℂ
+      (fun k : Fin n =>
+        (⟨fun z : ℂ => ((Polynomial.X : Polynomial ℂ) ^ (k : ℕ)).eval z * XiC z,
+          hmem (k : ℕ)⟩ : S)) := by
+    apply LinearIndependent.of_comp S.subtype
+    convert hfin using 1
+  have hcard := hSfam.fintype_card_le_finrank
+  rw [Fintype.card_fin] at hcard
   omega
 
 end RHTower
+
+end

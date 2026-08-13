@@ -269,3 +269,64 @@ i.e. computation, excluded by the session's Lean rules).
 
 - 2026-08-12 — Θ3.2 certified in Lean by a local positivity certificate, which replaces the
   paper proof's exponential-independence argument entirely.- 2026-08-12 — Θ3.1's kernel identity certified; only its integral packaging remains.
+
+## Θ4 hostile re-audit (2026-08-13) — two gaps in the recorded proof, and the repaired route
+
+Formalization-grade reading found the recorded Θ4 proof incomplete at two points:
+
+1. **Step 1 (placement drift).** The Taylor bound `|η_i| ≤ C t*² δ` needs `|Re F_i''|` small on
+   the whole displacement segment `1/2 + [−t*, t*] + iγ`, but the class 𝒜 assumes decay of
+   `F''(1/2+iτ)` on the line only.  On-line decay does not bound off-line values: the bound as
+   written is unjustified.  Repair: strengthen the class to strip-uniform vanishing
+   (`F(σ+iτ) → 0` as `|τ| → ∞`, uniformly on `|σ−1/2| ≤ θ` for some `θ > t*`).  Every corpus
+   producer (Weil tests with `C_c^∞`/Schwartz data, Li kernels, Báez-Duarte kernels) satisfies
+   the strengthened condition, so the corollary's scope is unchanged.
+2. **Step 2 (Jacobian propagation).** The claim "if every k×k determinant vanished for all
+   choices of (γ_m) [from supp Z₀], the derivatives would be linearly dependent functions —
+   analyticity propagates" is false as written: supp Z₀ is discrete, a relation on a discrete
+   infinite set does not propagate by analyticity (sin vanishes on πℤ).  Adversarial pairs
+   (F_i, Z₀) with line-derivative degeneracy exactly on supp Z₀ defeat the recorded correction
+   scheme at every order of the na�ve repair.
+
+**Repaired proof (to be formalized).**  Work with the full move family: inserted line pairs at
+free ordinates β (value `2u_i(β)`, `u_i := Re F_i` on the line), deleted support pairs at
+`α ∈ supp Z₀` (value `−2u_i(α)`), and quadruples at `(γ, t*)` (value `4·Re F_i(1/2+t*+iγ)` by the
+σκ symmetries).  Steps:
+
+- *Cone fullness.*  If every move had nonnegative `w`-component for some `w ≠ 0`, then
+  `u_w := Σ w_i u_i ≥ 0` on the line, `u_w = 0` on the infinite support (insertions force `≥ 0`,
+  deletions force `≤ 0` there), and `U_w := Re Σ w_i F_i ≥ 0` on the two boundary lines
+  `Re s = 1/2 ± t*` (quadruple moves).  Strip decay + the rectangle maximum principle give
+  `U_w ≥ 0` on the open substrip; a support point is then an interior zero of a nonnegative
+  harmonic function, so `U_w ≡ 0` (minimum principle), hence `Σ w_i F_i` constant, contradicting
+  independence mod constants.  So the closed convex cone of move values is all of ℝ^k.
+- *Exact hitting.*  Approximate the needed correction by a positive rational combination of
+  finitely many moves (bipolar/cone duality + Carathéodory, bounded rounding error since all
+  move values are bounded); absorb the bounded error by N replicated IFT blocks of k inserted
+  pairs at a fixed evaluation tuple with invertible Jacobian (existence from the corpus
+  evaluation-minor lemma `exists_injective_evaluation_minor_of_linearIndependent` applied to the
+  line derivatives `u_i'`, legitimate because the tuple ranges over ℝ, not over supp Z₀); image
+  balls of the blocks add (`B(b,r) + B(b',r') = B(b+b', r+r')`), so N·r eventually covers the
+  error and the values are matched exactly.
+
+The theorem statement survives with 𝒜 replaced by the strip-vanishing class 𝒜̂ (and linear
+independence mod constants of the line restrictions as the stated nondegeneracy, with the
+dependent case reduced by count-balanced expansion).  The corollary (no finite truncation of the
+Weil criterion) is unchanged.  Lean modules planned: `RHTower.CriticalLocusHessianClassification`
+(Θ2(i)–(v), Θ3.1 packaging — in progress), `RHTower.CriticalLocusConeFullness` (harmonic step),
+`RHTower.CriticalLocusEvaluationBlindness` (assembly).
+
+- 2026-08-13 (Θ4 endgame audit, continued) — the repaired route's final assembly has one
+  genuinely open point: exact hitting when the deletion moves are essential cone directions.
+  Deletions are bounded by the multiplicities of Z₀, and an adversarial Z₀ (sparse support,
+  multiplicity one, fast-decaying test values, collinear support evaluations) bounds the total
+  deletion capacity while positive-type test families (e.g. `1/cos²(A(s−1/2))`-type, positive on
+  the line and on the `±t*` lines for `t* < θ/2`) make insertions and quadruples one-sided, so
+  the integer-move semigroup is not syndetic and the IFT-patch bases race against their radii at
+  every small scale (analytic curves: base ~ s^{p₁}, radius ~ s^{p_k}).  One-dimensional cases
+  close by IVT with a single deletion; the general case needs a new mechanism (research item —
+  attack with the conjecture-attack toolkit; candidate levers: two-parameter extra-quadruple
+  family V(γ,t′) with its t′-jets = weight vectors, far-field direction spread, and the exact
+  interplay between deletion capacity and the direction cone).  Until closed, Θ4's Lean surface
+  is: Module B (cone fullness — provable as designed) plus the assembly under the honest
+  additional hypotheses that the final research settles.  Θ1–Θ3 certification is unaffected.

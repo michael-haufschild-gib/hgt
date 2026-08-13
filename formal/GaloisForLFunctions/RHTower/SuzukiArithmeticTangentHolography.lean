@@ -66,7 +66,6 @@ theorem norm_suzukiCauchyKernel_le {δ : ℝ} (hδ : 0 < δ) {t : ℝ} (ht : δ 
     linarith
   have h2 : ‖(t : ℂ) - x‖⁻¹ ≤ (δ / 2)⁻¹ := by
     gcongr
-    linarith
   calc ‖(t : ℂ) - x‖⁻¹ ≤ (δ / 2)⁻¹ := h2
     _ = 2 / δ := by field_simp
 
@@ -108,8 +107,13 @@ theorem hasDerivAt_suzukiCauchyKernel {t : ℝ} {x : ℂ} (hx : (t : ℂ) - x �
     exact h3
   convert h4 using 1
   simp only [Nat.add_sub_cancel]
-  push_cast
+  have hC : ((((t : ℂ) - x) ^ (j + 1)) ^ 2 : ℂ) ≠ 0 := pow_ne_zero _ (pow_ne_zero _ hx)
+  rw [eq_div_iff hC]
+  have hexp : (j + 1) * 2 = (j + 2) + j := by ring
+  rw [inv_pow, ← pow_mul, hexp, pow_add]
+  have hne : ((t : ℂ) - x) ^ (j + 2) ≠ 0 := pow_ne_zero _ hx
   field_simp
+  push_cast
   ring
 
 /-- **Differentiation under the Cauchy transform.**  On the half-gap disc, the `j`-th kernel power
@@ -214,19 +218,22 @@ theorem iteratedDeriv_succ_succ_suzukiDonoghueTransform {nu : Measure ℝ} [IsFi
       Filter.eventuallyEq_of_mem (Metric.isOpen_ball.mem_nhds (mem_ball_zero_iff.mpr hz))
         fun w hw => iteratedDeriv_one_suzukiDonoghueTransform hδ hgap (mem_ball_zero_iff.mp hw)
     rw [hev.deriv_eq]
-    have hP0 := hasDerivAt_suzukiCauchyPow hδ hgap 0 hz
-    have hP1 := hasDerivAt_suzukiCauchyPow hδ hgap 1 hz
+    have hP0' : HasDerivAt (suzukiCauchyPow nu 0) ((1 : ℂ) * suzukiCauchyPow nu 1 z) z := by
+      convert hasDerivAt_suzukiCauchyPow hδ hgap 0 hz using 2
+      norm_num
+    have hP1' : HasDerivAt (suzukiCauchyPow nu 1) ((2 : ℂ) * suzukiCauchyPow nu 2 z) z := by
+      convert hasDerivAt_suzukiCauchyPow hδ hgap 1 hz using 2
+      norm_num
     have h : HasDerivAt (fun w : ℂ => 1 + (2 * w * suzukiCauchyPow nu 0 w
         + (w ^ 2 + 1) * suzukiCauchyPow nu 1 w))
         ((2 * 1 * suzukiCauchyPow nu 0 z
-            + 2 * z * (((0 : ℂ) + 1) * suzukiCauchyPow nu (0 + 1) z))
+            + 2 * z * ((1 : ℂ) * suzukiCauchyPow nu 1 z))
           + (((2 : ℕ) : ℂ) * z ^ (2 - 1) * suzukiCauchyPow nu 1 z
-            + (z ^ 2 + 1) * (((1 : ℂ) + 1) * suzukiCauchyPow nu (1 + 1) z))) z :=
-      ((((hasDerivAt_id z).const_mul 2).mul hP0).add
-        (((hasDerivAt_pow 2 z).add_const 1).mul hP1)).const_add 1
+            + (z ^ 2 + 1) * ((2 : ℂ) * suzukiCauchyPow nu 2 z))) z :=
+      ((((hasDerivAt_id z).const_mul 2).mul hP0').add
+        (((hasDerivAt_pow 2 z).add_const 1).mul hP1')).const_add 1
     rw [h.deriv]
-    push_cast [Nat.factorial]
-    norm_num
+    norm_num [Nat.factorial]
     ring
   | succ r ih =>
     intro z hz
@@ -310,8 +317,7 @@ theorem iteratedDeriv_suzukiDonoghueTransform_odd_zero {nu : Measure ℝ}
       rw [suzukiCauchyPow_zero_eq]
       norm_num [suzukiInverseEvenMoment]
     rw [hbq, suzukiInverseEvenMoment_zero]
-    push_cast [Nat.factorial]
-    ring
+    norm_num [Nat.factorial]
   | succ m =>
     have hidx : 2 * (m + 1) + 1 = 2 * m + 1 + 2 := by ring
     rw [hidx, iteratedDeriv_succ_succ_suzukiDonoghueTransform hδ hgap (2 * m + 1) h0]
@@ -328,7 +334,6 @@ theorem iteratedDeriv_suzukiDonoghueTransform_odd_zero {nu : Measure ℝ}
       rw [he]
       rfl
     rw [hb1, hb2]
-    push_cast
     ring
 
 /-- **The inverse-moment reconstruction** — the card's `(6)`:
@@ -342,8 +347,8 @@ theorem suzukiInverseMomentReconstruction_eq {nu : Measure ℝ}
   have h := iteratedDeriv_suzukiDonoghueTransform_odd_zero hδ hgap n
   have hfac : ((((2 * n + 1).factorial : ℕ)) : ℂ) ≠ 0 :=
     Nat.cast_ne_zero.mpr (2 * n + 1).factorial_ne_zero
-  rw [h]
-  field_simp
+  rw [h, mul_div_cancel_left₀ _ hfac]
+  ring
 
 /-! ## Pushforward moments and dilation invariance -/
 
@@ -351,20 +356,25 @@ theorem suzukiInverseMomentReconstruction_eq {nu : Measure ℝ}
 of `ν` under `t ↦ (t²)⁻¹` is the `n`-th inverse even moment. -/
 theorem suzukiInverseMoment_pushforward (nu : Measure ℝ) (n : ℕ) :
     ∫ y, y ^ n ∂(nu.map fun t => (t ^ 2)⁻¹) = suzukiInverseEvenMoment nu n := by
-  rw [integral_map ((measurable_id.pow_const 2).inv).aemeasurable
-    (measurable_id.pow_const n).aestronglyMeasurable]
-  simp only [suzukiInverseEvenMoment]
-  congr 1
-  funext t
-  rw [← inv_pow, ← pow_mul, mul_comm n 2]
+  have hφ : Measurable fun t : ℝ => (t ^ 2)⁻¹ := by
+    exact (measurable_id.pow_const 2).inv
+  have hgn : Measurable fun y : ℝ => y ^ n := by
+    exact measurable_id.pow_const n
+  rw [integral_map hφ.aemeasurable hgn.aestronglyMeasurable]
+  have hker : ∀ t : ℝ, ((t ^ 2)⁻¹) ^ n = (t ^ (2 * n))⁻¹ := by
+    intro t
+    rw [← inv_pow, ← pow_mul, inv_pow]
+  simp_rw [hker]
+  rfl
 
 /-- Inverse even moments scale geometrically under dilation: `q n ↦ c^{-2n} q n`. -/
 theorem suzukiInverseEvenMoment_dilation (nu : Measure ℝ) (c : ℝ) (n : ℕ) :
     suzukiInverseEvenMoment (nu.map fun t => c * t) n
       = (c ^ (2 * n))⁻¹ * suzukiInverseEvenMoment nu n := by
+  have hg : Measurable fun t : ℝ => (t ^ (2 * n))⁻¹ := by
+    exact (measurable_id.pow_const (2 * n)).inv
   rw [suzukiInverseEvenMoment,
-    integral_map (measurable_const_mul c).aemeasurable
-      ((measurable_id.pow_const (2 * n)).inv).aestronglyMeasurable]
+    integral_map (measurable_const_mul c).aemeasurable hg.aestronglyMeasurable]
   have hker : ∀ t : ℝ, ((c * t) ^ (2 * n))⁻¹ = (c ^ (2 * n))⁻¹ * (t ^ (2 * n))⁻¹ := by
     intro t
     rw [mul_pow, mul_inv]
@@ -383,7 +393,6 @@ theorem suzukiProjectiveMomentShape_geometricScale (nu : Measure ℝ) {c : ℝ} 
   have hc2 : c ^ (2 * n) ≠ 0 := pow_ne_zero _ hc
   have hcn : (c ^ (2 * 1))⁻¹ ^ n = (c ^ (2 * n))⁻¹ := by
     rw [← inv_pow, ← pow_mul]
-    congr 1
     ring
   rw [mul_pow, hcn]
   field_simp
@@ -401,11 +410,11 @@ theorem measure_abs_preimage_of_even {nu : Measure ℝ}
     simp only [Set.mem_preimage, Set.mem_union]
     constructor
     · intro h
-      rcases le_or_lt 0 t with hto | hto
+      rcases le_total 0 t with hto | hto
       · left
         rwa [abs_of_nonneg hto] at h
       · right
-        rwa [abs_of_neg hto] at h
+        rwa [abs_of_nonpos hto] at h
     · intro h
       rcases h with h | h
       · have hp := hpos h
@@ -421,7 +430,7 @@ theorem measure_abs_preimage_of_even {nu : Measure ℝ}
     have hp1 := hpos h1
     have hp2 := hpos h2
     rw [Set.mem_Ioi] at hp1 hp2
-    exact absurd hp2 (by simp only [Set.mem_preimage] at hp2 ⊢; linarith)
+    exact absurd hp1 (by linarith)
   have hmeasneg : MeasurableSet ((fun t : ℝ => -t) ⁻¹' A) := measurable_neg hA
   have hrefl : nu ((fun t : ℝ => -t) ⁻¹' A) = nu A := by
     conv_rhs => rw [← he]
@@ -451,7 +460,6 @@ theorem ext_of_even_of_map_invSq_eq {nu₁ nu₂ : Measure ℝ}
       ext t
       simp only [Set.mem_preimage]
       rw [hcomp t]
-      rfl
     have hkey : ∀ nu : Measure ℝ,
         (nu.map fun t : ℝ => (t ^ 2)⁻¹) ((fun u : ℝ => (Real.sqrt u)⁻¹) ⁻¹' A)
           = nu (abs ⁻¹' A) := by
@@ -546,7 +554,11 @@ theorem measure_singleton_zero_of_gap {nu : Measure ℝ} {δ : ℝ} (hδ : 0 < �
 theorem map_invSq_ae_mem_Icc {nu : Measure ℝ} {δ : ℝ} (hδ : 0 < δ)
     (hgap : ∀ᵐ t ∂nu, δ ≤ |t|) :
     ∀ᵐ y ∂(nu.map fun t => (t ^ 2)⁻¹), y ∈ Set.Icc (0 : ℝ) ((δ ^ 2)⁻¹) := by
-  rw [ae_map_iff ((measurable_id.pow_const 2).inv).aemeasurable measurableSet_Icc]
+  have hφ : Measurable fun t : ℝ => (t ^ 2)⁻¹ := by
+    exact (measurable_id.pow_const 2).inv
+  simp only [Set.mem_Icc]
+  rw [ae_map_iff hφ.aemeasurable
+    (measurableSet_Icc : MeasurableSet (Set.Icc (0 : ℝ) ((δ ^ 2)⁻¹)))]
   filter_upwards [hgap] with t ht
   constructor
   · positivity
@@ -692,6 +704,5 @@ theorem hasDerivAt_suzukiHerglotz_freeBoundary
   convert h using 1
   have hsub : (1 : ℂ) - Θfree ≠ 0 := sub_ne_zero.mpr (Ne.symm h1)
   field_simp
-  ring
 
 end GaloisForLFunctions.RHTower
