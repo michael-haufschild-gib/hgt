@@ -715,3 +715,39 @@ Beyond Hausdorff's moment theorem recorded above:
 
 Fourteen new modules were added to `GaloisForLFunctions.HTGeometry` in this session, all axiom-clean
 and all wired into the umbrella.
+
+## Bottleneck 1 sign repair — decision taken and execution plan (2026-08-13)
+
+Decision: **flip the evaluation-node half-plane in place** (nodes lower, Weyl poles upper).  The
+conjugation/negation transports were all checked and fail structurally: real-symmetric entries make
+entrywise conjugation the identity; leaf negation flips twice (`q̃(z) = −q(−z)` lands lower again);
+projective `i`-rescaling breaks the real-matrix ties of the carrier structure.  Moreover the
+existing upper/upper convention is uninhabitable for EVERY genuine Nevanlinna family — Herglotz
+positivity forces the Möbius pole into the open lower half-plane — so the flipped convention
+replaces a vacuous chain, and nothing of value breaks.
+
+Bottom-up steps (node-side only; every pole-side `0 < (q ·).im` stays):
+
+1. `MinimalTypeProjectiveSeparation.lean`: add `exists_lower_ne_zero_of_differentiable_ne_zero`.
+2. `CompactNoncriticalProjectiveSeparationAtlas.lean`: add lower-rows coverage
+   (`injectiveShiftConfigurations_covered_by_lower_noncriticalProjectiveGoodRows`).
+3. `PolynomialRelationDetector.lean`: add `finite_complex_family_has_imaginary_upper_bound`.
+4. `CompactNoncriticalProjectiveRowPacketAtlas.lean`: rename `…UpperGood…` → `…LowerGood…`, flip the
+   node clauses to `(z + shift i).im < 0`, mirror `…Rows_infinite` and the combined chart.
+5. `NevanlinnaNoncriticalProjectiveCompactPatch.lean`: `hupperMap` becomes
+   `∀ z, z.im < 0 → 0 < (q z).im`; chart renames; nothing downstream of
+   `0 < (q (nodes h x)).im` changes.
+6. `AnalyticNevanlinnaCarrierBridge.lean`: structure fields `finite_cauchy`/`infinity_cauchy`
+   weaken `0 < z.im` to `z.im ≠ 0` (the proved closed forms already cover it); eval-node lemmas
+   generalized to `z.im ≠ 0`; `…cauchyFrozenTangent_at_I` moves to the node `−I`.
+7. `AnalyticNevanlinnaCarrierRelationFree`, `BoundaryCarrierTranslationFreeness`,
+   `CarrierHerglotzPresentationFree`, `NevanlinnaBoundaryFaceMaximalTranslation` (field `upperMap`
+   → `∀ z, z.im < 0 → 0 < (F.quotient z).im`), both `SingularContinuous…UniversalityLaw` modules:
+   mechanical signature flips.
+8. New module: entry conjugation symmetry `B(z̄) = conj(B z)`, `D(z̄) = conj(D z)` for the
+   constructed family, hence `z.im < 0 → 0 < (F.quotient z).im` from `nevInf_quotient_im_neg`.
+   That discharges the flipped field for `analyticNevCarrierFamily`.
+
+Parallel chain note: `cauchyUpperGood…` (CompactCauchyRowPacketAtlas) and
+`evenCanonicalUpperGood…` feed `MovingCanonical…`/`Herglotz…FullTranslationRankGenericity`; same
+flip needed there when those capstones are instantiated — separate pass.

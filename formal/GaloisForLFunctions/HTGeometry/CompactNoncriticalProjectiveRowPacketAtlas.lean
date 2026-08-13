@@ -88,26 +88,26 @@ theorem exists_rowOffsets_combined_injective
     dsimp [M] at this
     linarith
 
-/-- A row is upper-good when its complete projective certificate is nonzero and every translated
-source node lies in the upper half-plane. -/
-def noncriticalProjectiveUpperGoodRowSet
+/-- A row is lower-good when its complete projective certificate is nonzero and every translated
+source node lies in the lower half-plane. -/
+def noncriticalProjectiveLowerGoodRowSet
     {ι κ : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ]
     (C D : ℂ → ℂ) (forbidden : κ → ℂ) (z : ℂ) :
     Set (InjectiveShiftConfiguration ι) :=
   noncriticalProjectiveGoodRowSet (ι := ι) (κ := κ) C D forbidden z ∩
-    {shift | ∀ i, 0 < (z + shift.1 i).im}
+    {shift | ∀ i, (z + shift.1 i).im < 0}
 
-/-- The upper-good configurations for a fixed row form an open set. -/
-theorem noncriticalProjectiveUpperGoodRowSet_isOpen
+/-- The lower-good configurations for a fixed row form an open set. -/
+theorem noncriticalProjectiveLowerGoodRowSet_isOpen
     {ι κ : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ]
     {C D : ℂ → ℂ} (hC : Differentiable ℂ C) (hD : Differentiable ℂ D)
     (forbidden : κ → ℂ) (z : ℂ) :
-    IsOpen (noncriticalProjectiveUpperGoodRowSet
+    IsOpen (noncriticalProjectiveLowerGoodRowSet
       (ι := ι) (κ := κ) C D forbidden z) := by
   apply (noncriticalProjectiveGoodRowSet_isOpen
     (ι := ι) (κ := κ) hC hD forbidden z).inter
-  rw [show {shift : InjectiveShiftConfiguration ι | ∀ i, 0 < (z + shift.1 i).im} =
-      ⋂ i, {shift : InjectiveShiftConfiguration ι | 0 < (z + shift.1 i).im} by
+  rw [show {shift : InjectiveShiftConfiguration ι | ∀ i, (z + shift.1 i).im < 0} =
+      ⋂ i, {shift : InjectiveShiftConfiguration ι | (z + shift.1 i).im < 0} by
     ext shift
     simp]
   apply isOpen_iInter_of_finite
@@ -116,49 +116,49 @@ theorem noncriticalProjectiveUpperGoodRowSet_isOpen
       (fun shift : InjectiveShiftConfiguration ι => (z + shift.1 i).im) := by
     exact Complex.continuous_im.comp
       (continuous_const.add ((continuous_apply i).comp continuous_subtype_val))
-  exact isOpen_lt continuous_const hcont
+  exact isOpen_lt hcont continuous_const
 
-/-- For one collision-free shift configuration, upper-good rows are unbounded in imaginary
-height and therefore infinite. -/
-theorem noncriticalProjectiveUpperGoodRows_infinite
+/-- For one collision-free shift configuration, lower-good rows are unbounded in negative
+imaginary height and therefore infinite. -/
+theorem noncriticalProjectiveLowerGoodRows_infinite
     {ι κ : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ]
     {C D : ℂ → ℂ} (hCmin : HasMinimalExponentialType C) (hD : Differentiable ℂ D)
     (hnoCommon : ∀ z, ¬ (C z = 0 ∧ D z = 0))
     {p : ℂ} (hCp : C p = 0) {c : ℂ} (hCc : C c ≠ 0)
     (forbidden : κ → ℂ) (shift : InjectiveShiftConfiguration ι) :
-    {z : ℂ | shift ∈ noncriticalProjectiveUpperGoodRowSet
+    {z : ℂ | shift ∈ noncriticalProjectiveLowerGoodRowSet
       (ι := ι) (κ := κ) C D forbidden z}.Infinite := by
   obtain ⟨Hshift, hHshift⟩ :=
-    finite_complex_family_has_imaginary_lower_bound shift.1
+    finite_complex_family_has_imaginary_upper_bound shift.1
   intro hfinite
   have himageFinite :
       ((fun z : ℂ => z.im) ''
-        {z : ℂ | shift ∈ noncriticalProjectiveUpperGoodRowSet
+        {z : ℂ | shift ∈ noncriticalProjectiveLowerGoodRowSet
           (ι := ι) (κ := κ) C D forbidden z}).Finite :=
     hfinite.image _
-  obtain ⟨B, hB⟩ := himageFinite.bddAbove
-  let H := max Hshift B
-  have hcover := injectiveShiftConfigurations_covered_by_upper_noncriticalProjectiveGoodRows
+  obtain ⟨B, hB⟩ := himageFinite.bddBelow
+  let H := min (-Hshift) B
+  have hcover := injectiveShiftConfigurations_covered_by_lower_noncriticalProjectiveGoodRows
     (ι := ι) (κ := κ) hCmin hD hnoCommon hCp hCc forbidden H
     (Set.mem_univ shift)
   obtain ⟨z, hzgood⟩ := Set.mem_iUnion.mp hcover
-  have hzH : H < z.1.im := z.2
-  have hzupper : ∀ i, 0 < (z.1 + shift.1 i).im := by
+  have hzH : z.1.im < H := z.2
+  have hzupper : ∀ i, (z.1 + shift.1 i).im < 0 := by
     intro i
     rw [Complex.add_im]
     have hshift := hHshift i
-    have hrow : Hshift < z.1.im := (le_max_left _ _).trans_lt hzH
+    have hrow : z.1.im < -Hshift := hzH.trans_le (min_le_left _ _)
     linarith
-  have hzmem : z.1 ∈ {w : ℂ | shift ∈ noncriticalProjectiveUpperGoodRowSet
+  have hzmem : z.1 ∈ {w : ℂ | shift ∈ noncriticalProjectiveLowerGoodRowSet
       (ι := ι) (κ := κ) C D forbidden w} :=
     ⟨hzgood, hzupper⟩
-  have hzle : z.1.im ≤ B := hB ⟨z.1, hzmem, rfl⟩
-  have hBlt : B < z.1.im := (le_max_right _ _).trans_lt hzH
+  have hzle : B ≤ z.1.im := hB ⟨z.1, hzmem, rfl⟩
+  have hBlt : z.1.im < B := hzH.trans_le (min_le_right _ _)
   exact (not_lt_of_ge hzle) hBlt
 
 /-- Every finite row type can be filled by distinct rows which are all upper-good for one fixed
 configuration. -/
-theorem exists_noncriticalProjectiveUpperGoodRowPacket
+theorem exists_noncriticalProjectiveLowerGoodRowPacket
     {row ι κ : Type*} [Fintype row]
     [Fintype ι] [DecidableEq ι] [Fintype κ]
     {C D : ℂ → ℂ} (hCmin : HasMinimalExponentialType C) (hD : Differentiable ℂ D)
@@ -166,13 +166,13 @@ theorem exists_noncriticalProjectiveUpperGoodRowPacket
     {p : ℂ} (hCp : C p = 0) {c : ℂ} (hCc : C c ≠ 0)
     (forbidden : κ → ℂ) (shift : InjectiveShiftConfiguration ι) :
     ∃ packet : InjectiveProjectiveRowPacket row,
-      ∀ r, shift ∈ noncriticalProjectiveUpperGoodRowSet
+      ∀ r, shift ∈ noncriticalProjectiveLowerGoodRowSet
         (ι := ι) (κ := κ) C D forbidden (packet.1 r) := by
   let good : Set ℂ :=
-    {z | shift ∈ noncriticalProjectiveUpperGoodRowSet
+    {z | shift ∈ noncriticalProjectiveLowerGoodRowSet
       (ι := ι) (κ := κ) C D forbidden z}
   have hgood : good.Infinite :=
-    noncriticalProjectiveUpperGoodRows_infinite
+    noncriticalProjectiveLowerGoodRows_infinite
       hCmin hD hnoCommon hCp hCc forbidden shift
   letI : Infinite good := hgood.to_subtype
   let e : ℕ ↪ good := Infinite.natEmbedding good
@@ -190,28 +190,28 @@ theorem exists_noncriticalProjectiveUpperGoodRowPacket
   exact (e (Fintype.equivFin row r).val).2
 
 /-- Configurations on which every row of a fixed packet is upper-good. -/
-def noncriticalProjectiveUpperGoodRowPacketSet
+def noncriticalProjectiveLowerGoodRowPacketSet
     {row ι κ : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ]
     (C D : ℂ → ℂ) (forbidden : κ → ℂ)
     (packet : InjectiveProjectiveRowPacket row) :
     Set (InjectiveShiftConfiguration ι) :=
-  ⋂ r, noncriticalProjectiveUpperGoodRowSet
+  ⋂ r, noncriticalProjectiveLowerGoodRowSet
     (ι := ι) (κ := κ) C D forbidden (packet.1 r)
 
 /-- Each simultaneous row-packet chart is open. -/
-theorem noncriticalProjectiveUpperGoodRowPacketSet_isOpen
+theorem noncriticalProjectiveLowerGoodRowPacketSet_isOpen
     {row ι κ : Type*} [Fintype row]
     [Fintype ι] [DecidableEq ι] [Fintype κ]
     {C D : ℂ → ℂ} (hC : Differentiable ℂ C) (hD : Differentiable ℂ D)
     (forbidden : κ → ℂ) (packet : InjectiveProjectiveRowPacket row) :
-    IsOpen (noncriticalProjectiveUpperGoodRowPacketSet
+    IsOpen (noncriticalProjectiveLowerGoodRowPacketSet
       (ι := ι) (κ := κ) C D forbidden packet) := by
   apply isOpen_iInter_of_finite
   intro r
-  exact noncriticalProjectiveUpperGoodRowSet_isOpen hC hD forbidden (packet.1 r)
+  exact noncriticalProjectiveLowerGoodRowSet_isOpen hC hD forbidden (packet.1 r)
 
 /-- Simultaneous upper-good row-packet charts cover the full collision-free shift space. -/
-theorem injectiveShiftConfigurations_covered_by_noncriticalProjectiveUpperGoodRowPackets
+theorem injectiveShiftConfigurations_covered_by_noncriticalProjectiveLowerGoodRowPackets
     {row ι κ : Type*} [Fintype row]
     [Fintype ι] [DecidableEq ι] [Fintype κ]
     {C D : ℂ → ℂ} (hCmin : HasMinimalExponentialType C) (hD : Differentiable ℂ D)
@@ -219,10 +219,10 @@ theorem injectiveShiftConfigurations_covered_by_noncriticalProjectiveUpperGoodRo
     {p : ℂ} (hCp : C p = 0) {c : ℂ} (hCc : C c ≠ 0)
     (forbidden : κ → ℂ) :
     Set.univ ⊆ ⋃ packet : InjectiveProjectiveRowPacket row,
-      noncriticalProjectiveUpperGoodRowPacketSet
+      noncriticalProjectiveLowerGoodRowPacketSet
         (ι := ι) (κ := κ) C D forbidden packet := by
   intro shift hshift
-  obtain ⟨packet, hpacket⟩ := exists_noncriticalProjectiveUpperGoodRowPacket
+  obtain ⟨packet, hpacket⟩ := exists_noncriticalProjectiveLowerGoodRowPacket
     (row := row) hCmin hD hnoCommon hCp hCc forbidden shift
   apply Set.mem_iUnion.mpr
   refine ⟨packet, ?_⟩
@@ -232,7 +232,7 @@ theorem injectiveShiftConfigurations_covered_by_noncriticalProjectiveUpperGoodRo
 covered by finitely many compact pieces, each contained in one open simultaneous row-packet chart.
 The closed shrinking is what permits finitely many patchwise density statements to be intersected
 without losing points on chart boundaries. -/
-theorem compact_injectiveShiftPatch_finite_noncriticalProjectiveUpperGoodRowPacket_refinement
+theorem compact_injectiveShiftPatch_finite_noncriticalProjectiveLowerGoodRowPacket_refinement
     {row ι κ : Type*} [Fintype row]
     [Fintype ι] [DecidableEq ι] [Fintype κ]
     {C D : ℂ → ℂ} (hCmin : HasMinimalExponentialType C) (hD : Differentiable ℂ D)
@@ -244,24 +244,24 @@ theorem compact_injectiveShiftPatch_finite_noncriticalProjectiveUpperGoodRowPack
       ∃ pieces : Fin n → Set (InjectiveShiftConfiguration ι),
         K ⊆ ⋃ j, pieces j ∧
         (∀ j, IsCompact (pieces j)) ∧
-        ∀ j, pieces j ⊆ noncriticalProjectiveUpperGoodRowPacketSet
+        ∀ j, pieces j ⊆ noncriticalProjectiveLowerGoodRowPacketSet
           (ι := ι) (κ := κ) C D forbidden (packets j) := by
   classical
   obtain ⟨packetFinset, hpacketFinset⟩ := hK.elim_finite_subcover
     (fun packet : InjectiveProjectiveRowPacket row =>
-      noncriticalProjectiveUpperGoodRowPacketSet
+      noncriticalProjectiveLowerGoodRowPacketSet
         (ι := ι) (κ := κ) C D forbidden packet)
-    (fun packet => noncriticalProjectiveUpperGoodRowPacketSet_isOpen
+    (fun packet => noncriticalProjectiveLowerGoodRowPacketSet_isOpen
       hCmin.1 hD forbidden packet)
     (Set.Subset.trans (Set.subset_univ K)
-      (injectiveShiftConfigurations_covered_by_noncriticalProjectiveUpperGoodRowPackets
+      (injectiveShiftConfigurations_covered_by_noncriticalProjectiveLowerGoodRowPackets
         (row := row) hCmin hD hnoCommon hCp hCc forbidden))
   let n := packetFinset.card
   let e : Fin n ≃ {packet // packet ∈ packetFinset} :=
     by simpa [n] using (Fintype.equivFin {packet // packet ∈ packetFinset}).symm
   let packets : Fin n → InjectiveProjectiveRowPacket row := fun j => (e j).1
   let cover : Fin n → Set (InjectiveShiftConfiguration ι) := fun j =>
-    noncriticalProjectiveUpperGoodRowPacketSet
+    noncriticalProjectiveLowerGoodRowPacketSet
       (ι := ι) (κ := κ) C D forbidden (packets j)
   have hcover : K ⊆ ⋃ j, cover j := by
     intro shift hshift
@@ -271,12 +271,12 @@ theorem compact_injectiveShiftPatch_finite_noncriticalProjectiveUpperGoodRowPack
     let j : Fin n := e.symm ⟨packet, hpacketMem⟩
     apply Set.mem_iUnion.mpr
     refine ⟨j, ?_⟩
-    change shift ∈ noncriticalProjectiveUpperGoodRowPacketSet
+    change shift ∈ noncriticalProjectiveLowerGoodRowPacketSet
       (ι := ι) (κ := κ) C D forbidden (packets j)
     simpa [packets, j] using hgood
   obtain ⟨v, hKv, hvclosed, hvsub⟩ :=
     exists_subset_iUnion_closed_subset hK.isClosed
-      (fun j => noncriticalProjectiveUpperGoodRowPacketSet_isOpen
+      (fun j => noncriticalProjectiveLowerGoodRowPacketSet_isOpen
         hCmin.1 hD forbidden (packets j))
       (fun _ _ => Set.toFinite _)
       hcover
@@ -300,7 +300,7 @@ def combinedProjectiveRowShiftPacket
 /-- A simultaneous packet chart whose single complete certificate is imposed on the entire
 `row × shift` node family.  Unlike coordinatewise row charts, this includes separation between
 different rows and is therefore the exact chart required by constrained Cauchy controllability. -/
-def noncriticalProjectiveUpperGoodCombinedRowPacketSet
+def noncriticalProjectiveLowerGoodCombinedRowPacketSet
     {row ι κ : Type*} [Fintype row]
     [Fintype ι] [DecidableEq (row × ι)] [Fintype κ]
     (C D : ℂ → ℂ) (forbidden : κ → ℂ)
@@ -309,15 +309,15 @@ def noncriticalProjectiveUpperGoodCombinedRowPacketSet
   {shift |
     noncriticalProjectiveSeparationProduct C D
       (combinedProjectiveRowShiftPacket packet shift) forbidden 0 ≠ 0} ∩
-    {shift | ∀ x, 0 < (combinedProjectiveRowShiftPacket packet shift x).im}
+    {shift | ∀ x, (combinedProjectiveRowShiftPacket packet shift x).im < 0}
 
 /-- Complete combined row-packet charts are open in the collision-free shift space. -/
-theorem noncriticalProjectiveUpperGoodCombinedRowPacketSet_isOpen
+theorem noncriticalProjectiveLowerGoodCombinedRowPacketSet_isOpen
     {row ι κ : Type*} [Fintype row]
     [Fintype ι] [DecidableEq (row × ι)] [Fintype κ]
     {C D : ℂ → ℂ} (hC : Differentiable ℂ C) (hD : Differentiable ℂ D)
     (forbidden : κ → ℂ) (packet : InjectiveProjectiveRowPacket row) :
-    IsOpen (noncriticalProjectiveUpperGoodCombinedRowPacketSet
+    IsOpen (noncriticalProjectiveLowerGoodCombinedRowPacketSet
       (ι := ι) (κ := κ) C D forbidden packet) := by
   apply IsOpen.inter
   · have hpacket : Continuous
@@ -334,9 +334,9 @@ theorem noncriticalProjectiveUpperGoodCombinedRowPacketSet_isOpen
         hC hD forbidden 0).comp hpacket
     exact hcertificate.isOpen_preimage {w : ℂ | w ≠ 0} isOpen_ne
   · rw [show {shift : InjectiveShiftConfiguration ι |
-        ∀ x, 0 < (combinedProjectiveRowShiftPacket packet shift x).im} =
+        ∀ x, (combinedProjectiveRowShiftPacket packet shift x).im < 0} =
         ⋂ x, {shift : InjectiveShiftConfiguration ι |
-          0 < (combinedProjectiveRowShiftPacket packet shift x).im} by
+          (combinedProjectiveRowShiftPacket packet shift x).im < 0} by
       ext shift
       simp]
     apply isOpen_iInter_of_finite
@@ -345,12 +345,12 @@ theorem noncriticalProjectiveUpperGoodCombinedRowPacketSet_isOpen
         (combinedProjectiveRowShiftPacket packet shift x).im) :=
       Complex.continuous_im.comp
         (continuous_const.add ((continuous_apply x.2).comp continuous_subtype_val))
-    exact isOpen_lt continuous_const hcont
+    exact isOpen_lt hcont continuous_const
 
 /-- Every collision-free shift configuration lies in a complete combined row-packet chart.  The
 proof first creates widely separated row offsets, regards `row × shift` as one injective finite
 packet, and then applies the nonzero entire certificate once to that combined packet. -/
-theorem injectiveShiftConfigurations_covered_by_noncriticalProjectiveUpperGoodCombinedRowPackets
+theorem injectiveShiftConfigurations_covered_by_noncriticalProjectiveLowerGoodCombinedRowPackets
     {row ι κ : Type*} [Fintype row]
     [Fintype ι] [DecidableEq (row × ι)] [Fintype κ]
     {C D : ℂ → ℂ} (hCmin : HasMinimalExponentialType C) (hD : Differentiable ℂ D)
@@ -358,14 +358,14 @@ theorem injectiveShiftConfigurations_covered_by_noncriticalProjectiveUpperGoodCo
     {p : ℂ} (hCp : C p = 0) {c : ℂ} (hCc : C c ≠ 0)
     (forbidden : κ → ℂ) :
     Set.univ ⊆ ⋃ packet : InjectiveProjectiveRowPacket row,
-      noncriticalProjectiveUpperGoodCombinedRowPacketSet
+      noncriticalProjectiveLowerGoodCombinedRowPacketSet
         (ι := ι) (κ := κ) C D forbidden packet := by
   intro shift hshift
   obtain ⟨offset, hoffset, hcombined⟩ :=
     exists_rowOffsets_combined_injective (row := row) (ι := ι) shift.1 shift.2
   let combined : InjectiveShiftConfiguration (row × ι) :=
     ⟨fun x => offset x.1 + shift.1 x.2, hcombined⟩
-  have hinfinite := noncriticalProjectiveUpperGoodRows_infinite
+  have hinfinite := noncriticalProjectiveLowerGoodRows_infinite
     (ι := row × ι) hCmin hD hnoCommon hCp hCc forbidden combined
   obtain ⟨z, hzgood, hzupper⟩ := hinfinite.nonempty
   let rowBase : row → ℂ := fun r => z + offset r
@@ -389,7 +389,7 @@ theorem injectiveShiftConfigurations_covered_by_noncriticalProjectiveUpperGoodCo
 /-- **Complete compact simultaneous row atlas.**  Every compact collision-free shift patch has a
 finite compact refinement subordinate to charts on which the whole row-by-shift packet is regular,
 upper, target-separated across all rows, frozen-safe, and noncritical. -/
-theorem compact_injectiveShiftPatch_finite_noncriticalProjectiveUpperGoodCombinedRowPacket_refinement
+theorem compact_injectiveShiftPatch_finite_noncriticalProjectiveLowerGoodCombinedRowPacket_refinement
     {row ι κ : Type*} [Fintype row]
     [Fintype ι] [DecidableEq (row × ι)] [Fintype κ]
     {C D : ℂ → ℂ} (hCmin : HasMinimalExponentialType C) (hD : Differentiable ℂ D)
@@ -401,24 +401,24 @@ theorem compact_injectiveShiftPatch_finite_noncriticalProjectiveUpperGoodCombine
       ∃ pieces : Fin n → Set (InjectiveShiftConfiguration ι),
         K ⊆ ⋃ j, pieces j ∧
         (∀ j, IsCompact (pieces j)) ∧
-        ∀ j, pieces j ⊆ noncriticalProjectiveUpperGoodCombinedRowPacketSet
+        ∀ j, pieces j ⊆ noncriticalProjectiveLowerGoodCombinedRowPacketSet
           (ι := ι) (κ := κ) C D forbidden (packets j) := by
   classical
   obtain ⟨packetFinset, hpacketFinset⟩ := hK.elim_finite_subcover
     (fun packet : InjectiveProjectiveRowPacket row =>
-      noncriticalProjectiveUpperGoodCombinedRowPacketSet
+      noncriticalProjectiveLowerGoodCombinedRowPacketSet
         (ι := ι) (κ := κ) C D forbidden packet)
-    (fun packet => noncriticalProjectiveUpperGoodCombinedRowPacketSet_isOpen
+    (fun packet => noncriticalProjectiveLowerGoodCombinedRowPacketSet_isOpen
       hCmin.1 hD forbidden packet)
     (Set.Subset.trans (Set.subset_univ K)
-      (injectiveShiftConfigurations_covered_by_noncriticalProjectiveUpperGoodCombinedRowPackets
+      (injectiveShiftConfigurations_covered_by_noncriticalProjectiveLowerGoodCombinedRowPackets
         (row := row) hCmin hD hnoCommon hCp hCc forbidden))
   let n := packetFinset.card
   let e : Fin n ≃ {packet // packet ∈ packetFinset} :=
     by simpa [n] using (Fintype.equivFin {packet // packet ∈ packetFinset}).symm
   let packets : Fin n → InjectiveProjectiveRowPacket row := fun j => (e j).1
   let cover : Fin n → Set (InjectiveShiftConfiguration ι) := fun j =>
-    noncriticalProjectiveUpperGoodCombinedRowPacketSet
+    noncriticalProjectiveLowerGoodCombinedRowPacketSet
       (ι := ι) (κ := κ) C D forbidden (packets j)
   have hcover : K ⊆ ⋃ j, cover j := by
     intro shift hshift
@@ -428,12 +428,12 @@ theorem compact_injectiveShiftPatch_finite_noncriticalProjectiveUpperGoodCombine
     let j : Fin n := e.symm ⟨packet, hpacketMem⟩
     apply Set.mem_iUnion.mpr
     refine ⟨j, ?_⟩
-    change shift ∈ noncriticalProjectiveUpperGoodCombinedRowPacketSet
+    change shift ∈ noncriticalProjectiveLowerGoodCombinedRowPacketSet
       (ι := ι) (κ := κ) C D forbidden (packets j)
     simpa [packets, j] using hgood
   obtain ⟨v, hKv, hvclosed, hvsub⟩ :=
     exists_subset_iUnion_closed_subset hK.isClosed
-      (fun j => noncriticalProjectiveUpperGoodCombinedRowPacketSet_isOpen
+      (fun j => noncriticalProjectiveLowerGoodCombinedRowPacketSet_isOpen
         hCmin.1 hD forbidden (packets j))
       (fun _ _ => Set.toFinite _)
       hcover

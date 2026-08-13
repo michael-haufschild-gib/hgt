@@ -61,6 +61,20 @@ theorem finite_complex_family_has_imaginary_lower_bound
     exact abs_nonneg _
   exact (neg_le_abs _).trans hi
 
+/-- Every finite complex family has a common upper bound for its imaginary parts. -/
+theorem finite_complex_family_has_imaginary_upper_bound
+    {ι : Type*} [Fintype ι] (shift : ι → ℂ) :
+    ∃ H : ℝ, ∀ i, (shift i).im ≤ H := by
+  let H := ∑ i, |(shift i).im|
+  refine ⟨H, ?_⟩
+  intro i
+  have hi : |(shift i).im| ≤ H := by
+    refine Finset.single_le_sum (s := Finset.univ)
+      (f := fun j => |(shift j).im|) ?_ (Finset.mem_univ i)
+    intro j hj
+    exact abs_nonneg _
+  exact (le_abs_self _).trans hi
+
 /-- A nonzero polynomial-coefficient relation on a finite injective shift packet has a nonzero
 finite-jet detector at distinct upper-half-plane nodes. -/
 theorem exists_upper_noncolliding_polynomial_detector

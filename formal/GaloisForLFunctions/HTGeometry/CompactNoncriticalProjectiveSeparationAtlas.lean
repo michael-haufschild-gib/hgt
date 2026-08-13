@@ -112,6 +112,23 @@ theorem injectiveShiftConfigurations_covered_by_upper_noncriticalProjectiveGoodR
     hne H
   exact Set.mem_iUnion.mpr ⟨⟨z, hzH⟩, hz⟩
 
+/-- The arbitrarily low complete-good row opens cover all injective configurations. -/
+theorem injectiveShiftConfigurations_covered_by_lower_noncriticalProjectiveGoodRows
+    {ι κ : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ]
+    {C D : ℂ → ℂ} (hCmin : HasMinimalExponentialType C) (hD : Differentiable ℂ D)
+    (hnoCommon : ∀ z, ¬ (C z = 0 ∧ D z = 0))
+    {p : ℂ} (hCp : C p = 0) {c : ℂ} (hCc : C c ≠ 0)
+    (forbidden : κ → ℂ) (H : ℝ) :
+    Set.univ ⊆ ⋃ z : {z : ℂ // z.im < H},
+      noncriticalProjectiveGoodRowSet (ι := ι) (κ := κ) C D forbidden z.1 := by
+  intro shift hshift
+  have hne := noncriticalProjectiveSeparationProduct_ne_zero
+    hCmin hD hnoCommon hCp hCc shift.1 shift.2 forbidden
+  obtain ⟨z, hzH, hz⟩ := exists_lower_ne_zero_of_differentiable_ne_zero
+    (noncriticalProjectiveSeparationProduct_differentiable hCmin.1 hD shift.1 forbidden)
+    hne H
+  exact Set.mem_iUnion.mpr ⟨⟨z, hzH⟩, hz⟩
+
 /-- **Compact noncritical projective separation atlas.** Every compact collision-free shift patch
 has a finite open row atlas whose certificates include all hypotheses needed by the triangular
 Nevanlinna jet conversion. -/

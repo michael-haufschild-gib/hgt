@@ -29,7 +29,7 @@ structure MaximalTranslationInputs where
   zeroPoint_spec : F.c zeroPoint = 0
   regularPoint : ℂ
   regularPoint_spec : F.c regularPoint ≠ 0
-  upperMap : ∀ z, 0 < z.im → 0 < (F.quotient z).im
+  upperMap : ∀ z, z.im < 0 → 0 < (F.quotient z).im
   phase_isGδ : IsGδ {nu : ProbabilityMeasure ℝ |
     MaximalTranslationDifferentialFree nu}
 

@@ -31,7 +31,7 @@ theorem singularContinuous_jointMaximalFullTranslation_primeArchHankelUniversali
     (hCmin : HasMinimalExponentialType F.c)
     (hnoCommon : ∀ z, ¬ (F.c z = 0 ∧ F.d z = 0))
     {p0 : ℂ} (hCp : F.c p0 = 0) {c0 : ℂ} (hCc : F.c c0 ≠ 0)
-    (hupperMap : ∀ z, 0 < z.im → 0 < (F.quotient z).im)
+    (hupperMap : ∀ z, z.im < 0 → 0 < (F.quotient z).im)
     (zf : ιf → ℂ)
     (hqf_inj : Function.Injective (fun i => F.quotient (zf i)))
     (hupperf : ∀ i, 0 < (F.quotient (zf i)).im)

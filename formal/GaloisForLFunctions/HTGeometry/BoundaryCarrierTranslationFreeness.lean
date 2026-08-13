@@ -136,7 +136,7 @@ theorem probabilityCarrierExpandedFullRankWitness_weightedBoundaryProbabilityCar
     (degree : ℕ) (orders : ι → ℕ)
     (exponent : κ → (Fin (Fintype.card (Σ i, Fin (orders i))) →₀ ℕ))
     (shift : InjectiveShiftConfiguration ι)
-    (hupperMap : ∀ z, 0 < z.im → 0 < (F.quotient z).im)
+    (hupperMap : ∀ z, z.im < 0 → 0 < (F.quotient z).im)
     (hfull : actualNevanlinnaExpandedFullRankWitness
       (row := row) (κ := κ) (ι := ι)
       F.background F.amplitude F.quotient degree orders exponent

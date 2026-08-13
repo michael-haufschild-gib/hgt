@@ -218,6 +218,24 @@ theorem exists_upper_ne_zero_of_differentiable_ne_zero
     differentiable_zero.differentiableOn.analyticOnNhd isOpen_univ
   exact hfn (hfan.eq_of_eventuallyEq hzero hevent)
 
+/-- A nonzero entire function is nonzero somewhere below every horizontal line. -/
+theorem exists_lower_ne_zero_of_differentiable_ne_zero
+    {f : ℂ → ℂ} (hf : Differentiable ℂ f) (hfn : f ≠ 0) (H : ℝ) :
+    ∃ z : ℂ, z.im < H ∧ f z ≠ 0 := by
+  by_contra h
+  push Not at h
+  let z₀ : ℂ := (H - 1 : ℂ) * I
+  have hz₀ : z₀.im < H := by simp [z₀]
+  have hopen : IsOpen {z : ℂ | z.im < H} := isOpen_lt continuous_im continuous_const
+  have hevent : f =ᶠ[nhds z₀] 0 := by
+    filter_upwards [hopen.mem_nhds hz₀] with z hz
+    exact h z hz
+  have hfan : AnalyticOnNhd ℂ f Set.univ :=
+    hf.differentiableOn.analyticOnNhd isOpen_univ
+  have hzero : AnalyticOnNhd ℂ (0 : ℂ → ℂ) Set.univ :=
+    differentiable_zero.differentiableOn.analyticOnNhd isOpen_univ
+  exact hfn (hfan.eq_of_eventuallyEq hzero hevent)
+
 /-- **Arbitrarily high projective separation rows.** For every finite injective shift packet and
 height, one can choose a base point above that height at which every shifted denominator is
 nonzero and all shifted projective labels `[-D:C]` are pairwise distinct. -/

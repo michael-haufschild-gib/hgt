@@ -157,13 +157,13 @@ theorem globalWitness_dense_residual_of_sigmaCompact
   exact ⟨dense_of_mem_residual hres, hres⟩
 
 /-- Extract the complete Nevanlinna control data from one combined row-packet chart. -/
-theorem noncriticalProjectiveUpperGoodCombinedRowPacket_complete_data
+theorem noncriticalProjectiveLowerGoodCombinedRowPacket_complete_data
     {row ι κ : Type*} [Fintype row]
     [Fintype ι] [DecidableEq (row × ι)] [Fintype κ]
     {C D : ℂ → ℂ} (hC : Differentiable ℂ C) (hD : Differentiable ℂ D)
     (forbidden : κ → ℂ) (packet : InjectiveProjectiveRowPacket row)
     {shift : InjectiveShiftConfiguration ι}
-    (hgood : shift ∈ noncriticalProjectiveUpperGoodCombinedRowPacketSet
+    (hgood : shift ∈ noncriticalProjectiveLowerGoodCombinedRowPacketSet
       (ι := ι) (κ := κ) C D forbidden packet) :
     (∀ x, C (combinedProjectiveRowShiftPacket packet shift x) ≠ 0) ∧
       Function.Injective (fun x => projectiveNevanlinnaQuotient C D
@@ -345,7 +345,7 @@ theorem compact_completeProjectiveRowPiece_has_dense_actualNevanlinna_finiteProb
     [Fintype ι] [DecidableEq ι]
     [Fintype ιf] [DecidableEq ιf]
     {C D : ℂ → ℂ} (hC : Differentiable ℂ C) (hD : Differentiable ℂ D)
-    (hupperMap : ∀ z, 0 < z.im → 0 < (projectiveNevanlinnaQuotient C D z).im)
+    (hupperMap : ∀ z, z.im < 0 → 0 < (projectiveNevanlinnaQuotient C D z).im)
     (m0 : ℂ → ℂ)
     (hm0 : ∀ k, ContDiffOn ℂ ⊤ (iteratedDeriv k m0) (projectiveRegularLocus C))
     (zf : ιf → ℂ)
@@ -360,7 +360,7 @@ theorem compact_completeProjectiveRowPiece_has_dense_actualNevanlinna_finiteProb
     (mu : Measure (OnePoint ℝ)) [IsProbabilityMeasure mu] (hmu : mu.support.Infinite)
     (baseDensity : Lp ℝ (⊤ : ENNReal) mu)
     (piece : Set (InjectiveShiftConfiguration ι)) (hpiece : IsCompact piece)
-    (hpieceChart : piece ⊆ noncriticalProjectiveUpperGoodCombinedRowPacketSet
+    (hpieceChart : piece ⊆ noncriticalProjectiveLowerGoodCombinedRowPacketSet
       (ι := ι) (κ := ιf) C D
       (fun i => projectiveNevanlinnaQuotient C D (zf i)) packet)
     (hdim : Module.finrank ℝ (ι → ℂ) <
@@ -404,7 +404,7 @@ theorem compact_completeProjectiveRowPiece_has_dense_actualNevanlinna_finiteProb
   have ha : ContDiffOn ℂ ⊤ a Omega := hcoords.1
   have hq : ContDiffOn ℂ ⊤ q Omega := hcoords.2
   have hK : IsCompact K := hpiece.image continuous_subtype_val
-  have hchartOpen := noncriticalProjectiveUpperGoodCombinedRowPacketSet_isOpen
+  have hchartOpen := noncriticalProjectiveLowerGoodCombinedRowPacketSet_isOpen
     (row := row) (ι := ι) (κ := ιf) hC hD
       (fun i => q (zf i)) packet
   rw [isOpen_induced_iff] at hchartOpen
@@ -413,7 +413,7 @@ theorem compact_completeProjectiveRowPiece_has_dense_actualNevanlinna_finiteProb
   have hU0 : IsOpen U0 := hOopen.inter (injectiveShiftConfigurationSet_isOpen ι)
   have hchartU0 : ∀ (h : ι → ℂ) (hh : h ∈ U0),
       (⟨h, hh.2⟩ : InjectiveShiftConfiguration ι) ∈
-        noncriticalProjectiveUpperGoodCombinedRowPacketSet
+        noncriticalProjectiveLowerGoodCombinedRowPacketSet
           (ι := ι) (κ := ιf) C D (fun i => q (zf i)) packet := by
     intro h hh
     have hpre : (⟨h, hh.2⟩ : InjectiveShiftConfiguration ι) ∈ Subtype.val ⁻¹' O := hh.1
@@ -435,7 +435,7 @@ theorem compact_completeProjectiveRowPiece_has_dense_actualNevanlinna_finiteProb
         (∀ x i, q (nodes h x) ≠ q (zf i)) ∧
         (∀ x, deriv q (nodes h x) ≠ 0) := by
     intro h hh
-    have hdata := noncriticalProjectiveUpperGoodCombinedRowPacket_complete_data
+    have hdata := noncriticalProjectiveLowerGoodCombinedRowPacket_complete_data
       hC hD (fun i => q (zf i)) packet (hchartU0 h hh)
     have hnodesEq :
         combinedProjectiveRowShiftPacket packet
@@ -585,7 +585,7 @@ theorem compact_injectiveShiftPatch_has_dense_completeAtlas_actualNevanlinna
     {C D : ℂ → ℂ} (hCmin : HasMinimalExponentialType C) (hD : Differentiable ℂ D)
     (hnoCommon : ∀ z, ¬ (C z = 0 ∧ D z = 0))
     {p : ℂ} (hCp : C p = 0) {c : ℂ} (hCc : C c ≠ 0)
-    (hupperMap : ∀ z, 0 < z.im → 0 < (projectiveNevanlinnaQuotient C D z).im)
+    (hupperMap : ∀ z, z.im < 0 → 0 < (projectiveNevanlinnaQuotient C D z).im)
     (m0 : ℂ → ℂ)
     (hm0 : ∀ k, ContDiffOn ℂ ⊤ (iteratedDeriv k m0) (projectiveRegularLocus C))
     (zf : ιf → ℂ)
@@ -610,7 +610,7 @@ theorem compact_injectiveShiftPatch_has_dense_completeAtlas_actualNevanlinna
       ∃ pieces : Fin n → Set (InjectiveShiftConfiguration ι),
         Kshift ⊆ ⋃ j, pieces j ∧
         (∀ j, IsCompact (pieces j)) ∧
-        (∀ j, pieces j ⊆ noncriticalProjectiveUpperGoodCombinedRowPacketSet
+        (∀ j, pieces j ⊆ noncriticalProjectiveLowerGoodCombinedRowPacketSet
           (ι := ι) (κ := ιf) C D (fun i => q (zf i)) (packets j)) ∧
         let nodes := fun j => ambientCombinedProjectiveNodes (packets j)
         let control := fun j h =>
@@ -643,7 +643,7 @@ theorem compact_injectiveShiftPatch_has_dense_completeAtlas_actualNevanlinna
   letI normedAddCommGroupS : NormedAddCommGroup S := Submodule.normedAddCommGroup S
   letI : NormedSpace ℝ S := Submodule.normedSpace S
   obtain ⟨n, packets, pieces, hcover, hpiecesCompact, hpiecesChart⟩ :=
-    compact_injectiveShiftPatch_finite_noncriticalProjectiveUpperGoodCombinedRowPacket_refinement
+    compact_injectiveShiftPatch_finite_noncriticalProjectiveLowerGoodCombinedRowPacket_refinement
       (row := row) (ι := ι) (κ := ιf) hCmin hD hnoCommon hCp hCc
       (fun i => q (zf i)) hKshift
   let nodes : Fin n → (ι → ℂ) → (row × ι → ℂ) := fun j =>
@@ -712,7 +712,7 @@ theorem global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual
     {C D : ℂ → ℂ} (hCmin : HasMinimalExponentialType C) (hD : Differentiable ℂ D)
     (hnoCommon : ∀ z, ¬ (C z = 0 ∧ D z = 0))
     {p : ℂ} (hCp : C p = 0) {c : ℂ} (hCc : C c ≠ 0)
-    (hupperMap : ∀ z, 0 < z.im → 0 < (projectiveNevanlinnaQuotient C D z).im)
+    (hupperMap : ∀ z, z.im < 0 → 0 < (projectiveNevanlinnaQuotient C D z).im)
     (m0 : ℂ → ℂ)
     (hm0 : ∀ k, ContDiffOn ℂ ⊤ (iteratedDeriv k m0) (projectiveRegularLocus C))
     (zf : ιf → ℂ)
@@ -777,7 +777,7 @@ theorem countablePatterns_global_injectiveShifts_actualNevanlinna_fullRankWitnes
     {C D : ℂ → ℂ} (hCmin : HasMinimalExponentialType C) (hD : Differentiable ℂ D)
     (hnoCommon : ∀ z, ¬ (C z = 0 ∧ D z = 0))
     {p : ℂ} (hCp : C p = 0) {c : ℂ} (hCc : C c ≠ 0)
-    (hupperMap : ∀ z, 0 < z.im → 0 < (projectiveNevanlinnaQuotient C D z).im)
+    (hupperMap : ∀ z, z.im < 0 → 0 < (projectiveNevanlinnaQuotient C D z).im)
     (m0 : ℂ → ℂ)
     (hm0 : ∀ k, ContDiffOn ℂ ⊤ (iteratedDeriv k m0) (projectiveRegularLocus C))
     (zf : ιf → ℂ)
@@ -856,7 +856,7 @@ theorem countablePatterns_actualNevanlinna_relationFree_dense_residual
     {C D : ℂ → ℂ} (hCmin : HasMinimalExponentialType C) (hD : Differentiable ℂ D)
     (hnoCommon : ∀ z, ¬ (C z = 0 ∧ D z = 0))
     {p : ℂ} (hCp : C p = 0) {c : ℂ} (hCc : C c ≠ 0)
-    (hupperMap : ∀ z, 0 < z.im → 0 < (projectiveNevanlinnaQuotient C D z).im)
+    (hupperMap : ∀ z, z.im < 0 → 0 < (projectiveNevanlinnaQuotient C D z).im)
     (m0 : ℂ → ℂ)
     (hm0 : ∀ k, ContDiffOn ℂ ⊤ (iteratedDeriv k m0) (projectiveRegularLocus C))
     (zf : ιf → ℂ)

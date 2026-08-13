@@ -866,7 +866,7 @@ theorem weightedBoundaryCarrierExpandedPacketValue_eq_actualNevanlinnaExpandedPa
     (hint : ∫ t, (baseDensity + w.1) t ∂eta = 1)
     (orders : ι → ℕ) (packet : InjectiveProjectiveRowPacket row)
     (shift : InjectiveShiftConfiguration ι)
-    (hupperMap : ∀ z, 0 < z.im → 0 < (F.quotient z).im)
+    (hupperMap : ∀ z, z.im < 0 → 0 < (F.quotient z).im)
     (hupper : ∀ x, 0 < (combinedProjectiveRowShiftPacket packet shift x).im) :
     F.weightedBoundaryCarrierExpandedPacketValue
         eta (baseDensity + w.1) orders packet shift =
