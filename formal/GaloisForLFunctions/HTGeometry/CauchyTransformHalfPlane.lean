@@ -60,7 +60,7 @@ variable {s : ℕ → ℝ} (F : ClassicalAnalyticNevanlinnaCarrierFamily s)
 the leaf at infinity. -/
 theorem im_infinityCauchy_pos {z : ℂ} (hz : 0 < z.im) (hc : F.c z ≠ 0) :
     0 < (F.a z / F.c z).im := by
-  rw [← F.infinity_cauchy z hz hc]
+  rw [← F.infinity_cauchy z hz.ne' hc]
   exact im_cauchyTransform_pos _ hz
 
 /-- **`a` cannot vanish where `c` does not.**  A zero of `a` would make the leaf transform at
@@ -75,7 +75,7 @@ theorem a_ne_zero_of_c_ne_zero {z : ℂ} (hz : 0 < z.im) (hc : F.c z ≠ 0) : F.
 transform of the leaf at that parameter. -/
 theorem im_finiteCauchy_pos (tau : ℝ) {z : ℂ} (hz : 0 < z.im) :
     0 < ((F.a z * tau + F.b z) / (F.c z * tau + F.d z)).im := by
-  rw [← F.finite_cauchy tau z hz]
+  rw [← F.finite_cauchy tau z hz.ne']
   exact im_cauchyTransform_pos _ hz
 
 /-- **The Möbius denominator never vanishes above the real axis.**  If it did, the leaf transform at

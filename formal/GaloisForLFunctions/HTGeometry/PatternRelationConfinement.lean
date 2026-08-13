@@ -38,7 +38,7 @@ theorem exists_placed_relation_forcing_zeroSet
       (row := row) nu degree orders exponent shift coeff)
     (z₀ : row → ℂ) (hz₀ : Function.Injective z₀) :
     ∃ (z : row → ℂ) (hz : Function.Injective z),
-      (∀ r i, 0 < (z r + shift.1 i).im) ∧
+      (∀ r i, (z r + shift.1 i).im < 0) ∧
       ∀ r : row,
         (∑ β : κ, MvPolynomial.monomial (exponent β)
             (rowCoefficientPolynomial degree coeff β (z r))) ≠ 0 ∧
@@ -48,7 +48,7 @@ theorem exists_placed_relation_forcing_zeroSet
               (rowCoefficientPolynomial degree coeff β (z r))) = 0 := by
   classical
   obtain ⟨z, hz, hupper, hnondeg⟩ :=
-    exists_placed_packet_all_rows_nondegenerate degree
+    exists_placed_lower_packet_all_rows_nondegenerate degree
       (Fintype.card (Σ i, Fin (orders i))) exponent hexp coeff β₀ hcoeff z₀ hz₀ shift.1
   refine ⟨z, hz, hupper, ?_⟩
   intro r
@@ -80,7 +80,7 @@ def CarrierJetNondegenerateAt
     (nu : ProbabilityMeasure ℝ) (orders : ι → ℕ)
     (shift : InjectiveShiftConfiguration ι) : Prop :=
   ∀ (z : row → ℂ) (hz : Function.Injective z),
-    (∀ r i, 0 < (z r + shift.1 i).im) →
+    (∀ r i, (z r + shift.1 i).im < 0) →
     ∀ Q : MvPolynomial (Fin (Fintype.card (Σ i, Fin (orders i)))) ℂ, Q ≠ 0 →
       ∀ r : row,
         MvPolynomial.eval
@@ -149,7 +149,7 @@ theorem carrierJetNondegenerateAt_of_momentNondegenerate
     (nu : ProbabilityMeasure ℝ) (orders : ι → ℕ)
     (shift : InjectiveShiftConfiguration ι)
     (hmom : ∀ (z : row → ℂ) (hz : Function.Injective z),
-      (∀ r i, 0 < (z r + shift.1 i).im) →
+      (∀ r i, (z r + shift.1 i).im < 0) →
       ∀ r : row,
         ∀ Q : MvPolynomial (Fin (Fintype.card (Σ i, Fin (orders i)))) ℂ, Q ≠ 0 →
           MvPolynomial.eval
@@ -160,7 +160,7 @@ theorem carrierJetNondegenerateAt_of_momentNondegenerate
   intro z hz hupper Q hQ r
   have hnode : ∀ k, (packetNode orders ⟨z, hz⟩ shift (r, k)).im ≠ 0 := by
     intro k
-    exact ne_of_gt (hupper r _)
+    exact ne_of_lt (hupper r _)
   have hvals :
       (fun k => probabilityCarrierExpandedPacketValue nu orders ⟨z, hz⟩ shift (r, k)) =
         fun k => ((Nat.factorial (packetOrder orders (r, k)) : ℕ) : ℂ) *
@@ -185,7 +185,7 @@ theorem maximalTranslationDifferentialFree_of_momentNondegenerate
     (hmom : ∀ (p : FiniteDifferentialPattern Unit)
       (shift : InjectiveShiftConfiguration (CarrierPatternShift p))
       (z : CarrierPatternRow p → ℂ) (hz : Function.Injective z),
-      (∀ r i, 0 < (z r + shift.1 i).im) →
+      (∀ r i, (z r + shift.1 i).im < 0) →
       ∀ r : CarrierPatternRow p,
         ∀ Q : MvPolynomial
           (Fin (Fintype.card (Σ i : CarrierPatternShift p, Fin (p.orders i)))) ℂ, Q ≠ 0 →

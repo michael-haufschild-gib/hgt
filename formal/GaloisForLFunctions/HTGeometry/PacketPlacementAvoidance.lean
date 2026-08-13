@@ -111,6 +111,78 @@ theorem exists_placed_packet_all_rows_nondegenerate
   obtain ⟨β, hβ⟩ := hnot
   exact sum_monomial_ne_zero exponent hexp _ hβ
 
+/-- Vertical placement avoiding a finite set, below every prescribed height. -/
+theorem exists_translation_avoiding_finite_below
+    {row : Type*} [Finite row] (z : row → ℂ) {S : Set ℂ} (hS : S.Finite) (H : ℝ) :
+    ∃ t : ℝ, t < H ∧ ∀ r, (z r + (t : ℂ) * Complex.I) ∉ S := by
+  classical
+  have hunion :
+      (⋃ r : row, {t : ℝ | z r + (t : ℂ) * Complex.I ∈ S}).Finite :=
+    Set.finite_iUnion fun r => finite_translations_into_finite (z r) hS
+  have hnotsub : ¬ Set.Iio H ⊆
+      ⋃ r : row, {t : ℝ | z r + (t : ℂ) * Complex.I ∈ S} := by
+    intro hsub
+    exact (Set.Iio_infinite H) (hunion.subset hsub)
+  obtain ⟨t, htIio, htnot⟩ := Set.not_subset.mp hnotsub
+  refine ⟨t, htIio, ?_⟩
+  intro r hmem
+  exact htnot (Set.mem_iUnion.mpr ⟨r, hmem⟩)
+
+/-- Translating low enough puts every row strictly in the lower half-plane, uniformly over a
+finite family of offsets. -/
+theorem exists_translation_lower_and_avoiding
+    {row ι : Type*} [Finite row] [Finite ι]
+    (z : row → ℂ) (shift : ι → ℂ) {S : Set ℂ} (hS : S.Finite) :
+    ∃ t : ℝ, (∀ r i, (z r + (t : ℂ) * Complex.I + shift i).im < 0) ∧
+      ∀ r, (z r + (t : ℂ) * Complex.I) ∉ S := by
+  classical
+  cases nonempty_fintype row
+  cases nonempty_fintype ι
+  set H : ℝ := ∑ r : row, |(z r).im| + ∑ i : ι, |(shift i).im| with hH
+  obtain ⟨t, htH, htS⟩ := exists_translation_avoiding_finite_below z hS (-H)
+  refine ⟨t, ?_, htS⟩
+  intro r i
+  have hr : |(z r).im| ≤ ∑ r' : row, |(z r').im| :=
+    Finset.single_le_sum (f := fun r' : row => |(z r').im|)
+      (fun r' _ => abs_nonneg _) (Finset.mem_univ r)
+  have hi : |(shift i).im| ≤ ∑ i' : ι, |(shift i').im| :=
+    Finset.single_le_sum (f := fun i' : ι => |(shift i').im|)
+      (fun i' _ => abs_nonneg _) (Finset.mem_univ i)
+  have hzr : (z r).im ≤ |(z r).im| := le_abs_self _
+  have hsi : (shift i).im ≤ |(shift i).im| := le_abs_self _
+  have hsum : (z r + (t : ℂ) * Complex.I + shift i).im =
+      (z r).im + t + (shift i).im := by
+    simp [Complex.add_im, Complex.mul_im]
+  rw [hsum]
+  have : t < -H := htH
+  rw [hH] at this
+  linarith
+
+/-- **A placed lower packet on which every row is nondegenerate.**  Given a nonzero coefficient
+vector, one vertical translation simultaneously drops an arbitrary injective row family into
+admissible lower-half-plane position and carries it off the finite degenerate set, so at *every*
+row the relation polynomial is nonzero. -/
+theorem exists_placed_lower_packet_all_rows_nondegenerate
+    {row κ ι : Type*} [Finite row] [Fintype κ] [DecidableEq κ] [Finite ι]
+    (q n : ℕ) (exponent : κ → (Fin n →₀ ℕ)) (hexp : Function.Injective exponent)
+    (coeff : κ × Fin (q + 1) → ℂ) (β₀ : κ) {d₀ : Fin (q + 1)}
+    (hcoeff : coeff (β₀, d₀) ≠ 0)
+    (z₀ : row → ℂ) (hz₀ : Function.Injective z₀) (shift : ι → ℂ) :
+    ∃ z : row → ℂ, Function.Injective z ∧
+      (∀ r i, (z r + shift i).im < 0) ∧
+      ∀ r, (∑ β : κ, MvPolynomial.monomial (exponent β)
+        (rowCoefficientPolynomial q coeff β (z r))) ≠ 0 := by
+  classical
+  obtain ⟨t, hlower, havoid⟩ := exists_translation_lower_and_avoiding z₀ shift
+    (finite_degenerate_rowNodes q coeff β₀ hcoeff)
+  refine ⟨fun r => z₀ r + (t : ℂ) * Complex.I,
+    injective_translate z₀ hz₀ t, hlower, ?_⟩
+  intro r
+  have hnot := havoid r
+  simp only [Set.mem_setOf_eq, not_forall] at hnot
+  obtain ⟨β, hβ⟩ := hnot
+  exact sum_monomial_ne_zero exponent hexp _ hβ
+
 end
 
 end GaloisForLFunctions.HTGeometry

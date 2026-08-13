@@ -414,7 +414,7 @@ theorem monicOrthoAlpha_favardMoment (α β : ℕ → ℝ) (hβ : ∀ n : ℕ, 0
     have hstep : Polynomial.C (monicOrthoAlpha (favardMoment α β) (m + 1)) *
         favardPoly α β (m + 1) =
         Polynomial.C (α (m + 1)) * favardPoly α β (m + 1) := by
-      linear_combination (norm := ring_nf) hrec - hours
+      linear_combination (norm := ring_nf) hours - hrec
     have hCeq := mul_right_cancel₀ (favardPoly_ne_zero α β (m + 1)) hstep
     exact Polynomial.C_injective hCeq
 

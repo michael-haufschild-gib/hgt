@@ -40,10 +40,10 @@ structure ClassicalAnalyticNevanlinnaCarrierFamily (s : ℕ → ℝ) where
   b_real : ∀ x : ℝ, b x = base.toBoundaryFamily.matrix.b x
   c_real : ∀ x : ℝ, c x = base.toBoundaryFamily.matrix.c x
   d_real : ∀ x : ℝ, d x = base.toBoundaryFamily.matrix.d x
-  finite_cauchy : ∀ (tau : ℝ) (z : ℂ), 0 < z.im →
+  finite_cauchy : ∀ (tau : ℝ) (z : ℂ), z.im ≠ 0 →
     (∫ x, ((x : ℂ) - z)⁻¹ ∂(base.leaf tau : Measure ℝ)) =
       (a z * tau + b z) / (c z * tau + d z)
-  infinity_cauchy : ∀ z : ℂ, 0 < z.im → c z ≠ 0 →
+  infinity_cauchy : ∀ z : ℂ, z.im ≠ 0 → c z ≠ 0 →
     (∫ x, ((x : ℂ) - z)⁻¹ ∂(base.leaf ∞ : Measure ℝ)) = a z / c z
 
 namespace ClassicalAnalyticNevanlinnaCarrierFamily
@@ -207,7 +207,7 @@ theorem finite_denominator_ne_zero_of_quotient_upper
 The value at the point at infinity is exactly the background because the projective Cauchy term
 vanishes there. -/
 theorem leaf_cauchy_eq_background_add_projective
-    (t : OnePoint ℝ) (z : ℂ) (hz : 0 < z.im)
+    (t : OnePoint ℝ) (z : ℂ) (hz : z.im ≠ 0)
     (hc : F.c z ≠ 0) (hq : 0 < (F.quotient z).im) :
     (∫ x, ((x : ℂ) - z)⁻¹ ∂(F.base.leaf t : Measure ℝ)) =
       F.background z + F.amplitude z * projectiveCauchyPower (F.quotient z) 0 t := by
@@ -223,7 +223,7 @@ theorem leaf_cauchy_eq_background_add_projective
 
 /-- The projective affine leaf transform is continuous in the compactified real parameter. -/
 theorem continuous_leaf_cauchy
-    (z : ℂ) (hz : 0 < z.im) (hc : F.c z ≠ 0)
+    (z : ℂ) (hz : z.im ≠ 0) (hc : F.c z ≠ 0)
     (hq : 0 < (F.quotient z).im) :
     Continuous (fun t : OnePoint ℝ =>
       ∫ x, ((x : ℂ) - z)⁻¹ ∂(F.base.leaf t : Measure ℝ)) := by
@@ -237,7 +237,7 @@ theorem continuous_leaf_cauchy
 Nevanlinna expansion used by the transversality family.  This is local on the meromorphic regular
 locus, so no fictitious global smooth extension of `-1/c²` or `-d/c` is assumed. -/
 theorem iteratedDeriv_leafCauchy_eq_background_add_expansion
-    (t : OnePoint ℝ) (z : ℂ) (hz : 0 < z.im)
+    (t : OnePoint ℝ) (z : ℂ) (hz : z.im ≠ 0)
     (hc : F.c z ≠ 0) (hq : 0 < (F.quotient z).im) (n : ℕ) :
     iteratedDeriv n
         (fun w => ∫ x, ((x : ℂ) - w)⁻¹ ∂(F.base.leaf t : Measure ℝ)) z =
@@ -265,8 +265,8 @@ theorem iteratedDeriv_leafCauchy_eq_background_add_expansion
     hamp.contDiffAt (hU.mem_nhds hzU)
   have hquotAt : ContDiffAt ℂ ⊤ F.quotient z :=
     hquot.contDiffAt (hU.mem_nhds hzU)
-  have hzEv : ∀ᶠ w in 𝓝 z, 0 < w.im :=
-    continuousAt_const.eventually_lt Complex.continuous_im.continuousAt hz
+  have hzEv : ∀ᶠ w in 𝓝 z, w.im ≠ 0 :=
+    Complex.continuous_im.continuousAt.eventually_ne hz
   have hcEv : ∀ᶠ w in 𝓝 z, F.c w ≠ 0 :=
     F.differentiable_c.continuous.continuousAt.eventually_ne hc
   have hqEv : ∀ᶠ w in 𝓝 z, 0 < (F.quotient w).im :=
@@ -319,31 +319,31 @@ theorem iteratedDeriv_leafCauchy_eq_background_add_expansion
       rw [heq.iteratedDeriv_eq n]
       simp [projectiveNevanlinnaJetExpansionColumn]
 
-/-- The Cauchy kernel at an upper-half-plane point is integrable against every finite real
+/-- The Cauchy kernel at a point off the real axis is integrable against every finite real
 measure. -/
-theorem integrable_cauchyKernel_of_im_pos
-    (mu : Measure ℝ) [IsFiniteMeasure mu] (z : ℂ) (hz : 0 < z.im) :
+theorem integrable_cauchyKernel_of_im_ne_zero
+    (mu : Measure ℝ) [IsFiniteMeasure mu] (z : ℂ) (hz : z.im ≠ 0) :
     Integrable (fun x : ℝ => ((x : ℂ) - z)⁻¹) mu := by
   have hzsupport : z ∉ algebraMap ℝ ℂ '' mu.support := by
     rintro ⟨x, _hx, hzx⟩
     have him := congrArg Complex.im hzx
     change ((x : ℂ)).im = z.im at him
     simp only [ofReal_im] at him
-    linarith
+    exact hz him.symm
   simpa [resolvent, pow_one] using
     (integrable_resolvent_pow (μ := mu) hzsupport 1)
 
-/-- Every positive power of the upper-half-plane Cauchy kernel is integrable against a finite
-real measure. -/
-theorem integrable_cauchyKernel_pow_of_im_pos
-    (mu : Measure ℝ) [IsFiniteMeasure mu] (z : ℂ) (hz : 0 < z.im) (r : ℕ) :
+/-- Every positive power of the off-axis Cauchy kernel is integrable against a finite real
+measure. -/
+theorem integrable_cauchyKernel_pow_of_im_ne_zero
+    (mu : Measure ℝ) [IsFiniteMeasure mu] (z : ℂ) (hz : z.im ≠ 0) (r : ℕ) :
     Integrable (fun x : ℝ => (((x : ℂ) - z)⁻¹) ^ r) mu := by
   have hzsupport : z ∉ algebraMap ℝ ℂ '' mu.support := by
     rintro ⟨x, _hx, hzx⟩
     have him := congrArg Complex.im hzx
     change ((x : ℂ)).im = z.im at him
     simp only [ofReal_im] at him
-    linarith
+    exact hz him.symm
   simpa [resolvent] using (integrable_resolvent_pow (μ := mu) hzsupport r)
 
 /-- Complex Fubini for a bounded-density reweighting of the Nevanlinna boundary kernel.  The
@@ -434,7 +434,7 @@ theorem weightedBoundaryCarrier_cauchy_eq_parameterIntegral
     (eta : Measure (OnePoint ℝ)) [IsProbabilityMeasure eta]
     (w : Lp ℝ (⊤ : ENNReal) eta) (hw : LinftyStrictlyPositive eta w)
     (hint : ∫ t, w t ∂eta = 1)
-    (z : ℂ) (hz : 0 < z.im) (hc : F.c z ≠ 0)
+    (z : ℂ) (hz : z.im ≠ 0) (hc : F.c z ≠ 0)
     (hq : 0 < (F.quotient z).im) :
     (∫ x, ((x : ℂ) - z)⁻¹
         ∂weightedBoundaryCarrier F.base.toBoundaryFamily eta w) =
@@ -463,14 +463,14 @@ theorem weightedBoundaryCarrier_cauchy_eq_parameterIntegral
       (hinnerLp.integrable (by norm_num))
   have hcarrier : Integrable (fun x : ℝ => ((x : ℂ) - z)⁻¹)
       (weightedBoundaryCarrier F.base.toBoundaryFamily eta w) :=
-    integrable_cauchyKernel_of_im_pos
+    integrable_cauchyKernel_of_im_ne_zero
       (weightedBoundaryCarrier F.base.toBoundaryFamily eta w) z hz
   have hkernelContinuous : Continuous (fun x : ℝ => ((x : ℂ) - z)⁻¹) := by
     exact (continuous_ofReal.sub continuous_const).inv₀ (fun x hzero => by
       change (x : ℂ) - z = 0 at hzero
       have him := congrArg Complex.im hzero
       simp only [sub_im, ofReal_im, zero_im] at him
-      linarith)
+      exact hz (by linarith))
   apply Complex.ext
   · have hrecarrier := integral_re hcarrier
     change (∫ x, (((x : ℂ) - z)⁻¹).re
@@ -495,7 +495,7 @@ theorem weightedBoundaryCarrier_cauchy_eq_parameterIntegral
     apply integral_congr_ae
     filter_upwards [hw] with t ht
     rw [ENNReal.toReal_ofReal ht.le]
-    have hleaf := integrable_cauchyKernel_of_im_pos
+    have hleaf := integrable_cauchyKernel_of_im_ne_zero
       (F.base.leaf t : Measure ℝ) z hz
     have hreleaf := integral_re hleaf
     change (∫ x, (((x : ℂ) - z)⁻¹).re ∂(F.base.leaf t : Measure ℝ)) =
@@ -527,7 +527,7 @@ theorem weightedBoundaryCarrier_cauchy_eq_parameterIntegral
     apply integral_congr_ae
     filter_upwards [hw] with t ht
     rw [ENNReal.toReal_ofReal ht.le]
-    have hleaf := integrable_cauchyKernel_of_im_pos
+    have hleaf := integrable_cauchyKernel_of_im_ne_zero
       (F.base.leaf t : Measure ℝ) z hz
     have himleaf := integral_im hleaf
     change (∫ x, (((x : ℂ) - z)⁻¹).im ∂(F.base.leaf t : Measure ℝ)) =
@@ -544,7 +544,7 @@ theorem iteratedDeriv_weightedBoundaryCarrier_cauchy_eq_background_add_control
     (eta : Measure (OnePoint ℝ)) [IsProbabilityMeasure eta]
     (w : Lp ℝ (⊤ : ENNReal) eta) (hw : LinftyStrictlyPositive eta w)
     (hint : ∫ t, w t ∂eta = 1)
-    (z : ℂ) (hz : 0 < z.im) (hc : F.c z ≠ 0)
+    (z : ℂ) (hz : z.im ≠ 0) (hc : F.c z ≠ 0)
     (hq : 0 < (F.quotient z).im) (n : ℕ) :
     iteratedDeriv n
         (fun u => ∫ x, ((x : ℂ) - u)⁻¹
@@ -571,7 +571,7 @@ theorem iteratedDeriv_weightedBoundaryCarrier_cauchy_eq_background_add_control
     have him := congrArg Complex.im hzx
     change ((x : ℂ)).im = z.im at him
     simp only [ofReal_im] at him
-    linarith
+    exact hz him.symm
   have hactual := iteratedDeriv_resolventTransform n z hzsupport
   rw [resolventTransform_def] at hactual
   have hactual' : iteratedDeriv n
@@ -588,13 +588,13 @@ theorem iteratedDeriv_weightedBoundaryCarrier_cauchy_eq_background_add_control
       change (x : ℂ) - z = 0 at hzero
       have him := congrArg Complex.im hzero
       simp only [sub_im, ofReal_im, zero_im] at him
-      linarith)).pow (n + 1)
+      exact hz (by linarith))).pow (n + 1)
   have hfcarrier : Integrable f muw :=
-    (integrable_cauchyKernel_pow_of_im_pos muw z hz (n + 1)).const_mul
+    (integrable_cauchyKernel_pow_of_im_ne_zero muw z hz (n + 1)).const_mul
       (n.factorial : ℂ)
   have hfleaves : ∀ t, Integrable f (F.base.leaf t : Measure ℝ) := by
     intro t
-    exact (integrable_cauchyKernel_pow_of_im_pos
+    exact (integrable_cauchyKernel_pow_of_im_ne_zero
       (F.base.leaf t : Measure ℝ) z hz (n + 1)).const_mul (n.factorial : ℂ)
   let eta0 : ℝ := (F.quotient z).im / 2
   have heta0 : 0 < eta0 := by dsimp [eta0]; linarith
@@ -628,7 +628,7 @@ theorem iteratedDeriv_weightedBoundaryCarrier_cauchy_eq_background_add_control
             have him := congrArg Complex.im hzx
             change ((x : ℂ)).im = z.im at him
             simp only [ofReal_im] at him
-            linarith)
+            exact hz him.symm)
         rw [resolventTransform_def] at hleafActual
         simpa [resolvent] using hleafActual
       _ = iteratedDeriv n F.background z + column t := by
@@ -730,7 +730,7 @@ theorem iteratedDeriv_weightedBoundaryCarrier_cauchy_eq_base_of_cauchyFrozenTang
     (hpositive : LinftyStrictlyPositive eta (baseDensity + w.1))
     (hintegral : ∫ t, (baseDensity + w.1) t ∂eta = 1)
     (i : ι) (j : Fin (nf i))
-    (hz : 0 < (zf i).im) (hc : F.c (zf i) ≠ 0) :
+    (hz : (zf i).im ≠ 0) (hc : F.c (zf i) ≠ 0) :
     iteratedDeriv j.1
         (fun u => ∫ x, ((x : ℂ) - u)⁻¹
           ∂weightedBoundaryCarrier F.base.toBoundaryFamily eta
@@ -867,14 +867,14 @@ theorem weightedBoundaryCarrierExpandedPacketValue_eq_actualNevanlinnaExpandedPa
     (orders : ι → ℕ) (packet : InjectiveProjectiveRowPacket row)
     (shift : InjectiveShiftConfiguration ι)
     (hupperMap : ∀ z, z.im < 0 → 0 < (F.quotient z).im)
-    (hupper : ∀ x, 0 < (combinedProjectiveRowShiftPacket packet shift x).im) :
+    (hupper : ∀ x, (combinedProjectiveRowShiftPacket packet shift x).im < 0) :
     F.weightedBoundaryCarrierExpandedPacketValue
         eta (baseDensity + w.1) orders packet shift =
       actualNevanlinnaExpandedPacketValue
         F.background F.amplitude F.quotient orders eta baseDensity S packet w shift := by
   classical
   let nodes : row × ι → ℂ := ambientCombinedProjectiveNodes packet shift.1
-  have hnodeUpper : ∀ x, 0 < (nodes x).im := by
+  have hnodeUpper : ∀ x, (nodes x).im < 0 := by
     intro x
     simpa [nodes, ambientCombinedProjectiveNodes, combinedProjectiveRowShiftPacket] using hupper x
   have hquotientUpper : ∀ x, 0 < (F.quotient (nodes x)).im := fun x =>
@@ -890,7 +890,7 @@ theorem weightedBoundaryCarrierExpandedPacketValue_eq_actualNevanlinnaExpandedPa
   funext p
   let s := (Fintype.equivFin (Σ i, Fin (orders i))).symm p.2
   let z : ℂ := nodes (p.1, s.1)
-  have hz : 0 < z.im := hnodeUpper (p.1, s.1)
+  have hz : z.im < 0 := hnodeUpper (p.1, s.1)
   have hq : 0 < (F.quotient z).im := hquotientUpper (p.1, s.1)
   have hc : F.c z ≠ 0 := by
     intro hcz
@@ -898,7 +898,7 @@ theorem weightedBoundaryCarrierExpandedPacketValue_eq_actualNevanlinnaExpandedPa
     rw [hqzero] at hq
     simp at hq
   have hjet := F.iteratedDeriv_weightedBoundaryCarrier_cauchy_eq_background_add_control
-    eta (baseDensity + w.1) hw hint z hz hc hq s.2
+    eta (baseDensity + w.1) hw hint z hz.ne hc hq s.2
   have hcoord :=
     projectiveNevanlinnaJetExpansionSmoothControl_coordinate_eq_singleton_last
       F.amplitude F.quotient (fun x : row × ι => orders x.2)
@@ -945,7 +945,7 @@ theorem weightedBoundaryCarrier_cauchy_eq_background_add_control
     (eta : Measure (OnePoint ℝ)) [IsProbabilityMeasure eta]
     (w : Lp ℝ (⊤ : ENNReal) eta) (hw : LinftyStrictlyPositive eta w)
     (hint : ∫ t, w t ∂eta = 1)
-    (z : ℂ) (hz : 0 < z.im) (hc : F.c z ≠ 0)
+    (z : ℂ) (hz : z.im ≠ 0) (hc : F.c z ≠ 0)
     (hq : 0 < (F.quotient z).im) :
     (∫ x, ((x : ℂ) - z)⁻¹
         ∂weightedBoundaryCarrier F.base.toBoundaryFamily eta w) =

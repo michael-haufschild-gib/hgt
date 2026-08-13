@@ -60,7 +60,7 @@ noncomputable def analyticNevCarrierFamily (h : PositiveMomentForm s) (h0b : Bou
     ring
   finite_cauchy := by
     intro tau z hz
-    have hz' : z.im ≠ 0 := ne_of_gt hz
+    have hz' : z.im ≠ 0 := hz
     have hkey := cauchyTransform_nevLeaf_eq_moebius h h0b h0 tau hz'
     have hden := nevInf_denominator_ne_zero h h0b h0 tau hz'
     have hshape : -nevAinf s z * (tau : ℂ) + nevCinf s z
@@ -72,7 +72,7 @@ noncomputable def analyticNevCarrierFamily (h : PositiveMomentForm s) (h0b : Bou
     rw [nevExtremalFamily_leaf, hkey, hshape, hshape']
   infinity_cauchy := by
     intro z hz _
-    have hz' : z.im ≠ 0 := ne_of_gt hz
+    have hz' : z.im ≠ 0 := hz
     show (∫ x, ((x : ℂ) - z)⁻¹
         ∂((nevExtremalFamily h h0b h0).leaf ∞ : Measure ℝ)) = _
     rw [nevExtremalFamily_leaf]
