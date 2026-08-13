@@ -7,7 +7,7 @@
   pending independent formula-level audit
 - **Parent results:** `constrained-prolate-radial-leakage-divisibility-spectrum.md`,
   `ccm-exact-radial-nonstationary-sector-bound.md`, and
-  `ccm-prime-shift-radial-index-separation-law.md`, and
+  `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm/ccm-prime-shift-radial-index-separation-law.md`, and
   `ccm-exact-high-radial-first-row-bv-bound.md`
 - **Statement:** The finite-aperture raw exterior von Mangoldt charge of the constrained CCM
   source, divided by its first leakage scale, converges to

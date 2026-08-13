@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.AnalyticNevanlinnaCarrierRelationFree
+import GaloisForLFunctions.HTGeometry.NevanlinnaQuotientSection
 import GaloisForLFunctions.HTGeometry.RegularizedTransformGauge
 
 /-!
@@ -96,6 +97,30 @@ theorem countablePatterns_actualNevanlinna_notDifferentiallyAlgebraicOn_dense_re
   refine ⟨hdense.mono ?_, Filter.mem_of_superset hres ?_⟩ <;>
     exact fun w hw =>
       F.not_differentiallyAlgebraicOn_cauchyTransform_weightedBoundaryCarrier eta _ hw
+
+/-- The classical carrier structure supplies all projective-separation anchors required by the
+half-plane residual law. -/
+theorem countablePatterns_actualNevanlinna_notDifferentiallyAlgebraicOn_dense_residual_of_classical
+    {ιf : Type} [Fintype ιf] [DecidableEq ιf]
+    (hCmin : HasMinimalExponentialType F.c)
+    (hupperMap : ∀ z, z.im < 0 → 0 < (F.quotient z).im)
+    (zf : ιf → ℂ)
+    (hqf_inj : Function.Injective (fun i => F.quotient (zf i)))
+    (hupperf : ∀ i, 0 < (F.quotient (zf i)).im)
+    (nf : ιf → ℕ)
+    (eta : Measure (OnePoint ℝ)) [IsProbabilityMeasure eta] (heta : eta.support.Infinite) :
+    let frozen := normalizedProjectiveCauchyJetLinftyContinuousControl
+      (fun i => F.quotient (zf i)) nf eta hupperf
+    let S := LinearMap.ker frozen.toLinearMap
+    let positiveChart : Set S := Metric.ball 0 1
+    let notDAOnCarrier : Set positiveChart := {w |
+      ¬ DifferentiallyAlgebraicOn
+        (cauchyTransform (weightedBoundaryCarrier F.base.toBoundaryFamily eta
+          (linftyOne eta + w.1.1))) lowerHalfPlane}
+    Dense notDAOnCarrier ∧ notDAOnCarrier ∈ residual positiveChart := by
+  obtain ⟨hnoCommon, ⟨p0, hCp⟩, c0, hCc⟩ := F.projectiveSeparationAnchors
+  exact F.countablePatterns_actualNevanlinna_notDifferentiallyAlgebraicOn_dense_residual
+    hCmin hnoCommon hCp hCc hupperMap zf hqf_inj hupperf nf eta heta
 
 end ClassicalAnalyticNevanlinnaCarrierFamily
 

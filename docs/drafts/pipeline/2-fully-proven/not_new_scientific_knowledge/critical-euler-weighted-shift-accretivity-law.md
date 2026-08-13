@@ -202,7 +202,7 @@ n<=e^(2a).                                                 (24)
 
 This recovers Suzuki's/CCM's exact finite-aperture prime cutoff from support geometry. It does not
 truncate the subsequent radial index; that distinction remains the one proved in
-`ccm-prime-shift-radial-index-separation-law.md`.
+`docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm/ccm-prime-shift-radial-index-separation-law.md`.
 
 ## Prime-character carrier
 
@@ -278,4 +278,3 @@ the RH equivalence, so no Lean file is added.
 - [x] signed-Gamma complementary carrier budget attached
 - [ ] factor the Hermitian part of `T` through a source-defined positive space
 - [ ] prove accretivity and RH
-

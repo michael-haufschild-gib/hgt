@@ -54,7 +54,9 @@ d_1/c * sum_(q<=lambda^2) log(q)/q
 ```
 
 This proves low-index summability only. The high truncated-divisor weighted radial tail remains the
-gate isolated in `ccm-prime-shift-radial-index-separation-law.md`. The formal theorem itself is
+gate isolated in
+`docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm/ccm-prime-shift-radial-index-separation-law.md`.
+The formal theorem itself is
 unchanged: it is exactly a shift cutoff, not a radial-harmonic cutoff.
 
 ## Verification

@@ -308,7 +308,7 @@ gate.  That was the wrong measurement of the card's own content: sections 1–4 
 wrapper but nine separate statements, and the *positivity*, the *grade localisation*, the *dimension
 count*, the *readout norm*, and the *Hardy product formula* are each a proof, not a restatement.  All
 of them are now in Lean, on top of the local-ratio layer of
-`ccm-local-ratio-second-order-covariance-charge.md`.
+`docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm/ccm-local-ratio-second-order-covariance-charge.md`.
 
 - `covIndex`, `covFeature`, **`covarianceAnomaly_eq_readout`** — equations `(1)`–`(5)`.  Note that
   `covFeature` takes no ambient set: the coordinate `V_V(t)_I` genuinely does not depend on `V`, which
@@ -380,4 +380,3 @@ subset-indexed feature map.  Both were re-proved in the form the card uses.
 - [ ] transport of the shifted-Xi Pick negative index by the resulting positive Schur kernel
 - [ ] cofinal determinant/divisor convergence
 - [ ] uniform positive Gauss lifting: relative graph convergence to `T_0` with uniform contractivity
-

@@ -1,7 +1,7 @@
 # Restricted summation has an invisible aperture gauge
 
 - **ID:** `ccm-restricted-summation-aperture-gauge`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Parent source:** Connes--Consani--Moscovici, *Zeta Spectral Triples*, Sections 7--8;
@@ -157,7 +157,8 @@ Two remarks matching the card's own limitation.  The representative differs from
 smooth compactly supported function, so it has exactly the endpoint regularity of `f` and is *not*
 Schwartz — the module proves `HasCompactSupport b` and smoothness of `b`, never smoothness of `f_0`.
 And the lower tail `1_(0,lambda^(-1)) E(f)` is untouched by this module; that object is the subject of
-`ccm-poisson-tail-l2-unboundedness.md`, whose `sqrt N` lower bound and coherent extremal packet are
+`docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm/ccm-poisson-tail-l2-unboundedness.md`,
+whose `sqrt N` lower bound and coherent extremal packet are
 formalized in `CCMArithmeticTailUnbounded.lean`.
 
 ## Gates

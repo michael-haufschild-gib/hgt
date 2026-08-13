@@ -162,7 +162,8 @@ high radial row k>lambda^2: exterior phase + BV estimate.        (14)
 ```
 
 Thus the high radial divisor tail identified in
-`ccm-prime-shift-radial-index-separation-law.md` vanishes at the leakage scale.
+`docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm/ccm-prime-shift-radial-index-separation-law.md`
+vanishes at the leakage scale.
 
 ## Novelty and significance verdict
 

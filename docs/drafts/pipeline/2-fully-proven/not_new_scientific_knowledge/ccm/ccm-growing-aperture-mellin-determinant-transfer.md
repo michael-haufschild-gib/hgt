@@ -281,7 +281,8 @@ This theorem is one link in an existing chain, not a new standalone route.
 
 ### Inputs already proved in the pipeline
 
-1. `ccm-restricted-summation-aperture-gauge.md` proves that the apparent source point-value defect
+1. `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm/ccm-restricted-summation-aperture-gauge.md`
+   proves that the apparent source point-value defect
    can be removed without changing the restricted summation vector. The genuine transfer object is
    the exterior arithmetic tail.
 2. `constrained-prolate-two-mode-ground-state.md` proves that the CCM `h_0`--`h_4` seed is selected
@@ -294,7 +295,9 @@ This theorem is one link in an existing chain, not a new standalone route.
    `C lambda^(-4)`, with exact constants `8/11` and `8/13`. A true-Weil bilinear transfer preserving
    this ratio supplies the required cofinal even dominance positively.
 4. `ccm-weil-exterior-tail-quotient-gate.md` identifies the aperture vector with the negative
-   exterior tail modulo the global Weil radical. `ccm-poisson-tail-l2-unboundedness.md` then proves
+   exterior tail modulo the global Weil radical.
+   `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm/ccm-poisson-tail-l2-unboundedness.md`
+   then proves
    quantitatively that the successful tail estimate must use the special prolate source in a
    zeta-weighted/oscillatory topology. An abstract scalar concentration bound supplies only its
    starting datum.

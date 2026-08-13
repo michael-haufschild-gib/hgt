@@ -1,7 +1,7 @@
 # Variable-width two-edge profiles are exactly the full aperture parity sectors
 
 - **ID:** `ccm-variable-width-two-edge-principalization-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM (paper) / FRONTIER-CONJECTURE CALIBRATION
 - **Scientific status:** `[PROVED HERE] [ELEMENTARY STRUCTURAL LAW]`
   `[NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`

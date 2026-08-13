@@ -1,7 +1,7 @@
 # The completed local-ratio product carries a cofinal second-order covariance charge
 
 - **ID:** `ccm-local-ratio-second-order-covariance-charge`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent sources:** the local-ratio multipliers and quantized differential of Connes--Consani,

@@ -7082,3 +7082,4 @@ import GaloisForLFunctions.HTGeometry.TripticSourceReciprocity
 import GaloisForLFunctions.HTGeometry.TripticSourceClassGroup
 import GaloisForLFunctions.HTGeometry.FreeDifferentialTranslationAutomorphism
 import GaloisForLFunctions.HTGeometry.NevanlinnaFullRankPhaseGdelta
+import GaloisForLFunctions.HTGeometry.DiscreteL1Convolution

@@ -97,7 +97,7 @@ end GaloisForLFunctions.HTGeometry
 
 namespace GaloisForLFunctions.HTGeometry
 
-open GaloisForLFunctions Polynomial IsDedekindDomain IsLocalRing WithZero
+open GaloisForLFunctions Polynomial IsDedekindDomain IsDedekindDomain.HeightOneSpectrum IsLocalRing WithZero
 open UniqueFactorizationMonoid
 
 set_option maxHeartbeats 1000000
@@ -247,7 +247,6 @@ theorem exists_monogenic_clearing :
 
 /-! ## The drop at every place -/
 
-set_option maxHeartbeats 8000000 in
 /-- **The extended derivation drops every place boundedly.** -/
 theorem exists_pos_valuation_algLaw_uDeriv_le
     (Q : HeightOneSpectrum (algCascadeInt m p)) :
@@ -258,14 +257,16 @@ theorem exists_pos_valuation_algLaw_uDeriv_le
   set c : algCascadeInt m p := Polynomial.aeval α (derivative (minpoly (topInt m) α)) with hc
   set n : ℕ := multiplicity Q.asIdeal (Ideal.span {c}) with hn
   refine ⟨n + 1, Nat.succ_pos n, fun f => ?_⟩
-  refine valuation_deriv_le_of_not_mem_pow Q (algLaw p (uDeriv m)) (hclear Q) ?_ f
+  refine valuation_fun_le_of_not_mem_pow Q
+    (fun x y => map_add (algLaw p (uDeriv m)) x y)
+    (fun x y => by rw [Derivation.leibniz]; simp only [smul_eq_mul])
+    (hclear Q) ?_ f
   intro hmem
   have hle := (intValuation_le_pow_iff_mem Q c (n + 1)).mpr hmem
   rw [Q.intValuation_eq_exp_neg_multiplicity hcne, ← hn] at hle
   have := exp_le_exp.mp hle
   omega
 
-set_option maxHeartbeats 8000000 in
 /-- **At a place over the maximal ideal, the Kummer–Dedekind multiplicity itself bounds the
 drop** — the tame different estimate `ord_Q(𝔡) ≤ e − 1`. -/
 theorem valuation_algLaw_uDeriv_le_of_normalizedFactor
@@ -278,7 +279,10 @@ theorem valuation_algLaw_uDeriv_le_of_normalizedFactor
     Q.valuation (AlgCascadeField p) (algLaw p (uDeriv m) f)
       ≤ Q.valuation (AlgCascadeField p) f * exp (e : ℤ) := by
   obtain ⟨α, hgen, hint, hcne, hclear⟩ := exists_monogenic_clearing m p
-  refine valuation_deriv_le_of_not_mem_pow Q (algLaw p (uDeriv m)) (hclear Q) ?_ f
+  refine valuation_fun_le_of_not_mem_pow Q
+    (fun x y => map_add (algLaw p (uDeriv m)) x y)
+    (fun x y => by rw [Derivation.leibniz]; simp only [smul_eq_mul])
+    (hclear Q) ?_ f
   exact not_mem_pow_aeval_derivative (maximalIdeal.isMaximal _)
     (topInt_maximalIdeal_ne_bot m) hgen hint hQ he
 

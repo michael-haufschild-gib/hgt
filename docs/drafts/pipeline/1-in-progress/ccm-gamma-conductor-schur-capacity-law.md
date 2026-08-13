@@ -209,7 +209,8 @@ the additive Euler explicit-formula source without destroying `(10h)` or divisor
 inertia.
 
 The source-side replacement is now explicit in
-`ccm-local-ratio-second-order-covariance-charge.md`. The full local-ratio product has a canonical
+`../3-formalized/not_new_scientific_knowledge/ccm/ccm-local-ratio-second-order-covariance-charge.md`.
+The full local-ratio product has a canonical
 higher-than-linear kernel anomaly with quadratic diagonal vanishing and cofinally divergent central
 curvature. A successful Gauss descent need not identify that kernel literally with the Gamma Gram
 `(10g)`; it must construct a pointed positive/relative lift with the same conductor-capacity and

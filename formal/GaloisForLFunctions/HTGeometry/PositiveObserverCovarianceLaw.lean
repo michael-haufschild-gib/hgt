@@ -1,5 +1,6 @@
 import Mathlib.Analysis.CStarAlgebra.CompletelyPositiveMap
 import Mathlib.Analysis.InnerProductSpace.GramMatrix
+import Mathlib.Analysis.Normed.Module.FiniteDimension
 import Mathlib.LinearAlgebra.Matrix.Rank
 
 /-!
@@ -67,6 +68,45 @@ theorem hiddenCovariance_re_nonneg
     (phi : A →ₗ[ℂ] ℂ) (hphi : ∀ x : A, 0 ≤ (phi (E.map (star x * x))).re) (a : A) :
     0 ≤ (E.hiddenCovariance phi a a).re := by
   exact hphi (E.hiddenComponent a)
+
+/-- Full positive-semidefinite kernel law: every finite covariance quadratic form is nonnegative. -/
+theorem hiddenCovariance_sum_re_nonneg
+    (phi : A →ₗ[ℂ] ℂ) (hphi : ∀ x : A, 0 ≤ (phi (E.map (star x * x))).re)
+    {ι : Type*} [Fintype ι] (a : ι → A) (z : ι → ℂ) :
+    0 ≤ (∑ j, ∑ i, star (z i) * z j * E.hiddenCovariance phi (a i) (a j)).re := by
+  let x : A := ∑ i, z i • E.hiddenComponent (a i)
+  have hx :
+      (∑ j, ∑ i, star (z i) * z j * E.hiddenCovariance phi (a i) (a j)) =
+        phi (E.map (star x * x)) := by
+    simp only [x, hiddenCovariance, star_sum, star_smul, Finset.sum_mul,
+      Finset.mul_sum, smul_mul_assoc, mul_smul_comm, map_smul, map_sum]
+    simp only [smul_eq_mul, Finset.mul_sum, mul_assoc, mul_left_comm]
+  rw [hx]
+  exact hphi x
+
+/-- Connected filtered-product defect of the observer. -/
+def connectedProductDefect (phi : A →ₗ[ℂ] ℂ) (a b : A) : ℂ :=
+  phi (E.map (a * b) - E.map a * E.map b)
+
+/-- Connected products are exactly star-paired hidden covariances. -/
+theorem connectedProductDefect_eq_hiddenCovariance
+    (phi : A →ₗ[ℂ] ℂ) (a b : A) :
+    E.connectedProductDefect phi a b = E.hiddenCovariance phi (star a) b := by
+  rw [E.hiddenCovariance_eq_observerKadisonCovariance]
+  simp [connectedProductDefect, observerKadisonCovariance]
+
+/-- A faithful multiplicative observer is the identity, hence has no relative hidden modes. -/
+theorem map_eq_id_of_multiplicative_faithful
+    (hmul : ∀ a b, E.map (a * b) = E.map a * E.map b)
+    (hfaith : ∀ x, E.map (star x * x) = 0 → x = 0) :
+    E.map = LinearMap.id := by
+  apply LinearMap.ext
+  intro a
+  have hhidden : E.hiddenComponent a = 0 := by
+    apply hfaith
+    rw [hmul, E.map_star]
+    simp [hiddenComponent, E.idempotent]
+  simpa [hiddenComponent] using (sub_eq_zero.mp hhidden).symm
 
 end ConditionalExpectationCore
 
@@ -151,6 +191,23 @@ theorem covarianceHilbert_not_finiteDimensional
   have hle := (T.hiddenJet_linearIndependent (Module.finrank ℂ H)).fintype_card_le_finrank
   simp only [Fintype.card_fin] at hle
   omega
+
+/-- Canonical positive norm action has a noncompact unit sublevel under relative jet freedom. -/
+theorem canonicalPositiveAction_unitSublevel_not_compact
+    (T : RelativeJetCovarianceRealization E (H := H)) :
+    ¬ IsCompact {x : H | ‖x‖ ^ 2 ≤ 1} := by
+  intro hcompact
+  have hset : {x : H | ‖x‖ ^ 2 ≤ 1} = Metric.closedBall 0 1 := by
+    ext x
+    simp only [Set.mem_setOf_eq, Metric.mem_closedBall, dist_zero_right]
+    constructor
+    · intro hx
+      nlinarith [norm_nonneg x]
+    · intro hx
+      nlinarith [norm_nonneg x]
+  rw [hset] at hcompact
+  exact T.covarianceHilbert_not_finiteDimensional
+    (FiniteDimensional.of_isCompact_closedBall₀ ℂ zero_lt_one hcompact)
 
 /-- Packaged relative-jet covariance theorem. -/
 theorem relativeJetFreedom_forces_infinite_covariance_rank

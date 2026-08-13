@@ -186,7 +186,8 @@ Hence the complete exceptional first row vanishes cofinally at the leakage scale
 Together with the already proved exact nonstationary `j,k>=2` sector and the diagonal radial
 leakage spectrum, `(18)` closes the low radial part of the exceptional first row. It does not close
 the truncated-divisor weighted tail `k>lambda^2`; see
-`ccm-prime-shift-radial-index-separation-law.md`. The Poisson center, archimedean form, and true
+`docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm/ccm-prime-shift-radial-index-separation-law.md`.
+The Poisson center, archimedean form, and true
 Weil even-gap lower bound remain later gates.
 
 ## References

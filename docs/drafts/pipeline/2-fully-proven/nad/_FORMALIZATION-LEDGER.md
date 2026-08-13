@@ -825,3 +825,35 @@ theorem, twice over.
 (`NevanlinnaCarrierDenominatorRow` + `analyticNevCarrierFamily_lowerMap`).  Bottleneck 1 has
 exactly two open items left: **M. Riesz (`KernelMinimalExponentialType`, needs Hadamard
 factorization)** and the leaf/label covariance upgrade; then the ten per-card assemblies.
+
+## M. Riesz WITHOUT Hadamard — Simon's transfer-product route (2026-08-13) `[ROUTE FOUND]`
+
+The "needs Weierstrass/Hadamard factorization" assessment is **wrong**.  Simon (*The classical
+moment problem as a self-adjoint finite difference operator*, Adv. Math. 137 (1998), §4,
+Lemma 4.6 + Theorems 4.8/4.9) proves minimal exponential type of all four Nevanlinna entries by a
+purely elementary product estimate:
+
+- The truncated Nevanlinna matrix is the product `T_n(z) = ∏_{j ≤ n} (1 + z·S(j))` with the
+  RANK-ONE step `S(j) = v_j w_j^T`, `v_j = (−q_j(0), p_j(0))`, `w_j = (p_j(0), q_j(0))`
+  (orthonormal normalization; monic form carries `h₀/h_j`).
+- `Σ_j ‖S(j)‖ < ∞` is exactly the two kernel sums at `0` — i.e. the corpus's
+  `BoundedKernel s 0` (which bundles BOTH families: the `⟨S0, P0, …⟩` fields).
+- Lemma 4.6: `‖∏(1+zA_j)‖ ≤ ∏_{j≤N}(1+|z|‖A_j‖)·exp(|z|·Σ_{j>N}‖A_j‖)`; choosing `N` with tail
+  `≤ ε/2` gives `≤ c_ε·exp(ε|z|)` — **minimal type, uniformly in n**, hence for the limits.
+- The step identity `M_n(z) = (1+z·S_n)·M_{n−1}(z)` reduces to the two scalar expansions
+  `p_n(z) = p_n(0) + h₀·z·Σ_{j<n} (q_n(0)p_j(0) − p_n(0)q_j(0))·p_j(z)/h_j` (and the `q`-version),
+  which follow from `christoffelDarbouxC` + `mixedChristoffelDarbouxC` + `monicOrthoC_wronskian`
+  — ALL already in the corpus (`NevanlinnaPluecker`, `ComplexChristoffelDarboux`).
+- Matrix norms are avoidable: track `m_n = max` of the four truncated entries; the rank-one step
+  gives `m_n ≤ m_{n−1}·(1 + |z|·c_n)` with `c_n ≲ (h₀/h_n)(p_n(0)² + q_n(0)²)` summable.
+
+Consequence: `HasMinimalExponentialType (nevBinf s)` (= the `minimalExponentialType` field, since
+`F.c = nevBinf` in carrier convention) is reachable by pure orthogonal-polynomial algebra +
+product bounds — no entire-function theory at all.  `KernelMinimalExponentialType` (kernel-root
+form) is then optional; the field needs only the `B` entry.
+
+Plan: new module `NevanlinnaTransferMinimalType.lean`:
+1. zero-expansion identities for `monicOrthoC` and `secondKindC` (from CD + mixed CD + Wronskian);
+2. increment identities for `nevAtruncC…nevDtruncC` (partial-sum one-step, definitional);
+3. scalar product bound `m_n(z) ≤ ∏(1+|z|c_j)` and the ε-tail split;
+4. `hasMinimalExponentialType_nevBinf` (+ A, C, D for free) via `tendsto_nev*truncC`.

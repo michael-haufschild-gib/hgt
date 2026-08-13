@@ -1,7 +1,7 @@
 # CCM Poisson-tail control must use source-structured arithmetic cancellation
 
 - **ID:** `ccm-poisson-tail-l2-unboundedness`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM (paper), `[BRIDGE] [NECESSITY THEOREM]`
 - **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Parent theories:** Mellin diagonalization of dilations; Dirichlet-polynomial multipliers;

@@ -15,7 +15,7 @@ card has been moved into `docs/drafts/pipeline/3-formalized/universal-law-field/
 | 3 | `condensed-phase-probabilistic-death-modulus-budget-and-gaussian-fluctuation-law.md` | NEEDS-LEAN — audit which clauses already have modules |
 | 4 | `critical-locus-hessian-classification-and-crystalline-transversality-law.md` | IN PROGRESS — Θ1, Θ2(i)–(v), Θ3.1 (packaged), Θ3.2 all certified (CriticalLocusQuadrupleEvenness, CrystallineShadowTransversality, CriticalLocusHessianClassification); Θ4 Step A certified (CriticalLocusConeFullness). Left: Θ4 exact-hitting assembly — OPEN RESEARCH, hostile audit + repair route + residual open point on the card (2026-08-13 log) |
 | 5 | `eigen-pair-prime-identification-derivation.md` | PAPER-INCOMPLETE — card states D3–D6 open; only D1–D2 are derived, so full formalization is blocked on the paper proof |
-| 6 | `finite-amplifier-width-cap-and-fejer-ratio-barrier-law.md` | NEAR-DONE 2026-08-13 — `HTGeometry/FiniteAmplifierFrame.lean`: Thm 1 (master bound/exclusion/width cap), Thm 1′ (multi-σ + averaging), Thm 2 (threshold, ratio form, ρ-finiteness on circle + every finite abelian Γ), Page anchor; §8 literature gate discharged (2504.05606 audited, no ceiling found).  Left: 2.1.1 for mixed `ℤ^r × F` supports (torus-sampling reduction, named on card) |
+| 6 | `finite-amplifier-width-cap-and-fejer-ratio-barrier-law.md` | **DONE 2026-08-13** — promoted to `3-formalized/`.  `HTGeometry/FiniteAmplifierFrame.lean`: Thm 1 (master bound/exclusion/width cap), Thm 1′ (multi-σ + averaging), Thm 2 (threshold, ratio form, ρ-finiteness: cosine sampling, finite-abelian dual averaging, separating-quotient reduction); Page + circle anchors in `FiniteAmplifierPatternCap`; residual-finiteness glue and Fejér's exact value recorded as cited-classical; 2504.05606 audited (no ceiling) |
 | 7 | `g-u-structure-admission-split-law.md` | NEEDS-LEAN — typing-grade split law flagged [NO LEAN — directive] |
 | 8 | `nonvacuous-independence-and-polarization-import-law.md` | BLOCKED-ON-PREREQ — quantitative core certified (SelbergSpectralParameter); the rest is citation-level and needs a hyperbolic-surface spectral layer (Laplace spectrum, Eisenstein series, Maass-Selberg truncation, Selberg trace formula and zeta) absent from mathlib and the corpus |
 | 9 | `odd-coordinate-mechanism-universal-law-set.md` | NEEDS-LEAN — law set; Law 6 proved here |
@@ -192,3 +192,24 @@ session scratchpad `subfolder-gaps.md` (regenerate with the grep in this ledger'
 lost — one grep over the card set).
 
 - `pole-purchase-escape-and-collision-gap-law.md` — **DONE 2026-08-13** — promoted: (INV3.2) log-derivative identity certified (RHTower/PolePurchaseLogDerivIdentity.lean, axiom-clean); full displayed surface now Lean-closed
+
+- `finite-amplifier-width-cap-and-fejer-ratio-barrier-law.md` — **DONE 2026-08-13** — promoted: frame Theorems 1/1'/2 certified in HTGeometry/FiniteAmplifierFrame.lean (master bound, exclusion, width cap, threshold, ratio form, multi-sigma + averaged stability, rho-finiteness via cosine sampling, finite-abelian dual averaging, and the separating-quotient reduction); anchors in FiniteAmplifierPatternCap; arXiv:2504.05606 audited, no ceiling meta-theorem found; all capstones axiom-clean
+
+## Design note — ULF-INV-5 Theorem B witness (2026-08-13, do next on this card)
+
+Concrete non-Ramanujan witness with clean algebra: the prism `C₁₆ × K₂` (3-regular, 32
+vertices).  Rayleigh vector: `v_{j,s} := cos(2πj/16)` (K₂-symmetric, cycle-cosine — mean zero).
+Exact quotient `R(v) = 2cos(π/8) + 1`, computed by the discrete cosine sums already certified in
+`HTGeometry/FiniteAmplifierFrame.lean` (cos-sample orthogonality).  Margin:
+`2cos(π/8) + 1 > 2√2 ⟺ √(2+√2) > 2√2 − 1 ⟺ 5√2 > 7 ⟺ 50 > 49` — pure algebra via
+`cos²(π/8) = (2+√2)/4` (half-angle).  Eigenvalue form via mathlib's Rayleigh layer
+(`Mathlib.Analysis.InnerProductSpace.Rayleigh`) on the `𝟙⊥`-restriction, or state the failure
+witness variationally.  N-clause satisfactions (finite trace = N2/N5 vacuous, `count ≤ trace` =
+spectral theorem, N6 Perron `d`, N4 girth) as simple lemmas with the card's vacuity caveat.
+
+Design note continued (INV-5): eigenvalue packaging via
+`LinearMap.IsSymmetric.hasEigenvalue_iSup_of_finiteDimensional` on the `A`-invariant
+subspace `𝟙⊥` (invariance from symmetry + `A𝟙 = 3𝟙`); `λ < 3` from the equality analysis of
+`⟨(3I−A)v, v⟩ = ∑_{edges}(v_x − v_y)²` — a 3-eigenvector in `𝟙⊥` is edge-constant, and
+edge-constancy on the prism forces global constancy by explicit `ZMod`-induction along the
+cycle plus one rung (no `SimpleGraph.Connected` machinery); `λ > 0` rules out `−3`.

@@ -121,7 +121,7 @@ theorem coe_mem_differentialAdjoin_of_subfield
 
 /-! ### The composite deck fixed field -/
 
-set_option maxHeartbeats 1600000 in
+set_option maxHeartbeats 1000000 in
 /-- **Invariance under the translation and the rotation forces membership in the current field.**
 An element fixed by the unit translation `q ↦ q + 1` and by the scaling `q ↦ ζ·q` of a root of
 unity of exact order `n` is a differential rational function of `(q′)^n`. -/
@@ -182,8 +182,10 @@ theorem mem_differentialAdjoin_derivPow_of_translation_rotation_invariant
     rw [hm, hk] at hcoe
     exact Nat.cast_injective hcoe
   -- the lifted palette
-  set xv : Fin 1 → ↥L := adjoinLift F (fun _ : Fin 1 ↦ q′) with hxvdef
-  have hxvcoe : ((xv 0 : ↥L) : T) = q′ := rfl
+  set v₀ : ↥L := ⟨q′, by
+    rw [hLdef, hLset]
+    exact subset_differentialAdjoin F ({q′} : Set T) rfl⟩ with hv₀def
+  have hv₀coe : ((v₀ : ↥L) : T) = q′ := rfl
   have hindT : DifferentialIndependent F (fun _ : Fin 1 ↦ q′) := by
     have hU : DifferentialIndependent F (fun _ : Unit ↦ q′) :=
       (hypertranscendentalOver_iff_differentialIndependent_singleton F q′).mp hq'
@@ -195,11 +197,21 @@ theorem mem_differentialAdjoin_derivPow_of_translation_rotation_invariant
       have hij : i = j := Subsingleton.elim i j
       rw [hm, hij])
     exact hcomp
-  have hv : DifferentialIndependent F xv := by
-    refine differentialIndependent_subfield L hLclosed xv ?_
+  have hv : DifferentialIndependent F (fun _ : Fin 1 ↦ v₀) := by
+    refine differentialIndependent_subfield L hLclosed (fun _ : Fin 1 ↦ v₀) ?_
     exact hindT
-  have hgenv : differentialAdjoin F (Set.range xv) = ⊤ :=
-    differentialAdjoin_adjoinLift_eq_top (fun _ : Fin 1 ↦ q′)
+  have hgenv : differentialAdjoin F (Set.range (fun _ : Fin 1 ↦ v₀)) = ⊤ := by
+    have h := differentialAdjoin_adjoinLift_eq_top (F := F) (fun _ : Fin 1 ↦ q′)
+    have hr : Set.range (adjoinLift F (fun _ : Fin 1 ↦ q′))
+        = Set.range (fun _ : Fin 1 ↦ v₀) := by
+      ext w
+      constructor
+      · rintro ⟨i, rfl⟩
+        exact ⟨0, Subtype.ext rfl⟩
+      · rintro ⟨i, rfl⟩
+        exact ⟨0, Subtype.ext rfl⟩
+    rw [hr] at h
+    exact h
   -- the rotation preserves the subfield
   have hmapadj : ∀ (σ : T ≃ₐ[F] T), (∀ z : T, σ z′ = (σ z)′) →
       ∀ w ∈ L, σ w ∈ differentialAdjoin F ({σ q′} : Set T) := by
@@ -253,8 +265,8 @@ theorem mem_differentialAdjoin_derivPow_of_translation_rotation_invariant
       invFun := fun w ↦ ⟨ρ.symm w, hρsymmem w w.2⟩
       left_inv := fun w ↦ Subtype.ext (ρ.symm_apply_apply w)
       right_inv := fun w ↦ Subtype.ext (ρ.apply_symm_apply w)
-      map_mul' := fun a b ↦ Subtype.ext (map_mul ρ a b)
-      map_add' := fun a b ↦ Subtype.ext (map_add ρ a b)
+      map_mul' := fun a b ↦ Subtype.ext (map_mul ρ (a : T) (b : T))
+      map_add' := fun a b ↦ Subtype.ext (map_add ρ (a : T) (b : T))
       commutes' := fun a ↦ Subtype.ext (ρ.commutes a) } with hρLdef
   have hρLderiv : ∀ z : ↥L, ρL z′ = (ρL z)′ := by
     intro z
@@ -266,22 +278,19 @@ theorem mem_differentialAdjoin_derivPow_of_translation_rotation_invariant
       derivationClosedDifferential_apply L hLclosed (ρL z)
     rw [h1, h2, h3]
     exact hρderiv _
-  have hρLpalette : ρL (xv 0) = algebraMap F ↥L ((ζ : Fˣ) : F) * xv 0 := by
+  have hρLpalette : ρL v₀ = algebraMap F ↥L ((ζ : Fˣ) : F) * v₀ := by
     apply Subtype.ext
-    have h1 : ((ρL (xv 0) : ↥L) : T) = ρ q′ := rfl
-    have h2 : ((algebraMap F ↥L ((ζ : Fˣ) : F) * xv 0 : ↥L) : T)
+    have h1 : ((ρL v₀ : ↥L) : T) = ρ q′ := rfl
+    have h2 : ((algebraMap F ↥L ((ζ : Fˣ) : F) * v₀ : ↥L) : T)
         = algebraMap F T ((ζ : Fˣ) : F) * q′ := by
-      rw [MulMemClass.coe_mul, hxvcoe]
-      congr 1
-      exact (IsScalarTower.algebraMap_apply F ↥L T _).symm
+      rw [MulMemClass.coe_mul, hv₀coe]
+      rfl
     rw [h1, h2, hρq']
   have hρLeq : ρL = torusScaleEquiv hv hgenv (fun _ ↦ ζ) := by
-    refine tailEquiv_ext xv hgenv hρLderiv
+    refine tailEquiv_ext (fun _ : Fin 1 ↦ v₀) hgenv hρLderiv
       (fun z ↦ torusScaleEquiv_deriv hv hgenv (fun _ ↦ ζ) z) ?_
     intro i
-    have hi : i = 0 := Subsingleton.elim i 0
-    subst hi
-    rw [hρLpalette, torusScaleEquiv_apply hv hgenv (fun _ ↦ ζ) 0]
+    rw [hρLpalette, torusScaleEquiv_apply hv hgenv (fun _ ↦ ζ) i]
   -- the constants of the base stay constants
   have hconstL : ∀ c : F, (c′ : F) = 0 := hconst
   -- membership of the invariant in the subfield
@@ -293,19 +302,17 @@ theorem mem_differentialAdjoin_derivPow_of_translation_rotation_invariant
     rw [← hρLeq]
     exact Subtype.ext hxρ
   -- the rotation layer
-  have hv0 : xv 0 ≠ 0 := by
+  have hv0 : v₀ ≠ 0 := by
     intro h0
     exact hq'0 (by
-      have := congrArg Subtype.val h0
-      simpa [hxvcoe] using this)
-  have hmemL := mem_differentialAdjoin_pow_of_rootOfUnity_invariant hconstL hv hgenv hv0
-    hn hord hxρL
+      have hc := congrArg Subtype.val h0
+      simpa [hv₀coe] using hc)
+  have hmemL := mem_differentialAdjoin_pow_of_rootOfUnity_invariant (C := F) (E := ↥L)
+    (v := v₀) (ζ := ζ) hconstL hv hgenv hv0 hn hord hxρL
   -- descend to the ambient field
-  have hdown := coe_mem_differentialAdjoin_of_subfield L hLclosed (xv 0 ^ n) (by
-    have hpowcoe : xv 0 ^ n = (xv 0) ^ n := rfl
-    exact hmemL)
-  have hcoepow : (((xv 0 ^ n : ↥L)) : T) = q′ ^ n := by
-    rw [SubmonoidClass.coe_pow, hxvcoe]
+  have hdown := coe_mem_differentialAdjoin_of_subfield L hLclosed (v₀ ^ n) hmemL
+  have hcoepow : (((v₀ ^ n : ↥L)) : T) = q′ ^ n := by
+    rw [SubmonoidClass.coe_pow]
   rwa [hcoepow] at hdown
 
 set_option maxHeartbeats 800000 in

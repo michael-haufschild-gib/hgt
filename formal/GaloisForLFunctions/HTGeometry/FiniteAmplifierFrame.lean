@@ -247,7 +247,7 @@ theorem averaged_width_cap {P : Type*} [MeasurableSpace P]
 /-! ## Coefficient finiteness on the circle (Theorem 2.1, ℤ anchor) -/
 
 open Complex in
-private theorem exp_unit_sum_zero (N : ℕ) (r : ℕ) (hr : 0 < r) (hrN : r < N) :
+theorem exp_unit_sum_zero (N : ℕ) (r : ℕ) (hr : 0 < r) (hrN : r < N) :
     ∑ j ∈ Finset.range N, Complex.exp (2 * Real.pi * I * r * j / N) = 0 := by
   have hNpos : 0 < N := lt_trans hr hrN
   have hN0 : (N : ℂ) ≠ 0 := by exact_mod_cast hNpos.ne'
@@ -305,7 +305,7 @@ private theorem exp_unit_sum_zero (N : ℕ) (r : ℕ) (hr : 0 < r) (hrN : r < N)
     _ = (x ^ N - 1) / (x - 1) := geom_sum_eq hxne N
     _ = 0 := by rw [hxN]; simp
 
-private theorem cos_sample_sum_zero (N : ℕ) (r : ℕ) (hr : 0 < r) (hrN : r < N) :
+theorem cos_sample_sum_zero (N : ℕ) (r : ℕ) (hr : 0 < r) (hrN : r < N) :
     ∑ j ∈ Finset.range N, Real.cos (2 * Real.pi * r * j / N) = 0 := by
   have hNpos : 0 < N := lt_trans hr hrN
   have := congrArg Complex.re (exp_unit_sum_zero N r hr hrN)
@@ -697,5 +697,114 @@ theorem finite_pattern_coeff_bound {G : Type*} [AddCommGroup G] [Fintype G] [Dec
   constructor
   · nlinarith
   · nlinarith
+
+end HTGeometry
+
+namespace HTGeometry
+
+open Finset
+
+/-- **Coefficient bound through a separating finite quotient (Theorem 2.1, general
+supports).**  For a finitely supported symmetric pattern on any abelian amplifier group,
+nonnegativity at the characters pulled back from one finite quotient injective on the
+support already bounds every coefficient by the pole coefficient.  Every finitely
+generated support — in particular the mixed `ℤ^r × F` supports of the symmetric-power
+anchors — admits such a quotient, so its detection/pole ratio is finite. -/
+theorem pattern_coeff_bound_of_finite_quotient {Γ H : Type*} [AddCommGroup Γ]
+    [DecidableEq Γ] [AddCommGroup H] [Fintype H] [DecidableEq H]
+    (q : Γ →+ H) (S : Finset Γ) (hinj : Set.InjOn q (S : Set Γ))
+    (h0S : (0 : Γ) ∈ S) (hsymS : ∀ g ∈ S, -g ∈ S)
+    (c : Γ → ℝ) (hsupp : ∀ g ∉ S, c g = 0) (hsym : ∀ g, c (-g) = c g)
+    (hpos : ∀ ψ : AddChar H ℂ, 0 ≤ (∑ g ∈ S, (c g : ℂ) * ψ (q g)).re)
+    (g₀ : Γ) : |c g₀| ≤ c 0 := by
+  classical
+  set cH : H → ℝ := fun h => ∑ g ∈ S.filter (fun g' => q g' = h), c g with hcH
+  have hfiber : ∀ g ∈ S, S.filter (fun g' => q g' = q g) = {g} := by
+    intro g hg
+    ext g'
+    simp only [Finset.mem_filter, Finset.mem_singleton]
+    constructor
+    · rintro ⟨hg', hq⟩
+      exact hinj hg' hg hq
+    · rintro rfl
+      exact ⟨hg, rfl⟩
+  have hcH_q : ∀ g ∈ S, cH (q g) = c g := by
+    intro g hg
+    rw [hcH]
+    simp only
+    rw [hfiber g hg, Finset.sum_singleton]
+  have hcH_zero : cH 0 = c 0 := by
+    have := hcH_q 0 h0S
+    rw [map_zero] at this
+    exact this
+  have hcH_sym : ∀ h, cH (-h) = cH h := by
+    intro h
+    rw [hcH]
+    simp only
+    have himg : S.filter (fun g' => q g' = -h)
+        = (S.filter (fun g' => q g' = h)).image (fun g => -g) := by
+      ext g
+      simp only [Finset.mem_filter, Finset.mem_image]
+      constructor
+      · rintro ⟨hgS, hq⟩
+        exact ⟨-g, ⟨hsymS g hgS, by rw [map_neg, hq, neg_neg]⟩, neg_neg g⟩
+      · rintro ⟨g', ⟨hg'S, hq'⟩, rfl⟩
+        exact ⟨hsymS g' hg'S, by rw [map_neg, hq']⟩
+    rw [himg, Finset.sum_image (fun a _ b _ hab => neg_injective hab)]
+    exact Finset.sum_congr rfl fun g _ => hsym g
+  have hQ : ∀ ψ : AddChar H ℂ, ∑ h : H, (cH h : ℂ) * ψ h
+      = ∑ g ∈ S, (c g : ℂ) * ψ (q g) := by
+    intro ψ
+    have hexp : ∀ h : H, (cH h : ℂ) * ψ h
+        = ∑ g ∈ S.filter (fun g' => q g' = h), (c g : ℂ) * ψ (q g) := by
+      intro h
+      rw [hcH]
+      simp only
+      rw [Complex.ofReal_sum, Finset.sum_mul]
+      refine Finset.sum_congr rfl fun g hg => ?_
+      rw [(Finset.mem_filter.mp hg).2]
+    rw [Finset.sum_congr rfl fun h _ => hexp h]
+    exact Finset.sum_fiberwise S (fun g => q g) (fun g => (c g : ℂ) * ψ (q g))
+  have hpos' : ∀ ψ : AddChar H ℂ, 0 ≤ (∑ h : H, (cH h : ℂ) * ψ h).re := by
+    intro ψ
+    rw [hQ ψ]
+    exact hpos ψ
+  have hmain := finite_pattern_coeff_bound cH hcH_sym hpos'
+  by_cases hg₀S : g₀ ∈ S
+  · have := hmain (q g₀)
+    rw [hcH_q g₀ hg₀S, hcH_zero] at this
+    exact this
+  · have h00 := hmain 0
+    rw [hcH_zero] at h00
+    have hc0 : 0 ≤ c 0 := le_trans (abs_nonneg _) h00
+    rw [hsupp g₀ hg₀S, abs_zero]
+    exact hc0
+
+end HTGeometry
+
+namespace HTGeometry
+
+/-- Phase-shifted sampled cosine sum: a nontrivial frequency sum vanishes at every phase. -/
+theorem cos_sample_sum_zero_phase (N : ℕ) (r : ℕ) (hr : 0 < r) (hrN : r < N) (φ : ℝ) :
+    ∑ j ∈ Finset.range N, Real.cos (2 * Real.pi * r * j / N + φ) = 0 := by
+  have hsum := exp_unit_sum_zero N r hr hrN
+  have hmul := congrArg (fun z => Complex.exp ((φ : ℝ) * Complex.I) * z) hsum
+  simp only [mul_zero] at hmul
+  rw [Finset.mul_sum] at hmul
+  have := congrArg Complex.re hmul
+  rw [Complex.re_sum] at this
+  simp only [Complex.zero_re] at this
+  calc ∑ j ∈ Finset.range N, Real.cos (2 * Real.pi * r * j / N + φ)
+      = ∑ j ∈ Finset.range N,
+          (Complex.exp ((φ : ℝ) * Complex.I)
+            * Complex.exp (2 * Real.pi * Complex.I * r * j / N)).re := by
+        refine Finset.sum_congr rfl fun j _ => ?_
+        rw [← Complex.exp_add]
+        have harg : (φ : ℝ) * Complex.I + 2 * Real.pi * Complex.I * r * j / N
+            = ((2 * Real.pi * r * j / N + φ : ℝ) : ℂ) * Complex.I := by
+          push_cast
+          ring
+        rw [harg, Complex.exp_ofReal_mul_I_re]
+    _ = 0 := this
 
 end HTGeometry

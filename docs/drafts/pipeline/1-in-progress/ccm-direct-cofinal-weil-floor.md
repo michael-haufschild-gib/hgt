@@ -924,7 +924,8 @@ and every pairing descends to the same canonical cyclic class. The live theorem 
 Gauss lift**: choose the compact Hardy representative and Sonin relative grade uniformly so that it
 is a positive Schur lift of this class, retains the covariance charge `(12z5d6)`, and transports
 divisor-sensitive index. The source-charge proof is in
-`ccm-local-ratio-second-order-covariance-charge.md`; algebraic descent is recorded in
+`../3-formalized/not_new_scientific_knowledge/ccm/ccm-local-ratio-second-order-covariance-charge.md`;
+algebraic descent is recorded in
 `ccm-gauss-paired-quantized-differential-incidence-law.md`.
 
 There is also a canonical positive finite lift before Hardy compression. Put

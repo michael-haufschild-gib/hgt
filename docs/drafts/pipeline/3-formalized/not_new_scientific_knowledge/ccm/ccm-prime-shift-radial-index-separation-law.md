@@ -1,7 +1,7 @@
 # Finite prime aperture leaves an infinite radial divisor tail
 
 - **ID:** `ccm-prime-shift-radial-index-separation-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent theories:** the exact CCM dilation identity, the logarithmic-aperture shift cutoff, and

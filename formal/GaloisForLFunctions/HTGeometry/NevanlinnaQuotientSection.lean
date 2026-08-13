@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.AnalyticNevanlinnaCarrierBridge
+import GaloisForLFunctions.HTGeometry.ProjectiveLabelNullPreimage
 
 /-!
 # Canonical separated nodes for the Nevanlinna quotient
@@ -18,6 +19,34 @@ noncomputable section
 namespace ClassicalAnalyticNevanlinnaCarrierFamily
 
 variable {s : ℕ → ℝ} (F : ClassicalAnalyticNevanlinnaCarrierFamily s)
+
+/-- **Universal projective-separation anchor law.** Determinant one prevents a common zero of the
+analytic denominator pair, while the source-faithful finite and infinite boundary fibres supply,
+respectively, nonzero and zero values of `c`. -/
+theorem projectiveSeparationAnchors :
+    (∀ z, ¬ (F.c z = 0 ∧ F.d z = 0)) ∧
+      (∃ p, F.c p = 0) ∧ ∃ c, F.c c ≠ 0 := by
+  have hnoCommon : ∀ z, ¬ (F.c z = 0 ∧ F.d z = 0) := by
+    intro z
+    rintro ⟨hc, hd⟩
+    have hdet := F.det_one z
+    simp [hc, hd] at hdet
+  obtain ⟨p, hp⟩ := F.base.toBoundaryFamily.infinityDenominatorFiber_nonempty
+  have hCp : F.c (p : ℂ) = 0 := by
+    rw [F.c_real]
+    exact_mod_cast hp
+  obtain ⟨c, hc⟩ := F.base.toBoundaryFamily.finiteDenominatorFiber_nonempty 0
+  have hDc : F.base.toBoundaryFamily.matrix.d c = 0 := by
+    change F.base.toBoundaryFamily.matrix.c c * 0 +
+      F.base.toBoundaryFamily.matrix.d c = 0 at hc
+    simpa using hc
+  have hCcReal : F.base.toBoundaryFamily.matrix.c c ≠ 0 := by
+    intro hC
+    exact F.base.toBoundaryFamily.matrix.C_D_ne_zero c ⟨hC, hDc⟩
+  have hCc : F.c (c : ℂ) ≠ 0 := by
+    rw [F.c_real]
+    exact_mod_cast hCcReal
+  exact ⟨hnoCommon, ⟨p, hCp⟩, c, hCc⟩
 
 /-- Image of the meromorphic Nevanlinna quotient. -/
 def QuotientImage : Type := Set.range F.quotient

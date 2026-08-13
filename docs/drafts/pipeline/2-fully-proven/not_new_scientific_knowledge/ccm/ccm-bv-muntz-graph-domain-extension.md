@@ -111,7 +111,8 @@ which is exactly maximal multiplier graph-domain membership. Finally `z_rho` lie
 The CCM seed source `h_lambda` is a linear combination of two smooth prolate eigenfunctions on
 `[-lambda,lambda]`, extended by zero outside, and is chosen to have zero integral. Its restriction
 to the positive half-line satisfies the theorem. Resetting its value at the single point zero, as
-in `ccm-restricted-summation-aperture-gauge.md`, changes neither its `L2` class nor `E(h_lambda)`
+in `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm/ccm-restricted-summation-aperture-gauge.md`,
+changes neither its `L2` class nor `E(h_lambda)`
 almost everywhere.
 
 Thus the endpoint jump does **not** invalidate the global Muntz vector, the zeta-multiplier identity,
@@ -148,7 +149,8 @@ The proof is a bounded-variation Riemann-sum estimate followed by the classical 
 analytic continuation. More decisively, Connes--Consani Lemma 6.1 already proves the same
 `O(u^(1/2))` estimate for bounded-variation zero-mean sources satisfying `f(u)=O(u^2)` at zero, and
 their proof of Theorem 6.4 supplies the zeta multiplier continuation. The invisible central gauge
-in `ccm-restricted-summation-aperture-gauge.md` produces exactly such a representative for the CCM
+in `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm/ccm-restricted-summation-aperture-gauge.md`
+produces exactly such a representative for the CCM
 aperture vector. The present statement only observes that bounded behavior at zero is already
 enough if one works with the ungauged source. Baez-Duarte and Burnol also develop substantially more
 general `L2` Muntz frameworks. This is a useful route reconciliation, not new scientific knowledge.

@@ -143,7 +143,8 @@ zero-integral combination.
 
 ## Route consequence
 
-`ccm-poisson-tail-l2-unboundedness.md` proves that the arithmetic tail map is unbounded on the
+`docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm/ccm-poisson-tail-l2-unboundedness.md`
+proves that the arithmetic tail map is unbounded on the
 ambient leakage space because coherent slowly varying logarithmic packets make the Dirichlet sum
 grow. Equations `(3)`--`(7)` show that this mechanism is absent for a fixed smooth compact source:
 its leading Fourier leakage oscillates as an endpoint sine series and is uniformly summable.

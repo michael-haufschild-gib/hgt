@@ -1539,3 +1539,15 @@ exact-hitting research (hostile audit found the recorded Step 1/Step 2 proof gap
 and residual open point recorded on the card).  New reusable infrastructure: the reality-symmetry
 conjugation bridge for `deriv`/`iteratedDeriv 2`/`AnalyticAt`, and the harmonic cone-fullness
 pattern over the Bottcher min/max principle layer.
+
+## Session 2026-08-13 addition (finite-amplifier frame)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-INV-7 | The abstract pole-purchase frame: master bound from (P1)–(P3), zero exclusion, the (INV7.1) width cap, the (INV7.3) threshold, the ratio-controlled constant, multi-σ and positive-average stability, and ρ-finiteness (cosine discrete sampling on the circle, dual averaging on every finite abelian group, and the separating-finite-quotient reduction for general supports) | `HTGeometry.FiniteAmplifierFrame` (+ pre-existing `HTGeometry.FiniteAmplifierPatternCap`) |
+
+Formalization corrections recorded on the card: Theorem 2.1.1's "compactness" proof replaced by
+the averaging mechanism; frame axiom (P3) sharpened to the two-sided channel bound for signed
+patterns.  All capstones axiom-clean; module build green; card promoted to `3-formalized/` with
+Fejér's exact extremal value and f.g.-abelian residual finiteness recorded as cited-classical
+inputs per the card's own disclaimers.

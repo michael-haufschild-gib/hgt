@@ -98,7 +98,8 @@ hidden proof of the open arrow:
     exterior Olver expansion to prove that the complete exact `j,k>=2` sector is `O(d_1/c)`. The
     only stationary sector is the first row. `ccm-exact-finite-aperture-first-row-vanishing.md`
     proves its low radial-index part through `k<=lambda^2` is `o(d_1)`.
-    `ccm-prime-shift-radial-index-separation-law.md` proves that the prime cutoff does not truncate
+    `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm/ccm-prime-shift-radial-index-separation-law.md`
+    proves that the prime cutoff does not truncate
     the radial multiplier `k=q*n`; `ccm-exact-high-radial-first-row-bv-bound.md` proves the weighted
     tail `k>lambda^2` is `o(d_1)` by exterior-phase integration by parts.
 11. `constrained-prolate-full-radial-prime-charge-law.md` performs the resulting cofinal

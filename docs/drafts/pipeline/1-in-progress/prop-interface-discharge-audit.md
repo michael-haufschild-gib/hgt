@@ -5258,3 +5258,29 @@ Both are one line.  The even result cost **no new full-rank mathematics**: the e
 construction transferred by supplying three fields.
 
 All new declarations: `[propext, Classical.choice, Quot.sound]`.
+
+## 2026-08-13 — singular-continuous support premise discharge
+
+`[CORPUS]` Membership in `projectiveSingularContinuousProbabilityLaws` already supplies
+`NullSingletonClass` for a projective probability law.  After installing the existing
+second-countable topology transported from the projective sphere, finite topological support would
+have measure zero, while its complement has measure zero by `Measure.measure_compl_support`; this
+contradicts probability mass one.
+
+`[LEAN-PROVED]`
+`projectiveSingularContinuousProbabilityLaw_support_infinite` formalizes that implication.  It
+removes the separate `support.Infinite` premise from:
+
+* `positiveSingularContinuousCarrier_hypertranscendental_dense_residual`;
+* `singularContinuousCarrier_fullTranslationFamilyFreeness_denseResidual`;
+* `singularContinuousCarrier_cauchyHerglotz_globalHypertranscendence_of_mem_universalPhase`;
+* `singularContinuousFullTranslation_primeArchHankelUniversality`;
+* `singularContinuous_jointMaximalFullTranslation_primeArchHankelUniversality`.
+
+`exists_maximalTranslationFullRankWitness_of_inputs` further chooses an existing
+singular-continuous projective law and `K = Set.univ`, discharging the boundary set, boundary law,
+carriedness, and infinite-support premises of the generic full-rank witness theorem.  Only the
+genuine analytic `MaximalTranslationInputs` interface remains.
+
+Targeted Lean checks passed for all modified theorem files.  Axiom audit for the new support theorem
+and the full-translation/RHTower laws reports only `[propext, Classical.choice, Quot.sound]`.

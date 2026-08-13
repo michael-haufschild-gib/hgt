@@ -36,7 +36,8 @@ here escapes through both permitted channels: its support grows with `lambda`, a
 to zero exponentially, so it approaches the prolate radical.
 
 The global radical source space also imposes `f(0)=0`. The finite-aperture theorem
-`ccm-restricted-summation-aperture-gauge.md` shows that this additional scalar condition is gauge at
+`docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm/ccm-restricted-summation-aperture-gauge.md`
+shows that this additional scalar condition is gauge at
 the level of `k_lambda`: it can be imposed by an invisible central bump without changing
 `R_lambda E(f)`. Endpoint regularity and the lower Poisson tail remain genuine, separate issues.
 

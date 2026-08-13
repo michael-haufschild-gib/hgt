@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.AnalyticNevanlinnaCarrierBridge
+import GaloisForLFunctions.HTGeometry.ProjectiveLabelNullPreimage
 import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
 
 /-!
@@ -11,7 +12,7 @@ separate real-analyticity premises from downstream projective-label and carrier 
 
 namespace GaloisForLFunctions.HTGeometry
 
-open Set
+open MeasureTheory OnePoint Set
 
 noncomputable section
 
@@ -57,6 +58,16 @@ theorem analyticOnNhd_boundary_c_and_d :
     AnalyticOnNhd ℝ F.base.toBoundaryFamily.matrix.c Set.univ ∧
       AnalyticOnNhd ℝ F.base.toBoundaryFamily.matrix.d Set.univ :=
   ⟨F.analyticOnNhd_boundary_c, F.analyticOnNhd_boundary_d⟩
+
+/-- Classical analytic carrier data automatically satisfies the null-preimage condition used by
+singular-continuous boundary-carrier transport. -/
+theorem projectiveLabel_preimage_volume_eq_zero_of_classical
+    {E : Set (OnePoint ℝ)} (hE : MeasurableSet E)
+    (hnull : (projectiveLebesgueProbability : Measure (OnePoint ℝ)) E = 0) :
+    (volume : Measure ℝ)
+      (F.base.toBoundaryFamily.matrix.projectiveLabel ⁻¹' E) = 0 :=
+  F.base.toBoundaryFamily.projectiveLabel_preimage_volume_eq_zero
+    F.analyticOnNhd_boundary_c F.analyticOnNhd_boundary_d hE hnull
 
 end ClassicalAnalyticNevanlinnaCarrierFamily
 

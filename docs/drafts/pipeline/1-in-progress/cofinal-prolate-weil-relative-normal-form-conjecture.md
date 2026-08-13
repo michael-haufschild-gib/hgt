@@ -180,7 +180,7 @@ where:
 3. the profile masses are square-summable and exhaust the lost Hilbert norm;
    each `f_r` is independent of `n` and has fixed compact support, and the unextracted boundary
    mass satisfies the uniform tightness/vanishing alternative dictated by
-   `ccm-variable-width-two-edge-principalization-law.md`;
+   `../3-formalized/not_new_scientific_knowledge/ccm/ccm-variable-width-two-edge-principalization-law.md`;
 4. the remainder `r_n` is profile-free and obeys a uniform bulk estimate;
 5. Hilbert norm decouples profilewise, while the intact Weil form decouples only between the
    prolate, assembled-boundary, and bulk channels.  All boundary--boundary arithmetic interactions
