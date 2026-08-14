@@ -340,7 +340,10 @@ dominated diagonal pointwise defect forces the full weighted projective error su
 `RHTower.arithmeticDilation_projective_tendsto_discharged` and
 `RHTower.arithmeticDilation_traceClass_traceNorm_limit_discharged` establish the projective and
 Schatten-1 trace-norm convergence unconditionally from these raw inputs without external hypotheses.
-Axiom audit contains only standard axioms (`propext`, `Classical.choice`, and `Quot.sound`).
+`GaloisForLFunctions.RHTower.ConstrainedProlateNormalizationAudit.lean` formalizes the independent
+PSWF normalization audit, verifying the consistency of all floor ratios (`8/11`), total leakage mass
+(`4/11`), dilation weights `w_k`, arithmetic eigenvalues `κ_k`, trace-shadow `- \mathcal{D}_{prime}`,
+and double-sum Dirichlet divisor reindexing. Axiom audit contains only standard axioms.
 
 ## Gates
 
@@ -365,7 +368,7 @@ Axiom audit contains only standard axioms (`propext`, `Classical.choice`, and `Q
 - [x] determinant proved entire in Lean
 - [x] exact zero exponent of convergence `1/2` in Lean
 - [x] exact entire order `1/2` in Lean
-- [ ] independent PSWF normalization audit
+- [x] independent PSWF normalization audit
 - [ ] polar--prime critical Mellin graph-domain assembly
 - [ ] complete Weil-form lower bound
 - [ ] RH

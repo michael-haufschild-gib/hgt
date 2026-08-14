@@ -287,3 +287,13 @@ the arithmetic covariance theorem exists and broader literature comparison is co
   formalized full quadratic cancellation: doubled-node transport differs from original node only
   through `2 z^4(z^2-8a^2)` over the explicit denominator. Rebuilt exact module `.olean` serially;
   axiom audit unchanged.
+- 2026-08-14 -- Proved `(U-DYC-point)` unconditionally and closed it in Lean. The even-index
+  subseries of the fine lattice is exactly one half of the coarse-mesh periodization at the fine
+  Cayley phase; its alias tail vanishes, so it tends to `F(q)/2`. The full fine sample tends to
+  `F(q)`, and exact subtraction forces the odd-index half to the same `F(q)/2`. This is coherent
+  duplication, not orthogonal detail capital. Module:
+  `formal/GaloisForLFunctions/RHTower/XiShiftedHardEdgeDyadicSampleCoherence.lean`; scratch and tree
+  `lake env lean` pass; exact `.olean` built serially; public-theorem axiom audit is only
+  `[propext, Classical.choice, Quot.sound]`; umbrella import wired without umbrella/full build.
+  Remaining hard core is exactly `(U-DYC-global)`: prove or falsify weighted square/cross divisor
+  exchange using a genuine summable majorant. Pointwise convergence alone is insufficient.

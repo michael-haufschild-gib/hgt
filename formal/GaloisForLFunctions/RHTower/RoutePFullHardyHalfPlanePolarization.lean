@@ -35,7 +35,7 @@ theorem one_lt_eulerPositiveComplexBoundaryParameter_re_of_neg_half_lt
     ofReal_re, ofReal_im, mul_zero, sub_zero]
   nlinarith [mul_pos (by nlinarith : 0 < 1 + u.re) (sub_pos.mpr hsigma)]
 
-private theorem norm_sq_eulerPositiveCriticalComplexDampedStateWeight_eq_mass
+theorem norm_sq_eulerPositiveCriticalComplexDampedStateWeight_eq_mass
     {sigma : ℝ} {u : ℂ} (hsigma : 1 < sigma) (n : ℕ+) :
     ‖eulerPositiveCriticalComplexDampedStateWeight sigma u n‖ ^ 2 =
       eulerPositiveMass (eulerPositiveComplexHardySquareExponent sigma u) n /
