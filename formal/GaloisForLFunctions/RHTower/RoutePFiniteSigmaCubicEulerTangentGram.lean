@@ -281,7 +281,6 @@ theorem hasDerivAt_routePProjectiveFullEulerHalfWeightedStateWeight
   filter_upwards with x
   simp only [routePProjectiveFullEulerHalfWeightedStateWeight,
     Function.comp_apply, Pi.sub_apply]
-  ring
 
 /-- One finite-`sigma` log-moment Gram term, already normalized by the projective source scale. -/
 def routePProjectiveFullEulerLogMomentGramTerm

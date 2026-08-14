@@ -56,4 +56,27 @@ theorem tendsto_radialPSWF_leading_tail_to_arithmetic_eigenvalue
   rw [heq] at heig
   exact heig
 
+/-- Finite-aperture sum convergence of radial PSWF leading density to the partial arithmetic trace. -/
+theorem tendsto_radialPSWF_leading_tail_sum_to_arithmetic_partial_sum
+    {ι : Type*} {l : Filter ι} {c sigma : ι → ℝ} {theta : ℝ} (N : ℕ)
+    (hc : Tendsto c l atTop) (hsigma : Tendsto sigma l (nhds 0)) :
+    Tendsto (fun i => ∑ n ∈ Finset.range N, 2 * Real.log ((n + 2 : ℕ) : ℝ) *
+        ((8 / 11) * (1 / ((n + 2 : ℕ) : ℝ)) *
+          ∫ t in Ioi (Real.sqrt (((n + 2 : ℕ) : ℝ) ^ 2 - 1)),
+            radialPSWFLeadingArclengthDensity (c i) (sigma i) theta t))
+      l (nhds (∑ n ∈ Finset.range N, constrainedProlateArithmeticEigenvalue n)) :=
+  tendsto_finsetSum (Finset.range N) fun n _ =>
+    tendsto_radialPSWF_leading_tail_to_arithmetic_eigenvalue n hc hsigma
+
+/-- The finite-aperture radial prime charge limit in terms of the signed diagonal constant. -/
+theorem tendsto_radialPSWF_leading_tail_sum_to_neg_primeConstant_limit
+    {ι : Type*} {l : Filter ι} {c sigma : ι → ℝ} {theta : ℝ} (N : ℕ)
+    (hc : Tendsto c l atTop) (hsigma : Tendsto sigma l (nhds 0)) :
+    Tendsto (fun i => - ∑ n ∈ Finset.range N, 2 * Real.log ((n + 2 : ℕ) : ℝ) *
+        ((8 / 11) * (1 / ((n + 2 : ℕ) : ℝ)) *
+          ∫ t in Ioi (Real.sqrt (((n + 2 : ℕ) : ℝ) ^ 2 - 1)),
+            radialPSWFLeadingArclengthDensity (c i) (sigma i) theta t))
+      l (nhds (- ∑ n ∈ Finset.range N, constrainedProlateArithmeticEigenvalue n)) :=
+  (tendsto_radialPSWF_leading_tail_sum_to_arithmetic_partial_sum N hc hsigma).neg
+
 end RHTower
