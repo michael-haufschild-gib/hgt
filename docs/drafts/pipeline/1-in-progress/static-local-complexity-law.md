@@ -6225,3 +6225,13 @@ receive a new title and an independent significance audit.
   local Hamiltonian.  Exact source, pair-average identity, sharpness, and product law are checked in
   Lean with only standard foundational axioms.  Formal card:
   `../3-formalized/centralizer-centered-shortcut-history-recurrence-energy-law.md`.
+- 2026-08-14 -- Closed the pure-state quantum realization of the target factor.  Vectorize the
+  rank-one projector of each `r`-fold pure-state tensor power in finite Hilbert--Schmidt
+  coordinates.  Lean proves its real inner product with a second projector is exactly
+  `Fidelity(psi,phi)^r`, hence nonnegative, and proves the static preparation frame energy is
+  exactly the complete average of these replica fidelities with all pair multiplicities retained.
+  Therefore the adaptive shortcut law's sign premise is automatic for physical pure-state
+  projectors, and its target-side growing-replica core is now literally an average-fidelity bound,
+  not an analogy or a minimum-separation surrogate.  Remaining work is circuit-heap
+  anti-concentration for that complete average and the ordinary static-H recurrence-energy bound.
+  Formal module: `HTGeometry.StaticShortcutReplicaProjectorFrameLaw`.

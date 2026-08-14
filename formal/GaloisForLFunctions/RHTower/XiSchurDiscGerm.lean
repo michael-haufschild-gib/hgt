@@ -3,6 +3,7 @@ import GaloisForLFunctions.RHTower.XiRelativeResolventFlux
 import GaloisForLFunctions.RHTower.CompletedFluxGradedReality
 import GaloisForLFunctions.RHTower.XiHeatShellMinimum
 import GaloisForLFunctions.HTGeometry.HerglotzRepresentationDisc
+import GaloisForLFunctions.RHTower.XiLaguerrePolya
 
 /-!
 # The Xi Carathéodory germ on the unit disc
@@ -316,6 +317,51 @@ theorem exists_xiCircleMeasure_of_rh (hRH : RiemannHypothesis) :
     (xiCaratheodory_zero_of_rh hRH)
   rw [Metric.mem_ball, dist_zero_right] at hz
   exact xiCaratheodory_re_nonneg_of_rh hRH hz
+
+/-- Under the Riemann hypothesis each basepoint resolvent term contributes the Cauchy weight
+`1/(t² + 1)`. -/
+theorem neg_xiRelativeResolventTerm_I_im_of_rh (hRH : RiemannHypothesis) (q : XiZeroCopy) :
+    -(xiRelativeResolventTerm Complex.I q).im = 1 / (xiRealSpectralPoint q ^ 2 + 1) := by
+  have ht := xiSpectralPoint_eq_ofReal_of_rh hRH q
+  set t := xiRealSpectralPoint q with htdef
+  have hden : Complex.normSq ((t : ℂ) - Complex.I) = t ^ 2 + 1 := by
+    rw [Complex.normSq_apply]
+    simp [Complex.sub_re, Complex.sub_im]
+    ring
+  rw [xiRelativeResolventTerm, ht, Complex.sub_im, Complex.inv_im, Complex.inv_im]
+  simp only [Complex.sub_im, Complex.ofReal_im, Complex.I_im, zero_sub, neg_neg,
+    neg_zero, zero_div]
+  rw [hden]
+
+/-- **The basepoint normalization is the total Cauchy weight of the centered Xi spectrum.** -/
+theorem xiBasepointSlope_re_eq_tsum_of_rh (hRH : RiemannHypothesis) :
+    xiBasepointSlope.re = ∑' q : XiZeroCopy, 1 / (xiRealSpectralPoint q ^ 2 + 1) := by
+  have hz : (0 : ℝ) < (Complex.I).im := by simp
+  have hXi : XiC Complex.I ≠ 0 := XiC_ne_zero_of_rh_of_im_pos hRH hz
+  have hsum : Summable (xiRelativeResolventTerm Complex.I) :=
+    summable_xiRelativeResolventTerm hXi
+  have heq : xiSourceHerglotz Complex.I = -xiRelativeResolventTrace Complex.I := by
+    rw [xiSourceHerglotz, logDeriv_XiC_eq_relativeResolventTrace hXi]
+  have himsum : (xiRelativeResolventTrace Complex.I).im
+      = ∑' q : XiZeroCopy, (xiRelativeResolventTerm Complex.I q).im := by
+    rw [xiRelativeResolventTrace]
+    exact Complex.imCLM.map_tsum hsum
+  have hneg : ∑' q : XiZeroCopy, -(xiRelativeResolventTerm Complex.I q).im
+      = -(xiRelativeResolventTrace Complex.I).im := by
+    rw [himsum, ← tsum_neg]
+  rw [xiBasepointSlope_re, heq, Complex.neg_im, ← hneg]
+  exact tsum_congr fun q => neg_xiRelativeResolventTerm_I_im_of_rh hRH q
+
+/-- The Cauchy weights of the centered Xi spectrum are summable. -/
+theorem summable_xiCauchyWeight_of_rh (hRH : RiemannHypothesis) :
+    Summable fun q : XiZeroCopy => 1 / (xiRealSpectralPoint q ^ 2 + 1) := by
+  have hz : (0 : ℝ) < (Complex.I).im := by simp
+  have hXi : XiC Complex.I ≠ 0 := XiC_ne_zero_of_rh_of_im_pos hRH hz
+  have hsum : Summable (xiRelativeResolventTerm Complex.I) :=
+    summable_xiRelativeResolventTerm hXi
+  have hsumim : Summable fun q : XiZeroCopy => -(xiRelativeResolventTerm Complex.I q).im :=
+    ((hsum.map Complex.imCLM Complex.imCLM.continuous)).neg
+  exact hsumim.congr fun q => neg_xiRelativeResolventTerm_I_im_of_rh hRH q
 
 end
 

@@ -6517,3 +6517,28 @@ critical `L^{-1/2}` corona and into `L²(dL)`.  Both audit to
 All three audit to `[propext, Classical.choice, Quot.sound]`.  What card 5 still needs is Theorem 2,
 whose content is complex-analytic (holomorphic gluing across the strip `0 < Im z < 1`), not
 real-variable transport.
+
+## GT — card 7: the Gamma corona sequence
+
+`RHTower/SuzukiGammaCoronaSequence.lean` assembles the corona claims on top of the scattering
+asymptotic.
+
+- `halfLogScatter_surjective`: `β(2√π e^{-iπ/4}β, 0) = β`, so the trace map is onto — claim 1.
+- `norm_gammaProfile_sub_halfLog_le`: after the `1/2π` normalisation of the inverse Fourier
+  integral, the carrier obeys `‖F(L) − L^{-1/2}β‖ = O(L^{-1})`, the card's `(3)`.
+- `halfLog_trace_zero_iff_integrableOn_sq`: for any profile with that asymptotic, `β = 0` is
+  *equivalent* to square integrability on the terminal ray — claim 2, `ker τ = 𝒢_T ∩ N`.  The easy
+  direction is the `O(1/L)` decay of section GR; the hard direction is the corpus lemma
+  `not_integrableOn_sq_of_halfLog_trace`.
+- `norm_primeNormalSection_sub_halfLog_le`: the prime-normal cross-section
+  `P_T(β)(L) = (L − T/2)^{-1/2}β` differs from `L^{-1/2}β` by at most `‖T‖‖β‖/(2L^{3/2})`, and
+  `integrableOn_sq_sub_of_halfLog` turns two such asymptotics into square integrability of the
+  difference — claim 4, `F − P_T(τ(F)) ∈ N`.
+
+Claim 3 (the short exact sequence) is the packaging of claims 1 and 2.  All declarations audit to
+`[propext, Classical.choice, Quot.sound]`.
+
+Cards 6 and 7 now share exactly one open input: the distributional half of the half-line
+classification — that a tempered solution restricted to a frequency half-line is a function, and
+that no distribution supported at the origin can be added.  The second half needs the structure
+theorem for distributions with point support, which mathlib does not have; that is the next build.

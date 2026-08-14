@@ -25,7 +25,8 @@ and proves that the endpoint exponential branch, not finite-isogeny algebra, is 
 
 - [x] 0 -> 1  in-progress: exact statement, proof, hostile countermodel, and pivot identified
 - [x] 1 -> 2  fully-proven: core membership and exact normal-closure classification proved
-- [ ] 2 -> 3  formalized: formalize the isogeny-core membership theorem after paper audit
+- [ ] 2 -> 3  formalized: scalar-power fixed-field core is Lean-proved; slope membership and
+  power-primitive normalization remain to formalize
 - [ ] 3 -> 4  publication-ready: external novelty audit; elementary mechanism likely a bridge
 
 ## Setup
@@ -259,7 +260,12 @@ differentials, traces, norms, or abstract function-field Galois theory can finis
   core failure are the same phenomenon: algebraic functoriality preserves the coefficient wall but
   erases the selected analytic exponential branch.  A successful next invariant must be
   branch-sensitive while remaining arithmetic under specialization.
-- **Status:** dependency-closed paper proofs; exact Lean formalization pending.  Targeted external
+- **Status:** dependency-closed paper proofs.  The scalar-power group/fixed-field classification is
+  formalized by `iSup_powerTupleStabilizer_eq_torsionRatioClosure` and
+  `iInf_fixedField_powerTupleStabilizer_eq_torsionRatioClosure` in
+  `HTGeometry/SchanuelIsogenyCore.lean`; scratch axiom audit reports only `propext`,
+  `Classical.choice`, and `Quot.sound`.  Full slope membership and `(PP)` formalization remain.
+  Targeted external
   search found Kummer subfield results (for example Stacks Project, Tag `0EXP`) but no statement
   coupling finite-isogeny value fields to Schanuel defect slopes.  No priority claim.
 
@@ -286,3 +292,4 @@ torically primitive algebraic curve; ordinary field intersection is proved insuf
   core collapse is now equivalent to abundance of coordinatewise torsion conjugacies.
 - 2026-08-14 -- factorial-power stabilization removed every finite Kummer layer and produced the
   power-primitive counterexample normal form `(PP)` without changing the canonical slope.
+- 2026-08-14 -- scalar-power Kummer-core fixed-field classification formalized and umbrella-wired.

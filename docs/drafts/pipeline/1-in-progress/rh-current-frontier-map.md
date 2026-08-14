@@ -61,8 +61,9 @@ At this cutoff, certified state is:
   Hermitian squarefree source Gram through graph normalization. Umbrella-wired, scratch-checked
   P-G160/P-G161 prove sharp four-unit Hardy saturation, exact `4+|d|²` curvature toll, rank-one
   graph-normal tangent `(1+u)⁻¹r_Xi(1/2)`, and `r_Xi(1/2)=0 iff RH`. P-G162 then proves ordinary
-  Schur defect has linear slack that strictly dominates the quadratic toll under false RH. The
-  exterior producer must therefore cancel first-order loss and realize a source-derived
+  Schur defect has linear slack that strictly dominates the quadratic toll under false RH; P-G163
+  proves generic scalar unitary completion is nondifferentiable under false RH. The exterior
+  producer must therefore remain vector-valued before compression, cancel first-order loss, and realize a source-derived
   second-order unitary curvature identity; generic contractivity, contour norms, and independent
   complement budgets are dead. These are two P lanes, not two independent routes.
 - **Route R.** Route R is terminalized as an independent producer. Lean proves the intrinsic
@@ -183,10 +184,11 @@ asks for the same kind of source-side arithmetic budget; it is not a separate le
 operator chain remains G/CCM's localized operator layer, while collision and probe-circle laws
 without pre-zero source budgets are receivers. First open source theorems are now: U's pole-free
 normalized terminal-charge capital; G/CCM's complete-ground selection and lower control; P's
-high-tail curvature ceiling or dephased four-leg prime--Gamma exterior estimate; T's full-range
-signed Perron/cell/gap/current composition plus pole-preserving Wold continuation; and L's singular
-source-to-fixed-physical specialization. Route R's former Calkin/Fisher alternatives are terminal
-RH receivers. A current Helson/
+high-tail curvature ceiling or finite-sigma first-order-isometric Hermitian curvature incidence;
+T's blockwise conductor-normalized fourth-moment assembly followed by density, prime supply, and
+signed Perron/cell/gap/current composition, plus pole-preserving Wold continuation; and L's
+singular source-to-fixed-physical specialization. Route R's former Calkin/Fisher alternatives are
+terminal RH receivers. A current Helson/
 Fredholm wall remains a candidate rather than an additional route because it still lacks a canonical Xi
 coefficient stream and source-derived global orientation.
 
@@ -414,7 +416,7 @@ existing route.
 | M | terminalized | remaining source-flatness statement is RH |
 | N | terminalized, receiver merged with R wall | none below RH-equivalent zero Kadison fracture on every Xi conormal |
 | O | open, advanced; two internal producer branches | Prolate branch: paper proof now selects the CCM two-mode seed as the full zero-integral positive-even prolate leakage ground state, with `O(lambda^-7)` direction error, limiting leakage ratio `8/11`, and normalized constrained gap at least `3/11`; the complete radial prime charge is also provisionally evaluated. These results close seed arbitrariness and the prolate leakage ground problem, not the true restricted-Weil floor. First unresolved theorem is source-derived comparison with every restricted-Weil near-ground direction, equivalently lower control of `epsilon_lambda` or `Delta_lambda=r_lambda-epsilon_lambda`. Negative spectrum cannot evacuate. Completed-Evans branch retains the literal completed-zero-mode to support-pruned carrier/cutoff intertwiner, trace-zero channel, and raw Evans injectivity as its open chain. |
-| P | open, advanced; two source-budget lanes | Curvature normalization removes the quadratic functional-equation gauge. The normalized budget is equivalent to RH; fourth-trace source geometry proves it on `|Im s|<=233/20`, and any finite upper ceiling on the remaining positive tail is already equivalent to RH. Exterior lane has a literal coefficient-faithful four-contour prime--Gamma source expression, theta-boundary gap, exact source clocks, fixed-center energy, affine multiplicity separation, and umbrella-formal non-diagonal Hermitian graph-normal Gram. P-G160/P-G161 are umbrella-wired and scratch-checked: four is saturated, escaped mass costs exactly `|d|²`, graph-normal tangent is `(1+u)⁻¹r_Xi(1/2)`, and its coefficient vanishes exactly under RH. P-G162 proves finite-aperture Schur slack is first order and strictly dominates this quadratic toll under false RH. First exterior producer is therefore a source-derived first-order-isometric, second-order unitary-curvature incidence; generic contractivity, contour norms, and independent complement budgets are dead. |
+| P | open, advanced; two source-budget lanes | Curvature normalization removes the quadratic functional-equation gauge. The normalized budget is equivalent to RH; fourth-trace source geometry proves it on `|Im s|<=233/20`, and any finite upper ceiling on the remaining positive tail is already equivalent to RH. Exterior lane has a literal coefficient-faithful four-contour prime--Gamma source expression, theta-boundary gap, exact source clocks, fixed-center energy, affine multiplicity separation, and umbrella-formal non-diagonal Hermitian graph-normal Gram. Paper-proved P-G160/P-G161 show four-unit saturation, exact `|d|^2` escaped-mass toll, and graph-normal tangent `(1+u)^(-1)r_Xi(1/2)`; their committed modules are not umbrella-reachable at this cutoff. Working-tree P-G162/P-G163 show generic Schur slack hides the toll and scalar unitary completion loses differentiable tangent geometry. First exterior producer is a pre-compression vector-valued, first-order-isometric, second-order Hermitian curvature incidence; generic contractivity, scalar dilation, contour norms, and independent complement budgets are dead. |
 | Q | open, secondary | direct Cassini--Jensen/jet saturation, or a source-derived label-sensitive plateau quotient; the selected continuous power-reciprocal carrier is retired by the all-degree support no-go |
 | R | terminalized as independent producer | The intrinsic pre-polar annihilator type is empty. Lean exhausts the surviving audited interfaces—external positive polar comparison, pointwise two-orientation non-amplification, collective compactness of the fixed `(2,3)` receiver, singular Xi/Calkin factorization, compact first-Xi-jet principal coefficient, and loss-zero fixed Fisher landing—and proves each branch, and their disjunction, equivalent to RH. Hyperbolic-gauge quadratic positivity is universally zero; the surviving quartic amplitude equals the physical Stokes excess but its annihilation is RH-equivalent. Coefficient-faithful pre-divisor Gamma-corona globalization is also impossible outside neutral grade, independently of packet-horizon gauge. Finite Kunneth/Bockstein enlargement, Poisson theta shear, local anomaly cancellation, positive invariant means, bounded multipliers, and compact counterterms do not produce annihilation. |
 | S | upstream | source algebraicity or divisor-preserving dynamics with typed Xi handoff |
@@ -5905,9 +5907,10 @@ Control at one positive residual height excludes only an outer substrip; postula
 all divisor shifts is RH-equivalent. Finite incidence formation, recurrence solution, polynomial
 saving extraction, actual-interval embedding, logarithmic Taylor transport, MV24.10 reception,
 near-one zeta growth, zero-free optimization, and smooth Perron packaging are no longer the
-frontier. First new mathematics is the unconditional density-to-`7/10` supply theorem or equivalent
-signed upper-boundary control, then lower/upper prime-gap/current composition; another fixed local
-amplitude deficit cannot close it.
+frontier. Full reflected dual-series freezing is now formal. First new mathematics is blockwise
+conductor-normalized primal/dual/cross-term mean-square assembly yielding the required fourth
+moment, followed by density-to-`7/10` supply or equivalent signed upper-boundary control and
+lower/upper prime-gap/current composition; another fixed local amplitude deficit cannot close it.
 
 **Why independent.** T begins with completed Chebyshev/von Mangoldt current and a mass-dependent
 light cone. It neither transports Möbius parity as E does nor classifies theta-domain energy as N
@@ -8234,6 +8237,22 @@ All Route-E anchors listed here are umbrella-reachable at this cutoff.
 - formal/GaloisForLFunctions/RHTower/FieldOneFiniteStageIdeleClassHaarSplitting.lean
 - formal/GaloisForLFunctions/RHTower/FieldOneFiniteStageIdeleClassInvariantL2.lean
 - formal/GaloisForLFunctions/RHTower/FieldOneFiniteStageModuleOneInvariantL2.lean
+- formal/GaloisForLFunctions/RHTower/FieldOnePadicProposition44.lean
+- formal/GaloisForLFunctions/RHTower/FieldOnePadicSoninApproximation.lean
+- formal/GaloisForLFunctions/RHTower/FieldOnePadicSoninL2FourierSupport.lean
+- formal/GaloisForLFunctions/RHTower/FieldOnePadicSoninL2TwoShell.lean
+- formal/GaloisForLFunctions/RHTower/FieldOneFiniteStageClassSonin.lean
+- formal/GaloisForLFunctions/RHTower/FieldOnePositiveUnitsHaarNormalization.lean
+- formal/GaloisForLFunctions/RHTower/SuzukiWeilFriedrichsOperator.lean
+- formal/GaloisForLFunctions/RHTower/SuzukiH01FormDomain.lean
+- formal/GaloisForLFunctions/RHTower/SuzukiH01OperatorDomain.lean
+- formal/GaloisForLFunctions/RHTower/SuzukiDirichletFormCore.lean
+- formal/GaloisForLFunctions/RHTower/SuzukiDirichletAdjointDomain.lean
+- formal/GaloisForLFunctions/RHTower/SuzukiCCMSourceFormBridge.lean
+- formal/GaloisForLFunctions/RHTower/SuzukiCCMExactSourceIdentification.lean
+- formal/GaloisForLFunctions/RHTower/SuzukiGammaHalfLineClassification.lean
+- formal/GaloisForLFunctions/RHTower/SuzukiGammaChannelAmplitude.lean
+- formal/GaloisForLFunctions/RHTower/SuzukiHalfLogLowFrequencyTerm.lean
 
 ### L and R
 
@@ -8429,6 +8448,11 @@ Euler-depleted-kernel, Meyer-topology, and continuous-moment files receive forma
 - formal/GaloisForLFunctions/RHTower/RouteRPositiveInvariantMeanPrimeAtomNoGo.lean
 - formal/GaloisForLFunctions/RHTower/RouteRXiJetPrincipalCalkinNonErasure.lean
 - formal/GaloisForLFunctions/RHTower/RouteRTerminalProducerClassification.lean
+- formal/GaloisForLFunctions/HTGeometry/MilnorKResidueMap.lean
+- formal/GaloisForLFunctions/HTGeometry/MilnorKResidueUnits.lean
+- formal/GaloisForLFunctions/HTGeometry/MilnorKResidueValuation.lean
+- formal/GaloisForLFunctions/HTGeometry/MilnorKFiniteField.lean
+- formal/GaloisForLFunctions/HTGeometry/MilnorKGersten.lean
 
 ### O
 
@@ -8486,6 +8510,9 @@ Euler-depleted-kernel, Meyer-topology, and continuous-moment files receive forma
 - formal/GaloisForLFunctions/RHTower/XiHorizontalCollisionPrimeCayleyInformationLoss.lean
 - formal/GaloisForLFunctions/RHTower/XiHorizontalCollisionWardGreenCayleyQuantum.lean
 - formal/GaloisForLFunctions/RHTower/XiHorizontalCollisionWardGreenExteriorSourceCarrier.lean
+- formal/GaloisForLFunctions/RHTower/HedenmalmCoefficientFaithfulExteriorSourceContour.lean
+- formal/GaloisForLFunctions/RHTower/MobiusCriticalComplexPhaseHermitianGram.lean
+- formal/GaloisForLFunctions/RHTower/XiHorizontalCollisionGaussHodgePrimeCurrent.lean
 
 ### Q
 
@@ -8578,6 +8605,9 @@ umbrella-reachable; their listed declarations receive formal credit.
 - formal/GaloisForLFunctions/RHTower/Sieve/MaynardSelectedCellGlobalMiddleHuxley.lean
 - formal/GaloisForLFunctions/RHTower/Sieve/MaynardReceiverMargin.lean
 - formal/GaloisForLFunctions/RHTower/Sieve/MaynardWindowRelevantPerron.lean
+- formal/GaloisForLFunctions/RHTower/SmoothAFEZetaDualWeightHeightDerivative.lean
+- formal/GaloisForLFunctions/RHTower/SmoothAFEZetaDualWeightDerivativeBound.lean
+- formal/GaloisForLFunctions/RHTower/SmoothAFEZetaDualSeriesFreezing.lean
 
 ### U
 
@@ -8908,6 +8938,10 @@ anchors identified as wired below receive ordinary formal credit.
 - formal/GaloisForLFunctions/HTGeometry/ConstraintRelativity/NeutralFusionCotangent.lean
 - formal/GaloisForLFunctions/HTGeometry/ConstraintRelativity/PrimeValuationCoframe.lean
 - formal/GaloisForLFunctions/HTGeometry/ConstraintRelativity/TriangleHolonomy.lean
+- formal/GaloisForLFunctions/HTGeometry/PrimeLinearOccupationHypertranscendence.lean
+- formal/GaloisForLFunctions/RHTower/SchanuelStageWitnesses.lean
+- formal/GaloisForLFunctions/RHTower/SchanuelDefectLattice.lean
+- formal/GaloisForLFunctions/RHTower/SchanuelDefectValueField.lean
 
 ### Adjacent C1/CCM Gauss-component infrastructure
 
@@ -9560,21 +9594,23 @@ propagated-iterate control (`m >= 3`),
 identification with the actual Weil/intersection object, and that global annihilating trace remain.
 Route L's cofinal prime-period tomography proves algebraic label sufficiency and topological
 non-strictness; its formal Floquet resonance quotient and bounded-correction no-go, Milnor--Witt,
-Steinberg, Gamma-six, and Mobius-successor layers prove the missing object is the global ideal-
+Steinberg, degree-uniform Milnor Gersten row, Gamma-six, and Mobius-successor layers prove the missing object is the global ideal-
 preserving lift from the complete shell-amplified singular source to the fixed Gamma/co-Poisson
 target, not another source normal, compact periodization, Euler-depleted Floquet correction, or
 scalar diagonal form. Route O now has two internal producer branches: true restricted-Weil
 whole-ground control beyond the paper-closed full constrained-prolate leakage optimizer and gap,
 and the completed-zero-mode-to-support-pruned-carrier intertwiner beyond the closed weak Gamma and
 root-port steps. Route P's curvature-normalized tail, source-native reflected projector, fixed-
-center exterior energy, and affine multiplicity separator are umbrella-formal; its two source
-budgets are a finite positive-tail ceiling or a literal strict sub-quantum four-leg prime--Gamma
-trace. Route R's `(2,3)` Calkin, first-jet, positive-polar, and
+center exterior energy, affine multiplicity separator, literal four-contour formation, and
+Hermitian graph-normal Gram are umbrella-formal; its two source budgets are a finite positive-tail
+ceiling or a finite-sigma first-order-isometric Hermitian curvature/cross-term law before positive
+landing. Route R's `(2,3)` Calkin, first-jet, positive-polar, and
 Fisher interfaces are all terminal RH-equivalent receivers; no independent producer remains.
 Route T's Wold-side wall is a signed/distributional pole-preserving landing. Its arithmetic wall has
 moved past reserve geometry, full physical slicing, proper-prime-power removal, zero peeling,
-weighted Littlewood identity, and the coefficient-three exponent budget; the first wall is the
-unconditional density-to-`7/10` prime-supply theorem and signed route composition. Route U's
+weighted Littlewood identity, coefficient-three exponent budget, Gaussian derivative exchange, and
+full reflected dual-series freezing; first wall is blockwise fourth-moment assembly, followed by
+density-to-`7/10` prime supply and signed route composition. Route U's
 parabolic horizon, characteristic/projective laws, adaptive source account, exact cofinal linear-
 dimension finite-Hankel phase, reciprocal clearing, and terminal source-work residue are formal.
 Its terminal wall is a source sign or capital bound on that fixed packet family.
@@ -10794,9 +10830,11 @@ eventual packet bound < 4(96/145)^2  -> RH.
 
 This rules out two prior dead ends at once: global exterior determinant is contaminated by
 cross-zero Cauchy--Binet minors, while same-copy Ward trace is contaminated by critical-line mass.
-The new carrier has neither defect. Exact remaining producer is a four-leg prime--Gamma estimate
-on this dephased local exterior pencil below its indivisible quantum. No density-normalized
-`o(N)` estimate suffices; target is absolute and packet-local.
+The new carrier has neither defect. Later coefficient-faithful four-contour formation closes
+construction of this source expression and proves its generic strict subquantum bound equivalent to
+RH. Therefore no density-normalized `o(N)` or generic contour norm estimate is a producer. Live
+successor is a source-derived finite-sigma Hermitian cross-term/curvature law, or labelled
+arithmetic cancellation before positive landing.
 
 ### Route U mechanism: strict-frontier contact order is integer logarithmic holonomy
 
@@ -11369,6 +11407,20 @@ off-line mass toll.  This is a genuine no-go, not failure to find a bound.  The 
 previous stalls is jet-order mismatch: ordinary positivity records first-order dissipation, while
 graph-normal RH information occupies second-order curvature.
 
+P-G163 kills apparent generic-dilation repair.  Every Hilbert defect vector satisfying exact
+scalar-phase completion obeys
+
+```text
+|Phi_(1/2)(a)|^2+||c(a)||^2=1
+  ==> ||c(a)||^2/a -> 2 Re r_Xi(1/2).                  (P-G163.1)
+```
+
+Under false RH this limit is positive, so scalar Julia/Halmos defect channels are square-root scale
+and cannot have a finite derivative at zero. Conversely, a differentiable exact completion already
+proves RH. Abstract unitary dilation after scalar compression is therefore another receiver, not
+the missing source. Differentiable block-unitary Ward curvature must be built before scalar
+observation, with a vector-valued causal block retaining first-order source compensation.
+
 `RoutePFirstOrderSlackNoGo.lean` and its umbrella import are uncommitted at this cutoff, so this
 no-go receives paper/working-tree status rather than formal credit. Its provisional surviving
 producer is
@@ -11376,6 +11428,10 @@ a source-derived pre-divisor Gamma/Sonin incidence whose causal channel is isome
 and whose anti-causal derivative is `(P-G161.1)`.  Only after cancellation of complete linear loss
 can block-unitary second variation expose P-G160 rigidity.  Any candidate with positive
 first-derivative norm defect is killed by `(P-G162.1)`.  RH remains open.
+
+`RoutePScalarUnitaryCompletionRegularityNoGo.lean` proves `(P-G163.1)` and the differentiability
+classification in the current working tree; its umbrella import is likewise uncommitted at this
+cutoff.
 
 ### Route T exact dual carrier: Gaussian tail and height variation close
 

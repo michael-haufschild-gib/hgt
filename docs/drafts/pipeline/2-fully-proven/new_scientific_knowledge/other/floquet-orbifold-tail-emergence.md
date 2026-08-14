@@ -160,3 +160,22 @@ autonomous classification, so the card remains in step 2.
 - [x] general finite periodic transport law formalized unconditionally
 - [ ] 2 -> 3: symbolic transport is formalized; assemble with the autonomous tail classification
 - [ ] 3 -> 4: independent novelty audit and standalone exposition
+
+## 2026-08-14 — the phase tails contain their currents, unconditionally
+
+The shared layer `formal/GaloisForLFunctions/HTGeometry/OrbifoldCurrentTailInclusion.lean`
+(unconditional, axiom-clean) supplies the containment half of `(3)` for both phases of this
+protocol:
+
+- `HTGeometry.differentialAdjoin_logDeriv_le_stableRangeCore_of_pow` applied to the phase-zero
+  period map `P₀(z) = z⁴` gives `C⟨δy/y⟩ ≤ Tail(P₀)` — the phase-zero current is stable at every
+  depth, with multiplier `4`, which is exactly the Floquet eigenvalue this card's
+  `phaseZeroCurrent_twoStep` computes;
+- `HTGeometry.differentialAdjoin_logDeriv_sub_le_stableRangeCore_of_pow` applied to
+  `P₁(z) = (z-1)⁴ + 1` gives `C⟨δy/(y-1)⟩ ≤ Tail(P₁)`, the phase-one current.
+
+So the *emergence* half of the theorem — that the alternating protocol retains a nonconstant
+orbifold current although neither static step does — is now formal on the side that asserts
+retention.  What still rests on the paper-level autonomous classification is the complementary
+assertion `(1)`, that each static tail is exactly `C`, and the exactness (rather than containment)
+of `(3)`.

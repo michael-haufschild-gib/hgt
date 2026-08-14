@@ -6,8 +6,9 @@
 - **Date:** 2026-08-14
 - **Paper proof:**
   `../2-fully-proven/centralizer-centered-shortcut-history-recurrence-energy-law.md`
-- **Lean module:**
-  `formal/GaloisForLFunctions/HTGeometry/StaticShortcutRecurrenceEnergyLaw.lean`
+- **Lean modules:**
+  `formal/GaloisForLFunctions/HTGeometry/StaticShortcutRecurrenceEnergyLaw.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/StaticShortcutReplicaProjectorFrameLaw.lean`
 - **Umbrella:** `formal/GaloisForLFunctions/HTGeometry.lean`
 
 ## Formalized frontier
@@ -23,7 +24,11 @@ The module proves unconditionally:
 6. uniform target frame energy is exactly the normalized sum of every target Gram entry;
 7. subtracting the self-adjoint idempotent universal sector subtracts its squared norm exactly;
 8. adaptive shortcut-history mass is bounded by centralizer-conditioned target frame energy times
-   centralizer-centered source recurrence energy.
+   centralizer-centered source recurrence energy;
+9. rank-one projectors of replicated finite pure states have real Hilbert--Schmidt inner product
+   exactly equal to replica fidelity;
+10. target frame energy for those projectors is exactly complete average replica fidelity, and
+    every physical target collision is automatically nonnegative.
 
 Items 3, 6, and 8 machine-check the exact research boundary.  Pure Hilbert geometry cannot remove
 the Cauchy square.  The only scale-sensitive target invariant left by the proof is average replica
@@ -43,6 +48,13 @@ finitePreparationFrameEnergy
 finitePreparationFrameEnergy_eq_pairAverage
 preparationMemory_norm_sq_eq_frameEnergy_sub_universal
 adaptive_shortcuts_force_recurrence_energy
+finitePureProjectorCoordinate
+finitePureProjectorEuclidean
+inner_finitePureProjectorEuclidean
+inner_finitePureProjectorEuclidean_tensorPower
+real_inner_finitePureProjectorEuclidean_tensorPower
+finitePreparationFrameEnergy_replicaProjector_eq_averageFidelity
+real_inner_finitePureProjectorEuclidean_tensorPower_nonneg
 ```
 
 ## Verification
@@ -63,8 +75,12 @@ Classical.choice
 Quot.sound
 ```
 
-No `sorry`, `admit`, project `axiom`, `opaque`, or `unsafe` declaration occurs in the module.  No
-project-wide build was run.  Module is wired into the `HTGeometry` umbrella.
+The projector bridge was tested together with the exact static module in
+`/tmp/hgt_static_replica_projector_combined.lean`; all five projector/frame theorems pass and report
+the same three standard foundational axioms.
+
+No `sorry`, `admit`, project `axiom`, `opaque`, or `unsafe` declaration occurs in either module.  No
+project-wide build was run.  Both modules are wired into the `HTGeometry` umbrella.
 
 ## Honest boundary
 

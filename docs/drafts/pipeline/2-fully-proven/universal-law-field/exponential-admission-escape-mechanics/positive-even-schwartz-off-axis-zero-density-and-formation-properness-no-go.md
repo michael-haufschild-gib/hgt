@@ -407,7 +407,8 @@ continuation, functional equation, recovery, and proper work.
 - [x] common-recovery information neutrality
 - [x] strict reflected Jeffreys properness
 - [x] exact topology survivor
-- [ ] Lean certification of finite algebraic core
+- [x] Lean certification of finite algebraic core in
+  `ConstitutivePositiveEvenLaplaceEscape.lean`
 - [ ] source-generated exponential admission
 - [ ] selection consequence
 

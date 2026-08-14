@@ -265,3 +265,65 @@ Layer C is now complete except for the two passages to cohomology:
   finite-dimensional inner product space.
 - Equivariance: `H^*(Γ,ℝ)` from `Γ`-invariant cochains on a contractible complex with a proper
   cocompact action, so that the statement applies to `SL_n(𝒪_S)` acting on its Bruhat–Tits building.
+
+## Layer C — the Hodge step, started
+
+Same module.  The passage from "no nonzero harmonic cochain" to `H^k = 0` needs cochains as a
+finite-dimensional real vector space with a positive-definite pairing, so that the coboundaries have
+an orthogonal complement.  The route chosen avoids inner-product-space machinery entirely and uses
+mathlib's bilinear-form orthogonality
+(`LinearMap.BilinForm.isCompl_orthogonal_of_restrict_nondegenerate`), which is pure algebra.
+
+Landed:
+
+- `Cochain V k` — cochains of a fixed degree as functions on `{τ : Finset V // τ.card = k + 1}`,
+  automatically a finite-dimensional real vector space.
+- `extend`, `extendₗ` — extension by zero to all finite vertex sets, as a linear map.
+- `restrictₗ`, **`cobₗ`** — **the coboundary as a linear map between the fixed-degree cochain
+  spaces**, built from the corpus's `simplicialCoboundaryₗ`.
+- **`pairing`** — the weighted pairing `⟨a,b⟩ = Σ_{|τ|=k+1} m(τ)·a(τ)·b(τ)` as a
+  `LinearMap.BilinForm ℝ`, with `pairing_comm`, `pairing_isRefl`, `pairing_self_nonneg` and
+  **`pairing_eq_zero_iff`** — **it is positive definite when the faces of that dimension have
+  positive weight**.
+
+`harmonic_eq_zero`'s co-closedness hypothesis was weakened to the faces that actually matter
+(`∀ σ ∈ powersetCard k univ`), which is exactly what orthogonality to the coboundaries delivers.
+
+Remaining in the Hodge step: the orthogonal complement of `range (cobₗ k)`, the identification of
+that complement with co-closedness via `codiff_adjoint`, and the conclusion that every cocycle is a
+coboundary.
+
+## Layer C — COMPLETE for a finite complex
+
+`HTGeometry/GarlandLocalization.lean` (737 lines).  Axiom audit: `propext, Classical.choice,
+Quot.sound`.
+
+- **`cocycle_eq_coboundary`** — **Garland's vanishing theorem in cohomological form.**  On a pure
+  `n`-dimensional weighted complex whose faces of dimension `j+1` have positive weight, with
+  `j + 1 < n`, if every link of a `(j+1)`-face has a spectral gap `lam` with
+  `(j+1) < lam·(j+2)`, then every cocycle of degree `j+1` is a coboundary — i.e. `H^{j+1} = 0`.
+
+The Hodge step was carried out with mathlib's bilinear-form orthogonality rather than inner-product
+spaces, so it stays pure algebra:
+
+- `sum_subtype_card` — the bridge between sums over `powersetCard n univ` and sums over the subtype
+  of faces of that cardinality.
+- **`pairing_cob`** — the pairing of a cochain against a coboundary is its pairing against the
+  codifferential, by `codiff_adjoint`.
+- `indicator`, `extend_indicator`, **`codiff_eq_zero_of_pairing_cob_eq_zero`** — **orthogonality to
+  the coboundaries is co-closedness**, by testing against the indicator of a face.
+- `card_erase_ne`, **`extend_cobₗ`** — the extension of a coboundary is the coboundary of the
+  extension, because the extension by zero of a cochain of fixed degree has its coboundary
+  concentrated in the next degree.
+- **`pairing_restrict_nondegenerate`** — the pairing restricted to any subspace is nondegenerate,
+  since it is positive definite.
+- The assembly: `IsCompl` of the coboundaries and their orthogonal complement
+  (`isCompl_orthogonal_of_restrict_nondegenerate`), split a cocycle, show the orthogonal part is
+  harmonic, and kill it with `harmonic_eq_zero`.
+
+### What remains before Layer D
+
+The equivariant version: `H^*(Γ,ℝ)` computed from `Γ`-invariant cochains on a contractible complex
+with a proper cocompact action.  The finite-complex statement above is the model; the equivariant
+one replaces `Cochain V k` by its `Γ`-invariants and the sums over all faces by sums over a
+fundamental domain, with the same two localization identities.

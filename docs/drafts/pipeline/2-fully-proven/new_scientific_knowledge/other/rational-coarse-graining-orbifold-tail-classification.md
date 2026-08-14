@@ -314,3 +314,27 @@ the complete classification remains at stage 2.
   theory*, 2008, for differential invariants and differential closure.
 - J. Garofali, *Dynamical systems with a parallel tensor*, 2018.
 - L. D'Alfonso, G. Jeronimo, P. Solerno, *Effective Differential Luroth's Theorem*, 2014.
+
+## 2026-08-14 — the easy direction of `(1)` and the containment in `(3)` are formalized
+
+`formal/GaloisForLFunctions/HTGeometry/OrbifoldCurrentTailInclusion.lean`, unconditional and
+axiom-clean, wired into the `HTGeometry` umbrella.
+
+- **`HTGeometry.tensorCurrent_transport`** — the evaluated form of the tensor eigen-relation.  If
+  the substitution has chain-rule derivative factor `R'` and the `k`-differential satisfies
+  `q(R)·(R')^k = λ·q`, then the evaluated current `q(y)(δy)^k` is multiplied by `λ`.  This is
+  `R^*(q(dz)^k) = λ q(dz)^k` read on a free jet, and it is the source of every eigenvector below;
+- **`HTGeometry.differentialAdjoin_le_stableRangeCore_of_algebraMap_eigenvector`** — an eigenvector
+  with nonzero constant eigenvalue drags its *whole differential field* into the tail.  The corpus
+  already had the single-element and ordinary-adjoin statements; the differential statement needs
+  the derivation-closedness of the stable core, so every jet of the current is stable too;
+- **`HTGeometry.differentialAdjoin_logDeriv_le_stableRangeCore_of_pow`** — the power maps.  A
+  substitution with `Φ y = y^d` scales the logarithmic current `δy/y` by `d`, hence
+  `C⟨δy/y⟩ ≤ Tail`.  This is the `k = 1` orbifold current of `z^d`, with multiplier the degree;
+- **`HTGeometry.differentialAdjoin_logDeriv_sub_le_stableRangeCore_of_pow`** — the translated power
+  maps `y ↦ c + (y-c)^d`, whose current is `δy/(y-c)`.
+
+Together these prove `Tail(R) ⊇ C⟨Q_R⟩` whenever an invariant `k`-differential exists — the
+"if" half of item 1 and the containment half of item 3.  The remaining content of the card is the
+converse: that a nonconstant tail *forces* an invariant tensor, which is the Casale/Malgrange
+classification step.

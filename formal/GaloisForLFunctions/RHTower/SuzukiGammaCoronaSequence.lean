@@ -1,6 +1,8 @@
 import GaloisForLFunctions.RHTower.SuzukiHalfLogSquareIntegrable
 import GaloisForLFunctions.HTGeometry.HalfLogTraceNonIntegrable
 import GaloisForLFunctions.RHTower.SuzukiPrimeNormalCoronaComparison
+import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Basic
+import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
 
 /-!
 # The Gamma corona sequence
@@ -154,8 +156,8 @@ theorem norm_primeNormalSection_sub_halfLog_le (hT : IsSelfAdjoint T) {β : X} {
   have hrem := RHTower.norm_cfc_binomialSymbol_sub_one_le T hL hL0
   have hsplit : primeNormalSection T β L - (1 / Real.sqrt L) • β
       = (L ^ (-(1:ℝ)/2)) • ((cfc (fun t : ℝ => RHTower.binomialSymbol L t - 1) T) β) := by
-    rw [primeNormalSection, hdecomp, ContinuousLinearMap.add_apply,
-      ContinuousLinearMap.one_apply, smul_add, rpow_neg_half_eq hL0]
+    rw [primeNormalSection, hdecomp, add_apply, one_apply_eq_self, smul_add,
+      rpow_neg_half_eq hL0]
     abel
   rw [hsplit, norm_smul, Real.norm_eq_abs,
     abs_of_pos (Real.rpow_pos_of_pos hL0 _)]
@@ -170,7 +172,6 @@ theorem norm_primeNormalSection_sub_halfLog_le (hT : IsSelfAdjoint T) {β : X} {
       norm_num
     rw [hsplitpow, Real.rpow_neg_one]
     field_simp
-    ring
   calc (L ^ (-(1:ℝ)/2)) * ‖(cfc (fun t : ℝ => RHTower.binomialSymbol L t - 1) T) β‖
       ≤ (L ^ (-(1:ℝ)/2)) * ((‖T‖ / (2 * L)) * ‖β‖) :=
         mul_le_mul_of_nonneg_left hop (Real.rpow_nonneg hL0.le _)

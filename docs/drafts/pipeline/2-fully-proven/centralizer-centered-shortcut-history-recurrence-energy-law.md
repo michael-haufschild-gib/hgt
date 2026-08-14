@@ -86,6 +86,19 @@ When `Y` indexes each occupied endpoint once in replica-projector Hilbert space,
 normalized average replica fidelity of all endpoint pairs.  The theorem itself permits any finite
 family; duplicate labels retain their chosen multiplicity.
 
+This quantum identification is formal, not interpretive shorthand.  For every finite pure state
+`psi`, vectorize the rank-one projector of its `r`-fold tensor power in real Hilbert--Schmidt
+coordinates.  Lean proves
+
+```text
+<Proj(psi^tensor r),Proj(phi^tensor r)>_R
+  = Fidelity(psi,phi)^r >= 0,
+F(Y_r)=|Y|^(-2) sum_(k,l) Fidelity(y_k,y_l)^r.             (4b)
+```
+
+Thus the nonnegative-collision premise below is automatic for physical pure-state projector
+targets; it is not a sign assumption on raw quantum amplitudes.
+
 Let `Y={y_k}` be any finite nonnegative target dictionary whose uniform preparation moment is `y`
 and has the same universal projection as `x`.  At each time `t_j`, the witnessing target `k(j)` may
 be chosen adaptively.  If
@@ -227,6 +240,7 @@ not new scientific knowledge and not a manuscript headline.
 
 - [x] Stage 1 -> 2: exact proof closes.
 - [x] Stage 2 -> 3: `(1)--(6)`, sharpness, frame-energy identity, and conditioned-energy
-  factorization formalized and axiom-audited.
+  factorization formalized and axiom-audited; replica-projector fidelity realization and automatic
+  collision nonnegativity formalized separately.
 - [ ] Publication use: establish application priority and close both growing-replica factors for
   ordinary static local Hamiltonians.

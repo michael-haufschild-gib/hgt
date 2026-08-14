@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.WeightedComplexLink
 import GaloisForLFunctions.HTGeometry.SimplicialLinkRestrict
+import Mathlib.LinearAlgebra.BilinearForm.Orthogonal
 
 /-!
 # Garland's localization: the mass norm
@@ -485,14 +486,250 @@ every face of positive weight. -/
 theorem harmonic_eq_zero {n k : ℕ} (hpure : ∀ s ∈ X.top, s.card = n + 1) (hkn : k < n)
     (f : Finset V → ℝ) (lam : ℝ)
     (hgap : ∀ σ ∈ (univ : Finset V).powersetCard k, (X.linkGraph σ).HasSpectralGap lam)
-    (hclosed : simplicialCoboundary ℝ f = 0) (hcoclosed : ∀ σ, X.codiff f σ = 0)
+    (hclosed : simplicialCoboundary ℝ f = 0) (hcoclosed : ∀ σ ∈ (univ : Finset V).powersetCard k, X.codiff f σ = 0)
     (hlam : (k : ℝ) < lam * ((k : ℝ) + 1))
     {τ : Finset V} (hτ : τ.card = k + 1) (hm : X.m τ ≠ 0) :
     f τ = 0 :=
   X.eq_zero_of_cochainNormSq_eq_zero
     (X.cochainNormSq_eq_zero_of_spectralGap hpure hkn f lam hgap
-      (fun σ _ => by rw [X.sum_mass_linkRestrict hpure f σ, hcoclosed σ, mul_zero]) hclosed hlam)
+      (fun σ hσ => by rw [X.sum_mass_linkRestrict hpure f σ, hcoclosed σ hσ, mul_zero]) hclosed hlam)
     hτ hm
+
+
+end WeightedComplex
+
+/-! ## Cochains as a finite-dimensional vector space -/
+
+/-- Cochains of a fixed degree, as a finite-dimensional real vector space. -/
+abbrev Cochain (V : Type*) [DecidableEq V] [Fintype V] (k : ℕ) : Type _ :=
+  {τ : Finset V // τ.card = k + 1} → ℝ
+
+/-- A cochain of fixed degree, extended by zero to all finite vertex sets. -/
+noncomputable def extend {k : ℕ} (a : Cochain V k) : Finset V → ℝ :=
+  fun τ => if h : τ.card = k + 1 then a ⟨τ, h⟩ else 0
+
+omit [LinearOrder V] in
+theorem extend_apply {k : ℕ} (a : Cochain V k) {τ : Finset V} (h : τ.card = k + 1) :
+    extend a τ = a ⟨τ, h⟩ := dif_pos h
+
+omit [LinearOrder V] in
+theorem extend_add {k : ℕ} (a b : Cochain V k) : extend (a + b) = extend a + extend b := by
+  funext τ
+  by_cases h : τ.card = k + 1 <;> simp [extend, h]
+
+omit [LinearOrder V] in
+theorem extend_smul {k : ℕ} (c : ℝ) (a : Cochain V k) : extend (c • a) = c • extend a := by
+  funext τ
+  by_cases h : τ.card = k + 1 <;> simp [extend, h]
+
+/-- The extension-by-zero map, as a linear map. -/
+noncomputable def extendₗ (k : ℕ) : Cochain V k →ₗ[ℝ] (Finset V → ℝ) where
+  toFun := extend
+  map_add' := extend_add
+  map_smul' := extend_smul
+
+/-- Restriction of a function on all finite vertex sets to the faces of a fixed cardinality. -/
+def restrictₗ (k : ℕ) : (Finset V → ℝ) →ₗ[ℝ] Cochain V k where
+  toFun f := fun τ => f τ.1
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
+
+/-- **The coboundary as a linear map between the fixed-degree cochain spaces.** -/
+noncomputable def cobₗ (k : ℕ) : Cochain V k →ₗ[ℝ] Cochain V (k + 1) :=
+  (restrictₗ (k + 1)).comp ((simplicialCoboundaryₗ ℝ).comp (extendₗ k))
+
+theorem cobₗ_apply {k : ℕ} (a : Cochain V k) (ρ : {τ : Finset V // τ.card = k + 1 + 1}) :
+    cobₗ k a ρ = simplicialCoboundary ℝ (extend a) ρ.1 := rfl
+
+
+namespace WeightedComplex
+
+variable (X : WeightedComplex V)
+
+/-- **The weighted pairing on cochains of a fixed degree.** -/
+noncomputable def pairing (k : ℕ) : LinearMap.BilinForm ℝ (Cochain V k) :=
+  LinearMap.mk₂ ℝ (fun a b => ∑ τ : {τ : Finset V // τ.card = k + 1}, X.m τ.1 * (a τ * b τ))
+    (fun a₁ a₂ b => by
+      rw [← Finset.sum_add_distrib]
+      refine Finset.sum_congr rfl fun τ _ => ?_
+      show X.m τ.1 * ((a₁ τ + a₂ τ) * b τ) = _
+      ring)
+    (fun c a b => by
+      rw [smul_eq_mul, Finset.mul_sum]
+      refine Finset.sum_congr rfl fun τ _ => ?_
+      show X.m τ.1 * ((c * a τ) * b τ) = c * (X.m τ.1 * (a τ * b τ))
+      ring)
+    (fun a b₁ b₂ => by
+      rw [← Finset.sum_add_distrib]
+      refine Finset.sum_congr rfl fun τ _ => ?_
+      show X.m τ.1 * (a τ * (b₁ τ + b₂ τ)) = _
+      ring)
+    (fun c a b => by
+      rw [smul_eq_mul, Finset.mul_sum]
+      refine Finset.sum_congr rfl fun τ _ => ?_
+      show X.m τ.1 * (a τ * (c * b τ)) = c * (X.m τ.1 * (a τ * b τ))
+      ring)
+
+omit [LinearOrder V] in
+theorem pairing_apply (k : ℕ) (a b : Cochain V k) :
+    X.pairing k a b = ∑ τ : {τ : Finset V // τ.card = k + 1}, X.m τ.1 * (a τ * b τ) := rfl
+
+omit [LinearOrder V] in
+theorem pairing_comm (k : ℕ) (a b : Cochain V k) : X.pairing k a b = X.pairing k b a := by
+  rw [pairing_apply, pairing_apply]
+  exact Finset.sum_congr rfl fun τ _ => by ring
+
+omit [LinearOrder V] in
+theorem pairing_isRefl (k : ℕ) : (X.pairing k).IsRefl := by
+  intro a b h
+  rw [X.pairing_comm k b a]
+  exact h
+
+omit [LinearOrder V] in
+theorem pairing_self_nonneg (k : ℕ) (a : Cochain V k) : 0 ≤ X.pairing k a a :=
+  Finset.sum_nonneg fun _ _ => mul_nonneg (X.m_nonneg _) (mul_self_nonneg _)
+
+omit [LinearOrder V] in
+/-- **The pairing is positive definite when the faces have positive weight.** -/
+theorem pairing_eq_zero_iff {k : ℕ} (hpos : ∀ τ : Finset V, τ.card = k + 1 → 0 < X.m τ)
+    (a : Cochain V k) : X.pairing k a a = 0 ↔ a = 0 := by
+  constructor
+  · intro h
+    funext τ
+    have hterm := (Finset.sum_eq_zero_iff_of_nonneg
+      (fun σ (_ : σ ∈ (Finset.univ : Finset {τ : Finset V // τ.card = k + 1})) =>
+        mul_nonneg (X.m_nonneg _) (mul_self_nonneg _))).1 h τ (Finset.mem_univ τ)
+    rcases mul_eq_zero.1 hterm with h1 | h2
+    · exact absurd h1 (hpos τ.1 τ.2).ne'
+    · exact mul_self_eq_zero.1 h2
+  · rintro rfl
+    exact Finset.sum_eq_zero fun τ _ => by
+      show X.m τ.1 * ((0:ℝ) * (0:ℝ)) = 0
+      ring
+
+omit [LinearOrder V] [DecidableEq V] in
+theorem sum_subtype_card (n : ℕ) (F : Finset V → ℝ) :
+    ∑ τ : {τ : Finset V // τ.card = n}, F τ.1 = ∑ τ ∈ (univ : Finset V).powersetCard n, F τ := by
+  symm
+  refine Finset.sum_subtype ((univ : Finset V).powersetCard n) (fun x => ?_) F
+  rw [Finset.mem_powersetCard]
+  exact ⟨fun hx => hx.2, fun hx => ⟨Finset.subset_univ _, hx⟩⟩
+
+/-- **The pairing against a coboundary is the pairing against the codifferential.** -/
+theorem pairing_cob (j : ℕ) (a : Cochain V j) (h : Cochain V (j + 1)) :
+    X.pairing (j + 1) (cobₗ j a) h
+      = ∑ τ ∈ (univ : Finset V).powersetCard (j + 1), extend a τ * X.codiff (extend h) τ := by
+  rw [pairing_apply, ← X.codiff_adjoint (extend a) (extend h) j, ← sum_subtype_card]
+  refine Finset.sum_congr rfl fun τ _ => ?_
+  rw [cobₗ_apply, extend_apply h τ.2]
+
+/-- The indicator cochain of a face. -/
+noncomputable def indicator (j : ℕ) (σ : Finset V) : Cochain V j :=
+  fun τ => if τ.1 = σ then 1 else 0
+
+omit [LinearOrder V] in
+theorem extend_indicator {j : ℕ} {σ τ : Finset V} (hτ : τ.card = j + 1) :
+    extend (indicator (V := V) j σ) τ = if τ = σ then 1 else 0 := by
+  rw [extend_apply _ hτ]
+  rfl
+
+/-- **Orthogonality to the coboundaries is co-closedness.** -/
+theorem codiff_eq_zero_of_pairing_cob_eq_zero {j : ℕ} (h : Cochain V (j + 1))
+    (hperp : ∀ a : Cochain V j, X.pairing (j + 1) (cobₗ j a) h = 0)
+    {σ : Finset V} (hσ : σ ∈ (univ : Finset V).powersetCard (j + 1)) :
+    X.codiff (extend h) σ = 0 := by
+  classical
+  have hcard : σ.card = j + 1 := (Finset.mem_powersetCard.1 hσ).2
+  have hz := hperp (indicator j σ)
+  rw [X.pairing_cob j (indicator j σ) h] at hz
+  rw [Finset.sum_congr rfl (fun τ hτ => by
+    rw [extend_indicator (j := j) (σ := σ) (Finset.mem_powersetCard.1 hτ).2])] at hz
+  have hsum : ∑ τ ∈ (univ : Finset V).powersetCard (j + 1),
+      (if τ = σ then (1:ℝ) else 0) * X.codiff (extend h) τ
+      = ∑ τ ∈ (univ : Finset V).powersetCard (j + 1),
+        (if τ = σ then X.codiff (extend h) τ else 0) := by
+    refine Finset.sum_congr rfl fun τ _ => ?_
+    by_cases hts : τ = σ
+    · rw [if_pos hts, if_pos hts, one_mul]
+    · rw [if_neg hts, if_neg hts, zero_mul]
+  rw [hsum, Finset.sum_ite_eq' _ σ (fun τ => X.codiff (extend h) τ), if_pos hσ] at hz
+  exact hz
+
+
+omit [LinearOrder V] [Fintype V] in
+theorem card_erase_ne {j : ℕ} {ρ : Finset V} (hρ : ρ.card ≠ j + 1 + 1) {v : V} (hv : v ∈ ρ) :
+    (ρ.erase v).card ≠ j + 1 := by
+  rw [Finset.card_erase_of_mem hv]
+  intro hc
+  exact hρ (by omega)
+
+/-- **The extension of a coboundary is the coboundary of the extension.** -/
+theorem extend_cobₗ {j : ℕ} (a : Cochain V j) :
+    extend (cobₗ j a) = simplicialCoboundary ℝ (extend a) := by
+  funext ρ
+  by_cases hρ : ρ.card = j + 1 + 1
+  · rw [extend_apply _ hρ, cobₗ_apply]
+  · rw [extend, dif_neg hρ, simplicialCoboundary_apply]
+    refine (Finset.sum_eq_zero fun v hv => ?_).symm
+    have : (ρ.erase v).card ≠ j + 1 := card_erase_ne (j := j) hρ hv
+    rw [extend, dif_neg this, mul_zero]
+
+omit [LinearOrder V] in
+theorem pairing_restrict_nondegenerate {k : ℕ}
+    (hpos : ∀ τ : Finset V, τ.card = k + 1 → 0 < X.m τ) (W : Submodule ℝ (Cochain V k)) :
+    ((X.pairing k).restrict W).Nondegenerate := by
+  constructor
+  · intro x hx
+    have h : X.pairing k x.1 x.1 = 0 := hx x
+    exact Subtype.ext ((X.pairing_eq_zero_iff hpos x.1).1 h)
+  · intro y hy
+    have h : X.pairing k y.1 y.1 = 0 := hy y
+    exact Subtype.ext ((X.pairing_eq_zero_iff hpos y.1).1 h)
+
+
+/-- **Garland's vanishing theorem in cohomological form**: on a pure `n`-dimensional weighted
+complex with positive weights in the relevant dimension, whose links of `(j+1)`-faces all have a
+spectral gap larger than `(j+1)/(j+2)`, every cocycle of degree `j+1` is a coboundary. -/
+theorem cocycle_eq_coboundary {n j : ℕ} (hpure : ∀ s ∈ X.top, s.card = n + 1) (hjn : j + 1 < n)
+    (hpos : ∀ τ : Finset V, τ.card = j + 1 + 1 → 0 < X.m τ) (lam : ℝ)
+    (hgap : ∀ σ ∈ (univ : Finset V).powersetCard (j + 1), (X.linkGraph σ).HasSpectralGap lam)
+    (hlam : ((j : ℝ) + 1) < lam * ((j : ℝ) + 2))
+    (f : Cochain V (j + 1)) (hf : simplicialCoboundary ℝ (extend f) = 0) :
+    ∃ a : Cochain V j, f = cobₗ j a := by
+  classical
+  set W : Submodule ℝ (Cochain V (j + 1)) := LinearMap.range (cobₗ j) with hW
+  have hcompl : IsCompl W (LinearMap.BilinForm.orthogonal (X.pairing (j + 1)) W) :=
+    LinearMap.BilinForm.isCompl_orthogonal_of_restrict_nondegenerate
+      (X.pairing_isRefl (j + 1)) (X.pairing_restrict_nondegenerate hpos W)
+  have hmem : f ∈ W ⊔ LinearMap.BilinForm.orthogonal (X.pairing (j + 1)) W := by
+    rw [hcompl.sup_eq_top]
+    trivial
+  obtain ⟨f₁, hf₁, f₂, hf₂, hsum⟩ := Submodule.mem_sup.1 hmem
+  obtain ⟨a, ha⟩ := hf₁
+  have hperp : ∀ b : Cochain V j, X.pairing (j + 1) (cobₗ j b) f₂ = 0 := by
+    intro b
+    exact (LinearMap.BilinForm.mem_orthogonal_iff.1 hf₂) (cobₗ j b)
+      (LinearMap.mem_range_self _ b)
+  have hext : extend f = extend f₁ + extend f₂ := by rw [← hsum, extend_add]
+  have hclosed₁ : simplicialCoboundary ℝ (extend f₁) = 0 := by
+    rw [← ha, extend_cobₗ]
+    exact simplicialCoboundary_simplicialCoboundary (extend a)
+  have hclosed₂ : simplicialCoboundary ℝ (extend f₂) = 0 := by
+    have hlin : simplicialCoboundary ℝ (extend f)
+        = simplicialCoboundary ℝ (extend f₁) + simplicialCoboundary ℝ (extend f₂) := by
+      rw [hext]
+      exact map_add (simplicialCoboundaryₗ ℝ) (extend f₁) (extend f₂)
+    rw [hf, hclosed₁, zero_add] at hlin
+    exact hlin.symm
+  have hlam' : (((j + 1 : ℕ) : ℝ)) < lam * (((j + 1 : ℕ) : ℝ) + 1) := by push_cast; linarith
+  have hzero : f₂ = 0 := by
+    funext τ
+    have hv := X.harmonic_eq_zero hpure hjn (extend f₂) lam hgap hclosed₂
+      (fun σ hσ => X.codiff_eq_zero_of_pairing_cob_eq_zero f₂ hperp hσ) hlam' τ.2
+      (hpos τ.1 τ.2).ne'
+    rwa [extend_apply _ τ.2] at hv
+  refine ⟨a, ?_⟩
+  rw [← hsum, hzero, add_zero, ha]
 
 
 end WeightedComplex

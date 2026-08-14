@@ -155,7 +155,7 @@ universal field must contain a law preventing that incompatibility.
 ## 7. Gates
 
 - [x] exact remote-packet escape sequence
-- [x] explicit positive even two-shell off-axis zero
+- [x] explicit positive even two-shell off-axis zero, Lean-certified
 - [x] Gaussian smoothing preserving positivity, Schwartz regularity, and zero quartet
 - [x] density of zero-bearing sources in the positive even Schwartz cone
 - [x] fusion with functional equation, split recovery, KL conservation, and proper work
@@ -168,16 +168,16 @@ universal field must contain a law preventing that incompatibility.
 
 ## 8. Lean scope
 
-The finite algebraic core is to be certified in
+The finite algebraic core is certified in
 
 `ConstitutivePositiveEvenLaplaceEscape.lean`:
 
 - positive two-shell weights;
-- exact off-axis cancellation;
-- involutive zero quartet at the algebraic transform level.
+- exact off-axis cancellation at the explicit point `1 + pi I` and uniformly along `a + pi I`.
 
 The Schwartz density theorem remains paper-proved until the required translated-Schwartz and
-bilateral-Laplace infrastructure is built.
+bilateral-Laplace infrastructure is built. Scratch elaboration of the exact finite module passed
+before umbrella wiring; no project or area build was run.
 
 ## Log
 

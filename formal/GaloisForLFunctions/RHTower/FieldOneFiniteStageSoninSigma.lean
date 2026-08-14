@@ -26,7 +26,7 @@ noncomputable section
 
 open MeasureTheory Set TopologicalSpace IsDedekindDomain
 open _root_.RHTower
-open scoped BigOperators TensorProduct FourierTransform
+open scoped BigOperators TensorProduct FourierTransform NNReal
 
 variable {ι : Type*} [Fintype ι]
 variable (p : ι → ℕ) [∀ i, Fact (p i).Prime]
@@ -46,7 +46,7 @@ variable (p : ι → ℕ) [∀ i, Fact (p i).Prime]
   by_cases hk0 : k = 0
   · simp [hk0]
   · by_cases hk1 : k = -1
-    · simp [hk0, hk1]
+    · simp [hk1]
     · simp [hk0, hk1]
 
 /-- Coordinate-free value classification on nonzero p-adic elements, with
@@ -289,13 +289,13 @@ theorem fieldOneFiniteStageSoninSigma_sunitAngular
   apply Finset.prod_congr rfl
   intro v hv
   let P : Nat.Primes := Rat.HeightOneSpectrum.primesEquiv v.1
-  let e := fieldOneLocalPadicContinuousAddEquiv v.1
+  let e := Rat.HeightOneSpectrum.adicCompletion.padicEquiv v.1
   let a : v.1.adicCompletion ℚ :=
     algebraMap ℚ (v.1.adicCompletion ℚ) (q.1 : ℚ) *
       fieldOneFiniteStageAngularFiniteEmbedding S k v
   have ha0 : a ≠ 0 := by
     apply mul_ne_zero
-    · exact map_ne_zero (algebraMap ℚ (v.1.adicCompletion ℚ))
+    · exact (map_ne_zero (algebraMap ℚ (v.1.adicCompletion ℚ))).2
         (Units.ne_zero q.1)
     · exact Units.ne_zero
         (fieldOneFiniteStageAngularTorusRepresentative S k v).1
@@ -306,15 +306,21 @@ theorem fieldOneFiniteStageSoninSigma_sunitAngular
   rw [fieldOnePadicSoninSigma_apply_unit]
   have hval : Padic.valuation (au : ℚ_[P.1]) =
       fieldOneSUnitExponent S q v := by
+    have hqval := fieldOneSUnit_localPadic_valuation S q v
+    change Padic.valuation
+        (e (algebraMap ℚ (v.1.adicCompletion ℚ) (q.1 : ℚ))) =
+      fieldOneSUnitExponent S q v at hqval
+    have hkval := fieldOneFiniteStageAngularLocalPadic_valuation S k v
+    change Padic.valuation
+        (e (fieldOneFiniteStageAngularFiniteEmbedding S k v)) = 0 at hkval
     change Padic.valuation (e a) = fieldOneSUnitExponent S q v
     change Padic.valuation
         (e (algebraMap ℚ (v.1.adicCompletion ℚ) (q.1 : ℚ) *
           fieldOneFiniteStageAngularFiniteEmbedding S k v)) = _
     rw [map_mul, Padic.valuation_mul]
-    · rw [fieldOneSUnit_localPadic_valuation,
-        fieldOneFiniteStageAngularLocalPadic_valuation, add_zero]
+    · rw [hqval, hkval, add_zero]
     · exact (map_ne_zero e).2
-        (map_ne_zero (algebraMap ℚ (v.1.adicCompletion ℚ))
+        ((map_ne_zero (algebraMap ℚ (v.1.adicCompletion ℚ))).2
           (Units.ne_zero q.1))
     · exact (map_ne_zero e).2 (Units.ne_zero
         (fieldOneFiniteStageAngularTorusRepresentative S k v).1)
@@ -416,6 +422,157 @@ theorem fieldOneFiniteStageClassFourier_thetaClassCore
     fieldOneFiniteStageBruhatFourierLinearEquiv_tmul,
     fieldOneFiniteStageFiniteBruhatFourierBruhat_soninSigma,
     fieldOneFiniteStageThetaClassBruhatCoreLinearMap_apply]
+
+/-! ## Radiality and literal invariant landing -/
+
+theorem fieldOneFiniteStageThetaBruhatCore_orbit_independentAngular
+    (S : Finset (HeightOneSpectrum ℤ)) (f : SchwartzMap ℝ ℂ)
+    (k l : FieldOneFiniteStageModuleOneClass S) (t : ℝ)
+    (q : fieldOneSUnitSubgroup S) :
+    fieldOneFiniteStageBruhatOrbit S
+        (fieldOneFiniteStageThetaBruhatCoreLinearMap S f)
+        (fieldOneFiniteStageBruhatLogRayIdele S
+          (fun v => (fieldOneFiniteStageAngularTorusRepresentative S k v).1) t) q =
+      fieldOneFiniteStageBruhatOrbit S
+        (fieldOneFiniteStageThetaBruhatCoreLinearMap S f)
+        (fieldOneFiniteStageBruhatLogRayIdele S
+          (fun v => (fieldOneFiniteStageAngularTorusRepresentative S l v).1) t) q := by
+  rw [fieldOneFiniteStageThetaBruhatCoreLinearMap_apply,
+    fieldOneFiniteStageBruhatOrbit_tmul,
+    fieldOneFiniteStageBruhatOrbit_tmul]
+  unfold fieldOneFiniteStageBruhatPureTensorOrbit
+  change f (Real.exp t * (((q.1 : ℚ) : ℚ) : ℝ)) *
+      (fieldOneFiniteStageSoninSigma S).1
+        (fun v => algebraMap ℚ (v.1.adicCompletion ℚ) (q.1 : ℚ) *
+          fieldOneFiniteStageAngularFiniteEmbedding S k v) =
+    f (Real.exp t * (((q.1 : ℚ) : ℚ) : ℝ)) *
+      (fieldOneFiniteStageSoninSigma S).1
+        (fun v => algebraMap ℚ (v.1.adicCompletion ℚ) (q.1 : ℚ) *
+          fieldOneFiniteStageAngularFiniteEmbedding S l v)
+  rw [fieldOneFiniteStageSoninSigma_sunitAngular,
+    fieldOneFiniteStageSoninSigma_sunitAngular]
+
+theorem fieldOneFiniteStageThetaBruhatCore_logPeriodization_independentAngular
+    (S : Finset (HeightOneSpectrum ℤ)) (f : SchwartzMap ℝ ℂ)
+    (k l : FieldOneFiniteStageModuleOneClass S) (t : ℝ) :
+    fieldOneFiniteStageBruhatLogPeriodization S
+        (fieldOneFiniteStageThetaBruhatCoreLinearMap S f) (k, t) =
+      fieldOneFiniteStageBruhatLogPeriodization S
+        (fieldOneFiniteStageThetaBruhatCoreLinearMap S f) (l, t) := by
+  rw [fieldOneFiniteStageBruhatLogPeriodization,
+    fieldOneFiniteStageBruhatLogPeriodization,
+    fieldOneFiniteStageBruhatPeriodization,
+    fieldOneFiniteStageBruhatPeriodization]
+  apply tsum_congr
+  intro q
+  exact fieldOneFiniteStageThetaBruhatCore_orbit_independentAngular
+    S f k l t q
+
+theorem fieldOneFiniteStageThetaBruhatCore_logHalfDensity_independentAngular
+    (S : Finset (HeightOneSpectrum ℤ)) (f : SchwartzMap ℝ ℂ)
+    (k l : FieldOneFiniteStageModuleOneClass S) (t : ℝ) :
+    fieldOneFiniteStageBruhatLogHalfDensity S
+        (fieldOneFiniteStageThetaBruhatCoreLinearMap S f) (k, t) =
+      fieldOneFiniteStageBruhatLogHalfDensity S
+        (fieldOneFiniteStageThetaBruhatCoreLinearMap S f) (l, t) := by
+  unfold fieldOneFiniteStageBruhatLogHalfDensity
+  rw [fieldOneFiniteStageThetaBruhatCore_logPeriodization_independentAngular]
+
+theorem fieldOneFiniteStageThetaBruhatCore_splitHalfDensity_independentAngular
+    (S : Finset (HeightOneSpectrum ℤ)) (f : SchwartzMap ℝ ℂ)
+    (k l : FieldOneFiniteStageModuleOneClass S) (u : ℝ≥0ˣ) :
+    fieldOneFiniteStageBruhatSplitHalfDensity S
+        (fieldOneFiniteStageThetaBruhatCoreLinearMap S f) (k, u) =
+      fieldOneFiniteStageBruhatSplitHalfDensity S
+        (fieldOneFiniteStageThetaBruhatCoreLinearMap S f) (l, u) := by
+  exact fieldOneFiniteStageThetaBruhatCore_logHalfDensity_independentAngular
+    S f k l (fieldOnePositiveUnitsExpHomeomorph.symm u)
+
+/-- The literal theta Bruhat half-density is fixed by the actual module-one
+regular representation on the split product `L²` space. -/
+theorem fieldOneFiniteStageThetaBruhatHalfDensity_mem_productInvariants
+    (S : Finset (HeightOneSpectrum ℤ)) (f : SchwartzMap ℝ ℂ) :
+    fieldOneFiniteStageBruhatHalfDensityLinearMap S
+        (fieldOneFiniteStageThetaBruhatCoreLinearMap S f) ∈
+      fieldOneFiniteStageProductModuleOneInvariantSubmodule S := by
+  intro k
+  let h := fieldOneFiniteStageBruhatHalfDensityLinearMap S
+    (fieldOneFiniteStageThetaBruhatCoreLinearMap S f)
+  change fieldOneFiniteStageProductModuleOneLeftRegular S k h = h
+  change Lp.compMeasurePreserving ((k⁻¹, 1) * ·)
+      (measurePreserving_mul_left
+        (fieldOneFiniteStageSplitProductHaarMeasure S) (k⁻¹, 1)) h = h
+  apply Lp.ext
+  let mp := measurePreserving_mul_left
+    (fieldOneFiniteStageSplitProductHaarMeasure S) (k⁻¹, 1)
+  have hleft := Lp.coeFn_compMeasurePreserving h mp
+  have hae := fieldOneFiniteStageBruhatHalfDensityL2_ae S
+    (fieldOneFiniteStageThetaBruhatCoreLinearMap S f)
+  have haecomp := mp.quasiMeasurePreserving.ae_eq_comp hae
+  filter_upwards [hleft, haecomp, hae] with x hleftx hcompx hx
+  rw [hleftx]
+  change (fieldOneFiniteStageBruhatHalfDensityL2 S
+      (fieldOneFiniteStageThetaBruhatCoreLinearMap S f))
+        ((k⁻¹, 1) * x) =
+    (fieldOneFiniteStageBruhatHalfDensityL2 S
+      (fieldOneFiniteStageThetaBruhatCoreLinearMap S f)) x
+  have hcompx' :
+      (fieldOneFiniteStageBruhatHalfDensityL2 S
+        (fieldOneFiniteStageThetaBruhatCoreLinearMap S f)) ((k⁻¹, 1) * x) =
+        fieldOneFiniteStageBruhatSplitHalfDensity S
+          (fieldOneFiniteStageThetaBruhatCoreLinearMap S f) ((k⁻¹, 1) * x) := by
+    simpa only [Function.comp_apply] using hcompx
+  rw [hcompx', hx]
+  have hmul : (k⁻¹, (1 : ℝ≥0ˣ)) * x = (k⁻¹ * x.1, x.2) := by
+    apply Prod.ext <;> simp
+  rw [hmul]
+  exact fieldOneFiniteStageThetaBruhatCore_splitHalfDensity_independentAngular
+    S f (k⁻¹ * x.1) x.1 x.2
+
+/-- The literal class-space vector `E(σ_S ⊗ f)` lies in the actual
+`K_S`-fixed subspace of `L²(X_S)`. -/
+theorem fieldOneFiniteStageThetaClassBruhatCore_mem_invariants
+    (S : Finset (HeightOneSpectrum ℤ)) (f : SchwartzMap ℝ ℂ) :
+    fieldOneFiniteStageThetaClassBruhatCoreLinearMap S f ∈
+      fieldOneFiniteStageClassModuleOneInvariantSubmodule S := by
+  intro k
+  apply (fieldOneFiniteStageClassToSplitProductL2Unitary S).injective
+  change fieldOneFiniteStageSplitL2Unitary S
+      (fieldOneFiniteStageClassToSplitClassL2Unitary S
+        (fieldOneFiniteStageClassModuleOneLeftRegular S k
+          (fieldOneFiniteStageThetaClassBruhatCoreLinearMap S f))) = _
+  rw [fieldOneFiniteStageClassToSplitClassL2Unitary_intertwines_moduleOne,
+    fieldOneFiniteStageSplitL2Unitary_intertwines_moduleOne]
+  have hinv := fieldOneFiniteStageThetaBruhatHalfDensity_mem_productInvariants S f
+  have hcore :
+      fieldOneFiniteStageClassToSplitProductL2Unitary S
+          (fieldOneFiniteStageThetaClassBruhatCoreLinearMap S f) =
+        fieldOneFiniteStageBruhatHalfDensityLinearMap S
+          (fieldOneFiniteStageThetaBruhatCoreLinearMap S f) := by
+    rw [fieldOneFiniteStageThetaClassBruhatCoreLinearMap_apply,
+      fieldOneFiniteStageClassToSplitProductL2Unitary_classBruhat,
+      fieldOneFiniteStageThetaBruhatCoreLinearMap_apply]
+  change fieldOneFiniteStageProductModuleOneLeftRegular S k
+      (fieldOneFiniteStageClassToSplitProductL2Unitary S
+        (fieldOneFiniteStageThetaClassBruhatCoreLinearMap S f)) =
+    fieldOneFiniteStageClassToSplitProductL2Unitary S
+      (fieldOneFiniteStageThetaClassBruhatCoreLinearMap S f)
+  rw [hcore, hinv k]
+
+/-- Literal CCM theta on the Schwartz--Bruhat core, now valued in the actual
+fixed subspace rather than an abstractly transported copy. -/
+def fieldOneFiniteStageThetaInvariantBruhatCoreLinearMap
+    (S : Finset (HeightOneSpectrum ℤ)) :
+    SchwartzMap ℝ ℂ →ₗ[ℂ]
+      fieldOneFiniteStageClassModuleOneInvariantSubmodule S where
+  toFun f := ⟨fieldOneFiniteStageThetaClassBruhatCoreLinearMap S f,
+    fieldOneFiniteStageThetaClassBruhatCore_mem_invariants S f⟩
+  map_add' f g := by
+    apply Subtype.ext
+    exact map_add (fieldOneFiniteStageThetaClassBruhatCoreLinearMap S) f g
+  map_smul' c f := by
+    apply Subtype.ext
+    exact map_smul (fieldOneFiniteStageThetaClassBruhatCoreLinearMap S) c f
 
 end
 
