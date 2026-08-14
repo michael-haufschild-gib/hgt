@@ -9,12 +9,22 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local committed cutoff is
-`3b9edf60d6a57d4452ee029c17b784f5821082e8`.
+`ab1168e65fa1b39970f1daaba9575b03d0ca0fdc`.
 Post-cutoff shared-tree declarations are explicitly labelled `Active-tree Lean`. Scientific
 comparison follows declaration content rather than module placement.
 
 Current live count remains ten independent lettered routes plus CCM-FU; Route R remains
-terminalized. Latest local results change seven exchanges:
+terminalized. Latest local results change eight exchanges:
+
+- **E:** Lean now proves the exact logarithmic deficit identity and transports the source-selected
+  Euler antiscale energy to `pi^2 Y^a/(a^3 log^3 Y)`. Under physical saddle centering every fixed-
+  power unconditioned coercivity estimate fails eventually; at half density the limiting constants
+  are `8*pi^2` before centering and `4*pi^2` after division by `log X`. This is stronger than the
+  external prime-window/PNT inputs: it is a corpus-specific terminal no-go for the proposed scalar
+  landing. The live successor must condition on the physical shell or prove capacity on the fixed
+  grade-recurrent relation. Lean also gives a multivariate exponential-polynomial separation law
+  for squarefree node weights, but no external or internal theorem converts it into unit load,
+  interval Hall expansion, or co-moving seam flux.
 
 - **G:** whole-frequency Gamma asymptotics are closed, not open. Lean retains both frequency rays,
   proves `2*pi*L^(-1/2)*beta+O(L^-1)` uniformly in truncation, proves `beta=0` is exactly the
@@ -26,10 +36,12 @@ terminalized. Latest local results change seven exchanges:
   operator jet systems are also rigid. Lean applies that rigidity to the full weak
   Gamma equation and proves every point-supported tempered solution is zero. Lean also
   proves the interval du Bois--Reymond theorem using compactly supported primitives: a
-  derivative-zero distribution is constant Lebesgue measure locally. Remaining distributional
-  debt is source-specific half-line conjugation to that theorem, subtraction of the two classified
-  channel solutions, and proof that their residual is point-supported and satisfies that exact
-  equation. Other exterior debts are holomorphic strip gluing, physical-trace
+  derivative-zero distribution is constant Lebesgue measure locally. Lean now completes the
+  source-specific conjugation: every weak solution on each entire open ray is one explicit
+  `|eta|^(-1/2)Q(eta)c` channel with a ray-wide vector. It also makes flat terminal charge and
+  bounded-dipole matching automatic. Remaining distributional debt is global two-ray tempered
+  assembly, subtraction of the classified profiles, and proof that the residual is point-supported
+  and retains the full equation. Other exterior debts are holomorphic strip gluing, physical-trace
   identification/orientation, and coupled all-aperture return. Floor branch still needs complete near-ground profile exhaustion/lower
   control. The newest Suzuki declarations remove operator-domain ambiguity: the complex screw is
   the real source screw after complexification, its explicit maximal-adjoint witness maps back to
@@ -52,8 +64,13 @@ terminalized. Latest local results change seven exchanges:
   theorem from explicit rank-two block data: a one-dimensional odd radical and nondegenerate
   frequency image produce a nonnegative metric squared-frequency completion and real regular odd
   Fourier zeros, with no spectral conclusion assumed. Lean weakens the even metric
-  premise to semidefinite plus the exact nonkernel condition. Parity is therefore no longer the
-  finite theorem's obstruction. Lean also proves that fixed-support mean-square
+  premise to semidefinite plus the exact nonkernel condition. Lean further reconstructs the literal
+  published centered restricted-Weil packet, proves exact PSD parity blocks and rank-one cross
+  commutator, and shows its shifted floor is unconditionally PSD and singular; if its full radical
+  is simple odd, visibility and normalization are automatic. Parity adaptation is therefore no
+  longer the finite theorem's obstruction. The exact complex mixed CCM source form is also closed:
+  on arbitrary form-domain pairs it equals the two-sided polar--prime distribution minus the
+  archimedean Weil distribution. Lean also proves that fixed-support mean-square
   convergence of continuous sources yields locally uniform convergence of their entire compact
   Fourier transforms and transfers real-zero support to every nonzero limit. The analytic
   closed-zero passage is therefore no longer an obstruction; canonical `Pi(lambda,k)`, cofinal
@@ -65,6 +82,8 @@ terminalized. Latest local results change seven exchanges:
   nonzero source is equivalent to neutral grade. This is a literal local four-unit detector, not
   an all-prime/cofinal law forcing its equality.
 - **O:** Lean proves the exact Hermite parity-floor constants `8/11`, `8/13`, and `13/11`.
+  The literal published finite matrix now has the parity adapter and singular PSD shifted floor
+  described above, and the mixed complex source form is exact.
   The nonnegative prime-shift double series is absolutely summable, reindexes exactly through
   multiplicative fibres to `sum_(k>=2) log(k)arcsin(1/k)/k`, and equals half the limiting arithmetic
   trace after normalization. Weighted off-diagonal row bounds are summable. Actual radial tail and
@@ -74,7 +93,8 @@ terminalized. Latest local results change seven exchanges:
   inverse-bandwidth envelope plus summable row majorant and dominated diagonal defect forces
   weighted projective and trace-norm convergence to the positive arithmetic diagonal. Lean now proves the Dunster leading PSWF arclength tail converges exactly to the arcsine
   arithmetic weight and, after the `2 log(k)` factor, to the declared arithmetic eigenvalue. The normalization audit verifies total leakage mass `4/11`, trace equal to the negative prime
-  constant, and the divisor response as exactly half the trace. Remaining
+  constant, and the divisor response as exactly half the trace; finite-aperture leading-density
+  sums converge to the same negative prime constant. Remaining
   seed-level analytic input is the actual-PSWF-to-leading error and inverse-bandwidth estimate
   establishing those concrete bounds; remaining
   RH-bearing input is still comparison of the explicit prolate seed with every restricted-Weil
@@ -95,13 +115,13 @@ terminalized. Latest local results change seven exchanges:
   two-scale Hardy packet is exactly the cubic Hellinger horizontal kernel. Algebraic cubic landing
   is closed. Lean extends actual full-Euler columns to the sharp source domain `Re u>-1/2`, where
   all positive projective nodes are admitted and the exact non-diagonal Gram persists. Lean proves that at every fixed positive scale the rescaled genuine Euler overlap tends to
-  `1/(a+b)` at the critical boundary, so projective scale blow-up is a chart artifact. Committed
-  Lean constructs the square-summable log-weighted columns and exact second-moment Gram.
-  Active-tree Lean constructs the genuine finite-`sigma` two-scale Hellinger tangent, identifies
-  its four-term arithmetic Hilbert Gram exactly, and proves that Gram converges to the cubic
-  Hellinger horizontal kernel. Remaining
-  producer is source-faithful dyadic height localization and the Euler--Gamma
-  `N/4` trace budget; finite high-tail curvature ceiling remains the separate lane.
+  `1/(a+b)` at the critical boundary, so projective scale blow-up is a chart artifact. Lean
+  constructs the square-summable log-weighted columns, genuine finite-`sigma` tangent, exact cubic
+  Gram, and the physical moving-ordinate realization. Equal ordinates retain the cubic kernel and
+  fixed unequal ordinates diagonalize, but gaps `kappa(sigma-1)` retain a nonzero complex cubic
+  Cauchy collision kernel. The producer is therefore a cluster-stable completed Euler--Gamma trace
+  estimate for the full collision Gram, not dyadic diagonal `N/4` counting; finite high-tail
+  curvature ceiling remains the separate lane.
 - **T:** Lean now controls the squared neutral chi carrier and exact square-dual Gaussian weight at
   balanced conductor scale, with derivative `A(1+tau)/Y` and coefficientwise `O(1/n)` dyadic
   freezing. Infinite affine mean-square transfer is proved under explicit summability hypotheses.
@@ -113,12 +133,14 @@ terminalized. Latest local results change seven exchanges:
   reflected left boundary as the exact dual-weight series, and proves the full normalized Gaussian
   AFE with its explicit confluent double-pole correction. Lean shifts the square-dual
   weight itself to an integrable `Re w=-1/4` contour and proves the exact residue-one identity
-  `W2_tau(Y)=1+W2_tau^(-1/4)(Y)`. Active-tree Lean differentiates the quarter-line ratio square
-  pointwise and proves its central-range conductor-relative log-derivative bound. Surviving
-  producer is all-`v` differentiation under that contour, followed by two-sided
-  localization of the assembled AFE derivative
-  series, and global Duhamel mean-square transfer without discarding oscillation. Density, `7/10` prime supply, and
-  route composition follow only after this.
+  `W2_tau(Y)=1+W2_tau^(-1/4)(Y)`. Lean differentiates under that contour at all heights, proves
+  complementary two-sided derivative bounds and dyadic variation, closes divisor-square tails and
+  both affine coefficient masses, and proves a phase-faithful infinite affine landing. The exact
+  critical amplitude cancellation improves the weighted mass to `O(log^3 N/N)` on a physical
+  dyadic block. Surviving producer is joint regularity or a measurable Duhamel insertion theorem
+  for the literal summed derivative field, cell-phase identification, derivative-height
+  integration, and primal/dual/pole/cross assembly. Density, `7/10` prime supply, and route
+  composition follow only after this.
 - **U:** the source-disintegration theorem writes every shifted reciprocal Hankel quadratic
   as a positive Laplace average of the literal complete Gamma--polar--von-Mangoldt balance. Hard-
   edge reversal cancels all degree powers to one Cauchy density. Negative capital therefore forces
@@ -131,9 +153,12 @@ terminalized. Latest local results change seven exchanges:
   computes its exact order-four drift. This falsifies direct transfer of flat arcsine positivity.
   A cofinal successor is now Lean-proved pointwise: along index `2k+1`, mass doubles and mesh halves;
   for each fixed smooth compact approximation and Xi copy, the full fine sample converges to the
-  Paley--Wiener extension and its even/odd pieces each converge to half. Missing arithmetic
-  statement is uniform promotion through adaptive degree, source limit, whole divisor sum, and
-  completed prime--Gamma energy/covariance.
+  Paley--Wiener extension and its even/odd pieces each converge to half. The parabolic shell instead
+  has exact `(1,-1)` parity. Lean proves every constant UV-safe PSD quadratic collapses to full
+  fine-sample square; positive covariance is not a producer. The unique nontrivial safe class
+  modulo that square is the signed current `J=E^2-O^2`, and Lean proves its pointwise vanishing at
+  both infrared and ultraviolet ends. Missing arithmetic statement is weighted complete-divisor
+  summation or an exact prime--Gamma scale-flux law for `J`, uniform through the transition.
 - **L:** finite-complex Garland localization is complete through cohomological vanishing, and the
   symmetric-design incidence theorem gives the actual bipartite link spectral gap. The
   Steinberg chain constructs elementary transvections, Steinberg-to-`GL`, elementary group,

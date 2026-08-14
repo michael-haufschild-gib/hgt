@@ -703,6 +703,7 @@ theorem choose_le_exp_mul_div_pow (n k : ℕ) (hk : 0 < k) :
 
 variable {α : Type*} [Fintype α] [LinearOrder α] [Nonempty α]
 
+omit [LinearOrder α] in
 /-- Multiplicity profiles at depth `s` are dominated by the `M`-subset profile count. -/
 theorem choose_profile_le_choose_alphabet (s : ℕ) :
     (Fintype.card α + s - 1).choose s ≤ (Fintype.card α + s).choose (Fintype.card α) := by
@@ -763,11 +764,22 @@ theorem log_cumulativeTraceCount_le (independent : α → α → Prop)
       pow_pos (by positivity) _
     have h3 : (0 : ℝ) < (2 : ℝ) ^ (Δ * s) := by positivity
     exact mul_pos (mul_pos h1 h2) h3
-  refine le_trans (Real.log_le_log (by positivity) hbound) ?_
+  have hone : 0 < Nat.card (FixedTraceClass independent 0) := by
+    haveI : Nonempty (FixedTraceClass independent 0) :=
+      ⟨Quotient.mk (fixedTraceSetoid independent 0) List.Vector.nil⟩
+    exact Nat.card_pos
+  have hcumpos : (0 : ℝ) < (cumulativeTraceCount independent s : ℝ) := by
+    have : 0 < cumulativeTraceCount independent s := by
+      rw [cumulativeTraceCount]
+      exact Finset.sum_pos' (fun i _ => Nat.zero_le _)
+        ⟨0, Finset.mem_range.mpr (Nat.succ_pos s), hone⟩
+    exact_mod_cast this
+  refine le_trans (Real.log_le_log hcumpos hbound) ?_
   rw [Real.log_mul (by positivity) (by positivity), Real.log_mul (by positivity) (by positivity),
     Real.log_pow, Real.log_pow, Real.log_mul (Real.exp_ne_zero 1) (by positivity), Real.log_exp]
   push_cast
   ring_nf
+  exact le_rfl
 
 /-- **Subexponential gate profile.**  In the regime `M ≤ K n`, `s ≤ c 2^n`, the multiplicity-profile
 and depth terms of the capacity logarithm are `o(2^n)`. -/
@@ -819,7 +831,6 @@ theorem tendsto_capacityProfile_div_pow_two (K c : ℝ) (hK : 0 ≤ K) (hc : 0 �
         K * Real.log 2 * (n : ℝ) ^ 2 +
           (K * (1 + Real.log (1 + c)) + Real.log 2) * (n : ℝ) + Real.log (1 + c) := by
       field_simp
-      ring
     rw [hfield]
     nlinarith [hstep, h2]
   have hzero : Filter.Tendsto
