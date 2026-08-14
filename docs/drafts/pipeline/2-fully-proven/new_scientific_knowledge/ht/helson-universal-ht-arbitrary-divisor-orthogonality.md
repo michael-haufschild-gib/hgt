@@ -431,3 +431,71 @@ This is the conclusion of Pong's Theorem 5.9 in the form the card consumes, for 
 valuation layer, with no hypothesis on the arithmetic of the phase.  What remains to reach the
 card's `L_χ` statement is the descent from the prime-power palette to the shifted derivatives of
 `Z_χ` itself.
+
+## Lean progress — THE BOUNDARY-EVERYWHERE SEAM IS UNCONDITIONAL; Saksman--Webb is not needed for it
+
+The card derives codensity of the continuable stratum `M` from Haar-nullity plus full support.  That
+route needs Saksman--Webb.  It is not the only route, and the cheaper one is a *theorem*, not an
+input: codensity needs only **one** noncontinuable Helson zeta, because a finite Euler modification
+of a noncontinuable phase is again noncontinuable, and finite modifications of any fixed phase are
+dense.
+
+`GaloisForLFunctions/HTGeometry/HelsonCubeRootNonContinuation.lean` (wired, axiom-clean):
+
+    cubeRootUnit, normSq_cubeRootUnit, norm_cubeRootUnit
+    cubeRootUnit_add_conj, cubeRootUnit_mul_conj
+    cubeRoot_factorization        `(1-ωx)(1-ω̄x)(1-x) = 1-x³` for a primitive cube root `ω`
+    prime_cpow_ofReal             on the real axis a prime power is a positive real
+    prime_rpow_cube
+    norm_sq_mul_riemannZeta :
+      **`‖Z_ω(σ)‖² · ζ(σ) = ζ(3σ)`  for real `σ > 1`**
+    cubeRootPhase                 the phase equal to `ω` at every prime
+    tendsto_ofReal_nhdsWithin_ne
+    notMem_continuableStratum_cubeRootPhase :
+      **the constant cube-root phase is NOT continuable**
+    eulerRatio, meromorphicAt_eulerRatio
+    mem_continuableStratum_of_finite_ne :
+      continuability transfers along finite modifications of the phase
+    notMem_continuableStratum_of_finiteModification
+    dense_compl_continuableStratum :
+      **the noncontinuable phases are DENSE in the phase torus**
+    frontier_continuableStratum_eq_univ :
+      **`frontier M = Ω`** — the continuation seam is boundary-everywhere
+    nowhereContinuous_continuationIndicator :
+      **the Boolean continuation indicator is continuous at no phase**
+    no_continuous_factorization_continuationIndicator :
+      **and does not factor through any continuous readout**
+
+The mechanism is an order parity obstruction at `s = 1`, not an abscissa computation.  Since `1`,
+`ω`, `ω̄` are the three cube roots of unity, multiplying the Euler products of `χ ≡ ω`, of its
+conjugate, and of the trivial phase gives `Z_ω · Z̄_ω · ζ = ζ(3·)` on the half plane of absolute
+convergence, and on the real axis `Z̄_ω(σ) = conj Z_ω(σ)`.  Hence `‖Z_ω(σ)‖² = ζ(3σ)/ζ(σ)`, which
+vanishes to order exactly **one** as `σ ↓ 1` because `ζ(3) ≠ 0` and `(σ-1)ζ(σ) → 1`.  A function
+meromorphic at `1` has `‖F(σ)‖²` vanishing to an **even** order, and `2n ≠ 1` for every integer `n`.
+Equivalently: the local order of `Z_ω` at `1` would have to be `-Re ω = 1/2`.
+
+So the card's four seam conclusions
+
+```text
+closure(M) = Ω,   closure(Ω∖M) = Ω,   boundary(M) = Ω,   1_M nowhere continuous
+```
+
+are now formal with **no** classical input at all, and the "no continuous readout of the compact
+finite-prime inverse limit decides continuation" law — the card's positive necessity statement — is
+unconditional.
+
+### Revised residue of this card
+
+| statement | status |
+|---|---|
+| labelled differential-field universality | formal |
+| Pong's hypothesis (prime support not finitely generated) | formal |
+| Pong's conclusion at the prime-power palette | formal |
+| density of `M` | formal |
+| **codensity of `M`, `boundary(M) = Ω`, nowhere-continuous indicator, no continuous factorization** | **formal, unconditional** |
+| `Haar(M) = 0` (Saksman--Webb/Seip) | open |
+| divisor surjectivity (Andersson Thm 5) | open |
+| descent from the prime-power palette to `Z_χ` itself | open |
+
+Haar-nullity is no longer load-bearing for any other conclusion on the card: it is now an isolated
+strengthening of codensity, not the source of it.

@@ -297,3 +297,13 @@ the arithmetic covariance theorem exists and broader literature comparison is co
   `[propext, Classical.choice, Quot.sound]`; umbrella import wired without umbrella/full build.
   Remaining hard core is exactly `(U-DYC-global)`: prove or falsify weighted square/cross divisor
   exchange using a genuine summable majorant. Pointwise convergence alone is insufficient.
+- 2026-08-14 -- **Falsified `(U-DYC-global)`.** The missing majorant does not exist because the
+  complete divisor probes a moving parabolic shell `|gamma|=u(k+1)^2`.  There the fine Cayley phase,
+  after one coarse-period fold, tends to `-4/u`; the scaled resolvent tends to `4/u^2`; even and odd
+  channels become anti-coherent `(1,-1)`, not pointwise-coherent `(1,1)`.  Riemann--von Mangoldt
+  supplies `Theta((k+1)^2 log(k+1))` zeros in each compact shell, forcing logarithmic channel mass.
+  Exact premise-free phase and resolvent survivors are Lean-formalized in
+  `XiShiftedHardEdgeParabolicNyquistAlias.lean`, whose exact `.olean` is built and umbrella import is
+  wired without an umbrella build.  New card:
+  `route-u-parabolic-nyquist-alias-covariance.md`.  Open replacement is a renormalized covariance
+  after removal of the universal anti-diagonal ultraviolet counterterm.

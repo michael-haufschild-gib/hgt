@@ -3,7 +3,7 @@
 - **ID:** `scalar-centralizer-recurrence-energy-as-brown-onset-provider`
 - **Stage:** 5-failed
 - **Type:** failed proof architecture / exact scale obstruction
-- **Parent:** `../2-fully-proven/centralizer-centered-shortcut-history-recurrence-energy-law.md`
+- **Parent:** `../3-formalized/centralizer-centered-shortcut-history-recurrence-energy-law.md`
 - **Status:** `[FALSIFIED] [POSITIVE SURVIVOR LEAN-PROVED]`
 - **Date:** 2026-08-14
 
@@ -65,7 +65,7 @@ Partition the history by the selected target before applying Cauchy.  The result
 selector-partition recurrence law retains same-target temporal pairs and turns fresh-target samples
 into explicit diagonal channel-production cost.  Its paper proof is dependency-closed in:
 
-`../2-fully-proven/selector-partition-observer-channel-recurrence-law.md`.
+`../3-formalized/selector-partition-observer-channel-recurrence-law.md`.
 
 The positive survivor and its fresh-channel saturation theorem are formalized in
 `formal/GaloisForLFunctions/HTGeometry/StaticShortcutSelectorPartitionLaw.lean`.

@@ -12132,15 +12132,44 @@ and prove its Euler--Gamma trace budget.
 `RoutePFullHardyHalfPlanePolarization.lean` proves the sharp domain, source Gram, exact projective
 overlap, residue-unit limit, transverse reporter, and augmented Gram.
 
-`RoutePFiniteSigmaCubicEulerTangentGram.lean` constructs the logarithm-weighted
-projective Euler columns as literal square-summable sources at every finite `sigma>1`; committed
-Lean computes their exact second-log-moment Gram. Its active-tree extension constructs the genuine
-half-weighted two-scale Hellinger tangent. The four arithmetic terms are exactly the Hilbert Gram of
-those tangent vectors before passage to the boundary. Active-tree Lean proves the scaled second log
-moment tends to `2/(a+b)^2`, each normalized Gram term tends to `2/(a+b)^3`, and the four-term Gram
-tends to `cubicLogMomentHellingerHorizontalKernel(a,b)`. Thus current tree tip closes
-finite-`sigma` tangent provenance and critical cubic source landing. Dyadic ordinate localization
-and the Euler--Gamma `N/4` trace budget remain the exterior open core.
+`RoutePFiniteSigmaCubicEulerTangentGram.lean` constructs logarithm-weighted projective Euler
+columns as literal square-summable sources at every finite `sigma>1`. Lean proves the coordinate
+derivative of the actual half-weighted packet is
+`sqrt(R) R(sigma-1) log(n)(h_sigma,2a-h_sigma,a)` and that the constructed Hilbert tangent has
+exactly this weight. Its four arithmetic terms are exactly the pre-limit Hilbert Gram. The scaled
+second log moment tends to `2/(a+b)^2`, each normalized term tends to `2/(a+b)^3`, and their
+polarization tends to `cubicLogMomentHellingerHorizontalKernel(a,b)`. Thus P-G170 closes
+finite-`sigma` differentiation, tangent provenance, and critical cubic source landing. Dyadic
+ordinate localization and the Euler--Gamma `N/4` trace budget remain the exterior open core.
+
+P-G171 removes the separate ordinate-localization layer. Its moving full-Hardy node
+
+```text
+u_sigma,R(a,gamma)=R*a-1/2+i*gamma/(sigma-1)
+```
+
+has the same genuine Euler Hilbert norm as P-G170's real node, but carries fixed phase
+`n^(-i*gamma)`. Two columns therefore have exact pair exponent
+
+```text
+1+R(a+b)(sigma-1)+i(delta-gamma).                         (P-G171.1)
+```
+
+Equal ordinates retain the zeta pole; unequal ordinates land at a regular boundary point and are
+annihilated by reciprocal-zeta source normalization. Lean proves this first for the source Gram,
+then constructs the actual log-weighted Hellinger tangents and proves their exact second-zeta-jet
+Gram. The four-term critical limit is
+
+```text
+if gamma=delta then cubicLogMomentHellingerHorizontalKernel(a,b) else 0.  (P-G171.2)
+```
+
+The complete quadratic form of every finite packet converges to the corresponding ordinate-block
+projection. Thus horizontal damping and vertical dephasing are not nonlinear kernels requiring an
+external product: they are real and imaginary components of one Hermitian Euler tangent Gram.
+`RoutePCriticalBoundaryOrdinateDiagonalization.lean` proves the moving source, exact overlap,
+second-jet tangent realization, cubic projector, and finite-packet law. Remaining open core is now
+strictly the completed height-local Euler--Gamma trace estimate for this unified source Gram.
 
 ### Route T exact dual carrier: Gaussian tail and height variation close
 
@@ -12304,30 +12333,75 @@ smoothAFEZetaSquareDualWeight(tau,Y)
   = 1 + smoothAFEZetaSquareDualWeightAt(-1/4,tau,Y).
 ~~~
 
-This extracts the neutral constant exactly and provides a literal negative-contour carrier for the
-remaining height analysis. The module does not differentiate that representation, expand its
-negative line as a localized arithmetic series, or prove the global Duhamel mean-square estimate.
-It narrows the analytic producer but does not close it.
+This extracts the neutral constant exactly and provides a literal negative-contour carrier. The
+constant residue is independent of height, so differentiating the shifted identity removes it
+exactly rather than estimating it.
 
-Active-tree `SmoothAFEZetaSquareDualQuarterHeightDerivative.lean` begins the missing
-differentiation at integrand level. It proves exact height derivatives for the quarter-line
-chi-shift ratio and its square. On `tau>=4` and `2|v|<=tau`, it controls the corresponding
-log-derivative increment by
+`SmoothAFEZetaSquareDualQuarterHeightDerivative.lean` proves exact height derivatives for the
+quarter-line chi-shift ratio and its square. On `tau>=4` and `2|v|<=tau`, it controls the
+corresponding log-derivative increment by
 
 ~~~
 (16/tau^2 + 2*pi/tau) * (1+|v|).
 ~~~
 
-This is the correct conductor-relative central estimate and exposes the `1/tau` gain without
-discarding the contour phase. The module does not supply an integrable all-`v` derivative majorant,
-interchange differentiation with the quarter-line integral, or localize the resulting arithmetic
-carrier. Those are now the immediate Route-T analytic steps before Duhamel transfer.
+`SmoothAFEZetaSquareDualQuarterGlobalSlope.lean` proves a uniform linear digamma envelope on the
+positive eighth strip containing all four quarter-contour arguments. On the complementary range
+`tau<2|v|`, conductor powers are therefore converted into powers of `1+|v|` and absorbed by the
+Gaussian. `SmoothAFEZetaSquareDualQuarterDerivativeBound.lean` combines both ranges into the
+corpus-new pointwise law
 
-This is material Route-T movement: square-carrier variation, complete divisor-weight freezing,
-Gaussian pole decomposition, contour crossing, and exact AFE formation are no longer open.
-Remaining hard core is sharply isolated: prove two-sided localization of the assembled full height
-derivative, verify the plain and weighted
-square-summability hypotheses of the infinite affine mean-square theorem, then assemble primal,
-frozen dual, and cross terms without destroying
-their oscillation. Only that assembly can yield the required `T^(101/100)` fourth moment. RH
+~~~
+|d/dtau R_tau,-1/4(v)^2|
+  <= C (1+|v|)^5 / [tau (tau^(1/4))^2],              tau>=4.
+~~~
+
+Thus the negative-quarter carrier derivative has the exact `tau^(-3/2)` scale. The two explicit
+quarter powers are retained in Lean, avoiding an unnecessary real-power normalization.
+
+`SmoothAFEZetaSquareDualQuarterGlobalDerivative.lean` separately proves the all-height polynomial
+majorant and frequency continuity needed only for dominated differentiation.
+`SmoothAFEZetaSquareDualNegativeContourDerivative.lean` differentiates the negative-quarter
+integral and then differentiates the residue identity. Lean therefore proves that the original
+square-dual weight has exactly the negative-contour derivative; no residue error survives.
+Gaussian integration in `SmoothAFEZetaSquareDualSmallScaleDerivativeBound.lean` gives
+
+~~~
+|d/dtau W2_tau(Y)|
+  <= A Y^(1/4) / [tau (tau^(1/4))^2].                (T-C8e-I.1)
+~~~
+
+Combining this with the positive-contour law `A(1+tau)/Y`,
+`SmoothAFEZetaSquareDualTwoSidedDerivativeBound.lean` proves the exact two-sided localization
+
+~~~
+|d/dtau W2_tau(Y)|
+  <= min(C Y^(1/4)/[tau (tau^(1/4))^2], C(1+tau)/Y). (T-C8e-I.2)
+~~~
+
+The crossover is `Y~tau^2`; at `Y=(n+1)x` with `x~tau`, this is precisely divisor-index
+localization at `n~tau`. `SmoothAFEZetaSquareDualTwoSidedVariation.lean` integrates the same law on
+dyadic height blocks without freezing any Dirichlet phase.
+
+The higher principle is **constant-residue derivative localization**: a contour shift may be poor
+for the carrier itself but optimal after height differentiation whenever every crossed residue is
+height-neutral. Earlier failure to obtain a lower-conductor derivative was a shadow of estimating
+before subtracting the neutral residue.
+
+`Sieve/DuhamelMeanSquare.lean` now proves the oscillation-preserving transport inequality
+
+~~~
+integral_a^b |integral_a^t F(r,t) dr|^2 dt
+  <= (b-a) integral_a^b integral_a^b |F(r,t)|^2 dt dr.       (T-C8e-I.3)
+~~~
+
+This is the correct replacement for absolute short-block freezing: at each derivative height `r`,
+the full Dirichlet phase in `t` remains available to the infinite affine mean-square theorem.
+
+This is material Route-T movement: exact Gaussian AFE formation, negative-contour differentiation,
+two-sided square-conductor localization, and abstract Duhamel transfer are closed. Remaining hard
+core is now arithmetic and quantitative: prove sharp plain and `n`-weighted square masses for the
+localized derivative coefficient series (including the divisor-square tail), instantiate the
+infinite affine theorem on short cells, then assemble primal, dual, pole, and cross terms without
+destroying oscillation. Only that assembly can yield the required `T^(101/100)` fourth moment. RH
 remains open.

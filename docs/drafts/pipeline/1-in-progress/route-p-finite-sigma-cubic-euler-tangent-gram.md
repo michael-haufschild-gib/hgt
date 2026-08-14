@@ -64,13 +64,38 @@ specialization.
 - **C3:** build the log-weighted derivative column directly in `EulerPositiveL2`, compute its Gram,
   then take the residue-controlled critical limit. **Selected.**
 
+## Closed result
+
+Lean constructs the log-weighted projective column in `EulerPositiveL2`, proves the literal
+projective column's coordinate derivative, and proves the doubled-node chain rule turns the
+half-weighted packet derivative into
+
+```text
+sqrt(R) * R*(sigma-1) * log(n) * (h_sigma,2a(n)-h_sigma,a(n)).
+```
+
+The Hilbert vector has exactly this coordinate weight. Its inner product is exactly the four-term
+finite-`sigma` arithmetic Gram assembled from normalized zeta overlaps and normalized second Euler
+log moments. Each unpolarized term converges to `2/(a+b)^3`; their polarization converges to
+`cubicLogMomentHellingerHorizontalKernel(a,b)`.
+
+This closes the missing source-tangent interchange: P-G168's cubic mixed jet is not merely a
+derivative of a post-limit kernel. It is the critical limit of a genuine pre-limit Euler Hilbert
+Gram whose `log n` insertion is forced by differentiation. Remaining obstruction is vertical
+ordinate localization plus completed Euler--Gamma trace control.
+
+Scratch compilation produced
+`/tmp/routep-snapshot/GaloisForLFunctions/RHTower/RoutePFiniteSigmaCubicEulerTangentGram.olean`.
+All capstones depend only on `propext`, `Classical.choice`, and `Quot.sound`; targeted forbidden
+scan is clean. Umbrella import was verified present; umbrella was not compiled by this work.
+
 ## Gates
 
 - [x] corpus collision and dead-route audit
-- [ ] Lean log-weighted projective source column
-- [ ] Lean coordinate derivative of half-weighted source packet
-- [ ] Lean exact finite-`sigma` tangent Gram
-- [ ] Lean critical limit to cubic horizontal kernel
-- [ ] scratch compile, forbidden-token scan, and axiom audit
-- [ ] umbrella import wired without umbrella build
+- [x] Lean log-weighted projective source column
+- [x] Lean coordinate derivative of half-weighted source packet
+- [x] Lean exact finite-`sigma` tangent Gram
+- [x] Lean critical limit to cubic horizontal kernel
+- [x] scratch compile, forbidden-token scan, and axiom audit
+- [x] umbrella import wired without umbrella build
 - [ ] dyadic ordinate localization and Euler--Gamma trace budget

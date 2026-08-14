@@ -73,9 +73,13 @@ theorem primitive_eq_zero_outside {φ : ℝ → Y} {a b : ℝ} (hcont : Continuo
       simp
     rw [hsplit, hzero, hbx, add_zero]
 
-/-- **The du Bois-Reymond lemma.**  A distribution whose derivative annihilates every test function
-supported in an interval is, on that interval, a constant multiple of Lebesgue measure. -/
-theorem apply_eq_integral_smul_of_deriv_zero {u : SchwartzMap ℝ ℂ →L[ℂ] X} {a b : ℝ}
+/-- **The du Bois-Reymond lemma for a functional linear on one interval.**  If a map on Schwartz
+space is linear on the test functions supported in an interval and its derivative annihilates all
+of them, then on that interval its value depends only on the integral of the test function. -/
+theorem apply_eq_integral_smul_of_deriv_zero_of_linearOn {u : SchwartzMap ℝ ℂ → X} {a b : ℝ}
+    (hlin : ∀ (φ χ : SchwartzMap ℝ ℂ) (c : ℂ),
+      (∀ x, x ∉ Ioo a b → (φ : ℝ → ℂ) x = 0) → (∀ x, x ∉ Ioo a b → (χ : ℝ → ℂ) x = 0) →
+      u (φ - c • χ) = u φ - c • u χ)
     (hzero : ∀ ψ : SchwartzMap ℝ ℂ, (∀ x, x ∉ Ioo a b → (ψ : ℝ → ℂ) x = 0) →
       u (SchwartzMap.derivCLM ℂ ℂ ψ) = 0)
     {χ : SchwartzMap ℝ ℂ} (hχsupp : ∀ x, x ∉ Ioo a b → (χ : ℝ → ℂ) x = 0)
@@ -129,11 +133,24 @@ theorem apply_eq_integral_smul_of_deriv_zero {u : SchwartzMap ℝ ℂ →L[ℂ] 
   have hug : u g = 0 := by
     have := hzero ψ hψsupp
     rwa [hderiv] at this
-  have hlin : u g = u φ - I • u χ := by
-    rw [hg, map_sub, map_smul]
-  rw [hlin] at hug
+  have hglin : u g = u φ - I • u χ := by
+    rw [hg]
+    exact hlin φ χ I hφsupp hχsupp
+  rw [hglin] at hug
   have := sub_eq_zero.mp hug
   rw [this, hI]
+
+/-- **The du Bois-Reymond lemma.**  A distribution whose derivative annihilates every test function
+supported in an interval is, on that interval, a constant multiple of Lebesgue measure. -/
+theorem apply_eq_integral_smul_of_deriv_zero {u : SchwartzMap ℝ ℂ →L[ℂ] X} {a b : ℝ}
+    (hzero : ∀ ψ : SchwartzMap ℝ ℂ, (∀ x, x ∉ Ioo a b → (ψ : ℝ → ℂ) x = 0) →
+      u (SchwartzMap.derivCLM ℂ ℂ ψ) = 0)
+    {χ : SchwartzMap ℝ ℂ} (hχsupp : ∀ x, x ∉ Ioo a b → (χ : ℝ → ℂ) x = 0)
+    (hχint : (∫ t in a..b, (χ : ℝ → ℂ) t) = 1) :
+    ∀ φ : SchwartzMap ℝ ℂ, (∀ x, x ∉ Ioo a b → (φ : ℝ → ℂ) x = 0) →
+      u φ = (∫ t in a..b, (φ : ℝ → ℂ) t) • u χ :=
+  apply_eq_integral_smul_of_deriv_zero_of_linearOn
+    (fun _ _ _ _ _ => by rw [map_sub, map_smul]) hzero hχsupp hχint
 
 end
 

@@ -326,6 +326,14 @@ def routePProjectiveFullEulerHellingerTangentLp
         (mul_pos two_pos ha) -
       routePProjectiveFullEulerLogStateLp sigma R a hsigma hR ha))
 
+/-- The Hilbert tangent has exactly the coordinate derivative weight constructed above. -/
+@[simp] theorem routePProjectiveFullEulerHellingerTangentLp_apply
+    {sigma R a : ℝ} (hsigma : 1 < sigma) (hR : 0 < R) (ha : 0 < a)
+    (n : ℕ+) :
+    routePProjectiveFullEulerHellingerTangentLp sigma R a hsigma hR ha n =
+      routePProjectiveFullEulerHellingerTangentWeight sigma R a n := by
+  rfl
+
 /-- Four-term finite-`sigma` arithmetic Gram of the half-weighted source tangents. -/
 def routePProjectiveFullEulerCubicTangentGram
     (R a b sigma : ℝ) : ℂ :=

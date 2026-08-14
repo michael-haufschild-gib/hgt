@@ -1,7 +1,7 @@
 # Route E whole-anchor capacity--displacement conservation law
 
 - **ID:** ROUTE-E-WHOLE-ANCHOR-CAPACITY-DISPLACEMENT-001
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / SHARP FULL-ALLOCATION NO-GO / POSITIVE CONSERVATION LAW
 - **Parent:** route-e-whole-anchor-bidirectional-harmonic-e3-law.md
 - **Source:** OPEN-SOURCE-001
@@ -24,9 +24,19 @@
   capacity bounds `(2)`/`(14)`: `exists_wholeAnchorTerminalUniverse_card_le` (Euler-product form)
   and `exists_wholeAnchorTerminalUniverse_card_le_theta` (θ form, with the band floor
   `A·(log log b + K) ≤ log W` as the exact `W ≥ (log X)^A` regime hypothesis). Module builds pass;
-  axiom audits `[propext, Classical.choice, Quot.sound]` on all nine leading theorems. Remaining
-  for stage 3: the `o(1)` sequence corollary `(3)`, the kernel-composition corollary combining
-  `(2)` with `(4)`, and the proposed-band specialization `(5)`/`(6)`.
+  axiom audits `[propext, Classical.choice, Quot.sound]` on all nine leading theorems.
+  `MobiusWholeAnchorTerminalDensityCollapse.lean` closes the remaining three items:
+  `tendsto_wholeAnchorTerminalUniverse_density_zero` is the `o(1)` law `(3)`
+  (`θ → 0 ⇒ #𝒯/b → 0` along any admissible band schedule),
+  `exists_column_ge_of_card_le` / `exists_column_ge_theta` are the kernel-composition corollary
+  `(2)+(4)` (every row-stochastic kernel into the terminal universe has a column of size at least
+  the source count over the sublinear capacity), and
+  `exists_wholeAnchorTerminalUniverse_card_le_proposedBand` / `exists_column_ge_proposedBand`
+  are the proposed-band specialization `(5)`/`(6)`, with the band regime entered through the exact
+  inequalities `exp √L ≤ log W` and `log Z · L² ≤ log b`, giving
+  `#𝒯 ≤ C·b·exp(−√L)` and column load `≥ (#𝒜/b)·exp(√L)/C`; the auxiliary
+  `one_le_logLog_of_sixteen_le` (`e^e < 16`) supplies the `L ≥ 1` normalization. All six theorems
+  build under `lake build` and audit `[propext, Classical.choice, Quot.sound]`.
 
 ## 1. Statement
 
