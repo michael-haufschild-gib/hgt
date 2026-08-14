@@ -258,6 +258,66 @@ theorem exists_testTransform_decay {ψ : ℝ → ℂ} (hψ : ContDiff ℝ ∞ ψ
             + Real.exp (M * K) * ∫ L : ℝ, ‖deriv (deriv ψ) L‖ := add_le_add hb1 hb2
       _ = Real.exp (M * K) * ((∫ L : ℝ, ‖ψ L‖) + ∫ L : ℝ, ‖deriv (deriv ψ) L‖) := by ring
 
+/-- The Fourier extension in the `2π` normalisation, so that its restriction to the real axis is
+the inverse Fourier transform of the test function. -/
+def testTransformTwoPi (ψ : ℝ → ℂ) (z : ℂ) : ℂ :=
+  testTransform ψ (((2 * Real.pi : ℝ) : ℂ) * z)
+
+theorem differentiable_testTransformTwoPi {ψ : ℝ → ℂ} (hc : Continuous ψ)
+    (hs : HasCompactSupport ψ) : Differentiable ℂ (testTransformTwoPi ψ) := by
+  intro z
+  have hlin : DifferentiableAt ℂ (fun w : ℂ => ((2 * Real.pi : ℝ) : ℂ) * w) z :=
+    differentiableAt_id.const_mul _
+  exact ((differentiable_testTransform hc hs) _).comp z hlin
+
+/-- The exponential of the rescaled transform splits into the oscillation on the line and the
+exponential weight of the height. -/
+theorem exp_twoPi_line_split (σ x L : ℝ) :
+    Complex.exp (((2 * Real.pi * L * x : ℝ) : ℂ) * Complex.I)
+        * Complex.exp (-(((2 * Real.pi * σ * L : ℝ)) : ℂ))
+      = Complex.exp (Complex.I * (((2 * Real.pi : ℝ) : ℂ)
+          * ((x : ℂ) + (σ : ℂ) * Complex.I)) * (L : ℂ)) := by
+  rw [← Complex.exp_add]
+  congr 1
+  refine Complex.ext ?_ ?_
+  · simp
+  · simp
+    ring
+
+theorem testTransformTwoPi_ofReal_line {ψ : ℝ → ℂ} (σ x : ℝ) :
+    testTransformTwoPi ψ ((x : ℂ) + (σ : ℂ) * Complex.I)
+      = ∫ L : ℝ, Complex.exp (((2 * Real.pi * L * x : ℝ) : ℂ) * Complex.I)
+          * (ψ L * Complex.exp (-(((2 * Real.pi * σ * L : ℝ)) : ℂ))) := by
+  rw [testTransformTwoPi, testTransform]
+  refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun L => ?_)
+  show ψ L * Complex.exp (Complex.I * (((2 * Real.pi : ℝ) : ℂ)
+        * ((x : ℂ) + (σ : ℂ) * Complex.I)) * (L : ℂ))
+      = Complex.exp (((2 * Real.pi * L * x : ℝ) : ℂ) * Complex.I)
+        * (ψ L * Complex.exp (-(((2 * Real.pi * σ * L : ℝ)) : ℂ)))
+  rw [← exp_twoPi_line_split σ x L]
+  ring
+
+/-- The quadratic decay of the transform survives the `2π` rescaling. -/
+theorem exists_testTransformTwoPi_decay {ψ : ℝ → ℂ} (hψ : ContDiff ℝ ∞ ψ)
+    (hs : HasCompactSupport ψ) (a b : ℝ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ z : ℂ, z.im ∈ uIcc a b →
+      ‖testTransformTwoPi ψ z‖ ≤ C / (1 + ‖z‖ ^ 2) := by
+  obtain ⟨C, hC0, hC⟩ := exists_testTransform_decay hψ hs (2 * Real.pi * a) (2 * Real.pi * b)
+  refine ⟨C, hC0, fun z hz => ?_⟩
+  have hpi : (0 : ℝ) < 2 * Real.pi := by positivity
+  have hzim : (((2 * Real.pi : ℝ) : ℂ) * z).im = 2 * Real.pi * z.im := by simp
+  have hmem : (((2 * Real.pi : ℝ) : ℂ) * z).im ∈ uIcc (2 * Real.pi * a) (2 * Real.pi * b) := by
+    rw [hzim]
+    rcases Set.mem_uIcc.mp hz with ⟨h1, h2⟩ | ⟨h1, h2⟩
+    · exact Set.mem_uIcc.mpr (Or.inl ⟨by nlinarith, by nlinarith⟩)
+    · exact Set.mem_uIcc.mpr (Or.inr ⟨by nlinarith, by nlinarith⟩)
+  have hnorm : ‖z‖ ≤ ‖((2 * Real.pi : ℝ) : ℂ) * z‖ := by
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hpi]
+    nlinarith [norm_nonneg z, Real.two_le_pi]
+  refine le_trans (hC _ hmem) ?_
+  refine div_le_div_of_nonneg_left hC0 (by positivity) ?_
+  nlinarith [norm_nonneg z, norm_nonneg (((2 * Real.pi : ℝ) : ℂ) * z)]
+
 end
 
 end GaloisForLFunctions.HTGeometry

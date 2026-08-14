@@ -115,16 +115,16 @@ theorem differentialIndependent_family_differentialAdjoin_of_finite_jetSet
     intro i j hij
     have h : (fun p : ι × ℕ => differentialJet p.2 (y p.1)) (i, 0)
         = (fun p : ι × ℕ => differentialJet p.2 (y p.1)) (j, 0) := hij
-    have h2 := hind.injective h
-    rw [Prod.mk.injEq] at h2
-    exact h2.1
+    exact hind.injective h
   set e : ι ≃ ↥(Set.range y) := Equiv.ofInjective y hinj with he
   have hprod : ((fun p : ↥(Set.range y) × ℕ => differentialJet p.2 ((p.1 : K)))
       ∘ (e.prodCongr (Equiv.refl ℕ))) = fun p : ι × ℕ => differentialJet p.2 (y p.1) := by
     funext p
     rfl
   have hiff := algebraicIndependent_equiv' (R := k) (e.prodCongr (Equiv.refl ℕ)) hprod
-  exact hiff.mpr (differentialIndependent_differentialAdjoin_of_finite_jetSet hS
+  have hiff2 := algebraicIndependent_equiv' (R := ↥(differentialAdjoin k S))
+    (e.prodCongr (Equiv.refl ℕ)) hprod
+  exact hiff2.mpr (differentialIndependent_differentialAdjoin_of_finite_jetSet hS
     (Set.finite_range y) (hiff.mp hind))
 
 end

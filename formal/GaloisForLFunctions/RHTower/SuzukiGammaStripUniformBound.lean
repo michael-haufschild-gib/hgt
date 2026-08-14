@@ -35,7 +35,7 @@ theorem suzukiGammaStripNormSq_le_of_mem {σ₀ σ₁ : ℝ} (h0 : 0 < σ₀) {K
     have := Complex.abs_im_le_norm ((x : ℂ) + (σ : ℂ) * I)
     rwa [him] at this
   rw [suzukiGammaStripNormSq]
-  exact div_le_div hK0 (hK σ hσ x) h0 hnorm
+  exact div_le_div₀ hK0 (hK σ hσ x) h0 hnorm
 
 /-- **The glued strip solution is uniformly bounded on every closed substrip.** -/
 theorem exists_bound_norm_stripSolution {E : ℂ → ℂ} {T : X →L[ℂ] X} (hT : IsSelfAdjoint T)

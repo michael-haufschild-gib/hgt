@@ -39,6 +39,30 @@ theorem linearIndependent_pair_of_irrational {a b : ℝ} (hb : b ≠ 0)
       linarith [hmn']
     exact h ⟨(-n / m : ℚ), hval.symm⟩
 
+/-- **The converse: independent frequencies have irrational ratio.** -/
+theorem irrational_div_of_linearIndependent_pair {a b : ℝ} (h : LinearIndependent ℤ ![a, b]) :
+    Irrational (a / b) := by
+  rw [LinearIndependent.pair_iff] at h
+  have hb : b ≠ 0 := by
+    intro hb0
+    have := (h 0 1 (by simp [hb0])).2
+    exact absurd this one_ne_zero
+  rintro ⟨c, hc⟩
+  have ha : a = (c : ℝ) * b := by
+    field_simp at hc
+    linarith [hc]
+  have hden : ((c.den : ℤ) : ℝ) * a + (-(c.num : ℤ) : ℤ) • b = 0 := by
+    rw [ha]
+    push_cast
+    rw [Rat.cast_def]
+    field_simp
+    push_cast [zsmul_eq_mul]
+    ring
+  have hzero := (h (c.den : ℤ) (-(c.num : ℤ)) (by
+    simpa [zsmul_eq_mul] using hden)).1
+  have : (c.den : ℤ) ≠ 0 := by exact_mod_cast c.den_nz
+  exact this hzero
+
 /-- The corresponding rational independence of the pair, in the form the torus flow needs. -/
 theorem rationallyIndependentSequence_pair {a b : ℝ} (hb : b ≠ 0)
     (h : Irrational (a / b)) : RationallyIndependentSequence ![a, b] :=

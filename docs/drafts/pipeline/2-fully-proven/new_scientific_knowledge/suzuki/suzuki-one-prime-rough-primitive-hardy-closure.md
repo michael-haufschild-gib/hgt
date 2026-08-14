@@ -270,7 +270,7 @@ literal rough primitive
 + three-step Gamma integration by parts
 + complementary primitive cancellation
 + dyadic chart coverage
- -> trace-zero H1_0 below the second-prime threshold.   (24)
+ -> trace-zero H1_0 below the second-prime threshold.   (25)
 ```
 
 External priority remains unverified.
@@ -291,12 +291,19 @@ integrableAtTop_suzukiPolynomialIBPTails_iff
   exact joint window;
 
 suzukiOnePrimeThirdIBPTails
-  concrete (kappa,sigma,N)=(2/3,3/4,3) certificate.
+  concrete (kappa,sigma,N)=(2/3,3/4,3) certificate;
+
+tsum_suzukiBackwardGeometricBlockEnvelope_le
+  sharp unconditional l1 mass bound for the backward primitive;
+
+tsum_suzukiBackwardGeometricBlockEnvelope_lt_top
+  strict geometric contraction preserves finite block mass.
 ```
 
 The vector-valued Fourier/Bochner composition remains paper analysis; no Lean wrapper assumes
-`(3)`. The next formal infrastructure target is backward block-primitive preservation, followed by
-the operator-valued one-block estimate rather than a theorem restating the desired conclusion.
+`(3)`. Backward block-primitive preservation is now formalized. The next formal infrastructure
+target is the operator-valued one-block estimate rather than a theorem restating the desired
+conclusion.
 
 ## Gates
 
@@ -306,7 +313,7 @@ the operator-valued one-block estimate rather than a theorem restating the desir
 - [x] convert zero-order terminal source to rough primitive
 - [x] prove polynomial-group one-block transfer at rank one
 - [x] compose complementary flux and dyadic coverage on paper
-- [ ] formalize backward block-primitive preservation
+- [x] formalize backward block-primitive preservation
 - [ ] formalize operator-valued polynomial-group one-block estimate
 - [ ] pass the second-prime threshold
 - [ ] pass recurrence-infinite apertures

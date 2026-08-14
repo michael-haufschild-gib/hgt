@@ -12,6 +12,7 @@ proves their exact joint integrability window and certifies that the one-prime c
 -/
 
 open Filter MeasureTheory
+open scoped ENNReal
 
 noncomputable section
 
@@ -55,5 +56,42 @@ theorem suzukiOnePrimeThirdIBPTails :
     IntegrableAtFilter (suzukiPolynomialIBPNearTailNormSq (2 / 3) 3) atTop volume := by
   rw [integrableAtTop_suzukiPolynomialIBPTails_iff]
   norm_num
+
+/-- Backward geometric convolution of a nonnegative block envelope.  This is the discrete
+primitive operator produced by integrating a terminally supported exponential block tail. -/
+def suzukiBackwardGeometricBlockEnvelope
+    (q : ℝ≥0∞) (h : ℕ → ℝ≥0∞) (n : ℕ) : ℝ≥0∞ :=
+  ∑' j : ℕ, q ^ j * h (n + j)
+
+/-- Sharp global mass bound for the backward block primitive.  No summability assumption is
+needed: the statement remains valid in `ℝ≥0∞` at infinite mass. -/
+theorem tsum_suzukiBackwardGeometricBlockEnvelope_le
+    (q : ℝ≥0∞) (h : ℕ → ℝ≥0∞) :
+    ∑' n : ℕ, suzukiBackwardGeometricBlockEnvelope q h n ≤
+      (1 - q)⁻¹ * ∑' n : ℕ, h n := by
+  unfold suzukiBackwardGeometricBlockEnvelope
+  rw [ENNReal.tsum_comm]
+  calc
+    (∑' j : ℕ, ∑' n : ℕ, q ^ j * h (n + j)) =
+        ∑' j : ℕ, q ^ j * ∑' n : ℕ, h (n + j) := by
+      congr 1
+      funext j
+      exact ENNReal.tsum_mul_left
+    _ ≤ ∑' j : ℕ, q ^ j * ∑' n : ℕ, h n := by
+      apply ENNReal.tsum_le_tsum
+      intro j
+      have htail : (∑' n : ℕ, h (n + j)) ≤ ∑' n : ℕ, h n :=
+        ENNReal.tsum_comp_le_tsum_of_injective (f := fun n : ℕ => n + j)
+          (fun _ _ hEq => Nat.add_right_cancel hEq) h
+      simpa [mul_comm] using mul_le_mul_right htail (q ^ j)
+    _ = (1 - q)⁻¹ * ∑' n : ℕ, h n := by
+      rw [ENNReal.tsum_mul_right, ENNReal.tsum_geometric]
+
+/-- A finite block envelope remains finite under every strict backward geometric contraction. -/
+theorem tsum_suzukiBackwardGeometricBlockEnvelope_lt_top
+    (q : ℝ≥0∞) (h : ℕ → ℝ≥0∞) (hq : q < 1) (hh : ∑' n : ℕ, h n < ⊤) :
+    ∑' n : ℕ, suzukiBackwardGeometricBlockEnvelope q h n < ⊤ :=
+  lt_of_le_of_lt (tsum_suzukiBackwardGeometricBlockEnvelope_le q h)
+    (ENNReal.mul_lt_top (ENNReal.inv_lt_top.2 (tsub_pos_iff_lt.2 hq)) hh)
 
 end GaloisForLFunctions.RHTower

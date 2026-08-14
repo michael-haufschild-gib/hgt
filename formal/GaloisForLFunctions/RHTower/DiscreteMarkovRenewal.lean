@@ -612,4 +612,231 @@ theorem entranceMass_le_one (P : S → S → ℝ≥0∞) (hP : ∀ x, ∑' y : S
 
 end Stochastic
 
+section GreenBounds
+
+variable {S : Type*} [Countable S]
+
+theorem tsum_list_regroup (g : List S → ℝ≥0∞) :
+    (∑' l : List S, g l) = ∑' n : ℕ, ∑' l : {l : List S // l.length = n}, g (l : List S) := by
+  rw [← (Equiv.sigmaFiberEquiv (List.length : List S → ℕ)).tsum_eq g, ENNReal.tsum_sigma']
+  rfl
+
+/-- Discounted occupation takes one discounted step after recording the present state. -/
+theorem greenMass_step (P : S → S → ℝ≥0∞) (a : ℝ≥0∞) (x : S) (B : Set S) :
+    greenMass P a x B = Set.indicator B 1 x + a * ∑' y : S, P x y * greenMass P a y B := by
+  classical
+  rw [greenMass, tsum_list_split]
+  have hnil : Set.indicator {l : List S | pathEnd x l ∈ B}
+      (fun l => a ^ l.length * pathWeight P x l) [] = Set.indicator B 1 x := by
+    by_cases hB : x ∈ B
+    · rw [Set.indicator_of_mem (show ([] : List S) ∈ {l : List S | pathEnd x l ∈ B} from
+        by simpa using hB), Set.indicator_of_mem hB]
+      simp
+    · rw [Set.indicator_of_notMem (show ([] : List S) ∉ {l : List S | pathEnd x l ∈ B} from
+        by simpa using hB), Set.indicator_of_notMem hB]
+  have hcons : ∀ p : S × List S, Set.indicator {l : List S | pathEnd x l ∈ B}
+      (fun l => a ^ l.length * pathWeight P x l) (p.1 :: p.2) =
+      a * (P x p.1 * Set.indicator {l : List S | pathEnd p.1 l ∈ B}
+        (fun l => a ^ l.length * pathWeight P p.1 l) p.2) := by
+    rintro ⟨y, l⟩
+    by_cases hB : pathEnd y l ∈ B
+    · rw [Set.indicator_of_mem (show (y :: l) ∈ {l : List S | pathEnd x l ∈ B} from
+        by simpa using hB),
+        Set.indicator_of_mem (show l ∈ {l : List S | pathEnd y l ∈ B} from hB)]
+      simp only [List.length_cons, pathWeight_cons, pow_succ]
+      ring
+    · rw [Set.indicator_of_notMem (show (y :: l) ∉ {l : List S | pathEnd x l ∈ B} from
+        by simpa using hB),
+        Set.indicator_of_notMem (show l ∉ {l : List S | pathEnd y l ∈ B} from hB),
+        mul_zero, mul_zero]
+  have hprod : (∑' p : S × List S, P x p.1 * Set.indicator {l : List S | pathEnd p.1 l ∈ B}
+      (fun l => a ^ l.length * pathWeight P p.1 l) p.2) =
+      ∑' y : S, ∑' l : List S, P x y * Set.indicator {l : List S | pathEnd y l ∈ B}
+        (fun l => a ^ l.length * pathWeight P y l) l := by
+    rw [← ENNReal.tsum_prod (f := fun y l => P x y * Set.indicator {l : List S | pathEnd y l ∈ B}
+      (fun l => a ^ l.length * pathWeight P y l) l)]
+  have hinner : (∑' y : S, ∑' l : List S, P x y * Set.indicator {l : List S | pathEnd y l ∈ B}
+      (fun l => a ^ l.length * pathWeight P y l) l) =
+      ∑' y : S, P x y * greenMass P a y B :=
+    tsum_congr fun y => by rw [ENNReal.tsum_mul_left, greenMass]
+  rw [hnil, tsum_congr hcons, ENNReal.tsum_mul_left, hprod, hinner]
+
+theorem one_le_greenMass (P : S → S → ℝ≥0∞) (a : ℝ≥0∞) {x : S} {B : Set S} (hx : x ∈ B) :
+    1 ≤ greenMass P a x B := by
+  classical
+  rw [greenMass]
+  refine le_trans (le_of_eq ?_) (ENNReal.le_tsum ([] : List S))
+  rw [Set.indicator_of_mem (show ([] : List S) ∈ {l : List S | pathEnd x l ∈ B} from
+    by simpa using hx)]
+  simp
+
+/-- Discounted occupation is bounded by the geometric series of the discount. -/
+theorem greenMass_le_geometric (P : S → S → ℝ≥0∞) (hP : ∀ x, ∑' y : S, P x y = 1) (a : ℝ≥0∞)
+    (x : S) (B : Set S) : greenMass P a x B ≤ ∑' n : ℕ, a ^ n := by
+  classical
+  have hle : greenMass P a x B ≤ ∑' l : List S, a ^ l.length * pathWeight P x l := by
+    rw [greenMass]
+    refine ENNReal.tsum_le_tsum fun l => ?_
+    by_cases hB : pathEnd x l ∈ B
+    · rw [Set.indicator_of_mem (show l ∈ {l : List S | pathEnd x l ∈ B} from hB)]
+    · rw [Set.indicator_of_notMem (show l ∉ {l : List S | pathEnd x l ∈ B} from hB)]
+      exact bot_le
+  refine le_trans hle (le_of_eq ?_)
+  rw [tsum_list_regroup (fun l => a ^ l.length * pathWeight P x l)]
+  refine tsum_congr fun n => ?_
+  have hval : ∀ l : {l : List S // l.length = n},
+      a ^ (l : List S).length * pathWeight P x (l : List S) =
+        a ^ n * pathWeight P x (l : List S) := by
+    rintro ⟨l, rfl⟩; rfl
+  have hlevel : (∑' l : {l : List S // l.length = n}, pathWeight P x (l : List S)) =
+      levelMass P x n := tsum_subtype {l : List S | l.length = n} (fun l => pathWeight P x l)
+  rw [tsum_congr hval, ENNReal.tsum_mul_left, hlevel, levelMass_eq_one P hP, mul_one]
+
+/-- The discounted entrance mass is countably additive over the target points. -/
+theorem tsum_entranceMass_singleton (P : S → S → ℝ≥0∞) (a : ℝ≥0∞) (A : Set S) (x : S)
+    (B : Set S) :
+    (∑' z : S, entranceMass P a A x ({z} ∩ B)) = entranceMass P a A x B := by
+  classical
+  have hswap : (∑' z : S, entranceMass P a A x ({z} ∩ B)) =
+      ∑' l : List S, ∑' z : S, Set.indicator {l : List S |
+        FirstEntrance A x l ∧ pathEnd x l ∈ ({z} ∩ B)}
+        (fun l => a ^ l.length * pathWeight P x l) l := by
+    rw [ENNReal.tsum_comm]
+    exact tsum_congr fun z => by rw [entranceMass]
+  rw [hswap, entranceMass]
+  refine tsum_congr fun l => ?_
+  by_cases hFE : FirstEntrance A x l ∧ pathEnd x l ∈ B
+  · rw [Set.indicator_of_mem (show l ∈ {l : List S |
+      FirstEntrance A x l ∧ pathEnd x l ∈ B} from hFE)]
+    have hsingle : (∑' z : S, Set.indicator {l : List S |
+        FirstEntrance A x l ∧ pathEnd x l ∈ (({z} : Set S) ∩ B)}
+        (fun l => a ^ l.length * pathWeight P x l) l) =
+        Set.indicator {l : List S |
+          FirstEntrance A x l ∧ pathEnd x l ∈ (({pathEnd x l} : Set S) ∩ B)}
+          (fun l => a ^ l.length * pathWeight P x l) l :=
+      tsum_eq_single (pathEnd x l) fun z hz =>
+        Set.indicator_of_notMem (fun hc => hz hc.2.1.symm) _
+    rw [hsingle, Set.indicator_of_mem (show l ∈ {l : List S |
+      FirstEntrance A x l ∧ pathEnd x l ∈ (({pathEnd x l} : Set S) ∩ B)} from
+        ⟨hFE.1, rfl, hFE.2⟩)]
+  · rw [Set.indicator_of_notMem (show l ∉ {l : List S |
+      FirstEntrance A x l ∧ pathEnd x l ∈ B} from hFE)]
+    refine ENNReal.tsum_eq_zero.mpr fun z => ?_
+    exact Set.indicator_of_notMem (fun hc => hFE ⟨hc.1, hc.2.2⟩) _
+
+end GreenBounds
+
+section Sandwich
+
+variable {S : Type*} [Countable S]
+
+theorem entranceMass_singleton_eq_zero (P : S → S → ℝ≥0∞) (a : ℝ≥0∞) (A : Set S) (x : S)
+    {z : S} (hz : z ∉ A) : entranceMass P a A x {z} = 0 := by
+  classical
+  rw [entranceMass]
+  refine ENNReal.tsum_eq_zero.mpr fun l => ?_
+  refine Set.indicator_of_notMem (fun hc => ?_) _
+  exact hz (hc.2 ▸ hc.1.1)
+
+theorem tsum_entranceMass_singleton_self (P : S → S → ℝ≥0∞) (a : ℝ≥0∞) (A : Set S) (x : S) :
+    (∑' z : S, entranceMass P a A x {z}) = entranceMass P a A x A := by
+  classical
+  rw [← tsum_entranceMass_singleton P a A x A]
+  refine tsum_congr fun z => ?_
+  by_cases hz : z ∈ A
+  · congr 1
+    exact (Set.inter_eq_left.mpr (by simpa using hz)).symm
+  · rw [entranceMass_singleton_eq_zero P a A x hz]
+    refine (ENNReal.tsum_eq_zero.mpr fun l => ?_).symm
+    refine Set.indicator_of_notMem (fun hc => ?_) _
+    exact hz (hc.2.1 ▸ hc.1.1)
+
+/-- **Stopped occupation upper bound.**  A uniform bound on the occupation from the target
+transfers to the occupation from any state through the entrance mass. -/
+theorem greenMass_le_mul_entranceMass (P : S → S → ℝ≥0∞) (a : ℝ≥0∞) {A B : Set S} (hBA : B ⊆ A)
+    (x : S) {g : ℝ≥0∞} (hg : ∀ z ∈ A, greenMass P a z B ≤ g) :
+    greenMass P a x B ≤ g * entranceMass P a A x A := by
+  rw [greenMass_eq_tsum_entranceMass P a A B hBA x, ← tsum_entranceMass_singleton_self,
+    ← ENNReal.tsum_mul_left]
+  refine ENNReal.tsum_le_tsum fun z => ?_
+  by_cases hz : z ∈ A
+  · rw [mul_comm g]
+    exact mul_le_mul_right (hg z hz) _
+  · rw [entranceMass_singleton_eq_zero P a A x hz, zero_mul, mul_zero]
+
+/-- **Stopped occupation lower bound.** -/
+theorem mul_entranceMass_le_greenMass (P : S → S → ℝ≥0∞) (a : ℝ≥0∞) {A B : Set S} (hBA : B ⊆ A)
+    (x : S) {g : ℝ≥0∞} (hg : ∀ z ∈ A, g ≤ greenMass P a z B) :
+    g * entranceMass P a A x A ≤ greenMass P a x B := by
+  rw [greenMass_eq_tsum_entranceMass P a A B hBA x, ← tsum_entranceMass_singleton_self,
+    ← ENNReal.tsum_mul_left]
+  refine ENNReal.tsum_le_tsum fun z => ?_
+  by_cases hz : z ∈ A
+  · rw [mul_comm g]
+    exact mul_le_mul_right (hg z hz) _
+  · rw [entranceMass_singleton_eq_zero P a A x hz, zero_mul, mul_zero]
+
+/-- **Green--entrance equivalence.**  Discounted occupation of a target is squeezed between the
+discounted entrance mass and its geometric multiple. -/
+theorem entranceMass_le_greenMass_le (P : S → S → ℝ≥0∞) (hP : ∀ x, ∑' y : S, P x y = 1)
+    (a : ℝ≥0∞) (A : Set S) (x : S) :
+    entranceMass P a A x A ≤ greenMass P a x A ∧
+      greenMass P a x A ≤ (∑' n : ℕ, a ^ n) * entranceMass P a A x A := by
+  constructor
+  · have := mul_entranceMass_le_greenMass P a (subset_refl A) x
+      (g := 1) (fun z hz => one_le_greenMass P a hz)
+    simpa using this
+  · exact greenMass_le_mul_entranceMass P a (subset_refl A) x
+      (fun z _ => greenMass_le_geometric P hP a z A)
+
+end Sandwich
+
+section ReturnKernel
+
+variable {S : Type*} [Countable S]
+
+/-- Discounted first positive return kernel of the target set. -/
+noncomputable def returnMass (P : S → S → ℝ≥0∞) (a : ℝ≥0∞) (A : Set S) (z : S) (B : Set S) :
+    ℝ≥0∞ :=
+  a * ∑' y : S, P z y * entranceMass P a A y B
+
+/-- **Return contraction.**  The discounted return kernel has total mass at most the discount. -/
+theorem returnMass_le (P : S → S → ℝ≥0∞) (hP : ∀ x, ∑' y : S, P x y = 1) {a : ℝ≥0∞} (ha : a ≤ 1)
+    (A : Set S) (z : S) : returnMass P a A z A ≤ a := by
+  rw [returnMass]
+  calc a * ∑' y : S, P z y * entranceMass P a A y A
+      ≤ a * ∑' y : S, P z y * 1 := by
+        refine mul_le_mul_right (ENNReal.tsum_le_tsum fun y => ?_) _
+        exact mul_le_mul_right (entranceMass_le_one P hP ha A y A) _
+    _ = a := by simp [hP z]
+
+/-- **Entrance--return resolvent equation.**  From the target, discounted occupation is the present
+visit plus one discounted return followed by occupation. -/
+theorem greenMass_eq_add_tsum_returnMass (P : S → S → ℝ≥0∞) (a : ℝ≥0∞) {A B : Set S}
+    (hBA : B ⊆ A) (z : S) :
+    greenMass P a z B =
+      Set.indicator B 1 z + ∑' w : S, returnMass P a A z {w} * greenMass P a w B := by
+  classical
+  rw [greenMass_step P a z B]
+  congr 1
+  have hstep : ∀ y : S, greenMass P a y B =
+      ∑' w : S, entranceMass P a A y {w} * greenMass P a w B := fun y =>
+    greenMass_eq_tsum_entranceMass P a A B hBA y
+  have hswap : (a * ∑' y : S, P z y * greenMass P a y B) =
+      ∑' w : S, a * (∑' y : S, P z y * entranceMass P a A y {w}) * greenMass P a w B := by
+    rw [tsum_congr fun y => by rw [hstep y]]
+    have hinner : ∀ y : S, (P z y * ∑' w : S, entranceMass P a A y {w} * greenMass P a w B) =
+        ∑' w : S, P z y * entranceMass P a A y {w} * greenMass P a w B := by
+      intro y
+      rw [ENNReal.tsum_mul_left]
+      exact tsum_congr fun w => by ring
+    rw [tsum_congr hinner, ENNReal.tsum_comm, ENNReal.tsum_mul_left]
+    refine tsum_congr fun w => ?_
+    rw [← ENNReal.tsum_mul_right, ← ENNReal.tsum_mul_left]
+    exact tsum_congr fun y => by ring
+  rw [hswap]
+  exact tsum_congr fun w => by rw [returnMass]
+
+end ReturnKernel
+
 end GaloisForLFunctions.RHTower

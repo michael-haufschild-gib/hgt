@@ -95,9 +95,15 @@ theorem norm_dilation_multiplier (hr : 0 < r) (s : ℂ) :
 /-- A positive base other than one has no nonzero exponent giving one. -/
 theorem eq_zero_of_rpow_eq_one (hr : 0 < r) (hr1 : r ≠ 1) {y : ℝ} (h : r ^ y = 1) : y = 0 := by
   rw [Real.rpow_def_of_pos hr] at h
-  have hlog : Real.log r * y = 0 := Real.exp_eq_one_iff.mp h
+  have h2 : Real.exp (Real.log r * y) = Real.exp 0 := by simpa using h
+  have hlog : Real.log r * y = 0 := Real.exp_eq_exp.mp h2
   rcases mul_eq_zero.mp hlog with h1 | h1
-  · exact absurd (Real.log_eq_zero_iff hr |>.mp h1) (by simpa using hr1)
+  · exfalso
+    have hone : r = 1 := by
+      have hexp := Real.exp_log hr
+      rw [h1] at hexp
+      simpa using hexp.symm
+    exact hr1 hone
   · exact h1
 
 /-- **`(30)`.**  Grade preservation of a nonzero Mellin normal forces the critical line. -/
@@ -115,10 +121,9 @@ theorem re_eq_half_of_rayMellin_dilation_norm_eq (hr : 0 < r) (hr1 : r ≠ 1) {f
   rw [rayMellin_unitaryDilation hr f s, norm_mul] at h
   have hpos : 0 < ‖rayMellin f s‖ := norm_pos_iff.mpr hne
   have hone : ‖(r : ℂ) ^ ((1 / 2 : ℂ) - s)‖ = 1 := by
-    field_simp at h
-    rcases h with h | h
-    · exact h
-    · exact absurd h (ne_of_gt hpos)
+    refine mul_right_cancel₀ (ne_of_gt hpos) ?_
+    rw [one_mul]
+    exact h
   exact re_eq_half_of_norm_multiplier_eq_one hr hr1 hone
 
 end GaloisForLFunctions.RHTower
