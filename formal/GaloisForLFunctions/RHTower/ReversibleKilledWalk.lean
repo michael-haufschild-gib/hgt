@@ -354,6 +354,20 @@ theorem inner_le_mul_negEnergySq {a : ℝ} (ha0 : 0 ≤ a) (ha1 : a < 1) (g : S 
     nlinarith
 
 
+theorem energy_add (a : ℝ) (f g : S → ℝ) :
+    C.energy a (f + g) = C.energy a f + 2 * C.energyBil a f g + C.energy a g := by
+  have := C.energy_add_smul a 1 f g
+  simpa using this
+
+theorem killed_one (a : ℝ) : C.killed a (1 : S → ℝ) = (1 - a) • (1 : S → ℝ) := by
+  funext x
+  simp only [killed, step, Pi.one_apply, Pi.smul_apply, smul_eq_mul, mul_one]
+  rw [C.row_sum x, mul_one]
+
+theorem inner_one_left (f : S → ℝ) : C.inner 1 f = ∑ x, C.stat x * f x := by
+  simp only [inner, Pi.one_apply, one_mul]
+
+
 end ReversibleChain
 
 end GaloisForLFunctions.RHTower

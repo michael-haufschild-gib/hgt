@@ -177,26 +177,28 @@ theorem coareaStationaryDefect_neg_of_mem {r : ℝ} (hr1 : 1 < r)
 
 theorem tendsto_coareaStationaryDefect_atTop :
     Tendsto coareaStationaryDefect atTop atTop := by
+  have hinv : Tendsto (fun r : ℝ => r⁻¹) atTop (nhds 0) := tendsto_inv_atTop_zero
+  have hnum : Tendsto (fun r : ℝ => 2 - 2 * r⁻¹) atTop (nhds 2) := by
+    have h := hinv.const_mul (2 : ℝ)
+    rw [mul_zero] at h
+    have h2 : Tendsto (fun r : ℝ => (2 : ℝ) - 2 * r⁻¹) atTop (nhds ((2 : ℝ) - 0)) :=
+      tendsto_const_nhds.sub h
+    simpa using h2
+  have hden : Tendsto (fun r : ℝ => 2 - r⁻¹) atTop (nhds 2) := by
+    have h2 : Tendsto (fun r : ℝ => (2 : ℝ) - r⁻¹) atTop (nhds ((2 : ℝ) - 0)) :=
+      tendsto_const_nhds.sub hinv
+    simpa using h2
   have hquot : Tendsto (fun r : ℝ => 2 * (r - 1) / (2 * r - 1)) atTop (nhds 1) := by
-    have hrw : ∀ r : ℝ, 0 < r → 2 * (r - 1) / (2 * r - 1) = (2 - 2 / r) / (2 - 1 / r) := by
-      intro r hr
-      have hne : r ≠ 0 := ne_of_gt hr
-      field_simp
-      ring
-    have hnum : Tendsto (fun r : ℝ => 2 - 2 / r) atTop (nhds 2) := by
-      have h := tendsto_const_nhds.sub (tendsto_const_nhds.div_atTop tendsto_id (a := (2 : ℝ)))
-      simpa using h
-    have hden : Tendsto (fun r : ℝ => 2 - 1 / r) atTop (nhds 2) := by
-      have h := tendsto_const_nhds.sub (tendsto_const_nhds.div_atTop tendsto_id (a := (1 : ℝ)))
-      simpa using h
     have hdiv := hnum.div hden (by norm_num)
     have hval : (2 : ℝ) / 2 = 1 := by norm_num
     rw [hval] at hdiv
     refine hdiv.congr' ?_
     filter_upwards [eventually_gt_atTop (0 : ℝ)] with r hr
-    exact (hrw r hr).symm
+    have hne : r ≠ 0 := ne_of_gt hr
+    simp only [Pi.div_apply]
+    field_simp
   have hlog : Tendsto Real.log atTop atTop := Real.tendsto_log_atTop
-  have h := hlog.atTop_add (hquot.neg)
+  have h := hlog.atTop_add hquot.neg
   refine h.congr fun r => ?_
   rw [coareaStationaryDefect]
   ring
@@ -207,43 +209,8 @@ theorem exists_unique_coareaStationaryRatio :
   have hcrit := one_lt_criticalRatio
   have hneg : coareaStationaryDefect ((3 + Real.sqrt 5) / 4) < 0 :=
     coareaStationaryDefect_neg_of_mem hcrit le_rfl
-  obtain ⟨b, hb⟩ := (tendsto_coareaStationaryDefect_atTop.eventually_ge_atTop 1).exists
-  have hble : (3 + Real.sqrt 5) / 4 ≤ b := by
-    by_contra hcon
-    push_neg at hcon
-    have hbneg : coareaStationaryDefect b < 0 := by
-      rcases le_or_lt b 1 with h | h
-      · have hmono := strictAntiOn_coareaStationaryDefect
-        rcases eq_or_lt_of_le h with heq | hlt
-        · rw [heq, coareaStationaryDefect_one] at hb
-          linarith
-        · -- `b < 1`: the defect is not covered; use the monotone branch instead
-          exfalso
-          have hlog : Real.log b < 0 := Real.log_neg (by nlinarith [hb]) hlt
-          have hfrac : 0 ≤ 2 * (b - 1) / (2 * b - 1) → False := by
-            intro _
-            linarith [hb, hlog]
-          have hbpos : 0 < b := by nlinarith [hb]
-          have h2b : 2 * b - 1 ≠ 0 := by
-            intro hz
-            have : b = 1 / 2 := by linarith
-            rw [this] at hb
-            have : Real.log (1 / 2 : ℝ) < 0 := Real.log_neg (by norm_num) (by norm_num)
-            simp [coareaStationaryDefect, this] at hb
-            linarith
-          have hval : coareaStationaryDefect b < 0 := by
-            rw [coareaStationaryDefect]
-            rcases lt_or_gt_of_ne h2b with hlt2 | hgt2
-            · have hnum : 2 * (b - 1) < 0 := by linarith
-              have hdiv : 0 < 2 * (b - 1) / (2 * b - 1) := div_pos_of_neg_of_neg hnum hlt2
-              linarith
-            · have hnum : 2 * (b - 1) < 0 := by linarith
-              have hdiv : 2 * (b - 1) / (2 * b - 1) < 0 := div_neg_of_neg_of_pos hnum hgt2
-              have : Real.log b < 0 := hlog
-              nlinarith [hb, hdiv, hlog]
-          linarith
-      · exact coareaStationaryDefect_neg_of_mem h hcon.le
-    linarith
+  obtain ⟨b, hb, hble⟩ := ((tendsto_coareaStationaryDefect_atTop.eventually_ge_atTop 1).and
+    (eventually_ge_atTop ((3 + Real.sqrt 5) / 4))).exists
   have hcont : ContinuousOn coareaStationaryDefect (Icc ((3 + Real.sqrt 5) / 4) b) :=
     continuousOn_coareaStationaryDefect.mono fun r hr => le_trans hcrit.le hr.1
   have hzero : ∃ r ∈ Icc ((3 + Real.sqrt 5) / 4) b, coareaStationaryDefect r = 0 := by
@@ -254,7 +221,7 @@ theorem exists_unique_coareaStationaryRatio :
   have hr1 : 1 < r := lt_of_lt_of_le hcrit hrmem.1
   refine ⟨r, ⟨hr1, hr0⟩, fun s hs => ?_⟩
   obtain ⟨hs1, hs0⟩ := hs
-  rcases le_or_lt s ((3 + Real.sqrt 5) / 4) with hle | hlt
+  rcases le_or_gt s ((3 + Real.sqrt 5) / 4) with hle | hlt
   · exact absurd hs0 (ne_of_lt (coareaStationaryDefect_neg_of_mem hs1 hle))
   · have hsmem : s ∈ Ici ((3 + Real.sqrt 5) / 4) := hlt.le
     have hrmem' : r ∈ Ici ((3 + Real.sqrt 5) / 4) := hrmem.1
@@ -262,6 +229,114 @@ theorem exists_unique_coareaStationaryRatio :
     · exact absurd (strictMonoOn_coareaStationaryDefect hsmem hrmem' h) (by rw [hr0, hs0]; simp)
     · exact h
     · exact absurd (strictMonoOn_coareaStationaryDefect hrmem' hsmem h) (by rw [hr0, hs0]; simp)
+
+/-! ## The certificate cost of a partition -/
+
+theorem coareaRatioCost_pos {r : ℝ} (hr : 1 < r) : 0 < coareaRatioCost r := by
+  have hlog : 0 < Real.log r := Real.log_pos hr
+  have hnum : 0 < Real.sqrt (r * (r - 1)) := by
+    refine Real.sqrt_pos.mpr ?_
+    have h1 : 0 < r := by linarith
+    have h2 : 0 < r - 1 := by linarith
+    positivity
+  exact div_pos hnum hlog
+
+/-- The optimal certificate coefficient. -/
+def coareaMinCost : ℝ := sInf (coareaRatioCost '' Ioi 1)
+
+theorem coareaMinCost_nonneg : 0 ≤ coareaMinCost := by
+  refine Real.sInf_nonneg ?_
+  rintro y ⟨r, hr, rfl⟩
+  exact (coareaRatioCost_pos hr).le
+
+theorem coareaMinCost_le {r : ℝ} (hr : 1 < r) : coareaMinCost ≤ coareaRatioCost r := by
+  refine csInf_le ⟨0, ?_⟩ ⟨r, hr, rfl⟩
+  rintro y ⟨s, hs, rfl⟩
+  exact (coareaRatioCost_pos hs).le
+
+/-- **The per-shell certificate inequality.**  Every shell of ratio `r > 1` costs at least
+`c_* log r`. -/
+theorem coareaMinCost_mul_log_le {r : ℝ} (hr : 1 < r) :
+    coareaMinCost * Real.log r ≤ Real.sqrt (r * (r - 1)) := by
+  have hlog : 0 < Real.log r := Real.log_pos hr
+  have h := coareaMinCost_le hr
+  rw [coareaRatioCost, le_div_iff₀ hlog] at h
+  exact h
+
+/-! ## Partitions -/
+
+/-- **The shell-count theorem under a ratio cap.**  A partition whose consecutive ratios are at
+most `R` needs at least `log(u_K/u_0)/log R` shells. -/
+theorem log_le_card_mul_log_of_ratio_le {u : ℕ → ℝ} {K : ℕ} {R : ℝ}
+    (hpos : ∀ j ≤ K, 0 < u j) (hratio : ∀ j < K, u (j + 1) ≤ R * u j) :
+    Real.log (u K / u 0) ≤ (K : ℝ) * Real.log R := by
+  induction K with
+  | zero =>
+      have h0 : 0 < u 0 := hpos 0 le_rfl
+      rw [div_self (ne_of_gt h0), Real.log_one]
+      norm_num
+  | succ K ih =>
+      have hposK : ∀ j ≤ K, 0 < u j := fun j hj => hpos j (by omega)
+      have hratioK : ∀ j < K, u (j + 1) ≤ R * u j := fun j hj => hratio j (by omega)
+      have hstep := ih hposK hratioK
+      have hK1 : 0 < u (K + 1) := hpos (K + 1) le_rfl
+      have hK0 : 0 < u K := hpos K (by omega)
+      have h0 : 0 < u 0 := hpos 0 (by omega)
+      have hlast := hratio K (by omega)
+      have hsplit : Real.log (u (K + 1) / u 0)
+          = Real.log (u (K + 1) / u K) + Real.log (u K / u 0) := by
+        rw [← Real.log_mul (by positivity) (by positivity)]
+        congr 1
+        field_simp
+      have hratiolog : Real.log (u (K + 1) / u K) ≤ Real.log R := by
+        have hle : u (K + 1) / u K ≤ R := by
+          rw [div_le_iff₀ hK0]
+          linarith [hlast]
+        have hpos' : 0 < u (K + 1) / u K := by positivity
+        exact Real.log_le_log hpos' hle
+      rw [hsplit]
+      push_cast
+      linarith
+
+/-- The ratio-capped shell count in divided form. -/
+theorem card_ge_log_div_log {u : ℕ → ℝ} {K : ℕ} {R : ℝ} (hR : 1 < R)
+    (hpos : ∀ j ≤ K, 0 < u j) (hratio : ∀ j < K, u (j + 1) ≤ R * u j) :
+    Real.log (u K / u 0) / Real.log R ≤ (K : ℝ) := by
+  have hlogR : 0 < Real.log R := Real.log_pos hR
+  rw [div_le_iff₀ hlogR]
+  exact log_le_card_mul_log_of_ratio_le hpos hratio
+
+/-- **The lower bound for every interval partition.**  Summing the per-shell inequality
+telescopes to `c_* log(u_K/u_0)`. -/
+theorem coareaMinCost_mul_log_le_sum {u : ℕ → ℝ} {K : ℕ}
+    (hpos : ∀ j ≤ K, 0 < u j) (hmono : ∀ j < K, u j < u (j + 1)) :
+    coareaMinCost * Real.log (u K / u 0)
+      ≤ ∑ j ∈ Finset.range K,
+        Real.sqrt ((u (j + 1) / u j) * (u (j + 1) / u j - 1)) := by
+  induction K with
+  | zero =>
+      have h0 : 0 < u 0 := hpos 0 le_rfl
+      rw [div_self (ne_of_gt h0), Real.log_one, mul_zero, Finset.range_zero,
+        Finset.sum_empty]
+  | succ K ih =>
+      have hposK : ∀ j ≤ K, 0 < u j := fun j hj => hpos j (by omega)
+      have hmonoK : ∀ j < K, u j < u (j + 1) := fun j hj => hmono j (by omega)
+      have hstep := ih hposK hmonoK
+      have hK1 : 0 < u (K + 1) := hpos (K + 1) le_rfl
+      have hK0 : 0 < u K := hpos K (by omega)
+      have h0 : 0 < u 0 := hpos 0 (by omega)
+      have hlast := hmono K (by omega)
+      have hratio : 1 < u (K + 1) / u K := by
+        rw [lt_div_iff₀ hK0]
+        linarith
+      have hshell := coareaMinCost_mul_log_le hratio
+      have hsplit : Real.log (u (K + 1) / u 0)
+          = Real.log (u (K + 1) / u K) + Real.log (u K / u 0) := by
+        rw [← Real.log_mul (by positivity) (by positivity)]
+        congr 1
+        field_simp
+      rw [hsplit, Finset.sum_range_succ, mul_add]
+      linarith
 
 end
 

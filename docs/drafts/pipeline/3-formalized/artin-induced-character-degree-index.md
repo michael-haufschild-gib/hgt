@@ -1,9 +1,9 @@
 # Induced-character degree equals subgroup index times degree
 
 - **ID:** `artin-induced-character-degree-index`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Status:** `[LITERATURE] [PAPER-PROVED] [BRIDGE]`
+- **Status:** `[LITERATURE] [PAPER-PROVED] [LEAN-PROVED] [BRIDGE]`
 
 ## Exact claim
 
@@ -77,3 +77,27 @@ Construct the right-coset evaluation linear equivalence for `Representation.coin
 with `Rep.indCoindIso`, prove the finrank and identity-character formulas, and specialize to
 `monomialGenuineCharacter`. No `sorry`, `admit`, new axiom, `opaque`, `unsafe`, or
 target-equivalent proposition interface.
+
+## Lean formalization
+
+Module:
+
+```text
+formal/GaloisForLFunctions/RHTower/ArtinInducedDegree.lean
+```
+
+Exported results:
+
+- `coinducedRightCosetEquiv`: explicit right-coset evaluation linear equivalence.
+- `coinduced_finrank_eq_index_mul`: coinduced dimension formula.
+- `induced_finrank_eq_index_mul`: induced dimension formula via `Rep.indCoindIso`.
+- `induced_character_one_eq_index_mul`: induced-character degree formula.
+- `monomialGenuineCharacter_one_eq_index`: genuine monomial degree equals subgroup index.
+- `monomialVirtualCharacter_one_eq_index`: underlying virtual monomial degree equals index.
+
+Verification on 2026-08-14:
+
+- direct source check: `lake env lean GaloisForLFunctions/RHTower/ArtinInducedDegree.lean` passed;
+- targeted audit: `lake build GaloisForLFunctions.RHTower.ArtinInducedDegree` passed;
+- axiom audit for every exported result: only `propext`, `Classical.choice`, and `Quot.sound`;
+- imported by `formal/GaloisForLFunctions/RHTower.lean`; umbrella build intentionally not run.

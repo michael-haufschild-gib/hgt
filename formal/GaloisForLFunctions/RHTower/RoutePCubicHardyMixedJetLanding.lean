@@ -64,8 +64,7 @@ theorem routeP_scaled_projectiveHardyKernel
           (routePProjectiveHardyNode R b) =
       ((1 / (a + b) : ℝ) : ℂ) := by
   simp only [mobiusCriticalUniversalHardyKernel,
-    routePProjectiveHardyNode, map_sub, map_mul, map_div₀, map_one,
-    map_ofNat, RCLike.star_def, Complex.conj_ofReal]
+    routePProjectiveHardyNode, RCLike.star_def, Complex.conj_ofReal]
   push_cast
   have hRC : (R : ℂ) ≠ 0 := ofReal_ne_zero.mpr hR
   have habC : ((a + b : ℝ) : ℂ) ≠ 0 := ofReal_ne_zero.mpr hab

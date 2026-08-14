@@ -80,6 +80,10 @@ the principal branch of `Complex.log`.
 - [x] Equality/uniqueness of analytic continuation from coefficients
 - [x] Finite-order characterization equivalence
 - [ ] Gamma-presentation invariance of degree, conductor, internal shift
+  - [x] Exact simple-pole orders and full pole classification for affine Gamma factors
+  - [ ] Finite gamma-product pole multiplicity formula
+  - [ ] Gamma-pole generalized Dirichlet-series uniqueness and `H(0),H(1)` invariance
+  - [ ] Stirling coefficient and conductor invariance
 - [x] Exact `S` extension
 - [ ] Product monoid and conjugation closure
 - [ ] Primitive element/factorization definitions on semantic equality

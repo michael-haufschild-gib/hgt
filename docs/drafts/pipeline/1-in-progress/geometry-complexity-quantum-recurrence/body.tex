@@ -21,8 +21,8 @@ spectral statistics and circuit hardness of one fixed static Hamiltonian?
 Our answer is that each is a target problem on the same compact phase hull.
 The hull is fixed by persistent spectrum and exact rational relations;
 interaction fixes its factorization; an observer or preparation model fixes
-the target capacity; the group or semigroup law fixes reflection and
-recovery.
+the target capacity; finite data determine only a restricted projection of
+that completed geometry.
 
 \subsection{Contributions and boundaries}
 
@@ -40,18 +40,18 @@ The paper proves four laws.
       produces static-local completed-time complexity plateaux, fixed-input
       computable hard witnesses and complete hard recurrence polygons without
       Haar randomization.
-\item \emph{Recovery and information.}  Returns reflect circuit shells and
-      recover Markovian information, but finite earlier records do not
-      identify the completed recurrence geometry.
+\item \emph{Finite-horizon inference.}  Finite earlier records and finitely
+      many moments do not identify the completed recurrence geometry; the
+      ambiguity persists for nearest-neighbour Hamiltonians with a common
+      spectrum and has a sharp support threshold.
 \end{enumerate}
 
-The first conceptual identity below is a bridge from compact-group
-equidistribution, not a standalone novelty claim.  The new mathematical
-content is in its exact local-network, collision, complexity and recovery
-instantiations.  We do not prove a first-return time, a monotone complexity
-ramp from time zero, a mixing time, an infinite-volume recurrence, or a
-Haar-design statement.  These exclusions are consequences of the theorem
-domains, not generic limitations language.
+The theorem surface is deliberately narrower than an informal synthesis.
+Each displayed result is mapped to one exact Lean declaration, and each
+model-specific premise is discharged by a second declaration or within the
+same capstone.  We do not state the paper-only autonomous-reflection,
+Markovian-recovery or computable fixed-input hardness arguments developed in
+earlier drafts, because they do not yet meet that standard.
 
 \begin{figure}[H]
 \centering
@@ -68,16 +68,16 @@ domains, not generic limitations language.
 \node[box,fill=orange!9,below=1.55cm of h] (c)
   {target capacity\\returns, observers, circuits};
 \node[box,fill=green!8,left=3.6cm of c] (r)
-  {return information\\reflection, recovery, inference};
+  {finite-horizon information\\ambiguity and inference};
 \draw[arr] (p) -- node[above=4pt,lab]{loss selects} (h);
 \draw[arr] (h) -- node[right=5pt,lab]{Haar occupation} (c);
-\draw[arr] (c) -- node[below=4pt,lab]{composition constrains} (r);
+\draw[arr] (c) -- node[below=4pt,lab]{finite records project} (r);
 \draw[arr] (r) -- node[left=5pt,lab]{finite data probes} (p);
 \end{tikzpicture}
 \caption{\textbf{Return-capacity architecture.}  Labels occupy the gaps
 between nodes; none overlays a box.  Interaction changes the hull,
-observation and preparation change target capacity, and return composition
-constrains the full history.}
+observation and preparation change target capacity, and finite records retain
+only a projection of the completed geometry.}
 \label{fig:architecture}
 \end{figure}
 
@@ -110,36 +110,30 @@ induces the fidelity defect
 while a family of observables induces a positive weighted edge energy on
 the same hull.
 
-\subsection{Return-capacity principle}
+\subsection{Finite projective phase law}
 
-Let $K$ be a compact metrizable group, $m_K$ normalized Haar measure, and
-$\alpha:\R\to K$ a continuous homomorphism with dense image.  For a target
-family $Y\subset K$ write $B_\varepsilon(Y)=\bigcup_{y\in Y}B_\varepsilon(y)$.
+The finite spectrum itself supplies one exact algebraic object; no external
+equidistribution hypothesis is placed into the theorem.  Let $D=|\Carrier|$
+and let $h(k)=\sum_j\max(k_j,0)$ be the positive mass of a balanced integer
+character.
 
-\begin{theorem}[Haar-on-the-hull and target capacity]
+\begin{theorem}[Projective kernel--rank--replica law]
 \label{thm:returncapacity}
-For every Borel set $A\subset K$ with $m_K(\partial A)=0$,
+For every finite real energy packet,
 \begin{equation}
- \lim_{T\to\infty}\frac1{2T}
- \operatorname{Leb}\{t\in[-T,T]:\alpha(t)\in A\}=m_K(A). \label{eq:haarhull}
+ \tau(E)+\rho(E)=D-1.                                  \label{eq:haarhull}
 \end{equation}
-If $Y$ is finite, then
-\begin{equation}
- \overline{\dens}\{t:d(\alpha(t),Y)\le\varepsilon\}
- \le |Y|\sup_{y\in Y}m_K(B_\varepsilon(y)).             \label{eq:capacityunion}
-\end{equation}
-If the right-hand side is less than one and the target complement has
-nonempty interior, visits to that complement are syndetic.
+The operational temporal dimension of its exact relation-phase law is
+$\tau(E)$.  A projective character is fixed by that law exactly when it lies
+in $\Rel_E$, and the resolved replica hierarchy detects such a character at
+order $m$ exactly when $h(k)\le m$.
 \end{theorem}
 
-The theorem is unique ergodicity of a dense one-parameter translation,
-followed by a union bound and compactness.  Its force comes from computing
-$K$, its Haar balls and target capacity in concrete local systems.  Taking
-$Y=\{1\}$ gives recurrence density.  Taking $Y$ to be endpoints of short
-circuits gives low-complexity density.  Taking a quotient metric from an
-observer gives visible recurrence.  Finite-time conclusions require
-additional quantitative information and are not inferred from
-\eqref{eq:haarhull}.
+The later recurrence, observer and circuit theorems are concrete target
+computations for this finite phase law.  Exact Haar frequencies are stated
+only where maximal projective rank has been proved for the physical
+Hamiltonian family.  Quantitative finite-time conclusions are stated only
+where a separate Lean deadline theorem supplies them.
 
 \section{Law I: loss selects the persistent carrier}
 
@@ -280,12 +274,11 @@ periodic.  Approximate returns remain
 syndetic, although no quantitative gap between them follows from the rank
 theorem.
 
-\begin{corollary}[Connected-network thermodynamic return law]
+\begin{corollary}[Homogeneous-path thermodynamic return law]
 \label{cor:thermodynamic}
-Let $(G_n)$ be any sequence of finite connected interaction graphs, let
-$D_n=\prod_{v\in V_n}q_v\to\infty$, and choose a generic Hamiltonian at each
-volume.
-For fixed $0<\varepsilon<2$, put
+Fix $q\ge2$ and the open $n$-site $q$-level path.  For a Hamiltonian in the
+dense residual full-measure maximal set supplied by the path genericity
+theorem, put $D_n=q^n$.  For fixed $0<\varepsilon<2$, define
 \begin{equation}
  a_\varepsilon=\frac{2\arcsin(\varepsilon/2)}{\pi},
  \qquad I(\varepsilon)=-\log a_\varepsilon.
@@ -296,14 +289,11 @@ Taking completed time first at each finite volume,
  \qquad
  \frac{-\log d_n(\varepsilon)}{D_n}\longrightarrow I(\varepsilon). \label{eq:thermograph}
 \end{equation}
-If $|V_n|=n$ and
-$n^{-1}\sum_{v\in V_n}\log q_v\to s>0$, then
 \begin{equation}
- \frac1n\log[-\log d_n(\varepsilon)]\longrightarrow s. \label{eq:doubleloggraph}
+ \frac1n\log[-\log d_n(\varepsilon)]\longrightarrow \log q. \label{eq:doubleloggraph}
 \end{equation}
-For homogeneous qudits, $s=\log q$.  Thus strict completed-time return
-density is exponentially small in Hilbert-space dimension and doubly
-exponentially small in site number, independently of connected topology.
+Thus strict completed-time return density is exponentially small in
+Hilbert-space dimension and doubly exponentially small in path length.
 \end{corollary}
 
 No infinite-volume flow is constructed in this corollary, and the order of
@@ -446,25 +436,25 @@ phase states
  \Phi(z)=D^{-1/2}\sum_{j=1}^Dz_j e_j\otimes\overline{e_j},
  \qquad z\in\T^D.                                      \label{eq:choiphase}
 \end{equation}
-Let $\Delta$ denote pure-state trace distance.  For $0<\delta<1/2$, put
+Write $\rho(z)=|\Phi(z)\rangle\langle\Phi(z)|$ and use Hilbert--Schmidt
+distance between density matrices.  For $\delta>0$, put
 \begin{equation}
- \eta_\delta=1-\sqrt{1-4\delta^2},\qquad
- B_D(\delta)=De^{D/2}
- \left(\frac{\pi\eta_\delta}{2}\right)^{(D-1)/2}.     \label{eq:choicap}
+ B_D^{\rm HS}(\delta)=De^{D/2}
+ \left(\sqrt{\pi\delta^2}\right)^{D-1}.              \label{eq:choicap}
 \end{equation}
 
 \begin{theorem}[Eigenbasis-free Choi tube bound]
 \label{thm:choicap}
-For every normalized target $\psi$, independently of eigenbasis,
+For every target density matrix $\sigma$, independently of eigenbasis,
 \begin{equation}
- m_{\T^D}\{z:\Delta(\Phi(z),\psi)\le\delta\}
- \le B_D(\delta).                                      \label{eq:onetargetcap}
+ m_{\T^D}\{z:\|\rho(z)-\sigma\|_{\rm HS}\le\delta\}
+ \le B_D^{\rm HS}(\delta).                            \label{eq:onetargetcap}
 \end{equation}
 If a gate model has at most $M\ge2$ labelled choices per circuit step and
-$C_\delta$ is robust Choi-state circuit complexity, then
+$C_\delta^{\rm HS}$ is robust density-matrix circuit complexity, then
 \begin{equation}
- m_{\T^D}\{z:C_\delta(\Phi(z))\le s\}
- \le M^{s+1}B_D(\delta).                               \label{eq:wordcap}
+ m_{\T^D}\{z:C_\delta^{\rm HS}(\rho(z))\le s\}
+ \le M^{s+1}B_D^{\rm HS}(\delta).                     \label{eq:wordcap}
 \end{equation}
 For maximally projective spectrum, the same expression bounds upper
 completed-time density.  Whenever it is below one, hard endpoints occur
@@ -474,11 +464,11 @@ syndetically, although the syndetic gap is not quantified.
 For every fixed $\delta$ with
 \begin{equation}
  \alpha_\delta=-\frac{1}{2}-\frac{1}{2}\log
- \left(\frac{\pi\eta_\delta}{2}\right)>0,             \label{eq:alphadelta}
+ \left(\pi\delta^2\right)>0,                           \label{eq:alphadelta}
 \end{equation}
-$B_D(\delta)=\exp[-\alpha_\delta D+O(\log D)]$.
-Combining Theorems \ref{thm:path} and \ref{thm:choicap} gives the first
-paper-level capstone.
+$B_D^{\rm HS}(\delta)=\exp[-\alpha_\delta D+O(\log D)]$.
+The graph-genericity and Choi-capacity hypotheses are combined in one Lean
+capstone as follows.
 
 \begin{corollary}[Generic static-local completed-time complexity]
 \label{cor:staticplateau}
@@ -487,8 +477,8 @@ For a dense residual full-measure set of static onsite-plus-edge
 Hamiltonians, and any finite local gate dictionary with at most $M\ge2$
 choices per step,
 \begin{equation}
- \overline{\dens}\{t:C_\delta(\Phi_H(t))\le s\}
- \le M^{s+1}B_D(\delta).                               \label{eq:staticplateau}
+ \overline{\dens}\{t:C_\delta^{\rm HS}(\rho_H(t))\le s\}
+ \le M^{s+1}B_D^{\rm HS}(\delta).                     \label{eq:staticplateau}
 \end{equation}
 Consequently completed-time Choi complexity is
 $\Omega(D/\log M)$ outside a set of density $\exp[-\Omega(D)]$.
@@ -518,95 +508,13 @@ Therefore
  \log H_s\le\Delta s\log2+M\log\!\left(e(1+s/M)\right)
  +\log(s+1).                                           \label{eq:heaplog}
 \end{equation}
-For a one-dimensional bounded-range alphabet, $M=O(n)$ and
-$\Delta=O(1)$.  Combining \eqref{eq:heapbound} with
-\eqref{eq:onetargetcap} yields a completed-time lower bound
-$C_\delta>cD$ for every
-$c<\alpha_\delta/(\Delta\log2)$, up to the explicit lower-order term.
 \end{theorem}
 
 The trace-monoid counting statement is classical in mechanism; its role
 here is to identify intrinsic local preparation capacity rather than raw
-word capacity.
-
-\subsection{Fixed-input hardness at common times}
-
-The Choi bounds above concern the whole evolution channel.  A separate
-quenched statement places exponential complexity on the orbit of one fixed
-product state.  On the open $n$-qubit path, let
-\begin{equation}
- H_n(J)=\sum_{a=1}^{m_n}J_aP_a                         \label{eq:gaussianpath}
-\end{equation}
-contain every one-site Pauli and every two-site Pauli orientation on each
-edge, with independent standard Gaussian coefficients, and put
-$\Omega=|0\rangle^{\otimes n}$.  Fix a finite computable gate dictionary
-with at most $M_n\ge2$ padded choices per word position.  Write
-$C^{\rm st}_\epsilon$ for ancilla-free state-preparation complexity from
-$\Omega$ in pure-state trace distance.
-
-Fix rational $0<\epsilon<1/2$, put
-\begin{equation}
- a=1-4\epsilon^2,\quad
- r_n=\left\lfloor\frac{a^2}{128}\left(\frac32\right)^n\right\rfloor,\quad
- \ell_n=\lceil\log_2M_n\rceil,                         \label{eq:fixedstateparams}
-\end{equation}
-and, when $r_n\ge8$, set
-\begin{equation}
- s_n=\left\lfloor\frac{r_n}{4\ell_n}\right\rfloor-1,\qquad
- \eta_n=2^{-3r_n/4}.                                  \label{eq:fixedstatescale}
-\end{equation}
-We restrict to sizes for which $s_n\ge0$.
-
-\begin{theorem}[Computable static-local state hardness]
-\label{thm:computablestate}
-Let
-\begin{equation}
- B_n=\left\lceil\sqrt{2\log(8m_n)}\right\rceil+1.
-\end{equation}
-There is a measurable $\mathcal G_n\subset[-B_n,B_n]^{m_n}$ of Gaussian
-probability at least $1/2$ such that every $J\in\mathcal G_n$ obeys
-\begin{equation}
- \limsup_{T\to\infty}\frac1T
- \operatorname{Leb}\{t\in[0,T]:
- C^{\rm st}_{2\epsilon}(\ee^{-itH_n(J)}\Omega)\le s_n\}
- \le\eta_n.                                           \label{eq:quenchedstate}
-\end{equation}
-Consequently, if
-$g_n(t)=\mathbb P_J\{C^{\rm st}_{2\epsilon}
-(\ee^{-itH_n(J)}\Omega)>s_n\}$, then
-\begin{equation}
- \liminf_{T\to\infty}\frac1T\int_0^Tg_n(t)\,dt
- \ge\frac12(1-\eta_n),
- \qquad
- \limsup_{t\to\infty}g_n(t)\ge\frac12(1-\eta_n).     \label{eq:commontime}
-\end{equation}
-At some rational common time $\widetilde t_n>0$ there is a rational
-$\widetilde J_n\in[-B_n-1,B_n+1]^{m_n}$ with
-\begin{equation}
- C^{\rm st}_{\epsilon}
- (\ee^{-i\widetilde t_nH_n(\widetilde J_n)}\Omega)>s_n. \label{eq:rationalwitness}
-\end{equation}
-One total terminating algorithm selects the pairs
-$(\widetilde J_n,\widetilde t_n)$ for all covered $n$.
-\end{theorem}
-
-For polynomial $M_n$, the proved fixed-state scale is
-$\Omega((3/2)^n/\log n)$.  This is weaker than the Choi scale but answers a
-different question: one fixed product input, ordinary bounded-degree
-Hamiltonians, common deterministic times, and computable rational witnesses.
-Explicit high-complexity families are known by other mechanisms
-\cite{JiaWolf2023}; here the hard states lie on an autonomous local orbit.
-The search time, coefficient bit length and first hard time are not bounded.
-At every fixed positive resolution there is nevertheless an easy initial
-interval for $H\ne0$, since
-\begin{equation}
- d_{\rm tr}(\ee^{-itH}\Omega,\Omega)\le |t|\,\|H\|_{\rm op}
- \quad\Longrightarrow\quad
- C^{\rm st}_\epsilon(\ee^{-itH}\Omega)=0
- \quad\text{for }|t|\le\epsilon/\|H\|_{\rm op}.       \label{eq:resolutioninterval}
-\end{equation}
-Thus completed hardness and common hard times do not determine an onset
-ramp; physical statements must keep time and observer resolution together.
+word capacity.  We do not combine it with the Choi tube theorem into a
+linear-depth claim here because that growing-parameter composition has not
+yet been stated as one Lean theorem.
 
 \subsection{Hard prime polygons and permanent non-Haar structure}
 
@@ -644,73 +552,7 @@ permanent non-Haar structure.  It does not instantiate $Y$ with every
 circuit up to Brown-scale depth; that requires the sharper heap budget in a
 growing-replica regime.  It also says nothing about first onset.
 
-\section{Law IV: return imposes reflection and recovery}
-
-\subsection{Closed autonomous complexity reflection}
-
-Let $U_t=e^{-itH}$ and use projective Choi distance
-\begin{equation}
- d_{\rm Ch}(U,V)=
- \sqrt{1-\left|\operatorname{tr}(U^*V)/D\right|^2}.     \label{eq:choidistance}
-\end{equation}
-Fix a finite inverse-closed gate dictionary and let $C_\epsilon(U)$ be
-minimum word length within distance $\epsilon$.  For a proposed return time
-$R$, set $\delta_R=d_{\rm Ch}(U_R,I)$.
-
-\begin{theorem}[Autonomous return reflection]
-\label{thm:reflection}
-For every $R,t$ and $\epsilon\ge0$ with
-$\epsilon+\delta_R<1$,
-\begin{equation}
- C_{\epsilon+\delta_R}(U_t)\le C_\epsilon(U_{R-t}),
- \qquad
- C_{\epsilon+\delta_R}(U_{R-t})\le C_\epsilon(U_t).    \label{eq:reflection}
-\end{equation}
-At an exact projective return,
-$C_\epsilon(U_{R-t})=C_\epsilon(U_t)$.  Equality also holds separately for
-every exact word-length incidence shell and therefore for every nonnegative
-length partition function.
-\end{theorem}
-
-Thus an exact autonomous complexity history is palindromic around $R/2$.
-Any independently proved forward growth envelope reappears in reverse
-before return.  Reflection does not prove forward growth or locate $R$.
-
-\subsection{Markovian recurrence recovery}
-
-Let $(\Lambda_t)_{t\ge0}$ be a finite-dimensional CPTP semigroup and put
-\begin{equation}
- \delta_R=\|\Lambda_R-\operatorname{id}\|_\diamond.
-\end{equation}
-
-\begin{theorem}[Markovian return recovery and rigidity]
-\label{thm:markovrecovery}
-For every $0\le t\le R$,
-\begin{equation}
- \Lambda_{R-t}\circ\Lambda_t
- =\Lambda_t\circ\Lambda_{R-t}=\Lambda_R.              \label{eq:semigrouprecovery}
-\end{equation}
-Hence $\Lambda_{R-t}$ is an explicit $\delta_R$-recovery channel for
-$\Lambda_t$, and for every operator $X$ with arbitrary ancilla,
-\begin{equation}
- \|(\Lambda_t\otimes\operatorname{id})(X)\|_1
- \ge(1-\delta_R)\|X\|_1.                              \label{eq:distinguishrecovery}
-\end{equation}
-Robust diamond-norm circuit complexity and every exact-length unitary-word
-incidence shell obey the two reflection inequalities with
-$\epsilon\mapsto\epsilon+\delta_R$.  If $\delta_R=0$, every intermediate
-channel is a unitary conjugation and the semigroup is periodic.  Thus no
-genuinely dissipative finite-dimensional Markovian semigroup has a nonzero
-exact recurrence of the full channel.
-\end{theorem}
-
-The classification of CPTP maps with CPTP inverse is classical
-\cite{NayakSen2007}.  The quantitative simultaneous-recovery and shellwise
-reflection package is the relevant recurrence consequence.  Full-channel
-recurrence is essential; return of one state does not imply
-\eqref{eq:distinguishrecovery}.
-
-\section{Finite records do not determine the completed geometry}
+\section{Law IV: finite records do not determine completed geometry}
 
 The four laws determine recurrence once carrier, hull and target metric are
 known.  They do not make these objects identifiable from finite data.

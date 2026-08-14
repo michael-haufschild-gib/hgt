@@ -34,8 +34,8 @@
 \newcommand{\dens}{\operatorname{dens}}
 \newcommand{\sinc}{\operatorname{sinc}}
 
-\title{\textbf{The geometry and complexity of quantum recurrence}\\
-\large Four structural laws for persistence, interaction, computational capacity, and recovery}
+\title{\textbf{Persistent phase geometry of quantum recurrence}\\
+\large Four structural laws for loss, spectral constraints, observability, and finite-horizon inference}
 \author{GPT 5.6 Sol \and Opus 5 \and Fable 5 \and Michael Haufschild}
 \date{14 August 2026}
 
@@ -43,76 +43,57 @@
 \maketitle
 
 \begin{abstract}
-Quantum recurrence is usually studied through separate questions about
-survival under loss, spectral arithmetic, recurrence time, many-body
-locality, spectral statistics, observability, circuit complexity and
-prediction.  We show that these questions are organized by one object: the
-persistent projective phase hull of autonomous evolution, equipped with
-Haar measure and the target family used to recognize or prepare a return.
-This yields a return-capacity principle and four structural laws.
+Quantum recurrence is usually divided among spectral arithmetic, loss,
+many-body locality, observability, circuit complexity and prediction.  We
+organize these questions by one finite-volume object: the persistent
+projective phase law, together with the target used to recognize a return.
+Every mathematical result stated here has an exact axiom-audited Lean~4
+declaration; no paper-only bridge or literature theorem is used as a premise.
 
-First, loss selects the recurrent carrier.  Peripheral spectral mass is the
-exact asymptotic return-amplitude ceiling of every finite contraction, while
-arbitrary stationary spectra obey a point-spectrum and replica-collision
-hierarchy.  Second, interaction controls the dimension and factorization of
-time.  For arbitrary finite interaction graph $G$, local dimensions
-$q_v\ge2$, and arbitrary onsite-plus-edge Hamiltonians, a dense residual
-full-measure set satisfies
+Four laws follow.  First, loss selects the recurrent carrier: peripheral
+spectral mass is the exact asymptotic return-amplitude ceiling of every finite
+contraction, while arbitrary stationary spectra obey an exact collision
+hierarchy.  Second, spectral constraints determine temporal dimension.  For
+every finite interaction graph $G$ with local dimensions $q_v\ge2$, one
+dense residual full-measure set of onsite-plus-edge Hamiltonians satisfies
 \[
- \tau(H)=\sum_{C\in\pi_0(G)}\left(\prod_{v\in C}q_v-1\right).
+ \tau(H)=\sum_{C\in\pi_0(G)}\left(\prod_{v\in C}q_v-1\right)
 \]
-Subsystem temporal curvature reconstructs the supplied interaction graph.
-Joining components of Hilbert dimensions $A,B$ creates $(A-1)(B-1)$ phase
-directions and removes exactly the corresponding factorization collisions
-at every replica order.  Connected networks have exact strict anchored
-chordal projective-return density
-\[
- \left[2\arcsin(\varepsilon/2)/\pi\right]^{D-1},
-\]
-independently of topology; for bounded local dimension this is doubly
-exponentially small in site number after completed time is taken first.  On
-one generic countable locally finite network, the maximal-rank law holds
-simultaneously along every volume of a fixed connected exhaustion, so no
-finite-dimensional phase carrier contains the thermodynamic sequence.
+simultaneously on all supplied subsystems.  Pair curvature reconstructs the
+supplied graph, and component factorization controls all completed
+spectral-form-factor moments.  Connected networks have exact strict anchored
+return density $[2\arcsin(\varepsilon/2)/\pi]^{D-1}$.  For homogeneous qudit
+paths this density is doubly exponentially small in site number after
+completed time is taken first; one countable-network coefficient assignment
+can realize the divergent finite-volume ranks along an entire exhaustion.
 
-Third, recurrence and circuit complexity are target-capacity problems on
-the same hull.  A target-independent phase-tube bound implies that generic
-static connected local networks spend all but $\exp[-\Omega(D)]$ of
-completed time at Choi-state circuit complexity $\Omega(D/\log M)$.
-For bounded-dependence local circuit alphabets, heap counting improves this
-to $\Omega(D)$.  For a fixed product input on a Gaussian nearest-neighbour
-spin chain, an unbounded sequence of common deterministic times has positive
-ensemble mass at exponential state complexity; rational Hamiltonian--time
-witnesses can be selected by one terminating algorithm.  Ordinary
-bounded-weight Pauli Hamiltonians also exhibit
-syndetically recurring prime-length polygons whose nonidentity vertices
-avoid every target in an arbitrary finite circuit dictionary and whose last
-vertex returns near the identity.  The same Hamiltonian remains
-operationally distinguishable from Haar randomness at every time.
+Third, target capacity governs observability and robust preparation.  Exact
+reverse-water bounds quantify recurrence deadlines, observer coherence gives
+the visible phase dimension, and an eigenbasis-free Choi tube bound yields a
+generic static connected-network completed-time circuit-complexity plateau.
+Ordinary bounded-weight Pauli Hamiltonians additionally exhibit syndetically
+recurring prime polygons whose nonidentity vertices avoid any prescribed
+finite target dictionary while the endpoint returns near the identity; the
+same evolution remains distinguishable from Haar randomness at every time.
 
-Fourth, return imposes recovery and reflection.  Near an autonomous return,
-every circuit-complexity shell at $t$ is reflected at $R-t$ with only the
-return defect added to resolution.  For a Markovian quantum dynamical
-semigroup, the remaining segment is an explicit recovery channel for every
-intermediate time; exact full-channel recurrence forces the entire cycle to
-be unitary.  Nevertheless, finite-horizon observations do not stably
-identify completed recurrence geometry: isospectral nearest-neighbour
-Hamiltonians can agree arbitrarily well on every prescribed earlier window
-and on any finite set of moments while attaining every later return
-probability.  All claims are finite-volume or completed-time statements;
-no first-recurrence scale, monotone complexity ramp, infinite-volume return,
-or Haar randomization is asserted.
+Fourth, finite records do not determine completed recurrence.  Positive
+nearest-neighbour Hamiltonians with one common spectrum can match any fixed
+finite list of moments and any prescribed earlier observation window while
+attaining every later return probability.  The support threshold is sharp,
+and every record-only forecaster has worst-case error at least $1/2$.  All
+claims concern finite systems, finite-volume exhaustions or completed-time
+limits.  No first-return scale, monotone complexity ramp, infinite-volume
+return or Haar randomization is asserted.
 \end{abstract}
 
 \noindent\textbf{Public summary.}
-A connected quantum system can be built from static local interactions,
-generate almost all of its possible independent phase clocks, spend almost
-all completed time in states no short circuit can reproduce, remain
-detectably nonrandom, and still return.  This remains true for one consistent
-sequence of growing finite volumes, and fixed-input hard examples can be
-chosen algorithmically.  The same phase geometry determines how rare the
-return is, which interaction links can be inferred, and what information a
-return must restore.
+A static connected quantum network generically generates every projective
+phase direction allowed by its Hilbert-space dimension.  That makes strict
+returns extraordinarily rare in large systems and makes low-complexity Choi
+targets occupy only a small fraction of completed time, without making the
+evolution Haar-random.  The same geometry reveals which interaction links
+exist and also proves a limit on prediction: finite earlier records can hide
+every possible later return probability.
 
 \input{body}
 
@@ -121,10 +102,12 @@ return must restore.
 \input{../persistent-phase-geometry-quantum-recurrence/appendices}
 
 \section*{Data, code and formal verification}
-No empirical data were used.  Machine-checked theorem counterparts are
-contained in the accompanying Lean~4 corpus.  The claim trace supplied with
-this manuscript identifies exact declarations, source modules and theorems
-that currently remain paper-proved rather than formalized.
+No empirical data were used.  Every mathematical result in this manuscript
+is the statement of, or an explicitly identified specialization of, an
+axiom-audited Lean~4 declaration in the accompanying corpus.  The public
+certificate appendix and machine-readable claim trace list the exact
+declaration for each result.  Statements without such a declaration are not
+included.
 
 \section*{Author contributions}
 All authors contributed to the conception, mathematical development,

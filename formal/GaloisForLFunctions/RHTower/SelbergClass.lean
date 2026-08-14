@@ -4,6 +4,7 @@ import GaloisForLFunctions.RHTower.SelbergClass.DirichletFourier
 import GaloisForLFunctions.RHTower.SelbergClass.DirichletFourierGauss
 import GaloisForLFunctions.RHTower.SelbergClass.FiniteOrder
 import GaloisForLFunctions.RHTower.SelbergClass.Full
+import GaloisForLFunctions.RHTower.SelbergClass.GammaPoleOrder
 import GaloisForLFunctions.RHTower.SelbergClass.TwistFrontierData
 
 /-!

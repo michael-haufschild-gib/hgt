@@ -1193,3 +1193,63 @@ These are exactly the inputs of the generic Ostrowski criterion
 form of `facePacket_differentialIndependent_of_no_telescoping`: feed the system, the rank-two
 generator boundary, and the shift equation `T_p (block y) = block y + displacement` into that
 criterion, leaving only the exclusion of a simultaneous jet telescoper.
+
+**Third module of this pass.**  `HTGeometry/MultipleSineFaceNoTelescoping.lean` (umbrella-wired,
+build green, axiom-clean) closes the Ostrowski step:
+
+> **`sineFacePacket_differentialIndependent_of_no_telescoping`.**  For a ray period family and a
+> face `J` with two surviving directions `q, u` whose next faces are deeper, if no nonzero constant
+> jet form of the displacements is a simultaneous defect in the deeper face field, then the whole
+> translation block of `J` is differentially algebraically independent over that field.
+
+Mechanism: feed `sineFaceDifferenceSystem` and
+`rankTwoGeneratorMeromorphicDifferenceDifferentialField (sineFacePacketPeriods ω q u)` into
+`ElementaryOstrowski.differentialIndependent_of_no_constant_simultaneous_jet_telescoping`; the
+joint-fixed hypothesis is discharged by `rankTwoRay_generator_jointFixed_iff_constant`, and the
+shift equation is `T_p (block y) = block y + displacement`, which holds by construction.
+
+What remains for the layer, in order: (a) exclude the telescoper, using the palette obstruction
+`TwistedFreeShiftTransport.oneSlice_ne_coboundary_of_twisted_ambient_shift` with
+`MultipleSineFacePalette.facePalette` as `x`, `facePalette_shift` as `hshift` and
+`faceDisplacement_injective` for the zero-slice labelling — the sine form of
+`FacePacketFreeTelescoping`; (b) run
+`differentialRank_uniformFace_nestedStar_diffIndepOn_of_orbit` over the deeper field to complete one
+layer; (c) induct on the survivor count with `sineDeeperFaces_succ` and
+`sineFacePacketUnion_diffIndepOn_union`, the base case being
+`multipleSineMaximalFaces_diffIndepOn`.
+
+**The one genuine mathematical difference from the gamma template, isolated exactly.**  In the
+elliptic-gamma hierarchy the coface equation is exact: `T_q y - y` *is* an element of the next
+packet, so the displacement labelling lands in the zero slice and the telescoper exclusion is
+literally the one-slice obstruction
+`TwistedFreeShiftTransport.oneSlice_ne_coboundary_of_twisted_ambient_shift`.
+
+For the multiple sine the recurrence `(T_k - 1) L_A = -L_{A∖{k}}` holds only **up to a rational
+function**: `faceDisplacement_primitive` gives
+
+```text
+T_{ω q} y - y + faceDisplacement(α) ∈ ℂ(z),
+```
+
+and this is intrinsic, not an artefact of the chosen normalization — even the normalized source of
+`MultipleSineNormalizedSource` retains a polynomial remainder `Q_k(z)` in its difference equation.
+Writing `T_q y - y = r_y - d_y` with `d_y` in the zero slice and `r_y ∈ ℂ(z)`, the telescoper
+equation the Ostrowski criterion must exclude becomes
+
+```text
+Ψ(k) - k = ρ - (one-slice form),      ρ = Σ_j c_j · jet(r_j) ∈ K₀ ,
+```
+
+because `ℂ(z)` is inside the complementary base `K₀` (this is why `sineDeeperGenerators` adjoins the
+coordinate).  So the sine layer needs the **modulo-base strengthening** of the one-slice
+obstruction:
+
+> for a nonzero one-slice form with coefficients in `F`, `Ψ(g) - g` is not congruent to that form
+> modulo `F` — i.e. `Ψ(g) - g ≠ b + (one-slice form)` for every `b : F`.
+
+In the free parametrization `differentialAdjoin F (range x) ≅ FreeShiftField F α` the added `b` sits
+in degree zero while the one-slice form is degree one in the slice-`0` free variables, so the
+existing support argument should extend verbatim; the work is to restate and reprove it (as a new
+declaration, leaving the `b = 0` version and its elliptic-gamma call sites untouched).  That is the
+precise next brick, and everything downstream of it — the layer gluing and the survivor-count
+induction — is then pure assembly from the modules listed above.

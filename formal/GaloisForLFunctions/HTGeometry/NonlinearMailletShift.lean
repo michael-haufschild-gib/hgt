@@ -386,11 +386,307 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution_shift {m N v : ℕ}
                 W α * jetMonomial (eulerJetVector (m := m) (truncSeries (n - 1) H)) α := by
           rw [hTsum (eulerJetVector Y) (eulerJetVector (truncSeries (n - 1) H))]
           rfl
-        have hDbound : GevreyWeightBound w K₀ A r
+        have hDbound : GevreyWeightBound w (K₀ * ε ^ 2) A r
             (taylorDefect (eulerJetVector Y)
               (eulerJetVector (truncSeries (n - 1) H)) P) := by
-          sorry
-        sorry
-  sorry
+          rw [hDsum]
+          have h := GevreyWeightBound.finsetSum (w := w) (r := r) (A := A) T.support
+            (fun α => W α * jetMonomial (eulerJetVector (m := m) (truncSeries (n - 1) H)) α)
+            (fun α => (2 : ℝ) ^ (w + 2) * Cw * ((2 : ℝ) ^ (2 + 2)) ^ (jetDegree α)
+                * (((N + 1)! : ℝ)) ^ r * 2 ^ ((N + 1) * r) * ε ^ 2) hDterm
+          refine h.mono_const (le_of_eq ?_) hApos
+          rw [hK₀def, Finset.sum_mul]
+        have hDest : ‖PowerSeries.coeff (n + v)
+              (taylorDefect (eulerJetVector Y) (eulerJetVector H) P)‖ * ((n : ℝ) + 1) ^ a
+            ≤ c / 3 * ((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r) := by
+          rw [hloc]
+          have hnv1 : (1 : ℝ) ≤ (((n + v : ℕ) : ℝ) + 1) := by
+            have := Nat.cast_nonneg (α := ℝ) (n + v)
+            linarith
+          have hle : ((n : ℝ) + 1) ≤ (((n + v : ℕ) : ℝ) + 1) := by
+            push_cast
+            have := Nat.cast_nonneg (α := ℝ) v
+            linarith
+          have hpowstep : ((n : ℝ) + 1) ^ a * ((n : ℝ) + 1) ^ (v * r)
+              ≤ (((n + v : ℕ) : ℝ) + 1) ^ w := by
+            calc ((n : ℝ) + 1) ^ a * ((n : ℝ) + 1) ^ (v * r)
+                = ((n : ℝ) + 1) ^ (a + v * r) := by rw [pow_add]
+              _ ≤ (((n + v : ℕ) : ℝ) + 1) ^ (a + v * r) :=
+                  pow_le_pow_left₀ (by positivity) hle _
+              _ ≤ (((n + v : ℕ) : ℝ) + 1) ^ w := pow_le_pow_right₀ hnv1 hawv
+          have hstep1 : ‖PowerSeries.coeff (n + v)
+                (taylorDefect (eulerJetVector Y)
+                  (eulerJetVector (truncSeries (n - 1) H)) P)‖
+                * (((n : ℝ) + 1) ^ a * ((n : ℝ) + 1) ^ (v * r))
+              ≤ K₀ * ε ^ 2 * A ^ (n + v) * (((n + v)! : ℝ)) ^ r := by
+            refine le_trans (mul_le_mul_of_nonneg_left hpowstep (norm_nonneg _)) ?_
+            exact hDbound (n + v)
+          have hstep2 : K₀ * ε ^ 2 * A ^ (n + v) * (((n + v)! : ℝ)) ^ r
+              ≤ (K * ε ^ 2 * A ^ v * (A ^ n * ((n ! : ℝ)) ^ r)) * ((n : ℝ) + 1) ^ (v * r) := by
+            have hfac := factorial_add_rpow_le v r n
+            have hApowsplit : A ^ (n + v) = A ^ v * A ^ n := by rw [pow_add]; ring
+            have hbase : (0 : ℝ) ≤ K₀ * ε ^ 2 * A ^ (n + v) := by positivity
+            calc K₀ * ε ^ 2 * A ^ (n + v) * (((n + v)! : ℝ)) ^ r
+                ≤ K₀ * ε ^ 2 * A ^ (n + v)
+                    * (((n ! : ℝ)) ^ r * (((v : ℝ) + 1)) ^ (v * r) * (((n : ℝ) + 1)) ^ (v * r)) :=
+                  mul_le_mul_of_nonneg_left hfac hbase
+              _ = (K₀ * (((v : ℝ) + 1)) ^ (v * r) * ε ^ 2 * A ^ v * (A ^ n * ((n ! : ℝ)) ^ r))
+                    * ((n : ℝ) + 1) ^ (v * r) := by
+                  rw [hApowsplit]
+                  ring
+              _ = (K * ε ^ 2 * A ^ v * (A ^ n * ((n ! : ℝ)) ^ r)) * ((n : ℝ) + 1) ^ (v * r) := by
+                  rw [hKdef]
+          have hcancel : ‖PowerSeries.coeff (n + v)
+                (taylorDefect (eulerJetVector Y)
+                  (eulerJetVector (truncSeries (n - 1) H)) P)‖ * ((n : ℝ) + 1) ^ a
+              ≤ K * ε ^ 2 * A ^ v * (A ^ n * ((n ! : ℝ)) ^ r) := by
+            refine le_of_mul_le_mul_right ?_
+              (show (0 : ℝ) < ((n : ℝ) + 1) ^ (v * r) by positivity)
+            calc ‖PowerSeries.coeff (n + v)
+                  (taylorDefect (eulerJetVector Y)
+                    (eulerJetVector (truncSeries (n - 1) H)) P)‖ * ((n : ℝ) + 1) ^ a
+                  * ((n : ℝ) + 1) ^ (v * r)
+                = ‖PowerSeries.coeff (n + v)
+                    (taylorDefect (eulerJetVector Y)
+                      (eulerJetVector (truncSeries (n - 1) H)) P)‖
+                    * (((n : ℝ) + 1) ^ a * ((n : ℝ) + 1) ^ (v * r)) := by ring
+              _ ≤ K₀ * ε ^ 2 * A ^ (n + v) * (((n + v)! : ℝ)) ^ r := hstep1
+              _ ≤ (K * ε ^ 2 * A ^ v * (A ^ n * ((n ! : ℝ)) ^ r))
+                    * ((n : ℝ) + 1) ^ (v * r) := hstep2
+          refine le_trans hcancel ?_
+          have hcoef : K * ε ^ 2 * A ^ v ≤ c / 3 * ε := by
+            have h1 : K * ε * A ^ v * ε ≤ (c / 3) * ε := mul_le_mul_of_nonneg_right hεK hε0
+            calc K * ε ^ 2 * A ^ v = K * ε * A ^ v * ε := by ring
+              _ ≤ (c / 3) * ε := h1
+          have hstep3 : K * ε ^ 2 * A ^ v * (A ^ n * ((n ! : ℝ)) ^ r)
+              ≤ (c / 3 * ε) * (A ^ n * ((n ! : ℝ)) ^ r) :=
+            mul_le_mul_of_nonneg_right hcoef (by positivity)
+          refine le_trans hstep3 ?_
+          have hbase2 : (0 : ℝ) ≤ c / 3 * (ε * A ^ n * ((n ! : ℝ)) ^ r) := by positivity
+          calc (c / 3 * ε) * (A ^ n * ((n ! : ℝ)) ^ r)
+              = (c / 3 * (ε * A ^ n * ((n ! : ℝ)) ^ r)) * 1 := by ring
+            _ ≤ (c / 3 * (ε * A ^ n * ((n ! : ℝ)) ^ r)) * ((n : ℝ) + 1) ^ d :=
+                mul_le_mul_of_nonneg_left hpowd1 hbase2
+            _ = c / 3 * ((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r) := by ring
+        -- the value at the truncation
+        have hVest : ‖PowerSeries.coeff (n + v) V‖ * ((n : ℝ) + 1) ^ a
+            ≤ c / 3 * ((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r) := by
+          by_cases hnvN : n + v < N + 1
+          · have h0 : PowerSeries.coeff (n + v) V = 0 :=
+              (PowerSeries.X_pow_dvd_iff.mp hVdvd0) (n + v) hnvN
+            rw [h0, norm_zero, zero_mul]
+            positivity
+          · push Not at hnvN
+            have hb := hVb (n + v)
+            simp only [pow_zero, mul_one] at hb
+            have hle : ((n : ℝ) + 1) ≤ (((n + v : ℕ) : ℝ) + 1) := by
+              push_cast
+              have := Nat.cast_nonneg (α := ℝ) v
+              linarith
+            have h1 : ‖PowerSeries.coeff (n + v) V‖ * ((n : ℝ) + 1) ^ a
+                ≤ Cv * Av ^ (n + v) := by
+              refine le_trans (mul_le_mul_of_nonneg_left ?_ (norm_nonneg _)) hb
+              exact pow_le_pow_left₀ (by positivity) hle a
+            have h2 := hVA n hnvN
+            have h3 : c / 3 * ε * A ^ n
+                ≤ c / 3 * ((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r) := by
+              have hbase : (0 : ℝ) ≤ c / 3 * ε * A ^ n := by positivity
+              have hprod : (1 : ℝ) ≤ ((n : ℝ) + 1) ^ d * ((n ! : ℝ)) ^ r := by
+                nlinarith [hpowd1, hfac1]
+              calc c / 3 * ε * A ^ n = (c / 3 * ε * A ^ n) * 1 := by ring
+                _ ≤ (c / 3 * ε * A ^ n) * (((n : ℝ) + 1) ^ d * ((n ! : ℝ)) ^ r) :=
+                    mul_le_mul_of_nonneg_left hprod hbase
+                _ = c / 3 * ((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r) := by ring
+            linarith
+        -- the convolution
+        have hconv : (∑ k ∈ Finset.range n,
+              ‖(shiftPolynomial B (n + v - k)).eval ((k : ℕ) : ℂ)‖ * ‖PowerSeries.coeff k H‖)
+              * ((n : ℝ) + 1) ^ a
+            ≤ c / 3 * ((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r) := by
+          have hstep : ∀ k ∈ Finset.range n,
+              ‖(shiftPolynomial B (n + v - k)).eval ((k : ℕ) : ℂ)‖ * ‖PowerSeries.coeff k H‖
+                  * ((n : ℝ) + 1) ^ a
+                ≤ (Cb' * (ε * A ^ n * ((n ! : ℝ)) ^ r) * ((n : ℝ) + 1) ^ d)
+                  * ((((n - k : ℕ) : ℝ) + 1) ^ a * q ^ (n - k)) := by
+            intro k hk
+            have hkn : k < n := Finset.mem_range.mp hk
+            have hμ : (n - k) + k = n := by omega
+            have hidx : n + v - k = v + (n - k) := by omega
+            have hμR : (((n - k : ℕ) : ℝ)) + (k : ℝ) = (n : ℝ) := by
+              have hc' : ((((n - k) + k : ℕ)) : ℝ) = (n : ℝ) := by exact_mod_cast hμ
+              push_cast at hc'
+              linarith
+            have hsplitn : ((n : ℝ) + 1) ≤ ((((n - k : ℕ) : ℝ)) + 1) * (((k : ℝ)) + 1) := by
+              have hnn : (0 : ℝ) ≤ (((n - k : ℕ) : ℝ)) * (k : ℝ) := by positivity
+              nlinarith [hμR, hnn]
+            have hpowsplit : ((n : ℝ) + 1) ^ a
+                ≤ ((((n - k : ℕ) : ℝ)) + 1) ^ a * (((k : ℝ)) + 1) ^ a := by
+              calc ((n : ℝ) + 1) ^ a
+                  ≤ (((((n - k : ℕ) : ℝ)) + 1) * (((k : ℝ)) + 1)) ^ a :=
+                    pow_le_pow_left₀ (by positivity) hsplitn a
+                _ = ((((n - k : ℕ) : ℝ)) + 1) ^ a * (((k : ℝ)) + 1) ^ a := by rw [mul_pow]
+            have h1 : ‖(shiftPolynomial B (n + v - k)).eval ((k : ℕ) : ℂ)‖
+                ≤ Cb' * ρ ^ (n - k) * (((k : ℝ)) + 1) ^ m := by
+              have h := hshift (n + v - k) k
+              rw [hidx, pow_add] at h
+              rw [hCb'def, ← hidx] at *
+              calc ‖(shiftPolynomial B (n + v - k)).eval ((k : ℕ) : ℂ)‖
+                  ≤ Cb * (ρ ^ v * ρ ^ (n - k)) * (((k : ℝ)) + 1) ^ m := h
+                _ = Cb * ρ ^ v * ρ ^ (n - k) * (((k : ℝ)) + 1) ^ m := by ring
+            have h2 : ‖PowerSeries.coeff k H‖ * (((k : ℝ)) + 1) ^ a
+                ≤ ε * A ^ k * ((k ! : ℝ)) ^ r := ih k hkn
+            have hfactor : (((k : ℝ)) + 1) ^ m * (((k ! : ℝ)) ^ r / ((n ! : ℝ)) ^ r)
+                ≤ ((n : ℝ) + 1) ^ d := shiftFactor_nat_le hmdr hkn
+            have hApow : A ^ n = A ^ (n - k) * A ^ k := by rw [← pow_add, hμ]
+            have hqpow : q ^ (n - k) = ρ ^ (n - k) / A ^ (n - k) := by rw [hqdef, div_pow]
+            have hmid : ‖(shiftPolynomial B (n + v - k)).eval ((k : ℕ) : ℂ)‖
+                  * (‖PowerSeries.coeff k H‖ * (((k : ℝ)) + 1) ^ a)
+                ≤ (Cb' * ρ ^ (n - k) * (((k : ℝ)) + 1) ^ m) * (ε * A ^ k * ((k ! : ℝ)) ^ r) :=
+              mul_le_mul h1 h2 (by positivity) (by positivity)
+            have hfinal : (Cb' * ρ ^ (n - k) * (((k : ℝ)) + 1) ^ m)
+                  * (ε * A ^ k * ((k ! : ℝ)) ^ r)
+                ≤ (Cb' * (ε * A ^ n * ((n ! : ℝ)) ^ r) * ((n : ℝ) + 1) ^ d) * q ^ (n - k) := by
+              have hid : (Cb' * ρ ^ (n - k) * (((k : ℝ)) + 1) ^ m)
+                    * (ε * A ^ k * ((k ! : ℝ)) ^ r)
+                  = (Cb' * (ε * A ^ n * ((n ! : ℝ)) ^ r)) * (q ^ (n - k)
+                      * ((((k : ℝ)) + 1) ^ m * (((k ! : ℝ)) ^ r / ((n ! : ℝ)) ^ r))) := by
+                rw [hqpow, hApow]
+                field_simp
+              rw [hid]
+              have hleft0 : (0 : ℝ) ≤ Cb' * (ε * A ^ n * ((n ! : ℝ)) ^ r) := by positivity
+              have hqk0 : (0 : ℝ) ≤ q ^ (n - k) := pow_nonneg hq0 _
+              calc (Cb' * (ε * A ^ n * ((n ! : ℝ)) ^ r)) * (q ^ (n - k)
+                    * ((((k : ℝ)) + 1) ^ m * (((k ! : ℝ)) ^ r / ((n ! : ℝ)) ^ r)))
+                  ≤ (Cb' * (ε * A ^ n * ((n ! : ℝ)) ^ r))
+                      * (q ^ (n - k) * ((n : ℝ) + 1) ^ d) := by
+                    refine mul_le_mul_of_nonneg_left ?_ hleft0
+                    exact mul_le_mul_of_nonneg_left hfactor hqk0
+                _ = (Cb' * (ε * A ^ n * ((n ! : ℝ)) ^ r) * ((n : ℝ) + 1) ^ d) * q ^ (n - k) := by
+                    ring
+            have hnn0 : (0 : ℝ) ≤ ‖(shiftPolynomial B (n + v - k)).eval ((k : ℕ) : ℂ)‖
+                * ‖PowerSeries.coeff k H‖ := by positivity
+            calc ‖(shiftPolynomial B (n + v - k)).eval ((k : ℕ) : ℂ)‖ * ‖PowerSeries.coeff k H‖
+                  * ((n : ℝ) + 1) ^ a
+                ≤ ‖(shiftPolynomial B (n + v - k)).eval ((k : ℕ) : ℂ)‖ * ‖PowerSeries.coeff k H‖
+                    * (((((n - k : ℕ) : ℝ)) + 1) ^ a * (((k : ℝ)) + 1) ^ a) :=
+                  mul_le_mul_of_nonneg_left hpowsplit hnn0
+              _ = (((((n - k : ℕ) : ℝ)) + 1) ^ a)
+                    * (‖(shiftPolynomial B (n + v - k)).eval ((k : ℕ) : ℂ)‖
+                      * (‖PowerSeries.coeff k H‖ * (((k : ℝ)) + 1) ^ a)) := by ring
+              _ ≤ (((((n - k : ℕ) : ℝ)) + 1) ^ a)
+                    * ((Cb' * (ε * A ^ n * ((n ! : ℝ)) ^ r) * ((n : ℝ) + 1) ^ d)
+                      * q ^ (n - k)) := by
+                  refine mul_le_mul_of_nonneg_left (le_trans hmid hfinal) (by positivity)
+              _ = (Cb' * (ε * A ^ n * ((n ! : ℝ)) ^ r) * ((n : ℝ) + 1) ^ d)
+                    * (((((n - k : ℕ) : ℝ)) + 1) ^ a * q ^ (n - k)) := by ring
+          have hbig0 : (0 : ℝ) ≤ Cb' * (ε * A ^ n * ((n ! : ℝ)) ^ r) * ((n : ℝ) + 1) ^ d := by
+            positivity
+          calc (∑ k ∈ Finset.range n,
+                ‖(shiftPolynomial B (n + v - k)).eval ((k : ℕ) : ℂ)‖ * ‖PowerSeries.coeff k H‖)
+                * ((n : ℝ) + 1) ^ a
+              = ∑ k ∈ Finset.range n,
+                  ‖(shiftPolynomial B (n + v - k)).eval ((k : ℕ) : ℂ)‖ * ‖PowerSeries.coeff k H‖
+                    * ((n : ℝ) + 1) ^ a := by rw [Finset.sum_mul]
+            _ ≤ ∑ k ∈ Finset.range n,
+                  (Cb' * (ε * A ^ n * ((n ! : ℝ)) ^ r) * ((n : ℝ) + 1) ^ d)
+                    * ((((n - k : ℕ) : ℝ) + 1) ^ a * q ^ (n - k)) := Finset.sum_le_sum hstep
+            _ = (Cb' * (ε * A ^ n * ((n ! : ℝ)) ^ r) * ((n : ℝ) + 1) ^ d)
+                  * ∑ k ∈ Finset.range n, (((n - k : ℕ) : ℝ) + 1) ^ a * q ^ (n - k) := by
+                rw [Finset.mul_sum]
+            _ ≤ (Cb' * (ε * A ^ n * ((n ! : ℝ)) ^ r) * ((n : ℝ) + 1) ^ d)
+                  * (Ca * ((2 * q) / (1 - 2 * q))) :=
+                mul_le_mul_of_nonneg_left
+                  (polyGeom_shift_sum_le hCa (by linarith [hCa1]) hq0 hq21 n) hbig0
+            _ = (Cb' * (Ca * ((2 * q) / (1 - 2 * q))))
+                  * (((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r)) := by ring
+            _ ≤ (c / 3) * (((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r)) :=
+                mul_le_mul_of_nonneg_right hqgeom (by positivity)
+            _ = c / 3 * ((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r) := by ring
+        -- assembling the recursion
+        have hrec := shiftPolynomial_shift_mul_coeff B v hvlow H n
+        rw [hLH0] at hrec
+        have hnormrec : ‖(shiftPolynomial B v).eval ((n : ℕ) : ℂ)‖ * ‖PowerSeries.coeff n H‖
+            ≤ ‖PowerSeries.coeff (n + v) V‖
+              + ‖PowerSeries.coeff (n + v)
+                  (taylorDefect (eulerJetVector Y) (eulerJetVector H) P)‖
+              + ∑ k ∈ Finset.range n,
+                  ‖(shiftPolynomial B (n + v - k)).eval ((k : ℕ) : ℂ)‖
+                    * ‖PowerSeries.coeff k H‖ := by
+          have hleft : ‖(shiftPolynomial B v).eval ((n : ℕ) : ℂ) * PowerSeries.coeff n H‖
+              = ‖(shiftPolynomial B v).eval ((n : ℕ) : ℂ)‖ * ‖PowerSeries.coeff n H‖ := norm_mul _ _
+          have hA' : ‖(shiftPolynomial B v).eval ((n : ℕ) : ℂ) * PowerSeries.coeff n H‖
+              ≤ ‖PowerSeries.coeff (n + v)
+                    (-V - taylorDefect (eulerJetVector Y) (eulerJetVector H) P)‖
+                + ‖∑ k ∈ Finset.range n,
+                    (shiftPolynomial B (n + v - k)).eval ((k : ℕ) : ℂ)
+                      * PowerSeries.coeff k H‖ := by
+            rw [hrec]
+            exact norm_sub_le _ _
+          have hB' : ‖∑ k ∈ Finset.range n,
+                (shiftPolynomial B (n + v - k)).eval ((k : ℕ) : ℂ) * PowerSeries.coeff k H‖
+              ≤ ∑ k ∈ Finset.range n,
+                  ‖(shiftPolynomial B (n + v - k)).eval ((k : ℕ) : ℂ)‖
+                    * ‖PowerSeries.coeff k H‖ := by
+            refine le_trans (norm_sum_le _ _) ?_
+            exact le_of_eq (Finset.sum_congr rfl fun k _ => norm_mul _ _)
+          have hC' : ‖PowerSeries.coeff (n + v)
+                (-V - taylorDefect (eulerJetVector Y) (eulerJetVector H) P)‖
+              ≤ ‖PowerSeries.coeff (n + v) V‖
+                + ‖PowerSeries.coeff (n + v)
+                    (taylorDefect (eulerJetVector Y) (eulerJetVector H) P)‖ := by
+            rw [map_sub, map_neg]
+            refine le_trans (norm_sub_le _ _) ?_
+            rw [norm_neg]
+          rw [hleft] at hA'
+          linarith
+        have hmid : c * ((n : ℝ) + 1) ^ d * ‖PowerSeries.coeff n H‖
+            ≤ ‖(shiftPolynomial B v).eval ((n : ℕ) : ℂ)‖ * ‖PowerSeries.coeff n H‖ :=
+          mul_le_mul_of_nonneg_right hΦlow (norm_nonneg _)
+        have htotal : (‖PowerSeries.coeff (n + v) V‖
+              + ‖PowerSeries.coeff (n + v)
+                  (taylorDefect (eulerJetVector Y) (eulerJetVector H) P)‖
+              + ∑ k ∈ Finset.range n,
+                  ‖(shiftPolynomial B (n + v - k)).eval ((k : ℕ) : ℂ)‖
+                    * ‖PowerSeries.coeff k H‖)
+              * ((n : ℝ) + 1) ^ a
+            ≤ c * ((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r) := by
+          have hexp : (‖PowerSeries.coeff (n + v) V‖
+                + ‖PowerSeries.coeff (n + v)
+                    (taylorDefect (eulerJetVector Y) (eulerJetVector H) P)‖
+                + ∑ k ∈ Finset.range n,
+                    ‖(shiftPolynomial B (n + v - k)).eval ((k : ℕ) : ℂ)‖
+                      * ‖PowerSeries.coeff k H‖)
+                * ((n : ℝ) + 1) ^ a
+              = ‖PowerSeries.coeff (n + v) V‖ * ((n : ℝ) + 1) ^ a
+                + ‖PowerSeries.coeff (n + v)
+                    (taylorDefect (eulerJetVector Y) (eulerJetVector H) P)‖ * ((n : ℝ) + 1) ^ a
+                + (∑ k ∈ Finset.range n,
+                    ‖(shiftPolynomial B (n + v - k)).eval ((k : ℕ) : ℂ)‖
+                      * ‖PowerSeries.coeff k H‖) * ((n : ℝ) + 1) ^ a := by ring
+          rw [hexp]
+          have hsum3 : c / 3 * ((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r)
+              + c / 3 * ((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r)
+              + c / 3 * ((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r)
+              = c * ((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r) := by ring
+          linarith [hVest, hDest, hconv, hsum3]
+        have hfinal : c * ((n : ℝ) + 1) ^ d * (‖PowerSeries.coeff n H‖ * ((n : ℝ) + 1) ^ a)
+            ≤ c * ((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r) := by
+          have hmul := mul_le_mul_of_nonneg_right (le_trans hmid hnormrec)
+            (by positivity : (0 : ℝ) ≤ ((n : ℝ) + 1) ^ a)
+          calc c * ((n : ℝ) + 1) ^ d * (‖PowerSeries.coeff n H‖ * ((n : ℝ) + 1) ^ a)
+              = (c * ((n : ℝ) + 1) ^ d * ‖PowerSeries.coeff n H‖) * ((n : ℝ) + 1) ^ a := by ring
+            _ ≤ (‖PowerSeries.coeff (n + v) V‖
+                  + ‖PowerSeries.coeff (n + v)
+                      (taylorDefect (eulerJetVector Y) (eulerJetVector H) P)‖
+                  + ∑ k ∈ Finset.range n,
+                      ‖(shiftPolynomial B (n + v - k)).eval ((k : ℕ) : ℂ)‖
+                        * ‖PowerSeries.coeff k H‖) * ((n : ℝ) + 1) ^ a := hmul
+            _ ≤ c * ((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r) := htotal
+        exact le_of_mul_le_mul_left hfinal (by positivity)
+  -- from the perturbation back to the solution
+  have hHgev : IsGevreySeries ((r : ℕ) : ℝ) H := hmain.isGevreySeries hεpos hApos
+  have hYgev : IsGevreySeries ((r : ℕ) : ℝ) Y := hYconv0.mono (by positivity)
+  rw [← hYH0]
+  exact hYgev.add hHgev
 
 end GaloisForLFunctions.HTGeometry
