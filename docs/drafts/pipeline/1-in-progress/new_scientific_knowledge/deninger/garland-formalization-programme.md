@@ -327,3 +327,111 @@ The equivariant version: `H^*(Γ,ℝ)` computed from `Γ`-invariant cochains on 
 with a proper cocompact action.  The finite-complex statement above is the model; the equivariant
 one replaces `Cochain V k` by its `Γ`-invariants and the sums over all faces by sums over a
 fundamental domain, with the same two localization identities.
+
+## Layer D — the entry point
+
+`HTGeometry/WeightedGraphSpectralGap.lean`.
+
+- **`hasSpectralGap_of_bound`** — **a bound on the averaging form is a spectral gap.**  Since
+  `E(f,f) = ‖f‖²_m − ⟨Af,f⟩`, a bound `⟨Af,f⟩ ≤ θ‖f‖²_m` on functions of mass average zero is
+  exactly the gap `1 − θ`.  `averaging` names the form.
+
+This is the interface Layer D has to hit: to give the links of the Bruhat–Tits building a spectral
+gap, it suffices to bound their averaging form, which is an eigenvalue estimate for the incidence
+graph of a spherical building over `𝔽_q`.
+
+### The quantitative target
+
+For `H²` the criterion needs `λ₁ > 2/3` on the links of vertices and of edges.  The link of a
+simplex in the building of `SL_n(K_v)` is a spherical building over the residue field `𝔽_q`, and the
+governing rank-two case is the point–line incidence graph of a projective plane over `𝔽_q`.  There
+the incidence matrix satisfies `N Nᵀ = q·I + J` — two distinct points lie on exactly one line and
+each point lies on `q + 1` lines — which forces the singular values `q + 1` and `√q`, hence
+`λ₁ = 1 − √q/(q+1)`.  That exceeds `2/3` as soon as `q ≥ 5`, and the finite place of `S` is ours to
+choose, so the arithmetic costs nothing.
+
+`N Nᵀ = q·I + J` is an identity about a projective plane, not an analytic estimate, so the whole
+quantitative input of Garland's method is finite combinatorics.
+
+## Layer D — the design identity, PROVED
+
+`HTGeometry/IncidenceDesignBound.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- **`sum_incidence_sq`** — **the design identity.**  If `Σ_l N(p,l)N(p',l) = r` when `p = p'` and
+  `lam` otherwise, then for every `f`
+  `Σ_l (Σ_p N(p,l) f(p))² = (r − lam)·Σ_p f(p)² + lam·(Σ_p f(p))²`.
+  This is the whole eigenvalue content of a `2`-design, obtained by expanding the square and
+  splitting the diagonal — no analysis.
+- `sum_incidence_sq_of_sum_eq_zero` — on functions of sum zero the second term drops and the
+  transport multiplies the squared length by exactly `r − lam`.
+- **`sum_incidence_sq_projectivePlane`** — for a projective plane (`lam = 1`, `r = q + 1`) the
+  factor is `q`.  Combined with Cauchy–Schwarz this is the bound `√q` on the nontrivial singular
+  values of the incidence matrix, hence `λ₁ = 1 − √q/(q+1)` for the incidence graph, which exceeds
+  `2/3` once `q ≥ 5`.
+
+What remains in Layer D's rank-two case is the passage from this identity to
+`hasSpectralGap_of_bound`: split a mean-zero function on the bipartite vertex set into its two
+constant-adjusted halves, apply Cauchy–Schwarz to `⟨Nᵀf₀, g₀⟩`, and observe that the constant part
+only ever helps the inequality.
+
+## Layer D — the incidence pairing bound, PROVED
+
+Same module.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- **`two_mul_incidence_le`** — for a `2`-design and a function `a` of sum zero on the points,
+  `2·Σ_{p,l} N(p,l)·a(p)·b(l) ≤ √(r − lam)·(Σ_p a(p)² + Σ_l b(l)²)` for every `b`.
+
+This is the Cauchy--Schwarz step that turns the design identity into a spectral bound: the pairing
+is `Σ_l (Nᵀa)(l)·b(l)`, Cauchy--Schwarz bounds its square by `‖Nᵀa‖²·‖b‖² = (r − lam)·‖a‖²·‖b‖²`,
+and `4AB ≤ (A+B)²` finishes.  Together with `hasSpectralGap_of_bound` it is the whole spectral input
+of Garland's method for the rank-two links, once the bipartite bookkeeping (splitting a mean-zero
+function on `P ⊔ L` into its two constant-adjusted halves) is done.
+
+## Layer D — the incidence graph
+
+Same module.
+
+- `incW`, **`incidenceGraph`** — the bipartite incidence graph of an incidence structure, as a
+  `WeightedGraph (P ⊕ L)`.
+- `incidenceGraph_mass_inl`, `incidenceGraph_mass_inr` — its vertex masses are the point degree and
+  the line degree.
+- **`incidenceGraph_averaging`** — its averaging form is
+  `2·Σ_{p,l} N(p,l)·f(inl p)·f(inr l)`, the factor two coming from counting each edge in both
+  orders.
+
+With `two_mul_incidence_le` and `hasSpectralGap_of_bound` in hand, what is left of the rank-two
+spectral gap is the constant-adjustment bookkeeping: a mean-zero function on `P ⊔ L` has
+`α·|P| + β·|L| = 0` for its two averages, and when `|P| = |L|` this forces `β = −α`, so the constant
+part contributes `−2α²|P|r` to the averaging form and `+2α²|P|r` to the mass norm — it only helps
+the inequality in both places.
+
+## Layer D — the rank-two spectral gap, PROVED
+
+`HTGeometry/IncidenceDesignBound.lean` (323 lines).  Axiom audit: `propext, Classical.choice,
+Quot.sound`.
+
+- **`incidenceGraph_hasSpectralGap`** — **the incidence graph of a symmetric `2`-design has spectral
+  gap `1 − √(r − lam)/r`.**  Hypotheses: both degrees equal `r`, any two distinct points lie on
+  `lam` common lines, and `|P| = |L|`.
+
+For a projective plane over `𝔽_q` this reads `1 − √q/(q+1)`, which exceeds `2/3` once `q ≥ 5` — the
+exact hypothesis `cocycle_eq_coboundary` needs at `k = 2`.
+
+Supporting results proved along the way: `incidenceGraph_massInner` (the mass norm is `r` times the
+sum of the two squared lengths), `incidenceGraph_sum_eq_zero` (mass average zero is the vanishing of
+the total sum), `incidence_pairing_shift` (the pairing after shifting both functions by constants),
+`sum_sq_sub_const` (the squared length after shifting by the mean).
+
+The mechanism of the constant part is the point worth recording: a mean-zero function on `P ⊔ L`
+has `al + be = 0`, so the constant contributes `−2·al²·|P|·r` to the averaging form and
+`+2·al²·|P|·√(r−lam)` to the bound — it helps on both sides, which is why the eigenvalue `−1` forced
+by bipartiteness never obstructs Garland's one-sided inequality.
+
+### Layer D, remaining
+
+1. The Bruhat--Tits building of `SL_n` over a local field as a `WeightedComplex`: homothety classes
+   of lattices, incidence, purity of dimension `n − 1`.
+2. Its contractibility.
+3. The identification of the link of a simplex with a spherical building over the residue field, and
+   the reduction of its spectral gap to the rank-two case above.  The corpus's `BuildingLink`,
+   `SolomonInduction` and `BuildingHomologyConcentration` layer is the object in question.

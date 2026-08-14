@@ -283,10 +283,24 @@ The algebraic Watson-forcing step is now unconditional in
 section of an HT exchange law is HT. Reflection is represented by an actual derivation-preserving
 field automorphism, and its preservation of DA is proved rather than assumed.
 
-The decisive physical hypotheses remain external analytic/operator-algebraic facts: the Lechner
-tube theorem, `S_2`-symmetric Fock sectors, modular nuclearity, compact-local intersections, and
-Reeh--Schlieder density. Consequently the card stays in Stage 2 even though its differential-
-algebraic implication is now formalized.
+The rest of the algebraic chain is now formalized too.
+
+* Step 3 of the forcing proof -- descent of hypertranscendence across the purely transcendental
+  constant extension `C(t) -> C(u,t)` -- is exactly
+  `differentialAlgebraicOver_of_intermediate_trdeg_lt_aleph0` in
+  `HTGeometry/DifferentialAdjoinFiniteTrdeg.lean`: the intermediate field is derivation-closed with
+  `D u = 0` and has transcendence degree one, so differential algebraicity over it descends.
+* Equation `(8)` is `kolchinJetRank_eq_of_hypertranscendentalOver` in
+  `HTGeometry/KolchinSlopeDichotomy.lean`: every finite relative-jet packet of an HT reporter has
+  rank exactly `r+1`.
+* Equations `(11)`--`(13)`, the **operator-independent Kolchin locality inequality**, are
+  `HTGeometry/KolchinLocalityFloor.lean`: `kolchinLocalFloor` is the infimum of the two-valued
+  one-reporter slope over a nonempty family, `kolchinSlopeValue_le_kolchinLocalFloor` is `(12)`, and
+  `kolchinLocalFloor_eq_one` is `(13)`.
+
+The decisive physical inputs stay external cited theorems: the Lechner tube theorem,
+`S_2`-symmetric Fock sectors, modular nuclearity, compact-local intersections, and Reeh--Schlieder
+density.
 
 ## Primary literature
 

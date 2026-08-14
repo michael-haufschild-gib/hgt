@@ -8,66 +8,61 @@ This paper compares every proof, disproof, secondary, and retired route in the c
 exact results located externally, and what external work contributes that is both absent from Lean
 and capable of narrowing the route's first open source premise.
 
-Local formal cutoff is committed umbrella-reachable snapshot
-`4e15c99f6a9acbae76240ec4c953b14db74728c8`. Files outside committed umbrellas at this snapshot are
-excluded. Paper-only claims are labeled separately.
+Local committed cutoff is
+`728c536207aa8addd7cafe8a1648f68d094a3d11`; active-tree declarations are labelled separately.
+Scientific comparison follows declaration content rather than module placement.
 
-Current live count is ten independent lettered routes plus CCM-FU; Route R is terminalized as an
-independent producer. Route G is umbrella-formal through Suzuki's spectral/physical compression,
-Lemmas 4.3--4.11, equations (4.14)--(4.19), determinant and Schrödinger identities, exact first-gap
-positivity, literal interval/zero-extension unitary, exterior rigged/Wiener carrier, and the literal
-restricted-Weil Friedrichs operator. Exact source form, self-adjoint compact-resolvent ground
-realization, `H_0^1` form/operator domains, CCM source identification, and maximal Dirichlet-
-adjoint domain are formal. Its floor branch now needs source-derived control or exhaustion of the
-complete restricted-Weil near-ground family, not operator construction. Its exterior branch has an
-exact `C^1` Gamma half-line classification and two-channel half-log low-frequency law; it still
-needs distributional/origin-atom exclusion, whole-frequency assembly, a nonzero tested-equation
-provider, and coupled all-aperture source return. CCM-FU's finite-stage field-one chain is umbrella-
-formal through Connes--Marcolli Proposition 2.30, Lemma 2.32, equation (2.252), full ramified Tate
-equation (2.58), local spherical Sonin Proposition 4.4, literal finite-stage semilocal Sonin
-Definition 4.5, and common Haar normalization. Missing `isosonin` is now specifically the global
-semilocal Hilbert isomorphism; `Pi(lambda,k)` and cofinal four-unit orientation remain open.
+Current live count remains ten independent lettered routes plus CCM-FU; Route R remains
+terminalized. Latest local results change six exchanges:
 
-Route T now eliminates the exact zero-reserve mode, covers the physical slice and proper-prime-
-power range through `mu<=8`, and confines upper uncertainty to `mu(1-alpha)=1`. Exact zeta zero
-peeling, multiplicity-faithful weighted Littlewood identity, pole-regularized detector, and the
-coefficient-three exponent budget are formal. The global Gaussian dual-weight derivative and full
-reflected dual-series freezing estimate are also formal, preserving every Dirichlet phase with an
-absolutely summable `3/2`-power cost. Missing producer is first the blockwise conductor-normalized
-primal/dual/cross-term mean-square assembly yielding the required `T^(101/100)` fourth moment, then
-an Ingham/Gabriel coefficient-three density theorem giving `7/10` prime supply or equivalent direct
-signed upper-boundary control and route composition. Route U is reduced to one explicit
-cofinal family of negative finite Hankel packets of dimension
-`N(n,k)=(n+1)(k+1)+1`; reciprocal clearing closes the finite root transport. Its missing producer
-is an unconditional sign or capital law for that packet family retaining the completed
-prime--Gamma source before divisor aggregation.
+- **G:** whole-frequency Gamma asymptotics are closed, not open. Lean retains both frequency rays,
+  proves `2*pi*L^(-1/2)*beta+O(L^-1)` uniformly in truncation, proves `beta=0` is exactly the
+  terminal-`L2` branch for the classified profiles, and identifies the singular corona quotient
+  with one trace-space copy. Bounded forcing is `O(eta)` and carries no half-log coefficient.
+  Point-support analysis now proves finite order and high-jet annihilation for any origin-supported
+  tempered distribution; finite jet-factorization/delta-derivative classification and elimination
+  in the Gamma ODE remain. The other exterior debts are holomorphic strip gluing, physical-trace
+  identification/orientation, and coupled all-aperture return. Floor branch still needs complete
+  near-ground profile exhaustion/lower control.
+- **CCM-FU:** Lean constructs the literal finite-stage Sonin tensor `sigma_S`, its Fourier fixed
+  point, exact S-unit orbit coefficients, theta-core Fourier covariance, angular independence, and
+  landing in the actual invariant subspace. On inverse-prime squarefree packets the coefficient is
+  exactly `mu(n)/n`, unchanged by finite Fourier transport. Thus CCM Sonin source and Route-E
+  critical Möbius source have a coefficient-faithful finite-stage seam. A common-Haar candidate
+  whole-`L2` transport exists; missing `isosonin` is the theorem that it completes this literal
+  theta core. `Pi(lambda,k)`, four-unit orientation, and Route-E's cofinal Hall/load theorem remain.
+- **P:** four-unit saturation, the exact `4+|d|^2` escaped-mass toll, rank-one graph-normal tangent,
+  linear-Schur-versus-quadratic-curvature no-go, and scalar-completion nondifferentiability are Lean
+  theorems. The active-tree unit-frame theorem strengthens the closure: no pair of differentiable
+  unit source paths meeting at aperture zero can realize the scalar Xi phase unless RH holds. A
+  viable producer must transport the division-free graph-normal difference as a vector block,
+  permit linear mass exchange inside one jointly conserved source form, and scalarize only after
+  first-order cancellation.
+- **T:** Lean now controls the squared neutral chi carrier and exact square-dual Gaussian weight at
+  balanced conductor scale, with derivative `A(1+tau)/Y` and coefficientwise `O(1/n)` dyadic
+  freezing. The infinite affine mean-square transfer is proved under explicit summability
+  hypotheses. Missing producer is to connect the complete Gaussian zeta-square AFE, including the
+  double-pole residue, verify those hypotheses for its actual coefficient arrays, and assemble
+  primal/dual/cross terms into the `T^(101/100)` fourth moment. Density, `7/10` prime supply, and
+  route composition follow only after this.
+- **U:** the active source-disintegration theorem writes every shifted reciprocal Hankel quadratic
+  as a positive Laplace average of the literal complete Gamma--polar--von-Mangoldt balance. Hard-
+  edge reversal cancels all degree powers to one Cauchy density. Negative capital therefore forces
+  a pointwise super-aperture source inversion, and false RH is equivalent to one fixed carrier
+  sustaining such inversions cofinally. The open theorem is to exclude that phase from the intact
+  pointwise arithmetic incidence, not another generic Hankel sign or determinant budget.
+- **L:** finite-complex Garland localization is complete through cohomological vanishing, and the
+  projective-plane design identity begins the exact link-gap realization. This helps the adjacent
+  tame-kernel/real-Milnor package. It does not alter Route L's RH-bearing core: the singular
+  source-to-fixed Burnol--Deninger physical comparison before divisor specialization.
 
-Route P now has two exact source-budget lanes. Curvature normalization makes any finite ceiling on
-the positive tail beyond `|Im s|=233/20` equivalent to RH. Its exterior lane now has a legal trace,
-mixed reflection projector, source-Cayley Abel landing, source-native prime Ward clock, fixed-
-center energy, affine multiplicity determinant `-4M^2`, literal coefficient-faithful four-contour
-prime--Gamma source, and non-diagonal Hermitian graph-normal Gram. The generic uniform subquantum
-bound is RH-equivalent. Paper-proved P-G160/P-G161 reduce the live exterior producer to a finite-
-sigma coherent Hermitian cross-term/second-order curvature identity, or labelled cancellation
-before positive landing; their committed modules are not umbrella-reachable at this cutoff. Route
-R's intrinsic
-producer category is formally empty, and every surviving positive-polar, compactness,
-Xi/Calkin/first-jet, or Fisher interface is RH-equivalent; pre-divisor Gamma-corona globalization is
-also impossible outside neutral grade. Route L now includes strict resolved provenance,
-Hazewinkel primeness/saturation, exact Floquet resonance quotient and bounded-correction no-go,
-and Milnor/Milnor--Witt carrier plumbing. Only its global ideal-preserving singular source-to-fixed-
-physical comparison remains open. Degree-uniform Milnor residues and the Gersten row are now
-formal; Garland torsion is adjacent formalization backlog, not Route L's RH core. C1 gains an unconditional Weil-positivity cone, the
-probe-circle/smearing no-go, and a literal Gauss--Hodge source-resolvent field whose complete-
-monotonicity obligation is reduced to the high-order low-shift wedge. No pre-zero source trace
-proves that wedge. Horizontal collision charge gains a canonical reflection self-
-intersection subcharge with the same exact two-unit cofinal RH endpoint. The newer horizontal-
-collision Gauss--Hodge prime current is prime-summable exactly under RH and is coefficient-exactly
-welded to squared fixed-ideal Gamma Bockstein through a positive gauge. These are receivers, not new
-routes. Route O's full constrained-prolate leakage optimizer and gap are now paper-proved, but
-true restricted-Weil ground control remains open. Route E's full-allocation whole-anchor lane is
-formally retired by global terminal-capacity shortage; its fixed grade-recurrent capacity theorem
-remains open. None proves or disproves RH.
+The Xi Schur receiver is also classified more sharply: under RH its canonical circle measure is
+explicitly singular atomic on Cayley images of real Xi spectral points. Positive-even symmetry is
+formally insufficient for zero location because positive two-shell Laplace sources have exact
+off-axis zeros. Schanuel, prime-occupation, q-ladder, Barnes--Mellin, orbifold-tail,
+character-formation, and static-recurrence additions remain source/classifier infrastructure
+without an Xi-typed producer. No new independent route is instantiated, and no result proves or
+disproves RH.
 
 The enlarged generic field still supplies no additional route. The folded half-density prime-tail
 resolvent is an exact receiver in `mu=(rho-1/2)^2`, but has arbitrary homogeneous datum and divisor-
@@ -340,13 +335,20 @@ rapid decay, periodization, angular/logarithmic `L2` density, and the literal Co
 Proposition 2.30 dense-range theorem are joined by Lemma 2.32's correlation/unfolding identity and
 equation (2.252), which places theta differences in the source radical. Finite Fourier/Haar/
 Plancherel, local and `p`-adic Bruhat products, self-dual Haar, and the full ramified Tate equation
-(2.58) close the finite-stage Fourier/Tate carrier. The unit-invariant local Sonin space is now
+(2.58) close the finite-stage Fourier/Tate carrier. The unit-invariant local Sonin space is
 formalized exactly as the span of the spherical vector in Proposition 4.4, with radial Bruhat and
-two-shell `L2` classification. Lean also constructs the literal finite-stage physical aperture and
-semilocal common-kernel Sonin space of Definition 4.5 and identifies one common archimedean/finite-
-place Haar-density normalization. This removes local and finite-stage Sonin formation from the
-backlog. It still does not specify `Pi(lambda,k)`, prove the global semilocal Hilbert isomorphism
-and intertwining denoted by `isosonin`, or orient the ground floor.
+two-shell `L2` classification. Lean constructs the literal finite-stage physical aperture, the
+semilocal common-kernel Sonin space of Definition 4.5, and the actual tensor Sonin vector `sigma_S`.
+That vector is Fourier-fixed; its S-unit coefficients are explicit; `f tensor sigma_S` has exact
+Fourier covariance, is angular-independent, and lands in the actual invariant subspace. On a
+squarefree inverse-prime packet `T`, its coefficient is exactly `mu(n_T)/n_T`, with every prime
+label retained, and finite Fourier transport gives the same coefficient. This is a literal
+finite-stage CCM--Route-E source seam.
+
+Common Haar normalization and the invertible finite Euler multiplier construct a candidate
+whole-`L2` transport. What remains of `isosonin` is to prove that this transport is the continuous
+completion of the literal theta core. It still does not specify `Pi(lambda,k)`, orient the ground
+floor, or supply Route E's cofinal Hall/load/cost theorem.
 
 **External contribution.** Paley--Wiener/Laplace RKHS realization, hard-cut exponential divided
 differences, double-operator-integral formulas, coarea identities, and Gamma/Sonin transforms
@@ -355,12 +357,13 @@ incidence from the Möbius Fisher corner to the continued Xi Ward column, and a 
 operator is formally excluded.
 
 **Exchange verdict and Lean action.** Exact open core is the prelimit cofinal noncompact family
-`C_sigma`, concretely tied to the canonical finite matrices `Pi(lambda,k)`: prove `isosonin`,
-uniform Ward-column convergence and four-unit energy orientation, and transport the admitted jet
-horizon into the complete cofinal ground selector. No located literature theorem supplies this
-comparison. Here `isosonin` means the global semilocal Hilbert isomorphism beyond the now-formal
-local and finite-stage Sonin spaces. More abstract RKHS, Pick, compact Sonin, finite-stage Tate, or fixed critical-source
-formalization would not narrow it.
+`C_sigma`, concretely tied to canonical `Pi(lambda,k)`: first identify the candidate whole-`L2`
+transport with the now-literal theta core, then prove uniform Ward-column convergence and four-unit
+ground orientation while transporting the admitted jet horizon. No located external theorem
+supplies this source identification or comparison. The exact `mu(n)/n` seam suggests a cross-route
+CCM--E architecture, but it is not yet a route: nothing transports the finite Fourier-fixed
+packets through E's physical co-degree/Hall seam or CCM's complete ground selector. More abstract
+RKHS, Pick, compact Sonin, or finite-stage Tate work would not narrow it.
 
 ### Route B — fixed-width rectangular Weil and positive quadrature [RETIRED]
 
@@ -1439,11 +1442,17 @@ maximal adjoint-domain classification are formal. `SuzukiApertureL2Equivalence.l
 literal interval/zero-extension unitary. Operator formation and literal restricted-resolvent
 provenance are therefore closed.
 
-On the exterior side, every `C^1` positive-half-line Gamma-channel solution is uniquely
-`eta^(-1/2)Q(eta)c`, and localized conjugate-channel asymptotics give the exact two-channel half-log
-leading term with `O(L^(-1))` error. The remaining classical/formal completion is distributional
-regularity, exclusion of origin-supported atoms, and whole-frequency assembly. The rigged
-realization gives an exact high-frequency valuation--Wiener inverse and two-port reconstruction.
+On the exterior side, every `C^1` positive-half-line homogeneous Gamma-channel solution is uniquely
+`eta^(-1/2)Q(eta)c`. Variation of constants proves bounded forcing contributes `O(eta)` and no
+half-log coefficient. The full two-ray inverse Fourier integral now has exact asymptotic
+`2*pi*L^(-1/2)*beta+O(L^-1)` uniformly in truncation; `beta=0` is the terminal-`L2` branch, the
+scattering map is onto, and the corona quotient is exactly one trace-space copy. Whole-frequency
+assembly is closed. The point-support programme also proves that an origin-supported tempered
+distribution has finite order in the needed sense and annihilates every Schwartz function with a
+sufficiently long zero jet. Remaining finite-dimensional step is factorization through the finite
+jet map, hence classification as a finite delta-derivative combination, followed by elimination of
+those terms from the Gamma ODE. The rigged realization gives an exact high-frequency
+valuation--Wiener inverse and two-port reconstruction.
 The cutoff graph relation is closed, and its sole nonregular source is the Carleman cross-boundary
 port. `SuzukiCarlemanFlatPortBarrier.lean` and its gap theorem prove that zero trace plus ordinary
 Carleman/`L2` boundedness cannot imply a positive Gamma strip: the interior equation, full source
@@ -1486,8 +1495,9 @@ target has unavoidable real poles. Numerical finite-element claims are not impor
 isolated theta skewness budget is a mathematical open premise, not a literature-to-Lean backlog.
 Route-level open core has two internal branches. Floor branch requires source-derived selection and
 lower control or profile exhaustion of the complete restricted-Weil ground family. Exterior branch
-requires the distributional/whole-frequency Gamma completion, a nonzero function-valued tested
-solution, and a coupled all-aperture source-return/weighted-Carleman domain theorem. Equivalent downstream formulations of
+requires finite-jet classification/elimination of the possible origin-supported distribution,
+holomorphic forced-source gluing across `0<Im z<1`, a nonzero physical tested solution, and a
+coupled all-aperture source-return/weighted-Carleman domain theorem. Equivalent downstream formulations of
 the floor branch are weak convergence of compactified
 even/odd spectral-shift occupancy to the unique theta/Xi measure, the full paired smoothing-trace
 hierarchy, or the fixed-anchor bounded transform on a positive uniqueness set. Kernel transport,

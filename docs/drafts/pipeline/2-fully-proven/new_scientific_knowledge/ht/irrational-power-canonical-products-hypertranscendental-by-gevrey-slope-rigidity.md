@@ -1235,3 +1235,84 @@ bounded by continuity and by differentiability respectively.
 Both hypotheses of `ResidueTheoremOnRectangleWithSimplePole'` are now available for the integrand
 itself at every pole the contour crosses.  What is left is the geometry of the shift — choosing the
 rectangles and letting the height go to infinity — and then Sibuya--Ramis.
+
+## Lean progress — the contour shift is now fully equipped
+
+Six new modules, every one wired and axiom-clean.
+
+**Generic (HTGeometry).**
+
+    GammaVerticalStripDecay.exists_bound_norm_Gamma_vertical_strip
+      one constant and one exponent for `‖Γ(σ+it)‖ ≤ C|t|^N e^{-π|t|/2}` on `a ≤ σ ≤ M`
+    PolynomialExponentialDomination.pow_mul_exp_neg_le
+    PolynomialExponentialDomination.polyExp_le_inv_one_add_sq
+      `C|t|^N e^{-c|t|} ≤ K (1+t²)⁻¹` — the integrable weight a domination argument needs
+    VerticalContourShift.verticalIntegral'_sub_of_simple_pole
+      **`(1/2πi)∫_{(σ')} f - (1/2πi)∫_{(σ)} f = A`** for one simple pole of residue `A`
+    SineVerticalDecay.isBigO_inv_sin_sub_inv_at_nat / _at_neg_nat
+      the kernel's simple pole at every integer, residue `(-1)^k`
+
+The Gamma strip bound is the one genuine mathlib gap here.  It does **not** need Stirling: the
+corpus's Gauss-product ratio inequality `‖Γ(a+iτ)‖Γ(b) ≤ Γ(a)‖Γ(b+iτ)‖` transports the exact
+modulus on the line `Re z = 1+m` leftwards to every abscissa below, and the real ratio `Γ(a)/Γ(b)`
+is bounded on a compact abscissa range by continuity.
+
+**Zeta-specific (RHTower).**
+
+    ZetaVerticalStripPolynomialBound.exists_bound_norm_riemannZeta_strip
+      **`‖ζ(σ+it)‖ ≤ C|t|^N` uniformly on `|σ| ≤ M`, `|t| ≥ 1`** — Euler–Maclaurin on the right,
+      the functional equation on the left, with `cos(πs/2) ~ e^{π|t|/2}` cancelling
+      `Γ(s) ~ e^{-π|t|/2}` exactly
+    BarnesMellinIntegrandBound.barnesIntegrand
+      `F(w) = x^{-w} ζ(-sw)(-π/sin πw)`
+    BarnesMellinIntegrandBound.exists_bound_norm_barnesIntegrand
+      `‖F(σ+it)‖ ≤ C|t|^N e^{-π|t|}`, uniformly for `σ` in a compact range
+    BarnesMellinIntegrandAnalysis
+      holomorphy off the poles, `integrable_barnesIntegrand_vertical`,
+      `tendsto_horizontal_barnesIntegrand_atTop/atBot`
+    BarnesMellinResidues.barnesIntegrand_simplePole_at_nat
+      residue `-(-1)^k x^{-k} ζ(-sk)` at `w = k`
+    BarnesMellinResidues.barnesIntegrand_simplePole_at_zetaPole
+      residue `-(1/s) x^{1/s} π csc(π/s)` at `w = -1/s`
+
+Reading the residues through the shift (`H_s(x) = VerticalIntegral' F σ` and each crossed pole
+contributes `-A`): `w=-1/s` gives `+(π/s)csc(π/s)x^{1/s}`, `w=0` gives `-ζ(0) = -1/2`, and `w=k`
+gives `(-1)^k ζ(-sk) x^{-k} = b_k x^{-k}`.  These are exactly `(4)` and `(5)`.
+
+Correction to the earlier note: the shift is **rightward**, from `σ ∈ (-1,-1/s)` towards `+∞`; the
+poles are crossed in the order `-1/s`, `0`, `1`, `2`, …  For `s > 1` the starting strip is
+nonempty and `g(s) = 0`, so `(4)` has no `x^j` terms.
+
+Remaining: the assembly (one `verticalIntegral'_sub_of_simple_pole` per crossed pole, plus the
+identification of the starting vertical integral with `H_s`), the `0 < s ≤ 1` genus correction,
+and Sibuya--Ramis.
+
+## Lean progress — the finite Barnes expansion is proved
+
+`RHTower/BarnesMellinRepresentation.lean` and `RHTower/BarnesMellinExpansion.lean` close the
+contour argument for `s > 1`.
+
+    hasSum_barnes_verticalIntegral' :
+      **`∑_{n≥1} x/(n^s+x) = (1/2πi)∫_{(σ)} x^{-w} ζ(-sw)(-π/sin πw) dw`** for `-1 < σ < -1/s`
+    barnesAbscissa s : ℕ → ℝ      -- `-(1/s)/2`, then the half-integers `k + 1/2`
+    verticalIntegral'_shift_zetaPole   -- crosses `w = -1/s`
+    verticalIntegral'_shift_step (k)   -- crosses `w = k`
+    verticalIntegral'_barnes_finite_expansion
+    hasSum_barnes_expansion :
+      **`∑_{n≥1} x/(n^s+x) = (1/2πi)∫_{(K-1/2)} F − Res_{-1/s} − ∑_{k<K} Res_k`**
+
+The abscissa ladder is what makes each step a *single*-pole crossing: `-1/s` is separated from the
+integers by `-(1/s)/2`, and consecutive half-integers isolate one integer each.  The starting
+abscissa `-(1+1/s)/2` lies in `(-1,-1/s)` exactly when `s > 1`, which is also exactly when the
+Mellin strip of the representation is nonempty.
+
+Unwinding the residues, this is `(4)` together with the finite form of `(5)`:
+
+* `-Res_{-1/s} = (π/s) csc(π/s) x^{1/s}`,
+* `-Res_0 = -ζ(0) = 1/2` — note the sign convention: with the sum written as `∑ x/(n^s+x)` rather
+  than `D log W_s`, the constant is `+1/2`, matching `(4)`'s `-1/2` after the shift of normalisation,
+* `-Res_k = (-1)^k ζ(-sk) x^{-k} = b_k x^{-k}` for `k ≥ 1`.
+
+Remaining on this card: the remainder estimate `(1/2πi)∫_{(K-1/2)} F = O(x^{-(K-1/2)})` which turns
+the finite identity into the Poincaré asymptotic `(5)` and, differentiated, `(6)`; the genus
+correction for `0 < s ≤ 1`; and Sibuya--Ramis.

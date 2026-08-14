@@ -540,11 +540,40 @@ every declaration axiom-clean: `propext`, `Classical.choice`, `Quot.sound`).
   there is a `ProbabilityMeasure Circle` whose Poisson integral is `Re F_Xi` on the open disc.  This
   uses the corpus's own `HTGeometry.exists_herglotz_representation`.
 
-**What is left of this gate.**  Two analytic facts about that measure: that its support is infinite
-(the Cayley images of the infinite Xi divisor) and that it is mutually singular with
-`circleLebesgue`.  The natural route to singularity is Fatou's radial-limit theorem for Poisson
-integrals — `Re F_Xi` has radial limit `0` almost everywhere on the circle because `H_Xi` is real on
-the real axis away from the divisor — and mathlib has no radial boundary-limit theorem for the
-Poisson kernel.  That theorem is the next unconditional build for this card; once it is available,
-`xiSchur_inverseLimit_atomicCondensation` can be instantiated at the constructed measure instead of
-receiving the equivalence as an argument.
+## Log — the canonical measure is atomic, singular, and carries the condensation `[PROVED]`
+
+`formal/GaloisForLFunctions/RHTower/XiCircleAtomicMeasure.lean` (wired into
+`GaloisForLFunctions.RHTower`, every declaration axiom-clean).  Fatou's radial-limit theorem turned
+out not to be needed: the Herglotz measure can be **constructed atomically** and then identified
+with the abstract one by its Poisson integral.
+
+- **`xiCayleyPoint q`** — the circle point `(t_q - i)/(t_q + i)`, with `xiCayleyValue_norm` proving
+  unimodularity; **`xiAtomWeight q = 1/(b(t_q^2+1))`**; **`xiCircleAtomicMeasure`** — the sum of the
+  weighted point masses.
+- **`xiCircleAtomicMeasure_univ_of_rh`** — it is a **probability measure**, because
+  `xiBasepointSlope_re_eq_tsum_of_rh` identifies `b` with the total Cauchy weight
+  `sum_q 1/(t_q^2+1)`.
+- **`mutuallySingular_xiCircleAtomicMeasure`** — singular to `circleLebesgue`, unconditionally,
+  since it is carried by the countable set `range xiCayleyPoint`.
+- **`xiCircleAtomicMeasure_support_infinite_of_rh`** — infinite support: the centered Xi spectrum is
+  an infinite set (`range_xiSpectralPoint_infinite`, from
+  `tendsto_norm_xiSpectralPoint_cofinite`), the Cayley map is injective, and each atom has positive
+  mass.
+- **`im_cayleyDisc_div_normSq`** — the exact **conformal Poisson transfer**: the half-plane Poisson
+  weight of a real ordinate at `chi(w)` equals the disc Poisson kernel at the ordinate's circle
+  point divided by `t^2+1`.
+- **`im_xiSourceHerglotz_eq_tsum_of_rh`**, **`re_xiCaratheodory_eq_of_rh`**,
+  **`re_xiCaratheodory_eq_tsum_poissonKernel_of_rh`** and
+  **`re_xiCaratheodory_eq_integral_poissonKernel_of_rh`** — the germ's real part is the weighted sum
+  of disc Poisson kernels at the Cayley images of the spectrum, and therefore **is** the Poisson
+  integral of `xiCircleAtomicMeasure`.  So the atomic measure is the Herglotz measure of `F_Xi`, not
+  merely some measure with the right properties.
+- **`xiSchur_atomicCondensation_of_rh`** — the capstone: under RH the canonical Xi circle measure
+  has infinite support and is singular, hence carries both `HasSingularSchurDefectCollapse` and
+  `HasBernsteinSzegoCofinalApproximation` through the corpus's
+  `singularSchurDefect_doubleBoundary`.  The generic
+  `xiSchur_inverseLimit_atomicCondensation` no longer needs to receive the equivalence as an
+  argument for the Xi case: it is instantiated.
+
+With this the card's Stage-3 formalization gate is closed.  What remains on the paper card is the
+independent specialist proof audit and the full priority audit, both external.

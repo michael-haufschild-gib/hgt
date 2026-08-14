@@ -279,7 +279,83 @@ theorem im_cayleyDisc_div_normSq (t : ℝ) {w : ℂ} (hw : ‖w‖ < 1) :
   · rw [hzw]
     simp
   · field_simp
+
+theorem neg_xiRelativeResolventTerm_im_of_rh (hRH : RiemannHypothesis) {z : ℂ}
+    (q : XiZeroCopy) :
+    -(xiRelativeResolventTerm z q).im
+      = z.im / Complex.normSq ((xiRealSpectralPoint q : ℂ) - z) := by
+  have ht := xiSpectralPoint_eq_ofReal_of_rh hRH q
+  rw [xiRelativeResolventTerm, ht, Complex.sub_im, Complex.inv_im, Complex.inv_im]
+  simp only [Complex.sub_im, Complex.ofReal_im, zero_sub, neg_neg, neg_zero, zero_div]
+
+/-- **The half-plane Herglotz expansion of the Xi source trace.** -/
+theorem im_xiSourceHerglotz_eq_tsum_of_rh (hRH : RiemannHypothesis) {z : ℂ} (hz : 0 < z.im) :
+    (xiSourceHerglotz z).im
+      = ∑' q : XiZeroCopy, z.im / Complex.normSq ((xiRealSpectralPoint q : ℂ) - z) := by
+  have hXi : XiC z ≠ 0 := XiC_ne_zero_of_rh_of_im_pos hRH hz
+  have hsum := summable_xiRelativeResolventTerm hXi
+  have heq : xiSourceHerglotz z = -xiRelativeResolventTrace z := by
+    rw [xiSourceHerglotz, logDeriv_XiC_eq_relativeResolventTrace hXi]
+  have himsum : (xiRelativeResolventTrace z).im
+      = ∑' q : XiZeroCopy, (xiRelativeResolventTerm z q).im := by
+    rw [xiRelativeResolventTrace]
+    exact Complex.imCLM.map_tsum hsum
+  rw [heq, Complex.neg_im, himsum, ← tsum_neg]
+  exact tsum_congr fun q => neg_xiRelativeResolventTerm_im_of_rh hRH q
+
+theorem re_xiCaratheodory_eq_of_rh (hRH : RiemannHypothesis) (w : ℂ) :
+    (xiCaratheodory w).re
+      = (xiSourceHerglotz (cayleyDisc w)).im / xiBasepointSlope.re := by
+  have hbim := xiBasepointSlope_im
+  have hbre := xiBasepointSlope_re_pos_of_rh hRH
+  have hns : Complex.normSq xiBasepointSlope = xiBasepointSlope.re ^ 2 := by
+    rw [Complex.normSq_apply, hbim]
     ring
+  rw [xiCaratheodory, Complex.div_re, hbim, hns]
+  simp only [Complex.mul_re, Complex.mul_im, Complex.neg_re, Complex.neg_im,
+    Complex.I_re, Complex.I_im]
+  field_simp
+  ring
+
+/-- **The Xi disc germ is the atomic Poisson integral.**  Its real part is the weighted sum of disc
+Poisson kernels at the Cayley images of the centered Xi spectrum, with the normalized Cauchy
+weights. -/
+theorem re_xiCaratheodory_eq_tsum_poissonKernel_of_rh (hRH : RiemannHypothesis)
+    {w : ℂ} (hw : ‖w‖ < 1) :
+    (xiCaratheodory w).re
+      = ∑' q : XiZeroCopy,
+          1 / (xiBasepointSlope.re * (xiRealSpectralPoint q ^ 2 + 1))
+            * poissonKernel 0 w (xiCayleyValue (xiRealSpectralPoint q)) := by
+  have hbre := xiBasepointSlope_re_pos_of_rh hRH
+  rw [re_xiCaratheodory_eq_of_rh hRH,
+    im_xiSourceHerglotz_eq_tsum_of_rh hRH (cayleyDisc_im_pos hw)]
+  rw [div_eq_mul_inv, ← tsum_mul_right]
+  refine tsum_congr fun q => ?_
+  rw [im_cayleyDisc_div_normSq _ hw]
+  have ht2 : (xiRealSpectralPoint q : ℝ) ^ 2 + 1 ≠ 0 := by positivity
+  field_simp
+
+/-- **The atomic Xi circle measure represents the Xi disc germ.**  Its Poisson integral is exactly
+the real part of the Xi Carathéodory germ, so it is the Herglotz measure of `F_Ξ`. -/
+theorem re_xiCaratheodory_eq_integral_poissonKernel_of_rh (hRH : RiemannHypothesis)
+    {w : ℂ} (hw : ‖w‖ < 1) :
+    (xiCaratheodory w).re
+      = ∫ zeta : Circle, poissonKernel 0 w (zeta : ℂ) ∂xiCircleAtomicMeasure := by
+  haveI hprob : IsProbabilityMeasure xiCircleAtomicMeasure :=
+    ⟨xiCircleAtomicMeasure_univ_of_rh hRH⟩
+  have hbre := xiBasepointSlope_re_pos_of_rh hRH
+  have hcont : Continuous fun zeta : Circle => poissonKernel 0 w (zeta : ℂ) :=
+    GaloisForLFunctions.HTGeometry.continuous_poissonKernel_circle
+      (by rw [Metric.mem_ball, dist_zero_right]; exact hw)
+  have hint : Integrable (fun zeta : Circle => poissonKernel 0 w (zeta : ℂ))
+      xiCircleAtomicMeasure :=
+    hcont.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
+  rw [re_xiCaratheodory_eq_tsum_poissonKernel_of_rh hRH hw]
+  rw [xiCircleAtomicMeasure] at hint ⊢
+  rw [integral_sum_measure hint]
+  refine tsum_congr fun q => ?_
+  rw [integral_smul_measure, integral_dirac, xiAtomWeight,
+    ENNReal.toReal_ofReal (by positivity), coe_xiCayleyPoint, smul_eq_mul]
 
 end
 

@@ -6542,3 +6542,35 @@ Cards 6 and 7 now share exactly one open input: the distributional half of the h
 classification — that a tempered solution restricted to a frequency half-line is a function, and
 that no distribution supported at the origin can be added.  The second half needs the structure
 theorem for distributions with point support, which mathlib does not have; that is the next build.
+
+## GU — the point-support structure theory, first half
+
+Cards 6 and 7 need "no distribution supported at the origin", which rests on a structure theorem
+mathlib does not have.  Five new `HTGeometry` modules build the analytic half of it, all
+unconditional and axiom-clean.
+
+- `TemperedOrder.lean` — `exists_schwartz_seminorm_bound`: a tempered distribution is bounded by
+  finitely many Schwartz seminorms.  This is the finite-order property.
+- `TaylorVanishingBound.lean` — `norm_le_of_deriv_norm_le_pow` and its two-sided form, then
+  `norm_iteratedDeriv_le_of_vanishing`: if every derivative up to order `N` vanishes at the origin
+  and the `(N+1)`-st is bounded by `M` on `[-1,1]`, then `‖f^{(N+1-d)}(x)‖ ≤ M|x|^d/d!`.  The proof
+  is a downward induction on the derivative index against the exact power boundary `M t^{d}/d!`.
+- `ScaledCutoff.lean` — the fixed bump equal to one on `[-1,1]` and supported in `(-2,2)`, its
+  scaled family `χ_ε`, and the derivative bound `|χ_ε^{(n)}| ≤ C_n ε^{-n}`.
+- `CutoffProductEstimate.lean` — the localised Leibniz estimate: for `n ≤ N`,
+  `‖D^n(χ_ε φ)(x)‖ ≤ C ε^{N+1-n}` on the support of `χ_ε`, all derivatives of `χ_ε` being paid for
+  by the vanishing of `φ`; the derivatives vanish identically outside the support; hence the
+  weighted bound `|x|^k‖D^n(χ_ε φ)(x)‖ ≤ C' ε^{k+N+1-n}`.
+- `SchwartzCompactSupport.lean` — `schwartzOfCompactSupport` (a smooth compactly supported function
+  is Schwartz), the localisation `cutoffSchwartz ε φ`, and `seminorm_cutoffSchwartz_le`: every
+  Schwartz seminorm of the localisation of a function vanishing to order `N` is `O(ε)`.
+- `PointSupportVanishing.lean` — `exists_order_apply_eq_zero`: **if a tempered distribution
+  annihilates every Schwartz function that vanishes near the origin, then there is an order `N` such
+  that it annihilates every Schwartz function whose derivatives up to order `N` vanish at the
+  origin.**  Proof: `u φ = u(χ_ε φ)` because the difference vanishes near the origin, and
+  `‖u(χ_ε φ)‖ ≤ C·max_{s} p(χ_ε φ) = O(ε)`.
+
+What remains for the full structure theorem is the finite-dimensional half: the jet map
+`φ ↦ (φ^{(j)}(0))_{j ≤ N}` is onto, so `u` factors as `u φ = ∑_{j≤N} φ^{(j)}(0) c_j`, i.e. `u` is a
+finite combination of derivatives of the delta.  With that, card 6's descending induction on the
+`(2j+1)` eigenvalue closes Theorem 1, and cards 6 and 7 become promotable.

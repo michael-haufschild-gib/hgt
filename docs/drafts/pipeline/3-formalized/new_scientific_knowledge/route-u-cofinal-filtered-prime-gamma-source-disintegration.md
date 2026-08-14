@@ -1,10 +1,10 @@
 # Route U: cofinal filtered prime--Gamma source disintegration
 
 - **ID:** `route-u-cofinal-filtered-prime-gamma-source-disintegration`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Route:** U, fixed-carrier cofinal hard-edge packets
 - **Type:** SOURCE BRIDGE / POSITIVE SURVIVOR
-- **Scientific status:** `[PAPER-PROVED] [BRIDGE] [NOVELTY UNVERIFIED] [LEAN PENDING]`
+- **Scientific status:** `[LEAN-PROVED] [BRIDGE] [NOVELTY UNVERIFIED]`
 - **Date:** 2026-08-14
 
 ## Exact frontier
@@ -62,7 +62,7 @@ entire degree-dependent density.  Consequently every negative packet contains an
 prime--Gamma source inversion, necessarily beyond the completed aperture.  False RH is equivalent
 to a cofinal family of these source inversions from one fixed carrier.
 
-**Preliminary verdict:** `SURVIVES PRELIMINARY ATTACK`.  It is not a sign theorem and does not
+**Verdict:** `PAPER-PROVED AND LEAN-PROVED`.  It is not a sign theorem and does not
 claim RH.  It changes the remaining object from a divisor-side negative quadratic to a literal
 source-side inversion at a certified super-aperture time.  Scalar-budget countermodels do not kill
 it because the complete Gamma, polar, and von-Mangoldt incidence is retained pointwise before the
@@ -190,10 +190,11 @@ Since
 substitution into `R=B(2a^2X-1)`, squaring, and cancelling the positive power
 `(a^2+x^2)^(2d)` proves `(SD.5)`.
 
-If the capital is negative and every positive-time balance were nonnegative, then the Laplace
+For arbitrary real `y`, if the capital is negative and every positive-time balance were nonnegative, then the Laplace
 weight in `(SD.3)` would be nonnegative everywhere on `(0,infinity)`, so its integral would be
 nonnegative.  This contradiction proves `(SD.6)`.  By `(SD.9)` the selected polynomial-Gaussian
-trace is negative.  When `c ne 0`, shifted reversal is nonzero; the completed-wedge theorem then
+trace is negative.  Positivity of `y` enters only through `(SD.4)` and the Hankel identification.
+When `c ne 0`, shifted reversal is nonzero; the completed-wedge theorem then
 forces `(SD.7)`.
 
 For `(SD.8)`, start from the existing closed equivalence
@@ -221,6 +222,29 @@ equivalence.
   bound.
 - `(SD.8)` is a source-faithful equivalence, not an RH proof.  Remaining open core is an
   unconditional mechanism excluding the cofinal inversion phase.
+
+## Lean formalization and audit
+
+Formal artifact:
+
+`formal/GaloisForLFunctions/RHTower/XiShiftedHardEdgePrimeGammaSourceDisintegration.lean`
+
+The module proves the literal completed-balance/trace identity, filtered-source integrability,
+capital/Hankel identity `(SD.4)`, source inversion, completed-aperture escape, exact hard-edge
+degree cancellation `(SD.5)`, explicit finite-packet specialization, closed equivalence `(SD.8)`,
+and the premise-free dichotomy
+
+```lean
+riemannHypothesis_or_xiShiftedHardEdgeCofinalPrimeGammaInversionPhase :
+    RiemannHypothesis ∨ XiShiftedHardEdgeCofinalPrimeGammaInversionPhase
+```
+
+The checked-in source was compiled as a standalone object in an isolated scratch Lake/olean
+overlay with `lake env lean`; no project or module build was used.  A separate scratch file then
+typechecked every public theorem and ran `#print axioms`.  Every audited theorem depends only on
+`propext`, `Classical.choice`, and `Quot.sound`.  Forbidden-token scan found no `sorry`, `admit`,
+`axiom`, `opaque`, `unsafe`, `native_decide`, `#eval`, or `#reduce`.  The RHTower umbrella imports
+the new module.
 
 ## Higher universal principle
 

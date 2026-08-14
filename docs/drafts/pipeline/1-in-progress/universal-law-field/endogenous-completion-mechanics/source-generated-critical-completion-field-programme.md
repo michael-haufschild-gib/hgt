@@ -188,6 +188,19 @@ same separation in at least three nonisomorphic laboratories:
 The source data must be fixed before the first failure.  A later mapping that chooses its next test
 from a desired endpoint fails the gate.
 
+### Second laboratory now closed: analytic reporter repair
+
+The bilateral exponential repair theorem supplies the first non-rewriting realization. In the
+weighted convolution fibre `A_a`, the admitted reporter strip is exactly `|Re z|<=a`. A marked
+horizontal intervention by `c` sends the admitted boundary reporter at `a` to the excluded reporter
+at `a+c`; the least repair is the next fibre `A_(a+|c|)`. Every finite repair therefore generates
+the next failure, while convolution laws and all older reporters are conserved. Reflection and
+phase remain isometric, and phase observation is periodic although repair grade diverges.
+
+This closes item 3 at the level of an exact analytic/topological realization. It does not close the
+field: a third nonisomorphic source laboratory and a literal arithmetic source-to-physical
+repair-scale landing remain open.
+
 ## 7. Parent boundary
 
 Knuth--Bendix and Buchberger completion, critical-pair criteria, higher-dimensional rewriting,
@@ -220,3 +233,6 @@ Retire this line as insufficient if any occurs:
   endpoint normality, nonconfluence, semantic conservativity, strict repair admission, and
   hereditary next-stage failure. Infinite-union confluence was deliberately excluded from the
   capstone; second non-rewriting realization remains the field gate.
+- 2026-08-14 -- ULF-ECMPL-2 paper-proved: bilateral weighted convolution supplies the second,
+  non-rewriting laboratory. Horizontal reporter execution forces a strict exponential repair
+  chain; periodic phase observation coexists with open repair history. Lean core pending.

@@ -31,6 +31,107 @@ open scoped BigOperators TensorProduct FourierTransform NNReal
 variable {ι : Type*} [Fintype ι]
 variable (p : ι → ℕ) [∀ i, Fact (p i).Prime]
 
+/-! ## Exact signed coordinates and the Boolean Sonin support -/
+
+/-- The literal `S`-unit with prescribed sign and prime exponents.  The
+Boolean value `true` denotes the positive representative. -/
+def fieldOneSignedSUnitOfBool
+    (S : Finset (HeightOneSpectrum ℤ))
+    (b : Bool) (n : ↥S → ℤ) : fieldOneSUnitSubgroup S :=
+  if b then
+    ⟨fieldOneSUnitProduct S n, fieldOneSUnitProduct_mem S n⟩
+  else
+    (⟨-1, fieldOne_negOne_mem_sUnitSubgroup S⟩ : fieldOneSUnitSubgroup S) *
+      ⟨fieldOneSUnitProduct S n, fieldOneSUnitProduct_mem S n⟩
+
+/-- Sign and all prime exponents are recovered exactly from the explicit
+signed `S`-unit. -/
+theorem fieldOneSignedSUnitOfBool_signedExponent
+    (S : Finset (HeightOneSpectrum ℤ))
+    (b : Bool) (n : ↥S → ℤ) :
+    fieldOneSUnitSignedExponent S (fieldOneSignedSUnitOfBool S b n) = (b, n) := by
+  apply Prod.ext
+  · cases b with
+    | false =>
+        have hp := fieldOneSUnitProduct_pos S n
+        simp [fieldOneSignedSUnitOfBool, fieldOneSUnitSignedExponent,
+          fieldOneSUnitPositiveSign, le_of_lt hp]
+    | true =>
+        simp [fieldOneSignedSUnitOfBool, fieldOneSUnitSignedExponent,
+          fieldOneSUnitPositiveSign, fieldOneSUnitProduct_pos S n]
+  · cases b <;> simp only [fieldOneSignedSUnitOfBool, Bool.false_eq_true,
+      if_false, if_true, fieldOneSUnitSignedExponent]
+    · rw [fieldOneSUnitExponent_mul, fieldOneSUnitExponent_product]
+      funext v
+      change deningerRatExp (-1 : ℚ) _ + n v = n v
+      rw [deningerRatExp_neg]
+      simp
+    · exact fieldOneSUnitExponent_product S n
+
+theorem fieldOneSUnitSignedExponent_surjective
+    (S : Finset (HeightOneSpectrum ℤ)) :
+    Function.Surjective (fieldOneSUnitSignedExponent S) := by
+  rintro ⟨b, n⟩
+  exact ⟨fieldOneSignedSUnitOfBool S b n,
+    fieldOneSignedSUnitOfBool_signedExponent S b n⟩
+
+/-- Exact signed lattice coordinates
+`Q_Sˣ ≃ {±1} × ℤ^S` on the literal CCM subgroup. -/
+noncomputable def fieldOneSUnitsSignedExponentEquiv
+    (S : Finset (HeightOneSpectrum ℤ)) :
+    fieldOneSUnitSubgroup S ≃ Bool × (↥S → ℤ) :=
+  Equiv.ofBijective (fieldOneSUnitSignedExponent S)
+    ⟨fieldOneSUnitSignedExponent_injective S,
+      fieldOneSUnitSignedExponent_surjective S⟩
+
+theorem fieldOneSignedSUnitOfBool_injective
+    (S : Finset (HeightOneSpectrum ℤ)) :
+    Function.Injective (fun bn : Bool × (↥S → ℤ) =>
+      fieldOneSignedSUnitOfBool S bn.1 bn.2) := by
+  rintro ⟨b, n⟩ ⟨c, m⟩ h
+  have hs := congrArg (fieldOneSUnitSignedExponent S) h
+  simpa only [fieldOneSignedSUnitOfBool_signedExponent] using hs
+
+/-- Boolean exponent `false ↦ 0`, `true ↦ -1` selected by the two local
+shells of `σ_p`. -/
+def fieldOneSoninExponentOfBool (b : Bool) : ℤ :=
+  if b then -1 else 0
+
+/-- Finite Boolean cube `{0,-1}^S` inside the integral `S`-unit lattice. -/
+def fieldOneFiniteStageSoninExponentCube
+    (S : Finset (HeightOneSpectrum ℤ)) : Finset (↥S → ℤ) := by
+  classical
+  exact Finset.univ.image
+    (fun b : ↥S → Bool => fun v => fieldOneSoninExponentOfBool (b v))
+
+theorem fieldOneFiniteStageSoninExponent_mem_cube_iff
+    (S : Finset (HeightOneSpectrum ℤ)) (n : ↥S → ℤ) :
+    n ∈ fieldOneFiniteStageSoninExponentCube S ↔
+      ∀ v, n v = 0 ∨ n v = -1 := by
+  classical
+  constructor
+  · rw [fieldOneFiniteStageSoninExponentCube, Finset.mem_image]
+    rintro ⟨b, -, rfl⟩ v
+    cases b v <;> simp [fieldOneSoninExponentOfBool]
+  · intro hn
+    rw [fieldOneFiniteStageSoninExponentCube, Finset.mem_image]
+    let b : ↥S → Bool := fun v => decide (n v = -1)
+    refine ⟨b, Finset.mem_univ b, ?_⟩
+    funext v
+    rcases hn v with hv | hv
+    · simp [b, fieldOneSoninExponentOfBool, hv]
+    · simp [b, fieldOneSoninExponentOfBool, hv]
+
+/-- The finite subset of literal `S`-units on which `σ_S` can be nonzero:
+two signs times the Boolean exponent cube. -/
+def fieldOneFiniteStageSoninSignedSupport
+    (S : Finset (HeightOneSpectrum ℤ)) :
+    Finset (fieldOneSUnitSubgroup S) := by
+  classical
+  exact ((Finset.univ : Finset Bool).product
+        (fieldOneFiniteStageSoninExponentCube S)).image
+      (fun bn => fieldOneSignedSUnitOfBool S bn.1 bn.2)
+
 /-- Exact two-shell value of `σ_p` in valuation--unit coordinates. -/
 @[simp] theorem fieldOnePadicSoninSigma_apply_forward
     (q : ℕ) [Fact q.Prime] (k : ℤ) (u : ℤ_[q]ˣ) :
@@ -273,6 +374,63 @@ def fieldOneFiniteStageSoninSigmaOrbitCoefficient
       -((Rat.HeightOneSpectrum.primesEquiv v.1 : ℂ)⁻¹)
     else 0
 
+/-- The same coefficient written directly in integral exponent coordinates. -/
+def fieldOneFiniteStageSoninExponentCoefficient
+    (S : Finset (HeightOneSpectrum ℤ)) (n : ↥S → ℤ) : ℂ :=
+  ∏ v : ↥S,
+    if n v = 0 then 1
+    else if n v = -1 then
+      -((Rat.HeightOneSpectrum.primesEquiv v.1 : ℂ)⁻¹)
+    else 0
+
+theorem fieldOneFiniteStageSoninSigmaOrbitCoefficient_signedSUnit
+    (S : Finset (HeightOneSpectrum ℤ))
+    (b : Bool) (n : ↥S → ℤ) :
+    fieldOneFiniteStageSoninSigmaOrbitCoefficient S
+        (fieldOneSignedSUnitOfBool S b n) =
+      fieldOneFiniteStageSoninExponentCoefficient S n := by
+  have h := congrArg Prod.snd
+    (fieldOneSignedSUnitOfBool_signedExponent S b n)
+  change fieldOneSUnitExponent S (fieldOneSignedSUnitOfBool S b n) = n at h
+  unfold fieldOneFiniteStageSoninSigmaOrbitCoefficient
+  unfold fieldOneFiniteStageSoninExponentCoefficient
+  rw [h]
+
+theorem fieldOneFiniteStageSoninSigmaOrbitCoefficient_eq_zero_of_exponent_not_mem
+    (S : Finset (HeightOneSpectrum ℤ))
+    (q : fieldOneSUnitSubgroup S)
+    (hq : fieldOneSUnitExponent S q ∉
+      fieldOneFiniteStageSoninExponentCube S) :
+    fieldOneFiniteStageSoninSigmaOrbitCoefficient S q = 0 := by
+  classical
+  rw [fieldOneFiniteStageSoninExponent_mem_cube_iff] at hq
+  push Not at hq
+  obtain ⟨v, hv0, hvm1⟩ := hq
+  unfold fieldOneFiniteStageSoninSigmaOrbitCoefficient
+  apply Finset.prod_eq_zero (Finset.mem_univ v)
+  simp [hv0, hvm1]
+
+theorem fieldOneFiniteStageSoninSigmaOrbitCoefficient_eq_zero_of_not_mem_support
+    (S : Finset (HeightOneSpectrum ℤ))
+    (q : fieldOneSUnitSubgroup S)
+    (hq : q ∉ fieldOneFiniteStageSoninSignedSupport S) :
+    fieldOneFiniteStageSoninSigmaOrbitCoefficient S q = 0 := by
+  apply fieldOneFiniteStageSoninSigmaOrbitCoefficient_eq_zero_of_exponent_not_mem
+  intro hexp
+  apply hq
+  classical
+  rw [fieldOneFiniteStageSoninSignedSupport, Finset.mem_image]
+  let b := fieldOneSUnitPositiveSign q
+  let n := fieldOneSUnitExponent S q
+  have hpair : (b, n) ∈
+      (Finset.univ : Finset Bool).product
+        (fieldOneFiniteStageSoninExponentCube S) := by
+    exact Finset.mem_product.2 ⟨Finset.mem_univ b, hexp⟩
+  refine ⟨(b, n), hpair, ?_⟩
+  apply fieldOneSUnitSignedExponent_injective S
+  rw [fieldOneSignedSUnitOfBool_signedExponent]
+  rfl
+
 /-- Exact evaluation on every rational `S`-unit translate of every angular
 representative.  This is the orbit-classification core of equation (57). -/
 theorem fieldOneFiniteStageSoninSigma_sunitAngular
@@ -384,6 +542,229 @@ def fieldOneFiniteStageThetaBruhatCoreLinearMap
     (S : Finset (HeightOneSpectrum ℤ)) (f : SchwartzMap ℝ ℂ) :
     fieldOneFiniteStageThetaBruhatCoreLinearMap S f =
       f ⊗ₜ[ℂ] fieldOneFiniteStageSoninSigma S := rfl
+
+/-- Exact finite collapse of the nominally infinite `S`-unit periodization:
+only the two signs over the Boolean exponent cube `{0,-1}^S` survive. -/
+theorem fieldOneFiniteStageThetaBruhatCore_logPeriodization_eq_sum_support
+    (S : Finset (HeightOneSpectrum ℤ)) (f : SchwartzMap ℝ ℂ)
+    (k : FieldOneFiniteStageModuleOneClass S) (t : ℝ) :
+    fieldOneFiniteStageBruhatLogPeriodization S
+        (fieldOneFiniteStageThetaBruhatCoreLinearMap S f) (k, t) =
+      ∑ q ∈ fieldOneFiniteStageSoninSignedSupport S,
+        fieldOneFiniteStageBruhatOrbit S
+          (fieldOneFiniteStageThetaBruhatCoreLinearMap S f)
+          (fieldOneFiniteStageBruhatLogRayIdele S
+            (fun v =>
+              (fieldOneFiniteStageAngularTorusRepresentative S k v).1) t) q := by
+  classical
+  rw [fieldOneFiniteStageBruhatLogPeriodization,
+    fieldOneFiniteStageBruhatPeriodization]
+  apply tsum_eq_sum
+  intro q hq
+  rw [fieldOneFiniteStageThetaBruhatCoreLinearMap_apply,
+    fieldOneFiniteStageBruhatOrbit_tmul]
+  unfold fieldOneFiniteStageBruhatPureTensorOrbit
+  simp only [fieldOneFiniteStageBruhatLogRayIdele]
+  change _ * (fieldOneFiniteStageSoninSigma S).1
+      (fun v => algebraMap ℚ (v.1.adicCompletion ℚ) (q.1 : ℚ) *
+        fieldOneFiniteStageAngularFiniteEmbedding S k v) = 0
+  rw [fieldOneFiniteStageSoninSigma_sunitAngular,
+    fieldOneFiniteStageSoninSigmaOrbitCoefficient_eq_zero_of_not_mem_support
+      S q hq, mul_zero]
+
+/-- Coordinate form of the finite collapse, before pairing the two signs. -/
+theorem fieldOneFiniteStageThetaBruhatCore_logPeriodization_eq_sum_bool_cube
+    (S : Finset (HeightOneSpectrum ℤ)) (f : SchwartzMap ℝ ℂ)
+    (k : FieldOneFiniteStageModuleOneClass S) (t : ℝ) :
+    fieldOneFiniteStageBruhatLogPeriodization S
+        (fieldOneFiniteStageThetaBruhatCoreLinearMap S f) (k, t) =
+      ∑ bn ∈ (Finset.univ : Finset Bool).product
+          (fieldOneFiniteStageSoninExponentCube S),
+        fieldOneFiniteStageBruhatOrbit S
+          (fieldOneFiniteStageThetaBruhatCoreLinearMap S f)
+          (fieldOneFiniteStageBruhatLogRayIdele S
+            (fun v =>
+              (fieldOneFiniteStageAngularTorusRepresentative S k v).1) t)
+          (fieldOneSignedSUnitOfBool S bn.1 bn.2) := by
+  classical
+  rw [fieldOneFiniteStageThetaBruhatCore_logPeriodization_eq_sum_support,
+    fieldOneFiniteStageSoninSignedSupport, Finset.sum_image]
+  intro a ha b hb hab
+  exact fieldOneSignedSUnitOfBool_injective S hab
+
+/-- For even archimedean input, the positive and negative representatives
+of every exponent vector contribute exactly the same orbit term. -/
+theorem fieldOneFiniteStageThetaBruhatCore_orbit_signed_pair_eq
+    (S : Finset (HeightOneSpectrum ℤ)) (f : SchwartzMap ℝ ℂ)
+    (hf : ∀ x : ℝ, f (-x) = f x)
+    (k : FieldOneFiniteStageModuleOneClass S) (t : ℝ) (n : ↥S → ℤ) :
+    fieldOneFiniteStageBruhatOrbit S
+        (fieldOneFiniteStageThetaBruhatCoreLinearMap S f)
+        (fieldOneFiniteStageBruhatLogRayIdele S
+          (fun v =>
+            (fieldOneFiniteStageAngularTorusRepresentative S k v).1) t)
+        (fieldOneSignedSUnitOfBool S false n) =
+      fieldOneFiniteStageBruhatOrbit S
+        (fieldOneFiniteStageThetaBruhatCoreLinearMap S f)
+        (fieldOneFiniteStageBruhatLogRayIdele S
+          (fun v =>
+            (fieldOneFiniteStageAngularTorusRepresentative S k v).1) t)
+        (fieldOneSignedSUnitOfBool S true n) := by
+  rw [fieldOneFiniteStageThetaBruhatCoreLinearMap_apply,
+    fieldOneFiniteStageBruhatOrbit_tmul,
+    fieldOneFiniteStageBruhatOrbit_tmul]
+  unfold fieldOneFiniteStageBruhatPureTensorOrbit
+  simp only [fieldOneFiniteStageBruhatLogRayIdele]
+  change f _ * (fieldOneFiniteStageSoninSigma S).1
+        (fun v => algebraMap ℚ (v.1.adicCompletion ℚ)
+            ((fieldOneSignedSUnitOfBool S false n).1 : ℚ) *
+          fieldOneFiniteStageAngularFiniteEmbedding S k v) =
+    f _ * (fieldOneFiniteStageSoninSigma S).1
+        (fun v => algebraMap ℚ (v.1.adicCompletion ℚ)
+            ((fieldOneSignedSUnitOfBool S true n).1 : ℚ) *
+          fieldOneFiniteStageAngularFiniteEmbedding S k v)
+  rw [fieldOneFiniteStageSoninSigma_sunitAngular,
+    fieldOneFiniteStageSoninSigma_sunitAngular,
+    fieldOneFiniteStageSoninSigmaOrbitCoefficient_signedSUnit,
+    fieldOneFiniteStageSoninSigmaOrbitCoefficient_signedSUnit]
+  congr 1
+  simp only [fieldOneSignedSUnitOfBool, Bool.false_eq_true, if_false, if_true,
+    Subgroup.coe_mul, Units.val_neg, Units.val_mk0, neg_mul, one_mul]
+  push_cast
+  change f (Real.exp t *
+      -(((fieldOneSUnitProduct S n : ℚˣ) : ℚ) : ℝ)) =
+    f (Real.exp t * (((fieldOneSUnitProduct S n : ℚˣ) : ℚ) : ℝ))
+  rw [show Real.exp t *
+      -(((fieldOneSUnitProduct S n : ℚˣ) : ℚ) : ℝ) =
+        -(Real.exp t * (((fieldOneSUnitProduct S n : ℚˣ) : ℚ) : ℝ)) by ring,
+    hf]
+
+/-- Exact positive-sign orbit term in exponent coordinates. -/
+theorem fieldOneFiniteStageThetaBruhatCore_orbit_signed_true
+    (S : Finset (HeightOneSpectrum ℤ)) (f : SchwartzMap ℝ ℂ)
+    (k : FieldOneFiniteStageModuleOneClass S) (t : ℝ) (n : ↥S → ℤ) :
+    fieldOneFiniteStageBruhatOrbit S
+        (fieldOneFiniteStageThetaBruhatCoreLinearMap S f)
+        (fieldOneFiniteStageBruhatLogRayIdele S
+          (fun v =>
+            (fieldOneFiniteStageAngularTorusRepresentative S k v).1) t)
+        (fieldOneSignedSUnitOfBool S true n) =
+      f (Real.exp t *
+          (((fieldOneSUnitProduct S n : ℚˣ) : ℚ) : ℝ)) *
+        fieldOneFiniteStageSoninExponentCoefficient S n := by
+  rw [fieldOneFiniteStageThetaBruhatCoreLinearMap_apply,
+    fieldOneFiniteStageBruhatOrbit_tmul]
+  unfold fieldOneFiniteStageBruhatPureTensorOrbit
+  simp only [fieldOneFiniteStageBruhatLogRayIdele]
+  change f _ * (fieldOneFiniteStageSoninSigma S).1
+      (fun v => algebraMap ℚ (v.1.adicCompletion ℚ)
+          ((fieldOneSignedSUnitOfBool S true n).1 : ℚ) *
+        fieldOneFiniteStageAngularFiniteEmbedding S k v) = _
+  rw [fieldOneFiniteStageSoninSigma_sunitAngular,
+    fieldOneFiniteStageSoninSigmaOrbitCoefficient_signedSUnit]
+  congr 1
+  simp [fieldOneSignedSUnitOfBool, Units.val_mk0]
+
+/-- The finite Euler sum selected by the local two-shell vector, before
+rewriting it as a product of dilation operators. -/
+def fieldOneFiniteStageThetaPositiveEulerValue
+    (S : Finset (HeightOneSpectrum ℤ))
+    (f : SchwartzMap ℝ ℂ) (x : ℝ) : ℂ :=
+  ∑ n ∈ fieldOneFiniteStageSoninExponentCube S,
+    f (x * (((fieldOneSUnitProduct S n : ℚˣ) : ℚ) : ℝ)) *
+      fieldOneFiniteStageSoninExponentCoefficient S n
+
+/-- Exact normalization behind the paper's phrase “ignoring the summation
+over `±1` since `f` is even”: full-`Γ` periodization is twice positive-`Γ`
+periodization, with no hidden convergence argument. -/
+theorem fieldOneFiniteStageThetaBruhatCore_logPeriodization_eq_two_mul_positiveCube
+    (S : Finset (HeightOneSpectrum ℤ)) (f : SchwartzMap ℝ ℂ)
+    (hf : ∀ x : ℝ, f (-x) = f x)
+    (k : FieldOneFiniteStageModuleOneClass S) (t : ℝ) :
+    fieldOneFiniteStageBruhatLogPeriodization S
+        (fieldOneFiniteStageThetaBruhatCoreLinearMap S f) (k, t) =
+      2 * ∑ n ∈ fieldOneFiniteStageSoninExponentCube S,
+        fieldOneFiniteStageBruhatOrbit S
+          (fieldOneFiniteStageThetaBruhatCoreLinearMap S f)
+          (fieldOneFiniteStageBruhatLogRayIdele S
+            (fun v =>
+              (fieldOneFiniteStageAngularTorusRepresentative S k v).1) t)
+          (fieldOneSignedSUnitOfBool S true n) := by
+  classical
+  rw [fieldOneFiniteStageThetaBruhatCore_logPeriodization_eq_sum_bool_cube]
+  calc
+    (∑ bn ∈ (Finset.univ : Finset Bool).product
+          (fieldOneFiniteStageSoninExponentCube S),
+        fieldOneFiniteStageBruhatOrbit S
+          (fieldOneFiniteStageThetaBruhatCoreLinearMap S f)
+          (fieldOneFiniteStageBruhatLogRayIdele S
+            (fun v =>
+              (fieldOneFiniteStageAngularTorusRepresentative S k v).1) t)
+          (fieldOneSignedSUnitOfBool S bn.1 bn.2)) =
+      ∑ b ∈ (Finset.univ : Finset Bool),
+        ∑ n ∈ fieldOneFiniteStageSoninExponentCube S,
+          fieldOneFiniteStageBruhatOrbit S
+            (fieldOneFiniteStageThetaBruhatCoreLinearMap S f)
+            (fieldOneFiniteStageBruhatLogRayIdele S
+              (fun v =>
+                (fieldOneFiniteStageAngularTorusRepresentative S k v).1) t)
+            (fieldOneSignedSUnitOfBool S b n) := by
+        exact Finset.sum_product
+          (Finset.univ : Finset Bool)
+          (fieldOneFiniteStageSoninExponentCube S)
+          (fun bn => fieldOneFiniteStageBruhatOrbit S
+            (fieldOneFiniteStageThetaBruhatCoreLinearMap S f)
+            (fieldOneFiniteStageBruhatLogRayIdele S
+              (fun v =>
+                (fieldOneFiniteStageAngularTorusRepresentative S k v).1) t)
+            (fieldOneSignedSUnitOfBool S bn.1 bn.2))
+    _ =
+      ∑ n ∈ fieldOneFiniteStageSoninExponentCube S,
+        ∑ b ∈ (Finset.univ : Finset Bool),
+          fieldOneFiniteStageBruhatOrbit S
+            (fieldOneFiniteStageThetaBruhatCoreLinearMap S f)
+            (fieldOneFiniteStageBruhatLogRayIdele S
+              (fun v =>
+                (fieldOneFiniteStageAngularTorusRepresentative S k v).1) t)
+            (fieldOneSignedSUnitOfBool S b n) := by
+        rw [Finset.sum_comm]
+    _ = ∑ n ∈ fieldOneFiniteStageSoninExponentCube S,
+        2 * fieldOneFiniteStageBruhatOrbit S
+          (fieldOneFiniteStageThetaBruhatCoreLinearMap S f)
+          (fieldOneFiniteStageBruhatLogRayIdele S
+            (fun v =>
+              (fieldOneFiniteStageAngularTorusRepresentative S k v).1) t)
+          (fieldOneSignedSUnitOfBool S true n) := by
+        apply Finset.sum_congr rfl
+        intro n hn
+        rw [Fintype.sum_bool]
+        rw [fieldOneFiniteStageThetaBruhatCore_orbit_signed_pair_eq S f hf k t n]
+        ring
+    _ = 2 * ∑ n ∈ fieldOneFiniteStageSoninExponentCube S,
+        fieldOneFiniteStageBruhatOrbit S
+          (fieldOneFiniteStageThetaBruhatCoreLinearMap S f)
+          (fieldOneFiniteStageBruhatLogRayIdele S
+            (fun v =>
+              (fieldOneFiniteStageAngularTorusRepresentative S k v).1) t)
+          (fieldOneSignedSUnitOfBool S true n) := by
+        rw [Finset.mul_sum]
+
+/-- Exact pointwise Boolean-cube form of semilocal equation (4.23), with
+the factor `2` forced by the corpus's full signed-`Γ` convention. -/
+theorem fieldOneFiniteStageThetaBruhatCore_logPeriodization_eq_two_mul_eulerValue
+    (S : Finset (HeightOneSpectrum ℤ)) (f : SchwartzMap ℝ ℂ)
+    (hf : ∀ x : ℝ, f (-x) = f x)
+    (k : FieldOneFiniteStageModuleOneClass S) (t : ℝ) :
+    fieldOneFiniteStageBruhatLogPeriodization S
+        (fieldOneFiniteStageThetaBruhatCoreLinearMap S f) (k, t) =
+      2 * fieldOneFiniteStageThetaPositiveEulerValue S f (Real.exp t) := by
+  rw [fieldOneFiniteStageThetaBruhatCore_logPeriodization_eq_two_mul_positiveCube
+    S f hf k t]
+  unfold fieldOneFiniteStageThetaPositiveEulerValue
+  congr 1
+  apply Finset.sum_congr rfl
+  intro n hn
+  exact fieldOneFiniteStageThetaBruhatCore_orbit_signed_true S f k t n
 
 /-- Exact Fourier covariance of the literal `σ_S ⊗ f` core. -/
 theorem fieldOneFiniteStageBruhatFourier_thetaCore

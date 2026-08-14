@@ -1,4 +1,5 @@
 import Mathlib.Data.Real.Basic
+import Mathlib.Tactic.Linarith
 import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 
@@ -120,6 +121,28 @@ theorem spectralGap_apply {lam : ℝ} (h : G.HasSpectralGap lam) (htot : G.total
       ≤ G.dirichlet f f := by
   have hmean := h (fun v => f v - G.mean f) (G.sum_mass_sub_mean f htot)
   rwa [G.dirichlet_sub_const f (G.mean f)] at hmean
+
+/-- **A bound on the averaging form gives a spectral gap.**  Since the Dirichlet form is the mass
+norm minus the averaging form, a bound `⟨Af, f⟩ ≤ θ‖f‖²` on functions of mass average zero is
+exactly the spectral gap `1 - θ`. -/
+theorem hasSpectralGap_of_bound (θ : ℝ)
+    (h : ∀ f : V → ℝ, (∑ v, G.mass v * f v) = 0 →
+      (∑ v, ∑ u, G.w v u * (f v * f u)) ≤ θ * G.massInner f f) :
+    G.HasSpectralGap (1 - θ) := by
+  intro f hf
+  rw [G.dirichlet_self_eq f]
+  have hb := h f hf
+  have hexp : (1 - θ) * G.massInner f f
+      = G.massInner f f - θ * G.massInner f f := by ring
+  rw [hexp]
+  linarith
+
+/-- The averaging form of a weighted graph. -/
+def averaging (f g : V → ℝ) : ℝ := ∑ v, ∑ u, G.w v u * (f v * g u)
+
+theorem dirichlet_self_eq_sub (f : V → ℝ) :
+    G.dirichlet f f = G.massInner f f - G.averaging f f := G.dirichlet_self_eq f
+
 
 end WeightedGraph
 

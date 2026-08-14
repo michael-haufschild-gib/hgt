@@ -237,8 +237,18 @@ field and reporter-invariance infrastructure in `HTGeometry`.  The finite ZF ope
 unbounded-domain theory, distributional coefficient extraction, and constructive-QFT locality
 theorem are not present.
 
-Formalizing only the affine reporter `(5)` would be wrapper bloat.  No Lean change is justified
-until the compact-local reporter is proved on paper with an unconditional theorem interface.
+`HTGeometry/WedgeFourPointExchangeCarrier.lean` now carries the differential-algebraic transfer
+outright: `wedgeFourPointCoefficient S = S - 1` is equation `(5)`,
+`differentialAdjoin_wedgeFourPointCoefficient` is equation `(6)` proved as an equality of
+differential fields, `hypertranscendentalOver_wedgeFourPointCoefficient_iff` and
+`differentialAlgebraicOver_wedgeFourPointCoefficient_iff` are the two halves of `(7)`, and
+`tendsto_kolchinSlope_one_wedgeFourPointCoefficient` is equation `(8)` -- the normalized Kolchin
+slope of the connected coefficient is exactly `1` on the HT branch, through the new
+`KolchinSlopeDichotomy.lean`.  The complementary slope-`0` statement is proved too, so the connected
+sector separates the two branches rather than only detecting one.
+
+The finite ZF operator algebra, unbounded-domain theory and distributional coefficient extraction
+behind `(1)`--`(4)`, and the constructive-QFT locality theorem, remain outside the formal tree.
 
 ## Primary literature
 
