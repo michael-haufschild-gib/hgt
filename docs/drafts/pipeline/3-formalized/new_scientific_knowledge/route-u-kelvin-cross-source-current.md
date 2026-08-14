@@ -1,10 +1,10 @@
 # Route U Kelvin cross-source current
 
 - **ID:** `route-u-kelvin-cross-source-current`
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** CONJECTURE ATTACK + SOURCE GEOMETRY
 - **Parent:** `route-u-antipodal-prime-gamma-polarization`
-- **Status:** `[PAPER-PROVED CORE] [LEAN IN PROGRESS] [NOVELTY UNVERIFIED]`
+- **Status:** `[FORMALIZED] [HOSTILE AUDIT PASSED] [NOVELTY UNVERIFIED]`
 
 ## Live obstruction
 
@@ -63,7 +63,7 @@ The cross term is an oriented modular defect, not a cancelling odd integral.
 
 Replacement conjecture: retain the signed current and expose its only local weight mismatch.
 
-**Verdict:** `[PAPER-PROVED CORE]`; Lean pending.
+**Verdict:** `[PAPER-PROVED]`; scratch Lean passed.
 
 For any real weight `w`, define the Jacobian-paired cross current on `x>0` by
 
@@ -89,6 +89,10 @@ Q_O(a^2)=0,  F_t(a)=0,  J_w(a)=0.                       (K.2)
 For the literal archimedean source take `w=gammaHardyPhaseRate`.  Thus its cross contribution is
 controlled exactly by one Gamma--heat modular-weight defect on a Kelvin fundamental domain.  No
 pointwise energy argument survives.
+
+Hostile formal feedback also verifies that `F_t` is exactly, pointwise, one quarter of the
+difference between norms of the full and antipodal polynomial--Gaussian densities occurring in
+the completed prime--Gamma cross balance.  It is not an auxiliary model density.
 
 ## Dependency-closed proof
 
@@ -141,5 +145,18 @@ must preserve all three; dropping prime cross polarization would replay the diag
 - [x] `U-CROSS-SIGN` falsified
 - [x] `U-CROSS-CANCEL` falsified
 - [x] `U-KELVIN-CURRENT` dependency-closed paper proof
-- [ ] Hostile Lean feedback audit
-- [ ] Exact Lean formalization and axiom audit
+- [x] Hostile Lean feedback audit
+- [x] Exact Lean formalization and axiom audit
+
+## Lean audit
+
+`XiShiftedHardEdgePrimeGammaKelvinCrossCurrent.lean` (426 lines) passes both scratch and checked-in
+`lake env lean`.  Exact module `.olean` built directly at
+`formal/.lake/build/lib/lean/GaloisForLFunctions/RHTower/XiShiftedHardEdgePrimeGammaKelvinCrossCurrent.olean`
+(749568 bytes); no umbrella or project build was run.  `formal/GaloisForLFunctions/RHTower.lean`
+imports the finished module.
+
+`#print axioms` on generic antipode/Kelvin covariance, literal archimedean polarization, cross
+anti-covariance, strict sign reversal, seam vanishing, arbitrary-weight modular factorization, and
+Gamma specialization reports only `propext`, `Classical.choice`, and `Quot.sound`.  Targeted
+forbidden-token and `git diff --check` audits pass.

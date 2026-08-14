@@ -1,16 +1,19 @@
 import GaloisForLFunctions.RHTower.SuzukiGammaStripFourierWeight
+import GaloisForLFunctions.HTGeometry.CompactTestTransformOrder
 
 /-!
 # Vector-valued Paley–Wiener translation on the unit strip
 
-A holomorphic function on the open unit strip which is bounded on every closed substrip and square
-integrable on every interior line has one single frequency profile: its `L²` inverse Fourier
-transforms on the different lines differ exactly by the exponential weights `e^{2πσL}`.
+A holomorphic function on the open unit strip which grows at most polynomially on every closed
+substrip and is square integrable on every interior line has one single frequency profile: its `L²`
+inverse Fourier transforms on the different lines differ exactly by the exponential weights
+`e^{2πσL}`.
 
 The mechanism is the same at this level of generality as for the Gamma seam.  Multiplying the datum
 by the entire Fourier extension of a compactly supported smooth test function produces a holomorphic
-integrand which decays quadratically along every horizontal line of a closed substrip, so Cauchy's
-theorem for rectangles moves the line of integration freely.  The multiplication formula for
+integrand which decays quadratically along every horizontal line of a closed substrip — the test
+transform decays faster than every power, so it absorbs the polynomial growth — and Cauchy's theorem
+for rectangles then moves the line of integration freely.  The multiplication formula for
 tempered distributions turns that shift into an identity between the `L²` transforms, and the
 du Bois-Reymond lemma for locally integrable functions converts it into an almost-everywhere
 identity.
@@ -31,14 +34,14 @@ noncomputable section
 
 variable {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℂ X] [CompleteSpace X]
 
-/-- A holomorphic strip datum: holomorphic on the open unit strip, bounded on every closed
-substrip, and square integrable on every interior horizontal line. -/
+/-- A holomorphic strip datum: holomorphic on the open unit strip, of at most polynomial growth on
+every closed substrip, and square integrable on every interior horizontal line. -/
 structure StripDatum (f : ℂ → X) : Prop where
   /-- Holomorphy on the open unit strip. -/
   diff : DifferentiableOn ℂ f (imStrip 0 1)
-  /-- Boundedness on every closed substrip. -/
+  /-- Polynomial growth on every closed substrip. -/
   bdd : ∀ σ₀ σ₁ : ℝ, 0 < σ₀ → σ₀ ≤ σ₁ → σ₁ < 1 →
-    ∃ D : ℝ, 0 ≤ D ∧ ∀ z : ℂ, z.im ∈ Icc σ₀ σ₁ → ‖f z‖ ≤ D
+    ∃ (D : ℝ) (n : ℕ), 0 ≤ D ∧ ∀ z : ℂ, z.im ∈ Icc σ₀ σ₁ → ‖f z‖ ≤ D * (1 + ‖z‖) ^ n
   /-- Square integrability on every interior line. -/
   memLp : ∀ σ : ℝ, σ ∈ Ioo (0 : ℝ) 1 →
     MemLp (fun x : ℝ => f ((x : ℂ) + (σ : ℂ) * Complex.I)) 2 (volume : Measure ℝ)
@@ -88,23 +91,29 @@ theorem exists_bound_datumPaired {ψ : ℝ → ℂ} (hψ : ContDiff ℝ ∞ ψ)
     (hσ : σ ∈ Ioo (0 : ℝ) 1) (hσ' : σ' ∈ Ioo (0 : ℝ) 1) :
     ∃ A : ℝ, 0 ≤ A ∧ ∀ z : ℂ, z.im ∈ uIcc σ σ' →
       ‖datumPaired ψ f z‖ ≤ A / (1 + z.re ^ 2) := by
-  obtain ⟨C, hC0, hC⟩ := exists_testTransformTwoPi_decay hψ hψs σ σ'
-  obtain ⟨D, hD0, hD⟩ := hf.bdd (σ ⊓ σ') (σ ⊔ σ') (lt_min hσ.1 hσ'.1) inf_le_sup
+  obtain ⟨D, n, hD0, hD⟩ := hf.bdd (σ ⊓ σ') (σ ⊔ σ') (lt_min hσ.1 hσ'.1) inf_le_sup
     (max_lt hσ.2 hσ'.2)
+  obtain ⟨C, hC0, hC⟩ := exists_testTransformTwoPi_decay_order hψ hψs σ σ' (n + 2)
   refine ⟨C * D, by positivity, fun z hz => ?_⟩
   have hzIcc : z.im ∈ Icc (σ ⊓ σ') (σ ⊔ σ') := hz
+  have hz0 : (0 : ℝ) ≤ ‖z‖ := norm_nonneg z
   have hre : z.re ^ 2 ≤ ‖z‖ ^ 2 := by
     have h1 : |z.re| ≤ ‖z‖ := Complex.abs_re_le_norm z
     calc z.re ^ 2 = |z.re| ^ 2 := (sq_abs _).symm
       _ ≤ ‖z‖ ^ 2 := pow_le_pow_left₀ (abs_nonneg _) h1 2
+  have hcollapse : (C / (1 + ‖z‖) ^ (n + 2)) * (D * (1 + ‖z‖) ^ n)
+      = (C * D) / (1 + ‖z‖) ^ 2 := by
+    have hne : ((1 : ℝ) + ‖z‖) ^ n ≠ 0 := by positivity
+    rw [pow_add]
+    field_simp
   calc ‖datumPaired ψ f z‖
       = ‖testTransformTwoPi ψ z‖ * ‖f z‖ := by rw [datumPaired, norm_smul]
-    _ ≤ (C / (1 + ‖z‖ ^ 2)) * D :=
+    _ ≤ (C / (1 + ‖z‖) ^ (n + 2)) * (D * (1 + ‖z‖) ^ n) :=
         mul_le_mul (hC z hz) (hD z hzIcc) (norm_nonneg _) (by positivity)
-    _ = (C * D) / (1 + ‖z‖ ^ 2) := by ring
+    _ = (C * D) / (1 + ‖z‖) ^ 2 := hcollapse
     _ ≤ (C * D) / (1 + z.re ^ 2) := by
         refine div_le_div_of_nonneg_left (by positivity) (by positivity) ?_
-        linarith
+        nlinarith [hz0, hre]
 
 omit [CompleteSpace X] in
 theorem continuous_datumPaired_line {ψ : ℝ → ℂ} (hψc : Continuous ψ)

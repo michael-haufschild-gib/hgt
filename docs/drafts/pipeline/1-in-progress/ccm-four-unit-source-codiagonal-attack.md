@@ -2359,3 +2359,103 @@ It does not prove `(C49.2)` or the Ward sign. The exact remaining map must trans
 physical horizon through polarized Gamma/co-Poisson/Hodge descent to the resolved Green
 antidiagonal, identify its boundary column with `continuedXiAntiCausalWardResponse`, and preserve
 the four-unit energy. Any post-divisor weighting or bounded scalar projection remains excluded.
+
+## C52 finite Guinand--Weil event reflection `[FROZEN CONJECTURE]`
+
+The 2026 finite Guinand--Weil dictionary changes the finite source variables. For an integer
+Fourier mode `n` and an event `omega in [0,1]`, put
+
+```text
+b_omega(n)=sin(2*pi*omega*n)/pi,
+d_omega(n)=2*omega*cos(2*pi*omega*n),
+
+Q_omega(m,n)=d_omega(m)                         if m=n,
+             (b_omega(m)-b_omega(n))/(m-n)      if m!=n.       (C52.1)
+```
+
+This is the literal single-event divided-difference matrix in Groskin's finite source calculus.
+Let `omega* = 1-omega` be source reflection, not Fourier-mode reflection.
+
+**Conjecture C52.** Source reflection diagonalizes the event pair:
+
+```text
+Q_omega+Q_(omega*)
+  =2*Diag_n(cos(2*pi*omega*n)).                            (C52.2)
+```
+
+Consequently every off-diagonal entry of a finite source event is reflection-odd, while the
+zero-mode reflected pair has exact value `2`; doubling the two parity/source legs gives `4`.
+
+This claim is frozen before proof because it has a risky consequence: the four-unit number would
+be a central diagonal trace of source reflection, not evidence for positive orientation. The
+immediate falsifier is a nonzero mode where the right side of `(C52.2)` is negative. If such a
+mode exists, eventwise reflected Gamma/pole pairing cannot be the missing positive incidence.
+
+## C52 proof and C53 pivot `[PAPER-PROVED; MIRROR-POSITIVITY FALSIFIED]`
+
+For every integer `n`, periodicity gives
+
+```text
+sin(2*pi*(1-omega)*n)=-sin(2*pi*omega*n),
+cos(2*pi*(1-omega)*n)= cos(2*pi*omega*n).                 (C52.3)
+```
+
+If `m!=n`, `(C52.3)` negates both source values in the divided difference, hence
+`Q_(1-omega)(m,n)=-Q_omega(m,n)`. If `m=n`, the two diagonal entries add to
+
+```text
+2*omega*cos(2*pi*omega*n)
+  +2*(1-omega)*cos(2*pi*omega*n)
+=2*cos(2*pi*omega*n).
+```
+
+This proves `(C52.2)` entrywise. Linearity gives the packet law for arbitrary finite signed
+weights `alpha_r`:
+
+```text
+sum_r alpha_r*(Q_(omega_r)+Q_(1-omega_r))
+ =2*Diag_n(sum_r alpha_r*cos(2*pi*omega_r*n)).             (C52.4)
+```
+
+At `n=0`, `(C52.4)` is `2*sum_r alpha_r`; a second parity/source leg is exactly
+`4*sum_r alpha_r`. This is the finite-dictionary origin of a four-unit central trace.
+
+The proposed positivity consequence fails sharply. For one unit event at `omega=1/2`, the
+`n=1` diagonal of the reflected pair is
+
+```text
+2*cos(pi)=-2.                                             (C53.1)
+```
+
+Thus a reflected event has positive central value `2` and a negative first-mode value `-2` in
+the same exact matrix. Doubling produces `4` and `-4`; four-unit saturation and indefiniteness
+coexist. No eventwise mirror-majorization, diagonal Gamma repair, or argument using only the
+central four-unit trace can prove Weil positivity.
+
+**Higher principle exposed.** Write
+
+```text
+Q_omega
+ = (Q_omega+Q_(1-omega))/2
+   +(Q_omega-Q_(1-omega))/2.                              (C52.5)
+```
+
+The first term is diagonal and contains the central normalization. Every off-diagonal entry is
+in the second, source-reflection-odd term. The corpus's scalar, radial, fixed-compact, and
+source-blind failures are shadows of taking the first term or its norm before orienting the
+second. The missing CCM-FU producer is therefore not another four-unit budget: it is a
+cross-event/cofinal law controlling the reflection-odd matrix in `(C52.5)` by the completed
+diagonal sector without atomwise positivity. Because `(C53.1)` kills local reflected pairs, that
+law must assemble distinct prime, pole, and archimedean events before scalarization.
+
+**Novelty boundary.** Groskin proves the single-event formula and exact `2N+1` source quotient,
+but does not state `(C52.2)--(C52.5)` or the four-unit/negative-mode coexistence. Targeted corpus
+and primary-source searches found no such source-reflection matrix decomposition. The
+trigonometric proof is elementary; claimed contribution is the CCM structural consequence and
+frontier reduction, with external priority still unverified.
+
+**Next conjecture C54.** For the literal completed prime--pole--archimedean source packet, seek a
+non-atomwise factorization of its reflection-odd sector through the source-defined all-jet
+physical horizon whose Schur complement against the diagonal sector is nonnegative cofinally.
+Falsifier: any construction decomposing into positive reflected single-event blocks is killed by
+`(C53.1)` before a limit is taken.

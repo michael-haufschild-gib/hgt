@@ -201,4 +201,128 @@ end ZeroTemperature
 
 end
 
+section PositiveLinearization
+
+variable {ι : Type*} [Fintype ι] [Nonempty ι]
+
+/-- The normalized `p`-norm of a finite dictionary of scores. -/
+noncomputable def finiteDictionaryLpNorm (f : ι → ℝ) (p : ℝ) : ℝ :=
+  ((Fintype.card ι : ℝ)⁻¹ * ∑ w, f w ^ p) ^ p⁻¹
+
+/-- Upper half of the positive-linearization sandwich. -/
+theorem finiteDictionaryLpNorm_le {f : ι → ℝ} (hf : ∀ w, 0 ≤ f w) {p : ℝ} (hp : 0 < p) :
+    finiteDictionaryLpNorm f p ≤ finiteDictionaryMax f := by
+  have hcard : (0 : ℝ) < (Fintype.card ι : ℝ) := by exact_mod_cast Fintype.card_pos
+  have hmax : 0 ≤ finiteDictionaryMax f := finiteDictionaryMax_nonneg hf
+  have hsum : ∑ w, f w ^ p ≤ (Fintype.card ι : ℝ) * finiteDictionaryMax f ^ p := by
+    calc ∑ w, f w ^ p ≤ ∑ _w : ι, finiteDictionaryMax f ^ p :=
+          Finset.sum_le_sum fun w _ =>
+            Real.rpow_le_rpow (hf w) (le_finiteDictionaryMax f w) hp.le
+      _ = (Fintype.card ι : ℝ) * finiteDictionaryMax f ^ p := by
+          simp [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+  have hstep : (Fintype.card ι : ℝ)⁻¹ * ∑ w, f w ^ p ≤ finiteDictionaryMax f ^ p := by
+    calc (Fintype.card ι : ℝ)⁻¹ * ∑ w, f w ^ p
+        ≤ (Fintype.card ι : ℝ)⁻¹ * ((Fintype.card ι : ℝ) * finiteDictionaryMax f ^ p) :=
+          mul_le_mul_of_nonneg_left hsum (by positivity)
+      _ = finiteDictionaryMax f ^ p := by
+          rw [← mul_assoc, inv_mul_cancel₀ hcard.ne', one_mul]
+  have hnn : (0 : ℝ) ≤ (Fintype.card ι : ℝ)⁻¹ * ∑ w, f w ^ p := by
+    refine mul_nonneg (by positivity) (Finset.sum_nonneg fun w _ => ?_)
+    exact Real.rpow_nonneg (hf w) p
+  calc finiteDictionaryLpNorm f p ≤ (finiteDictionaryMax f ^ p) ^ p⁻¹ :=
+        Real.rpow_le_rpow hnn hstep (by positivity)
+    _ = finiteDictionaryMax f := Real.rpow_rpow_inv hmax hp.ne'
+
+/-- Lower half of the positive-linearization sandwich. -/
+theorem le_finiteDictionaryLpNorm {f : ι → ℝ} (hf : ∀ w, 0 ≤ f w) {p : ℝ} (hp : 0 < p) :
+    (Fintype.card ι : ℝ) ^ (-p⁻¹) * finiteDictionaryMax f ≤ finiteDictionaryLpNorm f p := by
+  have hcard : (0 : ℝ) < (Fintype.card ι : ℝ) := by exact_mod_cast Fintype.card_pos
+  have hmax : 0 ≤ finiteDictionaryMax f := finiteDictionaryMax_nonneg hf
+  obtain ⟨w₀, hw₀⟩ := exists_eq_finiteDictionaryMax f
+  have hsingle : finiteDictionaryMax f ^ p ≤ ∑ w, f w ^ p := by
+    calc finiteDictionaryMax f ^ p = f w₀ ^ p := by rw [hw₀]
+      _ ≤ ∑ w, f w ^ p :=
+        Finset.single_le_sum (f := fun w => f w ^ p)
+          (fun w _ => Real.rpow_nonneg (hf w) p) (Finset.mem_univ w₀)
+  have hstep : (Fintype.card ι : ℝ)⁻¹ * finiteDictionaryMax f ^ p ≤
+      (Fintype.card ι : ℝ)⁻¹ * ∑ w, f w ^ p :=
+    mul_le_mul_of_nonneg_left hsingle (by positivity)
+  have hnn : (0 : ℝ) ≤ (Fintype.card ι : ℝ)⁻¹ * finiteDictionaryMax f ^ p := by
+    exact mul_nonneg (by positivity) (Real.rpow_nonneg hmax p)
+  have hsplit : ((Fintype.card ι : ℝ)⁻¹ * finiteDictionaryMax f ^ p) ^ p⁻¹ =
+      (Fintype.card ι : ℝ) ^ (-p⁻¹) * finiteDictionaryMax f := by
+    rw [Real.mul_rpow (by positivity) (Real.rpow_nonneg hmax p),
+      Real.rpow_rpow_inv hmax hp.ne', ← Real.rpow_neg_one ((Fintype.card ι : ℝ)),
+      ← Real.rpow_mul hcard.le, neg_one_mul]
+  calc (Fintype.card ι : ℝ) ^ (-p⁻¹) * finiteDictionaryMax f
+      = ((Fintype.card ι : ℝ)⁻¹ * finiteDictionaryMax f ^ p) ^ p⁻¹ := hsplit.symm
+    _ ≤ finiteDictionaryLpNorm f p := Real.rpow_le_rpow hnn hstep (by positivity)
+
+/-- The one-hot dictionary saturates the lower constant of the sandwich. -/
+theorem finiteDictionaryLpNorm_oneHot [DecidableEq ι] (w₀ : ι) {p : ℝ} (hp : 0 < p) :
+    finiteDictionaryLpNorm (fun w => if w = w₀ then (1 : ℝ) else 0) p =
+        (Fintype.card ι : ℝ) ^ (-p⁻¹) ∧
+      finiteDictionaryMax (fun w => if w = w₀ then (1 : ℝ) else 0) = 1 := by
+  have hcard : (0 : ℝ) < (Fintype.card ι : ℝ) := by exact_mod_cast Fintype.card_pos
+  have hterm : ∀ w : ι, (if w = w₀ then (1 : ℝ) else 0) ^ p = if w = w₀ then (1 : ℝ) else 0 := by
+    intro w
+    by_cases hw : w = w₀
+    · rw [if_pos hw]
+      exact Real.one_rpow p
+    · rw [if_neg hw]
+      exact Real.zero_rpow hp.ne'
+  have hsum : ∑ w : ι, (if w = w₀ then (1 : ℝ) else 0) ^ p = 1 := by
+    rw [Finset.sum_congr rfl fun w _ => hterm w, Finset.sum_ite_eq' Finset.univ w₀
+      (fun _ => (1 : ℝ)), if_pos (Finset.mem_univ w₀)]
+  constructor
+  · rw [finiteDictionaryLpNorm, hsum, mul_one, ← Real.rpow_neg_one ((Fintype.card ι : ℝ)),
+      ← Real.rpow_mul hcard.le, neg_one_mul]
+  · refine le_antisymm ?_ ?_
+    · refine Finset.sup'_le _ _ fun w _ => ?_
+      by_cases hw : w = w₀
+      · rw [if_pos hw]
+      · rw [if_neg hw]
+        norm_num
+    · have := le_finiteDictionaryMax (fun w => if w = w₀ then (1 : ℝ) else 0) w₀
+      rwa [if_pos rfl] at this
+
+/-- **Entropy--temperature price.**  Preserving the complete maximum within a fixed multiplicative
+error forces the linearization order to exceed the dictionary entropy divided by that error. -/
+theorem log_card_div_le_of_exp_le {η p : ℝ} (hη : 0 < η) (hp : 0 < p)
+    (h : Real.exp (-η) ≤ (Fintype.card ι : ℝ) ^ (-p⁻¹)) :
+    Real.log (Fintype.card ι) / η ≤ p := by
+  have hcard : (0 : ℝ) < (Fintype.card ι : ℝ) := by exact_mod_cast Fintype.card_pos
+  have hlog : -η ≤ -p⁻¹ * Real.log (Fintype.card ι) := by
+    have hpos : (0 : ℝ) < (Fintype.card ι : ℝ) ^ (-p⁻¹) := Real.rpow_pos_of_pos hcard _
+    have := Real.log_le_log (Real.exp_pos (-η)) h
+    rwa [Real.log_exp, Real.log_rpow hcard] at this
+  have hlogcard : 0 ≤ Real.log (Fintype.card ι) := by
+    refine Real.log_nonneg ?_
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr Fintype.card_ne_zero
+  rw [div_le_iff₀ hη]
+  have hkey : p⁻¹ * Real.log (Fintype.card ι) ≤ η := by linarith
+  have := mul_le_mul_of_nonneg_left hkey hp.le
+  rw [← mul_assoc, mul_inv_cancel₀ hp.ne', one_mul] at this
+  linarith
+
+/-- The dictionary-entropy form of the linearization price for a word alphabet. -/
+theorem mul_log_div_le_of_exp_le {M ℓ : ℕ} (hcard : Fintype.card ι = M ^ ℓ) {η p : ℝ}
+    (hη : 0 < η) (hp : 0 < p) (h : Real.exp (-η) ≤ (Fintype.card ι : ℝ) ^ (-p⁻¹)) :
+    (ℓ : ℝ) * Real.log M / η ≤ p := by
+  have := log_card_div_le_of_exp_le hη hp h
+  rwa [hcard, Nat.cast_pow, Real.log_pow] at this
+
+/-- **Replica-order price.**  A degree-`r` positive reporter linearized by the `p`-th power has
+linear moment order `r * p`, and preserving the complete maximum within its natural error forces
+that order to exceed the dictionary entropy divided by the error rate. -/
+theorem log_card_div_le_mul_of_exp_le {κ r p : ℝ} (hκ : 0 < κ) (hr : 0 < r) (hp : 0 < p)
+    (h : Real.exp (-(κ * r)) ≤ (Fintype.card ι : ℝ) ^ (-p⁻¹)) :
+    Real.log (Fintype.card ι) / κ ≤ r * p := by
+  have hbase := log_card_div_le_of_exp_le (mul_pos hκ hr) hp h
+  rw [div_le_iff₀ (mul_pos hκ hr)] at hbase
+  rw [div_le_iff₀ hκ]
+  nlinarith [hbase]
+
+end PositiveLinearization
+
 end GaloisForLFunctions.HTGeometry

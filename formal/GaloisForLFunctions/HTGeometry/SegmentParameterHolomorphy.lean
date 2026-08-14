@@ -28,16 +28,17 @@ namespace GaloisForLFunctions.HTGeometry
 
 variable {X : Type*} [NormedAddCommGroup X] [NormedSpace ℂ X] [CompleteSpace X]
 
-/-- **Holomorphy of a segment-parameter integral.**  On a star-shaped open set the integral of a
-holomorphic integrand against a bounded continuous weight along the unit parameter segment is
-holomorphic. -/
-theorem differentiableAt_integral_unitSegment {U : Set ℂ} (hU : IsOpen U)
+/-- **Differentiation under the integral along the unit parameter segment.**  On a star-shaped open
+set the integral of a holomorphic integrand against a bounded continuous weight is holomorphic, with
+the expected derivative. -/
+theorem hasDerivAt_integral_unitSegment {U : Set ℂ} (hU : IsOpen U)
     (hstar : ∀ z ∈ U, ∀ s : ℝ, s ∈ Icc (0 : ℝ) 1 → z * (s : ℂ) ∈ U)
     {G : ℂ → X} (hG : DifferentiableOn ℂ G U)
     {w : ℝ → ℂ} {M : ℝ} (hwc : ContinuousOn w (Icc (0 : ℝ) 1))
     (hwb : ∀ s ∈ Icc (0 : ℝ) 1, ‖w s‖ ≤ M)
     {z₀ : ℂ} (hz₀ : z₀ ∈ U) :
-    DifferentiableAt ℂ (fun z => ∫ s in (0 : ℝ)..1, w s • G (z * (s : ℂ))) z₀ := by
+    HasDerivAt (fun z => ∫ s in (0 : ℝ)..1, w s • G (z * (s : ℂ)))
+      (∫ s in (0 : ℝ)..1, (w s * (s : ℂ)) • deriv G (z₀ * (s : ℂ))) z₀ := by
   classical
   obtain ⟨ε, hε, hball⟩ : ∃ ε : ℝ, 0 < ε ∧ closedBall z₀ ε ⊆ U := by
     obtain ⟨r, hr, hrU⟩ := Metric.isOpen_iff.mp hU z₀ hz₀
@@ -140,7 +141,20 @@ theorem differentiableAt_integral_unitSegment {U : Set ℂ} (hU : IsOpen U)
       = fun z : ℂ => ∫ s : ℝ, F z s ∂(volume.restrict (Ioc (0 : ℝ) 1)) := by
     funext z
     rw [intervalIntegral.integral_of_le (by norm_num : (0 : ℝ) ≤ 1)]
-  rw [hrw]
-  exact hmain.2.differentiableAt
+  have hrw' : (∫ s in (0 : ℝ)..1, (w s * (s : ℂ)) • deriv G (z₀ * (s : ℂ)))
+      = ∫ s : ℝ, F' z₀ s ∂(volume.restrict (Ioc (0 : ℝ) 1)) := by
+    rw [intervalIntegral.integral_of_le (by norm_num : (0 : ℝ) ≤ 1)]
+  rw [hrw, hrw']
+  exact hmain.2
+
+/-- **Holomorphy of a segment-parameter integral.** -/
+theorem differentiableAt_integral_unitSegment {U : Set ℂ} (hU : IsOpen U)
+    (hstar : ∀ z ∈ U, ∀ s : ℝ, s ∈ Icc (0 : ℝ) 1 → z * (s : ℂ) ∈ U)
+    {G : ℂ → X} (hG : DifferentiableOn ℂ G U)
+    {w : ℝ → ℂ} {M : ℝ} (hwc : ContinuousOn w (Icc (0 : ℝ) 1))
+    (hwb : ∀ s ∈ Icc (0 : ℝ) 1, ‖w s‖ ≤ M)
+    {z₀ : ℂ} (hz₀ : z₀ ∈ U) :
+    DifferentiableAt ℂ (fun z => ∫ s in (0 : ℝ)..1, w s • G (z * (s : ℂ))) z₀ :=
+  (hasDerivAt_integral_unitSegment hU hstar hG hwc hwb hz₀).differentiableAt
 
 end GaloisForLFunctions.HTGeometry

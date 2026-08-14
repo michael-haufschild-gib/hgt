@@ -218,9 +218,14 @@ Current mathematical changes are:
   computes its trace, and proves that the bare law bounding every such target trace by the
   primitive budget is equivalent to RH. Source collision summability and the numerical capacity
   gap are closed, but target-side capacity is a terminal receiver, not an admissible exterior
-  premise. First exterior producer must therefore be a named coefficient-faithful arithmetic
-  incidence acting before zero specialization and before codiagonalization, with an independently
-  proved contraction law. Such a construction would exclude even one off-line zero directly; no
+  premise. P-G177 paper-constructs the canonical cubic Euler Hankel synthesis and classifies linear
+  one-variable continuation as impossible by inverse-log/pole-order polarity. P-G178 finds a
+  literal source-side incidence: primitive depth squaring realizes P-G173's doubled clock and
+  preserves von Mangoldt amplitude with modular gain `sqrt n`. That gain is unbounded in counting
+  norm, but native cubic weight absorbs its square exactly, making every finite weighted packet
+  contract by `1/8`. First exterior producer is therefore a Gamma--Euler/Xi landing carrying this
+  exact block through a genuinely two-variable or determinant-line continuation before zero
+  specialization. Such a construction would exclude even one off-line zero directly; no
   positive-proportion or amplification layer remains afterward.
   Curvature lane separately retains its finite high-tail ceiling.
 - **T:** the square approximate-functional-equation dual carrier is now formed and controlled at
@@ -422,9 +427,12 @@ Ward/Hellinger construction is a further serious opening: P-G174 puts the full a
 kernel on the primitive Euler carrier with one global summable trace budget, while the zero-side
 separator remains uniformly charging. P-G175 proves that global source budget is strictly smaller
 than one zero-side quantum. P-G176 proves that imposing the corresponding scalar capacity law on
-all strict-right zero packets is exactly RH. It still has no coefficient-faithful pre-zero
-arithmetic incidence from primitive cells to Xi divisors; that incidence must derive capacity
-rather than assume it. It is therefore not added to the Route-V count.
+all strict-right zero packets is exactly RH. P-G178 supplies a coefficient-faithful pre-zero
+arithmetic incidence between primitive scales: depth squaring doubles the clock, retains amplitude
+with modular gain `sqrt n`, and is an exact `1/8` contraction in cubic source measure despite being
+unbounded in counting norm. What remains absent is the completed Gamma--Euler/Xi landing from that
+source block to divisors; it must derive capacity rather than assume it. Route P is therefore not
+added to the Route-V count.
 Formal Green-square analysis also suggests a possible future quotient of P into C1:
 both endpoints meet at positive spectrum of the same source-built `B^2`, with all nonpositive bulk
 localized to one rank-two boundary current. The present Lean comparison reaches the P endpoints
@@ -444,8 +452,9 @@ without pre-zero source budgets are receivers. First open source theorems are no
 common-filter diagonal classification for the fixed cofinal carrier after its mixed Nyquist flux
 closed to zero; G/CCM's complete-ground selection and lower control, with G's separate global
 two-ray tempered subtraction/return and physical trace selection; P's high-tail curvature ceiling
-or a named coefficient-faithful pre-zero primitive-Euler incidence that breaks reflected gauge
-before codiagonalization and derives, rather than assumes, the P-G176 terminal capacity law;
+or a completed Gamma--Euler/Xi landing carrying P-G178's exact cubic-weighted depth-square
+contraction through a two-variable/determinant-line conormal form and deriving, rather than
+assuming, the P-G176 terminal capacity law;
 T's actual Ingham--Gabriel coefficient-three zero-counting interpolation from its now-closed fourth
 moment/detector budgets, followed by prime supply and signed Perron/cell/gap/current composition,
 plus pole-preserving Wold continuation; and L's
@@ -678,12 +687,12 @@ existing route.
 | M | terminalized | remaining source-flatness statement is RH |
 | N | terminalized, receiver merged with R wall | none below RH-equivalent zero Kadison fracture on every Xi conormal |
 | O | open, advanced; exact floor attainment/smooth visibility, radial decay, constrained ladder, leading-density arithmetic diagonal, low-rank admission, and projective-limit transfer closed; two internal producer branches | Lean proves the true restricted-Weil floor is attained and equals the infimum over strict-interior smooth sources. The prolate branch has exact ladder constants, prime-shift reindexing, Dunster leading-density diagonal, abstract projective/trace transfer, ODE decay `|R(y)|<=C/y`, summable channel squared masses, and per-channel polar control. Missing seed-level inputs are actual-PSWF-to-leading error, inverse-bandwidth separation, and assembled physical channel comparison. First RH-bearing theorem remains source-derived control of the attained whole ground direction, equivalently lower control of `epsilon_lambda` or `Delta_lambda`; negative spectrum cannot evacuate. Completed-Evans branch now has literal bounded fractional one-prime shifts, exact two-site terminal pruning/propagator, and the rough-primitive Hardy thresholds. Its open core is higher-aperture source-selected finite-to-flat transfer, completed/raw Evans identification, nonzero-trace return, and raw positivity. |
-| P | open, advanced; arbitrary-cluster positivity and subquantum primitive-Euler capacity closed | Literal four-contour source and non-diagonal Hermitian graph-normal Gram are constructed. The moving-ordinate cubic collision matrix is a signed compression of a doubled Hardy Gram's third Schur power, hence PSD for arbitrary frequencies; its trace is `sum_i 115/(864*a_i^3)`. P-G174 congruences the full kernel onto primitive Euler cells with resolved von Mangoldt amplitudes and gives one packet-size/frequency-independent trace budget. P-G175 proves that complete budget is `<115/108`, below the least charge of one strict-right zero. P-G176 proves the universal target trace-capacity law itself is equivalent to RH, so it cannot be assumed as producer. Clustering, source collision summability, scalar capacity, and post-transport amplification are not obstructions. Sole exterior theorem is an earlier completed coefficient-faithful trace contraction transporting primitive Euler source structure to the Xi-divisor collision carrier before divisor expansion, from which capacity follows; it would close RH immediately. Curvature lane separately allows a finite high-tail ceiling. |
+| P | open, advanced; arbitrary-cluster positivity, subquantum capacity, and exact weighted depth-square contraction closed | Literal four-contour source and non-diagonal Hermitian graph-normal Gram are constructed. The moving-ordinate cubic collision matrix is a signed compression of a doubled Hardy Gram's third Schur power, hence PSD for arbitrary frequencies; its trace is `sum_i 115/(864*a_i^3)`. P-G174 congruences the full kernel onto primitive Euler cells with resolved von Mangoldt amplitudes and gives one packet-size/frequency-independent trace budget. P-G175 proves that complete budget is `<115/108`, below the least charge of one strict-right zero. P-G176 proves the universal target trace-capacity law itself is equivalent to RH, so it cannot be assumed as producer. P-G177 identifies the canonical Euler Hankel synthesis and linear moment-polarity wall. P-G178 realizes doubled Hardy clock by arithmetic depth squaring: amplitude preservation needs unbounded gain `sqrt n`, yet cubic source density absorbs its square exactly and yields `1/8` finite-packet energy contraction. Clustering, source collision summability, scalar capacity, and source-side modular contraction are not obstructions. Sole exterior theorem is a completed Gamma--Euler/Xi two-variable or determinant-line landing carrying that exact source block to the Xi-divisor collision carrier before divisor expansion, from which capacity follows; it would close RH immediately. Curvature lane separately allows a finite high-tail ceiling. |
 | Q | open, secondary | direct Cassini--Jensen/jet saturation, or a source-derived label-sensitive plateau quotient; the selected continuous power-reciprocal carrier is retired by the all-degree support no-go |
 | R | terminalized as independent producer | The intrinsic pre-polar annihilator type is empty. Lean exhausts the surviving audited interfaces—external positive polar comparison, pointwise two-orientation non-amplification, collective compactness of the fixed `(2,3)` receiver, singular Xi/Calkin factorization, compact first-Xi-jet principal coefficient, and loss-zero fixed Fisher landing—and proves each branch, and their disjunction, equivalent to RH. Hyperbolic-gauge quadratic positivity is universally zero; the surviving quartic amplitude equals the physical Stokes excess but its annihilation is RH-equivalent. Coefficient-faithful pre-divisor Gamma-corona globalization is also impossible outside neutral grade, independently of packet-horizon gauge. Finite Kunneth/Bockstein enlargement, Poisson theta shear, local anomaly cancellation, positive invariant means, bounded multipliers, and compact counterterms do not produce annihilation. |
 | S | upstream | source algebraicity or divisor-preserving dynamics with typed Xi handoff |
 | T | open after unconditional exact-AFE fourth-moment closure | Lean proves separate `N^(101/100)` dyadic budgets for literal primal, diagonal dual, and confluent pole summands, then combines the exact identity `zeta^2=P+D-R` with a three-source norm inequality to prove `integral_[N,2N]|zeta(1/2+it)|^4<=C N^(101/100)`. It identifies the same moment in Ingham's detector, proves the mollifier second moment and the mollified-error `4/3` moment `O(N^(251/250))`, and verifies the absorbed height exponent is `<7/10`. Repeated short-block freezing remains dead at `T^(5/3)`. First unresolved theorem is the actual Ingham--Gabriel coefficient-three interpolation/zero-counting theorem, then density-to-`7/10` prime supply and source-faithful composition; Wold chart separately requires signed pole-preserving continuation. |
-| U | open at fixed-carrier antipodal diagonal-or-cross source classification; Nyquist mixed-flux successor retired | False RH is equivalent to one fixed carrier producing cofinal negative Hankel packets whose quadratic is a positive Laplace average of the complete Gamma--polar--von Mangoldt balance. Every UV-safe PSD quadratic collapses to full fine-sample square, and the signed Nyquist current and its common-filter prime--Gamma flux vanish unconditionally. Post-cutoff antipodal polarization now decomposes the actual packet into even and odd source channels and proves false RH equivalent to a cofinal labelled anomaly: negative even capital, negative odd capital, or negative cross capital, each with a literal completed prime--Gamma balance inversion. Live theorem is source-specific exclusion of all three alternatives for the fixed carrier using the degree-free Cauchy density. Universal positivity remains RH-equivalent. |
+| U | open at fixed-carrier antipodal diagonal-or-cross source classification; Nyquist mixed-flux and heat-uniform cross orientation retired | False RH is equivalent to one fixed carrier producing cofinal negative Hankel packets whose quadratic is a positive Laplace average of complete Gamma--polar--von Mangoldt balance. Post-cutoff antipodal polarization decomposes actual packet into even and odd channels and makes false RH equivalent to a cofinal labelled even, odd, or cross anomaly. Cross density is a Kelvin-odd modular current, not positive energy: canonical Mellin normalization is exactly odd and unit-weight heat defect changes sign at the unique orbit time `t_*=((2d+1)u)/(a^2 sinh(2u))`. Live theorem is source-specific exclusion of all alternatives; cross branch now requires integrated signed heat-mass comparison retaining literal Gamma rate, polar residue, and prime Fourier source. Universal positivity remains RH-equivalent. |
 
 The live independent count is ten lettered routes plus CCM-FU. This count is conditional only
 on current corpus identification: future comparison could merge routes, and a constructed
@@ -3957,6 +3966,29 @@ modulo trace class, its Wold coface, and the normalized source Gibbs reader. Mis
 the global ideal-preserving lift of the formalized local exceptional comparison to this complete
 singular class, followed by strict place-marked relative descent in the existing target square and
 fixed-reader cyclicity there.
+
+**Trace-ideal strict-lift obstruction now Lean-closed.**
+`DeningerGammaSixTraceIdealSoninStrictLiftObstruction.lean` tests that proposed lift on the literal
+complete Wold coface. For every linear comparison sending rectangular Schatten-one source
+operators to compact operators, the strict-square defect differs from the fixed aperture-one
+Sonin `(2,3)` receiver by a compact operator. Hence
+
+~~~
+essentialNorm(strictDefect_F(a))
+  = essentialNorm(fixedSoninReceiver(a))
+  >= |Delta_23(a)|/sqrt(6),
+
+exists trace-ideal comparison exact on the complete Wold coface
+  <-> a=0.
+~~~
+
+Thus relative cyclic homology, determinant/joint-torsion invariance, Dixmier trace, or any other
+grade-uniform trace-class correction cannot manufacture the missing square. This does not retire
+Route L: the desired comparison may still be constructed fibrewise on the actual Xi divisor
+locus. It sharpens the open theorem to a divisor-selective multi-place law which uses
+`Xi(rho)=0` to produce trace-ideal-preserving compactness and cannot extend as an exact free-grade
+family. The module is umbrella-wired; direct check, targeted leaf build, and axiom audit pass.
+
 Postulating reflected compatibility, quotienting by
 the anomaly, factoring through ordinary Milnor/Hochschild homology, or demanding a closable
 successor graph would impose or erase the critical line rather than derive it.
@@ -7782,6 +7814,58 @@ not RH <-> cofinal fixed-carrier antipodal prime--Gamma polarization phase.
 Exact Route-U open core is therefore source-specific exclusion of all three labelled alternatives
 for that fixed carrier. The old “diagonal only” phrasing was incomplete; polarization shows the
 cross channel must remain intact. Universal exclusion is RH itself and cannot be a premise.
+
+`XiShiftedHardEdgePrimeGammaKelvinCrossCurrent.lean` now resolves geometry of that cross channel.
+Common-degree shifted reversal converts hard-edge antipody into Kelvin reciprocity.  If `Q_E,Q_O`
+are actual even/odd reversed source polynomials, `A=a^2`, and `d` is their common reciprocal degree,
+Lean proves
+
+```text
+Q_E(A^2/W) =  (A/W)^d Q_E(W),
+Q_O(A^2/W) = -(A/W)^d Q_O(W).
+```
+
+Consequently literal Gaussian cross density `F_t(x)=Q_E(x^2)Q_O(x^2)e^(-t x^2)` reverses sign on
+every physical inversion orbit `x <-> a^2/x` and vanishes at self-dual seam `x=a`.  Lean also
+identifies `F_t` pointwise with exact norm polarization inside completed prime--Gamma balance and
+factors Jacobian-paired current for any weight `w` as
+
+```text
+F_t(x) * [w(x) - (a^2/x^2)^(2d+1)
+  exp(-t*((a^2/x)^2-x^2)) w(a^2/x)].
+```
+
+Thus pointwise sign control and naive inversion cancellation are both false.  Cross branch is an
+oriented modular current, not hidden energy.  Sharpened open core is compare this exact Gamma--heat
+modular defect (`w=gammaHardyPhaseRate`) with polar and prime cross terms of same completed-source
+identity.  Dropping prime cross polarization would replay the diagonal error.
+
+`XiShiftedHardEdgePrimeGammaKelvinMellinCriticalPhase.lean` now removes Kelvin cocycle exactly.  The
+forced zero-heat normalization
+
+```text
+K(x)=(a/x)^(2d) F_0(x)
+```
+
+is anti-invariant, `K(a^2/x)=-K(x)`, so `H(u)=K(a exp(u))` is literally odd.  For inner log-radius
+`x=a exp(-u)`, `u>0`, Lean reduces unit-weight paired heat defect to
+
+```text
+D_(a,d,t)(u)=1-exp(2*(2d+1)*u-2*t*a^2*sinh(2u)).
+```
+
+It has unique positive critical time
+
+```text
+t_*(a,d,u)=((2d+1)*u)/(a^2*sinh(2u)),
+```
+
+with `D<0` below `t_*`, `D=0` at `t_*`, and `D>0` above `t_*`; positive heat times of both
+orientations exist on every positive orbit.  Hence no heat-uniform cross orientation is available.
+This classifies modular defect, not full current sign: full current remains `F_t D`, and theorem uses
+`w=1`, not Gamma rate.  Live cross target is therefore an integrated signed heat-mass comparison
+relative to orbit-dependent `t_*`, retaining literal Gamma rate, polar residue, and prime Fourier
+cross source.
 
 **Earlier equivalent structural formulation.** In the degenerate/root-sign branch, items
 55--58 replace unspecified odd descent by a literal Padé spectral-measure and source-capacity
@@ -12948,6 +13032,44 @@ Thus “every zero collision trace fits in the primitive Euler budget” is a te
 independent hypothesis. Route P must construct an earlier coefficient-faithful source mechanism or
 incidence/contraction whose capacity consequence is then proved; it cannot postulate capacity.
 
+P-G177 replaces that unnamed mechanism by the earliest canonical cubic Euler operator. The
+primitive feature columns
+
+```text
+phi_(p,e)(r)=sqrt(Lambda(n)/n) r (exp(-r log n)-exp(-2r log n))
+```
+
+form a Hilbert--Schmidt synthesis whose Gram is P-G174 and whose transposed covariance is an exact
+four-point finite difference of `-zeta'/zeta`. Its inverse-cubic-log trace weight and a cubic
+divisor pole have opposite functional-calculus polarity: primitives preserve source weight but
+soften a pole to a logarithmic branch, while derivatives create the cubic pole but destroy Euler
+summability. Linear one-variable continuation is therefore retired; survivor is a nonlinear
+two-variable or determinant-line landing.
+
+P-G178 identifies a nontrivial arithmetic block for that survivor. On primitive cells set
+
+```text
+D(p,e)=(p,2e+1),  n=p^(e+1),  g(p,e)=sqrt n.
+```
+
+Lean proves `valuation(D pe)=n^2`, exact log-clock doubling, and reflected-incidence transport
+`a -> 2a`; hence P-G173's tagged doubled Hardy node is the actual arithmetic squared clock. Gain
+`g` exactly preserves resolved von Mangoldt half-density but is unbounded on the prime-two depth
+tower, ruling out bounded counting-norm reindexing. Strongest survivor is positive:
+
+```text
+w(D pe) g(pe)^2 = w(pe)/8,
+sum_(pe in S) w(D pe)|g(pe)f(pe)|^2
+  =(1/8) sum_(pe in S) w(pe)|f(pe)|^2.                 (P-G178.1)
+```
+
+Thus cubic moment is precisely compatible with dyadic clock dilation: it converts unbounded
+coefficient-preserving modular gain into an exact strict weighted contraction. This is a literal
+pre-zero source incidence, not the completed source-to-divisor landing. Exact remaining seam is to
+carry this depth-square block through a source-defined Gamma--Euler/Xi conormal or determinant-line
+continuation and prove its polar cubic form is P-G173, without defining the map from zeros or
+importing P-G176 capacity.
+
 ### Route T exact dual carrier: Gaussian tail and height variation close
 
 T-C8e-E closes the two analytic debts left by T-C8e-C/D.  The global off-pole digamma argument gives
@@ -13424,3 +13546,30 @@ scientific theorem is the actual Ingham--Gabriel interpolation and zero-counting
 turns these formal moments and the existing pole-regularized detector into the coefficient-three
 zero-density estimate. After that come the density-to-short-interval prime theorem at exponent
 `7/10` and the already-described source-faithful composition into the centered Route-T current.
+
+### Route T fixed-right-edge correction and power-saving endpoint
+
+`InghamRightEdgeMeanSquare.lean` first proves the literal cutoff-uniform estimate
+
+```text
+integral_[-T,T] |zeta(beta+it) M_X(beta+it)-1|^2 dt <= C_beta T  (beta>1).
+```
+
+Heavy-conjecture audit then falsifies this as a sufficient Gabriel input: uniform `O(T)` throws
+away the exact coefficient gap below `X` and cannot produce coefficient three. The positive
+survivor in `InghamRightEdgePowerSaving.lean` fixes `beta=181/180`, retains
+`a_X(n)=0` for `n<=X`, and combines `d(n)<=C n^(1/360)` with exact p-series tails. Lean proves
+
+```text
+sum_n n |a_X(n)n^(-181/180)|^2 <= C^2 X^(-1/180)/(1/180),
+sum_n   |a_X(n)n^(-181/180)|^2 <= C^2 X^(-181/180)/(181/180),
+integral_[-X,X] |zeta(181/180+it) M_X(181/180+it)-1|^2 dt
+  <= C_right X^(-1/180).
+```
+
+All three statements are unconditional and axiom-clean modulo Lean's standard quotient/choice
+principles. This supplies genuine right-endpoint decay, not merely bounded normalized average.
+At the fixed geometry `(alpha,sigma,beta)=(1/2,7/10,181/180)`, it leaves positive room after the
+formal critical `251/250` loss. Exact remaining first obstruction is now Gabriel's integral-mean
+interpolation itself, then the already-formal detector's quantitative boundary-to-zero-count
+assembly. RH remains open.

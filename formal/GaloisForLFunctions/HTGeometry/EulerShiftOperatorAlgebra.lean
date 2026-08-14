@@ -220,4 +220,27 @@ theorem isBoundedShiftFamily_shiftComp {m₁ m₂ : ℕ} {Ψ Φ : ℕ → Polyno
         rw [← mul_pow]
         ring_nf
 
+/-! ### Reading off a shift polynomial -/
+
+theorem coeff_shiftPolynomial {m : ℕ} (B : Fin (m + 1) → PowerSeries ℂ) (μ : ℕ)
+    (j : Fin (m + 1)) :
+    (shiftPolynomial B μ).coeff (j : ℕ) = PowerSeries.coeff μ (B j) := by
+  classical
+  rw [shiftPolynomial, Polynomial.finsetSum_coeff]
+  rw [Finset.sum_eq_single j]
+  · rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, if_pos rfl, mul_one]
+  · intro i _ hij
+    rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow,
+      if_neg (fun h => hij (Fin.val_injective h.symm)), mul_zero]
+  · intro h
+    exact absurd (Finset.mem_univ j) h
+
+theorem shiftPolynomial_ne_zero_of_coeff {m : ℕ} {B : Fin (m + 1) → PowerSeries ℂ} {μ : ℕ}
+    {j : Fin (m + 1)} (h : PowerSeries.coeff μ (B j) ≠ 0) : shiftPolynomial B μ ≠ 0 := by
+  intro hz
+  apply h
+  have := coeff_shiftPolynomial B μ j
+  rw [hz, Polynomial.coeff_zero] at this
+  exact this.symm
+
 end GaloisForLFunctions.HTGeometry

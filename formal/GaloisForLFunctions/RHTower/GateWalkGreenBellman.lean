@@ -671,6 +671,58 @@ theorem abs_bellmanCalibration_sub_le (act : Γ → X → X) (χ : X) {β ε : �
   gcongr
   exact abs_le.mpr ⟨by linarith, by linarith⟩
 
+/-- **Complete-union control by one scalar collision.**  The probability of a retained event on
+which the target is reachable within a fixed length is controlled by one soft Green moment. -/
+theorem measure_reachable_le_lintegral (act : Γ → X → X) (χ : X) (β ε : ℝ)
+    {Ω : Type*} [MeasurableSpace Ω] (μ : MeasureTheory.Measure Ω) (V : Ω → X) (R : Set Ω)
+    {a : ℝ≥0∞} (ha0 : a ≠ 0) (ha1 : a < 1) (s : ℕ)
+    (hE : MeasurableSet {ω : Ω | ∃ w : List Γ, w.length ≤ s ∧ wordEval act w χ ∈ tube ε (V ω)}) :
+    μ ({ω : Ω | ∃ w : List Γ, w.length ≤ s ∧ wordEval act w χ ∈ tube ε (V ω)} ∩ R) ≤
+      (∫⁻ ω in R, softGreen act χ β ε a (V ω) ∂μ) /
+        ((1 - a) * (a / Fintype.card Γ) ^ s) := by
+  classical
+  have hMne : (Fintype.card Γ : ℝ≥0∞) ≠ 0 := by simp
+  have hMtop : (Fintype.card Γ : ℝ≥0∞) ≠ ⊤ := ENNReal.natCast_ne_top _
+  have hatop : a ≠ ⊤ := ne_top_of_lt ha1
+  have hM1 : (1 : ℝ≥0∞) ≤ (Fintype.card Γ : ℝ≥0∞) := by
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Fintype.card_ne_zero (α := Γ))
+  have haM : a / (Fintype.card Γ : ℝ≥0∞) ≤ 1 :=
+    ENNReal.div_le_of_le_mul (by simpa using le_trans ha1.le hM1)
+  have hcne : (1 - a) * (a / (Fintype.card Γ : ℝ≥0∞)) ^ s ≠ 0 := by
+    refine mul_ne_zero (tsub_pos_of_lt ha1).ne' (pow_ne_zero _ ?_)
+    simp [ENNReal.div_eq_zero_iff, ha0, hMtop]
+  have hctop : (1 - a) * (a / (Fintype.card Γ : ℝ≥0∞)) ^ s ≠ ⊤ := by
+    refine ENNReal.mul_ne_top (ne_top_of_le_ne_top ENNReal.one_ne_top tsub_le_self)
+      (ENNReal.pow_ne_top (ENNReal.div_ne_top hatop hMne))
+  have hpoint : ∀ ω : Ω,
+      Set.indicator {ω : Ω | ∃ w : List Γ, w.length ≤ s ∧ wordEval act w χ ∈ tube ε (V ω)} 1 ω ≤
+      softGreen act χ β ε a (V ω) / ((1 - a) * (a / Fintype.card Γ) ^ s) := by
+    intro ω
+    by_cases hω : ω ∈ {ω : Ω | ∃ w : List Γ, w.length ≤ s ∧ wordEval act w χ ∈ tube ε (V ω)}
+    · obtain ⟨w, hwlen, hw⟩ := id hω
+      rw [Set.indicator_of_mem hω]
+      show (1 : ℝ≥0∞) ≤ _
+      rw [ENNReal.le_div_iff_mul_le (Or.inl hcne) (Or.inl hctop), one_mul]
+      refine le_trans ?_ (softGreen_ge_of_reaching act χ β ε a (V ω) hw)
+      exact mul_le_mul_right (pow_le_pow_right_of_le_one' haM hwlen) _
+    · rw [Set.indicator_of_notMem hω]
+      exact bot_le
+  calc μ ({ω : Ω | ∃ w : List Γ, w.length ≤ s ∧ wordEval act w χ ∈ tube ε (V ω)} ∩ R)
+      = (μ.restrict R) {ω : Ω | ∃ w : List Γ, w.length ≤ s ∧ wordEval act w χ ∈ tube ε (V ω)} :=
+        (MeasureTheory.Measure.restrict_apply hE).symm
+    _ = ∫⁻ ω in R,
+          Set.indicator {ω : Ω | ∃ w : List Γ, w.length ≤ s ∧
+            wordEval act w χ ∈ tube ε (V ω)} 1 ω ∂μ :=
+        (MeasureTheory.lintegral_indicator_one hE).symm
+    _ ≤ ∫⁻ ω in R, softGreen act χ β ε a (V ω) /
+          ((1 - a) * (a / Fintype.card Γ) ^ s) ∂μ :=
+        MeasureTheory.lintegral_mono hpoint
+    _ = (∫⁻ ω in R, softGreen act χ β ε a (V ω) ∂μ) /
+          ((1 - a) * (a / Fintype.card Γ) ^ s) := by
+        set c : ℝ≥0∞ := (1 - a) * (a / (Fintype.card Γ : ℝ≥0∞)) ^ s with hc
+        simp only [ENNReal.div_eq_inv_mul]
+        exact MeasureTheory.lintegral_const_mul' _ _ (ENNReal.inv_ne_top.mpr hcne)
+
 end SoftCalibration
 
 

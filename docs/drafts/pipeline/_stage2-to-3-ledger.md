@@ -1236,3 +1236,35 @@ prime/zeta/divisor theorem.  See
 - Verification: targeted foreground `lake env lean` green on every module; `#print axioms` on every
   capstone reports only `propext`, `Classical.choice`, `Quot.sound`; final foreground
   `lake build GaloisForLFunctions.HTGeometry.UniversalLawField` green at 11,590 jobs.
+
+## FEG-2 — first-entrance gate capacity and discrepancy law
+
+- Promoted `2-fully-proven/first-entrance-gate-capacity-discrepancy-law.md` → `3-formalized/`.
+- New reusable infrastructure: `RHTower/ReversibleKilledWalk` packages a finite reversible chain as
+  a structure and proves the killed Dirichlet form, both carré-du-champ identities, the spectral
+  window `(1-a)‖f‖² ≤ E(f) ≤ (1+a)‖f‖²`, Cauchy--Schwarz for the killed form by discriminant, and
+  invertibility of the killed operator by finite-dimensional injective-implies-surjective — so the
+  dual negative-energy norm needs no matrix inverse.
+- `RHTower/GateCapacityDiscrepancy` transports the parent's discounted entrance mass to real values
+  and proves Bellman--Dirichlet, uniqueness, the Dirichlet principle, capacity/charge, `(CM)`,
+  `(SM)`, `(CW)`, `(CD0)`, `(CD)`, `(GO)`, `(GS)`, `(DM)`.
+- `RHTower/GateInverseWordCapacity` proves the inverse-word conversion with no group structure
+  (pulling a tube back along a gate is the tube around the inversely transported target), hence the
+  first-hit mass of a moving target is the equilibrium potential of the backward chain, and the
+  parent's complete-union law becomes the capacity union bounds.
+- Verification: targeted foreground `lake env lean` green on all three modules; `#print axioms` on
+  every capstone reports only `propext`, `Classical.choice`, `Quot.sound`.
+
+## GWG-1 — gate-walk Green--Bellman tropicalization law
+
+- Promoted `2-fully-proven/gate-walk-green-bellman-tropicalization-law.md` → `3-formalized/`.
+- Theorem A already existed in `HTGeometry/GateWalkGreenBellmanTropicalization` in the
+  `approxComplexity` encoding; the new `RHTower/GateWalkGreenBellman` re-proves it in the word-sum
+  encoding in `ℝ≥0∞` because Theorems B--D need the sum over words, not over lengths.  Both are
+  kept; `wordEval` and the pre-existing `wordAct` are the same `foldr`.
+- New: the transfer-operator iterate identity `(4)`, the tropical limit `(8)`, the soft radial
+  kernel with its Harnack and Lipschitz laws `(12)`--`(16)`, and the complete-union bound `(17)`.
+- Theorem E is added to `HTGeometry/StaticCircuitEnsembleZeroTemperature` as a real-exponent
+  `p`-norm sandwich with the one-hot saturation and the entropy--temperature price `(21)`/`(22)`.
+- Verification: targeted foreground `lake env lean` green; `#print axioms` on every capstone
+  reports only `propext`, `Classical.choice`, `Quot.sound`.

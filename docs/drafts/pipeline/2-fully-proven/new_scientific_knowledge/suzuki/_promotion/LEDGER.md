@@ -7155,3 +7155,190 @@ This single module discharges `(16)` of `forced-gamma-upper-strip-gluing`, `(25)
 The remaining input for the forced solutions is holomorphy of the segment-parameterised particular
 integral, i.e. differentiation under the integral sign for `z ↦ ∫₀¹ w(s)G(zs)ds` on a star-shaped
 domain.
+
+## LL. Holomorphy of the particular solution through the frequency origin
+
+```text
+HTGeometry/SegmentParameterHolomorphy.lean   differentiableAt_integral_unitSegment
+RHTower/SuzukiForcedStripHolomorphy.lean     Theorem 1 completed
+```
+
+`differentiableAt_integral_unitSegment`: on an open set star-shaped about the origin, `z ↦ ∫₀¹ w(s)
+G(zs) ds` is holomorphic whenever `G` is holomorphic there and `w` is a bounded continuous weight on
+`[0,1]`.  Differentiation under the integral sign; the dominating bound comes from boundedness of
+`deriv G` on the compact cone `[0,1]·closedBall z₀ ε ⊆ U`, using that a complex differentiable
+function on an open set is analytic there.
+
+`forcedParticular_eq_total` extends the branch cancellation to `z = 0` (both sides vanish, since
+`0^{-1/2} = 0`), and `differentiableOn_forcedParticular` /
+`differentiableOn_forcedParticular_imStrip` then give holomorphy of the particular solution across
+the frequency origin.  Supporting: `continuousOn_cpowHalf`, `norm_cpowHalf_le_one`,
+`differentiableAt_stripTransportInv_apply`, `differentiableAt_stripTransport_applyFun`,
+`imStrip_star`.
+
+**Route for the remaining `(16)`.**  The forced solution is *not* bounded on closed substrips, only
+polynomially bounded (the card says so).  So the abstract translation package must be relaxed:
+
+1. generalise the entire test-transform decay from order two to every order — iterate
+   `testTransform_ibp` to get `‖Ψ(z)‖ ≤ C_k/(1+‖z‖)^k` on every horizontal strip;
+2. relax `StripDatum.bdd` to `∃ D n, ‖f z‖ ≤ D(1+‖z‖)^n` on every closed substrip, and pair with
+   test-transform decay of order `n+2`;
+3. exhibit the glued forced solution as such a datum: holomorphy from section LL, polynomial growth
+   from `(12)` plus polynomial growth of `b` (Theorem 2's growth claim), `L²` on lines from
+   Theorem 3.
+
+That same relaxation is what `(25)` of the wall-block card and the Paley–Wiener debt of
+`scalar-analytic-forcing-trace-zero-h1` need.
+
+## MM. Decay of every order, and the polynomial-growth strip datum
+
+```text
+HTGeometry/CompactTestTransformOrder.lean    testTransform_ibp_iter,
+                                             exists_testTransform_decay_order,
+                                             exists_testTransformTwoPi_decay_order
+RHTower/StripFourierTranslation.lean         StripDatum relaxed to polynomial growth
+```
+
+`testTransform_ibp_iter` iterates the single integration by parts: `Ψ(z)(iz)^k = (-1)^k Ψ_k(z)`
+with `Ψ_k` the transform of the `k`-th derivative, using `contDiff_iterate_deriv` and
+`hasCompactSupport_iterate_deriv`.  Combined with the strip bound
+`exists_bound_testTransform_strip` this gives `‖Ψ(z)‖ ≤ C_k(1+‖z‖)^{-k}` on every horizontal strip,
+for every `k` — the test transform beats every polynomial.
+
+`StripDatum.bdd` is accordingly relaxed from boundedness to `∃ D n, ‖f z‖ ≤ D(1+‖z‖)^n` on every
+closed substrip, and `exists_bound_datumPaired` now pairs growth of order `n` against decay of order
+`n+2`.  Everything downstream (`datumPaired_line_shift`, `stripDatumFourier_weight_eq`,
+`exists_memLp_exp_smul_stripDatumFourier`) is unchanged.
+
+### The remaining obstruction for `(16)`
+
+Exhibiting the *forced* solution as a `StripDatum` needs polynomial growth of the particular
+solution on a closed substrip, i.e. a polynomial bound for `‖Q(w)^{-1}‖` on the cone swept by the
+segments.  That is a **lower** bound for the vertical Gamma ratio,
+
+```text
+‖Γ(1-τ+ix)‖ / ‖Γ(1+τ+ix)‖ ≥ c (1+|x|)^{-2σ₁},   0 ≤ τ ≤ σ₁ < 1,
+```
+
+uniform in `τ` on the closed substrip.  The Beta-integral method gives only the matching **upper**
+bound (`norm_Gamma_vertical_le`, `exists_bound_gammaRatio_substrip`), because it needs a positive
+real part in the second Beta argument.  The corpus asymptotic
+`gamma_vertical_ratio_norm_rpow_tendsto` has the right content but is stated for a fixed pair
+`(a, δ)`; the missing object is its **locally uniform** version in the parameters.  That single
+uniform asymptotic unlocks:
+
+* `(16)` of `forced-gamma-upper-strip-gluing`,
+* the substrip growth half of Theorem 2 of the same card,
+* `(25)` of `gamma-wall-block-hardy-and-derivative-scattering`,
+* the Paley–Wiener debt of `scalar-analytic-forcing-trace-zero-h1`.
+
+The homogeneous part of every one of those is already covered, because
+`exists_bound_norm_stripSolution` is substrip-uniform (the Beta bound is uniform in the height).
+
+## NN. The obstruction of section MM is removed
+
+`RHTower/GammaVerticalRatioUniform.lean` (clean, wired).
+
+`abs_gamma_vertical_ratio_log_le` is the **quantitative** form of the vertical Gamma-ratio law:
+
+```text
+| log‖Γ(a+iτ)‖ − log‖Γ((a+δ)+iτ)‖ + δ log τ |  ≤  δ (1/τ² + π/(2τ) + (a+δ)²/(2τ²)),
+```
+
+for `a ≥ 0`, `δ ≥ 0`, `τ > 0`.  It is the same fundamental-theorem identity that underlies the
+corpus limit `gamma_vertical_ratio_log_tendsto`, but with the error kept explicit; the sharp
+vertical digamma bound `re_digamma_vertical_bound_uncond` supplies the pointwise estimate and
+`log(1+x²/τ²) ≤ x²/τ²` the remaining gap.
+
+Since the error depends on the parameters only through `a+δ`, exponentiating gives
+`exists_twoSided_gamma_vertical_ratio`: for every parameter box `0 ≤ a ≤ a₁`, `0 ≤ δ ≤ δ₁` there are
+`0 < c ≤ C` with
+
+```text
+c τ^{-δ}  ≤  ‖Γ(a+iτ)‖ / ‖Γ((a+δ)+iτ)‖  ≤  C τ^{-δ},    τ ≥ 1,
+```
+
+**uniformly in the parameters**.  The lower half is exactly what the Beta-integral method cannot
+give, and it is what controls the inverse Gamma transport `Q(w)^{-1}` on the cone swept by the
+segments.  With it the route of section MM is unobstructed: substrip-uniform two-sided strip-carrier
+bounds, polynomial growth of the particular solution on closed substrips, and hence `(16)` of
+`forced-gamma-upper-strip-gluing`, the growth half of its Theorem 2, `(25)` of
+`gamma-wall-block-hardy-and-derivative-scattering`, and the Paley–Wiener debt of
+`scalar-analytic-forcing-trace-zero-h1`.
+
+## OO. The Gamma quotient on the closed lower substrip
+
+`RHTower/GammaRatioStripUniform.lean` (clean, wired).  `gammaRatioPair (τ,x)` is the Suzuki Gamma
+quotient `‖Γ(1-τ+ix)‖/‖Γ(1+τ+ix)‖` as a function of height and frequency;
+`exists_twoSided_gammaRatioPair` gives, for every `0 ≤ σ₁ < 1`, constants `0 < c ≤ C` with
+
+```text
+c (1+|x|)^{-2σ₁}  ≤  gammaRatioPair (τ,x)  ≤  C,    0 ≤ τ ≤ σ₁,  x ∈ ℝ,
+```
+
+uniformly in `τ`.  Above `|x| = 1` this is `exists_twoSided_gamma_vertical_ratio` with `a = 1-τ`,
+`δ = 2τ`; inside the unit box it is continuity (`continuousOn_gammaRatioPair`) and positivity
+(`gammaRatioPair_pos`) on a compact set; the negative ray follows from `gammaRatioPair_neg`
+(conjugation symmetry).
+
+This is the quantitative form of "the inverse Gamma transport grows at most polynomially on the cone
+swept by the segments from the frequency origin".
+
+**Session state.**  Twelve modules built and wired in this pass, every capstone audited to
+`[propext, Classical.choice, Quot.sound]`:
+
+```text
+HTGeometry/WeightedHardyInequality.lean          (39), sharpness, Hardy transfer
+HTGeometry/SegmentParameterHolomorphy.lean       holomorphy of a segment-parameter integral
+HTGeometry/CompactTestTransformOrder.lean        test-transform decay of every order
+RHTower/SuzukiGammaWallCutoffCommutator.lean     Theorem 3 of the wall-block card
+RHTower/SuzukiGammaStripCarrierTwoSided.lean     (3)
+RHTower/SuzukiGammaForcedStripHardy.lean         Theorem 4 of the wall-block card
+RHTower/SuzukiForcedStripParticular.lean         Theorem 1 of the gluing card, branch cancellation
+RHTower/SuzukiForcedStripHolomorphy.lean         Theorem 1 of the gluing card, holomorphy at 0
+RHTower/SuzukiForcedStripGluing.lean             Theorems 2 and 3 of the gluing card
+RHTower/StripFourierTranslation.lean             abstract Paley–Wiener strip translation
+RHTower/GammaVerticalRatioUniform.lean           quantitative vertical Gamma-ratio law
+RHTower/GammaRatioStripUniform.lean              two-sided substrip-uniform Gamma quotient
+```
+
+**Immediate next step.**  Assemble: substrip-uniform two-sided bounds for `stripPropagator` and
+`stripPropagatorInv` from `exists_twoSided_gammaRatioPair`; polynomial growth of
+`forcedParticular` on closed substrips; then exhibit the glued forced solution as a `StripDatum` and
+read off `(16)`.
+
+## PP. Substrip-uniform transport bounds and the growth of the particular solution
+
+`RHTower/SuzukiStripTransportUniform.lean` (clean, wired, axiom-audited).
+
+* `norm_gammaRatio_eq_pair`, `norm_branch_sq`: the branch modulus squared is the substrip Gamma
+  quotient at `(Im z, Re z)`.
+* `exists_bound_stripTransport_substrip`: `‖Q(z)‖ ≤ K` on `0 ≤ Im z ≤ σ₁ < 1`.
+* `exists_bound_stripTransportInv_substrip`: `‖Q(z)^{-1}‖ ≤ A(1+‖z‖)` on the same substrip — the
+  crude integer form of `(1+‖z‖)^{σ₁}`, which suffices because the inverse only ever meets a test
+  transform decaying faster than every power.
+* `exists_bound_forcedParticular_substrip`: `‖p(z)‖ ≤ P(1+‖z‖)^{n+2}` whenever the forcing obeys
+  `‖b w‖ ≤ D(1+‖w‖)^n` on the substrip.  The segment `w = zs` stays inside the substrip and inside
+  the disc of radius `‖z‖`, so the branch-free kernel gains one power and the outer factor `z` one
+  more.
+
+This is the growth half of Theorem 2 of `forced-gamma-upper-strip-gluing`, and it is exactly the
+`StripDatum.bdd` field for the forced solution.
+
+### The one remaining bridge for `(16)`
+
+`(15)` was proved for `forcedStripLine` — variation of constants along the *horizontal* line — while
+Theorem 1 and the growth bound are stated for `forcedParticular` — the contour integral along the
+*segment* from the origin.  The two brackets differ by the constant `∫_{[0,iσ]}H^{-1}b`, so the two
+representations agree after adjusting `c`.  The clean way to prove that is:
+
+```text
+Ψ(z) = z ∫₀¹ G(zs) ds   is a primitive of G on a star-shaped domain,
+```
+
+i.e. `HasDerivAt Ψ (G z) z`, which follows from the parametric derivative
+`d/dz ∫₀¹G(zs)ds = ∫₀¹ s G'(zs)ds` (already available inside
+`differentiableAt_integral_unitSegment`, which currently only exports `DifferentiableAt`) together
+with the `s`-fundamental theorem `∫₀¹ d/ds[s G(zs)]ds = G(z)`.  With a primitive in hand the
+horizontal FTC identifies the two brackets, `(15)` transfers to
+`stripSolution + forcedParticular`, and `exists_memLp_exp_smul_stripDatumFourier` delivers `(16)`.

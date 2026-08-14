@@ -1928,3 +1928,71 @@ factorization `L = M ∘ N` in `ℂ{t}[θ]` does, and that factorization is ther
 construction.  In the shift-polynomial presentation the ring law is
 `(t^a Ψ(θ))·(t^b Φ(θ)) = t^{a+b} Ψ(θ+b) Φ(θ)`, so the factorization is a Hensel-type recursion in
 the shift with a majorant convergence proof.
+
+## Lean progress — the operator ring, and the irrational leading vertex
+
+The remaining item is the sharp half of Sibuya--Ramis, whose classical proof factors the operator
+along its Newton polygon.  The ring in which that factorization lives, and the arithmetic that makes
+an **irrational** level non-degenerate, are now formal.  Four new modules, all wired and axiom-clean.
+
+`GaloisForLFunctions/HTGeometry/EulerShiftOperatorAlgebra.lean`
+
+    shiftOp Φ                     the operator of a family of shift polynomials,
+                                  `coeff_n (L F) = ∑_{k ≤ n} Φ_{n-k}(k) f_k`
+    shiftOp_shiftPolynomial       it agrees with the `∑_j B_j θ^j` presentation
+    shiftComp Ψ Φ                 `(Ψ ⋆ Φ)_ν = ∑_{a+b=ν} Ψ_a(X + b) · Φ_b(X)`
+    shiftOp_shiftComp :           **the convolution IS composition of operators**
+    natDegree_shiftComp_le
+    IsBoundedShiftFamily m Φ      `‖Φ_μ(k)‖ ≤ C ρ^μ (k+1)^m`, the estimate a convergent operator
+                                  supplies
+    isBoundedShiftFamily_shiftPolynomial
+    isBoundedShiftFamily_shiftComp :
+      **boundedness is stable under composition**, with the orders adding
+    coeff_shiftPolynomial, shiftPolynomial_ne_zero_of_coeff
+
+The composition law is the commutation `θ ∘ t^b = t^b ∘ (θ + b)` read on coefficients; the proof is
+the triangular sum swap `∑_{k ≤ n} ∑_{j ≤ k} = ∑_{j ≤ n} ∑_{k ∈ [j, n]}` followed by `k = j + b`.
+
+`GaloisForLFunctions/HTGeometry/NewtonIrrationalLevelVertex.lean`
+
+    weightedLevel r Φ μ = deg Φ_μ − r μ
+    weightedLevel_injective_of_irrational :
+      **at an irrational level distinct shifts have distinct weights** — equality exhibits `r` as a
+      quotient of integers
+    exists_max_weightedLevel      the maximum is attained: degrees are bounded, so only finitely
+                                  many shifts can compete
+    exists_gap_weightedLevel      and on any finite window the leading shift has a uniform positive
+                                  advantage
+
+`GaloisForLFunctions/HTGeometry/NewtonLevelComposition.lean`
+
+    natDegree_comp_X_add_C, leadingCoeff_comp_X_add_C, comp_X_add_C_ne_zero
+    natDegree_shiftComp_le_of_bound
+    coeff_shiftComp_leading :
+      **the leading vertex of a composition is the sum of the leading vertices**, with leading
+      coefficient the product of the two — at an irrational level no other pair of monomials can
+      reach the same shift and degree, so there is nothing to cancel it
+    shiftComp_leading_ne_zero, natDegree_shiftComp_leading
+
+`GaloisForLFunctions/HTGeometry/NewtonIrrationalPositiveVertex.lean`
+
+    newtonBoundedBy_iff_weightedLevel_le :
+      the Newton condition at level `r` is exactly `λ_r(μ) ≤ λ_r(0)`
+    exists_positive_weightedLevel_of_irrational_exactOrder :
+      **an irrational exact Gevrey order forces the leading vertex to a positive shift**
+
+The last statement halves the remaining problem.  If the leading vertex sat at shift `0`, the
+Newton condition would hold at level `s`, the least admissible level would be a **rational** `q ≤ s`,
+hence `q < s` because `s` is irrational, and Maillet's theorem at `q` would make the solution Gevrey
+of order `q < s` — contradicting exactness.  So the only surviving configuration is the one in which
+the polygon genuinely has a slope above `s`, and that is precisely the configuration a factorization
+`L = M ∘ N` at the cut `s` is designed to split.
+
+### The single remaining construction
+
+`L = M ∘ N` at an irrational cut `s`, with `N` Newton-bounded at level `s` and every slope of `M`
+above `s`.  Given it, the chain closes: `U := N F` lies in `E_s` because `N` is convergent, solves
+`M U = G` with `G` convergent, so by induction on the number of slopes `gev(U) = 0`; then `N F` is
+convergent and Maillet at the least Newton level of `N` — a rational number below `s` — makes `F`
+Gevrey of an order strictly below its exact one.  The ring, its estimates, and the multiplicativity
+of leading vertices that the construction must respect are now all formal.

@@ -148,3 +148,34 @@ theorem would be research theatre.
 4. [x] Detector weighted Littlewood count formalized on selected contours.
 5. [ ] Quantitative moment/interpolation estimate closed with no conjectural premises.
 6. Named Lean build, lint, and axiom audit pass.
+
+### C5d: fixed-right-edge power saving, and correction of the uniform-bound conjecture
+
+Status: **FORMALIZED** in `Sieve/InghamRightEdgeMeanSquare.lean` and
+`Sieve/InghamRightEdgePowerSaving.lean`.
+
+The first conjecture was that a cutoff-uniform `O(T)` right-edge second moment would close the
+right input to Gabriel interpolation. This is **FALSIFIED AS SUFFICIENT**: coefficient three needs
+the cutoff-tail saving created by `a_X(n)=0` for `n<=X`; discarding that support loses the density
+exponent even though the resulting theorem is true.
+
+Positive survivor: fix `beta=181/180`, use the unconditional divisor bound
+`d(n)<=C n^(1/360)`, and retain exact support. Lean proves
+
+```text
+sum_n n |a_X(n)n^(-beta)|^2 <= C^2 X^(-1/180)/(1/180),
+sum_n   |a_X(n)n^(-beta)|^2 <= C^2 X^(-181/180)/(181/180),
+```
+
+and therefore the literal power-saving endpoint theorem
+
+```text
+integral_[-X,X] |zeta(181/180+it) M_X(181/180+it)-1|^2 dt
+  <= C_right X^(-1/180).
+```
+
+This fixed edge avoids the moving `1+delta/log X` geometry. Its weaker elementary divisor loss is
+still compatible with Route T's `7/10` reserve once combined with the formal critical exponent
+`251/250`. Thus the right endpoint is no longer the hard core. Remaining analytic obstruction is
+the actual Gabriel integral interpolation theorem, followed by detector boundary/zero-counting
+assembly.

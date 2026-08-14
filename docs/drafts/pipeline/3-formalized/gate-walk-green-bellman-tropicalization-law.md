@@ -4,7 +4,7 @@
 - **Stage:** 2 -- fully proved on paper
 - **Type:** theorem / external circuit calibration / positive-linearization no-go
 - **Parent:** `../3-formalized/static-orbit-net-no-go-and-circuit-bellman-law.md`
-- **Status:** `[PAPER-PROVED] [FRONTIER ADVANCE] [NOVELTY UNVERIFIED] [LEAN DEFERRED]`
+- **Status:** `[PAPER-PROVED] [LEAN-CERTIFIED] [FRONTIER ADVANCE] [NOVELTY UNVERIFIED]`
 - **Date:** 2026-08-09
 
 ## Public sentence
@@ -378,9 +378,46 @@ The exact surviving target is the directional pairing with the seed-tube equilib
    calibration, complete-union quenched criterion, and Brown-replica entropy classification were
    not found in the targeted external search.  External priority remains unverified, so no novelty
    claim is made.
-7. **Formalization.**  The Green--Bellman core is already represented by
-   `GaloisForLFunctions.HTGeometry.GateWalkGreenBellmanTropicalization`.  The new first-entrance and
-   capacity children remain paper-only while the shared corpus is being refactored.
+7. **Formalization.**  Every theorem of this card is Lean-certified; see the certificate below.
+   The first-entrance and capacity children are certified in their own cards.
+
+## Lean certificate
+
+The whole card is formalized unconditionally.  The killed Green function is realized as a weighted
+sum over gate words rather than over lengths, so the transfer-operator definition and the word
+count are connected by an explicit iterate identity; the soft-target calibration, the gate Harnack
+inequality and the complete-union bound are then word-level statements about the same sum.
+
+Modules:
+
+- `GaloisForLFunctions.HTGeometry.GateWalkGreenBellmanTropicalization` (pre-existing: Theorem A in
+  the `approxComplexity` encoding)
+- `GaloisForLFunctions.RHTower.GateWalkGreenBellman`
+- `GaloisForLFunctions.HTGeometry.StaticCircuitEnsembleZeroTemperature`
+
+| Card statement | Lean declaration |
+|---|---|
+| `(3)` one-gate transfer operator | `gateAvgOp`, `backAct` |
+| `(4)` iterate counts reaching words | `gateAvgOp_iterate`, `reachingWordCount` |
+| `(5)` killed Green function | `gateGreen`, `gateGreenReal` |
+| Thm A `(6)` | `gateGreen_ge`, `gateGreen_le`, `gateGreenReal_sandwich`, and `gateWalkGreen_sandwich` |
+| Thm A unreachable case | `gateGreen_eq_zero_of_unreachable` |
+| Thm A `(7)` | `complexity_log_sandwich` |
+| Thm B `(8)` | `tendsto_neg_log_gateGreenReal` |
+| `(9)` radial soft kernel | `softKernel`, `softKernel_le_one`, `softKernel_of_mem_tube` |
+| `(10)` soft Green function | `softGreen`, `softGreenReal`, `softGreen_le_one` |
+| `(11)` calibration | `bellmanCalibration` |
+| Thm C `(12)` | `bellmanCalibration_le` |
+| Thm C `(13)`, `(15)` | `bellmanCalibration_gate_step`, `softGreen_gate_harnack`, `softGreenReal_gate_harnack` |
+| Thm C `(14)`, `(16)` | `abs_bellmanCalibration_sub_le`, `softKernel_le_mul`, `softGreen_le_mul` |
+| Thm D `(17)` | `measure_reachable_le_lintegral` |
+| Thm E `(18)` | `finiteDictionaryLpNorm`, `finiteDictionaryMax` |
+| Thm E `(19)` | `finiteDictionaryLpNorm_le`, `le_finiteDictionaryLpNorm` |
+| Thm E sharpness | `finiteDictionaryLpNorm_oneHot` |
+| Thm E `(20)`--`(21)` | `log_card_div_le_of_exp_le`, `mul_log_div_le_of_exp_le` |
+| Thm E `(22)` | `log_card_div_le_mul_of_exp_le` |
+
+Every listed declaration reports exactly `propext`, `Classical.choice`, `Quot.sound`.
 
 ## Log
 

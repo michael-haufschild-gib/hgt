@@ -4271,3 +4271,42 @@ the reusable layers, `RHTower` for the route-specific ones.
   contrast coefficients -- and both are classical PSWF asymptotics, cited.  The construction, the
   envelope `(19c)`--`(19d)`, `(4)`, the variation law `(19e)` and the polar estimate `(18)` are
   label-free and now apply to an object that exists.
+
+- 2026-08-14 (hundred-and-thirty-fourth instalment) -- **The uniform domination for the Abel
+  limit.**  New module `RHTower/PoissonAbelUniformBound.lean`, wired, axiom-clean.
+
+  The one link left in the route is transporting the primitive bound `(11)` from the channel
+  representation to the lattice representation.  The transport is an interchange of the Abel limit
+  `r -> 1⁻` with the outer `s`-integration, and an interchange needs a *domination* that does not
+  depend on the Abel radius.  That domination is now a theorem.
+
+  * **`norm_poissonAbelFourierAverage_le`** -- the Abel-weighted bilateral Fourier average is
+    exactly the Poisson integral of its boundary datum (already in the tree), and the Poisson kernel
+    is nonnegative with mass `2 pi` on the symmetric period, so
+
+    ```text
+    |Abel average of phi at radius r| <= sup |phi|,     uniformly in r.
+    ```
+
+    Positivity plus normalization is the whole content: no concentration or Fatou argument is used,
+    which is why the bound is uniform rather than asymptotic.
+  * **`abs_poissonMuntzScaledPeriodization_le`** -- a bounded source supported in `[-L, L]` has
+    scaled periodization bounded by `(2 a L + 1) C_f`: the lattice points meeting the support lie
+    in `Icc (ceil (-x - aL)) (floor (-x + aL))`, whose cardinality is at most `2 a L + 1`.  No
+    variation estimate is needed for this crude bound, and it is uniform in the offset.
+  * **`norm_sqrt_mul_poissonMuntzAbelSum_le`, `..._le_of_bounded`** -- combining the two through
+    the tree's exact mean-defect identity `poissonMuntzAbelSum = (Abel average - a·Fourier(0))/(2a)`
+    and the vanishing of the zero-frequency mean:
+
+    ```text
+    |sqrt a · AbelSum(f, a, r)| <= (2 a L + 1) C_f / (2 sqrt a),     uniformly in r.
+    ```
+
+  On every compact range of apertures -- which is all the `s`-integration over `[0, t]` sees -- this
+  is a constant.  What remains of the transport is now purely mechanical: dominated convergence
+  along `r -> 1⁻` for the `s`-integral, the sum/integral interchange at fixed `r < 1` (absolutely
+  convergent, since the Abel weight is geometric), and the identification of the Fourier samples of
+  the cut-off mode with the radial prolate solution -- the tree's
+  `exists_global_even_radialProlate_of_signedMode` already gives that solution, and the band
+  eigen-equation holds at *every* real point, which is exactly the self-reciprocity the
+  identification needs.

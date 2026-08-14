@@ -504,6 +504,34 @@ non-absolutely summable, but singularity alone earns no credit without `(1)` and
     full source boundary, and makes the already fixed physical reader cyclic on that transported
     boundary. Source object, singular pole transport, local tame symbol, exact physical
     coefficient, and completed incidence landing are no longer open.
+36. **Conjecture:** relative cyclic homology, joint torsion, Dixmier trace, or an arbitrary
+    trace-class correction constructs that lift uniformly in the free horizontal grade.
+    **Falsified with an exact positive obstruction.** Let
+    $B_6^{\rm src}=W_6(T_6)-\frac16T_6$, the literal complete Wold coface. It is rectangular
+    Schatten one. For every linear comparison $F$ sending source Schatten-one operators to
+    compact physical operators, define
+    
+    \[
+      \mathfrak D_F(a)=C_6^{\rm Sonin}(a)-F(B_6^{\rm src}).
+    \]
+    
+    Compact-perturbation invariance and the fixed Sonin shell lower bound give
+    
+    \[
+      \|\mathfrak D_F(a)\|_{\rm ess}
+      =\|C_6^{\rm Sonin}(a)\|_{\rm ess}
+      \ge { |\Delta_{23}(a)|\over\sqrt6}.
+    \]
+    
+    An exact trace-ideal comparison on this coface exists iff $a=0$. The result is Lean-closed in
+    `DeningerGammaSixTraceIdealSoninStrictLiftObstruction.lean`. Thus a trace-class-invariant
+    secondary character cannot absorb the physical anomaly; it preserves its Calkin class.
+37. **Refined surviving conjecture:** construct the comparison only after restricting to the
+    actual Xi divisor locus. It must use a new nonlocal multi-place consequence of
+    `Xi(rho)=0` to produce the fibrewise trace-ideal-preserving compactness, while retaining
+    divisor multiplicity and both marked branches. Item 36 proves that this construction cannot
+    extend as an exact free-grade family. This divisor-selective compactness theorem, not another
+    quotient or trace, is now the first unresolved Route-L statement.
 
 ## Falsifiers
 
@@ -614,6 +642,12 @@ A proposed closure fails if it:
 
 ## Log
 
+- 2026-08-15 — Killed every grade-uniform trace-class-invariant lift. The complete Gamma-six
+  Wold coface is Schatten one, so every trace-ideal-preserving comparison changes the fixed Sonin
+  receiver only compactly. Its strict defect therefore has the same essential norm and the exact
+  lower bound $|\Delta_{23}(a)|/\sqrt6$; exact lift existence is equivalent to $a=0$. Paper proof,
+  Lean module, targeted build, umbrella wiring, and axiom audit are complete. Remaining producer is
+  a divisor-selective multi-place comparison deriving fibrewise compactness from `Xi(rho)=0`.
 - 2026-08-11 — Formalized the actual Gamma-six leading shell operator. Exact sorted approximation
   numbers are `6^(-floor(log_6(n+216)))`; the operator is weak Schatten one but not trace class,
   complete shell mass is five, literal Wold coordinate multiplication scales by `1/6`, and the

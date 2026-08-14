@@ -14,7 +14,27 @@
   `RouteESourceFaithfulEulerTiltUnitShell.lean`; the moving-to-critical chi-square bridge is
   formalized in `RouteEMovingEulerTiltChiSquareContiguity.lean`; arbitrary-observable gauge
   cancellation `(29)` and the sharp matching receiver `(30)` are now formalized in the source
-  module. The PNT asymptotics `(9)`--`(14)` remain paper-only, so this full card remains stage 2.
+  module.  The PNT layer of `(18)`/`(19)`/`(9)` is now formalized unconditionally as well:
+  * `RHTower/ThetaRelativeErrorMass.lean` — `∫_2^∞ |θ(t)/t - 1| dt/t < ∞` and the uniform Abel
+    remainder `|∫_2^x E(t) t^{-δ-1} dt| ≤ thetaRelMass` for every `δ ≥ 0`;
+  * `RHTower/TiltedPrimeLogSum.lean` — `integral_rpow_sub_one_of_ne`,
+    `integral_derivRpow_mul_theta_eq_of_ne`, and `abs_tiltedPrimeLogSum_sub_le`:
+    `|∑_{2<p≤Y} p^{-1-δ} log p - (1-Y^{-δ})/δ| ≤ 4 log 4 + 8 + 2 thetaRelMass`, uniformly for
+    `δ ∈ (0,1]`;
+  * `RHTower/EulerTiltMeanEnergy.lean` — `eulerTiltMeanEnergy`, the convergent Euler-denominator
+    correction `abs_eulerTiltMeanEnergy_sub_le`, and `abs_eulerTiltMeanEnergy_sub_expansion_le`
+    = `(18)`: `|μ(1+δ,Y) - (log Y - δ (log Y)²/2)| ≤ C + δ²(log Y)³/6`;
+  * `RHTower/EulerTiltSaddle.lean` — the saddle defect, its strict monotonicity in the tilt
+    (hence uniqueness of the solution), and `abs_saddle_sub_cofactor_le` = `(19)`;
+  * `RHTower/EulerTiltSaddleAperture.lean` — the canonical aperture `Y = 2L e^{L}` with the exact
+    identity `log Y = L + log L + log 2`, `exists_unique_saddle_root`, and the capstone
+    `eventually_saddle_root_expansion` = `(9)`: for every sufficiently wide aperture the tilt
+    equation has exactly one solution in `(0,1]` and it equals `2(ℓ-L)/ℓ²` up to
+    `O(1/ℓ² + (ℓ-L)²/ℓ³)`.
+  All of these audit `[propext, Classical.choice, Quot.sound]`.  Still paper-only: the Euler-edge
+  covariance asymptotics `(10)`--`(13)` (which need the second-moment tilted sum
+  `∑_{p≤Y} p^{-1-δ}(log p)²`) and the all-cumulant amplitude `(14)` (which needs the oscillatory
+  Mertens sum `∑_{p≤Y} p^{-σ} cos(t log p)`), so this card remains stage 2.
 - **Scientific status:** project-local new synthesis; external priority unclaimed
 
 ## 1. Result
