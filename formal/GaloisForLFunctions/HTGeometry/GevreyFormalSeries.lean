@@ -122,17 +122,14 @@ theorem IsGevreySeries.add {r : ℝ} {F G : PowerSeries ℂ} (hF : IsGevreySerie
         gcongr
     _ = (C₁ + C₂) * (max A₁ A₂) ^ n * (n ! : ℝ) ^ r := by ring
 
-/-- The Gevrey bound of a Cauchy product: `i! · j! ≤ (i+j)!` collapses the two factorial factors,
-and the antidiagonal contributes only the polynomial factor `n+1`. -/
-theorem IsGevreySeries.mul {r : ℝ} (hr : 0 ≤ r) {F G : PowerSeries ℂ}
-    (hF : IsGevreySeries r F) (hG : IsGevreySeries r G) : IsGevreySeries r (F * G) := by
+/-- **A quantitative Cauchy-product bound.**  Two series with the same Gevrey base multiply with
+constants multiplied and one extra factor `n+1`, coming from the size of the antidiagonal. -/
+theorem norm_coeff_mul_le {r : ℝ} (hr : 0 ≤ r) {F G : PowerSeries ℂ} {C₁ C₂ A : ℝ}
+    (hC₁ : 0 ≤ C₁) (hC₂ : 0 ≤ C₂) (hA : 0 < A)
+    (hF : ∀ n, ‖PowerSeries.coeff n F‖ ≤ C₁ * A ^ n * (n ! : ℝ) ^ r)
+    (hG : ∀ n, ‖PowerSeries.coeff n G‖ ≤ C₂ * A ^ n * (n ! : ℝ) ^ r) (n : ℕ) :
+    ‖PowerSeries.coeff n (F * G)‖ ≤ C₁ * C₂ * ((n : ℝ) + 1) * A ^ n * (n ! : ℝ) ^ r := by
   classical
-  obtain ⟨C₁, A₁, hC₁, hA₁, h₁⟩ := hF
-  obtain ⟨C₂, A₂, hC₂, hA₂, h₂⟩ := hG
-  set A : ℝ := max A₁ A₂ with hAdef
-  have hA : 0 < A := lt_of_lt_of_le hA₁ (le_max_left _ _)
-  obtain ⟨C₃, hC₃1, hC₃⟩ := exists_succ_pow_le_const_mul_pow 1 (by norm_num : (1 : ℝ) < 2)
-  refine ⟨C₁ * C₂ * C₃, 2 * A, by positivity, by positivity, fun n => ?_⟩
   have hfacpos : (0 : ℝ) < (n ! : ℝ) ^ r := factorial_rpow_pos n r
   have hterm : ∀ p ∈ Finset.HasAntidiagonal.antidiagonal n,
       ‖PowerSeries.coeff p.1 F * PowerSeries.coeff p.2 G‖
@@ -150,38 +147,78 @@ theorem IsGevreySeries.mul {r : ℝ} (hr : 0 ≤ r) {F G : PowerSeries ℂ}
         push_cast
         rw [Real.mul_rpow (by positivity) (by positivity)]
       rw [hmul]
-      refine Real.rpow_le_rpow (by positivity) hfac hr
-    have hAp : A₁ ^ p.1 * A₂ ^ p.2 ≤ A ^ n := by
-      have h1 : A₁ ^ p.1 ≤ A ^ p.1 := pow_le_pow_left₀ (le_of_lt hA₁) (le_max_left _ _) _
-      have h2 : A₂ ^ p.2 ≤ A ^ p.2 := pow_le_pow_left₀ (le_of_lt hA₂) (le_max_right _ _) _
-      calc A₁ ^ p.1 * A₂ ^ p.2 ≤ A ^ p.1 * A ^ p.2 := by
-            exact mul_le_mul h1 h2 (by positivity) (by positivity)
-        _ = A ^ n := by rw [← pow_add, hpn]
+      exact Real.rpow_le_rpow (by positivity) hfac hr
+    have hApow : A ^ p.1 * A ^ p.2 = A ^ n := by rw [← pow_add, hpn]
     calc ‖PowerSeries.coeff p.1 F * PowerSeries.coeff p.2 G‖
         = ‖PowerSeries.coeff p.1 F‖ * ‖PowerSeries.coeff p.2 G‖ := norm_mul _ _
-      _ ≤ (C₁ * A₁ ^ p.1 * ((p.1 ! : ℝ)) ^ r) * (C₂ * A₂ ^ p.2 * ((p.2 ! : ℝ)) ^ r) :=
-          mul_le_mul (h₁ p.1) (h₂ p.2) (norm_nonneg _) (by positivity)
-      _ = (C₁ * C₂) * (A₁ ^ p.1 * A₂ ^ p.2) * (((p.1 ! : ℝ)) ^ r * ((p.2 ! : ℝ)) ^ r) := by ring
+      _ ≤ (C₁ * A ^ p.1 * ((p.1 ! : ℝ)) ^ r) * (C₂ * A ^ p.2 * ((p.2 ! : ℝ)) ^ r) :=
+          mul_le_mul (hF p.1) (hG p.2) (norm_nonneg _)
+            (mul_nonneg (mul_nonneg hC₁ (le_of_lt (pow_pos hA _)))
+              (le_of_lt (factorial_rpow_pos p.1 r)))
+      _ = (C₁ * C₂) * (A ^ p.1 * A ^ p.2) * (((p.1 ! : ℝ)) ^ r * ((p.2 ! : ℝ)) ^ r) := by ring
       _ ≤ (C₁ * C₂) * A ^ n * (n ! : ℝ) ^ r := by
-          refine mul_le_mul (mul_le_mul_of_nonneg_left hAp (by positivity)) hrp
-            (by positivity) (by positivity)
+          rw [hApow]
+          refine mul_le_mul_of_nonneg_left hrp ?_
+          exact mul_nonneg (mul_nonneg hC₁ hC₂) (le_of_lt (pow_pos hA n))
       _ = C₁ * C₂ * A ^ n * (n ! : ℝ) ^ r := by ring
   have hcard : (Finset.HasAntidiagonal.antidiagonal n).card = n + 1 := Finset.Nat.card_antidiagonal n
   calc ‖PowerSeries.coeff n (F * G)‖
-      = ‖∑ p ∈ Finset.HasAntidiagonal.antidiagonal n, PowerSeries.coeff p.1 F * PowerSeries.coeff p.2 G‖ := by
+      = ‖∑ p ∈ Finset.HasAntidiagonal.antidiagonal n,
+          PowerSeries.coeff p.1 F * PowerSeries.coeff p.2 G‖ := by
         rw [PowerSeries.coeff_mul]
-    _ ≤ ∑ p ∈ Finset.HasAntidiagonal.antidiagonal n, ‖PowerSeries.coeff p.1 F * PowerSeries.coeff p.2 G‖ :=
-        norm_sum_le _ _
+    _ ≤ ∑ p ∈ Finset.HasAntidiagonal.antidiagonal n,
+          ‖PowerSeries.coeff p.1 F * PowerSeries.coeff p.2 G‖ := norm_sum_le _ _
     _ ≤ ∑ _p ∈ Finset.HasAntidiagonal.antidiagonal n, C₁ * C₂ * A ^ n * (n ! : ℝ) ^ r :=
         Finset.sum_le_sum hterm
     _ = ((n : ℝ) + 1) * (C₁ * C₂ * A ^ n * (n ! : ℝ) ^ r) := by
         rw [Finset.sum_const, hcard, nsmul_eq_mul]
         push_cast
         ring
-    _ ≤ (C₃ * 2 ^ n) * (C₁ * C₂ * A ^ n * (n ! : ℝ) ^ r) := by
-        have h := hC₃ n
-        simp only [pow_one] at h
-        exact mul_le_mul_of_nonneg_right h (by positivity)
+    _ = C₁ * C₂ * ((n : ℝ) + 1) * A ^ n * (n ! : ℝ) ^ r := by ring
+
+/-- The Gevrey classes are closed under Cauchy products: the extra factor `n+1` of the quantitative
+bound is absorbed by enlarging the geometric base. -/
+theorem IsGevreySeries.mul {r : ℝ} (hr : 0 ≤ r) {F G : PowerSeries ℂ}
+    (hF : IsGevreySeries r F) (hG : IsGevreySeries r G) : IsGevreySeries r (F * G) := by
+  classical
+  obtain ⟨C₁, A₁, hC₁, hA₁, h₁⟩ := hF
+  obtain ⟨C₂, A₂, hC₂, hA₂, h₂⟩ := hG
+  set A : ℝ := max A₁ A₂ with hAdef
+  have hA : 0 < A := lt_of_lt_of_le hA₁ (le_max_left _ _)
+  have hF' : ∀ n, ‖PowerSeries.coeff n F‖ ≤ C₁ * A ^ n * (n ! : ℝ) ^ r := by
+    intro n
+    refine le_trans (h₁ n) ?_
+    have hle : A₁ ^ n ≤ A ^ n := pow_le_pow_left₀ (le_of_lt hA₁) (le_max_left _ _) n
+    have hpos : (0 : ℝ) < (n ! : ℝ) ^ r := factorial_rpow_pos n r
+    exact mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_left hle (le_of_lt hC₁)) (le_of_lt hpos)
+  have hG' : ∀ n, ‖PowerSeries.coeff n G‖ ≤ C₂ * A ^ n * (n ! : ℝ) ^ r := by
+    intro n
+    refine le_trans (h₂ n) ?_
+    have hle : A₂ ^ n ≤ A ^ n := pow_le_pow_left₀ (le_of_lt hA₂) (le_max_right _ _) n
+    have hpos : (0 : ℝ) < (n ! : ℝ) ^ r := factorial_rpow_pos n r
+    exact mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_left hle (le_of_lt hC₂)) (le_of_lt hpos)
+  obtain ⟨C₃, hC₃1, hC₃⟩ := exists_succ_pow_le_const_mul_pow 1 (by norm_num : (1 : ℝ) < 2)
+  refine ⟨C₁ * C₂ * C₃, 2 * A, by positivity, by positivity, fun n => ?_⟩
+  have hstep := norm_coeff_mul_le hr (le_of_lt hC₁) (le_of_lt hC₂) hA hF' hG' n
+  have hpoly : ((n : ℝ) + 1) ≤ C₃ * 2 ^ n := by
+    have h := hC₃ n
+    simpa using h
+  have hfacpos : (0 : ℝ) < (n ! : ℝ) ^ r := factorial_rpow_pos n r
+  calc ‖PowerSeries.coeff n (F * G)‖
+      ≤ C₁ * C₂ * ((n : ℝ) + 1) * A ^ n * (n ! : ℝ) ^ r := hstep
+    _ ≤ C₁ * C₂ * (C₃ * 2 ^ n) * A ^ n * (n ! : ℝ) ^ r := by
+        have hbase : (0 : ℝ) ≤ C₁ * C₂ := le_of_lt (mul_pos hC₁ hC₂)
+        have hrest : (0 : ℝ) ≤ A ^ n * (n ! : ℝ) ^ r :=
+          le_of_lt (mul_pos (pow_pos hA n) hfacpos)
+        have hmid : C₁ * C₂ * ((n : ℝ) + 1) ≤ C₁ * C₂ * (C₃ * 2 ^ n) :=
+          mul_le_mul_of_nonneg_left hpoly hbase
+        calc C₁ * C₂ * ((n : ℝ) + 1) * A ^ n * (n ! : ℝ) ^ r
+            = (C₁ * C₂ * ((n : ℝ) + 1)) * (A ^ n * (n ! : ℝ) ^ r) := by ring
+          _ ≤ (C₁ * C₂ * (C₃ * 2 ^ n)) * (A ^ n * (n ! : ℝ) ^ r) :=
+              mul_le_mul_of_nonneg_right hmid hrest
+          _ = C₁ * C₂ * (C₃ * 2 ^ n) * A ^ n * (n ! : ℝ) ^ r := by ring
     _ = C₁ * C₂ * C₃ * (2 * A) ^ n * (n ! : ℝ) ^ r := by
         rw [mul_pow]
         ring

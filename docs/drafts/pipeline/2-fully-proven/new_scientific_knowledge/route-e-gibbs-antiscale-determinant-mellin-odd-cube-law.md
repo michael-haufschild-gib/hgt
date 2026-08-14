@@ -8,10 +8,34 @@
 - **Companion:** `../../3-formalized/new_scientific_knowledge/route-e-critical-half-density-terminal-frame-minimax-law.md`
 - **RH used:** no
 - **Computation used:** no
-- **Lean status:** exact finite determinant/odd-cube/rapidity core is formalized in
-  `RHTower/GibbsAntiscaleDeterminantOddCube.lean`, umbrella-reachable through
-  `RHTower/RouteEPhysicalSaddleAntiscaleBarrier.lean`. Four-field Mellin polarization and PNT
-  terminal lower bounds remain paper-only.
+- **Lean status:** the exact finite determinant/odd-cube/rapidity core `(11)`--`(19)` is
+  formalized in `RHTower/GibbsAntiscaleDeterminantOddCube.lean`, the finite Gibbs Mellin--Euler
+  factorization `(5)`--`(7)` in `RHTower/GibbsCriticalDissipationAntiscaleResonance.lean`. The PNT
+  layer is now formalized as well, on the reusable prime-window infrastructure
+  (`HTGeometry/RpowKernelRemainder.lean`, `HTGeometry/WindowRpowIntegral.lean`,
+  `RHTower/PrimeRpowLogSumAsymptotic.lean`, `RHTower/PrimeWindowLaw.lean`,
+  `RHTower/PrimeWindowLawNoLog.lean`):
+  * `(20)`--`(27)` terminal antiscale chamber — `RHTower/RouteEGibbsTerminalChamber.lean`:
+    `terminalChamber`, `cos_terminalChamber_le` (`(21)`/`(22)`), `tendsto_chamberMass`
+    (`(25)`: `∑_{X/e<p≤X}p^{-1/2}·log X/√X → 2 - 2e^{-1/2}`), `chamberDeterminant`,
+    `exp_chamberMass_div_three_sub_one_le` (`(26)`), `log_one_add_abs_chamberDeterminant_le` and
+    `chamberMass_div_three_le_log_one_add` (`(27)`, two-sided `≍ √X/log X`);
+  * `(28)`/`(29)` prefix modulus positivity — `prefixModulus_ge` in
+    `RHTower/RouteEGibbsWideBatch.lean`;
+  * the linear grade of `(36)` — `tendsto_criticalCosSum`
+    (`∑_{p≤X}p^{-1/2}cos(t_X log p)·log X/√X → -2`) in the same module;
+  * `(30)`--`(33)` prefix phase — `RHTower/RouteEGibbsPrefixPhase.lean`: `prefixPhaseWeight` and
+    `tendsto_prefixPhaseWeight` (`(32)`), `prefixPhase`, `abs_prefixPhase_add_le` (`(31)`, the
+    linear law with explicit cubic error `68 t³(log Y)²∑p^{-1/2}log p`), and
+    `tendsto_prefixPhase_threshold` (`(33)`: `Φ_{(log X)^A}(t_X)·(log X)^{1-A/2} → -4π`, so
+    `A = 2` is the exact threshold), on the new Taylor bricks
+    `HTGeometry/ArctanSinTaylor.lean` (`|arctan u - u| ≤ |u|³`, `|sin u - u| ≤ |u|³`);
+  * Mertens' third theorem `∏_{p≤N}(1-1/p) ≍ 1/log N` — new reusable
+    `RHTower/Sieve/MertensThird.lean`.
+  All of these build and audit `[propext, Classical.choice, Quot.sound]`.
+  Still paper-only: the modulus stability `(34)`, the full rapidity `(37)`/`(38)` (needs the
+  `artanh` cubic bound and the `d_p` versus `p^{-1/2}` correction), and the four-field
+  Mellin--Plancherel polarization `(8)`.
 
 ## 1. Literal Gibbs determinant
 

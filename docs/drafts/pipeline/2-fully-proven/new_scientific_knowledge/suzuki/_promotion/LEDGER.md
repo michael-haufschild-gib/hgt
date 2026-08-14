@@ -6865,3 +6865,33 @@ exponentially weighted physical carrier.  The scalar half is already the corpus 
 `integrable_suzukiGammaStripNormSq`; the missing input is the operator bound
 `‖e^{-i(x+iσ)T/2}‖ ≤ e^{σ‖T‖/2}`, which needs unitarity of `e^{-ixT/2}` for self-adjoint `T` — a
 C*-algebra fact, not available for a bare Banach space.
+
+## HE — card 6's `(24)`: the glued seam is square integrable on every interior line
+
+```text
+HTGeometry/ExpSelfAdjointNormBound.lean
+  norm_eq_one_of_mem_unitary        a unitary element of a C*-algebra has norm one
+  norm_exp_real_smul_le             ‖e^{rT}‖ ≤ e^{|r|‖T‖} through the functional calculus
+  norm_exp_imaginary_smul_eq_one    e^{isT} is unitary for self-adjoint T
+  norm_exp_smul_le                  **‖e^{wT}‖ ≤ e^{|Re w|‖T‖}** — only the real part of the
+                                    exponent contributes
+RHTower/SuzukiGammaStripSquareIntegrable.lean
+  norm_gammaRatio_shift             |Γ(1+iz)/Γ(1-iz)| on z = x+iσ is the corpus strip density,
+                                    through Γ(conj z) = conj Γ(z)
+  norm_sq_stripSolution_shift_le    the pointwise bound by e^{-2γσ}e^{σ‖T‖}‖c‖² times the carrier
+  integrable_norm_sq_stripSolution  **card 6's `(24)`**: the glued homogeneous seam is square
+                                    integrable on every line 0 < σ < 1
+```
+
+The operator factor is where self-adjointness is load-bearing: `e^{-i(x+iσ)T/2}` splits into a
+unitary factor and `e^{σT/2}`, so its norm is bounded by `e^{σ‖T‖/2}` uniformly in `x`; without
+self-adjointness only `e^{|z|‖T‖/2}` is available and the line integral diverges.  All declarations
+audit to `[propext, Classical.choice, Quot.sound]`.
+
+Card 6 now needs only `(25)`.  Good news for that lane: **mathlib does have the `L²` Fourier
+isometry** — `MeasureTheory.Lp.fourierTransformₗᵢ` and `MeasureTheory.Lp.norm_fourier_eq` in
+`Mathlib/Analysis/Fourier/LpSpace.lean`, valid for a complex Hilbert space of values and a
+finite-dimensional real inner product space of arguments, together with
+`SchwartzMap.toLp_fourier_eq` and the tempered-distribution comparison.  What remains for `(25)` is
+the contour shift: that the `L²` inverse Fourier transform of `f(·+iσ)` is `e^{σL}` times a
+σ-independent carrier, i.e. the Paley–Wiener step for the holomorphic strip solution.

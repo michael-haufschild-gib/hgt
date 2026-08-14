@@ -38,10 +38,13 @@ theorem norm_gammaRatio_shift (σ x : ℝ) :
         ‖Complex.Gamma (((1 + σ : ℝ) : ℂ) + (x : ℂ) * Complex.I)‖ := by
   have hnum : (1 : ℂ) + Complex.I * ((x : ℂ) + (σ : ℂ) * Complex.I)
       = ((1 - σ : ℝ) : ℂ) + (x : ℂ) * Complex.I := by
-    refine Complex.ext ?_ ?_ <;> simp <;> ring
+    refine Complex.ext ?_ ?_
+    · simp
+      ring
+    · simp
   have hden : (1 : ℂ) - Complex.I * ((x : ℂ) + (σ : ℂ) * Complex.I)
       = (starRingEnd ℂ) (((1 + σ : ℝ) : ℂ) + (x : ℂ) * Complex.I) := by
-    refine Complex.ext ?_ ?_ <;> simp <;> ring
+    refine Complex.ext ?_ ?_ <;> simp
   rw [gammaRatio, hnum, hden, Complex.Gamma_conj, norm_div]
   congr 1
   simp
@@ -123,6 +126,64 @@ theorem norm_sq_stripSolution_shift_le {E : ℂ → ℂ} {T : X →L[ℂ] X} (hT
   rw [← hz]
   ring_nf
   rfl
+
+/-- **`(24)`: the glued homogeneous seam is square integrable on every interior line of the
+strip.** -/
+theorem integrable_norm_sq_stripSolution {E : ℂ → ℂ} {T : X →L[ℂ] X} (hT : IsSelfAdjoint T)
+    (hEc : ContinuousOn E (imStrip (-1) 1))
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z) (c : X) {σ : ℝ} (hσ0 : 0 < σ)
+    (hσ1 : σ < 1) :
+    Integrable (fun x : ℝ => ‖stripSolution E T c ((x : ℂ) + (σ : ℂ) * Complex.I)‖ ^ 2) := by
+  set C : ℝ := Real.exp (-(2 * Real.eulerMascheroniConstant * σ)) * Real.exp (σ * ‖T‖) * ‖c‖ ^ 2
+    with hC
+  have hmap : Continuous (fun x : ℝ => ((x : ℂ) + (σ : ℂ) * Complex.I)) := by fun_prop
+  have hslit : ∀ x : ℝ, ((x : ℂ) + (σ : ℂ) * Complex.I) ∈ Complex.slitPlane := by
+    intro x
+    refine Complex.mem_slitPlane_iff.mpr (Or.inr ?_)
+    simp
+    linarith
+  have hpowc : Continuous
+      (fun x : ℝ => ((x : ℂ) + (σ : ℂ) * Complex.I) ^ (-(1 : ℂ) / 2)) := by
+    refine continuous_iff_continuousAt.mpr fun x => ?_
+    have h1 : ContinuousAt (fun w : ℂ => w ^ (-(1 : ℂ) / 2))
+        ((x : ℂ) + (σ : ℂ) * Complex.I) :=
+      (differentiableAt_id.cpow_const (hslit x)).continuousAt
+    have h2 : ContinuousAt (fun y : ℝ => ((y : ℂ) + (σ : ℂ) * Complex.I)) x := hmap.continuousAt
+    have h3 : ContinuousAt ((fun w : ℂ => w ^ (-(1 : ℂ) / 2))
+        ∘ (fun y : ℝ => ((y : ℂ) + (σ : ℂ) * Complex.I))) x := ContinuousAt.comp h1 h2
+    exact h3
+  have hEcont : Continuous (fun x : ℝ => E ((x : ℂ) + (σ : ℂ) * Complex.I)) :=
+    hEc.comp_continuous hmap (fun x => shift_mem_imStrip hσ0 hσ1 x)
+  have hphasec : Continuous (fun x : ℝ =>
+      Complex.exp (Complex.I * (Real.eulerMascheroniConstant : ℂ) * ((x : ℂ)
+        + (σ : ℂ) * Complex.I))) := by
+    exact Complex.continuous_exp.comp (by fun_prop)
+  have hexpc : Continuous (fun x : ℝ =>
+      NormedSpace.exp ((-(Complex.I / 2) * ((x : ℂ) + (σ : ℂ) * Complex.I)) • T)) := by
+    letI : NormedAlgebra ℚ (X →L[ℂ] X) := .restrictScalars ℚ ℂ _
+    exact NormedSpace.exp_continuous.comp (by fun_prop)
+  have hvecc : Continuous (fun x : ℝ =>
+      NormedSpace.exp ((-(Complex.I / 2) * ((x : ℂ) + (σ : ℂ) * Complex.I)) • T) c) :=
+    (ContinuousLinearMap.apply ℂ X c).continuous.comp hexpc
+  have hsolc : Continuous
+      (fun x : ℝ => stripSolution E T c ((x : ℂ) + (σ : ℂ) * Complex.I)) := by
+    have hsol : (fun x : ℝ => stripSolution E T c ((x : ℂ) + (σ : ℂ) * Complex.I))
+        = fun x : ℝ => (((x : ℂ) + (σ : ℂ) * Complex.I) ^ (-(1 : ℂ) / 2))
+          • ((Complex.exp (Complex.I * (Real.eulerMascheroniConstant : ℂ)
+                * ((x : ℂ) + (σ : ℂ) * Complex.I)) * E ((x : ℂ) + (σ : ℂ) * Complex.I))
+            • (NormedSpace.exp ((-(Complex.I / 2) * ((x : ℂ) + (σ : ℂ) * Complex.I)) • T) c)) := by
+      funext x
+      rw [stripSolution, stripTransport_apply]
+    rw [hsol]
+    exact hpowc.smul ((hphasec.mul hEcont).smul hvecc)
+  have hcont : Continuous
+      (fun x : ℝ => ‖stripSolution E T c ((x : ℂ) + (σ : ℂ) * Complex.I)‖ ^ 2) :=
+    (hsolc.norm).pow 2
+  refine Integrable.mono' ((integrable_suzukiGammaStripNormSq hσ0 hσ1).const_mul C)
+    hcont.aestronglyMeasurable ?_
+  filter_upwards with x
+  rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+  exact norm_sq_stripSolution_shift_le hT hE c hσ0 hσ1 x
 
 end
 

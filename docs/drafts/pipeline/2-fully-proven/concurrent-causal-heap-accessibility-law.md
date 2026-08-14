@@ -621,3 +621,37 @@ calibration and Lipschitz constant `1/delta`, independent of that number.
 - [x] hostile and external collision audit
 - [ ] quenched decay of `(34)` for one ordinary static local-Hamiltonian ensemble
 - [ ] Lean formalization after corpus refactor
+
+## Lean progress
+
+Modules: `GaloisForLFunctions.RHTower.CircuitTraceMonoid`,
+`GaloisForLFunctions.RHTower.CircuitTraceBoltzmann`,
+`GaloisForLFunctions.RHTower.CircuitCausalAccessibility`.
+
+Formalized unconditionally:
+
+| Card item | Lean declaration |
+|---|---|
+| trace monoid `(3)`, prefix order `(3)` | `Trace`, `traceMk`, `traceLen`, `TracePrefix`, `traceCylinder` |
+| Lemma A cancellation | `trace_mul_left_cancel`, `trace_mul_right_cancel` |
+| length grading | `traceGradeEquiv` |
+| `(1)`, `(2)` | `tracePartition`, `one_le_tracePartition`, `tracePartition_le` |
+| `(4)` | `traceMass` |
+| `(5)` | `traceMass_traceCylinder` (via `traceCylinderEquiv`) |
+| `(6)` | `tsum_tracePrefixCount` |
+| `(8)` | `causalSuccessEvent`, `causalAccessibility`, `preparationAction` |
+| `(9)` | `causalAccessibility_nonneg`, `causalAccessibility_le_one` |
+| `(10)` | `pow_le_causalAccessibility`, `causalAccessibility_le_longHeaps` |
+| `(11)` | `causalAccessibility_eq_one`, `preparationAction_eq_zero` |
+| `(12)` | `measure_heapAccessible_le_causalAccessibility` |
+| `(14)` | `causalAccessibility_le_ratio` |
+| `(15)`, `(16)` | `causalAccessibility_le_optimal` |
+| `(17)` | `preparationAction_sandwich` |
+| `(18)`, `(19)` | `traceGreenReporter`, `causalAccessibility_le_traceGreenReporter` |
+| `(21)` | `traceCylinder_inter_of_independent`, `traceMass_union_cylinders_of_independent` |
+| `(22)`--`(24)` | `measure_heapAccessible_le_capacity`, `measure_heapAccessible_le_capacity_optimal` |
+
+Every declaration above reports exactly `propext`, `Classical.choice`, `Quot.sound`.
+
+Still to formalize on this card: the relative-entropy characterization `(13)`, the free-word
+first-entrance reduction `(20)`, and the soft causal reporter `(25)`--`(33)`.

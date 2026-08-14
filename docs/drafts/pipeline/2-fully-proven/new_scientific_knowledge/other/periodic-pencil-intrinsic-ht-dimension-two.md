@@ -1157,3 +1157,51 @@ All modules umbrella-wired, build green, axiom-clean.  This is exactly the datum
 `famAeval_coeff_ne_zero_of_dominant` consumes as `hw₀`, so what remains of `(11)` is step (iii) — a
 *single* profile, independent of `Q`, for which the key produced above is dominant with a gap
 beating the coefficient mass — and step (iv), the bridge to `DifferentialIndependent`.
+
+### Lean progress — step (iii): the family survives every algebraic relation
+
+The dominance step turned out not to need a bespoke profile design at all.  The corpus's
+single-series capstone
+`BoundedRelationExponentialSurvival.exists_coeff_ne_zero_of_boundedRelation_exponential`
+does not argue by magnitude dominance: it groups the atom keys by *valuation*, uses
+`BoundedRelationConfinement` to make the chosen key's valuation fibre a singleton, and then applies
+the finite Lindemann–Weierstrass theorem
+(`RHTower.exp_algebraic_relation_eq_zero`) to forbid cancellation between the remaining fibres.
+That argument transfers to the family verbatim, because a dilation contributes only the scalar
+`q_i^{index}` — which lands in the *weight* of a split, never in its atom — so the family expansion
+`coeff_aeval_famJets_regrouped` has the same atoms as the single-series one.
+
+`HTGeometry/FamilyBoundedRelationSurvival.lean` (umbrella-wired, build green, axiom-clean):
+
+- `famMaxSlotCount`, `famAppearing_atom_count_le` — every appearing atom key has total count at most
+  the largest slot count of a monomial of `Q`;
+- `famWeight_isAlgebraic`, `famAevalWeight_isAlgebraic` — the split weights are algebraic when the
+  dilations and the coefficients of `Q` are (the falling factorials are natural numbers);
+- `exists_key_famAevalWeight_ne_zero_of_mem` — the key of the previous section, produced for a
+  *prescribed* monomial of the support, so it can be taken at one of maximal slot count;
+- **`exists_coeff_ne_zero_famJets_of_boundedRelation`** — for a source `H` with algebraic
+  exponential coefficients `u_i e^{-b_i}`, algebraic log-magnitudes with bounded-relation
+  confinement, and algebraic, injective, nonvanishing dilations `q`, every nonzero jet polynomial
+  `Q` with algebraic coefficients satisfies
+
+  ```text
+  ∃ N, coeff N (aeval (familyJets n (fun i => rescale (q i) H)) Q) ≠ 0 .
+  ```
+
+Mechanism: take `M` from the confinement at `famMaxSlotCount Q`, take the square-free key with all
+parts beyond `max n M` from the separation of the previous section, and note that its valuation
+fibre is a singleton by `atom_eq_of_valuation_eq_of_full_tail`.  Its own fibre coefficient is
+`atomPhase · famAevalWeight ≠ 0`, and Lindemann–Weierstrass says every fibre coefficient vanishes —
+contradiction.
+
+**What `(11)` still needs.**  Two items, both about the *coefficients* of the relation rather than
+about the source:
+
+1. a family Mahler normalization — the analogue of
+   `FormalMahlerIntegerNormalization.formal_mahler_integer_normalization`, removing the
+   algebraic-coefficient hypothesis on `Q`.  Note the naive descent is false for families of
+   *values* (a transcendental constant multiple is dependent over `ℂ` and independent over `ℚ̄`) but
+   true for families of *jets*, where the Wronskian eliminates the constant; the corpus's
+   `FormalMahlerDescent` and `DifferentialAdjoinFiniteTrdeg` are the machinery to reuse;
+2. step (iv), the bridge from the formal statement to `DifferentialIndependent` of the analytic
+   orbit, which the card already records as needing only the family jet vector.

@@ -1,7 +1,7 @@
 # Singular autonomous ADEs obey a finite Kolchin-frequency law
 
 - **ID:** `singular-autonomous-ade-kolchin-frequency-law`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / GENERAL HYPERTRANSCENDENCE LANDSCAPE
 - **Scientific status:** `[PROVED] [NOVELTY UNVERIFIED]`
 - **Statement:** Every holomorphic Bohr-almost-periodic solution of a nonzero autonomous algebraic
@@ -318,7 +318,13 @@ capacity floor.  The inverse-limit covering-dimension engine remains the checked
 - [x] positive prime-cutoff complexity floor proved
 - [x] singular and smooth boundary cases attacked
 - [ ] full cross-literature priority audit
-- [x] complete Lean theorem surface from explicit Ritt--Kolchin/Bohr/Pontryagin inputs
+- [x] complete Lean theorem surface on genuine objects: the jet capacity is the minimal
+  differential order (`kolchinJetCapacity_eq_differentialOrder`), the frequency budget holds at
+  that order (`rank_bohrFrequencyModule_le_autonomousMinimalOrder`), the prime floor is
+  `π′(N) ≤ κ` (`primeCounting_le_autonomousMinimalOrder`), the observable form is
+  `rank_bohrFrequencyModule_le_of_bohrSpectrum_subset`, and the hull has finite covering dimension
+  (`exists_hasCoverDimLE_bohrHull`).  The numerical `SingularKolchinFrequencyInput` is no longer
+  load-bearing
 
 ## Audit — `SingularKolchinFrequencyInput` is a numerical structure, not an analytic one
 

@@ -1624,3 +1624,66 @@ resulting order is the *integer* `m - deg Φ_0`, the crude Newton bound obtained
 
 The last row is the one the card contradicts.  An upper bound alone is compatible with an irrational
 exact order, so the sharp half is unavoidable.
+
+## Lean progress — MAILLET IN NEWTON-POLYGON FORM
+
+The crude Maillet bound `m - deg Φ_0` uses only `deg Φ_μ ≤ m`.  The polygon gives the sharp upper
+bound, and its proof is shorter, because the factorial gain over a shift of `μ` steps is exactly the
+power the polygon condition allows:
+
+```text
+k!/n! ≤ (k+1)^{-(n-k)}        (the n-k factors of n!/k! are all ≥ k+1),
+```
+
+so with `d = deg Φ_0` and the polygon condition `j ≤ d + r μ` on the coefficients present at shift
+`μ ≥ 1`,
+
+```text
+(k+1)^{d + r(n-k)} · (k!/n!)^r ≤ (k+1)^{d} ≤ (n+1)^{d} .
+```
+
+Added to `ShiftPolynomialBounds.lean` and `MailletLinearGevrey.lean` (wired, axiom-clean):
+
+    exists_bound_shiftPolynomial_newton   `‖Φ_μ(k)‖ ≤ C ρ^μ (k+1)^{d + r μ}` under the polygon
+                                          condition
+    pow_succ_mul_factorial_le_factorial   `(k+1)^{n-k} k! ≤ n!`
+    factorial_ratio_pow_le
+    shiftFactor_newton_le                 the displayed inequality
+    isGevreySeries_of_eulerLinearOp_eq_newton :
+      **Maillet in Newton form** — no slope ratio above `r` forces the formal solution to be Gevrey
+      of order `r`
+    isGevreySeries_zero_of_eulerLinearOp_eq :
+      **no positive slope forces the formal solution to CONVERGE**
+
+The last statement is the `r = 0` case and is the classical "regular singular ⟹ convergent formal
+solutions" law.
+
+This closes the sharp *upper* half of the Sibuya--Ramis programme for linear equations with
+convergent coefficients.  What remains for the card is the nonlinear reduction and the sharp *lower*
+half.
+
+## Lean progress — the Maillet order is RATIONAL
+
+The Newton bound that Maillet's theorem consumes has a least admissible value, and that value is a
+maximum of finitely many ratios of integers: for each index `j` the condition `j ≤ d + r μ` is
+hardest at the **smallest** shift `μ` at which `B_j` is present, and there are only `m+1` indices.
+
+`GaloisForLFunctions/HTGeometry/NewtonBoundRational.lean` (wired, axiom-clean):
+
+    NewtonBoundedBy B r                the Newton condition at level `r`
+    newtonBoundedBy_natSub             the crude level `m - deg Φ_0` always works
+    exists_rat_least_newtonBound :
+      **the least admissible level is RATIONAL** (and it is a least element, not just a bound)
+    exists_rat_isGevreySeries_of_eulerLinearOp_eq :
+      **every formal solution of a linear analytic equation is Gevrey of a rational order**
+    exactOrder_le_rat_of_eulerLinearOp_eq :
+      **its exact Gevrey order is at most a rational number determined by the operator**
+
+This is the arithmetic half of §5's obstruction, now attached to the analytic machinery rather than
+to an abstract lattice: an irrational number is never the least Newton bound of an operator, and the
+exact order of a solution is always bounded by such a rational.
+
+What is still missing for the card is precisely that the exact order is **equal** to one of those
+rationals rather than merely below the largest — the sharp half of Sibuya--Ramis — together with the
+nonlinear reduction that produces a linear operator with convergent coefficients from the card's
+algebraic differential equation.

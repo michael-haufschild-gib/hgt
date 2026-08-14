@@ -37,12 +37,12 @@ def differentialOrder (F : Type*) {E : Type*} [Field F] [Field E] [Algebra F E]
     [Differential E] (x : E) : ℕ :=
   sInf (differentialOrderSet F x)
 
-omit [CharZero E] in
+omit [Differential F] [DifferentialAlgebra F E] [CharZero E] in
 theorem differentialOrderSet_nonempty {x : E} (hx : DifferentialAlgebraicOver F x) :
     (differentialOrderSet F x).Nonempty :=
   exists_algebraic_jet_over_prefix (k := F) hx
 
-omit [CharZero E] in
+omit [Differential F] [DifferentialAlgebra F E] [CharZero E] in
 theorem differentialOrder_mem {x : E} (hx : DifferentialAlgebraicOver F x) :
     differentialOrder F x ∈ differentialOrderSet F x :=
   Nat.sInf_mem (differentialOrderSet_nonempty hx)
@@ -120,6 +120,7 @@ theorem card_scalarFiniteJetPacket_of_lt_differentialOrder {x : E} {n : ℕ}
   intro m hm m' hm' hmm
   exact hinj (by simpa using hm) (by simpa using hm') hmm
 
+set_option maxHeartbeats 4000000 in
 omit [Differential F] [DifferentialAlgebra F E] [CharZero E] in
 /-- Below the minimal order the jet packet is algebraically independent. -/
 theorem algebraicIndependent_scalarFiniteJetPacket {x : E} {n : ℕ}

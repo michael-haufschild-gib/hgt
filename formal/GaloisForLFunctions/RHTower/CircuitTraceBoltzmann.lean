@@ -227,6 +227,56 @@ theorem traceMass_union_cylinders_of_independent (independent : α → α → Pr
   rw [hA, hB, hAB] at hmod
   linarith
 
+/-- Normalized Boltzmann weight of a single circuit heap. -/
+noncomputable def traceWeight (independent : α → α → Prop) (z : ℝ) (T : Trace independent) : ℝ :=
+  z ^ traceLen independent T / tracePartition independent z
+
+omit [DecidableEq α] in
+omit [Fintype α] [LinearOrder α] [Nonempty α] in
+theorem traceWeight_nonneg (independent : α → α → Prop) {z : ℝ} (hz0 : 0 ≤ z)
+    (hpos : 0 < tracePartition independent z) (T : Trace independent) :
+    0 ≤ traceWeight independent z T := by
+  rw [traceWeight]
+  positivity
+
+omit [DecidableEq α] in
+theorem summable_traceWeight (independent : α → α → Prop)
+    (hsymm : ∀ x y, independent x y → independent y x) (Δ : ℕ)
+    (hdegree : ∀ a, incidentEdgeCount independent a ≤ Δ)
+    {z : ℝ} (hz0 : 0 ≤ z) (hz : 2 ^ Δ * z < 1) :
+    Summable (traceWeight independent z) := by
+  have h := (summable_tracePow independent hsymm Δ hdegree hz0 hz).mul_right
+    (tracePartition independent z)⁻¹
+  have heq : (fun T : Trace independent =>
+      z ^ traceLen independent T * (tracePartition independent z)⁻¹) =
+      traceWeight independent z := by
+    funext T
+    rw [traceWeight, div_eq_mul_inv]
+  rwa [heq] at h
+
+omit [DecidableEq α] in
+/-- The Boltzmann weights form a probability law on circuit heaps. -/
+theorem tsum_traceWeight (independent : α → α → Prop)
+    (hsymm : ∀ x y, independent x y → independent y x) (Δ : ℕ)
+    (hdegree : ∀ a, incidentEdgeCount independent a ≤ Δ)
+    {z : ℝ} (hz0 : 0 ≤ z) (hz : 2 ^ Δ * z < 1) :
+    (∑' T : Trace independent, traceWeight independent z T) = 1 := by
+  have hpos := tracePartition_pos independent hsymm Δ hdegree hz0 hz
+  simp only [traceWeight, div_eq_mul_inv]
+  rw [tsum_mul_right, ← tracePartition, mul_inv_cancel₀ (ne_of_gt hpos)]
+
+omit [Fintype α] [DecidableEq α] [LinearOrder α] [Nonempty α] in
+theorem traceMass_eq_tsum_traceWeight (independent : α → α → Prop) (z : ℝ)
+    (S : Set (Trace independent)) :
+    traceMass independent z S = ∑' T : S, traceWeight independent z (T : Trace independent) := by
+  have heq : ∀ T : Trace independent,
+      traceWeight independent z T =
+        z ^ traceLen independent T * (tracePartition independent z)⁻¹ := by
+    intro T
+    rw [traceWeight, div_eq_mul_inv]
+  rw [traceMass, tsum_congr fun T : S => heq (T : Trace independent), tsum_mul_right,
+    div_eq_mul_inv]
+
 end Cylinder
 
 section PrefixCount

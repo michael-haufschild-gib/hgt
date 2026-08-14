@@ -25,7 +25,7 @@ variable {ι : Type*} [Fintype ι] [DecidableEq ι] [Nonempty ι]
 def famMaxSlotCount {n : ℕ} (Q : MvPolynomial (Option (ι × Fin (n + 1))) ℂ) : ℕ :=
   Q.support.sup fun m => ∑ p : ι × Fin (n + 1), m (some p)
 
-omit [Nonempty ι] in
+omit [DecidableEq ι] [Nonempty ι] in
 theorem famAppearing_atom_count_le {n N : ℕ}
     (Q : MvPolynomial (Option (ι × Fin (n + 1))) ℂ) {ν : ℕ →₀ ℕ}
     (hν : ν ∈ (famSigmaIdx n N Q).image (famAtomKey n)) :
@@ -34,10 +34,11 @@ theorem famAppearing_atom_count_le {n N : ℕ}
   obtain ⟨x, hx, hxν⟩ := Finset.mem_image.mp hν
   rw [famSigmaIdx, Finset.mem_sigma] at hx
   have hmem : x.1 ∈ Q.support := (Finset.mem_filter.mp hx.1).1
-  rw [← hxν, famAtomKey, key_total_count]
-  exact Finset.le_sup hmem
+  rw [← hxν, famAtomKey, key_total_count, famMaxSlotCount]
+  exact Finset.le_sup (f := fun m : Option (ι × Fin (n + 1)) →₀ ℕ =>
+    ∑ p : ι × Fin (n + 1), m (some p)) hmem
 
-omit [Nonempty ι] in
+omit [DecidableEq ι] [Nonempty ι] in
 theorem famWeight_isAlgebraic {n : ℕ} (q : ι → ℂ) (hqAlg : ∀ i, IsAlgebraic ℚ (q i))
     (m : Option (ι × Fin (n + 1)) →₀ ℕ)
     (l : Fin (∑ p : ι × Fin (n + 1), m (some p)) →₀ ℕ) :
@@ -51,7 +52,7 @@ theorem famWeight_isAlgebraic {n : ℕ} (q : ι → ℂ) (hqAlg : ∀ i, IsAlgeb
     rw [Subalgebra.mem_algebraicClosure]
     exact hqAlg _
 
-omit [Nonempty ι] in
+omit [DecidableEq ι] [Nonempty ι] in
 theorem famAevalWeight_isAlgebraic {n N : ℕ} (q : ι → ℂ) (hqAlg : ∀ i, IsAlgebraic ℚ (q i))
     (Q : MvPolynomial (Option (ι × Fin (n + 1))) ℂ)
     (hQalg : ∀ m, IsAlgebraic ℚ (MvPolynomial.coeff m Q)) (ν : ℕ →₀ ℕ) :

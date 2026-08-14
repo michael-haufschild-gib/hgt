@@ -45,8 +45,8 @@ theorem sum_inv_mul_pred_eq : ∀ N : ℕ, 1 ≤ N →
       have hnne : ((n : ℝ)) ≠ 0 := ne_of_gt hn0
       have hn1 : ((n : ℝ) + 1) ≠ 0 := by positivity
       push_cast
+      simp only [add_sub_cancel_right]
       field_simp
-      rw [mul_inv_cancel₀ hnne]
       ring
 
 theorem sum_inv_mul_pred_le_one {N : ℕ} (hN : 1 ≤ N) :
