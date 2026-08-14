@@ -53,7 +53,7 @@ ramp from time zero, a mixing time, an infinite-volume recurrence, or a
 Haar-design statement.  These exclusions are consequences of the theorem
 domains, not generic limitations language.
 
-\begin{figure}[t]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[
   font=\small,>=Latex,
@@ -63,11 +63,11 @@ domains, not generic limitations language.
   lab/.style={font=\scriptsize,fill=white,inner sep=1.5pt}
 ]
 \node[box,fill=blue!7] (p) {persistent carrier\\surviving spectral mass};
-\node[box,fill=purple!7,right=2.25cm of p] (h)
+\node[box,fill=purple!7,right=3.6cm of p] (h)
   {projective phase hull\\relations and factorization};
 \node[box,fill=orange!9,below=1.55cm of h] (c)
   {target capacity\\returns, observers, circuits};
-\node[box,fill=green!8,left=2.25cm of c] (r)
+\node[box,fill=green!8,left=3.6cm of c] (r)
   {return information\\reflection, recovery, inference};
 \draw[arr] (p) -- node[above=4pt,lab]{loss selects} (h);
 \draw[arr] (h) -- node[right=5pt,lab]{Haar occupation} (c);

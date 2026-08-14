@@ -185,27 +185,30 @@ profile limit.
 Both are the shared engine for `concurrent-causal-heap-accessibility-law`,
 `first-entrance-gate-renewal-prefix-law`, and `first-entrance-gate-capacity-discrepancy-law`.
 
-## In flight: the first-entrance gate cards
+## FEG-1 — first-entrance gate renewal and prefix law
 
-`RHTower/DiscreteMarkovRenewal` (new) is the reusable discrete-time renewal engine for
-`first-entrance-gate-renewal-prefix-law` and `first-entrance-gate-capacity-discrepancy-law`:
-finite paths as lists of successor states, `pathEnd`/`pathWeight` with their append laws,
-`FirstEntrance`, `firstEntranceTime` and the split bijection `firstEntranceSplit`, the discounted
-`greenMass` and `entranceMass`, and the exact first-entrance decomposition
-`greenMass_eq_tsum_entranceMass` (the card's `(SG)`).
-
-Still to build on that engine, in order:
-
-1. `∑' l of length n, pathWeight = 1` for a stochastic transition law, and the prefix-free
-   (Kraft) bound `∑' over a prefix-free path family, pathWeight ≤ 1`.  This is what gives
-   `entranceMass ≤ 1` and hence the card's `(2.1)`.
-2. the one-step decomposition `greenMass = indicator + a * ∑' y, P x y * greenMass y`, then the
-   return kernel `returnMass P a A z B := a * ∑' y, P z y * entranceMass P a A y B` and the return
-   equation; `(ER)` follows as the Neumann series, `(PR)` as its singleton case.
-3. `(2.4)`, `(GEQ)`, `(SEQ)` from `(SG)` and `1 ≤ greenMass z A ≤ (1-a)⁻¹` for `z ∈ A`.
-4. the gate-word layer `(FH)`, `(Kraft)`, `(CS)`, `(TR)`, `(IP)`, `(EM)`, `(CU)`, `(RC)`, which is
-   pure word combinatorics over `List Γ` plus the discrete relative entropy already built in
-   `RHTower/CircuitPreparationActionEntropy`.
+- Promoted `2-fully-proven/first-entrance-gate-renewal-prefix-law.md` → `3-formalized/`.
+- Every statement of the card is Lean-certified unconditionally: `(ER)`, `(2.1)`, Cor. 2.2--2.4,
+  Thm 3.1 (`(FH)` and `(Kraft)`), Thm 4.1 `(CS)` with the unreachable case, Cor. 4.2 `(TR)`,
+  Thm 5.1 `(IP)` with its minimizer, Cor. 5.2 `(EM)`, Thm 6.1 `(CU)`, Section 7 `(RC)`.
+- Modules: `RHTower/DiscreteMarkovRenewal`, `RHTower/GateWordFirstHit`,
+  `RHTower/GateWordRenewalBridge`, `RHTower/GateWordComplexityLaws`,
+  `RHTower/GateWordInformationProjection`.
+- Reusable infrastructure now available for the sibling capacity-discrepancy card:
+  - the whole discrete renewal engine (`greenMass`, `entranceMass`, `returnMass`, `returnIterate`,
+    the first-entrance split bijection, the Neumann resolvent, the geometric bounds);
+  - the uniform gate chain on `List Γ` (`gateKernel`, `gatePath`, `wordTarget`) together with the
+    theorem that positive-weight paths are exactly canonical prefix chains, which converts any
+    path-sum statement into a word-sum statement;
+  - prefix-free word combinatorics (`wordCompletions`, the Kraft inequality) and the minimal
+    hitting word (`exists_minimal_hitting_word`);
+  - word counting in `ℝ≥0∞` (`tsum_list_length_apply`) and the geometric gate prior with its
+    summability and unit mass;
+  - a general information projection (`isLeast_discreteRelativeEntropy`, `conditionedWeight`) over
+    an arbitrary index type, which supersedes the trace-specific version in
+    `RHTower/CircuitPreparationActionEntropy` for new work.
+- Verification: targeted foreground `lake env lean` green on all five modules; `#print axioms` on
+  every capstone reports only `propext`, `Classical.choice`, `Quot.sound`.
 
 ## Corpus facts found during the sweep (do not rebuild)
 

@@ -1,53 +1,55 @@
-# The Sibuya–Ramis tower for ht card 3 — built layers and the roadmap
+# Card 3 (irrational-power canonical products) — the Sibuya–Ramis tower
 
-Card 3 `irrational-power-canonical-products-…-gevrey-slope-rigidity` has ONE open item: the
-Sibuya–Ramis exact Newton-slope theorem.  `(4)`–`(6)` are closed at every genus (see
-`mem:ht-cards/session-2026-08-14-closures`).
+Card: `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/ht/irrational-power-canonical-products-hypertranscendental-by-gevrey-slope-rigidity.md`
 
-## Built (all wired, axiom-clean)
+Everything on this card is formal EXCEPT the last two rows below.
 
-| module | content |
-|---|---|
-| `HTGeometry/GevreyFormalSeries` | `IsGevreySeries r F`; mono, `C`, add, **mul** (via the quantitative `norm_coeff_mul_le`), **derivativeFun**; bridge to the sequence notion; `barnesTailSeries s` with **exact order `s`** for irrational `s` |
-| `HTGeometry/FormalAnalyticADE` | closure lemmas, `IsAnalyticDifferentialPolynomial`, `isGevreySeries_aeval_of_analytic`, the `SibuyaRamisRationalExactOrder` interface + its consequence for `barnesTailSeries` |
-| `HTGeometry/FormalEulerOperator` | `eulerOp`, `eulerLinearOp`, **`shiftPolynomial B μ`**, `coeff_eulerLinearOp`, **`shiftPolynomial_zero_mul_coeff`** (the recursion) |
-| `HTGeometry/ShiftPolynomialBounds` | `exists_lower_bound_eval_natCast`; `exists_bound_shiftPolynomial`; **`exists_bound_shiftPolynomial_newton`** |
-| `HTGeometry/MailletLinearGevrey` | `shiftFactor_le`, **`shiftFactor_newton_le`**, `geom_shift_sum_le`, **`isGevreySeries_of_eulerLinearOp_eq`** (Maillet), **`…_newton`**, **`isGevreySeries_zero_of_eulerLinearOp_eq`** |
-| `HTGeometry/NewtonBoundRational` | **`exists_rat_least_newtonBound`**, `exists_rat_isGevreySeries_of_eulerLinearOp_eq`, `exactOrder_le_rat_of_eulerLinearOp_eq` |
-| `HTGeometry/EulerADELinearization` | `eulerJetVector`, `IsFormalEulerADESolution`, `linearizationCoeff`, **`aeval_eulerJetVector_add`**, `taylorDefect_mem_sq_X_pow`, `eulerLinearOp_linearization_eq` |
-| `HTGeometry/EulerADETruncation` | `truncSeries`, `isGevreySeries_zero_truncSeries`, `X_pow_dvd_sub_truncSeries`, `isGevreySeries_aeval_eulerJetVector`, **`isGevreySeries_zero_linearizationCoeff`**, **`X_pow_dvd_aeval_truncSeries`** |
-| `HTGeometry/MvPolynomialQuadraticDefect` | **`exists_taylorDefect_repr`** — `defect = ∑_{a,b} L_a L_b Q_{ab}(S,L)`, the quantitative form of the corpus's `taylorDefect_mem_sq` |
+## Formal (all wired, all axiom-clean)
 
-## Corpus pieces to REUSE (do not rebuild)
+- `(1)`, `(8)`–`(12)`: exact Gevrey order `s` of the zeta tail, unconditional for irrational `s>0`.
+- `(4)`–`(6)`: Barnes/Mellin derivative-compatible expansion, at EVERY genus.
+- §4 DA transfer; `(14) ⟹ (15)` asymptotic-to-formal; §5 Newton-slope rationality.
+- Linear Maillet (crude + Newton form), rationality of the Maillet order.
+- Linearization at a truncation, quadratic defect, its locality.
+- **Nonlinear Maillet** — `HTGeometry/NonlinearMailletGevrey.lean`,
+  `exists_isGevreySeries_of_isFormalEulerADESolution`: a formal solution of an analytic ADE whose
+  linearization along `trunc_N F` has `Φ_0 ≠ 0`, and with `m ≤ N+1`, is Gevrey of a finite ℕ order.
 
-`JacobianDomainCriterion.algebraicIndependent_of_domain_jacobian`;
-`MvPolynomialFirstOrderTaylor` (`taylorDefect`, `taylorDefect_mem_sq`, `taylorDefect_mul_X`,
-`aeval_add_eq_add_sum_pderiv_mod_sq`).  See `mem:corpus-search-before-building`.
+Supporting modules built for it (all new, all wired):
+`GevreyBanachNorm`, `GevreyWeightedNorm`, `MvPolynomialTaylorFamily`, `GevreyJetMonomial`,
+`NonlinearMailletAux`.
 
-## Ideas worth keeping
+Key mechanisms, so they are not re-derived:
+- `GevreyWeightBound w C A r F` := `‖f_n‖(n+1)^w ≤ C A^n (n!)^r`, **integral** `r` (natural powers,
+  no rpow).  Submultiplicative at every weight `a ≥ 2` with constant `2^{a+2}`.
+- `θ` costs exactly ONE unit of weight (`GevreyWeightBound.eulerOp`).
+- **The gain**: a product of two series both divisible by `t^M` gains `M·r` units of weight
+  (`GevreyWeightBound.mul_of_dvd`), because `i!j! ≤ M!(n−M)!` and `(n−M+1)^M (n−M)! ≤ n!`.
+  This is what pays for the `m` units the jets cost; hence the hypothesis `m ≤ N+1`.
+- The Taylor family `defect = ∑_{|α|≥2} (coeff in the base point) L^α` must be produced by the
+  induction along `MvPolynomial.as_sum` (monomials), NOT `MvPolynomial.induction_on`: the
+  hypothesis "all coefficients lie in the subsemiring `R₀`" is inherited by monomials but not by
+  the summands of an arbitrary sum decomposition.
+- Order of choices in the main proof: `ε` first (defect constant is `A`-independent), `A` second.
 
-1. In the Euler basis `L = ∑ B_j θ^j` the operator acts on coefficients by ONE convolution,
-   `coeff_n(LF) = ∑_{i+k=n} Φ_i(k) f_k`.
-2. `k!/n! ≤ (k+1)^{-(n-k)}`, so under the polygon condition `j ≤ d + rμ`,
-   `(k+1)^{d+r(n-k)}(k!/n!)^r ≤ (k+1)^d ≤ (n+1)^d` — no case analysis.
-3. **Use the EULER basis, not `d/dt`**: `θ` preserves the order of a series, so a perturbation and
-   all of its jets stay divisible by the same power of `t`.
+## Open — exactly two items
 
-## Remaining
+### 1. Discharge the nondegeneracy hypothesis `Φ_0 ≠ 0`
+Route: choose `P` minimal (order, then degree) among nonzero annihilators, so some
+`aeval (jets F) (∂_j P) ≠ 0`; let `v` be the common vanishing order of the linearization along `F`;
+for `N ≥ v` the linearization at `trunc_N F` has the same `v`.  Then `L = t^v L'` and the equation
+divides by `t^v`.  The cost is `A^v` in the defect estimate; it is repaid by the vanishing order
+`N+1−v` of the value at the truncation, and the two constraints on `(ε, A)` are compatible exactly
+when `N + 1 > 2v`.  Also take `N ≥ N₀` so that the finitely many initial coefficients of `H` vanish
+and the base-case term of `A` is zero.
 
-### A. Nonlinear Maillet — only the final quantitative induction is left
-For each `N`: `L_N(H) = -P(jets F_N) - defect`, with `L_N` convergent, `P(jets F_N)` convergent of
-order `≥ N+1`, and `defect = ∑ L_a L_b Q_{ab}` of order `≥ 2N+2`.  NEXT BRICK: a Gevrey predicate
-with EXPLICIT constants (`GevreyBound C A r F`) so the defect's constant can be seen to carry `C_H²`;
-then the strong induction of `isGevreySeries_of_eulerLinearOp_eq` with the defect as an extra term,
-`N` chosen so large that `C_H ≤ 1` and the forcing term is small.
-
-### B. The sharp lower half (the real Sibuya–Ramis)
-1. Newton factorization `L = L_< · L_≥` over `ℂ[[t]][θ]`.
-2. `G := L_≥ F` solves `L_< G = 0`, so `G` is Gevrey of order `r_i` (**available**).
-3. A REVERSE recursion (driven by the top shift): if all ratios of `L` exceed `s'`, then
-   `LF ∈ ℂ[[t]]_{s'}` and `F ∈ ℂ[[t]]_s` force `F ∈ ℂ[[t]]_{s'}`.
-4. Induction on the number of slopes confines the exact order to `{0} ∪ {ratios}`.
-
-Counterexample: `tθF + F = t` has a divergent solution with convergent right-hand side, so an
-operator with positive slopes is NOT invertible on Gevrey-`0`; step 3 must be a quotient statement.
+### 2. The sharp half of Sibuya–Ramis
+`gev(F) ∈ {0} ∪ {slope ratios}`, not merely `gev(F) ≤ r₀`.  An upper bound alone is compatible with
+an irrational exact order, so this is unavoidable for the card.
+Analysis done: the naive bootstrap fails only on the finitely many "bad" shifts `μ` with
+`(deg Φ_μ − deg Φ_0)/μ > r`, i.e. on the top part of the Newton polygon; the a-priori bound at level
+`r` does not help there.  The classical remedy is the **Newton–Ramis factorization**
+`L = M ∘ N` in `ℂ{t}[θ]` splitting the slopes at a cut, plus induction on the number of slopes.
+In the shift-polynomial presentation `L = ∑_μ t^μ Φ_μ(θ)` with
+`(t^a Ψ(θ))(t^b Φ(θ)) = t^{a+b} Ψ(θ+b) Φ(θ)`, so the factorization is a Hensel-type recursion in
+`μ` with a majorant convergence proof.  That is the remaining mathlib-scale construction.

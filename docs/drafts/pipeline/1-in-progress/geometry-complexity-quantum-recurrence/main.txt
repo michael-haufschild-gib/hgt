@@ -1,7 +1,7 @@
     The geometry and complexity of quantum recurrence
      Four structural laws for persistence, interaction, computational capacity, and recovery
 
-                                                Michael Haufschild
+                GPT 5.6 Sol               Opus 5            Fable 5            Michael Haufschild
                                                   14 August 2026
 
                                                           Abstract
@@ -59,25 +59,7 @@ The quantum recurrence theorem guarantees approximate returns for finite closed 
 work has since bounded recurrence times for prescribed states and for simultaneous return of all states [2, 3, 4],
 
                                                             1
-                                persistent carrier       loss selects   projective phase hull
-                                 surviving spec-                            relations and
-                                    tral mass                               factorization
-
-
-                      finite data probes                                              Haar occupation
-
-
-
-                               return information                           target capacity
-                                reflection, recov-                            returns, ob-
-                                  ery, inference   composition constrains   servers, circuits
-
-
-Figure 1: Return-capacity architecture. Labels occupy the gaps between nodes; none overlays a box. Inter-
-action changes the hull, observation and preparation change target capacity, and return composition constrains
-the full history.
-
-isolated arithmetic mechanisms for exact Floquet periods [5], and observed or proposed recurrences in interacting
+isolated arithmetic mechanisms for exact Floquet periods [5], and observed or proposed recurrences in interacting
 many-body devices [6, 7]. A separate line of research studies circuit complexity along quantum evolution. The
 expected growth–plateau–recurrence pattern is central to the second law of quantum complexity [8]; saturation
 and recurrence have been proved for random circuits and stochastic local Hamiltonian evolution [9], while time-
@@ -107,20 +89,38 @@ tiations. We do not prove a first-return time, a monotone complexity ramp from t
 an infinite-volume recurrence, or a Haar-design statement. These exclusions are consequences of the theorem
 domains, not generic limitations language.
 
+                           persistent carrier            loss selects        projective phase hull
+                            surviving spec-                                      relations and
+                               tral mass                                         factorization
+
+
+                 finite data probes                                                      Haar occupation
+
+
+
+                          return information                                   target capacity
+                           reflection, recov-                                    returns, ob-
+                             ery, inference         composition constrains     servers, circuits
+
+
+Figure 1: Return-capacity architecture. Labels occupy the gaps between nodes; none overlays a box. Inter-
+action changes the hull, observation and preparation change target capacity, and return composition constrains
+the full history.
+
 
 2     Persistent projective phase geometry
 Consider
-P         a finite pure-point packet with distinct occupied energies E = (Ej )j∈C , positive weights wj , and
-  j w j = 1. Global phase is invisible, so the character lattice is
-                                                                  
-                                                        X         
-                                      PC = k ∈ Z C :       kj = 0 ,                                        (1)
-                                                                  
-                                                         j
-                                             X
-                                  DE (k) =      k j Ej ,   LE = ker DE ,                                   (2)
-                                               j
-                                              
+P        a finite pure-point packet with distinct occupied energies E = (Ej )j∈C , positive weights wj , and
+  j wj = 1. Global phase is invisible, so the character lattice is
+                                                                 
+                                                       X         
+                                     PC = k ∈ Z C :       kj = 0 ,                                        (1)
+                                                                 
+                                                        j
+                                            X
+                                 DE (k) =      k j Ej ,   LE = ker DE ,                                   (2)
+                                                j
+                                                
                                        KE = z ∈ TC /T : z k = 1 for all k ∈ LE .                              (3)
 
 
@@ -437,7 +437,7 @@ complexity on the orbit of one fixed product state. On the open n-qubit path, le
                                                                  X
                                                                  m n
 
-                                                      Hn (J) =         J a Pa                                (39)
+                                                     Hn (J) =          J a Pa                                (39)
                                                                  a=1
 
 contain every one-site Pauli and every two-site Pauli orientation on each edge, with independent standard
@@ -447,13 +447,13 @@ distance.
     Fix rational 0 < ϵ < 1/2, put
                                                    2  n 
                                                     a     3
-                           a = 1 − 4ϵ , quadrn =
-                                     2
-                                                                , quadℓn = dlog2 Mn e,                    (40)
+                              a = 1 − 4ϵ , rn =
+                                        2
+                                                                , ℓn = dlog2 Mn e,                        (40)
                                                    128 2
 and, when rn ≥ 8, set                                  
                                                     rn
-                                         sn =             − 1, qquadηn = 2−3rn /4 .                          (41)
+                                         sn =             − 1,         ηn = 2−3rn /4 .                       (41)
                                                     4ℓn
 We restrict to sizes for which sn ≥ 0.
 Theorem 14 (Computable static-local state hardness). Let
@@ -471,7 +471,7 @@ Consequently, if gn (t) = PJ {C2ϵ (e         Ω) > sn }, then
                         lim inf       gn (t) dt ≥ (1 − ηn ),              lim sup gn (t) ≥     (1 − ηn ).    (44)
                          T →∞ T 0                2                         t→∞               2
 
-                                                               7
+                                                                 7
 At some rational common time ten > 0 there is a rational Jen ∈ [−Bn − 1, Bn + 1]mn with
                                                        e          e
                                               Cϵst (e−itn Hn (Jn ) Ω) > sn .                                         (45)
@@ -759,9 +759,9 @@ space remains nonzero on the larger graph space, proving τ = D − 1 for connec
 B.4    Disconnected graphs and simultaneous restrictions
 For component Hamiltonians HC , every total relative energy is a sum of component relative energies, while
 every component gap occurs by changing one component coordinate. Hence rational gap modules satisfy
-                                     X                          X
-                             M (H) =     M (HC ), qquadτ (H) ≤     (DC − 1).                          (63)
-                                            C                                  C
+                                      X                        X
+                             M (H) =     M (HC ),      τ (H) ≤    (DC − 1).                           (63)
+                                             C                                 C
 
 Choose maximally projective component witnesses KC and scale them by nonzero real tC . Recursively avoid
 the countable set of ratios that would make tC M (KC ) intersect the previously chosen module. The sum is then
@@ -1582,8 +1582,8 @@ that currently remain paper-proved rather than formalized.
 
 
 Author contributions
-M. Haufschild conceived the project, developed the mathematical framework, performed the analysis and wrote
-the manuscript.
+All authors contributed to the conception, mathematical development, analysis, verification and writing of the
+manuscript.
 
 
 References

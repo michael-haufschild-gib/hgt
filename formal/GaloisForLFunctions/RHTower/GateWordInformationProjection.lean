@@ -434,6 +434,61 @@ theorem summable_firstHitLaw_length (act : Γ → X → X) (χ : X) (A : Set X) 
           rw [div_eq_mul_inv]
           ring
 
+theorem tsum_firstHitLaw (act : Γ → X → X) (χ : X) (A : Set X) {a : ℝ}
+    (ha0 : 0 ≤ a) (ha1 : a < 1) (hpos : 0 < firstHitMassReal act χ A a) :
+    (∑' w : List Γ, firstHitLaw act χ A a w) = 1 := by
+  have hmass : (0 : ℝ) < ∑' w : List Γ,
+      Set.indicator {w : List Γ | FirstHitWord act χ A w} (gatePrior Γ a) w := by
+    rw [tsum_indicator_gatePrior act χ A ha0 ha1]
+    exact mul_pos (by linarith) hpos
+  simpa only [firstHitLaw] using tsum_conditionedWeight hmass
+
+theorem summable_firstHitLaw (act : Γ → X → X) (χ : X) (A : Set X) {a : ℝ}
+    (ha0 : 0 ≤ a) (ha1 : a < 1) : Summable (firstHitLaw act χ A a) :=
+  summable_conditionedWeight (fun w => gatePrior_nonneg (Γ := Γ) ha0 ha1.le w)
+    (summable_gatePrior ha0 ha1) _
+
+/-- **Energy--multiplicity identity.**  The first-hit surprisal is the mean synthesis length
+weighted by the description cost of one letter, minus the entropy of the successful routes. -/
+theorem energy_multiplicity (act : Γ → X → X) (χ : X) (A : Set X) {a : ℝ}
+    (ha0 : 0 < a) (ha1 : a < 1) (hpos : 0 < firstHitMassReal act χ A a) :
+    -Real.log (firstHitMassReal act χ A a) =
+      Real.log (Fintype.card Γ / a) * meanSynthesisLength act χ A a -
+        routeEntropy act χ A a := by
+  have hM : (0 : ℝ) < Fintype.card Γ := by exact_mod_cast Fintype.card_pos (α := Γ)
+  have hterm : ∀ w : List Γ, firstHitLaw act χ A a w * Real.log (firstHitLaw act χ A a w) =
+      (firstHitLaw act χ A a w * w.length) *
+          (Real.log a - Real.log (Fintype.card Γ)) -
+        firstHitLaw act χ A a w * Real.log (firstHitMassReal act χ A a) := by
+    intro w
+    by_cases hw : FirstHitWord act χ A w
+    · have hLw : firstHitLaw act χ A a w =
+          (a / Fintype.card Γ) ^ w.length / firstHitMassReal act χ A a :=
+        firstHitLaw_of_mem act χ A ha0.le ha1 hw
+      have hlog : Real.log (firstHitLaw act χ A a w) =
+          (w.length : ℝ) * (Real.log a - Real.log (Fintype.card Γ)) -
+            Real.log (firstHitMassReal act χ A a) := by
+        rw [hLw, Real.log_div (ne_of_gt (pow_pos (div_pos ha0 hM) _)) hpos.ne', Real.log_pow,
+          Real.log_div ha0.ne' hM.ne']
+      rw [hlog]
+      ring
+    · rw [firstHitLaw_eq_zero act χ A a hw]
+      simp
+  have h1 : Summable fun w : List Γ => (firstHitLaw act χ A a w * w.length) *
+      (Real.log a - Real.log (Fintype.card Γ)) :=
+    (summable_firstHitLaw_length act χ A ha0.le ha1).mul_right _
+  have h2 : Summable fun w : List Γ => firstHitLaw act χ A a w *
+      Real.log (firstHitMassReal act χ A a) :=
+    (summable_firstHitLaw act χ A ha0.le ha1).mul_right _
+  have hsum : (∑' w : List Γ, firstHitLaw act χ A a w * Real.log (firstHitLaw act χ A a w)) =
+      meanSynthesisLength act χ A a * (Real.log a - Real.log (Fintype.card Γ)) -
+        Real.log (firstHitMassReal act χ A a) := by
+    rw [tsum_congr hterm, h1.tsum_sub h2, tsum_mul_right, tsum_mul_right,
+      tsum_firstHitLaw act χ A ha0.le ha1 hpos, one_mul, meanSynthesisLength]
+  rw [routeEntropy, hsum, Real.log_div hM.ne' ha0.ne']
+  ring
+
+
 end EnergyMultiplicity
 
 end GaloisForLFunctions.RHTower

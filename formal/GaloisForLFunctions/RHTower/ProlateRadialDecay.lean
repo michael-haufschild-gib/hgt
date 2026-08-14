@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.ProlatePolarSource
+import GaloisForLFunctions.HTGeometry.HalfDensityEnvelopePolarCharge
 
 /-!
 # The exact radial mode decays like `1/x`, and its channels are square-summable
@@ -205,4 +206,35 @@ theorem summable_channelSource_sq_bound {s c : ℝ} {R DR : ℝ → ℝ} :
   rw [div_pow, show (2 + (j : ℝ)) = ((j : ℝ) + 2) by ring]
   ring
 
+/-! ### The unconditional per-channel polar charge -/
+
+theorem continuous_channelSource {k : ℝ} {R : ℝ → ℝ} (hRc : Continuous R) :
+    Continuous (channelSource k R) := by
+  rw [show channelSource k R = fun u : ℝ => Real.sqrt (Real.exp u) * R (k * Real.exp u) from rfl]
+  exact (Real.continuous_sqrt.comp Real.continuous_exp).mul
+    (hRc.comp (continuous_const.mul Real.continuous_exp))
+
+/-- **`(18)` for every exterior channel of the exact radial mode, unconditionally.**  The half
+density envelope of the channel discharges every integrability hypothesis of the abstract polar
+estimate, and the channel primitive bound supplies the constant.  Nothing beyond the radial
+differential equation is assumed. -/
+theorem abs_polarCharge_channelSource_le_of_ode {s c k a : ℝ} {R DR DDR : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hc : 1 ≤ c) (hk : 2 ≤ k) (ha : 0 ≤ a)
+    (hR : ∀ t : ℝ, HasDerivAt R (DR t) t) (hDR : ∀ t : ℝ, HasDerivAt DR (DDR t) t)
+    (hode : ∀ t : ℝ, (t ^ 2 - 1) * DDR t + 2 * t * DR t
+      - (s * c ^ 2 - c ^ 2 * t ^ 2) * R t = 0) :
+    |HTGeometry.polarCharge (channelSource k R) a|
+      ≤ 4 * (4500 * exactEnergyBudget s c R DR 2 / (Real.sqrt c * (c * k ^ 2)))
+            * (radialDecayConstant s c R DR / k)
+        + 4 * (radialDecayConstant s c R DR / k) ^ 2 := by
+  have hc0 : (0 : ℝ) < c := lt_of_lt_of_le zero_lt_one hc
+  have hk0 : (0 : ℝ) < k := lt_of_lt_of_le zero_lt_two hk
+  have hRc : Continuous R := continuous_iff_continuousAt.mpr fun u => (hR u).continuousAt
+  have hK : (0 : ℝ) ≤ radialDecayConstant s c R DR / k :=
+    div_nonneg (radialDecayConstant_nonneg hc0) hk0.le
+  exact HTGeometry.abs_polarCharge_le_of_envelope (continuous_channelSource hRc) ha hK
+    (fun u hu => abs_channelSource_le (DDR := DDR) hs0 hs1 hc0 hk hu hR hDR hode)
+    (abs_halfLineExpPrimitive_channelSource_le (DDR := DDR) hs0 hs1 hc hk hR hDR hode)
+
 end GaloisForLFunctions.RHTower
+

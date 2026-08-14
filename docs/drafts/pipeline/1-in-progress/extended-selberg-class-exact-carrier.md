@@ -77,8 +77,8 @@ the principal branch of `Complex.log`.
 - [x] Branch-safe Euler-log representation chosen
 - [x] Core Lean definitions compile
 - [x] Meromorphy of represented `F` and completed function
-- [ ] Equality/uniqueness of analytic continuation from coefficients
-- [ ] Finite-order characterization equivalence
+- [x] Equality/uniqueness of analytic continuation from coefficients
+- [x] Finite-order characterization equivalence
 - [ ] Gamma-presentation invariance of degree, conductor, internal shift
 - [x] Exact `S` extension
 - [ ] Product monoid and conjugation closure

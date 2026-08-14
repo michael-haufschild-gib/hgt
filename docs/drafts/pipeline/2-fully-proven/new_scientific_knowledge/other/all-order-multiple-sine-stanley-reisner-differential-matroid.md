@@ -1146,3 +1146,50 @@ two surviving directions `q, u ∉ J`, and the module mirroring
 `HTGeometry.FacePacketDifferenceSystem` is correspondingly shorter: it drops the whole unit-period
 layer (`facePacket_one_translate_eq`, `facePacketUnion_one_translate_eq`,
 `differentialAdjoin_facePacketUnion_one_fixed`, and their negatives).
+
+**Also built in this pass.**  `HTGeometry/MultipleSineFaceFieldTranslation.lean` (umbrella-wired,
+build green, axiom-clean) — the translation stability the difference system needs:
+
+- `facePacketSlice_subset_facePacket`, `facePacket_neg_translate_mem` — a direction of the face
+  permutes its packet in both senses;
+- `facePacket_offFace_translate_sub_mem`, `facePacket_offFace_neg_translate_sub_mem` —
+  **unconditional**: for a direction outside the face, the translation defect of a packet element is
+  its displacement into the *next* packet, up to the rational coordinate field.  This is the sine
+  form of the coface equation, read off `faceDisplacement_primitive`; unlike the elliptic-gamma case
+  the defect is exact only modulo `ℂ(z)`, which is why the deeper field must carry the coordinate;
+- `differentialAdjoin_rationalBase_translate_stable_of_generators`,
+  `sineFacePacketUnion_translate_mem`, `sineFacePacketUnion_neg_translate_mem`,
+  `differentialAdjoin_sineFacePacketUnion_translate_stable` and its inverse — the field generated
+  over `ℂ(z)` by the packets of an upward-closed family is stable under every structural
+  translation;
+- `sineDeeperGenerators` and
+  `differentialAdjoin_sineDeeperGenerators_translate_stable` (and its inverse) — the same over the
+  **constants**, adjoining `ℂ(z)` to the generators.  This is the form the Ostrowski difference
+  system requires, because `CommutingDifferenceDifferentialField ι C K` asks its automorphisms to
+  fix `C`, and a translation fixes `ℂ` but not `ℂ(z)`.
+
+Next brick: the rank-two difference system on `differentialAdjoin ℂ (sineDeeperGenerators ω hω S)`,
+built from `meroTranslationRestrict` and the four stability theorems above, with fixed field the
+constants by `exists_constant_of_two_rayPeriods_fixed`.
+
+**And the rank-two layer of that system, also built in this pass** (both umbrella-wired, build
+green, axiom-clean):
+
+- `HTGeometry/MeromorphicRankTwoRaySourceBoundary.lean` —
+  `rankTwoGeneratorMeromorphicDifferenceDifferentialField` and
+  **`rankTwoRay_generator_jointFixed_iff_constant`**: for `c ≠ 0` and irrational `a/b`, the common
+  fixed field of the two translations `T_{ca}, T_{cb}` in the global meromorphic field is exactly
+  the complex constants.  This is the rank-two replacement for
+  `rankThree_generator_jointFixed_iff_constant`, and it is what makes the unit period unnecessary.
+- `HTGeometry/MultipleSineFaceDifferenceSystem.lean` — `sineFacePacketPeriods` (`![ω q, ω u]`),
+  the stability of the deeper field in both structural directions, **`sineFaceDifferenceSystem`**
+  (a `CommutingDifferenceDifferentialField (Fin 2) ℂ` on
+  `differentialAdjoin ℂ (sineDeeperGenerators ω hω S)`), the translation block
+  `sineFacePacketBlock`, and `sineFacePacketDisplacement` with
+  `sineFacePacketBlock_period_displacement_mem` placing every displacement in the deeper field.
+
+These are exactly the inputs of the generic Ostrowski criterion
+`differentialIndependent_of_no_constant_simultaneous_jet_telescoping`.  The next brick is the sine
+form of `facePacket_differentialIndependent_of_no_telescoping`: feed the system, the rank-two
+generator boundary, and the shift equation `T_p (block y) = block y + displacement` into that
+criterion, leaving only the exclusion of a simultaneous jet telescoper.

@@ -70,6 +70,12 @@ characters:
 
 This closes one algebraic prerequisite only. It does not yet formalize the published theorem.
 
+`RHTower.SelbergClass.TwistFrontierData` now gives concrete Lean predicates for polynomial local
+splitting, saturation modulo `D`, exact coefficient twisting, and integer conductor of the current
+gamma presentation.  The polynomial-splitting predicate is the analytic identity
+`F_|p(s) = (\sum_j A_j p^{-js}) F(s)` on `Re(s)>1`, with nonzero leading coefficient; it does not
+replace this identity by an abstract closure hypothesis.
+
 ## Completion gates
 
 - [x] Exact theorem frozen against primary source
@@ -77,6 +83,7 @@ This closes one algebraic prerequisite only. It does not yet formalize the publi
 - [x] Dependency DAG extracted
 - [x] First coefficient-twist algebra layer paper-proved
 - [x] First coefficient-twist algebra layer Lean-audited and promoted
+- [x] Exact polynomial-splitting, saturation, coefficient-twist, and integer-conductor predicates
 - [ ] Exact `S♯` carrier and invariants (carrier exists; gamma-presentation invariance remains)
 - [ ] Lemma 1 (Fourier inversion and primitive Gauss case formalized; imprimitive
   conductor/Möbius factor remains)

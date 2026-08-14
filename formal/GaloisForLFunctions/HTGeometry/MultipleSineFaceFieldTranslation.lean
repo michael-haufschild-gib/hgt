@@ -265,6 +265,97 @@ theorem differentialAdjoin_sineFacePacketUnion_neg_translate_stable (ω : ι →
   differentialAdjoin_rationalBase_translate_stable_of_generators (-(ω q)) _
     (fun _ hy => sineFacePacketUnion_neg_translate_mem ω hω q hS hS2 hy) hx
 
+/-! ### The deeper face field over the constants -/
+
+/-- The generators of the deeper face field over the constants: the packets of the family together
+with the rational coordinate field. -/
+def sineDeeperGenerators (ω : ι → ℂ) (hω : ∀ k, 0 < (ω k).im) (S : Set (Finset ι)) :
+    Set (meroField (Set.univ : Set ℂ)) :=
+  sineFacePacketUnion ω hω S ∪
+    (meromorphicRationalCoordinateField : Set (meroField (Set.univ : Set ℂ)))
+
+set_option synthInstance.maxHeartbeats 1000000 in
+/-- **A structural translation moves a deeper generator inside the deeper field.** -/
+theorem sineDeeperGenerators_translate_mem (ω : ι → ℂ) (hω : ∀ k, 0 < (ω k).im)
+    {S : Set (Finset ι)} (q : ι) (hS : ∀ L ∈ S, q ∉ L → insert q L ∈ S)
+    (hS2 : ∀ L ∈ S, 2 ≤ (Lᶜ : Finset ι).card)
+    {y : meroField (Set.univ : Set ℂ)} (hy : y ∈ sineDeeperGenerators ω hω S) :
+    addTranslationMeroEquiv (ω q) y ∈ differentialAdjoin ℂ (sineDeeperGenerators ω hω S) := by
+  classical
+  rcases hy with hy | hy
+  · obtain ⟨L, hL, hyL⟩ := Set.mem_iUnion₂.mp hy
+    by_cases hq : q ∈ L
+    · exact subset_differentialAdjoin ℂ _
+        (Or.inl (Set.mem_iUnion₂.mpr ⟨L, hL, facePacket_translate_mem ω hω hq hyL⟩))
+    · obtain ⟨d, hd, r, hr, hstep⟩ :=
+        facePacket_offFace_translate_sub_mem ω hω hq (hS2 L hL) hyL
+      have hyK : y ∈ differentialAdjoin ℂ (sineDeeperGenerators ω hω S) :=
+        subset_differentialAdjoin ℂ _ (Or.inl (Set.mem_iUnion₂.mpr ⟨L, hL, hyL⟩))
+      have hdK : d ∈ differentialAdjoin ℂ (sineDeeperGenerators ω hω S) :=
+        subset_differentialAdjoin ℂ _
+          (Or.inl (Set.mem_iUnion₂.mpr ⟨insert q L, hS L hL hq, hd⟩))
+      have hrK : r ∈ differentialAdjoin ℂ (sineDeeperGenerators ω hω S) :=
+        subset_differentialAdjoin ℂ _ (Or.inr hr)
+      have hval : addTranslationMeroEquiv (ω q) y = y + r - d := by
+        linear_combination hstep
+      rw [hval]
+      exact (differentialAdjoin ℂ (sineDeeperGenerators ω hω S)).sub_mem
+        ((differentialAdjoin ℂ (sineDeeperGenerators ω hω S)).add_mem hyK hrK) hdK
+  · exact subset_differentialAdjoin ℂ _
+      (Or.inr (addTranslationMeroAlgEquiv_mem_rationalCoordinateField (ω q) hy))
+
+set_option synthInstance.maxHeartbeats 1000000 in
+/-- **The inverse structural translation likewise.** -/
+theorem sineDeeperGenerators_neg_translate_mem (ω : ι → ℂ) (hω : ∀ k, 0 < (ω k).im)
+    {S : Set (Finset ι)} (q : ι) (hS : ∀ L ∈ S, q ∉ L → insert q L ∈ S)
+    (hS2 : ∀ L ∈ S, 2 ≤ (Lᶜ : Finset ι).card)
+    {y : meroField (Set.univ : Set ℂ)} (hy : y ∈ sineDeeperGenerators ω hω S) :
+    addTranslationMeroEquiv (-(ω q)) y ∈ differentialAdjoin ℂ (sineDeeperGenerators ω hω S) := by
+  classical
+  rcases hy with hy | hy
+  · obtain ⟨L, hL, hyL⟩ := Set.mem_iUnion₂.mp hy
+    by_cases hq : q ∈ L
+    · exact subset_differentialAdjoin ℂ _
+        (Or.inl (Set.mem_iUnion₂.mpr ⟨L, hL, facePacket_neg_translate_mem ω hω hq hyL⟩))
+    · obtain ⟨d, hd, r, hr, hstep⟩ :=
+        facePacket_offFace_neg_translate_sub_mem ω hω hq (hS2 L hL) hyL
+      have hyK : y ∈ differentialAdjoin ℂ (sineDeeperGenerators ω hω S) :=
+        subset_differentialAdjoin ℂ _ (Or.inl (Set.mem_iUnion₂.mpr ⟨L, hL, hyL⟩))
+      have hdK : d ∈ differentialAdjoin ℂ (sineDeeperGenerators ω hω S) :=
+        subset_differentialAdjoin ℂ _
+          (Or.inl (Set.mem_iUnion₂.mpr ⟨insert q L, hS L hL hq, hd⟩))
+      have hrK : r ∈ differentialAdjoin ℂ (sineDeeperGenerators ω hω S) :=
+        subset_differentialAdjoin ℂ _ (Or.inr hr)
+      have hval : addTranslationMeroEquiv (-(ω q)) y = y + d - r := by
+        linear_combination hstep
+      rw [hval]
+      exact (differentialAdjoin ℂ (sineDeeperGenerators ω hω S)).sub_mem
+        ((differentialAdjoin ℂ (sineDeeperGenerators ω hω S)).add_mem hyK hdK) hrK
+  · exact subset_differentialAdjoin ℂ _
+      (Or.inr (addTranslationMeroAlgEquiv_mem_rationalCoordinateField (-(ω q)) hy))
+
+set_option synthInstance.maxHeartbeats 1000000 in
+/-- **The deeper face field over the constants is translation stable.** -/
+theorem differentialAdjoin_sineDeeperGenerators_translate_stable (ω : ι → ℂ)
+    (hω : ∀ k, 0 < (ω k).im) {S : Set (Finset ι)} (q : ι)
+    (hS : ∀ L ∈ S, q ∉ L → insert q L ∈ S) (hS2 : ∀ L ∈ S, 2 ≤ (Lᶜ : Finset ι).card)
+    {x : meroField (Set.univ : Set ℂ)}
+    (hx : x ∈ differentialAdjoin ℂ (sineDeeperGenerators ω hω S)) :
+    addTranslationMeroEquiv (ω q) x ∈ differentialAdjoin ℂ (sineDeeperGenerators ω hω S) :=
+  differentialAdjoin_translate_stable_of_generators (ω q) _
+    (fun _ hy => sineDeeperGenerators_translate_mem ω hω q hS hS2 hy) hx
+
+set_option synthInstance.maxHeartbeats 1000000 in
+/-- **And stable in the inverse direction.** -/
+theorem differentialAdjoin_sineDeeperGenerators_neg_translate_stable (ω : ι → ℂ)
+    (hω : ∀ k, 0 < (ω k).im) {S : Set (Finset ι)} (q : ι)
+    (hS : ∀ L ∈ S, q ∉ L → insert q L ∈ S) (hS2 : ∀ L ∈ S, 2 ≤ (Lᶜ : Finset ι).card)
+    {x : meroField (Set.univ : Set ℂ)}
+    (hx : x ∈ differentialAdjoin ℂ (sineDeeperGenerators ω hω S)) :
+    addTranslationMeroEquiv (-(ω q)) x ∈ differentialAdjoin ℂ (sineDeeperGenerators ω hω S) :=
+  differentialAdjoin_translate_stable_of_generators (-(ω q)) _
+    (fun _ hy => sineDeeperGenerators_neg_translate_mem ω hω q hS hS2 hy) hx
+
 end
 
 end GaloisForLFunctions.HTGeometry

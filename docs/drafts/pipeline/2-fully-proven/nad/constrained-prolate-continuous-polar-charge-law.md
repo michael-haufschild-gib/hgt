@@ -4091,3 +4091,46 @@ the reusable layers, `RHTower` for the route-specific ones.
 **Still open, all spectral, none analytic**: the weighted projective Gram convergence
 `R_(lambda,N) -> R_lambda`; `(4)` `‖R_lambda‖_2^2 = O(d_lambda)`; exhibiting the classical
 `h_0, h_4` modes.
+
+- 2026-08-14 (hundred-and-twenty-ninth instalment) -- **The mode's `1/x` decay, and the first
+  unconditional `(18)`.**  Two new modules,
+  `HTGeometry/HalfDensityEnvelopePolarCharge.lean` and `RHTower/ProlateRadialDecay.lean`, both
+  wired, all declarations axiom-clean.
+
+  * **`HTGeometry.abs_polarCharge_le_of_envelope`** -- the abstract polar estimate took *ten*
+    separate integrability inputs.  One pointwise envelope `|R(s)| <= K exp(-s/2)` plus continuity
+    supplies all of them, and the conclusion becomes explicit:
+
+    ```text
+    |PPol(R, a)| <= 4 M K + 4 K².
+    ```
+
+    The square, the two shifted integrands and the decaying branch are all dominated by a multiple
+    of `exp(-s)`; the two-dimensional cross integrand by `K² exp(a) exp(-s)` on the lag rectangle,
+    where the weight `exp(eps h/2)` is at most `exp a` for `|eps| = 1` and `0 < h <= 2a`; and the
+    two weighted autocorrelation integrands come from that product integrability through
+    `Integrable.integral_prod_left`, which is exactly Fubini in the direction the estimate needs.
+  * **`RHTower.abs_radialProlate_dilate_le`, `abs_radialProlate_le`** -- the two exponential
+    branches have unit modulus, so the exact two-branch representation and the amplitude bound
+    `|a| <= 300 M/(sqrt c · k · sqrt x)` give
+
+    ```text
+    |R (k x)| <= 600 M / (sqrt c · k · x),      k >= 1, x >= 1, k x >= 2.
+    ```
+
+    This is `(14)` read on the mode itself rather than on its amplitudes.
+  * **`RHTower.abs_channelSource_le`, `integral_channelSource_sq_le`,
+    `summable_channelSource_sq_bound`** -- in the logarithmic variable the `1/x` decay is exactly
+    the half-density envelope `|H_k(u)| <= (C/k) exp(-u/2)`, so the `k`-th channel has squared mass
+    at most `C²/k²` and the channel masses are summable.
+  * **`RHTower.abs_polarCharge_channelSource_le_of_ode`** -- combining the two: **`(18)` holds
+    unconditionally for every exterior channel `k >= 2` of the exact radial mode**, with nothing
+    assumed beyond the radial differential equation.  This is the first instance of `(18)` in the
+    tree with no integrability side conditions at all.
+
+  What this does *not* give is `(18)` for the radial *sum*.  The channel masses are square
+  summable, not summable: `‖H_k‖₂ <= C/k` and `sum 1/k` diverges, so the radial series converges
+  in `L²` only through the almost-orthogonality of the dilates -- which is precisely the weighted
+  projective Gram theorem the card cites as an outside input.  The instalment sharpens the shape of
+  that remaining input: what is missing is a Bessel/Gram inequality for `{R(k ·)}`, and the size
+  data it would consume (`C²/k²` per channel) is now a theorem.

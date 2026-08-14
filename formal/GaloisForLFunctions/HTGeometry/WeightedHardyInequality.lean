@@ -440,4 +440,127 @@ theorem lintegral_hardyAverage_sq_eq_top_of_le_half {p : ℝ} (hp : p ≤ 1 / 2)
 
 end Sharpness
 
+section Transfer
+
+private theorem enn_sq_add_le (A B : ℝ≥0∞) : (A + B) ^ 2 ≤ 4 * A ^ 2 + 4 * B ^ 2 := by
+  have h1 : A + B ≤ 2 * max A B := by
+    rw [two_mul]
+    exact add_le_add (le_max_left _ _) (le_max_right _ _)
+  have h2 : max A B ^ 2 ≤ A ^ 2 + B ^ 2 := by
+    rcases max_choice A B with h | h <;> rw [h]
+    · exact le_self_add
+    · exact le_add_self
+  calc (A + B) ^ 2 ≤ (2 * max A B) ^ 2 := pow_le_pow_left' h1 2
+    _ = 4 * max A B ^ 2 := by ring
+    _ ≤ 4 * (A ^ 2 + B ^ 2) := mul_le_mul' le_rfl h2
+    _ = 4 * A ^ 2 + 4 * B ^ 2 := by ring
+
+private theorem lintegral_Ioi_one_rpow_lt_top {a : ℝ} (ha : a < -1) :
+    ∫⁻ x in Ioi (1 : ℝ), ENNReal.ofReal (x ^ a) < ⊤ := by
+  have hint : IntegrableOn (fun x : ℝ => x ^ a) (Ioi (1 : ℝ)) volume :=
+    (integrableOn_Ioi_rpow_iff one_pos).mpr ha
+  have hnn : 0 ≤ᵐ[volume.restrict (Ioi (1 : ℝ))] fun x : ℝ => x ^ a := by
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
+    exact Real.rpow_nonneg (le_of_lt (lt_trans zero_lt_one hx)) _
+  rw [← ofReal_integral_eq_lintegral_ofReal hint hnn]
+  exact ENNReal.ofReal_lt_top
+
+variable {X : Type*} [NormedAddCommGroup X]
+
+/-- **Weighted Hardy transfer for a propagated forced solution.**  A function obeying the
+variation-of-constants bound with propagator decay `x^{-p}`, `p > 1/2`, and whose forcing carries a
+square integrable first moment, is itself square integrable on the ray.  The homogeneous part is
+square integrable because `2p > 1`, and the forced part is controlled by the weighted Hardy
+inequality. -/
+theorem lintegral_enorm_sq_lt_top_of_hardyBound {p : ℝ} (hp : 1 / 2 < p)
+    {f h : ℝ → X} {K κ : ℝ} (hK : 0 ≤ K) (hκ : 0 ≤ κ)
+    (hbound : ∀ x : ℝ, 1 < x →
+      ‖f x‖ₑ ≤ ENNReal.ofReal (K * x ^ (-p))
+        * (ENNReal.ofReal κ + ∫⁻ t in Ioc (1 : ℝ) x, ENNReal.ofReal (t ^ (p - 1)) * ‖h t‖ₑ))
+    (hmeas : AEMeasurable (fun t => ‖h t‖ₑ) (volume.restrict (Ioi (1 : ℝ))))
+    (hfin : ∫⁻ t in Ioi (1 : ℝ), ‖h t‖ₑ ^ 2 < ⊤) :
+    ∫⁻ x in Ioi (1 : ℝ), ‖f x‖ₑ ^ 2 < ⊤ := by
+  have hq : 0 < p - 1 / 2 := by linarith
+  -- pointwise splitting of the propagated bound
+  have hpt : ∀ x ∈ Ioi (1 : ℝ), ‖f x‖ₑ ^ 2
+      ≤ 4 * ENNReal.ofReal ((K * κ) ^ 2 * x ^ (-(2 * p)))
+        + 4 * (ENNReal.ofReal (K ^ 2)
+          * (ENNReal.ofReal (x ^ (-p))
+            * ∫⁻ t in Ioc (1 : ℝ) x, ENNReal.ofReal (t ^ (p - 1)) * ‖h t‖ₑ) ^ 2) := by
+    intro x hx
+    have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
+    have hsplitK : ENNReal.ofReal (K * x ^ (-p))
+        = ENNReal.ofReal K * ENNReal.ofReal (x ^ (-p)) := ENNReal.ofReal_mul hK
+    have hhom : (ENNReal.ofReal K * ENNReal.ofReal (x ^ (-p)) * ENNReal.ofReal κ) ^ 2
+        = ENNReal.ofReal ((K * κ) ^ 2 * x ^ (-(2 * p))) := by
+      rw [← ENNReal.ofReal_mul hK, ← ENNReal.ofReal_mul (by positivity),
+        ← ENNReal.ofReal_pow (by positivity)]
+      congr 1
+      rw [mul_pow, mul_pow, ← Real.rpow_natCast (x ^ (-p)) 2, ← Real.rpow_mul hx0.le,
+        show -p * ((2 : ℕ) : ℝ) = -(2 * p) by push_cast; ring]
+      ring
+    have hforced : (ENNReal.ofReal K * (ENNReal.ofReal (x ^ (-p))
+        * ∫⁻ t in Ioc (1 : ℝ) x, ENNReal.ofReal (t ^ (p - 1)) * ‖h t‖ₑ)) ^ 2
+        = ENNReal.ofReal (K ^ 2)
+          * (ENNReal.ofReal (x ^ (-p))
+            * ∫⁻ t in Ioc (1 : ℝ) x, ENNReal.ofReal (t ^ (p - 1)) * ‖h t‖ₑ) ^ 2 := by
+      rw [mul_pow, ← ENNReal.ofReal_pow hK]
+    calc ‖f x‖ₑ ^ 2
+        ≤ (ENNReal.ofReal (K * x ^ (-p))
+            * (ENNReal.ofReal κ
+              + ∫⁻ t in Ioc (1 : ℝ) x, ENNReal.ofReal (t ^ (p - 1)) * ‖h t‖ₑ)) ^ 2 :=
+          pow_le_pow_left' (hbound x hx) 2
+      _ = (ENNReal.ofReal K * ENNReal.ofReal (x ^ (-p)) * ENNReal.ofReal κ
+            + ENNReal.ofReal K * (ENNReal.ofReal (x ^ (-p))
+              * ∫⁻ t in Ioc (1 : ℝ) x, ENNReal.ofReal (t ^ (p - 1)) * ‖h t‖ₑ)) ^ 2 := by
+          rw [hsplitK]
+          ring
+      _ ≤ 4 * (ENNReal.ofReal K * ENNReal.ofReal (x ^ (-p)) * ENNReal.ofReal κ) ^ 2
+            + 4 * (ENNReal.ofReal K * (ENNReal.ofReal (x ^ (-p))
+              * ∫⁻ t in Ioc (1 : ℝ) x, ENNReal.ofReal (t ^ (p - 1)) * ‖h t‖ₑ)) ^ 2 :=
+          enn_sq_add_le _ _
+      _ = 4 * ENNReal.ofReal ((K * κ) ^ 2 * x ^ (-(2 * p)))
+            + 4 * (ENNReal.ofReal (K ^ 2)
+              * (ENNReal.ofReal (x ^ (-p))
+                * ∫⁻ t in Ioc (1 : ℝ) x, ENNReal.ofReal (t ^ (p - 1)) * ‖h t‖ₑ) ^ 2) := by
+          rw [hhom, hforced]
+  -- the homogeneous ray integral
+  have hhomfin : (∫⁻ x in Ioi (1 : ℝ), ENNReal.ofReal ((K * κ) ^ 2 * x ^ (-(2 * p)))) < ⊤ := by
+    have hrw : ∀ x ∈ Ioi (1 : ℝ), ENNReal.ofReal ((K * κ) ^ 2 * x ^ (-(2 * p)))
+        = ENNReal.ofReal ((K * κ) ^ 2) * ENNReal.ofReal (x ^ (-(2 * p))) := by
+      intro x _
+      exact ENNReal.ofReal_mul (by positivity)
+    rw [setLIntegral_congr_fun measurableSet_Ioi hrw,
+      lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+    exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top
+      (lintegral_Ioi_one_rpow_lt_top (by linarith))
+  -- the forced ray integral
+  have hforcedfin : (∫⁻ x in Ioi (1 : ℝ), ENNReal.ofReal (K ^ 2)
+      * (ENNReal.ofReal (x ^ (-p))
+        * ∫⁻ t in Ioc (1 : ℝ) x, ENNReal.ofReal (t ^ (p - 1)) * ‖h t‖ₑ) ^ 2) < ⊤ := by
+    rw [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+    refine ENNReal.mul_lt_top ENNReal.ofReal_lt_top ?_
+    refine lt_of_le_of_lt (lintegral_hardyAverage_sq_le hp hmeas) ?_
+    exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top hfin
+  calc ∫⁻ x in Ioi (1 : ℝ), ‖f x‖ₑ ^ 2
+      ≤ ∫⁻ x in Ioi (1 : ℝ), (4 * ENNReal.ofReal ((K * κ) ^ 2 * x ^ (-(2 * p)))
+          + 4 * (ENNReal.ofReal (K ^ 2)
+            * (ENNReal.ofReal (x ^ (-p))
+              * ∫⁻ t in Ioc (1 : ℝ) x, ENNReal.ofReal (t ^ (p - 1)) * ‖h t‖ₑ) ^ 2)) :=
+        setLIntegral_mono' measurableSet_Ioi hpt
+    _ = 4 * (∫⁻ x in Ioi (1 : ℝ), ENNReal.ofReal ((K * κ) ^ 2 * x ^ (-(2 * p))))
+          + 4 * ∫⁻ x in Ioi (1 : ℝ), ENNReal.ofReal (K ^ 2)
+            * (ENNReal.ofReal (x ^ (-p))
+              * ∫⁻ t in Ioc (1 : ℝ) x, ENNReal.ofReal (t ^ (p - 1)) * ‖h t‖ₑ) ^ 2 := by
+        rw [lintegral_add_left' (by
+          refine AEMeasurable.const_mul ?_ _
+          exact ENNReal.measurable_ofReal.comp_aemeasurable
+            (((by fun_prop : Measurable fun x : ℝ => (K * κ) ^ 2 * x ^ (-(2 * p)))).aemeasurable))
+          _, lintegral_const_mul' _ _ (by norm_num), lintegral_const_mul' _ _ (by norm_num)]
+    _ < ⊤ :=
+        ENNReal.add_lt_top.mpr
+          ⟨ENNReal.mul_lt_top (by norm_num) hhomfin, ENNReal.mul_lt_top (by norm_num) hforcedfin⟩
+
+end Transfer
+
 end GaloisForLFunctions.HTGeometry

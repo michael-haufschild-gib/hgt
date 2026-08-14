@@ -173,4 +173,33 @@ theorem coeff_taylorDefect_eq_of_sub_dvd {m n M : ℕ}
   rw [map_sub, sub_eq_zero] at hzero
   exact hzero
 
+/-! ### The recursion at a positive leading shift -/
+
+/-- **The coefficient recursion when the operator has no term below shift `v`.**  The `n`-th
+coefficient of the argument is isolated at level `n + v`. -/
+theorem shiftPolynomial_shift_mul_coeff {m : ℕ} (B : Fin (m + 1) → PowerSeries ℂ) (v : ℕ)
+    (hv : ∀ μ, μ < v → shiftPolynomial B μ = 0) (F : PowerSeries ℂ) (n : ℕ) :
+    (shiftPolynomial B v).eval ((n : ℕ) : ℂ) * PowerSeries.coeff n F
+      = PowerSeries.coeff (n + v) (eulerLinearOp B F)
+        - ∑ k ∈ Finset.range n,
+            (shiftPolynomial B (n + v - k)).eval ((k : ℕ) : ℂ) * PowerSeries.coeff k F := by
+  classical
+  have h := coeff_eulerLinearOp_range B F (n + v)
+  have hsplit : ∑ k ∈ Finset.range (n + v + 1),
+        (shiftPolynomial B (n + v - k)).eval ((k : ℕ) : ℂ) * PowerSeries.coeff k F
+      = ∑ k ∈ Finset.range (n + 1),
+        (shiftPolynomial B (n + v - k)).eval ((k : ℕ) : ℂ) * PowerSeries.coeff k F :=
+    (Finset.sum_subset
+      (fun x hx => Finset.mem_range.mpr (by
+        have hx' := Finset.mem_range.mp hx
+        omega))
+      (fun k hk hk' => by
+        have h1 : k < n + v + 1 := Finset.mem_range.mp hk
+        have h2 : ¬ (k < n + 1) := fun h => hk' (Finset.mem_range.mpr h)
+        rw [hv (n + v - k) (by omega), Polynomial.eval_zero, zero_mul])).symm
+  rw [hsplit, Finset.sum_range_succ] at h
+  have hidx : n + v - n = v := by omega
+  rw [hidx] at h
+  linear_combination -h
+
 end GaloisForLFunctions.HTGeometry

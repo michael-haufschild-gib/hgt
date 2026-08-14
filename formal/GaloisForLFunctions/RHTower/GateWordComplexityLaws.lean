@@ -37,6 +37,15 @@ theorem exists_minimal_hitting_word (act : Γ → X → X) (χ : X) (A : Set X)
   rw [hw₀len]
   exact Nat.find_le ⟨w, rfl, hw⟩
 
+/-- An unreachable target has vanishing discounted first-hit mass. -/
+theorem firstHitMass_eq_zero_of_unreachable (act : Γ → X → X) (χ : X) (A : Set X) (a : ℝ≥0∞)
+    (h : ∀ w : List Γ, wordEval act w χ ∉ A) : firstHitMass act χ A a = 0 := by
+  classical
+  refine ENNReal.tsum_eq_zero.mpr fun w => ?_
+  refine Set.indicator_of_notMem (fun hc => ?_) _
+  exact h w hc.1
+
+
 end MinimalWord
 
 section TropicalRecovery

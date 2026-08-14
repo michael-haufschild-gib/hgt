@@ -1,6 +1,6 @@
 # First-Entrance Gate Renewal and Prefix Law
 
-Status: `[PAPER-PROVED] [NOVELTY UNVERIFIED] [LEAN DEFERRED DURING REFACTOR]`
+Status: `[PAPER-PROVED] [LEAN-CERTIFIED] [NOVELTY UNVERIFIED]`
 
 Date: 2026-08-10
 
@@ -684,22 +684,47 @@ raw Green occupation.
 10. **Why not publication-ready?** It is a bridge, not the missing
     static-local theorem, and external priority is not established.
 
-## 11. Formalization plan
+## 11. Lean certificate
 
-Lean formalization is intentionally deferred while the corpus is being
-refactored, per user instruction. A later dependency-light formalization can be
-split into:
+The whole card is formalized unconditionally.  The gate walk is realized as the uniform
+right-extension Markov chain on words, whose only positive-weight paths are the canonical prefix
+chains; the renewal theory of Section 2 is proved for an arbitrary countable state space by
+path-sum first-entrance decomposition, so it specializes to the gate walk verbatim.
 
-1. finite-word first-hit predicate and prefix-freeness;
-2. finite-depth Kraft inequality;
-3. finite-depth first-hit partition identity;
-4. complexity sandwich and finite-depth complete-union bound;
-5. finite-state discounted entrance/return matrix identity;
-6. KL information projection on a finite first-hit support;
-7. passage to infinite depth by monotone convergence, if the analytic
-   infrastructure is ready.
+Modules:
 
-No Lean process was started for this card.
+- `GaloisForLFunctions.RHTower.DiscreteMarkovRenewal`
+- `GaloisForLFunctions.RHTower.GateWordFirstHit`
+- `GaloisForLFunctions.RHTower.GateWordRenewalBridge`
+- `GaloisForLFunctions.RHTower.GateWordComplexityLaws`
+- `GaloisForLFunctions.RHTower.GateWordInformationProjection`
+
+| Card statement | Lean declaration |
+|---|---|
+| discounted occupation, entrance mass | `greenMass`, `entranceMass` |
+| return kernel `K_{A,a}` | `returnMass`, `returnIterate` |
+| `(2.1)` return contraction | `returnMass_le` |
+| `(ER)` entrance--return resolvent | `greenMass_eq_tsum_entranceMass_mul_returnIterate`, `greenMass_eq_tsum_returnIterate` |
+| Cor 2.2 stopped Green decomposition | `greenMass_eq_tsum_entranceMass` |
+| Cor 2.3 `(PR)` singleton product | `greenMass_singleton_eq`, `greenMass_singleton_eq_div` |
+| Cor 2.4 `(GEQ)` fixed-fugacity equivalence | `entranceMass_le_greenMass_le` |
+| gate chain and its target pullback | `gateKernel`, `tsum_gateKernel`, `gatePath`, `wordTarget` |
+| Thm 3.1 prefix-freeness | `firstHitWord_eq_of_prefix` |
+| Thm 3.1 `(FH)` partition function | `entranceMass_gateKernel_eq_firstHitMass`, `firstHitMass_eq_tsum_length` |
+| Thm 3.1 `(Kraft)` | `tsum_firstHitWord_inv_card_le_one` |
+| gate-word `(GEQ)` specialization | `firstHitMass_le_greenMass_le` |
+| Thm 4.1 `(CS)` complexity sandwich | `pow_le_firstHitMass`, `firstHitMass_le_pow`, `firstHitMassReal_sandwich` |
+| Thm 4.1 unreachable case | `firstHitMass_eq_zero_of_unreachable` |
+| Cor 4.2 `(TR)` tropical recovery | `tendsto_neg_log_firstHitMassReal` |
+| `(5.1)` prior mass of the language | `tsum_indicator_gatePrior` |
+| geometric gate prior | `gatePrior`, `tsum_gatePrior`, `summable_gatePrior` |
+| Thm 5.1 `(IP)` information projection | `isLeast_gateSynthesisDivergence`, `isLeast_discreteRelativeEntropy` |
+| Thm 5.1 minimizer `Q_A^*` | `firstHitLaw`, `conditionedWeight`, `discreteRelativeEntropy_conditionedWeight` |
+| Cor 5.2 `(EM)` energy--multiplicity | `energy_multiplicity`, `meanSynthesisLength`, `routeEntropy` |
+| Thm 6.1 `(CU)` complete union | `measure_reachableWithin_le_lintegral`, `indicator_reachableWithin_le` |
+| Section 7 `(RC)` recurrence collapse | `firstHitMass_of_mem` |
+
+Every listed declaration reports exactly `propext`, `Classical.choice`, `Quot.sound`.
 
 ## 12. Dependencies and child frontier
 
