@@ -97,6 +97,19 @@ shells of `σ_p`. -/
 def fieldOneSoninExponentOfBool (b : Bool) : ℤ :=
   if b then -1 else 0
 
+theorem fieldOneSoninExponentOfBool_injective :
+    Function.Injective fieldOneSoninExponentOfBool := by
+  intro b c h
+  cases b <;> cases c <;> simp [fieldOneSoninExponentOfBool] at h ⊢
+
+theorem fieldOneSoninBooleanExponent_injective
+    (S : Finset (HeightOneSpectrum ℤ)) :
+    Function.Injective (fun b : ↥S → Bool =>
+      fun v => fieldOneSoninExponentOfBool (b v)) := by
+  intro b c h
+  funext v
+  exact fieldOneSoninExponentOfBool_injective (congrFun h v)
+
 /-- Finite Boolean cube `{0,-1}^S` inside the integral `S`-unit lattice. -/
 def fieldOneFiniteStageSoninExponentCube
     (S : Finset (HeightOneSpectrum ℤ)) : Finset (↥S → ℤ) := by
@@ -131,6 +144,28 @@ def fieldOneFiniteStageSoninSignedSupport
   exact ((Finset.univ : Finset Bool).product
         (fieldOneFiniteStageSoninExponentCube S)).image
       (fun bn => fieldOneSignedSUnitOfBool S bn.1 bn.2)
+
+/-- Positive rational scale attached to a Boolean subset of finite places. -/
+def fieldOneFiniteStageSoninBooleanRationalScale
+    (S : Finset (HeightOneSpectrum ℤ)) (b : ↥S → Bool) : ℚˣ :=
+  ∏ v : ↥S,
+    if b v then (fieldOneRationalPrimeUnit v.1)⁻¹ else 1
+
+/-- Product of the local coefficients chosen by a Boolean subset. -/
+def fieldOneFiniteStageSoninBooleanCoefficient
+    (S : Finset (HeightOneSpectrum ℤ)) (b : ↥S → Bool) : ℂ :=
+  ∏ v : ↥S,
+    if b v then -((Rat.HeightOneSpectrum.primesEquiv v.1 : ℂ)⁻¹) else 1
+
+theorem fieldOneSUnitProduct_soninBooleanExponent
+    (S : Finset (HeightOneSpectrum ℤ)) (b : ↥S → Bool) :
+    fieldOneSUnitProduct S (fun v => fieldOneSoninExponentOfBool (b v)) =
+      fieldOneFiniteStageSoninBooleanRationalScale S b := by
+  classical
+  unfold fieldOneSUnitProduct fieldOneFiniteStageSoninBooleanRationalScale
+  apply Finset.prod_congr rfl
+  intro v hv
+  cases h : b v <;> simp [fieldOneSoninExponentOfBool, h]
 
 /-- Exact two-shell value of `σ_p` in valuation--unit coordinates. -/
 @[simp] theorem fieldOnePadicSoninSigma_apply_forward
@@ -382,6 +417,18 @@ def fieldOneFiniteStageSoninExponentCoefficient
     else if n v = -1 then
       -((Rat.HeightOneSpectrum.primesEquiv v.1 : ℂ)⁻¹)
     else 0
+
+theorem fieldOneFiniteStageSoninExponentCoefficient_boolean
+    (S : Finset (HeightOneSpectrum ℤ)) (b : ↥S → Bool) :
+    fieldOneFiniteStageSoninExponentCoefficient S
+        (fun v => fieldOneSoninExponentOfBool (b v)) =
+      fieldOneFiniteStageSoninBooleanCoefficient S b := by
+  classical
+  unfold fieldOneFiniteStageSoninExponentCoefficient
+  unfold fieldOneFiniteStageSoninBooleanCoefficient
+  apply Finset.prod_congr rfl
+  intro v hv
+  cases h : b v <;> simp [fieldOneSoninExponentOfBool, h]
 
 theorem fieldOneFiniteStageSoninSigmaOrbitCoefficient_signedSUnit
     (S : Finset (HeightOneSpectrum ℤ))
@@ -663,7 +710,6 @@ theorem fieldOneFiniteStageThetaBruhatCore_orbit_signed_true
   rw [fieldOneFiniteStageSoninSigma_sunitAngular,
     fieldOneFiniteStageSoninSigmaOrbitCoefficient_signedSUnit]
   congr 1
-  simp [fieldOneSignedSUnitOfBool, Units.val_mk0]
 
 /-- The finite Euler sum selected by the local two-shell vector, before
 rewriting it as a product of dilation operators. -/

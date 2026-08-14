@@ -152,4 +152,75 @@ theorem exists_norm_smoothAFEZetaSquareDualWeight_sub_le_dyadic :
   dsimp only [f, C] at hmvt ⊢
   simpa [Real.norm_eq_abs] using hmvt
 
+/-- The square-dual weight gains one reciprocal smoothing scale while retaining
+the expected square-conductor size. -/
+theorem exists_norm_smoothAFEZetaSquareDualWeight_le_invScale :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ (tau : ℝ) {Y : ℝ}, 0 < Y →
+      ‖smoothAFEZetaSquareDualWeight tau Y‖ ≤
+        K * (1 + |tau|) ^ 2 / Y := by
+  let q : ℝ → ℝ := fun v =>
+    (1 + |v|) ^ 2 * Real.exp (-(v ^ 2))
+  let M : ℝ := ∫ v : ℝ, q v
+  let a : ℝ := 1 / (2 * Real.pi)
+  let K : ℝ := a * 3 * M
+  have hq : Integrable q := integrable_one_add_abs_sq_mul_exp_neg_sq
+  have hq0 : ∀ v, 0 ≤ q v := fun v => by
+    dsimp only [q]
+    positivity
+  have hM : 0 ≤ M := by
+    dsimp only [M]
+    exact integral_nonneg hq0
+  have ha : 0 ≤ a := by
+    dsimp only [a]
+    positivity
+  refine ⟨K, by dsimp only [K]; positivity, ?_⟩
+  intro tau Y hY
+  let C : ℝ := 3 * (1 + |tau|) ^ 2 / Y
+  have hC : 0 ≤ C := by dsimp only [C]; positivity
+  have hboundInt : Integrable (fun v : ℝ => C * q v) := hq.const_mul C
+  have hint :
+      ‖∫ v : ℝ,
+          smoothAFEZetaChiShiftRatioSq tau v *
+            smoothAFEMellinIntegrand Y
+              (((1 : ℝ) : ℂ) + (v : ℂ) * I)‖ ≤
+        ∫ v : ℝ, C * q v := by
+    apply norm_integral_le_of_norm_le hboundInt
+    exact Filter.Eventually.of_forall fun v => by
+      have hratio := norm_smoothAFEZetaChiShiftRatio_neg_right_one_le tau v
+      have hm := norm_smoothAFEMellinIntegrand_vertical_le hY
+        (show (0 : ℝ) < 1 by norm_num) v
+      have hm' :
+          ‖smoothAFEMellinIntegrand Y (↑(1 : ℝ) + ↑v * I)‖ ≤
+            (Y⁻¹ * Real.exp 1) * Real.exp (-(v ^ 2)) := by
+        simpa [Real.rpow_neg_one] using hm
+      have hexp1 : Real.exp (1 : ℝ) ≤ 3 := by
+        exact Real.exp_one_lt_d9.le.trans (by norm_num)
+      unfold smoothAFEZetaChiShiftRatioSq
+      rw [norm_mul, norm_pow]
+      calc
+        ‖smoothAFEZetaChiShiftRatio (linePt tau)
+            (-(((1 : ℝ) : ℂ) + (v : ℂ) * I))‖ ^ 2 *
+              ‖smoothAFEMellinIntegrand Y
+                (↑(1 : ℝ) + ↑v * I)‖
+          ≤ ((1 + |tau|) * (1 + |v|)) ^ 2 *
+              ((Y⁻¹ * Real.exp 1) * Real.exp (-(v ^ 2))) := by gcongr
+        _ ≤ ((1 + |tau|) * (1 + |v|)) ^ 2 *
+              ((Y⁻¹ * 3) * Real.exp (-(v ^ 2))) := by gcongr
+        _ = C * q v := by
+          dsimp only [C, q]
+          rw [inv_eq_one_div]
+          ring
+  unfold smoothAFEZetaSquareDualWeight
+  rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg ha]
+  calc
+    a * ‖∫ v : ℝ,
+          smoothAFEZetaChiShiftRatioSq tau v *
+            smoothAFEMellinIntegrand Y
+              (((1 : ℝ) : ℂ) + (v : ℂ) * I)‖
+      ≤ a * ∫ v : ℝ, C * q v := by gcongr
+    _ = a * (C * M) := by rw [integral_const_mul]
+    _ = K * (1 + |tau|) ^ 2 / Y := by
+      dsimp only [K, C]
+      ring
+
 end RHTower

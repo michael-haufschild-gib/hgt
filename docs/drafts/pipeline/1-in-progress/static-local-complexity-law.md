@@ -6235,3 +6235,17 @@ receive a new title and an independent significance audit.
   not an analogy or a minimum-separation surrogate.  Remaining work is circuit-heap
   anti-concentration for that complete average and the ordinary static-H recurrence-energy bound.
   Formal module: `HTGeometry.StaticShortcutReplicaProjectorFrameLaw`.
+- 2026-08-14 -- Falsified raw occupied-endpoint cardinality as the target-side capacity: arbitrarily
+  many distinct normalized rays can lie in one arbitrarily small projector cluster, so their
+  complete finite-replica frame energy can remain arbitrarily close to one.  Replaced the false
+  invariant by the observer-resolution quotient.  Lean now constructs a maximal
+  Hilbert--Schmidt `delta`-packing of every nonempty finite normalized pure-state target image,
+  proves it covers the complete image at the same radius, and proves the exact finite-replica law
+  `F_r <= N_delta^(-1)+(1-N_delta^(-1))(1-delta^2/2)^r`.  When the remainder is at most
+  `N_delta^(-1)`, the frame energy is at most `2/N_delta`.  Any original `epsilon`-capture transfers
+  to one center at radius `epsilon+delta`, including the corresponding all-replica fidelity
+  threshold.  A Lean capstone substitutes `2/N_delta` into the complete adaptive weighted-history
+  recurrence-energy law.  This closes the target-geometry factor, not Brown onset: the quenched
+  centralizer-centered source recurrence-energy bound for one ordinary static local Hamiltonian
+  remains open.  Formal card:
+  `../3-formalized/resolution-quotient-replica-frame-capacity-law.md`.

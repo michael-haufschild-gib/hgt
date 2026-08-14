@@ -152,4 +152,41 @@ end Pure
 
 end WeightedComplex
 
+/-! ## The counting weight -/
+
+variable {V : Type*} [DecidableEq V]
+
+/-- **A complex with every top face of weight one.**  This is the weighting a building carries: the
+weight of a face is then the number of chambers containing it. -/
+def unitComplex (top : Finset (Finset V)) : WeightedComplex V where
+  top := top
+  wt := fun _ => 1
+  wt_nonneg := fun _ => zero_le_one
+
+@[simp]
+theorem unitComplex_top (top : Finset (Finset V)) : (unitComplex top).top = top := rfl
+
+/-- **The weight of a face in the counting weighting is the number of top faces containing it.** -/
+theorem unitComplex_m (top : Finset (Finset V)) (τ : Finset V) :
+    (unitComplex top).m τ = ((top.filter (fun s => τ ⊆ s)).card : ℝ) := by
+  simp [WeightedComplex.m, unitComplex]
+
+/-- **A face of a complex with the counting weighting has positive weight exactly when some top
+face contains it.** -/
+theorem unitComplex_m_pos_iff (top : Finset (Finset V)) (τ : Finset V) :
+    0 < (unitComplex top).m τ ↔ ∃ s ∈ top, τ ⊆ s := by
+  rw [unitComplex_m]
+  constructor
+  · intro h
+    have hcard : 0 < (top.filter (fun s => τ ⊆ s)).card := by exact_mod_cast h
+    obtain ⟨s, hs⟩ := Finset.card_pos.1 hcard
+    rw [Finset.mem_filter] at hs
+    exact ⟨s, hs.1, hs.2⟩
+  · rintro ⟨s, hs, hts⟩
+    have hmem : s ∈ top.filter (fun s => τ ⊆ s) := Finset.mem_filter.2 ⟨hs, hts⟩
+    have hcard : 0 < (top.filter (fun s => τ ⊆ s)).card :=
+      Finset.card_pos.2 ⟨s, hmem⟩
+    exact_mod_cast hcard
+
+
 end GaloisForLFunctions.HTGeometry

@@ -2,7 +2,7 @@
 
 - **Parent:**
   `../../../2-fully-proven/universal-law-field/endogenous-completion-mechanics/bilateral-exponential-repair-scale-reporter-exchange-and-recurrent-boundary-law.md`
-- **Status:** `[FAILED] [POSITIVE SURVIVOR PAPER-PROVED] [LEAN CORE PENDING]`
+- **Status:** `[FAILED] [POSITIVE SURVIVOR PAPER-PROVED] [LEAN CORE CERTIFIED]`
 
 ## Claim attacked
 
@@ -27,6 +27,10 @@ reporter after `T_c` produces the first reporter outside that strip.
 The correct type is a strict repair scale plus its projective receiver. Every failure forces the
 next weight; reflection and phase remain fibrewise isometric; phase is periodic while repair depth
 is unbounded. This is a second non-rewriting realization of endogenous critical completion.
+
+The positive boundary reporter also acts as its own multiplier. Its square is the doubled boundary
+reporter, forcing dyadic repair `a -> 2a`; the repaired output becomes the next catalyst. Thus the
+survivor is not a fixed externally supplied promoter ladder.
 
 It does not prove RH. Its field consequence is structural: the missing source-to-physical landing
 must be scale-valued or projective. Searching for one bounded common completion repeats a proved

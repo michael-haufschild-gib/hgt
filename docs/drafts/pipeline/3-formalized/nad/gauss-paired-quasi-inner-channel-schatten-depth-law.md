@@ -271,9 +271,12 @@ knowledge.
 
 ## Lean decision
 
-The Lean tree does not contain Hardy quasi-inner multipliers, weak Schatten ideals, Dixmier traces,
-or regularized Fredholm determinants. An abstract finite-direct-sum wrapper would not certify the
-analytic endpoint `(8)`. No Lean file is added for the operator-analytic core.
+*(Superseded -- see `## Correction` at the end of this card.)*  The weak-Schatten and Dixmier
+substrate does exist (`RHTower/WeakSchattenResidue.lean`, `HTGeometry/DixmierIdeal.lean`), and the
+exact endpoint depth `(12)`--`(13)` is proved in
+`RHTower/GaussPairedChannelSchattenCapstone.lean` from the endpoint certificates taken as explicit
+analytic hypotheses.  Hardy quasi-inner multipliers and regularized Fredholm determinants are still
+absent, and are not needed for that theorem.
 
 The one framework-level step here, the coefficient--state allocation `(19)`--`(20)`
 (`dim A_N ≤ 2 kappa_rel`, linear form `dim V ≤ dim (V/(V ⊓ D)) + dim D`), is formalized abstractly
@@ -319,3 +322,33 @@ Lean file was added for the operator-analytic core.  The stale reference should 
 Formalization obligation, unchanged and large: build the weak-Schatten ideal / Dixmier-trace /
 regularized-determinant substrate, then prove the Gauss endpoint residue and the cofinal depth
 unconditionally, removing `GaussChannelSchattenEndpointInput`.
+
+## Correction — the operator-analytic substrate exists, and so does the cited module
+
+The audit above is wrong on both counts, and the `## Lean decision` section is stale.
+
+* The module it reports missing is in the tree, in the general-geometry area rather than under
+  `RHTower`: `formal/GaloisForLFunctions/HTGeometry/GaussPairedChannelSchattenDepth.lean`
+  (namespace `GaloisForLFunctions.RHTower`).  A path-based check under `RHTower/` misses it.
+* The weak-Schatten and Dixmier substrate the card calls absent is present and unconditional:
+  `formal/GaloisForLFunctions/RHTower/WeakSchattenResidue.lean` defines `MemWeakSchattenClass`,
+  the logarithmic partial sum, and `HasSchattenLogResidue`, and proves both
+  `MemWeakSchattenClass.memSchattenClass_of_lt` (weak-to-ordinary inclusion above the endpoint) and
+  `HasSchattenLogResidue.not_memSchattenClass` (a positive logarithmic residue excludes the ordinary
+  class at the endpoint), which combine in `exact_schattenDepth_of_weak_of_positive_logResidue`.
+  `formal/GaloisForLFunctions/HTGeometry/DixmierIdeal.lean` carries the Dixmier partial sum and
+  ideal, including `isDixmier_of_singVal_decay`.
+* `formal/GaloisForLFunctions/RHTower/GaussPairedChannelSchattenCapstone.lean` proves `(12)`--`(13)`
+  outright: `gaussPairedChannel_exact_schattenDepth` and its `Fin m` form give
+  `inf {q > 0 : T in S_q} = 2m` from weak membership at `2m` and the positive arithmetic residue
+  `(11)`, and `exists_cutoff_not_memSchattenClass` is the cofinal no-fixed-depth theorem.  It uses
+  the honest analytic hypotheses directly; the `GaussChannelSchattenEndpointInput` structure is not
+  involved, so nothing is postulated.
+* `formal/GaloisForLFunctions/RHTower/GaussPairedSchattenResidueProducer.lean` supplies the residue
+  side (`hasSchattenLogResidue_gaussPairedChannelResidue`,
+  `hasSchattenLogResidue_gaussPairedCriticalDepth`).
+
+What is genuinely still open is what the gate list already says: an independent audit of the
+Gauss-component residue theorem `(8)`, a uniform smoothing or covariance cancellation, semilocal
+trace-remainder positivity, transport of the index to the true restricted-Weil operator, and RH.
+The first is an external obligation and the last four are the card's onward research targets.

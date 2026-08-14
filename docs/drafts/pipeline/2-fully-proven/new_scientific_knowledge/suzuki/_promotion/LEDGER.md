@@ -6574,3 +6574,94 @@ What remains for the full structure theorem is the finite-dimensional half: the 
 `φ ↦ (φ^{(j)}(0))_{j ≤ N}` is onto, so `u` factors as `u φ = ∑_{j≤N} φ^{(j)}(0) c_j`, i.e. `u` is a
 finite combination of derivatives of the delta.  With that, card 6's descending induction on the
 `(2j+1)` eigenvalue closes Theorem 1, and cards 6 and 7 become promotable.
+
+## GV — the point-support structure theorem is proved
+
+`HTGeometry/JetTestFunctions.lean` and `HTGeometry/PointSupportStructure.lean` complete the
+mathlib gap identified in section GU.
+
+- `iteratedDeriv_ofReal_pow`: the iterated derivative of the monomial along the real line,
+  `D^i (x ↦ x^j) = (j)_i x^{j-i}`, proved by induction with the descending-factorial recursion; at
+  the origin it is `j!` when `i = j` and zero otherwise.
+- `jetTest j`: the monomial `x^j/j!` localised by the cutoff — a Schwartz function — and
+  `iteratedDeriv_jetTest_zero`: its derivatives at the origin are the Kronecker delta.  These
+  realise every prescribed finite jet.
+- `exists_delta_representation`: **a tempered distribution annihilating every Schwartz function that
+  vanishes near the origin satisfies**
+
+  `u φ = ∑_{j ≤ N} φ^{(j)}(0) · c_j`,  `c_j = u(jetTest j)`,
+
+  i.e. it is a finite combination of derivatives of the delta.  The proof subtracts the jet
+  interpolation of `φ` and applies the vanishing theorem of section GU.
+
+This is the structure theorem card 6's Theorem 1 cites as standard.  It is now formal and
+unconditional, and audits to `[propext, Classical.choice, Quot.sound]`.
+
+What remains for card 6's Theorem 1: the action of the Gamma principal operator on
+`δ₀^{(j)}` — the eigenvalue `(2j+1)` — and the descending induction that forces every coefficient
+`c_j` to vanish; plus the distributional regularity of the solution on each open half-line.
+
+## GW — card 6: the point-supported kernel of the principal Gamma operator is trivial
+
+`HTGeometry/PointSupportPrincipalOperator.lean`.
+
+- `coordMulCLM`: multiplication by the frequency coordinate on Schwartz space.
+- `iteratedDeriv_mul_coord`: the Leibniz rule `D^j(g·x) = x·g^{(j)} + j·g^{(j-1)}`, by induction;
+  hence `iteratedDeriv_coordMul_deriv_zero`: `(ηφ')^{(j)}(0) = j·φ^{(j)}(0)`.  This is the exact
+  content of the card's identity `η δ₀^{(j+1)} = -(j+1)δ₀^{(j)}` in the jet picture.
+- `coeff_eq_zero_of_principal`: if a point-supported distribution with jet coefficients `c_j`
+  satisfies the principal equation `u + 2η∂u = 0`, then testing against the jet functions gives
+  `(2j+1)c_j = 0` for every `j`, so every coefficient vanishes — the `(2j+1)` eigenvalue of the
+  card, obtained without an induction because the jet tests diagonalise the operator.
+- `eq_zero_of_pointSupport_principal`: **no nonzero distribution supported at the origin solves the
+  principal Gamma equation.**
+
+Together with sections GU and GV this closes the second half of card 6's Theorem 1: the structure
+theorem is formal, and the principal operator is injective on distributions supported at the origin.
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+Card 6's Theorem 1 still needs the two remaining reductions the card performs: distributional
+regularity of the solution on each open half-line (so that the restriction is the classical solution
+already certified by `exists_channel_vector`), and the reduction of the full operator
+`(2η + r(η) − T)∂ + 1` to its principal part, using that `ηr(η)` vanishes to third order and `ηT`
+lowers the point-support order.
+
+## GX — card 6: the triangular jet system
+
+`HTGeometry/PointSupportTriangular.lean`.
+
+- `iteratedDeriv_mul_jetTest_zero`: against a jet test function the Leibniz sum collapses to one
+  term, `D^j(g·χ_i)(0) = C(j, j−i) g^{(j−i)}(0)` for `i ≤ j` and zero otherwise.  A multiplier
+  carrying a factor `η` therefore couples the coefficient `c_i` only to coefficients of strictly
+  larger index — the card's "`ηr(η)` lowers point-support order".
+- `coeff_eq_zero_of_triangular` and `coeff_eq_zero_of_triangular_map`: a jet system
+  `(2i+1)c_i = ∑_{j>i} A_{ij}(c_j)` has only the zero solution, by descending induction.  The
+  operator-coefficient version covers the `ηT` term of the Gamma equation, whose coefficients are
+  `T` itself rather than scalars.
+
+With sections GU–GW this is the complete machinery of card 6's Theorem 1(b): structure theorem,
+`(2j+1)` diagonalisation, order-lowering of the `η`-carrying terms, and the descending induction.
+Everything audits to `[propext, Classical.choice, Quot.sound]`.
+
+## GY — card 6: Theorem 1's point-support exclusion is closed
+
+`HTGeometry/PointSupportGammaForm.lean` assembles sections GU–GX into the card's statement.
+
+- `mulTemperateCLM`: multiplication by a smooth function of temperate growth on Schwartz space, and
+  `iteratedDeriv_mulTemperate_jetTest`: its jet coefficients against a jet test function.
+- `eq_zero_of_pointSupport_gammaForm`: **if a tempered distribution `u` annihilates every Schwartz
+  function vanishing near the origin and satisfies the paired Gamma equation**
+
+  `u(φ) + 2u(ηφ') + i·u(ηr·φ) − i·T(u(ηφ)) = 0`   for all `φ`,
+
+  **then `u = 0`.**  The proof: the structure theorem writes `u` by its jet coefficients; the first
+  two terms give the diagonal `(2j+1)`; both remaining terms carry a factor vanishing at the origin,
+  so by the Leibniz collapse they only couple to strictly higher coefficients; the triangular system
+  then forces every coefficient to vanish.
+
+This is exactly the second half of card 6's Theorem 1 — "There is no additional distribution
+supported at `η = 0`" — now unconditional and axiom-clean, with the structure theorem it cites also
+proved rather than assumed.
+
+Card 6's Theorem 1 now needs only the first half: that a tempered solution restricts on each open
+frequency half-line to the classical solution already classified by `exists_channel_vector`.

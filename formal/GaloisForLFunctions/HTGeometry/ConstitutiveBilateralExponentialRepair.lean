@@ -99,6 +99,77 @@ theorem nextReporter_not_uniformly_bounded (n : ℕ) :
     exact le_of_mul_le_mul_right hbound hwpos
   linarith
 
+/-- A current boundary reporter can act as its own horizontal intervention. -/
+theorem boundaryReporter_self_mul (a : ℕ) (k : ℤ) :
+    boundaryReporter a k * boundaryReporter a k = boundaryReporter (2 * a) k := by
+  rw [boundaryReporter, boundaryReporter, ← Real.exp_add]
+  congr 1
+  push_cast
+  ring
+
+/-- Self-intervention by the current boundary costs exactly a doubling of repair grade. -/
+theorem stageWeight_mul_boundaryReporter_le (a : ℕ) (k : ℤ) :
+    stageWeight a k * boundaryReporter a k ≤ stageWeight (2 * a) k := by
+  rw [stageWeight, boundaryReporter, stageWeight, ← Real.exp_add]
+  apply Real.exp_le_exp.mpr
+  push_cast
+  have hk : (k : ℝ) ≤ |(k : ℝ)| := le_abs_self _
+  have ha : (0 : ℝ) ≤ (a : ℝ) := by positivity
+  nlinarith
+
+/-- On the positive ray, the self-generated next reporter/current-cost ratio is `exp(a*k)`. -/
+theorem doubledReporter_eq_exp_mul_stageWeight (a k : ℕ) :
+    boundaryReporter (2 * a) (k : ℤ) =
+      Real.exp ((a : ℝ) * k) * stageWeight a (k : ℤ) := by
+  rw [boundaryReporter, stageWeight, abs_of_nonneg (by positivity : 0 ≤ ((k : ℤ) : ℝ)),
+    ← Real.exp_add]
+  congr 1
+  push_cast
+  ring
+
+/-- Every positive self-catalytic doubling produces a reporter unbounded on the current fibre. -/
+theorem doubledReporter_not_uniformly_bounded {a : ℕ} (ha : 0 < a) :
+    ¬ ∃ C : ℝ, ∀ k : ℕ,
+      boundaryReporter (2 * a) (k : ℤ) ≤ C * stageWeight a (k : ℤ) := by
+  rintro ⟨C, hC⟩
+  have htend : Filter.Tendsto (fun k : ℕ => Real.exp (k : ℝ)) Filter.atTop Filter.atTop :=
+    Real.tendsto_exp_atTop.comp tendsto_natCast_atTop_atTop
+  have hev : ∀ᶠ k : ℕ in Filter.atTop, C + 1 ≤ Real.exp (k : ℝ) :=
+    htend.eventually (Filter.eventually_ge_atTop (C + 1))
+  obtain ⟨K, hK⟩ := Filter.eventually_atTop.1 hev
+  have hlarge := hK K le_rfl
+  have hbound := hC K
+  rw [doubledReporter_eq_exp_mul_stageWeight] at hbound
+  have hwpos : 0 < stageWeight a (K : ℤ) := stageWeight_pos _ _
+  have hcoef : Real.exp ((a : ℝ) * K) ≤ C :=
+    le_of_mul_le_mul_right hbound hwpos
+  have hKnonneg : 0 ≤ (K : ℝ) := by positivity
+  have haone : (1 : ℝ) ≤ a := by exact_mod_cast ha
+  have hexpmono : Real.exp (K : ℝ) ≤ Real.exp ((a : ℝ) * K) := by
+    apply Real.exp_le_exp.mpr
+    nlinarith
+  linarith
+
+/-- Dyadic self-repair grade. -/
+def dyadicGrade (n : ℕ) : ℕ := 2 ^ n
+
+@[simp] theorem dyadicGrade_succ (n : ℕ) : dyadicGrade (n + 1) = 2 * dyadicGrade n := by
+  simp [dyadicGrade, pow_succ, Nat.mul_comm]
+
+/-- The current dyadic boundary reporter self-generates the next dyadic reporter. -/
+theorem dyadicReporter_self_generates_next (n : ℕ) (k : ℤ) :
+    boundaryReporter (dyadicGrade n) k * boundaryReporter (dyadicGrade n) k =
+      boundaryReporter (dyadicGrade (n + 1)) k := by
+  rw [dyadicGrade_succ, boundaryReporter_self_mul]
+
+/-- Every dyadic repair stage generates a genuinely nonadmitted next reporter. -/
+theorem dyadicNextReporter_not_uniformly_bounded (n : ℕ) :
+    ¬ ∃ C : ℝ, ∀ k : ℕ,
+      boundaryReporter (dyadicGrade (n + 1)) (k : ℤ) ≤
+        C * stageWeight (dyadicGrade n) (k : ℤ) := by
+  rw [dyadicGrade_succ]
+  exact doubledReporter_not_uniformly_bounded (pow_pos (by decide) _)
+
 /-- Reflection preserves every stage weight. -/
 @[simp] theorem stageWeight_neg (n : ℕ) (k : ℤ) :
     stageWeight n (-k) = stageWeight n k := by

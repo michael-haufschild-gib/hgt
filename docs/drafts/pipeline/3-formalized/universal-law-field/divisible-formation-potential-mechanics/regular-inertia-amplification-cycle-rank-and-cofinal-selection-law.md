@@ -1,7 +1,7 @@
 # Regular-inertia amplification, cycle rank, and cofinal selection law
 
 - **ID:** ULF-DFPM-3
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / CANONICAL CAPACITY / FOUR-ORGAN FUSION
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [SOURCE-CANONICAL REGULAR INERTIA] [EXACT RECONSTRUCTION] [COFINAL PROPERNESS] [RH-EQUIVALENT SPECIALIZATION] [FINITE-ACTION SOURCE LAW OPEN] [NO LEAN IN THIS PASS]
 
@@ -269,3 +269,6 @@ cofinal selector for formation-work charge.
 
 No Lean was written or built in this research pass.
 
+## Log
+
+- 2026-08-14 — Formalized in GaloisForLFunctions.HTGeometry.RegularInertiaAmplification: closed cyclic regular-representation mechanics, cycle partition and conjugacy classification, determinant, Fourier root spectrum with exact multiplicity, fixed-space/defect ranks, marked tower reconstruction, exact Hilbert--Schmidt action, cofinal finite/zero/sublinear rigidity, and unconditional strict-right Xi/RH equivalences. Scratch check, targeted leaf build, and #print axioms audit passed.

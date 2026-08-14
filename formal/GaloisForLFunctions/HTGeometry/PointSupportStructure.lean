@@ -29,26 +29,24 @@ theorem exists_delta_representation (u : SchwartzMap ℝ ℂ →L[ℂ] X)
   obtain ⟨N, hN⟩ := exists_order_apply_eq_zero u hu
   refine ⟨N, fun j => u (jetTest j), fun φ => ?_⟩
   set c : ℕ → ℂ := fun j => iteratedDeriv j (φ : ℝ → ℂ) 0 with hc
-  set ψ : SchwartzMap ℝ ℂ := φ - ∑ j ∈ Finset.range (N+1), c j • jetTest j with hψdef
-  have hcoe : (ψ : ℝ → ℂ)
-      = (φ : ℝ → ℂ) - ∑ j ∈ Finset.range (N+1), c j • (jetTest j : ℝ → ℂ) := by
+  set Ψ : SchwartzMap ℝ ℂ := ∑ j ∈ Finset.range (N+1), c j • jetTest j with hΨdef
+  set ψ : SchwartzMap ℝ ℂ := φ - Ψ with hψdef
+  have hΨcoe : (Ψ : ℝ → ℂ) = ∑ j ∈ Finset.range (N+1), c j • (jetTest j : ℝ → ℂ) := by
+    rw [hΨdef]
+    push_cast
+    rfl
+  have hcoe : (ψ : ℝ → ℂ) = (φ : ℝ → ℂ) - (Ψ : ℝ → ℂ) := by
     rw [hψdef]
     push_cast
     rfl
-  have hcdsum : ∀ i : ℕ, ContDiffAt ℝ (i : ℕ∞)
-      (∑ j ∈ Finset.range (N+1), c j • (jetTest j : ℝ → ℂ)) 0 := by
-    intro i
-    refine ContDiffAt.sum (f := fun j => c j • ((jetTest j : SchwartzMap ℝ ℂ) : ℝ → ℂ))
-      fun j _ => ?_
-    have h : ContDiffAt ℝ (i : ℕ∞) ((jetTest j : SchwartzMap ℝ ℂ) : ℝ → ℂ) 0 :=
-      (((jetTest j).smooth').of_le (by exact_mod_cast le_top)).contDiffAt
-    exact h.const_smul (c j)
+  have hcdsum : ∀ i : ℕ, ContDiffAt ℝ (i : ℕ∞) (Ψ : ℝ → ℂ) 0 := fun i =>
+    ((Ψ.smooth').of_le (by exact_mod_cast le_top)).contDiffAt
   have hjet : ∀ i, i ≤ N → iteratedDeriv i (ψ : ℝ → ℂ) 0 = 0 := by
     intro i hi
     rw [hcoe]
     have hφcd : ContDiffAt ℝ (i : ℕ∞) (φ : ℝ → ℂ) 0 :=
       ((φ.smooth').of_le (by exact_mod_cast le_top)).contDiffAt
-    rw [iteratedDeriv_sub hφcd (hcdsum i)]
+    rw [iteratedDeriv_sub hφcd (hcdsum i), hΨcoe]
     rw [iteratedDeriv_sum (f := fun j => c j • ((jetTest j : SchwartzMap ℝ ℂ) : ℝ → ℂ))
       (I := Finset.range (N+1)) (n := i) (x := 0)
       (fun j _ => ((((jetTest j).smooth').of_le
@@ -70,7 +68,7 @@ theorem exists_delta_representation (u : SchwartzMap ℝ ℂ →L[ℂ] X)
     exact sub_self _
   have huψ := hN ψ hjet
   have hlin : u ψ = u φ - ∑ j ∈ Finset.range (N+1), c j • u (jetTest j) := by
-    rw [hψdef, map_sub, map_sum]
+    rw [hψdef, map_sub, hΨdef, map_sum]
     congr 1
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [map_smul]

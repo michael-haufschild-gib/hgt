@@ -3,7 +3,7 @@
 - **ID:** ULF-ALM-PROGRAMME-1
 - **Stage:** 1-in-progress
 - **Type:** ROUTE-INDEPENDENT FIELD PROGRAMME
-- **Status:** [MECHANISMS AND LAWS, NOT ONE OBJECT] [FOUR LEAN-CERTIFIED LABS]
+- **Status:** [MECHANISMS AND LAWS, NOT ONE OBJECT] [FIVE LEAN-CERTIFIED LABS]
   [FRANKENSTEIN SYNTHESIS] [HOSTILE GATES OPEN] [NOT RH]
 
 ## 1. Frontier-forced pivot
@@ -66,8 +66,9 @@ and
 
 ## 3. Proposed laws
 
-These are programme laws. Laws III--V have two exact calibrations; Law VI has two further exact
-Lean-certified calibrations, one single-repair and one irreducibly collective.
+These are programme laws. Laws III--V have three exact calibrations, including one analytic
+changing-admission metabolism; Law VI has two further exact Lean-certified calibrations, one
+single-repair and one irreducibly collective.
 
 ### Law I -- source food is not target truth
 
@@ -166,6 +167,34 @@ Lean: `HTGeometry.ConstitutiveSequentialRepairHeredity`.
 They prove Laws III--V occur in two nonisomorphic mathematical settings, one with rule birth and one
 with a fixed native topology. They do not prove that every frontier stall is autocatalytic, that a
 selected repair exists, that viable completion follows, or that one category encodes the corpus.
+
+### 4.3a Analytic admission metabolism -- ULF-ECMPL-2
+
+The bilateral exponential source adds the missing changing-admission laboratory. At repair grade
+`a`, the continuous exponential reporters form exactly the strip `|Re z|<=a`. A marked horizontal
+intervention by `c` sends the admitted boundary reporter to the first excluded reporter and is
+bounded only as a map from grade `a+|c|` back to grade `a`. Therefore current failure generates the
+next least exponential repair, every finite repair generates another failure, and the projective
+receiver retains the complete repair history.
+
+The canonical self-intervention removes the fixed-promoter ambiguity. The coefficient of the
+current positive boundary reporter is itself a legal horizontal multiplier; its self-execution
+squares `r_a` to `r_(2a)`. Repair to grade `2a` admits that output, which then becomes the catalyst
+for the next doubling. Hence `a_n=2^n a_0` is an internally generated analytic lineage, not an
+externally enumerated challenge sequence.
+
+Reflection and phase remain fibrewise isometric; integral phase is periodic while repair grade is
+unbounded. The fusion of formation, admission, reflection, and recurrence then predicts a fourth
+organ: all finite clock jets are continuous only through collar loss/projective history, never as a
+complete same-fibre calculus.
+
+Paper theorem:
+`endogenous-completion-mechanics/bilateral-exponential-repair-scale-reporter-exchange-and-recurrent-boundary-law.md`.
+Lean: `HTGeometry.ConstitutiveBilateralExponentialRepair`.
+
+This strengthens the earlier sentence: Laws III--V now occur in three nonisomorphic settings--rule
+birth, native sequential topology, and self-catalytic analytic admission. It still does not
+identify the arithmetic catalyst or prove the source-to-physical landing required for RH selection.
 
 ### 4.4 Viability--coercivity metabolism -- ULF-ALM-1
 
@@ -292,14 +321,15 @@ the field vocabulary.
 ALM becomes more than an organizing metaphor only after all of the following:
 
 1. abstract feedback laws exclude arbitrary transition-oracle encoding;
-2. nonisomorphic laboratories couple repair to viability or coercivity, including irreducibly
-   collective viability (**Lean-certified by ULF-ALM-1 and ULF-ALM-2**);
+2. nonisomorphic laboratories couple repair to execution, admission, viability, or coercivity,
+   including analytic changing-admission metabolism and irreducibly collective viability
+   (**Lean-certified by ULF-ECMPL-2, ULF-ALM-1, and ULF-ALM-2**);
 3. one theorem predicts a withheld fact in at least three corpus mechanism families;
 4. selection is derived from predeclared source resource, not fitted target;
 5. significant dependency-closed theorems are formalized in Lean under the Universal Law Field
    umbrella.
 
-Until then, honest status is a mechanism-first research programme with four certified
+Until then, honest status is a mechanism-first research programme with five certified
 calibrations and open anti-theatre gates.
 
 ## 9. Endogenous viability and observer exchange

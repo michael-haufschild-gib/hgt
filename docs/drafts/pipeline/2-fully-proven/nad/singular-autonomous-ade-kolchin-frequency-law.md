@@ -390,3 +390,39 @@ equation of order `n`, then `π′(N) ≤ n` — together with its contrapositiv
 `not_realAutonomousAnnihilator_of_primeLog_mem`.  Both are unconditional and axiom-clean; the prime
 side uses `primeLog_primesBelow_linearIndependent_rat` (`rank_ℚ Λ_N = π′(N)`, upgraded from the
 `ℤ`-statement by `LinearIndependent.iff_fractionRing ℤ ℚ`).
+
+## Log — the Kolchin jet capacity is now a Lean object `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/KolchinJetCapacity.lean`, built on the new
+`KolchinSlopeDichotomy.lean` (both wired into `GaloisForLFunctions.HTGeometry`, axiom-clean:
+`propext`, `Classical.choice`, `Quot.sound`).
+
+- **`kolchinJetRank F x r`** — the transcendence rank of the finite jet packet `{x, Dx, …, D^r x}`,
+  defined as the ordinary algebraic-matroid rank, so no cardinal arithmetic is needed.
+- **`kolchinJetBoundSet`** and **`kolchinJetCapacity F x = sInf`** — the one-reporter analogue of
+  `kappa(P)` in `(6)`.
+- **`nonempty_kolchinJetBoundSet_iff`** — **finiteness of the jet capacity is exactly differential
+  algebraicity**, and **`not_exists_bound_of_hypertranscendentalOver`** is its contrapositive: no
+  natural number bounds every finite jet rank of a hypertranscendental reporter.  This is the exact
+  one-reporter form of the card's `(6)` finiteness statement, proved rather than asserted: the DA
+  half uses the separant/prefix argument (`exists_algebraic_jet_over_prefix` and
+  `all_jets_algebraic_over_prefix`, now public in `DifferentialAlgebraicTransitivity.lean`), the HT
+  half uses `kolchinJetRank_eq_of_hypertranscendentalOver` (`kappa(r) = r+1`).
+- **`kolchinJetRank_le_kolchinJetCapacity`** and **`kolchinJetCapacity_le`** — the capacity really
+  bounds every jet rank and is the least such bound.
+
+**Exactly what is still missing for `(11)`--`(14)`.**  Two classical dimension-theory inputs that
+mathlib does not have and that `HullDimensionBound.lean` already isolates:
+
+1. `ind (C^N) <= 2N` — subadditivity of small inductive dimension under products, together with
+   `ind R <= 1`.  With it, `hull_smallIndDimLE_of_ambient` gives `(11)` and `(13)` immediately from
+   the finite jet embedding.
+2. The Pontryagin--Takahashi identity `dim G = rank_Q (dual G)` for a compact connected abelian
+   group — needed for the equality in `(14)`.  Only the inequality `rank_Q Gamma(f) <= dim X_f` is
+   used by the card's conclusion, and even that is the nontrivial half.
+
+The rest of the substrate is present and unconditional: `hasCoverDimLE_bohrHull_of_injection`,
+`hull_smallIndDimLE_of_ambient`, `rank_closure_bohrSpectrum_eq`,
+`exists_frequency_of_hull_character`, and the direct algebraic frequency-rank law
+`rank_bohrFrequencyModule_le_of_exists_realAutonomousAnnihilator` with its arithmetic consequence in
+`PrimePhaseBudgetRank.lean`.

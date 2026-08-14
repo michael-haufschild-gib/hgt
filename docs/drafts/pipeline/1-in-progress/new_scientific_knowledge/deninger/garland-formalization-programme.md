@@ -435,3 +435,139 @@ by bipartiteness never obstructs Garland's one-sided inequality.
 3. The identification of the link of a simplex with a spherical building over the residue field, and
    the reduction of its spectral gap to the rank-two case above.  The corpus's `BuildingLink`,
    `SolomonInduction` and `BuildingHomologyConcentration` layer is the object in question.
+
+## Layer B1 — the Steinberg group, PROVED
+
+`HTGeometry/SteinbergGroupPresentation.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+`K_2` of a ring is the kernel of `St(R) → E(R)`, so the Steinberg group is the first object Layer B
+needs.  It is now built as a `PresentedGroup` on one generator per off-diagonal position and ring
+element.
+
+- `SteinbergGen` — the generators: a position `i ≠ j` and an entry `a`.
+- `steinbergAddRel`, `steinbergCommRel`, `steinbergChainRel`, `steinbergRels` — Steinberg's three
+  relation families.
+- **`SteinbergGroup`** — the presented group; `steinbergX` the generator at a position.
+- **`steinbergX_mul`** — `x_ij(a)·x_ij(b) = x_ij(a+b)`.
+- **`steinbergX_zero`** — `x_ij(0) = 1`, derived from additivity.
+- **`steinbergX_commute`** — generators at disjoint positions commute.
+- **`steinbergX_chain`** — `[x_ij(a), x_jk(b)] = x_ik(ab)`.
+
+Next in Layer B: the homomorphism `St(R) → GL(R)` sending `x_ij(a)` to the transvection
+`1 + a·E_ij`, which needs the three relations verified for elementary matrices (mathlib has
+`Matrix.transvection` and `transvection_mul_transvection_same`); then `E(R)` as its image, and
+`K_2(R)` as the kernel.
+
+## Layer B1 — `K_2` of a ring, PROVED
+
+`HTGeometry/SteinbergElementaryGroup.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+Milnor's `K_2` is now defined and its defining map built.
+
+- **`elemUnit`** — the elementary matrix `1 + a·E_ij` as a unit, with inverse `1 − a·E_ij`.
+- `elemUnit_mul`, `elemUnit_zero`, `elemUnit_inv` — additivity in the entry, from
+  `Matrix.transvection_mul_transvection_same`.
+- **`transvection_comm`** — elementary matrices at disjoint positions commute, because both
+  products of the single-entry matrices vanish.
+- **`transvection_chain`** — `[1+aE_ij, 1+bE_jk] = 1 + abE_ik`.  The three-step expansion, each step
+  killing the products that vanish: `E_ij·E_ij = 0`, `E_jk·E_ij = 0`, `E_ik·E_ij = 0`,
+  `E_jk·E_jk = 0`, `E_ik·E_jk = 0`, and `E_ij·E_jk = E_ik`.
+- `elemUnit_commute`, `elemUnit_chain` — the same at the level of units.
+- **`steinbergToGL`** — **the map from the Steinberg group to the invertible matrices**, obtained
+  from `PresentedGroup.toGroup` now that all three relations are verified for elementary matrices;
+  `steinbergToGL_x` records its value on a generator.
+- **`elementaryGroup`** — its image; **`KTwo`** — **its kernel, which is `K_2(R)`**, with
+  `mem_KTwo_iff` and the normality instance.
+
+Layer B's remaining steps are unchanged: `St(R) → E(R)` is the universal central extension (so
+`K_2(R) ≅ H_2(E(R), ℤ)`), Matsumoto's theorem `K_2(F) ≅ K_2^M(F)`, the localization identifying the
+Milnor tame kernel of `𝒪_S` with `K_2(𝒪_S)`, and homological stability in degree two.
+
+## Layer B — the Weyl element
+
+Same module.
+
+- `weylMatrix` — the Weyl matrix `1 + u·E_ij − u⁻¹·E_ji − E_ii − E_jj`, i.e. the block
+  `[[0, u], [−u⁻¹, 0]]` at the two indices and the identity elsewhere.
+- **`transvection_weyl`** — **the Weyl element of the Steinberg group maps to it**:
+  `t_ij(u)·t_ji(−u⁻¹)·t_ij(u) = weylMatrix i j u`.  The expansion is the same three-step pattern as
+  the chained commutator, using `E_ij·E_ji = E_ii`, `E_ji·E_ij = E_jj`, `E_ii·E_ij = E_ij`, and the
+  vanishing of the repeated products.
+
+The Steinberg symbol `{u,v} = h(uv)·h(u)⁻¹·h(v)⁻¹` with `h(u) = w(u)·w(1)⁻¹` lands in `K_2` once
+`w(u)·w(1)⁻¹` is identified with the diagonal matrix `diag(u, u⁻¹)` — the remaining block
+computation, since `w(1)⁻¹ = w(−1)` and `[[0,u],[−u⁻¹,0]]·[[0,−1],[1,0]] = [[u,0],[0,u⁻¹]]`.  That
+identification is what makes the symbol map `K_2^M(F) → K_2(F)` of Matsumoto's theorem exist.
+
+## Layer B — the Steinberg symbol, PROVED
+
+`HTGeometry/SteinbergElementaryGroup.lean` (354 lines).  Axiom audit: `propext, Classical.choice,
+Quot.sound`.
+
+The object Matsumoto's theorem is about now exists in Lean, and the fact that makes it exist is
+proved.
+
+- `single_eq_smul` — a single-entry matrix is its entry acting on the unit single-entry matrix.
+  This is what lets `module` finish the block computations: after the products are resolved by the
+  multiplication table of the four atoms `E_ij, E_ji, E_ii, E_jj`, everything is a linear
+  combination.
+- **`weylMatrix_mul_neg_one`** — `w(u)·w(−1) = diag(u, u⁻¹)`, the block identity
+  `[[0,u],[−u⁻¹,0]]·[[0,−1],[1,0]] = [[u,0],[0,u⁻¹]]`, proved from the sixteen-entry multiplication
+  table of the four single-entry matrices.
+- `diagMatrix_one`, **`diagMatrix_mul`** — the diagonal matrices multiply: `d(u)·d(v) = d(uv)`.
+- `diagUnit`, `diagUnit_mul` — the same as units, with inverse `d(u⁻¹)`.
+- `steinbergWeyl`, `steinbergTorus`, **`steinbergSymbol`** — `w(u) = x_ij(u)x_ji(−u⁻¹)x_ij(u)`,
+  `h(u) = w(u)w(−1)`, and `{u,v} = h(uv)·h(u)⁻¹·h(v)⁻¹`.
+- `steinbergToGL_weyl`, `steinbergToGL_torus` — their images: the Weyl matrix and the diagonal unit.
+- **`steinbergSymbol_mem_KTwo`** — **the Steinberg symbol lies in `K_2`**, because its image is
+  `d(uv)·d(u)⁻¹·d(v)⁻¹ = 1`, the diagonal units commuting because `Rˣ` does.
+
+This is the map `K_2^M(F) → K_2(F)` of Matsumoto's theorem, at the level of symbols.  What remains
+of B3 is that the symbol is bimultiplicative and kills the Steinberg relation — so that it descends
+from `K_2^M` — and then that the induced map is an isomorphism.
+
+## Layer B — the column subgroups
+
+`HTGeometry/SteinbergGroupPresentation.lean`, `HTGeometry/SteinbergElementaryGroup.lean`.
+
+The centrality of `K_2` in the Steinberg group — the fact that makes `St(R) → E(R)` a central
+extension, and hence `K_2(R) ≅ H_2(E(R), ℤ)` — runs on the abelian "column" and "row" subgroups
+generated by the `x_kj(·)` with a fixed second index (or the `x_ik(·)` with a fixed first index),
+and on the injectivity of the map to matrices on them.
+
+- **`steinbergX_commute_col`**, **`steinbergX_commute_row`** — those subgroups are abelian, directly
+  from the disjoint-position relation.
+- **`transvection_col_mul`** — on the matrix side the product is `1 + a·E_kj + b·E_lj`: the entries
+  simply add, because the product of the two single-entry matrices vanishes.
+- **`transvection_col_comm`** — hence they commute there too.
+
+The injectivity of the map on a column subgroup — a product `∏_k x_kj(b_k)` maps to
+`1 + Σ_k b_k E_kj`, which is the identity only if every `b_k` is zero — is the next brick, and it is
+what turns "same image" into "equal" in Milnor's centrality argument.
+
+## Layer B — column injectivity, PROVED
+
+`HTGeometry/SteinbergElementaryGroup.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- `single_col_apply`, **`sum_single_col_apply`** — the `(p, j)` entry of `Σ_k b_k·E_kj` is `b_p`.
+- **`sum_single_col_eq_zero_iff`** — **a column sum vanishes exactly when all its coefficients
+  do.**
+
+This is the injectivity that turns "same image in the matrices" into "equal" for the abelian column
+subgroups, which is the step Milnor's centrality argument turns on: an element of `K_2` conjugates a
+column generator to something with the same image, hence to itself.
+
+## Layer B — perfectness of the Steinberg group, PROVED
+
+`HTGeometry/SteinbergGroupPresentation.lean`.
+
+- **`steinbergX_eq_commutator`** — every generator is a commutator:
+  `x_ik(a) = [x_ij(a), x_jk(1)]`, directly from the chained relation with `b = 1`.
+- **`steinbergGroup_perfect`** — **`St(R)` is perfect** as soon as every pair of distinct indices
+  admits a third: the generators generate (`PresentedGroup.closure_range_of`) and each is a
+  commutator.
+
+Perfectness is one of the two halves of "`St(R) → E(R)` is the universal central extension"; the
+other is centrality of `K_2`, whose mechanism — the abelian column subgroups and the injectivity of
+the map to matrices on them — is already proved.  Together they give `K_2(R) ≅ H_2(E(R), ℤ)`, the
+bridge from the tame kernel to the group homology that Garland's vanishing controls.

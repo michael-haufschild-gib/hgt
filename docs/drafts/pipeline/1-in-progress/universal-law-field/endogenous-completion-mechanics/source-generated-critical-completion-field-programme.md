@@ -233,6 +233,6 @@ Retire this line as insufficient if any occurs:
   endpoint normality, nonconfluence, semantic conservativity, strict repair admission, and
   hereditary next-stage failure. Infinite-union confluence was deliberately excluded from the
   capstone; second non-rewriting realization remains the field gate.
-- 2026-08-14 -- ULF-ECMPL-2 paper-proved: bilateral weighted convolution supplies the second,
-  non-rewriting laboratory. Horizontal reporter execution forces a strict exponential repair
-  chain; periodic phase observation coexists with open repair history. Lean core pending.
+- 2026-08-14 -- ULF-ECMPL-2 paper-proved and Lean-core certified: bilateral weighted convolution
+  supplies the second, non-rewriting laboratory. Horizontal reporter execution forces a strict
+  exponential repair chain; periodic phase observation coexists with open repair history.

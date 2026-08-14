@@ -314,3 +314,48 @@ classification remain to be formalized. No axiom or opaque placeholder is added.
   Algebra 406 (2014), for differential Luroth and exact-order generator control.
 - Classical Hermann--Krener and modern algebraic observability literature, for the adjacent but
   flow-based local/global observability setting; no matching free-HT field classification found.
+
+## 2026-08-14 — the parabolic half of the translation-stabilizer step
+
+`formal/GaloisForLFunctions/HTGeometry/TranslationShiftAffineRigidity.lean`, unconditional and
+axiom-clean, wired into the `HTGeometry` umbrella.
+
+The proof's step `(6)` says the translation vector `c` stabilizes the observation curve, and the
+card argues that a nonlinear curve has trivial translation stabilizer through a one-dimensional
+additive subgroup.  On the normalization that argument becomes a statement about a Möbius
+reparametrization `M` of the coordinate with `Rᵢ ∘ M = Rᵢ + cᵢ`, and only two cases occur: `M` is
+parabolic, or `M` has two fixed points.  The parabolic case is now closed:
+
+**`HTGeometry.shift_const_quotient_affine`** — for a coprime representation `p/q`, the relation
+`p(X+1)·q = (p + c·q)·q(X+1)` forces `q` to be a nonzero constant `b` and `p = c·b·X + a`.  That
+is: the only rational solutions of `R(z+1) = R(z) + c` are the affine `R(z) = cz + d`, so every
+`Rᵢ` is affine in the parabolic coordinate and the observation curve is a line.
+
+The mechanism is a one-line reduction rather than a new estimate: subtracting `c·z` turns the
+constant shift defect into shift periodicity, and the corpus already owned
+`shift_periodic_quotient_constant` — a shift-periodic rational function is constant.  What remains
+of the translation-stabilizer step is the two-fixed-point case, where `M(z) = λz` and the same
+relation forces `c = 0`.
+
+### The two-fixed-point half, and the dichotomy closed
+
+`formal/GaloisForLFunctions/HTGeometry/ScalingShiftRigidity.lean`, unconditional and axiom-clean.
+
+**`HTGeometry.scale_const_quotient_eq_zero`** — for a coprime representation `p/q` and `λ ≠ 0`,
+the relation `p(λX)·q = (p + c·q)·q(λX)` forces `c = 0`.  So a Möbius reparametrization with two
+fixed points cannot produce a nonzero constant shift at all.
+
+The proof is entirely algebraic.  The scaling substitution is a ring automorphism, so it preserves
+coprimality; hence the scaled denominator divides the denominator, they have equal degree, and they
+differ by a unit `u`.  Cancelling leaves `u·p(λX) = p + c·q`, and evaluating at the fixed point `0`
+gives `u·p(0) = p(0) + c·q(0)` together with `q(0) = u·q(0)`.  If `q(0) ≠ 0` then `u = 1` and
+`c·q(0) = 0`.  If `q(0) = 0` then coprimality gives `p(0) ≠ 0`, again `u = 1`, and now `q` is
+scaling invariant — so `λ^{deg q} = 1` by comparing leading coefficients.  Iterating
+`p(λX) = p + c·q` through that period returns `p.comp X = p` while accumulating `deg q · c · q`,
+which forces `c = 0` in characteristic zero.
+
+**The translation-stabilizer step `(6)` is therefore complete**: with
+`shift_const_quotient_affine` for the parabolic case, a nonzero translation of the observation
+curve realized on its normalization forces every `Rᵢ` to be affine, i.e. the curve is a line — and
+in the non-affine branch the translation vector is zero, which is exactly what the card's `(6)`
+needs to conclude `Rᵢ(Z) = Rᵢ(T)` and hence `Z = T`.

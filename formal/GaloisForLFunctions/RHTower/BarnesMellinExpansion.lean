@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.BarnesMellinRepresentation
+import GaloisForLFunctions.RHTower.BarnesMellinShift
 
 /-!
 # The Barnes expansion, one crossed pole at a time
@@ -41,10 +42,10 @@ theorem zetaPole_re : (-(1 / ((s : ℝ) : ℂ))).re = -(1 / s) := by simp
 
 /-- **Crossing the zeta pole.**  On the strip `-(1+1/s)/2 < Re w < -(1/s)/2` the only singularity
 is `w = -1/s`, and the shift picks up its residue. -/
-theorem verticalIntegral'_shift_zetaPole {s x : ℝ} (hs1 : 1 < s) (hx : 0 < x) :
-    VerticalIntegral' (barnesIntegrand s x) (-(1 / s) / 2)
-        - VerticalIntegral' (barnesIntegrand s x) (-(1 + 1 / s) / 2)
-      = (((x : ℝ) : ℂ) ^ (-(-(1 / ((s : ℝ) : ℂ))))
+theorem verticalIntegral'_shift_zetaPole {s x : ℝ} (hs1 : 1 < s) (hx : 0 < x) (m : ℕ) :
+    VerticalIntegral' (barnesIntegrandPow s x m) (-(1 / s) / 2)
+        - VerticalIntegral' (barnesIntegrandPow s x m) (-(1 + 1 / s) / 2)
+      = (-(-(1 / ((s : ℝ) : ℂ)))) ^ m * (((x : ℝ) : ℂ) ^ (-(-(1 / ((s : ℝ) : ℂ))))
           * -((Real.pi : ℂ) / Complex.sin ((Real.pi : ℂ) * (-(1 / ((s : ℝ) : ℂ))))))
         * (-(1 / (s : ℂ))) := by
   have hs : (0 : ℝ) < s := lt_trans zero_lt_one hs1
@@ -126,20 +127,22 @@ theorem verticalIntegral'_shift_zetaPole {s x : ℝ} (hs1 : 1 < s) (hx : 0 < x) 
     rw [this] at hpσ'
     rw [hpre] at hpσ'
     exact lt_irrefl _ hpσ'
-  exact verticalIntegral'_barnes_shift hs hx hσp hpσ' hreg
-    (barnesIntegrand_simplePole_at_zetaPole hs hx hpmul hsinp) hσsin hσz hσ'sin hσ'z
+  exact verticalIntegral'_barnes_shift hs hx m hσp hpσ' hreg
+    (barnesIntegrandPow_simplePole_at_zetaPole hs hx m hpmul hsinp) hσsin hσz hσ'sin hσ'z
 
 
 /-- **Crossing an integer.**  If the strip `[σ, σ']` meets the integers only in `k` and stays to the
 right of the zeta pole, the shift picks up the kernel residue at `k`. -/
-theorem verticalIntegral'_shift_nat {s x : ℝ} (hs : 0 < s) (hx : 0 < x) (k : ℕ)
+theorem verticalIntegral'_shift_nat {s x : ℝ} (hs : 0 < s) (hx : 0 < x) (m : ℕ) (k : ℕ)
     {σ σ' : ℝ} (hσ : σ < (k : ℝ)) (hσ' : (k : ℝ) < σ')
     (hlow : (k : ℝ) - 1 < σ) (hhigh : σ' < (k : ℝ) + 1)
     (hzeta : -(1 / s) < σ)
     (hσsin : Real.sin (Real.pi * σ) ≠ 0) (hσ'sin : Real.sin (Real.pi * σ') ≠ 0)
     (hσz : -(s : ℝ) * σ ≠ 1) (hσ'z : -(s : ℝ) * σ' ≠ 1) :
-    VerticalIntegral' (barnesIntegrand s x) σ' - VerticalIntegral' (barnesIntegrand s x) σ
-      = ((x : ℝ) : ℂ) ^ (-(k : ℂ)) * riemannZeta (-(s : ℂ) * (k : ℂ)) * (-(-1) ^ k) := by
+    VerticalIntegral' (barnesIntegrandPow s x m) σ'
+        - VerticalIntegral' (barnesIntegrandPow s x m) σ
+      = (-(k : ℂ)) ^ m * (((x : ℝ) : ℂ) ^ (-(k : ℂ)) * riemannZeta (-(s : ℂ) * (k : ℂ)))
+        * (-(-1) ^ k) := by
   have hpre : ((k : ℂ)).re = (k : ℝ) := by simp
   have hreg : ∀ w : ℂ, w.re ∈ Set.Icc σ σ' → w ≠ (k : ℂ) →
       -((s : ℝ) : ℂ) * w ≠ 1 ∧ Complex.sin ((Real.pi : ℂ) * w) ≠ 0 := by
@@ -159,9 +162,9 @@ theorem verticalIntegral'_shift_nat {s x : ℝ} (hs : 0 < s) (hx : 0 < x) (k : �
       have hz2 : m < (k : ℤ) + 1 := by exact_mod_cast h2'
       have hmk : m = (k : ℤ) := by omega
       exact hne (by rw [hm, hmk]; push_cast; ring)
-  refine verticalIntegral'_barnes_shift hs hx (by rw [hpre]; exact hσ) (by rw [hpre]; exact hσ')
+  refine verticalIntegral'_barnes_shift hs hx m (by rw [hpre]; exact hσ) (by rw [hpre]; exact hσ')
     hreg ?_ hσsin hσz hσ'sin hσ'z
-  exact barnesIntegrand_simplePole_at_nat hs hx k
+  exact barnesIntegrandPow_simplePole_at_nat hs hx m k
 
 
 /-! ### The abscissa ladder -/
@@ -189,10 +192,11 @@ theorem sin_pi_half_odd_ne_zero (n : ℕ) : Real.sin (Real.pi * ((n : ℝ) + 1 /
 
 /-- **One step of the ladder.**  Passing from the `k`-th abscissa to the next crosses the integer
 `k` and collects its residue. -/
-theorem verticalIntegral'_shift_step {s x : ℝ} (hs1 : 1 < s) (hx : 0 < x) (k : ℕ) :
-    VerticalIntegral' (barnesIntegrand s x) (barnesAbscissa s (k + 1))
-        - VerticalIntegral' (barnesIntegrand s x) (barnesAbscissa s k)
-      = ((x : ℝ) : ℂ) ^ (-(k : ℂ)) * riemannZeta (-(s : ℂ) * (k : ℂ)) * (-(-1) ^ k) := by
+theorem verticalIntegral'_shift_step {s x : ℝ} (hs1 : 1 < s) (hx : 0 < x) (m : ℕ) (k : ℕ) :
+    VerticalIntegral' (barnesIntegrandPow s x m) (barnesAbscissa s (k + 1))
+        - VerticalIntegral' (barnesIntegrandPow s x m) (barnesAbscissa s k)
+      = (-(k : ℂ)) ^ m * (((x : ℝ) : ℂ) ^ (-(k : ℂ)) * riemannZeta (-(s : ℂ) * (k : ℂ)))
+        * (-(-1) ^ k) := by
   have hs : (0 : ℝ) < s := lt_trans zero_lt_one hs1
   have hinv0 : (0 : ℝ) < 1 / s := by positivity
   have hinv1 : 1 / s < 1 := by rw [div_lt_one hs]; exact hs1
@@ -203,7 +207,7 @@ theorem verticalIntegral'_shift_step {s x : ℝ} (hs1 : 1 < s) (hx : 0 < x) (k :
       rw [hσ0, hσ1]
       have hσlow : -1 < -(1 / s) / 2 := by linarith
       have hσneg : -(1 / s) / 2 < 0 := by linarith
-      refine verticalIntegral'_shift_nat hs hx 0 (by simpa using hσneg) (by norm_num)
+      refine verticalIntegral'_shift_nat hs hx m 0 (by simpa using hσneg) (by norm_num)
         (by push_cast; linarith) (by norm_num) (by linarith)
         (GaloisForLFunctions.HTGeometry.sin_pi_ne_zero_of_mem_strip hσlow hσneg) ?_ ?_ ?_
       · have h := sin_pi_half_odd_ne_zero 0
@@ -221,7 +225,7 @@ theorem verticalIntegral'_shift_step {s x : ℝ} (hs1 : 1 < s) (hx : 0 < x) (k :
         ring
       rw [hσj, hσj1]
       have hjnn : (0 : ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
-      refine verticalIntegral'_shift_nat hs hx (j + 1) ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_
+      refine verticalIntegral'_shift_nat hs hx m (j + 1) ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_
       · push_cast; linarith
       · push_cast; linarith
       · push_cast; linarith
@@ -241,35 +245,38 @@ theorem verticalIntegral'_shift_step {s x : ℝ} (hs1 : 1 < s) (hx : 0 < x) (k :
 /-! ### The finite expansion -/
 
 /-- The residue of the zeta pole, as it enters the expansion. -/
-def barnesLeadingResidue (s x : ℝ) : ℂ :=
-  (((x : ℝ) : ℂ) ^ (-(-(1 / ((s : ℝ) : ℂ))))
+def barnesLeadingResidue (s x : ℝ) (m : ℕ) : ℂ :=
+  (-(-(1 / ((s : ℝ) : ℂ)))) ^ m * (((x : ℝ) : ℂ) ^ (-(-(1 / ((s : ℝ) : ℂ))))
       * -((Real.pi : ℂ) / Complex.sin ((Real.pi : ℂ) * (-(1 / ((s : ℝ) : ℂ))))))
     * (-(1 / (s : ℂ)))
 
 /-- The residue at the integer `k`, as it enters the expansion. -/
-def barnesTailResidue (s x : ℝ) (k : ℕ) : ℂ :=
-  ((x : ℝ) : ℂ) ^ (-(k : ℂ)) * riemannZeta (-(s : ℂ) * (k : ℂ)) * (-(-1) ^ k)
+def barnesTailResidue (s x : ℝ) (m : ℕ) (k : ℕ) : ℂ :=
+  (-(k : ℂ)) ^ m * (((x : ℝ) : ℂ) ^ (-(k : ℂ)) * riemannZeta (-(s : ℂ) * (k : ℂ)))
+    * (-(-1) ^ k)
 
 /-- **The finite Barnes expansion.**  Shifting the initial contour rightwards past the zeta pole and
 the first `K` integers leaves the contour at the `K`-th abscissa. -/
-theorem verticalIntegral'_barnes_finite_expansion {s x : ℝ} (hs1 : 1 < s) (hx : 0 < x) (K : ℕ) :
-    VerticalIntegral' (barnesIntegrand s x) (-(1 + 1 / s) / 2)
-      = VerticalIntegral' (barnesIntegrand s x) (barnesAbscissa s K)
-        - barnesLeadingResidue s x
-        - ∑ k ∈ Finset.range K, barnesTailResidue s x k := by
+theorem verticalIntegral'_barnes_finite_expansion {s x : ℝ} (hs1 : 1 < s) (hx : 0 < x) (m : ℕ)
+    (K : ℕ) :
+    VerticalIntegral' (barnesIntegrandPow s x m) (-(1 + 1 / s) / 2)
+      = VerticalIntegral' (barnesIntegrandPow s x m) (barnesAbscissa s K)
+        - barnesLeadingResidue s x m
+        - ∑ k ∈ Finset.range K, barnesTailResidue s x m k := by
   have htel : ∑ k ∈ Finset.range K,
-      (VerticalIntegral' (barnesIntegrand s x) (barnesAbscissa s (k + 1))
-        - VerticalIntegral' (barnesIntegrand s x) (barnesAbscissa s k))
-      = VerticalIntegral' (barnesIntegrand s x) (barnesAbscissa s K)
-        - VerticalIntegral' (barnesIntegrand s x) (barnesAbscissa s 0) :=
-    Finset.sum_range_sub (fun k => VerticalIntegral' (barnesIntegrand s x) (barnesAbscissa s k)) K
+      (VerticalIntegral' (barnesIntegrandPow s x m) (barnesAbscissa s (k + 1))
+        - VerticalIntegral' (barnesIntegrandPow s x m) (barnesAbscissa s k))
+      = VerticalIntegral' (barnesIntegrandPow s x m) (barnesAbscissa s K)
+        - VerticalIntegral' (barnesIntegrandPow s x m) (barnesAbscissa s 0) :=
+    Finset.sum_range_sub
+      (fun k => VerticalIntegral' (barnesIntegrandPow s x m) (barnesAbscissa s k)) K
   have hsteps : ∑ k ∈ Finset.range K,
-      (VerticalIntegral' (barnesIntegrand s x) (barnesAbscissa s (k + 1))
-        - VerticalIntegral' (barnesIntegrand s x) (barnesAbscissa s k))
-      = ∑ k ∈ Finset.range K, barnesTailResidue s x k := by
+      (VerticalIntegral' (barnesIntegrandPow s x m) (barnesAbscissa s (k + 1))
+        - VerticalIntegral' (barnesIntegrandPow s x m) (barnesAbscissa s k))
+      = ∑ k ∈ Finset.range K, barnesTailResidue s x m k := by
     refine Finset.sum_congr rfl fun k _ => ?_
-    rw [verticalIntegral'_shift_step hs1 hx k, barnesTailResidue]
-  have hzeta := verticalIntegral'_shift_zetaPole hs1 hx
+    rw [verticalIntegral'_shift_step hs1 hx m k, barnesTailResidue]
+  have hzeta := verticalIntegral'_shift_zetaPole hs1 hx m
   rw [hsteps] at htel
   have hzero : barnesAbscissa s 0 = -(1 / s) / 2 := rfl
   rw [hzero] at htel
@@ -280,9 +287,9 @@ theorem verticalIntegral'_barnes_finite_expansion {s x : ℝ} (hs1 : 1 < s) (hx 
 integral minus the residues already crossed. -/
 theorem hasSum_barnes_expansion {s x : ℝ} (hs1 : 1 < s) (hx : 0 < x) (K : ℕ) :
     HasSum (fun n : ℕ => ((x : ℝ) : ℂ) / (((((n : ℝ) + 1) ^ s : ℝ) : ℂ) + ((x : ℝ) : ℂ)))
-      (VerticalIntegral' (barnesIntegrand s x) (barnesAbscissa s K)
-        - barnesLeadingResidue s x
-        - ∑ k ∈ Finset.range K, barnesTailResidue s x k) := by
+      (VerticalIntegral' (barnesIntegrandPow s x 0) (barnesAbscissa s K)
+        - barnesLeadingResidue s x 0
+        - ∑ k ∈ Finset.range K, barnesTailResidue s x 0 k) := by
   have hs : (0 : ℝ) < s := lt_trans zero_lt_one hs1
   have hinv1 : 1 / s < 1 := by rw [div_lt_one hs]; exact hs1
   have hinv0 : (0 : ℝ) < 1 / s := by positivity
@@ -293,7 +300,9 @@ theorem hasSum_barnes_expansion {s x : ℝ} (hs1 : 1 < s) (hx : 0 < x) (K : ℕ)
     rw [hval]
     linarith
   have hbase := hasSum_barnes_verticalIntegral' hx h1 h2 hsσ
-  rw [verticalIntegral'_barnes_finite_expansion hs1 hx K] at hbase
+  rw [show barnesIntegrand s x = barnesIntegrandPow s x 0 from
+    funext fun w => (barnesIntegrandPow_zero s x w).symm] at hbase
+  rw [verticalIntegral'_barnes_finite_expansion hs1 hx 0 K] at hbase
   exact hbase
 
 end

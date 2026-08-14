@@ -1316,3 +1316,89 @@ Unwinding the residues, this is `(4)` together with the finite form of `(5)`:
 Remaining on this card: the remainder estimate `(1/2πi)∫_{(K-1/2)} F = O(x^{-(K-1/2)})` which turns
 the finite identity into the Poincaré asymptotic `(5)` and, differentiated, `(6)`; the genus
 correction for `0 < s ≤ 1`; and Sibuya--Ramis.
+
+## Lean progress — (4), (5) and (6) are all proved for `s > 1`
+
+Three further modules complete the Barnes side of the card.
+
+    BarnesMellinPowIntegrand    -- `F_m(w) = (-w)^m x^{-w} ζ(-sw)(-π/sin πw)`, its uniform decay,
+                                   holomorphy, vertical integrability, horizontal vanishing
+    BarnesMellinPowResidues     -- residues of `F_m`: the entire factor `(-w)^m` multiplies each
+                                   residue by `(-p)^m`
+    BarnesMellinRemainder       -- `‖(1/2πi)∫_{(σ)} F_m‖ ≤ C_σ x^{-σ}`, hence
+                                   **`barnes_poincare_expansion`**: the error after `K+1` terms is
+                                   `O(x^{-(K+1/2)})`
+    BarnesMellinEulerDerivative -- `d/dx (1/2πi)∫ F_m = x^{-1}(1/2πi)∫ F_{m+1}`
+                                   (differentiation under the integral, dominated by the kernel's
+                                   exponential decay), hence `eulerDeriv^[m]` of the Euler sum is
+                                   again a contour integral, hence
+                                   **`barnes_poincare_expansion_euler`**
+
+The shift, ladder and expansion modules were generalised in place to carry the weight `m`, so the
+`m = 0` statements are the special case and no proof is duplicated.
+
+`barnes_poincare_expansion_euler` is exactly `(6)`:
+
+```text
+D^m ( ∑_{n≥1} x/(n^s+x) ) + (-p_ζ)^m·Res_ζ + ∑_{k≤K} (-k)^m·Res_k  =  O(x^{-(K+1/2)}) ,
+```
+
+the `k`-th coefficient of the `m`-th Euler derivative being `(-k)^m` times the `k`-th coefficient of
+the original — the termwise-differentiable form the card asks for.  The estimate is uniform: one
+constant per `(m, K)`, valid for every `x > 0`.
+
+The whole chain is unconditional and axiom-clean
+(`[propext, Classical.choice, Quot.sound]`).
+
+Remaining on this card: the genus correction for `0 < s ≤ 1` (where the Mellin strip
+`-1 < σ < -1/s` is empty and the `E_g` subtractions enter), and Sibuya--Ramis.
+
+## The genus correction, `0 < s ≤ 1` — the route
+
+For `s ≤ 1` the Mellin strip `-1 < σ < -1/s` of the representation is empty, because the Dirichlet
+series `∑ n^{sw}` needs `Re w < -1/s ≤ -1` while the Cauchy kernel needs `Re w > -1`.  The fix is
+not to widen the kernel's strip but to differentiate: with `g = floor(1/s)` the `E_g` subtraction in
+`(1)` is a polynomial in `x` of degree `g`, so
+
+```text
+d^{g+1}/dx^{g+1} H_s(x) = ∑_{n≥1} d^{g+1}/dx^{g+1} [ x/(n^s+x) ]
+                        = -(-1)^{g+1}(g+1)! ∑_{n≥1} n^s/(n^s+x)^{g+2} ,
+```
+
+with **no** subtractions left.  Writing `n^s/(n^s+x)^{g+2} = n^{-sg}·κ(x/n^s)/x` with
+
+```text
+κ(u) = u/(1+u)^{g+2} ,
+```
+
+the Mellin transform of the summand is `n^{sw}·M_κ(w)` and the Dirichlet sum is `ζ(sg - sw)`, which
+converges for `Re w < g - 1/s`.  The kernel converges for `-1 < Re w < g+1`.  So the strip is
+
+```text
+-1 < Re w < g - 1/s ,
+```
+
+nonempty exactly when `g + 1 > 1/s` — which is the definition of `g = floor(1/s)` whenever `1/s` is
+not an integer, precisely the hypothesis of `(4)`.
+
+The kernel is again the sine kernel with a polynomial weight:
+
+```text
+M_κ(w) = B(w+1, g+1-w) = Γ(w+1)Γ(g+1-w)/Γ(g+2)
+       = [ w ∏_{i=1}^{g} (i-w) ] · π/sin(πw) / (g+1)! .
+```
+
+So the machinery already built applies after two parameter generalisations:
+
+1. the weight `(-w)^m` becomes an arbitrary polynomial in `w` (all estimates are polynomial-in-`|t|`
+   and every residue is linear in the weight);
+2. the zeta argument `-sw` becomes `a - sw` for a real constant `a = sg`, which moves the zeta pole
+   from `w = -1/s` to `w = (a-1)/s`.
+
+First brick: `HTGeometry/HalfLineBetaKernel.lean`,
+
+    integral_halfLine_beta :
+      **`∫_0^∞ y^{w-1}(1+y)^{-c} dy = Γ(w)Γ(c-w)/Γ(c)` on `0 < Re w < Re c`**
+
+proved by the same `halfLineChart` change of variables that gave the reflection kernel, so the
+`c = 1` case is recovered.

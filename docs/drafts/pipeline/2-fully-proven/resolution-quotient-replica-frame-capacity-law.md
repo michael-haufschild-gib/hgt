@@ -4,7 +4,8 @@
 - **Stage:** 2 -- fully proven on paper
 - **Type:** exact target-geometry theorem / Brown-frontier bridge
 - **Parent:** `centralizer-centered-shortcut-history-recurrence-energy-law.md`
-- **Status:** `[PAPER-PROVED] [BRIDGE] [APPLICATION NOVELTY UNVERIFIED]`
+- **Status:** `[PAPER-PROVED] [LEAN-FORMALIZED SURVIVOR] [BRIDGE]`
+  `[APPLICATION NOVELTY UNVERIFIED] [PARENT COMPOSITION FORMALIZED]`
 - **Date:** 2026-08-14
 
 ## Public sentence
@@ -187,5 +188,19 @@ recurrence-energy estimate.
 - [x] exact frontier and falsifier recorded
 - [x] replacement claim frozen
 - [x] dependency-closed proof survives line-by-line hostile audit
-- [ ] exact Lean theorem, no proof debt
-- [ ] umbrella wiring and axiom audit
+- [x] exact positive-survivor Lean theorem, no proof debt
+- [x] umbrella wiring and axiom audit
+
+## Lean certificate
+
+Formalized companion:
+`../3-formalized/resolution-quotient-replica-frame-capacity-law.md`.
+
+Module:
+`GaloisForLFunctions.HTGeometry.ResolutionQuotientReplicaFrameCapacityLaw`.
+
+Lean proves `(RQ1)--(RQ6)`, the finite-replica frame remainder, the `2/N_delta` regime,
+all-replica fidelity transfer, and the capstone substitution of `2/N_delta` into the adaptive
+observer--spectral recurrence-energy law.  The axiom audit reports only `propext`,
+`Classical.choice`, and `Quot.sound`.  The illustrative C0 qubit family is not a declaration in this
+module and must not be advertised as Lean-certified until its separate no-go theorem exists.

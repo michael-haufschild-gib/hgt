@@ -500,3 +500,88 @@ which is where `ζ(-sk)` comes from.
 The two regimes are genuinely different and the expansion above is the one that matters: `‖t‖ > 1`
 means `n^s < x`, the finitely many small `n`, and it is exactly those terms that carry the
 inverse-power asymptotics.
+
+### The Barnes kernel of `(1)` is formalized
+
+`formal/GaloisForLFunctions/HTGeometry/BarnesKernelMellin.lean`, unconditional and axiom-clean,
+wired into the `HTGeometry` umbrella.
+
+`(1)` is a Mellin–Barnes statement, and its kernel is the Mellin transform of the model factor.
+`logDeriv_weierstrassE` already reduced `H_s` to
+
+```text
+H_s(x) = (-1)^g ∑_{n≥1} f(x/n^s),   f(t) = t^{g+1}/(1+t),
+```
+
+so every term of `(1)` is a translate of one integral.  That integral is now evaluated:
+
+- `HTGeometry.betaChart u = u/(1-u)` with `betaChart_image` (it carries `(0,1)` bijectively onto
+  `(0,∞)`), `betaChart_injOn`, and `hasDerivWithinAt_betaChart` (derivative `(1-u)^{-2}`);
+- `HTGeometry.betaChart_integrand` — under the chart the integrand `t^{s-1}/(1+t)` becomes exactly
+  `u^{s-1}(1-u)^{-s}`, the Beta integrand at `(s, 1-s)`;
+- **`HTGeometry.integral_barnesKernel`** — hence for `0 < Re s < 1`
+
+```text
+∫_0^∞ t^{s-1}/(1+t) dt = π / sin(π s),
+```
+
+by the change-of-variables formula on `Ioo 0 1` and Euler's reflection formula
+`Γ(s)Γ(1-s) = π/sin(πs)` applied to `Γ(s)Γ(1-s) = Γ(1)·B(s,1-s)`;
+- **`HTGeometry.integral_barnesKernel_shift`** — the form the card uses:
+
+```text
+∫_0^∞ t^{w-1}·t^{g+1}/(1+t) dt = π / sin(π(w+g+1)).
+```
+
+The `sin` in the denominator is the same one that produces the card's `(π/s)csc(π/s)x^{1/s}` leading
+term and, after the functional equation, the sign oscillation of `(3)`.  What remains of `(1)` is
+the Mellin inversion itself: pairing this kernel against the Dirichlet series `∑_n n^{-sw}` and
+shifting the contour to collect the residues at the poles that produce `b_k = (-1)^k ζ(-sk)`.
+
+### The Mellin form and the scaling law
+
+Same module, unconditional and axiom-clean:
+
+- `HTGeometry.barnesModel g t = t^{g+1}/(1+t)` — the model factor as a function `ℝ → ℂ`;
+- **`HTGeometry.mellin_barnesModel`** — its mathlib `mellin` transform is the reflection kernel
+  translated by `g+1`, i.e. `integral_barnesKernel_shift` in the form the Mellin calculus consumes;
+- **`HTGeometry.mellin_barnesModel_scaled`** — for `A > 0`,
+
+```text
+mellin (x ↦ barnesModel g (x/A)) w = A^w · mellin (barnesModel g) w.
+```
+
+This is the step that converts the sum over `n` into a Dirichlet series: at `A = n^s` the factor is
+`n^{sw}`, so summing the transforms of the terms of `H_s` produces `ζ(-sw)` times the single kernel.
+That pairing, and the contour shift which reads off `b_k = (-1)^k ζ(-sk)` from its poles, are what
+is left of `(1)`.
+
+### Correction: the genus-zero kernel was already owned
+
+The two sections above overstated what was new.  The corpus already contained the reflection kernel
+and, on top of it, most of the Mellin–Barnes machine for `(1)` at genus zero:
+
+- `HTGeometry/MellinReflectionKernel.lean` — `integral_halfLine_reflection`, exactly
+  `∫_0^∞ y^{w-1}/(1+y) dy = π/sin(πw)` on `0 < Re w < 1`, by the same unit-interval chart and Beta
+  route, and `mellin_cauchyKernel` for `u/(1+u)`;
+- `HTGeometry/CauchyKernelMellin.lean` — vertical-line integrability of the reflection kernel,
+  Mellin inversion (`mellinInv_mellin_cauchyKernel`), the scaled terms, the summability envelope,
+  the interchange of the sum over `n` with the vertical integral
+  (`hasSum_integral_mellinInv_scaled`, `hasSum_eulerLogDerivTerms_mellin`), and `tsum_scaled_eq_zeta`
+  — the inner sum is `ζ(-σw)`;
+- `HTGeometry/ZetaMomentFunctionalEquation.lean` — `zetaMomentCoeff α n = (-1)^n ζ(-(α n))`, the
+  card's `b_k` themselves.
+
+`BarnesKernelMellin.lean` has been rewritten to contain only what is genuinely additional and to
+derive from `integral_halfLine_reflection` rather than reprove it:
+
+- `HTGeometry.barnesModel g t = t^{g+1}/(1+t)` — the model factor at **arbitrary genus**, which the
+  card needs because `g = ⌊1/s⌋` is `0` only for `s > 1`;
+- **`HTGeometry.integral_barnesKernel_shift`** and **`HTGeometry.mellin_barnesModel`** — its Mellin
+  transform is the reflection kernel translated by `g+1`;
+- **`HTGeometry.mellin_barnesModel_scaled`** — the rescaling law at arbitrary genus.
+
+So the accurate statement of what `(1)` still needs is narrower than before: the genus-zero
+Mellin–Barnes representation is already Lean, and what is missing is its extension from the Cauchy
+kernel to the genus-`g` model factor — the strip bookkeeping, the vertical-line envelope, and the
+contour shift collecting the residues that produce `b_k = (-1)^k ζ(-sk)`.
