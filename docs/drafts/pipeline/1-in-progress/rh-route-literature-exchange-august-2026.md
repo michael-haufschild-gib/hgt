@@ -9,8 +9,9 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local committed cutoff is
-`1ffc01934c12b7317d3c6c3054f500da458f71cb`; active-tree declarations are labelled separately.
-Scientific comparison follows declaration content rather than module placement.
+`3b9edf60d6a57d4452ee029c17b784f5821082e8`.
+Post-cutoff shared-tree declarations are explicitly labelled `Active-tree Lean`. Scientific
+comparison follows declaration content rather than module placement.
 
 Current live count remains ten independent lettered routes plus CCM-FU; Route R remains
 terminalized. Latest local results change seven exchanges:
@@ -33,7 +34,7 @@ terminalized. Latest local results change seven exchanges:
   control. The newest Suzuki declarations remove operator-domain ambiguity: the complex screw is
   the real source screw after complexification, its explicit maximal-adjoint witness maps back to
   zero-mean screw compression, `Dom(D†G_aD)=H_0^1(-a,a)`, and the natural product's action is
-  computed exactly. Active-tree Lean proves this product is formally self-adjoint on that exact
+  computed exactly. Lean proves this product is formally self-adjoint on that exact
   domain. These close provenance, domain, action, and symmetry questions, not ground orientation.
 - **CCM-FU:** Lean constructs the literal finite-stage Sonin tensor `sigma_S`, its Fourier fixed
   point, exact S-unit orbit coefficients, theta-core Fourier covariance, angular independence, and
@@ -50,14 +51,14 @@ terminalized. Latest local results change seven exchanges:
   Hall/load theorem remain. Lean also closes the odd half of the finite simple-ground Fourier
   theorem from explicit rank-two block data: a one-dimensional odd radical and nondegenerate
   frequency image produce a nonnegative metric squared-frequency completion and real regular odd
-  Fourier zeros, with no spectral conclusion assumed. Active-tree Lean weakens the even metric
+  Fourier zeros, with no spectral conclusion assumed. Lean weakens the even metric
   premise to semidefinite plus the exact nonkernel condition. Parity is therefore no longer the
-  finite theorem's obstruction. Active-tree Lean also proves that fixed-support mean-square
+  finite theorem's obstruction. Lean also proves that fixed-support mean-square
   convergence of continuous sources yields locally uniform convergence of their entire compact
   Fourier transforms and transfers real-zero support to every nonzero limit. The analytic
   closed-zero passage is therefore no longer an obstruction; canonical `Pi(lambda,k)`, cofinal
   simple-ground/block verification, the source-specific mean-square approximation with nonzero Xi
-  landing, and full ground orientation remain. Active-tree Lean additionally welds each field-one Euler
+  landing, and full ground orientation remain. Lean additionally welds each field-one Euler
   factor to reflected Suzuki quarter-shift contractions. Their Mellin multipliers are exactly the
   Suzuki `+t/-t` ratios, all four factors are units, prime labels and divisor depth survive, and
   their horizontally dressed energy difference is exactly the Gamma Bockstein. Equality for a
@@ -69,12 +70,10 @@ terminalized. Latest local results change seven exchanges:
   trace after normalization. Weighted off-diagonal row bounds are summable. Actual radial tail and
   first-row convergence follow from an explicit inverse-bandwidth separation envelope. Lean also
   proves the normalized gaps `3/11`, `5/13`, the general finite constrained-ladder
-  Rayleigh limit, and first adjacent determinant ratio `242/211`. Active-tree Lean shows an
+  Rayleigh limit, and first adjacent determinant ratio `242/211`. Lean shows an
   inverse-bandwidth envelope plus summable row majorant and dominated diagonal defect forces
-  weighted projective and trace-norm convergence to the positive arithmetic diagonal. Active-tree
-  Lean now proves the Dunster leading PSWF arclength tail converges exactly to the arcsine
-  arithmetic weight and, after the `2 log(k)` factor, to the declared arithmetic eigenvalue. An active
-  normalization audit verifies total leakage mass `4/11`, trace equal to the negative prime
+  weighted projective and trace-norm convergence to the positive arithmetic diagonal. Lean now proves the Dunster leading PSWF arclength tail converges exactly to the arcsine
+  arithmetic weight and, after the `2 log(k)` factor, to the declared arithmetic eigenvalue. The normalization audit verifies total leakage mass `4/11`, trace equal to the negative prime
   constant, and the divisor response as exactly half the trace. Remaining
   seed-level analytic input is the actual-PSWF-to-leading error and inverse-bandwidth estimate
   establishing those concrete bounds; remaining
@@ -95,11 +94,12 @@ terminalized. Latest local results change seven exchanges:
   P-G168 then proves that the mixed jet of the projectively rescaled, forced half-weighted
   two-scale Hardy packet is exactly the cubic Hellinger horizontal kernel. Algebraic cubic landing
   is closed. Lean extends actual full-Euler columns to the sharp source domain `Re u>-1/2`, where
-  all positive projective nodes are admitted and the exact non-diagonal Gram persists. Active-tree
-  Lean proves that at every fixed positive scale the rescaled genuine Euler overlap tends to
-  `1/(a+b)` at the critical boundary, so projective scale blow-up is a chart artifact. Active-tree
-  Lean also constructs the finite-`sigma` log-weighted projective Euler tangent as a square-
-  summable vector and computes its Gram as the exact second Euler log moment. Remaining
+  all positive projective nodes are admitted and the exact non-diagonal Gram persists. Lean proves that at every fixed positive scale the rescaled genuine Euler overlap tends to
+  `1/(a+b)` at the critical boundary, so projective scale blow-up is a chart artifact. Committed
+  Lean constructs the square-summable log-weighted columns and exact second-moment Gram.
+  Active-tree Lean constructs the genuine finite-`sigma` two-scale Hellinger tangent, identifies
+  its four-term arithmetic Hilbert Gram exactly, and proves that Gram converges to the cubic
+  Hellinger horizontal kernel. Remaining
   producer is source-faithful dyadic height localization and the Euler--Gamma
   `N/4` trace budget; finite high-tail curvature ceiling remains the separate lane.
 - **T:** Lean now controls the squared neutral chi carrier and exact square-dual Gaussian weight at
@@ -111,7 +111,11 @@ terminalized. Latest local results change seven exchanges:
   integrability, horizontal decay, finite residue crossing, and infinite contour-shift identity.
   Lean expands the right boundary as the exact divisor-weighted Gaussian cutoff series, expands the
   reflected left boundary as the exact dual-weight series, and proves the full normalized Gaussian
-  AFE with its explicit confluent double-pole correction. Surviving producer is two-sided
+  AFE with its explicit confluent double-pole correction. Lean shifts the square-dual
+  weight itself to an integrable `Re w=-1/4` contour and proves the exact residue-one identity
+  `W2_tau(Y)=1+W2_tau^(-1/4)(Y)`. Active-tree Lean differentiates the quarter-line ratio square
+  pointwise and proves its central-range conductor-relative log-derivative bound. Surviving
+  producer is all-`v` differentiation under that contour, followed by two-sided
   localization of the assembled AFE derivative
   series, and global Duhamel mean-square transfer without discarding oscillation. Density, `7/10` prime supply, and
   route composition follow only after this.
@@ -151,18 +155,22 @@ Asymptotic-law cores now form compact convex tail invariants commuting with affi
 Strict-convex no-loss forces singleton selection; three jointly recoverable reporter organs then
 propagate that selection to every fourth affine reporter. A separate channel law forces adaptive
 shortcut mass into same-channel recurrence or occupied-channel production; Lean makes
-positive-resolution observer labels faithful to genuinely distinct memories. Active-tree
-`StaticShortcutCrossRecurrenceCapacityLaw.lean` subtracts diagonal self-memory and proves bounded
+positive-resolution observer labels faithful to genuinely distinct memories. `StaticShortcutCrossRecurrenceCapacityLaw.lean` subtracts diagonal self-memory and proves bounded
 channel capacity plus a positive coherence gap forces genuine cross-time recurrence inside reused
-channels or further channel production. The Schanuel period
+channels or further channel production. Its active-tree unit-sample specialization makes the
+quadratic-history versus linear-capacity obstruction exact. The Schanuel period
 modules also prove that integral power/period branch change subtracts the
 period differential, a newly adjoined transcendental period is independent of every nonzero old
 defect, and every nontrivial integral shift pair retains rank two for a transcendental slope. The
 intersection of value fields over all nonsingular integral two-by-two isogenies equals the
 intersection over common positive scalar powers, so matrix mixing cannot shrink the core further.
-Active-tree Lean also shows scalar powering supplies no new vanishing equation or multiplicity at
+Lean also shows scalar powering supplies no new vanishing equation or multiplicity at
 a nonzero diagonal point: the power difference is the original difference times a nonzero
-geometric cofactor.
+geometric cofactor. Active-tree `SchanuelAffineRelativeExponentialClosure.lean` adds a stage-two
+alternative: for nonzero algebraic `alpha`, any second edge `z,exp(z)` algebraic over
+`Qbar(exp(alpha))` with `z∉Q alpha` refutes the two-variable Schanuel extraction statement. This
+turns relative exponential-edge rigidity into an exact Schanuel obligation, but proves neither the
+rigidity nor a counterexample and has no Xi landing.
 These are
 architecture-shaped producer templates, but no Xi-typed recoverable reporter triple, nonlinear
 no-loss law, or divisor landing exists. They are not Route V. The generic bounded-perturbed
@@ -482,7 +490,7 @@ The finite spectral implication has also advanced beyond the located even-ground
 data without assuming any spectral conclusion: the rank-two cross commutator, one-dimensional odd
 radical, normalization, and nondegenerate frequency image force positive coupling; a
 squared-frequency source completion is self-adjoint and nonnegative in the degenerate CCM metric;
-its determinant identity makes every regular odd Fourier zero real. Active-tree refinement needs
+its determinant identity makes every regular odd Fourier zero real. The committed refinement needs
 only a positive semidefinite even metric plus the exact nonkernel condition. This removes parity as
 an independent finite obstruction. It does not construct the arithmetic `Pi(lambda,k)` family,
 prove the simple-ground/block hypotheses for it, or construct its continuous finite-to-Xi source
@@ -496,7 +504,7 @@ real zeros. This is stronger and more source-explicit than citing Hurwitz abstra
 receiver: no theorem yet supplies the canonical arithmetic approximants, their required finite
 block laws, their mean-square convergence, or their nonzero Xi identification.
 
-Active-tree `FieldOneSuzukiCriticalEulerHalfStepWeld.lean` supplies a second literal seam absent
+`FieldOneSuzukiCriticalEulerHalfStepWeld.lean` supplies a second literal seam absent
 from the located literature. Each field-one local Euler factor is the product of two reflected
 Suzuki quarter-density contractions; the positive Euler operator has four invertible factors.
 Mellin transport identifies their multipliers exactly with the Suzuki `+t/-t` Gamma-depth ratios,
@@ -1608,8 +1616,7 @@ Dirichlet-adjoint domain; and
 Dom(D†G_aD)=H_0^1(-a,a).
 ~~~
 
-Lean also computes `D†G_aD` on that domain as the explicit adjoint witness. Active-tree
-`SuzukiScrewOperatorSymmetry.lean` proves the same natural product is formally self-adjoint there.
+Lean also computes `D†G_aD` on that domain as the explicit adjoint witness. `SuzukiScrewOperatorSymmetry.lean` proves the same natural product is formally self-adjoint there.
 These results close Suzuki's hard domain inclusion, natural-domain equality, action, and symmetry
 interfaces. They do
 not orient the ground floor.
@@ -2433,20 +2440,18 @@ The finite spectral algebra and its analytic operator limit are sharper still.
 `ConstrainedProlateTwoModeRayleigh.lean` and `ConstrainedProlateLadderRayleigh.lean` compute exact
 Rayleigh quotients on orthonormal diagonal mode ladders and prove their normalized leading-scale
 limit when lower leakage ratios vanish. Besides `8/11` and `8/13`, Lean obtains normalized gaps
-`3/11` and `5/13` and first adjacent Hermite determinant ratio `242/211`. Active-tree
-`ArithmeticDilationWeightedProjectiveDischarge.lean` proves that an inverse-bandwidth off-diagonal
+`3/11` and `5/13` and first adjacent Hermite determinant ratio `242/211`. `ArithmeticDilationWeightedProjectiveDischarge.lean` proves that an inverse-bandwidth off-diagonal
 envelope against a summable row majorant plus a dominated pointwise-vanishing diagonal defect
 forces weighted projective convergence; the existing trace-class realization upgrades this to
 Schatten trace-norm convergence toward the positive diagonal arithmetic operator. No external
-theorem is needed after those concrete estimates are available. Active-tree
-`ConstrainedProlateNormalizationAudit.lean` cross-verifies the normalization chain: total limiting
+theorem is needed after those concrete estimates are available. `ConstrainedProlateNormalizationAudit.lean` cross-verifies the normalization chain: total limiting
 leakage mass is `4/11`, arithmetic eigenvalue is `2 log(k)w_k`, operator trace is the negative prime
 constant, and the Dirichlet divisor response is exactly one half of that trace. The local corpus still lacks the
 actual-PSWF-to-leading and inverse-bandwidth estimates verifying them for the physical prolate modes
 and the whole-ground comparison
 needed for RH.
 
-Active-tree `RadialPSWFArithmeticDilationDischarge.lean` closes the diagonal target for the explicit
+`RadialPSWFArithmeticDilationDischarge.lean` closes the diagonal target for the explicit
 Dunster leading arclength density. For each fixed `k>=1`, its exterior tail tends to
 `8/(11*pi*k) * arcsin(1/k)` as phase frequency diverges and turning parameter vanishes; multiplying
 by `2 log(k)` gives the exact constrained-prolate arithmetic eigenvalue. This proves the target is
@@ -2513,10 +2518,13 @@ projective two-scale mixed source jet exactly with the cubic Hellinger horizonta
 full-Euler columns exist on the sharp source domain `Re u>-1/2`, all positive projective nodes lie
 inside it, and their exact rescaled source overlap tends to `1/(a+b)` at every fixed scale as
 `sigma->1+`. The Hardy kernel is therefore a literal Euler-source limit, not a fitted kernel or an
-`R->infinity` construction. Active-tree `RoutePFiniteSigmaCubicEulerTangentGram.lean` constructs
-the log-weighted projective Euler tangent as an actual square-summable finite-`sigma` source and
-computes its Gram exactly as the second logarithmic moment of the positive Euler law. It does not
-yet prove the finite-`sigma` cubic limit or height localization. First open theorems are a
+`R->infinity` construction. `RoutePFiniteSigmaCubicEulerTangentGram.lean` constructs
+the log-weighted projective Euler columns as actual square-summable finite-`sigma` sources, and the
+committed theorem computes their exact second-moment Gram. Its active-tree extension constructs the
+genuine half-weighted two-scale tangent. Its four arithmetic terms equal the tangent Hilbert Gram
+exactly; scaled second log moments converge to the forced inverse-square profile, each Gram term to
+`2/(a+b)^3`, and the full four-term Gram to the cubic Hellinger horizontal kernel. At current tree
+tip finite-`sigma` cubic source landing is closed. First open theorems are a
 source-derived high-tail ceiling or
 source-faithful dyadic height
 localization plus the Euler--Gamma `N/4` trace budget.
@@ -3138,6 +3146,31 @@ with the exact divisor-weighted Gaussian cutoff series.
 termwise integration, and the exact negative dual-weight expansion of the left boundary.
 `Sieve/SmoothAFEZetaSquareExactAFE.lean` then combines both sides with the confluent residue into
 the full normalized symmetric Gaussian AFE, including its explicit shifted double-pole correction.
+
+`SmoothAFEZetaSquareDualNegativeContour.lean` separately shifts the square-dual weight
+itself through `w=0`. Analyticity on `Re w>-1/2`, negative-line integrability, horizontal decay, and
+finite-to-infinite contour passage give the exact identity
+
+```text
+W2_tau(Y)=1+W2_tau^(-1/4)(Y).
+```
+
+This isolates the neutral constant and supplies a literal negative-contour carrier. The committed module does not
+differentiate or localize that carrier, give its arithmetic series expansion, or prove the global
+Duhamel mean-square transfer.
+
+Active-tree `SmoothAFEZetaSquareDualQuarterHeightDerivative.lean` proves the exact pointwise height
+derivatives of the quarter-line chi ratio and its square. On `tau>=4`, `2|v|<=tau`, the relevant
+log-derivative increment is at most
+
+```text
+(16/tau^2+2*pi/tau)(1+|v|).
+```
+
+This obtains the conductor-relative `1/tau` gain on the central contour without taking absolute
+values of the final arithmetic sum. It does not yet give an all-`v` integrable derivative
+majorant, justify differentiation under the negative-contour integral, or localize the resulting
+carrier. Those are now the immediate analytic inputs before global Duhamel transfer.
 
 Direct use of these estimates on repeated short blocks is now quantitatively retired: boundary
 accumulation optimizes only to `T^(5/3)`. Surviving analytic architecture is global. Prove
@@ -4689,14 +4722,18 @@ are closed, with interval du Bois--Reymond regularity and exact natural-product 
 remaining exterior work is source-specific half-line conjugation/channel subtraction, strip
 gluing, and physical return. Route P's scalar/smooth-unitary
 repairs are negative closures, while its full-Hardy complex pointed transverse source Gram, fixed-
-scale projective Hardy limit, exact cubic mixed jet, and finite-`sigma` Euler tangent Gram are now
-constructed; remaining work is dyadic source localization and the Euler--Gamma `N/4` trace budget.
+scale projective Hardy limit, exact cubic mixed jet, and full finite-`sigma` cubic tangent landing
+are now constructed; remaining work is dyadic source localization and the Euler--Gamma `N/4` trace
+budget.
 Route O's constrained Hermite
 ladder, Dunster-leading arithmetic diagonal, and projective/trace-limit implication from explicit
 radial estimates are closed, while the physical PSWF-to-leading/separation bounds and whole-ground
 comparison remain. Route T's local freezing strategy is
 quantitatively dead and its exact Gaussian AFE is closed, leaving derivative
-localization/Duhamel transfer. Route U is source-disintegrated to a fixed-carrier super-aperture
+localization/Duhamel transfer; the exact neutral-plus-negative-contour decomposition of its dual
+weight is now available, and its quarter-line integrand has an active-tree pointwise derivative and
+central `1/tau` bound. All-`v` domination, differentiation under the integral, and localization
+remain. Route U is source-disintegrated to a fixed-carrier super-aperture
 inversion phase. Direct finite flat transfer is falsified by nonlinear Cayley-node drift, but
 cofinal even/odd sample coherence is proved for each fixed smooth compact approximation and Xi
 copy. Missing theorem is uniform promotion through adaptive degree, source limit, whole divisor
@@ -4776,8 +4813,12 @@ the required residual; conditional residual continuity is an RH receiver. The ar
 formal through zero-reserve elimination, the full physical slice and prime-power range, selected-
 contour weighted Littlewood identity, pole-regularized detector, and coefficient-three exponent
 budget, Gaussian pole decomposition, Gaussian derivative exchange, and full reflected dual-series
-freezing; both contour boundary expansions and the exact Gaussian AFE are also formal. Scientific
-core is global localization/Duhamel mean-square transfer,
+freezing; both contour boundary expansions, exact Gaussian AFE, and residue-one decomposition of
+the dual weight into a neutral constant plus integrable negative-contour carrier are also formal.
+Active-tree Lean adds the pointwise quarter-line height derivative and central conductor-relative
+bound. Scientific core is all-`v` domination and differentiation under the contour, localization of
+the assembled carrier, and global Duhamel
+mean-square transfer,
 followed by density-to-`7/10` prime supply or equivalent signed upper-boundary estimate and source-
 faithful lower/upper landing in literal consecutive-prime-gap moment and centered current; Wold
 chart separately needs signed pole-preserving continuation. Exterior reflection adds no second
@@ -4813,7 +4854,8 @@ principal distributional reduction, strip gluing, and coupled nonzero all-apertu
 L's global ideal-preserving completed-Green/BV lift to fixed Burnol/Deninger physical landing; O's
 whole restricted-Weil ground-space exhaustion beyond variationally selected prolate seed; P's
 finite high-tail curvature ceiling or dyadic source localization/Euler--Gamma `N/4` trace budget
-for its exact complex pointed four-unit Gram and cubic mixed jet; T's global derivative localization/Duhamel fourth-moment transfer, Ingham density-to-
+for its exact complex pointed four-unit Gram and finite-`sigma` cubic tangent landing; T's global
+derivative localization/Duhamel fourth-moment transfer, Ingham density-to-
 `7/10` prime supply, and physical current composition, or signed pole-preserving Wold continuation;
 and U's exclusion of one fixed carrier's cofinal super-aperture completed-source inversion. Route R is
 terminalized: all admitted Calkin, first-jet, positive-polar, compactness, and Fisher interfaces are

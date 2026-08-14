@@ -6249,3 +6249,22 @@ receive a new title and an independent significance audit.
   centralizer-centered source recurrence-energy bound for one ordinary static local Hamiltonian
   remains open.  Formal card:
   `../3-formalized/resolution-quotient-replica-frame-capacity-law.md`.
+- 2026-08-14 -- Removed the selector source's unavoidable diagonal self-memory exactly.  The
+  channel recurrence energy now splits as \(R_\sigma=D_{\rm self}+R_{\rm cross}\), where
+  \(D_{\rm self}=\sum_jw_j^2\|r_j\|^2\) is charged once and \(R_{\rm cross}\) contains only
+  distinct-time pairs that reuse the same observer channel.  If at most \(K\) channels are
+  occupied, every adaptive shortcut history satisfies
+  \[
+  \eta^2W^2-BK D_{\rm self}\le BK R_{\rm cross}.
+  \]
+  Under \(\|r_j\|^2\le D\) and off-diagonal coherence at most \(\mu\), Lean proves
+  \[
+  (\eta^2-B\mu)W^2\le BK(D-\mu)\sum_jw_j^2.
+  \]
+  This retires fresh-channel/self-memory contamination: bounded shortcut capacity must now be
+  paid by genuine same-channel cross-time recurrence.  It does not prove Brown onset.  With
+  exponentially growing circuit-channel capacity, deterministic history counting alone gives at
+  best logarithmic depth.  Remaining core is a quenched growing-replica or incidence-action bound
+  for one ordinary static local Hamiltonian, uniform over complete approximate shallow-circuit
+  selector class.  Formal card:
+  `../3-formalized/return-excised-cross-recurrence-capacity-law.md`.

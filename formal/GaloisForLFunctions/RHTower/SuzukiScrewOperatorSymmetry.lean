@@ -4,9 +4,9 @@ import GaloisForLFunctions.RHTower.SuzukiScrewOperatorAction
 # Formal self-adjointness of Suzuki's natural product
 
 The exact maximal-adjoint witness identifies the action of `D† Gₐ D` on its natural domain.
-Using the inverse primitive pairing and self-adjointness of the compressed screw operator `Gₐ`,
-this module proves that the literal product is formally self-adjoint on the now-established
-domain `H₀¹(-a,a)`.
+The inverse-primitive pairing and self-adjointness of the compressed screw operator `Gₐ` then
+prove that this literal product is formally self-adjoint on its established domain
+`H₀¹(-a,a)`.
 -/
 
 open Complex MeasureTheory Set Filter Topology
@@ -20,6 +20,17 @@ attribute [local instance] Measure.Subtype.measureSpace
 
 local instance (a : SuzukiPositiveAperture) : CompleteSpace (SuzukiApertureZeroMean a) :=
   (suzukiApertureZeroMean_isClosed a).completeSpace_coe
+
+/-- Pairing a zero-mean primitive against the maximal-adjoint screw witness recovers the
+compressed screw form exactly. -/
+theorem inner_suzukiDirichletInverse_rawScrewAdjointWitness
+    (a : SuzukiPositiveAperture) (f g : SuzukiApertureZeroMean a) :
+    inner ℂ (suzukiDirichletInverseCLM a f)
+        (suzukiRawScrewAdjointWitness a
+          (g : SuzukiApertureIntervalL2 a.1)) =
+      inner ℂ f (suzukiScrewZeroMeanOperator a g) := by
+  rw [inner_suzukiDirichletInverse_eq_adjoint,
+    suzukiDirichletInverseAdjointCLM_adjointWitness_eq]
 
 /-- Suzuki's literal natural product `D† Gₐ D` is formally self-adjoint on its proved
 `H₀¹(-a,a)` domain. -/
@@ -75,29 +86,17 @@ theorem suzukiDirichletScrewOperator_isFormalAdjoint
         (starRingEnd ℂ) (inner ℂ (suzukiDirichletInverseCLM a g)
           (suzukiRawScrewAdjointWitness a
             (f : SuzukiApertureIntervalL2 a.1))) :=
-      (inner_conj_symm (𝕜 := ℂ)
-        (suzukiRawScrewAdjointWitness a
-          (f : SuzukiApertureIntervalL2 a.1))
-        (suzukiDirichletInverseCLM a g)).symm
-    _ = (starRingEnd ℂ) (inner ℂ g
-        (suzukiDirichletInverseAdjointCLM a
-          (suzukiRawScrewAdjointWitness a
-            (f : SuzukiApertureIntervalL2 a.1)))) := by
-      rw [inner_suzukiDirichletInverse_eq_adjoint]
+      (inner_conj_symm (𝕜 := ℂ) _ _).symm
     _ = (starRingEnd ℂ) (inner ℂ g (suzukiScrewZeroMeanOperator a f)) := by
-      rw [suzukiDirichletInverseAdjointCLM_adjointWitness_eq]
+      rw [inner_suzukiDirichletInverse_rawScrewAdjointWitness]
     _ = inner ℂ (suzukiScrewZeroMeanOperator a f) g :=
-      inner_conj_symm (𝕜 := ℂ) (suzukiScrewZeroMeanOperator a f) g
+      inner_conj_symm (𝕜 := ℂ)
+        (suzukiScrewZeroMeanOperator a f : SuzukiApertureZeroMean a) g
     _ = inner ℂ f (suzukiScrewZeroMeanOperator a g) := hG
-    _ = inner ℂ f
-        (suzukiDirichletInverseAdjointCLM a
-          (suzukiRawScrewAdjointWitness a
-            (g : SuzukiApertureIntervalL2 a.1))) := by
-      rw [suzukiDirichletInverseAdjointCLM_adjointWitness_eq]
     _ = inner ℂ (suzukiDirichletInverseCLM a f)
         (suzukiRawScrewAdjointWitness a
           (g : SuzukiApertureIntervalL2 a.1)) :=
-      (inner_suzukiDirichletInverse_eq_adjoint a f _).symm
+      (inner_suzukiDirichletInverse_rawScrewAdjointWitness a f g).symm
 
 end RHTower
 

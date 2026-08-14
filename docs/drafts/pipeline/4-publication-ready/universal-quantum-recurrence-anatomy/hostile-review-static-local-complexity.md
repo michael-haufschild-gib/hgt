@@ -120,3 +120,28 @@ demand. The missing result is a single quenched estimate, uniform over the compl
 selector class, making `B K(s) R_sigma < eta^2 W^2` through the onset window and then extending the
 same event to plateau measure and first low-complexity recurrence. Without it, the new inequality
 is an exact reduction theorem, not complexity growth or black-hole physics.
+
+## 14 August 2026 hostile addendum -- cross recurrence only
+
+The new return-excised capacity law answers the diagonal objection correctly. After each sample's
+self-memory is charged once, bounded observer-channel capacity can survive only through
+distinct-time recurrence inside reused channels:
+
+\[
+\eta^2W^2-BK D_{\rm self}\le BK R_{\rm cross}.
+\]
+
+This is stronger and cleaner than preceding total-recurrence reduction. It is still not a Nature
+result. A hostile reviewer rejects three possible overstatements:
+
+1. uniform pairwise coherence is assumed in convenient corollary, not proved for ordinary
+   local-Hamiltonian ensembles;
+2. finite history versus channel count yields at best logarithmic circuit depth when channel
+   capacity is exponential;
+3. no single quenched event yet controls first growth, plateau occupation and first
+   low-complexity recurrence together.
+
+Acceptance still requires local-physics theorem: growing-replica or direct incidence-action decay
+after return removal, uniform over complete approximate shallow-circuit selectors for one ordinary
+time-independent local Hamiltonian. Until then, manuscript must present this result only as exact
+frontier reduction and must not infer black-hole or holographic dynamics.

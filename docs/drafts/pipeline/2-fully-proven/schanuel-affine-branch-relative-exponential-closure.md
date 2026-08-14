@@ -17,8 +17,8 @@ identifies the smallest known prototype of the remaining arithmetic wall.
 
 - [x] 0 -> 1  in-progress: both implications isolated and hostile examples checked
 - [x] 1 -> 2  fully-proven: dependency-closed proof below
-- [ ] 2 -> 3  formalized: integral-coordinate normal form and relative algebraic-closure bridge
-  remain
+- [ ] 2 -> 3  formalized: reverse implication and one-generator transcendence-rank bridge are
+  formalized; integral-coordinate normal form and forward relative algebraic-closure bridge remain
 - [ ] 3 -> 4  publication-ready: independent proof and literature audits pending
 
 ## Relative rigidity statement
@@ -93,6 +93,20 @@ contained an independent vector `(r,s)`, then `s != 0` and algebraicity of `r al
 `z` algebraic.  But algebraic `alpha,z` with rational independence make `e^alpha,e^z`
 algebraically independent by Lindemann--Weierstrass, contradicting that `e^z` is algebraic over
 `Qbar(e^alpha)`.  This proves the claimed equivalence. **[PROVED HERE]**
+
+## Formalization status
+
+`RHTower/SchanuelAffineRelativeExponentialClosure.lean` now proves unconditionally:
+
+1. two complex numbers algebraic over `Qbar(exp(alpha))` cannot be algebraically independent over
+   `Qbar`;
+2. any nonzero algebraic `alpha` and `z notin Q alpha` for which both `z` and `exp(z)` are algebraic
+   over `Qbar(exp(alpha))` produce a literal failure of `SchanuelExtractionAt 2`.
+
+This is the reverse implication of the paper equivalence, expressed using actual intermediate
+fields and algebraicity rather than a new proposition interface.  The forward implication still
+needs the integral rank-one coordinate normalization and adjoining-one algebraic-independence
+converse.
 
 ## Failed conjecture and pivot
 

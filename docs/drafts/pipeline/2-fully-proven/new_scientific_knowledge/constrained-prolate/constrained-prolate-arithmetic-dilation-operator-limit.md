@@ -340,6 +340,9 @@ dominated diagonal pointwise defect forces the full weighted projective error su
 `RHTower.arithmeticDilation_projective_tendsto_discharged` and
 `RHTower.arithmeticDilation_traceClass_traceNorm_limit_discharged` establish the projective and
 Schatten-1 trace-norm convergence unconditionally from these raw inputs without external hypotheses.
+`GaloisForLFunctions.RHTower.RadialPSWFArithmeticDilationDischarge.lean` formalizes the exact
+convergence of the radial PSWF Dunster leading arclength density integrals to the arithmetic
+weights and eigenvalues `κ_k = 16 log(k) arcsin(1/k) / (11 π k)`.
 `GaloisForLFunctions.RHTower.ConstrainedProlateNormalizationAudit.lean` formalizes the independent
 PSWF normalization audit, verifying the consistency of all floor ratios (`8/11`), total leakage mass
 (`4/11`), dilation weights `w_k`, arithmetic eigenvalues `κ_k`, trace-shadow `- \mathcal{D}_{prime}`,

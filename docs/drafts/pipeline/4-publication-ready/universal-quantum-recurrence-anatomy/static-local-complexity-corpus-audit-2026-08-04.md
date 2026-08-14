@@ -150,3 +150,34 @@ The separated-channel corollary prevents duplicate labels from faking capacity. 
 frontier but does not supply the required static-H inequality. The next theorem must establish the
 strict budget bound uniformly over every canonical resolution-separated shallow-circuit selector
 on one quenched event.
+
+## 14 August 2026 refinement -- diagonal memory removed exactly
+
+The recurrence-or-channel-production law still included one unavoidable self-pair for every
+sample. That term is now separated in Lean:
+
+\[
+R_\sigma=D_{\rm self}+R_{\rm cross},\qquad
+D_{\rm self}=\sum_jw_j^2\|r_j\|^2,
+\]
+
+with \(R_{\rm cross}\) containing only distinct-time pairs that reuse one selected channel. For
+occupied-channel capacity \(K\),
+
+\[
+\eta^2W^2-BK D_{\rm self}\le BK R_{\rm cross}.
+\]
+
+Thus a positive residual budget certifies genuine cross-time recurrence, not fresh-channel norm.
+A pairwise coherence ceiling \(\mu\) gives sufficient obstruction
+
+\[
+(\eta^2-B\mu)W^2\le BK(D-\mu)\sum_jw_j^2.
+\]
+
+This is a real source-side correction but not Brown growth. Pairwise coherence may be stronger
+than necessary, and deterministic sample counting cannot beat exponential circuit-channel
+capacity at linear depth. Exact remaining theorem is a quenched growing-replica or direct
+incidence-action estimate for one ordinary static local Hamiltonian, uniform over complete
+approximate circuit selectors. No black-hole, plateau-onset, or recurrence-scale claim is
+authorized by this refinement.

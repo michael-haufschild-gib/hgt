@@ -308,9 +308,11 @@ No parity hypothesis is needed.
 - **Lean status.** Finite odd core is proved in
   `formal/GaloisForLFunctions/RHTower/CCMParityFreeOddGroundFourier.lean`: positive semimetric
   completion, nonnegative full characteristic roots, and real non-pole Fourier-resolvent zeros.
-  Literal published-source parity blocks and the infinite approximation/Hurwitz step remain open.
-  This formalization closes literature parity debt but does not receive Route-O ground-selection
-  credit.
+  `CCMCompactFourierMeanSquareZeroTransfer.lean` proves the exact fixed-support `L²` Fourier bound,
+  locally uniform convergence, and nonzero-limit real-zero transfer. Literal published-source
+  parity blocks and compressed-ground mean-square convergence remain open. This formalization
+  closes the finite and analytic-transfer parts of the literature parity debt but does not receive
+  Route-O ground-selection credit.
 
 ## No-go closure
 
@@ -319,10 +321,13 @@ No parity hypothesis is needed.
 - **Strongest positive survivor:** parity-free simple-ground Fourier real-zero law `(PF.15)`.
 - **New insight:** parity is not the obstruction.  Full-ground selection is.
 - **Status:** dependency-closed paper proof; external novelty unverified; finite odd core
-  Lean-closed; no Route-O ground-selection credit.
+  and fixed-support analytic transfer Lean-closed; no Route-O ground-selection credit.
 
 ## Log
 
 - 2026-08-11 — odd (D^2) correction derived; common-zero closure falsified; paper proof closed.
 - 2026-08-14 — finite odd squared-frequency correction and non-pole Fourier-resolvent reality
-  formalized in `CCMParityFreeOddGroundFourier.lean`; continuous source approximation remains.
+  formalized in `CCMParityFreeOddGroundFourier.lean`.
+- 2026-08-14 — exact fixed-support mean-square-to-locally-uniform Fourier estimate and Hurwitz
+  zero-locus transfer formalized in `CCMCompactFourierMeanSquareZeroTransfer.lean`; literal
+  compressed-ground approximation remains.

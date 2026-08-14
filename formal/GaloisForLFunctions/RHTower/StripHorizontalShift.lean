@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.VerticalContourShift
+import GaloisForLFunctions.HTGeometry.SmoothWeightShift
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 
 /-!

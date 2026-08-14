@@ -6,7 +6,8 @@
 - **Type:** THEOREM
 - **Scientific status:** `[LEAN-PROVED] [PAPER-PROVED] [NOVELTY UNVERIFIED] [NO RH CLAIM]`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/CCMParityFreeOddGroundFourier.lean`
+  `formal/GaloisForLFunctions/RHTower/CCMParityFreeOddGroundFourier.lean` and
+  `formal/GaloisForLFunctions/RHTower/CCMCompactFourierMeanSquareZeroTransfer.lean`
 - **Paper parent:**
   `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/parity-free-simple-ground-fourier-real-zero-law.md`
 
@@ -53,11 +54,16 @@ resolvent zero to satisfy `Im z = 0`.
 - `CCMParityFreeOddGroundData.completion_charpoly_zero_re_nonneg`
 - `CCMParityFreeOddGroundData.squaredResolventNumerator_zero_nonnegative_real`
 - `CCMParityFreeOddGroundData.oddFourierResolventNumerator_zero_im_eq_zero`
+- `norm_compactFourier_sub_le_meanSquare`
+- `compactFourier_tendstoLocallyUniformly_of_meanSquare`
+- `compactFourier_limit_zero_im_eq_zero_of_meanSquare`
 
 ## Audit
 
 - `lake env lean GaloisForLFunctions/RHTower/CCMParityFreeOddGroundFourier.lean`: pass.
 - `lake build GaloisForLFunctions.RHTower.CCMParityFreeOddGroundFourier`: pass.
+- `lake env lean GaloisForLFunctions/RHTower/CCMCompactFourierMeanSquareZeroTransfer.lean`: pass.
+- `lake build GaloisForLFunctions.RHTower.CCMCompactFourierMeanSquareZeroTransfer`: pass.
 - `#print axioms` on the three load-bearing endpoints: only `propext`, `Classical.choice`, and
   `Quot.sound`.
 - No `sorry`, `admit`, new `axiom`, `opaque`, `unsafe`, or numerical computation.
@@ -65,10 +71,17 @@ resolvent zero to satisfy `Im z = 0`.
 
 ## Exact boundary
 
-This closes the finite odd algebraic theorem, not Route O.  It does not construct the literal
-parity blocks of the published restricted-Weil matrix, prove that its selected floor is simple,
-or prove finite-to-continuous ground convergence.  The infinite truncated-convolution theorem's
-source approximation/Hurwitz step remains outside this Lean module.  Most importantly, real-zero
-reality of either parity gives no comparison between the prolate leakage ground and every true
-restricted-Weil near-ground direction.  Route O's RH-bearing open core remains source-derived
-upper control `eta(a)=exp(o(a))`.
+This closes the finite odd algebraic theorem and the fixed-support analytic limit step, not Route
+O.  Lean now proves the exact source-scale estimate
+
+~~~
+|F(f_n)(z)-F(f)(z)|
+ <= exp(max(|a|,|b|)|Im z|) sqrt(b-a) ||f_n-f||_2,
+~~~
+
+its locally uniform consequence, and closed-real-zero transfer for every nonzero limit.  It does
+not construct the literal parity blocks of the published restricted-Weil matrix, prove that its
+selected floor is simple, or prove that the literal compressed ground vectors converge in mean
+square.  Most importantly, real-zero reality of either parity gives no comparison between the
+prolate leakage ground and every true restricted-Weil near-ground direction.  Route O's RH-bearing
+open core remains source-derived upper control `eta(a)=exp(o(a))`.

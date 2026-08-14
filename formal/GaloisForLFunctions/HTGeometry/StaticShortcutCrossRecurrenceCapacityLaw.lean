@@ -254,6 +254,24 @@ theorem selectorOccupiedChannels_gt_of_coherenceBudget_lt
     r q chosen w heta hB hgap hw halign hq hnorm hcoh hcapacity
   linarith
 
+/-- Unit-sample form: a bounded channel family can carry only linearly many
+pairwise anti-coherent shortcuts. -/
+theorem selectorCard_sq_le_capacity_mul_card_of_coherence
+    (r : J → F) (q : C → F) (chosen : J → C)
+    {eta B D mu : ℝ} {K : ℕ}
+    (heta : 0 ≤ eta) (hB : 0 ≤ B)
+    (hgap : 0 ≤ eta ^ 2 - B * mu)
+    (halign : ∀ j, eta ≤ inner ℝ (r j) (q (chosen j)))
+    (hq : ∀ c, ‖q c‖ ^ 2 ≤ B)
+    (hnorm : ∀ j, ‖r j‖ ^ 2 ≤ D)
+    (hcoh : ∀ i j, i ≠ j → inner ℝ (r i) (r j) ≤ mu)
+    (hcapacity : (selectorOccupiedChannels chosen (fun _ => 1)).card ≤ K) :
+    (eta ^ 2 - B * mu) * (Fintype.card J : ℝ) ^ 2 ≤
+      B * K * (D - mu) * (Fintype.card J : ℝ) := by
+  simpa using selectorMass_sq_le_capacity_mul_diagonal_of_coherence
+    r q chosen (fun _ => 1) heta hB hgap (fun _ => by norm_num)
+      halign hq hnorm hcoh hcapacity
+
 /-- After self-memory is charged once, bounded channel capacity forces genuine cross-time
 recurrence inside reused observer channels. -/
 theorem selectorCapacity_forces_crossRecurrence
@@ -275,4 +293,3 @@ theorem selectorCapacity_forces_crossRecurrence
 end
 
 end GaloisForLFunctions.HTGeometry
-
