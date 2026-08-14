@@ -44,8 +44,8 @@ omit [Nontrivial X] in
 channel amplitude. -/
 theorem halfPower_smul_freqPropagator (L : ℝ) (c : X) (η : ℝ) :
     (η ^ (-(1:ℝ)/2)) • (freqPropagator L Rint T η c)
-      = scaledFresnel L η • channelAmplitude Rint T c η := by
-  rw [freqPropagator_eq_smul_gammaTransport, scaledFresnel, channelAmplitude]
+      = scaledFresnel L η • gammaChannelAmplitude Rint T c η := by
+  rw [freqPropagator_eq_smul_gammaTransport, scaledFresnel, gammaChannelAmplitude]
   show (η ^ (-(1:ℝ)/2)) • (Complex.exp (((η * L : ℝ)) * I) • (gammaTransport Rint T η c))
       = (((η ^ (-(1:ℝ)/2) : ℝ) : ℂ) * Complex.exp (((η * L : ℝ)) * I))
         • (gammaTransport Rint T η c)
@@ -55,9 +55,9 @@ omit [Nontrivial X] in
 /-- The reflected integrand is the conjugate half-power kernel against the reflected amplitude. -/
 theorem halfPower_smul_freqPropagator_neg (L : ℝ) (c : X) (t : ℝ) :
     (t ^ (-(1:ℝ)/2)) • (freqPropagator L Rint T (-t) c)
-      = scaledFresnelConj L t • channelAmplitudeNeg Rint T c t := by
-  rw [freqPropagator_eq_smul_gammaTransport, scaledFresnelConj, channelAmplitudeNeg,
-    channelAmplitude]
+      = scaledFresnelConj L t • gammaChannelAmplitudeNeg Rint T c t := by
+  rw [freqPropagator_eq_smul_gammaTransport, scaledFresnelConj, gammaChannelAmplitudeNeg,
+    gammaChannelAmplitude]
   show (t ^ (-(1:ℝ)/2)) • (Complex.exp (((-t * L : ℝ)) * I) • (gammaTransport Rint T (-t) c))
       = (((t ^ (-(1:ℝ)/2) : ℝ) : ℂ) * Complex.exp (-(((t * L : ℝ)) * I)))
         • (gammaTransport Rint T (-t) c)
@@ -106,40 +106,40 @@ theorem norm_halfLog_scattering_asymptotic {r' : ℝ → ℝ} (hT : IsSelfAdjoin
       (Or.inl (ne_of_gt (hposAR x hx)))).continuousWithinAt
   -- the four pieces
   have hfunpos : (fun η : ℝ => (η ^ (-(1:ℝ)/2)) • (freqPropagator L Rint T η cp))
-      = fun η : ℝ => scaledFresnel L η • channelAmplitude Rint T cp η := by
+      = fun η : ℝ => scaledFresnel L η • gammaChannelAmplitude Rint T cp η := by
     funext η
     exact halfPower_smul_freqPropagator L cp η
   have hfunneg : (fun t : ℝ => (t ^ (-(1:ℝ)/2)) • (freqPropagator L Rint T (-t) cm))
-      = fun t : ℝ => scaledFresnelConj L t • channelAmplitudeNeg Rint T cm t := by
+      = fun t : ℝ => scaledFresnelConj L t • gammaChannelAmplitudeNeg Rint T cm t := by
     funext t
     exact halfPower_smul_freqPropagator_neg L cm t
   have hposlip : ∀ η : ℝ, 0 ≤ η → η ≤ A →
-      ‖channelAmplitude Rint T cp η - channelAmplitude Rint T cp 0‖
+      ‖gammaChannelAmplitude Rint T cp η - gammaChannelAmplitude Rint T cp 0‖
         ≤ ((B / 2 + ‖T‖ / 2) * ‖cp‖) * η := by
     intro η hη hηA
-    rw [channelAmplitude_zero hR]
-    refine norm_channelAmplitude_sub_le hT hR hRint (fun x hx0 hxη => ?_) hη
+    rw [gammaChannelAmplitude_zero hR]
+    refine norm_gammaChannelAmplitude_sub_le hT hR hRint (fun x hx0 hxη => ?_) hη
     exact hrb x (by rw [abs_of_nonneg hx0]; linarith)
   have hneglip : ∀ t : ℝ, 0 ≤ t → t ≤ A →
-      ‖channelAmplitudeNeg Rint T cm t - channelAmplitudeNeg Rint T cm 0‖
+      ‖gammaChannelAmplitudeNeg Rint T cm t - gammaChannelAmplitudeNeg Rint T cm 0‖
         ≤ ((B / 2 + ‖T‖ / 2) * ‖cm‖) * t := by
     intro t ht htA
-    rw [channelAmplitudeNeg_zero hR]
-    refine norm_channelAmplitudeNeg_sub_le hT hR hRint (fun x hx1 hx2 => ?_) ht
+    rw [gammaChannelAmplitudeNeg_zero hR]
+    refine norm_gammaChannelAmplitudeNeg_sub_le hT hR hRint (fun x hx1 hx2 => ?_) ht
     exact hrb x (by rw [abs_of_nonpos hx2]; linarith)
   have hint_pos_low : IntervalIntegrable
       (fun η : ℝ => (η ^ (-(1:ℝ)/2)) • (freqPropagator L Rint T η cp)) volume 0 A := by
     rw [hfunpos]
     exact intervalIntegrable_scaledFresnel_smul (L := L)
       (f' := fun η => (I • (shiftedSymbolOp (r η / 2) T * gammaTransport Rint T η)) cp) hA
-      (by positivity) (fun η _ _ => hasDerivAt_channelAmplitude (hRint η)) hposlip
+      (by positivity) (fun η _ _ => hasDerivAt_gammaChannelAmplitude (hRint η)) hposlip
   have hint_neg_low : IntervalIntegrable
       (fun t : ℝ => (t ^ (-(1:ℝ)/2)) • (freqPropagator L Rint T (-t) cm)) volume 0 A := by
     rw [hfunneg]
     exact intervalIntegrable_scaledFresnelConj_smul (L := L)
       (f' := fun t => -((I • (shiftedSymbolOp (r (-t) / 2) T
         * gammaTransport Rint T (-t))) cm)) hA (by positivity)
-      (fun t _ _ => hasDerivAt_channelAmplitudeNeg (hRint (-t))) hneglip
+      (fun t _ _ => hasDerivAt_gammaChannelAmplitudeNeg (hRint (-t))) hneglip
   have hint_pos_high : IntervalIntegrable
       (fun η : ℝ => (η ^ (-(1:ℝ)/2)) • (freqPropagator L Rint T η cp)) volume A R :=
     (hacAR.smul (hWv cp).continuousOn).intervalIntegrable

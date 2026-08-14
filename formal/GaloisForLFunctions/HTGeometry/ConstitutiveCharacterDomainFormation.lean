@@ -8,6 +8,8 @@ module certifies a concrete cofinal admission work which is zero only at the neu
 infinite everywhere else.
 -/
 
+open scoped ENNReal NNReal
+
 namespace CharacterDomainFormation
 
 inductive Polarity where
@@ -34,6 +36,7 @@ def Polarity.flip : Polarity → Polarity
 @[simp] theorem Polarity.act_add (p : Polarity) (s t : ℝ) :
     p.act (s + t) = p.act s + p.act t := by
   cases p <;> simp [Polarity.act]
+  ring
 
 inductive Expr (ι : Type*) where
   | leaf (i : ι)
@@ -42,13 +45,11 @@ inductive Expr (ι : Type*) where
   | tilt (a : ℝ) (child : Expr ι)
   | reflect (child : Expr ι)
   | recover (child : Expr ι)
-  deriving Repr
 
 structure Constraint (ι : Type*) where
   leaf : ι
   polarity : Polarity
   offset : ℝ
-  deriving Repr
 
 def Constraint.eval (c : Constraint ι) (t : ℝ) : ℝ :=
   c.polarity.act t + c.offset
@@ -94,19 +95,32 @@ def Expr.Admitted (domain : ι → Set ℝ) : Expr ι → ℝ → Prop
 def Constraint.Holds (domain : ι → Set ℝ) (c : Constraint ι) (t : ℝ) : Prop :=
   c.eval t ∈ domain c.leaf
 
+@[simp] theorem Constraint.shift_leaf (a : ℝ) (c : Constraint ι) :
+    (c.shift a).leaf = c.leaf := rfl
+
+@[simp] theorem Constraint.reflect_leaf (c : Constraint ι) : c.reflect.leaf = c.leaf := rfl
+
+@[simp] theorem Constraint.holds_shift (domain : ι → Set ℝ) (a : ℝ) (c : Constraint ι) (t : ℝ) :
+    (c.shift a).Holds domain t ↔ c.Holds domain (t + a) := by
+  simp [Constraint.Holds]
+
+@[simp] theorem Constraint.holds_reflect (domain : ι → Set ℝ) (c : Constraint ι) (t : ℝ) :
+    c.reflect.Holds domain t ↔ c.Holds domain (-t) := by
+  simp [Constraint.Holds]
+
 /-- Every finite formation expression is admitted exactly when all affine leaf constraints hold. -/
 theorem Expr.admitted_iff_constraints (domain : ι → Set ℝ) (E : Expr ι) (t : ℝ) :
     E.Admitted domain t ↔ ∀ c ∈ E.constraints, c.Holds domain t := by
   induction E generalizing t with
   | leaf i => simp [Expr.Admitted, Expr.constraints, Constraint.Holds, Constraint.eval]
   | mix left right ihLeft ihRight =>
-      simp [Expr.Admitted, Expr.constraints, ihLeft, ihRight]
+      simp [Expr.Admitted, Expr.constraints, ihLeft, ihRight, or_imp, forall_and]
   | fuse left right ihLeft ihRight =>
-      simp [Expr.Admitted, Expr.constraints, ihLeft, ihRight]
+      simp [Expr.Admitted, Expr.constraints, ihLeft, ihRight, or_imp, forall_and]
   | tilt a child ih =>
-      simp [Expr.Admitted, Expr.constraints, ih, Constraint.Holds]
+      simp [Expr.Admitted, Expr.constraints, ih (t + a)]
   | reflect child ih =>
-      simp [Expr.Admitted, Expr.constraints, ih, Constraint.Holds]
+      simp [Expr.Admitted, Expr.constraints, ih (-t)]
   | recover child ih =>
       simpa [Expr.Admitted, Expr.constraints] using ih t
 
@@ -148,7 +162,8 @@ theorem cofinalWork_eq_top_of_ne_zero {t : ℝ} (ht : t ≠ 0) : cofinalWork t =
   calc
     (r : ℝ) = ((r : ℝ) / |t|) * |t| := by field_simp
     _ ≤ (n : ℝ) * |t| := mul_le_mul_of_nonneg_right hn (le_of_lt habs)
-    _ ≤ ((n : ℝ) + 1) * |t| := by positivity
+    _ ≤ ((n : ℝ) + 1) * |t| :=
+      mul_le_mul_of_nonneg_right (by linarith) (abs_nonneg t)
 
 /-- Cofinal work is finite exactly at the neutral character. -/
 theorem cofinalWork_ne_top_iff (t : ℝ) : cofinalWork t ≠ ⊤ ↔ t = 0 := by
@@ -167,7 +182,7 @@ theorem cofinalWork_le_coe_iff (t : ℝ) (C : ℝ≥0) :
     have hne : cofinalWork t ≠ ⊤ := by
       intro htop
       rw [htop] at h
-      exact ENNReal.coe_ne_top C (top_le_iff.mp h)
+      exact ENNReal.coe_ne_top (top_le_iff.mp h)
     exact (cofinalWork_ne_top_iff t).mp hne
   · rintro rfl
     simp

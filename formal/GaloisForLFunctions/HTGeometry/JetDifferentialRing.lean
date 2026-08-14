@@ -16,12 +16,12 @@ logarithmic derivative is a nonzero constant.  Concretely, `g·𝒟f − f·𝒟
 `g ≠ 0` forces `f = 0`, because the corresponding identity between polynomials in one variable has
 strictly smaller degree on the left than on the right.
 
-* `GaloisForLFunctions.HTGeometry.jetDeriv`;
-* `GaloisForLFunctions.HTGeometry.hasDerivAt_eval_jetVector`;
-* `GaloisForLFunctions.HTGeometry.eq_zero_of_jetLogDeriv_const`.
+* `GaloisForLFunctions.HTGeometry.JetRing.jetDeriv`;
+* `GaloisForLFunctions.HTGeometry.JetRing.hasDerivAt_eval_jetVector`;
+* `GaloisForLFunctions.HTGeometry.JetRing.eq_zero_of_jetLogDeriv_const`.
 -/
 
-namespace GaloisForLFunctions.HTGeometry
+namespace GaloisForLFunctions.HTGeometry.JetRing
 
 open MvPolynomial
 
@@ -223,4 +223,4 @@ theorem eq_zero_of_jetLogDeriv_const {f g : MvPolynomial ℕ ℂ} {μ : ℂ} (h�
 
 end
 
-end GaloisForLFunctions.HTGeometry
+end GaloisForLFunctions.HTGeometry.JetRing

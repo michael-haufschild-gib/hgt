@@ -22,7 +22,7 @@ the relation is then a single monomial, and the exponential — being nowhere ze
 
 namespace GaloisForLFunctions.HTGeometry
 
-open MvPolynomial
+open MvPolynomial JetRing
 
 noncomputable section
 

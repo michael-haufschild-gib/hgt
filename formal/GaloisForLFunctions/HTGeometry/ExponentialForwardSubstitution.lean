@@ -21,7 +21,7 @@ removed by the degree induction of the elimination layer.
 
 namespace GaloisForLFunctions.HTGeometry
 
-open MvPolynomial
+open MvPolynomial JetRing
 
 noncomputable section
 

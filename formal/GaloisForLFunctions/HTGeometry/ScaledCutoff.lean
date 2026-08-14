@@ -26,7 +26,7 @@ theorem contDiff_unitCutoff : ContDiff ℝ (⊤ : ℕ∞) (unitCutoff : ℝ → 
 theorem hasCompactSupport_unitCutoff : HasCompactSupport (unitCutoff : ℝ → ℝ) :=
   unitCutoff.hasCompactSupport
 
-theorem hasCompactSupport_iteratedDeriv {f : ℝ → ℝ} (hf : HasCompactSupport f) (n : ℕ) :
+theorem hasCompactSupport_iteratedDeriv_real {f : ℝ → ℝ} (hf : HasCompactSupport f) (n : ℕ) :
     HasCompactSupport (iteratedDeriv n f) := by
   induction n with
   | zero => simpa [iteratedDeriv_zero] using hf
@@ -39,7 +39,7 @@ theorem exists_bound_iteratedDeriv_unitCutoff (n : ℕ) :
   have hcont : Continuous (iteratedDeriv n (unitCutoff : ℝ → ℝ)) :=
     ContDiff.continuous_iteratedDeriv n contDiff_unitCutoff (by exact_mod_cast le_top)
   have hsupp : HasCompactSupport (iteratedDeriv n (unitCutoff : ℝ → ℝ)) :=
-    hasCompactSupport_iteratedDeriv hasCompactSupport_unitCutoff n
+    hasCompactSupport_iteratedDeriv_real hasCompactSupport_unitCutoff n
   obtain ⟨C, hC⟩ := hsupp.exists_bound_of_continuous hcont
   refine ⟨|C| , abs_nonneg C, fun x => ?_⟩
   have := hC x

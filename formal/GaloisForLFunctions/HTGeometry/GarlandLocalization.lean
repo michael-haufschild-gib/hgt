@@ -501,44 +501,44 @@ end WeightedComplex
 /-! ## Cochains as a finite-dimensional vector space -/
 
 /-- Cochains of a fixed degree, as a finite-dimensional real vector space. -/
-abbrev Cochain (V : Type*) [DecidableEq V] [Fintype V] (k : ℕ) : Type _ :=
+abbrev SimplicialCochain (V : Type*) [DecidableEq V] [Fintype V] (k : ℕ) : Type _ :=
   {τ : Finset V // τ.card = k + 1} → ℝ
 
 /-- A cochain of fixed degree, extended by zero to all finite vertex sets. -/
-noncomputable def extend {k : ℕ} (a : Cochain V k) : Finset V → ℝ :=
+noncomputable def extend {k : ℕ} (a : SimplicialCochain V k) : Finset V → ℝ :=
   fun τ => if h : τ.card = k + 1 then a ⟨τ, h⟩ else 0
 
 omit [LinearOrder V] in
-theorem extend_apply {k : ℕ} (a : Cochain V k) {τ : Finset V} (h : τ.card = k + 1) :
+theorem extend_apply {k : ℕ} (a : SimplicialCochain V k) {τ : Finset V} (h : τ.card = k + 1) :
     extend a τ = a ⟨τ, h⟩ := dif_pos h
 
 omit [LinearOrder V] in
-theorem extend_add {k : ℕ} (a b : Cochain V k) : extend (a + b) = extend a + extend b := by
+theorem extend_add {k : ℕ} (a b : SimplicialCochain V k) : extend (a + b) = extend a + extend b := by
   funext τ
   by_cases h : τ.card = k + 1 <;> simp [extend, h]
 
 omit [LinearOrder V] in
-theorem extend_smul {k : ℕ} (c : ℝ) (a : Cochain V k) : extend (c • a) = c • extend a := by
+theorem extend_smul {k : ℕ} (c : ℝ) (a : SimplicialCochain V k) : extend (c • a) = c • extend a := by
   funext τ
   by_cases h : τ.card = k + 1 <;> simp [extend, h]
 
 /-- The extension-by-zero map, as a linear map. -/
-noncomputable def extendₗ (k : ℕ) : Cochain V k →ₗ[ℝ] (Finset V → ℝ) where
+noncomputable def extendₗ (k : ℕ) : SimplicialCochain V k →ₗ[ℝ] (Finset V → ℝ) where
   toFun := extend
   map_add' := extend_add
   map_smul' := extend_smul
 
 /-- Restriction of a function on all finite vertex sets to the faces of a fixed cardinality. -/
-def restrictₗ (k : ℕ) : (Finset V → ℝ) →ₗ[ℝ] Cochain V k where
+def restrictₗ (k : ℕ) : (Finset V → ℝ) →ₗ[ℝ] SimplicialCochain V k where
   toFun f := fun τ => f τ.1
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
 
 /-- **The coboundary as a linear map between the fixed-degree cochain spaces.** -/
-noncomputable def cobₗ (k : ℕ) : Cochain V k →ₗ[ℝ] Cochain V (k + 1) :=
+noncomputable def cobₗ (k : ℕ) : SimplicialCochain V k →ₗ[ℝ] SimplicialCochain V (k + 1) :=
   (restrictₗ (k + 1)).comp ((simplicialCoboundaryₗ ℝ).comp (extendₗ k))
 
-theorem cobₗ_apply {k : ℕ} (a : Cochain V k) (ρ : {τ : Finset V // τ.card = k + 1 + 1}) :
+theorem cobₗ_apply {k : ℕ} (a : SimplicialCochain V k) (ρ : {τ : Finset V // τ.card = k + 1 + 1}) :
     cobₗ k a ρ = simplicialCoboundary ℝ (extend a) ρ.1 := rfl
 
 
@@ -547,7 +547,7 @@ namespace WeightedComplex
 variable (X : WeightedComplex V)
 
 /-- **The weighted pairing on cochains of a fixed degree.** -/
-noncomputable def pairing (k : ℕ) : LinearMap.BilinForm ℝ (Cochain V k) :=
+noncomputable def pairing (k : ℕ) : LinearMap.BilinForm ℝ (SimplicialCochain V k) :=
   LinearMap.mk₂ ℝ (fun a b => ∑ τ : {τ : Finset V // τ.card = k + 1}, X.m τ.1 * (a τ * b τ))
     (fun a₁ a₂ b => by
       rw [← Finset.sum_add_distrib]
@@ -571,11 +571,11 @@ noncomputable def pairing (k : ℕ) : LinearMap.BilinForm ℝ (Cochain V k) :=
       ring)
 
 omit [LinearOrder V] in
-theorem pairing_apply (k : ℕ) (a b : Cochain V k) :
+theorem pairing_apply (k : ℕ) (a b : SimplicialCochain V k) :
     X.pairing k a b = ∑ τ : {τ : Finset V // τ.card = k + 1}, X.m τ.1 * (a τ * b τ) := rfl
 
 omit [LinearOrder V] in
-theorem pairing_comm (k : ℕ) (a b : Cochain V k) : X.pairing k a b = X.pairing k b a := by
+theorem pairing_comm (k : ℕ) (a b : SimplicialCochain V k) : X.pairing k a b = X.pairing k b a := by
   rw [pairing_apply, pairing_apply]
   exact Finset.sum_congr rfl fun τ _ => by ring
 
@@ -586,13 +586,13 @@ theorem pairing_isRefl (k : ℕ) : (X.pairing k).IsRefl := by
   exact h
 
 omit [LinearOrder V] in
-theorem pairing_self_nonneg (k : ℕ) (a : Cochain V k) : 0 ≤ X.pairing k a a :=
+theorem pairing_self_nonneg (k : ℕ) (a : SimplicialCochain V k) : 0 ≤ X.pairing k a a :=
   Finset.sum_nonneg fun _ _ => mul_nonneg (X.m_nonneg _) (mul_self_nonneg _)
 
 omit [LinearOrder V] in
 /-- **The pairing is positive definite when the faces have positive weight.** -/
 theorem pairing_eq_zero_iff {k : ℕ} (hpos : ∀ τ : Finset V, τ.card = k + 1 → 0 < X.m τ)
-    (a : Cochain V k) : X.pairing k a a = 0 ↔ a = 0 := by
+    (a : SimplicialCochain V k) : X.pairing k a a = 0 ↔ a = 0 := by
   constructor
   · intro h
     funext τ
@@ -616,7 +616,7 @@ theorem sum_subtype_card (n : ℕ) (F : Finset V → ℝ) :
   exact ⟨fun hx => hx.2, fun hx => ⟨Finset.subset_univ _, hx⟩⟩
 
 /-- **The pairing against a coboundary is the pairing against the codifferential.** -/
-theorem pairing_cob (j : ℕ) (a : Cochain V j) (h : Cochain V (j + 1)) :
+theorem pairing_cob (j : ℕ) (a : SimplicialCochain V j) (h : SimplicialCochain V (j + 1)) :
     X.pairing (j + 1) (cobₗ j a) h
       = ∑ τ ∈ (univ : Finset V).powersetCard (j + 1), extend a τ * X.codiff (extend h) τ := by
   rw [pairing_apply, ← X.codiff_adjoint (extend a) (extend h) j, ← sum_subtype_card]
@@ -624,7 +624,7 @@ theorem pairing_cob (j : ℕ) (a : Cochain V j) (h : Cochain V (j + 1)) :
   rw [cobₗ_apply, extend_apply h τ.2]
 
 /-- The indicator cochain of a face. -/
-noncomputable def indicator (j : ℕ) (σ : Finset V) : Cochain V j :=
+noncomputable def indicator (j : ℕ) (σ : Finset V) : SimplicialCochain V j :=
   fun τ => if τ.1 = σ then 1 else 0
 
 omit [LinearOrder V] in
@@ -634,8 +634,8 @@ theorem extend_indicator {j : ℕ} {σ τ : Finset V} (hτ : τ.card = j + 1) :
   rfl
 
 /-- **Orthogonality to the coboundaries is co-closedness.** -/
-theorem codiff_eq_zero_of_pairing_cob_eq_zero {j : ℕ} (h : Cochain V (j + 1))
-    (hperp : ∀ a : Cochain V j, X.pairing (j + 1) (cobₗ j a) h = 0)
+theorem codiff_eq_zero_of_pairing_cob_eq_zero {j : ℕ} (h : SimplicialCochain V (j + 1))
+    (hperp : ∀ a : SimplicialCochain V j, X.pairing (j + 1) (cobₗ j a) h = 0)
     {σ : Finset V} (hσ : σ ∈ (univ : Finset V).powersetCard (j + 1)) :
     X.codiff (extend h) σ = 0 := by
   classical
@@ -664,7 +664,7 @@ theorem card_erase_ne {j : ℕ} {ρ : Finset V} (hρ : ρ.card ≠ j + 1 + 1) {v
   exact hρ (by omega)
 
 /-- **The extension of a coboundary is the coboundary of the extension.** -/
-theorem extend_cobₗ {j : ℕ} (a : Cochain V j) :
+theorem extend_cobₗ {j : ℕ} (a : SimplicialCochain V j) :
     extend (cobₗ j a) = simplicialCoboundary ℝ (extend a) := by
   funext ρ
   by_cases hρ : ρ.card = j + 1 + 1
@@ -676,7 +676,7 @@ theorem extend_cobₗ {j : ℕ} (a : Cochain V j) :
 
 omit [LinearOrder V] in
 theorem pairing_restrict_nondegenerate {k : ℕ}
-    (hpos : ∀ τ : Finset V, τ.card = k + 1 → 0 < X.m τ) (W : Submodule ℝ (Cochain V k)) :
+    (hpos : ∀ τ : Finset V, τ.card = k + 1 → 0 < X.m τ) (W : Submodule ℝ (SimplicialCochain V k)) :
     ((X.pairing k).restrict W).Nondegenerate := by
   constructor
   · intro x hx
@@ -694,10 +694,10 @@ theorem cocycle_eq_coboundary {n j : ℕ} (hpure : ∀ s ∈ X.top, s.card = n +
     (hpos : ∀ τ : Finset V, τ.card = j + 1 + 1 → 0 < X.m τ) (lam : ℝ)
     (hgap : ∀ σ ∈ (univ : Finset V).powersetCard (j + 1), (X.linkGraph σ).HasSpectralGap lam)
     (hlam : ((j : ℝ) + 1) < lam * ((j : ℝ) + 2))
-    (f : Cochain V (j + 1)) (hf : simplicialCoboundary ℝ (extend f) = 0) :
-    ∃ a : Cochain V j, f = cobₗ j a := by
+    (f : SimplicialCochain V (j + 1)) (hf : simplicialCoboundary ℝ (extend f) = 0) :
+    ∃ a : SimplicialCochain V j, f = cobₗ j a := by
   classical
-  set W : Submodule ℝ (Cochain V (j + 1)) := LinearMap.range (cobₗ j) with hW
+  set W : Submodule ℝ (SimplicialCochain V (j + 1)) := LinearMap.range (cobₗ j) with hW
   have hcompl : IsCompl W (LinearMap.BilinForm.orthogonal (X.pairing (j + 1)) W) :=
     LinearMap.BilinForm.isCompl_orthogonal_of_restrict_nondegenerate
       (X.pairing_isRefl (j + 1)) (X.pairing_restrict_nondegenerate hpos W)
@@ -706,7 +706,7 @@ theorem cocycle_eq_coboundary {n j : ℕ} (hpure : ∀ s ∈ X.top, s.card = n +
     trivial
   obtain ⟨f₁, hf₁, f₂, hf₂, hsum⟩ := Submodule.mem_sup.1 hmem
   obtain ⟨a, ha⟩ := hf₁
-  have hperp : ∀ b : Cochain V j, X.pairing (j + 1) (cobₗ j b) f₂ = 0 := by
+  have hperp : ∀ b : SimplicialCochain V j, X.pairing (j + 1) (cobₗ j b) f₂ = 0 := by
     intro b
     exact (LinearMap.BilinForm.mem_orthogonal_iff.1 hf₂) (cobₗ j b)
       (LinearMap.mem_range_self _ b)

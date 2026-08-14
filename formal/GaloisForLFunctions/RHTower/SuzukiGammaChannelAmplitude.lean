@@ -24,19 +24,19 @@ variable {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℂ X] [CompleteS
   [Nontrivial X]
 
 /-- The channel amplitude carried by the half-power weight. -/
-def channelAmplitude (Rint : ℝ → ℝ) (T : X →L[ℂ] X) (c : X) (η : ℝ) : X :=
+def gammaChannelAmplitude (Rint : ℝ → ℝ) (T : X →L[ℂ] X) (c : X) (η : ℝ) : X :=
   gammaTransport Rint T η c
 
 variable {Rint r : ℝ → ℝ} {T : X →L[ℂ] X} {c : X}
 
 omit [CompleteSpace X] [Nontrivial X] in
-theorem channelAmplitude_zero (hR : Rint 0 = 0) : channelAmplitude Rint T c 0 = c := by
-  rw [channelAmplitude, gammaTransport, freqPropagator_zero T hR]
+theorem gammaChannelAmplitude_zero (hR : Rint 0 = 0) : gammaChannelAmplitude Rint T c 0 = c := by
+  rw [gammaChannelAmplitude, gammaTransport, freqPropagator_zero T hR]
   rfl
 
 omit [Nontrivial X] in
-theorem hasDerivAt_channelAmplitude {η : ℝ} (hRint : HasDerivAt Rint (r η) η) :
-    HasDerivAt (channelAmplitude Rint T c)
+theorem hasDerivAt_gammaChannelAmplitude {η : ℝ} (hRint : HasDerivAt Rint (r η) η) :
+    HasDerivAt (gammaChannelAmplitude Rint T c)
       ((I • (shiftedSymbolOp (r η / 2) T * gammaTransport Rint T η)) c) η := by
   have hQ : HasDerivAt (gammaTransport Rint T)
       (I • (shiftedSymbolOp (r η / 2) T * gammaTransport Rint T η)) η := by
@@ -47,15 +47,15 @@ theorem hasDerivAt_channelAmplitude {η : ℝ} (hRint : HasDerivAt Rint (r η) �
   simp only [map_zero, add_zero] at h
   exact h
 
-theorem norm_channelAmplitude_le (hT : IsSelfAdjoint T) (η : ℝ) :
-    ‖channelAmplitude Rint T c η‖ ≤ ‖c‖ := by
+theorem norm_gammaChannelAmplitude_le (hT : IsSelfAdjoint T) (η : ℝ) :
+    ‖gammaChannelAmplitude Rint T c η‖ ≤ ‖c‖ := by
   have h := ContinuousLinearMap.le_opNorm (gammaTransport Rint T η) c
   have hnorm : ‖gammaTransport Rint T η‖ = 1 := norm_freqPropagator hT 0 Rint η
   rw [hnorm, one_mul] at h
   exact h
 
 /-- The generator of the amplitude is bounded by the symbol and the operator. -/
-theorem norm_deriv_channelAmplitude_le (hT : IsSelfAdjoint T) {η B : ℝ} (hr : |r η| ≤ B) :
+theorem norm_deriv_gammaChannelAmplitude_le (hT : IsSelfAdjoint T) {η B : ℝ} (hr : |r η| ≤ B) :
     ‖(I • (shiftedSymbolOp (r η / 2) T * gammaTransport Rint T η)) c‖
       ≤ (B / 2 + ‖T‖ / 2) * ‖c‖ := by
   have hnormQ : ‖gammaTransport Rint T η‖ = 1 := norm_freqPropagator hT 0 Rint η
@@ -81,71 +81,71 @@ theorem norm_deriv_channelAmplitude_le (hT : IsSelfAdjoint T) {η B : ℝ} (hr :
     _ ≤ (B / 2 + ‖T‖ / 2) * ‖c‖ := by gcongr
 
 /-- **The channel amplitude is Lipschitz on the cutoff region.** -/
-theorem norm_channelAmplitude_sub_le (hT : IsSelfAdjoint T) (hR : Rint 0 = 0)
+theorem norm_gammaChannelAmplitude_sub_le (hT : IsSelfAdjoint T) (hR : Rint 0 = 0)
     {B η : ℝ}
     (hRint : ∀ x : ℝ, HasDerivAt Rint (r x) x)
     (hr : ∀ x : ℝ, 0 ≤ x → x ≤ η → |r x| ≤ B) (hη : 0 ≤ η) :
-    ‖channelAmplitude Rint T c η - c‖ ≤ ((B / 2 + ‖T‖ / 2) * ‖c‖) * η := by
+    ‖gammaChannelAmplitude Rint T c η - c‖ ≤ ((B / 2 + ‖T‖ / 2) * ‖c‖) * η := by
   have hconv : Convex ℝ (Icc (0:ℝ) η) := convex_Icc 0 η
-  have hderiv : ∀ x ∈ Icc (0:ℝ) η, HasDerivWithinAt (channelAmplitude Rint T c)
+  have hderiv : ∀ x ∈ Icc (0:ℝ) η, HasDerivWithinAt (gammaChannelAmplitude Rint T c)
       ((I • (shiftedSymbolOp (r x / 2) T * gammaTransport Rint T x)) c) (Icc (0:ℝ) η) x :=
-    fun x _ => (hasDerivAt_channelAmplitude (hRint x)).hasDerivWithinAt
+    fun x _ => (hasDerivAt_gammaChannelAmplitude (hRint x)).hasDerivWithinAt
   have hbound : ∀ x ∈ Icc (0:ℝ) η,
       ‖(I • (shiftedSymbolOp (r x / 2) T * gammaTransport Rint T x)) c‖
         ≤ (B / 2 + ‖T‖ / 2) * ‖c‖ :=
-    fun x hx => norm_deriv_channelAmplitude_le hT (hr x hx.1 hx.2)
+    fun x hx => norm_deriv_gammaChannelAmplitude_le hT (hr x hx.1 hx.2)
   have h := hconv.norm_image_sub_le_of_norm_hasDerivWithin_le hderiv hbound
     (left_mem_Icc.mpr hη) (right_mem_Icc.mpr hη)
-  rw [channelAmplitude_zero hR] at h
+  rw [gammaChannelAmplitude_zero hR] at h
   rw [sub_zero] at h
-  calc ‖channelAmplitude Rint T c η - c‖ ≤ (B / 2 + ‖T‖ / 2) * ‖c‖ * |η| := by
+  calc ‖gammaChannelAmplitude Rint T c η - c‖ ≤ (B / 2 + ‖T‖ / 2) * ‖c‖ * |η| := by
         simpa [Real.norm_eq_abs] using h
     _ = ((B / 2 + ‖T‖ / 2) * ‖c‖) * η := by rw [abs_of_nonneg hη]
 
 /-- The channel amplitude of the negative frequency half-line, reflected to `t = -η ≥ 0`. -/
-def channelAmplitudeNeg (Rint : ℝ → ℝ) (T : X →L[ℂ] X) (c : X) (t : ℝ) : X :=
-  channelAmplitude Rint T c (-t)
+def gammaChannelAmplitudeNeg (Rint : ℝ → ℝ) (T : X →L[ℂ] X) (c : X) (t : ℝ) : X :=
+  gammaChannelAmplitude Rint T c (-t)
 
 omit [CompleteSpace X] [Nontrivial X] in
-theorem channelAmplitudeNeg_zero (hR : Rint 0 = 0) : channelAmplitudeNeg Rint T c 0 = c := by
-  rw [channelAmplitudeNeg, neg_zero, channelAmplitude_zero hR]
+theorem gammaChannelAmplitudeNeg_zero (hR : Rint 0 = 0) : gammaChannelAmplitudeNeg Rint T c 0 = c := by
+  rw [gammaChannelAmplitudeNeg, neg_zero, gammaChannelAmplitude_zero hR]
 
 omit [Nontrivial X] in
-theorem hasDerivAt_channelAmplitudeNeg {t : ℝ} (hRint : HasDerivAt Rint (r (-t)) (-t)) :
-    HasDerivAt (channelAmplitudeNeg Rint T c)
+theorem hasDerivAt_gammaChannelAmplitudeNeg {t : ℝ} (hRint : HasDerivAt Rint (r (-t)) (-t)) :
+    HasDerivAt (gammaChannelAmplitudeNeg Rint T c)
       (-((I • (shiftedSymbolOp (r (-t) / 2) T * gammaTransport Rint T (-t))) c)) t := by
-  have h := hasDerivAt_channelAmplitude (Rint := Rint) (r := r) (T := T) (c := c) hRint
+  have h := hasDerivAt_gammaChannelAmplitude (Rint := Rint) (r := r) (T := T) (c := c) hRint
   have hneg : HasDerivAt (fun x : ℝ => -x) (-1 : ℝ) t := (hasDerivAt_id t).neg
   have hcomp := h.scomp t hneg
   rw [neg_one_smul] at hcomp
   exact hcomp
 
 /-- **The reflected channel amplitude is Lipschitz on the cutoff region.** -/
-theorem norm_channelAmplitudeNeg_sub_le (hT : IsSelfAdjoint T) (hR : Rint 0 = 0) {B t : ℝ}
+theorem norm_gammaChannelAmplitudeNeg_sub_le (hT : IsSelfAdjoint T) (hR : Rint 0 = 0) {B t : ℝ}
     (hRint : ∀ x : ℝ, HasDerivAt Rint (r x) x)
     (hr : ∀ x : ℝ, -t ≤ x → x ≤ 0 → |r x| ≤ B) (ht : 0 ≤ t) :
-    ‖channelAmplitudeNeg Rint T c t - c‖ ≤ ((B / 2 + ‖T‖ / 2) * ‖c‖) * t := by
+    ‖gammaChannelAmplitudeNeg Rint T c t - c‖ ≤ ((B / 2 + ‖T‖ / 2) * ‖c‖) * t := by
   have hconv : Convex ℝ (Icc (0:ℝ) t) := convex_Icc 0 t
-  have hderiv : ∀ x ∈ Icc (0:ℝ) t, HasDerivWithinAt (channelAmplitudeNeg Rint T c)
+  have hderiv : ∀ x ∈ Icc (0:ℝ) t, HasDerivWithinAt (gammaChannelAmplitudeNeg Rint T c)
       (-((I • (shiftedSymbolOp (r (-x) / 2) T * gammaTransport Rint T (-x))) c))
       (Icc (0:ℝ) t) x :=
-    fun x _ => (hasDerivAt_channelAmplitudeNeg (hRint (-x))).hasDerivWithinAt
+    fun x _ => (hasDerivAt_gammaChannelAmplitudeNeg (hRint (-x))).hasDerivWithinAt
   have hbound : ∀ x ∈ Icc (0:ℝ) t,
       ‖-((I • (shiftedSymbolOp (r (-x) / 2) T * gammaTransport Rint T (-x))) c)‖
         ≤ (B / 2 + ‖T‖ / 2) * ‖c‖ := by
     intro x hx
     rw [norm_neg]
-    exact norm_deriv_channelAmplitude_le hT (hr (-x) (by linarith [hx.2]) (by linarith [hx.1]))
+    exact norm_deriv_gammaChannelAmplitude_le hT (hr (-x) (by linarith [hx.2]) (by linarith [hx.1]))
   have h := hconv.norm_image_sub_le_of_norm_hasDerivWithin_le hderiv hbound
     (left_mem_Icc.mpr ht) (right_mem_Icc.mpr ht)
-  rw [channelAmplitudeNeg_zero hR, sub_zero] at h
-  calc ‖channelAmplitudeNeg Rint T c t - c‖ ≤ (B / 2 + ‖T‖ / 2) * ‖c‖ * |t| := by
+  rw [gammaChannelAmplitudeNeg_zero hR, sub_zero] at h
+  calc ‖gammaChannelAmplitudeNeg Rint T c t - c‖ ≤ (B / 2 + ‖T‖ / 2) * ‖c‖ * |t| := by
         simpa [Real.norm_eq_abs] using h
     _ = ((B / 2 + ‖T‖ / 2) * ‖c‖) * t := by rw [abs_of_nonneg ht]
 
 omit [Nontrivial X] in
 /-- The generator of the amplitude depends continuously on the frequency. -/
-theorem continuous_deriv_channelAmplitude (hrc : Continuous r)
+theorem continuous_deriv_gammaChannelAmplitude (hrc : Continuous r)
     (hRint : ∀ x : ℝ, HasDerivAt Rint (r x) x) :
     Continuous (fun η => (I • (shiftedSymbolOp (r η / 2) T * gammaTransport Rint T η)) c) := by
   have hQ : Continuous (gammaTransport Rint T) := by

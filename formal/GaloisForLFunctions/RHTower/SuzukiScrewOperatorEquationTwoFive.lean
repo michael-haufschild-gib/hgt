@@ -1,4 +1,6 @@
 import GaloisForLFunctions.RHTower.SuzukiDirichletScrewFactorization
+import GaloisForLFunctions.RHTower.SuzukiRestrictedWeilSourceForm
+import GaloisForLFunctions.RHTower.SuzukiScrewSourceNormalization
 
 /-!
 # Suzuki equation (2.5) as an operator identity
