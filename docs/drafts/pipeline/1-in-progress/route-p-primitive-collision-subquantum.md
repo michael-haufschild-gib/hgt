@@ -111,6 +111,7 @@ umbrella is intentionally not built.
 - [x] primitive source budget `<115/108`
 - [x] targeted compile, forbidden-token scan, and axiom audit
 - [x] umbrella import wired without umbrella build
+- [x] bare target-capacity law classified as RH-equivalent by P-G176
 - [ ] completed coefficient-faithful trace contraction
 - [ ] unconditional RH closure
 
@@ -119,3 +120,6 @@ umbrella is intentionally not built.
 - 2026-08-14 — Proved exact subquantum source capacity in Lean. This removes every
   positive-proportion/amplification debt after carrier transport and sharpens Route P's sole hard
   seam to one completed coefficient-faithful trace contraction.
+- 2026-08-14 — P-G176 proves that merely asserting the corresponding trace bound for every finite
+  strict-right zero packet is equivalent to RH. Required producer must now be a named pre-zero
+  arithmetic incidence whose contraction follows from independently checkable coefficient action.

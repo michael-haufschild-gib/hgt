@@ -7079,3 +7079,79 @@ carrying both outward rays at once, and `lintegral_enorm_sq_forcedStripRay_lt_to
 
 **Still open on this card:** Theorem 1 `(11)`, Theorem 2 `(24)`/`(25)`, the order-minus-one
 commutator `(32)`/`(35a)`, the exact cutoff identity `(51)`, and Theorem 5 `(47)`.
+
+## JJ. Forced Gamma upper-strip gluing: particular solution, `(11)`, `(12)`, `(14) ⟹ (15)`
+
+Work on `suzuki-forced-gamma-upper-strip-gluing`.  Two new modules, each checked clean and wired
+into `RHTower`.
+
+```text
+RHTower/SuzukiForcedStripParticular.lean   Theorem 1: branch cancellation (7), (8)
+RHTower/SuzukiForcedStripGluing.lean       Theorem 2: (11); (12); Theorem 3: (14) ⟹ (15)
+```
+
+**Theorem 1, branch cancellation.**  The contour in `(7)` is taken along the segment, parameterised
+by `w = zs`, `s ∈ [0,1]`.  On that segment the inner half power splits,
+`(zs)^{1/2} = z^{1/2}s^{1/2}` (`cpow_half_mul_ofReal`, proved from
+`Complex.log_mul_ofReal`), because the second factor is a nonnegative real; hence the segment
+integral carries one factor `z^{1/2}` out front and
+
+```text
+p(z) = z · Q(z) ∫₀¹ s^{1/2} Q(zs)^{-1} b(zs) ds.
+```
+
+`forcedParticular_eq` is that identity and `norm_forcedParticular_le` is `(8)`.  The right side has
+no half power at all, so the particular solution is single-valued across the frequency origin and
+vanishes to first order there.  Supporting: `stripTransportInv` and
+`stripPropagatorInv_eq_cpow_smul`.
+
+**Theorem 2, `(11)`.**  `forcedGlue_iff_halfLogScatter_eq_zero`: because the same particular
+solution appears in both channels, the forced gluing criterion collapses onto the homogeneous one,
+`halfLogScatter cp cm = 0 ↔ c₋ = -i c₊`.  `forcedGlue_of_channel` is the forward direction in
+constructive form.
+
+**`(12)`.**  `exists_stripPropagator_line_bounds`: `‖H(x+iσ)‖ ≤ K(1+|x|)^{-1/2-σ}` and
+`‖H(x+iσ)^{-1}‖ ≤ A(1+|x|)^{1/2+σ}`, both from the two-sided strip-carrier bound and
+self-adjointness of `T`.
+
+**Theorem 3, `(14) ⟹ (15)`.**  `forcedStripLine` is variation of constants rebased at the origin of
+the shifted line; `lintegral_enorm_sq_forcedStripLine_lt_top` proves square integrability from the
+weighted source bound.  The bracket is uniformly bounded by `(14)` and the remaining propagator
+power has square exponent `1+2σ > 1`; `integrable_oneAddAbs_rpow` and
+`lintegral_oneAddAbs_rpow_lt_top` supply that last step from the corpus power-tail integrals.
+
+**Axiom audit.**  All fifteen new capstones of sections II and JJ audit to
+`[propext, Classical.choice, Quot.sound]`.
+
+**Still open on this card:** holomorphy of the branch-free kernel through the origin (the remaining
+half of Theorem 1), the distributional statement `(13)`, and `(16)`, which needs the abstract
+vector-valued Paley–Wiener strip translation for a general holomorphic strip function.
+
+## KK. Abstract vector-valued Paley–Wiener strip translation
+
+`RHTower/StripFourierTranslation.lean` (clean, wired) generalises the Gamma-specific translation
+package away from `stripSolution`.  A `StripDatum f` is any `f : ℂ → X` that is
+
+* holomorphic on `imStrip 0 1`,
+* bounded on every closed substrip,
+* square integrable on every interior horizontal line.
+
+For such an `f`, `stripDatumFourier_weight_eq` proves that the `L²` inverse Fourier transforms of the
+different interior lines differ exactly by the exponential weights, and
+`exists_memLp_exp_smul_stripDatumFourier` extracts one frequency profile `F` with
+`e^{2πσL}F ∈ L²(ℝ;X)` for every `0 < σ < 1`.
+
+The proof is the pairing argument: `datumPaired` multiplies the datum by the entire Fourier
+extension of a compactly supported smooth test function, `exists_bound_datumPaired` gives the
+quadratic decay along horizontal lines of a closed substrip, `datumPaired_line_shift` is Cauchy's
+rectangle theorem, `integral_weightedTest_smul_fourierInv_datum` is the multiplication formula for
+tempered distributions, and du Bois-Reymond converts the resulting `σ`-independence into the
+almost-everywhere identity.  No pointwise inversion is used, because for `σ ≤ 1/2` the datum is only
+`L²`.
+
+This single module discharges `(16)` of `forced-gamma-upper-strip-gluing`, `(25)` of
+`gamma-wall-block-hardy-and-derivative-scattering`, and the Paley–Wiener debt of
+`scalar-analytic-forcing-trace-zero-h1`, once each concrete solution is exhibited as a `StripDatum`.
+The remaining input for the forced solutions is holomorphy of the segment-parameterised particular
+integral, i.e. differentiation under the integral sign for `z ↦ ∫₀¹ w(s)G(zs)ds` on a star-shaped
+domain.

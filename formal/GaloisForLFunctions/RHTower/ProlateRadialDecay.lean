@@ -232,7 +232,9 @@ theorem abs_polarCharge_channelSource_le_of_ode {s c k a : ℝ} {R DR DDR : ℝ 
   have hRc : Continuous R := continuous_iff_continuousAt.mpr fun u => (hR u).continuousAt
   have hK : (0 : ℝ) ≤ radialDecayConstant s c R DR / k :=
     div_nonneg (radialDecayConstant_nonneg hc0) hk0.le
-  exact HTGeometry.abs_polarCharge_le_of_envelope (continuous_channelSource hRc) ha hK
+  have hcont := continuous_channelSource (k := k) hRc
+  exact HTGeometry.abs_polarCharge_le_of_envelope hcont.measurable
+    (fun x y => HTGeometry.intervalIntegrable_expHalf_mul hcont x y) ha hK
     (fun u hu => abs_channelSource_le (DDR := DDR) hs0 hs1 hc0 hk hu hR hDR hode)
     (abs_halfLineExpPrimitive_channelSource_le (DDR := DDR) hs0 hs1 hc hk hR hDR hode)
 

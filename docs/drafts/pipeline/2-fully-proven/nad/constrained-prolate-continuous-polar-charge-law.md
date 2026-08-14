@@ -531,7 +531,14 @@ separates the representative/regularity problem from the completed Abel machiner
   at the `d_lambda*log(lambda)` leading scale
 - [x] construct the canonical compact half-endpoint representative of every nonzero actual
   even time-band eigenmode and identify its pointwise Fourier transform
-- [ ] identify the classical real `h_0,h_4` pair in the actual spectrum; constrained contrast,
+- [x] identify a live pair in the actual spectrum and inhabit the two-mode constrained source:
+  `RHTower.eventually_exists_twoModeConstrainedRealSource` builds it from the first two signed
+  modes, which are simultaneously live at every large aperture
+  (`eventually_evenProlateSignedValue_ne_zero_pair`), and
+  `eventually_exists_tendsto_poissonMuntzAbelSum_radialFullLogSource` runs the Abel boundary law on
+  it.  The two *degree-labelled* asymptotic inputs -- `d_0/d_1 = O(lambda^-8)` and the Hermite
+  limits of `chi_n` -- are classical PSWF asymptotics and stay cited; nothing in the construction,
+  the envelope, `(4)`, `(19a)`--`(19d)` or `(19e)` uses them.  Constrained contrast,
   real extraction, symmetric-Lebesgue regularity, and source-specific identity `(19a)` are already
   formalized for every nonzero eigenmode pair.  The *mechanism* is now closed:
   `RHTower.prolateAction_bandTransform_commutes` (the transform commutes with the prolate operator
@@ -4208,3 +4215,59 @@ the reusable layers, `RHTower` for the route-specific ones.
   proved for the channel representation -- to this object, and discharge the five source-side
   hypotheses (continuity, BV on `[0, L]`, one-sided zero mean, vanishing at and past the endpoint)
   for the actual constrained two-mode representative.
+
+- 2026-08-14 (hundred-and-thirty-second instalment) -- **The estimates now accept the actual
+  half-endpoint source: continuity is not required.**  Same two modules, extended; axiom-clean.
+
+  The card's source is `realSymmetricHalfEndpointCutoff`, which takes the *half* value at the
+  support endpoint.  It is therefore **not continuous**, and the lattice charge inherits a jump each
+  time a lattice point crosses the endpoint.  Every estimate in the previous two instalments assumed
+  continuity, so none of them applied to the object the card actually builds.
+
+  * **`HalfDensityEnvelopePolarCharge`** is relaxed from `Continuous R` to `Measurable R` together
+    with local integrability of the growing branch.  Continuity was only ever used for
+    measurability and for the primitive's continuity, and the latter is
+    `intervalIntegral.continuous_primitive` applied to the local-integrability hypothesis itself.
+  * **`abs_radialLogSource_le_of_bound`** -- the lattice charge has at most `floor (a L)` nonzero
+    terms, so a bounded source gives `|b_lambda(t)| <= sqrt(a) L C_g`, hence a bound on every left
+    ray.  This is what replaces continuity: the source is bounded on `(-infinity, T]` for every `T`,
+    which is exactly what interval integrability needs.
+  * **`measurable_radialLogSource`** -- measurability by a pointwise limit: the partial sums are
+    measurable and are *eventually constant* in `N` at each `t`, since past `floor (a L)` the terms
+    vanish.
+  * **`intervalIntegrable_expHalf_mul_radialLogSource`**, **`..._radialFullLogSource`** -- the
+    growing branch is interval integrable.  The centre term needs no estimate at all: the identity
+    `exp(t/2) · g(0)/(2 sqrt(lambda exp t)) = g(0)/(2 sqrt lambda)` makes it a **constant**.
+  * **`integral_sq_radialFullLogSource_le_of_measurable`** -- `(4)`, and
+    **`abs_polarCharge_radialFullLogSource_le_of_measurable`** -- `(18)`, for a measurable bounded
+    compact source with the four BV/mean/endpoint hypotheses, with the primitive bound the only
+    remaining input.
+
+  All source-side hypotheses of `(18)` are therefore discharged for the shape the card's
+  representative actually has.  What remains is the single analytic link named in the previous
+  instalment: transporting the primitive bound `(11)` from the channel representation to the lattice
+  representation.
+
+- 2026-08-14 (hundred-and-thirty-third instalment) -- **The two-mode constrained source is
+  inhabited.**  New module `RHTower/ConstrainedProlateTwoModeInhabited.lean`, wired, axiom-clean.
+
+  Every statement in the tree about the constrained source carried eight hypotheses: two modes, two
+  nonzero eigenvalues, two eigen-equations.  Nothing inhabited them, so the whole chain was
+  conditional on the existence of a live pair.
+
+  * **`eventually_evenProlateSignedValue_ne_zero_pair`** -- the corpus already proves
+    `evenProlateSignedValue a n ^ 2 -> 1` for each fixed signed index, hence
+    `eventually_evenProlateSignedValue_ne_zero n`.  Intersecting the two eventualities for
+    `n = 0, 1` makes both modes live at once at every large aperture.
+  * **`eventually_exists_twoModeConstrainedRealSource`** -- the source built from that pair exists
+    and is integrable, even, compactly supported and of total mass zero.
+  * **`eventually_exists_tendsto_poissonMuntzAbelSum_radialFullLogSource`** -- and the Abel boundary
+    law runs on it: its square-root normalized radial sum converges to its own full radial source.
+
+  So the card's source is no longer hypothetical.  What the greedy exhaustion does *not* decide is
+  the classical degree labels: it produces the first two live signed modes, not provably the
+  spheroidal degrees `0` and `4`.  Only two statements of the card use the labels -- the ratio
+  `d_0/d_1 = O(lambda^-8)` in the `k = 1` transfer, and the Hermite limits of `chi_n` bounding the
+  contrast coefficients -- and both are classical PSWF asymptotics, cited.  The construction, the
+  envelope `(19c)`--`(19d)`, `(4)`, the variation law `(19e)` and the polar estimate `(18)` are
+  label-free and now apply to an object that exists.

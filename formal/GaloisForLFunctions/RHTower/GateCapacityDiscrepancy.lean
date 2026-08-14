@@ -384,6 +384,82 @@ theorem chiSq_ge_of_support {ν : S → ℝ} (hν : ∑ x, ν x = 1) {B : Set S}
   rw [C.chiSq_eq hν]
   linarith
 
+/-- The perturbation of the stationary law in a fixed direction. -/
+noncomputable def perturbedLaw (g : S → ℝ) (η : ℝ) : S → ℝ := fun x => C.stat x * (1 + η * g x)
+
+theorem sum_perturbedLaw {g : S → ℝ} (hg : ∑ x, C.stat x * g x = 0) (η : ℝ) :
+    ∑ x, C.perturbedLaw g η x = 1 := by
+  have hterm : ∀ x : S, C.perturbedLaw g η x = C.stat x + η * (C.stat x * g x) := by
+    intro x
+    rw [perturbedLaw]
+    ring
+  rw [Finset.sum_congr rfl fun x _ => hterm x, Finset.sum_add_distrib, ← Finset.mul_sum, hg,
+    C.stat_sum, mul_zero, add_zero]
+
+theorem perturbedLaw_nonneg {g : S → ℝ} {η : ℝ} (hη : ∀ x, 0 ≤ 1 + η * g x) (x : S) :
+    0 ≤ C.perturbedLaw g η x :=
+  mul_nonneg (C.stat_pos x).le (hη x)
+
+/-- Every direction admits a positive perturbation scale keeping the law nonnegative. -/
+theorem exists_perturbation_nonneg (g : S → ℝ) : ∃ η : ℝ, 0 < η ∧ ∀ x, 0 ≤ 1 + η * g x := by
+  classical
+  set T : ℝ := ∑ y, |g y| with hT
+  have hT0 : 0 ≤ T := Finset.sum_nonneg fun y _ => abs_nonneg _
+  have hpos : (0 : ℝ) < 1 + T := by linarith
+  refine ⟨1 / (1 + T), by positivity, fun x => ?_⟩
+  have hbound : |g x| ≤ T :=
+    Finset.single_le_sum (f := fun y => |g y|) (fun y _ => abs_nonneg _) (Finset.mem_univ x)
+  have hge : -T ≤ g x := by
+    have := neg_abs_le (g x)
+    linarith
+  have hrw : 1 + (1 / (1 + T)) * g x = ((1 + T) + g x) / (1 + T) := by
+    field_simp
+  rw [hrw]
+  exact div_nonneg (by linarith) hpos.le
+
+theorem density_perturbedLaw (g : S → ℝ) (η : ℝ) (x : S) :
+    C.density (C.perturbedLaw g η) x = 1 + η * g x := by
+  rw [density, perturbedLaw, mul_comm, mul_div_assoc, div_self (C.stat_pos x).ne', mul_one]
+
+/-- **Directional matching without Haar convergence.**  A law perturbed in a direction orthogonal
+to the equilibrium potential has vanishing directional capacity discrepancy. -/
+theorem discrepancy_perturbedLaw {a : ℝ} (A : Set S) {g : S → ℝ} (η : ℝ)
+    (hgh : C.inner g (C.potential a A) = 0) :
+    C.discrepancy a A (C.perturbedLaw g η) = 0 := by
+  have hdir : C.density (C.perturbedLaw g η) - 1 = η • g := by
+    funext x
+    simp only [Pi.sub_apply, Pi.one_apply, Pi.smul_apply, smul_eq_mul,
+      C.density_perturbedLaw g η x]
+    ring
+  rw [discrepancy, hdir, C.inner_smul_left, hgh, mul_zero]
+
+theorem perturbedLaw_ne_stat {g : S → ℝ} {η : ℝ} (hg : g ≠ 0) (hη : η ≠ 0) :
+    C.perturbedLaw g η ≠ C.stat := by
+  intro hc
+  refine hg (funext fun x => ?_)
+  have hx := congrFun hc x
+  rw [perturbedLaw] at hx
+  have hstat := (C.stat_pos x).ne'
+  have : C.stat x * (η * g x) = 0 := by nlinarith [hx]
+  rcases mul_eq_zero.mp this with h | h
+  · exact absurd h hstat
+  · rcases mul_eq_zero.mp h with h' | h'
+    · exact absurd h' hη
+    · simpa using h'
+
+/-- **Support form of the global obstruction.**  A law supported on a small target has a large
+killed negative-energy square. -/
+theorem dualNormSq_ge_of_support {a : ℝ} (ha0 : 0 ≤ a) (ha1 : a < 1) {ν : S → ℝ}
+    (hν : ∑ x, ν x = 1) {B : Set S} (hsupp : ∀ x, x ∉ B → ν x = 0) :
+    ((C.statMeasure B)⁻¹ - 1) / (1 + a) ≤ C.dualNormSq a ν := by
+  have h1 := C.chiSq_ge_of_support hν hsupp
+  have h2 := C.chiSq_le_dualNormSq ha0 ha1 ν
+  have hpos : (0:ℝ) < 1 + a := by linarith
+  rw [div_le_iff₀ hpos]
+  calc (C.statMeasure B)⁻¹ - 1 ≤ C.chiSq ν := h1
+    _ ≤ (1 + a) * C.dualNormSq a ν := h2
+    _ = C.dualNormSq a ν * (1 + a) := by ring
+
 end ReversibleChain
 
 end GaloisForLFunctions.RHTower

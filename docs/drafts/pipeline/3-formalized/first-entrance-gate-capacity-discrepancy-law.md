@@ -1,6 +1,6 @@
 # First-Entrance Gate Capacity and Discrepancy Law
 
-Status: `[PAPER-PROVED] [NOVELTY UNVERIFIED] [LEAN DEFERRED DURING REFACTOR]`
+Status: `[PAPER-PROVED] [LEAN-CERTIFIED] [NOVELTY UNVERIFIED]`
 
 Date: 2026-08-10
 
@@ -632,21 +632,57 @@ or studies gate-walk mixing/designs. It was not found to formulate the
 ordinary static-local Brown problem as the capacity-discrepancy bound (NCU).
 That negative search is not proof of priority.
 
-## 11. Formalization plan
+## 11. Lean certificate
 
-Lean is intentionally deferred during corpus refactor. Later finite-state
-formalization can use matrices and weighted Euclidean inner products:
+The whole card is formalized unconditionally.  A finite reversible chain is packaged as a structure
+carrying its kernel, its strictly positive stationary probability law, and reversibility; the killed
+Dirichlet form is built on the stationary inner product, and its two-sided spectral window is proved
+by the two carré-du-champ identities rather than by spectral theory.  Invertibility of the killed
+operator is the finite-dimensional injective-implies-surjective step, so the dual negative-energy
+square is defined without any matrix inverse, and Cauchy--Schwarz for the killed form is the
+discriminant of the quadratic in the perturbation parameter.
 
-1. reversible self-adjointness of \(P\);
-2. positivity of \(I-aP\);
-3. finite hitting-time dynamic programming;
-4. Dirichlet minimization by orthogonal energy decomposition;
-5. charge and stationary-mean identity;
-6. capacity window;
-7. inverse-energy Cauchy--Schwarz;
-8. composition with finite first-hit complete-union law.
+The equilibrium potential is the discounted first-entrance mass of the parent card, transported to
+real values; the Bellman--Dirichlet equation is the parent's stopping and one-step lemmas.  The
+inverse-word conversion is proved without any group structure: pulling a target tube back along a
+gate is the tube around the inversely transported target, so the first-hit mass of a moving target
+satisfies exactly the backward Bellman equation and is the equilibrium potential by uniqueness.
 
-No Lean process was started.
+Modules:
+
+- `GaloisForLFunctions.RHTower.ReversibleKilledWalk`
+- `GaloisForLFunctions.RHTower.GateCapacityDiscrepancy`
+- `GaloisForLFunctions.RHTower.GateInverseWordCapacity`
+
+| Card statement | Lean declaration |
+|---|---|
+| reversible chain, stationary inner product | `ReversibleChain`, `ReversibleChain.inner` |
+| self-adjointness of `P` and of `L_a` | `inner_step_symm`, `inner_killed_symm` |
+| `(1.1)` positivity, spectrum in `[1-a,1+a]` | `energy_window`, `energy_nonneg` |
+| `(1.2)` first-entrance mass | `potential` |
+| `(BD)` Bellman--Dirichlet | `potential_of_mem`, `potential_of_notMem`, `killed_potential_of_notMem` |
+| Thm 2.1 uniqueness | `eq_zero_of_boundary_of_killed_harmonic`, `eq_potential_of_energy_eq` |
+| Thm 2.1 Dirichlet principle | `energy_potential_le` |
+| Cor 2.2 `(GE)` gate-gradient energy | `energy_eq`, `gradSq`, `inner_sub_step_eq` |
+| `(3.1)` capacity, equilibrium charge | `capacity`, `charge` |
+| Thm 3.1 charge support | `charge_of_notMem`, `charge_ge_of_mem` |
+| Thm 3.1 `(CM)`/`(SM)` | `capacity_eq`, `stationary_mean` |
+| Cor 3.2 `(CW)` capacity window | `capacity_window` |
+| `(3.2)` volume comparison | `statMeasure_le_stationary_mean` |
+| `(4.1)` directional discrepancy | `discrepancy`, `density` |
+| `(4.2)` dual negative-energy norm | `dualNormSq`, `negEnergySq`, `killedInv` |
+| Thm 4.1 `(CD0)` | `mean_potential_eq` |
+| Thm 4.1 `(CD)` | `abs_discrepancy_le`, `inner_sq_le_energy_mul_negEnergySq`, `energyBil_sq_le` |
+| Thm 4.2 `(GO)` | `chiSq_le_dualNormSq`, `inner_le_mul_negEnergySq` |
+| Thm 4.2 `(GS)` | `chiSq_ge_of_support`, `dualNormSq_ge_of_support` |
+| Cor 4.3 `(DM)` | `discrepancy_perturbedLaw`, `exists_perturbation_nonneg`, `sum_perturbedLaw`, `perturbedLaw_ne_stat` |
+| `(IW)` inverse-word conversion | `preimage_tube`, `backAct`, `tube` |
+| `(IF)` first-hit is the potential | `potential_eq_firstHitPotential`, `firstHitPotential_recursion` |
+| Thm 6.1 `(CUC)` | `stationary_capacity_union_bound` |
+| Thm 6.2 `(NCU0)` | `capacity_union_bound` |
+| Thm 6.2 `(NCU)` | `capacity_union_bound_dual` |
+
+Every listed declaration reports exactly `propext`, `Classical.choice`, `Quot.sound`.
 
 ## 12. Dependencies
 

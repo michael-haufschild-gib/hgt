@@ -1863,3 +1863,68 @@ linearization can vanish, and the classical remedy is to divide the operator by 
 and is repaid by the vanishing order `N+1−v` of the value at the truncation — solvable exactly when
 `N + 1 > 2v`, hence for a large enough truncation, since `v` stabilises once `N` exceeds the order of
 vanishing of the linearization along the solution itself.
+
+## Lean progress — MAILLET'S NONLINEAR THEOREM IS NOW UNCONDITIONAL
+
+The nondegeneracy hypothesis recorded above as the remaining obstruction of the nonlinear layer is
+discharged.  Two further modules, both wired and axiom-clean.
+
+`GaloisForLFunctions/HTGeometry/NonlinearMailletShift.lean`
+
+    factorial_add_le, factorial_add_rpow_le      `(n+v)! ≤ n!·((v+1)(n+1))^v`
+    exists_isGevreySeries_of_isFormalEulerADESolution_shift :
+      **the estimate at an arbitrary leading shift `v`** — if the linearization along the
+      truncation at order `N` vanishes to order `v` and `m + 2v ≤ N`, the solution is Gevrey of a
+      finite integral order
+
+The indicial polynomial of the linearization may vanish; what cannot vanish is the shift polynomial
+at the order `v` to which the linearization vanishes, and the recursion is then the same recursion
+read `v` levels higher.  Three costs appear and are each paid: the convolution weights gain the
+fixed factor `ρ^v`; the value at the truncation is read at level `n+v` and so loses `A^v`, repaid by
+the order `N+1−v` to which it vanishes (this is where `N + 1 > 2v` enters); and the defect loses
+`((n+v)!/n!)^r ≤ ((v+1)(n+1))^{vr}`, which is exactly the slack the truncation order supplies.
+Because the induction size `ε` must absorb `A^v` it is now defined **after** the geometric base,
+as `ε = c/(3(K+1)(c+1)A^v)`, and every constraint on `A` is then free of `ε`.
+
+`GaloisForLFunctions/HTGeometry/NonlinearMailletUnconditional.lean`
+
+    coeff_shiftPolynomial, shiftPolynomial_ne_zero_of_coeff
+    aeval_add_sub_mem                 perturbing the point moves the value inside the ideal
+    coeff_aeval_eulerJetVector_truncPowerSeries_eq :
+      the linearization along the truncation at order `N` agrees with the linearization along the
+      solution itself up to level `N`
+    totalDegree_pderiv_lt, eq_C_of_forall_pderiv_eq_zero
+    exists_nondegenerate_annihilator :
+      **a nonzero annihilator of least total degree has a partial derivative that does not
+      annihilate**
+    exists_isGevreySeries_of_annihilator :
+      **MAILLET'S THEOREM, NONLINEAR CASE, UNCONDITIONALLY** — every formal power series
+      annihilated by a nonzero algebraic differential polynomial with convergent coefficients is
+      Gevrey of a finite integral order
+
+The selection is the classical one: among the nonzero annihilators take one of least total degree;
+a polynomial all of whose partial derivatives vanish is a constant, and a constant annihilator is
+zero, so some partial derivative is nonzero; it has strictly smaller total degree, hence by
+minimality does not annihilate.  Its order of vanishing `v` along the solution is finite, and
+taking the truncation order `N = m + 2v` meets both requirements of the shifted estimate, because
+the linearization along the truncation agrees with the linearization along the solution up to
+level `N`.
+
+### The single remaining item
+
+| step | status |
+|---|---|
+| everything else on this card | formal |
+| **the sharp half of Sibuya--Ramis** | open |
+
+The sharp half is *not* reachable by the scalar recursion.  Writing `u_n = f_n/(A^n (n!)^s)`, the
+irrationality of `s` does give a **unique** dominant shift `μ*` — the exponents
+`e_μ = deg Φ_μ − deg Φ_0 − s μ` are pairwise distinct because `s` is irrational — and the recursion
+then bounds `u_{n−μ*}` by `n^{−e*}` times the neighbouring values.  But solving the recursion for
+`f_{n−μ*}` expresses it through `f` at indices **above** `n−μ*` as well as below, so the estimate is
+not an induction, and bounding those higher indices by the a priori Gevrey bound of order `s` is
+too lossy by a factor `(n!)^δ`.  Decoupling the high part is exactly what the Newton--Ramis
+factorization `L = M ∘ N` in `ℂ{t}[θ]` does, and that factorization is therefore the remaining
+construction.  In the shift-polynomial presentation the ring law is
+`(t^a Ψ(θ))·(t^b Φ(θ)) = t^{a+b} Ψ(θ+b) Φ(θ)`, so the factorization is a Hensel-type recursion in
+the shift with a majorant convergence proof.

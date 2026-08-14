@@ -64,21 +64,21 @@ theorem sq_le_of_envelope (hK : 0 ≤ K)
           rw [sq, exp_neg_half_mul_self]
         rw [mul_pow, hsq2]
 
-theorem integrableOn_sq_of_envelope (hcont : Continuous R) (hK : 0 ≤ K)
+theorem integrableOn_sq_of_envelope (hmeas : Measurable R) (hK : 0 ≤ K)
     (henv : ∀ s : ℝ, 0 ≤ s → |R s| ≤ K * Real.exp (-s / 2)) :
     IntegrableOn (fun s : ℝ => R s ^ 2) (Ioi (0 : ℝ)) := by
   refine integrableOn_Ioi_of_exp_bound (B := K ^ 2)
-    (hcont.pow 2).aestronglyMeasurable.restrict (fun s hs => ?_)
+    (hmeas.pow_const 2).aestronglyMeasurable.restrict (fun s hs => ?_)
   rw [abs_of_nonneg (sq_nonneg _)]
   exact sq_le_of_envelope hK henv hs.le
 
-theorem integral_sq_le_of_envelope (hcont : Continuous R) (hK : 0 ≤ K)
+theorem integral_sq_le_of_envelope (hmeas : Measurable R) (hK : 0 ≤ K)
     (henv : ∀ s : ℝ, 0 ≤ s → |R s| ≤ K * Real.exp (-s / 2)) :
     (∫ s in Ioi (0 : ℝ), R s ^ 2) ≤ K ^ 2 := by
   have hmaj : IntegrableOn (fun s : ℝ => K ^ 2 * Real.exp (-s)) (Ioi (0 : ℝ)) :=
     (integrableOn_exp_neg_Ioi 0).const_mul _
   have hle : (∫ s in Ioi (0 : ℝ), R s ^ 2) ≤ ∫ s in Ioi (0 : ℝ), K ^ 2 * Real.exp (-s) := by
-    refine integral_mono_ae (integrableOn_sq_of_envelope hcont hK henv) hmaj ?_
+    refine integral_mono_ae (integrableOn_sq_of_envelope hmeas hK henv) hmaj ?_
     refine (ae_restrict_iff' measurableSet_Ioi).mpr (Filter.Eventually.of_forall fun s hs => ?_)
     exact sq_le_of_envelope hK henv hs.le
   have hval : (∫ s in Ioi (0 : ℝ), K ^ 2 * Real.exp (-s)) = K ^ 2 := by
@@ -86,25 +86,25 @@ theorem integral_sq_le_of_envelope (hcont : Continuous R) (hK : 0 ≤ K)
     simp
   linarith [hle, hval.le, hval.ge]
 
-theorem integrableOn_expNegHalf_mul_of_envelope (hcont : Continuous R)
+theorem integrableOn_expNegHalf_mul_of_envelope (hmeas : Measurable R)
     (henv : ∀ s : ℝ, 0 ≤ s → |R s| ≤ K * Real.exp (-s / 2)) :
     IntegrableOn (fun s : ℝ => Real.exp (-s / 2) * R s) (Ioi (0 : ℝ)) := by
   refine integrableOn_Ioi_of_exp_bound (B := K)
-    (((Real.continuous_exp.comp (continuous_id.neg.div_const 2)).mul
-      hcont).aestronglyMeasurable.restrict) (fun s hs => ?_)
+    ((((Real.continuous_exp.comp (continuous_id.neg.div_const 2)).measurable).mul
+      hmeas).aestronglyMeasurable.restrict) (fun s hs => ?_)
   rw [abs_mul, abs_of_nonneg (Real.exp_pos _).le]
   calc Real.exp (-s / 2) * |R s| ≤ Real.exp (-s / 2) * (K * Real.exp (-s / 2)) :=
         mul_le_mul_of_nonneg_left (henv s hs.le) (Real.exp_pos _).le
     _ = K * Real.exp (-s) := by rw [← mul_assoc, mul_comm (Real.exp (-s / 2)) K, mul_assoc,
         exp_neg_half_mul_self]
 
-theorem integral_abs_expNegHalf_mul_le_of_envelope (hcont : Continuous R)
+theorem integral_abs_expNegHalf_mul_le_of_envelope (hmeas : Measurable R)
     (henv : ∀ s : ℝ, 0 ≤ s → |R s| ≤ K * Real.exp (-s / 2)) :
     (∫ s in Ioi (0 : ℝ), |Real.exp (-s / 2) * R s|) ≤ K := by
   have hmaj : IntegrableOn (fun s : ℝ => K * Real.exp (-s)) (Ioi (0 : ℝ)) :=
     (integrableOn_exp_neg_Ioi 0).const_mul _
   have habs : IntegrableOn (fun s : ℝ => |Real.exp (-s / 2) * R s|) (Ioi (0 : ℝ)) :=
-    (integrableOn_expNegHalf_mul_of_envelope hcont henv).abs
+    (integrableOn_expNegHalf_mul_of_envelope hmeas henv).abs
   have hle : (∫ s in Ioi (0 : ℝ), |Real.exp (-s / 2) * R s|)
       ≤ ∫ s in Ioi (0 : ℝ), K * Real.exp (-s) := by
     refine integral_mono_ae habs hmaj ?_
@@ -128,11 +128,11 @@ theorem shifted_envelope {h : ℝ} (hh : 0 ≤ h) (hK : 0 ≤ K)
   refine Real.exp_le_exp.mpr ?_
   linarith
 
-theorem integrableOn_sq_comp_add_of_envelope (hcont : Continuous R) (hK : 0 ≤ K)
+theorem integrableOn_sq_comp_add_of_envelope (hmeas : Measurable R) (hK : 0 ≤ K)
     (henv : ∀ s : ℝ, 0 ≤ s → |R s| ≤ K * Real.exp (-s / 2)) {h : ℝ} (hh : 0 ≤ h) :
     IntegrableOn (fun s : ℝ => R (s + h) ^ 2) (Ioi (0 : ℝ)) := by
   refine integrableOn_Ioi_of_exp_bound (B := K ^ 2)
-    (((hcont.comp (continuous_id.add continuous_const)).pow 2).aestronglyMeasurable.restrict)
+    (((hmeas.comp (measurable_id.add_const _)).pow_const 2).aestronglyMeasurable.restrict)
     (fun s hs => ?_)
   have hb := shifted_envelope hh hK henv hs.le
   have hnn : (0 : ℝ) ≤ |R (s + h)| := abs_nonneg _
@@ -141,11 +141,11 @@ theorem integrableOn_sq_comp_add_of_envelope (hcont : Continuous R) (hK : 0 ≤ 
   calc |R (s + h)| ^ 2 ≤ (K * Real.exp (-s / 2)) ^ 2 := by nlinarith
     _ = K ^ 2 * Real.exp (-s) := by rw [mul_pow, hsq2]
 
-theorem integrableOn_mul_comp_add_of_envelope (hcont : Continuous R) (hK : 0 ≤ K)
+theorem integrableOn_mul_comp_add_of_envelope (hmeas : Measurable R) (hK : 0 ≤ K)
     (henv : ∀ s : ℝ, 0 ≤ s → |R s| ≤ K * Real.exp (-s / 2)) {h : ℝ} (hh : 0 ≤ h) :
     IntegrableOn (fun s : ℝ => R (s + h) * R s) (Ioi (0 : ℝ)) := by
   refine integrableOn_Ioi_of_exp_bound (B := K ^ 2)
-    (((hcont.comp (continuous_id.add continuous_const)).mul hcont).aestronglyMeasurable.restrict)
+    (((hmeas.comp (measurable_id.add_const _)).mul hmeas).aestronglyMeasurable.restrict)
     (fun s hs => ?_)
   have hb := shifted_envelope hh hK henv hs.le
   have hb0 := henv s hs.le
@@ -161,13 +161,15 @@ theorem intervalIntegrable_expHalf_mul (hcont : Continuous R) (x y : ℝ) :
     IntervalIntegrable (fun t : ℝ => Real.exp (t / 2) * R t) volume x y :=
   ((Real.continuous_exp.comp (continuous_id.div_const 2)).mul hcont).intervalIntegrable x y
 
-theorem continuous_halfLineExpPrimitive (hcont : Continuous R) :
+theorem continuous_halfLineExpPrimitive
+    (hlocal : ∀ x y : ℝ,
+      IntervalIntegrable (fun t : ℝ => Real.exp (t / 2) * R t) volume x y) :
     Continuous (halfLineExpPrimitive R) :=
-  intervalIntegral.continuous_primitive (fun x y => intervalIntegrable_expHalf_mul hcont x y) 0
+  intervalIntegral.continuous_primitive hlocal 0
 
 /-- **The two-dimensional cross integrand is dominated.**  On the lag rectangle the weight is at
 most `exp a`, so the envelope dominates the whole product by `K² exp a · exp (-s)`. -/
-theorem integrable_prod_expHalf_of_envelope (hcont : Continuous R) (hK : 0 ≤ K)
+theorem integrable_prod_expHalf_of_envelope (hmeas : Measurable R) (hK : 0 ≤ K)
     (henv : ∀ s : ℝ, 0 ≤ s → |R s| ≤ K * Real.exp (-s / 2)) {a eps : ℝ} (_ha : 0 ≤ a)
     (heps : |eps| = 1) :
     Integrable (Function.uncurry (fun h s : ℝ => Real.exp (eps * h / 2) * R (s + h) * R s))
@@ -181,12 +183,12 @@ theorem integrable_prod_expHalf_of_envelope (hcont : Continuous R) (hK : 0 ≤ K
   have hmeas : AEStronglyMeasurable
       (Function.uncurry (fun h s : ℝ => Real.exp (eps * h / 2) * R (s + h) * R s))
       ((volume.restrict (Ioc (0 : ℝ) (2 * a))).prod (volume.restrict (Ioi (0 : ℝ)))) := by
-    refine Continuous.aestronglyMeasurable ?_
-    have h1 : Continuous fun p : ℝ × ℝ => Real.exp (eps * p.1 / 2) :=
-      Real.continuous_exp.comp ((continuous_const.mul continuous_fst).div_const 2)
-    have h2 : Continuous fun p : ℝ × ℝ => R (p.2 + p.1) :=
-      hcont.comp (continuous_snd.add continuous_fst)
-    have h3 : Continuous fun p : ℝ × ℝ => R p.2 := hcont.comp continuous_snd
+    refine Measurable.aestronglyMeasurable ?_
+    have h1 : Measurable fun p : ℝ × ℝ => Real.exp (eps * p.1 / 2) :=
+      (Real.continuous_exp.comp ((continuous_const.mul continuous_fst).div_const 2)).measurable
+    have h2 : Measurable fun p : ℝ × ℝ => R (p.2 + p.1) :=
+      hmeas.comp (measurable_snd.add measurable_fst)
+    have h3 : Measurable fun p : ℝ × ℝ => R p.2 := hmeas.comp measurable_snd
     exact (h1.mul h2).mul h3
   refine Integrable.mono' hmaj hmeas ?_
   rw [Measure.prod_restrict]
@@ -218,12 +220,12 @@ theorem integrable_prod_expHalf_of_envelope (hcont : Continuous R) (hK : 0 ≤ K
 
 /-- **Both weighted autocorrelation integrands are integrable on the lag interval.**  Fubini turns
 the product integrability into integrability of the inner integral. -/
-theorem integrableOn_expWeight_mul_autocorrelation_of_envelope (hcont : Continuous R) (hK : 0 ≤ K)
+theorem integrableOn_expWeight_mul_autocorrelation_of_envelope (hmeas : Measurable R) (hK : 0 ≤ K)
     (henv : ∀ s : ℝ, 0 ≤ s → |R s| ≤ K * Real.exp (-s / 2)) {a eps : ℝ} (ha : 0 ≤ a)
     (heps : |eps| = 1) :
     IntegrableOn (fun h : ℝ => Real.exp (eps * h / 2) * halfLineAutocorrelation R h)
       (Ioc 0 (2 * a)) := by
-  have hprod := integrable_prod_expHalf_of_envelope hcont hK henv ha heps
+  have hprod := integrable_prod_expHalf_of_envelope hmeas hK henv ha heps
   have hfub := hprod.integral_prod_left
   refine hfub.congr (Filter.Eventually.of_forall fun h => ?_)
   show (∫ s : ℝ, Real.exp (eps * h / 2) * R (s + h) * R s ∂(volume.restrict (Ioi (0 : ℝ))))
@@ -233,7 +235,9 @@ theorem integrableOn_expWeight_mul_autocorrelation_of_envelope (hcont : Continuo
   ring
 
 /-- The pairing of the decaying branch with a primitive increment is integrable. -/
-theorem integrableOn_expNegHalf_mul_primitive_diff_of_envelope (hcont : Continuous R) (hK : 0 ≤ K)
+theorem integrableOn_expNegHalf_mul_primitive_diff_of_envelope (hmeas : Measurable R)
+    (hlocal : ∀ x y : ℝ, IntervalIntegrable (fun t : ℝ => Real.exp (t / 2) * R t) volume x y)
+    (hK : 0 ≤ K)
     (henv : ∀ s : ℝ, 0 ≤ s → |R s| ≤ K * Real.exp (-s / 2)) {a M : ℝ} (ha : 0 ≤ a)
     (hA : ∀ t : ℝ, 0 ≤ t → |halfLineExpPrimitive R t| ≤ M) :
     IntegrableOn (fun s : ℝ => (Real.exp (-s / 2) * R s)
@@ -244,10 +248,11 @@ theorem integrableOn_expNegHalf_mul_primitive_diff_of_envelope (hcont : Continuo
       rw [halfLineExpPrimitive, intervalIntegral.integral_same]
     rw [hz] at h0
     simpa using h0
-  have hprim := continuous_halfLineExpPrimitive hcont
+  have hprim := continuous_halfLineExpPrimitive hlocal
   refine integrableOn_Ioi_of_exp_bound (B := 2 * M * K)
-    ((((Real.continuous_exp.comp (continuous_id.neg.div_const 2)).mul hcont).mul
-      ((hprim.comp (continuous_id.add continuous_const)).sub hprim)).aestronglyMeasurable.restrict)
+    (((((Real.continuous_exp.comp (continuous_id.neg.div_const 2)).measurable).mul hmeas).mul
+      (((hprim.comp (continuous_id.add continuous_const)).sub
+        hprim).measurable)).aestronglyMeasurable.restrict)
     (fun s hs => ?_)
   have hs0 : (0 : ℝ) ≤ s := le_of_lt hs
   have h1 : |Real.exp (-s / 2) * R s| ≤ K * Real.exp (-s) := by
@@ -270,7 +275,9 @@ theorem integrableOn_expNegHalf_mul_primitive_diff_of_envelope (hcont : Continuo
 /-- **The polar charge under one half-density envelope.**  Continuity and the envelope discharge
 every integrability hypothesis of the abstract estimate, and the two remaining integrals are
 bounded by `K` and `K²`. -/
-theorem abs_polarCharge_le_of_envelope (hcont : Continuous R) {a M K : ℝ} (ha : 0 ≤ a)
+theorem abs_polarCharge_le_of_envelope (hmeas : Measurable R)
+    (hlocal : ∀ x y : ℝ, IntervalIntegrable (fun t : ℝ => Real.exp (t / 2) * R t) volume x y)
+    {a M K : ℝ} (ha : 0 ≤ a)
     (hK : 0 ≤ K) (henv : ∀ s : ℝ, 0 ≤ s → |R s| ≤ K * Real.exp (-s / 2))
     (hA : ∀ t : ℝ, 0 ≤ t → |halfLineExpPrimitive R t| ≤ M) :
     |polarCharge R a| ≤ 4 * M * K + 4 * K ^ 2 := by
@@ -283,32 +290,32 @@ theorem abs_polarCharge_le_of_envelope (hcont : Continuous R) {a M K : ℝ} (ha 
   have hpos : |(1 : ℝ)| = 1 := abs_one
   have hneg : |(-1 : ℝ)| = 1 := by norm_num
   have hmain := abs_polarCharge_le R ha hA
-    (integrableOn_sq_of_envelope hcont hK henv)
-    (fun h hh => integrableOn_sq_comp_add_of_envelope hcont hK henv hh)
-    (fun h hh => integrableOn_mul_comp_add_of_envelope hcont hK henv hh)
-    (fun x y => intervalIntegrable_expHalf_mul hcont x y)
+    (integrableOn_sq_of_envelope hmeas hK henv)
+    (fun h hh => integrableOn_sq_comp_add_of_envelope hmeas hK henv hh)
+    (fun h hh => integrableOn_mul_comp_add_of_envelope hmeas hK henv hh)
+    hlocal
     (by
-      have h := integrable_prod_expHalf_of_envelope hcont hK henv ha hpos
+      have h := integrable_prod_expHalf_of_envelope hmeas hK henv ha hpos
       refine h.congr (Filter.Eventually.of_forall fun p => ?_)
       show Real.exp (1 * p.1 / 2) * R (p.2 + p.1) * R p.2
         = Real.exp (p.1 / 2) * R (p.2 + p.1) * R p.2
       rw [one_mul])
-    (integrableOn_expNegHalf_mul_of_envelope hcont henv)
-    (integrableOn_expNegHalf_mul_primitive_diff_of_envelope hcont hK henv ha hA)
+    (integrableOn_expNegHalf_mul_of_envelope hmeas henv)
+    (integrableOn_expNegHalf_mul_primitive_diff_of_envelope hmeas hlocal hK henv ha hA)
     (by
-      have h := integrableOn_expWeight_mul_autocorrelation_of_envelope hcont hK henv ha hpos
+      have h := integrableOn_expWeight_mul_autocorrelation_of_envelope hmeas hK henv ha hpos
       refine h.congr (Filter.Eventually.of_forall fun x => ?_)
       show Real.exp (1 * x / 2) * halfLineAutocorrelation R x
         = Real.exp (x / 2) * halfLineAutocorrelation R x
       rw [one_mul])
     (by
-      have h := integrableOn_expWeight_mul_autocorrelation_of_envelope hcont hK henv ha hneg
+      have h := integrableOn_expWeight_mul_autocorrelation_of_envelope hmeas hK henv ha hneg
       refine h.congr (Filter.Eventually.of_forall fun x => ?_)
       show Real.exp (-1 * x / 2) * halfLineAutocorrelation R x
         = Real.exp (-x / 2) * halfLineAutocorrelation R x
       rw [show (-1 : ℝ) * x / 2 = -x / 2 by ring])
-  have hI1 := integral_abs_expNegHalf_mul_le_of_envelope hcont henv
-  have hI2 := integral_sq_le_of_envelope hcont hK henv
+  have hI1 := integral_abs_expNegHalf_mul_le_of_envelope hmeas henv
+  have hI2 := integral_sq_le_of_envelope hmeas hK henv
   have hI1nn : (0 : ℝ) ≤ ∫ s in Ioi (0 : ℝ), |Real.exp (-s / 2) * R s| :=
     integral_nonneg (fun s => abs_nonneg _)
   nlinarith [hmain, hI1, hI2, hM, hK, hI1nn]

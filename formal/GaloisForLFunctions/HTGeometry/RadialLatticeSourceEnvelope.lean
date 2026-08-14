@@ -188,7 +188,8 @@ theorem integral_sq_radialLogSource_le {g : ℝ → ℂ} {L lam : ℝ} (hlam : 0
     have h1 : (0 : ℝ) ≤ (eVariationOn g (Icc 0 L)).toReal := ENNReal.toReal_nonneg
     have h2 : (0 : ℝ) < Real.sqrt lam := Real.sqrt_pos.mpr hlam
     positivity
-  exact integral_sq_le_of_envelope (continuous_radialLogSource (L := L) hlam hL hgc hvan) hK
+  have hcont := continuous_radialLogSource (L := L) hlam hL hgc hvan
+  exact integral_sq_le_of_envelope hcont.measurable hK
     (fun s _ => abs_radialLogSource_le hlam hL hint hvar hmean hLz hvan s)
 
 /-- **`(18)` for the radial lattice source.**  Only the primitive bound is left to supply: every
@@ -205,7 +206,9 @@ theorem abs_polarCharge_radialLogSource_le {g : ℝ → ℂ} {L lam a M : ℝ} (
     have h1 : (0 : ℝ) ≤ (eVariationOn g (Icc 0 L)).toReal := ENNReal.toReal_nonneg
     have h2 : (0 : ℝ) < Real.sqrt lam := Real.sqrt_pos.mpr hlam
     positivity
-  exact abs_polarCharge_le_of_envelope (continuous_radialLogSource (L := L) hlam hL hgc hvan)
+  have hcont := continuous_radialLogSource (L := L) hlam hL hgc hvan
+  exact abs_polarCharge_le_of_envelope hcont.measurable
+    (fun x y => intervalIntegrable_expHalf_mul hcont x y)
     ha hK (fun s _ => abs_radialLogSource_le hlam hL hint hvar hmean hLz hvan s) hA
 
 /-! ### The real source and the Poisson centre -/
@@ -353,7 +356,8 @@ theorem integral_sq_radialFullLogSource_le {f : ℝ → ℝ} {L lam : ℝ} (hlam
     have h2 : (0 : ℝ) < Real.sqrt lam := Real.sqrt_pos.mpr hlam
     have h3 : (0 : ℝ) ≤ |f 0| := abs_nonneg _
     positivity
-  exact integral_sq_le_of_envelope (continuous_radialFullLogSource (L := L) hlam hL hfc hvan) hK
+  have hcont := continuous_radialFullLogSource (L := L) hlam hL hfc hvan
+  exact integral_sq_le_of_envelope hcont.measurable hK
     (fun s _ => abs_radialFullLogSource_le hlam hL hint hvar hmean hLz hvan s)
 
 /-- **`(18)` for the full radial source.**  Only the primitive bound is left to supply. -/
@@ -370,7 +374,196 @@ theorem abs_polarCharge_radialFullLogSource_le {f : ℝ → ℝ} {L lam a M : �
     have h2 : (0 : ℝ) < Real.sqrt lam := Real.sqrt_pos.mpr hlam
     have h3 : (0 : ℝ) ≤ |f 0| := abs_nonneg _
     positivity
-  exact abs_polarCharge_le_of_envelope (continuous_radialFullLogSource (L := L) hlam hL hfc hvan)
+  have hcont := continuous_radialFullLogSource (L := L) hlam hL hfc hvan
+  exact abs_polarCharge_le_of_envelope hcont.measurable
+    (fun x y => intervalIntegrable_expHalf_mul hcont x y)
+    ha hK (fun s _ => abs_radialFullLogSource_le hlam hL hint hvar hmean hLz hvan s) hA
+
+/-! ### Measurable sources -/
+
+/-- A measurable function bounded below the right endpoint is interval integrable. -/
+theorem intervalIntegrable_of_measurable_of_bound_le {f : ℝ → ℝ} (hm : Measurable f) {x y C : ℝ}
+    (hb : ∀ t : ℝ, t ≤ max x y → |f t| ≤ C) : IntervalIntegrable f volume x y := by
+  have hstep : ∀ u v : ℝ, v ≤ max x y → IntegrableOn f (Ioc u v) := by
+    intro u v hv
+    refine Integrable.mono' (integrableOn_const (C := C) measure_Ioc_lt_top.ne enorm_ne_top)
+      hm.aestronglyMeasurable.restrict ?_
+    refine (ae_restrict_iff' measurableSet_Ioc).mpr (Filter.Eventually.of_forall fun t ht => ?_)
+    simpa [Real.norm_eq_abs] using hb t (le_trans ht.2 hv)
+  exact ⟨hstep x y (le_max_right x y), hstep y x (le_max_left x y)⟩
+
+/-- The lattice charge counts at most `a L` nonzero terms, so the radial source is bounded on
+every left ray. -/
+theorem abs_radialLogSource_le_of_bound {g : ℝ → ℂ} {L lam Cg : ℝ} (hlam : 0 < lam) (hL : 0 ≤ L)
+    (hgb : ∀ x : ℝ, ‖g x‖ ≤ Cg) (hvan : ∀ x : ℝ, L < x → g x = 0) {T t : ℝ} (ht : t ≤ T) :
+    |radialLogSource g lam t| ≤ Real.sqrt (lam * Real.exp T) * L * Cg := by
+  have hCg : (0 : ℝ) ≤ Cg := le_trans (norm_nonneg _) (hgb 0)
+  have ha : (0 : ℝ) < lam * Real.exp t := by positivity
+  set a : ℝ := lam * Real.exp t with hadef
+  set n : ℕ := ⌊a * L⌋₊ with hndef
+  have hfl' : a * L < (n : ℝ) + 1 := Nat.lt_floor_add_one (a * L)
+  have hn : L < ((n : ℝ) + 1) / a := by
+    rw [lt_div_iff₀ ha]
+    linarith [hfl']
+  have hcount : (n : ℝ) ≤ a * L := Nat.floor_le (by positivity)
+  have hsum : ‖latticeCharge g a‖ ≤ (n : ℝ) * Cg := by
+    rw [latticeCharge_eq_sum ha hvan hn]
+    calc ‖∑ i ∈ Finset.range n, g (((i : ℝ) + 1) / a)‖
+        ≤ ∑ i ∈ Finset.range n, ‖g (((i : ℝ) + 1) / a)‖ := norm_sum_le _ _
+      _ ≤ ∑ _i ∈ Finset.range n, Cg := Finset.sum_le_sum fun i _ => hgb _
+      _ = (n : ℝ) * Cg := by
+          rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+  have hsa : (0 : ℝ) < Real.sqrt a := Real.sqrt_pos.mpr ha
+  have hsasq : Real.sqrt a * Real.sqrt a = a := Real.mul_self_sqrt ha.le
+  have hre : |radialLogSource g lam t| ≤ ‖latticeCharge g a‖ / Real.sqrt a := by
+    rw [radialLogSource, radialLatticeSource]
+    refine le_trans (Complex.abs_re_le_norm _) (le_of_eq ?_)
+    rw [norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hsa]
+  have hstep : ‖latticeCharge g a‖ / Real.sqrt a ≤ Real.sqrt a * L * Cg := by
+    rw [div_le_iff₀ hsa]
+    calc ‖latticeCharge g a‖ ≤ (n : ℝ) * Cg := hsum
+      _ ≤ (a * L) * Cg := by nlinarith [hCg, hcount]
+      _ = Real.sqrt a * L * Cg * Real.sqrt a := by
+          rw [show Real.sqrt a * L * Cg * Real.sqrt a
+            = (Real.sqrt a * Real.sqrt a) * L * Cg by ring, hsasq]
+  have hmono : Real.sqrt a ≤ Real.sqrt (lam * Real.exp T) := by
+    refine Real.sqrt_le_sqrt ?_
+    exact mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ht) hlam.le
+  calc |radialLogSource g lam t| ≤ ‖latticeCharge g a‖ / Real.sqrt a := hre
+    _ ≤ Real.sqrt a * L * Cg := hstep
+    _ ≤ Real.sqrt (lam * Real.exp T) * L * Cg := by
+        have : (0 : ℝ) ≤ L * Cg := by positivity
+        nlinarith [hmono, hsa.le]
+
+/-- The radial source of a measurable compact source is measurable. -/
+theorem measurable_radialLogSource {g : ℝ → ℂ} {L lam : ℝ} (hlam : 0 < lam)
+    (hgm : Measurable g) (hvan : ∀ x : ℝ, L < x → g x = 0) :
+    Measurable (radialLogSource g lam) := by
+  have hmeasN : ∀ N : ℕ, Measurable fun t : ℝ =>
+      ((∑ i ∈ Finset.range N, g (((i : ℝ) + 1) / (lam * Real.exp t)))
+        / (Real.sqrt (lam * Real.exp t) : ℂ)).re := by
+    intro N
+    have hden : Measurable fun t : ℝ => ((Real.sqrt (lam * Real.exp t) : ℝ) : ℂ) :=
+      (Complex.continuous_ofReal.comp
+        (Real.continuous_sqrt.comp (continuous_const.mul Real.continuous_exp))).measurable
+    have hnum : Measurable fun t : ℝ =>
+        ∑ i ∈ Finset.range N, g (((i : ℝ) + 1) / (lam * Real.exp t)) := by
+      refine Finset.measurable_sum _ fun i _ => hgm.comp ?_
+      exact measurable_const.div ((continuous_const.mul Real.continuous_exp).measurable)
+    exact Complex.measurable_re.comp (hnum.div hden)
+  refine measurable_of_tendsto_metrizable' Filter.atTop hmeasN (tendsto_pi_nhds.mpr fun t => ?_)
+  have ha : (0 : ℝ) < lam * Real.exp t := by positivity
+  refine tendsto_const_nhds.congr' ?_
+  filter_upwards [Filter.eventually_ge_atTop (⌊(lam * Real.exp t) * L⌋₊ + 1)] with N hN
+  have hfl' : (lam * Real.exp t) * L < (⌊(lam * Real.exp t) * L⌋₊ : ℝ) + 1 :=
+    Nat.lt_floor_add_one _
+  have hNle : ((⌊(lam * Real.exp t) * L⌋₊ : ℕ) : ℝ) + 1 ≤ (N : ℝ) := by
+    exact_mod_cast hN
+  have hn : L < ((N : ℝ) + 1) / (lam * Real.exp t) := by
+    rw [lt_div_iff₀ ha]
+    linarith [hfl', hNle]
+  rw [radialLogSource, radialLatticeSource, latticeCharge_eq_sum ha hvan hn]
+
+/-- The growing branch of a bounded measurable radial source is interval integrable. -/
+theorem intervalIntegrable_expHalf_mul_radialLogSource {g : ℝ → ℂ} {L lam Cg : ℝ}
+    (hlam : 0 < lam) (hL : 0 ≤ L) (hgm : Measurable g) (hgb : ∀ x : ℝ, ‖g x‖ ≤ Cg)
+    (hvan : ∀ x : ℝ, L < x → g x = 0) (x y : ℝ) :
+    IntervalIntegrable (fun t : ℝ => Real.exp (t / 2) * radialLogSource g lam t) volume x y := by
+  have hm : Measurable fun t : ℝ => Real.exp (t / 2) * radialLogSource g lam t :=
+    (Real.continuous_exp.comp (continuous_id.div_const 2)).measurable.mul
+      (measurable_radialLogSource hlam hgm hvan)
+  refine intervalIntegrable_of_measurable_of_bound_le hm
+    (C := Real.exp (max x y / 2) * (Real.sqrt (lam * Real.exp (max x y)) * L * Cg)) ?_
+  intro t ht
+  have hb := abs_radialLogSource_le_of_bound (T := max x y) hlam hL hgb hvan ht
+  have hnn : (0 : ℝ) ≤ Real.sqrt (lam * Real.exp (max x y)) * L * Cg := by
+    have hCg : (0 : ℝ) ≤ Cg := le_trans (norm_nonneg _) (hgb 0)
+    have : (0 : ℝ) ≤ Real.sqrt (lam * Real.exp (max x y)) := Real.sqrt_nonneg _
+    positivity
+  rw [abs_mul, abs_of_nonneg (Real.exp_pos _).le]
+  have hexp : Real.exp (t / 2) ≤ Real.exp (max x y / 2) := by
+    refine Real.exp_le_exp.mpr ?_
+    linarith
+  exact mul_le_mul hexp hb (abs_nonneg _) (Real.exp_pos _).le
+
+/-! ### The measurable full source -/
+
+theorem measurable_radialFullLogSource {f : ℝ → ℝ} {L lam : ℝ} (hlam : 0 < lam)
+    (hfm : Measurable f) (hvan : ∀ x : ℝ, L < x → f x = 0) :
+    Measurable (radialFullLogSource f lam) := by
+  have hvanC : ∀ x : ℝ, L < x → ((f x : ℝ) : ℂ) = 0 := by
+    intro x hx
+    rw [hvan x hx]
+    simp
+  refine (measurable_radialLogSource (L := L) hlam
+    (Complex.measurable_ofReal.comp hfm) hvanC).add ?_
+  refine measurable_const.div ?_
+  exact (continuous_const.mul
+    (Real.continuous_sqrt.comp (continuous_const.mul Real.continuous_exp))).measurable
+
+/-- The centre term contributes a constant to the growing branch. -/
+theorem expHalf_mul_centre {f : ℝ → ℝ} {lam : ℝ} (hlam : 0 < lam) (t : ℝ) :
+    Real.exp (t / 2) * (f 0 / (2 * Real.sqrt (lam * Real.exp t))) = f 0 / (2 * Real.sqrt lam) := by
+  have hsl : Real.sqrt lam ≠ 0 := ne_of_gt (Real.sqrt_pos.mpr hlam)
+  have hne : Real.exp (t / 2) ≠ 0 := ne_of_gt (Real.exp_pos _)
+  rw [sqrt_mul_exp hlam.le]
+  field_simp
+
+theorem intervalIntegrable_expHalf_mul_radialFullLogSource {f : ℝ → ℝ} {L lam Cg : ℝ}
+    (hlam : 0 < lam) (hL : 0 ≤ L) (hfm : Measurable f) (hfb : ∀ x : ℝ, |f x| ≤ Cg)
+    (hvan : ∀ x : ℝ, L < x → f x = 0) (x y : ℝ) :
+    IntervalIntegrable (fun t : ℝ => Real.exp (t / 2) * radialFullLogSource f lam t)
+      volume x y := by
+  have hvanC : ∀ z : ℝ, L < z → ((f z : ℝ) : ℂ) = 0 := by
+    intro z hz
+    rw [hvan z hz]
+    simp
+  have hgb : ∀ z : ℝ, ‖((f z : ℝ) : ℂ)‖ ≤ Cg := by
+    intro z
+    rw [Complex.norm_real, Real.norm_eq_abs]
+    exact hfb z
+  have h1 := intervalIntegrable_expHalf_mul_radialLogSource (g := fun z : ℝ => ((f z : ℝ) : ℂ))
+    (L := L) (Cg := Cg) hlam hL (Complex.measurable_ofReal.comp hfm) hgb hvanC x y
+  have h2 : IntervalIntegrable (fun _ : ℝ => f 0 / (2 * Real.sqrt lam)) volume x y :=
+    intervalIntegrable_const
+  refine (h1.add h2).congr fun t _ => ?_
+  show Real.exp (t / 2) * radialLogSource (fun z : ℝ => ((f z : ℝ) : ℂ)) lam t
+      + f 0 / (2 * Real.sqrt lam)
+    = Real.exp (t / 2) * radialFullLogSource f lam t
+  rw [radialFullLogSource, mul_add, expHalf_mul_centre hlam t]
+
+/-- **`(4)` for a measurable full source.** -/
+theorem integral_sq_radialFullLogSource_le_of_measurable {f : ℝ → ℝ} {L lam : ℝ} (hlam : 0 < lam)
+    (hL : 0 ≤ L) (hfm : Measurable f) (hint : IntervalIntegrable f volume 0 L)
+    (hvar : BoundedVariationOn f (Icc 0 L)) (hmean : ∫ x in (0 : ℝ)..L, f x = 0)
+    (hLz : f L = 0) (hvan : ∀ x : ℝ, L < x → f x = 0) :
+    (∫ t in Ioi (0 : ℝ), radialFullLogSource f lam t ^ 2)
+      ≤ ((2 * (eVariationOn f (Icc 0 L)).toReal + |f 0| / 2) / Real.sqrt lam) ^ 2 := by
+  have hK : (0 : ℝ) ≤ (2 * (eVariationOn f (Icc 0 L)).toReal + |f 0| / 2) / Real.sqrt lam := by
+    have h1 : (0 : ℝ) ≤ (eVariationOn f (Icc 0 L)).toReal := ENNReal.toReal_nonneg
+    have h2 : (0 : ℝ) < Real.sqrt lam := Real.sqrt_pos.mpr hlam
+    have h3 : (0 : ℝ) ≤ |f 0| := abs_nonneg _
+    positivity
+  exact integral_sq_le_of_envelope (measurable_radialFullLogSource (L := L) hlam hfm hvan) hK
+    (fun s _ => abs_radialFullLogSource_le hlam hL hint hvar hmean hLz hvan s)
+
+/-- **`(18)` for a measurable full source.**  Only the primitive bound is left to supply. -/
+theorem abs_polarCharge_radialFullLogSource_le_of_measurable {f : ℝ → ℝ} {L lam a M Cg : ℝ}
+    (hlam : 0 < lam) (hL : 0 ≤ L) (ha : 0 ≤ a) (hfm : Measurable f) (hfb : ∀ x : ℝ, |f x| ≤ Cg)
+    (hint : IntervalIntegrable f volume 0 L) (hvar : BoundedVariationOn f (Icc 0 L))
+    (hmean : ∫ x in (0 : ℝ)..L, f x = 0) (hLz : f L = 0)
+    (hvan : ∀ x : ℝ, L < x → f x = 0)
+    (hA : ∀ t : ℝ, 0 ≤ t → |halfLineExpPrimitive (radialFullLogSource f lam) t| ≤ M) :
+    |polarCharge (radialFullLogSource f lam) a|
+      ≤ 4 * M * ((2 * (eVariationOn f (Icc 0 L)).toReal + |f 0| / 2) / Real.sqrt lam)
+        + 4 * ((2 * (eVariationOn f (Icc 0 L)).toReal + |f 0| / 2) / Real.sqrt lam) ^ 2 := by
+  have hK : (0 : ℝ) ≤ (2 * (eVariationOn f (Icc 0 L)).toReal + |f 0| / 2) / Real.sqrt lam := by
+    have h1 : (0 : ℝ) ≤ (eVariationOn f (Icc 0 L)).toReal := ENNReal.toReal_nonneg
+    have h2 : (0 : ℝ) < Real.sqrt lam := Real.sqrt_pos.mpr hlam
+    have h3 : (0 : ℝ) ≤ |f 0| := abs_nonneg _
+    positivity
+  exact abs_polarCharge_le_of_envelope (measurable_radialFullLogSource (L := L) hlam hfm hvan)
+    (intervalIntegrable_expHalf_mul_radialFullLogSource (L := L) (Cg := Cg) hlam hL hfm hfb hvan)
     ha hK (fun s _ => abs_radialFullLogSource_le hlam hL hint hvar hmean hLz hvan s) hA
 
 end HTGeometry

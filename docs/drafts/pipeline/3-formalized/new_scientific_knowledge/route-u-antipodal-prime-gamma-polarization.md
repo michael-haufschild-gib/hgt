@@ -1,7 +1,7 @@
 # Route U antipodal prime--Gamma polarization
 
 - **ID:** `route-u-antipodal-prime-gamma-polarization`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** CONJECTURE ATTACK + SOURCE CLASSIFICATION
 - **Source:** `rh-current-frontier-map.md`; successor to
   `route-u-prime-gamma-nyquist-flux`
@@ -13,7 +13,7 @@
 
 ## Status labels
 
-`[PAPER-PROVED] [HOSTILE AUDIT PASSED] [NOVELTY UNVERIFIED]`
+`[FORMALIZED] [HOSTILE AUDIT PASSED] [NOVELTY UNVERIFIED]`
 
 ## Exact frontier
 
@@ -104,7 +104,8 @@ an additional positive channel.
 Replacement conjecture: perform full common-filter polarization and classify the source anomaly
 before attempting a sign.
 
-**Verdict:** `[PAPER-PROVED]`; Lean pending.
+**Verdict:** `[FORMALIZED]` in
+`XiShiftedHardEdgePrimeGammaAntipodalPolarization.lean`.
 
 ## Exact theorem
 
@@ -228,6 +229,18 @@ Required closed surface:
 - antipodal Chebyshev and hard-edge Cauchy inversion laws;
 - fixed-carrier cofinal false-RH polarization phase and exact equivalence.
 
+## Lean audit
+
+`lake env lean` passes on scratch and checked-in source.  Exact module `.olean` built directly at
+`formal/.lake/build/lib/lean/GaloisForLFunctions/RHTower/XiShiftedHardEdgePrimeGammaAntipodalPolarization.olean`
+(882368 bytes); no umbrella or project build was run.  The module is imported by
+`formal/GaloisForLFunctions/RHTower.lean`.
+
+`#print axioms` for the cross-capital identity, trichotomy, pointwise cross witness, Cauchy
+inversion, actual packet identification, cofinal false-RH equivalence, and premise-free dichotomy
+reports only `propext`, `Classical.choice`, and `Quot.sound`.  Targeted forbidden-token and
+`git diff --check` audits pass.
+
 ## Gates
 
 - [x] Internal corpus audit
@@ -237,4 +250,4 @@ Required closed surface:
 - [x] `U-POLAR` dependency-closed paper proof
 - [x] Hostile paper-proof audit
 - [x] Stage 2 promotion
-- [ ] Exact Lean formalization and axiom audit
+- [x] Exact Lean formalization and axiom audit
