@@ -1,7 +1,7 @@
 # Logarithmic-differential defect lattice of an exponential tuple
 
 - **ID:** schanuel-logarithmic-differential-defect-lattice
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** failed Ax-compatible deformation conjecture; Ax/Kirby exponential differential equation
 - **Statement:** Every finite `Q`-linearly independent complex exponential tuple has a canonically injective integral defect lattice in the Kahler differentials of its value field.
@@ -18,7 +18,7 @@ the missing step in differential attacks on Schanuel.
 
 - [x] 0 -> 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 -> 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 -> 3  formalized: no Lean module yet
+- [x] 2 -> 3  formalized: unconditional Lean proof, wired into project umbrellas
 - [ ] 3 -> 4  publication-ready: external novelty audit and comparison with exponential derivations pending
 
 ## Statement
@@ -55,24 +55,30 @@ Assume `epsilon(m)=0`.  Put
 
 Then `ds = dw/w` in `Omega`.
 
-We first prove the function-field lemma: if a finitely generated extension `K/Qbar` has
-`s in K`, `w in K^*`, and `ds=dw/w`, then `s,w in Qbar`.  Choose a normal projective model of `K`.
-If `s` is nonconstant, it has a pole along some prime divisor.  At the associated discrete
-valuation, if `ord(s)=-k<0`, characteristic zero gives
+We first prove a stronger field-theoretic lemma.  Let `C -> L` be any characteristic-zero field
+extension, let `w != 0`, and suppose `dw = w ds` in `Omega[L/C]`.  Then both `s` and `w` are
+algebraic over `C`.
+
+Assume instead that `s` is transcendental.  Extend `{s}` to a transcendence basis `B` of `L/C`,
+put `F=C(B)`, and prescribe the coordinate derivation `partial` on `F` by `partial(s)=1` and
+`partial(b)=0` for `b != s`.  Since `L/F` is algebraic and characteristic is zero, `partial`
+extends to `L`.  Evaluating `dw=w ds` gives `partial(w)=w`.
+
+Let `p in F[X]` be the monic minimal polynomial of `w`, of degree `n>0`, and differentiate
+`p(w)=0`.  If `partial_coeff(p)` denotes coefficientwise differentiation, then
 
 \[
-  \operatorname{ord}(ds)=-k-1<-1.
+  q=\partial_{\mathrm{coeff}}(p)+Xp'
 \]
 
-But every logarithmic differential has at worst a simple pole:
-
-\[
-  \operatorname{ord}(dw/w)\ge -1.
-\]
-
-This contradicts `ds=dw/w`.  Hence `s` has no poles on the projective model and lies in `Qbar`.
-Now `dw/w=ds=0`, so `w` is algebraic over `Qbar`; because `Qbar` is algebraically closed in `K`,
-`w in Qbar`.
+also vanishes at `w`.  Its leading coefficient is `n`, so `q-np` has degree below `n`; minimality
+forces `q=np`.  The constant coefficient `a_0` is nonzero because `w != 0`, and comparison of
+constant coefficients gives `partial(a_0)=n a_0`.  No nonzero rational function in `C(B)` can be
+an eigenvector of the free-coordinate derivation with nonzero constant eigenvalue: writing it as a
+reduced quotient of polynomials in the coordinate `s`, comparison of `s`-degrees after
+differentiation gives a strict degree drop.  Contradiction.  Hence `s` is algebraic over `C`.
+Then `ds=0`, so `dw=0`, and the kernel theorem for the universal derivation makes `w` algebraic
+over `C` as well.
 
 Returning to the tuple, rational linear independence gives `s != 0` whenever `m != 0`.
 Hermite--Lindemann then makes `exp(s)=w` transcendental over `Q`, contradicting `w in Qbar`.
@@ -103,8 +109,12 @@ Therefore `m=0`, proving injectivity. **[PROVED HERE]**
 - **New insight:** every differential route reaches the same typed wall: available arithmetic gives
   constant-coefficient independence, while transcendence degree requires value-field-coefficient
   independence.
-- **Status:** dependency-closed paper proof; formalization requires algebraic-function-field divisor
-  infrastructure and is deferred until external novelty audit says the invariant warrants it.
+- **Status:** **[LEAN-PROVED]**.  Formal declarations:
+  `ne_self_of_isAlgebraic_freeCoordinateDerivation`,
+  `isAlgebraic_left_of_kaehlerD_eq_smul`,
+  `algebraic_of_kaehlerD_eq_smul`, `schanuelDefect_integer_relation`, and
+  `schanuelDefect_integer_relation_in_intermediateField`.  Kernel audit uses only `propext`,
+  `Classical.choice`, and `Quot.sound`; no project axiom, `sorry`, `admit`, `opaque`, or `unsafe`.
 
 ## Literature audit
 
@@ -118,3 +128,5 @@ Therefore `m=0`, proving injectivity. **[PROVED HERE]**
 ## Log
 
 - 2026-08-14 -- Ax-compatible lift conjecture killed; injective defect lattice extracted and proved.
+- 2026-08-14 -- Replaced divisor argument by a stronger free-coordinate/minimal-polynomial proof;
+  formalized ambient and intermediate-field versions in Lean 4 and wired both umbrellas.

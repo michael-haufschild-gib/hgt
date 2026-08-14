@@ -64,32 +64,34 @@ theorem norm_lowFrequency_two_channel {T : X →L[ℂ] X} (hT : IsSelfAdjoint T)
     {r Rint : ℝ → ℝ} {cp cm : X} {A L B : ℝ}
     (hA : 0 < A) (hL : 0 < L) (hR : Rint 0 = 0)
     (hRint : ∀ x : ℝ, HasDerivAt Rint (r x) x)
-    (hrb : ∀ x : ℝ, |r x| ≤ B)
+    (hrb : ∀ x : ℝ, |x| ≤ A → |r x| ≤ B)
     (hrc : Continuous r) :
     ‖((∫ η in (0:ℝ)..A, scaledFresnel L η • channelAmplitude Rint T cp η)
         + ∫ t in (0:ℝ)..A, scaledFresnelConj L t • channelAmplitudeNeg Rint T cm t)
       - ((2 * Real.pi * L ^ (-(1:ℝ)/2) : ℝ) : ℂ) • halfLogScatter cp cm‖
       ≤ (‖cp‖ + ‖cm‖) * (2 * A ^ (-(1:ℝ)/2) * L ^ (-(1:ℝ)))
         + (4 * ((B / 2 + ‖T‖ / 2) * (‖cp‖ + ‖cm‖)) * A ^ ((1:ℝ)/2)) / L := by
-  have hB0 : 0 ≤ B := le_trans (abs_nonneg (r 0)) (hrb 0)
+  have hB0 : 0 ≤ B := le_trans (abs_nonneg (r 0)) (hrb 0 (by simp [hA.le]))
   have hc₀0 : (0:ℝ) ≤ B / 2 + ‖T‖ / 2 := by positivity
   -- positive channel
-  have hposderiv : ∀ η : ℝ, 0 < η → HasDerivAt (channelAmplitude Rint T cp)
+  have hposderiv : ∀ η : ℝ, 0 < η → η ≤ A → HasDerivAt (channelAmplitude Rint T cp)
       ((I • (shiftedSymbolOp (r η / 2) T * gammaTransport Rint T η)) cp) η :=
-    fun η _ => hasDerivAt_channelAmplitude (hRint η)
-  have hposlip : ∀ η : ℝ, 0 ≤ η →
+    fun η _ _ => hasDerivAt_channelAmplitude (hRint η)
+  have hposlip : ∀ η : ℝ, 0 ≤ η → η ≤ A →
       ‖channelAmplitude Rint T cp η - channelAmplitude Rint T cp 0‖
         ≤ ((B / 2 + ‖T‖ / 2) * ‖cp‖) * η := by
-    intro η hη
+    intro η hη hηA
     rw [channelAmplitude_zero hR]
-    exact norm_channelAmplitude_sub_le hT hR hRint (fun x _ => hrb x) hη
-  have hposbound : ∀ η : ℝ, 0 < η →
+    refine norm_channelAmplitude_sub_le hT hR hRint (fun x hx0 hxη => ?_) hη
+    exact hrb x (by rw [abs_of_nonneg hx0]; linarith)
+  have hposbound : ∀ η : ℝ, 0 < η → η ≤ A →
       ‖(I • (shiftedSymbolOp (r η / 2) T * gammaTransport Rint T η)) cp‖
-        ≤ (B / 2 + ‖T‖ / 2) * ‖cp‖ :=
-    fun η _ => norm_deriv_channelAmplitude_le hT (hrb η)
+        ≤ (B / 2 + ‖T‖ / 2) * ‖cp‖ := by
+    intro η hη hηA
+    exact norm_deriv_channelAmplitude_le hT (hrb η (by rw [abs_of_nonneg hη.le]; exact hηA))
   have hposcont : ∀ v : X, ContinuousOn (fun η : ℝ =>
       (inner ℂ v ((I • (shiftedSymbolOp (r η / 2) T * gammaTransport Rint T η)) cp) : ℂ))
-      (Set.Ioi (0:ℝ)) := fun v =>
+      (Set.Ioc 0 A) := fun v =>
     (continuous_const.inner (continuous_deriv_channelAmplitude hrc hRint)).continuousOn
   have hposint := intervalIntegrable_scaledFresnel_smul (L := L) hA
     (by positivity : (0:ℝ) ≤ (B / 2 + ‖T‖ / 2) * ‖cp‖) hposderiv hposlip
@@ -99,24 +101,27 @@ theorem norm_lowFrequency_two_channel {T : X →L[ℂ] X} (hT : IsSelfAdjoint T)
     hposbound hposint
   rw [channelAmplitude_zero hR] at hpos
   -- negative channel
-  have hnegderiv : ∀ t : ℝ, 0 < t → HasDerivAt (channelAmplitudeNeg Rint T cm)
+  have hnegderiv : ∀ t : ℝ, 0 < t → t ≤ A → HasDerivAt (channelAmplitudeNeg Rint T cm)
       (-((I • (shiftedSymbolOp (r (-t) / 2) T * gammaTransport Rint T (-t))) cm)) t :=
-    fun t _ => hasDerivAt_channelAmplitudeNeg (hRint (-t))
-  have hneglip : ∀ t : ℝ, 0 ≤ t →
+    fun t _ _ => hasDerivAt_channelAmplitudeNeg (hRint (-t))
+  have hneglip : ∀ t : ℝ, 0 ≤ t → t ≤ A →
       ‖channelAmplitudeNeg Rint T cm t - channelAmplitudeNeg Rint T cm 0‖
         ≤ ((B / 2 + ‖T‖ / 2) * ‖cm‖) * t := by
-    intro t ht
+    intro t ht htA
     rw [channelAmplitudeNeg_zero hR]
-    exact norm_channelAmplitudeNeg_sub_le hT hR hRint hrb ht
-  have hnegbound : ∀ t : ℝ, 0 < t →
+    refine norm_channelAmplitudeNeg_sub_le hT hR hRint (fun x hx1 hx2 => ?_) ht
+    exact hrb x (by rw [abs_of_nonpos hx2]; linarith)
+  have hnegbound : ∀ t : ℝ, 0 < t → t ≤ A →
       ‖-((I • (shiftedSymbolOp (r (-t) / 2) T * gammaTransport Rint T (-t))) cm)‖
         ≤ (B / 2 + ‖T‖ / 2) * ‖cm‖ := by
-    intro t _
+    intro t ht htA
     rw [norm_neg]
-    exact norm_deriv_channelAmplitude_le hT (hrb (-t))
+    refine norm_deriv_channelAmplitude_le hT (hrb (-t) ?_)
+    rw [abs_neg, abs_of_nonneg ht.le]
+    exact htA
   have hnegcont : ∀ v : X, ContinuousOn (fun t : ℝ =>
       (inner ℂ v (-((I • (shiftedSymbolOp (r (-t) / 2) T * gammaTransport Rint T (-t))) cm)) : ℂ))
-      (Set.Ioi (0:ℝ)) := by
+      (Set.Ioc 0 A) := by
     intro v
     have hbase : Continuous (fun t : ℝ =>
         -((I • (shiftedSymbolOp (r (-t) / 2) T * gammaTransport Rint T (-t))) cm)) :=

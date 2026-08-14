@@ -82,9 +82,9 @@ theorem norm_deriv_channelAmplitude_le (hT : IsSelfAdjoint T) {η B : ℝ} (hr :
 
 /-- **The channel amplitude is Lipschitz on the cutoff region.** -/
 theorem norm_channelAmplitude_sub_le (hT : IsSelfAdjoint T) (hR : Rint 0 = 0)
-    {B : ℝ}
+    {B η : ℝ}
     (hRint : ∀ x : ℝ, HasDerivAt Rint (r x) x)
-    (hr : ∀ x : ℝ, 0 ≤ x → |r x| ≤ B) {η : ℝ} (hη : 0 ≤ η) :
+    (hr : ∀ x : ℝ, 0 ≤ x → x ≤ η → |r x| ≤ B) (hη : 0 ≤ η) :
     ‖channelAmplitude Rint T c η - c‖ ≤ ((B / 2 + ‖T‖ / 2) * ‖c‖) * η := by
   have hconv : Convex ℝ (Icc (0:ℝ) η) := convex_Icc 0 η
   have hderiv : ∀ x ∈ Icc (0:ℝ) η, HasDerivWithinAt (channelAmplitude Rint T c)
@@ -93,7 +93,7 @@ theorem norm_channelAmplitude_sub_le (hT : IsSelfAdjoint T) (hR : Rint 0 = 0)
   have hbound : ∀ x ∈ Icc (0:ℝ) η,
       ‖(I • (shiftedSymbolOp (r x / 2) T * gammaTransport Rint T x)) c‖
         ≤ (B / 2 + ‖T‖ / 2) * ‖c‖ :=
-    fun x hx => norm_deriv_channelAmplitude_le hT (hr x hx.1)
+    fun x hx => norm_deriv_channelAmplitude_le hT (hr x hx.1 hx.2)
   have h := hconv.norm_image_sub_le_of_norm_hasDerivWithin_le hderiv hbound
     (left_mem_Icc.mpr hη) (right_mem_Icc.mpr hη)
   rw [channelAmplitude_zero hR] at h
@@ -121,9 +121,9 @@ theorem hasDerivAt_channelAmplitudeNeg {t : ℝ} (hRint : HasDerivAt Rint (r (-t
   exact hcomp
 
 /-- **The reflected channel amplitude is Lipschitz on the cutoff region.** -/
-theorem norm_channelAmplitudeNeg_sub_le (hT : IsSelfAdjoint T) (hR : Rint 0 = 0) {B : ℝ}
+theorem norm_channelAmplitudeNeg_sub_le (hT : IsSelfAdjoint T) (hR : Rint 0 = 0) {B t : ℝ}
     (hRint : ∀ x : ℝ, HasDerivAt Rint (r x) x)
-    (hr : ∀ x : ℝ, |r x| ≤ B) {t : ℝ} (ht : 0 ≤ t) :
+    (hr : ∀ x : ℝ, -t ≤ x → x ≤ 0 → |r x| ≤ B) (ht : 0 ≤ t) :
     ‖channelAmplitudeNeg Rint T c t - c‖ ≤ ((B / 2 + ‖T‖ / 2) * ‖c‖) * t := by
   have hconv : Convex ℝ (Icc (0:ℝ) t) := convex_Icc 0 t
   have hderiv : ∀ x ∈ Icc (0:ℝ) t, HasDerivWithinAt (channelAmplitudeNeg Rint T c)
@@ -133,9 +133,9 @@ theorem norm_channelAmplitudeNeg_sub_le (hT : IsSelfAdjoint T) (hR : Rint 0 = 0)
   have hbound : ∀ x ∈ Icc (0:ℝ) t,
       ‖-((I • (shiftedSymbolOp (r (-x) / 2) T * gammaTransport Rint T (-x))) c)‖
         ≤ (B / 2 + ‖T‖ / 2) * ‖c‖ := by
-    intro x _
+    intro x hx
     rw [norm_neg]
-    exact norm_deriv_channelAmplitude_le hT (hr (-x))
+    exact norm_deriv_channelAmplitude_le hT (hr (-x) (by linarith [hx.2]) (by linarith [hx.1]))
   have h := hconv.norm_image_sub_le_of_norm_hasDerivWithin_le hderiv hbound
     (left_mem_Icc.mpr ht) (right_mem_Icc.mpr ht)
   rw [channelAmplitudeNeg_zero hR, sub_zero] at h

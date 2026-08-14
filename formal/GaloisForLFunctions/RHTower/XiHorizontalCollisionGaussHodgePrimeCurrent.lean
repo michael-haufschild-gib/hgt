@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.GaussReciprocalCharacterAdmission
 import GaloisForLFunctions.RHTower.GaussHodgeWeightedResolventEdge
+import GaloisForLFunctions.RHTower.PrimeGammaCofinalBocksteinSchattenWall
 import GaloisForLFunctions.RHTower.SourceHorizontalGammaSixCurvedSuspensionHodgeTrace
 import GaloisForLFunctions.RHTower.XiHorizontalCollisionChargeEndpoint
 import GaloisForLFunctions.RHTower.XiHurwitzOrientationEnergyConsumers
@@ -340,6 +341,72 @@ theorem summable_gammaSixSuspensionPrimeSourceResolventTrace_iff_riemannHypothes
 
 /-! ## Derivative-free source curvature endpoint -/
 
+private theorem gammaSix_bockstein_scalar_bridge
+    {P : ℝ} (hP : 0 < P) (F R t : ℝ) :
+    (R * F * (P ^ t + P ^ (-t) - 2)) *
+        (F * (P ^ |t| + P ^ (-|t|) + 2)) =
+      R * (F * (P ^ |t| - P ^ (-|t|))) ^ 2 := by
+  have habs : P ^ t + P ^ (-t) = P ^ |t| + P ^ (-|t|) := by
+    by_cases ht : 0 ≤ t
+    · rw [abs_of_nonneg ht]
+    · rw [abs_of_nonpos (le_of_not_ge ht)]
+      ring
+  rw [habs]
+  have hprod : P ^ |t| * P ^ (-|t|) = 1 := by
+    rw [← Real.rpow_add hP]
+    simp
+  linear_combination 4 * R * F ^ 2 * hprod
+
+/-- Positive completion gauge converting even Gamma-six curvature into the square of the odd
+fixed-first-trace Gamma Bockstein.  It retains both reflection orientations and the prime label. -/
+def gammaSixBocksteinCompletionGauge (t : ℝ) (p : Nat.Primes) : ℝ :=
+  primeActivationOccupancyFisherTwist |t| p +
+    primeActivationOccupancyFisherTwist (-|t|) p +
+      2 * primeActivationOccupancyFisherDensity p
+
+theorem gammaSixBocksteinCompletionGauge_pos (t : ℝ) (p : Nat.Primes) :
+    0 < gammaSixBocksteinCompletionGauge t p := by
+  have hp : (0 : ℝ) < (p : ℝ) := by exact_mod_cast p.2.pos
+  have hF : 0 < primeActivationOccupancyFisherDensity p :=
+    primeActivationOccupancyFisherDensity_pos' p
+  rw [gammaSixBocksteinCompletionGauge,
+    primeActivationOccupancyFisherTwist,
+    primeActivationOccupancyFisherTwist]
+  positivity
+
+/-- **Coefficient-exact cross-route weld.**  Raw determinant curvature of the literal Gamma-six
+suspension, after the explicit positive two-orientation completion gauge, is exactly the square of
+the fixed-ideal Gamma Bockstein with the original Gauss coefficient.  No quotient, asymptotic, or
+divisor scalarization occurs. -/
+theorem gaussGammaSixSuspensionTraceEnergy_mul_bocksteinCompletionGauge
+    (m : ℕ) (t : ℝ) (p : Nat.Primes) :
+    gaussGammaSixSuspensionTraceEnergy m p t *
+        gammaSixBocksteinCompletionGauge t p =
+      (Real.log 2 / 2 * gaussChannelResidueCurrent m p /
+          Real.log (p : ℝ)) *
+        primeGammaCofinalBocksteinMagnitude t p ^ 2 := by
+  have hp : (0 : ℝ) < (p : ℝ) := by exact_mod_cast p.2.pos
+  have hsplit :
+      reciprocalCharacterSplitEnergy (gaussReciprocalCharacterWeight m p)
+          (Real.log (p : ℝ)) t =
+        gaussReciprocalCharacterWeight m p *
+          ((p : ℝ) ^ t + (p : ℝ) ^ (-t) - 2) := by
+    rw [reciprocalCharacterSplitEnergy,
+      HTGeometry.rpow_add_rpow_neg_sub_two_eq hp t]
+    ring
+  rw [gaussGammaSixSuspensionTraceEnergy_eq_pairedBoundaryEnergy,
+    gaussGammaSixPairedBoundaryEnergy_eq_splitEnergy, hsplit,
+    gammaSixBocksteinCompletionGauge,
+    primeGammaCofinalBocksteinMagnitude_eq,
+    gaussReciprocalCharacterWeight]
+  simp only [primeActivationOccupancyFisherTwist]
+  have hcore := gammaSix_bockstein_scalar_bridge hp
+    (primeActivationOccupancyFisherDensity p)
+    (Real.log 2 / 2 * gaussChannelResidueCurrent m p /
+      Real.log (p : ℝ)) t
+  ring_nf at hcore ⊢
+  exact hcore
+
 private theorem sq_le_two_mul_cosh_sub_one (x : ℝ) :
     x ^ 2 ≤ 2 * (Real.cosh x - 1) := by
   rw [show x = 2 * (x / 2) by ring, Real.cosh_two_mul]
@@ -362,6 +429,53 @@ def gammaSixSuspensionDeterminantPrimeCurrent
     (m : ℕ) (q : XiZeroCopy) (p : Nat.Primes) : ℝ :=
   gaussGammaSixSuspensionTraceEnergy m p
     (primeDepthBVWoldXiCenteredRate q.1)
+
+/-- The cross-route weld on an actual retained Xi multiplicity copy. -/
+theorem gammaSixSuspensionDeterminantPrimeCurrent_mul_bocksteinCompletionGauge
+    (m : ℕ) (q : XiZeroCopy) (p : Nat.Primes) :
+    gammaSixSuspensionDeterminantPrimeCurrent m q p *
+        gammaSixBocksteinCompletionGauge
+          (primeDepthBVWoldXiCenteredRate q.1) p =
+      (Real.log 2 / 2 * gaussChannelResidueCurrent m p /
+          Real.log (p : ℝ)) *
+        primeGammaCofinalBocksteinMagnitude
+          (primeDepthBVWoldXiCenteredRate q.1) p ^ 2 := by
+  exact gaussGammaSixSuspensionTraceEnergy_mul_bocksteinCompletionGauge
+    m (primeDepthBVWoldXiCenteredRate q.1) p
+
+/-- On every retained Xi copy and prime label, raw source determinant curvature vanishes exactly
+when the fixed-first-trace two-orientation Bockstein vanishes. -/
+theorem gammaSixSuspensionDeterminantPrimeCurrent_eq_zero_iff_bocksteinMagnitude_eq_zero
+    {m : ℕ} (hm : 1 ≤ m) (q : XiZeroCopy) (p : Nat.Primes) :
+    gammaSixSuspensionDeterminantPrimeCurrent m q p = 0 ↔
+      primeGammaCofinalBocksteinMagnitude
+        (primeDepthBVWoldXiCenteredRate q.1) p = 0 := by
+  have hcoef :
+      0 < Real.log 2 / 2 * gaussChannelResidueCurrent m p /
+          Real.log (p : ℝ) := by
+    have hlog2 : 0 < Real.log 2 := Real.log_pos one_lt_two
+    have hlogp : 0 < Real.log (p : ℝ) :=
+      Real.log_pos (by exact_mod_cast p.2.one_lt)
+    have hresidue := gaussChannelResidueCurrent_pos hm p
+    positivity
+  have hgauge := gammaSixBocksteinCompletionGauge_pos
+    (primeDepthBVWoldXiCenteredRate q.1) p
+  constructor
+  · intro hcurrent
+    have hbridge :=
+      gammaSixSuspensionDeterminantPrimeCurrent_mul_bocksteinCompletionGauge m q p
+    rw [hcurrent, zero_mul] at hbridge
+    have hsquare :
+        primeGammaCofinalBocksteinMagnitude
+            (primeDepthBVWoldXiCenteredRate q.1) p ^ 2 = 0 :=
+      (mul_eq_zero.mp hbridge.symm).resolve_left hcoef.ne'
+    exact sq_eq_zero_iff.mp hsquare
+  · intro hbockstein
+    have hbridge :=
+      gammaSixSuspensionDeterminantPrimeCurrent_mul_bocksteinCompletionGauge m q p
+    rw [hbockstein] at hbridge
+    simp only [zero_pow (by norm_num : 2 ≠ 0), mul_zero] at hbridge
+    exact (mul_eq_zero.mp hbridge).resolve_right hgauge.ne'
 
 /-- Raw suspension determinant current already pays a harmonic-prime quantum off center. -/
 theorem gammaSixSuspensionDeterminantPrimeCurrent_harmonic_lower

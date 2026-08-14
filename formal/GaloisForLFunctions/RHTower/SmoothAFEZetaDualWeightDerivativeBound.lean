@@ -1,5 +1,4 @@
 import GaloisForLFunctions.RHTower.SmoothAFEZetaDualWeightHeightDerivative
-import GaloisForLFunctions.RHTower.GaussianWindowMomentRescaling
 
 /-!
 # Conductor-scale derivative bound for the exact dual weight
@@ -19,22 +18,17 @@ namespace RHTower
 /-- A quartic polynomial is still integrable against the standard Gaussian. -/
 theorem integrable_one_add_abs_pow_four_mul_exp_neg_sq :
     Integrable (fun v : ℝ => (1 + |v|) ^ 4 * Real.exp (-(v ^ 2))) := by
+  have hk (k : ℕ) :
+      Integrable (fun v : ℝ => |v| ^ k * Real.exp (-(v ^ 2))) := by
+    have hraw := integrable_rpow_mul_exp_neg_mul_sq
+      (b := (1 : ℝ)) (s := (k : ℝ)) (by norm_num)
+        (by have hk0 : (0 : ℝ) ≤ k := Nat.cast_nonneg k; linarith)
+    simpa [Real.rpow_natCast, Real.norm_eq_abs, abs_mul, abs_pow,
+      abs_of_pos (Real.exp_pos _)] using hraw.norm
   have h0 : Integrable (fun v : ℝ => Real.exp (-(v ^ 2))) := by
-    simpa using integrable_pow_mul_exp_neg_sq 0
-  have h1 : Integrable (fun v : ℝ => |v| * Real.exp (-(v ^ 2))) := by
-    simpa [Real.norm_eq_abs, abs_mul, abs_of_pos (Real.exp_pos _)] using
-      (integrable_pow_mul_exp_neg_sq 1).norm
-  have h2 : Integrable (fun v : ℝ => |v| ^ 2 * Real.exp (-(v ^ 2))) := by
-    simpa [Real.norm_eq_abs, abs_mul, abs_pow, abs_of_pos (Real.exp_pos _)] using
-      (integrable_pow_mul_exp_neg_sq 2).norm
-  have h3 : Integrable (fun v : ℝ => |v| ^ 3 * Real.exp (-(v ^ 2))) := by
-    simpa [Real.norm_eq_abs, abs_mul, abs_pow, abs_of_pos (Real.exp_pos _)] using
-      (integrable_pow_mul_exp_neg_sq 3).norm
-  have h4 : Integrable (fun v : ℝ => |v| ^ 4 * Real.exp (-(v ^ 2))) := by
-    simpa [Real.norm_eq_abs, abs_mul, abs_pow, abs_of_pos (Real.exp_pos _)] using
-      (integrable_pow_mul_exp_neg_sq 4).norm
-  have hsum := (((h0.add (h1.const_mul 4)).add (h2.const_mul 6)).add
-    (h3.const_mul 4)).add h4
+    simpa using hk 0
+  have hsum := (((h0.add ((hk 1).const_mul 4)).add ((hk 2).const_mul 6)).add
+    ((hk 3).const_mul 4)).add (hk 4)
   refine hsum.congr (Filter.Eventually.of_forall fun v => ?_)
   simp only [Pi.add_apply]
   ring

@@ -1,7 +1,7 @@
 # Reciprocal-character real-form fusion, virial reconstruction, and Gauss admission law
 
 - **ID:** ULF-RCRFM-2
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** FOUR-ORGAN FUSION / JOINT RECONSTRUCTION / COFINAL ADMISSION CLASSIFICATION
 - **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [UNIVERSAL FINITE LAW]
   [LITERAL GAUSS SPECIALIZATION] [LEAN-PROVED CORE] [RH SELECTION GATE, NOT RH]
@@ -371,3 +371,7 @@ The significant claims are certified without added axioms in:
 
 The formal RH equivalence remains a conditional selection gate: Lean proves the equivalence, not
 the missing independent theorem asserting its trace-ideal premise.
+
+## Log
+
+- 2026-08-14 — Full unconditional Lean closure: exact complex split/compact real-form restrictions, Euler-virial conservation, common finite-packet quadratic jet, coercivity and radicals, positive finite Prony reconstruction, prime-clock recurrence, and literal Gauss harmonic admission/RH equivalence; direct source checks, scratch axiom audit, scoped new-code scan, and umbrella wiring pass.

@@ -33,10 +33,10 @@ theorem inner_integral_comm {f : ℝ → X} {a b : ℝ} (v : X)
 /-- **The Hilbert-valued low-frequency asymptotic.** -/
 theorem norm_vector_lowFrequency_asymptotic {f f' : ℝ → X} {K A L : ℝ}
     (hA : 0 < A) (hL : 0 < L) (hK : 0 ≤ K)
-    (hderiv : ∀ η : ℝ, 0 < η → HasDerivAt f (f' η) η)
-    (hcont : ∀ v : X, ContinuousOn (fun η : ℝ => (inner ℂ v (f' η) : ℂ)) (Set.Ioi (0:ℝ)))
-    (hlip : ∀ η : ℝ, 0 ≤ η → ‖f η - f 0‖ ≤ K * η)
-    (hbound : ∀ η : ℝ, 0 < η → ‖f' η‖ ≤ K)
+    (hderiv : ∀ η : ℝ, 0 < η → η ≤ A → HasDerivAt f (f' η) η)
+    (hcont : ∀ v : X, ContinuousOn (fun η : ℝ => (inner ℂ v (f' η) : ℂ)) (Set.Ioc 0 A))
+    (hlip : ∀ η : ℝ, 0 ≤ η → η ≤ A → ‖f η - f 0‖ ≤ K * η)
+    (hbound : ∀ η : ℝ, 0 < η → η ≤ A → ‖f' η‖ ≤ K)
     (hint : IntervalIntegrable (fun η : ℝ => scaledFresnel L η • f η) volume 0 A) :
     ‖(∫ η in (0:ℝ)..A, scaledFresnel L η • f η)
         - (((L ^ (-(1:ℝ)/2) : ℝ) : ℂ)
@@ -57,25 +57,25 @@ theorem norm_vector_lowFrequency_asymptotic {f f' : ℝ → X} {K A L : ℝ}
     intro v hv
     set g : ℝ → ℂ := fun η => (inner ℂ v (f η) : ℂ) with hg
     set g' : ℝ → ℂ := fun η => (inner ℂ v (f' η) : ℂ) with hg'
-    have hgderiv : ∀ η : ℝ, 0 < η → HasDerivAt g (g' η) η := by
-      intro η hη
+    have hgderiv : ∀ η : ℝ, 0 < η → η ≤ A → HasDerivAt g (g' η) η := by
+      intro η hη hηA
       have hconst : HasDerivAt (fun _ : ℝ => v) (0 : X) η := hasDerivAt_const η v
-      have hbase := HasDerivAt.inner ℂ hconst (hderiv η hη)
+      have hbase := HasDerivAt.inner ℂ hconst (hderiv η hη hηA)
       simpa [hg, hg'] using hbase
-    have hglip : ∀ η : ℝ, 0 ≤ η → ‖g η - g 0‖ ≤ K * η := by
-      intro η hη
+    have hglip : ∀ η : ℝ, 0 ≤ η → η ≤ A → ‖g η - g 0‖ ≤ K * η := by
+      intro η hη hηA
       have hsub : g η - g 0 = (inner ℂ v (f η - f 0) : ℂ) := by
         rw [hg, inner_sub_right]
       rw [hsub]
       calc ‖(inner ℂ v (f η - f 0) : ℂ)‖ ≤ ‖v‖ * ‖f η - f 0‖ :=
             norm_inner_le_norm (𝕜 := ℂ) v (f η - f 0)
         _ = ‖f η - f 0‖ := by rw [hv, one_mul]
-        _ ≤ K * η := hlip η hη
-    have hgbound : ∀ η : ℝ, 0 < η → ‖g' η‖ ≤ K := by
-      intro η hη
+        _ ≤ K * η := hlip η hη hηA
+    have hgbound : ∀ η : ℝ, 0 < η → η ≤ A → ‖g' η‖ ≤ K := by
+      intro η hη hηA
       calc ‖(inner ℂ v (f' η) : ℂ)‖ ≤ ‖v‖ * ‖f' η‖ := norm_inner_le_norm (𝕜 := ℂ) v (f' η)
         _ = ‖f' η‖ := by rw [hv, one_mul]
-        _ ≤ K := hbound η hη
+        _ ≤ K := hbound η hη hηA
     have hscalar := norm_lowFrequency_asymptotic (f := g) (f' := g') hA hL hK hgderiv
       (hcont v) hglip hgbound
     have hcomm : (inner ℂ v D : ℂ)

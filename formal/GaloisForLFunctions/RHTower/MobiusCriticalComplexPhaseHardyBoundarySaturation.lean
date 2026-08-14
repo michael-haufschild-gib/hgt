@@ -611,6 +611,147 @@ theorem eq_zero_of_all_twoNode_mobiusCriticalHardyFisherMassPerturbed_posSemidef
   rw [RCLike.le_iff_re_im] at hnonneg
   exact (not_lt_of_ge hnonneg.1) hneg
 
+/-- Mass-perturbed boundary block with an arbitrary real bottom budget. -/
+def mobiusCriticalUniversalHardyFisherMassPerturbedGramWithBudget
+    {n : ℕ} (u : Fin n → ℂ) (d : ℂ) (budget : ℝ) :
+    Matrix (Fin n ⊕ Unit) (Fin n ⊕ Unit) ℂ :=
+  mobiusCriticalUniversalHardyFisherMassPerturbedGram u d +
+    Matrix.single (Sum.inr ()) (Sum.inr ()) ((budget : ℂ) - 4)
+
+/-- Changing only the bottom budget contributes exactly `budget - 4` to
+the translated mass-saturation quadratic. -/
+theorem mobiusCriticalHardyMassSaturation_budget_quadratic_eq_four_add
+    (t budget : ℝ) (d : ℂ) :
+    dotProduct (star (mobiusCriticalHardyMassSaturationCoefficients t d))
+        (Matrix.mulVec
+          (mobiusCriticalUniversalHardyFisherMassPerturbedGramWithBudget
+            (mobiusCriticalHardySaturationNodes t) d budget)
+          (mobiusCriticalHardyMassSaturationCoefficients t d)) =
+      dotProduct (star (mobiusCriticalHardyMassSaturationCoefficients t d))
+        (Matrix.mulVec
+          (mobiusCriticalUniversalHardyFisherMassPerturbedGram
+            (mobiusCriticalHardySaturationNodes t) d)
+          (mobiusCriticalHardyMassSaturationCoefficients t d)) +
+        ((budget : ℂ) - 4) := by
+  rw [mobiusCriticalUniversalHardyFisherMassPerturbedGramWithBudget,
+    Matrix.add_mulVec, dotProduct_add]
+  simp [Matrix.single_mulVec_eq,
+    mobiusCriticalHardyMassSaturationCoefficients]
+
+/-- Exact quadratic with both escaped-mass coefficient and variable bottom
+budget. -/
+theorem mobiusCriticalHardyMassSaturation_budget_quadratic_eq
+    {t : ℝ} (ht : 0 < t) (d : ℂ) (budget : ℝ) :
+    dotProduct (star (mobiusCriticalHardyMassSaturationCoefficients t d))
+        (Matrix.mulVec
+          (mobiusCriticalUniversalHardyFisherMassPerturbedGramWithBudget
+            (mobiusCriticalHardySaturationNodes t) d budget)
+          (mobiusCriticalHardyMassSaturationCoefficients t d)) =
+      ((8 * t ^ 2 * (2 * t + 3) /
+        ((1 + t) ^ 2 * (1 + 2 * t)) + budget - 4 : ℝ) : ℂ) -
+        (Complex.normSq d : ℂ) := by
+  rw [mobiusCriticalHardyMassSaturation_budget_quadratic_eq_four_add,
+    mobiusCriticalHardyMassSaturation_quadratic_eq ht d]
+  push_cast
+  ring
+
+/-- If the budget is smaller than `4 + |d|²`, a finite two-node packet
+detects a negative quadratic form. -/
+theorem exists_mobiusCriticalHardyFisherMassPerturbedWithBudget_quadratic_neg
+    {d : ℂ} {budget : ℝ}
+    (hbudget : budget < 4 + Complex.normSq d) :
+    ∃ t : ℝ, 0 < t ∧
+      (dotProduct (star
+          (mobiusCriticalHardyMassSaturationCoefficients t d))
+        (Matrix.mulVec
+          (mobiusCriticalUniversalHardyFisherMassPerturbedGramWithBudget
+            (mobiusCriticalHardySaturationNodes t) d budget)
+          (mobiusCriticalHardyMassSaturationCoefficients t d))).re < 0 := by
+  have hmass :=
+    tendsto_mobiusCriticalHardyMassSaturation_quadratic d |>.comp
+      tendsto_mobiusCriticalHardySaturationScale
+  have hshift := hmass.add_const ((budget - 4 : ℝ) : ℂ)
+  have htotal : Tendsto (fun j =>
+      dotProduct (star
+          (mobiusCriticalHardyMassSaturationCoefficients
+            (mobiusCriticalHardySaturationScale j) d))
+        (Matrix.mulVec
+          (mobiusCriticalUniversalHardyFisherMassPerturbedGramWithBudget
+            (mobiusCriticalHardySaturationNodes
+              (mobiusCriticalHardySaturationScale j)) d budget)
+          (mobiusCriticalHardyMassSaturationCoefficients
+            (mobiusCriticalHardySaturationScale j) d)))
+      atTop
+      (nhds (((budget - 4 - Complex.normSq d : ℝ) : ℂ))) := by
+    have hshift' : Tendsto (fun j =>
+        dotProduct (star
+            (mobiusCriticalHardyMassSaturationCoefficients
+              (mobiusCriticalHardySaturationScale j) d))
+          (Matrix.mulVec
+            (mobiusCriticalUniversalHardyFisherMassPerturbedGram
+              (mobiusCriticalHardySaturationNodes
+                (mobiusCriticalHardySaturationScale j)) d)
+            (mobiusCriticalHardyMassSaturationCoefficients
+              (mobiusCriticalHardySaturationScale j) d)) +
+          ((budget - 4 : ℝ) : ℂ))
+        atTop
+        (nhds (-((Complex.normSq d : ℝ) : ℂ) +
+          ((budget - 4 : ℝ) : ℂ))) := by
+      simpa using hshift
+    apply hshift'.congr'
+    · filter_upwards with j
+      exact
+        (mobiusCriticalHardyMassSaturation_budget_quadratic_eq_four_add
+          (mobiusCriticalHardySaturationScale j) budget d).symm
+    · push_cast
+      ring
+  have hre : Tendsto (fun j =>
+      (dotProduct (star
+          (mobiusCriticalHardyMassSaturationCoefficients
+            (mobiusCriticalHardySaturationScale j) d))
+        (Matrix.mulVec
+          (mobiusCriticalUniversalHardyFisherMassPerturbedGramWithBudget
+            (mobiusCriticalHardySaturationNodes
+              (mobiusCriticalHardySaturationScale j)) d budget)
+          (mobiusCriticalHardyMassSaturationCoefficients
+            (mobiusCriticalHardySaturationScale j) d))).re)
+      atTop (nhds (budget - 4 - Complex.normSq d)) := by
+    simpa using (Complex.continuous_re.tendsto _).comp htotal
+  have hlim : budget - 4 - Complex.normSq d < 0 := by
+    linarith
+  have hevent : ∀ᶠ j : ℕ in atTop,
+      (dotProduct (star
+          (mobiusCriticalHardyMassSaturationCoefficients
+            (mobiusCriticalHardySaturationScale j) d))
+        (Matrix.mulVec
+          (mobiusCriticalUniversalHardyFisherMassPerturbedGramWithBudget
+            (mobiusCriticalHardySaturationNodes
+              (mobiusCriticalHardySaturationScale j)) d budget)
+          (mobiusCriticalHardyMassSaturationCoefficients
+            (mobiusCriticalHardySaturationScale j) d))).re < 0 :=
+    hre.eventually (Iio_mem_nhds hlim)
+  obtain ⟨N, hN⟩ := eventually_atTop.1 hevent
+  refine ⟨mobiusCriticalHardySaturationScale N,
+    mobiusCriticalHardySaturationScale_pos N, hN N le_rfl⟩
+
+/-- **Exact curvature toll.**  Positivity on only canonical two-node
+packets forces bottom budget at least `4 + |d|²`. -/
+theorem four_add_normSq_le_of_all_twoNode_massPerturbedWithBudget_posSemidef
+    {d : ℂ} {budget : ℝ}
+    (hpos : ∀ t : ℝ, 0 < t →
+      (mobiusCriticalUniversalHardyFisherMassPerturbedGramWithBudget
+        (mobiusCriticalHardySaturationNodes t) d budget).PosSemidef) :
+    4 + Complex.normSq d ≤ budget := by
+  by_contra hnot
+  have hbudget : budget < 4 + Complex.normSq d := lt_of_not_ge hnot
+  obtain ⟨t, ht, hneg⟩ :=
+    exists_mobiusCriticalHardyFisherMassPerturbedWithBudget_quadratic_neg
+      hbudget
+  have hnonneg := (hpos t ht).dotProduct_mulVec_nonneg
+    (mobiusCriticalHardyMassSaturationCoefficients t d)
+  rw [RCLike.le_iff_re_im] at hnonneg
+  exact (not_lt_of_ge hnonneg.1) hneg
+
 /-- **Mass-mode rigidity at the saturated boundary.**  If every finite
 inward packet with a common escaped-mass coefficient remains positive at
 the fixed four-unit budget, that coefficient is zero. -/

@@ -27,7 +27,7 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 variable {J F : Type*} [Fintype J]
-variable [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+variable [NormedAddCommGroup F] [InnerProductSpace ℝ F]
 
 /-- Weighted sum of a finite family of memory vectors. -/
 def weightedMemorySum (r : J → F) (w : J → ℝ) : F :=
@@ -49,17 +49,34 @@ theorem weightedAlignment_eq_inner_sum (r : J → F) (q : F) (w : J → ℝ) :
 /-- The recurrence Gram energy is exactly a squared Hilbert norm, hence is nonnegative. -/
 theorem weightedRecurrenceEnergy_eq_norm_sq (r : J → F) (w : J → ℝ) :
     weightedRecurrenceEnergy r w = ‖weightedMemorySum r w‖ ^ 2 := by
-  rw [← real_inner_self_eq_norm_sq]
-  simp [weightedRecurrenceEnergy, weightedMemorySum, sum_inner, inner_sum,
-    real_inner_smul_left, real_inner_smul_right]
-  ring
+  calc
+    weightedRecurrenceEnergy r w =
+        inner ℝ (weightedMemorySum r w) (weightedMemorySum r w) := by
+      simp only [weightedRecurrenceEnergy, weightedMemorySum, sum_inner, inner_sum,
+        real_inner_smul_left, real_inner_smul_right]
+      apply Finset.sum_congr rfl
+      intro i hi
+      apply Finset.sum_congr rfl
+      intro j hj
+      rw [real_inner_comm (r i) (r j)]
+      rw [mul_assoc]
+    _ = ‖weightedMemorySum r w‖ ^ 2 :=
+      real_inner_self_eq_norm_sq (weightedMemorySum r w)
 
 /-- **Alignment--recurrence energy law.**  A fixed preparation memory can recognize a weighted
 history only within the Gram energy carried by that history. -/
 theorem weightedAlignment_sq_le_recurrenceEnergy (r : J → F) (q : F) (w : J → ℝ) :
     weightedAlignment r q w ^ 2 ≤ ‖q‖ ^ 2 * weightedRecurrenceEnergy r w := by
   rw [weightedAlignment_eq_inner_sum, weightedRecurrenceEnergy_eq_norm_sq]
-  nlinarith [abs_real_inner_le_norm (weightedMemorySum r w) q]
+  have hcs := abs_real_inner_le_norm (weightedMemorySum r w) q
+  have hnonneg : 0 ≤ ‖weightedMemorySum r w‖ * ‖q‖ :=
+    mul_nonneg (norm_nonneg _) (norm_nonneg _)
+  calc
+    inner ℝ (weightedMemorySum r w) q ^ 2 =
+        |inner ℝ (weightedMemorySum r w) q| ^ 2 := by rw [sq_abs]
+    _ ≤ (‖weightedMemorySum r w‖ * ‖q‖) ^ 2 := by
+      nlinarith [abs_nonneg (inner ℝ (weightedMemorySum r w) q)]
+    _ = ‖q‖ ^ 2 * ‖weightedMemorySum r w‖ ^ 2 := by ring_nf
 
 /-- **Sharpness of the universal recurrence-energy frontier.**  Choosing the preparation memory
 to be the weighted history sum saturates the alignment--energy law exactly.  Any improvement that
@@ -70,6 +87,7 @@ theorem weightedAlignment_sq_eq_recurrenceEnergy_of_historyProbe
       ‖weightedMemorySum r w‖ ^ 2 * weightedRecurrenceEnergy r w := by
   rw [weightedAlignment_eq_inner_sum, weightedRecurrenceEnergy_eq_norm_sq,
     real_inner_self_eq_norm_sq]
+  rw [pow_two]
 
 /-- A unitary-flow Gram entry is the stationary recurrence kernel at the time difference. -/
 theorem inner_unitaryFlow_eq_recurrenceKernel (U : UnitaryFlow ℝ F) (z : F) (s t : ℝ) :
@@ -78,7 +96,7 @@ theorem inner_unitaryFlow_eq_recurrenceKernel (U : UnitaryFlow ℝ F) (z : F) (s
   have hadd := U.op_add (-s) t z
   rw [← hadd]
   congr 2
-  ring
+  ring_nf
 
 /-- The complete weighted Gram energy of a static orbit is one stationary recurrence-kernel
 quadrature over all time differences. -/
@@ -97,17 +115,50 @@ theorem threshold_sq_le_weightedRecurrenceEnergy
   have hsumw : 0 ≤ ∑ j, w j := Finset.sum_nonneg fun j _ => hw j
   have hlin : eta * ∑ j, w j ≤ weightedAlignment r q w := by
     rw [Finset.mul_sum]
-    exact Finset.sum_le_sum fun j _ => mul_le_mul_of_nonneg_left (halign j) (hw j)
+    exact Finset.sum_le_sum fun j _ => by
+      simpa [mul_comm] using mul_le_mul_of_nonneg_left (halign j) (hw j)
   have halign0 : 0 ≤ weightedAlignment r q w := le_trans (mul_nonneg heta hsumw) hlin
   have hsq : (eta * ∑ j, w j) ^ 2 ≤ weightedAlignment r q w ^ 2 := by
-    nlinarith
+    simpa only [pow_two] using mul_le_mul_of_nonneg hlin hlin
+      (mul_nonneg heta hsumw) halign0
   exact le_trans hsq (weightedAlignment_sq_le_recurrenceEnergy r q w)
 
-variable {I : Type*} [Fintype I] [Nonempty I]
+variable {I : Type*} [Fintype I]
+variable [CompleteSpace F]
 
-/-- **Adaptive shortcut-history recurrence law.**  At every sampled time a different target may
+/-- Squared norm of the uniform occupied-target moment.  In replica projector space this is the
+normalized target frame potential: the average of all pair fidelities at the chosen replica
+order. -/
+def finitePreparationFrameEnergy (target : I → F) : ℝ :=
+  ‖finitePreparationMoment target‖ ^ 2
+
+/-- Removing the completed universal sector subtracts its energy exactly from the target frame
+energy.  This is the target-side factor in the observer--spectral reciprocity law. -/
+theorem preparationMemory_norm_sq_eq_frameEnergy_sub_universal
+    (PiOp : F →L[ℝ] F) (x : F) (target : I → F)
+    (hPisa : IsSelfAdjoint PiOp)
+    (hPiid : ∀ z, PiOp (PiOp z) = PiOp z)
+    (hPiMoment : PiOp (finitePreparationMoment target) = PiOp x) :
+    ‖preparationMemory PiOp x (finitePreparationMoment target)‖ ^ 2 =
+      finitePreparationFrameEnergy target - ‖universalSector PiOp x‖ ^ 2 := by
+  have horth := universal_preparation_inner_eq_zero PiOp x
+    (finitePreparationMoment target) hPisa hPiid hPiMoment
+  have hdecomp : finitePreparationMoment target =
+      universalSector PiOp x +
+        preparationMemory PiOp x (finitePreparationMoment target) := by
+    simp only [universalSector, preparationMemory]
+    abel
+  have hpyth := norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero
+    (universalSector PiOp x)
+    (preparationMemory PiOp x (finitePreparationMoment target)) horth
+  rw [← hdecomp] at hpyth
+  simp only [finitePreparationFrameEnergy]
+  nlinarith
+
+/-- **Adaptive observer--spectral reciprocity law.**  At every sampled time a different target may
 witness the shortcut.  Uniform target averaging and the two-memory law nevertheless produce one
-fixed preparation memory.  All shortcuts then force the displayed centralizer-centered stationary
+fixed preparation memory.  The complete adaptive history is bounded by the product of two intrinsic
+quantities: centralizer-conditioned target frame energy and centralizer-centered stationary
 recurrence energy. -/
 theorem adaptive_shortcuts_force_recurrence_energy
     (PiOp P : F →L[ℝ] F) (U : UnitaryFlow ℝ F) (x : F)
@@ -130,7 +181,7 @@ theorem adaptive_shortcuts_force_recurrence_energy
           inner ℝ (staticMemory PiOp P x)
             (preparationMemory PiOp x (finitePreparationMoment target)))) *
         ∑ j, w j) ^ 2 ≤
-      ‖preparationMemory PiOp x (finitePreparationMoment target)‖ ^ 2 *
+      (finitePreparationFrameEnergy target - ‖universalSector PiOp x‖ ^ 2) *
         ∑ i, ∑ j, w i * w j *
           inner ℝ (x - P x) (U.op (time j - time i) (x - P x)) := by
   let eta : ℝ := (Fintype.card I : ℝ)⁻¹ * a -
@@ -150,6 +201,8 @@ theorem adaptive_shortcuts_force_recurrence_energy
     funext j
     simp only [dynamicMemory, map_sub, hUP]
   rw [hdynamic, weightedRecurrenceEnergy_flow_eq_kernel] at henergy
+  rw [preparationMemory_norm_sq_eq_frameEnergy_sub_universal
+    PiOp x target hPisa hPiid hPiMoment] at henergy
   exact henergy
 
 end

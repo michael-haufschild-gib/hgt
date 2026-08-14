@@ -121,3 +121,42 @@ uniformly on finite conjugate complex packets as `sigma→1+`. Independent bound
   critical boundary.
 - 2026-08-14 — P-G160b orthogonal-slack conjecture falsified by exact two-node residual; sharp
   four-unit minimality proved on paper and encoded in Lean.
+
+### P-G160c — a coherent escaped-mass cross term can hide inside four units
+
+The prior Fisher--Stein contact module already identifies `(1+u)⁻¹` as the critical escaped-mass
+transform; that profile itself is not new.  What was open was whether it can occur as a coherent
+cross term without increasing the saturated Fisher diagonal.  For `d∈ℂ`, replace the Fisher row by
+
+```text
+g_d(u) = 2u/(1+u)^2 + d/(1+u)
+```
+
+while keeping the diagonal equal to four.  Translate the two-node saturation coefficients by
+`conj(d)` at node zero.  Direct expansion gives the exact quadratic
+
+```text
+Q_d(t) = 8 t^2(2t+3)/((1+t)^2(1+2t)) - |d|^2.        (P-G160.4)
+```
+
+**FALSIFIED.** For every `d≠0`, `Q_d(t)<0` for some finite `t>0`.  Hence positivity on only the
+canonical two-node packets forces `d=0`.  This is stronger than budget minimality: it classifies
+the escaped-mass tangent as forbidden at fixed four-unit energy unless its scalar coefficient
+vanishes.
+
+**Novelty boundary.** Critical mass profile and Fisher orthogonality were already present in
+`MobiusCriticalFisherSteinContact.lean`.  Corpus-new content is exact fixed-diagonal Gram deficit
+`(P-G160.4)`, finite negative witness, and two-node mass-mode rigidity.  Lean declarations are in
+`MobiusCriticalComplexPhaseHardyBoundarySaturation.lean`; direct audit remains pending behind the
+shared HTGeometry cache build.
+
+Allowing bottom budget `B` sharpens `(P-G160.4)` to
+
+```text
+Q_(d,B)(t)=Q(t)+B-4-|d|^2,
+all canonical two-node packets PSD  ==>  4+|d|^2 <= B.  (P-G160.5)
+```
+
+This is exact second-order curvature toll.  Therefore a first-order mass deformation `epsilon*d`
+requires diagonal surplus at least `epsilon^2|d|^2`.  A same-diagonal positive graph-complement
+extension is not generic positivity infrastructure; it is already rigidity forcing `d=0`.

@@ -111,3 +111,58 @@ then Layer B.
 ## Log
 
 - 2026-08-14 — programme opened; route selected; Layer A recorded as complete.
+
+## Layer C — progress, 2026-08-14
+
+Three modules landed, each checked with `lake env lean` and wired into
+`GaloisForLFunctions/HTGeometry.lean`.
+
+### `HTGeometry/WeightedGraphSpectralGap.lean` — C3
+
+- `WeightedGraph` — a finite symmetric nonnegative weight with no loops.
+- `mass`, `totalMass`, `massInner`, `dirichlet` — the vertex masses, the mass inner product and the
+  Dirichlet form, with nonnegativity of the mass and of the Dirichlet form of a function against
+  itself.
+- **`dirichlet_self_eq`** — `E(f,f) = ⟨f,f⟩_m − Σ_{v,u} w(v,u) f(v) f(u)`: the Dirichlet form is the
+  mass norm minus the averaging form.  Proved from the two summation identities
+  `sum_sum_w_mul_left` and `sum_sum_w_mul_right`, the second of which is where symmetry of the
+  weight is used.
+- `HasSpectralGap` — the gap is carried as a property of a real number, not as an infimum, which is
+  the form Garland's inequality consumes and needs no compactness.
+- **`spectralGap_apply`** — a spectral gap bounds `lam · ‖f − mean f‖²_m` by `E(f,f)`, because the
+  Dirichlet form is invariant under adding a constant and `f − mean f` has mass average zero.
+
+### `HTGeometry/WeightedComplexLink.lean` — C1
+
+- `WeightedComplex` — a finite complex presented by its top faces with a nonnegative weight on each.
+- **`m`** — the weight of a face: the total weight of the top faces containing it; monotone
+  decreasing in the face.
+- **`linkGraph`** — the link of a face as a weighted graph.  Two vertices *outside* `σ` are joined
+  with the weight of the face they span together with `σ`; the vertices of `σ` are isolated in it.
+  That guard is what makes the next item true.
+- **`linkGraph_mass`** — **the weighted degree of a vertex of the link of `σ` on a pure
+  `n`-dimensional complex is `(n − |σ|)` times the weight of `σ ∪ {u}`.**  Every top face containing
+  `σ ∪ {u}` has exactly `n − |σ|` further vertices, each contributing one edge of the link at `u`.
+  This is the combinatorial identity that converts a statement about links into a statement about
+  the complex, and it is the first place where purity is used.
+
+### `HTGeometry/SimplicialLinkRestrict.lean` — C2, first half
+
+Built on the corpus's `SimplicialCochainComplex`, so `δ ∘ δ = 0` and the incidence-sign calculus are
+inherited rather than rebuilt.
+
+- **`linkRestrict`** — the restriction of a cochain to the link of a face, `f_σ(u) = ε·f(σ ∪ {u})`
+  with `ε` the incidence sign of `u` in `σ ∪ {u}`.  That sign is exactly what is needed for:
+- **`coboundary_link_pair`** — **the two link terms of `δf` on `σ ∪ {u, u'}` are a single sign times
+  `f_σ(u) − f_σ(u')`.**  The mechanism is the corpus's
+  `faceSign_mul_faceSign_erase_antisymm`: erasing `u` then `u'` and erasing `u'` then `u` carry
+  opposite signs.
+- **`coboundary_link_decomp`** — **the coboundary localized at a face**:
+  `δf(σ ∪ {u,u'}) = ε·(f_σ(u) − f_σ(u')) + Σ_{v ∈ σ} faceSign · f(…)`.
+  This is the shape Garland's localization identity is assembled from.
+
+### Next
+
+The remaining half of C2 is the localization identity proper — summing
+`‖δ_σ f_σ‖²_{link}` over the faces `σ` of dimension `k−1` and comparing with `‖δf‖²` — followed by
+C4, the vanishing theorem.

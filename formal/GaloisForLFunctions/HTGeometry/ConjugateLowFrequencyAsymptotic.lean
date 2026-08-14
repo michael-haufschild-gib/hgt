@@ -54,10 +54,10 @@ variable {f f' : ℝ → ℂ} {K : ℝ}
 
 /-- **The scalar low-frequency asymptotic on the negative channel.** -/
 theorem norm_lowFrequency_asymptotic_conj {A L : ℝ} (hA : 0 < A) (hL : 0 < L) (hK : 0 ≤ K)
-    (hderiv : ∀ η : ℝ, 0 < η → HasDerivAt f (f' η) η)
-    (hcont : ContinuousOn (fun η => (starRingEnd ℂ) (f' η)) (Set.Ioi (0:ℝ)))
-    (hlip : ∀ η : ℝ, 0 ≤ η → ‖f η - f 0‖ ≤ K * η)
-    (hbound : ∀ η : ℝ, 0 < η → ‖f' η‖ ≤ K) :
+    (hderiv : ∀ η : ℝ, 0 < η → η ≤ A → HasDerivAt f (f' η) η)
+    (hcont : ContinuousOn (fun η => (starRingEnd ℂ) (f' η)) (Set.Ioc 0 A))
+    (hlip : ∀ η : ℝ, 0 ≤ η → η ≤ A → ‖f η - f 0‖ ≤ K * η)
+    (hbound : ∀ η : ℝ, 0 < η → η ≤ A → ‖f' η‖ ≤ K) :
     ‖(∫ η in (0:ℝ)..A, f η * scaledFresnelConj L η) - f 0 * watsonConstConj L‖
       ≤ ‖f 0‖ * (2 * A ^ (-(1:ℝ)/2) * L ^ (-(1:ℝ)))
         + (4 * K * A ^ ((1:ℝ)/2)) / L := by
@@ -65,18 +65,18 @@ theorem norm_lowFrequency_asymptotic_conj {A L : ℝ} (hA : 0 < A) (hL : 0 < L) 
       HasDerivAt (fun y => (starRingEnd ℂ) (g y)) ((starRingEnd ℂ) g') η := by
     intro g g' η hg
     exact (Complex.conjCLE.toContinuousLinearMap.hasFDerivAt.comp_hasDerivAt η hg)
-  have hderivC : ∀ η : ℝ, 0 < η →
+  have hderivC : ∀ η : ℝ, 0 < η → η ≤ A →
       HasDerivAt (fun y => (starRingEnd ℂ) (f y)) ((starRingEnd ℂ) (f' η)) η :=
-    fun η hη => hconjCLM (hderiv η hη)
-  have hlipC : ∀ η : ℝ, 0 ≤ η →
+    fun η hη hηA => hconjCLM (hderiv η hη hηA)
+  have hlipC : ∀ η : ℝ, 0 ≤ η → η ≤ A →
       ‖(starRingEnd ℂ) (f η) - (starRingEnd ℂ) (f 0)‖ ≤ K * η := by
-    intro η hη
+    intro η hη hηA
     rw [← map_sub, RCLike.norm_conj]
-    exact hlip η hη
-  have hboundC : ∀ η : ℝ, 0 < η → ‖(starRingEnd ℂ) (f' η)‖ ≤ K := by
-    intro η hη
+    exact hlip η hη hηA
+  have hboundC : ∀ η : ℝ, 0 < η → η ≤ A → ‖(starRingEnd ℂ) (f' η)‖ ≤ K := by
+    intro η hη hηA
     rw [RCLike.norm_conj]
-    exact hbound η hη
+    exact hbound η hη hηA
   have hbase := norm_lowFrequency_asymptotic (f := fun η => (starRingEnd ℂ) (f η))
     (f' := fun η => (starRingEnd ℂ) (f' η)) hA hL hK hderivC hcont hlipC hboundC
   have hint : IntervalIntegrable (fun η => (starRingEnd ℂ) (f η) * scaledFresnel L η)
@@ -124,13 +124,13 @@ theorem intervalIntegrable_halfPowerKernel_smul {w : ℝ → ℂ} {f f' : ℝ �
     (hA : 0 < A) (hK : 0 ≤ K)
     (hwn : ∀ η : ℝ, 0 < η → ‖w η‖ = η ^ (-(1:ℝ)/2))
     (hwc : ContinuousOn w (Set.Ioc 0 A))
-    (hderiv : ∀ η : ℝ, 0 < η → HasDerivAt f (f' η) η)
-    (hlip : ∀ η : ℝ, 0 ≤ η → ‖f η - f 0‖ ≤ K * η) :
+    (hderiv : ∀ η : ℝ, 0 < η → η ≤ A → HasDerivAt f (f' η) η)
+    (hlip : ∀ η : ℝ, 0 ≤ η → η ≤ A → ‖f η - f 0‖ ≤ K * η) :
     IntervalIntegrable (fun η => w η • f η) volume 0 A := by
   have hIoc : Set.uIoc (0:ℝ) A = Set.Ioc 0 A := Set.uIoc_of_le hA.le
   have hfc : ContinuousOn f (Set.Ioc 0 A) := by
     intro x hx
-    exact (((hderiv x hx.1).continuousAt).continuousWithinAt)
+    exact (((hderiv x hx.1 hx.2).continuousAt).continuousWithinAt)
   have hmeas : AEStronglyMeasurable (fun η => w η • f η)
       (volume.restrict (Set.uIoc 0 A)) := by
     rw [hIoc]
@@ -144,7 +144,7 @@ theorem intervalIntegrable_halfPowerKernel_smul {w : ℝ → ℂ} {f f' : ℝ �
   rw [hIoc] at hη
   have hη0 : 0 < η := hη.1
   have hfη : ‖f η‖ ≤ ‖f 0‖ + K * η := by
-    have h := hlip η hη0.le
+    have h := hlip η hη0.le hη.2
     have := norm_sub_norm_le (f η) (f 0)
     linarith [le_trans this h]
   have hmul : η ^ (-(1:ℝ)/2) * η = η ^ ((1:ℝ)/2) := by
@@ -198,8 +198,8 @@ omit [CompleteSpace X] in
 /-- The positive channel kernel against a Lipschitz vector amplitude is integrable. -/
 theorem intervalIntegrable_scaledFresnel_smul {f f' : ℝ → X} {K A L : ℝ} (hA : 0 < A)
     (hK : 0 ≤ K)
-    (hderiv : ∀ η : ℝ, 0 < η → HasDerivAt f (f' η) η)
-    (hlip : ∀ η : ℝ, 0 ≤ η → ‖f η - f 0‖ ≤ K * η) :
+    (hderiv : ∀ η : ℝ, 0 < η → η ≤ A → HasDerivAt f (f' η) η)
+    (hlip : ∀ η : ℝ, 0 ≤ η → η ≤ A → ‖f η - f 0‖ ≤ K * η) :
     IntervalIntegrable (fun η => scaledFresnel L η • f η) volume 0 A :=
   intervalIntegrable_halfPowerKernel_smul (f' := f') hA hK
     (fun _ hη => norm_scaledFresnel_of_pos hη) continuousOn_scaledFresnel hderiv hlip
@@ -208,8 +208,8 @@ omit [CompleteSpace X] in
 /-- The conjugate half-power kernel against a Lipschitz vector amplitude is integrable. -/
 theorem intervalIntegrable_scaledFresnelConj_smul {f f' : ℝ → X} {K A L : ℝ} (hA : 0 < A)
     (hK : 0 ≤ K)
-    (hderiv : ∀ η : ℝ, 0 < η → HasDerivAt f (f' η) η)
-    (hlip : ∀ η : ℝ, 0 ≤ η → ‖f η - f 0‖ ≤ K * η) :
+    (hderiv : ∀ η : ℝ, 0 < η → η ≤ A → HasDerivAt f (f' η) η)
+    (hlip : ∀ η : ℝ, 0 ≤ η → η ≤ A → ‖f η - f 0‖ ≤ K * η) :
     IntervalIntegrable (fun η => scaledFresnelConj L η • f η) volume 0 A :=
   intervalIntegrable_halfPowerKernel_smul (f' := f') hA hK
     (fun _ hη => norm_scaledFresnelConj_of_pos hη) continuousOn_scaledFresnelConj hderiv hlip
@@ -217,10 +217,10 @@ theorem intervalIntegrable_scaledFresnelConj_smul {f f' : ℝ → X} {K A L : �
 /-- **The Hilbert-valued low-frequency asymptotic on the negative channel.** -/
 theorem norm_vector_lowFrequency_asymptotic_conj {f f' : ℝ → X} {K A L : ℝ}
     (hA : 0 < A) (hL : 0 < L) (hK : 0 ≤ K)
-    (hderiv : ∀ η : ℝ, 0 < η → HasDerivAt f (f' η) η)
-    (hcont : ∀ v : X, ContinuousOn (fun η : ℝ => (inner ℂ v (f' η) : ℂ)) (Set.Ioi (0:ℝ)))
-    (hlip : ∀ η : ℝ, 0 ≤ η → ‖f η - f 0‖ ≤ K * η)
-    (hbound : ∀ η : ℝ, 0 < η → ‖f' η‖ ≤ K) :
+    (hderiv : ∀ η : ℝ, 0 < η → η ≤ A → HasDerivAt f (f' η) η)
+    (hcont : ∀ v : X, ContinuousOn (fun η : ℝ => (inner ℂ v (f' η) : ℂ)) (Set.Ioc 0 A))
+    (hlip : ∀ η : ℝ, 0 ≤ η → η ≤ A → ‖f η - f 0‖ ≤ K * η)
+    (hbound : ∀ η : ℝ, 0 < η → η ≤ A → ‖f' η‖ ≤ K) :
     ‖(∫ η in (0:ℝ)..A, scaledFresnelConj L η • f η) - watsonConstConj L • f 0‖
       ≤ ‖f 0‖ * (2 * A ^ (-(1:ℝ)/2) * L ^ (-(1:ℝ)))
         + (4 * K * A ^ ((1:ℝ)/2)) / L := by
@@ -237,26 +237,26 @@ theorem norm_vector_lowFrequency_asymptotic_conj {f f' : ℝ → X} {K A L : ℝ
     intro v hv
     set g : ℝ → ℂ := fun η => (inner ℂ v (f η) : ℂ) with hg
     set g' : ℝ → ℂ := fun η => (inner ℂ v (f' η) : ℂ) with hg'
-    have hgderiv : ∀ η : ℝ, 0 < η → HasDerivAt g (g' η) η := by
-      intro η hη
+    have hgderiv : ∀ η : ℝ, 0 < η → η ≤ A → HasDerivAt g (g' η) η := by
+      intro η hη hηA
       have hconst : HasDerivAt (fun _ : ℝ => v) (0 : X) η := hasDerivAt_const η v
-      have hbase := HasDerivAt.inner ℂ hconst (hderiv η hη)
+      have hbase := HasDerivAt.inner ℂ hconst (hderiv η hη hηA)
       simpa [hg, hg'] using hbase
-    have hglip : ∀ η : ℝ, 0 ≤ η → ‖g η - g 0‖ ≤ K * η := by
-      intro η hη
+    have hglip : ∀ η : ℝ, 0 ≤ η → η ≤ A → ‖g η - g 0‖ ≤ K * η := by
+      intro η hη hηA
       have hsub : g η - g 0 = (inner ℂ v (f η - f 0) : ℂ) := by
         rw [hg, inner_sub_right]
       rw [hsub]
       calc ‖(inner ℂ v (f η - f 0) : ℂ)‖ ≤ ‖v‖ * ‖f η - f 0‖ :=
             norm_inner_le_norm (𝕜 := ℂ) v (f η - f 0)
         _ = ‖f η - f 0‖ := by rw [hv, one_mul]
-        _ ≤ K * η := hlip η hη
-    have hgbound : ∀ η : ℝ, 0 < η → ‖g' η‖ ≤ K := by
-      intro η hη
+        _ ≤ K * η := hlip η hη hηA
+    have hgbound : ∀ η : ℝ, 0 < η → η ≤ A → ‖g' η‖ ≤ K := by
+      intro η hη hηA
       calc ‖(inner ℂ v (f' η) : ℂ)‖ ≤ ‖v‖ * ‖f' η‖ := norm_inner_le_norm (𝕜 := ℂ) v (f' η)
         _ = ‖f' η‖ := by rw [hv, one_mul]
-        _ ≤ K := hbound η hη
-    have hgcont : ContinuousOn (fun η => (starRingEnd ℂ) (g' η)) (Set.Ioi (0:ℝ)) :=
+        _ ≤ K := hbound η hη hηA
+    have hgcont : ContinuousOn (fun η => (starRingEnd ℂ) (g' η)) (Set.Ioc 0 A) :=
       Complex.continuous_conj.comp_continuousOn (hcont v)
     have hscalar := norm_lowFrequency_asymptotic_conj (f := g) (f' := g') hA hL hK hgderiv
       hgcont hglip hgbound

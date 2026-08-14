@@ -425,9 +425,52 @@ theorem isBigO_inv_sin_sub_inv_at_neg_nat (k : ℕ) :
   have hsign : ((-1 : ℂ)) ^ k * ((-1 : ℂ)) ^ k = 1 := by
     rw [← pow_add, ← two_mul, pow_mul]
     norm_num
-  rw [sin_pi_mul_add_nat w k]
-  have hsin : Complex.sin ((Real.pi : ℂ) * w) ≠ 0 ∨ True := Or.inr trivial
-  field_simp
+  have heinv : (((-1 : ℂ)) ^ k)⁻¹ = ((-1 : ℂ)) ^ k := inv_eq_of_mul_eq_one_right hsign
+  rw [sin_pi_mul_add_nat w k, mul_inv, heinv, div_eq_mul_inv, sub_neg_eq_add]
+  linear_combination ((Real.pi : ℂ) * (Complex.sin ((Real.pi : ℂ) * w))⁻¹) * hsign
+
+theorem tendsto_sub_nat_nhdsWithin (k : ℕ) :
+    Filter.Tendsto (fun w : ℂ => w - (k : ℂ))
+      (nhdsWithin ((k : ℂ)) {((k : ℂ))}ᶜ) (nhdsWithin (0 : ℂ) {(0 : ℂ)}ᶜ) := by
+  refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+  · have hcont : Filter.Tendsto (fun w : ℂ => w - (k : ℂ)) (nhds ((k : ℂ)))
+        (nhds ((k : ℂ) - (k : ℂ))) := (continuous_id.sub continuous_const).tendsto _
+    rw [sub_self] at hcont
+    exact hcont.mono_left nhdsWithin_le_nhds
+  · filter_upwards [self_mem_nhdsWithin] with w hw
+    have hwne : w ≠ (k : ℂ) := hw
+    intro hcon
+    simp only [Set.mem_singleton_iff, sub_eq_zero] at hcon
+    exact hwne hcon
+
+/-- **The reflection kernel has a simple pole at every nonnegative integer**, with residue
+`(-1)^k`.  These are the poles crossed by the rightward contour shift that produces the
+descending power series of the Barnes tail. -/
+theorem isBigO_inv_sin_sub_inv_at_nat (k : ℕ) :
+    (fun w : ℂ => (Real.pi : ℂ) * (Complex.sin ((Real.pi : ℂ) * w))⁻¹
+        - (-1) ^ k / (w - (k : ℂ)))
+      =O[nhdsWithin ((k : ℂ)) {((k : ℂ))}ᶜ] (fun _ : ℂ => (1 : ℂ)) := by
+  have hbase := (isBigO_inv_sin_sub_inv.comp_tendsto (tendsto_sub_nat_nhdsWithin k))
+  have hconst : (fun w : ℂ => ((-1 : ℂ)) ^ k
+      * ((Real.pi : ℂ) * (Complex.sin ((Real.pi : ℂ) * (w - (k : ℂ))))⁻¹ - (w - (k : ℂ))⁻¹))
+      =O[nhdsWithin ((k : ℂ)) {((k : ℂ))}ᶜ] (fun _ : ℂ => (1 : ℂ)) := by
+    simpa using (Asymptotics.isBigO_const_const ((-1 : ℂ) ^ k) one_ne_zero
+      (nhdsWithin ((k : ℂ)) {((k : ℂ))}ᶜ)).mul hbase
+  refine hconst.congr' ?_ Filter.EventuallyEq.rfl
+  filter_upwards [self_mem_nhdsWithin] with w _
+  have hsign : ((-1 : ℂ)) ^ k * ((-1 : ℂ)) ^ k = 1 := by
+    rw [← pow_add, ← two_mul, pow_mul]
+    norm_num
+  have heinv : (((-1 : ℂ)) ^ k)⁻¹ = ((-1 : ℂ)) ^ k := inv_eq_of_mul_eq_one_right hsign
+  have htr : Complex.sin ((Real.pi : ℂ) * w)
+      = (-1) ^ k * Complex.sin ((Real.pi : ℂ) * (w - (k : ℂ))) := by
+    have := sin_pi_mul_add_nat (w - (k : ℂ)) k
+    rw [sub_add_cancel] at this
+    exact this
+  set e : ℂ := ((-1 : ℂ)) ^ k with he
+  clear_value e
+  clear he
+  rw [htr, mul_inv, heinv, div_eq_mul_inv]
   ring
 
 end GaloisForLFunctions.HTGeometry

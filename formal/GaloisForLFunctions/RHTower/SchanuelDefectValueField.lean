@@ -38,12 +38,33 @@ theorem schanuelDefect_integer_relation_in_intermediateField
         schanuelDefect (x i : ℂ) := by
     intro i
     simp only [Φ, A, schanuelDefect, map_sub, map_smul,
-      KaehlerDifferential.map_D, IntermediateField.algebraMap_apply,
-      IntermediateField.coe_inv, hy]
+      KaehlerDifferential.map_D, IntermediateField.algebraMap_apply, hy]
+    have hscalar :
+        (y i)⁻¹ •
+            KaehlerDifferential.D A ℂ (Complex.exp (x i : ℂ)) =
+          algebraMap K ℂ ((y i)⁻¹) •
+            KaehlerDifferential.D A ℂ (Complex.exp (x i : ℂ)) := by
+      exact (IsScalarTower.algebraMap_smul
+        (A := ℂ) (M := KaehlerDifferential A ℂ) ((y i)⁻¹)
+        (KaehlerDifferential.D A ℂ (Complex.exp (x i : ℂ)))).symm
+    rw [hscalar, map_inv₀, IntermediateField.algebraMap_apply, hy]
   have hmap := congrArg Φ hdefect
-  simp only [map_sum, map_zsmul, hΦ, map_zero] at hmap
+  simp only [map_sum, map_zsmul, map_zero] at hmap
+  change (∑ i, m i •
+      Φ ((y i)⁻¹ • KaehlerDifferential.D A K (y i) -
+        KaehlerDifferential.D A K (x i))) = 0 at hmap
+  have hambient : ∑ i, m i • schanuelDefect (x i : ℂ) = 0 := by
+    calc
+      ∑ i, m i • schanuelDefect (x i : ℂ) =
+          ∑ i, m i •
+            Φ ((y i)⁻¹ • KaehlerDifferential.D A K (y i) -
+              KaehlerDifferential.D A K (x i)) := by
+        apply Finset.sum_congr rfl
+        intro i hi
+        rw [hΦ i]
+      _ = 0 := hmap
   apply schanuelDefect_integer_relation (fun i => (x i : ℂ)) hx m
-  simpa only [Int.cast_smul_eq_zsmul ℂ] using hmap
+  simpa only [Int.cast_smul_eq_zsmul ℂ] using hambient
 
 end
 

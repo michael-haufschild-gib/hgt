@@ -6403,3 +6403,45 @@ All declarations audit to `[propext, Classical.choice, Quot.sound]` and are wire
 What card 6 still needs for `(12)`: Theorem 1's distributional classification `(8)` (ODE
 regularity on each half-line plus exclusion of a distribution supported at the origin) and the
 low/high split that combines `(16)` with `(20)`.
+
+## GP — card 6: half-line classification, both channels, and the low-frequency term `(16)`
+
+- `RHTower/SuzukiGammaHalfLineClassification.lean` — the Gamma transport `Q(η)` as the
+  zero-frequency propagator, its inverse, the commutation of the shifted symbol with the transport,
+  the adjoint transport equation, and `exists_channel_vector`: every solution of
+  `f' = [-1/(2η) + (i/2)(rI - T)]f` on the positive frequency half-line is `η^{-1/2}Q(η)c`.  The
+  proof is the exact integrating factor `η^{1/2}Q(η)^{-1}f(η)`, whose derivative vanishes, so it is
+  constant on the connected half-line.  `channel_vector_unique` gives uniqueness of `c`.  This is
+  the analytic core of Theorem 1's `(8)`; what `(8)` adds is the distributional regularity step and
+  the exclusion of a distribution supported at the origin.
+- `RHTower/SuzukiHalfLogScatteringKernel.lean` — the half-log scattering map
+  `β(c₊,c₋) = (2√π)⁻¹[e^{iπ/4}c₊ + e^{-iπ/4}c₋]` and `halfLogScatter_eq_zero_iff`:
+  `β(c₊,c₋) = 0 ↔ c₋ = -i c₊`.  This is `(21)`, the kernel statement of Theorem 3.
+- `HTGeometry/ConjugateLowFrequencyAsymptotic.lean` — the negative frequency channel.  The
+  conjugate kernel `η^{-1/2}e^{-iηL}`, its Watson constant `√π e^{-iπ/4}`, the scalar asymptotic
+  `norm_lowFrequency_asymptotic_conj` and the Hilbert-valued
+  `norm_vector_lowFrequency_asymptotic_conj`, each obtained by transporting the positive channel
+  through the isometric real-linear conjugation.  The integrability side condition is now derived,
+  not assumed: `intervalIntegrable_halfPowerKernel_smul` covers both channels, and
+  `intervalIntegrable_scaledFresnel` was extracted from the positive channel proof so no argument
+  is duplicated.
+- `RHTower/SuzukiGammaChannelAmplitude.lean` — the channel amplitude `a(η) = Q(η)c` and its
+  reflection `a₋(t) = Q(-t)c`: value `c` at the origin, norm at most `‖c‖`, generator bounded by
+  `(B + ‖T‖)/2` for a symbol bounded by `B`, and the resulting Lipschitz estimate
+  `‖a(η) - c‖ ≤ ((B + ‖T‖)/2)‖c‖ η` from the mean value inequality.  These are exactly the data the
+  Watson asymptotic consumes, and they are what `(14)` asserts in quantitative form.
+- `RHTower/SuzukiHalfLogLowFrequencyTerm.lean` — `watson_two_channel_sum`: the two Watson terms
+  combine into `2π L^{-1/2} β(c₊,c₋)`; and `norm_lowFrequency_two_channel`, the card's `(16)`:
+
+  `‖∫₀^A η^{-1/2}e^{iηL}Q(η)c₊ dη + ∫₀^A t^{-1/2}e^{-itL}Q(-t)c₋ dt − 2πL^{-1/2}β(c₊,c₋)‖`
+  `  ≤ (‖c₊‖+‖c₋‖)(2A^{-1/2}L^{-1}) + 4·((B+‖T‖)/2)(‖c₊‖+‖c₋‖)A^{1/2}/L`,
+
+  an explicit `O(L^{-1})` remainder around the critical `L^{-1/2}` scattering term.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]` and are wired into the
+`RHTower` and `HTGeometry` umbrellas.
+
+Remaining for `(12)`: the low-frequency estimate above is stated for a globally bounded (cutoff)
+symbol, because the Watson asymptotic in `HTGeometry/LowFrequencyAsymptotic.lean` asks for a
+Lipschitz bound on all of `[0,∞)`.  Localising that hypothesis to `[0,A]` lets the same statement
+run with the true unbounded Gamma symbol, after which `(16)` and `(20)` combine into `(12)`.

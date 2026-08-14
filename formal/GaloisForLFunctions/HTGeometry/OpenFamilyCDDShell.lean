@@ -1,5 +1,7 @@
 import GaloisForLFunctions.HTGeometry.GeometricCDDConstraint
 import GaloisForLFunctions.HTGeometry.ExponentialObservationHypertranscendence
+import Mathlib.Topology.Algebra.InfiniteSum.Ring
+import Mathlib.Analysis.SpecificLimits.Normed
 
 /-!
 # The open family of finite rational CDD shells
@@ -305,5 +307,84 @@ theorem hypertranscendentalOver_cdd_dressing_iff
     {P R : E} (hR : DifferentialAlgebraicOver F R) (hR0 : R ≠ 0) :
     HypertranscendentalOver F (P * R) ↔ HypertranscendentalOver F P :=
   hypertranscendentalOver_mul_differentialAlgebraic_iff hR hR0
+
+/-- A finite product of multipliable families is multipliable. -/
+theorem multipliable_finset_prod {ι' : Type*} (F : ι' → ℕ → ℂ)
+    (h : ∀ j, Multipliable (F j)) (s : Finset ι') :
+    Multipliable (fun k => ∏ j ∈ s, F j k) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp
+  | insert j s hj ih =>
+      simp only [Finset.prod_insert hj]
+      exact (h j).mul ih
+
+/-- **Normal convergence of a single shell factor along the scale orbit.**  For a positive seed, a
+contracting scale and a crossing coordinate in the closed right half-plane, the geometric decay of
+`q^k t` makes the orbit product converge. -/
+theorem multipliable_cddShellFactor {a q : ℝ} (ha : 0 < a) (hq0 : 0 < q) (hq1 : q < 1)
+    {t : ℂ} (ht : 0 ≤ t.re) :
+    Multipliable (fun k : ℕ =>
+      ((a : ℂ) - ((q : ℝ) : ℂ) ^ k * t) / ((a : ℂ) + ((q : ℝ) : ℂ) ^ k * t)) := by
+  have hqk : ∀ k : ℕ, (((q : ℝ) : ℂ) ^ k * t).re = q ^ k * t.re := by
+    intro k
+    simp [Complex.mul_re, ← Complex.ofReal_pow]
+  have hqnorm : ∀ k : ℕ, ‖((q : ℝ) : ℂ) ^ k * t‖ = q ^ k * ‖t‖ := by
+    intro k
+    rw [norm_mul, norm_pow, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hq0]
+  have hden : ∀ k : ℕ, a ≤ ‖(a : ℂ) + ((q : ℝ) : ℂ) ^ k * t‖ := by
+    intro k
+    refine le_trans ?_ (Complex.re_le_norm _)
+    rw [Complex.add_re, Complex.ofReal_re, hqk k]
+    have : 0 ≤ q ^ k * t.re := mul_nonneg (le_of_lt (pow_pos hq0 k)) ht
+    linarith
+  have hne : ∀ k : ℕ, (a : ℂ) + ((q : ℝ) : ℂ) ^ k * t ≠ 0 := by
+    intro k hzero
+    have := hden k
+    rw [hzero, norm_zero] at this
+    linarith
+  have heq : ∀ k : ℕ,
+      ((a : ℂ) - ((q : ℝ) : ℂ) ^ k * t) / ((a : ℂ) + ((q : ℝ) : ℂ) ^ k * t)
+        = 1 + (-(2 * (((q : ℝ) : ℂ) ^ k * t))) / ((a : ℂ) + ((q : ℝ) : ℂ) ^ k * t) := by
+    intro k
+    have h := hne k
+    field_simp
+    ring
+  have hsummable : Summable fun k : ℕ =>
+      ‖(-(2 * (((q : ℝ) : ℂ) ^ k * t))) / ((a : ℂ) + ((q : ℝ) : ℂ) ^ k * t)‖ := by
+    refine Summable.of_nonneg_of_le (fun k => norm_nonneg _) (fun k => ?_)
+      (((summable_geometric_of_lt_one (le_of_lt hq0) hq1)).mul_left (2 * ‖t‖ / a))
+    rw [norm_div, norm_neg, norm_mul, hqnorm k]
+    have hpos : (0 : ℝ) < ‖(a : ℂ) + ((q : ℝ) : ℂ) ^ k * t‖ :=
+      lt_of_lt_of_le ha (hden k)
+    rw [div_le_iff₀ hpos]
+    have hnum : ‖(2 : ℂ)‖ * (q ^ k * ‖t‖) = 2 * ‖t‖ * q ^ k := by
+      rw [Complex.norm_ofNat]
+      ring
+    rw [hnum]
+    have hstep : 2 * ‖t‖ / a * q ^ k * a ≤ 2 * ‖t‖ / a * q ^ k *
+        ‖(a : ℂ) + ((q : ℝ) : ℂ) ^ k * t‖ := by
+      apply mul_le_mul_of_nonneg_left (hden k)
+      positivity
+    refine le_trans (le_of_eq ?_) hstep
+    field_simp
+  have := multipliable_one_add_of_summable hsummable
+  simpa only [← heq] using this
+
+/-- **Normal convergence of the shell orbit.**  Every finite positive seed with multiplicities has a
+convergent one-sided scale orbit on the closed right half-plane. -/
+theorem multipliable_cddShellOrbit {a : ι → ℝ} (ha : ∀ j, 0 < a j) (m : ι → ℕ)
+    {q : ℝ} (hq0 : 0 < q) (hq1 : q < 1) {t : ℂ} (ht : 0 ≤ t.re) :
+    Multipliable (fun k : ℕ =>
+      cddShell (fun j => ((a j : ℝ) : ℂ)) m (((q : ℝ) : ℂ) ^ k * t)) := by
+  have hfactor : ∀ j : ι, Multipliable (fun k : ℕ =>
+      (((a j : ℝ) : ℂ) - ((q : ℝ) : ℂ) ^ k * t) /
+        (((a j : ℝ) : ℂ) + ((q : ℝ) : ℂ) ^ k * t)) :=
+    fun j => multipliable_cddShellFactor (ha j) hq0 hq1 ht
+  have hpow : ∀ j : ι, Multipliable (fun k : ℕ =>
+      ((((a j : ℝ) : ℂ) - ((q : ℝ) : ℂ) ^ k * t) /
+        (((a j : ℝ) : ℂ) + ((q : ℝ) : ℂ) ^ k * t)) ^ (2 * m j)) :=
+    fun j => (hfactor j).pow (2 * m j)
+  exact multipliable_finset_prod _ hpow Finset.univ
 
 end GaloisForLFunctions.HTGeometry

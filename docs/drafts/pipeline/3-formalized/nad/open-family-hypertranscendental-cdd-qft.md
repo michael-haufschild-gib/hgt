@@ -291,14 +291,22 @@ family rather than a dynamically predicted universality class.
 
 ## Lean boundary
 
-The current HTGeometry corpus already formalizes the one-seed finite algebra, crossing identities,
-shell constraint, boundary selection, and finite-jet HT consequences.  The passage from one seed
-to the finite product `(2)` is a mechanical finite-product wrapper and does not justify a new Lean
-module.  The load-bearing new content is analytic: normal convergence, enlarged-strip bounds, the
-external difference-Galois dichotomy, and constructive-QFT reconstruction.
+`HTGeometry/OpenFamilyCDDShell.lean` now carries the several-seed family itself, unconditionally.
+It defines the finite rational shell `(2)` with multiplicities and its scale orbit `(3)`, and proves
+the decimation constraint `(4)`, the reflection identity `(5)`, rapidity unitarity and
+crossing-period inversion, the normalization `(11)`, the strict half-plane contraction `(7)` and the
+positive crossing-coordinate real part `(6)`, unimodularity on the real rapidity axis, the multi-seed
+unwrapped phase `(14)` with its strictly positive slope `(15)`, and the differential-algebraic
+stability step of Claim E.
 
-No Lean build is justified until one of those infinite analytic interfaces or the source-minimal
-shell law receives an unconditional reusable theorem surface.
+The analytic gap named earlier is closed as well: `multipliable_cddShellFactor` and
+`multipliable_cddShellOrbit` prove **normal convergence of the infinite scale orbit** on the closed
+right half-plane, from the geometric decay of `q^k t` against the uniform lower bound `a_j` on the
+denominators.  mathlib had the criterion but not the estimate.
+
+What is still external is the Adamczewski--Dreyfus--Hardouin dichotomy used in Claim C and Lechner's
+inverse-scattering reconstruction used in Claim D; both are cited published theorems, as the card
+states.
 
 ## Primary literature
 
