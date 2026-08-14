@@ -1,5 +1,4 @@
 import Mathlib.Analysis.InnerProductSpace.Basic
-import Mathlib.Topology.MetricSpace.Basic
 import GaloisForLFunctions.RHTower.ConstrainedProlateHermiteParityEvaluation
 
 /-!
@@ -118,6 +117,26 @@ theorem tendsto_twoModeRayleighQuotient_div_d1
   filter_upwards [hd1] with i hdi
   exact (twoModeRayleighQuotient_div_d1_eq (d0 i) (d1 i) (l0 i) (l1 i) hdi).symm
 
+/-- Limit of the rescaled two-mode spectral gap `(d₁ - ℛ) / d₁` under coordinate convergence
+and eigenvalue separation `d₀/d₁ → 0`. -/
+theorem tendsto_twoModeRayleighQuotient_gap_ratio
+    {ι : Type*} {L : Filter ι}
+    {d0 d1 l0 l1 : ι → ℝ} {L0 L1 : ℝ}
+    (hl0 : Tendsto l0 L (𝓝 L0))
+    (hl1 : Tendsto l1 L (𝓝 L1))
+    (hL0 : L0 ≠ 0)
+    (hd1 : ∀ᶠ i in L, d1 i ≠ 0)
+    (hd_ratio : Tendsto (fun i => d0 i / d1 i) L (𝓝 0)) :
+    Tendsto (fun i => (d1 i - twoModeRayleighQuotient (d0 i) (d1 i) (l0 i) (l1 i)) / d1 i)
+      L (𝓝 (1 - L0 ^ 2 / (L0 ^ 2 + L1 ^ 2))) := by
+  have hlim := tendsto_twoModeRayleighQuotient_div_d1 hl0 hl1 hL0 hd1 hd_ratio
+  have hsub : Tendsto (fun i => 1 - twoModeRayleighQuotient (d0 i) (d1 i) (l0 i) (l1 i) / d1 i)
+      L (𝓝 (1 - L0 ^ 2 / (L0 ^ 2 + L1 ^ 2))) :=
+    (tendsto_const_nhds.sub hlim)
+  refine hsub.congr' ?_
+  filter_upwards [hd1] with i hdi
+  simp only [sub_div, div_self hdi]
+
 open _root_.RHTower
 
 /-- In the positive sector, the limiting ratio `L₀² / (L₀² + L₁²)` for Hermite coordinates
@@ -126,11 +145,21 @@ theorem positiveSector_twoModeRayleigh_limit_eq_eight_elevenths :
     hermiteOriginSq 0 / (hermiteOriginSq 0 + hermiteOriginSq 2) = 8 / 11 :=
   positive_sector_hermite_floor_ratio_eq
 
+/-- The positive sector spectral gap ratio converges to `3/11`. -/
+theorem positiveSector_twoModeRayleigh_gap_limit_eq_three_elevenths :
+    1 - (8 : ℝ) / 11 = 3 / 11 := by
+  norm_num
+
 /-- In the negative sector, the limiting ratio `L₀² / (L₀² + L₁²)` for Hermite coordinates
 `L₀ = h₂(0)` and `L₁ = h₆(0)` evaluates to `8/13`. -/
 theorem negativeSector_twoModeRayleigh_limit_eq_eight_thirteenths :
     hermiteOriginSq 1 / (hermiteOriginSq 1 + hermiteOriginSq 3) = 8 / 13 :=
   negative_sector_hermite_floor_ratio_eq
+
+/-- The negative sector spectral gap ratio converges to `5/13`. -/
+theorem negativeSector_twoModeRayleigh_gap_limit_eq_five_thirteenths :
+    1 - (8 : ℝ) / 13 = 5 / 13 := by
+  norm_num
 
 /-- The ratio of positive-to-negative sector floor weights evaluates to `13/11`. -/
 theorem parityFloor_twoModeRayleigh_ratio_eq_thirteen_elevenths :

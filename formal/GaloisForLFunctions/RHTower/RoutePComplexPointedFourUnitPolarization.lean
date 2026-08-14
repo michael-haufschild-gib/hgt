@@ -93,7 +93,7 @@ theorem eulerPositiveCriticalComplexDampedStateLp_ofReal
     eulerPositiveCriticalDampedStateWeight sigma u n
   simp [eulerPositiveCriticalComplexDampedStateWeight]
 
-private theorem complexDamping_mul_eulerPositiveMass
+theorem complexDamping_mul_eulerPositiveMass
     (sigma : ℝ) (u : ℂ) (n : ℕ+) :
     Complex.exp
           (-u * ((sigma - 1 : ℝ) : ℂ) *
@@ -120,7 +120,7 @@ private theorem complexDamping_mul_eulerPositiveMass
   push_cast
   ring
 
-private theorem summable_complexEulerLogDirichlet
+theorem summable_complexEulerLogDirichlet
     {s : ℂ} (hs : 1 < s.re) :
     Summable (fun n : ℕ =>
       (Real.log n : ℂ) / (n : ℂ) ^ s) := by
@@ -138,7 +138,7 @@ private theorem summable_complexEulerLogDirichlet
     rw [Real.rpow_neg hnpos.le]
     ring
 
-private theorem tsum_complexEulerLogDirichlet_succ
+theorem tsum_complexEulerLogDirichlet_succ
     {s : ℂ} (hs : 1 < s.re) :
     (∑' n : ℕ,
       (Real.log (n + 1 : ℕ) : ℂ) / ((n + 1 : ℕ) : ℂ) ^ s) =
@@ -146,7 +146,7 @@ private theorem tsum_complexEulerLogDirichlet_succ
   have h := (summable_complexEulerLogDirichlet hs).sum_add_tsum_nat_add 1
   simpa using h
 
-private theorem tsum_complexDamping_eulerPositiveMass
+theorem tsum_complexDamping_eulerPositiveMass
     {sigma : ℝ} {u : ℂ}
     (hshift : 1 < (eulerPositiveComplexBoundaryParameter sigma u).re) :
     (∑' n : ℕ+,
@@ -178,7 +178,7 @@ private theorem tsum_complexDamping_eulerPositiveMass
   simpa only [Nat.cast_add, Nat.cast_one] using
     (zeta_eq_tsum_one_div_nat_add_one_cpow hshift).symm
 
-private theorem tsum_complexDamping_eulerPositiveMass_mul_log
+theorem tsum_complexDamping_eulerPositiveMass_mul_log
     {sigma : ℝ} {u : ℂ}
     (hshift : 1 < (eulerPositiveComplexBoundaryParameter sigma u).re) :
     (∑' n : ℕ+,
@@ -277,7 +277,7 @@ theorem inner_eulerPositiveState_complexDamped_eq_affineOverlap
     ofReal_eulerPositiveTotal_eq_riemannZeta hsigma]
   rfl
 
-private theorem complexDamped_pair_apply
+theorem complexDamped_pair_apply
     (sigma : ℝ) (u v : ℂ) (n : ℕ+) :
     eulerPositiveCriticalComplexDampedStateWeight sigma v n *
         (starRingEnd ℂ)

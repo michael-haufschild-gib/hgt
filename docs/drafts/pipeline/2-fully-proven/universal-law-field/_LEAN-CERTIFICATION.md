@@ -1701,3 +1701,15 @@ depend only on `propext`, `Classical.choice`, and `Quot.sound`. Module is wired 
 `HTGeometry.UniversalLawField`. Abstract fusion/conservation/prediction chain is closed; literal
 source realization by three named nonisomorphic HGT organs remains open and is not replaced by a
 formal product.
+
+## Session 2026-08-14 addition (literal reflected-shell cofinal selection)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-CDFM-2 | Every real character and reflected mate survive some finite marked Euler-shell fibre; functional-equation sign action is neutral; admission through every fibre above the normalization wall is equivalent to neutral character | `HTGeometry.ConstitutiveReflectedShellCofinalSelection` |
+
+Scratch and tree foreground elaboration pass. Targeted leaf build creates every missing dependency
+`.olean` and builds only the named module; no umbrella, area, or project build was run. Five audited
+declarations depend only on `propext`, `Classical.choice`, and `Quot.sound`. Module is wired into
+`HTGeometry.UniversalLawField`. This closes literal source genealogy and global cofinal
+formation/properness. Physical Xi-to-global-admission landing remains open; no RH claim is made.

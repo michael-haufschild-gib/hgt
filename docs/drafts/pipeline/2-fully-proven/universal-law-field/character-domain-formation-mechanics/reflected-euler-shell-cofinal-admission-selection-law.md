@@ -7,7 +7,8 @@
   marked Euler-shell Gibbs fibre. Requiring the same pair to be admitted by every fibre above the
   normalization wall forces the neutral character exactly.
 - **Status:** `[PAPER-PROVED] [DEPENDENCY-CLOSED] [LITERAL ARITHMETIC SOURCE]`
-  `[FINITE-TO-COFINAL SELECTION] [FUNCTIONAL-EQUATION SYMMETRIC] [PRE-ZERO] [NOT RH]`
+  `[FINITE-TO-COFINAL SELECTION] [FUNCTIONAL-EQUATION SYMMETRIC] [LEAN-CERTIFIED]`
+  `[PRE-ZERO] [NOT RH]`
 
 ## 1. Literal source family
 
@@ -133,9 +134,9 @@ comparison showing that the physical horizontal grade is a globally admitted cha
 complete reflected source genealogy. No additional positivity, recurrence, moment, or properness
 theorem is missing at this interface.
 
-## 7. Lean plan
+## 7. Lean certification
 
-Formalize exactly:
+`HTGeometry.ConstitutiveReflectedShellCofinalSelection` certifies exactly:
 
 1. summability inside the shifted shell half-plane;
 2. finite reflected admission for every real character;
@@ -147,4 +148,4 @@ No numerical computation, extra axiom, or RH premise is permitted.
 
 ## 8. Log
 
-- 2026-08-14 — literal shell genealogy and cofinal reflected selector proved on paper.
+- 2026-08-14 — literal shell genealogy and cofinal reflected selector proved on paper and in Lean.

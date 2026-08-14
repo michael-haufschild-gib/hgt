@@ -99,10 +99,12 @@ automorphism.  Thus neither branch-rank pattern contradicts algebraic Galois sym
   translation coupling additive and multiplicative coordinates.  Adjoining `tau` resolves the
   defect precisely when it adds a new transcendence direction.
 - **Lean status:** `RHTower/SchanuelPeriodBranchDefect.lean` formalizes the exact branch-defect
-  identity, its divided form, and the determinant criterion showing that a nonzero affine shift
-  has rank two once the old defect direction and `d tau` are independent.  The source was checked
-  first in `/tmp/SchanuelPeriodBranchScratch.lean`; all declarations use only `propext`,
-  `Classical.choice`, and `Quot.sound`.  Pure-transcendental Kähler splitting remains open.
+  identity and determinant criterion. `RHTower/SchanuelPureTranscendentalPeriod.lean` proves that
+  a nonzero old Kähler direction and `d tau` are independent after adjoining a transcendental
+  period. `RHTower/SchanuelPeriodBranchRank.lean` combines this with transcendence of `rho` to
+  prove rank two for every nonzero integral branch shift.  All declarations were checked first in
+  `/tmp` and use only `propext`, `Classical.choice`, and `Quot.sound`.  The transcendental-period
+  branch of `(2)`--`(3)` is formalized; the algebraic-period infinite-family classification is not.
 - **Novelty:** no external priority claim; this is a new internal synthesis of standard Kähler
   and branch identities.
 
@@ -119,3 +121,6 @@ force a uniform algebraic degree bound: finite isogenies preserve the local idea
   Kummer-symmetry failure isolated.
 - 2026-08-14 -- exact shifted-defect identity and determinant rank criterion verified
   unconditionally in Lean and wired as `RHTower/SchanuelPeriodBranchDefect.lean`.
+- 2026-08-14 -- pure-transcendental base/new differential independence and the full nonzero
+  integral-shift rank-two theorem verified unconditionally in Lean and wired as
+  `RHTower/SchanuelPureTranscendentalPeriod.lean` and `RHTower/SchanuelPeriodBranchRank.lean`.

@@ -58,7 +58,7 @@ Module-only builds pass:
 
 Axiom audits report only propext, Classical.choice, Quot.sound. No sorry/admit/project axiom/opaque/unsafe. Both wired in HTGeometry umbrella. Scratch files cleaned and no stale Lean processes.
 
-Global non-build lint failed only because unrelated concurrent module GaloisForLFunctions.RHTower.SuzukiScrewNaturalDomainEquality was unreachable from RHTower umbrella.
+Global non-build lint retries were blocked only by unrelated concurrent new RHTower/HTGeometry leaves unreachable from their umbrellas; both new recurrence modules themselves are wired, debt-free, directly checked, and module-built.
 
 ## Exact open Brown core
 
