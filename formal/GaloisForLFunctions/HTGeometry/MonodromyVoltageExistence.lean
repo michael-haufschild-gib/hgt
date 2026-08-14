@@ -38,6 +38,7 @@ def cyclicSumL (σ : Perm S) (n : ℕ) : (S → ZMod p) →ₗ[ZMod p] (S → ZM
     funext s
     simp only [cyclicSum, Pi.smul_apply, smul_eq_mul, RingHom.id_apply, Finset.mul_sum]
 
+omit [Fintype S] [DecidableEq S] in
 @[simp] theorem cyclicSumL_apply (σ : Perm S) (n : ℕ) (α : S → ZMod p) :
     cyclicSumL σ n α = cyclicSum σ n α := rfl
 
@@ -48,6 +49,7 @@ def invariantSubmodule (σ : Perm S) : Submodule (ZMod p) (S → ZMod p) where
   zero_mem' := fun s => rfl
   smul_mem' r v hv := fun s => by simp only [Pi.smul_apply, hv s]
 
+omit [Fintype S] [DecidableEq S] in
 theorem mem_invariantSubmodule_pow {σ : Perm S} {v : S → ZMod p}
     (hv : v ∈ invariantSubmodule σ) (k : ℕ) (s : S) : v ((σ ^ k) s) = v s := by
   induction k with
@@ -56,6 +58,7 @@ theorem mem_invariantSubmodule_pow {σ : Perm S} {v : S → ZMod p}
       have hstep : (σ ^ (k + 1)) s = σ ((σ ^ k) s) := by rw [pow_succ']; rfl
       rw [hstep, hv ((σ ^ k) s), ih]
 
+omit [Fintype S] [DecidableEq S] in
 /-- Cyclic sums are invariant functions. -/
 theorem cyclicSum_mem_invariantSubmodule {σ : Perm S} {n : ℕ} (hσ : σ ^ n = 1)
     (α : S → ZMod p) : cyclicSum σ n α ∈ invariantSubmodule σ := by
@@ -81,6 +84,7 @@ theorem cyclicSum_mem_invariantSubmodule {σ : Perm S} {n : ℕ} (hσ : σ ^ n =
   rw [hshift, h4]
   rfl
 
+omit [DecidableEq S] in
 /-- An invariant function is determined by its values on a transversal. -/
 theorem finrank_invariantSubmodule_le {σ : Perm S} {n : ℕ} {T : Finset S}
     (hT : ∀ s : S, ∃ t ∈ T, ∃ k, k < n ∧ (σ ^ k) t = s) :
@@ -142,6 +146,7 @@ def coboundaryMap : (S → ZMod p) →ₗ[ZMod p] ((S → ZMod p) × (S → ZMod
       simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply, Prod.smul_fst, Prod.smul_snd] <;>
       ring
 
+omit [DecidableEq S] in
 theorem finrank_pair : Module.finrank (ZMod p) ((S → ZMod p) × (S → ZMod p))
     = Fintype.card S + Fintype.card S := by
   rw [Module.finrank_prod, Module.finrank_fintype_fun_eq_card]

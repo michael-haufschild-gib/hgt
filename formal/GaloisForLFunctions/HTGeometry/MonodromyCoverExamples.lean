@@ -25,9 +25,11 @@ open scoped Classical
 
 variable {G : Type*} [Group G] [Fintype G] [DecidableEq G] {a b c : ℕ}
 
+omit [Fintype G] [DecidableEq G] in
 /-- Left translation by a group element, as a permutation. -/
 theorem toPermHom_apply (g s : G) : (MulAction.toPermHom G G g) s = g * s := rfl
 
+omit [Fintype G] [DecidableEq G] in
 /-- Left translation by an element of order `a` is free of order `a`. -/
 theorem isFreeOfOrder_toPermHom {x : G} {a : ℕ} (hx : orderOf x = a) :
     IsFreeOfOrder (MulAction.toPermHom G G x) a where
@@ -57,7 +59,7 @@ noncomputable def regularCover (x y : G) (ha : orderOf x = a) (hb : orderOf y = 
     exact isFreeOfOrder_toPermHom hc
   transitive := by
     intro s t
-    refine ⟨MulAction.toPermHom G G (t * s⁻¹), ?_, by simp [toPermHom_apply, mul_assoc]⟩
+    refine ⟨MulAction.toPermHom G G (t * s⁻¹), ?_, by simp [mul_assoc]⟩
     have hmem : t * s⁻¹ ∈ Subgroup.closure ({x, y} : Set G) := by rw [hgen]; trivial
     have himg : Subgroup.map (MulAction.toPermHom G G) (Subgroup.closure ({x, y} : Set G))
         = Subgroup.closure ((MulAction.toPermHom G G) '' ({x, y} : Set G)) :=
@@ -85,12 +87,15 @@ def pairSubgroup (x y : G) : Subgroup G := Subgroup.closure ({x, y} : Set G)
 noncomputable instance pairSubgroupFintype (x y : G) : Fintype ↥(pairSubgroup x y) :=
   Fintype.ofFinite _
 
+omit [Fintype G] [DecidableEq G] in
 theorem mem_pairSubgroup_left (x y : G) : x ∈ pairSubgroup x y :=
   Subgroup.subset_closure (Or.inl rfl)
 
+omit [Fintype G] [DecidableEq G] in
 theorem mem_pairSubgroup_right (x y : G) : y ∈ pairSubgroup x y :=
   Subgroup.subset_closure (Or.inr rfl)
 
+omit [Fintype G] [DecidableEq G] in
 /-- Inside the subgroup they generate, the pair generates everything. -/
 theorem closure_pair_coe_eq_top (x y : G) :
     Subgroup.closure ({⟨x, mem_pairSubgroup_left x y⟩, ⟨y, mem_pairSubgroup_right x y⟩} :

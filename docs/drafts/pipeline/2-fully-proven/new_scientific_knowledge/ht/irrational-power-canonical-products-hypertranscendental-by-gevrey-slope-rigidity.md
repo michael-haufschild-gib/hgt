@@ -1561,3 +1561,66 @@ Steps 4 and 5 are the mathlib-scale content.  Step 5 is the one the card actuall
 the reason step 4 alone does not suffice is recorded in the card's hostile audit: a series of exact
 irrational order belongs to every larger rational Gevrey class, so an upper bound is compatible with
 an irrational exact order.
+
+## Lean progress — the Euler-form operator, its shift polynomials, and MAILLET'S THEOREM
+
+The Sibuya--Ramis layer needs the recursion that a differential equation imposes on the coefficients
+of a formal solution.  In the Euler basis that recursion is a single convolution.
+
+`GaloisForLFunctions/HTGeometry/FormalEulerOperator.lean` (wired, axiom-clean):
+
+    eulerOp                        `θ = t d/dt`, diagonal on monomials
+    coeff_eulerOp_iterate          `coeff_n (θ^j F) = n^j coeff_n F`
+    IsGevreySeries.eulerOp         `θ` preserves every Gevrey class
+    eulerLinearOp B                `L = ∑_{j ≤ m} B_j θ^j`
+    shiftPolynomial B μ            **`Φ_μ(N) = ∑_j (coeff_μ B_j) N^j`**
+    eval_shiftPolynomial, natDegree_shiftPolynomial_le
+    coeff_eulerLinearOp :
+      **`coeff_n (L F) = ∑_{i+k=n} Φ_i(k) f_k`** — the operator acts by one convolution against its
+      shift polynomials
+    coeff_eulerLinearOp_range
+    shiftPolynomial_zero_mul_coeff :
+      **`Φ_0(n) f_n = coeff_n (L F) - ∑_{k<n} Φ_{n-k}(k) f_k`** — the recursion
+
+The pairs `(deg Φ_μ, μ)` are lattice points, which is where the Newton polygon and the rationality of
+its slopes live (`NewtonSlopeRationality` already owns the arithmetic half).
+
+`GaloisForLFunctions/HTGeometry/ShiftPolynomialBounds.lean` (wired, axiom-clean):
+
+    exists_lower_bound_eval_natCast :
+      a nonzero complex polynomial is bounded below along `ℕ` by `c (n+1)^{deg}`
+    exists_bound_shiftPolynomial :
+      for convergent `B_j`, `‖Φ_μ(k)‖ ≤ C ρ^μ (k+1)^m` — geometric in the shift, polynomial in the
+      argument
+
+`GaloisForLFunctions/HTGeometry/MailletLinearGevrey.lean` (wired, axiom-clean):
+
+    factorial_ratio_le             `k!/n! ≤ 1/n` for `k < n`
+    cast_sub_le
+    shiftFactor_le :
+      **`(k+1)^m (k!/n!)^r ≤ (n+1)^d` for `k < n`, with `r = m - d`** — the exponent that makes the
+      recursion close
+    geom_shift_sum_le              `∑_{k<n} q^{n-k} ≤ q/(1-q)`
+    isGevreySeries_of_eulerLinearOp_eq :
+      **MAILLET'S THEOREM** — every formal solution of `L F = G` with convergent `B_j` and `G` is
+      Gevrey of order `m - deg Φ_0`
+
+The proof is exactly the recursion: divide by `Φ_0(n)`, whose modulus is at least `c (n+1)^{d}`;
+each convolution term is geometric in the shift and, by `shiftFactor_le`, carries at most the factor
+`(n+1)^d`; the geometric series is made small by choosing the Gevrey base `A` large.  Note the
+resulting order is the *integer* `m - deg Φ_0`, the crude Newton bound obtained from
+`deg Φ_μ ≤ m`; the refined polygon gives the smaller rational bounds.
+
+### What the Sibuya--Ramis layer still needs
+
+| step | status |
+|---|---|
+| Gevrey filtration as a differential algebra | formal |
+| Euler-form operator, shift polynomials, coefficient recursion | formal |
+| size of the shift polynomials, above and below | formal |
+| **Maillet's theorem, linear case with convergent coefficients** | **formal** |
+| Maillet's theorem, nonlinear case (linearize at a truncation of the solution) | open |
+| the sharp half: the exact order is a slope ratio, not merely below the largest | open |
+
+The last row is the one the card contradicts.  An upper bound alone is compatible with an irrational
+exact order, so the sharp half is unavoidable.

@@ -256,11 +256,11 @@ equation is `(1)`.
 The paired indicial theorem removes the terminal value/dipole flux charge at every interior seam.
 At physical roots the zero exterior orientation has only the half-log indicial root; its
 borderline `1/log` dipole produces an uncancelled logarithmic source and is zero against the
-bounded completed source.  Moreover the flat terminal charge is automatic by `(11a)`.  Literal
-low-frequency counterterms remain part of source assembly, but no independent physical dipole or
-flat-flux matching premise remains.  Sections 1--5 therefore prove shifted \(L^2\) for arbitrary
-bounded nonnormal prime transport once literal assembly and the finite-to-flat expansion are
-available.
+bounded completed source. Moreover the flat terminal charge is automatic by `(11a)`. Literal
+source assembly is now proved; optional low-frequency counterterms lie in the same subcritical
+class. No independent physical dipole or flat-flux matching premise remains. Sections 1--5
+therefore prove shifted \(L^2\) for arbitrary bounded nonnormal prime transport once the
+finite-to-flat expansion is available.
 
 Thus:
 

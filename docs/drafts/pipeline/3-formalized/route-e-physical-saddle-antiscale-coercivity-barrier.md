@@ -1,16 +1,43 @@
 # Route E physical-saddle antiscale coercivity barrier
 
 - **ID:** `ROUTE-E-PHYSICAL-SADDLE-ANTISCALE-BARRIER-001`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** `[PAPER-PROVED] [NO-GO] [POSITIVE SURVIVOR]`
 - **Parent:** `../../1-in-progress/route-e-cofinal-parity-energy-covariance-accumulation.md`
 - **RH used:** no
 - **Computation used:** no
-- **Lean status:** exact analytic saddle core is formalized in
+- **Lean status:** complete and unconditional. The exact analytic saddle core is formalized in
   `RHTower/RouteEPhysicalSaddleAntiscaleBarrier.lean`: all exponential factorial moments, unique
   correction `pi/a`, residual `pi^2/a^3`, local Euler deficit, and finite-product deficit.
-  `RHTower/GibbsAntiscaleDeterminantOddCube.lean` supplies exact growing odd grades. PNT transport
-  from these identities to `(3)`--`(10)` remains paper-only.
+  `RHTower/GibbsAntiscaleDeterminantOddCube.lean` supplies exact growing odd grades. The PNT
+  transport `(3)`--`(10)` is now formalized as well, on a new reusable prime-window layer:
+  * `HTGeometry/RpowKernelRemainder.lean`, `HTGeometry/WindowRpowIntegral.lean` — the power-kernel
+    remainder and the window integral `∫_2^Y u^{a-1}(log Y - log u)^j du` with its exact recursion,
+    uniform bound `j!/a^{j+1}·Y^a`, and normalized limit;
+  * `RHTower/PrimeRpowLogSumAsymptotic.lean` — `θ(t)/t → 1` in relative form and
+    `∑_{2<p≤x} p^{a-1} log p = (x^a/a)(1+o(1))` by Abel summation against `θ`;
+  * `RHTower/PrimeWindowLaw.lean`, `RHTower/PrimeWindowLawNoLog.lean` — the prime window law
+    `Y^{-a}∑_{p≤Y} p^{a-1}(log Y-log p)^j log p → j!/a^{j+1}` and its unweighted form
+    `(log Y)Y^{-a}∑_{p≤Y}p^{a-1}(log Y-log p)^j → j!/a^{j+1}`, i.e. the exponential window density
+    `e^{-av}dv` of the prime measure;
+  * `RHTower/RouteESaddlePntTransport.lean` — `(15)` (`tendsto_primeRpowLogSumLE`), `(14)`
+    (`tendsto_eulerTiltDeficit`, from Mertens' first theorem and `p^{-2σ} ≤ p^{-1}`), `(3)`
+    (`tendsto_saddleLogCenter`: `Λ_{σ,Y}·a/(2Y^a) → 1`) and `(16)`
+    (`tendsto_saddleLogVariance`: `Var·a/(2Y^a log Y) → 1`);
+  * `RHTower/RouteEAntiscaleEnergyTransport.lean` — `(21)`/`(23)`
+    (`tendsto_antiscaleEnergy`: `F_{σ,Y}(t_{σ,Y})·(log Y)^3/Y^a → π²/a³`), with the antiscale phase
+    identity `t log p - π = (π/a - (π+π/(a log Y))(log Y - log p))/log Y` and the uniform
+    trigonometric bound `|2 - 2cos θ - θ²| ≤ 5θ⁴`;
+  * `RHTower/RouteEEulerDeficitIdentity.lean` — the exact deficit identity `(25)`/`(26)`
+    (`eulerMellinNormSq_div_positiveEulerSquare`, `eulerLogDeficit_eq_log_sub`);
+  * `RHTower/RouteEEulerDeficitTransport.lean` — `(5)` (`tendsto_eulerLogDeficit`), the physical
+    centering form `(7)` (`tendsto_eulerLogDeficit_div_log`: deficit`·(log Y)^3/log X → π²/a²`),
+    the falsification `(8)` (`eventually_saddle_coercivity_fails`: for every `c>0` eventually
+    `G·X^{-c} < |M|²`), and the critical specializations `(10)`
+    (`tendsto_eulerLogDeficit_half` = `8π²`, `tendsto_eulerLogDeficit_div_log_half` = `4π²`);
+    Loop B's Gamma statement `(30)` is `tendsto_gamma_normSq_antiscale`, from
+    `tendsto_antiscaleFrequency` and analyticity of `Γ` off the poles.
+  All modules build under `lake build` and audit `[propext, Classical.choice, Quot.sound]`.
 - **Scientific status:** candidate project-new synthesis; external priority not claimed
 
 ## Result

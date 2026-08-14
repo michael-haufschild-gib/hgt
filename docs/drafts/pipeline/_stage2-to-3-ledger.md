@@ -154,6 +154,23 @@ Promotion recipe:
   (general pullback form plus the unitary instance and the monotone-reader form), and the robust
   Bellman calibration lower bound.
 
+## Shared infrastructure for the trace/heap cluster
+
+`RHTower/CircuitTraceMonoid` builds the trace monoid itself: append congruence of the independent
+swap relation, the monoid structure on `List α / TraceEq`, the length morphism, left and right
+cancellativity (from the parent's pair-projection reconstruction), the causal prefix order with its
+cylinder equivalence `Trace ≃ ↑u`, and the length grading
+`(Σ ℓ, FixedTraceClass independent ℓ) ≃ Trace independent`.
+
+`RHTower/LocalCircuitHeapGreenReporter` builds the measure-side layer: the heap Green reporter and
+its accessibility bound, the trace partition sum with its negative-binomial value, the optimized
+geometric weight, the finite heap incidence, the one-dimensional gate alphabet `ChainLetter` with a
+chain-length-independent dependence-degree bound, and the capacity entropy split with its `o(D)`
+profile limit.
+
+Both are the shared engine for `concurrent-causal-heap-accessibility-law`,
+`first-entrance-gate-renewal-prefix-law`, and `first-entrance-gate-capacity-discrepancy-law`.
+
 ## Corpus facts found during the sweep (do not rebuild)
 
 - Duhamel operator bound: `HTGeometry.exp_skewAdjoint_sub_exp_skewAdjoint_norm_le` and

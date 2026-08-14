@@ -126,12 +126,14 @@ count, RH premise, numerical computation, or exchange of limit and divisor sum o
 No audited source states the Xi hard-edge quadratic-shell two-ended current.  The underlying
 difference-of-squares and PSD linear algebra are classical and receive no novelty credit.
 
-## Exact open core
+## Successor closure and exact open core
 
-Prove a weighted complete-Xi divisor theorem for `J` with completed resolvent weight: absolute
-summability or a source-exact signed summation law, uniform across the infrared/parabolic transition.
-Only then test whether the sum equals the nonlinear node-transport plus prime--Gamma covariance
-appearing in `U-DYADIC-SOURCE`.  Pointwise vanishing at both ends is insufficient.
+`route-u-global-nyquist-current-exchange.md` closes the weighted complete-Xi divisor theorem for
+`J`: absolute summability at every scale and full native-weighted sum tending to zero with an
+explicit `O((k+1)^-2)` coefficient.  The remaining open core is no longer analytic summation.
+Derive the exact finite-scale source identity relating this oriented current to nonlinear node
+transport and literal prime--Gamma degree/mass flux before divisor aggregation; then classify any
+boundary anomaly that survives the proven vanishing law.
 
 ## Lean formalization
 
@@ -173,4 +175,3 @@ is `[propext, Classical.choice, Quot.sound]`.  Source contains no `sorry`, `admi
   and its fixed-divisor/parabolic two-ended vanishing law.
 - 2026-08-14 — Exact survivor Lean-proved, exact `.olean` compiled, axiom-audited, and umbrella
   wired without umbrella/full build.
-

@@ -633,9 +633,10 @@ Thus the cutoff defect belongs to a primitive-plus-zero-order Gamma source class
 uncontrolled derivative after the full product rule. The subsequent flux reduction removes the
 derivative of that primitive from the augmented equation and gives arbitrary-nonnormal weighted
 graph uniqueness. At finite logarithmic type its base weighted source norm is paper-closed.
-At the value/flux stage, remaining core was root-derivative propagation, physical finite/flat
-charge matching, total antisymmetric matching, and literal paired assembly. Degree-\(m\) moments are
-required only if the direct polynomial-group Hardy path is retained.
+The later literal assembly theorem now supplies exact two-rooted transport signs, retains every
+marked-descendant center constant, constructs a canonical cutoff supported exactly on interior
+samples, and fixes the physical-plus-cutoff primitive signs. Degree-\(m\) moments are required
+only if the direct polynomial-group Hardy path is retained.
 
 Root-derivative propagation is now closed by
 `suzuki-complementary-primitive-flux-derivative-recovery.md`. For \(Q=I-M\),
@@ -648,8 +649,9 @@ A(QF)-[C,Q]F=QAF.
 The rough primitives are opposite and the two flux derivatives sum to \((AF)'\). The terminal
 \(M\)-branch is controlled by Volterra Liouville; the pre-event \(Q\)-branch pays the finite
 recurrence budget directly. Shifted Gamma numerical-range coercivity then gives weighted \(F'\)
-with arbitrary bounded nonnormal \(B\). Remaining finite-type gates are literal paired source
-assembly, physical-root value/dipole flux matching, and compact-middle coverage.
+with arbitrary bounded nonnormal \(B\). Rooted source assembly and physical value/dipole/flat
+charge matching are now closed; remaining finite-type gates are finite-to-flat expansion and
+compact-middle coverage.
 
 The physical finite/flat charge gate is now discharged by
 `suzuki-flat-flux-charge-automaticity.md`.  The first primitive equation and superpolynomial block
@@ -663,10 +665,11 @@ extension; the one-sided indicial coefficient
 
 has only the half-log root `tau=1/2`, while a `beta/L` dipole produces the uncancelled output
 `-beta log L` and is impossible against the bounded completed source.  After zero half-log trace,
-no independent physical dipole or flat-flux matching remains.  Literal low-frequency
-counterterms, arbitrary finite-order expansion, total marked-descendant source assembly, and
-compact-middle coverage remain.  Thus the current finite-type gates are literal paired source
-assembly, finite-to-flat expansion, and compact-middle coverage.
+no independent physical dipole or flat-flux matching remains. The exact marked-descendant
+source assembly is now proved in
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-literal-paired-source-assembly.md`.
+Optional low-frequency counterterms are subcritical. Thus current finite-type gates are
+finite-to-flat expansion and compact-middle coverage.
 
 Hostile verdict: `SURVIVES PRELIMINARY ATTACK`. Generic logarithmic ellipticity is insufficient,
 whole-packet inverse-log grading is false, and the completed domain has a genuine corona. The
@@ -737,11 +740,14 @@ all-orders source-specific expansion or flatness-to-`H1_0` theorem.
 - [x] prove complementary primitive-flux derivative recovery
 - [x] prove physical endpoint has no independent `1/log` dipole
 - [x] prove terminal flat-flux charge is automatic from the primitive equation
+- [x] correct opposite rooted valuation directions and retain marked-descendant constants
+- [x] construct canonical literal-support cutoff and assemble the two-coset distribution equation
+- [x] prove finite-recurrence weighted primitive/zero-order source bounds
 - [ ] prove polynomial-carrier boundary-log normal identity at finite logarithmic type
 - [ ] prove degree-m source moments, or replace direct Hardy by primitive-flux Liouville
 - [ ] prove nonnormal exponential-dichotomy matching only if the direct Hardy path is retained
 - [ ] prove arbitrary finite-order expansion for completed modes
-- [ ] verify the exact zero-dipole source moment after marked-descendant subtraction
+- [x] verify the exact zero-dipole source moment after marked-descendant subtraction
 - [ ] pass the exceptional recurrence-infinite apertures or construct a nontempered carrier
 - [ ] derive a genuinely new source consequence from the literal interior null equation
 - [ ] prove the trace-zero supported-nullspace theorem

@@ -57,8 +57,8 @@ the card cites; and `#print axioms` the declaration list.
 | 25 | `pick-defect-finite-selector-maximal-ht-phase-law` | **PROMOTED** | moment-fibre card: `nevExtremalFamily` and `cauchyTransform_nevLeaf` are built; blocked on the Weyl-disc closed form and then a term of `MaximalTranslationInputs`. |
 | 26 | `postselected-qubit-clock-integrability-fracture` | **PROMOTED** | Stage 3. Real interval first-crossing `(13)`, complex multiplier, exclusion of all four Ritt families, Koenigs existence+uniqueness, Poincaré germ and entire extension; see `3-formalized/nad/_RG-CLUSTER-SHARED-LEAN.md`. Converse classification stays a cited classical input, as the card's own Lean boundary states. |
 | 27 | `prime-log-jump-sonin-mellin-grade-frame` | AUDITED | open Lean gates are explicit: jump packet and Mellin normal theorem, canonical undeconvolved source-action intertwiner, closed-graph continuity of dagger and Mellin normal, positive self-adjoint Xi spectral realization. Terminal gate is RH itself. |
-| 28 | `projective-constraint-topological-capacity-phase-law` | AUDITED | `HurwitzSurvivalWitnessInhabited.lean` proves both survival-witness classes inhabited by explicit integer families, so the phase theorems are non-vacuous **and** the witnesses carry no geometry. Open: construct the classical inputs. |
-| 29 | `projective-hurwitz-one-over-forty-two-phase-transition` | AUDITED | arithmetic `1/42` gap, its uniqueness at `(2,3,7)`, and Riemann--Hurwitz eq. (8) are unconditional; the survival witness is content-free (see card 28). Open: `Δ(2,3,7)` as a group with torsion-free finite-index subgroups of unbounded index. |
+| 28 | `projective-constraint-topological-capacity-phase-law` | **PROMOTED** | Stage 3. Both survival witnesses are now carried by constructed covers: `OrbifoldMonodromyCover` (fibre counts + lifted-triangulation Euler characteristic), `ModularMonodromyCover` (`D = 6(2g+s−2)` with cusps the cycles of `X·Y`), `HurwitzTriangleCoverTower` and `ModularCoverTower` (unbounded degree). Schwarzian pullback and Kummer minimality stay cited. |
+| 29 | `projective-hurwitz-one-over-forty-two-phase-transition` | **PROMOTED** | Stage 3. `VonDyckTriangleGroup` builds `Δ(a,b,c)` as a presented group; sheet stabilisers have index the degree and contain no elliptic conjugate; the `ZMod 2` voltage tower gives such subgroups of unbounded index, so `Δ(2,3,7)` is infinite. The fibre counts feeding `hurwitzTriangle_projectiveCapacity_exact` are derived from actual covers, and `84 ∣ D` comes from the orientation constraint. |
 | 30 | `q-ladder-reflectionless-reciprocal-jost-qft` | **PROMOTED** | Stage 3. `QLadderTransmission.lean` builds the transmission germ `(6)`, proves normal convergence on the unit disc, the exact one-shell equation `(7)` for the infinite product, reflectionless unimodularity, the momentum form `(5)` and the ladder summability `(2)`. Claim B is the corpus log-derivative equivalence. Open: GKZ, ADH and Lechner stay cited; onward Jost dynamics and cosmological reporter. |
 | 31 | `sectoral-kolchin-signature-quantum-fields` | **PROMOTED** | Stage 3. `KolchinSlopeDichotomy.lean` proves `(1)`--`(3)` unconditionally: the jet rank is `r+1` for HT reporters, uniformly bounded for DA ones, and the normalized slope converges with value `1` iff HT and `0` iff DA. Reporter invariance, the CDD algebra, the exchange-law forcing and the collision production law were already Lean-certified. Open: the labelled open core `(18)` (LSZ/Haag--Ruelle transfer) and external audits. |
 | 32 | `signed-archimedean-gamma-orbit-charge-phase-law` | **PROMOTED** | headline orbit-charge dichotomy is genuinely unconditional (`hsep` is a data condition, not an imported theorem); but `(37)`'s upper bound `π(N) ≤ δ_G + 2m(n+1)` is unproved and no gate tracks it. |
@@ -910,3 +910,56 @@ projective label — take `W_g` with `a := const g₁₀`, `b := const (−g₀�
 and label covariance by the `c'τ+d' = c(g₀₀τ+g₀₁) + d(g₁₀τ+g₁₁)` factorization, and the endpoint
 `(F.twist g).carrierProjector = F.carrierProjector` via
 `carrierProjector_eq_of_leaf_label_covariance` at `e := (g⁻¹ • ·)`.
+
+## The projective cluster (cards 28, 29) is closed `[PROVED]`
+
+The blocking audit on both cards was the same: `HurwitzProjectiveSurvivalWitness` and
+`ModularProjectiveSurvivalWitness` were met by arbitrary integer families, so the phase theorems
+were non-vacuous but carried no geometry.  Ten new modules replace the numerical interface by
+constructed covering surfaces.
+
+**The dictionary.**  A connected unramified degree-`D` cover of the `(a,b,c)` sphere orbifold is a
+transitive pair of permutations `X`, `Y` of the sheets with `X^a = Y^b = (X·Y)^c = 1` and every
+nontrivial power fixed-point-free (`MonodromyCover`).  The marked fibres are the orbit sets of
+`X`, `Y`, `X·Y`, so freeness gives `a·f_a = b·f_b = c·f_c = D` immediately
+(`FreeCyclicOrbits.IsFreeOfOrder.card_eq_mul_cycleType_card`), and the lifted triangulation of the
+base sphere (`V = 3`, `E = 3`, `F = 2`) gives `χ = f_a + f_b + f_c − D`.
+
+* `(2,3,7)`: `42·χ = −D`, and the genus is an integer because `sign X · sign Y = sign (X·Y)` forces
+  `84 ∣ D` — the two odd-order monodromies are even permutations, so the involution has an even
+  number of two-cycles.  Hence `D = 42(2g − 2)` (`MonodromyCover.hurwitz_capacity_exact`).
+* `(2,3,∞)`: dropping the constraint on `X·Y` gives `ModularCover`; its cycles are the cusps, with
+  cycle lengths the cusp widths, and the same count gives `D = 6(2g + s − 2)`
+  (`ModularCover.modular_capacity_exact`).
+
+**Unbounded degree** is the substantive step: every finite quotient of `Δ(2,3,7)` is perfect, so no
+elementary family exists.  The route is the mod-`p` homology of the covering surface, as a rank
+count.  A `ZMod p`-voltage `(α, β)` lifts a cover to a `p`-fold cover of the *same* orbifold exactly
+when the cyclic sums of the voltage around the orbits of `X`, `Y`, `X·Y` vanish, and the lift is
+connected exactly when the voltage is not a coboundary (`MonodromyVoltageLift`: holonomy subgroup,
+`liftCover`).  Each cyclic-sum constraint takes values in the invariants of its own monodromy, so
+the three constraints have rank at most `f_a + f_b + f_c`, while the coboundary map kills the
+constants and so has rank at most `D − 1`.  The two counts separate precisely when
+`f_a + f_b + f_c < D`, i.e. when the covering surface is hyperbolic
+(`MonodromyVoltageExistence.exists_voltageData`).  Iterating from the explicit `PSL(2,7)` cover
+gives connected unramified `(2,3,7)` covers of degree `168·2ⁿ`.
+
+**The triangle group.**  `VonDyckTriangleGroup` builds `Δ(a,b,c) = ⟨x,y | x^a, y^b, (xy)^c⟩` as a
+presented group, its monodromy representation, and the sheet stabiliser; the stabiliser has index
+exactly the degree (`sheetStabilizer_index`) and contains no conjugate of a nontrivial power of
+`x`, `y`, `x·y` (`sheetStabilizer_ellipticFree_*`) — the unramifiedness of the cover, which for a
+cocompact triangle group is torsion-freeness.  Consequently `Δ(2,3,7)` has elliptic-free subgroups
+of unbounded finite index and is infinite (`exists_ellipticFree_subgroup_index_gt`,
+`infinite_vonDyck_237`).
+
+**Congruence realisation.**  `ModularCongruenceCover` proves the classical statement directly for
+`PSL(2,ℤ)`: for `n ≥ 3` the principal congruence subgroup `Γ(n)` contains no element whose square
+or cube is `±1` other than `±1` — by Cayley–Hamilton `A² = (tr A)A − 1`, which forces
+`tr A ∈ {0, ±1, ±2}` in every torsion case, against `tr A ≡ 2 (mod n)`, with the residual case
+`n = 3`, `tr A = −1` excluded by reading `A² + A + 1 = 0` modulo `9`.  The coset action of
+`SL(2,ℤ)` on `Γ(n)·{±1}` is therefore a connected unramified cover of the modular orbifold — the
+modular curve `X(n)` — of index at least `n`, and it obeys `D = 6(2g + s − 2)`.
+
+Still cited, and used by no theorem above: the Schwarzian common pullback along the arithmetic
+commensurator, Kummer minimality of `Q_237` and of the order-three equation of `j`, and the
+identification of the combinatorial genus with the genus of the covering Riemann surface.

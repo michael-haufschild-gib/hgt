@@ -38,9 +38,11 @@ def liftPerm (σ : Perm S) (α : S → ZMod p) : Perm (S × ZMod p) where
   left_inv q := by simp
   right_inv q := by simp
 
+omit [Fintype S] [DecidableEq S] in
 @[simp] theorem liftPerm_apply (σ : Perm S) (α : S → ZMod p) (q : S × ZMod p) :
     liftPerm σ α q = (σ q.1, q.2 + α q.1) := rfl
 
+omit [Fintype S] [DecidableEq S] in
 theorem liftPerm_pow (σ : Perm S) (α : S → ZMod p) (n : ℕ) (q : S × ZMod p) :
     ((liftPerm σ α) ^ n) q = ((σ ^ n) q.1, q.2 + cyclicSum σ n α q.1) := by
   induction n with
@@ -55,6 +57,7 @@ theorem liftPerm_pow (σ : Perm S) (α : S → ZMod p) (n : ℕ) (q : S × ZMod 
         ring
       rw [h1, h2]
 
+omit [Fintype S] [DecidableEq S] in
 theorem liftPerm_mul (σ τ : Perm S) (α β : S → ZMod p) :
     liftPerm σ α * liftPerm τ β = liftPerm (σ * τ) (fun s => β s + α (τ s)) := by
   ext q
@@ -62,6 +65,7 @@ theorem liftPerm_mul (σ τ : Perm S) (α β : S → ZMod p) :
   · simp only [Equiv.Perm.mul_apply, liftPerm_apply]
     ring
 
+omit [Fintype S] [DecidableEq S] in
 /-- Freeness is inherited by the lift: the base coordinate already moves. -/
 theorem isFreeOfOrder_liftPerm {σ : Perm S} {α : S → ZMod p} {n : ℕ}
     (h : IsFreeOfOrder σ n) (hsum : ∀ s, cyclicSum σ n α s = 0) :
@@ -119,8 +123,10 @@ def transl (d : ZMod p) : Perm (S × ZMod p) where
   left_inv q := by simp
   right_inv q := by simp
 
+omit [Fintype S] [DecidableEq S] in
 @[simp] theorem transl_apply (d : ZMod p) (q : S × ZMod p) : transl d q = (q.1, q.2 + d) := rfl
 
+omit [Fintype S] [DecidableEq S] in
 theorem liftPerm_comm_transl (σ : Perm S) (α : S → ZMod p) (d : ZMod p) :
     Commute (liftPerm σ α) (transl d) := by
   show liftPerm σ α * transl d = transl d * liftPerm σ α
@@ -211,9 +217,11 @@ def holonomy (s₀ : S) : AddSubgroup (ZMod p) where
     rw [this, hinv]
     simp
 
+omit [NeZero p] in
 theorem mem_holonomy_iff {s₀ : S} {d : ZMod p} :
     d ∈ V.holonomy s₀ ↔ ∃ g ∈ V.liftClosure, g (s₀, 0) = (s₀, d) := Iff.rfl
 
+omit [NeZero p] in
 /-- Two lifted monodromy elements sending the base point into the same fibre differ by a
 holonomy element. -/
 theorem holonomy_sub_mem {s₀ s : S} {i i' : ZMod p} {g g' : Perm (S × ZMod p)}
@@ -230,6 +238,7 @@ theorem holonomy_sub_mem {s₀ s : S} {i i' : ZMod p} {g g' : Perm (S × ZMod p)
   rw [this, hinv]
   simp
 
+omit [NeZero p] in
 /-- Every sheet of the base is reached by the lifted monodromy group. -/
 theorem exists_lift_over (s₀ s : S) : ∃ i : ZMod p, ∃ g ∈ V.liftClosure, g (s₀, 0) = (s, i) := by
   obtain ⟨h, hh, hhs⟩ := F.transitive s₀ s
@@ -271,11 +280,12 @@ theorem holonomy_eq_top_of_ne_bot (hp : p.Prime) (s₀ : S) (hne : V.holonomy s�
   haveI : Fact p.Prime := ⟨hp⟩
   obtain ⟨d, hd, hd0⟩ : ∃ d ∈ V.holonomy s₀, d ≠ 0 := by
     by_contra hcon
-    push_neg at hcon
-    exact hne (by
-      ext x
-      simp only [AddSubgroup.mem_bot]
-      exact ⟨fun hx => hcon x hx, fun hx => by rw [hx]; exact (V.holonomy s₀).zero_mem⟩)
+    refine hne ?_
+    ext x
+    simp only [AddSubgroup.mem_bot]
+    refine ⟨fun hx => ?_, fun hx => by rw [hx]; exact (V.holonomy s₀).zero_mem⟩
+    by_contra hx0
+    exact hcon ⟨x, hx, hx0⟩
   intro e
   have hdinv : (e * d⁻¹) * d = e := by
     field_simp
@@ -333,7 +343,7 @@ def liftCover (hp : p.Prime) : MonodromyCover a b c (S × ZMod p) where
   transitive := V.liftClosure_transitive hp
 
 theorem liftCover_degree (hp : p.Prime) : (V.liftCover hp).degree = F.degree * p := by
-  simp [MonodromyCover.degree, liftCover, Fintype.card_prod, ZMod.card]
+  simp [MonodromyCover.degree, Fintype.card_prod, ZMod.card]
 
 end VoltageData
 

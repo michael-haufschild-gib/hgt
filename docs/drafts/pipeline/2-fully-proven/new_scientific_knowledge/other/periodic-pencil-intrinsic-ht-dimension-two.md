@@ -1038,3 +1038,122 @@ class contribute; (ii) run `expPolySumMulti_eq_zero` on it; (iii) design the pro
 prescribed square-free key is strictly dominant with a gap beating both the coefficient mass and the
 dilation ratios; (iv) bridge from the formal statement to `DifferentialIndependent` of the analytic
 orbit.
+
+### Lean progress — the orbit separation of `(11)`, in abstract form
+
+Step (ii) of the remaining programme is now an unconditional Lean theorem, and the two separations
+it composes are each isolated as reusable modules.
+
+**`HTGeometry/DescPochhammerProductBasis.lean`** — the jet-order separation.
+`descProdSymbol μ = ∏_s (descPochhammer ℤ (μ s)) ∘ X_s` is the unsummed product the descent needs,
+as against the permanent symbol which sums over all assignments.  `coeff_descProdSymbol` factorises
+its coefficients over the variables (from the corpus's disjoint-variable factorisation
+`coeff_prod_aeval_X`), `coeff_descProdSymbol_self` reads its leading coefficient as one, and
+`coeff_descProdSymbol_leading_eq_zero` shows a symbol of total order at most `μ₀`'s charges `μ₀`'s
+leading monomial only if it *is* `μ₀`.  Hence **`descProdSymbol_combination_eq_zero`**: over any
+characteristic-zero ring, a finite combination of these symbols vanishes only when every
+coefficient does — take the maximal total order carrying a nonzero coefficient.  No constant-order
+restriction is needed, unlike the permanent-symbol version.  `eval_descProdSymbol_map` evaluates
+the symbol at a natural tuple as `∏_s (k_s)_{μ_s}`.
+
+**`HTGeometry/MultiNodePolynomialSeparation.lean`** — the multi-node theorem in the form an orbit
+argument produces.  `mvPolynomial_nodeSeparation`: if `∑_i P_i(k) ∏_s Z(i,s)^{k_s} = 0` for every
+positive tuple `k`, with the node tuples pairwise distinct and nonzero, then every `P_i` is the
+zero *polynomial*.  This is `expPolySumMulti_eq_zero` with the coefficient functions presented as
+multivariate polynomials rather than as explicit monomial expansions.
+
+**`HTGeometry/MultiNodeInjectiveParameter.lean`** — the hypothesis is weakened to exactly what a
+square-free key supplies.  The card's identities hold only at *injective* parameter tuples above
+the jet order, never at all positive tuples.  The gap is closed by the triangular substitution
+`k_s = K₀ + 1 + ∑_{t ≥ s} m_t`, which is strictly decreasing — hence injective — and above `K₀`,
+for every positive `m`.  Under it the node tuple `Z` becomes the tuple of initial products
+`W_t = ∏_{s ≤ t} Z_s`, and `prodIic_injective` shows that replacement is injective (compare the two
+node tuples at the smallest index where they differ).  The polynomial coefficients are composed
+with the affine substitution, whose linear part `triLinear` is injective — look at the largest
+index of the support — hence bijective, so `aeval_triSubstPoly_eq_zero` recovers the original
+polynomial.  Result: **`mvPolynomial_nodeSeparation_injective`**.
+
+**`HTGeometry/SlotSequenceSeparation.lean`** — the two separations composed.  A flattened jet
+monomial of a dilated family is a *slot sequence* `w : Fin D → ι × ℕ`: for each slot, the dilation
+it carries and the jet order it consumes.  Its contribution at a key is
+`slotTerm q w k = (∏_s (k_s)_{(w s).2}) · ∏_s q_{(w s).1}^{k_s}`.  Then
+
+> **`slotSequence_coeff_eq_zero`.**  For injective nonvanishing `q`, if
+> `∑_{w ∈ T} c_w · slotTerm q w k = 0` for every injective key `k` above the jet order, then
+> `c_w = 0` for every `w ∈ T`.
+
+Mechanism: group the slot sequences by their dilation tuple; the node separation kills each fibre's
+polynomial; inside a fibre the slot sequence is determined by its jet-order tuple, so the
+falling-factorial independence kills each coefficient.  This is exactly the orbit separation the
+card identifies as the step no growth argument can perform — all translates of one source share a
+magnitude profile to leading order, and only letting the `D` key parameters vary independently
+distinguishes them.
+
+**`HTGeometry/FamilySquareFreeNodeForm.lean`** — the bridge to the corpus's family weight.
+`sum_famWeight_squareFreeKey_node_form` rewrites `∑_{splits with key k} famWeight` as
+`∑_σ famNodeTerm`, the permanent whose `σ`-term is a product of falling factorials of the slot
+orders times the `k`-powers of the slot dilations — the `slotTerm` shape, one term per permutation.
+
+All five modules are umbrella-wired, build green, and axiom-clean.  What remains of step (i) is the
+bookkeeping that presents `famAevalWeight` at a square-free key as a finite family of slot
+sequences with coefficients the monomial coefficients of `Q` — the dependent-arity transport across
+monomials of a fixed slot count — after which `slotSequence_coeff_eq_zero` discharges step (ii)
+outright.  Steps (iii) and (iv) are unchanged.
+
+### Lean progress — steps (i) and (ii) of `(11)` are closed
+
+The assembly is done, and the coupling that made it delicate is now explicit.  A split realizing the
+key of `k` satisfies `∑ l = ∑ k − ord m`, while the truncation forces `∑ l = N − m none`; so a
+*fixed* `N` exposes a different family of monomials for every key.  Letting the truncation follow
+the key,
+
+```text
+keyTrunc n m₀ k = m₀ none + ∑ k − ord m₀ ,
+```
+
+exposes instead the fixed class `keyClass` of monomials with the slot count of `m₀` and the same
+excess `m none − ord m`.  Over that class the key weight is a sum of slot-sequence contributions
+indexed by pairs (monomial, ordering) — an index set independent of `k` — so one separation sees
+every key at once.
+
+**`HTGeometry/FlatIndexFiber.lean`** — `card_filter_flatIndex`: the flattening of an exponent
+profile has fibres of the prescribed sizes.  This is what lets a slot sequence recover the monomial
+it came from.
+
+**`HTGeometry/FamilySlotSequence.lean`** — **`exists_slotSeq_of_key`**: a split realizing the key of
+an injective tuple above the jet order *is* a slot sequence — its weight is `slotTerm q w k` and the
+multiplicity of each slot label in `w` is the corresponding jet exponent.  Uses the corpus's
+`key_total_count` (the key fixes the slot count), `key_comp_equiv` (transport along `finCongr`) and
+`key_eq_iff_exists_perm`.
+
+**`HTGeometry/FamilyKeyInnerSum.lean`** — **`sum_famWeight_key_eq_slotSeq`**:
+
+```text
+∑_{splits with key k} famWeight = ∑_{σ : Perm (Fin D)} slotTerm q (slotSeqOf n D m σ) k ,
+```
+
+with `slotSeqOf n D m σ` the monomial's slot sequence listed in the order `σ`.  Index set and slot
+sequences are `k`-independent; only the contribution moves.
+
+**`HTGeometry/FamilyKeySeparation.lean`** — the assembly.  `famAevalWeight_expand` splits the key
+weight over monomials; `mem_keyClass_of_contributes` shows a contributing split forces its monomial
+into `keyClass` (the key fixes `∑ famOrder = ∑ k`, the antidiagonal fixes `∑ l = N − m none`, and
+the two together are the class relation); `famAevalWeight_key_eq_class_sum` is the resulting
+identity.  Feeding it to the grouped slot-sequence separation at the slot sequence of `m₀` itself,
+and recovering `m₀` from that slot sequence — its label multiplicities give `m₀ ∘ some`, its order
+sum plus the class relation gives `m₀ none` — yields
+
+> **`coeff_eq_zero_of_famAevalWeight_key_vanishing`.**  If the square-free key weights vanish at
+> every injective key above the jet order, at the truncation following the key, then the coefficient
+> of the reference monomial vanishes.
+
+and its contrapositive
+
+> **`exists_key_famAevalWeight_ne_zero`.**  For every nonzero jet polynomial `Q` there are a
+> monomial `m₀` and an injective key `k` above the jet order with
+> `famAevalWeight q n (keyTrunc n m₀ k) Q (key k) ≠ 0`.
+
+All modules umbrella-wired, build green, axiom-clean.  This is exactly the datum
+`famAeval_coeff_ne_zero_of_dominant` consumes as `hw₀`, so what remains of `(11)` is step (iii) — a
+*single* profile, independent of `Q`, for which the key produced above is dominant with a gap
+beating the coefficient mass — and step (iv), the bridge to `DifferentialIndependent`.

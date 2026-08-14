@@ -1,7 +1,7 @@
 # Projective constraint topology has a sharp Hurwitz phase transition at 1/42
 
 - **ID:** `projective-hurwitz-one-over-forty-two-phase-transition`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized
 - **Type:** THEOREM (Lean 4; classical geometric inputs exposed explicitly)
 - **Scientific status:** `[PAPER PROOF COMPLETE] [HURWITZ ARITHMETIC 1/42 GAP FORMALIZED; GEOMETRIC EXISTENCE STILL WITNESSED] [NOVELTY UNVERIFIED]`
 - **Depends on:** `projective-constraint-topological-capacity-phase-law`

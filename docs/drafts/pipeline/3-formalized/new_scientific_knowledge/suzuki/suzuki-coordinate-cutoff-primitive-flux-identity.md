@@ -274,18 +274,12 @@ finite recurrence
     source.                                              [PAPER-PROVED]       (24)
 ```
 
-This restores differentiated finite-type assembly at the source-norm level. It does not yet prove
-the finite-recurrence \(H^1_0\) conjecture, because three further obligations remain:
-
-1. assemble the two endpoint cosets and every physical exterior event into one distributional
-   equation with the exact signs in `(3)`;
-2. prove the antisymmetric zero-frequency moment of the **total**
-   zero-order source, including `(5)`, equals the physical seam jump and hence vanishes.
-3. for non-polynomial carrier weights, prove the stable/unstable nonnormal Hardy matching exposed
-   by `suzuki-log-recurrence-polynomial-carrier-trichotomy.md`.
-
-The cutoff identity sharply removes derivative circularity. It does not silently solve moment
-matching.
+This restores differentiated finite-type assembly at the source-norm level. The two endpoint
+cosets, exterior events, exact rooted signs, and physical primitive term are now assembled in
+`../../../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-literal-paired-source-assembly.md`.
+That theorem also identifies the total antisymmetric source moment with the continuous physical
+seam jump. The nonnormal derivative issue is handled by the primitive-flux graph reduction.
+Remaining obligations are arbitrary finite-order expansion and compact-middle coverage.
 
 ## 6. Hostile audit
 
@@ -294,10 +288,10 @@ matching.
 3. **No unproved derivative norm.** Bounds `(18)`--`(23)` use \(F\), \(RF\), and physical source
    blocks, never \(F'\).
 4. **No recurrence overclaim.** Event times must still have finite linear type.
-5. **No moment deletion.** A primitive source is safe at \(z=0\); the remaining zero-order source
-   still needs exact antisymmetric moment cancellation.
-6. **No nonnormal Hardy claim.** Primitive source control does not bound
-   \(\exp(-ixB/2)\).
+5. **No moment deletion.** Literal source assembly retains the physical primitive and proves
+   that the total antisymmetric moment is the continuous physical seam jump.
+6. **No nonnormal Hardy claim.** Primitive source control alone does not bound
+   \(\exp(-ixB/2)\); the later graph reduction avoids requiring that bound.
 7. **No RH claim.** Even finite-type trace-zero \(H^1_0\) would leave exceptional apertures and raw
    Evans positivity.
 
@@ -312,7 +306,7 @@ unavoidable noncovariant terminal cutoff
  -> first-order prime defect
  -> exact primitive flux
  -> finite recurrence controls primitive Gamma datum
- -> only total dipole moment remains.                    (25)
+ -> literal two-coset source assembly.                   (25)
 ```
 
 Suzuki's 2026 source paper does not introduce valuation-orbit terminal cutoffs. The audited
@@ -326,9 +320,11 @@ logarithmic-Laplacian literature treats scalar bounded sources, not the \([B,M]\
 `primitiveCutoffFlux_with_zeroOrder_pointwise`. The predecessor module formalizes the
 weighted-shift commutator and transport-covariant adapted-cutoff obstruction.
 
-The analytic block estimates `(18)`--`(23)` require the actual Gamma convolution and weighted
-Bochner spaces. They remain paper-proved until that infrastructure exists; no theorem may replace
-them by hypotheses and claim source closure.
+The analytic block estimates `(18)`--`(23)` and their two-coset extension require actual Gamma
+convolution and weighted Bochner spaces. They remain paper-proved; the new Lean module
+`SuzukiLiteralPairedSourceAssembly.lean` formalizes rooted transport, literal cutoff support, and
+the complete physical-plus-cutoff source algebra without replacing analytic estimates by
+hypotheses.
 
 ## Gates
 
@@ -339,8 +335,8 @@ them by hypotheses and claim source closure.
 - [x] prove Gamma primitive event summability from exact commutator decay
 - [x] bound zero-order event remainder without \(F'\)
 - [x] formalize exact primitive operator identity in Lean
-- [ ] assemble total two-coset physical source with exact signs
-- [ ] prove total antisymmetric moment equals physical seam jump
+- [x] assemble total two-coset physical source with exact signs
+- [x] prove total antisymmetric moment equals physical seam jump
 - [ ] prove finite-type trace-zero \(H^1_0\)
 - [ ] pass recurrence-infinite apertures
 - [ ] prove RH or a genuine whole-Connes no-go

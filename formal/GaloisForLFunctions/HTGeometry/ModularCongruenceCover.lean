@@ -280,13 +280,9 @@ theorem gamma_dvd {A : SL(2, ℤ)} (hA : A ∈ Gamma n) :
       rw [h00]
       ring
     exact (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mp this
-  · have : (((A : Matrix (Fin 2) (Fin 2) ℤ) 0 1 : ℤ) : ZMod n) = 0 := by
-      push_cast
-      exact h01
+  · have : (((A : Matrix (Fin 2) (Fin 2) ℤ) 0 1 : ℤ) : ZMod n) = 0 := h01
     exact (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mp this
-  · have : (((A : Matrix (Fin 2) (Fin 2) ℤ) 1 0 : ℤ) : ZMod n) = 0 := by
-      push_cast
-      exact h10
+  · have : (((A : Matrix (Fin 2) (Fin 2) ℤ) 1 0 : ℤ) : ZMod n) = 0 := h10
     exact (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mp this
   · have : (((A : Matrix (Fin 2) (Fin 2) ℤ) 1 1 - 1 : ℤ) : ZMod n) = 0 := by
       push_cast
@@ -363,6 +359,31 @@ open Equiv
 
 variable {n : ℕ}
 
+theorem slNegOne_inv : (slNegOne : SL(2, ℤ))⁻¹ = slNegOne :=
+  inv_eq_of_mul_eq_one_right slNegOne_mul_self
+
+theorem negOne_mul_negOne_mul (A B : SL(2, ℤ)) : (slNegOne * A) * (slNegOne * B) = A * B := by
+  calc (slNegOne * A) * (slNegOne * B) = slNegOne * (A * slNegOne) * B := by
+        simp only [mul_assoc]
+    _ = slNegOne * (slNegOne * A) * B := by rw [← (slNegOne_central A).eq]
+    _ = (slNegOne * slNegOne) * (A * B) := by simp only [mul_assoc]
+    _ = A * B := by rw [slNegOne_mul_self, one_mul]
+
+theorem negOne_mul_cube (A : SL(2, ℤ)) :
+    (slNegOne * A) * (slNegOne * A) * (slNegOne * A) = slNegOne * (A * A * A) := by
+  rw [negOne_mul_negOne_mul, ← mul_assoc, ← (slNegOne_central (A * A)).eq, mul_assoc]
+
+theorem negOne_mul_inv (A : SL(2, ℤ)) : slNegOne * A⁻¹ = (slNegOne * A)⁻¹ := by
+  rw [_root_.mul_inv_rev, slNegOne_inv]
+  exact (slNegOne_central A⁻¹).eq
+
+theorem eq_negOne_mul_of_negOne_mul {A B : SL(2, ℤ)} (h : slNegOne * A = B) :
+    A = slNegOne * B := by
+  rw [← h, ← mul_assoc, slNegOne_mul_self, one_mul]
+
+theorem negOne_conj (g : SL(2, ℤ)) : g⁻¹ * slNegOne * g = slNegOne := by
+  rw [← (slNegOne_central g⁻¹).eq, mul_assoc, inv_mul_cancel, mul_one]
+
 /-- `Γ(n)·{±1}`: the preimage in `SL(2,ℤ)` of the image of `Γ(n)` in `PSL(2,ℤ)`. -/
 def gammaPM (n : ℕ) : Subgroup SL(2, ℤ) where
   carrier := {A | A ∈ Gamma n ∨ slNegOne * A ∈ Gamma n}
@@ -379,19 +400,13 @@ def gammaPM (n : ℕ) : Subgroup SL(2, ℤ) where
       rw [← mul_assoc]
       exact mul_mem hA hB
     · refine Or.inl ?_
-      have hswap : A * B = (slNegOne * A) * (slNegOne * B) := by
-        rw [← mul_assoc, mul_assoc slNegOne A slNegOne, ← (slNegOne_central A).eq,
-          ← mul_assoc, ← mul_assoc, slNegOne_mul_self, one_mul]
-      rw [hswap]
+      rw [← negOne_mul_negOne_mul A B]
       exact mul_mem hA hB
   inv_mem' := by
     rintro A (hA | hA)
     · exact Or.inl (inv_mem hA)
     · refine Or.inr ?_
-      have hswap : slNegOne * A⁻¹ = (slNegOne * A)⁻¹ := by
-        rw [mul_inv_rev, inv_eq_of_mul_eq_one_right slNegOne_mul_self,
-          (slNegOne_central A⁻¹).eq]
-      rw [hswap]
+      rw [negOne_mul_inv]
       exact inv_mem hA
 
 theorem mem_gammaPM {A : SL(2, ℤ)} :
@@ -408,34 +423,25 @@ theorem not_mem_gammaPM_of_sq (hn : 3 ≤ n) {C : SL(2, ℤ)} (hsq : C * C = slN
   intro hmem
   have hA2 : (g⁻¹ * C * g) * (g⁻¹ * C * g) = slNegOne := by
     have hstep : (g⁻¹ * C * g) * (g⁻¹ * C * g) = g⁻¹ * (C * C) * g := by group
-    rw [hstep, hsq, ← (slNegOne_central g⁻¹).eq, mul_assoc, mul_inv_cancel, mul_one]
+    rw [hstep, hsq, negOne_conj]
   have hconj : ∀ B : SL(2, ℤ), B = 1 ∨ B = slNegOne → g⁻¹ * C * g = B → False := by
     rintro B (rfl | rfl) hB
-    · exact hC1 (by
-        have := congrArg (fun x => g * x * g⁻¹) hB
-        simpa [mul_assoc] using this)
-    · exact hCm (by
-        have := congrArg (fun x => g * x * g⁻¹) hB
-        simp only [mul_one] at this
-        rw [← (slNegOne_central g).eq] at this
-        simpa [mul_assoc] using this)
+    · refine hC1 ?_
+      have hC : C = g * (1 : SL(2, ℤ)) * g⁻¹ := by rw [← hB]; group
+      simpa using hC
+    · refine hCm ?_
+      have hC : C = g * slNegOne * g⁻¹ := by rw [← hB]; group
+      rw [hC, ← (slNegOne_central g).eq, mul_assoc, mul_inv_cancel, mul_one]
   rcases mem_gammaPM.mp hmem with hA | hA
-  · have := gamma_sq_mem_slPM hn hA (by rw [hA2]; exact Or.inr rfl)
-    exact hconj _ (mem_slPM.mp this) rfl
+  · exact hconj _ (mem_slPM.mp (gamma_sq_mem_slPM hn hA (by rw [hA2]; exact Or.inr rfl))) rfl
   · have hB2 : (slNegOne * (g⁻¹ * C * g)) * (slNegOne * (g⁻¹ * C * g)) = slNegOne := by
-      have hstep : (slNegOne * (g⁻¹ * C * g)) * (slNegOne * (g⁻¹ * C * g))
-          = (slNegOne * slNegOne) * ((g⁻¹ * C * g) * (g⁻¹ * C * g)) := by
-        rw [mul_assoc, ← mul_assoc (g⁻¹ * C * g) slNegOne,
-          ← (slNegOne_central (g⁻¹ * C * g)).eq, mul_assoc, ← mul_assoc]
-      rw [hstep, slNegOne_mul_self, one_mul, hA2]
+      rw [negOne_mul_negOne_mul, hA2]
     have hmem2 := gamma_sq_mem_slPM hn hA (by rw [hB2]; exact Or.inr rfl)
     rcases mem_slPM.mp hmem2 with h' | h'
     · refine hconj slNegOne (Or.inr rfl) ?_
-      have := congrArg (fun x => slNegOne * x) h'
-      simpa [← mul_assoc, slNegOne_mul_self] using this.symm
+      rw [eq_negOne_mul_of_negOne_mul h', mul_one]
     · refine hconj 1 (Or.inl rfl) ?_
-      have := congrArg (fun x => slNegOne * x) h'
-      simpa [← mul_assoc, slNegOne_mul_self] using this.symm
+      rw [eq_negOne_mul_of_negOne_mul h', slNegOne_mul_self]
 
 /-- Conjugates of a cube root of `−1` avoid `Γ(n)·{±1}` for `n ≥ 3`. -/
 theorem not_mem_gammaPM_of_cube (hn : 3 ≤ n) {C : SL(2, ℤ)} (hcube : C * C * C = slNegOne)
@@ -444,40 +450,26 @@ theorem not_mem_gammaPM_of_cube (hn : 3 ≤ n) {C : SL(2, ℤ)} (hcube : C * C *
   have hA3 : (g⁻¹ * C * g) * (g⁻¹ * C * g) * (g⁻¹ * C * g) = slNegOne := by
     have hstep : (g⁻¹ * C * g) * (g⁻¹ * C * g) * (g⁻¹ * C * g) = g⁻¹ * (C * C * C) * g := by
       group
-    rw [hstep, hcube, ← (slNegOne_central g⁻¹).eq, mul_assoc, mul_inv_cancel, mul_one]
+    rw [hstep, hcube, negOne_conj]
   have hconj : ∀ B : SL(2, ℤ), B = 1 ∨ B = slNegOne → g⁻¹ * C * g = B → False := by
     rintro B (rfl | rfl) hB
-    · exact hC1 (by
-        have := congrArg (fun x => g * x * g⁻¹) hB
-        simpa [mul_assoc] using this)
-    · exact hCm (by
-        have := congrArg (fun x => g * x * g⁻¹) hB
-        simp only [mul_one] at this
-        rw [← (slNegOne_central g).eq] at this
-        simpa [mul_assoc] using this)
+    · refine hC1 ?_
+      have hC : C = g * (1 : SL(2, ℤ)) * g⁻¹ := by rw [← hB]; group
+      simpa using hC
+    · refine hCm ?_
+      have hC : C = g * slNegOne * g⁻¹ := by rw [← hB]; group
+      rw [hC, ← (slNegOne_central g).eq, mul_assoc, mul_inv_cancel, mul_one]
   rcases mem_gammaPM.mp hmem with hA | hA
-  · have := gamma_cube_mem_slPM hn hA (by rw [hA3]; exact Or.inr rfl)
-    exact hconj _ (mem_slPM.mp this) rfl
-  · set A := g⁻¹ * C * g with hAdef
-    have hB3 : (slNegOne * A) * (slNegOne * A) * (slNegOne * A) = 1 := by
-      have hstep : (slNegOne * A) * (slNegOne * A) * (slNegOne * A)
-          = (slNegOne * slNegOne * slNegOne) * (A * A * A) := by
-        have h1 : Commute slNegOne A := slNegOne_central A
-        simp only [mul_assoc]
-        rw [← h1.eq]
-        simp only [← mul_assoc]
-        rw [mul_assoc slNegOne slNegOne A, ← (slNegOne_central A).eq]
-        group
-      rw [hstep, hA3]
-      rw [mul_assoc, slNegOne_mul_self, mul_one, slNegOne_mul_self]
+  · exact hconj _ (mem_slPM.mp (gamma_cube_mem_slPM hn hA (by rw [hA3]; exact Or.inr rfl))) rfl
+  · have hB3 : (slNegOne * (g⁻¹ * C * g)) * (slNegOne * (g⁻¹ * C * g))
+        * (slNegOne * (g⁻¹ * C * g)) = 1 := by
+      rw [negOne_mul_cube, hA3, slNegOne_mul_self]
     have hmem2 := gamma_cube_mem_slPM hn hA (by rw [hB3]; exact Or.inl rfl)
     rcases mem_slPM.mp hmem2 with h' | h'
     · refine hconj slNegOne (Or.inr rfl) ?_
-      have := congrArg (fun x => slNegOne * x) h'
-      simpa [← mul_assoc, slNegOne_mul_self] using this.symm
+      rw [eq_negOne_mul_of_negOne_mul h', mul_one]
     · refine hconj 1 (Or.inl rfl) ?_
-      have := congrArg (fun x => slNegOne * x) h'
-      simpa [← mul_assoc, slNegOne_mul_self] using this.symm
+      rw [eq_negOne_mul_of_negOne_mul h', slNegOne_mul_self]
 
 theorem S_mul_S : ModularGroup.S * ModularGroup.S = slNegOne := by
   apply Subtype.ext
@@ -505,23 +497,30 @@ theorem ST_cube : (ModularGroup.S * ModularGroup.T) * (ModularGroup.S * ModularG
   rw [Matrix.SpecialLinearGroup.coe_mul, Matrix.SpecialLinearGroup.coe_mul, ST_coe, slNegOne_coe]
   norm_num [Matrix.mul_fin_two]
 
+theorem ST_entry : ((ModularGroup.S * ModularGroup.T : SL(2, ℤ))
+    : Matrix (Fin 2) (Fin 2) ℤ) 0 0 = 0 := by
+  rw [ST_coe]
+  norm_num
+
 theorem ST_ne_one : ModularGroup.S * ModularGroup.T ≠ 1 := by
   intro h
-  have := congrArg (fun A : SL(2, ℤ) => (A : Matrix (Fin 2) (Fin 2) ℤ) 0 0) h
-  simp [ST_coe] at this
+  have h0 := ST_entry
+  rw [h] at h0
+  simp at h0
 
 theorem ST_ne_negOne : ModularGroup.S * ModularGroup.T ≠ slNegOne := by
   intro h
-  have := congrArg (fun A : SL(2, ℤ) => (A : Matrix (Fin 2) (Fin 2) ℤ) 0 0) h
-  simp [ST_coe] at this
+  have h0 := ST_entry
+  rw [h] at h0
+  simp at h0
 
 /-- The central element acts trivially on the cosets of `Γ(n)·{±1}`. -/
 theorem mk_negOne_mul (g : SL(2, ℤ)) :
     (QuotientGroup.mk (slNegOne * g) : SL(2, ℤ) ⧸ gammaPM n) = QuotientGroup.mk g := by
   rw [QuotientGroup.eq]
   have hrw : (slNegOne * g)⁻¹ * g = slNegOne := by
-    rw [mul_inv_rev, inv_eq_of_mul_eq_one_right slNegOne_mul_self, mul_assoc,
-      ← (slNegOne_central g).eq, ← mul_assoc, inv_mul_cancel, one_mul]
+    rw [_root_.mul_inv_rev, slNegOne_inv]
+    exact negOne_conj g
   rw [hrw]
   exact slNegOne_mem_gammaPM
 
@@ -530,22 +529,13 @@ theorem mk_mul_eq_iff {C g : SL(2, ℤ)} :
     (QuotientGroup.mk (C * g) : SL(2, ℤ) ⧸ gammaPM n) = QuotientGroup.mk g
       ↔ g⁻¹ * C * g ∈ gammaPM n := by
   rw [QuotientGroup.eq]
-  constructor
-  · intro h
-    have hrw : g⁻¹ * C * g = ((C * g)⁻¹ * g)⁻¹ := by
-      rw [mul_inv_rev, inv_inv, mul_inv_rev, inv_inv, mul_assoc]
-    rw [hrw]
-    exact inv_mem h
-  · intro h
-    have hrw : (C * g)⁻¹ * g = (g⁻¹ * C * g)⁻¹ := by
-      rw [mul_inv_rev, mul_inv_rev, inv_inv, inv_inv, mul_assoc]
-    rw [hrw]
-    exact inv_mem h
+  have hkey : (C * g)⁻¹ * g = (g⁻¹ * C * g)⁻¹ := by group
+  rw [hkey, Subgroup.inv_mem_iff]
 
 variable [NeZero n]
 
 theorem gammaPM_finiteIndex : (gammaPM n).FiniteIndex :=
-  haveI : (Gamma n).FiniteIndex := CongruenceSubgroup.instFiniteIndexGamma
+  haveI : (Gamma n).FiniteIndex := CongruenceSubgroup.instFiniteIndexGamma n
   Subgroup.finiteIndex_of_le gamma_le_gammaPM
 
 noncomputable instance : Fintype (SL(2, ℤ) ⧸ gammaPM n) :=
@@ -554,110 +544,135 @@ noncomputable instance : Fintype (SL(2, ℤ) ⧸ gammaPM n) :=
 
 noncomputable instance : DecidableEq (SL(2, ℤ) ⧸ gammaPM n) := Classical.decEq _
 
+/-- The coset monodromy of the order-two elliptic point. -/
+noncomputable def congX (n : ℕ) [NeZero n] : Equiv.Perm (SL(2, ℤ) ⧸ gammaPM n) :=
+  MulAction.toPermHom SL(2, ℤ) (SL(2, ℤ) ⧸ gammaPM n) ModularGroup.S
+
+/-- The coset monodromy of the order-three elliptic point. -/
+noncomputable def congY (n : ℕ) [NeZero n] : Equiv.Perm (SL(2, ℤ) ⧸ gammaPM n) :=
+  MulAction.toPermHom SL(2, ℤ) (SL(2, ℤ) ⧸ gammaPM n) (ModularGroup.S * ModularGroup.T)
+
+theorem congX_apply (g : SL(2, ℤ)) :
+    congX n (QuotientGroup.mk g) = QuotientGroup.mk (ModularGroup.S * g) := rfl
+
+theorem congY_apply (g : SL(2, ℤ)) :
+    congY n (QuotientGroup.mk g)
+      = QuotientGroup.mk (ModularGroup.S * ModularGroup.T * g) := rfl
+
+theorem congX_sq : (congX n) ^ 2 = 1 := by
+  ext q
+  induction q using Quotient.inductionOn with
+  | h g =>
+      show ((congX n) ^ 2) (QuotientGroup.mk g) = QuotientGroup.mk g
+      rw [pow_two, Equiv.Perm.mul_apply, congX_apply, congX_apply, ← mul_assoc, S_mul_S,
+        mk_negOne_mul]
+
+theorem congY_cube : (congY n) ^ 3 = 1 := by
+  ext q
+  induction q using Quotient.inductionOn with
+  | h g =>
+      show ((congY n) ^ 3) (QuotientGroup.mk g) = QuotientGroup.mk g
+      have hsplit : (congY n) ^ 3 = congY n * (congY n * congY n) := by
+        rw [pow_succ, pow_succ, pow_one]
+        group
+      rw [hsplit, Equiv.Perm.mul_apply, Equiv.Perm.mul_apply, congY_apply, congY_apply,
+        congY_apply]
+      have hkey : ModularGroup.S * ModularGroup.T * (ModularGroup.S * ModularGroup.T *
+          (ModularGroup.S * ModularGroup.T * g)) = slNegOne * g := by
+        rw [← ST_cube]
+        simp only [mul_assoc]
+      rw [hkey, mk_negOne_mul]
+
+theorem congX_free (hn : 3 ≤ n) (q : SL(2, ℤ) ⧸ gammaPM n) : congX n q ≠ q := by
+  induction q using Quotient.inductionOn with
+  | h g =>
+      rw [congX_apply]
+      intro hq
+      exact not_mem_gammaPM_of_sq hn S_mul_S S_ne_one S_ne_negOne g (mk_mul_eq_iff.mp hq)
+
+theorem congY_free (hn : 3 ≤ n) (q : SL(2, ℤ) ⧸ gammaPM n) : congY n q ≠ q := by
+  induction q using Quotient.inductionOn with
+  | h g =>
+      rw [congY_apply]
+      intro hq
+      exact not_mem_gammaPM_of_cube hn ST_cube ST_ne_one ST_ne_negOne g (mk_mul_eq_iff.mp hq)
+
+/-- The two coset monodromies generate a transitive group of permutations of the cosets. -/
+theorem congXY_transitive (s t : SL(2, ℤ) ⧸ gammaPM n) :
+    ∃ σ ∈ Subgroup.closure ({congX n, congY n} : Set (Equiv.Perm (SL(2, ℤ) ⧸ gammaPM n))),
+      σ s = t := by
+  induction s using Quotient.inductionOn with
+  | h g =>
+      induction t using Quotient.inductionOn with
+      | h h =>
+          have hgen : Subgroup.closure ({ModularGroup.S, ModularGroup.S * ModularGroup.T} :
+              Set SL(2, ℤ)) = ⊤ := by
+            refine top_unique ?_
+            rw [← _root_.SpecialLinearGroup.SL2Z_generators, Subgroup.closure_le]
+            rintro x (rfl | hx)
+            · exact Subgroup.subset_closure (Or.inl rfl)
+            · simp only [Set.mem_singleton_iff] at hx
+              subst hx
+              have hmul := mul_mem
+                (inv_mem (Subgroup.subset_closure (Or.inl rfl) :
+                  ModularGroup.S ∈ Subgroup.closure ({ModularGroup.S,
+                    ModularGroup.S * ModularGroup.T} : Set SL(2, ℤ))))
+                (Subgroup.subset_closure (Or.inr rfl) :
+                  ModularGroup.S * ModularGroup.T ∈ Subgroup.closure ({ModularGroup.S,
+                    ModularGroup.S * ModularGroup.T} : Set SL(2, ℤ)))
+              rwa [← mul_assoc, inv_mul_cancel, one_mul] at hmul
+          have hmem : (h * g⁻¹) ∈ Subgroup.closure ({ModularGroup.S,
+              ModularGroup.S * ModularGroup.T} : Set SL(2, ℤ)) := by
+            rw [hgen]; trivial
+          refine ⟨MulAction.toPermHom SL(2, ℤ) (SL(2, ℤ) ⧸ gammaPM n) (h * g⁻¹), ?_, ?_⟩
+          · have himg : Subgroup.map (MulAction.toPermHom SL(2, ℤ) (SL(2, ℤ) ⧸ gammaPM n))
+                (Subgroup.closure ({ModularGroup.S, ModularGroup.S * ModularGroup.T} :
+                  Set SL(2, ℤ)))
+                = Subgroup.closure ((MulAction.toPermHom SL(2, ℤ) (SL(2, ℤ) ⧸ gammaPM n)) ''
+                  ({ModularGroup.S, ModularGroup.S * ModularGroup.T} : Set SL(2, ℤ))) :=
+              MonoidHom.map_closure _ _
+            have hin : MulAction.toPermHom SL(2, ℤ) (SL(2, ℤ) ⧸ gammaPM n) (h * g⁻¹) ∈
+                Subgroup.map (MulAction.toPermHom SL(2, ℤ) (SL(2, ℤ) ⧸ gammaPM n))
+                  (Subgroup.closure ({ModularGroup.S, ModularGroup.S * ModularGroup.T} :
+                    Set SL(2, ℤ))) := ⟨h * g⁻¹, hmem, rfl⟩
+            rw [himg] at hin
+            refine Subgroup.closure_mono ?_ hin
+            rintro _ ⟨x, hx, rfl⟩
+            rcases hx with hx | hx
+            · exact Or.inl (by rw [hx]; rfl)
+            · simp only [Set.mem_singleton_iff] at hx
+              exact Or.inr (by rw [hx]; rfl)
+          · show (QuotientGroup.mk (h * g⁻¹ * g) : SL(2, ℤ) ⧸ gammaPM n) = QuotientGroup.mk h
+            rw [mul_assoc, inv_mul_cancel, mul_one]
+
 /-- **The principal congruence cover.**  For `n ≥ 3` the coset action of `SL(2,ℤ)` on
 `Γ(n)·{±1}` is the monodromy of a connected unramified cover of the modular orbifold: the modular
 curve `X(n)`. -/
 noncomputable def congruenceModularCover (hn : 3 ≤ n) :
     ModularCover (SL(2, ℤ) ⧸ gammaPM n) where
-  X := MulAction.toPermHom SL(2, ℤ) (SL(2, ℤ) ⧸ gammaPM n) ModularGroup.S
-  Y := MulAction.toPermHom SL(2, ℤ) (SL(2, ℤ) ⧸ gammaPM n) (ModularGroup.S * ModularGroup.T)
+  X := congX n
+  Y := congY n
   freeX := by
-    constructor
-    · rw [← map_pow]
-      have hsq : ModularGroup.S ^ 2 = slNegOne := by
-        rw [pow_two]; exact S_mul_S
-      rw [hsq]
-      ext q
-      refine Quotient.inductionOn q fun g => ?_
-      exact mk_negOne_mul g
-    · intro k hk0 hk2 q
-      interval_cases k
-      refine Quotient.inductionOn q fun g => ?_
-      simp only [pow_one]
-      intro hfix
-      have : (QuotientGroup.mk (ModularGroup.S * g) : SL(2, ℤ) ⧸ gammaPM n)
-          = QuotientGroup.mk g := hfix
-      exact not_mem_gammaPM_of_sq hn S_mul_S S_ne_one S_ne_negOne g (mk_mul_eq_iff.mp this)
+    refine ⟨congX_sq, ?_⟩
+    intro k hk0 hk2 q hfix
+    interval_cases k
+    exact congX_free hn q (by simpa using hfix)
   freeY := by
-    constructor
-    · rw [← map_pow]
-      have hcube : (ModularGroup.S * ModularGroup.T) ^ 3 = slNegOne := by
-        rw [pow_succ, pow_succ, pow_one]; exact ST_cube
-      rw [hcube]
-      ext q
-      refine Quotient.inductionOn q fun g => ?_
-      exact mk_negOne_mul g
-    · intro k hk0 hk3 q hfix
-      -- a fixed point of `Y^2` is a fixed point of `Y`, since `Y^3 = 1`
-      have hbase : ∀ g : SL(2, ℤ),
-          (QuotientGroup.mk (ModularGroup.S * ModularGroup.T * g) : SL(2, ℤ) ⧸ gammaPM n)
-            ≠ QuotientGroup.mk g := by
-        intro g hg
-        exact not_mem_gammaPM_of_cube hn ST_cube ST_ne_one ST_ne_negOne g
-          (mk_mul_eq_iff.mp hg)
+    refine ⟨congY_cube, ?_⟩
+    intro k hk0 hk3 q hfix
+    have hone : congY n q = q := by
       interval_cases k
-      · refine Quotient.inductionOn q (fun g => ?_) hfix
-        intro hg
-        exact hbase g hg
-      · -- `k = 2`
-        refine Quotient.inductionOn q (fun g => ?_) hfix
-        intro hg
-        refine hbase (ModularGroup.S * ModularGroup.T * g) ?_
-        have h2 : ((ModularGroup.S * ModularGroup.T) ^ 2 * g)
-            = ModularGroup.S * ModularGroup.T * (ModularGroup.S * ModularGroup.T * g) := by
-          rw [pow_two, mul_assoc]
-        have hq : (QuotientGroup.mk ((ModularGroup.S * ModularGroup.T) ^ 2 * g)
-            : SL(2, ℤ) ⧸ gammaPM n) = QuotientGroup.mk g := hg
-        rw [h2] at hq
-        have h3 : (QuotientGroup.mk (ModularGroup.S * ModularGroup.T *
-            (ModularGroup.S * ModularGroup.T * (ModularGroup.S * ModularGroup.T * g)))
-            : SL(2, ℤ) ⧸ gammaPM n)
-            = QuotientGroup.mk (ModularGroup.S * ModularGroup.T * g) := by
-          rw [hq]
-        have h4 : ModularGroup.S * ModularGroup.T *
-            (ModularGroup.S * ModularGroup.T * (ModularGroup.S * ModularGroup.T * g))
-            = slNegOne * g := by
-          rw [← mul_assoc, ← mul_assoc, ST_cube]
-        rw [h4, mk_negOne_mul] at h3
-        exact h3.symm
-  transitive := by
-    intro s t
-    refine Quotient.inductionOn₂ s t fun g h => ?_
-    have hgen : Subgroup.closure ({ModularGroup.S, ModularGroup.S * ModularGroup.T} :
-        Set SL(2, ℤ)) = ⊤ := by
-      refine top_unique ?_
-      rw [← Matrix.SpecialLinearGroup.SL2Z_generators, Subgroup.closure_le]
-      rintro x (rfl | hx)
-      · exact Subgroup.subset_closure (Or.inl rfl)
-      · simp only [Set.mem_singleton_iff] at hx
-        subst hx
-        have hT : ModularGroup.T = ModularGroup.S⁻¹ * (ModularGroup.S * ModularGroup.T) := by
-          rw [← mul_assoc, inv_mul_cancel, one_mul]
-        rw [hT]
-        exact mul_mem (inv_mem (Subgroup.subset_closure (Or.inl rfl)))
-          (Subgroup.subset_closure (Or.inr rfl))
-    have hmem : (h * g⁻¹) ∈ Subgroup.closure ({ModularGroup.S,
-        ModularGroup.S * ModularGroup.T} : Set SL(2, ℤ)) := by
-      rw [hgen]; trivial
-    refine ⟨MulAction.toPermHom SL(2, ℤ) (SL(2, ℤ) ⧸ gammaPM n) (h * g⁻¹), ?_, ?_⟩
-    · have himg : Subgroup.map (MulAction.toPermHom SL(2, ℤ) (SL(2, ℤ) ⧸ gammaPM n))
-          (Subgroup.closure ({ModularGroup.S, ModularGroup.S * ModularGroup.T} : Set SL(2, ℤ)))
-          = Subgroup.closure ((MulAction.toPermHom SL(2, ℤ) (SL(2, ℤ) ⧸ gammaPM n)) ''
-            ({ModularGroup.S, ModularGroup.S * ModularGroup.T} : Set SL(2, ℤ))) :=
-        MonoidHom.map_closure _ _
-      have hin : MulAction.toPermHom SL(2, ℤ) (SL(2, ℤ) ⧸ gammaPM n) (h * g⁻¹) ∈
-          Subgroup.map (MulAction.toPermHom SL(2, ℤ) (SL(2, ℤ) ⧸ gammaPM n))
-            (Subgroup.closure ({ModularGroup.S, ModularGroup.S * ModularGroup.T} :
-              Set SL(2, ℤ))) := ⟨h * g⁻¹, hmem, rfl⟩
-      rw [himg] at hin
-      refine Subgroup.closure_mono ?_ hin
-      rintro _ ⟨x, hx, rfl⟩
-      rcases hx with hx | hx
-      · exact Or.inl (by rw [hx])
-      · simp only [Set.mem_singleton_iff] at hx
-        exact Or.inr (by rw [hx])
-    · show (QuotientGroup.mk (h * g⁻¹ * g) : SL(2, ℤ) ⧸ gammaPM n) = QuotientGroup.mk h
-      rw [mul_assoc, inv_mul_cancel, mul_one]
+      · simpa using hfix
+      · have hsplit : (congY n) ^ 4 = (congY n) ^ 2 * (congY n) ^ 2 := by
+          rw [← pow_add]
+        have h4 : ((congY n) ^ 4) q = q := by
+          rw [hsplit, Equiv.Perm.mul_apply, hfix, hfix]
+        have hred : (congY n) ^ 4 = congY n := by
+          rw [show (4 : ℕ) = 3 + 1 from rfl, pow_succ, congY_cube, one_mul]
+        rw [hred] at h4
+        exact h4
+    exact congY_free hn q hone
+  transitive := congXY_transitive
 
 /-- The `n` cosets of `Γ(n)·{±1}` represented by powers of `T` are distinct, so the index is at
 least `n`. -/
@@ -668,20 +683,19 @@ theorem index_gammaPM_ge (hn : 3 ≤ n) : n ≤ (gammaPM n).index := by
       (fun k : Fin n => (QuotientGroup.mk (ModularGroup.T ^ ((k : ℕ) : ℤ))
         : SL(2, ℤ) ⧸ gammaPM n)) := by
     intro j k hjk
-    simp only at hjk
     rw [QuotientGroup.eq] at hjk
     have hpow : (ModularGroup.T ^ ((j : ℕ) : ℤ))⁻¹ * ModularGroup.T ^ ((k : ℕ) : ℤ)
         = ModularGroup.T ^ (((k : ℕ) : ℤ) - ((j : ℕ) : ℤ)) := by
-      rw [zpow_sub, ← zpow_neg, ← zpow_add₀ (by exact one_ne_zero)]
-      · ring_nf
-      all_goals skip
+      rw [← _root_.zpow_neg, ← _root_.zpow_add]
+      congr 1
+      ring
     rw [hpow] at hjk
     set m : ℤ := ((k : ℕ) : ℤ) - ((j : ℕ) : ℤ) with hm
     have hdvd : (n : ℤ) ∣ m := by
       rcases mem_gammaPM.mp hjk with hA | hA
       · obtain ⟨-, h01, -, -⟩ := Gamma_mem.mp hA
         rw [ModularGroup.coe_T_zpow] at h01
-        simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons] at h01
+        norm_num at h01
         exact (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mp h01
       · exfalso
         obtain ⟨h00, -, -, -⟩ := Gamma_mem.mp hA

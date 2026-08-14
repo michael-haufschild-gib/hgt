@@ -35,6 +35,7 @@ namespace IsFreeOfOrder
 
 variable {σ : Perm S} {a : ℕ}
 
+omit [Fintype S] [DecidableEq S] in
 theorem apply_ne_self (h : IsFreeOfOrder σ a) (ha : 1 < a) (s : S) : σ s ≠ s := by
   have := h.free 1 one_pos ha s
   simpa using this
@@ -43,6 +44,7 @@ theorem support_eq_univ (h : IsFreeOfOrder σ a) (ha : 1 < a) : σ.support = Fin
   ext s
   simp [Equiv.Perm.mem_support, h.apply_ne_self ha s]
 
+omit [Fintype S] [DecidableEq S] in
 /-- Distinct exponents below `a` move a point to distinct places. -/
 theorem pow_apply_injOn (h : IsFreeOfOrder σ a) (s : S) {k j : ℕ} (hk : k < a) (hj : j < a)
     (hkj : (σ ^ k) s = (σ ^ j) s) : k = j := by

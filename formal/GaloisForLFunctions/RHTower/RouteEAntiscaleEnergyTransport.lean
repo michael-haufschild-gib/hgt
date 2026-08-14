@@ -391,6 +391,54 @@ theorem tendsto_antiscaleEnergy {a : ℝ} (ha0 : 0 < a) :
   rw [antiscaleEnergy_eq_add hY]
   ring
 
+/-! ## The archimedean factor -/
+
+/-- The antiscale frequency tends to zero. -/
+theorem tendsto_antiscaleFrequency {a : ℝ} (ha0 : 0 < a) :
+    Tendsto (fun Y : ℝ => antiscaleFrequency a Y) atTop (nhds 0) := by
+  have h1 : Tendsto (fun Y : ℝ => Real.pi / Real.log Y) atTop (nhds 0) :=
+    tendsto_const_nhds.div_atTop Real.tendsto_log_atTop
+  have hL2 : Tendsto (fun Y : ℝ => Real.log Y ^ 2) atTop atTop := by
+    have h := Filter.Tendsto.atTop_mul_atTop₀ Real.tendsto_log_atTop Real.tendsto_log_atTop
+    refine h.congr fun Y => ?_
+    ring
+  have haL2 : Tendsto (fun Y : ℝ => a * Real.log Y ^ 2) atTop atTop := hL2.const_mul_atTop ha0
+  have h2 : Tendsto (fun Y : ℝ => Real.pi / (a * Real.log Y ^ 2)) atTop (nhds 0) :=
+    tendsto_const_nhds.div_atTop haL2
+  have h := h1.add h2
+  rw [add_zero] at h
+  exact h
+
+/-- **Gamma completion does not attenuate the escape.**  The antiscale frequency tends to zero, so
+the archimedean factor converges to its real value. -/
+theorem tendsto_gamma_normSq_antiscale {a : ℝ} (ha0 : 0 < a) (ha1 : a < 1) :
+    Tendsto (fun Y : ℝ =>
+      ‖Complex.Gamma (((1 - a : ℝ) : ℂ) + ((antiscaleFrequency a Y : ℝ) : ℂ) * Complex.I)‖ ^ 2)
+      atTop (nhds (‖Complex.Gamma (((1 - a : ℝ) : ℂ))‖ ^ 2)) := by
+  have hne : ∀ m : ℕ, ((1 - a : ℝ) : ℂ) ≠ -m := by
+    intro m h
+    have hre := congrArg Complex.re h
+    simp only [Complex.ofReal_re, Complex.neg_re, Complex.natCast_re] at hre
+    have hm : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
+    linarith
+  have hΓ : ContinuousAt Complex.Gamma ((1 - a : ℝ) : ℂ) :=
+    (Complex.differentiableAt_Gamma _ hne).continuousAt
+  have hfreq := tendsto_antiscaleFrequency ha0
+  have harg : Tendsto
+      (fun Y : ℝ => ((1 - a : ℝ) : ℂ) + ((antiscaleFrequency a Y : ℝ) : ℂ) * Complex.I) atTop
+      (nhds (((1 - a : ℝ) : ℂ))) := by
+    have hc : Tendsto (fun Y : ℝ => ((antiscaleFrequency a Y : ℝ) : ℂ)) atTop (nhds 0) := by
+      have hof := Complex.continuous_ofReal.tendsto (0 : ℝ)
+      have hcomp := hof.comp hfreq
+      simpa [Function.comp_def] using hcomp
+    have h2 : Tendsto
+        (fun Y : ℝ => ((1 - a : ℝ) : ℂ) + ((antiscaleFrequency a Y : ℝ) : ℂ) * Complex.I) atTop
+        (nhds (((1 - a : ℝ) : ℂ) + 0 * Complex.I)) :=
+      tendsto_const_nhds.add (hc.mul_const Complex.I)
+    simpa using h2
+  have hgamma := hΓ.tendsto.comp harg
+  exact (hgamma.norm).pow 2
+
 end
 
 end RHTower

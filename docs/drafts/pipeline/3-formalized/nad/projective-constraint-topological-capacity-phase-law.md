@@ -1,7 +1,7 @@
 # Functional--relational phase separation for projective constraints
 
 - **ID:** `projective-constraint-topological-capacity-phase-law`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized
 - **Type:** THEOREM (Lean 4; classical geometric inputs exposed explicitly)
 - **Scientific status:** `[PAPER PROOF COMPLETE; CLASSICAL GEOMETRIC EXISTENCE INPUTS NOT YET FORMALIZED] [NOVELTY UNVERIFIED]`
 - **Depends on:** `nonautonomous-rational-complete-tail-orbifold-classification`

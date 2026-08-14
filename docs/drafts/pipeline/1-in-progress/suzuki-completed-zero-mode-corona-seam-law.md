@@ -946,8 +946,8 @@ Coordinatewise event cutoffs also create a raw first-order commutator, classifie
 so finite logarithmic recurrence controls the correct primitive-plus-zero-order base source without
 assuming \(F'\). The augmented flux system then removes the primitive derivative, gives
 arbitrary-nonnormal weighted graph uniqueness, and Volterra Liouville gives exponential value/flux
-decay. At that stage the remaining core was root-derivative propagation, literal paired assembly,
-and exact physical root dipole/flux matching. Degree-\(m\) moments and
+decay. Root-derivative propagation, literal paired assembly, and exact physical root dipole/flux
+matching are now closed. Degree-\(m\) moments and
 biweighted dichotomy remain alternative obligations of the direct Hardy architecture.
 
 `../3-formalized/new_scientific_knowledge/suzuki/suzuki-complementary-primitive-flux-derivative-recovery.md`
@@ -957,8 +957,9 @@ coercivity.  The subsequent
 `../3-formalized/new_scientific_knowledge/suzuki/suzuki-flat-flux-charge-automaticity.md`
 discharges physical dipole/flat-flux matching: the one-sided zero-extension has only the half-log
 indicial root and no `1/log` dipole, while superpolynomial block flatness forces terminal flux
-charge zero. The remaining finite-type source gates are literal paired assembly, arbitrary
-finite-order expansion to the flat residual, and compact-middle coverage.
+charge zero. `../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-literal-paired-source-assembly.md`
+closes exact two-coset source assembly and total marked-descendant matching. Remaining finite-type
+source gates are arbitrary finite-order expansion to the flat residual and compact-middle coverage.
 
 ## 7. Lean decision
 
@@ -1055,7 +1056,8 @@ paper mathematics; abstract formalization would not certify source-specific anal
 - [x] prove physical endpoint dipole and terminal flat-flux charge vanish automatically
 - [ ] prove `SUZUKI-POLYNOMIAL-ORBIT-NORMAL-IDENTITY`
 - [ ] prove degree-m source moments or biweighted Evans dichotomy only if direct Hardy is retained
-- [ ] verify total marked-descendant zero-dipole source moment in literal assembly
+- [x] derive literal two-coset source assembly with corrected rooted transport signs
+- [x] verify total marked-descendant zero-dipole source moment in literal assembly
 - [ ] pass recurrence-infinite apertures
 - [ ] extract a new source-specific consequence from `P p_a(D)u=0`
 - [ ] prove the literal trace-zero supported-nullspace theorem `(30)`

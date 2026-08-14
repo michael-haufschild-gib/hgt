@@ -241,14 +241,15 @@ regularity. Consequently the proved implication is
 
 ```text
 literal paired assembly
++ finite-to-flat expansion
 + zero physical half-log traces
 + finite recurrence
  -> both physical endpoint collars lie in H1.           (29)
 ```
 
-The endpoint derivative and physical dipole/flat-flux obstructions are closed. Literal source
-assembly, finite-to-flat expansion, and finite interior coverage remain source-bearing gates;
-none is assumed away.
+The endpoint derivative, physical dipole/flat-flux, and literal source-assembly obstructions are
+closed. Finite-to-flat expansion and finite interior coverage remain source-bearing gates; none
+is assumed away.
 
 ## 6. Exact frontier movement
 
@@ -266,8 +267,9 @@ arbitrary bounded nonnormal B:
   costs only ||B|| in terminal coercivity;              [PAPER-PROVED]
 
 finite-recurrence trace-zero H1:
-  reduced to literal paired source equation,
-  finite-to-flat expansion, and interior coverage.      [OPEN SOURCE CORE]   (30)
+  literal paired source equation closed;
+  reduced to finite-to-flat expansion and interior
+  coverage.                                             [OPEN SOURCE CORE]   (30)
 ```
 
 Neither degree-\(m\) source moments nor Hatano--Nelson dichotomy are required by this flux route.
@@ -280,8 +282,9 @@ Neither degree-\(m\) source moments nor Hatano--Nelson dichotomy are required by
 4. **No derivative premise.** `(22)` follows by the same weak mollifier closure as the proved
    Gamma coercivity theorem.
 5. **No value-to-derivative leap.** The derivative comes from `(18)`, not from weighted \(F\).
-6. **No source assembly theatre.** The theorem is conditional on the literal equation `(7)` and
-   physical-root flux matching; those are now the only finite-type source gates.
+6. **No source assembly theatre.** Literal equation `(7)` and physical-root flux matching are
+   now proved; this theorem still requires the finite-to-flat expansion before applying its
+   flat-sector hypothesis.
 7. **No all-aperture claim.** Recurrence-infinite apertures remain.
 8. **No interior-coverage claim.** Endpoint collars are proved; compact-middle coverage remains.
 9. **No RH claim.** Raw Evans injectivity and nonzero-trace return remain.

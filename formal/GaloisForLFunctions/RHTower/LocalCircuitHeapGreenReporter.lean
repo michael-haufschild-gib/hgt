@@ -114,6 +114,19 @@ theorem measure_heapAccessible_le_partition (ν : Measure X) {z : ℝ} (hz0 : 0 
     (mul_le_mul_right (le_trans (lintegral_heapGreenReporter_le ν z len hS hB)
       (mul_le_mul_right hZ B)) _)
 
+omit [MeasurableSpace X] [Countable T] in
+/-- Accessibility only depends on the dictionary through a length-preserving reindexing. -/
+theorem heapAccessible_congr_equiv {T' : Type*} (e : T' ≃ T) (len : T → ℕ) (S : T → Set X)
+    (s : ℕ) :
+    heapAccessible (fun t' => len (e t')) (fun t' => S (e t')) s = heapAccessible len S s := by
+  ext x
+  simp only [heapAccessible, Set.mem_iUnion, Set.mem_setOf_eq, exists_prop]
+  constructor
+  · rintro ⟨t', ht', hx⟩
+    exact ⟨e t', ht', hx⟩
+  · rintro ⟨t, ht, hx⟩
+    exact ⟨e.symm t, by simpa using ht, by simpa using hx⟩
+
 /-- Finite heap incidence of a weighted dictionary through budget `s`. -/
 noncomputable def heapIncidence (ν : Measure X) (len : T → ℕ) (S : T → Set X) (s : ℕ) : ℝ≥0∞ :=
   ∑' τ : T, Set.indicator {τ : T | len τ ≤ s} (fun τ => ν (S τ)) τ

@@ -6820,3 +6820,48 @@ explicitly defined cross-section, commentary on what the corona class contains, 
 load-bearing for claims 1–4.  Formalising it needs `Ring.choose (-1/2) n = (-1)^n C(2n,n)/4^n`
 (mathlib has the binomial series `Real.one_add_rpow_hasFPowerSeriesOnBall_zero`) together with
 continuity of the functional calculus in the symbol, and is a clean optional strengthening.
+
+## HD — card 6's Theorem 3: the upper-strip gluing is closed
+
+The equivalence `(23)` of card 6 — zero endpoint trace, `c₋ = -i c₊`, and gluing of the two
+real-frequency channels into one holomorphic strip solution — is now formal.
+
+```text
+HTGeometry/HolomorphicBranch.lean
+  isSimplyConnected_of_convex     a convex nonempty planar set is simply connected
+  differentiableAt_of_exp_comp    a continuous logarithm of a holomorphic nonvanishing function is
+                                  holomorphic: locally it differs from the principal logarithm of
+                                  the normalised function by an element of 2πiℤ, and a continuous
+                                  function into that discrete set vanishing at the point vanishes
+                                  nearby
+  exists_differentiableOn_exp_eq  **a holomorphic logarithm on a simply connected domain**
+  exists_differentiableOn_sq_eq   **a holomorphic square root, normalised where the function is one**
+RHTower/SuzukiGammaStripBranch.lean
+  imStrip, isOpen_imStrip, convex_imStrip, isSimplyConnected_imStrip
+  gammaRatio                      Γ(1+iz)/Γ(1-iz)
+  gammaArg_ne_pole                on |Im z| < 1 both Gamma arguments have real part in (0,2)
+  differentiableOn_gammaRatio, gammaRatio_ne_zero, gammaRatio_zero
+  exists_gammaRatioSqrt           **the holomorphic branch of [Γ(1+iz)/Γ(1-iz)]^{1/2} on the unit
+                                  strip, normalised at the origin**
+RHTower/SuzukiGammaStripGluing.lean
+  stripTransport                  Q(z) = e^{iγz}[Γ(1+iz)/Γ(1-iz)]^{1/2}e^{-izT/2}
+  stripSolution                   H(z) = z^{-1/2}Q(z)c
+  stripTransport_injective        the transport is invertible where the branch does not vanish
+  cpow_neg_half_ofReal_pos/neg    the principal half-power on the two real rays: `η^{-1/2}` and
+                                  `-i(-η)^{-1/2}` — the card's `(27)`
+  stripSolution_ofReal_pos/neg    the two boundary values
+  differentiableOn_stripSolution  **H is holomorphic on the upper unit strip**
+  stripSolution_glue_iff          **gluing ⟺ c₋ = -i c₊**
+  halfLogScatter_eq_zero_iff_glue **β = 0 ⟺ gluing** — card 6's `(23)`
+```
+
+The branch is built without any primitive-on-a-strip machinery: the Gamma ratio is holomorphic and
+nonvanishing on `|Im z| < 1` because both Gamma arguments have real part in `(0,2)`, the strip is
+convex hence simply connected, and mathlib's continuous branch is upgraded to a holomorphic one by
+the local `2πiℤ` argument.  All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+What card 6 still needs: `(24)`/`(25)`, the `L²` membership of the shifted line and of the
+exponentially weighted physical carrier.  The scalar half is already the corpus theorem
+`integrable_suzukiGammaStripNormSq`; the missing input is the operator bound
+`‖e^{-i(x+iσ)T/2}‖ ≤ e^{σ‖T‖/2}`, which needs unitarity of `e^{-ixT/2}` for self-adjoint `T` — a
+C*-algebra fact, not available for a bare Banach space.

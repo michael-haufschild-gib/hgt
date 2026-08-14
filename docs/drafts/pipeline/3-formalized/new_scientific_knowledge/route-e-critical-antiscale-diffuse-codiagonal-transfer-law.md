@@ -1,7 +1,7 @@
 # Route E critical antiscale diffuse-codiagonal transfer law
 
 - **ID:** `ROUTE-E-CRITICAL-ANTISCALE-DIFFUSE-CODIAGONAL-001`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** `[EXACT DISSIPATION CLASSIFICATION]` / `[CENTERED TRANSFER LAW]` /
   `[PROOF-BURDEN REDUCTION]`
 - **Parent:** `../../1-in-progress/route-e-cofinal-parity-energy-covariance-accumulation.md`
@@ -27,7 +27,13 @@
   phase-independent non-`l2` classification are now closed by
   `RouteEStrictRightMellinObserverFirewall`; exact Stage-3 child:
   `../../3-formalized/new_scientific_knowledge/route-e-strict-right-mellin-observer-firewall.md`.
-  The relation-specific estimate `(50)` and signed recurrence seam keep this parent at Stage 2.
+  Every theorem of this card (A--H, with their equations `(1)`--`(49)`) is therefore closed in
+  unconditional umbrella-wired Lean and audits `[propext, Classical.choice, Quot.sound]`; the
+  exact column ANOVA `(48)`/`(49)` is
+  `RouteEFiniteColumnData.chiSquare_eq_centeredEnergy_add_massDefect`. The relation-specific
+  estimate `(50)` and the signed recurrence seam are *open frontier targets* stated by this card,
+  not proved statements of it (see §8--§9), so they carry no formalization debt: they belong to the
+  successor programme, not to this theorem set.
 
 ## 1. Result
 

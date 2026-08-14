@@ -13,8 +13,7 @@
   `../3-formalized/new_scientific_knowledge/suzuki/suzuki-flat-flux-charge-automaticity.md`,
   `suzuki-paired-gamma-logistic-flat-sector-conjecture.md`,
   `suzuki-polar-remainder-lipschitz-gamma-subcriticality.md`
-- **Current obstruction:** literal paired source assembly, arbitrary finite-order expansion, and
-  compact-middle coverage
+- **Current obstruction:** arbitrary finite-order expansion and compact-middle coverage
 
 ## 0. Retraction of premature theorem status
 
@@ -53,9 +52,9 @@ finite-recurrence trace-zero H1_0 theorem;               [CONJECTURE].        (0
 The live replacement is source-side:
 `SUZUKI-LITERAL-PAIRED-ASSEMBLY-EXPANSION-AND-MIDDLE-COVERAGE`. Complementary primitive flux
 propagates weighted control through the rough prime cutoff without differentiating it. The
-physical one-sided dipole and terminal flat charge are now forced to zero. One must construct the
-literal completed-source equation, prove its finite-to-flat expansion, and cover the compact
-middle.
+physical one-sided dipole and terminal flat charge are now forced to zero. The literal
+completed-source equation is now assembled with corrected rooted signs and a canonical
+literal-support cutoff. One must prove its finite-to-flat expansion and cover compact middle.
 
 ## 1. Conjectured result
 
@@ -172,22 +171,27 @@ dense centers do not require disjoint charts.
 
 ## 4. Exact prime intertwining
 
-Let a visible prime-power step be \(s=\pm j e_p\).  Translation of the sample in `(6)` gives
+Let a visible prime-power step be \(s=\pm j e_p\), and identify the right/left root labels with
+\(\epsilon=+1/-1\). Translation of the sample in `(6)` gives the root-dependent law
 
 ```text
 u(x_(epsilon,nu)+/-exp(-L)-ell(s))
- =u(x_(epsilon,nu+s)+/-exp(-L)).                        (10)
+ =u(x_(epsilon,nu+epsilon*s)+/-exp(-L)).                (10)
 ```
 
-After subtracting center values, the constants disappear upon differentiation.  Therefore the
-literal differentiated prime term is exactly the weighted coordinate shift
+The former same-direction formula was false on the left coset:
+\(x_{-,\nu}-\ell(s)=x_{-,\nu-s}\). After subtracting center values, the retained descendant
+center constants disappear upon differentiation. Therefore the literal differentiated prime
+term is the rooted weighted coordinate shift
 
 ```text
-(S_(s,w)Z)_nu
- =[w(nu)/w(nu+s)]Z_(nu+s),                             (11)
+(S_(epsilon*s,w)Z)_nu
+ =[w(nu)/w(nu+epsilon*s)]Z_(nu+epsilon*s).             (11)
 ```
 
-and the complete prime coupling is the bounded nonnormal operator
+Because Suzuki's prime block contains both \(s\) and \(-s\) with equal coefficients, reindexing
+\(s\mapsto-s\) makes the complete prime coupling the same bounded nonnormal operator on both
+rooted cosets:
 
 ```text
 B_(a,w)=sum_(s in Sigma_a)c_s S_(s,w).                  (12)
@@ -202,6 +206,10 @@ The norm estimate from the tempered-orbit theorem gives
 
 Equations `(10)`--`(13)` are exact on every coordinate for which the sampled point is in \(I\).
 When it is outside, \(u=0\); the discrepancy is a boundary-event source, classified next.
+
+The exact marked-descendant decomposition, canonical literal-support cutoff, two-coset
+distributional assembly, and finite-recurrence source estimate are now proved in
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-literal-paired-source-assembly.md`.
 
 ## 5. Boundary events and the zero-order recurrence budget
 
@@ -335,8 +343,8 @@ At finite recurrence type, \(G_{\rm cut}\) and \(H_{\rm cut}\) have the required
 zero-order norms. The weighted graph estimate for `(22c)` uses only \(\|B\|\), even when \(B\) is
 nonnormal. Volterra Liouville supplies the flat value/flux upgrade, and complementary
 \(M\)/\(I-M\) fluxes recover the weighted derivative.  Superpolynomial block flatness forces the
-terminal flux charge to zero, so no separate matching premise remains. Remaining work is literal
-source assembly and finite-to-flat expansion.
+terminal flux charge to zero, so no separate matching premise remains. Literal source assembly
+is now proved; remaining work is finite-to-flat expansion.
 
 ## 7. Conditional value and dipole matching
 
@@ -454,7 +462,10 @@ coordinate-adapted differentiated assembly
 primitive global flux / exterior-residual relation
  -> physical dipole and flat charges vanish;             [PROVED]
 
-literal source assembly + finite-to-flat expansion
+literal two-coset paired source assembly
+ -> exact rooted signs and weighted source class;        [PROVED]
+
+finite-to-flat expansion
 + compact-middle coverage
  -> finite-type trace-zero H1_0;                         [OPEN]
 
@@ -492,15 +503,16 @@ finite prime-log recurrence
 
 The augmented primitive-flux equation, weighted graph estimate, automatic zero-charge flat
 value/flux upgrade, physical dipole exclusion, and complementary derivative recovery are proved.
-Literal source assembly, arbitrary finite-order expansion, and compact-middle coverage are not.
+Literal source assembly is proved. Arbitrary finite-order expansion and compact-middle coverage
+are not.
 Therefore theorem `(3)` remains open.
 
 ## 13. Lean decision
 
 The dependency-closed cutoff-covariance no-go, primitive identity, exponential flux cancellation,
 absorption inequality, complementary flux cancellation, automatic flat-charge squeeze, and
-physical indicial coefficients are formalized. No wrapper may assume source assembly,
-finite-to-flat expansion, `(25)`, or theorem `(3)`.
+physical indicial coefficients, rooted transport, literal cutoff support, and exact source
+algebra are formalized. No wrapper may assume finite-to-flat expansion, `(25)`, or theorem `(3)`.
 
 ## Gates
 
@@ -517,7 +529,10 @@ finite-to-flat expansion, `(25)`, or theorem `(3)`.
 - [x] prove flat-tempered primitive-flux Volterra Liouville
 - [x] prove complementary primitive-flux root derivative recovery
 - [x] prove physical-root dipole and terminal flat-flux charge vanish automatically
-- [ ] derive literal infinite paired-orbit normal equation on the completed source
+- [x] derive literal infinite paired-orbit normal equation on the completed source
+- [x] correct opposite rooted valuation directions and retain descendant center constants
+- [x] construct canonical smooth cutoff supported exactly on literal interior samples
+- [x] prove complete primitive/zero-order source signs and finite-recurrence Hilbert bounds
 - [ ] prove arbitrary finite-order expansion and isolate the flat residual
 - [ ] obtain spatial endpoint \(H^1\) for some `sigma>1/2`
 - [ ] prove one-prime finite-system interior regularity

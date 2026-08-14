@@ -17,6 +17,7 @@
 | `HTGeometry/MonodromyCoverExamples.lean`, `HTGeometry/MonodromyVoltageLift.lean`, `HTGeometry/MonodromyVoltageExistence.lean`, `HTGeometry/HurwitzTriangleCoverTower.lean` | **new** — the explicit `(2,3,7)` cover, connected `ZMod p`-voltage lifts, their existence on hyperbolic covers, and the resulting tower of unbounded degree |
 | `HTGeometry/ModularMonodromyCover.lean` | **new** — `ModularCover`: unramified covers of the `(2,3,∞)` modular orbifold, cusps as the cycles of `X·Y`, and the exact storage law `D = 6(2g + s − 2)` |
 | `HTGeometry/ModularCoverTower.lean` | **new** — modular covers of unbounded degree and the modular survival witness they carry |
+| `HTGeometry/ModularCongruenceCover.lean` | **new** — `Γ(n)` is torsion free in `PSL(2,ℤ)` for `n ≥ 3`, and the coset action of `SL(2,ℤ)` on `Γ(n)·{±1}` is a connected unramified cover of the modular orbifold — the modular curve `X(n)` — of index at least `n` |
 | `HTGeometry/VonDyckTriangleGroup.lean`, `HTGeometry/HurwitzTriangleSubgroupTower.lean` | **new** — the triangle group `Δ(a,b,c)`, sheet stabilisers of index the degree, elliptic-freeness, and unbounded index |
 
 ## Audited declarations
@@ -42,7 +43,16 @@ Each resolves and `#print axioms` reports exactly `propext`, `Classical.choice`,
   degree, genus and cusp number those of constructed covering surfaces;
 - `hurwitzTowerGenus_unbounded`, `modularTower_capacity_unbounded` — unbounded relational degree is
   paid for by unbounded topological capacity;
-- `projectiveConstraint_functionalRelational_phaseSeparation` — the combined statement `(9)`.
+- `projectiveConstraint_functionalRelational_phaseSeparation` — the combined statement `(9)`;
+- `gamma_sq_mem_slPM`, `gamma_cube_mem_slPM` — **`Γ(n)` is torsion free in `PSL(2,ℤ)` for
+  `n ≥ 3`**: an element of `SL(2,ℤ)` whose square or cube is `±1` is itself `±1`, unless its trace
+  is `0`, `±1`, which contradicts `tr ≡ 2 (mod n)`; the residual case `n = 3`, `tr = −1` is killed
+  by reading `A² + A + 1 = 0` modulo `9`;
+- `congruenceModularCover` — the coset action of `SL(2,ℤ)` on `Γ(n)·{±1}` is a connected
+  unramified cover of the modular orbifold, i.e. the modular curve `X(n)`: `S` and `S·T` act with
+  order `2` and `3` and without fixed points, and they generate `SL(2,ℤ)`;
+- `index_gammaPM_ge`, `exists_congruence_index_gt`, `congruence_modular_capacity` — the index is at
+  least `n`, hence unbounded, and satisfies `D = 6(2g + s − 2)`.
 
 ## Verification
 

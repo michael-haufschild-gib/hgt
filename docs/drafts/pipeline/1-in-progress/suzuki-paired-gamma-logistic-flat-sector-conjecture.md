@@ -54,8 +54,8 @@ proves flat-tempered flux Liouville.  Complementary primitive flux subsequently 
 physical-root derivative propagation, and
 `../3-formalized/new_scientific_knowledge/suzuki/suzuki-flat-flux-charge-automaticity.md`
 shows the flat terminal charge is automatic and the physical zero-extension has no independent
-`1/log` dipole. Remaining finite-type theorems are literal source assembly, finite-to-flat
-expansion, and compact-middle coverage, not an exponential-dichotomy theorem.
+`1/log` dipole. Literal source assembly is now proved. Remaining finite-type theorems are
+finite-to-flat expansion and compact-middle coverage, not an exponential-dichotomy theorem.
 
 ## 1. Result
 
@@ -356,9 +356,9 @@ Suzuki flat-tempered primitive-flux Liouville;           [PROVED]
 physical-root primitive derivative propagation;         [PROVED]
 physical dipole and flat terminal charge;                [AUTOMATIC]
 
-literal infinite paired-orbit equation
-+ finite-to-flat expansion
-+ total marked-descendant source matching;              [OPEN SOURCE IDENTITY]
+literal infinite paired-orbit equation;                 [PROVED]
+finite-to-flat expansion;                              [OPEN]
+total marked-descendant source matching;               [PROVED]
 
 exceptional recurrence-infinite passage;                [OPEN]
 nonzero-root Evans return/raw Evans positivity.          [OPEN RH CORE]       (26)
@@ -421,9 +421,9 @@ paired-orbit source identity is paper-complete.
 - [x] prove flat-tempered primitive-flux Volterra Liouville
 - [x] prove physical-root primitive derivative propagation
 - [x] prove physical dipole and flat terminal charge vanish automatically
-- [ ] derive the literal infinite paired-orbit equation from every completed mode
+- [x] derive the literal infinite paired-orbit equation from every completed mode
 - [ ] prove arbitrary finite-order expansion to the flat residual
-- [ ] prove total marked-descendant source matching in literal assembly
+- [x] prove total marked-descendant source matching in literal assembly
 - [ ] pass recurrence-infinite apertures
 - [ ] prove trace-zero completed modes enter `H1_0`
 - [ ] prove completed Evans injectivity
