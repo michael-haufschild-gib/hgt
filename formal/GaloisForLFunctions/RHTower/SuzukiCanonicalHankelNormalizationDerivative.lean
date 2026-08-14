@@ -47,7 +47,7 @@ theorem continuous_suzukiHankelMuScalar_div
   rw [continuous_iff_continuousAt]
   intro a
   by_cases ha : a < 1
-  · have heq : (fun b => suzukiHankelMuScalar omega homega b / b) =ᶠ[𝒩 a]
+  · have heq : (fun b => suzukiHankelMuScalar omega homega b / b) =ᶠ[𝓝 a]
         fun _ => 0 := by
       filter_upwards [Iio_mem_nhds ha] with b hb
       rw [suzukiHankelMuScalar_eq_zero_of_le_one homega (le_of_lt hb), zero_div]

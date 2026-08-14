@@ -9,7 +9,8 @@
   their conservative/dissipative dilation histories; proof routes are compressions, no-gos are
   defect currents or conservative memory, and selection is rigidity of a closed positive cycle.
 - **Status:** [FIELD CANDIDATE] [MECHANISM, NOT OBJECT] [FRANKENSTEIN SYNTHESIS]
-  [FINITE CORE PAPER-PROVED SEPARATELY] [SOURCE CYCLE OPEN] [NOT RH]
+  [FINITE CORE LEAN-PROVED] [LAPLACE SOURCE CYCLE PAPER-PROVED]
+  [PHYSICAL VISIBLE-ONLY RECOVERY OPEN] [NOT RH]
 
 ## 1. Pivot
 
@@ -47,7 +48,8 @@ The proposed field laws are:
 1. **Passivity.** Legal positive observations satisfy $J_f\ge 0$.
 2. **Serial conservation.** $J_{g\circ f}(x)=J_f(x)+J_g(fx)$.
 3. **Dilation reconstruction.** A terminal state plus the ordered defect ledger reconstructs the
-   initial work exactly.
+   initial work exactly.  In the complete Laplace chart, the source-generated split decoder
+   reconstructs the initial state itself.
 4. **Split-cycle rigidity.** If legal passive reconstruction $r$ satisfies $r(fx)=x$, then
    $J_f(x)=J_r(fx)=0$.
 5. **Conservative polarization.** Recurrent/open history with zero total defect belongs to a
@@ -60,7 +62,9 @@ The proposed field laws are:
 8. **Strict selection.** If every nonneutral source formation forces positive defect on at least
    one leg of a source-generated closed passive cycle, the only admitted formation is neutral.
 
-The Stage-2 companion card proves Laws 2--4 and the strict selection schema without an RH premise.
+ULF-CDM-1 proves Laws 2--4 and the strict selection schema.  ULF-CDM-2 realizes them on the literal
+complete Laplace formation: the visible multiplier forces its defect, its unique homogeneous Wold
+history, its geometric recovery kernel, and a contractive exact decoder.
 
 ## 3. Relation to the seven-step frontier grammar
 
@@ -103,6 +107,11 @@ The corpus already proves both halves but usually in separate modules.
   positive work to escape.
 - Wold, recurrence, determinant, and Pluecker histories exhibit conservative memory with closed
   observation and open lift.
+- The complete Laplace formation now supplies both histories in one source law.  If
+  `a_n=L_nu(n)` and `d_n=sqrt(1-a_n^2)`, then
+  `b |-> (a_n b_n,d_n b_n)` is isometric, its fibrewise row is a contractive exact decoder, and
+  `d_n a_n^j` is the unique positive diagonal isometric history intertwining formation with the
+  backward shift.  Its square is the source-generated geometric recovery kernel.
 
 CDM's first route-independent prediction is therefore a separation theorem:
 
@@ -116,7 +125,7 @@ history cannot be silently counted as the same hidden coordinate.
 
 ## 5. Three structurally different realizations
 
-The laws have exact parents in three unlike organs.
+The laws now have one exact source-generated fusion across three unlike organs.
 
 1. **Information organ.** For a statistical observer, source work is a directed divergence;
    conditional divergence is the defect ledger and the chain rule is serial conservation.
@@ -124,6 +133,17 @@ The laws have exact parents in three unlike organs.
    square; the defect operator/current measures lost energy and a passive dilation restores it.
 3. **Process/history organ.** For repeated process composition, the ordered defect ledger is the
    dissipative memory while a unitary/minimal dilation carries conservative recurrence and phase.
+
+For positive half-line convolution these are not parallel analogies.  The same Laplace coefficient
+`a_n` produces the visible formation, Hilbert defect `sqrt(1-a_n^2)`, and geometric history law
+`(1-a_n^2)a_n^(2j)`.  The history kernel reconstructs every `a_n`; Hausdorff determinacy then
+reconstructs the source measure.  Convolution fusion obeys the exact ordered conservation law
+
+\[
+ 1-\prod_{r=1}^ka_{r,n}^2
+ =\sum_{r=1}^k\left(\prod_{i<r}a_{i,n}^2\right)(1-a_{r,n}^2).
+ \tag{CDM.2}
+\]
 
 The fourth-organ prediction concerns completion: an exact recurrent return with positive local
 defect cannot survive in one Hausdorff passive completion.  Any corpus realization claiming both
@@ -135,15 +155,23 @@ separates them.
 The current RH frontier has many positive receivers with exact critical radical.  Their common
 failure is not lack of another receiver; it is lack of one pre-zero reconstruction leg.
 
-CDM converts that wall into a single constructive target:
+CDM previously converted that wall into a generic passive-cycle target.  ULF-CDM-2 removes two
+independent inputs: complete positive formation itself forces the hidden channel and its passive
+decoder.  It also proves a sharp no-go.  For every nontrivial `nu`, `||A_nu||=L_nu(1)<1`; hence no
+contraction can recover a nonzero response from the visible formed leg alone.
 
-1. build a source-generated positive work on the marked reflection packet;
-2. build a passive compression whose defect is the existing Hodge/formation current;
-3. build a legal passive reconstruction from the compressed source statistic;
-4. prove the source laws make reconstruction a left inverse before Xi-zero specialization.
+The remaining constructive target is therefore:
 
-Then split-cycle rigidity forces the defect current to vanish.  Where the corpus has already proved
-that current's critical radical, selection follows.
+1. type the literal pre-zero physical current in the complete Laplace-response atlas;
+2. identify its positive source formation `A_nu` before Xi-zero specialization;
+3. prove the functional-equation source operation recovers that current from the **visible formed
+   response alone**, or prove independently that the forced hidden history vanishes;
+4. retain passivity in the same source work doctrine.
+
+Then strict visible contraction forces the complete response to vanish, source-response
+reconstruction forces the current to vanish, and the existing critical radical theorem supplies
+selection.  If the functional equation uses the forced hidden history, the full split cycle is
+conservative and no selection follows.
 
 This target is stronger than endpoint equality and weaker than reconstructing every source
 coefficient.  It asks for one **contractive sufficient statistic** on the actual source process.
@@ -174,11 +202,12 @@ only after divisor specialization, this field mechanism does not close RH.
 2. Construct minimal positive dilations and their conservative memory groupoids.
 3. Develop completion-sensitive defect ledgers for unbounded/partial interventions.
 4. Compare minimal dilation-memory growth with Spencer/Kolchin prolongation rank.
-5. Search the Euler/Witt source for a pre-zero contractive reconstruction of one reflection-even
-   statistic.
-6. Identify the exact defect of that compression with the already constructed positive Hodge or
-   formation current.
-7. Only after Steps 5--6 ask for the RH selection corollary.
+5. Construct the physical current's complete Laplace response from the Euler/Witt source.
+6. Decide whether functional-equation recovery factors through the visible positive formation or
+   necessarily consumes the forced defect history.
+7. If it factors visibly, apply ULF-CDM-2's strict no-go; if not, identify the exact source law
+   carried by the hidden history before seeking another selector.
+8. Only after Steps 5--7 ask for the RH selection corollary.
 
 ## 9. Parent mathematics
 
@@ -193,9 +222,10 @@ source-normal law coupling them across mathematical proof processes.
 - [x] full-frontier operation grammar retained
 - [x] positive and conservative histories separated by an exact no-go
 - [x] finite serial conservation and split-cycle selection theorem paper-proved
-- [ ] Lean formalization of the finite theorem
-- [ ] one literal source-generated three-organ passive cycle
-- [ ] one withheld completion/prolongation prediction validated without fitted parameters
+- [x] Lean formalization of the finite theorem
+- [x] one literal source-generated three-organ passive cycle in the complete Laplace formation
+- [x] completion prediction: zero-delay-free visible formation is compact/nonproper while its
+  forced hidden complement is boundedly invertible
 - [ ] pre-zero contractive reconstruction of the RH-bearing positive current
 
 ## Log
@@ -203,3 +233,7 @@ source-normal law coupling them across mathematical proof processes.
 - 2026-08-11 — created after rejecting conditional hidden current, process tomography alone, and
   generic curvature as field cores.  Positive split-cycle rigidity gives a sharper constructive
   selection target: source-generated passive reconstruction.
+- 2026-08-14 — ULF-CDM-2 generated the passive cycle from complete Laplace formation itself:
+  unique Julia defect, unique shift-intertwining history, geometric recovery kernel, mutual source
+  reconstruction, and convolution defect conservation.  Selection gate sharpened to passive
+  visible-only physical recovery or source annihilation of the forced hidden history.

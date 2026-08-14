@@ -52,6 +52,7 @@ import GaloisForLFunctions.HilbertMetric.CCRScaleCalibration
 import GaloisForLFunctions.HilbertMetric.PremiseWitnesses
 import GaloisForLFunctions.HilbertMetric.CCRFullTupleCorollaries
 import GaloisForLFunctions.HilbertMetric.NomologicalCrossGram
+import GaloisForLFunctions.HilbertMetric.FullCCRInterfaceClassification
 
 /-!
 # Hilbert-metric theorem area

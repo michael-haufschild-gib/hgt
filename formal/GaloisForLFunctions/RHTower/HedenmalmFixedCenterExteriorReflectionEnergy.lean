@@ -73,9 +73,9 @@ theorem xiExteriorCayleyAbelGreenMultiplier_lineConj_one_eq_neg
   by_cases hline : (rho : ℂ).re = 1 / 2
   · have hrefLine : ((xiZeroLineConjEquiv rho : XiDivisorSupport) : ℂ).re = 1 / 2 := by
       rw [xiZeroLineConjEquiv_apply]
-      simp [hline]
+      norm_num [hline]
     rw [xiExteriorCayleyAbelGreenMultiplier, xiExteriorCayleyAbelGreenMultiplier]
-    simp [xiHorizontalSourceCayleyPhase, sourceCayleyAbelGreenMultiplier,
+    norm_num [xiHorizontalSourceCayleyPhase, sourceCayleyAbelGreenMultiplier,
       GaloisForLFunctions.HTGeometry.realCayley, hline, hrefLine]
   · have href : ((xiZeroLineConjEquiv rho : XiDivisorSupport) : ℂ).re ≠ 1 / 2 := by
       rw [xiZeroLineConjEquiv_apply]
@@ -97,9 +97,8 @@ theorem adjacentCriticalFeatureEvaluationDet_lineConj_eq_neg
           (xiZeroLineConjEquiv rho)) =
       -adjacentCriticalFeatureEvaluationDet t (xiSpectralPointSupport rho)
         (abs_xiSpectralPointSupport_im_lt_half_exteriorCarrier rho) := by
-  rw [xiSpectralPointSupport_lineConj_boundaryClosure]
   rw [adjacentCriticalFeatureEvaluationDet, adjacentCriticalFeatureEvaluationDet]
-  ring
+  simp [xiSpectralPointSupport_lineConj_boundaryClosure]
 
 /-- Both sign reversals cancel: the boundary coefficient is reflection-invariant. -/
 theorem xiFixedAdjacentCayleyAbelCoefficient_lineConj_one_eq
@@ -185,7 +184,7 @@ theorem tendsto_xiFixedAdjacentPrimeCayleyExteriorDeterminant
     congr 1
     apply Finset.sum_congr rfl
     intro rho hrho
-    exact xiFixedAdjacent_reflectedProjectorTerm_eq_normSq t rho
+    exact (xiFixedAdjacent_reflectedProjectorTerm_eq_normSq t rho).symm
 
 /-- Complete fixed-center two-orientation exterior energy. -/
 def xiFixedCenterExteriorEnergy (t : ℝ) (rho : XiDivisorSupport) : ℝ :=

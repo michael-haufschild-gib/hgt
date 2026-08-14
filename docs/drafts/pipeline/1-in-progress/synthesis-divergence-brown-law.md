@@ -364,3 +364,54 @@ No Lean statement is written while (4) remains conjectural and corpus refactor
 is active. The first-entrance theorem is paper-proved only and queued for later
 formalization. A dependency-closed proof of (8) or (9) would open the final
 formalization gate.
+
+## 2026-08-13 concurrent correction and quenched replica target
+
+The free-word first-entrance potential above remains mathematically valid, but it is no longer the
+intrinsic preparation reporter for bounded-degree local hardware.  After quotienting exact swaps of
+support-disjoint gates, incomparable minimal causal prefixes can share a completion.  Their
+cylinders are not prefix-free: for independent letters `a,b`,
+
+\[
+ \uparrow a\cap\uparrow b=\uparrow(ab).
+\]
+
+The paper-proved successor `../2-fully-proven/concurrent-causal-heap-accessibility-law.md` replaces
+the word sum by the probability of the **union** of successful causal-prefix cylinders under the
+finite trace law `pi_z(T)=z^|T|/Z(z)`.  It proves exact cylinder mass `z^|u|`, exact recurrence value
+one, a relative-entropy preparation action, intrinsic bounded-dependence capacity, and a soft
+`1/delta`-Lipschitz reporter independent of Hilbert dimension and circuit count.  Thus equations
+`(9)--(11)` above remain sufficient free-word formulations but are superseded as the active
+bounded-degree target.
+
+The paper-proved child `../2-fully-proven/quenched-causal-replica-action-law.md` identifies the new
+growing-replica object.  With one common static Hamiltonian in every replica,
+
+\[
+ Z_r(t)=\mathbb E_H F_{A,z}(\Phi_H(t))^r,
+\]
+
+and exactly
+
+\[
+ -\log Z_r(t)
+ =\inf_{q\ll\rho_H}
+   \left\{D(q\Vert\rho_H)+r\,\mathbb E_qJ_{A,z}(\Phi_H(t))\right\}.
+\]
+
+Consequently, the replica estimate `Z_r<=z^(rs)e^(-kappa r)` is equivalent to one action gap for
+every tilted Hamiltonian law:
+
+\[
+ {1\over r}D(q\Vert\rho_H)+\mathbb E_qJ_{A,z}(\Phi_H(t))
+ \ge s\log(1/z)+\kappa.
+\]
+
+This retains source fibres, occupied endpoint image, causal sheet multiplicity, and the complete
+circuit union.  It also proves a hostile correction: growing replicas amortize a rare carrier's
+source cost as `D/r`, so they expose rather than suppress rare easy Hamiltonians.  Common recurrence
+mass is the exact nondecaying replica sector and is removed once; all remaining low-action carriers
+must still be classified quantitatively.  This action gap is the exact open core of the
+growing-replica route.  It is sufficient, not necessary, for a direct Brown lower-tail proof: a
+rare easy carrier can be harmless to the desired event probability yet dominate `Z_r`.  Lean
+remains read only during refactor.

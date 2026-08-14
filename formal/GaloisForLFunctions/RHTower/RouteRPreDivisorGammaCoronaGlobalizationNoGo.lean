@@ -25,7 +25,7 @@ namespace RHTower
 
 noncomputable section
 
-noncomputable local instance :
+noncomputable local instance routeRPreDivisorCrossPrimePacketDecidableEq :
     DecidableEq DeningerCalderonWittCrossPrimePacketIndex :=
   Classical.decEq _
 

@@ -42,7 +42,7 @@ theorem maynardMiddleHuxleyCountCostConstant_pos :
 theorem eventually_maynardWindowRelevantSelectedCell_middle_adjacent_count :
     ∀ᶠ T : ℝ in atTop,
       ∀ {L X K : ℕ} {mu N0 c alpha delta : ℝ},
-      4 / 3 ≤ mu → mu ≤ 19 / 9 →
+      4 / 3 ≤ mu → mu ≤ 8 →
       1 / 2 ≤ c → 19 / 25 ≤ alpha → alpha ≤ 997 / 1000 →
       0 < delta →
       ∀ (label : HeathBrownSelectionLabel L X 60),

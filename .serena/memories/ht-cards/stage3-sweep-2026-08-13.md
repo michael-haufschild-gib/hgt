@@ -1,55 +1,46 @@
-# ht/ folder stage-3 sweep (goal: formalize all 7 cards in 2-fully-proven/new_scientific_knowledge/ht)
+# HT stage-2 → stage-3 sweep (`2-fully-proven/new_scientific_knowledge/ht`)
 
-## Status 2026-08-13 (afternoon)
+State as of 2026-08-14.
 
-### Card 1 triptic-kummer — ✅ DONE, PROMOTED TO STAGE 3
-Six new modules, all built, all `[propext, Classical.choice, Quot.sound]`, wired into the
-HTGeometry umbrella, lint gate passed (`formal_tools.py lint` exit 0, indexes regenerated):
-`TripticMultiplicativeSourceClass`, `TripticSourceDivisorFinsupp`,
-`TripticGammaProductRealization`, `TripticKummerRootClassification`, `TripticSourceReciprocity`,
-`TripticSourceClassGroup`.
-Card git-mv'd to `3-formalized/new_scientific_knowledge/ht/` with Stage set to 3-formalized, a new
-companion `triptic-ht-kummer-content-root-classification-formalized.md` (module list + theorem
-chain + verification block), relative link fixed, Formalized-companion pointer added.
-Everything in the card is formal: divisor in ℤ[ℂ/H₃] (τ-invariance from germ constraint; finite
-class support by fundamental-parallelogram reduction), reciprocity D_σ=D_τ on the class, kernel =
-DA both directions (germ forms), gamma-product realization of every divisor, root theorem
-(charge + content forms) + uniqueness + exact max root order, germ-unit group packaging with
-`tripticSourceQuotientEquiv : M/ker D ≃+ ℤ[ℂ/H₃]` and verbatim abstract Kummer application.
-NOTE: another concurrent agent session repaired two of my modules mid-flight (lemma names/tactics)
-and prebuilt them — cooperative concurrency worked; check file mtimes before editing shared files.
+## PROMOTED
+- `nonautonomous-rational-first-order-tail-orbifold-law` (card 6) → `3-formalized`, with certificate.
+- `nonautonomous-isogeny-tail-time-splitting` (card 4) → `3-formalized`, with certificate.
+  Closed by the complex-torus column in every dimension — see
+  `mem:ht-cards/card4-complex-torus-stack-plan`.
 
-### Card 4 (nonautonomous-rational-first-order-tail-orbifold-law) — IN PROGRESS
-Plan in `mem:ht-cards/card4-complete-tail-plan`. Already built this session:
-`FreeDifferentialTranslationAutomorphism.lean` (u ↦ c + u differential automorphism of free
-C⟨u⟩; jets unchanged in positive degrees; adjunction invariance) — built, wired, axiom-clean.
-Next steps:
-1. `DerivativeTranslationFixedField.lean` — additive mirror of LogarithmicDerivativeFixedField:
-   C⟨u⟩ = C⟨u′⟩(u) (jets n≥1 lie in C⟨u′⟩ since jet(n+1)u = jet n (u′)); u transcendental over
-   C⟨u′⟩ (translation orbit c+u infinite, mirror transcendental_over_logDerivField);
-   invariant ⟹ ∈ C⟨u′⟩ via RatFunc translation transport + existing
-   `ratFuncTranslation_fixed_eq_constant` (RatFuncTranslationFixedField.lean; needs CharZero base
-   via charZero_of_injective_algebraMap); final `fixedField_translation_eq_derivField`.
-   NOTE ALSO: `FreeJetTranslationFixedField.lean` already proves the model-side version
-   (fixed field of depth-0 coordinate translations = tail-coordinate field) — check reuse before
-   writing; `ScalarAdditiveDifferentialTorsor.fixedField_zpowers_scalarDifferentialTranslation_one`
-   proves "unit translation fixes exactly F⟨q′⟩" via `scalarDerivativeField` — POSSIBLY ALREADY THE
-   WHOLE ADDITIVE LAYER: its carrier T with q hypertranscendental, hgen top. Verify whether that
-   theorem + rotation layer suffices without my new fixed-field module.
-2. Rotation layer: rank-1 instance of `fixedField_torusScaleRep_eq_torusInvariantMonomialField`
-   (TorusProtocolMonomialTail.lean) with S = ⟨ζ⟩ (ζ primitive n-th root, n ∈ {2,3,4,6}) on the
-   subfield C⟨u′⟩-as-field (plumbing via DifferentialSubfieldTransfer adjoinLift); simplify
-   C⟨v′/v, vⁿ⟩ = C⟨vⁿ⟩ via v′/v = (vⁿ)′/(n vⁿ).
-3. (2,2,∞): inversion w ↦ w⁻¹ via paletteEndo (independence of inverse palette via
-   `DifferentialIndependentTransfer.differentialIndependent_of_range_subset_closure`); acts by
-   ℓ ↦ −ℓ on ℓ = w′/w; rank-1 scaling machinery with S = {−1} gives C⟨ℓ²⟩;
-   `logDeriv_sq_eq_chebyshev_current` identifies downstairs.
-4. Protocol assembly per signature mirroring MultiplicativeProtocolLogCurrentTail /
-   TorusProtocolMonomialTail; then card-4 promotion (its §§1–3 already formal per card text).
+## STILL IN 2-fully-proven (4 cards)
 
-### Cards 2,3,5,6,7 — recon notes unchanged (see earlier sections of this memory’s history and
-`mem:ht-cards/card4-complete-tail-plan`): card 3 = abelian-variety degree data
-(AbelianVarietyIsogenyTail.lean conditional bridge exists); card 2 = canonical carrier +
-all-depth exact image (parent card in other/); card 6 = Pong/Andersson/Saksman–Webb (large formal
-Dirichlet DA layer exists: PrimeDirichletDifferentialField etc.); card 7 = Barnes (4)–(6) +
-Sibuya–Ramis (large Barnes layer exists: BarnesDoubleZeta*, BarnesKernelExpansion, NewtonPuiseux*).
+### `nonautonomous-rational-complete-tail-orbifold-classification` (card 5)
+Gate: "formalize fixed-field/groupoid descent and the global orbifold signature reduction".
+BOTH named items are now formal (2026-08-14):
+- `RationalPrefixDifferentialAdjoin.lean` — the §1 descent for an ARBITRARY rational map:
+  `derivationClosed_adjoin_of_ratMapEval`, `differentialAdjoin_le_adjoin_ratMapEval`,
+  `finrank_differentialAdjoin_ratMapEval_le` (`[L : K] ≤ deg P`),
+  `finiteDimensional_differentialAdjoin_ratMapEval`.  Generalises `RadicalDifferentialAdjoin`
+  (the `y ↦ y^N` case) via the chain rule `g′ = (u′/W)·Q(g)²`, `W = P′Q − PQ′`.
+- `RationalPrefixDeckDescent.lean` — `differentialAdjoin_ratMapEval_eq_fixedField`,
+  `finrank_differentialAdjoin_ratMapEval_eq_card`.
+- `NonautonomousCompleteTailOrbifoldLaw.lean` — `twelve_dvd_of_forall_holonomyOrder_dvd`
+  (12 is the LEAST universal charge), `completeTail_orbifold_reduction`,
+  `completeTail_frozen_charge`.
+**Residue, and the only one**: the Lie–Cartan/Casale classification of proper transitive rational
+differential groupoids on a curve into `G1/G2/G3`.  The card CITES it as a published parent; its two
+consumers are already formal.  Formalizing it means building transitive Lie pseudogroups and
+`D`-envelopes on a curve — absent from mathlib in any form.  DO NOT promote until that exists.
+
+### `hypertranscendental-pair-localization-noncompression` (card 2) — CLOSEST TO DONE
+Algebraic core formal (`PairFacePrivateSector`), order-one atomic parent corpus-owned
+(`EllipticGammaAtomicOverDAExtension`), `Ψ ∈ Q` proved (`EllipticGammaConeSource`,
+`ellipticGammaSource_mixed_difference`).
+Missing: the canonical carrier `F_e = ∏_{k∉e} Δ_{τ_k} Ψ_{d-1}`, its signatures (4) `S_e(F_e) ≠ 0`
+and (5) `S_f(F_e) = 0` for `f ≠ e`, and the resulting boundary-noncompression no-go.  The
+direct-sum private field additionally needs the exact-image parent, which belongs to the all-depth
+card, not this one.
+
+### `irrational-power-canonical-products-…-gevrey-slope-rigidity` (card 3)
+Open gate: "unconditional analytic Lean formalization".  Needs the Barnes expansion (4)–(6) and the
+Sibuya–Ramis exact Newton-slope theorem.
+
+### `helson-universal-ht-arbitrary-divisor-orthogonality` (card 1)
+Abstract layer formal; Pong's HYPOTHESIS discharged (`PrimeSupportNotFinitelyGenerated`).
+Missing: the CONCLUSIONS of Pong 5.9, Andersson Thm 5, Saksman–Webb/Seip.

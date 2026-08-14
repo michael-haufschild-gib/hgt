@@ -1036,20 +1036,194 @@ theorem fieldOneFiniteStageBruhatCorrelation_integral_additive_eq_multiplicative
         (fieldOneFiniteStageIdeleModuleInvDensity_continuous S).measurable]
     · apply integral_congr_ae
       exact MeasureTheory.ae_of_all _ fun u => by
+        let m : ℝ≥0 := fieldOneFiniteStageModule S u
+        have hm : m ≠ 0 := fieldOneFiniteStageModule_ne_zero S u
         change (fieldOneFiniteStageIdeleModuleInvDensity S u).toReal •
           ((fieldOneFiniteStageModule S u : ℂ) *
             H (fieldOneFiniteStageIdeleVal S u)) =
           H (fieldOneFiniteStageIdeleVal S u)
         rw [fieldOneFiniteStageIdeleModuleInvDensity, ENNReal.coe_toReal]
-        rw [Complex.real_smul]
-        have hcast :
-            (((fieldOneFiniteStageModule S u : ℝ≥0) : ℝ) : ℂ) =
-              (fieldOneFiniteStageModule S u : ℂ) := rfl
-        rw [← hcast]
-        rw [← mul_assoc, inv_mul_cancel₀]
-        exact_mod_cast fieldOneFiniteStageModule_ne_zero S u
+        change ((m⁻¹ : ℝ≥0) : ℝ) •
+            ((m : ℂ) * H (fieldOneFiniteStageIdeleVal S u)) =
+          H (fieldOneFiniteStageIdeleVal S u)
+        have hinner :
+            (m : ℂ) *
+                H (fieldOneFiniteStageIdeleVal S u) =
+              (m : ℝ) •
+                H (fieldOneFiniteStageIdeleVal S u) :=
+          Complex.real_smul.symm
+        rw [hinner, smul_smul]
+        have hnn : m⁻¹ * m = 1 := inv_mul_cancel₀ hm
+        have hcoef : ((m⁻¹ : ℝ≥0) : ℝ) * (m : ℝ) = 1 := by
+          calc
+            ((m⁻¹ : ℝ≥0) : ℝ) * (m : ℝ) =
+                ((m⁻¹ * m : ℝ≥0) : ℝ) := (NNReal.coe_mul _ _).symm
+            _ = ((1 : ℝ≥0) : ℝ) :=
+              congrArg (fun r : ℝ≥0 => (r : ℝ)) hnn
+            _ = 1 := rfl
+        rw [hcoef, one_smul]
     · exact MeasureTheory.ae_of_all _ fun _ => ENNReal.coe_lt_top
   exact hmap.trans hcancel.symm
+
+/-- Fundamental-domain unfolding of the phase-sensitive multiplicative
+integral.  The result is exactly the source inner product, multiplied by the
+positive Haar-normalization scalar. -/
+theorem fieldOneFiniteStageBruhatCorrelation_integral_multiplicative_eq_sourceInner
+    (S : Finset (HeightOneSpectrum ℤ))
+    (x y : FieldOneFiniteStageBruhatSchwartz S) :
+    (∫ u, fieldOneFiniteStageBruhatMultiplicativeCorrelationIntegrand S x y u
+        ∂fieldOneFiniteStageIdeleMultiplicativeFromAdditive S) =
+      ((haarScalarFactor
+        (fieldOneFiniteStageIdeleMultiplicativeFromAdditive S)
+        (fieldOneFiniteStageIdeleFundamentalHaarMeasure S) : ℝ) •
+        fieldOneFiniteStageBruhatSourceInner S x y) := by
+  let c : ℝ≥0 := haarScalarFactor
+    (fieldOneFiniteStageIdeleMultiplicativeFromAdditive S)
+    (fieldOneFiniteStageIdeleFundamentalHaarMeasure S)
+  let F := fieldOneFiniteStageBruhatMultiplicativeCorrelationIntegrand S x y
+  let e := (fieldOneFiniteStageIdeleImageFundamentalContinuousMulEquiv S).toHomeomorph.toMeasurableEquiv
+  have hc : 0 < c := fieldOneFiniteStageIdeleMultiplicative_fundamentalScalar_pos S
+  have hmeasure :
+      fieldOneFiniteStageIdeleMultiplicativeFromAdditive S =
+        (c : ℝ≥0∞) • fieldOneFiniteStageIdeleFundamentalHaarMeasure S := by
+    simpa [c] using
+      fieldOneFiniteStageIdeleMultiplicativeFromAdditive_eq_fundamentalHaar S
+  have hFmul : Integrable F
+      (fieldOneFiniteStageIdeleMultiplicativeFromAdditive S) := by
+    exact fieldOneFiniteStageBruhatMultiplicativeCorrelationIntegrand_integrable S x y
+  have hFfund : Integrable F
+      (fieldOneFiniteStageIdeleFundamentalHaarMeasure S) := by
+    rw [hmeasure] at hFmul
+    exact (integrable_smul_measure
+      (ENNReal.coe_ne_zero.2 hc.ne') ENNReal.coe_ne_top).1 hFmul
+  have hfundMap :
+      fieldOneFiniteStageIdeleFundamentalHaarMeasure S =
+        Measure.map e (fieldOneFiniteStageIdeleFundamentalProductMeasure S) := by
+    rfl
+  have hFprod : Integrable (F ∘ e)
+      (fieldOneFiniteStageIdeleFundamentalProductMeasure S) := by
+    rw [hfundMap] at hFfund
+    exact (integrable_map_equiv e F).1 hFfund
+  have hFprod' : Integrable (F ∘ e)
+      ((count : Measure (fieldOneFiniteStageSUnitImage S)).prod
+        (fieldOneFiniteStageSplitProductHaarMeasure S)) := by
+    simpa [fieldOneFiniteStageIdeleFundamentalProductMeasure] using hFprod
+  have hmapIntegral :
+      (∫ u, F u ∂fieldOneFiniteStageIdeleFundamentalHaarMeasure S) =
+        ∫ p, F (e p) ∂fieldOneFiniteStageIdeleFundamentalProductMeasure S := by
+    rw [hfundMap]
+    exact integral_map_equiv e F
+  have hcountIntegral :
+      (∫ p, F (e p) ∂fieldOneFiniteStageIdeleFundamentalProductMeasure S) =
+        ∫ z,
+          ∑' h : fieldOneFiniteStageSUnitImage S,
+            F (h.1 * fieldOneFiniteStageIdeleFundamentalSection S z)
+          ∂fieldOneFiniteStageSplitProductHaarMeasure S := by
+    rw [fieldOneFiniteStageIdeleFundamentalProductMeasure]
+    calc
+      (∫ p, F (e p)
+          ∂(count : Measure (fieldOneFiniteStageSUnitImage S)).prod
+            (fieldOneFiniteStageSplitProductHaarMeasure S)) =
+          ∫ z, ∫ h, F (e (h, z)) ∂(count : Measure
+              (fieldOneFiniteStageSUnitImage S))
+            ∂fieldOneFiniteStageSplitProductHaarMeasure S :=
+        integral_prod_symm _ hFprod'
+      _ = ∫ z,
+          ∑' h : fieldOneFiniteStageSUnitImage S,
+            F (h.1 * fieldOneFiniteStageIdeleFundamentalSection S z)
+          ∂fieldOneFiniteStageSplitProductHaarMeasure S := by
+        apply integral_congr_ae
+        filter_upwards [hFprod'.prod_left_ae] with z hz
+        have hz' : Integrable (fun h => F (e (h, z))) count := by
+          simpa only [Function.comp_apply] using hz
+        rw [MeasureTheory.integral_countable hz']
+        apply tsum_congr
+        intro h
+        rw [MeasureTheory.count_real_singleton, one_smul]
+        rfl
+  have hpoint (z : FieldOneFiniteStageModuleOneClass S × ℝ≥0ˣ) :
+      (∑' h : fieldOneFiniteStageSUnitImage S,
+        F (h.1 * fieldOneFiniteStageIdeleFundamentalSection S z)) =
+        star (fieldOneFiniteStageBruhatSplitHalfDensityDirect S x z) *
+          fieldOneFiniteStageBruhatSplitHalfDensityDirect S y z := by
+    change (∑' h : fieldOneFiniteStageSUnitImage S,
+      (fieldOneFiniteStageModule S
+        (h.1 * fieldOneFiniteStageIdeleFundamentalSection S z) : ℂ) *
+        (∑' gamma : fieldOneSUnitSubgroup S,
+          star (fieldOneFiniteStageBruhatEval S x
+            (fieldOneFiniteStageIdeleVal S
+              (h.1 * fieldOneFiniteStageIdeleFundamentalSection S z))) *
+          fieldOneFiniteStageBruhatThetaEval S gamma y
+            (fieldOneFiniteStageIdeleVal S
+              (h.1 * fieldOneFiniteStageIdeleFundamentalSection S z)))) = _
+    simp_rw [fieldOneFiniteStageBruhatEval_val,
+      fieldOneFiniteStageBruhatThetaEval_val]
+    calc
+      (∑' h : fieldOneFiniteStageSUnitImage S,
+          (fieldOneFiniteStageModule S
+            (h.1 * fieldOneFiniteStageIdeleFundamentalSection S z) : ℂ) *
+            ∑' gamma : fieldOneSUnitSubgroup S,
+              star (fieldOneFiniteStageBruhatOrbit S x
+                (h.1 * fieldOneFiniteStageIdeleFundamentalSection S z) 1) *
+              fieldOneFiniteStageBruhatOrbit S y
+                (h.1 * fieldOneFiniteStageIdeleFundamentalSection S z) gamma⁻¹) =
+          ∑' h : fieldOneFiniteStageSUnitImage S,
+            ∑' gamma : fieldOneSUnitSubgroup S,
+              (fieldOneFiniteStageModule S
+                (h.1 * fieldOneFiniteStageIdeleFundamentalSection S z) : ℂ) *
+                (star (fieldOneFiniteStageBruhatOrbit S x
+                  (h.1 * fieldOneFiniteStageIdeleFundamentalSection S z) 1) *
+                fieldOneFiniteStageBruhatOrbit S y
+                  (h.1 * fieldOneFiniteStageIdeleFundamentalSection S z) gamma⁻¹) := by
+        apply tsum_congr
+        intro h
+        exact tsum_mul_left.symm
+      _ = _ := fieldOneFiniteStageBruhatOrbit_complex_double_tsum S x y z
+  have hproductSource :
+      (∫ p, F (e p) ∂fieldOneFiniteStageIdeleFundamentalProductMeasure S) =
+        fieldOneFiniteStageBruhatSourceInner S x y := by
+    rw [hcountIntegral, fieldOneFiniteStageBruhatSourceInner]
+    apply integral_congr_ae
+    exact MeasureTheory.ae_of_all _ fun z => by
+      change (∑' h : fieldOneFiniteStageSUnitImage S,
+          F (h.1 * fieldOneFiniteStageIdeleFundamentalSection S z)) =
+        star (fieldOneFiniteStageBruhatSplitHalfDensity S x z) *
+          fieldOneFiniteStageBruhatSplitHalfDensity S y z
+      rw [hpoint z, fieldOneFiniteStageBruhatSplitHalfDensityDirect_eq S x,
+        fieldOneFiniteStageBruhatSplitHalfDensityDirect_eq S y]
+  calc
+    (∫ u, F u ∂fieldOneFiniteStageIdeleMultiplicativeFromAdditive S) =
+        ∫ u, F u ∂((c : ℝ≥0∞) •
+          fieldOneFiniteStageIdeleFundamentalHaarMeasure S) := by rw [hmeasure]
+    _ = ((c : ℝ≥0∞).toReal) •
+        ∫ u, F u ∂fieldOneFiniteStageIdeleFundamentalHaarMeasure S :=
+      integral_smul_measure F (c : ℝ≥0∞)
+    _ = (c : ℝ) • fieldOneFiniteStageBruhatSourceInner S x y := by
+      rw [hmapIntegral, hproductSource]
+      change (c : ℝ) • fieldOneFiniteStageBruhatSourceInner S x y =
+        (c : ℝ) • fieldOneFiniteStageBruhatSourceInner S x y
+      rfl
+    _ = ((haarScalarFactor
+        (fieldOneFiniteStageIdeleMultiplicativeFromAdditive S)
+        (fieldOneFiniteStageIdeleFundamentalHaarMeasure S) : ℝ) •
+          fieldOneFiniteStageBruhatSourceInner S x y) := by
+      rfl
+
+/-- Connes--Marcolli Lemma 2.32, exact finite-stage form: the literal source
+correlation series is absolutely convergent and equals the source inner
+product with the unique positive Haar-normalization scalar. -/
+theorem fieldOneFiniteStage_connesMarcolli_lemma_2_32
+    (S : Finset (HeightOneSpectrum ℤ))
+    (x y : FieldOneFiniteStageBruhatSchwartz S) :
+    (∑' gamma : fieldOneSUnitSubgroup S,
+      fieldOneFiniteStageBruhatAdditiveCorrelation S x y gamma) =
+      ((haarScalarFactor
+        (fieldOneFiniteStageIdeleMultiplicativeFromAdditive S)
+        (fieldOneFiniteStageIdeleFundamentalHaarMeasure S) : ℝ) •
+        fieldOneFiniteStageBruhatSourceInner S x y) := by
+  rw [fieldOneFiniteStageBruhatAdditiveCorrelation_tsum_eq_integral_series,
+    fieldOneFiniteStageBruhatCorrelation_integral_additive_eq_multiplicative,
+    fieldOneFiniteStageBruhatCorrelation_integral_multiplicative_eq_sourceInner]
 
 end
 

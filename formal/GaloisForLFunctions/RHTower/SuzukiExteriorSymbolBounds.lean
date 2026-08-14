@@ -49,14 +49,15 @@ theorem suzukiArchPoint_conj (ξ : ℝ) :
   ring
 
 /-- The logarithmic frequency weight `L(ξ) = log ⟨ξ⟩`. -/
-def suzukiLogWeight (ξ : ℝ) : ℝ := (1 / 2) * Real.log (1 + ξ ^ 2)
+def suzukiExteriorLogWeight (ξ : ℝ) : ℝ := (1 / 2) * Real.log (1 + ξ ^ 2)
 
-theorem suzukiLogWeight_neg (ξ : ℝ) : suzukiLogWeight (-ξ) = suzukiLogWeight ξ := by
-  simp [suzukiLogWeight]
+theorem suzukiExteriorLogWeight_neg (ξ : ℝ) :
+    suzukiExteriorLogWeight (-ξ) = suzukiExteriorLogWeight ξ := by
+  simp [suzukiExteriorLogWeight]
 
 /-- The archimedean part of the normalized symbol remainder. -/
 def suzukiArchRemainder (ξ : ℝ) : ℝ :=
-  (Complex.digamma (suzukiArchPoint ξ)).re - suzukiLogWeight ξ - Real.log Real.pi
+  (Complex.digamma (suzukiArchPoint ξ)).re - suzukiExteriorLogWeight ξ - Real.log Real.pi
 
 theorem continuous_suzukiArchRemainder : Continuous suzukiArchRemainder := by
   have hdig : Continuous fun ξ : ℝ => Complex.digamma (suzukiArchPoint ξ) := by
@@ -66,8 +67,8 @@ theorem continuous_suzukiArchRemainder : Continuous suzukiArchRemainder := by
       simp [suzukiArchPoint_re]
     exact (continuousOn_digamma_rePos.continuousAt (isOpen_rePos.mem_nhds hre)).comp
       continuous_suzukiArchPoint.continuousAt
-  have hlog : Continuous suzukiLogWeight := by
-    unfold suzukiLogWeight
+  have hlog : Continuous suzukiExteriorLogWeight := by
+    unfold suzukiExteriorLogWeight
     have : ∀ ξ : ℝ, (0:ℝ) < 1 + ξ ^ 2 := fun ξ => by positivity
     fun_prop (disch := intro ξ; positivity)
   unfold suzukiArchRemainder
@@ -76,19 +77,20 @@ theorem continuous_suzukiArchRemainder : Continuous suzukiArchRemainder := by
 /-- The archimedean remainder is even. -/
 theorem suzukiArchRemainder_neg (ξ : ℝ) : suzukiArchRemainder (-ξ) = suzukiArchRemainder ξ := by
   unfold suzukiArchRemainder
-  rw [suzukiLogWeight_neg]
+  rw [suzukiExteriorLogWeight_neg]
   congr 2
   rw [← suzukiArchPoint_conj ξ, ReflectedDigammaAnomaly.digamma_conj]
   simp
 
 /-- The logarithmic gap between the vertical asymptote and the frequency weight is bounded. -/
 theorem abs_log_half_sub_logWeight_le {ξ : ℝ} (hξ : 2 ≤ ξ) :
-    |Real.log (ξ / 2) - suzukiLogWeight ξ| ≤ Real.log 2 + Real.log 2 / 2 := by
+    |Real.log (ξ / 2) - suzukiExteriorLogWeight ξ| ≤ Real.log 2 + Real.log 2 / 2 := by
   have hξpos : (0:ℝ) < ξ := by linarith
   have h1 : Real.log (ξ / 2) = Real.log ξ - Real.log 2 := by
     rw [Real.log_div (ne_of_gt hξpos) (by norm_num)]
-  have hsq : suzukiLogWeight ξ - Real.log ξ = (1 / 2) * Real.log ((1 + ξ ^ 2) / ξ ^ 2) := by
-    rw [suzukiLogWeight, Real.log_div (by positivity) (by positivity), Real.log_pow]
+  have hsq : suzukiExteriorLogWeight ξ - Real.log ξ =
+      (1 / 2) * Real.log ((1 + ξ ^ 2) / ξ ^ 2) := by
+    rw [suzukiExteriorLogWeight, Real.log_div (by positivity) (by positivity), Real.log_pow]
     push_cast
     ring
   have hratio_le : (1 + ξ ^ 2) / ξ ^ 2 ≤ 2 := by
@@ -150,7 +152,7 @@ theorem exists_bound_suzukiArchRemainder :
         have hgap := abs_log_half_sub_logWeight_le hη
         have hsplit : suzukiArchRemainder η
             = ((Complex.digamma (suzukiArchPoint η)).re - Real.log (η / 2))
-              + (Real.log (η / 2) - suzukiLogWeight η) - Real.log Real.pi := by
+              + (Real.log (η / 2) - suzukiExteriorLogWeight η) - Real.log Real.pi := by
           unfold suzukiArchRemainder
           ring
         rw [hsplit]

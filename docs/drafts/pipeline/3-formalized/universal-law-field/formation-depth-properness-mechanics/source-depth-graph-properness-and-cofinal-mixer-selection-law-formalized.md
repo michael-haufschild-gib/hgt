@@ -4,10 +4,12 @@
 - **Stage:** 3 — formalized in Lean 4
 - **Paper parent:**
   `docs/drafts/pipeline/2-fully-proven/universal-law-field/formation-depth-properness-mechanics/source-depth-graph-properness-and-cofinal-mixer-selection-law.md`
-- **Lean module:**
-  `GaloisForLFunctions.HTGeometry.ConstitutiveFormationDepthProperness`
+- **Lean modules:**
+  `GaloisForLFunctions.HTGeometry.ConstitutiveFormationDepthProperness` and
+  `GaloisForLFunctions.HTGeometry.ConstitutiveFormationDepthCompactness`
 - **Umbrella:** `GaloisForLFunctions.HTGeometry.UniversalLawField`
-- **Status:** `[LEAN-FORMALIZED] [GLOBAL PROPERNESS] [COFINAL MIXER] [NO SORRY] [NOT RH]`
+- **Status:** `[LEAN-FORMALIZED FULL] [CLOSED GRAPH] [COMPACT SUBLEVELS] [GLOBAL PROPERNESS]`
+  `[COFINAL MIXER] [NO SORRY] [NOT RH]`
 
 ## Certified theorem surface
 
@@ -26,10 +28,30 @@ cofinal tails. It proves:
 7. `tendsto_completeResolution_boundary_zero`: terminal finite-aperture flux vanishes;
 8. `summable_completeResolutionDeficit`: the accumulated reciprocal-zeta deficit is absolutely
    summable;
-9. `hasSum_completeResolutionDeficit_eq_weighted`: infinite formation-generation conservation.
+9. `hasSum_completeResolutionDeficit_eq_weighted`: infinite formation-generation conservation;
+10. `isClosed_formationDepthGraph`: the literal depth-generator graph in `ell^1 × ell^1` is
+    closed;
+11. `mem_formationLpGaugeSublevel_iff_forall_finiteGauge` and
+    `formationLpGaugeSublevel_eq_iInter`: exact graph-gauge sublevels are intersections of
+    continuous finite-aperture inequalities;
+12. `isClosed_formationLpGaugeSublevel` and
+    `lowerSemicontinuous_formationDepthDomainGauge`: exact lower semicontinuity in the ambient and
+    induced graph-domain topologies;
+13. `norm_sub_formationTruncation_eq_tail`,
+    `norm_le_of_mem_formationLpGaugeSublevel`, and
+    `formationTail_le_of_mem_formationLpGaugeSublevel`: exact finite-head error plus uniform norm
+    and sharp tail control on every sublevel;
+14. `totallyBounded_formationLpGaugeSublevel`, `isCompact_formationLpGaugeSublevel`, and
+    `isCompact_formationDepthDomainGaugeSublevel`: full relative compactness, ambient closedness,
+    and compactness clauses;
+15. `iUnion_formationDepthDomainGaugeSublevel`: natural-number sublevels exhaust the graph domain;
+16. `formationDepthCompactProperness_capstone`: bundled closed-graph, lower-semicontinuity,
+    compact-sublevel, and exhaustion theorem.
 
 All results use existing mathlib and repository theorems only. No `sorry`, `admit`, added axiom,
-`opaque`, `unsafe`, or numerical computation is used.
+`opaque`, `unsafe`, `decide`, `native_decide`, `norm_num`, or `omega` occurs in the new compactness
+module. Direct source elaboration, targeted module build, and umbrella elaboration pass. Audited
+capstones depend only on `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Remaining selection gate
 

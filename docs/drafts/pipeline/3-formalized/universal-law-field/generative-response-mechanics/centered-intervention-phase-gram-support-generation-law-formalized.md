@@ -2,7 +2,7 @@
 
 - **ID:** ULF-GRM-1
 - **Paper card:**
-  `docs/drafts/pipeline/2-fully-proven/universal-law-field/generative-response-mechanics/centered-intervention-phase-gram-support-generation-law.md`
+  `docs/drafts/pipeline/3-formalized/universal-law-field/generative-response-mechanics/centered-intervention-phase-gram-support-generation-law.md`
 - **Lean module:** `GaloisForLFunctions.HTGeometry.GenerativeResponseFusion`
 - **Umbrella:** `GaloisForLFunctions.HTGeometry.UniversalLawField`
 - **Status:** [LEAN-CERTIFIED] [NO PROJECT AXIOMS] [FOUR-ORGAN FUSION] [NOT RH]
@@ -25,8 +25,9 @@ of the zeroth phase moment plus nonnegative first response for every positive Gr
 Every negative crossing therefore exposes an absent source atom with negative tangent coefficient.
 
 The unconditional `generativeResponse_full_capstone` packages Hankel generation, support-birth
-matrix equality, newborn-span rank, leverage conservation, log-determinant differentiation, and
-the diagonal simple-null determinant law in one closed declaration.
+matrix equality, newborn-span rank, leverage conservation, log-determinant differentiation, the
+diagonal law, and the coordinate-free positive corank-one determinant orientation in one closed
+declaration.
 
 ## Certified declarations
 
@@ -40,6 +41,12 @@ the diagonal simple-null determinant law in one closed declaration.
 - `hankelNull_generation`;
 - `hasDerivAt_det_perturbedNormalizedGramMatrix_of_adjugate_certificate`;
 - `hasDerivAt_det_perturbedNormalizedGramMatrix_diagonal_simple_null`;
+- `positivePseudodeterminant` and
+  `exists_uniqueZero_adjugate_eq_pseudodeterminant_eigenvector`;
+- `adjugate_eq_positivePseudodeterminant_smul_nullVector`;
+- `normalizedGramMatrix_posSemidef` and
+  `positivePseudodeterminant_normalizedGramMatrix_pos`;
+- `hasDerivAt_det_perturbedNormalizedGramMatrix_positive_corank_one`;
 - `generativeTangent_iff_universalNullResponse`;
 - `legalCenteredTangent_iff_phaseConservation_and_universalNullResponse`;
 - `negativeNullResponse_forces_negative_birth` and `generativeSelection_capstone`;
@@ -47,10 +54,11 @@ the diagonal simple-null determinant law in one closed declaration.
 
 ## Formal boundary
 
-The coordinate-free paper theorem for an arbitrary positive corank-one Gram face reduces by the
-spectral theorem to the certified diagonal gauge. Lean separately certifies an arbitrary adjugate
-rank-one certificate and the full diagonal simple-null formula, but does not yet contain a single
-declaration performing that final spectral reduction. No RH selection theorem is claimed.
+Lean now performs the full coordinate-free spectral reduction: positive semidefiniteness and rank
+`d - 1` force one zero eigenline, all complementary eigenvalues are positive, orthogonal
+conjugation transports the diagonal adjugate, and any unit kernel generator yields
+`adj(G₀) = det₊(G₀) aaᵀ`. The exact `(GRM.13)` determinant derivative follows with strictly positive
+pseudodeterminant coefficient. No RH selection theorem is claimed.
 
 ## Verification
 
@@ -58,12 +66,14 @@ Foreground checks:
 
 ```text
 lake env lean GaloisForLFunctions/HTGeometry/GenerativeResponseFusion.lean
-lake build GaloisForLFunctions.HTGeometry.UniversalLawField
+lake build GaloisForLFunctions.HTGeometry.GenerativeResponseFusion
+lake env lean GaloisForLFunctions/HTGeometry/UniversalLawField.lean
 ```
 
-The final umbrella build passes 11,608 jobs. A `/tmp` axiom audit of all load-bearing declarations
-and the full capstone reports only `propext`, `Classical.choice`, and `Quot.sound`. The module uses
-no `sorry`, `admit`, custom `axiom`, `opaque`, `unsafe`, or computation certificate.
+The targeted module build passes 8,665 jobs. A `/tmp` axiom audit of the spectral, adjugate,
+pseudodeterminant, coordinate-free derivative declarations and full capstone reports only
+`propext`, `Classical.choice`, and `Quot.sound`. The module uses no `sorry`, `admit`, custom
+`axiom`, `opaque`, `unsafe`, or computation certificate.
 
 Repository lint reaches this module without a target error. Its global nonzero exit is caused by
 six unrelated unwired `RHTower` modules and stale generated `LEAN_API.md`, `LEAN_GAPS.md`, and

@@ -652,6 +652,275 @@ theorem hasDerivAt_det_perturbedNormalizedGramMatrix_diagonal_simple_null
   rw [hentry, dotProduct_gramResponseMatrix_mulVec_eq,
     positiveNullFace_generation hZ hw hnull]
 
+private theorem adjugate_unitary_real
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (U : Matrix.unitaryGroup ι ℝ) :
+    (U : Matrix ι ι ℝ).adjugate =
+      (U : Matrix ι ι ℝ).det • star (U : Matrix ι ι ℝ) := by
+  calc
+    (U : Matrix ι ι ℝ).adjugate =
+        (1 : Matrix ι ι ℝ) * (U : Matrix ι ι ℝ).adjugate := by rw [Matrix.one_mul]
+    _ = (star (U : Matrix ι ι ℝ) * (U : Matrix ι ι ℝ)) *
+          (U : Matrix ι ι ℝ).adjugate := by
+      rw [Unitary.coe_star_mul_self]
+    _ = star (U : Matrix ι ι ℝ) *
+          ((U : Matrix ι ι ℝ) * (U : Matrix ι ι ℝ).adjugate) := by
+      rw [Matrix.mul_assoc]
+    _ = star (U : Matrix ι ι ℝ) *
+          ((U : Matrix ι ι ℝ).det • (1 : Matrix ι ι ℝ)) := by
+      rw [Matrix.mul_adjugate]
+    _ = (U : Matrix ι ι ℝ).det • star (U : Matrix ι ι ℝ) := by
+      rw [Matrix.mul_smul, Matrix.mul_one]
+
+private theorem adjugate_unitary_conjugate_real
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (U : Matrix.unitaryGroup ι ℝ) (D : Matrix ι ι ℝ) :
+    ((U : Matrix ι ι ℝ) * D * star (U : Matrix ι ι ℝ)).adjugate =
+      (U : Matrix ι ι ℝ) * D.adjugate * star (U : Matrix ι ι ℝ) := by
+  have hdet :
+      (star (U : Matrix ι ι ℝ)).det * (U : Matrix ι ι ℝ).det = 1 := by
+    simpa only [Matrix.det_mul, Matrix.det_one] using
+      congrArg Matrix.det (Unitary.coe_star_mul_self U)
+  rw [Matrix.adjugate_mul_distrib, Matrix.adjugate_mul_distrib,
+    adjugate_unitary_real]
+  have hstar : star (U : Matrix ι ι ℝ) = (star U : Matrix.unitaryGroup ι ℝ) := rfl
+  have hdet' :
+      (U : Matrix ι ι ℝ).det * (star U : Matrix ι ι ℝ).det = 1 := by
+    rw [mul_comm]
+    simpa only [← hstar] using hdet
+  rw [hstar, adjugate_unitary_real]
+  rw [Matrix.mul_smul, Matrix.mul_smul, Matrix.smul_mul, smul_smul]
+  rw [← hstar, star_star, hdet', one_smul, Matrix.mul_assoc]
+
+/-- Product of the positive eigenvalues of a positive semidefinite matrix. -/
+noncomputable def positivePseudodeterminant
+    {A : Matrix (Fin d) (Fin d) ℝ} (hA : A.PosSemidef) : ℝ :=
+  ∏ i ∈ Finset.univ.filter (fun i => 0 < hA.isHermitian.eigenvalues i),
+    hA.isHermitian.eigenvalues i
+
+private theorem adjugate_diagonal_unique_zero
+    (e : Fin d → ℝ) (x : Fin d) (hx : e x = 0) :
+    (Matrix.diagonal e).adjugate =
+      (∏ j ∈ Finset.univ.erase x, e j) •
+        Matrix.vecMulVec (coordinateCovector x) (coordinateCovector x) := by
+  rw [Matrix.adjugate_diagonal]
+  ext i j
+  by_cases hi : i = x
+  · subst i
+    by_cases hj : j = x
+    · subst j
+      simp [Matrix.vecMulVec_apply, coordinateCovector]
+    · rw [Matrix.diagonal_apply_ne _ (Ne.symm hj)]
+      simp [Matrix.vecMulVec_apply, coordinateCovector, hj]
+  · have hprod : ∏ k ∈ Finset.univ.erase i, e k = 0 := by
+      apply Finset.prod_eq_zero (Finset.mem_erase.mpr ⟨Ne.symm hi, Finset.mem_univ x⟩)
+      exact hx
+    simp [Matrix.diagonal_apply, Matrix.vecMulVec_apply, coordinateCovector, hi, hprod]
+
+/-- Spectral adjugate law at a positive corank-one face. The selected eigenline is the unique
+zero eigenline, every other eigenvalue is positive, and its cofactor is the positive
+pseudodeterminant. -/
+theorem exists_uniqueZero_adjugate_eq_pseudodeterminant_eigenvector
+    (A : Matrix (Fin d) (Fin d) ℝ) (hA : A.PosSemidef)
+    (hd : 0 < d) (hrank : A.rank = d - 1) :
+    ∃ x : Fin d,
+      hA.isHermitian.eigenvalues x = 0 ∧
+      (∀ j, j ≠ x → 0 < hA.isHermitian.eigenvalues j) ∧
+      0 < positivePseudodeterminant hA ∧
+      A.adjugate = positivePseudodeterminant hA •
+        Matrix.vecMulVec
+          (hA.isHermitian.eigenvectorBasis x).ofLp
+          (hA.isHermitian.eigenvectorBasis x).ofLp := by
+  classical
+  let e : Fin d → ℝ := hA.isHermitian.eigenvalues
+  let live : Finset (Fin d) := Finset.univ.filter (fun i => e i ≠ 0)
+  let dead : Finset (Fin d) := Finset.univ.filter (fun i => ¬ e i ≠ 0)
+  have hlive : live.card = d - 1 := by
+    calc
+      live.card = Fintype.card {i : Fin d // e i ≠ 0} := by
+        rw [Fintype.card_subtype]
+      _ = A.rank := by
+        simpa only [e] using hA.isHermitian.rank_eq_card_non_zero_eigs.symm
+      _ = d - 1 := hrank
+  have hpartition : live.card + dead.card = d := by
+    simpa only [live, dead, Fintype.card_fin, Finset.card_univ] using
+      (Finset.card_filter_add_card_filter_not
+        (s := (Finset.univ : Finset (Fin d))) (p := fun i => e i ≠ 0))
+  have hdead : dead.card = 1 := by
+    have hsub : d - 1 + 1 = d := Nat.sub_add_cancel hd
+    rw [hlive] at hpartition
+    exact Nat.add_left_cancel (hpartition.trans hsub.symm)
+  obtain ⟨x, hxdead⟩ := Finset.card_eq_one.mp hdead
+  have hx : e x = 0 := by
+    have hxmem : x ∈ dead := by rw [hxdead]; simp
+    simpa [dead] using hxmem
+  have hunique : ∀ j, j ≠ x → e j ≠ 0 := by
+    intro j hj hzero
+    have hjmem : j ∈ dead := by simp [dead, hzero]
+    rw [hxdead] at hjmem
+    exact hj (Finset.mem_singleton.mp hjmem)
+  have hpositiveFilter :
+      Finset.univ.filter (fun i => 0 < e i) = Finset.univ.erase x := by
+    ext i
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_erase]
+    constructor
+    · intro hi
+      exact ⟨by rintro rfl; rw [hx] at hi; linarith, trivial⟩
+    · rintro ⟨hix, -⟩
+      exact lt_of_le_of_ne (hA.eigenvalues_nonneg i) (Ne.symm (hunique i hix))
+  have hpseudo :
+      positivePseudodeterminant hA = ∏ j ∈ Finset.univ.erase x, e j := by
+    unfold positivePseudodeterminant
+    simpa only [e] using congrArg
+      (fun s : Finset (Fin d) => ∏ j ∈ s, e j) hpositiveFilter
+  have hpositive : ∀ j, j ≠ x → 0 < e j := by
+    intro j hj
+    exact lt_of_le_of_ne (hA.eigenvalues_nonneg j) (Ne.symm (hunique j hj))
+  have hpseudoPos : 0 < positivePseudodeterminant hA := by
+    rw [hpseudo]
+    exact Finset.prod_pos fun j hj => hpositive j (Finset.ne_of_mem_erase hj)
+  have hdiag := adjugate_diagonal_unique_zero e x hx
+  let U := hA.isHermitian.eigenvectorUnitary
+  have hcoord : coordinateCovector x = Pi.single x 1 := by
+    funext j
+    simp [coordinateCovector, Pi.single_apply, eq_comm]
+  have hcol :
+      (U : Matrix (Fin d) (Fin d) ℝ) *ᵥ coordinateCovector x =
+        (hA.isHermitian.eigenvectorBasis x).ofLp := by
+    rw [hcoord]
+    exact hA.isHermitian.eigenvectorUnitary_mulVec x
+  have hrow :
+      coordinateCovector x ᵥ* star (U : Matrix (Fin d) (Fin d) ℝ) =
+        (hA.isHermitian.eigenvectorBasis x).ofLp := by
+    have hstar : star (U : Matrix (Fin d) (Fin d) ℝ) =
+        (U : Matrix (Fin d) (Fin d) ℝ)ᵀ := by
+      ext i j
+      simp
+    rw [hstar, Matrix.vecMul_transpose, hcol]
+  have hspec :
+      A = (U : Matrix (Fin d) (Fin d) ℝ) * Matrix.diagonal e *
+        star (U : Matrix (Fin d) (Fin d) ℝ) := by
+    simpa [U, e, Unitary.conjStarAlgAut_apply] using
+      hA.isHermitian.spectral_theorem
+  refine ⟨x, ?_, ?_, hpseudoPos, ?_⟩
+  · exact hx
+  · exact hpositive
+  · calc
+      A.adjugate =
+          ((U : Matrix (Fin d) (Fin d) ℝ) * Matrix.diagonal e *
+            star (U : Matrix (Fin d) (Fin d) ℝ)).adjugate :=
+        congrArg Matrix.adjugate hspec
+      _ = (U : Matrix (Fin d) (Fin d) ℝ) *
+          (Matrix.diagonal e).adjugate * star (U : Matrix (Fin d) (Fin d) ℝ) :=
+        adjugate_unitary_conjugate_real U (Matrix.diagonal e)
+      _ = positivePseudodeterminant hA •
+          Matrix.vecMulVec
+            (hA.isHermitian.eigenvectorBasis x).ofLp
+            (hA.isHermitian.eigenvectorBasis x).ofLp := by
+        rw [hdiag, Matrix.mul_smul, Matrix.smul_mul, Matrix.mul_vecMulVec,
+          Matrix.vecMulVec_mul, hcol, hrow, hpseudo]
+
+/-- Coordinate-free corank-one adjugate law for any chosen unit generator of the kernel. -/
+theorem adjugate_eq_positivePseudodeterminant_smul_nullVector
+    (A : Matrix (Fin d) (Fin d) ℝ) (hA : A.PosSemidef)
+    (hd : 0 < d) (hrank : A.rank = d - 1)
+    (a : Fin d → ℝ) (haunit : a ⬝ᵥ a = 1)
+    (hker : ∀ v : Fin d → ℝ,
+      A.mulVec v = 0 ↔ ∃ c : ℝ, v = c • a) :
+    A.adjugate = positivePseudodeterminant hA • Matrix.vecMulVec a a := by
+  classical
+  obtain ⟨x, hx, -, -, hadj⟩ :=
+    exists_uniqueZero_adjugate_eq_pseudodeterminant_eigenvector A hA hd hrank
+  let b : Fin d → ℝ := (hA.isHermitian.eigenvectorBasis x).ofLp
+  have hbzero : A.mulVec b = 0 := by
+    simpa only [b, hx, zero_smul] using hA.isHermitian.mulVec_eigenvectorBasis x
+  obtain ⟨c, hc⟩ := (hker b).mp hbzero
+  have hbnorm : b ⬝ᵥ b = 1 := by
+    have hinner :=
+      (orthonormal_iff_ite.mp hA.isHermitian.eigenvectorBasis.orthonormal x x)
+    rw [EuclideanSpace.inner_eq_star_dotProduct] at hinner
+    simpa only [b, if_pos, star_trivial] using hinner
+  have hcsq : c * c = 1 := by
+    rw [hc, smul_dotProduct, dotProduct_smul, haunit] at hbnorm
+    simpa only [smul_eq_mul, mul_one] using hbnorm
+  have hbvec : Matrix.vecMulVec b b = Matrix.vecMulVec a a := by
+    rw [hc]
+    ext i j
+    simp only [Matrix.vecMulVec_apply, Pi.smul_apply, smul_eq_mul]
+    calc
+      (c * a i) * (c * a j) = (c * c) * (a i * a j) := by ring
+      _ = a i * a j := by rw [hcsq, one_mul]
+  simpa only [b, hbvec] using hadj
+
+/-- A normalized finite Gram matrix with nonnegative source weights is positive semidefinite. -/
+theorem normalizedGramMatrix_posSemidef
+    (w : Fin n → ℝ) (φ : Fin n → Fin d → ℝ)
+    (hZ : 0 < interventionTotal w) (hw : ∀ x, 0 ≤ w x) :
+    (normalizedGramMatrix w φ).PosSemidef := by
+  classical
+  unfold normalizedGramMatrix
+  apply Matrix.posSemidef_sum Finset.univ
+  intro x _
+  have hvec : (Matrix.vecMulVec (φ x) (φ x)).PosSemidef := by
+    simpa only [star_trivial] using Matrix.posSemidef_vecMulVec_self_star (φ x)
+  exact hvec.smul (div_nonneg (hw x) hZ.le)
+
+/-- The normalized Gram quadratic is exactly the normalized source energy. -/
+theorem dotProduct_normalizedGramMatrix_mulVec_eq
+    (w : Fin n → ℝ) (φ : Fin n → Fin d → ℝ) (a : Fin d → ℝ) :
+    a ⬝ᵥ (normalizedGramMatrix w φ).mulVec a = normalizedGramEnergy w φ a := by
+  classical
+  unfold normalizedGramMatrix normalizedGramEnergy featureOverlap
+  rw [Matrix.sum_mulVec Finset.univ, dotProduct_sum a Finset.univ]
+  apply Finset.sum_congr rfl
+  intro x _
+  rw [Matrix.smul_mulVec, dotProduct_smul, Matrix.vecMulVec_mulVec,
+    dotProduct_smul]
+  simp only [smul_eq_mul, MulOpposite.smul_eq_mul_unop, MulOpposite.unop_op]
+  rw [dotProduct_comm (φ x) a]
+  ring
+
+/-- Coordinate-free simple-null determinant orientation for a positive normalized Gram face. -/
+theorem hasDerivAt_det_perturbedNormalizedGramMatrix_positive_corank_one
+    (w h : Fin n → ℝ) (φ : Fin n → Fin d → ℝ) (a : Fin d → ℝ)
+    (hZ : 0 < interventionTotal w) (hw : ∀ x, 0 ≤ w x)
+    (hd : 0 < d)
+    (hrank : (normalizedGramMatrix w φ).rank = d - 1)
+    (haunit : a ⬝ᵥ a = 1)
+    (hker : ∀ v : Fin d → ℝ,
+      (normalizedGramMatrix w φ).mulVec v = 0 ↔ ∃ c : ℝ, v = c • a) :
+    HasDerivAt (fun t => (perturbedNormalizedGramMatrix w h φ t).det)
+      (positivePseudodeterminant
+          (normalizedGramMatrix_posSemidef w φ hZ hw) *
+        supportBirthEnergy w h φ a) 0 := by
+  let hpsd := normalizedGramMatrix_posSemidef w φ hZ hw
+  have hadj : (normalizedGramMatrix w φ).adjugate =
+      positivePseudodeterminant hpsd • Matrix.vecMulVec a a :=
+    adjugate_eq_positivePseudodeterminant_smul_nullVector
+      (normalizedGramMatrix w φ) hpsd hd hrank a haunit hker
+  have hazero : (normalizedGramMatrix w φ).mulVec a = 0 :=
+    (hker a).mpr ⟨1, by simp⟩
+  have hnull : normalizedGramEnergy w φ a = 0 := by
+    rw [← dotProduct_normalizedGramMatrix_mulVec_eq, hazero, dotProduct_zero]
+  have hderiv :=
+    hasDerivAt_det_perturbedNormalizedGramMatrix_of_adjugate_certificate
+      w h φ a (positivePseudodeterminant hpsd) hZ hw hnull hadj
+  simpa only [hpsd] using hderiv
+
+/-- The pseudodeterminant coefficient at a positive corank-one Gram face is strictly positive. -/
+theorem positivePseudodeterminant_normalizedGramMatrix_pos
+    (w : Fin n → ℝ) (φ : Fin n → Fin d → ℝ)
+    (hZ : 0 < interventionTotal w) (hw : ∀ x, 0 ≤ w x)
+    (hd : 0 < d)
+    (hrank : (normalizedGramMatrix w φ).rank = d - 1) :
+    0 < positivePseudodeterminant
+      (normalizedGramMatrix_posSemidef w φ hZ hw) := by
+  let hpsd := normalizedGramMatrix_posSemidef w φ hZ hw
+  obtain ⟨_, _, _, hpos, _⟩ :=
+    exists_uniqueZero_adjugate_eq_pseudodeterminant_eigenvector
+      (normalizedGramMatrix w φ) hpsd hd hrank
+  simpa only [hpsd] using hpos
+
 /-- Closed selection capstone: a legal centered tangent is exactly a conserved phase tangent whose
 response is inward on every positive Gram null face; any negative crossing exposes a negative
 newborn source coordinate. -/
@@ -723,8 +992,18 @@ theorem generativeResponse_full_capstone :
       normalizedGramEnergy w φ (coordinateCovector x) = 0 →
       HasDerivAt (fun t => (perturbedNormalizedGramMatrix w h φ t).det)
         ((∏ j ∈ Finset.univ.erase x, diag j) *
-          supportBirthEnergy w h φ (coordinateCovector x)) 0) := by
-  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
+          supportBirthEnergy w h φ (coordinateCovector x)) 0) ∧
+    (∀ (n d : ℕ) (w h : Fin n → ℝ) (φ : Fin n → Fin d → ℝ)
+        (a : Fin d → ℝ) (hZ : 0 < interventionTotal w) (hw : ∀ x, 0 ≤ w x),
+      0 < d →
+      (normalizedGramMatrix w φ).rank = d - 1 → a ⬝ᵥ a = 1 →
+      (∀ v : Fin d → ℝ,
+        (normalizedGramMatrix w φ).mulVec v = 0 ↔ ∃ c : ℝ, v = c • a) →
+      HasDerivAt (fun t => (perturbedNormalizedGramMatrix w h φ t).det)
+        (positivePseudodeterminant
+            (normalizedGramMatrix_posSemidef w φ hZ hw) *
+          supportBirthEnergy w h φ a) 0) := by
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · exact fun _ _ _ _ _ _ => hankelNull_generation
   · exact fun _ _ _ _ _ => gramResponseMatrix_eq_supportBirthMatrix
   · exact fun _ _ _ _ _ => rank_supportBirthMatrix_eq_finrank_span_birthFeatures
@@ -734,6 +1013,9 @@ theorem generativeResponse_full_capstone :
   · intro _ _ w h φ diag x
     exact hasDerivAt_det_perturbedNormalizedGramMatrix_diagonal_simple_null
       w h φ diag x
+  · intro _ _ w h φ a hZ hw hd hrank haunit hker
+    exact hasDerivAt_det_perturbedNormalizedGramMatrix_positive_corank_one
+      w h φ a hZ hw hd hrank haunit hker
 
 end FiniteFusion
 

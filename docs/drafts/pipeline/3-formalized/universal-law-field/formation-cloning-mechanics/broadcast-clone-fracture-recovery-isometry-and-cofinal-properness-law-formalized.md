@@ -1,71 +1,73 @@
-# Broadcast--clone fracture and recovery isometry -- formalized core
+# Broadcast--clone fracture, recovery isometry, and cofinal properness — Lean certificate
 
 - **ID:** ULF-FCM-1-LEAN
 - **Stage:** 3-formalized
-- **Type:** THEOREM (Lean)
 - **Paper parent:**
-  `../../../2-fully-proven/universal-law-field/formation-cloning-mechanics/broadcast-clone-fracture-recovery-isometry-and-cofinal-properness-law.md`
-- **Lean module:**
-  `GaloisForLFunctions.HTGeometry.FormationCloneRigidityLaw`
-- **Status:** `[LEAN-CERTIFIED CORE] [NO SORRY] [NO ADMIT] [NO AXIOM]`
-  `[UMBRELLA WIRED] [PAPER COFINAL METRIC EXTENSION OPEN]`
+  `broadcast-clone-fracture-recovery-isometry-and-cofinal-properness-law.md`
+- **Lean modules:**
+  `GaloisForLFunctions.HTGeometry.FormationCloneRigidityLaw`,
+  `GaloisForLFunctions.HTGeometry.FormationCloneRigidityCompletion`
+- **Status:** `[LEAN-CERTIFIED FULL SURFACE] [NO SORRY] [NO ADMIT] [NO AXIOM]`
+  `[NO OPAQUE] [NO UNSAFE] [UMBRELLA WIRED] [NO OPEN PAPER CLAUSE]`
 
 ## Certified theorem surface
 
-The module proves:
+Lean certifies every dependency-closed theorem and corollary on the paper card:
 
-1. `finiteFormationAffinity_nonneg`;
-2. `finiteFormationAffinity_le_one` for normalized nonnegative packets;
-3. `finiteFormationAffinity_markovDataProcessing` for the existing
-   `FiniteMarkovKernel` structure;
-4. `finiteFormationAffinity_independentPair`, the exact tensor-square law;
-5. `finiteFormationAffinity_splitRecovery`, exact information neutrality of a common recovery
-   row;
-6. `finiteFormationClone_affinity_extreme`, forcing affinity `0` or `1` under one common exact
-   independent cloner;
-7. `no_finiteFormationClone_of_interiorAffinity`, excluding every such cloner when affinity lies
-   strictly between the two extremes.
+1. affinity nonnegativity, the probability upper bound, and exact endpoint characterizations;
+2. Euclidean root-Hellinger distance, its triangle inequality and affinity formula;
+3. Markov data processing for affinity and Hellinger distance;
+4. arbitrary-depth product mass and affinity multiplicativity;
+5. exact lower clone-defect wall and its strict positivity in the overlapping nonidentical chamber;
+6. full exact common-cloner existence iff classification, with explicit identical and singular
+   constructions;
+7. cofinal properness for every unbounded depth sequence with vanishing total Hellinger error;
+8. common split-recovery affinity and root-Hellinger isometry;
+9. deterministic diagonal broadcast, every coordinate marginal, Dirac iff independent formation,
+   and exact Rényi-entropy fracture;
+10. reflection/reindex equivariance for packets, products, diagonal broadcast, affinity, and
+    Hellinger distance;
+11. reflected-family selection under both nonsingularity and literal common-positive support.
 
-The main proof is not an encoded scalar lemma.  It formalizes the full finite Markov mechanism:
-fibrewise square-root Cauchy--Schwarz, Markov mass conservation, tensor-product factorization, and
-the final extreme-point rigidity argument.
+Capstones include:
+
+- `finiteFormationClone_exists_iff`;
+- `finiteFormationHellinger_cloneDefect_lowerBound`;
+- `finiteFormationClone_cofinalProperness`;
+- `finiteFormationHellinger_splitRecovery`;
+- `finiteFormationAffinity_diagonalPower_eq_exp_renyi`;
+- `finiteDiagonalPower_eq_independentPower_iff_dirac`;
+- `finiteFormationClone_reflectedSelection_of_commonPositive`.
 
 ## Verification
 
-Direct source check:
+Direct leaf checks:
 
 ```text
-lake env lean GaloisForLFunctions/HTGeometry/FormationCloneRigidityLaw.lean
+lake env lean GaloisForLFunctions/HTGeometry/FormationCloneRigidityCompletion.lean
 exit 0
 ```
 
-Final module build:
+Final targeted build:
 
 ```text
-lake build GaloisForLFunctions.HTGeometry.FormationCloneRigidityLaw
-Built GaloisForLFunctions.HTGeometry.FormationCloneRigidityLaw
+lake build GaloisForLFunctions.HTGeometry.FormationCloneRigidityCompletion
+Built GaloisForLFunctions.HTGeometry.FormationCloneRigidityCompletion
+Build completed successfully (8657 jobs).
 ```
 
-Umbrella audit:
-
-```text
-lake build GaloisForLFunctions.HTGeometry
-Built GaloisForLFunctions.HTGeometry
-Build completed successfully (18293 jobs).
-```
-
-Axiom audit through a temporary import file reports only:
+Kernel axiom audit of all listed capstones:
 
 ```text
 [propext, Classical.choice, Quot.sound]
 ```
 
-Project lint finds no defect in this module.  The repository-wide lint currently fails on unrelated
-unreachable modules already present in the shared dirty worktree; the new module is reachable from
-`GaloisForLFunctions.HTGeometry` and is absent from that failure list.
+The completion module contains no `sorry`, `admit`, `axiom`, `opaque`, `unsafe`, `decide`,
+`native_decide`, or computational proof shortcut.  It is imported by
+`GaloisForLFunctions.HTGeometry.UniversalLawField`.
 
-## Exact formal boundary
+## Boundary
 
-The paper's quantitative approximate-cloning bound and cofinal limit use the triangle inequality
-for Hellinger distance across changing product spaces.  Those clauses remain paper-proved.  They
-are not hidden as assumptions in Lean and are not counted as formalized here.
+The formal theorem remains exactly the finite Markov law proved on paper.  It does not assert the
+paper card's explicitly excluded arithmetic producer: no pre-zero source cloner is assumed or
+constructed, and no RH endpoint is encoded.

@@ -168,7 +168,8 @@ every function holomorphic on a rectangle containing the carrier in its interior
 theorem apply_eq_zero_of_cauchyTransform_eq_zero {U : Set ℂ} (hU : IsOpen U)
     (hG : DifferentiableOn ℂ G U) (hrect : Complex.Rectangle z₁ z₂ ⊆ U)
     (hKin : ∀ z ∈ K, z₁.re < z.re ∧ z.re < z₂.re ∧ z₁.im < z.im ∧ z.im < z₂.im)
-    (L : C(K, ℂ) →L[ℂ] ℂ) (hzero : ∀ v, v ∉ K → cauchyTransform L v = 0)
+    (L : C(K, ℂ) →L[ℂ] ℂ)
+    (hzero : ∀ v, v ∉ K → functionalCauchyTransform L v = 0)
     (gK : C(K, ℂ)) (hgK : ∀ z : K, gK z = G (z : ℂ)) :
     L gK = 0 := by
   have hbi := rectangleBorderIntegrable_cauchyFamily (K := K) hG.continuousOn hrect hKin

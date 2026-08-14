@@ -213,7 +213,7 @@ theorem primeFoldForcing_const_mul (c : ℂ) (f : ℝ → ℂ) :
 /-! ## The first-order transport law -/
 
 /-- Whole-line integral of the derivative of a compactly supported `C¹` function. -/
-theorem integral_deriv_eq_zero_of_hasCompactSupport
+theorem integral_deriv_primeFold_eq_zero_of_hasCompactSupport
     {g : ℝ → ℂ} (hg : ContDiff ℝ 1 g) (hsupp : HasCompactSupport g) :
     (∫ L : ℝ, deriv g L) = 0 := by
   have hint : Integrable fun L : ℝ => deriv g L :=
@@ -387,7 +387,7 @@ theorem integral_primeFoldBranch_transport
       simp only [hg]
       ring
     rw [← hhomDeriv]
-    exact integral_deriv_eq_zero_of_hasCompactSupport hhomCD hhomSupp
+    exact integral_deriv_primeFold_eq_zero_of_hasCompactSupport hhomCD hhomSupp
   have hpoint := mul_primeFoldBranch_eq_sub_sum P lam hgzero
   rw [show (fun L : ℝ => (deriv ψ L + lam * ψ L) * primeFoldBranch P lam L) =
       fun L : ℝ => g L * primeFoldBranch P lam L from rfl]

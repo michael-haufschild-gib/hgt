@@ -150,8 +150,9 @@ theorem sigmaMap_kernelFun (hconj : ∀ z ∈ Kt, (starRingEnd ℂ) z ∈ Kt) {v
 /-- **The Cauchy transform of the doubled functional.** -/
 theorem cauchyTransform_doubledFunctional (hsub : Kc ⊆ Kt)
     (hconj : ∀ z ∈ Kt, (starRingEnd ℂ) z ∈ Kt) (L : C(Kc, ℂ) →L[ℂ] ℂ) {v : ℂ} (hv : v ∉ Kt) :
-    cauchyTransform (doubledFunctional hsub hconj L) v
-      = cauchyTransform L v + (starRingEnd ℂ) (cauchyTransform L ((starRingEnd ℂ) v)) := by
+    functionalCauchyTransform (doubledFunctional hsub hconj L) v
+      = functionalCauchyTransform L v
+        + (starRingEnd ℂ) (functionalCauchyTransform L ((starRingEnd ℂ) v)) := by
   have hvc : v ∉ Kc := fun hc => hv (hsub hc)
   have hcv : (starRingEnd ℂ) v ∉ Kt := conj_notMem_of_notMem hconj hv
   have hcvc : (starRingEnd ℂ) v ∉ Kc := fun hc => hcv (hsub hc)
@@ -235,8 +236,8 @@ theorem sigmaTransfer_kernelFun (hmap : ∀ z ∈ K₂, (starRingEnd ℂ) z ∈ 
 /-- **The Cauchy transform of the conjugate functional.** -/
 theorem cauchyTransform_conjFunctional (hmap : ∀ z ∈ K₂, (starRingEnd ℂ) z ∈ K₁)
     (L : C(K₂, ℂ) →L[ℂ] ℂ) {v : ℂ} (hv : v ∉ K₁) :
-    cauchyTransform (conjFunctional hmap L) v
-      = (starRingEnd ℂ) (cauchyTransform L ((starRingEnd ℂ) v)) := by
+    functionalCauchyTransform (conjFunctional hmap L) v
+      = (starRingEnd ℂ) (functionalCauchyTransform L ((starRingEnd ℂ) v)) := by
   have hcv : (starRingEnd ℂ) v ∉ K₂ := conj_notMem_of_notMem_transfer hmap hv
   rw [cauchyTransform_eq _ hv, cauchyTransform_eq L hcv, conjFunctional_apply,
     sigmaTransfer_kernelFun hmap hv hcv]
@@ -280,7 +281,8 @@ theorem precompCLM_feReflMap_kernelFun (hmap : ∀ z ∈ K₁, 1 - z ∈ K₂) {
 /-- **The Cauchy transform of the reflected pullback.** -/
 theorem cauchyTransform_feReflFunctional (hmap : ∀ z ∈ K₁, 1 - z ∈ K₂)
     (L : C(K₁, ℂ) →L[ℂ] ℂ) {v : ℂ} (hv : v ∉ K₂) :
-    cauchyTransform (feReflFunctional hmap L) v = -cauchyTransform L (1 - v) := by
+    functionalCauchyTransform (feReflFunctional hmap L) v
+      = -functionalCauchyTransform L (1 - v) := by
   rw [cauchyTransform_eq _ hv, cauchyTransform_eq L (one_sub_notMem_of_notMem hmap hv),
     feReflFunctional_apply, precompCLM_feReflMap_kernelFun hmap hv, map_neg]
 
@@ -289,7 +291,8 @@ end Reflection
 /-- The Cauchy transform is unchanged by restricting a functional from a larger carrier. -/
 theorem cauchyTransform_comp_precompCLM (hsub : Kc ⊆ Kt) (F : C(Kc, ℂ) →L[ℂ] ℂ) {v : ℂ}
     (hv : v ∉ Kt) :
-    cauchyTransform (F.comp (precompCLM (inclMap hsub))) v = cauchyTransform F v := by
+    functionalCauchyTransform (F.comp (precompCLM (inclMap hsub))) v
+      = functionalCauchyTransform F v := by
   rw [cauchyTransform_eq _ hv, cauchyTransform_eq F (fun hc => hv (hsub hc)),
     ContinuousLinearMap.comp_apply, precompCLM_kernelFun hsub hv]
 

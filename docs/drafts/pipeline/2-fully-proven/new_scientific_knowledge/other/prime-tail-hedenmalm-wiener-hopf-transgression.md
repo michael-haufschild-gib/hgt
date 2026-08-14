@@ -375,3 +375,38 @@ avoids Minkowski entirely:
 
 Everything is stated in `ℝ≥0∞`, so no integrability hypothesis appears anywhere; the `L²` operator
 bound of Theorem 1 is the specialization to `K = ‖k‖₊`, `F = ‖f‖₊`.
+
+## 2026-08-14 — Theorems 1, 2 and the `L²` norm of (13) are formalized
+
+`formal/GaloisForLFunctions/RHTower/ThetaWienerHopfTransgression.lean`, unconditional and
+axiom-clean, wired into the `RHTower` umbrella:
+
+**Theorem 1.**  `halfLineConvMinus`, `halfLineConvPlus`, `halfLineConvEven`, `halfLineConvOdd` are
+the literal Bochner integrals `T₋`, `T₊`, `C`, `S` of `(1)`–`(2)`.
+`halfLineConvPlus_eq_halfLineConvMinus_neg` is `(3)` for an even kernel, whence
+`halfLineConvEven_neg` (`C f` even) and `halfLineConvOdd_neg` (`S f` odd).
+`lintegral_enorm_sq_halfLineConvMinus_le` and `lintegral_enorm_sq_halfLineConvPlus_le` are the
+`L¹ ⋆ L² → L²` bound `‖T∓ f‖₂ ≤ ‖k‖₁‖f‖₂`, obtained from the zero extension
+(`zeroExtend`, `halfLineConvMinus_eq_lineConv`) and the corpus's own Young inequality
+`HTGeometry.lintegral_enorm_sq_le_of_convolution_bound`.
+
+**Theorem 2.**  `halfLineConvMinus_deriv` and `halfLineConvPlus_deriv` are half-line integration by
+parts: `T₋(f') = -k(x)f(0) + T₋^{k'}(f)` and `T₊(f') = -k(x)f(0) - T₊^{k'}(f)`.  Differentiating the
+kernel is therefore the same operator with kernel `k'`, and the two endpoint traces cancel in the
+even half and add in the odd half:
+
+- `halfLineConvEven_kernelDeriv` — equation `(4)` first identity, `∂_x C f = S(f')`;
+- `halfLineConvOdd_kernelDeriv` — equation `(4)` second identity, `∂_x S f = k·f(0) + C(f')`.
+
+This is the card's assertion that the rank-one theta defect is exactly an endpoint trace of an
+ordinary half-line derivative, now literal.
+
+**Theorem 4, equation (13).**  `canonicalHalfLineInput lam L = exp (-λL)` of `(7)`, with
+`norm_canonicalHalfLineInput` and `integral_norm_sq_canonicalHalfLineInput`:
+`∫_0^∞ |f_λ|² = 1/(2 re λ)` whenever `re λ > 0` — the exact `L²` wall of `(14)`, whose finiteness
+is precisely the half `re ρ > 1/2`.
+
+Still paper-level on this card: the zero-specialisation identities `(8)`–`(9)` of Theorem 3 (the
+folds themselves are formalized in `RHTower/XiHedenmalmReflectionFoldedDirac.lean`), the Fourier
+injectivity half of Theorem 4, and the Corollary.  The "Revised open core" is RH-equivalent and
+remains open, as stated there.

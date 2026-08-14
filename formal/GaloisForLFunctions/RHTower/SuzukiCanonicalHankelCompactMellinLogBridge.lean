@@ -198,9 +198,22 @@ theorem suzukiHankelPhiSum_intervalPairing_eq_compactMellin_sum
       rw [suzukiMellinDensity, suzukiClampedMellinWeightValue,
         max_eq_right hcx.le]
   have hW : ContinuousOn W (uIcc 0 a) := by
-    dsimp only [W]
-    exact (suzukiClampedMellinWeight
-      (B := a) (show 0 < 1 / a by positivity) z).continuous.continuousOn
+    have hmax : Continuous (fun x : ℝ => max (1 / a) x) :=
+      continuous_const.max continuous_id
+    have hlog : Continuous (fun x : ℝ => Real.log (max (1 / a) x)) := by
+      rw [continuous_iff_continuousAt]
+      intro x
+      have hcomp := ContinuousAt.comp
+        (f := fun y : ℝ => max (1 / a) y)
+        (g := Real.log)
+        (Real.continuousAt_log
+          (ne_of_gt (lt_of_lt_of_le (show 0 < 1 / a by positivity)
+            (le_max_left (1 / a) x))))
+        hmax.continuousAt
+      change ContinuousAt (Real.log ∘ fun y : ℝ => max (1 / a) y) x
+      exact hcomp
+    exact (Complex.continuous_exp.comp
+      (continuous_const.mul (Complex.continuous_ofReal.comp hlog))).continuousOn
   have hP : ContinuousOn P (uIcc 0 a) := by
     rw [uIcc_of_le (show 0 ≤ a by linarith)]
     exact (continuousOn_suzukiHankelPhiGlobal_nonnegative
@@ -256,5 +269,174 @@ theorem suzukiCompactL2Fourier_hankelPhiSumLog_eq_compactMellin_sum
           (suzukiHankelPhiSum omega a homega ha)
           (suzukiHankelPhiSum_log_compact homega ha) z)
     _ = _ := suzukiHankelPhiSum_intervalPairing_eq_compactMellin_sum homega ha z
+
+/-- The compact logarithmic Fredholm difference is a fixed point of the symmetric aperture
+projection.  This follows from its exact identification as one application of that projection,
+not from an informal support assertion. -/
+theorem suzukiHankelPhiDifferenceCompactLog_compact
+    {omega a : ℝ} (homega : 1 < omega) (ha : 1 < a) :
+    suzukiCutoff (Real.log a)
+        (suzukiHankelPhiDifferenceCompactLog omega a homega ha) =
+      suzukiHankelPhiDifferenceCompactLog omega a homega ha := by
+  rw [suzukiHankelPhiDifferenceCompactLog_eq_cutoff_global homega ha]
+  have hidem := indicatorCutoff_idempotent
+    (Icc (-Real.log a) (Real.log a)) measurableSet_Icc
+  rw [isIdempotentElem_iff] at hidem
+  exact congrArg
+    (fun T : SoninL2 →L[ℂ] SoninL2 =>
+      T (suzukiHankelPhiDifferenceLog omega a homega ha)) hidem
+
+/-- The physical Mellin pairing of the finite Fredholm difference is the difference of the two
+literal compact Mellin transforms. -/
+theorem suzukiHankelPhiDifference_intervalPairing_eq_compactMellin_difference
+    {omega a : ℝ} (homega : 1 < omega) (ha : 1 < a) (z : ℂ) :
+    (∫ x : ClosedInterval 0 a,
+        suzukiMellinDensity z (x : ℝ) *
+          suzukiHankelPhiDifference omega a homega ha x ∂volume) =
+      suzukiHankelCompactMellin SuzukiHankelSign.positive
+          omega a homega ha z -
+        suzukiHankelCompactMellin SuzukiHankelSign.negative
+          omega a homega ha z := by
+  let p : IntervalL2 0 a :=
+    suzukiHankelPhi SuzukiHankelSign.positive omega a (by linarith) ha
+  let m : IntervalL2 0 a :=
+    suzukiHankelPhi SuzukiHankelSign.negative omega a (by linarith) ha
+  let P : ℝ → ℂ :=
+    suzukiHankelPhiGlobal SuzukiHankelSign.positive omega a homega ha
+  let M : ℝ → ℂ :=
+    suzukiHankelPhiGlobal SuzukiHankelSign.negative omega a homega ha
+  let W : ℝ → ℂ := suzukiClampedMellinWeightValue (1 / a) z
+  have hrep : ∀ᵐ x : ClosedInterval 0 a ∂volume,
+      suzukiHankelPhiDifference omega a homega ha x = P (x : ℝ) - M (x : ℝ) := by
+    filter_upwards [Lp.coeFn_sub p m,
+      suzukiHankelPhiContinuous_ae SuzukiHankelSign.positive homega ha,
+      suzukiHankelPhiContinuous_ae SuzukiHankelSign.negative homega ha] with
+        x hsub hp hm
+    change (p - m) x = P (x : ℝ) - M (x : ℝ)
+    rw [hsub]
+    change p x - m x = P (x : ℝ) - M (x : ℝ)
+    rw [← hp, ← hm]
+    dsimp only [P, M]
+    rw [suzukiHankelPhiGlobal_eq_continuousRepresentative
+        SuzukiHankelSign.positive homega ha x,
+      suzukiHankelPhiGlobal_eq_continuousRepresentative
+        SuzukiHankelSign.negative homega ha x]
+  have hweight : EqOn
+      (fun x : ℝ => suzukiMellinDensity z x * (P x - M x))
+      (fun x : ℝ => W x * (P x - M x)) (uIcc 0 a) := by
+    intro x hx
+    rw [uIcc_of_le (show 0 ≤ a by linarith)] at hx
+    change suzukiMellinDensity z x * (P x - M x) =
+      W x * (P x - M x)
+    by_cases hxc : x ≤ 1 / a
+    · have hp0 : P x = 0 :=
+        suzukiHankelPhiGlobal_eq_zero_below_reciprocal
+          SuzukiHankelSign.positive homega ha hx.1 hxc
+      have hm0 : M x = 0 :=
+        suzukiHankelPhiGlobal_eq_zero_below_reciprocal
+          SuzukiHankelSign.negative homega ha hx.1 hxc
+      rw [hp0, hm0, sub_self, mul_zero, mul_zero]
+    · have hcx : 1 / a < x := lt_of_not_ge hxc
+      change suzukiMellinDensity z x * (P x - M x) =
+        suzukiClampedMellinWeightValue (1 / a) z x * (P x - M x)
+      rw [suzukiMellinDensity, suzukiClampedMellinWeightValue,
+        max_eq_right hcx.le]
+  have hW : ContinuousOn W (uIcc 0 a) := by
+    have hmax : Continuous (fun x : ℝ => max (1 / a) x) :=
+      continuous_const.max continuous_id
+    have hlog : Continuous (fun x : ℝ => Real.log (max (1 / a) x)) := by
+      rw [continuous_iff_continuousAt]
+      intro x
+      have hcomp := ContinuousAt.comp
+        (f := fun y : ℝ => max (1 / a) y)
+        (g := Real.log)
+        (Real.continuousAt_log
+          (ne_of_gt (lt_of_lt_of_le (show 0 < 1 / a by positivity)
+            (le_max_left (1 / a) x))))
+        hmax.continuousAt
+      change ContinuousAt (Real.log ∘ fun y : ℝ => max (1 / a) y) x
+      exact hcomp
+    exact (Complex.continuous_exp.comp
+      (continuous_const.mul (Complex.continuous_ofReal.comp hlog))).continuousOn
+  have hP : ContinuousOn P (uIcc 0 a) := by
+    rw [uIcc_of_le (show 0 ≤ a by linarith)]
+    exact (continuousOn_suzukiHankelPhiGlobal_nonnegative
+      SuzukiHankelSign.positive homega ha).mono fun _ hx => hx.1
+  have hM : ContinuousOn M (uIcc 0 a) := by
+    rw [uIcc_of_le (show 0 ≤ a by linarith)]
+    exact (continuousOn_suzukiHankelPhiGlobal_nonnegative
+      SuzukiHankelSign.negative homega ha).mono fun _ hx => hx.1
+  have hWP : IntervalIntegrable (fun x => W x * P x) volume 0 a :=
+    (hW.mul hP).intervalIntegrable
+  have hWM : IntervalIntegrable (fun x => W x * M x) volume 0 a :=
+    (hW.mul hM).intervalIntegrable
+  calc
+    (∫ x : ClosedInterval 0 a,
+        suzukiMellinDensity z (x : ℝ) *
+          suzukiHankelPhiDifference omega a homega ha x ∂volume) =
+        ∫ x : ClosedInterval 0 a,
+          suzukiMellinDensity z (x : ℝ) * (P (x : ℝ) - M (x : ℝ))
+            ∂volume := by
+      apply integral_congr_ae
+      filter_upwards [hrep] with x hx
+      rw [hx]
+    _ = ∫ x in (0 : ℝ)..a, suzukiMellinDensity z x * (P x - M x) :=
+      integral_subtype_closedInterval_eq_intervalIntegral
+        (show 0 ≤ a by linarith)
+        (fun x : ℝ => suzukiMellinDensity z x * (P x - M x))
+    _ = ∫ x in (0 : ℝ)..a, W x * (P x - M x) :=
+      intervalIntegral.integral_congr hweight
+    _ = (∫ x in (0 : ℝ)..a, W x * P x) -
+          ∫ x in (0 : ℝ)..a, W x * M x := by
+      simp_rw [mul_sub]
+      exact intervalIntegral.integral_sub hWP hWM
+    _ = _ := rfl
+
+/-- Exact coordinate bridge for the compact Fredholm difference. -/
+theorem suzukiCompactL2Fourier_hankelPhiDifferenceCompactLog_eq_compactMellin_difference
+    {omega a : ℝ} (homega : 1 < omega) (ha : 1 < a) (z : ℂ) :
+    suzukiCompactL2Fourier (Real.log a)
+        (suzukiHankelPhiDifferenceCompactLog omega a homega ha) z =
+      suzukiHankelCompactMellin SuzukiHankelSign.positive
+          omega a homega ha z -
+        suzukiHankelCompactMellin SuzukiHankelSign.negative
+          omega a homega ha z := by
+  calc
+    suzukiCompactL2Fourier (Real.log a)
+        (suzukiHankelPhiDifferenceCompactLog omega a homega ha) z =
+        ∫ x : ClosedInterval 0 a,
+          suzukiMellinDensity z (x : ℝ) *
+            suzukiHankelPhiDifference omega a homega ha x ∂volume := by
+      simpa [suzukiHankelPhiDifferenceCompactLog] using
+        (suzukiCompactL2Fourier_positiveLogUnitary_fixed_eq_intervalPairing
+          (show 0 < a by linarith)
+          (suzukiHankelPhiDifference omega a homega ha)
+          (suzukiHankelPhiDifferenceCompactLog_compact homega ha) z)
+    _ = _ :=
+      suzukiHankelPhiDifference_intervalPairing_eq_compactMellin_difference
+        homega ha z
+
+/-- Exact coordinate bridge for Suzuki's compact transform of the global Hankel image. -/
+theorem suzukiCompactL2Fourier_hankelPhiSumHankelLog_eq_compactMellin_difference
+    {omega a : ℝ} (homega : 1 < omega) (ha : 1 < a) (z : ℂ) :
+    suzukiCompactL2Fourier (Real.log a)
+        (suzukiHankelPhiSumHankelLog omega a homega ha) z =
+      suzukiHankelCompactMellin SuzukiHankelSign.negative
+          omega a homega ha z -
+        suzukiHankelCompactMellin SuzukiHankelSign.positive
+          omega a homega ha z := by
+  have hupper := suzukiHankelPhiDifferenceCompact_upperTransform
+    homega ha (-z)
+  have hcompact := suzukiUpperFourierLaplace_eq_compactL2Fourier_neg_of_fixed
+    (suzukiHankelPhiDifferenceCompactLog_upper homega ha)
+    (suzukiHankelPhiDifferenceCompactLog_compact homega ha) (-z)
+  have hphysical :=
+    suzukiCompactL2Fourier_hankelPhiDifferenceCompactLog_eq_compactMellin_difference
+      homega ha z
+  rw [neg_neg] at hcompact
+  rw [hcompact] at hupper
+  rw [hphysical] at hupper
+  simp only [neg_neg] at hupper
+  linear_combination hupper
 
 end RHTower

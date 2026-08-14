@@ -26,7 +26,7 @@ namespace RHTower
 
 noncomputable section
 
-noncomputable local instance :
+noncomputable local instance routeRGammaCoronaCrossPrimePacketDecidableEq :
     DecidableEq DeningerCalderonWittCrossPrimePacketIndex :=
   Classical.decEq _
 
@@ -52,7 +52,7 @@ private theorem routeRCrossPrimePacketIndexOfPrime_injective :
     (fun i : DeningerCalderonWittCrossPrimePacketIndex => i.1.1) h
   simpa [routeRCrossPrimePacketIndexOfPrime_first] using hval
 
-noncomputable local instance :
+noncomputable local instance routeRGammaCoronaCrossPrimePacketInfinite :
     Infinite DeningerCalderonWittCrossPrimePacketIndex :=
   Infinite.of_injective routeRCrossPrimePacketIndexOfPrime
     routeRCrossPrimePacketIndexOfPrime_injective

@@ -60,20 +60,19 @@ theorem differentiable_glueVert {f g : ℂ → ℂ} {c₁ c₂ : ℝ} (hc : c₁
 
 variable {Kc Kc' : Set ℂ} [CompactSpace Kc] [CompactSpace Kc']
 
-/-- **Two Cauchy transforms opposite on the separating vertical strip both vanish.** -/
-theorem cauchyTransform_eq_zero_of_glue_re
-    (hKc : IsCompact Kc)
+/-- **Two Cauchy transforms opposite on the separating vertical strip vanish on the left
+half-plane.** -/
+theorem cauchyTransform_eq_zero_of_glue_re_lt
     {c₁ c₂ R : ℝ} (hc : c₁ < c₂)
     (hKcRe : ∀ z ∈ Kc, c₂ ≤ z.re) (hKc'Re : ∀ z ∈ Kc', z.re ≤ c₁)
     (hKcR : ∀ z ∈ Kc, ‖z‖ ≤ R) (hKc'R : ∀ z ∈ Kc', ‖z‖ ≤ R)
     (L : C(Kc, ℂ) →L[ℂ] ℂ) (L' : C(Kc', ℂ) →L[ℂ] ℂ)
     (hagree : ∀ v : ℂ, c₁ < v.re → v.re < c₂ →
-      cauchyTransform L v + cauchyTransform L' v = 0)
-    (hpre : IsPreconnected (Kcᶜ)) :
-    ∀ v ∉ Kc, cauchyTransform L v = 0 := by
+      functionalCauchyTransform L v + functionalCauchyTransform L' v = 0) :
+    ∀ v : ℂ, v.re < c₂ → functionalCauchyTransform L v = 0 := by
   classical
-  set f : ℂ → ℂ := cauchyTransform L with hf
-  set g : ℂ → ℂ := fun v => -cauchyTransform L' v with hg
+  set f : ℂ → ℂ := functionalCauchyTransform L with hf
+  set g : ℂ → ℂ := fun v => -functionalCauchyTransform L' v with hg
   have hagree' : ∀ v : ℂ, c₁ < v.re → v.re < c₂ → f v = g v := by
     intro v h1 h2
     have := hagree v h1 h2
@@ -153,12 +152,26 @@ theorem cauchyTransform_eq_zero_of_glue_re
       linarith [h, mul_comm (‖w‖ - R) ε]
     rw [zero_add]
     exact le_trans hbound hfinal
-  have hlow : ∀ v : ℂ, v.re < c₂ → cauchyTransform L v = 0 := by
-    intro v hv
-    have := hzero v
-    rwa [glueVert_of_lt hv] at this
-  have hanalytic : AnalyticOnNhd ℂ (cauchyTransform L) Kcᶜ :=
-    analyticOnNhd_cauchyTransform hKc L
+  intro v hv
+  have hval := hzero v
+  rwa [glueVert_of_lt hv] at hval
+
+/-- **Two Cauchy transforms opposite on the separating vertical strip both vanish.** -/
+theorem cauchyTransform_eq_zero_of_glue_re
+    (hKc : IsCompact Kc)
+    {c₁ c₂ R : ℝ} (hc : c₁ < c₂)
+    (hKcRe : ∀ z ∈ Kc, c₂ ≤ z.re) (hKc'Re : ∀ z ∈ Kc', z.re ≤ c₁)
+    (hKcR : ∀ z ∈ Kc, ‖z‖ ≤ R) (hKc'R : ∀ z ∈ Kc', ‖z‖ ≤ R)
+    (L : C(Kc, ℂ) →L[ℂ] ℂ) (L' : C(Kc', ℂ) →L[ℂ] ℂ)
+    (hagree : ∀ v : ℂ, c₁ < v.re → v.re < c₂ →
+      functionalCauchyTransform L v + functionalCauchyTransform L' v = 0)
+    (hpre : IsPreconnected (Kcᶜ)) :
+    ∀ v ∉ Kc, functionalCauchyTransform L v = 0 := by
+  classical
+  have hlow : ∀ v : ℂ, v.re < c₂ → functionalCauchyTransform L v = 0 :=
+    cauchyTransform_eq_zero_of_glue_re_lt (Kc' := Kc') hc hKcRe hKc'Re hKcR hKc'R L L' hagree
+  have hanalytic : AnalyticOnNhd ℂ (functionalCauchyTransform L) Kcᶜ :=
+    analyticOnNhd_functionalCauchyTransform hKc L
   have hopenL : IsOpen {v : ℂ | v.re < c₂} := isOpen_lt Complex.continuous_re continuous_const
   have hlowsub : {v : ℂ | v.re < c₂} ⊆ Kcᶜ := by
     intro w hw hcon
@@ -171,7 +184,7 @@ theorem cauchyTransform_eq_zero_of_glue_re
     rw [hv₀re]
     linarith
   have hv₀mem : v₀ ∈ Kcᶜ := hlowsub hv₀low
-  have hev : cauchyTransform L =ᶠ[nhds v₀] 0 := by
+  have hev : functionalCauchyTransform L =ᶠ[nhds v₀] 0 := by
     filter_upwards [hopenL.mem_nhds hv₀low] with w hw
     exact hlow w hw
   exact fun v hv => hanalytic.eqOn_zero_of_preconnected_of_eventuallyEq_zero hpre hv₀mem hev hv

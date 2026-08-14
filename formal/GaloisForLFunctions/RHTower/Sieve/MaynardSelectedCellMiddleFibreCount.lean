@@ -45,8 +45,9 @@ theorem eventually_maynardWindowRelevantSelectedCell_middle_fibre_first_or_secon
   have hd : 0 < d := maynardLongGlobalAmplitudeDeficit_pos
   have hHF0 : 0 ≤ maynardHarmonicFactor K delta :=
     (maynardHarmonicFactor_pos K hdelta).le
+  have hmuEight : mu ≤ 8 := by linarith
   by_cases hbetaOne : beta < 1
-  · have hraw := hadj hmuLo hmuHi hc halphaLo halphaHi hdelta label
+  · have hraw := hadj hmuLo hmuEight hc halphaLo halphaHi hdelta label
       (by simpa only [beta] using hbetaOne) S hSne hS lam hgap hband hselection
     rcases routeT_middle_shifted_adjacent_with_cost_first_or_second
         hmuLo hmuHi halphaLo halphaHi with hfirst | hsecond
@@ -69,7 +70,7 @@ theorem eventually_maynardWindowRelevantSelectedCell_middle_fibre_first_or_secon
       have hpow := Real.rpow_le_rpow_of_exponent_le hT.le hexp
       exact hraw.trans (mul_le_mul_of_nonneg_left hpow hHF0)
   · have hbetaLo : 1 ≤ beta := le_of_not_gt hbetaOne
-    have hraw := hover hmuLo hmuHi hc halphaLo halphaHi hdelta label
+    have hraw := hover hmuLo hmuEight hc halphaLo halphaHi hdelta label
       (by simpa only [beta] using hbetaLo) S hSne hS lam hgap hband hselection
     obtain ⟨r0, hr0⟩ := hSne
     rcases hselection r0 hr0 with

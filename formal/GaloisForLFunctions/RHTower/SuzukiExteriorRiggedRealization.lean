@@ -19,7 +19,8 @@ evaluation, with no `ℓ²`-to-scalar map anywhere.
 
 open Set Filter Topology
 open scoped ENNReal
-open RHTower (suzukiLogWeight suzukiSymbolRemainder exists_bound_suzukiSymbolRemainder)
+open RHTower
+  (suzukiExteriorLogWeight suzukiSymbolRemainder exists_bound_suzukiSymbolRemainder)
 
 namespace GaloisForLFunctions.RHTower
 
@@ -66,12 +67,12 @@ theorem suzukiExteriorAtoms_eq_zero_outside (a : ℝ) {ν : SuzukiSeamValuation}
 
 /-- The high-pass valuation element `h_ξ` of Suzuki's exterior symbol. -/
 def suzukiHighPassElement (a ξ : ℝ) : SuzukiSeamValuation → ℂ :=
-  wienerHighPassSymbol ((suzukiLogWeight ξ : ℝ) : ℂ) (suzukiSymbolRemainder a ξ)
+  wienerHighPassSymbol ((suzukiExteriorLogWeight ξ : ℝ) : ℂ) (suzukiSymbolRemainder a ξ)
     (suzukiExteriorAtoms a)
 
 /-- **`(15)`--`(16)`: the exact source normalization, with `κ = 1`.** -/
 def suzukiExteriorSymbol (a ξ : ℝ) : ℂ :=
-  ((suzukiLogWeight ξ : ℝ) : ℂ) + suzukiSymbolRemainder a ξ
+  ((suzukiExteriorLogWeight ξ : ℝ) : ℂ) + suzukiSymbolRemainder a ξ
     + suzukiWienerEval ξ (suzukiExteriorAtoms a)
 
 /-- The high-pass element is supported on the unit atom and the visible prime atoms. -/
@@ -101,10 +102,10 @@ theorem summable_norm_suzukiExteriorAtoms (a : ℝ) :
 theorem suzukiWienerEval_highPassElement (a ξ : ℝ) :
     suzukiWienerEval ξ (suzukiHighPassElement a ξ) = suzukiExteriorSymbol a ξ := by
   have hsplit : suzukiHighPassElement a ξ
-      = fun ν => (((suzukiLogWeight ξ : ℝ) : ℂ) + suzukiSymbolRemainder a ξ) * discreteDelta ν
+      = fun ν => (((suzukiExteriorLogWeight ξ : ℝ) : ℂ) + suzukiSymbolRemainder a ξ) * discreteDelta ν
           + suzukiExteriorAtoms a ν := rfl
   have hdelta : Summable fun ν : SuzukiSeamValuation =>
-      ‖(((suzukiLogWeight ξ : ℝ) : ℂ) + suzukiSymbolRemainder a ξ) * discreteDelta ν‖ := by
+      ‖(((suzukiExteriorLogWeight ξ : ℝ) : ℂ) + suzukiSymbolRemainder a ξ) * discreteDelta ν‖ := by
     apply summable_of_ne_finset_zero (s := ({0} : Finset SuzukiSeamValuation))
     intro ν hν
     have h0 : ν ≠ 0 := by simpa using hν
@@ -118,7 +119,7 @@ logarithmic weight exceeds that margin. -/
 theorem exists_suzukiExteriorThreshold (a : ℝ) :
     ∃ C L0 Ξ : ℝ, 0 ≤ C ∧ 0 < L0 ∧ (∀ ξ : ℝ, ‖suzukiSymbolRemainder a ξ‖ ≤ C)
       ∧ C + suzukiWienerMass a < L0
-      ∧ ∀ ξ : ℝ, Ξ ≤ |ξ| → L0 ≤ suzukiLogWeight ξ := by
+      ∧ ∀ ξ : ℝ, Ξ ≤ |ξ| → L0 ≤ suzukiExteriorLogWeight ξ := by
   obtain ⟨C, hC0, hC⟩ := exists_bound_suzukiSymbolRemainder a
   refine ⟨C, C + suzukiWienerMass a + 1, Real.sqrt (Real.exp (2 * (C + suzukiWienerMass a + 1))),
     hC0, by linarith [suzukiWienerMass_nonneg a], hC, by linarith, ?_⟩
@@ -136,24 +137,24 @@ theorem exists_suzukiExteriorThreshold (a : ℝ) :
     have hle : Real.exp (2 * (C + suzukiWienerMass a + 1)) ≤ 1 + ξ ^ 2 := by linarith
     have := Real.log_le_log hpos hle
     rwa [Real.log_exp] at this
-  rw [suzukiLogWeight]
+  rw [suzukiExteriorLogWeight]
   linarith
 
 /-- The Neumann inverse of the high-pass element at a frequency above the threshold. -/
 def suzukiExteriorInverse (a ξ : ℝ) : SuzukiSeamValuation → ℂ :=
-  wienerNeumannInverse ((suzukiLogWeight ξ : ℝ) : ℂ) (suzukiSymbolRemainder a ξ)
+  wienerNeumannInverse ((suzukiExteriorLogWeight ξ : ℝ) : ℂ) (suzukiSymbolRemainder a ξ)
     (suzukiExteriorAtoms a)
 
 /-- **`(22)`: above the threshold the inverse is `ℓ¹` with the exact margin bound.** -/
 theorem tsum_enorm_suzukiExteriorInverse_le {a ξ C L0 : ℝ} (hC0 : 0 ≤ C)
-    (hq : ‖suzukiSymbolRemainder a ξ‖ ≤ C) (hL : L0 ≤ suzukiLogWeight ξ)
+    (hq : ‖suzukiSymbolRemainder a ξ‖ ≤ C) (hL : L0 ≤ suzukiExteriorLogWeight ξ)
     (hsub : C + suzukiWienerMass a < L0) :
     (∑' ν, ‖suzukiExteriorInverse a ξ ν‖ₑ)
       ≤ (ENNReal.ofReal L0 - ENNReal.ofReal (C + suzukiWienerMass a))⁻¹ := by
   have hqe : ‖suzukiSymbolRemainder a ξ‖ₑ ≤ ENNReal.ofReal C := by
     rw [← ofReal_norm]
     exact ENNReal.ofReal_le_ofReal hq
-  have hLe : ENNReal.ofReal L0 ≤ ‖((suzukiLogWeight ξ : ℝ) : ℂ)‖ₑ := by
+  have hLe : ENNReal.ofReal L0 ≤ ‖((suzukiExteriorLogWeight ξ : ℝ) : ℂ)‖ₑ := by
     rw [← ofReal_norm, Complex.norm_real, Real.norm_eq_abs]
     exact ENNReal.ofReal_le_ofReal (le_trans hL (le_abs_self _))
   have hbound := fun ν => enorm_wienerNeumannInverse_le (G := SuzukiSeamValuation)
@@ -182,7 +183,7 @@ private theorem summable_norm_of_tsum_enorm_ne_top {f : SuzukiSeamValuation → 
   simpa using NNReal.summable_coe.mpr hnn
 
 theorem summable_norm_suzukiExteriorInverse {a ξ C L0 : ℝ} (hC0 : 0 ≤ C)
-    (hq : ‖suzukiSymbolRemainder a ξ‖ ≤ C) (hL : L0 ≤ suzukiLogWeight ξ)
+    (hq : ‖suzukiSymbolRemainder a ξ‖ ≤ C) (hL : L0 ≤ suzukiExteriorLogWeight ξ)
     (hsub : C + suzukiWienerMass a < L0) :
     Summable fun ν => ‖suzukiExteriorInverse a ξ ν‖ := by
   apply summable_norm_of_tsum_enorm_ne_top
@@ -196,23 +197,23 @@ theorem summable_norm_suzukiExteriorInverse {a ξ C L0 : ℝ} (hC0 : 0 ≤ C)
 
 /-- **`(21)`: the Neumann series really inverts the symbol.** -/
 theorem discreteConv_suzukiHighPass_inverse {a ξ C L0 : ℝ} (hC0 : 0 ≤ C)
-    (hq : ‖suzukiSymbolRemainder a ξ‖ ≤ C) (hL : L0 ≤ suzukiLogWeight ξ)
+    (hq : ‖suzukiSymbolRemainder a ξ‖ ≤ C) (hL : L0 ≤ suzukiExteriorLogWeight ξ)
     (hsub : C + suzukiWienerMass a < L0) :
     discreteConv (suzukiHighPassElement a ξ) (suzukiExteriorInverse a ξ) = discreteDelta := by
   have hL0pos : 0 < L0 := by linarith [suzukiWienerMass_nonneg a]
-  have hLpos : 0 < suzukiLogWeight ξ := lt_of_lt_of_le hL0pos hL
-  have hne : ((suzukiLogWeight ξ : ℝ) : ℂ) ≠ 0 := by
+  have hLpos : 0 < suzukiExteriorLogWeight ξ := lt_of_lt_of_le hL0pos hL
+  have hne : ((suzukiExteriorLogWeight ξ : ℝ) : ℂ) ≠ 0 := by
     simp only [ne_eq, Complex.ofReal_eq_zero]
     exact ne_of_gt hLpos
   have hqe : ‖suzukiSymbolRemainder a ξ‖ₑ ≤ ENNReal.ofReal C := by
     rw [← ofReal_norm]
     exact ENNReal.ofReal_le_ofReal hq
-  have hLe : ENNReal.ofReal L0 ≤ ‖((suzukiLogWeight ξ : ℝ) : ℂ)‖ₑ := by
+  have hLe : ENNReal.ofReal L0 ≤ ‖((suzukiExteriorLogWeight ξ : ℝ) : ℂ)‖ₑ := by
     rw [← ofReal_norm, Complex.norm_real, Real.norm_eq_abs]
     exact ENNReal.ofReal_le_ofReal (le_trans hL (le_abs_self _))
-  have hmass : discreteMass (fun ν => ‖wienerRelativeKernel ((suzukiLogWeight ξ : ℝ) : ℂ)
+  have hmass : discreteMass (fun ν => ‖wienerRelativeKernel ((suzukiExteriorLogWeight ξ : ℝ) : ℂ)
       (suzukiSymbolRemainder a ξ) (suzukiExteriorAtoms a) ν‖ₑ) < 1 := by
-    have hle : discreteMass (fun ν => ‖wienerRelativeKernel ((suzukiLogWeight ξ : ℝ) : ℂ)
+    have hle : discreteMass (fun ν => ‖wienerRelativeKernel ((suzukiExteriorLogWeight ξ : ℝ) : ℂ)
         (suzukiSymbolRemainder a ξ) (suzukiExteriorAtoms a) ν‖ₑ)
         ≤ discreteMass (wienerStarKernel C L0 (suzukiExteriorAtoms a)) := by
       rw [discreteMass, discreteMass]
@@ -227,7 +228,7 @@ theorem discreteConv_suzukiHighPass_inverse {a ξ C L0 : ℝ} (hC0 : 0 ≤ C)
 /-- **`(25)`: absolute evaluation inverts the symbol.**  Above the threshold the unit-phase
 evaluation of the Neumann inverse is the reciprocal of Suzuki's symbol. -/
 theorem suzukiWienerEval_inverse_mul {a ξ C L0 : ℝ} (hC0 : 0 ≤ C)
-    (hq : ‖suzukiSymbolRemainder a ξ‖ ≤ C) (hL : L0 ≤ suzukiLogWeight ξ)
+    (hq : ‖suzukiSymbolRemainder a ξ‖ ≤ C) (hL : L0 ≤ suzukiExteriorLogWeight ξ)
     (hsub : C + suzukiWienerMass a < L0) :
     suzukiWienerEval ξ (suzukiExteriorInverse a ξ) * suzukiExteriorSymbol a ξ = 1 := by
   have hconv := discreteConv_suzukiHighPass_inverse hC0 hq hL hsub
@@ -246,7 +247,7 @@ theorem suzukiWienerEval_inverse_mul {a ξ C L0 : ℝ} (hC0 : 0 ≤ C)
 /-- **`(23)`--`(25)`: the two-root carrier reconstructs the completed mode.**  For any source
 family the carrier `c = h⁻¹ ⋆ s` evaluates to the source evaluation divided by the symbol. -/
 theorem suzukiWienerEval_carrier {a ξ C L0 : ℝ} (hC0 : 0 ≤ C)
-    (hq : ‖suzukiSymbolRemainder a ξ‖ ≤ C) (hL : L0 ≤ suzukiLogWeight ξ)
+    (hq : ‖suzukiSymbolRemainder a ξ‖ ≤ C) (hL : L0 ≤ suzukiExteriorLogWeight ξ)
     (hsub : C + suzukiWienerMass a < L0) {s : SuzukiSeamValuation → ℂ}
     {T : Finset SuzukiSeamValuation} (hs : ∀ σ ∉ T, s σ = 0) :
     suzukiWienerEval ξ (discreteConv (suzukiExteriorInverse a ξ) s) * suzukiExteriorSymbol a ξ

@@ -21,7 +21,7 @@ prove its properties rather than assuming them.
 | `triptic-orbit-residue-reciprocity` | **both unconditional theorems formalized** — additive and multiplicative reciprocity |
 | `triptic-ht-kummer-content-root-classification` | abstract Kummer core audited axiom-clean; divisor layer built |
 | `hypertranscendental-pair-localization-noncompression` | algebraic core audited axiom-clean |
-| `nonautonomous-rational-first-order-tail-orbifold-law` | Euclidean signature classification closed |
+| `nonautonomous-rational-first-order-tail-orbifold-law` | PROMOTED to 3-formalized (2026-08-14) |
 | `nonautonomous-rational-complete-tail-orbifold-classification` | Euclidean signature classification closed |
 | `nonautonomous-isogeny-tail-time-splitting` | (1),(3),(4),(5) formal; (2),(6),(7) formal for `G_m` |
 | `helson-universal-ht-arbitrary-divisor-orthogonality` | pending |
@@ -770,3 +770,67 @@ Since every atom is a jet of a translate of `δ log θ`, and jets and translates
 algebraic germ are differentially algebraic, the kernel of the orbital divisor consists of
 differentially algebraic functions.  That is statement `(4)` of `triptic-ht-kummer-content-root-classification`
 and the completeness half of `triptic-orbit-residue-reciprocity`.
+
+## 2026-08-14 — `nonautonomous-rational-first-order-tail-orbifold-law` promoted to 3-formalized
+
+The `2 → 3` gate is closed.  What closed it, beyond the symbol/quantization/signature layers that
+were already formal:
+
+- the **elliptic function field theorem** (a mathlib gap): every lattice-periodic meromorphic
+  function on `ℂ` satisfies `C(℘)·f = A(℘) + ℘'·B(℘)`
+  (`EllipticMeromorphicOrderTools` → `EllipticEvenPolynomialWeierstrass` →
+  `EllipticEvenRationalWeierstrass` → `EllipticFunctionFieldWeierstrass`);
+- the **field of meromorphic functions on the plane**, as germs along the codiscrete filter, with
+  its derivation, translations and constants (`MeromorphicPlane*`), on which
+  `ellipticSubfield_eq_adjoin` identifies the phase fields as `ℂ⟮℘, ℘'⟯`;
+- the **generic reparametrisation** of a differential field (`CoefficientDerivation`,
+  `GenericReparametrization`, `ReparametrizationAutomorphism`,
+  `TwistedReparametrizationAutomorphism`, `ReparametrizationDescent`), on which the orbifold
+  coordinate becomes a differential-generic point while the deck transformations stay the analytic
+  translations and scalings of the plane — so no `℘` addition theorem is needed;
+- the **phase tail** itself (`EllipticIsogenyDeck`, `EllipticIsogenyTailPlane`,
+  `EllipticReparamProtocolTail`, `EllipticVelocityTail`, `EllipticRotationTail`,
+  `EllipticPhaseTailReparam`) and the **transported current** (`EllipticReparamCurrent`).
+
+Certificate: `../3-formalized/new_scientific_knowledge/ht/nonautonomous-rational-first-order-tail-orbifold-law-formalized.md`.
+
+## 2026-08-14 — `nonautonomous-isogeny-tail-time-splitting` promoted to 3-formalized
+
+The `2 → 3` gate asked for "the full algebraic-group statement in Lean", and the card's own audit had
+narrowed what was missing to one thing: the class of groups.  `G_a` has no nontrivial isogeny in
+characteristic zero, `G_m` and `G_m^r` were already formal, and the elliptic curve had just been
+closed — so what remained was the abelian-variety column in dimension `> 1`.
+
+Over `ℂ` every connected commutative algebraic group is, as a complex Lie group, `ℂ^n / Λ`, so one
+analytic stack over `ℂ^n` settles the whole class at once.  Two things had to change relative to the
+one-variable elliptic column, and both are structural rather than technical:
+
+- **The carrier.**  For `n ≥ 2` the polar set of a meromorphic function is a hypersurface, so the
+  codiscrete-germ field `MeromorphicPlane` has no analogue.  The replacement is the **fraction field
+  of the entire functions** (`EntireFunctionField`), which exists in every dimension and needs no
+  Cousin or Oka theorem — the domain property is the identity theorem on a connected space.
+- **The deck-closure input.**  The elliptic argument used *arbitrarily small periods*, which is
+  useless for `n ≥ 2`: the period group of a nonconstant function of several variables need not be
+  discrete (`f(z₁,z₂) = z₁` has periods `{0} × ℂ`).  The replacement is **density** of the
+  accumulated division points (`dense_divisionPoints`), which a cocompact period lattice supplies
+  by an integer-part estimate.
+
+With those, the several-velocity reparametrisation (`GeneralCoefficientDerivation`,
+`MultiReparametrization`, `MultiReparametrizationAutomorphism`) carries the whole one-variable
+argument over, and the columns are:
+
+- `ComplexTorusIsogenyDeck` — the deck group of `z ↦ m z` is exactly its group of division points;
+- `ComplexTorusVelocityTail` — the phase tail is `C⟨u₁′, …, uₙ′⟩`, the velocities are differentially
+  independent (`dtrdeg = n = dim G`), and the tail meets `C(G)` in the constants only;
+- `ComplexTorusMaurerCartan` — `deriv_coordEntire`: the Maurer–Cartan velocity of the tautological
+  point IS the tuple of reparametrisation velocities.  This is the "coordinate description of
+  `Lie(G)`" the card had recorded as the last scheme-level input; analytically it is `∂ₖzⱼ = δⱼₖ`;
+- `ComplexTorusPositionVelocity` — the position–velocity splitting for an **arbitrary** set of deck
+  translations, with no hypothesis on the protocol, of which the expanding case is the branch where
+  the position invariants collapse to the constants.
+
+`stdTorus_phase_tail` states items `(6)`, `(7a)` and `(7b)` together for the standard torus
+`ℂ^n / (ℤ + iℤ)^n` with degrees `2^k` and no hypothesis at all — lattice, protocol and point all
+exhibited — so the statement is not vacuous.
+
+Certificate: `../3-formalized/new_scientific_knowledge/ht/nonautonomous-isogeny-tail-time-splitting-formalized.md`.

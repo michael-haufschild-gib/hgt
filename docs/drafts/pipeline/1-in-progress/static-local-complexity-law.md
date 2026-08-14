@@ -6106,3 +6106,57 @@ receive a new title and an independent significance audit.
   only to the heap Green/static-capacity composition.  Paper proof and hostile audit:
   `../2-fully-proven/local-circuit-heap-capacity-law.md`.  Lean remained read only during the shared
   refactor.
+- 2026-08-13 -- Replaced sequential first-hit/Kraft accounting by concurrent causal accessibility.
+  Trace-prefix cylinders are not prefix-free: independent successful prefixes can share one
+  completion.  Under the finite heap law `pi_z(T)=z^|T|/Z(z)`, left cancellation gives the exact
+  cylinder identity `pi_z(up u)=z^|u|` and exact expected prefix count `E|Pref(T)|=Z(z)`.  Taking the
+  probability of the union of all successful causal prefixes produces a bounded reporter `F`, with
+  exact recurrence value one, `z^C<=F`, a sharp tail upper bound, and
+  `-log F=inf_(Q(hit)=1) D(Q||pi_z)`.  A soft max-over-prefix version is `1/delta`-Lipschitz
+  independent of Hilbert dimension, circuit depth, and prefix count, removing the previous
+  dimension-linear approximate-tube remainder.  It does not prove the fixed-time mean decay.
+  Paper proof: `../2-fully-proven/concurrent-causal-heap-accessibility-law.md`.  Lean remained read
+  only during refactor.
+- 2026-08-13 -- Identified the exact quenched growing-replica object and its carrier law.  Replicate
+  preparation heaps while keeping one common static Hamiltonian:
+  `Z_r(t)=E_H F(Phi_H(t))^r`.  This is exactly the product-incidence probability for `r` independent
+  causal heaps against the same occupied endpoint, and
+  `Pr_H{C<=s}<=z^(-rs)Z_r`.  Entropy duality gives the action formula
+  `-log Z_r=inf_q[D(q||rho_H)+r E_q J]`.  Therefore replica closure is exactly the uniform tilted-law
+  gap `(1/r)D(q||rho_H)+E_q J >= s log(1/z)+kappa` **within this replica certificate**.  The replica limit detects
+  `ess inf J`: source rarity is paid once and amortized by `1/r`, so growing replicas amplify the
+  easiest surviving rare carrier rather than washing it out.  The empty heap proves `F=1` exactly
+  on the common recurrence target and isolates that nondecaying mass once.  This supersedes raw
+  incidence-normalized coarea mass as the invariant: coarea/Jacobian methods are now proof devices
+  only if they establish the action gap for every source tilt.  A rare easy carrier may be harmless
+  to the desired event tail but still dominate `Z_r`; it must be cut, stratified, or handled by a
+  direct non-moment proof.  Physical static-local gap remains open.  Paper proof and hostile audit:
+  `../2-fully-proven/quenched-causal-replica-action-law.md`.  Lean remained read only during refactor.
+- 2026-08-14 -- Proved a new rational-frame constraint on static recurrence.  For a uniform
+  `D`-phase orbit and any finite target dictionary of size `N`, at most
+  `4N exp[-(1-4 delta^2)D/4]` of the projective `k`-torsion points lie within trace distance
+  `delta<1/2` of the dictionary.  At prime order every nonzero power is an automorphism, so whenever
+  `4(k-1)N exp[-(1-4 delta^2)D/4]<1`, a positive explicitly bounded fraction of torsion points
+  generate cyclic polygons whose complete `k-1` nonidentity vertices avoid every target.  Maximal
+  projective spectral rank shadows any such polygon at arbitrarily late physical times: the
+  endpoint returns while every exact rational slice `jR/k` is hard.  With bounded-dependence local
+  circuit heaps, `M=O(n)`, `Delta=O(1)`, and depth `s=cD`, one may take prime
+  `k=exp(eta D+o(D))`; one recurrence cycle then contains exponentially many equally spaced
+  `Theta(D)`-hard slices.  Generic path-local maximal rank and the permanent same-Hamiltonian
+  two-query separator compose with this result, so the same ordinary static local Hamiltonian can
+  exhibit those hard recurrence polygons while remaining distinguishable from Haar at every time.
+  This advances recurrence anatomy, not Brown onset: it gives neither the first selected recurrence
+  time nor initial monotone/linear growth.  Paper proof and hostile audit:
+  `../2-fully-proven/prime-torsion-recurrence-polygon-complexity-law.md`.
+- 2026-08-14 -- Closed the dependency-free Lean core of the prime-torsion polygon law and improved
+  its cap mechanism.  `PrimeTorsionOrbitAvoidance` proves the exact survivor count
+  `p^d-(p-1)|bad|`.  `FiniteGridCoherenceMoment` proves the exact `2n`-th phase-coherence moment for
+  every modulus `M` with `2n<M`, translated target-cap invariance, and the factorial cap bound.
+  `PrimeTorsionTargetCapPolygon` composes them: if
+  `(p-1)N n! (sum_i w_i^2)^n < u^(2n)`, one prime-order phase has every nonidentity power outside
+  all `N` target caps.  Decoupling replica order `n` from polygon order `p` is stronger than the
+  original `M=2n+1` grid presentation and preserves exponentially long polygons.  The key
+  literature boundary was already formalized separately: ordinary static-local hard epochs can
+  coexist with a permanent two-query separation from Haar.  Remaining frontier is now the physical
+  composition through arbitrary normalized rays, autonomous late-time shadowing, circuit
+  asymptotics, and ultimately first Brown onset—not finite-grid power-orbit counting.

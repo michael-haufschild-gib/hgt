@@ -10,10 +10,10 @@ import Mathlib.NumberTheory.SumPrimeReciprocals
 /-!
 # Critical half-density prime-tail resolvent law
 
-This file realizes the infinite ordinary-integer source from the paper card as a locally finite
-measure on positive logarithmic time, identifies its position moment, constructs its advanced
-transport resolvent for `re z > 1`, and proves the distributional jump equation.  It also records
-the multiplicity-exact Xi monodromy modes, all parameter jets, and the adjoint reflection law.
+This file realizes the infinite ordinary-integer source as a locally finite measure on positive
+logarithmic time, identifies its position moment as the unsquared nonarchimedean Weil current,
+constructs its advanced transport resolvent for `re z > 1`, and proves the distributional transport
+equation `(∂_L - (z - 1/2)) H_z = -Π₀` by half-line integration by parts against each Green atom.
 
 The displayed tail in the card uses the closed convention `L ≤ log n`; it is consequently
 left-continuous at an atom.  The strict-tail representative is right-continuous, differs only on
@@ -680,6 +680,202 @@ theorem criticalPrimeTailForcingDistribution_apply
     criticalPrimeTailForcingFunctional
     (fun K _K_sub => criticalPrimeTailForcingLocalCLM K)
     criticalPrimeTailForcingFunctional_ofSupportedIn φ
+
+/-! ## Equation (5): the distributional transport equation -/
+
+theorem criticalPrimeTailTestAdvancedTerm_eq_indicator
+    (z : ℂ) (ψ : DeningerTimeTestFunction) (n : DeningerPrimePowerIndex) :
+    criticalPrimeTailTestAdvancedTerm z ψ n =
+      (Iic (deningerPrimePowerTime n)).indicator
+        (fun L : ℝ => (criticalPrimeTailAtomWeight n : ℂ) *
+          ((ψ L : ℂ) *
+            Complex.exp (((L - deningerPrimePowerTime n : ℝ) : ℂ) *
+              criticalPrimeTailTransportRate z))) := by
+  funext L
+  rw [criticalPrimeTailTestAdvancedTerm, criticalPrimeTailAdvancedTerm]
+  by_cases hn : L ≤ deningerPrimePowerTime n
+  · rw [if_pos hn, Set.indicator_of_mem (Set.mem_Iic.mpr hn)]
+    rw [mul_comm (criticalPrimeTailTransportRate z)]
+    ring
+  · rw [if_neg hn, Set.indicator_of_notMem (by simpa using hn), mul_zero]
+
+theorem integral_criticalPrimeTailTestAdvancedTerm_eq
+    (z : ℂ) (ψ : DeningerTimeTestFunction) (n : DeningerPrimePowerIndex) :
+    (∫ L : ℝ, criticalPrimeTailTestAdvancedTerm z ψ n L) =
+      (criticalPrimeTailAtomWeight n : ℂ) *
+        ∫ L : ℝ in Iic (deningerPrimePowerTime n),
+          (ψ L : ℂ) *
+            Complex.exp (((L - deningerPrimePowerTime n : ℝ) : ℂ) *
+              criticalPrimeTailTransportRate z) := by
+  rw [criticalPrimeTailTestAdvancedTerm_eq_indicator,
+    MeasureTheory.integral_indicator measurableSet_Iic, MeasureTheory.integral_const_mul]
+
+theorem integrableOn_criticalPrimeTail_atom_pairing
+    (z : ℂ) (ψ : DeningerTimeTestFunction) (n : DeningerPrimePowerIndex) :
+    IntegrableOn
+      (fun L : ℝ => (ψ L : ℂ) *
+        Complex.exp (((L - deningerPrimePowerTime n : ℝ) : ℂ) *
+          criticalPrimeTailTransportRate z))
+      (Iic (deningerPrimePowerTime n)) volume := by
+  have hcont : Continuous (fun L : ℝ => (ψ L : ℂ) *
+      Complex.exp (((L - deningerPrimePowerTime n : ℝ) : ℂ) *
+        criticalPrimeTailTransportRate z)) := by
+    refine (Complex.continuous_ofReal.comp (ψ.contDiff.continuous)).mul ?_
+    exact (Complex.continuous_exp.comp
+      ((Complex.continuous_ofReal.comp (continuous_id.sub continuous_const)).mul
+        continuous_const))
+  have hcs : HasCompactSupport (fun L : ℝ => (ψ L : ℂ) *
+      Complex.exp (((L - deningerPrimePowerTime n : ℝ) : ℂ) *
+        criticalPrimeTailTransportRate z)) := by
+    refine HasCompactSupport.mul_right ?_
+    simpa only [Function.comp_apply] using!
+      (ψ.hasCompactSupport.comp_left (g := fun r : ℝ => (r : ℂ)) rfl)
+  exact (hcont.integrable_of_hasCompactSupport hcs).integrableOn
+
+/-- Per-atom transport pairing: the advanced Green atom pairs with the transport combination of a
+test function to exactly its Dirac mass. -/
+theorem integral_criticalPrimeTail_atom_transport_pairing
+    (z : ℂ) (n : DeningerPrimePowerIndex) (φ : DeningerTimeTestFunction) :
+    (∫ L : ℝ, criticalPrimeTailTestAdvancedTerm z (deningerTimeTestDerivative φ) n L)
+        + criticalPrimeTailTransportRate z *
+          (∫ L : ℝ, criticalPrimeTailTestAdvancedTerm z φ n L) =
+      (criticalPrimeTailAtomWeight n : ℂ) * (φ (deningerPrimePowerTime n) : ℂ) := by
+  rw [integral_criticalPrimeTailTestAdvancedTerm_eq,
+    integral_criticalPrimeTailTestAdvancedTerm_eq]
+  have hsplit :
+      (criticalPrimeTailAtomWeight n : ℂ) *
+          (∫ L : ℝ in Iic (deningerPrimePowerTime n),
+            ((deningerTimeTestDerivative φ) L : ℂ) *
+              Complex.exp (((L - deningerPrimePowerTime n : ℝ) : ℂ) *
+                criticalPrimeTailTransportRate z))
+        + criticalPrimeTailTransportRate z *
+            ((criticalPrimeTailAtomWeight n : ℂ) *
+              ∫ L : ℝ in Iic (deningerPrimePowerTime n),
+                (φ L : ℂ) *
+                  Complex.exp (((L - deningerPrimePowerTime n : ℝ) : ℂ) *
+                    criticalPrimeTailTransportRate z))
+      = (criticalPrimeTailAtomWeight n : ℂ) *
+          ((∫ L : ℝ in Iic (deningerPrimePowerTime n),
+              ((deningerTimeTestDerivative φ) L : ℂ) *
+                Complex.exp (((L - deningerPrimePowerTime n : ℝ) : ℂ) *
+                  criticalPrimeTailTransportRate z))
+            + ∫ L : ℝ in Iic (deningerPrimePowerTime n),
+                criticalPrimeTailTransportRate z *
+                  ((φ L : ℂ) *
+                    Complex.exp (((L - deningerPrimePowerTime n : ℝ) : ℂ) *
+                      criticalPrimeTailTransportRate z))) := by
+    rw [MeasureTheory.integral_const_mul]
+    ring
+  rw [hsplit]
+  congr 1
+  rw [← MeasureTheory.integral_add (integrableOn_criticalPrimeTail_atom_pairing z
+      (deningerTimeTestDerivative φ) n)
+    ((integrableOn_criticalPrimeTail_atom_pairing z φ n).const_mul _)]
+  rw [← integral_Iic_criticalPrimeTail_atom_transport z n φ]
+  apply MeasureTheory.integral_congr_ae
+  filter_upwards [] with L
+  ring
+
+/-- **Equation (5).**  The advanced prime tail satisfies the forced transport equation
+`(∂_L - (z - 1/2)) H_z = -Π₀` in distributions on positive logarithmic time. -/
+theorem criticalHalfDensityPrimeTail_transport_eq_forcing
+    {z : ℂ} (hz : 1 < z.re) (φ : DeningerTimeTestFunction) :
+    criticalHalfDensityPrimeTailDistribution z (deningerTimeTestDerivative φ)
+        + criticalPrimeTailTransportRate z *
+          criticalHalfDensityPrimeTailDistribution z φ =
+      criticalPrimeTailForcingDistribution φ := by
+  have hloc := criticalHalfDensityPrimeTail_locallyIntegrableOn hz
+  rw [criticalHalfDensityPrimeTailDistribution,
+    deningerRegularTimeDistribution_apply hloc (deningerTimeTestDerivative φ),
+    deningerRegularTimeDistribution_apply hloc φ,
+    integral_mul_criticalHalfDensityPrimeTail_eq_tsum hz (deningerTimeTestDerivative φ),
+    integral_mul_criticalHalfDensityPrimeTail_eq_tsum hz φ,
+    criticalPrimeTailForcingDistribution_apply]
+  have hsum₁ : Summable (fun n : DeningerPrimePowerIndex =>
+      ∫ L : ℝ, criticalPrimeTailTestAdvancedTerm z (deningerTimeTestDerivative φ) n L) :=
+    Summable.of_norm ((summable_integral_norm_criticalPrimeTailTestAdvancedTerm hz
+      (deningerTimeTestDerivative φ)).of_nonneg_of_le
+      (fun _ => norm_nonneg _) (fun _ => norm_integral_le_integral_norm _))
+  have hsum₂' : Summable (fun n : DeningerPrimePowerIndex =>
+      ∫ L : ℝ, criticalPrimeTailTestAdvancedTerm z φ n L) :=
+    Summable.of_norm ((summable_integral_norm_criticalPrimeTailTestAdvancedTerm hz φ).of_nonneg_of_le
+      (fun _ => norm_nonneg _) (fun _ => norm_integral_le_integral_norm _))
+  have hsum₂ : Summable (fun n : DeningerPrimePowerIndex =>
+      criticalPrimeTailTransportRate z *
+        ∫ L : ℝ, criticalPrimeTailTestAdvancedTerm z φ n L) := hsum₂'.mul_left _
+  rw [← Summable.tsum_mul_left _ hsum₂', ← Summable.tsum_add hsum₁ hsum₂]
+  exact tsum_congr fun n => integral_criticalPrimeTail_atom_transport_pairing z n φ
+
+/-! ## Theorem 3: the source-created modes are homogeneous ambiguities -/
+
+theorem integral_deriv_eq_zero_of_hasCompactSupport {F : ℝ → ℂ}
+    (hFC : ContDiff ℝ 1 F) (hFCS : HasCompactSupport F) :
+    (∫ x : ℝ, deriv F x) = 0 := by
+  obtain ⟨R, hR⟩ := hFCS.isCompact.isBounded.subset_closedBall (0 : ℝ)
+  have hb : ∀ x : ℝ, R < x → x ∉ tsupport F := by
+    intro x hx hmem
+    have hxR := hR hmem
+    simp only [Metric.mem_closedBall, Real.dist_eq, sub_zero] at hxR
+    linarith [(abs_le.mp hxR).2]
+  have hderiv0 : ∀ x : ℝ, R < x → deriv F x = 0 := by
+    intro x hx
+    have hev : F =ᶠ[nhds x] 0 := by
+      filter_upwards [isOpen_Ioi.mem_nhds hx] with y hy
+      exact image_eq_zero_of_notMem_tsupport (hb y hy)
+    simpa using hev.deriv_eq
+  have hFb : F (R + 1) = 0 :=
+    image_eq_zero_of_notMem_tsupport (hb (R + 1) (by linarith))
+  have hIic := HasCompactSupport.integral_Iic_deriv_eq hFC hFCS (R + 1)
+  rw [hFb] at hIic
+  have hfull : (∫ x : ℝ in Iic (R + 1), deriv F x) = ∫ x : ℝ, deriv F x := by
+    refine MeasureTheory.setIntegral_eq_integral_of_forall_compl_eq_zero ?_
+    intro x hx
+    refine hderiv0 x ?_
+    simp only [Set.mem_Iic, not_le] at hx
+    linarith
+  rw [← hfull, hIic]
+
+/-- **Every exponential mode is a homogeneous solution of the transport operator.**  With
+`μ = ρ - 1/2` this is the card's equation `(11)`: the mode created by monodromy at a nontrivial zero
+is annihilated by `∂_L - (ρ - 1/2)`, so it is an ambiguity of the same forced equation `(5)` rather
+than a second, independent object. -/
+theorem integral_homogeneousMode_transport (μ : ℂ) (φ : DeningerTimeTestFunction) :
+    (∫ L : ℝ, (((deningerTimeTestDerivative φ) L : ℂ) * Complex.exp (μ * (L : ℂ))
+        + (φ L : ℂ) * (μ * Complex.exp (μ * (L : ℂ))))) = 0 := by
+  set u : ℝ → ℂ := fun L => (φ L : ℂ) with hu
+  set v : ℝ → ℂ := fun L => Complex.exp (μ * (L : ℂ)) with hv
+  set F : ℝ → ℂ := fun L => u L * v L with hF
+  have hud : ∀ L, HasDerivAt u ((deningerTimeTestDerivative φ) L : ℂ) L := by
+    intro L
+    have hφ : HasDerivAt (fun x : ℝ => φ x) (deriv (fun x : ℝ => φ x) L) L :=
+      (φ.contDiff.differentiable (by simp)).differentiableAt.hasDerivAt
+    simpa only [hu, deningerTimeTestDerivative_apply_eq_deriv] using hφ.ofReal_comp
+  have hvd : ∀ L, HasDerivAt v (μ * v L) L := by
+    intro L
+    have hlin : HasDerivAt (fun x : ℝ => μ * (x : ℂ)) μ L := by
+      simpa using ((hasDerivAt_id L).ofReal_comp.const_mul μ)
+    simpa only [hv, mul_comm] using hlin.cexp
+  have hFd : ∀ L, HasDerivAt F
+      (((deningerTimeTestDerivative φ) L : ℂ) * v L + u L * (μ * v L)) L :=
+    fun L => (hud L).mul (hvd L)
+  have huC : ContDiff ℝ 1 u := by
+    simpa [hu, Function.comp_def] using
+      (Complex.ofRealCLM.contDiff.comp (φ.contDiff.of_le (by simp)))
+  have hvC : ContDiff ℝ 1 v :=
+    ((contDiff_const.mul (Complex.ofRealCLM.contDiff.comp
+      (contDiff_id : ContDiff ℝ 1 (id : ℝ → ℝ))))).cexp
+  have hFC : ContDiff ℝ 1 F := huC.mul hvC
+  have huCS : HasCompactSupport u := by
+    simpa only [hu, Function.comp_apply] using!
+      (φ.hasCompactSupport.comp_left (g := fun r : ℝ => (r : ℂ)) rfl)
+  have hFCS : HasCompactSupport F := huCS.mul_right
+  have hzero := integral_deriv_eq_zero_of_hasCompactSupport hFC hFCS
+  have hderivEq : (fun L => deriv F L) = fun L =>
+      ((deningerTimeTestDerivative φ) L : ℂ) * v L + u L * (μ * v L) := by
+    funext L
+    exact (hFd L).deriv
+  rw [hderivEq] at hzero
+  simpa only [hu, hv] using hzero
 
 end
 

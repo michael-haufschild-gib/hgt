@@ -60,8 +60,11 @@ theorem tendsto_thetaXiWardKernelAbelOffLineWeight (q : XiZeroCopy) :
   have h := (tendsto_const_nhds (x := (1 : ℝ)) (f := atTop (α := ℕ))).sub
     (tendsto_thetaXiWardKernelAbelWeight q)
   by_cases hq : (q.1 : ℂ).re = 1 / 2
-  · simpa [thetaXiWardKernelAbelOffLineWeight, hq] using h
-  · simpa [thetaXiWardKernelAbelOffLineWeight, hq] using h
+  · convert h using 1 <;>
+      simp [thetaXiWardKernelAbelOffLineWeight, hq]
+  · have hq' : (q.1 : ℂ).re ≠ (2 : ℝ)⁻¹ := by simpa using hq
+    convert h using 1 <;>
+      simp [thetaXiWardKernelAbelOffLineWeight, hq']
 
 /-- Regular transverse coordinate supplied by the Ward Abel complement. -/
 def thetaXiWardAbelTransverseCoordinate (n : ℕ) (q : XiZeroCopy) : ℝ :=
@@ -71,7 +74,7 @@ theorem thetaXiWardAbelTransverseCoordinate_sq (n : ℕ) (q : XiZeroCopy) :
     thetaXiWardAbelTransverseCoordinate n q ^ 2 =
       thetaXiWardKernelAbelOffLineWeight n q := by
   rw [thetaXiWardAbelTransverseCoordinate,
-    sq_sqrt (thetaXiWardKernelAbelOffLineWeight_nonneg n q)]
+    Real.sq_sqrt (thetaXiWardKernelAbelOffLineWeight_nonneg n q)]
 
 /-- Abel off-line mass of a finite multiplicity-exact divisor packet. -/
 def finiteThetaXiWardAbelOffLineMass
@@ -89,7 +92,9 @@ theorem tendsto_finiteThetaXiWardAbelOffLineMass
   unfold finiteThetaXiWardAbelOffLineMass
   apply tendsto_finsetSum
   intro q hq
-  simpa [if_neg (hoff q hq)] using
+  have hq' : (q.1 : ℂ).re ≠ (2 : ℝ)⁻¹ := by
+    simpa using hoff q hq
+  simpa [hq'] using
     tendsto_thetaXiWardKernelAbelOffLineWeight q
 
 /-- Phase-safe affine determinant of one finite equal-height packet, using only the regular Ward
@@ -135,7 +140,12 @@ theorem tendsto_finiteThetaXiWardAbelAffineFibreDet
       (nhds (-4 * (s.card : ℝ) ^ 2)) := by
   have h := (tendsto_finiteThetaXiWardAbelOffLineMass s hoff).const_mul
     (-4 * (s.card : ℝ))
-  simpa only [finiteThetaXiWardAbelAffineFibreDet_eq] using h
+  have hfun : finiteThetaXiWardAbelAffineFibreDet s x =
+      fun n => -4 * (s.card : ℝ) * finiteThetaXiWardAbelOffLineMass s n := by
+    funext n
+    exact finiteThetaXiWardAbelAffineFibreDet_eq s x n
+  rw [hfun]
+  simpa [pow_two, mul_assoc] using h
 
 end
 

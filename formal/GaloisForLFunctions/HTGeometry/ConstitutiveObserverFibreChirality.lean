@@ -177,4 +177,93 @@ theorem sufficientReversalSelection {I Ω Y : Type*} [LinearOrder I]
     rw [klChirality_swap, hzero, neg_zero] at hpos
     linarith
 
+/-- Signed current lost between two consecutive visible stages of an observer tower. -/
+def observerTowerCurrent (visibleChirality : ℕ → ℝ) (n : ℕ) : ℝ :=
+  visibleChirality n - visibleChirality (n + 1)
+
+/-- Arbitrary finite observer towers conserve source chirality as terminal chirality plus the sum
+of their signed stage currents. -/
+theorem observerTower_chirality_conservation (visibleChirality : ℕ → ℝ) :
+    ∀ n, visibleChirality 0 = visibleChirality n +
+      ∑ i ∈ Finset.range n, observerTowerCurrent visibleChirality i := by
+  intro n
+  induction n with
+  | zero => simp
+  | succ n ih =>
+      rw [Finset.sum_range_succ, observerTowerCurrent]
+      linarith
+
+/-- If terminal reversal kills visible chirality, all source chirality is localized in tower
+currents. -/
+theorem observerTower_chirality_eq_sum_of_terminal_zero
+    (visibleChirality : ℕ → ℝ) (n : ℕ) (hterminal : visibleChirality n = 0) :
+    visibleChirality 0 = ∑ i ∈ Finset.range n, observerTowerCurrent visibleChirality i := by
+  have h := observerTower_chirality_conservation visibleChirality n
+  linarith
+
+/-- Quantitative observer-tower localization: some stage carries at least the average source
+chirality whenever terminal reversal makes the visible terminal current vanish. -/
+theorem exists_observerTowerCurrent_ge_average_of_terminal_zero
+    (visibleChirality : ℕ → ℝ) (n : ℕ) (hn : 0 < n)
+    (hterminal : visibleChirality n = 0) :
+    ∃ i < n, visibleChirality 0 / (n : ℝ) ≤ observerTowerCurrent visibleChirality i := by
+  have hsum := observerTower_chirality_eq_sum_of_terminal_zero visibleChirality n hterminal
+  have hrange : (Finset.range n).Nonempty := Finset.nonempty_range_iff.mpr hn.ne'
+  have hconst : ∑ i ∈ Finset.range n, visibleChirality 0 / (n : ℝ) = visibleChirality 0 := by
+    simp only [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+    exact mul_div_cancel₀ _ (Nat.cast_ne_zero.mpr hn.ne')
+  obtain ⟨i, hi, hle⟩ := Finset.exists_le_of_sum_le
+    (f := fun _ ↦ visibleChirality 0 / (n : ℝ))
+    (g := observerTowerCurrent visibleChirality) hrange (by rw [hconst, hsum])
+  exact ⟨i, Finset.mem_range.mp hi, hle⟩
+
+/-- A single pushed-forward endpoint equality under an involution supplies the reverse equality. -/
+theorem map_reversal_reverse_of_involution {X : Type*} [MeasurableSpace X]
+    (P R : Measure X) {θ : X → X} (hθ : Measurable θ)
+    (hinv : ∀ x, θ (θ x) = x) (hP : P.map θ = R) : R.map θ = P := by
+  rw [← hP, Measure.map_map hθ hθ]
+  have hcomp : θ ∘ θ = id := funext hinv
+  rw [hcomp, Measure.map_id]
+
+/-- Paper-form reversal law: one endpoint-exchange equality under a measurable involution already
+kills directed KL chirality. -/
+theorem klChirality_eq_zero_of_reversal_left {X : Type*} [MeasurableSpace X]
+    (P R : Measure X) [IsFiniteMeasure P] [IsFiniteMeasure R]
+    {θ : X → X} (hθ : Measurable θ) (hinv : ∀ x, θ (θ x) = x)
+    (hP : P.map θ = R) : klChirality P R = 0 :=
+  klChirality_eq_zero_of_reversal P R hθ hinv hP
+    (map_reversal_reverse_of_involution P R hθ hinv hP)
+
+/-- Under reversible observation, the whole source information arrow is carried by observer
+fibres. -/
+theorem observerFibreChirality_eq_source_of_reversal {X Y : Type*}
+    [MeasurableSpace X] [MeasurableSpace Y]
+    (P R : Measure X) [IsFiniteMeasure P] [IsFiniteMeasure R]
+    (q : X → Y) {θ : Y → Y} (hθ : Measurable θ) (hinv : ∀ y, θ (θ y) = y)
+    (hP : (P.map q).map θ = R.map q) : observerFibreChirality P R q = klChirality P R := by
+  have hvisible : klChirality (P.map q) (R.map q) = 0 :=
+    klChirality_eq_zero_of_reversal_left (P.map q) (R.map q) hθ hinv hP
+  simp [observerFibreChirality, hvisible]
+
+/-- Strict source chronology therefore forces a strictly positive hidden fibre current at every
+reversible observed pair. -/
+theorem observerFibreChirality_pos_of_reversal {X Y : Type*}
+    [MeasurableSpace X] [MeasurableSpace Y]
+    (P R : Measure X) [IsFiniteMeasure P] [IsFiniteMeasure R]
+    (q : X → Y) {θ : Y → Y} (hθ : Measurable θ) (hinv : ∀ y, θ (θ y) = y)
+    (hP : (P.map q).map θ = R.map q) (hsource : 0 < klChirality P R) :
+    0 < observerFibreChirality P R q := by
+  rw [observerFibreChirality_eq_source_of_reversal P R q hθ hinv hP]
+  exact hsource
+
+/-- Pair sufficiency plus a single observed endpoint exchange selects zero source chronology. -/
+theorem klChirality_eq_zero_of_sufficient_reversal_left {X Y : Type*}
+    [MeasurableSpace X] [MeasurableSpace Y]
+    (P R : Measure X) [IsFiniteMeasure P] [IsFiniteMeasure R]
+    {q : X → Y} (hq : Measurable q) (hsuff : IsKLPairSufficient P R q)
+    {θ : Y → Y} (hθ : Measurable θ) (hinv : ∀ y, θ (θ y) = y)
+    (hP : (P.map q).map θ = R.map q) : klChirality P R = 0 :=
+  klChirality_eq_zero_of_sufficient_reversal P R hq hsuff hθ hinv hP
+    (map_reversal_reverse_of_involution (P.map q) (R.map q) hθ hinv hP)
+
 end GaloisForLFunctions.HTGeometry

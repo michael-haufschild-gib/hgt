@@ -140,7 +140,20 @@ In `namespace RHTower.QuadrantCarrierData`: `D.Lc = D.L` (retyped on `D.Kc`),
 `D.Kt_re_pos`, `D.Kt_re_lt_one`, **`D.feTangentKt hp : C(D.Kt, ℂ)`** (the symmetrised Euler
 tangent on the right pair of blocks) and **`D.sigmaMap_feTangentKt`** (conjugation fixes it —
 the hypothesis `doubledFunctional_apply_of_sigma_eq` consumes).
-NEXT LEMMA in this file:
+Also DONE in this file: `precompCLM_feTangentKt` and **`total_feTangent`**:
+`(hval : ∀ z : D.Ktot, h z = eulerTangent p z) → D.total h = ((2 * f₂ (eulerTangentElement p) : ℝ) : ℂ)`.
+LEAN NOTE: finish with `exact congrArg (fun r : ℝ => ((2 * r : ℝ) : ℂ)) (D.hL (eulerTangentElement p))`
+— do NOT `simp only [Lc]` first, that unfolds `D.Kc` to `rect …` and breaks the `ContinuousLinearMap`
+instance match.
+**ALSO DONE**: `mem_Ktot_corner` and **`total_coord_pow_eq_zero`**:
+`(hgr : ∀ p : Nat.Primes, f₁ (primeTangentGen p) + f₂ (eulerTangentElement p) = 0) →
+∀ m, D.total (coordMap D.Ktot ^ m) = 0` — the carrier elimination is DISCHARGED
+(`lam n := if h : n.Prime then ((2 * f₁ (primeTangentGen ⟨n,h⟩) : ℝ) : ℂ) else 0`,
+`C := 2 * ‖f₁‖`, `α := 1 - D.b`, `β := D.b`).
+So the only remaining steps for the card are: far-field vanishing + strip identity theorem +
+the two gluings ⇒ `∀ v ∉ D.Kc, cauchyTransform D.Lc v = 0`; then
+`apply_eq_zero_of_cauchyTransform_eq_zero` ⇒ `helim` ⇒ (3)/(18)/(19) ⇒ promote.
+Superseded sketch:
 ```
 theorem total_feTangent (p : Nat.Primes) (h : C(D.Ktot, ℂ))
     (hval : ∀ z : D.Ktot, h z = eulerTangent p (z : ℂ)) :

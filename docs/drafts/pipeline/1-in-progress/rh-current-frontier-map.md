@@ -5667,17 +5667,116 @@ d = 1 - mu(1-alpha) + s.
 
 Zero reserve is rigid: `mu(1-alpha)=tau(1-alpha)=1` and `s=0`. At that point every complement
 dyadic exponent is zero and the entire complement is exactly the constant Dirichlet polynomial
-`1`. Thus the residual obstruction is precisely one long zeta/log pole mode. Both modules
-direct-check and imports are wired; final umbrella build remains pending.
+`1`. `MaynardZeroReserveLogRigidity.lean` then identifies the distinguished atom with the unique
+logarithm atom. `MaynardZeroReserveSupportNull.lean` proves the stronger support law
+`2^q=D=X`: every nonzero coefficient of that block begins at the physical cutoff, where both
+adjacent tents vanish. Generic finite-support positive-line Perron inversion therefore makes its
+raw, normalized, and target--reference adjacent Mellin transforms exactly zero. Exact zero reserve
+is eliminated rather than estimated. Modules direct-check and imports are wired; final umbrella
+build remains pending.
+
+`MaynardPhysicalObservationCone.lean` sharpens this from one rigid boundary box to the whole
+adjacent packet. Recutting at the literal widest endpoint `D(box)<N+2R` changes no raw,
+normalized, or adjacent Perron integral. Every retained box has `tau<mu`, and the exact derivative
+reserve gains the positive physical-support term
+
+```text
+2(mu-tau)(1-alpha).
+```
+
+Strict reserve is not uniform, so it cannot by itself absorb fixed polylogarithms. Lean instead
+proves the exact reserve--support dichotomy: at any requested margin `eps`, either the enhanced
+reserve pays `2 eps (1-alpha)`, or `T^(mu-eps)<D(box)`. More strongly, every coefficient in the
+open physical cone is literally von Mangoldt. Thus the thin-reserve survivor is a short physical
+von-Mangoldt slice, not another boxwise derivative estimate. The next analytic input must be a
+local interval-length-sensitive large-value/energy theorem for that slice; the existing prefix
+divisor moment cannot supply the needed gain.
+
+`MaynardPhysicalSliceLargeValues.lean` now supplies that local theorem. It identifies every
+observed slice `(A,B]` in the open cone with the literal Dirichlet polynomial
+`sum Lambda(n)n^(-1-it)`, proves coefficient energy at most
+`(B-A)(log B/A)^2`, and feeds it into the separated finite-set Montgomery inequality. The exact
+power comparison with Route T's second alternative is `mu(1-nu)+eta<=2`. Corpus constants give
+fixed reserve `eta=1/100` throughout `mu<=39/10`, extending this receiver well past the historical
+`19/9` range. The apparent `mu=4` transition is a real obstruction: formally
+`4(1-nu)=2+2d>2`, so every nonnegative slice budget forces `mu<4`. Prime-density logarithms cannot
+repair that positive-power excess. This closes the near-support local-energy input and splits the
+remaining work into a lower physical-slice phase and a genuinely different upper phase.
+
+`MaynardPrimeSliceEnergy.lean` sharpens the upper-phase survivor. The physical polynomial splits
+exactly into true-prime and proper-prime-power parts. Proper prime powers have square-root local
+width and a full power of receiver reserve throughout `mu<=8`; only true primes remain critical.
+`MaynardUpperPhaseScalarGluing.lean` confines unresolved upper mass to
+`mu(1-alpha)=1+o(1)`. `MaynardUpperSeamSelectedCell.lean` widens the raw adjacent and overweight
+Huxley counts to `mu<=8` and proves that, on the fixed seam window and `mu>=17/4`, every sub-height
+selected-cell coloring satisfies the first receiver with `1/200` reserve after label summation.
+The same module proves why this is not yet a global coloring: maximal-length Kuzmin--Landau has
+amplitude exactly `1-1/mu` at zero cost, and its weighted sub-height exclusion threshold is
+strictly above the seam. Thus the remaining upper object is precisely signed over-height
+true-prime boundary mass, not an unproved generic selected-cell count.
+
+`MaynardUpperPhaseHandoff.lean` removes the artificial `mu<=39/10` lower-phase cutoff. Spending
+the already available Route-T moment deficit `d` instead of the coarse reserve `1/100` proves
+fixed-reserve physical-slice coverage through
+
+```text
+mu <= 4/(1+2d).
+```
+
+At that exact endpoint the additive physical width has exponent
+
+```text
+1-1/mu = 3/4-d/2 = 1/4+routeTGapMomentNu.
+```
+
+Every larger `mu` has at least this width. Hence an unconditional prime-short-interval theorem at
+the single explicit exponent `3/4-d/2` would delete the whole upper phase; no full-range signed
+boundary theorem would then be needed. Existing corpus PNT error gives only
+`x*exp(-c*(log x)^a)` windows and cannot reach any fixed exponent below one. This exposes a real
+route choice: build a weak quantitative zero-density/Hoheisel input crossing the explicit handoff,
+or control the signed true-prime boundary directly.
+At scalar level the required density strength is exact: coefficient three satisfies
+`3(1-theta_*)<1`, whereas coefficient four gives `4(1-theta_*)=1+2d>1`. The latter misses by the
+same `2d` as the physical slice at `mu=4`; logarithmic refinements cannot repair it.
+
+`MaynardMultiscaleReferenceTelescope.lean` replaces obstructed single wide-to-narrow comparison
+by an exact dyadic signed telescope. Its canonical stopping index satisfies
+`2^(J-1)<=R/H<2^J`; one adjacent comparable pair therefore carries at least average endpoint
+defect with only logarithmic loss, exact pole cancellation, and transition ratio at most four.
+The endpoint-only prime-free theorem requires no intermediate PNT calibration.
+`MaynardAdjacentKernelLocalization.lean` proves this is not algebraic relabeling of old bandwidth
+gap: at `H<=R<=2H`, adjacent normalized kernel tail beyond `N/(2R)` has `L1` mass at most
+`260 C N/R`. Low band and tail now share natural ordinate scale. Both modules direct-check and
+are umbrella-wired; final umbrella build remains pending.
 
 **Open core.** Route T has two equivalent live analytic charts, but only one current first
 producer.
 
-- In the Maynard chart, use the moving derivative reserve away from its zero set. At the rigid
-  zero-reserve boundary—and any transition layer too thin to absorb fixed costs—retain the signed
-  normalized target--reference packet so its common pole mode cancels before box selection. The
-  remaining hard estimate is signed oscillatory control on the intermediate Mellin band; wide
-  PNT reference calibration alone cannot reach it. Only after that may one sum labels on
+- In the Maynard chart, use the moving derivative reserve away from its zero set. The rigid
+  exact zero-reserve boundary is now support-null and contributes identically zero. For positive
+  but arbitrarily thin reserve, first recut to the literal observation cone. Enhanced reserve
+  either pays a chosen margin or forces a near-cutoff physical slice whose coefficients collapse
+  exactly to von Mangoldt. The local interval-length-sensitive large-value/energy bound for that
+  slice is now formal and, after spending the native deficit, covers
+  `mu<=4/(1+2d)` with fixed power reserve. Proper prime powers
+  are power-negligible on the entire `mu<=8` range. Its exact sub-four ceiling proves the remaining
+  upper phase needs cancellation-preserving true-prime input, not a Brun--Titchmarsh refinement of
+  the same second moment. Base/derivative scalar gluing confines that input to the transition seam;
+  generalized Huxley closes every available sub-height coloring for `mu>=17/4`, while an exact
+  Kuzmin--Landau equality proves positive sub-height selection itself fails on the seam. Former intermediate Mellin
+  band is closed at kernel level, and cell/layer modules now give cancellation-preserving separated
+  superlevels from a localized adjacent integral. Canonical exact-cutoff coordinates close the
+  former scale--ordinate mismatch: eligibility is the physical inequality `T^t<=coreLower`, so
+  `X=T^mu,t=mu/120` makes the entire aggregate pointwise height-invariant; a second dyadic ordinate
+  telescope then puts one large shell directly in its new `[T,2T]` count band. Remaining hard
+  theorem is either an unconditional prime-short-interval input at exponent
+  `3/4-d/2` (which erases the entire upper phase), or signed over-height true-prime boundary control
+  (including the near-four transition and the non-colorable boundary sector above it), composed
+  with the lower physical-slice receiver,
+  followed by quantitative
+  shell/layer/count and prime-gap-moment summation. Only
+  after that may one
+  sum labels on
   `19/9<mu<=8`, join historical count, and compose with the consecutive-prime-gap moment and
   centered Route-T current. Sharp Möbius propagation, endpoint-long exclusion,
   window relevance, coloring, normalized-band count alternatives, polynomial threshold, zeta
@@ -10729,3 +10828,83 @@ yielding an actual four-leg source expression for every finite approximant. That
 needs an absolute bound below the indivisible quantum `4*(96/145)^2`. Calling the present
 divisor-finite determinant itself a prime--Gamma estimate would be theatre; no such bound or RH is
 claimed.
+
+### Route T update: finite smooth Chebyshev zero crossing is now unconditional in Lean
+
+`ZetaResidueUnitRectanglePeeling.lean` removes the zero-free-rectangle premise that blocked use of
+the existing smooth Chebyshev contour in Ingham density. For the entire residue unit
+`G=(s-1)zeta`, it formalizes finite closed-rectangle zero packets, exact analytic multiplicities,
+global peeling, and a cofactor nonzero throughout the box. Against the actual smooth-cutoff Mellin
+weight, the four-edge regular `-zeta'/zeta` boundary is exactly the negative finite zero packet.
+
+Boundary admissibility is also discharged rather than assumed. In arbitrary prescribed separated
+positive abscissa and height intervals, finite avoidance selects `c,d,T` with all four edges
+zero-free and proves
+
+```text
+zetaRegularMellinBoundary(N,H,c,d,T)
+  = -zetaRegularMellinZeroPacket(N,H,c,d,T).
+```
+
+This advances C62 materially: zero crossing, multiplicity, Mellin analyticity, and finite contour
+selection are no longer part of the Ingham/Hoheisel open core. Remaining Route-T analytic theorem
+is genuinely quantitative: prove Ingham's coefficient-three density estimate and sum the resulting
+zero packets/edge errors strongly enough for prime supply at exponent `7/10`. Named module build
+passes `8792/8792`; axiom audit is clean. No RH conclusion is claimed.
+
+### Route T update: fixed short-interval prime supply erases the moving upper seam on paper
+
+The exact C61 handoff need not be used as the analytic exponent. With
+`theta_0=7/10`, Lean proves
+
+```text
+theta_0 + 9/200 < theta_* <= 1-1/mu        for every mu>=mu_*,
+1-3(1-theta_0)=1/10,
+(10/3)(1-theta_0)=1.
+```
+
+This makes Route T insensitive to its tiny deficit on the analytic side. Classical Ingham density
+has uniform coefficient at most three, so the standard density-to-short-ranges theorem supplies a
+prime in `(x,x+x^(7/10)]` for all sufficiently large `x`. That interval is contained in every upper
+physical window. Consequently the signed true-prime over-height boundary remains a valid direct
+chart but is no longer a necessary Route-T open core.
+
+The complete route-specific paper theorem is Stage 2 in
+`route-t-fixed-short-interval-handoff.md`. `MaynardUpperPhasePrimeSupplyHandoff.lean` closes its
+scalar interface and is umbrella-reachable. Exact remaining formal analytic debt is unconditional
+Ingham/Hoheisel prime supply, followed by lower/upper prime-gap moment composition; RH is not yet
+proved.
+
+### Route T update: fixed-contour Littlewood identity exposes and repairs the moving-edge gap
+
+Direct theorem-signature audit falsified the belief that the existing `RectIntegralEdges` plus
+`BoxFubini` path instantiated Littlewood's lemma for zeta. The former stores zeros as a
+`Finset ℝ`, losing multiplicity and merging distinct zeros with equal real part. The latter assumes
+the counted function is nonzero on the entire closed box, which forces the interior zero packet to
+be empty. This was a real representation gap, not remaining notation.
+
+The replacement is one fixed weighted contour. Applying the exact residue-unit argument principle
+with `g(z)=z-c` gives
+
+```text
+2π Σ_w m(w)(Re(w)-c)
+  = Im ∮ (z-c) G'(z)/G(z) dz,
+```
+
+where the sum is over the `Finset ℂ` packet and `m(w)` is exact analytic multiplicity. Expanding the
+four edges, using `d/dt log|G(a+it)|=-Im(G'/G)`, and integrating by parts cancels every endpoint
+term against the horizontal real-part increments. The result is the full branch-free Littlewood
+boundary identity with interior zeros allowed. Finite zero avoidance then gives an unconditional
+selected-contour zeta theorem with no boundary premise in its conclusion.
+
+Lean modules `WeightedLittlewoodRectangle.lean` and
+`Sieve/ZetaResidueUnitWeightedLittlewood.lean` prove the generic identity, the exact zeta
+instantiation, and `exists_zetaLittlewoodZeroMass_eq_boundary`. Named build passes `8797/8797`;
+formal lint passes; audited public theorems use only `[propext, Classical.choice, Quot.sound]`; both
+modules are umbrella-wired.
+
+This advances the Route-T frontier but does not prove zero density or RH. Zero bookkeeping,
+multiplicity, moving-edge exceptional abscissae, complex-log branches, and contour selection are no
+longer in the Ingham open core. Exact remaining first obstruction is quantitative: bound the right
+and horizontal terms in this identity through Gabriel convexity/fourth-moment input to obtain the
+coefficient-three density estimate, then execute the density-to-`x^(7/10)` prime-supply bridge.

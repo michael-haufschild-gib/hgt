@@ -5706,3 +5706,304 @@ Traps: `Real.sqrt_atTop` is `Real.tendsto_sqrt_atTop`; `x*e^{-x} → 0` is
 resists `rw` — use `simp only [name]` or a `show`; `integral_union` is `setIntegral_union` and
 `integral_univ` is `setIntegral_univ`; `Metric.tendsto_atTop.mp` already yields the `∃ N, ∀ n ≥ N`
 form.
+
+## FQ. State after the 2026-08-13 late session — 91/103, and the exact next steps
+
+Promoted this session: `suzuki-polar-remainder-lipschitz-gamma-subcriticality` (FN),
+`suzuki-exterior-residual-rigged-wiener-realization` (FO),
+`suzuki-carleman-flat-port-weighted-strip-barrier` (FP).  Fourteen cards remain in stage 2.
+
+Started, not finished: `RHTower/SuzukiOrbitWeightSummability.lean` — the `ℓ¹` length `orbitLength`,
+the exponential weight `orbitWeight`, subadditivity, the edge-ratio bound `(16)`, and the
+two-sided geometric summability `summable_pow_natAbs`.  What is *not* yet in it, and is the next
+concrete step for `suzuki-tempered-orbit-carrier-aperture-recurrence-dichotomy`:
+
+```text
+(9)  ∑_ν ρ^{2|ν|₁} = ((1+ρ²)/(1-ρ²))^{#P}
+```
+
+Both the exact `ℤ`-mass and the rank induction hit `whnf` timeouts through
+`tsum_of_nat_of_neg_add_one` and `Summable.mul_of_nonneg` on `ℤ × (Fin k → ℤ)` — the Pi-type
+`Summable` instance chain is the expensive part.  The route that avoids it: do the whole product
+computation in `ℝ≥0∞`, where `ENNReal.tsum_prod'` and `ENNReal.tsum_mul_left` are unconditional,
+then transfer with `ENNReal.tsum_coe_ne_top_iff_summable`.  The rank induction should use
+`Fin.consEquiv (fun _ => ℤ)` with `Fin.sum_univ_succ`.
+
+Remaining per-card debt, updated:
+
+| card | what is missing |
+|---|---|
+| `flat-primitive-flux-volterra-liouville` | Gamma commutator block estimate, exponential envelopes, infinite-tail Volterra lemma, Bochner block summation |
+| `forced-gamma-upper-strip-gluing` | Hilbert-valued holomorphic ODE on a strip, Stirling modulus `(12)`, branch-cancelling particular solution `(7)`, weighted Bochner tail `(17)` |
+| `gamma-homogeneous-half-log-scattering-classification` | Hilbert-valued oscillatory Fourier/Paley–Wiener connector, branch gluing `(21)→(25)` |
+| `gamma-prime-normal-corona-equivalence` | forced-domain theorem `(21)` (depends on the two Gamma-strip cards) |
+| `gamma-wall-block-hardy-and-derivative-scattering` | Hilbert-valued weighted Hardy inequality `(39)`, cutoff identity `(47)`, equivalence `(45)` |
+| `log-recurrence-polynomial-carrier-trichotomy` | lattice shell summability `(8)`, polynomial shift ratios `(14)`, iterated position commutator `(15)`, polynomial group estimate `(17)`, symbol ellipse `(21)`–`(24)`, Borel–Cantelli aperture theorem `(28)` |
+| `paired-seam-carleman-logistic-normal-form` | the two seam substitutions `(9)`–`(14)` (improper, with difference cancellation), the scalar `∫₀^∞ dv/(1+e^{v-L}) = L + log(1+e^{-L})`, the beta evaluation `m_σ = Γ(1+σ)Γ(1-σ)` and Young's `L²` bound `(7)` |
+| `root-retained-exterior-dilation` | root-retained boundary-log-domain theorem `(23)` |
+| `scalar-analytic-forcing-trace-zero-h1` | vector-valued Paley–Wiener strip translation, Gamma-ratio modulus, block `L²` convolution, weak mollifier passage |
+| `tempered-orbit-carrier-aperture-recurrence-dichotomy` | `(9)` above, the carrier norm `(3)`/`(4)`, intertwining `(15)`–`(19)`, finite-type summability `(26)`, Borel–Cantelli full measure `(27)`, dense Liouville apertures `(28)`–`(31)` |
+| `weil-position-torque-recurrence` | moving-cutoff torque continuity and exponential order, Landau's theorem for the tail transform, the cofinal sign theorem `(19)` |
+| `wiener-cutoff-closed-graph-relation` | unbounded multiplier `a_a(D)` and its graph domain `(19)`, the Carleman commutator bound `(25)`–`(26)`, cutoff identity `(23)` |
+| `coalescing-anchor-parity-locking-reduction` | not yet audited (7222-line card) |
+| `critical-radical-anchor-finite-head-reduction` | pairwise infinite-variance identity, fixed-anchor cofinite theorem; the annular corollary needs Riemann–von Mangoldt and the published `>5/12` theorem as formal providers |
+
+Two pieces of infrastructure would each unblock more than one card:
+
+1. **Schur's test, outer step.**  `HTGeometry/SchurTestPointwise.lean` has the pointwise half and
+   `HTGeometry/CarlemanSchurWeight.lean` has `∫₀^∞ dt/((s+t)√t) = π/√s`.  What remains is
+   integrating in `s` and swapping (Tonelli in `ℝ≥0∞`, as in `YoungConvolutionL2.lean`), giving
+   `‖S‖ ≤ π` for the Carleman transform — named by `paired-seam-carleman` and `wiener-cutoff`.
+   Note the weight `t^{-1/2}` must be extended positively off `Ioi 0` (e.g. `1` there) because the
+   pointwise lemma asks for `0 < w` everywhere.
+2. **Vector-valued Paley–Wiener strip translation + Gamma-ratio strip modulus** — named by
+   `forced-gamma-upper-strip-gluing`, `scalar-analytic-forcing-trace-zero-h1`,
+   `gamma-homogeneous-half-log-scattering-classification`, `gamma-prime-normal-corona-equivalence`.
+
+## FR. 92/103 — `suzuki-tempered-orbit-carrier-aperture-recurrence-dichotomy` promoted
+
+Five modules, on top of EZ's weighted-shift energy layer:
+
+```text
+SuzukiOrbitWeightSummability.lean  orbitLength, orbitWeight, edge-ratio bound (16); the two-sided
+                                   geometric mass (1+x)/(1-x); the rank product computed in ℝ≥0∞
+                                   via ENNReal.tsum_prod' and Fin.consEquiv; (9) exact mass
+                                   ((1+ρ²)/(1-ρ²))^{#P} and square summability
+SuzukiOrbitCarrier.lean            orbitTranslate (Lp.compMeasurePreserving), isometry, (3)/(4)/
+                                   (10)/(11); (13)-(15) intertwining; (16)-(19) shift bounds;
+                                   (5)/(20)/(22) numerical-range coercivity
+SuzukiApertureRecurrence.lean      (23)-(26): depth, weighted activation bound, summability at
+                                   finite type, and the graded version
+SuzukiApertureAlmostEvery.lean     (27): orbitLevel with card ≤ (2N+1)^{#P}, interval measure
+                                   bound, polynomial×geometric majorant, Borel–Cantelli
+SuzukiLiouvilleAperture.lean       (28) Baire: each stage open and dense (density survives
+                                   deleting the finitely many short valuations); (29)-(30) the
+                                   exponential lower bound by unit-step induction; (31) the no-go
+```
+
+Method note: the Liouville apertures are produced by **Baire**, not by a hand-built nested-interval
+recursion — each stage `⋃_{|ν|₁ ≥ n} {a : 0 < |2a-ℓν| < f(|ν|₁)}` is open, and dense because
+`Dense.sdiff_finite` removes only the finitely many short valuations.  That replaces the card's
+recursive construction with three lines.
+
+Traps: `rw [tsum_of_nat_of_neg_add_one h1 h2]` triggers a pathological `isDefEq` (minutes, then
+timeout) — state the split as a `have` with an explicit type and `rw` that instead; the same shape
+of failure appears for `Summable.mul_of_nonneg` on `ℤ × (Fin k → ℤ)`, which is why the rank product
+runs in `ℝ≥0∞`.  `Fin.consEquiv` introduced by `have` is opaque — put such equivalences at top level
+so `rfl` lemmas about them exist.  A docstring may not precede `omit … in`; give the instance to the
+individual theorems instead.  `Dense.diff_finite` is now `Dense.sdiff_finite`; `Metric.dense_iff`
+returns ball-membership *first*.
+
+## FS. Schur's test for the Carleman kernel is closed
+
+`HTGeometry/CarlemanOperatorBound.lean` completes the piece EY left open:
+
+```text
+integrableOn_carlemanSchurWeight   the Schur integrand is integrable on the ray
+lintegral_carlemanSchurWeight      ∫⁻ dt/((s+t)√t) = ofReal (π/√s)
+sq_lintegral_carleman_le           pointwise Schur step against w(t) = t^{-1/2}
+lintegral_carleman_sq_le           ∫⁻_s (∫⁻_t f(t)/(s+t))² ≤ π² ∫⁻ f²   — i.e. ‖S‖ ≤ π
+```
+
+The whole test runs in `ℝ≥0∞`, so it carries **no integrability hypotheses at all**: the Tonelli
+swap (`lintegral_lintegral_swap`) is what proves joint integrability rather than what assumes it,
+and the weight is used in the division-free form `k·w·(f/w) = k·f` by writing `f/w = f·√t`.
+
+This is named by `paired-seam-carleman-logistic-normal-form` (its `(7)`) and by
+`wiener-cutoff-closed-graph-relation` (its `(25)`--`(26)`, where the cutoff commutator's
+logarithmic part is the two-ended Carleman cross block).
+
+Trap worth keeping: `lintegral_const_mul` needs the *measurability of the integrand factor* supplied
+explicitly — `fun_prop` cannot see through `ENNReal.ofReal ∘ …` when the function is still a
+metavariable, so bind it in a `have` first.
+
+## FT. The multiplier graph domain is closed — `wiener-cutoff` `(19)`
+
+`HTGeometry/MultiplierClosedGraph.lean`:
+
+```text
+multiplierGraph m μ                    {(u,v) : v = m·u a.e.} in L² × L²
+exists_subseq_ae_tendsto               L² convergence ⇒ an a.e. convergent subsequence
+isClosed_multiplierGraph               the graph is closed — no bound on the symbol is used
+supportedIn S μ / isClosed_supportedIn the support condition is a closed subspace
+isClosed_multiplierGraph_supported     (19): the graph domain with the support condition is
+                                       closed, hence complete in the graph norm
+```
+
+The route is `tendstoInMeasure_of_tendsto_eLpNorm` followed by
+`TendstoInMeasure.exists_seq_tendsto_ae`, applied once per component; the defining identity then
+passes to the a.e. limit.  Because no boundedness of `m` enters, this applies verbatim to the
+growing logarithmic symbol `a_a(ξ) = log⟨ξ⟩ + q_a(ξ)`.
+
+Remaining for `suzuki-wiener-cutoff-closed-graph-relation`: transporting this graph statement
+through the `L²` Fourier isometry to `p_a(D)` itself, and the cutoff identity `(23)` with the
+Carleman commutator bound (whose analytic half is now FS).
+
+## FU. `paired-seam-carleman-logistic-normal-form` — promoted
+
+State: 93/103 promoted; 12 cards remain in stage 2.
+
+`HTGeometry/ReflectionIntegral.lean` (the two half-line reflection integrals):
+
+```text
+mobiusChart x = x/(1-x)                 injective chart Ioo 0 1 → Ioi 0, derivative 1/(1-x)²
+integral_Ioi_comp_mobiusChart           the substitution, hypothesis-free
+integral_Ioi_rpow_div_one_add_eq        ∫₀^∞ z^{-σ}/(1+z) = ∫₀¹ x^{-σ}(1-x)^{σ-1}
+integral_Ioi_rpow_div_one_add_sq_eq     ∫₀^∞ z^{-σ}/(1+z)² = ∫₀¹ x^{-σ}(1-x)^{σ}
+betaIntegral_eq_ofReal                  the real Euler integral as Complex.betaIntegral
+betaIntegral_shift_eq_ofReal            same, with the shifted second parameter
+integral_Ioi_rpow_div_one_add           = π/sin(πσ)
+integral_Ioi_rpow_div_one_add_sq        = σπ/sin(πσ)
+integral_Ioi_comp_exp                   the exponential chart ℝ → Ioi 0
+integral_exp_neg_mul_logistic           (17): ∫ℝ e^{-σt}k(t)dt = σπ/sin(πσ)
+```
+
+`RHTower/SuzukiLogisticCoupling.lean`:
+
+```text
+logisticKernel_neg                      k is even
+logisticMoment σ = ∫ e^{-σt}k(t)dt      integrable on |σ|<1 by domination by e^{-(1-|σ|)|t|}
+logisticMoment_eq / _zero               σπ/sin(πσ) off zero, 1 at zero
+hasDerivAt_carlemanCutoffFactor_left    (15): ∂_L (1+e^{v-L})⁻¹ = k(v-L)
+logisticCoupling F L = ∫ F(v)k(v-L)dv   (6)
+expMul_logisticCoupling_eq              (16): conjugation = convolution by e^{σt}k(t)
+lintegral_sq_expMul_logisticCoupling_le (7): ‖e^{σL}KF‖₂ ≤ m_σ‖e^{σ·}F‖₂, ℝ≥0∞ form
+eventually_terminal_coercive            (20): 2L - c + O(e^{-L}) > 0 on a far ray
+```
+
+`RHTower/SuzukiPairedSeamNormalForm.lean`:
+
+```text
+seamRight / seamLeft                    the two oriented germs; reflection swaps them
+jumpNear / jumpFar / jumpOpposite       the three windows; logJumpRight is their sum
+image_nearChart / _farChart / _oppositeChart   the three exponential charts
+jumpNear_eq / jumpFar_eq / jumpOpposite_eq     (9), (10), (12), all hypothesis-free
+integrableOn_carlemanCutoffFactor       the cutoff factor is integrable on the ray
+jumpFar_split / jumpOpposite_split      (10)-split and (14)
+logJumpRight_eq / logJumpLeft_eq        (4+) and (4-)
+logJumpRight_eq_of_zero_exterior        (8): zero exterior kills the cross block
+hasDerivAt_seamC                        (6): (C F)' = K F for bounded F, by domination
+hasDerivAt_seamScalar / _seamPrimitive  q' and the Volterra primitive
+hasDerivAt_normalFormRight              (19+)
+```
+
+Traps worth keeping: `Real.exp_neg` rewrites *every* `exp (-·)` in the goal, so a chart identity
+that also contains `exp (-L)` must go through a variable-only helper (`exp_neg_log_div`);
+`setIntegral_const` now produces `Measure.real` (`Real.volume_real_Ioo` and `max_eq_left`, not
+`ENNReal.toReal_ofReal`); and `integrableOn_const`'s finiteness argument is an `autoParam` whose
+`aesop` default fails on `volume (Ioo 0 L)` — supply `(by simp [Real.volume_Ioo])` explicitly.
+
+## FV. `wiener-cutoff-closed-graph-relation` — promoted
+
+State: 94/103 promoted; 11 cards remain in stage 2.
+
+The blocking analytic item was `(26)`: identifying the logarithmic part of the cutoff commutator
+with the cross-boundary Carleman kernel.  The route that worked avoids distributional kernels of
+`log⟨D⟩` entirely — subordination to the resolvent family, where every step is a scalar identity or
+an elementary kernel computation:
+
+```text
+∫₀^∞ [(1+λ)⁻¹ - (1+λ+z)⁻¹] dλ = log (1+z)             integral_Ioi_resolvent_diff
+𝓕 (e^{-μ|x|}) ξ = 2μ/(μ²+4π²ξ²)                        fourierIntegral_exp_neg_mul_abs
+𝓕 (e^{-μ|x|}/(2μ)) ξ = 1/(μ²+4π²ξ²)                    fourierIntegral_resolventKernel
+𝓕 (k_μ ⋆ f) = (μ²+4π²ξ²)⁻¹ 𝓕 f                         fourier_resolventConvolution
+∫₀^∞ e^{-√(1+λ)r}/(2√(1+λ)) dλ = e^{-r}/r              integral_Ioi_resolventKernel
+[K,P](x,y) = K(x,y)(1_I(y) - 1_I(x))                   kernel_cutoff_commutator
+e^{-(s+t)}/(2(s+t)) ≤ 1/(2(s+t))                       logSymbolKernel_cross_le
+Schur ⇒ the cross block is bounded on L²               lintegral_sq_logSymbolCross_le
+```
+
+The substitution `λ = μ²-1` on `Ioi 1` is what turns the resolvent superposition into the single
+exponential ray integral `∫₁^∞ e^{-μr} dμ = e^{-r}/r`; the Jacobian `2μ` cancels the `1/(2μ)` of the
+resolvent kernel exactly.  The one step not certified as a single operator equation is the exchange
+of the `λ`-integral with the operator action, which needs an `L²` multiplier calculus for unbounded
+symbols; the certificate says so explicitly.
+
+Also closed here: `(24)` the bandlimited port (`norm_iteratedDeriv_fourier_le_of_bandLimited`, via
+`Real.iteratedDeriv_fourier` with `N = ⊤`), `(21)` the two-port reconstruction, and `(12)` isolated
+as `WeightedCarlemanTarget` with its strip monotonicity.
+
+Traps worth keeping: `Real.fourierIntegral` is now `𝓕` with `Real.fourier_real_eq_integral_exp_smul`
+as the usable one-dimensional unfolding (the `fourierIntegral_*` names are deprecated, and
+deprecation warnings fail the lint gate); `Complex.ofRealCLM.hasDerivAt` must be used with `exact`,
+never `simpa`, or the `AddCommGroup` instance path diverges; and the convolution notation `⋆[L]`
+needs `open scoped Convolution`.
+
+## FW. `flat-primitive-flux-volterra-liouville` — in progress
+
+Not yet promoted.  Four of the five infrastructure items named by the card's §10 are now Lean:
+
+```text
+HTGeometry/FlatVolterraDecay.lean
+  pow_div_succ_le_one_sub        (n/(n+1))^B ≤ 1 - A/n for B > A on a terminal ray
+  flat_volterra_decay            (15) from the tail recursion + superpolynomial flatness
+  SuperpolynomiallyFlat          the card's hypothesis (3)
+  volterraTerm / volterraTail    the backward tail and its recursion
+  summable_of_flat, volterraTail_flat, volterraTail_step
+  flat_volterra_decay_of_tail    (15) in the card's own form
+HTGeometry/CoerciveResolutionBound.lean
+  norm_le_of_reInner_ge          c‖v‖ ≤ ‖Av‖ from a coercive quadratic form
+  reInner_sub_ge                 (10): coercive + positive + bounded stays coercive
+RHTower/SuzukiGammaCutoffCommutatorKernel.lean
+  gammaJumpKernel                1/(e^{|s|}-1)
+  abs_cutoff_diff_mul_gammaJumpKernel_le  (7): the cutoff difference cancels the singularity,
+                                 |χ(L)-χ(L')|/(e^{|L-L'|}-1) ≤ (2Λ+4) e^{-|L-L'|/2}
+RHTower/SuzukiFlatPrimitiveFluxAssembly.lean
+  tsum_exp_shift                 the geometric source tail
+  flat_flux_exponential_decay    (11)+(13) ⇒ (21): both value and flux decay at every rate < δ
+  terminal_flux_eq_neg_integral  (12): zero terminal charge makes the flux a backward integral
+  expEnvelope, le_expEnvelope
+  expEnvelope_le_of_exp_decay    (8)/(22): the envelope preserves every rate below its own
+```
+
+The mechanism that made `(15)` work in Lean is the *natural* integrating factor: instead of the
+card's `p_n ≍ n^{-A}` product, take `B = ⌈A⌉₊ + 1` and compare `(n/(n+1))^B ≤ 1 - A/n` by Bernoulli.
+Then `n ↦ Q n · n^B` is monotone up to a summable defect, and superpolynomial flatness kills the
+telescoping terminal term — no product asymptotics needed.
+
+Remaining for promotion: the Bochner block summation of §2, i.e. the passage from the localized
+operator equation `(9)` to the block inequalities `(11)`/`(13)`, which are currently the hypotheses
+of `flat_flux_exponential_decay`.  That needs unit-block norms of a Hilbert-valued profile and the
+block form of the kernel estimate `(7)`.
+
+## FX. Block infrastructure for the Suzuki flat/forced cards
+
+`HTGeometry/BlockKernelEstimate.lean` supplies the "Bochner block summation" item that the
+flat-flux card's §10 names, in `ℝ≥0∞` form so that no integrability hypothesis appears:
+
+```text
+rayBlock m = Ioo m (m+1)                unit blocks of the terminal ray
+volume_rayBlock                         each block has measure one
+blockNorm Φ m                           the block L² norm
+lintegral_rayBlock_le_blockNorm         Cauchy–Schwarz on a unit block
+lintegral_Ioi_eq_tsum_rayBlock          the ray is the a.e. disjoint union of its blocks
+exp_kernel_block_le                     e^{-μ|x-y|} ≤ e^{2μ} e^{-μ|n-m|} across blocks
+lintegral_Ioi_kernel_le_blockEnvelope   the block envelope form of an exponentially localized
+                                        kernel bound
+```
+
+Combined with `abs_cutoff_diff_mul_gammaJumpKernel_le` (`C = 2Λ+4`, `μ = 1/2`) this is the card's
+`(7)` in its literal unit-block shape.  What still separates the flat-flux card from promotion is
+only the Hilbert-valued localization step: pairing the localized equation `(9)` with `χ_n F` and
+absorbing the envelope into the growing `2L`.
+
+## FY. The Gamma frequency symbol — shared analytic base for cards 5, 6, 8, 12
+
+`RHTower/SuzukiGammaFrequencySymbol.lean` starts the chain those four cards share:
+
+```text
+gammaJumpWeight s = 1/(e^s - 1)
+gammaJumpWeight_le_inv          ≤ 1/s near zero (the singularity is integrable against s)
+gammaJumpWeight_le_two_exp      ≤ 2 e^{-s} on the far ray
+integral_Ioi_exp_neg_mul        ∫₀^∞ e^{-ns} ds = 1/n
+integral_Ioi_exp_neg_mul_cos    ∫₀^∞ e^{-ns} cos (η s) ds = n/(n²+η²)
+one_le_cosh, exp_sub_one_le_mul the two elementary convexity bounds the strip estimate needs
+gammaShiftCost σ s              (cosh (σ s) - 1)/(e^s - 1)
+integrableOn_gammaShiftCost     (17): κ_σ is finite exactly for |σ| < 1
+re_shifted_weight_ge            the shifted frequency weight is bounded below by -κ_σ pointwise
+```
+
+`integral_Ioi_exp_neg_mul_cos` is the term of the series `r(η) = 2 ∑ η²/(n(n²+η²))`: expanding
+`1/(e^s-1) = ∑ e^{-ns}` and integrating term by term gives `1/n - n/(n²+η²) = η²/(n(n²+η²))`.  The
+two Laplace integrals are proved from the complex ray integral `∫₀^∞ e^{-cz} = 1/c` of
+`ResolventSubordination`, projected with `Complex.reCLM.integral_comp_comm`.

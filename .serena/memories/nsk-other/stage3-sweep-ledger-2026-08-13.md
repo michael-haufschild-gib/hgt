@@ -1,7 +1,13 @@
 # new_scientific_knowledge/other stage-3 sweep — ledger
 
 Goal (session stop hook): every card in `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/other/`
-fully formalized unconditionally in Lean and moved to stage 3. 65 at start; **23 promoted 2026-08-13; 42 remain**.
+fully formalized unconditionally in Lean and moved to stage 3. 65 at start; **24 promoted 2026-08-13; 41 remain**.
+(#24 = `weighted-euler-tangent-global-graph-decoupling`, promoted 2026-08-13 late: its (3)/(18)/(19)
+are `RHTower.topologicalClosure_primeQuadrantGraph_eq_top'`,
+`RHTower.closure_primeQuadrantGraph_eq_univ`,
+`RHTower.closure_affine_primeQuadrantGraph_eq_univ` in
+`RHTower/WeightedEulerJointClosure.lean`, all axiom-clean.  20 new modules; see memory
+`route-weighted-euler/joint-closure-plan-2026-08-13`.)
 
 Promotion procedure that worked (Phase A + tranche 2): batched `lake build <mods>` foreground →
 `#print axioms` scratch on capstones (⊆ propext/Classical.choice/Quot.sound) → sed Stage line →
@@ -38,6 +44,17 @@ GaloisForLFunctions.UniformBoundaryWedge), projective-prime-weyl-leakage, prime-
   research/ring_ord_ramification_bridge_2026_08_06). Check whether item 2' closes by DVR-localising
   at Q and applying differentIdeal_eq_span_pow instead of the Kummer–Dedekind route.
 - Open gate box line ~465: observability (helim) on a general cascade (Reduction III w/ algebraic law).
+
+## Open-gate census 2026-08-13 (remaining 41, by count of unchecked `- [ ]` boxes)
+0: power-canonical-product (only eq. (1), the Barnes tail of `W_s`, is unformalized),
+   prime-tail-hedenmalm (Young `L¹⋆L²→L²` built as `HTGeometry/YoungConvolutionL2.lean`; the
+   half-line convolution operator, trace intertwining and `L²` wall of Theorem 1 are still
+   paper-level, so NOT ready — its "revised open core" is RH-equivalent and is flagged open on the
+   card itself, which is fine, but Theorem 1 must still be formalized).
+1: gauss-component-quasi-inner, prime-euler-unit-tangent, prime-modulated-weyl.
+2: abelian-multiplication-tail-manin, additive-heat-aperture-shifted-zeta-echo,
+   additive-heat-aperture-zeta-zero-echo, all-depth-compatible-pair-face,
+   almost-periodic ×2, archimedean-relative-prime-cocycle, …
 
 ## Attack order for the remaining 42
 Bounded gaps (do first): universal-first-order-entire-cascade (ACTIVE), weighted-euler-tangent

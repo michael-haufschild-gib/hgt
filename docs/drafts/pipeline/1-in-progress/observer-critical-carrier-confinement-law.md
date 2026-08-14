@@ -140,3 +140,34 @@ replica gain is exactly cancelled by observer/tube replication.  The correct
 open object must combine intrinsic transversality with aggregate
 endpoint--circuit incidence.  This is not a Brown--Susskind plateau theorem or
 a Nature-level standalone result; the incidence estimate remains open.
+
+## 2026-08-13 quantitative successor correction
+
+`../2-fully-proven/concurrent-causal-heap-accessibility-law.md` and
+`../2-fully-proven/quenched-causal-replica-action-law.md` now identify the aggregate incidence
+invariant exactly.  The complete local-circuit target is the probability `F(H)` that a finite
+concurrent circuit heap contains a successful causal prefix, not a linear target-tube sum.  For one
+shared static Hamiltonian and `r` independent preparation heaps,
+
+\[
+ Z_r=\mathbb E_HF(H)^r,
+ \qquad
+ -\log Z_r
+ =\inf_{q\ll\rho_H}\{D(q\Vert\rho_H)+r\mathbb E_q[-\log F]\}.
+\]
+
+Thus incidence-normalized coarea mass is superseded as the invariant of the growing-replica route.
+Coarea and observer Jacobians remain admissible proof tools if they establish, for every tilted
+source law `q`, the action gap
+
+\[
+ {1\over r}D(q\Vert\rho_H)+\mathbb E_q[-\log F]
+ \ge s\log(1/z)+\kappa.
+\]
+
+This formulation retains source-fibre multiplicity and occupied endpoint image before any
+pushforward.  Its soft reporter has `1/delta` endpoint Lipschitz constant independent of dimension
+and circuit count, closing the dimension-linear boundary-remainder defect.  A direct non-moment
+lower-tail proof remains logically possible because rare easy carriers can dominate `Z_r` while
+having acceptable event probability.  Physical static-local action gap remains open; no
+quantitative Brown theorem is inferred.

@@ -13,10 +13,11 @@ units, so the transform is holomorphic off `K`, and outside a disc containing `K
 norm-convergent geometric series in the coordinate, so a functional killing every power of the
 coordinate has vanishing transform there.
 
-* `GaloisForLFunctions.HTGeometry.coordMap`, `GaloisForLFunctions.HTGeometry.cauchyTransform`;
+* `GaloisForLFunctions.HTGeometry.coordMap`,
+  `GaloisForLFunctions.HTGeometry.functionalCauchyTransform`;
 * `GaloisForLFunctions.HTGeometry.differentiableOn_cauchyTransform`;
 * `GaloisForLFunctions.HTGeometry.cauchyTransform_eq_zero_of_lt`;
-* `GaloisForLFunctions.HTGeometry.norm_cauchyTransform_le`.
+* `GaloisForLFunctions.HTGeometry.norm_functionalCauchyTransform_le`.
 -/
 
 noncomputable section
@@ -74,13 +75,13 @@ def resolventUnit (K : Set ℂ) [CompactSpace K] {v : ℂ} (hv : v ∉ K) : (C(K
     simp [resolventElt, coordMap, kernelFun, inv_mul_cancel₀ hz]
 
 /-- The Cauchy transform of a continuous functional on `C(K, ℂ)`. -/
-def cauchyTransform (A : C(K, ℂ) →L[ℂ] ℂ) (v : ℂ) : ℂ :=
+def functionalCauchyTransform (A : C(K, ℂ) →L[ℂ] ℂ) (v : ℂ) : ℂ :=
   A (Ring.inverse (resolventElt K v))
 
 theorem cauchyTransform_eq (A : C(K, ℂ) →L[ℂ] ℂ) {v : ℂ} (hv : v ∉ K) :
-    cauchyTransform A v = A (kernelFun K hv) := by
+    functionalCauchyTransform A v = A (kernelFun K hv) := by
   have hunit : resolventElt K v = ((resolventUnit K hv : (C(K, ℂ))ˣ) : C(K, ℂ)) := rfl
-  rw [cauchyTransform, hunit, Ring.inverse_unit]
+  rw [functionalCauchyTransform, hunit, Ring.inverse_unit]
   rfl
 
 /-! ## Holomorphy off the carrier -/
@@ -109,18 +110,19 @@ theorem continuousOn_resolventInv : ContinuousOn (resolventInv K) Kᶜ := fun _v
   (differentiableAt_resolventInv hv).continuousAt.continuousWithinAt
 
 theorem cauchyTransform_eq_apply_resolventInv (A : C(K, ℂ) →L[ℂ] ℂ) (v : ℂ) :
-    cauchyTransform A v = A (resolventInv K v) := rfl
+    functionalCauchyTransform A v = A (resolventInv K v) := rfl
 
 theorem differentiableAt_cauchyTransform (A : C(K, ℂ) →L[ℂ] ℂ) {v : ℂ} (hv : v ∉ K) :
-    DifferentiableAt ℂ (cauchyTransform A) v :=
+    DifferentiableAt ℂ (functionalCauchyTransform A) v :=
   A.differentiableAt.comp v (differentiableAt_resolventInv hv)
 
 theorem differentiableOn_cauchyTransform (A : C(K, ℂ) →L[ℂ] ℂ) :
-    DifferentiableOn ℂ (cauchyTransform A) Kᶜ := fun _v hv =>
+    DifferentiableOn ℂ (functionalCauchyTransform A) Kᶜ := fun _v hv =>
   (differentiableAt_cauchyTransform A hv).differentiableWithinAt
 
-theorem analyticOnNhd_cauchyTransform (hK : IsCompact K) (A : C(K, ℂ) →L[ℂ] ℂ) :
-    AnalyticOnNhd ℂ (cauchyTransform A) Kᶜ :=
+theorem analyticOnNhd_functionalCauchyTransform (hK : IsCompact K)
+    (A : C(K, ℂ) →L[ℂ] ℂ) :
+    AnalyticOnNhd ℂ (functionalCauchyTransform A) Kᶜ :=
   (differentiableOn_cauchyTransform A).analyticOnNhd hK.isClosed.isOpen_compl
 
 /-! ## Size of the transform -/
@@ -132,8 +134,10 @@ theorem norm_kernelFun_le {v : ℂ} (hv : v ∉ K) {r : ℝ} (hr : 0 < r)
   simp only [← one_div]
   exact one_div_le_one_div_of_le hr (hdist z z.2)
 
-theorem norm_cauchyTransform_le (A : C(K, ℂ) →L[ℂ] ℂ) {v : ℂ} (hv : v ∉ K) {r : ℝ} (hr : 0 < r)
-    (hdist : ∀ z ∈ K, r ≤ ‖v - z‖) : ‖cauchyTransform A v‖ ≤ ‖A‖ * r⁻¹ := by
+theorem norm_functionalCauchyTransform_le (A : C(K, ℂ) →L[ℂ] ℂ)
+    {v : ℂ} (hv : v ∉ K) {r : ℝ} (hr : 0 < r)
+    (hdist : ∀ z ∈ K, r ≤ ‖v - z‖) :
+    ‖functionalCauchyTransform A v‖ ≤ ‖A‖ * r⁻¹ := by
   rw [cauchyTransform_eq A hv]
   refine le_trans (A.le_opNorm _) ?_
   exact mul_le_mul_of_nonneg_left (norm_kernelFun_le hv hr hdist) (norm_nonneg A)
@@ -216,7 +220,7 @@ disc containing the carrier.** -/
 theorem cauchyTransform_eq_zero_of_lt (A : C(K, ℂ) →L[ℂ] ℂ)
     (hA : ∀ m : ℕ, A (coordMap K ^ m) = 0)
     {v : ℂ} {r : ℝ} (hr : 0 ≤ r) (hKr : ∀ z ∈ K, ‖z‖ ≤ r) (hv : r < ‖v‖) :
-    cauchyTransform A v = 0 := by
+    functionalCauchyTransform A v = 0 := by
   have hvK : v ∉ K := fun hc => absurd (hKr v hc) (not_le.mpr hv)
   rw [cauchyTransform_eq A hvK, ← tsum_geometricKernel_eq hr hKr hv hvK,
     A.map_tsum (summable_geometricKernel hr hKr hv)]

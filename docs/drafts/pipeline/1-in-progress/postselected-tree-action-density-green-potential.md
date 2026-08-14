@@ -10,7 +10,7 @@
 - **Tail classifications:**
   `../2-fully-proven/new_scientific_knowledge/rational-coarse-graining-orbifold-tail-classification.md`
   and
-  `../2-fully-proven/new_scientific_knowledge/nonautonomous-rational-first-order-tail-orbifold-law.md`
+  `../3-formalized/new_scientific_knowledge/ht/nonautonomous-rational-first-order-tail-orbifold-law.md`
 - **Statement:** Iterating the balanced postselected-qubit protocol as a complete binary tree makes
   the intensive negative log-success probability equal to a canonical escape-rate potential of the
   homogeneous rational lift.  This gives an operational tree-tensor-network action density whose

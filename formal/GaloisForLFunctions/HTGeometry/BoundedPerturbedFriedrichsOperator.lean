@@ -685,6 +685,123 @@ theorem boundedPerturbedFriedrichsOperator_hasCompactResolventAt_negShift
     rw [hcancel]
     exact hy
 
+/-- Exact Friedrichs-extension theorem for a boundedly perturbed form.  A core operator whose
+vectors lift continuously to the form domain and whose graph realizes the unshifted signed form
+is extended by the represented self-adjoint operator. -/
+theorem boundedPerturbedFriedrichsOperator_extends_core
+    (J : V →L[ℂ] H) (B : H →L[ℂ] H) (hB : IsSelfAdjoint B)
+    (hJinj : Function.Injective J) (hDense : Dense (J.range : Set H))
+    (T : H →ₗ.[ℂ] H) (coreLift : T.domain →ₗ[ℂ] V)
+    (hsection : ∀ x : T.domain, J (coreLift x) = (x : H))
+    (hform : ∀ (x : T.domain) (v : V),
+      inner ℂ (coreLift x) v + inner ℂ (B (x : H)) (J v) =
+        inner ℂ (T x) (J v)) :
+    T ≤ boundedPerturbedFriedrichsOperator J B hB := by
+  let R := boundedPerturbedFormRiesz J B
+  let Rinv := boundedPerturbedFormRieszInv J B hB
+  let C := boundedPerturbedFormCovariance J B hB
+  let A0 := closedDenseInverse C
+  have hCinj : Function.Injective C :=
+    boundedPerturbedFormCovariance_injective J B hB hJinj hDense
+  have hRinvR : ∀ u : V, Rinv (R u) = u := fun u =>
+    (boundedPerturbedFormRieszEquiv J B hB).symm_apply_apply u
+  have hR : ∀ x : T.domain,
+      R (coreLift x) =
+        J.adjoint (T x + (boundedPerturbedFormShift B : ℂ) • (x : H)) := by
+    intro x
+    apply ext_inner_right ℂ
+    intro v
+    rw [boundedPerturbedFormRiesz_apply, inner_add_left, inner_add_left,
+      inner_smul_left, J.adjoint_inner_left, J.adjoint_inner_left,
+      J.adjoint_inner_left, hsection]
+    rw [inner_add_left, inner_smul_left]
+    rw [← hform x v]
+  have hC : ∀ x : T.domain,
+      C (T x + (boundedPerturbedFormShift B : ℂ) • (x : H)) = (x : H) := by
+    intro x
+    change J (Rinv (J.adjoint
+      (T x + (boundedPerturbedFormShift B : ℂ) • (x : H)))) = (x : H)
+    rw [← hR x, hRinvR, hsection]
+  refine ⟨?_, ?_⟩
+  · intro x hx
+    let xd : T.domain := ⟨x, hx⟩
+    change x ∈ A0.domain
+    rw [closedDenseInverse_domain]
+    exact ⟨T xd + (boundedPerturbedFormShift B : ℂ) • x, hC xd⟩
+  · intro x y hxy
+    let xd : T.domain := x
+    have hxA0 : (x : H) ∈ A0.domain := by
+      rw [closedDenseInverse_domain]
+      exact ⟨T xd + (boundedPerturbedFormShift B : ℂ) • (x : H), hC xd⟩
+    have hA0 : A0 ⟨(x : H), hxA0⟩ =
+        T xd + (boundedPerturbedFormShift B : ℂ) • (x : H) := by
+      let z := T xd + (boundedPerturbedFormShift B : ℂ) • (x : H)
+      have happ := (closedDenseInverse_apply_C C hCinj z).2
+      have heq : (⟨(x : H), hxA0⟩ : A0.domain) =
+          ⟨C z, (closedDenseInverse_apply_C C hCinj z).1⟩ :=
+        Subtype.ext (hC xd).symm
+      exact (congrArg A0 heq).trans happ
+    have hyEq : (y : H) = (x : H) := hxy.symm
+    rw [boundedPerturbedFriedrichsOperator_apply]
+    change T xd = A0 ⟨(y : H), _⟩ -
+      (boundedPerturbedFormShift B : ℂ) • (y : H)
+    have heqDom : (⟨(y : H), by
+          simpa only [A0, boundedPerturbedFriedrichsOperator_domain] using y.property⟩ : A0.domain) =
+        ⟨(x : H), hxA0⟩ := Subtype.ext hyEq
+    rw [heqDom, hA0, hyEq]
+    module
+
+/-- A form vector whose sesquilinear functional has an `H`-representative belongs to the
+represented operator domain, and the represented operator takes exactly that value. -/
+theorem boundedPerturbedFriedrichsOperator_mem_domain_of_represents
+    (J : V →L[ℂ] H) (B : H →L[ℂ] H) (hB : IsSelfAdjoint B)
+    (hJinj : Function.Injective J) (hDense : Dense (J.range : Set H))
+    (u : V) (y : H)
+    (hform : ∀ v : V,
+      inner ℂ u v + inner ℂ (B (J u)) (J v) = inner ℂ y (J v)) :
+    ∃ hmem : J u ∈ (boundedPerturbedFriedrichsOperator J B hB).domain,
+      boundedPerturbedFriedrichsOperator J B hB ⟨J u, hmem⟩ = y := by
+  let R := boundedPerturbedFormRiesz J B
+  let Rinv := boundedPerturbedFormRieszInv J B hB
+  let C := boundedPerturbedFormCovariance J B hB
+  let A0 := closedDenseInverse C
+  let z : H := y + (boundedPerturbedFormShift B : ℂ) • J u
+  have hCinj : Function.Injective C :=
+    boundedPerturbedFormCovariance_injective J B hB hJinj hDense
+  have hRinvR : Rinv (R u) = u :=
+    (boundedPerturbedFormRieszEquiv J B hB).symm_apply_apply u
+  have hR : R u = J.adjoint z := by
+    apply ext_inner_right ℂ
+    intro v
+    rw [boundedPerturbedFormRiesz_apply, inner_add_left, inner_add_left,
+      inner_smul_left, J.adjoint_inner_left, J.adjoint_inner_left,
+      J.adjoint_inner_left]
+    rw [hform v, inner_add_left, inner_smul_left]
+  have hC : C z = J u := by
+    change J (Rinv (J.adjoint z)) = J u
+    rw [← hR, hRinvR]
+  have hmem0 : J u ∈ A0.domain := by
+    rw [closedDenseInverse_domain]
+    exact ⟨z, hC⟩
+  have hA0 : A0 ⟨J u, hmem0⟩ = z := by
+    have happ := (closedDenseInverse_apply_C C hCinj z).2
+    have heq : (⟨J u, hmem0⟩ : A0.domain) =
+        ⟨C z, (closedDenseInverse_apply_C C hCinj z).1⟩ :=
+      Subtype.ext hC.symm
+    exact (congrArg A0 heq).trans happ
+  have hmem : J u ∈ (boundedPerturbedFriedrichsOperator J B hB).domain := by
+    simpa only [A0, boundedPerturbedFriedrichsOperator_domain] using hmem0
+  refine ⟨hmem, ?_⟩
+  rw [boundedPerturbedFriedrichsOperator_apply]
+  change A0 ⟨J u, _⟩ - (boundedPerturbedFormShift B : ℂ) • J u = y
+  have heqDom : (⟨J u, by
+      simpa only [A0, boundedPerturbedFriedrichsOperator_domain] using hmem⟩ : A0.domain) =
+      ⟨J u, hmem0⟩ := rfl
+  rw [heqDom, hA0]
+  dsimp only [z]
+  module
+
+
 /-- Exact first-representation identity for the unshifted signed form. -/
 theorem boundedPerturbedFriedrichsOperator_represents_form
     (J : V →L[ℂ] H) (B : H →L[ℂ] H) (hB : IsSelfAdjoint B)

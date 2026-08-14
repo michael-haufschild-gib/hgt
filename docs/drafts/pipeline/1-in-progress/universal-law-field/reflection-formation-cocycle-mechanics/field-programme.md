@@ -158,3 +158,8 @@ The one-dimensional affine class is now closed and cannot be proposed again.
   recovery preserves, rather than annihilates, reflected work.
 - 2026-08-12 -- first affine-Weyl hypothesis attacked; common-center classification killed it as a
   field core and exposed the unique half-density compensation/properness survivor.
+- 2026-08-14 -- required noncommutative successor constructed in Constitutive Reflection-Space
+  Mechanics.  Twisted-antipode fixed responses carry the closed sandwich law `x y⁻¹ x`; ordinary
+  multiplication exits by a genuine commutator rather than an affine coboundary.  The first escaped
+  primitive response is `[X,Y]/2`, and several source reversals generate the exact joint properness
+  Gramian.  Literal HGT antipode realization remains open.

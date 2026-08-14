@@ -2,10 +2,11 @@
 
 - **ID:** ULF-GRM-3
 - **Paper card:**
-  `docs/drafts/pipeline/2-fully-proven/universal-law-field/generative-response-mechanics/complex-time-exponential-generation-phase-recurrence-and-normalization-wall-law.md`
-- **Lean module:** `GaloisForLFunctions.HTGeometry.ComplexTimeGenerativeMechanics`
+  `docs/drafts/pipeline/3-formalized/universal-law-field/generative-response-mechanics/complex-time-exponential-generation-phase-recurrence-and-normalization-wall-law.md`
+- **Lean modules:** `GaloisForLFunctions.HTGeometry.ComplexTimeGenerativeMechanics`,
+  `GaloisForLFunctions.HTGeometry.ComplexTimeEulerShellGeneration`
 - **Umbrella:** `GaloisForLFunctions.HTGeometry.UniversalLawField`
-- **Status:** [LEAN-CERTIFIED CORE] [NO PROJECT AXIOMS] [FOUR-ORGAN MECHANISM] [NOT RH]
+- **Status:** [HISTORICAL CORE] [SUPERSEDED BY FULL LEAN CERTIFICATION] [NO PROJECT AXIOMS] [NOT RH]
 
 ## Certified laws
 
@@ -27,21 +28,24 @@ source second moment = observed second moment + conditional score loss
 is the certified conservation law. It gives a falsifiable fourth-organ condition: no positive
 observer can report more Fisher second moment than its source.
 
-## Formal boundary
+## Full realization added 2026-08-14
 
-Lean does not yet package the countable Euler-shell complex partition
-`exp(z*mu_sigma) * S_m(sigma+z) / S_m(sigma)` or prove its maximal real domain. This card certifies
-the universal finite mechanism, not the entire analytic realization.
+`ComplexTimeEulerShellGeneration` now packages the countable Euler-shell complex partition
+`exp(z*mu_sigma) * S_m(sigma+z) / S_m(sigma)`, proves its all-order centered-moment tower, literal
+real Gibbs shift, imaginary phase law, countable Fisher conservation/equality, exact negative
+lifetime, and divergence at the normalization wall. The full promoted paper card is authoritative;
+this companion remains only as the historical record of the earlier finite-core milestone.
 
 ## Verification
 
 ```text
 lake env lean GaloisForLFunctions/HTGeometry/ComplexTimeGenerativeMechanics.lean
-lake build GaloisForLFunctions.HTGeometry.UniversalLawField
+lake env lean GaloisForLFunctions/HTGeometry/ComplexTimeEulerShellGeneration.lean
+lake build GaloisForLFunctions.HTGeometry.ComplexTimeEulerShellGeneration
+lake env lean GaloisForLFunctions/HTGeometry/UniversalLawField.lean
 ```
 
-Both commands pass in the foreground; the umbrella build completes 11,610 jobs. Source-level axiom
-prints on exponential-tilt differentiation, exact Fisher conservation, data processing, and the
-strict-amplification no-go report only `propext`, `Classical.choice`, and `Quot.sound`. Repository
-formal lint passes. No `sorry`, `admit`, custom `axiom`, `opaque`, `unsafe`, or computation
-certificate occurs.
+All checks pass in the foreground. Source-level axiom prints on finite/countable Fisher laws,
+source-ratio generation, the derivative tower, wall divergence, and the fusion capstone report only
+`propext`, `Classical.choice`, and `Quot.sound`. No `sorry`, `admit`, custom `axiom`, `opaque`,
+`unsafe`, or computation certificate occurs.

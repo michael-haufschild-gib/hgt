@@ -1014,8 +1014,12 @@ positive null localization, newborn-span rank, leverage conservation, literal Gr
 log-determinant derivatives, Hankel response, determinant response, and the unconditional full
 capstone report only `propext`, `Classical.choice`, and `Quot.sound`. No computation certificate,
 route premise, project axiom, or RH statement occurs. Final foreground umbrella build passes with
-11,608 jobs. The arbitrary positive corank-one spectral reduction remains a paper-level bridge;
-Lean certifies its adjugate-certificate and diagonal simple-null forms.
+11,608 jobs. The arbitrary positive corank-one spectral reduction is now Lean-closed: rank `d - 1`
+isolates the unique zero eigenline, positivity makes every complementary eigenvalue strictly
+positive, orthogonal conjugation transports the diagonal adjugate, and any unit kernel generator
+gives `adj(G₀) = det₊(G₀) aaᵀ`. The exact coordinate-free determinant derivative and strict
+pseudodeterminant positivity are included in `generativeResponse_full_capstone`; the updated
+targeted module build completes 8,665 jobs.
 
 The same module now also certifies the exact finite selection law: conservation of the zeroth phase
 moment together with inward response on every positive Gram null face is equivalent to membership
@@ -1593,3 +1597,68 @@ unchanged.
 Direct leaf build completes 3,492 jobs; the wired `HTGeometry.UniversalLawField` umbrella completes
 11,862 jobs. No RH
 premise, route endpoint, computation certificate, added axiom, or enlarged heartbeat occurs.
+
+## Session 2026-08-14 addition (common-recovery cocycle mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-RCM-1 | Exact recovery packets and KL isometry; finite periodic-data Livsic classification; canonical harmonic ledger and sharp global/cyclewise Hodge work; primitive-period return law and bounded-history rigidity; skew-lift conjugacy; joint reconstruction; sandpile local/cumulative work; involutive two-cycle consequence | `HTGeometry.ConstitutiveRecoveryCocycleHolonomy` |
+
+Formalization exposes literal periodic-orbit statements in addition to the efficient global-order
+Reynolds encoding, so primitive cycle holonomy, return work, and Hodge minimum are not weakened.
+Direct elaboration and targeted leaf build pass; module is wired into
+`HTGeometry.UniversalLawField`.  All audited capstones depend only on `propext`,
+`Classical.choice`, and `Quot.sound`.  No computation certificate, forbidden declaration, RH
+premise, or route-specific assumption occurs.
+
+## Session 2026-08-14 addition (nonabelian recovery cocycle mechanics)
+
+| ID | Theorem | Lean modules |
+|---|---|---|
+| ULF-RCM-2 | Primitive-cycle holonomy conjugacy classification; exact conjugacy-word and balanced-square work minima on actual marked cycles; refinement laws; common-recovery KL isometry; schedule commutator genesis; finite recurrence with linearly open marked action; unitary Gram blindness; automorphic reverse-cycle invariance; joint reconstruction signature | `HTGeometry.ConstitutiveNonabelianRecoveryHolonomy`, `HTGeometry.ConstitutiveConjugacyWordWork`, `HTGeometry.ConstitutiveNonabelianRecoveryWork` |
+
+Formalization uses primitive periods `orderOf (T.cycleOf s)`, avoiding the mathematically invalid
+replacement by global-permutation-order holonomy powers.  Word length is constructed as the least
+length of an actual word over finite symmetric generating data; conjugacy minima and balanced
+factorizations are proved and attained rather than assumed.  Direct checks, targeted leaf builds,
+and wired `HTGeometry.UniversalLawField` elaboration pass.  Capstones depend only on `propext`,
+`Classical.choice`, and `Quot.sound`; scoped forbidden-declaration and computation scans are clean.
+
+## Session 2026-08-14 addition (complex-time Euler-shell generation)
+
+| ID | Theorem | Lean modules |
+|---|---|---|
+| ULF-GRM-3 / CTG.1–CTG.16 | Finite and summably admitted complex-time generation; exact covariance response; Markov mean/Fisher conservation, data processing, equality classification, and strict-amplification exclusion; literal marked-shell source ratio, Gibbs shift, phase reporter, all-order centered-moment tower, zero straight radius, exact negative lifetime, wall divergence, and four-organ fusion | `HTGeometry.ComplexTimeGenerativeMechanics`, `HTGeometry.ComplexTimeEulerShellGeneration` |
+
+Direct source checks, targeted shell-leaf build, and wired `HTGeometry.UniversalLawField`
+elaboration pass.  Capstone axiom prints report only `propext`, `Classical.choice`, and
+`Quot.sound`; scoped forbidden-declaration and computation scans are clean.  Existing
+`ConstraintMotiveRelativity.MarkedEulerShellWall.normalization_wall` supplies the physical
+half-density beyond-chart obstruction.  RH selection remains conditional on the explicitly
+unconstructed positive arithmetic Markov realization.  Whole-corpus lint reaches only four
+unrelated `RHTower` umbrella-ownership failures.
+
+## Session 2026-08-14 addition (full bipolar admission and infinite alternation)
+
+| ID | Theorem | Lean modules |
+|---|---|---|
+| ULF-LSM-7 | Least closed-equivalence analytic hull; exact algebraic/analytic conflict and finitely-supported Dirac-TV laws; closed bounded alternation with first-shell depth divergence; exact two-ended source model, global three-class/total-admission split, finite interval class, continuous finite reporters, pointwise/non-equicontinuous limit, sharp half-gap, endpoint TV erasure, and literal minimal `2m` depth for `(-m,m)` | `HTGeometry.ConstitutiveClosedAdmissionHull`, `HTGeometry.ConstitutiveBoundedAlternation`, `HTGeometry.ConstitutiveTwoEndedAdmissionCriticalShell` |
+
+All previously paper-only clauses are closed without added premises. Direct source checks, three
+targeted leaf builds, and wired `HTGeometry.UniversalLawField` elaboration pass. Capstone axiom
+prints report only `propext`, `Classical.choice`, and `Quot.sound`; scoped forbidden-declaration and
+computation scans are clean. Repository lint reaches only unrelated shared `RHTower`
+umbrella-ownership failures.
+
+## Session 2026-08-14 addition (formation-depth compact properness)
+
+| ID | Theorem | Lean modules |
+|---|---|---|
+| ULF-FDPM-2 | Exact source-depth coercivity, joint reconstruction, cofinal-tail control, bounded expanding-orbit selection, complete-resolution graph admission and mixer conservation; closed depth-generator graph; lower-semicontinuous gauge; exact finite-gauge intersection; ambient and graph-domain compact sublevels; natural-level exhaustion | `HTGeometry.ConstitutiveFormationDepthProperness`, `HTGeometry.ConstitutiveFormationDepthCompactness` |
+
+The former paper-only topological clause is now fully Lean-closed. Finite coordinate heads give
+uniform `ell^1` approximation from the sharp depth-work tail bound; continuous finite gauges give
+closed sublevels, hence compactness. Direct source elaboration, targeted compactness-module build,
+and wired `HTGeometry.UniversalLawField` elaboration pass. Capstone axiom prints report only
+`propext`, `Classical.choice`, and `Quot.sound`; scoped forbidden-declaration and computation scans
+are clean.

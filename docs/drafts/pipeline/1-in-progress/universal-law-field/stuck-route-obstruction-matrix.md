@@ -136,17 +136,51 @@ and `HTGeometry.ConstitutiveEntropicAlternatingFormation`.
 
 ## 5. Queue (ordered)
 
-1. ~~Attack the trilemma's open core.~~ Closed by a fourth-branch witness. Formalize the positive
+1. **New mechanism gate:** Source-Response Signature Mechanics is now instantiated on the literal
+   logarithmic prime-shift source.  Grade-one commutator response has a uniform all-prime lower
+   bound.  Hostile word fusion then proves a new wall: grade-two antisymmetric response is injective
+   compact/dense-nonclosed on source-certified crowded prime pairs, and every finite diagonal
+   logarithmic/time-differential prolongation still fails.  Its forced singular survivor now repairs
+   grades two through four: relative/Vandermonde exact-range division, subset-grade compensation,
+   and causal Green inversion produce positive three-, seven-, and fifteen-stage formation laws
+   with uniform all-prime pair/triple/quadruple frames.  The universal deletion--interpolation
+   recursion now replaces factorial schedule enumeration.  An all-grade flag-determinant theorem
+   further proves complete monotonicity, exact subset-phase conservation, and a frame at every
+   fixed grade.  Hostile cofinal assembly then proves dense nonclosed range and rules out every
+   scalar grade-only Hilbert topology.  Its positive survivor is now executed: all-grade
+   probability formation is an exact isometry from `ell^1` coefficients to vector measures in
+   total variation, with total mass as one contractive recovery; finite-horizon CDF observation is
+   the nonproper quotient.  A common-recovery/Ward fusion has now been tested and falsified as a
+   selector: normalized shape jets are vertical, all-Markov invariant reporters factor through
+   mass, and affine Ward balance is Bartlett cancellation.  Its positive survivor is an all-order
+   coefficient/shape splitting and exact Fisher/connection anomaly-migration law.  A higher
+   twisted-coinvariant pivot has now constructed the source-restricted vertical reporter: integer
+   Laplace characters reconstruct every zero-mass signed half-line current, and their finite
+   inverse covariance-Gram energies exhaust Fisher information.  The same response predicts an
+   exact origin-atom boundary for convolutional properness.  Remaining load-bearing work is literal
+   physical current horizontal/vertical landing.  Direct character deconvolution nonproperness is
+   no longer terminal: `I-M_nu` is globally proper for every nontrivial positive delay law and
+   `I+M_nu` is always proper, so fixed/anti-fixed zero-mass currents vanish.  The pre-zero source
+   comparison `functional-equation reflection = positive formation` has now been killed as a
+   one-sided operator law: every positive involution is the identity, whereas nontrivial Laplace
+   formation is strictly contractive.  Positive survivor ULF-CDM-2 proves the complete formation
+   instead forces its marked Julia defect, unique homogeneous history, geometric recovery kernel,
+   passive joint decoder, and convolution defect ledger; the kernel family reconstructs the
+   source law.  The pre-zero gate is now physical **visible-only passive recovery** of the same
+   current, or a source theorem annihilating the forced hidden history,
+   the grade-five causal numerator,
+   transport to the physical transverse module, and a complete-response null identity.
+2. ~~Attack the trilemma's open core.~~ Closed by a fourth-branch witness. Formalize the positive
    face-compression classification, then ask only for **source-generated face motion** not already
    covered by formation-Laplacian mechanics.
-2. ~~Read `RHTower`'s UV-corner modules lane-deep.~~ Closed negatively: finite prime quadratic
+3. ~~Read `RHTower`'s UV-corner modules lane-deep.~~ Closed negatively: finite prime quadratic
    corners are matrix-injective modulo compacts, so the compact face is zero. Test only genuinely
    infinite, nonlinear, smoothed, or repolarized successors.
-3. Audit whether cofinal completion/admission itself can generate the next legal operation and its
+4. Audit whether cofinal completion/admission itself can generate the next legal operation and its
    work, rather than receiving a supplied target or certificate sequence.
-4. Require one source-generated history that simultaneously carries derived topology, work, and
+5. Require one source-generated history that simultaneously carries derived topology, work, and
    noncommuting charge transport before divisor specialization.
-5. Keep route-local Schur, W9 second-jet, and moment-horizon tests parked until this higher formation
+6. Keep route-local Schur, W9 second-jet, and moment-horizon tests parked until this higher formation
    gate either succeeds or is mathematically falsified.
 
 ## Log
@@ -164,3 +198,45 @@ and `HTGeometry.ConstitutiveEntropicAlternatingFormation`.
 - 2026-08-13 — first mechanism-level successor proved and formalized: alternating marginal failure
   generates unique transverse repairs; exact action telescopes; cofinal approximate recurrence
   forces stationarity; reflection exchanges repairs; positivity is proper modulo one forced gauge.
+- 2026-08-14 — Duhamel/Volterra pivot closed the supplied-response-map gap at paper level.  One
+  cyclic source evolution now generates the ordered response tower, positive Gram response,
+  inverse-cost response, and global closed-range test; functional equation is exactly neutral.
+  Arithmetic source realization and the complete-response null law remain open.
+- 2026-08-14 — arithmetic source realization closed at grade one, then failed sharply under
+  grade-two formation.  Shrinking prime-log windows force compact orientation response after every
+  finite diagonal logarithmic/time-differential prolongation.  Positive survivor: formation-grade properness spectrum plus an
+  exact stretched-exponential lower growth law for any diagonal repair.
+- 2026-08-14 — singular positive survivor executed rather than merely named.  Grade-two relative
+  Green exactification gives a three-phase CDF and pair frame.  Grade-three hostile attack falsifies
+  the repeated pair recipe, then proves the permutohedral successor: Vandermonde boundary,
+  subset-sum denominator, causal numerator `2z+A`, seven-phase CDF, and triple frame.
+- 2026-08-14 — grade-four stability gate closed.  First-letter deletion gives an exact recursive
+  law for every formation numerator; `P_4` factors into a stable linear term and a quartic with a
+  manifestly positive Hurwitz minor.  Its exact-range Green inverse yields the fifteen-phase CDF
+  and quadruple frame.  Queue now begins at grade five rather than another route-specific object.
+- 2026-08-14 — higher pivot closed all finite-grade existence at once: flag-determinant total
+  positivity yields all-grade conservation and fixed-grade frames.  The cofinal tower is injective
+  with dense nonclosed range, and no scalar arity weight can make it bounded and proper because
+  low-prime and high-prime channels impose incompatible scaling.  Queue now starts with a
+  source-generated tuple-adaptive topology, not another finite-grade normalization.
+- 2026-08-14 — topology survivor closed without fitted tuple weights.  The complete subset-phase
+  probability family is an `ell^1`-to-vector-measure total-variation isometry with common mass
+  recovery.  Hilbert CDF observation alone causes the cofinal fracture.  Queue now begins with
+  constructing the literal pre-zero signed current in this recovered range.
+- 2026-08-14 — all-Markov reporter no-go was not accepted as terminal.  Restricting to the
+  source-generated additive semigroup yields a complete twisted-character cotangent atlas;
+  integer Laplace responses reconstruct vertical signed currents and inverse Grams conserve Fisher
+  mass exactly.  Atomless convolution remains compact/dense-nonclosed, while positive origin mass
+  is exactly the properness face.  Queue now asks for the physical landing and a source null
+  identity, not another scalar reporter.
+- 2026-08-14 — the atomless completion wall was attacked through the formation polynomial.
+  `I-M_nu` is uniformly invertible off the identity law with positive Neumann Green inverse, while
+  `I+M_nu` is always uniformly invertible.  A reflection parity becomes selective as soon as the
+  source proves reflected current equals formed current.  This is now the exact comparison gate;
+  functional-equation covariance or common-kernel lifting alone remains insufficient.
+- 2026-08-14 — attacked the remaining reflection--formation comparison and proved it cannot hold
+  as an identification of one-sided positive formation with an involution.  ULF-CDM-2 salvages a
+  stronger generated law: Laplace formation uniquely forces the conservative defect/history
+  double and common geometric recovery, which reconstructs the source measure.  Remaining gate is
+  passive recovery from the visible physical formation without that history, or source
+  annihilation of the history itself.

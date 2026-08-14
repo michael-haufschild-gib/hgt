@@ -1,50 +1,69 @@
-# Self-dual factorization and Cartan properness — Lean certificate
+# Self-dual factorization torsor, reciprocal Gram, and Cartan properness — Lean certificate
 
-- **Source card:**
-  `docs/drafts/pipeline/2-fully-proven/universal-law-field/formation-factorization-mechanics/self-dual-factorization-torsor-reciprocal-gram-and-cartan-properness-law.md`
-- **ID:** ULF-FFM-2-CORE
-- **Lean module:**
-  `formal/GaloisForLFunctions/HTGeometry/ConstitutiveSelfDualFactorizationGeometry.lean`
-- **Umbrella:** `GaloisForLFunctions.HTGeometry.UniversalLawField`
-- **Stage:** 3 — formalized
-- **Date:** 2026-08-12
+- **ID:** ULF-FFM-2-LEAN
+- **Stage:** 3-formalized
+- **Paper parent:**
+  `self-dual-factorization-torsor-reciprocal-gram-and-cartan-properness-law.md`
+- **Lean modules:**
+  `GaloisForLFunctions.HTGeometry.ConstitutiveSelfDualFactorizationGeometry`,
+  `GaloisForLFunctions.HTGeometry.CartanWorkProperness`,
+  `GaloisForLFunctions.HTGeometry.ConstitutiveSelfDualFactorizationMatrixRay`
+- **Status:** `[LEAN-CERTIFIED FULL SURFACE] [NO SORRY] [NO ADMIT] [NO AXIOM]`
+  `[NO OPAQUE] [NO UNSAFE] [UMBRELLA WIRED] [NO OPEN PAPER CLAUSE]`
 
-## Certified mechanism
+## Certified theorem surface
 
-Lean proves four connected laws.
+Lean certifies the complete dependency-closed mechanism:
 
-1. `ExactRecoveryFactorization G` is the type of group-valued semantic/lineage pairs with exact
-   common recovery. `exactRecoveryFactorizationEquiv` proves this entire fibre is canonically
-   equivalent to the gauge group `G`; no carrier scalar appears.
-2. For every involutive star-group, adjoint reversal is involutive and
-   `exactRecoveryFactorization_reverse_fixed_iff` proves its fixed locus is exactly
-   `star s * s = 1`.
-3. `semanticGramGauge_mul_lineageGramGauge` proves the two positive algebraic leg reporters are
-   reciprocal. `lineageGramGauge_reversal_eq_semanticGramGauge` proves reversal exchanges them.
-4. `cartanModeWork x = 4 sinh(x)^2` is nonnegative, even, and zero exactly at zero.
-   `eq_zero_of_bounded_cartanPacketWork` proves that a finite radial packet whose work is uniformly
-   bounded at every natural formation depth is the zero packet.
+1. exact recovery factorizations form a gauge torsor (`exactRecoveryFactorizationEquiv`);
+2. adjoint gauge reversal is involutive and its fixed locus is exactly the balanced/unitary
+   stratum;
+3. semantic and lineage Gram gauges are reciprocal and exchanged by reversal;
+4. finite Cartan-mode and packet work is nonnegative, reversal invariant, rigid at zero, and
+   globally selecting under bounded depth;
+5. matrix Cartan work has the exact positive-eigenvalue formula, zero locus, two-sided spectral
+   sublevel bounds, determinant floor, polynomial closed-locus presentation, and compact sublevels;
+6. `factorizationMatrixRay X Y t = e^{tY}e^{tX}` is the literal operator ray;
+7. `factorizationMatrixReversal_ray` proves the exact adjoint-reversal formula `(CT.22)`;
+8. Hermitian spectral diagonalization proves
+   `cartanWork (factorizationMatrixRay X Y t) = ∑ⱼ 4 sinh²(tλⱼ)`, equation `(CT.23)`;
+9. the real skew-Hermitian phase orbit has compact closure and returns to identity at unbounded
+   natural times;
+10. bounded operator work is equivalent to `X = 0`, and bounded work along every sequence with
+    `|t_n| → ∞` also forces `X = 0`.
 
-This is the first exact ULF formation theorem in which carrier blindness, recovery gauge,
-self-duality, positive reconstruction, and global properness occupy distinct typed roles. It does
-not construct the arithmetic source map required for RH selection.
+The matrix-ray capstones are:
+
+- `factorizationMatrixReversal_ray`;
+- `cartanWork_factorizationMatrixRay`;
+- `isCompact_closure_range_skewHermitianPhase`;
+- `skewHermitianPhase_recurrent`;
+- `bounded_cartanWork_factorizationMatrixRay_iff`;
+- `eq_zero_of_bounded_cartanWork_along_cobounded`.
 
 ## Verification
 
-- Direct foreground check:
-  `lake env lean GaloisForLFunctions/HTGeometry/ConstitutiveSelfDualFactorizationGeometry.lean`
-- Leaf build:
-  `lake build GaloisForLFunctions.HTGeometry.ConstitutiveSelfDualFactorizationGeometry`
-- Umbrella build:
-  `lake build GaloisForLFunctions.HTGeometry.UniversalLawField`
-- Umbrella build passed with 11,840 jobs.
-- Axiom audit of classification, reversal fixed locus, reciprocal conservation, and bounded-work
-  selection reports only `propext`, `Classical.choice`, and `Quot.sound`.
-- No declaration uses `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`.
+```text
+lake env lean GaloisForLFunctions/HTGeometry/ConstitutiveSelfDualFactorizationMatrixRay.lean
+exit 0
+
+lake build GaloisForLFunctions.HTGeometry.ConstitutiveSelfDualFactorizationMatrixRay
+Build completed successfully (8659 jobs).
+
+lake env lean GaloisForLFunctions/HTGeometry/UniversalLawField.lean
+exit 0
+```
+
+Kernel axiom audits of all listed capstones report only:
+
+```text
+[propext, Classical.choice, Quot.sound]
+```
+
+No module in this certificate uses `sorry`, `admit`, a project axiom, `opaque`, or `unsafe`.
 
 ## Boundary
 
-Lean does not yet certify the paper card's finite-dimensional Hilbert-space singular-value formula,
-topological compactness of work sublevels, or recurrence of arbitrary unitary one-parameter groups.
-The certified bounded-natural-depth theorem is already a global formation/properness selector once a
-source realization supplies its hypotheses.
+This remains the exact finite-dimensional factorization theorem stated by the paper.  It assumes
+the paper's self-adjoint/adjoint generator conditions and proves no arithmetic source realization
+or RH endpoint.

@@ -124,7 +124,7 @@ theorem algebraicIndependent_jet :
 /-- **The velocity is differentially transcendental over the constants.**  The reparametrisation
 makes the Maurer–Cartan current a differentially independent source, so the phase tail has
 differential transcendence degree one, the dimension of the elliptic curve. -/
-theorem differentialIndependent_jet_zero :
+theorem differentialIndependent_reparamJet_zero :
     DifferentialIndependent ℂ
       (fun _ : Unit => (ReparamField.jet 0 : ReparamField MeromorphicPlane)) := by
   have hbase : AlgebraicIndependent ℂ

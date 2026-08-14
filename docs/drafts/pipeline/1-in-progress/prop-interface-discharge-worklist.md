@@ -145,3 +145,95 @@ the first round of work.
 | 1 | `AnnihilatesDigamma` | realized by `0` |
 | 1 | `HasNonrealPeriodRatio` | realized by the pair `1, i` |
 | 1 | `HasPolynomialFunctionalProjectiveBoundary` | consistent (empty coefficient class); substantive content is the Montel-type statement |
+
+## Third-order audit: exact conclusion atoms and grounding dependencies (2026-08-13)
+
+The current audit no longer counts an interface merely because it occurs somewhere inside a
+conclusion.  It extracts only proposition atoms actually asserted under `∃`, `Nonempty`, and `∧`;
+an `↔` grounds neither side.  On the last complete three-umbrella snapshot it found 103069 project
+constants, 1206 proposition interfaces consumed as premises, 102 never directly concluded, and 150
+ungrounded at the dependency fixpoint.  Each row remains a nomination because structure fields,
+inductive constructors, and subtype `Nonempty` instances are intentionally invisible.
+
+Resolved in this pass:
+
+- `IndepPeriods`: exact equivalence to linear independence after mapping into the fraction field,
+  plus the nontrivial period pair `i, i√2`.
+- `SpectralCharacterActive`: exact birth-order realizability iff the character is nonzero.
+- `GammaOppositeShiftIntensityCollapse`: integer-translation, self, half-integer thermal, and family
+  witnesses.
+- `OddUnder`: canonical reflection-odd projection, zero witness, and exact image classification.
+- `IsRegularModulo`: exact bottom-ideal classification plus unit, top, coordinate-product, and
+  singleton regular-sequence witnesses.
+- `IsExtensiveFormation`: hull, identity, closure-operator, least-hull, and monotone/finitary laws.
+- Structural families: compensators, constitutive closed paths, factorization, prime orientations,
+  vertical amplitudes, universal matrix generation, equivariant reporters, KL repair, polarized
+  incidence, and formal self-adjointness.
+- `ComplexGammaCommensurate` and marked translation orbit membership are equivalence relations;
+  Gram-nerve refinement and reporter refinement are reflexive/transitive.
+- Exact universal laws: orbit quotient equality iff orbit membership, failure-kernel incidence iff
+  nonempty intersection, full-chain locality, full-base successful revision iff empty-base failure,
+  and universal set-valued reporter coframe separation.
+- Canonical chambers: subsingleton Witt and Shilov peak witnesses, finite Pauli-label existence,
+  constant partial recovery/action/reporters, zero bilinear dressing/source cocycle/packet, zero
+  source-pointed descent, identity preservation/retraction, zero tangent/positive face/defect/ray,
+  top algebra generation, admitted exactness, unit cofinite scale, zero-gate preparation, zero
+  q-gamma relation, zero feasible flux, depth-zero shattering, zero local meromorphic algebraicity,
+  anti-differential exchange reflexivity, based affine-tree exactness, empty-chord exactness, unit
+  Ihara block bound, and a sharp event-adapted cutoff at every threshold.
+
+New checked modules:
+
+- `HTGeometry/IndepPeriodsUniversalityLaw.lean`
+- `HTGeometry/SpectralCharacterRealizabilityLaw.lean`
+- `HTGeometry/GammaOppositeShiftCollapseWitnesses.lean`
+- `HTGeometry/OddUnderWitnesses.lean`
+- `HTGeometry/RegularModuloWitnesses.lean`
+- `HTGeometry/FormationInterfaceWitnesses.lean`
+- `HTGeometry/StructuralPropInterfaceWitnesses.lean`
+- `HTGeometry/AdditionalPropInterfaceWitnesses.lean`
+- `HTGeometry/FurtherPropInterfaceWitnesses.lean`
+- `HTGeometry/SecondTierPropInterfaceWitnesses.lean`
+- `HTGeometry/SingletonPropInterfaceWitnesses.lean`
+- `RHTower/SuzukiGammaTestedEquationWitnesses.lean`
+- `RHTower/SingletonPropInterfaceWitnesses.lean`
+
+Classified false positives include structure fields (`PartialCompletion.admissible`), inductive
+constructors (boundary-wedge membership), subtype inhabitants (finite Pauli labels), and producers
+present in source but absent from the stale umbrella object (`IsLocallyFiniteSpectrum`,
+`IsKoszulRegular`).  `HilbertMetric.IsFullCCRMatrixTuple` remains impossible in positive finite
+dimension with its block-CCR replacement already proved.  `RHTower.SchanuelConjecture` remains the
+named Hermite--Lindemann open core.  Nonzero `SuzukiGammaTestedEquation` is isolated on the research
+card `suzuki-gamma-tested-equation-nonzero-provider.md`; zero source and zero response are formally
+realized now.
+
+## Final exact-head closure audit (2026-08-14)
+
+After refreshing all three umbrella objects, the exact conclusion-head and dependency-fixpoint
+audit reports **105848 project constants, 1218 proposition definitions, 879 consumed interfaces,
+2 never concluded, and 2 ungrounded**.  This closes 100 of the original 102 never-produced heads
+and 148 of the original 150 ungrounded heads.
+
+New closure modules:
+
+- `HTGeometry/PropInterfaceClosureLaws.lean`: prescribed spectral birth, finite-spectrum locality,
+  exact radial occurrence, replica gap radius, failure-kernel and reporter-promotion universal laws.
+- `HilbertMetric/FullCCRInterfaceClassification.lean`: exact existence classification for full CCR
+  tuples; they exist precisely in empty-mode or empty-coordinate regimes.
+- `HTGeometry/GroundedPropInterfaceWitnesses.lean`: 37 unconditional identity, zero, empty-family,
+  finite-memory, Fourier, Interfinity, rank-three, thermal, Gamma, and Nevanlinna ground laws.
+- `HTGeometry/ResidualPropInterfaceClassifications.lean`: explicit ground models for structure
+  projections, boundary-wedge membership, total completion admission, and zero relation matrices.
+
+The two residual heads are mathematically final:
+
+1. `RHTower.SchanuelConjecture` is the named open Schanuel conjecture.  Producing it would claim an
+   unconditional solution of open transcendence mathematics; existing Hermite--Lindemann results
+   cover the proved one-dimensional stage but do not imply this interface.
+2. `IntrinsicRealCoronaOddDatum.HasSmoothProjectorFirstOrderPrerequisite` is not missing evidence:
+   `IntrinsicRealCoronaOddDatum.not_hasSmoothProjectorFirstOrderPrerequisite` proves its negation for
+   every datum.  The strongest unconditional survivor is the existing empty-subclass theorem.
+
+No unresolved constructible interface remains.  Earlier audit rows for boundary membership,
+constraint faces, partial-completion admission, and relation matrices were exact-head visibility
+gaps rather than mathematical gaps; direct ground theorems now make that distinction formal.

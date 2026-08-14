@@ -650,6 +650,58 @@ theorem bipartiteAlternatingRepairHistory_conservation [Nonempty I] [Nonempty J]
   exact bipartiteAlternatingRepairHistory_pythagorean target r c a htarget hr hc ha
     htargetRow htargetColumn n
 
+/-- Accumulated exact information action of the literal alternating row/column repair history. -/
+def bipartiteAlternatingRepairAction
+    (r : I → ℝ) (c : J → ℝ) (a : I → J → ℝ) (N : ℕ) : ℝ :=
+  ∑ k ∈ Finset.range N,
+    bipartiteRelativeEntropy (bipartiteAlternatingRepairHistory r c a (k + 1))
+      (bipartiteAlternatingRepairHistory r c a k)
+
+/-- Positive repairs make accumulated information action monotone in history length. -/
+theorem monotone_bipartiteAlternatingRepairAction [Nonempty I] [Nonempty J]
+    (r : I → ℝ) (c : J → ℝ) (a : I → J → ℝ)
+    (hr : ∀ i, 0 < r i) (hc : ∀ j, 0 < c j) (ha : ∀ i j, 0 < a i j) :
+    Monotone (bipartiteAlternatingRepairAction r c a) := by
+  intro m n hmn
+  apply Finset.sum_le_sum_of_subset_of_nonneg (Finset.range_mono hmn)
+  intro k _ _
+  exact bipartiteRelativeEntropy_nonneg _ _
+    (bipartiteAlternatingRepairHistory_pos r c a hr hc ha (k + 1))
+    (bipartiteAlternatingRepairHistory_pos r c a hr hc ha k)
+
+/-- Accumulated repair action is bounded by initial divergence from every positive feasible target. -/
+theorem bipartiteAlternatingRepairAction_le_initial [Nonempty I] [Nonempty J]
+    (target : I → J → ℝ) (r : I → ℝ) (c : J → ℝ) (a : I → J → ℝ)
+    (htarget : ∀ i j, 0 < target i j) (hr : ∀ i, 0 < r i) (hc : ∀ j, 0 < c j)
+    (ha : ∀ i j, 0 < a i j)
+    (htargetRow : ∀ i, bipartiteRowMass target i = r i)
+    (htargetColumn : ∀ j, bipartiteColumnMass target j = c j) (N : ℕ) :
+    bipartiteAlternatingRepairAction r c a N ≤ bipartiteRelativeEntropy target a := by
+  have hcons := bipartiteAlternatingRepairHistory_conservation target r c a htarget hr hc ha
+    htargetRow htargetColumn N
+  have hresidual : 0 ≤
+      bipartiteRelativeEntropy target (bipartiteAlternatingRepairHistory r c a N) :=
+    bipartiteRelativeEntropy_nonneg _ _ htarget
+      (bipartiteAlternatingRepairHistory_pos r c a hr hc ha N)
+  unfold bipartiteAlternatingRepairAction
+  linarith
+
+/-- The paper's predeclared product packet is a feasible target for exact global conservation. -/
+theorem bipartiteProductWitness_alternatingRepairHistory_conservation
+    [Nonempty I] [Nonempty J]
+    (r : I → ℝ) (c : J → ℝ) (M : ℝ) (a : I → J → ℝ)
+    (hr : ∀ i, 0 < r i) (hc : ∀ j, 0 < c j) (hM : 0 < M)
+    (hrM : ∑ i, r i = M) (hcM : ∑ j, c j = M)
+    (ha : ∀ i j, 0 < a i j) :
+    ∀ N, bipartiteRelativeEntropy (bipartiteProductWitness r c M) a =
+      bipartiteRelativeEntropy (bipartiteProductWitness r c M)
+          (bipartiteAlternatingRepairHistory r c a N) +
+        bipartiteAlternatingRepairAction r c a N := by
+  exact bipartiteAlternatingRepairHistory_conservation (bipartiteProductWitness r c M) r c a
+    (bipartiteProductWitness_pos r c M hr hc hM) hr hc ha
+    (bipartiteProductWitness_rowMass r c M hM.ne' hcM)
+    (bipartiteProductWitness_columnMass r c M hM.ne' hrM)
+
 theorem bipartiteAlternatingRepairHistory_cycle_balanced [Nonempty I] [Nonempty J]
     (target : I → J → ℝ) (r : I → ℝ) (c : J → ℝ) (a : I → J → ℝ)
     (htarget : ∀ i j, 0 < target i j) (hr : ∀ i, 0 < r i) (hc : ∀ j, 0 < c j)
@@ -701,6 +753,25 @@ theorem bipartiteAlternatingRepairHistory_cycle_balanced [Nonempty I] [Nonempty 
     rw [← hcolumnRepair]
     exact bipartiteColumnMass_columnRepair c a
       (fun j ↦ (bipartiteColumnMass_pos a ha j).ne') j
+
+/-- Any recurrent positive alternating repair history of length at least two is already balanced,
+with the product witness supplying feasibility rather than an extra existence premise. -/
+theorem bipartiteProductWitness_alternatingRepairHistory_cycle_balanced
+    [Nonempty I] [Nonempty J]
+    (r : I → ℝ) (c : J → ℝ) (M : ℝ) (a : I → J → ℝ)
+    (hr : ∀ i, 0 < r i) (hc : ∀ j, 0 < c j) (hM : 0 < M)
+    (hrM : ∑ i, r i = M) (hcM : ∑ j, c j = M)
+    (ha : ∀ i j, 0 < a i j) (N : ℕ) (hN : 2 ≤ N)
+    (hcycle : bipartiteAlternatingRepairHistory r c a N = a) :
+    (∀ i, bipartiteRowMass a i = r i) ∧
+      (∀ j, bipartiteColumnMass a j = c j) ∧
+      ∀ k < N, bipartiteAlternatingRepairHistory r c a (k + 1) =
+        bipartiteAlternatingRepairHistory r c a k := by
+  exact bipartiteAlternatingRepairHistory_cycle_balanced
+    (bipartiteProductWitness r c M) r c a
+    (bipartiteProductWitness_pos r c M hr hc hM) hr hc ha
+    (bipartiteProductWitness_rowMass r c M hM.ne' hcM)
+    (bipartiteProductWitness_columnMass r c M hM.ne' hrM) N hN hcycle
 
 end FiniteEntropy
 

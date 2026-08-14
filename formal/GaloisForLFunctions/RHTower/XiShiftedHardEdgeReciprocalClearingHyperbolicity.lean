@@ -32,7 +32,7 @@ theorem evalRealPolynomial_xiShiftedHardEdgeReciprocalClearing
     evalRealPolynomial (xiShiftedHardEdgeReciprocalClearing y N P) u =
       ((P.map (algebraMap ℝ ℂ)).reflect N).eval (u + y) := by
   simp [evalRealPolynomial, xiShiftedHardEdgeReciprocalClearing,
-    Polynomial.reflect_map]
+    Polynomial.reflect_map, Polynomial.aeval_comp]
 
 /-- The value at the reciprocal-chart pole is exactly the coefficient at the clearing depth.
 This is the degree-drop branch that cannot be discarded by multiplying through a denominator. -/
@@ -41,7 +41,11 @@ theorem evalRealPolynomial_xiShiftedHardEdgeReciprocalClearing_neg_mass
     evalRealPolynomial (xiShiftedHardEdgeReciprocalClearing y N P) (-(y : ℂ)) =
       (P.coeff N : ℂ) := by
   rw [evalRealPolynomial_xiShiftedHardEdgeReciprocalClearing]
-  simp [Polynomial.eval_zero, Polynomial.coeff_reflect, Polynomial.revAt_zero]
+  have hy : -(y : ℂ) + (y : ℂ) = 0 := by ring
+  rw [hy]
+  rw [← Polynomial.coeff_zero_eq_eval_zero, Polynomial.coeff_reflect,
+    Polynomial.revAt_zero, Polynomial.coeff_map]
+  rfl
 
 /-- **Exact reciprocal-zero classification.** A cleared zero is either the exceptional pole,
 detected by the depth coefficient, or the reciprocal image of a genuine zero of `P`. -/
@@ -54,11 +58,12 @@ theorem evalRealPolynomial_xiShiftedHardEdgeReciprocalClearing_eq_zero_iff
   rw [evalRealPolynomial_xiShiftedHardEdgeReciprocalClearing]
   by_cases hw : u + (y : ℂ) = 0
   · rw [if_pos hw, hw]
-    simp [Polynomial.eval_zero, Polynomial.coeff_reflect,
-      Polynomial.revAt_zero]
+    rw [← Polynomial.coeff_zero_eq_eval_zero, Polynomial.coeff_reflect,
+      Polynomial.revAt_zero, Polynomial.coeff_map]
+    rfl
   · rw [if_neg hw]
     have hPmap : (P.map (algebraMap ℝ ℂ)).natDegree ≤ N :=
-      (Polynomial.natDegree_map_le P (algebraMap ℝ ℂ)).trans hP
+      Polynomial.natDegree_map_le.trans hP
     letI : Invertible ((u + (y : ℂ))⁻¹) :=
       invertibleOfNonzero (inv_ne_zero hw)
     have hiff := Polynomial.eval₂_reflect_eq_zero_iff
@@ -141,4 +146,3 @@ theorem xiShiftedHankelNullPolynomial_hardEdgeClearing_root_im_eq_zero
 end
 
 end RHTower
-

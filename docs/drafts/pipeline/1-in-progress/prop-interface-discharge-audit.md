@@ -1,7 +1,7 @@
 # Prop-interface discharge audit: HTGeometry, HilbertMetric, RHTower
 
 - **ID:** prop-interface-discharge-audit
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Source:** loop mandate — audit the three owned areas for undischarged hypotheses / `Prop` interfaces
 - **Statement:** every `Prop` interface consumed as a hypothesis in `HTGeometry`, `HilbertMetric`,
@@ -5284,3 +5284,38 @@ genuine analytic `MaximalTranslationInputs` interface remains.
 
 Targeted Lean checks passed for all modified theorem files.  Axiom audit for the new support theorem
 and the full-translation/RHTower laws reports only `[propext, Classical.choice, Quot.sound]`.
+
+## 2026-08-14 — exact-head closure and final verification
+
+`[LEAN-PROVED]` Whole-environment exact-head audit now scans **105 848 project constants**, finds
+**1 218 project proposition definitions** and **879 proposition interfaces consumed as premises**.
+Only **2** interfaces are never concluded and only the same **2** remain ungrounded under the
+dependency fixpoint.  This closes **100/102** originally never-produced heads and **148/150**
+originally ungrounded heads.
+
+The two survivors are exact mathematical classifications, not missing connector work:
+
+* `RHTower.SchanuelConjecture` is the named open Schanuel conjecture.  Existing
+  Hermite--Lindemann results discharge its proved one-dimensional consequences but cannot produce
+  the universal conjecture unconditionally.
+* `IntrinsicRealCoronaOddDatum.HasSmoothProjectorFirstOrderPrerequisite` is false for every datum;
+  `IntrinsicRealCoronaOddDatum.not_hasSmoothProjectorFirstOrderPrerequisite` proves the negation and
+  `intrinsicRealCorona_smoothSubclass_empty` is the strongest positive survivor.
+
+`[VERIFIED]` Final authoritative gates on this snapshot:
+
+* `lake build GaloisForLFunctions.HTGeometry` — **18 489/18 489** jobs;
+* `lake build GaloisForLFunctions.RHTower` — **20 419/20 419** jobs;
+* `lake build GaloisForLFunctions.HilbertMetric` — **8 711/8 711** jobs;
+* `scripts/formal_tools.py lint` — passed, including banned-declaration and umbrella-reachability
+  checks;
+* representative `#print axioms` audit over universal laws, ground witnesses, empty-subclass
+  rigidity, and full-CCR classification — no project axioms; dependencies are empty or only
+  `[propext, Classical.choice, Quot.sound]`.
+
+Universal-law consolidation is formalized in `HTGeometry/PropInterfaceClosureLaws.lean`, including
+the exact equivalence between equality-valued strict reporter promotion and pointwise commutation.
+`HilbertMetric/FullCCRInterfaceClassification.lean` gives the nontrivial complete satisfiability
+law: a finite full-CCR tuple exists exactly when mode type is empty or both coordinate types are
+empty.  Canonical value reflections (zero, identity, constant, empty-family, exact rank-three) are
+collected as unconditional ground witnesses rather than repeated downstream assumptions.

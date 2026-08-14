@@ -168,3 +168,54 @@ theorem isExtremeRayMeasure_iff_smul_dirac [MeasurableSingletonClass X] {mu : Me
 end
 
 end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+open MeasureTheory Set
+open scoped ENNReal NNReal
+
+/-- **A two-valued probability measure is a point mass.**  On a Hausdorff second-countable space a
+probability measure taking only the values `0` and `1` is the Dirac mass at the unique point of its
+support. -/
+theorem exists_eq_dirac_of_measure_eq_zero_or_one {X : Type*} [TopologicalSpace X] [T2Space X]
+    [MeasurableSpace X] [BorelSpace X] [SecondCountableTopology X] [MeasurableSingletonClass X]
+    (mu : Measure X) [IsProbabilityMeasure mu]
+    (h01 : ∀ S : Set X, MeasurableSet S → mu S = 0 ∨ mu S = 1) :
+    ∃ y : X, mu = Measure.dirac y := by
+  have hne : mu ≠ 0 := by
+    intro h
+    have := congrArg (fun m : Measure X => m univ) h
+    simp [measure_univ] at this
+  obtain ⟨y, hy⟩ := Measure.nonempty_support hne
+  have hsingle : mu.support = {y} := by
+    refine Set.Subset.antisymm (fun z hz => ?_) (Set.singleton_subset_iff.2 hy)
+    by_contra hzy
+    rw [Set.mem_singleton_iff] at hzy
+    obtain ⟨U, V, hU, hV, hyU, hzV, hUV⟩ := t2_separation (Ne.symm hzy)
+    have hUpos : 0 < mu U := (Measure.mem_support_iff_forall y).1 hy U (hU.mem_nhds hyU)
+    have hVpos : 0 < mu V := (Measure.mem_support_iff_forall z).1 hz V (hV.mem_nhds hzV)
+    have hUfull : mu U = 1 := (h01 U hU.measurableSet).resolve_left (ne_of_gt hUpos)
+    have hVfull : mu V = 1 := (h01 V hV.measurableSet).resolve_left (ne_of_gt hVpos)
+    have hadd : mu (U ∪ V) = mu U + mu V := measure_union hUV hV.measurableSet
+    have hle : mu (U ∪ V) ≤ 1 := by
+      have hmono : mu (U ∪ V) ≤ mu univ := measure_mono (subset_univ (U ∪ V))
+      rwa [measure_univ] at hmono
+    rw [hadd, hUfull, hVfull] at hle
+    have : (2 : ℝ≥0∞) ≤ 1 := by
+      calc (2 : ℝ≥0∞) = 1 + 1 := by norm_num
+        _ ≤ 1 := hle
+    norm_num at this
+  have hnull : mu {y}ᶜ = 0 := by
+    rw [← hsingle]
+    exact Measure.measure_compl_support (μ := mu)
+  refine ⟨y, ?_⟩
+  have hmass : mu {y} = 1 := by
+    have hcompl : mu {y} + mu {y}ᶜ = mu univ :=
+      measure_add_measure_compl (measurableSet_singleton y)
+    rw [hnull, add_zero, measure_univ] at hcompl
+    exact hcompl
+  have := eq_smul_dirac_of_compl_singleton_null mu hnull
+  rw [hmass, one_smul] at this
+  exact this
+
+end GaloisForLFunctions.HTGeometry
