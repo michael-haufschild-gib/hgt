@@ -7,7 +7,8 @@
   `capacitary-observer-sector-excision-law.md`,
   `fixed-shell-angular-dephasing-static-local-plateau-law.md`
 - **Status:** `[PAPER-PROVED] [PROVED HERE] [FRONTIER ADVANCE]
-  [CLASSICAL TRACE-MONOID ENGINE] [APPLICATION NOVELTY UNVERIFIED] [LEAN DEFERRED]`
+  [CLASSICAL TRACE-MONOID ENGINE] [APPLICATION NOVELTY UNVERIFIED]
+  [THEOREM A LEAN-FORMALIZED] [THEOREM B PAPER-ONLY]`
 - **Date:** 2026-08-13
 
 ## Public sentence
@@ -433,8 +434,10 @@ first-cut target.
    uses of commuting gates, but not the dependency-normalized Green reporter `(15)--(21)`, its
    static completed-phase capacity upgrade `(32)`, or the resulting first-cut entropy correction.
    Absence in search is not priority certification.
-8. **Lean deferred by instruction.**  The proof is finite combinatorics plus nonnegative series,
-   but no Lean source is written while the shared corpus is being refactored.
+8. **Formal boundary is explicit.**  Theorem A, including dependent-pair completeness, exact
+   maximum-degree count, and cumulative-depth bound, is formalized in
+   `formal/GaloisForLFunctions/RHTower/LocalCircuitTraceCapacity.lean`.  The heap Green reporter of
+   Theorem B remains paper-proved only and cannot yet be cited as formal support.
 
 ## 9. External boundary
 
@@ -455,5 +458,6 @@ first-cut target.
 - [x] bounded-degree path-local specialization
 - [x] linear-in-Hilbert-dimension completed-phase plateau corollary
 - [x] hostile and external collision audit
-- [ ] Lean formalization after corpus refactor
+- [x] Lean formalization of Theorem A and its cumulative-depth corollary
+- [ ] Lean formalization of Theorem B heap Green reporter
 - [ ] quenched physical-time heap-incidence estimate closing first cut

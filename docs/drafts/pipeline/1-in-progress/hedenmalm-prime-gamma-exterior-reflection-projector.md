@@ -54,7 +54,7 @@ removable after exteriorization because the reflected Pluecker coordinate is alr
 - [x] three-clock Cesaro projector onto reflection pairs;
 - [x] ordered reflected minors equal negative Pluecker norm square;
 - [x] Abel/Cayley resolvent limit equals exact transverse-normalized exterior packet energy;
-- [ ] every finite approximant is an explicit prime--Gamma four-leg source expression;
+- [x] every finite approximant is an explicit prime--Gamma four-leg source expression;
 - [ ] absolute source bound below `4 * (96 / 145)^2`;
 - [ ] unconditional closed Lean proof of RH.
 

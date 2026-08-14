@@ -275,3 +275,10 @@ properness doctrine capable of selection.
 - 2026-08-12 -- generalized homogeneous vertical transport to affine formation current plus
   transport. Semidirect composition, coupled four-organ Bianchi law, and finite
   diagonal/reset/KMS realization proved on paper.
+- 2026-08-14 -- first literal source-weighted vertical realization closed.  Ramification power
+  formation produces a nonzero excess, Mellin state turns it into an orthogonal GNS defect, and
+  negative log survival gives a source-derived work satisfying an exact crossed cocycle.  Work
+  diverges at the normalization wall, proving relative properness.  This closes the “nonzero
+  vertical comparison” and “positive work” gates for one source family, but not the three-organ
+  heterogeneity or RH selection gates.  See
+  `docs/drafts/pipeline/2-fully-proven/universal-law-field/formation-excess-mechanics/ramification-gibbs-gns-defect-spectral-information-and-boundary-work-law.md`.

@@ -6104,8 +6104,9 @@ receive a new title and an independent significance audit.
   after return/carrier excision and removes one spurious `log n` from its entropy budget.  Trace
   monoids and their use in circuit enumeration are classical; priority is assigned, provisionally,
   only to the heap Green/static-capacity composition.  Paper proof and hostile audit:
-  `../2-fully-proven/local-circuit-heap-capacity-law.md`.  Lean remained read only during the shared
-  refactor.
+  `../2-fully-proven/local-circuit-heap-capacity-law.md`.  The exact trace-classification theorem,
+  maximum-degree bound, and cumulative-depth bound are now unconditional in Lean:
+  `../3-formalized/local-circuit-trace-capacity-law.md`.  The Green reporter remains paper-only.
 - 2026-08-13 -- Replaced sequential first-hit/Kraft accounting by concurrent causal accessibility.
   Trace-prefix cylinders are not prefix-free: independent successful prefixes can share one
   completion.  Under the finite heap law `pi_z(T)=z^|T|/Z(z)`, left cancellation gives the exact
@@ -6132,6 +6133,23 @@ receive a new title and an independent significance audit.
   to the desired event tail but still dominate `Z_r`; it must be cut, stratified, or handled by a
   direct non-moment proof.  Physical static-local gap remains open.  Paper proof and hostile audit:
   `../2-fully-proven/quenched-causal-replica-action-law.md`.  Lean remained read only during refactor.
+- 2026-08-14 -- Formalized the universal two-memory mechanism exposed by the static-centralizer
+  no-go.  For nested orthogonal projections `Pi<=P`, a unitary evolution `U` fixing `P`, and any
+  preparation vector with the same `Pi` component as the seed, Lean proves the exact collision
+  identity
+  `<Ux,y>=<u,u>+<c,q>+<r,q>`, the completed baseline
+  `<Px,y>=<u,u>+<c,q>`, the single dynamic correction `<(U-P)x,y>=<r,q>`, and conserved retained
+  memory norm `||c||^2+||r||^2=||x-Pi x||^2`.  For every finite nonnegative target dictionary, one
+  shortcut forces an explicit inverse-dictionary dynamic alignment; exact recurrence with the seed
+  in the dictionary forces the corresponding realignment.  Composing with the exact trace-capacity
+  theorem replaces inverse raw-word count by the intrinsic heap scale
+  `1/(choose(M+ell-1,ell)2^(Delta ell))`; commuting-gate permutations are removed before the
+  collision moment.  The formal Hilbert theorem needs no finite dimension.  This proves that
+  persistent non-Haar memory is compatible with circuit hardness and isolates the Brown frontier to
+  one signed quenched alignment, but it does not bound that alignment for ordinary local
+  Hamiltonians.  Formal cards:
+  `../3-formalized/static-circuit-two-memory-orthogonality-law.md` and
+  `../3-formalized/local-circuit-two-memory-capacity-law.md`.
 - 2026-08-14 -- Proved a new rational-frame constraint on static recurrence.  For a uniform
   `D`-phase orbit and any finite target dictionary of size `N`, at most
   `4N exp[-(1-4 delta^2)D/4]` of the projective `k`-torsion points lie within trace distance
@@ -6160,3 +6178,34 @@ receive a new title and an independent significance audit.
   coexist with a permanent two-query separation from Haar.  Remaining frontier is now the physical
   composition through arbitrary normalized rays, autonomous late-time shadowing, circuit
   asymptotics, and ultimately first Brown onset—not finite-grid power-orbit counting.
+- 2026-08-14 -- Closed the arbitrary-ray composition in Lean.  `FiniteGridChoiRayCap` embeds every
+  finite cyclic phase grid into normalized diagonal Choi vectors and proves that an
+  `epsilon`-cap around any normalized vector in the full `d^2`-dimensional Choi space is contained
+  in one translated coherence cap whenever nonempty.  `PrimeTorsionCircuitRayPolygon` then proves
+  unconditionally that
+  `((p-1)N)n!d^(-n) < sqrt(1-4epsilon^2)^(2n)`, with prime `p`, `2n<p`, and
+  `0<=epsilon<1/2`, produces one order-`p` polygon whose every nonidentity vertex is farther than
+  `epsilon` from every one of the `N` arbitrary normalized circuit rays.  This preserves fibre
+  multiplicity and the complete circuit/power union; targets need not be diagonal or grid-valued.
+  Remaining frontier is now autonomous same-Hamiltonian shadowing, explicit Brown-scale heap
+  instantiation, and first onset.  Formal card:
+  `../3-formalized/prime-torsion-circuit-ray-polygon-law.md`.
+- 2026-08-14 -- Closed autonomous same-Hamiltonian polygon shadowing in Lean.  Strict hardness at
+  all nonidentity prime-grid powers plus the prime return endpoint forms one nonempty open target
+  in the projective phase torus.  Maximal projective rank makes one fixed autonomous phase flow hit
+  that whole target syndetically.  Consequently, under the same replica budget, after every start
+  time there is a base time `tau` such that every physical slice `a.val*tau`, `a!=0 mod p`, is
+  `epsilon`-hard against the complete arbitrary normalized dictionary and `p*tau` is within any
+  prescribed `rho>0` of the identity ray.  No quantitative Diophantine estimate or minimum gap is
+  needed.  This retires autonomous late-time shadowing.  Remaining frontier: explicit ordinary
+  local-Hamiltonian/permanent-Haar composition, Brown-scale heap instantiation, and first onset.
+  Formal card: `../3-formalized/prime-torsion-autonomous-circuit-polygon-law.md`.
+- 2026-08-14 -- Specialized the complete autonomous polygon to ordinary fixed bounded-weight Pauli
+  Hamiltonians and composed the permanent same-Hamiltonian Haar separator.  For every generic
+  coefficient vector, the exact replica budget gives syndetically recurring complete hard prime
+  polygons and a near-identity endpoint, while a product-stabilizer two-query signal remains
+  strictly above the exact operator-normalized Haar benchmark at every real time.  This closes the
+  previously separate local-Hamiltonian ensemble-transfer and permanent-locality obligations for
+  late recurrence polygons.  Remaining open core is Brown-scale heap instantiation and first-onset
+  growth.  Formal card:
+  `../3-formalized/pauli-local-prime-torsion-circuit-polygon-law.md`.

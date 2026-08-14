@@ -422,6 +422,22 @@ theorem coe_zeta_mul_zeta_apply_eq_card_divisors (n : ℕ) :
         norm_num
       _ = (n.divisors.card : ℂ) := by simp
 
+/-- The divisor-counting Dirichlet series is absolutely summable on `Re w > 1`. -/
+theorem LSeriesSummable_card_divisors {w : ℂ} (hw : 1 < w.re) :
+    LSeriesSummable (fun n : ℕ => (n.divisors.card : ℂ)) w := by
+  let Z : ArithmeticFunction ℂ := ArithmeticFunction.zeta
+  have hz : LSeriesHasSum (Z : ℕ → ℂ) w (riemannZeta w) := by
+    dsimp [Z]
+    exact ArithmeticFunction.LSeriesHasSum_zeta hw
+  have hmul : LSeriesHasSum ((Z * Z : ArithmeticFunction ℂ) : ℕ → ℂ) w
+      (riemannZeta w * riemannZeta w) :=
+    ArithmeticFunction.LSeriesHasSum_mul hz hz
+  have hcongr : ∀ {n : ℕ}, n ≠ 0 →
+      ((Z * Z : ArithmeticFunction ℂ) n) = (n.divisors.card : ℂ) := by
+    intro n _hn
+    exact coe_zeta_mul_zeta_apply_eq_card_divisors n
+  exact ((LSeriesHasSum_congr w _ hcongr).mp hmul).LSeriesSummable
+
 /-- Exact divisor Dirichlet series identity on the half-plane of absolute convergence. -/
 theorem LSeries_card_divisors_eq_riemannZeta_sq {w : ℂ} (hw : 1 < w.re) :
     LSeries (fun n : ℕ => (n.divisors.card : ℂ)) w =

@@ -105,7 +105,8 @@ producer:
   and its Nevanlinna parametrization rather than a Dirac orbit;
 - exact critical approximation-number asymptotic for the concrete Gauss-paired channel;
 - differential-algebraic closure as an `IntermediateField`;
-- external Lindemann--Weierstrass input used by Schanuel stage one.
+- Schanuel stage two and above; stage one is discharged unconditionally by the corpus
+  Hermite--Lindemann theorem `exp_algebraic_transcendental`.
 
 The first three require classification against every RH route before investment. General
 infrastructure completion alone is not RH progress.

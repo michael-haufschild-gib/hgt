@@ -339,3 +339,54 @@ The five foundations named in §10 — Ritt--Raudenbush finite prime decompositi
 dimension polynomial, covering dimension of inverse limits, the Bohr almost-periodic hull, and
 Pontryagin--Takahashi duality — are the actual formalization obligation, and four of the five have no
 corpus asset at all.
+
+## Log — the prime phase-budget inequality, monotone half `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/PrimePhaseBudgetRank.lean` (wired into
+`GaloisForLFunctions.HTGeometry`, axiom-clean: `propext`, `Classical.choice`, `Quot.sound`).
+
+- **`primeLog_primesBelow_linearIndependent_rat`** — the logarithms of the primes below `N` are
+  `ℚ`-linearly independent.  The corpus had only the `ℤ`-statement
+  (`primeLog_primesBelow_linearIndependent`, unique factorization); the transfer is mathlib's
+  `LinearIndependent.iff_fractionRing ℤ ℚ`, which is exactly the "clear denominators" step and gives
+  `rank_ℚ Λ_N = π′(N)` rather than only the lattice rank.
+- **`primeCounting_le_finrank_of_primeLog_mem`** — any `ℚ`-subspace of `ℝ` containing every prime
+  logarithm below `N` has dimension at least `π′(N)`; independence transfers into the subspace
+  through `LinearIndependent.of_comp Γ.subtype`.
+- **`primeCounting_le_of_primeLog_mem_of_finrank_le`** and
+  `two_mul_atlasOrder_ge_of_primeLog_mem` — the phase-budget inequality `(37)` and its complexity
+  form `(38)`: if the recurrent frequency group contains `Λ_N` and its rational dimension is at most
+  `B` (respectively `δ_G + 2m(n+1)`), then `π(N) ≤ B`.
+
+This closes the card-specific half of `(37)`: the deduction from the dimension bound is now a Lean
+theorem, with the bound itself as its explicit numerical hypothesis.  What is still open is the
+parent bound `(33)`/`(35)`, `rank_ℚ Γ_B(f) ≤ δ_G + 2m(n+1)`, which is the autonomous implicit-ADE
+frequency theorem and needs the Bohr-hull / Kolchin-dimension substrate named in the audit.
+
+## Correction — the Bohr / Pontryagin / covering-dimension substrate is **not** absent
+
+The earlier audit recorded that four of the five named foundations "have no corpus asset at all".
+That is wrong.  A direct search of `formal/GaloisForLFunctions/HTGeometry` finds **seventy-plus**
+Bohr modules, and the load-bearing ones are unconditional and axiom-clean
+(`propext`, `Classical.choice`, `Quot.sound` only):
+
+| Asset | Declaration |
+|---|---|
+| Bohr almost periodicity, spectrum, mean value, Parseval, Fejér approximation | `BohrAlmostPeriodic`, `BohrSpectrum`, `BohrMeanValue`, `BohrParseval`, `BohrFejer*` (≈ 20 modules) |
+| the Bohr hull and its characters | `BohrHullGroup`, `BohrHullCharacter`, `BohrHullCharRealization`, `BohrHullSeparation` |
+| **hull duality (Pontryagin direction)** | `GaloisForLFunctions.bohrHullChar_injective`, **`GaloisForLFunctions.exists_frequency_of_hull_character`** |
+| **the module theorem** | **`GaloisForLFunctions.rank_closure_bohrSpectrum_eq`**, `bohrHullFrequencies_eq_closure_bohrSpectrum` |
+| **inverse-limit covering dimension** | `CoveringDimension.HasCoverDimLE.of_refinedByStages`, **`GaloisForLFunctions.hasCoverDimLE_bohrHull_of_injection`** |
+| **the frequency-rank law itself** | **`GaloisForLFunctions.HTGeometry.rank_bohrFrequencyModule_le_of_exists_realAutonomousAnnihilator`** — the rational Bohr-frequency rank of a quasiperiodic function with holomorphic phase observable is at most the order of *any* nonzero autonomous algebraic differential equation it satisfies |
+
+So the analytic content this card needs is in the tree, not missing.  What the numerical
+`SingularKolchinFrequencyInput` failed to carry is supplied directly by the frequency-rank law, and
+the arithmetic budget is now a genuine theorem rather than a restatement:
+
+`formal/GaloisForLFunctions/HTGeometry/PrimePhaseBudgetRank.lean` proves
+**`primeCounting_le_of_realAutonomousAnnihilator_of_primeLog_mem`** — if every prime logarithm below
+`N` is a Bohr frequency and the phase function satisfies a nonzero autonomous algebraic differential
+equation of order `n`, then `π′(N) ≤ n` — together with its contrapositive
+`not_realAutonomousAnnihilator_of_primeLog_mem`.  Both are unconditional and axiom-clean; the prime
+side uses `primeLog_primesBelow_linearIndependent_rat` (`rank_ℚ Λ_N = π′(N)`, upgraded from the
+`ℤ`-statement by `LinearIndependent.iff_fractionRing ℤ ℚ`).

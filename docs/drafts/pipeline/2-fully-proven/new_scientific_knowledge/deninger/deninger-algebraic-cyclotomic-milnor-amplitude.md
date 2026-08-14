@@ -493,3 +493,72 @@ What remains for the residue is the Steinberg vanishing — that the composite o
 `1 - a` is zero — which is the same four-case analysis on valuations that
 `TameData.tame_steinberg` already carries out in degree two, and then the descent of `resPair` to a
 homomorphism out of `K_n^M(K)`.
+
+### The residue homomorphism in every degree `[NEW]`
+
+`formal/GaloisForLFunctions/HTGeometry/MilnorKResidueMap.lean`,
+`formal/GaloisForLFunctions/HTGeometry/MilnorKResidueValuation.lean`.  Axiom audit for all
+declarations: `propext, Classical.choice, Quot.sound`.
+
+The card's reduction of `(1)` runs through the tame symbol, which the corpus had only in degree two.
+Milnor's residue in *every* degree is now built, together with its input data at every finite place
+of a Dedekind domain — so the Gersten complex of `K_*^M` over an arithmetic curve is available, not
+only its degree-two row.
+
+- `resPairAt` — the fold of the residue steps `x ↦ ([ū_a] + v(a)ξ)·x` over a symbol, indexed by the
+  *length* of the list rather than by the list.  This is the point that makes the construction
+  statable: the type of the value then does not mention the list, so the two defining relations of
+  Milnor `K`-theory can be compared without transporting along `List.length`.
+- **`resPairAt_mul`** — multilinearity at an interior slot, from `resStepHom_mul`.
+- **`resPairAt_steinberg`** — the Steinberg relation at an interior slot, from the four-case
+  `resStepHom_steinberg`.
+- `resPre`, **`resPre_ker`**, **`milnorResPair`** — the fold descends from formal sums of symbols to
+  `K_n^M(K)`.
+- **`milnorResidue`**, **`milnorSpecialization`** — **the residue `∂ : K_n^M(K) → K_{n-1}^M(k)` and
+  the specialization `K_n^M(K) → K_n^M(k)` attached to a uniformizer.**
+- `milnorResidue_one` — the residue of a degree-one symbol is its valuation;
+  **`milnorResidue_two`** — the residue in degree two is the tame symbol,
+  `∂{a,b} = v(b)[ū_a] - v(a)[ū_b] + v(a)v(b)[-1]`.
+- `residueDataOfValuation`, `placeUniformizer`, **`residueDataAtPlace`** — the residue data of an
+  integer-valued valuation with a chosen uniformizer, and its instance at a finite place of a
+  Dedekind domain.  The extra datum beyond the tame symbol data is the additivity of the residue on
+  `1 - a`, which is automatic: the residue map is induced by the quotient map of the valuation ring
+  onto its residue field.  `residueDataAtPlace_toTameData` records that the underlying tame data is
+  the one the tame kernel already uses.
+
+### Milnor `K`-theory of a finite field `[NEW]`
+
+`formal/GaloisForLFunctions/HTGeometry/MilnorKFiniteField.lean`.  Axiom audit for all declarations:
+`propext, Classical.choice, Quot.sound`.
+
+The targets of the residue maps over an arithmetic curve are the Milnor `K`-groups of the residue
+fields, which are finite.  Those groups are now computed above degree one: they vanish.
+
+- `milnorSymTwo` with `milnorSymTwoLeft`, `milnorSymTwoRight`, `milnorSymTwo_zpow` — the degree-two
+  symbol as a bilinear pairing, so `{g^i, g^j} = ij·{g,g}`.
+- **`two_smul_milnorSymTwo_self`** — `{a,a} = -{a,-1}` is killed by two, over any field.
+- **`exists_nonsquare_oneSub_nonsquare`** — **in a finite field of odd characteristic there is a
+  nonsquare `a` with `1 - a` a nonsquare.**  If not, `a ↦ 1 - a` injects the nonsquares into the
+  nonzero squares; the quadratic character sums to zero so the two sets have the same size, the
+  injection is a bijection, and the preimage of `1` is `0` — which is not a nonsquare.
+- **`milnorSymTwo_gen_eq_zero`** — for a generator `g` of the unit group, `{g,g} = 0`: the Steinberg
+  relation at that nonsquare pair says `ij·{g,g} = 0` with `i, j` odd, and two is coprime to an odd
+  number.  In characteristic two the argument is shorter: `-1 = 1`.
+- **`milnorKDegTwo_eq_zero_of_finite`**, **`milnorKDeg_eq_zero_of_finite`** — **`K_n^M` of a finite
+  field vanishes for every `n ≥ 2`**, since the symbol classes generate and each is a multiple of
+  `{g,g}`.
+
+### What still blocks `(1)` — the exact statement
+
+Everything on the near side of the card's `(1)` is unconditional: the reduction of an arbitrary
+algebraic extension of `ℚ` to its number subfields, the reduction of degree `2 + k` to degree two,
+the tame symbol at every finite place with finite support, the finiteness of the residue fields, and
+now the residue map in every degree.  The single remaining input is
+
+> **the tame kernel of a number field is torsion** — `K_2(𝒪_K) ⊗ ℚ = 0`,
+
+which is Garland's finiteness theorem (1971), equivalently Quillen's finite generation together with
+Borel's rank computation.  The literature has no proof of it by elementary means; searches confirm
+that every published route goes through Garland, or through Quillen–Borel, or through Soulé's
+vanishing plus Quillen–Lichtenbaum.  The card therefore stays at stage 2, and the programme card
+`garland-tame-kernel-torsion` carries the decomposition.

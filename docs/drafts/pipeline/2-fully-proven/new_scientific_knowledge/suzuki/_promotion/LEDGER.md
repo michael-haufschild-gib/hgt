@@ -6007,3 +6007,399 @@ re_shifted_weight_ge            the shifted frequency weight is bounded below by
 `1/(e^s-1) = ∑ e^{-ns}` and integrating term by term gives `1/n - n/(n²+η²) = η²/(n(n²+η²))`.  The
 two Laplace integrals are proved from the complex ray integral `∫₀^∞ e^{-cz} = 1/c` of
 `ResolventSubordination`, projected with `Complex.reCLM.integral_comp_comm`.
+
+## FZ. `critical-radical-anchor-finite-head-reduction` — anchoring proved in Lean
+
+`HTGeometry/PairwiseVarianceIdentity.lean` is the reusable lemma the card's handoff asks for first:
+
+```text
+summable_pairwise_dispersion   the double family a_q a_r (τ_q-τ_r)² is summable
+tsum_pairwise_dispersion       (SR-64.4): ∑_{(q,r)} a_q a_r (τ_q-τ_r)² = 2[(∑a)(∑aτ²)-(∑aτ)²]
+tsum_anchor_pairs_le           the anchored pairs, extracted through the injection
+                               S × Bool → ι × ι, total at most the Hilbert dispersion
+```
+
+The `S × Bool` injection is exactly the card's "no double counting": both orientations of each
+unordered anchored pair are extracted, so the factor two cancels the factor two of the identity and
+the bound is sharp.
+
+`RHTower/SuzukiCriticalRadicalAnchor.lean` then proves the card's first theorem:
+
+```text
+chargeDensity_div_mass_le_normSq   χ_q/a_q ≤ ‖λ_q‖², from the strict sector im² < re²
+anchor_pair_pays_charge            (SR-64.10): one anchored pair pays one atom's charge
+exists_finset_anchor_payment       (SR-64.1): a finite head F ∋ r with
+                                   A ∑_{q ∉ F} χ_q ≤ H
+transverseCharge_le_dispersion_of_chargeFree_head
+                                   (SR-64.12): a charge-free head closes the minor
+```
+
+Two notes.  First, the payment needs no critical-line hypothesis at all: any anchor works, because
+the two cofinite inputs are `τ_q → 0` (`tendsto_xiShiftedResponseSlope_cofinite_zero`) and
+`‖λ_q‖ → 0`; the critical line enters only in the charge-free-head corollary.  Second, the annular
+refinement `(SR-64.2)`/`(SR-64.22)` needs the squared-height gap `h > 141/2`, while the Lean corpus
+currently proves `41/2` (`xiZeroCopy_fortyOne_div_two_lt_im_sq`); it will be stated with the height
+as an explicit coordinate condition on the atom, and the five-twelfths coverage additionally needs
+Riemann–von Mangoldt and Pratt–Robles–Zaharescu–Zeindler as formal providers.
+
+## GA. `critical-radical-anchor` — the annular payment is Lean-exact
+
+`RHTower/SuzukiAnnularCriticalPayment.lean` closes gates three and four of the card:
+
+```text
+xiShiftedResponseMass_one_eq              a = X/D
+xiShiftedResponseSlope_one_eq             τ = (X²-Y²)/(X D)
+xiShiftedTransverseChargeDensity_one_eq   χ = Y²/(X D²)
+chargeRatio_lt_inv_cube                   (SR-64.15)-(SR-64.16): χ/a < 1/(1+h)³
+slope_gt_of_height                        (SR-64.18): τ > 83/(85(1+h))
+criticalLine_mass_and_slope               on the critical line a = τ = 1/(1+k)
+tsum_xiShiftedResponseMass_one_lt         A < 29/625
+annular_single_witness                    (SR-64.21): one band witness pays 16/(675(1+h)³)
+two_witness_annular_payment               (SR-64.22): two witnesses beat A χ_q, margin 32/675 - 29/625
+```
+
+The height input the card needs, `h > 141/2`, is carried as an explicit hypothesis; for off-line
+copies the Lean corpus already proves the stronger `85 < h`
+(`xiZeroCopy_offLine_eightyFive_lt_im_sq`), so the hypothesis is never an extra assumption in the
+intended application.  The coordinates come from `xiShiftedReciprocalSquare_eq_inv` at `v = 1`,
+where `X = 1 + Re N`, `Y = Im N`, and the sector `84 Y² < X²` is
+`eightyFour_mul_xiSquaredNode_im_sq_lt`.
+
+What remains for this card is only its fifth gate: the five-twelfths multiplicative-annulus
+coverage, which needs Riemann--von Mangoldt zero counting and the Pratt--Robles--Zaharescu--Zeindler
+proportion theorem as formal providers.  Neither is in mathlib or the corpus; per the card's own
+handoff no hypothesis wrapper may stand in for them.
+
+## GB. `log-recurrence-polynomial-carrier-trichotomy` — cases one and two started
+
+`RHTower/SuzukiPolynomialCarrierSummability.lean` closes the card's first case at the carrier
+level:
+
+```text
+tsum_inv_one_add_natAbs_sq_ne_top     the one-dimensional quadratic coordinate mass
+tsum_prod_inv_one_add_natAbs_sq_ne_top the rank product of that mass
+tsum_inv_pow_orbitLength_fin_ne_top   (1+|ν|₁)^{-m} ≤ ∏ (1+|ν_j|)^{-2} for m ≥ 2d, hence finite
+summable_inv_pow_orbitLength          the real-valued form
+polynomial_weight_ratio_le            (14): bounded generator ratios
+summable_polynomial_carrier           (8), (12), (13): a logarithmic event family costs n powers
+                                      and the surviving exponent m ≥ 2d keeps the carrier square
+                                      summable
+```
+
+The trick that avoids fractional exponents is the coordinatewise bound `∏_j (1+|ν_j|)² ≤
+(1+|ν|₁)^{2d}`; taking the surviving exponent `≥ 2d` (a valid instance of the card's `2κ > d+2σQ`)
+keeps everything in natural powers, so the rank induction of `SuzukiOrbitWeightSummability`
+transfers verbatim.
+
+`RHTower/SuzukiHatanoNelsonWall.lean` closes the second case's mechanism:
+
+```text
+hatanoNelsonSymbol κ θ = 2 cosh (κ + iθ)
+hatanoNelsonSymbol_re / _im            re = 2 cosh κ cos θ, im = 2 sinh κ sin θ
+hatanoNelsonSymbol_im_ne_zero          the spectrum leaves the real line for κ > 0
+norm_exp_neg_mul_symbol                the propagator modulus is e^{x·Im symbol}
+exists_exponential_beats_polynomial    exponential growth beats every polynomial bound
+exists_no_polynomial_bound             (9) fails for the radial exponential weight
+```
+
+Remaining for the card: the polynomial propagation estimate `(15)`--`(17)` for the weighted finite
+range adjacency, and the identification of the third case with the predecessor tempered-weight
+no-go.
+
+## GC. Corona infrastructure for `gamma-prime-normal-corona-equivalence` and `root-retained-exterior-dilation`
+
+Three modules, all unconditional:
+
+```text
+HTGeometry/InverseSqrtPerturbation.lean
+  abs_inv_sqrt_one_sub_sub_one_le   |1/√(1-y) - 1| ≤ |y| for |y| ≤ 1/2, from
+                                    1/s - 1 = y/(s(1+s)) and s(1+s) ≥ 1
+  norm_cfc_invSqrt_sub_one_le       (16)/(9): ‖(1 - T/(2L))^{-1/2} - 1‖ ≤ ‖T‖/(2L)
+HTGeometry/HalfLogTraceNonIntegrable.lean
+  norm_ge_of_halfLog_asymptotic     past the comparison scale ‖F(L)‖ ≥ ‖β‖/(2√L)
+  not_integrableOn_sq_of_halfLog_trace
+                                    (12)-(14): a nonzero half-log trace destroys square
+                                    integrability — the hard direction of ker τ = 𝒢 ∩ N
+RHTower/SuzukiPrimeNormalCoronaComparison.lean
+  binomialSymbol, continuousOn_binomialSymbol
+  cfc_binomialSymbol_eq_one_add     the resolvent is the identity plus a first-order remainder
+  norm_cfc_binomialSymbol_sub_one_le  (17): the cross-section is the half-log term up to O(L^{-3/2})
+```
+
+The continuous functional calculus route needs the spectrum inclusion
+`spectrum ℝ T ⊆ [-‖T‖, ‖T‖]` (`spectrum.norm_le_norm_of_mem`) and `norm_cfc_le`; the instance stack
+required is `[NormedRing A] [StarRing A] [NormedAlgebra ℝ A] [CompleteSpace A] [NormOneClass A]
+[IsometricContinuousFunctionalCalculus ℝ A IsSelfAdjoint]`.
+
+Both corona cards now reduce to the same single missing input: the Gamma homogeneous asymptotic
+`(3)`/`(12)` itself, i.e. the oscillatory Fourier/Watson theorem of
+`gamma-homogeneous-half-log-scattering-classification`.  That is the next build target for the
+corona group.
+
+## GD. The complex-scaled Euler integral — gateway to the oscillatory constants
+
+`HTGeometry/ComplexScaledGammaIntegral.lean` proves
+
+```text
+gammaScaledIntegral a c = ∫₀^∞ t^{a-1} e^{-ct} dt
+norm_cpow_mul_cexp            ‖t^{a-1}e^{-ct}‖ = t^{Re a - 1} e^{-(Re c) t}
+integrableOn_cpow_mul_cexp    integrability for Re a > 0, Re c > 0
+hasDerivAt_gammaScaledIntegral  differentiation under the integral in the scale
+isOpen_rightHalfPlane, isPreconnected_rightHalfPlane
+gammaScaledIntegral_eq        ∫₀^∞ t^{a-1} e^{-ct} dt = Γ(a)/c^a for Re a, Re c > 0
+```
+
+Mathlib has only the positive-real scale (`Complex.integral_cpow_mul_exp_neg_mul_Ioi`).  The
+extension is the identity theorem: both sides are analytic on the open right half-plane, which is
+convex hence preconnected, and they agree along `1 + 1/(n+1)`, a sequence accumulating at `1` from
+inside.  Domination for the derivative uses `t^{Re a} e^{-(Re c₀/2)t}` on the ball of radius
+`Re c₀/2`.
+
+This is the first half of the Watson/Fresnel constant `∫₀^∞ u^{-1/2} e^{iu} du = √π e^{iπ/4}` that
+the half-log scattering map `(11)` needs: what remains is the boundary limit `c → -i` along
+`Re c ↓ 0`, where the integral is only conditionally convergent.
+
+## GE. The oscillatory half-power tail
+
+`HTGeometry/FresnelTailBound.lean`:
+
+```text
+fresnelKernel u = u^{-1/2} e^{iu}
+fresnelPrimitive u = e^{iu}/i,  norm_fresnelPrimitive = 1
+hasDerivAt_fresnelPrimitive, hasDerivAt_ofReal_rpow
+integral_fresnelKernel_eq        the integration-by-parts identity on [a,b]
+norm_integral_fresnelKernel_le   ‖∫_a^b u^{-1/2}e^{iu} du‖ ≤ 2 a^{-1/2}
+```
+
+This is the Cauchy criterion for the improper Fresnel integral: the oscillatory half-power tail is
+uniformly small, so the improper limit exists even though the integrand is not Lebesgue integrable
+at infinity.  Next: the limit's existence as a `Tendsto` statement, and its identification with
+`√π e^{iπ/4}` through the complex-scaled Euler integral `Γ(1/2)(ε - i)^{-1/2}` of section GD as
+`ε ↓ 0`.
+
+## GF. The improper Fresnel limit exists
+
+`HTGeometry/FresnelImproperLimit.lean`:
+
+```text
+intervalIntegrable_fresnelKernel   ‖u^{-1/2}e^{iu}‖ = |u^{-1/2}|, integrable at the origin
+fresnelTruncated R = ∫₀^R u^{-1/2} e^{iu} du
+fresnelTruncated_sub               additivity of adjacent intervals
+exists_tendsto_fresnelTruncated    the improper limit exists
+```
+
+The Cauchy criterion is the tail bound of GE: past `max 1 (16/ε²)` the increments are below `ε`,
+because `2a^{-1/2} < ε` exactly when `a > 4/ε²`.  The limit is obtained along `n+1` by
+`cauchySeq_tendsto_of_complete` and upgraded to the real `atTop` filter by the same increment bound.
+
+Remaining for the Watson constant: identify this limit with `Γ(1/2)·(-i)^{-1/2} = √π e^{iπ/4}` by
+comparing with `gammaScaledIntegral (1/2) (ε - i)` as `ε ↓ 0`, for which the same integration by
+parts supplies the `ε`-uniform tail.
+
+## GG. The damped tail, uniform in the scale
+
+`HTGeometry/FresnelDampedTail.lean`:
+
+```text
+dampedKernel c u = u^{-1/2} e^{-cu},  dampedPrimitive c u = e^{-cu}/(-c)
+norm_dampedPrimitive_le            ≤ 1 whenever Re c ≥ 0 and ‖c‖ ≥ 1
+norm_integral_dampedKernel_le      ‖∫_a^b u^{-1/2}e^{-cu}du‖ ≤ 2a^{-1/2}, uniformly in c
+dampedKernel_eq_cpow               the kernel is the Euler integrand at a = 1/2
+integrableOn_dampedKernel          Lebesgue integrable on the ray for Re c > 0
+norm_integral_Ioi_dampedKernel_le  the same bound for the Lebesgue tail
+```
+
+With `c = ε - i` both hypotheses hold for every `ε ≥ 0` (`‖ε-i‖ = √(ε²+1) ≥ 1`), so the tail is
+uniformly `O(R^{-1/2})` in `ε`: this is exactly the uniformity that lets the limits `ε ↓ 0` and
+`R → ∞` be exchanged in the identification of the half-log scattering constant with
+`Γ(1/2)(-i)^{-1/2} = √π e^{iπ/4}`.  The three remaining pieces are the dominated-convergence step on
+a fixed `[0,R]`, the continuity of `c ↦ Γ(1/2)/c^{1/2}` at `-i`, and the `3ε` assembly.
+
+## GH. The half-log scattering constant is proved
+
+`HTGeometry/FresnelConstant.lean`:
+
+```text
+dampedKernel_sub_fresnelKernel_norm_le   ‖damped - undamped‖ ≤ ε u^{1/2}
+norm_integral_damping_error_le           the damping error on [0,R] is ≤ (2/3) ε R^{3/2}
+integral_Ioi_dampedKernel_split          ray = truncation + tail
+integral_Ioi_dampedKernel_eq             the damped ray integral is Γ(1/2)(ε-i)^{-1/2}
+tendsto_fresnelTruncated_value           ∫₀^∞ u^{-1/2}e^{iu}du = Γ(1/2)(-i)^{-1/2}
+gamma_half_div_neg_I_cpow                = π^{1/2} e^{iπ/4}
+tendsto_fresnelTruncated_sqrt_pi         the Watson constant, in closed form
+```
+
+The double limit is avoided entirely: for every `R > 0` the three-term estimate
+
+`‖S - Γ(1/2)(ε-i)^{-1/2}‖ ≤ ‖S - ∫₀^R‖ + (2/3) ε R^{3/2} + 2 R^{-1/2}`
+
+is taken first to `ε ↓ 0` — where the middle term vanishes and the left side converges by continuity
+of `c ↦ Γ(1/2)/c^{1/2}` at `-i ∈ slitPlane` — and then to `R → ∞`.  Two Lean traps worth keeping:
+`set` for the limit value must be followed by `clear_value`, or unification of the `cpow` body times
+out; and `tendsto_rpow_neg_atTop` needs the exponent in the syntactic shape `-(1/2)`, not `-1/2`.
+
+This closes the constant in `(11)` and `(15)` of `gamma-homogeneous-half-log-scattering-classification`.
+
+## GI. Watson scaling — the leading low-frequency term
+
+`HTGeometry/WatsonScaling.lean`:
+
+```text
+scaledFresnel L η = η^{-1/2} e^{iηL}
+fresnelKernel_mul                       (Lη)^{-1/2} splits off the scale
+integral_scaledFresnel                  ∫₀^A η^{-1/2}e^{iηL}dη = L^{-1/2}·fresnelTruncated (LA)
+norm_watson_sub_fresnelTruncated_le     ‖W - fresnelTruncated R‖ ≤ 2R^{-1/2}
+norm_integral_scaledFresnel_sub_watson_le
+                                        ‖∫₀^A η^{-1/2}e^{iηL}dη - W L^{-1/2}‖ ≤ 2 A^{-1/2} L^{-1}
+```
+
+This is the card's `(15)` for the constant part of the cutoff: the leading term is exactly
+`√π e^{iπ/4} L^{-1/2}` and the error is `O(L^{-1})`, which is the accuracy the corona statement
+`(12)` `F(L) = L^{-1/2}β + O(L^{-1})` needs.  What remains for `(16)` is the variable part of the
+cutoff, `∫₀^A (χ(η) - χ(0)) η^{-1/2} e^{iηL} dη`, whose `O(L^{-1})` bound is one integration by
+parts against the integrable derivative `(χ(η)-χ(0))' η^{-1/2} - (1/2)(χ(η)-χ(0))η^{-3/2}`.
+
+## GJ. One integration by parts against an oscillation
+
+`HTGeometry/OscillatoryIntegrationByParts.lean`:
+
+```text
+oscPrimitive L η = e^{iηL}/(iL),  norm_oscPrimitive = 1/L
+hasDerivAt_oscPrimitive
+norm_integral_oscillatory_le    ‖∫_a^A g e^{iηL}‖ ≤ (‖g A‖ + ‖g a‖ + ∫_a^A ‖g'‖)/L
+```
+
+This is the generic subcriticality step of the half-log expansion: every `C¹` amplitude loses a full
+power of the frequency, so the non-constant part of a smooth cutoff contributes `O(L^{-1})` while
+the constant part contributes the Watson term `W L^{-1/2}` of GI.  Applying it to
+`g(η) = (χ(η) - χ(0)) η^{-1/2}` on `[a,A]` and letting `a ↓ 0` (the derivative
+`χ'(η)η^{-1/2} - (1/2)(χ(η)-χ(0))η^{-3/2}` is integrable at the origin when `χ` is Lipschitz)
+gives the card's `(16)`.
+
+Note the import trap: `integral_mul_deriv_eq_deriv_mul` lives in
+`Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts`, in the root namespace.
+
+## GK. The variable part of the cutoff is subcritical
+
+`HTGeometry/LowFrequencyAsymptotic.lean`:
+
+```text
+centredAmplitude f η = (f η - f 0) η^{-1/2}
+norm_centredAmplitude_le             ≤ K η^{1/2} for a K-Lipschitz amplitude
+centredAmplitudeDeriv, hasDerivAt_centredAmplitude
+norm_centredAmplitudeDeriv_le        ≤ (3/2) K η^{-1/2} — integrable at the origin
+intervalIntegrable_centredAmplitudeDeriv
+norm_integral_centredAmplitude_le    ‖∫_a^A (f η - f 0) η^{-1/2} e^{iηL} dη‖
+                                       ≤ (4K A^{1/2} + K a^{1/2})/L
+```
+
+The centring is exactly what removes the half-power singularity: the factor `η` in
+`‖f η - f 0‖ ≤ K η` cancels `η^{-1/2}` up to `η^{1/2}`, and the derivative keeps only the integrable
+`η^{-1/2}`.  Combining with GI (`‖∫₀^A η^{-1/2}e^{iηL} - W L^{-1/2}‖ ≤ 2A^{-1/2}L^{-1}`) gives the
+card's `(16)`: `∫₀^A f(η) η^{-1/2} e^{iηL} dη = f(0) √π e^{iπ/4} L^{-1/2} + O(L^{-1})`, with the
+constant `|f 0| · 2A^{-1/2} + 4K A^{1/2}`.
+
+## GL. The low-frequency half-log asymptotic is complete
+
+`HTGeometry/LowFrequencyAsymptotic.lean` closes the card's `(15)`--`(16)`:
+
+```text
+intervalIntegrable_centredAmplitude_mul   the centred integrand is integrable through the origin
+norm_lowFrequency_asymptotic
+  ‖∫₀^A f(η) η^{-1/2} e^{iηL} dη - f(0) L^{-1/2} √π e^{iπ/4}‖
+      ≤ ‖f 0‖ · 2 A^{-1/2} L^{-1} + 4 K A^{1/2} / L
+```
+
+for every amplitude that is differentiable on the ray, `K`-Lipschitz at the origin, and has
+`‖f'‖ ≤ K`.  The proof splits `f = f(0) + (f - f(0))`: the constant part scales to the Watson term
+(GI), and the centred part is subcritical by one integration by parts (GJ, GK).  The `a ↓ 0` limit
+uses the head bound `(2/3)K a^{3/2}` and `ge_of_tendsto` on `𝓝[>] 0`.
+
+This is the exact statement that `gamma-homogeneous-half-log-scattering-classification` needs for its
+half-log trace `(12)`, and through it the corona cards `gamma-prime-normal-corona-equivalence` and
+`root-retained-exterior-dilation`.  What those still need from card 6 is the vector-valued form
+(the same estimate applied coordinatewise to an `X`-valued channel vector) and the high-frequency
+`O(L^{-1})` bound `(20)`.
+
+## GM. The Hilbert-valued half-log asymptotic
+
+`HTGeometry/VectorLowFrequencyAsymptotic.lean`:
+
+```text
+inner_integral_comm                     ⟪v, ∫ f⟫ = ∫ ⟪v, f⟫ through innerSL
+norm_vector_lowFrequency_asymptotic
+  ‖∫₀^A η^{-1/2}e^{iηL} • f η - (L^{-1/2} √π e^{iπ/4}) • f 0‖
+      ≤ ‖f 0‖ · 2A^{-1/2}L^{-1} + 4 K A^{1/2}/L
+```
+
+for an `X`-valued amplitude with `‖f η - f 0‖ ≤ K η` and `‖f'‖ ≤ K`.  The transfer is pure duality:
+testing against a unit vector turns the vector integral into the scalar one with the same Lipschitz
+data (`HasDerivAt.inner`, `norm_inner_le_norm`), and the norm of the defect is recovered by testing
+against its own direction.  Trap worth keeping: `inner_self_eq_norm_sq_to_K` produces the `RCLike`
+coercion, so the closing step needs `norm_cast`, not `ring`.
+
+This is the form the half-log scattering map `(11)` uses on the two frequency channels: with
+`f = Q(·)c₊` it gives `F(L) = L^{-1/2} β + O(L^{-1})` once the high-frequency piece `(20)` is added.
+
+## GN. The high-frequency tail estimates `(20)`
+
+`HTGeometry/MonotoneSymbolTailEstimate.lean`:
+
+```text
+symbolTailPrimitive c r η = -2/(c + r η/2)
+hasDerivAt_symbolTailPrimitive     its derivative is r'/(c + r/2)²
+integral_deriv_div_sq_le           ∫_ε^R r'/(c + r/2)² ≤ 2/c  for any nonnegative symbol
+integral_rpow_neg_three_halves_le  ∫_ε^R η^{-3/2} ≤ 2 ε^{-1/2}
+```
+
+These are exactly the two displayed estimates of the card's `(20)`, with `c = L - ‖T‖/2`: the first
+telescopes because `-2/(c+r/2)` is an exact primitive — only nonnegativity of the symbol is used, so
+the whole Gamma phase is retained — and the second is the elementary half-power tail.  Both are
+`O(1/L)`, which is the high-frequency half of the half-log expansion; the low-frequency half is GL
+(scalar) and GM (Hilbert-valued).
+
+What remains to assemble card 6's `(12)` from these four pieces is the operator propagator
+`W_L(η) = e^{iηL} exp((i/2)∫₀^η r) exp(-iηT/2)` and its ODE `(18)`, i.e. the vector-valued
+integration by parts that turns `B_L(η)^{-1}` into the two integrals above.
+
+## GO — card 6: the frequency propagator, its transport equation, and the high-frequency bound `(17)`–`(20)`
+
+Five new modules complete the high-frequency half of
+`suzuki-gamma-homogeneous-half-log-scattering-classification` unconditionally.
+
+- `HTGeometry/GammaPhaseFactor.lean` — the scalar Gamma phase `p_L(η) = exp(iηL + (i/2)∫₀^η r)`:
+  `norm_gammaPhase` (unimodular) and `hasDerivAt_gammaPhase` (logarithmic derivative equals the
+  shifted symbol `i(L + r(η)/2)`), plus the inversion identity used by the integration by parts.
+- `HTGeometry/BoundedResolventNeumann.lean` — the shifted symbol operator `B(c,T) = c − T/2`:
+  explicit Neumann inverse `shiftedSymbolInv`, two-sided inverse identities,
+  `isUnit_shiftedSymbolOp`, and the sharp bound `norm_shiftedSymbolInv_le`
+  `‖B(c,T)⁻¹‖ ≤ (c − ‖T‖/2)⁻¹`.  This is `(19)`.
+- `HTGeometry/FrequencyPropagator.lean` — `freqPropagator L Rint T η = p_L(η) · exp(−iηT/2)`,
+  which is `(17)`, together with `hasDerivAt_freqPropagator`:
+  `W_L' = i B_L(η) W_L`, i.e. `(18)`, and `norm_freqPropagator = 1` for self-adjoint `T`
+  (the operator phase is unitary: `opPhase_mem_unitary`).  The transport is lossless.
+- `HTGeometry/ResolventDerivative.lean` — `hasDerivAt_shiftedSymbolInv`:
+  `d/dη B(c(η))⁻¹ = −c'(η) B(c(η))⁻¹B(c(η))⁻¹`, the ingredient that makes the resolvent an
+  admissible integrating factor.
+- `HTGeometry/HighFrequencyTransportBound.lean` — the assembly.  One integration by parts with
+  `W_L = (1/i)B_L^{-1}W_L'` gives, for any amplitude `f` bounded by `M` on `[ε,R]`,
+
+  `‖∫_ε^R f(η) W_L(η) dη‖ ≤ (|f(ε)| + |f(R)| + ∫_ε^R |f'| + M) · (L − ‖T‖/2)^{-1}`,
+
+  `norm_integral_freqPropagator_le`.  Specialising to the critical amplitude `η^{-1/2}` and
+  feeding the two tail estimates of section GN yields
+
+  `‖∫_ε^R η^{-1/2} W_L(η) dη‖ ≤ (3ε^{-1/2} + R^{-1/2})·(L − ‖T‖/2)^{-1}`,
+
+  `norm_integral_halfPower_freqPropagator_le`, which is exactly `(20)`, uniform in the endpoint
+  `R` and in the symbol `r`.  Only `r ≥ 0`, `r' ≥ 0` are used: the entire Gamma phase is carried,
+  none discarded.  `norm_integral_halfPower_freqPropagator_apply_le` transfers the bound to a
+  vector channel `η^{-1/2}W_L(η)c₊`, which is the integrand of `(10)` on the positive half-line
+  after `(8)`.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]` and are wired into
+`GaloisForLFunctions.HTGeometry`.
+
+What card 6 still needs for `(12)`: Theorem 1's distributional classification `(8)` (ODE
+regularity on each half-line plus exclusion of a distribution supported at the origin) and the
+low/high split that combines `(16)` with `(20)`.

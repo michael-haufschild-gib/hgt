@@ -1,7 +1,7 @@
 # Functional-reflection positive envelope -- Lean formalization certificate
 
 - **Source card:**
-  `docs/drafts/pipeline/2-fully-proven/universal-law-field/constitutive-reflection-space-mechanics/functional-reflection-positive-envelope-polarization-trilemma.md`
+  `docs/drafts/pipeline/3-formalized/universal-law-field/constitutive-reflection-space-mechanics/functional-reflection-positive-envelope-polarization-trilemma.md`
 - **Lean module:**
   `formal/GaloisForLFunctions/HTGeometry/ConstitutiveFunctionalReflectionPositiveEnvelope.lean`
 - **Stage:** 3-formalized
@@ -40,6 +40,8 @@ transport an admissible polarization; it cannot be another direct recovered pack
 
 - Direct check:
   `lake env lean GaloisForLFunctions/HTGeometry/ConstitutiveFunctionalReflectionPositiveEnvelope.lean`
+- Targeted final build:
+  `lake build GaloisForLFunctions.HTGeometry.ConstitutiveFunctionalReflectionPositiveEnvelope`
 - Final umbrella build:
   `lake build GaloisForLFunctions.HTGeometry.UniversalLawField`
 - Build result: `11891` jobs completed successfully.

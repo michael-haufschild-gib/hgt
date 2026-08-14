@@ -78,7 +78,9 @@ private theorem differentialIndependent_singleton_of_jets (x : K)
 
 omit [Differential k] [DifferentialAlgebra k K] in
 set_option maxHeartbeats 100000 in
-private theorem exists_algebraic_jet_over_prefix {x : K}
+/-- A differentially algebraic element has a first jet that is algebraic over the field generated
+by its strictly earlier jets. -/
+theorem exists_algebraic_jet_over_prefix {x : K}
     (hx : DifferentialAlgebraicOver k x) :
     ∃ n : ℕ, IsAlgebraic
       (IntermediateField.adjoin k ((fun m => differentialJet m x) '' Set.Iio n))
@@ -148,7 +150,8 @@ private theorem deriv_prefix_mem_integralClosure
   exact a.2
 
 set_option maxHeartbeats 300000 in
-private theorem all_jets_algebraic_over_prefix [CharZero K]
+/-- Once one jet is algebraic over the prefix field, every jet is. -/
+theorem all_jets_algebraic_over_prefix [CharZero K]
     (x : K) (n : ℕ)
     (hn : IsAlgebraic (differentialJetPrefixField k x n) (differentialJet n x)) :
     ∀ m : ℕ, IsAlgebraic (differentialJetPrefixField k x n) (differentialJet m x) := by

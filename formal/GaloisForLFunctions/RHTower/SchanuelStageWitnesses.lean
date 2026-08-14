@@ -1,15 +1,14 @@
 import GaloisForLFunctions.RHTower.SchanuelWeldApex
+import GaloisForLFunctions.RHTower.ExpAlgebraicTranscendental
 import Mathlib.RingTheory.AlgebraicIndependent.Transcendental
 
 /-!
 # Stagewise form of the Schanuel interface, and its first two stages
 
 Schanuel's conjecture is carried in the corpus as one `Prop` interface quantified over the family
-size.  Splitting it stagewise isolates exactly which stages are open: the empty stage holds
-unconditionally, and the one-element stage is *equivalent* to the Hermite–Lindemann statement that
-for every nonzero complex number either it or its exponential is transcendental.  That statement is
-the missing part of Lindemann–Weierstrass, of which mathlib currently carries only the analytical
-part, so stage one is the first genuinely open stage.
+size.  Splitting it stagewise isolates exactly which stages are open: the empty and one-element
+stages hold unconditionally.  The latter is Hermite–Lindemann: for every nonzero complex number,
+either it or its exponential is transcendental.  Thus stage two is the first genuinely open stage.
 -/
 
 namespace GaloisForLFunctions.RHTower
@@ -76,5 +75,16 @@ theorem schanuelExtractionAt_one_iff :
       · intro i
         exact Or.inr ⟨0, rfl⟩
       · exact algebraicIndependent_unique_type_iff.mpr htrans
+
+/-- **Stage one holds unconditionally.**  This is Hermite–Lindemann, with the algebraic case
+discharged by `exp_algebraic_transcendental`. -/
+theorem schanuelExtractionAt_one : SchanuelExtractionAt 1 := by
+  rw [schanuelExtractionAt_one_iff]
+  intro z hz
+  by_cases hzalg : IsAlgebraic ℤ z
+  · exact Or.inr (exp_algebraic_transcendental hzalg hz)
+  · left
+    intro hzalgQ
+    exact hzalg ((IsFractionRing.isAlgebraic_iff ℤ ℚ ℂ).mpr hzalgQ)
 
 end GaloisForLFunctions.RHTower

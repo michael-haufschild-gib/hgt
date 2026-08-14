@@ -81,7 +81,7 @@ definitions, 50 undischarged interfaces.
 | `RHTower.IsAbscissa` | realized: Lebesgue measure on the half line has Laplace abscissa zero (`isAbscissa_volume_zero`) |
 | `MultipleEllipticGammaHasRankThreeMinor` | realized by the parameter pair `i, i√2`, whose period triple `1, i, i√2` is rationally independent by irrationality of `√2` |
 | `GammaPowerRel` | realized by the zero relation, so the gamma hypertranscendence no-go concerns nonzero relations |
-| `RHTower.SchanuelConjecture` | **irreducible external open input.**  Split stagewise: stage 0 proved unconditionally, stage 1 proved *equivalent* to Hermite–Lindemann — the missing half of Lindemann–Weierstrass, of which mathlib carries only the analytical part |
+| `RHTower.SchanuelConjecture` | **irreducible external open input from stage 2 onward.** Stages 0 and 1 are unconditional; stage 1 is discharged by Hermite–Lindemann (`exp_algebraic_transcendental`, `schanuelExtractionAt_one`) |
 | `HTGeometry.MultipleSineDifferentialRegimeInput` | consistent (empty clock direction set); the substantive realization is the analytic multiple-sine DA/HT dichotomy, which the corpus does not contain |
 | `HTGeometry.MatrixDensityClockCyclic` | realized by every constant clock, whose diagonal is central |
 | `HTGeometry.OneGeneratorRungeDense` | realized by every algebraic generator (`Algebra.adjoin C {r} = ⊤`), since a subalgebra lies in its own closure |

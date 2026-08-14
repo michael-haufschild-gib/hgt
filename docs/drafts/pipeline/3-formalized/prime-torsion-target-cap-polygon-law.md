@@ -87,9 +87,13 @@ the `N` translated coherence caps.
 - [x] complete nonidentity prime-torsion power orbit
 - [x] umbrella import
 - [ ] autonomous recurrence-shadowing composition
-- [ ] arbitrary normalized-ray target reduction
+- [x] arbitrary normalized-ray target reduction (full Choi Hilbert space; see
+  `prime-torsion-circuit-ray-polygon-law.md`)
 - [ ] circuit-count asymptotics
 
 ## Log
 
 - 2026-08-14 -- formalized exact finite-grid, cap, and complete prime-power-orbit core.
+- 2026-08-14 -- downstream `FiniteGridChoiRayCap` and
+  `PrimeTorsionCircuitRayPolygon` close arbitrary normalized-ray targets without requiring targets
+  to be diagonal or grid-valued.

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.ConstitutiveCofinalRenewalGeometry
+import GaloisForLFunctions.HTGeometry.ConstitutiveCofinalRenewalSharpness
 import GaloisForLFunctions.HTGeometry.ConstitutiveHassePacketFormation
 
 /-!
@@ -102,6 +103,7 @@ theorem measurableSet_hasseHistoryAperture (n : ℕ) :
     MeasurableSet (hasseHistoryAperture (X := X) n) := by
   exact MeasurableSet.univ.prod (MeasurableSet.singleton _)
 
+omit [MeasurableSpace X] in
 theorem pairwise_disjoint_hasseHistoryAperture :
     Pairwise fun n m =>
       Disjoint (hasseHistoryAperture (X := X) n) (hasseHistoryAperture (X := X) m) := by
@@ -149,7 +151,7 @@ theorem HasseHistoryProfile.packet_real_hasseHistoryAperture_le
       ENNReal.toReal_mono ENNReal.ofReal_ne_top hmeasure
     _ = b := ENNReal.toReal_ofReal hb0
 
-private theorem exp_div_two_mem_Ioo {lambda : ℝ} (hlambda : 0 < lambda)
+private theorem exp_div_two_mem_Ioo {lambda : ℝ}
     (hlt : lambda < Real.log 2) : Real.exp lambda / 2 ∈ Set.Ioo 0 1 := by
   have he2 : Real.exp lambda < 2 := by
     calc
@@ -160,12 +162,12 @@ private theorem exp_div_two_mem_Ioo {lambda : ℝ} (hlambda : 0 < lambda)
   · linarith
 
 private theorem hasse_uniform_partition_series
-    {lambda : ℝ} (hlambda : 0 < lambda) (hlt : lambda < Real.log 2) :
+    {lambda : ℝ} (hlt : lambda < Real.log 2) :
     1 + ∑' n : ℕ, Real.exp
         (-((Real.log 2 - lambda) * ((n + 1 : ℕ) : ℝ))) =
       (1 - Real.exp lambda / 2)⁻¹ := by
   let r : ℝ := Real.exp lambda / 2
-  have hr := exp_div_two_mem_Ioo hlambda hlt
+  have hr := exp_div_two_mem_Ioo hlt
   have hterm (n : ℕ) :
       Real.exp (-((Real.log 2 - lambda) * ((n + 1 : ℕ) : ℝ))) = r ^ (n + 1) := by
     rw [show -((Real.log 2 - lambda) * ((n + 1 : ℕ) : ℝ)) =
@@ -221,7 +223,7 @@ theorem HasseHistoryProfile.partition_entropyMoment
             (-((Real.log 2 - lambda) * ((n + 1 : ℕ) : ℝ))) := by
         simpa [Real.rpow_one] using h.2.2.1
       _ = (1 - Real.exp lambda / 2)⁻¹ :=
-        hasse_uniform_partition_series hlambda hlt
+        hasse_uniform_partition_series hlt
   · simpa using h.2.2.2.2.1
   · simpa using h.2.2.2.2.2
 
@@ -270,6 +272,31 @@ theorem HasseHistoryProfile.totalLinearHistoryCurrent_bound
     (fun n => by
       simpa using T.packet_real_hasseHistoryAperture_le mu n)
     hwork hfin
+
+/-- Fixed-scale Hasse recovery is exactly the geometric sharpness baseline. -/
+theorem hassePacketRecovery_eq_geometricBaselineMass (t : ℝ) (n : ℕ) :
+    hassePacketRecovery t n = geometricBaselineMass (hassePacketRatio t) n := rfl
+
+/-- Cubic-and-higher work is class-sharp inside the literal fixed-scale Hasse species.  The
+renewed law is a genuine PMF, has finite KL action over the Hasse law, and carries exactly the
+constant current `c` at every positive depth. -/
+theorem hasseHistory_cubic_classSharp
+    {t K c d : ℝ} (ht : 0 < t) (hK : 0 < K) (hc : 0 < c) (hd : 2 < d)
+    (htotal : ∑' n, polynomialRenewalTail (c / K) d n < 1) :
+    let P := geometricBaselinePMF (hassePacketRatio t)
+      (hassePacketRatio_mem_Ioo ht).1.le (hassePacketRatio_mem_Ioo ht).2
+    let Q := polynomialRenewalPMF (c / K) d (div_nonneg hc.le hK.le)
+      (by linarith) htotal
+    (∀ n, P n = ENNReal.ofReal (hassePacketRecovery t n)) ∧
+      (∀ n, Q (n + 1) =
+        ENNReal.ofReal ((c / K) * (((n + 1 : ℕ) : ℝ) ^ (-d)))) ∧
+      klDiv Q.toMeasure P.toMeasure ≠ ⊤ ∧
+      ∀ n, (Q (n + 1)).toReal *
+        (K * (((n + 1 : ℕ) : ℝ) ^ d)) = c := by
+  simpa only [hassePacketRecovery_eq_geometricBaselineMass] using
+    geometricPolynomialRenewal_cubicSharp
+      (hassePacketRatio_mem_Ioo ht).1 (hassePacketRatio_mem_Ioo ht).2
+      hK hc hd htotal
 
 end
 

@@ -267,3 +267,167 @@ Pong's Theorem 5.9 applies to an arithmetic function whose prime support is not 
 For a completely multiplicative unimodular `chi` the support is all primes, so the hypothesis is
 now a theorem rather than a condition to be checked per character.  What remains of Pong's input is
 its conclusion — algebraic independence of the shifted derivatives — not its hypothesis.
+
+## Lean plan — the density half of the seam is NOT a literature input
+
+The `2 → 3` gate lists three classical inputs, but the dense half of the dense–null seam is not one
+of them: the card proves it itself, by finite Euler modification.  Only the *null* half needs
+Saksman--Webb.  So the seam splits into one buildable brick and one deep one, and the buildable one
+is the next target.
+
+What the density argument needs, in order:
+
+1. **`MeromorphicOn riemannZeta Set.univ`** — mathlib does not have it.  Route: off `1` use
+   `differentiableAt_riemannZeta` with `analyticAt_iff_eventually_differentiableAt` (the set `{1}ᶜ`
+   is a neighbourhood of every other point).  At `1` use `MeromorphicAt.congr` against the explicit
+   formula `riemannZeta s = (completedRiemannZeta₀ s - 1/s - 1/(1-s)) / Gammaℝ s`
+   (`riemannZeta_def_of_ne_zero`, `completedRiemannZeta_eq`), valid on a punctured neighbourhood of
+   `1`: `completedRiemannZeta₀` is entire (`differentiable_completedZeta₀`), `1/s` is analytic at
+   `1`, `1/(1-s)` is meromorphic at `1`, and `Gammaℝ` is analytic and nonzero at `1`
+   (`Gammaℝ_ne_zero_of_re_pos`).
+2. **The finite Euler modification is meromorphic.**  For a finite set `P` of primes and phases
+   `χ p` on the unit circle, `∏_{p ∈ P} (1 - p^{-s})/(1 - χ(p) p^{-s})` is a finite product of
+   quotients of entire functions with nonzero denominators, hence meromorphic on `ℂ`.
+3. **It is the Helson zeta.**  On `Re s > 1`, mathlib's Euler product for a completely
+   multiplicative coefficient function (`EulerProduct`) identifies
+   `Z_χ(s) = ζ(s) · ∏_{p ∈ P} (1 - p^{-s})/(1 - χ(p) p^{-s})` when `χ = 1` off `P`.
+4. **Density.**  `dense_finiteModification` (already formal in `DenseNullContinuationSeam.lean`)
+   then gives that the continuable stratum is dense in the character torus, with no classical input.
+
+That leaves, as genuinely classical and genuinely deep: Pong's Theorem 5.9 (algebraic independence
+of the shifted derivatives — note the corpus already owns the conclusion for the prime-power
+valuation palette, `primePowerCoefficientShiftPalettes_differentialIndependent_of_recurringPatternsSpan`,
+so the remaining work is to discharge `RecurringCoefficientPatternsSpan` for a unimodular completely
+multiplicative phase and to descend from the palette to `Z_χ` itself), Andersson's arbitrary-divisor
+theorem, and Saksman--Webb's almost-sure abscissa.
+
+## Lean progress — step 1 of the density instantiation: zeta is meromorphic on the plane
+
+`GaloisForLFunctions/HTGeometry/RiemannZetaMeromorphic.lean` (wired, axiom-clean):
+
+    analyticAt_riemannZeta    away from `1`, `ζ` is analytic — differentiability on the open set
+                              `{1}ᶜ`, which is a neighbourhood of every other point
+    analyticAt_Gammaℝ         the real gamma factor is analytic on the right half plane
+    meromorphicOn_riemannZeta **`MeromorphicOn riemannZeta Set.univ`**
+
+mathlib records the pole of `ζ` only as the residue limit `(s-1)ζ(s) → 1`, and has no meromorphy
+statement, so this had to be built.  The proof at `s = 1` does not use a removable-singularity
+theorem: meromorphy depends only on the germ off the point (`MeromorphicAt.congr`), and on a
+punctured neighbourhood of `1` the completed functional equation writes
+
+    ζ(s) = (Λ₀(s) - 1/s - 1/(1-s)) / Γ_ℝ(s)
+
+with `Λ₀` entire, `1/s` analytic at `1`, `1/(1-s)` visibly meromorphic there, and `Γ_ℝ` analytic
+at `1` because `Γ` is analytic at `1/2`.
+
+This is step 1 of the four-step density instantiation recorded above; steps 2–4 (meromorphy of the
+finite Euler modification factor, the Euler-product identification on `Re s > 1`, and the appeal to
+`dense_finiteModification`) do not need any classical input either.
+
+## Lean progress — steps 2 and 4 of the density instantiation
+
+`GaloisForLFunctions/HTGeometry/HelsonEulerModification.lean` (wired, axiom-clean):
+
+    eulerFactor a b                       the correction `(1 - a^{-s})/(1 - b·a^{-s})`
+    analyticAt_const_cpow_neg             a constant power with nonzero base is entire in the
+                                          exponent
+    meromorphicAt_eulerFactor             so each correction factor is meromorphic
+    meromorphicAt_finsetProd              a finite product of germs meromorphic at a point is
+    meromorphicOn_eulerModification       hence a finite Euler modification is meromorphic on `ℂ`
+    meromorphicOn_mul_eulerModification   and it preserves meromorphy of whatever it multiplies
+    meromorphicOn_riemannZeta_mul_eulerModification :
+      **every finite Euler modification of `ζ` continues meromorphically to the whole plane**
+    finiteEulerStratum                    the phases equal to `1` at all but finitely many primes
+    dense_finiteEulerStratum              **that stratum is dense**
+    exists_meromorphicOn_of_mem_finiteEulerStratum :
+      every member of it carries an explicit presentation meromorphic on the whole plane, with the
+      modified primes read off as the support of `χ - 1`
+
+Steps 1, 2 and 4 of the density plan are therefore formal, with no classical input.  What links them
+is step 3: on `Re s > 1` the presentation
+`ζ(s)·∏_{p ∈ P}(1 - p^{-s})/(1 - χ(p)p^{-s})` equals the Helson zeta `Z_χ(s)`, which is mathlib's
+Euler product for a completely multiplicative coefficient function together with the splitting of a
+convergent product by a finite correction.  That is the next brick, and it is not a classical input
+either.
+
+Only the *null* half of the seam — Saksman--Webb's almost-sure abscissa — together with Pong's and
+Andersson's conclusions, remains genuinely classical on this card.
+
+## Lean progress — THE DENSITY HALF OF THE SEAM IS CLOSED, unconditionally
+
+`GaloisForLFunctions/HTGeometry/HelsonZetaEulerProduct.lean` (wired, axiom-clean):
+
+    norm_prime_cpow_neg_lt_one            `‖p^{-s}‖ < 1` on `Re s > 1`
+    one_sub_phase_prime_cpow_ne_zero      so no Euler denominator of a unimodular phase vanishes
+    one_sub_prime_cpow_ne_zero
+    hasProd_helsonEuler :
+      **for a phase equal to `1` off a finite set `P`,**
+        `∏'_p (1 - χ(p)p^{-s})^{-1} = ζ(s) · ∏_{p ∈ P} (1 - p^{-s})/(1 - χ(p)p^{-s})`
+      on `Re s > 1`
+    exists_meromorphicOn_helsonZeta_of_mem_finiteEulerStratum
+    PhaseTorus, trivialPhase, continuableStratum
+    mem_continuableStratum_of_finiteModification
+    dense_continuableStratum :
+      **the stratum of phases whose Helson zeta continues meromorphically to the whole plane is
+      DENSE in the phase torus**
+
+`continuableStratum` is not a proxy: it is the set of phases `χ` for which there exists `F`
+meromorphic on all of `ℂ` whose values are the Euler product `∏'_p (1 - χ(p)p^{-s})^{-1}` at every
+`s` with `Re s > 1`.
+
+The proof is the card's own: split the Euler product factorwise against the Riemann one, note that
+the correction family is `1` off `P` so its infinite product is the finite product
+(`hasProd_prod_of_ne_finset_one`), and use the finite-modification meromorphy law together with
+`meromorphicOn_riemannZeta`.  mathlib supplies only the Riemann Euler product
+(`riemannZeta_eulerProduct_hasProd`); everything else had to be built, including the meromorphy of
+`ζ` itself.
+
+### Revised status of the classical inputs
+
+The `2 → 3` gate lists Pong, Andersson and Saksman--Webb.  The density half of the dense--null seam
+was never among them — it is the card's own finite-Euler-modification argument, and it is now
+formal end to end with no classical input.  What is genuinely classical and still open:
+
+| input | used for |
+|---|---|
+| Saksman--Webb / Seip, `σ(χ) = 1/2` a.s. | the NULL half of the seam |
+| Pong, Theorem 5.9 | the universal labelled differential-field type |
+| Andersson, Theorem 5 | divisor surjectivity of the continuable stratum |
+
+The abstract consequences of the seam (`frontier_eq_univ_of_dense_and_dense_compl`,
+`nowhereContinuous_seamIndicator`, `no_continuous_factorization_seamIndicator`) are already formal,
+so the null half is the single remaining input for the boundary-everywhere geometry.
+
+## Lean progress — Pong's independence conclusion, with its hypothesis discharged for every phase
+
+`GaloisForLFunctions/HTGeometry/HelsonPhaseTailIndependence.lean` (wired, axiom-clean):
+
+    recurringCoefficientPatternsSpan_const :
+      a single source with constant coefficient displays one pattern, at every prime, so it spans
+    tailCoefficientIndependent_shiftJet_const
+    tailCoefficientIndependent_phaseShiftJet :
+      **a nowhere-vanishing phase keeps the shift--jet palette tail independent**
+    tailCoefficientIndependent_helsonShiftJet :
+      in particular a unimodular phase does, at every prime-power layer
+    primePowerCoefficientShiftedRotatedJet_tailIndependent_phase :
+      the same for the rotated clock
+    primePowerCoefficientShiftedJets_algebraicIndependent_phase :
+      **the complete shifted-jet rectangle of a nowhere-vanishing phase, across a finite window of
+      valuation layers, is algebraically independent over the finite-prime rational coefficient
+      field**
+
+The obstacle was that the corpus's criterion for tail independence, `RecurringCoefficientPatternsSpan`,
+is designed for coefficient families of **finite range**, and a generic Helson phase has infinite
+range — no value of `χ(p)` need recur at all, so the criterion is not merely hard to check, it is
+false as stated for a generic phase.
+
+It does not have to be checked.  A single source contributes its coefficient as one **common weight**
+on every column of the shift--jet rectangle, and `tailCoefficientIndependent_commonWeight_iff` says a
+common nowhere-vanishing weight is invisible to tail independence.  So the criterion is applied once,
+to the constant family — whose single pattern recurs at every prime — and the phase is then
+reinstated as a weight.  Unimodularity enters only through `χ(p) ≠ 0`.
+
+This is the conclusion of Pong's Theorem 5.9 in the form the card consumes, for one source per
+valuation layer, with no hypothesis on the arithmetic of the phase.  What remains to reach the
+card's `L_χ` statement is the descent from the prime-power palette to the shifted derivatives of
+`Z_χ` itself.

@@ -365,3 +365,146 @@ bound `|V^m| <= |V|_HS^m / sqrt(m!)` generates `exp(c|z|^2)`, order two rather t
 small-tail split only improves the constant.  The route that remains is entire-function theoretic
 (real zeros with summable reciprocals, then a genus-zero Hadamard product), and Hadamard
 factorization is absent from mathlib.
+
+
+## Log — correction: mathlib already has the Poisson integral formula
+
+The card's remaining unconditional Stage-3 gate is the source-faithful construction of the canonical
+Xi circle probability measure, whose analytic parent is the Herglotz representation theorem on the
+disc.  A first pass wrote a kernel module for it; that was **withdrawn as a duplicate** once the
+search was done properly.  mathlib carries the whole kernel layer and the integral formula:
+
+| mathlib declaration | content |
+|---|---|
+| `Complex.herglotzRieszKernel c w z` | the Herglotz–Riesz kernel `(z − c + (w − c))/(z − c − (w − c))` |
+| `Complex.poissonKernel c w z`, `poissonKernel_eq_re_herglotzRieszKernel` | the Poisson kernel and its identification with the real part of the Herglotz–Riesz kernel |
+| `re_herglotzRieszKernel_le`, `le_re_herglotzRieszKernel` | two-sided bounds on the boundary sphere, hence positivity inside |
+| `DiffContOnCl.circleAverage_re_herglotzRieszKernel_smul`, `…_poissonKernel_smul` | **the Poisson integral formula** for holomorphic functions continuous up to the boundary |
+| `HarmonicOnNhd.circleAverage_poissonKernel_smul`, `HarmonicContOnCl.…` | the same for harmonic functions |
+| `Mathlib/Analysis/Complex/Harmonic/{Analytic,MeanValue,Liouville,Poisson}.lean` | the surrounding harmonic-function layer |
+
+So the representation theorem is much closer than the earlier note claimed.  What genuinely remains
+is only the *boundary limit*: for each `r < 1` the formula already represents `Re F` inside the disc
+against the probability measure with density `Re F(r·)` on the circle (a probability measure by the
+mean value property, since `Re F(0) = 1`); the missing step is weak-\* compactness of that family as
+`r → 1` and the identification of the limit, followed by the card's own Xi bridge — the germ
+`(1)`–`(4)`, the pure-point structure of the Herglotz measure of `F_Xi` under RH, and its
+singularity, which `singularSchurDefect_doubleBoundary` then converts into the condensation package.
+
+## Log — the dilated Poisson representation `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/HerglotzDiscDilation.lean` (wired, axiom-clean), built
+directly on mathlib's Poisson layer and adding nothing mathlib already has:
+
+- **`diffContOnCl_dilate`** — for `0 < r < 1`, `z ↦ F(r z)` is holomorphic on a neighbourhood of the
+  closed unit disc whenever `F` is holomorphic on the open disc; the dilation maps
+  `ball 0 (1/r)` into `ball 0 1`, and `closedBall 0 1 ⊆ ball 0 (1/r)`;
+- **`circleAverage_poissonKernel_dilate`** — hence the exact Poisson representation
+  `F(r w) = ⨍ P(0, w, ·) · F(r ·)` on the unit circle, for every `w` in the open disc
+  (mathlib's `DiffContOnCl.circleAverage_poissonKernel_smul`);
+- `poissonKernel_center_eq_one` and **`circleAverage_dilate_eq_center`** — the normalization
+  `⨍ F(r ·) = F(0)`, so for a Carathéodory germ with `F(0) = 1` the boundary densities `Re F(r ·)`
+  are a family of **probability** densities on the circle, uniformly in `r`.
+
+That is the entire `r`-level of the Herglotz representation.  The single remaining analytic step is
+the boundary limit: weak-\* compactness of `{Re F(r ·) dθ/2π}` as `r → 1` on the compact circle, and
+identification of the limit measure through the representation above.  After it, the card's Xi
+bridge is the germ `(1)`–`(4)`, the pure-point structure of the resulting measure under RH, and its
+singularity — which `singularSchurDefect_doubleBoundary` already converts into the condensation
+package.
+
+## Log — the boundary probability family `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/HerglotzBoundaryMeasure.lean` (wired, axiom-clean) turns the
+`r`-level representation into genuine measures on the circle the card's capstone already speaks
+about (`mu : ProbabilityMeasure Circle`, `circleLebesgue`):
+
+- `herglotzBoundaryMeasure F r = circleLebesgue.withDensity (ENNReal.ofReal ∘ Re ∘ F(r ·))`;
+- `continuous_dilate_circle`, `integrable_dilate_circle` — the dilated germ is continuous, hence
+  integrable, on the compact circle;
+- **`integral_re_dilate_circle`** — `∫ Re F(rζ) dcircleLebesgue = Re F(0)`, transporting
+  `circleAverage_dilate_eq_center` through the corpus bridge
+  `integral_circleLebesgue_eq_circleAverage_complex`;
+- **`isProbabilityMeasure_herglotzBoundaryMeasure`** — for a Carathéodory germ (`Re F ≥ 0` on the
+  disc, `F 0 = 1`) every `herglotzBoundaryMeasure F r`, `0 < r < 1`, is a **probability measure**.
+
+So the family whose weak-* limit is the Herglotz measure now exists as `ProbabilityMeasure Circle`
+objects.  The remaining step is purely the limit: `MeasureTheory.Measure.Prokhorov` gives
+`CompactSpace (ProbabilityMeasure Circle)`, and
+`ProbabilityMeasure.tendsto_iff_forall_integral_tendsto` transfers the Poisson representation
+`circleAverage_poissonKernel_dilate` to a limit point along `r → 1`, the kernel `P(0,w,·)` being
+bounded and continuous on the circle.
+
+### Log addendum — the Poisson representation over the circle measure `[PROVED]`
+
+**`integral_poissonKernel_density`** — for a germ holomorphic on the open unit disc and `0 < r < 1`,
+
+```text
+∫_Circle P(0, w, ζ) · Re F(r ζ) d(circleLebesgue) = Re F(r w)     for every w in the open disc.
+```
+
+The proof runs the corpus bridge `integral_circleLebesgue_eq_circleAverage_complex` on the
+complex-valued integrand `P(0,w,·) · F(r ·)` — the kernel being real, its `ℝ`-scalar action is
+multiplication by the cast — lands on `circleAverage_poissonKernel_dilate`, and takes real parts
+through `Complex.reCLM.integral_comp_comm`.  Continuity of the kernel on the circle uses that `w`
+lies strictly inside while `‖ζ‖ = 1`, so the denominator never vanishes.
+
+With `isProbabilityMeasure_herglotzBoundaryMeasure` this is the complete `r`-level of the Herglotz
+representation *in measure form*: a family of probability measures on `Circle` reproducing `Re F`
+inside the disc.  The remaining step is the weak-\* limit along `r → 1`
+(`Measure.Prokhorov` + `ProbabilityMeasure.tendsto_iff_forall_integral_tendsto`), after which the
+card's Xi bridge applies.
+
+### Log addendum — the representation now holds *against the boundary measure* `[PROVED]`
+
+**`integral_poissonKernel_herglotzBoundaryMeasure`** — for a Carathéodory germ and `0 < r < 1`,
+
+```text
+∫_Circle P(0, w, ζ) d(herglotzBoundaryMeasure F r) = Re F(r w)     for every w in the open disc,
+```
+
+with `herglotzBoundaryMeasure F r = circleLebesgue.withDensity (herglotzDensity F r)` a genuine
+probability measure (`isProbabilityMeasure_herglotzBoundaryMeasure`).  The density is factored out
+as `herglotzDensity` so that mathlib's
+`integral_withDensity_eq_integral_toReal_smul` applies cleanly, and `ENNReal.toReal_ofReal` uses the
+nonnegativity of `Re F` on the disc.
+
+The `r`-level of the Herglotz representation is therefore complete **as a statement about
+probability measures on `Circle`**, which is the exact form the card's capstone consumes.  Only the
+weak-\* limit remains: `Measure.Prokhorov` supplies compactness of `ProbabilityMeasure Circle`, the
+kernel `P(0,w,·)` is bounded continuous there, and
+`ProbabilityMeasure.tendsto_iff_forall_integral_tendsto` transfers the identity to a cluster point
+as `r → 1` — the left side converging because `Re F(r w) → Re F(w)` by continuity.
+
+## Log — the Herglotz representation theorem on the disc `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/HerglotzRepresentationDisc.lean` (wired, axiom-clean):
+
+```text
+exists_herglotz_representation :
+  F holomorphic on the open unit disc, Re F ≥ 0 there, F 0 = 1
+    ⟹  ∃ μ : ProbabilityMeasure Circle,
+          ∀ w in the open disc, Re F w = ∫_Circle P(0, w, ζ) dμ(ζ).
+```
+
+This is the classical Herglotz–Riesz representation, absent from mathlib and from the corpus until
+now.  The proof is the four-stage chain built over the last batches:
+
+1. `diffContOnCl_dilate` — the dilation `z ↦ F(r z)` is holomorphic up to the closed disc;
+2. `circleAverage_poissonKernel_dilate` — mathlib's Poisson integral formula then represents it;
+3. `circleAverage_dilate_eq_center`, `integral_re_dilate_circle`,
+   `isProbabilityMeasure_herglotzBoundaryMeasure` — the boundary densities `Re F(r ·)` are
+   probability densities on `Circle` against `circleLebesgue`;
+4. `integral_poissonKernel_density`, `integral_poissonKernel_herglotzBoundaryMeasure` — the
+   representation holds against those measures;
+5. **the limit** — `Measure.Prokhorov` gives a cluster point `μ` of the family in
+   `ProbabilityMeasure Circle`; the Poisson kernel is a `BoundedContinuousFunction` on the circle, so
+   `ProbabilityMeasure.continuous_integral_boundedContinuousFunction` makes
+   `ν ↦ ∫ P dν` continuous, hence `∫ P dμ` is a cluster point of `Re F(r_n w)`, which converges to
+   `Re F w`; `eq_of_nhds_neBot` identifies them.
+
+The card's remaining Stage-3 gate is now only its own Xi bridge: the germ `(1)`–`(4)`, the
+identification of the Herglotz measure of `F_Xi` as pure point on the Cayley images of the Xi zeros
+under RH, and its singularity — after which `singularSchurDefect_doubleBoundary` supplies the
+condensation package, and the RH direction is already checked in
+`RHTower.continuedPrimeArchUpperAntiHerglotz_iff_riemannHypothesis`.

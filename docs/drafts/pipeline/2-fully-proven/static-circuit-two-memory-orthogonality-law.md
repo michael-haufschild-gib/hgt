@@ -5,7 +5,8 @@
 - **Type:** theorem / universal moment decomposition / recurrence realignment
 - **Parents:** `centralizer-centered-circuit-collision-and-design-barrier-law.md`,
   `all-replica-static-centralizer-planar-separation-law.md`
-- **Status:** `[PAPER-PROVED] [FRONTIER ADVANCE] [NOVELTY PROVISIONAL] [LEAN DEFERRED]`
+- **Status:** `[PAPER-PROVED] [FRONTIER ADVANCE] [NOVELTY PROVISIONAL]`
+  `[ABSTRACT TWO-MEMORY LAW LEAN-FORMALIZED] [ENSEMBLE AND ALL-REPLICA LIMIT PAPER-ONLY]`
 - **Date:** 2026-08-10
 
 ## Public sentence
@@ -467,9 +468,13 @@ the preparation memory of the allowed gate dynamics.
    spaces.  Targeted search found no exact static-centralizer/circuit-defect decomposition with the
    shortcut threshold `(21)` and forced recurrence realignment `(25)`.  Priority remains
    provisional pending specialist review.
-8. **Lean status.**  The theorem is dependency-closed on paper.  No final manuscript may use it as
-   AI-proved until the exact finite-Hilbert-space statement passes Lean and axiom audit after the
-   active corpus refactor.
+8. **Lean status.**  `HTGeometry/StaticCircuitTwoMemoryOrthogonalityLaw.lean` now proves the
+   projection orthogonalities, collision decomposition `(7)`, completed baseline `(8)`, dynamic
+   correction `(9)`, conserved norm `(12)`, finite-dictionary shortcut implication `(21)` at the
+   abstract moment-vector level, and exact recurrence realignment `(26)`.  The theorem is stronger
+   than the paper setup in one direction: no finite-dimensionality is required.  The Bochner
+   ensemble identity `(14)/(27)`, concrete tensor-power circuit realization `(16)--(20)`, and
+   all-replica limit `(28)--(30)` remain paper-only and may not be presented as formalized.
 
 ## 10. External boundary checked
 
@@ -486,11 +491,20 @@ the preparation memory of the allowed gate dynamics.
   non-Haar distinguishability for constant-local static dynamics at every time.  That theorem is
   compatible with, but does not imply, small circuit-memory alignment.
 
-## 11. Lean plan after refactor
+## 11. Lean status and remaining map
 
-1. nested orthogonal-projection lemmas `(5)`--`(12)`;
-2. finite gate-moment iteration `(16)`--`(19)`;
-3. three-sector circuit identity and shortcut implication `(20)`--`(23)`;
-4. recurrence realignment `(25)`--`(27)`;
-5. finite-family `L^p` limit `(28)`--`(30)`;
-6. one targeted module check, axiom audit, umbrella wiring, and final targeted module build.
+Formalized in `HTGeometry/StaticCircuitTwoMemoryOrthogonalityLaw.lean`:
+
+1. nested projection orthogonality and exact three-sector collision;
+2. completed baseline and single dynamic correction;
+3. conserved non-Haar memory norm;
+4. preparation-channel invariance at every depth;
+5. uniform finite-dictionary collision and one-target realignment threshold;
+6. exact recurrence realignment for a normalized seed contained in the dictionary.
+
+Still open before every equation on this card can enter a formal-only manuscript:
+
+1. instantiate the real Hilbert vector theorem with concrete Hermitian tensor-power moment
+   operators and prove `(16)--(20)` without a surrogate interface;
+2. formalize the Bochner ensemble identities `(14)` and `(27)`;
+3. formalize finite-family normalized `L^p` convergence `(28)--(30)`.

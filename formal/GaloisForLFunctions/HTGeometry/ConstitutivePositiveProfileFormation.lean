@@ -45,6 +45,10 @@ def StarReceiverInvisible (C : Type*) [Semiring C] [Star C] [Algebra ℂ C]
     (x : A) : Prop :=
   ∀ π : A →⋆ₐ[ℂ] C, π x = 0
 
+/-- Receiver-relative positive radical as an actual subset of the source algebra. -/
+def starReceiverRadical (C : Type*) [Semiring C] [Star C] [Algebra ℂ C] : Set A :=
+  {x | StarReceiverInvisible C x}
+
 /-- A split formation is injective. -/
 theorem SplitStarFormation.form_injective (E : SplitStarFormation A B) :
     Function.Injective E.form :=
@@ -76,6 +80,24 @@ theorem SplitStarFormation.starReceiverInvisible_form_iff
     exact h (φ.comp E.recover)
   · intro h π
     exact h (π.comp E.form)
+
+/-- Exact receiver-radical pullback, in the set-theoretic form used by the paper theorem. -/
+theorem SplitStarFormation.starReceiverRadical_preimage
+    (E : SplitStarFormation A B) :
+    E.form ⁻¹' starReceiverRadical (A := B) C = starReceiverRadical (A := A) C := by
+  ext x
+  exact E.starReceiverInvisible_form_iff x
+
+/-- Exact radical pullback persists after intersecting over an arbitrary declared family of
+receivers. -/
+theorem SplitStarFormation.starReceiverRadical_iInter_preimage
+    (E : SplitStarFormation A B) {ι : Type*} (D : ι → Type*)
+    [∀ i, Semiring (D i)] [∀ i, Star (D i)] [∀ i, Algebra ℂ (D i)] :
+    E.form ⁻¹' (⋂ i, starReceiverRadical (A := B) (D i)) =
+      ⋂ i, starReceiverRadical (A := A) (D i) := by
+  ext x
+  simp only [Set.mem_preimage, Set.mem_iInter, starReceiverRadical, Set.mem_setOf_eq]
+  exact forall_congr' fun i => E.starReceiverInvisible_form_iff (C := D i) x
 
 /-- Equivariant split formation carries a pair of functional-equation actions. -/
 structure FunctionalSplitStarFormation (A B : Type*)
@@ -117,14 +139,26 @@ variable {A₁ B₁ D : Type*}
   [Semiring B₁] [StarRing B₁] [Algebra ℂ B₁]
   [NormedRing D] [StarRing D] [CStarRing D] [Algebra ℂ D]
 
+/-- A direct star-algebra formation preserves star isotropy literally. -/
+theorem starAlgHom_preserves_starIsotropic
+    (F : A₁ →⋆ₐ[ℂ] B₁) {x : A₁} (hx : star x * x = 0) :
+    star (F x) * F x = 0 := by
+  rw [← map_star F, ← map_mul, hx, map_zero]
+
+/-- Every positive C-star receiver kills a star-isotropic source element. -/
+theorem starAlgHom_kills_starIsotropic
+    (π : A₁ →⋆ₐ[ℂ] D) {x : A₁} (hx : star x * x = 0) :
+    π x = 0 := by
+  rw [← CStarRing.star_mul_self_eq_zero_iff (π x)]
+  rw [← map_star π, ← map_mul, hx, map_zero]
+
 /-- Any direct star-algebra formation of a star-isotropic source element remains invisible in every
 positive C-star receiver. -/
 theorem starAlgHom_kills_formed_starIsotropic
     (F : A₁ →⋆ₐ[ℂ] B₁) (π : B₁ →⋆ₐ[ℂ] D) {x : A₁}
     (hx : star x * x = 0) :
     π (F x) = 0 := by
-  rw [← CStarRing.star_mul_self_eq_zero_iff (π (F x))]
-  rw [← map_star π, ← map_mul, ← map_star F, ← map_mul, hx, map_zero, map_zero]
+  exact starAlgHom_kills_starIsotropic (π.comp F) hx
 
 end CStar
 

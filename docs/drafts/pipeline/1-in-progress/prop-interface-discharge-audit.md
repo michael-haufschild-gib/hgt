@@ -252,18 +252,19 @@ Non-vacuity is then inherited from the already-proved Gaussian coherent completi
     has Laplace abscissa zero — integrability of the exponential kernel right of zero, and the
     constant lower bound left of zero;
   - `RHTower.SchanuelConjecture` (`RHTower/SchanuelStageWitnesses.lean`): classified as an
-    irreducible external open input and split stagewise, with stage 0 proved and stage 1 proved
-    **equivalent** to Hermite–Lindemann (`∀ z ≠ 0, Transcendental ℚ z ∨ Transcendental ℚ (exp z)`),
-    the missing half of Lindemann–Weierstrass — mathlib carries only its analytical part.
+    irreducible external open input and split stagewise. Stages 0 and 1 are proved unconditionally;
+    stage 1 is Hermite–Lindemann
+    (`∀ z ≠ 0, Transcendental ℚ z ∨ Transcendental ℚ (exp z)`), discharged by
+    `exp_algebraic_transcendental`. Stage 2 is the first open stage.
 
 ## Status
 
 Every `Prop` interface consumed as a hypothesis in `HTGeometry`, `HilbertMetric` or `RHTower` and
 concluded nowhere in the corpus is now either realized, structurally replaced, or classified with a
-named external open core.  Two named follow-up constructions remain, each recorded above:
-the differential-algebraic closure as an `IntermediateField` (which would upgrade the exponential-gauge
-realization from the unit gauge to the meromorphic gauge `u c = exp (c h)`), and Lindemann–Weierstrass
-(which would settle stage one of the Schanuel interface).
+named external open core. One named follow-up construction remains: the differential-algebraic
+closure as an `IntermediateField` (which would upgrade the exponential-gauge realization from the
+unit gauge to the meromorphic gauge `u c = exp (c h)`). Hermite–Lindemann and Schanuel stage 1 are
+now discharged.
 
 ## Verification state (2026-07-26)
 
@@ -377,9 +378,10 @@ recursor artifacts.  The three genuinely new rows are now resolved:
 - `HTGeometry.EllipticHypertranscendenceFree` — **named open construction.**  The statement is the
   classical fact that a lattice-periodic meromorphic function is not hypertranscendental, which
   follows from the Weierstrass presentation `ℂ(℘, ℘')` and the ℘ differential equation.  Mathlib has
-  no Weierstrass ℘ theory, so this needs that development first; it joins Lindemann–Weierstrass (for
-  Schanuel stage one) and the differential-algebraic closure as an `IntermediateField` (for the
-  meromorphic exponential gauge) on the list of external constructions this audit has isolated.
+  no Weierstrass ℘ theory, so this needs that development first; it joins the differential-algebraic
+  closure as an `IntermediateField` (for the meromorphic exponential gauge) on the list of external
+  constructions this audit has isolated. Hermite–Lindemann and Schanuel stage 1 were later
+  discharged by `exp_algebraic_transcendental` and `schanuelExtractionAt_one`.
 
 ## Re-measurement, 2026-07-27 (all three areas)
 
@@ -410,8 +412,9 @@ Two card entries were stale and are corrected here:
   explicit prime-supported unit source realizes all three premises simultaneously in
   `primeClockUnitSource_tail_clockOrderEscapes`.
 
-Remaining named external inputs, unchanged: Lindemann–Weierstrass (Schanuel stage one) and the
-differential-algebraic closure as an `IntermediateField` (the meromorphic exponential gauge).
+Remaining named external input: the differential-algebraic closure as an `IntermediateField` (the
+meromorphic exponential gauge). Hermite–Lindemann now discharges Schanuel stage 1; stage 2 is the
+first open Schanuel stage.
 
 ### Universal law added
 
