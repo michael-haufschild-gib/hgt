@@ -369,7 +369,17 @@ The existing corpus already contains the reusable finite skeleton:
 - `GeometricCDDConstraint.lean` and `GeometricCDDBoundarySelection.lean` formalize the finite CDD
   algebra and the unique one-sided shell response.
 
-No new Lean wrapper is justified for `(1)`--`(3)`: the finite algebraic content already exists.
+`KolchinSlopeDichotomy.lean` now proves `(1)`--`(3)` outright and unconditionally:
+`kolchinJetRank` is the ordinary algebraic-matroid rank of the finite jet packet of one reporter,
+`kolchinJetRank_eq_of_hypertranscendentalOver` gives `kappa_f(r)=r+1` in the HT case,
+`exists_kolchinJetRank_le_of_differentialAlgebraicOver` gives the uniform bound in the DA case, and
+`tendsto_kolchinSlope_one_iff_hypertranscendentalOver` together with
+`tendsto_kolchinSlope_zero_iff_differentialAlgebraicOver` prove that the normalized slope always
+converges and separates the two classes exactly.  Reporter invariance item 1 is
+`differentialAdjoin_mobius_generator`; items 2--3 are the reporter and counterterm invariance of
+`WickKolchinProfile.lean` and `SourceLogarithmicBoundary.lean`.
+
+The remaining gates are the labelled open core `(18)` and external audits, not formalization gates.
 Formalization should resume only when `(18)` supplies a new unconditional theorem interface.  The
 external infinite-product, difference-Galois, and constructive-QFT theorems remain explicit paper
 interfaces.

@@ -128,6 +128,14 @@ source-derived divergent capacity, minimally linear among polynomial weights, ma
 equivalent to zero charge.  This retains root-stack holonomy instead of demanding its pointwise
 descent.
 
+### Law XI -- regular-inertia amplification
+
+The depth-(n) root inertia group has a canonical regular Hilbert module of dimension (n).
+Nontrivial holonomy is fixed-point-free on its marked basis, so normalized Hilbert--Schmidt defect
+is exactly (2), even though every scalar character approaches (1) as (n\to\infty).  The regular
+module therefore generates the sharp capacity internally.  Across all depths, finite normalized
+regular action is equivalent to zero integer charge.
+
 ## 3. Exact Euler-shell realization
 
 For (m\ge12,r\ge2), Formation-Excess Mechanics produces the positive survival probability
@@ -157,6 +165,10 @@ The Stage-2 theorem proves:
 The companion ULF-DFPM-2 proves that the same divisor is reconstructed from all finite Kummer
 holonomies and that linear depth capacity is the sharp global-action threshold selecting zero
 charge.
+
+ULF-DFPM-3 strengthens this: the canonical regular representation of depth-(n) inertia supplies
+that linear capacity automatically, gives exact cycle/rank/spectrum shadows, and turns nonzero
+charge into cofinal action of slope (2).
 
 This is an exact selection mechanism.  It is not an RH proof because source genesis of the roots is
 open.
@@ -223,7 +235,8 @@ on (\sigma>1), or if it factors through an information-neutral common recovery k
 - [x] root-stack existence without base descent ruled out
 - [ ] effective trivial-inertia descent through common recovery
 - [x] sharp pro-Kummer capacity/properness threshold
-- [ ] source derivation of linear-or-stronger root-depth capacity
+- [x] source-canonical linear capacity from regular inertia
+- [ ] independent finite/sublinear regular-action admission theorem
 - [ ] compatibility with functional-equation packet action
 - [ ] independent realization in a second source family
 - [ ] RH conclusion

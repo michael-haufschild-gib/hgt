@@ -216,4 +216,127 @@ theorem analyticAt_inv_sin_pi_mul {z : ℂ} (hz : Complex.sin ((Real.pi : ℂ) *
     AnalyticAt ℂ (fun w : ℂ => (Complex.sin ((Real.pi : ℂ) * w))⁻¹) z :=
   (analyticAt_sin_pi_mul z).inv hz
 
+/-! ### Translation of the sine by an integer -/
+
+/-- **The sine of `π w` is periodic up to sign.**  Translating the argument by a natural number
+multiplies the sine by `(-1)` to that power. -/
+theorem sin_pi_mul_add_nat (w : ℂ) (k : ℕ) :
+    Complex.sin ((Real.pi : ℂ) * (w + (k : ℂ)))
+      = (-1) ^ k * Complex.sin ((Real.pi : ℂ) * w) := by
+  induction k with
+  | zero => simp
+  | succ n ih =>
+      have hshift : (Real.pi : ℂ) * (w + ((n + 1 : ℕ) : ℂ))
+          = (Real.pi : ℂ) * (w + (n : ℂ)) + (Real.pi : ℂ) := by
+        push_cast
+        ring
+      rw [hshift, Complex.sin_add_pi, ih, pow_succ]
+      ring
+
+/-- The reflection kernel at an integer translate. -/
+theorem inv_sin_pi_mul_add_nat (w : ℂ) (k : ℕ) :
+    (Complex.sin ((Real.pi : ℂ) * (w + (k : ℂ))))⁻¹
+      = (-1) ^ k * (Complex.sin ((Real.pi : ℂ) * w))⁻¹ := by
+  rw [sin_pi_mul_add_nat, mul_inv]
+  congr 1
+  rw [← inv_pow]
+  norm_num
+
+/-! ### The simple pole of the reflection kernel at the origin -/
+
+theorem hasDerivAt_sin_pi_mul_zero :
+    HasDerivAt (fun w : ℂ => Complex.sin ((Real.pi : ℂ) * w)) (Real.pi : ℂ) 0 := by
+  have hinner : HasDerivAt (fun w : ℂ => (Real.pi : ℂ) * w) (Real.pi : ℂ) 0 := by
+    simpa using (hasDerivAt_id (0 : ℂ)).const_mul (Real.pi : ℂ)
+  have houter : HasDerivAt Complex.sin (Complex.cos ((Real.pi : ℂ) * 0)) ((Real.pi : ℂ) * 0) :=
+    Complex.hasDerivAt_sin _
+  have hcomp := houter.comp (0 : ℂ) hinner
+  rw [mul_zero, Complex.cos_zero, one_mul] at hcomp
+  exact hcomp
+
+/-- **The sine slope at the origin.** -/
+theorem tendsto_sin_pi_mul_div :
+    Filter.Tendsto (fun w : ℂ => Complex.sin ((Real.pi : ℂ) * w) / w)
+      (nhdsWithin (0 : ℂ) {(0 : ℂ)}ᶜ) (nhds (Real.pi : ℂ)) := by
+  have h := hasDerivAt_iff_tendsto_slope.mp hasDerivAt_sin_pi_mul_zero
+  refine h.congr fun w => ?_
+  rw [slope_def_field]
+  simp
+
+/-- **The reflection kernel has a simple pole at the origin.**  The product with the variable tends
+to the reciprocal of `π`, so `π / sin(π w)` has residue one there. -/
+theorem tendsto_mul_inv_sin_pi_mul :
+    Filter.Tendsto (fun w : ℂ => w * (Complex.sin ((Real.pi : ℂ) * w))⁻¹)
+      (nhdsWithin (0 : ℂ) {(0 : ℂ)}ᶜ) (nhds ((Real.pi : ℂ)⁻¹)) := by
+  have hpi : (Real.pi : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr Real.pi_ne_zero
+  have hinv := tendsto_sin_pi_mul_div.inv₀ hpi
+  refine hinv.congr fun w => ?_
+  rw [inv_div, div_eq_mul_inv]
+
+/-! ### The simple-zero factorization of the sine at the origin -/
+
+/-- The analytic cofactor of the simple zero of `sin(π ·)` at the origin. -/
+noncomputable def sinPiCofactor : ℂ → ℂ :=
+  dslope (fun w : ℂ => Complex.sin ((Real.pi : ℂ) * w)) 0
+
+theorem analyticAt_sinPiCofactor : AnalyticAt ℂ sinPiCofactor 0 := by
+  obtain ⟨p, hp⟩ := analyticAt_sin_pi_mul 0
+  exact ⟨p.fslope, hp.has_fpower_series_dslope_fslope⟩
+
+theorem sinPiCofactor_zero : sinPiCofactor 0 = (Real.pi : ℂ) := by
+  rw [sinPiCofactor, dslope_same]
+  exact hasDerivAt_sin_pi_mul_zero.deriv
+
+/-- **The sine has a simple zero at the origin.**  It factors as the variable times an analytic
+cofactor whose value there is `π`. -/
+theorem sin_pi_mul_eq_mul_cofactor (w : ℂ) :
+    Complex.sin ((Real.pi : ℂ) * w) = w * sinPiCofactor w := by
+  have h := sub_smul_dslope (fun z : ℂ => Complex.sin ((Real.pi : ℂ) * z)) 0 w
+  rw [sub_zero, smul_eq_mul] at h
+  rw [sinPiCofactor, h]
+  simp
+
+/-! ### The residue hypothesis of the rectangle theorem -/
+
+/-- **The reflection kernel minus its principal part is bounded at the origin.**  This is the
+`near_p` hypothesis of the residue theorem for a simple pole, at `p = 0` with residue `1`. -/
+theorem isBigO_inv_sin_sub_inv :
+    (fun w : ℂ => (Real.pi : ℂ) * (Complex.sin ((Real.pi : ℂ) * w))⁻¹ - w⁻¹)
+      =O[nhdsWithin (0 : ℂ) {(0 : ℂ)}ᶜ] (fun _ : ℂ => (1 : ℂ)) := by
+  have hpi : (Real.pi : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr Real.pi_ne_zero
+  have hcont : ContinuousAt sinPiCofactor 0 := analyticAt_sinPiCofactor.continuousAt
+  have hne : ∀ᶠ w : ℂ in nhds (0 : ℂ), sinPiCofactor w ≠ 0 := by
+    refine hcont.eventually_ne ?_
+    rw [sinPiCofactor_zero]
+    exact hpi
+  have hbdd : ∀ᶠ w : ℂ in nhds (0 : ℂ), ‖(sinPiCofactor w)⁻¹‖ ≤ 2 * ‖(Real.pi : ℂ)⁻¹‖ := by
+    have hinv : ContinuousAt (fun w : ℂ => (sinPiCofactor w)⁻¹) 0 := by
+      refine hcont.inv₀ ?_
+      rw [sinPiCofactor_zero]
+      exact hpi
+    have htarget : ‖((sinPiCofactor 0)⁻¹ : ℂ)‖ < 2 * ‖(Real.pi : ℂ)⁻¹‖ := by
+      rw [sinPiCofactor_zero]
+      have hpos : (0 : ℝ) < ‖(Real.pi : ℂ)⁻¹‖ := by
+        simp
+      linarith
+    exact (hinv.norm.eventually (eventually_lt_nhds htarget)).mono fun w hw => le_of_lt hw
+  obtain ⟨C, hC⟩ := Asymptotics.isBigO_iff.mp
+    ((analyticAt_sinPiCofactor.differentiableAt.hasDerivAt).isBigO_sub)
+  refine Asymptotics.IsBigO.of_bound (C * (2 * ‖(Real.pi : ℂ)⁻¹‖)) ?_
+  filter_upwards [nhdsWithin_le_nhds hne, nhdsWithin_le_nhds hbdd,
+    nhdsWithin_le_nhds hC, self_mem_nhdsWithin] with w hwne hwbdd hwC hw0
+  have hw : w ≠ 0 := hw0
+  have hidentity : (Real.pi : ℂ) * (Complex.sin ((Real.pi : ℂ) * w))⁻¹ - w⁻¹
+      = -((sinPiCofactor w - sinPiCofactor 0) * w⁻¹) * (sinPiCofactor w)⁻¹ := by
+    rw [sin_pi_mul_eq_mul_cofactor, sinPiCofactor_zero, mul_inv]
+    field_simp
+    ring
+  rw [hidentity, norm_mul, norm_neg, norm_mul, norm_one, mul_one]
+  have hnum : ‖sinPiCofactor w - sinPiCofactor 0‖ * ‖(w : ℂ)⁻¹‖ ≤ C := by
+    rw [norm_inv, ← div_eq_mul_inv, div_le_iff₀ (norm_pos_iff.mpr hw)]
+    simp [sub_zero] at hwC
+    exact hwC
+  have hC0 : (0 : ℝ) ≤ C := le_trans (by positivity) hnum
+  exact mul_le_mul hnum hwbdd (norm_nonneg _) hC0
+
 end GaloisForLFunctions.HTGeometry

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FreeCoordinateField
+import Mathlib.FieldTheory.Differential.Basic
 
 /-!
 # No rational exponential eigenfunctions of a free coordinate derivative
@@ -12,6 +13,27 @@ drop forces both derivatives to vanish.
 namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
+
+open Polynomial
+open scoped Differential
+
+/-- Regard a derivation over any coefficient ring as the underlying integer derivation of a
+differential ring. -/
+@[reducible] def differentialOfDerivation
+    {C R : Type*} [CommRing C] [CommRing R] [Algebra C R]
+    (D : Derivation C R R) : Differential R where
+  deriv := Derivation.mk'
+    D.toAddMonoidHom.toIntLinearMap
+    (by
+      intro x y
+      change D (x * y) = x * D y + y * D x
+      exact D.leibniz x y)
+
+@[simp] theorem differentialOfDerivation_apply
+    {C R : Type*} [CommRing C] [CommRing R] [Algebra C R]
+    (D : Derivation C R R) (x : R) :
+    letI := differentialOfDerivation D
+    x′ = D x := rfl
 
 /-- A free-coordinate derivation has no nonzero rational eigenfunction with nonzero scalar
 eigenvalue. -/
@@ -82,6 +104,91 @@ theorem freeCoordinateDerivation_eq_const_mul_self_forces_zero
   rw [hqderiv] at hqrelation
   have hcC : MvPolynomial.C c ≠ (0 : P) := MvPolynomial.C_ne_zero.mpr hc
   exact (mul_ne_zero hcC hq) (neg_eq_zero.mp hqrelation.symm)
+
+/-- An element algebraic over a free rational coordinate field cannot solve `x' = x` in a
+differential field extension. -/
+theorem ne_self_of_isAlgebraic_freeCoordinateDerivation
+    {C σ L : Type*} [Field C] [CharZero C] [Field L] [Algebra C L]
+    [Algebra (FreeCoordinateRationalField C σ) L]
+    [IsScalarTower C (FreeCoordinateRationalField C σ) L]
+    (i : σ) (D : Derivation C L L)
+    (hD : ∀ a : FreeCoordinateRationalField C σ,
+      D (algebraMap (FreeCoordinateRationalField C σ) L a) =
+        algebraMap (FreeCoordinateRationalField C σ) L
+          (freeCoordinateDerivation C σ i a))
+    {x : L} (hxalg : IsAlgebraic (FreeCoordinateRationalField C σ) x)
+    (hx0 : x ≠ 0) :
+    D x ≠ x := by
+  letI : Differential (FreeCoordinateRationalField C σ) :=
+    differentialOfDerivation (freeCoordinateDerivation C σ i)
+  letI : Differential L :=
+    differentialOfDerivation D
+  letI : DifferentialAlgebra (FreeCoordinateRationalField C σ) L :=
+    ⟨by
+      intro a
+      change D (algebraMap (FreeCoordinateRationalField C σ) L a) =
+        algebraMap (FreeCoordinateRationalField C σ) L
+          (freeCoordinateDerivation C σ i a)
+      exact hD a⟩
+  let F := FreeCoordinateRationalField C σ
+  intro hx
+  let p : F[X] := minpoly F x
+  let n := p.natDegree
+  let q : F[X] := Differential.mapCoeffs p + X * derivative p
+  let r : F[X] := q - Polynomial.C (n : F) * p
+  have hp0 : p ≠ 0 := minpoly.ne_zero hxalg.isIntegral
+  have hpd : 0 < n := (minpoly.irreducible hxalg.isIntegral).natDegree_pos
+  have hpmonic : p.Monic := minpoly.monic hxalg.isIntegral
+  have hqeval : aeval x q = 0 := by
+    have hchain := Differential.deriv_aeval_eq (A := F) x p
+    have hprel : aeval x p = 0 := minpoly.aeval F x
+    have hx' : x′ = x := by
+      change D x = x
+      exact hx
+    rw [hprel, map_zero, hx'] at hchain
+    simpa only [q, map_add, map_mul, aeval_X, mul_comm] using hchain.symm
+  have hpq : p ∣ q := minpoly.dvd F x hqeval
+  have hpr : p ∣ r := by
+    apply dvd_sub hpq
+    exact ⟨Polynomial.C (n : F), by ring⟩
+  have hEulerCoeff : ∀ m : ℕ,
+      (X * derivative p).coeff m = (m : F) * p.coeff m := by
+    intro m
+    cases m with
+    | zero => simp
+    | succ m =>
+        rw [Polynomial.coeff_X_mul, Polynomial.coeff_derivative]
+        push_cast
+        ring
+  have hrle : r.natDegree ≤ n - 1 := by
+    rw [natDegree_le_iff_coeff_eq_zero]
+    intro m hm
+    have hnm : n ≤ m := by omega
+    simp only [r, q, coeff_sub, coeff_add, Differential.coeff_mapCoeffs,
+      Polynomial.coeff_C_mul, hEulerCoeff]
+    by_cases hmn : m = n
+    · subst m
+      rw [hpmonic.coeff_natDegree]
+      simp
+    · have hlt : n < m := lt_of_le_of_ne hnm (Ne.symm hmn)
+      simp [coeff_eq_zero_of_natDegree_lt hlt]
+  have hrlt : r.natDegree < p.natDegree := by
+    change r.natDegree < n
+    omega
+  have hr0 : r = 0 := Polynomial.eq_zero_of_dvd_of_natDegree_lt hpr hrlt
+  have hcoeff := congrArg (fun s : F[X] ↦ s.coeff 0) hr0
+  simp only [r, q, coeff_sub, coeff_add, Differential.coeff_mapCoeffs,
+    Polynomial.coeff_C_mul, hEulerCoeff, Nat.cast_zero, zero_mul, add_zero,
+    coeff_zero] at hcoeff
+  have heigen : freeCoordinateDerivation C σ i (p.coeff 0) =
+      algebraMap C F (n : C) * p.coeff 0 := by
+    change (p.coeff 0)′ = algebraMap C F (n : C) * p.coeff 0
+    rw [map_natCast]
+    linear_combination hcoeff
+  have hnC : (n : C) ≠ 0 := Nat.cast_ne_zero.mpr (Nat.ne_zero_of_lt hpd)
+  have hpcoeff0 : p.coeff 0 = 0 :=
+    freeCoordinateDerivation_eq_const_mul_self_forces_zero i hnC heigen
+  exact (minpoly.coeff_zero_ne_zero hxalg.isIntegral hx0) hpcoeff0
 
 end
 

@@ -218,6 +218,22 @@ theorem intervalIntegrable_centredAmplitude_mul {A L : ℝ} (hA : 0 < A) (hK : 0
   rw [hval, Real.norm_eq_abs, abs_of_nonneg (by positivity : (0:ℝ) ≤ K * η ^ ((1:ℝ)/2))]
   exact norm_centredAmplitude_le hlip hη0
 
+/-- The half-power oscillatory kernel is integrable across the origin. -/
+theorem intervalIntegrable_scaledFresnel {A L : ℝ} :
+    IntervalIntegrable (scaledFresnel L) volume 0 A := by
+  have hbase : IntervalIntegrable (fun u : ℝ => u ^ (-(1:ℝ)/2)) volume 0 A :=
+    intervalIntegral.intervalIntegrable_rpow' (by norm_num)
+  have hmeas : AEStronglyMeasurable (scaledFresnel L) (volume.restrict (Set.uIoc 0 A)) := by
+    apply Measurable.aestronglyMeasurable
+    unfold scaledFresnel
+    fun_prop
+  refine IntervalIntegrable.mono_fun hbase hmeas ?_
+  filter_upwards with η
+  have hval : ‖scaledFresnel L η‖ = |η ^ (-(1:ℝ)/2)| := by
+    rw [scaledFresnel, norm_mul, Complex.norm_real, Real.norm_eq_abs, Complex.norm_exp]
+    simp
+  rw [hval, Real.norm_eq_abs]
+
 /-- **The low-frequency half-log asymptotic.**  Against a Lipschitz amplitude the half-power
 oscillatory integral is the Watson term plus `O(L^{-1})`. -/
 theorem norm_lowFrequency_asymptotic {A L : ℝ} (hA : 0 < A) (hL : 0 < L) (hK : 0 ≤ K)
@@ -230,19 +246,8 @@ theorem norm_lowFrequency_asymptotic {A L : ℝ} (hA : 0 < A) (hL : 0 < L) (hK :
           * (((Real.pi : ℂ) ^ ((1:ℂ)/2)) * Complex.exp ((Real.pi/4 : ℝ) * I)))‖
       ≤ ‖f 0‖ * (2 * A ^ (-(1:ℝ)/2) * L ^ (-(1:ℝ)))
         + (4 * K * A ^ ((1:ℝ)/2)) / L := by
-  have hintScaled : IntervalIntegrable (scaledFresnel L) volume 0 A := by
-    have hbase : IntervalIntegrable (fun u : ℝ => u ^ (-(1:ℝ)/2)) volume 0 A :=
-      intervalIntegral.intervalIntegrable_rpow' (by norm_num)
-    have hmeas : AEStronglyMeasurable (scaledFresnel L) (volume.restrict (Set.uIoc 0 A)) := by
-      apply Measurable.aestronglyMeasurable
-      unfold scaledFresnel
-      fun_prop
-    refine IntervalIntegrable.mono_fun hbase hmeas ?_
-    filter_upwards with η
-    have hval : ‖scaledFresnel L η‖ = |η ^ (-(1:ℝ)/2)| := by
-      rw [scaledFresnel, norm_mul, Complex.norm_real, Real.norm_eq_abs, Complex.norm_exp]
-      simp
-    rw [hval, Real.norm_eq_abs]
+  have hintScaled : IntervalIntegrable (scaledFresnel L) volume 0 A :=
+    intervalIntegrable_scaledFresnel
   have hintCentred := intervalIntegrable_centredAmplitude_mul (L := L) hA hK hderiv hlip
   have hsplit : (∫ η in (0:ℝ)..A, f η * scaledFresnel L η)
       = f 0 * (∫ η in (0:ℝ)..A, scaledFresnel L η)

@@ -329,9 +329,16 @@ These are genuine field theorems, not a packaged reflection-preservation assumpt
 reuses the project's unconditional closure of differential algebraicity under field operations.
 It passed one exact targeted build when its `.olean` was absent and direct single-file verification.
 
-The card remains in Stage 2 because Lechner's analytic/Hilbert intertwiner, the operator formula
-`(10b)`, and the localization/admissible-gauge interface are not formalized. The new module proves
-the complete Kolchin algebraic obstruction but not the QFT realization.
+Lechner's analytic/Hilbert intertwiner and the operator formula `(10b)` are now formalized as well:
+`LechnerPairMultiplier.lean` proves the pair multiplier `(5)` and the creation recursion `(10a)`
+(`pairMultiplier_shift`), and `LechnerFockIntertwiner.lean` builds the direct-sum linear isometry
+`Y = sum_n Y_n` of the rapidity Fock space, proves `intertwine_swapAt` (the `S`-exchange law becomes
+the constant `epsilon` law) and `conjugated_creation_multiplier` (equation `(10b)`).
+
+What remains are the card's two onward theorems -- a physical admissibility theorem for DA exchange
+gauges and a localization/OPE/profile invariant of the Kolchin exchange class -- together with the
+external novelty and operator-algebraic audits.  Those are new theorem targets, not formalization
+gates for the content proved here.
 
 ## Primary literature
 

@@ -562,3 +562,32 @@ Borel's rank computation.  The literature has no proof of it by elementary means
 that every published route goes through Garland, or through Quillen–Borel, or through Soulé's
 vanishing plus Quillen–Lichtenbaum.  The card therefore stays at stage 2, and the programme card
 `garland-tame-kernel-torsion` carries the decomposition.
+
+### The Gersten row over an arithmetic curve `[NEW]`
+
+`formal/GaloisForLFunctions/HTGeometry/MilnorKResidueUnits.lean`,
+`formal/GaloisForLFunctions/HTGeometry/MilnorKGersten.lean`.  Axiom audit for all declarations:
+`propext, Classical.choice, Quot.sound`.
+
+The residue construction is now assembled into the row it belongs to, in every degree.
+
+- **`resPairAt_snd_eq_zero`**, `milnorResidue_eq_zero_of_units` — **the residue kills a symbol all
+  of whose entries are units of valuation zero**: multiplication by `[ū_a] + v(a)ξ` is
+  multiplication by `[ū_a]` alone when `v(a) = 0`, so no `ξ` is ever produced.
+- **`resPairAt_fst_eq`**, `milnorSpecialization_of_units` — and the specialization of such a symbol
+  is the symbol of the residues, so the specialization is the reduction map on units.
+- `milnorResidueAtPlace` — the residue at a finite place of a Dedekind domain, in every degree.
+- **`finite_milnorResidueAtPlace_ne_zero`** — **a class has nonzero residue at only finitely many
+  places**: each entry of a symbol is a unit at all but finitely many places, and there the residue
+  vanishes by the previous item; the symbol classes generate, and the almost-everywhere-vanishing
+  classes form a subgroup.
+- `milnorTameKernel`, `mem_milnorTameKernel_iff` — **the tame kernel in degree `n`.**
+- **`exists_zsmul_mem_milnorTameKernel`** — every class has a nonzero multiple in the tame kernel,
+  as soon as its finitely many residues are torsion.
+- **`milnorKDeg_torsion_of_milnorTameKernel_torsion`** — **torsion of the tame kernel forces torsion
+  of `K_n^M(K)`**, in every degree, given torsion residue targets.  Over a number field the targets
+  are torsion for every `n ≥ 2`: they are `k(v)^×` when `n = 2` (finite) and `0` when `n ≥ 3`
+  (`milnorKDeg_eq_zero_of_finite`).
+
+This is the general-degree form of the card's degree-two reduction.  It changes nothing about the
+outstanding input, which remains the torsion of the degree-two tame kernel.

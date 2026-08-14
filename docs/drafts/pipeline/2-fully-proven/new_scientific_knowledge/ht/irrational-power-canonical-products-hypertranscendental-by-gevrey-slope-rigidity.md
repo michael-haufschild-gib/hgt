@@ -1124,3 +1124,59 @@ is the `fHolo` hypothesis of `ResidueTheoremOnRectangleWithSimplePole'`.
 What the shift still needs is the residue computation at each crossed pole, i.e. the `near_p`
 hypothesis: `π/sin(π w) - (-1)^k/(w - k) = O(1)` near `w = k`, and the analogous statement for the
 `ζ` pole at `-s w = 1`.
+
+## Lean progress — every pole of the reflection kernel reduces to the one at the origin
+
+Added to `SineVerticalDecay.lean` (wired, axiom-clean):
+
+    sin_pi_mul_add_nat :      `sin(π (w + k)) = (-1)^k · sin(π w)`  for `k : ℕ`
+    inv_sin_pi_mul_add_nat :  `(sin(π (w + k)))⁻¹ = (-1)^k · (sin(π w))⁻¹`
+
+The kernel `π/sin(π w)` therefore has the *same* local shape at every integer, differing only by the
+sign `(-1)^k`.  So the `near_p` hypothesis of `ResidueTheoremOnRectangleWithSimplePole'` needs to be
+established once, at `w = 0` — where it reads `π/sin(π w) - 1/w = O(1)` — and the residue at `w = -k`
+is then `(-1)^k` times that of `w = 0`, which is the source of the alternating sign in
+`b_k = (-1)^k ζ(-s k)` of `(5)`.
+
+Proof is one induction on `k` against `Complex.sin_add_pi`; no addition formula for the sine and no
+periodicity API beyond that single step.
+
+## Lean progress — the residue of the reflection kernel at the origin
+
+Added to `SineVerticalDecay.lean` (wired, axiom-clean):
+
+    hasDerivAt_sin_pi_mul_zero :   `w ↦ sin(π w)` has derivative `π` at `0`
+    tendsto_sin_pi_mul_div :       hence `sin(π w)/w → π` as `w → 0` off the origin
+    tendsto_mul_inv_sin_pi_mul :
+      **`w · (sin(π w))⁻¹ → π⁻¹`**, i.e. `π/sin(π w)` has a simple pole at the origin with
+      residue `1`
+
+The slope route avoids any series expansion: `sin(π w)/w` is literally the difference quotient of
+`sin(π ·)` at `0`, so `hasDerivAt_iff_tendsto_slope` converts the derivative into the limit.
+
+With `inv_sin_pi_mul_add_nat` this fixes the residue at every pole of the kernel: `(-1)^k` at
+`w = -k`, which is exactly the alternating sign of `b_k = (-1)^k ζ(-s k)` in `(5)`.  What the
+rectangle argument still needs is the `O(1)` form of this statement — `π/sin(π w) - 1/w` bounded
+near `0` — which is the `near_p` hypothesis; the limit above is its content.
+
+## Lean progress — the simple-zero factorization of the sine
+
+Added to `SineVerticalDecay.lean` (wired, axiom-clean):
+
+    sinPiCofactor := dslope (fun w => sin (π w)) 0
+    analyticAt_sinPiCofactor :        the cofactor is analytic at the origin
+    sinPiCofactor_zero :              its value there is `π`
+    sin_pi_mul_eq_mul_cofactor :      **`sin(π w) = w · sinPiCofactor w`**, identically
+
+This is the factorization that turns the residue limit into the `O(1)` statement the rectangle
+theorem wants.  With it,
+
+    π/sin(π w) - 1/w = (π - sinPiCofactor w) / (w · sinPiCofactor w),
+
+whose numerator is `sinPiCofactor 0 - sinPiCofactor w`, hence `O(w)` because the cofactor is
+differentiable at the origin, while the denominator is `w` times something nonzero near `0`.  So the
+quotient is `O(1)`, which is exactly `near_p` for `ResidueTheoremOnRectangleWithSimplePole'`.
+
+`dslope` is the right tool here rather than the general order factorization
+(`exists_eventuallyEq_pow_smul_nonzero_iff`): it gives the cofactor with no case analysis on the
+order, and `sub_smul_dslope` supplies the identity for free.

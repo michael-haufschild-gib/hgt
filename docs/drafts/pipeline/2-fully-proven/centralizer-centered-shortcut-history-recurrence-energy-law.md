@@ -1,0 +1,179 @@
+# Centralizer-centered shortcut-history recurrence-energy law
+
+- **ID:** `centralizer-centered-shortcut-history-recurrence-energy-law`
+- **Stage:** 2 -- fully proved on paper
+- **Type:** theorem / exact static-history reduction / literature-frontier boundary
+- **Parents:** `static-circuit-two-memory-orthogonality-law.md`,
+  `centralizer-centered-circuit-collision-and-design-barrier-law.md`
+- **Status:** `[PAPER-PROVED] [BRIDGE] [APPLICATION NOVELTY UNVERIFIED]`
+- **Date:** 2026-08-14
+
+## Public sentence
+
+Every collection of adaptive shallow-circuit shortcuts leaves one positive, target-independent
+trace in the system's own recurrence kernel: after permanent spectral memory is removed, the
+complete shortcut history has no more energy than the centralizer-centered recurrence history.
+
+## Exact theorem
+
+Let `F` be a real Hilbert space, let `U(t)` be a unitary one-parameter group, and let `z,q in F`.
+For a finite sample set `J`, times `t_j`, and real weights `w_j`, define
+
+```text
+A_w(q) = sum_j w_j <U(t_j)z,q>,
+R_w(z) = sum_(i,j) w_i w_j <z,U(t_j-t_i)z>.
+```
+
+Then
+
+```text
+R_w(z) = ||sum_j w_j U(t_j)z||^2 >= 0                    (1)
+```
+
+and
+
+```text
+                         A_w(q)^2 <= ||q||^2 R_w(z).       (2)
+```
+
+If `w_j>=0`, `eta>=0`, and
+
+```text
+<U(t_j)z,q> >= eta                 for every j,           (3)
+```
+
+then
+
+```text
+             (eta sum_j w_j)^2 <= ||q||^2 R_w(z).          (4)
+```
+
+Now take nested orthogonal projections `Pi<=P`, a seed `x`, and a unitary flow fixing `range P`.
+Put
+
+```text
+z = x-Px,
+q = y-Pi x,
+r(t) = U(t)x-Px = U(t)z,
+B = <Pi x,Pi x> + <(P-Pi)x,q>.
+```
+
+Let `Y={y_k}` be any finite nonnegative target dictionary whose uniform preparation moment is `y`
+and has the same universal projection as `x`.  At each time `t_j`, the witnessing target `k(j)` may
+be chosen adaptively.  If
+
+```text
+<U(t_j)x,y_k> >= a,
+<U(t_j)x,y_l> >= 0 for every target l,
+eta = |Y|^(-1) a-B >= 0,                                  (5)
+```
+
+then the same `q` satisfies `(3)`.  Consequently
+
+```text
+(eta sum_j w_j)^2
+ <= ||q||^2 sum_(i,j) w_i w_j
+       <x-Px,U(t_j-t_i)(x-Px)>.                            (6)
+```
+
+Thus target adaptation disappears before the temporal estimate.  The right side is the Gram
+energy of one stationary positive-definite kernel and contains no circuit selector, target union,
+minimum spectral gap, or Haar-mixing premise.
+
+## Dependency-closed proof
+
+Let `v=sum_j w_j U(t_j)z`.  Bilinearity gives
+
+```text
+A_w(q)=<v,q>.
+```
+
+Cauchy--Schwarz gives `(2)`.  Unitarity and the group law give
+
+```text
+<U(t_i)z,U(t_j)z>
+ = <z,U(-t_i)U(t_j)z>
+ = <z,U(t_j-t_i)z>.
+```
+
+Expanding `||v||^2` proves `(1)`.  Under `(3)` and nonnegative weights,
+`A_w(q)>=eta sum_j w_j>=0`; squaring this inequality and applying `(2)` proves `(4)`.
+
+For the projected statement, invariance of `range P` gives
+
+```text
+U(t)x-Px=U(t)(x-Px).
+```
+
+The parent two-memory collision theorem and uniform target averaging imply, independently at each
+sample time,
+
+```text
+<r(t_j),q> >= |Y|^(-1)a-B=eta.
+```
+
+The preparation moment `y`, hence `q`, is fixed even though the witnessing target varies with
+`j`.  Apply `(4)` and the stationary-kernel identity to obtain `(6)`.
+
+## Conjecture--failure--survivor audit
+
+### C0 -- monotone memory flux
+
+`[FALSIFIED]`.  A two-dimensional rotation already makes every nonconstant alignment oscillatory;
+finite static spectra recur, so no nontrivial pointwise monotone memory functional can cover the
+full cycle.
+
+### C1 -- one-time recurrence controls one-time shortcut alignment
+
+`[BRIDGE] [INSIGNIFICANT]`.  Cauchy at one time is only
+`<U(t)z,q>^2<=||z||^2||q||^2`; it contains no recurrence information beyond the diagonal.
+
+### C2 -- many adaptive shortcuts force recurrence Gram energy
+
+`[PAPER-PROVED]`.  Equations `(1)--(6)` survive recurrence, centralizer nonmixing, changing target
+selectors, and arbitrary signed quadrature weights.  The precise positive survivor is the
+stationary Gram kernel, not a monotone flux.
+
+## Scale audit and exact remaining core
+
+The theorem is not by itself a Brown-onset estimate.  With uniform dictionary size `N`, the forced
+alignment may be only `Theta(N^(-1))`; Cauchy squares that scale.  Without an additional bound on
+`||q||` or a stronger circuit-preparation structure, `(6)` may require exponentially many easy
+samples before it contradicts recurrence anti-correlation.  Claiming first onset from `(6)` alone
+would be theatre.
+
+Its real advance is narrower and exact: it replaces the signed multi-time selector problem by a
+positive centralizer-centered spectral-form-factor problem.  To turn it into Brown growth one must
+prove, for the ordinary fixed local-Hamiltonian ensemble after the common return/carrier cut, a
+scale-sharp bound on the kernel energy in `(6)` that loses only one intrinsic heap-capacity factor,
+not its square.  Minimum spectral-gap anti-concentration remains irrelevant.
+
+## External frontier audit
+
+- `[LITERATURE]` Positive-definiteness of unitary matrix-coefficient kernels and Gram/Cauchy energy
+  inequalities are classical; no novelty is claimed for `(1)--(4)` in isolation.
+- `[LITERATURE]` Haferkamp et al. prove linear growth for random circuits through accessible
+  dimension, not for powers of one fixed Hamiltonian:
+  <https://arxiv.org/abs/2106.05305>.
+- `[LITERATURE]` Oszmaniec et al. prove saturation and recurrence for random circuits and
+  stochastic local Hamiltonian evolution, not ordinary one-draw static dynamics:
+  <https://arxiv.org/abs/2205.09734>.
+- `[LITERATURE]` Balasubramanian et al. obtain exponential-time local minimality only under the
+  Eigenstate Complexity Hypothesis: <https://arxiv.org/abs/1905.05765>.
+- `[LITERATURE]` Ippoliti proves a connected spectral ramp for an engineered static geometrically
+  local Hamiltonian inside a symmetry sector, but no complete circuit-shortcut law:
+  <https://arxiv.org/abs/2606.30635>.
+- `[LOCAL-RESEARCH]` `StaticOrbitNetBellmanLaw.lean` already formalizes why fixed-time source
+  covering entropy cannot transfer random-circuit accessible-dimension proofs and identifies the
+  exact Bellman survivor.  This card does not duplicate that boundary.
+
+External priority for the adaptive centralizer-centered composition `(5)--(6)` is unverified.
+Until a focused citation audit or expert review establishes otherwise, it is a candidate bridge,
+not new scientific knowledge and not a manuscript headline.
+
+## Pipeline
+
+- [x] Stage 1 -> 2: exact proof closes.
+- [ ] Stage 2 -> 3: formalize `(1)--(6)` and audit axioms.
+- [ ] Publication use: establish application priority and close the one-capacity-factor kernel
+  bound for ordinary static local Hamiltonians.
