@@ -165,6 +165,72 @@ theorem coareaOuterEnergy_le {x u v : ℝ} (hx : 0 < x) (hu : 0 < u) (huv : u �
   rw [hwindow]
   exact div_le_div_of_nonneg_right (by linarith [hmass.2]) (by positivity)
 
+/-! ## The inner energy and the reciprocal product law -/
+
+theorem coareaInnerEnergy_nonneg {L v : ℝ} : 0 ≤ coareaInnerEnergy L v := by
+  rw [coareaInnerEnergy]
+  have := mertensPrimeWeightSum_nonneg ⌊Real.exp v⌋₊
+  positivity
+
+/-- **The inner energy is the available logarithmic length.** -/
+theorem coareaInnerEnergy_le {L v : ℝ} (hv : Real.log 2 ≤ v) :
+    coareaInnerEnergy L v ≤ L ^ 2 * (v + (mertensPrimeWindowBound + 1)) := by
+  have hexp : (2 : ℝ) ≤ Real.exp v := by
+    have h := Real.exp_le_exp.mpr hv
+    rwa [Real.exp_log (by norm_num : (0 : ℝ) < 2)] at h
+  have h := abs_le.mp (abs_mertensPrimeWeightSum_floor_sub_log_le hexp)
+  rw [Real.log_exp] at h
+  have hle : mertensPrimeWeightSum ⌊Real.exp v⌋₊ ≤ v + (mertensPrimeWindowBound + 1) := by
+    linarith [h.2]
+  rw [coareaInnerEnergy]
+  exact mul_le_mul_of_nonneg_left hle (by positivity)
+
+/-- **The reciprocal coarea product law.**  The outer and inner certification energies pair to a
+scale-free bound: the two powers of the cofactor scale cancel before any Cauchy--Schwarz step. -/
+theorem sqrt_coareaEnergy_product_le {x u v L : ℝ} (hx : 0 < x) (hu : 0 < u) (huv : u ≤ v)
+    (hA : 2 ≤ x * Real.exp (-v)) (hv : Real.log 2 ≤ v) :
+    Real.sqrt (coareaOuterEnergy x u v * coareaInnerEnergy L v)
+      ≤ |L| * Real.sqrt ((v - u + primeLogWindowConst) * (v + (mertensPrimeWindowBound + 1)))
+        / u := by
+  have houter := coareaOuterEnergy_le hx hu huv hA
+  have hinner := coareaInnerEnergy_le (L := L) hv
+  have houter0 := coareaOuterEnergy_nonneg (x := x) (u := u) (v := v)
+  have hinner0 := coareaInnerEnergy_nonneg (L := L) (v := v)
+  have hprod : coareaOuterEnergy x u v * coareaInnerEnergy L v
+      ≤ ((v - u + primeLogWindowConst) / u ^ 2) * (L ^ 2 * (v + (mertensPrimeWindowBound + 1))) := by
+    have hnn : 0 ≤ (v - u + primeLogWindowConst) / u ^ 2 := by
+      have hc := primeLogWindowConst_nonneg
+      have : 0 ≤ v - u + primeLogWindowConst := by linarith
+      positivity
+    calc coareaOuterEnergy x u v * coareaInnerEnergy L v
+        ≤ ((v - u + primeLogWindowConst) / u ^ 2) * coareaInnerEnergy L v :=
+          mul_le_mul_of_nonneg_right houter hinner0
+      _ ≤ ((v - u + primeLogWindowConst) / u ^ 2) * (L ^ 2 * (v + (mertensPrimeWindowBound + 1))) :=
+          mul_le_mul_of_nonneg_left hinner hnn
+  have hsqrt := Real.sqrt_le_sqrt hprod
+  refine le_trans hsqrt (le_of_eq ?_)
+  have hval : ((v - u + primeLogWindowConst) / u ^ 2) * (L ^ 2 * (v + (mertensPrimeWindowBound + 1)))
+      = (L ^ 2 * ((v - u + primeLogWindowConst) * (v + (mertensPrimeWindowBound + 1)))) / u ^ 2 := by
+    field_simp
+  rw [hval, Real.sqrt_div' _ (by positivity), Real.sqrt_mul (sq_nonneg L),
+    Real.sqrt_sq_eq_abs, Real.sqrt_sq hu.le]
+
+/-- **The geometric-shell conservation law.**  On a shell of fixed ratio `r` the certified cost is
+bounded independently of the scale `u`. -/
+theorem sqrt_coareaEnergy_product_geometric_le {x u r L : ℝ} (hx : 0 < x) (hu : 0 < u)
+    (hr : 1 ≤ r) (hA : 2 ≤ x * Real.exp (-(r * u))) (hv : Real.log 2 ≤ r * u) :
+    Real.sqrt (coareaOuterEnergy x u (r * u) * coareaInnerEnergy L (r * u))
+      ≤ |L| * Real.sqrt (((r - 1) + primeLogWindowConst / u)
+        * (r + (mertensPrimeWindowBound + 1) / u)) := by
+  have huv : u ≤ r * u := by nlinarith
+  have h := sqrt_coareaEnergy_product_le (L := L) hx hu huv hA hv
+  refine le_trans h (le_of_eq ?_)
+  have hval : ((r * u - u + primeLogWindowConst) * (r * u + (mertensPrimeWindowBound + 1)))
+      = u ^ 2 * (((r - 1) + primeLogWindowConst / u) * (r + (mertensPrimeWindowBound + 1) / u)) := by
+    field_simp
+  rw [hval, Real.sqrt_mul (by positivity), Real.sqrt_sq hu.le]
+  field_simp
+
 end
 
 end RHTower

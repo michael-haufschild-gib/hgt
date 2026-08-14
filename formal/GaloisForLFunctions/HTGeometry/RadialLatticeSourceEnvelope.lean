@@ -208,4 +208,169 @@ theorem abs_polarCharge_radialLogSource_le {g : ℝ → ℂ} {L lam a M : ℝ} (
   exact abs_polarCharge_le_of_envelope (continuous_radialLogSource (L := L) hlam hL hgc hvan)
     ha hK (fun s _ => abs_radialLogSource_le hlam hL hint hvar hmean hLz hvan s) hA
 
+/-! ### The real source and the Poisson centre -/
+
+theorem sqrt_mul_exp {lam : ℝ} (hlam : 0 ≤ lam) (t : ℝ) :
+    Real.sqrt (lam * Real.exp t) = Real.sqrt lam * Real.exp (t / 2) := by
+  rw [Real.sqrt_mul hlam]
+  congr 1
+  rw [show Real.exp t = Real.exp (t / 2) * Real.exp (t / 2) by rw [← Real.exp_add]; ring_nf]
+  exact Real.sqrt_mul_self (Real.exp_pos _).le
+
+/-- Complexification does not change the total variation. -/
+theorem eVariationOn_ofReal (f : ℝ → ℝ) (s : Set ℝ) :
+    eVariationOn (fun x => ((f x : ℝ) : ℂ)) s = eVariationOn f s := by
+  have hre : LipschitzWith 1 Complex.re := by
+    refine LipschitzWith.of_dist_le_mul fun z w => ?_
+    simp only [NNReal.coe_one, one_mul, Real.dist_eq, Complex.dist_eq]
+    calc |z.re - w.re| = |(z - w).re| := by rw [Complex.sub_re]
+      _ ≤ ‖z - w‖ := Complex.abs_re_le_norm _
+  refine le_antisymm ?_ ?_
+  · have h := (Complex.isometry_ofReal.lipschitz.lipschitzOnWith).comp_eVariationOn_le
+      (g := f) (s := s) (Set.mapsTo_univ _ _)
+    simpa [Function.comp_def] using h
+  · have h := (hre.lipschitzOnWith).comp_eVariationOn_le
+      (g := fun x : ℝ => ((f x : ℝ) : ℂ)) (s := s) (Set.mapsTo_univ _ _)
+    simpa [Function.comp_def] using h
+
+/-- The complexified lattice charge is the complexification of the real one. -/
+theorem latticeCharge_ofReal {f : ℝ → ℝ} {L a : ℝ} (ha : 0 < a)
+    (hvan : ∀ x : ℝ, L < x → f x = 0) :
+    latticeCharge (fun x => ((f x : ℝ) : ℂ)) a
+      = (((∑' i : ℕ, f (((i : ℝ) + 1) / a) : ℝ)) : ℂ) := by
+  set n : ℕ := ⌊a * L⌋₊ + 1 with hndef
+  have hfl' : a * L < (⌊a * L⌋₊ : ℝ) + 1 := Nat.lt_floor_add_one (a * L)
+  have hn : L < ((n : ℝ) + 1) / a := by
+    rw [lt_div_iff₀ ha, hndef]
+    push_cast
+    linarith [hfl']
+  have hvanC : ∀ x : ℝ, L < x → ((f x : ℝ) : ℂ) = 0 := by
+    intro x hx
+    rw [hvan x hx]
+    simp
+  have hzero : ∀ i : ℕ, i ∉ Finset.range n → f (((i : ℝ) + 1) / a) = 0 := by
+    intro i hi
+    refine hvan _ ?_
+    have hin : (n : ℝ) ≤ (i : ℝ) := by
+      have : n ≤ i := Nat.le_of_not_lt (by simpa using hi)
+      exact_mod_cast this
+    calc L < ((n : ℝ) + 1) / a := hn
+      _ ≤ ((i : ℝ) + 1) / a := by
+          have hnum : ((n : ℝ) + 1) ≤ ((i : ℝ) + 1) := by linarith
+          gcongr
+  rw [latticeCharge_eq_sum ha hvanC hn, tsum_eq_sum hzero]
+  push_cast
+  rfl
+
+/-- The real radial source in the logarithmic variable. -/
+theorem radialLogSource_ofReal {f : ℝ → ℝ} {L lam : ℝ} (hlam : 0 < lam)
+    (hvan : ∀ x : ℝ, L < x → f x = 0) (t : ℝ) :
+    radialLogSource (fun x => ((f x : ℝ) : ℂ)) lam t
+      = (∑' i : ℕ, f (((i : ℝ) + 1) / (lam * Real.exp t))) / Real.sqrt (lam * Real.exp t) := by
+  have ha : (0 : ℝ) < lam * Real.exp t := by positivity
+  rw [radialLogSource, radialLatticeSource, latticeCharge_ofReal ha hvan]
+  rw [← Complex.ofReal_div]
+  exact Complex.ofReal_re _
+
+/-- **The full radial source**: the Poisson centre plus the physical lattice charge. -/
+def radialFullLogSource (f : ℝ → ℝ) (lam : ℝ) (t : ℝ) : ℝ :=
+  radialLogSource (fun x => ((f x : ℝ) : ℂ)) lam t
+    + f 0 / (2 * Real.sqrt (lam * Real.exp t))
+
+/-- **`(19d)`.**  The full radial source has the exact half-density envelope. -/
+theorem abs_radialFullLogSource_le {f : ℝ → ℝ} {L lam : ℝ} (hlam : 0 < lam) (hL : 0 ≤ L)
+    (hint : IntervalIntegrable f volume 0 L) (hvar : BoundedVariationOn f (Icc 0 L))
+    (hmean : ∫ x in (0 : ℝ)..L, f x = 0) (hLz : f L = 0)
+    (hvan : ∀ x : ℝ, L < x → f x = 0) (t : ℝ) :
+    |radialFullLogSource f lam t|
+      ≤ ((2 * (eVariationOn f (Icc 0 L)).toReal + |f 0| / 2) / Real.sqrt lam)
+        * Real.exp (-t / 2) := by
+  have hsl : (0 : ℝ) < Real.sqrt lam := Real.sqrt_pos.mpr hlam
+  have hexp : (0 : ℝ) < Real.exp (t / 2) := Real.exp_pos _
+  have hintC : IntervalIntegrable (fun x : ℝ => ((f x : ℝ) : ℂ)) volume 0 L :=
+    ⟨hint.1.ofReal, hint.2.ofReal⟩
+  have hvarC : BoundedVariationOn (fun x : ℝ => ((f x : ℝ) : ℂ)) (Icc 0 L) := by
+    rw [BoundedVariationOn, eVariationOn_ofReal]
+    exact hvar
+  have hmeanC : ∫ x in (0 : ℝ)..L, ((f x : ℝ) : ℂ) = 0 := by
+    rw [intervalIntegral.integral_ofReal, hmean]
+    simp
+  have hLzC : ((f L : ℝ) : ℂ) = 0 := by rw [hLz]; simp
+  have hvanC : ∀ x : ℝ, L < x → ((f x : ℝ) : ℂ) = 0 := by
+    intro x hx
+    rw [hvan x hx]
+    simp
+  have hbody := abs_radialLogSource_le (g := fun x : ℝ => ((f x : ℝ) : ℂ)) (L := L)
+    hlam hL hintC hvarC hmeanC hLzC hvanC t
+  rw [eVariationOn_ofReal] at hbody
+  have hcentre : |f 0 / (2 * Real.sqrt (lam * Real.exp t))|
+      = (|f 0| / 2 / Real.sqrt lam) * Real.exp (-t / 2) := by
+    rw [sqrt_mul_exp hlam.le, abs_div]
+    have hden : |2 * (Real.sqrt lam * Real.exp (t / 2))| = 2 * (Real.sqrt lam * Real.exp (t / 2)) :=
+      abs_of_pos (by positivity)
+    rw [hden]
+    have hEn : Real.exp (-t / 2) = 1 / Real.exp (t / 2) := by
+      rw [show (-t / 2 : ℝ) = -(t / 2) by ring, Real.exp_neg]
+      ring
+    rw [hEn]
+    field_simp
+  calc |radialFullLogSource f lam t|
+      ≤ |radialLogSource (fun x : ℝ => ((f x : ℝ) : ℂ)) lam t|
+          + |f 0 / (2 * Real.sqrt (lam * Real.exp t))| := abs_add_le _ _
+    _ ≤ (2 * (eVariationOn f (Icc 0 L)).toReal / Real.sqrt lam) * Real.exp (-t / 2)
+          + (|f 0| / 2 / Real.sqrt lam) * Real.exp (-t / 2) := by
+        rw [hcentre]
+        exact add_le_add hbody le_rfl
+    _ = ((2 * (eVariationOn f (Icc 0 L)).toReal + |f 0| / 2) / Real.sqrt lam)
+          * Real.exp (-t / 2) := by ring
+
+theorem continuous_radialFullLogSource {f : ℝ → ℝ} {L lam : ℝ} (hlam : 0 < lam) (hL : 0 ≤ L)
+    (hfc : Continuous f) (hvan : ∀ x : ℝ, L < x → f x = 0) :
+    Continuous (radialFullLogSource f lam) := by
+  have hgc : Continuous fun x : ℝ => ((f x : ℝ) : ℂ) := Complex.continuous_ofReal.comp hfc
+  have hvanC : ∀ x : ℝ, L < x → ((f x : ℝ) : ℂ) = 0 := by
+    intro x hx
+    rw [hvan x hx]
+    simp
+  refine (continuous_radialLogSource (L := L) hlam hL hgc hvanC).add ?_
+  refine continuous_const.div (continuous_const.mul
+    (Real.continuous_sqrt.comp (continuous_const.mul Real.continuous_exp))) fun t => ?_
+  have h : (0 : ℝ) < 2 * Real.sqrt (lam * Real.exp t) := by
+    have : (0 : ℝ) < lam * Real.exp t := by positivity
+    have := Real.sqrt_pos.mpr this
+    positivity
+  exact ne_of_gt h
+
+/-- **`(4)` for the full radial source.** -/
+theorem integral_sq_radialFullLogSource_le {f : ℝ → ℝ} {L lam : ℝ} (hlam : 0 < lam) (hL : 0 ≤ L)
+    (hfc : Continuous f) (hint : IntervalIntegrable f volume 0 L)
+    (hvar : BoundedVariationOn f (Icc 0 L)) (hmean : ∫ x in (0 : ℝ)..L, f x = 0)
+    (hLz : f L = 0) (hvan : ∀ x : ℝ, L < x → f x = 0) :
+    (∫ t in Ioi (0 : ℝ), radialFullLogSource f lam t ^ 2)
+      ≤ ((2 * (eVariationOn f (Icc 0 L)).toReal + |f 0| / 2) / Real.sqrt lam) ^ 2 := by
+  have hK : (0 : ℝ) ≤ (2 * (eVariationOn f (Icc 0 L)).toReal + |f 0| / 2) / Real.sqrt lam := by
+    have h1 : (0 : ℝ) ≤ (eVariationOn f (Icc 0 L)).toReal := ENNReal.toReal_nonneg
+    have h2 : (0 : ℝ) < Real.sqrt lam := Real.sqrt_pos.mpr hlam
+    have h3 : (0 : ℝ) ≤ |f 0| := abs_nonneg _
+    positivity
+  exact integral_sq_le_of_envelope (continuous_radialFullLogSource (L := L) hlam hL hfc hvan) hK
+    (fun s _ => abs_radialFullLogSource_le hlam hL hint hvar hmean hLz hvan s)
+
+/-- **`(18)` for the full radial source.**  Only the primitive bound is left to supply. -/
+theorem abs_polarCharge_radialFullLogSource_le {f : ℝ → ℝ} {L lam a M : ℝ} (hlam : 0 < lam)
+    (hL : 0 ≤ L) (ha : 0 ≤ a) (hfc : Continuous f) (hint : IntervalIntegrable f volume 0 L)
+    (hvar : BoundedVariationOn f (Icc 0 L)) (hmean : ∫ x in (0 : ℝ)..L, f x = 0)
+    (hLz : f L = 0) (hvan : ∀ x : ℝ, L < x → f x = 0)
+    (hA : ∀ t : ℝ, 0 ≤ t → |halfLineExpPrimitive (radialFullLogSource f lam) t| ≤ M) :
+    |polarCharge (radialFullLogSource f lam) a|
+      ≤ 4 * M * ((2 * (eVariationOn f (Icc 0 L)).toReal + |f 0| / 2) / Real.sqrt lam)
+        + 4 * ((2 * (eVariationOn f (Icc 0 L)).toReal + |f 0| / 2) / Real.sqrt lam) ^ 2 := by
+  have hK : (0 : ℝ) ≤ (2 * (eVariationOn f (Icc 0 L)).toReal + |f 0| / 2) / Real.sqrt lam := by
+    have h1 : (0 : ℝ) ≤ (eVariationOn f (Icc 0 L)).toReal := ENNReal.toReal_nonneg
+    have h2 : (0 : ℝ) < Real.sqrt lam := Real.sqrt_pos.mpr hlam
+    have h3 : (0 : ℝ) ≤ |f 0| := abs_nonneg _
+    positivity
+  exact abs_polarCharge_le_of_envelope (continuous_radialFullLogSource (L := L) hlam hL hfc hvan)
+    ha hK (fun s _ => abs_radialFullLogSource_le hlam hL hint hvar hmean hLz hvan s) hA
+
 end HTGeometry

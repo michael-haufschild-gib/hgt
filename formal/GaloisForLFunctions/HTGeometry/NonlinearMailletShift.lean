@@ -68,7 +68,7 @@ theorem factorial_add_rpow_le (v r n : ℕ) :
     _ = ((n ! : ℝ)) ^ r * (((v : ℝ) + 1)) ^ (v * r) * (((n : ℝ) + 1)) ^ (v * r) := by
         rw [mul_pow, mul_assoc]
 
-set_option maxHeartbeats 400000 in
+set_option maxHeartbeats 4000000 in
 /-- **Maillet's theorem, nonlinear case, at an arbitrary leading shift.**  A formal solution of an
 analytic algebraic differential equation whose linearization along the truncation at order `N`
 vanishes exactly to order `v`, with `m + 2v ≤ N`, is Gevrey of a finite integral order. -/

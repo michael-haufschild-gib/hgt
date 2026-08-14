@@ -207,6 +207,62 @@ theorem firstHitMass_le_greenMass_le (act : Γ → X → X) (χ : X) (A : Set X)
   rw [entranceMass_gateKernel_eq_firstHitMass act χ A a] at h
   exact h
 
+/-- **First-letter recursion.**  Off the target the discounted first-hit mass decomposes over the
+first synthesis letter and the pulled-back targets. -/
+theorem firstHitMass_recursion (act : Γ → X → X) (χ : X) (A : Set X) (hχ : χ ∉ A) (a : ℝ≥0∞) :
+    firstHitMass act χ A a =
+      (a / Fintype.card Γ) * ∑ g : Γ, firstHitMass act χ {x | act g x ∈ A} a := by
+  classical
+  have hiff : ∀ (g : Γ) (w : List Γ),
+      FirstHitWord act χ A (g :: w) ↔ FirstHitWord act χ {x | act g x ∈ A} w := by
+    intro g w
+    constructor
+    · rintro ⟨hend, hmin⟩
+      refine ⟨hend, fun k hk hmem => ?_⟩
+      refine hmin (k + 1) (by simpa using hk) ?_
+      have hcons : (g :: w).take (k + 1) = g :: w.take k := by simp
+      rw [hcons]
+      exact hmem
+    · rintro ⟨hend, hmin⟩
+      refine ⟨hend, fun k hk hmem => ?_⟩
+      cases k with
+      | zero => exact hχ (by simpa using hmem)
+      | succ j =>
+        have hcons : (g :: w).take (j + 1) = g :: w.take j := by simp
+        rw [hcons] at hmem
+        exact hmin j (by simpa using hk) hmem
+  have hterm : ∀ p : Γ × List Γ,
+      Set.indicator {w : List Γ | FirstHitWord act χ A w}
+        (fun w => (a / Fintype.card Γ) ^ w.length) (p.1 :: p.2) =
+      (a / Fintype.card Γ) * Set.indicator {w : List Γ | FirstHitWord act χ {x | act p.1 x ∈ A} w}
+        (fun w => (a / Fintype.card Γ) ^ w.length) p.2 := by
+    rintro ⟨g, w⟩
+    by_cases hw : FirstHitWord act χ {x | act g x ∈ A} w
+    · rw [Set.indicator_of_mem (show (g :: w) ∈ {w : List Γ | FirstHitWord act χ A w} from
+        (hiff g w).mpr hw), Set.indicator_of_mem
+        (show w ∈ {w : List Γ | FirstHitWord act χ {x | act g x ∈ A} w} from hw),
+        List.length_cons, pow_succ, mul_comm]
+    · rw [Set.indicator_of_notMem (show (g :: w) ∉ {w : List Γ | FirstHitWord act χ A w} from
+        fun hc => hw ((hiff g w).mp hc)), Set.indicator_of_notMem
+        (show w ∉ {w : List Γ | FirstHitWord act χ {x | act g x ∈ A} w} from hw), mul_zero]
+  have hnil : Set.indicator {w : List Γ | FirstHitWord act χ A w}
+      (fun w => (a / Fintype.card Γ) ^ w.length) [] = 0 := by
+    refine Set.indicator_of_notMem (fun hc => ?_) _
+    exact hχ (by simpa using hc.1)
+  have hprod : (∑' i : Γ × List Γ,
+      Set.indicator {w : List Γ | FirstHitWord act χ {x | act i.1 x ∈ A} w}
+        (fun w => (a / Fintype.card Γ) ^ w.length) i.2) =
+      ∑' g : Γ, ∑' w : List Γ,
+        Set.indicator {w : List Γ | FirstHitWord act χ {x | act g x ∈ A} w}
+          (fun w => (a / Fintype.card Γ) ^ w.length) w :=
+    ENNReal.tsum_prod (f := fun g w =>
+      Set.indicator {w : List Γ | FirstHitWord act χ {x | act g x ∈ A} w}
+        (fun w => (a / Fintype.card Γ) ^ w.length) w)
+  rw [firstHitMass, tsum_list_split, hnil, zero_add, tsum_congr hterm, ENNReal.tsum_mul_left,
+    hprod, tsum_fintype]
+  rfl
+
+
 end Bridge
 
 end GaloisForLFunctions.RHTower

@@ -266,6 +266,124 @@ theorem statMeasure_le_stationary_mean {a : ℝ} (ha0 : 0 ≤ a) (ha1 : a < 1) (
   · rw [hmean, div_le_div_iff_of_pos_right hpos]
     exact hwin.2.1
 
+/-- The density of a law against the stationary law. -/
+noncomputable def density (ν : S → ℝ) : S → ℝ := fun x => ν x / C.stat x
+
+theorem stat_mul_density (ν : S → ℝ) (x : S) : C.stat x * C.density ν x = ν x := by
+  rw [density, mul_div_cancel₀ _ (C.stat_pos x).ne']
+
+/-- The directional capacity discrepancy of a law. -/
+noncomputable def discrepancy (a : ℝ) (A : Set S) (ν : S → ℝ) : ℝ :=
+  C.inner (C.density ν - 1) (C.potential a A)
+
+/-- The chi-square divergence of a law against the stationary law. -/
+noncomputable def chiSq (ν : S → ℝ) : ℝ := C.inner (C.density ν - 1) (C.density ν - 1)
+
+/-- The killed negative-energy square of a law against the stationary law. -/
+noncomputable def dualNormSq (a : ℝ) (ν : S → ℝ) : ℝ := C.negEnergySq a (C.density ν - 1)
+
+/-- **Capacity--discrepancy law.**  The mean first-entrance mass of a law is the stationary mean
+plus its directional capacity discrepancy. -/
+theorem mean_potential_eq {a : ℝ} (ha0 : 0 ≤ a) (ha1 : a < 1) (A : Set S) (ν : S → ℝ) :
+    ∑ x, ν x * C.potential a A x =
+      C.capacity a A / (1 - a) + C.discrepancy a A ν := by
+  have hterm : ∀ x : S, C.stat x * ((C.density ν - 1) x * C.potential a A x) =
+      ν x * C.potential a A x - C.stat x * C.potential a A x := by
+    intro x
+    simp only [Pi.sub_apply, Pi.one_apply]
+    have h := C.stat_mul_density ν x
+    linear_combination (C.potential a A x) * h
+  rw [discrepancy, inner, Finset.sum_congr rfl fun x _ => hterm x, Finset.sum_sub_distrib,
+    ← C.stationary_mean ha0 ha1 A]
+  ring
+
+/-- **Directional discrepancy bound.**  The directional discrepancy is controlled by capacity and
+the killed negative-energy square. -/
+theorem abs_discrepancy_le {a : ℝ} (ha0 : 0 ≤ a) (ha1 : a < 1) (A : Set S) (ν : S → ℝ) :
+    |C.discrepancy a A ν| ≤ Real.sqrt (C.capacity a A) * Real.sqrt (C.dualNormSq a ν) := by
+  have hcs := C.inner_sq_le_energy_mul_negEnergySq ha0 ha1 (C.density ν - 1) (C.potential a A)
+  have hsq : (C.discrepancy a A ν) ^ 2 ≤ C.capacity a A * C.dualNormSq a ν := by
+    rw [discrepancy, capacity, dualNormSq, mul_comm]
+    exact hcs
+  have hnn : 0 ≤ C.capacity a A * C.dualNormSq a ν :=
+    le_trans (sq_nonneg _) hsq
+  have hcap : (0:ℝ) ≤ C.capacity a A := C.energy_nonneg ha0 ha1.le _
+  have hle := Real.sqrt_le_sqrt hsq
+  rwa [Real.sqrt_sq_eq_abs, Real.sqrt_mul hcap] at hle
+
+/-- **Global discrepancy obstruction.**  The killed negative-energy square dominates the
+chi-square divergence up to the killed spectral radius. -/
+theorem chiSq_le_dualNormSq {a : ℝ} (ha0 : 0 ≤ a) (ha1 : a < 1) (ν : S → ℝ) :
+    C.chiSq ν ≤ (1 + a) * C.dualNormSq a ν :=
+  C.inner_le_mul_negEnergySq ha0 ha1 _
+
+theorem chiSq_eq {ν : S → ℝ} (hν : ∑ x, ν x = 1) :
+    C.chiSq ν = (∑ x, C.stat x * C.density ν x ^ 2) - 1 := by
+  have hterm : ∀ x : S, C.stat x * ((C.density ν - 1) x * (C.density ν - 1) x) =
+      C.stat x * C.density ν x ^ 2 - 2 * ν x + C.stat x := by
+    intro x
+    simp only [Pi.sub_apply, Pi.one_apply]
+    have h := C.stat_mul_density ν x
+    linear_combination (-2 : ℝ) * h
+  rw [chiSq, inner, Finset.sum_congr rfl fun x _ => hterm x]
+  rw [Finset.sum_add_distrib, Finset.sum_sub_distrib, ← Finset.mul_sum, hν, C.stat_sum]
+  ring
+
+/-- **Support obstruction.**  A law supported on a small target has large chi-square
+divergence. -/
+theorem chiSq_ge_of_support {ν : S → ℝ} (hν : ∑ x, ν x = 1) {B : Set S}
+    (hsupp : ∀ x, x ∉ B → ν x = 0) :
+    (C.statMeasure B)⁻¹ - 1 ≤ C.chiSq ν := by
+  classical
+  have hf : ∀ x : S, Real.sqrt (C.stat x) ^ 2 = C.stat x :=
+    fun x => Real.sq_sqrt (C.stat_pos x).le
+  have hpair : ∀ x : S, Set.indicator B (fun x => Real.sqrt (C.stat x)) x *
+      (Set.indicator B (fun x => Real.sqrt (C.stat x) * C.density ν x) x) = ν x := by
+    intro x
+    by_cases hx : x ∈ B
+    · rw [Set.indicator_of_mem hx, Set.indicator_of_mem hx]
+      have : Real.sqrt (C.stat x) * (Real.sqrt (C.stat x) * C.density ν x) =
+          C.stat x * C.density ν x := by
+        rw [← mul_assoc, ← pow_two, hf x]
+      rw [this, C.stat_mul_density]
+    · rw [Set.indicator_of_notMem hx, zero_mul, hsupp x hx]
+  have hsq1 : ∀ x : S, Set.indicator B (fun x => Real.sqrt (C.stat x)) x ^ 2 =
+      Set.indicator B C.stat x := by
+    intro x
+    by_cases hx : x ∈ B
+    · rw [Set.indicator_of_mem hx, Set.indicator_of_mem hx, hf x]
+    · rw [Set.indicator_of_notMem hx, Set.indicator_of_notMem hx]
+      norm_num
+  have hsq2 : ∀ x : S, Set.indicator B (fun x => Real.sqrt (C.stat x) * C.density ν x) x ^ 2 ≤
+      C.stat x * C.density ν x ^ 2 := by
+    intro x
+    by_cases hx : x ∈ B
+    · rw [Set.indicator_of_mem hx, mul_pow, hf x]
+    · rw [Set.indicator_of_notMem hx]
+      have := mul_nonneg (C.stat_pos x).le (sq_nonneg (C.density ν x))
+      simpa using this
+  have hcs := Finset.sum_mul_sq_le_sq_mul_sq Finset.univ
+    (fun x => Set.indicator B (fun x => Real.sqrt (C.stat x)) x)
+    (fun x => Set.indicator B (fun x => Real.sqrt (C.stat x) * C.density ν x) x)
+  rw [Finset.sum_congr rfl fun x _ => hpair x, hν,
+    Finset.sum_congr rfl fun x _ => hsq1 x] at hcs
+  have hle : ∑ x, Set.indicator B (fun x => Real.sqrt (C.stat x) * C.density ν x) x ^ 2 ≤
+      ∑ x, C.stat x * C.density ν x ^ 2 := Finset.sum_le_sum fun x _ => hsq2 x
+  have hmain : 1 ≤ C.statMeasure B * ∑ x, C.stat x * C.density ν x ^ 2 := by
+    refine le_trans (le_of_eq (by norm_num)) (le_trans hcs ?_)
+    exact mul_le_mul_of_nonneg_left hle (C.statMeasure_nonneg B)
+  have hβ : 0 < C.statMeasure B := by
+    rcases lt_or_eq_of_le (C.statMeasure_nonneg B) with h | h
+    · exact h
+    · exfalso
+      rw [← h, zero_mul] at hmain
+      linarith
+  have hfinal : (C.statMeasure B)⁻¹ ≤ ∑ x, C.stat x * C.density ν x ^ 2 := by
+    rw [inv_eq_one_div, div_le_iff₀ hβ, mul_comm]
+    exact hmain
+  rw [C.chiSq_eq hν]
+  linarith
+
 end ReversibleChain
 
 end GaloisForLFunctions.RHTower

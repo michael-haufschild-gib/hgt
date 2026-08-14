@@ -7014,3 +7014,68 @@ The certificate is
 `3-formalized/new_scientific_knowledge/suzuki/suzuki-gamma-homogeneous-half-log-scattering-classification-formalized.md`.
 Twelve cards remain in stage 2.  All declarations audit to
 `[propext, Classical.choice, Quot.sound]`.
+
+## II. Gamma-wall block Hardy: weighted Hardy, cutoff commutator, forced strip criterion
+
+Work on `suzuki-gamma-wall-block-hardy-and-derivative-scattering`.  Four new modules, each checked
+clean with `lake env lean` and wired into its umbrella.
+
+```text
+HTGeometry/WeightedHardyInequality.lean        (39) + sharpness + Hardy transfer
+RHTower/SuzukiGammaWallCutoffCommutator.lean   Theorem 3: (28), (29), (30), (31)
+RHTower/SuzukiGammaStripCarrierTwoSided.lean   (3): two-sided power bound on the strip carrier
+RHTower/SuzukiGammaForcedStripHardy.lean       Theorem 4: (36) ⟹ (37), with the literal propagator
+```
+
+**`(39)` the Hilbert-valued weighted Hardy inequality.**  Stated for `ℝ≥0∞`-valued densities, so no
+integrability hypothesis is needed:
+
+```text
+∫_{(1,∞)} (x^{-p} ∫_{(1,x]} t^{p-1} H t dt)² dx ≤ (p-1/2)^{-2} ∫_{(1,∞)} H²,   p > 1/2.
+```
+
+Route: Cauchy–Schwarz against the weight `t^{p-1/2}` (splitting `t^{p-1}` as
+`t^{(p-1)-(p-1/2)/2} · t^{(p-1/2)/2}`), giving the elementary constant `x^{p-1/2}/(p-1/2)` from
+`∫₁^x t^{p-3/2}dt`; then Tonelli, where the outer weight `x^{-(p+1/2)}` integrates over `[t,∞)` to
+`t^{-(p-1/2)}/(p-1/2)` and cancels the inner weight exactly.  Both halves of the constant appear, so
+the result is sharp in the constant as well as in the exponent.  Declarations:
+`lintegral_hardyAverage_sq_le_of_measurable`, `lintegral_hardyAverage_sq_le`,
+`lintegral_enorm_hardyAverage_sq_le` (Bochner form), and the exponent sharpness
+`lintegral_hardyAverage_sq_eq_top_of_le_half` against `hardySharpDensity`, the unit-energy indicator
+of `(1,2]`, whose energy is computed exactly by `lintegral_hardySharpDensity_sq`.
+
+**Hardy transfer.**  `lintegral_enorm_sq_lt_top_of_hardyBound` converts a variation-of-constants
+bound with propagator decay `x^{-p}` into ray-`L²`: the homogeneous term is integrable because
+`2p > 1`, the forced term by `(39)`.
+
+**Theorem 3, the literal Gamma cutoff commutator.**  `gammaWallCommutator` is the cutoff-difference
+integral; `gammaWallCommutator_integrand` is the exact algebraic identity `(31)` showing the two
+second-difference integrands differ by exactly that, with no derivative of `F` inside a commutator.
+The envelope is `gammaJumpKernel_mul_cutoffDiff_le`: `k(s)|χ(u)-χ(v)| ≤ 4Λe^{-s}` when `|u-v| = s`,
+proved by the Lipschitz cancellation `k(s) ≤ 1/s` below the origin scale and `k(s) ≤ 2e^{-s}` above.
+The cutoff bound `|χ| ≤ Λ` is derived, not assumed (`abs_cutoff_le_lipschitz`), together with
+`1 ≤ Λ` (`one_le_of_cutoff_lipschitz`).  Consequences: `(29)` `norm_gammaWallCommutator_le`
+(`≤ 8Λ‖F‖_∞`) and `(28)` `norm_gammaWallCommutator_le_exp` (`≤ 24Λ‖F‖_∞e^{-|L|}` for `|L| ≥ 2`),
+the latter because outside the unit collar every cutoff difference at range `< |L|-1` vanishes
+identically.  All bounds go through the extended norm, so no measurability hypothesis on `F` is
+needed.
+
+**`(7)`, `(8)`, `(30)`.**  `gammaWallBlockNorm` is the physical block norm; the transfer
+`gammaWallBlockNorm_lt_top_of_exp_wall` shows an `O(e^{-|L|})` wall is in the block class for every
+`0 < σ < 1`, reusing `suzukiGammaWallPositiveBlock`/`suzukiGammaWallNegativeBlock` summability, and
+`gammaWallBlockNorm_gammaWallCommutator_lt_top` is `(30)` for the literal commutator.
+
+**`(3)`.**  `exists_twoSided_suzukiGammaStripNormSq`: the strip density is trapped between two
+multiples of `(1+|x|)^{-(1+2σ)}`.  Positivity plus continuity handle the collar, the exact vertical
+Gamma-ratio exponent handles the tail, and evenness of the density in the height (conjugation
+symmetry) transports both to the negative ray.
+
+**Theorem 4.**  `stripPropagator`/`stripPropagatorInv` with `stripPropagatorInv_stripPropagator`;
+operator-norm bounds `norm_stripPropagator_shift_le`, `norm_stripPropagatorInv_shift_le` (the scalar
+factor is exactly `suzukiGammaStripCarrier` by `norm_cpow_mul_branch_shift`, the operator factor is
+`e^{σ‖T‖/2}` by self-adjointness).  `forcedStripRay` is `(13)` with an orientation `ε`, `|ε| = 1`,
+carrying both outward rays at once, and `lintegral_enorm_sq_forcedStripRay_lt_top` is
+`(36) ⟹ (37)`.
+
+**Still open on this card:** Theorem 1 `(11)`, Theorem 2 `(24)`/`(25)`, the order-minus-one
+commutator `(32)`/`(35a)`, the exact cutoff identity `(51)`, and Theorem 5 `(47)`.

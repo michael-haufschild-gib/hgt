@@ -463,6 +463,123 @@ theorem coareaMinCost_eq {r' : ℝ} (hr' : 1 < r') (hzero : coareaStationaryDefe
   rintro y ⟨s, hs, rfl⟩
   exact coareaRatioCost_min hr' hzero hs
 
+/-! ## The atom-corrected certificate -/
+
+theorem sqrt_pow_eq (x : ℝ) (hx : 0 ≤ x) (n : ℕ) : Real.sqrt (x ^ n) = Real.sqrt x ^ n := by
+  induction n with
+  | zero => simp
+  | succ n ih => rw [pow_succ, pow_succ, Real.sqrt_mul (pow_nonneg hx n), ih]
+
+theorem sqrt_add_le_sqrt_add_sqrt {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
+    Real.sqrt (a + b) ≤ Real.sqrt a + Real.sqrt b := by
+  have h1 : Real.sqrt a ^ 2 = a := Real.sq_sqrt ha
+  have h2 : Real.sqrt b ^ 2 = b := Real.sq_sqrt hb
+  have hnn : 0 ≤ Real.sqrt a + Real.sqrt b := by positivity
+  have hexp : a + b ≤ (Real.sqrt a + Real.sqrt b) ^ 2 := by
+    nlinarith [h1, h2, mul_nonneg (Real.sqrt_nonneg a) (Real.sqrt_nonneg b)]
+  calc Real.sqrt (a + b) ≤ Real.sqrt ((Real.sqrt a + Real.sqrt b) ^ 2) := Real.sqrt_le_sqrt hexp
+    _ = Real.sqrt a + Real.sqrt b := Real.sqrt_sq hnn
+
+theorem geom_sum_le_inv_one_sub {q : ℝ} (hq0 : 0 ≤ q) (hq1 : q < 1) (K : ℕ) :
+    ∑ j ∈ Finset.range K, q ^ j ≤ 1 / (1 - q) := by
+  have hne : q ≠ 1 := ne_of_lt hq1
+  have hpos : (0 : ℝ) < 1 - q := by linarith
+  rw [geom_sum_eq hne]
+  have hval : (q ^ K - 1) / (q - 1) = (1 - q ^ K) / (1 - q) := by
+    rw [← neg_div_neg_eq]
+    congr 1 <;> ring
+  rw [hval]
+  have hqK : 0 ≤ q ^ K := pow_nonneg hq0 K
+  exact div_le_div_of_nonneg_right (by linarith) hpos.le
+
+/-- The atom-corrected certificate cost of a partition. -/
+def coareaPartitionCost (u : ℕ → ℝ) (K : ℕ) : ℝ :=
+  ∑ j ∈ Finset.range K,
+    Real.sqrt ((u (j + 1) / u j) * (u (j + 1) / u j - 1 + 1 / u j))
+
+/-- **The atom-corrected lower bound.**  Every interval partition pays at least the optimal
+coefficient per unit logarithmic length. -/
+theorem coareaMinCost_mul_log_le_partitionCost {u : ℕ → ℝ} {K : ℕ}
+    (hpos : ∀ j ≤ K, 0 < u j) (hmono : ∀ j < K, u j < u (j + 1)) :
+    coareaMinCost * Real.log (u K / u 0) ≤ coareaPartitionCost u K := by
+  refine le_trans (coareaMinCost_mul_log_le_sum hpos hmono) ?_
+  rw [coareaPartitionCost]
+  refine Finset.sum_le_sum fun j hj => ?_
+  rw [Finset.mem_range] at hj
+  have hu0 : 0 < u j := hpos j (by omega)
+  have hstep := hmono j hj
+  have hr : 1 < u (j + 1) / u j := by
+    rw [lt_div_iff₀ hu0]
+    linarith
+  have hatom : (0 : ℝ) < 1 / u j := by positivity
+  refine Real.sqrt_le_sqrt ?_
+  nlinarith [hr, hatom]
+
+/-- **The geometric partition realizes the optimal coefficient.** -/
+theorem coareaPartitionCost_geometric_le {u₀ r : ℝ} (hu₀ : 0 < u₀) (hr : 1 < r) (K : ℕ) :
+    coareaPartitionCost (fun j => u₀ * r ^ j) K
+      ≤ coareaRatioCost r * Real.log ((u₀ * r ^ K) / u₀)
+        + Real.sqrt (r / u₀) * (1 / (1 - Real.sqrt r⁻¹)) := by
+  have hr0 : (0 : ℝ) < r := by linarith
+  have hlogr : 0 < Real.log r := Real.log_pos hr
+  have hinv0 : (0 : ℝ) < r⁻¹ := by positivity
+  have hinv1 : r⁻¹ < 1 := by
+    rw [inv_lt_one_iff₀]
+    right
+    exact hr
+  have hsqinv : Real.sqrt r⁻¹ < 1 := by
+    have h := Real.sqrt_lt_sqrt hinv0.le hinv1
+    rwa [Real.sqrt_one] at h
+  have hsqinv0 : 0 ≤ Real.sqrt r⁻¹ := Real.sqrt_nonneg _
+  -- termwise bound
+  have hterm : ∀ j ∈ Finset.range K,
+      Real.sqrt (((u₀ * r ^ (j + 1)) / (u₀ * r ^ j))
+          * ((u₀ * r ^ (j + 1)) / (u₀ * r ^ j) - 1 + 1 / (u₀ * r ^ j)))
+        ≤ Real.sqrt (r * (r - 1)) + Real.sqrt (r / u₀) * Real.sqrt r⁻¹ ^ j := by
+    intro j _
+    have hrj : (0 : ℝ) < r ^ j := by positivity
+    have hratio : (u₀ * r ^ (j + 1)) / (u₀ * r ^ j) = r := by
+      field_simp
+      rw [pow_succ]
+    rw [hratio]
+    have hsplit : r * (r - 1 + 1 / (u₀ * r ^ j)) = r * (r - 1) + (r / u₀) * (r⁻¹) ^ j := by
+      rw [inv_pow]
+      field_simp
+    rw [hsplit]
+    have h1 : (0 : ℝ) ≤ r * (r - 1) := by nlinarith
+    have h2 : (0 : ℝ) ≤ (r / u₀) * (r⁻¹) ^ j := by positivity
+    refine le_trans (sqrt_add_le_sqrt_add_sqrt h1 h2) ?_
+    have hval : Real.sqrt ((r / u₀) * (r⁻¹) ^ j)
+        = Real.sqrt (r / u₀) * Real.sqrt r⁻¹ ^ j := by
+      rw [Real.sqrt_mul (by positivity), sqrt_pow_eq _ hinv0.le]
+    rw [hval]
+  refine le_trans (Finset.sum_le_sum hterm) ?_
+  rw [Finset.sum_add_distrib, Finset.sum_const, Finset.card_range, ← Finset.mul_sum]
+  have hgeom : ∑ j ∈ Finset.range K, Real.sqrt r⁻¹ ^ j ≤ 1 / (1 - Real.sqrt r⁻¹) :=
+    geom_sum_le_inv_one_sub hsqinv0 hsqinv K
+  have hlogval : Real.log ((u₀ * r ^ K) / u₀) = (K : ℝ) * Real.log r := by
+    have hval : (u₀ * r ^ K) / u₀ = r ^ K := by
+      field_simp
+    rw [hval, Real.log_pow]
+  have hmain : (K : ℕ) • Real.sqrt (r * (r - 1))
+      = coareaRatioCost r * Real.log ((u₀ * r ^ K) / u₀) := by
+    rw [hlogval, coareaRatioCost, nsmul_eq_mul]
+    field_simp
+  rw [hmain]
+  have hsqrt0 : (0 : ℝ) ≤ Real.sqrt (r / u₀) := Real.sqrt_nonneg _
+  have := mul_le_mul_of_nonneg_left hgeom hsqrt0
+  linarith
+
+/-- **The optimal partition cost.**  Combining the lower bound with the geometric partition at the
+stationary ratio: the optimal certificate coefficient is exactly `c_*`. -/
+theorem coareaPartitionCost_geometric_optimal_le {u₀ : ℝ} (hu₀ : 0 < u₀) {r' : ℝ} (hr' : 1 < r')
+    (hzero : coareaStationaryDefect r' = 0) (K : ℕ) :
+    coareaPartitionCost (fun j => u₀ * r' ^ j) K
+      ≤ coareaMinCost * Real.log ((u₀ * r' ^ K) / u₀)
+        + Real.sqrt (r' / u₀) * (1 / (1 - Real.sqrt r'⁻¹)) := by
+  rw [coareaMinCost_eq hr' hzero]
+  exact coareaPartitionCost_geometric_le hu₀ hr' K
+
 end
 
 end RHTower

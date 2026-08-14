@@ -4134,3 +4134,77 @@ the reusable layers, `RHTower` for the route-specific ones.
   projective Gram theorem the card cites as an outside input.  The instalment sharpens the shape of
   that remaining input: what is missing is a Bessel/Gram inequality for `{R(k ·)}`, and the size
   data it would consume (`C²/k²` per channel) is now a theorem.
+
+- 2026-08-14 (hundred-and-thirtieth instalment) -- **`(4)` is unconditional for the radial lattice
+  source.**  New module `HTGeometry/RadialLatticeSourceEnvelope.lean`, wired, axiom-clean.
+
+  The BV quadrature envelope was already in the tree, stated for the quadrature
+  `sqrtRadialLatticeQuadrature g k n` at a *given* index `n`.  What was missing was the object the
+  card actually uses: the physical lattice charge
+
+  ```text
+  Q(a) = sum_(n >= 1) g(n/a),          b_lambda(t) = Q(a)/sqrt a,   a = lambda exp t,
+  ```
+
+  as a function of the radial scale, with no index to choose.
+
+  * **`latticeCharge`, `radialLatticeSource`, `radialLogSource`** -- the charge as a `tsum`.  It is
+    a finite sum: `latticeCharge_eq_sum` shows every term past `a L` vanishes, for any cutoff index
+    with `L < (n+1)/a`.
+  * **`radialLatticeSource_eq_quadrature`** -- at the floor index `n = floor (a L)` *both* sides of
+    the BV envelope's index condition hold at once (`n/a <= L` and `L < (n+1)/a`), and the third
+    fact -- that the terms past `n` vanish -- is the same inequality.  So the charge *is* the
+    quadrature, and **`norm_radialLatticeSource_le`** gives `‖b‖ <= (2/sqrt a) Var(g)`.
+  * **`abs_radialLogSource_le`** -- in the logarithmic variable this is exactly `(19c)`:
+
+    ```text
+    |b_lambda(t)| <= (2 Var(g)/sqrt lambda) exp(-t/2).
+    ```
+
+  * **`continuous_radialLogSource`** -- the charge is continuous in the scale.  The proof is the
+    local-finiteness one: on `(-infinity, t+1)` the index `N = ceil (lambda exp(t+1) L)` already
+    exceeds `a L`, so the `tsum` *is* the fixed finite sum there, and a finite sum of continuous
+    terms is continuous.  This is the only place the vanishing hypothesis past `L` is used twice.
+  * **`integral_sq_radialLogSource_le`** -- **`(4)`**: the source's squared mass on the half line is
+    at most `(2 Var(g))²/lambda`, with no integrability hypothesis at all.
+  * **`abs_polarCharge_radialLogSource_le`** -- **`(18)`** for the radial lattice source: every
+    integrability input of the abstract polar estimate is discharged, and the *only* remaining
+    hypothesis is the primitive bound `sup_t |A(t)| <= M`, i.e. `(11)`.
+
+  The card's route for `(18)` is therefore reduced to a single missing link: the primitive bound
+  `(11)`, proved in the tree for the *channel* decomposition, has to be transported to the *lattice*
+  representation.  The two representations are the two sides of the one-sided Poisson--Muntz
+  formula, whose Abel boundary value the tree already computes as
+  `g(0)/(2 sqrt b) + (sum_n g((n+1)/b))/sqrt b` -- literally the Poisson center plus
+  `radialLatticeSource`.  That identification is the next instalment.
+
+- 2026-08-14 (hundred-and-thirty-first instalment) -- **The Abel boundary value *is* the full radial
+  source.**  New module `RHTower/PoissonMuntzRadialSource.lean`, wired, axiom-clean; the real
+  full-source layer added to `HTGeometry/RadialLatticeSourceEnvelope.lean`.
+
+  * **`HTGeometry.eVariationOn_ofReal`** -- complexification does not change total variation, in
+    both directions, from `LipschitzOnWith.comp_eVariationOn_le` applied to `ofReal` and to `re`.
+    This is the connector the tree lacked: the BV envelope is stated for complex sources, the
+    variation bound `(19e)` for real ones.
+  * **`HTGeometry.latticeCharge_ofReal`, `radialLogSource_ofReal`** -- the complexified lattice
+    charge is the complexification of the real one, so the real radial source is literally
+    `(sum_n f(n/a))/sqrt a`.
+  * **`HTGeometry.radialFullLogSource`** -- the card's `R_lambda`: Poisson centre plus lattice
+    charge.  **`abs_radialFullLogSource_le`** is `(19d)`,
+
+    ```text
+    |R_lambda(t)| <= ((2 Var(g) + |g(0)|/2)/sqrt lambda) exp(-t/2),
+    ```
+
+    **`integral_sq_radialFullLogSource_le`** is `(4)`, and
+    **`abs_polarCharge_radialFullLogSource_le`** is `(18)` for it with only the primitive bound left.
+  * **`RHTower.tendsto_sqrt_mul_poissonMuntzAbelSum_eq_radialFullLogSource`** -- `(19a)`--`(19b)`:
+    the Abel boundary value of the square-root normalized radial sum is exactly
+    `radialFullLogSource`.  So the object the envelope estimates speak about is the object the
+    Poisson--Muntz law produces; the two halves of the card's source analysis now refer to one
+    function.
+
+  The remaining link is unchanged in kind and smaller: transport the primitive bound `(11)` --
+  proved for the channel representation -- to this object, and discharge the five source-side
+  hypotheses (continuity, BV on `[0, L]`, one-sided zero mean, vanishing at and past the endpoint)
+  for the actual constrained two-mode representative.

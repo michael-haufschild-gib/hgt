@@ -1,7 +1,7 @@
 # Reciprocal coarea optimality for hyperbolic prime--cofactor decompositions
 
 - **ID:** `halasz-reciprocal-coarea-optimality-law`
-- **Stage:** `2-fully-proven`
+- **Stage:** `3-formalized`
 - **Type:** `THEOREM (paper) [CORPUS] [PROJECT-LOCAL NEW KNOWLEDGE]`
 - **Source:** `../not_new_scientific_knowledge/halasz-ghs-adaptive-coarea-completion.md`
 - **Statement:** In any GHS-type triple convolution, the correct block coordinate is the
@@ -297,9 +297,45 @@ The full Matomäki--Radziwiłł mean-square assembly and Route E's coherent Hall
 open.  This law closes the sharp Halász subroute and identifies the next genuine frontier without
 pretending that a long-mean theorem proves short-interval coherence.
 
-## Lean notes only
+## Lean status
 
-No Lean was written or built during this proof.  Later formalization should use:
+Formalized unconditionally in two modules, both auditing
+`[propext, Classical.choice, Quot.sound]`:
+
+`formal/GaloisForLFunctions/RHTower/ReciprocalCoareaOptimality.lean` — the certificate analysis:
+
+- `coareaRatioCost r = sqrt(r(r-1))/log r` and the stationarity defect
+  `coareaStationaryDefect r = log r - 2(r-1)/(2r-1)` with
+  `hasDerivAt_coareaStationaryDefect` (derivative `(4r^2-6r+1)/(r(2r-1)^2)`), the sign lemmas at
+  the inner critical ratio `(3+sqrt 5)/4`, `strictAntiOn`/`strictMonoOn`,
+  `tendsto_coareaStationaryDefect_atTop`, and `exists_unique_coareaStationaryRatio` = `(R13)`;
+- `hasDerivAt_coareaRatioCost` (`= (2r-1)·defect/(2 sqrt(r(r-1)) (log r)^2)`),
+  `coareaRatioCost_min` (global minimality at the stationary ratio) and `coareaMinCost_eq`
+  (the infimum `c_*` is attained there) = `(R10)`;
+- `log_le_card_mul_log_of_ratio_le` and `card_ge_log_div_log` = `(R8)`;
+- `coareaPartitionCost` = `(R9)`, `coareaMinCost_mul_log_le_sum` and
+  `coareaMinCost_mul_log_le_partitionCost` = `(R11)`,
+  `coareaPartitionCost_geometric_le` = `(R12)` (with the explicit boundary constant
+  `sqrt(r/u_0)/(1 - sqrt(1/r))`), and `coareaPartitionCost_geometric_optimal_le`, which with
+  `(R11)` is exactly `(R14)`.
+
+`formal/GaloisForLFunctions/RHTower/ReciprocalCoareaEnergy.lean` — the reciprocal energies, with
+`(R2)`/`(R3)` supplied *unconditionally* by the corpus Mertens layer rather than assumed:
+
+- `primeLogWindowMass` and `abs_primeLogWindowMass_sub_le` (Mertens' first theorem in window
+  form, from `abs_mertensPrimeWeightSum_floor_sub_log_le`), and `abs_coareaShellMass_sub_le`
+  (the cofactor shell `x e^{-v} <= p <= x e^{-u}` has prime log-density `v-u+O(1)`) = `(R2)`;
+- `coareaOuterEnergy`, `coareaOuterEnergy_le` (`<= (v-u+C)/u^2`) and `coareaInnerEnergy`,
+  `coareaInnerEnergy_le` (`<= L^2 (v+C_0)`) = `(R5)`;
+- `sqrt_coareaEnergy_product_le` = `(R6)` and `sqrt_coareaEnergy_product_geometric_le` = `(R7)`:
+  on a fixed-ratio shell the certified cost is `|L| sqrt((r-1+C/u)(r+C_0/u))`, independent of the
+  scale `u` up to `O(1/u)`.
+
+The remaining sections of this card (coarea interpretation, three-wall collapse, failure loops,
+Route E consequences) are architecture statements about the live formal programme, not
+formalizable theorems.
+
+Later work on the surrounding programme should use:
 
 - `PNTPlus.BrunTitchmarsh.primesBetween_le` for the adaptive window count;
 - `RHTower.Sieve.GallagherAlmostDiagonal` for `(R1)`;
@@ -317,7 +353,7 @@ downstream, but neither contains the adaptive prime sparsity needed in `(R1)`.
 - [x] atom-corrected certification functional optimized; unique stationary ratio proved
 - [x] three prior walls reduced to one order-of-operations theorem
 - [x] external novelty claim withheld; project-local novelty stated precisely
-- [ ] 2 -> 3: paused by user during Lean corpus refactor
+- [x] 2 -> 3: formalized unconditionally (see the Lean status section)
 
 ## Log
 
