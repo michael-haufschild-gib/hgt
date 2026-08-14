@@ -151,31 +151,6 @@ theorem schanuelDefect_integer_relation
   rw [← hwexp]
   exact hwQ
 
-/-- **Value-field form of integral defect independence.** Let `K` be any intermediate field of
-`ℂ / Qbar` containing an exponential tuple.  A relation among its logarithmic Kähler defects in
-`Ω[K/Qbar]` has only zero integral coefficients.  In particular this applies to the field generated
-by the tuple and its exponential values. -/
-theorem schanuelDefect_integer_relation_in_intermediateField
-    {n : ℕ}
-    (K : IntermediateField (algebraicClosure ℚ ℂ) ℂ)
-    (x y : Fin n → K)
-    (hy : ∀ i, (y i : ℂ) = Complex.exp (x i : ℂ))
-    (hx : LinearIndependent ℚ (fun i => (x i : ℂ)))
-    (m : Fin n → ℤ)
-    (hdefect :
-      ∑ i, m i •
-        ((y i)⁻¹ • KaehlerDifferential.D (algebraicClosure ℚ ℂ) K (y i) -
-          KaehlerDifferential.D (algebraicClosure ℚ ℂ) K (x i)) = 0) :
-    m = 0 := by
-  let A := algebraicClosure ℚ ℂ
-  let Φ := KaehlerDifferential.map A A K ℂ
-  have hmap := congrArg Φ hdefect
-  simp only [Φ, A, map_sum, map_zsmul, map_sub, map_smul,
-    KaehlerDifferential.map_D, map_inv₀, map_zero] at hmap
-  apply schanuelDefect_integer_relation (fun i => (x i : ℂ)) hx m
-  simp_rw [Int.cast_smul_eq_zsmul ℂ]
-  simpa only [schanuelDefect, hy] using hmap
-
 end
 
 end GaloisForLFunctions.RHTower

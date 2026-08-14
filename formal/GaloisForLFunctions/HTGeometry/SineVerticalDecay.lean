@@ -339,4 +339,95 @@ theorem isBigO_inv_sin_sub_inv :
   have hC0 : (0 : ℝ) ≤ C := le_trans (by positivity) hnum
   exact mul_le_mul hnum hwbdd (norm_nonneg _) hC0
 
+/-! ### Simple poles multiply by analytic factors -/
+
+/-- The difference quotient of an analytic function is bounded near the base point. -/
+theorem isBigO_slope_of_analyticAt {g : ℂ → ℂ} {p : ℂ} (hg : AnalyticAt ℂ g p) :
+    (fun w : ℂ => (g w - g p) / (w - p))
+      =O[nhdsWithin p {p}ᶜ] (fun _ : ℂ => (1 : ℂ)) := by
+  obtain ⟨C, hC⟩ := Asymptotics.isBigO_iff.mp (hg.differentiableAt.hasDerivAt.isBigO_sub)
+  refine Asymptotics.IsBigO.of_bound C ?_
+  filter_upwards [nhdsWithin_le_nhds hC, self_mem_nhdsWithin] with w hwC hw
+  have hwp : w - p ≠ 0 := sub_ne_zero.mpr hw
+  rw [norm_one, mul_one, norm_div, div_le_iff₀ (norm_pos_iff.mpr hwp)]
+  exact hwC
+
+/-- **A simple pole survives multiplication by an analytic factor**, with the residue scaled by the
+factor's value.  This carries the pole of the reflection kernel to the pole of the full
+inverse-Mellin integrand. -/
+theorem isBigO_analytic_mul_simplePole {g h : ℂ → ℂ} {p A : ℂ}
+    (hg : AnalyticAt ℂ g p)
+    (hh : (fun w : ℂ => h w - A / (w - p)) =O[nhdsWithin p {p}ᶜ] (fun _ : ℂ => (1 : ℂ))) :
+    (fun w : ℂ => g w * h w - g p * A / (w - p))
+      =O[nhdsWithin p {p}ᶜ] (fun _ : ℂ => (1 : ℂ)) := by
+  have hgO : g =O[nhdsWithin p {p}ᶜ] (fun _ : ℂ => (1 : ℂ)) := by
+    have hcont : ContinuousAt g p := hg.continuousAt
+    refine Asymptotics.IsBigO.of_bound (‖g p‖ + 1) ?_
+    have hnear : ∀ᶠ w : ℂ in nhds p, ‖g w‖ < ‖g p‖ + 1 :=
+      hcont.norm.eventually (eventually_lt_nhds (by linarith : ‖g p‖ < ‖g p‖ + 1))
+    filter_upwards [nhdsWithin_le_nhds hnear] with w hw
+    rw [norm_one, mul_one]
+    exact le_of_lt hw
+  have hslope := isBigO_slope_of_analyticAt hg
+  have hsum : (fun w : ℂ => g w * (h w - A / (w - p)) + (g w - g p) / (w - p) * A)
+      =O[nhdsWithin p {p}ᶜ] (fun _ : ℂ => (1 : ℂ)) := by
+    have h1 : (fun w : ℂ => g w * (h w - A / (w - p)))
+        =O[nhdsWithin p {p}ᶜ] (fun _ : ℂ => (1 : ℂ)) := by
+      simpa using hgO.mul hh
+    have h2 : (fun w : ℂ => (g w - g p) / (w - p) * A)
+        =O[nhdsWithin p {p}ᶜ] (fun _ : ℂ => (1 : ℂ)) := by
+      simpa using hslope.mul (Asymptotics.isBigO_const_const A one_ne_zero _)
+    simpa using h1.add h2
+  refine hsum.congr' ?_ (Filter.EventuallyEq.rfl)
+  filter_upwards [self_mem_nhdsWithin] with w hw
+  have hwp : w - p ≠ 0 := sub_ne_zero.mpr hw
+  field_simp
+  ring
+
+/-! ### The kernel's pole at a negative integer -/
+
+theorem tendsto_add_nat_nhdsWithin (k : ℕ) :
+    Filter.Tendsto (fun w : ℂ => w + (k : ℂ))
+      (nhdsWithin (-(k : ℂ)) {(-(k : ℂ))}ᶜ) (nhdsWithin (0 : ℂ) {(0 : ℂ)}ᶜ) := by
+  refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+  · have hcont : Filter.Tendsto (fun w : ℂ => w + (k : ℂ)) (nhds (-(k : ℂ)))
+        (nhds (-(k : ℂ) + (k : ℂ))) := (continuous_id.add continuous_const).tendsto _
+    rw [neg_add_cancel] at hcont
+    exact hcont.mono_left nhdsWithin_le_nhds
+  · filter_upwards [self_mem_nhdsWithin] with w hw
+    have hwne : w ≠ -(k : ℂ) := hw
+    intro hcon
+    exact hwne (by
+      have : w = -(k : ℂ) := by
+        have h := hcon
+        simp only [Set.mem_singleton_iff] at h
+        linear_combination h
+      exact this)
+
+/-- **The reflection kernel has a simple pole at every negative integer**, with residue `(-1)^k`. -/
+theorem isBigO_inv_sin_sub_inv_at_neg_nat (k : ℕ) :
+    (fun w : ℂ => (Real.pi : ℂ) * (Complex.sin ((Real.pi : ℂ) * w))⁻¹
+        - (-1) ^ k / (w - -(k : ℂ)))
+      =O[nhdsWithin (-(k : ℂ)) {(-(k : ℂ))}ᶜ] (fun _ : ℂ => (1 : ℂ)) := by
+  have hbase := (isBigO_inv_sin_sub_inv.comp_tendsto (tendsto_add_nat_nhdsWithin k))
+  have hconst : (fun w : ℂ => ((-1 : ℂ)) ^ k
+      * ((Real.pi : ℂ) * (Complex.sin ((Real.pi : ℂ) * (w + (k : ℂ))))⁻¹ - (w + (k : ℂ))⁻¹))
+      =O[nhdsWithin (-(k : ℂ)) {(-(k : ℂ))}ᶜ] (fun _ : ℂ => (1 : ℂ)) := by
+    simpa using (Asymptotics.isBigO_const_const ((-1 : ℂ) ^ k) one_ne_zero
+      (nhdsWithin (-(k : ℂ)) {(-(k : ℂ))}ᶜ)).mul hbase
+  refine hconst.congr' ?_ Filter.EventuallyEq.rfl
+  filter_upwards [self_mem_nhdsWithin] with w hw
+  have hwne : w + (k : ℂ) ≠ 0 := by
+    intro hcon
+    exact hw (by
+      have : w = -(k : ℂ) := by linear_combination hcon
+      simpa using this)
+  have hsign : ((-1 : ℂ)) ^ k * ((-1 : ℂ)) ^ k = 1 := by
+    rw [← pow_add, ← two_mul, pow_mul]
+    norm_num
+  rw [sin_pi_mul_add_nat w k]
+  have hsin : Complex.sin ((Real.pi : ℂ) * w) ≠ 0 ∨ True := Or.inr trivial
+  field_simp
+  ring
+
 end GaloisForLFunctions.HTGeometry

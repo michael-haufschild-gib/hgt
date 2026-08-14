@@ -136,6 +136,58 @@ is exactly (2), even though every scalar character approaches (1) as (n\to\infty
 module therefore generates the sharp capacity internally.  Across all depths, finite normalized
 regular action is equivalent to zero integer charge.
 
+### Law XII -- global restricted formation
+
+Assemble the canonical regular inertia modules into the Hilbert direct sum
+
+\[
+ H_\infty=\bigoplus_{n\ge2}^{\ell^2}\ell^2(\mathbb Z/n\mathbb Z),
+ \qquad
+ U_q=\bigoplus_{n\ge2}L_{n,q}.
+\]
+
+Then \(q\mapsto\pi(U_q)\) is a faithful representation of integer divisor charge in the Calkin
+unitary group, and distinct charges have essential distance exactly \(2\).  Thus
+
+\[
+ U_q-I\text{ compact}
+ \Longleftrightarrow
+ U_q-I\text{ Schatten}
+ \Longleftrightarrow
+ q=0.
+\]
+
+This removes arbitrary cofinal weights from the selection geometry.  The missing source law is now
+categorical admission into the compactly restricted global formation group, not a fitted numerical
+action bound.
+
+### Law XIII -- ambidextrous depth flatness
+
+For \(n\mid m\), Kummer depth has two canonical variances: reduction
+\(R_{m,n}:C_m\to C_n\) and transfer \(T_{n,m}:C_n\to C_m\).  Integer holonomy
+\(q_n=[q]_n\) is always reduction-flat.  Its transfer defect
+
+\[
+ \Delta_{n,m}(q)=q_m-T_{n,m}q_n
+\]
+
+obeys
+
+\[
+ \Delta_{n,\ell}
+ =\Delta_{m,\ell}+T_{m,\ell}\Delta_{n,m}.
+\]
+
+Simultaneous flatness for the cofinal doubling squares is equivalent to \(q=0\), because for every
+\(n>|q|\),
+
+\[
+ \Delta_{n,2n}(q)=[-q]_{2n}.
+\]
+
+This replaces global compactness by a finite algebraic source gate: the literal formation must be
+horizontal for both canonical depth variances, not merely coherent under root restriction.
+
 ## 3. Exact Euler-shell realization
 
 For (m\ge12,r\ge2), Formation-Excess Mechanics produces the positive survival probability
@@ -169,6 +221,16 @@ charge.
 ULF-DFPM-3 strengthens this: the canonical regular representation of depth-(n) inertia supplies
 that linear capacity automatically, gives exact cycle/rank/spectrum shadows, and turns nonzero
 charge into cofinal action of slope (2).
+
+ULF-DFPM-4 performs the global formation.  The complete regular tower is Calkin-faithful and
+maximally separates distinct charges; compact, Schatten, and determinant-class formation all have
+the same zero-charge locus.  Its split-formation fusion theorem also proves that functional-equation
+information neutrality preserves this essential charge rather than selecting it.
+
+ULF-DFPM-5 identifies the algebraic formation law beneath that topology.  Reduction-coherent root
+holonomy exists for every charge, but its transfer defect is a crossed cocycle whose cofinal
+doubling values reconstruct and select the charge.  The global Calkin obstruction is the regular
+packet amplification of this finite ambidextrous defect.
 
 This is an exact selection mechanism.  It is not an RH proof because source genesis of the roots is
 open.
@@ -236,8 +298,13 @@ on (\sigma>1), or if it factors through an information-neutral common recovery k
 - [ ] effective trivial-inertia descent through common recovery
 - [x] sharp pro-Kummer capacity/properness threshold
 - [x] source-canonical linear capacity from regular inertia
-- [ ] independent finite/sublinear regular-action admission theorem
-- [ ] compatibility with functional-equation packet action
+- [x] canonical Calkin-faithful global regular formation
+- [x] compact/Schatten/determinant-class zero-charge classification
+- [x] compatibility with functional-equation packet action
+- [ ] independent restricted-global-formation admission theorem
+- [x] restriction--transfer defect and crossed composition law
+- [x] cofinal ambidextrous-flat zero-charge classification
+- [ ] source proof of covariant-inclusion horizontalness
 - [ ] independent realization in a second source family
 - [ ] RH conclusion
 

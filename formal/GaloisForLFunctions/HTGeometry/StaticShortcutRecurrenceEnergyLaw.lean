@@ -61,6 +61,16 @@ theorem weightedAlignment_sq_le_recurrenceEnergy (r : J → F) (q : F) (w : J �
   rw [weightedAlignment_eq_inner_sum, weightedRecurrenceEnergy_eq_norm_sq]
   nlinarith [abs_real_inner_le_norm (weightedMemorySum r w) q]
 
+/-- **Sharpness of the universal recurrence-energy frontier.**  Choosing the preparation memory
+to be the weighted history sum saturates the alignment--energy law exactly.  Any improvement that
+loses less than the Cauchy square must therefore use additional preparation structure. -/
+theorem weightedAlignment_sq_eq_recurrenceEnergy_of_historyProbe
+    (r : J → F) (w : J → ℝ) :
+    weightedAlignment r (weightedMemorySum r w) w ^ 2 =
+      ‖weightedMemorySum r w‖ ^ 2 * weightedRecurrenceEnergy r w := by
+  rw [weightedAlignment_eq_inner_sum, weightedRecurrenceEnergy_eq_norm_sq,
+    real_inner_self_eq_norm_sq]
+
 /-- A unitary-flow Gram entry is the stationary recurrence kernel at the time difference. -/
 theorem inner_unitaryFlow_eq_recurrenceKernel (U : UnitaryFlow ℝ F) (z : F) (s t : ℝ) :
     inner ℝ (U.op s z) (U.op t z) = inner ℝ z (U.op (t - s) z) := by

@@ -22,6 +22,8 @@ namespace GaloisForLFunctions.RHTower
 
 noncomputable section
 
+open IsDedekindDomain
+
 /-! ### Exact comparison with the split model -/
 
 /-- Restriction to the conull idele locus, source half-density, and Haar

@@ -143,6 +143,26 @@ theorem norm_channelAmplitudeNeg_sub_le (hT : IsSelfAdjoint T) (hR : Rint 0 = 0)
         simpa [Real.norm_eq_abs] using h
     _ = ((B / 2 + ‖T‖ / 2) * ‖c‖) * t := by rw [abs_of_nonneg ht]
 
+omit [Nontrivial X] in
+/-- The generator of the amplitude depends continuously on the frequency. -/
+theorem continuous_deriv_channelAmplitude (hrc : Continuous r)
+    (hRint : ∀ x : ℝ, HasDerivAt Rint (r x) x) :
+    Continuous (fun η => (I • (shiftedSymbolOp (r η / 2) T * gammaTransport Rint T η)) c) := by
+  have hQ : Continuous (gammaTransport Rint T) := by
+    refine continuous_iff_continuousAt.mpr fun x => ?_
+    have h := hasDerivAt_freqPropagator (L := 0) (Rint := Rint) (r := r) (η := x) T (hRint x)
+    exact h.continuousAt
+  have hB : Continuous (fun η : ℝ => shiftedSymbolOp (r η / 2) T) := by
+    have h1 : Continuous (fun η : ℝ => (((r η / 2 : ℝ)) : ℂ)) :=
+      Complex.continuous_ofReal.comp (hrc.div_const 2)
+    have h2 : Continuous (fun η : ℝ => (((r η / 2 : ℝ)) : ℂ) • (1 : X →L[ℂ] X)) :=
+      h1.smul continuous_const
+    exact h2.sub continuous_const
+  have hprod : Continuous (fun η : ℝ =>
+      (I : ℂ) • (shiftedSymbolOp (r η / 2) T * gammaTransport Rint T η)) :=
+    (hB.mul hQ).const_smul (I : ℂ)
+  exact (ContinuousLinearMap.apply ℂ X c).continuous.comp hprod
+
 end
 
 end GaloisForLFunctions.RHTower

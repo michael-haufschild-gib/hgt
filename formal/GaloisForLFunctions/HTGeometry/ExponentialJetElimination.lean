@@ -81,7 +81,7 @@ theorem coeff_jetCoeffDeriv (F : ExpJetPoly) (e : ℕ) :
 
 theorem coeff_X_mul_derivative (F : ExpJetPoly) (e : ℕ) :
     (Polynomial.X * Polynomial.derivative F).coeff e
-      = MvPolynomial.C ((e : ℂ)) * F.coeff e := by
+      = (e : MvPolynomial ℕ ℂ) * F.coeff e := by
   cases e with
   | zero => simp [Polynomial.mul_coeff_zero]
   | succ m =>
@@ -97,9 +97,12 @@ def expJetTotalDeriv (a : ℂ) (F : ExpJetPoly) : ExpJetPoly :=
 theorem coeff_expJetTotalDeriv (a : ℂ) (F : ExpJetPoly) (e : ℕ) :
     (expJetTotalDeriv a F).coeff e
       = jetDeriv (F.coeff e) + MvPolynomial.C (a * (e : ℂ)) * F.coeff e := by
+  have hC : (MvPolynomial.C (a * (e : ℂ)) : MvPolynomial ℕ ℂ)
+      = MvPolynomial.C a * (e : MvPolynomial ℕ ℂ) := by
+    rw [map_mul]
+    congr 1
   rw [expJetTotalDeriv, Polynomial.coeff_add, coeff_jetCoeffDeriv, Polynomial.coeff_C_mul,
-    coeff_X_mul_derivative, map_mul]
-  ring
+    coeff_X_mul_derivative, hC, mul_assoc]
 
 theorem natDegree_expJetTotalDeriv_le (a : ℂ) (F : ExpJetPoly) :
     (expJetTotalDeriv a F).natDegree ≤ F.natDegree := by
@@ -111,21 +114,22 @@ theorem natDegree_expJetTotalDeriv_le (a : ℂ) (F : ExpJetPoly) :
 theorem hasDerivAt_exp_pow (a : ℂ) (d : ℕ) (z : ℂ) :
     HasDerivAt (fun w => Complex.exp (a * w) ^ d)
       (a * (d : ℂ) * Complex.exp (a * z) ^ d) z := by
-  have hlin : HasDerivAt (fun w : ℂ => a * w) a z := by
-    simpa using (hasDerivAt_id z).const_mul a
-  have hexp : HasDerivAt (fun w : ℂ => Complex.exp (a * w)) (Complex.exp (a * z) * a) z :=
-    Complex.hasDerivAt_exp (a * z) |>.comp z hlin
-  have hpow := hexp.pow d
-  cases d with
-  | zero => simpa using hasDerivAt_const z (1 : ℂ)
-  | succ m =>
-      have hval : ((m : ℕ) + 1 : ℂ) * Complex.exp (a * z) ^ ((m + 1) - 1)
-            * (Complex.exp (a * z) * a)
-          = a * ((m + 1 : ℕ) : ℂ) * Complex.exp (a * z) ^ (m + 1) := by
-        push_cast
-        rw [Nat.add_sub_cancel]
-        ring
-      simpa only [hval] using hpow
+  have hpow : ∀ w : ℂ, Complex.exp (a * w) ^ d = Complex.exp (((d : ℂ) * a) * w) := by
+    intro w
+    rw [mul_assoc, Complex.exp_nat_mul]
+  have hlin : HasDerivAt (fun w : ℂ => ((d : ℂ) * a) * w) ((d : ℂ) * a) z := by
+    simpa using (hasDerivAt_id z).const_mul ((d : ℂ) * a)
+  have hcomp : HasDerivAt (fun w : ℂ => Complex.exp (((d : ℂ) * a) * w))
+      (Complex.exp (((d : ℂ) * a) * z) * ((d : ℂ) * a)) z :=
+    (Complex.hasDerivAt_exp _).comp z hlin
+  have hfun : (fun w : ℂ => Complex.exp (a * w) ^ d)
+      = fun w : ℂ => Complex.exp (((d : ℂ) * a) * w) := funext hpow
+  have hval : Complex.exp (((d : ℂ) * a) * z) * ((d : ℂ) * a)
+      = a * (d : ℂ) * Complex.exp (a * z) ^ d := by
+    rw [← hpow z]
+    ring
+  rw [hfun, ← hval]
+  exact hcomp
 
 /-- **Total differentiation realizes the derivative.** -/
 theorem hasDerivAt_expJetEvalHom {a : ℂ} {h : ℂ → ℂ}
@@ -162,14 +166,20 @@ theorem hasDerivAt_expJetEvalHom {a : ℂ} {h : ℂ → ℂ}
     rw [← hval]
     exact hprod
   have hsum := HasDerivAt.sum hterm
-  rw [hfun, expJetEvalHom_eq_sum_range a h z hDM]
+  have hfe : (∑ d ∈ Finset.range M, fun w =>
+        MvPolynomial.eval (jetVector h w) (F.coeff d) * Complex.exp (a * w) ^ d)
+      = fun w => ∑ d ∈ Finset.range M,
+          MvPolynomial.eval (jetVector h w) (F.coeff d) * Complex.exp (a * w) ^ d := by
+    funext w
+    exact Finset.sum_apply w _ _
+  rw [hfun, expJetEvalHom_eq_sum_range a h z hDM, ← hfe]
   exact hsum
 
 theorem expJetEvalHom_expJetTotalDeriv_eq_zero {a : ℂ} {h : ℂ → ℂ}
     (hh : ∀ m : ℕ, Differentiable ℂ (iteratedDeriv m h)) {F : ExpJetPoly}
     (hF : ∀ z, expJetEvalHom a h z F = 0) (z : ℂ) :
     expJetEvalHom a h z (expJetTotalDeriv a F) = 0 := by
-  have hd := hasDerivAt_expJetEvalHom hh F z
+  have hd := hasDerivAt_expJetEvalHom (a := a) hh F z
   have hconst : (fun w => expJetEvalHom a h w F) = fun _ : ℂ => (0 : ℂ) := by
     funext w
     exact hF w
@@ -211,7 +221,7 @@ theorem exists_autonomousJet_of_expJetRelation {a : ℂ} (ha : a ≠ 0) {h : ℂ
       intro e he
       rcases eq_or_lt_of_le he with rfl | hlt
       · rw [hH, Polynomial.coeff_sub, Polynomial.coeff_C_mul, Polynomial.coeff_C_mul,
-          coeff_expJetTotalDeriv, ← hcD, ← hq]
+          coeff_expJetTotalDeriv, ← hcD, hq]
         ring
       · have h0 : G.coeff e = 0 := Polynomial.coeff_eq_zero_of_natDegree_lt (by omega)
         rw [hH, Polynomial.coeff_sub, Polynomial.coeff_C_mul, Polynomial.coeff_C_mul,
@@ -222,7 +232,7 @@ theorem exists_autonomousJet_of_expJetRelation {a : ℂ} (ha : a ≠ 0) {h : ℂ
         intro e he
         have hcoeff : H.coeff e = 0 := by rw [hHne, Polynomial.coeff_zero]
         rw [hH, Polynomial.coeff_sub, Polynomial.coeff_C_mul, Polynomial.coeff_C_mul,
-          coeff_expJetTotalDeriv, ← hcD, ← hq] at hcoeff
+          coeff_expJetTotalDeriv, hq] at hcoeff
         have hrel : cD * jetDeriv (G.coeff e) - G.coeff e * jetDeriv cD
             = MvPolynomial.C ((d₀ - e : ℕ) * a) * (G.coeff e * cD) := by
           have hcast : ((d₀ : ℂ) - (e : ℂ)) = ((d₀ - e : ℕ) : ℂ) := by
@@ -233,7 +243,7 @@ theorem exists_autonomousJet_of_expJetRelation {a : ℂ} (ha : a ≠ 0) {h : ℂ
               - (jetDeriv cD + MvPolynomial.C (a * (d₀ : ℂ)) * cD) * G.coeff e = 0 := hcoeff
           have hsplit : cD * jetDeriv (G.coeff e) - G.coeff e * jetDeriv cD
               = MvPolynomial.C (a * ((d₀ : ℂ) - (e : ℂ))) * (G.coeff e * cD) := by
-            have hCsub : MvPolynomial.C (a * ((d₀ : ℂ) - (e : ℂ)))
+            have hCsub : (MvPolynomial.C (a * ((d₀ : ℂ) - (e : ℂ))) : MvPolynomial ℕ ℂ)
                 = MvPolynomial.C (a * (d₀ : ℂ)) - MvPolynomial.C (a * (e : ℂ)) := by
               rw [← map_sub]
               congr 1

@@ -3957,6 +3957,7 @@ import GaloisForLFunctions.HTGeometry.MilnorKResidueSteinberg
 import GaloisForLFunctions.HTGeometry.MilnorKResidueMap
 import GaloisForLFunctions.HTGeometry.MilnorKResidueUnits
 import GaloisForLFunctions.HTGeometry.MilnorKGersten
+import GaloisForLFunctions.HTGeometry.WeightedGraphSpectralGap
 import GaloisForLFunctions.HTGeometry.MilnorKResidueValuation
 import GaloisForLFunctions.HTGeometry.MilnorKTameDedekind
 import GaloisForLFunctions.HTGeometry.MilnorKTameKernel

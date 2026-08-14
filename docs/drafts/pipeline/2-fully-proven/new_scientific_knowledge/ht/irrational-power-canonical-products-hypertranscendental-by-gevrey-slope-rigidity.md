@@ -1180,3 +1180,58 @@ quotient is `O(1)`, which is exactly `near_p` for `ResidueTheoremOnRectangleWith
 `dslope` is the right tool here rather than the general order factorization
 (`exists_eventuallyEq_pow_smul_nonzero_iff`): it gives the cofactor with no case analysis on the
 order, and `sub_smul_dslope` supplies the identity for free.
+
+## Lean progress — THE `near_p` HYPOTHESIS IS PROVED
+
+Added to `SineVerticalDecay.lean` (wired, axiom-clean):
+
+    isBigO_inv_sin_sub_inv :
+      **`π/sin(π w) - 1/w  =O[𝓝[≠] 0]  1`**
+
+This is exactly the `near_p` hypothesis of `ResidueTheoremOnRectangleWithSimplePole'` at `p = 0`
+with residue `A = 1`.  The proof is the factorization:
+
+    π/sin(π w) - 1/w = -((c w - c 0) · w⁻¹) · (c w)⁻¹,   c = sinPiCofactor, c 0 = π,
+
+where the first factor is bounded because `c` is differentiable at `0` (so `c w - c 0 = O(w)`) and
+the second because `c` is continuous and nonzero there.
+
+With `inv_sin_pi_mul_add_nat` the same bound transfers to every integer: at `w = -k` the kernel has a
+simple pole of residue `(-1)^k`.  Both hypotheses of the rectangle theorem — `fHolo` from
+`analyticAt_inv_sin_pi_mul` together with `meromorphicOn_riemannZeta`, and `near_p` here — are
+therefore available at every pole the contour crosses.
+
+### What is left on this card
+
+1. The rectangle shifts themselves: apply `ResidueTheoremOnRectangleWithSimplePole'` at
+   `w = 1/s`, `w = 0`, `w = -k`, and let the height go to infinity with
+   `RectangleIntegral_tendsTo_VerticalIntegral`, the horizontal sides vanishing by
+   `norm_inv_sin_le_exp`.  That yields `(4)`--`(6)`.
+2. The Sibuya--Ramis exact Newton-slope theorem.
+
+Everything else on the card is formal.
+
+## Lean progress — poles of the full integrand, from poles of the kernel
+
+Added to `SineVerticalDecay.lean` (wired, axiom-clean):
+
+    isBigO_slope_of_analyticAt :
+      the difference quotient of an analytic function is bounded at its base point
+    isBigO_analytic_mul_simplePole :
+      **`h` has a simple pole of residue `A` at `p` and `g` is analytic there
+      ⟹ `g · h` has a simple pole of residue `g p · A`**
+
+This is the step from the reflection kernel to the actual integrand.  Writing the integrand as
+`g w · (π/sin(π w))` with `g w = -x^{-w} ζ(-s w)` analytic at the crossed pole, the residue is
+`g(p)` times the kernel residue, so `near_p` for the integrand follows from
+`isBigO_inv_sin_sub_inv` with no new estimate.  Concretely the residue at `w = -k` is
+`-x^{k} ζ(s k) · (-1)^k`, matching `(5)`'s `b_k = (-1)^k ζ(-s k)` after the sign conventions of the
+representation are unwound.
+
+The identity behind it is
+`g w h w - g p A/(w-p) = g w (h w - A/(w-p)) + ((g w - g p)/(w-p)) A`, whose two summands are
+bounded by continuity and by differentiability respectively.
+
+Both hypotheses of `ResidueTheoremOnRectangleWithSimplePole'` are now available for the integrand
+itself at every pole the contour crosses.  What is left is the geometry of the shift — choosing the
+rectangles and letting the height go to infinity — and then Sibuya--Ramis.

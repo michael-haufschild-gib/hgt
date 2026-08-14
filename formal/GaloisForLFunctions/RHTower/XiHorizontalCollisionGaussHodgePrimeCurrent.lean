@@ -575,7 +575,7 @@ theorem summable_gammaSixSuspensionDeterminantPrimeSourceResolventTrace_iff_riem
           reciprocalCharacterSplitEnergy, hrate]
         simp
       rw [hterm]
-      simp
+      exact tsum_zero
     rw [hzero]
     exact summable_zero
 
