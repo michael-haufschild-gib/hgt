@@ -58,7 +58,7 @@
 - [x] `nonreal-factorial-slope-formal-hypertranscendence`
 - [ ] `orbifold-tail-holographic-reconstruction`
 - [ ] `periodic-pencil-intrinsic-ht-dimension-two`
-- [ ] `power-canonical-product-exact-moment-borel-lattice-law`
+- [x] `power-canonical-product-exact-moment-borel-lattice-law`
 - [ ] `prescribed-gap-process-order-one-maximal-ht-profield`
 - [ ] `prime-completion-annihilates-hypertranscendence-at-even-temperature`
 - [ ] `prime-euler-unit-tangent-completeness`
@@ -1489,3 +1489,21 @@ with pole-pushing — which mathlib does not have and the corpus owns only for t
 the Cauchy coordinate (`holo_mem_topologicalClosure_adjoin_cauchyCoord`), a statement that does not
 transfer to `Q₊`.  `convex_criticalQuadrant` is recorded above precisely because it is the
 hypothesis that Runge layer will consume.
+
+- 2026-08-14 — `power-canonical-product-exact-moment-borel-lattice-law` CLOSED and promoted to
+  Stage 3.  The last open item was equation `(1)`, the Barnes expansion of
+  `H_s(x) = x W_s'(x)/W_s(x)`, which is now unconditional at every genus:
+  `RHTower.barnes_expansion_powerCanonicalProduct` in
+  `RHTower/BarnesCanonicalProductExpansion.lean`.  Four new modules:
+  `HTGeometry/PowerCanonicalProductLogDeriv.lean` (the Euler logarithmic derivative of `W_s`
+  collapses to `∑_n (-1)^g (x/n^s)^{g+1}/(1+x/n^s)` on the positive axis, via
+  `logDeriv_tprod_eq_tsum` and nonvanishing of `W_s` there),
+  `RHTower/BarnesMellinGenusRepresentation.lean` (the model factor's Mellin transform is
+  `(-1)^g(-π/sin πw)` on `-(g+1) < Re w < -g`, so the summed representation has the *same*
+  integrand as at genus zero on a shifted strip),
+  `RHTower/BarnesMellinNegResidues.lean` (the kernel's pole at a negative integer and the shift
+  across it) and `RHTower/BarnesMellinGenusExpansion.lean` (the abscissa ladder
+  `-((g+1)+1/s)/2`, `-(g+1/s)/2`, `k-g+1/2`, its telescoping and the `O(x^{-σ_K})` remainder).
+  Only side condition: `1/s ∉ ℕ`, which is a domain condition of the displayed formula itself
+  (`csc(π/s)` and `ζ(sj)` both have poles there).  All capstones axiom-clean.  Numerically
+  certified at genus `0,1,2,3`.

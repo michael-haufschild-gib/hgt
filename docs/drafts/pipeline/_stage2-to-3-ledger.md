@@ -57,6 +57,12 @@ Promotion recipe:
 | `burnol-prime-two-causal-cartier-collar-law` | all of `(3)`--`(25)` | `RHTower/BurnolGammaSteinCollarKernel`, `RHTower/BurnolGammaSteinMoments`, `RHTower/BurnolCollarKernelSeries`, `RHTower/BurnolPrimeTwoCollarSymbol` (all new) |
 
 | `nomological-homotopy-geometry` (26-card field batch) | exact theorem witness for every card; new finite-dimensional gauge spectral-flow invariance/pure-gauge rigidity; missing minimal-law umbrella wiring | `HTGeometry/NomologicalHomotopyGeometry/*`, `HilbertMetric/NomologicalCrossGram` |
+| `centralizer-centered-shortcut-history-recurrence-energy-law` | none (verified only) | `HTGeometry/StaticShortcutRecurrenceEnergyLaw`, `StaticShortcutReplicaProjectorFrameLaw` |
+| `observer-channel-recurrence-production-dichotomy-law` | none (verified only) | `HTGeometry/StaticShortcutRecurrenceChannelProductionLaw` |
+| `resolution-quotient-replica-frame-capacity-law` | none (verified only) | `HTGeometry/ResolutionQuotientReplicaFrameCapacityLaw` |
+| `return-excised-cross-recurrence-capacity-law` | none (verified only) | `HTGeometry/StaticShortcutCrossRecurrenceCapacityLaw` |
+| `selector-partition-observer-channel-recurrence-law` | none (verified only) | `HTGeometry/StaticShortcutSelectorPartitionLaw` |
+| `static-circuit-two-memory-orthogonality-law` | Bochner ensemble collision `(14)`/`(27)`; vectorized conjugation channel and replica tensor powers; one-gate moment channel with its depth-`s` word expansion `(16)`--`(19)`; static diagonal flow, completed static projection, universal sector and the concrete three-sector collision `(20)`; zero-temperature reconstruction `(28)`--`(30)` | `HTGeometry/StaticCircuitEnsembleZeroTemperature`, `PureConjugationChannel`, `StaticCircuitReplicaWordDictionary`, `StaticCircuitReplicaSectorRealization` (all new) |
 
 ## New reusable infrastructure built during the sweep
 

@@ -1421,3 +1421,75 @@ an explicit polynomial of degree `g+1` — and that polynomial vanishes at `w = 
 cancelling the sine poles the Beta kernel does not have.  So the genus route reuses the existing
 machinery verbatim once the weight is allowed to be a polynomial and the zeta argument is allowed
 the shift `a - sw`.
+
+## Lean progress — `(4)`–`(6)` ARE CLOSED AT EVERY GENUS
+
+The genus branch `0 < s ≤ 1` no longer needs a second Mellin theory.  The right model factor is the
+logarithmic derivative of the Weierstrass factor itself:
+
+```text
+D log E_g(-u) = (-1)^g · u^{g+1}/(1+u) ,
+```
+
+because `u/(1+u) + ∑_{j≤g} (-1)^j u^j = ∑_{j>g} (-1)^{j+1} u^j = (-1)^g u^{g+1}/(1+u)`.  So the
+`E_g` subtractions are *inside* the model factor, and the sum `∑_n (-1)^g barnesModel g (x/n^s)`
+converges with no regularization.  The Mellin transform of `t ↦ t^{g+1}/(1+t)` is the reflection
+kernel translated by `g+1`,
+
+```text
+mellin (barnesModel g) w = (-1)^g · (-π / sin (π w)) ,   -(g+1) < Re w < -g ,
+```
+
+whose parity sign cancels the `(-1)^g` of the model.  Hence the summed integrand is **the same**
+
+```text
+F(w) = x^{-w} ζ(-s w) (-π / sin (π w))
+```
+
+as at genus zero, only on the strip `-(g+1) < σ < -g`, which is where the Dirichlet series converges
+because `-1/s` lies in it exactly when `g = ⌊1/s⌋`.
+
+    HTGeometry/BarnesKernelMellin.lean          barnesModel, its transform, vertical bounds
+    RHTower/BarnesMellinGenusRepresentation.lean
+      mellin_barnesModel_eq, mellinInv_mellin_barnesModel,
+      norm_barnesModelInv_integrand_le, summable_integral_norm_barnesModelInv,
+      hasSum_integral_barnesModelInv_scaled, tsum_barnesModelInv_eq,
+      **hasSum_barnesModel_verticalIntegral'**
+    RHTower/BarnesMellinNegResidues.lean, RHTower/BarnesMellinGenusExpansion.lean
+      barnesIntResidue, verticalIntegral'_shift_int (crossing an arbitrary integer),
+      genusAbscissa (the ladder `σ₀ = -((g+1)+1/s)/2`, `σ₁ = -(g+1/s)/2`, `σ_{k+2} = k-g+1/2`),
+      verticalIntegral'_shift_genusZetaPole, verticalIntegral'_genus_shift_step,
+      verticalIntegral'_genus_finite_expansion,
+      **hasSum_barnes_genus_expansion**, **barnes_genus_poincare_expansion**
+
+`GaloisForLFunctions/RHTower/BarnesMellinGenusEulerDerivative.lean` (wired, axiom-clean) closes the
+derivative-compatible half:
+
+    barnesGenusEulerSum s g            `x ↦ ∑_n (-1)^g barnesModel g (x/n^s)` — the Euler
+                                       logarithmic derivative `H_s` at genus `g`
+    barnesGenusEulerSum_eqOn           it is the contour integral at `σ₀`
+    genusStart_zeta
+    eulerIterate_barnesGenusEulerSum   **every Euler derivative `D^m H_s` is again a contour
+                                       integral, with weight `(-w)^m`**
+    barnes_genus_poincare_expansion_euler :
+      **`(6)` at genus `g`** — for every `m` and `K`,
+        `D^m H_s(x) + (-p_ζ)^m Res_ζ + ∑_{k<K} (-(k-g))^m Res_{k-g} = O(x^{-σ_{K+1}})`
+      uniformly in `x > 0`, whenever `g < 1/s < g+1`
+
+The Euler operator raises the weight independently of the abscissa, so the genus-zero
+differentiation-under-the-integral machinery applies verbatim at the genus ladder.
+
+### Status of the card after this session
+
+| step | status |
+|---|---|
+| `(1)`, `(8)`–`(12)` exact Gevrey order `s` | formal |
+| §4.1–4.4 DA transfer to the remainder | formal |
+| `(14) ⟹ (15)` asymptotic-to-formal transfer | formal |
+| §5 Newton-slope rationality obstruction | formal |
+| **`(4)`–`(6)` for `s > 1` (genus `0`)** | **formal** |
+| **`(4)`–`(6)` for every `s` with `1/s ∉ ℤ` (arbitrary genus)** | **formal** |
+| §5 Sibuya--Ramis exact Newton-slope theorem | open — the single remaining item |
+
+Every irrational `s > 0` has `1/s ∉ ℤ`, so the Barnes layer of the card is complete for the whole
+irrational family.  Only the nonlinear exact-order theorem remains.

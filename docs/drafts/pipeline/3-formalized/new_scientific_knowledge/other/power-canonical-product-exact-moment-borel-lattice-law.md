@@ -1,7 +1,7 @@
 # Power canonical products have an exact moment-Borel power-lattice law
 
 - **ID:** `power-canonical-product-exact-moment-borel-lattice-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / positive survivor of a failed hypertranscendence route
 - **Source:** the Barnes tail of `W_s`, the Riemann zeta functional equation, and
   the nonlinear-ODE resurgence audit
@@ -607,3 +607,95 @@ is nonempty for every `g`.
 
 The next layers to port from the genus-zero chain are the vertical-line envelope of the shifted
 reflection kernel, Mellin inversion on this strip, and the summed representation.
+
+## 2026-08-14 — equation `(1)` is formalized; the card is complete
+
+`(1)` — the Barnes expansion of `H_s(x) = x W_s'(x)/W_s(x)` — is now an unconditional Lean theorem
+at **every** genus, and with it the last analytic dependency of the card is discharged.  Section 7
+above ("No Lean formalization is attempted", "these analytic dependencies are absent") is
+superseded: all four of its dependencies are now corpus theorems.
+
+### The capstone
+
+`formal/GaloisForLFunctions/RHTower/BarnesCanonicalProductExpansion.lean`, axiom-clean:
+
+**`RHTower.barnes_expansion_powerCanonicalProduct`** — for `s > 0` with `1/s` not an integer,
+`g = ⌊1/s⌋` and every truncation `K`, there is a constant `C ≥ 0` with
+
+```text
+‖ x W_s'(x)/W_s(x)
+    − (π/s) csc(π/s) x^{1/s}
+    − ∑_{k<K} (−1)^{k−g} ζ(−s(k−g)) x^{−(k−g)} ‖  ≤  C · x^{−(K−1−g+1/2)}   (x > 0).
+```
+
+The crossed integers run over `j = −g, …, K−1−g`, so the sum contains exactly the three groups of
+`(1)`: the ascending powers `(−1)^j ζ(sj) x^j` for `j = 1..g` (from the negative integers), the
+constant `ζ(0) = −1/2` (from `j = 0`), and the descending Barnes tail `b_k x^{−k}`,
+`b_k = (−1)^k ζ(−sk)`, for `k ≥ 1`.  Since the error exponent `K−1−g+1/2` grows without bound, this
+is exactly the Poincaré asymptotic `R_s(x) ∼ ∑_{k≥1} b_k x^{−k}` of `(1)`.
+
+`RHTower.barnesTerm_natCast` identifies the descending coefficients with `zetaMomentCoeff s k`,
+the very coefficients the transform theory `(2)`–`(11)` is built from, so `(1)` and `(2)` are now
+joined by a Lean equation rather than by a naming convention.
+
+**Hypothesis audit.**  The only side condition is that `1/s` is not an integer.  This is not a
+proof convenience: at `1/s ∈ ℕ` the displayed formula is undefined, because `csc(π/s)` has a pole
+and `ζ(sj)` has one at `j = 1/s`; the pullback `−1/s` of the pole of zeta then collides with the
+integer pole `−g` of the reflection kernel and the expansion acquires a logarithm.  The card's
+`(1)` carries that restriction implicitly.
+
+### The four layers built for it
+
+1. **`HTGeometry/PowerCanonicalProductLogDeriv.lean`** — the identification of the object.
+   `logDeriv_primaryFactor_scaled` (`E_g'(z/c)/E_g(z/c)` collapses to `−(z/c)^g/(c(1−z/c))`),
+   `powerCanonicalProduct_ne_zero` (no zero of `W_s` is on the positive axis, via the corpus
+   summability of the centred factors), `logDeriv_powerCanonicalProduct_eq_tsum` (mathlib's
+   `logDeriv_tprod_eq_tsum` against the corpus's locally uniform product convergence), and the
+   capstone **`ofReal_mul_logDeriv_powerCanonicalProduct`**:
+
+   ```text
+   x W_s'(x)/W_s(x) = ∑_{n ≥ 1} (−1)^g (x/n^s)^{g+1}/(1 + x/n^s) ,   x > 0 .
+   ```
+
+   The summability of the terms is exactly the admissibility of the genus, `s(g+1) > 1`.
+
+2. **`RHTower/BarnesMellinGenusRepresentation.lean`** — the Mellin representation at arbitrary
+   genus.  The key identity is **`mellin_barnesModel_eq`**: on `−(g+1) < Re w < −g`,
+
+   ```text
+   mellin (barnesModel g) w = (−1)^g · (−π/sin(πw)) ,
+   ```
+
+   because translating the reflection kernel by `g+1` only flips the sine's sign `g+1` times.  The
+   parity `(−1)^g` cancels against the parity of the logarithmic derivative, so the summed
+   representation **`hasSum_barnesModel_verticalIntegral'`** has the *same* integrand
+   `F(w) = x^{−w} ζ(−sw)(−π/sin πw)` as at genus zero — only the strip moves.  The rest of the
+   module is the envelope/integrability/interchange chain transported from
+   `HTGeometry/CauchyKernelMellin.lean`, with the Dirichlet series converging because `sσ < −1`.
+
+3. **`RHTower/BarnesMellinNegResidues.lean`** — the reflection kernel's simple pole at a negative
+   integer, and the one-pole contour shift across it.
+
+4. **`RHTower/BarnesMellinGenusExpansion.lean`** — the ladder.  Abscissae
+   `σ_0 = −((g+1)+1/s)/2`, `σ_1 = −(g+1/s)/2`, `σ_{k+2} = k − g + 1/2` separate the singularities:
+   `−1/s` lies between `σ_0` and `σ_1` (this is where `g < 1/s < g+1` is used, and it is exactly
+   `g = ⌊1/s⌋` with `1/s ∉ ℕ`), and the integer `k − g` lies between `σ_{k+1}` and `σ_{k+2}`.
+   `verticalIntegral'_shift_int` crosses an integer of either sign,
+   `verticalIntegral'_shift_genusZetaPole` crosses the pole of zeta, and
+   `verticalIntegral'_genus_finite_expansion` telescopes the ladder.  The remainder bound
+   **`barnes_genus_poincare_expansion`** is the corpus's `norm_verticalIntegral'_barnesPow_le`
+   applied at `σ_{K+1}`: all the `x`-dependence of the integrand is the constant modulus `x^{−σ}`.
+
+### Numerical certification
+
+The formalized statement was checked against the definition of `H_s` at `dps = 30` with an
+Euler–Maclaurin tail, at
+`(s,x) ∈ {(3,50), (2.5,120), (1.4,80), (0.9,100), (0.7,60), (0.7,300), (0.45,40), (0.3,25)}`,
+covering genus `0, 1, 2, 3`: relative agreement between `10^{-13}` and `10^{-18}` on all but the
+most extreme point (`s = 0.3`, `x = 25`, genus `3`, where the truncated tail dominates at
+`10^{-7}`).
+
+### Status
+
+Sections 1–3 and 5 of this card are formalized end to end and axiom-clean; Section 4 is a negative
+literature audit, not a theorem.  Nothing on the card is left at paper level.

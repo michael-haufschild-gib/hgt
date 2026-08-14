@@ -30,15 +30,19 @@ noncomputable section
 
 /-! ### The logarithmic derivative of a rescaled primary factor -/
 
+/-- The derivative of a rescaled Weierstrass factor. -/
+theorem hasDerivAt_primaryFactor_scaled (g : ℕ) (c z : ℂ) :
+    HasDerivAt (fun w : ℂ => primaryFactor g (w / c))
+      ((-(z / c) ^ g * Complex.exp (primaryExponent g (z / c))) * (1 / c)) z := by
+  have hd1 : HasDerivAt (fun w : ℂ => w / c) (1 / c) z := by
+    simpa using (hasDerivAt_id z).div_const c
+  exact (primaryFactor_hasDerivAt g (z / c)).comp z hd1
+
 /-- The logarithmic derivative of a rescaled Weierstrass factor. -/
 theorem logDeriv_primaryFactor_scaled (g : ℕ) {c : ℂ} (hc : c ≠ 0) {z : ℂ} (hz : z / c ≠ 1) :
     logDeriv (fun w : ℂ => primaryFactor g (w / c)) z
       = -(z / c) ^ g / (c * (1 - z / c)) := by
-  have hd1 : HasDerivAt (fun w : ℂ => w / c) (1 / c) z := by
-    simpa using (hasDerivAt_id z).div_const c
-  have hcomp : HasDerivAt (fun w : ℂ => primaryFactor g (w / c))
-      ((-(z / c) ^ g * Complex.exp (primaryExponent g (z / c))) * (1 / c)) z :=
-    (primaryFactor_hasDerivAt g (z / c)).comp z hd1
+  have hcomp := hasDerivAt_primaryFactor_scaled g c z
   have hval : primaryFactor g (z / c)
       = (1 - z / c) * Complex.exp (primaryExponent g (z / c)) := rfl
   have hexp : Complex.exp (primaryExponent g (z / c)) ≠ 0 := Complex.exp_ne_zero _
@@ -50,8 +54,7 @@ theorem logDeriv_primaryFactor_scaled (g : ℕ) {c : ℂ} (hc : c ≠ 0) {z : �
 theorem differentiable_primaryFactor_scaled (g : ℕ) (c : ℂ) :
     Differentiable ℂ fun w : ℂ => primaryFactor g (w / c) := by
   intro w
-  refine HasDerivAt.differentiableAt ?_
-  exact (primaryFactor_hasDerivAt g (w / c)).comp w (by simpa using (hasDerivAt_id w).div_const c)
+  exact (hasDerivAt_primaryFactor_scaled g c w).differentiableAt
 
 /-! ### The terms of the power canonical product on the positive axis -/
 
@@ -138,7 +141,11 @@ theorem summable_logDeriv_powerFactor (hs : 0 < s) {x : ℝ} (hx : 0 < x) :
       = fun n : ℕ => ((-1) ^ (powerGenus s) : ℂ) * ((powerLogDerivTerm s x n : ℝ) : ℂ) :=
     funext fun n => logDeriv_powerFactor_eq hx n
   rw [hcongr]
-  exact ((Complex.ofReal_clm.summable_comp (summable_powerLogDerivTerm hs hx))).mul_left _
+  have hcast : Summable fun n : ℕ => ((powerLogDerivTerm s x n : ℝ) : ℂ) := by
+    refine Summable.of_norm ?_
+    refine (summable_powerLogDerivTerm hs hx).congr fun n => ?_
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (powerLogDerivTerm_pos hx n)]
+  exact hcast.mul_left _
 
 /-! ### Nonvanishing on the positive axis -/
 
@@ -198,11 +205,25 @@ theorem ofReal_mul_logDeriv_powerFactor {x : ℝ} (hx : 0 < x) (n : ℕ) :
         * barnesModel (powerGenus s) (x / ((n : ℝ) + 1) ^ s) := by
   have hA : (0 : ℝ) < ((n : ℝ) + 1) ^ s := powerScale_pos s n
   have ht : (0 : ℝ) < x / ((n : ℝ) + 1) ^ s := div_pos hx hA
+  have hAne : ((n : ℝ) + 1) ^ s ≠ 0 := ne_of_gt hA
+  have htne : 1 + x / ((n : ℝ) + 1) ^ s ≠ 0 := by positivity
+  have hxeq : ((n : ℝ) + 1) ^ s * (x / ((n : ℝ) + 1) ^ s) = x := mul_div_cancel₀ x hAne
+  have hkey : ∀ A t : ℝ, A ≠ 0 → 1 + t ≠ 0 →
+      (A * t) * (t ^ (powerGenus s) / (A * (1 + t)))
+        = t ^ (powerGenus s + 1) / (1 + t) := by
+    intro A t hAne' hden'
+    field_simp
+    ring
   have hreal : x * powerLogDerivTerm s x n
       = (x / ((n : ℝ) + 1) ^ s) ^ (powerGenus s + 1) / (1 + x / ((n : ℝ) + 1) ^ s) := by
     rw [powerLogDerivTerm]
-    field_simp
-    ring
+    calc x * ((x / ((n : ℝ) + 1) ^ s) ^ (powerGenus s)
+            / (((n : ℝ) + 1) ^ s * (1 + x / ((n : ℝ) + 1) ^ s)))
+        = (((n : ℝ) + 1) ^ s * (x / ((n : ℝ) + 1) ^ s))
+            * ((x / ((n : ℝ) + 1) ^ s) ^ (powerGenus s)
+              / (((n : ℝ) + 1) ^ s * (1 + x / ((n : ℝ) + 1) ^ s))) := by rw [hxeq]
+      _ = (x / ((n : ℝ) + 1) ^ s) ^ (powerGenus s + 1) / (1 + x / ((n : ℝ) + 1) ^ s) :=
+          hkey _ _ hAne htne
   rw [logDeriv_powerFactor_eq hx n, barnesModel]
   have hden : (1 : ℂ) + ((x / ((n : ℝ) + 1) ^ s : ℝ) : ℂ) ≠ 0 := by
     have hcast : (1 : ℂ) + ((x / ((n : ℝ) + 1) ^ s : ℝ) : ℂ)

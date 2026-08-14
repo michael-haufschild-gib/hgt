@@ -171,3 +171,40 @@ anti-diagonal covariance.  `[NOVELTY UNVERIFIED]` remains mandatory pending broa
 - 2026-08-14 — Proved exact folded-phase and scaled-resolvent laws in Lean; compiled missing exact
   dependency `.olean`s serially, compiled exact new module `.olean`, audited axioms, and wired
   umbrella without building umbrella or project.
+
+## 2026-08-14 ultraviolet parity closure
+
+`U-PN-LOCAL-PARITY` is now premise-free and Lean-proved for every positive shell coordinate `u`,
+compact approximation `n`, and Schwartz profile `f`:
+
+```text
+even_a(u) -->  (1/2) F_n(-4/u),
+full_a(u) -->  0,
+odd_a(u)  --> -(1/2) F_n(-4/u),
+(even_a(u), odd_a(u)) --> (F_n(-4/u)/2, -F_n(-4/u)/2).
+```
+
+Paper proof: exact coarse-alias periodicity folds the fine quadratic-shell phase to `-4/u`; complex
+HEPW continuity and uniform alias-tail decay give the even limit.  In the fine chart the unfolded
+phase tends to positive infinity, uniform Paley--Wiener decay kills the central extension, and the
+fine alias tail vanishes quadratically.  Exact recombination `odd = full - even` forces the negative
+half-profile.  No zero-counting theorem enters this local law.
+
+Lean module:
+`formal/GaloisForLFunctions/RHTower/XiShiftedHardEdgeParabolicNyquistParity.lean`.
+Closed declarations:
+
+- `routeUComplexHardEdgePeriodizationAt_sub_aliasPeriod`
+- `tendsto_routeUDyadicParabolicEvenSample`
+- `tendsto_routeUDyadicParabolicFullSample_zero`
+- `tendsto_routeUDyadicParabolicOddSample`
+- `tendsto_routeUDyadicParabolicParityPair`
+
+Axiom audit for all four limit theorems: `[propext, Classical.choice, Quot.sound]`.  Exact module
+`.olean` compiled at Lake's module path and umbrella import wired; umbrella was not built.
+
+This closes prior open-core item 2 on each fixed positive real parabolic shell.  Remaining hard core
+is genuinely global: compact-`u`/strip-uniform strengthening, multiplicity-exact Xi
+Riemann--von Mangoldt, tail tightness, and normalized covariance.  Local ultraviolet parity is no
+longer conjectural: Route U's shell mode is rigorously `(1,-1)`, so any unrenormalized positive
+polyphase trace is structurally aimed at the wrong parity sector.

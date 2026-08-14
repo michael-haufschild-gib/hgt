@@ -514,7 +514,7 @@ existing route.
 | Route | Status | First unresolved source theorem |
 |---|---|---|
 | A | terminalized | none below its RH-equivalent source orientation |
-| CCM-FU | open, unlettered; finite source-faithful whole-`L2` completion, parity-free simple-ground Fourier law, and fixed-support mean-square zero transfer closed; CCM--E seam open | Lean constructs literal `sigma_S`, proves exact Fourier fixedness and S-unit coefficients, and identifies its actual theta core and unique source-faithful whole-`L2` transport; the coefficient is exactly `mu(n)/n` and survives finite Fourier transport. Independently, explicit rank-two finite CCM block data with a one-dimensional odd radical force a positive coupling, a nonnegative metric source completion, and real zeros of the regular odd Fourier numerator. Fixed-support mean-square convergence now promotes those real-zero laws to any nonzero compact-Fourier limit by locally uniform convergence. Neither theorem assumes a spectral conclusion, but the corpus does not yet construct the canonical arithmetic approximating family or verify its block and convergence hypotheses. First unresolved CCM theorem is canonical `Pi(lambda,k)` formation together with cofinal verification of the simple-ground/block and mean-square approximation hypotheses and four-unit orientation. The CCM--E seam becomes a route only if one comparison also transports E's Hall/load/flux mechanism. |
+| CCM-FU | open, unlettered; finite source-faithful whole-`L2` completion, literal parity blocks, parity-free simple-ground Fourier law, and fixed-support mean-square zero transfer closed; CCM--E seam open | Lean constructs literal `sigma_S`, proves exact Fourier fixedness and S-unit coefficients, and identifies its actual theta core and unique source-faithful whole-`L2` transport; the coefficient is exactly `mu(n)/n` and survives finite Fourier transport. Independently, the literal centered published restricted-Weil packet now has exact PSD parity blocks and rank-one cross commutator; its spectral-floor shift is unconditionally PSD and singular, and every simple full odd ground automatically supplies the normalized finite odd data forcing real regular Fourier-resolvent zeros. Fixed-support mean-square convergence promotes those laws to any nonzero compact-Fourier limit by locally uniform convergence. Corpus still lacks canonical arithmetic approximating family, simple-floor selection, and compressed-ground convergence. First unresolved CCM theorem is canonical `Pi(lambda,k)` formation together with cofinal simple-ground and mean-square approximation plus four-unit orientation. The CCM--E seam becomes a route only if one comparison also transports E's Hall/load/flux mechanism. |
 | B | retired | fixed-width scalar mechanism exhausted |
 | C1 | open, advanced | Source-derived real-spectrum/positive-closure theorem for the fixed theta-source inverse, or an Euler-product/intersection inequality dominating the deviation-weighted divided-difference moment. The numeric Weil-positivity cone is unconditional but spectrally silent on detector vectors; the probe-circle law shows every off-line response is an on-line response at displaced probes. The literal Gauss--Hodge source-resolvent field sharpens the producer to complete monotonicity only in `n>=19`, `0<X<(n+1)^2`; all complementary sectors are already unconditionally signed. Missing theorem is a pre-zero reflection-doubled trace/Markov identity proving this wedge, not more finite ray jets or post-divisor moments. Widening assembly remains only on the explicit-form branch. |
 | C2 | retired | detector saturated |
@@ -3933,9 +3933,12 @@ positive in the semidefinite CCM metric and every non-pole Fourier-resolvent zer
 formalizes the paper-proved odd extension without assuming an invertible opposite-parity metric.
 `CCMCompactFourierMeanSquareZeroTransfer.lean` additionally closes the fixed-support analytic
 limit: mean-square source convergence gives locally uniform entire Fourier convergence, and a
-nonzero limit preserves the real-zero locus. These results still earn no Route-O source-selection
-credit: literal published parity blocks, simple-floor selection, and compressed-ground
-mean-square convergence are not constructed by either theorem.
+nonzero limit preserves the real-zero locus. `CCMPublishedRestrictedWeilParityBlocks.lean` now
+closes the literal finite adapter: centered parity frames, exact PSD compressions, source vectors,
+rank-one cross commutator, unconditional PSD singular spectral-floor shift, and automatic
+visibility/normalization in the simple full odd branch. These results still earn no Route-O
+whole-ground credit: simple-floor selection and literal compressed-ground mean-square convergence
+remain open, and neither supplies the comparison `eta(a)=exp(o(a))`.
 
 **Provisional prolate-ground and full-charge results.** The full zero-integral positive-even
 prolate leakage compression now has a simple ground state. Paper proof shows its unit vector
@@ -12170,6 +12173,29 @@ external product: they are real and imaginary components of one Hermitian Euler 
 `RoutePCriticalBoundaryOrdinateDiagonalization.lean` proves the moving source, exact overlap,
 second-jet tangent realization, cubic projector, and finite-packet law. Remaining open core is now
 strictly the completed height-local Euler--Gamma trace estimate for this unified source Gram.
+
+P-G172 audits the uniformity needed to use that projector in growing height windows. If two
+ordinates collide at the boundary resolution,
+
+```text
+delta_sigma-gamma=kappa(sigma-1),
+```
+
+then they remain distinct for every `sigma>1` when `kappa!=0`, but their zeta argument is
+`1+(sigma-1)[R(a+b)+i kappa]`. Lean proves the exact retained limits
+
+```text
+state overlap -> R/[R(a+b)+i kappa],
+log-moment term -> 2R^3/[R(a+b)+i kappa]^3.              (P-G172.1)
+```
+
+The four-term Hellinger tangent therefore converges to the corresponding complex cubic
+polarization, and `C_1(1,1;1)!=0` is proved exactly. More generally, every finite co-moving packet
+retains a non-diagonal Gram indexed by relative scaled gaps `kappa_j-kappa_i`. This falsifies the
+entrywise-project-then-grow shortcut: P-G171 dephasing is pointwise, not uniform at collision
+scale. Positive survivor is an exact mesoscopic cluster kernel. Remaining open core is sharpened
+to a cluster-stable completed Euler--Gamma trace estimate controlling that kernel without any zero
+spacing hypothesis; diagonal-only `N/4` budgeting is insufficient.
 
 ### Route T exact dual carrier: Gaussian tail and height variation close
 

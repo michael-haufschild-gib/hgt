@@ -17,8 +17,8 @@ identifies the smallest known prototype of the remaining arithmetic wall.
 
 - [x] 0 -> 1  in-progress: both implications isolated and hostile examples checked
 - [x] 1 -> 2  fully-proven: dependency-closed proof below
-- [ ] 2 -> 3  formalized: reverse implication and one-generator transcendence-rank bridge are
-  formalized; integral-coordinate normal form and forward relative algebraic-closure bridge remain
+- [ ] 2 -> 3  formalized: normalized affine equivalence, one-generator transcendence-rank bridge,
+  and integral-isogeny invariance are formalized; primitive rank-one lattice normalization remains
 - [ ] 3 -> 4  publication-ready: independent proof and literature audits pending
 
 ## Relative rigidity statement
@@ -103,10 +103,23 @@ algebraically independent by Lindemann--Weierstrass, contradicting that `e^z` is
 2. any nonzero algebraic `alpha` and `z notin Q alpha` for which both `z` and `exp(z)` are algebraic
    over `Qbar(exp(alpha))` produce a literal failure of `SchanuelExtractionAt 2`.
 
-This is the reverse implication of the paper equivalence, expressed using actual intermediate
-fields and algebraicity rather than a new proposition interface.  The forward implication still
-needs the integral rank-one coordinate normalization and adjoining-one algebraic-independence
-converse.
+The same module now proves the exact normalized affine equivalence: for nonzero algebraic `alpha`,
+the family `alpha,z,exp(alpha),exp(z)` has no two-element algebraically independent extraction if
+and only if both `z` and `exp(z)` are algebraic over `Qbar(exp(alpha))`.  This uses actual
+intermediate fields and extraction data rather than a new proposition interface.  It also proves
+the unconditional algebraic-vertex boundary: if `z` is algebraic and `exp(z)` is algebraic over
+`Qbar(exp(alpha))`, finite Lindemann--Weierstrass forces `z in Q alpha`.  Hence every genuine
+relative-rigidity obstruction has transcendental `z`.
+
+`RHTower/SchanuelStageTwoIsogenyInvariance.lean` additionally proves that two-element extraction
+failure survives every integral isogeny transform.  Its proof selects `x_0` or `exp(x_0)` as an
+unconditional transcendental anchor, makes every original generator algebraic over the resulting
+one-generator field, and transports algebraicity through integral additive coordinates and torus
+monomials.  No determinant hypothesis is needed for failure preservation; nonzero determinant is
+used only to preserve rational linear independence.
+
+Only primitive rank-one lattice normalization and Bezout completion to a unimodular matrix remain
+for Gate 2 -> 3.
 
 ## Failed conjecture and pivot
 

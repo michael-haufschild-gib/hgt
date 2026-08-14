@@ -6690,3 +6690,68 @@ Mathlib turns out to carry the fundamental lemma of the calculus of variations
 `Analysis/Distribution/Support.lean`).  The next step is `ae_eq_const_of_weak_deriv_zero` — a locally
 integrable function with vanishing weak derivative is a.e. constant — after which the scalar
 integrating factor reduces the Gamma equation on a half-line to that statement.
+
+## HA — the distributional half-line regularity is closed
+
+Cards 6 and 7 shared one open input: that a tempered `X`-valued solution of the Gamma frequency
+equation restricts on a frequency half-line to the classical solution.  That is now proved
+unconditionally, through a new reusable theory of **exponential twists of vector-valued tempered
+distributions**.
+
+The obstruction was structural: an `X`-valued tempered distribution `u : 𝓢(ℝ,ℂ) →L[ℂ] X` cannot be
+multiplied by an operator-valued function, so the classical integrating factor `η^{1/2}Q(η)^{-1}`
+has no distributional meaning.  The replacement is the series
+
+```text
+(E_A u)(φ) = ∑_n (-A)^n u(η^n φ)/n!
+```
+
+which converges on every test function supported in a bounded interval.
+
+```text
+HTGeometry/SchwartzCoordPowerBound.lean
+  coordPow                       iterated multiplication by the coordinate
+  seminorm_coordMulCLM_le        ‖·‖^k‖D^l(xφ)‖ ≤ B‖·‖^k‖D^lφ‖ + l‖·‖^k‖D^{l-1}φ‖ on a carrier
+  blockSeminorm, blockSeminorm_coordPow_le   the seminorm block grows like (B+L)^n
+  exists_bound_coordPow          ‖u(η^n φ)‖ ≤ C D^n — geometric growth along coordinate powers
+HTGeometry/CompactPrimitive.lean
+  apply_eq_integral_smul_of_deriv_zero_of_linearOn
+                                 du Bois-Reymond for a map linear only on one interval
+HTGeometry/ExponentialTwist.lean
+  expTwist                       the twist, summable by the geometric bound
+  coordPow_derivCLM              η^n φ' = (η^n φ)' - n η^{n-1} φ
+  expTwist_derivCLM_eq_zero      the twist of a solution of u' = Au has vanishing derivative
+  exists_normalised_test         a normalised complex test function on a bounded interval
+  exists_expTwist_const          hence the twist is (∫φ)·c on the interval
+HTGeometry/ExponentialTwistInversion.lean
+  twistInvTerm / twistInvGrouped the double family and its reindexing by total degree
+  sum_twistInvGrouped_coeff      the alternating binomial collapse ∑_{n≤j}(-1)^n C(j,n)
+  tsum_twistInv                  **the twist is inverted by the opposite twist**
+HTGeometry/DistributionalLinearODE.lean
+  exp_smul_apply_eq_tsum         exp(zA)c expanded on a vector
+  intervalIntegral_smul_exp      the propagator integral is the moment series of the propagator
+  exists_exp_representation      **a distributional solution of u' = Au on an interval is
+                                 ∫ φ(t)·exp(tA)c dt**
+HTGeometry/ConjugatedTransportRepresentation.lean
+  derivCLM_mulTemperateCLM       Leibniz for a temperate multiplier with g' = -mg on the interval
+  exists_conjugate_representation  the scalar-conjugated form: u φ = ∫ g(t)^{-1}φ(t)·exp(tA)c dt
+HTGeometry/IntervalCutoff.lean
+  exists_interval_cutoff         a smooth cutoff one near [a,b] ⊂ (0,∞), zero near the origin
+HTGeometry/HalfLineIntegratingFactor.lean
+  invCut, sqrtFactor, sqrtFactorInv, gammaMultiplier
+                                 the cut-off Gamma coefficient and its integrating factor,
+                                 with global smoothness, compact support, temperate growth
+  deriv_sqrtFactor               the integrating-factor identity g' = -m g on the interval
+RHTower/SuzukiGammaDistributionalHalfLine.lean
+  exists_channel_vector_distributional
+                                 **card 6's Theorem 1(a): a tempered distributional solution of
+                                 the Gamma frequency equation on a compact subinterval of the
+                                 positive half-line is η^{-1/2}Q(η)c for a channel vector c**
+```
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+What remains for card 6's Theorem 1: the same statement on the negative frequency half-line (the
+integrating factor `|η|^{1/2}` is uniform in the sign, so the construction transfers), the
+independence of the channel vector from the subinterval, and the assembly with the point-support
+exclusion of section GY.

@@ -7,7 +7,8 @@
 - **Scientific status:** `[LEAN-PROVED] [PAPER-PROVED] [NOVELTY UNVERIFIED] [NO RH CLAIM]`
 - **Lean module:**
   `formal/GaloisForLFunctions/RHTower/CCMParityFreeOddGroundFourier.lean` and
-  `formal/GaloisForLFunctions/RHTower/CCMCompactFourierMeanSquareZeroTransfer.lean`
+  `formal/GaloisForLFunctions/RHTower/CCMCompactFourierMeanSquareZeroTransfer.lean` and
+  `formal/GaloisForLFunctions/RHTower/CCMPublishedRestrictedWeilParityBlocks.lean`
 - **Paper parent:**
   `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/parity-free-simple-ground-fourier-real-zero-law.md`
 
@@ -57,6 +58,11 @@ resolvent zero to satisfy `Im z = 0`.
 - `norm_compactFourier_sub_le_meanSquare`
 - `compactFourier_tendstoLocallyUniformly_of_meanSquare`
 - `compactFourier_limit_zero_im_eq_zero_of_meanSquare`
+- `ccmPublishedParityShift_displacement`
+- `ccmPublishedParityCross_commutator`
+- `exists_ccmPublishedParityFreeOddGroundData_of_simple_full_odd_ground`
+- `exists_ccmPublishedParityGroundShift`
+- `exists_ccmPublishedParityGroundShift_simpleOddAdapter`
 
 ## Audit
 
@@ -64,6 +70,9 @@ resolvent zero to satisfy `Im z = 0`.
 - `lake build GaloisForLFunctions.RHTower.CCMParityFreeOddGroundFourier`: pass.
 - `lake env lean GaloisForLFunctions/RHTower/CCMCompactFourierMeanSquareZeroTransfer.lean`: pass.
 - `lake build GaloisForLFunctions.RHTower.CCMCompactFourierMeanSquareZeroTransfer`: pass.
+- `lake env lean GaloisForLFunctions/RHTower/CCMPublishedRestrictedWeilParityBlocks.lean`: pass.
+- `lake build GaloisForLFunctions.RHTower.CCMPublishedRestrictedWeilParityBlocks`: pass; exact
+  leaf `.olean` built.
 - `#print axioms` on the three load-bearing endpoints: only `propext`, `Classical.choice`, and
   `Quot.sound`.
 - No `sorry`, `admit`, new `axiom`, `opaque`, `unsafe`, or numerical computation.
@@ -79,9 +88,13 @@ O.  Lean now proves the exact source-scale estimate
  <= exp(max(|a|,|b|)|Im z|) sqrt(b-a) ||f_n-f||_2,
 ~~~
 
-its locally uniform consequence, and closed-real-zero transfer for every nonzero limit.  It does
-not construct the literal parity blocks of the published restricted-Weil matrix, prove that its
-selected floor is simple, or prove that the literal compressed ground vectors converge in mean
-square.  Most importantly, real-zero reality of either parity gives no comparison between the
+its locally uniform consequence, and closed-real-zero transfer for every nonzero limit. The
+literal published restricted-Weil matrix is now rebuilt in centered parity coordinates. Lean
+derives the exact even/odd frames, PSD compressions, source vectors, rank-one cross commutator,
+unconditional PSD singular spectral-floor shift, and the full simple-odd adapter. In particular,
+source visibility and normalization are conclusions of a simple full odd radical, not extra
+premises. It does not prove that the selected floor is simple or prove that literal compressed
+ground vectors converge in mean square. Most importantly, real-zero reality of either parity
+gives no comparison between the
 prolate leakage ground and every true restricted-Weil near-ground direction.  Route O's RH-bearing
 open core remains source-derived upper control `eta(a)=exp(o(a))`.

@@ -499,3 +499,78 @@ unconditional.
 
 Haar-nullity is no longer load-bearing for any other conclusion on the card: it is now an isolated
 strengthening of codensity, not the source of it.
+
+## Lean progress — PONG'S CONCLUSION FOR `Z_χ` ITSELF, and the labelled isomorphism `Φ_(χ,ψ)`
+
+The remaining algebraic residue was the descent from the prime-power palette to the shifted
+derivatives of `Z_χ`, whose coefficients live on **all** of `ℕ`.  The obstruction was structural,
+not quantitative: the corpus's Shapiro--Sparer bridge is stated for *prime-supported* arithmetic
+functions, because there the prime derivation `∂_q b = b(q)·1` is a **scalar**, so the Jacobian is a
+matrix over the base field.  A completely multiplicative coefficient function has no such Jacobian.
+
+The support restriction is unnecessary.
+
+`GaloisForLFunctions/HTGeometry/ArithmeticFunctionGeneralJacobian.lean` (wired, axiom-clean):
+
+    arithmeticEvalOne              evaluation at `n = 1` as a ring homomorphism `𝒜 → ℂ`
+                                   (the only factorization of `1` is `1·1`)
+    primeDeriv_apply_one           `(∂_q b)(1) = b q`, with no support hypothesis
+    arithmeticPrimeJacobian        the Jacobian `(∂_{q i} g_j)` over the Dirichlet algebra
+    arithmeticPrimeJacobian_evalOne
+    det_arithmeticPrimeJacobian_ne_zero :
+      **the constant term of the Jacobian determinant is the prime-evaluation determinant**
+    algebraicIndependent_arithmeticFunctions_of_primeEvaluation :
+      **an ARBITRARY finite family of arithmetic functions with a nonsingular prime-evaluation
+      matrix is algebraically independent over `ℂ`**
+    fractionArithmeticPrimeJacobian, det_fractionArithmeticPrimeJacobian_ne_zero
+    algebraicIndependent_fractionArithmetic_over_commonKernel
+    CofiniteArithmeticEvaluationPacket
+    algebraicIndependent_fractionArithmetic_over_finitePrimeCoefficientField
+    cofiniteArithmeticEvaluationPacket_of_tailIndependent
+    algebraicIndependent_fractionArithmetic_of_tailIndependent :
+      **tail independence of the PRIME RESTRICTIONS alone gives algebraic independence over the
+      whole intrinsic finite-prime coefficient field**
+
+The mechanism: the Dirichlet algebra is a domain, so the Jacobian criterion needs only
+`det ≠ 0`, and that is decided at the identity component, where `∂_q` reads off the value at `q`
+whatever the rest of the coefficients are.
+
+`GaloisForLFunctions/HTGeometry/HelsonZetaShiftedJetIndependence.lean` (wired, axiom-clean):
+
+    algebraicIndependent_of_finite_subfamilies
+                                   a family is independent as soon as every finite subfamily is
+    helsonClockJet χ α c k         the coefficient function `n ↦ χ(n) n^{-α} (c log n)^k`
+    helsonClockJet_apply_prime
+    logWeight_helsonClockJet       the rotated logarithmic derivation raises the clock power
+    differentialJet_helsonClockJet **the `k`-th jet of `Z_χ(s+α)` in the Dirichlet field**
+    tailCoefficientIndependent_equiv
+    tailCoefficientIndependent_helsonClockJet
+    helsonClockJets_algebraicIndependent          finite rectangles
+    helsonClockJets_algebraicIndependent_all :
+      **the COMPLETE shift--jet family, arbitrary shift index, unbounded jet order**
+    helsonShifts_differentialIndependent :
+      **`DifferentialIndependent E_fin (fun a ↦ Z_χ(s + α a))`**
+    helsonShifts_differentialIndependent_of_unimodular
+    helsonLabelledAlgEquiv :
+      **`Φ_(χ,ψ) : L_χ ≃ₐ[E_fin] L_ψ`** for any two nowhere-vanishing phases and any shift family
+      with distinct real parts
+    helsonLabelledAlgEquiv_jet :
+      it carries every labelled jet to its counterpart
+
+So the card's first theorem — *every `L_χ` is an abstract differential rational function field on the
+shift-indexed family, and `Φ_(χ,ψ)` is the canonical labelled isomorphism* — is now formal for the
+actual Helson zeta functions, not only for a prime-power palette.  The only hypothesis on the phase
+is `χ(p) ≠ 0`, which unimodularity supplies; the only hypothesis on the shifts is that their real
+parts are distinct, which the card's nonnegative distinct real shifts supply.
+
+### Residue of this card after this session
+
+| statement | status |
+|---|---|
+| labelled differential-field universality (abstract) | formal |
+| **Pong's conclusion for `Z_χ` itself, over `E_fin`** | **formal, unconditional** |
+| **`Φ_(χ,ψ)` for actual Helson zetas** | **formal, unconditional** |
+| density of `M` | formal |
+| **codensity of `M`, `boundary(M) = Ω`, nowhere-continuous indicator, no continuous factorization** | **formal, unconditional** |
+| `Haar(M) = 0` (Saksman--Webb/Seip) | open |
+| divisor surjectivity (Andersson Thm 5) | open |

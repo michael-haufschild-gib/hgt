@@ -309,10 +309,14 @@ No parity hypothesis is needed.
   `formal/GaloisForLFunctions/RHTower/CCMParityFreeOddGroundFourier.lean`: positive semimetric
   completion, nonnegative full characteristic roots, and real non-pole Fourier-resolvent zeros.
   `CCMCompactFourierMeanSquareZeroTransfer.lean` proves the exact fixed-support `L²` Fourier bound,
-  locally uniform convergence, and nonzero-limit real-zero transfer. Literal published-source
-  parity blocks and compressed-ground mean-square convergence remain open. This formalization
-  closes the finite and analytic-transfer parts of the literature parity debt but does not receive
-  Route-O ground-selection credit.
+  locally uniform convergence, and nonzero-limit real-zero transfer.
+  `CCMPublishedRestrictedWeilParityBlocks.lean` now constructs the literal centered parity packet,
+  derives its PSD blocks and cross commutator, selects an unconditional PSD singular floor, and
+  proves that a simple full odd ground automatically supplies source visibility, normalization,
+  and all finite odd-ground data. Simple-floor selection and compressed-ground mean-square
+  convergence remain open. This formalization closes the finite literal-adapter and
+  analytic-transfer parts of the literature parity debt but does not receive Route-O
+  whole-ground-comparison credit.
 
 ## No-go closure
 
@@ -331,3 +335,7 @@ No parity hypothesis is needed.
 - 2026-08-14 — exact fixed-support mean-square-to-locally-uniform Fourier estimate and Hurwitz
   zero-locus transfer formalized in `CCMCompactFourierMeanSquareZeroTransfer.lean`; literal
   compressed-ground approximation remains.
+- 2026-08-14 — literal centered restricted-Weil parity frames, block positivity, cross commutator,
+  unconditional finite ground shift, and simple-full-odd-ground adapter formalized in
+  `CCMPublishedRestrictedWeilParityBlocks.lean`; no source visibility or normalization premise
+  remains in the odd branch.
