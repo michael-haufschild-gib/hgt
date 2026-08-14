@@ -1,7 +1,7 @@
 # Gamma transport forces a complete half-log scattering classification
 
 - **ID:** `suzuki-gamma-homogeneous-half-log-scattering-classification`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM (paper) / EXACT HOMOGENEOUS CORONA CLASSIFICATION
 - **Scientific status:** `[PROVED HERE] [NEW SCIENTIFIC KNOWLEDGE]`
   `[NOVELTY UNVERIFIED] [NOT RH]`

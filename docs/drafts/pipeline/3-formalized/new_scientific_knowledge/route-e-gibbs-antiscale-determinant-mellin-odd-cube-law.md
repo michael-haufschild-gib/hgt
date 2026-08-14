@@ -1,7 +1,7 @@
 # Route E Gibbs antiscale determinant Mellin odd-cube law
 
 - **ID:** `ROUTE-E-GIBBS-ANTISCALE-DETERMINANT-MELLIN-ODD-CUBE-001`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** `[PAPER-PROVED EXACT SOURCE FACTORIZATION]` / `[SPECTRAL TRANSVERSALITY LAW]`
 - **Scientific status:** `[PAPER-PROVED] [INTERNAL COLLISION-AUDITED] [EXTERNAL PRIORITY UNCLAIMED]`
 - **Parent:** `../../1-in-progress/route-e-cofinal-parity-energy-covariance-accumulation.md`
@@ -52,8 +52,20 @@
     (both amplitudes cost `O(∑_{p≤X}1/p)` in the logarithm), and
     `tendsto_log_one_add_abs_batchEulerDeterminant`
     (`(38)`: `log(1+|D_X|)·log X/√X → 4`).
-  All of these build and audit `[propext, Classical.choice, Quot.sound]`.
-  Still paper-only: the four-field Mellin--Plancherel polarization `(8)`.
+  * `(7)`/`(8)` four-field Mellin--Plancherel polarization — new reusable analytic stack
+    `RHTower/MellinLinePolarization.lean` (`integral_conj_fourier_mul_fourier`, the polarized
+    line law `integral_conj_mellin_line_mul_mellin_line`
+    (`∫ conj(M f(σ+it))·M g(σ+it) dt = 2π·M(conj f·g)(2σ)`), `continuous_mellin_line`,
+    `integrable_conj_mellin_line_mul_mellin_line`),
+    `RHTower/FiniteExponentialSumMellin.lean` (`expDecaySum`, `mellin_expDecaySum`
+    (`Γ(s)·Σ c_i m_i^{-s}`), `mellinConvergent_of_exp_bound`, and the `L¹ ∩ L²` logarithmic-source
+    lemmas for exponentially dominated fields), and
+    `RHTower/GibbsFourFieldMellinPolarization.lean` (`gibbsCoarseField` with
+    `gibbsCoarseField_eq_sum_gibbsDiag` identifying it with `(2)`/`(3)`,
+    `mellin_gibbsCoarseFieldC` = `(7)`, `gibbsAntiscaleDeterminant` = `(4)`, and
+    `integral_gammaNormSq_mul_eulerPair_eq_mellin_gibbsAntiscaleDeterminant` = `(8)`).
+  All of these build and audit `[propext, Classical.choice, Quot.sound]`.  Nothing in
+  `(1)`--`(39)` is paper-only any more.
 
 ## 1. Literal Gibbs determinant
 

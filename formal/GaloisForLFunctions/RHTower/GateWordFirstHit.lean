@@ -130,7 +130,7 @@ variable {Γ : Type*} [Fintype Γ] [DecidableEq Γ] {X : Type*}
 noncomputable def wordCompletions (w : List Γ) (n : ℕ) (hw : w.length ≤ n) :
     Finset (List.Vector Γ n) :=
   Finset.univ.image fun m : List.Vector Γ (n - w.length) =>
-    (⟨w ++ (m : List Γ), by
+    (⟨w ++ m.1, by
       rw [List.length_append, m.2]
       omega⟩ : List.Vector Γ n)
 
@@ -144,13 +144,13 @@ theorem card_wordCompletions (w : List Γ) (n : ℕ) (hw : w.length ≤ n) :
   exact Subtype.ext (List.append_cancel_left this)
 
 theorem mem_wordCompletions_iff {w : List Γ} {n : ℕ} (hw : w.length ≤ n)
-    (v : List.Vector Γ n) : v ∈ wordCompletions w n hw ↔ w <+: (v : List Γ) := by
+    (v : List.Vector Γ n) : v ∈ wordCompletions w n hw ↔ w <+: v.1 := by
   classical
   constructor
   · intro hv
     rw [wordCompletions, Finset.mem_image] at hv
     obtain ⟨m, -, hm⟩ := hv
-    exact ⟨(m : List Γ), congrArg Subtype.val hm⟩
+    exact ⟨m.1, congrArg Subtype.val hm⟩
   · rintro ⟨s, hs⟩
     have hlen : s.length = n - w.length := by
       have := v.2
@@ -167,7 +167,7 @@ theorem tsum_firstHitWord_inv_card_le_one [Nonempty Γ] (act : Γ → X → X) (
   classical
   have hM : 0 < Fintype.card Γ := Fintype.card_pos
   have hMR : (Fintype.card Γ : ℝ≥0∞) ≠ 0 := by
-    simpa using Nat.pos_iff.mp hM
+    simp
   have hMtop : (Fintype.card Γ : ℝ≥0∞) ≠ ⊤ := ENNReal.natCast_ne_top _
   rw [ENNReal.tsum_eq_iSup_sum]
   refine iSup_le fun s => ?_
@@ -186,8 +186,8 @@ theorem tsum_firstHitWord_inv_card_le_one [Nonempty Γ] (act : Γ → X → X) (
     · exact (Finset.sum_congr rfl fun w _ => (card_wordCompletions _ _ _).symm)
     · intro w hw w' hw' hne
       refine Finset.disjoint_left.mpr fun v hv hv' => hne (Subtype.ext ?_)
-      have h1 : (w : List Γ) <+: (v : List Γ) := (mem_wordCompletions_iff _ v).mp hv
-      have h2 : (w' : List Γ) <+: (v : List Γ) := (mem_wordCompletions_iff _ v).mp hv'
+      have h1 : (w : List Γ) <+: v.1 := (mem_wordCompletions_iff _ v).mp hv
+      have h2 : (w' : List Γ) <+: v.1 := (mem_wordCompletions_iff _ v).mp hv'
       have hwF : FirstHitWord act χ A (w : List Γ) := (Finset.mem_filter.mp w.2).2
       have hw'F : FirstHitWord act χ A (w' : List Γ) := (Finset.mem_filter.mp w'.2).2
       rcases List.prefix_or_prefix_of_prefix h1 h2 with h | h
@@ -228,8 +228,66 @@ theorem tsum_firstHitWord_inv_card_le_one [Nonempty Γ] (act : Γ → X → X) (
   have hne0 : (Fintype.card Γ : ℝ≥0∞) ^ n ≠ 0 := pow_ne_zero _ hMR
   have hnetop : (Fintype.card Γ : ℝ≥0∞) ^ n ≠ ⊤ := ENNReal.pow_ne_top hMtop
   rw [hsum]
-  exact (ENNReal.mul_le_mul_right hne0 hnetop).mp hfinal
+  exact (ENNReal.mul_le_mul_iff_left hne0 hnetop).mp hfinal
 
 end Kraft
+
+section Sandwich
+
+variable {Γ : Type*} [Fintype Γ] [DecidableEq Γ] [Nonempty Γ] {X : Type*}
+
+/-- A shortest hitting word is a first-hit word. -/
+theorem firstHitWord_of_minimal (act : Γ → X → X) (χ : X) (A : Set X) {w₀ : List Γ}
+    (hw₀ : wordEval act w₀ χ ∈ A)
+    (hmin : ∀ w : List Γ, wordEval act w χ ∈ A → w₀.length ≤ w.length) :
+    FirstHitWord act χ A w₀ := by
+  refine ⟨hw₀, fun k hk hmem => ?_⟩
+  have hlen : (w₀.take k).length = k := by
+    rw [List.length_take, min_eq_left hk.le]
+  have := hmin (w₀.take k) hmem
+  omega
+
+/-- **Complexity lower calibration.**  The shortest hitting word contributes its geometric weight
+to the discounted first-hit mass. -/
+theorem pow_le_firstHitMass (act : Γ → X → X) (χ : X) (A : Set X) (a : ℝ≥0∞) {w₀ : List Γ}
+    (hw₀ : wordEval act w₀ χ ∈ A)
+    (hmin : ∀ w : List Γ, wordEval act w χ ∈ A → w₀.length ≤ w.length) :
+    (a / Fintype.card Γ) ^ w₀.length ≤ firstHitMass act χ A a := by
+  classical
+  rw [firstHitMass]
+  refine le_trans (le_of_eq ?_) (ENNReal.le_tsum w₀)
+  rw [Set.indicator_of_mem (show w₀ ∈ {w : List Γ | FirstHitWord act χ A w} from
+    firstHitWord_of_minimal act χ A hw₀ hmin)]
+
+/-- **Complexity upper calibration.**  Every first-hit word is at least as long as the robust
+complexity, so the discounted first-hit mass is bounded by the discount power. -/
+theorem firstHitMass_le_pow (act : Γ → X → X) (χ : X) (A : Set X) {a : ℝ≥0∞} (ha : a ≤ 1)
+    {c : ℕ} (hmin : ∀ w : List Γ, FirstHitWord act χ A w → c ≤ w.length) :
+    firstHitMass act χ A a ≤ a ^ c := by
+  classical
+  have hterm : ∀ w : List Γ, Set.indicator {w : List Γ | FirstHitWord act χ A w}
+      (fun w => (a / Fintype.card Γ) ^ w.length) w ≤
+      a ^ c * Set.indicator {w : List Γ | FirstHitWord act χ A w}
+        (fun w => ((Fintype.card Γ : ℝ≥0∞))⁻¹ ^ w.length) w := by
+    intro w
+    by_cases hw : FirstHitWord act χ A w
+    · rw [Set.indicator_of_mem (show w ∈ {w : List Γ | FirstHitWord act χ A w} from hw),
+        Set.indicator_of_mem (show w ∈ {w : List Γ | FirstHitWord act χ A w} from hw),
+        div_eq_mul_inv, mul_pow]
+      exact mul_le_mul_left (pow_le_pow_right_of_le_one' ha (hmin w hw)) _
+    · rw [Set.indicator_of_notMem (show w ∉ {w : List Γ | FirstHitWord act χ A w} from hw),
+        Set.indicator_of_notMem (show w ∉ {w : List Γ | FirstHitWord act χ A w} from hw),
+        mul_zero]
+  calc firstHitMass act χ A a
+      ≤ ∑' w : List Γ, a ^ c * Set.indicator {w : List Γ | FirstHitWord act χ A w}
+          (fun w => ((Fintype.card Γ : ℝ≥0∞))⁻¹ ^ w.length) w := by
+        rw [firstHitMass]
+        exact ENNReal.tsum_le_tsum hterm
+    _ = a ^ c * ∑' w : List Γ, Set.indicator {w : List Γ | FirstHitWord act χ A w}
+          (fun w => ((Fintype.card Γ : ℝ≥0∞))⁻¹ ^ w.length) w := ENNReal.tsum_mul_left
+    _ ≤ a ^ c * 1 := mul_le_mul_right (tsum_firstHitWord_inv_card_le_one act χ A) _
+    _ = a ^ c := mul_one _
+
+end Sandwich
 
 end GaloisForLFunctions.RHTower

@@ -88,6 +88,38 @@ theorem mellin_expDecaySum {ι : Type*} (s : Finset ι) (c m : ι → ℝ)
   rw [MeasureTheory.integral_smul, hmellin i, mellin_exp_neg_mul (hm i hi) hσ, smul_eq_mul]
   ring
 
+/-- Exponentially dominated continuous fields are Mellin convergent on every positive line. -/
+theorem mellinConvergent_of_exp_bound {f : ℝ → ℂ} {sigma C a : ℝ} (hsigma : 0 < sigma)
+    (ha : 0 < a) (hf : Continuous f)
+    (hbound : ∀ x : ℝ, 0 < x → ‖f x‖ ≤ C * Real.exp (-(a * x))) :
+    MellinConvergent f ((sigma : ℝ) : ℂ) := by
+  have hC : 0 ≤ C := by
+    have h := hbound 1 one_pos
+    have h0 : (0 : ℝ) ≤ ‖f 1‖ := norm_nonneg _
+    nlinarith [Real.exp_pos (-(a * 1)), h, h0]
+  have hre : (0 : ℝ) < (((sigma : ℝ) : ℂ)).re := by simpa using hsigma
+  have hbase := mellinConvergent_exp_neg_mul ha hre
+  rw [MellinConvergent] at hbase ⊢
+  simp only [smul_eq_mul] at hbase ⊢
+  have hmeas : AEStronglyMeasurable
+      (fun x : ℝ => (x : ℂ) ^ ((((sigma : ℝ) : ℂ)) - 1) * f x) (volume.restrict (Ioi 0)) := by
+    refine ContinuousOn.aestronglyMeasurable ?_ measurableSet_Ioi
+    refine ContinuousOn.mul (fun x hx => ?_) hf.continuousOn
+    have hx0 : (0 : ℝ) < x := hx
+    have hcont : ContinuousAt (fun z : ℂ => z ^ ((((sigma : ℝ) : ℂ)) - 1)) (x : ℂ) :=
+      continuousAt_cpow_const (Complex.mem_slitPlane_iff.mpr (Or.inl (by simpa using hx0)))
+    exact (hcont.comp Complex.continuous_ofReal.continuousAt).continuousWithinAt
+  refine Integrable.mono' (hbase.norm.const_mul C) hmeas ?_
+  refine (ae_restrict_iff' measurableSet_Ioi).2 (Filter.Eventually.of_forall fun x hx => ?_)
+  have hx0 : (0 : ℝ) < x := hx
+  have hb := hbound x hx0
+  rw [norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg (Real.exp_pos _).le]
+  calc ‖(x : ℂ) ^ ((((sigma : ℝ) : ℂ)) - 1)‖ * ‖f x‖
+      ≤ ‖(x : ℂ) ^ ((((sigma : ℝ) : ℂ)) - 1)‖ * (C * Real.exp (-(a * x))) :=
+        mul_le_mul_of_nonneg_left hb (norm_nonneg _)
+    _ = C * (‖(x : ℂ) ^ ((((sigma : ℝ) : ℂ)) - 1)‖ * Real.exp (-(a * x))) := by ring
+
 /-! ## The logarithmic source lies in `L¹ ∩ L²` -/
 
 /-- The doubly exponential logarithmic majorant is integrable. -/

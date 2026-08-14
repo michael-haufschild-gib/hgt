@@ -23,46 +23,6 @@ namespace GaloisForLFunctions.HTGeometry
 
 variable {ι : Type*} [DecidableEq ι]
 
-/-! ### Peeling one factor off a multi-degree -/
-
-theorem jetDegree_eq_zero_iff {α : ι →₀ ℕ} : jetDegree α = 0 ↔ α = 0 := by
-  constructor
-  · intro h
-    ext i
-    by_cases hi : i ∈ α.support
-    · exfalso
-      have hpos : 0 < α i := Nat.pos_of_ne_zero (Finsupp.mem_support_iff.mp hi)
-      have hle : α i ≤ jetDegree α :=
-        Finset.single_le_sum (f := fun j => α j) (fun j _ => Nat.zero_le _) hi
-      omega
-    · simp [Finsupp.notMem_support_iff.mp hi]
-  · intro h
-    rw [h]
-    simp [jetDegree]
-
-theorem exists_jetDegree_pred {α : ι →₀ ℕ} {d : ℕ} (h : jetDegree α = d + 1) :
-    ∃ (j : ι) (β : ι →₀ ℕ), α = β + Finsupp.single j 1 ∧ jetDegree β = d := by
-  classical
-  have hne : α ≠ 0 := by
-    intro h0
-    rw [h0] at h
-    simp [jetDegree] at h
-  obtain ⟨j, hj⟩ := Finsupp.support_nonempty_iff.mpr hne
-  have hj1 : 1 ≤ α j := Nat.one_le_iff_ne_zero.mpr (Finsupp.mem_support_iff.mp hj)
-  have hdec : α = (α - Finsupp.single j 1) + Finsupp.single j 1 := by
-    ext i
-    rw [Finsupp.add_apply, Finsupp.tsub_apply]
-    by_cases hij : i = j
-    · subst hij
-      rw [Finsupp.single_eq_same]
-      omega
-    · rw [Finsupp.single_apply, if_neg (fun h => hij h.symm)]
-      omega
-  refine ⟨j, α - Finsupp.single j 1, hdec, ?_⟩
-  · have := jetDegree_add (α - Finsupp.single j 1) (Finsupp.single j 1)
-    rw [← hdec, h, jetDegree_single] at this
-    omega
-
 /-! ### Weighted bounds for monomials -/
 
 theorem gevreyWeightBound_one {w r : ℕ} {A : ℝ} (hA : 0 < A) :
@@ -76,6 +36,7 @@ theorem gevreyWeightBound_one {w r : ℕ} {A : ℝ} (hA : 0 < A) :
     rw [hz, norm_zero, zero_mul]
     positivity
 
+omit [DecidableEq ι] in
 /-- **A monomial of degree `d` in factors of weighted size `ε` has weighted size `ε^d`.** -/
 theorem gevreyWeightBound_jetMonomial {a r : ℕ} (ha : 2 ≤ a) {A ε : ℝ} (hA : 0 < A)
     (hε0 : 0 ≤ ε) (g : ι → PowerSeries ℂ) (hg : ∀ j, GevreyWeightBound a ε A r (g j)) :
@@ -99,6 +60,7 @@ theorem gevreyWeightBound_jetMonomial {a r : ℕ} (ha : 2 ≤ a) {A ε : ℝ} (h
 
 /-! ### Divisibility of monomials -/
 
+omit [DecidableEq ι] in
 theorem X_pow_dvd_jetMonomial {M : ℕ} {g : ι → PowerSeries ℂ}
     (hg : ∀ j, (PowerSeries.X : PowerSeries ℂ) ^ M ∣ g j) :
     ∀ (d : ℕ) (α : ι →₀ ℕ), jetDegree α = d → 1 ≤ d →
@@ -112,6 +74,7 @@ theorem X_pow_dvd_jetMonomial {M : ℕ} {g : ι → PowerSeries ℂ}
       rw [jetMonomial_add, jetMonomial_single]
       exact Dvd.dvd.mul_left (hg j) _
 
+omit [DecidableEq ι] in
 theorem X_pow_dvd_jetMonomial_sub {n : ℕ} {u v : ι → PowerSeries ℂ}
     (huv : ∀ j, (PowerSeries.X : PowerSeries ℂ) ^ n ∣ (u j - v j)) :
     ∀ (d : ℕ) (α : ι →₀ ℕ), jetDegree α = d →
@@ -132,6 +95,7 @@ theorem X_pow_dvd_jetMonomial_sub {n : ℕ} {u v : ι → PowerSeries ℂ}
       rw [hrw]
       exact dvd_add (Dvd.dvd.mul_right (ih β hβ) _) (Dvd.dvd.mul_left (huv j) _)
 
+omit [DecidableEq ι] in
 /-- **Replacing the perturbation by a truncation moves a monomial of degree at least two by a
 higher order.** -/
 theorem X_pow_dvd_jetMonomial_sub_of_two_le {n M : ℕ} {u v : ι → PowerSeries ℂ}
@@ -158,6 +122,7 @@ theorem X_pow_dvd_jetMonomial_sub_of_two_le {n M : ℕ} {u v : ι → PowerSerie
   rw [hswap]
   exact mul_dvd_mul (X_pow_dvd_jetMonomial hv d β hβ hd1) (huv j)
 
+omit [DecidableEq ι] in
 /-- **A monomial of degree at least two in factors vanishing to order `M` gains `M r` units of
 weight.** -/
 theorem gevreyWeightBound_jetMonomial_dvd {a M r : ℕ} (ha : 2 ≤ a) {A ε : ℝ} (hA : 0 < A)
@@ -189,12 +154,11 @@ theorem gevreyWeightBound_jetMonomial_dvd {a M r : ℕ} (ha : 2 ≤ a) {A ε : �
     _ = ((2 : ℝ) ^ (a + 2)) ^ (jetDegree (β + Finsupp.single j 1)) * ((M ! : ℝ)) ^ r
           * 2 ^ (M * r) * ε ^ 2 := by
         rw [hd]
-        ring
 
 /-! ### Finite sums -/
 
 theorem GevreyWeightBound.finsetSum {w r : ℕ} {A : ℝ} {κ : Type*} (s : Finset κ)
-    (f : κ → PowerSeries ℂ) (C : κ → ℝ) (hA : 0 < A)
+    (f : κ → PowerSeries ℂ) (C : κ → ℝ)
     (h : ∀ i ∈ s, GevreyWeightBound w (C i) A r (f i)) :
     GevreyWeightBound w (∑ i ∈ s, C i) A r (∑ i ∈ s, f i) := by
   intro n
@@ -203,7 +167,8 @@ theorem GevreyWeightBound.finsetSum {w r : ℕ} {A : ℝ} {κ : Type*} (s : Fins
       ≤ (∑ i ∈ s, ‖PowerSeries.coeff n (f i)‖) * ((n : ℝ) + 1) ^ w :=
         mul_le_mul_of_nonneg_right (norm_sum_le _ _) (by positivity)
     _ = ∑ i ∈ s, ‖PowerSeries.coeff n (f i)‖ * ((n : ℝ) + 1) ^ w := by rw [Finset.sum_mul]
-    _ ≤ ∑ i ∈ s, C i * A ^ n * ((n ! : ℝ)) ^ r := Finset.sum_le_sum h
+    _ ≤ ∑ i ∈ s, C i * A ^ n * ((n ! : ℝ)) ^ r :=
+        Finset.sum_le_sum fun i hi => h i hi n
     _ = (∑ i ∈ s, C i) * A ^ n * ((n ! : ℝ)) ^ r := by
         rw [Finset.sum_mul, Finset.sum_mul]
 

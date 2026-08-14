@@ -141,6 +141,15 @@ The algebraic-group layer now has two unconditional, kernel-checked modules:
 - `AffineExponentialProjectionImages` constructs the two scheme-theoretic projection-image Hopf
   ideals of an arbitrary subgroup ideal and identifies their additive-linear and torus-character
   relations exactly as contractions of the original ideal.
+- `SymmetricHopfPrimitive` proves over any characteristic-zero field, without a finite-dimensional
+  hypothesis, that every primitive element of `Sym(V)` is a degree-one generator.
+- `GroupGradedHopfPrimitive` proves the universal grading rigidity theorem: every primitive of
+  `B[M]` is supported at the identity of `M`, with primitive coefficient in `B`.
+- `TensorGroupHopfEquiv` proves the canonical algebra equivalence `k[M] tensor B ~= B[M]` is a
+  bialgebra equivalence, allowing grading arguments on the tensor coordinate algebra.
+- `AffineExponentialPrimitive` concludes on the project's actual coordinate algebra that every
+  primitive regular function on `G_a^n x G_m^n` is exactly additive-linear and independent of the
+  torus factor.
 
 This closes construction and cross-Hom rigidity, but not yet the classification theorem needed in
 the paper proof: every connected closed subgroup of `G_a^n x G_m^n` must be shown to split and its
@@ -156,3 +165,5 @@ logarithms remain open Lean dependencies.
 - 2026-08-14 -- generalized cross-Hom rigidity to all dimensions; formalized Hopf kernels and exact
   projection-image contractions, reducing splitting to classification of the remaining mixed Hopf
   ideal above its two factor contractions.
+- 2026-08-14 -- classified primitives in symmetric, group-graded, and tensor-product Hopf
+  coordinates; proved every primitive regular function on `G_a^n x G_m^n` is additive-linear.

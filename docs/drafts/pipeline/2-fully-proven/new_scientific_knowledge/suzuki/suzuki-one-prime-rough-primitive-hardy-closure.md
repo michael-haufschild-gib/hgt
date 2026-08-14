@@ -305,6 +305,10 @@ The vector-valued Fourier/Bochner composition remains paper analysis; no Lean wr
 target is the operator-valued one-block estimate rather than a theorem restating the desired
 conclusion.
 
+`SuzukiOnePrimeFractionalCarrier.lean` also closes a prerequisite discovered during formal audit:
+the exact `kappa=2/3` weighted valuation shifts are square-summable, obey the polynomial energy
+bound, and satisfy the exact group law. Earlier integer-degree infrastructure did not imply this.
+
 ## Gates
 
 - [x] close exact polynomial/Gamma homogeneous threshold
@@ -314,6 +318,7 @@ conclusion.
 - [x] prove polynomial-group one-block transfer at rank one
 - [x] compose complementary flux and dyadic coverage on paper
 - [x] formalize backward block-primitive preservation
+- [x] construct the fractional `2/3` polynomial shift group
 - [ ] formalize operator-valued polynomial-group one-block estimate
 - [ ] pass the second-prime threshold
 - [ ] pass recurrence-infinite apertures

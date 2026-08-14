@@ -2,10 +2,10 @@
 
 ## Status
 
-- Pipeline: fully proven on paper
+- Pipeline: formalized in Lean 4
 - Novelty: `[LITERATURE]` / `[REDISCOVERED]`
 - Proof status: `[PAPER-PROVED]`
-- Lean status: not yet formalized
+- Lean status: `[LEAN-PROVED]`
 - Role: exact algebraic prerequisite for Selberg Conjecture 3; not claimed as frontier progress
 
 ## Exact claim
@@ -70,7 +70,19 @@ Euler factors at primes dividing the conductor.  Consequently, a factorization a
 silently cancels a twist is invalid; the correct reversible object must remember ramified local
 data.
 
-## Next formal target
+## Lean realization
 
-Formalize the three identities using Mathlib's `ArithmeticFunction ℂ` and
-`DirichletCharacter ℂ q`, then inspect axioms and move the exact theorem to pipeline stage 3.
+Module: `GaloisForLFunctions.RHTower.DirichletCharacterTwist`
+
+Kernel-checked declarations:
+
+- `RHTower.characterLevelDepletion_apply_of_coprime`
+- `RHTower.characterLevelDepletion_apply_of_not_coprime`
+- `RHTower.dirichletCharacterTwist_comp`
+- `RHTower.dirichletCharacterTwist_mul`
+- `RHTower.dirichletCharacterTwist_inv_twist`
+
+Targeted module build passed. `#print axioms` reports only Lean's standard `propext`,
+`Classical.choice`, and `Quot.sound`; no project axiom. Repository lint recognizes this module as
+reachable from the RHTower umbrella, but its global exit remains nonzero because ten pre-existing,
+unrelated modules are not wired into their respective umbrellas.

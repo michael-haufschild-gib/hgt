@@ -14,7 +14,7 @@ first-entrance decomposition of discounted occupation: occupation equals entranc
 unrestricted continuation from the entrance point.
 -/
 
-open scoped ENNReal
+open scoped ENNReal Topology
 
 set_option linter.unusedSectionVars false
 
@@ -901,5 +901,143 @@ theorem greenMass_singleton_eq_div (P : S → S → ℝ≥0∞) (hP : ∀ x, ∑
   rw [greenMass_singleton_eq, hsolve, div_eq_mul_inv]
 
 end Singleton
+
+section Resolvent
+
+variable {S : Type*} [Countable S]
+
+/-- Interchange of a finite sum with a countable sum of extended nonnegative reals. -/
+theorem tsum_finset_sum_comm {ι : Type*} (s : Finset ι) (f : ι → S → ℝ≥0∞) :
+    ∑ i ∈ s, ∑' z : S, f i z = ∑' z : S, ∑ i ∈ s, f i z := by
+  classical
+  induction s using Finset.induction with
+  | empty => simp
+  | insert i s hi ih => simp [Finset.sum_insert hi, ENNReal.tsum_add, ih]
+
+/-- The iterated discounted return kernel.  `returnIterate P a A k z B` is the mass of `k`
+successive discounted returns to `A` starting from `z` and landing in `B`. -/
+noncomputable def returnIterate (P : S → S → ℝ≥0∞) (a : ℝ≥0∞) (A : Set S) :
+    ℕ → S → Set S → ℝ≥0∞
+  | 0, z, B => Set.indicator B 1 z
+  | (k + 1), z, B => ∑' w : S, returnMass P a A z {w} * returnIterate P a A k w B
+
+theorem returnIterate_zero (P : S → S → ℝ≥0∞) (a : ℝ≥0∞) (A : Set S) (z : S) (B : Set S) :
+    returnIterate P a A 0 z B = Set.indicator B 1 z := rfl
+
+theorem returnIterate_succ (P : S → S → ℝ≥0∞) (a : ℝ≥0∞) (A : Set S) (k : ℕ) (z : S) (B : Set S) :
+    returnIterate P a A (k + 1) z B =
+      ∑' w : S, returnMass P a A z {w} * returnIterate P a A k w B := rfl
+
+/-- The discounted return kernel is countably additive over the target points. -/
+theorem tsum_returnMass_singleton (P : S → S → ℝ≥0∞) (a : ℝ≥0∞) (A : Set S) (z : S) :
+    (∑' w : S, returnMass P a A z {w}) = returnMass P a A z A := by
+  rw [returnMass]
+  have hy : ∀ y : S, (∑' w : S, P z y * entranceMass P a A y {w}) =
+      P z y * entranceMass P a A y A := by
+    intro y
+    rw [ENNReal.tsum_mul_left, tsum_entranceMass_singleton_self]
+  calc (∑' w : S, a * ∑' y : S, P z y * entranceMass P a A y {w})
+      = a * ∑' w : S, ∑' y : S, P z y * entranceMass P a A y {w} := ENNReal.tsum_mul_left
+    _ = a * ∑' y : S, ∑' w : S, P z y * entranceMass P a A y {w} := by rw [ENNReal.tsum_comm]
+    _ = a * ∑' y : S, P z y * entranceMass P a A y A := by rw [tsum_congr hy]
+
+/-- Every truncated Neumann sum of return kernels is dominated by the discounted occupation. -/
+theorem sum_range_returnIterate_le_greenMass (P : S → S → ℝ≥0∞) (a : ℝ≥0∞) {A B : Set S}
+    (hBA : B ⊆ A) (n : ℕ) (z : S) :
+    ∑ k ∈ Finset.range n, returnIterate P a A k z B ≤ greenMass P a z B := by
+  induction n generalizing z with
+  | zero => simp
+  | succ n ih =>
+    rw [Finset.sum_range_succ']
+    have hswap : ∑ k ∈ Finset.range n, returnIterate P a A (k + 1) z B =
+        ∑' w : S, returnMass P a A z {w} * ∑ k ∈ Finset.range n, returnIterate P a A k w B := by
+      simp_rw [returnIterate_succ]
+      rw [tsum_finset_sum_comm]
+      exact tsum_congr fun w => (Finset.mul_sum _ _ _).symm
+    rw [hswap, returnIterate_zero]
+    rw [greenMass_eq_add_tsum_returnMass P a hBA z, add_comm]
+    exact add_le_add_right (ENNReal.tsum_le_tsum fun w => mul_le_mul_right (ih w) _) _
+
+/-- The discounted occupation exceeds a truncated Neumann sum only by a geometric remainder. -/
+theorem greenMass_le_sum_range_returnIterate_add (P : S → S → ℝ≥0∞)
+    (hP : ∀ x, ∑' y : S, P x y = 1) {a : ℝ≥0∞} (ha : a ≤ 1) {A B : Set S} (hBA : B ⊆ A)
+    (n : ℕ) (z : S) :
+    greenMass P a z B ≤ (∑ k ∈ Finset.range n, returnIterate P a A k z B) +
+      a ^ n * ∑' m : ℕ, a ^ m := by
+  induction n generalizing z with
+  | zero => simpa using greenMass_le_geometric P hP a z B
+  | succ n ih =>
+    rw [greenMass_eq_add_tsum_returnMass P a hBA z, Finset.sum_range_succ', returnIterate_zero]
+    have hstep : ∀ w : S, returnMass P a A z {w} * greenMass P a w B ≤
+        returnMass P a A z {w} * ((∑ k ∈ Finset.range n, returnIterate P a A k w B) +
+          a ^ n * ∑' m : ℕ, a ^ m) := fun w => mul_le_mul_right (ih w) _
+    have hsplit : (∑' w : S, returnMass P a A z {w} *
+        ((∑ k ∈ Finset.range n, returnIterate P a A k w B) + a ^ n * ∑' m : ℕ, a ^ m)) =
+        (∑' w : S, returnMass P a A z {w} * ∑ k ∈ Finset.range n, returnIterate P a A k w B) +
+          (∑' w : S, returnMass P a A z {w}) * (a ^ n * ∑' m : ℕ, a ^ m) := by
+      rw [← ENNReal.tsum_mul_right, ← ENNReal.tsum_add]
+      exact tsum_congr fun w => mul_add _ _ _
+    have hiter : (∑' w : S, returnMass P a A z {w} *
+        ∑ k ∈ Finset.range n, returnIterate P a A k w B) =
+        ∑ k ∈ Finset.range n, returnIterate P a A (k + 1) z B := by
+      simp_rw [returnIterate_succ]
+      rw [tsum_finset_sum_comm]
+      exact tsum_congr fun w => Finset.mul_sum _ _ _
+    have htail : (∑' w : S, returnMass P a A z {w}) * (a ^ n * ∑' m : ℕ, a ^ m) ≤
+        a ^ (n + 1) * ∑' m : ℕ, a ^ m := by
+      rw [tsum_returnMass_singleton, pow_succ, mul_comm (a ^ n) a, mul_assoc]
+      exact mul_le_mul_left (returnMass_le P hP ha A z) _
+    calc Set.indicator B 1 z + ∑' w : S, returnMass P a A z {w} * greenMass P a w B
+        ≤ Set.indicator B 1 z + ∑' w : S, returnMass P a A z {w} *
+            ((∑ k ∈ Finset.range n, returnIterate P a A k w B) +
+              a ^ n * ∑' m : ℕ, a ^ m) := add_le_add_right (ENNReal.tsum_le_tsum hstep) _
+      _ = Set.indicator B 1 z +
+            ((∑ k ∈ Finset.range n, returnIterate P a A (k + 1) z B) +
+              (∑' w : S, returnMass P a A z {w}) * (a ^ n * ∑' m : ℕ, a ^ m)) := by
+            rw [hsplit, hiter]
+      _ ≤ Set.indicator B 1 z +
+            ((∑ k ∈ Finset.range n, returnIterate P a A (k + 1) z B) +
+              a ^ (n + 1) * ∑' m : ℕ, a ^ m) := add_le_add_right (add_le_add_right htail _) _
+      _ = (∑ k ∈ Finset.range n, returnIterate P a A (k + 1) z B) + Set.indicator B 1 z +
+            a ^ (n + 1) * ∑' m : ℕ, a ^ m := by ring
+
+/-- **Neumann resolvent for the discounted occupation.**  Below the dependence radius the
+discounted occupation of a target inside `A` is the convergent Neumann series of the discounted
+return kernel. -/
+theorem greenMass_eq_tsum_returnIterate (P : S → S → ℝ≥0∞) (hP : ∀ x, ∑' y : S, P x y = 1)
+    {a : ℝ≥0∞} (ha : a < 1) {A B : Set S} (hBA : B ⊆ A) (z : S) :
+    greenMass P a z B = ∑' k : ℕ, returnIterate P a A k z B := by
+  have hgeom : (∑' m : ℕ, a ^ m) ≠ ⊤ := by
+    rw [ENNReal.tsum_geometric]
+    exact ENNReal.inv_ne_top.mpr (tsub_pos_of_lt ha).ne'
+  refine le_antisymm ?_ ?_
+  · have htend : Filter.Tendsto
+        (fun n : ℕ => (∑' k : ℕ, returnIterate P a A k z B) + a ^ n * ∑' m : ℕ, a ^ m)
+        Filter.atTop (𝓝 ((∑' k : ℕ, returnIterate P a A k z B) + 0)) := by
+      refine Filter.Tendsto.const_add _ ?_
+      have := ENNReal.Tendsto.mul_const (b := ∑' m : ℕ, a ^ m)
+        (ENNReal.tendsto_pow_atTop_nhds_zero_of_lt_one ha) (Or.inr hgeom)
+      simpa using this
+    rw [← add_zero (∑' k : ℕ, returnIterate P a A k z B)]
+    refine ge_of_tendsto htend (Filter.Eventually.of_forall fun n => ?_)
+    refine le_trans (greenMass_le_sum_range_returnIterate_add P hP ha.le hBA n z) ?_
+    exact add_le_add_left (ENNReal.sum_le_tsum (Finset.range n)) _
+  · rw [ENNReal.tsum_eq_iSup_nat]
+    exact iSup_le fun n => sum_range_returnIterate_le_greenMass P a hBA n z
+
+/-- **Entrance--return resolvent law.**  Discounted occupation of a target inside `A` is the
+discounted entrance measure composed with the Neumann resolvent of the discounted return kernel. -/
+theorem greenMass_eq_tsum_entranceMass_mul_returnIterate (P : S → S → ℝ≥0∞)
+    (hP : ∀ x, ∑' y : S, P x y = 1) {a : ℝ≥0∞} (ha : a < 1) {A B : Set S} (hBA : B ⊆ A) (x : S) :
+    greenMass P a x B =
+      ∑' k : ℕ, ∑' z : S, entranceMass P a A x {z} * returnIterate P a A k z B := by
+  rw [greenMass_eq_tsum_entranceMass P a A B hBA x]
+  have hz : ∀ z : S, entranceMass P a A x {z} * greenMass P a z B =
+      ∑' k : ℕ, entranceMass P a A x {z} * returnIterate P a A k z B := fun z => by
+    rw [greenMass_eq_tsum_returnIterate P hP ha hBA z, ENNReal.tsum_mul_left]
+  rw [tsum_congr hz]
+  exact ENNReal.tsum_comm
+
+end Resolvent
 
 end GaloisForLFunctions.RHTower

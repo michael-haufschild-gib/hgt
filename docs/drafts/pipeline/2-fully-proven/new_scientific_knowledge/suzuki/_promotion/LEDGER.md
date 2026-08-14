@@ -6948,3 +6948,69 @@ its rapid decay on horizontal lines, and the pairing argument that turns the shi
 identity `e^{-σL}𝓕⁻(f(·+iσ)) = e^{-σ'L}𝓕⁻(f(·+iσ'))` between the `L²` transforms.
 
 All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## HH — card 6's `(25)` is closed and the card is promoted
+
+The Paley–Wiener step of `suzuki-gamma-homogeneous-half-log-scattering-classification` is now
+formal, so the card carries no unformalised statement and moves to stage 3.
+
+```text
+HTGeometry/GammaVerticalSubstripBound.lean
+  continuousOn_realGammaRatio       the real Gamma quotient Γ(1-y)/Γ(1+y) is continuous in y
+  exists_bound_gammaRatio_substrip  **‖Γ(1-y+ix)‖/‖Γ(1+y+ix)‖ ≤ K on σ₀ ≤ y ≤ σ₁ < 1, all x**
+HTGeometry/CompactTestTransform.lean
+  testTransform                     Ψ(z) = ∫ ψ(L)e^{izL}dL
+  integrable_testTransform_integrand, norm_exp_I_mul
+  differentiable_testTransform      Ψ is entire (differentiation under the integral sign)
+  hasDerivAt_expLine, testTransform_ibp, testTransform_ibp_two
+                                    (iz)²Ψ(z) = ∫ψ''(L)e^{izL}dL, two integrations by parts
+  norm_testTransform_le_exp         the L¹ bound on a horizontal strip
+  exists_testTransform_decay        **‖Ψ(z)‖ ≤ C/(1+‖z‖²) uniformly on a horizontal strip**
+  testTransformTwoPi, exp_twoPi_line_split, testTransformTwoPi_ofReal_line,
+  differentiable_testTransformTwoPi, exists_testTransformTwoPi_decay
+                                    the same in the 2π normalisation of the Fourier transform
+RHTower/SuzukiGammaStripUniformBound.lean
+  suzukiGammaStripNormSq_le_of_mem  the strip carrier is bounded on a closed substrip
+  exists_bound_norm_stripSolution   **the glued strip solution is bounded on σ₀ ≤ Im z ≤ σ₁**
+RHTower/SuzukiGammaStripContourPairing.lean
+  pairedIntegrand                   Ψ(z)·f(z)
+  mem_imStrip_of_mem_uIcc, differentiableAt_pairedIntegrand
+  exists_bound_pairedIntegrand      ‖Ψ(z)f(z)‖ ≤ A/(1+(Re z)²) across the substrip
+  continuous_pairedIntegrand_line, integrable_pairedIntegrand_line
+  pairedIntegrand_line_shift        **∫Ψ(x+iσ)f(x+iσ)dx does not depend on σ ∈ (0,1)**
+RHTower/SuzukiGammaStripFourierWeight.lean
+  locallyIntegrable_real_continuous_smul
+  stripLine, continuous_stripLine, memLp_stripLine, stripLineLp
+                                    the boundary datum of height σ as an L² class
+  weightedTest, contDiff_weightedTest, hasCompactSupport_weightedTest
+  fourierInv_weightedTest           𝓕⁻(ψ·e^{-2πσ·})(x) = Ψ(x+iσ)
+  integral_weightedTest_smul_fourierInv
+                                    **the multiplication formula**: testing 𝓕⁻(f_σ) against the
+                                    weighted test function equals testing f_σ against Ψ(·+iσ)
+  stripFourier_weight_eq            **card 6's `(32)`**: e^{-2πσL}𝓕⁻(f_σ)(L) is independent of σ
+  exists_memLp_exp_smul_stripFourier
+                                    **card 6's `(25)`**: one frequency profile F with
+                                    e^{2πσL}F ∈ L²(ℝ;X) for every 0 < σ < 1
+```
+
+The route is the pairing argument, not a pointwise contour shift, because for `σ ≤ 1/2` the
+boundary datum is only square integrable and no pointwise inversion formula is available.  A
+compactly supported smooth `ψ` has an entire extension `Ψ(z) = ∫ψ(L)e^{2πizL}dL` which is
+`O(|z|^{-2})` on every horizontal strip — two integrations by parts against `e^{2πizL}` — and
+`ψ·e^{-2πσL}` is again compactly supported and smooth, hence Schwartz, with
+`𝓕⁻(ψ·e^{-2πσ·})(x) = Ψ(x+iσ)`.  Mathlib's identification of the `L²` Fourier transform with the
+tempered-distribution transform (`MeasureTheory.Lp.fourierInv_toTemperedDistribution_eq`) turns the
+pairing of `𝓕⁻(f_σ)` with that test function into the pairing of `f_σ` with `Ψ(·+iσ)`, which the
+rectangle Cauchy theorem makes σ-independent.  The du Bois-Reymond lemma
+(`ae_eq_of_integral_contDiff_smul_eq`) then gives the a.e. identity between the damped transforms.
+
+Two ingredients are the reason no Stirling asymptotics are needed.  The Gamma quotient bound is the
+Beta bound of section HG, whose right-hand side `Γ(1-y)/Γ(1+y)` is continuous on `(0,1)` and hence
+bounded on a compact height interval; and the operator factor is bounded by `e^{σ‖T‖/2}` because `T`
+is self-adjoint.  Together with `‖z‖ ≥ Im z ≥ σ₀` these bound the strip solution uniformly across a
+closed substrip, which is exactly what kills the two vertical segments of the rectangle.
+
+The certificate is
+`3-formalized/new_scientific_knowledge/suzuki/suzuki-gamma-homogeneous-half-log-scattering-classification-formalized.md`.
+Twelve cards remain in stage 2.  All declarations audit to
+`[propext, Classical.choice, Quot.sound]`.

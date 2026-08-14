@@ -14,34 +14,37 @@ whose coefficients depend on the **base point only**.  That is what lets each su
 as a convergent series times a monomial in the increment: every factor of the increment is exposed,
 so a product of two or more of them can be seen to gain.
 
-The family is produced by the same induction as the ideal membership.  Multiplying by a variable
-`X i` acts on it in three ways: it multiplies every coefficient by `X i`, it shifts every
-multi-degree by `i`, and it creates the pure quadratic entries `∂_j p` at the multi-degrees
+The family is produced by the induction along constants, sums and multiplication by a variable.
+Multiplying by `X i` acts on it in three ways: it multiplies every coefficient by `X i`, it shifts
+every multi-degree by `i`, and it creates the pure quadratic entries `∂_j p` at the multi-degrees
 `e_i + e_j`.
+
+The coefficients of the family stay inside any subsemiring containing those of the equation — the
+construction only adds, multiplies by variables, and differentiates, and differentiation only
+introduces natural-number factors.  Running the induction along `P = ∑ monomial` rather than along
+an arbitrary decomposition into a sum is what keeps that hypothesis available at every step.
 -/
 
 open MvPolynomial
 
 namespace GaloisForLFunctions.HTGeometry
 
-variable {ι R A : Type*} [CommSemiring R] [CommRing A] [Algebra R A] [Fintype ι] [DecidableEq ι]
+variable {ι R : Type*} [CommSemiring R]
 
 /-! ### Monomials in the increment -/
 
 /-- The monomial in the increment attached to a multi-degree. -/
-def jetMonomial (L : ι → A) (α : ι →₀ ℕ) : A := α.prod fun i k => L i ^ k
+def jetMonomial {A : Type*} [CommRing A] (L : ι → A) (α : ι →₀ ℕ) : A :=
+  α.prod fun i k => L i ^ k
 
-omit [Fintype ι] [DecidableEq ι] in
-@[simp] theorem jetMonomial_zero (L : ι → A) : jetMonomial L 0 = 1 :=
+@[simp] theorem jetMonomial_zero {A : Type*} [CommRing A] (L : ι → A) : jetMonomial L 0 = 1 :=
   Finsupp.prod_zero_index
 
-omit [Fintype ι] [DecidableEq ι] in
-theorem jetMonomial_add (L : ι → A) (α β : ι →₀ ℕ) :
+theorem jetMonomial_add {A : Type*} [CommRing A] (L : ι → A) (α β : ι →₀ ℕ) :
     jetMonomial L (α + β) = jetMonomial L α * jetMonomial L β :=
   Finsupp.prod_add_index' (fun _ => pow_zero _) (fun i a b => pow_add (L i) a b)
 
-omit [Fintype ι] [DecidableEq ι] in
-@[simp] theorem jetMonomial_single (L : ι → A) (i : ι) :
+@[simp] theorem jetMonomial_single {A : Type*} [CommRing A] (L : ι → A) (i : ι) :
     jetMonomial L (Finsupp.single i 1) = L i := by
   have h : (Finsupp.single i 1).prod (fun (i : ι) (k : ℕ) => L i ^ k) = L i ^ 1 :=
     Finsupp.prod_single_index (pow_zero (L i))
@@ -50,15 +53,74 @@ omit [Fintype ι] [DecidableEq ι] in
 /-- The total degree of a multi-degree. -/
 def jetDegree (α : ι →₀ ℕ) : ℕ := α.sum fun _ k => k
 
-omit [Fintype ι] [DecidableEq ι] in
 theorem jetDegree_add (α β : ι →₀ ℕ) : jetDegree (α + β) = jetDegree α + jetDegree β :=
   Finsupp.sum_add_index' (fun _ => rfl) (fun _ _ _ => rfl)
 
-omit [Fintype ι] [DecidableEq ι] in
 @[simp] theorem jetDegree_single (i : ι) (k : ℕ) : jetDegree (Finsupp.single i k) = k :=
   Finsupp.sum_single_index rfl
 
+theorem jetDegree_eq_zero_iff {α : ι →₀ ℕ} : jetDegree α = 0 ↔ α = 0 := by
+  constructor
+  · intro h
+    ext i
+    by_cases hi : i ∈ α.support
+    · exfalso
+      have hpos : 0 < α i := Nat.pos_of_ne_zero (Finsupp.mem_support_iff.mp hi)
+      have hle : α i ≤ jetDegree α :=
+        Finset.single_le_sum (f := fun j => α j) (fun j _ => Nat.zero_le _) hi
+      omega
+    · simp [Finsupp.notMem_support_iff.mp hi]
+  · intro h
+    rw [h]
+    simp [jetDegree]
+
+theorem exists_jetDegree_pred {α : ι →₀ ℕ} {d : ℕ} (h : jetDegree α = d + 1) :
+    ∃ (j : ι) (β : ι →₀ ℕ), α = β + Finsupp.single j 1 ∧ jetDegree β = d := by
+  classical
+  have hne : α ≠ 0 := by
+    intro h0
+    rw [h0] at h
+    simp [jetDegree] at h
+  obtain ⟨j, hj⟩ := Finsupp.support_nonempty_iff.mpr hne
+  have hj1 : 1 ≤ α j := Nat.one_le_iff_ne_zero.mpr (Finsupp.mem_support_iff.mp hj)
+  have hdec : α = (α - Finsupp.single j 1) + Finsupp.single j 1 := by
+    ext i
+    rw [Finsupp.add_apply, Finsupp.tsub_apply]
+    by_cases hij : i = j
+    · subst hij
+      rw [Finsupp.single_eq_same]
+      omega
+    · rw [Finsupp.single_apply, if_neg (fun h => hij h.symm)]
+      omega
+  refine ⟨j, α - Finsupp.single j 1, hdec, ?_⟩
+  · have := jetDegree_add (α - Finsupp.single j 1) (Finsupp.single j 1)
+    rw [← hdec, h, jetDegree_single] at this
+    omega
+
+/-! ### Natural numbers in a subsemiring -/
+
+theorem natCast_mem_subsemiring (R₀ : Subsemiring R) : ∀ n : ℕ, (n : R) ∈ R₀ := by
+  intro n
+  induction n with
+  | zero => simp
+  | succ n ih =>
+      rw [Nat.cast_succ]
+      exact R₀.add_mem ih R₀.one_mem
+
 /-! ### The family -/
+
+variable [Fintype ι] [DecidableEq ι]
+
+/-- The Taylor defect of `P` is a sum of monomials of degree at least two in the increment, with
+coefficients in `R₀` depending on the base point alone. -/
+def HasTaylorDefectFamily (A : Type*) [CommRing A] [Algebra R A] (R₀ : Subsemiring R)
+    (P : MvPolynomial ι R) : Prop :=
+  ∃ T : (ι →₀ ℕ) →₀ MvPolynomial ι R,
+    (∀ α ∈ T.support, 2 ≤ jetDegree α) ∧
+    (∀ α σ, MvPolynomial.coeff σ (T α) ∈ R₀) ∧
+    ∀ S L : ι → A, taylorDefect S L P = T.sum fun α Q => aeval S Q * jetMonomial L α
+
+variable {A : Type*} [CommRing A] [Algebra R A]
 
 omit [Fintype ι] [DecidableEq ι] in
 private theorem sum_zero_aux (S : ι → A) (L : ι → A) (α : ι →₀ ℕ) :
@@ -72,89 +134,173 @@ private theorem sum_add_aux (S : ι → A) (L : ι → A) (α : ι →₀ ℕ)
       = aeval S Q₁ * jetMonomial L α + aeval S Q₂ * jetMonomial L α := by
   rw [map_add, add_mul]
 
-/-- **The Taylor defect is a sum of monomials of degree at least two**, with coefficients that are
-polynomials in the base point alone. -/
-theorem exists_taylorDefectFamily (P : MvPolynomial ι R) :
-    ∃ T : (ι →₀ ℕ) →₀ MvPolynomial ι R,
-      (∀ α ∈ T.support, 2 ≤ jetDegree α) ∧
-      ∀ S L : ι → A, taylorDefect S L P
-        = T.sum fun α Q => aeval S Q * jetMonomial L α := by
+omit [DecidableEq ι] in
+theorem hasTaylorDefectFamily_C (R₀ : Subsemiring R) (a : R) :
+    HasTaylorDefectFamily A R₀ (C a : MvPolynomial ι R) := by
+  refine ⟨0, by simp, ?_, fun S L => ?_⟩
+  · intro α σ
+    simp
+  · rw [taylorDefect_C, Finsupp.sum_zero_index]
+
+theorem HasTaylorDefectFamily.add {R₀ : Subsemiring R} {p q : MvPolynomial ι R}
+    (hp : HasTaylorDefectFamily A R₀ p) (hq : HasTaylorDefectFamily A R₀ q) :
+    HasTaylorDefectFamily A R₀ (p + q) := by
   classical
-  induction P using MvPolynomial.induction_on with
-  | C r =>
-      refine ⟨0, by simp, fun S L => ?_⟩
-      rw [taylorDefect_C, Finsupp.sum_zero_index]
-  | add p q hp hq =>
-      obtain ⟨Tp, hTps, hTp⟩ := hp
-      obtain ⟨Tq, hTqs, hTq⟩ := hq
-      refine ⟨Tp + Tq, ?_, fun S L => ?_⟩
-      · intro α hα
-        rcases Finset.mem_union.mp (Finsupp.support_add hα) with h | h
-        · exact hTps α h
-        · exact hTqs α h
-      · rw [taylorDefect_add, hTp, hTq,
-          Finsupp.sum_add_index' (sum_zero_aux S L) (sum_add_aux S L)]
-  | mul_X p i hp =>
-      obtain ⟨Tp, hTps, hTp⟩ := hp
-      refine ⟨Tp.mapRange (fun Q => Q * X i) (by simp)
+  obtain ⟨Tp, hTps, hTpc, hTp⟩ := hp
+  obtain ⟨Tq, hTqs, hTqc, hTq⟩ := hq
+  refine ⟨Tp + Tq, ?_, ?_, fun S L => ?_⟩
+  · intro α hα
+    rcases Finset.mem_union.mp (Finsupp.support_add hα) with h | h
+    · exact hTps α h
+    · exact hTqs α h
+  · intro α σ
+    rw [Finsupp.add_apply, MvPolynomial.coeff_add]
+    exact R₀.add_mem (hTpc α σ) (hTqc α σ)
+  · rw [taylorDefect_add, hTp, hTq,
+      Finsupp.sum_add_index' (sum_zero_aux S L) (sum_add_aux S L)]
+
+theorem HasTaylorDefectFamily.mul_X {R₀ : Subsemiring R} {p : MvPolynomial ι R}
+    (hp : HasTaylorDefectFamily A R₀ p) (hpc : ∀ σ, MvPolynomial.coeff σ p ∈ R₀) (i : ι) :
+    HasTaylorDefectFamily A R₀ (p * X i) := by
+  classical
+  obtain ⟨Tp, hTps, hTpc, hTp⟩ := hp
+  have hpd : ∀ (j : ι) (σ : ι →₀ ℕ), MvPolynomial.coeff σ (pderiv j p) ∈ R₀ := by
+    intro j σ
+    rw [MvPolynomial.coeff_pderiv]
+    refine R₀.mul_mem (hpc _) ?_
+    have hnat : ((σ j : R) + 1) = ((σ j + 1 : ℕ) : R) := by push_cast; ring
+    rw [hnat]
+    exact natCast_mem_subsemiring R₀ _
+  have hinj : Function.Injective (fun α : ι →₀ ℕ => α + Finsupp.single i 1) :=
+    fun _ _ h => by simpa using h
+  refine ⟨Tp.mapRange (fun Q => Q * X i) (by simp)
+      + Finsupp.mapDomain (fun α => α + Finsupp.single i 1) Tp
+      + ∑ j : ι, Finsupp.single (Finsupp.single i 1 + Finsupp.single j 1) (pderiv j p),
+    ?_, ?_, fun S L => ?_⟩
+  · intro α hα
+    rcases Finset.mem_union.mp (Finsupp.support_add hα) with h | h
+    · rcases Finset.mem_union.mp (Finsupp.support_add h) with h' | h'
+      · exact hTps α (Finsupp.support_mapRange h')
+      · obtain ⟨β, hβ, hβα⟩ := Finset.mem_image.mp (Finsupp.mapDomain_support h')
+        have hd := hTps β hβ
+        rw [← hβα, jetDegree_add, jetDegree_single]
+        omega
+    · have hmem : α ∈ Finset.univ.biUnion
+          (fun j : ι => (Finsupp.single (Finsupp.single i 1 + Finsupp.single j 1)
+            (pderiv j p)).support) := Finsupp.support_finsetSum h
+      obtain ⟨j, _, hj⟩ := Finset.mem_biUnion.mp hmem
+      have hsub := Finsupp.support_single_subset hj
+      rw [Finset.mem_singleton.mp hsub, jetDegree_add, jetDegree_single, jetDegree_single]
+  · intro α σ
+    rw [Finsupp.add_apply, Finsupp.add_apply, MvPolynomial.coeff_add, MvPolynomial.coeff_add]
+    refine R₀.add_mem (R₀.add_mem ?_ ?_) ?_
+    · rw [Finsupp.mapRange_apply, MvPolynomial.coeff_mul_X']
+      by_cases hi : i ∈ σ.support
+      · rw [if_pos hi]
+        exact hTpc _ _
+      · rw [if_neg hi]
+        exact R₀.zero_mem
+    · by_cases hα : α ∈ Set.range (fun β : ι →₀ ℕ => β + Finsupp.single i 1)
+      · obtain ⟨β, rfl⟩ := hα
+        rw [Finsupp.mapDomain_apply hinj]
+        exact hTpc β σ
+      · rw [Finsupp.mapDomain_notin_range _ _ hα]
+        simp
+    · rw [Finsupp.finsetSum_apply, MvPolynomial.coeff_sum]
+      refine R₀.sum_mem fun j _ => ?_
+      rw [Finsupp.single_apply]
+      by_cases hj : Finsupp.single i 1 + Finsupp.single j 1 = α
+      · rw [if_pos hj]
+        exact hpd j σ
+      · rw [if_neg hj]
+        simp
+  · have hsplit : ((Tp.mapRange (fun Q => Q * X i) (by simp)
           + Finsupp.mapDomain (fun α => α + Finsupp.single i 1) Tp
-          + ∑ j : ι, Finsupp.single (Finsupp.single i 1 + Finsupp.single j 1) (pderiv j p),
-        ?_, fun S L => ?_⟩
-      · intro α hα
-        rcases Finset.mem_union.mp (Finsupp.support_add hα) with h | h
-        · rcases Finset.mem_union.mp (Finsupp.support_add h) with h' | h'
-          · exact hTps α (Finsupp.support_mapRange h')
-          · obtain ⟨β, hβ, hβα⟩ := Finset.mem_image.mp (Finsupp.mapDomain_support h')
-            have hd := hTps β hβ
-            rw [← hβα, jetDegree_add, jetDegree_single]
-            omega
-        · have hmem : α ∈ Finset.univ.biUnion
-              (fun j : ι => (Finsupp.single (Finsupp.single i 1 + Finsupp.single j 1)
-                (pderiv j p)).support) := Finsupp.support_finsetSum h
-          obtain ⟨j, _, hj⟩ := Finset.mem_biUnion.mp hmem
-          have hsub := Finsupp.support_single_subset hj
-          rw [Finset.mem_singleton.mp hsub, jetDegree_add, jetDegree_single, jetDegree_single]
-      · have hsplit : ((Tp.mapRange (fun Q => Q * X i) (by simp)
-              + Finsupp.mapDomain (fun α => α + Finsupp.single i 1) Tp
-              + ∑ j : ι, Finsupp.single (Finsupp.single i 1 + Finsupp.single j 1)
-                  (pderiv j p) : (ι →₀ ℕ) →₀ MvPolynomial ι R).sum
+          + ∑ j : ι, Finsupp.single (Finsupp.single i 1 + Finsupp.single j 1)
+              (pderiv j p) : (ι →₀ ℕ) →₀ MvPolynomial ι R).sum
+        fun α Q => aeval S Q * jetMonomial L α)
+        = ((Tp.mapRange (fun Q => Q * X i) (by simp) : (ι →₀ ℕ) →₀ MvPolynomial ι R).sum
             fun α Q => aeval S Q * jetMonomial L α)
-            = ((Tp.mapRange (fun Q => Q * X i) (by simp) : (ι →₀ ℕ) →₀ MvPolynomial ι R).sum
-                fun α Q => aeval S Q * jetMonomial L α)
-              + ((Finsupp.mapDomain (fun α => α + Finsupp.single i 1) Tp).sum
-                fun α Q => aeval S Q * jetMonomial L α)
-              + ((∑ j : ι, Finsupp.single (Finsupp.single i 1 + Finsupp.single j 1)
-                  (pderiv j p) : (ι →₀ ℕ) →₀ MvPolynomial ι R).sum
-                fun α Q => aeval S Q * jetMonomial L α) := by
-          rw [Finsupp.sum_add_index' (sum_zero_aux S L) (sum_add_aux S L),
-            Finsupp.sum_add_index' (sum_zero_aux S L) (sum_add_aux S L)]
-        rw [hsplit]
-        have h1 : ((Tp.mapRange (fun Q => Q * X i) (by simp) : (ι →₀ ℕ) →₀ MvPolynomial ι R).sum
-              fun α Q => aeval S Q * jetMonomial L α)
-            = S i * taylorDefect S L p := by
-          rw [Finsupp.sum_mapRange_index (sum_zero_aux S L), hTp S L, Finsupp.mul_sum]
-          refine Finsupp.sum_congr fun α _ => ?_
-          rw [map_mul, aeval_X]
-          ring
-        have h2 : ((Finsupp.mapDomain (fun α => α + Finsupp.single i 1) Tp).sum
-              fun α Q => aeval S Q * jetMonomial L α)
-            = L i * taylorDefect S L p := by
-          rw [Finsupp.sum_mapDomain_index (fun _ => sum_zero_aux S L _)
-              (fun _ _ _ => sum_add_aux S L _ _ _), hTp S L, Finsupp.mul_sum]
-          refine Finsupp.sum_congr fun α _ => ?_
-          rw [jetMonomial_add, jetMonomial_single]
-          ring
-        have h3 : ((∑ j : ι, Finsupp.single (Finsupp.single i 1 + Finsupp.single j 1)
-                (pderiv j p) : (ι →₀ ℕ) →₀ MvPolynomial ι R).sum
-              fun α Q => aeval S Q * jetMonomial L α)
-            = L i * ∑ j, aeval S (pderiv j p) * L j := by
-          rw [← Finsupp.sum_finsetSum_index (sum_zero_aux S L) (sum_add_aux S L),
-            Finset.mul_sum]
-          refine Finset.sum_congr rfl fun j _ => ?_
-          rw [Finsupp.sum_single_index (sum_zero_aux S L _), jetMonomial_add,
-            jetMonomial_single, jetMonomial_single]
-          ring
-        rw [h1, h2, h3, taylorDefect_mul_X]
-        ring
+          + ((Finsupp.mapDomain (fun α => α + Finsupp.single i 1) Tp).sum
+            fun α Q => aeval S Q * jetMonomial L α)
+          + ((∑ j : ι, Finsupp.single (Finsupp.single i 1 + Finsupp.single j 1)
+              (pderiv j p) : (ι →₀ ℕ) →₀ MvPolynomial ι R).sum
+            fun α Q => aeval S Q * jetMonomial L α) := by
+      rw [Finsupp.sum_add_index' (sum_zero_aux S L) (sum_add_aux S L),
+        Finsupp.sum_add_index' (sum_zero_aux S L) (sum_add_aux S L)]
+    rw [hsplit]
+    have h1 : ((Tp.mapRange (fun Q => Q * X i) (by simp) : (ι →₀ ℕ) →₀ MvPolynomial ι R).sum
+          fun α Q => aeval S Q * jetMonomial L α)
+        = S i * taylorDefect S L p := by
+      rw [Finsupp.sum_mapRange_index (sum_zero_aux S L), hTp S L, Finsupp.mul_sum]
+      refine Finsupp.sum_congr fun α _ => ?_
+      rw [map_mul, aeval_X]
+      ring
+    have h2 : ((Finsupp.mapDomain (fun α => α + Finsupp.single i 1) Tp).sum
+          fun α Q => aeval S Q * jetMonomial L α)
+        = L i * taylorDefect S L p := by
+      rw [Finsupp.sum_mapDomain_index (fun _ => sum_zero_aux S L _)
+          (fun _ _ _ => sum_add_aux S L _ _ _), hTp S L, Finsupp.mul_sum]
+      refine Finsupp.sum_congr fun α _ => ?_
+      rw [jetMonomial_add, jetMonomial_single]
+      ring
+    have h3 : ((∑ j : ι, Finsupp.single (Finsupp.single i 1 + Finsupp.single j 1)
+            (pderiv j p) : (ι →₀ ℕ) →₀ MvPolynomial ι R).sum
+          fun α Q => aeval S Q * jetMonomial L α)
+        = L i * ∑ j, aeval S (pderiv j p) * L j := by
+      rw [← Finsupp.sum_finsetSum_index (sum_zero_aux S L) (sum_add_aux S L),
+        Finset.mul_sum]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      rw [Finsupp.sum_single_index (sum_zero_aux S L _), jetMonomial_add,
+        jetMonomial_single, jetMonomial_single]
+      ring
+    rw [h1, h2, h3, taylorDefect_mul_X]
+    ring
+
+theorem hasTaylorDefectFamily_monomial (R₀ : Subsemiring R) {a : R} (ha : a ∈ R₀) :
+    ∀ (d : ℕ) (u : ι →₀ ℕ), jetDegree u = d → HasTaylorDefectFamily A R₀ (monomial u a) := by
+  classical
+  intro d
+  induction d with
+  | zero =>
+      intro u hu
+      rw [jetDegree_eq_zero_iff.mp hu, MvPolynomial.monomial_zero']
+      exact hasTaylorDefectFamily_C R₀ a
+  | succ d ih =>
+      intro u hu
+      obtain ⟨j, β, rfl, hβ⟩ := exists_jetDegree_pred hu
+      have hmul : (monomial (β + Finsupp.single j 1) a : MvPolynomial ι R)
+          = monomial β a * X j := by
+        rw [MvPolynomial.monomial_add_single, pow_one]
+      rw [hmul]
+      refine (ih β hβ).mul_X ?_ j
+      intro σ
+      rw [MvPolynomial.coeff_monomial]
+      by_cases hσ : β = σ
+      · rw [if_pos hσ]
+        exact ha
+      · rw [if_neg hσ]
+        exact R₀.zero_mem
+
+theorem hasTaylorDefectFamily_finsetSum {R₀ : Subsemiring R} {κ : Type*} (s : Finset κ)
+    (f : κ → MvPolynomial ι R) (h : ∀ i ∈ s, HasTaylorDefectFamily A R₀ (f i)) :
+    HasTaylorDefectFamily A R₀ (∑ i ∈ s, f i) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty =>
+      simpa using hasTaylorDefectFamily_C (A := A) R₀ 0
+  | insert a s ha ih =>
+      rw [Finset.sum_insert ha]
+      exact (h a (Finset.mem_insert_self a s)).add
+        (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
+
+/-- **The Taylor defect is a sum of monomials of degree at least two**, with coefficients in any
+subsemiring containing the coefficients of the polynomial. -/
+theorem hasTaylorDefectFamily (R₀ : Subsemiring R) (P : MvPolynomial ι R)
+    (hP : ∀ σ, MvPolynomial.coeff σ P ∈ R₀) : HasTaylorDefectFamily A R₀ P := by
+  classical
+  rw [MvPolynomial.as_sum P]
+  refine hasTaylorDefectFamily_finsetSum _ _ fun v _ => ?_
+  exact hasTaylorDefectFamily_monomial R₀ (hP v) (jetDegree v) v rfl
 
 end GaloisForLFunctions.HTGeometry

@@ -108,4 +108,51 @@ theorem integral_conj_mellin_line_mul_mellin_line
   rw [hphys, Complex.real_smul]
   push_cast
   ring
+
+/-! ## Regularity of the vertical trace -/
+
+theorem continuous_fourier_of_integrable {F : ℝ → ℂ} (hF : Integrable F) :
+    Continuous (𝓕 F) := by
+  have h := VectorFourier.fourierIntegral_continuous (V := ℝ) (W := ℝ) (E := ℂ)
+    (e := Real.fourierChar) (μ := volume) (L := innerₗ ℝ)
+    Real.continuous_fourierChar continuous_inner hF
+  refine h.congr fun x => ?_
+  rw [Real.fourier_eq]
+  rfl
+
+theorem continuous_mellin_line {f : ℝ → ℂ} {sigma : ℝ}
+    (hf1 : Integrable (logMellinLineSource f sigma)) :
+    Continuous (fun t : ℝ => mellin f ((sigma : ℂ) + (t : ℂ) * I)) := by
+  have hcont : Continuous (𝓕 (logMellinLineSource f sigma)) :=
+    continuous_fourier_of_integrable hf1
+  have hrw : (fun t : ℝ => mellin f ((sigma : ℂ) + (t : ℂ) * I))
+      = fun t : ℝ => 𝓕 (logMellinLineSource f sigma) (t / (2 * Real.pi)) := by
+    funext t
+    rw [mellin_line_eq_fourier_logMellinLineSource]
+  rw [hrw]
+  exact hcont.comp (by fun_prop)
+
+/-- The polarized vertical integrand is integrable. -/
+theorem integrable_conj_mellin_line_mul_mellin_line {f g : ℝ → ℂ} {sigma : ℝ}
+    (hf1 : Integrable (logMellinLineSource f sigma))
+    (hf2 : MemLp (logMellinLineSource f sigma) 2 volume)
+    (hg1 : Integrable (logMellinLineSource g sigma))
+    (hg2 : MemLp (logMellinLineSource g sigma) 2 volume) :
+    Integrable (fun t : ℝ => (starRingEnd ℂ) (mellin f ((sigma : ℂ) + (t : ℂ) * I)) *
+      mellin g ((sigma : ℂ) + (t : ℂ) * I)) := by
+  have hfsq := integrable_norm_sq_mellin_line_of_logMellinLineSource hf1 hf2
+  have hgsq := integrable_norm_sq_mellin_line_of_logMellinLineSource hg1 hg2
+  have hmaj : Integrable (fun t : ℝ =>
+      (‖mellin f ((sigma : ℂ) + (t : ℂ) * I)‖ ^ 2 +
+        ‖mellin g ((sigma : ℂ) + (t : ℂ) * I)‖ ^ 2) / 2) := (hfsq.add hgsq).div_const 2
+  refine Integrable.mono' hmaj ?_ ?_
+  · exact ((Complex.continuous_conj.comp (continuous_mellin_line hf1)).mul
+      (continuous_mellin_line hg1)).aestronglyMeasurable
+  · refine Filter.Eventually.of_forall fun t => ?_
+    rw [norm_mul, Complex.norm_conj]
+    nlinarith [sq_nonneg (‖mellin f ((sigma : ℂ) + (t : ℂ) * I)‖ -
+      ‖mellin g ((sigma : ℂ) + (t : ℂ) * I)‖),
+      norm_nonneg (mellin f ((sigma : ℂ) + (t : ℂ) * I)),
+      norm_nonneg (mellin g ((sigma : ℂ) + (t : ℂ) * I))]
+
 end RHTower

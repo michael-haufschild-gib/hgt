@@ -35,6 +35,10 @@ formalized at the exact nonnegative block-envelope level, with the unconditional
 The paper theorem composes that analytic estimate with already paper-proved literal source
 assembly, complementary flux, and formalized dyadic coverage.
 
+The separate axiom-clean module `SuzukiOnePrimeFractionalCarrier.lean` now constructs the required
+fractional `kappa=2/3` weighted shift group itself. Thus "polynomial group" is no longer an
+integer-exponent extrapolation; only its Gamma-resolvent one-block transport remains open.
+
 ## Gates
 
 - [x] exact far-end threshold formalized
@@ -42,5 +46,6 @@ assembly, complementary flux, and formalized dyadic coverage.
 - [x] concrete one-prime point formalized
 - [x] wired into `GaloisForLFunctions.RHTower`
 - [x] formalize backward block-primitive preservation
+- [x] construct the fractional `2/3` polynomial shift group
 - [ ] formalize vector-valued polynomial-group one-block estimate
 - [ ] formalize full one-prime completed-source corollary after infrastructure exists

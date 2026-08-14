@@ -1,9 +1,9 @@
 # Stark simple-zero order classification
 
 - **ID:** `artin-stark-simple-zero-order-classification`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Status:** `[PAPER-PROVED] [BRIDGE]`
+- **Status:** `[LEAN-PROVED] [BRIDGE]`
 - **Source:** Stark simple-zero mechanism; Foote--Murty order norm
 
 ## Exact statement
@@ -82,8 +82,17 @@ Artin L-functions inside Lean, does not address multiple zeros, and does not pro
 Any claim beyond simple Dedekind-zeta zeros still needs group/arithmetic information not present in
 the three integer constraints.
 
-## Lean target
+## Lean certificate `[LEAN-PROVED]`
 
-Formalize the exact classifier over arbitrary finite `I`, with `d : I -> Nat`, `n : I -> Int`, no
-new axioms, `sorry`, `admit`, `opaque`, `unsafe`, or target-equivalent proposition interface.
+- Module: `GaloisForLFunctions.RHTower.ArtinStarkSimpleZero`
+- Theorem: `GaloisForLFunctions.artin_stark_simpleZero_order_classifier`
+- Exact scope: arbitrary finite `I`, `degree : I -> Nat`, `order : I -> Int`; statement matches the
+  paper classifier above.
+- Leaf check: `lake env lean GaloisForLFunctions/RHTower/ArtinStarkSimpleZero.lean` passed.
+- Targeted olean: `lake build GaloisForLFunctions.RHTower.ArtinStarkSimpleZero` passed.
+- Axiom audit: only Lean standard axioms `propext`, `Classical.choice`, `Quot.sound`.
+- Escape scan: no `sorry`, `admit`, new `axiom`, `opaque`, or `unsafe` declaration.
+- Umbrella: imported by `GaloisForLFunctions.RHTower`; umbrella build intentionally not run.
 
+This certifies only integer-order classification. Full Artin/Heilbronn analytic infrastructure remains
+mandatory before treating literature frontier as formalized.

@@ -1205,3 +1205,76 @@ about the source:
    `FormalMahlerDescent` and `DifferentialAdjoinFiniteTrdeg` are the machinery to reuse;
 2. step (iv), the bridge from the formal statement to `DifferentialIndependent` of the analytic
    orbit, which the card already records as needing only the family jet vector.
+
+### Lean progress — `(11)` items 1 and 2 are closed: the orbit family is jointly hypertranscendental
+
+Both items listed above are now proved, unconditionally and axiom-clean.  The algebraic-coefficient
+hypothesis on the relation is gone, and the formal statement has been carried to the analytic
+register.
+
+**Item 1 — family Mahler normalization.**  The single-series descent
+`FormalMahlerIntegerNormalization` absorbs the point variable and the complex coefficients of a
+relation into `differentialAdjoin ℚ S` for a finite `S` of polynomials in the point, whose jet set is
+finite, and then descends.  Five new modules lift that to families.
+
+- `HTGeometry/AlgebraicIndependentRangeTransfer.lean` — algebraic independence depends only on the
+  *image* of the coefficient ring in the ambient field: `algebraicIndependent_of_range_subset`, and
+  its consequences `differentialIndependent_of_coe_eq`, `differentialAlgebraicOver_of_coe_eq` for two
+  intermediate fields with equal carriers over different bases.  Built from an explicit ring map
+  `rangeFactor` inverting the injective coefficient map on the smaller image.
+- `HTGeometry/DifferentialAdjoinCommute.lean` — `differentialJetSet_union`,
+  `coe_differentialAdjoin_differentialAdjoin`, and `coe_differentialAdjoin_comm`: the two orders of a
+  double differential adjunction fill out the same subfield of the ambient field.  Stated on carriers,
+  not on types, which is exactly what the previous module consumes.
+- `HTGeometry/DifferentialIndependentTowerIff.lean`, `DifferentialIndependentSplit.lean` — the tower
+  law as an equivalence, and `exists_split_of_not_differentialIndependent`: a dependent finite family
+  contains a maximal independent subfamily plus one member differentially algebraic over the field
+  that subfamily generates.
+- `HTGeometry/DifferentialIndependentConstantDescent.lean` —
+  **`differentialIndependent_family_differentialAdjoin_of_finite_jetSet`**: a finite family
+  independent over `k` stays independent over `differentialAdjoin k S` whenever `differentialJetSet S`
+  is finite.  No induction on the family: split over the enlarged base, interchange the two
+  adjunctions, descend the single-element statement through
+  `differentialAlgebraicOver_of_intermediate_trdeg_lt_aleph0`, and contradict the tower law.
+- `HTGeometry/FamilyFormalMahlerDescent.lean` — **`exists_rational_familyJets_relation`**: every
+  nonzero complex relation `aeval (familyJets n g) Q = 0` yields a nonzero relation with *rational*
+  coefficients at some jet order `n'`.  The point row `familyPointRow` moves the point slot into the
+  coefficients; the relation becomes a dependence over `differentialAdjoin ℚ (coefficient generators)`;
+  the constant descent removes that base; a bound on the jet orders occurring in the resulting
+  `MvPolynomial (ι × ℕ) ℚ` relation returns it to jet-vector form.
+  (The point-row lift in `FormalMahlerIntegerNormalization.lean` is now stated for an arbitrary
+  variable type, so no machinery is duplicated.)
+
+Consequently `HTGeometry/FamilyJointHypertranscendence.lean` proves the hypothesis-free formal
+capstone
+
+> **`algebraicIndependent_famJets_of_boundedRelation`.**  For a source `H` with algebraic
+> exponential coefficients `u_i e^{-b_i}` obeying bounded-relation confinement, and algebraic,
+> injective, nonvanishing dilations `q`, the family
+> `familyJets n (fun i => rescale (q i) H)` — the point variable together with all jets of all
+> dilates — is algebraically independent over `ℂ`, for every jet order `n`.
+
+**Item 2 — step (iv), the analytic bridge.**  `HTGeometry/FamilyTaylorFormalBridge.lean` defines the
+joint notions `JointlyDifferentiallyAlgebraic` / `JointlyHypertranscendental` for a family of smooth
+functions — one nonzero polynomial in the point and in the jets of all members vanishing identically —
+and proves `taylorPS_famJetFun`, the family form of the Taylor bridge:
+`taylorPS (famJetFun f n Q) = aeval (familyJets n (taylorPS ∘ f)) Q`.  Hence
+`jointlyHypertranscendental_of_aeval_survives`.  Combining it with the formal capstone and
+`taylorPS_comp_const_mul` (`taylorPS (F(c·)) = rescale c (taylorPS F)`) gives the analytic form:
+
+> **`jointlyHypertranscendental_dilates_of_boundedRelation`.**  For an entire bounded-relation source
+> `F` and algebraic, injective, nonvanishing `q`, the dilate family `z ↦ F (q_i z)` satisfies no joint
+> algebraic differential equation with complex coefficients.
+
+All modules umbrella-wired, build green, `#print axioms` clean (`propext`, `Classical.choice`,
+`Quot.sound` only).
+
+**What `(11)` still needs.**  One item only, and it is about the *translations*, not the relation:
+the capstone requires the dilations `q_α = e^{2πiα}` to be algebraic.  The card's orbit lemma allows
+arbitrary countable translation sets `H_j`, hence arbitrary nonzero `q_α`.  The valuation-fibre
+argument of `BoundedRelationExponentialSurvival` ends in the finite Lindemann–Weierstrass theorem,
+which needs algebraic coefficients, and the dilation scalars `q_i^{index}` sit in exactly those
+coefficients.  Note this is not an obstruction for the pencil application when the pencil data
+`(a_v, ell_A, omega_A)` may be chosen algebraic — in particular for the explicit wedge realization —
+since then the translations of `(17)` are algebraic; it is an obstruction only for the general orbit
+lemma with prescribed transcendental translations.
