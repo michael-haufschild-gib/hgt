@@ -133,6 +133,14 @@ The algebraic-group layer now has two unconditional, kernel-checked modules:
 - `AffineExponentialSubgroups` proves a reusable principal Hopf-ideal criterion and applies it to
   additive linear equations and torus character equations.  The quotient coordinate rings inherit
   Hopf algebra structures, so these equations define actual closed affine subgroup schemes.
+- `AffineExponentialCrossHomFinite` upgrades both cross-Hom vanishing theorems to arbitrary finite
+  dimensions; its stronger core says the group algebra of any additive commutative group over a
+  field has no nonzero primitive elements.
+- `HopfIdealKernel` proves antipode naturality and proves that every kernel of a commutative
+  Hopf-algebra morphism over a field is a Hopf ideal, including the nontrivial coideal descent.
+- `AffineExponentialProjectionImages` constructs the two scheme-theoretic projection-image Hopf
+  ideals of an arbitrary subgroup ideal and identifies their additive-linear and torus-character
+  relations exactly as contractions of the original ideal.
 
 This closes construction and cross-Hom rigidity, but not yet the classification theorem needed in
 the paper proof: every connected closed subgroup of `G_a^n x G_m^n` must be shown to split and its
@@ -145,3 +153,6 @@ logarithms remain open Lean dependencies.
 - 2026-08-14 -- algebraic coefficient descent proved; stage-two defect slope shown transcendental.
 - 2026-08-14 -- formalized coordinate Hopf algebras, both cross-Hom vanishing theorems, and
   additive-linear/torus-character closed subgroup kernels with Hopf quotients.
+- 2026-08-14 -- generalized cross-Hom rigidity to all dimensions; formalized Hopf kernels and exact
+  projection-image contractions, reducing splitting to classification of the remaining mixed Hopf
+  ideal above its two factor contractions.

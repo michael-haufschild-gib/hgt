@@ -822,21 +822,84 @@ theorem greenMass_eq_add_tsum_returnMass (P : S → S → ℝ≥0∞) (a : ℝ�
   have hstep : ∀ y : S, greenMass P a y B =
       ∑' w : S, entranceMass P a A y {w} * greenMass P a w B := fun y =>
     greenMass_eq_tsum_entranceMass P a A B hBA y
+  have h1 : (∑' y : S, P z y * greenMass P a y B) =
+      ∑' y : S, ∑' w : S, P z y * entranceMass P a A y {w} * greenMass P a w B := by
+    refine tsum_congr fun y => ?_
+    rw [hstep y, ← ENNReal.tsum_mul_left]
+    exact tsum_congr fun w => by ring
+  have h2 : (∑' y : S, ∑' w : S, P z y * entranceMass P a A y {w} * greenMass P a w B) =
+      ∑' w : S, ∑' y : S, P z y * entranceMass P a A y {w} * greenMass P a w B :=
+    ENNReal.tsum_comm
+  have h3 : ∀ w : S, (a * ∑' y : S, P z y * entranceMass P a A y {w}) * greenMass P a w B =
+      a * ∑' y : S, P z y * entranceMass P a A y {w} * greenMass P a w B := by
+    intro w
+    rw [mul_assoc, ← ENNReal.tsum_mul_right]
   have hswap : (a * ∑' y : S, P z y * greenMass P a y B) =
-      ∑' w : S, a * (∑' y : S, P z y * entranceMass P a A y {w}) * greenMass P a w B := by
-    rw [tsum_congr fun y => by rw [hstep y]]
-    have hinner : ∀ y : S, (P z y * ∑' w : S, entranceMass P a A y {w} * greenMass P a w B) =
-        ∑' w : S, P z y * entranceMass P a A y {w} * greenMass P a w B := by
-      intro y
-      rw [ENNReal.tsum_mul_left]
-      exact tsum_congr fun w => by ring
-    rw [tsum_congr hinner, ENNReal.tsum_comm, ENNReal.tsum_mul_left]
-    refine tsum_congr fun w => ?_
-    rw [← ENNReal.tsum_mul_right, ← ENNReal.tsum_mul_left]
-    exact tsum_congr fun y => by ring
+      ∑' w : S, (a * ∑' y : S, P z y * entranceMass P a A y {w}) * greenMass P a w B := by
+    rw [h1, h2, tsum_congr h3, ← ENNReal.tsum_mul_left]
   rw [hswap]
   exact tsum_congr fun w => by rw [returnMass]
 
 end ReturnKernel
+
+section Singleton
+
+variable {S : Type*} [Countable S]
+
+theorem returnMass_singleton_eq_zero (P : S → S → ℝ≥0∞) (a : ℝ≥0∞) (A : Set S) (z : S)
+    {w : S} (hw : w ∉ A) : returnMass P a A z {w} = 0 := by
+  rw [returnMass]
+  refine mul_eq_zero.mpr (Or.inr ?_)
+  refine ENNReal.tsum_eq_zero.mpr fun y => ?_
+  rw [entranceMass_singleton_eq_zero P a A y hw, mul_zero]
+
+/-- **Preparation--recurrence factorization.**  Occupation of a single target point is entrance
+into it times occupation from it. -/
+theorem greenMass_singleton_eq (P : S → S → ℝ≥0∞) (a : ℝ≥0∞) (x y : S) :
+    greenMass P a x {y} = entranceMass P a {y} x {y} * greenMass P a y {y} := by
+  rw [greenMass_eq_tsum_entranceMass P a {y} {y} (subset_refl _) x]
+  refine tsum_eq_single y fun z hz => ?_
+  rw [entranceMass_singleton_eq_zero P a {y} x (show z ∉ ({y} : Set S) from hz), zero_mul]
+
+/-- The occupation of a single target point from itself satisfies the exact return equation. -/
+theorem greenMass_self_eq (P : S → S → ℝ≥0∞) (a : ℝ≥0∞) (y : S) :
+    greenMass P a y {y} = 1 + returnMass P a {y} y {y} * greenMass P a y {y} := by
+  classical
+  have hsingle : (∑' w : S, returnMass P a {y} y {w} * greenMass P a w {y}) =
+      returnMass P a {y} y {y} * greenMass P a y {y} :=
+    tsum_eq_single y fun w hw => by
+      rw [returnMass_singleton_eq_zero P a {y} y (show w ∉ ({y} : Set S) from hw), zero_mul]
+  have hind : Set.indicator ({y} : Set S) (1 : S → ℝ≥0∞) y = 1 := by
+    rw [Set.indicator_of_mem (show y ∈ ({y} : Set S) from rfl)]
+    simp
+  conv_lhs => rw [greenMass_eq_add_tsum_returnMass P a (subset_refl ({y} : Set S)) y]
+  rw [hsingle, hind]
+
+/-- **Closed preparation--recurrence product.**  Below the dependence radius the occupation of a
+single point is entrance divided by one minus the return mass. -/
+theorem greenMass_singleton_eq_div (P : S → S → ℝ≥0∞) (hP : ∀ x, ∑' y : S, P x y = 1)
+    {a : ℝ≥0∞} (ha : a < 1) (x y : S) :
+    greenMass P a x {y} =
+      entranceMass P a {y} x {y} / (1 - returnMass P a {y} y {y}) := by
+  have hgeom : (∑' n : ℕ, a ^ n) ≠ ⊤ := by
+    rw [ENNReal.tsum_geometric]
+    exact ENNReal.inv_ne_top.mpr (tsub_pos_of_lt ha).ne'
+  have hfin : greenMass P a y {y} ≠ ⊤ :=
+    ne_top_of_le_ne_top hgeom (greenMass_le_geometric P hP a y {y})
+  have hR : returnMass P a {y} y {y} ≤ a := returnMass_le P hP ha.le {y} y
+  have hRlt : returnMass P a {y} y {y} < 1 := lt_of_le_of_lt hR ha
+  have hRtop : returnMass P a {y} y {y} ≠ ⊤ := ne_top_of_lt hRlt
+  have hRG : returnMass P a {y} y {y} * greenMass P a y {y} ≠ ⊤ :=
+    ENNReal.mul_ne_top hRtop hfin
+  have hself := greenMass_self_eq P a y
+  have hmul : greenMass P a y {y} * (1 - returnMass P a {y} y {y}) = 1 := by
+    rw [ENNReal.mul_sub (fun _ _ => hfin), mul_one, mul_comm (greenMass P a y {y})]
+    nth_rewrite 1 [hself]
+    exact ENNReal.add_sub_cancel_right hRG
+  have hsolve : greenMass P a y {y} = (1 - returnMass P a {y} y {y})⁻¹ :=
+    ENNReal.eq_inv_of_mul_eq_one_left hmul
+  rw [greenMass_singleton_eq, hsolve, div_eq_mul_inv]
+
+end Singleton
 
 end GaloisForLFunctions.RHTower

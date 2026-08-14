@@ -31,34 +31,41 @@ variable {ι R A : Type*} [CommSemiring R] [CommRing A] [Algebra R A] [Fintype �
 /-- The monomial in the increment attached to a multi-degree. -/
 def jetMonomial (L : ι → A) (α : ι →₀ ℕ) : A := α.prod fun i k => L i ^ k
 
+omit [Fintype ι] [DecidableEq ι] in
 @[simp] theorem jetMonomial_zero (L : ι → A) : jetMonomial L 0 = 1 :=
   Finsupp.prod_zero_index
 
+omit [Fintype ι] [DecidableEq ι] in
 theorem jetMonomial_add (L : ι → A) (α β : ι →₀ ℕ) :
     jetMonomial L (α + β) = jetMonomial L α * jetMonomial L β :=
   Finsupp.prod_add_index' (fun _ => pow_zero _) (fun i a b => pow_add (L i) a b)
 
+omit [Fintype ι] [DecidableEq ι] in
 @[simp] theorem jetMonomial_single (L : ι → A) (i : ι) :
     jetMonomial L (Finsupp.single i 1) = L i := by
-  rw [jetMonomial, Finsupp.prod_single_index (pow_zero _), pow_one]
+  have h : (Finsupp.single i 1).prod (fun (i : ι) (k : ℕ) => L i ^ k) = L i ^ 1 :=
+    Finsupp.prod_single_index (pow_zero (L i))
+  rw [jetMonomial, h, pow_one]
 
 /-- The total degree of a multi-degree. -/
 def jetDegree (α : ι →₀ ℕ) : ℕ := α.sum fun _ k => k
 
+omit [Fintype ι] [DecidableEq ι] in
 theorem jetDegree_add (α β : ι →₀ ℕ) : jetDegree (α + β) = jetDegree α + jetDegree β :=
   Finsupp.sum_add_index' (fun _ => rfl) (fun _ _ _ => rfl)
 
+omit [Fintype ι] [DecidableEq ι] in
 @[simp] theorem jetDegree_single (i : ι) (k : ℕ) : jetDegree (Finsupp.single i k) = k :=
   Finsupp.sum_single_index rfl
 
 /-! ### The family -/
 
-omit [Fintype ι] in
+omit [Fintype ι] [DecidableEq ι] in
 private theorem sum_zero_aux (S : ι → A) (L : ι → A) (α : ι →₀ ℕ) :
     aeval S (0 : MvPolynomial ι R) * jetMonomial L α = 0 := by
   simp
 
-omit [Fintype ι] in
+omit [Fintype ι] [DecidableEq ι] in
 private theorem sum_add_aux (S : ι → A) (L : ι → A) (α : ι →₀ ℕ)
     (Q₁ Q₂ : MvPolynomial ι R) :
     aeval S (Q₁ + Q₂) * jetMonomial L α
@@ -103,7 +110,7 @@ theorem exists_taylorDefectFamily (P : MvPolynomial ι R) :
             omega
         · have hmem : α ∈ Finset.univ.biUnion
               (fun j : ι => (Finsupp.single (Finsupp.single i 1 + Finsupp.single j 1)
-                (pderiv j p)).support) := Finsupp.support_finset_sum h
+                (pderiv j p)).support) := Finsupp.support_finsetSum h
           obtain ⟨j, _, hj⟩ := Finset.mem_biUnion.mp hmem
           have hsub := Finsupp.support_single_subset hj
           rw [Finset.mem_singleton.mp hsub, jetDegree_add, jetDegree_single, jetDegree_single]
@@ -141,7 +148,7 @@ theorem exists_taylorDefectFamily (P : MvPolynomial ι R) :
                 (pderiv j p) : (ι →₀ ℕ) →₀ MvPolynomial ι R).sum
               fun α Q => aeval S Q * jetMonomial L α)
             = L i * ∑ j, aeval S (pderiv j p) * L j := by
-          rw [← Finsupp.sum_finset_sum_index (sum_zero_aux S L) (sum_add_aux S L),
+          rw [← Finsupp.sum_finsetSum_index (sum_zero_aux S L) (sum_add_aux S L),
             Finset.mul_sum]
           refine Finset.sum_congr rfl fun j _ => ?_
           rw [Finsupp.sum_single_index (sum_zero_aux S L _), jetMonomial_add,

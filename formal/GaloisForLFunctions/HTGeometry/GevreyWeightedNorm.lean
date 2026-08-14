@@ -302,26 +302,26 @@ theorem exists_gevreyWeightBound {r : ℕ} {F : PowerSeries ℂ} (hF : IsGevreyS
 /-! ### The gain of a common vanishing order -/
 
 /-- Two factorials whose arguments both exceed `M` are separated from their sum. -/
-theorem factorial_mul_factorial_le_of_le {M : ℕ} :
-    ∀ {i j : ℕ}, M ≤ i → M ≤ j → i ! * j ! ≤ M ! * (i + j - M)! := by
-  intro i
-  induction i using Nat.le_induction with
-  | base => intro j _ _; simp
-  | succ i hi ih =>
-      intro j hM hj
-      have hprev := ih hM hj
-      have hstep : (i + 1)! * j ! = (i + 1) * (i ! * j !) := by
-        rw [Nat.factorial_succ]
-        ring
-      have hidx : i + 1 + j - M = (i + j - M) + 1 := by omega
-      rw [hstep, hidx, Nat.factorial_succ]
-      calc (i + 1) * (i ! * j !) ≤ (i + 1) * (M ! * (i + j - M)!) :=
-            Nat.mul_le_mul_left _ hprev
-        _ ≤ (i + j - M + 1) * (M ! * (i + j - M)!) := by
-            refine Nat.mul_le_mul_right _ ?_
-            omega
-        _ = (i + j - M + 1) * M ! * (i + j - M)! := by ring
-        _ = M ! * ((i + j - M + 1) * (i + j - M)!) := by ring
+theorem factorial_mul_factorial_le_of_le (M : ℕ) :
+    ∀ i, M ≤ i → ∀ j, M ≤ j → i ! * j ! ≤ M ! * (i + j - M)! := by
+  intro i hi
+  refine Nat.le_induction ?_ ?_ i hi
+  · intro j _
+    simp
+  · intro i hi ih j hj
+    have hprev := ih j hj
+    have hstep : (i + 1)! * j ! = (i + 1) * (i ! * j !) := by
+      rw [Nat.factorial_succ]
+      ring
+    have hidx : i + 1 + j - M = (i + j - M) + 1 := by omega
+    rw [hstep, hidx, Nat.factorial_succ]
+    calc (i + 1) * (i ! * j !) ≤ (i + 1) * (M ! * (i + j - M)!) :=
+          Nat.mul_le_mul_left _ hprev
+      _ ≤ (i + j - M + 1) * (M ! * (i + j - M)!) := by
+          refine Nat.mul_le_mul_right _ ?_
+          omega
+      _ = (i + j - M + 1) * M ! * (i + j - M)! := by ring
+      _ = M ! * ((i + j - M + 1) * (i + j - M)!) := by ring
 
 /-- The factorial gain of a Cauchy product whose factors both vanish to order `M`. -/
 theorem factorial_prod_le_of_dvd_order {M n i j : ℕ} (hM : M ≤ i) (hMj : M ≤ j)

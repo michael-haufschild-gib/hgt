@@ -179,3 +179,260 @@ rather than Selberg Conjecture 3 and is forbidden by the task.
 - [ ] Independent theorem implying ramified superselection
 - [ ] Hostile paper-proof audit
 - [ ] Exact Lean formalization
+
+## Cycle 5 — low-output-degree atom preservation
+
+### Theorem 1 `[PROVED HERE]` `[NOVELTY UNRESOLVED]`
+
+Let `P in S` be primitive and let `chi` be a primitive Dirichlet character of conductor `q`.
+Assume `P^chi in S`. If `P^chi` admits a factorization
+
+\[
+P^\chi=G_1\cdots G_r,\qquad r\ge2,
+\]
+
+with every `G_j in S` of degree one, then a contradiction follows. Consequently, every
+nontrivial primitive factorization of `P^chi` contains a factor of degree at least two.
+
+Since `S` has no nontrivial elements of degree below one and none of degree strictly between one
+and two, this gives the unconditional boundary consequence
+
+\[
+d_{P^\chi}<3\quad\Longrightarrow\quad P^\chi\text{ is primitive}.
+\]
+
+Here “unconditional” means that the only assumptions are those occurring in the displayed
+statement; no Selberg orthogonality, degree conjecture, twist-closure conjecture, or new analytic
+axiom is used.
+
+### Proof
+
+The degree-one classification says that every `G_j` is either `zeta(s)` or
+`L(s+i tau_j, eta_j)` for a primitive Dirichlet character `eta_j`. Twist the displayed
+factorization coefficientwise by `bar chi`. Multiplicativity of twist gives
+
+\[
+E_qP=(P^\chi)^{\bar\chi}=\prod_{j=1}^r G_j^{\bar\chi}.
+\]
+
+For each `j`, the product character underlying `G_j^{bar chi}` is induced by a primitive
+character `rho_j`. Therefore
+
+\[
+G_j^{\bar\chi}(s)=D_j(s)L(s+i\tau_j,\rho_j),
+\]
+
+where `D_j` is a nonzero Dirichlet series supported on finitely many primes. For a zeta factor,
+this formula is read with `tau_j=0` and primitive character `bar chi`.
+
+There is one edge case: `rho_j` can be principal. If `tau_j != 0`, the right side contains
+`zeta(s+i tau_j)` and has a pole at `s=1-i tau_j`. Every other primitive Dirichlet `L`-function
+is nonzero on `Re(s)=1`, and every finite missing Euler factor is also nonzero there because its
+local variable has modulus `1/p`. Thus this pole cannot cancel in the product. But `E_qP` has no
+pole away from `s=1`: `P` has none, and the finitely many reciprocal local Euler factors defining
+`E_q` are holomorphic and nonzero for `Re(s)>theta` with `theta<1/2`. Hence the edge case is
+impossible. If `tau_j=0`, the principal primitive base is `zeta(s) in S`.
+
+It follows that every
+
+\[
+H_j(s):=L(s+i\tau_j,\rho_j)
+\]
+
+appearing above belongs to `S` and has degree one. Put `H=prod_j H_j in S` and
+`D=prod_j D_j`. On the other hand,
+
+\[
+E_qP=D_P P,
+\]
+
+where `D_P=prod_{p|q}P_p^{-1}` is a nonzero finite-prime Dirichlet series. Therefore
+
+\[
+D_P P-DH=0.
+\]
+
+The linear-independence theorem over finite-prime Dirichlet series forces `P=H`; otherwise two
+distinct elements of `S` satisfy a nontrivial linear relation over that ring. But `H` is a product
+of `r>=2` nontrivial degree-one elements of `S`, contradicting primitivity of `P`. This proves the
+first assertion.
+
+For the consequence, suppose `d_(P^chi)<3` and `P^chi` is not primitive. Factor it into at least
+two primitive elements. Each factor has degree at least one. If one had degree at least two, degree
+additivity would give total degree at least three. Hence every factor has degree in `[1,2)`, and
+the gap theorem for `S` forces degree exactly one. The first assertion gives the contradiction.
+
+### Hostile checks
+
+1. No inverse-twist closure is assumed: degree-one classification explicitly computes every
+   inverse twist up to finite Euler factors.
+2. Ramified erasure is retained as `E_qP`, not silently replaced by `P`.
+3. The finite-prime linear-independence theorem is applied only to `P,H in S`; neither `E_qP` nor
+   an individual inverse twist is assumed to be in `S`.
+4. The shifted-principal-character pole is handled before declaring `H_j in S`.
+5. The degree corollary uses the proved gaps `d<1` and `1<d<2`, not the open integer-degree
+   conjecture.
+
+### Significance and limitation
+
+This rules out the entire abelian/degree-one factorization locus as a source of counterexamples to
+primitive stability. Any primitive counterexample to Selberg Conjecture 3 must have twisted output
+degree at least three and must contain a primitive factor of degree at least two. It does not prove
+factorwise analytic re-entry for a product of several original primitives and therefore does not
+close the frozen target.
+
+## Cycle 6 — finite-prime completion obstruction
+
+### Theorem 2 `[PROVED HERE]` `[NOVELTY UNRESOLVED]`
+
+Under the hypotheses of Theorem 1, suppose `P^chi` is not primitive and fix a primitive
+factorization
+
+\[
+P^\chi=G_1\cdots G_r,\qquad r\ge2.
+\]
+
+Then at least one `G_j` has the following property:
+
+\[
+G_j^{\bar\chi}\ne D H
+\]
+
+for every `H in S` and every nonzero finite-prime Dirichlet series `D`.
+
+In words: every primitive counterexample contains an output factor whose inverse twist has no
+Selberg completion even after arbitrary changes at finitely many primes.
+
+### Proof
+
+Assume instead that `G_j^bar chi=D_jH_j` for every `j`, with `H_j in S` and `D_j` nonzero and
+finite-prime. Multiplying and using ramified erasure gives
+
+\[
+D_PP=E_qP=(P^\chi)^{\bar\chi}=\left(\prod_jD_j\right)\left(\prod_jH_j\right).
+\]
+
+No `H_j` can equal `1`. Indeed, then `G_j^bar chi` is finite-prime; twisting once more shows that
+`E_qG_j` is finite-prime, so `G_j` satisfies a nontrivial finite-prime linear relation with
+`1 in S`. Linear independence forces `G_j=1`, contrary to primitive factorization.
+
+Thus `H=prod_jH_j` is a nontrivial factorization in `S`. Linear independence applied to
+`D_PP-DH=0` forces `P=H`, contradicting primitivity of `P`. Therefore at least one `G_j` is not
+finite-prime completable.
+
+### Why this is a real reduction
+
+Theorem 2 excludes every route in which inverse twists can be repaired by choosing finitely many
+ramified Euler factors. A proof of the frozen conjecture may now focus on one exact analytic claim:
+
+> A primitive divisor of a Selberg-class Dirichlet twist always has a finite-prime Selberg
+> completion after inverse twist.
+
+Unlike Cycle 4, this statement is independently falsifiable: one counterexample is a specific
+primitive `G in S` dividing `P^chi` for which the multiplicative Dirichlet series `G^bar chi`
+cannot be completed at finitely many primes to satisfy a Selberg functional equation.
+
+### Minimal-degree descent attack
+
+`[CONJECTURE D]` Choose a primitive counterexample `P` minimizing `d_(P^chi)`. A non-completable
+primitive factor `G` from Theorem 2 has smaller degree and should generate a smaller counterexample
+after twisting back.
+
+**Attack.** `G^bar chi` is precisely not known to belong to `S`, even after finite completion.
+Therefore it is not an admissible input to Selberg Conjecture 3 and no smaller counterexample has
+been constructed. Minimality supplies no descent.
+
+**Verdict:** fail. The failed descent identifies finite-prime completion existence—not degree—as
+the next analytic core.
+
+## Cycle 7 — multiple-standard-twist spectral separation
+
+`[CONJECTURE E]` The polar hyperplanes of Kaczorowski–Perelli's multiple standard twist separate
+the primitive factors of `P^chi` and force the finite-prime completions required by Theorem 2.
+
+**Attack.** For a factorization `P^chi=prod_jG_j`, choose
+`kappa_j=1/d_(P^chi)` and restrict the multiple twist of the `G_j` to the diagonal
+`s_1=...=s_r=s`. The multiple series then equals the ordinary standard twist of the product,
+because both the convolution coefficient and the nonlinear phase depend only on `prod_j n_j`.
+The resulting polar identity is therefore tautological. Its hyperplanes record the additive totals
+of degrees and internal shifts. They do not reconstruct the periodic multipliers `bar chi(n)` on
+an individual factor. Away from the diagonal, no corresponding function built from `P` is
+available for comparison.
+
+The mismatch is structural: a standard twist uses `e(-alpha n^(1/d))`, whereas a Dirichlet twist
+uses the periodic completely multiplicative multiplier `chi(n)`. The 2026 continuation theorem
+does not convert one into the other.
+
+**Verdict:** fail. Joint standard-twist poles cannot by themselves prove inverse-twist completion.
+The failure rules out the newest apparent spectral-separation route rather than merely failing to
+execute it.
+
+## Cycle 8 — full Conjecture 3 on the degree-one-generated submonoid
+
+### Theorem 3 `[PROVED HERE]` `[KNOWN-BOUNDARY LABEL]`
+
+Let
+
+\[
+F=\prod_{i=1}^mF_i
+\]
+
+be a primitive factorization in `S` with `d_(F_i)=1` for every `i`. Let `chi` be primitive and
+assume `F^chi in S`. Then every `F_i^chi` belongs to `S` and is primitive. Thus Selberg
+Conjecture 3 holds exactly on the submonoid generated by degree-one elements.
+
+### Proof
+
+By degree-one classification, each `F_i` is `zeta(s)` or
+`L(s+i tau_i,psi_i)` with `psi_i` primitive. Hence
+
+\[
+F_i^\chi(s)=D_i(s)L(s+i\tau_i,\rho_i),
+\]
+
+where `rho_i` is the primitive character inducing `psi_i chi` and `D_i` is a finite product of
+missing Euler polynomials
+
+\[
+1-\rho_i(p)p^{-i\tau_i}p^{-s}.
+\]
+
+For a zeta input, `F_i^chi=L(s,chi)` and `D_i=1`.
+
+If `rho_i` is principal and `tau_i != 0`, the factor has a pole at `1-i tau_i`. No other
+degree-one primitive Dirichlet `L`-factor or missing Euler polynomial vanishes on `Re(s)=1`, so
+this pole cannot cancel in `F^chi=prod_iF_i^chi`. Since an element of `S` has no pole away from
+`s=1`, this case is impossible. Therefore every base
+
+\[
+H_i(s)=L(s+i\tau_i,\rho_i)
+\]
+
+belongs to `S` (with the principal case necessarily `zeta(s)`). Put `H=prod_iH_i in S` and
+`D=prod_iD_i`. Multiplicativity of character twist gives
+
+\[
+F^\chi=DH.
+\]
+
+Both `F^chi` and `H` lie in `S`, so finite-prime linear independence forces `F^chi=H` and
+`D=1`. Each `D_i` is a polynomial with constant term one in the finitely many independent local
+variables `p^{-s}`. Their product can be the unit `1` only if every `D_i=1`. Thus
+`F_i^chi=H_i in S`. Its degree is one, so it is primitive: a nontrivial factorization would split
+degree one into two positive Selberg degrees, while every nontrivial Selberg element has degree at
+least one.
+
+### Novelty audit
+
+Kaczorowski–Molteni–Perelli proved unique factorization for subsemigroups of the extended Selberg
+class generated by degree-zero and degree-one functions. The theorem above is therefore labeled a
+known-boundary consequence unless a later line-by-line comparison establishes a genuinely new
+formulation:
+<https://doi.org/10.1007/s00208-007-0197-9>.
+
+### Consequence for the exact frontier
+
+Any counterexample to full Selberg Conjecture 3 must contain an original primitive factor of degree
+at least two. Combined with Theorems 1–2, a primitive atom-stability counterexample must also have
+twisted output degree at least three and contain a non-finite-prime-completable primitive output
+factor of degree at least two.

@@ -143,11 +143,85 @@ one can place a Ginsberg fake and its duals on a four-point symmetry orbit witho
 pointwise character constraint.  Euler-log positivity only in the convergence chamber is also
 insufficient by the local corpus wall.
 
+### C2 -- divisor-formalism effectivity `[FALSIFIED]`
+
+**Claim.** Full proper-subgroup and quotient compatibility, induction, holomorphy of every
+monomial package, non-vanishing in the absolute-convergence half-plane, Stark's norm bound,
+complex conjugation, and functional-equation symmetry force every order character to be genuine.
+
+**Killing model `[PAPER-PROVED]`.** Keep `G = PSL(2,q)`, `q > 5` an odd prime, and take the
+real-valued Steinberg-derived minimal Heilbronn noncharacter `theta` from C1.  Put
+
+```text
+Z = {1/3+i, 1/3-i, 2/3+i, 2/3-i},
+P(s) = product_(z in Z) (s-z).
+```
+
+Then `P(1-s)=P(s)`, `P(conj(s))=conj(P(s))`, and `P` has no zero in `Re(s)>1`.  For every
+virtual character `psi` of `G`, define the synthetic meromorphic package
+
+```text
+mathcalL_G(s,psi) = P(s)^<theta,psi>.
+```
+
+For `H <= G`, define `mathcalL_H(s,phi)=P(s)^<Res_H(theta),phi>`.  Integer-valuedness of
+character inner products makes these single-valued meromorphic functions.  They have all of the
+following properties.
+
+1. Additivity becomes multiplicativity:
+   `mathcalL(s,psi_1+psi_2)=mathcalL(s,psi_1)mathcalL(s,psi_2)`.
+2. Frobenius reciprocity gives exact induction compatibility:
+   `mathcalL_G(s,Ind_H^G phi)=mathcalL_H(s,phi)`.
+3. If `H<G`, minimality says `Res_H(theta)` is a genuine character, so every
+   `mathcalL_H(s,phi)` for genuine `phi` is entire.  If `m` is monomial on `G`, Heilbronn
+   positivity gives `<theta,m> >= 0`, so `mathcalL_G(s,m)` is entire.
+4. Every package is holomorphic and non-zero in `Re(s)>1` because `P` is.
+5. Real-valuedness of `theta` and the two displayed symmetries of `P` give complex-conjugation
+   compatibility and the exact functional equation `mathcalL_G(1-s,psi)=mathcalL_G(s,psi)`.
+6. The regular factor is entire: `<theta,Reg_G>=theta(1)=q>0`.  The order character at every
+   `z in Z` is exactly `theta`, and it still obeys `||theta||^2=2q+1<=q^2=theta(1)^2`.
+7. Since `theta` is not genuine, some irreducible coefficient `<theta,chi>` is negative; the
+   corresponding `mathcalL_G(s,chi)` has a pole at every point of `Z`.
+
+Thus the claim is false even after all divisor-level constraints are imposed simultaneously.
+The construction is deliberately not an Artin L-function: it has no Frobenius-determinant local
+Euler factors.  That omission is the exact information boundary exposed by the countermodel, not
+a proposed counterexample to Artin holomorphy.
+
+**Positive survivor `[PAPER-PROVED] [BRIDGE] [NOVELTY UNVERIFIED]`.** Any proof using only
+integer order characters, restriction/induction, monomial effectivity, zero-free source chamber,
+Stark norm, and functional-equation orbits cannot prove Artin holomorphy.  A successful route must
+use a law that sees the genuine Frobenius-local determinant Euler factors and constrains their
+continued divisor without factoring through the pointwise order character.  This is the common
+source-to-divisor seam behind C1, the local phase-defect blindness law, and full-divisor tomography.
+
+**Lean status.** Exact survivor depends on Ginsberg's explicit `PSL(2,q)` character construction.
+No such finite-group character-table infrastructure exists in the project.  Formalizing the scalar
+polynomial shell alone would omit the theorem's killing witness and violate the anti-theatre cost
+gate, so no Lean file is opened.
+
+### Relentless interrogation after C2
+
+- Another pointwise inequality cannot work: the same `theta` can be installed at a complete
+  functional-equation orbit while retaining every known static inequality.
+- More divisor tomography cannot work: the model already specifies the complete divisor exactly.
+- Prime-source positivity only in `Re(s)>1` cannot work: the model is zero-free there, yet its
+  continuation has poles.
+- A replacement must use the *shape* of genuine local factors
+  `det(1-rho(Frob_p)N(p)^(-s) | V^{I_p})^(-1)` across infinitely many primes.  Merely assuming an
+  Euler product in its convergence chamber and then forgetting those factors loses the needed
+  information again.
+- Calling this missing law automorphy, Selberg orthogonality, or positivity of a hypothetical
+  Rankin--Selberg convolution is circular unless that law is independently constructed from the
+  finite-image Euler data.
+
 ## `[OPEN CORE]`
 
 State and prove an exact arithmetic realizability law for the full family of order characters that
 is stronger than static Heilbronn/Stark admissibility, survives Ginsberg's `PSL(2,q)` fakes, and is
-not equivalent by definition to Artin holomorphy or strong Artin automorphy.
+not equivalent by definition to Artin holomorphy or strong Artin automorphy.  C2 sharpens this:
+the law must couple Frobenius-determinant Euler factors to the continued divisor and cannot factor
+through any pointwise order-character package, even one carrying full functional-equation orbits.
 
 ## Lean gate
 
@@ -160,3 +234,6 @@ infrastructure may be written yet.  Read-only corpus inspection only.
 - 2026-08-14 -- C1 killed by Ginsberg's Steinberg-derived minimal Heilbronn family, which also
   satisfies Stark's norm inequality.  Pivot forced from static character cones to global
   arithmetic divisor-flow realizability.
+- 2026-08-14 -- C2 killed by an explicit symmetric synthetic L-package realizing the same fake
+  order character while satisfying all divisor-formalism constraints.  Pivot sharpened from
+  global divisor coherence to a non-factorizing Frobenius-source-to-divisor law.
