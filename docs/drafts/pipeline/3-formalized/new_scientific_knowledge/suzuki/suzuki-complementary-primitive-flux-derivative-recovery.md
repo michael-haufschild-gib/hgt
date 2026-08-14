@@ -215,11 +215,13 @@ Assume:
 
 1. the literal infinite paired-orbit equation `(7)` is constructed from a completed zero mode;
 2. its two physical half-log traces vanish;
-3. its physical-root value/dipole flux charges vanish in the exact two-port matching;
-4. the aperture has finite recurrence type.
+3. the aperture has finite recurrence type.
 
-The finite-grade indicial theorem removes every interior conormal charge. The residual terminal
-state is all-orders flat. Sections 1--4 and primitive-flux Volterra Liouville then give, for every
+The finite-grade indicial theorem removes every interior conormal charge.  At physical roots the
+zero exterior orientation has only the half-log root and no `1/log` dipole; on the flat residual,
+the defining primitive equation forces terminal flux charge zero.  These two hypothesis
+discharges are proved in `suzuki-flat-flux-charge-automaticity.md`. The residual terminal state is
+all-orders flat. Sections 1--4 and primitive-flux Volterra Liouville then give, for every
 strictly smaller source weight \(0<\sigma<1\),
 
 ```text
@@ -239,13 +241,14 @@ regularity. Consequently the proved implication is
 
 ```text
 literal paired assembly
-+ zero physical value/dipole flux charges
++ zero physical half-log traces
 + finite recurrence
  -> both physical endpoint collars lie in H1.           (29)
 ```
 
-The endpoint derivative obstruction is closed. Literal source assembly, physical-root flux
-matching, and finite interior coverage remain source-bearing gates; none is assumed away.
+The endpoint derivative and physical dipole/flat-flux obstructions are closed. Literal source
+assembly, finite-to-flat expansion, and finite interior coverage remain source-bearing gates;
+none is assumed away.
 
 ## 6. Exact frontier movement
 
@@ -263,8 +266,8 @@ arbitrary bounded nonnormal B:
   costs only ||B|| in terminal coercivity;              [PAPER-PROVED]
 
 finite-recurrence trace-zero H1:
-  reduced to literal paired source equation and exact
-  physical-root flux matching plus interior coverage.   [OPEN SOURCE CORE]   (30)
+  reduced to literal paired source equation,
+  finite-to-flat expansion, and interior coverage.      [OPEN SOURCE CORE]   (30)
 ```
 
 Neither degree-\(m\) source moments nor Hatano--Nelson dichotomy are required by this flux route.
@@ -339,8 +342,9 @@ conclusion, and the two branches pay their norms by the disjoint mechanisms of `
 - [x] prove pre-event complement recurrence summability
 - [x] prove arbitrary-nonnormal weak derivative coercivity
 - [x] formalize complementary-flux algebra in Lean
+- [x] discharge physical-root dipole and terminal flat-flux matching
 - [ ] construct literal infinite paired-orbit source equation
-- [ ] verify physical-root value/dipole flux matching
+- [ ] prove arbitrary finite-order expansion and isolate the flat residual
 - [ ] prove finite paired-chart/small-aperture interior coverage
 - [ ] pass recurrence-infinite apertures
 - [ ] prove raw Evans injectivity or whole-Connes no-go

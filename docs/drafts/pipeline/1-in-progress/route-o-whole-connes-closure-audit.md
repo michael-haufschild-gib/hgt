@@ -633,8 +633,8 @@ Thus the cutoff defect belongs to a primitive-plus-zero-order Gamma source class
 uncontrolled derivative after the full product rule. The subsequent flux reduction removes the
 derivative of that primitive from the augmented equation and gives arbitrary-nonnormal weighted
 graph uniqueness. At finite logarithmic type its base weighted source norm is paper-closed.
-At the value/flux stage, remaining core was root-derivative propagation, exact physical-root flux
-matching, total antisymmetric matching, and literal paired assembly. Degree-\(m\) moments are
+At the value/flux stage, remaining core was root-derivative propagation, physical finite/flat
+charge matching, total antisymmetric matching, and literal paired assembly. Degree-\(m\) moments are
 required only if the direct polynomial-group Hardy path is retained.
 
 Root-derivative propagation is now closed by
@@ -650,6 +650,23 @@ The rough primitives are opposite and the two flux derivatives sum to \((AF)'\).
 recurrence budget directly. Shifted Gamma numerical-range coercivity then gives weighted \(F'\)
 with arbitrary bounded nonnormal \(B\). Remaining finite-type gates are literal paired source
 assembly, physical-root value/dipole flux matching, and compact-middle coverage.
+
+The physical finite/flat charge gate is now discharged by
+`suzuki-flat-flux-charge-automaticity.md`.  The first primitive equation and superpolynomial block
+flatness force the terminal flux norm to zero, so flat Volterra Liouville needs no separate
+zero-charge premise.  At a physical endpoint the opposite orientation is the literal zero
+extension; the one-sided indicial coefficient
+
+```text
+[(1-2tau)/(1-tau)] beta
+```
+
+has only the half-log root `tau=1/2`, while a `beta/L` dipole produces the uncancelled output
+`-beta log L` and is impossible against the bounded completed source.  After zero half-log trace,
+no independent physical dipole or flat-flux matching remains.  Literal low-frequency
+counterterms, arbitrary finite-order expansion, total marked-descendant source assembly, and
+compact-middle coverage remain.  Thus the current finite-type gates are literal paired source
+assembly, finite-to-flat expansion, and compact-middle coverage.
 
 Hostile verdict: `SURVIVES PRELIMINARY ATTACK`. Generic logarithmic ellipticity is insufficient,
 whole-packet inverse-log grading is false, and the completed domain has a genuine corona. The
@@ -718,6 +735,8 @@ all-orders source-specific expansion or flatness-to-`H1_0` theorem.
 - [x] derive primitive-flux graph system and arbitrary-nonnormal weighted uniqueness estimate
 - [x] prove flat primitive-flux Volterra Liouville for arbitrary bounded prime transport
 - [x] prove complementary primitive-flux derivative recovery
+- [x] prove physical endpoint has no independent `1/log` dipole
+- [x] prove terminal flat-flux charge is automatic from the primitive equation
 - [ ] prove polynomial-carrier boundary-log normal identity at finite logarithmic type
 - [ ] prove degree-m source moments, or replace direct Hardy by primitive-flux Liouville
 - [ ] prove nonnormal exponential-dichotomy matching only if the direct Hardy path is retained

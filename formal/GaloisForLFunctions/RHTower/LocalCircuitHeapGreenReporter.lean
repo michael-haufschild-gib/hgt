@@ -125,6 +125,77 @@ theorem measure_heapAccessible_le_heapIncidence (ν : Measure X) (len : T → �
   rw [heapAccessible, heapIncidence, ← tsum_subtype]
   exact measure_biUnion_le ν (Set.to_countable _) S
 
+/-- Every dependence edge at `a` is determined by its other endpoint, so the incident-edge count is
+one less than the size of any finite set of letters containing `a` and every letter dependent on
+`a`. -/
+theorem incidentEdgeCount_succ_le_of_dependentSubset {α : Type*} [Fintype α] [LinearOrder α]
+    (independent : α → α → Prop) (hsymm : ∀ x y, independent x y → independent y x) (a : α)
+    (t : Finset α) (ht : ∀ b, b ≠ a → ¬ independent a b → b ∈ t) (hat : a ∈ t) :
+    incidentEdgeCount independent a + 1 ≤ t.card := by
+  classical
+  set E : Finset (DependenceEdge independent) :=
+    (Finset.univ : Finset (DependenceEdge independent)).filter fun e => a = e.1.1 ∨ a = e.1.2
+    with hE
+  have hother : ∀ e ∈ E, (if a = e.1.1 then e.1.2 else e.1.1) ∈ t.erase a := by
+    intro e he
+    have hmem : a = e.1.1 ∨ a = e.1.2 := (Finset.mem_filter.mp he).2
+    have hlt : e.1.1 < e.1.2 := e.2.1
+    have hdep : ¬ independent e.1.1 e.1.2 := e.2.2
+    rcases hmem with h1 | h2
+    · rw [if_pos h1]
+      refine Finset.mem_erase.mpr ⟨?_, ?_⟩
+      · exact fun hcon => absurd (hcon ▸ h1 ▸ hlt) (lt_irrefl _)
+      · refine ht _ (fun hcon => absurd (hcon ▸ h1 ▸ hlt) (lt_irrefl _)) ?_
+        rw [h1]; exact hdep
+    · have hne : a ≠ e.1.1 := fun hcon => absurd (hcon ▸ h2 ▸ hlt) (lt_irrefl _)
+      rw [if_neg hne]
+      refine Finset.mem_erase.mpr ⟨fun hcon => hne hcon.symm, ?_⟩
+      refine ht _ (fun hcon => hne hcon.symm) ?_
+      rw [h2]
+      exact fun hcon => hdep (hsymm _ _ hcon)
+  have hinj : Set.InjOn (fun e : DependenceEdge independent =>
+      if a = e.1.1 then e.1.2 else e.1.1) (E : Set (DependenceEdge independent)) := by
+    intro e he e' he' hEq
+    dsimp only at hEq
+    have hmem : a = e.1.1 ∨ a = e.1.2 := (Finset.mem_filter.mp he).2
+    have hmem' : a = e'.1.1 ∨ a = e'.1.2 := (Finset.mem_filter.mp he').2
+    have hlt : e.1.1 < e.1.2 := e.2.1
+    have hlt' : e'.1.1 < e'.1.2 := e'.2.1
+    have hpair : e.1 = e'.1 := by
+      rcases hmem with h1 | h2 <;> rcases hmem' with h1' | h2'
+      · rw [if_pos h1, if_pos h1'] at hEq
+        exact Prod.ext (h1 ▸ h1'.symm ▸ rfl) hEq
+      · have hne' : a ≠ e'.1.1 := fun hcon => absurd (hcon ▸ h2' ▸ hlt') (lt_irrefl _)
+        rw [if_pos h1, if_neg hne'] at hEq
+        have hgt : a < e.1.2 := h1 ▸ hlt
+        have hlt2 : e'.1.1 < a := h2' ▸ hlt'
+        exact absurd (hEq ▸ hgt) (not_lt.mpr hlt2.le)
+      · have hne : a ≠ e.1.1 := fun hcon => absurd (hcon ▸ h2 ▸ hlt) (lt_irrefl _)
+        rw [if_neg hne, if_pos h1'] at hEq
+        have hgt : a < e'.1.2 := h1' ▸ hlt'
+        have hlt2 : e.1.1 < a := h2 ▸ hlt
+        exact absurd (hEq ▸ hlt2) (not_lt.mpr hgt.le)
+      · have hne : a ≠ e.1.1 := fun hcon => absurd (hcon ▸ h2 ▸ hlt) (lt_irrefl _)
+        have hne' : a ≠ e'.1.1 := fun hcon => absurd (hcon ▸ h2' ▸ hlt') (lt_irrefl _)
+        rw [if_neg hne, if_neg hne'] at hEq
+        exact Prod.ext hEq (h2 ▸ h2'.symm ▸ rfl)
+    exact Subtype.ext hpair
+  have hcard : E.card ≤ (t.erase a).card :=
+    Finset.card_le_card_of_injOn _ hother hinj
+  have hterase : (t.erase a).card = t.card - 1 := Finset.card_erase_of_mem hat
+  have hpos : 1 ≤ t.card := Finset.card_pos.mpr ⟨a, hat⟩
+  have : incidentEdgeCount independent a = E.card := by
+    rw [incidentEdgeCount, hE]
+  omega
+
+/-- A finite family of `Fin`-indexed letters is bounded by any finite set of numerical labels
+covering it. -/
+theorem card_filter_fin_le {m : ℕ} (P : Fin m → Prop) [DecidablePred P] (t : Finset ℕ)
+    (h : ∀ x : Fin m, P x → (x : ℕ) ∈ t) :
+    ((Finset.univ : Finset (Fin m)).filter P).card ≤ t.card :=
+  Finset.card_le_card_of_injOn Fin.val (fun x hx => h x (Finset.mem_filter.mp hx).2)
+    (fun _ _ _ _ hxy => Fin.val_injective hxy)
+
 end HeapReporter
 
 section TracePartition
@@ -236,6 +307,73 @@ theorem tsum_ofReal_pow_traceLength_le (independent : α → α → Prop)
     (summable_traceCount_pow independent hsymm Δ hdegree hz0 hz)]
   exact ENNReal.ofReal_le_ofReal (tracePartitionSum_le independent hsymm Δ hdegree hz0 hz)
 
+omit [DecidableEq α] [LinearOrder α] [Nonempty α] in
+/-- The finite heap incidence of a trace dictionary is paid at the cumulative trace count. -/
+theorem heapIncidence_trace_le {X : Type*} [MeasurableSpace X] (ν : Measure X)
+    (independent : α → α → Prop) (S : CircuitTrace independent → Set X) (s : ℕ)
+    {B : ℝ≥0∞} (hB : ∀ τ, ν (S τ) ≤ B) :
+    heapIncidence ν (traceLength independent) S s ≤
+      (cumulativeTraceCount independent s : ℝ≥0∞) * B := by
+  classical
+  have hsplit : ∀ ℓ : ℕ,
+      (∑' b : FixedTraceClass independent ℓ,
+        Set.indicator {τ : CircuitTrace independent | traceLength independent τ ≤ s}
+          (fun τ => ν (S τ)) ⟨ℓ, b⟩) ≤
+        (if ℓ ≤ s then (Nat.card (FixedTraceClass independent ℓ) : ℝ≥0∞) * B else 0) := by
+    intro ℓ
+    by_cases hℓ : ℓ ≤ s
+    · rw [if_pos hℓ]
+      calc (∑' b : FixedTraceClass independent ℓ,
+              Set.indicator {τ : CircuitTrace independent | traceLength independent τ ≤ s}
+                (fun τ => ν (S τ)) ⟨ℓ, b⟩)
+            ≤ ∑' _b : FixedTraceClass independent ℓ, B := by
+            refine ENNReal.tsum_le_tsum fun b => ?_
+            rw [Set.indicator_of_mem (show (⟨ℓ, b⟩ : CircuitTrace independent) ∈
+              {τ : CircuitTrace independent | traceLength independent τ ≤ s} from hℓ)]
+            exact hB _
+        _ = (Nat.card (FixedTraceClass independent ℓ) : ℝ≥0∞) * B := by
+            rw [ENNReal.tsum_const, ENat.card_eq_coe_natCard]
+            rfl
+    · rw [if_neg hℓ]
+      have hzero : ∀ b : FixedTraceClass independent ℓ,
+          Set.indicator {τ : CircuitTrace independent | traceLength independent τ ≤ s}
+            (fun τ => ν (S τ)) (⟨ℓ, b⟩ : CircuitTrace independent) = 0 :=
+        fun b => Set.indicator_of_notMem
+          (show (⟨ℓ, b⟩ : CircuitTrace independent) ∉
+            {τ : CircuitTrace independent | traceLength independent τ ≤ s} from
+              fun hcon => hℓ hcon) _
+      simp [hzero]
+  calc heapIncidence ν (traceLength independent) S s
+      = ∑' ℓ : ℕ, ∑' b : FixedTraceClass independent ℓ,
+          Set.indicator {τ : CircuitTrace independent | traceLength independent τ ≤ s}
+            (fun τ => ν (S τ)) ⟨ℓ, b⟩ := by
+        rw [heapIncidence, ENNReal.tsum_sigma' (β := fun ℓ => FixedTraceClass independent ℓ)]
+    _ ≤ ∑' ℓ : ℕ, (if ℓ ≤ s then (Nat.card (FixedTraceClass independent ℓ) : ℝ≥0∞) * B else 0) :=
+        ENNReal.tsum_le_tsum hsplit
+    _ = ∑ ℓ ∈ Finset.range (s + 1),
+          (Nat.card (FixedTraceClass independent ℓ) : ℝ≥0∞) * B := by
+        rw [tsum_eq_sum (s := Finset.range (s + 1)) (fun ℓ hℓ => ?_)]
+        · refine Finset.sum_congr rfl fun ℓ hℓ => ?_
+          rw [if_pos (Nat.lt_succ_iff.mp (Finset.mem_range.mp hℓ))]
+        · rw [if_neg]
+          exact fun hcon => hℓ (Finset.mem_range.mpr (Nat.lt_succ_of_le hcon))
+    _ = (cumulativeTraceCount independent s : ℝ≥0∞) * B := by
+        rw [cumulativeTraceCount, ← Finset.sum_mul]
+        push_cast
+        rfl
+
+omit [DecidableEq α] [LinearOrder α] [Nonempty α] in
+/-- **Local-circuit plateau capacity bound.**  With a target-uniform measure bound `B`, the measure
+of the states reachable by circuits of depth at most `s` is at most the cumulative heap capacity
+times `B`. -/
+theorem measure_traceHeapAccessible_le_cumulativeTraceCount {X : Type*} [MeasurableSpace X]
+    (ν : Measure X) (independent : α → α → Prop) (S : CircuitTrace independent → Set X) (s : ℕ)
+    {B : ℝ≥0∞} (hB : ∀ τ, ν (S τ) ≤ B) :
+    ν (heapAccessible (traceLength independent) S s) ≤
+      (cumulativeTraceCount independent s : ℝ≥0∞) * B :=
+  le_trans (measure_heapAccessible_le_heapIncidence ν _ S s)
+    (heapIncidence_trace_le ν independent S s hB)
+
 end TracePartition
 
 section CircuitAccessibility
@@ -308,5 +446,210 @@ theorem measure_traceHeapAccessible_le_optimal (ν : Measure X) (independent : �
     (2 ^ (Δ * s) * (1 + (M : ℝ) / s) ^ s)) B, mul_assoc, ← ENNReal.ofReal_mul (by positivity)]
 
 end CircuitAccessibility
+
+
+section ChainAlphabet
+
+/-! ### The one-dimensional local gate alphabet -/
+
+variable (n K₁ K₂ : ℕ)
+
+/-- Letters of a one-dimensional local gate alphabet on an open chain: `K₁` one-site types at each
+of `n` sites and `K₂` nearest-neighbour types at each of the `n - 1` edges. -/
+def ChainLetter : Type := (Fin n × Fin K₁) ⊕ (Fin (n - 1) × Fin K₂)
+
+instance : Fintype (ChainLetter n K₁ K₂) :=
+  inferInstanceAs (Fintype ((Fin n × Fin K₁) ⊕ (Fin (n - 1) × Fin K₂)))
+
+instance : DecidableEq (ChainLetter n K₁ K₂) :=
+  inferInstanceAs (DecidableEq ((Fin n × Fin K₁) ⊕ (Fin (n - 1) × Fin K₂)))
+
+noncomputable instance : LinearOrder (ChainLetter n K₁ K₂) :=
+  LinearOrder.lift' (fun a => (Fintype.equivFin (ChainLetter n K₁ K₂) a).val)
+    fun _ _ h => (Fintype.equivFin (ChainLetter n K₁ K₂)).injective (Fin.val_injective h)
+
+/-- The alphabet size of a one-dimensional local gate dictionary. -/
+theorem card_chainLetter :
+    Fintype.card (ChainLetter n K₁ K₂) = K₁ * n + K₂ * (n - 1) := by
+  show Fintype.card ((Fin n × Fin K₁) ⊕ (Fin (n - 1) × Fin K₂)) = K₁ * n + K₂ * (n - 1)
+  simp [mul_comm]
+
+/-- Hardware support of a chain letter. -/
+def chainSupport : ChainLetter n K₁ K₂ → Finset ℕ
+  | Sum.inl p => {p.1.val}
+  | Sum.inr p => {p.1.val, p.1.val + 1}
+
+/-- Two chain letters commute exactly when their hardware supports are disjoint. -/
+def chainIndependent (a b : ChainLetter n K₁ K₂) : Prop :=
+  Disjoint (chainSupport n K₁ K₂ a) (chainSupport n K₁ K₂ b)
+
+theorem chainIndependent_symm (a b : ChainLetter n K₁ K₂) :
+    chainIndependent n K₁ K₂ a b → chainIndependent n K₁ K₂ b a :=
+  fun h => h.symm
+
+theorem not_chainIndependent_self (a : ChainLetter n K₁ K₂) :
+    ¬ chainIndependent n K₁ K₂ a a := by
+  cases a with
+  | inl p => simp [chainIndependent, chainSupport]
+  | inr p => simp [chainIndependent, chainSupport]
+
+theorem card_le_two_filter_site (m c : ℕ) :
+    ((Finset.univ : Finset (Fin m)).filter fun e => e.val = c ∨ e.val + 1 = c).card ≤ 2 := by
+  refine le_trans (card_filter_fin_le _ ({c, c - 1} : Finset ℕ) ?_) ?_
+  · rintro x (hx | hx)
+    · simp [hx]
+    · have : (x : ℕ) = c - 1 := by omega
+      simp [this]
+  · exact le_trans (Finset.card_insert_le _ _) (by simp)
+
+theorem card_le_two_filter_edge (m c : ℕ) :
+    ((Finset.univ : Finset (Fin m)).filter fun j => j.val = c ∨ j.val = c + 1).card ≤ 2 := by
+  refine le_trans (card_filter_fin_le _ ({c, c + 1} : Finset ℕ) ?_) ?_
+  · rintro x (hx | hx) <;> simp [hx]
+  · exact le_trans (Finset.card_insert_le _ _) (by simp)
+
+theorem card_le_three_filter_neighbourEdge (m c : ℕ) :
+    ((Finset.univ : Finset (Fin m)).filter fun f =>
+      f.val = c ∨ f.val = c + 1 ∨ f.val + 1 = c).card ≤ 3 := by
+  refine le_trans (card_filter_fin_le _ ({c, c + 1, c - 1} : Finset ℕ) ?_) ?_
+  · rintro x (hx | hx | hx)
+    · simp [hx]
+    · simp [hx]
+    · have : (x : ℕ) = c - 1 := by omega
+      simp [this]
+  · refine le_trans (Finset.card_insert_le _ _) ?_
+    have : ({c + 1, c - 1} : Finset ℕ).card ≤ 2 :=
+      le_trans (Finset.card_insert_le _ _) (by simp)
+    omega
+
+/-- **Bounded-degree one-dimensional dictionary.**  The dependence degree of a one-dimensional
+local gate alphabet is bounded independently of the chain length. -/
+theorem chain_incidentEdgeCount_le (n K₁ K₂ : ℕ) (a : ChainLetter n K₁ K₂) :
+    incidentEdgeCount (chainIndependent n K₁ K₂) a ≤
+      max (K₁ - 1 + 2 * K₂) (2 * K₁ + 3 * K₂ - 1) := by
+  classical
+  cases a with
+  | inl p =>
+      obtain ⟨i, k⟩ := p
+      have hK₁ : 0 < K₁ := k.pos
+      set E : Finset (Fin (n - 1)) :=
+        (Finset.univ : Finset (Fin (n - 1))).filter fun e => e.val = i.val ∨ e.val + 1 = i.val
+        with hEdef
+      set A : Finset (ChainLetter n K₁ K₂) :=
+        (Finset.univ : Finset (Fin K₁)).image fun k' => (Sum.inl (i, k') : ChainLetter n K₁ K₂)
+        with hAdef
+      set Bset : Finset (ChainLetter n K₁ K₂) :=
+        (E ×ˢ (Finset.univ : Finset (Fin K₂))).image fun q => (Sum.inr q : ChainLetter n K₁ K₂)
+        with hBdef
+      have hat : (Sum.inl (i, k) : ChainLetter n K₁ K₂) ∈ A ∪ Bset :=
+        Finset.mem_union_left _ (Finset.mem_image.mpr ⟨k, Finset.mem_univ _, rfl⟩)
+      have ht : ∀ b : ChainLetter n K₁ K₂, b ≠ Sum.inl (i, k) →
+          ¬ chainIndependent n K₁ K₂ (Sum.inl (i, k)) b → b ∈ A ∪ Bset := by
+        rintro (⟨j, k'⟩ | ⟨c, k'⟩) _ hdep
+        · have hij : i = j := by
+            by_contra hne
+            refine hdep ?_
+            simp only [chainIndependent, chainSupport, Finset.disjoint_singleton]
+            exact fun hcon => hne (Fin.val_injective hcon)
+          subst hij
+          exact Finset.mem_union_left _ (Finset.mem_image.mpr ⟨k', Finset.mem_univ _, rfl⟩)
+        · have hmem : c.val = i.val ∨ c.val + 1 = i.val := by
+            by_contra hcon
+            have h1 : c.val ≠ i.val := fun h => hcon (Or.inl h)
+            have h2 : c.val + 1 ≠ i.val := fun h => hcon (Or.inr h)
+            refine hdep ?_
+            simp only [chainIndependent, chainSupport, Finset.disjoint_singleton_left,
+              Finset.mem_insert, Finset.mem_singleton]
+            exact fun hx => by rcases hx with hx | hx <;> omega
+          refine Finset.mem_union_right _ (Finset.mem_image.mpr ⟨(c, k'), ?_, rfl⟩)
+          refine Finset.mem_product.mpr ⟨?_, Finset.mem_univ _⟩
+          show c ∈ E
+          exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, hmem⟩
+      have h1 : A.card ≤ K₁ := by
+        refine le_trans Finset.card_image_le ?_
+        simp
+      have h2 : Bset.card ≤ 2 * K₂ := by
+        refine le_trans Finset.card_image_le ?_
+        rw [Finset.card_product]
+        have hE2 : E.card ≤ 2 := card_le_two_filter_site (n - 1) i.val
+        calc E.card * (Finset.univ : Finset (Fin K₂)).card
+            ≤ 2 * (Finset.univ : Finset (Fin K₂)).card := Nat.mul_le_mul_right _ hE2
+          _ = 2 * K₂ := by simp
+      have hcard : (A ∪ Bset).card ≤ K₁ + 2 * K₂ :=
+        le_trans (Finset.card_union_le _ _) (Nat.add_le_add h1 h2)
+      have hmain := incidentEdgeCount_succ_le_of_dependentSubset
+        (chainIndependent n K₁ K₂) (chainIndependent_symm n K₁ K₂) _ (A ∪ Bset) ht hat
+      have hfinal : incidentEdgeCount (chainIndependent n K₁ K₂) (Sum.inl (i, k)) ≤
+          K₁ - 1 + 2 * K₂ := by omega
+      exact le_trans hfinal (le_max_left _ _)
+  | inr p =>
+      obtain ⟨e, k⟩ := p
+      have hK₂ : 0 < K₂ := k.pos
+      set J : Finset (Fin n) :=
+        (Finset.univ : Finset (Fin n)).filter fun j => j.val = e.val ∨ j.val = e.val + 1 with hJdef
+      set F : Finset (Fin (n - 1)) :=
+        (Finset.univ : Finset (Fin (n - 1))).filter fun f =>
+          f.val = e.val ∨ f.val = e.val + 1 ∨ f.val + 1 = e.val with hFdef
+      set A : Finset (ChainLetter n K₁ K₂) :=
+        (J ×ˢ (Finset.univ : Finset (Fin K₁))).image fun q => (Sum.inl q : ChainLetter n K₁ K₂)
+        with hAdef
+      set Bset : Finset (ChainLetter n K₁ K₂) :=
+        (F ×ˢ (Finset.univ : Finset (Fin K₂))).image fun q => (Sum.inr q : ChainLetter n K₁ K₂)
+        with hBdef
+      have heF : e ∈ F := Finset.mem_filter.mpr ⟨Finset.mem_univ _, Or.inl rfl⟩
+      have hat : (Sum.inr (e, k) : ChainLetter n K₁ K₂) ∈ A ∪ Bset :=
+        Finset.mem_union_right _ (Finset.mem_image.mpr
+          ⟨(e, k), Finset.mem_product.mpr ⟨heF, Finset.mem_univ _⟩, rfl⟩)
+      have ht : ∀ b : ChainLetter n K₁ K₂, b ≠ Sum.inr (e, k) →
+          ¬ chainIndependent n K₁ K₂ (Sum.inr (e, k)) b → b ∈ A ∪ Bset := by
+        rintro (⟨j, k'⟩ | ⟨f, k'⟩) _ hdep
+        · have hmem : j.val = e.val ∨ j.val = e.val + 1 := by
+            by_contra hcon
+            have h1 : j.val ≠ e.val := fun h => hcon (Or.inl h)
+            have h2 : j.val ≠ e.val + 1 := fun h => hcon (Or.inr h)
+            refine hdep ?_
+            simp only [chainIndependent, chainSupport, Finset.disjoint_singleton_right,
+              Finset.mem_insert, Finset.mem_singleton]
+            exact fun hx => by rcases hx with hx | hx <;> omega
+          refine Finset.mem_union_left _ (Finset.mem_image.mpr ⟨(j, k'), ?_, rfl⟩)
+          refine Finset.mem_product.mpr ⟨?_, Finset.mem_univ _⟩
+          show j ∈ J
+          exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, hmem⟩
+        · have hmem : f.val = e.val ∨ f.val = e.val + 1 ∨ f.val + 1 = e.val := by
+            by_contra hcon
+            have h1 : f.val ≠ e.val := fun h => hcon (Or.inl h)
+            have h2 : f.val ≠ e.val + 1 := fun h => hcon (Or.inr (Or.inl h))
+            have h3 : f.val + 1 ≠ e.val := fun h => hcon (Or.inr (Or.inr h))
+            refine hdep ?_
+            simp only [chainIndependent, chainSupport, Finset.disjoint_left,
+              Finset.mem_insert, Finset.mem_singleton]
+            rintro x (rfl | rfl) <;> rintro (hx | hx) <;> omega
+          refine Finset.mem_union_right _ (Finset.mem_image.mpr ⟨(f, k'), ?_, rfl⟩)
+          refine Finset.mem_product.mpr ⟨?_, Finset.mem_univ _⟩
+          show f ∈ F
+          exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, hmem⟩
+      have h1 : A.card ≤ 2 * K₁ := by
+        refine le_trans Finset.card_image_le ?_
+        rw [Finset.card_product]
+        have hJ2 : J.card ≤ 2 := card_le_two_filter_edge n e.val
+        calc J.card * (Finset.univ : Finset (Fin K₁)).card
+            ≤ 2 * (Finset.univ : Finset (Fin K₁)).card := Nat.mul_le_mul_right _ hJ2
+          _ = 2 * K₁ := by simp
+      have h2 : Bset.card ≤ 3 * K₂ := by
+        refine le_trans Finset.card_image_le ?_
+        rw [Finset.card_product]
+        have hF3 : F.card ≤ 3 := card_le_three_filter_neighbourEdge (n - 1) e.val
+        calc F.card * (Finset.univ : Finset (Fin K₂)).card
+            ≤ 3 * (Finset.univ : Finset (Fin K₂)).card := Nat.mul_le_mul_right _ hF3
+          _ = 3 * K₂ := by simp
+      have hcard : (A ∪ Bset).card ≤ 2 * K₁ + 3 * K₂ :=
+        le_trans (Finset.card_union_le _ _) (Nat.add_le_add h1 h2)
+      have hmain := incidentEdgeCount_succ_le_of_dependentSubset
+        (chainIndependent n K₁ K₂) (chainIndependent_symm n K₁ K₂) _ (A ∪ Bset) ht hat
+      have hfinal : incidentEdgeCount (chainIndependent n K₁ K₂) (Sum.inr (e, k)) ≤
+          2 * K₁ + 3 * K₂ - 1 := by omega
+      exact le_trans hfinal (le_max_right _ _)
+
+end ChainAlphabet
 
 end GaloisForLFunctions.RHTower

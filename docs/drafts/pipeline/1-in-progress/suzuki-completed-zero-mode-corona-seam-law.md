@@ -953,8 +953,12 @@ biweighted dichotomy remain alternative obligations of the direct Hardy architec
 `../3-formalized/new_scientific_knowledge/suzuki/suzuki-complementary-primitive-flux-derivative-recovery.md`
 now closes root-derivative propagation. The \(M\) and \(I-M\) primitive fluxes are exactly the two
 cutoffs of the uncut flux, so their rough prime primitives cancel before weak derivative
-coercivity. The remaining finite-type source gates are literal paired assembly, physical-root
-dipole/flux matching, and compact-middle coverage.
+coercivity.  The subsequent
+`../3-formalized/new_scientific_knowledge/suzuki/suzuki-flat-flux-charge-automaticity.md`
+discharges physical dipole/flat-flux matching: the one-sided zero-extension has only the half-log
+indicial root and no `1/log` dipole, while superpolynomial block flatness forces terminal flux
+charge zero. The remaining finite-type source gates are literal paired assembly, arbitrary
+finite-order expansion to the flat residual, and compact-middle coverage.
 
 ## 7. Lean decision
 
@@ -1048,9 +1052,10 @@ paper mathematics; abstract formalization would not certify source-specific anal
 - [x] prove primitive-flux arbitrary-nonnormal weighted graph reduction
 - [x] prove flat-tempered primitive-flux Volterra Liouville
 - [x] prove complementary primitive-flux root derivative recovery
+- [x] prove physical endpoint dipole and terminal flat-flux charge vanish automatically
 - [ ] prove `SUZUKI-POLYNOMIAL-ORBIT-NORMAL-IDENTITY`
 - [ ] prove degree-m source moments or biweighted Evans dichotomy only if direct Hardy is retained
-- [ ] verify zero dipole source moment in the literal assembled equation
+- [ ] verify total marked-descendant zero-dipole source moment in literal assembly
 - [ ] pass recurrence-infinite apertures
 - [ ] extract a new source-specific consequence from `P p_a(D)u=0`
 - [ ] prove the literal trace-zero supported-nullspace theorem `(30)`

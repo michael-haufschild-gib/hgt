@@ -30,7 +30,7 @@ variable {X : Type*} [NormedAddCommGroup X] [NormedSpace ℂ X] [CompleteSpace X
 Gamma frequency equation on a compact subinterval of the positive half-line is the Gamma transport
 applied to a single channel vector. -/
 theorem exists_channel_vector_distributional (T : X →L[ℂ] X) (u : SchwartzMap ℝ ℂ →L[ℂ] X)
-    {Rint r : ℝ → ℝ} {a b : ℝ} (ha : 0 < a) (hab : a < b)
+    {Rint r : ℝ → ℝ} {a b : ℝ} (hab : a < b) (h0 : (0 : ℝ) ∉ Icc a b)
     (hRint : ContDiff ℝ (⊤ : ℕ∞) Rint) (hRderiv : ∀ x : ℝ, HasDerivAt Rint (r x) x)
     (hq : Function.HasTemperateGrowth (fun x : ℝ => ((x * r x : ℝ) : ℂ)))
     (hEq : ∀ φ : SchwartzMap ℝ ℂ, (∀ x, x ∉ Ioo a b → (φ : ℝ → ℂ) x = 0) →
@@ -38,28 +38,31 @@ theorem exists_channel_vector_distributional (T : X →L[ℂ] X) (u : SchwartzMa
         + I • u (mulTemperateCLM hq φ) - I • T (u (coordMulCLM φ)) = 0) :
     ∃ c : X, ∀ φ : SchwartzMap ℝ ℂ, (∀ x, x ∉ Ioo a b → (φ : ℝ → ℂ) x = 0) →
       u φ = ∫ t in a..b, (φ : ℝ → ℂ) t
-        • ((t ^ (-(1 : ℝ) / 2)) • gammaTransport Rint T t c) := by
+        • ((|t| ^ (-(1 : ℝ) / 2)) • gammaTransport Rint T t c) := by
   -- the frequency remainder is smooth
   have hderivEq : deriv Rint = r := funext fun x => (hRderiv x).deriv
   have hr : ContDiff ℝ (⊤ : ℕ∞) r := by
     have := (contDiff_infty_iff_deriv.mp hRint).2
     rwa [hderivEq] at this
   -- the cutoff and the multipliers it produces
-  obtain ⟨χ, hχsm, hχcs, hχone, hχzero⟩ := exists_interval_cutoff ha hab
-  have hIccU : Icc a b ⊆ Ioo (a - a / 4) (b + a / 4) := by
+  obtain ⟨χ, δ, hδpos, hχsm, hχcs, hχone, hχzero⟩ := exists_interval_cutoff hab h0
+  have hε : (0 : ℝ) < 2 * δ := by linarith
+  have hIccU : Icc a b ⊆ Ioo (a - δ) (b + δ) := by
     intro x hx
     exact ⟨by linarith [hx.1], by linarith [hx.2]⟩
   have hUnhds : ∀ x ∈ Icc a b, ∀ᶠ y in nhds x, χ y = 1 := by
     intro x hx
-    filter_upwards [(isOpen_Ioo (a := a - a / 4) (b := b + a / 4)).mem_nhds (hIccU hx)] with y hy
+    filter_upwards [(isOpen_Ioo (a := a - δ) (b := b + δ)).mem_nhds (hIccU hx)] with y hy
     exact hχone y hy
-  have hIccpos : ∀ x ∈ Icc a b, 0 < x := fun x hx => lt_of_lt_of_le ha hx.1
+  have hIccne : ∀ x ∈ Icc a b, x ≠ 0 := by
+    intro x hx hcon
+    exact h0 (hcon ▸ hx)
   have hIccone : ∀ x ∈ Icc a b, χ x = 1 := fun x hx => hχone x (hIccU hx)
   set A : X →L[ℂ] X := ((-I / 2 : ℂ)) • T with hA
-  have hinv := hasTemperateGrowth_invCut hχsm hχcs ha hχzero
-  have hm := hasTemperateGrowth_gammaMultiplier hχsm hχcs ha hχzero hr
-  have hgfac := hasTemperateGrowth_sqrtFactor hχsm hχcs ha hχzero hRint
-  have hginv := hasTemperateGrowth_sqrtFactorInv hχsm hχcs ha hχzero hRint
+  have hinv := hasTemperateGrowth_invCut hχsm hχcs hε hχzero
+  have hm := hasTemperateGrowth_gammaMultiplier hχsm hχcs hε hχzero hr
+  have hgfac := hasTemperateGrowth_sqrtFactor hχsm hχcs hε hχzero hRint
+  have hginv := hasTemperateGrowth_sqrtFactorInv hχsm hχcs hε hχzero hRint
   have hrcut := hasTemperateGrowth_rCut hχsm hχcs hr
   -- dividing by the coordinate is inverse to multiplying by it, on the interval
   have hdiv : ∀ θ : SchwartzMap ℝ ℂ, (∀ x, x ∉ Icc a b → (θ : ℝ → ℂ) x = 0) →
@@ -68,7 +71,7 @@ theorem exists_channel_vector_distributional (T : X →L[ℂ] X) (u : SchwartzMa
     refine SchwartzMap.ext fun x => ?_
     rw [coordMulCLM_apply, mulTemperateCLM_apply]
     by_cases hx : x ∈ Icc a b
-    · have hmul := invCut_mul_self (χ := χ) (hIccpos x hx) (hIccone x hx)
+    · have hmul := invCut_mul_self (χ := χ) (hIccne x hx) (hIccone x hx)
       calc (θ : ℝ → ℂ) x * invCut χ x * (x : ℂ)
           = (θ : ℝ → ℂ) x * (invCut χ x * (x : ℂ)) := by ring
         _ = (θ : ℝ → ℂ) x := by rw [hmul, mul_one]
@@ -94,7 +97,7 @@ theorem exists_channel_vector_distributional (T : X →L[ℂ] X) (u : SchwartzMa
     -- the coordinate-divided test function
     have hgd : ∀ x ∈ Ioo a b, deriv (invCut χ) x = -(invCut χ x * invCut χ x) := by
       intro x hx
-      exact deriv_invCut (hIccpos x (Ioo_subset_Icc_self hx))
+      exact deriv_invCut (hIccne x (Ioo_subset_Icc_self hx))
         (hUnhds x (Ioo_subset_Icc_self hx))
     have hleib := derivCLM_mulTemperateCLM hinv hinv hgd hψ
     have hcoordDeriv : coordMulCLM (SchwartzMap.derivCLM ℂ ℂ (mulTemperateCLM hinv ψ))
@@ -105,7 +108,7 @@ theorem exists_channel_vector_distributional (T : X →L[ℂ] X) (u : SchwartzMa
       refine SchwartzMap.ext fun x => ?_
       rw [mulTemperateCLM_apply, mulTemperateCLM_apply, mulTemperateCLM_apply]
       by_cases hx : x ∈ Icc a b
-      · have hmul := invCut_mul_self (χ := χ) (hIccpos x hx) (hIccone x hx)
+      · have hmul := invCut_mul_self (χ := χ) (hIccne x hx) (hIccone x hx)
         have hone : χ x = 1 := hIccone x hx
         push_cast [hone]
         calc (ψ : ℝ → ℂ) x * invCut χ x * ((x : ℂ) * ((r x : ℝ) : ℂ))
@@ -141,11 +144,11 @@ theorem exists_channel_vector_distributional (T : X →L[ℂ] X) (u : SchwartzMa
   have hgderiv : ∀ x ∈ Ioo a b,
       deriv (sqrtFactor χ Rint) x = -(gammaMultiplier χ r x * sqrtFactor χ Rint x) := by
     intro x hx
-    exact deriv_sqrtFactor (hIccpos x (Ioo_subset_Icc_self hx))
+    exact deriv_sqrtFactor (hIccne x (Ioo_subset_Icc_self hx))
       (hUnhds x (Ioo_subset_Icc_self hx)) hRderiv
   have hgprod : ∀ x ∈ Ioo a b, sqrtFactor χ Rint x * sqrtFactorInv χ Rint x = 1 := by
     intro x hx
-    exact sqrtFactor_mul_inv (hIccpos x (Ioo_subset_Icc_self hx))
+    exact sqrtFactor_mul_inv (hIccne x (Ioo_subset_Icc_self hx))
       (hIccone x (Ioo_subset_Icc_self hx))
   obtain ⟨c, hc⟩ :=
     exists_conjugate_representation A u hab hm hgfac hginv hgderiv hgprod hEq'
@@ -153,10 +156,10 @@ theorem exists_channel_vector_distributional (T : X →L[ℂ] X) (u : SchwartzMa
   rw [hc φ hsupp]
   refine intervalIntegral.integral_congr fun t ht => ?_
   have htIcc : t ∈ Icc a b := by rwa [uIcc_of_le hab.le] at ht
-  have htpos : 0 < t := hIccpos t htIcc
+  have htne : t ≠ 0 := hIccne t htIcc
   have hone : χ t = 1 := hIccone t htIcc
-  have hsqrt : ((Real.sqrt t : ℝ) : ℂ) ≠ 0 := by
-    simpa using ne_of_gt (Real.sqrt_pos.mpr htpos)
+  have hsqrt : ((Real.sqrt |t| : ℝ) : ℂ) ≠ 0 := by
+    simpa using ne_of_gt (Real.sqrt_pos.mpr (abs_pos.mpr htne))
   -- the propagator identification
   have hopPhase : NormedSpace.exp ((t : ℂ) • A) = opPhase T t := by
     have harg : ((t : ℂ) • A) = t • ((-I / 2 : ℂ) • T) := by
@@ -168,13 +171,13 @@ theorem exists_channel_vector_distributional (T : X →L[ℂ] X) (u : SchwartzMa
     congr 1
     push_cast
     ring
-  have hrpow : (t ^ (-(1 : ℝ) / 2) : ℝ) = (Real.sqrt t)⁻¹ := by
-    rw [Real.sqrt_eq_rpow, ← Real.rpow_neg htpos.le]
+  have hrpow : (|t| ^ (-(1 : ℝ) / 2) : ℝ) = (Real.sqrt |t|)⁻¹ := by
+    rw [Real.sqrt_eq_rpow, ← Real.rpow_neg (abs_nonneg t)]
     norm_num
-  have hsmulReal : ∀ (v : X), (t ^ (-(1 : ℝ) / 2) : ℝ) • v
-      = ((((Real.sqrt t : ℝ) : ℂ))⁻¹) • v := by
+  have hsmulReal : ∀ (v : X), (|t| ^ (-(1 : ℝ) / 2) : ℝ) • v
+      = ((((Real.sqrt |t| : ℝ) : ℂ))⁻¹) • v := by
     intro v
-    rw [hrpow, ← ofReal_smul_eq ((Real.sqrt t)⁻¹) v]
+    rw [hrpow, ← ofReal_smul_eq ((Real.sqrt |t|)⁻¹) v]
     congr 1
     push_cast
     ring

@@ -168,6 +168,44 @@ theorem exists_relativeExponentialBase_edge_of_nonzero_additive_character
       alpha z halpha0 halpha).mpr hfailNorm
   exact ⟨alpha, z, halpha0, halpha, hznot, hedge.1, hedge.2⟩
 
+/-- Exact classification of the nonzero additive-character branch of stage-two failure. -/
+theorem nonzero_additive_character_stageTwo_failure_iff_relativeExponentialBase_edge :
+    (∃ x : Fin 2 → ℂ, LinearIndependent ℚ x ∧
+      (¬ ∃ t : Fin 2 → ℂ, Function.Injective t ∧
+        (∀ i, t i ∈ exponentialPairGeneratorSet x) ∧ AlgebraicIndependent ℚ t) ∧
+      ∃ m : Fin 2 → ℤ, m ≠ 0 ∧ m ∈ additiveAlgebraicCharacterLattice x) ↔
+    ∃ alpha z : ℂ, alpha ≠ 0 ∧ IsAlgebraic ℚ alpha ∧
+      (∀ q : ℚ, z ≠ q • alpha) ∧
+      IsAlgebraic (relativeExponentialBase alpha) z ∧
+      IsAlgebraic (relativeExponentialBase alpha) (Complex.exp z) := by
+  constructor
+  · rintro ⟨x, hx, hfail, hexists⟩
+    exact exists_relativeExponentialBase_edge_of_nonzero_additive_character
+      x hx hfail hexists
+  · rintro ⟨alpha, z, halpha0, halpha, hznot, hz, hexpz⟩
+    let x : Fin 2 → ℂ := ![alpha, z]
+    have hx : LinearIndependent ℚ x := by
+      simpa [x] using
+        linearIndependent_fin_two_of_ne_zero_of_not_rat_smul alpha z halpha0 hznot
+    have hfailNorm : ¬ ∃ t : Fin 2 → ℂ, Function.Injective t ∧
+        (∀ i, t i ∈ Set.range (![alpha, z] : Fin 2 → ℂ) ∪
+          Set.range (fun j : Fin 2 => Complex.exp ((![alpha, z] : Fin 2 → ℂ) j))) ∧
+        AlgebraicIndependent ℚ t :=
+      (relativeExponentialBase_edge_iff_no_affine_stageTwo_extraction
+        alpha z halpha0 halpha).mp ⟨hz, hexpz⟩
+    have hfail : ¬ ∃ t : Fin 2 → ℂ, Function.Injective t ∧
+        (∀ i, t i ∈ exponentialPairGeneratorSet x) ∧ AlgebraicIndependent ℚ t := by
+      simpa [x, exponentialPairGeneratorSet] using hfailNorm
+    let m : Fin 2 → ℤ := ![1, 0]
+    have hm0 : m ≠ 0 := by
+      intro hm
+      have h0 := congrFun hm 0
+      norm_num [m] at h0
+    have hm : m ∈ additiveAlgebraicCharacterLattice x := by
+      change IsAlgebraic ℚ (∑ i, m i • x i)
+      simpa [m, x, Fin.sum_univ_two] using halpha
+    exact ⟨x, hx, hfail, m, hm0, hm⟩
+
 end
 
 end GaloisForLFunctions.RHTower

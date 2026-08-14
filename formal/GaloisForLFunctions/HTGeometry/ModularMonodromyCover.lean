@@ -43,7 +43,7 @@ namespace ModularCover
 variable {S : Type*} [Fintype S] [DecidableEq S] (M : ModularCover S)
 
 /-- The degree of the cover. -/
-def degree : ℕ := Fintype.card S
+def degree (_ : ModularCover S) : ℕ := Fintype.card S
 
 /-- The number of points over the order-two elliptic point. -/
 def fibreX : ℕ := M.X.cycleType.card
@@ -146,7 +146,7 @@ theorem modular_capacity_exact :
 end ModularCover
 
 /-- Every `(2,3,c)` cover is in particular an unramified cover of the modular orbifold. -/
-def MonodromyCover.toModularCover {a b c : ℕ} {S : Type*} [Fintype S] [DecidableEq S]
+def MonodromyCover.toModularCover {c : ℕ} {S : Type*} [Fintype S] [DecidableEq S]
     (F : MonodromyCover 2 3 c S) : ModularCover S where
   X := F.X
   Y := F.Y

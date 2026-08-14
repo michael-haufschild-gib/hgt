@@ -4053,6 +4053,13 @@ Three producer classes remain live and are not proved to factor through one anot
 2. **E — completed Suzuki/Evans seam.** Prove the literal trace-zero supported-nullspace theorem
    for the completed interior equation, then injectivity of both completed-corona and raw Evans
    states at every aperture. Completion/reconstruction identities alone do not decide this sign.
+   The finite-type analytic gate is now narrower: `suzuki-flat-flux-charge-automaticity.md`
+   proves the terminal flat-flux charge is forced to zero by superpolynomial block flatness and the
+   defining primitive equation, and the physical zero-extension has no independent `1/log`
+   dipole. Complementary flux already recovers the weighted root derivative. Remaining finite-type
+   work is literal infinite paired-source assembly, arbitrary finite-order expansion to the flat
+   residual, and compact-middle coverage. Low-frequency boundary counterterms remain inside
+   assembly; no separate physical dipole/flat-charge premise remains.
 3. **I — noncompact Euler--Gamma incidence/direct floor.** Construct the source-defined moving
    incidence family and prove nonexpansive pole-to-divisor transport in its charged graph, or
    obtain the same subexponential/positive true-floor estimate directly.

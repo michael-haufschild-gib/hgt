@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.PowerCanonicalProductLogDeriv
 import GaloisForLFunctions.HTGeometry.ZetaMomentFunctionalEquation
-import GaloisForLFunctions.RHTower.BarnesMellinGenusExpansion
+import GaloisForLFunctions.RHTower.BarnesMellinGenusEulerDerivative
 
 /-!
 # The Barnes expansion of a power canonical product
@@ -127,6 +127,38 @@ theorem barnes_expansion_powerCanonicalProduct (hs : 0 < s)
     rw [HTGeometry.ofReal_mul_logDeriv_powerCanonicalProduct hs hx, hlead, hsumres]
     ring
   rw [← heq]
+  exact hC x hx
+
+/-- The Euler logarithmic derivative of the canonical product, as a function on the positive
+axis. -/
+def powerCanonicalEulerSum (s : ℝ) : ℝ → ℂ :=
+  fun x => ((x : ℝ) : ℂ) * logDeriv (HTGeometry.powerCanonicalProduct s) ((x : ℝ) : ℂ)
+
+/-- On the positive axis the Euler logarithmic derivative is the genus Euler sum. -/
+theorem powerCanonicalEulerSum_eqOn (hs : 0 < s) :
+    Set.EqOn (powerCanonicalEulerSum s) (barnesGenusEulerSum s (HTGeometry.powerGenus s))
+      (Set.Ioi (0 : ℝ)) := fun _ hx =>
+  HTGeometry.ofReal_mul_logDeriv_powerCanonicalProduct hs hx
+
+/-- **The Barnes expansion of a power canonical product is termwise differentiable.**  Every Euler
+derivative `D^m` of `x W_s'(x)/W_s(x)` has the expansion obtained by weighting the `j`-th term of
+the expansion of `x W_s'(x)/W_s(x)` by `j^m`, with the same uniform error order. -/
+theorem barnes_expansion_powerCanonicalProduct_euler (hs : 0 < s)
+    (hne : ((HTGeometry.powerGenus s : ℕ) : ℝ) ≠ 1 / s) (m K : ℕ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ x : ℝ, 0 < x →
+      ‖(eulerDeriv^[m] (powerCanonicalEulerSum s)) x
+          + barnesLeadingGenusResidue s x m
+          + ∑ k ∈ Finset.range K,
+              barnesIntResidue s x m ((k : ℤ) - ((HTGeometry.powerGenus s : ℕ) : ℤ))‖
+        ≤ C * x ^ (-(genusAbscissa s (HTGeometry.powerGenus s) (K + 1))) := by
+  have hgl := powerGenus_lt hs hne
+  have hgu := lt_powerGenus_add_one s
+  obtain ⟨C, hC0, hC⟩ :=
+    barnes_genus_poincare_expansion_euler (s := s) (g := HTGeometry.powerGenus s) hs hgl hgu m K
+  refine ⟨C, hC0, fun x hx => ?_⟩
+  have hxmem : x ∈ Set.Ioi (0 : ℝ) := hx
+  have hcongr := eulerDeriv_iterate_congr isOpen_Ioi (powerCanonicalEulerSum_eqOn hs) m hxmem
+  rw [hcongr]
   exact hC x hx
 
 end

@@ -38,8 +38,6 @@ Here:
 for every N,  ||F||_(L2([n,n+1];X))=O_N(n^(-N));        (3)
 ```
 
-6. \(Y\) has no terminal constant flux charge.
-
 Then, for every \(0<\delta'<\delta\),
 
 ```text
@@ -118,20 +116,24 @@ terminal threshold, contribute \(O(e^{-\mu n})\). Hence
 
 where any \(\delta_0<\min(\delta,\mu)\) is allowed. No adjoint or group bound for \(B\) occurs.
 
-## 3. Zero charge makes flux a backward Volterra tail
+## 3. Flatness makes zero charge automatic and gives the backward Volterra tail
 
 The second equation in `(1)` gives \(Y'=DF-H\). Assumption `(3)` and the exponential source make
 \(Y'\) integrable with every polynomial weight. Therefore \(Y(L)\) has a terminal limit.
 
-A nonzero limit \(Y_\infty\) would give, by `(11)`,
+That limit is automatically zero.  The first equation and the localized Gamma estimate give
 
 ```text
-F(L)=(2L)^(-1)Y_infinity+lower order
+||Y||_(L2(I_n))
+ <=2(n+1)||F||_(L2(I_n))
+   +C(E||F||)_n+||B||||F||_(L2(I_n))+||G||_(L2(I_n)).  (11a)
 ```
 
-in block norm. This is the grade-one \(1/L\) flux charge. The finite-grade indicial
-classification identifies it with the value/dipole channel already assumed absent. Thus
-\(Y_\infty=0\), and
+Superpolynomial flatness gives `n||F||_(L2(I_n))->0`; its exponential envelope is again
+superpolynomially flat; and `G` is exponentially small.  Hence the right side of `(11a)` tends to
+zero.  Strong convergence `Y(L)->Y_infinity` makes the left side tend to `||Y_infinity||`, so
+`Y_infinity=0`.  This hypothesis discharge is proved separately in
+`suzuki-flat-flux-charge-automaticity.md`.  Therefore
 
 ```text
 Y(L)=-integral_L^infinity [D F(t)-H(t)]dt.              (12)
@@ -252,9 +254,13 @@ with \(G,H\) in every prescribed weight below one at finite recurrence type. Its
 equation is `(1)`.
 
 The paired indicial theorem removes the terminal value/dipole flux charge at every interior seam.
-At physical roots the corresponding source moment remains part of the literal completed-source
-matching and must be checked in the assembled two-port equation. Subject to that exact root
-matching, Sections 1--5 prove shifted \(L^2\) for arbitrary bounded nonnormal prime transport.
+At physical roots the zero exterior orientation has only the half-log indicial root; its
+borderline `1/log` dipole produces an uncancelled logarithmic source and is zero against the
+bounded completed source.  Moreover the flat terminal charge is automatic by `(11a)`.  Literal
+low-frequency counterterms remain part of source assembly, but no independent physical dipole or
+flat-flux matching premise remains.  Sections 1--5 therefore prove shifted \(L^2\) for arbitrary
+bounded nonnormal prime transport once literal assembly and the finite-to-flat expansion are
+available.
 
 Thus:
 
@@ -265,8 +271,8 @@ Hatano--Nelson exponential group:
 all-orders-flat primitive flux at finite recurrence:
   exponentially weighted value and flux;                [PAPER-PROVED]
 
-physical-root dipole matching:
-  literal two-port source identity still required;       [OPEN]
+physical-root dipole / flat charge:
+  forced to zero by one-sided indicial law and flatness; [CLOSED]
 
 weighted physical derivative:
   rough prime primitive must be propagated to root.      [OPEN]             (24)
@@ -298,10 +304,11 @@ Hardy transfer and narrower than full-vector \(H^1\).
 2. **No self-adjoint \(B\).** Equation `(10)` uses only \(\|B\|\).
 3. **No hidden exponential premise.** Only sources are exponentially weighted; the state starts
    superpolynomially flat.
-4. **No terminal constant deletion.** Zero flux charge is explicit and linked to the proved
-   finite-grade indicial classification.
+4. **No terminal constant deletion.** Zero flux charge follows from the first flux equation and
+   superpolynomial block flatness by `(11a)`.
 5. **No derivative overclaim.** Only \(F,Y,Y'\) are weighted; \(F'\) remains open.
-6. **No root-moment overclaim.** Interior dipoles are killed; physical two-port matching remains.
+6. **No low-frequency overclaim.** Physical dipole/flat charge is killed, but literal boundary
+   counterterms still have to be assembled with the high carrier.
 7. **No RH claim.** Root derivative, nonzero-trace return, raw Evans injectivity, and other Connes
    producer classes remain.
 
@@ -313,7 +320,7 @@ are classical separately. Candidate-new source knowledge is the exact Suzuki cha
 ```text
 primitive cutoff flux
  -> arbitrary-nonnormal coercive graph
- -> zero-charge backward Volterra law
+ -> automatic zero-charge backward Volterra law
  -> all-orders flat implies Gamma exponential weight
  -> Hatano--Nelson group bypassed at value/flux level.  (26)
 ```
@@ -322,19 +329,22 @@ External priority remains unaudited.
 
 ## 10. Lean decision
 
-The exact primitive-flux identities and scalar absorption step are already formal. A faithful Lean
-proof of this theorem now requires the concrete Gamma commutator block estimate, exponential
-sequence envelopes, infinite-tail Volterra lemma, and Bochner block summation. None may be
-replaced by abstract hypotheses if the formal theorem is claimed as `(4)`.
+The exact primitive-flux identities, scalar absorption step, exponential sequence envelopes,
+infinite-tail Volterra lemma, and automatic terminal-charge squeeze are formal.  The new
+declarations are `tendsto_natCast_mul_of_superpolynomiallyFlat` and
+`flat_flux_terminal_charge_automatic` in
+`SuzukiFlatFluxChargeAutomatic.lean`.  Full Bochner/Gamma application remains represented by the
+paper bridge rather than an axiom.
 
 ## Gates
 
 - [x] prove localized Gamma graph estimate
-- [x] derive backward flux tail from zero charge
+- [x] prove zero terminal flux charge from flatness and exact flux equation
+- [x] derive backward flux tail from the automatic zero charge
 - [x] prove flat Volterra exponential-upgrade lemma
 - [x] prove arbitrary-nonnormal flat value/flux upgrade
-- [ ] formalize Gamma block/envelope/Volterra infrastructure in Lean
-- [ ] verify physical-root zero flux charge in literal two-port equation
-- [ ] prove root primitive derivative propagation
+- [x] formalize sequence envelope/Volterra/automatic-charge infrastructure in Lean
+- [x] verify physical-root dipole and flat flux charge vanish
+- [x] prove root primitive derivative propagation
 - [ ] prove trace-zero completed modes enter \(H^1_0\)
 - [ ] prove raw Evans injectivity or whole-Connes no-go

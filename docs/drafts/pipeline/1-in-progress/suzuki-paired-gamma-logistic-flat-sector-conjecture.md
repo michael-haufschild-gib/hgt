@@ -50,8 +50,12 @@ Y=(2L+R-B)F-G
 for a right side \(G'+H\). It proves the exact flux system and a weighted graph estimate in which
 arbitrary nonnormal \(B\) costs only \(\|B\|\). The subsequent
 `../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-flat-primitive-flux-volterra-liouville.md`
-proves flat-tempered flux Liouville from zero finite flux charge. Remaining analytic theorem is
-physical-root derivative propagation, not necessarily an exponential-dichotomy theorem.
+proves flat-tempered flux Liouville.  Complementary primitive flux subsequently closes
+physical-root derivative propagation, and
+`../3-formalized/new_scientific_knowledge/suzuki/suzuki-flat-flux-charge-automaticity.md`
+shows the flat terminal charge is automatic and the physical zero-extension has no independent
+`1/log` dipole. Remaining finite-type theorems are literal source assembly, finite-to-flat
+expansion, and compact-middle coverage, not an exponential-dichotomy theorem.
 
 ## 1. Result
 
@@ -349,10 +353,12 @@ tempered weighted physical orbit carrier;               [PROVED]
 finite-type aperture admission;                         [PROVED]
 
 Suzuki flat-tempered primitive-flux Liouville;           [PROVED]
-physical-root primitive derivative propagation;         [OPEN]
+physical-root primitive derivative propagation;         [PROVED]
+physical dipole and flat terminal charge;                [AUTOMATIC]
 
 literal infinite paired-orbit equation
-+ exact zero dipole moment after all marked descendants; [OPEN SOURCE IDENTITY]
++ finite-to-flat expansion
++ total marked-descendant source matching;              [OPEN SOURCE IDENTITY]
 
 exceptional recurrence-infinite passage;                [OPEN]
 nonzero-root Evans return/raw Evans positivity.          [OPEN RH CORE]       (26)
@@ -413,9 +419,11 @@ paired-orbit source identity is paper-complete.
 - [x] identify missing polynomial-group/exponential-dichotomy hypothesis
 - [x] replace intrinsic Hatano-wall wording by exact primitive-flux graph reduction
 - [x] prove flat-tempered primitive-flux Volterra Liouville
-- [ ] prove physical-root primitive derivative propagation
+- [x] prove physical-root primitive derivative propagation
+- [x] prove physical dipole and flat terminal charge vanish automatically
 - [ ] derive the literal infinite paired-orbit equation from every completed mode
-- [ ] prove exact zero dipole moment after marked descendants
+- [ ] prove arbitrary finite-order expansion to the flat residual
+- [ ] prove total marked-descendant source matching in literal assembly
 - [ ] pass recurrence-infinite apertures
 - [ ] prove trace-zero completed modes enter `H1_0`
 - [ ] prove completed Evans injectivity

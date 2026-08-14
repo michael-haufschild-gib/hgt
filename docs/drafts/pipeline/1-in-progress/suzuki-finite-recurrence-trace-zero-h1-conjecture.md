@@ -10,10 +10,11 @@
   `suzuki-tempered-orbit-carrier-aperture-recurrence-dichotomy.md`,
   `suzuki-paired-seam-carleman-logistic-normal-form.md`,
   `suzuki-interior-seam-indicial-dipole-exclusion.md`,
+  `../3-formalized/new_scientific_knowledge/suzuki/suzuki-flat-flux-charge-automaticity.md`,
   `suzuki-paired-gamma-logistic-flat-sector-conjecture.md`,
   `suzuki-polar-remainder-lipschitz-gamma-subcriticality.md`
-- **Current obstruction:** flat-tempered primitive-flux Liouville and physical-root derivative
-  propagation
+- **Current obstruction:** literal paired source assembly, arbitrary finite-order expansion, and
+  compact-middle coverage
 
 ## 0. Retraction of premature theorem status
 
@@ -43,16 +44,18 @@ paired local Gamma/logistic normal form;                 [PROVED]
 
 differentiated primitive-flux graph after adapted cutoff;[PAPER-PROVED]
 weighted uniqueness inside the flux graph;               [PAPER-PROVED]
-zero-charge flat solution enters weighted value/flux;    [PAPER-PROVED]
+flat solution has automatic zero charge and enters
+  weighted value/flux;                                  [PAPER-PROVED]
 complementary flux controls physical root derivative;    [PAPER-PROVED]
 finite-recurrence trace-zero H1_0 theorem;               [CONJECTURE].        (0)
 ```
 
 The live replacement is source-side:
-`SUZUKI-LITERAL-PAIRED-ASSEMBLY-AND-ROOT-FLUX-MATCHING`. Complementary primitive flux propagates
-weighted control through the rough prime cutoff without differentiating it. One must construct the
-literal completed-source equation, verify its physical-root value/dipole flux charges, and cover
-the compact middle.
+`SUZUKI-LITERAL-PAIRED-ASSEMBLY-EXPANSION-AND-MIDDLE-COVERAGE`. Complementary primitive flux
+propagates weighted control through the rough prime cutoff without differentiating it. The
+physical one-sided dipole and terminal flat charge are now forced to zero. One must construct the
+literal completed-source equation, prove its finite-to-flat expansion, and cover the compact
+middle.
 
 ## 1. Conjectured result
 
@@ -331,8 +334,9 @@ Y'=(2I-Z)(MF)-H_cut.                                    (22c)
 At finite recurrence type, \(G_{\rm cut}\) and \(H_{\rm cut}\) have the required weighted
 zero-order norms. The weighted graph estimate for `(22c)` uses only \(\|B\|\), even when \(B\) is
 nonnormal. Volterra Liouville supplies the flat value/flux upgrade, and complementary
-\(M\)/\(I-M\) fluxes recover the weighted derivative. Remaining work is literal source assembly
-and physical-root flux matching.
+\(M\)/\(I-M\) fluxes recover the weighted derivative.  Superpolynomial block flatness forces the
+terminal flux charge to zero, so no separate matching premise remains. Remaining work is literal
+source assembly and finite-to-flat expansion.
 
 ## 7. Conditional value and dipole matching
 
@@ -359,11 +363,21 @@ its punctured derivative is singular.  Exact opposite-orientation collisions rem
 labels but have the same zero scalar jump.
 
 At the physical roots, one punctured orientation is zero and the other half-log charge is
-\(\beta_\pm(u)\).  Assumption `(2)` removes both.
+\(\beta_\pm(u)\).  Assumption `(2)` removes both. The one-sided endpoint indicial coefficient is
 
-Thus every regular-singular charge of `(21)` vanishes once the literal flux solution is admitted
-to the frequency-zero graph. Volterra Liouville then proves shifted value/flux \(L^2\); it does
-not prove the root derivative.
+```text
+[(1-2tau)/(1-tau)]beta,
+```
+
+so the half-log channel `tau=1/2` is the unique nonzero subunit root. At `tau=1`, a putative
+`beta/L` dipole produces `-beta log L+o(log L)` with no opposite-orientation cancellation; the
+literal bounded source forces `beta=0`. On the all-orders-flat residual, the defining flux
+equation forces terminal charge zero. These statements are proved in
+`suzuki-flat-flux-charge-automaticity.md`.
+
+Thus every regular-singular and flat terminal charge of `(21)` vanishes once the literal flux
+solution is admitted to the frequency-zero graph. Volterra Liouville then proves shifted
+value/flux \(L^2\), and complementary flux proves the root derivative.
 
 ## 8. Conditional Gamma-strip upgrade
 
@@ -438,6 +452,10 @@ coordinate-adapted differentiated assembly
  -> derivative commutator with no zero-order bound;      [BLOCKED]
 
 primitive global flux / exterior-residual relation
+ -> physical dipole and flat charges vanish;             [PROVED]
+
+literal source assembly + finite-to-flat expansion
++ compact-middle coverage
  -> finite-type trace-zero H1_0;                         [OPEN]
 
 all apertures
@@ -466,21 +484,23 @@ budgets are classical ingredients. The intended source theorem remains
 ```text
 finite prime-log recurrence
  -> exact weighted paired physical-orbit equation
- -> automatic value/dipole matching
+ -> finite-to-flat expansion
+ -> automatic value/dipole/flat-charge matching
  -> Gamma-strip derivative
  -> trace-zero H1_0.                                    (28)
 ```
 
-The augmented primitive-flux equation, weighted graph estimate, flat value/flux upgrade, and
-complementary derivative recovery are proved. Literal source assembly, physical-root flux
-matching, and compact-middle coverage are not. Therefore theorem `(3)` remains open.
+The augmented primitive-flux equation, weighted graph estimate, automatic zero-charge flat
+value/flux upgrade, physical dipole exclusion, and complementary derivative recovery are proved.
+Literal source assembly, arbitrary finite-order expansion, and compact-middle coverage are not.
+Therefore theorem `(3)` remains open.
 
 ## 13. Lean decision
 
 The dependency-closed cutoff-covariance no-go, primitive identity, exponential flux cancellation,
-absorption inequality, and complementary flux cancellation are formalized. The analytic Volterra
-and weak derivative theorems are paper-proved but not yet formalized. No wrapper may assume source
-assembly, physical-root matching, `(25)`, or theorem `(3)`.
+absorption inequality, complementary flux cancellation, automatic flat-charge squeeze, and
+physical indicial coefficients are formalized. No wrapper may assume source assembly,
+finite-to-flat expansion, `(25)`, or theorem `(3)`.
 
 ## Gates
 
@@ -496,8 +516,9 @@ assembly, physical-root matching, `(25)`, or theorem `(3)`.
 - [x] prove arbitrary-nonnormal weighted graph uniqueness for that flux
 - [x] prove flat-tempered primitive-flux Volterra Liouville
 - [x] prove complementary primitive-flux root derivative recovery
+- [x] prove physical-root dipole and terminal flat-flux charge vanish automatically
 - [ ] derive literal infinite paired-orbit normal equation on the completed source
-- [ ] prove physical-root source moment matching in that exact equation
+- [ ] prove arbitrary finite-order expansion and isolate the flat residual
 - [ ] obtain spatial endpoint \(H^1\) for some `sigma>1/2`
 - [ ] prove one-prime finite-system interior regularity
 - [ ] cover interior and prove global \(H^1_0\)
