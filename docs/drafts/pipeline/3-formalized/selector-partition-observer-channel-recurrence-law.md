@@ -71,6 +71,10 @@ Hamiltonian:
 2. high-probability production of occupied observer-resolution channels faster than shallow
    circuit capacity, together with control of same-channel reuse.
 
+Their exact deterministic coupling is formalized in
+`StaticShortcutRecurrenceChannelProductionLaw.lean`: `eta^2 W^2 <= B M_sigma R_sigma`, with a
+strict capacity contrapositive and a separation premise preventing duplicate-label inflation.
+
 ## Verification
 
 Foreground scratch checks:

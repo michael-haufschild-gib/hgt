@@ -3,7 +3,7 @@
 ## Research map of HTGeometry, HilbertMetric, and RHTower
 
 **Corpus cutoff:** 14 August 2026, committed snapshot
-**c58075d90f6414b123a36dea8cc64a2f5e1c5ce3**, plus explicitly labelled active-tree results.
+**21e5bccf2e7435a19bb6549a37e1004cdce96d10**, plus explicitly labelled active-tree results.
 
 This map follows theorem statements, not module placement or research chronology. `Lean-proved`
 means an unconditional declaration in the committed snapshot. `Active-tree Lean` means a complete
@@ -17,9 +17,9 @@ Current mathematical changes are:
   `2*pi*L^(-1/2)*beta + O(L^(-1))`, proves `beta=0` gives terminal `L2`, and classifies the Gamma
   corona quotient as exactly one copy of trace space. Bounded forcing is `O(eta)` and creates no
   half-log branch. Lean now also proves the full point-support structure theorem: every tempered
-  distribution supported at the origin is a finite combination of delta derivatives. Active-tree
-  Lean proves the principal Gamma operator multiplies the `j`th coefficient by `2j+1`, hence has
-  no nonzero point-supported kernel. Active Lean also proves abstract scalar and operator-valued
+  distribution supported at the origin is a finite combination of delta derivatives. Lean proves
+  the principal Gamma operator multiplies the `j`th coefficient by `2j+1`, hence has no nonzero
+  point-supported kernel. Lean also proves abstract scalar and operator-valued
   lower-triangular jet systems with nonzero diagonal have only the zero solution, and applies them
   to the full Gamma frequency equation: every point-supported tempered solution is zero. Remaining
   generic regularity input also advanced: a compact-primitive/du Bois--Reymond theorem proves that
@@ -40,7 +40,7 @@ Current mathematical changes are:
   `2 * exp(t/2) * (finite positive Euler value)`, retaining every finite-place label and Boolean
   exponent. This is the first literal coefficient-faithful seam from
   CCM-FU to Route E's critical Möbius source. Common Haar normalization and an invertible finite
-  Euler operator give a candidate whole-`L2` transport. Active Lean now proves the operator itself
+  Euler operator give a candidate whole-`L2` transport. Lean proves the operator itself
   acts on every dense even-Schwartz source as the literal prime-labelled Euler subset expansion.
   The newest normalization theorem exposes the forced nonzero Haar/full-sign scalar, proves the
   literal invariant theta core equals the corrected transport on that dense source, and proves
@@ -61,12 +61,12 @@ Current mathematical changes are:
   Positive advance: the exact eight-unit pre-scalar Euler reporter splits orthogonally as radial
   four plus transverse four. After graph normalization radial coefficient is constant in inward
   node and cancels from pointed differences; transverse four-unit source reconstructs exact pointed
-  continued-Xi trace. Four-unit compression is therefore solved for pointed data. Active Lean now
+  continued-Xi trace. Four-unit compression is therefore solved for pointed data. Lean now
   complexifies the actual full-Euler inward columns before scalar observation,
   proves their exact non-diagonal zeta overlap, pairs the same transverse source with every safe
   complex node, reconstructs the pointed continued-Xi trace, and forms an actual positive
   semidefinite augmented Gram whose source norm still tends to four. Complex pointed polarization
-  is therefore closed. Active P-G168 then proves the exact projective Hardy source identity and
+  is therefore closed. P-G168 then proves the exact projective Hardy source identity and
   shows that the mixed jet of its forced half-weighted two-scale packet is precisely the cubic
   Hellinger horizontal kernel. Algebraic cubic landing is closed. First exterior producer is now
   source-faithful dyadic height localization of that mixed jet and the Euler--Gamma `N/4` trace
@@ -77,15 +77,19 @@ Current mathematical changes are:
   `|W_square(tau,Y)| <= K(1+|tau|)^2/Y`, freezes it coefficientwise at natural scale with `O(1/n)`
   cost, and supplies an infinite affine mean-square theorem once plain and weighted square
   summability are instantiated. Direct short-block freezing is now quantitatively retired: repeated
-  affine boundary cost optimizes only to `T^(5/3)`. Active Lean now also constructs the literal
+  affine boundary cost optimizes only to `T^(5/3)`. Lean also constructs the literal
   Gaussian zeta-square Mellin integrand, rewrites it as its pole-filled quotient, computes the
   shifted double-pole derivative and residue coefficient, and proves the exact confluent
-  simple-pole/double-pole/remainder decomposition. Gaussian pole algebra is therefore closed.
-  Surviving bridge is the full Gaussian contour shift and symmetric AFE assembly, two-sided
-  localization of the square-carrier derivative, then a global Duhamel mean-square transfer. This
+  simple-pole/double-pole/remainder decomposition. Lean now proves vertical integrability on both
+  boundary lines, quartic-Gaussian horizontal decay, the exact finite confluent-residue crossing,
+  and the resulting infinite contour-shift identity. Active-tree Lean expands the right boundary
+  integral as the exact divisor-weighted Gaussian cutoff series. Gaussian source formation,
+  pole algebra, and contour crossing are therefore closed. Surviving bridge is the reflected left
+  boundary-series identification and normalized symmetric AFE assembly, two-sided localization of
+  the square-carrier derivative, then a global Duhamel mean-square transfer. This
   uses the derivative series oscillation and is predicted to give
   `T log^O(1) T`, after which come coefficient-three density, `7/10` prime supply, and composition.
-- **U:** the divisor packet has acquired a literal source disintegration. The active Lean theorem
+- **U:** the divisor packet has acquired a literal source disintegration. Lean
   identifies every shifted reciprocal Hankel quadratic with a positive Laplace average of the
   complete Gamma--polar--von-Mangoldt balance, proves exact cancellation of every degree power in
   the hard-edge gauge to the Cauchy density
@@ -93,10 +97,14 @@ Current mathematical changes are:
   super-aperture source inversion. Consequently false RH is equivalent to one fixed carrier
   sustaining such inversions at every cofinal mass. Remaining core is no longer a generic Hankel
   sign: exclude that fixed-carrier cofinal inversion phase using the degree-free Cauchy density and
-  intact pointwise Gamma--polar--prime incidence. A new frozen Route-U conjecture makes the first
-  attack explicit: dyadic hard-edge refinement splits the flat Cauchy packet into orthogonal even
-  transport and odd Chebyshev detail, but the unproved arithmetic theorem is a sign or Schur bound
-  for completed prime--Gamma even/odd covariance.
+  intact pointwise Gamma--polar--prime incidence. Lean now proves the exact flat dyadic mechanism:
+  even and odd Chebyshev packets are arcsine-orthogonal, the half-scaled refinement obeys an exact
+  Pythagorean identity, and its gap is the nonnegative odd-detail energy. It simultaneously proves
+  that Route U samples the doubled packet at a nonlinear transported Cayley node, with exact drift
+  `2 z^4(z^2-8a^2)/((4a^2+z^2)^2(a^2+z^2))`. Thus flat parity does not transport directly to the
+  completed divisor packet. The open core is an arithmetic estimate controlling this node drift
+  together with completed prime--Gamma even/odd covariance strongly enough to exclude convergence
+  to a negative fixed point.
 - **L / Garland:** finite weighted-complex Garland localization is complete in Lean, including
   both localization identities, codifferential adjunction, harmonic vanishing, and the
   cohomological theorem that every cocycle is a coboundary under the link-gap hypothesis. The
@@ -122,7 +130,13 @@ Current mathematical changes are:
   controls all polynomially weighted vertical derivatives and arbitrary-order remainders, and the
   half-line kernel `(1+y)^(-c)` has the exact Mellin value
   `Gamma(w)Gamma(c-w)/Gamma(c)` on `0<Re(w)<Re(c)`.
-  Prime-occupation, q-ladder, orbifold-tail, and static-recurrence theorems likewise enlarge
+  Asymptotic-law cores are now compact convex tail invariants commuting with continuous affine
+  reporters. Strict-convex no-loss forces a singleton source core; three jointly recoverable
+  proper strict-convex reporter energies propagate that selection to every fourth affine reporter.
+  Static shortcut mass is likewise forced into either same-channel recurrence energy or a growing
+  family of genuinely separated observer channels. These are exact producer templates, but the
+  corpus supplies neither an Xi-typed recoverable reporter triple nor the required nonlinear
+  no-loss law. Prime-occupation, q-ladder, orbifold-tail, and recurrence theorems therefore enlarge
   infrastructure without instantiating another RH route.
 
 No new independent lettered route appears. T and U remain the latest distinct architectures.

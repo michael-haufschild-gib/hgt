@@ -23,6 +23,22 @@ variable [NormedAddCommGroup F] [InnerProductSpace ℝ F]
 def selectorOccupiedChannels (chosen : J → C) (w : J → ℝ) : Finset C :=
   Finset.univ.filter fun c => selectorChannelWeight chosen w c ≠ 0
 
+/-- Observer channels are intrinsically distinct at resolution `δ`. -/
+def ObserverChannelsSeparated (q : C → F) (δ : ℝ) : Prop :=
+  ∀ c d, c ≠ d → δ < ‖q c - q d‖
+
+omit [Fintype C] [InnerProductSpace ℝ F] in
+/-- Nonnegative separation makes observer-channel labels faithful to distinct memories. -/
+theorem observerChannelsSeparated_injective
+    (q : C → F) {δ : ℝ} (hδ : 0 ≤ δ)
+    (hsep : ObserverChannelsSeparated q δ) :
+    Function.Injective q := by
+  intro c d heq
+  by_contra hcd
+  have h := hsep c d hcd
+  rw [heq, sub_self, norm_zero] at h
+  exact (not_lt_of_ge hδ) h
+
 /-- Channel loads partition total sample weight exactly. -/
 theorem sum_selectorChannelWeight_eq_sum
     (chosen : J → C) (w : J → ℝ) :
@@ -137,6 +153,23 @@ theorem selectorOccupiedChannels_gt_of_recurrenceBudget_lt
   have hbound := selectorMass_sq_le_capacity_mul_recurrence
     r q chosen w heta hB hw halign hq hcapacity
   linarith
+
+/-- With a genuine resolution-separated target family, capacity violation counts distinct
+preparation memories rather than arbitrary duplicate labels. -/
+theorem separatedSelectorOccupiedChannels_gt_of_recurrenceBudget_lt
+    (r : J → F) (q : C → F) (chosen : J → C) (w : J → ℝ)
+    {eta B δ : ℝ} {K : ℕ}
+    (heta : 0 ≤ eta) (hB : 0 ≤ B) (hδ : 0 ≤ δ)
+    (hsep : ObserverChannelsSeparated q δ)
+    (hw : ∀ j, 0 ≤ w j)
+    (halign : ∀ j, eta ≤ inner ℝ (r j) (q (chosen j)))
+    (hq : ∀ c, ‖q c‖ ^ 2 ≤ B)
+    (hgap : B * K * selectorRecurrenceEnergy r chosen w <
+      eta ^ 2 * (∑ j, w j) ^ 2) :
+    Function.Injective q ∧ K < (selectorOccupiedChannels chosen w).card := by
+  exact ⟨observerChannelsSeparated_injective q hδ hsep,
+    selectorOccupiedChannels_gt_of_recurrenceBudget_lt
+      r q chosen w heta hB hw halign hq hgap⟩
 
 /-- Fresh unit-weight identity channels saturate the mass/load occupancy inequality exactly. -/
 theorem selectorIdentity_unitWeight_occupancy_saturation :

@@ -245,6 +245,12 @@ either:
 
 This is a stricter and structurally different target than source dephasing.
 
+The deterministic bridge between the two alternatives is now proved in
+`observer-channel-recurrence-production-dichotomy-law.md`: total shortcut mass satisfies
+`eta^2 W^2 <= B M_sigma R_sigma`. Consequently the remaining ensemble theorem is precisely a
+uniform strict recurrence-budget estimate over every canonical resolution-separated selector with
+bounded shallow-circuit capacity—not scalar dephasing of the unlabelled source.
+
 ## Promotion gates
 
 - [x] scalar-source conjecture killed by singleton and orthogonal saturation

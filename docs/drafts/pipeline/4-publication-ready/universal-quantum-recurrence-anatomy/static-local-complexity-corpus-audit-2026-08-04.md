@@ -137,3 +137,16 @@ estimate. It is selector-resolved cross-incidence anti-concentration surviving t
 union, or high-probability production of occupied observer-resolution channels beyond shallow-
 circuit capacity for one ordinary static local Hamiltonian. No Brown--Susskind, plateau, recurrence
 rate, black-hole or holographic claim is authorized by the correction alone.
+
+The correction has now been closed by a deterministic recurrence-or-channel-production law:
+
+```text
+eta^2 W^2 <= B M_sigma R_sigma,
+B K R_sigma < eta^2 W^2  =>  M_sigma > K.
+```
+
+Here `M_sigma` is occupied-channel count and `R_sigma` retains only same-channel temporal pairs.
+The separated-channel corollary prevents duplicate labels from faking capacity. This advances the
+frontier but does not supply the required static-H inequality. The next theorem must establish the
+strict budget bound uniformly over every canonical resolution-separated shallow-circuit selector
+on one quenched event.

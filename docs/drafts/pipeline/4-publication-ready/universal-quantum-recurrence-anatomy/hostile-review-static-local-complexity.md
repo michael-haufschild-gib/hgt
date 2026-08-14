@@ -107,3 +107,16 @@ resolution channels beyond complete shallow-circuit capacity, controls same-chan
 derives the claimed growth, plateau-measure and low-complexity recurrence scales on one event.
 Without that theorem, the manuscript remains rejected and must not claim black-hole interior or
 holographic consequences.
+
+The recurrence-or-channel-production theorem now supplies the exact deterministic spine
+
+```text
+eta^2 W^2 <= B M_sigma R_sigma.
+```
+
+It also closes the trivial relabeling objection under nonnegative resolution separation: channel
+labels then inject into distinct preparation memories. This still does not close the reviewer’s
+demand. The missing result is a single quenched estimate, uniform over the complete shallow-circuit
+selector class, making `B K(s) R_sigma < eta^2 W^2` through the onset window and then extending the
+same event to plateau measure and first low-complexity recurrence. Without it, the new inequality
+is an exact reduction theorem, not complexity growth or black-hole physics.

@@ -202,6 +202,47 @@ or a Carleson square-function bound in which the even--odd arithmetic covariance
 the odd diagonal energy. If true, its cofinal consequence should still forbid convergence to a
 negative fixed point.
 
+## Frozen hostile conjecture U-DYADIC-COHERENCE
+
+The matrix/Carleson replacement above is now subjected to a sharper hostile test. Let `S_k(q)` be
+the Route-U lattice sample at mass `a_k=k+1`, and split the fine sample at mass `2a_k` into its even
+and odd lattice indices:
+
+```text
+S_(2k+1)(q) = E_k(q) + O_k(q).
+```
+
+The exact even-index reindexing gives one half of a coarse-mesh periodization evaluated at the
+fine Cayley phase. Since both coarse and fine Cayley phases tend to the same spectral point and
+alias tails vanish, freeze the prediction
+
+```text
+E_k(q) -> F(q)/2,
+O_k(q) -> F(q)/2,                                      (U-DYC-point)
+```
+
+where `F(q)` is the compact Fourier extension at the Xi spectral point. After the existing
+weighted divisor exchange, the three quadratic channels should satisfy
+
+```text
+sum_q w_(2k+1)(q) E_k(q)^2       -> L/4,
+sum_q w_(2k+1)(q) O_k(q)^2       -> L/4,
+sum_q 2 w_(2k+1)(q) E_k(q)O_k(q) -> L/2,              (U-DYC-global)
+```
+
+with `L=sum_q F(q)^2`.
+
+If true, the dyadic covariance is asymptotically the rank-one matrix
+`(L/4) [[1,1],[1,1]]`. For a false-RH carrier with `Re L<0`, both diagonal channels and the cross
+channel are eventually negative in real part. Thus neither scalar odd-detail positivity nor a
+positive `2 x 2` Schur complement can be an independent producer. Dyadic refinement would be a
+coherent duplication of the signed central trace, not fresh positive capital.
+
+**Falsifier:** one fixed node or one divisor-dominated carrier for which either half does not tend
+to `F/2`, or for which weighted square/cross exchange fails despite the existing full-sample
+domination. Pointwise proof is attacked first; global exchange is promoted only after its exact
+majorant is checked.
+
 ## Attack loop
 
 1. Prove `(FLAT-MRA)` exactly on paper and in Lean.

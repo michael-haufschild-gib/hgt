@@ -98,9 +98,11 @@ automorphism.  Thus neither branch-rank pattern contradicts algebraic Galois sym
 - **Universal principle exposed:** finite étale/Kummer descent is blind to the affine period
   translation coupling additive and multiplicative coordinates.  Adjoining `tau` resolves the
   defect precisely when it adds a new transcendence direction.
-- **Lean status:** exact defect linearity and integer scaling are already formalized in
-  `RHTower/SchanuelDefectIsogeny.lean`.  Pure-transcendental Kähler splitting and the wedge-rank
-  dichotomy remain to formalize after the rank/trdeg bridge.
+- **Lean status:** `RHTower/SchanuelPeriodBranchDefect.lean` formalizes the exact branch-defect
+  identity, its divided form, and the determinant criterion showing that a nonzero affine shift
+  has rank two once the old defect direction and `d tau` are independent.  The source was checked
+  first in `/tmp/SchanuelPeriodBranchScratch.lean`; all declarations use only `propext`,
+  `Classical.choice`, and `Quot.sound`.  Pure-transcendental Kähler splitting remains open.
 - **Novelty:** no external priority claim; this is a new internal synthesis of standard Kähler
   and branch identities.
 
@@ -115,3 +117,5 @@ force a uniform algebraic degree bound: finite isogenies preserve the local idea
 
 - 2026-08-14 -- shifted-defect formula proved; exact `tau`-algebraic/transcendental dichotomy and
   Kummer-symmetry failure isolated.
+- 2026-08-14 -- exact shifted-defect identity and determinant rank criterion verified
+  unconditionally in Lean and wired as `RHTower/SchanuelPeriodBranchDefect.lean`.
