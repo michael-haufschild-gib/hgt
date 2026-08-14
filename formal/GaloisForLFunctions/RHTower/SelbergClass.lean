@@ -1,4 +1,7 @@
 import GaloisForLFunctions.RHTower.SelbergClass.Basic
+import GaloisForLFunctions.RHTower.SelbergClass.DirichletFourier
+import GaloisForLFunctions.RHTower.SelbergClass.DirichletFourierGauss
+import GaloisForLFunctions.RHTower.SelbergClass.Full
 
 /-!
 # Selberg-class formalization umbrella

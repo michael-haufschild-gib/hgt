@@ -1,7 +1,7 @@
 # Prime-log jump packets give a conormal-faithful Sonin boundary grade frame
 
 - **ID:** `prime-log-jump-sonin-mellin-grade-frame`
-- **Stage:** 2-fully-proven / needs literature and Lean audit
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / SOURCE-NORMAL–SONIN CROSS-LANDING / GRADE FALSIFIER
 - **Scientific status:** `[PAPER-PROVED BRIDGE] [CORPUS COLLISION]`
   `[NOT NEW SCIENTIFIC KNOWLEDGE] [NOT RH]`
@@ -485,7 +485,7 @@ if the exact packaging is absent from literature.
 - [x] hostile corpus collision audit: BV faithfulness and Sonin grade already proved separately
 - [x] preliminary external search
 - [ ] independent specialist literature audit
-- [ ] Lean formalization of jump packet and Mellin normal theorem
+- [x] Lean formalization of jump packet and Mellin normal theorem
 - [ ] canonical undeconvolved source-action intertwiner
 - [ ] closed graph continuity of both dagger and Mellin normal
 - [ ] positive self-adjoint Xi spectral realization
@@ -509,3 +509,11 @@ recurrence.
 ## Log
 
 - 2026-08-01 — paper theorem proved; novelty and Lean audits remain.
+- 2026-08-14 — Lean route closed unconditionally; see
+  `../../3-formalized/nad/prime-log-jump-sonin-mellin-grade-frame-formalized.md`.  The Sonin packet
+  layer is now carried by `AnnulusAmplitude`, an even measurable bounded amplitude with strict
+  annulus support and positive mass, so `(6)`--`(13)` hold for the discontinuous shell; `(16)` is an
+  exact identity with an explicit `O(1/κ)` residual; `(17)`--`(21)` come from the forward-orbit
+  Kronecker flow of the pair `(A, B)`; `(22)`--`(26)` are closed in the no-common-zero form realized
+  by the two compact BV windows of `(26b)`; `(28)`--`(30)` are exact.  The Cartan--Bezout identity
+  `(26)` itself stays classical and is used by nothing.

@@ -1,6 +1,7 @@
 import Mathlib.RepresentationTheory.Character
 import Mathlib.RepresentationTheory.Rep.Res
 import Mathlib.Data.Complex.Basic
+import Mathlib.LinearAlgebra.Dimension.Free
 
 /-!
 # Concrete virtual characters for the Artin program
@@ -13,7 +14,7 @@ generated from actual `FDRep` objects rather than asserted through an abstract p
 
 noncomputable section
 
-universe u v
+universe u v w
 
 namespace GaloisForLFunctions
 
@@ -22,6 +23,40 @@ variable (G : Type u) [Group G]
 /-- Character functions of actual finite-dimensional complex representations of `G`. -/
 def fdCharacterSet : Set (G → ℂ) :=
   Set.range fun V : FDRep ℂ G ↦ V.character
+
+/-- Transport any finite-dimensional complex representation, regardless of carrier universe, to
+the canonical small coordinate space `Fin (finrank ℂ V) → ℂ`. -/
+def smallModelRepresentation {V : Type w} [AddCommGroup V] [Module ℂ V]
+    [FiniteDimensional ℂ V] (ρ : Representation ℂ G V) :
+    Representation ℂ G (Fin (Module.finrank ℂ V) → ℂ) :=
+  ((Module.finBasis ℂ V).equivFun.conjRingEquiv).toMonoidHom.comp ρ
+
+/-- Coordinate transport is an equivalence of the original representation with its small model. -/
+def smallModelEquiv {V : Type w} [AddCommGroup V] [Module ℂ V]
+    [FiniteDimensional ℂ V] (ρ : Representation ℂ G V) :
+    ρ.Equiv (smallModelRepresentation G ρ) := by
+  apply Representation.Equiv.mk (Module.finBasis ℂ V).equivFun
+  intro g
+  ext x
+  simp [smallModelRepresentation]
+
+/-- Canonical `FDRep` model of an arbitrary finite-dimensional complex representation. -/
+def smallModelFDRep {V : Type w} [AddCommGroup V] [Module ℂ V]
+    [FiniteDimensional ℂ V] (ρ : Representation ℂ G V) : FDRep ℂ G :=
+  FDRep.of (smallModelRepresentation G ρ)
+
+/-- Passing to the canonical small model does not change the character. -/
+theorem smallModelFDRep_character {V : Type w} [AddCommGroup V] [Module ℂ V]
+    [FiniteDimensional ℂ V] (ρ : Representation ℂ G V) :
+    (smallModelFDRep G ρ).character = ρ.character := by
+  exact (Representation.char_iso (smallModelEquiv G ρ)).symm
+
+/-- The character of every finite-dimensional complex representation, in any carrier universe,
+belongs to the concrete `FDRep` generator set. -/
+theorem representation_character_mem_fdCharacterSet {V : Type w} [AddCommGroup V] [Module ℂ V]
+    [FiniteDimensional ℂ V] (ρ : Representation ℂ G V) :
+    ρ.character ∈ fdCharacterSet G :=
+  ⟨smallModelFDRep G ρ, smallModelFDRep_character G ρ⟩
 
 /-- Genuine characters, constructed as finite sums of actual `FDRep` characters. -/
 def genuineCharacterMonoid : AddSubmonoid (G → ℂ) :=

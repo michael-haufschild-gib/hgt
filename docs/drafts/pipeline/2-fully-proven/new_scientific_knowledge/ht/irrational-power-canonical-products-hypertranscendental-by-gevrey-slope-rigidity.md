@@ -1770,3 +1770,96 @@ With this representation a Gevrey bound on the defect is a Gevrey bound on a fin
 of two increment jets with an evaluated polynomial, so it carries the **square** of the increment's
 Gevrey constant — the gain the nonlinear recursion needs, once the increment's constant is at most
 one, which the truncation order arranges.
+
+## Lean progress — MAILLET'S THEOREM IN THE NONLINEAR CASE
+
+The nonlinear reduction recorded above as "the remaining assembly step" is now a theorem.  Five new
+modules, all wired and axiom-clean (`[propext, Classical.choice, Quot.sound]`).
+
+`GaloisForLFunctions/HTGeometry/GevreyWeightedNorm.lean`
+
+    antidiagonal_inv_pow_le      `(n+1)^a ∑_{i+j=n} 1/((i+1)^a (j+1)^a) ≤ 2^{a+2}` for every `a ≥ 2`
+    GevreyWeightBound w C A r F  `‖f_n‖ (n+1)^w ≤ C A^n (n!)^r`, integral order
+    .mono_weight/.mono_const/.mono_base/.mono_order
+    .eulerOp, .eulerOp_iterate   **`θ` costs exactly one unit of weight**
+    .mul                         **submultiplicative at every exponent `a ≥ 2`**
+    .isGevreySeries, exists_gevreyWeightBound
+    factorial_mul_factorial_le_of_le, factorial_prod_le_of_dvd_order
+    .mul_of_dvd :
+      **a product of two series that both vanish to order `M` GAINS `M r` units of weight**, the
+      binomial coefficient `((n+1)/2)^M / M!` separating the two factorials from the total one
+
+`GaloisForLFunctions/HTGeometry/MvPolynomialTaylorFamily.lean`
+
+    jetMonomial, jetDegree, jetDegree_eq_zero_iff, exists_jetDegree_pred
+    HasTaylorDefectFamily A R₀ P
+    hasTaylorDefectFamily :
+      **`defect = ∑_α (coefficient in the base point alone) · L^α`, every `α` of degree ≥ 2**, with
+      all coefficients in any subsemiring `R₀` containing those of `P`
+
+The subsemiring clause is what makes the coefficients of the family convergent, and it is why the
+induction runs along `P = ∑ monomial` (via `MvPolynomial.as_sum`) rather than along an arbitrary
+decomposition into a sum: the hypothesis "all coefficients lie in `R₀`" is not inherited by the
+summands of an arbitrary splitting, but it is inherited by monomials.
+
+`GaloisForLFunctions/HTGeometry/GevreyJetMonomial.lean`
+
+    gevreyWeightBound_jetMonomial      a monomial of degree `d` in factors of size `ε` has size `ε^d`
+    X_pow_dvd_jetMonomial, X_pow_dvd_jetMonomial_sub
+    X_pow_dvd_jetMonomial_sub_of_two_le :
+      **replacing the perturbation by a truncation moves a monomial of degree ≥ 2 only above the
+      truncation level plus the vanishing order**
+    gevreyWeightBound_jetMonomial_dvd :
+      **a monomial of degree ≥ 2 in factors vanishing to order `M` gains `M r` units of weight**
+    GevreyWeightBound.finsetSum, exists_common_gevreyWeightBound
+
+`GaloisForLFunctions/HTGeometry/NonlinearMailletAux.lean`
+
+    convergentSubsemiring              the convergent series as a subsemiring of `ℂ⟦t⟧`
+    shiftFactor_nat_le                 the shift factor at every integral exponent above the drop
+    polyGeom_shift_sum_le              a geometric sum survives a polynomial weight
+    gevreyWeightBound_truncSeries, X_pow_dvd_truncSeries, eulerOp_iterate_sub
+    coeff_taylorDefect_eq_of_sub_dvd :
+      **the defect at level `n` only sees the perturbation below level `n`** — so the nonlinear
+      recursion is still a recursion
+
+`GaloisForLFunctions/HTGeometry/NonlinearMailletGevrey.lean`
+
+    exists_isGevreySeries_of_isFormalEulerADESolution :
+      **MAILLET'S THEOREM, NONLINEAR CASE** — a formal solution of an analytic algebraic
+      differential equation `P(t, θF, …, θ^m F) = 0` whose linearization along the truncation at
+      order `N ≥ m − 1` has a nonzero indicial polynomial is Gevrey of a finite INTEGRAL order
+
+The estimate is the weighted recursion `‖h_n‖ (n+1)^{m+2} ≤ ε A^n (n!)^r`, `r = max(m − deg Φ_0, 1)`,
+for `H = F − trunc_N F`.  Three features make it close.
+
+* Each `θ^j` costs one unit of weight, so the jets of `H` still carry weight `2`.
+* A monomial of degree ≥ 2 in series vanishing to order `N+1` gains `(N+1) r` units of weight, and
+  `N + 1 ≥ m` restores exactly what the jets cost.  This is the quantitative form of "the defect is
+  quadratic", and it is where the largeness of the truncation order is used.
+* The defect at level `n` involves only `H` below level `n`, so the strong induction is legitimate.
+
+The size `ε` of the induction is chosen so small that the defect — quadratic in it — is dominated by
+the indicial lower bound, and only then is the geometric base `A` chosen large enough for the
+convolution, the value at the truncation, and the finitely many initial coefficients.  Both choices
+are made in that order because the defect constant is independent of `A`.
+
+### What is left of the Sibuya--Ramis layer
+
+| step | status |
+|---|---|
+| Gevrey filtration as a differential algebra | formal |
+| Euler-form operator, shift polynomials, coefficient recursion | formal |
+| Maillet, linear case, crude and Newton forms | formal |
+| the Maillet order is rational | formal |
+| linearization at a truncation, quadratic defect, locality | formal |
+| **Maillet, nonlinear case, with a nondegenerate indicial polynomial** | **formal** |
+| the nondegeneracy hypothesis, discharged by a minimal annihilator | open |
+| the sharp half: the exact order is a slope ratio, not merely below the largest | open |
+
+The nondegeneracy hypothesis is not vacuous and is not automatic: the indicial polynomial of the
+linearization can vanish, and the classical remedy is to divide the operator by the largest power of
+`t` dividing it.  That divides the whole equation by `t^v`, which costs `A^v` in the defect estimate
+and is repaid by the vanishing order `N+1−v` of the value at the truncation — solvable exactly when
+`N + 1 > 2v`, hence for a large enough truncation, since `v` stabilises once `N` exceeds the order of
+vanishing of the linearization along the solution itself.

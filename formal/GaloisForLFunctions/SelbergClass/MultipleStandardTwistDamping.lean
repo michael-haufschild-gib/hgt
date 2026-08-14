@@ -174,7 +174,7 @@ theorem summable_norm_dampedMultipleStandardTwistTerm {N : ℕ} (hN : 0 < N)
           Real.exp (-((rate / N) * ((n : ℕ) : ℝ) ^ κ i)))) by
       funext n
       dsimp [major]
-      ring]
+      ring_nf]
     change Summable ((fun n : ℕ =>
       C i * ((n : ℝ) ^ (B i - (s i).re) *
         Real.exp (-((rate / N) * (n : ℝ) ^ κ i)))) ∘ PNat.val)

@@ -84,6 +84,13 @@ THEOREM_AREAS = {
             "gaussianDistanceMatrix_det_mul_sq_le",
         ],
     },
+    "selberg_class": {
+        "module": "GaloisForLFunctions.SelbergClass",
+        "path": SRC / "SelbergClass",
+        "capstones": [
+            "SelbergClass.differentiable_dampedMultipleStandardTwist",
+        ],
+    },
     "quantum_alg": {
         "module": "GaloisForLFunctions.QuantumAlg",
         "path": SRC / "QuantumAlg",
@@ -109,6 +116,7 @@ ALLOWED_ROOT_LEAN = {
     "QECLean.lean",
     "QuantumAlg.lean",
     "RHTower.lean",
+    "SelbergClass.lean",
     "U0.lean",
 }
 

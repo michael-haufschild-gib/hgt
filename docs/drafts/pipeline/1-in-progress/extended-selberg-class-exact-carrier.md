@@ -75,11 +75,11 @@ the principal branch of `Complex.log`.
 - [x] Primary-source axiom audit
 - [x] Pole-safe representation chosen
 - [x] Branch-safe Euler-log representation chosen
-- [ ] Core Lean definitions compile
-- [ ] Meromorphy of represented `F` and completed function
+- [x] Core Lean definitions compile
+- [x] Meromorphy of represented `F` and completed function
 - [ ] Equality/uniqueness of analytic continuation from coefficients
 - [ ] Finite-order characterization equivalence
 - [ ] Gamma-presentation invariance of degree, conductor, internal shift
-- [ ] Exact `S` extension
+- [x] Exact `S` extension
 - [ ] Product monoid and conjugation closure
 - [ ] Primitive element/factorization definitions on semantic equality

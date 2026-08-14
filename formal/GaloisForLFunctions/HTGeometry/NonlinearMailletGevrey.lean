@@ -98,7 +98,8 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution {m N : ℕ}
   have hWconv : ∀ α, IsGevreySeries ((0 : ℕ) : ℝ) (W α) := by
     intro α
     have h := isGevreySeries_aeval_eulerJetVector (r := 0) le_rfl (T α) (fun σ => hTc α σ) hYconv0
-    simpa using h
+    rw [Nat.cast_zero]
+    exact h
   -- the constants of the recursion
   obtain ⟨c, hc, N₀, hlow⟩ := exists_lower_bound_eval_natCast (shiftPolynomial B 0) hΦ
   obtain ⟨Cb, ρ, hCb, hρ, hshift⟩ := exists_bound_shiftPolynomial B hBconv0
@@ -125,7 +126,7 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution {m N : ℕ}
     have h1 : ε ≤ c / (3 * (K + 1)) := min_le_right _ _
     have h2 : K * ε ≤ K * (c / (3 * (K + 1))) := mul_le_mul_of_nonneg_left h1 hK0
     have h3 : K * (c / (3 * (K + 1))) ≤ c / 3 := by
-      rw [div_le_div_iff₀ (by positivity) (by norm_num : (0:ℝ) < 3)] at *
+      rw [← mul_div_assoc, div_le_div_iff₀ (by positivity) (by norm_num : (0 : ℝ) < 3)]
       nlinarith [hK0, le_of_lt hc]
     linarith
   -- the geometric base
@@ -171,8 +172,7 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution {m N : ℕ}
   set q : ℝ := ρ / A with hqdef
   have hq0 : 0 ≤ q := by rw [hqdef]; positivity
   have hq2 : 2 * q ≤ 1 / 2 := by
-    rw [hqdef, div_le_iff₀ hApos] at *
-    rw [mul_comm 2 (ρ / A), div_mul_eq_mul_div, div_le_iff₀ hApos]
+    rw [hqdef, ← mul_div_assoc, div_le_div_iff₀ hApos (by norm_num : (0 : ℝ) < 2)]
     linarith [hA4ρ]
   have hq21 : 2 * q < 1 := by linarith
   have hqden : (1 : ℝ) / 2 ≤ 1 - 2 * q := by linarith
@@ -183,18 +183,18 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution {m N : ℕ}
     have hq4 : 4 * q ≤ c / (3 * Cb * Ca) := by
       have hform : 4 * q = 4 * ρ / A := by rw [hqdef]; ring
       rw [hform, div_le_div_iff₀ hApos (by positivity)]
-      have hAc : (12 * Cb * Ca * ρ / c) * (3 * Cb * Ca) ≤ A * (3 * Cb * Ca) :=
-        mul_le_mul_of_nonneg_right hAgeom (by positivity)
-      have hexp : (12 * Cb * Ca * ρ / c) * (3 * Cb * Ca) * c
-          = 36 * Cb ^ 2 * Ca ^ 2 * ρ := by field_simp; ring
-      nlinarith [hAc, hexp, le_of_lt hc, le_of_lt hCb, le_of_lt hCa1, le_of_lt hρ]
+      have hAc : (12 * Cb * Ca * ρ / c) * c ≤ A * c :=
+        mul_le_mul_of_nonneg_right hAgeom (le_of_lt hc)
+      have hexp : (12 * Cb * Ca * ρ / c) * c = 12 * Cb * Ca * ρ := by field_simp
+      rw [hexp] at hAc
+      nlinarith [hAc]
     calc Cb * (Ca * ((2 * q) / (1 - 2 * q))) ≤ Cb * (Ca * (4 * q)) := by
           refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hstep ?_) (le_of_lt hCb)
           linarith [hCa1]
       _ ≤ Cb * (Ca * (c / (3 * Cb * Ca))) := by
           refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hq4 ?_) (le_of_lt hCb)
           linarith [hCa1]
-      _ = c / 3 := by field_simp; ring
+      _ = c / 3 := by field_simp
   -- the main induction
   have hmain : GevreyWeightBound a ε A r H := by
     intro n
@@ -309,7 +309,14 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution {m N : ℕ}
                 ≤ c / 3 * ((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r) := by
               have hbase : (0 : ℝ) ≤ c / 3 * (ε * A ^ n * ((n ! : ℝ)) ^ r) := by positivity
               nlinarith [hpowd1, hbase]
-            nlinarith [h1, h2, le_of_lt hApown, le_of_lt hfacpos]
+            have h3 : K * ε ^ 2 * (A ^ n * ((n ! : ℝ)) ^ r)
+                ≤ (c / 3) * ε * (A ^ n * ((n ! : ℝ)) ^ r) :=
+              mul_le_mul_of_nonneg_right h1 (by positivity)
+            calc K * ε ^ 2 * A ^ n * ((n ! : ℝ)) ^ r
+                = K * ε ^ 2 * (A ^ n * ((n ! : ℝ)) ^ r) := by ring
+              _ ≤ (c / 3) * ε * (A ^ n * ((n ! : ℝ)) ^ r) := h3
+              _ = (c / 3) * ε * A ^ n * ((n ! : ℝ)) ^ r := by ring
+              _ ≤ c / 3 * ((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r) := h2
           linarith [hbw, hstep]
         -- the value at the truncation
         have hVest : ‖PowerSeries.coeff n V‖ * ((n : ℝ) + 1) ^ a
@@ -330,11 +337,12 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution {m N : ℕ}
               refine mul_le_mul_of_nonneg_right ?_ (le_of_lt hApown)
               simpa using hpow
             have h2 : Cv * (Av / A) ≤ c / 3 * ε := by
-              rw [div_le_iff₀ hApos] at *
               have hAc : (3 * Cv * Av / (c * ε)) * (c * ε) ≤ A * (c * ε) :=
                 mul_le_mul_of_nonneg_right hAval (by positivity)
               have hexp : (3 * Cv * Av / (c * ε)) * (c * ε) = 3 * Cv * Av := by field_simp
-              nlinarith [hAc, hexp, le_of_lt hCv, le_of_lt hAv, le_of_lt hc, hε0]
+              rw [hexp] at hAc
+              rw [← mul_div_assoc, div_le_iff₀ hApos]
+              nlinarith [hAc]
             calc Cv * ((Av / A) ^ n * A ^ n) ≤ Cv * ((Av / A) * A ^ n) := h1
               _ = (Cv * (Av / A)) * A ^ n := by ring
               _ ≤ (c / 3 * ε) * A ^ n := mul_le_mul_of_nonneg_right h2 (le_of_lt hApown)
@@ -342,7 +350,12 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution {m N : ℕ}
           have hlast : c / 3 * ε * A ^ n
               ≤ c / 3 * ((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r) := by
             have hbase : (0 : ℝ) ≤ c / 3 * ε * A ^ n := by positivity
-            nlinarith [hpowd1, hfac1, hbase]
+            have hprod : (1 : ℝ) ≤ ((n : ℝ) + 1) ^ d * ((n ! : ℝ)) ^ r := by
+              nlinarith [hpowd1, hfac1]
+            calc c / 3 * ε * A ^ n = (c / 3 * ε * A ^ n) * 1 := by ring
+              _ ≤ (c / 3 * ε * A ^ n) * (((n : ℝ) + 1) ^ d * ((n ! : ℝ)) ^ r) :=
+                  mul_le_mul_of_nonneg_left hprod hbase
+              _ = c / 3 * ((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r) := by ring
           linarith [hb, hchain, hlast]
         -- the convolution
         have hconv : (∑ k ∈ Finset.range n,
@@ -391,7 +404,6 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution {m N : ℕ}
                       * ((((k : ℝ)) + 1) ^ m * (((k ! : ℝ)) ^ r / ((n ! : ℝ)) ^ r))) := by
                 rw [hqpow, hApow]
                 field_simp
-                ring
               rw [hid]
               have hleft0 : (0 : ℝ) ≤ Cb * (ε * A ^ n * ((n ! : ℝ)) ^ r) := by positivity
               have hqk0 : (0 : ℝ) ≤ q ^ (n - k) := pow_nonneg hq0 _

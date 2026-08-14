@@ -1,0 +1,135 @@
+\documentclass[10pt]{article}
+
+\usepackage[a4paper,margin=0.78in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,bm,mathrsfs}
+\usepackage{booktabs,tabularx,longtable,microtype,enumitem,multicol,float}
+\usepackage{xcolor,tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,
+  citecolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
+\setlength{\emergencystretch}{2em}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\R}{\mathbb R}
+\newcommand{\C}{\mathbb C}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\T}{\mathbb T}
+\newcommand{\ee}{\mathrm e}
+\newcommand{\ii}{\mathrm i}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\Rel}{\mathcal L}
+\newcommand{\Hull}{\mathcal K}
+\newcommand{\Carrier}{\mathcal C}
+\newcommand{\Hwater}{\mathcal H}
+\newcommand{\Fid}{\mathcal F}
+\newcommand{\dens}{\operatorname{dens}}
+\newcommand{\sinc}{\operatorname{sinc}}
+
+\title{\textbf{The geometry and complexity of quantum recurrence}\\
+\large Four structural laws for persistence, interaction, computational capacity, and recovery}
+\author{Michael Haufschild}
+\date{14 August 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Quantum recurrence is usually studied through separate questions about
+survival under loss, spectral arithmetic, recurrence time, many-body
+locality, spectral statistics, observability, circuit complexity and
+prediction.  We show that these questions are organized by one object: the
+persistent projective phase hull of autonomous evolution, equipped with
+Haar measure and the target family used to recognize or prepare a return.
+This yields a return-capacity principle and four structural laws.
+
+First, loss selects the recurrent carrier.  Peripheral spectral mass is the
+exact asymptotic return-amplitude ceiling of every finite contraction, while
+arbitrary stationary spectra obey a point-spectrum and replica-collision
+hierarchy.  Second, interaction controls the dimension and factorization of
+time.  For arbitrary finite interaction graph $G$, local dimensions
+$q_v\ge2$, and arbitrary onsite-plus-edge Hamiltonians, a dense residual
+full-measure set satisfies
+\[
+ \tau(H)=\sum_{C\in\pi_0(G)}\left(\prod_{v\in C}q_v-1\right).
+\]
+Subsystem temporal curvature reconstructs the supplied interaction graph.
+Joining components of Hilbert dimensions $A,B$ creates $(A-1)(B-1)$ phase
+directions and removes exactly the corresponding factorization collisions
+at every replica order.  Connected networks have exact strict anchored
+chordal projective-return density
+\[
+ \left[2\arcsin(\varepsilon/2)/\pi\right]^{D-1},
+\]
+independently of topology; for bounded local dimension this is doubly
+exponentially small in site number after completed time is taken first.  On
+one generic countable locally finite network, the maximal-rank law holds
+simultaneously along every volume of a fixed connected exhaustion, so no
+finite-dimensional phase carrier contains the thermodynamic sequence.
+
+Third, recurrence and circuit complexity are target-capacity problems on
+the same hull.  A target-independent phase-tube bound implies that generic
+static connected local networks spend all but $\exp[-\Omega(D)]$ of
+completed time at Choi-state circuit complexity $\Omega(D/\log M)$.
+For bounded-dependence local circuit alphabets, heap counting improves this
+to $\Omega(D)$.  For a fixed product input on a Gaussian nearest-neighbour
+spin chain, an unbounded sequence of common deterministic times has positive
+ensemble mass at exponential state complexity; rational Hamiltonian--time
+witnesses can be selected by one terminating algorithm.  Ordinary
+bounded-weight Pauli Hamiltonians also exhibit
+syndetically recurring prime-length polygons whose nonidentity vertices
+avoid every target in an arbitrary finite circuit dictionary and whose last
+vertex returns near the identity.  The same Hamiltonian remains
+operationally distinguishable from Haar randomness at every time.
+
+Fourth, return imposes recovery and reflection.  Near an autonomous return,
+every circuit-complexity shell at $t$ is reflected at $R-t$ with only the
+return defect added to resolution.  For a Markovian quantum dynamical
+semigroup, the remaining segment is an explicit recovery channel for every
+intermediate time; exact full-channel recurrence forces the entire cycle to
+be unitary.  Nevertheless, finite-horizon observations do not stably
+identify completed recurrence geometry: isospectral nearest-neighbour
+Hamiltonians can agree arbitrarily well on every prescribed earlier window
+and on any finite set of moments while attaining every later return
+probability.  All claims are finite-volume or completed-time statements;
+no first-recurrence scale, monotone complexity ramp, infinite-volume return,
+or Haar randomization is asserted.
+\end{abstract}
+
+\noindent\textbf{Public summary.}
+A connected quantum system can be built from static local interactions,
+generate almost all of its possible independent phase clocks, spend almost
+all completed time in states no short circuit can reproduce, remain
+detectably nonrandom, and still return.  This remains true for one consistent
+sequence of growing finite volumes, and fixed-input hard examples can be
+chosen algorithmically.  The same phase geometry determines how rare the
+return is, which interaction links can be inferred, and what information a
+return must restore.
+
+\input{body}
+
+\appendix
+\input{new-appendices}
+\input{../persistent-phase-geometry-quantum-recurrence/appendices}
+
+\section*{Data, code and formal verification}
+No empirical data were used.  Machine-checked theorem counterparts are
+contained in the accompanying Lean~4 corpus.  The claim trace supplied with
+this manuscript identifies exact declarations, source modules and theorems
+that currently remain paper-proved rather than formalized.
+
+\section*{Author contributions}
+M. Haufschild conceived the project, developed the mathematical framework,
+performed the analysis and wrote the manuscript.
+
+\input{references}
+
+\end{document}

@@ -33,7 +33,7 @@ where mathematical knowledge is missing use the /hgtl7 skill to create it.
 ## formalize goal
 /goal
 
-formalize UNCONDITIONALLY in lean any proven theorem from these cards: docs/drafts/pipeline/2-fully-proven/ (IGNORE SUBFOLDERS)
+formalize UNCONDITIONALLY in lean any proven theorem from these cards: docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki
 
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
@@ -60,6 +60,8 @@ where mathematical knowledge is missing use the /hgtl7 skill to create it.+
 GOAL IS MET WHEN ALL CARDS ARE FULLY FORMALIZED AND CAN BE MOVED TO STEP 3 OF THE PIPELINE. NO SHORTCUTS OR FAKING IT!
 
 do not add hypotheses. always check first what the lean corpus already contains, to not duplicate existing work.
+
+do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
 
 optimize lean code. only build what is necessary. you can yourself only start 1 build procress at a time. be mindful that you are not the only agent working on the lean codebase right now.
 
@@ -164,7 +166,7 @@ where mathematical knowledge is missing use the $hgt-fields-medalist skill to cr
 
 ## research paper
 
-use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge to prove or disprove Selberg's conjectures 3 (https://en.wikipedia.org/wiki/Selberg_class#Conjectures)
+use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge to prove or disprove Artin holomorphy conjecture (https://en.wikipedia.org/wiki/Artin_L-function#The_Artin_conjecture)
 
 research rules:
 - use heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ... 

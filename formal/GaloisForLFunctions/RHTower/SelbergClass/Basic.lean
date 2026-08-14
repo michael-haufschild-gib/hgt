@@ -96,6 +96,37 @@ def SelbergGammaData.conductor (G : SelbergGammaData) : ℝ :=
 def SelbergGammaData.internalShift (G : SelbergGammaData) : ℝ :=
   (2 / G.degree) * (∑ j, G.mu j).im
 
+/-- Degree of every concrete gamma presentation is nonnegative. -/
+theorem SelbergGammaData.degree_nonneg (G : SelbergGammaData) : 0 ≤ G.degree := by
+  unfold SelbergGammaData.degree
+  have hsum : 0 ≤ ∑ j, G.lambda j :=
+    Finset.sum_nonneg fun j _ ↦ (G.lambda_pos j).le
+  nlinarith
+
+/-- A nonempty gamma presentation has positive degree. -/
+theorem SelbergGammaData.degree_pos_of_rank_pos (G : SelbergGammaData) (hr : 0 < G.rank) :
+    0 < G.degree := by
+  unfold SelbergGammaData.degree
+  let j0 : Fin G.rank := ⟨0, hr⟩
+  have hle : G.lambda j0 ≤ ∑ j, G.lambda j := by
+    apply Finset.single_le_sum
+    · intro j _
+      exact (G.lambda_pos j).le
+    · exact Finset.mem_univ j0
+  nlinarith [G.lambda_pos j0]
+
+/-- Conductor of every concrete gamma presentation is strictly positive. -/
+theorem SelbergGammaData.conductor_pos (G : SelbergGammaData) : 0 < G.conductor := by
+  unfold SelbergGammaData.conductor
+  have hbase : 0 < 2 * Real.pi := mul_pos (by norm_num) Real.pi_pos
+  have hpow : 0 < (2 * Real.pi) ^ G.degree := Real.rpow_pos_of_pos hbase _
+  have hQ : 0 < G.Q ^ 2 := pow_pos G.Q_pos _
+  have hprod : 0 < ∏ j, G.lambda j ^ (2 * G.lambda j) := by
+    apply Finset.prod_pos
+    intro j _
+    exact Real.rpow_pos_of_pos (G.lambda_pos j) _
+  positivity
+
 /-- Completed meromorphic value attached to concrete continuation and gamma data. -/
 def selbergCompletedValue (G : SelbergGammaData) (A : SelbergAnalyticContinuation)
     (s : ℂ) : ℂ :=
@@ -121,6 +152,18 @@ structure ExtendedSelbergClass where
 /-- Represented meromorphic function. -/
 def ExtendedSelbergClass.value (F : ExtendedSelbergClass) : ℂ → ℂ :=
   F.continuation.value
+
+/-- Degree attached to the selected gamma presentation. -/
+def ExtendedSelbergClass.presentationDegree (F : ExtendedSelbergClass) : ℝ :=
+  F.gammaData.degree
+
+/-- Conductor attached to the selected gamma presentation. -/
+def ExtendedSelbergClass.presentationConductor (F : ExtendedSelbergClass) : ℝ :=
+  F.gammaData.conductor
+
+/-- Internal shift attached to the selected gamma presentation. -/
+def ExtendedSelbergClass.presentationInternalShift (F : ExtendedSelbergClass) : ℝ :=
+  F.gammaData.internalShift
 
 instance : CoeFun ExtendedSelbergClass (fun _ ↦ ℂ → ℂ) := ⟨ExtendedSelbergClass.value⟩
 

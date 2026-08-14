@@ -2,7 +2,7 @@
 # Main theorem areas
 
 This module is the formal proof project's agent-facing entry point.  The project
-has six owned theorem areas:
+has seven owned theorem areas:
 
 * `GaloisForLFunctions.RHTower`
 * `GaloisForLFunctions.HTGeometry`
@@ -10,6 +10,7 @@ has six owned theorem areas:
 * `GaloisForLFunctions.U0`
 * `GaloisForLFunctions.Bottcher`
 * `GaloisForLFunctions.HilbertMetric`
+* `GaloisForLFunctions.SelbergClass`
 
 and three vendored areas:
 
@@ -30,6 +31,7 @@ import GaloisForLFunctions.Hurwitz
 import GaloisForLFunctions.U0
 import GaloisForLFunctions.Bottcher
 import GaloisForLFunctions.HilbertMetric
+import GaloisForLFunctions.SelbergClass
 import GaloisForLFunctions.QuantumAlg
 import GaloisForLFunctions.PNTPlus
 import GaloisForLFunctions.QECLean

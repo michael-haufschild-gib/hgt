@@ -168,13 +168,19 @@ Equality holds exactly when no component is split between partition blocks.
 
 ## Corollary 3 — exact generic recurrence law
 
-For connected \(G\), maximal projective rank makes the phase orbit dense in
-\(\mathbb T^{D-1}\). A positive exact global projective return would give a
-nonzero common period and hence a nontrivial rational relation, so no such
-return exists. Approximate returns remain recurrent.
+For connected \(G\), maximal projective rank makes the anchored phase orbit
+dense in \(\mathbb T^{D-1}\). If \(D\ge3\), a positive exact anchored return
+would make all nonzero gap ratios rational, contradicting their rational
+independence. The exceptional \(D=2\) flow is periodic. Approximate returns
+remain recurrent.
 
-For \(0<\varepsilon<2\), the operator-norm projective return set has
-asymptotic time density
+For \(0<\varepsilon<2\), fix a spectral anchor \(j_0\) and use the chordal
+target
+\[
+ \max_{j\ne j_0}
+ |e^{-it(\lambda_j-\lambda_{j_0})}-1|\le\varepsilon.
+\]
+This anchored projective return set has asymptotic time density
 \[
   \boxed{
   \left(
@@ -464,11 +470,10 @@ induced graphs.
 
 ### 10. Recurrence
 
-On a connected maximally projective spectrum, the \(D-1\) relative
+On a connected maximally projective spectrum, the \(D-1\) anchored relative
 frequencies are rationally independent. Kronecker--Weyl equidistribution
-makes the phase orbit Haar-equidistributed on \(\mathbb T^{D-1}\).
-Operator-norm distance at most \(\varepsilon\) modulo global phase requires
-every relative circle phase to lie in the arc
+makes their phase orbit Haar-equidistributed on \(\mathbb T^{D-1}\). The
+anchored chordal target requires every relative circle phase to lie in the arc
 \[
   |\theta|\le2\arcsin(\varepsilon/2).
 \]
@@ -476,9 +481,10 @@ The normalized arc length is
 \[
   2\arcsin(\varepsilon/2)/\pi.
 \]
-Product Haar measure gives `(9)`. A positive exact return would put every
-relative frequency in one reciprocal-time lattice, contradicting rational
-independence.
+Product Haar measure gives `(9)`. When \(D\ge3\), a positive exact return
+would make all relative-frequency ratios rational, contradicting rational
+independence. For \(D=2\), the single relative phase is periodic. The formula
+is not asserted for the optimally recentered quotient operator norm.
 
 ## Infinite-network completion
 

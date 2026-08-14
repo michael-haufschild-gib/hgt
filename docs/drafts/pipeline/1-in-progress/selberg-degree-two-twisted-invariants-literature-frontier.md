@@ -77,8 +77,9 @@ This closes one algebraic prerequisite only. It does not yet formalize the publi
 - [x] Dependency DAG extracted
 - [x] First coefficient-twist algebra layer paper-proved
 - [x] First coefficient-twist algebra layer Lean-audited and promoted
-- [ ] Exact `S♯` carrier and invariants
-- [ ] Lemma 1
+- [ ] Exact `S♯` carrier and invariants (carrier exists; gamma-presentation invariance remains)
+- [ ] Lemma 1 (Fourier inversion and primitive Gauss case formalized; imprimitive
+  conductor/Möbius factor remains)
 - [ ] Lemma 2
 - [ ] Lemma 3
 - [ ] Degree-gap/classification dependencies

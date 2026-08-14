@@ -1079,3 +1079,70 @@ review.
   layers minus the target, closed under the surviving direction), relative independence of a layer
   packet over that base via the generic twisted one-slice obstruction, then downward induction to
   `J = ∅`
+
+## 2026-08-14 — the all-face layer induction: exact remaining route, and the union layer
+
+The independence half is *not* blocked on the double-sine defect-coset theorem: that theorem is
+already in the corpus and unconditional
+(`DoubleSineDefectCosetMatroid.doubleSineDefect_rationalBase_matroid_imaginaryRay`, and the coset
+criterion `DoubleSineOrbitCosetCriterion.differentialIndependent_doubleSineOrbit_iff_imaginaryRay`).
+What is missing is one level up: joint independence of the packets of **all** proper faces, not only
+of the maximal ones.
+
+`MultipleSineAllFaceIndependence.multipleSineMaximalFaces_diffIndepOn` covers exactly the layer
+`|Jᶜ| = 2` — the top layer — because there the nested-star engine
+`DifferentialUniformFaceGluing.differentialRank_uniformFace_nestedStar_diffIndepOn_of_orbit` runs
+over the base field `ℂ`.  The card's matroid statement needs the packets of every face of
+`Δ = {J : |Jᶜ| ≥ 2}`, since `x_J L_V = ± L_{V∖J}` ranges over all of them.
+
+The exact template is the multiple-elliptic-gamma chain, which already carries this out for the
+sibling source:
+
+| gamma module | what it proves | multiple-sine counterpart |
+|---|---|---|
+| `FaceLayerDescendingUnion` | packet union, split, descending step | **`MultipleSineFacePacketUnion` (new, below)** |
+| `FacePacketFreeTelescoping` | face block free over the deeper face field | missing |
+| `FacePacketLayerGluing` | one complete layer over the deeper field | missing |
+| `MultipleEllipticGammaAllFaceIndependence` | layer induction on survivor count | missing |
+| `MultipleGammaMonomialCoefficients` | `x^d` expanded into face translates | missing |
+| `MultipleGammaAnnihilatorExact` | `Ann_DA = I_r` | missing |
+
+Every *analytic* input the middle three need is already proved on the multiple-sine side:
+`MultipleSineFacePalette` (`facePalette`, `facePalette_shift`, `range_facePalette`,
+`facePalette_injective`), `MultipleSineFaceDisplacement` (`faceDisplacement_mem_slice`,
+`faceDisplacement_primitive`, `faceDisplacement_injective`), `MultipleSineFaceStarOrbit`
+(`facePacketSlice`, `facePacket_eq_orbitUnion`, `faceStar_eq_orbitUnion`,
+`facePacketSlice_zpow_injective`), `MultipleSineFacePacketDisjoint` (`facePacket_disjoint`,
+`not_differentialAlgebraicOver_facePacket_freeStep`), `MultipleSineFacePacketStability`
+(`facePacket_translate_mem`, `facePacket_translate_image`) and `MultipleSineFaceOffStarNeutrality`
+(`differentialAlgebraicOver_translate_canonicalFace`).  The gluing engines
+(`Rank.uniformFace_nestedStar_indep`, `differentialRank_uniformFace_nestedStar_diffIndepOn_of_orbit`,
+`diffIndepOn_union_of_base`, `diffIndepOn_union_iff_nested`,
+`diffIndepOn_differentialAdjoin_iff_of_differentialAlgebraicOver`) are already base-field-generic, so
+they can be instantiated with the deeper face field directly.
+
+**Built in this pass.**  `HTGeometry/MultipleSineFacePacketUnion.lean` (umbrella-wired, builds
+clean): `sineFacePacketUnion`, `faceStar_empty_eq_sineFacePacketUnion`, `sineFacePacketUnion_union`,
+`sineFacePacketUnion_empty`, `sineFacePacketUnion_diffIndepOn_union` — the descending step — and the
+layer bookkeeping `sineBoundaryFaces`, `sineDeeperFaces`, `sineFaceLayer`,
+`sineFaceLayer_zero_eq_maximalFaces`, `sineDeeperFaces_zero`, `sineDeeperFaces_succ`,
+`sineDeeperFaces_top`, `card_of_mem_sineFaceLayer`.  This is the skeleton the induction runs on: at
+`k = 0` the layer is `maximalFaces` and the deeper family is empty, so the existing
+`multipleSineMaximalFaces_diffIndepOn` is exactly the base case.
+
+**One structural difference from the gamma template, and it simplifies the sine side.**  The gamma
+face-lifting argument runs a *rank-three* Ostrowski difference system `![1, τ_q, τ_u]`: the unit
+period is needed because two periods in the upper half plane can generate a discrete group, and the
+Ostrowski criterion needs the joint fixed field to be the constants.  The multiple sine of a **ray**
+family has no unit period, but it does not need one: all `ω_k = μ · rad_k` lie on one ray, so two
+rationally independent directions already generate a dense subgroup of that real line, and a
+meromorphic function invariant under it is constant.  That step is corpus-owned as
+
+`IncommensuratePeriodMeromorphicModel.exists_constant_of_two_rayPeriods_fixed`
+(`c ≠ 0`, `Irrational (a/b)`, `T_{c·a} z = z`, `T_{c·b} z = z` ⟹ `z` is a constant),
+
+already used by `DoubleSineRayMatroid`.  So the sine difference system is **rank two**, built from
+two surviving directions `q, u ∉ J`, and the module mirroring
+`HTGeometry.FacePacketDifferenceSystem` is correspondingly shorter: it drops the whole unit-period
+layer (`facePacket_one_translate_eq`, `facePacketUnion_one_translate_eq`,
+`differentialAdjoin_facePacketUnion_one_fixed`, and their negatives).

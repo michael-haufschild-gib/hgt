@@ -1,9 +1,9 @@
 # Artin virtual-character restriction foundation
 
 - **ID:** `artin-virtual-character-restriction-foundation`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Status:** `[PAPER-PROVED] [BRIDGE]`
+- **Status:** `[LEAN-PROVED] [BRIDGE]`
 
 ## Exact claim
 
@@ -23,6 +23,9 @@ Then:
 3. Every virtual character is conjugacy invariant.
 4. A genuine character takes a non-negative integer value at `1`; a virtual character takes an
    integer value at `1`.
+5. Every finite-dimensional complex representation on a carrier in any universe has a canonical
+   coordinate model on `Fin(dim) -> C`; this small model has the same character and therefore its
+   character belongs to `CharFD(G)`.
 
 These are concrete closure constructions. No proposition asserting that an arbitrary function is a
 character is introduced, and no Artin-holomorphy premise occurs.
@@ -50,6 +53,12 @@ At the identity, a representation character equals its complex dimension, hence 
 Finite sums remain natural-number-valued. Allowing additive inverses gives an integer value for a
 virtual character. Closure induction proves both statements.
 
+For an arbitrary finite-dimensional carrier `V`, choose the canonical finite basis indexed by
+`Fin(dim_C V)`. Its coordinate equivalence conjugates the action to an action on
+`Fin(dim_C V) -> C`, which lives in the scalar universe and hence bundles as an `FDRep`. Trace is
+invariant under this representation equivalence, so the small-model character equals the original
+character. This is the universe-safe bridge needed by subgroup induction.
+
 ## Significance boundary
 
 This is required representation-theoretic infrastructure, not new scientific knowledge. It does
@@ -62,3 +71,20 @@ Formalize exact constructions and all four conclusions from mathlib `FDRep` char
 representation restriction. No `sorry`, `admit`, new axiom, `opaque`, `unsafe`, or target-equivalent
 proposition interface.
 
+## Lean certificate
+
+- Module: `formal/GaloisForLFunctions/RHTower/ArtinVirtualCharacter.lean`
+- Concrete carriers: `genuineCharacterMonoid`, `virtualCharacterGroup`.
+- Actual representation restriction: `restrictFDRep`.
+- Universe-safe carrier reduction: `smallModelRepresentation`, `smallModelEquiv`,
+  `smallModelFDRep`, and `representation_character_mem_fdCharacterSet`.
+- Closure-preserving maps: `GenuineCharacter.restrict`, `VirtualCharacter.restrict`.
+- Structural theorems: `genuineCharacterMonoid_le_virtualCharacterGroup`,
+  `VirtualCharacter.conj_invariant`, `GenuineCharacter.one_eq_natCast`, and
+  `VirtualCharacter.one_eq_intCast`.
+- Source check: `lake env lean GaloisForLFunctions/RHTower/ArtinVirtualCharacter.lean`.
+- Targeted olean audit:
+  `lake build GaloisForLFunctions.RHTower.ArtinVirtualCharacter`.
+- `#print axioms` audit of all exported theorems reports only `propext`, `Classical.choice`, and
+  `Quot.sound`.
+- Wired into `GaloisForLFunctions/RHTower.lean`; umbrella deliberately not built.

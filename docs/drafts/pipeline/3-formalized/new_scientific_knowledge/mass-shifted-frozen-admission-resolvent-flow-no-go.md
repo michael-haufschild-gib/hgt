@@ -1,7 +1,7 @@
 # Frozen-admission resolvent-flow no-go
 
 - **ID:** mass-shifted-frozen-admission-resolvent-flow-no-go
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / exact route no-go
 - **Source:** mass-shifted-canonical-admission-arithmetic-transgression.md
 - **Statement:** Positive Hankel chambers and exact shifted-moment transport do not control frozen-admission source sign: a three-atom positive resolvent flow has positive current canonical source but negative source for a nearby frozen canonical admission.
@@ -16,8 +16,10 @@ below gives an exact negative answer and identifies the stronger literal input t
 
 - [x] 0 → 1 in-progress: exact conjecture and source type isolated
 - [x] 1 → 2 fully-proven: dependency-closed symbolic countermodel and positive survivor
-- [ ] 2 → 3 formalized: deliberately withheld; a generic closed countermodel would add no literal
-  completed-Xi theorem and must not receive Route U formal credit
+- [x] 2 → 3 formalized: `formal/GaloisForLFunctions/RHTower/FrozenAdmissionResolventFlowNoGo.lean`
+  formalizes the *literal* three-atom flow (explicit nodes `(t+d_i)⁻¹`, explicit weights
+  `1, ε, ε`), not a generic wrapper: no abstract flow, no supplied spectral data, no hypothesis
+  standing for an analytic input
 - [ ] 3 → 4 publication-ready: external novelty audit and standalone exposition
 
 ## 1. Derivative target is odd current, not Christoffel distance
@@ -186,8 +188,27 @@ exceeding current positive source.
   completed-Xi constraint equivalent in strength, to distinguish Xi flow from (FAR.8). Another
   finite-block, Christoffel-distance, generic Riccati, or compact-path inequality cannot close
   route.
-- **Lean status:** no Lean module is added. Formalizing this generic countermodel would repeat
-  abstract-wrapper failure and create no unconditional literal completed-Xi theorem.
+- **Lean status:** formalized unconditionally in
+  `formal/GaloisForLFunctions/RHTower/FrozenAdmissionResolventFlowNoGo.lean`, for the literal
+  three-atom flow only (no abstract moment-flow wrapper, so no Route U formal credit is claimed
+  for a generic transport theorem):
+  * (FAR.8)/(FAR.9) `farNode`, `farFunctional`, `farMoment`, `hasDerivAt_farMoment`
+    (`s'(k) = -(k+1) s(k+1)`);
+  * (FAR.10) `farFunctional_sq_pos` — the full degree-two Hankel chamber is positive definite at
+    every positive weight and every positive mass;
+  * (FAR.2)/(FAR.12) `farSource`, `farSource_eq`; (FAR.11) `farAlpha`; `farNorm`, `farOddCurrent`;
+  * (FAR.3) `hasDerivAt_farOddCurrent` (`d/dt J_t(A) = -Q_t(A)`), (FAR.4)
+    `hasDerivAt_farOddCurrent_sub`, (FAR.6) `farOddCurrent_sub_farOddCurrent_alpha`
+    (affine odd-Jacobi displacement `2 h₁ δ + J(Δ)`);
+  * (FAR.5) `hasDerivAt_farAlpha`, `farFunctional_mul_sub_farAlpha`,
+    `hasDerivAt_farOddCurrent_moving`, `hasDerivAt_farOddCurrent_displacement` — the moving
+    canonical admission keeps the connection term `2 h₁ α'(y)`;
+  * (FAR.13) `farSource_frozen_neg_zero` and `eventually_farSource_frozen_neg`, (FAR.14)
+    `farSource_current_pos` (proved by the exact split
+    `Q/2 = L(X²P²) + (2W)⁻¹ Σ_{i<j} w_i w_j (x_i³-x_j³)(x_i-x_j)`);
+  * capstone `exists_frozen_admission_source_sign_reversal`: some `ε > 0` has a positive-definite
+    degree-two chamber, positive current canonical source, and negative frozen canonical source.
+  Audits `[propext, Classical.choice, Quot.sound]`.
 
 ## 4. Conjecture → fail → pivot log
 

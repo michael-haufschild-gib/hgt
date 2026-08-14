@@ -19,6 +19,8 @@ open scoped Differential
 namespace GaloisForLFunctions.HTGeometry
 
 open GaloisForLFunctions Bottcher
+open GaloisForLFunctions.MatroidGluing GaloisForLFunctions.MatroidGluing.Rank
+open GaloisForLFunctions.MatroidGluing.Meromorphic
 
 noncomputable section
 
