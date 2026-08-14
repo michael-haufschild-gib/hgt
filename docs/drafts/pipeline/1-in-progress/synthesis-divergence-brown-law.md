@@ -376,7 +376,7 @@ cylinders are not prefix-free: for independent letters `a,b`,
  \uparrow a\cap\uparrow b=\uparrow(ab).
 \]
 
-The paper-proved successor `../2-fully-proven/concurrent-causal-heap-accessibility-law.md` replaces
+The paper-proved successor `../3-formalized/concurrent-causal-heap-accessibility-law.md` replaces
 the word sum by the probability of the **union** of successful causal-prefix cylinders under the
 finite trace law `pi_z(T)=z^|T|/Z(z)`.  It proves exact cylinder mass `z^|u|`, exact recurrence value
 one, a relative-entropy preparation action, intrinsic bounded-dependence capacity, and a soft

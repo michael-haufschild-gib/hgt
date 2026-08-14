@@ -31,10 +31,16 @@
     `A = 2` is the exact threshold), on the new Taylor bricks
     `HTGeometry/ArctanSinTaylor.lean` (`|arctan u - u| ≤ |u|³`, `|sin u - u| ≤ |u|³`);
   * Mertens' third theorem `∏_{p≤N}(1-1/p) ≍ 1/log N` — new reusable
-    `RHTower/Sieve/MertensThird.lean`.
+    `RHTower/Sieve/MertensThird.lean`;
+  * `(34)` prefix modulus stability — `RHTower/RouteEGibbsPrefixModulus.lean`: the exact local
+    identity `norm_one_sub_smul_exp_sq` (`|1-p^{-1-2it}|² = (1-1/p)² + (2/p)(1-cos 2t log p)`),
+    the two-sided product bounds `prefixModulus_ge'` / `prefixModulus_le`
+    (`≤ ∏(1-1/p)·exp(8t²(log Y)²∑1/p)`), and `tendsto_prefixModulus_ratio`
+    (the ratio to `∏_{p≤Y}(1-1/p)` tends to one at `t_X` for every `A > 0`), which with
+    Mertens' third theorem gives the exact order `1/log Y`.
   All of these build and audit `[propext, Classical.choice, Quot.sound]`.
-  Still paper-only: the modulus stability `(34)`, the full rapidity `(37)`/`(38)` (needs the
-  `artanh` cubic bound and the `d_p` versus `p^{-1/2}` correction), and the four-field
+  Still paper-only: the full rapidity `(37)`/`(38)` (needs the `artanh` quadratic bound, the
+  `d_p` versus `p^{-1/2}` correction and the `sinh` resummation) and the four-field
   Mellin--Plancherel polarization `(8)`.
 
 ## 1. Literal Gibbs determinant

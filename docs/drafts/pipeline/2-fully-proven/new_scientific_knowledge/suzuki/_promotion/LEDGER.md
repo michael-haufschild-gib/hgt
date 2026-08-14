@@ -6895,3 +6895,29 @@ finite-dimensional real inner product space of arguments, together with
 `SchwartzMap.toLp_fourier_eq` and the tempered-distribution comparison.  What remains for `(25)` is
 the contour shift: that the `L²` inverse Fourier transform of `f(·+iσ)` is `e^{σL}` times a
 σ-independent carrier, i.e. the Paley–Wiener step for the holomorphic strip solution.
+
+## HF — card 7's `(19)` is closed, and the binomial series is corpus infrastructure
+
+The optional strengthening recorded in section HC is now proved, so the promoted card carries no
+unformalised statement.
+
+```text
+HTGeometry/CentralBinomialSeries.lean
+  descPochhammer_smeval_neg_half   the descending Pochhammer value at -1/2
+  ringChoose_neg_half              **Ring.choose (-1/2) n = (-1)^n C(2n,n)/4^n**
+  hasSum_centralBinom              **(1-x)^{-1/2} = ∑ C(2n,n)x^n/4^n for |x| < 1**
+RHTower/SuzukiPrimeNormalBinomialSeries.lean
+  binomialSymbol_eq_rpow           the resolvent symbol is the negative half power
+  binomialPartial                  the truncated series
+  norm_binomialSymbol_sub_partial_le  the uniform tail bound on |t| ≤ c ≤ L
+  cfc_binomialPartial              the functional calculus of a truncation is the truncated
+                                   operator series
+  hasSum_cfc_binomialSymbol        **(1 - T/(2L))^{-1/2} = ∑_k [C(2k,k)/4^k](2L)^{-k}T^k**
+  hasSum_primeNormalSection        **card 7's `(19)`**: P_T(β)(L) = ∑_k [C(2k,k)/8^k]L^{-k-1/2}T^kβ
+```
+
+The mechanism is uniform convergence plus continuity of the functional calculus in the symbol:
+`|t/(2L)| ≤ 1/2` on the spectrum once `‖T‖ ≤ L`, so the tail of the central binomial series at
+`1/2` dominates uniformly, and `norm_cfc_le` transfers the estimate to the algebra.  The same
+expansion is the `(14)` of `suzuki-root-retained-exterior-dilation`.  All declarations audit to
+`[propext, Classical.choice, Quot.sound]`.

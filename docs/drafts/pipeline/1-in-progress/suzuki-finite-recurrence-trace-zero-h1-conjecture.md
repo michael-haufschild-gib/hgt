@@ -13,7 +13,8 @@
   `../3-formalized/new_scientific_knowledge/suzuki/suzuki-flat-flux-charge-automaticity.md`,
   `suzuki-paired-gamma-logistic-flat-sector-conjecture.md`,
   `suzuki-polar-remainder-lipschitz-gamma-subcriticality.md`
-- **Current obstruction:** arbitrary finite-order expansion and compact-middle coverage
+- **Current obstruction:** rank-zero/one rough primitive transfer and compact-middle coverage;
+  higher-rank source-selected finite-to-flat transfer
 
 ## 0. Retraction of premature theorem status
 
@@ -273,8 +274,12 @@ power \(mL_\nu\), choose instead
 kappa>(sigma+m)R_*(a).                                  (20)
 ```
 
-There is no upper restriction on \(\kappa\); `(13)` remains finite and terminal multiplication by
-\(2L\) eventually dominates its larger norm.
+There is no upper restriction on \(\kappa\) for the zero-order event sum or boundedness of `(13)`.
+There is a sharp upper restriction for the direct Gamma fundamental-matrix method:
+\(\kappa<\sigma<1\). Combining this with lattice square summability
+\(\kappa>d/2\) leaves a uniform radial polynomial-carrier window only for valuation ranks
+\(d\le1\). Higher rank must use source-selected homogeneous cancellation, reciprocal
+biweighting, or the primitive-flux finite-to-flat route.
 
 Equations `(18)`--`(20)` put zero-order exterior crossings, support-pruning discrepancies, exact
 resonances after their root labels are retained, initial pieces, far-window terms, and polar terms
@@ -387,12 +392,13 @@ Thus every regular-singular and flat terminal charge of `(21)` vanishes once the
 solution is admitted to the frequency-zero graph. Volterra Liouville then proves shifted
 value/flux \(L^2\), and complementary flux proves the root derivative.
 
-## 8. Conditional Gamma-strip upgrade
+## 8. Conditional Gamma-strip upgrade and dimension split
 
-Conditional on `(21)` and `(22)`, apply the paired Gamma--logistic flat-sector theorem. For every
+For a polynomial carrier of degree \(\kappa\), conditional on `(21)` and `(22)`, apply the paired
+Gamma--logistic flat-sector theorem only at heights
 
 ```text
-0<sigma<1                                                (24)
+kappa<sigma<1                                            (24)
 ```
 
 allowed by the chosen block cutoff,
@@ -401,17 +407,20 @@ allowed by the chosen block cutoff,
 exp(sigma L)F in H1(dL;ell2).                            (25)
 ```
 
-The nonnormal prime operator causes no loss of strip: its norm enters only the terminal cutoff.
-The logistic and Gamma multipliers have their common first pole at height one.
+The logistic and Gamma multipliers have their common first pole at height one. The nonnormal prime
+operator causes no further loss in the weighted derivative estimate after shifted value control,
+but its group growth is load-bearing in the direct Hardy step.
 
-Take \(1/2<\sigma<1\).  At either physical root, root-coordinate projection and `(25)` give
+Take \(\max(1/2,\kappa)<\sigma<1\). At either physical root, root-coordinate projection and `(25)` give
 
 ```text
 integral exp(L)|F_root'(L)|^2dL<infinity.                (26)
 ```
 
 Under \(r=e^{-L}\), `(26)` is exactly the spatial \(H^1\) derivative norm near that endpoint.
-This would make \(u\) \(H^1\) in two endpoint collars with zero Sobolev trace.
+This would make \(u\) \(H^1\) in two endpoint collars with zero Sobolev trace. The uniform radial
+polynomial route can realize such a \(\kappa\) only in ranks zero and one. In rank one the concrete
+window \((\kappa,\sigma)=(2/3,3/4)\) is now proved; rough primitive source transfer remains open.
 
 ## 9. Conditional interior coverage
 
@@ -465,9 +474,13 @@ primitive global flux / exterior-residual relation
 literal two-coset paired source assembly
  -> exact rooted signs and weighted source class;        [PROVED]
 
-finite-to-flat expansion
+rank zero/one rough primitive transfer
++ finite-cell compact-middle coverage
+ -> low-rank trace-zero H1_0;                            [OPEN]
+
+rank at least two source-selected finite-to-flat transfer
 + compact-middle coverage
- -> finite-type trace-zero H1_0;                         [OPEN]
+ -> higher-rank finite-type trace-zero H1_0;             [OPEN]
 
 all apertures
  -> additionally pass recurrence-infinite class.         [OPEN]               (27)
@@ -483,9 +496,11 @@ The trace-zero theorem remains open even on the full-measure finite-type class.
 3. **No recurrence escape.** Linear event-time growth controls location, not derivative order.
 4. **Surviving exact pieces retained.** Fixed-window normal form, weighted transport before
    cutoff, and zero-order event sum are unaffected.
-5. **Second gap retained.** One-prime interior system regularity was asserted, not proved.
-6. **No theorem-statement falsification.** The finite-type implication remains a conjecture.
-7. **No all-aperture or RH claim.** Exceptional apertures and Evans positivity remain later gates.
+5. **Dimension wall retained.** Uniform radial polynomial Hardy transfer survives only in ranks
+   zero and one; higher-rank source-selected/primitive transfer is not inferred.
+6. **Second gap retained.** One-prime interior system regularity was asserted, not proved.
+7. **No theorem-statement falsification.** The finite-type implication remains a conjecture.
+8. **No all-aperture or RH claim.** Exceptional apertures and Evans positivity remain later gates.
 
 ## 12. Conjecture boundary
 
@@ -533,7 +548,9 @@ algebra are formalized. No wrapper may assume finite-to-flat expansion, `(25)`, 
 - [x] correct opposite rooted valuation directions and retain descendant center constants
 - [x] construct canonical smooth cutoff supported exactly on literal interior samples
 - [x] prove complete primitive/zero-order source signs and finite-recurrence Hilbert bounds
-- [ ] prove arbitrary finite-order expansion and isolate the flat residual
+- [x] classify the sharp radial polynomial Gamma dimension wall
+- [ ] prove rank-zero/one rough primitive transfer and isolate the flat residual
+- [ ] prove higher-rank source-selected finite-to-flat transfer
 - [ ] obtain spatial endpoint \(H^1\) for some `sigma>1/2`
 - [ ] prove one-prime finite-system interior regularity
 - [ ] cover interior and prove global \(H^1_0\)

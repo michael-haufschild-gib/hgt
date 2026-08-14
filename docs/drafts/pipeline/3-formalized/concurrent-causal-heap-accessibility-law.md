@@ -1,14 +1,13 @@
 # Concurrent causal heap-accessibility law
 
 - **ID:** `concurrent-causal-heap-accessibility-law`
-- **Stage:** 2 -- fully proved on paper
+- **Stage:** 3-formalized
 - **Type:** theorem / preparation invariant / Brown-front advance
 - **Parents:** `local-circuit-heap-capacity-law.md`,
   `first-entrance-gate-renewal-prefix-law.md`,
   `static-orbit-net-no-go-and-circuit-bellman-law.md`
-- **Status:** `[PAPER-PROVED] [PROVED HERE] [FRONTIER ADVANCE]
-  [CLASSICAL TRACE-PROBABILITY ENGINE] [APPLICATION NOVELTY UNVERIFIED]
-  [LEAN DEFERRED]`
+- **Status:** `[LEAN-PROVED] [PROVED HERE] [FRONTIER ADVANCE]
+  [CLASSICAL TRACE-PROBABILITY ENGINE] [APPLICATION NOVELTY UNVERIFIED]`
 - **Date:** 2026-08-13
 
 ## Public sentence
@@ -619,8 +618,9 @@ calibration and Lipschitz constant `1/delta`, independent of that number.
 - [x] dimension-free soft-tube reporter and transport stability
 - [x] exact bounded first-cut target
 - [x] hostile and external collision audit
-- [ ] quenched decay of `(34)` for one ordinary static local-Hamiltonian ensemble
-- [ ] Lean formalization after corpus refactor
+- [ ] quenched decay of `(34)` for one ordinary static local-Hamiltonian ensemble *(open research
+  target, not a theorem of this card)*
+- [x] Lean formalization of `(1)`--`(35)`
 
 ## Lean progress
 
@@ -653,5 +653,27 @@ Formalized unconditionally:
 
 Every declaration above reports exactly `propext`, `Classical.choice`, `Quot.sound`.
 
-Still to formalize on this card: the relative-entropy characterization `(13)`, the free-word
-first-entrance reduction `(20)`, and the soft causal reporter `(25)`--`(33)`.
+Additional modules: `GaloisForLFunctions.RHTower.CircuitSoftCausalReporter`,
+`GaloisForLFunctions.RHTower.CircuitFreeWordFirstEntrance`,
+`GaloisForLFunctions.RHTower.CircuitPreparationActionEntropy`.
+
+| Card item | Lean declaration |
+|---|---|
+| `(13)` | `discreteRelativeEntropy`, `discreteRelativeEntropy_nonneg`, `conditionedTraceWeight`, `discreteRelativeEntropy_conditionedTraceWeight`, `isLeast_preparationAction` |
+| `(20)` | `noIndependence`, `traceEq_noIndependence_iff`, `tracePrefix_noIndependence_total`, `firstSuccessfulTrace`, `exists_firstSuccessful_prefix`, `firstSuccessful_unique`, `causalAccessibility_noIndependence_eq` |
+| `(25)` | `softTargetScore` and its range, recurrence value and Lipschitz bound |
+| `(26)` | `prefixMaxScore`, `softCausalReporter` |
+| `(27)` | `softCausalReporter_nonneg`, `softCausalReporter_le_one`, `causalAccessibility_le_softCausalReporter`, `abs_softCausalReporter_sub_le` |
+| `(28)` | `enlargedTarget`, `softCausalReporter_le_enlarged` |
+| `(29)` | `measure_heapAccessible_le_softCausalReporter` |
+| `(30)`, `(31)` | `lintegral_softCausalReporter_le` |
+| `(32)` | `kantorovichRubinstein`, `ofReal_mul_abs_integral_softCausalReporter_sub_le` |
+| `(33)` | `abs_softCausalReporter_evolution_sub_le` |
+
+`(13)` is stated as `IsLeast` over the laws supported on the causal success event whose divergence
+is finite; laws with infinite divergence lie above the minimum and do not change the infimum.
+`(32)` uses the Kantorovich--Rubinstein dual form of `W₁`, which is the form the card's proof
+applies.
+
+Every declaration above reports exactly `propext`, `Classical.choice`, `Quot.sound`.  Equations
+`(1)`--`(35)` of this card are therefore formalized unconditionally.

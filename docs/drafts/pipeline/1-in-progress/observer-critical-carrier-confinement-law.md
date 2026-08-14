@@ -143,7 +143,7 @@ a Nature-level standalone result; the incidence estimate remains open.
 
 ## 2026-08-13 quantitative successor correction
 
-`../2-fully-proven/concurrent-causal-heap-accessibility-law.md` and
+`../3-formalized/concurrent-causal-heap-accessibility-law.md` and
 `../2-fully-proven/quenched-causal-replica-action-law.md` now identify the aggregate incidence
 invariant exactly.  The complete local-circuit target is the probability `F(H)` that a finite
 concurrent circuit heap contains a successful causal prefix, not a linear target-tube sum.  For one

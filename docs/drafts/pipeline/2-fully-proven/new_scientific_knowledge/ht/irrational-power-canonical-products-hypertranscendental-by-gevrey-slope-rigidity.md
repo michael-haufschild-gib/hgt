@@ -1687,3 +1687,65 @@ What is still missing for the card is precisely that the exact order is **equal*
 rationals rather than merely below the largest — the sharp half of Sibuya--Ramis — together with the
 nonlinear reduction that produces a linear operator with convergent coefficients from the card's
 algebraic differential equation.
+
+## Lean progress — linearizing the nonlinear equation along a base point
+
+The nonlinear equation reduces to the linear theory by Malgrange's truncation: linearize not at the
+formal solution — whose jets are only formal — but at a **truncation** of it, whose jets are
+polynomials and therefore convergent.
+
+`GaloisForLFunctions/HTGeometry/EulerADELinearization.lean` (wired, axiom-clean):
+
+    eulerJetVector F                   the `θ`-jets `(F, θF, …, θ^m F)`
+    eulerOp_add, eulerOp_iterate_add, eulerJetVector_add
+    IsFormalEulerADESolution P F       the equation in the Euler basis
+    linearizationCoeff P Y j           `(∂_j P)(jets Y)`
+    aeval_eulerJetVector_add :
+      **`P(jets (Y+H)) = P(jets Y) + L_Y(H) + defect`**, with `L_Y = ∑_j (∂_j P)(jets Y) θ^j` the
+      linearized operator in Euler form
+    X_pow_dvd_eulerOp, X_pow_dvd_eulerOp_iterate
+                                       `θ` preserves divisibility by a power of `t`
+    taylorDefect_mem_sq_X_pow :
+      **a perturbation divisible by `t^k` has defect divisible by `t^{2k}`**
+    eulerLinearOp_linearization_eq :
+      the equation around a base point, `L_Y(H) = -P(jets Y) - defect`
+
+The Euler basis is what makes this work: `θ` preserves the order of a series, while `d/dt` lowers
+it, so the perturbation and all of its jets stay divisible by the same power of `t`.  The corpus's
+`MvPolynomialFirstOrderTaylor.taylorDefect_mem_sq` supplies the quadratic defect.
+
+With `Y` a truncation of the solution at order `N`, `P(jets Y)` is convergent *and* divisible by
+`t^{N+1}`, the coefficients of `L_Y` are convergent, and the defect is divisible by `t^{2N+2}`, so
+its coefficient at level `n` involves only the perturbation below level `n - N`.  That is exactly
+the shape the linear recursion consumes, and it is the remaining assembly step of the nonlinear
+Maillet theorem.
+
+## Lean progress — the truncation reduction
+
+`GaloisForLFunctions/HTGeometry/EulerADETruncation.lean` (wired, axiom-clean) supplies the three
+facts the nonlinear reduction needs, for a formal solution `F` truncated at order `N`:
+
+    truncSeries N F, coeff_truncSeries
+    isGevreySeries_zero_truncSeries        the truncation is convergent
+    X_pow_dvd_sub_truncSeries              its tail is divisible by `t^{N+1}`
+    isGevreySeries_eulerOp_iterate         Gevrey classes are `θ`-stable
+    isGevreySeries_aeval_eulerJetVector    a differential polynomial does not leave the class
+    isAnalyticDifferentialPolynomial_pderiv
+    isGevreySeries_zero_linearizationCoeff :
+      **the linearization at a truncation has CONVERGENT coefficients**
+    isGevreySeries_zero_aeval_truncSeries :
+      the value of the equation at the truncation is convergent
+    X_pow_dvd_aeval_truncSeries :
+      **and it is divisible by `t^{N+1}`** — because it equals minus the linearized term and the
+      defect, both of which are
+
+So for each `N` the solution's tail `H` satisfies
+
+```text
+L_N(H) = -P(jets F_N) - defect ,
+```
+
+with `L_N` a linear operator with convergent coefficients, `P(jets F_N)` convergent and of order
+`≥ N+1`, and the defect of order `≥ 2N+2`, so that its coefficient at level `n` involves only `H`
+below level `n - N`.  Every hypothesis of the linear Maillet theorem is available; what remains is
+the induction that absorbs the defect, which is where the largeness of `N` is used.

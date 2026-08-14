@@ -92,7 +92,9 @@ For every prescribed \(0<\sigma<1\):
    ```
 
    Thus the prime group has controlled polynomial, rather than exponential, distortion. Applying
-   paired Gamma Hardy still requires source frequency moments exceeding the polynomial degree.
+   paired Gamma Hardy uniformly requires the sharper inequality \(\kappa<\sigma<1\) between the
+   actual transport degree and Gamma height. Source frequency moments do not by themselves erase
+   a free homogeneous component.
 
 2. If \(T_{\log}(a)=\infty\) but \(R(a)<\infty\), exponential weights still give event
    summability, but the radial exponential choice
@@ -183,8 +185,9 @@ Equations `(15)`--`(16)` give the standard weighted estimate
  <=C_m(1+|x|)^m.                                       (17)
 ```
 
-Fractional polynomial weights follow by complex interpolation, or one may keep the larger integer
-\(m\) chosen in `(13)`. Since \(D_w=\langle X\rangle^{-m}\),
+Fractional polynomial weights follow by complex interpolation. The larger integer \(m\) chosen in
+`(13)` proves polynomial propagation, but cannot be used for direct Gamma Hardy when \(m\ge1\).
+Since \(D_w=\langle X\rangle^{-m}\),
 
 ```text
 exp(-i x B_w)
@@ -314,13 +317,17 @@ Thus the polynomial-carrier class is full measure but not all apertures.
 ## 7. Exact corrected frontier
 
 ```text
-T_log(a)<infinity:
-  polynomial event carrier
-  + polynomially bounded prime group
-  + degree-m source-moment requirement;                 [PAPER-PROVED]
+rank d <= 1 with bounded recurrence clock:
+  fractional polynomial event carrier
+  + d/2 < kappa < sigma < 1
+  -> uniform radial Gamma-Hardy window;                 [PAPER-PROVED]
 
-available Suzuki source norm
-  -> degree-m Hardy moment for arbitrary required m;    [OPEN]
+rank d >= 2:
+  lattice square summability requires kappa>d/2>=1
+  -> no uniform radial polynomial Gamma-Hardy window;   [PAPER-PROVED NO-GO]
+
+source-selected homogeneous cancellation
+  or primitive-flux finite-to-flat transfer;            [OPEN]
 
 T_log(a)=infinity, R(a)<infinity:
   event carrier exists,
@@ -334,8 +341,10 @@ all apertures:
   needs a biweighted/closed-relation dichotomy theorem. [OPEN]              (29)
 ```
 
-The full-measure finite-type attack should therefore begin with \(T_{\log}(a)<\infty\), not merely
-\(R(a)<\infty\), but it still needs a degree-m Hardy-moment or dichotomy cancellation theorem.
+The full-measure finite-type attack cannot close through a uniform radial polynomial carrier in
+rank at least two. It needs source-selected dichotomy cancellation or primitive-flux
+finite-to-flat transfer. Rank one is a genuine positive survivor because its event clock is
+bounded and admits, for example, \((\kappa,\sigma)=(2/3,3/4)\).
 
 ## 8. Stronger survivor conjecture
 
@@ -369,8 +378,8 @@ ultimately RH-bearing.
 4. **No exponential-carrier no-go overclaim.** The theorem kills radial exponential weight for
    Hardy transfer; other biweighted or non-diagonal relations remain open.
 5. **No almost-everywhere-to-everywhere leap.** Dense logarithmic-Liouville apertures remain.
-6. **No polynomial-to-Hardy leap.** Gamma's bare horizontal decay does not absorb arbitrary
-   polynomial group degree; extra source moments remain open.
+6. **No polynomial-to-Hardy leap.** Gamma's exact horizontal decay absorbs degree \(\kappa\)
+   exactly when \(\kappa<\sigma\); source moments do not remove an arbitrary homogeneous channel.
 7. **No RH claim.** Raw Evans positivity and all-aperture passage remain.
 
 ## 10. Lean target
@@ -392,7 +401,8 @@ Stage 2 until the full chain is unconditional in Lean.
 - [x] define logarithmic recurrence type
 - [x] prove polynomial event summability iff a sufficiently strong polynomial weight is chosen
 - [x] prove polynomially bounded weighted prime group
-- [x] expose degree-dependent Hardy source-moment requirement
+- [x] expose exact degree threshold `kappa < sigma`
+- [x] classify uniform radial carrier window as rank zero/one only
 - [x] identify radial exponential adjacency with Hatano--Nelson limit operator
 - [x] prove nonreal approximate spectrum and exponential group lower bound
 - [x] prove finite logarithmic type has full measure
@@ -400,7 +410,7 @@ Stage 2 until the full chain is unconditional in Lean.
 - [x] extract reciprocal biweighted Evans survivor
 - [ ] formalize exact theorem chain in Lean
 - [ ] prove biweighted Evans dichotomy or refute it
-- [ ] prove degree-m source moments for the polynomial carrier or replace it
+- [ ] prove source-selected homogeneous cancellation or replace direct Hardy by primitive flux
 - [ ] prove trace-zero \(H^1_0\) on finite logarithmic type
 - [ ] pass all apertures
 - [ ] prove RH or a genuine whole-Connes no-go

@@ -6116,7 +6116,7 @@ receive a new title and an independent significance audit.
   `-log F=inf_(Q(hit)=1) D(Q||pi_z)`.  A soft max-over-prefix version is `1/delta`-Lipschitz
   independent of Hilbert dimension, circuit depth, and prefix count, removing the previous
   dimension-linear approximate-tube remainder.  It does not prove the fixed-time mean decay.
-  Paper proof: `../2-fully-proven/concurrent-causal-heap-accessibility-law.md`.  Lean remained read
+  Paper proof: `../3-formalized/concurrent-causal-heap-accessibility-law.md`.  Lean remained read
   only during refactor.
 - 2026-08-13 -- Identified the exact quenched growing-replica object and its carrier law.  Replicate
   preparation heaps while keeping one common static Hamiltonian:

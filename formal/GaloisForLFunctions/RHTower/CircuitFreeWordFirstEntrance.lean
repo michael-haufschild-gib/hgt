@@ -146,69 +146,68 @@ theorem causalAccessibility_noIndependence_eq (Δ : ℕ)
       ∑' u : firstSuccessfulTrace (noIndependence α) S x,
         z ^ traceLen (noIndependence α) (u : Trace (noIndependence α)) := by
   classical
-  set ind : α → α → Prop := noIndependence α with hind
-  have hsymm : ∀ x y : α, ind x y → ind y x := fun _ _ h => h
-  have hZpos := tracePartition_pos ind hsymm Δ hdegree hz0 hz
-  have hsumz := summable_tracePow ind hsymm Δ hdegree hz0 hz
-  set w : Trace ind → ℝ := fun T => z ^ traceLen ind T with hwdef
-  have hpt : ∀ T : Trace ind,
-      Set.indicator (causalSuccessEvent ind S x) (fun T => ENNReal.ofReal (w T)) T =
-        ∑' u : firstSuccessfulTrace ind S x,
-          Set.indicator (traceCylinder ind (u : Trace ind))
+  have hsymm : ∀ x y : α, noIndependence α x y → noIndependence α y x := fun _ _ h => h
+  have hZpos := tracePartition_pos (noIndependence α) hsymm Δ hdegree hz0 hz
+  have hsumz := summable_tracePow (noIndependence α) hsymm Δ hdegree hz0 hz
+  set w : Trace (noIndependence α) → ℝ := fun T => z ^ traceLen (noIndependence α) T with hwdef
+  have hpt : ∀ T : Trace (noIndependence α),
+      Set.indicator (causalSuccessEvent (noIndependence α) S x) (fun T => ENNReal.ofReal (w T)) T =
+        ∑' u : firstSuccessfulTrace (noIndependence α) S x,
+          Set.indicator (traceCylinder (noIndependence α) (u : Trace (noIndependence α)))
             (fun T => ENNReal.ofReal (w T)) T := by
     intro T
-    by_cases hT : T ∈ causalSuccessEvent ind S x
-    · obtain ⟨u₀, hu₀, hu₀T⟩ := exists_firstSuccessful_prefix ind S x hT
+    by_cases hT : T ∈ causalSuccessEvent (noIndependence α) S x
+    · obtain ⟨u₀, hu₀, hu₀T⟩ := exists_firstSuccessful_prefix (noIndependence α) S x hT
       rw [Set.indicator_of_mem hT]
-      rw [tsum_eq_single (⟨u₀, hu₀⟩ : firstSuccessfulTrace ind S x) ?_]
-      · rw [Set.indicator_of_mem (show T ∈ traceCylinder ind u₀ from hu₀T)]
+      rw [tsum_eq_single (⟨u₀, hu₀⟩ : firstSuccessfulTrace (noIndependence α) S x) ?_]
+      · rw [Set.indicator_of_mem (show T ∈ traceCylinder (noIndependence α) u₀ from hu₀T)]
       · rintro ⟨v, hv⟩ hne
         refine Set.indicator_of_notMem (fun hcon => hne ?_) _
         exact Subtype.ext (firstSuccessful_unique S x hv hu₀ hcon hu₀T)
     · rw [Set.indicator_of_notMem hT]
-      refine (tsum_eq_zero_iff ENNReal.summable).mpr ?_
+      refine (ENNReal.tsum_eq_zero.mpr ?_).symm
       rintro ⟨v, hv⟩
       refine Set.indicator_of_notMem (fun hcon => hT ?_) _
       exact ⟨v, hcon, hv.1⟩
-  have hswap : (∑' T : Trace ind,
-      Set.indicator (causalSuccessEvent ind S x) (fun T => ENNReal.ofReal (w T)) T) =
-      ∑' u : firstSuccessfulTrace ind S x,
-        ENNReal.ofReal (w (u : Trace ind)) * tracePartitionENN ind z := by
+  have hswap : (∑' T : Trace (noIndependence α),
+      Set.indicator (causalSuccessEvent (noIndependence α) S x) (fun T => ENNReal.ofReal (w T)) T) =
+      ∑' u : firstSuccessfulTrace (noIndependence α) S x,
+        ENNReal.ofReal (w (u : Trace (noIndependence α))) * tracePartitionENN (noIndependence α) z := by
     simp_rw [hpt]
     rw [ENNReal.tsum_comm]
     refine tsum_congr fun u => ?_
-    rw [← tsum_subtype (traceCylinder ind (u : Trace ind))
-      (fun T : Trace ind => ENNReal.ofReal (w T))]
-    exact tsum_traceCylinderENN ind hsymm hz0 (u : Trace ind)
-  have hleft : (∑' T : Trace ind,
-      Set.indicator (causalSuccessEvent ind S x) (fun T => ENNReal.ofReal (w T)) T) =
-      ENNReal.ofReal (∑' T : causalSuccessEvent ind S x, w (T : Trace ind)) := by
-    rw [tsum_subtype (causalSuccessEvent ind S x) w,
+    rw [← tsum_subtype (traceCylinder (noIndependence α) (u : Trace (noIndependence α)))
+      (fun T : Trace (noIndependence α) => ENNReal.ofReal (w T))]
+    exact tsum_traceCylinderENN (noIndependence α) hsymm hz0 (u : Trace (noIndependence α))
+  have hleft : (∑' T : Trace (noIndependence α),
+      Set.indicator (causalSuccessEvent (noIndependence α) S x) (fun T => ENNReal.ofReal (w T)) T) =
+      ENNReal.ofReal (∑' T : causalSuccessEvent (noIndependence α) S x, w (T : Trace (noIndependence α))) := by
+    rw [tsum_subtype (causalSuccessEvent (noIndependence α) S x) w,
       ENNReal.ofReal_tsum_of_nonneg
         (fun T => by
-          by_cases h : T ∈ causalSuccessEvent ind S x <;>
+          by_cases h : T ∈ causalSuccessEvent (noIndependence α) S x <;>
             simp [Set.indicator, h, hwdef, pow_nonneg hz0])
-        (hsumz.indicator (causalSuccessEvent ind S x))]
+        (hsumz.indicator (causalSuccessEvent (noIndependence α) S x))]
     refine tsum_congr fun T => ?_
-    by_cases hT : T ∈ causalSuccessEvent ind S x
+    by_cases hT : T ∈ causalSuccessEvent (noIndependence α) S x
     · rw [Set.indicator_of_mem hT, Set.indicator_of_mem hT]
     · rw [Set.indicator_of_notMem hT, Set.indicator_of_notMem hT, ENNReal.ofReal_zero]
-  have hright : (∑' u : firstSuccessfulTrace ind S x,
-      ENNReal.ofReal (w (u : Trace ind)) * tracePartitionENN ind z) =
-      ENNReal.ofReal ((∑' u : firstSuccessfulTrace ind S x, w (u : Trace ind)) *
-        tracePartition ind z) := by
-    rw [ENNReal.tsum_mul_right, tracePartitionENN_eq_ofReal ind hsymm Δ hdegree hz0 hz,
+  have hright : (∑' u : firstSuccessfulTrace (noIndependence α) S x,
+      ENNReal.ofReal (w (u : Trace (noIndependence α))) * tracePartitionENN (noIndependence α) z) =
+      ENNReal.ofReal ((∑' u : firstSuccessfulTrace (noIndependence α) S x, w (u : Trace (noIndependence α))) *
+        tracePartition (noIndependence α) z) := by
+    rw [ENNReal.tsum_mul_right, tracePartitionENN_eq_ofReal (noIndependence α) hsymm Δ hdegree hz0 hz,
+      ← ENNReal.ofReal_tsum_of_nonneg
+        (f := fun u : firstSuccessfulTrace (noIndependence α) S x => w (u : Trace (noIndependence α)))
+        (fun u => by positivity)
+        (hsumz.subtype (fun v => v ∈ firstSuccessfulTrace (noIndependence α) S x)),
       ← ENNReal.ofReal_mul (tsum_nonneg fun u => by positivity)]
-    congr 1
-    congr 1
-    rw [← ENNReal.ofReal_tsum_of_nonneg (fun u => by positivity)
-      (hsumz.subtype (fun v => v ∈ firstSuccessfulTrace ind S x))]
-  have hEq : ENNReal.ofReal (∑' T : causalSuccessEvent ind S x, w (T : Trace ind)) =
-      ENNReal.ofReal ((∑' u : firstSuccessfulTrace ind S x, w (u : Trace ind)) *
-        tracePartition ind z) := by
+  have hEq : ENNReal.ofReal (∑' T : causalSuccessEvent (noIndependence α) S x, w (T : Trace (noIndependence α))) =
+      ENNReal.ofReal ((∑' u : firstSuccessfulTrace (noIndependence α) S x, w (u : Trace (noIndependence α))) *
+        tracePartition (noIndependence α) z) := by
     rw [← hleft, hswap, hright]
-  have hreal : (∑' T : causalSuccessEvent ind S x, w (T : Trace ind)) =
-      (∑' u : firstSuccessfulTrace ind S x, w (u : Trace ind)) * tracePartition ind z := by
+  have hreal : (∑' T : causalSuccessEvent (noIndependence α) S x, w (T : Trace (noIndependence α))) =
+      (∑' u : firstSuccessfulTrace (noIndependence α) S x, w (u : Trace (noIndependence α))) * tracePartition (noIndependence α) z := by
     refine (ENNReal.ofReal_eq_ofReal_iff ?_ ?_).mp hEq
     · exact tsum_nonneg fun T => by positivity
     · exact mul_nonneg (tsum_nonneg fun u => by positivity) hZpos.le

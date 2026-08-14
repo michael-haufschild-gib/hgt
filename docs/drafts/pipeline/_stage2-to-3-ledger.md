@@ -64,6 +64,7 @@ Promotion recipe:
 | `selector-partition-observer-channel-recurrence-law` | none (verified only) | `HTGeometry/StaticShortcutSelectorPartitionLaw` |
 | `static-circuit-two-memory-orthogonality-law` | Bochner ensemble collision `(14)`/`(27)`; vectorized conjugation channel and replica tensor powers; one-gate moment channel with its depth-`s` word expansion `(16)`--`(19)`; static diagonal flow, completed static projection, universal sector and the concrete three-sector collision `(20)`; zero-temperature reconstruction `(28)`--`(30)` | `HTGeometry/StaticCircuitEnsembleZeroTemperature`, `PureConjugationChannel`, `StaticCircuitReplicaWordDictionary`, `StaticCircuitReplicaSectorRealization` (all new) |
 | `local-circuit-heap-capacity-law` | heap Green reporter and its accessibility bound, trace partition sum with the negative-binomial value, optimized weight, finite heap incidence, one-dimensional gate alphabet with its length-independent degree bound, capacity entropy split and `o(D)` profile limit | `RHTower/LocalCircuitHeapGreenReporter` (new) |
+| `concurrent-causal-heap-accessibility-law` | trace monoid with cancellativity and length grading, Boltzmann trace law with exact cylinder mass and expected prefix count, concurrent causal accessibility with its complexity sandwich and Green relation, causal heap capacity, soft causal reporter with dimension-free Lipschitz/transport/Duhamel stability, free-word first-entrance reduction, and the relative-entropy projection of the preparation action | `RHTower/CircuitTraceMonoid`, `CircuitTraceBoltzmann`, `CircuitCausalAccessibility`, `CircuitSoftCausalReporter`, `CircuitFreeWordFirstEntrance`, `CircuitPreparationActionEntropy` (all new) |
 
 ## New reusable infrastructure built during the sweep
 
@@ -155,6 +156,19 @@ Promotion recipe:
   Bellman calibration lower bound.
 
 ## Shared infrastructure for the trace/heap cluster
+
+`RHTower/CircuitTraceBoltzmann` adds the Boltzmann layer: summability below the dependence radius,
+the partition function with its lower bound one and negative-binomial upper bound, the normalized
+mass with modularity and monotonicity, the exact cylinder mass `z^{|u|}`, the normalized weight
+`traceWeight` summing to one, and the expected causal-prefix count.
+
+`RHTower/CircuitCausalAccessibility`, `CircuitSoftCausalReporter`,
+`CircuitFreeWordFirstEntrance` and `CircuitPreparationActionEntropy` build the reporter layer:
+the causal success event, its accessibility and preparation action, the two-weight comparison and
+its optimum, the Green relation, the causal heap-capacity law, the soft (clipped-ramp) reporter
+with its `1/δ` Lipschitz constant, Kantorovich--Rubinstein transport stability and Duhamel source
+stability, the free-word first-entrance collapse, and Gibbs' inequality with the information
+projection of the preparation action.
 
 `RHTower/CircuitTraceMonoid` builds the trace monoid itself: append congruence of the independent
 swap relation, the monoid structure on `List α / TraceEq`, the length morphism, left and right

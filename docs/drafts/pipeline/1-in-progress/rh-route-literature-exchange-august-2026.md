@@ -9,9 +9,9 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local committed cutoff is
-`b85bd328c7f2aa6b07c5a65ee06c5d06528c9f11`, plus explicitly identified post-cutoff shared-tree
+`242bfabb9d81a27ed5967c7ae22373edc5481edc`, plus explicitly identified post-cutoff shared-tree
 declarations audited on 14 August. Historical `Active-tree Lean` wording records live-tree audit
-provenance; `b85bd328c` now contains those declarations unless a paragraph says `post-cutoff`.
+provenance; `242bfabb9` now contains those declarations unless a paragraph says `post-cutoff`.
 Scientific
 comparison follows declaration content rather than module placement.
 
@@ -30,8 +30,9 @@ terminalized. Latest local results change eight exchanges:
   proves terminal antiscale transversality: at `t_X=pi/log X`, all primes in `(X/e,X]` have one
   cosine orientation, every odd determinant grade reinforces, and
   `log(1+|Delta_X|)` has scale `sqrt(X)/log X`. The whole prime batch now has the same orientation:
-  its critical cosine sum is asymptotic to `-2sqrt(X)/log X`, while the Euler-prefix modulus has a
-  positive reciprocal-Mertens lower bound of order `1/log X`. Earlier primes and prefix vanishing
+  its critical cosine sum is asymptotic to `-2sqrt(X)/log X`, while for each fixed `A>0` the
+  Euler-prefix modulus at `Y=(log X)^A` is asymptotic to its positive Mertens product and has exact
+  order `1/log Y`. Earlier primes and prefix vanishing
   cannot rescue scalar determinant cancellation.
   Lean gives a multivariate
   exponential-polynomial separation law for squarefree node weights even when only injective
@@ -66,7 +67,10 @@ terminalized. Latest local results change eight exchanges:
   integrable on every interior strip line by domination with the exact Gamma carrier. Gluing and
   interior-line integrability are closed. Post-cutoff Lean also expands the prime-normal
   cross-section as a norm-convergent central-binomial functional-calculus series retaining every
-  descendant grade. Forcing the trace relation for the completed
+  descendant grade. Post-cutoff active-tree Lean further proves the sharp polynomial-carrier
+  Gamma wall: integrability holds exactly for `kappa<sigma`, and a simultaneous radial lattice/
+  Gamma window exists iff rank `d<=1`. Rank one survives; higher-rank radial polynomial enlargement
+  is closed. Forcing the trace relation for the completed
   physical source, its orientation, and coupled all-aperture return remain. Floor branch still
   needs complete near-ground profile exhaustion/lower
   control. The newest Suzuki declarations remove operator-domain ambiguity: the complex screw is
@@ -182,8 +186,12 @@ terminalized. Latest local results change eight exchanges:
   dyadic square-integrability, and obtains the literal Duhamel variation estimate
   `O(N log^3 N+N^(201/200))`. Since `201/200<101/100`, this lies below the target fourth-moment
   exponent. Lean then identifies the actual diagonal dual series exactly as
-  `chi^2*(frozenDual+variation)` and proves a conductor-uniform bound for `W2-1`. Surviving producer
-  is frozen-dual/primal/pole/cross assembly around that controlled dual contribution. Density,
+  `chi^2*(frozenDual+variation)` and proves a conductor-uniform bound for `W2-1`. Lean now also
+  bounds the frozen dual's global weighted/plain coefficient masses by `O(N log^3 N)` and
+  `O(log^4 N)`, identifies its phase-retaining L-series with the literal frozen source, and proves
+  the interval mean square `O(N log^3 N+H log^4 N)`, hence `O(N log^4 N)` on `[N,2N]`, below target
+  exponent. Surviving producer is phase-faithful cross-
+  component AFE assembly of the frozen dual with primal, pole, and cross terms. Density,
   `7/10` prime supply, and route composition follow only
   after this.
 - **U:** the source-disintegration theorem writes every shifted reciprocal Hankel quadratic
@@ -261,7 +269,12 @@ combinatorics, but still lack Xi source and landing. Barnes
 irrational-power tails have exact irrational Gevrey order and analytic differential operations
 preserve Gevrey order. Active-tree Euler/shift-polynomial modules prove the linear Maillet theorem:
 a formal solution of a convergent Euler-form equation is Gevrey of order `m-deg(Phi_0)`. This is a
-rational upper-order theorem, not the nonlinear exact-order statement needed below. A separate
+rational upper-order theorem, not the nonlinear exact-order statement needed below. Post-cutoff
+`EulerADELinearization.lean` proves the exact nonlinear Euler-jet Taylor decomposition and places
+the defect of a `t^k`-divisible perturbation in the square of the `t^k` ideal.
+`EulerADETruncation.lean` proves convergence of truncations, their linearization coefficients, and
+their equation values, plus `t^(N+1)` divisibility of a solution's truncation residual. This closes
+formal nonlinear-to-linear reduction at convergent truncations, not the Sibuya--Ramis exact-order theorem. A separate
 active theorem proves finite-jet separation forces a compact Bohr hull to have finite covering
 dimension; the character-rank equality remains Pontryagin--Takahashi input. The claimed Barnes
 non-ADE consequence still explicitly assumes the unformalized Sibuya--Ramis rational-exact-order
@@ -271,9 +284,19 @@ order at least `pi'(N)`; squaring cannot add frequency directions. This closes t
 autonomous differential-algebraic escape, but supplies no Xi-typed landing.
 Post-cutoff `PrimeLogJumpPacket.lean` constructs an even, zero-mean two-prime jump-shell test whose
 squared mass tends to the shell half-width, and `PrimeLogJumpMellinFrame.lean` proves its two
-endpoint Mellin channels have only `s=0` as a common zero. `CircuitSoftCausalReporter.lean` gives
+endpoint Mellin channels have only `s=0` as a common zero. `PrimeLogJumpMellinTrace.lean` proves
+the exact first integration-by-parts identity exposing both endpoint sine traces and one
+oscillatory remainder; it does not formalize a remainder asymptotic or a Burnol/Deninger physical
+landing. `CircuitSoftCausalReporter.lean` gives
 dimension-free Lipschitz/Wasserstein-stable causal reporters. None defines the coefficient-faithful
 source-to-fixed-physical Xi landing or annihilation law needed for a route.
+`CircuitFreeWordFirstEntrance.lean` also proves that the no-commutation free-word specialization
+collapses exactly to discounted unique first-entrance mass. It remains generic circuit geometry
+without an arithmetic Xi source.
+`CircuitPreparationActionEntropy.lean` further proves that preparation action is exactly the least
+relative entropy of a law supported on the causal success event, attained by the conditioned
+Boltzmann law. `HTGeometry/StripContourShift.lean` proves the Banach-valued horizontal contour shift
+under integrable boundary lines and vanishing vertical edges. Neither creates an Xi landing.
 None is Route V.
 These are
 architecture-shaped producer templates, but no Xi-typed recoverable reporter triple, nonlinear
@@ -1374,11 +1397,19 @@ modulus is at least `prod_(p<=X)(1-1/p)`. `Sieve/MertensThird.lean` gives explic
 and lower constant multiples of `1/log X` for that product. The whole linear grade is coherently
 negative and the prefix cannot vanish. No reviewed external statement packages this exact
 terminal-frequency/Mertens conclusion as a Route-E no-go.
+`RouteEGibbsPrefixModulus.lean` strengthens the physical prefix from a lower bound to an exact
+asymptotic ratio: at `Y=(log X)^A`, for each fixed `A>0`, its modulus divided by the positive
+Mertens product tends to one.
 Post-cutoff `RouteEGibbsPrefixPhase.lean` additionally proves
 `prefixPhaseWeight(Y)/sqrt(Y)->2` and an explicit cubic remainder for
 `prefixPhase(Y,t)+2t*prefixPhaseWeight(Y)`. At the terminal physical frequency the certified
 remainder is not lower order than the main phase scale, so this is exact phase geometry, not a
 scalar orientation theorem.
+Post-cutoff active-tree `RouteEGibbsRapidity.lean` defines the complete additive odd-cube rapidity
+and proves its local argument lies in `[-1/2,1/2]` past `p=16`, with critical half-density within
+`1/p` of `p^(-1/2)`. It does not yet prove the batch rapidity asymptotic stated in its module
+comment. Even that scalar asymptotic would remain inside the retired determinant lane rather than
+supply physical Hall capacity.
 The separate squarefree node-form and multivariate separation theorems give an exact algebraic
 coefficient interface, and `MultiNodeInjectiveParameter.lean` proves separation remains complete
 when only injective parameter tuples above a floor are available. Active-tree slot-sequence
@@ -1832,6 +1863,18 @@ binomial functional-calculus expansion of the prime-normal resolvent cross-secti
 tail bound and every descendant grade retained. This closes truncation/path-loss in that source
 coordinate, not completed forcing or trace orientation. No located external theorem supplies the
 missing source-specific zero-trace selection.
+
+Post-cutoff active-tree `SuzukiPolynomialCarrierGammaDimensionWall.lean` proves the exact distorted
+tail and threshold
+
+```text
+Integrable(|x|^(2*kappa) GammaCarrier_sigma(x)) iff kappa<sigma.
+```
+
+Together with the lattice requirement `d/2<kappa` and strip restriction `sigma<1`, this gives a
+common radial polynomial-carrier window iff `d<=1`; `(2/3,3/4)` realizes rank one. This is absent
+from the located Suzuki literature and is a sharp corpus classification. It validates the one-prime
+carrier and rules out higher-rank radial polynomial repair, but does not select the physical trace.
 
 Weighted Euler closure supplies a separate negative classification. Prime Euler tangents are
 dense in the coefficient/holomorphic joint graph, so generic continuous regular-germ invariants
@@ -3397,8 +3440,14 @@ Because `201/200<101/100`, the dual variation is below the required fourth-momen
 `SmoothAFEZetaSquareDualVariationSourceSeam.lean` further proves the actual diagonal dual AFE sum
 is exactly `chi^2*(frozenDual+variation)`, while
 `SmoothAFEZetaSquareDualWeightConductor.lean` bounds `W2_tau(Y)-1` by
-`C Y^(1/4)/(max(1,|tau|)^(1/4))^2`. Remaining analytic theorem is assembly of the frozen dual,
-primal, pole, and cross terms around this controlled contribution. Only after that fourth-
+`C Y^(1/4)/(max(1,|tau|)^(1/4))^2`. `SmoothAFEZetaSquareDualFrozenMass.lean` bounds the frozen
+carrier's global weighted/plain masses by `O(N log^3 N)` and `O(log^4 N)`, and
+`SmoothAFEZetaSquareDualFrozenAffineMeanSquare.lean` identifies the phase-retaining L-series with
+the literal frozen source field and proves `O(N log^3 N+H log^4 N)` on every centered interval.
+`SmoothAFEZetaSquareDualFrozenDyadicMeanSquare.lean` specializes this to `O(N log^4 N)` on
+`[N,2N]`, strictly below the target exponent.
+Remaining analytic theorem is phase-faithful cross-component assembly of the frozen dual with primal, pole, and cross terms around
+these controlled contributions. Only after that fourth-
 moment assembly can
 the Ingham/Gabriel coefficient-three density estimate and density-to-short-interval consequence
 give a prime in `(x,x+x^(7/10)]` for all large `x`, or be replaced by equivalent signed upper-
@@ -4945,8 +4994,8 @@ External results that can still strengthen a live route, in dependency order, ar
    interval consequence: formalize an unconditional theorem strong enough to give a prime in
    `(x,x+x^(7/10)]` for every sufficiently large `x`, using the already-formal residue-unit peeling,
    weighted Littlewood identity, pole-regularized detector, and exponent budget. Before this import
-   can fire, Route T must assemble the frozen dual, primal, pole, and cross terms around its now-controlled dual
-   variation; complete-source FTC and global Duhamel mean-square transfer are already formal, as are contour crossing, both boundary-series expansions,
+   can fire, Route T must phase-faithfully assemble the frozen dual, primal, pole, and cross terms around its now-controlled dual
+   variation and frozen source-field mean square; complete-source FTC and global Duhamel mean-square transfer are already formal, as are contour crossing, both boundary-series expansions,
    exact pole quotient and confluent correction, square-dual differentiation, divisor-series
    freezing, and infinite affine receiver are already formal.
    Density theorem must then be composed with physical lower/upper phases and
@@ -4986,7 +5035,9 @@ comparison remain. Route T's local freezing strategy is
 quantitatively dead and its exact Gaussian AFE, all-height derivative localization,
 divisor-square mass, literal derivative source, reflected-phase identity, and pure unit-cell
 `O(log^3 N/N)` physical landing are closed. Exact source FTC and Duhamel variation
-`O(N log^3 N+N^(201/200))` and the exact `chi^2*(frozenDual+variation)` seam are also closed. Remaining work is frozen-dual/primal/pole/cross AFE assembly. Route U is source-disintegrated to a fixed-carrier super-aperture
+`O(N log^3 N+N^(201/200))`, the exact `chi^2*(frozenDual+variation)` seam, and the frozen source's
+two global affine coefficient masses, literal frozen source-field affine landing, and dyadic
+`O(N log^4 N)` frozen energy are also closed. Remaining work is phase-faithful cross-component frozen-dual/primal/pole/cross AFE assembly. Route U is source-disintegrated to a fixed-carrier super-aperture
 inversion phase. Direct finite flat transfer is falsified by nonlinear Cayley-node drift, but
 cofinal even/odd sample coherence is proved for each fixed smooth compact approximation and Xi
 copy. Opposite ultraviolet parity kills every nontrivial PSD survivor; the signed two-ended current
@@ -5075,7 +5126,8 @@ the dual weight into a neutral constant plus integrable negative-contour carrier
 All-height differentiation, two-sided localization, divisor-square mass, and phase-faithful affine
 mean square are formal, with weighted mass `O(log^3 N/N)`. Complete-source FTC and measurable
 Duhamel give a dual-variation bound below target exponent, and the exact diagonal dual seam is
-closed. Scientific core is frozen-dual/primal/pole/cross assembly around that controlled term,
+closed. Frozen-dual weighted/plain coefficient masses and literal source-field affine mean square
+are also closed. Scientific core is phase-faithful cross-component frozen-dual/primal/pole/cross assembly around those controlled terms,
 followed by density-to-`7/10` prime supply or equivalent signed upper-boundary estimate and source-
 faithful lower/upper landing in literal consecutive-prime-gap moment and centered current; Wold
 chart separately needs signed pole-preserving continuation. Exterior reflection adds no second
@@ -5116,7 +5168,7 @@ L's global ideal-preserving completed-Green/BV lift to fixed Burnol/Deninger phy
 whole restricted-Weil ground-space exhaustion beyond variationally selected prolate seed; P's
 finite high-tail curvature ceiling or completed coefficient-faithful primitive-Euler-to-Xi
 incidence/contraction after its PSD, spacing-free, subquantum source collision law; T's
-frozen-dual/primal/pole/cross AFE fourth-moment assembly around the already-controlled dual variation, Ingham density-to-
+phase-faithful cross-component frozen-dual/primal/pole/cross AFE fourth-moment assembly around the already-controlled dual variation and frozen source-field mean square, Ingham density-to-
 `7/10` prime supply, and physical current composition, or signed pole-preserving Wold continuation;
 and U's common-filter diagonal classification excluding one fixed carrier's cofinal super-aperture
 completed-source inversion. Native weighted complete-divisor exchange and exact pre-aggregation

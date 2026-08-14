@@ -3,12 +3,12 @@
 ## Research map of HTGeometry, HilbertMetric, and RHTower
 
 **Corpus cutoff:** 14 August 2026, committed snapshot
-**b85bd328c7f2aa6b07c5a65ee06c5d06528c9f11**, plus explicitly identified post-cutoff
+**242bfabb9d81a27ed5967c7ae22373edc5481edc**, plus explicitly identified post-cutoff
 shared-tree declarations audited the same day.
 
 This map follows theorem statements, not module placement or research chronology. `Lean-proved`
 means an unconditional declaration at the audit tip. Historical `Active-tree Lean` wording in
-route paragraphs records live-tree audit provenance; commit `b85bd328c` now contains those
+route paragraphs records live-tree audit provenance; commit `242bfabb9` now contains those
 declarations unless a paragraph explicitly says `post-cutoff active-tree`.
 Paper-only claims remain labelled.
 
@@ -28,9 +28,9 @@ Current mathematical changes are:
   `(X/e,X]` has the same negative cosine orientation, every odd determinant grade reinforces, and
   `log(1+|Delta_X|)` is comparable to `sqrt(X)/log X`. The whole prime batch is now coherent too:
   Lean proves
-  `sum_(2<p<=X) p^(-1/2) cos((pi/log X)log p) ~ -2 sqrt(X)/log X`, while the signed/unsigned
-  Euler-prefix modulus is bounded below by the reciprocal Mertens product, itself between positive
-  constants times `1/log X`. Thus neither inner-prime cancellation nor a vanishing prefix can
+  `sum_(2<p<=X) p^(-1/2) cos((pi/log X)log p) ~ -2 sqrt(X)/log X`. For every fixed `A>0`, the
+  signed/unsigned prefix modulus at `Y=(log X)^A`, divided by its positive Mertens product, tends
+  to one and hence has exact order `1/log Y`. Thus neither inner-prime cancellation nor a vanishing prefix can
   rescue the scalar odd-grade lane. Live mechanisms must retain the shell before scalarization or use the fixed source-
   predeclared grade-recurrent relation. Node-form and multivariate separation theorems expose squarefree family
   weights as finite exponential polynomials; the injective-parameter theorem shows that the actual
@@ -72,7 +72,11 @@ Current mathematical changes are:
   derivative of the event source. Post-cutoff active-tree Lean further expands the prime-normal
   resolvent cross-section as a norm-convergent central-binomial functional-calculus series, retaining
   every descendant grade. It does not supply the completed forcing, derivative regularity,
-  or trace orientation. On the Suzuki floor side, Lean proves the literal natural product
+  or trace orientation. Post-cutoff active-tree Lean proves the sharp polynomial-carrier wall:
+  the distorted Gamma square density is integrable exactly for transport degree `kappa<sigma`,
+  and a radial lattice-square-summable/Gamma-integrable exponent window exists exactly in ranks
+  `d<=1`. Rank one survives; higher-rank radial polynomial enlargement is impossible. This is a
+  carrier classification, not trace orientation. On the Suzuki floor side, Lean proves the literal natural product
   `D† G_a D` is formally self-adjoint on its exact `H_0^1(-a,a)` domain. Operator action, domain,
   and symmetry are therefore closed; lower-floor orientation is not. The floor branch still needs
   source-derived exhaustion/lower control of every
@@ -229,9 +233,13 @@ Current mathematical changes are:
   dual-variation Duhamel step lies below the target fourth-moment exponent. Lean also proves the
   exact diagonal dual-source seam
   `dual(t)=chi(t)^2*(frozenDual_N(t)+V_N(t))` and the conductor-uniform bound
-  `|W2_tau(Y)-1| <= C Y^(1/4)/(max(1,|tau|)^(1/4))^2`.
-  Remaining bridge is frozen-dual/primal/pole/cross-term assembly with this controlled variation
-  inside the exact AFE. Only that assembly can yield the
+  `|W2_tau(Y)-1| <= C Y^(1/4)/(max(1,|tau|)^(1/4))^2`. Lean also proves the frozen source's two
+  global affine coefficient masses: weighted mass `O(N(1+log N)^3)` and half-power-normalized
+  plain mass `O((1+log N)^4)`, identifies the corresponding affine L-series with the literal frozen
+  source field, and proves its interval mean square
+  `O(N log^3 N+H log^4 N)`. On `[N,2N]` this is `O(N log^4 N)=N^(1+o(1))`, below the target
+  `N^(101/100)`. Frozen-dual phase landing and pricing are closed. Remaining scientific
+  bridge is phase-faithful AFE assembly of frozen dual with primal, pole, and cross terms. Only that assembly can yield the
   target fourth moment; coefficient-three density, `7/10` prime supply, and composition follow.
 - **U:** the divisor packet has acquired a literal source disintegration. Lean
   identifies every shifted reciprocal Hankel quadratic with a positive Laplace average of the
@@ -633,7 +641,7 @@ existing route.
 | Q | open, secondary | direct Cassini--Jensen/jet saturation, or a source-derived label-sensitive plateau quotient; the selected continuous power-reciprocal carrier is retired by the all-degree support no-go |
 | R | terminalized as independent producer | The intrinsic pre-polar annihilator type is empty. Lean exhausts the surviving audited interfaces—external positive polar comparison, pointwise two-orientation non-amplification, collective compactness of the fixed `(2,3)` receiver, singular Xi/Calkin factorization, compact first-Xi-jet principal coefficient, and loss-zero fixed Fisher landing—and proves each branch, and their disjunction, equivalent to RH. Hyperbolic-gauge quadratic positivity is universally zero; the surviving quartic amplitude equals the physical Stokes excess but its annihilation is RH-equivalent. Coefficient-faithful pre-divisor Gamma-corona globalization is also impossible outside neutral grade, independently of packet-horizon gauge. Finite Kunneth/Bockstein enlargement, Poisson theta shear, local anomaly cancellation, positive invariant means, bounded multipliers, and compact counterterms do not produce annihilation. |
 | S | upstream | source algebraicity or divisor-preserving dynamics with typed Xi handoff |
-| T | open, sharply narrowed; literal dual variation and its exact AFE seam are closed | Committed Lean proves the full symmetric Gaussian AFE, literal derivative source, joint measurability, dyadic square-integrability, and Duhamel bound `O(N log^3 N+N^(201/200))`, strictly below the target `N^(101/100)` exponent. Post-cutoff active-tree Lean proves the exact complete-source primitive/FTC, splits the actual diagonal dual series as `chi^2*(frozenDual+variation)`, and bounds `W2-1` at conductor scale. Repeated short-block freezing remains dead at `T^(5/3)`. First analytic producer is frozen-dual/primal/pole/cross assembly inside the exact AFE. Then come coefficient-three density, `7/10` prime supply, and source-faithful composition; Wold chart separately requires signed pole-preserving continuation. |
+| T | open, sharply narrowed; literal dual variation, exact AFE seam, and frozen-dual affine landing are closed | Committed Lean proves the full symmetric Gaussian AFE, literal derivative source, joint measurability, dyadic square-integrability, and Duhamel bound `O(N log^3 N+N^(201/200))`, strictly below the target `N^(101/100)` exponent. Post-cutoff active-tree Lean also proves the exact complete-source primitive/FTC, splits the actual diagonal dual series as `chi^2*(frozenDual+variation)`, bounds `W2-1` at conductor scale, and gives the literal frozen source-field mean square `O(N log^3 N+H log^4 N)`, hence `O(N log^4 N)` on `[N,2N]`. Repeated short-block freezing remains dead at `T^(5/3)`. First scientific producer is phase-faithful cross-component assembly of frozen dual with primal, pole, and cross terms inside the exact AFE. Then come coefficient-three density, `7/10` prime supply, and source-faithful composition; Wold chart separately requires signed pole-preserving continuation. |
 | U | open at common-filter diagonal source classification; Nyquist mixed-flux successor retired | False RH is equivalent to one fixed carrier producing cofinal negative Hankel packets whose quadratic is a positive Laplace average of the complete Gamma--polar--von Mangoldt balance. Every UV-safe PSD quadratic collapses to full fine-sample square. The signed survivor `J=E^2-O^2` has a uniform `L^-4` estimate and an unconditionally vanishing native complete-divisor sum. Lean now also proves the exact common-filter prime--Gamma identity `a_f^2(C_E-C_O)=pi(2D)! Re sum W_f J`; its canonical normalization tends to zero. Thus the pre-aggregation source landing has no oriented anomaly and this Nyquist lane is terminal. Route U's live theorem is a source-specific common-filter diagonal classification for the fixed cofinal carrier: lower-bound its actual even/detail diagonal capitals or show a negative diagonal contradicts the degree-free Cauchy density. Universal diagonal positivity is RH-equivalent. |
 
 The live independent count is ten lettered routes plus CCM-FU. This count is conditional only
@@ -2245,6 +2253,10 @@ moment. At the same frequency the signed/unsigned Euler-prefix modulus is at lea
 constants times `1/log X`. Hence neither earlier primes nor a zero prefix can cancel the terminal
 lobe. This strengthens the scalar no-go; it does not touch the pre-scalar grade-recurrent relation.
 
+`RouteEGibbsPrefixModulus.lean` sharpens the physical-prefix statement: for every fixed `A>0`, the
+modulus at `Y=(log X)^A`, divided by `prod_(p<=Y)(1-1/p)`, tends to one. The prefix therefore has
+exact Mertens order rather than merely a lower bound.
+
 Post-cutoff `RouteEGibbsPrefixPhase.lean` retains the argument rather than only modulus. Its weighted phase
 coefficient satisfies
 
@@ -2257,6 +2269,13 @@ prefixPhaseWeight(Y)/sqrt(Y) -> 2,
 This is an exact source-side phase tangent with cubic remainder. At the physical terminal frequency
 the proved remainder is not smaller than the main scale, so it supplies neither a new orientation
 nor a reopening of the retired scalar determinant lane.
+
+Post-cutoff active-tree `RouteEGibbsRapidity.lean` defines the additive odd-cube rapidity
+`sum artanh(2 d_p cos(t_X log p))`, proves `d_p>0`, `d_p<=p^(-1/2)`,
+`p^(-1/2)-d_p<=1/p`, and places every local argument in `[-1/2,1/2]` for `p>=16`. The batch
+asymptotic stated in the module comment is not yet a Lean theorem: no declaration currently sums
+the `artanh` correction or proves the rapidity limit. This is a scalar coordinate, not a reopening
+of Route E or a change to its Hall/load/flux frontier.
 
 `FamilySquareFreeNodeForm.lean`, `DescPochhammerProductBasis.lean`, and
 `MultiNodePolynomialSeparation.lean` expose every squarefree family-key weight as a permanent whose
@@ -3042,6 +3061,19 @@ sum_k [centralBinom(k)/(4^k(2L)^k)] T^k
 converges in norm to the functional calculus of `(1-t/(2L))^(-1/2)`, with an explicit uniform tail
 bound. Every prime descendant grade survives in the expansion. This removes finite truncation and
 path-loss ambiguity; it does not force the physical zero-trace relation.
+
+Post-cutoff active-tree `SuzukiPolynomialCarrierGammaDimensionWall.lean` proves the exact tail law
+for polynomially distorted Gamma carriers and the sharp threshold
+
+```text
+Integrable(|x|^(2*kappa) GammaCarrier_sigma(x))  iff  kappa < sigma.
+```
+
+Combining `d/2<kappa` for lattice square summability with the literal strip restriction
+`sigma<1`, Lean proves that a common radial polynomial-carrier window exists iff `d<=1`; the
+concrete rank-one choice `(kappa,sigma)=(2/3,3/4)` is summable and integrable. This confirms the
+one-prime carrier is dimensionally viable while closing every higher-rank radial polynomial
+enlargement. It neither constructs completed forcing nor orients the half-log trace.
 
 The CCM/Suzuki mixed-source modules also close the exact complex cross term: arbitrary form-domain
 pairs satisfy the full sesquilinear polar--prime minus archimedean Weil identity, with literal CCM
@@ -8612,7 +8644,13 @@ irrational-power tail has exact irrational Gevrey order, and analytic differenti
 preserve the required Gevrey class. Active-tree Euler/shift-polynomial modules now prove a linear
 Maillet theorem: a formal solution of a convergent Euler-form equation is Gevrey of order
 `m-deg(Phi_0)`. This supplies a rational upper-order law, not the exact-order theorem for nonlinear
-algebraic differential equations. The Barnes non-ADE conclusion still depends explicitly on the
+algebraic differential equations. Post-cutoff `EulerADELinearization.lean` proves the exact
+Euler-jet Taylor decomposition of a nonlinear algebraic differential equation and puts the defect
+of a `t^k`-divisible perturbation in the square of the `t^k` ideal. `EulerADETruncation.lean` proves
+that truncations, their linearization coefficients, and the equation value at a truncation are
+convergent, and that a solution's truncation residual is divisible by `t^(N+1)`. Formal nonlinear-
+to-linear reduction at convergent truncations is closed; the nonlinear exact-order theorem is not.
+The Barnes non-ADE conclusion still depends explicitly on the
 unformalized Sibuya--Ramis rational-exact-order interface. A separate active theorem proves that
 finite-jet separation embeds a compact Bohr hull in finite-dimensional complex space and hence
 forces finite covering dimension; identifying covering dimension with character-group rational
@@ -8626,9 +8664,20 @@ capacity obstruction, not an Xi producer.
 Post-cutoff `PrimeLogJumpPacket.lean` constructs an even, zero-mean two-prime jump-shell test with an exact
 nonvanishing asymptotic `L2` mass. `PrimeLogJumpMellinFrame.lean` then proves its two endpoint
 Mellin channels have only `s=0` as a common zero, so the pair is point-separating away from the
-neutral point. `CircuitSoftCausalReporter.lean` constructs bounded
+neutral point. `PrimeLogJumpMellinTrace.lean` proves the exact first integration-by-parts identity
+that exposes the two endpoint sine terms plus one oscillatory remainder. It does not prove a
+remainder asymptotic or the fixed Burnol/Deninger reader required by Route L.
+`CircuitSoftCausalReporter.lean` constructs bounded
 dimension-free Lipschitz/Wasserstein-stable causal reporters. Neither has a coefficient-faithful
 source-to-fixed-physical Xi landing or an annihilation law, so none instantiates Route V.
+`CircuitFreeWordFirstEntrance.lean` additionally proves that when no letters commute, causal
+accessibility equals the discounted mass of unique first-successful prefixes. This exact free-word
+reduction still has no arithmetic Xi source and changes no route frontier.
+`CircuitPreparationActionEntropy.lean` identifies preparation action exactly as the least discrete
+relative entropy among probability laws supported on the causal success event, attained by the
+conditioned Boltzmann law. `HTGeometry/StripContourShift.lean` gives the reusable Banach-valued
+horizontal strip contour shift under boundary integrability and vanishing vertical edges. Both are
+complete generic mechanisms with no Xi-typed source or reader.
 None supplies the source/mechanism/landing
 triple required for Route V.
 
@@ -8775,7 +8824,7 @@ open. Numerical evidence is not accepted as proof or disproof.
    Hazewinkel's printed pivot-division step is formally false in its stated coefficient algebra,
    but the separate monic Gröbner/projective-chart repair is now Lean-closed. No Witt/Hankel
    algebraic premise remains available to substitute for this RH-bearing comparison.
-3. **T:** assemble the frozen dual, primal, pole, and cross terms around the now-controlled literal dual variation
+3. **T:** phase-faithfully assemble the frozen dual, primal, pole, and cross terms around the now-controlled literal dual variation and frozen source-field mean square
    inside the exact Gaussian AFE. Complete-source differentiation/FTC, joint measurability, dyadic
    square-integrability, reflected-phase landing, and the Duhamel bound
    `O(N log^3 N+N^(201/200))` are already exact. Then prove
@@ -9935,8 +9984,9 @@ declarations change mechanisms, not route count:
   all-height derivative localization, divisor-square coefficient mass, and phase-faithful affine
   receiver are closed; repeated local freezing is too expensive. Complete dual-source
   differentiation/FTC and measurable Duhamel now give a variation bound below target exponent.
-  The exact diagonal dual sum is already `chi^2*(frozenDual+variation)`. Surviving analytic
-  architecture is frozen-dual/primal/pole/cross AFE assembly, followed by density and source
+  The exact diagonal dual sum is already `chi^2*(frozenDual+variation)`, and both global frozen
+  affine coefficient masses are bounded. Surviving analytic architecture is phase-faithful
+  frozen-dual/primal/pole/cross AFE assembly, followed by density and source
   composition.
 - U is reduced to excluding one fixed carrier's cofinal super-aperture completed-source inversion.
   Fixed-divisor and parabolic-shell parities are opposite. Every UV-safe PSD form collapses to full
@@ -11277,7 +11327,7 @@ uses only standard quotient/classical axioms already admitted by the corpus.
 
 ## 13. Current frontier conclusion
 
-At committed cutoff `b85bd328c7f2aa6b07c5a65ee06c5d06528c9f11`, with the explicitly audited
+At committed cutoff `242bfabb9d81a27ed5967c7ae22373edc5481edc`, with the explicitly audited
 post-cutoff shared-tree declarations above, RH and its negation remain
 unproved. Live independent lettered routes are C1, D2, E, G, L, O, P, Q, T, and U, with CCM-FU as
 a live unlettered lane. Route R is terminalized as an independent producer. No Route V is
@@ -11338,7 +11388,9 @@ Current first unresolved theorems are:
   divisor-square mass `O(log^3 N/N)`, literal derivative-source formation, reflected-phase
   identity, pure unit-cell `O(log^3 N/N)` physical affine mean square, exact complete-source FTC,
   measurable Duhamel variation bound `O(N log^3 N+N^(201/200))`, and exact diagonal dual-source
-  seam `chi^2*(frozenDual+variation)`. It must now assemble frozen dual, primal, pole, and cross
+  seam `chi^2*(frozenDual+variation)`. Its frozen L-series is now identified exactly with the
+  literal physical source field and has interval mean square `O(N log^3 N+H log^4 N)`. It must now
+  phase-faithfully assemble frozen dual, primal, pole, and cross
   terms around that controlled contribution. Repeated short-block freezing is
   dead at `T^(5/3)`. After the fourth moment
   come coefficient-three density, `7/10` prime supply, and source-faithful composition. Its other
@@ -13051,5 +13103,36 @@ hence the diagonal dual AFE series is exactly `chi^2*(frozenDual+variation)`.
 |W2_tau(Y)-1| <= C Y^(1/4)/(max(1,|tau|)^(1/4))^2.
 ```
 
-Thus neither dual-source identification nor its Duhamel seam remains open. The first analytic wall
-is frozen-dual/primal/pole/cross mean-square assembly at the target exponent.
+`SmoothAFEZetaSquareDualFrozenMass.lean` then closes the two frozen-source coefficient masses needed
+by the infinite affine mean-square theorem. Uniformly for `N>=4`, Lean proves
+
+```text
+sum_k d(k+1)^2 |W2_N((k+1)N)|^2
+  <= B N (1+log N)^3,
+sum_k d(k+1)^2 |W2_N((k+1)N)|^2/(k+1)
+  <= B (1+log N)^4.
+```
+
+`SmoothAFEZetaSquareDualFrozenAffineMeanSquare.lean` performs that composition, retains the center
+phase, identifies the L-series exactly with the literal frozen source field, and proves
+
+```text
+integral_[center-H,center+H] |frozenSource_N(t)|^2 dt
+  <= 5*pi*e*B*N*(1+log N)^3
+     +(5*pi/2)*B*H*(1+log N)^4.
+```
+
+Thus neither dual-source identification, its Duhamel seam, frozen coefficient mass, frozen phase
+landing, nor frozen affine pricing remains open. The first scientific wall is phase-faithful
+cross-component mean-square assembly of this frozen dual with the primal, pole, and cross terms at
+the target exponent.
+
+`SmoothAFEZetaSquareDualFrozenDyadicMeanSquare.lean` specializes the interval law to the full
+physical block and proves
+
+```text
+integral_[N,2N] |frozenSource_N(t)|^2 dt <= K N (1+log N)^4.
+```
+
+Thus the frozen component itself is `N^(1+o(1))`, strictly below `N^(101/100)`. The open problem is
+not a better frozen estimate; it is signed cross-component AFE assembly.

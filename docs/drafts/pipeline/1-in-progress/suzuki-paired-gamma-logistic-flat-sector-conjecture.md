@@ -12,7 +12,7 @@
 
 ## 0. Retraction of premature nonselfadjoint theorem status
 
-The residue calculation and self-adjoint/polynomial-group version survive. The claimed extension
+The residue calculation and self-adjoint/subcritical-polynomial-group version survive. The claimed extension
 from self-adjoint \(B\) to an arbitrary bounded nonnormal \(B\) does not.
 
 Section 4 asserted that the operator-valued fundamental matrix and its inverse have polynomial
@@ -23,7 +23,10 @@ exp(-i z B/2).                                           (0a)
 ```
 
 Boundedness of \(B\) permits exponential growth in \(\operatorname{Re}z\); polynomial growth
-requires an additional two-sided group bound. The exponential valuation carrier used for finite
+requires an additional two-sided group bound. Moreover, group-growth degree \(\kappa\) is
+compatible with a shifted line of height \(\sigma\) only when \(\kappa<\sigma\): the squared
+Gamma carrier has exact tail \(|x|^{-1-2\sigma}\), while transport costs
+\(|x|^{2\kappa}\). The exponential valuation carrier used for finite
 recurrence has an asymptotic nonreciprocal prime adjacency of Hatano--Nelson type and hence a
 complex elliptic limit spectrum. It does not satisfy the claimed polynomial bound.
 
@@ -31,12 +34,14 @@ Therefore:
 
 ```text
 residue -P_sym and local charge classification;          [PAPER-PROVED]
-self-adjoint or polynomially bounded B strip theorem;    [PAPER-PROVED]
+self-adjoint or degree-kappa<sigma B strip theorem;      [PAPER-PROVED]
+arbitrary polynomial-degree B strip theorem;             [FALSE]
 arbitrary bounded nonnormal B strip theorem;             [OPEN / PROOF FALSE]
 Suzuki exponential-weight flat-sector upgrade;           [OPEN].             (0b)
 ```
 
-See `suzuki-exponential-orbit-hatano-nelson-hard-wall.md`.
+See `suzuki-exponential-orbit-hatano-nelson-hard-wall.md` and
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-polynomial-carrier-gamma-dimension-wall.md`.
 
 **Subsequent positive reduction.** The hard wall applies to the direct frequency fundamental
 matrix, not to every formulation of the primitive-forced equation.
@@ -71,11 +76,11 @@ vanish.  Every remaining flat tail is forced into the positive Gamma strip; no s
 all-orders-flat channel remains.
 
 Let \(X\) be a complex Hilbert space, let \(B\in\mathcal B(X)\), and work on
-\(X\oplus X\). For the proved version assume the two-sided group bound
+\(X\oplus X\). For the proved version assume the two-sided group bound of degree \(\kappa\ge0\)
 
 ```text
 ||exp(-i x B/2)||+||exp(i x B/2)||
- <=C(1+|x|)^m,             x in R.                      (1a)
+ <=C(1+|x|)^kappa,         x in R.                      (1a)
 ```
 
 Self-adjoint \(B\), or a boundedly invertible similarity of one, satisfies `(1a)`. Let
@@ -121,7 +126,8 @@ Then the two real-frequency solutions glue holomorphically through \(z=0\) throu
 0<Im z<min(1,delta).                                    (6)
 ```
 
-If the block source norm is finite at \(0<\sigma<\min(1,\delta)\), then
+If the block source norm is finite at
+\(\kappa<\sigma<\min(1,\delta)\), then
 
 ```text
 exp(sigma L)F in L2.                                    (7)
@@ -137,7 +143,9 @@ In particular, every paired tail flat beyond all inverse-log orders is upgraded 
 Gamma strip after the two matching conditions.  It cannot remain at an intermediate rate such as
 \(e^{-\sqrt L}\).  Nonzero exponentially decaying tails driven by the compact initial segment are
 allowed.  The result is independent of self-adjointness of \(B\); only \(\|B\|<\infty\) enters the
-weighted derivative estimate after `(7)`. The shifted-\(L^2\) estimate `(7)` uses `(1a)`.
+weighted derivative estimate after `(7)`. The shifted-\(L^2\) estimate `(7)` uses `(1a)` and
+the sharp inequality \(\kappa<\sigma\). If \(\kappa\ge1\), no direct uniform shifted line exists
+inside the literal Gamma strip.
 
 For the weighted Suzuki orbit carrier, \(X\) is the valuation Hilbert space and \(B\) is its
 bounded nonnormal prime adjacency. It is not known to satisfy `(1a)`; the exponential radial
@@ -264,9 +272,10 @@ coordinates and commutes with the physical cutoff.  Hence the cutoff equation ha
 in the same norm as the predecessor Gamma wall theorem.
 
 Holomorphic gluing through height \(\sigma\), the block source norm, and `(1a)` give the
-Paley--Wiener/Hardy estimate `(7)`. On every closed substrip the \(B\)-factor and its inverse have
-polynomial growth by `(1a)`; Gamma and logistic factors retain their established polynomial
-bounds. The block summation is therefore identical.
+Paley--Wiener/Hardy estimate `(7)` only when \(\kappa<\sigma\). On every closed substrip the
+\(B\)-factor and its inverse cost \((1+|x|)^\kappa\), while the squared scalar Gamma carrier has
+exact decay \(|x|^{-1-2\sigma}\). Their product is integrable exactly for
+\(\kappa<\sigma\). Source moments alone do not remove a free homogeneous coefficient.
 
 Without `(1a)`, the factor \(\exp(-ixB/2)\) can grow exponentially. Temperedness of a realized
 solution may impose stable/unstable cancellations, but proving those cancellations is an
@@ -323,10 +332,11 @@ boundedness is enough after `(7)`. `QED`
 
 ## 7. Flat-sector exclusion
 
-Suppose both matching charges vanish and the noncompact source is Gamma-subcritical.  A terminally
+Suppose both matching charges vanish, the noncompact source is Gamma-subcritical, and the
+two-sided group degree satisfies \(\kappa<1\). A terminally
 homogeneous equation still acquires compact forcing after the cutoff used to put it on the whole
 line; this forcing must not be deleted.  Sections 4--6 apply to that compact source and give, for
-every permitted \(0<\sigma<1\),
+every permitted \(\kappa<\sigma<1\),
 
 ```text
 exp(sigma L)F in H1 on a shorter terminal ray.           (25)
@@ -348,7 +358,7 @@ The completed trace-zero gate now factors as
 local paired Carleman normal form;                       [PROVED]
 finite-grade root-only conormal support;                 [PROVED]
 paired regular-singular charge classification;          [PROVED]
-all-orders-flat paired weighted upgrade under (1a);      [PROVED]
+all-orders-flat paired weighted upgrade for kappa<sigma; [PROVED]
 tempered weighted physical orbit carrier;               [PROVED]
 finite-type aperture admission;                         [PROVED]
 
@@ -364,7 +374,9 @@ exceptional recurrence-infinite passage;                [OPEN]
 nonzero-root Evans return/raw Evans positivity.          [OPEN RH CORE]       (26)
 ```
 
-The direct analytic flat-sector proof is closed only for polynomially bounded transport. The
+The direct analytic flat-sector proof is closed only for transport whose polynomial degree is
+strictly below the chosen Gamma height. A radial all-vector polynomial carrier can satisfy this
+and lattice square summability only in valuation ranks zero and one. The
 exponential valuation carrier introduces either a nonnormal dichotomy gate or the sharper
 primitive-flux Liouville gate before source assembly suffices.
 
@@ -374,7 +386,8 @@ primitive-flux Liouville gate before source assembly suffices.
    derived from every completed mode.
 2. **No scalar trace substituted.**  Paired value and dipole charges are classified separately.
 3. **No strip-to-\(L^2\) leap.**  Quantitative block source norm is assumed and used.
-4. **Nonnormal gap exposed.** Boundedness suffices for derivative coercivity, not Hardy transfer.
+4. **Nonnormal and degree gaps exposed.** Boundedness suffices for derivative coercivity, not
+   Hardy transfer; arbitrary polynomial degree is also insufficient.
 5. **No conormality premise.**  Regular-singular frequency theory upgrades the flat sector
    directly.
 6. **No false tail Liouville claim.**  Compact cutoff forcing may generate a nonzero
@@ -414,7 +427,8 @@ paired-orbit source identity is paper-complete.
 - [x] identify common-value and dipole charges
 - [x] identify zero source-jump compatibility
 - [x] glue through the exact common strip
-- [x] prove quantitative shifted `L2` under polynomial two-sided group growth
+- [x] prove quantitative shifted `L2` under degree `kappa < sigma` two-sided group growth
+- [x] classify the sharp Gamma/lattice collision and its rank-one survivor
 - [x] prove weighted derivative once shifted \(L^2\) is known, allowing bounded nonnormal coupling
 - [x] identify missing polynomial-group/exponential-dichotomy hypothesis
 - [x] replace intrinsic Hatano-wall wording by exact primitive-flux graph reduction

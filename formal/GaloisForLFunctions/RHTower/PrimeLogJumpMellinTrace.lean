@@ -30,9 +30,17 @@ variable {A B κ : ℝ}
 /-- The derivative of the Mellin kernel along the positive ray. -/
 theorem hasDerivAt_cpow_ofReal {s : ℂ} {x : ℝ} (hx : 0 < x) :
     HasDerivAt (fun t : ℝ => ((t : ℂ)) ^ (-s)) (-s * (x : ℂ) ^ (-s - 1)) x := by
-  have hx' : (0 : ℝ) < ((x : ℂ)).re ∨ ((x : ℂ)).im ≠ 0 := Or.inl (by simpa using hx)
-  have h := (Complex.hasDerivAt_cpow_const (x := (x : ℂ)) (c := -s) hx')
-  exact h.comp_ofReal
+  rcases eq_or_ne s 0 with rfl | hs
+  · simpa using hasDerivAt_const x (1 : ℂ)
+  · exact hasDerivAt_ofReal_cpow_const (ne_of_gt hx) (neg_ne_zero.mpr hs)
+
+/-- The Mellin kernel is continuous along the positive ray. -/
+theorem continuousAt_cpow_ofReal {b : ℂ} {x : ℝ} (hx : 0 < x) :
+    ContinuousAt (fun t : ℝ => ((t : ℂ)) ^ b) x := by
+  have h : ((x : ℂ)) ∈ Complex.slitPlane := by
+    rw [Complex.mem_slitPlane_iff]
+    exact Or.inl (by simpa using hx)
+  exact (continuousAt_cpow_const h).comp Complex.continuous_ofReal.continuousAt
 
 /-- The primitive of the modulating cosine. -/
 theorem hasDerivAt_sin_div (hκ : κ ≠ 0) (x : ℝ) :
@@ -40,12 +48,12 @@ theorem hasDerivAt_sin_div (hκ : κ ≠ 0) (x : ℝ) :
       (((Real.cos (κ * x) : ℝ) : ℂ)) x := by
   have hκ' : ((κ : ℂ)) ≠ 0 := Complex.ofReal_ne_zero.mpr hκ
   have h1 : HasDerivAt (fun t : ℝ => Real.sin (κ * t)) (Real.cos (κ * x) * κ) x := by
-    simpa [mul_comm] using
-      (Real.hasDerivAt_sin (κ * x)).comp x ((hasDerivAt_id x).const_mul κ)
+    have h : HasDerivAt (fun t : ℝ => κ * t) κ x := by
+      simpa using HasDerivAt.const_mul κ (hasDerivAt_id x)
+    simpa [Function.comp_def] using (Real.hasDerivAt_sin (κ * x)).comp x h
   have h2 : HasDerivAt (fun t : ℝ => ((Real.sin (κ * t) : ℝ) : ℂ))
       (((Real.cos (κ * x) * κ : ℝ) : ℂ)) x := h1.ofReal_comp
-  have h3 := h2.div_const (κ : ℂ)
-  refine h3.congr_deriv ?_
+  refine (h2.div_const (κ : ℂ)).congr_deriv ?_
   push_cast
   field_simp
 
@@ -69,21 +77,17 @@ theorem integral_cpow_mul_cos (hA : 0 < A) (hAB : A < B) (hκ : κ ≠ 0) (s : �
   have hu' : IntervalIntegrable (fun x : ℝ => -s * (x : ℂ) ^ (-s - 1)) MeasureTheory.volume A B := by
     apply ContinuousOn.intervalIntegrable
     intro x hx
-    refine (continuousAt_const.mul ?_).continuousWithinAt
-    exact ((hasDerivAt_cpow_ofReal (s := s + 1) (hpos x hx)).continuousAt).congr (by
-      funext t
-      ring_nf)
+    exact (continuousAt_const.mul (continuousAt_cpow_ofReal (hpos x hx))).continuousWithinAt
   have hv' : IntervalIntegrable (fun x : ℝ => ((Real.cos (κ * x) : ℝ) : ℂ))
       MeasureTheory.volume A B := by
     apply Continuous.intervalIntegrable
     exact Complex.continuous_ofReal.comp
       (Real.continuous_cos.comp (continuous_const.mul continuous_id))
-  have hIBP := intervalIntegral.integral_mul_deriv_eq_deriv_mul hu hv hu' hv'
   have hleft : ∫ x in A..B, ((x : ℂ) ^ (-s)) * ((Real.cos (κ * x) : ℝ) : ℂ)
       = ((B : ℂ) ^ (-s) * (((Real.sin (κ * B) : ℝ) : ℂ) / (κ : ℂ))
         - (A : ℂ) ^ (-s) * (((Real.sin (κ * A) : ℝ) : ℂ) / (κ : ℂ)))
         - ∫ x in A..B, (-s * (x : ℂ) ^ (-s - 1)) * (((Real.sin (κ * x) : ℝ) : ℂ) / (κ : ℂ)) :=
-    hIBP
+    intervalIntegral.integral_mul_deriv_eq_deriv_mul hu hv hu' hv'
   rw [hleft]
   have hrw : (∫ x in A..B, (-s * (x : ℂ) ^ (-s - 1)) * (((Real.sin (κ * x) : ℝ) : ℂ) / (κ : ℂ)))
       = (-s / (κ : ℂ)) * ∫ x in A..B, (x : ℂ) ^ (-s - 1) * ((Real.sin (κ * x) : ℝ) : ℂ) := by
@@ -91,7 +95,6 @@ theorem integral_cpow_mul_cos (hA : 0 < A) (hAB : A < B) (hκ : κ ≠ 0) (s : �
     refine intervalIntegral.integral_congr ?_
     intro x _
     field_simp
-    ring
   rw [hrw]
   field_simp
   ring

@@ -17,6 +17,8 @@
   - `formal/GaloisForLFunctions/HTGeometry/ExponentialTwistInversion.lean`
   - `formal/GaloisForLFunctions/HTGeometry/IntervalTestSeparation.lean`
   - `formal/GaloisForLFunctions/HTGeometry/PointSupportGammaForm.lean`
+  - `formal/GaloisForLFunctions/HTGeometry/CentralBinomialSeries.lean`
+  - `formal/GaloisForLFunctions/RHTower/SuzukiPrimeNormalBinomialSeries.lean`
 
 ## Formal content
 
@@ -35,6 +37,9 @@
 | `(16)` continuous functional calculus remainder | `norm_cfc_invSqrt_sub_one_le`, `norm_cfc_binomialSymbol_sub_one_le` |
 | `(17)` `P_T(β)(L) = L^{-1/2}β + O(L^{-3/2})` | `norm_primeNormalSection_sub_halfLog_le` |
 | `(7)`, `(18)`, claim 4: `F - P_T(τF) ∈ N` | `integrableOn_sq_sub_of_halfLog` |
+| `(19)` the binomial expansion of the cross-section | `hasSum_primeNormalSection` |
+| the scalar generating function behind it | `ringChoose_neg_half`, `hasSum_centralBinom` |
+| the operator form of the expansion | `cfc_binomialPartial`, `hasSum_cfc_binomialSymbol` |
 
 ## What the card actually closes
 
@@ -76,10 +81,12 @@ in the homogeneous classification.  No RH, no spectral premise, no `sorry`, `axi
 
 ## Open boundary
 
-Section 4's binomial expansion `(19)`, `P_T(β)(L) = ∑_k [C(2k,k)/8^k] L^{-k-1/2} T^k β`, is the
-classical binomial series of the explicitly defined cross-section; it is commentary on what the
-corona class contains and is not load-bearing for claims 1–4.  Its nuclearity remark refers to the
-`ℓ¹` valuation realisation of another card.
+Section 4's binomial expansion `(19)` is formal: the generalised binomial coefficient at `-1/2` is
+`(-1)^n C(2n,n)/4^n`, so the resolvent symbol is the central binomial series in `t/(2L)`, which
+converges uniformly on the spectrum once `‖T‖ ≤ L`; continuity of the functional calculus in the
+symbol turns it into the operator series, and every prime descendant appears at its own grade.  The
+nuclearity remark of that section refers to the `ℓ¹` valuation realisation of another card and is
+not part of this one.
 
 What stays open is what the card itself declares open: constructing the literal completed
 exterior/Feshbach forcing `G_ext`, proving forced `L²`-domain solvability of `(21)` with the two

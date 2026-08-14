@@ -1,7 +1,7 @@
 # Route U antipodal prime--Gamma polarization
 
 - **ID:** `route-u-antipodal-prime-gamma-polarization`
-- **Stage:** 1-in-progress
+- **Stage:** 2-fully-proven
 - **Type:** CONJECTURE ATTACK + SOURCE CLASSIFICATION
 - **Source:** `rh-current-frontier-map.md`; successor to
   `route-u-prime-gamma-nyquist-flux`
@@ -13,7 +13,7 @@
 
 ## Status labels
 
-`[CONJECTURE] [PAPER PROOF UNDER HOSTILE AUDIT] [NOVELTY UNVERIFIED]`
+`[PAPER-PROVED] [HOSTILE AUDIT PASSED] [NOVELTY UNVERIFIED]`
 
 ## Exact frontier
 
@@ -92,7 +92,7 @@ Thus the complement is the original packet under physical inversion `z -> a^2/z`
 independent resource.  The degree-free Cauchy density obeys the exact Jacobian covariance
 
 ```text
-x^2 D_a[P^-](x)=a^2 D_a[P](a^2/x),
+x^2 D_a[P^-](x)=a^2 D_a[P](a^2/x)   (a != 0, x != 0),
 D_a[P](x)=a^2/(a^2+x^2) P(x_a(x))^2.
 ```
 
@@ -164,9 +164,9 @@ X(c,e)<0 -> exists t>0, B_x(t)<0.                  (AP.9)
 For the actual Route-U even and odd packet polynomials, take `d` to be the existing common lift
 degree and `c,e` their zero-padded reciprocal-lift coefficient vectors.  Their sum represents the
 full fine packet; their difference represents the complementary alias/antipodal packet.  Hence
-every negative full finite packet has exactly the labelled alternative (AP.6), and every branch
+every negative full finite packet has the labelled, nonexclusive alternative (AP.6), and every branch
 contains a literal pointwise diagonal or cross completed-source inversion.  Under false RH the
-same alternative occurs at every sufficiently large dyadic fine mass for one fixed carrier.
+same alternative occurs at every sufficiently large integral hard-edge mass for one fixed carrier.
 
 ## Dependency-closed paper proof
 
@@ -184,11 +184,14 @@ gives (AP.8).  If every literal cross balance were nonnegative, the positive fac
 `t^(2d) exp(-yt)` would make the cross kernel nonnegative almost everywhere, contradicting the
 negative integral.  This proves (AP.9).
 
-The actual common vectors recover the reciprocal lifts of the even and odd source polynomials.
+For each actual cofinal explicit packet `P_k`, define its exact antipodal eigencoordinates
+`E_k=(P_k+P_k^-)/2` and `O_k=(P_k-P_k^-)/2`.  Then `E_k+O_k=P_k` and
+`E_k-O_k=P_k^-`.  The common vectors recover the reciprocal lifts of `E_k` and `O_k`.
 Linearity of polynomial reciprocal pullback and `ofFn` makes `c+e` recover the full source
-polynomial and `c-e` the complement.  Existing coefficient-faithful channel evaluation then
-identifies the full divisor packet with the fine lattice sample.  The fixed-carrier false-RH phase
-makes this quadratic negative at every large fine index, so (AP.6)--(AP.9) apply cofinally.  QED.
+polynomial and `c-e` the complement.  Both the original coefficient vector and the common padded
+full vector evaluate to the same shifted reciprocal trace Hankel scalar.  The fixed-carrier
+false-RH phase makes this quadratic negative at every sufficiently large integral mass, so
+(AP.6)--(AP.9) apply cofinally.  QED.
 
 ## Hostile significance audit
 
@@ -232,6 +235,6 @@ Required closed surface:
 - [x] `U-DIAG` falsified with exact countermodel
 - [x] `U-INDEPENDENT-DETAIL` falsified by antipodal/inversion identity
 - [x] `U-POLAR` dependency-closed paper proof
-- [ ] Hostile paper-proof audit
-- [ ] Stage 2 promotion
+- [x] Hostile paper-proof audit
+- [x] Stage 2 promotion
 - [ ] Exact Lean formalization and axiom audit
