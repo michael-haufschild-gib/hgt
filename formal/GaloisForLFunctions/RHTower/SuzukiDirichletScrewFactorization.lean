@@ -1,5 +1,4 @@
 import GaloisForLFunctions.RHTower.SuzukiDirichletFormCore
-import GaloisForLFunctions.RHTower.SuzukiScrewSourceNormalization
 
 /-!
 # The honest unbounded product `D† G_a D`

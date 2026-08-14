@@ -317,8 +317,17 @@ The stronger quantitative rate is now formalized in
 normalized `lp 2` distance is `O(λ^{-7})`.  This comparison is with the same-aperture two-mode
 `h_2-h_6` seed, so no quantitative prolate-to-Hermite error is required; the coordinate limits are
 used only for eventual nonvanishing and a fixed head floor.  The theorem is axiom-clean (only
-`propext`, `Classical.choice`, and `Quot.sound`).  The card remains in stage 2 pending the listed
-true-operator identifications.
+`propext`, `Classical.choice`, and `Quot.sound`).
+
+The exact central binomial evaluations and Hermite floor weight ratios are unconditionally formalized in
+`formal/GaloisForLFunctions/RHTower/ConstrainedProlateHermiteParityEvaluation.lean`.
+`hermiteOriginSq_zero`, `hermiteOriginSq_one`, `hermiteOriginSq_two`, `hermiteOriginSq_three` prove
+$h_0(0)^2 = \sqrt{2}$, $h_2(0)^2 = \sqrt{2}/2$, $h_4(0)^2 = 3\sqrt{2}/8$, $h_6(0)^2 = 5\sqrt{2}/16$;
+`positive_sector_hermite_floor_ratio_eq` proves the exact positive floor weight $8/11$;
+`negative_sector_hermite_floor_ratio_eq` proves the exact negative floor weight $8/13$;
+`parity_floor_weight_ratio_eq` proves the exact weight ratio $(8/11)/(8/13) = 13/11$; and
+`parity_floor_fuchs_constant_ratio_eq` evaluates the scaled constant factor $(8/11 \cdot A_4) / (8/13 \cdot A_6) = 13 A_4 / (11 A_6)$.
+The card remains in stage 2 pending the listed true-operator identifications.
 
 ## Gates
 

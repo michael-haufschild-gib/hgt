@@ -4,7 +4,7 @@
 - **Stage:** 1-in-progress
 - **Type:** ROUTE-INDEPENDENT FORMATION MECHANISM
 - **Status:** `[FIELD PROGRAMME ACTIVE] [MECHANISM NOT OBJECT]`
-  `[LAWS I/III/IV LEAN-PROVED] [LAW II PARTIAL] [LAW V OPEN] [NOT RH]`
+  `[LAWS I/III/IV/VI LEAN-PROVED] [LAW II PARTIAL] [LAW V OPEN] [NOT RH]`
 - **Date:** 2026-08-14
 
 ## 1. Founding mechanism
@@ -96,6 +96,26 @@ compact state space of `ell^infinity`.  Then:
 This is the proposed formation/properness law.  A corona law is not an additional object: it is the
 exact cofinal product of a non-tight formation history.
 
+### Law VI -- strict nonlinear exchange selects
+
+Let `W` be a continuous strictly convex energy, assume `W(x_n)->c`, and suppose either the history
+is compactly contained or every sublevel of `W` is compact. Then exactly one of two mechanisms
+occurs:
+
+1. `F(x)` is a singleton;
+2. formation produces `m in F(x)` with `W(m)<c`, while `F(Wx)={c}`.
+
+Consequently nonlinear no-loss
+
+\[
+ W(\mathfrak F(x))\subseteq\mathfrak F(Wx)
+ \tag{ALF.6}
+\]
+
+forces a singleton core. Affine exchange is always information-neutral; strict nonlinear exchange
+is rigid. Compact energy sublevels are the global properness mechanism that produces a legal
+formation carrier rather than a separately postulated compactification.
+
 ## 3. Required fusion and prediction
 
 The same theorem must couple at least these four organs:
@@ -165,6 +185,8 @@ provenance/transgression law rather than pretending a positive invariant mean re
 6. Hostile-audit current literature and full ULF corpus.
 7. [x] Promote the dependency-closed formation/exchange/recovery/exactification survivor to Stage 2.
 8. [x] Formalize that survivor scratch-first in `HTGeometry` and wire only the ULF umbrella.
+9. [x] Prove and formalize strict nonlinear exchange dissipation and global compact-sublevel
+   selection.
 
 ## 8. Current exact frontier
 
@@ -173,11 +195,19 @@ The Stage-2/Lean theorem
 III, and IV. It also proves the functional-equation action and its information-neutral lift through
 every common affine recovery pair.
 
+The Stage-2/Lean theorem
+`strict-convex-nonlinear-exchange-dissipation-and-global-selection-law.md` closes Law VI. It proves
+that convergent proper strictly convex energy has a forced alternative: singleton selection or an
+explicit strict Jensen-dissipation law absent from the scalar energy core. Nonlinear no-loss rules
+out the second branch and therefore selects one formed law.
+
 This does not repeat the existing Markov-kernel KL theorem: the new carrier is the complete
 compact-convex tail core of an open history. The remaining field-producing gate is stronger:
 
 1. prove scalar reporter intervals and joint separation in Lean;
-2. prove the normal/corona/properness classification for probability histories;
-3. realize the same core in at least three nonisomorphic corpus organs;
-4. use reporter width to predict and prove a fourth-organ multiplicity theorem;
-5. only then ask whether source properness collapses the arithmetic core to the critical law.
+2. prove the normal/corona classification for probability histories;
+3. instantiate nonlinear dissipation in at least three nonisomorphic corpus organs;
+4. use the common law to predict and prove a fourth-organ failure of properness, conservation, or
+   nonlinear exchange;
+5. only then seek a source-native arithmetic `W` and no-loss identity capable of selecting the
+   critical law.

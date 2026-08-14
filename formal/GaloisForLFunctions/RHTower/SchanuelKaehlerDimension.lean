@@ -85,8 +85,13 @@ theorem finrank_kaehlerDifferential_eq_one_of_trdeg_eq_one
   have hvTB : IsTranscendenceBasis A basisVec :=
     AlgebraicIndependent.isTranscendenceBasis_of_trdeg_le_of_finite
       (R := A) (A := K) (ι := PUnit.{v + 1}) hvAI (by rw [htrdeg, Cardinal.mk_punit])
+  have hrange : Set.range basisVec = {u} := by
+    ext x
+    simp [basisVec]
   have hAlgRing : Algebra.IsAlgebraic (Algebra.adjoin A ({u} : Set K)) K := by
-    simpa [basisVec] using hvTB.isAlgebraic
+    have h := hvTB.isAlgebraic
+    rw [hrange] at h
+    exact h
   let E : IntermediateField A K := A⟮u⟯
   letI : Algebra E K := E.val.toAlgebra
   haveI : IsScalarTower A E K := IsScalarTower.of_algebraMap_eq fun _ ↦ rfl

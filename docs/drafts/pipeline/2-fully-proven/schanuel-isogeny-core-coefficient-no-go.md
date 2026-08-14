@@ -26,8 +26,8 @@ and proves that the endpoint exponential branch, not finite-isogeny algebra, is 
 - [x] 0 -> 1  in-progress: exact statement, proof, hostile countermodel, and pivot identified
 - [x] 1 -> 2  fully-proven: core membership and exact normal-closure classification proved
 - [ ] 2 -> 3  formalized: scalar-power fixed-field core, finite-Galois power-primitive
-  stabilization, and rank-one value-field slope descent are Lean-proved; explicit construction of
-  every full-matrix isogeny field remains
+  stabilization, rank-one value-field slope descent, and every concrete two-dimensional
+  full-matrix isogeny field are Lean-proved; full-matrix/scalar-core intersection equality remains
 - [ ] 3 -> 4  publication-ready: external novelty audit; elementary mechanism likely a bridge
 
 ## Setup
@@ -279,8 +279,14 @@ differentials, traces, norms, or abstract function-field Galois theory can finis
   Their exact combination is formalized by
   `schanuelDefect_slope_mem_of_integral_isogeny` in the umbrella-wired module
   `RHTower/SchanuelDefectIsogeny.lean`: any rank-one intermediate field carrying the transformed
-  exponential pair contains the original slope.  Packaging the concrete generated `K_M` and
-  deriving its Kähler finrank from the stage-two transcendence-degree hypothesis remain.
+  exponential pair contains the original slope.  The concrete generated field `K_M`, adjugate
+  recovery of both additive coordinates and determinant powers, finite/separable descent, and the
+  deduction of its Kähler finrank from `trdeg=1` are formalized by
+  `finiteDimensional_integral_isogeny_valueField` and
+  `schanuelDefect_slope_mem_integral_isogeny_valueField` in the umbrella-wired module
+  `RHTower/SchanuelIntegralIsogenyValueField.lean`.  Their scratch axiom audit reports only
+  `propext`, `Classical.choice`, and `Quot.sound`.  Formal equality of the full-matrix intersection
+  with the scalar-power core remains.
   Targeted external
   search found Kummer subfield results (for example Stacks Project, Tag `0EXP`) but no statement
   coupling finite-isogeny value fields to Schanuel defect slopes.  No priority claim.
@@ -317,3 +323,6 @@ torically primitive algebraic curve; ordinary field intersection is proved insuf
   identities after retiring a tactic-heavy elaboration; scratch axiom audit clean.
 - 2026-08-14 -- full nondegenerate integral-isogeny slope descent combined in
   `RHTower/SchanuelDefectIsogeny.lean`, scratch-verified, axiom-audited, and umbrella-wired.
+- 2026-08-14 -- concrete `K_M` construction closed in Lean: adjugate coordinate/power recovery,
+  finite separable extension, `trdeg=1` Kähler-rank transfer, transformed exponential law and
+  rational independence, and original-slope membership all scratch-verified and umbrella-wired.

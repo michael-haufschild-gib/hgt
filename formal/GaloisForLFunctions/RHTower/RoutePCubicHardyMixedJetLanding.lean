@@ -67,8 +67,16 @@ theorem routeP_scaled_projectiveHardyKernel
     routePProjectiveHardyNode, map_sub, map_mul, map_div₀, map_one,
     map_ofNat, RCLike.star_def, Complex.conj_ofReal]
   push_cast
-  field_simp [hR, hab]
-  ring
+  have hRC : (R : ℂ) ≠ 0 := ofReal_ne_zero.mpr hR
+  have habC : ((a + b : ℝ) : ℂ) ≠ 0 := ofReal_ne_zero.mpr hab
+  rw [show 1 + ((R : ℂ) * (b : ℂ) - 1 / 2) +
+      ((R : ℂ) * (a : ℂ) - 1 / 2) =
+      (R : ℂ) * ((a + b : ℝ) : ℂ) by push_cast; ring]
+  field_simp [hRC, habC]
+  have hsumC : (a : ℂ) + (b : ℂ) ≠ 0 := by
+    simpa using habC
+  push_cast
+  exact (div_self hsumC).symm
 
 /-- Half-weighted two-scale Hardy difference kernel.  The half weight compensates for the
 doubled-node chain rule. -/
@@ -109,6 +117,7 @@ theorem routePHalfWeightedHellingerCauchyKernel_eq_projectiveHardy
     routeP_scaled_projectiveHardyKernel hR h2a2b]
   simp only [routePHalfWeightedHellingerCauchyKernel]
   push_cast
+  ring
 
 /-- First horizontal jet of the half-weighted Hardy difference. -/
 def routePHalfWeightedHellingerCauchyFirstJet (a b : ℝ) : ℝ :=
@@ -122,25 +131,27 @@ private theorem hasDerivAt_one_div_affine
     HasDerivAt (fun y : ℝ => 1 / (alpha * y + beta))
       (-alpha / (alpha * x + beta) ^ 2) x := by
   have hbase : HasDerivAt (fun y : ℝ => alpha * y + beta) alpha x :=
-    ((hasDerivAt_id x).const_mul alpha).add_const beta
-  convert hbase.inv h using 1
-  · funext y
-    simp only [one_div]
-  · simp only [one_div, neg_div, inv_pow]
-    ring
+    by simpa using ((hasDerivAt_id x).const_mul alpha).add_const beta
+  simpa only [one_div, one_mul, neg_div] using! hbase.inv h
 
 private theorem hasDerivAt_one_div_affine_sq
     {alpha beta x : ℝ} (h : alpha * x + beta ≠ 0) :
     HasDerivAt (fun y : ℝ => 1 / (alpha * y + beta) ^ 2)
       (-2 * alpha / (alpha * x + beta) ^ 3) x := by
-  have hinv := hasDerivAt_one_div_affine (alpha := alpha) (beta := beta) (x := x) h
-  have hmul := hinv.mul hinv
-  convert hmul using 1
-  · funext y
-    simp only [one_div, inv_pow]
-    ring
-  · field_simp [h]
-    ring
+  have hlinear : HasDerivAt (fun y : ℝ => alpha * y + beta) alpha x :=
+    by simpa using ((hasDerivAt_id x).const_mul alpha).add_const beta
+  have hsq := hlinear.pow 2
+  have hne : (alpha * x + beta) ^ 2 ≠ 0 := pow_ne_zero 2 h
+  have hinv := hsq.inv hne
+  have hfun :
+      (fun y : ℝ => 1 / (alpha * y + beta) ^ 2) =
+        ((fun y : ℝ => alpha * y + beta) ^ 2)⁻¹ := by
+    funext y
+    simp only [one_div, Pi.inv_apply, Pi.pow_apply]
+  rw [hfun]
+  refine hinv.congr_deriv ?_
+  simp only [Pi.pow_apply, Nat.cast_ofNat, Nat.reduceSubDiff]
+  field_simp [h]
 
 /-- Differentiating the first Hardy node gives the forced half-weighted first jet. -/
 theorem hasDerivAt_routePHalfWeightedHellingerCauchyKernel
@@ -159,10 +170,27 @@ theorem hasDerivAt_routePHalfWeightedHellingerCauchyKernel
     (alpha := 2) (beta := b) (x := a) (by simpa using h2ab)
   have h4 := hasDerivAt_one_div_affine
     (alpha := 2) (beta := 2 * b) (x := a) (by simpa using h2a2b)
-  simpa [routePHalfWeightedHellingerCauchyKernel,
-    routePHalfWeightedHellingerCauchyFirstJet] using
-    (((h1.sub (h2.const_mul (1 / 2))).sub (h3.const_mul (1 / 2))).add
-      (h4.const_mul (1 / 4)))
+  have hcombined :=
+    ((h1.sub (h2.const_mul (1 / 2))).sub (h3.const_mul (1 / 2))).add
+      (h4.const_mul (1 / 4))
+  have hfun :
+      (fun x : ℝ => routePHalfWeightedHellingerCauchyKernel x b) =
+        (((fun y : ℝ => 1 / (1 * y + b)) -
+            fun y : ℝ => (1 / 2) * (1 / (1 * y + 2 * b))) -
+          fun y : ℝ => (1 / 2) * (1 / (2 * y + b))) +
+          fun y : ℝ => (1 / 4) * (1 / (2 * y + 2 * b)) := by
+    funext x
+    simp only [routePHalfWeightedHellingerCauchyKernel, one_mul,
+      Pi.add_apply, Pi.sub_apply]
+  have hder :
+      routePHalfWeightedHellingerCauchyFirstJet a b =
+        -1 / (1 * a + b) ^ 2 - (1 / 2) * (-1 / (1 * a + 2 * b) ^ 2) -
+          (1 / 2) * (-2 / (2 * a + b) ^ 2) +
+          (1 / 4) * (-2 / (2 * a + 2 * b) ^ 2) := by
+    simp only [routePHalfWeightedHellingerCauchyFirstJet, one_mul]
+    ring
+  rw [hfun, hder]
+  exact hcombined
 
 /-- Differentiating the first jet in the second Hardy node produces the four cubic Laplace terms. -/
 theorem hasDerivAt_routePHalfWeightedHellingerCauchyFirstJet
@@ -183,9 +211,30 @@ theorem hasDerivAt_routePHalfWeightedHellingerCauchyFirstJet
     (alpha := 1) (beta := 2 * a) (x := b) (by simpa [add_comm] using h2ab)
   have h4 := hasDerivAt_one_div_affine_sq
     (alpha := 2) (beta := 2 * a) (x := b) (by simpa [add_comm] using h2a2b)
-  simpa [routePHalfWeightedHellingerCauchyFirstJet] using
-    (((h1.neg.add (h2.const_mul (1 / 2))).add h3).sub
-      (h4.const_mul (1 / 2)))
+  have hcombined :=
+    ((h1.neg.add (h2.const_mul (1 / 2))).add h3).sub
+      (h4.const_mul (1 / 2))
+  have hfun :
+      (fun y : ℝ => routePHalfWeightedHellingerCauchyFirstJet a y) =
+        ((((-fun y : ℝ => 1 / (1 * y + a) ^ 2) +
+            fun y : ℝ => (1 / 2) * (1 / (2 * y + a) ^ 2)) +
+          fun y : ℝ => 1 / (1 * y + 2 * a) ^ 2) -
+          fun y : ℝ => (1 / 2) * (1 / (2 * y + 2 * a) ^ 2)) := by
+    funext y
+    simp only [routePHalfWeightedHellingerCauchyFirstJet, one_mul,
+      Pi.add_apply, Pi.sub_apply, Pi.neg_apply]
+    congr 1 <;> ring
+  have hder :
+      2 / (a + b) ^ 3 - 2 / (a + 2 * b) ^ 3 -
+          2 / (2 * a + b) ^ 3 + 2 / (2 * a + 2 * b) ^ 3 =
+        -(-2 * 1 / (1 * b + a) ^ 3) +
+          (1 / 2) * (-2 * 2 / (2 * b + a) ^ 3) +
+          -2 * 1 / (1 * b + 2 * a) ^ 3 -
+          (1 / 2) * (-2 * 2 / (2 * b + 2 * a) ^ 3) := by
+    field_simp [hab, ha2b, h2ab, h2a2b]
+    ring
+  rw [hfun, hder]
+  exact hcombined
 
 /-- **Cubic Hardy landing.**  The mixed source jet of the projective half-weighted Route-P Hardy
 packet is exactly the cubic log-moment horizontal separator. -/

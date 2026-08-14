@@ -1675,3 +1675,29 @@ prints report only `propext`, `Classical.choice`, and `Quot.sound`. Repository l
 module-local defect; its five ownership errors concern unrelated concurrently added modules. The
 module is wired into `HTGeometry.UniversalLawField`. This certifies formation/exchange/exactification
 kinematics, not the still-open probability normal/corona properness law or an RH selector.
+
+## Session 2026-08-14 addition (strict nonlinear exchange and global properness selection)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-ALCM-2 | Convex energy upper law; explicit strict-Jensen formation dissipation; singleton-or-dissipation alternative; compact-sublevel global formation/properness; nonlinear no-loss and exact-exchange selection rigidity | `HTGeometry.ConstitutiveAsymptoticLawCoreRigidity` |
+
+Scratch and tree foreground elaboration pass. Targeted leaf build completes 1,782 required jobs and
+produces missing `.olean`; no area, umbrella, or project build was run. All six headline axiom
+prints report only `propext`, `Classical.choice`, and `Quot.sound`. Module is wired into
+`HTGeometry.UniversalLawField`. This is a route-independent selection mechanism: a non-singleton
+formed core must dissipate convergent proper strictly convex energy, while exact nonlinear no-loss
+forces one law. Constructing arithmetic energy and proving no-loss remain open.
+
+## Session 2026-08-14 addition (triple-reporter fusion and fourth-organ propagation)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-TRF-1 | Three-reporter common recovery; exact additive midpoint-dissipation conservation; joint strict convexity; component-to-source compact-sublevel properness; nonlinear no-loss selection; arbitrary fourth-affine-organ singleton propagation | `HTGeometry.ConstitutiveTripleReporterFusion` |
+
+Scratch and tree foreground elaboration pass. Targeted leaf build completes 1,783 required jobs and
+produces missing `.olean`; no area, umbrella, or project build was run. Seven audited capstones
+depend only on `propext`, `Classical.choice`, and `Quot.sound`. Module is wired into
+`HTGeometry.UniversalLawField`. Abstract fusion/conservation/prediction chain is closed; literal
+source realization by three named nonisomorphic HGT organs remains open and is not replaced by a
+formal product.

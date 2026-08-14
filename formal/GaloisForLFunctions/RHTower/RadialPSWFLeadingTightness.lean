@@ -577,7 +577,7 @@ theorem tendsto_integral_Ioi_weight_mul_radialPSWFLeadingArclengthDensity_of_non
           w t * radialPSWFLeadingArclengthDensity (c i) (sigma i) theta t := by
     rw [intervalIntegral.integral_of_le hRa]
     rw [← hunion]
-    exact integral_union_ae hdisj.aedisjoint measurableSet_Ioi.nullMeasurableSet
+    exact setIntegral_union₀ hdisj.aedisjoint measurableSet_Ioi.nullMeasurableSet
       hfiniteInt.integrableOn hfiniteInt.integrableOn
   have hsplitTarget :
       ∫ t in Ioi a, (1 / Real.pi) * w t * (1 + t ^ 2)⁻¹ =
@@ -585,7 +585,7 @@ theorem tendsto_integral_Ioi_weight_mul_radialPSWFLeadingArclengthDensity_of_non
         ∫ t in Ioi R, (1 / Real.pi) * w t * (1 + t ^ 2)⁻¹ := by
     rw [intervalIntegral.integral_of_le hRa]
     rw [← hunion]
-    exact integral_union_ae hdisj.aedisjoint measurableSet_Ioi.nullMeasurableSet
+    exact setIntegral_union₀ hdisj.aedisjoint measurableSet_Ioi.nullMeasurableSet
       htargetInt.integrableOn htargetInt.integrableOn
   have htailFinite :
       |∫ t in Ioi R,

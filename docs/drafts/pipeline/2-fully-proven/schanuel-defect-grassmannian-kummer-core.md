@@ -137,10 +137,11 @@ coefficient wall.
   defect-kernel invariant.  Failure at higher Schanuel stages is controlled by a Kummer-core-valued
   Grassmannian point, not a collection of unrelated scalar coefficients.
 - **Status:** dependency-closed paper proof.  The `n=2` affine chart is Lean-proved by
-  `schanuelDefect_slope_mem_of_integral_isogeny`, and the all-dimensional transformation law `(5)`
-  is Lean-proved by `schanuelDefect_integer_linearCombination`, both in
-  `RHTower/SchanuelDefectIsogeny.lean`.  General Kähler-kernel base change and Plücker descent remain
-  to formalize.
+  `schanuelDefect_slope_mem_of_integral_isogeny`; its concrete generated full-matrix field and
+  `trdeg=1` rank transfer are Lean-proved by
+  `schanuelDefect_slope_mem_integral_isogeny_valueField`.  The all-dimensional transformation law
+  `(5)` is Lean-proved by `schanuelDefect_integer_linearCombination`.  General Kähler-kernel base
+  change and Plücker descent remain to formalize.
 
 ## Big-picture consequence
 

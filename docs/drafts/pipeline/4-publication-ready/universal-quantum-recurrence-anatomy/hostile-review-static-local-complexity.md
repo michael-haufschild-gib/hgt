@@ -92,3 +92,18 @@ explicit high-probability event, complexity growth, plateau measure, low-
 complexity recurrence scale and permanent non-Haar locality distinction. The
 current theorem is one algebraic lemma on that route, not the result itself.
 
+## 14 August 2026 hostile addendum
+
+The new selector-partition observer-channel law is a real frontier correction, not a Nature result.
+It proves that the programme's later proposed scalar recurrence-energy closure was impossible:
+fresh target channels saturate the exact positive inequality through diagonal norm even when all
+off-diagonal recurrence disappears. The target-specific two-memory capstone removes uniform target
+averaging and inverse-dictionary attenuation, while retaining only same-channel stationary pairs.
+
+This improves mathematical honesty and prevents a false proof architecture. It does not satisfy
+the acceptance condition above. A hostile reviewer still demands a quenched growing-system theorem
+for one ordinary time-independent local-Hamiltonian ensemble that produces occupied observer-
+resolution channels beyond complete shallow-circuit capacity, controls same-channel reuse, and
+derives the claimed growth, plateau-measure and low-complexity recurrence scales on one event.
+Without that theorem, the manuscript remains rejected and must not claim black-hole interior or
+holographic consequences.

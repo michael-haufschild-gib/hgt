@@ -4,7 +4,7 @@
 - **Stage:** 5-failed
 - **Type:** failed proof architecture / exact scale obstruction
 - **Parent:** `../2-fully-proven/centralizer-centered-shortcut-history-recurrence-energy-law.md`
-- **Status:** `[FALSIFIED] [POSITIVE SURVIVOR PAPER-PROVED]`
+- **Status:** `[FALSIFIED] [POSITIVE SURVIVOR LEAN-PROVED]`
 - **Date:** 2026-08-14
 
 ## Failed claim
@@ -67,6 +67,9 @@ into explicit diagonal channel-production cost.  Its paper proof is dependency-c
 
 `../2-fully-proven/selector-partition-observer-channel-recurrence-law.md`.
 
+The positive survivor and its fresh-channel saturation theorem are formalized in
+`formal/GaloisForLFunctions/HTGeometry/StaticShortcutSelectorPartitionLaw.lean`.
+
 ## External and corpus audit
 
 Gram/Cauchy identities, direct-sum Hilbert spaces, frame operators, and cross-Gram matrices are
@@ -78,4 +81,3 @@ decorrelation.
 
 No claim of standalone mathematical novelty is made for the direct-sum inequality.  Application
 priority remains unverified.
-

@@ -4,7 +4,7 @@ namespace GaloisForLFunctions.RHTower
 
 noncomputable section
 
-open MeasureTheory IsDedekindDomain
+open MeasureTheory MeasureTheory.Measure IsDedekindDomain
 open scoped BigOperators NNReal
 
 theorem fieldOneEvenToPositiveUnitsHaarUnitary_ae
@@ -25,46 +25,19 @@ theorem fieldOneEvenToPositiveUnitsHaarUnitary_ae
       fun u => h (fieldOnePositiveUnitsExpHomeomorph.symm u) := by
     exact Lp.coeFn_compMeasurePreserving h
       fieldOnePositiveUnitsExp_measurePreserving.symm
-  have hdiv :
-      GaloisForLFunctions.HTGeometry.densityDiv
-          fieldOnePositiveUnitsHaarLogWeight
-          fieldOnePositiveUnitsHaarLogWeight_measurable
-          fieldOnePositiveUnitsHaarLogWeight_pos j =ᵐ[fieldOnePositiveUnitsLogHaarMeasure]
-        fun u =>
-          (GaloisForLFunctions.HTGeometry.sqrtWeight
-            fieldOnePositiveUnitsHaarLogWeight u)⁻¹ * j u :=
-    GaloisForLFunctions.HTGeometry.densityDiv_ae
-      fieldOnePositiveUnitsHaarLogWeight
-      fieldOnePositiveUnitsHaarLogWeight_measurable
-      fieldOnePositiveUnitsHaarLogWeight_pos j
-  have hplain :
-      GaloisForLFunctions.HTGeometry.densityDiv
-          fieldOnePositiveUnitsHaarLogWeight
-          fieldOnePositiveUnitsHaarLogWeight_measurable
-          fieldOnePositiveUnitsHaarLogWeight_pos j =ᵐ[fieldOnePositiveUnitsLogHaarMeasure]
-        fun u =>
-          (GaloisForLFunctions.HTGeometry.sqrtWeight
-            fieldOnePositiveUnitsHaarLogWeight u)⁻¹ *
-            h (fieldOnePositiveUnitsExpHomeomorph.symm u) := by
-    filter_upwards [hdiv, hpull] with u hdivu hpullu
-    rw [hdivu, hpullu]
+  have hpullHaar := fieldOnePositiveUnits_aeLogToHaar hpull
   have hweighted :
-      GaloisForLFunctions.HTGeometry.densityDiv
-          fieldOnePositiveUnitsHaarLogWeight
-          fieldOnePositiveUnitsHaarLogWeight_measurable
-          fieldOnePositiveUnitsHaarLogWeight_pos j =ᵐ[fieldOnePositiveUnitsHaarMeasure]
+      fieldOnePositiveUnitsHaarDensityDiv j =ᵐ[fieldOnePositiveUnitsHaarMeasure]
         fun u =>
           (GaloisForLFunctions.HTGeometry.sqrtWeight
             fieldOnePositiveUnitsHaarLogWeight u)⁻¹ *
             h (fieldOnePositiveUnitsExpHomeomorph.symm u) := by
-    rw [fieldOnePositiveUnitsHaar_eq_withDensity]
-    exact (GaloisForLFunctions.HTGeometry.withDensity_realDensity_ae_eq
-      fieldOnePositiveUnitsHaarLogWeight_measurable
-      fieldOnePositiveUnitsHaarLogWeight_pos).mpr hplain
+    filter_upwards [fieldOnePositiveUnitsHaarDensityDiv_ae j, hpullHaar]
+      with u hdivu hpullu
+    rw [hdivu, hpullu]
   simpa [fieldOneEvenToPositiveUnitsHaarUnitary,
-    fieldOnePositiveUnitsHaarToLogUnitary,
     fieldOnePositiveUnitsLogPullbackUnitary,
-    GaloisForLFunctions.HTGeometry.weightedDensityUnitary_symm_apply,
+    fieldOnePositiveUnitsHaarToLogUnitary_symm_apply,
     h, j] using hweighted
 
 theorem logEvenUnitary_ccmEvenSchwartzSource_ae_of_even
@@ -98,7 +71,9 @@ theorem fieldOneEvenToPositiveUnitsHaarUnitary_ae_of_even
           Real.exp (fieldOnePositiveUnitsExpHomeomorph.symm u / 2) : ℝ) : ℂ) *
           g (Real.exp (fieldOnePositiveUnitsExpHomeomorph.symm u))) := by
   have hunitary := fieldOneEvenToPositiveUnitsHaarUnitary_ae g
-  have hlog := fieldOnePositiveUnitsExp_measurePreserving.symm.quasiMeasurePreserving.ae_eq_comp
+  have hlog := (MeasurePreserving.symm
+      fieldOnePositiveUnitsExpHomeomorph.toMeasurableEquiv
+      fieldOnePositiveUnitsExp_measurePreserving).quasiMeasurePreserving.ae_eq_comp
     (logEvenUnitary_ccmEvenSchwartzSource_ae_of_even g hg)
   have hlogHaar :
       (fun u =>
@@ -114,7 +89,8 @@ theorem fieldOneEvenToPositiveUnitsHaarUnitary_ae_of_even
     apply (GaloisForLFunctions.HTGeometry.withDensity_realDensity_ae_eq
       fieldOnePositiveUnitsHaarLogWeight_measurable
       fieldOnePositiveUnitsHaarLogWeight_pos).mpr
-    simpa only [Function.comp_apply] using hlog
+    filter_upwards [hlog] with u hu
+    exact hu
   filter_upwards [hunitary, hlogHaar] with u hu hlogu
   rw [hu, hlogu]
 
@@ -201,15 +177,25 @@ theorem fieldOneFiniteStageThetaBruhatHalfDensity_eq_normalization_smul_radialEu
     fieldOnePositiveUnitsHaar_logScalar_pos
   have hsqrtc : Real.sqrt (haarScalarFactor fieldOnePositiveUnitsHaarMeasure
       fieldOnePositiveUnitsLogHaarMeasure) ≠ 0 := (Real.sqrt_pos.mpr hc).ne'
+  have hsqrtcC : (Real.sqrt (haarScalarFactor fieldOnePositiveUnitsHaarMeasure
+      fieldOnePositiveUnitsLogHaarMeasure) : ℂ) ≠ 0 := by
+    exact_mod_cast hsqrtc
   have hsqrt2 : (Real.sqrt 2 : ℂ) * (Real.sqrt 2 : ℂ) = 2 := by
     norm_cast
     rw [Real.mul_self_sqrt (by norm_num)]
-  rw [← mul_assoc,
-    inv_mul_cancel₀ (show (Real.sqrt
-      (haarScalarFactor fieldOnePositiveUnitsHaarMeasure
-        fieldOnePositiveUnitsLogHaarMeasure) : ℂ) ≠ 0 by exact_mod_cast hsqrtc),
-    one_mul, ← mul_assoc, hsqrt2]
-  ring
+  simp only [smul_eq_mul]
+  field_simp [hsqrtcC]
+  push_cast
+  let E : ℂ := Complex.exp
+    ((fieldOnePositiveUnitsExpHomeomorph.symm z.2 : ℂ) / 2)
+  let V : ℂ := fieldOneFiniteStageThetaPositiveEulerValue S f
+    (Real.exp (fieldOnePositiveUnitsExpHomeomorph.symm z.2))
+  change 2 * E * V = V * (Real.sqrt 2 : ℂ) * ((Real.sqrt 2 : ℂ) * E)
+  calc
+    2 * E * V = V * 2 * E := by ring
+    _ = V * ((Real.sqrt 2 : ℂ) * (Real.sqrt 2 : ℂ)) * E := by rw [hsqrt2]
+    _ = V * (Real.sqrt 2 : ℂ) * ((Real.sqrt 2 : ℂ) * E) := by ring
+  all_goals exact hf
 
 theorem fieldOneFiniteStageClassToSplitProduct_sourceUnitary
     (S : Finset (HeightOneSpectrum ℤ))
@@ -252,11 +238,24 @@ theorem fieldOneFiniteStageThetaInvariantBruhatCore_eq_normalization_smul_transp
         fieldOneFiniteStageThetaTransportEquiv S
           (RHTower.ccmEvenSchwartzSource f) :
             fieldOneFiniteStageClassModuleOneInvariantSubmodule S).1)
+  have hrhs :
+      fieldOneFiniteStageClassToSplitProductL2Unitary S
+          ((fieldOneThetaSourceNormalization •
+            fieldOneFiniteStageThetaTransportEquiv S
+              (RHTower.ccmEvenSchwartzSource f) :
+                fieldOneFiniteStageClassModuleOneInvariantSubmodule S).1) =
+        fieldOneThetaSourceNormalization •
+          fieldOneFiniteStageClassToSplitProductL2Unitary S
+            ((fieldOneFiniteStageThetaTransportEquiv S
+              (RHTower.ccmEvenSchwartzSource f)).1) := by
+    simpa using (fieldOneFiniteStageClassToSplitProductL2Unitary S).map_smul
+      fieldOneThetaSourceNormalization
+      ((fieldOneFiniteStageThetaTransportEquiv S
+        (RHTower.ccmEvenSchwartzSource f)).1)
+  rw [hrhs]
   rw [fieldOneFiniteStageThetaClassBruhatCoreLinearMap_apply,
     fieldOneFiniteStageClassToSplitProductL2Unitary_classBruhat,
-    map_smul,
     fieldOneFiniteStageClassToSplitProduct_sourceUnitary,
-    map_smul,
     fieldOneFiniteStageSourceUnitary_thetaTransport]
   exact fieldOneFiniteStageThetaBruhatHalfDensity_eq_normalization_smul_radialEuler
     S f hf
@@ -325,9 +324,17 @@ theorem fieldOneFiniteStageThetaInvariantBruhatCore_even_denseRange
     (fieldOneFiniteStageLiteralThetaTransportEquiv S).surjective.denseRange
   have hcomp := htransport.comp fieldOneEvenSchwartzSource_denseRange
     (fieldOneFiniteStageLiteralThetaTransportEquiv S).continuous
-  simpa only [Function.comp_apply,
-    fieldOneFiniteStageThetaInvariantBruhatCore_eq_literalTransport]
-    using hcomp
+  have hfun :
+      (fieldOneFiniteStageLiteralThetaTransportEquiv S ∘
+        fun f : FieldOneEvenSchwartzSource =>
+          RHTower.ccmEvenSchwartzSource f.1) =
+      (fun f : FieldOneEvenSchwartzSource =>
+        fieldOneFiniteStageThetaInvariantBruhatCoreLinearMap S f.1) := by
+    funext f
+    exact (fieldOneFiniteStageThetaInvariantBruhatCore_eq_literalTransport
+      S f.1 f.2).symm
+  rw [hfun] at hcomp
+  exact hcomp
 
 end
 

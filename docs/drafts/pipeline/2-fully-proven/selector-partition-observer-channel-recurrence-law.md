@@ -5,6 +5,8 @@
 - **Type:** exact adaptive-history theorem / failed-frontier replacement
 - **Parent:** `centralizer-centered-shortcut-history-recurrence-energy-law.md`
 - **Status:** `[PAPER-PROVED] [BRIDGE] [NOVELTY UNVERIFIED]`
+- **Lean promotion:**
+  `../3-formalized/selector-partition-observer-channel-recurrence-law.md`
 - **Failed route:**
   `../5-failed/scalar-centralizer-recurrence-energy-as-brown-onset-provider.md`
 - **Date:** 2026-08-14
@@ -177,6 +179,17 @@ the actual selected-channel occupancy partition.
 
 ## Sharpness
 
+The saturation mechanism does not require orthogonality. Take `J=C`, select `sigma(c)=c`, put
+`q_c=r_c`, and choose the channel margin `eta_c=||r_c||^2`. Each occupied channel is a singleton,
+so for arbitrary vectors and arbitrary weights
+
+```text
+eta_c^2 W_c^2 = ||q_c||^2 ||V_c||^2
+```
+
+term by term. Thus `(SP1)` is exactly saturated by fresh self-target channels before any spectral
+or cross-channel geometry enters.
+
 Let `J=C`, take an orthonormal family `e_c`, put `r_c=q_c=e_c`, choose `sigma(c)=c`, and use unit
 weights.  Then `eta_c=1`, `W_c=1`, `V_c=e_c`, and both sides of `(SP1)` equal `|C|`.  Hence the
 diagonal channel-production term and coefficient one are sharp.
@@ -239,5 +252,5 @@ This is a stricter and structurally different target than source dephasing.
 - [x] strongest positive survivor identified
 - [x] dependency-closed proof of `(SP1)--(SP4)`
 - [x] hostile audit
-- [ ] exact Lean theorem
-- [ ] umbrella wiring and axiom audit
+- [x] exact Lean theorem
+- [x] umbrella wiring and axiom audit

@@ -116,3 +116,24 @@ Still missing:
 7. complexity growth, plateau and first low-complexity recurrence.
 
 No paper-level claim beyond item 5 of the completed list is authorized.
+
+## 14 August 2026 correction — recurrence is channel reuse, not channel production
+
+Later two-memory and recurrence-energy work initially reduced the remaining source problem to a
+quenched scalar recurrence-energy ceiling. That reduction is now formally falsified. A fresh
+selected target channel has an unavoidable diagonal norm cost at one sample, and identity selection
+with self-target memory saturates the channel-resolved observer--spectral inequality for arbitrary
+vectors and weights. Orthogonality, stronger phase anti-concentration and diagonal subtraction do
+not repair the scalar route.
+
+The positive survivor is formalized in
+`formal/GaloisForLFunctions/HTGeometry/StaticShortcutSelectorPartitionLaw.lean`. It partitions the
+history by its actual selected target before temporal Cauchy--Schwarz and proves an exact
+same-channel stationary-kernel law. Constant selection is scalar recurrence; injective selection
+is pure diagonal channel production.
+
+This changes items 5--7 of the old frontier. Correct open core is no longer a scalar source decay
+estimate. It is selector-resolved cross-incidence anti-concentration surviving the complete circuit
+union, or high-probability production of occupied observer-resolution channels beyond shallow-
+circuit capacity for one ordinary static local Hamiltonian. No Brown--Susskind, plateau, recurrence
+rate, black-hole or holographic claim is authorized by the correction alone.

@@ -119,10 +119,11 @@ selected cubic separator.  Direct finite-`sigma` provenance from P-G167 is expli
 - [x] exact paper algebra for projective Hardy identity `(168.1)`
 - [x] exact paper algebra and chain-rule audit for mixed jet `(168.4)`
 - [x] hostile coefficient and radial-gauge audits
-- [ ] Lean projective-node and scaled-kernel identity
-- [ ] Lean no-uniform-inward-scale theorem
-- [ ] Lean first and mixed derivative theorems
-- [ ] Lean equality with cubic horizontal separator
-- [ ] direct check, targeted build, lint, and axiom audit
+- [x] Lean projective-node and scaled-kernel identity
+- [x] Lean no-uniform-inward-scale theorem
+- [x] Lean first and mixed derivative theorems
+- [x] Lean equality with cubic horizontal separator
+- [x] scratch compile, targeted forbidden-token scan, and axiom audit
+- [ ] global lint (blocked by unrelated unreachable Suzuki modules; Route-P modules are umbrella-wired)
 - [ ] source-faithful dyadic height localization
 - [ ] unconditional Euler--Gamma trace budget `E(T) <= N(T)/4+o(N(T))`

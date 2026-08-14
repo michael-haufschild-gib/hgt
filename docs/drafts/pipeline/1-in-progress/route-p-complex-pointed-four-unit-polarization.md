@@ -81,10 +81,11 @@ summable cubic Euler diagonal contributing lower order.
 
 - [x] corpus noncollision and source-provenance audit
 - [x] dependency-closed paper algebra for `(167.1)`--`(167.2)`
-- [ ] Lean complex full-Euler state and summability
-- [ ] Lean exact non-diagonal overlap
-- [ ] Lean transverse coefficient and graph-normal Xi reporter
-- [ ] Lean augmented-Gram positivity
-- [ ] direct check, targeted build, lint, and axiom audit
-- [ ] identify cubic second-variation landing
+- [x] Lean complex full-Euler state and summability
+- [x] Lean exact non-diagonal overlap
+- [x] Lean transverse coefficient and graph-normal Xi reporter
+- [x] Lean augmented-Gram positivity
+- [x] scratch compile, targeted forbidden-token scan, and axiom audit
+- [x] identify cubic second-variation landing (P-G168)
+- [ ] global lint (blocked by unrelated unreachable Suzuki modules; Route-P modules are umbrella-wired)
 - [ ] prove dyadic `N/4` Euler--Gamma budget

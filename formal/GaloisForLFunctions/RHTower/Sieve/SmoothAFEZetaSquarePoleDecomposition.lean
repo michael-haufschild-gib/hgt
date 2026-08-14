@@ -170,4 +170,13 @@ theorem smoothAFEZetaSquareMellinIntegrand_confluent_decomposition
         (linePt tau) hx).differentiableAt),
     confluentSimpleCoeff_smoothAFEZetaSquarePoleNumerator]
 
+/-- The literal square integrand is the single-zeta Gaussian integrand times
+one additional zeta factor. -/
+theorem smoothAFEZetaSquareMellinIntegrand_eq_single_mul_zeta
+    (s : ℂ) (x : ℝ) (w : ℂ) :
+    smoothAFEZetaSquareMellinIntegrand s x w =
+      smoothAFEZetaMellinIntegrand s x w * riemannZeta (s + w) := by
+  unfold smoothAFEZetaSquareMellinIntegrand smoothAFEZetaMellinIntegrand
+  ring
+
 end RHTower.Sieve

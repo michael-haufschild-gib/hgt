@@ -3,7 +3,8 @@
 - **ID:** `route-u-dyadic-cayley-source-multiresolution`
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE + EXACT BRIDGE CANDIDATE
-- **Scientific status:** `[FROZEN CONJECTURE] [HOSTILE TESTING] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[FROZEN CONJECTURE] [TRANSFER MECHANISM FALSIFIED]`
+  `[LEAN-FORMALIZED POSITIVE SURVIVOR] [NOVELTY UNVERIFIED]`
 - **Source:** Route U hard-edge cofinal source inversion and degree-free Cauchy density
 - **Statement:** Dyadic hard-edge refinement is an exact even/odd Chebyshev multiresolution for
   the flat Cauchy energy; RH would follow if the completed prime--Gamma functional retained the
@@ -116,7 +117,56 @@ Consequently its flat real-line energy has the exact refinement
 E_(2a) = (1/2) E_a + 2*pi*a*||D_a||_(mu_T)^2.          (CAUCHY-MRA)
 ```
 
-Constants will be fixed against mathlib's exact normalization before promotion to paper theorem.
+Mathlib's Chebyshev measure has mass `pi`; division by `pi` gives the probability normalization
+used above. The finite even/odd Pythagorean law, its half-refinement form, and the sharp lower bound
+are now closed in Lean as
+
+```text
+RouteUDyadicCayley.flatPythagorean
+RouteUDyadicCayley.flatHalfPythagorean
+RouteUDyadicCayley.flatHalfSubmartingale.
+```
+
+The exact real-line change-of-variables theorem remains separate; the polynomial/arcsine theorem
+already contains the complete parity mechanism needed for the hostile test.
+
+## Hostile-test result: flat transfer to the divisor is invalid
+
+The flat argument compares even and odd sectors at one abstract Cayley coordinate `x`. Route-U
+does not evaluate both masses at that coordinate. For spectral node `z`, the mass-`a` node is
+
+```text
+x_a(z)=(a^2-z^2)/(a^2+z^2).
+```
+
+Lean proves the exact doubled-mass transport
+
+```text
+T_2(x_(2a)(z))
+  = (16a^4-24a^2z^2+z^4)/(4a^2+z^2)^2.
+```
+
+It also proves the exact drift from the original mass-`a` node:
+
+```text
+T_2(x_(2a)(z)) - x_a(z)
+  = 2 z^4 (z^2-8a^2) / ((4a^2+z^2)^2 (a^2+z^2)).
+```
+
+Hence tangent doubling cancels the entire quadratic spectral drift; for fixed `z` the node defect
+starts at order `a^-4`. Packet degree grows linearly in `a`, so derivative amplification can raise
+its effective size, but any argument treating node motion as a generic order-`a^-2` defect loses a
+real cancellation. Lean theorem: `RouteUDyadicCayley.dyadicTransportedNode_sub_cayleyNode`.
+
+Away from tangent-doubling poles, the right side is
+`x_a(z/(1-z^2/(4a^2)))`, not `x_a(z)`. This is formalized by
+`RouteUDyadicCayley.cayleyNode_doubling_eq_dyadicTransportedNode`.
+
+Therefore arcsine invariance under `T_2` cannot compare `W_(2k+1)` with `W_k`: the Xi divisor is
+sampled at a nonlinear drifted spectral node and carries a mass-dependent resolvent weight. The
+proposed direct implication `(FLAT-MRA) -> (U-DYS)` is falsified. The scalar conjecture itself is
+not disproved, but it now requires a genuinely arithmetic transport theorem rather than parity
+orthogonality.
 
 ## Anti-theatre interpretation
 
@@ -167,9 +217,11 @@ negative fixed point.
 
 ## Open core
 
-`[OPEN CORE]` Determine the exact sign or sharp norm bound for completed prime--Gamma even/odd
-Chebyshev covariance under `a -> 2a`. This is the first unproved step. Everything after it is a
-short cofinal-limit contradiction already supported by the Route-U corpus.
+`[OPEN CORE]` Control the sum of two defects under `a -> 2a`: nonlinear Cayley node transport of
+the existing even sector, and completed prime--Gamma even/odd covariance of the fresh detail. A
+sharp bound must be global/infinite-tail; finite prime-log jets and scalar Gamma subtraction are
+already excluded. Everything after such a bound is a short cofinal-limit contradiction supported
+by the Route-U corpus.
 
 ## Literature audit
 
@@ -183,3 +235,14 @@ the arithmetic covariance theorem exists and broader literature comparison is co
 - 2026-08-14 -- Card opened. Corrected normalization from raw Hankel/source capital to
   `W_k=(k+1)^2 H_k`. Froze `(U-DYS)` with explicit falsifiers. Identified fresh odd Chebyshev
   detail as reason fixed-carrier finite-budget arguments fail.
+- 2026-08-14 -- Hostile test falsified the flat-to-source transfer mechanism: dyadic parity is at a
+  fixed abstract Cayley node, while the divisor sees exact nonlinear tangent-doubling node drift.
+  Proved and Lean-formalized the strongest positive survivor: finite even/odd arcsine Pythagoras,
+  exact half-refinement, sharp half-submartingale, and explicit doubled-node transport. Module:
+  `formal/GaloisForLFunctions/RHTower/XiShiftedHardEdgeCayleyMultiresolution.lean`; scratch and tree
+  `lake env lean` pass; axiom audit is `[propext, Classical.choice, Quot.sound]`; exact `.olean`
+  built serially and umbrella import wired without an umbrella build.
+- 2026-08-14 -- Strengthened node-transport survivor with exact drift formula. Discovered and
+  formalized full quadratic cancellation: doubled-node transport differs from original node only
+  through `2 z^4(z^2-8a^2)` over the explicit denominator. Rebuilt exact module `.olean` serially;
+  axiom audit unchanged.

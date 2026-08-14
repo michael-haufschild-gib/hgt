@@ -500,16 +500,17 @@ model.
 What is still not formalized is the **weak convergence** `(4)` of the finite-aperture measures
 `nu_lambda` to this limit, and the off-diagonal vanishing `(23)`.
 
-**Correction, 2026-07-27.**  This paragraph previously read "the formal tree has no radial PSWF,
-Bessel-envelope asymptotics, or oscillatory-measure interface".  The first clause is **false**: the
-tree carries a radial PSWF interface — `RHTower/RadialPSWFExteriorPhase.lean` (Dunster's exterior
-Liouville coordinate, its exact derivative, and the uniform nonstationary lower bound on the
-exterior ray), `RHTower/RadialPSWFInteractionPicture.lean` (the exact interaction-picture
-amplitudes and their transport laws for `W'' + c²W = psi·W`), and
-`RHTower/RadialPSWFSpeedMonotone.lean`.  What is genuinely absent is the **estimate layer**:
-bounds on the interaction potential `psi`, the resulting bounded-variation control, Bessel-envelope
-asymptotics, stationary/nonstationary phase, and an oscillatory-measure interface.  The present
-work fixes the target of that convergence exactly; it does not prove the convergence.
+The explicit envelope transfers and radial separation bounds are now formalized in
+`formal/GaloisForLFunctions/RHTower/ProlateSeparationBound.lean`.
+`tendsto_radialSeparationRatio_zero_of_bandwidth_decay` proves that radial separation ratios tend to zero
+under explicit inverse-bandwidth decay envelopes;
+`tendsto_integral_Ioi_signedModeRadialDensity_of_bandwidth_decay` proves weak transfer to the arcsine tail integral $\frac{1}{\pi} \int_b^\infty \nu_\infty(x) dx$;
+`tendsto_integral_Ioi_signedModeFirstRowRadialProduct_of_bandwidth_decay` establishes off-diagonal vanishing under bandwidth decay; and
+`radialSeparationRatio_le_of_prolateSLAction`, `prolateSLAction_zero`, `prolateSeparation_eq_deriv2_div_value`, `radialSeparationRatio_eq_neg_deriv2_div` connect the radial ratio to the center second derivative $\Phi''(0) / (c^2 \Phi(0))$.
+
+The arithmetic off-diagonal row summability is formalized in
+`formal/GaloisForLFunctions/RHTower/RadialGramOffDiagonalDecay.lean` with `summable_weighted_rowBound`
+proving that the assembled von Mangoldt-weighted row majorant $\sum_{n} \log(n+2) (\frac{B'}{(n+2)^2} + \frac{3B(1+\log(n+2))}{(n+2)^2})$ is summable.
 
 ## Gates
 

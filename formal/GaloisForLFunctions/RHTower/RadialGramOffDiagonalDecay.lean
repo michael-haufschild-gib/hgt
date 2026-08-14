@@ -389,6 +389,44 @@ theorem rowBound_le {B B' : ℝ} (hB : 0 ≤ B) {K : ℕ} (hK : 2 ≤ K) :
     linarith
   linarith
 
+/-- The assembled von Mangoldt-weighted row majorant is summable over all rows `K ≥ 2`. -/
+theorem summable_weighted_rowBound (B B' : ℝ) (hB : 0 ≤ B) (hB' : 0 ≤ B') :
+    Summable (fun n : ℕ =>
+      Real.log ((n : ℝ) + 2) * (B' / ((n : ℝ) + 2) ^ 2 + 3 * B * (1 + Real.log ((n : ℝ) + 2)) / ((n : ℝ) + 2) ^ 2)) := by
+  have hdom : Summable (fun n : ℕ =>
+      (B' + 3 * B) * (Real.log ((n : ℝ) + 2) * (1 + Real.log ((n : ℝ) + 2)) / ((n : ℝ) + 2) ^ 2)) :=
+    summable_weighted_rowMajorant.mul_left (B' + 3 * B)
+  refine Summable.of_nonneg_of_le (fun n => ?_) (fun n => ?_) hdom
+  · have hx : (1 : ℝ) ≤ (n : ℝ) + 2 := by linarith [show (0 : ℝ) ≤ n by positivity]
+    have hlog : 0 ≤ Real.log ((n : ℝ) + 2) := Real.log_nonneg hx
+    have hterm1 : 0 ≤ B' / ((n : ℝ) + 2) ^ 2 := by positivity
+    have hterm2 : 0 ≤ 3 * B * (1 + Real.log ((n : ℝ) + 2)) / ((n : ℝ) + 2) ^ 2 := by positivity
+    exact mul_nonneg hlog (add_nonneg hterm1 hterm2)
+  · have hx : (1 : ℝ) ≤ (n : ℝ) + 2 := by linarith [show (0 : ℝ) ≤ n by positivity]
+    have hlog : 0 ≤ Real.log ((n : ℝ) + 2) := Real.log_nonneg hx
+    have h1le : 1 ≤ 1 + Real.log ((n : ℝ) + 2) := by linarith
+    have hB'le : Real.log ((n : ℝ) + 2) * (B' / ((n : ℝ) + 2) ^ 2)
+        ≤ B' * (Real.log ((n : ℝ) + 2) * (1 + Real.log ((n : ℝ) + 2)) / ((n : ℝ) + 2) ^ 2) := by
+      have : Real.log ((n : ℝ) + 2) * (B' / ((n : ℝ) + 2) ^ 2) =
+          B' * (Real.log ((n : ℝ) + 2) / ((n : ℝ) + 2) ^ 2) := by ring
+      rw [this]
+      have hstep : Real.log ((n : ℝ) + 2) / ((n : ℝ) + 2) ^ 2
+          ≤ Real.log ((n : ℝ) + 2) * (1 + Real.log ((n : ℝ) + 2)) / ((n : ℝ) + 2) ^ 2 := by
+        rw [div_le_div_iff_of_pos_right (by positivity)]
+        nlinarith
+      exact mul_le_mul_of_nonneg_left hstep hB'
+    have hBle : Real.log ((n : ℝ) + 2) * (3 * B * (1 + Real.log ((n : ℝ) + 2)) / ((n : ℝ) + 2) ^ 2)
+        = (3 * B) * (Real.log ((n : ℝ) + 2) * (1 + Real.log ((n : ℝ) + 2)) / ((n : ℝ) + 2) ^ 2) := by
+      ring
+    calc
+      Real.log ((n : ℝ) + 2) * (B' / ((n : ℝ) + 2) ^ 2 + 3 * B * (1 + Real.log ((n : ℝ) + 2)) / ((n : ℝ) + 2) ^ 2)
+          = Real.log ((n : ℝ) + 2) * (B' / ((n : ℝ) + 2) ^ 2) +
+            Real.log ((n : ℝ) + 2) * (3 * B * (1 + Real.log ((n : ℝ) + 2)) / ((n : ℝ) + 2) ^ 2) := by ring
+      _ ≤ B' * (Real.log ((n : ℝ) + 2) * (1 + Real.log ((n : ℝ) + 2)) / ((n : ℝ) + 2) ^ 2) +
+          (3 * B) * (Real.log ((n : ℝ) + 2) * (1 + Real.log ((n : ℝ) + 2)) / ((n : ℝ) + 2) ^ 2) := by linarith [hB'le, hBle]
+      _ = (B' + 3 * B) * (Real.log ((n : ℝ) + 2) * (1 + Real.log ((n : ℝ) + 2)) / ((n : ℝ) + 2) ^ 2) := by ring
+
 end
 
 end RHTower
+

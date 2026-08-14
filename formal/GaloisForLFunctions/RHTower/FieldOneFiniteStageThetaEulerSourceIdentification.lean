@@ -16,6 +16,10 @@ noncomputable section
 open IsDedekindDomain
 open scoped BigOperators
 
+local instance fieldOneFiniteStagePlaceDecidableEq
+    {S : Finset (HeightOneSpectrum ℤ)} : DecidableEq ↥S :=
+  Classical.decEq _
+
 /-- One local Euler factor acting within Schwartz space. -/
 def fieldOneFiniteStageThetaEulerSchwartzTerm
     (S : Finset (HeightOneSpectrum ℤ)) (v : ↥S)

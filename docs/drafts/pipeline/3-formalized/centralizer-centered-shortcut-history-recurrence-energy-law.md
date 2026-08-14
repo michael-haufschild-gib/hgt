@@ -84,13 +84,13 @@ project-wide build was run.  Both modules are wired into the `HTGeometry` umbrel
 
 ## Honest boundary
 
-This formalization does not prove Brown--Susskind first onset.  It proves the exact factorization
-that a successful proof must close.  Remaining growing-replica tasks are:
+This formalization does not prove Brown--Susskind first onset. Subsequent analysis and formalization
+show that its second proposed task—making scalar centralizer recurrence energy small—is the wrong
+frontier: a fresh target channel carries unavoidable diagonal norm and can saturate the inequality
+even with perfect temporal decorrelation. The correction is formalized in
+`StaticShortcutSelectorPartitionLaw.lean`.
 
-```text
-return/carrier-excised occupied heap-image frame energy = O(1 / intrinsic capacity),
-quenched centralizer-centered recurrence energy is small on the required static-H time window.
-```
-
-Both must hold at scales strong enough for complete circuit union.  Literature priority for their
-composition remains unverified, so this bridge is not yet a paper headline.
+The remaining static-H problem is selector-resolved: prove cross-incidence anti-concentration for
+the complete circuit union, or prove production of occupied observer-resolution channels beyond
+shallow-circuit capacity while controlling recurrence inside each reused channel. Literature
+priority for this application remains unverified, so neither bridge is yet a paper headline.

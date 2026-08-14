@@ -141,7 +141,7 @@ private theorem summable_complexEulerLogDirichlet
 private theorem tsum_complexEulerLogDirichlet_succ
     {s : ℂ} (hs : 1 < s.re) :
     (∑' n : ℕ,
-      (Real.log (n + 1) : ℂ) / ((n + 1 : ℕ) : ℂ) ^ s) =
+      (Real.log (n + 1 : ℕ) : ℂ) / ((n + 1 : ℕ) : ℂ) ^ s) =
       ∑' n : ℕ, (Real.log n : ℂ) / (n : ℂ) ^ s := by
   have h := (summable_complexEulerLogDirichlet hs).sum_add_tsum_nat_add 1
   simpa using h
@@ -175,7 +175,8 @@ private theorem tsum_complexDamping_eulerPositiveMass
         (f := fun n : ℕ => 1 / (n : ℂ) ^
           eulerPositiveComplexBoundaryParameter sigma u))
   rw [hpnat]
-  exact (zeta_eq_tsum_one_div_nat_add_one_cpow hshift).symm
+  simpa only [Nat.cast_add, Nat.cast_one] using
+    (zeta_eq_tsum_one_div_nat_add_one_cpow hshift).symm
 
 private theorem tsum_complexDamping_eulerPositiveMass_mul_log
     {sigma : ℝ} {u : ℂ}
@@ -211,7 +212,8 @@ private theorem tsum_complexDamping_eulerPositiveMass_mul_log
                 ((Real.log (n : ℕ) : ℝ) : ℂ)) *
             (eulerPositiveMass sigma n : ℂ)) by ring]
     rw [complexDamping_mul_eulerPositiveMass]
-    simp only [div_eq_mul_inv]]
+    dsimp only [s]
+    simp only [div_eq_mul_inv, one_mul]]
   have hpnat :
       (∑' n : ℕ+, (Real.log (n : ℕ) : ℂ) / ((n : ℕ) : ℂ) ^ s) =
         ∑' n : ℕ, (Real.log (n + 1 : ℕ) : ℂ) /
@@ -226,7 +228,6 @@ private theorem tsum_complexDamping_eulerPositiveMass_mul_log
   simp only [infinitePrimeFlux, logDeriv_apply]
   dsimp only [s] at hz ⊢
   field_simp [hz]
-  ring
 
 /-- The base state paired with a complex inward column is the literal full-Euler overlap. -/
 theorem inner_eulerPositiveState_complexDamped_eq_affineOverlap
@@ -434,7 +435,7 @@ theorem inner_eulerPositiveFisherTangent_complexDamped_eq_affineScore
                   ((Real.log (n : ℕ) : ℝ) : ℂ)) *
               (eulerPositiveMass sigma n : ℂ)) by ring,
         complexDamping_mul_eulerPositiveMass]
-      simp only [div_eq_mul_inv]
+      simp only [div_eq_mul_inv, one_mul]
   have hmass : Summable (fun n : ℕ+ =>
       Complex.exp
           (-u * ((sigma - 1 : ℝ) : ℂ) *
@@ -595,8 +596,10 @@ theorem eulerPositiveComplexPointedTransverseGram_bottomRight
   change inner ℂ (eulerPositivePreScalarGammaTransverseSource sigma hsigma)
       (eulerPositivePreScalarGammaTransverseSource sigma hsigma) = _
   rw [inner_self_eq_norm_sq_to_K]
-  exact_mod_cast
-    norm_eulerPositivePreScalarGammaTransverseSource_sq hsigma
+  have h := congrArg (fun x : ℝ => (x : ℂ))
+    (norm_eulerPositivePreScalarGammaTransverseSource_sq hsigma)
+  push_cast at h
+  exact h
 
 /-- The polarized reporter retains P-G166's sharp four-unit critical source budget. -/
 theorem tendsto_norm_eulerPositiveComplexPointedTransverse_source_sq :
