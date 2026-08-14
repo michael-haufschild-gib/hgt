@@ -17,7 +17,8 @@ silently import part of Schanuel.
 
 - [x] 0 -> 1  in-progress: projective-kernel conjecture stated and dimension trap removed
 - [x] 1 -> 2  fully-proven: base-change, isogeny action, and core equality proved below
-- [ ] 2 -> 3  formalized: general Kähler base-change and Plücker field-of-definition layer remain
+- [ ] 2 -> 3  formalized: full/scalar core equality is Lean-proved; general Kähler base-change and
+  Plücker field-of-definition layer remain
 - [ ] 3 -> 4  publication-ready: independent proof and external novelty audits pending
 
 ## Setup
@@ -140,8 +141,10 @@ coefficient wall.
   `schanuelDefect_slope_mem_of_integral_isogeny`; its concrete generated full-matrix field and
   `trdeg=1` rank transfer are Lean-proved by
   `schanuelDefect_slope_mem_integral_isogeny_valueField`.  The all-dimensional transformation law
-  `(5)` is Lean-proved by `schanuelDefect_integer_linearCombination`.  General Kähler-kernel base
-  change and Plücker descent remain to formalize.
+  `(5)` is Lean-proved by `schanuelDefect_integer_linearCombination`.  Core equality `(3)` is
+  Lean-proved by `fullIntegralIsogenyCore_eq_scalarPowerIsogenyCore` in
+  `RHTower/SchanuelIntegralIsogenyCoreIntersection.lean`.  General Kähler-kernel base change and
+  Plücker descent remain to formalize.
 
 ## Big-picture consequence
 
@@ -162,3 +165,5 @@ combination as a new internal theorem; external novelty unconfirmed and no prior
   Grassmannian; core equality and Plücker descent proved on paper.
 - 2026-08-14 -- all-dimensional integral transformation law for numerical Schanuel defects
   scratch-proved, axiom-audited, copied into the isogeny module, and covered by existing umbrella.
+- 2026-08-14 -- full integral-isogeny core/scalar-power core equality scratch-proved,
+  axiom-audited, and umbrella-wired.

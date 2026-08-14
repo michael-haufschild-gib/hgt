@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven / needs independent specialist audit
 - **Route:** U, full restricted-Weil ground selection
 - **Type:** THEOREM + FAILED CLOSURE AUDIT (paper)
-- **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [LEAN NOT STARTED]`
+- **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [FINITE ODD CORE LEAN-PROVED] [CONTINUOUS STEP OPEN]`
 - **External parent:** Connes--van Suijlekom,
   [Quadratic Forms, Real Zeros and Echoes of the Spectral Action](https://arxiv.org/abs/2511.23257)
 - **Statement:** For the reflection-invariant truncated-convolution operators of
@@ -305,9 +305,12 @@ No parity hypothesis is needed.
   contradiction.  Any successful successor must prove from the literal completed-Xi source that
   the selected even critical state is the full bottom, or must couple its nonreal zero to every odd
   lower-ground vector.  Even-ground common zeros alone cannot do this.
-- **Lean status.** Not started.  A general matrix/operator formalization would not construct the
-  literal completed-Xi hard edge or close its odd-sector admission wall, so doing it now would be
-  infrastructure theatre under the Route-U rules.
+- **Lean status.** Finite odd core is proved in
+  `formal/GaloisForLFunctions/RHTower/CCMParityFreeOddGroundFourier.lean`: positive semimetric
+  completion, nonnegative full characteristic roots, and real non-pole Fourier-resolvent zeros.
+  Literal published-source parity blocks and the infinite approximation/Hurwitz step remain open.
+  This formalization closes literature parity debt but does not receive Route-O ground-selection
+  credit.
 
 ## No-go closure
 
@@ -315,9 +318,11 @@ No parity hypothesis is needed.
   evaluation is unconstrained.
 - **Strongest positive survivor:** parity-free simple-ground Fourier real-zero law `(PF.15)`.
 - **New insight:** parity is not the obstruction.  Full-ground selection is.
-- **Status:** dependency-closed paper proof; external novelty unverified; deliberately no Lean
-  wrapper and no Route-U formal credit.
+- **Status:** dependency-closed paper proof; external novelty unverified; finite odd core
+  Lean-closed; no Route-O ground-selection credit.
 
 ## Log
 
 - 2026-08-11 — odd (D^2) correction derived; common-zero closure falsified; paper proof closed.
+- 2026-08-14 — finite odd squared-frequency correction and non-pole Fourier-resolvent reality
+  formalized in `CCMParityFreeOddGroundFourier.lean`; continuous source approximation remains.

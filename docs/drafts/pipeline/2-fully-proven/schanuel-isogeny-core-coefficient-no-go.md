@@ -25,9 +25,9 @@ and proves that the endpoint exponential branch, not finite-isogeny algebra, is 
 
 - [x] 0 -> 1  in-progress: exact statement, proof, hostile countermodel, and pivot identified
 - [x] 1 -> 2  fully-proven: core membership and exact normal-closure classification proved
-- [ ] 2 -> 3  formalized: scalar-power fixed-field core, finite-Galois power-primitive
-  stabilization, rank-one value-field slope descent, and every concrete two-dimensional
-  full-matrix isogeny field are Lean-proved; full-matrix/scalar-core intersection equality remains
+- [x] 2 -> 3  formalized: scalar-power fixed-field core, finite-Galois power-primitive
+  stabilization, rank-one value-field slope descent, every concrete two-dimensional full-matrix
+  isogeny field, and full-matrix/scalar-core intersection equality are Lean-proved
 - [ ] 3 -> 4  publication-ready: external novelty audit; elementary mechanism likely a bridge
 
 ## Setup
@@ -285,8 +285,10 @@ differentials, traces, norms, or abstract function-field Galois theory can finis
   `finiteDimensional_integral_isogeny_valueField` and
   `schanuelDefect_slope_mem_integral_isogeny_valueField` in the umbrella-wired module
   `RHTower/SchanuelIntegralIsogenyValueField.lean`.  Their scratch axiom audit reports only
-  `propext`, `Classical.choice`, and `Quot.sound`.  Formal equality of the full-matrix intersection
-  with the scalar-power core remains.
+  `propext`, `Classical.choice`, and `Quot.sound`.  The exact cofinality statement `(3)` is
+  formalized by `fullIntegralIsogenyCore_eq_scalarPowerIsogenyCore` in
+  `RHTower/SchanuelIntegralIsogenyCoreIntersection.lean`, using the explicit determinant-power
+  containment and scalar-matrix realization; its scratch axiom audit has the same standard list.
   Targeted external
   search found Kummer subfield results (for example Stacks Project, Tag `0EXP`) but no statement
   coupling finite-isogeny value fields to Schanuel defect slopes.  No priority claim.
@@ -317,6 +319,8 @@ torically primitive algebraic curve; ordinary field intersection is proved insuf
 - 2026-08-14 -- scalar-power Kummer-core fixed-field classification formalized and umbrella-wired.
 - 2026-08-14 -- finite-automorphism power-primitive stabilization formalized in scratch, copied
   exactly into `HTGeometry/SchanuelIsogenyCore.lean`, and axiom-audited; no project build run.
+- 2026-08-14 -- full integral-matrix core/scalar-power core equality formalized in scratch,
+  axiom-audited, and umbrella-wired as `RHTower/SchanuelIntegralIsogenyCoreIntersection.lean`.
 - 2026-08-14 -- rank-one intermediate-value-field slope descent formalized and axiom-audited in
   scratch, then copied into already-wired `RHTower/SchanuelDefectValueField.lean`.
 - 2026-08-14 -- nondegenerate integral Möbius slope inversion formalized with explicit ring

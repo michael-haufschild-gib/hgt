@@ -216,8 +216,128 @@ theorem inner_eulerPositiveComplexHardy_projective_eq_zetaRatio
   rw [inner_eulerPositiveComplexHardy_complexHardy_eq_affineOverlap]
   unfold eulerAffineBoundaryOverlap
   congr 2
-  simp only [routePProjectiveHardyNode, map_sub, map_mul, map_div₀,
-    map_one, map_ofNat, RCLike.star_def, Complex.conj_ofReal]
+  simp only [routePProjectiveHardyNode, Complex.conj_ofReal]
+  push_cast
+  ring
+
+/-- Projectively rescaled finite-`sigma` zeta overlap of two full-Hardy Euler columns. -/
+def routePProjectiveFullEulerZetaOverlap (R a b sigma : ℝ) : ℂ :=
+  (R : ℂ) *
+    (riemannZeta (((1 + R * (a + b) * (sigma - 1) : ℝ) : ℂ)) /
+      riemannZeta (sigma : ℂ))
+
+/-- The rescaled zeta overlap is not a fitted kernel: it is exactly the inner product of the
+genuine square-summable full-Euler columns at every `sigma > 1`. -/
+theorem routePProjectiveFullEulerZetaOverlap_eq_scaled_inner
+    {sigma R a b : ℝ} (hsigma : 1 < sigma) (hR : 0 < R)
+    (ha : 0 < a) (hb : 0 < b) :
+    routePProjectiveFullEulerZetaOverlap R a b sigma =
+      (R : ℂ) *
+        inner ℂ
+          (eulerPositiveCriticalComplexHardyStateLp sigma
+            (routePProjectiveHardyNode R a) hsigma
+            (neg_half_lt_routePProjectiveHardyNode_re hR ha))
+          (eulerPositiveCriticalComplexHardyStateLp sigma
+            (routePProjectiveHardyNode R b) hsigma
+            (neg_half_lt_routePProjectiveHardyNode_re hR hb)) := by
+  rw [inner_eulerPositiveComplexHardy_projective_eq_zetaRatio hsigma hR ha hb]
+  rfl
+
+/-- Pole cancellation turns every fixed positive projective scale of the genuine Euler source into
+the universal Hardy kernel.  The scale `R` disappears exactly, rather than being sent to infinity. -/
+theorem tendsto_routePProjectiveFullEulerZetaOverlap
+    {R a b : ℝ} (hR : 0 < R) (ha : 0 < a) (hb : 0 < b) :
+    Tendsto (routePProjectiveFullEulerZetaOverlap R a b)
+      (nhdsWithin 1 (Ioi 1))
+      (nhds (((1 / (a + b) : ℝ) : ℂ))) := by
+  let q : ℂ := ((a + b : ℝ) : ℂ)
+  have hab : 0 < a + b := add_pos ha hb
+  have hq : q ≠ 0 := by
+    exact ofReal_ne_zero.mpr (ne_of_gt hab)
+  have hsigma : Tendsto (fun sigma : ℝ => (sigma : ℂ))
+      (nhdsWithin 1 (Ioi 1)) (nhds (1 : ℂ)) :=
+    Complex.continuous_ofReal.continuousAt.tendsto.mono_left nhdsWithin_le_nhds
+  have hparam : Tendsto
+      (fun sigma : ℝ =>
+        ((1 + R * (a + b) * (sigma - 1) : ℝ) : ℂ))
+      (nhdsWithin 1 (Ioi 1)) (nhds (1 : ℂ)) := by
+    have hcont : ContinuousAt
+        (fun sigma : ℝ =>
+          ((1 + R * (a + b) * (sigma - 1) : ℝ) : ℂ)) 1 := by
+      fun_prop
+    simpa using hcont.tendsto.mono_left nhdsWithin_le_nhds
+  have hunitSigma : Tendsto
+      (fun sigma : ℝ => zetaResidueUnit (sigma : ℂ))
+      (nhdsWithin 1 (Ioi 1)) (nhds (1 : ℂ)) := by
+    simpa only [Function.comp_def, zetaResidueUnit_one] using
+      zetaResidueUnit_analyticAt.continuousAt.tendsto.comp hsigma
+  have hunitParam : Tendsto
+      (fun sigma : ℝ =>
+        zetaResidueUnit
+          (((1 + R * (a + b) * (sigma - 1) : ℝ) : ℂ)))
+      (nhdsWithin 1 (Ioi 1)) (nhds (1 : ℂ)) := by
+    simpa only [Function.comp_def, zetaResidueUnit_one] using
+      zetaResidueUnit_analyticAt.continuousAt.tendsto.comp hparam
+  have hregularized : Tendsto
+      (fun sigma : ℝ =>
+        zetaResidueUnit
+              (((1 + R * (a + b) * (sigma - 1) : ℝ) : ℂ)) /
+          (zetaResidueUnit (sigma : ℂ) * q))
+      (nhdsWithin 1 (Ioi 1)) (nhds q⁻¹) := by
+    have h := hunitParam.div (hunitSigma.mul_const q)
+      (mul_ne_zero one_ne_zero hq)
+    have hfun :
+        ((fun sigma : ℝ =>
+            zetaResidueUnit
+              (((1 + R * (a + b) * (sigma - 1) : ℝ) : ℂ))) /
+          (fun sigma : ℝ => zetaResidueUnit (sigma : ℂ) * q)) =
+        (fun sigma : ℝ =>
+          zetaResidueUnit
+                (((1 + R * (a + b) * (sigma - 1) : ℝ) : ℂ)) /
+            (zetaResidueUnit (sigma : ℂ) * q)) := by
+      funext sigma
+      rfl
+    rw [hfun] at h
+    simpa only [one_mul, one_div] using h
+  have htarget : q⁻¹ = (((1 / (a + b) : ℝ) : ℂ)) := by
+    rw [show ((1 / (a + b) : ℝ) : ℂ) = (1 : ℂ) / q by
+      simp only [q, Complex.ofReal_div, Complex.ofReal_one]]
+    exact (one_div q).symm
+  rw [htarget] at hregularized
+  apply hregularized.congr'
+  filter_upwards [self_mem_nhdsWithin] with sigma hsigmaGt
+  change 1 < sigma at hsigmaGt
+  have hsigOne : sigma ≠ 1 := ne_of_gt hsigmaGt
+  have hscale : 0 < R * (a + b) := mul_pos hR hab
+  have hparamGt : 1 < 1 + R * (a + b) * (sigma - 1) := by
+    nlinarith [mul_pos hscale (sub_pos.mpr hsigmaGt)]
+  have hparamOne : 1 + R * (a + b) * (sigma - 1) ≠ 1 :=
+    ne_of_gt hparamGt
+  have hsigZeta : 1 < ((sigma : ℂ)).re := by simpa using hsigmaGt
+  have hparamZeta :
+      1 < (((1 + R * (a + b) * (sigma - 1) : ℝ) : ℂ)).re := by
+    simpa using hparamGt
+  have hunitSig : zetaResidueUnit (sigma : ℂ) =
+      ((sigma : ℂ) - 1) * riemannZeta (sigma : ℂ) := by
+    rw [zetaResidueUnit, Function.update_of_ne (by exact_mod_cast hsigOne)]
+  have hunitPar :
+      zetaResidueUnit
+          (((1 + R * (a + b) * (sigma - 1) : ℝ) : ℂ)) =
+        ((((1 + R * (a + b) * (sigma - 1) : ℝ) : ℂ)) - 1) *
+          riemannZeta
+            (((1 + R * (a + b) * (sigma - 1) : ℝ) : ℂ)) := by
+    rw [zetaResidueUnit,
+      Function.update_of_ne (by exact_mod_cast hparamOne)]
+  rw [routePProjectiveFullEulerZetaOverlap, hunitSig, hunitPar]
+  have hsigOneC : (sigma : ℂ) - 1 ≠ 0 :=
+    sub_ne_zero.mpr (by exact_mod_cast hsigOne)
+  have hparamOneC :
+      (((1 + R * (a + b) * (sigma - 1) : ℝ) : ℂ)) - 1 ≠ 0 :=
+    sub_ne_zero.mpr (by exact_mod_cast hparamOne)
+  field_simp [hq, hsigOneC, hparamOneC,
+    riemannZeta_ne_zero_of_one_lt_re hsigZeta,
+    riemannZeta_ne_zero_of_one_lt_re hparamZeta]
+  unfold q
   push_cast
   ring
 

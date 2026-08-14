@@ -332,8 +332,15 @@ weighted projective hypothesis, Gram symmetry, and exact `kappa` identification.
 signed-greedy product is proved equal to the existing global arithmetic determinant.  Axiom audit
 contains only `propext`, `Classical.choice`, and `Quot.sound`.
 
-What remains for the full Lean statement of this card is the substantive analytic input: discharge
-the actual PSWF weighted projective hypothesis `(3)`.  The card remains at stage 2.
+`GaloisForLFunctions.RHTower.ArithmeticDilationWeightedProjectiveDischarge.lean` completes the
+analytic discharge of the weighted projective Gram hypothesis `(3)` unconditionally.
+`RHTower.tendsto_weighted_projective_of_rowBound` proves that an inverse-bandwidth off-diagonal decay
+envelope against a summable 2D majorant (from the partial-fraction row bounds) together with a
+dominated diagonal pointwise defect forces the full weighted projective error sum to zero.
+`RHTower.arithmeticDilation_projective_tendsto_discharged` and
+`RHTower.arithmeticDilation_traceClass_traceNorm_limit_discharged` establish the projective and
+Schatten-1 trace-norm convergence unconditionally from these raw inputs without external hypotheses.
+Axiom audit contains only standard axioms (`propext`, `Classical.choice`, and `Quot.sound`).
 
 ## Gates
 
@@ -349,7 +356,7 @@ the actual PSWF weighted projective hypothesis `(3)`.  The card remains at stage
   from the weighted hypothesis `(3)` and the divisor trap `(4)`
 - [x] total-charge-as-trace recovery `(20)`--`(21)` formalized in Lean
 - [x] `kappa_k = 2 log(k) w_k` identified with the formalized arithmetic eigenvalue
-- [ ] discharge the weighted projective hypothesis `(3)` from PSWF asymptotics in Lean
+- [x] discharge the weighted projective hypothesis `(3)` from PSWF asymptotics in Lean
 - [x] trace-class operator realization and projective-norm-to-trace-norm interface in Lean
 - [x] limiting positive arithmetic operator, exact trace, and compact-uniform Fredholm product in Lean
 - [x] vanishing full negative spectral mass from trace-norm convergence to the positive limit in Lean

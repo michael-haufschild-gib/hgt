@@ -68,13 +68,33 @@ full-Euler source for every fixed positive projective scale, without zero-fitted
 - **C4:** enlarge P-G167 to its sharp L2 half-plane `Re u>-1/2`. **Selected:** literal source weights
   already have this domain and every positive projective node is automatically admitted.
 
+## Closed result
+
+Lean proves the sharp source-domain extension, exact full-half-plane Gram, transverse completed-Xi
+reporter, projective finite-`sigma` zeta ratio, and residue-unit critical limit. In particular, for
+every fixed `R,a,b>0`, the literal full-Euler source columns exist and satisfy
+
+```text
+R <h_sigma(u_R(a)),h_sigma(u_R(b))> -> 1/(a+b)  as sigma -> 1+.
+```
+
+No projective-scale blow-up is needed. The P-G168 obstruction survives only for the artificial
+subchart `Re u>=0`; it disappears on the exact L2 domain `Re u>-1/2`. This is a source theorem,
+not an abstract-kernel identification: Lean first proves the zeta ratio equals the actual Hilbert
+inner product, then cancels both poles with `zetaResidueUnit`.
+
+Scratch compilation produced
+`/tmp/routep-snapshot/GaloisForLFunctions/RHTower/RoutePFullHardyHalfPlanePolarization.olean`.
+All public capstones depend only on `propext`, `Classical.choice`, and `Quot.sound`; targeted
+forbidden-token scan is clean. Umbrella import is wired without compiling the umbrella.
+
 ## Gates
 
 - [x] corpus noncollision and exact convergence-threshold audit
-- [ ] Lean sharp half-plane square summability
-- [ ] Lean exact full-half-plane non-diagonal overlap
-- [ ] Lean transverse reporter and augmented Gram on full half-plane
-- [ ] Lean projective finite-`sigma` overlap
-- [ ] Lean pole-cancelled projective Hardy limit
-- [ ] scratch compile, forbidden-token scan, and axiom audit
+- [x] Lean sharp half-plane square summability
+- [x] Lean exact full-half-plane non-diagonal overlap
+- [x] Lean transverse reporter and augmented Gram on full half-plane
+- [x] Lean projective finite-`sigma` overlap
+- [x] Lean pole-cancelled projective Hardy limit
+- [x] scratch compile, forbidden-token scan, and axiom audit
 - [ ] source-faithful dyadic height trace budget

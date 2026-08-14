@@ -82,12 +82,13 @@ structure CCMParityFreeOddGroundData
   eta : even → ℂ
   beta : odd → ℂ
   ground : odd → ℂ
-  plus_posDef : Qplus.PosDef
+  plus_posSemidef : Qplus.PosSemidef
   minus_posSemidef : Qminus.PosSemidef
   cross_commutator :
     Qplus * frequency - frequency * Qminus = Matrix.vecMulVec eta (star beta)
   ground_kernel : Qminus *ᵥ ground = 0
   ground_radical : ∀ v : odd → ℂ, Qminus *ᵥ v = 0 → ∃ a : ℂ, v = a • ground
+  frequency_ground_not_kernel : Qplus *ᵥ (frequency *ᵥ ground) ≠ 0
   normalized : star ground ⬝ᵥ (frequencyᴴ *ᵥ eta) = 1
 
 namespace CCMParityFreeOddGroundData
@@ -131,7 +132,17 @@ theorem star_frequency_ground_dot_eta (S : CCMParityFreeOddGroundData even odd) 
 
 theorem betaGround_pos (S : CCMParityFreeOddGroundData even odd) :
     0 < S.betaGround := by
-  have hpos := S.plus_posDef.dotProduct_mulVec_pos (S.frequency_ground_ne_zero)
+  have hnonneg := S.plus_posSemidef.dotProduct_mulVec_nonneg
+    (S.frequency *ᵥ S.ground)
+  have hne : star (S.frequency *ᵥ S.ground) ⬝ᵥ
+      (S.Qplus *ᵥ (S.frequency *ᵥ S.ground)) ≠ 0 := by
+    intro hzero
+    exact S.frequency_ground_not_kernel
+      ((S.plus_posSemidef.dotProduct_mulVec_zero_iff
+        (S.frequency *ᵥ S.ground)).mp hzero)
+  have hpos : 0 < star (S.frequency *ᵥ S.ground) ⬝ᵥ
+      (S.Qplus *ᵥ (S.frequency *ᵥ S.ground)) :=
+    lt_of_le_of_ne hnonneg (Ne.symm hne)
   rw [S.qplus_mulVec_frequency_ground, dotProduct_smul,
     S.star_frequency_ground_dot_eta] at hpos
   simpa using hpos
@@ -141,7 +152,7 @@ theorem adjoint_cross_commutator (S : CCMParityFreeOddGroundData even odd) :
       Matrix.vecMulVec S.beta (star S.eta) := by
   have h := congrArg Matrix.conjTranspose S.cross_commutator
   simpa [Matrix.conjTranspose_sub, Matrix.conjTranspose_mul,
-    S.plus_posDef.isHermitian.eq, S.minus_posSemidef.isHermitian.eq] using h
+    S.plus_posSemidef.isHermitian.eq, S.minus_posSemidef.isHermitian.eq] using h
 
 theorem squaredFrequency_commutator (S : CCMParityFreeOddGroundData even odd) :
     S.squaredFrequency * S.Qminus - S.Qminus * S.squaredFrequency =
@@ -277,7 +288,7 @@ theorem frequency_ground_semimetric_pairing
         (S.Qplus *ᵥ (S.frequency *ᵥ f)) =
       S.betaGround * (star S.delta ⬝ᵥ f) := by
   have hherm := ccmHermitian_mulVec_inner S.Qplus
-    (S.frequency *ᵥ S.ground) (S.frequency *ᵥ f) S.plus_posDef.isHermitian
+    (S.frequency *ᵥ S.ground) (S.frequency *ᵥ f) S.plus_posSemidef.isHermitian
   rw [S.qplus_mulVec_frequency_ground] at hherm
   have hbstar : star S.betaGround = S.betaGround := by
     have hbim : S.betaGround.im = 0 :=
@@ -295,7 +306,7 @@ theorem betaGround_mul_norm_pairing_sq_le
     S.betaGround.re * ‖star S.delta ⬝ᵥ f‖ ^ 2 ≤
       (star (S.frequency *ᵥ f) ⬝ᵥ
         (S.Qplus *ᵥ (S.frequency *ᵥ f))).re := by
-  have hcs := norm_semimetric_pairing_sq_le S.Qplus S.plus_posDef.posSemidef
+  have hcs := norm_semimetric_pairing_sq_le S.Qplus S.plus_posSemidef
     (S.frequency *ᵥ S.ground) (S.frequency *ᵥ f)
   rw [S.frequency_ground_semimetric_pairing,
     S.frequency_ground_semimetric_energy] at hcs
