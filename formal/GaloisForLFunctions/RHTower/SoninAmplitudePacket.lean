@@ -71,11 +71,12 @@ theorem abs_eq (x : ℝ) : |A.toFun x| = A.toFun x := abs_of_nonneg (A.nonneg' x
 theorem integrable_of_bound {f : ℝ → ℝ} (hf : Measurable f) {K : ℝ}
     (hK : ∀ x, |f x| ≤ K) (hvan : ∀ x, A.toFun x = 0 → f x = 0) : Integrable f := by
   have hKnn : (0 : ℝ) ≤ K := le_trans (abs_nonneg _) (hK 0)
+  have hfin : (volume (Metric.closedBall (0 : ℝ) c)) ≠ ⊤ := measure_closedBall_lt_top.ne
+  have hind : Integrable ((Metric.closedBall (0 : ℝ) c).indicator (fun _ : ℝ => K)) :=
+    (integrable_indicator_iff measurableSet_closedBall).mpr (integrableOn_const hfin)
   refine Integrable.mono'
-    (g := fun x => (Metric.closedBall (0 : ℝ) c).indicator (fun _ => K) x) ?_
+    (g := fun x => (Metric.closedBall (0 : ℝ) c).indicator (fun _ => K) x) hind
     hf.aestronglyMeasurable ?_
-  · exact (integrable_indicator_iff measurableSet_closedBall).mpr
-      (integrableOn_const (by simp [Real.volume_closedBall]))
   · filter_upwards with x
     by_cases hx : x ∈ Metric.closedBall (0 : ℝ) c
     · rw [Set.indicator_of_mem hx, Real.norm_eq_abs]
@@ -112,6 +113,7 @@ theorem memLp_ofReal : MemLp (fun x : ℝ => (A.toFun x : ℂ)) 2 (volume : Meas
     (Complex.continuous_ofReal.measurable.comp A.measurable').aestronglyMeasurable
   refine (memLp_two_iff_integrable_sq_norm hmeas).mpr ?_
   refine A.integrable_sq.congr (Filter.Eventually.of_forall fun x => ?_)
+  show A.toFun x ^ 2 = ‖((A.toFun x : ℝ) : ℂ)‖ ^ 2
   rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
 
 /-- The amplitude as an element of `L²(ℝ)`. -/
@@ -201,6 +203,7 @@ theorem memLp_ampPacket (κ : ℝ) :
     (Complex.continuous_ofReal.measurable.comp (A.measurable_ampPacket κ)).aestronglyMeasurable
   refine (memLp_two_iff_integrable_sq_norm hmeas).mpr ?_
   refine (A.integrable_ampPacket_sq κ).congr (Filter.Eventually.of_forall fun x => ?_)
+  show A.ampPacket κ x ^ 2 = ‖((A.ampPacket κ x : ℝ) : ℂ)‖ ^ 2
   rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
 
 end AnnulusAmplitude

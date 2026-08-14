@@ -45,7 +45,7 @@ theorem taylorPS_comp_const_mul {F : ℂ → ℂ} (hF : ContDiff ℂ (⊤ : ℕ�
   ext k
   rw [coeff_taylorPS, PowerSeries.coeff_rescale, coeff_taylorPS,
     iteratedDeriv_comp_const_mul (hF.of_le (by exact_mod_cast le_top)) c]
-  rw [mul_zero]
+  simp only [mul_zero]
   ring
 
 /-- **The dilates of an analytic bounded-relation source are jointly hypertranscendental.**  No

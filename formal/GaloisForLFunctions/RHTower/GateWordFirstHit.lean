@@ -122,4 +122,114 @@ theorem firstHitMass_of_mem (act : Γ → X → X) {χ : X} {A : Set X} (a : ℝ
 
 end GateWords
 
+section Kraft
+
+variable {Γ : Type*} [Fintype Γ] [DecidableEq Γ] {X : Type*}
+
+/-- Length-`n` completions of a word shorter than `n`. -/
+noncomputable def wordCompletions (w : List Γ) (n : ℕ) (hw : w.length ≤ n) :
+    Finset (List.Vector Γ n) :=
+  Finset.univ.image fun m : List.Vector Γ (n - w.length) =>
+    (⟨w ++ (m : List Γ), by
+      rw [List.length_append, m.2]
+      omega⟩ : List.Vector Γ n)
+
+theorem card_wordCompletions (w : List Γ) (n : ℕ) (hw : w.length ≤ n) :
+    (wordCompletions w n hw).card = Fintype.card Γ ^ (n - w.length) := by
+  classical
+  rw [wordCompletions, Finset.card_image_of_injective _ ?_, Finset.card_univ,
+    card_vector]
+  rintro ⟨m, hm⟩ ⟨m', hm'⟩ h
+  have : w ++ m = w ++ m' := congrArg Subtype.val h
+  exact Subtype.ext (List.append_cancel_left this)
+
+theorem mem_wordCompletions_iff {w : List Γ} {n : ℕ} (hw : w.length ≤ n)
+    (v : List.Vector Γ n) : v ∈ wordCompletions w n hw ↔ w <+: (v : List Γ) := by
+  classical
+  constructor
+  · intro hv
+    rw [wordCompletions, Finset.mem_image] at hv
+    obtain ⟨m, -, hm⟩ := hv
+    exact ⟨(m : List Γ), congrArg Subtype.val hm⟩
+  · rintro ⟨s, hs⟩
+    have hlen : s.length = n - w.length := by
+      have := v.2
+      rw [← hs, List.length_append] at this
+      omega
+    rw [wordCompletions, Finset.mem_image]
+    exact ⟨⟨s, hlen⟩, Finset.mem_univ _, Subtype.ext hs⟩
+
+/-- **Kraft inequality for the first-hit language.**  A prefix-free gate language has total
+inverse-alphabet mass at most one. -/
+theorem tsum_firstHitWord_inv_card_le_one [Nonempty Γ] (act : Γ → X → X) (χ : X) (A : Set X) :
+    (∑' w : List Γ, Set.indicator {w : List Γ | FirstHitWord act χ A w}
+      (fun w => ((Fintype.card Γ : ℝ≥0∞))⁻¹ ^ w.length) w) ≤ 1 := by
+  classical
+  have hM : 0 < Fintype.card Γ := Fintype.card_pos
+  have hMR : (Fintype.card Γ : ℝ≥0∞) ≠ 0 := by
+    simpa using Nat.pos_iff.mp hM
+  have hMtop : (Fintype.card Γ : ℝ≥0∞) ≠ ⊤ := ENNReal.natCast_ne_top _
+  rw [ENNReal.tsum_eq_iSup_sum]
+  refine iSup_le fun s => ?_
+  set n : ℕ := s.sup List.length with hn
+  set s' : Finset (List Γ) := s.filter (fun w => FirstHitWord act χ A w) with hs'
+  have hlen : ∀ w ∈ s', w.length ≤ n := fun w hw =>
+    Finset.le_sup (f := List.length) (Finset.mem_of_mem_filter w hw)
+  have hcardsum : ∑ w ∈ s'.attach, Fintype.card Γ ^ (n - (w : List Γ).length) ≤
+      Fintype.card Γ ^ n := by
+    have hbi : (s'.attach.biUnion fun w =>
+        wordCompletions (w : List Γ) n (hlen (w : List Γ) w.2)).card ≤
+        Fintype.card (List.Vector Γ n) := Finset.card_le_univ _
+    rw [card_vector] at hbi
+    refine le_trans (le_of_eq ?_) hbi
+    rw [Finset.card_biUnion]
+    · exact (Finset.sum_congr rfl fun w _ => (card_wordCompletions _ _ _).symm)
+    · intro w hw w' hw' hne
+      refine Finset.disjoint_left.mpr fun v hv hv' => hne (Subtype.ext ?_)
+      have h1 : (w : List Γ) <+: (v : List Γ) := (mem_wordCompletions_iff _ v).mp hv
+      have h2 : (w' : List Γ) <+: (v : List Γ) := (mem_wordCompletions_iff _ v).mp hv'
+      have hwF : FirstHitWord act χ A (w : List Γ) := (Finset.mem_filter.mp w.2).2
+      have hw'F : FirstHitWord act χ A (w' : List Γ) := (Finset.mem_filter.mp w'.2).2
+      rcases List.prefix_or_prefix_of_prefix h1 h2 with h | h
+      · exact firstHitWord_eq_of_prefix hwF hw'F h
+      · exact (firstHitWord_eq_of_prefix hw'F hwF h).symm
+  have hsum : ∑ w ∈ s, Set.indicator {w : List Γ | FirstHitWord act χ A w}
+      (fun w => ((Fintype.card Γ : ℝ≥0∞))⁻¹ ^ w.length) w =
+      ∑ w ∈ s'.attach, ((Fintype.card Γ : ℝ≥0∞))⁻¹ ^ (w : List Γ).length := by
+    rw [Finset.sum_attach s' (fun w => ((Fintype.card Γ : ℝ≥0∞))⁻¹ ^ w.length), hs',
+      Finset.sum_filter]
+    refine Finset.sum_congr rfl fun w _ => ?_
+    by_cases hw : FirstHitWord act χ A w
+    · rw [Set.indicator_of_mem (show w ∈ {w : List Γ | FirstHitWord act χ A w} from hw),
+        if_pos hw]
+    · rw [Set.indicator_of_notMem (show w ∉ {w : List Γ | FirstHitWord act χ A w} from hw),
+        if_neg hw]
+  have hkey : ∀ k : ℕ, k ≤ n →
+      ((Fintype.card Γ : ℝ≥0∞))⁻¹ ^ k * (Fintype.card Γ : ℝ≥0∞) ^ n =
+        (Fintype.card Γ : ℝ≥0∞) ^ (n - k) := by
+    intro k hk
+    have hsplit : (Fintype.card Γ : ℝ≥0∞) ^ n =
+        (Fintype.card Γ : ℝ≥0∞) ^ k * (Fintype.card Γ : ℝ≥0∞) ^ (n - k) := by
+      rw [← pow_add]
+      congr 1
+      omega
+    rw [hsplit, ← mul_assoc, ← mul_pow, ENNReal.inv_mul_cancel hMR hMtop, one_pow, one_mul]
+  have hcast : ((∑ w ∈ s'.attach, Fintype.card Γ ^ (n - (w : List Γ).length) : ℕ) : ℝ≥0∞) ≤
+      ((Fintype.card Γ ^ n : ℕ) : ℝ≥0∞) := by exact_mod_cast hcardsum
+  have hfinal : (∑ w ∈ s'.attach, ((Fintype.card Γ : ℝ≥0∞))⁻¹ ^ (w : List Γ).length) *
+      (Fintype.card Γ : ℝ≥0∞) ^ n ≤ 1 * (Fintype.card Γ : ℝ≥0∞) ^ n := by
+    rw [Finset.sum_mul, one_mul]
+    calc (∑ w ∈ s'.attach, ((Fintype.card Γ : ℝ≥0∞))⁻¹ ^ (w : List Γ).length *
+          (Fintype.card Γ : ℝ≥0∞) ^ n)
+        = ∑ w ∈ s'.attach, (Fintype.card Γ : ℝ≥0∞) ^ (n - (w : List Γ).length) :=
+          Finset.sum_congr rfl fun w _ => hkey _ (hlen (w : List Γ) w.2)
+      _ ≤ (Fintype.card Γ : ℝ≥0∞) ^ n := by
+          refine le_trans (le_of_eq ?_) (le_trans hcast (le_of_eq ?_)) <;> push_cast <;> ring
+  have hne0 : (Fintype.card Γ : ℝ≥0∞) ^ n ≠ 0 := pow_ne_zero _ hMR
+  have hnetop : (Fintype.card Γ : ℝ≥0∞) ^ n ≠ ⊤ := ENNReal.pow_ne_top hMtop
+  rw [hsum]
+  exact (ENNReal.mul_le_mul_right hne0 hnetop).mp hfinal
+
+end Kraft
+
 end GaloisForLFunctions.RHTower
