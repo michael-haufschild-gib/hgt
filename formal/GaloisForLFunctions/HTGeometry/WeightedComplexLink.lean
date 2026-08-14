@@ -189,4 +189,40 @@ theorem unitComplex_m_pos_iff (top : Finset (Finset V)) (τ : Finset V) :
     exact_mod_cast hcard
 
 
+/-! ## Flag complexes -/
+
+section Flag
+
+variable [Fintype V] [LE V] [DecidableRel ((· ≤ ·) : V → V → Prop)]
+
+/-- A finite set of vertices is a chain when its elements are pairwise comparable. -/
+def IsChainFinset (s : Finset V) : Prop := ∀ x ∈ s, ∀ y ∈ s, x ≤ y ∨ y ≤ x
+
+instance (s : Finset V) : Decidable (IsChainFinset s) := by
+  unfold IsChainFinset
+  infer_instance
+
+/-- **The flag complex of a finite ordered type in a fixed rank**: the top faces are the chains of
+a given size, each of weight one.  This is the shape a building has, and it is pure by
+construction. -/
+def flagComplexOfCard (d : ℕ) : WeightedComplex V :=
+  unitComplex ((Finset.univ : Finset (Finset V)).filter (fun s => IsChainFinset s ∧ s.card = d))
+
+/-- **The flag complex is pure.** -/
+theorem flagComplexOfCard_pure (d : ℕ) :
+    ∀ s ∈ (flagComplexOfCard (V := V) d).top, s.card = d := by
+  intro s hs
+  rw [flagComplexOfCard, unitComplex_top, Finset.mem_filter] at hs
+  exact hs.2.2
+
+/-- **Every face of the flag complex is a chain.** -/
+theorem flagComplexOfCard_isChain {d : ℕ} {τ : Finset V}
+    (hτ : (flagComplexOfCard (V := V) d).IsFace τ) : IsChainFinset τ := by
+  obtain ⟨s, hs, hts⟩ := hτ
+  rw [flagComplexOfCard, unitComplex_top, Finset.mem_filter] at hs
+  exact fun x hx y hy => hs.2.1 x (hts hx) y (hts hy)
+
+end Flag
+
+
 end GaloisForLFunctions.HTGeometry

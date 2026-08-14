@@ -1402,3 +1402,22 @@ First brick: `HTGeometry/HalfLineBetaKernel.lean`,
 
 proved by the same `halfLineChart` change of variables that gave the reflection kernel, so the
 `c = 1` case is recovered.
+
+### First bricks of the genus route, built and wired
+
+`GaloisForLFunctions/HTGeometry/HalfLineBetaKernel.lean` (wired into the umbrella, axiom-clean):
+
+    integral_halfLine_beta :
+      **`∫_0^∞ y^{w-1}(1+y)^{-c} dy = Γ(w)Γ(c-w)/Γ(c)`** on `0 < Re w < Re c`
+    Gamma_natCast_add_one_sub :
+      `Γ(g+1-w) = (∏_{i<g}(i+1-w))·Γ(1-w)` off the integers
+    Gamma_add_one_mul_Gamma_natCast_sub :
+      **`Γ(w+1)Γ(g+1-w) = [w ∏_{i<g}(i+1-w)] · π/sin(πw)`**
+
+The first is the same `halfLineChart` change of variables that produced the reflection kernel, now
+with a free exponent, so the `c = 1` case is recovered.  The second pair turns the genus-`g` Beta
+kernel into the *same* sine kernel already carried through the whole contour argument, multiplied by
+an explicit polynomial of degree `g+1` — and that polynomial vanishes at `w = 0,1,…,g`, exactly
+cancelling the sine poles the Beta kernel does not have.  So the genus route reuses the existing
+machinery verbatim once the weight is allowed to be a polynomial and the zeta argument is allowed
+the shift `a - sw`.

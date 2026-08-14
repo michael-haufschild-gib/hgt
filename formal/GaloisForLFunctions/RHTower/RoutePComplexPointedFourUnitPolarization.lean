@@ -14,7 +14,7 @@ No Xi zero, target interpolation polynomial, or RH premise enters the constructi
 -/
 
 open Complex Filter Set
-open scoped BigOperators Topology
+open scoped BigOperators Topology ComplexOrder
 
 namespace RHTower
 
@@ -89,8 +89,9 @@ theorem eulerPositiveCriticalComplexDampedStateLp_ofReal
       eulerPositiveCriticalDampedStateLp sigma u hsigma hu := by
   apply lp.ext
   funext n
-  simp [eulerPositiveCriticalComplexDampedStateLp,
-    eulerPositiveCriticalComplexDampedStateWeight]
+  change eulerPositiveCriticalComplexDampedStateWeight sigma (u : ℂ) n =
+    eulerPositiveCriticalDampedStateWeight sigma u n
+  simp [eulerPositiveCriticalComplexDampedStateWeight]
 
 private theorem complexDamping_mul_eulerPositiveMass
     (sigma : ℝ) (u : ℂ) (n : ℕ+) :
@@ -106,14 +107,17 @@ private theorem complexDamping_mul_eulerPositiveMass
     rw [← Complex.ofReal_natCast (n : ℕ),
       ← Complex.ofReal_log (by positivity)]
   rw [eulerPositiveMass, Complex.ofReal_cpow (by positivity)]
-  rw [show ((-sigma : ℝ) : ℂ) = -(sigma : ℂ) by norm_cast,
-    Complex.cpow_neg]
-  rw [Complex.cpow_def_of_ne_zero hnC,
-    Complex.cpow_def_of_ne_zero hnC, hlog,
-    div_eq_mul_inv, ← Complex.exp_neg, ← Complex.exp_neg]
-  simp only [one_mul, eulerPositiveComplexBoundaryParameter]
-  rw [← Complex.exp_add]
+  change
+    Complex.exp
+          (-u * ((sigma - 1 : ℝ) : ℂ) *
+            ((Real.log (n : ℕ) : ℝ) : ℂ)) *
+        ((n : ℕ) : ℂ) ^ ((-sigma : ℝ) : ℂ) =
+      1 / ((n : ℕ) : ℂ) ^ eulerPositiveComplexBoundaryParameter sigma u
+  simp only [Complex.cpow_def_of_ne_zero hnC, hlog]
+  rw [one_div, ← Complex.exp_neg, ← Complex.exp_add]
   congr 1
+  simp only [eulerPositiveComplexBoundaryParameter]
+  push_cast
   ring
 
 private theorem summable_complexEulerLogDirichlet
@@ -171,7 +175,7 @@ private theorem tsum_complexDamping_eulerPositiveMass
         (f := fun n : ℕ => 1 / (n : ℂ) ^
           eulerPositiveComplexBoundaryParameter sigma u))
   rw [hpnat]
-  exact zeta_eq_tsum_one_div_nat_add_one_cpow hshift
+  exact (zeta_eq_tsum_one_div_nat_add_one_cpow hshift).symm
 
 private theorem tsum_complexDamping_eulerPositiveMass_mul_log
     {sigma : ℝ} {u : ℂ}
@@ -207,10 +211,10 @@ private theorem tsum_complexDamping_eulerPositiveMass_mul_log
                 ((Real.log (n : ℕ) : ℝ) : ℂ)) *
             (eulerPositiveMass sigma n : ℂ)) by ring]
     rw [complexDamping_mul_eulerPositiveMass]
-    rfl]
+    simp only [div_eq_mul_inv]]
   have hpnat :
       (∑' n : ℕ+, (Real.log (n : ℕ) : ℂ) / ((n : ℕ) : ℂ) ^ s) =
-        ∑' n : ℕ, (Real.log (n + 1) : ℂ) /
+        ∑' n : ℕ, (Real.log (n + 1 : ℕ) : ℂ) /
           ((n + 1 : ℕ) : ℂ) ^ s := by
     simpa only using
       (tsum_pnat_eq_tsum_succ
@@ -220,6 +224,7 @@ private theorem tsum_complexDamping_eulerPositiveMass_mul_log
     ← GaloisForLFunctions.zeta_deriv_eq_neg_tsum hshift]
   have hz : riemannZeta s ≠ 0 := riemannZeta_ne_zero_of_one_lt_re hshift
   simp only [infinitePrimeFlux, logDeriv_apply]
+  dsimp only [s] at hz ⊢
   field_simp [hz]
   ring
 
@@ -279,8 +284,7 @@ private theorem complexDamped_pair_apply
       eulerPositiveCriticalComplexDampedStateWeight sigma
           (v + (starRingEnd ℂ) u) n *
         (starRingEnd ℂ) (eulerPositiveStateWeight sigma n) := by
-  rw [eulerPositiveCriticalComplexDampedStateWeight_eq_exp,
-    eulerPositiveCriticalComplexDampedStateWeight_eq_exp]
+  simp only [eulerPositiveCriticalComplexDampedStateWeight_eq_exp]
   have hexp :
       (starRingEnd ℂ)
           (Complex.exp
@@ -312,7 +316,7 @@ private theorem complexDamped_pair_apply
             (starRingEnd ℂ) (eulerPositiveStateWeight sigma n) by ring]
   rw [← Complex.exp_add]
   congr 2
-  ring_nf
+  ring
 
 /-- Exact non-diagonal full-Euler source Gram. -/
 theorem inner_eulerPositiveComplexDamped_complexDamped_eq_affineOverlap
@@ -430,7 +434,7 @@ theorem inner_eulerPositiveFisherTangent_complexDamped_eq_affineScore
                   ((Real.log (n : ℕ) : ℝ) : ℂ)) *
               (eulerPositiveMass sigma n : ℂ)) by ring,
         complexDamping_mul_eulerPositiveMass]
-      rfl
+      simp only [div_eq_mul_inv]
   have hmass : Summable (fun n : ℕ+ =>
       Complex.exp
           (-u * ((sigma - 1 : ℝ) : ℂ) *
@@ -501,13 +505,15 @@ theorem eulerPositivePreScalarComplexGraphNormalizedCoefficient_transverse
         infinitePrimeFlux (sigma : ℂ)) := by
   rw [eulerPositivePreScalarComplexGraphNormalizedCoefficient,
     eulerPositivePreScalarGammaTransverseSource, inner_neg_left,
-    inner_eulerPositiveFisherTangent_complexDamped_eq_affineScore hsigma hu,
-    eulerAffineFisherScore_eq_current_difference
+    inner_eulerPositiveFisherTangent_complexDamped_eq_affineScore hsigma hu]
+  have hden :=
+    eulerPositivePreScalarComplexGraphDenominator_ne_zero hsigma hu
+  apply (div_eq_iff hden).2
+  rw [eulerAffineFisherScore_eq_current_difference
       (by simpa using hsigma)
       (one_lt_eulerPositiveComplexBoundaryParameter_re hsigma hu)]
   unfold eulerPositivePreScalarComplexGraphDenominator
   simp only [eulerPositiveComplexBoundaryParameter]
-  field_simp [eulerPositivePreScalarComplexGraphDenominator_ne_zero hsigma hu]
   ring
 
 /-- Exact pointed completed-Xi reporter on every safe complex inward node. -/
@@ -588,8 +594,9 @@ theorem eulerPositiveComplexPointedTransverseGram_bottomRight
       (eulerPositiveCriticalProjectiveFisherEnergy sigma : ℂ) := by
   change inner ℂ (eulerPositivePreScalarGammaTransverseSource sigma hsigma)
       (eulerPositivePreScalarGammaTransverseSource sigma hsigma) = _
-  rw [inner_self_eq_norm_sq_to_K, Complex.ofReal_pow,
-    norm_eulerPositivePreScalarGammaTransverseSource_sq hsigma]
+  rw [inner_self_eq_norm_sq_to_K]
+  exact_mod_cast
+    norm_eulerPositivePreScalarGammaTransverseSource_sq hsigma
 
 /-- The polarized reporter retains P-G166's sharp four-unit critical source budget. -/
 theorem tendsto_norm_eulerPositiveComplexPointedTransverse_source_sq :

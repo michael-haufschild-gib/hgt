@@ -2,8 +2,6 @@ import GaloisForLFunctions.RHTower.FieldOneFiniteStageSoninSigma
 import GaloisForLFunctions.RHTower.FieldOnePositiveUnitsHaarNormalization
 import GaloisForLFunctions.RHTower.CCMArchimedeanGeometricScaledKernel
 
-set_option maxHeartbeats 200000
-
 /-!
 # Literal finite-stage CCM theta equation
 

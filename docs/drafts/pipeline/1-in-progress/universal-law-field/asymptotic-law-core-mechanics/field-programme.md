@@ -1,10 +1,10 @@
 # Asymptotic Law-Core Mechanics -- field programme
 
-- **ID:** ULF-ALFM-PROGRAMME-1
+- **ID:** ULF-ALCM-PROGRAMME-1
 - **Stage:** 1-in-progress
 - **Type:** ROUTE-INDEPENDENT FORMATION MECHANISM
-- **Status:** `[CONJECTURE FROZEN] [MECHANISM NOT OBJECT] [PAPER PROOF IN PROGRESS]`
-  `[LEAN REQUIRED] [NOT RH]`
+- **Status:** `[FIELD PROGRAMME ACTIVE] [MECHANISM NOT OBJECT]`
+  `[LAWS I/III/IV LEAN-PROVED] [LAW II PARTIAL] [LAW V OPEN] [NOT RH]`
 - **Date:** 2026-08-14
 
 ## 1. Founding mechanism
@@ -157,12 +157,27 @@ provenance/transgression law rather than pretending a positive invariant mean re
 
 ## 7. Immediate proof programme
 
-1. Prove compact-convex nonemptiness and affine functoriality.
+1. [x] Prove compact-convex nonemptiness and affine functoriality.
 2. Prove exact reporter interval reconstruction and separation.
-3. Prove approximate-fixed and approximate-kernel exactification.
+3. [x] Prove approximate-fixed and approximate-kernel exactification.
 4. Prove countable probability tight/escape/properness classification.
 5. Construct scalar, shift, and operator laboratories.
 6. Hostile-audit current literature and full ULF corpus.
-7. Promote only dependency-closed survivors to Stage 2.
-8. Formalize promoted theorems scratch-first in `HTGeometry`, wire only the ULF umbrella, and run no
-   broad build.
+7. [x] Promote the dependency-closed formation/exchange/recovery/exactification survivor to Stage 2.
+8. [x] Formalize that survivor scratch-first in `HTGeometry` and wire only the ULF umbrella.
+
+## 8. Current exact frontier
+
+The Stage-2/Lean theorem
+`asymptotic-law-core-formation-affine-exchange-recovery-and-exactification-law.md` closes Laws I,
+III, and IV. It also proves the functional-equation action and its information-neutral lift through
+every common affine recovery pair.
+
+This does not repeat the existing Markov-kernel KL theorem: the new carrier is the complete
+compact-convex tail core of an open history. The remaining field-producing gate is stronger:
+
+1. prove scalar reporter intervals and joint separation in Lean;
+2. prove the normal/corona/properness classification for probability histories;
+3. realize the same core in at least three nonisomorphic corpus organs;
+4. use reporter width to predict and prove a fourth-organ multiplicity theorem;
+5. only then ask whether source properness collapses the arithmetic core to the critical law.

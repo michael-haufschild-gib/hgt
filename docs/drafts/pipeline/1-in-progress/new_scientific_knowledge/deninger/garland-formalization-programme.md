@@ -571,3 +571,68 @@ Perfectness is one of the two halves of "`St(R) → E(R)` is the universal centr
 other is centrality of `K_2`, whose mechanism — the abelian column subgroups and the injectivity of
 the map to matrices on them — is already proved.  Together they give `K_2(R) ≅ H_2(E(R), ℤ)`, the
 bridge from the tame kernel to the group homology that Garland's vanishing controls.
+
+## Layer D — the counting weight, PROVED
+
+`HTGeometry/WeightedComplexLink.lean`.
+
+- **`unitComplex`** — a complex with every top face of weight one.  This is the weighting a building
+  carries.
+- **`unitComplex_m`** — the weight of a face is then the number of chambers containing it.
+- **`unitComplex_m_pos_iff`** — positive weight exactly when some chamber contains the face, which
+  is the positivity hypothesis `cocycle_eq_coboundary` needs.
+
+This is the interface between a building presented by its chambers and the Garland machinery: such a
+complex becomes a `WeightedComplex` with the right weights, `linkGraph_mass` reads its links as
+weighted graphs, and `incidenceGraph_hasSpectralGap` supplies their spectral gaps once the rank-two
+links are identified with incidence graphs of projective planes.
+
+## Layer B — perfectness of the elementary group, PROVED
+
+`HTGeometry/SteinbergElementaryGroup.lean`.
+
+- **`elementaryGroup_perfect`** — `⁅E(R), E(R)⁆ = E(R)`: the elementary group is perfect, being the
+  image of the perfect Steinberg group.  With centrality of `K_2` this is exactly the hypothesis
+  under which `St(R) → E(R)` is the universal central extension and `K_2(R) ≅ H_2(E(R), ℤ)`.
+
+## Layer B — the column subgroup, PROVED
+
+`HTGeometry/SteinbergGroupPresentation.lean`.
+
+- `columnGens`, **`columnGens_comm`** — the generators with a fixed second index commute pairwise.
+- **`columnSubgroup`**, **`columnSubgroup_isMulCommutative`** — **the subgroup they generate is
+  abelian**, via `Subgroup.isMulCommutative_closure`.
+- `steinbergX_mem_columnSubgroup` — the generators lie in it.
+
+Milnor's centrality argument needs exactly two facts about these subgroups: that they are abelian,
+and that the map to the matrices is injective on them.  The first is now proved in the group; the
+second is proved on the matrix side (`sum_single_col_eq_zero_iff`, `transvection_col_mul`).  What
+remains is to transport the second across, and then the normalisation argument that lets one
+conclude that an element of `K_2` commutes with every generator.
+
+## Layer D — flag complexes, PROVED
+
+`HTGeometry/WeightedComplexLink.lean`.
+
+- `IsChainFinset` — a finite vertex set whose elements are pairwise comparable, with its decidability
+  instance.
+- **`flagComplexOfCard`** — **the flag complex of a finite ordered type in a fixed rank**: the top
+  faces are the chains of a given size, each of weight one.  This is the shape a building has.
+- **`flagComplexOfCard_pure`** — it is pure by construction, which discharges the purity hypothesis
+  of every Layer C theorem.
+- `flagComplexOfCard_isChain` — every face of it is a chain.
+
+With `unitComplex_m_pos_iff` for positivity, a building presented as the flag complex of its poset
+of proper nonzero subspaces now satisfies the two structural hypotheses of `cocycle_eq_coboundary`
+directly; what remains in Layer D is the identification of the links with spherical buildings of
+lower rank and, at rank two, with incidence graphs of projective planes.
+
+## Session close — 2026-08-14
+
+Fourteen modules added, all wired into `GaloisForLFunctions/HTGeometry.lean`, all built with
+`lake build` and warning-free.  Axiom audit throughout: `propext, Classical.choice, Quot.sound`.
+
+Card `deninger-selective-positive-cell-h0-preservation` was closed and moved to `3-formalized`.
+Card `deninger-algebraic-cyclotomic-milnor-amplitude` remains at stage 2, blocked on exactly one
+statement — the tame kernel of a number field is torsion — which is no longer a citation but a
+construction under way in Layers B, C and D of this programme.

@@ -6665,3 +6665,28 @@ proved rather than assumed.
 
 Card 6's Theorem 1 now needs only the first half: that a tempered solution restricts on each open
 frequency half-line to the classical solution already classified by `exists_channel_vector`.
+
+## GZ — card 6: the regularity lane, first bricks
+
+Card 6's Theorem 1 still needs its first half — a tempered solution restricts on each open frequency
+half-line to the classical solution.  The route is the classical one: a weak derivative that
+vanishes forces a constant, and the integrating factor turns the ODE into that situation.  Two
+modules are in place, both unconditional and axiom-clean.
+
+- `HTGeometry/CompactPrimitive.lean` — `contDiff_primitive` (the primitive of a smooth function is
+  smooth, for any Banach codomain), `primitive_eq_zero_outside` (a function supported in `(a,b)`
+  with vanishing integral has a primitive supported in `(a,b)`), and
+  `apply_eq_integral_smul_of_deriv_zero`, the **du Bois-Reymond lemma** for tempered distributions:
+  if `u(ψ') = 0` for every test function supported in an interval, then on that interval `u φ`
+  depends only on `∫φ`.
+- `HTGeometry/WeakDerivativeConstant.lean` — `exists_test_integral_one` (a normalised bump supported
+  in a prescribed bounded interval) and `exists_test_primitive` (a test function with vanishing
+  integral is the derivative of a test function supported in the same interval, with the compact
+  support bookkeeping done through `sInf`/`sSup` of the support).
+
+Mathlib turns out to carry the fundamental lemma of the calculus of variations
+(`IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero`) and a tempered-distribution API
+(`Analysis/Distribution/TemperedDistribution.lean`, with `dsupport` and `IsVanishingOn` in
+`Analysis/Distribution/Support.lean`).  The next step is `ae_eq_const_of_weak_deriv_zero` — a locally
+integrable function with vanishing weak derivative is a.e. constant — after which the scalar
+integrating factor reduces the Gamma equation on a half-line to that statement.

@@ -178,6 +178,12 @@ The exact arithmetic part is formalized unconditionally.  In
 `16 log(k) arcsin(1/k)/(11*pi*k)` are strictly positive and summable, and their total mass is exactly
 the negative of `constrainedProlatePrimeConstant`.
 
+The **double-sum Dirichlet divisor reindexing identity (9a)** is now formalized unconditionally in
+`GaloisForLFunctions.RHTower.ConstrainedProlatePrimeShiftDoubleSum`.
+`tsum_primeShiftDoubleSumTerm_eq_tsum_primeSeries` proves
+$$\sum_{q=2}^\infty \sum_{j=1}^\infty \frac{\Lambda(q)}{q} \frac{\arcsin(1/(qj))}{j} = \sum_{n=0}^\infty \frac{\log(n+2)}{n+2} \arcsin\left(\frac{1}{n+2}\right)$$
+and `primeShiftUnsignedResponseConstant_eq_half_arithmeticTrace` establishes that the unsigned response constant equals $(1/2) \operatorname{Tr}(A_\infty) = -(1/2) \mathcal{D}_{\text{prime}}$.
+
 The *value* appearing in the diagonal limit `(4)` is now formalized in
 `GaloisForLFunctions/RHTower/RadialLeakageArcsineMeasure.lean`:
 `RHTower.integral_Ioi_radialLeakageDensity` proves
@@ -202,6 +208,8 @@ still not in Lean, so the cofinal limit `(9)` is not yet formalized.  The card r
 - [x] high truncated-divisor weighted first row proved negligible
 - [x] explicit universal constant obtained
 - [x] divisor collapse, positive summable diagonal spectrum, and exact scalar mass formalized
+  unconditionally in Lean
+- [x] double-sum Dirichlet divisor reindexing (9a) and response constant trace-shadow formalized
   unconditionally in Lean
 - [x] primary formula search found no parent statement
 - [x] the arcsine value in the diagonal limit `(4)` formalized in Lean as an exact measure tail

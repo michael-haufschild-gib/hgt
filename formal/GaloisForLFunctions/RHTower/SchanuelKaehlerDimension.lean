@@ -8,6 +8,8 @@ import GaloisForLFunctions.HTGeometry.AlgebraAdjoinAlgebraic
 
 namespace GaloisForLFunctions.RHTower
 
+universe u v
+
 open Polynomial
 open scoped IntermediateField TensorProduct
 
@@ -54,7 +56,11 @@ theorem finrank_kaehlerDifferential_adjoin_transcendental
     rw [← hr]
     change IsAlgebraic (RatFunc A) (algebraMap (RatFunc A) A⟮u⟯ r)
     exact isAlgebraic_algebraMap r
-  letI separableRU : Algebra.IsSeparable (RatFunc A) A⟮u⟯ := inferInstance
+  letI separableRU : Algebra.IsSeparable (RatFunc A) A⟮u⟯ := by
+    refine Algebra.IsSeparable.of_equiv_equiv
+      (RingEquiv.refl (RatFunc A)) e.toRingEquiv ?_
+    ext r
+    simp [RingHom.algebraMap_toAlgebra]
   calc
     Module.finrank A⟮u⟯ (KaehlerDifferential A A⟮u⟯) =
         Module.finrank (RatFunc A) (KaehlerDifferential A (RatFunc A)) :=
@@ -66,21 +72,21 @@ theorem finrank_kaehlerDifferential_adjoin_transcendental
 one-dimensional module of absolute Kähler differentials in the direction needed by the Schanuel
 defect argument. -/
 theorem finrank_kaehlerDifferential_eq_one_of_trdeg_eq_one
-    {A K : Type*} [Field A] [Field K] [Algebra A K] [CharZero A]
+    {A : Type u} {K : Type v} [Field A] [Field K] [Algebra A K] [CharZero A]
     (htrdeg : Algebra.trdeg A K = 1) :
     Module.finrank K (KaehlerDifferential A K) = 1 := by
   have hne : Algebra.trdeg A K ≠ 0 := by simp [htrdeg]
   haveI : Algebra.Transcendental A K := trdeg_ne_zero_iff.mp hne
   obtain ⟨u, hu⟩ := Algebra.Transcendental.transcendental (R := A) (A := K)
-  let v : Unit → K := fun _ ↦ u
-  have hvAI : AlgebraicIndependent A v := by
+  let basisVec : PUnit.{v + 1} → K := fun _ ↦ u
+  have hvAI : AlgebraicIndependent A basisVec := by
     rw [algebraicIndependent_unique_type_iff]
     exact hu
-  have hvTB : IsTranscendenceBasis A v :=
-    hvAI.isTranscendenceBasis_of_trdeg_le_of_finite (by
-      rw [htrdeg, Cardinal.mk_unit])
+  have hvTB : IsTranscendenceBasis A basisVec :=
+    AlgebraicIndependent.isTranscendenceBasis_of_trdeg_le_of_finite
+      (R := A) (A := K) (ι := PUnit.{v + 1}) hvAI (by rw [htrdeg, Cardinal.mk_punit])
   have hAlgRing : Algebra.IsAlgebraic (Algebra.adjoin A ({u} : Set K)) K := by
-    simpa [v] using hvTB.isAlgebraic
+    simpa [basisVec] using hvTB.isAlgebraic
   let E : IntermediateField A K := A⟮u⟯
   letI : Algebra E K := E.val.toAlgebra
   haveI : IsScalarTower A E K := IsScalarTower.of_algebraMap_eq fun _ ↦ rfl

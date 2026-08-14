@@ -426,3 +426,27 @@ The rest of the substrate is present and unconditional: `hasCoverDimLE_bohrHull_
 `exists_frequency_of_hull_character`, and the direct algebraic frequency-rank law
 `rank_bohrFrequencyModule_le_of_exists_realAutonomousAnnihilator` with its arithmetic consequence in
 `PrimePhaseBudgetRank.lean`.
+
+## Log — finite covering dimension of Euclidean compacta `[PROVED]`
+
+`formal/GaloisForLFunctions/HTGeometry/EuclideanCompactCoveringDimension.lean` (wired into
+`GaloisForLFunctions.HTGeometry`, axiom-clean: `propext`, `Classical.choice`, `Quot.sound`).
+
+- **`exists_separated_net_with_sep`** — a maximal `eta`-separated net of a bounded set in `R^m`,
+  returning the **separation** as well as the net property.  `exists_separated_net` in
+  `EuclideanSphereCoveringBound.lean` discards the separation, which is exactly what a multiplicity
+  bound needs.
+- **`hasCoverDimLE_of_isCompact`** — **every compact `K` in `R^m` has `HasCoverDimLE K (5^m - 1)`**:
+  a Lebesgue number `delta` for a finite open cover, a maximal `delta/4`-separated net inside `K`,
+  and the balls of radius `delta/2` around the net points give an open shrinking; the volumetric
+  packing bound of `EuclideanSphereCoveringBound.lean` says no point lies in more than `5^m` of
+  those balls.
+
+This is the *finiteness* half of the first missing input for `(11)`--`(13)`.  It does **not** give
+the sharp constant: the card's `dim_cover X_m <= 2 dim_C V_(P,m)` needs `ind (C^N) <= 2N`, which
+still requires the product/sum theorem of dimension theory.  What is now available unconditionally is
+that a compact subset of `C^N` has *finite* covering dimension, which combined with
+`hasCoverDimLE_bohrHull_of_injection` and the finite jet embedding gives `dim_cover X_f < infinity`.
+The remaining input for `(14)` is unchanged: the Pontryagin--Takahashi identity
+`dim G = rank_Q (dual G)` for a compact connected abelian group (only the inequality
+`rank_Q Gamma(f) <= dim X_f` is used, and it is the nontrivial half).

@@ -1662,3 +1662,16 @@ closed sublevels, hence compactness. Direct source elaboration, targeted compact
 and wired `HTGeometry.UniversalLawField` elaboration pass. Capstone axiom prints report only
 `propext`, `Classical.choice`, and `Quot.sound`; scoped forbidden-declaration and computation scans
 are clean.
+
+## Session 2026-08-14 addition (asymptotic law-core mechanics)
+
+| ID | Theorem | Lean module |
+|---|---|---|
+| ULF-ALCM-1 | Nonempty compact-convex tail-law formation; exact continuous-affine exchange; common-recovery reconstruction; involutive functional-equation action and information-neutral lift; approximate-kernel and approximate-fixed exactification | `HTGeometry.ConstitutiveAsymptoticLawCore` |
+
+Scratch and tree foreground elaboration pass. The targeted leaf build completes 1,781 required
+jobs and produces the missing `.olean`; no area, umbrella, or project build was run. Headline axiom
+prints report only `propext`, `Classical.choice`, and `Quot.sound`. Repository lint reports no
+module-local defect; its five ownership errors concern unrelated concurrently added modules. The
+module is wired into `HTGeometry.UniversalLawField`. This certifies formation/exchange/exactification
+kinematics, not the still-open probability normal/corona properness law or an RH selector.

@@ -219,6 +219,7 @@ theorem transvection_weyl {i j : n} (hij : i ≠ j) (u : Rˣ) :
 def diagMatrix (i j : n) (u : Rˣ) : Matrix n n R :=
   1 + Matrix.single i i ((u : R) - 1) + Matrix.single j j (((u⁻¹ : Rˣ) : R) - 1)
 
+omit [Fintype n] in
 theorem weylMatrix_neg_one (i j : n) :
     weylMatrix i j (-1 : Rˣ)
       = 1 + Matrix.single i j (-1 : R) + Matrix.single j i (1 : R)
@@ -231,7 +232,7 @@ omit [Fintype n] in
 theorem single_eq_smul (i j : n) (c : R) :
     (Matrix.single i j c : Matrix n n R) = c • Matrix.single i j (1 : R) := by
   ext p q
-  by_cases h1 : i = p <;> by_cases h2 : j = q <;> simp [Matrix.single_apply, h1, h2]
+  by_cases h1 : i = p <;> by_cases h2 : j = q <;> simp [h1, h2]
 
 /-- **The Weyl matrix times the Weyl matrix at `-1` is the diagonal matrix.**  In the two-index
 block this is `[[0,u],[-u⁻¹,0]]·[[0,-1],[1,0]] = [[u,0],[0,u⁻¹]]`. -/
@@ -374,7 +375,7 @@ theorem transvection_col_comm {k l j : n} (hkj : k ≠ j) (hlj : l ≠ j) (a b :
 omit [Fintype n] in
 theorem single_col_apply {j : n} (b : n → R) (p k : n) :
     (Matrix.single k j (b k) : Matrix n n R) p j = if k = p then b k else 0 := by
-  by_cases h : k = p <;> simp [Matrix.single_apply, h]
+  by_cases h : k = p <;> simp [h]
 
 /-- **The `(p, j)` entry of a column sum is the `p`-th coefficient.** -/
 theorem sum_single_col_apply {j : n} (b : n → R) (p : n) :
@@ -395,6 +396,15 @@ theorem sum_single_col_eq_zero_iff {j : n} (b : n → R) :
   · intro h
     refine Finset.sum_eq_zero fun k _ => ?_
     rw [h k, Matrix.single_zero]
+
+
+/-- **The elementary group is perfect**, being the image of a perfect group. -/
+theorem elementaryGroup_perfect (h3 : ∀ i k : n, i ≠ k → ∃ j, i ≠ j ∧ j ≠ k) :
+    ⁅elementaryGroup R n, elementaryGroup R n⁆ = elementaryGroup R n := by
+  have hE : elementaryGroup R n
+      = (⊤ : Subgroup (SteinbergGroup R n)).map (steinbergToGL (R := R) (n := n)) := by
+    rw [elementaryGroup, MonoidHom.range_eq_map]
+  rw [hE, ← Subgroup.map_commutator, ← commutator, steinbergGroup_perfect h3]
 
 
 end GaloisForLFunctions.HTGeometry

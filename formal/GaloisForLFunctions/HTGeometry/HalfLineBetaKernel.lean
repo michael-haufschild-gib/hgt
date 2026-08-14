@@ -114,4 +114,44 @@ theorem integral_halfLine_beta {w c : ℂ} (hw : 0 < w.re) (hc : w.re < c.re) :
   rw [eq_div_iff hcne]
   linear_combination -hgam
 
+
+/-! ### The Beta kernel as a polynomial multiple of the reflection kernel -/
+
+/-- Shifting the Gamma argument by a natural number extracts a product of linear factors. -/
+theorem Gamma_natCast_add_one_sub (g : ℕ) {w : ℂ} (hw : ∀ n : ℤ, w ≠ (n : ℂ)) :
+    Complex.Gamma ((g : ℂ) + 1 - w)
+      = (∏ i ∈ Finset.range g, ((i : ℂ) + 1 - w)) * Complex.Gamma (1 - w) := by
+  induction g with
+  | zero => simp
+  | succ k ih =>
+      have hne : ((k : ℂ) + 1 - w) ≠ 0 := by
+        intro hcon
+        refine hw ((k : ℤ) + 1) ?_
+        push_cast
+        linear_combination -hcon
+      have hstep : Complex.Gamma ((k : ℂ) + 1 + 1 - w)
+          = ((k : ℂ) + 1 - w) * Complex.Gamma ((k : ℂ) + 1 - w) := by
+        have h := Complex.Gamma_add_one (s := ((k : ℂ) + 1 - w)) hne
+        rw [show ((k : ℂ) + 1 - w) + 1 = (k : ℂ) + 1 + 1 - w by ring] at h
+        exact h
+      have hcast : (((k + 1 : ℕ) : ℂ) + 1 - w) = ((k : ℂ) + 1 + 1 - w) := by push_cast; ring
+      rw [hcast, hstep, ih, Finset.prod_range_succ]
+      ring
+
+/-- **The Beta kernel is a polynomial multiple of the reflection kernel.** -/
+theorem Gamma_add_one_mul_Gamma_natCast_sub (g : ℕ) {w : ℂ} (hw : ∀ n : ℤ, w ≠ (n : ℂ)) :
+    Complex.Gamma (w + 1) * Complex.Gamma ((g : ℂ) + 1 - w)
+      = (w * ∏ i ∈ Finset.range g, ((i : ℂ) + 1 - w))
+        * ((Real.pi : ℂ) / Complex.sin ((Real.pi : ℂ) * w)) := by
+  have hw0 : w ≠ 0 := by
+    intro hcon
+    exact hw 0 (by rw [hcon]; simp)
+  rw [Complex.Gamma_add_one w hw0, Gamma_natCast_add_one_sub g hw]
+  have hrefl := Complex.Gamma_mul_Gamma_one_sub w
+  calc w * Complex.Gamma w * ((∏ i ∈ Finset.range g, ((i : ℂ) + 1 - w)) * Complex.Gamma (1 - w))
+      = (w * ∏ i ∈ Finset.range g, ((i : ℂ) + 1 - w))
+          * (Complex.Gamma w * Complex.Gamma (1 - w)) := by ring
+    _ = (w * ∏ i ∈ Finset.range g, ((i : ℂ) + 1 - w))
+          * ((Real.pi : ℂ) / Complex.sin ((Real.pi : ℂ) * w)) := by rw [hrefl]
+
 end GaloisForLFunctions.HTGeometry

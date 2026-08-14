@@ -585,3 +585,25 @@ So the accurate statement of what `(1)` still needs is narrower than before: the
 Mellin–Barnes representation is already Lean, and what is missing is its extension from the Cauchy
 kernel to the genus-`g` model factor — the strip bookkeeping, the vertical-line envelope, and the
 contour shift collecting the residues that produce `b_k = (-1)^k ζ(-sk)`.
+
+### The genus-`g` convergence strip
+
+Same module, unconditional and axiom-clean:
+
+- `HTGeometry.norm_barnesModel` — `‖t^{g+1}/(1+t)‖ = t^{g+1}/(1+t)` on the positive axis, with the
+  two one-sided bounds `norm_barnesModel_le_pow_succ` (`≤ t^{g+1}`) and `norm_barnesModel_le_pow`
+  (`≤ t^g`);
+- `HTGeometry.continuousOn_barnesModel`, `locallyIntegrableOn_barnesModel`;
+- `HTGeometry.isBigO_barnesModel_zero` and `isBigO_barnesModel_atTop` — the model factor vanishes to
+  order `g+1` at the origin and grows like `t^g` at infinity;
+- **`HTGeometry.mellinConvergent_barnesModel`** — hence its Mellin integral converges exactly on
+
+```text
+-(g+1) < Re w < -g,
+```
+
+which is the genus-`g` replacement for the corpus's `-1 < Re s < 0` strip of the Cauchy kernel, and
+is nonempty for every `g`.
+
+The next layers to port from the genus-zero chain are the vertical-line envelope of the shifted
+reflection kernel, Mellin inversion on this strip, and the summed representation.

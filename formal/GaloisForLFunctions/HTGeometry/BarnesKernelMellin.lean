@@ -84,3 +84,75 @@ theorem mellin_barnesModel_scaled (g : ℕ) (w : ℂ) {A : ℝ} (hA : 0 < A) :
 end
 
 end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+open Complex MeasureTheory Set Filter
+
+open scoped Topology
+
+noncomputable section
+
+variable {g : ℕ}
+
+theorem norm_barnesModel {t : ℝ} (ht : 0 < t) : ‖barnesModel g t‖ = t ^ (g + 1) / (1 + t) := by
+  rw [barnesModel, norm_div, norm_pow, Complex.norm_real, Real.norm_eq_abs, abs_of_pos ht]
+  congr 1
+  rw [show (1 : ℂ) + ((t : ℝ) : ℂ) = (((1 + t : ℝ)) : ℂ) by push_cast; ring, Complex.norm_real,
+    Real.norm_eq_abs, abs_of_pos (by linarith : (0 : ℝ) < 1 + t)]
+
+theorem norm_barnesModel_le_pow_succ {t : ℝ} (ht : 0 < t) :
+    ‖barnesModel g t‖ ≤ t ^ (g + 1) := by
+  rw [norm_barnesModel ht, div_le_iff₀ (by linarith : (0 : ℝ) < 1 + t)]
+  nlinarith [pow_pos ht (g + 1)]
+
+theorem norm_barnesModel_le_pow {t : ℝ} (ht : 0 < t) : ‖barnesModel g t‖ ≤ t ^ g := by
+  rw [norm_barnesModel ht, div_le_iff₀ (by linarith : (0 : ℝ) < 1 + t), pow_succ]
+  nlinarith [pow_pos ht g]
+
+theorem continuousOn_barnesModel : ContinuousOn (barnesModel g) (Ioi (0 : ℝ)) := by
+  intro u hu
+  have hupos : (0 : ℝ) < u := hu
+  have hden : (1 : ℂ) + (u : ℂ) ≠ 0 := by
+    intro h
+    have hc : ((1 + u : ℝ) : ℂ) = 0 := by push_cast; exact h
+    have hzero : (1 : ℝ) + u = 0 := Complex.ofReal_eq_zero.mp hc
+    linarith
+  refine ContinuousAt.continuousWithinAt ?_
+  refine ContinuousAt.div ?_ ?_ hden
+  · exact (Complex.continuous_ofReal.continuousAt).pow _
+  · exact continuousAt_const.add Complex.continuous_ofReal.continuousAt
+
+theorem locallyIntegrableOn_barnesModel :
+    LocallyIntegrableOn (barnesModel g) (Ioi (0 : ℝ)) :=
+  continuousOn_barnesModel.locallyIntegrableOn measurableSet_Ioi
+
+theorem isBigO_barnesModel_atTop :
+    (barnesModel g) =O[atTop] fun t : ℝ => t ^ (-(-(g : ℝ))) := by
+  refine Asymptotics.IsBigO.of_bound 1 ?_
+  filter_upwards [eventually_gt_atTop (0 : ℝ)] with u hu
+  rw [neg_neg, one_mul, Real.norm_eq_abs, abs_of_nonneg (Real.rpow_nonneg hu.le _),
+    Real.rpow_natCast]
+  exact norm_barnesModel_le_pow hu
+
+theorem isBigO_barnesModel_zero :
+    (barnesModel g) =O[𝓝[>] (0 : ℝ)] fun t : ℝ => t ^ (-(-((g : ℝ) + 1))) := by
+  refine Asymptotics.IsBigO.of_bound 1 ?_
+  filter_upwards [self_mem_nhdsWithin] with u hu
+  have hupos : (0 : ℝ) < u := hu
+  rw [neg_neg, one_mul, Real.norm_eq_abs, abs_of_nonneg (Real.rpow_nonneg hupos.le _)]
+  have hcast : ((g : ℝ) + 1) = ((g + 1 : ℕ) : ℝ) := by push_cast; ring
+  rw [hcast, Real.rpow_natCast]
+  exact norm_barnesModel_le_pow_succ hupos
+
+/-- **The Mellin integral of the genus-`g` model factor converges on its strip.**  The factor
+vanishes to order `g+1` at the origin and grows like `t^g` at infinity, so the strip is
+`-(g+1) < Re w < -g`. -/
+theorem mellinConvergent_barnesModel {w : ℂ} (h1 : -((g : ℝ) + 1) < w.re) (h2 : w.re < -(g : ℝ)) :
+    MellinConvergent (barnesModel g) w :=
+  mellinConvergent_of_isBigO_rpow locallyIntegrableOn_barnesModel
+    isBigO_barnesModel_atTop h2 isBigO_barnesModel_zero h1
+
+end
+
+end GaloisForLFunctions.HTGeometry

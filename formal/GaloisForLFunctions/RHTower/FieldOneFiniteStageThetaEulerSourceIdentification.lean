@@ -50,7 +50,8 @@ theorem fieldOneFiniteStageThetaEulerSchwartzTerm_apply
       (Real.sqrt p : ℂ)⁻¹ * (Real.sqrt p⁻¹ : ℂ) = (p : ℂ)⁻¹ := by
     norm_cast
   unfold fieldOneFiniteStageThetaEulerSchwartzTerm
-  rw [RHTower.ccmNormalizedSchwartzDilation_apply]
+  simp only [sub_apply, smul_apply,
+    RHTower.ccmNormalizedSchwartzDilation_apply]
   change f x - (Real.sqrt p : ℂ)⁻¹ *
       ((Real.sqrt p⁻¹ : ℂ) * f (p⁻¹ * x)) =
     f x - (p : ℂ)⁻¹ * f (x * p⁻¹)
@@ -70,6 +71,7 @@ theorem fieldOneFiniteStageSoninSubsetRationalScale_insert
     ((((fieldOneFiniteStageSoninSubsetRationalScale (insert v A) : ℚˣ) : ℚ) : ℝ)) =
       (fieldOneFinitePlacePrime v.1 : ℝ)⁻¹ *
         ((((fieldOneFiniteStageSoninSubsetRationalScale A : ℚˣ) : ℚ) : ℝ)) := by
+  classical
   unfold fieldOneFiniteStageSoninSubsetRationalScale
   rw [Finset.prod_insert hv]
   push_cast
@@ -81,6 +83,7 @@ theorem fieldOneFiniteStageSoninSubsetCoefficient_insert
     fieldOneFiniteStageSoninSubsetCoefficient (insert v A) =
       -(((fieldOneFinitePlacePrime v.1 : ℝ) : ℂ)⁻¹) *
         fieldOneFiniteStageSoninSubsetCoefficient A := by
+  classical
   unfold fieldOneFiniteStageSoninSubsetCoefficient
   rw [Finset.prod_insert hv]
   rfl
@@ -95,6 +98,7 @@ theorem fieldOneFiniteStageThetaEulerSchwartzList_apply
         f (x *
             ((((fieldOneFiniteStageSoninSubsetRationalScale A : ℚˣ) : ℚ) : ℝ))) *
           fieldOneFiniteStageSoninSubsetCoefficient A := by
+  classical
   induction l generalizing f x with
   | nil =>
       simp [fieldOneFiniteStageSoninSubsetRationalScale,
@@ -218,11 +222,13 @@ theorem fieldOneFiniteStageThetaEulerSchwartz_apply
     (S : Finset (HeightOneSpectrum ℤ)) (f : SchwartzMap ℝ ℂ) (x : ℝ) :
     fieldOneFiniteStageThetaEulerSchwartz S f x =
       fieldOneFiniteStageThetaSubsetEulerValue S f x := by
+  classical
   unfold fieldOneFiniteStageThetaEulerSchwartz
   unfold fieldOneFiniteStageThetaSubsetEulerValue
-  simpa [Finset.attach_eq_univ] using
-    fieldOneFiniteStageThetaEulerSchwartzList_apply
-      S S.attach.toList S.attach.nodup_toList f x
+  have h := fieldOneFiniteStageThetaEulerSchwartzList_apply
+    S S.attach.toList S.attach.nodup_toList f x
+  rw [Finset.toList_toFinset, Finset.attach_eq_univ] at h
+  exact h
 
 /-- The same value in exponent-cube coordinates. -/
 theorem fieldOneFiniteStageThetaEulerSchwartz_apply_eq_positiveEulerValue
