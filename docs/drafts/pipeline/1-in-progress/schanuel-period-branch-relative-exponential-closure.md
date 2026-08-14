@@ -1,8 +1,8 @@
 # Relative exponential-closure normal form for multiplicative stage-two Schanuel defects
 
 - **ID:** schanuel-period-branch-relative-exponential-closure
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper proof complete; Lean formalization in progress)
+- **Stage:** 3-formalized (card move pending final targeted module audit)
+- **Type:** THEOREM (paper and Lean)
 - **Source:** stage-two defect character lattices + Hermite--Lindemann + integral isogeny invariance
 - **Statement:** Stage-two counterexamples with any nonzero multiplicative algebraic character are
   exactly failures of relative exponential-closure rigidity over `acl(Qbar(alpha))` at a nonzero
@@ -17,7 +17,8 @@ form.  This is the exact multiplicative dual, not a Kähler or transcendence-deg
 
 - [x] 0 -> 1  in-progress: exact statement and dependency-closed paper proof below
 - [x] 1 -> 2  fully-proven: both implications and saturation proof closed below
-- [ ] 2 -> 3  formalized: Lean module pending
+- [x] 2 -> 3  formalized: exact local equivalence, character saturation, primitive normalization,
+  forward normal form, and global iff are source-checked and wired
 - [ ] 3 -> 4  publication-ready: independent proof and literature audits pending
 
 ## Relative rigidity statement
@@ -117,12 +118,24 @@ choice of coordinates but a three-stratum law:
 The prior failed trace, norm, isogeny, and Kähler attacks are shadows of forgetting this boundary
 stratification.
 
+## Formalization status
+
+`RHTower/SchanuelPeriodCharacterNormalForm.lean` defines the actual field `Qbar(alpha)`, proves
+that a nonzero logarithm of an algebraic number is transcendental over `Qbar`, proves the exact
+local extraction equivalence, proves algebraicity descends from every nonzero integral power,
+constructs and saturates the concrete multiplicative character subgroup, divides characters to
+primitive ones, applies the explicit determinant-one normalizing matrix, and proves both
+directions of the global classification.  The module passes direct `lake env lean` source checking
+and is wired into `RHTower.lean`.
+
 ## New open core
 
-Formalize the exact equivalence.  Then prove `(RER)`, prove `(PRER)`, and classify the remaining
+Prove `(RER)`, prove `(PRER)`, and classify the remaining
 bi-character-free stratum by an invariant that uses the selected exponential graph rather than only
 its ambient transcendence-degree-one field.
 
 ## Log
 
 - 2026-08-14 -- exact multiplicative dual of affine normal form isolated; paper proof closed.
+- 2026-08-14 -- full theorem formalized in Lean; whole nonzero multiplicative-character branch
+  reduced exactly to `(PRER)`.

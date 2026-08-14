@@ -3,7 +3,7 @@
 ## Research map of HTGeometry, HilbertMetric, and RHTower
 
 **Corpus cutoff:** 14 August 2026, committed snapshot
-**3b9edf60d6a57d4452ee029c17b784f5821082e8**.
+**44291f8cc7052f50102b3724b0481403bffb5ec8**.
 
 This map follows theorem statements, not module placement or research chronology. `Lean-proved`
 means an unconditional declaration in the committed snapshot. `Active-tree Lean` labels a complete
@@ -12,6 +12,16 @@ Paper-only claims remain labelled.
 
 Current mathematical changes are:
 
+- **E:** Lean now identifies the exact unconditioned physical-saddle obstruction rather than only
+  its local coordinates. The Euler norm deficit equals the transverse antiscale energy up to a
+  Mertens remainder. Active-tree Lean transports this to
+  `pi^2 Y^a/(a^3 log^3 Y)`, and under physical saddle centering proves that every fixed-power
+  coercive comparison fails eventually; at half density the constants are `8*pi^2` before
+  centering and `4*pi^2` after division by `log X`. Thus an unconditioned scalar Euler/Mellin norm
+  cannot close Route E. The live mechanisms must retain a physical shell before scalarization or
+  use the fixed source-predeclared grade-recurrent relation. Active-tree node-form and multivariate
+  separation theorems expose squarefree family weights as finite exponential polynomials, but do
+  not yet construct the required relation or prove Hall/load/flux.
 - **G exterior:** whole-frequency assembly is closed. Lean now retains both frequency rays,
   proves the exact half-log asymptotic
   `2*pi*L^(-1/2)*beta + O(L^(-1))`, proves `beta=0` gives terminal `L2`, and classifies the Gamma
@@ -24,9 +34,13 @@ Current mathematical changes are:
   to the full Gamma frequency equation: every point-supported tempered solution is zero. Remaining
   generic regularity input also advanced: a compact-primitive/du Bois--Reymond theorem proves that
   a distribution with vanishing derivative on an interval is a constant multiple of Lebesgue
-  measure there. Remaining science is the source-specific half-line conjugation reducing the weak
-  Gamma equation to that theorem and proof that channel subtraction
-  leaves a point-supported solution of that exact full equation, followed by holomorphic
+  measure there. Active-tree Lean now completes the distributional conjugation itself: on each
+  entire open frequency ray every weak Gamma solution is one explicit
+  `|eta|^(-1/2) Q(eta)c` channel with a ray-wide channel vector, and an origin-supported solution
+  of the same equation is zero. Remaining exterior science is global two-ray assembly: realize
+  both classified profiles as tempered distributions, subtract them from the physical source,
+  prove the residual is supported at the origin and still satisfies the full equation, then use
+  the no-point-support theorem, followed by holomorphic
   gluing across `0<Im z<1`, then identify and orient the physical trace with coupled all-aperture
   return. On the Suzuki floor side, Lean proves the literal natural product
   `D† G_a D` is formally self-adjoint on its exact `H_0^1(-a,a)` domain. Operator action, domain,
@@ -7297,6 +7311,26 @@ The literal first target is a weighted square/cross-divisor exchange theorem wit
 summable majorant (`U-DYC-global`). That promoted energy/covariance statement—not pointwise sample convergence—is now the first
 cross-scale producer capable of excluding the negative fixed point.
 
+The quadratic-shell hostile audit now changes that target.  Lean proves that the fine shell has
+ultraviolet parity `(E,O)->(h,-h)`, while the full fine reconstruction tends to zero.  Rotating to
+`S=E+O,D=E-O`, any constant quadratic observable that cancels this shell has zero pure-`D`
+coefficient.  The corpus two-channel null-diagonal theorem then forces every nonnegative such
+observable to be exactly a multiple of `S^2`, which is only the original full fine-sample energy;
+there is no genuinely cross-scale PSD survivor.  This falsifies the PSD form of `U-DYC-global`.
+The strongest positive survivor is the unique signed class modulo `S^2`,
+
+~~~
+J=S D=(E+O)(E-O)=E^2-O^2.
+~~~
+
+`XiShiftedHardEdgeNyquistNullForm.lean` proves its exact algebra and that `J` tends to zero both for
+every fixed Xi divisor copy (infrared parity `(1,1)`) and every positive quadratic shell
+(ultraviolet parity `(1,-1)`).  Therefore the first live cross-scale producer is no longer a raw
+positive covariance or a full Riemann--von Mangoldt covariance constant.  It is a weighted
+complete-divisor theorem for this signed two-ended Nyquist current, preferably an exact
+prime--Gamma scale-flux identity.  Pointwise two-ended vanishing is not summability; obtaining the
+uniform transition bound or source-exact summation law is the new open core.
+
 **Earlier equivalent structural formulation.** In the degenerate/root-sign branch, items
 55--58 replace unspecified odd descent by a literal Padé spectral-measure and source-capacity
 statement. Define
@@ -12438,3 +12472,57 @@ localized derivative coefficient series (including the divisor-square tail), ins
 infinite affine theorem on short cells, then assemble primal, dual, pole, and cross terms without
 destroying oscillation. Only that assembly can yield the required `T^(101/100)` fourth moment. RH
 remains open.
+
+### T-C8e-J: contour-complementary derivative masses and phase-faithful affine landing
+
+The two contour branches now combine at coefficient level instead of being treated as competing
+global estimates.  For the exact centered derivative coefficient
+
+~~~
+a_n(T,r,t)=d(n+1)(n+1)^(-1/2+it)
+  d/dr W2_r((n+1)T),
+~~~
+
+`SmoothAFEZetaSquareDualDerivativeMass.lean` proves, with the explicit divisor exponent
+`epsilon=1/400`, the complementary pointwise laws
+
+~~~
+|a_n| <= K(1+r)T^(-1)(n+1)^(-599/400),
+|a_n| <= K T^(-5/4)(n+1)^(-99/400)       (T<=r).
+~~~
+
+On `r in [N,2N]`, the negative-quarter branch controls `n<N` and the positive-contour branch
+controls `n>=N`.  Integral comparison on the head and the exact p-series tail therefore give the
+full unconditional masses
+
+~~~
+sum_n |a_n(N,r,t)|^2       <= A N^(-399/200),
+sum_n (n+1)|a_n(N,r,t)|^2 <= B N^(-199/200).             (T-C8e-J.1)
+~~~
+
+This closes the divisor-square localization debt.  The structural principle is **contour
+complementarity as Littlewood--Paley splitting**: the residue-neutral negative contour is the
+low-index estimate, the charged positive contour is the high-index estimate, and their crossover
+at square conductor is exactly what makes both affine masses decay.  Neither branch alone sees the
+critical mass law.
+
+`SmoothAFEZetaSquareDualDerivativeAffineMeanSquare.lean` then reindexes at positive integers while
+retaining the complete center phase.  It proves absolute, plain-square, and `n`-weighted-square
+summability, exact reindexing of both `tsum`s, and instantiates the infinite affine theorem on every
+symmetric cell:
+
+~~~
+integral_[-H,H] |L(a_(N,r,center),iy)|^2 dy
+ <= 5*pi*e B N^(-199/200)
+    + (5*pi/2) A H N^(-399/200),           H>=1.          (T-C8e-J.2)
+~~~
+
+No Dirichlet phase is bounded or frozen.  Both modules are wired into `RHTower.lean`, exact-built,
+and their endpoint theorems use only `propext`, `Classical.choice`, and `Quot.sound`.
+
+The next exact core is no longer arithmetic mass.  To apply `Sieve/DuhamelMeanSquare.lean` to the
+literal dual variation field, prove joint continuity in derivative height and observation ordinate
+of the summed derivative L-series (or strengthen Duhamel to the already available measurable,
+integrable hypotheses), identify the center-reflected affine phase on a physical cell, and then
+integrate (T-C8e-J.2) in the derivative-height variable.  After that, remaining work is primal,
+pole, and cross-term assembly toward the `T^(101/100)` fourth moment.  RH remains open.

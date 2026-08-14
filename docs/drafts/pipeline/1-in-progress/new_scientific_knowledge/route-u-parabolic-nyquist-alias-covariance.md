@@ -208,3 +208,22 @@ is genuinely global: compact-`u`/strip-uniform strengthening, multiplicity-exact
 Riemann--von Mangoldt, tail tightness, and normalized covariance.  Local ultraviolet parity is no
 longer conjectural: Route U's shell mode is rigorously `(1,-1)`, so any unrenormalized positive
 polyphase trace is structurally aimed at the wrong parity sector.
+
+## 2026-08-14 null-form pivot
+
+The proposed normalized anti-diagonal covariance may still be a true descriptive asymptotic, but
+it cannot be Route U's closing positive producer.  The formally proved two-channel classification
+in `route-u-nyquist-null-form-rigidity.md` shows that every constant PSD quadratic annihilating the
+anti-diagonal shell collapses exactly to full fine-sample square.  Hence a PSD renormalization either
+retains the ultraviolet logarithm or loses all independent cross-scale information.
+
+The strongest positive survivor is the signed null form
+
+```text
+J=(E+O)(E-O)=E^2-O^2,
+```
+
+unique modulo full fine-sample square.  Lean proves `J->0` in both fixed-divisor infrared and every
+positive parabolic ultraviolet shell.  The live global target is now a complete-divisor weighted
+summation/source identity for `J`, not proof of the raw covariance constant.  `U-PN-COVARIANCE`
+remains a secondary descriptive conjecture; it is no longer the selected Route-U producer.

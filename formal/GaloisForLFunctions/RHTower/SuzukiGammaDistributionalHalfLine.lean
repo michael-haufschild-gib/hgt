@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.ConjugatedTransportRepresentation
 import GaloisForLFunctions.HTGeometry.HalfLineIntegratingFactor
+import GaloisForLFunctions.HTGeometry.IntervalTestSeparation
 import GaloisForLFunctions.RHTower.SuzukiGammaHalfLineClassification
 
 /-!
@@ -26,6 +27,10 @@ noncomputable section
 
 variable {X : Type*} [NormedAddCommGroup X] [NormedSpace ℂ X] [CompleteSpace X]
 
+/-- The homogeneous Gamma profile away from the origin, `|η|^{-1/2}Q(η)c`. -/
+def gammaFrequencyProfile (Rint : ℝ → ℝ) (T : X →L[ℂ] X) (c : X) (t : ℝ) : X :=
+  (|t| ^ (-(1 : ℝ) / 2)) • gammaTransport Rint T t c
+
 /-- **The distributional half-line classification.**  A tempered distributional solution of the
 Gamma frequency equation on a compact subinterval of the positive half-line is the Gamma transport
 applied to a single channel vector. -/
@@ -37,8 +42,7 @@ theorem exists_channel_vector_distributional (T : X →L[ℂ] X) (u : SchwartzMa
       u φ + (2 : ℂ) • u (coordMulCLM (SchwartzMap.derivCLM ℂ ℂ φ))
         + I • u (mulTemperateCLM hq φ) - I • T (u (coordMulCLM φ)) = 0) :
     ∃ c : X, ∀ φ : SchwartzMap ℝ ℂ, (∀ x, x ∉ Ioo a b → (φ : ℝ → ℂ) x = 0) →
-      u φ = ∫ t in a..b, (φ : ℝ → ℂ) t
-        • ((|t| ^ (-(1 : ℝ) / 2)) • gammaTransport Rint T t c) := by
+      u φ = ∫ t in a..b, (φ : ℝ → ℂ) t • gammaFrequencyProfile Rint T c t := by
   -- the frequency remainder is smooth
   have hderivEq : deriv Rint = r := funext fun x => (hRderiv x).deriv
   have hr : ContDiff ℝ (⊤ : ℕ∞) r := by
@@ -184,12 +188,229 @@ theorem exists_channel_vector_distributional (T : X →L[ℂ] X) (u : SchwartzMa
   have hgt : gammaTransport Rint T t c
       = Complex.exp ((I / 2) * ((Rint t : ℝ) : ℂ)) • (NormedSpace.exp ((t : ℂ) • A) c) := by
     rw [gammaTransport, freqPropagator, smul_apply, hphase, ← hopPhase]
-  rw [hgt, hsmulReal]
+  rw [gammaFrequencyProfile, hgt, hsmulReal]
   simp only [smul_smul]
   congr 1
   rw [sqrtFactorInv, hone]
   push_cast
   ring
+
+/-- The Gamma transport is continuous in the frequency. -/
+theorem continuous_gammaTransport {Rint r : ℝ → ℝ} (T : X →L[ℂ] X)
+    (hRderiv : ∀ x : ℝ, HasDerivAt Rint (r x) x) :
+    Continuous (fun t : ℝ => gammaTransport Rint T t) :=
+  continuous_iff_continuousAt.mpr fun t =>
+    (hasDerivAt_freqPropagator (L := 0) T (hRderiv t)).continuousAt
+
+/-- The Gamma profile is continuous away from the origin. -/
+theorem continuousOn_gammaFrequencyProfile {Rint r : ℝ → ℝ} (T : X →L[ℂ] X) (c : X)
+    (hRderiv : ∀ x : ℝ, HasDerivAt Rint (r x) x) {s : Set ℝ} (hs : ∀ x ∈ s, x ≠ 0) :
+    ContinuousOn (gammaFrequencyProfile Rint T c) s := by
+  have h1 : ContinuousOn (fun t : ℝ => (|t| ^ (-(1 : ℝ) / 2) : ℝ)) s :=
+    (continuous_abs.continuousOn).rpow_const fun x hx => Or.inl (abs_ne_zero.mpr (hs x hx))
+  have h2 : Continuous (fun t : ℝ => gammaTransport Rint T t c) :=
+    ((ContinuousLinearMap.apply ℂ X c).continuous).comp (continuous_gammaTransport T hRderiv)
+  exact h1.smul h2.continuousOn
+
+omit [CompleteSpace X] in
+/-- An interval integral of a function carried by a subinterval is the integral over that
+subinterval. -/
+theorem intervalIntegral_eq_of_subset {f : ℝ → X} {a b a' b' : ℝ}
+    (hab : a ≤ b) (h1 : a' ≤ a) (h2 : b ≤ b') (hf : ∀ x, x ∉ Ioo a b → f x = 0) :
+    (∫ t in a'..b', f t) = ∫ t in a..b, f t := by
+  have hab' : a' ≤ b' := le_trans h1 (le_trans hab h2)
+  rw [intervalIntegral.integral_of_le hab', intervalIntegral.integral_of_le hab]
+  refine MeasureTheory.setIntegral_eq_of_subset_of_forall_sdiff_eq_zero measurableSet_Ioc
+    (Ioc_subset_Ioc h1 h2) fun x hx => ?_
+  exact hf x fun hc => hx.2 (Ioo_subset_Ioc_self hc)
+
+/-- **The distributional channel vector is unique.** -/
+theorem channel_vector_unique_distributional {Rint r : ℝ → ℝ} (T : X →L[ℂ] X) (u : SchwartzMap ℝ ℂ →L[ℂ] X)
+    {a b : ℝ} (hab : a < b) (h0 : (0 : ℝ) ∉ Icc a b)
+    (hRderiv : ∀ x : ℝ, HasDerivAt Rint (r x) x) {c c' : X}
+    (hc : ∀ φ : SchwartzMap ℝ ℂ, (∀ x, x ∉ Ioo a b → (φ : ℝ → ℂ) x = 0) →
+      u φ = ∫ t in a..b, (φ : ℝ → ℂ) t • gammaFrequencyProfile Rint T c t)
+    (hc' : ∀ φ : SchwartzMap ℝ ℂ, (∀ x, x ∉ Ioo a b → (φ : ℝ → ℂ) x = 0) →
+      u φ = ∫ t in a..b, (φ : ℝ → ℂ) t • gammaFrequencyProfile Rint T c' t) :
+    c = c' := by
+  have hne : ∀ x ∈ Icc a b, x ≠ 0 := by
+    intro x hx hcon
+    exact h0 (hcon ▸ hx)
+  have hcont : ContinuousOn (fun t : ℝ => gammaFrequencyProfile Rint T c t - gammaFrequencyProfile Rint T c' t)
+      (Icc a b) :=
+    (continuousOn_gammaFrequencyProfile T c hRderiv hne).sub (continuousOn_gammaFrequencyProfile T c' hRderiv hne)
+  have hzero : ∀ φ : SchwartzMap ℝ ℂ, (∀ x, x ∉ Ioo a b → (φ : ℝ → ℂ) x = 0) →
+      (∫ t in a..b, ((φ : ℝ → ℂ) t)
+        • (gammaFrequencyProfile Rint T c t - gammaFrequencyProfile Rint T c' t)) = 0 := by
+    intro φ hφ
+    have hi1 : IntervalIntegrable
+        (fun t : ℝ => ((φ : ℝ → ℂ) t) • gammaFrequencyProfile Rint T c t) MeasureTheory.volume a b := by
+      refine ContinuousOn.intervalIntegrable ?_
+      rw [uIcc_of_le hab.le]
+      exact (φ.continuous.continuousOn).smul (continuousOn_gammaFrequencyProfile T c hRderiv hne)
+    have hi2 : IntervalIntegrable
+        (fun t : ℝ => ((φ : ℝ → ℂ) t) • gammaFrequencyProfile Rint T c' t) MeasureTheory.volume a b := by
+      refine ContinuousOn.intervalIntegrable ?_
+      rw [uIcc_of_le hab.le]
+      exact (φ.continuous.continuousOn).smul (continuousOn_gammaFrequencyProfile T c' hRderiv hne)
+    have hsplit : (fun t : ℝ => ((φ : ℝ → ℂ) t)
+        • (gammaFrequencyProfile Rint T c t - gammaFrequencyProfile Rint T c' t))
+        = fun t : ℝ => ((φ : ℝ → ℂ) t) • gammaFrequencyProfile Rint T c t
+          - ((φ : ℝ → ℂ) t) • gammaFrequencyProfile Rint T c' t := by
+      funext t
+      rw [smul_sub]
+    rw [hsplit, intervalIntegral.integral_sub hi1 hi2, ← hc φ hφ, ← hc' φ hφ, sub_self]
+  have hvanish := eq_zero_of_forall_test_integral_zero hab hcont hzero
+  obtain ⟨t₀, ht₀⟩ : (Ioo a b).Nonempty := nonempty_Ioo.mpr hab
+  have hG := hvanish t₀ ht₀
+  have ht₀ne : t₀ ≠ 0 := hne t₀ (Ioo_subset_Icc_self ht₀)
+  have hdiff : (|t₀| ^ (-(1 : ℝ) / 2)) • (gammaTransport Rint T t₀ (c - c')) = 0 := by
+    rw [map_sub, smul_sub]
+    exact hG
+  have hscal : (|t₀| ^ (-(1 : ℝ) / 2) : ℝ) ≠ 0 := by
+    have : (0 : ℝ) < |t₀| := abs_pos.mpr ht₀ne
+    positivity
+  have hzeroQ : gammaTransport Rint T t₀ (c - c') = 0 :=
+    (smul_eq_zero.mp hdiff).resolve_left hscal
+  have hinv := gammaTransportInv_mul (Rint := Rint) (T := T) t₀
+  have happ : gammaTransportInv Rint T t₀ (gammaTransport Rint T t₀ (c - c')) = c - c' := by
+    show (gammaTransportInv Rint T t₀ * gammaTransport Rint T t₀) (c - c') = c - c'
+    rw [hinv]
+    rfl
+  rw [hzeroQ, map_zero] at happ
+  exact sub_eq_zero.mp happ.symm
+
+/-- **The classification on the whole positive frequency half-line.**  One channel vector serves
+every compact subinterval. -/
+theorem exists_channel_vector_positive (T : X →L[ℂ] X) (u : SchwartzMap ℝ ℂ →L[ℂ] X)
+    {Rint r : ℝ → ℝ}
+    (hRint : ContDiff ℝ (⊤ : ℕ∞) Rint) (hRderiv : ∀ x : ℝ, HasDerivAt Rint (r x) x)
+    (hq : Function.HasTemperateGrowth (fun x : ℝ => ((x * r x : ℝ) : ℂ)))
+    (hEq : ∀ φ : SchwartzMap ℝ ℂ,
+      u φ + (2 : ℂ) • u (coordMulCLM (SchwartzMap.derivCLM ℂ ℂ φ))
+        + I • u (mulTemperateCLM hq φ) - I • T (u (coordMulCLM φ)) = 0) :
+    ∃ c : X, ∀ a b : ℝ, 0 < a → a < b → ∀ φ : SchwartzMap ℝ ℂ,
+      (∀ x, x ∉ Ioo a b → (φ : ℝ → ℂ) x = 0) →
+        u φ = ∫ t in a..b, (φ : ℝ → ℂ) t • gammaFrequencyProfile Rint T c t := by
+  have key : ∀ a b : ℝ, 0 < a → a < b → ∃ c : X, ∀ φ : SchwartzMap ℝ ℂ,
+      (∀ x, x ∉ Ioo a b → (φ : ℝ → ℂ) x = 0) →
+        u φ = ∫ t in a..b, (φ : ℝ → ℂ) t • gammaFrequencyProfile Rint T c t := by
+    intro a b ha hab
+    have h0 : (0 : ℝ) ∉ Icc a b := by
+      intro hc
+      exact absurd hc.1 (not_le.mpr ha)
+    exact exists_channel_vector_distributional T u hab h0 hRint hRderiv hq
+      (fun φ _ => hEq φ)
+  obtain ⟨c₀, hc₀⟩ := key (1 / 2) 2 (by norm_num) (by norm_num)
+  refine ⟨c₀, fun a b ha hab φ hφ => ?_⟩
+  set a' : ℝ := min a (1 / 2) with ha'
+  set b' : ℝ := max b 2 with hb'
+  have ha'pos : 0 < a' := lt_min ha (by norm_num)
+  have ha'b' : a' < b' := by
+    have h1 : a' ≤ a := min_le_left _ _
+    have h2 : b ≤ b' := le_max_left _ _
+    linarith
+  obtain ⟨c₁, hc₁⟩ := key a' b' ha'pos ha'b'
+  have h0' : (0 : ℝ) ∉ Icc (1 / 2 : ℝ) 2 := by
+    intro hc
+    have := hc.1
+    norm_num at this
+  have hrestrict : ∀ (x y : ℝ), a' ≤ x → y ≤ b' → x ≤ y → ∀ ψ : SchwartzMap ℝ ℂ,
+      (∀ z, z ∉ Ioo x y → (ψ : ℝ → ℂ) z = 0) →
+        u ψ = ∫ t in x..y, (ψ : ℝ → ℂ) t • gammaFrequencyProfile Rint T c₁ t := by
+    intro x y hx hy hxy ψ hψ
+    have hsupp : ∀ z, z ∉ Ioo x y → ((ψ : ℝ → ℂ) z) • gammaFrequencyProfile Rint T c₁ z = 0 := by
+      intro z hz
+      rw [hψ z hz, zero_smul]
+    have hψ' : ∀ z, z ∉ Ioo a' b' → (ψ : ℝ → ℂ) z = 0 := by
+      intro z hz
+      refine hψ z fun hc => hz ⟨lt_of_le_of_lt hx hc.1, lt_of_lt_of_le hc.2 hy⟩
+    rw [hc₁ ψ hψ', intervalIntegral_eq_of_subset hxy hx hy hsupp]
+  have heq₀ : c₀ = c₁ := by
+    refine channel_vector_unique_distributional T u (by norm_num : (1 / 2 : ℝ) < 2) h0' hRderiv
+      hc₀ ?_
+    intro ψ hψ
+    exact hrestrict (1 / 2) 2 (min_le_right _ _) (le_max_right _ _) (by norm_num) ψ hψ
+  rw [heq₀]
+  exact hrestrict a b (min_le_left _ _) (le_max_left _ _) hab.le φ hφ
+
+/-- **The classification on the whole negative frequency half-line.** -/
+theorem exists_channel_vector_negative (T : X →L[ℂ] X) (u : SchwartzMap ℝ ℂ →L[ℂ] X)
+    {Rint r : ℝ → ℝ}
+    (hRint : ContDiff ℝ (⊤ : ℕ∞) Rint) (hRderiv : ∀ x : ℝ, HasDerivAt Rint (r x) x)
+    (hq : Function.HasTemperateGrowth (fun x : ℝ => ((x * r x : ℝ) : ℂ)))
+    (hEq : ∀ φ : SchwartzMap ℝ ℂ,
+      u φ + (2 : ℂ) • u (coordMulCLM (SchwartzMap.derivCLM ℂ ℂ φ))
+        + I • u (mulTemperateCLM hq φ) - I • T (u (coordMulCLM φ)) = 0) :
+    ∃ c : X, ∀ a b : ℝ, b < 0 → a < b → ∀ φ : SchwartzMap ℝ ℂ,
+      (∀ x, x ∉ Ioo a b → (φ : ℝ → ℂ) x = 0) →
+        u φ = ∫ t in a..b, (φ : ℝ → ℂ) t • gammaFrequencyProfile Rint T c t := by
+  have key : ∀ a b : ℝ, b < 0 → a < b → ∃ c : X, ∀ φ : SchwartzMap ℝ ℂ,
+      (∀ x, x ∉ Ioo a b → (φ : ℝ → ℂ) x = 0) →
+        u φ = ∫ t in a..b, (φ : ℝ → ℂ) t • gammaFrequencyProfile Rint T c t := by
+    intro a b hb hab
+    have h0 : (0 : ℝ) ∉ Icc a b := by
+      intro hc
+      exact absurd hc.2 (not_le.mpr hb)
+    exact exists_channel_vector_distributional T u hab h0 hRint hRderiv hq (fun φ _ => hEq φ)
+  obtain ⟨c₀, hc₀⟩ := key (-2) (-(1 / 2)) (by norm_num) (by norm_num)
+  refine ⟨c₀, fun a b hb hab φ hφ => ?_⟩
+  set a' : ℝ := min a (-2) with ha'
+  set b' : ℝ := max b (-(1 / 2)) with hb'
+  have hb'neg : b' < 0 := max_lt hb (by norm_num)
+  have ha'b' : a' < b' := by
+    have h1 : a' ≤ a := min_le_left _ _
+    have h2 : b ≤ b' := le_max_left _ _
+    linarith
+  obtain ⟨c₁, hc₁⟩ := key a' b' hb'neg ha'b'
+  have h0' : (0 : ℝ) ∉ Icc (-2 : ℝ) (-(1 / 2)) := by
+    intro hc
+    have := hc.2
+    norm_num at this
+  have hrestrict : ∀ (x y : ℝ), a' ≤ x → y ≤ b' → x ≤ y → ∀ ψ : SchwartzMap ℝ ℂ,
+      (∀ z, z ∉ Ioo x y → (ψ : ℝ → ℂ) z = 0) →
+        u ψ = ∫ t in x..y, (ψ : ℝ → ℂ) t • gammaFrequencyProfile Rint T c₁ t := by
+    intro x y hx hy hxy ψ hψ
+    have hsupp : ∀ z, z ∉ Ioo x y → ((ψ : ℝ → ℂ) z) • gammaFrequencyProfile Rint T c₁ z = 0 := by
+      intro z hz
+      rw [hψ z hz, zero_smul]
+    have hψ' : ∀ z, z ∉ Ioo a' b' → (ψ : ℝ → ℂ) z = 0 := by
+      intro z hz
+      refine hψ z fun hc => hz ⟨lt_of_le_of_lt hx hc.1, lt_of_lt_of_le hc.2 hy⟩
+    rw [hc₁ ψ hψ', intervalIntegral_eq_of_subset hxy hx hy hsupp]
+  have heq₀ : c₀ = c₁ := by
+    refine channel_vector_unique_distributional T u (by norm_num : (-2 : ℝ) < -(1 / 2)) h0'
+      hRderiv hc₀ ?_
+    intro ψ hψ
+    exact hrestrict (-2) (-(1 / 2)) (min_le_right _ _) (le_max_right _ _) (by norm_num) ψ hψ
+  rw [heq₀]
+  exact hrestrict a b (min_le_left _ _) (le_max_left _ _) hab.le φ hφ
+
+/-- **The homogeneous Gamma classification.**  A tempered distributional solution of the Gamma
+frequency equation is, on each open frequency half-line, the Gamma transport applied to a single
+channel vector, and no nonzero solution is supported at the origin. -/
+theorem gamma_tempered_classification (T : X →L[ℂ] X) (u : SchwartzMap ℝ ℂ →L[ℂ] X)
+    {Rint r : ℝ → ℝ}
+    (hRint : ContDiff ℝ (⊤ : ℕ∞) Rint) (hRderiv : ∀ x : ℝ, HasDerivAt Rint (r x) x)
+    (hq : Function.HasTemperateGrowth (fun x : ℝ => ((x * r x : ℝ) : ℂ)))
+    (hr : ContDiff ℝ (⊤ : ℕ∞) r)
+    (hEq : ∀ φ : SchwartzMap ℝ ℂ,
+      u φ + (2 : ℂ) • u (coordMulCLM (SchwartzMap.derivCLM ℂ ℂ φ))
+        + I • u (mulTemperateCLM hq φ) - I • T (u (coordMulCLM φ)) = 0) :
+    (∃ cpos : X, ∀ a b : ℝ, 0 < a → a < b → ∀ φ : SchwartzMap ℝ ℂ,
+        (∀ x, x ∉ Ioo a b → (φ : ℝ → ℂ) x = 0) →
+          u φ = ∫ t in a..b, (φ : ℝ → ℂ) t • gammaFrequencyProfile Rint T cpos t)
+      ∧ (∃ cneg : X, ∀ a b : ℝ, b < 0 → a < b → ∀ φ : SchwartzMap ℝ ℂ,
+        (∀ x, x ∉ Ioo a b → (φ : ℝ → ℂ) x = 0) →
+          u φ = ∫ t in a..b, (φ : ℝ → ℂ) t • gammaFrequencyProfile Rint T cneg t)
+      ∧ ((∀ ψ : SchwartzMap ℝ ℂ, (∃ δ > 0, ∀ x : ℝ, |x| ≤ δ → (ψ : ℝ → ℂ) x = 0) → u ψ = 0) →
+          ∀ φ : SchwartzMap ℝ ℂ, u φ = 0) := by
+  refine ⟨exists_channel_vector_positive T u hRint hRderiv hq hEq,
+    exists_channel_vector_negative T u hRint hRderiv hq hEq, fun hu => ?_⟩
+  have hgc : ContDiff ℝ (⊤ : ℕ∞) (fun x : ℝ => ((x * r x : ℝ) : ℂ)) :=
+    Complex.ofRealCLM.contDiff.comp (contDiff_id.mul hr)
+  have hg0 : ((0 * r 0 : ℝ) : ℂ) = 0 := by simp
+  exact eq_zero_of_pointSupport_gammaForm hq hgc hg0 T hu hEq
 
 end
 

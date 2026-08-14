@@ -6755,3 +6755,42 @@ What remains for card 6's Theorem 1: the same statement on the negative frequenc
 integrating factor `|η|^{1/2}` is uniform in the sign, so the construction transfers), the
 independence of the channel vector from the subinterval, and the assembly with the point-support
 exclusion of section GY.
+
+## HB — card 6's Theorem 1 is closed
+
+The half-line regularity of section HA is now global, two-sided, and unique, and is packaged with the
+point-support exclusion of section GY into the card's Theorem 1.
+
+```text
+HTGeometry/IntervalCutoff.lean
+  exists_interval_cutoff       a smooth cutoff one near any compact interval avoiding the origin
+HTGeometry/HalfLineIntegratingFactor.lean
+  hasDerivAt_sqrt_abs          D√|η| = √|η|/(2η) — the sign-uniform integrating factor
+  sqrtFactor, sqrtFactorInv, gammaMultiplier, deriv_sqrtFactor
+                               the same construction now serves both frequency half-lines
+HTGeometry/IntervalTestSeparation.lean
+  eq_zero_of_forall_test_integral_zero
+                               the fundamental lemma of the calculus of variations for a
+                               vector-valued function continuous on an interval
+RHTower/SuzukiGammaDistributionalHalfLine.lean
+  gammaFrequencyProfile        |η|^{-1/2}Q(η)c
+  exists_channel_vector_distributional   the classification on one compact subinterval
+  continuous_gammaTransport, continuousOn_gammaProfile, intervalIntegral_eq_of_subset
+  channel_vector_unique_distributional   **the channel vector is unique**
+  exists_channel_vector_positive         one channel vector for the whole positive half-line
+  exists_channel_vector_negative         one channel vector for the whole negative half-line
+  gamma_tempered_classification          **card 6's Theorem 1**: unique `c₊`, `c₋` with
+                                         `f = |η|^{-1/2}Q(η)c_±` on each open half-line, and no
+                                         nonzero solution supported at the origin
+```
+
+Uniqueness comes from the fundamental lemma: two channel vectors give the same interval integrals
+against every test function, so the continuous difference `|η|^{-1/2}Q(η)(c-c')` vanishes on the
+interval, and the transport is invertible.  Globalisation is the nested exhaustion
+`(1/(n+2), n+2)` on the positive side and its reflection on the negative side, glued by that
+uniqueness.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+Card 6 now needs only its Theorem 3 — the upper-strip gluing `(23)`–`(25)` — and card 7 needs
+nothing further from the half-line lane.

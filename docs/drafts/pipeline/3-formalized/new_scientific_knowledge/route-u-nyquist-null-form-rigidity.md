@@ -1,8 +1,8 @@
 # Route U Nyquist null-form rigidity and two-ended current
 
 - **ID:** `route-u-nyquist-null-form-rigidity`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `rh-current-frontier-map.md`, Route U; successor to `U-DYC-global`
 - **Statement:** Every quadratic two-channel observable annihilating Route U's parabolic
   `(1,-1)` shell mode factors through exact fine-channel reconstruction; a nonnegative one is only
@@ -12,7 +12,7 @@
 
 ## Status labels
 
-`[PAPER-PROVED] [BRIDGE] [NOVELTY UNVERIFIED]`
+`[LEAN-PROVED] [BRIDGE] [NOVELTY UNVERIFIED]`
 
 The positive-semidefinite classification is a Route-U specialization of the corpus theorem
 `twoChannelLinearCurrent_eq_goodDiagonal_of_nonnegative_of_badWeight_eq_zero` and is therefore
@@ -133,11 +133,36 @@ summability or a source-exact signed summation law, uniform across the infrared/
 Only then test whether the sum equals the nonlinear node-transport plus prime--Gamma covariance
 appearing in `U-DYADIC-SOURCE`.  Pointwise vanishing at both ends is insufficient.
 
+## Lean formalization
+
+Module:
+`formal/GaloisForLFunctions/RHTower/XiShiftedHardEdgeNyquistNullForm.lean`.
+
+Closed theorem surface:
+
+- `RouteUNonnegativeUVSafeNyquistCurrent.classification`
+- `RouteUNonnegativeUVSafeNyquistCurrent.complex_classification`
+- `RouteUNonnegativeUVSafeNyquistCurrent.parabolic_eq_full_sq`
+- `routeUNyquistComplexQuadraticForm_factor_iff_uvSafe`
+- `routeUNyquistComplexSafeQuadraticForm_decomposition`
+- `tendsto_routeUDyadicParabolicQuadraticForm`
+- `tendsto_routeUDyadicParabolicSafeQuadraticForm_zero`
+- `routeUDyadicParabolicNyquistCurrent_eq_sq_sub_sq`
+- `tendsto_routeUDyadicParabolicNyquistCurrent_zero`
+- `routeUDyadicXiNyquistCurrent_eq_sq_sub_sq`
+- `tendsto_routeUDyadicXiNyquistCurrent_zero`
+
+Scratch and checked-in source passed `lake env lean`.  Exact module `.olean` was compiled directly at
+Lake's resolved module path; umbrella import was wired without building umbrella or project.  Axiom
+audit of classification, factorization, shell limit, exact sample collapse, and both endpoint limits
+is `[propext, Classical.choice, Quot.sound]`.  Source contains no `sorry`, `admit`, new `axiom`,
+`opaque`, `unsafe`, `native_decide`, `#eval`, or `#reduce`.
+
 ## Gates
 
 - [x] 0 → 1: exact falsifiable quadratic classification and hostile attack
 - [x] 1 → 2: dependency-closed proof above
-- [ ] 2 → 3: exact Lean theorem and axiom audit
+- [x] 2 → 3: exact Lean theorem and axiom audit
 - [ ] 3 → 4: independent novelty/significance audit and standalone exposition
 
 ## Log
@@ -146,3 +171,6 @@ appearing in `U-DYADIC-SOURCE`.  Pointwise vanishing at both ends is insufficien
   theorem after rotating to reconstruction/detail coordinates.
 - 2026-08-14 — Strongest positive survivor `U-PN-NULL` paper-proved: unique signed quotient current
   and its fixed-divisor/parabolic two-ended vanishing law.
+- 2026-08-14 — Exact survivor Lean-proved, exact `.olean` compiled, axiom-audited, and umbrella
+  wired without umbrella/full build.
+

@@ -134,11 +134,10 @@ theorem eval_descProdSymbol_map {R : Type*} [CommRing R] (μ : Fin D → ℕ) (k
       = MvPolynomial.aeval (R := ℤ) (fun s => ((k s : ℕ) : R)) (descProdSymbol μ) := by
     rw [MvPolynomial.eval_map, MvPolynomial.aeval_def]
     congr 1
-    exact (algebraMap_int_eq).symm
   rw [halg, descProdSymbol, map_prod]
   refine Finset.prod_congr rfl fun s _ => ?_
-  rw [Polynomial.aeval_algHom_apply, MvPolynomial.aeval_X, Polynomial.aeval_def,
-    Polynomial.eval₂_eq_eval_map, ← algebraMap_int_eq, descPochhammer_map,
+  rw [← Polynomial.aeval_algHom_apply, MvPolynomial.aeval_X, Polynomial.aeval_def,
+    Polynomial.eval₂_eq_eval_map, descPochhammer_map,
     descPochhammer_eval_eq_descFactorial]
 
 end

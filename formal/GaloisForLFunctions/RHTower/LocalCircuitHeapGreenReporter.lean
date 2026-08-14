@@ -652,4 +652,189 @@ theorem chain_incidentEdgeCount_le (n K₁ K₂ : ℕ) (a : ChainLetter n K₁ K
 
 end ChainAlphabet
 
+section ChainCapacity
+
+/-- **One-dimensional local-circuit capacity law.**  For a one-dimensional local gate dictionary
+with `K₁` one-site and `K₂` nearest-neighbour types, the measure of the states reachable at depth
+at most `s` is bounded by the length-independent dependence-degree capacity times any
+target-uniform measure bound. -/
+theorem chain_measure_traceHeapAccessible_le {X : Type*} [MeasurableSpace X]
+    (ν : Measure X) {n K₁ K₂ : ℕ} (hn : 0 < n) (hK : 0 < K₁)
+    (S : CircuitTrace (chainIndependent n K₁ K₂) → Set X) (s : ℕ)
+    {B : ℝ≥0∞} (hB : ∀ τ, ν (S τ) ≤ B) :
+    ν (heapAccessible (traceLength (chainIndependent n K₁ K₂)) S s) ≤
+      (((s + 1) * (K₁ * n + K₂ * (n - 1) + s - 1).choose s *
+        2 ^ (max (K₁ - 1 + 2 * K₂) (2 * K₁ + 3 * K₂ - 1) * s) : ℕ) : ℝ≥0∞) * B := by
+  haveI : Nonempty (ChainLetter n K₁ K₂) :=
+    ⟨Sum.inl (⟨0, hn⟩, ⟨0, hK⟩)⟩
+  refine le_trans (measure_traceHeapAccessible_le_cumulativeTraceCount ν _ S s hB) ?_
+  refine mul_le_mul_left ?_ B
+  have hcum := cumulativeTraceCount_le_maxDegree (chainIndependent n K₁ K₂)
+    (chainIndependent_symm n K₁ K₂) s (max (K₁ - 1 + 2 * K₂) (2 * K₁ + 3 * K₂ - 1))
+    (chain_incidentEdgeCount_le n K₁ K₂)
+  rw [card_chainLetter] at hcum
+  exact_mod_cast hcum
+
+end ChainCapacity
+
+section CapacityEntropy
+
+/-- Explicit binomial profile bound: a `k`-subset count of an `n`-set is at most `(e n / k)^k`. -/
+theorem choose_le_exp_mul_div_pow (n k : ℕ) (hk : 0 < k) :
+    (n.choose k : ℝ) ≤ (Real.exp 1 * n / k) ^ k := by
+  have hkR : (0 : ℝ) < k := by exact_mod_cast hk
+  have hfac : (0 : ℝ) < (k.factorial : ℝ) := by exact_mod_cast k.factorial_pos
+  have h1 : (n.choose k : ℝ) ≤ (n : ℝ) ^ k / (k.factorial : ℝ) := Nat.choose_le_pow_div k n
+  have h2 : ((k : ℝ)) ^ k / (k.factorial : ℝ) ≤ Real.exp k :=
+    Real.pow_div_factorial_le_exp k (by positivity) k
+  have h3 : ((k : ℝ)) ^ k ≤ Real.exp k * (k.factorial : ℝ) := by
+    rw [div_le_iff₀ hfac] at h2
+    exact h2
+  have hinv : (1 : ℝ) / (k.factorial : ℝ) ≤ Real.exp k / ((k : ℝ) ^ k) := by
+    rw [div_le_div_iff₀ hfac (by positivity)]
+    linarith
+  calc (n.choose k : ℝ) ≤ (n : ℝ) ^ k / (k.factorial : ℝ) := h1
+    _ = (n : ℝ) ^ k * (1 / (k.factorial : ℝ)) := by ring
+    _ ≤ (n : ℝ) ^ k * (Real.exp k / ((k : ℝ) ^ k)) := by
+        exact mul_le_mul_of_nonneg_left hinv (by positivity)
+    _ = (Real.exp 1 * n / k) ^ k := by
+        rw [div_pow, mul_pow, ← Real.exp_nat_mul, mul_one]
+        field_simp
+
+variable {α : Type*} [Fintype α] [LinearOrder α] [Nonempty α]
+
+/-- Multiplicity profiles at depth `s` are dominated by the `M`-subset profile count. -/
+theorem choose_profile_le_choose_alphabet (s : ℕ) :
+    (Fintype.card α + s - 1).choose s ≤ (Fintype.card α + s).choose (Fintype.card α) := by
+  have hM : 1 ≤ Fintype.card α := Fintype.card_pos
+  have hidx : Fintype.card α + s - 1 = s + (Fintype.card α - 1) := by omega
+  have hsub : s + (Fintype.card α - 1) - (Fintype.card α - 1) = s := by omega
+  have hchoose : (Fintype.card α + s - 1).choose s =
+      (s + (Fintype.card α - 1)).choose (Fintype.card α - 1) := by
+    rw [hidx, ← Nat.choose_symm (Nat.le_add_left (Fintype.card α - 1) s), hsub]
+  have hpascal : (Fintype.card α + s).choose (Fintype.card α) =
+      (s + (Fintype.card α - 1)).choose (Fintype.card α - 1) +
+        (s + (Fintype.card α - 1)).choose (Fintype.card α) := by
+    have h1 : Fintype.card α + s = (s + (Fintype.card α - 1)) + 1 := by omega
+    have h2 : Fintype.card α = (Fintype.card α - 1) + 1 := by omega
+    rw [h1, h2, Nat.choose_succ_succ]
+    simp
+  omega
+
+/-- **Bounded-degree gate entropy.**  The logarithm of the cumulative heap capacity splits into an
+extensive dependence term and a subleading multiplicity-profile term. -/
+theorem log_cumulativeTraceCount_le (independent : α → α → Prop)
+    (hsymm : ∀ x y, independent x y → independent y x) (s Δ : ℕ)
+    (hdegree : ∀ a, incidentEdgeCount independent a ≤ Δ) :
+    Real.log (cumulativeTraceCount independent s) ≤
+      Δ * s * Real.log 2 +
+        Fintype.card α * (1 + Real.log (1 + (s : ℝ) / Fintype.card α)) +
+        Real.log (s + 1) := by
+  classical
+  have hM : 1 ≤ Fintype.card α := Fintype.card_pos
+  have hMR : (0 : ℝ) < Fintype.card α := by exact_mod_cast hM
+  have hcum := cumulativeTraceCount_le_maxDegree independent hsymm s Δ hdegree
+  have hprofile : ((Fintype.card α + s - 1).choose s : ℝ) ≤
+      (Real.exp 1 * (1 + (s : ℝ) / Fintype.card α)) ^ Fintype.card α := by
+    have hstep : ((Fintype.card α + s - 1).choose s : ℝ) ≤
+        ((Fintype.card α + s).choose (Fintype.card α) : ℝ) := by
+      exact_mod_cast choose_profile_le_choose_alphabet (α := α) s
+    refine le_trans hstep ?_
+    refine le_trans (choose_le_exp_mul_div_pow (Fintype.card α + s) (Fintype.card α) hM) ?_
+    apply le_of_eq
+    congr 1
+    push_cast
+    field_simp
+  have hbound : (cumulativeTraceCount independent s : ℝ) ≤
+      ((s : ℝ) + 1) * (Real.exp 1 * (1 + (s : ℝ) / Fintype.card α)) ^ Fintype.card α *
+        (2 : ℝ) ^ (Δ * s) := by
+    have hcast : (cumulativeTraceCount independent s : ℝ) ≤
+        ((s : ℝ) + 1) * ((Fintype.card α + s - 1).choose s : ℝ) * (2 : ℝ) ^ (Δ * s) := by
+      exact_mod_cast hcum
+    refine le_trans hcast ?_
+    have h2pos : (0 : ℝ) ≤ (2 : ℝ) ^ (Δ * s) := by positivity
+    refine mul_le_mul_of_nonneg_right ?_ h2pos
+    exact mul_le_mul_of_nonneg_left hprofile (by positivity)
+  have hprofpos : (0 : ℝ) < 1 + (s : ℝ) / Fintype.card α := by positivity
+  have hpos : (0 : ℝ) < ((s : ℝ) + 1) *
+      (Real.exp 1 * (1 + (s : ℝ) / Fintype.card α)) ^ Fintype.card α * (2 : ℝ) ^ (Δ * s) := by
+    have h1 : (0 : ℝ) < (s : ℝ) + 1 := by positivity
+    have h2 : (0 : ℝ) < (Real.exp 1 * (1 + (s : ℝ) / Fintype.card α)) ^ Fintype.card α :=
+      pow_pos (by positivity) _
+    have h3 : (0 : ℝ) < (2 : ℝ) ^ (Δ * s) := by positivity
+    exact mul_pos (mul_pos h1 h2) h3
+  refine le_trans (Real.log_le_log (by positivity) hbound) ?_
+  rw [Real.log_mul (by positivity) (by positivity), Real.log_mul (by positivity) (by positivity),
+    Real.log_pow, Real.log_pow, Real.log_mul (Real.exp_ne_zero 1) (by positivity), Real.log_exp]
+  push_cast
+  ring_nf
+
+/-- **Subexponential gate profile.**  In the regime `M ≤ K n`, `s ≤ c 2^n`, the multiplicity-profile
+and depth terms of the capacity logarithm are `o(2^n)`. -/
+theorem tendsto_capacityProfile_div_pow_two (K c : ℝ) (hK : 0 ≤ K) (hc : 0 ≤ c) :
+    Filter.Tendsto
+      (fun n : ℕ => (K * n * (1 + Real.log (1 + c * 2 ^ n)) + Real.log (c * 2 ^ n + 1)) / 2 ^ n)
+      Filter.atTop (nhds 0) := by
+  have hlogc : (0 : ℝ) < 1 + c := by linarith
+  have hbound : ∀ n : ℕ, Real.log (1 + c * 2 ^ n) ≤ Real.log (1 + c) + n * Real.log 2 := by
+    intro n
+    have h2 : (1 : ℝ) ≤ (2 : ℝ) ^ n := one_le_pow₀ (by norm_num)
+    have hle : 1 + c * (2 : ℝ) ^ n ≤ (1 + c) * 2 ^ n := by nlinarith
+    calc Real.log (1 + c * 2 ^ n) ≤ Real.log ((1 + c) * 2 ^ n) :=
+          Real.log_le_log (by positivity) hle
+      _ = Real.log (1 + c) + n * Real.log 2 := by
+          rw [Real.log_mul (ne_of_gt hlogc) (by positivity), Real.log_pow]
+  have hbound' : ∀ n : ℕ, Real.log (c * 2 ^ n + 1) ≤ Real.log (1 + c) + n * Real.log 2 := by
+    intro n
+    have := hbound n
+    rwa [add_comm (c * (2:ℝ) ^ n) 1]
+  have hnonneg : ∀ n : ℕ,
+      0 ≤ (K * n * (1 + Real.log (1 + c * 2 ^ n)) + Real.log (c * 2 ^ n + 1)) / 2 ^ n := by
+    intro n
+    have h1 : 0 ≤ Real.log (1 + c * (2:ℝ) ^ n) :=
+      Real.log_nonneg (by nlinarith [one_le_pow₀ (show (1:ℝ) ≤ 2 by norm_num) (n := n)])
+    have h2 : 0 ≤ Real.log (c * (2:ℝ) ^ n + 1) :=
+      Real.log_nonneg (by nlinarith [one_le_pow₀ (show (1:ℝ) ≤ 2 by norm_num) (n := n)])
+    have : 0 ≤ K * n * (1 + Real.log (1 + c * (2:ℝ) ^ n)) := by positivity
+    positivity
+  have hupper : ∀ n : ℕ,
+      (K * n * (1 + Real.log (1 + c * 2 ^ n)) + Real.log (c * 2 ^ n + 1)) / 2 ^ n ≤
+        (K * Real.log 2) * ((n : ℝ) ^ 2 / 2 ^ n) +
+          (K * (1 + Real.log (1 + c)) + Real.log 2) * ((n : ℝ) ^ 1 / 2 ^ n) +
+          Real.log (1 + c) * ((n : ℝ) ^ 0 / 2 ^ n) := by
+    intro n
+    have hpow : (0 : ℝ) < (2 : ℝ) ^ n := by positivity
+    rw [div_le_iff₀ hpow]
+    have h1 := hbound n
+    have h2 := hbound' n
+    have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+    have hKn : 0 ≤ K * n := by positivity
+    have hstep : K * n * (1 + Real.log (1 + c * 2 ^ n)) ≤
+        K * n * (1 + Real.log (1 + c) + n * Real.log 2) := by
+      refine mul_le_mul_of_nonneg_left ?_ hKn
+      linarith
+    have hfield : ((K * Real.log 2) * ((n : ℝ) ^ 2 / 2 ^ n) +
+        (K * (1 + Real.log (1 + c)) + Real.log 2) * ((n : ℝ) ^ 1 / 2 ^ n) +
+        Real.log (1 + c) * ((n : ℝ) ^ 0 / 2 ^ n)) * 2 ^ n =
+        K * Real.log 2 * (n : ℝ) ^ 2 +
+          (K * (1 + Real.log (1 + c)) + Real.log 2) * (n : ℝ) + Real.log (1 + c) := by
+      field_simp
+      ring
+    rw [hfield]
+    nlinarith [hstep, h2]
+  have hzero : Filter.Tendsto
+      (fun n : ℕ => (K * Real.log 2) * ((n : ℝ) ^ 2 / 2 ^ n) +
+        (K * (1 + Real.log (1 + c)) + Real.log 2) * ((n : ℝ) ^ 1 / 2 ^ n) +
+        Real.log (1 + c) * ((n : ℝ) ^ 0 / 2 ^ n)) Filter.atTop (nhds 0) := by
+    have h2 := tendsto_pow_const_div_const_pow_of_one_lt 2 (r := (2 : ℝ)) (by norm_num)
+    have h1 := tendsto_pow_const_div_const_pow_of_one_lt 1 (r := (2 : ℝ)) (by norm_num)
+    have h0 := tendsto_pow_const_div_const_pow_of_one_lt 0 (r := (2 : ℝ)) (by norm_num)
+    simpa using ((h2.const_mul (K * Real.log 2)).add
+      (h1.const_mul (K * (1 + Real.log (1 + c)) + Real.log 2))).add
+      (h0.const_mul (Real.log (1 + c)))
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hzero
+    hnonneg hupper
+
+end CapacityEntropy
+
 end GaloisForLFunctions.RHTower
