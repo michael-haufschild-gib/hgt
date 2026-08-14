@@ -36,6 +36,7 @@ namespace GaloisForLFunctions.RHTower
 open GaloisForLFunctions.HTGeometry
 
 variable {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℂ X] [CompleteSpace X]
+  [Nontrivial X]
 
 /-- The scalar modulus of the Gamma strip propagator on the shifted line. -/
 def suzukiGammaStripCarrier (σ x : ℝ) : ℝ := Real.sqrt (suzukiGammaStripNormSq σ x)
@@ -48,7 +49,7 @@ theorem suzukiGammaStripCarrier_pos {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) (
 def stripPropagator (E : ℂ → ℂ) (T : X →L[ℂ] X) (z : ℂ) : X →L[ℂ] X :=
   (z ^ (-(1 : ℂ) / 2)) • stripTransport E T z
 
-omit [CompleteSpace X] in
+omit [CompleteSpace X] [Nontrivial X] in
 theorem stripPropagator_apply (E : ℂ → ℂ) (T : X →L[ℂ] X) (z : ℂ) (c : X) :
     stripPropagator E T z c = stripSolution E T c z := rfl
 
@@ -58,6 +59,7 @@ def stripPropagatorInv (E : ℂ → ℂ) (T : X →L[ℂ] X) (z : ℂ) : X →L[
       * (Complex.exp (Complex.I * (Real.eulerMascheroniConstant : ℂ) * z) * E z))⁻¹)
     • NormedSpace.exp (((Complex.I / 2) * z) • T)
 
+omit [Nontrivial X] in
 /-- The inverse propagator really inverts the propagator wherever the branch does not vanish. -/
 theorem stripPropagatorInv_stripPropagator {E : ℂ → ℂ} {T : X →L[ℂ] X} {z : ℂ}
     (hz : z ≠ 0) (hE : E z ≠ 0) (v : X) :
@@ -83,11 +85,11 @@ theorem stripPropagatorInv_stripPropagator {E : ℂ → ℂ} {T : X →L[ℂ] X}
       NormedSpace.exp_zero]
   have hstep : stripPropagator E T z v
       = a • NormedSpace.exp ((-(Complex.I / 2) * z) • T) v := by
-    rw [stripPropagator, ContinuousLinearMap.smul_apply, stripTransport_apply, hadef,
+    rw [stripPropagator, smul_apply, stripTransport_apply, hadef,
       smul_smul]
-    rfl
-  rw [hstep, stripPropagatorInv, ContinuousLinearMap.smul_apply, map_smul, smul_smul,
+  rw [hstep, stripPropagatorInv, smul_apply, map_smul, smul_smul,
     inv_mul_cancel₀ hane, one_smul]
+  exact congrFun (congrArg (fun S : X →L[ℂ] X => (S : X → X)) hprod) v
 
 section Bounds
 
@@ -111,7 +113,6 @@ theorem norm_cpow_mul_branch_shift (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gam
     rw [Complex.norm_cpow_of_ne_zero hzne]
     norm_num
     rw [Real.sqrt_eq_rpow, ← Real.rpow_neg hznorm.le]
-    norm_num
   have hEsq : ‖E z‖ ^ 2 = ‖gammaRatio z‖ := by
     rw [← norm_pow, hE z (shift_mem_imStrip hσ0 hσ1 x)]
   have hnormSq : suzukiGammaStripNormSq σ x = ‖E z‖ ^ 2 / ‖z‖ := by
@@ -364,7 +365,8 @@ theorem lintegral_enorm_sq_forcedStripRay_lt_top {E : ℂ → ℂ} {T : X →L[�
               + ∫⁻ t in Ioc (1 : ℝ) x, ENNReal.ofReal (t ^ (p - 1)) * ‖h t‖ₑ) := by
           refine mul_le_mul' (ENNReal.ofReal_le_ofReal houter) ?_
           refine le_trans (enorm_add_le _ _) ?_
-          exact add_le_add (le_of_eq (ofReal_norm c).symm ▸ le_rfl) hint
+          refine add_le_add (le_of_eq ?_) hint
+          exact (ofReal_norm c).symm
   -- the moment hypothesis for the rescaled forcing
   have hhmeas : AEMeasurable (fun t => ‖h t‖ₑ) (volume.restrict (Ioi (1 : ℝ))) := by
     have hrw : (fun t : ℝ => ‖h t‖ₑ)

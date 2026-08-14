@@ -186,6 +186,86 @@ theorem capacity_eq {a : ℝ} (ha0 : 0 ≤ a) (ha1 : a ≤ 1) (A : Set S) :
     rw [h1, C.inner_killed_symm, C.killed_one, C.inner_smul_left, C.inner_one_left]
   rw [hfirst, hsecond]
 
+/-- The stationary mass of a target. -/
+noncomputable def statMeasure (A : Set S) : ℝ := ∑ x, Set.indicator A C.stat x
+
+theorem statMeasure_nonneg (A : Set S) : 0 ≤ C.statMeasure A := by
+  classical
+  refine Finset.sum_nonneg fun x _ => ?_
+  by_cases hx : x ∈ A
+  · rw [Set.indicator_of_mem hx]
+    exact (C.stat_pos x).le
+  · rw [Set.indicator_of_notMem hx]
+
+theorem inner_indicator_nonneg (A : Set S) :
+    0 ≤ C.inner (Set.indicator A 1) (C.step (Set.indicator A 1)) := by
+  classical
+  have hnn : ∀ x : S, 0 ≤ Set.indicator A (1 : S → ℝ) x := by
+    intro x
+    by_cases hx : x ∈ A
+    · rw [Set.indicator_of_mem hx]
+      norm_num
+    · rw [Set.indicator_of_notMem hx]
+  refine Finset.sum_nonneg fun x _ => ?_
+  refine mul_nonneg (C.stat_pos x).le (mul_nonneg (hnn x) ?_)
+  exact Finset.sum_nonneg fun y _ => mul_nonneg (C.kernel_nonneg x y) (hnn y)
+
+theorem inner_indicator_self (A : Set S) :
+    C.inner (Set.indicator A 1) (Set.indicator A 1) = C.statMeasure A := by
+  classical
+  refine Finset.sum_congr rfl fun x _ => ?_
+  by_cases hx : x ∈ A
+  · rw [Set.indicator_of_mem hx, Set.indicator_of_mem hx]
+    simp
+  · rw [Set.indicator_of_notMem hx, Set.indicator_of_notMem hx]
+    simp
+
+/-- **Sharp elementary capacity window.** -/
+theorem capacity_window {a : ℝ} (ha0 : 0 ≤ a) (ha1 : a ≤ 1) (A : Set S) :
+    (1 - a) * C.statMeasure A ≤ C.capacity a A ∧
+      C.capacity a A ≤ C.statMeasure A ∧ C.capacity a A ≤ 1 - a := by
+  classical
+  refine ⟨?_, ?_, ?_⟩
+  · rw [(C.capacity_eq ha0 ha1 A).2]
+    refine mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun x _ => ?_) (by linarith : (0:ℝ) ≤ 1 - a)
+    by_cases hx : x ∈ A
+    · rw [Set.indicator_of_mem hx, C.potential_of_mem a hx, mul_one]
+    · rw [Set.indicator_of_notMem hx]
+      exact mul_nonneg (C.stat_pos x).le (C.potential_nonneg a A x)
+  · have hle := C.energy_potential_le ha0 ha1
+      (f := Set.indicator A (1 : S → ℝ)) (fun x hx => by rw [Set.indicator_of_mem hx]; rfl)
+    refine le_trans hle (le_of_le_of_eq ?_ (C.inner_indicator_self A))
+    rw [energy, energyBil, inner_killed_expand]
+    have := mul_nonneg ha0 (C.inner_indicator_nonneg A)
+    linarith
+  · have hle := C.energy_potential_le ha0 ha1 (A := A) (f := (1 : S → ℝ)) (fun x _ => rfl)
+    refine le_trans hle (le_of_eq ?_)
+    rw [energy, energyBil, C.killed_one, C.inner_smul_right, C.inner_one_left]
+    simp [C.stat_sum]
+
+/-- **Stationary first-entrance mean.**  The stationary mean of the equilibrium potential is the
+capacity divided by the killing rate. -/
+theorem stationary_mean {a : ℝ} (ha0 : 0 ≤ a) (ha1 : a < 1) (A : Set S) :
+    ∑ x, C.stat x * C.potential a A x = C.capacity a A / (1 - a) := by
+  have h := (C.capacity_eq ha0 ha1.le A).2
+  have hpos : (0:ℝ) < 1 - a := by linarith
+  rw [h, mul_comm, mul_div_assoc, div_self hpos.ne', mul_one]
+
+/-- The stationary first-entrance mass differs from the target volume by at most the killing
+factor. -/
+theorem statMeasure_le_stationary_mean {a : ℝ} (ha0 : 0 ≤ a) (ha1 : a < 1) (A : Set S) :
+    C.statMeasure A ≤ ∑ x, C.stat x * C.potential a A x ∧
+      ∑ x, C.stat x * C.potential a A x ≤ C.statMeasure A / (1 - a) := by
+  have hwin := C.capacity_window ha0 ha1.le A
+  have hmean := C.stationary_mean ha0 ha1 A
+  have hpos : (0:ℝ) < 1 - a := by linarith
+  constructor
+  · rw [hmean, le_div_iff₀ hpos]
+    have := hwin.1
+    linarith
+  · rw [hmean, div_le_div_iff_of_pos_right hpos]
+    exact hwin.2.1
+
 end ReversibleChain
 
 end GaloisForLFunctions.RHTower

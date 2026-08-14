@@ -5,10 +5,7 @@ This is an agent worklist aid, not a mathematical ledger.
 
 ## Proof Debt
 
-| Kind | Location | Context | Text |
-|---|---|---|---|
-| proof-debt | `formal/GaloisForLFunctions/HTGeometry/NonlinearMailletShift.lean:349` | `theorem exists_isGevreySeries_of_isFormalEulerADESolution_shift` | `sorry` |
-| proof-debt | `formal/GaloisForLFunctions/HTGeometry/NonlinearMailletShift.lean:350` | `theorem exists_isGevreySeries_of_isFormalEulerADESolution_shift` | `sorry` |
+No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 
 ## Large Files
 
@@ -17,9 +14,9 @@ This is an agent worklist aid, not a mathematical ledger.
 | 67381 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularInversion/MontgomeryKaliski.lean` |
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
 | 9881 | `formal/GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean` |
-| 8516 | `formal/GaloisForLFunctions/RHTower.lean` |
+| 8527 | `formal/GaloisForLFunctions/RHTower.lean` |
 | 8232 | `formal/GaloisForLFunctions/QuantumAlg/Util/Polynomial/Complement/Interval/Witness.lean` |
-| 7442 | `formal/GaloisForLFunctions/HTGeometry.lean` |
+| 7450 | `formal/GaloisForLFunctions/HTGeometry.lean` |
 | 6316 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularDivision/StructuredCircuit.lean` |
 | 6194 | `formal/GaloisForLFunctions/QuantumAlg/Primitives/QSP/MultiQubit/QSVT/Decomposition.lean` |
 | 5058 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |

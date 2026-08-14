@@ -63,10 +63,12 @@ theorem factorial_add_rpow_le (v r n : ℕ) :
   calc (((n + v)! : ℝ)) ^ r
       ≤ (((n ! : ℝ)) * (((v : ℝ) + 1) * ((n : ℝ) + 1)) ^ v) ^ r :=
         pow_le_pow_left₀ (by positivity) hnat r
+    _ = ((n ! : ℝ)) ^ r * ((((v : ℝ) + 1) * ((n : ℝ) + 1)) ^ v) ^ r := by rw [mul_pow]
+    _ = ((n ! : ℝ)) ^ r * (((v : ℝ) + 1) * ((n : ℝ) + 1)) ^ (v * r) := by rw [← pow_mul]
     _ = ((n ! : ℝ)) ^ r * (((v : ℝ) + 1)) ^ (v * r) * (((n : ℝ) + 1)) ^ (v * r) := by
-        ring
+        rw [mul_pow, mul_assoc]
 
-set_option maxHeartbeats 4000000 in
+set_option maxHeartbeats 400000 in
 /-- **Maillet's theorem, nonlinear case, at an arbitrary leading shift.**  A formal solution of an
 analytic algebraic differential equation whose linearization along the truncation at order `N`
 vanishes exactly to order `v`, with `m + 2v ≤ N`, is Gevrey of a finite integral order. -/
@@ -75,32 +77,32 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution_shift {m N v : ℕ}
     (hP : IsAnalyticDifferentialPolynomial P)
     {F : PowerSeries ℂ} (hsol : IsFormalEulerADESolution P F)
     (hNm : m + 2 * v ≤ N)
-    (hvlow : ∀ μ, μ < v → shiftPolynomial (linearizationCoeff P (truncSeries N F)) μ = 0)
-    (hΦ : shiftPolynomial (linearizationCoeff P (truncSeries N F)) v ≠ 0) :
+    (hvlow : ∀ μ, μ < v → shiftPolynomial (linearizationCoeff P (truncPowerSeries N F)) μ = 0)
+    (hΦ : shiftPolynomial (linearizationCoeff P (truncPowerSeries N F)) v ≠ 0) :
     ∃ r : ℕ, IsGevreySeries (r : ℝ) F := by
   classical
   -- the linearization along the truncation
-  have hHdvd0 : (PowerSeries.X : PowerSeries ℂ) ^ (N + 1) ∣ (F - truncSeries N F) :=
-    X_pow_dvd_sub_truncSeries N F
-  have hYH0 : truncSeries N F + (F - truncSeries N F) = F := by ring
-  have hsol'0 : IsFormalEulerADESolution P (truncSeries N F + (F - truncSeries N F)) := by
+  have hHdvd0 : (PowerSeries.X : PowerSeries ℂ) ^ (N + 1) ∣ (F - truncPowerSeries N F) :=
+    X_pow_dvd_sub_truncPowerSeries N F
+  have hYH0 : truncPowerSeries N F + (F - truncPowerSeries N F) = F := by ring
+  have hsol'0 : IsFormalEulerADESolution P (truncPowerSeries N F + (F - truncPowerSeries N F)) := by
     rw [hYH0]; exact hsol
-  have hBconv0 : ∀ j, IsGevreySeries 0 (linearizationCoeff P (truncSeries N F) j) := fun j =>
+  have hBconv0 : ∀ j, IsGevreySeries 0 (linearizationCoeff P (truncPowerSeries N F) j) := fun j =>
     isGevreySeries_zero_linearizationCoeff P hP F j
-  have hVconv0 : IsGevreySeries 0 (MvPolynomial.aeval (eulerJetVector (truncSeries N F)) P) :=
-    isGevreySeries_zero_aeval_truncSeries P hP F
+  have hVconv0 : IsGevreySeries 0 (MvPolynomial.aeval (eulerJetVector (truncPowerSeries N F)) P) :=
+    isGevreySeries_zero_aeval_truncPowerSeries P hP F
   have hVdvd0 : (PowerSeries.X : PowerSeries ℂ) ^ (N + 1) ∣
-      MvPolynomial.aeval (eulerJetVector (truncSeries N F)) P :=
-    X_pow_dvd_aeval_truncSeries P hsol
-  have hYconv0 : IsGevreySeries 0 (truncSeries N F) := isGevreySeries_zero_truncSeries N F
-  have hLH0 : eulerLinearOp (linearizationCoeff P (truncSeries N F)) (F - truncSeries N F)
-      = -(MvPolynomial.aeval (eulerJetVector (truncSeries N F)) P)
-        - taylorDefect (eulerJetVector (truncSeries N F))
-            (eulerJetVector (F - truncSeries N F)) P :=
-    eulerLinearOp_linearization_eq P (truncSeries N F) (F - truncSeries N F) hsol'0
+      MvPolynomial.aeval (eulerJetVector (truncPowerSeries N F)) P :=
+    X_pow_dvd_aeval_truncPowerSeries P hsol
+  have hYconv0 : IsGevreySeries 0 (truncPowerSeries N F) := isGevreySeries_zero_truncPowerSeries N F
+  have hLH0 : eulerLinearOp (linearizationCoeff P (truncPowerSeries N F)) (F - truncPowerSeries N F)
+      = -(MvPolynomial.aeval (eulerJetVector (truncPowerSeries N F)) P)
+        - taylorDefect (eulerJetVector (truncPowerSeries N F))
+            (eulerJetVector (F - truncPowerSeries N F)) P :=
+    eulerLinearOp_linearization_eq P (truncPowerSeries N F) (F - truncPowerSeries N F) hsol'0
   obtain ⟨T, hTs, hTc, hTsum⟩ :=
     hasTaylorDefectFamily (A := PowerSeries ℂ) convergentSubsemiring P hP
-  set Y : PowerSeries ℂ := truncSeries N F with hYdef
+  set Y : PowerSeries ℂ := truncPowerSeries N F with hYdef
   set H : PowerSeries ℂ := F - Y with hHdef
   set B : Fin (m + 1) → PowerSeries ℂ := linearizationCoeff P Y with hBdef
   set V : PowerSeries ℂ := MvPolynomial.aeval (eulerJetVector Y) P with hVdef
@@ -142,15 +144,21 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution_shift {m N v : ℕ}
   set N₁ : ℕ := max N₀ 1 with hN₁def
   set Cb' : ℝ := Cb * ρ ^ v with hCb'def
   have hCb' : 0 < Cb' := by rw [hCb'def]; positivity
+  -- each constant is fixed by the estimates already proved about it; keeping the defining
+  -- bodies out of the context is what keeps the recursion below tractable
+  clear_value Cb'
   set K₀ : ℝ := ∑ α ∈ T.support,
       (2 : ℝ) ^ (w + 2) * Cw * ((2 : ℝ) ^ (2 + 2)) ^ (jetDegree α)
         * (((N + 1)! : ℝ)) ^ r * 2 ^ ((N + 1) * r) with hK₀def
   have hK₀0 : (0 : ℝ) ≤ K₀ := Finset.sum_nonneg fun α _ => by positivity
+  clear_value K₀
   set K : ℝ := K₀ * (((v : ℝ) + 1)) ^ (v * r) with hKdef
   have hK0 : (0 : ℝ) ≤ K := by rw [hKdef]; positivity
+  clear_value K
   set S : ℝ := ∑ k ∈ Finset.range N₁,
       ‖PowerSeries.coeff k H‖ * ((k : ℝ) + 1) ^ a / ((k ! : ℝ)) ^ r with hSdef
   have hS0 : (0 : ℝ) ≤ S := Finset.sum_nonneg fun k _ => by positivity
+  clear_value S
   -- the geometric base, chosen free of the induction size
   set A : ℝ := 1 + Aw + Av + 4 * ρ + 12 * Cb' * Ca * ρ / c
       + 9 * (K + 1) * (c + 1) * Cv * Av ^ (N + 1) / c ^ 2
@@ -161,25 +169,26 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution_shift {m N v : ℕ}
   have hApos : 0 < A := by rw [hAdef]; positivity
   have hA1 : (1 : ℝ) ≤ A := by
     rw [hAdef]
-    linarith [le_of_lt hAw, le_of_lt hAv, le_of_lt hρ, le_of_lt hp1, le_of_lt hp2, hp3]
+    linarith only [le_of_lt hAw, le_of_lt hAv, le_of_lt hρ, le_of_lt hp1, le_of_lt hp2, hp3]
   have hAAw : Aw ≤ A := by
     rw [hAdef]
-    linarith [le_of_lt hAv, le_of_lt hρ, le_of_lt hp1, le_of_lt hp2, hp3]
+    linarith only [le_of_lt hAv, le_of_lt hρ, le_of_lt hp1, le_of_lt hp2, hp3]
   have hAAv : Av ≤ A := by
     rw [hAdef]
-    linarith [le_of_lt hAw, le_of_lt hρ, le_of_lt hp1, le_of_lt hp2, hp3]
+    linarith only [le_of_lt hAw, le_of_lt hρ, le_of_lt hp1, le_of_lt hp2, hp3]
   have hA4ρ : 4 * ρ ≤ A := by
     rw [hAdef]
-    linarith [le_of_lt hAw, le_of_lt hAv, le_of_lt hp1, le_of_lt hp2, hp3]
+    linarith only [le_of_lt hAw, le_of_lt hAv, le_of_lt hp1, le_of_lt hp2, hp3]
   have hAgeom : 12 * Cb' * Ca * ρ / c ≤ A := by
     rw [hAdef]
-    linarith [le_of_lt hAw, le_of_lt hAv, le_of_lt hρ, le_of_lt hp2, hp3]
+    linarith only [le_of_lt hAw, le_of_lt hAv, le_of_lt hρ, le_of_lt hp2, hp3]
   have hAval : 9 * (K + 1) * (c + 1) * Cv * Av ^ (N + 1) / c ^ 2 ≤ A := by
     rw [hAdef]
-    linarith [le_of_lt hAw, le_of_lt hAv, le_of_lt hρ, le_of_lt hp1, hp3]
+    linarith only [le_of_lt hAw, le_of_lt hAv, le_of_lt hρ, le_of_lt hp1, hp3]
   have hAbase : 3 * (K + 1) * (c + 1) * S / c ≤ A := by
     rw [hAdef]
-    linarith [le_of_lt hAw, le_of_lt hAv, le_of_lt hρ, le_of_lt hp1, le_of_lt hp2]
+    linarith only [le_of_lt hAw, le_of_lt hAv, le_of_lt hρ, le_of_lt hp1, le_of_lt hp2]
+  clear_value A
   have hApowpos : ∀ k : ℕ, (0 : ℝ) < A ^ k := fun k => pow_pos hApos k
   have hApow1 : ∀ k : ℕ, (1 : ℝ) ≤ A ^ k := fun k => one_le_pow₀ hA1
   -- the induction size
@@ -199,7 +208,7 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution_shift {m N v : ℕ}
       rw [hεdef]
       field_simp
     rw [hid, div_le_div_iff₀ (by positivity) (by norm_num : (0 : ℝ) < 3)]
-    nlinarith [hK0, le_of_lt hc, mul_nonneg hK0 (le_of_lt hc)]
+    nlinarith only [hK0, le_of_lt hc, mul_nonneg hK0 (le_of_lt hc)]
   -- the base-case bound
   have hSA : S ≤ ε * A ^ (N + 1) := by
     have hsplit : A ^ (N + 1) = A ^ v * A ^ (N + 1 - v) := by
@@ -215,7 +224,7 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution_shift {m N v : ℕ}
       mul_le_mul_of_nonneg_right hAbase (le_of_lt hc)
     have h2 : 3 * (K + 1) * (c + 1) * S / c * c = 3 * (K + 1) * (c + 1) * S := by field_simp
     rw [h2] at h1
-    nlinarith [h1, hAle, le_of_lt hc]
+    nlinarith only [h1, hAle, le_of_lt hc]
   -- the value estimate
   have hVA : ∀ n : ℕ, N + 1 ≤ n + v →
       Cv * Av ^ (n + v) ≤ c / 3 * ε * A ^ n := by
@@ -270,19 +279,20 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution_shift {m N v : ℕ}
     have hstep2 : (A * c ^ 2) * A ^ v ≤ (A ^ (N + 1 - 2 * v) * c ^ 2) * A ^ v := by
       refine mul_le_mul_of_nonneg_right ?_ (le_of_lt (hApowpos v))
       exact mul_le_mul_of_nonneg_right hAle (by positivity)
-    nlinarith [hstep1, hstep2]
+    nlinarith only [hstep1, hstep2]
+  clear_value ε
   -- the geometric ratio
   set q : ℝ := ρ / A with hqdef
   have hq0 : 0 ≤ q := by rw [hqdef]; positivity
   have hq2 : 2 * q ≤ 1 / 2 := by
     rw [hqdef, ← mul_div_assoc, div_le_div_iff₀ hApos (by norm_num : (0 : ℝ) < 2)]
-    linarith [hA4ρ]
+    linarith only [hA4ρ]
   have hq21 : 2 * q < 1 := by linarith
   have hqden : (1 : ℝ) / 2 ≤ 1 - 2 * q := by linarith
   have hqgeom : Cb' * (Ca * ((2 * q) / (1 - 2 * q))) ≤ c / 3 := by
     have hstep : (2 * q) / (1 - 2 * q) ≤ 4 * q := by
       rw [div_le_iff₀ (by linarith)]
-      nlinarith [hq0, hqden]
+      nlinarith only [hq0, hqden]
     have hq4 : 4 * q ≤ c / (3 * Cb' * Ca) := by
       have hform : 4 * q = 4 * ρ / A := by rw [hqdef]; ring
       rw [hform, div_le_div_iff₀ hApos (by positivity)]
@@ -290,14 +300,15 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution_shift {m N v : ℕ}
         mul_le_mul_of_nonneg_right hAgeom (le_of_lt hc)
       have hexp : (12 * Cb' * Ca * ρ / c) * c = 12 * Cb' * Ca * ρ := by field_simp
       rw [hexp] at hAc
-      nlinarith [hAc]
+      nlinarith only [hAc]
     calc Cb' * (Ca * ((2 * q) / (1 - 2 * q))) ≤ Cb' * (Ca * (4 * q)) := by
           refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hstep ?_) (le_of_lt hCb')
-          linarith [hCa1]
+          linarith only [hCa1]
       _ ≤ Cb' * (Ca * (c / (3 * Cb' * Ca))) := by
           refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hq4 ?_) (le_of_lt hCb')
-          linarith [hCa1]
+          linarith only [hCa1]
       _ = c / 3 := by field_simp
+  clear_value q
   -- the main induction
   have hmain : GevreyWeightBound a ε A r H := by
     intro n
@@ -335,43 +346,42 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution_shift {m N v : ℕ}
         have hΦlow : c * ((n : ℝ) + 1) ^ d ≤ ‖(shiftPolynomial B v).eval ((n : ℕ) : ℂ)‖ :=
           hlow n hN₀n
         -- the truncated perturbation
-        have hH'bound : GevreyWeightBound a ε A r (truncSeries (n - 1) H) :=
-          gevreyWeightBound_truncSeries hApos hε0 (fun k hk => ih k (by omega))
-        have hH'dvd : (PowerSeries.X : PowerSeries ℂ) ^ (N + 1) ∣ truncSeries (n - 1) H :=
-          X_pow_dvd_truncSeries hHdvd0
-        have hdiff : (PowerSeries.X : PowerSeries ℂ) ^ n ∣ (H - truncSeries (n - 1) H) := by
-          have h := X_pow_dvd_sub_truncSeries (n - 1) H
+        have hH'bound : GevreyWeightBound a ε A r (truncPowerSeries (n - 1) H) :=
+          gevreyWeightBound_truncPowerSeries hApos hε0 (fun k hk => ih k (by omega))
+        have hH'dvd : (PowerSeries.X : PowerSeries ℂ) ^ (N + 1) ∣ truncPowerSeries (n - 1) H :=
+          X_pow_dvd_truncPowerSeries hHdvd0
+        have hdiff : (PowerSeries.X : PowerSeries ℂ) ^ n ∣ (H - truncPowerSeries (n - 1) H) := by
+          have h := X_pow_dvd_sub_truncPowerSeries (n - 1) H
           rwa [show (n - 1) + 1 = n by omega] at h
         have hloc : PowerSeries.coeff (n + v)
               (taylorDefect (eulerJetVector Y) (eulerJetVector H) P)
             = PowerSeries.coeff (n + v)
-                (taylorDefect (eulerJetVector Y) (eulerJetVector (truncSeries (n - 1) H)) P) := by
-          have hdvd := coeff_taylorDefect_eq_of_sub_dvd (n := n) P Y H (truncSeries (n - 1) H)
-            (by omega : 1 ≤ N + 1) hHdvd0 hH'dvd hdiff
-          exact hdvd ▸ rfl
+                (taylorDefect (eulerJetVector Y) (eulerJetVector (truncPowerSeries (n - 1) H)) P) := by
+          exact coeff_taylorDefect_eq_of_sub_dvd (n := n) (M := N + 1) (j := n + v)
+            P Y H (truncPowerSeries (n - 1) H) (by omega) hHdvd0 hH'dvd hdiff
         -- the defect estimate
         have hjets : ∀ j : Fin (m + 1),
-            GevreyWeightBound 2 ε A r (eulerJetVector (m := m) (truncSeries (n - 1) H) j) := by
+            GevreyWeightBound 2 ε A r (eulerJetVector (m := m) (truncPowerSeries (n - 1) H) j) := by
           intro j
           have hjm : (j : ℕ) ≤ m := Nat.lt_succ_iff.mp j.isLt
           have hsplit : (a - (j : ℕ)) + (j : ℕ) = a := by omega
           have h1 : GevreyWeightBound (a - (j : ℕ)) ε A r
-              (GaloisForLFunctions.HTGeometry.eulerOp^[(j : ℕ)] (truncSeries (n - 1) H)) := by
-            refine GevreyWeightBound.eulerOp_iterate ?_
+              (GaloisForLFunctions.HTGeometry.formalEulerOp^[(j : ℕ)] (truncPowerSeries (n - 1) H)) := by
+            refine GevreyWeightBound.formalEulerOp_iterate ?_
             rw [hsplit]
             exact hH'bound
           exact h1.mono_weight (by omega)
         have hjetsdvd : ∀ j : Fin (m + 1), (PowerSeries.X : PowerSeries ℂ) ^ (N + 1) ∣
-            eulerJetVector (m := m) (truncSeries (n - 1) H) j :=
-          fun j => X_pow_dvd_eulerOp_iterate (j : ℕ) hH'dvd
+            eulerJetVector (m := m) (truncPowerSeries (n - 1) H) j :=
+          fun j => X_pow_dvd_formalEulerOp_iterate (j : ℕ) hH'dvd
         have hDterm : ∀ α ∈ T.support,
             GevreyWeightBound w
               ((2 : ℝ) ^ (w + 2) * Cw * ((2 : ℝ) ^ (2 + 2)) ^ (jetDegree α)
                 * (((N + 1)! : ℝ)) ^ r * 2 ^ ((N + 1) * r) * ε ^ 2) A r
-              (W α * jetMonomial (eulerJetVector (m := m) (truncSeries (n - 1) H)) α) := by
+              (W α * jetMonomialValue (eulerJetVector (m := m) (truncPowerSeries (n - 1) H)) α) := by
           intro α hα
-          have hmono := gevreyWeightBound_jetMonomial_dvd (a := 2) (M := N + 1) (r := r)
-            le_rfl hApos hε0 hε1 (eulerJetVector (m := m) (truncSeries (n - 1) H))
+          have hmono := gevreyWeightBound_jetMonomialValue_dvd (a := 2) (M := N + 1) (r := r)
+            le_rfl hApos hε0 hε1 (eulerJetVector (m := m) (truncPowerSeries (n - 1) H))
             hjetsdvd hjets α (hTs α hα)
           have hWbound : GevreyWeightBound w Cw A r (W α) :=
             (((hWb α hα).mono_order (Nat.zero_le r) (le_of_lt hCw) hAw).mono_base hAw hAAw
@@ -381,17 +391,17 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution_shift {m N v : ℕ}
           refine hprod.mono_const (le_of_eq ?_) hApos
           ring
         have hDsum : taylorDefect (eulerJetVector Y)
-              (eulerJetVector (truncSeries (n - 1) H)) P
+              (eulerJetVector (truncPowerSeries (n - 1) H)) P
             = ∑ α ∈ T.support,
-                W α * jetMonomial (eulerJetVector (m := m) (truncSeries (n - 1) H)) α := by
-          rw [hTsum (eulerJetVector Y) (eulerJetVector (truncSeries (n - 1) H))]
+                W α * jetMonomialValue (eulerJetVector (m := m) (truncPowerSeries (n - 1) H)) α := by
+          rw [hTsum (eulerJetVector Y) (eulerJetVector (truncPowerSeries (n - 1) H))]
           rfl
         have hDbound : GevreyWeightBound w (K₀ * ε ^ 2) A r
             (taylorDefect (eulerJetVector Y)
-              (eulerJetVector (truncSeries (n - 1) H)) P) := by
+              (eulerJetVector (truncPowerSeries (n - 1) H)) P) := by
           rw [hDsum]
           have h := GevreyWeightBound.finsetSum (w := w) (r := r) (A := A) T.support
-            (fun α => W α * jetMonomial (eulerJetVector (m := m) (truncSeries (n - 1) H)) α)
+            (fun α => W α * jetMonomialValue (eulerJetVector (m := m) (truncPowerSeries (n - 1) H)) α)
             (fun α => (2 : ℝ) ^ (w + 2) * Cw * ((2 : ℝ) ^ (2 + 2)) ^ (jetDegree α)
                 * (((N + 1)! : ℝ)) ^ r * 2 ^ ((N + 1) * r) * ε ^ 2) hDterm
           refine h.mono_const (le_of_eq ?_) hApos
@@ -410,13 +420,13 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution_shift {m N v : ℕ}
           have hpowstep : ((n : ℝ) + 1) ^ a * ((n : ℝ) + 1) ^ (v * r)
               ≤ (((n + v : ℕ) : ℝ) + 1) ^ w := by
             calc ((n : ℝ) + 1) ^ a * ((n : ℝ) + 1) ^ (v * r)
-                = ((n : ℝ) + 1) ^ (a + v * r) := by rw [pow_add]
+                = ((n : ℝ) + 1) ^ (a + v * r) := (pow_add ((n : ℝ) + 1) a (v * r)).symm
               _ ≤ (((n + v : ℕ) : ℝ) + 1) ^ (a + v * r) :=
                   pow_le_pow_left₀ (by positivity) hle _
               _ ≤ (((n + v : ℕ) : ℝ) + 1) ^ w := pow_le_pow_right₀ hnv1 hawv
           have hstep1 : ‖PowerSeries.coeff (n + v)
                 (taylorDefect (eulerJetVector Y)
-                  (eulerJetVector (truncSeries (n - 1) H)) P)‖
+                  (eulerJetVector (truncPowerSeries (n - 1) H)) P)‖
                 * (((n : ℝ) + 1) ^ a * ((n : ℝ) + 1) ^ (v * r))
               ≤ K₀ * ε ^ 2 * A ^ (n + v) * (((n + v)! : ℝ)) ^ r := by
             refine le_trans (mul_le_mul_of_nonneg_left hpowstep (norm_nonneg _)) ?_
@@ -438,17 +448,17 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution_shift {m N v : ℕ}
                   rw [hKdef]
           have hcancel : ‖PowerSeries.coeff (n + v)
                 (taylorDefect (eulerJetVector Y)
-                  (eulerJetVector (truncSeries (n - 1) H)) P)‖ * ((n : ℝ) + 1) ^ a
+                  (eulerJetVector (truncPowerSeries (n - 1) H)) P)‖ * ((n : ℝ) + 1) ^ a
               ≤ K * ε ^ 2 * A ^ v * (A ^ n * ((n ! : ℝ)) ^ r) := by
             refine le_of_mul_le_mul_right ?_
               (show (0 : ℝ) < ((n : ℝ) + 1) ^ (v * r) by positivity)
             calc ‖PowerSeries.coeff (n + v)
                   (taylorDefect (eulerJetVector Y)
-                    (eulerJetVector (truncSeries (n - 1) H)) P)‖ * ((n : ℝ) + 1) ^ a
+                    (eulerJetVector (truncPowerSeries (n - 1) H)) P)‖ * ((n : ℝ) + 1) ^ a
                   * ((n : ℝ) + 1) ^ (v * r)
                 = ‖PowerSeries.coeff (n + v)
                     (taylorDefect (eulerJetVector Y)
-                      (eulerJetVector (truncSeries (n - 1) H)) P)‖
+                      (eulerJetVector (truncPowerSeries (n - 1) H)) P)‖
                     * (((n : ℝ) + 1) ^ a * ((n : ℝ) + 1) ^ (v * r)) := by ring
               _ ≤ K₀ * ε ^ 2 * A ^ (n + v) * (((n + v)! : ℝ)) ^ r := hstep1
               _ ≤ (K * ε ^ 2 * A ^ v * (A ^ n * ((n ! : ℝ)) ^ r))
@@ -492,12 +502,12 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution_shift {m N v : ℕ}
                 ≤ c / 3 * ((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r) := by
               have hbase : (0 : ℝ) ≤ c / 3 * ε * A ^ n := by positivity
               have hprod : (1 : ℝ) ≤ ((n : ℝ) + 1) ^ d * ((n ! : ℝ)) ^ r := by
-                nlinarith [hpowd1, hfac1]
+                nlinarith only [hpowd1, hfac1]
               calc c / 3 * ε * A ^ n = (c / 3 * ε * A ^ n) * 1 := by ring
                 _ ≤ (c / 3 * ε * A ^ n) * (((n : ℝ) + 1) ^ d * ((n ! : ℝ)) ^ r) :=
                     mul_le_mul_of_nonneg_left hprod hbase
                 _ = c / 3 * ((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r) := by ring
-            linarith
+            linarith only [h1, h2, h3]
         -- the convolution
         have hconv : (∑ k ∈ Finset.range n,
               ‖(shiftPolynomial B (n + v - k)).eval ((k : ℕ) : ℂ)‖ * ‖PowerSeries.coeff k H‖)
@@ -518,7 +528,7 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution_shift {m N v : ℕ}
               linarith
             have hsplitn : ((n : ℝ) + 1) ≤ ((((n - k : ℕ) : ℝ)) + 1) * (((k : ℝ)) + 1) := by
               have hnn : (0 : ℝ) ≤ (((n - k : ℕ) : ℝ)) * (k : ℝ) := by positivity
-              nlinarith [hμR, hnn]
+              nlinarith only [hμR, hnn]
             have hpowsplit : ((n : ℝ) + 1) ^ a
                 ≤ ((((n - k : ℕ) : ℝ)) + 1) ^ a * (((k : ℝ)) + 1) ^ a := by
               calc ((n : ℝ) + 1) ^ a
@@ -529,10 +539,11 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution_shift {m N v : ℕ}
                 ≤ Cb' * ρ ^ (n - k) * (((k : ℝ)) + 1) ^ m := by
               have h := hshift (n + v - k) k
               rw [hidx, pow_add] at h
-              rw [hCb'def, ← hidx] at *
-              calc ‖(shiftPolynomial B (n + v - k)).eval ((k : ℕ) : ℂ)‖
-                  ≤ Cb * (ρ ^ v * ρ ^ (n - k)) * (((k : ℝ)) + 1) ^ m := h
-                _ = Cb * ρ ^ v * ρ ^ (n - k) * (((k : ℝ)) + 1) ^ m := by ring
+              rw [hidx, hCb'def]
+              have heq : Cb * (ρ ^ v * ρ ^ (n - k)) * (((k : ℝ)) + 1) ^ m
+                  = Cb * ρ ^ v * ρ ^ (n - k) * (((k : ℝ)) + 1) ^ m := by ring
+              rw [← heq]
+              exact h
             have h2 : ‖PowerSeries.coeff k H‖ * (((k : ℝ)) + 1) ^ a
                 ≤ ε * A ^ k * ((k ! : ℝ)) ^ r := ih k hkn
             have hfactor : (((k : ℝ)) + 1) ^ m * (((k ! : ℝ)) ^ r / ((n ! : ℝ)) ^ r)
@@ -596,7 +607,7 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution_shift {m N v : ℕ}
             _ ≤ (Cb' * (ε * A ^ n * ((n ! : ℝ)) ^ r) * ((n : ℝ) + 1) ^ d)
                   * (Ca * ((2 * q) / (1 - 2 * q))) :=
                 mul_le_mul_of_nonneg_left
-                  (polyGeom_shift_sum_le hCa (by linarith [hCa1]) hq0 hq21 n) hbig0
+                  (polyGeom_shift_sum_le hCa (by linarith only [hCa1]) hq0 hq21 n) hbig0
             _ = (Cb' * (Ca * ((2 * q) / (1 - 2 * q))))
                   * (((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r)) := by ring
             _ ≤ (c / 3) * (((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r)) :=
@@ -638,7 +649,7 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution_shift {m N v : ℕ}
             refine le_trans (norm_sub_le _ _) ?_
             rw [norm_neg]
           rw [hleft] at hA'
-          linarith
+          linarith only [hA', hB', hC']
         have hmid : c * ((n : ℝ) + 1) ^ d * ‖PowerSeries.coeff n H‖
             ≤ ‖(shiftPolynomial B v).eval ((n : ℕ) : ℂ)‖ * ‖PowerSeries.coeff n H‖ :=
           mul_le_mul_of_nonneg_right hΦlow (norm_nonneg _)
@@ -668,7 +679,7 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution_shift {m N v : ℕ}
               + c / 3 * ((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r)
               + c / 3 * ((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r)
               = c * ((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r) := by ring
-          linarith [hVest, hDest, hconv, hsum3]
+          linarith only [hVest, hDest, hconv, hsum3]
         have hfinal : c * ((n : ℝ) + 1) ^ d * (‖PowerSeries.coeff n H‖ * ((n : ℝ) + 1) ^ a)
             ≤ c * ((n : ℝ) + 1) ^ d * (ε * A ^ n * ((n ! : ℝ)) ^ r) := by
           have hmul := mul_le_mul_of_nonneg_right (le_trans hmid hnormrec)

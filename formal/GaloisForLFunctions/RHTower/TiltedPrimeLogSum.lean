@@ -93,6 +93,7 @@ theorem tiltedPrimeLogSum_eq {δ Y : ℝ} (hδ : 0 < δ) (hY : 2 ≤ Y) :
   have hval : (-δ - 1) * ((Y ^ (-δ) - (2 : ℝ) ^ (-δ)) / (-δ))
       = (1 + δ) * ((Y ^ (-δ) - (2 : ℝ) ^ (-δ)) / δ) := by
     field_simp
+    ring
   have hswap : (1 + δ) * (((2 : ℝ) ^ (-δ) - Y ^ (-δ)) / δ)
       = -((1 + δ) * ((Y ^ (-δ) - (2 : ℝ) ^ (-δ)) / δ)) := by
     field_simp

@@ -46,9 +46,8 @@ theorem latticeCharge_eq_sum {g : ℝ → ℂ} {L a : ℝ} (ha : 0 < a)
     exact_mod_cast this
   calc L < ((n : ℝ) + 1) / a := hn
     _ ≤ ((i : ℝ) + 1) / a := by
-        apply div_le_div_of_nonneg_right _ ha |>.mp
-        · linarith
-        · linarith
+        have hnum : ((n : ℝ) + 1) ≤ ((i : ℝ) + 1) := by linarith
+        gcongr
 
 /-- The radial source is the square-root lattice quadrature at the floor index. -/
 theorem radialLatticeSource_eq_quadrature {g : ℝ → ℂ} {L a : ℝ} (ha : 0 < a)
@@ -57,15 +56,13 @@ theorem radialLatticeSource_eq_quadrature {g : ℝ → ℂ} {L a : ℝ} (ha : 0 
   have hs : (0 : ℝ) < Real.sqrt a := Real.sqrt_pos.mpr ha
   rw [radialLatticeSource, latticeCharge_eq_sum ha hvan hn, sqrtRadialLatticeQuadrature,
     positiveLatticeQuadrature, Complex.real_smul, Complex.real_smul]
-  have hkey : ((Real.sqrt a : ℝ) : ℂ) * (((1 / a : ℝ)) : ℂ) = (((Real.sqrt a : ℝ)) : ℂ)⁻¹ := by
+  have hreal : Real.sqrt a * (1 / a) = (Real.sqrt a)⁻¹ := by
     have hsa : Real.sqrt a * Real.sqrt a = a := Real.mul_self_sqrt ha.le
-    have hsc : ((Real.sqrt a : ℝ) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt hs)
-    have hac : ((a : ℝ) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt ha)
-    have hsa' : ((Real.sqrt a : ℝ) : ℂ) * ((Real.sqrt a : ℝ) : ℂ) = ((a : ℝ) : ℂ) := by
-      rw [← Complex.ofReal_mul, hsa]
+    have hsne : Real.sqrt a ≠ 0 := ne_of_gt hs
     field_simp
-    rw [← hsa']
-    ring
+    linarith [hsa]
+  have hkey : ((Real.sqrt a : ℝ) : ℂ) * (((1 / a : ℝ)) : ℂ) = (((Real.sqrt a : ℝ)) : ℂ)⁻¹ := by
+    rw [← Complex.ofReal_mul, hreal, Complex.ofReal_inv]
   rw [← mul_assoc, hkey, div_eq_inv_mul]
 
 /-- **The square-root envelope of the radial lattice source.** -/
@@ -158,7 +155,7 @@ theorem continuousAt_radialLogSource {g : ℝ → ℂ} {L lam : ℝ} (hlam : 0 <
         (Real.continuous_sqrt.comp (continuous_const.mul Real.continuous_exp))
     have hnum : Continuous fun s : ℝ =>
         ∑ i ∈ Finset.range N, g (((i : ℝ) + 1) / (lam * Real.exp s)) := by
-      refine continuous_finset_sum _ fun i _ => hgc.comp ?_
+      refine continuous_finsetSum _ fun i _ => hgc.comp ?_
       refine continuous_const.div (continuous_const.mul Real.continuous_exp) fun s => ?_
       have : (0 : ℝ) < lam * Real.exp s := by positivity
       exact ne_of_gt this

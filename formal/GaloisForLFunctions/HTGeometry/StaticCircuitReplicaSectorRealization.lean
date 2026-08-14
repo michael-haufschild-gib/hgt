@@ -83,7 +83,7 @@ section MatrixOperator
 
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 
-theorem isSelfAdjoint_toEuclideanCLM {A : Matrix ι ι ℂ} (hA : Aᴴ = A) :
+private theorem isSelfAdjoint_toEuclideanCLM {A : Matrix ι ι ℂ} (hA : Aᴴ = A) :
     IsSelfAdjoint (Matrix.toEuclideanCLM (𝕜 := ℂ) A) := by
   have : star (Matrix.toEuclideanCLM (𝕜 := ℂ) A) = Matrix.toEuclideanCLM (𝕜 := ℂ) (star A) :=
     (map_star (Matrix.toEuclideanCLM (𝕜 := ℂ)) A).symm

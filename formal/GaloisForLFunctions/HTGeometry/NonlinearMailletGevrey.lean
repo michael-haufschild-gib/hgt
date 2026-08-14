@@ -53,28 +53,28 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution {m N : ℕ}
     (hP : IsAnalyticDifferentialPolynomial P)
     {F : PowerSeries ℂ} (hsol : IsFormalEulerADESolution P F)
     (hNm : m ≤ N + 1)
-    (hΦ : shiftPolynomial (linearizationCoeff P (truncSeries N F)) 0 ≠ 0) :
+    (hΦ : shiftPolynomial (linearizationCoeff P (truncPowerSeries N F)) 0 ≠ 0) :
     ∃ r : ℕ, IsGevreySeries (r : ℝ) F := by
   classical
   -- the linearization along the truncation
-  have hHdvd0 : (PowerSeries.X : PowerSeries ℂ) ^ (N + 1) ∣ (F - truncSeries N F) :=
-    X_pow_dvd_sub_truncSeries N F
-  have hYH0 : truncSeries N F + (F - truncSeries N F) = F := by ring
-  have hsol'0 : IsFormalEulerADESolution P (truncSeries N F + (F - truncSeries N F)) := by
+  have hHdvd0 : (PowerSeries.X : PowerSeries ℂ) ^ (N + 1) ∣ (F - truncPowerSeries N F) :=
+    X_pow_dvd_sub_truncPowerSeries N F
+  have hYH0 : truncPowerSeries N F + (F - truncPowerSeries N F) = F := by ring
+  have hsol'0 : IsFormalEulerADESolution P (truncPowerSeries N F + (F - truncPowerSeries N F)) := by
     rw [hYH0]; exact hsol
-  have hBconv0 : ∀ j, IsGevreySeries 0 (linearizationCoeff P (truncSeries N F) j) := fun j =>
+  have hBconv0 : ∀ j, IsGevreySeries 0 (linearizationCoeff P (truncPowerSeries N F) j) := fun j =>
     isGevreySeries_zero_linearizationCoeff P hP F j
-  have hVconv0 : IsGevreySeries 0 (MvPolynomial.aeval (eulerJetVector (truncSeries N F)) P) :=
-    isGevreySeries_zero_aeval_truncSeries P hP F
-  have hYconv0 : IsGevreySeries 0 (truncSeries N F) := isGevreySeries_zero_truncSeries N F
-  have hLH0 : eulerLinearOp (linearizationCoeff P (truncSeries N F)) (F - truncSeries N F)
-      = -(MvPolynomial.aeval (eulerJetVector (truncSeries N F)) P)
-        - taylorDefect (eulerJetVector (truncSeries N F))
-            (eulerJetVector (F - truncSeries N F)) P :=
-    eulerLinearOp_linearization_eq P (truncSeries N F) (F - truncSeries N F) hsol'0
+  have hVconv0 : IsGevreySeries 0 (MvPolynomial.aeval (eulerJetVector (truncPowerSeries N F)) P) :=
+    isGevreySeries_zero_aeval_truncPowerSeries P hP F
+  have hYconv0 : IsGevreySeries 0 (truncPowerSeries N F) := isGevreySeries_zero_truncPowerSeries N F
+  have hLH0 : eulerLinearOp (linearizationCoeff P (truncPowerSeries N F)) (F - truncPowerSeries N F)
+      = -(MvPolynomial.aeval (eulerJetVector (truncPowerSeries N F)) P)
+        - taylorDefect (eulerJetVector (truncPowerSeries N F))
+            (eulerJetVector (F - truncPowerSeries N F)) P :=
+    eulerLinearOp_linearization_eq P (truncPowerSeries N F) (F - truncPowerSeries N F) hsol'0
   obtain ⟨T, hTs, hTc, hTsum⟩ :=
     hasTaylorDefectFamily (A := PowerSeries ℂ) convergentSubsemiring P hP
-  set Y : PowerSeries ℂ := truncSeries N F with hYdef
+  set Y : PowerSeries ℂ := truncPowerSeries N F with hYdef
   set H : PowerSeries ℂ := F - Y with hHdef
   set B : Fin (m + 1) → PowerSeries ℂ := linearizationCoeff P Y with hBdef
   set V : PowerSeries ℂ := MvPolynomial.aeval (eulerJetVector Y) P with hVdef
@@ -235,41 +235,41 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution {m N : ℕ}
         have hΦlow : c * ((n : ℝ) + 1) ^ d ≤ ‖(shiftPolynomial B 0).eval ((n : ℕ) : ℂ)‖ :=
           hlow n hN₀n
         -- the truncated perturbation
-        have hH'bound : GevreyWeightBound a ε A r (truncSeries (n - 1) H) :=
-          gevreyWeightBound_truncSeries hApos hε0 (fun k hk => ih k (by omega))
-        have hH'dvd : (PowerSeries.X : PowerSeries ℂ) ^ (N + 1) ∣ truncSeries (n - 1) H :=
-          X_pow_dvd_truncSeries hHdvd0
-        have hdiff : (PowerSeries.X : PowerSeries ℂ) ^ n ∣ (H - truncSeries (n - 1) H) := by
-          have h := X_pow_dvd_sub_truncSeries (n - 1) H
+        have hH'bound : GevreyWeightBound a ε A r (truncPowerSeries (n - 1) H) :=
+          gevreyWeightBound_truncPowerSeries hApos hε0 (fun k hk => ih k (by omega))
+        have hH'dvd : (PowerSeries.X : PowerSeries ℂ) ^ (N + 1) ∣ truncPowerSeries (n - 1) H :=
+          X_pow_dvd_truncPowerSeries hHdvd0
+        have hdiff : (PowerSeries.X : PowerSeries ℂ) ^ n ∣ (H - truncPowerSeries (n - 1) H) := by
+          have h := X_pow_dvd_sub_truncPowerSeries (n - 1) H
           rwa [show (n - 1) + 1 = n by omega] at h
         have hloc : PowerSeries.coeff n (taylorDefect (eulerJetVector Y) (eulerJetVector H) P)
             = PowerSeries.coeff n
-                (taylorDefect (eulerJetVector Y) (eulerJetVector (truncSeries (n - 1) H)) P) :=
-          coeff_taylorDefect_eq_of_sub_dvd P Y H (truncSeries (n - 1) H) (by omega)
+                (taylorDefect (eulerJetVector Y) (eulerJetVector (truncPowerSeries (n - 1) H)) P) :=
+          coeff_taylorDefect_eq_of_sub_dvd P Y H (truncPowerSeries (n - 1) H) (by omega)
             hHdvd0 hH'dvd hdiff
         -- the defect estimate
         have hjets : ∀ j : Fin (m + 1),
-            GevreyWeightBound 2 ε A r (eulerJetVector (m := m) (truncSeries (n - 1) H) j) := by
+            GevreyWeightBound 2 ε A r (eulerJetVector (m := m) (truncPowerSeries (n - 1) H) j) := by
           intro j
           have hjm : (j : ℕ) ≤ m := Nat.lt_succ_iff.mp j.isLt
           have hsplit : (a - (j : ℕ)) + (j : ℕ) = a := by omega
           have h1 : GevreyWeightBound (a - (j : ℕ)) ε A r
-              (GaloisForLFunctions.HTGeometry.eulerOp^[(j : ℕ)] (truncSeries (n - 1) H)) := by
-            refine GevreyWeightBound.eulerOp_iterate ?_
+              (GaloisForLFunctions.HTGeometry.formalEulerOp^[(j : ℕ)] (truncPowerSeries (n - 1) H)) := by
+            refine GevreyWeightBound.formalEulerOp_iterate ?_
             rw [hsplit]
             exact hH'bound
           exact h1.mono_weight (by omega)
         have hjetsdvd : ∀ j : Fin (m + 1), (PowerSeries.X : PowerSeries ℂ) ^ (N + 1) ∣
-            eulerJetVector (m := m) (truncSeries (n - 1) H) j :=
-          fun j => X_pow_dvd_eulerOp_iterate (j : ℕ) hH'dvd
+            eulerJetVector (m := m) (truncPowerSeries (n - 1) H) j :=
+          fun j => X_pow_dvd_formalEulerOp_iterate (j : ℕ) hH'dvd
         have hDterm : ∀ α ∈ T.support,
             GevreyWeightBound w
               ((2 : ℝ) ^ (w + 2) * Cw * ((2 : ℝ) ^ (2 + 2)) ^ (jetDegree α)
                 * (((N + 1)! : ℝ)) ^ r * 2 ^ ((N + 1) * r) * ε ^ 2) A r
-              (W α * jetMonomial (eulerJetVector (m := m) (truncSeries (n - 1) H)) α) := by
+              (W α * jetMonomialValue (eulerJetVector (m := m) (truncPowerSeries (n - 1) H)) α) := by
           intro α hα
-          have hmono := gevreyWeightBound_jetMonomial_dvd (a := 2) (M := N + 1) (r := r)
-            le_rfl hApos hε0 hε1 (eulerJetVector (m := m) (truncSeries (n - 1) H))
+          have hmono := gevreyWeightBound_jetMonomialValue_dvd (a := 2) (M := N + 1) (r := r)
+            le_rfl hApos hε0 hε1 (eulerJetVector (m := m) (truncPowerSeries (n - 1) H))
             hjetsdvd hjets α (hTs α hα)
           have hWbound : GevreyWeightBound w Cw A r (W α) :=
             (((hWb α hα).mono_order (Nat.zero_le r) (le_of_lt hCw) hAw).mono_base hAw hAAw
@@ -279,17 +279,17 @@ theorem exists_isGevreySeries_of_isFormalEulerADESolution {m N : ℕ}
           refine hprod.mono_const (le_of_eq ?_) hApos
           ring
         have hDsum : taylorDefect (eulerJetVector Y)
-              (eulerJetVector (truncSeries (n - 1) H)) P
+              (eulerJetVector (truncPowerSeries (n - 1) H)) P
             = ∑ α ∈ T.support,
-                W α * jetMonomial (eulerJetVector (m := m) (truncSeries (n - 1) H)) α := by
-          rw [hTsum (eulerJetVector Y) (eulerJetVector (truncSeries (n - 1) H))]
+                W α * jetMonomialValue (eulerJetVector (m := m) (truncPowerSeries (n - 1) H)) α := by
+          rw [hTsum (eulerJetVector Y) (eulerJetVector (truncPowerSeries (n - 1) H))]
           rfl
         have hDbound : GevreyWeightBound w
             (∑ α ∈ T.support,
               (2 : ℝ) ^ (w + 2) * Cw * ((2 : ℝ) ^ (2 + 2)) ^ (jetDegree α)
                 * (((N + 1)! : ℝ)) ^ r * 2 ^ ((N + 1) * r) * ε ^ 2) A r
             (taylorDefect (eulerJetVector Y)
-              (eulerJetVector (truncSeries (n - 1) H)) P) := by
+              (eulerJetVector (truncPowerSeries (n - 1) H)) P) := by
           rw [hDsum]
           exact GevreyWeightBound.finsetSum _ _ _ hDterm
         have hDconst : (∑ α ∈ T.support,

@@ -9,9 +9,9 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local committed cutoff is
-`242bfabb9d81a27ed5967c7ae22373edc5481edc`, plus explicitly identified post-cutoff shared-tree
+`bb1411afe4443137baf28d38521ab418d4d3a59f`, plus explicitly identified post-cutoff shared-tree
 declarations audited on 14 August. Historical `Active-tree Lean` wording records live-tree audit
-provenance; `242bfabb9` now contains those declarations unless a paragraph says `post-cutoff`.
+provenance; `bb1411afe` contains those declarations unless a paragraph says `post-cutoff`.
 Scientific
 comparison follows declaration content rather than module placement.
 
@@ -65,7 +65,12 @@ terminalized. Latest local results change eight exchanges:
   and proves its two ray channels glue iff `c_-=-i*c_+`, equivalently iff the half-log endpoint
   trace vanishes. For self-adjoint transport Lean also proves the glued solution is square-
   integrable on every interior strip line by domination with the exact Gamma carrier. Gluing and
-  interior-line integrability are closed. Post-cutoff Lean also expands the prime-normal
+  interior-line integrability are closed. Lean now proves matching two-sided Gamma-carrier power
+  bounds, height-independent strip contour pairing, and one Fourier profile whose exponential
+  weights lie in `L2` on every interior line. The wall commutator has uniform/exponential bounds
+  and finite physical block norm. Active-tree Lean proves the forced-ray Hardy implication from an
+  `L2` first moment of the forcing. These close homogeneous profile globalization and generic
+  propagation, not physical forcing formation or trace selection. Post-cutoff Lean also expands the prime-normal
   cross-section as a norm-convergent central-binomial functional-calculus series retaining every
   descendant grade. Post-cutoff active-tree Lean further proves the sharp polynomial-carrier
   Gamma wall: integrability holds exactly for `kappa<sigma`, and a simultaneous radial lattice/
@@ -73,7 +78,8 @@ terminalized. Latest local results change eight exchanges:
   is closed. Forcing the trace relation for the completed
   physical source, its orientation, and coupled all-aperture return remain. Floor branch still
   needs complete near-ground profile exhaustion/lower
-  control. The newest Suzuki declarations remove operator-domain ambiguity: the complex screw is
+  control. The true floor is now attained, strict-interior smooth sources are form-norm dense, and
+  their Rayleigh infimum is exactly the ground energy. The newest Suzuki declarations remove operator-domain ambiguity: the complex screw is
   the real source screw after complexification, its explicit maximal-adjoint witness maps back to
   zero-mean screw compression, `Dom(D†G_aD)=H_0^1(-a,a)`, and the natural product's action is
   computed exactly. Lean proves this product is formally self-adjoint on that exact
@@ -130,7 +136,11 @@ terminalized. Latest local results change eight exchanges:
   seed-level analytic input is the actual-PSWF-to-leading error and inverse-bandwidth estimate
   establishing those concrete bounds; remaining
   RH-bearing input is still comparison of the explicit prolate seed with every restricted-Weil
-  near-ground direction.
+  near-ground direction. Lean additionally derives `|R(y)|<=C/y` from the radial ODE, proves
+  summability of logarithmic channel squared masses and per-channel polar control, and proves the
+  exact floor is attained and visible to dense smooth sources. Thus radial decay and existence/
+  smooth visibility of the ground vector are no longer open; actual PSWF comparison, whole-channel
+  assembly, and source-derived control of that attained vector are.
 - **P:** four-unit saturation, the exact `4+|d|^2` escaped-mass toll, rank-one graph-normal tangent,
   linear-Schur-versus-quadratic-curvature no-go, and scalar-completion nondifferentiability are Lean
   theorems. The unit-frame theorem strengthens the closure: no pair of differentiable
@@ -191,10 +201,14 @@ terminalized. Latest local results change eight exchanges:
   `O(log^4 N)`, identifies its phase-retaining L-series with the literal frozen source, and proves
   the interval mean square `O(N log^3 N+H log^4 N)`, hence `O(N log^4 N)` on `[N,2N]`, below target
   exponent. Post-cutoff Lean combines frozen and variation pieces to bound the complete diagonal
-  inner dual source by `O(N log^4 N+N^(201/200))`, also below target. Surviving producer is phase-
-  faithful AFE assembly of this controlled dual with primal and pole contributions and all cross terms. Density,
-  `7/10` prime supply, and route composition follow only
-  after this.
+  inner dual source by `O(N log^4 N+N^(201/200))`, also below target. Lean now proves matching
+  `N^(101/100)` dyadic budgets for the literal primal and exact confluent-pole summands. Exact AFE
+  equality plus a three-source inequality yields the unconditional fourth moment
+  `integral_[N,2N]|zeta(1/2+it)|^4<=C N^(101/100)` without cross-term estimates. Lean identifies
+  the same moment in Ingham's detector, proves the mollifier second moment, the detector-error
+  `4/3` moment `O(N^(251/250))`, and the absorbed height exponent `<7/10`. First unresolved
+  theorem is now the actual Ingham--Gabriel coefficient-three interpolation/zero-counting step,
+  followed by `7/10` prime supply and route composition.
 - **U:** the source-disintegration theorem writes every shifted reciprocal Hankel quadratic
   as a positive Laplace average of the literal complete Gamma--polar--von-Mangoldt balance. Hard-
   edge reversal cancels all degree powers to one Cauchy density. Negative capital therefore forces
@@ -268,16 +282,13 @@ exact cancellative trace monoid; below the dependence radius their normalized Bo
 finite partition function and causal-cylinder mass exactly `z^|u|`. Concurrent causal
 accessibility is now calibrated by shortest successful trace length, with an integral bound on
 reachable endpoint measure. These turn abstract capacity witnesses into actual geometry and
-combinatorics, but still lack Xi source and landing. Barnes
-irrational-power tails have exact irrational Gevrey order and analytic differential operations
-preserve Gevrey order. Active-tree Euler/shift-polynomial modules prove the linear Maillet theorem:
-a formal solution of a convergent Euler-form equation is Gevrey of order `m-deg(Phi_0)`. This is a
-rational upper-order theorem, not the nonlinear exact-order statement needed below. Post-cutoff
-`EulerADELinearization.lean` proves the exact nonlinear Euler-jet Taylor decomposition and places
-the defect of a `t^k`-divisible perturbation in the square of the `t^k` ideal.
-`EulerADETruncation.lean` proves convergence of truncations, their linearization coefficients, and
-their equation values, plus `t^(N+1)` divisibility of a solution's truncation residual. This closes
-formal nonlinear-to-linear reduction at convergent truncations, not the Sibuya--Ramis exact-order theorem. A separate
+combinatorics, but still lack Xi source and landing. Barnes irrational-power tails have exact
+irrational Gevrey order and analytic differential operations preserve Gevrey order. The local
+Maillet theorem is now nonlinear: `NonlinearMailletGevrey.lean` proves finite integral Gevrey order
+for formal solutions of analytic Euler algebraic differential equations with nonzero truncation
+indicial polynomial; active-tree `NonlinearMailletShift.lean` handles the first nonzero shifted
+coefficient under `m+2v<=N`. Nonlinear finite-Gevrey upper control is closed, but the rational
+**exact** order required by the Sibuya--Ramis/Barnes contradiction is not. A separate
 active theorem proves finite-jet separation forces a compact Bohr hull to have finite covering
 dimension; the character-rank equality remains Pontryagin--Takahashi input. The claimed Barnes
 non-ADE consequence still explicitly assumes the unformalized Sibuya--Ramis rational-exact-order
@@ -285,12 +296,15 @@ theorem. Active-tree Lean now also proves Kolchin jet capacity equals minimal di
 and that any quasiperiodic carrier retaining every prime logarithm below `N` has minimal autonomous
 order at least `pi'(N)`; squaring cannot add frequency directions. This closes the fixed-order
 autonomous differential-algebraic escape, but supplies no Xi-typed landing.
-Post-cutoff `PrimeLogJumpPacket.lean` constructs an even, zero-mean two-prime jump-shell test whose
-squared mass tends to the shell half-width, and `PrimeLogJumpMellinFrame.lean` proves its two
-endpoint Mellin channels have only `s=0` as a common zero. `PrimeLogJumpMellinTrace.lean` proves
-the exact first integration-by-parts identity exposing both endpoint sine traces and one
-oscillatory remainder; it does not formalize a remainder asymptotic or a Burnol/Deninger physical
-landing. `CircuitSoftCausalReporter.lean` gives
+The prime-log jump layer now forms a serious candidate architecture. Its residual is formally
+`O(1/kappa)`; irrational prime-log clocks independently select both endpoint channels; compact
+negative BV windows realize their desingularized Mellin transforms with no common zero anywhere;
+the same packet is a Sonin annulus amplitude transported cofinally to its inverse dilate and back;
+and the exact dilation grade is `r^(1/2-s)`. Hence norm preservation of any nonzero packet channel
+forces `Re(s)=1/2`. No located literature theorem supplies the missing pre-divisor step: a
+source-defined dagger/intertwiner mapping every Xi divisor mode to a nonzero channel and preserving
+that Mellin norm. It remains the strongest new Route-V candidate, not an instantiated route.
+`CircuitSoftCausalReporter.lean` gives
 dimension-free Lipschitz/Wasserstein-stable causal reporters. None defines the coefficient-faithful
 source-to-fixed-physical Xi landing or annihilation law needed for a route.
 `CircuitFreeWordFirstEntrance.lean` also proves that the no-commutation free-word specialization
@@ -300,6 +314,19 @@ without an arithmetic Xi source.
 relative entropy of a law supported on the causal success event, attained by the conditioned
 Boltzmann law. `HTGeometry/StripContourShift.lean` proves the Banach-valued horizontal contour shift
 under integrable boundary lines and vanishing vertical edges. Neither creates an Xi landing.
+
+Other late formal closures are infrastructure, not routes. The literal four-field Gibbs parity
+determinant has an exact Gamma--Euler Mellin polarization. The relative Chebyshev error has finite
+absolute logarithmic mass, giving the uniform tilted-prime law
+`sum log(p)/p^(1+delta)=(1-Y^(-delta))/delta+O(1)`. Symmetric Hopf primitives and ideals are fully
+linear in characteristic zero, while group grading adds no additive direction. The exact Selberg
+carrier, continuation uniqueness, coefficientwise twists, multiple-standard-twist holomorphy, and
+Artin induction/reciprocity enlarge the general L-function platform; the Stark theorem remains a
+finite order classifier conditional on its analytic order identities. Reversible killed-chain and
+gate-language modules close equilibrium capacity, information projection, energy--multiplicity,
+and zero-fugacity complexity. A positive three-atom resolvent flow nevertheless exhibits frozen-
+admission source-sign reversal, ruling out generic positive-flow sign inheritance. No reviewed
+external theorem turns any of these interfaces into a Riemann-Xi source handoff.
 None is Route V.
 These are
 architecture-shaped producer templates, but no Xi-typed recoverable reporter triple, nonlinear
@@ -1852,7 +1879,15 @@ trace vanishes. `HTGeometry/ExpSelfAdjointNormBound.lean` proves only the real p
 self-adjoint exponent contributes to norm growth, and `SuzukiGammaStripSquareIntegrable.lean`
 uses the exact integrable Gamma carrier to prove the glued solution is `L2` on every interior line.
 This closes homogeneous gluing and interior-line integrability, not the source theorem forcing that
-trace condition after completed two-ray assembly. The rigged realization gives an exact high-frequency
+trace condition after completed two-ray assembly. `SuzukiGammaStripCarrierTwoSided.lean`,
+`SuzukiGammaStripContourPairing.lean`, and `SuzukiGammaStripFourierWeight.lean` strengthen this:
+the carrier has matching power upper/lower bounds, line pairings are height-independent, and one
+measurable Fourier profile represents all interior heights with the exact exponential `L2`
+weights. `SuzukiGammaWallCutoffCommutator.lean` proves the literal wall commutator has uniform and
+exponential bounds and finite physical block norm. Active-tree `SuzukiGammaForcedStripHardy.lean`
+proves that an `L2` first moment of the forcing suffices for the forced solution to lie in `L2` on
+both rays. No located Suzuki theorem supplies the remaining physical source first-moment estimate
+or trace orientation. The rigged realization gives an exact high-frequency
 valuation--Wiener inverse and two-port reconstruction.
 The cutoff graph relation is closed, and its sole nonregular source is the Carleman cross-boundary
 port. `SuzukiCarlemanFlatPortBarrier.lean` and its gap theorem prove that zero trace plus ordinary
@@ -2692,6 +2727,15 @@ source-derived at leading-density level. It does not compare the physical PSWF w
 density or provide the inverse-bandwidth off-diagonal estimate, so the remaining seed-level input
 is now precisely actual-to-leading error control plus separation—not another diagonal formula.
 
+`ProlateRadialDecay.lean` derives the exact `1/y` radial tail directly from the ODE, transports it
+to the logarithmic half-density channel, proves `k^-2` channel mass bounds summable, and bounds each
+polar charge. Active-tree `RadialLatticeSourceEnvelope.lean` applies the same half-density law to
+the literal compact-BV lattice source, with squared mass `O(1/lambda)` and one remaining primitive
+bound. `SuzukiRayleighInfimum.lean` proves the exact restricted-Weil floor is attained and equals
+the infimum over strict-interior smooth sources. These are local corpus advances beyond the
+located prolate/CCM literature. They remove radial decay and ground existence/smooth visibility,
+not actual-PSWF comparison, whole-channel assembly, or source selection of the attained ground.
+
 The completed-Evans/log-seam producer is a second internal Route-O branch. Newly formal
 `SuzukiGammaWeakDomainUpgrade.lean` proves a supported weak tested Gamma equation yields the
 required `L2` derivative and `H1` profile under the explicit numerical-range budget, so the two
@@ -3459,10 +3503,19 @@ the literal frozen source field and proves `O(N log^3 N+H log^4 N)` on every cen
 `[N,2N]`, strictly below the target exponent.
 `SmoothAFEZetaSquareDualDiagonalMeanSquare.lean` combines the frozen base with the literal Duhamel
 variation and proves the complete diagonal inner dual bound
-`O(N log^4 N+N^(201/200))`, also below target. Remaining analytic theorem is phase-faithful AFE
-assembly of this controlled dual with primal and pole contributions and all cross terms. Only after that fourth-
-moment assembly can
-the Ingham/Gabriel coefficient-three density estimate and density-to-short-interval consequence
+`O(N log^4 N+N^(201/200))`, also below target. The next committed modules close the former AFE
+assembly wall. `SmoothAFEZetaSquarePrimalRouteTBudget.lean`,
+`SmoothAFEZetaSquareDualRouteTBudget.lean`, and `SmoothAFEZetaSquarePoleRouteTBudget.lean` prove
+separate `N^(101/100)` dyadic squared-norm bounds for the exact literal primal, dual, and confluent
+pole terms. `SmoothAFEZetaSquareFourthMomentRouteTBudget.lean` combines their exact AFE identity
+with `|P+D-R|^2<=3(|P|^2+|D|^2+|R|^2)` and proves the unconditional critical fourth moment
+`O(N^(101/100))`; no cross-term theorem is required. `SmoothAFEZetaSquareInghamCriticalMoment.lean`
+identifies the same integral with Ingham's critical moment, proves the mollifier second moment, the
+literal mollified-error `4/3` moment `O(N^(251/250))`, and the absorbed detector height exponent
+`<7/10`.
+
+The first unresolved theorem is therefore the actual Ingham/Gabriel coefficient-three
+interpolation and zero-counting argument. Its density-to-short-interval consequence must then
 give a prime in `(x,x+x^(7/10)]` for all large `x`, or be replaced by equivalent signed upper-
 boundary control. Lower/upper phase, shell, layer, count, consecutive-prime-gap moment, and centered
 current composition follows. Classical zero-free, Perron, and large-values literature supplies

@@ -34,21 +34,21 @@ variable {ι R : Type*} [CommSemiring R]
 /-! ### Monomials in the increment -/
 
 /-- The monomial in the increment attached to a multi-degree. -/
-def jetMonomial {A : Type*} [CommRing A] (L : ι → A) (α : ι →₀ ℕ) : A :=
+def jetMonomialValue {A : Type*} [CommRing A] (L : ι → A) (α : ι →₀ ℕ) : A :=
   α.prod fun i k => L i ^ k
 
-@[simp] theorem jetMonomial_zero {A : Type*} [CommRing A] (L : ι → A) : jetMonomial L 0 = 1 :=
+@[simp] theorem jetMonomialValue_zero {A : Type*} [CommRing A] (L : ι → A) : jetMonomialValue L 0 = 1 :=
   Finsupp.prod_zero_index
 
-theorem jetMonomial_add {A : Type*} [CommRing A] (L : ι → A) (α β : ι →₀ ℕ) :
-    jetMonomial L (α + β) = jetMonomial L α * jetMonomial L β :=
+theorem jetMonomialValue_add {A : Type*} [CommRing A] (L : ι → A) (α β : ι →₀ ℕ) :
+    jetMonomialValue L (α + β) = jetMonomialValue L α * jetMonomialValue L β :=
   Finsupp.prod_add_index' (fun _ => pow_zero _) (fun i a b => pow_add (L i) a b)
 
-@[simp] theorem jetMonomial_single {A : Type*} [CommRing A] (L : ι → A) (i : ι) :
-    jetMonomial L (Finsupp.single i 1) = L i := by
+@[simp] theorem jetMonomialValue_single {A : Type*} [CommRing A] (L : ι → A) (i : ι) :
+    jetMonomialValue L (Finsupp.single i 1) = L i := by
   have h : (Finsupp.single i 1).prod (fun (i : ι) (k : ℕ) => L i ^ k) = L i ^ 1 :=
     Finsupp.prod_single_index (pow_zero (L i))
-  rw [jetMonomial, h, pow_one]
+  rw [jetMonomialValue, h, pow_one]
 
 /-- The total degree of a multi-degree. -/
 def jetDegree (α : ι →₀ ℕ) : ℕ := α.sum fun _ k => k
@@ -118,20 +118,20 @@ def HasTaylorDefectFamily (A : Type*) [CommRing A] [Algebra R A] (R₀ : Subsemi
   ∃ T : (ι →₀ ℕ) →₀ MvPolynomial ι R,
     (∀ α ∈ T.support, 2 ≤ jetDegree α) ∧
     (∀ α σ, MvPolynomial.coeff σ (T α) ∈ R₀) ∧
-    ∀ S L : ι → A, taylorDefect S L P = T.sum fun α Q => aeval S Q * jetMonomial L α
+    ∀ S L : ι → A, taylorDefect S L P = T.sum fun α Q => aeval S Q * jetMonomialValue L α
 
 variable {A : Type*} [CommRing A] [Algebra R A]
 
 omit [Fintype ι] [DecidableEq ι] in
 private theorem sum_zero_aux (S : ι → A) (L : ι → A) (α : ι →₀ ℕ) :
-    aeval S (0 : MvPolynomial ι R) * jetMonomial L α = 0 := by
+    aeval S (0 : MvPolynomial ι R) * jetMonomialValue L α = 0 := by
   simp
 
 omit [Fintype ι] [DecidableEq ι] in
 private theorem sum_add_aux (S : ι → A) (L : ι → A) (α : ι →₀ ℕ)
     (Q₁ Q₂ : MvPolynomial ι R) :
-    aeval S (Q₁ + Q₂) * jetMonomial L α
-      = aeval S Q₁ * jetMonomial L α + aeval S Q₂ * jetMonomial L α := by
+    aeval S (Q₁ + Q₂) * jetMonomialValue L α
+      = aeval S Q₁ * jetMonomialValue L α + aeval S Q₂ * jetMonomialValue L α := by
   rw [map_add, add_mul]
 
 omit [DecidableEq ι] in
@@ -218,41 +218,41 @@ theorem HasTaylorDefectFamily.mul_X {R₀ : Subsemiring R} {p : MvPolynomial ι 
           + Finsupp.mapDomain (fun α => α + Finsupp.single i 1) Tp
           + ∑ j : ι, Finsupp.single (Finsupp.single i 1 + Finsupp.single j 1)
               (pderiv j p) : (ι →₀ ℕ) →₀ MvPolynomial ι R).sum
-        fun α Q => aeval S Q * jetMonomial L α)
+        fun α Q => aeval S Q * jetMonomialValue L α)
         = ((Tp.mapRange (fun Q => Q * X i) (by simp) : (ι →₀ ℕ) →₀ MvPolynomial ι R).sum
-            fun α Q => aeval S Q * jetMonomial L α)
+            fun α Q => aeval S Q * jetMonomialValue L α)
           + ((Finsupp.mapDomain (fun α => α + Finsupp.single i 1) Tp).sum
-            fun α Q => aeval S Q * jetMonomial L α)
+            fun α Q => aeval S Q * jetMonomialValue L α)
           + ((∑ j : ι, Finsupp.single (Finsupp.single i 1 + Finsupp.single j 1)
               (pderiv j p) : (ι →₀ ℕ) →₀ MvPolynomial ι R).sum
-            fun α Q => aeval S Q * jetMonomial L α) := by
+            fun α Q => aeval S Q * jetMonomialValue L α) := by
       rw [Finsupp.sum_add_index' (sum_zero_aux S L) (sum_add_aux S L),
         Finsupp.sum_add_index' (sum_zero_aux S L) (sum_add_aux S L)]
     rw [hsplit]
     have h1 : ((Tp.mapRange (fun Q => Q * X i) (by simp) : (ι →₀ ℕ) →₀ MvPolynomial ι R).sum
-          fun α Q => aeval S Q * jetMonomial L α)
+          fun α Q => aeval S Q * jetMonomialValue L α)
         = S i * taylorDefect S L p := by
       rw [Finsupp.sum_mapRange_index (sum_zero_aux S L), hTp S L, Finsupp.mul_sum]
       refine Finsupp.sum_congr fun α _ => ?_
       rw [map_mul, aeval_X]
       ring
     have h2 : ((Finsupp.mapDomain (fun α => α + Finsupp.single i 1) Tp).sum
-          fun α Q => aeval S Q * jetMonomial L α)
+          fun α Q => aeval S Q * jetMonomialValue L α)
         = L i * taylorDefect S L p := by
       rw [Finsupp.sum_mapDomain_index (fun _ => sum_zero_aux S L _)
           (fun _ _ _ => sum_add_aux S L _ _ _), hTp S L, Finsupp.mul_sum]
       refine Finsupp.sum_congr fun α _ => ?_
-      rw [jetMonomial_add, jetMonomial_single]
+      rw [jetMonomialValue_add, jetMonomialValue_single]
       ring
     have h3 : ((∑ j : ι, Finsupp.single (Finsupp.single i 1 + Finsupp.single j 1)
             (pderiv j p) : (ι →₀ ℕ) →₀ MvPolynomial ι R).sum
-          fun α Q => aeval S Q * jetMonomial L α)
+          fun α Q => aeval S Q * jetMonomialValue L α)
         = L i * ∑ j, aeval S (pderiv j p) * L j := by
       rw [← Finsupp.sum_finsetSum_index (sum_zero_aux S L) (sum_add_aux S L),
         Finset.mul_sum]
       refine Finset.sum_congr rfl fun j _ => ?_
-      rw [Finsupp.sum_single_index (sum_zero_aux S L _), jetMonomial_add,
-        jetMonomial_single, jetMonomial_single]
+      rw [Finsupp.sum_single_index (sum_zero_aux S L _), jetMonomialValue_add,
+        jetMonomialValue_single, jetMonomialValue_single]
       ring
     rw [h1, h2, h3, taylorDefect_mul_X]
     ring

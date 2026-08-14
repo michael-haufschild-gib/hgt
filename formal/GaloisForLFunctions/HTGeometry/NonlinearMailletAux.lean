@@ -91,34 +91,34 @@ theorem polyGeom_shift_sum_le {a : ℕ} {Ca q : ℝ} (hCa : ∀ μ : ℕ, ((μ :
 
 /-! ### Truncations -/
 
-theorem gevreyWeightBound_truncSeries {a r N' : ℕ} {A ε : ℝ} (hA : 0 < A) (hε : 0 ≤ ε)
+theorem gevreyWeightBound_truncPowerSeries {a r N' : ℕ} {A ε : ℝ} (hA : 0 < A) (hε : 0 ≤ ε)
     {H : PowerSeries ℂ}
     (h : ∀ k ≤ N', ‖PowerSeries.coeff k H‖ * ((k : ℝ) + 1) ^ a ≤ ε * A ^ k * ((k ! : ℝ)) ^ r) :
-    GevreyWeightBound a ε A r (truncSeries N' H) := by
+    GevreyWeightBound a ε A r (truncPowerSeries N' H) := by
   intro n
-  rw [coeff_truncSeries]
+  rw [coeff_truncPowerSeries]
   by_cases hn : n ≤ N'
   · rw [if_pos hn]
     exact h n hn
   · rw [if_neg hn, norm_zero, zero_mul]
     positivity
 
-theorem X_pow_dvd_truncSeries {M N' : ℕ} {H : PowerSeries ℂ}
+theorem X_pow_dvd_truncPowerSeries {M N' : ℕ} {H : PowerSeries ℂ}
     (hH : (PowerSeries.X : PowerSeries ℂ) ^ M ∣ H) :
-    (PowerSeries.X : PowerSeries ℂ) ^ M ∣ truncSeries N' H := by
+    (PowerSeries.X : PowerSeries ℂ) ^ M ∣ truncPowerSeries N' H := by
   rw [PowerSeries.X_pow_dvd_iff] at hH ⊢
   intro n hn
-  rw [coeff_truncSeries]
+  rw [coeff_truncPowerSeries]
   by_cases h : n ≤ N'
   · rw [if_pos h]
     exact hH n hn
   · rw [if_neg h]
 
-theorem eulerOp_iterate_sub (j : ℕ) (F G : PowerSeries ℂ) :
-    GaloisForLFunctions.HTGeometry.eulerOp^[j] (F - G)
-      = GaloisForLFunctions.HTGeometry.eulerOp^[j] F
-        - GaloisForLFunctions.HTGeometry.eulerOp^[j] G := by
-  have h := eulerOp_iterate_add j (F - G) G
+theorem formalEulerOp_iterate_sub (j : ℕ) (F G : PowerSeries ℂ) :
+    GaloisForLFunctions.HTGeometry.formalEulerOp^[j] (F - G)
+      = GaloisForLFunctions.HTGeometry.formalEulerOp^[j] F
+        - GaloisForLFunctions.HTGeometry.formalEulerOp^[j] G := by
+  have h := formalEulerOp_iterate_add j (F - G) G
   rw [sub_add_cancel] at h
   rw [h]
   ring
@@ -128,28 +128,28 @@ theorem eulerOp_iterate_sub (j : ℕ) (F G : PowerSeries ℂ) :
 /-- **Replacing the perturbation by a truncation does not move the defect at the truncation
 level.**  Every monomial of the defect carries at least two factors of the perturbation, and both
 vanish to the order of the truncation. -/
-theorem coeff_taylorDefect_eq_of_sub_dvd {m n M : ℕ}
-    (P : MvPolynomial (Fin (m + 1)) (PowerSeries ℂ)) (Y H H' : PowerSeries ℂ) (hM : 1 ≤ M)
+theorem coeff_taylorDefect_eq_of_sub_dvd {m n M j : ℕ}
+    (P : MvPolynomial (Fin (m + 1)) (PowerSeries ℂ)) (Y H H' : PowerSeries ℂ) (hj : j < n + M)
     (hH : (PowerSeries.X : PowerSeries ℂ) ^ M ∣ H)
     (hH' : (PowerSeries.X : PowerSeries ℂ) ^ M ∣ H')
     (hdiff : (PowerSeries.X : PowerSeries ℂ) ^ n ∣ (H - H')) :
-    PowerSeries.coeff n (taylorDefect (eulerJetVector Y) (eulerJetVector H) P)
-      = PowerSeries.coeff n (taylorDefect (eulerJetVector Y) (eulerJetVector H') P) := by
+    PowerSeries.coeff j (taylorDefect (eulerJetVector Y) (eulerJetVector H) P)
+      = PowerSeries.coeff j (taylorDefect (eulerJetVector Y) (eulerJetVector H') P) := by
   classical
   obtain ⟨T, hTs, _, hTsum⟩ :=
     hasTaylorDefectFamily (A := PowerSeries ℂ) (⊤ : Subsemiring (PowerSeries ℂ)) P
       (fun _ => Subsemiring.mem_top _)
   have hu : ∀ j : Fin (m + 1),
       (PowerSeries.X : PowerSeries ℂ) ^ M ∣ eulerJetVector (m := m) H j :=
-    fun j => X_pow_dvd_eulerOp_iterate (j : ℕ) hH
+    fun j => X_pow_dvd_formalEulerOp_iterate (j : ℕ) hH
   have hv : ∀ j : Fin (m + 1),
       (PowerSeries.X : PowerSeries ℂ) ^ M ∣ eulerJetVector (m := m) H' j :=
-    fun j => X_pow_dvd_eulerOp_iterate (j : ℕ) hH'
+    fun j => X_pow_dvd_formalEulerOp_iterate (j : ℕ) hH'
   have huv : ∀ j : Fin (m + 1), (PowerSeries.X : PowerSeries ℂ) ^ n ∣
       (eulerJetVector (m := m) H j - eulerJetVector (m := m) H' j) := by
     intro j
-    rw [eulerJetVector, eulerJetVector, ← eulerOp_iterate_sub]
-    exact X_pow_dvd_eulerOp_iterate (j : ℕ) hdiff
+    rw [eulerJetVector, eulerJetVector, ← formalEulerOp_iterate_sub]
+    exact X_pow_dvd_formalEulerOp_iterate (j : ℕ) hdiff
   have hdvd : (PowerSeries.X : PowerSeries ℂ) ^ (n + M) ∣
       (taylorDefect (eulerJetVector Y) (eulerJetVector H) P
         - taylorDefect (eulerJetVector Y) (eulerJetVector H') P) := by
@@ -159,17 +159,17 @@ theorem coeff_taylorDefect_eq_of_sub_dvd {m n M : ℕ}
     refine Finset.dvd_sum fun α hα => ?_
     have hα2 : 2 ≤ jetDegree α := hTs α hα
     have hsub : aeval (eulerJetVector Y) (T α)
-          * jetMonomial (eulerJetVector (m := m) H) α
-        - aeval (eulerJetVector Y) (T α) * jetMonomial (eulerJetVector (m := m) H') α
+          * jetMonomialValue (eulerJetVector (m := m) H) α
+        - aeval (eulerJetVector Y) (T α) * jetMonomialValue (eulerJetVector (m := m) H') α
         = aeval (eulerJetVector Y) (T α)
-          * (jetMonomial (eulerJetVector (m := m) H) α
-            - jetMonomial (eulerJetVector (m := m) H') α) := by ring
+          * (jetMonomialValue (eulerJetVector (m := m) H) α
+            - jetMonomialValue (eulerJetVector (m := m) H') α) := by ring
     rw [hsub]
-    exact Dvd.dvd.mul_left (X_pow_dvd_jetMonomial_sub_of_two_le hv hu huv α hα2) _
-  have hzero : PowerSeries.coeff n
+    exact Dvd.dvd.mul_left (X_pow_dvd_jetMonomialValue_sub_of_two_le hv hu huv α hα2) _
+  have hzero : PowerSeries.coeff j
       (taylorDefect (eulerJetVector Y) (eulerJetVector H) P
         - taylorDefect (eulerJetVector Y) (eulerJetVector H') P) = 0 :=
-    (PowerSeries.X_pow_dvd_iff.mp hdvd) n (by omega)
+    (PowerSeries.X_pow_dvd_iff.mp hdvd) j hj
   rw [map_sub, sub_eq_zero] at hzero
   exact hzero
 

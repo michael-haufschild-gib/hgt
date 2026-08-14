@@ -26,7 +26,7 @@ theorem contDiff_unitCutoff : ContDiff ℝ (⊤ : ℕ∞) (unitCutoff : ℝ → 
 theorem hasCompactSupport_unitCutoff : HasCompactSupport (unitCutoff : ℝ → ℝ) :=
   unitCutoff.hasCompactSupport
 
-theorem hasCompactSupport_iteratedDeriv_real {f : ℝ → ℝ} (hf : HasCompactSupport f) (n : ℕ) :
+private theorem hasCompactSupport_iteratedDeriv_real {f : ℝ → ℝ} (hf : HasCompactSupport f) (n : ℕ) :
     HasCompactSupport (iteratedDeriv n f) := by
   induction n with
   | zero => simpa [iteratedDeriv_zero] using hf

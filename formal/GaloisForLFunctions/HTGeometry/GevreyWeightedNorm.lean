@@ -166,13 +166,13 @@ theorem GevreyWeightBound.mono_order {w : ℕ} {C A : ℝ} {r r' : ℕ} (hr : r 
 
 /-! ### The Euler operator costs one unit of weight -/
 
-theorem GevreyWeightBound.eulerOp {w : ℕ} {C A : ℝ} {r : ℕ} {F : PowerSeries ℂ}
+theorem GevreyWeightBound.formalEulerOp {w : ℕ} {C A : ℝ} {r : ℕ} {F : PowerSeries ℂ}
     (h : GevreyWeightBound (w + 1) C A r F) :
-    GevreyWeightBound w C A r (GaloisForLFunctions.HTGeometry.eulerOp F) := by
+    GevreyWeightBound w C A r (GaloisForLFunctions.HTGeometry.formalEulerOp F) := by
   intro n
-  have hnorm : ‖PowerSeries.coeff n (GaloisForLFunctions.HTGeometry.eulerOp F)‖
+  have hnorm : ‖PowerSeries.coeff n (GaloisForLFunctions.HTGeometry.formalEulerOp F)‖
       = (n : ℝ) * ‖PowerSeries.coeff n F‖ := by
-    rw [coeff_eulerOp, norm_mul, Complex.norm_natCast]
+    rw [coeff_formalEulerOp, norm_mul, Complex.norm_natCast]
   have hle : (n : ℝ) * ‖PowerSeries.coeff n F‖ * ((n : ℝ) + 1) ^ w
       ≤ ‖PowerSeries.coeff n F‖ * ((n : ℝ) + 1) ^ (w + 1) := by
     have hn : (n : ℝ) ≤ (n : ℝ) + 1 := by linarith
@@ -183,17 +183,17 @@ theorem GevreyWeightBound.eulerOp {w : ℕ} {C A : ℝ} {r : ℕ} {F : PowerSeri
   rw [hnorm]
   exact le_trans hle (h n)
 
-theorem GevreyWeightBound.eulerOp_iterate {j : ℕ} :
+theorem GevreyWeightBound.formalEulerOp_iterate {j : ℕ} :
     ∀ {w : ℕ} {C A : ℝ} {r : ℕ} {F : PowerSeries ℂ},
       GevreyWeightBound (w + j) C A r F →
-      GevreyWeightBound w C A r (GaloisForLFunctions.HTGeometry.eulerOp^[j] F) := by
+      GevreyWeightBound w C A r (GaloisForLFunctions.HTGeometry.formalEulerOp^[j] F) := by
   induction j with
   | zero => intro w C A r F h; simpa using h
   | succ j ih =>
       intro w C A r F h
       rw [Function.iterate_succ_apply]
       refine ih ?_
-      refine GevreyWeightBound.eulerOp ?_
+      refine GevreyWeightBound.formalEulerOp ?_
       have hEq : w + j + 1 = w + (j + 1) := by omega
       rw [hEq]
       exact h

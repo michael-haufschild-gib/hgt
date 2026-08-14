@@ -338,6 +338,131 @@ theorem coareaMinCost_mul_log_le_sum {u : ℕ → ℝ} {K : ℕ}
       rw [hsplit, Finset.sum_range_succ, mul_add]
       linarith
 
+/-! ## The optimal ratio attains the infimum -/
+
+theorem hasDerivAt_coareaRatioCost {r : ℝ} (hr : 1 < r) :
+    HasDerivAt coareaRatioCost
+      ((2 * r - 1) * coareaStationaryDefect r
+        / (2 * Real.sqrt (r * (r - 1)) * Real.log r ^ 2)) r := by
+  have hr0 : (0 : ℝ) < r := by linarith
+  have hg : (0 : ℝ) < r * (r - 1) := by
+    have : (0 : ℝ) < r - 1 := by linarith
+    positivity
+  have hsqrt : 0 < Real.sqrt (r * (r - 1)) := Real.sqrt_pos.mpr hg
+  have hlog : 0 < Real.log r := Real.log_pos hr
+  have hlogne : Real.log r ≠ 0 := ne_of_gt hlog
+  have hbase : HasDerivAt (fun s : ℝ => s * (s - 1)) (2 * r - 1) r := by
+    have h := (hasDerivAt_id r).mul ((hasDerivAt_id r).sub_const 1)
+    refine h.congr_deriv ?_
+    simp
+    ring
+  have hsq : HasDerivAt (fun s : ℝ => Real.sqrt (s * (s - 1)))
+      ((2 * r - 1) / (2 * Real.sqrt (r * (r - 1)))) r := by
+    have h := (Real.hasDerivAt_sqrt (ne_of_gt hg)).comp r hbase
+    refine h.congr_deriv ?_
+    field_simp
+  have hlogd : HasDerivAt Real.log r⁻¹ r := Real.hasDerivAt_log (ne_of_gt hr0)
+  have hquot := hsq.div hlogd hlogne
+  refine hquot.congr_deriv ?_
+  rw [coareaStationaryDefect]
+  have hSne : Real.sqrt (r * (r - 1)) ≠ 0 := ne_of_gt hsqrt
+  have hSsq : Real.sqrt (r * (r - 1)) * Real.sqrt (r * (r - 1)) = r * (r - 1) :=
+    Real.mul_self_sqrt hg.le
+  have hSr : Real.sqrt (r * (r - 1)) * r⁻¹ = (r - 1) / Real.sqrt (r * (r - 1)) := by
+    rw [eq_div_iff hSne]
+    field_simp
+    linear_combination hSsq
+  rw [hSr]
+  have h2r : (2 : ℝ) * r - 1 ≠ 0 := by
+    intro h
+    linarith
+  field_simp
+
+theorem criticalRatio_lt_of_defect_zero {r : ℝ} (hr : 1 < r)
+    (hzero : coareaStationaryDefect r = 0) : (3 + Real.sqrt 5) / 4 < r := by
+  by_contra hcon
+  rw [not_lt] at hcon
+  exact absurd hzero (ne_of_lt (coareaStationaryDefect_neg_of_mem hr hcon))
+
+theorem coareaRatioCost_deriv_sign {r r' : ℝ} (hr : 1 < r) (hr' : 1 < r')
+    (hzero : coareaStationaryDefect r' = 0) :
+    (r < r' → coareaStationaryDefect r < 0) ∧ (r' < r → 0 < coareaStationaryDefect r) := by
+  have hcrit' := criticalRatio_lt_of_defect_zero hr' hzero
+  constructor
+  · intro hlt
+    rcases le_or_gt r ((3 + Real.sqrt 5) / 4) with hle | hgt
+    · exact coareaStationaryDefect_neg_of_mem hr hle
+    · have hmono := strictMonoOn_coareaStationaryDefect hgt.le hcrit'.le hlt
+      rw [hzero] at hmono
+      exact hmono
+  · intro hgt
+    have hrge : (3 + Real.sqrt 5) / 4 < r := lt_trans hcrit' hgt
+    have hmono := strictMonoOn_coareaStationaryDefect hcrit'.le hrge.le hgt
+    rw [hzero] at hmono
+    exact hmono
+
+/-- **The stationary ratio is the global minimizer of the certificate cost.** -/
+theorem coareaRatioCost_min {r' : ℝ} (hr' : 1 < r') (hzero : coareaStationaryDefect r' = 0)
+    {r : ℝ} (hr : 1 < r) : coareaRatioCost r' ≤ coareaRatioCost r := by
+  have hanti : StrictAntiOn coareaRatioCost (Ioc 1 r') := by
+    refine strictAntiOn_of_deriv_neg (convex_Ioc _ _) ?_ fun s hs => ?_
+    · intro s hs
+      have hs1 : (1 : ℝ) < s := hs.1
+      refine ContinuousAt.continuousWithinAt ?_
+      exact ((Real.continuous_sqrt.continuousAt).comp
+        (by fun_prop : ContinuousAt (fun t : ℝ => t * (t - 1)) s)).div
+        (Real.continuousAt_log (by linarith)) (ne_of_gt (Real.log_pos hs1))
+    · rw [interior_Ioc] at hs
+      have hs1 : (1 : ℝ) < s := hs.1
+      have hderiv := hasDerivAt_coareaRatioCost hs1
+      rw [hderiv.deriv]
+      have hsign := (coareaRatioCost_deriv_sign hs1 hr' hzero).1 hs.2
+      have hg : (0 : ℝ) < s * (s - 1) := by
+        have : (0 : ℝ) < s - 1 := by linarith
+        positivity
+      have hsqrt : 0 < Real.sqrt (s * (s - 1)) := Real.sqrt_pos.mpr hg
+      have hlog : 0 < Real.log s := Real.log_pos hs1
+      have hden : 0 < 2 * Real.sqrt (s * (s - 1)) * Real.log s ^ 2 := by positivity
+      have hnum : (2 * s - 1) * coareaStationaryDefect s < 0 := by
+        have h2s : (0 : ℝ) < 2 * s - 1 := by linarith
+        exact mul_neg_of_pos_of_neg h2s hsign
+      exact div_neg_of_neg_of_pos hnum hden
+  have hmono : StrictMonoOn coareaRatioCost (Ici r') := by
+    refine strictMonoOn_of_deriv_pos (convex_Ici _) ?_ fun s hs => ?_
+    · intro s hs
+      have hs1 : (1 : ℝ) < s := lt_of_lt_of_le hr' hs
+      refine ContinuousAt.continuousWithinAt ?_
+      exact ((Real.continuous_sqrt.continuousAt).comp
+        (by fun_prop : ContinuousAt (fun t : ℝ => t * (t - 1)) s)).div
+        (Real.continuousAt_log (by linarith)) (ne_of_gt (Real.log_pos hs1))
+    · rw [interior_Ici] at hs
+      have hs1 : (1 : ℝ) < s := lt_trans hr' hs
+      have hderiv := hasDerivAt_coareaRatioCost hs1
+      rw [hderiv.deriv]
+      have hsign := (coareaRatioCost_deriv_sign hs1 hr' hzero).2 hs
+      have hg : (0 : ℝ) < s * (s - 1) := by
+        have : (0 : ℝ) < s - 1 := by linarith
+        positivity
+      have hsqrt : 0 < Real.sqrt (s * (s - 1)) := Real.sqrt_pos.mpr hg
+      have hlog : 0 < Real.log s := Real.log_pos hs1
+      have hden : 0 < 2 * Real.sqrt (s * (s - 1)) * Real.log s ^ 2 := by positivity
+      have hnum : 0 < (2 * s - 1) * coareaStationaryDefect s := by
+        have h2s : (0 : ℝ) < 2 * s - 1 := by linarith
+        exact mul_pos h2s hsign
+      exact div_pos hnum hden
+  rcases lt_trichotomy r r' with hlt | heq | hgt
+  · exact (hanti ⟨hr, hlt.le⟩ ⟨hr', le_rfl⟩ hlt).le
+  · rw [heq]
+  · exact (hmono Set.self_mem_Ici hgt.le hgt).le
+
+/-- **The infimum is attained at the stationary ratio.** -/
+theorem coareaMinCost_eq {r' : ℝ} (hr' : 1 < r') (hzero : coareaStationaryDefect r' = 0) :
+    coareaMinCost = coareaRatioCost r' := by
+  refine le_antisymm (coareaMinCost_le hr') ?_
+  refine le_csInf ⟨coareaRatioCost r', r', hr', rfl⟩ ?_
+  rintro y ⟨s, hs, rfl⟩
+  exact coareaRatioCost_min hr' hzero hs
+
 end
 
 end RHTower

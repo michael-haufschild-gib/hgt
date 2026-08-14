@@ -117,3 +117,98 @@ theorem Complex.meromorphicOrderAt_Gamma_eq_neg_one_iff (z : ℂ) :
     norm_num at horder
   · rintro ⟨n, rfl⟩
     exact meromorphicOrderAt_Gamma_neg_nat n
+
+/-- Exact pole criterion for an affine Gamma factor. -/
+theorem Complex.meromorphicOrderAt_Gamma_affine_eq_neg_one_iff
+    (lambda : ℝ) (hlambda : lambda ≠ 0) (μ z : ℂ) :
+    meromorphicOrderAt (fun s : ℂ ↦ Gamma ((lambda : ℂ) * s + μ)) z = (-1 : ℤ) ↔
+      ∃ n : ℕ, (lambda : ℂ) * z + μ = -(n : ℂ) := by
+  have hlambdaC : (lambda : ℂ) ≠ 0 := ofReal_ne_zero.mpr hlambda
+  have hcomp :
+      meromorphicOrderAt (Gamma ∘ fun s : ℂ ↦ (lambda : ℂ) * s + μ) z =
+        meromorphicOrderAt Gamma ((lambda : ℂ) * z + μ) := by
+    apply meromorphicOrderAt_comp_of_deriv_ne_zero
+    · fun_prop
+    · simpa using hlambdaC
+  rw [← Function.comp_def, hcomp]
+  exact meromorphicOrderAt_Gamma_eq_neg_one_iff _
+
+namespace RHTower
+
+noncomputable section
+
+/-- Meromorphic order of a Selberg gamma factor is the sum of the orders of its Gamma factors;
+the positive exponential factor `Q^s` contributes order zero. -/
+theorem SelbergGammaData.meromorphicOrderAt_gammaFactor
+    (G : SelbergGammaData) (z : ℂ) :
+    meromorphicOrderAt G.gammaFactor z =
+      ∑ j, meromorphicOrderAt
+        (fun s : ℂ ↦ Gamma ((G.lambda j : ℂ) * s + G.mu j)) z := by
+  have hQdiff : Differentiable ℂ fun s : ℂ ↦ (G.Q : ℂ) ^ s :=
+    differentiable_id.const_cpow (.inl (ofReal_ne_zero.mpr G.Q_pos.ne'))
+  have hQanalytic : AnalyticOnNhd ℂ (fun s : ℂ ↦ (G.Q : ℂ) ^ s) Set.univ :=
+    analyticOnNhd_univ_iff_differentiable.mpr hQdiff
+  have hQan : AnalyticAt ℂ (fun s : ℂ ↦ (G.Q : ℂ) ^ s) z :=
+    hQanalytic z (Set.mem_univ z)
+  have hQne : (G.Q : ℂ) ^ z ≠ 0 :=
+    cpow_ne_zero_iff.mpr (.inl (ofReal_ne_zero.mpr G.Q_pos.ne'))
+  have hQorder : meromorphicOrderAt (fun s : ℂ ↦ (G.Q : ℂ) ^ s) z = 0 := by
+    rw [hQan.meromorphicOrderAt_eq, analyticOrderAt_eq_zero.mpr (.inr hQne)]
+    simp
+  have hGamma (j : Fin G.rank) :
+      MeromorphicAt (fun s : ℂ ↦ Gamma ((G.lambda j : ℂ) * s + G.mu j)) z := by
+    simpa only [Function.comp_def] using
+      (Meromorphic.Gamma ((G.lambda j : ℂ) * z + G.mu j)).comp_analyticAt
+        (x := z) (g := fun s : ℂ ↦ (G.lambda j : ℂ) * s + G.mu j) (by fun_prop)
+  have hprod : MeromorphicAt
+      (∏ j, (fun s : ℂ ↦ Gamma ((G.lambda j : ℂ) * s + G.mu j))) z :=
+    MeromorphicAt.prod fun j _ ↦ hGamma j
+  rw [SelbergGammaData.gammaFactor,
+    meromorphicOrderAt_mul hQan.meromorphicAt hprod, hQorder, zero_add]
+  simpa only using
+    (meromorphicOrderAt_prod (s := Finset.univ) (fun j _ ↦ hGamma j))
+
+/-- Number of individual Gamma factors having a pole at `z`, counted with collisions. -/
+noncomputable def SelbergGammaData.gammaPoleMultiplicity (G : SelbergGammaData) (z : ℂ) : ℕ := by
+  classical
+  exact (Finset.univ.filter fun j ↦
+    ∃ n : ℕ, (G.lambda j : ℂ) * z + G.mu j = -(n : ℂ)).card
+
+/-- Exact pole-multiplicity law for a concrete Selberg gamma presentation. -/
+theorem SelbergGammaData.meromorphicOrderAt_gammaFactor_eq_neg_multiplicity
+    (G : SelbergGammaData) (z : ℂ) :
+    meromorphicOrderAt G.gammaFactor z =
+      -((G.gammaPoleMultiplicity z : ℤ) : WithTop ℤ) := by
+  rw [G.meromorphicOrderAt_gammaFactor]
+  classical
+  have hterm (j : Fin G.rank) :
+      meromorphicOrderAt
+          (fun s : ℂ ↦ Gamma ((G.lambda j : ℂ) * s + G.mu j)) z =
+        if ∃ n : ℕ, (G.lambda j : ℂ) * z + G.mu j = -(n : ℂ)
+          then (-1 : WithTop ℤ) else 0 := by
+    by_cases hpole : ∃ n : ℕ, (G.lambda j : ℂ) * z + G.mu j = -(n : ℂ)
+    · rw [if_pos hpole]
+      exact (Complex.meromorphicOrderAt_Gamma_affine_eq_neg_one_iff
+        (G.lambda j) (G.lambda_pos j).ne' (G.mu j) z).mpr hpole
+    · rw [if_neg hpole]
+      have hnot : ∀ n : ℕ, (G.lambda j : ℂ) * z + G.mu j ≠ -(n : ℂ) := by
+        push Not at hpole
+        exact hpole
+      have hcomp :
+          meromorphicOrderAt
+              (Gamma ∘ fun s : ℂ ↦ (G.lambda j : ℂ) * s + G.mu j) z =
+            meromorphicOrderAt Gamma ((G.lambda j : ℂ) * z + G.mu j) := by
+        apply meromorphicOrderAt_comp_of_deriv_ne_zero
+        · fun_prop
+        · simpa using ofReal_ne_zero.mpr (G.lambda_pos j).ne'
+      rw [← Function.comp_def, hcomp, Complex.meromorphicOrderAt_Gamma_of_not_neg_nat hnot]
+  rw [Finset.sum_congr rfl (fun j _ ↦ hterm j)]
+  change (∑ j ∈ Finset.univ,
+    if ∃ n : ℕ, (G.lambda j : ℂ) * z + G.mu j = -(n : ℂ)
+      then (-1 : WithTop ℤ) else 0) = _
+  rw [Finset.sum_ite]
+  simp [SelbergGammaData.gammaPoleMultiplicity]
+
+end
+
+end RHTower

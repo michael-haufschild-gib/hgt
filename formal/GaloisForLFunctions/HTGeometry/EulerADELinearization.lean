@@ -28,26 +28,26 @@ noncomputable section
 
 /-- The `θ`-jet vector of a formal series. -/
 def eulerJetVector {m : ℕ} (F : PowerSeries ℂ) : Fin (m + 1) → PowerSeries ℂ :=
-  fun j => eulerOp^[(j : ℕ)] F
+  fun j => formalEulerOp^[(j : ℕ)] F
 
 /-- The Euler operator is additive. -/
-theorem eulerOp_add (F G : PowerSeries ℂ) : eulerOp (F + G) = eulerOp F + eulerOp G := by
+theorem formalEulerOp_add (F G : PowerSeries ℂ) : formalEulerOp (F + G) = formalEulerOp F + formalEulerOp G := by
   ext n
-  simp only [coeff_eulerOp, map_add]
+  simp only [coeff_formalEulerOp, map_add]
   ring
 
-theorem eulerOp_iterate_add (j : ℕ) (F G : PowerSeries ℂ) :
-    eulerOp^[j] (F + G) = eulerOp^[j] F + eulerOp^[j] G := by
+theorem formalEulerOp_iterate_add (j : ℕ) (F G : PowerSeries ℂ) :
+    formalEulerOp^[j] (F + G) = formalEulerOp^[j] F + formalEulerOp^[j] G := by
   induction j generalizing F G with
   | zero => simp
   | succ j ih =>
       rw [Function.iterate_succ_apply, Function.iterate_succ_apply, Function.iterate_succ_apply,
-        eulerOp_add, ih]
+        formalEulerOp_add, ih]
 
 theorem eulerJetVector_add {m : ℕ} (Y H : PowerSeries ℂ) :
     eulerJetVector (m := m) (Y + H) = eulerJetVector (m := m) Y + eulerJetVector (m := m) H := by
   funext j
-  exact eulerOp_iterate_add (j : ℕ) Y H
+  exact formalEulerOp_iterate_add (j : ℕ) Y H
 
 /-- `F` is a formal solution of the algebraic differential equation `P = 0` written in the Euler
 basis. -/
@@ -75,20 +75,20 @@ theorem aeval_eulerJetVector_add {m : ℕ} (P : MvPolynomial (Fin (m + 1)) (Powe
 /-! ### The perturbation is divisible by a power of the variable -/
 
 /-- The Euler operator preserves divisibility by a power of the variable. -/
-theorem X_pow_dvd_eulerOp {k : ℕ} {H : PowerSeries ℂ} (h : (PowerSeries.X : PowerSeries ℂ) ^ k ∣ H) :
-    (PowerSeries.X : PowerSeries ℂ) ^ k ∣ eulerOp H := by
+theorem X_pow_dvd_formalEulerOp {k : ℕ} {H : PowerSeries ℂ} (h : (PowerSeries.X : PowerSeries ℂ) ^ k ∣ H) :
+    (PowerSeries.X : PowerSeries ℂ) ^ k ∣ formalEulerOp H := by
   rw [PowerSeries.X_pow_dvd_iff] at h ⊢
   intro n hn
-  rw [coeff_eulerOp, h n hn, mul_zero]
+  rw [coeff_formalEulerOp, h n hn, mul_zero]
 
-theorem X_pow_dvd_eulerOp_iterate {k : ℕ} {H : PowerSeries ℂ} (j : ℕ)
+theorem X_pow_dvd_formalEulerOp_iterate {k : ℕ} {H : PowerSeries ℂ} (j : ℕ)
     (h : (PowerSeries.X : PowerSeries ℂ) ^ k ∣ H) :
-    (PowerSeries.X : PowerSeries ℂ) ^ k ∣ eulerOp^[j] H := by
+    (PowerSeries.X : PowerSeries ℂ) ^ k ∣ formalEulerOp^[j] H := by
   induction j generalizing H with
   | zero => simpa using h
   | succ j ih =>
       rw [Function.iterate_succ_apply]
-      exact ih (X_pow_dvd_eulerOp h)
+      exact ih (X_pow_dvd_formalEulerOp h)
 
 /-- **The defect of a perturbation divisible by `t^k` is divisible by `t^{2k}`.** -/
 theorem taylorDefect_mem_sq_X_pow {m k : ℕ} (P : MvPolynomial (Fin (m + 1)) (PowerSeries ℂ))
@@ -97,7 +97,7 @@ theorem taylorDefect_mem_sq_X_pow {m k : ℕ} (P : MvPolynomial (Fin (m + 1)) (P
       ∈ (Ideal.span {(PowerSeries.X : PowerSeries ℂ) ^ k}) ^ 2 := by
   refine taylorDefect_mem_sq _ _ _ (fun j => ?_) P
   rw [Ideal.mem_span_singleton]
-  exact X_pow_dvd_eulerOp_iterate (j : ℕ) hH
+  exact X_pow_dvd_formalEulerOp_iterate (j : ℕ) hH
 
 /-- **The nonlinear equation, rewritten around a base point.**  If `Y + H` is a formal solution then
 the linearized operator applied to the perturbation is the value at the base point plus the defect,

@@ -25,23 +25,23 @@ noncomputable section
 /-! ### The truncation of a formal series -/
 
 /-- The truncation of a formal series at order `N`, as a formal series. -/
-def truncSeries (N : ℕ) (F : PowerSeries ℂ) : PowerSeries ℂ :=
+def truncPowerSeries (N : ℕ) (F : PowerSeries ℂ) : PowerSeries ℂ :=
   PowerSeries.mk fun n => if n ≤ N then PowerSeries.coeff n F else 0
 
-@[simp] theorem coeff_truncSeries (N : ℕ) (F : PowerSeries ℂ) (n : ℕ) :
-    PowerSeries.coeff n (truncSeries N F)
+@[simp] theorem coeff_truncPowerSeries (N : ℕ) (F : PowerSeries ℂ) (n : ℕ) :
+    PowerSeries.coeff n (truncPowerSeries N F)
       = if n ≤ N then PowerSeries.coeff n F else 0 :=
   PowerSeries.coeff_mk _ _
 
 /-- A truncation is convergent. -/
-theorem isGevreySeries_zero_truncSeries (N : ℕ) (F : PowerSeries ℂ) :
-    IsGevreySeries 0 (truncSeries N F) := by
+theorem isGevreySeries_zero_truncPowerSeries (N : ℕ) (F : PowerSeries ℂ) :
+    IsGevreySeries 0 (truncPowerSeries N F) := by
   classical
   refine ⟨1 + ∑ k ∈ Finset.range (N + 1), ‖PowerSeries.coeff k F‖, 1, by positivity, one_pos,
     fun n => ?_⟩
   have hsum0 : (0 : ℝ) ≤ ∑ k ∈ Finset.range (N + 1), ‖PowerSeries.coeff k F‖ :=
     Finset.sum_nonneg fun k _ => norm_nonneg _
-  rw [coeff_truncSeries]
+  rw [coeff_truncPowerSeries]
   by_cases hn : n ≤ N
   · rw [if_pos hn]
     have hmem : n ∈ Finset.range (N + 1) := Finset.mem_range.mpr (by omega)
@@ -55,23 +55,23 @@ theorem isGevreySeries_zero_truncSeries (N : ℕ) (F : PowerSeries ℂ) :
     linarith
 
 /-- The tail of a truncation is divisible by the corresponding power of the variable. -/
-theorem X_pow_dvd_sub_truncSeries (N : ℕ) (F : PowerSeries ℂ) :
-    (PowerSeries.X : PowerSeries ℂ) ^ (N + 1) ∣ F - truncSeries N F := by
+theorem X_pow_dvd_sub_truncPowerSeries (N : ℕ) (F : PowerSeries ℂ) :
+    (PowerSeries.X : PowerSeries ℂ) ^ (N + 1) ∣ F - truncPowerSeries N F := by
   rw [PowerSeries.X_pow_dvd_iff]
   intro n hn
-  rw [map_sub, coeff_truncSeries, if_pos (by omega : n ≤ N), sub_self]
+  rw [map_sub, coeff_truncPowerSeries, if_pos (by omega : n ≤ N), sub_self]
 
-theorem truncSeries_add_tail (N : ℕ) (F : PowerSeries ℂ) :
-    truncSeries N F + (F - truncSeries N F) = F := by ring
+theorem truncPowerSeries_add_tail (N : ℕ) (F : PowerSeries ℂ) :
+    truncPowerSeries N F + (F - truncPowerSeries N F) = F := by ring
 
 /-! ### Convergence of the linearization at a truncation -/
 
-theorem isGevreySeries_eulerOp_iterate {r : ℝ} {F : PowerSeries ℂ} (hF : IsGevreySeries r F) :
-    ∀ j : ℕ, IsGevreySeries r ((GaloisForLFunctions.HTGeometry.eulerOp)^[j] F)
+theorem isGevreySeries_formalEulerOp_iterate {r : ℝ} {F : PowerSeries ℂ} (hF : IsGevreySeries r F) :
+    ∀ j : ℕ, IsGevreySeries r ((GaloisForLFunctions.HTGeometry.formalEulerOp)^[j] F)
   | 0 => by simpa using hF
   | (j + 1) => by
       rw [Function.iterate_succ_apply']
-      exact IsGevreySeries.eulerOp (isGevreySeries_eulerOp_iterate hF j)
+      exact IsGevreySeries.formalEulerOp (isGevreySeries_formalEulerOp_iterate hF j)
 
 /-- **A differential polynomial with analytic coefficients does not leave the Gevrey class of its
 argument**, in the Euler basis. -/
@@ -82,7 +82,7 @@ theorem isGevreySeries_aeval_eulerJetVector {r : ℝ} (hr : 0 ≤ r) {m : ℕ}
     IsGevreySeries r (MvPolynomial.aeval (eulerJetVector (m := m) Y) P) := by
   classical
   have hjet : ∀ j : Fin (m + 1), IsGevreySeries r (eulerJetVector (m := m) Y j) :=
-    fun j => isGevreySeries_eulerOp_iterate hY (j : ℕ)
+    fun j => isGevreySeries_formalEulerOp_iterate hY (j : ℕ)
   have hEval : MvPolynomial.aeval (eulerJetVector (m := m) Y) P
       = ∑ d ∈ P.support, MvPolynomial.coeff d P
         * ∏ i ∈ d.support, eulerJetVector (m := m) Y i ^ d i := by
@@ -124,29 +124,29 @@ theorem isAnalyticDifferentialPolynomial_pderiv {m : ℕ}
 theorem isGevreySeries_zero_linearizationCoeff {m N : ℕ}
     (P : MvPolynomial (Fin (m + 1)) (PowerSeries ℂ)) (hP : IsAnalyticDifferentialPolynomial P)
     (F : PowerSeries ℂ) (j : Fin (m + 1)) :
-    IsGevreySeries 0 (linearizationCoeff P (truncSeries N F) j) :=
+    IsGevreySeries 0 (linearizationCoeff P (truncPowerSeries N F) j) :=
   isGevreySeries_aeval_eulerJetVector le_rfl _ (isAnalyticDifferentialPolynomial_pderiv hP j)
-    (isGevreySeries_zero_truncSeries N F)
+    (isGevreySeries_zero_truncPowerSeries N F)
 
 /-- **The value of the equation at a truncation is convergent.** -/
-theorem isGevreySeries_zero_aeval_truncSeries {m N : ℕ}
+theorem isGevreySeries_zero_aeval_truncPowerSeries {m N : ℕ}
     (P : MvPolynomial (Fin (m + 1)) (PowerSeries ℂ)) (hP : IsAnalyticDifferentialPolynomial P)
     (F : PowerSeries ℂ) :
-    IsGevreySeries 0 (MvPolynomial.aeval (eulerJetVector (m := m) (truncSeries N F)) P) :=
-  isGevreySeries_aeval_eulerJetVector le_rfl P hP (isGevreySeries_zero_truncSeries N F)
+    IsGevreySeries 0 (MvPolynomial.aeval (eulerJetVector (m := m) (truncPowerSeries N F)) P) :=
+  isGevreySeries_aeval_eulerJetVector le_rfl P hP (isGevreySeries_zero_truncPowerSeries N F)
 
 /-- **The value of the equation at a truncation of a solution vanishes to the order of the
 truncation.** -/
-theorem X_pow_dvd_aeval_truncSeries {m N : ℕ}
+theorem X_pow_dvd_aeval_truncPowerSeries {m N : ℕ}
     (P : MvPolynomial (Fin (m + 1)) (PowerSeries ℂ)) {F : PowerSeries ℂ}
     (hsol : IsFormalEulerADESolution P F) :
     (PowerSeries.X : PowerSeries ℂ) ^ (N + 1)
-      ∣ MvPolynomial.aeval (eulerJetVector (m := m) (truncSeries N F)) P := by
+      ∣ MvPolynomial.aeval (eulerJetVector (m := m) (truncPowerSeries N F)) P := by
   classical
-  set Y : PowerSeries ℂ := truncSeries N F with hY
-  set H : PowerSeries ℂ := F - truncSeries N F with hH
+  set Y : PowerSeries ℂ := truncPowerSeries N F with hY
+  set H : PowerSeries ℂ := F - truncPowerSeries N F with hH
   have hYH : Y + H = F := by rw [hY, hH]; ring
-  have hdvdH : (PowerSeries.X : PowerSeries ℂ) ^ (N + 1) ∣ H := X_pow_dvd_sub_truncSeries N F
+  have hdvdH : (PowerSeries.X : PowerSeries ℂ) ^ (N + 1) ∣ H := X_pow_dvd_sub_truncPowerSeries N F
   have hsol' : IsFormalEulerADESolution P (Y + H) := by rw [hYH]; exact hsol
   have heq := eulerLinearOp_linearization_eq P Y H hsol'
   -- the linearized term is divisible
@@ -154,7 +154,7 @@ theorem X_pow_dvd_aeval_truncSeries {m N : ℕ}
       ∣ eulerLinearOp (linearizationCoeff P Y) H := by
     rw [eulerLinearOp]
     refine Finset.dvd_sum fun j _ => ?_
-    exact Dvd.dvd.mul_left (X_pow_dvd_eulerOp_iterate (j : ℕ) hdvdH) _
+    exact Dvd.dvd.mul_left (X_pow_dvd_formalEulerOp_iterate (j : ℕ) hdvdH) _
   -- and so is the defect
   have hdef : (PowerSeries.X : PowerSeries ℂ) ^ (N + 1)
       ∣ taylorDefect (eulerJetVector (m := m) Y) (eulerJetVector (m := m) H) P := by

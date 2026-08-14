@@ -31,25 +31,25 @@ namespace GaloisForLFunctions.HTGeometry
 /-! ### The Euler operator -/
 
 /-- The Euler operator `θ = t d/dt`, diagonal on monomials. -/
-noncomputable def eulerOp (F : PowerSeries ℂ) : PowerSeries ℂ :=
+noncomputable def formalEulerOp (F : PowerSeries ℂ) : PowerSeries ℂ :=
   PowerSeries.mk fun n => (n : ℂ) * PowerSeries.coeff n F
 
-@[simp] theorem coeff_eulerOp (F : PowerSeries ℂ) (n : ℕ) :
-    PowerSeries.coeff n (eulerOp F) = (n : ℂ) * PowerSeries.coeff n F :=
+@[simp] theorem coeff_formalEulerOp (F : PowerSeries ℂ) (n : ℕ) :
+    PowerSeries.coeff n (formalEulerOp F) = (n : ℂ) * PowerSeries.coeff n F :=
   PowerSeries.coeff_mk _ _
 
 /-- Every power of the Euler operator is diagonal. -/
-theorem coeff_eulerOp_iterate (F : PowerSeries ℂ) (j n : ℕ) :
-    PowerSeries.coeff n (eulerOp^[j] F) = (n : ℂ) ^ j * PowerSeries.coeff n F := by
+theorem coeff_formalEulerOp_iterate (F : PowerSeries ℂ) (j n : ℕ) :
+    PowerSeries.coeff n (formalEulerOp^[j] F) = (n : ℂ) ^ j * PowerSeries.coeff n F := by
   induction j generalizing F with
   | zero => simp
   | succ j ih =>
-      rw [Function.iterate_succ_apply, ih, coeff_eulerOp]
+      rw [Function.iterate_succ_apply, ih, coeff_formalEulerOp]
       ring
 
 /-- The Euler operator preserves the Gevrey classes. -/
-theorem IsGevreySeries.eulerOp {r : ℝ} {F : PowerSeries ℂ} (hF : IsGevreySeries r F) :
-    IsGevreySeries r (GaloisForLFunctions.HTGeometry.eulerOp F) := by
+theorem IsGevreySeries.formalEulerOp {r : ℝ} {F : PowerSeries ℂ} (hF : IsGevreySeries r F) :
+    IsGevreySeries r (GaloisForLFunctions.HTGeometry.formalEulerOp F) := by
   obtain ⟨C, A, hC, hA, hbound⟩ := hF
   obtain ⟨C₃, hC₃1, hC₃⟩ :=
     exists_pow_le_const_mul_pow 1 (by norm_num : (1 : ℝ) < 2)
@@ -60,9 +60,9 @@ theorem IsGevreySeries.eulerOp {r : ℝ} {F : PowerSeries ℂ} (hF : IsGevreySer
   have hpoly : (n : ℝ) ≤ C₃ * 2 ^ n := by
     have h := hC₃ n
     simpa using h
-  calc ‖PowerSeries.coeff n (GaloisForLFunctions.HTGeometry.eulerOp F)‖
+  calc ‖PowerSeries.coeff n (GaloisForLFunctions.HTGeometry.formalEulerOp F)‖
       = (n : ℝ) * ‖PowerSeries.coeff n F‖ := by
-        rw [coeff_eulerOp, norm_mul, hn]
+        rw [coeff_formalEulerOp, norm_mul, hn]
     _ ≤ (C₃ * 2 ^ n) * (C * A ^ n * (n ! : ℝ) ^ r) := by
         refine mul_le_mul hpoly (hbound n) (norm_nonneg _) (by positivity)
     _ = C * C₃ * (2 * A) ^ n * (n ! : ℝ) ^ r := by
@@ -74,7 +74,7 @@ theorem IsGevreySeries.eulerOp {r : ℝ} {F : PowerSeries ℂ} (hF : IsGevreySer
 /-- A linear differential operator of order at most `m`, written in the Euler basis. -/
 noncomputable def eulerLinearOp {m : ℕ} (B : Fin (m + 1) → PowerSeries ℂ) (F : PowerSeries ℂ) :
     PowerSeries ℂ :=
-  ∑ j : Fin (m + 1), B j * eulerOp^[(j : ℕ)] F
+  ∑ j : Fin (m + 1), B j * formalEulerOp^[(j : ℕ)] F
 
 /-- The shift polynomial of `L` at shift `μ`: the polynomial `N ↦ ∑_j (coeff_μ B_j) N^j`. -/
 noncomputable def shiftPolynomial {m : ℕ} (B : Fin (m + 1) → PowerSeries ℂ) (μ : ℕ) :
@@ -110,13 +110,13 @@ theorem coeff_eulerLinearOp {m : ℕ} (B : Fin (m + 1) → PowerSeries ℂ) (F :
   classical
   rw [eulerLinearOp, map_sum]
   have hswap : ∀ j : Fin (m + 1),
-      PowerSeries.coeff n (B j * eulerOp^[(j : ℕ)] F)
+      PowerSeries.coeff n (B j * formalEulerOp^[(j : ℕ)] F)
         = ∑ p ∈ Finset.HasAntidiagonal.antidiagonal n,
             PowerSeries.coeff p.1 (B j) * (((p.2 : ℕ) : ℂ) ^ (j : ℕ) * PowerSeries.coeff p.2 F) := by
     intro j
     rw [PowerSeries.coeff_mul]
     refine Finset.sum_congr rfl fun p _ => ?_
-    rw [coeff_eulerOp_iterate]
+    rw [coeff_formalEulerOp_iterate]
   rw [Finset.sum_congr rfl fun j _ => hswap j, Finset.sum_comm]
   refine Finset.sum_congr rfl fun p _ => ?_
   rw [eval_shiftPolynomial, Finset.sum_mul]
