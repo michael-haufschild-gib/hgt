@@ -38,10 +38,22 @@
     (`≤ ∏(1-1/p)·exp(8t²(log Y)²∑1/p)`), and `tendsto_prefixModulus_ratio`
     (the ratio to `∏_{p≤Y}(1-1/p)` tends to one at `t_X` for every `A > 0`), which with
     Mertens' third theorem gives the exact order `1/log Y`.
+  * `(35)`--`(37)` batch rapidity — `RHTower/RouteEGibbsRapidity.lean`: `criticalHalfDensity`,
+    `sub_criticalHalfDensity_le` (`|p^{-1/2} - d_p| ≤ 1/p`),
+    `abs_two_mul_criticalHalfDensity_mul_cos_le` (`|u_p| ≤ 1/2` past `16`), `batchRapidity`,
+    `abs_batchRapidity_sub_two_mul_batchCosSum_le` (the `artanh` and density corrections cost
+    only `18∑_{p≤X}1/p`), and `tendsto_batchRapidity`
+    (`(37)`: `R_X·log X/√X → -4` for `Y = (log X)^A`, every `A > 0`), on the new quadratic
+    `artanh` brick `HTGeometry/ArctanSinTaylor.lean` and the Mertens majorant
+    `tendsto_mertensS_floor_mul_log_div_sqrt`;
+  * `(38)` batch determinant capacity — `RHTower/RouteEGibbsBatchDeterminant.lean`:
+    `batchEulerDeterminant`, `batchEulerDeterminant_eq` (the exact `2 R_P ∏√(1-u_p²) sinh R`
+    resummation of `(18)` for the batch), `log_batchMass_le` and `neg_log_batchTransverse_le`
+    (both amplitudes cost `O(∑_{p≤X}1/p)` in the logarithm), and
+    `tendsto_log_one_add_abs_batchEulerDeterminant`
+    (`(38)`: `log(1+|D_X|)·log X/√X → 4`).
   All of these build and audit `[propext, Classical.choice, Quot.sound]`.
-  Still paper-only: the full rapidity `(37)`/`(38)` (needs the `artanh` quadratic bound, the
-  `d_p` versus `p^{-1/2}` correction and the `sinh` resummation) and the four-field
-  Mellin--Plancherel polarization `(8)`.
+  Still paper-only: the four-field Mellin--Plancherel polarization `(8)`.
 
 ## 1. Literal Gibbs determinant
 

@@ -33,7 +33,7 @@ where mathematical knowledge is missing use the /hgtl7 skill to create it.
 ## formalize goal
 /goal
 
-formalize UNCONDITIONALLY in lean any proven theorem from these cards:  docs/drafts/pipeline/2-fully-proven (EXCLUDING subfolders)
+formalize UNCONDITIONALLY in lean any proven theorem from these cards: docs/drafts/pipeline/2-fully-proven/ (IGNORE SUBFOLDERS)
 
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
@@ -61,17 +61,14 @@ GOAL IS MET WHEN ALL CARDS ARE FULLY FORMALIZED AND CAN BE MOVED TO STEP 3 OF TH
 
 do not add hypotheses. always check first what the lean corpus already contains, to not duplicate existing work.
 
-optimize lean code. only build what is necessary. you can yourself only
-    start 1 build procress at a time. be mindful that you are not the only
-    agent working on the lean codebase right now.
+optimize lean code. only build what is necessary. you can yourself only start 1 build procress at a time. be mindful that you are not the only agent working on the lean codebase right now.
 
 
 ## formalize gpt
 
 /goal
 
-formalize UNCONDITIONALLY in lean any proven theorem for:
-- docs/drafts/pipeline/2-fully-proven/universal-law-field/abelian-zeta-gas-two-observable-divisor-dictionary-and-condensation-wall-law.md
+formalize UNCONDITIONALLY in lean any proven theorem and its collatories for cards in docs/drafts/pipeline/2-fully-proven/universal-law-field including its subfolders.
 
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done - no simplifications.
 
@@ -88,7 +85,7 @@ ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WHAT THE PROJECT LEAN CODE ALREADY CON
 
 where mathematical knowledge is missing, use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to find and create it.
 
-goal is met when cards are fully formalized and moved to step 3 in the pipeline.
+goal is met when cards are fully formalized, anything that can be proven is formally proven, and card can be moved to step 3 in the pipeline and is moved.
 
 ## loop theorems claude
 /loop 1m (use the croncreate tool)
@@ -132,6 +129,7 @@ Audit lean corpus for any remaining hypothesis or Prop interface - then attempt 
 2. create and formally prove missing connector theorems
 3. subsume theorems under a larger universal law which is nontrivial
 4. use the $hgt-fields-medalist skill´s research process on each non-immediate mathematical obstacle
+5. use any tool of ideation possible including but not exclusively value relations and value reflections
 
 lean corpus:
 - formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
@@ -159,7 +157,6 @@ Mandatory:
    2. If it cannot be done in a single context window -> Does not matter. Do it!
    3. If it takes months -> Does not matter. Do it!
 
-You are not allowed to change the cron timing.
 
 LEAN PROOFS MUST BE UNCONDTIONAL!!! ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WHAT THE PROJECT LEAN CODE ALREADY CONTAINS AS PROOF OR BUILDING BLOCK YOU SO YOU DO NOT DUPLICATE WORK.
 
@@ -167,7 +164,7 @@ where mathematical knowledge is missing use the $hgt-fields-medalist skill to cr
 
 ## research paper
 
-use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge to prove that at least 75% of all zeros of the riemann zeta function lie on the critical line.
+use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge to prove or disprove Selberg's conjectures 3 (https://en.wikipedia.org/wiki/Selberg_class#Conjectures)
 
 research rules:
 - use heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ... 
@@ -187,7 +184,8 @@ Lean rules:
 6. Always use  lake env lean <file>  and only lake build <module> for the final audit. Do not forget to wire new modules into the umbrellas.
 7. make sure you don't leave stale lean processes running - clean up after yourself.
 
-goal is met when proof that at least 75% of all zeros of the riemann zeta function lie on the critical line is fully formalized in lean.
+goal is met when the conjecture is proven or disproven unconditionally without hypotheses or other premises in lean.
+
 goal is met when paper is written and passes a hostile review that confirms that the paper is on a quality level to be published in Nature.
 
 ## research Route

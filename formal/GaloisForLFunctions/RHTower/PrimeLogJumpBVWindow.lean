@@ -62,7 +62,7 @@ theorem hasDerivAt_cumulA (hAB : A < B) (x : ℝ) :
   exact h1.ofReal_comp
 
 /-- The affine cumulative function of the second window has constant derivative. -/
-theorem hasDerivAt_cumulB (hAB : A < B) (x : ℝ) :
+theorem hasDerivAt_cumulB (x : ℝ) :
     HasDerivAt (fun t : ℝ => ((-((t - A) / (B - A)) : ℝ) : ℂ))
       (((-(B - A)⁻¹ : ℝ) : ℂ)) x := by
   have h0 : HasDerivAt (fun t : ℝ => (t - A) / (B - A)) ((B - A)⁻¹) x := by
@@ -85,7 +85,6 @@ theorem windowMellinA_eq (hA : 0 < A) (hAB : A < B) (s : ℂ) :
   rw [cpow_neg_sub_one hx0, bvWindowA]
   push_cast
   field_simp
-  ring
 
 /-- Rewriting the second window transform as the cumulative transform one power down. -/
 theorem windowMellinB_eq (hA : 0 < A) (hAB : A < B) (s : ℂ) :
@@ -102,7 +101,6 @@ theorem windowMellinB_eq (hA : 0 < A) (hAB : A < B) (s : ℂ) :
   rw [cpow_neg_sub_one hx0, bvWindowB]
   push_cast
   field_simp
-  ring
 
 /-- **`(26e)` for the first window.**  Stieltjes integration by parts against a total-mass-zero
 cumulative function, with no division by `s`. -/
@@ -164,7 +162,7 @@ theorem mul_windowMellinB (hA : 0 < A) (hAB : A < B) (s : ℂ) :
     linarith [hx.1]
   have hu : ∀ x ∈ Set.uIcc A B,
       HasDerivAt (fun t : ℝ => ((-((t - A) / (B - A)) : ℝ) : ℂ)) (((-(B - A)⁻¹ : ℝ) : ℂ)) x :=
-    fun x _ => hasDerivAt_cumulB hAB x
+    fun x _ => hasDerivAt_cumulB x
   have hv : ∀ x ∈ Set.uIcc A B,
       HasDerivAt (fun t : ℝ => ((t : ℂ)) ^ (-s)) (-s * (x : ℂ) ^ (-s - 1)) x :=
     fun x hx => hasDerivAt_cpow_ofReal (w := -s) (hpos x hx)
@@ -288,13 +286,13 @@ theorem windowMellinB_zero_ne (hA : 0 < A) (hAB : A < B) : windowMellinB A B 0 �
 in the complex plane. -/
 theorem no_common_zero_windowMellin (hA : 0 < A) (hAB : A < B) (s : ℂ) :
     windowMellinA A B s ≠ 0 ∨ windowMellinB A B s ≠ 0 := by
-  by_contra hcon
-  push_neg at hcon
-  obtain ⟨h1, h2⟩ := hcon
-  have hcA : channelA A B s = 0 := by rw [← mul_windowMellinA hA hAB s, h1, mul_zero]
-  have hcB : channelB A B s = 0 := by rw [← mul_windowMellinB hA hAB s, h2, mul_zero]
-  have hs : s = 0 := eq_zero_of_channel_common_zero hA hAB hcA hcB
-  subst hs
-  exact windowMellinA_zero_ne hA hAB h1
+  by_cases h1 : windowMellinA A B s = 0
+  · refine Or.inr fun h2 => ?_
+    have hcA : channelA A B s = 0 := by rw [← mul_windowMellinA hA hAB s, h1, mul_zero]
+    have hcB : channelB A B s = 0 := by rw [← mul_windowMellinB hA hAB s, h2, mul_zero]
+    have hs : s = 0 := eq_zero_of_channel_common_zero hA hAB hcA hcB
+    subst hs
+    exact windowMellinA_zero_ne hA hAB h1
+  · exact Or.inl h1
 
 end GaloisForLFunctions.RHTower

@@ -185,22 +185,22 @@ def formalPointRowEmbedding : Polynomial ℂ →+* FormalLaurent :=
   (algebraMap (PowerSeries ℂ) FormalLaurent).comp
     (algebraMap (Polynomial ℂ) (PowerSeries ℂ))
 
-def formalPointCoefficientGenerators {n : ℕ}
-    (R : MvPolynomial (Fin (n + 1)) (Polynomial ℂ)) : Set FormalLaurent :=
+def formalPointCoefficientGenerators {σ : Type*}
+    (R : MvPolynomial σ (Polynomial ℂ)) : Set FormalLaurent :=
   Set.range fun d : R.support => formalPointRowEmbedding (MvPolynomial.coeff d.1 R)
 
-def liftFormalPointRow {n : ℕ}
-    (R : MvPolynomial (Fin (n + 1)) (Polynomial ℂ)) :
-    MvPolynomial (Fin (n + 1))
+def liftFormalPointRow {σ : Type*}
+    (R : MvPolynomial σ (Polynomial ℂ)) :
+    MvPolynomial σ
       (differentialAdjoin ℚ (formalPointCoefficientGenerators R)) :=
   ∑ d : R.support, MvPolynomial.monomial d.1
     ⟨formalPointRowEmbedding (MvPolynomial.coeff d.1 R),
       subset_differentialAdjoin ℚ (formalPointCoefficientGenerators R)
         (Set.mem_range_self d)⟩
 
-theorem coeff_liftFormalPointRow_of_mem {n : ℕ}
-    (R : MvPolynomial (Fin (n + 1)) (Polynomial ℂ))
-    {d : Fin (n + 1) →₀ ℕ} (hd : d ∈ R.support) :
+theorem coeff_liftFormalPointRow_of_mem {σ : Type*}
+    (R : MvPolynomial σ (Polynomial ℂ))
+    {d : σ →₀ ℕ} (hd : d ∈ R.support) :
     MvPolynomial.coeff d (liftFormalPointRow R) =
       ⟨formalPointRowEmbedding (MvPolynomial.coeff d R),
         subset_differentialAdjoin ℚ (formalPointCoefficientGenerators R)
@@ -217,9 +217,9 @@ theorem coeff_liftFormalPointRow_of_mem {n : ℕ}
     exact Subtype.ext hde
   · simp
 
-theorem coeff_liftFormalPointRow_of_not_mem {n : ℕ}
-    (R : MvPolynomial (Fin (n + 1)) (Polynomial ℂ))
-    {d : Fin (n + 1) →₀ ℕ} (hd : d ∉ R.support) :
+theorem coeff_liftFormalPointRow_of_not_mem {σ : Type*}
+    (R : MvPolynomial σ (Polynomial ℂ))
+    {d : σ →₀ ℕ} (hd : d ∉ R.support) :
     MvPolynomial.coeff d (liftFormalPointRow R) = 0 := by
   classical
   simp only [liftFormalPointRow, MvPolynomial.coeff_sum,
@@ -230,8 +230,8 @@ theorem coeff_liftFormalPointRow_of_not_mem {n : ℕ}
   intro hde
   exact hd (hde ▸ e.property)
 
-theorem map_liftFormalPointRow {n : ℕ}
-    (R : MvPolynomial (Fin (n + 1)) (Polynomial ℂ)) :
+theorem map_liftFormalPointRow {σ : Type*}
+    (R : MvPolynomial σ (Polynomial ℂ)) :
     MvPolynomial.map
         (algebraMap (differentialAdjoin ℚ (formalPointCoefficientGenerators R))
           FormalLaurent)
@@ -248,8 +248,8 @@ theorem map_liftFormalPointRow {n : ℕ}
       not_ne_iff.mp (mt MvPolynomial.mem_support_iff.mpr hd)
     rw [coeff_liftFormalPointRow_of_not_mem R hd, hcoeff, map_zero, map_zero]
 
-theorem liftFormalPointRow_ne_zero {n : ℕ}
-    {R : MvPolynomial (Fin (n + 1)) (Polynomial ℂ)} (hR : R ≠ 0) :
+theorem liftFormalPointRow_ne_zero {σ : Type*}
+    {R : MvPolynomial σ (Polynomial ℂ)} (hR : R ≠ 0) :
     liftFormalPointRow R ≠ 0 := by
   intro h
   have hmap := congrArg (MvPolynomial.map
@@ -263,8 +263,8 @@ theorem liftFormalPointRow_ne_zero {n : ℕ}
         (Polynomial.algebraMap_hahnSeries_injective (R := ℂ) (Γ := ℤ)))
   simpa only [map_zero] using hmap
 
-theorem formalPointCoefficientGenerators_finite_jetSet {n : ℕ}
-    (R : MvPolynomial (Fin (n + 1)) (Polynomial ℂ)) :
+theorem formalPointCoefficientGenerators_finite_jetSet {σ : Type*}
+    (R : MvPolynomial σ (Polynomial ℂ)) :
     (differentialJetSet (formalPointCoefficientGenerators R)).Finite := by
   rw [show differentialJetSet (formalPointCoefficientGenerators R) =
       ⋃ d : R.support, Set.range (fun j => differentialJet j

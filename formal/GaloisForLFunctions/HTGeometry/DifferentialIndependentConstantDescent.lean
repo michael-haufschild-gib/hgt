@@ -103,6 +103,30 @@ theorem differentialIndependent_differentialAdjoin_of_finite_jetSet
   exact hDA3
     ((differentialIndependent_unique_iff (ι := PUnit.{u + 1}) (ι' := Unit) z).mp htower.2)
 
+/-- Family form of constant-field enlargement: differential independence of a finite family is
+preserved by adjoining generators of finite jet set to the coefficient field. -/
+theorem differentialIndependent_family_differentialAdjoin_of_finite_jetSet
+    {k K : Type u} [Field k] [Field K] [Algebra k K] [Differential k] [Differential K]
+    [DifferentialAlgebra k K] [CharZero K]
+    {S : Set K} (hS : (differentialJetSet S).Finite)
+    {ι : Type*} [Finite ι] {y : ι → K} (hind : DifferentialIndependent k y) :
+    DifferentialIndependent ↥(differentialAdjoin k S) y := by
+  have hinj : Function.Injective y := by
+    intro i j hij
+    have h : (fun p : ι × ℕ => differentialJet p.2 (y p.1)) (i, 0)
+        = (fun p : ι × ℕ => differentialJet p.2 (y p.1)) (j, 0) := hij
+    have h2 := hind.injective h
+    rw [Prod.mk.injEq] at h2
+    exact h2.1
+  set e : ι ≃ ↥(Set.range y) := Equiv.ofInjective y hinj with he
+  have hprod : ((fun p : ↥(Set.range y) × ℕ => differentialJet p.2 ((p.1 : K)))
+      ∘ (e.prodCongr (Equiv.refl ℕ))) = fun p : ι × ℕ => differentialJet p.2 (y p.1) := by
+    funext p
+    rfl
+  have hiff := algebraicIndependent_equiv' (R := k) (e.prodCongr (Equiv.refl ℕ)) hprod
+  exact hiff.mpr (differentialIndependent_differentialAdjoin_of_finite_jetSet hS
+    (Set.finite_range y) (hiff.mp hind))
+
 end
 
 end GaloisForLFunctions.HTGeometry

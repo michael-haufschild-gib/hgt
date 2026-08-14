@@ -319,7 +319,8 @@ theorem tsum_list_split (f : List S → ℝ≥0∞) :
   have hR : (∑' p : S × List S, f (p.1 :: p.2)) =
       ∑' l : {l : List S // l ≠ []}, f (l : List S) :=
     (listConsEquiv S).tsum_eq (fun l : {l : List S // l ≠ []} => f (l : List S))
-  rw [hR, tsum_subtype {l : List S | l ≠ []} f]
+  rw [hR]
+  refine Eq.trans ?_ (tsum_subtype {l : List S | l ≠ []} f).symm
   refine tsum_congr fun l => ?_
   by_cases hl : l = []
   · rw [if_pos hl,
@@ -403,9 +404,212 @@ theorem entranceMass_of_notMem (P : S → S → ℝ≥0∞) (a : ℝ≥0∞) {A 
           FirstEntrance A y l ∧ pathEnd y l ∈ B} from hFE), mul_zero, mul_zero]
   rw [hnil, zero_add, tsum_congr hcons, ENNReal.tsum_mul_left]
   congr 1
-  refine tsum_congr fun y => ?_
-  rw [entranceMass, ← tsum_subtype, ENNReal.tsum_mul_left, tsum_subtype]
+  have hprod : (∑' p : S × List S, P x p.1 *
+      Set.indicator {l : List S | FirstEntrance A p.1 l ∧ pathEnd p.1 l ∈ B}
+        (fun l => a ^ l.length * pathWeight P p.1 l) p.2) =
+      ∑' y : S, ∑' l : List S, P x y *
+        Set.indicator {l : List S | FirstEntrance A y l ∧ pathEnd y l ∈ B}
+          (fun l => a ^ l.length * pathWeight P y l) l := by
+    rw [← ENNReal.tsum_prod (f := fun y l => P x y *
+      Set.indicator {l : List S | FirstEntrance A y l ∧ pathEnd y l ∈ B}
+        (fun l => a ^ l.length * pathWeight P y l) l)]
+  rw [hprod]
+  exact tsum_congr fun y => by rw [ENNReal.tsum_mul_left, entranceMass]
 
 end EntranceRecursion
+
+section Stochastic
+
+variable {S : Type*} [Countable S]
+
+/-- Total weight of the paths of a fixed length. -/
+noncomputable def levelMass (P : S → S → ℝ≥0∞) (x : S) (n : ℕ) : ℝ≥0∞ :=
+  ∑' l : List S, Set.indicator {l : List S | l.length = n} (fun l => pathWeight P x l) l
+
+theorem levelMass_zero (P : S → S → ℝ≥0∞) (x : S) : levelMass P x 0 = 1 := by
+  classical
+  rw [levelMass, tsum_list_split]
+  have hnil : Set.indicator {l : List S | l.length = 0} (fun l => pathWeight P x l) [] = 1 := by
+    rw [Set.indicator_of_mem (show ([] : List S) ∈ {l : List S | l.length = 0} from rfl)]
+    simp
+  have hcons : ∀ p : S × List S,
+      Set.indicator {l : List S | l.length = 0} (fun l => pathWeight P x l) (p.1 :: p.2) = 0 := by
+    intro p
+    exact Set.indicator_of_notMem (by simp) _
+  rw [hnil, tsum_congr hcons, tsum_zero, add_zero]
+
+theorem levelMass_succ (P : S → S → ℝ≥0∞) (x : S) (n : ℕ) :
+    levelMass P x (n + 1) = ∑' y : S, P x y * levelMass P y n := by
+  classical
+  rw [levelMass, tsum_list_split]
+  have hnil : Set.indicator {l : List S | l.length = n + 1}
+      (fun l => pathWeight P x l) [] = 0 :=
+    Set.indicator_of_notMem (by simp) _
+  have hcons : ∀ p : S × List S,
+      Set.indicator {l : List S | l.length = n + 1} (fun l => pathWeight P x l) (p.1 :: p.2) =
+        P x p.1 * Set.indicator {l : List S | l.length = n}
+          (fun l => pathWeight P p.1 l) p.2 := by
+    rintro ⟨y, l⟩
+    by_cases hl : l.length = n
+    · rw [Set.indicator_of_mem (show (y :: l) ∈ {l : List S | l.length = n + 1} from by
+        simp [hl]), Set.indicator_of_mem (show l ∈ {l : List S | l.length = n} from hl)]
+      simp
+    · rw [Set.indicator_of_notMem (show (y :: l) ∉ {l : List S | l.length = n + 1} from by
+        simpa using hl), Set.indicator_of_notMem
+          (show l ∉ {l : List S | l.length = n} from hl), mul_zero]
+  rw [hnil, zero_add, tsum_congr hcons]
+  have hprod : (∑' p : S × List S, P x p.1 * Set.indicator {l : List S | l.length = n}
+      (fun l => pathWeight P p.1 l) p.2) =
+      ∑' y : S, ∑' l : List S, P x y * Set.indicator {l : List S | l.length = n}
+        (fun l => pathWeight P y l) l := by
+    rw [← ENNReal.tsum_prod (f := fun y l => P x y * Set.indicator {l : List S | l.length = n}
+      (fun l => pathWeight P y l) l)]
+  rw [hprod]
+  exact tsum_congr fun y => by rw [ENNReal.tsum_mul_left, levelMass]
+
+theorem levelMass_eq_one (P : S → S → ℝ≥0∞) (hP : ∀ x, ∑' y : S, P x y = 1) (x : S) (n : ℕ) :
+    levelMass P x n = 1 := by
+  induction n generalizing x with
+  | zero => exact levelMass_zero P x
+  | succ n ih =>
+      rw [levelMass_succ]
+      calc (∑' y : S, P x y * levelMass P y n) = ∑' y : S, P x y := by
+            exact tsum_congr fun y => by rw [ih y, mul_one]
+        _ = 1 := hP x
+
+/-- Discounted entrance mass truncated to paths shorter than a bound. -/
+noncomputable def entranceMassTrunc (P : S → S → ℝ≥0∞) (a : ℝ≥0∞) (A : Set S) (x : S)
+    (B : Set S) (n : ℕ) : ℝ≥0∞ :=
+  ∑' l : List S, Set.indicator
+    {l : List S | (FirstEntrance A x l ∧ pathEnd x l ∈ B) ∧ l.length < n}
+    (fun l => a ^ l.length * pathWeight P x l) l
+
+theorem entranceMassTrunc_zero (P : S → S → ℝ≥0∞) (a : ℝ≥0∞) (A : Set S) (x : S) (B : Set S) :
+    entranceMassTrunc P a A x B 0 = 0 := by
+  rw [entranceMassTrunc]
+  refine (ENNReal.tsum_eq_zero).mpr fun l => ?_
+  exact Set.indicator_of_notMem (by simp) _
+
+theorem entranceMassTrunc_succ_of_mem (P : S → S → ℝ≥0∞) (a : ℝ≥0∞) {A : Set S} {x : S}
+    (B : Set S) (hx : x ∈ A) (n : ℕ) :
+    entranceMassTrunc P a A x B (n + 1) = Set.indicator B 1 x := by
+  classical
+  rw [entranceMassTrunc, tsum_list_split]
+  have hnil : Set.indicator {l : List S | (FirstEntrance A x l ∧ pathEnd x l ∈ B) ∧ l.length < n + 1}
+      (fun l => a ^ l.length * pathWeight P x l) [] = Set.indicator B 1 x := by
+    by_cases hB : x ∈ B
+    · rw [Set.indicator_of_mem (show ([] : List S) ∈ {l : List S |
+        (FirstEntrance A x l ∧ pathEnd x l ∈ B) ∧ l.length < n + 1} from
+          ⟨⟨(firstEntrance_nil_iff A x).mpr hx, by simpa using hB⟩, by simp⟩),
+        Set.indicator_of_mem hB]
+      simp
+    · rw [Set.indicator_of_notMem (show ([] : List S) ∉ {l : List S |
+        (FirstEntrance A x l ∧ pathEnd x l ∈ B) ∧ l.length < n + 1} from
+          fun hc => hB (by simpa using hc.1.2)), Set.indicator_of_notMem hB]
+  have hcons : ∀ p : S × List S, Set.indicator {l : List S |
+      (FirstEntrance A x l ∧ pathEnd x l ∈ B) ∧ l.length < n + 1}
+        (fun l => a ^ l.length * pathWeight P x l) (p.1 :: p.2) = 0 := by
+    intro p
+    refine Set.indicator_of_notMem (fun hc => ?_) _
+    exact ((firstEntrance_cons_iff A x p.1 p.2).mp hc.1.1).1 hx
+  rw [hnil, tsum_congr hcons, tsum_zero, add_zero]
+
+theorem entranceMassTrunc_succ_of_notMem (P : S → S → ℝ≥0∞) (a : ℝ≥0∞) {A : Set S} {x : S}
+    (B : Set S) (hx : x ∉ A) (n : ℕ) :
+    entranceMassTrunc P a A x B (n + 1) =
+      a * ∑' y : S, P x y * entranceMassTrunc P a A y B n := by
+  classical
+  rw [entranceMassTrunc, tsum_list_split]
+  have hnil : Set.indicator {l : List S |
+      (FirstEntrance A x l ∧ pathEnd x l ∈ B) ∧ l.length < n + 1}
+      (fun l => a ^ l.length * pathWeight P x l) [] = 0 := by
+    refine Set.indicator_of_notMem (fun hc => ?_) _
+    exact hx ((firstEntrance_nil_iff A x).mp hc.1.1)
+  have hcons : ∀ p : S × List S, Set.indicator {l : List S |
+      (FirstEntrance A x l ∧ pathEnd x l ∈ B) ∧ l.length < n + 1}
+        (fun l => a ^ l.length * pathWeight P x l) (p.1 :: p.2) =
+      a * (P x p.1 * Set.indicator {l : List S |
+        (FirstEntrance A p.1 l ∧ pathEnd p.1 l ∈ B) ∧ l.length < n}
+        (fun l => a ^ l.length * pathWeight P p.1 l) p.2) := by
+    rintro ⟨y, l⟩
+    by_cases hFE : (FirstEntrance A y l ∧ pathEnd y l ∈ B) ∧ l.length < n
+    · rw [Set.indicator_of_mem (show (y :: l) ∈ {l : List S |
+        (FirstEntrance A x l ∧ pathEnd x l ∈ B) ∧ l.length < n + 1} from
+          ⟨⟨(firstEntrance_cons_iff A x y l).mpr ⟨hx, hFE.1.1⟩, by simpa using hFE.1.2⟩,
+            by simpa using hFE.2⟩),
+        Set.indicator_of_mem (show l ∈ {l : List S |
+          (FirstEntrance A y l ∧ pathEnd y l ∈ B) ∧ l.length < n} from hFE)]
+      simp only [List.length_cons, pathWeight_cons, pow_succ]
+      ring
+    · rw [Set.indicator_of_notMem (show (y :: l) ∉ {l : List S |
+        (FirstEntrance A x l ∧ pathEnd x l ∈ B) ∧ l.length < n + 1} from fun hc =>
+          hFE ⟨⟨((firstEntrance_cons_iff A x y l).mp hc.1.1).2, by simpa using hc.1.2⟩,
+            by simpa using hc.2⟩),
+        Set.indicator_of_notMem (show l ∉ {l : List S |
+          (FirstEntrance A y l ∧ pathEnd y l ∈ B) ∧ l.length < n} from hFE), mul_zero, mul_zero]
+  rw [hnil, zero_add, tsum_congr hcons, ENNReal.tsum_mul_left]
+  congr 1
+  have hprod : (∑' p : S × List S, P x p.1 * Set.indicator {l : List S |
+      (FirstEntrance A p.1 l ∧ pathEnd p.1 l ∈ B) ∧ l.length < n}
+        (fun l => a ^ l.length * pathWeight P p.1 l) p.2) =
+      ∑' y : S, ∑' l : List S, P x y * Set.indicator {l : List S |
+        (FirstEntrance A y l ∧ pathEnd y l ∈ B) ∧ l.length < n}
+          (fun l => a ^ l.length * pathWeight P y l) l := by
+    rw [← ENNReal.tsum_prod (f := fun y l => P x y * Set.indicator {l : List S |
+      (FirstEntrance A y l ∧ pathEnd y l ∈ B) ∧ l.length < n}
+        (fun l => a ^ l.length * pathWeight P y l) l)]
+  rw [hprod]
+  exact tsum_congr fun y => by rw [ENNReal.tsum_mul_left, entranceMassTrunc]
+
+theorem entranceMassTrunc_le_one (P : S → S → ℝ≥0∞) (hP : ∀ x, ∑' y : S, P x y = 1)
+    {a : ℝ≥0∞} (ha : a ≤ 1) (A : Set S) (B : Set S) (n : ℕ) (x : S) :
+    entranceMassTrunc P a A x B n ≤ 1 := by
+  induction n generalizing x with
+  | zero => rw [entranceMassTrunc_zero]; exact zero_le_one
+  | succ n ih =>
+      by_cases hx : x ∈ A
+      · rw [entranceMassTrunc_succ_of_mem P a B hx n]
+        by_cases hB : x ∈ B
+        · rw [Set.indicator_of_mem hB, Pi.one_apply]
+        · rw [Set.indicator_of_notMem hB]; exact zero_le_one
+      · rw [entranceMassTrunc_succ_of_notMem P a B hx n]
+        calc a * ∑' y : S, P x y * entranceMassTrunc P a A y B n
+            ≤ 1 * ∑' y : S, P x y * 1 := by
+              refine mul_le_mul' ha (ENNReal.tsum_le_tsum fun y => mul_le_mul_right (ih y) _)
+          _ = 1 := by simp [hP x]
+
+/-- **Entrance total mass.**  A discounted first-entrance family is a subprobability. -/
+theorem entranceMass_le_one (P : S → S → ℝ≥0∞) (hP : ∀ x, ∑' y : S, P x y = 1)
+    {a : ℝ≥0∞} (ha : a ≤ 1) (A : Set S) (x : S) (B : Set S) :
+    entranceMass P a A x B ≤ 1 := by
+  classical
+  rw [entranceMass, ENNReal.tsum_eq_iSup_sum]
+  refine iSup_le fun s => ?_
+  set n : ℕ := (s.sup List.length) + 1 with hn
+  have hbound : ∀ l ∈ s, Set.indicator {l : List S | FirstEntrance A x l ∧ pathEnd x l ∈ B}
+      (fun l => a ^ l.length * pathWeight P x l) l ≤
+      Set.indicator {l : List S | (FirstEntrance A x l ∧ pathEnd x l ∈ B) ∧ l.length < n}
+        (fun l => a ^ l.length * pathWeight P x l) l := by
+    intro l hl
+    by_cases hFE : FirstEntrance A x l ∧ pathEnd x l ∈ B
+    · have hlen : l.length < n := by
+        have := Finset.le_sup (f := List.length) hl
+        omega
+      rw [Set.indicator_of_mem (show l ∈ {l : List S |
+        FirstEntrance A x l ∧ pathEnd x l ∈ B} from hFE),
+        Set.indicator_of_mem (show l ∈ {l : List S |
+          (FirstEntrance A x l ∧ pathEnd x l ∈ B) ∧ l.length < n} from ⟨hFE, hlen⟩)]
+    · rw [Set.indicator_of_notMem (show l ∉ {l : List S |
+        FirstEntrance A x l ∧ pathEnd x l ∈ B} from hFE)]
+      exact bot_le
+  calc (∑ l ∈ s, Set.indicator {l : List S | FirstEntrance A x l ∧ pathEnd x l ∈ B}
+        (fun l => a ^ l.length * pathWeight P x l) l)
+      ≤ ∑ l ∈ s, Set.indicator {l : List S |
+          (FirstEntrance A x l ∧ pathEnd x l ∈ B) ∧ l.length < n}
+          (fun l => a ^ l.length * pathWeight P x l) l := Finset.sum_le_sum hbound
+    _ ≤ entranceMassTrunc P a A x B n := ENNReal.sum_le_tsum s
+    _ ≤ 1 := entranceMassTrunc_le_one P hP ha A B n x
+
+end Stochastic
 
 end GaloisForLFunctions.RHTower
