@@ -279,9 +279,9 @@ cosets, exterior events, exact rooted signs, and physical primitive term are now
 `../../../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-literal-paired-source-assembly.md`.
 That theorem also identifies the total antisymmetric source moment with the continuous physical
 seam jump. The nonnormal derivative issue is handled by the primitive-flux graph reduction.
-The later dyadic orbit-chart theorem closes compact-middle coverage. Remaining obligation is
-analytic admission to the weighted graph: direct rough-primitive Hardy in rank one or
-finite-to-flat/source-selected transfer in higher rank.
+The later dyadic orbit-chart theorem closes compact-middle coverage. Direct rough-primitive Hardy
+is now paper-closed in rank one; remaining obligation is finite-to-flat/source-selected transfer
+in higher rank.
 
 ## 6. Hostile audit
 

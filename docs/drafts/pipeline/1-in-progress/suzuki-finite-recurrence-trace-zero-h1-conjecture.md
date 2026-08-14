@@ -13,8 +13,7 @@
   `../3-formalized/new_scientific_knowledge/suzuki/suzuki-flat-flux-charge-automaticity.md`,
   `suzuki-paired-gamma-logistic-flat-sector-conjecture.md`,
   `suzuki-polar-remainder-lipschitz-gamma-subcriticality.md`
-- **Current obstruction:** rank-zero/one rough primitive transfer;
-  higher-rank source-selected finite-to-flat transfer
+- **Current obstruction:** higher-rank source-selected finite-to-flat transfer
 
 ## 0. Retraction of premature theorem status
 
@@ -55,8 +54,9 @@ The live replacement is source-side:
 propagates weighted control through the rough prime cutoff without differentiating it. The
 physical one-sided dipole and terminal flat charge are now forced to zero. The literal
 completed-source equation is now assembled with corrected rooted signs and a canonical
-literal-support cutoff. Formalized dyadic orbit charts already cover compact middle. One must prove
-analytic admission of the rough-primitive equation.
+literal-support cutoff. Formalized dyadic orbit charts already cover compact middle. The
+rough-primitive Hardy theorem closes analytic admission in rank zero/one on `2a<log 3`; higher
+rank still needs finite-to-flat or source-selected cancellation.
 
 ## 1. Conjectured result
 
@@ -421,7 +421,8 @@ integral exp(L)|F_root'(L)|^2dL<infinity.                (26)
 Under \(r=e^{-L}\), `(26)` is exactly the spatial \(H^1\) derivative norm near that endpoint.
 This would make \(u\) \(H^1\) in two endpoint collars with zero Sobolev trace. The uniform radial
 polynomial route can realize such a \(\kappa\) only in ranks zero and one. In rank one the concrete
-window \((\kappa,\sigma)=(2/3,3/4)\) is now proved; rough primitive source transfer remains open.
+window \((\kappa,\sigma)=(2/3,3/4)\) and its three-step rough-primitive transfer are now
+paper-proved. Thus `(3)` is closed for `2a<log 3`.
 
 ## 9. Conditional interior coverage
 
@@ -472,7 +473,7 @@ literal two-coset paired source assembly
  -> exact rooted signs and weighted source class;        [PROVED]
 
 rank zero/one rough primitive transfer
- -> low-rank trace-zero H1_0 via dyadic coverage;        [OPEN]
+ -> low-rank trace-zero H1_0 via dyadic coverage;        [PAPER-PROVED]
 
 rank at least two source-selected finite-to-flat transfer
  -> higher-rank trace-zero H1_0 via dyadic coverage;     [OPEN]
@@ -513,7 +514,8 @@ finite prime-log recurrence
 
 The augmented primitive-flux equation, weighted graph estimate, automatic zero-charge flat
 value/flux upgrade, physical dipole exclusion, and complementary derivative recovery are proved.
-Literal source assembly and compact-middle coverage are proved. Analytic admission is not.
+Literal source assembly and compact-middle coverage are proved. Low-rank analytic admission is
+paper-proved; higher-rank admission is not.
 Therefore theorem `(3)` remains open.
 
 ## 13. Lean decision
@@ -543,9 +545,9 @@ algebra are formalized. No wrapper may assume finite-to-flat expansion, `(25)`, 
 - [x] construct canonical smooth cutoff supported exactly on literal interior samples
 - [x] prove complete primitive/zero-order source signs and finite-recurrence Hilbert bounds
 - [x] classify the sharp radial polynomial Gamma dimension wall
-- [ ] prove rank-zero/one rough primitive transfer and isolate the flat residual
+- [x] prove rank-zero/one rough primitive transfer without a flatness premise
 - [ ] prove higher-rank source-selected finite-to-flat transfer
-- [ ] obtain spatial endpoint \(H^1\) for some `sigma>1/2`
+- [x] obtain spatial endpoint \(H^1\) for `sigma=3/4` in rank zero/one
 - [x] cover compact middle by dyadic orbit charts
 - [ ] compose analytic admission with coverage and prove global \(H^1_0\)
 - [ ] pass recurrence-infinite apertures

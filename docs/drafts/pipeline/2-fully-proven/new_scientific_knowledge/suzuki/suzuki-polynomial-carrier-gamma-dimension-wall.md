@@ -182,10 +182,9 @@ provides:
 3. a square-integrable homogeneous Gamma majorant;
 4. the literal source block summability supplied by paired source assembly.
 
-What remains before declaring the one-prime trace-zero (H^1_0) theorem is the source-faithful
-rough primitive one-block transfer. Formalized dyadic orbit charts already close compact-middle
-coverage. The dimension obstruction is absent in rank one; analytic admission is now one concrete
-lemma rather than an unspecified finite-to-flat expansion.
+The follow-up `suzuki-one-prime-rough-primitive-hardy-closure.md` proves the source-faithful
+rough-primitive one-block transfer and composes formalized dyadic coverage. Thus the one-prime
+trace-zero (H^1_0) theorem is paper-closed; higher-rank analytic admission remains.
 
 ## 6. Rank-two-and-higher survivor
 
@@ -243,6 +242,6 @@ External priority remains unverified.
 - [x] exhibit concrete rank-one window `(κ,σ)=(2/3,3/4)`
 - [x] identify uniform radial polynomial Hardy as impossible in rank at least two
 - [x] retain vectorwise/biweighted/primitive-flux survivors
-- [ ] prove rough primitive one-block transfer in the rank-one window
+- [x] prove rough primitive one-block transfer in the rank-one window
 - [x] close compact-middle coverage by formalized dyadic orbit charts
 - [ ] prove general-rank source-selected cancellation or primitive finite-to-flat expansion

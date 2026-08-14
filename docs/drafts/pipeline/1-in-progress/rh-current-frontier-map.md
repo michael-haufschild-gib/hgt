@@ -76,7 +76,11 @@ Current mathematical changes are:
   the distorted Gamma square density is integrable exactly for transport degree `kappa<sigma`,
   and a radial lattice-square-summable/Gamma-integrable exponent window exists exactly in ranks
   `d<=1`. Rank one survives; higher-rank radial polynomial enlargement is impossible. This is a
-  carrier classification, not trace orientation. On the Suzuki floor side, Lean proves the literal natural product
+  carrier classification. The follow-up paper theorem now closes trace orientation and derivative
+  regularity on `2a<log 3`: backward primitive completion plus three integrations by parts gives
+  weighted admission at `(kappa,sigma)=(2/3,3/4)`, complementary flux gives the derivative, and
+  dyadic charts give `H1_0`. Higher-rank finite-to-flat/source-selected admission remains. On the
+  Suzuki floor side, Lean proves the literal natural product
   `D† G_a D` is formally self-adjoint on its exact `H_0^1(-a,a)` domain. Operator action, domain,
   and symmetry are therefore closed; lower-floor orientation is not. The floor branch still needs
   source-derived exhaustion/lower control of every
@@ -3090,6 +3094,21 @@ concrete rank-one choice `(kappa,sigma)=(2/3,3/4)` is summable and integrable. T
 one-prime carrier is dimensionally viable while closing every higher-rank radial polynomial
 enlargement. It neither constructs completed forcing nor orients the half-log trace.
 
+Post-cutoff paper theorem `suzuki-one-prime-rough-primitive-hardy-closure.md` now composes the
+literal forcing and trace orientation on the whole first-prime aperture range `2a<log 3`. A
+backward weighted primitive absorbs every zero-order tail source. Three frequency integrations by
+parts leave exactly two squared tails,
+
+```text
+x^(2(kappa-(1/2+sigma)))  and  x^(2(kappa+1-N)),
+```
+
+which are integrable exactly for `kappa<sigma` and `kappa+3/2<N`. Lean formalizes both iff
+thresholds and the concrete point `(kappa,sigma,N)=(2/3,3/4,3)`. Complementary primitive flux then
+recovers the weighted derivative, and formalized dyadic charts give global `H1_0`. Thus every
+trace-zero completed mode lies in `H1_0(-a,a)` for `2a<log 3`, without a finite-to-flat premise.
+This is a genuine low-rank source theorem, not RH: second-prime and higher apertures remain.
+
 The CCM/Suzuki mixed-source modules also close the exact complex cross term: arbitrary form-domain
 pairs satisfy the full sesquilinear polar--prime minus archimedean Weil identity, with literal CCM
 vectors for strict-interior complex smooth sources. Active-tree
@@ -4196,9 +4215,9 @@ is visible at first prime grade. The branch therefore no longer asks for Gamma d
 annihilation or root-port noncancellation. The literal completed mode now enters the paired
 primitive-flux carrier with exact two-rooted prime signs, marked-descendant constants, a canonical
 cutoff supported exactly on interior samples, and finite-recurrence weighted source bounds.
-Formalized dyadic orbit charts already close compact-middle coverage. Its first open theorem is
-analytic admission of the exact rough-primitive equation: rank-one direct Hardy transfer, or
-higher-rank finite-to-flat/source-selected cancellation. After that remain the
+Formalized dyadic orbit charts already close compact-middle coverage, and the rank-one
+rough-primitive Hardy theorem closes analytic admission for `2a<log 3`. Its first finite-type open
+theorem is now higher-rank finite-to-flat/source-selected cancellation. After that remain the
 trace-zero supported-nullspace theorem and raw Evans injectivity. This is a second internal producer
 branch of Route O, not a new route and not a proof that the prolate seed controls whole ground
 space.
@@ -4343,8 +4362,9 @@ Three producer classes remain live and are not proved to factor through one anot
    dipole. Complementary flux already recovers the weighted root derivative. The literal infinite
    paired-source assembly is now paper-proved, with its unconditional rooted/cutoff/source algebra
    formalized in `SuzukiLiteralPairedSourceAssembly.lean`. Formalized dyadic orbit charts close
-   compact-middle coverage. Remaining finite-type work is analytic admission: rank-one
-   rough-primitive Hardy transfer or higher-rank finite-to-flat/source-selected cancellation. Optional
+   compact-middle coverage. Rank-one rough-primitive Hardy admission is paper-closed for
+   `2a<log 3`. Remaining finite-type work is higher-rank finite-to-flat/source-selected
+   cancellation. Optional
    low-frequency boundary counterterms are source-controlled; no separate physical
    dipole/flat-charge premise remains.
 3. **I — noncompact Euler--Gamma incidence/direct floor.** Construct the source-defined moving

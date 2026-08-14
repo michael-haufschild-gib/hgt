@@ -185,6 +185,28 @@ profile limit.
 Both are the shared engine for `concurrent-causal-heap-accessibility-law`,
 `first-entrance-gate-renewal-prefix-law`, and `first-entrance-gate-capacity-discrepancy-law`.
 
+## In flight: the first-entrance gate cards
+
+`RHTower/DiscreteMarkovRenewal` (new) is the reusable discrete-time renewal engine for
+`first-entrance-gate-renewal-prefix-law` and `first-entrance-gate-capacity-discrepancy-law`:
+finite paths as lists of successor states, `pathEnd`/`pathWeight` with their append laws,
+`FirstEntrance`, `firstEntranceTime` and the split bijection `firstEntranceSplit`, the discounted
+`greenMass` and `entranceMass`, and the exact first-entrance decomposition
+`greenMass_eq_tsum_entranceMass` (the card's `(SG)`).
+
+Still to build on that engine, in order:
+
+1. `∑' l of length n, pathWeight = 1` for a stochastic transition law, and the prefix-free
+   (Kraft) bound `∑' over a prefix-free path family, pathWeight ≤ 1`.  This is what gives
+   `entranceMass ≤ 1` and hence the card's `(2.1)`.
+2. the one-step decomposition `greenMass = indicator + a * ∑' y, P x y * greenMass y`, then the
+   return kernel `returnMass P a A z B := a * ∑' y, P z y * entranceMass P a A y B` and the return
+   equation; `(ER)` follows as the Neumann series, `(PR)` as its singleton case.
+3. `(2.4)`, `(GEQ)`, `(SEQ)` from `(SG)` and `1 ≤ greenMass z A ≤ (1-a)⁻¹` for `z ∈ A`.
+4. the gate-word layer `(FH)`, `(Kraft)`, `(CS)`, `(TR)`, `(IP)`, `(EM)`, `(CU)`, `(RC)`, which is
+   pure word combinatorics over `List Γ` plus the discrete relative entropy already built in
+   `RHTower/CircuitPreparationActionEntropy`.
+
 ## Corpus facts found during the sweep (do not rebuild)
 
 - Duhamel operator bound: `HTGeometry.exp_skewAdjoint_sub_exp_skewAdjoint_norm_le` and

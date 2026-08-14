@@ -44,5 +44,5 @@ charts.
 - [x] concrete one-prime lattice and Gamma survivor proved
 - [x] wired into `GaloisForLFunctions.RHTower`
 - [x] compact-middle coverage available from dyadic orbit charts
-- [ ] vector-valued rough primitive transfer
-- [ ] one-prime trace-zero (H^1_0)
+- [x] vector-valued rough primitive transfer paper-closed in rank one
+- [ ] formalize full one-prime trace-zero (H^1_0) after analytic infrastructure exists

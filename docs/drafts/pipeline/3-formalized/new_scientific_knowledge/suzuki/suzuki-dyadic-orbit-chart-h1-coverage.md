@@ -125,7 +125,7 @@ gate. The finite-recurrence trace-zero theorem is reduced to analytic admission 
 derivatives:
 
 ```text
-rank one: rough-primitive direct Hardy transfer;
+rank one: rough-primitive direct Hardy transfer;        [PAPER-PROVED]
 higher rank: finite-to-flat or source-selected transfer. (14)
 ```
 
@@ -198,6 +198,7 @@ is the card's own open item `(14)`; Lean does not represent it by an abstract hy
 - [x] formalize dyadic lattice-cover core in Lean
 - [x] construct literal paired source equation
 - [x] verify physical-root flux matching
-- [ ] prove weighted analytic admission
+- [x] prove rank-one weighted analytic admission on paper
+- [ ] prove higher-rank weighted analytic admission
 - [ ] pass recurrence-infinite apertures
 - [ ] prove raw Evans injectivity or whole-Connes no-go

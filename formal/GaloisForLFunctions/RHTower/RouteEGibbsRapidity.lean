@@ -114,7 +114,7 @@ def batchCosSum (Y X : ℝ) : ℝ :=
 
 /-- **The rapidity is its linear grade up to a Mertens remainder.** -/
 theorem abs_batchRapidity_sub_two_mul_batchCosSum_le {Y X : ℝ} (hY : 16 ≤ Y)
-    (hYX : Y ≤ X) (hX : 0 < X) :
+    (hYX : Y ≤ X) :
     |batchRapidity Y X - 2 * batchCosSum Y X| ≤ 18 * Sieve.mertensS ⌊X⌋₊ := by
   have hfloorY : 16 ≤ ⌊Y⌋₊ := Nat.le_floor (by exact_mod_cast hY)
   have hfloorle : ⌊Y⌋₊ ≤ ⌊X⌋₊ := Nat.floor_le_floor hYX
@@ -401,17 +401,11 @@ theorem tendsto_batchRapidity {A : ℝ} (hA : 0 < A) :
     set Y : ℝ := Real.log X ^ A with hYdef
     have hX0 : (0 : ℝ) < X := by linarith
     have hlog : (1 : ℝ) ≤ Real.log X := by
-      have h := Real.log_le_log (by norm_num : (0:ℝ) < 2) (by linarith : (2:ℝ) ≤ X)
-      have h2 : Real.log 2 ≤ Real.log X := h
-      have : (0 : ℝ) < Real.log X := lt_of_lt_of_le (Real.log_pos (by norm_num)) h2
-      by_contra hcon
-      push_neg at hcon
       have hE : Real.exp 1 ≤ X := by
-        have := Real.exp_one_lt_d9
+        have hd9 := Real.exp_one_lt_d9
         linarith
-      have := Real.log_le_log (Real.exp_pos 1) hE
-      rw [Real.log_exp] at this
-      linarith
+      have hle := Real.log_le_log (Real.exp_pos 1) hE
+      rwa [Real.log_exp] at hle
     have hlog0 : (0 : ℝ) ≤ Real.log X := by linarith
     have hlogpos : (0 : ℝ) < Real.log X := by linarith
     have hD : (0 : ℝ) < X ^ ((1 : ℝ) / 2) := Real.rpow_pos_of_pos hX0 _
@@ -420,7 +414,7 @@ theorem tendsto_batchRapidity {A : ℝ} (hA : 0 < A) :
     -- split the difference into the nonlinearity and the prefix
     have hsplit := prefixCosSum_add_batchCosSum (Y := Y) (X := X) (by omega) hfloorle
     have hrap := abs_batchRapidity_sub_two_mul_batchCosSum_le (Y := Y) (X := X)
-      (by linarith) hYX hX0
+      (by linarith) hYX
     have hpre := abs_prefixCosSum_le Y X
     have hkey : |batchRapidity Y X - 2 * criticalCosSum X|
         ≤ 18 * Sieve.mertensS ⌊X⌋₊ + 2 * primeWindowSumNoLog (1 / 2) 0 Y := by

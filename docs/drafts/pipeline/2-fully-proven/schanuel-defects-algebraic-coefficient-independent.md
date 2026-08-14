@@ -122,6 +122,26 @@ indecomposability, splitting of additive/toroidal subgroups, and Baker's theorem
 found no published statement in this numerical defect form.  Status: **new internal theorem;
 external novelty unconfirmed**, with no priority claim.
 
+## Lean formalization progress
+
+The algebraic-group layer now has two unconditional, kernel-checked modules:
+
+- `AffineExponentialGroupHopf` constructs the additive symmetric-algebra antipode, the explicit
+  Hopf coordinate algebra of `G_a^n x G_m^n`, primitive additive coordinates, group-like torus
+  characters, and proves both cross-factor Hom groups vanish.  Its key coefficient theorem says
+  every primitive Laurent polynomial is zero.
+- `AffineExponentialSubgroups` proves a reusable principal Hopf-ideal criterion and applies it to
+  additive linear equations and torus character equations.  The quotient coordinate rings inherit
+  Hopf algebra structures, so these equations define actual closed affine subgroup schemes.
+
+This closes construction and cross-Hom rigidity, but not yet the classification theorem needed in
+the paper proof: every connected closed subgroup of `G_a^n x G_m^n` must be shown to split and its
+torus factor must be recovered from a saturated character lattice.  Rosenlicht subgroup closure,
+invariant-differential restriction, that classification, and general Baker for arbitrary algebraic
+logarithms remain open Lean dependencies.
+
 ## Log
 
 - 2026-08-14 -- algebraic coefficient descent proved; stage-two defect slope shown transcendental.
+- 2026-08-14 -- formalized coordinate Hopf algebras, both cross-Hom vanishing theorems, and
+  additive-linear/torus-character closed subgroup kernels with Hopf quotients.

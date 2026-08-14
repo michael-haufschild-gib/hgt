@@ -60,8 +60,9 @@ physical-root derivative propagation, and
 `../3-formalized/new_scientific_knowledge/suzuki/suzuki-flat-flux-charge-automaticity.md`
 shows the flat terminal charge is automatic and the physical zero-extension has no independent
 `1/log` dipole. Literal source assembly is now proved, and formalized dyadic orbit charts close
-compact-middle coverage. Remaining finite-type theorem is analytic admission of the rough
-primitive source, not another interior ellipticity theorem.
+compact-middle coverage. Rank-one rough-primitive admission is now paper-closed on `2a<log 3`.
+Remaining finite-type theorem is higher-rank analytic admission, not another interior ellipticity
+theorem.
 
 ## 1. Result
 
