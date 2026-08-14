@@ -2,7 +2,7 @@
 
 - **ID:** P-G161
 - **Stage:** 1-in-progress
-- **Type:** THEOREM (paper); Lean module written, audit pending
+- **Type:** THEOREM (Lean); scratch check passed and umbrella wired; axiom/lint audit pending
 - **Source:** Route P, P-G159 complex Hermitian graph normal + P-G160 sharp saturation
 - **Lean:** `RHTower/MobiusGammaXiGraphNormalComplementTangent.lean`
 - **Statement:** graph-normal source minus explicit Wiener--Hopf complement has a rank-one critical
@@ -18,7 +18,7 @@ to one source-pure positivity producer.
 
 - [x] 0 → 1 in-progress: exact source-pure definitions, proof, and Door passport
 - [x] 1 → 2 fully-proven on paper: algebraic factorization, analytic limit, fixed-node RH detector
-- [ ] 2 → 3 formalized: direct check, targeted build, umbrella, axiom audit
+- [ ] 2 → 3 formalized: scratch check and umbrella complete; axiom/lint audit pending
 - [ ] 3 → 4 publication-ready: external novelty audit and final positivity producer
 
 ## Conjecture loop
@@ -123,3 +123,4 @@ credit.  If exact curvature contains positive surplus, compute it and pivot; do 
   written.
 - 2026-08-14 — fixed node `1/2` proved complete for RH using strict pair positivity.
 - 2026-08-14 — route reduced to finite-sigma adjusted-block positivity; RH not yet proved.
+- 2026-08-14 — complete true-complement/tangent module scratch-checked and wired into `RHTower`.

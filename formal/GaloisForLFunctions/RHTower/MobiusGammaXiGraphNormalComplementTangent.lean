@@ -199,12 +199,16 @@ theorem tendsto_mobiusGammaXiWardBoundaryNode
       eulerPositiveCriticalBoundaryParameter sigma u - 1 / 2)
       (nhds 1) (nhds (1 / 2)) := by
     have hcont : ContinuousAt (fun sigma : ℝ =>
-        eulerPositiveCriticalBoundaryParameter sigma u - 1 / 2) 1 := by
+        sigma + u * (sigma - 1) - 1 / 2) 1 := by
       fun_prop
-    simpa [eulerPositiveCriticalBoundaryParameter] using hcont.tendsto
+    convert hcont.tendsto using 1
+    · rfl
+    · norm_num
   have hpath := hreal.comp hsigma
   have hcast := (Complex.continuous_ofReal.tendsto (1 / 2)).comp hpath
-  simpa [mobiusGammaXiWardBoundaryNode] using hcast
+  convert hcast using 1
+  · rfl
+  · norm_num
 
 /-- Continued Ward response converges along every fixed real critical
 source ray to its base-node value. -/

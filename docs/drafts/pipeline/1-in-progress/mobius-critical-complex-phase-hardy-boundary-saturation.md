@@ -1,7 +1,7 @@
 # P-G160 — Complex Möbius Hardy boundary saturation and sharp four-unit budget
 
 - **Route:** P / C47--C49 source metric and four-unit Ward boundary
-- **Status:** paper proof complete; Lean formalization in progress; RH not proved
+- **Status:** paper proof complete; Lean scratch check passed and umbrella wired; axiom/lint audit pending; RH not proved
 - **Lean:** `RHTower/MobiusCriticalComplexPhaseHardyBoundarySaturation.lean`
 - **Statement:** the actual precritical arithmetic source/Fisher Gram converges entrywise to a
   universal positive Hardy/Fisher block, its two-node residual tends to zero, and four is the sharp
@@ -17,7 +17,7 @@ do not divide by the singular Gamma/Xi graph normalizer.
 
 - [x] 0 → 1 in-progress: source-pure conjecture and exact critical profiles identified
 - [x] 1 → 2 fully-proven: complete algebraic/limit proof, `[PROVED HERE]`, no RH premise
-- [ ] 2 → 3 formalized: direct check, targeted build, umbrella, axiom audit
+- [ ] 2 → 3 formalized: scratch check and umbrella complete; axiom/lint audit pending
 - [ ] 3 → 4 publication-ready: external novelty limited; source--Ward incidence remains open
 
 ## Conjecture loop
@@ -79,7 +79,7 @@ This is sharp minimality, not a sufficient-bound restatement.
 - **New insight:** strict-right Ward complement cannot be attached as independent direct-sum
   channel. Only coherent source--complement cross terms in same graph-normal Hardy metric can keep
   total boundary budget four.
-- **Status:** paper proof dependency-closed; Lean module written, audit pending while shared build
+- **Status:** paper proof dependency-closed; Lean scratch check passed; umbrella wired
   cache completes.
 
 ## Hostile audit
@@ -147,8 +147,8 @@ vanishes.
 **Novelty boundary.** Critical mass profile and Fisher orthogonality were already present in
 `MobiusCriticalFisherSteinContact.lean`.  Corpus-new content is exact fixed-diagonal Gram deficit
 `(P-G160.4)`, finite negative witness, and two-node mass-mode rigidity.  Lean declarations are in
-`MobiusCriticalComplexPhaseHardyBoundarySaturation.lean`; direct audit remains pending behind the
-shared HTGeometry cache build.
+`MobiusCriticalComplexPhaseHardyBoundarySaturation.lean`; scratch validation passes and umbrella
+wiring is complete.
 
 Allowing bottom budget `B` sharpens `(P-G160.4)` to
 
@@ -160,3 +160,6 @@ all canonical two-node packets PSD  ==>  4+|d|^2 <= B.  (P-G160.5)
 This is exact second-order curvature toll.  Therefore a first-order mass deformation `epsilon*d`
 requires diagonal surplus at least `epsilon^2|d|^2`.  A same-diagonal positive graph-complement
 extension is not generic positivity infrastructure; it is already rigidity forcing `d=0`.
+
+- 2026-08-14 — full module scratch-checked; mass rigidity and `4+|d|²` toll close without
+  placeholders; wired into `RHTower` umbrella.

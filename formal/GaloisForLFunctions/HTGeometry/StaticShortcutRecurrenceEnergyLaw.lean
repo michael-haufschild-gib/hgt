@@ -126,11 +126,29 @@ theorem threshold_sq_le_weightedRecurrenceEnergy
 variable {I : Type*} [Fintype I]
 variable [CompleteSpace F]
 
-/-- Squared norm of the uniform occupied-target moment.  In replica projector space this is the
-normalized target frame potential: the average of all pair fidelities at the chosen replica
-order. -/
+/-- Squared norm of the uniform finite-target moment.  When the index type parametrizes the actual
+occupied endpoint image, this is its intrinsic normalized frame energy. -/
 def finitePreparationFrameEnergy (target : I → F) : ℝ :=
   ‖finitePreparationMoment target‖ ^ 2
+
+omit [CompleteSpace F] in
+/-- Target frame energy is exactly the average of all target Gram entries.  In replica-projector
+space these entries are the corresponding replica fidelities. -/
+theorem finitePreparationFrameEnergy_eq_pairAverage (target : I → F) :
+    finitePreparationFrameEnergy target =
+      ∑ i, ∑ j,
+        (Fintype.card I : ℝ)⁻¹ * (Fintype.card I : ℝ)⁻¹ *
+          inner ℝ (target i) (target j) := by
+  calc
+    finitePreparationFrameEnergy target =
+        ‖weightedMemorySum target (fun _ => (Fintype.card I : ℝ)⁻¹)‖ ^ 2 := by
+      simp only [finitePreparationFrameEnergy, finitePreparationMoment,
+        weightedMemorySum, Finset.smul_sum]
+    _ = weightedRecurrenceEnergy target
+        (fun _ => (Fintype.card I : ℝ)⁻¹) :=
+      (weightedRecurrenceEnergy_eq_norm_sq target
+        (fun _ => (Fintype.card I : ℝ)⁻¹)).symm
+    _ = _ := rfl
 
 /-- Removing the completed universal sector subtracts its energy exactly from the target frame
 energy.  This is the target-side factor in the observer--spectral reciprocity law. -/
@@ -157,8 +175,8 @@ theorem preparationMemory_norm_sq_eq_frameEnergy_sub_universal
 
 /-- **Adaptive observer--spectral reciprocity law.**  At every sampled time a different target may
 witness the shortcut.  Uniform target averaging and the two-memory law nevertheless produce one
-fixed preparation memory.  The complete adaptive history is bounded by the product of two intrinsic
-quantities: centralizer-conditioned target frame energy and centralizer-centered stationary
+fixed preparation memory.  The complete adaptive history is bounded by the product of the
+centralizer-conditioned frame energy of that target family and centralizer-centered stationary
 recurrence energy. -/
 theorem adaptive_shortcuts_force_recurrence_energy
     (PiOp P : F →L[ℝ] F) (U : UnitaryFlow ℝ F) (x : F)

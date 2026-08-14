@@ -508,3 +508,43 @@ identification of the Herglotz measure of `F_Xi` as pure point on the Cayley ima
 under RH, and its singularity — after which `singularSchurDefect_doubleBoundary` supplies the
 condensation package, and the RH direction is already checked in
 `RHTower.continuedPrimeArchUpperAntiHerglotz_iff_riemannHypothesis`.
+
+## Log — the canonical Xi circle probability measure is constructed `[PROVED]`
+
+`formal/GaloisForLFunctions/RHTower/XiSchurDiscGerm.lean` (wired into `GaloisForLFunctions.RHTower`,
+every declaration axiom-clean: `propext`, `Classical.choice`, `Quot.sound`).
+
+- **`xiSourceHerglotz z = -logDeriv XiC z`** — the card's `H_Xi` in the centered coordinate;
+  **`cayleyDisc w = i(1+w)/(1-w)`** — the card's `chi`, with `cayleyDisc_zero`,
+  `cayleyDisc_im : (chi w).im = (1-|w|^2)/|1-w|^2` and `cayleyDisc_im_pos`.
+- **`continuedPrimeArchUpperAntiHerglotz_iff_xiSourceHerglotz_im_nonneg`** and
+  **`riemannHypothesis_iff_xiSourceHerglotz_im_nonneg_strip`** — the bridge the Stage-3 gate asked
+  for in one direction: the already checked `RHTower` anti-Herglotz criterion **is** the statement
+  that `H_Xi` has nonnegative imaginary part on the centered upper half strip.  The identification
+  `continuedPrimeArchSourceRelativeTrace = -H_Xi` is proved
+  (`continuedPrimeArchSourceRelativeTrace_eq_neg_xiSourceHerglotz`), not assumed.
+- **`xiSourceHerglotz_im_nonneg_of_rh`** — equation `(6)`: under RH every centered spectral point is
+  real, so every relative-resolvent term `1/a - 1/(a-z)` has nonpositive imaginary part above the
+  axis and `H_Xi` is Herglotz on the **whole** upper half plane, not only on the strip.
+- **`xiBasepointSlope`** `= -i H_Xi(i)` — equation `(2)`.  **`xiBasepointSlope_im`** proves it is
+  real (from `logDeriv XiC i = i logDeriv xi(-1/2)` and Schwarz reality of `xi` on the real axis),
+  and **`xiBasepointSlope_re_pos_of_rh`** proves `b > 0` — equation `(3)` — as the convergent
+  positive sum `sum_q 1/(t_q^2+1)` over the centered spectrum, using `nonempty_xiZeroCopy`.  This
+  replaces the theta-integral argument by the resolvent one and needs no numerics.
+- **`xiCaratheodory`** `= -i H_Xi(chi w)/b` — equation `(4)`, with
+  **`xiCaratheodory_zero_of_rh : F_Xi(0) = 1`**,
+  **`xiCaratheodory_re_nonneg_of_rh`** (the Caratheodory property) and
+  **`differentiableOn_xiCaratheodory_of_rh`** (holomorphy on the open disc, since RH keeps `XiC`
+  zero-free above the axis).
+- **`exists_xiCircleMeasure_of_rh`** — **the canonical Xi circle probability measure**: under RH
+  there is a `ProbabilityMeasure Circle` whose Poisson integral is `Re F_Xi` on the open disc.  This
+  uses the corpus's own `HTGeometry.exists_herglotz_representation`.
+
+**What is left of this gate.**  Two analytic facts about that measure: that its support is infinite
+(the Cayley images of the infinite Xi divisor) and that it is mutually singular with
+`circleLebesgue`.  The natural route to singularity is Fatou's radial-limit theorem for Poisson
+integrals — `Re F_Xi` has radial limit `0` almost everywhere on the circle because `H_Xi` is real on
+the real axis away from the divisor — and mathlib has no radial boundary-limit theorem for the
+Poisson kernel.  That theorem is the next unconditional build for this card; once it is available,
+`xiSchur_inverseLimit_atomicCondensation` can be instantiated at the constructed measure instead of
+receiving the equivalence as an argument.

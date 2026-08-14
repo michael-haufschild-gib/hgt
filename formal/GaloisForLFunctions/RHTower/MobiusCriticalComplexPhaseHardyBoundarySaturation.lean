@@ -378,8 +378,8 @@ theorem tendsto_mobiusCriticalHardySaturationScale :
       (nhdsWithin 0 (Ioi 0)) := by
   apply tendsto_nhdsWithin_iff.mpr
   constructor
-  · simpa [mobiusCriticalHardySaturationScale] using
-      tendsto_one_div_add_atTop_nhds_zero_nat
+  · change Tendsto (fun j : ℕ => 1 / ((j : ℝ) + 1)) atTop (nhds 0)
+    exact tendsto_one_div_add_atTop_nhds_zero_nat
   · exact Filter.Eventually.of_forall
       mobiusCriticalHardySaturationScale_pos
 
@@ -422,8 +422,9 @@ theorem exists_mobiusCriticalHardyFisherGramWithBudget_quadratic_neg
       atTop (nhds ((budget - 4 : ℝ) : ℂ)) := by
     apply hshift'.congr'
     filter_upwards with j
-    exact (mobiusCriticalHardySaturation_budget_quadratic_eq_four_add
-      (mobiusCriticalHardySaturationScale j) budget).symm
+    simpa [ofReal_sub] using
+      (mobiusCriticalHardySaturation_budget_quadratic_eq_four_add
+        (mobiusCriticalHardySaturationScale j) budget).symm
   have hre : Tendsto (fun j =>
       (dotProduct (star
           (mobiusCriticalHardySaturationCoefficients
@@ -547,10 +548,23 @@ theorem tendsto_mobiusCriticalHardyMassSaturation_quadratic
   have hbase :=
     tendsto_mobiusCriticalHardySaturation_quadratic_zero.sub_const
       (Complex.normSq d : ℂ)
-  apply hbase.congr'
-  filter_upwards [self_mem_nhdsWithin] with t ht
-  rw [mobiusCriticalHardyMassSaturation_quadratic_eq ht d,
-    mobiusCriticalHardySaturation_quadratic_eq ht]
+  have heq : (fun t : ℝ =>
+      dotProduct (star (mobiusCriticalHardySaturationCoefficients t))
+        (Matrix.mulVec
+          (mobiusCriticalUniversalHardyFisherGram
+            (mobiusCriticalHardySaturationNodes t))
+          (mobiusCriticalHardySaturationCoefficients t)) -
+        (Complex.normSq d : ℂ)) =ᶠ[nhdsWithin 0 (Ioi 0)]
+      (fun t : ℝ =>
+        dotProduct (star (mobiusCriticalHardyMassSaturationCoefficients t d))
+          (Matrix.mulVec
+            (mobiusCriticalUniversalHardyFisherMassPerturbedGram
+              (mobiusCriticalHardySaturationNodes t) d)
+            (mobiusCriticalHardyMassSaturationCoefficients t d))) := by
+    filter_upwards [self_mem_nhdsWithin] with t ht
+    rw [mobiusCriticalHardyMassSaturation_quadratic_eq ht d,
+      mobiusCriticalHardySaturation_quadratic_eq ht]
+  simpa only [zero_sub] using hbase.congr' heq
 
 /-- A nonzero escaped-mass component is detected by a finite inward packet:
 the fixed four-unit boundary block is not positive semidefinite. -/
@@ -577,7 +591,19 @@ theorem exists_mobiusCriticalHardyFisherMassPerturbed_quadratic_neg
           (mobiusCriticalHardyMassSaturationCoefficients
             (mobiusCriticalHardySaturationScale j) d))).re)
       atTop (nhds (-Complex.normSq d)) := by
-    simpa using (Complex.continuous_re.tendsto _).comp hcomplex
+    have hre0 := (Complex.continuous_re.tendsto _).comp hcomplex
+    change Tendsto (fun j =>
+        (dotProduct (star
+            (mobiusCriticalHardyMassSaturationCoefficients
+              (mobiusCriticalHardySaturationScale j) d))
+          (Matrix.mulVec
+            (mobiusCriticalUniversalHardyFisherMassPerturbedGram
+              (mobiusCriticalHardySaturationNodes
+                (mobiusCriticalHardySaturationScale j)) d)
+            (mobiusCriticalHardyMassSaturationCoefficients
+              (mobiusCriticalHardySaturationScale j) d))).re)
+      atTop (nhds (-Complex.normSq d)) at hre0
+    exact hre0
   have hlim : -Complex.normSq d < 0 :=
     neg_neg_of_pos (Complex.normSq_pos.mpr hd)
   have hevent : ∀ᶠ j : ℕ in atTop,
@@ -698,13 +724,34 @@ theorem exists_mobiusCriticalHardyFisherMassPerturbedWithBudget_quadratic_neg
         (nhds (-((Complex.normSq d : ℝ) : ℂ) +
           ((budget - 4 : ℝ) : ℂ))) := by
       simpa using hshift
-    apply hshift'.congr'
-    · filter_upwards with j
-      exact
+    have heq : (fun j =>
+        dotProduct (star
+            (mobiusCriticalHardyMassSaturationCoefficients
+              (mobiusCriticalHardySaturationScale j) d))
+          (Matrix.mulVec
+            (mobiusCriticalUniversalHardyFisherMassPerturbedGram
+              (mobiusCriticalHardySaturationNodes
+                (mobiusCriticalHardySaturationScale j)) d)
+            (mobiusCriticalHardyMassSaturationCoefficients
+              (mobiusCriticalHardySaturationScale j) d)) +
+          ((budget - 4 : ℝ) : ℂ)) =ᶠ[atTop]
+        (fun j =>
+          dotProduct (star
+              (mobiusCriticalHardyMassSaturationCoefficients
+                (mobiusCriticalHardySaturationScale j) d))
+            (Matrix.mulVec
+              (mobiusCriticalUniversalHardyFisherMassPerturbedGramWithBudget
+                (mobiusCriticalHardySaturationNodes
+                  (mobiusCriticalHardySaturationScale j)) d budget)
+              (mobiusCriticalHardyMassSaturationCoefficients
+                (mobiusCriticalHardySaturationScale j) d))) := by
+      filter_upwards with j
+      simpa [ofReal_sub] using
         (mobiusCriticalHardyMassSaturation_budget_quadratic_eq_four_add
           (mobiusCriticalHardySaturationScale j) budget d).symm
-    · push_cast
-      ring
+    convert hshift'.congr' heq using 1
+    push_cast
+    ring_nf
   have hre : Tendsto (fun j =>
       (dotProduct (star
           (mobiusCriticalHardyMassSaturationCoefficients
@@ -716,7 +763,19 @@ theorem exists_mobiusCriticalHardyFisherMassPerturbedWithBudget_quadratic_neg
           (mobiusCriticalHardyMassSaturationCoefficients
             (mobiusCriticalHardySaturationScale j) d))).re)
       atTop (nhds (budget - 4 - Complex.normSq d)) := by
-    simpa using (Complex.continuous_re.tendsto _).comp htotal
+    have hre0 := (Complex.continuous_re.tendsto _).comp htotal
+    change Tendsto (fun j =>
+        (dotProduct (star
+            (mobiusCriticalHardyMassSaturationCoefficients
+              (mobiusCriticalHardySaturationScale j) d))
+          (Matrix.mulVec
+            (mobiusCriticalUniversalHardyFisherMassPerturbedGramWithBudget
+              (mobiusCriticalHardySaturationNodes
+                (mobiusCriticalHardySaturationScale j)) d budget)
+            (mobiusCriticalHardyMassSaturationCoefficients
+              (mobiusCriticalHardySaturationScale j) d))).re)
+      atTop (nhds (budget - 4 - Complex.normSq d)) at hre0
+    exact hre0
   have hlim : budget - 4 - Complex.normSq d < 0 := by
     linarith
   have hevent : ∀ᶠ j : ℕ in atTop,

@@ -17,7 +17,7 @@ namespace GaloisForLFunctions.HTGeometry
 open scoped BigOperators
 
 /-- One factor of the geometric-ladder transmission product. -/
-def qLadderFactor (q z : ℂ) (n : ℕ) : ℂ := (1 + q ^ n * z) / (1 - q ^ n * z)
+noncomputable def qLadderFactor (q z : ℂ) (n : ℕ) : ℂ := (1 + q ^ n * z) / (1 - q ^ n * z)
 
 /-- The geometric-ladder transmission germ in the crossing coordinate. -/
 noncomputable def qLadderTransmission (q z : ℂ) : ℂ := ∏' n : ℕ, qLadderFactor q z n
@@ -49,7 +49,7 @@ theorem one_sub_qLadderScale_ne_zero {q z : ℂ} (hq : ‖q‖ ≤ 1) (hz : ‖z
   rw [← h, norm_one] at this
   exact absurd this (lt_irrefl 1)
 
-theorem one_sub_norm_le_norm_one_sub {q z : ℂ} (hq : ‖q‖ ≤ 1) (hz : ‖z‖ < 1) (n : ℕ) :
+theorem one_sub_norm_le_norm_one_sub {q z : ℂ} (hq : ‖q‖ ≤ 1) (_hz : ‖z‖ < 1) (n : ℕ) :
     1 - ‖z‖ ≤ ‖1 - q ^ n * z‖ := by
   have hle : ‖q ^ n * z‖ ≤ ‖z‖ := by
     rw [norm_mul, norm_pow]
@@ -86,7 +86,6 @@ theorem multipliable_qLadderFactor {q z : ℂ} (hq : ‖q‖ < 1) (hz : ‖z‖ 
       positivity
     refine le_trans (le_of_eq ?_) hstep
     field_simp
-    ring
   have hone := multipliable_one_add_of_summable hsummable
   have hfun : (fun n : ℕ => 1 + (2 * (q ^ n * z)) / (1 - q ^ n * z))
       = qLadderFactor q z := by
@@ -127,21 +126,13 @@ theorem norm_qLadderFactor_eq_one {q : ℝ} {z : ℂ} (hz : z.re = 0) (n : ℕ) 
   have hsym : ‖(1 : ℂ) - ((q : ℝ) : ℂ) ^ n * z‖ = ‖(1 : ℂ) + ((q : ℝ) : ℂ) ^ n * z‖ := by
     have := norm_sub_eq_norm_add_of_re_eq_zero (1 : ℝ) hre
     simpa using this
-  have hne : (1 : ℂ) - ((q : ℝ) : ℂ) ^ n * z ≠ 0 := by
+  have hne : (1 : ℂ) + ((q : ℝ) : ℂ) ^ n * z ≠ 0 := by
     intro h
-    rw [h, norm_zero] at hsym
-    have h2 : (1 : ℂ) + ((q : ℝ) : ℂ) ^ n * z = 0 := by
-      exact norm_eq_zero.mp hsym.symm
-    have hsum : (2 : ℂ) = 0 := by
-      have := sub_eq_zero.mp h
-      rw [← this] at h2
-      linear_combination h2
-    norm_num at hsum
+    have hzero : ((1 : ℂ) + ((q : ℝ) : ℂ) ^ n * z).re = 0 := by rw [h]; simp
+    rw [Complex.add_re, Complex.one_re, hre] at hzero
+    norm_num at hzero
   unfold qLadderFactor
-  rw [norm_div, hsym, div_self (norm_ne_zero_iff.mpr (by
-    intro h
-    rw [h, norm_zero] at hsym
-    exact hne (norm_eq_zero.mp hsym)))]
+  rw [norm_div, hsym, div_self (norm_ne_zero_iff.mpr hne)]
 
 /-- **Unimodularity of the transmission germ on the imaginary axis.**  This is the reflectionless
 unitarity `|T(k)| = 1` for real momentum. -/
@@ -167,7 +158,16 @@ theorem qLadderFactor_momentum {q kappa k : ℂ} (hk : k ≠ 0) (n : ℕ) :
     (k + Complex.I * kappa * q ^ n) / (k - Complex.I * kappa * q ^ n)
       = qLadderFactor q (Complex.I * kappa / k) n := by
   unfold qLadderFactor
-  rw [div_eq_div_iff_of_ne] <;> field_simp <;> ring
+  have h1 : 1 + q ^ n * (Complex.I * kappa / k)
+      = (k + Complex.I * kappa * q ^ n) / k := by
+    field_simp
+  have h2 : 1 - q ^ n * (Complex.I * kappa / k)
+      = (k - Complex.I * kappa * q ^ n) / k := by
+    field_simp
+  rw [h1, h2]
+  by_cases hB : k - Complex.I * kappa * q ^ n = 0
+  · rw [hB, zero_div, div_zero, div_zero]
+  · field_simp
 
 /-- The geometric ladder of wave numbers is absolutely summable. -/
 theorem summable_qLadderWaveNumbers (kappa : ℝ) {q : ℝ} (hq0 : 0 ≤ q) (hq1 : q < 1) :

@@ -1,7 +1,7 @@
 # Polarized prime completion preserves a hypertranscendental Gamma phase
 
 - **ID:** `prime-occupation-polarized-gamma-phase-survival`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized / candidate-new
 - **Type:** THEOREM (paper) / SOURCE-PURE POLARIZED COMPLETION / FIRST-TRACE ANOMALY
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
   `[EXTERNAL EXACT-MATCH SEARCH NEGATIVE] [NOT AN RH RESULT]`
@@ -362,7 +362,7 @@ relative HT over the sine-generated differential field.
 - [ ] independent specialist priority review
 - [x] formalize the exact occupation reindexing, finite first-moment gauge, Gamma limit value,
   sine collapse, and meromorphic HT phase
-- [ ] formalize finite-prime multiplicative-variable HT, cofinal finite-set convergence,
+- [x] 2 -> 3: formalize finite-prime multiplicative-variable HT, cofinal finite-set convergence,
   logarithmic series, tangent uniqueness, and relative HT
 - [ ] connect the anomaly class—not merely the Gamma ratio—to the Xi spectral derivation
 
@@ -491,3 +491,89 @@ With `nomeMonomial_primeLinearNome` (occupation monomials are reciprocal integer
 `ellipticNome_primeNomePeriod` (nomes are reciprocal primes) both in place, the finite occupation
 product `A_S` and the multiple elliptic Gamma product at `τ_p` are built from the same data; the
 composition bridge in the multiplicative variable is the only remaining bookkeeping.
+
+## 2026-08-14 — the remaining Lean gate is closed
+
+Five new unconditional, axiom-clean modules, all wired into the `HTGeometry` umbrella.
+
+### The multiplicative-variable bridge, and the mathlib gap it needed
+
+The period-rank law lives in the *additive* variable: it makes
+`multipleEllipticGammaBackwardProduct τ` hypertranscendental as a function of `z`.  The card's
+`A_S` is a function of the multiplicative coordinate `t = exp(2πi z)`.  Transporting
+hypertranscendence across that substitution needs
+
+```text
+g differentially algebraic  ⟹  z ↦ g(exp(a z)) differentially algebraic,
+```
+
+which mathlib does not have, and which the corpus only had in the opposite direction
+(`differentiallyAlgebraic_of_comp_exp`).  It is now proved:
+
+- `HTGeometry.jetDeriv` (`JetDifferentialRing.lean`) — the jet differential polynomial ring
+  `ℂ[Y₀,Y₁,…]` with `Yₖ ↦ Yₖ₊₁`, realized both along the jets of a smooth function at a moving
+  point (`hasDerivAt_eval_jetVector`) and along the jets of a *polynomial*
+  (`derivative_polyJetSubst`), where degrees are available and every jet vector is attained;
+- **`HTGeometry.eq_zero_of_jetLogDeriv_const`** — the rigidity statement: no element of the jet ring
+  has a nonzero constant logarithmic derivative.  `g·𝒟f − f·𝒟g = μ·f·g` with `μ ≠ 0`, `g ≠ 0`
+  forces `f = 0`, because in the polynomial realization the left side has strictly smaller degree
+  than the right;
+- **`HTGeometry.exists_autonomousJet_of_expJetRelation`** (`ExponentialJetElimination.lean`) — the
+  elimination.  Total differentiation acts coefficientwise on the jets and multiplies the
+  coefficient of `Xᵈ` by `d·a`, hence preserves the exponential degree; clearing the leading
+  coefficient against the total derivative lowers it.  When that combination vanishes identically
+  the coefficients satisfy exactly the forbidden logarithmic-derivative relation, so the relation
+  collapses to one monomial and the nowhere-vanishing exponential divides out;
+- **`HTGeometry.differentiallyAlgebraic_comp_exp`** and
+  `HTGeometry.hypertranscendental_of_comp_exp` (`ExponentialForwardSubstitution.lean`) — the jets of
+  the composite are the invertible transfer matrix applied to the weighted jets `wʲ·g⁽ʲ⁾(w)`, and
+  `expWeightShift` shifts each monomial's point exponent by its jet weight so that the inverse
+  substitution stays polynomial, at the cost of one harmless factor `w^N`.
+
+### Assertion 1
+
+`PrimeLinearOccupationHypertranscendence.lean`:
+
+- **`multipleEllipticGammaBackwardProduct_eq_infiniteMultipleEllipticGamma`** — for any period
+  family, the backward all-order product *is* the genus-zero occupation product in the
+  multiplicative coordinate, by reindexing the occupation lattice along
+  `Finsupp.equivFunOnFinite`;
+- `primeOccupationFaceA`, `primeOccupationFaceB` with their product forms
+  `∏(1 ∓ t·p^ν)`, and `analyticOnNhd_primeOccupationFaceA` — both faces are entire;
+- **`hypertranscendental_primeOccupationFaceA`** and **`hypertranscendental_primeOccupationFaceB`**
+  — for `2 ≤ S.card` neither face satisfies an algebraic differential equation.  The proof is
+  exactly the card's: `ellipticNome_primeNomePeriod` identifies the occupation nomes with the
+  elliptic nomes of `τ_p = i·log p/(2π)`, unique factorization gives the rank-three minor, the
+  period-rank law gives hypertranscendence in `z`, and the exponential descent transports it to `t`.
+
+### Assertion `(9)`: the counterterm is the unique tangent gauge
+
+`PolarizedTangentGauge.lean`, for any family with summable norms bounded by one:
+
+- `HTGeometry.polarizedLog` — the difference of the two orientations' logarithms;
+- `HTGeometry.norm_polarizedLog_add_tangent_le` — after the counterterm the remainder is `O(|t|³)`
+  on `|t| ≤ 1/2`, by geometric domination of the odd jet series of `(8)`;
+- **`HTGeometry.hasDerivAt_polarizedLog_zero`** — hence `(log(A/B))'(0) = −2·Z(1)`, which is `(9)`;
+- **`HTGeometry.polarizedLog_gauge_tangent_eq_zero_iff`** — a linear gauge `exp(c·t)` removes the
+  first logarithmic trace **iff** `c = 2·Z(1)`.  The counterterm is not a choice.
+
+### Assertions `(2)`, `(3)`: cofinal convergence
+
+`PrimeOccupationCofinalLimit.lean`:
+
+- `occupationSupported S` — the `S`-smooth part of the occupation monoid, and
+  **`cofinal_occupationSupported`** — every finite set of occupation vectors is supported in all
+  large enough prime sets, so the finite prime sets are a genuine cofinal net;
+- `summable_norm_occupationRecip_sq` — the level-two occupation mass `∑ 1/n²` is finite, obtained
+  from `∑_p p⁻²` through the occupation-monoid summability criterion;
+- **`tendsto_smoothPowerSum`** — every occupation power sum above level one converges cofinally,
+  which is `(13)`;
+- **`tendsto_smoothLogIntensity`** — the logarithmic intensity `∑ log(1 − t/n²)` converges
+  cofinally, which is the logarithmic form of `(5)`/`(11)`;
+- `norm_smoothPowerSum_le` — every higher power sum is bounded by the level-two mass *uniformly in
+  the prime set*, and hence **`tendsto_smoothOddJetSeries`** — the odd jet series of `(8)` converges
+  cofinally, by dominated convergence against a geometric bound.  This is the card's step 3.
+
+Together with `PolarizedPhaseRelativeHypertranscendence.lean` (assertion 4, relative HT of the
+completed phase over the differentially algebraic sine carrier) and `LogProductPowerSeries.lean`
+(assertions `(7)`–`(8)`), every assertion of the exact theorem is now formalized.

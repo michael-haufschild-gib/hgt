@@ -6209,3 +6209,19 @@ receive a new title and an independent significance audit.
   late recurrence polygons.  Remaining open core is Brown-scale heap instantiation and first-onset
   growth.  Formal card:
   `../3-formalized/pauli-local-prime-torsion-circuit-polygon-law.md`.
+- 2026-08-14 -- Proved and formalized the adaptive observer--spectral reciprocity law.  After
+  removing the completed centralizer sector, every finite weighted history of adaptively chosen
+  circuit shortcuts satisfies
+  `(eta sum_j w_j)^2 <= F_Pi(Y) sum_(i,j) w_i w_j
+  <x-Px,U(t_j-t_i)(x-Px)>`.  Here `F_Pi(Y)` is exactly uniform target frame energy minus the
+  universal-sector norm, equivalently the squared preparation-memory norm; uniform frame energy
+  is the normalized sum of all target Gram entries.  Thus target adaptation disappears and the
+  obstruction factorizes into average occupied-image overlap and one stationary source recurrence
+  kernel.  The universal Cauchy step is sharp for every weighted history, so no stronger pure
+  Hilbert inequality can remove its square.  This retires both minimum endpoint separation and
+  minimum spectral gap as wrong frontier invariants.  Brown first onset now requires two explicit
+  growing-replica estimates after return/carrier excision: inverse-capacity occupied heap-image
+  frame energy and a quenched centralizer-centered recurrence-energy bound for an ordinary one-draw
+  local Hamiltonian.  Exact source, pair-average identity, sharpness, and product law are checked in
+  Lean with only standard foundational axioms.  Formal card:
+  `../3-formalized/centralizer-centered-shortcut-history-recurrence-energy-law.md`.

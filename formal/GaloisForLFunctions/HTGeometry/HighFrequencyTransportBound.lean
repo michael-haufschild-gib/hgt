@@ -35,7 +35,7 @@ theorem norm_integral_freqPropagator_le {T : A} (hT : IsSelfAdjoint T)
     (hTL : ‖T‖ / 2 < L) (hεR : ε ≤ R)
     (hr : ∀ x ∈ uIcc ε R, HasDerivAt r (r' x) x)
     (hrnn : ∀ x ∈ uIcc ε R, 0 ≤ r x)
-    (hr'nn : ∀ x ∈ uIcc ε R, 0 ≤ r' x)
+    (hr'mono : (∀ x ∈ uIcc ε R, 0 ≤ r' x) ∨ (∀ x ∈ uIcc ε R, r' x ≤ 0))
     (hr'c : ContinuousOn r' (uIcc ε R))
     (hRint : ∀ x ∈ uIcc ε R, HasDerivAt Rint (r x) x)
     (hf : ∀ x ∈ uIcc ε R, HasDerivAt f (f' x) x)
@@ -218,14 +218,18 @@ theorem norm_integral_freqPropagator_le {T : A} (hT : IsSelfAdjoint T)
     refine le_trans hmono (le_of_eq ?_)
     rw [intervalIntegral.integral_mul_const]
   -- symbol-derivative term
-  have hdenc : ContinuousOn (fun x => r' x / (L - ‖T‖ / 2 + r x / 2) ^ 2) (uIcc ε R) := by
+  have hdensigned : ContinuousOn (fun x => r' x / (L - ‖T‖ / 2 + r x / 2) ^ 2) (uIcc ε R) := by
     refine hr'c.div ((continuousOn_const.add (hrc.div_const 2)).pow 2) fun x hx => ?_
     have := hrnn x hx
     positivity
-  have hint_tail : IntervalIntegrable (fun x => r' x / (L - ‖T‖ / 2 + r x / 2) ^ 2)
-      volume ε R := hdenc.intervalIntegrable
-  have htail := integral_deriv_div_sq_le (r := r) (r' := r') (c := L - ‖T‖ / 2)
-    (ε := ε) (R := R) hc₀ hrnn hr hint_tail
+  have hdenc : ContinuousOn (fun x => |r' x| / (L - ‖T‖ / 2 + r x / 2) ^ 2) (uIcc ε R) := by
+    refine hr'c.abs.div ((continuousOn_const.add (hrc.div_const 2)).pow 2) fun x hx => ?_
+    have := hrnn x hx
+    positivity
+  have hint_signed : IntervalIntegrable (fun x => r' x / (L - ‖T‖ / 2 + r x / 2) ^ 2)
+      volume ε R := hdensigned.intervalIntegrable
+  have htail := integral_abs_deriv_div_sq_le (r := r) (r' := r') (c := L - ‖T‖ / 2)
+    (ε := ε) (R := R) hc₀ hrnn hr hint_signed hr'mono
   have h3 : ‖∫ x in ε..R, f x • (-((((r' x / 2 : ℝ)) : ℂ) •
       (shiftedSymbolInv (L + r x / 2) T * shiftedSymbolInv (L + r x / 2) T *
         freqPropagator L Rint T x)))‖ ≤ M * (L - ‖T‖ / 2)⁻¹ := by
@@ -233,12 +237,11 @@ theorem norm_integral_freqPropagator_le {T : A} (hT : IsSelfAdjoint T)
     have hmono : (∫ x in ε..R, ‖f x • (-((((r' x / 2 : ℝ)) : ℂ) •
           (shiftedSymbolInv (L + r x / 2) T * shiftedSymbolInv (L + r x / 2) T *
             freqPropagator L Rint T x)))‖)
-        ≤ ∫ x in ε..R, (M / 2) * (r' x / (L - ‖T‖ / 2 + r x / 2) ^ 2) := by
+        ≤ ∫ x in ε..R, (M / 2) * (|r' x| / (L - ‖T‖ / 2 + r x / 2) ^ 2) := by
       refine integral_mono_on hεR ((hfc.smul hDc).norm.intervalIntegrable)
         ((continuousOn_const.mul hdenc).intervalIntegrable) fun x hx => ?_
       have hx' : x ∈ uIcc ε R := by rwa [uIcc_of_le hεR]
       have hrx := hrnn x hx'
-      have hr'x := hr'nn x hx'
       have hBx := hBnorm x hx'
       have hpos : (0:ℝ) < L - ‖T‖ / 2 + r x / 2 := by linarith
       have hprod : ‖shiftedSymbolInv (L + r x / 2) T * shiftedSymbolInv (L + r x / 2) T *
@@ -255,14 +258,14 @@ theorem norm_integral_freqPropagator_le {T : A} (hT : IsSelfAdjoint T)
               mul_le_mul hBx hBx (norm_nonneg _) (by positivity)
           _ = (L - ‖T‖ / 2 + r x / 2)⁻¹ ^ 2 := (sq _).symm
       rw [norm_smul, Real.norm_eq_abs, norm_neg, norm_smul, Complex.norm_real, Real.norm_eq_abs,
-        abs_of_nonneg (by linarith : (0:ℝ) ≤ r' x / 2)]
+        abs_div, abs_two]
       have hfx := hfb x hx'
-      have hstep : |f x| * (r' x / 2 *
+      have hstep : |f x| * (|r' x| / 2 *
           ‖shiftedSymbolInv (L + r x / 2) T * shiftedSymbolInv (L + r x / 2) T *
             freqPropagator L Rint T x‖)
-          ≤ M * (r' x / 2 * (L - ‖T‖ / 2 + r x / 2)⁻¹ ^ 2) := by
+          ≤ M * (|r' x| / 2 * (L - ‖T‖ / 2 + r x / 2)⁻¹ ^ 2) := by
         refine mul_le_mul hfx ?_ (by positivity) hM0
-        exact mul_le_mul_of_nonneg_left hprod (by linarith)
+        exact mul_le_mul_of_nonneg_left hprod (by positivity)
       refine le_trans hstep (le_of_eq ?_)
       rw [inv_pow, div_eq_mul_inv]
       ring
@@ -365,12 +368,106 @@ theorem norm_integral_halfPower_freqPropagator_le {T : A} (hT : IsSelfAdjoint T)
     have h := integral_rpow_neg_three_halves_le hε hεR
     linarith
   have hmain := norm_integral_freqPropagator_le (T := T) (M := ε ^ (-(1:ℝ)/2)) hT hTL hεR
-    hr hrnn hr'nn hr'c hRint hfderiv hf'c hfabs
+    hr hrnn (Or.inl hr'nn) hr'c hRint hfderiv hf'c hfabs
   refine le_trans hmain ?_
   have hfε : |f ε| = ε ^ (-(1:ℝ)/2) := abs_of_pos (Real.rpow_pos_of_pos hε _)
   have hfR : |f R| = R ^ (-(1:ℝ)/2) :=
     abs_of_pos (Real.rpow_pos_of_pos (lt_of_lt_of_le hε hεR) _)
   rw [hfε, hfR]
+  have hinvnn : (0:ℝ) ≤ (L - ‖T‖ / 2)⁻¹ := by positivity
+  nlinarith [hf'int, hinvnn]
+
+/-- **The half-power high-frequency estimate on the negative frequency ray.**  The reflected
+amplitude `(-η)^{-1/2}` gives the same `O(1/L)` bound, so no frequency direction is privileged. -/
+theorem norm_integral_halfPower_freqPropagator_neg_le {T : A} (hT : IsSelfAdjoint T)
+    {r r' Rint : ℝ → ℝ} {L ε R : ℝ}
+    (hTL : ‖T‖ / 2 < L) (hε : 0 < ε) (hεR : ε ≤ R)
+    (hr : ∀ x ∈ uIcc (-R) (-ε), HasDerivAt r (r' x) x)
+    (hrnn : ∀ x ∈ uIcc (-R) (-ε), 0 ≤ r x)
+    (hr'mono : (∀ x ∈ uIcc (-R) (-ε), 0 ≤ r' x) ∨ (∀ x ∈ uIcc (-R) (-ε), r' x ≤ 0))
+    (hr'c : ContinuousOn r' (uIcc (-R) (-ε)))
+    (hRint : ∀ x ∈ uIcc (-R) (-ε), HasDerivAt Rint (r x) x) :
+    ‖∫ η in (-R)..(-ε), ((-η) ^ (-(1:ℝ)/2)) • freqPropagator L Rint T η‖
+      ≤ (3 * ε ^ (-(1:ℝ)/2) + R ^ (-(1:ℝ)/2)) * (L - ‖T‖ / 2)⁻¹ := by
+  have hc₀ : (0:ℝ) < L - ‖T‖ / 2 := by linarith
+  have hRpos : 0 < R := lt_of_lt_of_le hε hεR
+  have hIcc : uIcc (-R) (-ε) = Icc (-R) (-ε) := uIcc_of_le (by linarith)
+  have hneg : ∀ x ∈ uIcc (-R) (-ε), 0 < -x := by
+    intro x hx
+    rw [hIcc] at hx
+    have := hx.2
+    linarith
+  set f : ℝ → ℝ := fun x => (-x) ^ (-(1:ℝ)/2) with hfdef
+  set f' : ℝ → ℝ := fun x => (1:ℝ)/2 * (-x) ^ (-(3:ℝ)/2) with hf'def
+  have hfderiv : ∀ x ∈ uIcc (-R) (-ε), HasDerivAt f (f' x) x := by
+    intro x hx
+    have hx0 : (0:ℝ) < -x := hneg x hx
+    have hbase : HasDerivAt (fun y : ℝ => y ^ (-(1:ℝ)/2))
+        (-(1:ℝ)/2 * (-x) ^ (-(1:ℝ)/2 - 1)) (-x) :=
+      Real.hasDerivAt_rpow_const (Or.inl (ne_of_gt hx0))
+    have hn : HasDerivAt (fun y : ℝ => -y) (-1 : ℝ) x := (hasDerivAt_id x).neg
+    have hcomp := hbase.scomp x hn
+    have hexp : (-(1:ℝ)/2 - 1) = -(3:ℝ)/2 := by norm_num
+    rw [hexp] at hcomp
+    have hval : (-1 : ℝ) • (-(1:ℝ)/2 * (-x) ^ (-(3:ℝ)/2)) = f' x := by
+      rw [hf'def]
+      simp
+      ring
+    rw [hval] at hcomp
+    exact hcomp
+  have hf'c : ContinuousOn f' (uIcc (-R) (-ε)) := by
+    intro x hx
+    have hx0 : (0:ℝ) < -x := hneg x hx
+    have hb : ContinuousAt (fun y : ℝ => (-y) ^ (-(3:ℝ)/2)) x :=
+      (Real.continuousAt_rpow_const (-x) (-(3:ℝ)/2) (Or.inl (ne_of_gt hx0))).comp
+        (continuous_neg.continuousAt)
+    exact ((hb.const_mul ((1:ℝ)/2))).continuousWithinAt
+  have hfb : ∀ x ∈ uIcc (-R) (-ε), |f x| ≤ ε ^ (-(1:ℝ)/2) := by
+    intro x hx
+    have hx0 : (0:ℝ) < -x := hneg x hx
+    rw [hIcc] at hx
+    have hxε : ε ≤ -x := by linarith [hx.2]
+    have hpos : (0:ℝ) < (-x) ^ (-(1:ℝ)/2) := Real.rpow_pos_of_pos hx0 _
+    rw [hfdef]
+    simp only
+    rw [abs_of_pos hpos]
+    have hneg' : ∀ y : ℝ, 0 < y → y ^ (-(1:ℝ)/2) = (y ^ ((1:ℝ)/2))⁻¹ := by
+      intro y hy
+      rw [show (-(1:ℝ)/2) = -((1:ℝ)/2) by ring, Real.rpow_neg (le_of_lt hy)]
+    rw [hneg' (-x) hx0, hneg' ε hε]
+    exact inv_anti₀ (Real.rpow_pos_of_pos hε _)
+      (Real.rpow_le_rpow (le_of_lt hε) hxε (by norm_num))
+  have hf'int : (∫ η in (-R)..(-ε), |f' η|) ≤ ε ^ (-(1:ℝ)/2) := by
+    have habs : ∀ η ∈ uIcc (-R) (-ε), |f' η| = (1:ℝ)/2 * (-η) ^ (-(3:ℝ)/2) := by
+      intro η hη
+      have hη0 : (0:ℝ) < -η := hneg η hη
+      rw [hf'def]
+      simp only
+      exact abs_of_pos (by positivity)
+    have hcongr : (∫ η in (-R)..(-ε), |f' η|)
+        = ∫ η in (-R)..(-ε), (1:ℝ)/2 * (-η) ^ (-(3:ℝ)/2) :=
+      intervalIntegral.integral_congr habs
+    have hcomp : (∫ η in (-R)..(-ε), (1:ℝ)/2 * (-η) ^ (-(3:ℝ)/2))
+        = ∫ t in ε..R, (1:ℝ)/2 * t ^ (-(3:ℝ)/2) := by
+      have h := intervalIntegral.integral_comp_neg
+        (a := -R) (b := -ε) (f := fun t : ℝ => (1:ℝ)/2 * t ^ (-(3:ℝ)/2))
+      rw [h]
+      norm_num
+    rw [hcongr, hcomp, intervalIntegral.integral_const_mul]
+    have h := integral_rpow_neg_three_halves_le hε hεR
+    linarith
+  have hmain := norm_integral_freqPropagator_le (T := T) (M := ε ^ (-(1:ℝ)/2)) hT hTL
+    (by linarith : -R ≤ -ε) hr hrnn hr'mono hr'c hRint hfderiv hf'c hfb
+  refine le_trans hmain ?_
+  have hfR : |f (-R)| = R ^ (-(1:ℝ)/2) := by
+    rw [hfdef]
+    simp only [neg_neg]
+    exact abs_of_pos (Real.rpow_pos_of_pos hRpos _)
+  have hfε : |f (-ε)| = ε ^ (-(1:ℝ)/2) := by
+    rw [hfdef]
+    simp only [neg_neg]
+    exact abs_of_pos (Real.rpow_pos_of_pos hε _)
+  rw [hfR, hfε]
   have hinvnn : (0:ℝ) ≤ (L - ‖T‖ / 2)⁻¹ := by positivity
   nlinarith [hf'int, hinvnn]
 
@@ -422,6 +519,48 @@ theorem norm_integral_halfPower_freqPropagator_apply_le {T : X →L[ℂ] X} (hT 
     exact integral_congr fun η _ => (hpt η).symm
   rw [hrewrite]
   show ‖(∫ η in ε..R, (η ^ (-(1:ℝ)/2)) • freqPropagator L Rint T η) v‖ ≤ _
+  refine le_trans (ContinuousLinearMap.le_opNorm _ v) ?_
+  exact mul_le_mul_of_nonneg_right hmain (norm_nonneg v)
+
+/-- **The negative-ray high-frequency estimate on a vector channel.** -/
+theorem norm_integral_halfPower_freqPropagator_neg_apply_le {T : X →L[ℂ] X}
+    (hT : IsSelfAdjoint T) {r r' Rint : ℝ → ℝ} {L ε R : ℝ} (v : X)
+    (hTL : ‖T‖ / 2 < L) (hε : 0 < ε) (hεR : ε ≤ R)
+    (hr : ∀ x ∈ uIcc (-R) (-ε), HasDerivAt r (r' x) x)
+    (hrnn : ∀ x ∈ uIcc (-R) (-ε), 0 ≤ r x)
+    (hr'mono : (∀ x ∈ uIcc (-R) (-ε), 0 ≤ r' x) ∨ (∀ x ∈ uIcc (-R) (-ε), r' x ≤ 0))
+    (hr'c : ContinuousOn r' (uIcc (-R) (-ε)))
+    (hRint : ∀ x ∈ uIcc (-R) (-ε), HasDerivAt Rint (r x) x) :
+    ‖∫ η in (-R)..(-ε), ((-η) ^ (-(1:ℝ)/2)) • (freqPropagator L Rint T η v)‖
+      ≤ (3 * ε ^ (-(1:ℝ)/2) + R ^ (-(1:ℝ)/2)) * (L - ‖T‖ / 2)⁻¹ * ‖v‖ := by
+  have hmain := norm_integral_halfPower_freqPropagator_neg_le hT hTL hε hεR hr hrnn hr'mono
+    hr'c hRint
+  have hIcc : uIcc (-R) (-ε) = Icc (-R) (-ε) := uIcc_of_le (by linarith)
+  have hneg : ∀ x ∈ uIcc (-R) (-ε), 0 < -x := by
+    intro x hx
+    rw [hIcc] at hx
+    have := hx.2
+    linarith
+  have hWc : ContinuousOn (freqPropagator L Rint T) (uIcc (-R) (-ε)) := by
+    intro x hx
+    exact ((hasDerivAt_freqPropagator (L := L) (Rint := Rint) (r := r) T
+      (hRint x hx)).continuousAt).continuousWithinAt
+  have hac : ContinuousOn (fun x : ℝ => (-x) ^ (-(1:ℝ)/2)) (uIcc (-R) (-ε)) := by
+    intro x hx
+    have hx0 : (0:ℝ) < -x := hneg x hx
+    exact ((Real.continuousAt_rpow_const (-x) (-(1:ℝ)/2)
+      (Or.inl (ne_of_gt hx0))).comp continuous_neg.continuousAt).continuousWithinAt
+  have hint : IntervalIntegrable
+      (fun η => ((-η) ^ (-(1:ℝ)/2)) • freqPropagator L Rint T η) volume (-R) (-ε) :=
+    (hac.smul hWc).intervalIntegrable
+  have hcomm := (ContinuousLinearMap.apply ℂ X v).intervalIntegral_comp_comm hint
+  have hrewrite : (∫ η in (-R)..(-ε), ((-η) ^ (-(1:ℝ)/2)) • (freqPropagator L Rint T η v))
+      = (ContinuousLinearMap.apply ℂ X v)
+        (∫ η in (-R)..(-ε), ((-η) ^ (-(1:ℝ)/2)) • freqPropagator L Rint T η) := by
+    rw [← hcomm]
+    exact intervalIntegral.integral_congr fun η _ => rfl
+  rw [hrewrite]
+  show ‖(∫ η in (-R)..(-ε), ((-η) ^ (-(1:ℝ)/2)) • freqPropagator L Rint T η) v‖ ≤ _
   refine le_trans (ContinuousLinearMap.le_opNorm _ v) ?_
   exact mul_le_mul_of_nonneg_right hmain (norm_nonneg v)
 

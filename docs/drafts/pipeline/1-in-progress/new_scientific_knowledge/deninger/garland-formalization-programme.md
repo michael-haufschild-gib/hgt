@@ -166,3 +166,102 @@ inherited rather than rebuilt.
 The remaining half of C2 is the localization identity proper — summing
 `‖δ_σ f_σ‖²_{link}` over the faces `σ` of dimension `k−1` and comparing with `‖δf‖²` — followed by
 C4, the vanishing theorem.
+
+## Layer C — the localization identity, derived
+
+The identity Garland's method runs on, derived here in the corpus's normalization (weights `m` on
+faces, `‖f‖²_k = Σ_{|τ|=k+1} m(τ) f(τ)²`, link graphs as above), for a pure `n`-dimensional complex
+and a `k`-cochain `f`:
+
+\[
+ \sum_{|\sigma|=k}\langle f_\sigma,f_\sigma\rangle_{X_\sigma}=(n-k)(k+1)\,\|f\|_k^2,
+ \qquad
+ \sum_{|\sigma|=k}E_{X_\sigma}(f_\sigma,f_\sigma)=\|\delta f\|_{k+1}^2+k(n-k)\,\|f\|_k^2 .
+\]
+
+The derivation of the second is short once the pieces are in place, and it is what the remaining
+work assembles.  Write `A_v := \mathrm{faceSign}(\rho,v)\,f(\rho\setminus v)` for `|\rho| = k+2`.
+
+1. `coboundary_link_pair` says `f_σ(u) − f_σ(u') = ±(A_u + A_{u'})` for `ρ = σ ∪ {u,u'}`, so
+   `(f_σ(u) − f_σ(u'))² = (A_u + A_{u'})²`.
+2. Reindexing the double sum by `ρ` turns `Σ_σ E_σ` into
+   `½ Σ_{|ρ|=k+2} m(ρ) Σ_{(u,u') ordered distinct in ρ} (A_u + A_{u'})²`.
+3. `sum_pairs_sq` evaluates the inner sum as `2k·Σ_{u∈ρ}A_u² + 2(Σ_{u∈ρ}A_u)²`, and
+   `Σ_{u∈ρ}A_u = δf(ρ)`, `A_u² = f(ρ∖u)²`.
+4. `sum_powersetCard_insert` and `sum_m_insert` turn `Σ_ρ m(ρ) Σ_{u∈ρ} f(ρ∖u)²` into
+   `(n−k)‖f‖²_k`.
+
+### Landed in `HTGeometry/GarlandLocalization.lean`
+
+- **`sum_powersetCard_insert`** — the pairs `(σ,u)` with `|σ| = k`, `u ∉ σ` are the pairs `(τ,u)`
+  with `|τ| = k+1`, `u ∈ τ`.  Proved by an explicit bijection of sigma-types.
+- **`sum_pairs_sq`** — `Σ_{u∈ρ} Σ_{u'≠u} (A_u + A_{u'})² = 2(|ρ|−2)·Σ A_u² + 2(Σ A_u)²`.  Step 3
+  above; pure algebra over a finite set.
+- `linkRestrict_sq`, `linkGraph_mass_of_mem`, `cochainNormSq`, `link_massInner_eq`.
+- **`sum_link_massInner`** — **the first identity**:
+  `Σ_{|σ|=k} ⟨f_σ,f_σ⟩_{X_σ} = (n−k)(k+1)·‖f‖²_k`.
+- **`sum_m_insert`** — `Σ_{u ∉ τ} m(τ ∪ {u}) = (n+1−|τ|)·m(τ)`; step 4 above.
+
+What remains of C2 is the assembly of the second identity from these four, then C4.
+
+## Layer C — the localization identity and the vanishing core, PROVED
+
+`HTGeometry/GarlandLocalization.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+Both halves of Garland's localization identity now hold in Lean, for a pure `n`-dimensional weighted
+complex and a `k`-cochain `f`:
+
+- **`sum_link_massInner`** — `Σ_{|σ|=k} ⟨f_σ,f_σ⟩_{X_σ} = (n−k)(k+1)·‖f‖²_k`.
+- **`sum_link_dirichlet`** — `Σ_{|σ|=k} E_{X_σ}(f_σ,f_σ) = ‖δf‖²_{k+1} + k(n−k)·‖f‖²_k`.
+
+Supporting results, all proved: `two_dirichlet_link_eq` (restricting the link Dirichlet sums to the
+link), `coTerm`/`coTerm_sq`/`sum_coTerm` (the signed face values, whose sum is the coboundary),
+`dirTerm_eq` (a pair term of the link Dirichlet form equals `m(ρ)·(A_u + A_v)²`),
+`sdiff_erase_erase` and `insert_insert_erase_erase` (the two set identities the reindexing needs),
+`sum_two_dirichlet_link` (the triple reindexing, three applications of `sum_powersetCard_insert`),
+`sum_m_face_erase`, `cochainNormSq_nonneg`.
+
+And the theorem those identities exist for:
+
+- **`cochainNormSq_eq_zero_of_spectralGap`** — **Garland's vanishing, analytic core.**  If `k < n`,
+  every link of a `k`-face has a spectral gap `lam` with `k < lam·(k+1)`, and `f` is a cocycle whose
+  link restrictions all have mass average zero, then `‖f‖²_k = 0`, so `f` vanishes on every face.
+  The proof is exactly the classical one: the gap turns the second identity into
+  `k(n−k)‖f‖² ≥ lam(n−k)(k+1)‖f‖²`, and `lam(k+1) > k` forces `‖f‖² = 0`.
+
+This is the heart of Garland's method, and to my knowledge it had not been formalized before.
+
+### What remains in Layer C
+
+- C5: identify "mass average zero on every link" with co-closedness `δ*f = 0`, and pass from "no
+  nonzero harmonic cochain" to `H^k = 0` by finite-dimensional Hodge decomposition.
+- The equivariant version: `H^*(Γ,ℝ)` from `Γ`-invariant cochains on a contractible complex with a
+  proper cocompact action, so that the finite-complex statement above applies to `SL_n(𝒪_S)`.
+
+## Layer C — Garland's vanishing theorem, PROVED
+
+Same module.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- **`codiff`** — the codifferential, unnormalized:
+  `(δ*f)(τ) = Σ_{u ∉ τ} m(τ ∪ {u})·faceSign(τ ∪ {u}, u)·f(τ ∪ {u})`.
+- **`codiff_adjoint`** — **it is adjoint to the coboundary**:
+  `Σ_{|ρ|=k+2} m(ρ)·δf(ρ)·g(ρ) = Σ_{|τ|=k+1} f(τ)·(δ*g)(τ)`.
+  Proved by the same reindexing (`sum_powersetCard_insert`) as the localization identity.
+- **`sum_mass_linkRestrict`** — **the mass average of a link restriction is the codifferential**:
+  `Σ_u mass_σ(u)·f_σ(u) = (n − |σ|)·(δ*f)(σ)`.  This is what identifies the analytic hypothesis of
+  the vanishing core with co-closedness.
+- `eq_zero_of_cochainNormSq_eq_zero` — a cochain of zero mass norm vanishes on every face of
+  positive weight.
+- **`harmonic_eq_zero`** — **Garland's vanishing theorem.**  On a pure `n`-dimensional weighted
+  complex with `k < n`, if every link of a `k`-face has a spectral gap `lam` with
+  `k < lam·(k+1)`, then every harmonic `k`-cochain (`δf = 0` and `δ*f = 0`) vanishes on every face
+  of positive weight.
+
+Layer C is now complete except for the two passages to cohomology:
+
+- Hodge: from "no nonzero harmonic cochain" to `H^k = 0`, i.e. every cocycle is a coboundary.  The
+  argument is the standard one — minimize `‖f − δg‖²` over `g`; the minimizer is co-closed, hence
+  harmonic, hence zero — and needs the orthogonal projection onto the space of coboundaries in a
+  finite-dimensional inner product space.
+- Equivariance: `H^*(Γ,ℝ)` from `Γ`-invariant cochains on a contractible complex with a proper
+  cocompact action, so that the statement applies to `SL_n(𝒪_S)` acting on its Bruhat–Tits building.

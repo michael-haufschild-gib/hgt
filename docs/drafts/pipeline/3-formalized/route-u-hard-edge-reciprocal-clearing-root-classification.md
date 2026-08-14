@@ -2,7 +2,15 @@
 
 ## Status
 
-In progress. Paper proof dependency-closed; Lean formalisation next.
+Formalized in Lean. Exact checked-in source compiles in an isolated `/tmp` object tree; theorem
+surface and axiom audit pass from that scratch object. Module is wired into the Route-U umbrella.
+
+- **Stage:** 3-formalized
+- **Type:** BRIDGE / ROUTE-U POSITIVE SURVIVOR
+- **Scientific status:** `[LEAN-PROVED] [BRIDGE] [NOVELTY UNVERIFIED]`
+- **Lean artifact:**
+  `formal/GaloisForLFunctions/RHTower/XiShiftedHardEdgeReciprocalClearingHyperbolicity.lean`
+- **Axiom audit:** only `propext`, `Classical.choice`, `Quot.sound`
 
 ## Obstacle and pivot
 
@@ -66,14 +74,18 @@ exceptional pole root, although the generic classification does not need this st
 - Generic reciprocal root transport is classical algebra. Corpus novelty is the exact theorem and
   its canonical shifted-Xi hard-edge specialization, previously present only as a paper step.
 
-## Lean target
+## Lean artifact and audit
 
-Create
-`GaloisForLFunctions.RHTower.XiShiftedHardEdgeReciprocalClearingHyperbolicity` containing:
+`GaloisForLFunctions.RHTower.XiShiftedHardEdgeReciprocalClearingHyperbolicity` contains:
 
 1. mapped complex evaluation identity;
-2. exact exceptional/nonexceptional zero classification;
-3. generic root-reality preservation;
-4. shifted-Xi canonical first-face specialization;
-5. direct Lean audit, umbrella wiring, named module build, and axiom/forbidden-token audit.
+2. exact value at the reciprocal-chart pole;
+3. exact exceptional/nonexceptional zero classification;
+4. generic root-reality preservation;
+5. canonical first-face pole exclusion and reciprocal-zero classification;
+6. canonical first-face real-rootedness specialization.
 
+Verification used no project or umbrella build. Exact source was compiled with Lean into
+`/tmp/route_u_reciprocal_clearing_source.olean`, then a scratch audit imported that object and
+checked all six exported theorems. `#print axioms` reports only the standard mathlib axioms listed
+above. Umbrella import is present in `formal/GaloisForLFunctions/RHTower.lean`.

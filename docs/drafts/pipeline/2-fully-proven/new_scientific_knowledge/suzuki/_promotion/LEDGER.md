@@ -6445,3 +6445,75 @@ Remaining for `(12)`: the low-frequency estimate above is stated for a globally 
 symbol, because the Watson asymptotic in `HTGeometry/LowFrequencyAsymptotic.lean` asks for a
 Lipschitz bound on all of `[0,∞)`.  Localising that hypothesis to `[0,A]` lets the same statement
 run with the true unbounded Gamma symbol, after which `(16)` and `(20)` combine into `(12)`.
+
+## GQ — card 6: `(12)` closed, and the localisation that made it unconditional
+
+Three changes turned the two halves into the card's Theorem 2 estimate.
+
+1. **Localised Watson hypotheses.**  `HTGeometry/LowFrequencyAsymptotic.lean` and
+   `HTGeometry/VectorLowFrequencyAsymptotic.lean` now ask for the amplitude data only on `[0,A]`
+   (`hderiv`, `hlip`, `hbound` guarded by `η ≤ A`, and `hcont` on `Ioc 0 A`), matching the region the
+   integral actually sees.  Consequently the channel amplitude needs the symbol bounded only on the
+   compact cutoff window, which the true Gamma symbol satisfies; no global bound is assumed.  The
+   same localisation was carried through `HTGeometry/ConjugateLowFrequencyAsymptotic.lean` and
+   `RHTower/SuzukiGammaChannelAmplitude.lean`.
+2. **Both frequency rays.**  `integral_abs_deriv_div_sq_le` extends the telescoping tail estimate to
+   a symbol monotone in either direction, so `norm_integral_freqPropagator_le` no longer needs an
+   increasing symbol; `norm_integral_halfPower_freqPropagator_neg_le` and its vector form give the
+   `O(1/L)` bound on the negative ray, where the even symbol is decreasing.  The constant is the
+   same `(3ε^{-1/2} + R^{-1/2})/(L − ‖T‖/2)`.
+3. **The assembly.**  `RHTower/SuzukiHalfLogScatteringAsymptotic.lean` proves the factorisation
+   `W_L(η) = e^{iηL}Q(η)`, identifies the two ray integrands with the half-power kernels of the
+   Watson lane, splits each ray at the cutoff, and combines `(16)` with `(20)`:
+
+   `‖∫₀^R η^{-1/2}W_L(η)c₊ dη + ∫₀^R t^{-1/2}W_L(-t)c₋ dt − 2πL^{-1/2}β(c₊,c₋)‖`
+   `  ≤ (‖c₊‖+‖c₋‖)(2A^{-1/2}L^{-1}) + 4((B+‖T‖)/2)(‖c₊‖+‖c₋‖)A^{1/2}/L`
+   `    + (3A^{-1/2} + R^{-1/2})(L − ‖T‖/2)^{-1}(‖c₊‖+‖c₋‖)`,
+
+   `norm_halfLog_scattering_asymptotic`.  Every term on the right is `O(L^{-1})` uniformly in the
+   truncation `R`, so this is exactly `(12)`: the critical `L^{-1/2}` coefficient is the half-log
+   scattering map and the remainder is one full power better.
+
+All new declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+Card 6 status: `(14)`, `(15)`, `(16)`, `(17)`, `(18)`, `(19)`, `(20)`, `(12)` and `(21)` are
+Lean-certified, together with the ODE core of `(8)` and the uniqueness of the channel vectors.  What
+is not yet formal: the distributional half of Theorem 1 (regularity of a tempered solution on each
+half-line and the exclusion of a distribution supported at the origin — mathlib has no structure
+theory for distributions with point support), the `L²` corollary `(13)`, and the Hardy
+boundary-value half of Theorem 3.
+
+## GR — card 6: `(13)`, the square-integrability consequence of a vanishing scattering map
+
+`RHTower/SuzukiHalfLogSquareIntegrable.lean`.
+
+- `norm_halfLog_le_of_scatter_zero`: when `β(c₊,c₋) = 0` the critical term drops out of `(12)` and
+  the truncated transform obeys the pure decay bound
+
+  `‖∫₀^R η^{-1/2}W_L(η)c₊ + ∫₀^R t^{-1/2}W_L(-t)c₋‖ ≤ (‖c₊‖+‖c₋‖)(10A^{-1/2} + 2(B+‖T‖)A^{1/2})/L`
+
+  for every frequency `L ≥ ‖T‖`, uniformly in the truncation `R`.
+- `integrableOn_sq_of_decay`: a trace with `O(1/L)` decay is square integrable on any terminal
+  half-line, by comparison with `∫^∞ L^{-2}`.
+
+Together these are `(13)`: the kernel of the scattering map moves the homogeneous component off the
+critical `L^{-1/2}` corona and into `L²(dL)`.  Both audit to
+`[propext, Classical.choice, Quot.sound]`.
+
+## GS — card 5: variation of constants for the forced Gamma transport
+
+`RHTower/SuzukiForcedGammaVariation.lean`.
+
+- `hasDerivAt_forcedFactor`: the exact integrating factor `η^{1/2}Q(η)^{-1}` applied to a solution of
+  the forced equation `f' = [-1/(2η) + (i/2)(rI - T)]f + b` has derivative
+  `η^{1/2}Q(η)^{-1}b(η)` — the homogeneous part cancels identically, so only the forcing survives.
+- `forced_representation`: integrating that identity gives the variation-of-constants formula
+  `f(η) = η^{-1/2}Q(η)[c + ∫ s^{1/2}Q(s)^{-1}b(s) ds]`, the card's `(9)`.
+- `norm_particular_le`: for a forcing bounded by `M` near the origin the particular solution is
+  `O(η)`: `‖η^{-1/2}Q(η)∫₀^η s^{1/2}Q(s)^{-1}b(s)ds‖ ≤ (2/3)Mη`.  This is `(8)`: the `η^{1/2}` of the
+  integrating factor cancels the half-power weight, so the forcing contributes no half-log branch and
+  none of the critical coefficient `(10)`.
+
+All three audit to `[propext, Classical.choice, Quot.sound]`.  What card 5 still needs is Theorem 2,
+whose content is complex-analytic (holomorphic gluing across the strip `0 < Im z < 1`), not
+real-variable transport.

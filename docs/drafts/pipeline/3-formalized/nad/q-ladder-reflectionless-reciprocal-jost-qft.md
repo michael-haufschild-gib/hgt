@@ -493,12 +493,23 @@ The live HTGeometry tree was checked before this card was written.  It already c
   continuity, and uniqueness;
 - general moment/Hankel infrastructure used by the higher-spin completion card.
 
-The new theorem depends essentially on the analytic infinite-soliton inverse-scattering theorem,
-meromorphic product transmission, the external difference-Galois dichotomy, and Lechner's
-analytic QFT reconstruction.  Repackaging `(7)` or `(13)` as another finite algebraic Lean wrapper
-would duplicate the existing corpus and leave every substantive implication external.  No Lean
-edit or build is justified at this stage.  A future unconditional formalization should begin only
-after there is a reusable analytic scattering interface expressing `(3)`--`(5)`.
+`HTGeometry/QLadderTransmission.lean` now supplies that reusable analytic interface for `(5)`--`(7)`
+unconditionally.  It constructs the transmission germ `F_q(z) = prod_(n>=0) (1+q^n z)/(1-q^n z)` as a
+`tprod`, proves **normal convergence on the unit disc** (`multipliable_qLadderFactor`), the **exact
+one-shell `q`-difference equation `(7)`** (`qLadderTransmission_one_shell`), reflectionless
+**unimodularity `|T(k)|=1` on the imaginary axis** (`norm_qLadderTransmission_eq_one`), the
+identification of the momentum product `(5)` with the crossing-coordinate germ
+(`qLadderFactor_momentum`), and the summability `(2)` of the geometric wave-number ladder.
+`HTGeometry/OpenFamilyCDDShell.lean` carries the finite-union multi-ladder shell with multiplicities
+and its own convergence theorem.
+
+Claim B's algebraic chain is already in the corpus: `hypertranscendentalOver_deriv_div_self_iff`
+(`SourceLogarithmicBoundary.lean`) is exactly `(10)`--`(11)`, and
+`hypertranscendentalOver_mul_differentialAlgebraic_iff` gives `(12)`.
+
+What stays external is the Gesztesy--Karwowski--Zhao infinite-soliton theorem behind `(3)`--`(4)`,
+the Adamczewski--Dreyfus--Hardouin dichotomy behind `(8)`, and Lechner's QFT reconstruction in
+Claim D -- all cited published theorems.
 
 ## Primary literature
 

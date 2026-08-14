@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.FieldOneFiniteStageClassInvariantL2
 import GaloisForLFunctions.RHTower.FieldOnePositiveUnitsLogHaar
 import GaloisForLFunctions.RHTower.EvenL2LogUnitary
+import GaloisForLFunctions.RHTower.HardyTitchmarshEulerConcrete
 import GaloisForLFunctions.HTGeometry.WeightedDensityL2
 
 /-!
@@ -77,6 +78,134 @@ def fieldOneEvenToPositiveUnitsHaarUnitary :
   RHTower.logEvenUnitary.trans
     (fieldOnePositiveUnitsLogPullbackUnitary.symm.trans
       fieldOnePositiveUnitsHaarToLogUnitary.symm)
+
+/-! ## Finite Euler factor in the source-normalized archimedean model -/
+
+/-- Rational prime below a finite place of `ℚ`. -/
+def fieldOneFinitePlacePrime (v : HeightOneSpectrum ℤ) : ℕ :=
+  ((Rat.HeightOneSpectrum.primesEquiv v : Nat.Primes) : ℕ)
+
+theorem fieldOneFinitePlacePrime_prime (v : HeightOneSpectrum ℤ) :
+    Nat.Prime (fieldOneFinitePlacePrime v) := by
+  exact (Rat.HeightOneSpectrum.primesEquiv v).property
+
+theorem fieldOneFinitePlacePrime_real_gt_one (v : HeightOneSpectrum ℤ) :
+    1 < (fieldOneFinitePlacePrime v : ℝ) := by
+  exact_mod_cast (fieldOneFinitePlacePrime_prime v).one_lt
+
+/-- The factor `1-p⁻¹ ²⁻ⁱˢ` attached to one place, acting on even
+archimedean `L²`.  `evenPrimeLocalFactor` is its exact dilation operator. -/
+def fieldOneFiniteStageThetaEulerTerm (S : Finset (HeightOneSpectrum ℤ))
+    (v : {v : HeightOneSpectrum ℤ // v ∈ S}) :
+    RHTower.evenSubspace →L[ℂ] RHTower.evenSubspace :=
+  RHTower.evenPrimeLocalFactor (fieldOneFinitePlacePrime v.1 : ℝ)
+    (fieldOneFinitePlacePrime_real_gt_one v.1)
+
+/-- Finite Euler product `∏_{v∈S}(1-p_v⁻¹ ²⁻ⁱˢ)` as a concrete bounded
+operator, without assuming any spectral nonvanishing hypothesis. -/
+def fieldOneFiniteStageThetaEulerOperator
+    (S : Finset (HeightOneSpectrum ℤ)) :
+    RHTower.evenSubspace →L[ℂ] RHTower.evenSubspace :=
+  (S.attach.toList.map (fieldOneFiniteStageThetaEulerTerm S)).prod
+
+theorem fieldOneFiniteStageThetaEulerTerm_isUnit
+    (S : Finset (HeightOneSpectrum ℤ))
+    (v : {v : HeightOneSpectrum ℤ // v ∈ S}) :
+    IsUnit (fieldOneFiniteStageThetaEulerTerm S v) := by
+  unfold fieldOneFiniteStageThetaEulerTerm
+  apply RHTower.evenPrimeLocalFactor_isUnit
+
+theorem fieldOneFiniteStageThetaEulerOperator_isUnit
+    (S : Finset (HeightOneSpectrum ℤ)) :
+    IsUnit (fieldOneFiniteStageThetaEulerOperator S) := by
+  unfold fieldOneFiniteStageThetaEulerOperator
+  apply List.prod_isUnit
+  intro T hT
+  rw [List.mem_map] at hT
+  obtain ⟨v, hv, rfl⟩ := hT
+  exact fieldOneFiniteStageThetaEulerTerm_isUnit S v
+
+/-- Explicit bounded inverse of the finite Euler product. -/
+def fieldOneFiniteStageThetaEulerResolvent
+    (S : Finset (HeightOneSpectrum ℤ)) :
+    RHTower.evenSubspace →L[ℂ] RHTower.evenSubspace :=
+  ↑((fieldOneFiniteStageThetaEulerOperator_isUnit S).unit⁻¹)
+
+theorem fieldOneFiniteStageThetaEulerOperator_mul_resolvent
+    (S : Finset (HeightOneSpectrum ℤ)) :
+    fieldOneFiniteStageThetaEulerOperator S *
+        fieldOneFiniteStageThetaEulerResolvent S = 1 := by
+  let u := (fieldOneFiniteStageThetaEulerOperator_isUnit S).unit
+  change (u : RHTower.evenSubspace →L[ℂ] RHTower.evenSubspace) *
+      (↑(u⁻¹) : RHTower.evenSubspace →L[ℂ] RHTower.evenSubspace) = 1
+  exact Units.mul_inv u
+
+theorem fieldOneFiniteStageThetaEulerResolvent_mul_operator
+    (S : Finset (HeightOneSpectrum ℤ)) :
+    fieldOneFiniteStageThetaEulerResolvent S *
+        fieldOneFiniteStageThetaEulerOperator S = 1 := by
+  let u := (fieldOneFiniteStageThetaEulerOperator_isUnit S).unit
+  change (↑(u⁻¹) : RHTower.evenSubspace →L[ℂ] RHTower.evenSubspace) *
+      (u : RHTower.evenSubspace →L[ℂ] RHTower.evenSubspace) = 1
+  exact Units.inv_mul u
+
+/-- Unconditional bounded automorphism realizing the finite Euler multiplier
+in equation (57) of Connes--Consani--Moscovici. -/
+def fieldOneFiniteStageThetaEulerEquiv
+    (S : Finset (HeightOneSpectrum ℤ)) :
+    RHTower.evenSubspace ≃L[ℂ] RHTower.evenSubspace :=
+  ContinuousLinearEquiv.mk
+    { toFun := fieldOneFiniteStageThetaEulerOperator S
+      invFun := fieldOneFiniteStageThetaEulerResolvent S
+      left_inv := by
+        intro f
+        have h := congrArg
+          (fun T : RHTower.evenSubspace →L[ℂ] RHTower.evenSubspace => T f)
+          (fieldOneFiniteStageThetaEulerResolvent_mul_operator S)
+        simpa only [mul_apply_eq_comp, one_apply_eq_self] using h
+      right_inv := by
+        intro f
+        have h := congrArg
+          (fun T : RHTower.evenSubspace →L[ℂ] RHTower.evenSubspace => T f)
+          (fieldOneFiniteStageThetaEulerOperator_mul_resolvent S)
+        simpa only [mul_apply_eq_comp, one_apply_eq_self] using h
+      map_add' := (fieldOneFiniteStageThetaEulerOperator S).map_add
+      map_smul' := (fieldOneFiniteStageThetaEulerOperator S).map_smul }
+    (fieldOneFiniteStageThetaEulerOperator S).continuous
+    (fieldOneFiniteStageThetaEulerResolvent S).continuous
+
+/-- Regard a Hilbert-space unitary as a bounded linear equivalence. -/
+def fieldOneUnitaryToContinuousLinearEquiv
+    {E F : Type*} [SeminormedAddCommGroup E] [SeminormedAddCommGroup F]
+    [NormedSpace ℂ E] [NormedSpace ℂ F] (e : E ≃ₗᵢ[ℂ] F) : E ≃L[ℂ] F :=
+  ContinuousLinearEquiv.mk e.toLinearEquiv e.continuous e.symm.continuous
+
+/-- Candidate whole-`L²` theta transport obtained from the exact finite Euler
+operator, the source-normalized `w_∞`, and the literal finite-stage `w_S`.
+This is deliberately called a transport until its action on the Bruhat core is
+identified with the literal tensor `σ_S ⊗ f`. -/
+def fieldOneFiniteStageThetaTransportEquiv
+    (S : Finset (HeightOneSpectrum ℤ)) :
+    RHTower.evenSubspace ≃L[ℂ]
+      fieldOneFiniteStageClassModuleOneInvariantSubmodule S :=
+  (fieldOneFiniteStageThetaEulerEquiv S).trans
+    ((fieldOneUnitaryToContinuousLinearEquiv
+      fieldOneEvenToPositiveUnitsHaarUnitary).trans
+      (fieldOneUnitaryToContinuousLinearEquiv
+        (fieldOneFiniteStageSourceUnitary S).symm))
+
+/-- Exact equation-(57) transport identity.  The theorem is unconditional;
+the remaining literal-core theorem must show that this transport is CCM's
+`σ_S ⊗ f` map rather than merely an isomorphic model. -/
+theorem fieldOneFiniteStageSourceUnitary_thetaTransport
+    (S : Finset (HeightOneSpectrum ℤ)) (f : RHTower.evenSubspace) :
+    fieldOneFiniteStageSourceUnitary S
+        (fieldOneFiniteStageThetaTransportEquiv S f) =
+      fieldOneEvenToPositiveUnitsHaarUnitary
+        (fieldOneFiniteStageThetaEulerOperator S f) := by
+  simp [fieldOneFiniteStageThetaTransportEquiv,
+    fieldOneUnitaryToContinuousLinearEquiv,
+    fieldOneFiniteStageThetaEulerEquiv]
 
 end
 
