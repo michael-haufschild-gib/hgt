@@ -1,14 +1,14 @@
 # Local-circuit heap capacity law
 
 - **ID:** `local-circuit-heap-capacity-law`
-- **Stage:** 2 -- fully proved on paper
+- **Stage:** 3-formalized
 - **Type:** theorem / circuit-capacity correction / Brown-front advance
 - **Parents:** `first-entrance-gate-renewal-prefix-law.md`,
   `capacitary-observer-sector-excision-law.md`,
   `fixed-shell-angular-dephasing-static-local-plateau-law.md`
-- **Status:** `[PAPER-PROVED] [PROVED HERE] [FRONTIER ADVANCE]
+- **Status:** `[LEAN-PROVED] [PROVED HERE] [FRONTIER ADVANCE]
   [CLASSICAL TRACE-MONOID ENGINE] [APPLICATION NOVELTY UNVERIFIED]
-  [THEOREM A LEAN-FORMALIZED] [THEOREM B PAPER-ONLY]`
+  [THEOREMS A AND B LEAN-FORMALIZED]`
 - **Date:** 2026-08-13
 
 ## Public sentence
@@ -436,8 +436,13 @@ first-cut target.
    Absence in search is not priority certification.
 8. **Formal boundary is explicit.**  Theorem A, including dependent-pair completeness, exact
    maximum-degree count, and cumulative-depth bound, is formalized in
-   `formal/GaloisForLFunctions/RHTower/LocalCircuitTraceCapacity.lean`.  The heap Green reporter of
-   Theorem B remains paper-proved only and cannot yet be cited as formal support.
+   `formal/GaloisForLFunctions/RHTower/LocalCircuitTraceCapacity.lean`.  Theorem B, the
+   one-dimensional degree bound `(27)`, the finite heap incidence `(34)--(35)`, the exact capacity
+   form of `(30)`, and the entropy split `(11)`/`(13)` with its `o(D)` profile limit `(12)` are
+   formalized in `formal/GaloisForLFunctions/RHTower/LocalCircuitHeapGreenReporter.lean`.  The
+   Choi/thermofield phase cap `(29)` and the fixed-shell dephasing transfer used in `(33)` are
+   theorems of sibling cards and are consumed here only as the caller-supplied target-uniform bound
+   `B` of `(18)`.
 
 ## 9. External boundary
 
@@ -459,5 +464,28 @@ first-cut target.
 - [x] linear-in-Hilbert-dimension completed-phase plateau corollary
 - [x] hostile and external collision audit
 - [x] Lean formalization of Theorem A and its cumulative-depth corollary
-- [ ] Lean formalization of Theorem B heap Green reporter
-- [ ] quenched physical-time heap-incidence estimate closing first cut
+- [x] Lean formalization of Theorem B heap Green reporter
+- [ ] quenched physical-time heap-incidence estimate closing first cut *(open research target, not a
+  theorem of this card)*
+
+## Lean certificate
+
+Module: `GaloisForLFunctions.RHTower.LocalCircuitHeapGreenReporter`.
+
+| Card equation | Lean declaration |
+|---|---|
+| `(15)` reporter | `heapGreenReporter`, `heapAccessible` |
+| `(16)`/`(22)` | `tracePartitionSum_le`, `tsum_ofReal_pow_traceLength_le` |
+| `(17)` | `measure_heapAccessible_le_lintegral` |
+| `(23)` | `indicator_heapAccessible_le_reporter` |
+| `(24)` | `lintegral_heapGreenReporter`, `lintegral_heapGreenReporter_le` |
+| `(18)`--`(19)` | `measure_heapAccessible_le_partition`, `measure_traceHeapAccessible_le` |
+| `(20)`--`(21)` | `measure_traceHeapAccessible_le_optimal` |
+| `(26)` | `card_chainLetter` |
+| `(27)` | `chain_incidentEdgeCount_le` |
+| `(30)` exact form | `measure_traceHeapAccessible_le_cumulativeTraceCount`, `chain_measure_traceHeapAccessible_le` |
+| `(11)`/`(13)` | `log_cumulativeTraceCount_le`, `choose_le_exp_mul_div_pow`, `choose_profile_le_choose_alphabet` |
+| `(12)` `o(D)` profile | `tendsto_capacityProfile_div_pow_two` |
+| `(34)`--`(35)` | `heapIncidence`, `measure_heapAccessible_le_heapIncidence` |
+
+Every listed declaration reports exactly `propext`, `Classical.choice`, `Quot.sound`.

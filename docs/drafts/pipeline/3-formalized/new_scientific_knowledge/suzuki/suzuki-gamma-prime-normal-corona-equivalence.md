@@ -1,7 +1,7 @@
 # Gamma transport and prime-normal flow have the same physical corona
 
 - **ID:** `suzuki-gamma-prime-normal-corona-equivalence`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** EXACT CORONA SEQUENCE / PRIME--GAMMA COMPARISON
 - **Scientific status:** `[PROVED HERE] [NEW SCIENTIFIC KNOWLEDGE]`
   `[NOVELTY UNVERIFIED] [NOT RH]`

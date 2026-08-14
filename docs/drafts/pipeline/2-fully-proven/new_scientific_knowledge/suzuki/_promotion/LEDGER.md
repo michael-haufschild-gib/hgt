@@ -6794,3 +6794,29 @@ All declarations audit to `[propext, Classical.choice, Quot.sound]`.
 
 Card 6 now needs only its Theorem 3 — the upper-strip gluing `(23)`–`(25)` — and card 7 needs
 nothing further from the half-line lane.
+
+## HC — `suzuki-gamma-prime-normal-corona-equivalence` promoted
+
+Ten cards remain in stage 2.
+
+The card's only open input was the homogeneous classification, closed in sections HA and HB.  Its
+four claims were already Lean:
+
+```text
+halfLogScatter_surjective              claim 1, τ is onto
+halfLog_trace_zero_iff_integrableOn_sq claim 2, ker τ = 𝒢_T ∩ N
+                                       (hard direction: not_integrableOn_sq_of_halfLog_trace)
+norm_primeNormalSection_sub_halfLog_le (17), the cross-section is L^{-1/2}β + O(L^{-3/2})
+integrableOn_sq_sub_of_halfLog         claim 4, F - P_T(τF) ∈ N
+norm_gammaProfile_sub_halfLog_le       (3), the scattering asymptotic of the carrier
+```
+
+Claim 3 is the packaging of claims 1 and 2.  The certificate is
+`3-formalized/new_scientific_knowledge/suzuki/suzuki-gamma-prime-normal-corona-equivalence-formalized.md`.
+
+Not formalised, and recorded there as such: section 4's binomial expansion `(19)`
+`P_T(β)(L) = ∑_k [C(2k,k)/8^k]L^{-k-1/2}T^kβ`.  It is the classical binomial series of the
+explicitly defined cross-section, commentary on what the corona class contains, and not
+load-bearing for claims 1–4.  Formalising it needs `Ring.choose (-1/2) n = (-1)^n C(2n,n)/4^n`
+(mathlib has the binomial series `Real.one_add_rpow_hasFPowerSeriesOnBall_zero`) together with
+continuity of the functional calculus in the symbol, and is a clean optional strengthening.

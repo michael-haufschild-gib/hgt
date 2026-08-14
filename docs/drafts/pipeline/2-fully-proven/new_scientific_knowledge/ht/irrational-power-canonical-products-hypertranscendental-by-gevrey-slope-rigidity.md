@@ -1493,3 +1493,71 @@ differentiation-under-the-integral machinery applies verbatim at the genus ladde
 
 Every irrational `s > 0` has `1/s ∉ ℤ`, so the Barnes layer of the card is complete for the whole
 irrational family.  Only the nonlinear exact-order theorem remains.
+
+## Lean progress — the Gevrey filtration on formal series, and the exact statement of what is left
+
+The card's §3 machinery works with coefficient *sequences*; §5 needs the same notion for formal
+*series*, together with the ambient algebra in which a differential polynomial is evaluated.  Both
+are now built.
+
+`GaloisForLFunctions/HTGeometry/GevreyFormalSeries.lean` (wired, axiom-clean):
+
+    exists_pow_le_const_mul_pow        every polynomial growth is beaten by every geometric one
+    exists_succ_pow_le_const_mul_pow
+    IsGevreySeries r F                 `‖aₙ‖ ≤ C Aⁿ (n!)^r`
+    IsGevreySeries.mono                the filtration increases in `r`
+    isGevreySeries_C
+    IsGevreySeries.add
+    IsGevreySeries.mul                 **Cauchy products stay in the class** — `i!·j! ∣ (i+j)!`
+                                       collapses the two factorials and the antidiagonal
+                                       contributes only the polynomial factor `n+1`
+    IsGevreySeries.derivativeFun       **and so do formal derivatives**
+    isGevreySeries_iff_isGevreyOfOrder the bridge to the coefficient-sequence notion of §3
+    IsExactGevreySeriesOrder
+    barnesTailSeries s                 **`R̂_s(t) = ∑_{k ≥ 1} (-1)^k ζ(-s k) t^k` as a formal
+                                       series**
+    norm_coeff_barnesTailSeries
+    barnesTailSeries_isExactGevreySeriesOrder :
+      **for every irrational `s > 0` the formal Barnes tail has exact Gevrey order `s`**
+
+`GaloisForLFunctions/HTGeometry/FormalAnalyticADE.lean` (wired, axiom-clean):
+
+    isGevreySeries_zero, isGevreySeries_one, IsGevreySeries.pow
+    isGevreySeries_finsetSum, isGevreySeries_finsetProd
+    IsGevreySeries.derivative, IsGevreySeries.iterate_derivative
+    IsAnalyticDifferentialPolynomial   every coefficient is a convergent (Gevrey-`0`) series
+    formalJetVector, IsFormalAnalyticADESolution
+    isGevreySeries_aeval_of_analytic :
+      **a differential polynomial with analytic coefficients does not leave the Gevrey class of its
+      argument** — the elementary half of Maillet's circle of ideas
+    SibuyaRamisRationalExactOrder      the exact-order theorem, as an explicit interface
+    not_isFormalAnalyticADESolution_barnesTailSeries :
+      **granted that interface, the irrational-power Barnes tail solves no analytic algebraic
+      differential equation**
+
+So the card's chain is now a single named implication:
+
+```text
+W_s DA  ⟹  R̂_s is a formal solution of an analytic ADE      (formal: §4 + (14)⟹(15))
+R̂_s has exact Gevrey order s, irrational                     (formal: §3 + Barnes (4)–(6))
+exact Gevrey order of such a solution is rational            (Sibuya--Ramis — OPEN)
+```
+
+### The Sibuya--Ramis layer, decomposed
+
+What a proof needs, in order:
+
+1. the Gevrey filtration as a differential algebra — **done**;
+2. the linearized operator `L = ∑_j (∂P/∂y_j)(jets of F) ∂^j` along the formal solution, with
+   coefficients in `ℂ[[t]]`;
+3. the Newton polygon of such an operator: the shift polynomials
+   `Φ_μ(N) = ∑_j (coeff_{μ+j} A_j)·[N]_j`, whose `(deg Φ_μ, μ)` are lattice points, so every slope
+   ratio is rational — the arithmetic half is already formal
+   (`NewtonSlopeRationality.not_lattice_slope_of_irrational`);
+4. Maillet--Malgrange: the formal solution is Gevrey of order at most the largest slope ratio;
+5. the sharp half: the exact order is one of the slope ratios, not merely below the largest.
+
+Steps 4 and 5 are the mathlib-scale content.  Step 5 is the one the card actually contradicts, and
+the reason step 4 alone does not suffice is recorded in the card's hostile audit: a series of exact
+irrational order belongs to every larger rational Gevrey class, so an upper bound is compatible with
+an irrational exact order.

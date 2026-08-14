@@ -2,7 +2,7 @@
 
 - **ID:** `local-circuit-trace-capacity-law`
 - **Stage:** 3 -- formalized in Lean 4
-- **Parent:** `../2-fully-proven/local-circuit-heap-capacity-law.md`
+- **Parent:** `../3-formalized/local-circuit-heap-capacity-law.md`
 - **Lean:** `formal/GaloisForLFunctions/RHTower/LocalCircuitTraceCapacity.lean`
 - **Status:** `[LEAN-PROVED] [UNCONDITIONAL] [NO SORRY] [WIRED]`
 - **Date:** 2026-08-14

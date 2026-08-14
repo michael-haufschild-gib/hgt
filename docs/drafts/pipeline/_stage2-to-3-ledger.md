@@ -63,6 +63,7 @@ Promotion recipe:
 | `return-excised-cross-recurrence-capacity-law` | none (verified only) | `HTGeometry/StaticShortcutCrossRecurrenceCapacityLaw` |
 | `selector-partition-observer-channel-recurrence-law` | none (verified only) | `HTGeometry/StaticShortcutSelectorPartitionLaw` |
 | `static-circuit-two-memory-orthogonality-law` | Bochner ensemble collision `(14)`/`(27)`; vectorized conjugation channel and replica tensor powers; one-gate moment channel with its depth-`s` word expansion `(16)`--`(19)`; static diagonal flow, completed static projection, universal sector and the concrete three-sector collision `(20)`; zero-temperature reconstruction `(28)`--`(30)` | `HTGeometry/StaticCircuitEnsembleZeroTemperature`, `PureConjugationChannel`, `StaticCircuitReplicaWordDictionary`, `StaticCircuitReplicaSectorRealization` (all new) |
+| `local-circuit-heap-capacity-law` | heap Green reporter and its accessibility bound, trace partition sum with the negative-binomial value, optimized weight, finite heap incidence, one-dimensional gate alphabet with its length-independent degree bound, capacity entropy split and `o(D)` profile limit | `RHTower/LocalCircuitHeapGreenReporter` (new) |
 
 ## New reusable infrastructure built during the sweep
 

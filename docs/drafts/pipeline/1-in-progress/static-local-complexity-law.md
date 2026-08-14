@@ -6104,7 +6104,7 @@ receive a new title and an independent significance audit.
   after return/carrier excision and removes one spurious `log n` from its entropy budget.  Trace
   monoids and their use in circuit enumeration are classical; priority is assigned, provisionally,
   only to the heap Green/static-capacity composition.  Paper proof and hostile audit:
-  `../2-fully-proven/local-circuit-heap-capacity-law.md`.  The exact trace-classification theorem,
+  `../3-formalized/local-circuit-heap-capacity-law.md`.  The exact trace-classification theorem,
   maximum-degree bound, and cumulative-depth bound are now unconditional in Lean:
   `../3-formalized/local-circuit-trace-capacity-law.md`.  The Green reporter remains paper-only.
 - 2026-08-13 -- Replaced sequential first-hit/Kraft accounting by concurrent causal accessibility.

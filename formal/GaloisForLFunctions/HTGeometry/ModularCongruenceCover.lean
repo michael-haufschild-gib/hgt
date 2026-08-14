@@ -659,6 +659,84 @@ noncomputable def congruenceModularCover (hn : 3 ≤ n) :
     · show (QuotientGroup.mk (h * g⁻¹ * g) : SL(2, ℤ) ⧸ gammaPM n) = QuotientGroup.mk h
       rw [mul_assoc, inv_mul_cancel, mul_one]
 
+/-- The `n` cosets of `Γ(n)·{±1}` represented by powers of `T` are distinct, so the index is at
+least `n`. -/
+theorem index_gammaPM_ge (hn : 3 ≤ n) : n ≤ (gammaPM n).index := by
+  classical
+  haveI := gammaPM_finiteIndex (n := n)
+  have hinj : Function.Injective
+      (fun k : Fin n => (QuotientGroup.mk (ModularGroup.T ^ ((k : ℕ) : ℤ))
+        : SL(2, ℤ) ⧸ gammaPM n)) := by
+    intro j k hjk
+    simp only at hjk
+    rw [QuotientGroup.eq] at hjk
+    have hpow : (ModularGroup.T ^ ((j : ℕ) : ℤ))⁻¹ * ModularGroup.T ^ ((k : ℕ) : ℤ)
+        = ModularGroup.T ^ (((k : ℕ) : ℤ) - ((j : ℕ) : ℤ)) := by
+      rw [zpow_sub, ← zpow_neg, ← zpow_add₀ (by exact one_ne_zero)]
+      · ring_nf
+      all_goals skip
+    rw [hpow] at hjk
+    set m : ℤ := ((k : ℕ) : ℤ) - ((j : ℕ) : ℤ) with hm
+    have hdvd : (n : ℤ) ∣ m := by
+      rcases mem_gammaPM.mp hjk with hA | hA
+      · obtain ⟨-, h01, -, -⟩ := Gamma_mem.mp hA
+        rw [ModularGroup.coe_T_zpow] at h01
+        simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons] at h01
+        exact (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mp h01
+      · exfalso
+        obtain ⟨h00, -, -, -⟩ := Gamma_mem.mp hA
+        have hentry : ((slNegOne * ModularGroup.T ^ m : SL(2, ℤ))
+            : Matrix (Fin 2) (Fin 2) ℤ) 0 0 = -1 := by
+          rw [Matrix.SpecialLinearGroup.coe_mul, slNegOne_coe, ModularGroup.coe_T_zpow]
+          norm_num [Matrix.mul_fin_two]
+        rw [hentry] at h00
+        have h2 : ((2 : ℤ) : ZMod n) = 0 := by
+          have := h00
+          push_cast at this ⊢
+          linear_combination -this
+        have hdvd2 : (n : ℤ) ∣ 2 := (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mp (by
+          exact_mod_cast h2)
+        have := Int.le_of_dvd (by norm_num) hdvd2
+        have hn' : (3 : ℤ) ≤ (n : ℤ) := by exact_mod_cast hn
+        omega
+    obtain ⟨c, hc⟩ := hdvd
+    have hb1 : ((j : ℕ) : ℤ) < n := by exact_mod_cast j.isLt
+    have hb2 : ((k : ℕ) : ℤ) < n := by exact_mod_cast k.isLt
+    have hb3 : (0 : ℤ) ≤ ((j : ℕ) : ℤ) := by positivity
+    have hb4 : (0 : ℤ) ≤ ((k : ℕ) : ℤ) := by positivity
+    have hjk' : ((j : ℕ) : ℤ) = ((k : ℕ) : ℤ) := by
+      rcases lt_trichotomy c 0 with hc' | hc' | hc'
+      · nlinarith [hc, hm]
+      · rw [hc', mul_zero] at hc
+        omega
+      · nlinarith [hc, hm]
+    exact Fin.ext (by exact_mod_cast hjk')
+  have hcard := Fintype.card_le_of_injective _ hinj
+  rw [Fintype.card_fin] at hcard
+  rw [Subgroup.index, Nat.card_eq_fintype_card]
+  exact hcard
+
+/-- **The modular curves `X(n)`.**  For `n ≥ 3` the principal congruence cover of the modular
+orbifold is connected and unramified, and its degree — the index of `Γ(n)·{±1}` in `SL(2,ℤ)`,
+i.e. the index of the torsion-free group `Γ(n)` in `PSL(2,ℤ)` — obeys the exact modular storage
+law `D = 6(2g + s − 2)`. -/
+theorem congruence_modular_capacity (hn : 3 ≤ n) :
+    ∃ g : ℤ, ((gammaPM n).index : ℤ)
+      = 6 * (2 * g + ((congruenceModularCover hn).cuspCount : ℤ) - 2) := by
+  obtain ⟨g, -, hg⟩ := (congruenceModularCover hn).modular_capacity_exact
+  refine ⟨g, ?_⟩
+  rw [← hg]
+  congr 1
+  rw [Subgroup.index, Nat.card_eq_fintype_card]
+  rfl
+
+/-- The principal congruence covers have unbounded degree. -/
+theorem exists_congruence_index_gt (B : ℕ) : ∃ n : ℕ, 3 ≤ n ∧ B < (gammaPM n).index := by
+  refine ⟨max 3 (B + 1), le_max_left _ _, ?_⟩
+  haveI : NeZero (max 3 (B + 1)) := ⟨by omega⟩
+  have := index_gammaPM_ge (n := max 3 (B + 1)) (le_max_left _ _)
+  omega
+
 end Cover
 
 end GaloisForLFunctions.HTGeometry

@@ -238,6 +238,169 @@ theorem tendsto_primeRpowLogSqSumLE {a : ℝ} (ha0 : 0 < a) :
   field_simp
   ring
 
+/-! ## The physical saddle variance -/
+
+/-- The logarithmic variance `Var_{σ,Y} = 2∑_{p ≤ Y} q_p(1 - q_p)(log p)²` of the positive squared
+Euler law. -/
+def saddleLogVariance (σ Y : ℝ) : ℝ :=
+  2 * ∑ p ∈ Nat.primesLE ⌊Y⌋₊,
+    ((p : ℝ) ^ (-σ) / (1 + (p : ℝ) ^ (-σ))) * (1 - (p : ℝ) ^ (-σ) / (1 + (p : ℝ) ^ (-σ)))
+      * (Real.log p) ^ 2
+
+/-- The second-order deficit of the variance. -/
+def varianceTiltDeficit (σ Y : ℝ) : ℝ :=
+  ∑ p ∈ Nat.primesLE ⌊Y⌋₊,
+    (p : ℝ) ^ (-σ) * (2 * (p : ℝ) ^ (-σ) + (p : ℝ) ^ (-2 * σ)) * (Real.log p) ^ 2
+      / (1 + (p : ℝ) ^ (-σ)) ^ 2
+
+theorem saddleLogVariance_eq (σ Y : ℝ) :
+    saddleLogVariance σ Y = 2 * (primeRpowLogSqSumLE (1 - σ) Y - varianceTiltDeficit σ Y) := by
+  rw [saddleLogVariance, primeRpowLogSqSumLE, varianceTiltDeficit, ← Finset.sum_sub_distrib]
+  congr 1
+  refine Finset.sum_congr rfl fun p hp => ?_
+  have hprime := Nat.prime_of_mem_primesLE hp
+  have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hprime.pos
+  have hu : (0 : ℝ) < (p : ℝ) ^ (-σ) := Real.rpow_pos_of_pos hp0 _
+  have hdenom : (1 : ℝ) + (p : ℝ) ^ (-σ) ≠ 0 := by linarith
+  have hsq : (p : ℝ) ^ (-2 * σ) = (p : ℝ) ^ (-σ) * (p : ℝ) ^ (-σ) := by
+    rw [← Real.rpow_add hp0]
+    congr 1
+    ring
+  have hexp : (p : ℝ) ^ (1 - σ - 1) = (p : ℝ) ^ (-σ) := by
+    congr 1
+    ring
+  rw [hexp, hsq]
+  field_simp
+  ring
+
+theorem varianceTiltDeficit_nonneg (σ Y : ℝ) : 0 ≤ varianceTiltDeficit σ Y := by
+  refine Finset.sum_nonneg fun p hp => ?_
+  have hprime := Nat.prime_of_mem_primesLE hp
+  have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hprime.pos
+  have hu : (0 : ℝ) < (p : ℝ) ^ (-σ) := Real.rpow_pos_of_pos hp0 _
+  have hu2 : (0 : ℝ) < (p : ℝ) ^ (-2 * σ) := Real.rpow_pos_of_pos hp0 _
+  positivity
+
+theorem varianceTiltDeficit_le {σ Y : ℝ} (hσ : 1 / 2 ≤ σ) (hY : 2 ≤ Y) :
+    varianceTiltDeficit σ Y ≤ 3 * Real.log Y * (Real.log ⌊Y⌋₊ + Real.log 4) := by
+  have hY0 : (0 : ℝ) < Y := by linarith
+  have hfloor : 2 ≤ ⌊Y⌋₊ := Nat.le_floor (by exact_mod_cast hY)
+  have hlogY : (0 : ℝ) ≤ Real.log Y := Real.log_nonneg (by linarith)
+  have hstep : varianceTiltDeficit σ Y
+      ≤ ∑ p ∈ Nat.primesLE ⌊Y⌋₊, 3 * Real.log Y * (Real.log p / (p : ℝ)) := by
+    refine Finset.sum_le_sum fun p hp => ?_
+    have hprime := Nat.prime_of_mem_primesLE hp
+    have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hprime.pos
+    have hp1 : (1 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hprime.one_lt.le
+    have hu : (0 : ℝ) < (p : ℝ) ^ (-σ) := Real.rpow_pos_of_pos hp0 _
+    have hlogp : (0 : ℝ) ≤ Real.log p := Real.log_nonneg hp1
+    have hple : (p : ℝ) ≤ Y := by
+      have hmem : p ≤ ⌊Y⌋₊ := Nat.le_of_lt_succ (by
+        rw [Nat.primesLE, Nat.primesBelow, Finset.mem_filter, Finset.mem_range] at hp
+        exact hp.1)
+      have : (p : ℝ) ≤ ((⌊Y⌋₊ : ℕ) : ℝ) := by exact_mod_cast hmem
+      exact le_trans this (Nat.floor_le hY0.le)
+    have hlogple : Real.log p ≤ Real.log Y := Real.log_le_log hp0 hple
+    have hdenpos : (0 : ℝ) < (1 + (p : ℝ) ^ (-σ)) ^ 2 := by positivity
+    have hsq : (p : ℝ) ^ (-2 * σ) = (p : ℝ) ^ (-σ) * (p : ℝ) ^ (-σ) := by
+      rw [← Real.rpow_add hp0]
+      congr 1
+      ring
+    -- the local factor is at most `3 u²`
+    have hlocal : (p : ℝ) ^ (-σ) * (2 * (p : ℝ) ^ (-σ) + (p : ℝ) ^ (-2 * σ))
+        / (1 + (p : ℝ) ^ (-σ)) ^ 2 ≤ 3 * ((p : ℝ) ^ (-σ) * (p : ℝ) ^ (-σ)) := by
+      rw [div_le_iff₀ hdenpos, hsq]
+      nlinarith [hu, sq_nonneg ((p : ℝ) ^ (-σ))]
+    -- `u² ≤ 1/p`
+    have husq : (p : ℝ) ^ (-σ) * (p : ℝ) ^ (-σ) ≤ 1 / (p : ℝ) := by
+      have hadd : (p : ℝ) ^ (-σ) * (p : ℝ) ^ (-σ) = (p : ℝ) ^ (-2 * σ) := hsq.symm
+      have hmono : (p : ℝ) ^ (-2 * σ) ≤ (p : ℝ) ^ (-1 : ℝ) :=
+        Real.rpow_le_rpow_of_exponent_le hp1 (by linarith)
+      have hneg : (p : ℝ) ^ (-1 : ℝ) = 1 / (p : ℝ) := by
+        rw [Real.rpow_neg hp0.le, Real.rpow_one, one_div]
+      rw [hneg] at hmono
+      rw [hadd]
+      exact hmono
+    have hval : (p : ℝ) ^ (-σ) * (2 * (p : ℝ) ^ (-σ) + (p : ℝ) ^ (-2 * σ)) * (Real.log p) ^ 2
+        / (1 + (p : ℝ) ^ (-σ)) ^ 2
+        = ((p : ℝ) ^ (-σ) * (2 * (p : ℝ) ^ (-σ) + (p : ℝ) ^ (-2 * σ))
+            / (1 + (p : ℝ) ^ (-σ)) ^ 2) * (Real.log p) ^ 2 := by
+      field_simp
+    rw [hval]
+    have hsqlog : (0 : ℝ) ≤ (Real.log p) ^ 2 := sq_nonneg _
+    calc ((p : ℝ) ^ (-σ) * (2 * (p : ℝ) ^ (-σ) + (p : ℝ) ^ (-2 * σ))
+            / (1 + (p : ℝ) ^ (-σ)) ^ 2) * (Real.log p) ^ 2
+        ≤ (3 * ((p : ℝ) ^ (-σ) * (p : ℝ) ^ (-σ))) * (Real.log p) ^ 2 :=
+          mul_le_mul_of_nonneg_right hlocal hsqlog
+      _ ≤ (3 * (1 / (p : ℝ))) * (Real.log p) ^ 2 := by
+          apply mul_le_mul_of_nonneg_right _ hsqlog
+          linarith [husq]
+      _ = 3 * (Real.log p * Real.log p) / (p : ℝ) := by
+          field_simp
+      _ ≤ 3 * (Real.log Y * Real.log p) / (p : ℝ) := by
+          apply div_le_div_of_nonneg_right _ hp0.le
+          nlinarith [hlogp, hlogple]
+      _ = 3 * Real.log Y * (Real.log p / (p : ℝ)) := by
+          field_simp
+  refine le_trans hstep ?_
+  rw [← Finset.mul_sum]
+  have hmertens := Sieve.mertensFirst_upper (n := ⌊Y⌋₊) (by omega)
+  have hcoef : (0 : ℝ) ≤ 3 * Real.log Y := by linarith
+  exact mul_le_mul_of_nonneg_left hmertens hcoef
+
+/-- **The physical saddle variance.**  `Var_{σ,Y} = (2/a) Y^a log Y (1 + o(1))`. -/
+theorem tendsto_saddleLogVariance {σ : ℝ} (hσ : 1 / 2 ≤ σ) (hσ1 : σ < 1) :
+    Tendsto (fun Y : ℝ => saddleLogVariance σ Y / (Y ^ (1 - σ) * Real.log Y)) atTop
+      (nhds (2 / (1 - σ))) := by
+  have ha0 : (0 : ℝ) < 1 - σ := by linarith
+  have hmain := tendsto_primeRpowLogSqSumLE ha0
+  have hdef : Tendsto (fun Y : ℝ => varianceTiltDeficit σ Y / (Y ^ (1 - σ) * Real.log Y)) atTop
+      (nhds 0) := by
+    have hmaj : Tendsto (fun Y : ℝ => 3 * ((Real.log Y + Real.log 4) / Y ^ (1 - σ))) atTop
+        (nhds 0) := by
+      have hlog : Tendsto (fun Y : ℝ => Real.log Y / Y ^ (1 - σ)) atTop (nhds 0) :=
+        (isLittleO_log_rpow_atTop ha0).tendsto_div_nhds_zero
+      have hconst : Tendsto (fun Y : ℝ => Real.log 4 / Y ^ (1 - σ)) atTop (nhds 0) :=
+        tendsto_const_nhds.div_atTop (tendsto_rpow_atTop ha0)
+      have h := (hlog.add hconst).const_mul (3 : ℝ)
+      rw [add_zero, mul_zero] at h
+      refine h.congr fun Y => ?_
+      rw [add_div]
+    refine squeeze_zero' ?_ ?_ hmaj
+    · filter_upwards [eventually_gt_atTop (1 : ℝ)] with Y hY
+      have hYa : (0 : ℝ) < Y ^ (1 - σ) := Real.rpow_pos_of_pos (by linarith) _
+      have hlogY : (0 : ℝ) < Real.log Y := Real.log_pos hY
+      exact div_nonneg (varianceTiltDeficit_nonneg σ Y) (by positivity)
+    · filter_upwards [eventually_ge_atTop (2 : ℝ)] with Y hY
+      have hY0 : (0 : ℝ) < Y := by linarith
+      have hYa : (0 : ℝ) < Y ^ (1 - σ) := Real.rpow_pos_of_pos hY0 _
+      have hlogY : (0 : ℝ) < Real.log Y := Real.log_pos (by linarith)
+      have hfloor2 : 2 ≤ ⌊Y⌋₊ := Nat.le_floor (by exact_mod_cast hY)
+      have hfloorle : ((⌊Y⌋₊ : ℕ) : ℝ) ≤ Y := Nat.floor_le hY0.le
+      have hfloorpos : (0 : ℝ) < ((⌊Y⌋₊ : ℕ) : ℝ) := by
+        have : (0 : ℕ) < ⌊Y⌋₊ := by omega
+        exact_mod_cast this
+      have hlogfloor : Real.log ⌊Y⌋₊ ≤ Real.log Y := Real.log_le_log hfloorpos hfloorle
+      have hnum : varianceTiltDeficit σ Y ≤ 3 * Real.log Y * (Real.log Y + Real.log 4) := by
+        refine le_trans (varianceTiltDeficit_le hσ hY) ?_
+        have : Real.log ⌊Y⌋₊ + Real.log 4 ≤ Real.log Y + Real.log 4 := by linarith
+        nlinarith [hlogY, this]
+      have hstep : varianceTiltDeficit σ Y / (Y ^ (1 - σ) * Real.log Y)
+          ≤ (3 * Real.log Y * (Real.log Y + Real.log 4)) / (Y ^ (1 - σ) * Real.log Y) := by
+        apply div_le_div_of_nonneg_right hnum (by positivity)
+      have hval : (3 * Real.log Y * (Real.log Y + Real.log 4)) / (Y ^ (1 - σ) * Real.log Y)
+          = 3 * ((Real.log Y + Real.log 4) / Y ^ (1 - σ)) := by
+        field_simp
+      rw [hval] at hstep
+      exact hstep
+  have hsum := (hmain.sub hdef).const_mul (2 : ℝ)
+  rw [sub_zero] at hsum
+  have hval : (2 : ℝ) * (1 / (1 - σ)) = 2 / (1 - σ) := by ring
+  rw [hval] at hsum
+  refine hsum.congr fun Y => ?_
+  rw [saddleLogVariance_eq]
+  ring
+
 end
 
 end RHTower

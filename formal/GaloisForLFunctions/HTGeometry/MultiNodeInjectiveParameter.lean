@@ -131,11 +131,8 @@ theorem prod_pow_triSubst (Z : Fin D → ℂ) (K₀ : ℕ) (m : Fin D → ℕ) :
 theorem eval_aeval_comp {σ : Type*} (f : σ → MvPolynomial (Fin D) ℂ) (g : Fin D → ℂ)
     (p : MvPolynomial σ ℂ) :
     MvPolynomial.eval g (MvPolynomial.aeval f p)
-      = MvPolynomial.eval (fun s => MvPolynomial.eval g (f s)) p := by
-  induction p using MvPolynomial.induction_on with
-  | C a => simp
-  | add p q hp hq => simp [hp, hq]
-  | mul_X p i hp => simp [hp]
+      = MvPolynomial.eval (fun s => MvPolynomial.eval g (f s)) p :=
+  MvPolynomial.aeval_bind₁ g f p
 
 
 /-- The triangular substitution, as a tuple of polynomials. -/
@@ -202,11 +199,12 @@ theorem aeval_triSubstPoly_eq_zero (K₀ : ℕ) {p : MvPolynomial (Fin D) ℂ}
     ring
   have heval := congrArg (MvPolynomial.eval y) h
   rw [map_zero, eval_aeval_comp] at heval
-  rw [MvPolynomial.eval_zero]
-  rw [← heval]
-  congr 1
-  funext s
-  rw [eval_triSubstPoly, hz s]
+  have hpt : (fun s => MvPolynomial.eval y (triSubstPoly K₀ s)) = z := by
+    funext s
+    rw [eval_triSubstPoly, hz s]
+  rw [hpt] at heval
+  rw [map_zero]
+  exact heval
 
 /-! ### The separation theorem -/
 
