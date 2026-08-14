@@ -958,8 +958,10 @@ coercivity.  The subsequent
 discharges physical dipole/flat-flux matching: the one-sided zero-extension has only the half-log
 indicial root and no `1/log` dipole, while superpolynomial block flatness forces terminal flux
 charge zero. `../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-literal-paired-source-assembly.md`
-closes exact two-coset source assembly and total marked-descendant matching. Remaining finite-type
-source gates are arbitrary finite-order expansion to the flat residual and compact-middle coverage.
+closes exact two-coset source assembly and total marked-descendant matching. The formalized dyadic
+orbit-chart theorem closes compact-middle coverage. Remaining finite-type source gate is analytic
+admission: rank-one rough-primitive Hardy transfer or higher-rank finite-to-flat/source-selected
+cancellation.
 
 ## 7. Lean decision
 

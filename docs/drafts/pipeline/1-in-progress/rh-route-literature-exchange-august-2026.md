@@ -190,8 +190,9 @@ terminalized. Latest local results change eight exchanges:
   bounds the frozen dual's global weighted/plain coefficient masses by `O(N log^3 N)` and
   `O(log^4 N)`, identifies its phase-retaining L-series with the literal frozen source, and proves
   the interval mean square `O(N log^3 N+H log^4 N)`, hence `O(N log^4 N)` on `[N,2N]`, below target
-  exponent. Surviving producer is phase-faithful cross-
-  component AFE assembly of the frozen dual with primal, pole, and cross terms. Density,
+  exponent. Post-cutoff Lean combines frozen and variation pieces to bound the complete diagonal
+  inner dual source by `O(N log^4 N+N^(201/200))`, also below target. Surviving producer is phase-
+  faithful AFE assembly of this controlled dual with primal and pole contributions and all cross terms. Density,
   `7/10` prime supply, and route composition follow only
   after this.
 - **U:** the source-disintegration theorem writes every shifted reciprocal Hankel quadratic
@@ -217,9 +218,11 @@ terminalized. Latest local results change eight exchanges:
   pre-aggregation source identity too. Common-degree padding places the physical even and odd
   Chebyshev channels under one positive Laplace filter and proves
   `a_f^2(C_E-C_O)=pi(2D)! Re sum_q W_f(q)(E(q)^2-O(q)^2)`; its canonical normalization tends to
-  zero. No oriented anomaly survives, so the Nyquist mixed-flux successor is terminal. Route U
-  remains open at a different core: source-specific common-filter diagonal classification for the
-  fixed cofinal carrier. Universal diagonal positivity is RH-equivalent.
+  zero. No oriented anomaly survives, so the Nyquist mixed-flux successor is terminal. Post-cutoff
+  antipodal polarization decomposes the actual carrier into even and odd source channels and proves
+  false RH equivalent to a cofinal labelled completed-source anomaly in an even diagonal, odd
+  diagonal, or their cross capital. Route U now needs source-specific exclusion of all three for
+  the fixed carrier. Universal positivity is RH-equivalent.
 - **L:** finite-complex Garland localization is complete through cohomological vanishing, and the
   symmetric-design incidence theorem gives the actual bipartite link spectral gap. The
   Steinberg chain constructs elementary transvections, Steinberg-to-`GL`, elementary group,
@@ -1407,9 +1410,11 @@ remainder is not lower order than the main phase scale, so this is exact phase g
 scalar orientation theorem.
 Post-cutoff active-tree `RouteEGibbsRapidity.lean` defines the complete additive odd-cube rapidity
 and proves its local argument lies in `[-1/2,1/2]` past `p=16`, with critical half-density within
-`1/p` of `p^(-1/2)`. It does not yet prove the batch rapidity asymptotic stated in its module
-comment. Even that scalar asymptotic would remain inside the retired determinant lane rather than
-supply physical Hall capacity.
+`1/p` of `p^(-1/2)`. More strongly, it proves the global error law
+`|batchRapidity-2*batchCosSum|<=18*mertensS(floor X)`. The normalized moving-cutoff limit stated in
+the module comment is not yet a declaration, but nonlinear rapidity correction is now far below
+the coherent linear batch scale. This reinforces the retired determinant lane rather than supply
+physical Hall capacity.
 The separate squarefree node-form and multivariate separation theorems give an exact algebraic
 coefficient interface, and `MultiNodeInjectiveParameter.lean` proves separation remains complete
 when only injective parameter tuples above a floor are available. Active-tree slot-sequence
@@ -2998,6 +3003,12 @@ divisor collision space; P-G175 already supplies the strict subquantum scalar bu
 contractivity or differentiable unit-frame realization is already formally classified as
 insufficient or RH-equivalent. External supercritical Thorin theory is only a safe control case.
 
+Post-cutoff active-tree P-G176 proves the universal target trace-capacity law itself is equivalent
+to RH. A single strict-right copy violates it by P-G175's subquantum inequality; under RH the target
+packet type is empty. This removes “prove target capacity” from legitimate producer research. The
+remaining exterior task is an earlier coefficient-faithful source-to-Xi mechanism from which the
+capacity inequality follows, not the capacity inequality as a premise.
+
 ### Route Q — theta–Cassini likelihood hierarchy [OPEN / SECONDARY — SELECTED POWER CARRIER RETIRED]
 
 **Local contribution beyond located literature.** Exact reciprocal-moment calibration, Cassini
@@ -3446,8 +3457,10 @@ carrier's global weighted/plain masses by `O(N log^3 N)` and `O(log^4 N)`, and
 the literal frozen source field and proves `O(N log^3 N+H log^4 N)` on every centered interval.
 `SmoothAFEZetaSquareDualFrozenDyadicMeanSquare.lean` specializes this to `O(N log^4 N)` on
 `[N,2N]`, strictly below the target exponent.
-Remaining analytic theorem is phase-faithful cross-component assembly of the frozen dual with primal, pole, and cross terms around
-these controlled contributions. Only after that fourth-
+`SmoothAFEZetaSquareDualDiagonalMeanSquare.lean` combines the frozen base with the literal Duhamel
+variation and proves the complete diagonal inner dual bound
+`O(N log^4 N+N^(201/200))`, also below target. Remaining analytic theorem is phase-faithful AFE
+assembly of this controlled dual with primal and pole contributions and all cross terms. Only after that fourth-
 moment assembly can
 the Ingham/Gabriel coefficient-three density estimate and density-to-short-interval consequence
 give a prime in `(x,x+x^(7/10)]` for all large `x`, or be replaced by equivalent signed upper-
@@ -4155,10 +4168,14 @@ a_f^2(C_E-C_O)=pi(2D)! Re sum_q W_f(q)(E(q)^2-O(q)^2),
 
 and the mass/factorial-normalized literal prime--Gamma flux tends to zero. Thus the source landing
 has no oriented anomaly and this Nyquist successor is terminal. The strongest survivor is exact
-asymptotic common-filter reconstruction/detail orthogonality. Route U remains open only at the
-diagonal obstruction: prove a source-specific lower bound for the fixed carrier's actual
-even/detail diagonal capitals, or show a negative diagonal contradicts its degree-free Cauchy
-density. Universal diagonal positivity is RH itself. This is a Route-U pivot, not a new route.
+asymptotic common-filter reconstruction/detail orthogonality. Post-cutoff
+`XiShiftedHardEdgePrimeGammaAntipodalPolarization.lean` then constructs the actual even/odd
+antipodal source channels and literal completed prime--Gamma cross balance. Negative full capital
+forces a labelled negative even diagonal, odd diagonal, or cross capital, each with a pointwise
+negative source balance, and Lean proves false RH equivalent to such a cofinal fixed-carrier
+polarization phase. Route U must exclude all three alternatives; the former diagonal-only wording
+omitted the intact cross channel. Universal exclusion is RH-equivalent. This is a Route-U pivot,
+not a new route.
 The stationary chart is an equivalent receiver at floor scale, not a second producer. All-contact
 source, apex transversality, projective
 reversal, integer holonomy, adaptive all-degree capital, reset payment, reciprocal clock, terminal

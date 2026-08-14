@@ -183,9 +183,9 @@ provides:
 4. the literal source block summability supplied by paired source assembly.
 
 What remains before declaring the one-prime trace-zero (H^1_0) theorem is the source-faithful
-rough primitive one-block transfer and the finite-cell compact-middle elliptic argument. The
-dimension obstruction is absent there; those are now concrete analytic lemmas rather than an
-unspecified finite-to-flat expansion.
+rough primitive one-block transfer. Formalized dyadic orbit charts already close compact-middle
+coverage. The dimension obstruction is absent in rank one; analytic admission is now one concrete
+lemma rather than an unspecified finite-to-flat expansion.
 
 ## 6. Rank-two-and-higher survivor
 
@@ -211,8 +211,8 @@ the missing general-rank proof.
 3. **No source-moment fiction.** Extra regularity of forcing cannot remove a free homogeneous
    component.
 4. **No all-rank positive claim.** Concrete window exists only in ranks zero and one.
-5. **No low-rank (H^1) overclaim.** Rough primitive transfer and compact-middle remain to be
-   proved.
+5. **No low-rank (H^1) overclaim.** Rough primitive transfer remains to be proved; dyadic
+   compact-middle coverage is already formalized.
 6. **No RH claim.** Higher-rank finite recurrence, exceptional recurrence, completed/raw Evans
    identification, and raw Evans positivity remain.
 
@@ -244,5 +244,5 @@ External priority remains unverified.
 - [x] identify uniform radial polynomial Hardy as impossible in rank at least two
 - [x] retain vectorwise/biweighted/primitive-flux survivors
 - [ ] prove rough primitive one-block transfer in the rank-one window
-- [ ] close one-prime compact-middle finite-cell ellipticity
+- [x] close compact-middle coverage by formalized dyadic orbit charts
 - [ ] prove general-rank source-selected cancellation or primitive finite-to-flat expansion

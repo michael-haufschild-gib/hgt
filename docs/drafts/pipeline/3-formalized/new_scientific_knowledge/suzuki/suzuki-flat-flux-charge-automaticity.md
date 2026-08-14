@@ -210,12 +210,15 @@ interior finite charges:
   common value and antisymmetric dipole already killed; [CLOSED]
 
 literal infinite paired source equation:
-  not yet assembled;                                   [OPEN]
+  assembled with rooted signs and source bounds;       [CLOSED]
 
 arbitrary finite-order expansion / flat remainder:
   not yet proved for every completed mode;              [OPEN]
 
-compact-middle coverage and exceptional apertures:
+compact-middle coverage:
+  closed by formalized dyadic orbit charts;
+
+exceptional apertures:
   not yet proved.                                      [OPEN]               (21)
 ```
 
@@ -283,9 +286,9 @@ this discharge.  External priority remains unverified.
 - [x] classify the one-sided physical indicial root
 - [x] exclude the physical `1/log` dipole
 - [x] formalize exact sequence and indicial cores in Lean
-- [ ] construct literal infinite paired-orbit source equation
+- [x] construct literal infinite paired-orbit source equation
 - [ ] prove arbitrary finite-order expansion for every completed mode
-- [ ] prove compact-middle coverage
+- [x] prove compact-middle coverage by dyadic orbit charts
 - [ ] pass recurrence-infinite apertures
 - [ ] prove completed Evans injectivity
 - [ ] prove RH or whole-Connes no-go

@@ -650,8 +650,9 @@ The rough primitives are opposite and the two flux derivatives sum to \((AF)'\).
 \(M\)-branch is controlled by Volterra Liouville; the pre-event \(Q\)-branch pays the finite
 recurrence budget directly. Shifted Gamma numerical-range coercivity then gives weighted \(F'\)
 with arbitrary bounded nonnormal \(B\). Rooted source assembly and physical value/dipole/flat
-charge matching are now closed; remaining finite-type gates are finite-to-flat expansion and
-compact-middle coverage.
+charge matching are now closed. Dyadic orbit-chart coverage closes compact middle. Remaining
+finite-type analytic gate is admission to weighted value/flux: rough-primitive direct Hardy in
+rank one, or finite-to-flat/source-selected transfer in higher rank.
 
 The physical finite/flat charge gate is now discharged by
 `suzuki-flat-flux-charge-automaticity.md`.  The first primitive equation and superpolynomial block
@@ -668,8 +669,9 @@ has only the half-log root `tau=1/2`, while a `beta/L` dipole produces the uncan
 no independent physical dipole or flat-flux matching remains. The exact marked-descendant
 source assembly is now proved in
 `../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-literal-paired-source-assembly.md`.
-Optional low-frequency counterterms are subcritical. Thus current finite-type gates are
-finite-to-flat expansion and compact-middle coverage.
+Optional low-frequency counterterms are subcritical. The formalized dyadic chart theorem covers
+the whole compact aperture once weighted derivatives exist. Thus current finite-type gate is
+weighted analytic admission, split by the sharp Gamma dimension wall.
 
 Hostile verdict: `SURVIVES PRELIMINARY ATTACK`. Generic logarithmic ellipticity is insufficient,
 whole-packet inverse-log grading is false, and the completed domain has a genuine corona. The

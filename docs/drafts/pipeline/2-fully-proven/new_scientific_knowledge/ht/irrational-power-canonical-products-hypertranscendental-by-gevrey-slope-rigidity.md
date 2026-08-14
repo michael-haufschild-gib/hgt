@@ -1749,3 +1749,24 @@ with `L_N` a linear operator with convergent coefficients, `P(jets F_N)` converg
 `≥ N+1`, and the defect of order `≥ 2N+2`, so that its coefficient at level `n` involves only `H`
 below level `n - N`.  Every hypothesis of the linear Maillet theorem is available; what remains is
 the induction that absorbs the defect, which is where the largeness of `N` is used.
+
+## Lean progress — the Taylor defect, quantitatively
+
+An ideal membership `defect ∈ J²` is enough to see that the defect is quadratic, but not to bound
+it.  The defect now has an explicit representation.
+
+`GaloisForLFunctions/HTGeometry/MvPolynomialQuadraticDefect.lean` (wired, axiom-clean):
+
+    aeval_sumElim_rename_inl
+    exists_taylorDefect_repr :
+      **`defect = ∑_{a,b} L_a L_b · Q_{ab}(S, L)`** with `Q_{ab}` polynomials in the base point and
+      the increment depending only on the differential polynomial
+
+The induction is the same one that proves the ideal membership: the multiplication step
+`defect(p·X_i) = (S_i + L_i)·defect(p) + L_i·∑_j ∂_j p(S) L_j` multiplies every entry by
+`X_{inl i} + X_{inr i}` and creates the entries `∂_a p` in the column `b = i`.
+
+With this representation a Gevrey bound on the defect is a Gevrey bound on a finite sum of products
+of two increment jets with an evaluated polynomial, so it carries the **square** of the increment's
+Gevrey constant — the gain the nonlinear recursion needs, once the increment's constant is at most
+one, which the truncation order arranges.

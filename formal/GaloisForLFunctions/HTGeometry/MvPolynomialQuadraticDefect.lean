@@ -31,6 +31,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 variable {ι R A : Type*} [CommRing R] [CommRing A] [Algebra R A] [Fintype ι] [DecidableEq ι]
 
+omit [Fintype ι] [DecidableEq ι] in
 theorem aeval_sumElim_rename_inl (S L : ι → A) (Z : MvPolynomial ι R) :
     MvPolynomial.aeval (Sum.elim S L) (MvPolynomial.rename Sum.inl Z)
       = MvPolynomial.aeval S Z := by
@@ -75,11 +76,11 @@ theorem exists_taylorDefect_repr (P : MvPolynomial ι R) :
         intro a b
         by_cases hb : b = i
         · subst hb
-          simp only [if_pos rfl, map_add, map_mul, MvPolynomial.aeval_X, Sum.elim_inl,
+          simp only [if_true, map_add, map_mul, MvPolynomial.aeval_X, Sum.elim_inl,
             Sum.elim_inr, aeval_sumElim_rename_inl]
           ring
         · simp only [if_neg hb, map_add, map_mul, MvPolynomial.aeval_X, Sum.elim_inl,
-            Sum.elim_inr, add_zero, _root_.map_zero]
+            Sum.elim_inr, add_zero]
           ring
       rw [taylorDefect_mul_X, hQp]
       rw [Finset.sum_congr rfl fun a _ =>
@@ -97,9 +98,5 @@ theorem exists_taylorDefect_repr (P : MvPolynomial ι R) :
           if_pos (Finset.mem_univ i)]
       rw [Finset.sum_congr rfl fun a _ => hinner a, Finset.sum_add_distrib, ← Finset.mul_sum,
         ← Finset.mul_sum]
-      congr 1
-      congr 1
-      refine Finset.sum_congr rfl fun a _ => ?_
-      ring
 
 end GaloisForLFunctions.HTGeometry

@@ -28,11 +28,11 @@ open Complex intervalIntegral
 variable {A B κ : ℝ}
 
 /-- The derivative of the Mellin kernel along the positive ray. -/
-theorem hasDerivAt_cpow_ofReal {s : ℂ} {x : ℝ} (hx : 0 < x) :
-    HasDerivAt (fun t : ℝ => ((t : ℂ)) ^ (-s)) (-s * (x : ℂ) ^ (-s - 1)) x := by
-  rcases eq_or_ne s 0 with rfl | hs
+theorem hasDerivAt_cpow_ofReal {w : ℂ} {x : ℝ} (hx : 0 < x) :
+    HasDerivAt (fun t : ℝ => ((t : ℂ)) ^ w) (w * (x : ℂ) ^ (w - 1)) x := by
+  rcases eq_or_ne w 0 with rfl | hw
   · simpa using hasDerivAt_const x (1 : ℂ)
-  · exact hasDerivAt_ofReal_cpow_const (ne_of_gt hx) (neg_ne_zero.mpr hs)
+  · exact hasDerivAt_ofReal_cpow_const (ne_of_gt hx) hw
 
 /-- The Mellin kernel is continuous along the positive ray. -/
 theorem continuousAt_cpow_ofReal {b : ℂ} {x : ℝ} (hx : 0 < x) :
@@ -70,7 +70,7 @@ theorem integral_cpow_mul_cos (hA : 0 < A) (hAB : A < B) (hκ : κ ≠ 0) (s : �
     linarith [hx.1]
   have hu : ∀ x ∈ Set.uIcc A B,
       HasDerivAt (fun t : ℝ => ((t : ℂ)) ^ (-s)) (-s * (x : ℂ) ^ (-s - 1)) x :=
-    fun x hx => hasDerivAt_cpow_ofReal (hpos x hx)
+    fun x hx => hasDerivAt_cpow_ofReal (w := -s) (hpos x hx)
   have hv : ∀ x ∈ Set.uIcc A B,
       HasDerivAt (fun t : ℝ => ((Real.sin (κ * t) : ℝ) : ℂ) / (κ : ℂ))
         (((Real.cos (κ * x) : ℝ) : ℂ)) x := fun x _ => hasDerivAt_sin_div hκ x

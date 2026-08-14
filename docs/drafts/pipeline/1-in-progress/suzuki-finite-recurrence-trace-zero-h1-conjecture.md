@@ -13,7 +13,7 @@
   `../3-formalized/new_scientific_knowledge/suzuki/suzuki-flat-flux-charge-automaticity.md`,
   `suzuki-paired-gamma-logistic-flat-sector-conjecture.md`,
   `suzuki-polar-remainder-lipschitz-gamma-subcriticality.md`
-- **Current obstruction:** rank-zero/one rough primitive transfer and compact-middle coverage;
+- **Current obstruction:** rank-zero/one rough primitive transfer;
   higher-rank source-selected finite-to-flat transfer
 
 ## 0. Retraction of premature theorem status
@@ -55,7 +55,8 @@ The live replacement is source-side:
 propagates weighted control through the rough prime cutoff without differentiating it. The
 physical one-sided dipole and terminal flat charge are now forced to zero. The literal
 completed-source equation is now assembled with corrected rooted signs and a canonical
-literal-support cutoff. One must prove its finite-to-flat expansion and cover compact middle.
+literal-support cutoff. Formalized dyadic orbit charts already cover compact middle. One must prove
+analytic admission of the rough-primitive equation.
 
 ## 1. Conjectured result
 
@@ -438,21 +439,17 @@ The prime-log orbit is dense once two prime directions are visible.  For any com
 \(\operatorname{dist}(K,\partial I)\).  Its paired chart contains a neighborhood of \(x\).
 Compactness gives a finite subcover.  Hence \(u\in H^1(K)\).
 
-If fewer than two prime directions are visible, the visible seam set is discrete, and the
-complement consists of finitely many ordinary interior intervals.  On those intervals the
-translation forcing and polar term are \(H^1\) once the endpoint/seam collars are; the
-real-zero-free logarithmic multiplier is elliptic and preserves \(H^1_{\rm loc}\).  The same
-finite covering conclusion follows.
-
-Conditional on a proof of the finite visible-seam elliptic system in the one-prime case, combining
-the interior cover with the endpoint collars would give
+The formalized dyadic orbit-chart theorem replaces this former elliptic-system argument. If prime
+\(2\) is invisible, \(2a<\log 2<1\), so one physical endpoint chart covers the whole aperture. If
+prime \(2\) is visible, centers \(a-k\log2\) have spacing below one and finitely many unit charts
+cover \([-a,a]\). Combining those charts with `(25)` gives
 
 ```text
 u in H1(I).
 ```
 
-The zero extension and zero endpoint traces would put \(u\) in \(H^1_0(I)\). This section is not a
-proof because Section 6 and the one-prime system step remain open.
+The zero extension and zero endpoint traces would put \(u\) in \(H^1_0(I)\). Coverage is proved;
+only analytic admission in Section 8 remains open.
 
 ## 10. Corrected frontier
 
@@ -475,12 +472,10 @@ literal two-coset paired source assembly
  -> exact rooted signs and weighted source class;        [PROVED]
 
 rank zero/one rough primitive transfer
-+ finite-cell compact-middle coverage
- -> low-rank trace-zero H1_0;                            [OPEN]
+ -> low-rank trace-zero H1_0 via dyadic coverage;        [OPEN]
 
 rank at least two source-selected finite-to-flat transfer
-+ compact-middle coverage
- -> higher-rank finite-type trace-zero H1_0;             [OPEN]
+ -> higher-rank trace-zero H1_0 via dyadic coverage;     [OPEN]
 
 all apertures
  -> additionally pass recurrence-infinite class.         [OPEN]               (27)
@@ -498,7 +493,7 @@ The trace-zero theorem remains open even on the full-measure finite-type class.
    cutoff, and zero-order event sum are unaffected.
 5. **Dimension wall retained.** Uniform radial polynomial Hardy transfer survives only in ranks
    zero and one; higher-rank source-selected/primitive transfer is not inferred.
-6. **Second gap retained.** One-prime interior system regularity was asserted, not proved.
+6. **No compact-middle debt.** Formalized dyadic orbit charts give exact finite coverage.
 7. **No theorem-statement falsification.** The finite-type implication remains a conjecture.
 8. **No all-aperture or RH claim.** Exceptional apertures and Evans positivity remain later gates.
 
@@ -518,8 +513,7 @@ finite prime-log recurrence
 
 The augmented primitive-flux equation, weighted graph estimate, automatic zero-charge flat
 value/flux upgrade, physical dipole exclusion, and complementary derivative recovery are proved.
-Literal source assembly is proved. Arbitrary finite-order expansion and compact-middle coverage
-are not.
+Literal source assembly and compact-middle coverage are proved. Analytic admission is not.
 Therefore theorem `(3)` remains open.
 
 ## 13. Lean decision
@@ -552,8 +546,8 @@ algebra are formalized. No wrapper may assume finite-to-flat expansion, `(25)`, 
 - [ ] prove rank-zero/one rough primitive transfer and isolate the flat residual
 - [ ] prove higher-rank source-selected finite-to-flat transfer
 - [ ] obtain spatial endpoint \(H^1\) for some `sigma>1/2`
-- [ ] prove one-prime finite-system interior regularity
-- [ ] cover interior and prove global \(H^1_0\)
+- [x] cover compact middle by dyadic orbit charts
+- [ ] compose analytic admission with coverage and prove global \(H^1_0\)
 - [ ] pass recurrence-infinite apertures
 - [ ] identify trace-zero square-Evans kernel with raw Evans kernel for every aperture
 - [ ] prove nonzero-trace return

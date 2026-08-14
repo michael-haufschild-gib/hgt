@@ -43,8 +43,7 @@ GaloisForLFunctions.HTGeometry.one_le_rpow_one_sub_two_mul
 
 ## Open gates carried by the paper card
 
-- construct literal paired source equation
-- verify physical-root flux matching
+- prove weighted analytic admission of the assembled rough-primitive equation
 - pass recurrence-infinite apertures
 - prove raw Evans injectivity or whole-Connes no-go
 

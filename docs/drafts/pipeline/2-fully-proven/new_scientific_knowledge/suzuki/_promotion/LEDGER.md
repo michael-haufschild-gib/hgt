@@ -6921,3 +6921,30 @@ The mechanism is uniform convergence plus continuity of the functional calculus 
 `1/2` dominates uniformly, and `norm_cfc_le` transfers the estimate to the algebra.  The same
 expansion is the `(14)` of `suzuki-root-retained-exterior-dilation`.  All declarations audit to
 `[propext, Classical.choice, Quot.sound]`.
+
+## HG — two bricks for card 6's `(25)`
+
+```text
+HTGeometry/StripContourShift.lean
+  integral_line_shift        **the horizontal contour shift**: a function holomorphic on a closed
+                             horizontal strip, integrable on the two boundary lines and with
+                             vanishing vertical contribution at `±R`, has equal integrals on the
+                             two lines.  Rectangle Cauchy plus the exhaustion by `[-R,R]`.
+HTGeometry/GammaVerticalRatioBetaBound.lean
+  norm_betaIntegrand         the Beta integrand's modulus is the Beta integrand of the real parts
+  betaIntegrand_ofReal       the real-parameter integrand is the cast of a real one
+  norm_betaIntegral_le       ‖B(u,v)‖ ≤ Γ(Re u)Γ(Re v)/Γ(Re u + Re v)
+  norm_Gamma_vertical_le     **‖Γ(a+ix)‖ ≤ (Γ(a)/Γ(a+d))·‖Γ(a+d+ix)‖ for a,d > 0, uniformly in x**
+```
+
+The second is the uniform-in-height Gamma-ratio bound that the contour shift needs, and it costs no
+Stirling asymptotics: `Γ(u)Γ(v) = Γ(u+v)B(u,v)` and the modulus of the Beta integral is at most the
+Beta integral of the real parts, because `‖x^{u-1}(1-x)^{v-1}‖ = x^{Re u-1}(1-x)^{Re v-1}` on
+`(0,1)`.  Taking `a = 1-σ`, `d = 2σ` gives `‖Γ(1+iz)/Γ(1-iz)‖ ≤ Γ(1-σ)/Γ(1+σ)` on the line
+`Im z = σ`, a bound independent of the height and continuous in `σ` on `(0,1)`.
+
+What remains for `(25)`: the entire extension of the inverse transform of a Schwartz test function,
+its rapid decay on horizontal lines, and the pairing argument that turns the shift into the a.e.
+identity `e^{-σL}𝓕⁻(f(·+iσ)) = e^{-σ'L}𝓕⁻(f(·+iσ'))` between the `L²` transforms.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.

@@ -234,10 +234,10 @@ Taking \(1/2<\sigma<1\) gives the physical derivative estimate
 integral exp(L)||F'(L)||^2 dL<infinity.                (28)
 ```
 
-Root projection has norm one, so both physical endpoint profiles belong to \(H^1(dr)\). Interior
-coverage is separate: one must prove that finitely many realized paired charts, together with the
-small-aperture scalar interior equation, cover the compact middle without assuming derivative
-regularity. Consequently the proved implication is
+Root projection has norm one, so both physical endpoint profiles belong to \(H^1(dr)\). The later
+formalized theorem `suzuki-dyadic-orbit-chart-h1-coverage.md` proves that finitely many realized
+dyadic charts cover every finite aperture; no compact-middle elliptic theorem remains.
+Consequently the proved implication is
 
 ```text
 literal paired assembly
@@ -267,9 +267,8 @@ arbitrary bounded nonnormal B:
   costs only ||B|| in terminal coercivity;              [PAPER-PROVED]
 
 finite-recurrence trace-zero H1:
-  literal paired source equation closed;
-  reduced to finite-to-flat expansion and interior
-  coverage.                                             [OPEN SOURCE CORE]   (30)
+  literal paired source equation and dyadic coverage closed;
+  reduced to analytic admission of weighted value/flux. [OPEN SOURCE CORE]   (30)
 ```
 
 Neither degree-\(m\) source moments nor Hatano--Nelson dichotomy are required by this flux route.
@@ -286,7 +285,8 @@ Neither degree-\(m\) source moments nor Hatano--Nelson dichotomy are required by
    now proved; this theorem still requires the finite-to-flat expansion before applying its
    flat-sector hypothesis.
 7. **No all-aperture claim.** Recurrence-infinite apertures remain.
-8. **No interior-coverage claim.** Endpoint collars are proved; compact-middle coverage remains.
+8. **Coverage composed separately.** This theorem proves weighted derivatives; the later dyadic
+   chart theorem supplies exact local-to-global aperture coverage.
 9. **No RH claim.** Raw Evans injectivity and nonzero-trace return remain.
 
 ## 8. Novelty boundary

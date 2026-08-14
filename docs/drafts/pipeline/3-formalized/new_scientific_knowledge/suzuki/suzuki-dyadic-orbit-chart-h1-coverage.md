@@ -120,12 +120,13 @@ full paired-orbit weighted derivative
 The physical endpoint values are zero by the completed zero extension, so global \(H^1\) gives
 \(H^1_0(-a,a)\).
 
-Combined with complementary primitive-flux derivative recovery, the finite-recurrence
-trace-zero theorem is reduced to exactly two source statements:
+Combined with complementary primitive-flux derivative recovery, this removes the compact-middle
+gate. The finite-recurrence trace-zero theorem is reduced to analytic admission of weighted
+derivatives:
 
 ```text
-construct literal completed-source paired orbit equation;
-prove its physical-root value/dipole flux charges vanish. (14)
+rank one: rough-primitive direct Hardy transfer;
+higher rank: finite-to-flat or source-selected transfer. (14)
 ```
 
 ## 6. Hostile audit
@@ -136,8 +137,7 @@ prove its physical-root value/dipole flux charges vanish. (14)
 4. **No pointwise derivative premise.** Equation `(4)` is distributional change of variables;
    weighted \(L^2\) makes the weak derivative an \(L^2\) function.
 5. **No small-aperture gap.** When \(2\) is invisible, interval itself has length \(<1\).
-6. **No RH claim.** Literal source assembly, root flux matching, recurrence-infinite apertures, and
-   Evans injectivity remain.
+6. **No RH claim.** Analytic admission, recurrence-infinite apertures, and Evans injectivity remain.
 
 ## 7. Novelty boundary
 
@@ -196,7 +196,8 @@ is the card's own open item `(14)`; Lean does not represent it by an abstract hy
 - [x] prove visible dyadic centers give a finite unit-chart cover
 - [x] remove one-prime interior regularity gate
 - [x] formalize dyadic lattice-cover core in Lean
-- [ ] construct literal paired source equation
-- [ ] verify physical-root flux matching
+- [x] construct literal paired source equation
+- [x] verify physical-root flux matching
+- [ ] prove weighted analytic admission
 - [ ] pass recurrence-infinite apertures
 - [ ] prove raw Evans injectivity or whole-Connes no-go

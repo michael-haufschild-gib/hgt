@@ -1,44 +1,51 @@
-# periodic-pencil `(11)`: the exact remaining gap after steps (i)–(iii)
+# periodic-pencil `(11)`: the family coefficient descent — route found, first brick built
 
 `HTGeometry/FamilyBoundedRelationSurvival.exists_coeff_ne_zero_famJets_of_boundedRelation`
-kills every nonzero jet relation `Q` **with algebraic coefficients**.  To get
-`DifferentialIndependent ℂ` we must drop that hypothesis.  This note records why it is not routine
-and which route works, so the next session does not rediscover the dead ends.
+kills every nonzero jet relation `Q` **with algebraic coefficients**.  Dropping that hypothesis is
+the last blocker.  This note records the dead ends and the route that works.
 
-## Dead ends (verified by hand this session)
+## Dead ends (verified by hand)
 
-1. **`formal_mahler_descent` with `K = ℚ̄`.**  That theorem descends the *coefficient field of the
-   relation* to any subfield containing the *series' coefficients*.  Ours are `u_i e^{−b_i}`,
-   transcendental, so the smallest usable `K` is far bigger than `ℚ̄` — no gain.
-2. **Independence over `ℚ̄` ⇒ independence over `ℂ`.**  FALSE for families.  With `c` a
-   transcendental constant, `x₁` and `c·x₁` are ℂ-dependent as *values*; a trdeg count shows
-   `ℚ`-independence of a finite jet set is compatible with `ℚ(c)`-dependence whenever
-   `trdeg_ℚ ℚ(c) ≥ 1`.  Adding more jets does not help: the relation lives on a fixed finite set.
-3. **Wronskian descent.**  Linear dependence over a field of constants does give a vanishing
-   Wronskian, but only returns dependence over the *full* constant field of the ambient — here `ℂ` —
-   so it recovers nothing.
-4. **Reduce to the single-element case.**  Differential dependence of the family `{rescale q_i H}`
-   does not make `H` itself differentially algebraic, so
-   `differentialAlgebraicOver_of_intermediate_trdeg_lt_aleph0` (which is about ONE element) does not
-   apply directly.
+1. `formal_mahler_descent` with `K = ℚ̄`: it descends the relation's coefficient field only to a
+   field containing the *series'* coefficients, which are transcendental here.
+2. "independent over `ℚ̄` ⇒ independent over `ℂ`" is FALSE for families of values (`π` as a jet);
+   only the differential structure rules it out.
+3. Wronskian descent returns dependence over the *full* constant field `ℂ` — no gain.
+4. Reducing to the corpus's single-element `differentialAlgebraicOver_of_intermediate_trdeg_lt_aleph0`
+   does not apply directly: family dependence does not make any single member DA.
+5. Kolchin differential-transcendence-degree additivity would work but is a large theory build.
 
-## The route that works
+## THE ROUTE THAT WORKS (no dtrdeg needed)
 
-The classical statement is: *a family differentially dependent over a differential field extension
-`F` which is differentially algebraic over `k` is already differentially dependent over `k`* — this
-is additivity of **differential** transcendence degree,
-`dtrdeg_k(k⟨x⟩) ≤ dtrdeg_k F + dtrdeg_F(F⟨x⟩) = 0 + dtrdeg_F(F⟨x⟩) < |x|`.
-The corpus has ordinary `Algebra.trdeg` additivity (`trdeg_add_eq`) and
-`differentialAdjoin_trdeg_lt_aleph0_of_finite_jetSet`, and the single-element consequence
-`differentialAlgebraicOver_of_intermediate_trdeg_lt_aleph0`, but **no differential transcendence
-degree**.  So the missing brick is a family analogue of that single-element descent, i.e. Kolchin's
-dtrdeg additivity in the special case needed:
+Split the family with the **differential tower law**, then descend each single-element statement
+with the corpus's finite-trdeg theorem:
 
-> `F` a derivation-closed intermediate field of finite ordinary trdeg over `k`, `x : ι → K` finite,
-> `¬ DifferentialIndependent F x` ⇒ `¬ DifferentialIndependent k x`.
+- `¬ DifferentialIndependent F x` (finite family) ⇒ ∃ a splitting `x = (x', z)` with
+  `DifferentialIndependent F x'` and `DifferentialAlgebraicOver ↥(F⟨x'⟩) z`;
+- `F = ℚ⟨S⟩` with `S` the finitely many *constant* coefficients of the relation, so
+  `(ℚ⟨x'⟩)⟨S⟩` has finite trdeg over `ℚ⟨x'⟩`
+  (`differentialAdjoin_trdeg_lt_aleph0_of_finite_jetSet`, jet set of constants is finite);
+- hence `DifferentialAlgebraicOver ↥(ℚ⟨x'⟩⟨S⟩) z ⇒ DifferentialAlgebraicOver ↥(ℚ⟨x'⟩) z`
+  by `differentialAlgebraicOver_of_intermediate_trdeg_lt_aleph0`;
+- rebuild with the tower law ⇒ `¬ DifferentialIndependent ℚ x`.
 
-In the application `F = differentialAdjoin ℚ S` with `S` the (finitely many, constant) coefficients
-of the relation, exactly as in `FormalMahlerIntegerNormalization`.  Building this is the whole of
-the remaining step; after it, the family Mahler normalization and step (iv) are bookkeeping.
+**Brick 1 is BUILT** (`HTGeometry/DifferentialIndependentTowerIff.lean`, axiom-clean):
+`differentialIndependent_sumElim_iff` — the tower law as an **equivalence**
+(`DifferentialIndependent F (Sum.elim y x) ↔ DifferentialIndependent F x ∧
+DifferentialIndependent ↥(differentialAdjoin F (range x)) y`), from mathlib's
+`AlgebraicIndependent.sumElim_iff` plus the reindexing `Equiv.sumProdDistrib`.
+
+## Remaining bricks
+
+1. **Maximal-independent-subset extraction**: from `¬ DifferentialIndependent F ((↑) : s → E)` with
+   `s` finite, produce `t ⊆ s`, `z ∈ s \ t` with `t` independent and `z` DA over `F⟨t⟩`.  Index by
+   *subsets of `E`* (`↥s : Type u`) and use `PUnit.{u+1}` as the singleton index — this keeps all
+   universes equal to `E`'s, which `differentialIndependent_sumElim_iff` requires.
+2. **Commutation** `(F⟨S⟩)⟨t⟩ = (F⟨t⟩)⟨S⟩` as subfields of `E`, plus a transfer of
+   `DifferentialIndependent` between two bases with the same underlying subfield.
+3. Assemble the descent `DifferentialIndependent F x → DifferentialIndependent ↥(F⟨S⟩) x`
+   for `S` of finite jet set, then instantiate at `F = ℚ` (or `ℚ̄`) and `S` = the relation's
+   coefficients to remove `hQalg`.
+4. Then step (iv): bridge to `DifferentialIndependent` of the analytic orbit.
 
 See `mem:nsk-other/periodic-pencil-item11-progress-2026-08-14`.

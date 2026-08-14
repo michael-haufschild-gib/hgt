@@ -31,8 +31,9 @@ both the actual (mathbb Z)-sum and the exact distorted Gamma integral.
 ## Scope boundary
 
 This module certifies the sharp scalar majorant and exponent compatibility. It does not assume or
-claim the missing vector-valued primitive source transfer, compact-middle regularity, or a
-source-selected Evans cancellation. Those remain explicit paper-side gates.
+claim the missing vector-valued primitive source transfer or a source-selected Evans cancellation.
+Those remain explicit paper-side gates; compact-middle coverage is already closed by dyadic orbit
+charts.
 
 ## Gates
 
@@ -42,5 +43,6 @@ source-selected Evans cancellation. Those remain explicit paper-side gates.
 - [x] dimension window iff proved
 - [x] concrete one-prime lattice and Gamma survivor proved
 - [x] wired into `GaloisForLFunctions.RHTower`
+- [x] compact-middle coverage available from dyadic orbit charts
 - [ ] vector-valued rough primitive transfer
 - [ ] one-prime trace-zero (H^1_0)
