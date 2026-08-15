@@ -53,7 +53,68 @@ theorem inghamFixedGabrielCenterMoment_interpolate
         (Real.rpow_nonneg (inghamFixedGabrielCenterMoment_nonneg f T) _))
     · exact norm_inghamFixedGabrielScalarFamily_center f T
 
+private theorem rpow_le_max_one_of_le
+    {x C e : ℝ} (hx : 0 ≤ x) (hxC : x ≤ C) (he0 : 0 ≤ e) (he1 : e ≤ 1) :
+    x ^ e ≤ max 1 C := by
+  by_cases hx1 : x ≤ 1
+  · exact (Real.rpow_le_one hx hx1 he0).trans (le_max_left _ _)
+  · have h1x : 1 ≤ x := le_of_not_ge hx1
+    exact (Real.rpow_le_self_of_one_le h1x he1).trans (hxC.trans (le_max_right _ _))
+
+private theorem norm_fixedGabrielDual_seed_le_max
+    {C : ℝ} {w z : ℂ}
+    (hz : z ∈ Complex.HadamardThreeLines.verticalClosedStrip
+      (1 / 2) inghamPowerSavingRightEdge)
+    (hw : ‖w‖ ≤ C) :
+    ‖inghamFixedGabrielDualPower (inghamFixedGabrielDualSeed w) z‖ ≤ max 1 C := by
+  have hA0 : 0 < (inghamFixedGabrielDualExponent z).re := by
+    rw [inghamFixedGabrielDualExponent_re]
+    have := hz.1
+    norm_num at this ⊢
+    nlinarith
+  have hA1 : (inghamFixedGabrielDualExponent z).re ≤ 182 / 127 := by
+    rw [inghamFixedGabrielDualExponent_re]
+    have := hz.2
+    norm_num [inghamPowerSavingRightEdge] at this ⊢
+    nlinarith
+  rw [norm_inghamFixedGabrielDualPower_of_pos_re z _ hA0,
+    norm_inghamFixedGabrielDualSeed, ← Real.rpow_mul (norm_nonneg w)]
+  apply rpow_le_max_one_of_le (norm_nonneg w) hw
+  · positivity
+  · have : (inghamFixedGabrielDualExponent z).re ≤ 182 / 127 := hA1
+    nlinarith [hA0]
+
+/-- A bounded field on the closed Gabriel strip produces a bounded concrete scalar family. -/
+theorem bddAbove_inghamFixedGabrielScalarFamily_of_bound
+    {f : ℂ → ℂ} (T C : ℝ) (hC : 0 ≤ C)
+    (hf : ∀ z ∈ Complex.HadamardThreeLines.verticalClosedStrip
+      (1 / 2) inghamPowerSavingRightEdge, ‖f z‖ ≤ C) :
+    BddAbove ((norm ∘ inghamFixedGabrielScalarFamily f T) ''
+      Complex.HadamardThreeLines.verticalClosedStrip
+        (1 / 2) inghamPowerSavingRightEdge) := by
+  let mu : Measure ℝ := volume.restrict (Icc (-T) T)
+  refine ⟨∫ _ : ℝ, C * max 1 C ∂mu, ?_⟩
+  intro y hy
+  rcases hy with ⟨z, hz, rfl⟩
+  change ‖inghamFixedGabrielScalarFamily f T z‖ ≤ _
+  rw [inghamFixedGabrielScalarFamily]
+  apply norm_integral_le_of_norm_le (integrable_const _)
+  filter_upwards [ae_restrict_mem measurableSet_Icc] with t ht
+  rw [norm_mul]
+  have hzshift : z + (t : ℂ) * I ∈
+      Complex.HadamardThreeLines.verticalClosedStrip
+        (1 / 2) inghamPowerSavingRightEdge := by
+    simpa [Complex.HadamardThreeLines.verticalClosedStrip] using hz
+  have hcenter : (inghamFixedGabrielSigma : ℂ) + (t : ℂ) * I ∈
+      Complex.HadamardThreeLines.verticalClosedStrip
+        (1 / 2) inghamPowerSavingRightEdge := by
+    constructor <;> norm_num [inghamFixedGabrielSigma, inghamPowerSavingRightEdge]
+  exact mul_le_mul (hf _ hzshift)
+    (norm_fixedGabrielDual_seed_le_max (z := z)
+      (w := f ((inghamFixedGabrielSigma : ℂ) + (t : ℂ) * I)) hz (hf _ hcenter))
+    (norm_nonneg _) hC
+
+
 end
 
 end RHTower.Sieve
-

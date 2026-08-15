@@ -146,8 +146,7 @@ set_option maxHeartbeats 2000000 in
 set_option synthInstance.maxHeartbeats 1200000 in
 /-- Independence over the deeper field with boundary is independence over the deeper field of the
 non-boundary faces alone. -/
-theorem sineFaceLayer_diffIndepOn_rationalBase {μ : ℂ} {rad : ι → ℝ} (hrad : ∀ k, 0 < rad k)
-    (hind : LinearIndependent ℚ (fun k => μ * (rad k : ℂ)))
+theorem sineFaceLayer_diffIndepOn_rationalBase {μ : ℂ} {rad : ι → ℝ}
     (hω : ∀ k, 0 < (μ * (rad k : ℂ)).im) (N B : Set (Finset ι))
     (hBfaces : ∀ L ∈ B, (Lᶜ : Finset ι).card < 2)
     {I : Set (meroField (Set.univ : Set ℂ))}
@@ -156,6 +155,13 @@ theorem sineFaceLayer_diffIndepOn_rationalBase {μ : ℂ} {rad : ι → ℝ} (hr
     DiffIndepOn ↥(differentialAdjoin ↥meromorphicRationalCoordinateField
       (sineFacePacketUnion (fun k => μ * (rad k : ℂ)) hω N)) I := by
   classical
+  haveI : DifferentialAlgebra
+      ↥(differentialAdjoin ↥meromorphicRationalCoordinateField
+        (sineFacePacketUnion (fun k => μ * (rad k : ℂ)) hω N))
+      (meroField (Set.univ : Set ℂ)) :=
+    ⟨fun x => derivationClosedDifferential_apply _
+      (derivationClosed_differentialAdjoin ↥meromorphicRationalCoordinateField
+        (sineFacePacketUnion (fun k => μ * (rad k : ℂ)) hω N)) x⟩
   have hgen : sineDeeperGenerators (fun k => μ * (rad k : ℂ)) hω (N ∪ B)
       = (meromorphicRationalCoordinateField : Set (meroField (Set.univ : Set ℂ)))
         ∪ (sineFacePacketUnion (fun k => μ * (rad k : ℂ)) hω N
@@ -215,7 +221,7 @@ theorem multipleSineDeeperFaces_diffIndepOn {μ : ℂ} {rad : ι → ℝ} (hrad 
   | succ k ih =>
       have hlayer := sineFaceLayer_diffIndepOn_deeper hrad hind hω k ih
       rw [faceStar_empty_eq_sineFacePacketUnion] at hlayer
-      have hbase := sineFaceLayer_diffIndepOn_rationalBase hrad hind hω
+      have hbase := sineFaceLayer_diffIndepOn_rationalBase hω
         (sineDeeperFaces ι (k + 1)) (sineBoundaryFaces ι) (fun L hL => hL) hlayer
       have hunion := diffIndepOn_union_of_base ih hbase
       rw [sineDeeperFaces_succ, sineFacePacketUnion_union, Set.union_comm]

@@ -213,7 +213,10 @@ def primeChar (α : ℝ) (n : ℕ) : ℂ := Complex.exp ((α * Real.log n : ℝ)
 
 theorem norm_primeChar (α : ℝ) (n : ℕ) : ‖primeChar α n‖ = 1 := by
   rw [primeChar, Complex.norm_exp]
-  simp
+  have hre : ((α * Real.log n : ℝ) * Complex.I).re = 0 := by
+    rw [Complex.mul_re, Complex.I_re, Complex.I_im, Complex.ofReal_re, Complex.ofReal_im]
+    ring
+  rw [hre, Real.exp_zero]
 
 theorem norm_primeChar_le_one (α : ℝ) (n : ℕ) : ‖primeChar α n‖ ≤ 1 := by
   rw [norm_primeChar]
@@ -224,7 +227,8 @@ theorem unitDiskDist_primeChar (α : ℝ) (n : ℕ) :
   rw [unitDiskDist, primeChar, primeChar, ← Complex.exp_conj]
   have hconj : (starRingEnd ℂ) ((↑(α * Real.log n) : ℂ) * Complex.I)
       = -((↑(α * Real.log n) : ℂ) * Complex.I) := by
-    simp [Complex.ext_iff]
+    rw [map_mul, Complex.conj_ofReal, Complex.conj_I]
+    ring
   rw [hconj, ← Complex.exp_add]
   have harg : (↑(-α * Real.log n) : ℂ) * Complex.I + -((↑(α * Real.log n) : ℂ) * Complex.I)
       = (↑(-(2 * α * Real.log n)) : ℝ) * Complex.I := by
@@ -250,7 +254,8 @@ theorem pretentiousDistSq_real_reflect {r : ℕ → ℝ} (α x : ℝ) :
   rw [unitDiskDist, unitDiskDist, primeChar, primeChar]
   have hconj : (starRingEnd ℂ) ((↑(α * Real.log p) : ℂ) * Complex.I)
       = -((↑(α * Real.log p) : ℂ) * Complex.I) := by
-    simp [Complex.ext_iff]
+    rw [map_mul, Complex.conj_ofReal, Complex.conj_I]
+    ring
   rw [← Complex.exp_conj, hconj]
   have hleft : (Complex.exp ((↑(-α * Real.log p) : ℂ) * Complex.I)
       * (starRingEnd ℂ) (r p : ℂ)).re

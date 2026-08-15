@@ -3505,6 +3505,17 @@ prime-pair coordinate. This is source-native ordinary-prime provenance through c
 and Gamma admission, not RH: the missing theorem must still derive annihilation of this class as
 an actual transported target boundary while preserving the complete trace-class remainder.
 
+`DeningerBigWittPrimeSeamDirichletTransport.lean` identifies the correct physical completion of
+those atoms. Their positive square roots cannot form an `ell^2` packet: restricting to pairs
+`(p,2)` leaves one half of the divergent prime harmonic series. Thus the square-summable raw
+`1/(pq)` horizon is a subcritical regularization whose Hilbert energy is `1/(p^2q^2)`, not the
+physical weight. The positive survivor is exact: finite summation of the literal Big-Witt
+quadratic atoms against `|a_p-a_q|^2` equals the already fixed reciprocal-prime Xi seam energy
+coefficient for coefficient. Its uniform boundedness on every actual Xi divisor fibre is
+equivalent to RH. Hence the source-to-physical coefficient transport is now constructed as a
+cofinal Dirichlet form; the remaining RH-bearing theorem is a source-derived uniform upper bound
+or strict-boundary annihilation for that form, not another Hilbert vector comparison.
+
 The next Deninger--Hazewinkel §2 obstruction is also Lean-closed.
 `DeningerDeterminantalLaplace.lean` proves the division-free generalized Laplace containments
 `I_(r+s) <= I_r I_s` and `I_(nk) <= I_n^k` over arbitrary commutative rings.
@@ -4014,6 +4025,12 @@ Consequently Route L is not missing another source object, positive Floquet norm
 `L2` face, scalar weight, or reflected graph. It is missing a singular pre-Hilbert/nuclear
 incidence theorem transporting these already explicit anomalies into fixed physical target
 without completing away their noncompact information.
+
+The Big-Witt atom transport makes this topology statement literal: physical prime-pair mass is
+the cofinal Dirichlet weight `1/(pq)`, has no global half-density vector in the packet Hilbert
+space, and nevertheless has exact finite-window source provenance. Any successful `F_1` must
+therefore control this form directly on the strict source core; factoring it through the existing
+square-summable `1/(pq)` coefficient horizon squares away the physical mass.
 
 **Open core — singular source-to-physical specialization.** The missing square is now fixed:
 
