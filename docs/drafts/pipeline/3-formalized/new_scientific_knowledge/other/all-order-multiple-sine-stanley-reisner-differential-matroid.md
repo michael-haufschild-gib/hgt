@@ -1,8 +1,8 @@
 # Reflection removes exactly one face layer from every Barnes multiple-gamma matroid
 
 - **ID:** `all-order-multiple-sine-stanley-reisner-differential-matroid`
-- **Stage:** 2-fully-proven / needs independent audit
-- **Type:** THEOREM (paper) / ALL-ORDER MULTIPLE-SINE DIFFERENTIAL MATROID
+- **Stage:** 3-formalized / needs independent audit
+- **Type:** THEOREM (Lean) / ALL-ORDER MULTIPLE-SINE DIFFERENTIAL MATROID
 - **Scientific status:** `[NOVELTY UNVERIFIED]` -- the proof combines the new positive-real
   double-sine defect-coset theorem with the proved two-thick constraint-tower mechanism.  Classical
   multiple-sine papers supply the recurrence, Kurokawa--Wakayama cover commensurable periods, and
@@ -1460,3 +1460,87 @@ Three further modules, all umbrella-wired, build green, axiom-clean:
 
 The card's analytic content — `(6)`, `(10)`, `(11)`, `(12)` and the layer comparison behind `(14)` —
 is now formalized unconditionally in Lean.
+
+### The multiplicative classification
+
+`HTGeometry/MultipleSineMultiplicativeAnnihilator` closes equation `(13)`.  The multiple sine of a
+frame is realized as a meromorphic germ — `frameSineMero`, the Barnes cone product against its
+reflection — with **`logDeriv_frameSineMero`**: its logarithmic derivative is exactly the
+multiple-sine coordinate `frameSourceMero`.  Hence a finite product of integer powers of
+structurally translated multiple sines has the exponent operator applied to `L_V` as its logarithmic
+derivative (`logDeriv_translateSineProduct`), and
+
+**`differentialAlgebraicOver_translateSineProduct_iff_mem_veroneseIdeal`**: such a product is
+differentially algebraic exactly when its exponent operator lies in `I_{N-1}`.
+
+## Lean certificate
+
+All modules are wired into `GaloisForLFunctions.HTGeometry`, build green, and the axiom audit
+reports only `propext`, `Classical.choice`, `Quot.sound`.
+
+- `HTGeometry.MultipleSineFaceLatticeCube`
+  - `periodsIntegrallyIndependent_ray`, `mem_faceShiftLattice_iff`
+  - `frameSource_translation_defect_mem`, `faceDifferenceCube_frameSource`
+- `HTGeometry.MultipleSineFaceLabelDescent`
+  - `frameSource_translate_injective_mod_rational`, `frameSource_translate_injective`
+  - `facePacket_label_injective`, `facePalette_injective_of_two_le`
+- `HTGeometry.MultipleSineBottomCubeSeparation`
+  - `algebraicIndependent_linearIndependent_option`, `notMem_sineBottomSpan`
+  - `bottom_translate_sub_cube_notMem_rational`, `bottom_cube_sub_cube_notMem_rational`
+- `HTGeometry.MultipleSineFaceSeparation`
+  - `faceDifferenceCube_reduce`, `frameSource_translate_sub_notMem_rational`
+  - `facePacket_disjoint_of_two_le`
+- `HTGeometry.MultipleSineFaceDisplacementSlice`
+  - `facePacketExponent`, `sineDisplacementSlice_injective`, `sineDisplacementSlice_primitive`
+- `HTGeometry.DifferentialAdjoinBaseAbsorb` — `coe_differentialAdjoin_base`
+- `HTGeometry.MultipleSineBoundaryFaceField` / `MultipleSineBoundaryFaceDA`
+  - `facePacket_boundary_translate_sub_mem`,
+    `differentialAdjoin_sineDeeperGenerators_translate_stable_of_closed`
+  - `differentialAlgebraicOver_facePacket_of_compl_lt_two`
+- `HTGeometry.MultipleSineFaceDifferenceSystemClosed`
+  - `sineFaceDifferenceSystemClosed`,
+    `sineFacePacket_differentialIndependent_of_no_telescoping_closed`
+- `HTGeometry.MultipleSineFaceFreeTelescoping`
+  - `sineFacePalette_differentialIndependent_of_deeper` (and `..._with_boundary`)
+  - `sineDeeperGenerators_le_free_adjoin`, `sineFacePacket_no_telescoping_of_free`
+  - `sineFacePacket_differentialIndependent_of_free`
+- `HTGeometry.MultipleSineFaceLayer`
+  - `facePacketSlice_zpow_injective_of_two_le`, `facePacket_zsmul_translate_sub_mem`
+  - `sineFaceSemilinearEquiv`, `sineFaceStar_diffIndepOn_deeper`
+- `HTGeometry.MultipleSineAllProperFaces`
+  - `sineLayerFace_diffIndepOn_deeper`, `sineFaceLayer_diffIndepOn_deeper`
+  - **`multipleSineProperFacePackets_diffIndepOn`** (equation `(10)`) and its `_rationalBase` form
+- `HTGeometry.MultipleSineMonomialCoefficients`
+  - `sineFaceCoord`, `sineNatSynth`, `meroShiftDiff_sineNatSynth(_notMem)`
+  - **`listShiftDiff_sub_sineNatSynth_mem`**, `multipleSineSelectedFaces_differentialIndependent`
+- `HTGeometry.MultipleSineAnnihilatorExact`
+  - `sinePairTranslate`, `sineDeepCoordinate_injective`, `hypertranscendentalOver_sinePairSynth`
+  - `differentialAlgebraicOver_listShiftDiff_of_compl_le_one` (equation `(6)`)
+  - **`differentialAlgebraicOver_xApply_multipleSine_iff_mem_veroneseIdeal`** (equation `(12)`)
+- `HTGeometry.DifferentialIndependentPerturbation`
+  - `differentialIndependent_of_sub_differentialAlgebraic`,
+    `differentialFamilyMatroid_congr_of_sub_differentialAlgebraic`
+- `HTGeometry.MultipleSineCompleteDifferentialMatroid`
+  - `multipleSineCompleteDifferentialMatroid` (+ `_rationalBase`, `multipleSineCompleteDifferentialRank`)
+- `HTGeometry.MultipleSineOperatorMatroid`
+  - `xDiffApply`, `sinePairRow`, `xDiffApply_sub_pairRowSum_differentialAlgebraic`
+  - **`multipleSineOperatorFamilyMatroid`** (equation `(11)`)
+- `HTGeometry.MultipleSineMultiplicativeAnnihilator`
+  - `frameSineMero`, `logDeriv_frameSineMero`, `logDeriv_translateSineProduct`
+  - **`differentialAlgebraicOver_translateSineProduct_iff_mem_veroneseIdeal`** (equation `(13)`)
+- `HTGeometry.MultipleSineReflectionLayer`
+  - `prod_X_mem_veroneseIdeal_iff`, **`veroneseFaceComplex_sub_one`**, `veroneseIdeal_lt_sub_one`
+    (the one-layer reflection comparison behind `(14)`)
+
+**Hypothesis form.**  The formalized period hypothesis is the corpus's standing *ray* form:
+`ω_k = μ · rad_k` with `rad_k > 0` rationally independent and `0 < im ω_k`.  This is the
+positive-real setting of the Setup after the rotation `z ↦ μ z`, which changes neither the face
+hierarchy nor differential transcendence; every module of the multiple-sine hierarchy in the corpus
+uses it.
+
+## Log
+
+- 2026-08-15 — items 1–5 of the remaining-work list closed; joint independence of all proper face
+  packets, the exact squarefree annihilator, the complete differential matroid, the multiplicative
+  classification and the one-layer reflection comparison formalized unconditionally in Lean.
+  Targeted module builds PASS; axiom audit reports only `propext`, `Classical.choice`, `Quot.sound`.

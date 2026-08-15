@@ -1,10 +1,10 @@
 # Burnol first-wall Cartier residue and Gamma cancellation law
 
 - **ID:** `burnol-first-wall-cartier-residue-cancellation-law`
-- **Stage:** 2 — fully proved on paper
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM / TERMINUS CLASSIFICATION / REPLACEMENT PRODUCER
-- **Scientific status:** `[PAPER-PROVED] [SOURCE-PURE] [NOVELTY UNVERIFIED] [NOT RH]`
-- **Parent:** `../../3-formalized/new_scientific_knowledge/burnol/burnol-prime-two-causal-cartier-collar-law.md`
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [SOURCE-PURE] [NOVELTY UNVERIFIED] [NOT RH]`
+- **Parent:** `burnol-prime-two-causal-cartier-collar-law.md`
 - **Statement:** The stable deep component of the actual prime-two zero-divided crossing
   correlation is an explicit first-wall residue in the one-dimensional kernel of
   `A = partial_u + 1/2`.  The two Fourier orientations of this residue recover the Route R current
@@ -577,9 +577,11 @@ Corollary 5.
 - [x] Gamma--Stein adjoint identity and cancellation
 - [x] constant-collar plateau falsified on the actual source
 - [x] strongest positive survivor extracted
+- [x] quadratic exterior mass `(12)` formalized in Lean, unconditionally and without a Fubini step
+- [x] quartic collar reading and the `8^{-n}` depth pairing `(31)` formalized in Lean
+- [x] Lean formalization after corpus refactor — every equation `(1)`--`(31)` and Corollary 5
 - [ ] broad specialist novelty audit
 - [ ] pre-completion singular orientation law `(34)`
-- [ ] Lean formalization after corpus refactor
 - [ ] RH
 
 ## Log
@@ -701,19 +703,59 @@ dominated-convergence limits `tendsto_burnolBocksteinReading` and
 
 ## Exactly what is still open on this card
 
-Only the two *auxiliary sharpenings* `(12)` and `(31)`:
+Nothing.  Every statement of the card — `(1)`--`(31)` and Corollary 5 — is unconditional in Lean.
+The two auxiliary sharpenings that were last to close are recorded below.
 
-- `(12)` `∫_T^∞ g_ρ = O(T^{-2})`.  The potential collapses this to
-  `∫_T^∞ g_ρ = T^{ρ} ∫_T^∞ Λ(y) y^{-ρ-1} dy` with `Λ(T) = ∫_T^∞ f_0` — the `Λ(T)` boundary terms
-  cancel *exactly* — and `|Λ(y)| ≤ 1/(2y)` gives only `O(1/T)`.  The extra order needs the
-  second primitive: `m = ∫_0^1 P`, `P_0 = P - m` (mean zero, continuous), `P_1 = ∫_0^t P_0`
-  (periodic, bounded, `C^1`), after which `Λ(T) = -P_0(T)/T + O(T^{-2})` and the `P_0/T` terms
-  cancel against the corresponding term of `T^ρ Head(T)`.
-- `(31)` `Q_n = O(8^{-n})` follows from `(12)`: with `X = 2^n e^r/2`, the depth error is
-  `E_n(r) = a e^{-r/2} conj(∫_X^∞ g_ρ) = O(4^{-n} e^{-5r/2})`, so
-  `burnolCollarDepthReading = O(q^{4n})` and `Q_n = q^{2n} · that = O(q^{6n}) = O(8^{-n})`.
-  This additionally needs `|κ_*(r)| e^{-5r/2}` integrable, by the same two-region argument as
-  `abs_burnolCollarKernel_mul_mode_le` with `z^7 e^{-z} ≤ 7^7`.
+- `(12)` `∫_T^∞ g_ρ = O(T^{-2})`.  A pointwise `O(t^{-2})` bound only gives `O(T^{-1})`; the extra
+  order is a cancellation *inside* the integral, exposed by the centred primitive.  With
+  `m = ∫_0^1 P`, `P_0 = P - m` (one-periodic, mean zero, continuous) and `P_1 = ∫_0^t P_0`
+  (one-periodic, bounded, `C^1`), the first integration by parts against `P_0` instead of `P`
+  gives `(15)` with the cell mean already cancelled,
+  `g_ρ(t) = -P_0(t) t^{-2} + (ρ+1) t^{ρ-1} ∫_t^∞ P_0(y) y^{-ρ-2} dy`,
+  and the second, against `P_1`, makes the tail moment of `P_0` itself `O(t^{-σ-2})`, so the second
+  summand is `O(t^{-3})`.  The first summand is the `ρ = 0` case of the same tail moment, hence also
+  `O(T^{-2})` after integration.  No Fubini and no divisor hypothesis is used: `g_ρ` is integrable
+  past every positive cut because `∫_t^∞ p y^{-ρ-1} dy = M_ρ - Head_ρ(t)` is continuous there.
+- `(31)` `Q_n = O(8^{-n})` follows from `(12)`.  Subtracting the `A`-null limit profile
+  `R e^{-r/2}`, whose collar pairing vanishes by `(28)`, turns the normalised reading into a pairing
+  against the depth-profile error
+  `D_n(r) = e^{nL/2} W(nL+r) - R e^{-r/2}`, `L = log 2`.
+  For `nL + r > 0` the error is exactly `e^{-r/2} · a · conj(∫_X^∞ g_ρ)` with `X = e^{nL+r}/2`, so
+  `(12)` gives `‖D_n(r)‖ ≤ 4‖a‖C · 4^{-n} e^{-5r/2}`.  For `nL + r ≤ 0` the error is only
+  `O(e^{-r/2})`, but there `e^{2r} ≤ 4^{-n}` holds identically, which converts that bound into the
+  same majorant.  One integrable majorant `4^{-n}|κ_*(r)| e^{-5r/2}` therefore covers the whole
+  line, giving `burnolCollarDepthReading = O(4^{-n})`, and restoring the depth weight `q^n` on both
+  sides gives `Q_n = O(q^{6n}) = O(8^{-n})`.
+  The integrability of `|κ_*(r)| e^{-5r/2}` is the sharpened kernel bound
+  `|κ_*(r) e^{-r/2}| ≤ 4000 e^{-3|r|}`: on the right the factor `z(2z²-7z+3)` is `O(z) = O(e^{-2r})`,
+  and on the left the two extra powers of `z = π e^{-2r}` needed to turn `e^{-r}` into `e^{3r}` are
+  absorbed by `(2z^5+7z^4+3z^3) e^{-z} ≤ 8123`.
 
-Everything else on the card — `(1)`--`(11)`, `(13)`--`(30)`, and Corollary 5 — is unconditional in
-Lean.
+## Lean formalization of `(12)` and `(31)`
+
+New modules:
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolFirstWallCenteredPrimitive.lean
+formal/GaloisForLFunctions/RHTower/BurnolFirstWallTailMass.lean
+formal/GaloisForLFunctions/RHTower/BurnolFirstWallCollarDepthDecay.lean
+```
+
+| Paper item | Lean declaration |
+|---|---|
+| `m`, `P_0`, `P_1` of `(14)` | `burnolPrimitiveMean`, `abs_burnolPrimitiveMean_le_one`, `burnolCenteredPrimitive`, `burnolCenteredPrimitive_periodic`, `integral_burnolCenteredPrimitive_unit`, `abs_burnolCenteredPrimitive_le_two`, `hasDerivWithinAt_burnolCenteredPrimitive`, `burnolSecondPrimitive`, `burnolSecondPrimitive_periodic`, `abs_burnolSecondPrimitive_le_two`, `hasDerivAt_burnolSecondPrimitive` |
+| first by-parts against `P_0` | `hasDerivWithinAt_burnolCenteredByPartsProduct`, `integral_burnolFractPairKernel_centered_byParts`, `integral_burnolFractPairKernel_Ioi_centered` |
+| second by-parts against `P_1` | `hasDerivAt_burnolSecondByPartsProduct`, `integral_burnolCenteredPrimitiveKernel_byParts`, `integral_burnolCenteredPrimitiveKernel_Ioi_eq`, `norm_integral_burnolCenteredPrimitiveKernel_Ioi_le` |
+| `(15)` with the mean cancelled | `burnolZeroDividedSource_eq_centered` |
+| divisor-free continuity and integrability past a cut | `integral_burnolFractPairKernel_Ioi_eq_sub`, `burnolZeroDividedSource_eq_head_sub`, `continuousOn_burnolZeroDividedSource_pos`, `integrableOn_burnolZeroDividedSource_Ioi` |
+| `(12)` | `burnolTailMassConstant`, `norm_integral_burnolZeroDividedSource_Ioi_le` |
+| sharpened collar decay | `abs_burnolCollarKernel_mul_mode_le_cubic`, `burnolCollarModeFive_le`, `burnolIntegrable_collarModeFive`, `burnolCollarModeFiveMass` |
+| depth-profile error | `burnolCrossingCorrelation_residue_error`, `BurnolQuadraticExteriorMass`, `norm_burnolDepthProfileError_le` |
+| `(31)`, normalized | `burnolCollarDepthConstant`, `norm_burnolCollarDepthReading_le`, `xiDivisor_norm_burnolCollarDepthReading_le` |
+| `(31)`, raw depth pairing | `burnolCollarDepthReading_eq`, `norm_burnolDepthPairing_le`, `xiDivisor_norm_burnolDepthPairing_le` |
+
+The exterior-mass bound is stated for every cut `T > 0` and every `ρ` in the critical strip, with
+the explicit constant `burnolTailMassConstant ρ = ‖ρ+1‖(1 + ‖ρ+2‖/(Re ρ + 2)) + 4`; the divisor
+condition `ξ(ρ) = 0` is used nowhere in `(12)`.  The depth-pairing bound is stated in the abstract
+form `norm_burnolDepthPairing_le`, valid for every aperture-constant source with quadratic exterior
+mass, and instantiated at the zero-divided source.

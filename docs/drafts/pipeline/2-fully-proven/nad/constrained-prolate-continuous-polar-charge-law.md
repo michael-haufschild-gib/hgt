@@ -4527,3 +4527,77 @@ the reusable layers, `RHTower` for the route-specific ones.
   the band operator, which removes the eigenvalue `0` from the decomposition of the Gaussian test
   vector.  With it, every eigencomponent lands in an **even** eigenspace at a **nonzero** eigenvalue,
   where instalment 140 applies.
+
+- 2026-08-15 (hundred-and-forty-fourth instalment) -- **Entirety for integrable amplitudes, and
+  Fourier uniqueness from a window.**  New module
+  `HTGeometry/CompactFourierIntegrableEntire.lean`, wired, axiom-clean.
+
+  * **`hasDerivAt_compactFourier_of_integrable`, `differentiable_compactFourier_of_integrable`,
+    `continuous_compactFourier_of_integrable`** -- the compact Fourier transform
+    `z ↦ integral_a^b f(x) e^{izx} dx` is entire for a merely **integrable** amplitude: on the
+    integration interval the frequency factor is bounded, so `‖f‖` itself dominates the
+    differentiated integrand.  The corpus previously required a continuous amplitude.
+  * **`compactFourier_eq_fourierIntegral`, `ae_eq_zero_of_compactFourier_vanishing`** -- an
+    integrable amplitude supported on `[a,b]` whose compact Fourier transform vanishes on a
+    nondegenerate interval of real frequencies is almost everywhere zero: the identity theorem
+    spreads the vanishing to every frequency and `HTGeometry.ae_eq_zero_of_fourierIntegral_eq_zero`
+    finishes.
+
+- 2026-08-15 (hundred-and-forty-fifth instalment) -- **The Slepian band operator is injective.**
+  New module `RHTower/ProlateBandOperatorInjective.lean`, wired, axiom-clean.
+
+  * **`bandZeroExtend`, `bandInnerTransform`, `eigenExtension_one_eq_compactFourier`** -- the band
+    integral of an `L²` class is the compact Fourier transform of its own inner finite Fourier
+    transform, read at the rescaled frequency `2 pi kappa x`; this is the corpus's scaled Fubini
+    kernel identity, which needs only integrability.
+  * **`eq_zero_of_bandOperatorL2_eq_zero`** -- a kernel element makes that outer transform vanish
+    almost everywhere on the aperture; entirety plus the identity theorem spread this to the whole
+    plane; window Fourier uniqueness kills the inner transform; the same two steps applied once more
+    kill the element.
+  * **`bandEigenspace_zero_eq_bot`, `bandComponent_zero_eq_zero`** -- so the eigenvalue `0`
+    contributes nothing to the Hilbert-sum decomposition.
+
+- 2026-08-15 (hundred-and-forty-sixth instalment) -- **`s <= 1/2` is a theorem.**  New module
+  `RHTower/ProlateLowSeparationMode.lean`, wired, axiom-clean.
+
+  * **`exists_even_joint_prolate_eigen_separation_lt_half`** -- for every `c >= 400` there is an
+    even joint band/prolate eigenfunction with
+
+    ```text
+    radialSeparationRatio c eta  <  1/2,
+    ```
+
+    i.e. whose exterior turning point lies strictly inside the aperture.
+
+    The proof is the variational argument assembled from instalments 139--145.  Suppose every mode
+    had separation ratio at least `1/2`.  Decompose the Gaussian's band class over the band
+    operator's eigenspaces (instalment 141); injectivity removes the eigenvalue `0` (145); each
+    component is even (143), so instalment 140 makes its prolate quadratic form at most `-(c^2/2)`
+    times its squared norm; the prolate action is symmetric, so summing gives
+
+    ```text
+    integral_{-1}^{1} (L_c v) v  <=  -(c^2/2) integral_{-1}^{1} v^2,
+    ```
+
+    which contradicts the Gaussian estimate of instalment 139.
+
+- 2026-08-15 (hundred-and-forty-seventh instalment) -- **The exterior channel bound, with no
+  hypotheses.**  New module `RHTower/ProlateUnconditionalChannelBound.lean`, wired, axiom-clean.
+
+  * **`exists_radialProlate_data_separation_le_half`** -- the selected mode's endpoint value cannot
+    vanish (`value_one_ne_of_joint_prolate_band_eigen`), endpoint normalization preserves the
+    equation, and the separation ratio is nonnegative, so the full radial data package
+    `0 <= s <= 1/2`, `R 1 = 1`, smooth, even, radial ODE exists at every `c >= 400`.
+  * **`exists_radialProlate_channel_bound`** -- feeding that package to the corpus's exact-channel
+    estimate `tsum_norm_integral_radialProlate_all_channels_le` gives, unconditionally for every
+    `c >= 400` and every `X >= 1`,
+
+    ```text
+    ‖integral_1^X R‖ + sum_j ‖integral_1^X R((2+j)·)‖
+      <= prolateEndpointConstant/(c sqrt c) + 6750 · exactEnergyBudget/(sqrt c · c).
+    ```
+
+    Every hypothesis of `(17)`/`(11)`'s analytic core is now discharged.  What remains for the card
+    is the *realization*: exhibiting the constrained source whose Fourier samples are this profile,
+    i.e. upgrading the selected mode from a band eigenfunction to a finite-Fourier eigenfunction and
+    running the two-mode mean-zero construction on it.

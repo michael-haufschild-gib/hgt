@@ -1023,6 +1023,9 @@ is Loewner-dominated:
 G_zero,F <= T_F G_source,F T_F^*,                                                          (E52)
 ```
 
+Here and below `A <=_L B` means `(B-A)` is positive semidefinite.  It is not the entrywise order
+on complex matrices.
+
 **then** taking the operator trace on both sides yields:
 
 ```text
@@ -1045,6 +1048,13 @@ which would force the strict contradiction `2 < 2`, proving `S = emptyset` (RH).
   is circular (the same error as Attack 6).
 - **Correct Formulation:** W-H184 is the **exact, channel-separated operator bridge** needed to bypass
   coherent cancellation, not a completed proof.
+
+`FrankensteinMatrixCompleteBoundaryRestriction.lean` now formalizes the cancellation defect,
+Loewner trace monotonicity, and the finite direct restriction law.  It proves that the naked direct
+restriction law is **equivalent to RH**.  Therefore merely postulating finite matrices satisfying
+`G_zero <=_L G_source` is circular.  The missing theorem must construct those matrices from the
+literal completed source boundary law, preserving prime-depth labels and coefficients; that
+source-derived construction is the genuine open content of W-H184.
 
 - 2026-08-15 -- Formulated the matrix-complete Cauchy-Riesz operator transport W-H184 (Attack 22),
   isolated the trace capacity reduction, and strictly defined the open operator-norm gate `||T_F|| <= 1`.
@@ -1237,19 +1247,30 @@ exactly the damping that makes the series finite.
 5. **CCM--Route-P source seam:**
    `FrankensteinCCMRoutePBaseCubicGreenSourceBridge.lean` identifies the same source mass inside the
    literal CCM prime functional and isolates polar--Gamma surplus as the completion fracture.
+6. **Matrix-complete receiver and scalar no-go:**
+   `FrankensteinMatrixCompleteBoundaryRestriction.lean` gives a positive two-column Gram with trace
+   `2` and coherent sum `0`, proves Loewner trace monotonicity for the order
+   `A <=_L B :<=> (B-A).PosSemidef`, and proves that the finite direct restriction law is equivalent
+   to RH.  This closes the receiver, not the producer.
 
 Attacks 24--25 provide exact one-profile moment formulas but no operator obstruction.  Attack 26's
 claimed high-frequency bound is false; only the damped overlap series `(E70*)` survives.
 
-### The Genuine Open Core: Matrix-Complete Operator Transport `[CONJECTURE W-H184]`
+### The Genuine Open Core: Source-Derived Matrix-Complete Transport `[CONJECTURE W-H184]`
 
 ```text
-[CONJECTURE W-H184 -- MATRIX-COMPLETE OPERATOR BOUNDARY TRANSPORT]
-On each finite spectral aperture F, there exists a coefficient-faithful contraction operator
+[CONJECTURE W-H184 -- SOURCE-DERIVED MATRIX-COMPLETE OPERATOR BOUNDARY TRANSPORT]
+The literal completed pole--Gamma--von-Mangoldt boundary identity at the P-G185 wall constructs,
+without zero-fed choices or an RH-equivalent hypothesis, a coefficient-faithful contraction
 T_F: H_source,F -> H_zero,F with ||T_F|| <= 1 such that the zero Gram matrix is Loewner-dominated:
 
 G_zero,F <= T_F G_source,F T_F^*.                                                          (E54)
 ```
+
+The conclusion of `(E54)` alone is already equivalent to RH in Lean.  W-H184 is therefore a
+producer theorem: its proof must exhibit `T_F` from source-side data and the completed boundary
+identity.  Repackaging `(E54)` as an assumption, capacity law, or target-indexed source packet does
+not advance the route.
 
 ### Why W-H184 is the Correct Target:
 Taking the operator **trace** of both sides of `(E54)`:
@@ -1278,6 +1299,8 @@ Because operator trace is strictly monotone under Loewner order (`A <= B ==> Tr(
 | **Single Zero Quantum $Q_{\text{raw}} \ge 2$** | **LEAN PROVED** | `XiWardCubicRawConormalModularDoublet.lean` |
 | **Multiplicity $1/m$ Fiber Split** | **LEAN PROVED** | `RoutePCompletedXiConormalMultiplicitySplit.lean` |
 | **CCM--Route-P cubic Green source identity** | **LEAN PROVED** | `FrankensteinCCMRoutePBaseCubicGreenSourceBridge.lean` |
+| **PSD Gram trace survives coherent cancellation** | **LEAN PROVED** | `FrankensteinMatrixCompleteBoundaryRestriction.lean` |
+| **Direct matrix restriction law iff RH** | **LEAN PROVED (TERMINAL RECEIVER ONLY)** | `FrankensteinMatrixCompleteBoundaryRestriction.lean` |
 | **One-profile weighted Plancherel norm identity** | **PAPER ALGEBRA ONLY** | Attack 20 |
 | **Hardy off-line quartet local sign window** | **PAPER ALGEBRA ONLY** | Attack 21 |
 | **Scale expectation/dispersion formulas** | **PAPER ALGEBRA; NO TRANSPORT CONSEQUENCE** | Attacks 24--25 |
@@ -1287,4 +1310,4 @@ Because operator trace is strictly monotone under Loewner order (`A <= B ==> Tr(
 | **Global Total Positivity via $\operatorname{PF}_\infty$** | **FALSIFIED (CIRCULAR VIA SCHOENBERG)** | Attack 14 |
 | **Analytical Moment Saturation $\sum 2/\gamma_k^2 = \sigma_1$** | **FALSIFIED (CIRCULAR WITH RH)** | Attack 16 |
 | **Unweighted Riesz Extinction $\|P_+\|=1$** | **FALSIFIED (NORM EQUIVOCATION)** | Attack 23 |
-| **Matrix-Complete Operator Transport (W-H184)** | **GENUINE OPEN CORE** | Unconditional weighted operator norm ‖T_F‖ ≤ 1 |
+| **Source-derived Matrix-Complete Transport (W-H184)** | **GENUINE OPEN PRODUCER** | Construct `T_F` from completed source boundary data; direct domination alone is RH-equivalent |

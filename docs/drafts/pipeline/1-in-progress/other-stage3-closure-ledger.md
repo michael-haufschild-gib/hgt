@@ -1507,3 +1507,34 @@ hypothesis that Runge layer will consume.
   Only side condition: `1/s ∉ ℕ`, which is a domain condition of the displayed formula itself
   (`csc(π/s)` and `ζ(sj)` both have poles there).  All capstones axiom-clean.  Numerically
   certified at genus `0,1,2,3`.
+
+- 2026-08-15 — `all-order-multiple-sine-stanley-reisner-differential-matroid` CLOSED and promoted to
+  Stage 3.  The whole analytic core is now unconditional: joint differential independence of the
+  external packets of *every* face retaining two periods
+  (`HTGeometry/MultipleSineAllProperFaces.multipleSineProperFacePackets_diffIndepOn`), the exact
+  squarefree annihilator `Ann_DA(L_V) = I_{N-1}`
+  (`MultipleSineAnnihilatorExact.differentialAlgebraicOver_xApply_multipleSine_iff_mem_veroneseIdeal`),
+  the complete matroid law for arbitrary difference-differential operators
+  (`MultipleSineOperatorMatroid.multipleSineOperatorFamilyMatroid`), the multiplicative
+  classification (`MultipleSineMultiplicativeAnnihilator`), and the one-layer reflection comparison
+  (`MultipleSineReflectionLayer`).  Fifteen new modules.
+
+  Three obstructions had to be solved rather than mirrored from the elliptic-gamma chain.
+  (i) *The sine coface is exact only modulo `ℂ(z)`.*  Faithful labelling therefore had to be proved
+  in the modulo-`ℂ(z)` form and descended by corank induction, and the free-telescoping step needed
+  the affine one-slice obstruction `affineSlice_ne_coboundary_of_twisted_ambient_shift` rather than
+  the one-slice one.
+  (ii) *The deeper face field is not translation stable on corank-≥2 families*, because the coface of
+  a maximal face has corank 1.  Fix: put the boundary faces into the generating family — their
+  packets are translates of the order-one source, so their defect is *rational* — and remove them at
+  the end with `diffIndepOn_differentialAdjoin_iff_of_differentialAlgebraicOver`.  Stability then
+  needs only closure under deleting one more direction (`MultipleSineBoundaryFaceField`).
+  (iii) *Cross-face separation.*  Difference cubes collapse both faces onto maximal ones; the bottom
+  layer separates them because `{1} ∪ (bottom star)` is `ℂ(z)`-linearly independent — a consequence
+  of algebraic independence via the monomial basis of `MvPolynomial`
+  (`algebraicIndependent_linearIndependent_option`).
+
+  Reusable general tools produced on the way: `DifferentialAdjoinBaseAbsorb.coe_differentialAdjoin_base`
+  (adjoining over a derivation-closed base versus adjoining the base with the generators) and
+  `DifferentialIndependentPerturbation` (differential independence, and the differential family
+  matroid, are invariant under differentially algebraic perturbations).

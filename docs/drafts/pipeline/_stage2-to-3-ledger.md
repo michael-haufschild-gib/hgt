@@ -1370,3 +1370,29 @@ convergence converts the pointwise gradient bound into the quadratic translate h
 
 Together with `FiniteMaxGradient` this is the complete analytic engine the torus/variance cluster
 needs; what remains per card is the concrete phase-orbit computation of the gradient bound.
+
+## In flight: low-replica complete-incidence influence law
+
+The analytic engine is complete and axiom-clean; what is left is assembly.
+
+Built:
+
+- `HTGeometry/BinomialTailDerivativeBound` — `(11)`: the replica reporter's derivative is at most the
+  replica order, because a binomial probability term is one summand of an expansion of one; plus the
+  Lipschitz form on the unit interval.
+- `HTGeometry/PhaseOrbitGradient` — `(15)`: the overlap amplitude, its exact coordinate derivative
+  `-(2πi)e^{-2πix_j}⟪z,u_j⟫`, the score `‖A‖²` differentiated by mathlib's `HasFDerivAt.norm_sq`,
+  the squared-gradient bound `∑_j |∂_j X_z|² ≤ 16π²p` for `‖A‖ ≤ 1`, the same bound for the complete
+  maximum via `FiniteMaxGradient`, and `(12)` for a Lipschitz reporter of the maximum.
+- `HTGeometry/FiniteMaxGradient`, `HTGeometry/UnitTorusPoincare`,
+  `HTGeometry/TorusTranslateDifference` — the general engine.
+
+Remaining for the card:
+
+1. the torus form of the orbit (`fourier (-1) (t j)` in place of `exp(-2πi x_j)`) and the identity
+   `torusLift (torus score) = completeScore`, so the observable is a `C(UnitAddTorus d, ℂ)`;
+2. `‖A‖ ≤ 1` from `∑_j ‖u_j‖² ≤ 1` — the Bessel step `(14)` itself is done
+   (`sum_sq_inner_le_of_orthogonal`);
+3. `(13)` by `variance_le_of_ae_fderiv_bound` with `K = 16π²r²p_*`, giving exactly `4r²p_*`;
+4. Theorem A `(5)`--`(10)` from `BinomialTailBetaThreshold` plus the replica-order arithmetic;
+5. Theorem C `(16)`--`(23)`, elementary given Theorem B.

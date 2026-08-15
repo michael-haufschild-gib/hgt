@@ -156,6 +156,151 @@ theorem sum_sq_fderiv_overlapScore_le (u : d → V) (z : V) (x : d → ℝ) {p :
         have := Real.pi_pos
         positivity
 
+section CompleteScore
+
+variable {Z : Type*} [Fintype Z] [Nonempty Z]
+
+/-- The complete-dictionary incidence score of a finite target family. -/
+def completeScore (u : d → V) (z : Z → V) : (d → ℝ) → ℝ :=
+  finiteMax fun w => overlapScore u (z w)
+
+/-- **Squared gradient of the complete incidence score.**  At every point of differentiability the
+complete maximum inherits the single-target gradient bound. -/
+theorem sum_sq_fderiv_completeScore_le (u : d → V) (z : Z → V) (x : d → ℝ) {p : ℝ}
+    (hdiff : DifferentiableAt ℝ (completeScore u z) x)
+    (hA : ∀ w : Z, ‖overlapAmp u (z w) x‖ ≤ 1)
+    (hc : ∀ w : Z, ∑ j : d, ‖(inner ℂ (z w) (u j) : ℂ)‖ ^ 2 ≤ p) :
+    ∑ j : d, (fderiv ℝ (completeScore u z) x (Pi.single j 1)) ^ 2 ≤ 16 * Real.pi ^ 2 * p := by
+  obtain ⟨w, hw⟩ := exists_fderiv_finiteMax_eq
+    (X := fun w : Z => overlapScore u (z w))
+    (fun w => (differentiable_overlapScore u (z w)) x) hdiff
+  have hrw : ∀ j : d, fderiv ℝ (completeScore u z) x (Pi.single j 1) =
+      fderiv ℝ (overlapScore u (z w)) x (Pi.single j 1) := by
+    intro j
+    rw [completeScore, hw]
+  rw [Finset.sum_congr rfl fun j _ => by rw [hrw j]]
+  exact sum_sq_fderiv_overlapScore_le u (z w) x (hA w) (hc w)
+
+/-- **Squared gradient of a Lipschitz reporter of the complete score.** -/
+theorem sum_sq_fderiv_reporter_le (u : d → V) (z : Z → V) (x : d → ℝ) {p r : ℝ}
+    (hr : 0 ≤ r) {B : ℝ → ℝ} {B' : ℝ}
+    (hB : HasDerivAt B B' (completeScore u z x)) (hB' : |B'| ≤ r)
+    (hdiff : DifferentiableAt ℝ (completeScore u z) x)
+    (hA : ∀ w : Z, ‖overlapAmp u (z w) x‖ ≤ 1)
+    (hc : ∀ w : Z, ∑ j : d, ‖(inner ℂ (z w) (u j) : ℂ)‖ ^ 2 ≤ p) :
+    ∑ j : d, (fderiv ℝ (fun y => B (completeScore u z y)) x (Pi.single j 1)) ^ 2 ≤
+      r ^ 2 * (16 * Real.pi ^ 2 * p) := by
+  have hcomp : HasFDerivAt (fun y => B (completeScore u z y))
+      (B' • fderiv ℝ (completeScore u z) x) x := by
+    exact hB.comp_hasFDerivAt x hdiff.hasFDerivAt
+  have hval : ∀ j : d, fderiv ℝ (fun y => B (completeScore u z y)) x (Pi.single j 1) =
+      B' * fderiv ℝ (completeScore u z) x (Pi.single j 1) := by
+    intro j
+    rw [hcomp.fderiv]
+    simp [smul_apply]
+  have hbase := sum_sq_fderiv_completeScore_le u z x hdiff hA hc
+  have hnn : (0 : ℝ) ≤ ∑ j : d, (fderiv ℝ (completeScore u z) x (Pi.single j 1)) ^ 2 :=
+    Finset.sum_nonneg fun j _ => sq_nonneg _
+  have hsq : ∀ j : d, (fderiv ℝ (fun y => B (completeScore u z y)) x (Pi.single j 1)) ^ 2 =
+      B' ^ 2 * (fderiv ℝ (completeScore u z) x (Pi.single j 1)) ^ 2 := by
+    intro j
+    rw [hval j, mul_pow]
+  rw [Finset.sum_congr rfl fun j _ => hsq j, ← Finset.mul_sum]
+  have hB2 : B' ^ 2 ≤ r ^ 2 := by
+    have := abs_nonneg B'
+    nlinarith [hB', sq_abs B']
+  calc B' ^ 2 * ∑ j : d, (fderiv ℝ (completeScore u z) x (Pi.single j 1)) ^ 2
+      ≤ r ^ 2 * ∑ j : d, (fderiv ℝ (completeScore u z) x (Pi.single j 1)) ^ 2 :=
+        mul_le_mul_of_nonneg_right hB2 hnn
+    _ ≤ r ^ 2 * (16 * Real.pi ^ 2 * p) := by
+        refine mul_le_mul_of_nonneg_left hbase ?_
+        positivity
+
+end CompleteScore
+
+section Bessel
+
+/-- **Component-overlap budget.**  For a pairwise orthogonal family with squared norms at most `p`,
+the squared component overlaps of a unit target sum to at most `p`. -/
+theorem sum_sq_inner_le_of_orthogonal [DecidableEq V] {u : d → V}
+    (horth : ∀ i j : d, i ≠ j → (inner ℂ (u i) (u j) : ℂ) = 0)
+    {p : ℝ} (hp0 : 0 ≤ p) (hp : ∀ j : d, ‖u j‖ ^ 2 ≤ p) (z : V) (hz : ‖z‖ ≤ 1) :
+    ∑ j : d, ‖(inner ℂ z (u j) : ℂ)‖ ^ 2 ≤ p := by
+  classical
+  set S : Finset d := Finset.univ.filter fun j => u j ≠ 0 with hS
+  have hzero : ∀ j ∈ Finset.univ \ S, ‖(inner ℂ z (u j) : ℂ)‖ ^ 2 = 0 := by
+    intro j hj
+    have hj' : ¬ (u j ≠ 0) := by
+      have := Finset.mem_sdiff.mp hj
+      simpa [hS] using this.2
+    have hu : u j = 0 := by
+      by_contra hc
+      exact hj' hc
+    rw [hu]
+    simp
+  have hsplit : ∑ j : d, ‖(inner ℂ z (u j) : ℂ)‖ ^ 2 =
+      ∑ j ∈ S, ‖(inner ℂ z (u j) : ℂ)‖ ^ 2 := by
+    refine (Finset.sum_subset (Finset.subset_univ S) ?_).symm
+    intro j _ hj
+    have hj' : j ∈ Finset.univ \ S := Finset.mem_sdiff.mpr ⟨Finset.mem_univ j, hj⟩
+    exact hzero j hj'
+  have hnorm : ∀ j ∈ S, u j ≠ 0 := by
+    intro j hj
+    simpa [hS] using (Finset.mem_filter.mp hj).2
+  have horthonormal : Orthonormal ℂ fun j : S => ((‖u (j : d)‖⁻¹ : ℝ) : ℂ) • u (j : d) := by
+    rw [orthonormal_iff_ite]
+    intro i j
+    by_cases hij : i = j
+    · subst hij
+      have hne := hnorm (i : d) i.2
+      have hpos : (0 : ℝ) < ‖u (i : d)‖ := norm_pos_iff.mpr hne
+      rw [inner_smul_left, inner_smul_right, inner_self_eq_norm_sq_to_K (𝕜 := ℂ), if_pos rfl,
+        Complex.conj_ofReal]
+      have hne0 : ((‖u (i : d)‖ : ℝ) : ℂ) ≠ 0 := by
+        simpa using hpos.ne'
+      push_cast
+      field_simp
+      norm_cast
+    · have hij' : (i : d) ≠ (j : d) := fun hc => hij (Subtype.ext hc)
+      rw [inner_smul_left, inner_smul_right, horth _ _ hij', if_neg hij]
+      simp
+  have hbessel := horthonormal.sum_inner_products_le (s := Finset.univ) (x := z)
+  have hterm : ∀ j : S, ‖(inner ℂ z (u (j : d)) : ℂ)‖ ^ 2 ≤
+      p * ‖(inner ℂ (((‖u (j : d)‖⁻¹ : ℝ) : ℂ) • u (j : d)) z : ℂ)‖ ^ 2 := by
+    intro j
+    have hne := hnorm (j : d) j.2
+    have hpos : (0 : ℝ) < ‖u (j : d)‖ := norm_pos_iff.mpr hne
+    have hval : ‖(inner ℂ (((‖u (j : d)‖⁻¹ : ℝ) : ℂ) • u (j : d)) z : ℂ)‖ =
+        ‖u (j : d)‖⁻¹ * ‖(inner ℂ z (u (j : d)) : ℂ)‖ := by
+      rw [inner_smul_left, norm_mul, Complex.conj_ofReal, Complex.norm_real,
+        Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+      congr 1
+      rw [← inner_conj_symm, RCLike.norm_conj]
+    rw [hval, mul_pow, ← mul_assoc]
+    have hsq : ‖u (j : d)‖ ^ 2 ≤ p := hp (j : d)
+    have hinv : ((‖u (j : d)‖⁻¹) : ℝ) ^ 2 = (‖u (j : d)‖ ^ 2)⁻¹ := by rw [← inv_pow]
+    have hsqpos : (0 : ℝ) < ‖u (j : d)‖ ^ 2 := by positivity
+    have hnn : (0 : ℝ) ≤ ‖(inner ℂ z (u (j : d)) : ℂ)‖ ^ 2 := sq_nonneg _
+    rw [hinv]
+    have hfrac : (1 : ℝ) ≤ p * (‖u (j : d)‖ ^ 2)⁻¹ := by
+      rw [le_mul_inv_iff₀ hsqpos, one_mul]
+      exact hsq
+    nlinarith [hfrac, hnn]
+  have hcoe : ∑ j ∈ S, ‖(inner ℂ z (u j) : ℂ)‖ ^ 2 =
+      ∑ j : S, ‖(inner ℂ z (u (j : d)) : ℂ)‖ ^ 2 := (Finset.sum_coe_sort S _).symm
+  rw [hsplit, hcoe]
+  calc ∑ j : S, ‖(inner ℂ z (u (j : d)) : ℂ)‖ ^ 2
+      ≤ ∑ j : S, p * ‖(inner ℂ (((‖u (j : d)‖⁻¹ : ℝ) : ℂ) • u (j : d)) z : ℂ)‖ ^ 2 :=
+        Finset.sum_le_sum fun j _ => hterm j
+    _ = p * ∑ j : S, ‖(inner ℂ (((‖u (j : d)‖⁻¹ : ℝ) : ℂ) • u (j : d)) z : ℂ)‖ ^ 2 := by
+        rw [← Finset.mul_sum]
+    _ ≤ p * ‖z‖ ^ 2 := mul_le_mul_of_nonneg_left hbessel hp0
+    _ ≤ p := by
+        have hz2 : ‖z‖ ^ 2 ≤ 1 := by nlinarith [norm_nonneg z, hz]
+        nlinarith [hz2, hp0]
+
+end Bessel
+
 end PhaseOrbit
 
 end GaloisForLFunctions.HTGeometry
