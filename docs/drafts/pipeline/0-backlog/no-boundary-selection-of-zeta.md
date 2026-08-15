@@ -309,7 +309,7 @@ Current narrowed residue:
 
 Status: source-orientation residue sharpened.
 
-`../2-fully-proven/finite-rank-one-selector-no-free-lunch.md` proves that for a finite rank-one repair family
+`../3-formalized/not_new_scientific_knowledge/finite-rank-one-selector-no-free-lunch.md` proves that for a finite rank-one repair family
 
 `H(t)=A+t vv^*`
 

@@ -8231,3 +8231,117 @@ integral of the slice `L²` norms, with no integrability hypothesis anywhere.
 All declarations audit to `[propext, Classical.choice, Quot.sound]`.  Theorem 1 now needs only `(4)`
 — the `x`-derivative bounds on `B(x+iσ)`, for which the sharp vertical polygamma order
 `norm_iteratedDeriv_succ_digamma_vertical_pow` is the exact input — and the assembly `(17)`/`(18)`.
+
+## AAP. `(4)`, `(17)`, `(18)` of the wall-block card
+
+```text
+RHTower/WallSymbolFrequencyJets.lean               (4) the symbol jets and their decay
+HTGeometry/PhaseGeneratorIntegrationByParts.lean   (17), (18) the two integrations by parts
+```
+
+**`(4)` is two polygamma jets and a chain rule.**  On the shifted line the symbol is
+`r(x+iσ) = ψ((1−σ)+ix) + ψ((1+σ)−ix) + 2γ`, so its `j`-th frequency derivative is
+`i^j ψ^{(j)}((1−σ)+ix) + (−i)^j ψ^{(j)}((1+σ)−ix)`: the inner derivatives are the constants `±i`, so
+the jets differentiate into each other with no extra factors.  The magnitude bound is then two
+applications of the sharp vertical polygamma order
+`norm_iteratedDeriv_succ_digamma_vertical_pow`, whose constant does not depend on the abscissa —
+the only use of `0 < σ < 1` is that both abscissas `1−σ` and `1+σ` are positive, hence off the
+digamma poles.  Differentiability of the jets comes from the corpus pair
+`analyticAt_digamma_of_offPoles` / `analyticAt_iteratedDeriv_of_analyticAt`.
+
+**`(17)`/`(18)` are not an oscillatory-integral argument.**  The gain has nothing to do with
+oscillation: from `E' = −iEC` with `C` a *unit*, `E = iE'C⁻¹` identically, so every integral of `E`
+against a commuting amplitude `G` integrates by parts once, trading `G` for `(C⁻¹G)'` and leaving
+the boundary term `i[EC⁻¹G]`.  Iterating with `G = 1` and then `G = (C⁻¹)'` gives
+
+```text
+∫ E = i[E C⁻¹] + [E C⁻¹(C⁻¹)'] − ∫ E [C⁻¹(C⁻¹)']',
+```
+
+exactly `(18)`, with the two `i` factors collapsing to `−1` in the second term.  Each step costs one
+resolvent power, which is why a generator with a growing numerical floor gives genuine decay at
+every order.  The amplitude derivatives are the `InverseFamilyDerivative` jets, so `(19)` supplies
+their bounds directly.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.  Theorem 1's displayed
+ingredients `(3)`, `(4)`, `(5)`, `(13)`, `(15)`–`(19)`, `(21)`–`(23)` are now all Lean; what remains
+is the final assembly of `(11)` itself, and then Theorem 2.
+
+## AAQ. `(22)` in quantitative form
+
+```text
+HTGeometry/LaplaceSuperpositionBound.lean
+```
+
+`lintegral_sq_laplaceSuperposition_le`: a profile dominated by the total mass of a family whose
+slice `L²` norms obey `K e^{-ρs}` has `L²` norm at most `K/ρ`.  Minkowski reduces this to the scalar
+mass `∫₀^∞ K e^{-ρs} ds = K/ρ`, evaluated by the fundamental theorem on the ray.  This is the exact
+shape the card needs: through the Laplace representation `(21)` the shift `L` and the numerical
+floor of the generator *add*, so the slice decay rate is their sum and the constant is its
+reciprocal — a shift growing with the block index therefore buys a block-independent constant, which
+is why `(11)` is uniform in `m`.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AAR. First audit of `coalescing-anchor-parity-locking-reduction`
+
+The card had never been audited (7222 lines).  Structure, for whoever picks it up:
+
+```text
+ledger entries      SR-65 … SR-104 (40)
+named theorems      56 headed `### Theorem …` / `#### Theorem …`, running A … AO
+sections            1 Result … 14 Full-carrier boundary-layer classification (§14 alone is ~5800
+                    lines and carries §§14.1–14.19)
+card-level status   [PAPER-PROVED] [UNCONDITIONAL CORE + RH-CONDITIONAL GLOBAL-LIMIT AUDIT]
+                    [LEAN-PROVED SR-99 SCHUR + SR-100 CORRELATION CORES]
+                    [LEAN READ-ONLY AUDITED ELSEWHERE]
+no `## Gates` list  — unlike every other card in this folder
+```
+
+**The RH split is explicit in the header and must be respected.**  The card states: RH is *not*
+used in §§2–14.7, in the finite spectral-shift identities/selector of §§14.13–14.14, in the literal
+normalized-Hankel theorems of §§14.15–14.19, or in the first-jet part of Theorem AC; RH *is* the
+hypothesis of the global-limit and Xi-target audits of §§14.8–14.14 and of the complete-family
+consequences of Theorems AC–AL and AN–AO.  Theorem AM is an unconditional abstract compatibility
+construction from RH-declared target data.  Nineteen separate places in the body carry an explicit
+RH assumption.
+
+**Consequence for promotion.**  Only the unconditional core is a formalization target; the
+RH-conditional theorems are conditional statements and must be formalized *as implications from a
+declared target datum*, not as theorems.  Any promotion certificate has to say, theorem by theorem,
+which of the 56 falls on which side.
+
+**Lean already cited by the card** (read-only, not written for it):
+
+```text
+HTGeometry/RidgeSourceCorrelationLocalization.lean     SR-100 correlation core
+HTGeometry/ComplementaryFeshbachImprovement.lean       the complementary barrier
+HTGeometry/RidgeMatchedCoherenceBarrier.lean           the matched coherence barrier
+```
+
+plus four further modules named at lines 6286, 6474, 6549, 6605 for the `r/14` consequence, the
+`1/57` scalar threshold, the finite-index incompatibility criterion `256 C_T τ_H ≤ r`, and the
+`1/128` low-band constant.
+
+**Recommended order.**  Audit §§2–7 first (Theorems A–G, the unconditional coalescing-anchor
+matching and first-jet normality core); they are self-contained and do not touch §14.  §14's
+unconditional strata are §§14.13–14.19, which are where the already-cited Lean sits.
+
+## AAS. `(14)`, `(15)` homogeneous half of `polynomial-carrier-gamma-dimension-wall`
+
+```text
+RHTower/PolyDistortedHomogeneousThreshold.lean
+```
+
+The card's `(14)` is an exact threshold, not an estimate: the distorted homogeneous density is
+`|x|^{-1-2σ+2m}`, and `integrableOn_Ioi_rpow_iff` turns integrability on a terminal ray into
+`-1-2σ+2m < -1`, i.e. `m < σ`.  Both directions are recorded, because the card's actual point is the
+*negative* one — an arbitrary polynomial group degree is not enough, and at `m ≥ σ` no constant
+rescues the homogeneous component, since forcing only changes the particular solution.
+
+The positive half of `(15)` is then `lintegral_sq_powerTail_ne_top` at exponent `1/2 + σ − m > 1/2`.
+What `(15)` still borrows is the *forced* half, which is wall-block Theorem 2 — the same borrowing
+pattern as `(16)` of `root-retained-exterior-dilation`, and the reason this card cannot be promoted
+before the wall-block card.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.

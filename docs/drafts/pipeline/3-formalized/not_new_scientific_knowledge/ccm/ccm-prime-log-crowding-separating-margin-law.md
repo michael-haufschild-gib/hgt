@@ -1,7 +1,7 @@
 # Cofinal prime separation forces ground-state oscillation
 
 - **ID:** `ccm-prime-log-crowding-separating-margin-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized (paper proof; Lean certificate alongside)
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent results:** the fundamental theorem for a differentiable operator orbit, the Rayleigh
@@ -301,3 +301,40 @@ around the missing analytic specialization, so no Lean file is added.
 - [ ] combine the margin with the reduced-resolvent gap and Mellin evaluation norm
 - [ ] prove orbit-sensitive cofinal inertia transport
 - [ ] RH
+
+## Lean status
+
+**Formalized unconditionally, 2026-08-15**, in
+`formal/GaloisForLFunctions/HTGeometry/ChannelCrowdingMargin.lean`.  The earlier decision
+("formalizing only `(5)` would be a wrapper around the missing analytic specialization") is
+answered by stating the whole chain `(5)`--`(8)`, `(17)`, `(22)` for an arbitrary differentiable
+channel orbit: nothing in the card's proved content is specific to the CCM realization.
+
+- `pairDiffCoeff`, `pairDiffCoeff_normSq`, `pairDiffCoeff_combination` — the two-node test vector
+  of the proof of `(5)`, in the homogeneous normalization that avoids a square root.
+- **`separatingMargin_le_half_dist_sq`** — equation `(6)`: a separating margin is at most half the
+  squared distance between any two channels.
+- **`norm_orbit_sub_le`** — equation `(7)`: the mean value inequality bounds the channel distance by
+  the node spacing times the orbit velocity.
+- **`separatingMargin_le_of_orbit`** — equation `(5)`: `sigma <= |h_i - h_j|^2 M^2 / 2` for any
+  differentiable channel orbit with velocity bound `M`.  The translation form `(10)` is the case
+  `M = ||D xi||`, and the symmetric-orbit form `(14)` is the case `M = 2||D xi||`, since
+  `delta^2 (2||D xi||)^2 / 2 = 2 delta^2 ||D xi||^2`.
+- **`orbit_velocity_lower_bound`** — equation `(8)`, `(11)`: the exact resource lower bound
+  `M >= sqrt(2 sigma)/delta`.
+- **`exists_small_gap`** — equation `(17)`: among `n` consecutive gaps of a real sequence one is at
+  most the total spread divided by `n`.  This is the pigeonhole step, proved by telescoping with no
+  prime input at all.
+- **`orbit_velocity_lower_bound_of_spread`** — equation `(22)`: a positive margin over `n` gaps in a
+  spread of length `L` forces velocity at least `sqrt(2 sigma) n / L`.  Applied to the `pi(P)`
+  prime logarithms inside `[log 2, log P]` this is exactly the card's statement, with the
+  prime-counting asymptotic `(18)`, `(23)` supplied by the prime number theorem, which is not used
+  anywhere in the proof.
+
+All statements are unconditional: `#print axioms` returns only
+`[propext, Classical.choice, Quot.sound]`.
+
+Not formalized, and not theorems of this card: the strongly differentiable compressed translation
+orbit for the actual CCM representation, the true finite-Weil ground family, and the cofinal Gram
+margin — the card's own open gates.  The prime number theorem enters only to convert `(22)` into the
+asymptotic rate `(23)`; the exact inequality `(22)` is prime-free.

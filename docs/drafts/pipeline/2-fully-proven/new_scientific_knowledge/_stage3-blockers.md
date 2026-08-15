@@ -253,3 +253,14 @@ phase-curvature bound; both are compositions of already-formal pieces.
 A finite-dimensional transitive bracket-closed subspace of formal vector fields has dimension at most
 three, and when it is three the realized orders are exactly `0, 1, 2`.  Remaining: the normal forms
 and the groupoid-side translation.
+
+### The `(8)` ingredient list is complete
+
+    RadialTwoIndexOscillatoryBound   sub_one_le_xiEndpointPhase, le_dilatedRadialPhase
+    RadialNormalFormPotentialDecay   |ψ(x)| ≤ 54/x² beyond the second dilation, uniformly in c
+    XiAmplitudeDecay (pre-existing)  |A| ≤ 4/√x , |A'| ≤ 4/(x√x)
+    RadialPSWFAmplitudeVariation     |P|,|Q| ≤ 2A(a)e^{V/c} ; |P'(Φ)Φ'| ≤ (κKL/c)/x²
+    RadialSymbolTwoBranchBound       symbolTwoBranch_of_composition and the final estimate
+
+so the two consumer cards now need only the bookkeeping instantiation naming `W`, `V`, `ψ`, `Φ` for
+the concrete signed-mode data, plus the first-row sector (a separate parent card).

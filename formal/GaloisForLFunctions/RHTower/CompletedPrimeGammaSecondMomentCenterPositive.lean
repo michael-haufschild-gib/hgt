@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.CompletedPrimeGammaMomentFarRightAsymptotic
 import GaloisForLFunctions.RHTower.PrimeArchScaledHausdorffDivisorValueRelation
 import GaloisForLFunctions.RHTower.CompletedPrimeGammaResolvedMomentColligation
+import GaloisForLFunctions.Hurwitz.ShiftedPowerTailAsymptotic
 
 /-!
 # Strict center sign for the second completed odd moment
@@ -133,6 +134,25 @@ theorem completedOddLogDerivMoment_two_ten_re_eq_source :
   rw [completedOddLogDerivMoment_two_ten_re_eq_resolved]
   norm_num [completedPrimeGammaResolvedMoment, completedPrimeFactorialMoment,
     completedGammaSpectralMoment, completedPolarPairMoment]
+
+/-- The Gamma/Bose contribution at the far-right test point is a reciprocal sixth-power tail. -/
+theorem gammaBoseMoment_five_four_eq_reciprocalSixth :
+    HTGeometry.gammaBoseMoment 5 4 =
+      ∑' j : ℕ, (1 : ℝ) / ((j : ℝ) + 5) ^ 6 := by
+  unfold HTGeometry.gammaBoseMoment HTGeometry.gammaBoseWeight HTGeometry.gammaBoseNode
+  apply tsum_congr
+  intro j
+  rw [← pow_add, inv_pow, one_div]
+
+/-- The same Gamma/Bose contribution is the standard shifted sixth-power Hurwitz tail. -/
+theorem gammaBoseMoment_five_four_eq_shiftedPowerTail :
+    HTGeometry.gammaBoseMoment 5 4 =
+      GaloisForLFunctions.shiftedPowerTail 5 5 := by
+  apply Complex.ofReal_injective
+  rw [HTGeometry.gammaBoseMoment_ofReal_eq_hzeta]
+  simpa using
+    (GaloisForLFunctions.hzeta_nat_ofReal_eq_shiftedPowerTail 5
+      (x := (5 : ℝ)) (by positivity))
 
 /-- One explicit negative value of the second moment falsifies the global right-even
 factorization interface.  The positive endpoint is supplied unconditionally above. -/

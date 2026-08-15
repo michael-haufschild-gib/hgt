@@ -449,3 +449,69 @@ theorem fixedDivisor_fullTranslationFreeness_denseResidual
 end
 
 end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+open Set Topology
+open ClassicalAnalyticNevanlinnaCarrierFamily
+
+noncomputable section
+
+/-- **A gauged source has exactly the divisor of its source.** -/
+theorem analyticOrderAt_gaugeCarrier {W : ℂ → ℂ} (hWd : Differentiable ℂ W) (g : EntireGauge)
+    (z : ℂ) :
+    analyticOrderAt (fun w => W w * Complex.exp ((g : C(ℂ, ℂ)) w)) z = analyticOrderAt W z := by
+  have hW : AnalyticAt ℂ W z :=
+    (hWd.differentiableOn.analyticOnNhd isOpen_univ) z (Set.mem_univ z)
+  have hE : AnalyticAt ℂ (fun w => Complex.exp ((g : C(ℂ, ℂ)) w)) z :=
+    ((g.2.cexp).differentiableOn.analyticOnNhd isOpen_univ) z (Set.mem_univ z)
+  have hzero : analyticOrderAt (fun w => Complex.exp ((g : C(ℂ, ℂ)) w)) z = 0 :=
+    (AnalyticAt.analyticOrderAt_eq_zero hE).mpr (Complex.exp_ne_zero _)
+  have hmul := analyticOrderAt_mul hW hE
+  have hfun : (W * fun w => Complex.exp ((g : C(ℂ, ℂ)) w))
+      = fun w => W w * Complex.exp ((g : C(ℂ, ℂ)) w) := rfl
+  rw [hfun, hzero, add_zero] at hmul
+  exact hmul
+
+/-- **Every prescribed entire divisor carries a source whose full complex translation orbit is
+differentially algebraically independent over the rational functions.** -/
+theorem exists_gauge_fixedDivisor_fullTranslationFreeness
+    {W : ℂ → ℂ} (hWd : Differentiable ℂ W) (h0 : ∃ w, W w ≠ 0) :
+    ∃ g : EntireGauge,
+      Differentiable ℂ (fun z => W z * Complex.exp ((g : C(ℂ, ℂ)) z)) ∧
+      (∀ z, analyticOrderAt (fun w => W w * Complex.exp ((g : C(ℂ, ℂ)) w)) z
+        = analyticOrderAt W z) ∧
+      ∀ (mm : ℕ) (shift : InjectiveShiftConfiguration (Fin mm)),
+        ¬ FamilyDifferentiallyAlgebraicOn
+          (fun i z => W (z + shift.1 i) * Complex.exp ((g : C(ℂ, ℂ)) (z + shift.1 i)))
+          Set.univ := by
+  obtain ⟨hdense, _, _, hdiff, hfree⟩ := fixedDivisor_fullTranslationFreeness_denseResidual hWd h0
+  obtain ⟨g, hg⟩ := hdense.nonempty
+  exact ⟨g, hdiff g, fun z => analyticOrderAt_gaugeCarrier hWd g z, hfree g hg⟩
+
+/-- **Full-orbit divisor blindness.**  Any two prescribed entire divisors carry sources whose full
+complex translation orbits are both differentially algebraically independent over the rational
+functions, so the divisor is invisible to the differential-translation structure. -/
+theorem exists_pair_fixedDivisor_fullTranslationFreeness
+    {W₀ W₁ : ℂ → ℂ} (hW₀ : Differentiable ℂ W₀) (h₀ : ∃ w, W₀ w ≠ 0)
+    (hW₁ : Differentiable ℂ W₁) (h₁ : ∃ w, W₁ w ≠ 0) :
+    ∃ g₀ g₁ : EntireGauge,
+      (∀ z, analyticOrderAt (fun w => W₀ w * Complex.exp ((g₀ : C(ℂ, ℂ)) w)) z
+        = analyticOrderAt W₀ z) ∧
+      (∀ z, analyticOrderAt (fun w => W₁ w * Complex.exp ((g₁ : C(ℂ, ℂ)) w)) z
+        = analyticOrderAt W₁ z) ∧
+      (∀ (mm : ℕ) (shift : InjectiveShiftConfiguration (Fin mm)),
+        ¬ FamilyDifferentiallyAlgebraicOn
+          (fun i z => W₀ (z + shift.1 i) * Complex.exp ((g₀ : C(ℂ, ℂ)) (z + shift.1 i)))
+          Set.univ) ∧
+      ∀ (mm : ℕ) (shift : InjectiveShiftConfiguration (Fin mm)),
+        ¬ FamilyDifferentiallyAlgebraicOn
+          (fun i z => W₁ (z + shift.1 i) * Complex.exp ((g₁ : C(ℂ, ℂ)) (z + shift.1 i)))
+          Set.univ := by
+  obtain ⟨g₀, _, horder₀, hfree₀⟩ := exists_gauge_fixedDivisor_fullTranslationFreeness hW₀ h₀
+  obtain ⟨g₁, _, horder₁, hfree₁⟩ := exists_gauge_fixedDivisor_fullTranslationFreeness hW₁ h₁
+  exact ⟨g₀, g₁, horder₀, horder₁, hfree₀, hfree₁⟩
+
+end
+
+end GaloisForLFunctions.HTGeometry

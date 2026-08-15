@@ -246,3 +246,52 @@ to Stage 2.
   and their gamma-cleared entire quotient; it also verified that their theorem
   contains no Selberg-orthogonality or prime-correlation implication.  The
   unbounded-flow and `alpha -> 0` uniformity remain the exact open core.
+
+## Formalization update — finite tangent trace
+
+- 2026-08-15 -- `formal/GaloisForLFunctions/SelbergClass/
+  MultipleStandardTwistDegreeResonanceTrace.lean` formalizes the exact finite
+  Bohr projector.  Its positive-index theorem
+  `bohrMean_positiveWeightedTangentFlow_degree_resonance` retains exactly
+  `m^d_G = n^d_F`; its equal-degree specialization retains exactly `m = n`.
+  It was source-checked, exact-module built, and its six public theorems have
+  only Lean's standard `propext`, `Classical.choice`, and `Quot.sound` axioms.
+  This closes the finite-fibre positive survivor, not the regular-part trace
+  or either Selberg conjecture.
+
+## Loop 4 — can polar data determine the missing regular trace?
+
+**Conjecture.** The gamma-cleared polar hyperplanes together with all finite
+residue-fibre traces determine the anti-diagonal trace of the regular part.
+
+**Killed.** Write a gamma-cleared presentation as `M = G / R`, where
+`R(s) = 1 / Gamma(L(s))` is entire.  For every constant `c`,
+
+```
+M + c = (G + c R) / R.
+```
+
+The new numerator is still entire, and `c` changes no principal part on any
+candidate hyperplane because it is entire.  It does, however, shift every
+tangent Bohr mean by `c`.  More generally, any entire function pulled back
+from the normal affine coordinate `L(s)` is constant along the tangent flow
+and has the same defect.  Thus neither polar geometry nor all residue traces
+can determine the regular trace.
+
+**Positive survivor.** A non-circular trace theorem must use the initial-domain
+anchor (which excludes the perturbation by the identity theorem) *and* a
+vertical trace-class estimate.  Pole data alone is information modulo entire
+normal-coordinate functions.  This is a standard Mittag--Leffler ambiguity,
+so it is a rigorously useful no-go, not a novelty claim.
+
+**Lean status.** `MeromorphicTensorAlgebra.addEntire` now proves the algebraic
+part exactly: it keeps the displayed denominator and candidate-polar set,
+adds the entire term on the displayed regular locus, and is addition in the
+entire fraction field.  Principal-part invariance awaits a genuine
+multivariable residue notion, so no Lean theorem currently overstates that
+analytic sentence.
+
+- 2026-08-15 — `MultipleStandardTwistMellinBarnesFubini.lean` completed the
+  initial-domain Mellin–Barnes sum–integral interchange.  It is source-checked,
+  exact-module-built, and axiom-clean; it does not supply the unbounded
+  regular-part trace.

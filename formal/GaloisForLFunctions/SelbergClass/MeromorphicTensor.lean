@@ -42,7 +42,10 @@ statements below are restricted to `regularSet`. -/
 noncomputable def value (T : MeromorphicTensorPresentation N) : (Fin N → ℂ) → ℂ :=
   fun s => (T.numerator : (Fin N → ℂ) → ℂ) s / (T.denominator : (Fin N → ℂ) → ℂ) s
 
-/-- Complement of the polar set of a presentation. -/
+/-- Complement of the displayed denominator-zero set of a presentation.  It is
+the domain on which this particular quotient presentation is manifestly
+analytic; numerator zeros may make the actual meromorphic function regular at
+additional points. -/
 def regularSet (T : MeromorphicTensorPresentation N) : Set (Fin N → ℂ) :=
   {s | (T.denominator : (Fin N → ℂ) → ℂ) s ≠ 0}
 

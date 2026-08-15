@@ -43,7 +43,8 @@ noncomputable def reciprocalGammaAffineEntire
     reciprocalGamma_comp_affine_entire N L b⟩
 
 /-- Exact zero locus of the reciprocal-Gamma affine denominator.  These are the
-polar hyperplanes of a gamma-cleared presentation. -/
+candidate Gamma-polar hyperplanes of a gamma-cleared presentation; a numerator
+zero can still cancel an individual displayed pole. -/
 theorem reciprocalGammaAffineEntire_eval_eq_zero_iff
     (N : ℕ) (L : (Fin N → ℂ) →L[ℂ] ℂ) (b : ℂ) (s : Fin N → ℂ) :
     ((reciprocalGammaAffineEntire N L b : entireSubring (Fin N → ℂ)) :
@@ -82,8 +83,8 @@ theorem gammaClearedPresentation_value {N : ℕ}
     (gammaClearedPresentation G L b hden).value s =
       (G : (Fin N → ℂ) → ℂ) s / (Complex.Gamma (L s + b))⁻¹ := rfl
 
-/-- The regular locus of a gamma-cleared presentation is precisely the
-complement of the affine Gamma-polar hyperplanes. -/
+/-- The displayed-denominator regular locus of a gamma-cleared presentation is
+precisely the complement of the affine candidate Gamma-polar hyperplanes. -/
 theorem gammaClearedPresentation_regularSet {N : ℕ}
     (G : entireSubring (Fin N → ℂ)) (L : (Fin N → ℂ) →L[ℂ] ℂ) (b : ℂ)
     (hden : reciprocalGammaAffineEntire N L b ≠ 0) :

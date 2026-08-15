@@ -1,7 +1,7 @@
 # Finite Rank-One Selector No-Free-Lunch
 
 - **ID:** finite-rank-one-selector-no-free-lunch
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / proof-route guardrail
 - **Source:** `rh-landscape-proof-gate.md`, `no-boundary-selection-of-zeta.md`,
   `docs/consolidated/revision01/formulas.md`
@@ -128,7 +128,7 @@ it states exactly where a source-built RH proof must supply new content.
 
 - [x] 0 -> 1 in-progress: circularity question isolated in `L_src`.
 - [x] 1 -> 2 fully-proven: finite rank-one inertia proof written.
-- [ ] 2 -> 3 formalized: Lean finite-dimensional Hermitian inertia theorem, if useful.
+- [x] 2 -> 3 formalized: exact finite-dimensional Hermitian rank-one crossing certificate.
 
 ## Log
 
@@ -155,3 +155,24 @@ Thus the rank-one scalar is only a one-channel compression of the matrix boundar
 `rank-one-scalar-shadow-needs-kernel-exhaustion.md` records the complementary failure mode. This card says the finite rank-one chart has no second threshold-side selector; the scalar-shadow card says even a positive scalar is not a full-index certificate unless the boundary kernel has already been proved nonnegative.
 
 Together they isolate the source residue: construct the finite chart from source data, then prove the kernel/omitted-channel exhaustion and Schur sign from source orientation rather than by naming the threshold side.
+
+## 2026-08-15 Lean formalization
+
+Formalized in `GaloisForLFunctions.HTGeometry.FiniteRankOneSelector`:
+
+- `rankOneRepair` is exactly `A + t vv*`, with `rankOneRepair_eq_finiteRankRepaired`
+  identifying it with the one-channel finite-rank boundary construction.
+- `rankOneEnergy_coe` proves the complex quadratic scalar is real for Hermitian `A`; the
+  formal scalar `rankOneSchurScalar` is therefore exactly `-1/t - v* A⁻¹ v`.
+- `finiteRankOneSelector_noFreeLunch` packages the full theorem: nonzero channel, exact
+  positive/negative/zero Schur trichotomy, positive-definite threshold equivalence, unchanged
+  below-threshold inertia, and a one-dimensional null kernel with noninvertibility at the wall.
+- `rankOneSelector_iff_schurScalar_pos` formalizes the stated selector claim for every
+  predicate that decides positive definiteness from the finite chart.
+
+Checks passed:
+
+- `lake env lean GaloisForLFunctions/HTGeometry/FiniteRankOneSelector.lean`
+- `lake build GaloisForLFunctions.HTGeometry.FiniteRankOneSelector`
+- `#print axioms` for the package, selector, and wall theorems reports only
+  `propext`, `Classical.choice`, and `Quot.sound`.

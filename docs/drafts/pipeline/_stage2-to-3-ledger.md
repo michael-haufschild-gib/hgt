@@ -1657,3 +1657,30 @@ multinomial-cardinality lemma, no permutation argument).
 
 So the abstract theorem `(5)` now needs only the heavy-sector transfer `(7)`/`(10)` and the
 assembly with `measure_completeTargetCapture_le_optimalDesignMoments`.
+
+### Update: the abstract theorem `(5)` is closed with the *sharp* carrier constant (2026-08-15)
+
+Two new modules, both axiom-clean and wired:
+
+- `HTGeometry/SubspaceOptimalDesign.lean`
+  - `exists_optimalDesign_coord` — the corpus coordinate design law at every positive dimension;
+  - `exists_optimalDesign_of_span_top` — the same law in an arbitrary finite-dimensional complex
+    inner-product space, transported along `(stdOrthonormalBasis ℂ E).repr`;
+  - `exists_optimalDesign_of_span_eq` — ambient form for a family spanning a submodule, with the
+    *submodule* dimension as the factor;
+  - `incidenceCarrier S g A = span {P_S (g x) : x ∈ A}`, `incidenceCarrier_le`,
+    `starProjection_of_le`, `starProjection_incidenceCarrier_eq` (the card's `(14)`),
+    `inner_incidenceCarrier_target` (the card's `(15)`),
+    `span_starProjection_incidenceCarrier`.
+- `HTGeometry/ReturnExcisedPhaseIncidenceLaw.lean`
+  - regularity of the phase-orbit fidelity (continuity, unit bound, integrability on the box);
+  - `measureReal_capture_le_return_add_replicaMoment` — `(5)` with the ambient constant `h_r(Z)`;
+  - **`phaseIncidenceCarrier`** and **`measureReal_capture_le_return_add_carrierMoment`** — the
+    card's boxed `(5)` with the sharp constant `ι^L_{r,R}(Z) = finrank(phaseIncidenceCarrier …)`,
+    together with `phaseIncidenceCarrier_le` for `(8a)`.
+
+So `(6)`--`(19)` of `local-clifford-return-excised-phase-incidence-law` are all Lean-certified.
+**Remaining for that card:** only section "Ordinary bounded-degree static-local ensemble",
+`(20)`--`(24)`: the Gaussian coefficient ensemble, product-Clifford transitivity,
+`E_H C_H(Ω) ≤ (2/3)^n`, and almost-sure simple spectrum with maximal projective rational spectral
+rank.

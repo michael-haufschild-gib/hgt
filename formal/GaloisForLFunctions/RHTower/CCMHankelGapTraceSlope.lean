@@ -330,22 +330,25 @@ theorem tendsto_initial_slope_divisorPacket {r : ℕ} {lam : Fin r → ℂ} {m :
   have h := tendsto_initial_slope (leakProfile_divisorPacket (m := m) hlam)
   simpa [divisorPacketEnergy, leakDensity] using h
 
+/-- The leakage density of the incoming pole profile. -/
+theorem leakDensity_polePacketProfile (t : ℝ) :
+    leakDensity polePacketProfile t = 4 * Real.exp (-(1 : ℝ) * t) := by
+  unfold leakDensity polePacketProfile
+  rw [norm_mul, Complex.norm_exp]
+  have hre : (-((1 / 2 : ℂ) * (t : ℂ))).re = -((1 / 2 : ℝ) * t) := by
+    simp [Complex.mul_re]
+  rw [hre]
+  have hnorm2 : ‖(2 : ℂ)‖ = 2 := by norm_num
+  rw [hnorm2, mul_pow]
+  have hsq : Real.exp (-((1 / 2 : ℝ) * t)) ^ 2 = Real.exp (-(1 : ℝ) * t) := by
+    rw [← Real.exp_nat_mul]
+    congr 1
+    ring
+  rw [hsq]
+  norm_num
+
 theorem leakProfile_polePacket : LeakProfile polePacketProfile := by
-  have hdens : ∀ t : ℝ, leakDensity polePacketProfile t = 4 * Real.exp (-(1 : ℝ) * t) := by
-    intro t
-    unfold leakDensity polePacketProfile
-    rw [norm_mul, Complex.norm_exp]
-    have hre : (-((1 / 2 : ℂ) * (t : ℂ))).re = -((1 / 2 : ℝ) * t) := by
-      simp [Complex.mul_re]
-    rw [hre]
-    have hnorm2 : ‖(2 : ℂ)‖ = 2 := by norm_num
-    rw [hnorm2, mul_pow]
-    have : Real.exp (-((1 / 2 : ℝ) * t)) ^ 2 = Real.exp (-(1 : ℝ) * t) := by
-      rw [← Real.exp_nat_mul]
-      congr 1
-      ring
-    rw [this]
-    norm_num
+  have hdens := leakDensity_polePacketProfile
   refine ⟨?_, ?_⟩
   · refine Continuous.aestronglyMeasurable ?_
     unfold polePacketProfile

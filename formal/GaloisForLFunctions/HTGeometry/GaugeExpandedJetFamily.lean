@@ -9,6 +9,9 @@ The corpus rank-defect calculus reads a jet packet in row coordinates, with one 
 jet slots per row.  This module converts the jet packet of a gauged source into those coordinates,
 both for a finite polynomial probe of the exponent and for the gauge itself, and records that the
 first is smooth with surjective probe derivative while the second is jointly continuous.
+
+A finite chart through a point of any parameter space then transports finite-dimensional density
+to density in that parameter space.
 -/
 
 open MvPolynomial Set
@@ -16,6 +19,29 @@ open MvPolynomial Set
 namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
+
+/-! ### Density along a finite chart -/
+
+/-- **A finite chart transports density.**  If through every point of the parameter space there is
+a continuous finite-dimensional chart along which the avoidance set is dense, the avoidance set is
+dense in the parameter space. -/
+theorem compactConfigurationAvoidance_dense_of_finiteChart
+    {S : Type*} [TopologicalSpace S] {Hs Y : Type*} [TopologicalSpace Hs]
+    (F : S × Hs → Y) (bad : Set Y) (K : Set Hs) (D : ℕ)
+    (chart : S → (Fin D → ℂ) → S)
+    (hcont : ∀ s, Continuous (chart s)) (hzero : ∀ s, chart s 0 = s)
+    (hdense : ∀ s, Dense (compactConfigurationAvoidance
+        (fun p : (Fin D → ℂ) × Hs => F (chart s p.1, p.2)) bad K)) :
+    Dense (compactConfigurationAvoidance F bad K) := by
+  rw [dense_iff_closure_eq]
+  apply Set.eq_univ_of_forall
+  intro s
+  rw [mem_closure_iff]
+  intro V hVopen hsV
+  have hpreOpen : IsOpen (chart s ⁻¹' V) := hVopen.preimage (hcont s)
+  have hpreNonempty : (chart s ⁻¹' V).Nonempty := ⟨0, by simpa [hzero s] using hsV⟩
+  obtain ⟨c, hcgood, hcV⟩ := (hdense s).exists_mem_open hpreOpen hpreNonempty
+  exact ⟨chart s c, hcV, fun h hh => hcgood h hh⟩
 
 variable {row ι : Type} [Fintype row] [Fintype ι]
 
@@ -52,58 +78,50 @@ theorem surjective_jetTruncCLM (orders : ι → ℕ) (m : ℕ) (hm : ∀ i, orde
 
 /-! ### The expanded probe family -/
 
-/-- The probe dimension: one window coefficient per node and jet slot. -/
-abbrev gaugeProbeDim (row ι : Type) [Fintype row] [Fintype ι] (m : ℕ) : ℕ :=
-  Fintype.card (row × ι) * m
-
 variable {H : Type} [NormedAddCommGroup H] [NormedSpace ℝ H]
 
 /-- The jet packet of a probed gauged source, in row coordinates. -/
-def gaugeExpandedProbeJetFamily (W g : ℂ → ℂ) (m N : ℕ) (orders : ι → ℕ)
-    (hm : ∀ i, orders i ≤ m) (nodes : H → row × ι → ℂ)
-    (p : (Fin (gaugeProbeDim row ι m) → ℂ) × H) :
+def gaugeExpandedProbeJetFamily (W g : ℂ → ℂ) {m D : ℕ} (pd : GaugeProbe (row × ι) m D)
+    (orders : ι → ℕ) (hm : ∀ i, orders i ≤ m) (nodes : H → row × ι → ℂ)
+    (p : (Fin D → ℂ) × H) :
     row × Fin (Fintype.card (Σ i, Fin (orders i))) → ℂ :=
   reshapeCombinedJetsFinCLM row ι orders
-    (jetTruncCLM row ι orders m hm
-      (gaugeProbeJetPacket W g m N (gaugeProbeDim row ι m) nodes p))
+    (jetTruncCLM row ι orders m hm (gaugeProbeJetPacket W g pd nodes p))
 
 theorem contDiff_gaugeExpandedProbeJetFamily {W g : ℂ → ℂ} (hW : Differentiable ℂ W)
-    (hg : Differentiable ℂ g) (m N : ℕ) (orders : ι → ℕ) (hm : ∀ i, orders i ≤ m)
+    (hg : Differentiable ℂ g) {m D : ℕ} (pd : GaugeProbe (row × ι) m D)
+    (orders : ι → ℕ) (hm : ∀ i, orders i ≤ m)
     {nodes : H → row × ι → ℂ} (hnodes : ContDiff ℝ ⊤ nodes) :
-    ContDiff ℝ ⊤ (gaugeExpandedProbeJetFamily W g m N orders hm nodes) :=
+    ContDiff ℝ ⊤ (gaugeExpandedProbeJetFamily W g pd orders hm nodes) :=
   (reshapeCombinedJetsFinCLM row ι orders).contDiff.comp
     ((jetTruncCLM row ι orders m hm).contDiff.comp
-      (contDiff_gaugeProbeJetPacket hW hg m N (gaugeProbeDim row ι m) hnodes))
+      (contDiff_gaugeProbeJetPacket hW hg pd hnodes))
 
 omit [NormedAddCommGroup H] [NormedSpace ℝ H] in
-theorem surjective_fderiv_gaugeExpandedProbeJetFamily [DecidableEq row] [DecidableEq ι]
-    (W g : ℂ → ℂ) (m N : ℕ)
-    (orders : ι → ℕ) (hm : ∀ i, orders i ≤ m)
-    (nodes : H → row × ι → ℂ)
-    (c : Fin (gaugeProbeDim row ι m) → ℂ) (h : H)
-    (hinj : Function.Injective (nodes h)) (hne : ∀ x, nodes h x ≠ 0)
+theorem surjective_fderiv_gaugeExpandedProbeJetFamily (W g : ℂ → ℂ) {m D : ℕ}
+    (pd : GaugeProbe (row × ι) m D) (orders : ι → ℕ) (hm : ∀ i, orders i ≤ m)
+    (nodes : H → row × ι → ℂ) (c : Fin D → ℂ) (h : H)
+    (hprobe : Function.Surjective (pd.jet (nodes h)))
     (hWne : ∀ x, W (nodes h x) ≠ 0) :
     Function.Surjective
-      (fderiv ℝ (fun v => gaugeExpandedProbeJetFamily W g m N orders hm nodes (v, h)) c) := by
-  have hpacket := hasFDerivAt_gaugeProbeJetPacket W g m N (gaugeProbeDim row ι m) nodes c h
+      (fderiv ℝ (fun v => gaugeExpandedProbeJetFamily W g pd orders hm nodes (v, h)) c) := by
+  have hpacket := hasFDerivAt_gaugeProbeJetPacket W g pd nodes c h
   have hfull : HasFDerivAt
-      (fun v => gaugeExpandedProbeJetFamily W g m N orders hm nodes (v, h))
+      (fun v => gaugeExpandedProbeJetFamily W g pd orders hm nodes (v, h))
       (((reshapeCombinedJetsFinCLM row ι orders).comp
-        (jetTruncCLM row ι orders m hm)).comp
-          (gaugeProbeJetCLM W g m N (gaugeProbeDim row ι m) nodes c h)) c := by
-    have := (((reshapeCombinedJetsFinCLM row ι orders).comp
+        (jetTruncCLM row ι orders m hm)).comp (gaugeProbeJetCLM W g pd nodes c h)) c := by
+    have hstep := (((reshapeCombinedJetsFinCLM row ι orders).comp
       (jetTruncCLM row ι orders m hm)).hasFDerivAt
-        (x := gaugeProbeJetPacket W g m N (gaugeProbeDim row ι m) nodes (c, h))).comp c hpacket
-    exact this
+        (x := gaugeProbeJetPacket W g pd nodes (c, h))).comp c hpacket
+    exact hstep
   rw [hfull.fderiv]
   intro y
   obtain ⟨y1, hy1⟩ := reshapeCombinedJetsFinCLM_surjective row ι orders y
   obtain ⟨y2, hy2⟩ := surjective_jetTruncCLM orders m hm y1
-  obtain ⟨y3, hy3⟩ := surjective_gaugeProbeJetCLM (W := W) (g := g) m N nodes c h hinj hne hWne y2
+  obtain ⟨y3, hy3⟩ := surjective_gaugeProbeJetCLM (W := W) (g := g) pd nodes c h hprobe hWne y2
   refine ⟨y3, ?_⟩
   show reshapeCombinedJetsFinCLM row ι orders
-      (jetTruncCLM row ι orders m hm
-        (gaugeProbeJetCLM W g m N (gaugeProbeDim row ι m) nodes c h y3)) = y
+      (jetTruncCLM row ι orders m hm (gaugeProbeJetCLM W g pd nodes c h y3)) = y
   rw [hy3, hy2, hy1]
 
 end
@@ -118,54 +136,55 @@ open Set
 
 variable {row ι : Type} [Fintype row] [Fintype ι] {H : Type} [TopologicalSpace H]
 
-/-! ### The window chart on the gauge space -/
+/-! ### The probe as a chart on the gauge space -/
 
-/-- The window polynomial, jointly continuous in its coefficients and the point. -/
-def windowPolyCM (N D : ℕ) : C((Fin D → ℂ) × ℂ, ℂ) where
-  toFun q := Polynomial.eval q.2 (windowLin N D q.1)
+/-- The probe polynomial, jointly continuous in its coefficients and the point. -/
+def probePolyCM {X : Type*} [Fintype X] {m D : ℕ} (pd : GaugeProbe X m D) :
+    C((Fin D → ℂ) × ℂ, ℂ) where
+  toFun q := Polynomial.eval q.2 (pd.poly q.1)
   continuous_toFun := by
-    have hfun : (fun q : (Fin D → ℂ) × ℂ => Polynomial.eval q.2 (windowLin N D q.1))
-        = fun q : (Fin D → ℂ) × ℂ => ∑ i : Fin D, q.1 i * q.2 ^ (N + (i : ℕ)) := by
-      funext q
-      rw [windowLin_apply, Polynomial.eval_finsetSum]
-      exact Finset.sum_congr rfl fun i _ => by rw [Polynomial.eval_monomial]
-    rw [hfun]
-    refine continuous_finsetSum _ fun i _ => ?_
-    exact ((continuous_apply i).comp continuous_fst).mul (continuous_snd.pow _)
+    have h := (pd.polyJet_contDiff 0).continuous
+    simpa only [Function.iterate_zero_apply] using h
 
-theorem windowPolyCM_curry_differentiable (N D : ℕ) (c : Fin D → ℂ) :
-    Differentiable ℂ ⇑((ContinuousMap.curry (windowPolyCM N D)) c) := by
-  have hfun : ⇑((ContinuousMap.curry (windowPolyCM N D)) c)
-      = fun z => Polynomial.eval z (windowLin N D c) := rfl
+theorem probePolyCM_curry_differentiable {X : Type*} [Fintype X] {m D : ℕ}
+    (pd : GaugeProbe X m D) (c : Fin D → ℂ) :
+    Differentiable ℂ ⇑((ContinuousMap.curry (probePolyCM pd)) c) := by
+  have hfun : ⇑((ContinuousMap.curry (probePolyCM pd)) c)
+      = fun z => Polynomial.eval z (pd.poly c) := rfl
   rw [hfun]
   exact Polynomial.differentiable _
 
-/-- The window polynomial as an entire gauge. -/
-def windowGaugeElt (N D : ℕ) (c : Fin D → ℂ) : EntireGauge :=
-  ⟨(ContinuousMap.curry (windowPolyCM N D)) c, windowPolyCM_curry_differentiable N D c⟩
+/-- The probe polynomial as an entire gauge. -/
+def probeGaugeElt {X : Type*} [Fintype X] {m D : ℕ} (pd : GaugeProbe X m D)
+    (c : Fin D → ℂ) : EntireGauge :=
+  ⟨(ContinuousMap.curry (probePolyCM pd)) c, probePolyCM_curry_differentiable pd c⟩
 
-theorem continuous_windowGaugeElt (N D : ℕ) : Continuous (windowGaugeElt N D) := by
+theorem continuous_probeGaugeElt {X : Type*} [Fintype X] {m D : ℕ} (pd : GaugeProbe X m D) :
+    Continuous (probeGaugeElt pd) := by
   rw [continuous_induced_rng]
-  exact (ContinuousMap.curry (windowPolyCM N D)).continuous
+  exact (ContinuousMap.curry (probePolyCM pd)).continuous
 
-/-- Adding a window polynomial to a gauge: a continuous finite-dimensional chart. -/
-def windowGaugeChart (N D : ℕ) (g : EntireGauge) (c : Fin D → ℂ) : EntireGauge :=
-  g + windowGaugeElt N D c
+/-- Adding the probe polynomial to a gauge. -/
+def probeGaugeChart {X : Type*} [Fintype X] {m D : ℕ} (pd : GaugeProbe X m D)
+    (g : EntireGauge) (c : Fin D → ℂ) : EntireGauge :=
+  g + probeGaugeElt pd c
 
-theorem windowGaugeChart_apply (N D : ℕ) (g : EntireGauge) (c : Fin D → ℂ) (z : ℂ) :
-    (windowGaugeChart N D g c : C(ℂ, ℂ)) z
-      = (g : C(ℂ, ℂ)) z + Polynomial.eval z (windowLin N D c) := rfl
+theorem probeGaugeChart_apply {X : Type*} [Fintype X] {m D : ℕ} (pd : GaugeProbe X m D)
+    (g : EntireGauge) (c : Fin D → ℂ) (z : ℂ) :
+    (probeGaugeChart pd g c : C(ℂ, ℂ)) z
+      = (g : C(ℂ, ℂ)) z + Polynomial.eval z (pd.poly c) := rfl
 
-theorem continuous_windowGaugeChart (N D : ℕ) (g : EntireGauge) :
-    Continuous (windowGaugeChart N D g) :=
-  continuous_const.add (continuous_windowGaugeElt N D)
+theorem continuous_probeGaugeChart {X : Type*} [Fintype X] {m D : ℕ} (pd : GaugeProbe X m D)
+    (g : EntireGauge) : Continuous (probeGaugeChart pd g) :=
+  continuous_const.add (continuous_probeGaugeElt pd)
 
-theorem windowGaugeChart_zero (N D : ℕ) (g : EntireGauge) : windowGaugeChart N D g 0 = g := by
-  have hzero : windowGaugeElt N D (0 : Fin D → ℂ) = 0 := by
+theorem probeGaugeChart_zero {X : Type*} [Fintype X] {m D : ℕ} (pd : GaugeProbe X m D)
+    (g : EntireGauge) : probeGaugeChart pd g 0 = g := by
+  have hzero : probeGaugeElt pd (0 : Fin D → ℂ) = 0 := by
     refine Subtype.ext (ContinuousMap.ext fun z => ?_)
-    show Polynomial.eval z (windowLin N D (0 : Fin D → ℂ)) = 0
-    rw [map_zero, Polynomial.eval_zero]
-  rw [windowGaugeChart, hzero, add_zero]
+    show Polynomial.eval z (pd.poly 0) = 0
+    rw [pd.poly_zero, Polynomial.eval_zero]
+  rw [probeGaugeChart, hzero, add_zero]
 
 /-! ### The expanded family of the gauge itself -/
 
@@ -225,18 +244,22 @@ theorem continuous_gaugeExpandedActualJetFamily {W : ℂ → ℂ} (hW : Differen
     exact continuous_const
 
 omit [TopologicalSpace H] in
-/-- **The probe family is the actual family along the window chart.** -/
+/-- **The probe family is the actual family along any chart realizing the probe.** -/
 theorem gaugeExpandedProbeJetFamily_eq_actual {W : ℂ → ℂ} (hW : Differentiable ℂ W)
-    (g : EntireGauge) (m N : ℕ) (orders : ι → ℕ) (hm : ∀ i, orders i ≤ m)
-    (nodes : H → row × ι → ℂ) (p : (Fin (gaugeProbeDim row ι m) → ℂ) × H) :
-    gaugeExpandedProbeJetFamily W (⇑(g : C(ℂ, ℂ))) m N orders hm nodes p
-      = gaugeExpandedActualJetFamily W m orders hm nodes
-          (windowGaugeChart N (gaugeProbeDim row ι m) g p.1, p.2) := by
+    {g : EntireGauge} {m D : ℕ} (pd : GaugeProbe (row × ι) m D)
+    (orders : ι → ℕ) (hm : ∀ i, orders i ≤ m) (nodes : H → row × ι → ℂ)
+    (target : EntireGauge) (c : Fin D → ℂ)
+    (hchart : ∀ w, (target : C(ℂ, ℂ)) w = (g : C(ℂ, ℂ)) w + Polynomial.eval w (pd.poly c))
+    (h : H) :
+    gaugeExpandedProbeJetFamily W (⇑(g : C(ℂ, ℂ))) pd orders hm nodes (c, h)
+      = gaugeExpandedActualJetFamily W m orders hm nodes (target, h) := by
   unfold gaugeExpandedProbeJetFamily gaugeExpandedActualJetFamily
   congr 2
   funext x j
-  rw [gaugeProbeJetPacket_eq hW g.2 m N (gaugeProbeDim row ι m) nodes p x j]
+  rw [gaugeProbeJetPacket_eq hW g.2 pd nodes (c, h) x j]
   congr 1
+  funext w
+  rw [hchart w]
 
 end
 
@@ -255,36 +278,38 @@ variable {row κ ι : Type} [Fintype row] [DecidableEq row] [Fintype κ] [Decida
   {H : Type} [NormedAddCommGroup H] [NormedSpace ℝ H] [FiniteDimensional ℝ H]
 
 theorem compact_gaugeExpandedProbeEvaluation_avoidance_dense
-    (degree : ℕ) (orders : ι → ℕ) (m N : ℕ) (hm : ∀ i, orders i ≤ m)
+    (degree : ℕ) (orders : ι → ℕ) {m D : ℕ} (pd : GaugeProbe (row × ι) m D)
+    (hm : ∀ i, orders i ≤ m)
     (z : row → ℂ) (hz : Function.Injective z)
     (exponent : κ → (Fin (Fintype.card (Σ i, Fin (orders i))) →₀ ℕ))
     (hexponent : Function.Injective exponent)
     (hrows : Fintype.card (κ × Fin (degree + 1)) + degree < Fintype.card row)
-    {W : ℂ → ℂ} (hW : Differentiable ℂ W) (g : EntireGauge)
+    {W : ℂ → ℂ} (hW : Differentiable ℂ W) {g : ℂ → ℂ} (hg : Differentiable ℂ g)
     (nodes : H → row × ι → ℂ) (hnodes : ContDiff ℝ ⊤ nodes)
     (U K : Set H) (hU : IsOpen U) (hKU : K ⊆ U)
-    (hinj : ∀ h ∈ U, Function.Injective (nodes h))
-    (hne : ∀ h ∈ U, ∀ x, nodes h x ≠ 0)
+    (hprobe : ∀ h ∈ U, Function.Surjective (pd.jet (nodes h)))
     (hWne : ∀ h ∈ U, ∀ x, W (nodes h x) ≠ 0)
     (hdim : Module.finrank ℝ H <
       2 * (Fintype.card row - Fintype.card (κ × Fin (degree + 1)) - degree + 1)) :
     Dense (compactConfigurationAvoidance
-      (gaugeExpandedProbeJetFamily W (⇑(g : C(ℂ, ℂ))) m N orders hm nodes)
+      (gaugeExpandedProbeJetFamily W g pd orders hm nodes)
       (expandedDifferentialEvaluationRankDefect degree
         (Fintype.card (Σ i, Fin (orders i))) z exponent) K) := by
   apply expandedEvaluation_compactPatchAvoidance_dense
     degree (Fintype.card (Σ i, Fin (orders i))) z hz exponent hexponent hrows
-    (gaugeExpandedProbeJetFamily W (⇑(g : C(ℂ, ℂ))) m N orders hm nodes) U K hU hKU
-  · exact (contDiff_gaugeExpandedProbeJetFamily hW g.2 m N orders hm hnodes).contDiffOn
+    (gaugeExpandedProbeJetFamily W g pd orders hm nodes) U K hU hKU
+  · exact (contDiff_gaugeExpandedProbeJetFamily hW hg pd orders hm hnodes).contDiffOn
   · intro c h hh
-    exact surjective_fderiv_gaugeExpandedProbeJetFamily W (⇑(g : C(ℂ, ℂ))) m N orders hm nodes
-      c h (hinj h hh) (hne h hh) (hWne h hh)
+    exact surjective_fderiv_gaugeExpandedProbeJetFamily W g pd orders hm nodes c h
+      (hprobe h hh) (hWne h hh)
   · exact hdim
 
-/-- **Compact-patch density for a gauged source.**  Densely many entire gauges have full
-expanded-evaluation rank at every shift of a compact patch, with the divisor of `W` unchanged. -/
-theorem compact_gaugeExpandedActualEvaluation_avoidance_dense
-    (degree : ℕ) (orders : ι → ℕ) (m : ℕ) (hm : ∀ i, orders i ≤ m)
+/-- **Compact-patch density for a gauged source, along a chart of any parameter space.**  Densely
+many parameters give full expanded-evaluation rank at every shift of a compact patch, with the
+divisor of `W` unchanged. -/
+theorem compact_gaugeExpandedActualEvaluation_avoidance_dense_of_chart
+    (degree : ℕ) (orders : ι → ℕ) {m D : ℕ} (pd : GaugeProbe (row × ι) m D)
+    (hm : ∀ i, orders i ≤ m)
     (z : row → ℂ) (hz : Function.Injective z)
     (exponent : κ → (Fin (Fintype.card (Σ i, Fin (orders i))) →₀ ℕ))
     (hexponent : Function.Injective exponent)
@@ -292,35 +317,58 @@ theorem compact_gaugeExpandedActualEvaluation_avoidance_dense
     {W : ℂ → ℂ} (hW : Differentiable ℂ W)
     (nodes : H → row × ι → ℂ) (hnodes : ContDiff ℝ ⊤ nodes)
     (U K : Set H) (hU : IsOpen U) (hKU : K ⊆ U)
-    (hinj : ∀ h ∈ U, Function.Injective (nodes h))
-    (hne : ∀ h ∈ U, ∀ x, nodes h x ≠ 0)
+    (hprobe : ∀ h ∈ U, Function.Surjective (pd.jet (nodes h)))
+    (hWne : ∀ h ∈ U, ∀ x, W (nodes h x) ≠ 0)
+    (hdim : Module.finrank ℝ H <
+      2 * (Fintype.card row - Fintype.card (κ × Fin (degree + 1)) - degree + 1))
+    {S : Type} [TopologicalSpace S] (incl : S → EntireGauge)
+    (chart : S → (Fin D → ℂ) → S)
+    (hcont : ∀ s, Continuous (chart s)) (hzero : ∀ s, chart s 0 = s)
+    (hchartApply : ∀ (s : S) (c : Fin D → ℂ) (w : ℂ),
+      (incl (chart s c) : C(ℂ, ℂ)) w = (incl s : C(ℂ, ℂ)) w + Polynomial.eval w (pd.poly c)) :
+    Dense (compactConfigurationAvoidance
+      (fun p : S × H => gaugeExpandedActualJetFamily W m orders hm nodes (incl p.1, p.2))
+      (expandedDifferentialEvaluationRankDefect degree
+        (Fintype.card (Σ i, Fin (orders i))) z exponent) K) := by
+  refine compactConfigurationAvoidance_dense_of_finiteChart _ _ K D chart hcont hzero ?_
+  intro s
+  have hdenseProbe := compact_gaugeExpandedProbeEvaluation_avoidance_dense
+    degree orders pd hm z hz exponent hexponent hrows hW (incl s).2 nodes hnodes U K hU hKU
+    hprobe hWne hdim
+  intro V hVopen hVne
+  obtain ⟨c, hcgood, hcV⟩ := hdenseProbe.exists_mem_open hVopen hVne
+  refine ⟨c, ?_, hcV⟩
+  intro h hh
+  have hval := hcgood h hh
+  rw [gaugeExpandedProbeJetFamily_eq_actual hW pd orders hm nodes (chart s c) c
+    (fun w => hchartApply s c w) h] at hval
+  exact hval
+
+/-- Compact-patch density on the full gauge space, along the probe chart. -/
+theorem compact_gaugeExpandedActualEvaluation_avoidance_dense
+    (degree : ℕ) (orders : ι → ℕ) {m D : ℕ} (pd : GaugeProbe (row × ι) m D)
+    (hm : ∀ i, orders i ≤ m)
+    (z : row → ℂ) (hz : Function.Injective z)
+    (exponent : κ → (Fin (Fintype.card (Σ i, Fin (orders i))) →₀ ℕ))
+    (hexponent : Function.Injective exponent)
+    (hrows : Fintype.card (κ × Fin (degree + 1)) + degree < Fintype.card row)
+    {W : ℂ → ℂ} (hW : Differentiable ℂ W)
+    (nodes : H → row × ι → ℂ) (hnodes : ContDiff ℝ ⊤ nodes)
+    (U K : Set H) (hU : IsOpen U) (hKU : K ⊆ U)
+    (hprobe : ∀ h ∈ U, Function.Surjective (pd.jet (nodes h)))
     (hWne : ∀ h ∈ U, ∀ x, W (nodes h x) ≠ 0)
     (hdim : Module.finrank ℝ H <
       2 * (Fintype.card row - Fintype.card (κ × Fin (degree + 1)) - degree + 1)) :
     Dense (compactConfigurationAvoidance
-      (gaugeExpandedActualJetFamily W m orders hm nodes)
+      (gaugeExpandedActualJetFamily (row := row) (ι := ι) W m orders hm nodes)
       (expandedDifferentialEvaluationRankDefect degree
         (Fintype.card (Σ i, Fin (orders i))) z exponent) K) := by
-  rw [dense_iff_closure_eq]
-  apply Set.eq_univ_of_forall
-  intro g
-  rw [mem_closure_iff]
-  intro V hVopen hgV
-  set D := gaugeProbeDim row ι m with hD
-  set chart : (Fin D → ℂ) → EntireGauge := windowGaugeChart 0 D g with hchart
-  have hchartCont : Continuous chart := continuous_windowGaugeChart 0 D g
-  have hchartZero : chart 0 = g := windowGaugeChart_zero 0 D g
-  have hpreOpen : IsOpen (chart ⁻¹' V) := hVopen.preimage hchartCont
-  have hpreNonempty : (chart ⁻¹' V).Nonempty := ⟨0, by simpa [hchartZero] using hgV⟩
-  have hdenseFinite := compact_gaugeExpandedProbeEvaluation_avoidance_dense
-    degree orders m 0 hm z hz exponent hexponent hrows hW g nodes hnodes U K hU hKU
-    hinj hne hWne hdim
-  obtain ⟨c, hcgood, hcV⟩ := hdenseFinite.exists_mem_open hpreOpen hpreNonempty
-  refine ⟨chart c, hcV, ?_⟩
-  intro h hh
-  have hval := hcgood h hh
-  rw [gaugeExpandedProbeJetFamily_eq_actual hW g m 0 orders hm nodes (c, h)] at hval
-  exact hval
+  have h := compact_gaugeExpandedActualEvaluation_avoidance_dense_of_chart
+    degree orders pd hm z hz exponent hexponent hrows hW nodes hnodes U K hU hKU
+    hprobe hWne hdim (S := EntireGauge) id (probeGaugeChart pd)
+    (fun s => continuous_probeGaugeChart pd s) (fun s => probeGaugeChart_zero pd s)
+    (fun s c w => probeGaugeChart_apply pd s c w)
+  exact h
 
 end
 

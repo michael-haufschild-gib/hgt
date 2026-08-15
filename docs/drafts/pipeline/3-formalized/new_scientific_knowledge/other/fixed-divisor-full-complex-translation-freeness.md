@@ -1,7 +1,7 @@
 # Fixed-divisor full-complex translation freeness
 
 - **ID:** `fixed-divisor-full-complex-translation-freeness`
-- **Stage:** 2-fully-proven / needs independent audit
+- **Stage:** 3-formalized / needs independent audit
 - **Type:** THEOREM (paper) — `[PROVED HERE] [NOVELTY UNVERIFIED]`
 - **Lane:** general hypertranscendence; uncountable translation orbit; divisor fibers
 - **Statement:** For every nonzero entire function `W`, a comeager set of zero-free gauges
@@ -263,16 +263,17 @@ No scientific-newness label is applied until all gates pass.
 
 ## Lean status
 
-No Lean claim is made.  The complete theorem requires Baire category, algebraic codimension,
-Whitney stratification, finite-dimensional parametric transversality, Hermite interpolation, and
-holomorphic jet maps.  A partial finite-rank or polynomial lemma would not justify stage 3.
+**Complete, unconditional, axiom-clean** (`[propext, Classical.choice, Quot.sound]`).  The capstone
+is `GaloisForLFunctions.HTGeometry.fixedDivisor_fullTranslationFreeness_denseResidual` in
+`formal/GaloisForLFunctions/HTGeometry/FixedDivisorTranslationFreeness.lean`; see the assembly
+section below for the module chain.
 
 ## Gates
 
 - [x] 0 -> 1: exact full-complex theorem, codimension mechanism, proof architecture, and route scope
 - [x] 1 -> 2: complete unconditional paper proof; retained in `needs-audit` pending independent review
-- [ ] 2 -> 3: complete unconditional claim formalized in Lean
-- [ ] 3 -> 4: publication-ready preprint with independent novelty review
+- [x] 2 -> 3: complete unconditional claim formalized in Lean
+- [ ] independent specialist proof and novelty audit (human gate; not a formalization item)
 
 ## Log
 
@@ -561,3 +562,82 @@ gauge parameter.
 What remains is the assembly: the explicit composite `Psi`, its derivative computation from the two
 triangular matrices, and the step-5 bookkeeping reducing a differential relation over `C(z)` to a
 finite expanded monomial support.
+
+## Lean assembly — the theorem is closed
+
+The route that was actually formalized replaces the projective incidence variety, the Whitney
+stratification and the parametric transversality theorem by the corpus's own compact-patch
+codimension calculus, which already carries the same content in a stratification-free form:
+`expandedEvaluation_compactPatchAvoidance_dense` (an in-tree unconditional theorem) turns a smooth
+parametrised jet family whose probe derivative is onto into density of the rank-defect-avoiding
+parameters, as soon as the real dimension of shift-configuration space is below the codimension
+supplied by `expandedDifferentialEvaluationRankDefect_finiteRegularStratification_unconditional`.
+
+What the card had to add was the analytic half for a gauged source `W·exp(g)` with a prescribed
+divisor, and the gauge space itself.
+
+**The gauge space** (`EntireGaugeSpace.lean`).  `EntireGauge` is the compact-open space of entire
+functions, a closed complex subspace of `C(ℂ, ℂ)` by the Weierstrass theorem
+(`isClosed_differentiable`), hence completely metrizable and `BaireSpace`.  Differentiation acts
+continuously on it (`continuous_gaugeDeriv`, again Weierstrass), so every jet coordinate
+`(g, z) ↦ g^{(k)}(z)` is jointly continuous (`continuous_gaugeJetEval`).
+
+**Jets of an exponential** (`ExpJetJacobian.lean`).  Truncating the exponential jet polynomials
+`B_l` at order `m` gives `expJetMap m : v ↦ (exp(v_0)·B_l(v))_{l<m}`.  Its Jacobian is triangular
+with constant diagonal `exp(v_0)`: `B_l` involves no zeroth jet variable
+(`pderiv_zero_expJetPoly`), none above level `l` (`pderiv_expJetPoly_eq_zero`), and has coefficient
+`1` at level `l` (`pderiv_expJetPoly_self`).  Hence `det_expJetJacobian = exp(v_0)^m ≠ 0` and
+`surjective_fderiv_expJetMap`: the exponential jet map is a submersion everywhere.  No Bell or
+Faà di Bruno expansion is used, and no inverse function theorem.
+
+**Jets of a gauged source** (`GaugeCarrierJets.lean`).  `iteratedDeriv_gaugeCarrier` is the master
+formula
+`j^r_ζ(W·e^g) = leibnizJetMatrix(j^·_ζ W) · expJetMap(j^·_ζ g)`,
+obtained from `iteratedDeriv_mul_eq_leibnizJetMatrix` and `iteratedDeriv_exp_comp`.
+
+**The probe** (`GaugeProbeJetFamily.lean`, `GaugeExpandedJetFamily.lean`).  Adding a polynomial
+window to the exponent gives a finite-dimensional chart through any gauge.  Its derivative is the
+composite of three surjections — `surjective_probeJetLin` (the corpus's `windowJetMap`
+isomorphism at distinct nonzero nodes), `surjective_blockJetCLM` of the exponential Jacobians, and
+`surjective_leibnizBlockLin` (invertible exactly where `W` does not vanish) — so
+`surjective_fderiv_gaugeExpandedProbeJetFamily`.  Joint smoothness in the probe and the shift is
+`contDiff_gaugeProbeJetPacket`.  `compact_gaugeExpandedActualEvaluation_avoidance_dense` then
+transports finite-dimensional density to density in the gauge space along the continuous chart
+`windowGaugeChart`.
+
+**Admissible rows** (`GaugeRowPacketAtlas.lean`).  A row packet is admissible for a shift when the
+whole row-by-shift node family is collision-free, nonzero, and off the divisor; all three are open
+(`gaugeGoodCombinedRowPacketSet_isOpen`), and a translate of any collision-free packet by a point
+outside a countable set achieves them, because the zero set of a nonzero entire function is
+countable (`exists_translate_off_divisor`).  Compactness gives a finite atlas.
+
+**The assembly** (`FixedDivisorTranslationFreeness.lean`).
+
+```text
+compact_injectiveShiftPatch_has_dense_completeAtlas_gauge
+    -- one open dense set of gauges per compact shift patch
+global_injectiveShifts_gaugeExpandedFullRankWitness_dense_residual
+    -- sigma-compactness of the collision-free shift space, then Baire
+allFinitePatterns_gaugeExpandedFullRankWitness_dense_residual
+allFinitePatterns_gaugeExpandedRelationFree_dense_residual
+    -- countably many finite differential patterns, then Baire again
+not_familyDifferentiallyAlgebraicOn_gaugeCarrier_of_relationFree
+    -- descent from pattern coefficients to a literal differential relation
+fixedDivisor_fullTranslationFreeness_denseResidual        -- the theorem
+exists_gauge_fixedDivisor_fullTranslationFreeness         -- existence form
+exists_pair_fixedDivisor_fullTranslationFreeness          -- divisor blindness
+analyticOrderAt_gaugeCarrier                              -- the divisor is unchanged
+```
+
+The capstone reads: for every nonzero entire `W` the set of entire gauges `g` for which every
+finite family of distinct complex translates of `W·exp(g)` satisfies no algebraic differential
+relation over the coordinate is **dense and residual** in the compact-open gauge space, every
+`W·exp(g)` is entire, and `analyticOrderAt (W·exp g) = analyticOrderAt W` at every point, so the
+divisor is exactly that of `W`.
+
+The three earlier sections of this log (`PolynomialZeroSetDimension.lean`,
+`LipschitzCoveredDimension.lean`, `LeibnizJetMatrix.lean`, `ExpJetPolynomial.lean`,
+`ExpLocalInverse.lean`) remain in the tree as an independent, self-contained Hausdorff-dimension
+and Lipschitz-covering calculus for polynomial zero sets; they are not on the critical path of the
+proof above, which routes the codimension through the corpus's own rank-defect stratification
+instead.

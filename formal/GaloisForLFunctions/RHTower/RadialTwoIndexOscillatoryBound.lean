@@ -93,7 +93,7 @@ theorem continuousOn_dilatedRadialPhaseAccel {s r a b : ℝ} (hs1 : s ≤ 1 / 2)
 
 /-! ## The curvature of the dilated phase -/
 
-theorem one_le_xiSpeed {s t : ℝ} (hs1 : s ≤ 1) (ht : 1 < t) : 1 ≤ xiSpeed s t := by
+theorem one_le_xiSpeed_of_le_one {s t : ℝ} (hs1 : s ≤ 1) (ht : 1 < t) : 1 ≤ xiSpeed s t := by
   have h1 : (0 : ℝ) < t ^ 2 - 1 := by nlinarith
   have hratio : (1 : ℝ) ≤ (t ^ 2 - s) / (t ^ 2 - 1) := by
     rw [le_div_iff₀ h1]
@@ -119,7 +119,7 @@ theorem sub_one_le_xiEndpointPhase {s z : ℝ} (hs : 0 ≤ s) (hs1 : s ≤ 1) (h
     have ht1 : (1 : ℝ) < t := lt_of_le_of_ne ht.1 (by
       intro h
       exact hne (by simp [h.symm]))
-    exact one_le_xiSpeed hs1 ht1
+    exact one_le_xiSpeed_of_le_one hs1 ht1
   have hmono := intervalIntegral.integral_mono_ae_restrict hz hone hint hae
   have hconst : (∫ _ in (1 : ℝ)..z, (1 : ℝ)) = z - 1 := by
     simp
@@ -145,7 +145,7 @@ theorem abs_dilatedRadialPhaseAccel_le {s r x : ℝ} (hs : 0 ≤ s) (hs1 : s ≤
   have hu0 : (0 : ℝ) < r * x := by linarith
   have husq : (4 : ℝ) ≤ (r * x) ^ 2 := by nlinarith
   have hden : (0 : ℝ) < (r * x) ^ 2 - 1 := by linarith
-  have hspeed : (1 : ℝ) ≤ xiSpeed s (r * x) := one_le_xiSpeed (by linarith) hu1
+  have hspeed : (1 : ℝ) ≤ xiSpeed s (r * x) := one_le_xiSpeed_of_le_one (by linarith) hu1
   have hspeed0 : (0 : ℝ) < xiSpeed s (r * x) := lt_of_lt_of_le zero_lt_one hspeed
   have hnum : |(r * x) * (s - 1)| = (r * x) * (1 - s) := by
     rw [abs_mul, abs_of_pos hu0, abs_of_nonpos (by linarith : s - 1 ≤ 0)]

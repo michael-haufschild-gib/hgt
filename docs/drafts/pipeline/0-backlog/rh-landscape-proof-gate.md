@@ -91,7 +91,7 @@ This refinement does not prove or disprove RH. It prevents a scalar positivity c
 
 Status: proof-route guardrail added, not an RH proof.
 
-Created `../2-fully-proven/finite-rank-one-selector-no-free-lunch.md`. The finite rank-one family
+Created `../3-formalized/not_new_scientific_knowledge/finite-rank-one-selector-no-free-lunch.md`. The finite rank-one family
 
 `H(t)=A+t vv^*`, with `A` of inertia `(n,1)` and `t>0`, crosses the `N_1 -> N_0` threshold exactly when
 

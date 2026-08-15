@@ -419,21 +419,18 @@ The three numerical inputs it still wants for the actual radial PSWF solutions a
 3. `|P'(Φ(x))Φ'(x)| ≤ K'/x²` — the transported derivative bound, which is
    `‖ψ‖‖W‖/(2c)` times the bounded phase speed, with `ψ = O(ξ^{-2})`.
 
-### Input 1 of the symbol record is closed
+### Input 1 of the symbol record was already in the corpus
 
-`formal/GaloisForLFunctions/RHTower/RadialLiouvilleAmplitudeSymbol.lean` (wired, axiom-clean):
+`RHTower/XiAmplitudeDecay.lean` already proves exactly the half-power symbol bounds for the
+Liouville amplitude:
 
 ```text
-abs_xiAmplitude_le        |A_s(x)| ≤ 2/√x              for x > 1
-abs_xiAmplitude_logFactor_le
-    |P_s(x)/2 − x/(2(x²−s))| ≤ 26/(21x)                for x ≥ 2
-abs_xiAmplitudeDeriv_le   |A_s'(x)| ≤ 3/(x√x)          for x ≥ 2
+abs_xiAmplitude_le_four   |A_s(x)| ≤ 4/√x         for x ≥ 2
+abs_xiAmplitudeDeriv_le   |A_s'(x)| ≤ 4/(x√x)     for x ≥ 2
 ```
 
-using the corpus's `xiAmplitude_le` and `abs_phaseLogDefect_le_far` together with
-`x² − 1 ≥ (3/4)x²` and `x² − s ≥ (7/8)x²` on `x ≥ 2`.  So the Liouville amplitude is a half-power
-symbol with `C = 2`, `C' = 3`, which is the first of the three inputs
-`symbolTwoBranch_of_composition` asks for.  The remaining two are the uniform bound on the
+so `C = C' = 4`, and no new module is needed for the first of the three inputs
+`symbolTwoBranch_of_composition` asks for.  (A duplicate module written for this was deleted.)  The remaining two are the uniform bound on the
 interaction amplitudes (already `abs_radialAmpCos_le` + `radialInteractionTotal_le_exp`) and the
 transported derivative bound `|P'(Φ(x))Φ'(x)| ≤ K'/x²`.
 
@@ -455,3 +452,26 @@ uniform bound `|P|, |Q| ≤ K`, is `abs_radialAmpCos_le`/`abs_radialAmpSin_le` t
 **All three numerical inputs of `symbolTwoBranch_of_composition` are therefore reduced to two
 statements about the actual radial normal form**: the potential decay `‖ψ(ξ)‖ = O(ξ^{-2})` and the
 comparison `Φ(x) ≳ x` that converts it into `κ/x²`.
+
+### Both remaining normal-form statements are closed
+
+```text
+RHTower/RadialTwoIndexOscillatoryBound.lean
+  sub_one_le_xiEndpointPhase   ξ_s(z) ≥ z − 1        (ξ' ≥ 1 integrated)
+  le_dilatedRadialPhase        x ≤ ξ_s(r x)          for r ≥ 2, x ≥ 1
+
+RHTower/RadialNormalFormPotentialDecay.lean
+  abs_lgNormalFormDefect_radialProlate_le_sq
+      |ψ(x)| ≤ 54/x²   for x ≥ 2, uniformly in the bandwidth
+```
+
+The second is the corpus's own `abs_lgNormalFormDefect_radialProlate_le` (`|ψ| ≤ 40/(x²−1)`) read
+beyond the second dilation, where `x² − 1 ≥ (3/4)x²`; the aperture cancels exactly in the normal
+form, so no `c` survives in the potential.  The first says the Liouville variable grows at least like
+the radius, which is what converts a `ξ^{-2}` potential bound into an `x^{-2}` one.
+
+Every ingredient of `(8)` for the actual radial PSWF solutions is therefore formal: the two-branch
+representation, the amplitude bounds and their `O(1/c)` variation, the Liouville amplitude symbol
+bounds, the potential decay, the phase growth, the phase separation, the phase curvature, the
+oscillatory budget, and the endpoint-uniform assembly.  What is left is the bookkeeping instantiation
+that names `W`, `V`, `ψ`, `Φ` for the concrete signed-mode data and reads off the constants.
