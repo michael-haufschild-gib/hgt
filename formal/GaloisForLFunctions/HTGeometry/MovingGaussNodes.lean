@@ -898,6 +898,58 @@ theorem hasDerivAt_totalResidue {s : ℝ → ℕ → ℝ} {y : ℝ} {x w : Fin (
   rw [hgoal]
   exact hsum0
 
+/-! ## The hard node coordinate and the iterated moment jets -/
+
+set_option maxHeartbeats 2000000 in
+/-- **(GJRS.11) The hard node coordinate moves strictly right.**  `u_i = 1/x_i - y` has velocity
+`2N·L(p²)/(x_i²·γ_i)`. -/
+theorem hasDerivAt_hardNodeCoordinate {s : ℝ → ℕ → ℝ} {y : ℝ} {x w : Fin (n + 1) → ℝ → ℝ}
+    {x' w' : Fin (n + 1) → ℝ}
+    (hs : ∀ k, HasDerivAt (fun t => s t k) (-(((k : ℝ) + 1) * s y (k + 1))) y)
+    (hx : ∀ i, HasDerivAt (x i) (x' i) y) (hw : ∀ i, HasDerivAt (w i) (w' i) y)
+    (hquad : ∀ t : ℝ, ∀ g : Polynomial ℝ, g.natDegree ≤ 2 * n + 1 →
+      momentFunctional (s t) g = ∑ i, w i t * g.eval (x i t))
+    (i₀ : Fin (n + 1)) (hsep : nodeSeparation (fun j => x j y) i₀ ≠ 0)
+    (hw0 : w i₀ y ≠ 0) (hx0 : x i₀ y ≠ 0) :
+    HasDerivAt (fun t => (x i₀ t)⁻¹ - t)
+      ((2 * (n : ℝ) + 2) * momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2)
+          / ((x i₀ y) ^ 2 * nodeEnergy (fun j => x j y) (fun j => w j y) i₀)) y := by
+  have h := hasDerivAt_hardCoordinate hs hx hw hquad i₀ hsep hw0 hx0
+  have hn := h.neg
+  rw [neg_neg] at hn
+  refine hn.congr_of_eventuallyEq (Filter.Eventually.of_forall fun t => ?_)
+  simp only [Pi.neg_apply]
+  ring
+
+/-- **The iterated moment jets.**  The shifted moment ODE integrates to
+`s^{(r)}(k) = (-1)^r (k+1)(k+2)…(k+r) s(k+r)`. -/
+theorem iteratedDeriv_moment {s : ℝ → ℕ → ℝ}
+    (hs : ∀ (t : ℝ) (k : ℕ), HasDerivAt (fun u => s u k) (-(((k : ℝ) + 1) * s t (k + 1))) t)
+    (r k : ℕ) :
+    iteratedDeriv r (fun t => s t k)
+      = fun y => (-1) ^ r * (∏ i ∈ Finset.range r, ((k : ℝ) + 1 + i)) * s y (k + r) := by
+  induction r with
+  | zero =>
+      funext y
+      simp
+  | succ r ih =>
+      funext y
+      rw [iteratedDeriv_succ, ih]
+      have hderiv : HasDerivAt
+          (fun z => (-1 : ℝ) ^ r * (∏ i ∈ Finset.range r, ((k : ℝ) + 1 + i)) * s z (k + r))
+          ((-1 : ℝ) ^ r * (∏ i ∈ Finset.range r, ((k : ℝ) + 1 + i)) *
+            (-((((k + r : ℕ) : ℝ) + 1) * s y (k + r + 1)))) y :=
+        HasDerivAt.const_mul ((-1 : ℝ) ^ r * (∏ i ∈ Finset.range r, ((k : ℝ) + 1 + i)))
+          (hs y (k + r))
+      rw [hderiv.deriv]
+      have hprod : (∏ i ∈ Finset.range (r + 1), ((k : ℝ) + 1 + i))
+          = (∏ i ∈ Finset.range r, ((k : ℝ) + 1 + i)) * ((k : ℝ) + 1 + r) := by
+        rw [Finset.prod_range_succ]
+      have hidx : k + (r + 1) = k + r + 1 := by omega
+      rw [hprod, hidx]
+      push_cast
+      ring
+
 end HTGeometry
 
 end

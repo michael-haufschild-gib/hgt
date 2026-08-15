@@ -514,3 +514,35 @@ No Lean declaration is claimed. Formalizing the confluent-Vandermonde mechanics 
 positive-axis Padé bound would certify a generic implication but would not close literal Route U.
 Lean work begins only when the selected completed-Xi local-boundedness theorem, terminal-mass
 alternative, or another unconditional source closure is proved.
+
+## Lean status (updated)
+
+Section 2 — the exact hard-node velocity — is formal and axiom-clean, in the card's own setting: a
+positive chamber on which the nodes and weights are smoothly enumerated, quadrature exact through
+degree `2n-1`, and the literal shifted moment ODE.
+
+    HTGeometry/MovingGaussNodes.lean                  (axiom-clean, wired, built)
+      momentFlowPoly, hasDerivAt_momentFunctional     **(GJRS.1)** the dual of the moment flow
+      nodePoly, nodeCofactorPoly, nodeSeparation      the monic node polynomial and `p'(x_i)`
+      nodeVelocityTest,
+        eval_nodeVelocityTest,
+        eval_derivative_nodeVelocityTest,
+        coeff_nodeVelocityTest_top                    **(GJRS.8)-(GJRS.9)** the Hermite derivative
+                                                      cardinal `H_i = (X-x_i)L_i²` with
+                                                      `H_i(x_j)=0`, `H_i'(x_j)=1_{i=j}` and top
+                                                      coefficient `1/p'(x_i)²`
+      momentFunctional_eq_quadSum_add_top             **(GJRS.6)-(GJRS.7)** the one-coordinate
+                                                      moment discrepancy `h_n = L(p²)`
+      moving_master                                   differentiating exactness
+      weight_mul_nodeVelocity                         **(GJRS.10)** `x_i' = -x_i² - 2n h_n/gamma_i`
+      nodeEnergy, hasDerivAt_hardNodeCoordinate       **(GJRS.11)** `u_i' = 2n h_n/(x_i² gamma_i)`,
+                                                      strictly positive in a positive chamber
+      hardCoordinateVelocity_neg                      the same statement for `a_i = -u_i`
+      iteratedDeriv_moment                            **(GJRS.15)** the iterated moment jets
+                                                      `s^{(r)}(k) = (-1)^r (k+1)…(k+r) s(k+r)`
+      weightVelocity, hasDerivAt_nodeResidue,
+        hasDerivAt_totalResidue                       the companion weight and residue flows
+
+Still to formalize for this card: the flat-contact jet comparison `(GJRS.16)-(GJRS.20)`, which
+needs the iterated node jets — the same master identity applied at each order — and the
+orientation conclusion `(GJRS.21)`, which consumes the literal Xi contact-parity sign.

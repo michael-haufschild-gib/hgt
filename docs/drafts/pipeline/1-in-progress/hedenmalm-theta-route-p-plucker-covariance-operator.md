@@ -1,8 +1,9 @@
-# Hedenmalm theta Route P: physical Pluecker spectral operator (P-G91--P-G97)
+# Hedenmalm theta Route P: physical Pluecker spectral operator (P-G91--P-G98)
 
 Status: local pole movement, cofinal trace-class assembly, physical overlap sewing, global
-faithfulness, and actual-Xi Hilbert admission fully proved in Lean; source annihilation and
-resolvent/completed-moment identification are open; zero boundary spectrum is classified
+faithfulness, actual-Xi Hilbert admission, and source-native stable entire determinant fully proved
+in Lean; source annihilation and determinant/transfer completed-moment identification are open;
+zero boundary spectrum is classified
 
 ## Conjecture P-G91
 
@@ -144,6 +145,22 @@ Thus P-G95 did not remove zero from spectral geometry. It converted exact local 
 continuous boundary singularity. Any Gamma/polar transfer regular at zero or using a bounded
 inverse there is now formally impossible.
 
+P-G98 closes source-native stable determinant existence. The P-G94/P-G95 operator is already
+Schatten-one, hence Hilbert--Schmidt. Passing to its canonical coordinate kernel introduces no new
+normalization. Positivity and injectivity imply every finite principal compression is positive
+definite: zero-extending a block eigenvector preserves its quadratic form, and zero energy would
+put a nonzero physical vector in global kernel. Lean proves:
+
+34. canonical coordinate kernel is Hilbert--Schmidt and reconstructs physical operator exactly;
+35. every zero of every finite `det2(I-z T_s)` is strictly positive real;
+36. every zero of reflected finite determinant `det2(I+u T_s)` is strictly negative real;
+37. finite determinants converge pointwise and locally uniformly on closed discs to an entire
+    regularized determinant;
+38. every zero of cofinal reflected determinant is strictly negative real.
+
+This is source-faithful SP-E limit missing from artificial depth-square construction. It closes
+stability and cofinal determinant assembly, not arithmetic identification with Xi.
+
 Formal file:
 
 - `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalPluckerCovariance.lean`
@@ -151,6 +168,7 @@ Formal file:
 - `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesCofinalPluckerSpectralOperator.lean`
 - `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalOverlapPluckerSpectralOperator.lean`
 - `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalOverlapPluckerFaithfulness.lean`
+- `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalPluckerEntireDeterminant.lean`
 - `formal/GaloisForLFunctions/RHTower/FrankensteinPluckerXiHilbertAdmission.lean`
 - `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalOverlapPluckerBoundarySpectrum.lean`
 
@@ -189,6 +207,11 @@ Headline declarations:
 - `gammaSewnCriticalPhysicalPluckerSpectralOperator_denseRange`;
 - `gammaSewnCriticalPhysicalPluckerSpectralOperator_zero_mem_spectrum`;
 - `gammaSewnCriticalPhysicalPluckerSpectralOperator_zero_not_eigenvalue`.
+- `gammaSewnCriticalPhysicalPluckerKernel_toOperator`;
+- `gammaSewnCriticalPhysicalPluckerFiniteDet2_zero_pos`;
+- `gammaSewnCriticalPhysicalPluckerStableFiniteDet2_zero_re_im`;
+- `gammaSewnCriticalPhysicalPluckerStableEntireDet2_zero_re_im`;
+- `tendstoUniformlyOn_gammaSewnCriticalPhysicalPluckerStableFiniteDet2`.
 
 ## P-G93 higher principle
 
@@ -237,6 +260,16 @@ normalizable eigenvectors. This explains why earlier routes alternated between s
 and nonclosable clocks: both are shadows of one boundary-spectral law. Correct completion must use
 a singular, renormalized zero-boundary transfer; a bounded zero resolvent cannot exist.
 
+## P-G98 higher principle
+
+Stable Eulerian structure appears automatically after faithful physical incidence descent. Local
+rate-pair normalization severed overlap geometry, then tried to repair gauge sewing and source mass
+by scalar rescaling. P-G94 descent keeps literal overlap; P-G95 faithfulness turns positive
+semidefinite compressions into positive definite ones; regularized determinant theory converts that
+operator fact into finite and cofinal strict real-rootedness. Remaining wall is arithmetic: identify
+completed Xi content of an already-stable source determinant or its P-G97-compatible boundary
+transfer.
+
 ## Numerical pre-certification of next operator
 
 For the literal prime `2/3`, depth `0/1` hostile packet, external high-precision evaluation gives
@@ -276,10 +309,11 @@ by fitting: it is forced by cardinality-two Pluecker incidence law.
 
 ## Completion gate
 
-Construct a source-selected renormalized boundary resolvent/transfer compatible with P-G97's
-continuous zero spectrum and P-G96's admitted Xi carrier. Prove completed Gamma/polar source
-geometry annihilates its faithful detector energy, equivalently identify the sewn transfer and
-every moment with `normalizedPrimeArchMoment`; then invoke Julia saturation. Zero may occur only
-as a non-normalizable gauge boundary mode or the literal zero Xi carrier, not as an added
-Hilbert-space kernel vector. No additional inter-block coefficient is permitted: physical overlap
-is the sewing.
+First audit direct arithmetic content of P-G98 determinant: compute its first source trace and
+regularized logarithmic coefficients and compare them with `normalizedPrimeArchMoment`. If direct
+determinant identity fails, construct a source-selected renormalized boundary transfer compatible
+with P-G97's continuous zero spectrum and P-G96's admitted Xi carrier. Prove completed Gamma/polar
+source geometry annihilates its faithful detector energy, equivalently identify transfer and every
+moment with `normalizedPrimeArchMoment`; then invoke Julia saturation. Zero may occur only as a
+non-normalizable gauge boundary mode or literal zero Xi carrier, not as an added Hilbert-space
+kernel vector. No additional inter-block coefficient is permitted: physical overlap is sewing.

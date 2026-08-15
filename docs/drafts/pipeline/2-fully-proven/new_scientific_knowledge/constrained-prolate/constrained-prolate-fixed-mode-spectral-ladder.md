@@ -1211,3 +1211,245 @@ coefficient bounds are `ProlateRescaledCoefficients`, and the a priori phase bou
 `u(0) = 1`, `u′(0) = 0` — the first from `Φ(0) ≠ 0`
 (`SlepianKernelScaledFubini.value_zero_ne_of_even_joint_prolate_band_eigen`), the second from
 evenness.
+
+## Lean progress — the centre-mass asymptotic is closed unconditionally
+
+The scalar core of the eigenvector half is now a theorem.  Writing `u_c(ξ) = Φ_c(ξ/√c)/Φ_c(0)` for
+the normalized rescaled profile of the variationally selected ground family, the total mass
+`N(c) = ∫_{−√c}^{√c} u_c²` satisfies `N(c) → √π`, and since
+
+`√(π/c)·Φ_c(0)² / ∫_{−1}^{1} Φ_c²  =  √π / N(c)` ,
+
+the centre-mass ratio tends to `1`.
+
+The route needs no compactness, no spectral theorem, and no uniform convergence on the whole line:
+convergence on each fixed window plus a *bandwidth-uniform* Chebyshev tail bound already pins the
+total.
+
+New reusable infrastructure, all wired and axiom-clean.
+
+`HTGeometry/WindowTotalSqueeze.lean`:
+
+```text
+tendsto_gaussianWindow          ∫_{−K}^{K} e^{−x²} → √π
+window_le_total                 a symmetric window carries at most the total mass
+window_tail_le_of_secondMoment  N − W_K ≤ K⁻² · (total second moment)          [Chebyshev]
+tendsto_total_of_window         W_K ≤ N,  N(1 − M/K²) ≤ W_K,  W_K → G K,  G K → A
+                                  ⟹  N → A                                     [squeeze]
+```
+
+`RHTower/ProlateNormalizedProfile.lean`:
+
+```text
+normalizedProlateProfile c Φ ξ = Φ(ξ/√c)/Φ(0),  with its first two derivatives
+normalizedProlate_ode           the rescaled normal form on the window
+normalizedProlate_window_package  all five window hypotheses discharged at once:
+                                  global differentiability, the normal form,
+                                  u(0) = 1 and u′(0) = 0
+```
+
+The two normalizations are exactly the two facts the corpus already owns: `Φ(0) ≠ 0` is
+`value_zero_ne_of_even_joint_prolate_band_eigen`, and `u′(0) = 0` is `deriv_zero_of_even`.
+
+`RHTower/ProlateWindowMass.lean`:
+
+```text
+gaussianProfile_sq              (e^{−ξ²/2})² = e^{−ξ²}
+abs_sub_le_of_even_window       evenness transports a window estimate from [0,K] to [−K,K]
+abs_sq_sub_le_of_window         squaring costs the factor B + 1
+abs_windowMass_sub_le           |∫_{−K}^{K} u² − ∫_{−K}^{K} e^{−ξ²}| ≤ 2K(B+1)·E
+```
+
+`RHTower/ProlateGroundTotalMass.lean`:
+
+```text
+normalizedProlate_phase_le        a priori bound B = exp(max 1 (K²+3)·K), uniform in c
+prolateWindowMassEnvelope         the full window-mass envelope, and its vanishing
+prolateGround_windowMass_bound    |W_K(c) − G K| ≤ envelope
+normalizedProlate_secondMoment_le the second moment survives normalization
+normalizedProlate_chebyshev       N(c)(1 − 2/K²) ≤ W_K(c)
+prolateCentreMassRatio_mul_totalMass   ratio · N = √π   (exact, not asymptotic)
+tendsto_prolateGround_centreMass  √(π/c)·Φ_c(0)²/∫_{−1}^{1}Φ_c² → 1
+```
+
+What remains on this card is no longer analytic.  `tendsto_prolateGround_centreMass` is a statement
+about the family produced by the variational selection, i.e. about *band* eigenfunctions; the
+card's `ℓ_j` are indexed through the *finite Fourier* equation.  The missing link is the ordering
+statement recorded above — larger band eigenvalue ⟺ smaller separation constant on the even joint
+spectrum — which identifies the selected family with the signed mode of index `0`.
+
+## Corpus audit — what the whole constrained-prolate lane actually still consumes
+
+An audit of the formal tree against the three constrained-prolate cards and the CCM transfer tower
+finds that the ℓ-side is nearly closed and locates the remaining input precisely.
+
+Already unconditional in the tree (all `[propext, Classical.choice, Quot.sound]`):
+
+```text
+ConstrainedProlateBesselBound.lean
+    tsum_evenProlateConstraintCoord_sq_le      Σ ℓ_j² ≤ 2a          [Bessel]
+    summable_evenProlateConstraintCoord_sq
+    evenProlate_bessel_eventually, evenProlate_summable_eventually
+    tsum_evenProlateConstraintCoord_comp_sq_le the Bessel bound survives *any injective
+                                               renumbering* of the modes
+ConstrainedProlateBesselClockUniversalityLaw.lean
+    ClockEnvelope.constrainedProlateBessel_exactEigenpair_and_allRawDefects
+```
+
+The last of these is the whole tower's entry point, and after the Bessel inputs it consumes exactly
+one hypothesis:
+
+```text
+hl : ∀ j ≤ k+1,  ‖evenProlateConstraintCoord lam j‖ → constrainedProlateHermiteCoordinate j
+```
+
+So the card's square-summability and Bessel items are **done**, not open; the earlier note listing
+them as open is superseded.
+
+### The scalar content of `hl`, and why the centre-mass theorem is exactly it
+
+`ℓ_j = χ_j·e_j(0)` with `e_j` normalized in `L²[−λ,λ]`, so `|ℓ_j| → |h_{2j}(0)|` is the statement
+`e_j(0)² → h_{2j}(0)²`.  Writing `e(t) = NΦ(t/λ)` with `∫_{−λ}^{λ}e² = 1` gives `N² = 1/(λ∫_{−1}^{1}Φ²)`
+and hence
+
+```text
+e(0)² = Φ(0)² / (λ ∫_{−1}^{1}Φ²) .
+```
+
+`tendsto_prolateGround_centreMass` says `√(π/c)·Φ(0)²/∫_{−1}^{1}Φ² → 1` with `c = 2πλ²`, i.e.
+`Φ(0)²/∫Φ² → √(c/π) = λ√2`, so `e(0)² → √2`.  And `h_0(0)² = √2` in this Fourier convention
+(`h_0(x) = 2^{1/4}e^{−πx²}`, `constrainedProlateHermiteCoordinate 0 = 2^{1/4}`, which
+`CCMHypothesisDischarge` already evaluates).  The two agree exactly: **the centre-mass theorem is
+`hl` at `j = 0`, up to the index identification.**
+
+### The one remaining structural link, and why it is *not* total positivity
+
+`evenProlateConstraintCoord a j` is built from `evenProlateSignedMode a j = sgVec`, the **greedy**
+exhaustion of the band operator `PₐFPₐ` by `|⟨x,Sx⟩|`.  The analytic machine above produces modes
+indexed by their **separation constant** `μ`.  Matching the two indexings is the classical
+statement that the prolate integral operator and the prolate differential operator are ordered
+oppositely, which classically rests on strict total positivity of the sinc kernel
+(Gantmacher–Krein/Kellogg).  That has no mathlib counterpart and would be a project in itself.
+
+**It is not on the critical path.**  `tsum_evenProlateConstraintCoord_comp_sq_le` proves the Bessel
+bound for an arbitrary injective renumbering, and the clock tower consumes `ℓ` and `D` abstractly.
+So the tower may be instantiated with *both* families re-indexed by separation order.  The CCM
+conclusions are statements about the constrained ground state of an operator and do not depend on
+how its eigenmodes are labelled.  Re-indexing therefore replaces "greedy order = differential order"
+by:
+
+```text
+(α)  the differential ordering:   μ_j(c) → 4j+1  for the j-th even mode by separation order;
+(β)  Fuchs asymptotics in that same order:  d_j(λ) ~ A_j λ^{4j+1} e^{−4πλ²}.
+```
+
+`(β)` is what the card's `(7)` already flags as external.  `(α)` is new work, and the route is
+fixed by what the corpus now owns.
+
+### Route to `(α)`
+
+Lower half, already unconditional: the aperture virial `c ≤ μ(c+3)` holds for **every** mode
+(`bandwidthSeparation_ge`), so `liminf μ ≥ 1` for every mode.
+
+Upper half: a `(j+1)`-dimensional trial space of rescaled Hermite functions has prolate Rayleigh
+numerator above `−(4j+1+ε)c` times its aperture norm, for large `c`.  Feeding it into a *multi-mode*
+version of the variational extraction gives `j+1` linearly independent joint modes with
+`μ < 4j+1+ε`.
+
+The single-trial extraction is now general:
+
+```text
+ProlateGeneralTrialMode.exists_even_joint_prolate_eigen_gt_of_trial
+    any smooth even trial function with prolate Rayleigh numerator above −K·‖g‖²
+    produces an even joint band/prolate mode with prolate eigenvalue above −K
+```
+
+(The Gaussian-specific hypothesis is gone; only `ContDiff` and `Function.Even` are used.)  A single
+trial function is not enough — it only reproves `μ < 1`, which is already known.  What the multi-mode
+version needs, and what is the actual next construction, is the dimension count: if the joint modes
+with `η > −K` spanned a space `W` of dimension `≤ j`, then a nonzero `g ∈ V ∩ W^⊥` would have every
+band component orthogonal to `W`, so on each even band eigenspace the prolate operator would have
+all eigenvalues `≤ −K` on the relevant complement, and summing the per-eigenvalue estimate would
+contradict the trial bound.
+
+Finally, `μ_j → 4j+1` exactly (rather than `≤`) follows from the rung rigidity
+`OscillatorSpectralRigidity.exists_rung_of_integrable` — an `L²` solution of `v″ = (ξ²−μ)v` forces
+`μ = 2n+1` — together with the window limits, which now exist at **every** rung:
+
+```text
+ProlateHermiteRungWindowLimit.lean   (wired, axiom-clean)
+    hasDerivAt_deriv_hermiteFun          φ_n″ = (ξ² − (2n+1))φ_n in the window normal form
+    even_hermiteFun, deriv_hermiteFun_zero_of_even
+    prolateProfile_window_hermiteRung_dist_le
+    tendsto_prolateProfile_hermiteRung   μ → 2n+1, c → ∞  ⟹  u → φ_n on [0,K]
+```
+
+The limit profiles need no construction at any rung: the corpus's `hermiteFun n` already solves the
+rung equation exactly, and the Gaussian case is `hermiteFun 0`.
+
+## Lean progress — the multi-mode variational machinery, and Hermite orthogonality
+
+Two blocks of the route to `(α)` are now built, wired, and axiom-clean.
+
+### 1. The relative variational bound and the dimension count
+
+The absolute extraction theorem (a trial function with prolate form above `−K` yields a mode with
+eigenvalue above `−K`) is not enough for a count: one trial function only reproves `μ < 1`.  What a
+count needs is the *relative* statement, and it is now proved.
+
+`RHTower/ProlateEvenEigenspaceRelativeBound.lean`:
+
+```text
+prolate_form_le_of_orthogonal_high
+    on an even band eigenspace, a vector orthogonal to every prolate eigenvector with
+    eigenvalue above −K has prolate form ≤ −K‖·‖²
+```
+
+`RHTower/ProlateRelativeTrialBound.lean`:
+
+```text
+IsHighProlateMode c K Phi          a joint even band/prolate mode with eigenvalue above −K
+exists_mode_of_evenEigenspace_eigenvector
+    a nonzero prolate eigenvector of an even band eigenspace *is* the band class of a genuine
+    smooth even joint mode with the same eigenvalue        [reconstruction]
+prolate_trial_le_of_orthogonal_high
+    a smooth even trial function orthogonal on the aperture to every high mode has
+    ∫L_c g·g ≤ −K∫g²
+highProlateSpan c K                the span of the band classes of all high modes
+bandClass_notMem_orthogonal_highProlateSpan
+    a live trial function is not orthogonal to that span
+disjoint_trialSpace_orthogonal_highProlateSpan
+    a whole trial subspace meets the span's orthogonal complement only in zero
+rank_trialSpace_le_highProlateSpan
+    hence orthogonal projection onto the span is injective on the trial space:
+    rank(trial space) ≤ rank(high-mode span)
+```
+
+That is the dimension count in full.  What remains for `(α)`'s upper half is the *analytic* input:
+an explicit `(j+1)`-dimensional trial space whose prolate Rayleigh quotient stays below `4j+1+ε`.
+
+### 2. Hermite function orthogonality — exact, with the truncation error included
+
+Mathlib carries the Hermite *polynomials* but no analysis of the Hermite *functions*.  The trial
+space is spanned by rescaled Hermite functions, so their orthogonality and window masses had to be
+built.  The mechanism is a Wronskian, in the same style as the oscillator rigidity chain:
+
+`RHTower/HermiteFunctionOrthogonality.lean` (wired, axiom-clean):
+
+```text
+tendsto_polyEval_mul_gauss_atTop/atBot     polynomials lose to a Gaussian at both ends
+tendsto_hermiteFun_atTop/atBot             φ_n → 0
+tendsto_deriv_hermiteFun_atTop/atBot       φ_n′ → 0
+hermiteWronskian m n = φ_m′φ_n − φ_mφ_n′
+hasDerivAt_hermiteWronskian                W′ = 2(n − m)·φ_mφ_n
+integral_hermiteFun_mul_eq                 ∫_a^b φ_mφ_n = (W(b) − W(a))/(2(n − m))
+tendsto_integral_hermiteFun_mul            ∫_{−R}^{R} φ_mφ_n → 0
+exists_hermiteFun_ne_zero                  φ_n vanishes on no interval  (hermite n is monic)
+integral_hermiteFun_sq_pos                 ∫_a^b φ_n² > 0 on every nondegenerate window
+```
+
+The orthogonality identity is **exact**, not asymptotic: it *is* the truncation error, so no
+estimate of Hermite tails is needed anywhere downstream.  Together with the decay of `φ_n` and
+`φ_n′` this gives everything the almost-orthogonality argument for the trial space needs — the
+off-diagonal Gram entries vanish, the boundary terms vanish, and the diagonal entries are bounded
+below.

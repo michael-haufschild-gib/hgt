@@ -104,6 +104,75 @@ theorem stripPropagatorInv_blockSource {g : ℝ → X} {m σ : ℝ}
 /-! ## The interchange -/
 
 set_option maxHeartbeats 1000000 in
+/-- **The joint integrand of the block-times-window box is integrable.**  Its frequency dependence is
+continuous and its block dependence merely measurable, and it is dominated by the uniform transport
+bound on the window times the profile. -/
+theorem integrable_uncurry_wallPhaseMap_apply
+    (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0)
+    {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
+    {g : ℝ → X} {m : ℝ} (hg : IntegrableOn g (Icc m (m + 1)))
+    {a b : ℝ} :
+    Integrable (Function.uncurry fun (L : ℝ) (t : ℝ) => wallPhaseMap E T σ L t (g L))
+      ((volume.restrict (Icc m (m + 1))).prod (volume.restrict (Ioc a b))) := by
+  have hInvCont := continuous_stripPropagatorInv_line (T := T) hEdiff hE hEne hσ0 hσ1
+  obtain ⟨M, hM⟩ := (isCompact_Icc (a := a) (b := b)).exists_bound_of_continuousOn
+    (hInvCont.continuousOn)
+  have hmeas : AEStronglyMeasurable
+      (Function.uncurry fun (L : ℝ) (t : ℝ) => wallPhaseMap E T σ L t (g L))
+      ((volume.restrict (Icc m (m + 1))).prod (volume.restrict (Ioc a b))) := by
+    have hgfst : AEStronglyMeasurable (fun p : ℝ × ℝ => g p.1)
+        ((volume.restrict (Icc m (m + 1))).prod (volume.restrict (Ioc a b))) :=
+      hg.aestronglyMeasurable.comp_fst
+    have hAsnd : AEStronglyMeasurable
+        (fun p : ℝ × ℝ => stripPropagatorInv E T ((p.2 : ℂ) + (σ : ℂ) * Complex.I))
+        ((volume.restrict (Icc m (m + 1))).prod (volume.restrict (Ioc a b))) :=
+      hInvCont.aestronglyMeasurable.comp_snd
+    have hev : AEStronglyMeasurable
+        (fun p : ℝ × ℝ => stripPropagatorInv E T ((p.2 : ℂ) + (σ : ℂ) * Complex.I) (g p.1))
+        ((volume.restrict (Icc m (m + 1))).prod (volume.restrict (Ioc a b))) :=
+      ContinuousLinearMap.aestronglyMeasurable_comp₂ (ContinuousLinearMap.apply ℂ X) hgfst hAsnd
+    have hph : AEStronglyMeasurable
+        (fun p : ℝ × ℝ => Complex.exp (-(Complex.I) * (p.1 : ℂ) * (p.2 : ℂ)))
+        ((volume.restrict (Icc m (m + 1))).prod (volume.restrict (Ioc a b))) :=
+      continuous_expPhase₂.aestronglyMeasurable
+    exact hph.smul hev
+  haveI : IsFiniteMeasure (volume.restrict (Ioc a b)) := ⟨by simp [Real.volume_Ioc]⟩
+  have hw₁ : Integrable (fun L : ℝ => M * ‖g L‖) (volume.restrict (Icc m (m + 1))) :=
+    hg.norm.const_mul M
+  have hw₂ : Integrable (fun _ : ℝ => (1 : ℝ)) (volume.restrict (Ioc a b)) := integrable_const 1
+  refine Integrable.mono' (hw₁.mul_prod hw₂) hmeas ?_
+  rw [Measure.prod_restrict]
+  filter_upwards [ae_restrict_mem (measurableSet_Icc.prod measurableSet_Ioc)] with p hp
+  have ht : p.2 ∈ Icc a b := Ioc_subset_Icc_self hp.2
+  have hop : ‖stripPropagatorInv E T ((p.2 : ℂ) + (σ : ℂ) * Complex.I) (g p.1)‖
+      ≤ M * ‖g p.1‖ := by
+    refine le_trans (ContinuousLinearMap.le_opNorm _ _) ?_
+    exact mul_le_mul_of_nonneg_right (hM p.2 ht) (norm_nonneg _)
+  show ‖wallPhaseMap E T σ p.1 p.2 (g p.1)‖ ≤ M * ‖g p.1‖ * 1
+  rw [wallPhaseMap, smul_apply, norm_smul, norm_expPhase, one_mul, mul_one]
+  exact hop
+
+/-- **The block average of the frequency integrals is integrable.** -/
+theorem integrableOn_blockPhaseIntegral
+    (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0)
+    {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
+    {g : ℝ → X} {m : ℝ} (hg : IntegrableOn g (Icc m (m + 1)))
+    {a b : ℝ} (hab : a ≤ b) :
+    IntegrableOn (fun L : ℝ => ∫ t in a..b, wallPhaseMap E T σ L t (g L))
+      (Icc m (m + 1)) := by
+  have hjoint := integrable_uncurry_wallPhaseMap_apply (T := T) hEdiff hE hEne hσ0 hσ1 hg
+    (a := a) (b := b)
+  have hleft := hjoint.integral_prod_left
+  refine hleft.congr (Filter.Eventually.of_forall fun L => ?_)
+  show (∫ y in Ioc a b, wallPhaseMap E T σ L y (g L))
+      = ∫ t in a..b, wallPhaseMap E T σ L t (g L)
+  rw [intervalIntegral.integral_of_le hab]
+
+set_option maxHeartbeats 1000000 in
 /-- **The block integral and the frequency window commute.** -/
 theorem integral_blockSource_swap
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))

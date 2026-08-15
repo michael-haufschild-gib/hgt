@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.StripPropagatorLineDecay
 import GaloisForLFunctions.HTGeometry.FrequencyLineSplit
+import GaloisForLFunctions.HTGeometry.ClockIteratedIntegralBound
 
 /-!
 # `(16)`: the finite frequency window of the variation-of-constants solution
@@ -34,29 +35,11 @@ def forcedWindowPart (E : ℂ → ℂ) (T : X →L[ℂ] X) (b : ℝ → X) (σ x
   stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)
     (∫ t in (0 : ℝ)..x, stripPropagatorInv E T ((t : ℂ) + (σ : ℂ) * Complex.I) (b t))
 
-/-- On a moving-endpoint interval starting at the origin the inner frequency never exceeds the
-outer one. -/
-theorem abs_le_abs_of_mem_uIoc_zero {t x : ℝ} (ht : t ∈ uIoc (0 : ℝ) x) : |t| ≤ |x| := by
-  rw [uIoc] at ht
-  rcases le_total 0 x with hx0 | hx0
-  · rw [min_eq_left hx0, max_eq_right hx0] at ht
-    rw [abs_of_pos ht.1, abs_of_nonneg hx0]
-    exact ht.2
-  · rw [min_eq_right hx0, max_eq_left hx0] at ht
-    rw [abs_of_nonpos ht.2, abs_of_nonpos hx0]
-    linarith [ht.1]
-
 theorem uIoc_zero_subset_Icc {W x : ℝ} (hx : |x| ≤ W) : uIoc (0 : ℝ) x ⊆ Icc (-W) W := by
-  intro t ht
-  have hxW : -W ≤ x ∧ x ≤ W := abs_le.mp hx
   have hW : (0 : ℝ) ≤ W := le_trans (abs_nonneg x) hx
-  rw [uIoc] at ht
-  obtain ⟨h1, h2⟩ := ht
-  constructor
-  · have hmin : min (0 : ℝ) x ≥ -W := le_min (by linarith) hxW.1
-    linarith
-  · have hmax : max (0 : ℝ) x ≤ W := max_le hW hxW.2
-    linarith
+  have hxW : -W ≤ x ∧ x ≤ W := abs_le.mp hx
+  refine subset_trans uIoc_subset_uIcc ?_
+  exact Set.uIcc_subset_Icc ⟨by linarith, hW⟩ ⟨hxW.1, hxW.2⟩
 
 /-- **`(16)`: the window estimate for the forced part, with a window-free constant.**  Inside the
 moving-endpoint integral the inner frequency lies between the origin and the outer one, so the

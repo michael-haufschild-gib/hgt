@@ -132,10 +132,12 @@ moment towers.  No unproved premise enters any step.
 
 ### Positive survivor
 
-Route Q does not need another existence theorem for a discontinuous plateau quotient.  It needs a
-**source-intrinsic orientation law** that proves the canonical plateau barycenter is at most the
-completed theta/source barycenter.  This single upper comparison is exactly sharp: the reverse
-inequality and its defect are already unconditional.
+Route Q does not need another existence theorem for a discontinuous plateau quotient.  The initial
+survivor was a source-intrinsic label/order law proving the canonical plateau barycenter at most the
+completed theta/source barycenter.  The ambient-order part is now closed negatively by the explicit
+monotone theorem in `route-q-canonical-monotone-plateau-orientation-wall.md`.  Surviving structure
+must be arithmetic incidence not measurable from scalar theta rank alone.  The upper barycenter
+comparison remains exactly sharp: the reverse inequality and its defect are unconditional.
 
 ## Route U comparison
 
@@ -176,3 +178,6 @@ Proved, without hypotheses or new axioms, in
   `lake env lean -o ...PrimeArchThetaCanonicalPlateauQuantizerOrientationWall.olean ...lean`.
   Axiom audit of the capstone and core transport/defect theorems reports only `propext`,
   `Classical.choice`, and `Quot.sound`.  Module imported by `RHTower.lean`; umbrella not built.
+- 2026-08-16 — Ambient-order survivor closed negatively: an explicit canonical nondecreasing
+  theta-CDF/Xi-quantile reporter has the same unconditional pushforward and orientation wall.
+  Positive survivor tightened to arithmetic incidence beyond scalar rank.

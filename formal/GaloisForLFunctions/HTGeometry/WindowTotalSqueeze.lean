@@ -38,17 +38,22 @@ total. -/
 theorem tendsto_total_of_window {ι : Type*} {L : Filter ι}
     {N : ι → ℝ} {W : ℝ → ι → ℝ} {G : ℝ → ℝ} {A M : ℝ}
     (hM : 0 < M)
-    (hWle : ∀ K, ∀ᶠ i in L, W K i ≤ N i)
-    (hWge : ∀ K, M < K ^ 2 → ∀ᶠ i in L, N i * (1 - M / K ^ 2) ≤ W K i)
-    (hWlim : ∀ K, Tendsto (fun i => W K i) L (𝓝 (G K)))
+    (hWle : ∀ K, 0 < K → M < K ^ 2 → ∀ᶠ i in L, W K i ≤ N i)
+    (hWge : ∀ K, 0 < K → M < K ^ 2 → ∀ᶠ i in L, N i * (1 - M / K ^ 2) ≤ W K i)
+    (hWlim : ∀ K, 0 < K → M < K ^ 2 → Tendsto (fun i => W K i) L (𝓝 (G K)))
     (hGlim : Tendsto G atTop (𝓝 A)) :
     Tendsto N L (𝓝 A) := by
   refine tendsto_order.2 ⟨fun b hb => ?_, fun b hb => ?_⟩
   · -- lower half
-    obtain ⟨K, hK⟩ : ∃ K : ℝ, b < G K := by
-      have := hGlim.eventually (eventually_gt_nhds hb)
-      exact this.exists
-    filter_upwards [(hWlim K).eventually (eventually_gt_nhds hK), hWle K] with i hi hle
+    obtain ⟨K, hK, hKpos, hKM⟩ : ∃ K : ℝ, b < G K ∧ 0 < K ∧ M < K ^ 2 := by
+      have hsq : Tendsto (fun K : ℝ => K ^ 2) atTop atTop :=
+        tendsto_pow_atTop (n := 2) (Nat.succ_ne_zero 1)
+      obtain ⟨K, hKa, hKb, hKc⟩ :=
+        ((hGlim.eventually (eventually_gt_nhds hb)).and
+          ((eventually_gt_atTop (0 : ℝ)).and (hsq.eventually_gt_atTop M))).exists
+      exact ⟨K, hKa, hKb, hKc⟩
+    filter_upwards [(hWlim K hKpos hKM).eventually (eventually_gt_nhds hK),
+      hWle K hKpos hKM] with i hi hle
     exact lt_of_lt_of_le hi hle
   · -- upper half
     have hfac : Tendsto (fun K : ℝ => b * (1 - M / K ^ 2)) atTop (𝓝 (b * (1 - 0))) := by
@@ -60,19 +65,21 @@ theorem tendsto_total_of_window {ι : Type*} {L : Filter ι}
     have hgap : Tendsto (fun K : ℝ => b * (1 - M / K ^ 2) - G K) atTop (𝓝 (b * (1 - 0) - A)) :=
       hfac.sub hGlim
     have hbpos : 0 < b * (1 - 0) - A := by simpa using sub_pos.2 hb
-    obtain ⟨K, hK1, hK2⟩ : ∃ K : ℝ, M < K ^ 2 ∧ G K < b * (1 - M / K ^ 2) := by
+    obtain ⟨K, hK1, hK2, hKpos⟩ :
+        ∃ K : ℝ, M < K ^ 2 ∧ G K < b * (1 - M / K ^ 2) ∧ 0 < K := by
       have hpos := hgap.eventually (eventually_gt_nhds hbpos)
       have hbig : ∀ᶠ K : ℝ in atTop, M < K ^ 2 := by
         have hsq : Tendsto (fun K : ℝ => K ^ 2) atTop atTop :=
           tendsto_pow_atTop (n := 2) (Nat.succ_ne_zero 1)
         exact hsq.eventually_gt_atTop M
-      obtain ⟨K, hKa, hKb⟩ := (hpos.and hbig).exists
-      exact ⟨K, hKb, by linarith [hKa]⟩
+      obtain ⟨K, hKa, hKb, hKc⟩ := (hpos.and (hbig.and (eventually_gt_atTop (0 : ℝ)))).exists
+      exact ⟨K, hKb, by linarith [hKa], hKc⟩
     have hfacpos : (0 : ℝ) < 1 - M / K ^ 2 := by
       have hKsq : (0 : ℝ) < K ^ 2 := lt_trans hM hK1
       rw [sub_pos, div_lt_one hKsq]
       exact hK1
-    filter_upwards [(hWlim K).eventually (eventually_lt_nhds hK2), hWge K hK1] with i hi hle
+    filter_upwards [(hWlim K hKpos hK1).eventually (eventually_lt_nhds hK2),
+      hWge K hKpos hK1] with i hi hle
     have : N i * (1 - M / K ^ 2) < b * (1 - M / K ^ 2) := lt_of_le_of_lt hle hi
     exact lt_of_mul_lt_mul_right (by linarith [this]) hfacpos.le
 
@@ -133,5 +140,25 @@ theorem window_tail_le_of_secondMoment {f : ℝ → ℝ} {K R : ℝ}
     intervalIntegral.integral_nonneg hKK (fun x _ => by positivity)
   have hK2 : (0 : ℝ) < 1 / K ^ 2 := by positivity
   nlinarith [hleft, hright, hmid, hsplitL, hsplitR, hsplitL', hsplitR', hK2]
+
+/-- A symmetric window carries at most the total mass of a nonnegative integrand. -/
+theorem window_le_total {f : ℝ → ℝ} {K R : ℝ}
+    (hKR : K ≤ R) (hf : Continuous f) :
+    (∫ x in (-K)..K, f x ^ 2) ≤ ∫ x in (-R)..R, f x ^ 2 := by
+  have hsq : Continuous fun x : ℝ => f x ^ 2 := hf.pow 2
+  have hKR' : -R ≤ -K := neg_le_neg hKR
+  have hsplitL : (∫ x in (-R)..(-K), f x ^ 2) + ∫ x in (-K)..K, f x ^ 2
+      = ∫ x in (-R)..K, f x ^ 2 :=
+    intervalIntegral.integral_add_adjacent_intervals (hsq.intervalIntegrable _ _)
+      (hsq.intervalIntegrable _ _)
+  have hsplitR : (∫ x in (-R)..K, f x ^ 2) + ∫ x in K..R, f x ^ 2
+      = ∫ x in (-R)..R, f x ^ 2 :=
+    intervalIntegral.integral_add_adjacent_intervals (hsq.intervalIntegrable _ _)
+      (hsq.intervalIntegrable _ _)
+  have hleft : (0 : ℝ) ≤ ∫ x in (-R)..(-K), f x ^ 2 :=
+    intervalIntegral.integral_nonneg hKR' (fun x _ => sq_nonneg _)
+  have hright : (0 : ℝ) ≤ ∫ x in K..R, f x ^ 2 :=
+    intervalIntegral.integral_nonneg hKR (fun x _ => sq_nonneg _)
+  linarith [hsplitL, hsplitR, hleft, hright]
 
 end GaloisForLFunctions.HTGeometry

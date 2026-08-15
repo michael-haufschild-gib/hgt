@@ -417,3 +417,88 @@ summability of the reciprocals, and exponent of convergence one — but `SpacedR
 currently derives its row separation from `n + 3/4 < ζ_n < n + 5/4` and must instead *select* a
 spaced subsequence, which the divergence of the base supplies.  After that: the rational-quartet
 surgery and the all-power profield equality `T_n(F) = T_n(E)`.
+
+## 2026-08-16 — the canonical-product half is formalized
+
+The Statement is Lean-closed except for the entire-carrier upgrade.  Capstone
+
+```text
+GaloisForLFunctions.HTGeometry.exists_prescribedGapProcess_maximalTranslationFreeness
+```
+
+axiom report `propext, Classical.choice, Quot.sound`.  For every shift-ergodic probability law on
+positive sequences with integrable mean-one first coordinate it produces a deterministic divisor
+which is strictly increasing, positive, of unit asymptotic density, whose gaps carry exactly the
+prescribed finite-block Lipschitz law, whose even canonical product has an order-one envelope and
+the exact simple divisor `{±λ_j(θ)}`, and for a dense residual set of location parameters `θ` the
+symmetric carrier admits no algebraic differential relation among any finite family of distinct
+complex translates.
+
+**The moving divisor.**  `MovingDivisorData.lean` defines `MovingDivisor` — a base sequence,
+shrinking radii, a separation making the displaced sequence strictly increasing, and unit
+asymptotic density — and derives positivity, strict monotonicity, injectivity, divergence, the
+coordinate derivative and its positive speed, and, crucially, the **parameter-uniform** linear
+bounds `exists_uniform_lower_linear` / `exists_uniform_upper_linear` with the derived constants
+`lowerConst`, `majorantConst`.  Uniformity is what the finite chart forces: the chart moves `θ`, so
+every summability majorant must have a constant independent of it.  `GeneralMovingDivisor.lean`
+constructs `gapMovingDivisor` from the generic gap sequence, with
+`(gapMovingDivisor …).zero θ n = gapLocation g θ n` by `rfl`.
+
+**The chain, generalized off the clock.**  `MovingCanonicalProduct.lean` was rewritten in place so
+that its analytic estimates hold for any positive sequence trapped between `(n+1)/2` and `K(n+1)`
+(`halfLinear_growthSeries_le_orderOneWeight`, `halfLinear_summable_inv_sq`,
+`halfLinear_hasExponentOfConvergenceOne`, and the `realCanonicalProduct` / `realLogDerivative`
+layer); every clock-named theorem survives verbatim as a one-line specialization, so the ~26
+downstream modules are untouched.  `MovingDivisorProduct.lean` transports these to an arbitrary
+moving divisor by rescaling with `normalizer = min (2c) 1`, the argument rescaling absorbed by
+`orderOneWeight_le_of_norm_mul`.  Then `MovingDivisorEvenProduct.lean` (symmetric product, order
+one, exact divisor, odd Herglotz carrier), `MovingDivisorJetControllability.lean`,
+`MovingDivisorFiniteJetSubmersion.lean`, `MovingDivisorFiniteJetProbe.lean`
+(`fderiv_finiteActualJetFamily_surjective`), `MovingDivisorRankGenericity.lean` (the odd Baire
+assembly), `MovingDivisorEvenJetSubmersion.lean` and `MovingDivisorEvenFreeness.lean`
+(`movingDivisor_fullTranslationFreeness_denseResidual`).
+
+Two facts worth recording.  The corpus's location-jet rigidity
+(`movingPoleLocationJetRealLinearCombination_surjective`) was already stated for an arbitrary
+injective nonvanishing divisor, so that layer only needed instantiating.  And neither the odd nor
+the even row-packet atlas uses a spacing hypothesis, so `SpacedRayNodePacket`'s clock bound
+`n + 3/4 < ζ_n < n + 5/4` never entered: the clock-specific constants lived only in the summability
+majorants, which the uniform `majorantConst` replaces.
+
+**What remains.**  The *entire-carrier and all-power* section.  Once the translates of `E` are known
+to be differentially independent, the *same-profield opposite-divisor* theorem is immediate from the
+corpus: `F(z+h) = Q_τ(z+h) E(z+h)` with `Q_τ(z) = (z²-τ²)(z²-conj τ²)` a polynomial, so
+`familyDifferentiallyAlgebraicOn_of_mul_polynomial` gives `F`-family DA ⟹ `E`-family DA, and
+`familyDifferentiallyAlgebraicOn_of_pow` gives every positive power; no rational gauge is needed at
+the level of the products.
+
+The carrier-to-product step is the one genuinely open piece, and it is a differential
+transcendence-degree statement, not a substitution: `ℂ(z)⟨H⟩ ⊆ ℂ(z)⟨E⟩` with `E' = -H E`.  The
+corpus owns the right engine — `JetDifferentialFieldHom.jetSubfield_logDeriv_impossible` and the
+Kolchin argument of `ExponentialFullIndependence.exp_fullJet_independent`, which proves exactly this
+shape for `exp`.  The two differ only in which jet variable is the logarithmic derivative, so
+`ExponentialJetSubstitution.lean` has been generalized in place: `logJetNum r` with
+
+```text
+Q_0 = 1,   Q_{k+1} = jetTotalDerivation Q_k + X r · Q_k
+```
+
+its sharp support bound `logJetNum r k ∈ supported (Iic (k + r - 1))`, and
+
+```text
+iteratedDeriv_eq_logJetNum_mul :
+  E' = f^{(r)} E on U  →  iteratedDeriv k E z = E z * eval (jetVec f z) (logJetNum r k)
+```
+
+with the exponential case recovered as `r = 1` (`expJetNum_eq_logJetNum`) so nothing is duplicated.
+The carrier case is `r = 0`.  What is left is to carry the same parameter through
+`FullExponentialJetGauge` — the blockwise numerator, the substitution homomorphism, and the
+jet-realization lemma `exists_expFamily_realizing_jets`, whose `r = 0` analogue is
+`E_i = u_i exp(∫ H_i)` for a Taylor polynomial `H_i` — and through the linear forms of
+`ExponentialFullIndependence`, then instantiate at `r = 0`.
+
+**Also built for this card, and reusable.**  `MaximalErgodicTheorem.lean` (Garsia) and
+`BirkhoffPointwise.lean` (`ae_tendsto_birkhoffAverage`) — mathlib has `birkhoffSum`, `Ergodic` and
+the *mean* ergodic theorem but not the pointwise one.  `CountableTestFamily.lean`,
+`GenericGapSequence.lean`, `GapBlockLawStability.lean`, and `RationalJetShift.lean`
+(`iteratedDeriv_ratFunc`).

@@ -1,10 +1,10 @@
 # Moving-center Padé worldline and exact source-error law
 
 - **ID:** `mass-shifted-moving-center-pade-worldline-law`
-- **Stage:** 2-fully-proven / needs independent specialist audit
+- **Stage:** 3-formalized / needs independent specialist audit
 - **Route:** U, finite positive chamber preceding the hard edge
 - **Type:** THEOREM + EXACT NO-GO (paper)
-- **Scientific status:** `[PAPER-PROVED] [BRIDGE] [EXTERNAL NOVELTY UNVERIFIED] [LEAN NOT STARTED]`
+- **Scientific status:** `[PAPER-PROVED] [BRIDGE] [EXTERNAL NOVELTY UNVERIFIED] [LEAN FORMALIZED]`
 - **Depends on:** shifted-Xi moment ODE and positive Gauss quadrature
 - **Statement:** The canonical degree-`n` Padé resolvent obeys an exact moving-center rational
   flow with one numerator monomial. Every Padé pole is a transverse zero of a literal
@@ -388,3 +388,55 @@ divergence no-go `(MPW.18)`.
 With `(MPW.8)` and `(MPW.14)` the worldline dynamics is formal: pole positions move strictly left
 while the total absolute residue grows.  What remains is the packaged resolvent form `(MPW.5)`,
 the individual residue transport `(MPW.13)`, and the divergence no-go `(MPW.18)`.
+
+## Lean status (final)
+
+Every boxed equation of the card is formal and axiom-clean.  The setup is the card's own: an
+interval on which the nodes and weights are smoothly enumerated, quadrature exact through degree
+`2n-1`, and the literal shifted moment ODE.
+
+    HTGeometry/GaussResolventError.lean               (axiom-clean, wired, built)
+      gaussSum_resolvent_eq                           **(MPW.11)** the orthogonal-polynomial
+                                                      resolvent identity
+      momentFunctional_nodeResidual_eq_zero           **(MPW.12)** the source factor vanishes at
+                                                      every node
+
+    HTGeometry/MovingGaussNodes.lean                  (axiom-clean, wired, built)
+      momentFlowPoly, hasDerivAt_momentFunctional     **(MPW.1)** the dual of the moment flow
+      momentFunctional_eq_quadSum_add_top             **(MPW.6)-(MPW.7)** exactness extends one
+                                                      degree with the single defect `h = L(p²)`
+      moving_master                                   the differentiated exactness identity
+      weight_mul_nodeVelocity,
+        hasDerivAt_hardCoordinate                     **(MPW.8)** the hard coordinate `y - 1/x_i`
+                                                      moves with velocity `-2n h/(x_i² gamma_i)`
+      hardCoordinateVelocity_neg                      every real Padé pole moves strictly left
+      nodeLogDeriv, nodeWeightTest, weightVelocity    the weight velocity
+                                                      `w_i' = -w_i x_i + 4n lambda_i h/p'(x_i)²`
+      hasDerivAt_nodeResidue                          **(MPW.13)** the residue transport law
+      reciprocalNodeTest, hasDerivAt_totalResidue     **(MPW.14)** the total residue grows at rate
+                                                      `2n h/p(0)²`
+
+    HTGeometry/MovingCenterResolvent.lean             (axiom-clean, wired, built)
+      resolventTest                                   the Hermite interpolant of `1/(1 + Delta X)`
+      coeff_resolventTest_top                         its top coefficient is `-1/(Delta p(-1/Delta)²)`
+      hasDerivAt_movingCenterResolvent                **(MPW.5)** the whole `y`-derivative of the
+                                                      quadrature resolvent at a fixed absolute
+                                                      centre is `-2n h` times that top coefficient
+      pow_mul_eval_nodePoly_neg_inv,
+        hasDerivAt_movingCenterResolvent_prod         **(MPW.5)** in the Padé denominator form:
+                                                      `2n h (Y-y)^(2n-1)/D_y(Y)²`
+
+    HTGeometry/PowerSequenceLimitOne.lean              (axiom-clean, wired, built)
+      tendsto_pow_of_tendsto_one                       a slowly growing power of a sequence tending
+                                                       to one tends to one
+      tendsto_atTop_of_forall_partial_sum              a family whose every fixed member tends to
+                                                       one has divergent partial sums
+      tendsto_norm_ratio_pow_one,
+        tendsto_atTop_absoluteDivisorSum               **(MPW.18)** at the Route-U scale
+                                                       `n/y -> 0` the absolute-divisor majorant
+                                                       diverges: spectral-radius domination cannot
+                                                       prove Padé-atom vanishing
+
+The exact no-go of section 5 is the content of `(MPW.18)` together with the fact that `(MPW.5)`
+depends only on the moment ODE and finite Gauss exactness — both visible in the Lean statements,
+whose hypotheses are exactly those two.

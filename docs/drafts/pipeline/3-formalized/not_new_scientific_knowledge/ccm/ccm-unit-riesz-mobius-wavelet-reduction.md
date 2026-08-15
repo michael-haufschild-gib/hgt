@@ -287,3 +287,40 @@ declarations) proves section 2 exactly.
 
 Still to formalize for this card: `(7)`, `(10)`, `(15)`, the Stieltjes partial summation `(18)`,
 the pole-channel saturation `(20)`-`(23)`, and the equivalence `(25)`.
+
+## Lean status — complete, 2026-08-16
+
+`[FORMALIZED]` — the remaining items of the previous section are now proved in the new module
+
+`formal/GaloisForLFunctions/RHTower/CCMUnitRieszWaveletFrontier.lean`
+(8 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
+`formal/GaloisForLFunctions/RHTower.lean`).
+
+- `progressionMass`, **`progressionMass_eq`** — equation `(7)`:
+  `K_N(q) = 2√N/(3q) − 2 η(N/q)/√N`, so every individual modulus already carries a sharp
+  `O(N^{-1/2})` quadrature defect.
+- **`mobius_compensation`** — equation `(10)`:
+  `(−∑_q μ(q)log q · g(N/q)) − N/3 = (N/3)(Q_N − 1) + ∑_q μ(q)log q · η(N/q)`, the exact
+  cancellation of the two main parts (so they may not be bounded separately).
+- **`riesz_normalization_eq`** — equation `(15)`: `J_N = (2√N/3)(S_N − 1)`.
+- **`integral_kernel_zero_mean`** — equation `(18)`, zero-mean half: a kernel that is the derivative
+  of a primitive vanishing at both endpoints integrates to `0`.
+- **`integral_u_exp_neg`** — the exact window moment `∫_0^T u e^{-u} du = 1 − (T+1)e^{-T}`.
+- **`one_sub_poleChannel_le`** — equations `(20)`–`(22)`: with the sharp cutoff bound
+  `1 − W(t) ≤ 3/t` (already proved as `one_sub_unitRieszLogProfile_le`) the pole channel is
+  saturated at `1` with the explicit margin `1 − A_T ≤ (3T²/2 + T + 1)e^{-T}`.
+- **`frontier_identity`** — equation `(23)`:
+  `S_N − 1 = (A_T − 1) − ∫_0^T h_0 K_T`, using the causal graph identity `m_0 = e^{-u} − h_0`.
+- **`frontier_equivalence`** — equation `(25)`: the one-sided bound `J_N ≤ M` is *equivalent* to the
+  one-sided lower bound `(A_T − 1) − 3M/(2√N) ≤ ∫_0^T h_0 K_T` on the single causal-complement
+  wavelet coefficient.
+
+Together with `CCMUnitRieszQuadratureDefect` (section 2) and
+`CCMCriticalMellinRieszMobiusRenewal` (equations `(1)`, `(2)`, `(9)`, `(13)`), every equation of
+this card that is not an explicitly cited parent is now Lean-certified.
+
+Deliberately outside the Lean statement (cited parents):
+
+- the Möbius divisor law `∑_{q|n} μ(q)log q = −Λ(n)` used to pass from `(8)` to `(9)`;
+- the Stieltjes partial summation that produces the wavelet representation `(18)` itself;
+- the corpus critical causal graph identity `(19)`.

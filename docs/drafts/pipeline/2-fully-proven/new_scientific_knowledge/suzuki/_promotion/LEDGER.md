@@ -9169,3 +9169,263 @@ This is the missing half of ABP: the accumulated datum below the threshold grows
 of `X_m` — hence the block weight `e^{max(0,−m)}` and the convergence of Theorem 2's series.
 
 All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ABR. Quantitative ray bounds, and regularity of the block resolvent in the position
+
+```text
+RHTower/WallTailRayEstimates.lean            + quantitative ray power tail, second boundary,
+                                               and remainder (constants before the block)
+RHTower/WallBlockResolventRegularity.lean    continuity in the position; block integrability
+```
+
+The three ray bounds are now stated with the constant quantified **before** the block index, the
+threshold and the profile — which is the only form usable in `(11)`, where the constant must not see
+the block.  The second boundary term needs no threshold factor at all (its `Y^{-1}` tail is bounded
+by `1`), and the remainder's constant is `K₁²(p−1/2)^{-2}(K₂C_amp)²·‖wallTailDensity‖₂²`.
+
+**The block integral is over the *position*, so the resolvent's regularity there is what matters.**
+The shifted generator depends affinely on the position, hence continuously; wherever the floor is
+open it is a unit, and `NormedRing.inverse_continuousAt` gives continuity of the inverse.  So the
+resolvent and both amplitudes are continuous in the position on the block, and every term of the
+expansion is integrable there — a continuous bounded operator family applied to an integrable profile
+against a unimodular phase.  This is what allows the four terms of the expansion to be *separated*
+under the block integral, which is essential: the first boundary term must be integrated in the
+position *before* it is estimated, because its estimate is the oscillation (Plancherel), not a
+pointwise bound.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ABS. The propagated expansion at a single position
+
+```text
+RHTower/WallPropagatedExpansion.lean
+```
+
+The algebraic core of the tail decomposition.  Propagating the two-fold expansion, the transport
+cancels against the two boundary terms at the moving endpoint and survives only in front of the
+threshold terms and the remainder:
+
+```text
+H(x)[ i(W_x A_x - W_Y A_Y) + (W_x P_x - W_Y P_Y) - R ] v
+  = i e^{-ixL} A_x v + e^{-ixL} P_x v - H(x)(threshold operator v) - H(x)(R v).
+```
+
+Everything else in the tail is an integration of this identity over the block: the first two terms
+become the resolvent averages `(20)` and the second boundary term, the third becomes a fixed vector
+propagated by the transport (bounded by the *ray* mass, ABQ), and the fourth is the Hardy tail.
+
+Note the asymmetry the identity makes explicit: the terms at the moving endpoint are transport-free,
+so their size is the resolvent's, whereas the threshold terms keep the transport and are therefore
+controlled by its ray decay.  That is exactly the split of mechanisms in the card's proof.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ABT. The block decomposition of the propagated tail
+
+```text
+RHTower/WallTailBlockDecomposition.lean
+RHTower/WallBlockSourceExpansion.lean  + the joint and block-integral integrability lemmas
+```
+
+```text
+H(x) int_Y^x H(t)^{-1} b(t) dt
+  = -(i/2)[ i (first boundary) + (second boundary)
+            - H(x)(threshold vector) - (remainder) ].
+```
+
+This is the structural end of `(11)`'s tail: everything to the right has a ray estimate already.
+
+**Why the split is forced, not convenient.**  The first average must be integrated over the block
+*before* it is estimated, because its estimate is the oscillation of `e^{-ixL}` across the block
+(Plancherel), not a pointwise bound in `L` — pointwise it is only `O(1)` and not square integrable.
+So the four terms have to be separated under the block integral, which needs each of them to be
+separately integrable in the position.  That is what the position regularity of the resolvent is
+for: each of the three named families is continuous in `L` and uniformly bounded on the block, so
+each is integrable, and the fourth follows as a combination.
+
+The integrability of the *total* comes for free from the Fubini already used for the source: joint
+integrability of `(L,t) ↦ E(t,L)g(L)` gives `Integrable (fun L => ∫_t …)` by
+`Integrable.integral_prod_left`.  Exposing that as `integrableOn_blockPhaseIntegral` avoided
+redoing the joint measurability a second time.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+**What remains for `(11)`:** compose the four ray bounds through the decomposition, identify the
+block first-boundary average with the line one (support), reflect to the negative ray, and state
+Theorem 1.
+
+## ABU. Measurability of the moving-endpoint averages in the frequency
+
+```text
+RHTower/WallTailRayComposition.lean
+```
+
+Separating the four terms *inside the frequency integral* needs each of them measurable in the
+frequency.  Two of the three needed are the moving-endpoint averages: they are parametrised Bochner
+integrals whose integrands are jointly continuous in frequency and position wherever the floor is
+open — precisely the region the threshold selects — so `AEStronglyMeasurable.integral_prod_right'`
+applies after transporting the joint continuity across `Prod.swap`.  The third is the propagated
+threshold vector, which is continuous.
+
+**Only three of the four are needed.**  Splitting `∫⁻(A+B+C+D)` into a sum requires the *first three*
+summands to be measurable, since each step peels one off with `lintegral_add_left'`; the last is
+free.  Ordering the remainder last therefore removes the need for its frequency measurability, which
+is the hardest of the four (its integrand's domain moves with the frequency).
+
+Four terms cost a factor sixteen in the square, which is the only price of the composition.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ABV. The moving tail is bounded by its four terms
+
+```text
+RHTower/WallMovingTailBound.lean
+```
+
+```text
+|| moving tail ||^2_{L2(ray)}
+  <= 16 ( ||first boundary||^2 + ||second boundary||^2
+          + ||propagated threshold||^2 + ||remainder||^2 ),
+```
+
+all on the same ray.  The factor is the whole price of the composition.
+
+Two facts make the hypotheses collapse to a single one at the threshold.  **The floor grows with the
+frequency** — `wallFloor T σ Y ≤ wallFloor T σ t` for `0 ≤ Y ≤ t`, since it is `log(2+|·|)` up to
+constants — so a gap assumed at the threshold holds at every larger frequency, and in particular on
+the whole integration interval `[Y,x]`; the decomposition therefore applies at every point of the ray
+from one hypothesis.  And **the Gamma propagator is continuous along the shifted line**
+(`stripPropagator E T z = stripScalar E z · exp(−izT/2)`, both factors continuous), which is what
+makes the propagated threshold term measurable in the frequency.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+**`(11)` now needs only:** the propagated-datum term below the threshold, the reflection to the
+negative ray, and the assembly of the three regions into the statement of Theorem 1.
+
+## ABW. The datum accumulated below the threshold, and a duplication removed
+
+```text
+RHTower/WallThresholdDatum.lean
+RHTower/SuzukiWallWindowEstimate.lean   duplicate lemma removed
+```
+
+Everything the forced solution accumulates below the threshold is a fixed vector, propagated from
+there on.  Its size is one power of the threshold beyond the source's `L¹` mass on the window,
+because inside the window the inverse propagator grows like `(1+Y)^p` and nothing decays yet.
+Paired with the ray decay `O(Y^{1/2-p})` of the propagator (ABQ), the product is a *single* power of
+the threshold — the cancellation that gives the block weight `e^{max(0,−m)}`.
+
+**A duplication of mine, removed.**  `abs_le_abs_of_mem_uIoc_zero` — that on a moving-endpoint
+interval starting at the origin the inner point never exceeds the outer one — already existed in
+`HTGeometry/ClockIteratedIntegralBound.lean`.  The copy introduced in ABP is deleted and the
+existing one used; `uIoc_zero_subset_Icc` is likewise reduced to mathlib's `Set.uIcc_subset_Icc`.
+
+**On the negative ray**, three of the four terms need nothing new: the first boundary term is already
+proved on the whole line through an indicator (so the region can simply be `{|x| > Y}`), and the
+second boundary and datum terms use only the weight, whose two half-lines carry equal mass
+(`lintegral_oneAddAbsWeight_Iic`, owned).  Only the remainder is genuinely one-sided, since the Hardy
+inequality is; it needs a reflected transfer.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ABX. The inward ray by reflection
+
+```text
+RHTower/WallInwardRayReflection.lean
+```
+
+`∫⁻_{(-∞,-Y)}‖f‖² = ∫⁻_{(Y,∞)}‖f(-·)‖²`, hence the scalar Hardy transfer holds on the inward ray for
+a bound of Hardy shape at `-x`.
+
+The point worth recording: **nothing about the Gamma transport is reflected** — only the integration
+variable.  The propagator has no symmetry in the frequency (the two digamma abscissas `1−σ` and
+`1+σ` are genuinely different), so a symmetry argument on the *object* would be wrong.  What is
+symmetric is the *estimate*: every bound in the tail is stated through `(1+|x|)` and `|x|`, which are
+even, so the reflected profile satisfies the same hypotheses.  That is the precise content of the
+card's "the negative tail is identical after reflection".
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ABY. The forced profile on a terminal ray
+
+```text
+RHTower/WallForcedProfileRay.lean
+```
+
+```text
+||profile||^2_{L2(ray)} <= 4( ||propagated datum||^2 + ||moving tail||^2 ),
+```
+
+the two summands estimated by entirely different means — the first by the ray decay of the transport
+(ABQ, ABW), the second by the four-term expansion (ABV).
+
+The splitting needs the transported source to be interval integrable, and that is **not** an extra
+hypothesis: the joint integrability already established for the block-source Fubini gives it by
+integrating out the position (`Integrable.integral_prod_right`).  This is the third use of that same
+joint integrability — for the Fubini itself, for the block-integral integrability, and now for the
+interval one.  Establishing it once, as `integrable_uncurry_wallPhaseMap_apply`, has paid three
+times.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ABZ. The window region and the three-region composition
+
+```text
+RHTower/WallForcedProfileWindow.lean
+```
+
+On the window the profile splits into the propagated datum and the window part, neither carrying a
+threshold factor beyond the single power of the window length the window estimate charges (ABP).
+Together with the two outward rays this closes the frequency line, since the complement of an open
+window is the union of two closed rays and those carry the same mass as the open ones.
+
+**Every region of `(11)` is now bounded in Lean:**
+
+```text
+window      4( ||H c||^2 + ||window part||^2 )         ABP, StripPropagatorLineDecay
+outward ray 4( ||propagated datum||^2 + ||moving tail||^2 )   ABY
+            moving tail <= 16 (four terms)             ABV
+inward ray  same, by reflection                        ABX
+composition A + B + C                                  ABZ
+```
+
+What is left is arithmetic: choosing the threshold `X_m = C₀e^{max(0,−m)}` from
+`exists_threshold_wallFloor`, substituting the four ray bounds and the window bound, and collecting
+the constants into the single `C_{σ,T}(‖c‖ + e^{max(0,−m)}‖g‖₂)` of the card.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ACA. The energy of the block source
+
+```text
+RHTower/WallBlockSourceEnergy.lean
+```
+
+`b = −(i/2)·ĝ` is the angular transform halved and rotated, so
+
+```text
+int ||b(t)||^2 dt = (pi/2) int ||g(L)||^2 dL,
+```
+
+the Plancherel factor `2π` divided by four.  This is where the source's normalisation enters the
+one-block constant, and nowhere else.
+
+**Running total for `(11)`:** every analytic ingredient and every region is Lean-proved; what is left
+is the arithmetic that collects them.  The shape of that arithmetic, with `Y = C₀e^{max(0,−m)}` and
+`N₂ = ‖g‖₂`:
+
+```text
+window part          M^2 (2Y)^2 (pi/2) N2^2                  ~ Y^2 N2^2
+propagated datum     C (||c||^2 Y^{-2 sigma} + Y^2 N2^2)     using (1+Y)^{2p} Y^{1-2 sigma} <= 4^p Y^2
+first boundary       (2 pi / mu^2) N2^2
+second boundary      C N1^2 <= C N2^2
+propagated threshold C (1+Y)^{2p} Y^{-2 sigma} N1^2          = C Y N1^2 <= C Y^2 N2^2
+remainder            C Ne^2 <= C N2^2
+```
+
+all of the form `C(‖c‖² + Y²N₂²) ≤ C(‖c‖ + e^{max(0,−m)}N₂)²`, which is `(11)`.  The exponent
+bookkeeping `2p − 2σ = 1` and `p + 1/2 = 1 + σ` is what makes every term land on a *single* power of
+the threshold.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.

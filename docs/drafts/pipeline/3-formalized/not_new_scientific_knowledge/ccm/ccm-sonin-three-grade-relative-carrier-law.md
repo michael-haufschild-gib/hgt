@@ -337,3 +337,34 @@ cutoff finite part, a quantized-differential orbital class, and a semilocal Eule
 remaining three-grade theorem must transport this explicit connection through the Sonin
 cutoff/resolvent and combine it with the Burnol conductor and positive trace-class residual.  It no
 longer asks for an abstract semilocal carrier or an arbitrary relative trace.
+
+## Lean status — 2026-08-16
+
+`[FORMALIZED]` — the card's substantive components were already in Lean (all endpoints listed under
+"What the corpus already supplies" were verified present in `formal/GaloisForLFunctions/RHTower/`:
+`SoninRelativeGramDefect`, `SoninSemilocalTraceObstruction`, `SoninAllPrimeResidualKernel`,
+`SoninSemilocalRelativeTrace`, `SoninEulerCalkinPartialIsometry`, `SeamSpectralFlow`,
+`MeasuredIndexBlindness`).  The one algebraic gate that had no Lean carrier — the exact
+projection-compressed degree-one Gram identity `(9b)`–`(9d)` — is now proved:
+
+Module: `formal/GaloisForLFunctions/RHTower/CCMSoninCompressedCommutator.lean`
+(6 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]` — two use
+`[propext]` only — wired into `formal/GaloisForLFunctions/RHTower.lean`).
+
+- `one_sub_mul_one_sub`, `compress_split` — **equation (9b)**: inserting the resolution of the
+  identity splits a compressed product `Q X Z Q` into the internal term `(QXQ)(QZQ)` and the
+  leakage term `(QX(1−Q))((1−Q)ZQ)`.
+- `star_leakage_selfAdjoint`, `star_leakage_skewAdjoint` — the adjoints of the two leakages
+  `L_X = (1−Q)XQ` and `L_Z = (1−Q)ZQ`, using the symmetry of `Q`, `X` and the skew-symmetry of `Z`.
+- **`compressed_commutator_split`** — **equation (9c)**:
+  `Q[X,Z]Q = [QXQ, QZQ] + L_X^* L_Z + L_Z^* L_X`, exactly as stated on the card, for a projection
+  `Q`, self-adjoint `X` and skew-adjoint `Z`.
+- **`degree_one_trace_split`** — **equation (9d)**: applying any additive trace splits the
+  degree-one term into the internal trace defect and the leakage pairing.
+
+The statement is proved in an arbitrary `*`-ring, so it applies verbatim to bounded operators on the
+Sonin carrier.
+
+Still deliberately absent (the card's own open gates, not statements of this card): the closed
+principal–relative carrier `E_a`, the genuine degree-one semilocal relative functional, the cofinal
+contractions `(11)`, the index-preserving transport, and RH.

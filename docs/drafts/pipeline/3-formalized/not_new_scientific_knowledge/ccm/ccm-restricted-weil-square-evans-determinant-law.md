@@ -270,3 +270,41 @@ Primary source:
 - [x] select a continuous explicit source normalization chamber in aperture
 - [ ] prove nonvanishing on `lambda<=0` for every aperture
 - [ ] RH
+
+## Lean status
+
+`[FORMALIZED]` — supersedes the "No wrapper is added" decision recorded above.  The restricted Weil
+form, the Paley–Wiener compression and the Dirichlet reconstruction remain cited parents, but the
+card's own finite-dimensional statements — equal dimensions, kernel transfer, the determinant
+criterion and the parity grading — are reachable and are now proved.
+
+Module: `formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilSquareEvans.lean`
+(4 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]` — one is
+`[propext]` only — wired into `formal/GaloisForLFunctions/RHTower.lean`).
+
+What is proved in Lean:
+
+- `finrank_source_eq_target` — **equations (3)–(4)**: when `deg p_{a,λ} = 2L_{a,λ}` the
+  characteristic source `F_{a,λ}` and the Bessel residual target `R_{a,λ}` have the *same*
+  dimension, so the Evans map `(7)` is genuinely square.  This combines
+  `HTGeometry.finrank_solutionSpace` (built for the characteristic-crossing card) with
+  `RHTower.finrank_residualSpace` (built for the rational-residual card).
+- `det_eq_zero_iff_ker_ne_bot` — a square matrix has vanishing determinant exactly when its kernel
+  is nontrivial.
+- `eigenspace_eq_bot_iff_det_ne_zero` — **equations (8)–(9)**: under the kernel isomorphism `(8)`,
+  the eigenspace `ker(A_a − λ)` is trivial exactly when `det N_{a,λ} ≠ 0`.  This is the exact
+  determinant criterion, and with it `(19)`–`(21)` are immediate restatements.
+- `parity_split_dim` — **equation (22)**: the reflection splitting has two equal halves of dimension
+  `L_{a,λ}` adding to the full `d_{a,λ} = 2L_{a,λ}`, so there is no excess parity channel.
+
+Reused, not rebuilt: `HTGeometry.solutionSpace`, `finrank_solutionSpace`;
+`RHTower.residualSpace`, `finrank_residualSpace`; the fibrewise kernel-dimension transfer of
+`CCMSpectralParameterEvans` (`finrank_ker_eq_of_linearEquiv`, `sum_finrank_ker_eq`), which gives
+the Morse formula `(18)`.
+
+Deliberately outside the Lean statement (cited parents, not results of this card):
+
+- Suzuki's restricted Weil form `(11)` and its Toeplitz compression `(12)`;
+- the logarithmic Dirichlet reconstruction `(5)` and the Carleman cross-block `(16)`;
+- the rational Bessel residual computation `(6)` and the interior/exterior propagation;
+- the determinant-line identification `(10)` and the Weierstrass gluing (a separate card).

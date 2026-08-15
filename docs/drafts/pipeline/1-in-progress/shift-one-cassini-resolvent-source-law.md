@@ -598,7 +598,7 @@ of the following exact source signs suffices:
 ```text
 Weil quadratic nonnegative on algebraic Cauchy source core;
 eventual nonnegativity on one convergent continued source sequence;
-eventual nonnegativity on one convergent sequence of separated finite prime--Gamma packets.
+cofinal nonnegative recurrence on one convergent sequence of separated finite prime--Gamma packets.
                                                                   (43)
 ```
 
@@ -612,7 +612,7 @@ constant empty separated packet then witness both source-sequence conditions.  C
 
 ```text
 continued source-sequence nonnegativity
-  <-> separated finite prime--Gamma sequence nonnegativity
+  <-> separated finite prime--Gamma cofinal nonnegative recurrence
   <-> fixed adjoint-response seam saturation.                    (44)
 ```
 
@@ -653,7 +653,12 @@ Only sign assertion on nontrivial unconditionally reconstructed packets carries 
 - [x] prove seam-fixed complex closure equals real reciprocal-Krylov closure constructively
 - [x] weld fixed adjoint-response seam to first-prime/Hurwitz source seams and orientation energy
 - [x] wire algebraic-core and one-sequence finite-source sign interfaces directly into seam
-- [ ] prove eventual nonnegativity on one unconditional separated finite prime--Gamma sequence
+- [x] prove false RH universally traps every convergent separated packet reconstruction in a
+  strict negative basin; weaken required producer from eventual sign to cofinal sign recurrence
+- [x] prove exact global source-sign exclusion radius: every nonnegative separated packet has
+  squared evaluation error at least half the orientation energy, with attained sharp constant
+- [ ] prove cofinal nonnegative recurrence on one unconditional separated finite prime--Gamma
+  sequence from source values
 - [ ] prove the theta-specific boundary saturation/reverse sign
 - [ ] RH
 
@@ -716,3 +721,9 @@ Only sign assertion on nontrivial unconditionally reconstructed packets carries 
 - 2026-07-22 — Added empty separated packet and constructive reverse implications `(44)` in the
   same weld module.  This proves source-sequence sign interfaces and local seam saturation are
   identical without RH detours.  Direct Lean check and final module build passed.
+- 2026-08-16 — Formalized the cofinal separated-source sign gate and exact nonnegative-cone
+  distance law in `XiHurwitzOrientationCofinalSourceSignGate.lean` and
+  `XiHurwitzOrientationSharpNonnegativeConeDistance.lean`.  False RH forces every convergent
+  section into a strict negative tail, while every individual source-nonnegative packet remains at
+  squared target distance at least half the orientation energy.  Source-defined recurrence remains
+  open.

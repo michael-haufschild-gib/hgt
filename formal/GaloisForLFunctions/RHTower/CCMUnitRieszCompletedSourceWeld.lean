@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.CCMUnitRieszMarkovTransform
 import GaloisForLFunctions.RHTower.CCMInverseTiltedCriticalMellinFactorization
 import GaloisForLFunctions.RHTower.AnalyticDividedDifference
 import GaloisForLFunctions.RHTower.ChebyshevPsiLogSummatory
+import GaloisForLFunctions.RHTower.CCMPolarPrimeStieltjesAutocorrelation
 
 /-!
 # Unit-Riesz completed-source weld
@@ -15,7 +16,7 @@ These are unconditional identities and inequalities.  No zero-free conclusion or
 made here.
 -/
 
-open Complex Set
+open Complex Set MeasureTheory
 
 noncomputable section
 
@@ -294,6 +295,106 @@ theorem unitRieszCompletedSourceKernel_le
   have hpos : 0 ≤ Real.exp (-3 * t / 2) := (Real.exp_pos _).le
   unfold unitRieszCompletedSourceKernel
   linarith
+
+/-! ## Literal completed-source response -/
+
+/-- Smooth finite-aperture test realizing the unit-Riesz completed-source response. -/
+def unitRieszCompletedSourceTest (t h : ℝ) : ℂ :=
+  Complex.ofReal
+    (3 * (Real.exp (-t + h / 2) - Real.exp (-3 * t / 2 + h)))
+
+/-- Derivative of the finite-aperture unit-Riesz source test. -/
+def unitRieszCompletedSourceTestDeriv (t h : ℝ) : ℂ :=
+  Complex.ofReal ((3 / 2 : ℝ) * Real.exp (-t + h / 2) -
+    3 * Real.exp (-3 * t / 2 + h))
+
+theorem hasDerivAt_unitRieszCompletedSourceTest (t h : ℝ) :
+    HasDerivAt (unitRieszCompletedSourceTest t)
+      (unitRieszCompletedSourceTestDeriv t h) h := by
+  have h₁ : HasDerivAt (fun x : ℝ => Real.exp (-t + x / 2))
+      ((1 / 2 : ℝ) * Real.exp (-t + h / 2)) h := by
+    simpa only [Function.comp_def, id_eq, mul_comm] using
+      (Real.hasDerivAt_exp (-t + h / 2)).comp h
+        (((hasDerivAt_id h).div_const 2).const_add (-t))
+  have h₂ : HasDerivAt (fun x : ℝ => Real.exp (-3 * t / 2 + x))
+      (Real.exp (-3 * t / 2 + h)) h := by
+    simpa only [Function.comp_def, id_eq, mul_one] using
+      (Real.hasDerivAt_exp (-3 * t / 2 + h)).comp h
+        ((hasDerivAt_id h).const_add (-3 * t / 2))
+  have hr := (h₁.sub h₂).const_mul 3
+  have hc := hr.ofReal_comp
+  convert hc using 1
+  · funext y
+    simp only [unitRieszCompletedSourceTest, Pi.sub_apply,
+      Complex.ofReal_sub, Complex.ofReal_mul, Complex.ofReal_ofNat]
+  · simp only [unitRieszCompletedSourceTestDeriv, Complex.ofReal_sub,
+      Complex.ofReal_mul, Complex.ofReal_ofNat, Complex.ofReal_div,
+      Complex.ofReal_one]
+    ring
+
+theorem unitRieszCompletedSourceTest_eq_kernel (t h : ℝ) :
+    unitRieszCompletedSourceTest t h =
+      Complex.ofReal
+        (Real.exp (-h / 2) * unitRieszCompletedSourceKernel (t - h)) := by
+  change Complex.ofReal _ = Complex.ofReal _
+  congr 1
+  simp only [unitRieszCompletedSourceKernel]
+  have he1 : Real.exp (-h / 2) * Real.exp (-(t - h)) =
+      Real.exp (-t + h / 2) := by rw [← Real.exp_add]; congr 1; ring
+  have he2 : Real.exp (-h / 2) * Real.exp (-3 * (t - h) / 2) =
+      Real.exp (-3 * t / 2 + h) := by rw [← Real.exp_add]; congr 1; ring
+  rw [← he1, ← he2]
+  ring
+
+/-- Literal completed Euler--Gamma Stieltjes response seen by the unit-Riesz aperture. -/
+def unitRieszCompletedSourceResponse (t : ℝ) : ℂ :=
+  RHTower.criticalMellinStieltjesPairing (t / 2)
+    (unitRieszCompletedSourceTest t)
+
+theorem unitRieszCompletedSourceTest_endpoint (t : ℝ) :
+    unitRieszCompletedSourceTest t t = 0 := by
+  rw [unitRieszCompletedSourceTest_eq_kernel]
+  norm_num [unitRieszCompletedSourceKernel]
+
+theorem unitRieszCompletedSourceResponse_eq_errorIntegral
+    {t : ℝ} (ht : 0 ≤ t) :
+    unitRieszCompletedSourceResponse t =
+      -(∫ h in Set.Ioc (0 : ℝ) t,
+        (RHTower.criticalMellinCompletedError h : ℂ) *
+          unitRieszCompletedSourceTestDeriv t h) := by
+  rw [unitRieszCompletedSourceResponse]
+  have hderiv : ∀ x ∈ Set.Icc (0 : ℝ) (2 * (t / 2)),
+      HasDerivAt (unitRieszCompletedSourceTest t)
+        (unitRieszCompletedSourceTestDeriv t x) x := by
+    intro x _
+    exact hasDerivAt_unitRieszCompletedSourceTest t x
+  have hint : IntervalIntegrable (unitRieszCompletedSourceTestDeriv t) volume
+      0 (2 * (t / 2)) := by
+    have hc : Continuous (unitRieszCompletedSourceTestDeriv t) := by
+      unfold unitRieszCompletedSourceTestDeriv
+      fun_prop
+    exact hc.intervalIntegrable 0 (2 * (t / 2))
+  have hibp := RHTower.criticalMellinStieltjesPairing_integrationByParts
+    (a := t / 2) (by linarith) hderiv hint
+    (by rw [show 2 * (t / 2) = t by ring]; exact unitRieszCompletedSourceTest_endpoint t)
+  simpa only [show 2 * (t / 2) = t by ring] using hibp
+
+/-- The source response is exactly a difference of two exponentially weighted completed-error
+moments; no Möbius coordinate remains. -/
+theorem unitRieszCompletedSourceResponse_eq_twoMomentIntegral
+    {t : ℝ} (ht : 0 ≤ t) :
+    unitRieszCompletedSourceResponse t =
+      ∫ h in Set.Ioc (0 : ℝ) t,
+        (RHTower.criticalMellinCompletedError h : ℂ) *
+          ((3 * Real.exp (-3 * t / 2 + h) -
+            (3 / 2 : ℝ) * Real.exp (-t + h / 2) : ℝ) : ℂ) := by
+  rw [unitRieszCompletedSourceResponse_eq_errorIntegral ht,
+    ← MeasureTheory.integral_neg]
+  apply MeasureTheory.integral_congr_ae
+  filter_upwards with h
+  rw [unitRieszCompletedSourceTestDeriv]
+  push_cast
+  ring
 
 end GaloisForLFunctions.RHTower
 

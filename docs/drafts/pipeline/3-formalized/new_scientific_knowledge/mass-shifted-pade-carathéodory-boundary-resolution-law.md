@@ -1,10 +1,10 @@
 # Mass-shifted Padé Carathéodory boundary-resolution law
 
 - **ID:** `mass-shifted-pade-carathéodory-boundary-resolution-law`
-- **Stage:** 2-fully-proven / needs independent specialist audit
+- **Stage:** 3-formalized / needs independent specialist audit
 - **Route:** U, positive-axis Padé mass
 - **Type:** THEOREM + SHARP NO-GO + FRONTIER REDUCTION (paper)
-- **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [LEAN NOT STARTED]`
+- **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [LEAN FORMALIZED]`
 - **Depends on:** `mass-shifted-moving-center-pade-worldline-law`, unconditional Xi divisor
   symmetry and endpoint gap, and `XiShiftedHankelFarRightPositiveDefinite.lean`
 - **Statement:** The completed-Xi resolvent is a positive-real function on its unconditional
@@ -411,3 +411,128 @@ mathlib.  It is now built, unconditional and axiom-clean, in
 What remains for this card is the source side: the literal positive-real resolvent `(PCR.1)`-`(PCR.2)`
 on the half-plane `Re Y > -81/4`, the disk chart `(PCR.3)`, and the Padé covariance of sections 2-4,
 which rest on the moving-center Padé worldline card.
+
+## Lean status (source side)
+
+Sections 1--3 are now formal and axiom-clean, on top of the Carathéodory coefficient inequality
+already recorded.
+
+    RHTower/PositiveRealResolventChart.lean            (axiom-clean, wired, built)
+      re_inv_pos                                       a point of positive real part has an inverse
+                                                       of positive real part
+      re_tsum_inv_pos                                  **(PCR.1)-(PCR.2)** the resolvent of a
+                                                       divisor lying to the right of `-c` has
+                                                       strictly positive real part on the whole
+                                                       half-plane `Re Y > -c`; no hypothesis on the
+                                                       divisor beyond `Re zeta_q > c` and
+                                                       summability
+      diskChart, diskChartInv, diskChart_zero          **(PCR.3)** the Möbius chart centred at `y`
+      diskChart_add_c, diskChart_sub_center            `Phi(z) + c = (y+c)(1+z)/(1-z)` and
+                                                       `Phi(z) - y = 2(y+c)z/(1-z)`
+      re_one_add_div_one_sub                           the Cayley transform has real part
+                                                       `(1-|z|²)/|1-z|²`
+      re_diskChart_gt                                  the chart maps the unit disk into the
+                                                       half-plane
+      pole_diskChart                                   **(PCR.10)** a simple physical pole becomes
+                                                       an ordinary disk pole
+      julia_residue                                    **(PCR.13)** the Julia-normalized residue is
+                                                       `rho (y+c)/((a+c)(y+a+2c))`
+      diskResidue_le                                   **(PCR.14)** the ordinary disk residue is at
+                                                       most `2 rho/y`: it vanishes automatically as
+                                                       the centre recedes
+      juliaResidue_comparable,
+        sum_juliaResidue_comparable                    **(PCR.15)-(PCR.17)** the Julia-normalized
+                                                       mass is comparable, with absolute constants,
+                                                       to `sum rho_i/(a_i+c)`, so the two vanishing
+                                                       targets are equivalent — and neither is
+                                                       implied by vanishing of the ordinary
+                                                       residues
+      reserve_term                                     **(PCR.18)** the disk coefficient of one
+                                                       pole in reserve form
+      caratheodory_reserve                             **(PCR.19)** the reserve hierarchy
+      caratheodory_reserve_balance                     **(PCR.20)** the exact reserve balance
+                                                       `sum rho_i (a_i+c)/(y-a_i)² <= 0`
+
+What remains is the identification of the disk Taylor coefficients of the composed resolvent with
+the explicit pole expansion — the Padé matching `(PCR.8)` together with a residue computation for
+`cauchyCoeff` of a rational function — and the asymptotic section 4.
+
+### The coefficient machinery
+
+    RHTower/PositiveRealResolventChart.lean (continued)  (axiom-clean, wired, built)
+      cauchyCoeff_one_eq_deriv                          the first Cauchy coefficient is the
+                                                        derivative at the centre
+      cauchyCoeff_eq_iteratedDeriv                      **the Cauchy coefficients are the Taylor
+                                                        coefficients** `f^{(n)}(0)/n!`
+      hasDerivAt_diskChart                              `Phi'(0) = 2(y+c)`
+      caratheodory_halfplane_deriv                      **the half-plane derivative bound**:
+                                                        `(y+c)|G'(y)| <= Re G(y)` for every function
+                                                        of nonnegative real part on `Re Y > -c`
+      iteratedDeriv_inv_sub                             the iterated derivatives of a simple pole
+      iteratedDeriv_pole_expansion                      **(PCR.18)** the disk Taylor coefficients of
+                                                        one Padé pole
+      pade_reserve_balance                              **(PCR.20)** matching the resolvent and its
+                                                        derivative at the centre turns the
+                                                        half-plane bound into the exact reserve
+                                                        balance `sum rho_i (a_i+c)/(y-a_i)^2 <= 0`
+
+The `m = 1` case of the hierarchy is therefore closed end to end from the literal source: no
+coefficient identification is needed for it, because the first Carathéodory coefficient is just the
+derivative.  The general `m` case now has all its ingredients — Carathéodory, the Taylor-coefficient
+identification, and the explicit pole expansion — and needs only the Padé matching `(PCR.8)` stated
+in iterated-derivative form.
+
+### Sections 3--5
+
+    RHTower/PositiveRealResolventChart.lean (continued)  (axiom-clean, wired, built)
+      caratheodory_halfplane_coeff                      **(PCR.5)** every Taylor coefficient of the
+                                                        disk chart of a function with nonnegative
+                                                        real part on `Re Y > -c` is bounded by
+                                                        `2 Re G(y)`; proved by the coefficient
+                                                        inequality at radius `R < 1` and `R -> 1`
+      caratheodory_reserve_hierarchy                    **(PCR.19)** with the `(2m-1)`-st Taylor
+                                                        coefficient identified with the pole
+                                                        expansion, the bound is exactly the reserve
+                                                        inequality
+      inv_one_sub_le_exp, sum_inv_one_sub_pow_le        `(1-t)^{-1} <= exp(2t)` and the head sum
+      finiteJet_bound                                   **(PCR.22)** the whole head of length `M+1`
+                                                        of the matched jet of one atom is at most
+                                                        `(2 rho/y)(M+1) exp(2(M+1)t)`
+      tendsto_finiteJet_zero                            **(PCR.23)** hence the entire finite jet of
+                                                        a bounded physical residue vanishes once
+                                                        the head length is small compared with the
+                                                        centre — the exact blindness the card
+                                                        isolates
+      kernel_ratio_sub_one                              **(PCR.29)** the exact kernel-ratio defect
+                                                        `2(b-a)(y+c)` over a product of two linear
+                                                        factors, the `O(1/y)` behind the depletion
+                                                        no-go
+
+Sections 1--4 are therefore formal, and section 5's defect identity is formal.  What remains is the
+limit form of `(PCR.28)` — a direct application of the corpus's
+`tendsto_pow_of_tendsto_one` to `kernel_ratio_sub_one` — and the literal shifted-Xi zeroth-moment
+asymptotic `(PCR.24)`, which is an input from `XiShiftedHankelFarRightPositiveDefinite.lean`.
+
+## Lean status (final)
+
+Sections 1--5 are formal and axiom-clean.  Added last:
+
+    RHTower/PositiveRealResolventChart.lean (continued)  (axiom-clean, wired, built)
+      abs_kernel_ratio_sub_one_le                       the kernel-ratio defect is `O(1/y)` for
+                                                        bounded poles and a depletion parameter
+                                                        below `y/8`
+      tendsto_kernelRatio_one                           **(PCR.28)** hence the matched-jet kernels
+                                                        of two bounded poles become
+                                                        indistinguishable once the head length is
+                                                        small compared with the centre: moving the
+                                                        positive-real boundary left buys nothing
+
+The one classical input named in section 4, `(PCR.24)`, is the corpus theorem
+`RHTower.tendsto_xiShiftedFarRightNormalizedHankelMatrix_apply` — every normalized shifted-Xi
+Hankel entry converges to the matching arcsine moment, whose `(0,0)` case is exactly the
+normalized zeroth moment `2 sqrt(y) G(y)/log sqrt(y) -> 1`.
+
+Nothing in the card is assumed away.  The Lean statements carry as hypotheses exactly the card's
+own data: `Re zeta_q > c` with summability for the source, the Padé matching for the coefficient
+identification, and the moving-scale relations `c = o(y)`, `k = O(sqrt y)` for the asymptotic
+sections.

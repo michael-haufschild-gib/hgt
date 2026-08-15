@@ -2324,3 +2324,151 @@ And the corpus already contained the whole construction: `HTGeometry/NerveHomoto
 `cuspBuildingStrongHomotopyEquiv`.  All axiom-clean.
 
 Card moved to `3-formalized/new_scientific_knowledge/projective-horizon/`.
+
+### `local-clifford-return-excised-phase-incidence-law` → stage 3 (2026-08-16)
+
+`(28)` is closed, and with it the whole card.  Three new modules, all wired and axiom-clean:
+
+- `HTGeometry/CompletedTimeCaptureDensity.lean`
+  - **`measurePreserving_torusProj`** — the fundamental box `torusBox d` projects onto the phase
+    torus measure preservingly (`measurePreserving_pi` over `AddCircle.measurePreserving_mk`,
+    `Measure.restrict_pi_pi`).  This is the *set-level* transfer the ledger asked for; note it is
+    stated for mathlib's own `volume` on `UnitAddTorus d`, deliberately **not** under the local
+    `⟨haarAddCircle⟩` `MeasureSpace` instance that `TorusTranslateDifference` uses, because
+    `FiniteSpectralRecurrenceFrequencyLaw` speaks about mathlib's `volume` and the two are equal
+    but not definitionally so;
+  - `torusPhaseOrbit`, `torusCaptureTarget`, `isClosed_torusCaptureTarget`,
+    **`measure_torusCaptureTarget`** — the Haar measure of the capture event equals its phase-box
+    measure;
+  - `limsup_finiteTorusPhaseProbabilityMeasure_capture_le` — the full-torus form of the density
+    bound, for a rationally independent full frequency packet.
+- `HTGeometry/DiagonalPhaseSectionMeasure.lean`
+  - `DiagonalPhaseInvariant`, `torusSection`, `torusCombine`;
+  - **`measure_eq_measure_torusSection_preimage`** — a diagonally invariant set has the Haar
+    measure of its anchored slice.  Proof: split the torus along the reference coordinate with
+    `measurePreserving_piEquivPiSubtypeProd`, slice with `Measure.prod_apply_symm`, and translate
+    each fibre by the reference phase (`measure_preimage_add`).  This is what turns the full-torus
+    bound into a bound on the torus of *relative* phases, which is where the projective frequency
+    packet of a maximally projective spectrum lives;
+  - `isProbabilityMeasure_volume_unitAddTorus` (instance).
+- `HTGeometry/SpectralOrbitCaptureDensity.lean`
+  - `torusAmpOrbit`, `ampPhase`, **`torusAmpOrbit_eq_torusPhaseOrbit`** — a complex-coefficient
+    spectral orbit is the nonnegative-amplitude orbit translated by the argument vector, so
+    **`measure_torusAmpCaptureTarget`** inherits the box bound by Haar translation invariance;
+  - `diagonalPhaseInvariant_torusAmpCaptureTarget` — common-phase invariance, from
+    `finitePureStateFidelity_const_mul` at a unit-modulus character value;
+  - `projectiveSpectralOrbit`, `projectiveAmpCaptureTarget`,
+    `isClosed_projectiveAmpCaptureTarget`, **`measure_projectiveAmpCaptureTarget`**;
+  - **`limsup_finiteTorusPhaseProbabilityMeasure_projectiveAmpCapture_le`** — the card's `(28)`:
+    under `MaximallyProjectiveEnergy` the completed-time density of the complete-target capture
+    event is at most `ι r! (16 C_H(Ω)/a²)^r`.  Assembly:
+    `maximallyProjectiveEnergy_projectiveFrequency_independent` →
+    `rationallyIndependent_closedTarget_limsup_le_volume` → the two measure identities above →
+    `measureReal_capture_le_return_add_replicaMoment` with `R = ∅`;
+  - `maximallyProjectiveEnergy_neg`, **`projectiveSpectralOrbit_finiteTorusPhasePoint`** (at
+    sampled time `A(2u-1)` the anchored orbit is the eigencoefficient vector of `e^{-itH}Ω` up to
+    the global phase of the anchored level) and
+    **`limsup_finiteTorusPhaseProbabilityMeasure_evolutionCapture_le`**, which is `(28)` in the
+    physical sign convention.
+
+Card promoted to `docs/drafts/pipeline/3-formalized/` with a full equation → declaration table.
+
+### Update: Theorem A of `cubic-phase-seeded-static-local-full-scale-plateau-law` (2026-08-16)
+
+Three new modules, wired, built, axiom-clean.  Together they prove the fifteen-wise independence of
+cubic Boolean phase seeds, stated as uniformity of the evaluation vector rather than through the
+Reed--Muller duality theorem.
+
+`HTGeometry/BooleanConjunctionParity.lean` — the minimum-distance core:
+
+- `conjunctionFiber S T` — the points of `T` whose `S`-coordinates are all `true`;
+- **`two_pow_le_card_of_even_conjunctionFiber`** — if `T` is nonempty and every conjunction fibre of
+  at most `m` coordinates has even cardinality then `2^(m+1) ≤ |T|`.  Induction on `m`: split `T` at
+  a coordinate where two of its points differ; the `true` half is itself a conjunction fibre of `T`
+  (so inherits evenness one order lower) and the `false` half inherits it by difference.  This is
+  the statement "the dual of `RM(m,n)` has minimum weight `2^(m+1)`" with no code, no duality
+  theorem, and no dimension count;
+- `exists_odd_conjunctionFiber` — contrapositive.
+
+`HTGeometry/ReedMullerEvaluationRank.lean`:
+
+- `MonLe ι m` (multilinear monomials of degree at most `m`), `evalMatrix R m x`;
+- `vecMul_evalMatrix_apply` — a left kernel vector reads off conjunction-fibre parities;
+- **`vecMul_evalMatrix_eq_zero_imp`** — at fewer than `2^(m+1)` distinct Boolean points the
+  evaluation matrix has no nonzero left kernel vector over `ZMod 2`;
+- **`surjective_mulVec_evalMatrix`** — hence, by `Matrix.rank_transpose`, full row rank and
+  surjectivity of evaluation over `ZMod 2`.
+
+`HTGeometry/MultilinearEvaluationUniformity.lean`:
+
+- `redEight`, `liftEight`, `redEight_eq_zero_imp`;
+- **`exists_mulVec_add_two_smul`** — every value vector is an evaluation vector plus twice something;
+- **`surjective_mulVec_evalMatrix_eight`** — three corrections suffice because `8 = 0`, so evaluation
+  is surjective over `ZMod 8`;
+- `card_fiber_mulVec_evalMatrix_eq` — a surjective homomorphism of finite additive groups has
+  constant fibres;
+- **`sum_comp_mulVec_evalMatrix`** — the card's `(5)`: for every test function the sum over
+  coefficient families is a fixed multiple of the sum over `(ZMod 8)^k`, i.e. the evaluation vector
+  of a uniform degree-at-most-`m` coefficient family is uniform on `(ZMod 8)^k` whenever the
+  `k < 2^(m+1)` Boolean points are distinct.  At `m = 3` this is fifteen-wise independence.
+
+**Remaining for the card:** Theorem B `(7)`--`(14)` in the *finite* eighth-root model.  The corpus
+proves the continuous-phase versions on the torus box (`PhaseSeedCollisionMoments`,
+`PhaseSeedCollisionVariance.integral_box_variance_collision_le`).  The transfer is exact because
+every character exponent occurring in the fourth and eighth moments of the collision is at most
+four in absolute value, hence nonzero modulo eight, and involves at most eight distinct Boolean
+points; what is still missing in Lean is the character-orthogonality bridge in the finite model and
+the re-derivation of `(8)`--`(9)` against it.  Theorem C then composes `(9)` with the
+finite-alphabet circuit counting already available in `CircuitCountingCollisionBound`.
+
+### Update: Theorem B of `cubic-phase-seeded-static-local-full-scale-plateau-law` (2026-08-16)
+
+Four further modules, wired, built, axiom-clean.  The card's transfer step ("uniform eighth roots
+have the same moments as continuous phase on this exponent range") is now a theorem.
+
+`HTGeometry/FinitePhaseCharacterTransfer.lean`:
+
+- `boolEval`, `charFinite n c = stdAddChar (∑_a n_a h_c(a))` — the eighth-root phase character of an
+  integer frequency vector on Boolean points;
+- **`sum_charFinite`** — a frequency with support below `2^(m+1)` whose entries are nonzero modulo
+  eight has character mean zero.  Proof: enumerate the support (`Finset.equivFin`), apply
+  `sum_comp_mulVec_evalMatrix` to reduce to the uniform model on `(ZMod 8)^k`, factor the sum with
+  `Finset.prod_univ_sum`, and kill one factor with `AddChar.sum_mulShift` and
+  `ZMod.isPrimitive_stdAddChar`;
+- `trigFinite`, **`sum_trigFinite`**, **`average_trigFinite_eq_integral_box_trigLift`** — every
+  admissible character combination has the same mean in the finite and the continuous model.
+
+`HTGeometry/FinitePhaseTrigProduct.lean`:
+
+- **`trigLift_mul`** and **`trigFinite_mul`** — the product of two character combinations is one,
+  with frequencies added and coefficients multiplied;
+- `charFinite_add_index`;
+- `quarticFreq_apply`, **`abs_quarticFreq_le`** (entries at most two in absolute value),
+  **`card_support_quarticFreq_le`** (support at most four), and the corresponding bounds
+  `abs_add_quarticFreq_le` (at most four) and `card_support_add_quarticFreq_le` (at most eight) for
+  the frequencies of the square;
+- `eq_zero_of_abs_le_seven_of_cast_eq_zero` — the exponent range where eighth roots and continuous
+  phase agree.
+
+`HTGeometry/CubicPhaseCollisionMoments.lean`:
+
+- `finPhaseAmp`, `finPhaseAmpConj`, `finQuarticSum`, `finCollision` and the eighth-root analogues of
+  the corpus expansion lemmas, culminating in **`finQuarticSum_eq_trigFinite`**: the finite
+  collision is the *same* character combination `(quarticFreq, quarticCoeff)` as the continuous one;
+- **`average_finQuarticSum`** and **`average_finQuarticSum_sq`** — the first and second moments of
+  the collision agree with the continuous ones, by the transfer above at `m = 3` (support at most
+  eight, entries at most four).
+
+`HTGeometry/CubicPhaseCollisionConcentration.lean`:
+
+- `average_finCollision`, `average_finCollision_sq` — the real forms;
+- `integral_box_collision_le` — the continuous mean bound `≤ 2|J|`, from
+  `integral_box_fidelity_pow_le` at unit weights and replica order two;
+- **`average_finCollision_le`** and **`variance_finCollision_le`** — the card's `(8)` in unnormalized
+  form: `E_h f ≤ 2|J|` and `Var_h f ≤ 96|J|`, where `f = D² C_e(χ_h)`;
+- **`card_filter_finCollision_gt_le`** — the card's `(9)`: the fraction of cubic seeds with
+  `f > 2|J| + t` is at most `96|J|/t²`.  At `t = κ|J|` and `|J| = D` this is `96/(κ²D)`.
+
+**Remaining for the card:** Theorem C `(15)`--`(20)`, which composes `(9)` with the
+finite-alphabet circuit counting of `CircuitCountingCollisionBound` and the completed-time
+machinery, and the preparation-size statement `(3)`.

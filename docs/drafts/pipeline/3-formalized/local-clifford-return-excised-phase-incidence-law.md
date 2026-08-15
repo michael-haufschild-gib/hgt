@@ -1,10 +1,10 @@
 # Local-Clifford return-excised phase-incidence law
 
 - **ID:** `local-clifford-return-excised-phase-incidence-law`
-- **Stage:** 2 -- fully proved on paper
+- **Stage:** 3 -- formalized in Lean 4
 - **Type:** quenched growing-replica theorem / ordinary static-local complexity plateau
 - **Parent:** `../1-in-progress/static-local-complexity-law.md`, O3--O4 interface
-- **Status:** `[PAPER-PROVED] [FRONTIER ADVANCE] [NOVELTY UNVERIFIED] [LEAN DEFERRED]`
+- **Status:** `[LEAN-CERTIFIED] [FRONTIER ADVANCE] [NOVELTY UNVERIFIED]`
 - **Date:** 2026-08-08
 
 ## Public sentence
@@ -551,3 +551,50 @@ Future dependency order after refactor:
 
 Until those statements are formalized and axiom-audited, this card authorizes paper mathematics and
 frontier planning only, not a final manuscript claim under the project's Lean-only publication rule.
+
+## Lean certificate
+
+Every displayed equation of this card is a closed, unconditional Lean 4 declaration in
+`formal/GaloisForLFunctions/HTGeometry/`, wired into `GaloisForLFunctions.HTGeometry` and audited to
+`[propext, Classical.choice, Quot.sound]`.
+
+| Card equation | Lean declaration | Module |
+|---|---|---|
+| `(1)` collision `C_H(Ω)` | `occupationCollision` | `ReturnExcisedPhaseIncidenceLaw` |
+| `(2)`, `(4)` capture event and closed target tube | `torusCaptureTarget`, `torusAmpCaptureTarget`, `isClosed_torusAmpCaptureTarget` | `CompletedTimeCaptureDensity`, `SpectralOrbitCaptureDensity` |
+| `(5)` abstract quenched theorem, sharp constant | `measureReal_capture_le_return_add_carrierMoment` | `ReturnExcisedPhaseIncidenceLaw` |
+| `(5)` ambient-constant form | `measureReal_capture_le_return_add_replicaMoment` | `ReturnExcisedPhaseIncidenceLaw` |
+| `(6)` heavy sector and light weights | `heavySector`, `lightWeights` | `TorusReplicaMomentBound` |
+| `(7)`, `(9)`, `(10)` heavy-mass bound and threshold transfer | `sum_heavySector_le` | `TorusReplicaMomentBound` |
+| `(11)` replica pairing | `replicaPairing` | `TorusReplicaMomentBound` |
+| `(12)` exact Parseval identity | `integral_box_normSq_replicaPairing` | `TorusReplicaMomentBound` |
+| `(13)` replica moment bound | `integral_box_normSq_replicaPairing_le`, `integral_box_fidelity_pow_le` | `TorusReplicaMomentBound` |
+| `(14)` incidence carrier projection | `starProjection_incidenceCarrier_eq` | `SubspaceOptimalDesign` |
+| `(15)` carrier-target pairing | `inner_incidenceCarrier_target` | `SubspaceOptimalDesign` |
+| `(16)` optimal projected-endpoint design | `exists_optimalDesign_of_span_eq` | `SubspaceOptimalDesign` |
+| `(17)`--`(19)` minimal light incidence and assembly | `phaseIncidenceCarrier`, `phaseIncidenceCarrier_le`, `measureReal_capture_le_return_add_carrierMoment` | `ReturnExcisedPhaseIncidenceLaw` |
+| `(20)` centred Gaussian bounded-degree ensemble | `centredProductGaussian`, `pauliEnsemble` | `GaussianSignedPermutationInvariance`, `PauliEnsembleCliffordCovariance` |
+| `(21)` Markov bound on the collision | `measureReal_collision_pauliEnsemble_zeroProductState_ge_le` | `PauliEnsembleSimpleSpectrum` |
+| `(22)` return-excised bounded-incidence bound | `measureReal_capture_le_return_add_replicaMoment_of_collision_le` | `ReturnExcisedCollisionBoundedIncidence` |
+| `(23)` product-Clifford covariance of the ensemble | `pauliEnsemble_conj`, `measurePreserving_cliffordCoefficientMap`, `integral_spectralCollision_pauliEnsemble_clifford_eq` | `PauliEnsembleCliffordCovariance` |
+| `(24)` single-qubit stabilizer two-design identity | `sum_stabAmp_four` | `StabilizerTwoDesign` |
+| `(25)` product-stabilizer fourth-moment bound | `sum_prodStab_fourth_le`, `sum_spectralCollision_cliffordOrbit_le` | `StabilizerTwoDesign`, `CliffordOrbitCollisionBound` |
+| `(26)` mean collision `E_H C_H(Ω) ≤ (2/3)^n` | `integral_collision_pauliEnsemble_zeroProductState_le` | `PauliEnsembleSimpleSpectrum` |
+| `(27)` almost-sure simple and maximally projective spectrum | `injective_eigenvalues_pauliEnsemble_ae`, `maximallyProjectiveEnergy_pauliEnsemble_ae`, `isOrthoEigenBasis_injective_pauliEnsemble_ae` | `PauliEnsembleSimpleSpectrum` |
+| `(28)` completed-time capture density | `limsup_finiteTorusPhaseProbabilityMeasure_projectiveAmpCapture_le`, `limsup_finiteTorusPhaseProbabilityMeasure_evolutionCapture_le` | `SpectralOrbitCaptureDensity` |
+| `(28)` phase-box/Haar transfer | `measurePreserving_torusProj`, `measure_torusCaptureTarget` | `CompletedTimeCaptureDensity` |
+| `(28)` common-phase quotient | `measure_eq_measure_torusSection_preimage` | `DiagonalPhaseSectionMeasure` |
+| `(28)` Schrödinger dictionary | `projectiveSpectralOrbit_finiteTorusPhasePoint` | `SpectralOrbitCaptureDensity` |
+| `(29)`, `(30)` replica order below the collision scale | `factorial_mul_pow_le_two_pow_neg`, `measureReal_capture_le_return_add_card_mul_two_pow` | `CircuitCountingCollisionBound` |
+| `(31)` dictionary-size condition | `card_mul_two_pow_le_rpow` | `CircuitCountingCollisionBound` |
+| `(32)` complete circuit consequence | `measureReal_capture_le_return_add_two_rpow` | `CircuitCountingCollisionBound` |
+
+Equation `(33)` is `(32)` read as a complexity lower bound and adds no further mathematical content.
+
+Supporting infrastructure introduced for this card and reusable elsewhere:
+`SpectralCollisionFunctional` (the capped gap-regularized collision `cappedRegCollision`, which
+makes the eigenbasis collision a measurable function of the matrix entries),
+`CollisionEnsembleLaw`, `SpectralCollisionCovariance`, `LocalProductStateAction`,
+`ProductCliffordLabelAction`, `StabilizerCliffordOrbit`, `ProductStabilizerCliffordOrbit`,
+`CliffordEnsembleCollisionMean`, `PauliEnsembleTracelessBridge`, `GaussianCoordinateSelection`,
+`PauliHilbertSchmidtNorm`, `PauliOperatorNormSandwich`.

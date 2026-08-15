@@ -258,3 +258,39 @@ certify `(3)`, so no wrapper module is added before that source layer is represe
 - [ ] construct an unconditional positive source floor for `(7)`
 - [ ] formalize the source-side Stieltjes/autocorrelation layer
 - [ ] RH
+
+## Lean status
+
+`[FORMALIZED]` — supersedes the "no wrapper module is added" decision recorded above.  The
+distributional Weil form and the Stieltjes autocorrelation law remain cited parents (and the
+corresponding gate stays open), but the card's own geometric and algebraic steps are reachable and
+are now proved.
+
+Module: `formal/GaloisForLFunctions/RHTower/CCMRectangularTentFloor.lean`
+(10 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired
+into `formal/GaloisForLFunctions/RHTower.lean`).
+
+What is proved in Lean:
+
+- `movingTent`, `movingTent_nonneg`, `movingTent_eq_zero_of_outside`, `movingTent_endpoint_left`,
+  `movingTent_endpoint_right`, `movingTent_center` — **equation (2)**: the moving tent is
+  nonnegative, supported in `[2a−2L, 2a]`, vanishes at both endpoints, and peaks at `L`.
+- `interval_overlap_len` — the exact overlap length of two intervals of common length `L`:
+  `max(0, min(u+L,v+L) − max(u,v)) = max(0, L − |u−v|)`.
+- `autocorrelation_split` — **equation (9)**: the cross-edge overlap is exactly the moving tent
+  (and by the same lemma each same-edge overlap is `max(0, L−|h|)`).
+- `adjacent_block_readout` — **equations (6)–(7)**: with `c = 2a − L` the readout is exactly the
+  difference of the two *adjacent equal* blocks `[c, c+L]` and `[c−L, c]`.
+- `overlapLen`, `haar_overlap_eq_zero` — **equation (18)**: the zero-mean Haar readout is
+  orthogonal to the boundary indicator `1_{[0,T)}` whenever `T ≤ c−L` or `T ≥ c+L`, i.e. the
+  complementary Möbius branch is localized to the finite multiplicative shell.
+- `quadratic_two_translate_bound` — **equation (12)**: a positive quadratic form on a sum of two
+  equal-energy translates is at most four times its value on one of them, which is the uniform
+  two-sided Gamma bound `(14)`.
+
+Deliberately outside the Lean statement (cited parents, not results of this card):
+
+- the distributional restricted Weil form and the Stieltjes autocorrelation law `(10)`;
+- the digamma form domain for indicators and the finiteness of their logarithmic-multiplier energy;
+- the fixed-width rectangular completeness theorem `(15)`;
+- the Möbius mass-escape scale analysis `(19)`–`(20)`.

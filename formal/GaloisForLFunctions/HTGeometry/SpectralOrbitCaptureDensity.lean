@@ -263,15 +263,12 @@ theorem projectiveSpectralOrbit_finiteTorusPhasePoint (ref : I) (c : I → ℂ) 
     push_cast
     field_simp
     ring
-  · have hjref : j = ref := by
-      by_contra hcon
-      exact hj hcon
-    subst hjref
+  · have hjref : j = ref := not_ne_iff.mp hj
     have hsec : torusSection ref
         (finiteTorusPhasePoint (projectiveFrequency (fun i => -lam i) ref) A u) j = 0 := by
       rw [torusSection, dif_neg hj]
     rw [hsec]
-    simp
+    simp [hjref]
 
 /-- **Completed-time density of Schrödinger capture.**  Restatement of the capture-density bound
 for the physical evolution sign convention. -/

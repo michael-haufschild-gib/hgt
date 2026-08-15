@@ -204,11 +204,10 @@ partition functions is therefore insufficient to manufacture a letterwise Coxete
   Pluecker/Gram pencil retains any four-label curvature `Delta` as the stable coefficient
   `Delta^2 z w`; see
   `../3-formalized/needs-audit/prime-gamma-signed-eulerian-curvature-plucker-lift.md`.
-- `[OPEN CORE]` Construct the cofinal source matrix `K_N` from literal all-prime
-  Euler--Gamma/Mobius curvature sections and prove that
-  `det(I+u K_N K_N^T)` converges locally uniformly to `A(u)`.  First close the trace and squared
-  two-minor comparisons with `a_1,a_2`; no Xi coefficient or zero may define an individual source
-  column.
+- `[SUPERSEDED OPEN CORE]` Artificial all-prime depth-paired `K_N` construction is no longer
+  preferred. P-G94's literal overlapping six-minor covariance already gives canonical finite
+  principal matrices and cofinal source operator before Xi divisor reading. Remaining comparison
+  is arithmetic, not matrix existence.
 - `[FALSIFIED METRIC]` Literal nested first-trace edges in uniform Boolean `L^2` have normalized
   quadratic coefficient at most `13/98`, while theta moment log-convexity forces
   `a_2/a_1^2 >= 1/6`.  No scalar normalization can repair the gap; see
@@ -223,10 +222,16 @@ partition functions is therefore insufficient to manufacture a letterwise Coxete
   `737856/66015625 < 13/98 < 1/6`. Equal-diagonal repair uniquely requires extra nonnegative
   amplitude `8` and adds trace `63w/64`; see
   `../3-formalized/needs-audit/route-e-p-sp-e-cubic-source-normalization-debt.md`.
-- `[REFINED OPEN CORE]` Produce amplitude-eight correction intrinsically from completed
-  Gamma/co-Poisson/Stokes transport while paying exact `63w/64` trace debt inside Route P's `<2`
-  budget. Only after that source-faithfulness gate may corrected cubic blocks be assembled
-  cofinally and compared with theta's exact ratio.
+- `[PIVOT PROVED]` Full P-G94/P-G95 physical-overlap covariance avoids local rebalancing entirely.
+  Its canonical Hilbert--Schmidt coordinate kernel reconstructs source operator exactly. Every
+  finite reflected principal `det2(I+uT_s)` has only strictly negative-real zeros, finite sections
+  converge locally uniformly on every closed disc, and cofinal entire determinant has same strict
+  zero ray; see
+  `../3-formalized/needs-audit/prime-gamma-physical-plucker-entire-determinant.md`.
+- `[REFINED OPEN CORE]` Compute P-G98 determinant's trace and regularized logarithmic coefficients
+  from six-minor source series and compare them with `a_1,a_2`/`normalizedPrimeArchMoment` without
+  fitting. If direct identity with `A` fails, pivot to P-G97-compatible renormalized boundary
+  transfer and prove its completed moments or divisor equal Xi's.
 
 ## Primary parent results
 
@@ -257,11 +262,16 @@ positive results.
 - [x] uniform Boolean Gram metric excluded by exact rational quadratic gap
 - [x] source-native cubic Gamma/Hellinger metric block constructed
 - [x] canonical primitive fourth-depth block clears exact `1/6` quadratic floor
+- [x] raw fourth-depth source-faithful lift excluded; exact normalization debt classified
+- [x] literal physical-overlap cofinal positive trace-class operator constructed
+- [x] canonical finite source determinants proved strictly negative-real-rooted after reflection
+- [x] finite source determinants proved locally uniformly convergent to stable entire limit
+- [x] cofinal source determinant proved strictly negative-real-rooted
 - [ ] completed weights of all signed orders on two and three prime labels extracted
 - [ ] completed weights on the fiber-colliding four-label pair extracted
 - [ ] cubic Gamma/co-Poisson metric assembled on full two-face curvature family
 - [ ] source curvature sections identified with completed signed-word columns
-- [ ] cofinal Gram family constructed from all-prime Euler--Gamma/Mobius source
-- [ ] trace and squared-minor coefficient comparisons proved
+- [x] cofinal physical Pluecker determinant family constructed from prime--Gamma source
+- [ ] determinant trace/logarithmic coefficient comparisons with completed theta moments proved
 - [ ] locally uniform limit identified with `A`
 - [ ] RH capstone formalized

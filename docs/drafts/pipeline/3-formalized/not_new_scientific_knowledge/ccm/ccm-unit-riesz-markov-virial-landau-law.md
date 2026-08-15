@@ -325,3 +325,39 @@ declarations) proves the analytic heart of sections 2 and 4.
 
 Still to formalize for this card: the total-mass statement `(5)` in its direct form
 (`w(v) -> 1`), the causal-convolution factorization `(11)`, and the Landau connector `(18)`-`(22)`.
+
+## Lean status — complete, 2026-08-16
+
+`[FORMALIZED]` — the items listed as remaining above are now covered.
+
+- The total-mass statement `(5)` in its direct form (`w ≤ 1`, `1 − 9e^{-v/2} ≤ w`, `w → 1`) is
+  `formal/GaloisForLFunctions/RHTower/CCMUnitRieszProfileLimit.lean`, and the sharp form
+  `1 − w(v) ≤ 3e^{-v}` is `one_sub_unitRieszLogProfile_le` in
+  `CCMUnitRieszQuadratureDefect.lean`.
+- The transform side `(6)`, `(7)`, `(14)`–`(17)` is
+  `CCMUnitRieszMarkovTransform.lean` (26 declarations).
+- The remaining pieces — the wavelet kernel `(9)`, the convolution split of `(11)`, the polar part
+  of the virial `(13)`, and the Landau bookkeeping `(18)`–`(21)` — are the new module
+
+  `formal/GaloisForLFunctions/RHTower/CCMUnitRieszVirialConnector.lean`
+  (7 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired
+  into `formal/GaloisForLFunctions/RHTower.lean`):
+
+  - **`hasDerivAt_movingWavelet`** — equation `(9)`: `K_T(u) = w(T−u) − u d(T−u)` is exactly the
+    derivative of `Φ_T(u) = u w(T−u)`.
+  - **`wavelet_coefficient_split`** — equation `(11)`, first step: the coefficient splits as
+    `(h ⋆ w)(T) − ((t h) ⋆ d)(T)`.
+  - **`integral_exp_neg_window`**, **`virial_exp_part`** — equation `(13)`, polar part:
+    `∫_0^t e^{-u}du − t e^{-t} = 1 − (1+t)e^{-t}` exactly.
+  - **`landau_shift_nonneg_iff`** — equations `(18)`, `(20)`: the one-sided bound is exactly
+    nonnegativity of the shifted function `b(T) = I(T) + C e^{cT}`.
+  - **`landau_exponent_lt`**, **`landau_bracket`** — equations `(19)`, `(21)`: the shift exponent
+    `c = −1/2 + ε` is strictly below `δ` whenever `ε < δ + 1/2`, and a pole abscissa above `δ` with
+    a convergence abscissa at most `0` brackets the contradiction interval.
+
+Deliberately outside the Lean statement (cited parents):
+
+- the associativity `w = 1 ⋆ d` of causal convolution completing `(11)`;
+- the Laplace transforms `(14)`–`(16)` as *transforms* (their closed forms are already proved in
+  `CCMUnitRieszMarkovTransform`) and the residue statement `(17)`;
+- Landau's first-singularity theorem itself, and the Möbius floor identity `(12)`.

@@ -364,3 +364,35 @@ linear-algebra wrapper around the missing theorem `(21)`, so no Lean file is add
 - [ ] prove its determinant/kernel incidence is sensitive to every symmetric off-line orbit
 - [ ] construct the index-matched positive background or an inertia-preserving Euler-to-screw map
 - [ ] RH
+
+## Lean status — 2026-08-16
+
+`[FORMALIZED]` — module
+`formal/GaloisForLFunctions/RHTower/CCMEulerObservabilityAllocation.lean`
+(5 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
+`formal/GaloisForLFunctions/RHTower.lean`).
+
+The card's section 3 is exact finite-dimensional linear algebra, and it is now proved in full:
+
+- **`domRestrict_ker_injective`** — **equation (8)**: incidence faithfulness `(7)` (stated as
+  triviality of the joint kernel) makes `dC` injective on `ker d(O_r(B))`.
+- **`finrank_ker_le_finrank_range`** — **equation (9)**: therefore
+  `dim ker d(O_r(B)) ≤ rank dC`.
+- **`observability_allocation`** — **equation (10)**: rank–nullity turns this into
+  `k ≤ ρ_r(B) + rank dC`, so the scalar observability *deficit* — and only the deficit — is charged
+  to the relative state.
+- **`index_ge_of_bounded_jet`** — **equation (17)**: a bounded scalar jet depth `ρ_r ≤ r` forces
+  `q ≥ k − r`, the cofinally growing relative index.
+- **`jet_rank_le`** — **equation (4)**: the scalar jet sees at most `min(r, k)` directions.
+
+The same statements give `(15d)` verbatim for the stratified residue germ `c`, since the proof uses
+only the triviality of the joint kernel.
+
+Deliberately outside the Lean statement (cited parents, not results of this card):
+
+- the weighted Vandermonde faithfulness `(5)`;
+- the signed-Cauchy relative index theorem `(13)` — the corpus already owns its kernel algebra in
+  `RHTower/CCMRelativeLogDerivCoordinateIndex.lean` (card
+  `ccm-relative-logderivative-coordinate-negative-index-law`);
+- the residue-birth statement `(15e)` on an open dense set of deformations;
+- the divisor-preserving convergence bound `(18)`.

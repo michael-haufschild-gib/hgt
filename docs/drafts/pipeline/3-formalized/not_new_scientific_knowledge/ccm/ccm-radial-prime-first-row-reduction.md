@@ -404,3 +404,53 @@ The formal tree has no radial PSWF or stationary-phase infrastructure. No Lean f
 - [x] prove the truncated-divisor weighted high radial tail `(26)`
 - [ ] combine with exact Poisson central correction
 - [ ] true Weil Rayleigh-excess and parity transfer
+
+## Lean status
+
+`FORMALIZED` — `formal/GaloisForLFunctions/RHTower/CCMRadialPrimeFirstRow.lean`
+(namespace `GaloisForLFunctions.RHTower`, wired into `GaloisForLFunctions/RHTower.lean`,
+axioms `[propext, Classical.choice, Quot.sound]` on every declaration).
+
+The "Lean decision" above is superseded. It is correct that the tree carries no radial PSWF or
+stationary-phase infrastructure, and Dunster's uniform expansion `(5)`, the phase-preserving Gram
+bound `(4)`, the stationary-phase estimates `(21)`–`(24)` and the Weber–Abel transform `(23b)`
+remain cited parents. But the card's own algebraic, arithmetic and calculus steps are all
+reachable, and several of them were already carried by the tree.
+
+### Proved in the new module
+
+| Card step | Lean |
+|-|-|
+| `(10)`–`(11)` row split | `radialPrimeRow_split`, `Icc_one_eq_insert_Icc_two` |
+| `(10)`–`(11)` charge split into diagonal + first row + `j,k ≥ 2` sector | `radialPrimeCharge_split` |
+| the exact finite aperture weight `a_λ(k) = ∑_{q ∣ k, q ≤ λ²} Λ(q)` | `truncatedVonMangoldtCharge` |
+| `0 ≤ a_λ(k)` | `truncatedVonMangoldtCharge_nonneg` |
+| `a_λ(k) ≤ log k`, the domination behind the `(12)`–`(13)` transfer | `truncatedVonMangoldtCharge_le_log` |
+| `(6)` `d/dx ξ_∞(k x) = k²x/√(k²x²−1)` | `hasDerivAt_radialLimitPhase_scaled` |
+| the difference phase `ξ_∞(x) − ξ_∞(kx)` and its derivative | `hasDerivAt_radialDiffPhase` |
+| `(15)` the stationary point `x_k = √(1 + 1/k²)` | `radialCoalescePoint`, `radialCoalescePoint_sq` |
+| `(15)` stationarity and **uniqueness** on `x > 1` | `radialDiffPhaseDeriv_coalescePoint`, `radialDiffPhaseDeriv_eq_zero_iff` |
+| `(20)` `ρ(x_k) = 1/k`, `ρ(k x_k) = k` | `radialLimitPhase_coalescePoint`, `radialLimitPhase_scaled_coalescePoint` |
+| `(20)` curvature `= −(k³ − 1/k)` at `x_k` | `radialDiffPhase_secondDeriv_coalescePoint` |
+| `(16)` `k²(x_k − 1) → 1/2` | `tendsto_radialCoalesceRate`, `tendsto_radialCoalescePoint` |
+
+### Already in the tree, reused rather than rebuilt
+
+| Card step | Lean |
+|-|-|
+| `(3)` `∑_{m ∣ k, m ≥ 2} Λ(m) = log k` | `GaloisForLFunctions.constrainedProlate_sum_vonMangoldt_divisors_ge_two` |
+| `(8)` Hilbert-kernel row estimate `≤ C(1+log k)/k²` | `RHTower.radialRowSum_le` (with `sum_belowDiagTerm`, `tsum_aboveDiagTerm_le`) |
+| `(9)` weighted sector convergence | `RHTower.summable_weighted_rowMajorant`, `RHTower.summable_weighted_rowBound`, `RHTower.rowBound_le` |
+| `(23f)` exterior critical point and curvature of `φ_k(r) = r − √(k²r²+k²−1)` | `radialPhaseDeriv_critical`, `radialPhaseSecondDeriv_critical` (`CCMLimitingRadialWeber`) |
+| `(12)` diagonal series `∑ log k/k · arcsin(1/k)` | `constrainedProlatePrimeSeriesTerm` and its summability |
+
+### Deliberately outside the Lean statement
+
+Dunster's uniform radial Liouville–Green expansion `(5)` and its differentiated Olver remainders;
+the phase-preserving nonstationary Gram bound `(4)`/`(7)`; the one-dimensional stationary-phase
+lemma and the estimates `(21)`–`(24)`, `(23d)`; the Weber Gaussian–Bessel transform `(23b)` and its
+Abel continuation; and the exact PSWF remainder transfer.  These are cited parents of the card, not
+statements it proves.
+
+The two unchecked gates (`combine with exact Poisson central correction`, `true Weil Rayleigh-excess
+and parity transfer`) are route gates of the wider CCM programme, not obligations of this card.

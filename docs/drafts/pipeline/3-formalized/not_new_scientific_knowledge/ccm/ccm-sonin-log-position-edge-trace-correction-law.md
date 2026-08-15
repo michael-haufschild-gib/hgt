@@ -344,3 +344,42 @@ What is deliberately not formalized, and why:
 - [x] ordinary-position scope separated from the Euler orbital-length carrier
 - [x] corrected logarithmic-coordinate Sonin scattering formalized
 - [x] ordinary-position scalar-commutator substitution retired
+
+## Lean status — 2026-08-16
+
+`[FORMALIZED]` — the card's coordinate-scope commutators (`[log|x|,U_p] = −log(p) U_p`,
+`[x,U_p] = (1−p) x U_p`, and the non-proportionality) were already proved in Lean, as the card
+records.  The remaining exactly algebraic content — the resolvent dressing chain `(6c)`–`(6e)` and
+the formal-complement identity `(10)` — is now proved:
+
+Module: `formal/GaloisForLFunctions/RHTower/CCMSoninEdgeCommutatorAlgebra.lean`
+(4 theorems, all unconditional, axioms exactly `[propext]`, wired into
+`formal/GaloisForLFunctions/RHTower.lean`).
+
+- **`commutator_formal_complement`** — **equation (10)**: with `Q₀ = 1 − P − B` and `[X,P] = 0`,
+  `[X,Q₀] = −[X,B]`.
+- **`commutator_alternating_block`** — **equation (6e)**: with `T = B A B` and `[X,A] = 0`,
+  `[X,T] = [X,B] A B + B A [X,B]`.
+- **`commutator_resolvent`** — **equation (6d)**: with `V` a two-sided inverse of `1 − T`,
+  `[X,V] = V [X,T] V`.
+- **`commutator_exactProjection`** — **equation (6c)**: with `Q = E − E V B E` and `[X,E] = 0`,
+
+  ```text
+  [X,Q] = −E V ( ([X,B] A B + B A [X,B]) V B + [X,B] ) E .
+  ```
+
+  Every term factors through the *same* universal edge commutator `[X,B]`: the Hilbert–Schmidt
+  projection correction dresses the edge bundle by the prolate resolvent and introduces no new
+  position defects.
+
+All four are proved in an arbitrary ring, so they apply verbatim to any rigged realization of the
+operators.
+
+Deliberately outside the Lean statement (cited parents, not results of this card):
+
+- the distributional edge formula `(3)`–`(4)` (Fourier differentiation, `∂χ_a = δ_{-a} − δ_a`) and
+  its parity polarization `(11)`–`(12)`;
+- the Sobolev domain failure `(13)`–`(14)`;
+- the rigged Sobolev extension that turns `(6c)` into an operator identity, and the
+  Hilbert–Schmidt statement for `C_a`;
+- the first-moment kernel `(6)`.
