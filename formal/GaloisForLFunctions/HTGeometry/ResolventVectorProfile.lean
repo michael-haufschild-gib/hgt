@@ -33,7 +33,7 @@ def resolventVecProfile (T : X →L[ℂ] X) (a : ℝ) (g : ℕ → ℝ) (L : ℝ
   ∑' k : ℕ, resolventCoeffG a g k L • (T ^ k) β
 
 omit [CompleteSpace X] in
-theorem norm_pow_apply_le (T : X →L[ℂ] X) (β : X) (k : ℕ) :
+private theorem norm_pow_apply_le (T : X →L[ℂ] X) (β : X) (k : ℕ) :
     ‖(T ^ k) β‖ ≤ ‖T‖ ^ k * ‖β‖ := by
   rcases Nat.eq_zero_or_pos k with hk | hk
   · subst hk

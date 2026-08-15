@@ -23,48 +23,48 @@ section Quenched
 variable {Ω : Type*} [MeasurableSpace Ω]
 
 /-- The quenched causal replica mass at replica order `r`. -/
-def quenchedReplicaMass (ρ : Measure Ω) (F : Ω → ℝ) (r : ℕ) : ℝ := ∫ H, F H ^ r ∂ρ
+def quenchedActionReplicaMass (ρ : Measure Ω) (F : Ω → ℝ) (r : ℕ) : ℝ := ∫ H, F H ^ r ∂ρ
 
 /-- The preparation action of an accessibility. -/
 def preparationActionOf (F : Ω → ℝ) : Ω → ℝ := fun H => -Real.log (F H)
 
 /-- **The replica mass is the Laplace transform of the preparation action.** -/
-theorem quenchedReplicaMass_eq_integral_exp (ρ : Measure Ω) {F : Ω → ℝ}
+theorem quenchedActionReplicaMass_eq_integral_exp (ρ : Measure Ω) {F : Ω → ℝ}
     (hF : ∀ H, 0 < F H) (r : ℕ) :
-    quenchedReplicaMass ρ F r =
+    quenchedActionReplicaMass ρ F r =
       ∫ H, Real.exp (-((r : ℝ) * preparationActionOf F H)) ∂ρ := by
   refine integral_congr_ae (Filter.Eventually.of_forall fun H => ?_)
   show F H ^ r = Real.exp (-((r : ℝ) * -Real.log (F H)))
   rw [show -((r : ℝ) * -Real.log (F H)) = (r : ℝ) * Real.log (F H) by ring,
     Real.exp_nat_mul, Real.exp_log (hF H)]
 
-theorem quenchedReplicaMass_nonneg (ρ : Measure Ω) {F : Ω → ℝ} (hF : ∀ H, 0 ≤ F H) (r : ℕ) :
-    0 ≤ quenchedReplicaMass ρ F r :=
+theorem quenchedActionReplicaMass_nonneg (ρ : Measure Ω) {F : Ω → ℝ} (hF : ∀ H, 0 ≤ F H) (r : ℕ) :
+    0 ≤ quenchedActionReplicaMass ρ F r :=
   integral_nonneg fun H => pow_nonneg (hF H) r
 
-theorem quenchedReplicaMass_le_one (ρ : Measure Ω) [IsProbabilityMeasure ρ] {F : Ω → ℝ}
+theorem quenchedActionReplicaMass_le_one (ρ : Measure Ω) [IsProbabilityMeasure ρ] {F : Ω → ℝ}
     (hF : ∀ H, 0 ≤ F H) (hF1 : ∀ H, F H ≤ 1) (r : ℕ) (hint : Integrable (fun H => F H ^ r) ρ) :
-    quenchedReplicaMass ρ F r ≤ 1 := by
+    quenchedActionReplicaMass ρ F r ≤ 1 := by
   have hle : ∀ H, F H ^ r ≤ 1 := fun H => pow_le_one₀ (hF H) (hF1 H)
-  calc quenchedReplicaMass ρ F r ≤ ∫ _H, (1 : ℝ) ∂ρ :=
+  calc quenchedActionReplicaMass ρ F r ≤ ∫ _H, (1 : ℝ) ∂ρ :=
         integral_mono hint (integrable_const 1) hle
     _ = 1 := by simp
 
 /-- **The replica mass decreases in the replica order.** -/
-theorem quenchedReplicaMass_antitone (ρ : Measure Ω) {F : Ω → ℝ} (hF : ∀ H, 0 ≤ F H)
+theorem quenchedActionReplicaMass_antitone (ρ : Measure Ω) {F : Ω → ℝ} (hF : ∀ H, 0 ≤ F H)
     (hF1 : ∀ H, F H ≤ 1) {r : ℕ} (hint : Integrable (fun H => F H ^ r) ρ)
     (hint' : Integrable (fun H => F H ^ (r + 1)) ρ) :
-    quenchedReplicaMass ρ F (r + 1) ≤ quenchedReplicaMass ρ F r := by
+    quenchedActionReplicaMass ρ F (r + 1) ≤ quenchedActionReplicaMass ρ F r := by
   refine integral_mono hint' hint fun H => ?_
   rw [pow_succ]
   nlinarith [hF H, hF1 H, pow_nonneg (hF H) r, pow_le_one₀ (hF H) (hF1 H) (n := r)]
 
 /-- **Low-complexity sectors are discounted by the replica mass.**  A sector on which the
 accessibility is at least `c` has source mass at most `c⁻¹ ^ r` times the replica mass. -/
-theorem measureReal_le_quenchedReplicaMass (ρ : Measure Ω) [IsProbabilityMeasure ρ]
+theorem measureReal_le_quenchedActionReplicaMass (ρ : Measure Ω) [IsProbabilityMeasure ρ]
     {F : Ω → ℝ} (hF : ∀ H, 0 ≤ F H) {E : Set Ω} (hE : MeasurableSet E) {c : ℝ} (hc : 0 < c)
     (hlow : ∀ H ∈ E, c ≤ F H) (r : ℕ) (hint : Integrable (fun H => F H ^ r) ρ) :
-    ρ.real E ≤ (c⁻¹) ^ r * quenchedReplicaMass ρ F r := by
+    ρ.real E ≤ (c⁻¹) ^ r * quenchedActionReplicaMass ρ F r := by
   classical
   have hpoint : ∀ H, Set.indicator E (1 : Ω → ℝ) H ≤ (c⁻¹) ^ r * F H ^ r := by
     intro H
@@ -87,10 +87,10 @@ theorem measureReal_le_quenchedReplicaMass (ρ : Measure Ω) [IsProbabilityMeasu
 
 /-- **Rare-carrier lower bound.**  A carrier of positive source mass on which the accessibility is
 at least `e^{-j}` forces the replica mass to be at least its mass times the replicated cost. -/
-theorem quenchedReplicaMass_ge_of_carrier (ρ : Measure Ω) [IsProbabilityMeasure ρ]
+theorem quenchedActionReplicaMass_ge_of_carrier (ρ : Measure Ω) [IsProbabilityMeasure ρ]
     {F : Ω → ℝ} (hF : ∀ H, 0 ≤ F H) {B : Set Ω} (hB : MeasurableSet B) {j : ℝ}
     (hlow : ∀ H ∈ B, Real.exp (-j) ≤ F H) (r : ℕ) (hint : Integrable (fun H => F H ^ r) ρ) :
-    ρ.real B * Real.exp (-((r : ℝ) * j)) ≤ quenchedReplicaMass ρ F r := by
+    ρ.real B * Real.exp (-((r : ℝ) * j)) ≤ quenchedActionReplicaMass ρ F r := by
   classical
   have hpoint : ∀ H, Real.exp (-((r : ℝ) * j)) * Set.indicator B (1 : Ω → ℝ) H ≤ F H ^ r := by
     intro H
@@ -118,13 +118,13 @@ theorem rnDeriv_tilted_quenched (ρ : Measure Ω) [IsProbabilityMeasure ρ] {F :
     (hF : ∀ H, 0 < F H) (r : ℕ)
     (hmeas : AEMeasurable (fun H => -((r : ℝ) * preparationActionOf F H)) ρ) :
     (ρ.tilted fun H => -((r : ℝ) * preparationActionOf F H)).rnDeriv ρ =ᵐ[ρ]
-      fun H => ENNReal.ofReal (F H ^ r / quenchedReplicaMass ρ F r) := by
+      fun H => ENNReal.ofReal (F H ^ r / quenchedActionReplicaMass ρ F r) := by
   have hpt : ∀ H : Ω, Real.exp (-((r : ℝ) * preparationActionOf F H)) = F H ^ r := by
     intro H
     show Real.exp (-((r : ℝ) * -Real.log (F H))) = F H ^ r
     rw [show -((r : ℝ) * -Real.log (F H)) = (r : ℝ) * Real.log (F H) by ring,
       Real.exp_nat_mul, Real.exp_log (hF H)]
-  have hmass := quenchedReplicaMass_eq_integral_exp ρ hF r
+  have hmass := quenchedActionReplicaMass_eq_integral_exp ρ hF r
   filter_upwards [rnDeriv_tilted_left_self hmeas] with H hH
   rw [hH, hpt H, hmass]
 
@@ -138,9 +138,9 @@ theorem integral_llr_tilted_quenched (ρ : Measure Ω) [IsProbabilityMeasure ρ]
     (hfq : Integrable (fun H => -((r : ℝ) * preparationActionOf F H)) q) :
     (∫ H, llr q (ρ.tilted fun H => -((r : ℝ) * preparationActionOf F H)) H ∂q) =
       (∫ H, llr q ρ H ∂q) + (r : ℝ) * (∫ H, preparationActionOf F H ∂q) +
-        Real.log (quenchedReplicaMass ρ F r) := by
+        Real.log (quenchedActionReplicaMass ρ F r) := by
   rw [_root_.MeasureTheory.integral_llr_tilted_right hq hfq hint hllr,
-    quenchedReplicaMass_eq_integral_exp ρ hF r, integral_neg, integral_const_mul]
+    quenchedActionReplicaMass_eq_integral_exp ρ hF r, integral_neg, integral_const_mul]
   ring
 
 /-- **Quenched replica-action law.**  The negative logarithm of the replica mass is the least value
@@ -156,7 +156,7 @@ theorem isLeast_quenchedReplicaAction (ρ : Measure Ω) [IsProbabilityMeasure ρ
         Integrable (fun H => -((r : ℝ) * preparationActionOf F H)) q ∧
         Integrable (llr q (ρ.tilted fun H => -((r : ℝ) * preparationActionOf F H))) q ∧
         a = (∫ H, llr q ρ H ∂q) + (r : ℝ) * ∫ H, preparationActionOf F H ∂q}
-      (-Real.log (quenchedReplicaMass ρ F r)) := by
+      (-Real.log (quenchedActionReplicaMass ρ F r)) := by
   have hrewrite : ∀ q : Measure Ω,
       gibbsAction q ρ (fun H => -((r : ℝ) * preparationActionOf F H)) =
         (∫ H, llr q ρ H ∂q) + (r : ℝ) * ∫ H, preparationActionOf F H ∂q := by
@@ -167,7 +167,7 @@ theorem isLeast_quenchedReplicaAction (ρ : Measure Ω) [IsProbabilityMeasure ρ
       rw [integral_neg, integral_const_mul]
     rw [hneg]
     ring
-  have hmass := quenchedReplicaMass_eq_integral_exp ρ hF r
+  have hmass := quenchedActionReplicaMass_eq_integral_exp ρ hF r
   have hbase := isLeast_gibbsAction ρ hint hmeas htilt
   rw [hmass]
   constructor

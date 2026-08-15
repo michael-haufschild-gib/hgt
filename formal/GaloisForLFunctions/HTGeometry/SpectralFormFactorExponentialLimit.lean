@@ -24,7 +24,7 @@ noncomputable section
 
 section HaarMoments
 
-theorem fourier_one_pow (x : AddCircle (1 : ℝ)) (k : ℕ) :
+private theorem fourier_one_pow (x : AddCircle (1 : ℝ)) (k : ℕ) :
     (fourier 1 x) ^ k = fourier (k : ℤ) x := by
   induction k with
   | zero => simp
@@ -67,7 +67,7 @@ theorem torusSFF_nonneg (D : ℕ) (z : UnitAddTorus (Fin D)) : 0 ≤ torusSFF D 
 theorem continuous_torusSFF (D : ℕ) : Continuous (torusSFF D) :=
   ((continuous_torusPhaseSum D).norm.pow 2).div_const _
 
-theorem integrable_of_continuous {X : Type*} [TopologicalSpace X] [MeasurableSpace X]
+private theorem integrable_of_continuous {X : Type*} [TopologicalSpace X] [MeasurableSpace X]
     [BorelSpace X] [CompactSpace X] {μ : Measure X} [IsFiniteMeasure μ]
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {f : X → E} (hf : Continuous f) :
     Integrable f μ :=

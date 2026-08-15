@@ -166,7 +166,7 @@ theorem measureReal_replicaIncidenceEvent (independent : α → α → Prop)
     (hx : Measurable x) (ρ : Measure Ω) [IsProbabilityMeasure ρ] (r : ℕ) :
     (ρ.prod (Measure.pi fun _ : Fin r => traceLaw independent z)).real
         (replicaIncidenceEvent independent S x r) =
-      quenchedReplicaMass ρ (fun H => causalAccessibility independent z S (x H)) r := by
+      quenchedActionReplicaMass ρ (fun H => causalAccessibility independent z S (x H)) r := by
   have hmeas := measure_replicaIncidenceEvent independent hsymm Δ hdegree hz0 hz hS hx ρ r
   have hpow : ∀ H : Ω,
       ENNReal.ofReal (causalAccessibility independent z S (x H)) ^ r =
@@ -185,7 +185,7 @@ theorem measureReal_replicaIncidenceEvent (independent : α → α → Prop)
 /-- **Growing-replica complete-circuit bound.**  The source mass of the sector whose endpoint is
 reachable within depth `s` is at most the quenched replica mass discounted by the replicated
 geometric weight of that depth. -/
-theorem measureReal_heapAccessible_le_quenchedReplicaMass (independent : α → α → Prop)
+theorem measureReal_heapAccessible_le_quenchedActionReplicaMass (independent : α → α → Prop)
     (hsymm : ∀ x y, independent x y → independent y x) (Δ : ℕ)
     (hdegree : ∀ a, incidentEdgeCount independent a ≤ Δ)
     {z : ℝ} (hz0 : 0 < z) (hz1 : z ≤ 1) (hz : 2 ^ Δ * z < 1)
@@ -193,8 +193,8 @@ theorem measureReal_heapAccessible_le_quenchedReplicaMass (independent : α → 
     (hx : Measurable x) (ρ : Measure Ω) [IsProbabilityMeasure ρ] (s r : ℕ) :
     ρ.real (x ⁻¹' heapAccessible (traceLen independent) S s) ≤
       ((z ^ s)⁻¹) ^ r *
-        quenchedReplicaMass ρ (fun H => causalAccessibility independent z S (x H)) r := by
-  refine measureReal_le_quenchedReplicaMass ρ
+        quenchedActionReplicaMass ρ (fun H => causalAccessibility independent z S (x H)) r := by
+  refine measureReal_le_quenchedActionReplicaMass ρ
     (fun H => causalAccessibility_nonneg independent hsymm Δ hdegree hz0.le hz S (x H))
     (hx (measurableSet_heapAccessible hS s)) (pow_pos hz0 s) ?_ r
     (integrable_causalAccessibility_pow independent hsymm Δ hdegree hz0.le hz hS hx ρ r)
@@ -214,18 +214,18 @@ theorem measureReal_heapAccessible_le_exp (independent : α → α → Prop)
     {z : ℝ} (hz0 : 0 < z) (hz1 : z ≤ 1) (hz : 2 ^ Δ * z < 1)
     {S : Trace independent → Set X} (hS : ∀ u, MeasurableSet (S u)) {x : Ω → X}
     (hx : Measurable x) (ρ : Measure Ω) [IsProbabilityMeasure ρ] (s : ℕ) {r : ℕ} (hr : 0 < r)
-    (hZ : 0 < quenchedReplicaMass ρ (fun H => causalAccessibility independent z S (x H)) r) :
+    (hZ : 0 < quenchedActionReplicaMass ρ (fun H => causalAccessibility independent z S (x H)) r) :
     ρ.real (x ⁻¹' heapAccessible (traceLen independent) S s) ≤
       Real.exp (-((r : ℝ) *
         (quenchedReplicaAction ρ (fun H => causalAccessibility independent z S (x H)) r -
           (s : ℝ) * Real.log z⁻¹))) := by
   have hr0 : (0 : ℝ) < r := Nat.cast_pos.mpr hr
   have hrne : (r : ℝ) ≠ 0 := ne_of_gt hr0
-  have hbase := measureReal_heapAccessible_le_quenchedReplicaMass independent hsymm Δ hdegree
+  have hbase := measureReal_heapAccessible_le_quenchedActionReplicaMass independent hsymm Δ hdegree
     hz0 hz1 hz hS hx ρ s r
   have haction := quenchedReplicaAction_eq ρ
     (fun H => causalAccessibility independent z S (x H)) hZ
-  set Z : ℝ := quenchedReplicaMass ρ (fun H => causalAccessibility independent z S (x H)) r
+  set Z : ℝ := quenchedActionReplicaMass ρ (fun H => causalAccessibility independent z S (x H)) r
     with hZdef
   have hweight : Real.exp (((r : ℝ) * (s : ℝ)) * Real.log z⁻¹) = ((z ^ s)⁻¹) ^ r := by
     rw [mul_assoc, Real.exp_nat_mul, Real.exp_nat_mul, Real.exp_log (inv_pos.mpr hz0), inv_pow]
@@ -319,8 +319,8 @@ theorem measureReal_heapAccessible_le_softReplicaMass (independent : α → α �
     (hx : Measurable x) (ρ : Measure Ω) [IsProbabilityMeasure ρ] (s r : ℕ) :
     ρ.real (x ⁻¹' heapAccessible (traceLen independent) B s) ≤
       ((z ^ s)⁻¹) ^ r *
-        quenchedReplicaMass ρ (fun H => softCausalReporter independent z δ B (x H)) r := by
-  refine measureReal_le_quenchedReplicaMass ρ
+        quenchedActionReplicaMass ρ (fun H => softCausalReporter independent z δ B (x H)) r := by
+  refine measureReal_le_quenchedActionReplicaMass ρ
     (fun H => softCausalReporter_nonneg independent hsymm Δ hdegree hz0.le hz δ B (x H))
     (hx (measurableSet_heapAccessible hB s)) (pow_pos hz0 s) ?_ r
     (integrable_softCausalReporter_pow independent hsymm Δ hdegree hz0.le hz hδ B hx ρ r)

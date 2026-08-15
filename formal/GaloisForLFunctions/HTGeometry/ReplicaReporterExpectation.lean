@@ -32,7 +32,7 @@ theorem replicaDeficit_le_one (r : ℕ) (a b : ℝ) : replicaDeficit r a b ≤ 1
   have : (0 : ℝ) ≤ (r : ℝ) * (a - b) ^ 2 / 2 := by positivity
   linarith
 
-theorem integrable_binomialTail_comp (ν : Measure Ω) [IsProbabilityMeasure ν] {Y : Ω → ℝ}
+private theorem integrable_binomialTail_comp (ν : Measure Ω) [IsProbabilityMeasure ν] {Y : Ω → ℝ}
     (hY : Measurable Y) (hY0 : ∀ ω, 0 ≤ Y ω) (hY1 : ∀ ω, Y ω ≤ 1) (r k : ℕ) :
     Integrable (fun ω => binomialTail r k (Y ω)) ν := by
   refine Integrable.mono' (integrable_const (1 : ℝ)) ?_ ?_

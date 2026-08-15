@@ -71,7 +71,7 @@ theorem matrixSubst_injective {M : Matrix (Fin n) (Fin n) R} (hM : IsUnit M.det)
   exact h
 
 /-- A lower-triangular matrix with nonzero diagonal over a field is invertible. -/
-theorem isUnit_det_of_lowerTriangular {K : Type*} [Field K]
+private theorem isUnit_det_of_lowerTriangular {K : Type*} [Field K]
     {M : Matrix (Fin n) (Fin n) K} (htri : ∀ i j, i < j → M i j = 0)
     (hdiag : ∀ i, M i i ≠ 0) : IsUnit M.det := by
   rw [Matrix.det_of_lowerTriangular M htri]

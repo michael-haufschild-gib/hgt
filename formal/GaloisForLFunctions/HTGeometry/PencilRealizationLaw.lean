@@ -23,19 +23,19 @@ local instance pencilRealizationComplexDifferential : Differential ℂ := ⟨0�
 /-! ### The Stanley--Reisner ideal through facet restrictions -/
 
 omit [Fintype α] in
-theorem mem_stanleyReisnerIdeal_iff_facetRestrict {R : Type*} [CommRing R]
+theorem mem_stanleyReisnerIdeal_iff_pencilFacetRestrict {R : Type*} [CommRing R]
     (facets : Finset (Finset α)) (P : MvPolynomial α R) :
-    P ∈ stanleyReisnerIdeal R facets ↔ ∀ A ∈ facets, facetRestrict A P = 0 := by
+    P ∈ stanleyReisnerIdeal R facets ↔ ∀ A ∈ facets, pencilFacetRestrict A P = 0 := by
   rw [stanleyReisnerIdeal_eq_inf_facetIdeal, Finset.inf_eq_iInf, Ideal.mem_iInf]
   constructor
   · intro h A hA
     have hmem := h A
     rw [Ideal.mem_iInf] at hmem
-    exact (facetRestrict_eq_zero_iff_mem_facetIdeal A P).mpr (hmem hA)
+    exact (pencilFacetRestrict_eq_zero_iff_mem_facetIdeal A P).mpr (hmem hA)
   · intro h A
     rw [Ideal.mem_iInf]
     intro hA
-    exact (facetRestrict_eq_zero_iff_mem_facetIdeal A P).mp (h A hA)
+    exact (pencilFacetRestrict_eq_zero_iff_mem_facetIdeal A P).mp (h A hA)
 
 /-- A family containing a zero element is not differentially independent. -/
 theorem not_differentialIndependent_of_eq_zero {F K : Type*} [Field F] [Field K] [Algebra F K]
@@ -68,11 +68,11 @@ theorem mul_mapC_notMem_stanleyReisnerIdeal (facets : Finset (Finset α))
     (c : Polynomial ℂ) (hc : c ≠ 0) :
     MvPolynomial.C c * MvPolynomial.map (Polynomial.C) P
       ∉ stanleyReisnerIdeal (Polynomial ℂ) facets := by
-  rw [mem_stanleyReisnerIdeal_iff_facetRestrict] at hP ⊢
+  rw [mem_stanleyReisnerIdeal_iff_pencilFacetRestrict] at hP ⊢
   push Not at hP ⊢
   obtain ⟨A, hA, hAP⟩ := hP
   refine ⟨A, hA, ?_⟩
-  rw [map_mul, facetRestrict_C, facetRestrict_map]
+  rw [map_mul, pencilFacetRestrict_C, pencilFacetRestrict_map]
   intro hzero
   rcases mul_eq_zero.mp hzero with h | h
   · exact hc (by simpa using (MvPolynomial.C_eq_zero (σ := α)).mp h)
@@ -200,10 +200,10 @@ theorem pencilOrbit_seedCarrier_eq_zero_iff {facets : Finset (Finset α)}
       rfl
     rw [entireGerm_congr _ _ _ analyticOnNhd_const hfun, entireGerm_zero]
   · intro hP
-    rw [mem_stanleyReisnerIdeal_iff_facetRestrict] at hP
+    rw [mem_stanleyReisnerIdeal_iff_pencilFacetRestrict] at hP
     funext z
-    rw [seedCarrierPoly_sum_facetRestrict a Y hper P z]
-    have hz : ∀ A : facets, seedCarrierPoly a (Y A) (facetRestrict A.1 P) z = 0 := by
+    rw [seedCarrierPoly_sum_pencilFacetRestrict a Y hper P z]
+    have hz : ∀ A : facets, seedCarrierPoly a (Y A) (pencilFacetRestrict A.1 P) z = 0 := by
       intro A
       rw [hP A.1 A.2]
       exact congrFun (map_zero (seedCarrierPolyₗ a (Y A))) z

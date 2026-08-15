@@ -56,18 +56,18 @@ theorem hasFDerivAt_dotCLM (m : ℕ) (a v : Fin m → ℂ) :
 /-! ### Evaluating a jet polynomial on a truncated jet vector -/
 
 /-- A finite jet vector, read as a full jet vector by padding with zeros. -/
-def jetExtend (m : ℕ) (w : Fin m → ℂ) : ℕ → ℂ := fun k => if h : k < m then w ⟨k, h⟩ else 0
+def expJetJacobianExtend (m : ℕ) (w : Fin m → ℂ) : ℕ → ℂ := fun k => if h : k < m then w ⟨k, h⟩ else 0
 
-theorem jetExtend_apply_lt {m : ℕ} (w : Fin m → ℂ) {k : ℕ} (h : k < m) :
-    jetExtend m w k = w ⟨k, h⟩ := dif_pos h
+theorem expJetJacobianExtend_apply_lt {m : ℕ} (w : Fin m → ℂ) {k : ℕ} (h : k < m) :
+    expJetJacobianExtend m w k = w ⟨k, h⟩ := dif_pos h
 
 /-- The coefficient vector of one jet slot, zero above the truncation. -/
 def jetCoordVec (m j : ℕ) : Fin m → ℂ := fun k => if (k : ℕ) = j then 1 else 0
 
 theorem dot_jetCoordVec (m j : ℕ) (w : Fin m → ℂ) :
-    ∑ k, jetCoordVec m j k * w k = jetExtend m w j := by
+    ∑ k, jetCoordVec m j k * w k = expJetJacobianExtend m w j := by
   classical
-  unfold jetCoordVec jetExtend
+  unfold jetCoordVec expJetJacobianExtend
   by_cases h : j < m
   · rw [dif_pos h, Finset.sum_eq_single (⟨j, h⟩ : Fin m)]
     · simp
@@ -81,9 +81,9 @@ theorem dot_jetCoordVec (m j : ℕ) (w : Fin m → ℂ) :
     have hkj : (k : ℕ) ≠ j := fun hkj => h (hkj ▸ k.2)
     simp [hkj]
 
-theorem hasFDerivAt_jetExtend_coord (m j : ℕ) (v : Fin m → ℂ) :
-    HasFDerivAt (fun w : Fin m → ℂ => jetExtend m w j) (dotCLM m (jetCoordVec m j)) v := by
-  have hfun : (fun w : Fin m → ℂ => jetExtend m w j)
+theorem hasFDerivAt_expJetJacobianExtend_coord (m j : ℕ) (v : Fin m → ℂ) :
+    HasFDerivAt (fun w : Fin m → ℂ => expJetJacobianExtend m w j) (dotCLM m (jetCoordVec m j)) v := by
+  have hfun : (fun w : Fin m → ℂ => expJetJacobianExtend m w j)
       = fun w : Fin m → ℂ => ∑ k, jetCoordVec m j k * w k := by
     funext w
     rw [dot_jetCoordVec]
@@ -92,16 +92,16 @@ theorem hasFDerivAt_jetExtend_coord (m j : ℕ) (v : Fin m → ℂ) :
 
 /-- The gradient coefficient vector of a jet polynomial on the truncated jet space. -/
 def jetGradVec (m : ℕ) (P : MvPolynomial ℕ ℂ) (v : Fin m → ℂ) : Fin m → ℂ :=
-  fun k => MvPolynomial.eval (jetExtend m v) (MvPolynomial.pderiv (k : ℕ) P)
+  fun k => MvPolynomial.eval (expJetJacobianExtend m v) (MvPolynomial.pderiv (k : ℕ) P)
 
 theorem contDiff_evalJetExtend (m : ℕ) (P : MvPolynomial ℕ ℂ) :
-    ContDiff ℂ ⊤ (fun w : Fin m → ℂ => MvPolynomial.eval (jetExtend m w) P) := by
+    ContDiff ℂ ⊤ (fun w : Fin m → ℂ => MvPolynomial.eval (expJetJacobianExtend m w) P) := by
   induction P using MvPolynomial.induction_on with
   | C a => simpa using contDiff_const (c := a) (𝕜 := ℂ) (E := (Fin m → ℂ))
   | add P Q hP hQ => simpa only [map_add] using hP.add hQ
   | mul_X P j hP =>
-      have hcoord : ContDiff ℂ ⊤ (fun w : Fin m → ℂ => jetExtend m w j) := by
-        have hfun : (fun w : Fin m → ℂ => jetExtend m w j)
+      have hcoord : ContDiff ℂ ⊤ (fun w : Fin m → ℂ => expJetJacobianExtend m w j) := by
+        have hfun : (fun w : Fin m → ℂ => expJetJacobianExtend m w j)
             = fun w : Fin m → ℂ => ∑ k, jetCoordVec m j k * w k := by
           funext w
           rw [dot_jetCoordVec]
@@ -111,7 +111,7 @@ theorem contDiff_evalJetExtend (m : ℕ) (P : MvPolynomial ℕ ℂ) :
 
 /-- **The gradient of a jet polynomial on the truncated jet space.** -/
 theorem hasFDerivAt_evalJetExtend (m : ℕ) (P : MvPolynomial ℕ ℂ) (v : Fin m → ℂ) :
-    HasFDerivAt (fun w : Fin m → ℂ => MvPolynomial.eval (jetExtend m w) P)
+    HasFDerivAt (fun w : Fin m → ℂ => MvPolynomial.eval (expJetJacobianExtend m w) P)
       (dotCLM m (jetGradVec m P v)) v := by
   classical
   induction P using MvPolynomial.induction_on with
@@ -127,19 +127,19 @@ theorem hasFDerivAt_evalJetExtend (m : ℕ) (P : MvPolynomial ℕ ℂ) (v : Fin 
         funext k
         rw [jetGradVec, map_add, map_add]
         rfl
-      have hfun : (fun w : Fin m → ℂ => MvPolynomial.eval (jetExtend m w) (P + Q))
-          = fun w : Fin m → ℂ => MvPolynomial.eval (jetExtend m w) P
-              + MvPolynomial.eval (jetExtend m w) Q := by
+      have hfun : (fun w : Fin m → ℂ => MvPolynomial.eval (expJetJacobianExtend m w) (P + Q))
+          = fun w : Fin m → ℂ => MvPolynomial.eval (expJetJacobianExtend m w) P
+              + MvPolynomial.eval (expJetJacobianExtend m w) Q := by
         funext w
         rw [map_add]
       rw [hsum, dotCLM_add, hfun]
       exact hP.add hQ
   | mul_X P j hP =>
-      have hcoord := hasFDerivAt_jetExtend_coord m j v
+      have hcoord := hasFDerivAt_expJetJacobianExtend_coord m j v
       have hmul := hP.mul hcoord
-      have hfun : (fun w : Fin m → ℂ => MvPolynomial.eval (jetExtend m w) (P * MvPolynomial.X j))
+      have hfun : (fun w : Fin m → ℂ => MvPolynomial.eval (expJetJacobianExtend m w) (P * MvPolynomial.X j))
           = fun w : Fin m → ℂ =>
-            MvPolynomial.eval (jetExtend m w) P * jetExtend m w j := by
+            MvPolynomial.eval (expJetJacobianExtend m w) P * expJetJacobianExtend m w j := by
         funext w
         rw [map_mul, MvPolynomial.eval_X]
       rw [hfun]
@@ -148,8 +148,8 @@ theorem hasFDerivAt_evalJetExtend (m : ℕ) (P : MvPolynomial ℕ ℂ) (v : Fin 
       rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
         ContinuousLinearMap.smul_apply, dotCLM_apply, dotCLM_apply, dotCLM_apply]
       have hpd : ∀ k : Fin m, jetGradVec m (P * MvPolynomial.X j) v k
-          = jetGradVec m P v k * jetExtend m v j
-            + MvPolynomial.eval (jetExtend m v) P * jetCoordVec m j k := by
+          = jetGradVec m P v k * expJetJacobianExtend m v j
+            + MvPolynomial.eval (expJetJacobianExtend m v) P * jetCoordVec m j k := by
         intro k
         rw [jetGradVec, jetGradVec, jetCoordVec, MvPolynomial.pderiv_mul, map_add, map_mul,
           map_mul, MvPolynomial.eval_X, MvPolynomial.pderiv_X]
@@ -160,13 +160,13 @@ theorem hasFDerivAt_evalJetExtend (m : ℕ) (P : MvPolynomial ℕ ℂ) (v : Fin 
           simp
       simp only [hpd, add_mul]
       rw [Finset.sum_add_distrib]
-      have h1 : ∑ k : Fin m, jetGradVec m P v k * jetExtend m v j * w k
-          = (∑ k : Fin m, jetGradVec m P v k * w k) * jetExtend m v j := by
+      have h1 : ∑ k : Fin m, jetGradVec m P v k * expJetJacobianExtend m v j * w k
+          = (∑ k : Fin m, jetGradVec m P v k * w k) * expJetJacobianExtend m v j := by
         rw [Finset.sum_mul]
         exact Finset.sum_congr rfl fun k _ => by ring
       have h2 : ∑ k : Fin m,
-            MvPolynomial.eval (jetExtend m v) P * jetCoordVec m j k * w k
-          = MvPolynomial.eval (jetExtend m v) P * ∑ k : Fin m, jetCoordVec m j k * w k := by
+            MvPolynomial.eval (expJetJacobianExtend m v) P * jetCoordVec m j k * w k
+          = MvPolynomial.eval (expJetJacobianExtend m v) P * ∑ k : Fin m, jetCoordVec m j k * w k := by
         rw [Finset.mul_sum]
         exact Finset.sum_congr rfl fun k _ => by ring
       rw [h1, h2, dot_jetCoordVec]
@@ -177,15 +177,15 @@ theorem hasFDerivAt_evalJetExtend (m : ℕ) (P : MvPolynomial ℕ ℂ) (v : Fin 
 
 /-- The jets of an exponential, as a function of the jets of its exponent. -/
 def expJetMap (m : ℕ) (v : Fin m → ℂ) : Fin m → ℂ :=
-  fun l => Complex.exp (jetExtend m v 0) *
-    MvPolynomial.eval (jetExtend m v) (expJetPoly (l : ℕ))
+  fun l => Complex.exp (expJetJacobianExtend m v 0) *
+    MvPolynomial.eval (expJetJacobianExtend m v) (expJetPoly (l : ℕ))
 
 theorem contDiff_expJetMap (m : ℕ) : ContDiff ℂ ⊤ (expJetMap m) := by
   rw [contDiff_pi]
   intro l
   refine ContDiff.mul ?_ (contDiff_evalJetExtend m (expJetPoly (l : ℕ)))
   refine Complex.contDiff_exp.comp ?_
-  have hfun : (fun w : Fin m → ℂ => jetExtend m w 0)
+  have hfun : (fun w : Fin m → ℂ => expJetJacobianExtend m w 0)
       = fun w : Fin m → ℂ => ∑ k, jetCoordVec m 0 k * w k := by
     funext w
     rw [dot_jetCoordVec]
@@ -215,8 +215,8 @@ theorem pderiv_zero_expJetPoly (l : ℕ) : MvPolynomial.pderiv 0 (expJetPoly l) 
 
 /-- The Jacobian of the truncated exponential jet map. -/
 def expJetJacobian (m : ℕ) (v : Fin m → ℂ) : Matrix (Fin m) (Fin m) ℂ :=
-  fun l k => Complex.exp (jetExtend m v 0) *
-    (MvPolynomial.eval (jetExtend m v) (expJetPoly (l : ℕ)) * jetCoordVec m 0 k
+  fun l k => Complex.exp (expJetJacobianExtend m v 0) *
+    (MvPolynomial.eval (expJetJacobianExtend m v) (expJetPoly (l : ℕ)) * jetCoordVec m 0 k
       + jetGradVec m (expJetPoly (l : ℕ)) v k)
 
 /-- The Jacobian as a continuous linear map. -/
@@ -232,9 +232,9 @@ theorem hasFDerivAt_expJetMap (m : ℕ) (v : Fin m → ℂ) :
     HasFDerivAt (expJetMap m) (expJetJacobianCLM m v) v := by
   classical
   refine hasFDerivAt_pi.mpr fun l => ?_
-  have hexp : HasFDerivAt (fun w : Fin m → ℂ => Complex.exp (jetExtend m w 0))
-      (Complex.exp (jetExtend m v 0) • dotCLM m (jetCoordVec m 0)) v :=
-    (hasFDerivAt_jetExtend_coord m 0 v).cexp
+  have hexp : HasFDerivAt (fun w : Fin m → ℂ => Complex.exp (expJetJacobianExtend m w 0))
+      (Complex.exp (expJetJacobianExtend m v 0) • dotCLM m (jetCoordVec m 0)) v :=
+    (hasFDerivAt_expJetJacobianExtend_coord m 0 v).cexp
   have hpoly := hasFDerivAt_evalJetExtend m (expJetPoly (l : ℕ)) v
   have hmul := hexp.mul hpoly
   refine hmul.congr_fderiv ?_
@@ -244,12 +244,12 @@ theorem hasFDerivAt_expJetMap (m : ℕ) (v : Fin m → ℂ) :
     dotCLM_apply, dotCLM_apply, dotCLM_apply]
   simp only [expJetJacobian, smul_eq_mul]
   have hL : ∀ x : Fin m,
-      Complex.exp (jetExtend m v 0) *
-          (MvPolynomial.eval (jetExtend m v) (expJetPoly (l : ℕ)) * jetCoordVec m 0 x
+      Complex.exp (expJetJacobianExtend m v 0) *
+          (MvPolynomial.eval (expJetJacobianExtend m v) (expJetPoly (l : ℕ)) * jetCoordVec m 0 x
             + jetGradVec m (expJetPoly (l : ℕ)) v x) * w x
-        = MvPolynomial.eval (jetExtend m v) (expJetPoly (l : ℕ))
-              * Complex.exp (jetExtend m v 0) * (jetCoordVec m 0 x * w x)
-          + Complex.exp (jetExtend m v 0) * (jetGradVec m (expJetPoly (l : ℕ)) v x * w x) :=
+        = MvPolynomial.eval (expJetJacobianExtend m v) (expJetPoly (l : ℕ))
+              * Complex.exp (expJetJacobianExtend m v 0) * (jetCoordVec m 0 x * w x)
+          + Complex.exp (expJetJacobianExtend m v 0) * (jetGradVec m (expJetPoly (l : ℕ)) v x * w x) :=
     fun x => by ring
   rw [Finset.sum_congr rfl (fun x _ => hL x), Finset.sum_add_distrib, ← Finset.mul_sum,
     ← Finset.mul_sum]
@@ -269,7 +269,7 @@ theorem expJetJacobian_blockTriangular (m : ℕ) (v : Fin m → ℂ) :
   simp
 
 theorem expJetJacobian_diag (m : ℕ) (v : Fin m → ℂ) (l : Fin m) :
-    expJetJacobian m v l l = Complex.exp (jetExtend m v 0) := by
+    expJetJacobian m v l l = Complex.exp (expJetJacobianExtend m v 0) := by
   rcases Nat.eq_zero_or_pos (l : ℕ) with hl | hl
   · have hcoord : jetCoordVec m 0 l = 1 := by rw [jetCoordVec, if_pos hl]
     have hgrad : jetGradVec m (expJetPoly (l : ℕ)) v l = 0 := by
@@ -284,7 +284,7 @@ theorem expJetJacobian_diag (m : ℕ) (v : Fin m → ℂ) (l : Fin m) :
     simp
 
 theorem det_expJetJacobian (m : ℕ) (v : Fin m → ℂ) :
-    (expJetJacobian m v).det = Complex.exp (jetExtend m v 0) ^ m := by
+    (expJetJacobian m v).det = Complex.exp (expJetJacobianExtend m v 0) ^ m := by
   rw [Matrix.det_of_lowerTriangular _ (expJetJacobian_blockTriangular m v)]
   rw [Finset.prod_congr rfl (fun l _ => expJetJacobian_diag m v l)]
   simp

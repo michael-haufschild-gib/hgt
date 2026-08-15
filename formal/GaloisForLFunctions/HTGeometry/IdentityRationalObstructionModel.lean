@@ -57,7 +57,7 @@ theorem nsmul_id_ne_zero {c : ℕ} (hc : c ≠ 0) :
 
 /-- **Cofinal typed obstructions in the identity model.**  The constant bigraded rational module
 with identity twisted components has nonzero typed obstructions at arbitrarily high weights. -/
-theorem hasCofinalNonzeroBundledTypedObstructions_identityRational :
+private theorem hasCofinalNonzeroBundledTypedObstructions_identityRational :
     HasCofinalNonzeroBundledTypedObstructions identityRationalModel identityTwistedComponent := by
   classical
   intro c

@@ -1,13 +1,12 @@
 # Every global possibility-wall map is exactly flat
 
-- **ID:** `global-actuality-wall-cocycle-flatness`
+- **ID:** `global-actuality-wall-cocycle-flatness-formalized`
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean) / EXACT NO-GO / POSITIVE CLASSIFICATION
 - **Status:** `[LEAN-PROVED] [REDISCOVERED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
-- **Paper proof:**
-  `../2-fully-proven/not_new_scientific_knowledge/global-actuality-wall-cocycle-flatness.md`
+- **Paper proof:** `global-actuality-wall-cocycle-flatness.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/HTGeometry/ActualityWallFlatness.lean`
+  `../../../../../formal/GaloisForLFunctions/HTGeometry/ActualityWallFlatness.lean`
 
 ## Exact formal statement
 
@@ -37,6 +36,11 @@ The module proves:
 - `actualityWallProfile_triangleHolonomy`: every triangular holonomy is zero;
 - `actualityWallProfile_eq_iff`: profile fibers are exactly wall-indistinguishability classes;
 - `actualityWallProfile_injective_iff`: profiles are faithful exactly when walls separate points;
+- `wallIndistinguishableSetoid`, `actualityWallProfileQuotient`, and
+  `actualityWallProfileQuotient_injective`: the exact quotient by wall-indistinguishability embeds
+  in Boolean profiles after choosing a basepoint;
+- `actualityWallProfileQuotient_changeBase`: different basepoints change that embedding by the
+  fixed Boolean translation stated in the paper theorem;
 - `globalActualityWallCoordinate_flat`: every wall coordinate is a Boolean vertex coboundary and
   has zero XOR holonomy on every finite closed walk of every simple graph on \(X\).
 
@@ -49,6 +53,10 @@ Characteristic functions identify subsets of \(W\) with functions \(W\to\mathrm{
 pointwise XOR with symmetric difference. Therefore the formal difference, base-change, cocycle,
 triangle, fiber, and injectivity theorems are exactly clauses 1--8 of the paper statement in
 Boolean-coordinate form.
+
+`actualityWallProfileQuotient_injective` formalizes the paper's final quotient-embedding
+consequence, and `actualityWallProfileQuotient_changeBase` formalizes its basepoint-translation
+qualification.
 
 `globalActualityWallCoordinate_flat` strengthens the triangular clause to every finite closed walk:
 one global wall coordinate is an exact vertex coboundary on any chosen graph of states.
@@ -72,7 +80,7 @@ Final module audit:
 lake build GaloisForLFunctions.HTGeometry.ActualityWallFlatness
 ```
 
-completed successfully: `993/993`.
+completed successfully: `1006/1006`.
 
 Scratch `#print axioms` audit:
 
@@ -80,10 +88,10 @@ Scratch `#print axioms` audit:
 actualityWallProfile_cocycle
   [Quot.sound]
 
-actualityWallProfile_triangleHolonomy
-  [Quot.sound]
+actualityWallProfileQuotient_injective
+  [propext, Quot.sound]
 
-actualityWallProfile_injective_iff
+actualityWallProfileQuotient_changeBase
   [propext, Quot.sound]
 
 globalActualityWallCoordinate_flat
@@ -119,3 +127,5 @@ The parent physical identification remains conjectural.
 - 2026-07-29 — exact global-wall profile classification and arbitrary closed-walk flatness
   formalized unconditionally.
 - 2026-07-29 — repository formal lint passed.
+- 2026-08-15 — added and audited the literal wall-indistinguishability quotient embedding and
+  basepoint translation; direct source check and focused leaf build passed.

@@ -1,4 +1,6 @@
 import GaloisForLFunctions.RHTower.ProlateGaussianTrial
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 
 /-!
 # The Gaussian trial profile reaches the sharp `O(c)` threshold

@@ -153,6 +153,98 @@ theorem eventually_realLSeries_sub_im_neg
   rw [← lseriesPeeledPowerTwist_im_eq_LSeries_sub f n a x hzero hs]
   exact hsign
 
+/-- The raw impedance coordinate of a real ordinary Dirichlet series. -/
+def realLSeriesRawImpedance (f : ℕ → ℝ) (z : ℂ) : ℂ :=
+  LSeries (fun m => ((f m : ℝ) : ℂ)) (1 - Complex.I * z)
+
+/-- A positive first twisted mode gives positive raw-impedance witnesses above every height. -/
+theorem exists_high_realLSeriesRawImpedance_im_pos
+    {f : ℕ → ℝ} (n : ℕ) (t Y : ℝ)
+    (hf : LSeries.abscissaOfAbsConv (fun m => ((f m : ℝ) : ℂ)) < ⊤)
+    (hzero : ∀ m : ℕ, 2 ≤ m → m ≤ n → f m = 0)
+    (hlimit : 0 < (((f (n + 1) : ℝ) : ℂ) *
+      ((n + 1 : ℕ) : ℂ) ^ ((t : ℂ) * Complex.I)).im) :
+    ∃ z : ℂ, Y < z.im ∧ 0 < (realLSeriesRawImpedance f z).im := by
+  have hevent := (eventually_realLSeries_sub_im_pos n ((t : ℂ) * Complex.I) hf hzero hlimit).and
+    (eventually_gt_atTop (Y + 1))
+  obtain ⟨x, hsign, hx⟩ := hevent.exists
+  refine ⟨(t : ℂ) + ((x - 1 : ℝ) : ℂ) * Complex.I, ?_, ?_⟩
+  · simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.ofReal_re,
+      Complex.I_im, Complex.I_re, mul_one, zero_mul, add_zero]
+    linarith
+  · rw [realLSeriesRawImpedance]
+    have hcoord : (1 : ℂ) - Complex.I *
+        ((t : ℂ) + ((x - 1 : ℝ) : ℂ) * Complex.I) =
+        (x : ℂ) - (t : ℂ) * Complex.I := by
+      calc
+        (1 : ℂ) - Complex.I *
+            ((t : ℂ) + ((x - 1 : ℝ) : ℂ) * Complex.I) =
+            1 - Complex.I * (t : ℂ) - ((x - 1 : ℝ) : ℂ) *
+              (Complex.I * Complex.I) := by ring
+        _ = (x : ℂ) - (t : ℂ) * Complex.I := by
+          rw [Complex.I_mul_I]
+          push_cast
+          ring
+    rw [hcoord]
+    exact hsign
+
+/-- A negative first twisted mode gives negative raw-impedance witnesses above every height. -/
+theorem exists_high_realLSeriesRawImpedance_im_neg
+    {f : ℕ → ℝ} (n : ℕ) (t Y : ℝ)
+    (hf : LSeries.abscissaOfAbsConv (fun m => ((f m : ℝ) : ℂ)) < ⊤)
+    (hzero : ∀ m : ℕ, 2 ≤ m → m ≤ n → f m = 0)
+    (hlimit : (((f (n + 1) : ℝ) : ℂ) *
+      ((n + 1 : ℕ) : ℂ) ^ (-((t : ℂ) * Complex.I))).im < 0) :
+    ∃ z : ℂ, Y < z.im ∧ (realLSeriesRawImpedance f z).im < 0 := by
+  have hevent := (eventually_realLSeries_sub_im_neg n (-((t : ℂ) * Complex.I)) hf hzero hlimit).and
+    (eventually_gt_atTop (Y + 1))
+  obtain ⟨x, hsign, hx⟩ := hevent.exists
+  refine ⟨(-t : ℂ) + ((x - 1 : ℝ) : ℂ) * Complex.I, ?_, ?_⟩
+  · simp only [Complex.add_im, Complex.ofReal_im, Complex.neg_im, Complex.mul_im,
+      Complex.ofReal_re, Complex.I_im, Complex.I_re, mul_one, zero_mul, add_zero, neg_zero]
+    linarith
+  · rw [realLSeriesRawImpedance]
+    have hcoord : (1 : ℂ) - Complex.I *
+        ((-t : ℂ) + ((x - 1 : ℝ) : ℂ) * Complex.I) =
+        (x : ℂ) - (-((t : ℂ) * Complex.I)) := by
+      calc
+        (1 : ℂ) - Complex.I *
+            ((-t : ℂ) + ((x - 1 : ℝ) : ℂ) * Complex.I) =
+            1 - Complex.I * (-t : ℂ) - ((x - 1 : ℝ) : ℂ) *
+              (Complex.I * Complex.I) := by ring
+        _ = (x : ℂ) - (-((t : ℂ) * Complex.I)) := by
+          rw [Complex.I_mul_I]
+          push_cast
+          ring
+    rw [hcoord]
+    exact hsign
+
+/-- A negative first twisted mode excludes every upper-half-plane tail for the raw impedance. -/
+theorem realLSeriesRawImpedance_not_upperHalfPlaneValued_above
+    {f : ℕ → ℝ} (n : ℕ) (t Y : ℝ)
+    (hf : LSeries.abscissaOfAbsConv (fun m => ((f m : ℝ) : ℂ)) < ⊤)
+    (hzero : ∀ m : ℕ, 2 ≤ m → m ≤ n → f m = 0)
+    (hlimit : (((f (n + 1) : ℝ) : ℂ) *
+      ((n + 1 : ℕ) : ℂ) ^ (-((t : ℂ) * Complex.I))).im < 0) :
+    ¬ (∀ z : ℂ, Y < z.im → 0 ≤ (realLSeriesRawImpedance f z).im) := by
+  intro htail
+  obtain ⟨z, hz, hneg⟩ :=
+    exists_high_realLSeriesRawImpedance_im_neg n t Y hf hzero hlimit
+  exact not_le_of_gt hneg (htail z hz)
+
+/-- A positive first twisted mode excludes every lower-half-plane tail for the raw impedance. -/
+theorem realLSeriesRawImpedance_not_lowerHalfPlaneValued_above
+    {f : ℕ → ℝ} (n : ℕ) (t Y : ℝ)
+    (hf : LSeries.abscissaOfAbsConv (fun m => ((f m : ℝ) : ℂ)) < ⊤)
+    (hzero : ∀ m : ℕ, 2 ≤ m → m ≤ n → f m = 0)
+    (hlimit : 0 < (((f (n + 1) : ℝ) : ℂ) *
+      ((n + 1 : ℕ) : ℂ) ^ ((t : ℂ) * Complex.I)).im) :
+    ¬ (∀ z : ℂ, Y < z.im → (realLSeriesRawImpedance f z).im ≤ 0) := by
+  intro htail
+  obtain ⟨z, hz, hpos⟩ :=
+    exists_high_realLSeriesRawImpedance_im_pos n t Y hf hzero hlimit
+  exact not_le_of_gt hpos (htail z hz)
+
 end
 
 end GaloisForLFunctions

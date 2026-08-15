@@ -52,7 +52,7 @@ structure BVWeight (a b B : ℝ) (V V' : ℝ → ℝ) : Prop where
 
 /-! ## Two exterior power integrals -/
 
-theorem hasDerivAt_neg_two_div_sqrt {x : ℝ} (hx : 0 < x) :
+private theorem hasDerivAt_neg_two_div_sqrt {x : ℝ} (hx : 0 < x) :
     HasDerivAt (fun t : ℝ => -(2 * (Real.sqrt t)⁻¹)) (1 / (x * Real.sqrt x)) x := by
   have hsx : Real.sqrt x ≠ 0 := ne_of_gt (Real.sqrt_pos.mpr hx)
   have hs : HasDerivAt Real.sqrt (1 / (2 * Real.sqrt x)) x := Real.hasDerivAt_sqrt (ne_of_gt hx)

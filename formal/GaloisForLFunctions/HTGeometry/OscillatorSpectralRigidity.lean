@@ -56,7 +56,7 @@ theorem eq_zero_of_phase_zero {mu : ℝ} {v v' : ℝ → ℝ} {y0 : ℝ}
   intro x
   rcases le_total y0 x with h | h
   · exact eq_zero_of_phase_zero_right hv hv' h0 h0' x h
-  · obtain ⟨hw, hw'⟩ := hasDerivAt_reflect hv hv'
+  · obtain ⟨hw, hw'⟩ := hasDerivAt_oscillatorReflect hv hv'
     have hz : (fun t => v (-t)) (-y0) = 0 := by simpa using h0
     have hz' : (fun t => -v' (-t)) (-y0) = 0 := by simpa using h0'
     have := eq_zero_of_phase_zero_right (mu := mu) hw hw' hz hz' (-x) (by linarith)

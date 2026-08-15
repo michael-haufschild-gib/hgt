@@ -218,20 +218,20 @@ noncomputable section
 
 /-! ### The passport survives the gauge -/
 
-theorem eval_zero_jetShiftDeriv (P : MvPolynomial ℕ ℂ) :
-    MvPolynomial.eval (fun _ => (0 : ℂ)) (jetShiftDeriv P) = 0 := by
+theorem eval_zero_expJetShiftDeriv (P : MvPolynomial ℕ ℂ) :
+    MvPolynomial.eval (fun _ => (0 : ℂ)) (expJetShiftDeriv P) = 0 := by
   classical
   induction P using MvPolynomial.induction_on with
-  | C a => rw [jetShiftDeriv_C, map_zero]
+  | C a => rw [expJetShiftDeriv_C, map_zero]
   | add P Q hP hQ => rw [map_add, map_add, hP, hQ, add_zero]
   | mul_X P j hP =>
-      rw [Derivation.leibniz, jetShiftDeriv_X]
+      rw [Derivation.leibniz, expJetShiftDeriv_X]
       simp only [smul_eq_mul, map_add, map_mul, MvPolynomial.eval_X, hP]
       ring
 
 theorem eval_zero_expJetPoly_succ (l : ℕ) :
     MvPolynomial.eval (fun _ => (0 : ℂ)) (expJetPoly (l + 1)) = 0 := by
-  rw [expJetPoly_succ, map_add, eval_zero_jetShiftDeriv, map_mul, MvPolynomial.eval_X]
+  rw [expJetPoly_succ, map_add, eval_zero_expJetShiftDeriv, map_mul, MvPolynomial.eval_X]
   ring
 
 /-- **A gauge vanishing to order `d` keeps every jet of the source below order `d`.** -/
@@ -246,17 +246,17 @@ theorem iteratedDeriv_gaugeCarrier_eq_of_flat {W g : ℂ → ℂ} (hW : Differen
       expJetMap (j + 1) (gaugeJetVec (j + 1) g a) l = if (l : ℕ) = 0 then 1 else 0 := by
     intro l
     rw [expJetMap]
-    have h0 : jetExtend (j + 1) (gaugeJetVec (j + 1) g a) 0 = g a := by
-      rw [jetExtend_gaugeJetVec g a (by omega), iteratedDeriv_zero]
+    have h0 : expJetJacobianExtend (j + 1) (gaugeJetVec (j + 1) g a) 0 = g a := by
+      rw [expJetJacobianExtend_gaugeJetVec g a (by omega), iteratedDeriv_zero]
     have hga : g a = 0 := by
       have := hflat 0 (by omega)
       rwa [iteratedDeriv_zero] at this
-    have heval : MvPolynomial.eval (jetExtend (j + 1) (gaugeJetVec (j + 1) g a))
+    have heval : MvPolynomial.eval (expJetJacobianExtend (j + 1) (gaugeJetVec (j + 1) g a))
         (expJetPoly (l : ℕ))
         = MvPolynomial.eval (fun _ => (0 : ℂ)) (expJetPoly (l : ℕ)) := by
       refine eval_eq_of_mem_jetSub (expJetPoly_mem_jetSub (l : ℕ)) _ _ ?_
       intro k hk1 hk2
-      rw [jetExtend_gaugeJetVec g a (lt_of_le_of_lt hk2 l.2)]
+      rw [expJetJacobianExtend_gaugeJetVec g a (lt_of_le_of_lt hk2 l.2)]
       exact hflat k (lt_of_le_of_lt hk2 (lt_of_lt_of_le l.2 (by omega)))
     rw [h0, hga, Complex.exp_zero, heval]
     rcases Nat.eq_zero_or_pos (l : ℕ) with hl | hl

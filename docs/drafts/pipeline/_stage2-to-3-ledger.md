@@ -2066,3 +2066,15 @@ closed; Theorem E `(21)`--`(23)` closed; Theorem D closed except the *evaluation
 `Pr{ρ_e ≤ x}` — the reduction `(19)`--`(20)` is done, and only the beta projection law `(17)`--`(18)`
 (or the sphere-tube lower bound the card permits instead) remains.  Theorem C still composes the
 two stage-2 parents.
+
+### Promotion update: global actuality-wall cocycle flatness (2026-08-15)
+
+| Card | New Lean work | Modules |
+|---|---|---|
+| `global-actuality-wall-cocycle-flatness` | literal wall-indistinguishability Setoid quotient, injective quotient-profile embedding, and basepoint translation | `HTGeometry/ActualityWallFlatness` (extended and re-audited) |
+
+Moved `2-fully-proven/not_new_scientific_knowledge/global-actuality-wall-cocycle-flatness.md`
+to `3-formalized/not_new_scientific_knowledge/` with its Lean certificate. Direct source check and
+focused leaf build passed; capstone axioms are limited to `propext` and `Quot.sound` (the global
+closed-walk flatness theorem is axiom-free). The existing `HTGeometry` import was retained; no
+umbrella build was run. The parent paper and formalization links were repointed.

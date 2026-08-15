@@ -152,11 +152,11 @@ def phaseDetector (N : ℕ) (a : d → ℝ) : (d → ℝ) → ℂ :=
   trigLift (pairBox d N) diffFreq (detectorCoeff N a)
 
 /-- The Dirichlet sum of all box frequencies, shifted to the centre. -/
-def dirichletShift (N : ℕ) (a : d → ℝ) (x : d → ℝ) : ℂ :=
+def phaseGraphDirichletShift (N : ℕ) (a : d → ℝ) (x : d → ℝ) : ℂ :=
   ∑ J ∈ freqBox d N, charLift J (x - a)
 
-theorem norm_dirichletShift_le (N : ℕ) (a x : d → ℝ) :
-    ‖dirichletShift N a x‖ ≤ detectorScale d N := by
+theorem norm_phaseGraphDirichletShift_le (N : ℕ) (a x : d → ℝ) :
+    ‖phaseGraphDirichletShift N a x‖ ≤ detectorScale d N := by
   refine le_trans (norm_sum_le _ _) ?_
   have hterm : ∀ J ∈ freqBox d N, ‖charLift J (x - a)‖ ≤ 1 :=
     fun J _ => le_of_eq (norm_charLift J (x - a))
@@ -164,9 +164,9 @@ theorem norm_dirichletShift_le (N : ℕ) (a x : d → ℝ) :
   rw [Finset.sum_const, nsmul_eq_mul, mul_one, card_freqBox, detectorScale]
   norm_cast
 
-theorem dirichletShift_self (N : ℕ) (a : d → ℝ) :
-    dirichletShift N a a = (detectorScale d N : ℂ) := by
-  rw [dirichletShift]
+theorem phaseGraphDirichletShift_self (N : ℕ) (a : d → ℝ) :
+    phaseGraphDirichletShift N a a = (detectorScale d N : ℂ) := by
+  rw [phaseGraphDirichletShift]
   have hterm : ∀ J ∈ freqBox d N, charLift J (a - a) = 1 := by
     intro J _
     rw [sub_self, charLift_apply_zero]
@@ -178,16 +178,16 @@ theorem dirichletShift_self (N : ℕ) (a : d → ℝ) :
 /-- **The detector is the normalized squared modulus of the shifted Dirichlet sum.** -/
 theorem phaseDetector_eq (N : ℕ) (a x : d → ℝ) :
     phaseDetector N a x =
-      ((‖dirichletShift N a x‖ ^ 2 / (detectorScale d N) ^ 2 : ℝ) : ℂ) := by
+      ((‖phaseGraphDirichletShift N a x‖ ^ 2 / (detectorScale d N) ^ 2 : ℝ) : ℂ) := by
   classical
-  have hmulconj : ((‖dirichletShift N a x‖ ^ 2 : ℝ) : ℂ) =
-      dirichletShift N a x * (starRingEnd ℂ) (dirichletShift N a x) := by
+  have hmulconj : ((‖phaseGraphDirichletShift N a x‖ ^ 2 : ℝ) : ℂ) =
+      phaseGraphDirichletShift N a x * (starRingEnd ℂ) (phaseGraphDirichletShift N a x) := by
     rw [Complex.mul_conj]
     norm_cast
     exact Complex.sq_norm _
-  have hexpand : dirichletShift N a x * (starRingEnd ℂ) (dirichletShift N a x) =
+  have hexpand : phaseGraphDirichletShift N a x * (starRingEnd ℂ) (phaseGraphDirichletShift N a x) =
       ∑ pq ∈ pairBox d N, charLift (diffFreq pq) x * charLift (diffFreq pq) (-a) := by
-    rw [dirichletShift, map_sum, Finset.sum_mul_sum, pairBox, Finset.sum_product]
+    rw [phaseGraphDirichletShift, map_sum, Finset.sum_mul_sum, pairBox, Finset.sum_product]
     refine Finset.sum_congr rfl fun J _ => Finset.sum_congr rfl fun L _ => ?_
     rw [← charLift_neg_index, ← charLift_add_index, ← sub_eq_add_neg, ← charLift_sub_right]
     rfl
@@ -205,14 +205,14 @@ theorem phaseDetector_nonneg (N : ℕ) (a x : d → ℝ) :
 theorem phaseDetector_le_one (N : ℕ) (a x : d → ℝ) :
     (phaseDetector N a x).re ≤ 1 := by
   rw [phaseDetector_eq, Complex.ofReal_re, div_le_one (pow_pos (detectorScale_pos (d := d) N) 2)]
-  exact pow_le_pow_left₀ (norm_nonneg _) (norm_dirichletShift_le N a x) 2
+  exact pow_le_pow_left₀ (norm_nonneg _) (norm_phaseGraphDirichletShift_le N a x) 2
 
 theorem phaseDetector_im (N : ℕ) (a x : d → ℝ) : (phaseDetector N a x).im = 0 := by
   rw [phaseDetector_eq, Complex.ofReal_im]
 
 /-- **The detector equals one at its centre.** -/
 theorem phaseDetector_self (N : ℕ) (a : d → ℝ) : phaseDetector N a a = 1 := by
-  rw [phaseDetector_eq, dirichletShift_self, Complex.norm_real,
+  rw [phaseDetector_eq, phaseGraphDirichletShift_self, Complex.norm_real,
     Real.norm_of_nonneg (detectorScale_pos (d := d) N).le,
     div_self (pow_pos (detectorScale_pos (d := d) N) 2).ne', Complex.ofReal_one]
 

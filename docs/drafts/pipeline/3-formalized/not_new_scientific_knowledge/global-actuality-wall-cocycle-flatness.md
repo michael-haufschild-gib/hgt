@@ -1,9 +1,10 @@
 # Every global possibility-wall map is exactly flat
 
 - **ID:** `global-actuality-wall-cocycle-flatness`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Formalized companion:** `global-actuality-wall-cocycle-flatness-formalized.md`
 - **Type:** THEOREM (paper) / EXACT NO-GO / POSITIVE CLASSIFICATION
-- **Status:** `[PAPER-PROVED] [REDISCOVERED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
+- **Status:** `[PAPER-PROVED] [LEAN-PROVEN] [REDISCOVERED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Parent:** `../../1-in-progress/actuality-distinction-spacetime-law.md`
 - **Statement:** Relative orientations of any one globally defined family of binary event walls
   form an exact Boolean coboundary. Their holonomy around every loop is identically zero, and they
@@ -188,7 +189,9 @@ Its value is exact obstruction and classification.
   replacement. Local event--boundary duality may remain exact while global comparison is curved.
 - **Status:** Complete paper proof above. Exact Boolean-coordinate form is formalized
   unconditionally in `ActualityWallFlatness.lean`; the formalization also proves zero holonomy on
-  every finite closed graph walk, not only triangular loops.
+  every finite closed graph walk, not only triangular loops. It now also defines the literal
+  quotient by wall-indistinguishability and proves its basepoint-dependent profile embedding is
+  injective and changes only by the stated Boolean translation.
 
 ## Physical boundary
 
@@ -203,6 +206,20 @@ The theorem does **not** prove:
 
 It proves only that the simplest global realization of the frozen actuality-distinction law is
 necessarily flat in its own comparison coordinates.
+
+## Lean formalization
+
+`formal/GaloisForLFunctions/HTGeometry/ActualityWallFlatness.lean` formalizes all eight displayed
+profile clauses. In addition to the pointwise identities, it defines
+`wallIndistinguishableSetoid` and proves:
+
+1. `actualityWallProfileQuotient_injective`: after choosing a basepoint, the exact quotient
+   \(X/{\sim_W}\) embeds in \(W\to\mathrm{Bool}\);
+2. `actualityWallProfileQuotient_changeBase`: changing that basepoint translates the embedding by
+   the fixed profile \(P_b(c)\).
+
+Thus the final consequence of the paper theorem is a literal Lean declaration, rather than an
+inference left to the reader.
 
 ## Gates
 
@@ -223,3 +240,5 @@ necessarily flat in its own comparison coordinates.
   obstruction rather than a global wall-coordinate difference.
 - 2026-07-29 — formalized the exact profile identities, separation classification, and arbitrary
   closed-walk flatness in `HTGeometry/ActualityWallFlatness.lean`.
+- 2026-08-15 — formalized the exact wall-indistinguishability quotient embedding and its
+  basepoint-translation law; direct source check, focused build, and axiom audit passed.

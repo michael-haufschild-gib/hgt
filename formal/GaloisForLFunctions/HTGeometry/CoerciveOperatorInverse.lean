@@ -31,7 +31,7 @@ variable {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℂ X] [CompleteS
 
 omit [CompleteSpace X] in
 /-- **The numerical floor bounds the operator below.** -/
-theorem norm_le_of_coercive {A : X →L[ℂ] X} {c : ℝ}
+private theorem norm_le_of_coercive {A : X →L[ℂ] X} {c : ℝ}
     (hcoe : ∀ u : X, c * ‖u‖ ^ 2 ≤ (inner ℂ (A u) u).re) (u : X) :
     c * ‖u‖ ≤ ‖A u‖ := by
   rcases eq_or_lt_of_le (norm_nonneg u) with hu | hu

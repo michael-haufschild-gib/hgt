@@ -35,7 +35,7 @@ variable {d : Type*} [Fintype d] [DecidableEq d]
 
 section Characters
 
-theorem mFourier_add_point (n : d → ℤ) (x y : UnitAddTorus d) :
+private theorem mFourier_add_point (n : d → ℤ) (x y : UnitAddTorus d) :
     mFourier n (x + y) = mFourier n x * mFourier n y := by
   simp only [mFourier, ContinuousMap.coe_mk, ← Finset.prod_mul_distrib]
   refine Finset.prod_congr rfl fun i _ => ?_
@@ -104,7 +104,7 @@ end Characters
 
 section Coefficients
 
-theorem mFourierCoeff_translate (f : UnitAddTorus d → ℂ) (a : UnitAddTorus d) (n : d → ℤ) :
+private theorem mFourierCoeff_translate (f : UnitAddTorus d → ℂ) (a : UnitAddTorus d) (n : d → ℤ) :
     mFourierCoeff (fun t => f (t + a)) n = mFourier n a * mFourierCoeff f n := by
   have hshift : (∫ t, mFourier (-n) t • f (t + a)) =
       ∫ t, mFourier (-n) (t - a) • f t := by
@@ -132,7 +132,7 @@ theorem hasSum_sq_mFourierCoeff_continuous (g : C(UnitAddTorus d, ℂ)) :
     rw [ht]
   rwa [hint] at h
 
-theorem mFourierCoeff_sub (f g : C(UnitAddTorus d, ℂ)) (n : d → ℤ) :
+private theorem mFourierCoeff_sub (f g : C(UnitAddTorus d, ℂ)) (n : d → ℤ) :
     mFourierCoeff (fun t => f t - g t) n = mFourierCoeff f n - mFourierCoeff g n := by
   have hcongr : ∀ t : UnitAddTorus d, mFourier (-n) t • (f t - g t) =
       mFourier (-n) t • f t - mFourier (-n) t • g t := fun t => smul_sub _ _ _

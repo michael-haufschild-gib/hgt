@@ -22,24 +22,24 @@ noncomputable section
 namespace RHTower
 
 /-- Truncation of a coefficient family beyond the degree. -/
-def truncCoeff (N : ℕ) (b : ℕ → ℝ) (j : ℕ) : ℝ := if j ≤ N then b j else 0
+def hardEdgeTruncCoeff (N : ℕ) (b : ℕ → ℝ) (j : ℕ) : ℝ := if j ≤ N then b j else 0
 
-theorem truncCoeff_of_le {N : ℕ} (b : ℕ → ℝ) {j : ℕ} (hj : j ≤ N) :
-    truncCoeff N b j = b j := if_pos hj
+theorem hardEdgeTruncCoeff_of_le {N : ℕ} (b : ℕ → ℝ) {j : ℕ} (hj : j ≤ N) :
+    hardEdgeTruncCoeff N b j = b j := if_pos hj
 
-theorem truncCoeff_succ_self (N : ℕ) (b : ℕ → ℝ) : truncCoeff N b (N + 1) = 0 :=
+theorem hardEdgeTruncCoeff_succ_self (N : ℕ) (b : ℕ → ℝ) : hardEdgeTruncCoeff N b (N + 1) = 0 :=
   if_neg (by omega)
 
-theorem cosPoly_truncCoeff (N : ℕ) (b : ℕ → ℝ) (θ : ℝ) :
-    cosPoly N (truncCoeff N b) θ = cosPoly N b θ := by
+theorem cosPoly_hardEdgeTruncCoeff (N : ℕ) (b : ℕ → ℝ) (θ : ℝ) :
+    cosPoly N (hardEdgeTruncCoeff N b) θ = cosPoly N b θ := by
   refine Finset.sum_congr rfl fun j hj => ?_
   simp only [Finset.mem_range] at hj
-  rw [truncCoeff_of_le b (by omega)]
+  rw [hardEdgeTruncCoeff_of_le b (by omega)]
 
 /-- The half-shifted coefficient family. -/
 def halfShiftCoeff (N : ℕ) (b : ℕ → ℝ) (m : ℕ) : ℝ :=
-  truncCoeff N b m / 2 + (if m = 0 then truncCoeff N b 0 / 2 else 0)
-    + truncCoeff N b (m + 1) / 2
+  hardEdgeTruncCoeff N b m / 2 + (if m = 0 then hardEdgeTruncCoeff N b 0 / 2 else 0)
+    + hardEdgeTruncCoeff N b (m + 1) / 2
 
 /-- The uniform product-to-sum identity for the half-density factor. -/
 theorem cos_half_mul_cos_nat (j : ℕ) (θ : ℝ) :
@@ -54,8 +54,8 @@ theorem cos_half_mul_cos_nat (j : ℕ) (θ : ℝ) :
 cosine polynomial of the same degree. -/
 theorem cos_half_mul_cosPoly (N : ℕ) (b : ℕ → ℝ) (θ : ℝ) :
     Real.cos (θ / 2) * cosPoly N b θ = halfCosPoly N (halfShiftCoeff N b) θ := by
-  rw [← cosPoly_truncCoeff N b θ]
-  obtain ⟨t, htdef⟩ : ∃ t : ℕ → ℝ, t = truncCoeff N b := ⟨_, rfl⟩
+  rw [← cosPoly_hardEdgeTruncCoeff N b θ]
+  obtain ⟨t, htdef⟩ : ∃ t : ℕ → ℝ, t = hardEdgeTruncCoeff N b := ⟨_, rfl⟩
   have hshift : halfShiftCoeff N b
       = fun m => t m / 2 + (if m = 0 then t 0 / 2 else 0) + t (m + 1) / 2 := by
     funext m
@@ -83,7 +83,7 @@ theorem cos_half_mul_cosPoly (N : ℕ) (b : ℕ → ℝ) (θ : ℝ) :
       rw [hneg, Real.cos_neg]
     have hzeroN : t (N + 1) = 0 := by
       rw [htdef]
-      exact truncCoeff_succ_self N b
+      exact hardEdgeTruncCoeff_succ_self N b
     have htail : ∑ i ∈ Finset.range N,
         t (i + 1) / 2 * Real.cos (((((i + 1 : ℕ)) : ℝ) - 1 / 2) * θ)
         = ∑ i ∈ Finset.range (N + 1), t (i + 1) / 2 * Real.cos (((i : ℝ) + 1 / 2) * θ) := by

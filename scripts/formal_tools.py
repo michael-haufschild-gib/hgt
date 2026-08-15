@@ -13,19 +13,25 @@ from __future__ import annotations
 
 import argparse
 import dataclasses
+import functools
+import json
+import os
 import re
-import subprocess
+import sqlite3
 import sys
+import time
 from pathlib import Path
 
-from research_brief import (
-    build_frontier_chains,
-    build_research_brief,
-    canonical_area,
-    render_research_brief,
-    render_research_brief_json,
-    write_chain_reports,
+from lean_search_index import (
+    DeclRow,
+    LeanSearchIndex,
+    MarkerRow,
+    SearchIndexUnavailable,
+    SourceFile,
 )
+# `research_brief` and `subprocess` are imported inside the two commands that
+# need them.  Every `research` query pays for this module's imports, and those
+# two are a tenth of that startup for code a search never reaches.
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -34,8 +40,20 @@ SRC = FORMAL / "GaloisForLFunctions"
 API_MD = FORMAL / "LEAN_API.md"
 GAPS_MD = FORMAL / "LEAN_GAPS.md"
 OVERVIEW_MD = FORMAL / "LEAN_OVERVIEW.md"
+SEARCH_DB = FORMAL / ".lean_search.db"
 
 DECL_RE = re.compile(r"^\s*(theorem|lemma|def|structure|class|abbrev|inductive)\s+([\w'.]+)")
+# `DECL_RE` drives the generated API catalog and must stay as it is; the search
+# index uses this wider form instead.  On this corpus the narrow one misses
+# 24,260 declarations — every `noncomputable def`, `private theorem`,
+# same-line-attributed `@[simp] theorem`, and every named `instance` — which
+# made them unfindable and so liable to be proved a second time.
+INDEX_DECL_RE = re.compile(
+    r"^\s*(?:@\[[^\]]*\]\s*)*"
+    r"((?:(?:private|protected|noncomputable|partial|unsafe|nonrec|scoped|local)\s+)*)"
+    r"(theorem|lemma|def|structure|class|abbrev|inductive|instance|opaque)\s+([\w'.«»]+)"
+)
+ATTRIBUTE_LINE_RE = re.compile(r"^\s*@\[[^\]]*\]\s*$")
 DEBT_RE = re.compile(r"^\s*(sorry|admit)\b|^\s*(axiom|opaque)\s+[A-Za-z_]|^\s*unsafe\s+(def|theorem|axiom)\b")
 MARKER_RE = re.compile(r"\b(TODO|FIXME|OPEN|NEXT|Remaining|remaining|blocked|missing)\b")
 # Accepts the Lean module-system import forms (`public import`, `meta import`,
@@ -141,15 +159,34 @@ class Finding:
 
 
 def rel(path: Path) -> str:
-    return path.relative_to(ROOT).as_posix()
+    """Repo-relative path, falling back to the absolute one for outside files.
+
+    Callers pass this through to cache and index keys, and the reachability
+    checker is exercised against throwaway trees outside the repo, so an
+    out-of-tree path has to stay addressable rather than raise.
+    """
+    try:
+        return path.relative_to(ROOT).as_posix()
+    except ValueError:
+        return path.as_posix()
 
 
+@functools.lru_cache(maxsize=None)
 def lean_files() -> list[Path]:
     return sorted(SRC.rglob("*.lean"))
 
 
 def module_name(path: Path, *, formal: Path = FORMAL) -> str:
-    return ".".join(path.relative_to(formal).with_suffix("").parts)
+    """Dotted Lean module name, falling back to the bare stem outside the package.
+
+    A file outside `formal/` has no module name; callers still need a label for
+    it rather than an exception.
+    """
+    try:
+        relative = path.relative_to(formal)
+    except ValueError:
+        return path.stem
+    return ".".join(relative.with_suffix("").parts)
 
 
 def read_lines(path: Path) -> list[str]:
@@ -166,42 +203,215 @@ def read_lines(path: Path) -> list[str]:
 
 
 def strip_lean_comments(lines: list[str]) -> list[str]:
-    """Strip Lean line and block comments while preserving line numbers."""
+    """Strip Lean line and block comments while preserving line numbers.
+
+    Lines carrying no comment delimiter are passed through untouched, and the
+    remaining ones are scanned by jumping between delimiters rather than one
+    character at a time.  Block comments nest, so the depth carries across
+    lines.
+    """
     out: list[str] = []
     depth = 0
     for line in lines:
-        i = 0
+        if depth == 0:
+            if "--" not in line and "/-" not in line:
+                out.append(line)
+                continue
+        elif "/-" not in line and "-/" not in line:
+            out.append("")
+            continue
         kept: list[str] = []
-        while i < len(line):
-            if depth == 0 and line.startswith("--", i):
-                break
-            if line.startswith("/-", i):
+        i = 0
+        n = len(line)
+        while i < n:
+            if depth == 0:
+                dash = line.find("--", i)
+                open_ = line.find("/-", i)
+                if dash == -1 and open_ == -1:
+                    kept.append(line[i:])
+                    break
+                if dash != -1 and (open_ == -1 or dash < open_):
+                    kept.append(line[i:dash])
+                    break
+                kept.append(line[i:open_])
                 depth += 1
-                i += 2
-                continue
-            if depth > 0:
-                if line.startswith("-/", i):
+                i = open_ + 2
+            else:
+                close = line.find("-/", i)
+                open_ = line.find("/-", i)
+                if open_ != -1 and (close == -1 or open_ < close):
+                    depth += 1
+                    i = open_ + 2
+                elif close != -1:
                     depth -= 1
-                    i += 2
+                    i = close + 2
                 else:
-                    i += 1
-                continue
-            kept.append(line[i])
-            i += 1
+                    break
         out.append("".join(kept))
     return out
 
 
-def imported_modules(path: Path) -> set[str]:
-    imports: set[str] = set()
-    for line in strip_lean_comments(read_lines(path)):
+@dataclasses.dataclass(frozen=True)
+class FileFacts:
+    """Everything the reports need from one file, extracted in a single pass."""
+
+    imports: tuple[str, ...]
+    decls: tuple[tuple[str, str, int, str], ...]
+    debt: tuple[tuple[int, str, str], ...]
+    markers: tuple[tuple[int, str], ...]
+    lines: int
+
+
+def extract_facts(path: Path) -> FileFacts:
+    """Read one file once and derive its imports, declarations, debt and markers.
+
+    Markers are read from the raw text, the rest from the comment-stripped text.
+    A debt line is attributed to the nearest declaration at or above it, which is
+    the running declaration of the same left-to-right scan.
+    """
+    raw = read_lines(path)
+    markers = tuple(
+        (i + 1, line.strip()) for i, line in enumerate(raw) if MARKER_RE.search(line)
+    )
+    if path.suffix != ".lean":
+        return FileFacts((), (), (), markers, len(raw))
+
+    imports: list[str] = []
+    decls: list[tuple[str, str, int, str]] = []
+    debt: list[tuple[int, str, str]] = []
+    context = ""
+    for i, line in enumerate(strip_lean_comments(raw)):
         match = IMPORT_RE.match(line)
-        if not match:
-            continue
-        imports.update(
-            token for token in match.group(1).split() if MODULE_NAME_RE.fullmatch(token)
-        )
-    return imports
+        if match:
+            imports.extend(
+                token
+                for token in match.group(1).split()
+                if MODULE_NAME_RE.fullmatch(token)
+            )
+        decl = DECL_RE.match(line)
+        if decl:
+            context = f"{decl.group(1)} {decl.group(2)}"
+            decls.append((decl.group(1), decl.group(2), i + 1, doc_before(raw, i)))
+        if DEBT_RE.search(line):
+            debt.append((i + 1, raw[i].strip(), context))
+    return FileFacts(tuple(imports), tuple(decls), tuple(debt), markers, len(raw))
+
+
+CACHE_PATH = FORMAL / ".formal_tools_cache.json"
+CACHE_VERSION = 1
+
+_facts: dict[Path, FileFacts] = {}
+_cache: dict[str, list] | None = None
+_cache_dirty = False
+
+
+def _load_cache() -> dict[str, list]:
+    """Load the extraction cache, treating any damage as a cold cache.
+
+    Several agents run these reports concurrently against one worktree, so the
+    file on disk may be mid-replacement, truncated, or written by an older
+    version of this script.  None of that is worth failing over: the entries are
+    derivable from the tree.
+    """
+    global _cache
+    if _cache is not None:
+        return _cache
+    _cache = {}
+    try:
+        with CACHE_PATH.open(encoding="utf-8") as handle:
+            blob = json.load(handle)
+        if blob.get("version") == CACHE_VERSION:
+            _cache = blob.get("files", {})
+    except (OSError, ValueError, AttributeError):
+        _cache = {}
+    return _cache
+
+
+def _sweep_stale_temp_files(keep: Path) -> None:
+    """Delete abandoned cache temporaries left by killed runs.
+
+    Only long-dead files are swept, so a slow concurrent writer is never robbed
+    of the temporary it is still filling.
+    """
+    try:
+        now = time.time()
+        for stale in CACHE_PATH.parent.glob(f"{CACHE_PATH.stem}.*.tmp"):
+            if stale == keep:
+                continue
+            try:
+                if now - stale.stat().st_mtime > 3600:
+                    stale.unlink()
+            except OSError:
+                pass
+    except OSError:
+        pass
+
+
+def _save_cache() -> None:
+    """Replace the cache atomically so a concurrent reader never sees a partial file."""
+    if not _cache_dirty or _cache is None:
+        return
+    tmp = CACHE_PATH.with_suffix(f".{os.getpid()}.tmp")
+    try:
+        with tmp.open("w", encoding="utf-8") as handle:
+            json.dump({"version": CACHE_VERSION, "files": _cache}, handle)
+        os.replace(tmp, CACHE_PATH)
+    except OSError:
+        pass
+    finally:
+        # `os.replace` consumes the temporary; anything left here is a failed write.
+        try:
+            tmp.unlink()
+        except OSError:
+            pass
+        _sweep_stale_temp_files(tmp)
+
+
+def facts_for(path: Path) -> FileFacts:
+    """Return the extracted facts for one file, reusing the cache when it is current."""
+    cached = _facts.get(path)
+    if cached is not None:
+        return cached
+    try:
+        stat = path.stat()
+        stamp = [stat.st_size, stat.st_mtime_ns]
+    except OSError:
+        stamp = None
+
+    key = rel(path)
+    disk = _load_cache()
+    if stamp is not None:
+        entry = disk.get(key)
+        if entry is not None and entry[:2] == stamp:
+            facts = FileFacts(
+                tuple(entry[2]),
+                tuple(tuple(d) for d in entry[3]),
+                tuple(tuple(d) for d in entry[4]),
+                tuple(tuple(d) for d in entry[5]),
+                entry[6],
+            )
+            _facts[path] = facts
+            return facts
+
+    facts = extract_facts(path)
+    if stamp is not None:
+        global _cache_dirty
+        disk[key] = [
+            stamp[0],
+            stamp[1],
+            list(facts.imports),
+            [list(d) for d in facts.decls],
+            [list(d) for d in facts.debt],
+            [list(d) for d in facts.markers],
+            facts.lines,
+        ]
+        _cache_dirty = True
+    _facts[path] = facts
+    return facts
+
+
+def imported_modules(path: Path) -> set[str]:
+    return set(facts_for(path).imports)
 
 
 def unreachable_owned_modules(
@@ -275,49 +485,41 @@ def doc_before(lines: list[str], index: int) -> str:
     return text[:180]
 
 
+def attribute_free_index(lines: list[str], index: int) -> int:
+    """Step back over attribute-only lines so the docstring above them is found.
+
+    `/-- doc -/` then `@[simp]` then `theorem foo` is common, and looking only
+    at the line directly above the declaration would find the attribute.
+    """
+    while index > 0 and ATTRIBUTE_LINE_RE.match(lines[index - 1]):
+        index -= 1
+    return index
+
+
+@functools.lru_cache(maxsize=None)
 def declarations() -> list[Declaration]:
     out: list[Declaration] = []
     for path in lean_files():
-        lines = read_lines(path)
-        code_lines = strip_lean_comments(lines)
         mod = module_name(path)
-        for i, line in enumerate(code_lines):
-            match = DECL_RE.match(line)
-            if not match:
-                continue
+        relpath = rel(path)
+        for kind, name, line, doc in facts_for(path).decls:
             out.append(
-                Declaration(
-                    kind=match.group(1),
-                    name=match.group(2),
-                    module=mod,
-                    relpath=rel(path),
-                    line=i + 1,
-                    doc=doc_before(lines, i),
-                )
+                Declaration(kind=kind, name=name, module=mod, relpath=relpath, line=line, doc=doc)
             )
     return out
 
 
-def declaration_context(lines: list[str], index: int) -> str:
-    code_lines = strip_lean_comments(lines[: index + 1])
-    for j in range(index, -1, -1):
-        match = DECL_RE.match(code_lines[j])
-        if match:
-            return f"{match.group(1)} {match.group(2)}"
-    return ""
-
-
+@functools.lru_cache(maxsize=None)
 def proof_debt() -> list[Finding]:
     out: list[Finding] = []
     for path in lean_files():
-        lines = read_lines(path)
-        code_lines = strip_lean_comments(lines)
-        for i, line in enumerate(code_lines):
-            if DEBT_RE.search(line):
-                out.append(Finding("proof-debt", rel(path), i + 1, lines[i].strip(), declaration_context(lines, i)))
+        relpath = rel(path)
+        for line, text, context in facts_for(path).debt:
+            out.append(Finding("proof-debt", relpath, line, text, context))
     return out
 
 
+@functools.lru_cache(maxsize=None)
 def marker_findings(limit: int = 250, *, include_status_logs: bool = False) -> list[Finding]:
     paths = sorted(list(SRC.rglob("*.lean")) + list(SRC.rglob("*.md")) + [FORMAL / "README.md"])
     out: list[Finding] = []
@@ -326,20 +528,20 @@ def marker_findings(limit: int = 250, *, include_status_logs: bool = False) -> l
             continue
         if path.name == "STATUS.md" and not include_status_logs:
             continue
-        for i, line in enumerate(read_lines(path)):
-            if MARKER_RE.search(line):
-                out.append(Finding("marker", rel(path), i + 1, line.strip(), ""))
-                if len(out) >= limit:
-                    return out
+        for line, text in facts_for(path).markers:
+            out.append(Finding("marker", rel(path), line, text, ""))
+            if len(out) >= limit:
+                return out
     return out
 
 
+@functools.lru_cache(maxsize=None)
 def file_sizes(*, include_status_logs: bool = False) -> list[tuple[int, str]]:
     sizes: list[tuple[int, str]] = []
     for path in sorted(list(SRC.rglob("*.lean")) + list(SRC.rglob("*.md"))):
         if path.name == "STATUS.md" and not include_status_logs:
             continue
-        sizes.append((len(read_lines(path)), rel(path)))
+        sizes.append((facts_for(path).lines, rel(path)))
     return sorted(sizes, reverse=True)
 
 
@@ -529,6 +731,12 @@ def write_indexes(_: argparse.Namespace | None = None) -> int:
     print(f"wrote {rel(API_MD)}")
     print(f"wrote {rel(GAPS_MD)}")
     print(f"wrote {rel(OVERVIEW_MD)}")
+    try:
+        _, stats = refresh_search_index()
+    except SearchIndexUnavailable as error:
+        print(f"skipped search index: {error}", file=sys.stderr)
+    else:
+        print(f"refreshed {rel(SEARCH_DB)} ({stats.changed} changed, {stats.removed} removed)")
     return 0
 
 
@@ -544,6 +752,8 @@ def check_generated() -> list[str]:
 
 
 def run_lake_build(target: str | None) -> tuple[int, str]:
+    import subprocess
+
     cmd = ["lake", "build"]
     if target:
         cmd.append(target if target.startswith("+") else f"+{target}")
@@ -649,12 +859,130 @@ def status(_: argparse.Namespace) -> int:
     return 0
 
 
+SEARCH_SUFFIXES = (".lean", ".md")
+
+
+def search_sources() -> list[SourceFile]:
+    """Every file the search index covers: Lean sources plus in-tree prose.
+
+    Hand-rolled over `os.scandir` rather than `Path.rglob`, because this runs on
+    every single query: two rglob passes over ~18.7k files, an `exists()` per
+    hit and a later `stat()` per hit cost around 300 ms, where one walk that
+    stats as it goes costs a fraction of that.
+    """
+    prefix = len(str(ROOT)) + 1
+    out: list[SourceFile] = []
+    stack = [str(SRC)]
+    while stack:
+        try:
+            entries = list(os.scandir(stack.pop()))
+        except OSError:
+            continue
+        for entry in entries:
+            if entry.is_dir(follow_symlinks=False):
+                stack.append(entry.path)
+            elif entry.name.endswith(SEARCH_SUFFIXES):
+                try:
+                    stat = entry.stat()
+                except OSError:
+                    continue
+                out.append(
+                    SourceFile(entry.path[prefix:], entry.path, stat.st_size, stat.st_mtime_ns)
+                )
+    readme = FORMAL / "README.md"
+    try:
+        stat = readme.stat()
+    except OSError:
+        return out
+    out.append(SourceFile(rel(readme), str(readme), stat.st_size, stat.st_mtime_ns))
+    return out
+
+
+def index_rows(source: SourceFile) -> tuple[list[DeclRow], list[MarkerRow]]:
+    """Extract one file's searchable declarations and gap markers.
+
+    This scans the file itself instead of reusing `facts_for`, for two reasons.
+    It sees the ~10% of declarations that `DECL_RE` cannot (`INDEX_DECL_RE`
+    below), and it keeps the search path off the JSON extraction cache, which a
+    query would otherwise load and rewrite in full to record a handful of
+    changed files.
+    """
+    path = Path(source.abspath)
+    raw = read_lines(path)
+    markers = [
+        MarkerRow(line=i + 1, text=line.strip())
+        for i, line in enumerate(raw)
+        if MARKER_RE.search(line)
+    ]
+    if path.suffix != ".lean":
+        return [], markers
+
+    module = module_name(path)
+    decls: list[DeclRow] = []
+    for i, line in enumerate(strip_lean_comments(raw)):
+        match = INDEX_DECL_RE.match(line)
+        if not match:
+            continue
+        modifiers = " ".join(match.group(1).split())
+        kind = f"{modifiers} {match.group(2)}".strip()
+        decls.append(
+            DeclRow(
+                name=match.group(3),
+                kind=kind,
+                module=module,
+                line=i + 1,
+                doc=doc_before(raw, attribute_free_index(raw, i)),
+            )
+        )
+    return decls, markers
+
+
+def refresh_search_index(*, rebuild: bool = False) -> tuple[LeanSearchIndex, object]:
+    index = LeanSearchIndex(SEARCH_DB)
+    sources = search_sources()
+    stats = index.rebuild(sources, index_rows) if rebuild else index.refresh(sources, index_rows)
+    return index, stats
+
+
 def research(args: argparse.Namespace) -> int:
-    query = " ".join(args.query).strip().lower()
+    query = " ".join(args.query).strip()
     if not query:
         print("provide a search query", file=sys.stderr)
         return 2
 
+    if not getattr(args, "scan", False):
+        try:
+            index = LeanSearchIndex(SEARCH_DB)
+            if not getattr(args, "no_refresh", False):
+                stats = index.refresh(search_sources(), index_rows)
+                if stats.stale:
+                    print(
+                        f"note: index refresh skipped ({stats.reason.strip() or 'locked'});"
+                        " searching the last committed index",
+                        file=sys.stderr,
+                    )
+            decl_hits = index.search_declarations(query, args.limit)
+            marker_hits = index.search_markers(query, args.limit)
+        except (SearchIndexUnavailable, sqlite3.DatabaseError) as error:
+            print(f"search index unavailable ({error}); scanning instead", file=sys.stderr)
+        else:
+            print("Declarations:")
+            for hit in decl_hits:
+                print(f"- {hit.name} ({hit.kind}) {hit.module} {hit.relpath}:{hit.line}")
+                if hit.doc:
+                    print(f"  {hit.doc}")
+            if marker_hits:
+                print("\nGap markers:")
+                for hit in marker_hits:
+                    print(f"- {hit.relpath}:{hit.line}: {hit.text}")
+            return 0
+
+    return research_scan(args)
+
+
+def research_scan(args: argparse.Namespace) -> int:
+    """Index-free fallback: substring scoring over the in-memory declaration list."""
+    query = " ".join(args.query).strip().lower()
     scored: list[tuple[int, Declaration]] = []
     for d in declarations():
         hay = f"{d.name} {d.kind} {d.module} {d.relpath} {d.doc}".lower()
@@ -681,7 +1009,37 @@ def research(args: argparse.Namespace) -> int:
     return 0
 
 
+def search_index_cmd(args: argparse.Namespace) -> int:
+    try:
+        index, stats = refresh_search_index(rebuild=args.rebuild)
+    except SearchIndexUnavailable as error:
+        print(f"search index unavailable: {error}", file=sys.stderr)
+        return 1
+    counts = index.counts()
+    size = sum(
+        Path(str(SEARCH_DB) + suffix).stat().st_size
+        for suffix in ("", "-wal", "-shm")
+        if Path(str(SEARCH_DB) + suffix).exists()
+    )
+    print(f"{rel(SEARCH_DB)}: {size / 1e6:.1f} MB")
+    print(
+        f"indexed {counts['files']} files, {counts['declarations']} declarations,"
+        f" {counts['markers']} gap markers"
+    )
+    print(f"refreshed {stats.changed} changed, {stats.removed} removed")
+    if stats.stale:
+        print(f"note: refresh incomplete ({stats.reason.strip() or 'locked'})", file=sys.stderr)
+    return 0
+
+
 def brief(args: argparse.Namespace) -> int:
+    from research_brief import (
+        build_research_brief,
+        canonical_area,
+        render_research_brief,
+        render_research_brief_json,
+    )
+
     try:
         canonical_area(args.area)
     except ValueError as error:
@@ -722,6 +1080,8 @@ def brief(args: argparse.Namespace) -> int:
 
 
 def frontier_reports(args: argparse.Namespace) -> int:
+    from research_brief import build_frontier_chains, canonical_area, write_chain_reports
+
     try:
         canonical_area(args.area)
     except ValueError as error:
@@ -781,7 +1141,26 @@ def main(argv: list[str] | None = None) -> int:
     research_parser = sub.add_parser("research", help="search declarations and gap markers")
     research_parser.add_argument("query", nargs="+")
     research_parser.add_argument("--limit", type=int, default=20)
+    research_parser.add_argument(
+        "--no-refresh",
+        action="store_true",
+        help="search the index as-is instead of syncing changed files first",
+    )
+    research_parser.add_argument(
+        "--scan",
+        action="store_true",
+        help="bypass the search index and scan the declaration list directly",
+    )
     research_parser.set_defaults(func=research)
+
+    search_index_parser = sub.add_parser(
+        "search-index",
+        help="refresh and report on the full-text search index used by `research`",
+    )
+    search_index_parser.add_argument(
+        "--rebuild", action="store_true", help="discard and rebuild the index from scratch"
+    )
+    search_index_parser.set_defaults(func=search_index_cmd)
 
     brief_parser = sub.add_parser(
         "brief",
@@ -815,7 +1194,10 @@ def main(argv: list[str] | None = None) -> int:
     reports_parser.set_defaults(func=frontier_reports)
 
     args = parser.parse_args(argv)
-    return args.func(args)
+    try:
+        return args.func(args)
+    finally:
+        _save_cache()
 
 
 if __name__ == "__main__":

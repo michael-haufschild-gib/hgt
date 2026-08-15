@@ -61,7 +61,7 @@ theorem spectralCharacterActive_coordinateSpectralJet (r : ℕ) {i₀ : I}
 
 /-- **Exact prescribed-birth realizability.**  A projective character can be activated at a
 prescribed birth order exactly when it is nonzero. -/
-theorem exists_spectralCharacterActive_birthOrder_eq_iff_ne_zero
+private theorem exists_spectralCharacterActive_birthOrder_eq_iff_ne_zero
     (k : ProjectiveCharacter I) (r : ℕ) :
     (∃ jet : ℕ → I → ℂ, ∃ hactive : SpectralCharacterActive jet k,
       spectralCharacterBirthOrder jet k hactive = r) ↔ k ≠ 0 := by

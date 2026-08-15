@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.MultipleSineReflectionLayer
+import GaloisForLFunctions.HTGeometry.MultipleSineSkeletonIdeal
 import GaloisForLFunctions.HTGeometry.CompressedFaithfulSeparationRealization
 
 /-!

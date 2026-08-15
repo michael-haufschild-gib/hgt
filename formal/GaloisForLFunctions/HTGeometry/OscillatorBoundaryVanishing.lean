@@ -26,8 +26,8 @@ theorem tendsto_oscBoundary_atTop_zero {mu : ℝ} {v v' : ℝ → ℝ} {a : ℝ}
   have hintI : IntegrableOn (fun x => v x ^ 2) (Ici a) volume := hint.integrableOn
   have hneg : ∀ x ∈ Ici a, oscProduct v v' x < 0 :=
     oscProduct_neg_of_integrableOn ha hmu.le hv hv' hnt hintI
-  have hE : ∀ x ∈ Ici a, 0 ≤ oscEnergy mu v v' x :=
-    oscEnergy_nonneg_of_integrableOn ha hmu hv hv' hintI
+  have hE : ∀ x ∈ Ici a, 0 ≤ oscillatorMonotoneEnergy mu v v' x :=
+    oscillatorMonotoneEnergy_nonneg_of_integrableOn ha hmu hv hv' hintI
   have hP : Tendsto (oscProduct v v') atTop (𝓝 0) :=
     tendsto_oscProduct_zero ha hmu.le le_rfl hv hv' hneg
   have hnz : ∀ x ∈ Ici a, v x ≠ 0 := by
@@ -37,7 +37,7 @@ theorem tendsto_oscBoundary_atTop_zero {mu : ℝ} {v v' : ℝ → ℝ} {a : ℝ}
     simp at this
   have hcv : Continuous v := continuous_of_hasDerivAt hv
   have hv'0 : Tendsto v' atTop (𝓝 0) := by
-    rcases sign_const_of_ne_zero hcv hnz with hpos | hnegv
+    rcases sign_locally_const_of_ne_zero hcv hnz with hpos | hnegv
     · exact tendsto_deriv_zero_of_pos ha hmu.le hv hv' hpos hneg
     · have hvv : ∀ x, HasDerivAt (fun y => -v y) ((fun y => -v' y) x) x := fun x => (hv x).neg
       have hvv' : ∀ x, HasDerivAt (fun y => -v' y) ((x ^ 2 - mu) * (fun y => -v y) x) x := by
@@ -79,7 +79,7 @@ theorem tendsto_oscBoundary_atBot_zero {mu : ℝ} {v v' : ℝ → ℝ} {a : ℝ}
     (hnt : ∀ y, v y ≠ 0 ∨ v' y ≠ 0)
     (hint : Integrable (fun x => v x ^ 2)) :
     Tendsto (fun R : ℝ => oscBoundary v v' (-R)) atTop (𝓝 0) := by
-  obtain ⟨hw, hw'⟩ := hasDerivAt_reflect hv hv'
+  obtain ⟨hw, hw'⟩ := hasDerivAt_oscillatorReflect hv hv'
   have hntw : ∀ y, (fun t => v (-t)) y ≠ 0 ∨ (fun t => -v' (-t)) y ≠ 0 := by
     intro y
     rcases hnt (-y) with h | h

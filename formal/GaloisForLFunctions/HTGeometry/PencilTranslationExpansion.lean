@@ -27,9 +27,9 @@ variable {R α : Type*} [CommRing R] [DecidableEq α]
 
 theorem rename_facetPolynomialRestriction (F : Finset α) (P : MvPolynomial α R) :
     MvPolynomial.rename (facetVariableInclusion (R := R) F)
-        (facetPolynomialRestriction F P) = facetRestrict F P := by
+        (facetPolynomialRestriction F P) = pencilFacetRestrict F P := by
   have hhom : (MvPolynomial.rename (facetVariableInclusion (R := R) F)).comp
-      (facetPolynomialRestriction (R := R) F) = facetRestrict (R := R) F := by
+      (facetPolynomialRestriction (R := R) F) = pencilFacetRestrict (R := R) F := by
     apply MvPolynomial.algHom_ext
     intro v
     by_cases hv : v ∈ F
@@ -41,13 +41,13 @@ theorem rename_facetPolynomialRestriction (F : Finset α) (P : MvPolynomial α R
           (MvPolynomial.X (⟨v, hv⟩ : F) : MvPolynomial F R)
         rwa [MvPolynomial.rename_X, hval] at this
       show MvPolynomial.rename _ (facetPolynomialRestriction F (MvPolynomial.X v)) = _
-      rw [hkill, MvPolynomial.rename_X, hval, facetRestrict_X_mem hv]
+      rw [hkill, MvPolynomial.rename_X, hval, pencilFacetRestrict_X_mem hv]
     · have hmem : (MvPolynomial.X v : MvPolynomial α R) ∈ facetIdeal R F :=
         Ideal.subset_span ⟨v, hv, rfl⟩
       have hkill : facetPolynomialRestriction (R := R) F (MvPolynomial.X v) = 0 :=
         RingHom.mem_ker.mp ((ker_facetPolynomialRestriction (R := R) F).symm ▸ hmem)
       show MvPolynomial.rename _ (facetPolynomialRestriction F (MvPolynomial.X v)) = _
-      rw [hkill, map_zero, facetRestrict_X_notMem hv]
+      rw [hkill, map_zero, pencilFacetRestrict_X_notMem hv]
   exact congrArg (fun f : MvPolynomial α R →ₐ[R] MvPolynomial α R => f P) hhom
 
 omit [DecidableEq α] in
@@ -71,7 +71,7 @@ theorem rename_differenceToTranslationHom (F : Finset α) (Q : MvPolynomial F R)
 theorem facetTranslationPolynomialEmbedding_facetPolynomialRestriction
     (F : Finset α) (P : MvPolynomial α R) :
     facetTranslationPolynomialEmbedding (R := R) F (facetPolynomialRestriction F P)
-      = differenceToTranslationHom (facetRestrict F P) := by
+      = differenceToTranslationHom (pencilFacetRestrict F P) := by
   show MvPolynomial.rename (facetVariableInclusion (R := R) F)
       (differenceToTranslationHom (facetPolynomialRestriction F P)) = _
   rw [rename_differenceToTranslationHom, rename_facetPolynomialRestriction]
@@ -110,7 +110,7 @@ theorem stanleyReisnerFacetTranslationCoordinates_mk (facets : Finset (Finset α
     (P : MvPolynomial α R) (F : facets) :
     stanleyReisnerFacetTranslationCoordinates facets
         (Ideal.Quotient.mk (stanleyReisnerIdeal R facets) P) F
-      = differenceToTranslationHom (facetRestrict F.1 P) := by
+      = differenceToTranslationHom (pencilFacetRestrict F.1 P) := by
   show facetTranslationPolynomialEmbedding F.1
       (stanleyReisnerFacetPolynomialCoordinates facets
         (Ideal.Quotient.mk (stanleyReisnerIdeal R facets) P) F) = _

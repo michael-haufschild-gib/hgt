@@ -30,35 +30,35 @@ variable {Ω : Type*} [MeasurableSpace Ω] (ρ : Measure Ω) [IsProbabilityMeasu
 /-- The normalized quenched replica action: the negative logarithm of the replica-order root of
 the replica mass. -/
 def quenchedReplicaAction (ρ : Measure Ω) (F : Ω → ℝ) (r : ℕ) : ℝ :=
-  -Real.log (quenchedReplicaMass ρ F r ^ ((r : ℝ)⁻¹))
+  -Real.log (quenchedActionReplicaMass ρ F r ^ ((r : ℝ)⁻¹))
 
 theorem quenchedReplicaAction_eq (F : Ω → ℝ) {r : ℕ}
-    (hZ : 0 < quenchedReplicaMass ρ F r) :
-    quenchedReplicaAction ρ F r = -((r : ℝ)⁻¹ * Real.log (quenchedReplicaMass ρ F r)) := by
+    (hZ : 0 < quenchedActionReplicaMass ρ F r) :
+    quenchedReplicaAction ρ F r = -((r : ℝ)⁻¹ * Real.log (quenchedActionReplicaMass ρ F r)) := by
   rw [quenchedReplicaAction, Real.log_rpow hZ, mul_comm]
 
-theorem quenchedReplicaMass_nonneg' {F : Ω → ℝ} (h0 : ∀ x, 0 ≤ F x) (r : ℕ) :
-    0 ≤ quenchedReplicaMass ρ F r :=
+theorem quenchedActionReplicaMass_nonneg' {F : Ω → ℝ} (h0 : ∀ x, 0 ≤ F x) (r : ℕ) :
+    0 ≤ quenchedActionReplicaMass ρ F r :=
   integral_nonneg fun x => pow_nonneg (h0 x) r
 
 /-- **Unit ceiling.**  The replica mass never exceeds one. -/
-theorem quenchedReplicaMass_le_one' {F : Ω → ℝ} (hF : Measurable F) (h0 : ∀ x, 0 ≤ F x)
-    (h1 : ∀ x, F x ≤ 1) (r : ℕ) : quenchedReplicaMass ρ F r ≤ 1 :=
-  quenchedReplicaMass_le_one ρ h0 h1 r (integrable_pow_of_unit ρ hF h0 h1 r)
+theorem quenchedActionReplicaMass_le_one' {F : Ω → ℝ} (hF : Measurable F) (h0 : ∀ x, 0 ≤ F x)
+    (h1 : ∀ x, F x ≤ 1) (r : ℕ) : quenchedActionReplicaMass ρ F r ≤ 1 :=
+  quenchedActionReplicaMass_le_one ρ h0 h1 r (integrable_pow_of_unit ρ hF h0 h1 r)
 
 /-- **Replica monotonicity.**  The replica mass decreases in the replica order. -/
-theorem quenchedReplicaMass_antitone' {F : Ω → ℝ} (hF : Measurable F) (h0 : ∀ x, 0 ≤ F x)
+theorem quenchedActionReplicaMass_antitone' {F : Ω → ℝ} (hF : Measurable F) (h0 : ∀ x, 0 ≤ F x)
     (h1 : ∀ x, F x ≤ 1) (r : ℕ) :
-    quenchedReplicaMass ρ F (r + 1) ≤ quenchedReplicaMass ρ F r :=
-  quenchedReplicaMass_antitone ρ h0 h1 (integrable_pow_of_unit ρ hF h0 h1 r)
+    quenchedActionReplicaMass ρ F (r + 1) ≤ quenchedActionReplicaMass ρ F r :=
+  quenchedActionReplicaMass_antitone ρ h0 h1 (integrable_pow_of_unit ρ hF h0 h1 r)
     (integrable_pow_of_unit ρ hF h0 h1 (r + 1))
 
 /-- **Logarithmic convexity.**  Cauchy--Schwarz makes the replica masses logarithmically convex in
 the replica order. -/
-theorem quenchedReplicaMass_sq_le {F : Ω → ℝ} (hF : Measurable F) (h0 : ∀ x, 0 ≤ F x)
+theorem quenchedActionReplicaMass_sq_le {F : Ω → ℝ} (hF : Measurable F) (h0 : ∀ x, 0 ≤ F x)
     (h1 : ∀ x, F x ≤ 1) (r : ℕ) :
-    quenchedReplicaMass ρ F (r + 1) ^ 2 ≤
-      quenchedReplicaMass ρ F r * quenchedReplicaMass ρ F (r + 2) := by
+    quenchedActionReplicaMass ρ F (r + 1) ^ 2 ≤
+      quenchedActionReplicaMass ρ F r * quenchedActionReplicaMass ρ F (r + 2) := by
   have hpq : (2 : ℝ).HolderConjugate 2 :=
     Real.holderConjugate_iff.mpr ⟨by norm_num, by norm_num⟩
   have hmem : ∀ k : ℕ, MemLp (fun x => Real.sqrt (F x ^ k)) (ENNReal.ofReal 2) ρ := by
@@ -101,10 +101,10 @@ theorem quenchedReplicaMass_sq_le {F : Ω → ℝ} (hF : Measurable F) (h0 : ∀
 replica order. -/
 theorem quenchedReplicaAction_antitone {F : Ω → ℝ} (hF : Measurable F) (h0 : ∀ x, 0 ≤ F x)
     (h1 : ∀ x, F x ≤ 1) {r : ℕ} (hr : 0 < r)
-    (hZ : 0 < quenchedReplicaMass ρ F r) :
+    (hZ : 0 < quenchedActionReplicaMass ρ F r) :
     quenchedReplicaAction ρ F (r + 1) ≤ quenchedReplicaAction ρ F r := by
   have hroot := rpow_inv_integral_pow_monotone ρ hF h0 h1 hr
-  have hpos : (0 : ℝ) < quenchedReplicaMass ρ F r ^ ((r : ℝ)⁻¹) :=
+  have hpos : (0 : ℝ) < quenchedActionReplicaMass ρ F r ^ ((r : ℝ)⁻¹) :=
     Real.rpow_pos_of_pos hZ _
   have hcast : ((r : ℝ) + 1)⁻¹ = (((r + 1 : ℕ) : ℝ))⁻¹ := by push_cast; ring
   rw [hcast] at hroot
@@ -113,9 +113,9 @@ theorem quenchedReplicaAction_antitone {F : Ω → ℝ} (hF : Measurable F) (h0 
 
 /-- **Replica-mass root limit.**  The replica-order roots of the replica masses converge to the
 essential supremum of the accessibility. -/
-theorem tendsto_quenchedReplicaMass_rpow {F : Ω → ℝ} (hF : Measurable F) (h0 : ∀ x, 0 ≤ F x)
+theorem tendsto_quenchedActionReplicaMass_rpow {F : Ω → ℝ} (hF : Measurable F) (h0 : ∀ x, 0 ≤ F x)
     (h1 : ∀ x, F x ≤ 1) :
-    Tendsto (fun r : ℕ => quenchedReplicaMass ρ F r ^ ((r : ℝ)⁻¹)) atTop (𝓝 (essSup F ρ)) :=
+    Tendsto (fun r : ℕ => quenchedActionReplicaMass ρ F r ^ ((r : ℝ)⁻¹)) atTop (𝓝 (essSup F ρ)) :=
   tendsto_rpow_inv_integral_pow ρ hF h0 h1
 
 theorem essSup_pos_of_pos {F : Ω → ℝ} (h1 : ∀ x, F x ≤ 1) (hpos : ∀ x, 0 < F x) :
@@ -136,7 +136,7 @@ theorem tendsto_quenchedReplicaAction {F : Ω → ℝ} (hF : Measurable F) (h0 :
     Tendsto (fun r : ℕ => quenchedReplicaAction ρ F r) atTop (𝓝 (-Real.log (essSup F ρ))) := by
   have hM := essSup_pos_of_pos ρ h1 hpos
   exact ((Real.continuousAt_log hM.ne').tendsto.comp
-    (tendsto_quenchedReplicaMass_rpow ρ hF h0 h1)).neg
+    (tendsto_quenchedActionReplicaMass_rpow ρ hF h0 h1)).neg
 
 /-- The essential infimum of the preparation action is the negative logarithm of the essential
 supremum of the accessibility. -/
@@ -199,12 +199,12 @@ theorem quenchedReplicaAction_le_of_carrier {F : Ω → ℝ} (hF : Measurable F)
     quenchedReplicaAction ρ F r ≤ j + (r : ℝ)⁻¹ * Real.log (ρ.real B)⁻¹ := by
   have hr0 : (0 : ℝ) < r := Nat.cast_pos.mpr hr
   have hrne : (r : ℝ) ≠ 0 := ne_of_gt hr0
-  have hbase := quenchedReplicaMass_ge_of_carrier ρ h0 hB hlow r
+  have hbase := quenchedActionReplicaMass_ge_of_carrier ρ h0 hB hlow r
     (integrable_pow_of_unit ρ hF h0 h1 r)
   have hlhs : 0 ≤ ρ.real B * Real.exp (-((r : ℝ) * j)) :=
     mul_nonneg hmass.le (Real.exp_pos _).le
   have hstep : (ρ.real B * Real.exp (-((r : ℝ) * j))) ^ ((r : ℝ)⁻¹) ≤
-      quenchedReplicaMass ρ F r ^ ((r : ℝ)⁻¹) :=
+      quenchedActionReplicaMass ρ F r ^ ((r : ℝ)⁻¹) :=
     Real.rpow_le_rpow hlhs hbase (by positivity)
   have hcompute : (ρ.real B * Real.exp (-((r : ℝ) * j))) ^ ((r : ℝ)⁻¹) =
       ρ.real B ^ ((r : ℝ)⁻¹) * Real.exp (-j) := by
@@ -247,21 +247,21 @@ variable {Ω : Type*} [MeasurableSpace Ω] (ρ : Measure Ω) [IsProbabilityMeasu
 /-- **Exact causal-replica certificate criterion.**  The replica mass falls below an exponential
 threshold exactly when every tilted source law pays at least that threshold in source rarity plus
 replicated preparation action. -/
-theorem quenchedReplicaMass_le_exp_iff {F : Ω → ℝ} (hFpos : ∀ H, 0 < F H) (r : ℕ)
-    (hZ : 0 < quenchedReplicaMass ρ F r)
+theorem quenchedActionReplicaMass_le_exp_iff {F : Ω → ℝ} (hFpos : ∀ H, 0 < F H) (r : ℕ)
+    (hZ : 0 < quenchedActionReplicaMass ρ F r)
     (hint : Integrable (fun H => Real.exp (-((r : ℝ) * preparationActionOf F H))) ρ)
     (hmeas : AEMeasurable (fun H => -((r : ℝ) * preparationActionOf F H)) ρ)
     (htilt : Integrable (fun H => -((r : ℝ) * preparationActionOf F H))
       (ρ.tilted fun H => -((r : ℝ) * preparationActionOf F H))) (L : ℝ) :
-    quenchedReplicaMass ρ F r ≤ Real.exp (-L) ↔
+    quenchedActionReplicaMass ρ F r ≤ Real.exp (-L) ↔
       ∀ q : Measure Ω, ∀ _ : IsProbabilityMeasure q, q ≪ ρ →
         Integrable (llr q ρ) q →
         Integrable (fun H => -((r : ℝ) * preparationActionOf F H)) q →
         Integrable (llr q (ρ.tilted fun H => -((r : ℝ) * preparationActionOf F H))) q →
         L ≤ (∫ H, llr q ρ H ∂q) + (r : ℝ) * ∫ H, preparationActionOf F H ∂q := by
   have hbase := isLeast_quenchedReplicaAction ρ hFpos r hint hmeas htilt
-  have hthreshold : quenchedReplicaMass ρ F r ≤ Real.exp (-L) ↔
-      L ≤ -Real.log (quenchedReplicaMass ρ F r) := by
+  have hthreshold : quenchedActionReplicaMass ρ F r ≤ Real.exp (-L) ↔
+      L ≤ -Real.log (quenchedActionReplicaMass ρ F r) := by
     rw [← Real.log_le_iff_le_exp hZ]
     constructor <;> intro h <;> linarith
   rw [hthreshold]
@@ -275,20 +275,20 @@ theorem quenchedReplicaMass_le_exp_iff {F : Ω → ℝ} (hFpos : ∀ H, 0 < F H)
 
 /-- **Normalized certificate criterion.**  Dividing the certificate criterion by the replica order
 exhibits the desired depth-`θ` bound as a source--preparation separation inequality. -/
-theorem quenchedReplicaMass_le_exp_iff_normalized {F : Ω → ℝ} (hFpos : ∀ H, 0 < F H) {r : ℕ}
-    (hr : 0 < r) (hZ : 0 < quenchedReplicaMass ρ F r)
+theorem quenchedActionReplicaMass_le_exp_iff_normalized {F : Ω → ℝ} (hFpos : ∀ H, 0 < F H) {r : ℕ}
+    (hr : 0 < r) (hZ : 0 < quenchedActionReplicaMass ρ F r)
     (hint : Integrable (fun H => Real.exp (-((r : ℝ) * preparationActionOf F H))) ρ)
     (hmeas : AEMeasurable (fun H => -((r : ℝ) * preparationActionOf F H)) ρ)
     (htilt : Integrable (fun H => -((r : ℝ) * preparationActionOf F H))
       (ρ.tilted fun H => -((r : ℝ) * preparationActionOf F H))) (θ : ℝ) :
-    quenchedReplicaMass ρ F r ≤ Real.exp (-((r : ℝ) * θ)) ↔
+    quenchedActionReplicaMass ρ F r ≤ Real.exp (-((r : ℝ) * θ)) ↔
       ∀ q : Measure Ω, ∀ _ : IsProbabilityMeasure q, q ≪ ρ →
         Integrable (llr q ρ) q →
         Integrable (fun H => -((r : ℝ) * preparationActionOf F H)) q →
         Integrable (llr q (ρ.tilted fun H => -((r : ℝ) * preparationActionOf F H))) q →
         θ ≤ (r : ℝ)⁻¹ * (∫ H, llr q ρ H ∂q) + ∫ H, preparationActionOf F H ∂q := by
   have hr0 : (0 : ℝ) < r := Nat.cast_pos.mpr hr
-  rw [quenchedReplicaMass_le_exp_iff ρ hFpos r hZ hint hmeas htilt ((r : ℝ) * θ)]
+  rw [quenchedActionReplicaMass_le_exp_iff ρ hFpos r hZ hint hmeas htilt ((r : ℝ) * θ)]
   constructor
   · intro h q hq hac h1 h2 h3
     have := h q hq hac h1 h2 h3

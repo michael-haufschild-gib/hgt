@@ -49,7 +49,7 @@ theorem sum_uniformPhaseWeights_le_one : (∑ j, uniformPhaseWeights α j) ≤ 1
     rw [mul_inv_cancel₀ (ne_of_gt hpos)]
 
 /-- The equal-amplitude seed with independent uniform coordinate phases. -/
-def uniformPhaseSeed (x : α → ℝ) : α → ℂ := phaseOrbit (uniformPhaseWeights α) x
+def uniformPhaseSeed (x : α → ℝ) : α → ℂ := torusReplicaPhaseOrbit (uniformPhaseWeights α) x
 
 /-- **Replica moments of the uniform phase seed.**  The `r`-th moment of the squared pairing with
 any subunit vector is at most `r!` times the `r`-th power of the uniform weight. -/

@@ -118,4 +118,56 @@ theorem phase_ibp_twice {E Eder C C₁ C₂ : ℝ → R} {a b : ℝ}
   rw [smul_sub, hII]
   abel
 
+/-- **The two-fold expansion under differentiability hypotheses alone.**  On a compact frequency
+interval where the generator is a unit and the symbol is twice differentiable with continuous second
+derivative, every integrand appearing in the expansion is continuous, so the interval integrability
+hypotheses are automatic. -/
+theorem phase_ibp_twice_of_continuousOn {E Eder C C₁ C₂ : ℝ → R} {a b : ℝ}
+    (hgen : ∀ t ∈ uIcc a b, Eder t = (-(Complex.I) : ℂ) • (E t * C t))
+    (hu : ∀ t ∈ uIcc a b, IsUnit (C t))
+    (hE : ∀ t ∈ uIcc a b, HasDerivAt E (Eder t) t)
+    (hC : ∀ t ∈ uIcc a b, HasDerivAt C (C₁ t) t)
+    (hC₁ : ∀ t ∈ uIcc a b, HasDerivAt C₁ (C₂ t) t)
+    (hC₂ : ContinuousOn C₂ (uIcc a b)) :
+    (∫ t in a..b, E t * 1)
+      = (Complex.I : ℂ) • (E b * invFamily C b - E a * invFamily C a)
+        + (E b * invFamilyProduct C C₁ b - E a * invFamilyProduct C C₁ a)
+        - ∫ t in a..b, E t * invFamilyProductDeriv C C₁ C₂ t := by
+  have hEc : ContinuousOn E (uIcc a b) := fun t ht =>
+    ((hE t ht).continuousAt).continuousWithinAt
+  have hCc : ContinuousOn C (uIcc a b) := fun t ht =>
+    ((hC t ht).continuousAt).continuousWithinAt
+  have hC₁c : ContinuousOn C₁ (uIcc a b) := fun t ht =>
+    ((hC₁ t ht).continuousAt).continuousWithinAt
+  have hDc : ContinuousOn (invFamily C) (uIcc a b) := fun t ht =>
+    ((hasDerivAt_invFamily (hC t ht) (hu t ht)).continuousAt).continuousWithinAt
+  have hEderc : ContinuousOn Eder (uIcc a b) := by
+    refine ContinuousOn.congr ?_ hgen
+    exact ((hEc.mul hCc).const_smul (-(Complex.I) : ℂ))
+  have hDderivc : ContinuousOn (invFamilyDeriv C C₁) (uIcc a b) := by
+    have h : ContinuousOn (fun s => -(invFamily C s * C₁ s * invFamily C s)) (uIcc a b) :=
+      ((hDc.mul hC₁c).mul hDc).neg
+    exact h
+  have hD2c : ContinuousOn (invFamilyDeriv2 C C₁ C₂) (uIcc a b) := by
+    have h : ContinuousOn (fun s =>
+        invFamily C s * C₁ s * invFamily C s * C₁ s * invFamily C s
+          + invFamily C s * C₁ s * invFamily C s * C₁ s * invFamily C s
+          - invFamily C s * C₂ s * invFamily C s) (uIcc a b) :=
+      ((((hDc.mul hC₁c).mul hDc).mul hC₁c).mul hDc).add
+        ((((hDc.mul hC₁c).mul hDc).mul hC₁c).mul hDc) |>.sub ((hDc.mul hC₂).mul hDc)
+    exact h
+  have hPc : ContinuousOn (invFamilyProduct C C₁) (uIcc a b) := by
+    have h : ContinuousOn (fun s => invFamily C s * invFamilyDeriv C C₁ s) (uIcc a b) :=
+      hDc.mul hDderivc
+    exact h
+  have hPderivc : ContinuousOn (invFamilyProductDeriv C C₁ C₂) (uIcc a b) := by
+    have h : ContinuousOn (fun s =>
+        invFamilyDeriv C C₁ s * invFamilyDeriv C C₁ s + invFamily C s * invFamilyDeriv2 C C₁ C₂ s)
+        (uIcc a b) := (hDderivc.mul hDderivc).add (hDc.mul hD2c)
+    exact h
+  exact phase_ibp_twice hgen hu hC hC₁ hE hEderc.intervalIntegrable
+    hDderivc.intervalIntegrable hPderivc.intervalIntegrable
+    (hEderc.mul hDc).intervalIntegrable (hEc.mul hDderivc).intervalIntegrable
+    (hEderc.mul hPc).intervalIntegrable (hEc.mul hPderivc).intervalIntegrable
+
 end GaloisForLFunctions.HTGeometry

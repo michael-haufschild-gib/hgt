@@ -990,3 +990,29 @@ definite route and no literature import.
    and follows from the ordering of the greedy signed values
    (`ProlateSignedLeakageOrdering.abs_sgVal_antitone`) together with the strict separation of the
    rungs.
+
+## Lean progress — the sharp Gaussian threshold
+
+`RHTower/ProlateGaussianSharpRayleigh.lean` (wired, axiom-clean) closes step 1's analytic half at
+the sharp scale, with no Gaussian moment evaluation:
+
+```text
+hasDerivAt_cubeGaussian                (y³e^{−cy²})′ = (3y² − 2cy⁴)e^{−cy²}
+integral_quartic_gaussian              ∫_{-1}^{1}(3x² − 2cx⁴)e^{−cx²} = 2e^{−c}
+integral_gaussian_correction_pos       0 < ∫_{-1}^{1}(3cx² − c²x⁴)e^{−cx²}
+prolate_gaussian_rayleigh_gt_neg_bandwidth
+    −c ∫ v²  <  ∫ v · L_c v ,     v = e^{−cx²/2} ,   for every c > 0
+```
+
+The whole content is one exact primitive plus the split
+`3cx² − c²x⁴ = (3c/2)x² + (c/2)(3x² − 2cx⁴)`, which turns the correction into
+`(3c/2)∫x²e^{−cx²} + c e^{−c}`, visibly positive.  The existing corpus estimate
+`prolate_gaussian_rayleigh_gt` reached only the `c²/2` threshold (`s < 1/2`) and needed `c ≥ 400`
+plus a three-region pointwise analysis; the sharp form needs neither.
+
+What remains of step 1 is to run the corpus's eigenspace-decomposition argument
+(`ProlateLowSeparationMode.exists_even_joint_prolate_eigen_separation_lt_half`) with the threshold
+as a parameter rather than the hard-coded `c²/2`: its body uses `−(c²/2)` only as an opaque
+multiplier, so a threshold-parametric restatement instantiates at `K = c` and yields an even joint
+band/prolate eigenfunction with `−η < c`, i.e. **`μ = c·s < 1`** — the `n = 0` case of the uniform
+bound.

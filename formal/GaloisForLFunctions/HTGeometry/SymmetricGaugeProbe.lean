@@ -23,24 +23,24 @@ noncomputable section
 /-! ### The symmetry orbit of a node family -/
 
 /-- The four points of the symmetry orbit of each node. -/
-def orbitNode {X : Type*} (ν : X → ℂ) : X × Fin 4 → ℂ := fun p =>
+def gaugeProbeOrbitNode {X : Type*} (ν : X → ℂ) : X × Fin 4 → ℂ := fun p =>
   if p.2 = 0 then ν p.1
   else if p.2 = 1 then 1 - ν p.1
   else if p.2 = 2 then (starRingEnd ℂ) (ν p.1)
   else 1 - (starRingEnd ℂ) (ν p.1)
 
-@[simp] theorem orbitNode_zero {X : Type*} (ν : X → ℂ) (x : X) :
-    orbitNode ν (x, 0) = ν x := by simp [orbitNode]
+@[simp] theorem gaugeProbeOrbitNode_zero {X : Type*} (ν : X → ℂ) (x : X) :
+    gaugeProbeOrbitNode ν (x, 0) = ν x := by simp [gaugeProbeOrbitNode]
 
-@[simp] theorem orbitNode_one {X : Type*} (ν : X → ℂ) (x : X) :
-    orbitNode ν (x, 1) = 1 - ν x := by simp [orbitNode]
+@[simp] theorem gaugeProbeOrbitNode_one {X : Type*} (ν : X → ℂ) (x : X) :
+    gaugeProbeOrbitNode ν (x, 1) = 1 - ν x := by simp [gaugeProbeOrbitNode]
 
-@[simp] theorem orbitNode_two {X : Type*} (ν : X → ℂ) (x : X) :
-    orbitNode ν (x, 2) = (starRingEnd ℂ) (ν x) := by simp [orbitNode]
+@[simp] theorem gaugeProbeOrbitNode_two {X : Type*} (ν : X → ℂ) (x : X) :
+    gaugeProbeOrbitNode ν (x, 2) = (starRingEnd ℂ) (ν x) := by simp [gaugeProbeOrbitNode]
 
-@[simp] theorem orbitNode_three {X : Type*} (ν : X → ℂ) (x : X) :
-    orbitNode ν (x, 3) = 1 - (starRingEnd ℂ) (ν x) := by
-  simp only [orbitNode]
+@[simp] theorem gaugeProbeOrbitNode_three {X : Type*} (ν : X → ℂ) (x : X) :
+    gaugeProbeOrbitNode ν (x, 3) = 1 - (starRingEnd ℂ) (ν x) := by
+  simp only [gaugeProbeOrbitNode]
   rw [if_neg (by decide), if_neg (by decide), if_neg (by decide)]
 
 /-! ### The symmetric probe -/
@@ -115,7 +115,7 @@ theorem windowProbe_jet_apply' (m N D : ℕ) {Y : Type*} [Fintype Y] (μ : Y →
 
 /-- **The constrained symmetric probe is onto the jets at a free orbit.** -/
 theorem surjective_symProbe_jet [DecidableEq X] (Hp : Polynomial ℂ) (m N : ℕ) {ν : X → ℂ}
-    (hinj : Function.Injective (orbitNode ν)) (hne : ∀ p, orbitNode ν p ≠ 0)
+    (hinj : Function.Injective (gaugeProbeOrbitNode ν)) (hne : ∀ p, gaugeProbeOrbitNode ν p ≠ 0)
     (hHp : ∀ x, Hp.eval (ν x) ≠ 0) :
     Function.Surjective
       ((symProbe X Hp m N (Fintype.card (X × Fin 4) * m)).jet ν) := by
@@ -136,7 +136,7 @@ theorem surjective_symProbe_jet [DecidableEq X] (Hp : Polynomial ℂ) (m N : ℕ
   refine ⟨c, ?_⟩
   set Q : Polynomial ℂ := windowLin N D c with hQdef
   have hjetQ : ∀ (p : X × Fin 4) (k : Fin m),
-      (Polynomial.derivative^[(k : ℕ)] Q).eval (orbitNode ν p) = B p k := by
+      (Polynomial.derivative^[(k : ℕ)] Q).eval (gaugeProbeOrbitNode ν p) = B p k := by
     intro p k
     have := congrFun (congrFun hc p) k
     rw [windowProbe_jet_apply'] at this
@@ -151,26 +151,26 @@ theorem surjective_symProbe_jet [DecidableEq X] (Hp : Polynomial ℂ) (m N : ℕ
     rw [iterate_derivative_avgPoly_eval]
     have e0 : (Polynomial.derivative^[(k : ℕ)] Q).eval (ν x) = β x k := by
       have := hjetQ (x, 0) k
-      rw [orbitNode_zero] at this
+      rw [gaugeProbeOrbitNode_zero] at this
       rw [this, hB]
       simp
     have e1 : (Polynomial.derivative^[(k : ℕ)] Q).eval (1 - ν x)
         = (-1 : ℂ) ^ (k : ℕ) * β x k := by
       have := hjetQ (x, 1) k
-      rw [orbitNode_one] at this
+      rw [gaugeProbeOrbitNode_one] at this
       rw [this, hB]
       simp
     have e2 : (Polynomial.derivative^[(k : ℕ)] Q).eval ((starRingEnd ℂ) (ν x))
         = (starRingEnd ℂ) (β x k) := by
       have := hjetQ (x, 2) k
-      rw [orbitNode_two] at this
+      rw [gaugeProbeOrbitNode_two] at this
       rw [this, hB]
       simp only
       rw [if_neg (by decide), if_neg (by decide), if_pos (by decide)]
     have e3 : (Polynomial.derivative^[(k : ℕ)] Q).eval (1 - (starRingEnd ℂ) (ν x))
         = (-1 : ℂ) ^ (k : ℕ) * (starRingEnd ℂ) (β x k) := by
       have := hjetQ (x, 3) k
-      rw [orbitNode_three] at this
+      rw [gaugeProbeOrbitNode_three] at this
       rw [this, hB]
       simp only
       rw [if_neg (by decide), if_neg (by decide), if_neg (by decide)]

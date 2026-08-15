@@ -43,14 +43,14 @@ theorem orbitCoef_injective : Function.Injective orbitCoef := by
   fin_cases j <;> fin_cases k <;>
     simp_all [orbitCoef, Complex.ext_iff] <;> norm_num at hjk
 
-theorem orbitNode_diag {X : Type*} (a : X → ℂ) (t : ℝ) (q : X × Fin 4) :
-    orbitNode (fun x => (t : ℂ) * (1 + Complex.I) + a x) q
+theorem gaugeProbeOrbitNode_diag {X : Type*} (a : X → ℂ) (t : ℝ) (q : X × Fin 4) :
+    gaugeProbeOrbitNode (fun x => (t : ℂ) * (1 + Complex.I) + a x) q
       = orbitCoef q.2 * (t : ℂ) + orbitBase a q := by
   have hconj : (starRingEnd ℂ) ((t : ℂ) * (1 + Complex.I))
       = (t : ℂ) * (1 - Complex.I) := by
     rw [map_mul, Complex.conj_ofReal, map_add, map_one, Complex.conj_I]
     ring
-  unfold orbitNode orbitBase orbitCoef
+  unfold gaugeProbeOrbitNode orbitBase orbitCoef
   by_cases h0 : q.2 = 0
   · rw [if_pos h0, if_pos h0, if_pos h0]; ring
   · rw [if_neg h0, if_neg h0, if_neg h0]
@@ -109,10 +109,10 @@ divisor of the source, and the passport set. -/
 def symGoodCombinedRowPacketAmbientSet (W : ℂ → ℂ) (A : Finset ℂ)
     (packet : InjectiveProjectiveRowPacket row) : Set (ι → ℂ) :=
   (⋂ p : ((row × ι) × Fin 4) × ((row × ι) × Fin 4), ⋂ _ : p.1 ≠ p.2,
-      {shift : ι → ℂ | orbitNode (fun x : row × ι => packet.1 x.1 + shift x.2) p.1
-        ≠ orbitNode (fun x : row × ι => packet.1 x.1 + shift x.2) p.2}) ∩
+      {shift : ι → ℂ | gaugeProbeOrbitNode (fun x : row × ι => packet.1 x.1 + shift x.2) p.1
+        ≠ gaugeProbeOrbitNode (fun x : row × ι => packet.1 x.1 + shift x.2) p.2}) ∩
     ((⋂ q : (row × ι) × Fin 4,
-        {shift : ι → ℂ | orbitNode (fun x : row × ι => packet.1 x.1 + shift x.2) q ≠ 0}) ∩
+        {shift : ι → ℂ | gaugeProbeOrbitNode (fun x : row × ι => packet.1 x.1 + shift x.2) q ≠ 0}) ∩
       ((⋂ x : row × ι, {shift : ι → ℂ | W (packet.1 x.1 + shift x.2) ≠ 0}) ∩
         (⋂ x : row × ι, ⋂ a ∈ A, {shift : ι → ℂ | packet.1 x.1 + shift x.2 ≠ a})))
 
@@ -122,13 +122,13 @@ def symGoodCombinedRowPacketSet (W : ℂ → ℂ) (A : Finset ℂ)
   Subtype.val ⁻¹' symGoodCombinedRowPacketAmbientSet (ι := ι) W A packet
 
 omit [Fintype row] [Fintype ι] in
-theorem continuous_orbitNode_shift (packet : InjectiveProjectiveRowPacket row)
+theorem continuous_gaugeProbeOrbitNode_shift (packet : InjectiveProjectiveRowPacket row)
     (q : (row × ι) × Fin 4) :
     Continuous
-      (fun shift : ι → ℂ => orbitNode (fun x : row × ι => packet.1 x.1 + shift x.2) q) := by
+      (fun shift : ι → ℂ => gaugeProbeOrbitNode (fun x : row × ι => packet.1 x.1 + shift x.2) q) := by
   have hbase : Continuous (fun shift : ι → ℂ => packet.1 q.1.1 + shift q.1.2) :=
     continuous_const.add (continuous_apply q.1.2)
-  unfold orbitNode
+  unfold gaugeProbeOrbitNode
   split_ifs
   · exact hbase
   · exact continuous_const.sub hbase
@@ -143,9 +143,9 @@ theorem symGoodCombinedRowPacketAmbientSet_isOpen {W : ℂ → ℂ} (hW : Contin
     (IsOpen.inter (isOpen_iInter_of_finite fun q => ?_)
       (IsOpen.inter (isOpen_iInter_of_finite fun x => ?_)
         (isOpen_iInter_of_finite fun x => isOpen_biInter_finset fun a _ => ?_)))
-  · exact isOpen_ne_fun (continuous_orbitNode_shift packet p.1)
-      (continuous_orbitNode_shift packet p.2)
-  · exact isOpen_ne_fun (continuous_orbitNode_shift packet q) continuous_const
+  · exact isOpen_ne_fun (continuous_gaugeProbeOrbitNode_shift packet p.1)
+      (continuous_gaugeProbeOrbitNode_shift packet p.2)
+  · exact isOpen_ne_fun (continuous_gaugeProbeOrbitNode_shift packet q) continuous_const
   · exact isOpen_ne_fun (hW.comp (continuous_const.add (continuous_apply x.2))) continuous_const
   · exact isOpen_ne_fun (continuous_const.add (continuous_apply x.2)) continuous_const
 
@@ -159,7 +159,7 @@ omit [Fintype row] [Fintype ι] in
 theorem orbitInjective_of_mem_symGood {W : ℂ → ℂ} {A : Finset ℂ}
     {packet : InjectiveProjectiveRowPacket row} {shift : ι → ℂ}
     (h : shift ∈ symGoodCombinedRowPacketAmbientSet W A packet) :
-    Function.Injective (orbitNode (fun x : row × ι => packet.1 x.1 + shift x.2)) := by
+    Function.Injective (gaugeProbeOrbitNode (fun x : row × ι => packet.1 x.1 + shift x.2)) := by
   intro p q hpq
   by_contra hne
   exact (Set.mem_iInter.mp (Set.mem_iInter.mp h.1 (p, q)) hne) hpq
@@ -169,7 +169,7 @@ theorem orbitNe_zero_of_mem_symGood {W : ℂ → ℂ} {A : Finset ℂ}
     {packet : InjectiveProjectiveRowPacket row} {shift : ι → ℂ}
     (h : shift ∈ symGoodCombinedRowPacketAmbientSet W A packet)
     (q : (row × ι) × Fin 4) :
-    orbitNode (fun x : row × ι => packet.1 x.1 + shift x.2) q ≠ 0 :=
+    gaugeProbeOrbitNode (fun x : row × ι => packet.1 x.1 + shift x.2) q ≠ 0 :=
   Set.mem_iInter.mp h.2.1 q
 
 omit [Fintype row] [Fintype ι] in
@@ -297,11 +297,11 @@ theorem injectiveShiftConfigurations_covered_by_symGoodCombinedRowPackets
     show z + offset x.1 + shift.1 x.2 = z + (offset x.1 + shift.1 x.2)
     ring
   have horb : ∀ q : (row × ι) × Fin 4,
-      orbitNode (fun x : row × ι => (fun r : row => z + offset r) x.1 + shift.1 x.2) q
+      gaugeProbeOrbitNode (fun x : row × ι => (fun r : row => z + offset r) x.1 + shift.1 x.2) q
         = orbitCoef q.2 * (t : ℂ) + orbitBase a q := by
     intro q
     rw [hnodes, hzdef]
-    exact orbitNode_diag a t q
+    exact gaugeProbeOrbitNode_diag a t q
   refine ⟨?_, ?_, ?_, ?_⟩
   · refine Set.mem_iInter.mpr fun p => Set.mem_iInter.mpr fun hp hcon => ?_
     refine ht (Or.inl (Set.mem_iUnion.mpr ⟨p, Set.mem_iUnion.mpr ⟨hp, ?_⟩⟩))

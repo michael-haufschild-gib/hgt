@@ -25,7 +25,7 @@ namespace RHTower
 
 noncomputable section
 
-noncomputable local instance :
+noncomputable local instance instDecidableEqCrossPrimePacketIndexOneLegTrace :
     DecidableEq DeningerCalderonWittCrossPrimePacketIndex :=
   Classical.decEq _
 
@@ -50,7 +50,8 @@ def deningerBigWittCrossPairPacketNatEmbedding : ℕ ↪ DeningerCalderonWittCro
       congrArg (fun i : DeningerCalderonWittCrossPrimePacketIndex => i.1.1) h
     exact deningerBigWittCrossPairNthPrime_val_strictMono.injective (congrArg Subtype.val hfirst)
 
-local instance : Infinite DeningerCalderonWittCrossPrimePacketIndex :=
+local instance instInfiniteCrossPrimePacketIndexOneLegTrace :
+    Infinite DeningerCalderonWittCrossPrimePacketIndex :=
   Infinite.of_injective deningerBigWittCrossPairPacketNatEmbedding deningerBigWittCrossPairPacketNatEmbedding.injective
 
 def deningerBigWittCrossPairPacketIndicator

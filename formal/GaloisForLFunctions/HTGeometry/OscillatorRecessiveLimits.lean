@@ -52,7 +52,7 @@ theorem not_deriv_le_neg_of_nonneg {f f' : ℝ → ℝ} {b eps : ℝ} (heps : 0 
   nlinarith
 
 /-- A continuous nowhere-zero function on a half line has a constant sign. -/
-theorem sign_const_of_ne_zero {v : ℝ → ℝ} {b : ℝ} (hc : Continuous v)
+theorem sign_locally_const_of_ne_zero {v : ℝ → ℝ} {b : ℝ} (hc : Continuous v)
     (hnz : ∀ x ∈ Ici b, v x ≠ 0) :
     (∀ x ∈ Ici b, 0 < v x) ∨ (∀ x ∈ Ici b, v x < 0) := by
   rcases lt_or_gt_of_ne (hnz b (Set.mem_Ici.2 le_rfl)) with hneg | hpos
@@ -158,7 +158,7 @@ theorem tendsto_deriv_zero_of_pos {mu : ℝ} {v v' : ℝ → ℝ} {b : ℝ} (hb 
 
 /-- **The weighted square tends to zero.**  Nonnegative energy bounds `(ξ² − μ)v²` by `v′²`. -/
 theorem tendsto_weighted_sq_zero {mu : ℝ} {v v' : ℝ → ℝ} {b : ℝ}
-    (hE : ∀ x ∈ Ici b, 0 ≤ oscEnergy mu v v' x)
+    (hE : ∀ x ∈ Ici b, 0 ≤ oscillatorMonotoneEnergy mu v v' x)
     (hmu : ∀ x ∈ Ici b, mu ≤ x ^ 2)
     (hv'0 : Tendsto v' atTop (𝓝 0)) :
     Tendsto (fun x => (x ^ 2 - mu) * v x ^ 2) atTop (𝓝 0) := by
@@ -171,7 +171,7 @@ theorem tendsto_weighted_sq_zero {mu : ℝ} {v v' : ℝ → ℝ} {b : ℝ}
     nlinarith [sq_nonneg (v x)]
   · filter_upwards [eventually_ge_atTop b] with x hx
     have h := hE x (Set.mem_Ici.2 hx)
-    rw [oscEnergy] at h
+    rw [oscillatorMonotoneEnergy] at h
     linarith
 
 /-- The linear moment of the square tends to zero. -/

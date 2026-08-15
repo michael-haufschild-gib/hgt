@@ -189,7 +189,7 @@ end HeavySector
 section FidelityMoment
 
 /-- The spectral phase orbit of an occupation profile. -/
-def phaseOrbit (p : d → ℝ) (x : d → ℝ) : d → ℂ :=
+def torusReplicaPhaseOrbit (p : d → ℝ) (x : d → ℝ) : d → ℂ :=
   fun j => (Real.sqrt (p j) : ℂ) * charLift (Pi.single j 1) x
 
 theorem occupationSet_eq_piAntidiag (r : ℕ) :
@@ -216,23 +216,23 @@ theorem multinomial_le_factorial_of_mem {r : ℕ} {α : d → ℕ} (hα : α ∈
   nlinarith [Nat.multinomial_pos (Finset.univ : Finset d) α]
 
 /-- The inner product of a spectral phase orbit with a target is a character combination. -/
-theorem finiteComplexInner_phaseOrbit (p : d → ℝ) (x : d → ℝ) (z : d → ℂ) :
-    finiteComplexInner (phaseOrbit p x) z =
+theorem finiteComplexInner_torusReplicaPhaseOrbit (p : d → ℝ) (x : d → ℝ) (z : d → ℂ) :
+    finiteComplexInner (torusReplicaPhaseOrbit p x) z =
       ∑ j, ((Real.sqrt (p j) : ℂ) * z j) * charLift (-(Pi.single j 1)) x := by
   rw [finiteComplexInner]
   refine Finset.sum_congr rfl fun j _ => ?_
-  rw [phaseOrbit, map_mul, Complex.conj_ofReal, ← charLift_neg_index]
+  rw [torusReplicaPhaseOrbit, map_mul, Complex.conj_ofReal, ← charLift_neg_index]
   ring
 
 /-- The replica power of that inner product is a character combination over occupation
 multi-indices. -/
-theorem inner_phaseOrbit_pow (p : d → ℝ) (x : d → ℝ) (z : d → ℂ) (r : ℕ) :
-    (finiteComplexInner (phaseOrbit p x) z) ^ r =
+theorem inner_torusReplicaPhaseOrbit_pow (p : d → ℝ) (x : d → ℝ) (z : d → ℂ) (r : ℕ) :
+    (finiteComplexInner (torusReplicaPhaseOrbit p x) z) ^ r =
       trigLift (occupationSet d r) (fun α => -(occupationFreq α))
         (fun α => (Nat.multinomial Finset.univ α : ℂ) *
           ∏ j, ((Real.sqrt (p j) : ℂ) * z j) ^ α j) x := by
   classical
-  rw [finiteComplexInner_phaseOrbit p x z,
+  rw [finiteComplexInner_torusReplicaPhaseOrbit p x z,
     Finset.sum_pow_eq_sum_piAntidiag Finset.univ
       (fun j => ((Real.sqrt (p j) : ℂ) * z j) * charLift (-(Pi.single j 1)) x) r,
     ← occupationSet_eq_piAntidiag, trigLift]
@@ -266,14 +266,14 @@ theorem inner_phaseOrbit_pow (p : d → ℝ) (x : d → ℝ) (z : d → ℂ) (r 
 moment of the spectral phase orbit by the replica factorial times the cap to the replica order. -/
 theorem integral_box_fidelity_pow_le {p : d → ℝ} (hp : ∀ j, 0 ≤ p j) {τ : ℝ}
     (hτ : ∀ j, p j ≤ τ) (hτ0 : 0 ≤ τ) {z : d → ℂ} (hz : ∑ j, ‖z j‖ ^ 2 ≤ 1) (r : ℕ) :
-    (∫ x in torusBox d, finitePureStateFidelity (phaseOrbit p x) z ^ r) ≤
+    (∫ x in torusBox d, finitePureStateFidelity (torusReplicaPhaseOrbit p x) z ^ r) ≤
       (r.factorial : ℝ) * τ ^ r := by
   classical
-  have hpt : ∀ x : d → ℝ, finitePureStateFidelity (phaseOrbit p x) z ^ r =
-      ‖(finiteComplexInner (phaseOrbit p x) z) ^ r‖ ^ 2 := by
+  have hpt : ∀ x : d → ℝ, finitePureStateFidelity (torusReplicaPhaseOrbit p x) z ^ r =
+      ‖(finiteComplexInner (torusReplicaPhaseOrbit p x) z) ^ r‖ ^ 2 := by
     intro x
     rw [finitePureStateFidelity, norm_pow, ← pow_mul, ← pow_mul, mul_comm 2 r]
-  simp_rw [hpt, inner_phaseOrbit_pow p _ z r]
+  simp_rw [hpt, inner_torusReplicaPhaseOrbit_pow p _ z r]
   rw [integral_box_normSq_trigLift_of_injOn _ _ _ (fun α _ β _ h => by
     have : occupationFreq α = occupationFreq β := by
       have := congrArg (fun n : d → ℤ => -n) h
@@ -363,20 +363,20 @@ theorem sum_heavyWeights (p : d → ℝ) (τ : ℝ) :
   rw [heavySector, Finset.sum_filter]
   exact Finset.sum_congr rfl fun j _ => rfl
 
-theorem phaseOrbit_add_split (p : d → ℝ) (τ : ℝ) (x : d → ℝ) (j : d) :
-    phaseOrbit p x j =
-      phaseOrbit (heavyWeights p τ) x j + phaseOrbit (lightWeights p τ) x j := by
-  rw [phaseOrbit, phaseOrbit, phaseOrbit, heavyWeights, lightWeights]
+theorem torusReplicaPhaseOrbit_add_split (p : d → ℝ) (τ : ℝ) (x : d → ℝ) (j : d) :
+    torusReplicaPhaseOrbit p x j =
+      torusReplicaPhaseOrbit (heavyWeights p τ) x j + torusReplicaPhaseOrbit (lightWeights p τ) x j := by
+  rw [torusReplicaPhaseOrbit, torusReplicaPhaseOrbit, torusReplicaPhaseOrbit, heavyWeights, lightWeights]
   by_cases h : τ < p j
   · rw [if_pos h, if_pos h]
     simp
   · rw [if_neg h, if_neg h]
     simp
 
-theorem sum_normSq_phaseOrbit {q : d → ℝ} (hq : ∀ j, 0 ≤ q j) (x : d → ℝ) :
-    ∑ j, ‖phaseOrbit q x j‖ ^ 2 = ∑ j, q j := by
+theorem sum_normSq_torusReplicaPhaseOrbit {q : d → ℝ} (hq : ∀ j, 0 ≤ q j) (x : d → ℝ) :
+    ∑ j, ‖torusReplicaPhaseOrbit q x j‖ ^ 2 = ∑ j, q j := by
   refine Finset.sum_congr rfl fun j _ => ?_
-  rw [phaseOrbit, norm_mul, norm_charLift, mul_one, Complex.norm_real,
+  rw [torusReplicaPhaseOrbit, norm_mul, norm_charLift, mul_one, Complex.norm_real,
     Real.norm_of_nonneg (Real.sqrt_nonneg _), Real.sq_sqrt (hq j)]
 
 theorem norm_finiteComplexInner_le (u v : d → ℂ) :
@@ -423,19 +423,19 @@ capture threshold. -/
 theorem fidelity_lightWeights_ge {p : d → ℝ} (hp : ∀ j, 0 ≤ p j) {τ a : ℝ} (ha : 0 < a)
     (hheavy : ∑ j, heavyWeights p τ j ≤ a / 4)
     {z : d → ℂ} (hz : ∑ j, ‖z j‖ ^ 2 ≤ 1) {x : d → ℝ}
-    (hcap : a ≤ finitePureStateFidelity (phaseOrbit p x) z) :
-    a / 4 ≤ finitePureStateFidelity (phaseOrbit (lightWeights p τ) x) z := by
-  have hsplit : finiteComplexInner (phaseOrbit p x) z =
-      finiteComplexInner (phaseOrbit (heavyWeights p τ) x) z +
-        finiteComplexInner (phaseOrbit (lightWeights p τ) x) z := by
+    (hcap : a ≤ finitePureStateFidelity (torusReplicaPhaseOrbit p x) z) :
+    a / 4 ≤ finitePureStateFidelity (torusReplicaPhaseOrbit (lightWeights p τ) x) z := by
+  have hsplit : finiteComplexInner (torusReplicaPhaseOrbit p x) z =
+      finiteComplexInner (torusReplicaPhaseOrbit (heavyWeights p τ) x) z +
+        finiteComplexInner (torusReplicaPhaseOrbit (lightWeights p τ) x) z := by
     rw [finiteComplexInner, finiteComplexInner, finiteComplexInner, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun j _ => ?_
-    rw [phaseOrbit_add_split p τ x j, map_add]
+    rw [torusReplicaPhaseOrbit_add_split p τ x j, map_add]
     ring
-  have hheavyNorm : ‖finiteComplexInner (phaseOrbit (heavyWeights p τ) x) z‖ ≤
+  have hheavyNorm : ‖finiteComplexInner (torusReplicaPhaseOrbit (heavyWeights p τ) x) z‖ ≤
       Real.sqrt a / 2 := by
     refine le_trans (norm_finiteComplexInner_le _ _) ?_
-    rw [sum_normSq_phaseOrbit (heavyWeights_nonneg hp τ) x]
+    rw [sum_normSq_torusReplicaPhaseOrbit (heavyWeights_nonneg hp τ) x]
     have h1 : Real.sqrt (∑ j, heavyWeights p τ j) ≤ Real.sqrt (a / 4) :=
       Real.sqrt_le_sqrt hheavy
     have h2 : Real.sqrt (∑ j, ‖z j‖ ^ 2) ≤ 1 := by
@@ -454,22 +454,22 @@ theorem fidelity_lightWeights_ge {p : d → ℝ} (hp : ∀ j, 0 ≤ p j) {τ a :
         ≤ Real.sqrt (a / 4) * 1 :=
           mul_le_mul h1 h2 (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
       _ = Real.sqrt a / 2 := by rw [mul_one, h3]
-  have hfull : Real.sqrt a ≤ ‖finiteComplexInner (phaseOrbit p x) z‖ := by
-    rw [show ‖finiteComplexInner (phaseOrbit p x) z‖ =
-        Real.sqrt (‖finiteComplexInner (phaseOrbit p x) z‖ ^ 2) from
+  have hfull : Real.sqrt a ≤ ‖finiteComplexInner (torusReplicaPhaseOrbit p x) z‖ := by
+    rw [show ‖finiteComplexInner (torusReplicaPhaseOrbit p x) z‖ =
+        Real.sqrt (‖finiteComplexInner (torusReplicaPhaseOrbit p x) z‖ ^ 2) from
       (Real.sqrt_sq (norm_nonneg _)).symm]
     exact Real.sqrt_le_sqrt hcap
   have hlight : Real.sqrt a / 2 ≤
-      ‖finiteComplexInner (phaseOrbit (lightWeights p τ) x) z‖ := by
-    have htri : ‖finiteComplexInner (phaseOrbit p x) z‖ ≤
-        ‖finiteComplexInner (phaseOrbit (heavyWeights p τ) x) z‖ +
-          ‖finiteComplexInner (phaseOrbit (lightWeights p τ) x) z‖ := by
+      ‖finiteComplexInner (torusReplicaPhaseOrbit (lightWeights p τ) x) z‖ := by
+    have htri : ‖finiteComplexInner (torusReplicaPhaseOrbit p x) z‖ ≤
+        ‖finiteComplexInner (torusReplicaPhaseOrbit (heavyWeights p τ) x) z‖ +
+          ‖finiteComplexInner (torusReplicaPhaseOrbit (lightWeights p τ) x) z‖ := by
       rw [hsplit]
       exact norm_add_le _ _
     linarith
   rw [finitePureStateFidelity]
   have hsq : (Real.sqrt a / 2) ^ 2 ≤
-      ‖finiteComplexInner (phaseOrbit (lightWeights p τ) x) z‖ ^ 2 :=
+      ‖finiteComplexInner (torusReplicaPhaseOrbit (lightWeights p τ) x) z‖ ^ 2 :=
     pow_le_pow_left₀ (by positivity) hlight 2
   have hval : (Real.sqrt a / 2) ^ 2 = a / 4 := by
     rw [div_pow, Real.sq_sqrt ha.le]

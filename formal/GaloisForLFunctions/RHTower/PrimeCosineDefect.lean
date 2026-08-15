@@ -37,7 +37,7 @@ theorem abs_cos_sub_one_le_two (x : ℝ) : |Real.cos x - 1| ≤ 2 := by
   rw [abs_le]
   constructor <;> linarith
 
-theorem primesLE_subset {Z Y : ℝ} (hZY : Z ≤ Y) :
+private theorem primesLE_subset {Z Y : ℝ} (hZY : Z ≤ Y) :
     Nat.primesLE ⌊Z⌋₊ ⊆ Nat.primesLE ⌊Y⌋₊ := by
   intro p hp
   rw [Nat.mem_primesLE] at hp ⊢

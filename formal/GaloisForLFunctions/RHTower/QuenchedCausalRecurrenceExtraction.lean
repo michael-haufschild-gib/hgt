@@ -98,14 +98,14 @@ theorem causalAccessibility_eq_one_iff (independent : α → α → Prop)
 
 /-- **Recurrence lower bound.**  The quenched replica mass is at least the source mass of the
 recurrence sector. -/
-theorem measureReal_recurrent_le_quenchedReplicaMass (independent : α → α → Prop)
+theorem measureReal_recurrent_le_quenchedActionReplicaMass (independent : α → α → Prop)
     (hsymm : ∀ x y, independent x y → independent y x) (Δ : ℕ)
     (hdegree : ∀ a, incidentEdgeCount independent a ≤ Δ)
     {z : ℝ} (hz0 : 0 ≤ z) (hz : 2 ^ Δ * z < 1)
     {S : Trace independent → Set X} (hS : ∀ u, MeasurableSet (S u)) {x : Ω → X}
     (hx : Measurable x) (ρ : Measure Ω) [IsProbabilityMeasure ρ] (r : ℕ) :
     ρ.real (x ⁻¹' S 1) ≤
-      quenchedReplicaMass ρ (fun H => causalAccessibility independent z S (x H)) r := by
+      quenchedActionReplicaMass ρ (fun H => causalAccessibility independent z S (x H)) r := by
   classical
   have hA : MeasurableSet (x ⁻¹' S 1) := hx (hS 1)
   have hpoint : ∀ H : Ω, Set.indicator (x ⁻¹' S 1) (1 : Ω → ℝ) H ≤
@@ -125,13 +125,13 @@ theorem measureReal_recurrent_le_quenchedReplicaMass (independent : α → α �
 
 /-- **Recurrence upper bound.**  Off the recurrence sector the replica mass decays geometrically in
 the replica order. -/
-theorem quenchedReplicaMass_le_recurrent_add (independent : α → α → Prop)
+theorem quenchedActionReplicaMass_le_recurrent_add (independent : α → α → Prop)
     (hsymm : ∀ x y, independent x y → independent y x) (Δ : ℕ)
     (hdegree : ∀ a, incidentEdgeCount independent a ≤ Δ)
     {z : ℝ} (hz0 : 0 ≤ z) (hz : 2 ^ Δ * z < 1)
     {S : Trace independent → Set X} (hS : ∀ u, MeasurableSet (S u)) {x : Ω → X}
     (hx : Measurable x) (ρ : Measure Ω) [IsProbabilityMeasure ρ] (r : ℕ) :
-    quenchedReplicaMass ρ (fun H => causalAccessibility independent z S (x H)) r ≤
+    quenchedActionReplicaMass ρ (fun H => causalAccessibility independent z S (x H)) r ≤
       ρ.real (x ⁻¹' S 1) +
         ρ.real ((x ⁻¹' S 1)ᶜ) *
           (1 - traceWeight independent z (1 : Trace independent)) ^ r := by
@@ -171,14 +171,14 @@ theorem quenchedReplicaMass_le_recurrent_add (independent : α → α → Prop)
 
 /-- **Exact replica limit.**  The quenched replica mass converges to the source mass of the
 recurrence sector. -/
-theorem tendsto_quenchedReplicaMass_recurrent (independent : α → α → Prop)
+theorem tendsto_quenchedActionReplicaMass_recurrent (independent : α → α → Prop)
     (hsymm : ∀ x y, independent x y → independent y x) (Δ : ℕ)
     (hdegree : ∀ a, incidentEdgeCount independent a ≤ Δ)
     {z : ℝ} (hz0 : 0 ≤ z) (hz : 2 ^ Δ * z < 1)
     {S : Trace independent → Set X} (hS : ∀ u, MeasurableSet (S u)) {x : Ω → X}
     (hx : Measurable x) (ρ : Measure Ω) [IsProbabilityMeasure ρ] :
     Tendsto
-      (fun r : ℕ => quenchedReplicaMass ρ (fun H => causalAccessibility independent z S (x H)) r)
+      (fun r : ℕ => quenchedActionReplicaMass ρ (fun H => causalAccessibility independent z S (x H)) r)
       atTop (𝓝 (ρ.real (x ⁻¹' S 1))) := by
   have hp0 := traceWeight_one_pos independent hsymm Δ hdegree hz0 hz
   have hp1 := traceWeight_one_le_one independent hsymm Δ hdegree hz0 hz
@@ -193,9 +193,9 @@ theorem tendsto_quenchedReplicaMass_recurrent (independent : α → α → Prop)
     have := (hgeom.const_mul (ρ.real ((x ⁻¹' S 1)ᶜ))).const_add (ρ.real (x ⁻¹' S 1))
     simpa using this
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hupper
-    (fun r => measureReal_recurrent_le_quenchedReplicaMass independent hsymm Δ hdegree hz0 hz
+    (fun r => measureReal_recurrent_le_quenchedActionReplicaMass independent hsymm Δ hdegree hz0 hz
       hS hx ρ r)
-    (fun r => quenchedReplicaMass_le_recurrent_add independent hsymm Δ hdegree hz0 hz hS hx ρ r)
+    (fun r => quenchedActionReplicaMass_le_recurrent_add independent hsymm Δ hdegree hz0 hz hS hx ρ r)
 
 end RecurrenceExtraction
 

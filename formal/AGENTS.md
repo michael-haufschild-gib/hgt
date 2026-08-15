@@ -35,7 +35,10 @@ both are kept (see `PNTPlus/PROVENANCE.md` for the overlap map).  Parts of
 2. Read `LEAN_OVERVIEW.md` for the current map.
 3. Search before proving:
    `../scripts/formal_tools.py research "<query>"`
-4. Use `rg` for exact syntax:
+   Ranked BM25 search over every declaration, docstring and gap marker; it
+   re-syncs changed files on each run, so newly added modules are found without
+   regenerating anything.  See "How Search Works Here" in `README.md`.
+4. Use `rg` for exact syntax or for proof-body text the index does not cover:
    `rg "<name-or-concept>" GaloisForLFunctions`
 
 ## Build And Check

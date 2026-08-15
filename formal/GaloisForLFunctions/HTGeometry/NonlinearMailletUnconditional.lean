@@ -70,7 +70,7 @@ theorem coeff_aeval_eulerJetVector_truncPowerSeries_eq {m N : ℕ}
 
 /-! ### A minimal annihilator -/
 
-theorem totalDegree_pderiv_lt {ι : Type*} [DecidableEq ι] {R : Type*} [CommRing R]
+private theorem totalDegree_pderiv_lt {ι : Type*} [DecidableEq ι] {R : Type*} [CommRing R]
     {P : MvPolynomial ι R} {j : ι} (h : MvPolynomial.pderiv j P ≠ 0) :
     (MvPolynomial.pderiv j P).totalDegree < P.totalDegree := by
   classical

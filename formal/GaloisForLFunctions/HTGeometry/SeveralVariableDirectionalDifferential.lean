@@ -44,20 +44,20 @@ theorem analyticOnNhd_dirDerivFun (w : E) {U : Set E} {f : E → ℂ}
   exact (happ.comp hf.fderiv fun z _ => Set.mem_univ _)
 
 /-- Differentiation along `w` on germs. -/
-def dirGermDeriv (w : E) {U : Set E} (hUo : IsOpen U) :
+def svDirGermDeriv (w : E) {U : Set E} (hUo : IsOpen U) :
     Germ (𝓟 U) ℂ → Germ (𝓟 U) ℂ :=
   Germ.map' (dirDerivFun w) (by
     intro f g hfg
     exact eventually_principal.mpr
       (dirDerivFun_congr w hUo (eventually_principal.mp hfg)))
 
-@[simp] theorem dirGermDeriv_coe (w : E) {U : Set E} (hUo : IsOpen U) (f : E → ℂ) :
-    dirGermDeriv w hUo (f : Germ (𝓟 U) ℂ) = (dirDerivFun w f : Germ (𝓟 U) ℂ) := rfl
+@[simp] theorem svDirGermDeriv_coe (w : E) {U : Set E} (hUo : IsOpen U) (f : E → ℂ) :
+    svDirGermDeriv w hUo (f : Germ (𝓟 U) ℂ) = (dirDerivFun w f : Germ (𝓟 U) ℂ) := rfl
 
 /-- Differentiation along `w` on analytic germs. -/
 def analyticSubringGenDirDeriv (w : E) {U : Set E} (hUo : IsOpen U)
     (a : analyticSubringGen U) : analyticSubringGen U := by
-  refine ⟨dirGermDeriv w hUo a.1, ?_⟩
+  refine ⟨svDirGermDeriv w hUo a.1, ?_⟩
   obtain ⟨f, hf, hfa⟩ := a.2
   refine ⟨dirDerivFun w f, analyticOnNhd_dirDerivFun w hf, ?_⟩
   rw [← hfa]
@@ -66,7 +66,7 @@ def analyticSubringGenDirDeriv (w : E) {U : Set E} (hUo : IsOpen U)
 @[simp] theorem analyticSubringGenDirDeriv_coe (w : E) {U : Set E} (hUo : IsOpen U)
     (a : analyticSubringGen U) :
     (analyticSubringGenDirDeriv w hUo a : Germ (𝓟 U) ℂ) =
-      dirGermDeriv w hUo (a : Germ (𝓟 U) ℂ) := rfl
+      svDirGermDeriv w hUo (a : Germ (𝓟 U) ℂ) := rfl
 
 theorem analyticSubringGenDirDeriv_zero (w : E) {U : Set E} (hUo : IsOpen U) :
     analyticSubringGenDirDeriv w hUo (0 : analyticSubringGen U) = 0 := by
@@ -87,12 +87,12 @@ theorem analyticSubringGenDirDeriv_add (w : E) {U : Set E} (hUo : IsOpen U)
   obtain ⟨f, hf, hfa⟩ := a.2
   obtain ⟨g, hg, hgb⟩ := b.2
   apply Subtype.ext
-  change dirGermDeriv w hUo ((a : Germ (𝓟 U) ℂ) + b) =
-    dirGermDeriv w hUo a + dirGermDeriv w hUo b
+  change svDirGermDeriv w hUo ((a : Germ (𝓟 U) ℂ) + b) =
+    svDirGermDeriv w hUo a + svDirGermDeriv w hUo b
   rw [← hfa, ← hgb]
-  change dirGermDeriv w hUo (↑(f + g) : Germ (𝓟 U) ℂ) =
-    dirGermDeriv w hUo (↑f : Germ (𝓟 U) ℂ) + dirGermDeriv w hUo (↑g : Germ (𝓟 U) ℂ)
-  rw [dirGermDeriv_coe, dirGermDeriv_coe, dirGermDeriv_coe, ← Germ.coe_add, Germ.coe_eq]
+  change svDirGermDeriv w hUo (↑(f + g) : Germ (𝓟 U) ℂ) =
+    svDirGermDeriv w hUo (↑f : Germ (𝓟 U) ℂ) + svDirGermDeriv w hUo (↑g : Germ (𝓟 U) ℂ)
+  rw [svDirGermDeriv_coe, svDirGermDeriv_coe, svDirGermDeriv_coe, ← Germ.coe_add, Germ.coe_eq]
   refine eventually_principal.mpr fun z hz => ?_
   show fderiv ℂ (f + g) z w = fderiv ℂ f z w + fderiv ℂ g z w
   rw [fderiv_add ((hf z hz).differentiableAt) ((hg z hz).differentiableAt)]
@@ -105,13 +105,13 @@ theorem analyticSubringGenDirDeriv_mul (w : E) {U : Set E} (hUo : IsOpen U)
   obtain ⟨f, hf, hfa⟩ := a.2
   obtain ⟨g, hg, hgb⟩ := b.2
   apply Subtype.ext
-  change dirGermDeriv w hUo ((a : Germ (𝓟 U) ℂ) * b) =
-    (a : Germ (𝓟 U) ℂ) * dirGermDeriv w hUo b + (b : Germ (𝓟 U) ℂ) * dirGermDeriv w hUo a
+  change svDirGermDeriv w hUo ((a : Germ (𝓟 U) ℂ) * b) =
+    (a : Germ (𝓟 U) ℂ) * svDirGermDeriv w hUo b + (b : Germ (𝓟 U) ℂ) * svDirGermDeriv w hUo a
   rw [← hfa, ← hgb]
-  change dirGermDeriv w hUo (↑(f * g) : Germ (𝓟 U) ℂ) =
-    (↑f : Germ (𝓟 U) ℂ) * dirGermDeriv w hUo (↑g : Germ (𝓟 U) ℂ) +
-      (↑g : Germ (𝓟 U) ℂ) * dirGermDeriv w hUo (↑f : Germ (𝓟 U) ℂ)
-  rw [dirGermDeriv_coe, dirGermDeriv_coe, dirGermDeriv_coe, ← Germ.coe_mul, ← Germ.coe_mul,
+  change svDirGermDeriv w hUo (↑(f * g) : Germ (𝓟 U) ℂ) =
+    (↑f : Germ (𝓟 U) ℂ) * svDirGermDeriv w hUo (↑g : Germ (𝓟 U) ℂ) +
+      (↑g : Germ (𝓟 U) ℂ) * svDirGermDeriv w hUo (↑f : Germ (𝓟 U) ℂ)
+  rw [svDirGermDeriv_coe, svDirGermDeriv_coe, svDirGermDeriv_coe, ← Germ.coe_mul, ← Germ.coe_mul,
     ← Germ.coe_add, Germ.coe_eq]
   refine eventually_principal.mpr fun z hz => ?_
   show fderiv ℂ (f * g) z w = f z * fderiv ℂ g z w + g z * fderiv ℂ f z w

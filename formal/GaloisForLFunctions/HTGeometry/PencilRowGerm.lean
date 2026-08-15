@@ -155,17 +155,17 @@ theorem coeff_stanleyReisnerLaurentRows_opPoly_eq_zero
       (fun j => Ideal.Quotient.mk (stanleyReisnerIdeal (Polynomial ℂ) facets)
         (opPoly n (Q j))) i A
       = facetLaurentShift dd A.1 (differenceToTranslationHom
-        (opPoly n (fun s => facetRestrict A.1 (Q i s)))) := by
+        (opPoly n (fun s => pencilFacetRestrict A.1 (Q i s)))) := by
     show facetLaurentShift dd A.1
       (stanleyReisnerFacetTranslationCoordinates facets
         (Ideal.Quotient.mk (stanleyReisnerIdeal (Polynomial ℂ) facets) (opPoly n (Q i))) A) = _
-    rw [stanleyReisnerFacetTranslationCoordinates_mk, facetRestrict_opPoly]
+    rw [stanleyReisnerFacetTranslationCoordinates_mk, pencilFacetRestrict_opPoly]
   rw [hrow, facetLaurentShift]
   by_cases hg : g ∈ Set.range (facetLaurentExponentShift dd A.1)
   · obtain ⟨e, rfl⟩ := hg
     rw [Finsupp.mapDomain_apply (facetLaurentExponentShift_injective dd A.1)]
     show Polynomial.coeff (MvPolynomial.coeff e (differenceToTranslationHom
-      (opPoly n (fun s => facetRestrict A.1 (Q i s))))) r = 0
+      (opPoly n (fun s => pencilFacetRestrict A.1 (Q i s))))) r = 0
     rw [coeff_differenceToTranslationHom_opPoly, if_neg hr]
   · rw [Finsupp.mapDomain_notin_range _ _ hg, Polynomial.coeff_zero]
 

@@ -73,15 +73,15 @@ theorem phaseAmpConj_eq (e : ι → α → ℂ) (j : ι) (x : α → ℝ) :
   rw [map_mul, charLift_neg_index, Complex.conj_conj]
 
 theorem phaseAmp_eq_inner (e : ι → α → ℂ) (j : ι) (x : α → ℝ) :
-    phaseAmp e j x = finiteComplexInner (phaseOrbit (fun _ => (1 : ℝ)) x) (e j) := by
-  rw [finiteComplexInner_phaseOrbit, phaseAmp, trigLift]
+    phaseAmp e j x = finiteComplexInner (torusReplicaPhaseOrbit (fun _ => (1 : ℝ)) x) (e j) := by
+  rw [finiteComplexInner_torusReplicaPhaseOrbit, phaseAmp, trigLift]
   refine Finset.sum_congr rfl fun a _ => ?_
   rw [Real.sqrt_one]
   push_cast
   ring
 
 theorem normSq_phaseAmp (e : ι → α → ℂ) (j : ι) (x : α → ℝ) :
-    ‖phaseAmp e j x‖ ^ 2 = finitePureStateFidelity (phaseOrbit (fun _ => (1 : ℝ)) x) (e j) := by
+    ‖phaseAmp e j x‖ ^ 2 = finitePureStateFidelity (torusReplicaPhaseOrbit (fun _ => (1 : ℝ)) x) (e j) := by
   rw [finitePureStateFidelity, phaseAmp_eq_inner]
 
 theorem hasFDerivAt_phaseAmp (e : ι → α → ℂ) (j : ι) (x : α → ℝ) :
@@ -386,7 +386,7 @@ theorem integral_box_variance_quarticSum_le (e : ι → α → ℂ)
         ≤ ∑ _j : ι, (6 : ℝ) := by
           refine Finset.sum_le_sum fun j _ => ?_
           have hpt : ∀ x : α → ℝ, ‖phaseAmp e j x‖ ^ 6 =
-              finitePureStateFidelity (phaseOrbit (fun _ => (1 : ℝ)) x) (e j) ^ 3 := by
+              finitePureStateFidelity (torusReplicaPhaseOrbit (fun _ => (1 : ℝ)) x) (e j) ^ 3 := by
             intro x
             rw [← normSq_phaseAmp, ← pow_mul]
           simp_rw [hpt]

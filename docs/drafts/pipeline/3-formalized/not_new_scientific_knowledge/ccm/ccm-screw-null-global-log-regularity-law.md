@@ -174,3 +174,53 @@ Primary sources:
 - [x] unconditional cofinal determinant equivalence to RH recorded
 - [ ] prove `det(M_a^*M_a)>0` for every aperture
 - [ ] RH
+
+## Lean status
+
+`[FORMALIZED]` — supersedes the "no wrapper is added" decision recorded above, which is stale: the
+card's own reduction steps (the symbol algebra, the interior regularity, the empty-characteristic
+branch, and the kernel transport of `(12)`) are all reachable, and the logarithmic Dirichlet
+infrastructure stays explicitly outside the statement.
+
+Module: `formal/GaloisForLFunctions/RHTower/CCMScrewNullLogRegularity.lean`
+(9 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
+`formal/GaloisForLFunctions/RHTower.lean`).
+
+What is proved in Lean:
+
+- `polySymbol_eq_zero_of_dampedFactor` — **equations (6) → (7)**: applying the local operator
+  `(1+D²)^{L_a}` to the damped null equation `b_a(D)v = 0` returns `p_a(D)v = 0`, using
+  `(1+ξ²)^{L_a} b_a = p_a`.
+- `contDiff_of_mem_solutionSpace` — **equation (4)**: every interior solution is smooth (its
+  membership in the exponential-polynomial category is
+  `HTGeometry.exists_characteristic_modes`).
+- `integrableOn_normSq_of_mem_solutionSpace` — **equation (8)**: the interior trace is
+  square-integrable on every bounded interval.
+- `finrank_interiorTrace_space` — the finite characteristic space `F_a` has dimension exactly
+  `deg p_a = d_a`.
+- `finiteDimensional_modeSpace`, `solutionSpace_eq_bot_of_natDegree_eq_zero`,
+  `eq_zero_of_mem_solutionSpace_of_natDegree_eq_zero` — **the empty-characteristic branch**: with
+  `deg p_a = 0` the solution space is `⊥` and the interior trace vanishes identically, which is the
+  card's degenerate case of `(12)`.
+- `map_eq_bot_iff_of_linearEquiv` — **equation (12), first equivalence**: a linear equivalence
+  carries a trivial kernel to a trivial kernel, so `ker G_a = 0 ⟺ ker M_a = 0`.
+- `eq_bot_iff_det_evansGramMatrix_pos` — **equation (12), full form**: the null space of the
+  coordinate map is trivial exactly when the Evans Gram determinant is positive, combining the
+  transport with `det_evansGramMatrix_pos_iff` of
+  `ccm-rational-residual-finite-evans-matrix-law`.
+
+Reused, not rebuilt: `RHTower.dampedFactor`, `localOperator_dampedFactor`
+(`CCMCharacteristicCrossingModes`); `RHTower.evansGramMatrix`, `det_evansGramMatrix_pos_iff`
+(`CCMRationalResidualEvansMatrix`); `HTGeometry.solutionSpace`, `modeSpace`,
+`solutionSpace_eq_modeSpace`, `finrank_modeSpace`, `finrank_solutionSpace`
+(`CharacteristicModeDimension`).
+
+Deliberately outside the Lean statement (cited analytic parents, not results of this card):
+
+- the logarithmic multiplier `c_a(D)` as a map from compactly supported `L²` into tempered
+  distributions, and the distributional meaning of `(2)`;
+- the coercive logarithmic Dirichlet realization `C_{a,I}`, its inverse, and the unique-solvability
+  used for `(5)` and `(10)`;
+- the bounded cross-boundary block `(9)` and the resulting `L²` membership `(3)`.
+
+The retracted equation `(13)` is not formalized: the module proves only the unconditional `(12)`.

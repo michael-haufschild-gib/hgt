@@ -27,10 +27,10 @@ variable {α : Type} [Fintype α] [DecidableEq α]
 def facetMonomial (A : Finset α) : MvPolynomial α ℂ := ∏ u ∈ A, MvPolynomial.X u
 
 omit [Fintype α] in
-theorem facetRestrict_facetMonomial_self (A : Finset α) :
-    facetRestrict A (facetMonomial A) = facetMonomial A := by
+theorem pencilFacetRestrict_facetMonomial_self (A : Finset α) :
+    pencilFacetRestrict A (facetMonomial A) = facetMonomial A := by
   rw [facetMonomial, map_prod]
-  exact Finset.prod_congr rfl fun u hu => facetRestrict_X_mem hu
+  exact Finset.prod_congr rfl fun u hu => pencilFacetRestrict_X_mem hu
 
 omit [Fintype α] [DecidableEq α] in
 theorem facetMonomial_ne_zero (A : Finset α) : facetMonomial A ≠ 0 := by
@@ -43,7 +43,7 @@ theorem X_mul_facetMonomial_mem (facets : Finset (Finset α))
     (hanti : FacetAntichain (↑facets : Set (Finset α))) {A : Finset α} (hA : A ∈ facets)
     {v : α} (hv : v ∉ A) :
     MvPolynomial.X v * facetMonomial A ∈ stanleyReisnerIdeal ℂ facets := by
-  rw [mem_stanleyReisnerIdeal_iff_facetRestrict]
+  rw [mem_stanleyReisnerIdeal_iff_pencilFacetRestrict]
   intro B hB
   rw [map_mul, facetMonomial, map_prod]
   by_cases hvB : v ∈ B
@@ -53,18 +53,18 @@ theorem X_mul_facetMonomial_mem (facets : Finset (Finset α))
       have hAB : A = B := hanti (Finset.mem_coe.mpr hA) (Finset.mem_coe.mpr hB) hcon
       exact hv (hAB ▸ hvB)
     obtain ⟨u, huA, huB⟩ := hex
-    rw [Finset.prod_eq_zero huA (facetRestrict_X_notMem huB), mul_zero]
-  · rw [facetRestrict_X_notMem hvB, zero_mul]
+    rw [Finset.prod_eq_zero huA (pencilFacetRestrict_X_notMem huB), mul_zero]
+  · rw [pencilFacetRestrict_X_notMem hvB, zero_mul]
 
 omit [Fintype α] in
 /-- **A vertex inside a facet does not annihilate that facet's monomial.** -/
 theorem X_mul_facetMonomial_notMem (facets : Finset (Finset α)) {A : Finset α}
     (hA : A ∈ facets) {u : α} (hu : u ∈ A) :
     MvPolynomial.X u * facetMonomial A ∉ stanleyReisnerIdeal ℂ facets := by
-  rw [mem_stanleyReisnerIdeal_iff_facetRestrict]
+  rw [mem_stanleyReisnerIdeal_iff_pencilFacetRestrict]
   push Not
   refine ⟨A, hA, ?_⟩
-  rw [map_mul, facetRestrict_X_mem hu, facetRestrict_facetMonomial_self]
+  rw [map_mul, pencilFacetRestrict_X_mem hu, pencilFacetRestrict_facetMonomial_self]
   exact mul_ne_zero (MvPolynomial.X_ne_zero u) (facetMonomial_ne_zero A)
 
 /-- **Zero variables realize nothing on a nonempty vertex set.** -/

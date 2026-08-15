@@ -366,7 +366,7 @@ theorem trigNorm_trigCayleyStep_le {D : ℕ} {a : ℝ} (ha : 0 < a) {F F' : ℝ 
 
 /-! ## Iterating the Cayley transport -/
 
-theorem hasDerivAt_re {g : ℝ → ℂ} {g' : ℂ} {x : ℝ} (h : HasDerivAt g g' x) :
+private theorem hasDerivAt_re {g : ℝ → ℂ} {g' : ℂ} {x : ℝ} (h : HasDerivAt g g' x) :
     HasDerivAt (fun t => (g t).re) g'.re x := by
   have h2 := Complex.reCLM.hasFDerivAt.comp_hasDerivAt x h
   simp only [Function.comp_def, Complex.reCLM_apply] at h2

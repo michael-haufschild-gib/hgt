@@ -39,11 +39,11 @@ variable {d : Type*} [Fintype d] [DecidableEq d]
 section MultiIndex
 
 /-- The coordinate list of a multi-index. -/
-def multiIndexList (α : d → ℕ) : List d :=
+def sobolevMultiIndexList (α : d → ℕ) : List d :=
   (Finset.univ : Finset d).toList.flatMap fun i => List.replicate (α i) i
 
-theorem length_multiIndexList (α : d → ℕ) : (multiIndexList α).length = ∑ i, α i := by
-  rw [multiIndexList, List.length_flatMap]
+theorem length_sobolevMultiIndexList (α : d → ℕ) : (sobolevMultiIndexList α).length = ∑ i, α i := by
+  rw [sobolevMultiIndexList, List.length_flatMap]
   simp
 
 /-- The multi-indices of total order at most `k`. -/
@@ -82,7 +82,7 @@ def completedDirichlet (μ : Measure Ω) (F : Ω → (d → ℝ) → ℂ) : ℝ 
 /-- The completed phase Sobolev quantity of integer order `k`. -/
 def phaseSobolevSq (μ : Measure Ω) (F : Ω → (d → ℝ) → ℂ) (k : ℕ) : ℝ :=
   ∑ α ∈ multiIndexSet d k,
-    ∫ ω, (∫ x in torusBox d, ‖pderivList (multiIndexList α) (F ω) x‖ ^ 2) ∂μ
+    ∫ ω, (∫ x in torusBox d, ‖pderivList (sobolevMultiIndexList α) (F ω) x‖ ^ 2) ∂μ
 
 /-- The detector family adapted to a phase map. -/
 def graphDetector (N : ℕ) (Φ : Ω → (d → ℝ)) : Ω → (d → ℝ) → ℂ :=
@@ -178,26 +178,26 @@ theorem phaseSobolevSq_graphDetector_le (N k : ℕ) (Φ : Ω → (d → ℝ)) :
         ((1 + 2 * Real.pi * (N : ℝ)) ^ (2 * k) / ((N : ℝ) + 1) ^ Fintype.card d) := by
   rw [phaseSobolevSq]
   have hterm : ∀ α ∈ multiIndexSet d k,
-      (∫ ω, (∫ x in torusBox d, ‖pderivList (multiIndexList α) (graphDetector N Φ ω) x‖ ^ 2) ∂μ) ≤
+      (∫ ω, (∫ x in torusBox d, ‖pderivList (sobolevMultiIndexList α) (graphDetector N Φ ω) x‖ ^ 2) ∂μ) ≤
         (1 + 2 * Real.pi * (N : ℝ)) ^ (2 * k) / ((N : ℝ) + 1) ^ Fintype.card d := by
     intro α hα
-    refine le_trans (integral_graphDetector_pderivList_le μ N Φ (multiIndexList α)) ?_
-    have hlen : (multiIndexList α).length ≤ k := by
-      rw [length_multiIndexList]
+    refine le_trans (integral_graphDetector_pderivList_le μ N Φ (sobolevMultiIndexList α)) ?_
+    have hlen : (sobolevMultiIndexList α).length ≤ k := by
+      rw [length_sobolevMultiIndexList]
       exact sum_le_of_mem_multiIndexSet hα
     have hb : (0 : ℝ) ≤ 2 * Real.pi * (N : ℝ) := by positivity
-    have h1 : ((2 * Real.pi * (N : ℝ)) ^ (multiIndexList α).length) ^ 2
+    have h1 : ((2 * Real.pi * (N : ℝ)) ^ (sobolevMultiIndexList α).length) ^ 2
         ≤ (1 + 2 * Real.pi * (N : ℝ)) ^ (2 * k) := by
-      rw [← pow_mul, mul_comm ((multiIndexList α).length) 2]
-      calc (2 * Real.pi * (N : ℝ)) ^ (2 * (multiIndexList α).length)
-          ≤ (1 + 2 * Real.pi * (N : ℝ)) ^ (2 * (multiIndexList α).length) :=
+      rw [← pow_mul, mul_comm ((sobolevMultiIndexList α).length) 2]
+      calc (2 * Real.pi * (N : ℝ)) ^ (2 * (sobolevMultiIndexList α).length)
+          ≤ (1 + 2 * Real.pi * (N : ℝ)) ^ (2 * (sobolevMultiIndexList α).length) :=
             pow_le_pow_left₀ hb (by linarith) _
         _ ≤ (1 + 2 * Real.pi * (N : ℝ)) ^ (2 * k) :=
             pow_le_pow_right₀ (by linarith) (by omega)
     rw [div_eq_mul_inv, div_eq_mul_inv]
     exact mul_le_mul_of_nonneg_right h1 (by positivity)
   calc ∑ α ∈ multiIndexSet d k,
-        ∫ ω, (∫ x in torusBox d, ‖pderivList (multiIndexList α) (graphDetector N Φ ω) x‖ ^ 2) ∂μ
+        ∫ ω, (∫ x in torusBox d, ‖pderivList (sobolevMultiIndexList α) (graphDetector N Φ ω) x‖ ^ 2) ∂μ
       ≤ ∑ _α ∈ multiIndexSet d k,
           (1 + 2 * Real.pi * (N : ℝ)) ^ (2 * k) / ((N : ℝ) + 1) ^ Fintype.card d :=
         Finset.sum_le_sum hterm

@@ -107,6 +107,57 @@ Regenerate agent-facing indexes after adding, moving, or renaming declarations:
 ../scripts/formal_tools.py index
 ```
 
+## How Search Works Here
+
+`research` is a ranked search, not a grep.  It is backed by a SQLite FTS5 index
+at `formal/.lean_search.db` (git-ignored, derivable from the tree) holding every
+declaration name, docstring, module and gap marker in
+`GaloisForLFunctions/`.  A query costs about 130 ms; a full rebuild, which you
+should never need, about 17 s.
+
+### What keeps it current
+
+Nothing watches the filesystem and no hook has to fire.  Every `research`
+invocation re-syncs before it searches:
+
+1. One `os.scandir` walk of `GaloisForLFunctions/` stamps every `.lean` and
+   `.md` file with `(size, mtime_ns)` — 18.7k files in ~60 ms.
+2. Those stamps are compared against the index's `file` table.  A file whose
+   stamp differs, or that has no row, is **changed**; a row with no file on disk
+   is **removed**.
+3. With nothing changed — the normal case — the query runs immediately.  No
+   write, no lock taken.
+4. Otherwise the changed files are reparsed and rewritten in batches of 512, and
+   removed files have their rows dropped.  Only the changed files are read.
+
+So an agent that adds a module or edits a proof sees it in the very next search,
+its own or another agent's.  Nothing needs regenerating by hand.
+
+The index rebuilds itself automatically if the schema changes (it is fingerprinted,
+not hand-versioned) or if the database file is damaged.
+
+```bash
+../scripts/formal_tools.py search-index            # refresh and report
+../scripts/formal_tools.py search-index --rebuild  # discard and rebuild
+../scripts/formal_tools.py research "<query>" --scan   # bypass the index
+```
+
+Ranking is BM25 over name, exploded identifier components, docstring and module,
+so `research "measured clock inverse"` finds
+`evalJet_measuredClockInverseOperator_difference` and a query that is itself an
+identifier puts that declaration first.  Terms are OR-ed and prefix-matched;
+quote a phrase (`research '"critical line" zero'`) to require it verbatim.
+
+Use `rg` instead when the target is proof-body text rather than a declaration —
+raw regex over the whole tree is fast and the index only covers declaration
+metadata and gap markers.
+
+Many agents share one index, and the design assumes it.  Readers never block.
+Writers take the lock only for a batch at a time, and re-check each file's stamp
+inside the lock, so when several agents notice the same new module at once only
+the first one parses it.  A refresh that loses the lock leaves the query running
+against the last committed state and says so on stderr rather than blocking.
+
 This writes:
 
 | File | Purpose |

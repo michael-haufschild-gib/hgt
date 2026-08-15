@@ -93,31 +93,31 @@ theorem dirDerivFun_iterate_comp_add_const (w τ : E') (f : E' → ℂ) (r : ℕ
 
 variable {R S : Type*} [CommRing R] [CommRing S]
 
-@[simp] theorem facetRestrict_C (A : Finset α) (r : R) :
-    facetRestrict A (MvPolynomial.C r) = MvPolynomial.C r := by
-  rw [facetRestrict, MvPolynomial.aeval_C, MvPolynomial.algebraMap_eq]
+@[simp] theorem pencilFacetRestrict_C (A : Finset α) (r : R) :
+    pencilFacetRestrict A (MvPolynomial.C r) = MvPolynomial.C r := by
+  rw [pencilFacetRestrict, MvPolynomial.aeval_C, MvPolynomial.algebraMap_eq]
 
 omit [DecidableEq α] in
 @[simp] theorem differenceToTranslationHom_C (r : R) :
     differenceToTranslationHom (MvPolynomial.C r : MvPolynomial α R) = MvPolynomial.C r := by
   rw [differenceToTranslationHom, MvPolynomial.aeval_C, MvPolynomial.algebraMap_eq]
 
-theorem facetRestrict_map (φ : R →+* S) (A : Finset α) (P : MvPolynomial α R) :
-    facetRestrict A (MvPolynomial.map φ P) = MvPolynomial.map φ (facetRestrict A P) := by
-  have hhom : ((facetRestrict (R := S) A).toRingHom).comp (MvPolynomial.map φ)
-      = (MvPolynomial.map φ).comp ((facetRestrict (R := R) A).toRingHom) := by
+theorem pencilFacetRestrict_map (φ : R →+* S) (A : Finset α) (P : MvPolynomial α R) :
+    pencilFacetRestrict A (MvPolynomial.map φ P) = MvPolynomial.map φ (pencilFacetRestrict A P) := by
+  have hhom : ((pencilFacetRestrict (R := S) A).toRingHom).comp (MvPolynomial.map φ)
+      = (MvPolynomial.map φ).comp ((pencilFacetRestrict (R := R) A).toRingHom) := by
     apply MvPolynomial.ringHom_ext
     · intro r
-      show facetRestrict A (MvPolynomial.map φ (MvPolynomial.C r))
-        = MvPolynomial.map φ (facetRestrict A (MvPolynomial.C r))
-      rw [MvPolynomial.map_C, facetRestrict_C, facetRestrict_C, MvPolynomial.map_C]
+      show pencilFacetRestrict A (MvPolynomial.map φ (MvPolynomial.C r))
+        = MvPolynomial.map φ (pencilFacetRestrict A (MvPolynomial.C r))
+      rw [MvPolynomial.map_C, pencilFacetRestrict_C, pencilFacetRestrict_C, MvPolynomial.map_C]
     · intro v
-      show facetRestrict A (MvPolynomial.map φ (MvPolynomial.X v))
-        = MvPolynomial.map φ (facetRestrict A (MvPolynomial.X v))
+      show pencilFacetRestrict A (MvPolynomial.map φ (MvPolynomial.X v))
+        = MvPolynomial.map φ (pencilFacetRestrict A (MvPolynomial.X v))
       rw [MvPolynomial.map_X]
       by_cases hv : v ∈ A
-      · rw [facetRestrict_X_mem hv, facetRestrict_X_mem hv, MvPolynomial.map_X]
-      · rw [facetRestrict_X_notMem hv, facetRestrict_X_notMem hv, map_zero]
+      · rw [pencilFacetRestrict_X_mem hv, pencilFacetRestrict_X_mem hv, MvPolynomial.map_X]
+      · rw [pencilFacetRestrict_X_notMem hv, pencilFacetRestrict_X_notMem hv, map_zero]
   exact congrArg (fun f : MvPolynomial α R →+* MvPolynomial α S => f P) hhom
 
 omit [DecidableEq α] in
@@ -214,11 +214,11 @@ theorem opCarrier_eq (w : Fin d → ℂ) (ω : α → (Fin d → ℂ)) {F : (Fin
 
 /-! ### Coefficients of an operator -/
 
-theorem facetRestrict_opPoly (A : Finset α) (n : ℕ) (Q : ℕ → MvPolynomial α ℂ) :
-    facetRestrict A (opPoly n Q) = opPoly n (fun r => facetRestrict A (Q r)) := by
+theorem pencilFacetRestrict_opPoly (A : Finset α) (n : ℕ) (Q : ℕ → MvPolynomial α ℂ) :
+    pencilFacetRestrict A (opPoly n Q) = opPoly n (fun r => pencilFacetRestrict A (Q r)) := by
   rw [opPoly, map_sum, opPoly]
   refine Finset.sum_congr rfl fun r _ => ?_
-  rw [map_mul, facetRestrict_C, facetRestrict_map]
+  rw [map_mul, pencilFacetRestrict_C, pencilFacetRestrict_map]
 
 omit [DecidableEq α] in
 theorem differenceToTranslationHom_opPoly (n : ℕ) (Q : ℕ → MvPolynomial α ℂ) :
@@ -263,23 +263,23 @@ theorem shiftAlgHom_stepVar_eq_zero_of_periodic {ω : α → E} {G : E → ℂ} 
   rw [hG z, sub_self]
 
 /-- **On a source periodic outside its facet, only the facet variables act.** -/
-theorem seedCarrierPoly_facetRestrict_of_periodic (ω : α → E) {A : Finset α} {G : E → ℂ}
+theorem seedCarrierPoly_pencilFacetRestrict_of_periodic (ω : α → E) {A : Finset α} {G : E → ℂ}
     (hG : ∀ v ∉ A, ∀ z, G (z + ω v) = G z) (P : MvPolynomial α ℂ) :
-    seedCarrierPoly ω G P = seedCarrierPoly ω G (facetRestrict A P) := by
+    seedCarrierPoly ω G P = seedCarrierPoly ω G (pencilFacetRestrict A P) := by
   classical
   induction P using MvPolynomial.induction_on with
   | C a =>
-      rw [facetRestrict_C]
+      rw [pencilFacetRestrict_C]
   | add p q hp hq =>
       rw [seedCarrierPoly_add, hp, hq, map_add, seedCarrierPoly_add]
   | mul_X p v hp =>
       by_cases hv : v ∈ A
-      · rw [map_mul, facetRestrict_X_mem hv]
+      · rw [map_mul, pencilFacetRestrict_X_mem hv]
         rw [show p * MvPolynomial.X v = MvPolynomial.X v * p from mul_comm _ _,
-          show facetRestrict A p * MvPolynomial.X v
-            = MvPolynomial.X v * facetRestrict A p from mul_comm _ _,
+          show pencilFacetRestrict A p * MvPolynomial.X v
+            = MvPolynomial.X v * pencilFacetRestrict A p from mul_comm _ _,
           seedCarrierPoly_X_mul, seedCarrierPoly_X_mul, hp]
-      · rw [map_mul, facetRestrict_X_notMem hv, mul_zero]
+      · rw [map_mul, pencilFacetRestrict_X_notMem hv, mul_zero]
         have hzero : seedCarrierPoly ω G (MvPolynomial.X v) = 0 := by
           show shiftAlgHom (polyShift ω (MvPolynomial.X v)) G = 0
           rw [polyShift_X]
@@ -289,17 +289,17 @@ theorem seedCarrierPoly_facetRestrict_of_periodic (ω : α → E) {A : Finset α
 
 /-- **The facet expansion of a carrier.**  The carrier of a difference operator on a sum of facet
 sources is the sum of the carriers of its facet restrictions. -/
-theorem seedCarrierPoly_sum_facetRestrict (ω : α → E) (Y : facets → E → ℂ)
+theorem seedCarrierPoly_sum_pencilFacetRestrict (ω : α → E) (Y : facets → E → ℂ)
     (hY : ∀ (A : facets) (v : α), v ∉ A.1 → ∀ z, Y A (z + ω v) = Y A z)
     (P : MvPolynomial α ℂ) (z : E) :
     seedCarrierPoly ω (fun y => ∑ A : facets, Y A y) P z
-      = ∑ A : facets, seedCarrierPoly ω (Y A) (facetRestrict A.1 P) z := by
+      = ∑ A : facets, seedCarrierPoly ω (Y A) (pencilFacetRestrict A.1 P) z := by
   classical
   have hfun : (fun y => ∑ A : facets, Y A y)
       = fun y => ∑ A ∈ (Finset.univ : Finset facets), Y A y := rfl
   rw [hfun, seedCarrierPoly_sum]
   exact Finset.sum_congr rfl fun A _ =>
-    congrFun (seedCarrierPoly_facetRestrict_of_periodic ω (hY A) P) z
+    congrFun (seedCarrierPoly_pencilFacetRestrict_of_periodic ω (hY A) P) z
 
 end
 

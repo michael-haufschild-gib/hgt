@@ -31,13 +31,13 @@ def replicaPairCount (D m : ℕ) : ℝ :=
 /-- The exact long-time moment constant of the normalized spectral form factor. -/
 def sffMoment (D m : ℕ) : ℝ := replicaPairCount D m / (D : ℝ) ^ m
 
-theorem multinomial_le_factorial {α : Type*} (s : Finset α) (f : α → ℕ) :
+private theorem multinomial_le_factorial {α : Type*} (s : Finset α) (f : α → ℕ) :
     Nat.multinomial s f ≤ Nat.factorial (∑ i ∈ s, f i) := by
   refine Nat.le_of_dvd (Nat.factorial_pos _) ⟨∏ i ∈ s, Nat.factorial (f i), ?_⟩
   rw [← Nat.multinomial_spec s f]
   ring
 
-theorem sum_multinomial_piAntidiag (D m : ℕ) :
+private theorem sum_multinomial_piAntidiag (D m : ℕ) :
     ∑ p ∈ (Finset.univ : Finset (Fin D)).piAntidiag m,
       (Nat.multinomial Finset.univ p : ℝ) = (D : ℝ) ^ m := by
   have h := Finset.sum_pow_eq_sum_piAntidiag (Finset.univ : Finset (Fin D)) (fun _ => (1 : ℝ)) m
@@ -155,7 +155,7 @@ end Combinatorics
 section Limit
 
 /-- The falling factorial dominates the shifted power. -/
-theorem pow_sub_le_descFactorial (D m : ℕ) : (D - m) ^ m ≤ D.descFactorial m := by
+private theorem pow_sub_le_descFactorial (D m : ℕ) : (D - m) ^ m ≤ D.descFactorial m := by
   rw [Nat.descFactorial_eq_prod_range]
   calc (D - m) ^ m = ∏ _i ∈ Finset.range m, (D - m) := by
         rw [Finset.prod_const, Finset.card_range]
@@ -164,7 +164,7 @@ theorem pow_sub_le_descFactorial (D m : ℕ) : (D - m) ^ m ≤ D.descFactorial m
         have := Finset.mem_range.mp hi
         omega
 
-theorem tendsto_descFactorial_div_pow (m : ℕ) :
+private theorem tendsto_descFactorial_div_pow (m : ℕ) :
     Tendsto (fun D : ℕ => (D.descFactorial m : ℝ) / (D : ℝ) ^ m) atTop (𝓝 1) := by
   have hlow : Tendsto (fun D : ℕ => (1 - (m : ℝ) / (D : ℝ)) ^ m) atTop (𝓝 1) := by
     have hdiv : Tendsto (fun D : ℕ => (m : ℝ) / (D : ℝ)) atTop (𝓝 0) := by

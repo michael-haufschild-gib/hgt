@@ -68,7 +68,7 @@ theorem not_integrableOn_Ici_of_le {f : ℝ → ℝ} {a delta : ℝ} (hd : 0 < d
     simp at h
 
 /-- **Reflection.**  The potential is even, so the reflected function solves the same equation. -/
-theorem hasDerivAt_reflect {mu : ℝ} {v v' : ℝ → ℝ}
+theorem hasDerivAt_oscillatorReflect {mu : ℝ} {v v' : ℝ → ℝ}
     (hv : ∀ x, HasDerivAt v (v' x) x)
     (hv' : ∀ x, HasDerivAt v' ((x ^ 2 - mu) * v x) x) :
     (∀ x, HasDerivAt (fun t => v (-t)) ((fun t => -v' (-t)) x) x) ∧
@@ -165,16 +165,16 @@ theorem oscProduct_neg_of_integrableOn {mu : ℝ} {v v' : ℝ → ℝ} {a : ℝ}
 /-- **Square integrability forces nonnegative energy.**  If the energy were negative at one point
 past the turning point, the monotone normalized deficit would keep `v²` above a positive constant
 from there on. -/
-theorem oscEnergy_nonneg_of_integrableOn {mu : ℝ} {v v' : ℝ → ℝ} {a : ℝ}
+theorem oscillatorMonotoneEnergy_nonneg_of_integrableOn {mu : ℝ} {v v' : ℝ → ℝ} {a : ℝ}
     (ha : 0 < a) (hmu : mu < a ^ 2)
     (hv : ∀ x, HasDerivAt v (v' x) x)
     (hv' : ∀ x, HasDerivAt v' ((x ^ 2 - mu) * v x) x)
     (hint : IntegrableOn (fun x => v x ^ 2) (Ici a) volume) :
-    ∀ x ∈ Ici a, 0 ≤ oscEnergy mu v v' x := by
+    ∀ x ∈ Ici a, 0 ≤ oscillatorMonotoneEnergy mu v v' x := by
   intro b hb
   by_contra hcon
   have hab : a ≤ b := Set.mem_Ici.1 hb
-  have hneg : oscEnergy mu v v' b < 0 := lt_of_not_ge hcon
+  have hneg : oscillatorMonotoneEnergy mu v v' b < 0 := lt_of_not_ge hcon
   have hbpos : 0 < b := lt_of_lt_of_le ha hab
   have hbmu : mu < b ^ 2 := by nlinarith
   have hdpos : 0 < oscRatio mu v v' b := by

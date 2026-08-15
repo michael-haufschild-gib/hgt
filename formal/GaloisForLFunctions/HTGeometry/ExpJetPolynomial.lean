@@ -37,25 +37,25 @@ theorem hasDerivAt_iteratedDeriv_of_entire {p : ℂ → ℂ} (hp : Differentiabl
   rwa [← iteratedDeriv_succ] at hdd
 
 /-- The derivation of the jet ring that raises the order of a jet variable. -/
-def jetShiftDeriv : Derivation ℂ (MvPolynomial ℕ ℂ) (MvPolynomial ℕ ℂ) :=
+def expJetShiftDeriv : Derivation ℂ (MvPolynomial ℕ ℂ) (MvPolynomial ℕ ℂ) :=
   MvPolynomial.mkDerivation ℂ fun j => MvPolynomial.X (j + 1)
 
-@[simp] theorem jetShiftDeriv_X (j : ℕ) :
-    jetShiftDeriv (MvPolynomial.X j) = MvPolynomial.X (j + 1) :=
+@[simp] theorem expJetShiftDeriv_X (j : ℕ) :
+    expJetShiftDeriv (MvPolynomial.X j) = MvPolynomial.X (j + 1) :=
   MvPolynomial.mkDerivation_X ℂ _ j
 
-theorem jetShiftDeriv_C (a : ℂ) : jetShiftDeriv (MvPolynomial.C a) = 0 := by
+theorem expJetShiftDeriv_C (a : ℂ) : expJetShiftDeriv (MvPolynomial.C a) = 0 := by
   have hC : (MvPolynomial.C a : MvPolynomial ℕ ℂ) = algebraMap ℂ (MvPolynomial ℕ ℂ) a := rfl
   rw [hC, Derivation.map_algebraMap]
 
 /-- **Differentiating a polynomial in the jets of a function applies the jet shift.** -/
 theorem hasDerivAt_eval_jets {p : ℂ → ℂ} (hp : Differentiable ℂ p) (B : MvPolynomial ℕ ℂ) (x : ℂ) :
     HasDerivAt (fun z => MvPolynomial.eval (fun j => iteratedDeriv j p z) B)
-      (MvPolynomial.eval (fun j => iteratedDeriv j p x) (jetShiftDeriv B)) x := by
+      (MvPolynomial.eval (fun j => iteratedDeriv j p x) (expJetShiftDeriv B)) x := by
   classical
   induction B using MvPolynomial.induction_on with
   | C a =>
-      rw [jetShiftDeriv_C, map_zero]
+      rw [expJetShiftDeriv_C, map_zero]
       simp only [MvPolynomial.eval_C]
       exact hasDerivAt_const x a
   | add P Q hP hQ =>
@@ -69,17 +69,17 @@ theorem hasDerivAt_eval_jets {p : ℂ → ℂ} (hp : Differentiable ℂ p) (B : 
           = fun z => MvPolynomial.eval (fun j => iteratedDeriv j p z) P * iteratedDeriv j p z := by
         funext z
         rw [map_mul, MvPolynomial.eval_X]
-      have hderiv : jetShiftDeriv (P * MvPolynomial.X j)
-          = P * MvPolynomial.X (j + 1) + MvPolynomial.X j * jetShiftDeriv P := by
-        rw [Derivation.leibniz, jetShiftDeriv_X]
+      have hderiv : expJetShiftDeriv (P * MvPolynomial.X j)
+          = P * MvPolynomial.X (j + 1) + MvPolynomial.X j * expJetShiftDeriv P := by
+        rw [Derivation.leibniz, expJetShiftDeriv_X]
         simp only [smul_eq_mul]
       rw [hfun, hderiv]
       simp only [map_add, map_mul, MvPolynomial.eval_X]
       have hmul := hP.mul hjet
       have heq : MvPolynomial.eval (fun j => iteratedDeriv j p x) P * iteratedDeriv (j + 1) p x
             + iteratedDeriv j p x
-              * MvPolynomial.eval (fun j => iteratedDeriv j p x) (jetShiftDeriv P)
-          = MvPolynomial.eval (fun j => iteratedDeriv j p x) (jetShiftDeriv P)
+              * MvPolynomial.eval (fun j => iteratedDeriv j p x) (expJetShiftDeriv P)
+          = MvPolynomial.eval (fun j => iteratedDeriv j p x) (expJetShiftDeriv P)
               * iteratedDeriv j p x
             + MvPolynomial.eval (fun j => iteratedDeriv j p x) P * iteratedDeriv (j + 1) p x := by
         ring
@@ -89,12 +89,12 @@ theorem hasDerivAt_eval_jets {p : ℂ → ℂ} (hp : Differentiable ℂ p) (B : 
 /-- The universal polynomial expressing the `l`-th jet of an exponential composite. -/
 def expJetPoly : ℕ → MvPolynomial ℕ ℂ
   | 0 => 1
-  | (l + 1) => jetShiftDeriv (expJetPoly l) + expJetPoly l * MvPolynomial.X 1
+  | (l + 1) => expJetShiftDeriv (expJetPoly l) + expJetPoly l * MvPolynomial.X 1
 
 @[simp] theorem expJetPoly_zero : expJetPoly 0 = 1 := rfl
 
 theorem expJetPoly_succ (l : ℕ) :
-    expJetPoly (l + 1) = jetShiftDeriv (expJetPoly l) + expJetPoly l * MvPolynomial.X 1 := rfl
+    expJetPoly (l + 1) = expJetShiftDeriv (expJetPoly l) + expJetPoly l * MvPolynomial.X 1 := rfl
 
 /-- **The jets of an exponential composite.** -/
 theorem iteratedDeriv_exp_comp {p : ℂ → ℂ} (hp : Differentiable ℂ p) (l : ℕ) (x : ℂ) :
@@ -122,7 +122,7 @@ theorem iteratedDeriv_exp_comp {p : ℂ → ℂ} (hp : Differentiable ℂ p) (l 
               * MvPolynomial.eval (fun j => iteratedDeriv j p x) (expJetPoly l)
             + Complex.exp (p x)
               * MvPolynomial.eval (fun j => iteratedDeriv j p x)
-                (jetShiftDeriv (expJetPoly l))) x := hexp.mul hB
+                (expJetShiftDeriv (expJetPoly l))) x := hexp.mul hB
       rw [hmul.deriv, expJetPoly_succ]
       simp only [map_add, map_mul, MvPolynomial.eval_X]
       ring
@@ -142,16 +142,16 @@ theorem jetSub_mono {l m : ℕ} (h : l ≤ m) : jetSub l ≤ jetSub m := by
   exact ⟨j, ⟨h1, le_trans h2 h⟩, rfl⟩
 
 /-- **The jet shift raises the subalgebra by one level.** -/
-theorem jetShiftDeriv_mem_jetSub {l : ℕ} {B : MvPolynomial ℕ ℂ} (hB : B ∈ jetSub l) :
-    jetShiftDeriv B ∈ jetSub (l + 1) := by
+theorem expJetShiftDeriv_mem_jetSub {l : ℕ} {B : MvPolynomial ℕ ℂ} (hB : B ∈ jetSub l) :
+    expJetShiftDeriv B ∈ jetSub (l + 1) := by
   induction hB using Algebra.adjoin_induction with
   | mem x hx =>
       obtain ⟨j, ⟨h1, h2⟩, rfl⟩ := hx
-      rw [jetShiftDeriv_X]
+      rw [expJetShiftDeriv_X]
       exact X_mem_jetSub (by omega) (by omega)
   | algebraMap r =>
       have hC : (algebraMap ℂ (MvPolynomial ℕ ℂ) r) = MvPolynomial.C r := rfl
-      rw [hC, jetShiftDeriv_C]
+      rw [hC, expJetShiftDeriv_C]
       exact Subalgebra.zero_mem _
   | add x y _ _ hx hy =>
       rw [map_add]
@@ -185,19 +185,19 @@ theorem expJetPoly_eq_X_add (l : ℕ) :
   induction l with
   | zero =>
       refine ⟨0, Subalgebra.zero_mem _, ?_⟩
-      have hD : jetShiftDeriv (1 : MvPolynomial ℕ ℂ) = 0 := by
+      have hD : expJetShiftDeriv (1 : MvPolynomial ℕ ℂ) = 0 := by
         have h1 : (1 : MvPolynomial ℕ ℂ) = algebraMap ℂ (MvPolynomial ℕ ℂ) 1 := by simp
         rw [h1, Derivation.map_algebraMap]
       rw [expJetPoly_succ, expJetPoly_zero, hD]
       ring
   | succ l ih =>
       obtain ⟨R, hR, hEq⟩ := ih
-      refine ⟨jetShiftDeriv R + (MvPolynomial.X (l + 1) + R) * MvPolynomial.X 1, ?_, ?_⟩
-      · refine Subalgebra.add_mem _ (jetShiftDeriv_mem_jetSub hR) ?_
+      refine ⟨expJetShiftDeriv R + (MvPolynomial.X (l + 1) + R) * MvPolynomial.X 1, ?_, ?_⟩
+      · refine Subalgebra.add_mem _ (expJetShiftDeriv_mem_jetSub hR) ?_
         refine Subalgebra.mul_mem _ ?_ (X_mem_jetSub (by omega) (by omega))
         exact Subalgebra.add_mem _ (X_mem_jetSub (by omega) (by omega))
           (jetSub_mono (by omega) hR)
-      · rw [expJetPoly_succ, hEq, map_add, jetShiftDeriv_X]
+      · rw [expJetPoly_succ, hEq, map_add, expJetShiftDeriv_X]
         ring
 
 theorem pderiv_expJetPoly_self (l : ℕ) :

@@ -287,8 +287,8 @@ What is wrong comes first:
 
 The exact fifth obstruction is paper-proved and Lean-proved:
 
-- [paper theorem](../2-fully-proven/not_new_scientific_knowledge/global-actuality-wall-cocycle-flatness.md)
-- [formalization](../3-formalized/global-actuality-wall-cocycle-flatness.md)
+- [paper theorem](../3-formalized/not_new_scientific_knowledge/global-actuality-wall-cocycle-flatness.md)
+- [formalization](../3-formalized/not_new_scientific_knowledge/global-actuality-wall-cocycle-flatness-formalized.md)
 - [`ActualityWallFlatness.lean`](../../../../formal/GaloisForLFunctions/HTGeometry/ActualityWallFlatness.lean)
 
 The strongest exact theorem is:

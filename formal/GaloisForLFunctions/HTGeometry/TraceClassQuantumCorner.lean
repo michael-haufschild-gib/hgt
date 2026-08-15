@@ -98,14 +98,13 @@ def traceClassMatrixCone (H : Type*) [NormedAddCommGroup H]
   exact {M | 0 ≤ CStarMatrix.ofMatrix
     (M.map (RHTower.schattenOneSubmodule (H := H)).subtype)}
 
-/-- Sequential order-normality on the trace-class carrier. -/
+/-- Order-normality on the trace-class carrier: every existing directed supremum is preserved. -/
 def TraceClassNormal (H K : Type*) [NormedAddCommGroup H]
     [InnerProductSpace ℂ H] [CompleteSpace H]
     [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K]
     (φ : TraceClassOperator H →ₗ[ℂ] TraceClassOperator K) : Prop :=
-  ∀ (u : ℕ → TraceClassOperator H), Directed (· ≤ ·) u →
-    ∀ s : TraceClassOperator H, IsLUB (Set.range u) s →
-      IsLUB (Set.range (fun i => φ (u i))) (φ s)
+  ∀ ⦃d : Set (TraceClassOperator H)⦄, d.Nonempty → DirectedOn (· ≤ ·) d →
+    ∀ ⦃s : TraceClassOperator H⦄, IsLUB d s → IsLUB (φ '' d) (φ s)
 
 /-- A normal completely-positive trace-nonincreasing operation on genuine trace-class states. -/
 structure TraceClassQuantumOperation (H K : Type*) [NormedAddCommGroup H]
@@ -121,20 +120,28 @@ structure TraceClassQuantumOperation (H K : Type*) [NormedAddCommGroup H]
       (ContinuousLinearMap.opTrace (ρ : H →L[ℂ] H)).re
   normal : TraceClassNormal H K map
 
-/-- Sequential normality is stable under composition of monotone trace-class maps. -/
+/-- Order-normality is stable under composition of monotone trace-class maps. -/
 theorem traceClassNormal_comp {φ : TraceClassOperator H →ₗ[ℂ] TraceClassOperator K}
     {ψ : TraceClassOperator K →ₗ[ℂ] TraceClassOperator L}
     (hφ : TraceClassNormal H K φ) (hφmono : Monotone φ)
     (hψ : TraceClassNormal K L ψ) :
     TraceClassNormal H L (ψ.comp φ) := by
-  intro u hu s hs
-  have hu' : Directed (· ≤ ·) (fun i => φ (u i)) := by
-    intro i j
-    obtain ⟨k, hik, hjk⟩ := hu i j
-    exact ⟨k, hφmono hik, hφmono hjk⟩
-  have hφsup := hφ u hu s hs
-  have hψsup := hψ (fun i => φ (u i)) hu' (φ s) hφsup
-  simpa [ContinuousLinearMap.comp_apply] using hψsup
+  intro d hdne hdir s hsup
+  have hdir_image : DirectedOn (· ≤ ·) (φ '' d) := by
+    rintro _ ⟨x, hx, rfl⟩ _ ⟨y, hy, rfl⟩
+    obtain ⟨z, hz, hxz, hyz⟩ := hdir x hx y hy
+    exact ⟨φ z, ⟨z, hz, rfl⟩, hφmono hxz, hφmono hyz⟩
+  have himage_ne : (φ '' d).Nonempty := hdne.image φ
+  have hcomp : (fun x => ψ (φ x)) '' d = ψ '' (φ '' d) := by
+    ext z
+    constructor
+    · rintro ⟨x, hx, rfl⟩
+      exact ⟨φ x, ⟨x, hx, rfl⟩, rfl⟩
+    · rintro ⟨y, ⟨x, hx, rfl⟩, rfl⟩
+      exact ⟨x, hx, rfl⟩
+  change IsLUB ((fun x => ψ (φ x)) '' d) (ψ (φ s))
+  rw [hcomp]
+  exact hψ himage_ne hdir_image (hφ hdne hdir hsup)
 
 namespace TraceClassQuantumOperation
 
@@ -252,7 +259,7 @@ theorem cornerLift_traceNonincreasing (source : TraceClassQuantumCorner H W)
     traceClassTrace ((cornerLift source target Φ).map ρ) ≤ traceClassTrace ρ :=
   (cornerLift source target Φ).traceNonincreasing ρ hρ
 
-/-- The corner lift remains sequentially normal. -/
+/-- The corner lift remains order-normal. -/
 theorem cornerLift_normal (source : TraceClassQuantumCorner H W)
     (target : TraceClassQuantumCorner K W) (Φ : TraceClassQuantumOperation H K) :
     TraceClassNormal W W (cornerLift source target Φ).map :=

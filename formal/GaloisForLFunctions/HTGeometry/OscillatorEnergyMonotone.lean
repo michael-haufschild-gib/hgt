@@ -23,18 +23,18 @@ open Set
 namespace GaloisForLFunctions.HTGeometry
 
 /-- Energy of a solution of the oscillator equation. -/
-noncomputable def oscEnergy (mu : ℝ) (v v' : ℝ → ℝ) (xi : ℝ) : ℝ :=
+noncomputable def oscillatorMonotoneEnergy (mu : ℝ) (v v' : ℝ → ℝ) (xi : ℝ) : ℝ :=
   v' xi ^ 2 - (xi ^ 2 - mu) * v xi ^ 2
 
 /-- Normalized energy deficit, monotone past the turning point. -/
 noncomputable def oscRatio (mu : ℝ) (v v' : ℝ → ℝ) (xi : ℝ) : ℝ :=
-  -oscEnergy mu v v' xi / (xi ^ 2 - mu)
+  -oscillatorMonotoneEnergy mu v v' xi / (xi ^ 2 - mu)
 
 /-- **Energy derivative.**  The oscillator energy has derivative `−2ξv²`. -/
-theorem hasDerivAt_oscEnergy {mu : ℝ} {v v' : ℝ → ℝ}
+theorem hasDerivAt_oscillatorMonotoneEnergy {mu : ℝ} {v v' : ℝ → ℝ}
     (hv : ∀ x, HasDerivAt v (v' x) x)
     (hv' : ∀ x, HasDerivAt v' ((x ^ 2 - mu) * v x) x) (xi : ℝ) :
-    HasDerivAt (oscEnergy mu v v') (-(2 * xi * v xi ^ 2)) xi := by
+    HasDerivAt (oscillatorMonotoneEnergy mu v v') (-(2 * xi * v xi ^ 2)) xi := by
   have h1 : HasDerivAt (fun x => v' x ^ 2) (2 * v' xi * ((xi ^ 2 - mu) * v xi)) xi := by
     refine ((hv' xi).pow 2).congr_deriv ?_
     push_cast
@@ -53,17 +53,17 @@ theorem hasDerivAt_oscEnergy {mu : ℝ} {v v' : ℝ → ℝ}
   ring
 
 /-- The oscillator energy is nonincreasing on any interval in the positive axis. -/
-theorem antitoneOn_oscEnergy {mu : ℝ} {v v' : ℝ → ℝ} {a : ℝ} (ha : 0 ≤ a)
+theorem antitoneOn_oscillatorMonotoneEnergy {mu : ℝ} {v v' : ℝ → ℝ} {a : ℝ} (ha : 0 ≤ a)
     (hv : ∀ x, HasDerivAt v (v' x) x)
     (hv' : ∀ x, HasDerivAt v' ((x ^ 2 - mu) * v x) x) :
-    AntitoneOn (oscEnergy mu v v') (Ici a) := by
+    AntitoneOn (oscillatorMonotoneEnergy mu v v') (Ici a) := by
   refine antitoneOn_of_deriv_nonpos (convex_Ici a) ?_ ?_ ?_
-  · exact fun x _ => ((hasDerivAt_oscEnergy hv hv' x).continuousAt).continuousWithinAt
+  · exact fun x _ => ((hasDerivAt_oscillatorMonotoneEnergy hv hv' x).continuousAt).continuousWithinAt
   · intro x _
-    exact (hasDerivAt_oscEnergy hv hv' x).differentiableAt.differentiableWithinAt
+    exact (hasDerivAt_oscillatorMonotoneEnergy hv hv' x).differentiableAt.differentiableWithinAt
   · intro x hx
     rw [interior_Ici] at hx
-    rw [(hasDerivAt_oscEnergy hv hv' x).deriv]
+    rw [(hasDerivAt_oscillatorMonotoneEnergy hv hv' x).deriv]
     have hx0 : 0 ≤ x := le_of_lt (lt_of_le_of_lt ha hx)
     nlinarith [sq_nonneg (v x)]
 
@@ -73,8 +73,8 @@ theorem hasDerivAt_oscRatio {mu : ℝ} {v v' : ℝ → ℝ} {xi : ℝ} (hxi : xi
     (hv : ∀ x, HasDerivAt v (v' x) x)
     (hv' : ∀ x, HasDerivAt v' ((x ^ 2 - mu) * v x) x) :
     HasDerivAt (oscRatio mu v v') (2 * xi * v' xi ^ 2 / (xi ^ 2 - mu) ^ 2) xi := by
-  have hE : HasDerivAt (fun x => -oscEnergy mu v v' x) (2 * xi * v xi ^ 2) xi := by
-    refine ((hasDerivAt_oscEnergy hv hv' xi).neg).congr_deriv ?_
+  have hE : HasDerivAt (fun x => -oscillatorMonotoneEnergy mu v v' x) (2 * xi * v xi ^ 2) xi := by
+    refine ((hasDerivAt_oscillatorMonotoneEnergy hv hv' xi).neg).congr_deriv ?_
     ring
   have hd : HasDerivAt (fun x : ℝ => x ^ 2 - mu) (2 * xi) xi := by
     have := (hasDerivAt_pow 2 xi).sub_const mu
@@ -82,7 +82,7 @@ theorem hasDerivAt_oscRatio {mu : ℝ} {v v' : ℝ → ℝ} {xi : ℝ} (hxi : xi
   have hq := hE.div hd hxi
   refine hq.congr_deriv ?_
   have hne : (xi ^ 2 - mu) ≠ 0 := hxi
-  simp only [oscEnergy]
+  simp only [oscillatorMonotoneEnergy]
   field_simp
   ring
 
@@ -116,7 +116,7 @@ solution, the difference being `v′²/(ξ² − μ)`. -/
 theorem oscRatio_le_sq {mu : ℝ} {v v' : ℝ → ℝ} {xi : ℝ} (hxi : 0 < xi ^ 2 - mu) :
     oscRatio mu v v' xi ≤ v xi ^ 2 := by
   have hid : v xi ^ 2 - oscRatio mu v v' xi = v' xi ^ 2 / (xi ^ 2 - mu) := by
-    rw [oscRatio, oscEnergy]
+    rw [oscRatio, oscillatorMonotoneEnergy]
     field_simp
     ring
   have hnn : (0 : ℝ) ≤ v' xi ^ 2 / (xi ^ 2 - mu) := by positivity

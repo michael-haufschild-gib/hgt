@@ -187,12 +187,12 @@ theorem rowSum_eq_seedCarrier_sum (ω : α → E) (H : ℕ → facets → E → 
     Polynomial.coeff (Rows i A g) r * H r A (z + intTranslation ω g) with hf
   have hrow : ∀ A : facets, Rows i A
       = facetLaurentShift dd A.1 (differenceToTranslationHom
-        (opPoly n (fun r => facetRestrict A.1 (Q i r)))) := by
+        (opPoly n (fun r => pencilFacetRestrict A.1 (Q i r)))) := by
     intro A
     show facetLaurentShift dd A.1
       (stanleyReisnerFacetTranslationCoordinates facets
         (Ideal.Quotient.mk (stanleyReisnerIdeal (Polynomial ℂ) facets) (opPoly n (Q i))) A) = _
-    rw [stanleyReisnerFacetTranslationCoordinates_mk, facetRestrict_opPoly]
+    rw [stanleyReisnerFacetTranslationCoordinates_mk, pencilFacetRestrict_opPoly]
   set T : Finset (facets × (α → ℤ)) :=
     Finset.univ.biUnion (fun A : facets => (Rows i A).support.image (Prod.mk A)) with hT
   have hTS : T ⊆ finiteFinsuppRowSupport Rows := by
@@ -229,17 +229,17 @@ theorem rowSum_eq_seedCarrier_sum (ω : α → E) (H : ℕ → facets → E → 
     refine Finset.sum_congr rfl fun A _ => ?_
     exact Finset.sum_image (fun a _ b _ h => (Prod.mk.injEq .. ▸ h : A = A ∧ a = b).2)
   have hfacet : ∀ A : facets, ∑ g ∈ (Rows i A).support, f A g
-      = ∑ r ∈ Finset.range n, seedCarrierPoly ω (H r A) (facetRestrict A.1 (Q i r))
+      = ∑ r ∈ Finset.range n, seedCarrierPoly ω (H r A) (pencilFacetRestrict A.1 (Q i r))
           (z - ∑ v, (translationDenominatorExponent dd v : ℤ) • ω v) := by
     intro A
     have := facetRowSum_eq_seedCarrier ω (A := A.1) (fun r => H r A)
-      (fun r v hv y => hH r A v hv y) dd n (fun r => facetRestrict A.1 (Q i r)) z
+      (fun r v hv y => hH r A v hv y) dd n (fun r => pencilFacetRestrict A.1 (Q i r)) z
     rw [hf]
     simpa only [hrow A] using this
   show ∑ q : FiniteFinsuppRowIndex Rows, f q.1.1 q.1.2 = _
   rw [hstep, Finset.sum_congr rfl (fun A (_ : A ∈ Finset.univ) => hfacet A), Finset.sum_comm]
   refine Finset.sum_congr rfl fun r _ => ?_
-  exact (seedCarrierPoly_sum_facetRestrict ω (fun A => H r A)
+  exact (seedCarrierPoly_sum_pencilFacetRestrict ω (fun A => H r A)
     (fun A v hv y => hH r A v hv y) (Q i r) _).symm
 
 end

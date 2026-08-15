@@ -18,3 +18,12 @@ docs/prompts/
 docs/reports/
 docs/plans/
 tmp/
+
+# Per-file extraction cache for scripts/formal_tools.py (derivable from the tree)
+formal/.formal_tools_cache.json
+formal/.formal_tools_cache.*.tmp
+
+# Full-text search index for scripts/formal_tools.py research (derivable from the tree)
+formal/.lean_search.db
+formal/.lean_search.db-wal
+formal/.lean_search.db-shm

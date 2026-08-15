@@ -99,7 +99,7 @@ theorem cayleyNumerator_limit_zero_im_eq_zero
     {a : ℕ → ℝ} {d : ℕ → ℕ} {P : ℕ → Polynomial ℂ} {F : ℂ → ℂ}
     (ha : ∀ n, a n ≠ 0) (hd : ∀ n, (P n).natDegree ≤ d n)
     (hreal : ∀ n, ∀ ρ : ℂ, (P n).eval ρ = 0 → ρ.im = 0)
-    (hconv : Filter.TendstoLocallyUniformly
+    (hconv : TendstoLocallyUniformly
       (fun n w => (cayleyNumerator (a n) (d n) (P n)).eval w) F Filter.atTop)
     (hF : AnalyticOnNhd ℂ F Set.univ)
     {b z : ℂ} (hb : F b ≠ 0) (hz : F z = 0) : z.im = 0 :=
@@ -107,7 +107,7 @@ theorem cayleyNumerator_limit_zero_im_eq_zero
     (Filter.Eventually.of_forall fun n =>
       Polynomial.differentiable_aeval (cayleyNumerator (a n) (d n) (P n)))
     (isClosed_eq Complex.continuous_im continuous_const)
-    (Filter.Eventually.of_forall fun n w hw =>
+    (Filter.Eventually.of_forall fun n _ hw =>
       cayleyNumerator_root_im_eq_zero (a n) (ha n) (d n) (P n) (hd n) (hreal n) hw)
     hb hz
 

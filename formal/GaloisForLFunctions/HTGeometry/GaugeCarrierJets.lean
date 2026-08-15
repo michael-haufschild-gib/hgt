@@ -70,9 +70,9 @@ theorem eval_eq_of_mem_jetSub {l : ℕ} {B : MvPolynomial ℕ ℂ} (hB : B ∈ j
 /-- The jets of a function at a point, truncated at order `m`. -/
 def gaugeJetVec (m : ℕ) (g : ℂ → ℂ) (z : ℂ) : Fin m → ℂ := fun k => iteratedDeriv (k : ℕ) g z
 
-theorem jetExtend_gaugeJetVec {m : ℕ} (g : ℂ → ℂ) (z : ℂ) {k : ℕ} (hk : k < m) :
-    jetExtend m (gaugeJetVec m g z) k = iteratedDeriv k g z := by
-  rw [jetExtend_apply_lt _ hk]
+theorem expJetJacobianExtend_gaugeJetVec {m : ℕ} (g : ℂ → ℂ) (z : ℂ) {k : ℕ} (hk : k < m) :
+    expJetJacobianExtend m (gaugeJetVec m g z) k = iteratedDeriv k g z := by
+  rw [expJetJacobianExtend_apply_lt _ hk]
   rfl
 
 theorem gaugeJetVec_add {m : ℕ} {f g : ℂ → ℂ} (hf : Differentiable ℂ f) (hg : Differentiable ℂ g)
@@ -85,14 +85,14 @@ theorem expJetMap_gaugeJetVec {m : ℕ} {g : ℂ → ℂ} (hg : Differentiable �
     expJetMap m (gaugeJetVec m g z) (l : Fin m)
       = iteratedDeriv (l : ℕ) (fun w => Complex.exp (g w)) z := by
   rw [iteratedDeriv_exp_comp hg (l : ℕ) z, expJetMap]
-  have h0 : jetExtend m (gaugeJetVec m g z) 0 = g z := by
-    rw [jetExtend_gaugeJetVec g z (lt_of_le_of_lt (Nat.zero_le (l : ℕ)) l.2),
+  have h0 : expJetJacobianExtend m (gaugeJetVec m g z) 0 = g z := by
+    rw [expJetJacobianExtend_gaugeJetVec g z (lt_of_le_of_lt (Nat.zero_le (l : ℕ)) l.2),
       iteratedDeriv_zero]
   rw [h0]
   congr 1
   refine eval_eq_of_mem_jetSub (expJetPoly_mem_jetSub (l : ℕ)) _ _ ?_
   intro k _ hk2
-  exact jetExtend_gaugeJetVec g z (lt_of_le_of_lt hk2 l.2)
+  exact expJetJacobianExtend_gaugeJetVec g z (lt_of_le_of_lt hk2 l.2)
 
 /-! ### The jets of a gauged source -/
 
