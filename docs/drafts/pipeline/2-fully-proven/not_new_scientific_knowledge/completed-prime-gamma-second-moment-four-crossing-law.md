@@ -172,3 +172,24 @@ the strict sign change from (3) to (8).
 - [ ] 2 -> 3 formalized: formalize the `x=10` Euler/Gamma inequalities if this no-go needs a Lean
   certificate
 - [ ] 3 -> 4 publication-ready: not a standalone publication target
+
+## Lean certificate update — 2026-08-15
+
+The exact `x=10` sign certificate is now formalized in
+`formal/GaloisForLFunctions/RHTower/CompletedPrimeGammaSecondMomentCenterPositive.lean`:
+
+```text
+RHTower.completedEulerMoment_two_ten_lt
+RHTower.completedOddLogDerivMoment_two_ten_re_neg
+RHTower.not_completedOddLogDerivPolynomialRightEvenFactorization
+```
+
+The proof uses the source identity already formalized there, the closed Gamma tail bound, a finite
+Euler head bounded with certified logarithm enclosures, and the existing exact p-series tail
+theorem. `lake build GaloisForLFunctions.RHTower.CompletedPrimeGammaSecondMomentCenterPositive`
+and `#print axioms` of all three declarations pass with only Lean's standard
+`propext`, `Classical.choice`, and `Quot.sound` axioms.
+
+Thus the exact `P = X`, `R = 10` obstruction is Lean-closed. The broader intermediate-value and
+four-crossing packaging remains paper-level in this card, so its stage is not promoted merely from
+the terminal sign certificate.

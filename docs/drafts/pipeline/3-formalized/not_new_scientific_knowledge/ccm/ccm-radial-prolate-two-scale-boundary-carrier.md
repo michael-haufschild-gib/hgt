@@ -216,7 +216,61 @@ consequent invariant-line diagonalization in `RHTower/ProlateDiagonalization.lea
 genuinely absent is the **fixed-mode asymptotic for the actual eigenvalues** `chi_n(lambda)`:
 `RHTower/FuchsProlateScale.lean` formalizes the Fuchs *rate calculus* for the model rate
 `A·lambda^(2n+1)·exp(-4 pi lambda^2)` and the prolate-to-Hermite scaling identity, but no theorem
-identifies the true `chi_n(lambda)` with that rate.  No Lean file is added by this card.
+identifies the true `chi_n(lambda)` with that rate.
+
+**Superseded, 2026-08-15.**  "No Lean file is added by this card" is out of date: every equation the
+card proves is now formal, in
+`formal/GaloisForLFunctions/RHTower/CCMRadialTwoScaleCarrier.lean` (see the Lean status section
+below).  The eigenvalue asymptotic remains an import, but it is an input of `(4)` and `(6)`, not of
+anything the card derives.
+
+## Lean status
+
+**Formalized, 2026-08-15.**  Module
+`formal/GaloisForLFunctions/RHTower/CCMRadialTwoScaleCarrier.lean` (wired, axiom-clean), built over
+`CCMRadialGlobalDefectMass` and the corpus's leakage layer.
+
+- **`norm_sq_twoModeExterior`** — equation `(3)`, exactly: for the normalized vanishing-integral
+  two-mode source `g = (l_1 e_0 - l_0 e_1)/sqrt(l_0^2+l_1^2)`, orthogonality of the two exterior
+  components gives `delta = (l_1^2 d_0 + l_0^2 d_1)/(l_0^2+l_1^2)`.  Stated for an arbitrary linear
+  map on a real inner-product space, which is all the proof uses.
+- `scaledProfile`, `scaledProfileSq` — the exterior profile at an arbitrary scale,
+  `t |-> q(lambda + t/alpha)/q(lambda)`.  Equations `(8)` and `(13)` are the cases
+  `alpha = lambda` and `alpha = lambda^3`.
+- `integral_Ioi_shift`, `integral_Ioi_dilate` — the two elementary half-line changes of variables.
+- **`integral_Ioi_scaledProfileSq`** — equations `(9)` and `(16)` at once:
+
+  ```text
+  int_0^infinity |profile at scale alpha|^2 = alpha * delta / (2 |q(lambda)|^2),
+  ```
+
+  exactly, for every positive scale.  The card's `(9)` is `alpha = lambda`, its `(16)` is
+  `alpha = lambda^3`; no asymptotics enter.
+- **`tendsto_integral_Ioi_scaledProfileSq_outer`** — equation `(10)`: the outer scale normalizes the
+  total exterior mass, `int_0^infinity |R_lambda|^2 dr -> 1/(4 pi)`, from `(4)` and `(7)` alone.
+- **`tendsto_integral_Ioi_scaledProfileSq_inner`** — equation `(16)`: the inner scale does *not*
+  normalize the mass, `(int |I_lambda|^2)/lambda^2 -> 1/(4 pi)`.
+- `scaledProfile_zero` — `I_lambda(0) = 1`.
+- **`hasDerivAt_scaledProfile`** — the endpoint slope of the profile at scale `alpha` is exactly
+  `q'(lambda)/(alpha q(lambda))`.
+- **`endpointLogDeriv_eq`** — equations `(11)`-`(12)`: in the CCM aperture `c = 2 pi lambda^2`,
+  `(kappa - c^2)/(2 lambda) = -2 pi^2 lambda^3 + kappa/(2 lambda)`.  The universal cubic term is the
+  aperture, not the eigenvalue.
+- **`tendsto_endpointLogDeriv_div_cube`** — equation `(14)`: whenever `kappa_m(c) = o(lambda^4)`,
+  the inner-scale slope tends to the universal constant `-2 pi^2`.
+- **`outerSlope_eq_sq_mul_innerSlope`** — equation `(15)`, as an identity: the outer slope is
+  exactly `lambda^2` times the inner slope, so the outer coordinate's boundary derivative diverges
+  at precisely the rate the inner coordinate removes.  The scale separation is algebra, not an
+  asymptotic coincidence.
+
+`#print axioms` on all eleven declarations returns exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+Imported, not reproved: the constrained-prolate limit `(4)` and the endpoint-response height `(7)`
+(both named hypotheses, and both formal in `CCMEndpointResponseConstants` given their own classical
+inputs), the finite-Fourier eigenrelation `(5)`, and the eigenvalue asymptotic `kappa_m(c) = O(c)`.
+The non-tightness of the outer coordinate, which this card explicitly does *not* assert, is proved
+in `ccm-radial-prolate-global-defect-measure`.
 
 ## Gates
 

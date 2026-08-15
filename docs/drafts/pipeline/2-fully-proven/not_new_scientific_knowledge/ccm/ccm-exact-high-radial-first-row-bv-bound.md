@@ -179,10 +179,11 @@ it is classified as a bridge.
   theorems used by Dunster.
 - `radial-pswf-interaction-picture-transport.md`, exact ODE transport and Lean formalization.
 
-## Lean decision
+## Lean decision (superseded)
 
-The formal tree has no Bessel-envelope bounded-variation or nonstationary integration interface.
-No Lean file is added.
+At the time this card was written the formal tree had no Bessel-envelope bounded-variation or
+nonstationary integration interface, so no Lean file was added.  Both interfaces now exist; see the
+Lean progress section at the end of this card.
 
 ## Gates
 
@@ -190,3 +191,82 @@ No Lean file is added.
 - [x] pole-factor weighted BV bound proved
 - [x] exact `k^(-2)` high first-row estimate proved
 - [x] truncated-divisor weighted high tail summed
+
+## Lean progress — the whole estimate is formal
+
+The "Lean decision" above is stale.  The formal tree now has both interfaces it said were missing:
+the nonstationary integration interface (`HTGeometry/NonstationaryPhaseLowerBound.lean`,
+`HTGeometry/TwoPhaseOscillatoryProduct.lean`) and the exterior dilated-phase layer
+(`RHTower/RadialDilatedPhaseSeparation.lean`, `RHTower/RadialTwoIndexOscillatoryBound.lean`).
+
+`GaloisForLFunctions/RHTower/CCMHighRadialFirstRowBV.lean` (wired, axiom-clean) proves the card end
+to end, with every constant absolute:
+
+```text
+BVWeight a b B V V'
+    the card's `(7)`: a weight with endpoint-plus-total-variation budget
+      |V a| + |V b| + ∫_a^b |V′| ≤ B
+
+integral_one_div_mul_sqrt_le          ∫_a^b x^{-3/2} ≤ 2/√a
+integral_one_div_sq_le'               ∫_a^b x^{-2}   ≤ 1/a
+    the two exterior power integrals, by explicit antiderivatives
+
+bvWeight_of_symbol   (1 ≤ a ≤ b)
+    |V| ≤ P/(x√x)  and  |V′| ≤ P′/x²   ⟹   BVWeight a b (2P + P′) V V'  and  ∫|V| ≤ 2P
+
+firstRowWeight_symbol_bounds   (1 ≤ x)
+    the card's `(6)` and `(3)`: for `V = U·A/x` with
+      |U| ≤ Q/√x, |U′| ≤ Q′/√x,  |A| ≤ R/√x, |A′| ≤ R′/(x√x)
+    one has
+      |V| ≤ QR/(x√x)   and   |V′| ≤ (Q′R + QR′ + QR)/x²
+    so the first-row weight is exactly in the symbol class of `bvWeight_of_symbol`;
+    `Q′` is where the bandwidth of the first factor's own oscillation enters, and it is the
+    only place a power of `c` appears
+
+integral_abs_mul_dilatedRadialPhaseAccel_le   (0 ≤ s ≤ 1/2, 2 ≤ r, 1 ≤ a ≤ b)
+    ∫_a^b |V| |ξ″| ≤ 16 B₁/(9 r)      from |ξ″| ≤ (16/9)/(r x³) ≤ (16/9)/r
+
+abs_integral_highRadial_firstRow_le   (0 ≤ s ≤ 1/2, 2 ≤ r, 0 < c, 1 ≤ a ≤ b)
+    |∫_a^b V(x) cos(c ξ_s(r x) + φ) dx| ≤ (B/r + 16 B₁/(9 r³))/c        -- `(10)`,`(4)`,`(5)`
+
+abs_setIntegral_Ioi_highRadial_firstRow_le
+    the same on the exterior ray `(1,∞)`, because the bound is uniform in the right endpoint
+
+summable_highRadial_logMajorant       Σ log(k+2)/(k+2)² converges
+tsum_weighted_highRadial_le           Σ_{k ≥ N} a(k)|G(1,k)| ≤ C d Σ_{k ≥ N} log k/k²
+tendsto_tsum_log_shift_div_sq_tail    those tails tend to zero                     -- `(13)`
+```
+
+The mechanism is the card's own: the exterior phase `c ξ_s(r x)` has speed at least `c r`
+(`le_dilatedPhaseSpeed`) and curvature at most `(16/9)/(r x³)`
+(`abs_dilatedRadialPhaseAccel_le`), so one integration by parts against the oscillation costs a
+factor `1/(c r)` and returns the endpoint-plus-variation budget of the weight, exactly `(10)`.
+With `B = O(√d₁ c)` from `(7)` — the composition bound above with `Q′ = O(c)` — the entry is
+`O(√d₁/r)`, and the outer `√d₁/r` normalization of the exterior expansion `(2)` turns it into
+`(12)`: `|G_λ(1,k)| ≤ C d₁/k²`.  Summing against `0 ≤ a_λ(k) ≤ log k` gives `(13)`.
+
+`#print axioms` on every declaration of the module returns exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+## Gates — Lean
+
+- [x] the bounded-variation budget `(7)` as an interface, with its half-power symbol discharge
+- [x] the two-factor composition `(3)`/`(6)` of the first-row weight
+- [x] the integration by parts `(10)` with the phase lower bound `(4)` and curvature `(5)`
+- [x] the exterior-ray form of the estimate
+- [x] the truncated-divisor weighted high tail `(13)` and its vanishing
+- [ ] the endpoint layer of `(7)` for the *actual* first factor: on `c²(x−1) ≤ 1` the Bessel
+  amplitude has the `(x−1)^{-1/4}` singularity, so the half-power symbol bound
+  `|U| ≤ Q/√x` used by `firstRowWeight_symbol_bounds` does not hold there and the analytic
+  coordinate `η = ξ_c²` must be used instead.  Everything on the complement is discharged.
+
+### Residue
+
+What the module does **not** yet do is name the corpus's concrete first-row factor as the `U` of
+`firstRowWeight_symbol_bounds`.  Away from the endpoint layer the two inputs it needs are already
+corpus-owned — the Liouville–Green amplitude bounds `abs_xiAmplitude_le_four`,
+`abs_xiAmplitudeDeriv_le` (`RHTower/XiAmplitudeDecay.lean`) and the exterior symbol record
+`symbolTwoBranch_radialPSWF` (`RHTower/RadialSymbolTwoBranchBound.lean`) — so the missing step is
+exactly the endpoint layer, where `RHTower/CCMRadialProlateEndpointLayer.lean` and
+`RHTower/CCMFirstRowEnvelopeTail.lean` already carry the `(x−1)^{-1/4}` analysis used by the *low*
+first row.

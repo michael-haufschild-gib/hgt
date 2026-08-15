@@ -1710,3 +1710,54 @@ the Gaussian coefficient law under product-Clifford conjugation, hence equality 
 `E_H C_H(φ)` across the `6^n` product stabilizer inputs), `(26)` and `(21)` (Markov), `(27)` (the
 Krylov determinant genericity and the nearest-neighbour spectral-maximality theorem), and the
 physical-time and complete-circuit consequences `(28)`--`(33)`.
+
+## In flight: weak-cut complexity onset/capacity separation law (2026-08-15)
+
+Target: `docs/drafts/pipeline/2-fully-proven/weak-cut-complexity-onset-capacity-separation-law.md`.
+
+**Theorem A is closed** — new module `HTGeometry/WeakCutOnsetDelay.lean` (wired, axiom-clean):
+
+- `approxComplexity_le_of_near` — approximation transfer: a state within `δ₁` of a state
+  synthesizable to `δ₂` by `s` gates has `approxComplexity ≤ s` at every resolution `≥ δ₁ + δ₂`;
+- `dist_evolvedState_sub_le` — the card's `(7)`, Duhamel separation of two Schrödinger orbits of
+  the same unit seed at rate `‖H − K‖`;
+- `approxComplexity_evolvedState_le_synthesis` — the card's boxed `(4)`;
+- `lt_abs_time_of_lt_approxComplexity` — the card's boxed `(6)`, the onset lower bound
+  `T_full ≥ (ε − η_A − η_B)/‖V‖`.
+
+As in the card, the split-system synthesis cap `S_k(η)` enters as a hypothesis (`hsyn`): the card
+itself says "only finiteness of `S_k(η)` is needed".  What is *not* yet formalized from Theorem A's
+proof is the decoupled factorization `(8)`
+`e^{-itH₀}(χ_A⊗χ_B) = (e^{-itH_A}χ_A)⊗(e^{-itH_B}χ_B)` and the disjoint-circuit concatenation that
+produces `hsyn` with `S = S_A + S_B` and `η = η_A + η_B`; those need the bipartite tensor model
+(`finiteLocalMatrix` / `qubitLocalTensor` in the corpus) and `NormedSpace.exp_add_of_commute`.
+
+**Remaining:** Theorem B `(9)`--`(12)` (the Steinhaus/cubic-phase fourth-moment bound
+`E ∑_j |⟨e_j, χ_A⊗χ_B⟩|⁴ ≤ 4/D`) and Theorem C `(13)`--`(14)` (conull loci, positive-measure seed
+selection, equidistribution, plateau).
+
+Note for Theorem B: the required core is
+`∫_{box} ‖∑_y c_y e(x_y)‖⁴ ≤ 2 (∑_y ‖c_y‖²)²`, which is Parseval over the frequencies
+`Pi.single y 1 + Pi.single y' 1` — use `ofReal_integral_box_normSq_trigLift` from
+`HTGeometry/TorusPhaseTrigCalculus.lean`, exactly as in `TorusReplicaMomentBound`.  Independent
+uniform phases are realized as `charLift (Pi.single y 1)` on the torus box, so no new probability
+space is needed.
+
+### Update: the Steinhaus fourth-moment core of Theorem B is closed (2026-08-15)
+
+New module `HTGeometry/SteinhausFourthMoment.lean` (wired, axiom-clean):
+
+- `pairFreq p = Pi.single p.1 1 + Pi.single p.2 1` and `pairFreq_eq_iff` — a pair frequency
+  determines the *unordered* pair, so every frequency is carried by at most two ordered pairs;
+- **`integral_box_phase_fourth_le`** — the Steinhaus fourth moment
+  `∫_{box} ‖∑_y c_y e(x_y)‖⁴ ≤ 2 (∑_y ‖c_y‖²)²`, which is the card's `(11)` with `q(a)` factored
+  out.
+
+Independent uniform coordinate phases are realized as `charLift (Pi.single y 1)` on the torus box,
+so this needs no separate probability space; the proof is `ofReal_integral_box_normSq_trigLift`
+applied to the pair-frequency expansion of the square.
+
+Remaining for Theorem B: the bipartite reduction `(10)`, the second pairing `(12)`
+(`E_a q(a)² ≤ 2/d_A²`, which is the same lemma applied on the `A` factor to the row norms of `e`),
+the assembly to `(9)` `E ∑_j |⟨e_j, χ_A⊗χ_B⟩|⁴ ≤ 4/D`, and the transfer from Steinhaus phases to
+four-wise-independent cubic-phase seeds.

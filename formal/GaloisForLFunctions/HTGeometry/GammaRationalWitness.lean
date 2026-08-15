@@ -219,4 +219,15 @@ theorem isStripAlmostPeriodic_expLine_one_zero_one :
     IsStripAlmostPeriodic (expLine 1) 0 1 :=
   isStripAlmostPeriodic_expLine 1 0 1
 
+/-- The unit frequency belongs to the Bohr hull of its zero-line exponential witness. -/
+theorem isBohrHullFrequency_expLineBC_one_zero :
+    IsBohrHullFrequency (expLineBC 1 0) 1 :=
+  isBohrHullFrequency_expLineBC 1 0
+
+/-- The unit-frequency exponential witness has a nonzero finite Bohr-frequency rank. -/
+theorem rank_expLine_one_pos_and_finite :
+    ∃ K : ℕ, 1 ≤ Module.rank ℤ (bohrHullFrequencies (expLineBC 1 2)) ∧
+      Module.rank ℤ (bohrHullFrequencies (expLineBC 1 2)) ≤ (K : Cardinal) :=
+  rank_expLine_pos_and_finite 1 one_ne_zero
+
 end GaloisForLFunctions

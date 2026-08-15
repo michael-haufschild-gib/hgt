@@ -129,7 +129,7 @@ The same Lean module now contains the explicit balanced two-frequency certificat
 - `GaloisForLFunctions.twoFrequency_halfTurn_balanced_det_identity`
 - `GaloisForLFunctions.twoFrequency_halfTurn_balanced_det_pos`
 
-These formalize `../2-fully-proven/half-turn-first-gate-threshold-sharp.md`. For the balanced endpoint packet with weights `c_x=y^2`, `c_y=x^2`, the first shifted Hankel determinant is
+These formalize `half-turn-first-gate-threshold-sharp.md`. For the balanced endpoint packet with weights `c_x=y^2`, `c_y=x^2`, the first shifted Hankel determinant is
 
 `x^3 y^3 (3 x^2 - 34 x y + 3 y^2)/360`.
 

@@ -78,6 +78,30 @@ theorem sigNeg_le_one_of_add_sq_nonneg {M : Type*} [AddCommGroup M] [Module ℝ 
     (fun x => by simpa [Fin.sum_univ_one] using h x)
   simpa using this
 
+/-- A concrete negative vector supplies the lower half of a negative-inertia count. -/
+theorem sigNeg_pos_of_exists_negativeVector {M : Type*} [AddCommGroup M] [Module ℝ M]
+    [FiniteDimensional ℝ M] (Q : QuadraticForm ℝ M) {x : M}
+    (hx : x ≠ 0) (hneg : Q x < 0) : 0 < sigNeg Q := by
+  let V : Submodule ℝ M := ℝ ∙ x
+  have hV : ((-Q).restrict V).PosDef := by
+    intro y hy
+    obtain ⟨a, ha⟩ := (Submodule.mem_span_singleton.mp y.property)
+    have hycoe : (y : M) = a • x := ha.symm
+    have ha0 : a ≠ 0 := by
+      intro haZero
+      apply hy
+      apply Subtype.ext
+      rw [hycoe, haZero]
+      simp
+    rw [QuadraticMap.restrict_apply, QuadraticMap.neg_apply, hycoe,
+      QuadraticMap.map_smul]
+    simp only [smul_eq_mul]
+    nlinarith [sq_pos_of_ne_zero ha0]
+  have hle := le_sigNeg_of_negDef Q hV
+  rw [show Module.finrank ℝ V = 1 by
+    exact finrank_span_singleton hx] at hle
+  omega
+
 /-- **Complex Hermitian Krein–Langer bound, applied directly to the carrier (`κ₋ ≤ k`).** This is the
 inertia bound for the *actual* complex Hermitian object — the carrier Pick matrix — with **no
 realification** needed. If a Hermitian quadratic form `x ↦ Re(x* H x)` becomes nonnegative after

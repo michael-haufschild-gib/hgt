@@ -337,3 +337,38 @@ the recursion, the Cauchy-Schwarz bootstrap and the Gram law are all proved.
 Still to build for this card: the localized convolution operator itself, so that the radical of the
 form can be identified with its kernel, and the parity-doubled dimension count
 (HPJI.11)-(HPJI.12) assembled from the independence lemma and the odd twins.
+
+Added since: `routeUEvenForm_eq_zero_of_diag` (a vector of zero diagonal energy annihilates the even
+form) and `routeUJetDescendant_diag_eq_zero` (**(RJRR.8)**: every nonterminal divided descendant has
+zero diagonal energy, hence lies in the radical).  Together with `routeUOddForm_of_radical` these
+give the complete flag of even null descendants and their odd twins; what is not yet formal is the
+dimension count itself, which needs the parity direct sum and the localized operator.
+
+### The terminal alternatives and the parity count
+
+    RHTower/XiShiftedHardEdgeParityJet.lean (continued)
+      routeUEvenForm_eq_zero_of_factor,
+        routeUEvenForm_distinct_roots,
+        routeUOddForm_eq_zero_of_factor       **(HPJI.8)/(RJRR.7)** a pairing whose product factors
+                                              through a radical state vanishes — the exact
+                                              distinct-root orthogonality mechanism
+      routeUJetRoot_nonneg                    alternative 1: odd nonnegativity and a positive
+                                              terminal mass force `r >= 0`
+      routeUJetRoot_pos                       **(HPJI.13)** with a nonvanishing terminal odd energy,
+                                              `r > 0`
+      routeUJetTerminalOdd_null_of_root_zero  alternative 2: a zero root gives an extra odd ground
+                                              mode
+      routeUJetTerminal_null_of_terminal_mass_zero
+                                              alternative 3: a vanishing terminal mass gives both
+                                              terminal ground modes
+      linearIndependent_routeUJetDescendant   the divided descendants are independent
+      linearIndependent_prod_blocks           independence survives the parity direct sum
+      linearIndependent_routeUParityDirections
+                                              **(HPJI.11) for one root**: the state, its `m-1`
+                                              nonterminal even descendants and their `m-1` odd twins
+                                              are `2m-1` independent parity directions
+
+What remains for stage 3 is the localized convolution operator itself — the Friedrichs operator of
+the form on its closed domain, for which the corpus already has the general construction
+(`HTGeometry/FriedrichsFormOperator.lean`) — so that "radical of the form" can be read as "kernel of
+the operator", and the aggregation of the single-root count over a finite root set.

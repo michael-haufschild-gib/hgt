@@ -203,7 +203,7 @@ Thus rows A6--A7 cannot be discharged by proving only `H^- in N_1`. The repair t
 
 ## 2026-06-24 positive Stieltjes bulk plus archimedean atoms does not discharge A6--A7
 
-`../2-fully-proven/positive-stieltjes-pole-plus-first-atom-insufficient.md` blocks the shortcut that keeps only positive bulk support, pole mass, and first-trivial-zero mass. The displayed positive atomic bulk produces an unrepaired one-negative-square form, but the first atom does not repair it.
+`../3-formalized/not_new_scientific_knowledge/positive-stieltjes-pole-plus-first-atom-insufficient.md` blocks the shortcut that keeps only positive bulk support, pole mass, and first-trivial-zero mass. The displayed positive atomic bulk produces an unrepaired one-negative-square form, but the first atom does not repair it.
 
 Thus rows A6--A7 require the actual Euler/Gamma/FE carrier. Archimedean atom bookkeeping and a generic positive Stieltjes bulk do not prove the full repair/index sign.
 
@@ -397,7 +397,7 @@ If `b/a < (17+2 sqrt(70))/3`, then `U_1 U_3-U_2^2<0`. Thus rows A3--A7 cannot be
 
 ## 2026-06-24 first-gate threshold is sharp but not all-order
 
-`../2-fully-proven/half-turn-first-gate-threshold-sharp.md` shows that the half-turn repaired spread threshold `(17+2 sqrt(70))/3` is exact for the first shifted Hankel gate. With squared endpoints `x,y` and balanced weights `c_x=y^2`, `c_y=x^2`, the determinant is
+`../3-formalized/not_new_scientific_knowledge/half-turn-first-gate-threshold-sharp.md` shows that the half-turn repaired spread threshold `(17+2 sqrt(70))/3` is exact for the first shifted Hankel gate. With squared endpoints `x,y` and balanced weights `c_x=y^2`, `c_y=x^2`, the determinant is
 
 `x^3 y^3(3x^2-34xy+3y^2)/360`.
 

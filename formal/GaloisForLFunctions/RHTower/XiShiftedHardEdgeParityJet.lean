@@ -173,6 +173,43 @@ theorem routeUJetGram_of_null (σ : ℝ) (G : ℝ → ℝ) (r : ℝ) (m : ℕ)
 
 
 
+
+/-! ## Orthogonality across distinct roots -/
+
+/-- **The pairing only sees the product.**  If the product of two states factors through a radical
+state, their even form vanishes. -/
+theorem routeUEvenForm_eq_zero_of_factor (σ : ℝ) (H K F W : ℝ → ℝ)
+    (hfac : ∀ u : ℝ, H u * K u = F u * W u)
+    (hrad : routeUHardEdgeEvenForm σ F W = 0) :
+    routeUHardEdgeEvenForm σ H K = 0 := by
+  rw [routeUHardEdgeEvenForm, ← hrad, routeUHardEdgeEvenForm]
+  congr 1
+  funext u
+  exact hfac u
+
+/-- **(RJRR.7)/(HPJI.8) Descendants of distinct roots are orthogonal.**  For distinct roots the
+product of two divided descendants is the state times an entire cofactor, so the even form
+vanishes; the odd form vanishes for the same reason after the coordinate is absorbed. -/
+theorem routeUEvenForm_distinct_roots (σ : ℝ) (F : ℝ → ℝ) (r s : ℝ) (mr ms p q : ℕ)
+    (Gr Gs W : ℝ → ℝ)
+    (hr : ∀ u : ℝ, routeUJetDescendant mr r Gr p u * routeUJetDescendant ms s Gs q u
+      = F u * W u)
+    (hrad : routeUHardEdgeEvenForm σ F W = 0) :
+    routeUHardEdgeEvenForm σ (routeUJetDescendant mr r Gr p) (routeUJetDescendant ms s Gs q)
+      = 0 :=
+  routeUEvenForm_eq_zero_of_factor σ _ _ F W hr hrad
+
+/-- The odd form likewise vanishes when the coordinate-multiplied product factors through a
+radical state. -/
+theorem routeUOddForm_eq_zero_of_factor (σ : ℝ) (H K F W : ℝ → ℝ)
+    (hfac : ∀ u : ℝ, u * (H u * K u) = F u * W u)
+    (hrad : routeUHardEdgeEvenForm σ F W = 0) :
+    routeUHardEdgeOddForm σ H K = 0 := by
+  rw [routeUHardEdgeOddForm, ← hrad, routeUHardEdgeEvenForm]
+  congr 1
+  funext u
+  exact hfac u
+
 /-! ## The odd twins of the nonterminal descendants -/
 
 /-- The coordinate acts on the divided descendants as `u·F_{r,k} = r·F_{r,k} + F_{r,k-1}`. -/
@@ -293,6 +330,155 @@ theorem routeUJetDescendant_eq_zero_of_sum_eq_zero (r : ℝ) (G : ℝ → ℝ) (
     · intro hknot
       exact absurd hk hknot
   rw [← hcoeff, hzero, Polynomial.coeff_zero]
+
+
+
+/-! ## The terminal alternatives -/
+
+/-- **A root with positive terminal mass is nonnegative.**  The terminal odd energy is `r` times
+the terminal even mass, so odd nonnegativity forces `r ≥ 0`. -/
+theorem routeUJetRoot_nonneg (σ : ℝ) (G : ℝ → ℝ) (r : ℝ) (m : ℕ)
+    (h1 : IntegrableOn (fun u : ℝ =>
+      (u - r) ^ 1 * G u ^ 2 * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+    (h2 : IntegrableOn (fun u : ℝ =>
+      r * ((u - r) ^ 0 * G u ^ 2) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+    (hvanish : routeUJetMoment σ G r 1 = 0)
+    (hpsd : 0 ≤ routeUHardEdgeOddForm σ (routeUJetDescendant m r G m)
+      (routeUJetDescendant m r G m))
+    (hpos : 0 < routeUJetMoment σ G r 0) : 0 ≤ r := by
+  rw [routeUOddForm_terminal σ G r m h1 h2 hvanish] at hpsd
+  nlinarith
+
+/-- **A root with positive terminal mass and nonvanishing terminal odd energy is strictly
+positive.** -/
+theorem routeUJetRoot_pos (σ : ℝ) (G : ℝ → ℝ) (r : ℝ) (m : ℕ)
+    (h1 : IntegrableOn (fun u : ℝ =>
+      (u - r) ^ 1 * G u ^ 2 * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+    (h2 : IntegrableOn (fun u : ℝ =>
+      r * ((u - r) ^ 0 * G u ^ 2) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+    (hvanish : routeUJetMoment σ G r 1 = 0)
+    (hpsd : 0 ≤ routeUHardEdgeOddForm σ (routeUJetDescendant m r G m)
+      (routeUJetDescendant m r G m))
+    (hpos : 0 < routeUJetMoment σ G r 0)
+    (hne : routeUHardEdgeOddForm σ (routeUJetDescendant m r G m)
+      (routeUJetDescendant m r G m) ≠ 0) : 0 < r := by
+  have hnn := routeUJetRoot_nonneg σ G r m h1 h2 hvanish hpsd hpos
+  rcases lt_or_eq_of_le hnn with h | h
+  · exact h
+  · exfalso
+    apply hne
+    rw [routeUOddForm_terminal σ G r m h1 h2 hvanish, ← h, zero_mul]
+
+/-- **A vanishing terminal mass makes both terminal descendants zero-energy.** -/
+theorem routeUJetTerminal_null_of_terminal_mass_zero (σ : ℝ) (G : ℝ → ℝ) (r : ℝ) (m : ℕ)
+    (h1 : IntegrableOn (fun u : ℝ =>
+      (u - r) ^ 1 * G u ^ 2 * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+    (h2 : IntegrableOn (fun u : ℝ =>
+      r * ((u - r) ^ 0 * G u ^ 2) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+    (hvanish : routeUJetMoment σ G r 1 = 0)
+    (hgamma : routeUJetMoment σ G r 0 = 0) :
+    routeUHardEdgeEvenForm σ (routeUJetDescendant m r G m) (routeUJetDescendant m r G m) = 0
+      ∧ routeUHardEdgeOddForm σ (routeUJetDescendant m r G m)
+          (routeUJetDescendant m r G m) = 0 := by
+  constructor
+  · rw [routeUEvenForm_descendant]
+    have hidx : (m - m) + (m - m) = 0 := by omega
+    rw [hidx, hgamma]
+  · rw [routeUOddForm_terminal σ G r m h1 h2 hvanish, hgamma, mul_zero]
+
+/-- **A zero root makes the terminal odd descendant zero-energy.** -/
+theorem routeUJetTerminalOdd_null_of_root_zero (σ : ℝ) (G : ℝ → ℝ) (m : ℕ)
+    (h1 : IntegrableOn (fun u : ℝ =>
+      (u - (0 : ℝ)) ^ 1 * G u ^ 2 * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+    (h2 : IntegrableOn (fun u : ℝ =>
+      (0 : ℝ) * ((u - (0 : ℝ)) ^ 0 * G u ^ 2) * routeUHardEdgeDensity σ (Real.sqrt u)
+        / Real.sqrt u) (Ioi 0))
+    (hvanish : routeUJetMoment σ G 0 1 = 0) :
+    routeUHardEdgeOddForm σ (routeUJetDescendant m 0 G m) (routeUJetDescendant m 0 G m) = 0 := by
+  rw [routeUOddForm_terminal σ G 0 m h1 h2 hvanish, zero_mul]
+
+/-! ## The parity direct sum of null directions -/
+
+/-- The divided descendants of a state that is nonzero on an infinite set are linearly
+independent. -/
+theorem linearIndependent_routeUJetDescendant (r : ℝ) (G : ℝ → ℝ) (m : ℕ)
+    {S : Set ℝ} (hS : S.Infinite) (hG : ∀ u ∈ S, G u ≠ 0) :
+    LinearIndependent ℝ (fun k : Fin (m + 1) => routeUJetDescendant m r G (k : ℕ)) := by
+  classical
+  rw [Fintype.linearIndependent_iff]
+  intro g hg i
+  obtain ⟨c, hc⟩ : ∃ c : ℕ → ℝ, c = fun k => if h : k < m + 1 then g ⟨k, h⟩ else 0 := ⟨_, rfl⟩
+  have hcval : ∀ j : Fin (m + 1), c (j : ℕ) = g j := by
+    intro j
+    rw [hc]
+    simp only [j.isLt, dif_pos, Fin.eta]
+  have hsum : ∀ u : ℝ, ∑ k ∈ Finset.range (m + 1), c k * routeUJetDescendant m r G k u = 0 := by
+    intro u
+    have hpt := congrFun hg u
+    simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply] at hpt
+    rw [← Fin.sum_univ_eq_sum_range (fun k : ℕ => c k * routeUJetDescendant m r G k u) (m + 1)]
+    rw [← hpt]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [hcval j]
+  have hT : ∀ k ∈ Finset.range (m + 1), k ≤ m := by
+    intro k hk
+    simp only [Finset.mem_range] at hk
+    omega
+  have hzero := routeUJetDescendant_eq_zero_of_sum_eq_zero r G m hS hG c
+    (Finset.range (m + 1)) hT hsum
+  have hi : (i : ℕ) ∈ Finset.range (m + 1) := Finset.mem_range.2 i.isLt
+  rw [← hcval i]
+  exact hzero (i : ℕ) hi
+
+/-- Two independent families placed in complementary factors of a product stay independent. -/
+theorem linearIndependent_prod_blocks {M N : Type*} [AddCommGroup M] [Module ℝ M]
+    [AddCommGroup N] [Module ℝ N] {p q : ℕ} {a : Fin p → M} {b : Fin q → N}
+    (ha : LinearIndependent ℝ a) (hb : LinearIndependent ℝ b) :
+    LinearIndependent ℝ
+      (Sum.elim (fun i : Fin p => (a i, (0 : N))) (fun j : Fin q => ((0 : M), b j))) := by
+  classical
+  rw [Fintype.linearIndependent_iff] at ha hb ⊢
+  intro g hg i
+  rw [Fintype.sum_sum_type] at hg
+  simp only [Sum.elim_inl, Sum.elim_inr, Prod.smul_mk, smul_zero] at hg
+  rw [Prod.ext_iff] at hg
+  obtain ⟨hfst, hsnd⟩ := hg
+  simp only [Prod.fst_add, Prod.snd_add, Prod.fst_sum, Prod.snd_sum, Prod.fst_zero,
+    Prod.snd_zero, Finset.sum_const_zero, add_zero, zero_add] at hfst hsnd
+  cases i with
+  | inl i => exact ha (fun j => g (Sum.inl j)) hfst i
+  | inr j => exact hb (fun k => g (Sum.inr k)) hsnd j
+
+
+set_option maxHeartbeats 1000000 in
+/-- **(HPJI.11) for a single root.**  The state, its `m-1` nonterminal even descendants and their
+`m-1` odd twins are `2m-1` linearly independent parity directions. -/
+theorem linearIndependent_routeUParityDirections (r : ℝ) (G : ℝ → ℝ) (m : ℕ)
+    {S : Set ℝ} (hS : S.Infinite) (hG : ∀ u ∈ S, G u ≠ 0) :
+    LinearIndependent ℝ
+      (Sum.elim
+        (fun i : Fin m => (routeUJetDescendant m r G (i : ℕ), (0 : ℝ → ℝ)))
+        (fun j : Fin (m - 1) => ((0 : ℝ → ℝ), routeUJetDescendant m r G ((j : ℕ) + 1)))) := by
+  have hbase := linearIndependent_routeUJetDescendant r G m hS hG
+  have heven : LinearIndependent ℝ (fun i : Fin m => routeUJetDescendant m r G (i : ℕ)) := by
+    have hinj : Function.Injective (fun i : Fin m => (⟨(i : ℕ), by omega⟩ : Fin (m + 1))) := by
+      intro a b hab
+      have h : (a : ℕ) = (b : ℕ) := by
+        have hv := congrArg Fin.val hab
+        simpa using hv
+      exact Fin.ext h
+    exact hbase.comp (fun i : Fin m => (⟨(i : ℕ), by omega⟩ : Fin (m + 1))) hinj
+  have hodd : LinearIndependent ℝ
+      (fun j : Fin (m - 1) => routeUJetDescendant m r G ((j : ℕ) + 1)) := by
+    have hinj : Function.Injective
+        (fun j : Fin (m - 1) => (⟨(j : ℕ) + 1, by omega⟩ : Fin (m + 1))) := by
+      intro a b hab
+      have h : (a : ℕ) + 1 = (b : ℕ) + 1 := by
+        have hv := congrArg Fin.val hab
+        simpa using hv
+      exact Fin.ext (by omega)
+    exact hbase.comp (fun j : Fin (m - 1) => (⟨(j : ℕ) + 1, by omega⟩ : Fin (m + 1))) hinj
+  exact linearIndependent_prod_blocks heven hodd
 
 end RHTower
 

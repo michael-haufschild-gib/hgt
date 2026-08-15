@@ -8395,3 +8395,70 @@ multiplication by `x` — which needs the three-fold expansion, i.e. one more in
 top of `phase_ibp_twice`.
 
 All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AAV. `(17)` of `scalar-analytic-forcing-trace-zero-h1`, and the global homogeneous `L²`
+
+```text
+HTGeometry/GlobalPowerTailSquareIntegrable.lean   line-wide power tail, p > 1/2
+RHTower/StripPropagatorLineDecay.lean             + the homogeneous L²(ℝ) statement
+RHTower/ShiftedGammaNumericalRange.lean           (17) with an explicit constant
+```
+
+**`(17)` in series form, with a constant one can name.**  The card writes the lower numerical range
+as the integral `κ_σ = 2∫₀^∞ (cosh σs − 1)/(e^s − 1) ds`.  Through the Gauss series the same bound
+comes out as an explicit sum: with `a = n+1`,
+
+```text
+Re r(x+iσ) = Σ_{a≥1} [2/a − (a−σ)/((a−σ)²+x²) − (a+σ)/((a+σ)²+x²)]
+           ≥ Σ_{a≥1} [2/a − 1/(a−σ) − 1/(a+σ)]
+           = −2σ² Σ_{a≥1} 1/(a(a²−σ²)) =: −κ_σ,
+```
+
+each term bounded below by its value at `x = 0` because `a/(a²+x²) ≤ 1/a`, and the resulting series
+convergent for `σ < 1` because `a² − σ² ≥ a²(1−σ²)` for `a ≥ 1`.  Both abscissas `1−σ` and `1+σ` are
+positive exactly on the card's strip, which is the only place `0 < σ < 1` is used.
+
+**The homogeneous component is `L²(ℝ)`, not merely `L²` of a ray.**  The weight `(1+|x|)^{-2p}` is
+even, so the line mass is twice the ray mass; on the unit window it is bounded by the window length
+and past it by `x^{-2p}`.  With `p = 1/2 + σ` this is finite for every `σ > 0` — the reason Theorem
+2's homogeneous remainder needs no hypothesis beyond `(3)`.
+
+**Already owned, and reused rather than rebuilt.**  The scalar card's `(19)` — the `dr`/`dL`
+conversion `∫|u'(r)|²dr = ∫ e^L|F'(L)|²dL` — is `integral_sq_spatial_eq_integral_exp_weighted` in
+`HTGeometry/LogChartEnergyTransfer.lean`, built for `root-retained-exterior-dilation`.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AAW. Audit of `weil-position-torque-recurrence`: the exact remaining Lean object
+
+The card's own `2 → 3` gate names one missing item: the cofinal sign theorem `(19)`.  Auditing its
+proof against the corpus, the position is:
+
+**Already owned.**  `RHTower/LandauAbscissaRigidity.lean` carries the whole Taylor–Tonelli core:
+`landau_exchange` (the moment/transform exchange), `IsAbscissa`,
+`moments_ne_top_of_lt_abscissaDist` and `moments_eq_top_of_gt_abscissaDist` (the Taylor radius at a
+real point *is* the distance to the abscissa), `laplaceMass_antitone`, and `norm_complexLaplace_le`.
+
+**The exact missing bridge.**  Those statements are about the *moment series*; the card's argument is
+about *analytic continuation of the transform*.  Linking them needs
+
+```text
+(a)  HasDerivAt (fun s => ∫ e^{-su} dν) (−∫ u e^{-su} dν) a     for a > c,
+     and its iterate: the k-th derivative at a is (−1)^k ∫ u^k e^{-au} dν;
+(b)  AnalyticAt of the transform at a ⇒ its Taylor series converges on the disc,
+     whose coefficients are the (a)-derivatives.
+```
+
+`(a)` is differentiation under the integral sign — mathlib's
+`hasDerivAt_integral_of_dominated_loc_of_deriv_le` with dominating function `u e^{-a'u}` for
+`a' ∈ (c, a)`, itself integrable because `u e^{-a'u} ≤ C e^{-a''u}` for `a'' ∈ (c, a')`.  With `(a)`
+and `(b)`, Landau is immediate: analytic continuation to a disc about `c` gives, at an `a` slightly
+right of `c`, a convergent moment series with radius `> a − c`, contradicting
+`moments_eq_top_of_gt_abscissaDist`.
+
+**The two arithmetic providers the card also needs**, which are *not* in the corpus and are not
+Landau: existence of a nontrivial zero of `ξ` in the critical strip, and nonvanishing of `ξ` on the
+real axis (the card's own dependency-closed proof: Euler product for `s > 1`, the alternating eta
+series against `1 − 2^{1−s} < 0` for `0 < s < 1`, the functional equation for `s < 0`, and the
+completed endpoint values at `0, 1`).  These are the real cost of `(19)`, and they are ordinary
+mathematics, not open research.

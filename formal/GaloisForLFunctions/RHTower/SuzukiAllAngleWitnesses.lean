@@ -155,4 +155,14 @@ theorem suzukiHermiteBiehler_addI_linear :
     SuzukiHermiteBiehler (fun z : ℂ => z + I) := by
   simpa using (suzukiHermiteBiehler_addI_pow (n := 1) one_ne_zero)
 
+/-- The quadratic Cayley pair has real zeros for every unitary characteristic angle. -/
+theorem suzukiAllAngleRealZeros_cayleyQuadratic :
+    SuzukiAllAngleRealZeros (fun z : ℂ => (z - I) ^ 2) (fun z => (z + I) ^ 2) := by
+  simpa using (suzukiAllAngleRealZeros_cayleyPow (n := 2) (by norm_num))
+
+/-- The quadratic Cayley factor is Hermite--Biehler. -/
+theorem suzukiHermiteBiehler_addI_quadratic :
+    SuzukiHermiteBiehler (fun z : ℂ => (z + I) ^ 2) := by
+  simpa using (suzukiHermiteBiehler_addI_pow (n := 2) (by norm_num))
+
 end GaloisForLFunctions.RHTower

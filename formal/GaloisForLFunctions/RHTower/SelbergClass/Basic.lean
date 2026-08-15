@@ -59,6 +59,9 @@ structure SelbergGammaData where
   lambda_pos : ∀ j, 0 < lambda j
   mu : Fin rank → ℂ
   mu_re_nonneg : ∀ j, 0 ≤ (mu j).re
+  /-- Raw phase `ω` in the completed functional equation.  The invariant
+  phase `ω_F` used by asymmetric functional equations and standard-twist
+  residues is defined separately from this selected gamma presentation. -/
   rootNumber : ℂ
   rootNumber_norm : ‖rootNumber‖ = 1
 

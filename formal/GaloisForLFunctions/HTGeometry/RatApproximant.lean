@@ -222,6 +222,18 @@ theorem hasTubePolyGrowth_digamma_one_shift_firstJet :
     HasTubePolyGrowth (fun z => iteratedDeriv 1 Complex.digamma (z + (1 : ℂ))) :=
   hasRatApprox_digamma_one_shift_firstJet.hasTubePolyGrowth
 
+/-- The second digamma jet at translate two is rationally approximable on every vertical tube. -/
+theorem hasRatApprox_digamma_two_shift_secondJet :
+    HasRatApprox (fun z => iteratedDeriv 2 Complex.digamma (z + (2 : ℂ))) := by
+  have h_two : (0 : ℝ) ≤ 2 := by norm_num
+  simpa using
+    (hasRatApprox_iteratedDeriv_digamma_shift (lam := (2 : ℝ)) h_two 1)
+
+/-- The same concrete second digamma jet has polynomial tube growth. -/
+theorem hasTubePolyGrowth_digamma_two_shift_secondJet :
+    HasTubePolyGrowth (fun z => iteratedDeriv 2 Complex.digamma (z + (2 : ℂ))) :=
+  hasRatApprox_digamma_two_shift_secondJet.hasTubePolyGrowth
+
 end
 
 end GaloisForLFunctions.HTGeometry

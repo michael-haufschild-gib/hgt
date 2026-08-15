@@ -527,7 +527,7 @@ Consequence: the landscape proof cannot treat the unrepaired `N_1` Krein scaffol
 
 Status: proof-route guardrail added, not an RH proof.
 
-Created `../2-fully-proven/positive-stieltjes-pole-plus-first-atom-insufficient.md`. A positive Stieltjes bulk supported at `{0,1,2}`, after subtracting the pole atom `4e_{-4}^*e_{-4}` and adding the first-trivial-zero atom `(4/25)e_{-4/25}^*e_{-4/25}`, remains negative on the constant polynomial.
+Created `../3-formalized/not_new_scientific_knowledge/positive-stieltjes-pole-plus-first-atom-insufficient.md`. A positive Stieltjes bulk supported at `{0,1,2}`, after subtracting the pole atom `4e_{-4}^*e_{-4}` and adding the first-trivial-zero atom `(4/25)e_{-4/25}^*e_{-4/25}`, remains negative on the constant polynomial.
 
 Consequence: the landscape proof cannot stop at the formal archimedean pattern `positive bulk - pole + first atom`. It must use the actual prime-source residual, or prove an equivalent completed source domination theorem.
 
@@ -717,7 +717,7 @@ Consequence: constructing the half-turn is not enough, and local packets around 
 
 ## 2026-06-24 first-gate spread threshold is sharp
 
-`../2-fully-proven/half-turn-first-gate-threshold-sharp.md` closes the first-gate spread question. The threshold `(17+2 sqrt(70))/3` is not only necessary below it; above it, a balanced two-endpoint positive repaired packet has positive first shifted Hankel determinant.
+`../3-formalized/not_new_scientific_knowledge/half-turn-first-gate-threshold-sharp.md` closes the first-gate spread question. The threshold `(17+2 sqrt(70))/3` is not only necessary below it; above it, a balanced two-endpoint positive repaired packet has positive first shifted Hankel determinant.
 
 Consequence: the repaired-packet route is not killed by the first gate once broad spread is allowed. The live burden is all-order: source-build the spread and prove every higher shifted Hankel determinant, or replace the packet model by a boundary/index positivity object.
 

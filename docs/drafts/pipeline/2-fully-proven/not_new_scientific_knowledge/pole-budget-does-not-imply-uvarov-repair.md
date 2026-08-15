@@ -147,6 +147,6 @@ Thus pole-to-Uvarov transfer cannot be rescued by saying that the unrepaired car
 
 ## 2026-06-24 positive Stieltjes bulk still does not make the first atom enough
 
-`positive-stieltjes-pole-plus-first-atom-insufficient.md` gives the Stieltjes-bulk version with the actual pole and first-trivial-zero masses. A positive atomic bulk on `{0,1,2}` minus `4e_{-4}^*e_{-4}` has exactly one negative square, and adding `(4/25)e_{-4/25}^*e_{-4/25}` is still indefinite.
+`../../3-formalized/not_new_scientific_knowledge/positive-stieltjes-pole-plus-first-atom-insufficient.md` gives the Stieltjes-bulk version with the actual pole and first-trivial-zero masses. A positive atomic bulk on `{0,1,2}` minus `4e_{-4}^*e_{-4}` has exactly one negative square, and adding `(4/25)e_{-4/25}^*e_{-4/25}` is still indefinite.
 
 Thus the obstacle is not only arbitrary positive bulk geometry. The formal archimedean pattern `positive bulk - pole + first atom` is insufficient without the prime-source residual or another completed source theorem.

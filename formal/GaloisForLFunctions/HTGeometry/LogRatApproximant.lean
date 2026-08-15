@@ -355,6 +355,12 @@ theorem hasTubePolyGrowth_digamma :
     HasTubePolyGrowth (fun z : ℂ => Complex.digamma z) :=
   HasLogRatApprox.hasTubePolyGrowth hasLogRatApprox_digamma
 
+/-- The second digamma jet at translate two is logarithmically rationally approximable. -/
+theorem hasLogRatApprox_digamma_two_shift_secondJet :
+    HasLogRatApprox (fun z => iteratedDeriv 2 Complex.digamma (z + (2 : ℂ))) := by
+  have h_two : (0 : ℝ) ≤ 2 := by norm_num
+  exact (hasRatApprox_iteratedDeriv_digamma_shift (lam := (2 : ℝ)) h_two 1).hasLogRatApprox
+
 end
 
 end GaloisForLFunctions.HTGeometry

@@ -188,4 +188,4 @@ positive repaired frequency model must source-build.
 
 ## 2026-06-24 sharpness companion
 
-`half-turn-first-gate-threshold-sharp.md` proves that the threshold `theta=(17+2 sqrt(70))/3` is sharp for the first shifted Hankel gate. Above that squared-frequency spread, a balanced positive repaired two-endpoint packet has positive first determinant. Therefore this card is a below-threshold obstruction, not an all-order rejection of broad repaired packets.
+`../../3-formalized/not_new_scientific_knowledge/half-turn-first-gate-threshold-sharp.md` proves that the threshold `theta=(17+2 sqrt(70))/3` is sharp for the first shifted Hankel gate. Above that squared-frequency spread, a balanced positive repaired two-endpoint packet has positive first determinant. Therefore this card is a below-threshold obstruction, not an all-order rejection of broad repaired packets.

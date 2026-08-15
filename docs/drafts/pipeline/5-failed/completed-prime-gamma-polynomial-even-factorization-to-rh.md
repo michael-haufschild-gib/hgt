@@ -146,3 +146,21 @@ premise.
 - [x] Lean reduction of every polynomial far-right anchor to scalar moment asymptotics
 - [x] Lean proof of the all-order scalar completed-moment asymptotic
 - [x] source parity premise falsified by the `P=X` two-right-crossing theorem
+
+## Lean no-go closure — 2026-08-15
+
+The falsification no longer depends on a hypothesis. In
+`formal/GaloisForLFunctions/RHTower/CompletedPrimeGammaSecondMomentCenterPositive.lean`, Lean now
+proves the closed chain
+
+```text
+completedEulerMoment_two_ten_lt
+  -> completedOddLogDerivMoment_two_ten_re_neg
+  -> not_completedOddLogDerivPolynomialRightEvenFactorization.
+```
+
+The positive survivor required by the no-go discipline is the quantitative, reusable Euler-source
+certificate `completedEulerMoment_two_ten_lt`. It bounds the exact Euler contribution at the test
+point without a parity hypothesis, RH, a new axiom, or empirical numerical input. The terminal
+module build and `#print axioms` audit pass; the latter reports only `propext`,
+`Classical.choice`, and `Quot.sound`.

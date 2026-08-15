@@ -1,7 +1,7 @@
 # Half-Turn First-Gate Threshold Is Sharp
 
 - **ID:** half-turn-first-gate-threshold-sharp
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / source-transfer guardrail
 - **Grade:** BRIDGE / route splitter. This theorem shows that the first
   repaired Hankel gate is not enough to kill broad positive repaired packets.
@@ -123,12 +123,32 @@ cone.
 
 - [x] 0 -> 1 in-progress: first-gate sharpness question isolated.
 - [x] 1 -> 2 fully-proven: explicit balanced endpoint determinant computed.
-- [x] formal core: determinant identity and positive-above-threshold criterion
-  proved as
-  `GaloisForLFunctions.twoFrequency_halfTurn_balanced_det_identity` and
-  `GaloisForLFunctions.twoFrequency_halfTurn_balanced_det_pos`.
+- [x] 2 -> 3 formalized: complete determinant sign trichotomy and exact sharp
+  ratio threshold proved as
+  `GaloisForLFunctions.twoFrequency_halfTurn_balanced_det_threshold_sharp`
+  in `HTGeometry/SingleEvenFrequency.lean`.
 
 ## Log
 
 - 2026-06-24 -- Codex: created to close the sharpness question left by
   `bounded-half-turn-frequency-packets-fail-hankel.md`.
+
+## 2026-08-15 Lean formalization
+
+`formal/GaloisForLFunctions/HTGeometry/SingleEvenFrequency.lean` now contains
+the full exact certificate:
+
+- `twoFrequency_halfTurn_balanced_det_identity`,
+  `twoFrequency_halfTurn_balanced_det_pos`,
+  `twoFrequency_halfTurn_balanced_det_eq_zero`, and
+  `twoFrequency_halfTurn_balanced_det_neg` prove all three determinant signs.
+- `halfTurn_ratio_factor`, `halfTurn_ratio_quad_sign_trichotomy`, and
+  `twoFrequency_halfTurn_balanced_det_threshold_sharp` prove that for
+  `y/x >= 1` the three cases occur respectively above, at, and below
+  `halfTurnUpperThreshold = (17 + 2 * sqrt 70) / 3`.
+
+Validated by direct `lake env lean
+GaloisForLFunctions/HTGeometry/SingleEvenFrequency.lean` and targeted
+`lake build GaloisForLFunctions.HTGeometry.SingleEvenFrequency`. `#print axioms`
+for the complete theorem, ratio trichotomy, and zero branch reports only
+`propext`, `Classical.choice`, and `Quot.sound`.

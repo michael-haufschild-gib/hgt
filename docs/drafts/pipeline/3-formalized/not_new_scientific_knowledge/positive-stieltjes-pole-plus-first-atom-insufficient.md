@@ -1,7 +1,7 @@
 # Positive Stieltjes Pole Plus First Atom Is Insufficient
 
 - **ID:** positive-stieltjes-pole-plus-first-atom-insufficient
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / proof-route guardrail
 - **Source:** `pole-budget-does-not-imply-uvarov-repair.md`;
   `stieltjes-bulk-exterior-christoffel-monotonicity.md`;
@@ -118,8 +118,8 @@ to the repair theorem without the prime-source inequality.
 
 - [x] 0 -> 1 in-progress: positive-bulk pole-plus-first-atom shortcut isolated.
 - [x] 1 -> 2 fully-proven: exact finite Stieltjes-bulk counterexample written.
-- [ ] 2 -> 3 formalized: optional rational arithmetic and rank-one inertia
-  lemma.
+- [x] 2 -> 3 formalized: exact degree-two real quadratic-form countermodel in
+  `HTGeometry/PositiveStieltjesPoleFirstAtomCounterexample.lean`.
 
 ## Log
 
@@ -127,3 +127,24 @@ to the repair theorem without the prime-source inequality.
   whether the positive-bulk variant of pole-to-Uvarov transfer survived. It
   does not; the constant polynomial already witnesses failure for the displayed
   positive atomic bulk.
+
+## 2026-08-15 Lean formalization
+
+Formalized in
+`formal/GaloisForLFunctions/HTGeometry/PositiveStieltjesPoleFirstAtomCounterexample.lean`.
+On `Fin 3 -> R`, representing coefficients of `1,y,y^2`, the module defines
+the literal atomic bulk, pole subtraction, and first-atom repair from this
+card. `positiveStieltjesPolePlusFirstAtomInsufficient` proves:
+
+- the bulk is positive definite;
+- the pole-subtracted form has `QuadraticForm.sigNeg = 1` exactly;
+- the repaired form is not pointwise nonnegative, witnessed by the constant
+  polynomial;
+- the exact values `1858/2415`, `-7802/2415`, and `-37078/12075`, plus
+  `-4 < -4/25 < 0`.
+
+The rational identities are kernel-checked equalities, not numerical evidence.
+Validated with direct `lake env lean` and targeted
+`lake build GaloisForLFunctions.HTGeometry.PositiveStieltjesPoleFirstAtomCounterexample`.
+`#print axioms` for the package, exact inertia result, and negative-vector
+infrastructure reports only `propext`, `Classical.choice`, and `Quot.sound`.

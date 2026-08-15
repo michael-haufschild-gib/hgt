@@ -90,6 +90,10 @@ theorem primeLogExpansion_log_two_add_log_three :
     (primeLogExpansion_log_prime Nat.prime_two)
     (primeLogExpansion_log_prime Nat.prime_three)
 
+/-- The fifth prime logarithm has its explicit one-support expansion. -/
+theorem primeLogExpansion_log_five : PrimeLogExpansion (Real.log (5 : ℕ)) :=
+  primeLogExpansion_log_prime Nat.prime_five
+
 end RHTower
 
 end GaloisForLFunctions

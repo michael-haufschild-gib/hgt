@@ -536,8 +536,8 @@ response, which this card imports from the endpoint-response cards.
   interval bound; the weak form of `(10)` holds for every `C¹` test function
 - [x] Lean: the limiting measure is the tree's arcsine leakage measure (bridge + shared tail law), so the
   measure-theoretic upgrade of `(16)`/`(20)` is the existing Scheffé/total-mass transfer
-- [ ] Lean: equations `(16)`, `(20)` themselves — they need only `(13)`, the exact constrained leakage and
-  endpoint response, which this card imports from the endpoint-response cards
+- [x] Lean: equations `(15)`, `(16)`, `(18)` and `(20)` themselves
+  (`CCMRadialGlobalDefectMass.lean`), with `(13)` as the named input it always was
 
 
 ## Gates
@@ -550,3 +550,44 @@ response, which this card imports from the endpoint-response cards.
 - [ ] uniform all-dilation summation-vector asymptotic
 - [ ] von-Mangoldt-weighted exact-tail correlation law
 - [ ] true Weil Rayleigh-excess and parity transfer
+
+## Lean progress — the mass equations, 2026-08-15
+
+`formal/GaloisForLFunctions/RHTower/CCMRadialGlobalDefectMass.lean` (wired, axiom-clean) closes the
+last Lean gate.
+
+```text
+radialProfileSq lam q x = ‖q(lam x)‖² / ‖q lam‖²         -- |R_lambda(x)|², equation (3)
+outerProfileSq  lam q r = radialProfileSq lam q (r/lam² + 1)   -- equation (19)
+```
+
+- **`integral_Ioi_radialProfileSq`** — equation `(15)`, exactly:
+
+  ```text
+  int_1^infinity |R_lambda(x)|² dx = delta_lambda / (2 lambda |Phi_lambda(lambda)|²),
+  ```
+
+  from evenness and the exterior leakage identity `(14)`, through the corpus's
+  `integral_Ioi_nuLambdaDensity_eq_half_exterior`.  This is the card's change of variables
+  `y = lambda x`, with no asymptotics.
+- **`tendsto_aperture_mul_integral_radialProfileSq`** — equation `(16)`:
+  `c int_1^infinity |R_lambda|² dx -> 1/2` with `c = 2 pi lambda²`, from `delta/d_1 -> 8/11` and
+  `|Phi(lambda)|²/(lambda d_1) -> 16 pi/11`.  The two constants of `(13)` are its only inputs, and
+  `pi (8/11)/(16 pi/11) = 1/2` is where the universal mass comes from.
+- **`tendsto_sq_mul_integral_radialProfileSq`** — equation `(18)`, mass form:
+  `lambda² int_1^infinity |R_lambda|² dx -> 1/(4 pi)`.
+- **`integral_outerProfileSq_eq`** — equation `(19)`, exact change of variables:
+  `int_0^A |R^out_lambda(r)|² dr = lambda² int_1^{1+A/lambda²} |R_lambda(x)|² dx`.  So the outer
+  window is literally the `(18)`-normalized mass of a band shrinking to the band edge.
+- **`integral_Ioc_nuInfinityDensity`** — the limiting measure's mass on such a band:
+  `int_1^b nu_infinity = (8/(11 pi))(pi/2 - arcsin(1/b))`, from the corpus's arcsine tail law.  It
+  vanishes as `b -> 1`, which is the "no atom at `x = 1`" statement in exact form.
+- `integral_Ioc_le_of_L1` — a band mass is at most the limiting band mass plus the `L¹` distance.
+- **`tendsto_integral_outerProfileSq`** — equation `(20)`: for every fixed window `[0, A]`,
+  `int_0^A |R^out_lambda(r)|² dr -> 0`.  The proof is the squeeze
+  `0 <= lambda² int_1^{b_lambda} <= (lambda d_1/|Phi(lambda)|²)(int_1^{b_lambda} nu_infinity +
+  ||nu_lambda - nu_infinity||_1)`, with the corpus's Scheffé `L¹` transfer supplying the second term
+  and the arcsine band mass the first.  Hence the family is not tight on bounded `r`: all normalized
+  mass escapes to `r` of order `lambda²`, which is the global scale `x = y/lambda`.
+
+`#print axioms` on all nine declarations returns exactly `[propext, Classical.choice, Quot.sound]`.

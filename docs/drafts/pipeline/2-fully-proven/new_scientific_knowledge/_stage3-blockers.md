@@ -264,3 +264,91 @@ and the groupoid-side translation.
 
 so the two consumer cards now need only the bookkeeping instantiation naming `W`, `V`, `ψ`, `Φ` for
 the concrete signed-mode data, plus the first-row sector (a separate parent card).
+
+## State after the Lie--Cartan and high-first-row session
+
+### `ht/nonautonomous-rational-complete-tail-orbifold-classification` — PROMOTED to stage 3
+
+`HTGeometry/LieCartanNormalForms.lean` (wired, axiom-clean) closes the last imported parent, the
+**normal-form half** of the Lie--Cartan trichotomy, in the invariant form the card's `(4)`--`(6)`
+actually assert: a transitive finite-dimensional bracket-closed algebra of formal vector fields
+preserves a weight-one differential (rank one), an affine connection (rank ≤ two) or a projective
+connection (rank three), and in every case a projective connection.
+
+    vfTensorDefect / vfAffineDefect / vfProjDefect     the three infinitesimal actions
+    vfAffineDefect_eq_deriv        δ_f μ = (f μ + f′)′            — the affine primitive
+    deriv_projNumerator            ((f′)² − 2 f f″)′ = −2 f f‴    — the projective quotient
+    coeff_three_eq_zero_of_bracket [e₁,e₂] ∈ K e₂ forces coeff 3 e₂ = 0, which is exactly what
+                                   makes that quotient regular
+    vfProjDefect_vfBracket         the cocycle identity
+    eq_zero_of_vfRho_eq_zero       ρ(e₂) w = 0 ⟹ w = 0 for an order-two e₂
+    exists_projConnection          the capstone
+    lieCartan_normal_form_trichotomy
+
+No formal change of variable is used: the conjugation to `⟨∂, z∂, z²∂⟩` is replaced throughout by
+the invariant equation it exists to certify.
+
+### `ccm-exact-high-radial-first-row-bv-bound` — the estimate machinery is formal
+
+`RHTower/CCMHighRadialFirstRowBV.lean` (wired, axiom-clean): `BVWeight`, `bvWeight_of_symbol`,
+`firstRowWeight_symbol_bounds`, `integral_abs_mul_dilatedRadialPhaseAccel_le`,
+`abs_integral_highRadial_firstRow_le`, `abs_setIntegral_Ioi_highRadial_firstRow_le`,
+`summable_highRadial_logMajorant`, `tsum_weighted_highRadial_le`,
+`tendsto_tsum_log_shift_div_sq_tail`.
+
+This is the card's `(4)`, `(5)`, `(6)`, `(10)`, `(13)` and the interface form of `(7)`.
+
+### The exact remaining item for the two charge/dilation cards
+
+`constrained-prolate-full-radial-prime-charge-law` needs `(7)`, `(8)`, `(8a)`:
+
+| item | state |
+|---|---|
+| `(7)` off-diagonal `j,k ≥ 2` | formal — `ccm-exact-radial-nonstationary-sector-bound` is at stage 3 |
+| `(8)` low first row `k ≤ λ²` | formal — `ccm-exact-finite-aperture-first-row-vanishing` is at stage 3 |
+| `(8a)` high first row `k > λ²` | machinery formal; **one input missing** |
+
+The missing input is a **half-power symbol bound for the Bessel-comparison amplitude of the first
+factor on all of `[1,∞)`**, i.e.
+
+```text
+|A_c(x)| ≤ Q/√x ,      |A_c′(x)| ≤ Q′/(x√x)     for x ≥ 1,
+```
+
+where `A_c = √(ξ_c/ξ_c′)·(x²−1)^{-1/2}` is the *pole-uniform* amplitude, which is regular at the
+turning point `x = 1` — unlike the Liouville--Green amplitude `xiAmplitude`, whose corpus bounds
+`abs_xiAmplitude_le_four`, `abs_xiAmplitudeDeriv_le` hold only for `x ≥ 2`.  With that bound,
+`firstRowWeight_symbol_bounds` and `bvWeight_of_symbol` give `(7)` and hence `(12)`, `(13)`.
+
+The derivative of the Bessel factor is what carries the bandwidth: near the turning point use
+`|J₀′(u)| ≤ u/2` so that `c²ξξ′ = (c²ξ²)′/2` integrates to `c²ξ(x)²`, bounded on the endpoint layer
+`c²(x−1) ≤ 1`; away from it use `|J₀′(u)| ≤ C u^{-1/2}`, whose contribution
+`c^{1/2}ξ′/√ξ ≍ c^{1/2}(x−1)^{-3/4}` is integrable.  That is the whole content of the card's
+"analytic endpoint coordinate `η = ξ_c²`" remark, and it is the next brick.
+
+### The three prolate spectral cards
+
+`constrained-prolate-two-mode-ground-state`, `constrained-prolate-fixed-mode-spectral-ladder` and
+`constrained-prolate-fourier-parity-floor-separation` share exactly two open inputs, and only these:
+
+1. **prolate-to-Hermite limits** `ℓ_j(λ) = ∫ h_{4j,λ} → |ĥ_{4j}(0)|`, i.e. `hl0`, `hl1` in
+   `ConstrainedProlateFullDistanceCCM.lean`.  The target constants `2^{1/4}` and `√3·2^{-5/4}` are
+   already formal (`HermiteOriginConstraintTargets.lean`).
+2. **Fuchs identification** `d_j(λ) = 1 − χ_{4j}(λ)² ≍ A_j λ^{8j+1} e^{-4πλ²}`, i.e. that the actual
+   leakage eigenvalues are of the modelled `fuchsRate` shape.
+
+A soft route to `(1)` does not exist: strong convergence `T_λ → F` only shows that the modes
+approach the `+1` eigenspace of the Fourier transform, which is the whole span of
+`h_0, h_4, h_8, …`; and a Gaussian trial vector only gives `d_0 = O(e^{-2πλ²})`, one exponential
+short of the true `e^{-4πλ²}`, so the deficit-ratio argument `d_0/d_1 → 0` cannot be closed from it.
+Both inputs therefore need the **commuting prolate differential operator**
+
+```text
+L_c u = ((1 − t²) u′)′ − c² t² u ,      c = 2πλ² ,
+```
+
+whose commutation with the finite Fourier transform is an exact double integration by parts (the
+boundary terms vanish because `1 − t²` does), followed by its `c → ∞` degeneration to the harmonic
+oscillator.  That layer — `L_c` commutes with `T_λ`, its spectrum is simple, and its eigenfunctions
+converge to Hermite functions after the parabolic rescaling — is the next brick for these three
+cards, and mathlib has none of it.

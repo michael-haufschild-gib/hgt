@@ -167,6 +167,6 @@ Thus this card's positivity hypothesis is load-bearing. Exterior Christoffel mon
 
 ## 2026-06-24 positive-bulk monotonicity does not pay the fixed masses
 
-`positive-stieltjes-pole-plus-first-atom-insufficient.md` separates monotone threshold order from mass adequacy. A positive Stieltjes bulk can have the correct exterior order, yet the zeta pole mass `4` and first-trivial-zero mass `4/25` need not produce a positive repaired form.
+`../../3-formalized/not_new_scientific_knowledge/positive-stieltjes-pole-plus-first-atom-insufficient.md` separates monotone threshold order from mass adequacy. A positive Stieltjes bulk can have the correct exterior order, yet the zeta pole mass `4` and first-trivial-zero mass `4/25` need not produce a positive repaired form.
 
 Therefore this monotonicity lemma is not a repair theorem. It can compare thresholds once a source-built positive bulk and the correct mass inequality are known; it does not prove that the first-trivial-zero atom pays the pole deficit.

@@ -222,7 +222,7 @@ Therefore a Markov/Pick source proof cannot be: positive frequency expansion plu
 
 ## 2026-06-24 first repaired gate is sharp but insufficient
 
-`half-turn-first-gate-threshold-sharp.md` proves that the repaired-packet threshold `(17+2 sqrt(70))/3` is sharp for the first shifted Hankel determinant. Broad positive repaired packets can pass that one gate, so the Markov/Pick source theorem cannot be reduced to a `2 x 2` determinant. The remaining content is all-order Hankel positivity from source data.
+`../../3-formalized/not_new_scientific_knowledge/half-turn-first-gate-threshold-sharp.md` proves that the repaired-packet threshold `(17+2 sqrt(70))/3` is sharp for the first shifted Hankel determinant. Broad positive repaired packets can pass that one gate, so the Markov/Pick source theorem cannot be reduced to a `2 x 2` determinant. The remaining content is all-order Hankel positivity from source data.
 
 ## 2026-06-24 finite repaired packets closed; infinite repaired sources need a source gate
 

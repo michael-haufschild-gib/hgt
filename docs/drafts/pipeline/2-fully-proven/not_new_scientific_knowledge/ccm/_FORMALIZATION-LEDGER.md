@@ -153,3 +153,14 @@ would surface.
   the dilated Liouville amplitude's half-power symbol bounds, a composition lemma whose amplitude
   bound is needed only along the phase, and the instantiated entry estimate
   `abs_integral_radial_entry_le` for genuine solutions of the exterior normal form.
+
+- `ccm-radial-prolate-global-defect-measure` → stage 3.
+  New module `RHTower/CCMRadialGlobalDefectMass` (9 theorems): equations (15), (16), (18), (20) —
+  the exact `y = λx` change of variables in the leakage norm, the universal masses `1/2` and
+  `1/(4π)`, and the escape from the outer coordinate via the corpus's Scheffé `L¹` transfer plus the
+  exact arcsine band mass.
+
+- `ccm-radial-prolate-two-scale-boundary-carrier` → stage 3.
+  New module `RHTower/CCMRadialTwoScaleCarrier` (11 theorems): the exact two-mode exterior leakage
+  (3), the scale-uniform exterior mass `α δ/(2|q(λ)|²)` covering (9) and (16), the outer/inner mass
+  limits (10)/(16), and the endpoint-slope identities (11)–(15) — the scale separation is algebra.

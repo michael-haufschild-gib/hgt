@@ -146,6 +146,209 @@ theorem twoFrequency_halfTurn_balanced_det_pos {x y : Real}
     mul_pos (mul_pos hx3 hy3) hq
   norm_num [div_pos hprod]
 
+/-- The lower root of the balanced two-frequency first-gate polynomial. -/
+def halfTurnLowerThreshold : Real := (17 - 2 * Real.sqrt 70) / 3
+
+/-- The sharp upper spread threshold for the balanced two-frequency first gate. -/
+def halfTurnUpperThreshold : Real := (17 + 2 * Real.sqrt 70) / 3
+
+theorem halfTurn_sqrt70_sq : (Real.sqrt 70) ^ 2 = (70 : Real) := by
+  exact Real.sq_sqrt (by norm_num)
+
+theorem halfTurn_lowerThreshold_lt_one : halfTurnLowerThreshold < 1 := by
+  have hs0 : 0 < Real.sqrt 70 := Real.sqrt_pos.2 (by norm_num)
+  have hs : (Real.sqrt 70) ^ 2 = (70 : Real) := halfTurn_sqrt70_sq
+  unfold halfTurnLowerThreshold
+  nlinarith
+
+/-- Factorization of the sharp first-gate ratio polynomial. -/
+theorem halfTurn_ratio_factor (r : Real) :
+    3 * r ^ 2 - 34 * r + 3 =
+      3 * (r - halfTurnLowerThreshold) * (r - halfTurnUpperThreshold) := by
+  have hs : (Real.sqrt 70) ^ 2 = (70 : Real) := halfTurn_sqrt70_sq
+  unfold halfTurnLowerThreshold halfTurnUpperThreshold
+  nlinarith
+
+theorem halfTurn_ratio_quad_pos_iff {r : Real} (hr : 1 ≤ r) :
+    0 < 3 * r ^ 2 - 34 * r + 3 ↔ halfTurnUpperThreshold < r := by
+  rw [halfTurn_ratio_factor]
+  have hl : 0 < r - halfTurnLowerThreshold :=
+    sub_pos.mpr (lt_of_lt_of_le halfTurn_lowerThreshold_lt_one hr)
+  constructor
+  · intro h
+    have hprod : 0 < (r - halfTurnLowerThreshold) * (r - halfTurnUpperThreshold) := by
+      nlinarith
+    rcases mul_pos_iff.mp hprod with hpos | hneg
+    · exact sub_pos.mp hpos.2
+    · exact False.elim (not_lt_of_ge hl.le hneg.1)
+  · intro h
+    have hu : 0 < r - halfTurnUpperThreshold := sub_pos.mpr h
+    positivity
+
+theorem halfTurn_ratio_quad_eq_zero_iff {r : Real} (hr : 1 ≤ r) :
+    3 * r ^ 2 - 34 * r + 3 = 0 ↔ r = halfTurnUpperThreshold := by
+  rw [halfTurn_ratio_factor]
+  have hl : 0 < r - halfTurnLowerThreshold :=
+    sub_pos.mpr (lt_of_lt_of_le halfTurn_lowerThreshold_lt_one hr)
+  constructor
+  · intro h
+    have hprod : (r - halfTurnLowerThreshold) * (r - halfTurnUpperThreshold) = 0 := by
+      nlinarith
+    rcases mul_eq_zero.mp hprod with hlower | hupper
+    · exact False.elim (by nlinarith)
+    · exact sub_eq_zero.mp hupper
+  · intro h
+    rw [h]
+    ring
+
+theorem halfTurn_ratio_quad_neg_iff {r : Real} (hr : 1 ≤ r) :
+    3 * r ^ 2 - 34 * r + 3 < 0 ↔ r < halfTurnUpperThreshold := by
+  rw [halfTurn_ratio_factor]
+  have hl : 0 < r - halfTurnLowerThreshold :=
+    sub_pos.mpr (lt_of_lt_of_le halfTurn_lowerThreshold_lt_one hr)
+  constructor
+  · intro h
+    have hprod : (r - halfTurnLowerThreshold) * (r - halfTurnUpperThreshold) < 0 := by
+      nlinarith
+    rcases mul_neg_iff.mp hprod with hpos | hneg
+    · exact sub_neg.mp hpos.2
+    · exact False.elim (not_lt_of_ge hl.le hneg.1)
+  · intro h
+    have hu : r - halfTurnUpperThreshold < 0 := sub_neg.mpr h
+    have hprod : (r - halfTurnLowerThreshold) * (r - halfTurnUpperThreshold) < 0 :=
+      mul_neg_of_pos_of_neg hl hu
+    nlinarith
+
+/-- Equality branch of the balanced two-frequency first-gate trichotomy. -/
+theorem twoFrequency_halfTurn_balanced_det_eq_zero {x y : Real}
+    (hratio : 3 * (x ^ 2 + y ^ 2) = 34 * x * y) :
+    ((y ^ 2 * x + x ^ 2 * y) * (y ^ 2 * x ^ 3 + x ^ 2 * y ^ 3)) / 120
+        - ((y ^ 2 * x ^ 2 + x ^ 2 * y ^ 2) / 6) ^ 2 = 0 := by
+  rw [twoFrequency_halfTurn_balanced_det_identity]
+  have hq : 3 * x ^ 2 - 34 * x * y + 3 * y ^ 2 = 0 := by
+    nlinarith
+  rw [hq]
+  ring
+
+/-- Negative branch of the balanced two-frequency first-gate trichotomy. -/
+theorem twoFrequency_halfTurn_balanced_det_neg {x y : Real}
+    (hx : 0 < x) (hy : 0 < y) (hratio : 3 * (x ^ 2 + y ^ 2) < 34 * x * y) :
+    ((y ^ 2 * x + x ^ 2 * y) * (y ^ 2 * x ^ 3 + x ^ 2 * y ^ 3)) / 120
+        - ((y ^ 2 * x ^ 2 + x ^ 2 * y ^ 2) / 6) ^ 2 < 0 := by
+  rw [twoFrequency_halfTurn_balanced_det_identity]
+  have hq : 3 * x ^ 2 - 34 * x * y + 3 * y ^ 2 < 0 := by
+    nlinarith
+  have hx3 : 0 < x ^ 3 := pow_pos hx 3
+  have hy3 : 0 < y ^ 3 := pow_pos hy 3
+  have hprod : x ^ 3 * y ^ 3 * (3 * x ^ 2 - 34 * x * y + 3 * y ^ 2) < 0 :=
+    mul_neg_of_pos_of_neg (mul_pos hx3 hy3) hq
+  exact div_neg_of_neg_of_pos hprod (by norm_num)
+
+/-- On ratios at least one, the sharp ratio polynomial has its full sign trichotomy
+at `halfTurnUpperThreshold`. -/
+theorem halfTurn_ratio_quad_sign_trichotomy {x y : Real}
+    (hx : 0 < x) (hxy : x ≤ y) :
+    (0 < 3 * (x ^ 2 + y ^ 2) - 34 * x * y ↔ halfTurnUpperThreshold < y / x) ∧
+      (3 * (x ^ 2 + y ^ 2) - 34 * x * y = 0 ↔ y / x = halfTurnUpperThreshold) ∧
+      (3 * (x ^ 2 + y ^ 2) - 34 * x * y < 0 ↔ y / x < halfTurnUpperThreshold) := by
+  have hr : 1 ≤ y / x := by
+    apply (le_div_iff₀ hx).mpr
+    simpa using hxy
+  have hx2 : 0 < x ^ 2 := pow_pos hx 2
+  have hfactor : 3 * (x ^ 2 + y ^ 2) - 34 * x * y =
+      x ^ 2 * (3 * (y / x) ^ 2 - 34 * (y / x) + 3) := by
+    field_simp [hx.ne']
+    ring
+  refine ⟨?_, ?_, ?_⟩
+  · rw [hfactor]
+    constructor
+    · intro h
+      rcases mul_pos_iff.mp h with hpos | hneg
+      · exact (halfTurn_ratio_quad_pos_iff hr).mp hpos.2
+      · exact False.elim (not_lt_of_ge hx2.le hneg.1)
+    · intro h
+      exact mul_pos hx2 ((halfTurn_ratio_quad_pos_iff hr).mpr h)
+  · rw [hfactor]
+    constructor
+    · intro h
+      rcases mul_eq_zero.mp h with hx0 | hq
+      · exact False.elim (by nlinarith)
+      · exact (halfTurn_ratio_quad_eq_zero_iff hr).mp hq
+    · intro h
+      rw [(halfTurn_ratio_quad_eq_zero_iff hr).mpr h]
+      ring
+  · rw [hfactor]
+    constructor
+    · intro h
+      rcases mul_neg_iff.mp h with hpos | hneg
+      · exact (halfTurn_ratio_quad_neg_iff hr).mp hpos.2
+      · exact False.elim (not_lt_of_ge hx2.le hneg.1)
+    · intro h
+      exact mul_neg_of_pos_of_neg hx2 ((halfTurn_ratio_quad_neg_iff hr).mpr h)
+
+/-- Complete sharp threshold classification for the balanced two-frequency first Hankel gate. -/
+theorem twoFrequency_halfTurn_balanced_det_threshold_sharp {x y : Real}
+    (hx : 0 < x) (hy : 0 < y) (hxy : x ≤ y) :
+    (0 < ((y ^ 2 * x + x ^ 2 * y) * (y ^ 2 * x ^ 3 + x ^ 2 * y ^ 3)) / 120
+        - ((y ^ 2 * x ^ 2 + x ^ 2 * y ^ 2) / 6) ^ 2 ↔
+      halfTurnUpperThreshold < y / x) ∧
+      (((y ^ 2 * x + x ^ 2 * y) * (y ^ 2 * x ^ 3 + x ^ 2 * y ^ 3)) / 120
+        - ((y ^ 2 * x ^ 2 + x ^ 2 * y ^ 2) / 6) ^ 2 = 0 ↔
+      y / x = halfTurnUpperThreshold) ∧
+      (((y ^ 2 * x + x ^ 2 * y) * (y ^ 2 * x ^ 3 + x ^ 2 * y ^ 3)) / 120
+        - ((y ^ 2 * x ^ 2 + x ^ 2 * y ^ 2) / 6) ^ 2 < 0 ↔
+      y / x < halfTurnUpperThreshold) := by
+  obtain ⟨hqpos, hqzero, hqneg⟩ := halfTurn_ratio_quad_sign_trichotomy hx hxy
+  have hqeq : 3 * x ^ 2 - 34 * x * y + 3 * y ^ 2 =
+      3 * (x ^ 2 + y ^ 2) - 34 * x * y := by ring
+  have hQpos : 0 < 3 * x ^ 2 - 34 * x * y + 3 * y ^ 2 ↔
+      halfTurnUpperThreshold < y / x := by
+    rw [hqeq]
+    exact hqpos
+  have hQzero : 3 * x ^ 2 - 34 * x * y + 3 * y ^ 2 = 0 ↔
+      y / x = halfTurnUpperThreshold := by
+    rw [hqeq]
+    exact hqzero
+  have hQneg : 3 * x ^ 2 - 34 * x * y + 3 * y ^ 2 < 0 ↔
+      y / x < halfTurnUpperThreshold := by
+    rw [hqeq]
+    exact hqneg
+  have hscale : 0 < x ^ 3 * y ^ 3 := mul_pos (pow_pos hx 3) (pow_pos hy 3)
+  refine ⟨?_, ?_, ?_⟩
+  · constructor
+    · intro h
+      rw [twoFrequency_halfTurn_balanced_det_identity] at h
+      have hnum : 0 < x ^ 3 * y ^ 3 * (3 * x ^ 2 - 34 * x * y + 3 * y ^ 2) := by
+        nlinarith
+      rcases mul_pos_iff.mp hnum with hpos | hneg
+      · exact hQpos.mp hpos.2
+      · exact False.elim (not_lt_of_ge hscale.le hneg.1)
+    · intro h
+      rw [twoFrequency_halfTurn_balanced_det_identity]
+      exact div_pos (mul_pos hscale (hQpos.mpr h)) (by norm_num)
+  · constructor
+    · intro h
+      rw [twoFrequency_halfTurn_balanced_det_identity] at h
+      have hnum : x ^ 3 * y ^ 3 * (3 * x ^ 2 - 34 * x * y + 3 * y ^ 2) = 0 := by
+        nlinarith
+      rcases mul_eq_zero.mp hnum with hscale0 | hq
+      · exact False.elim (by nlinarith)
+      · exact hQzero.mp hq
+    · intro h
+      rw [twoFrequency_halfTurn_balanced_det_identity, (hQzero.mpr h)]
+      ring
+  · constructor
+    · intro h
+      rw [twoFrequency_halfTurn_balanced_det_identity] at h
+      have hnum : x ^ 3 * y ^ 3 * (3 * x ^ 2 - 34 * x * y + 3 * y ^ 2) < 0 := by
+        nlinarith
+      rcases mul_neg_iff.mp hnum with hpos | hneg
+      · exact hQneg.mp hpos.2
+      · exact False.elim (not_lt_of_ge hscale.le hneg.1)
+    · intro h
+      rw [twoFrequency_halfTurn_balanced_det_identity]
+      exact div_neg_of_neg_of_pos (mul_neg_of_pos_of_neg hscale (hQneg.mpr h)) (by norm_num)
+
 /-- Finite positive mixtures of even frequencies have negative second shifted moment. -/
 @[aesop safe]
 theorem positiveEvenFrequencyCone_T2_neg {n : Nat} [Nonempty (Fin n)]

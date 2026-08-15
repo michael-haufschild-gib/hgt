@@ -185,6 +185,6 @@ Stieltjes bulk.
 
 ## 2026-06-24 positive-bulk mass adequacy is separate
 
-`positive-stieltjes-pole-plus-first-atom-insufficient.md` gives a complementary positive-bulk countermodel. Even before passing to a signed `N_1` bulk, the formal data of a positive Stieltjes bulk, pole mass `4`, and first-trivial-zero mass `4/25` do not force repair.
+`../../3-formalized/not_new_scientific_knowledge/positive-stieltjes-pole-plus-first-atom-insufficient.md` gives a complementary positive-bulk countermodel. Even before passing to a signed `N_1` bulk, the formal data of a positive Stieltjes bulk, pole mass `4`, and first-trivial-zero mass `4/25` do not force repair.
 
 Together the two cards isolate two missing source facts: a positivity or kernel-exhaustion theorem for the bulk, and a mass/domination theorem for the actual completed carrier.

@@ -156,6 +156,14 @@ theorem isBohrAP_trigPoly {n : ℕ} (a : Fin n → ℂ) (lam : Fin n → ℝ) :
 theorem isBohrAP_bcfChar_one : IsBohrAP (bcfChar 1) :=
   isBohrAP_bcfChar 1
 
+/-- The frequency-two character has compact translation orbit. -/
+theorem isBohrAP_bcfChar_two : IsBohrAP (bcfChar 2) :=
+  isBohrAP_bcfChar 2
+
+/-- A concrete nonconstant two-frequency character sum is Bohr almost periodic. -/
+theorem isBohrAP_bcfChar_one_add_two : IsBohrAP (bcfChar 1 + bcfChar 2) :=
+  (isBohrAP_bcfChar 1).add (isBohrAP_bcfChar 2)
+
 end
 
 end GaloisForLFunctions

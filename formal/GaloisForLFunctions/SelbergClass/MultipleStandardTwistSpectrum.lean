@@ -1,4 +1,6 @@
 import GaloisForLFunctions.SelbergClass.MultipleStandardTwistDataGammaGeometry
+import GaloisForLFunctions.RHTower.SelbergClass.InvariantRootNumber
+import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
 
 /-!
 # Spectral data for multiple standard twists
@@ -197,9 +199,11 @@ theorem mem_spectralFibreFinset_iff {N : ℕ} (D : MultipleStandardTwistData N)
     n ∈ D.spectralFibreFinset α ↔ n ∈ D.spectralFibre α :=
   Set.Finite.mem_toFinset _
 
-/-- Product root number `ω_F = ∏ ω_ν` from (1.9). -/
+/-- Product invariant root number `ω_{\boldsymbol F} = ∏ ω_{F_ν}` from (1.9).
+Each factor is the invariant phase of (2.1), not the raw phase in the
+completed functional equation. -/
 noncomputable def totalRootNumber {N : ℕ} (D : MultipleStandardTwistData N) : ℂ :=
-  ∏ i, (D.factors i).gammaData.rootNumber
+  ∏ i, (D.factors i).gammaData.invariantRootNumber
 
 /-- Finite reflected residual sum
 `Ξ(s, α) = ω_F ∑_{α_n = α} ∏ overline(a_ν(n_ν)) / n_ν^(1 - s_ν)`
@@ -209,6 +213,24 @@ noncomputable def spectralXi {N : ℕ} (D : MultipleStandardTwistData N)
     (s : Fin N → ℂ) (α : ℝ) : ℂ :=
   D.totalRootNumber * ∑ n ∈ D.spectralFibreFinset α,
     ∏ i, star (D.coeff i (n i : ℕ)) * (((n i : ℕ) : ℂ) ^ (s i - 1))
+
+/-- The finite residual sum in Kaczorowski--Perelli (1.8) is entire in the
+multiple complex variable.  This uses only the proved finite-fibre theorem;
+it asserts no continuation of the multiple standard twist itself. -/
+theorem analyticOnNhd_spectralXi {N : ℕ} (D : MultipleStandardTwistData N)
+    (α : ℝ) : AnalyticOnNhd ℂ (D.spectralXi · α) Set.univ := by
+  unfold spectralXi
+  intro s _
+  apply analyticAt_const.mul
+  refine Finset.analyticAt_fun_sum _ fun n _ => ?_
+  refine Finset.analyticAt_fun_prod _ fun i _ => ?_
+  apply analyticAt_const.mul
+  have hproj : AnalyticAt ℂ (fun t : Fin N → ℂ => t i) s := by
+    change AnalyticAt ℂ (ContinuousLinearMap.proj (R := ℂ) i : (Fin N → ℂ) → ℂ) s
+    exact (ContinuousLinearMap.proj (R := ℂ) i).analyticAt s
+  exact analyticAt_const.cpow (hproj.sub analyticAt_const)
+    (Complex.mem_slitPlane_iff.mpr (Or.inl (by
+      exact_mod_cast (n i).property)))
 
 /-- Polar hyperplane `H_ℓ^*` from (1.5), expressed directly in coordinates. -/
 def sourceHyperplane {N : ℕ} (D : MultipleStandardTwistData N) (ell : ℕ) :
