@@ -207,3 +207,42 @@ anti-diagonal and sufficiently uniform as `alpha -> 0` to recover the untwisted 
 
 - 2026-08-14 -- created in Stage 1 after internal-corpus and current-literature audit; three initial
   conjecture/kill/pivot cycles recorded; exact regular-part trace uniformity isolated.
+
+## Loop 3 refinement — degree-weighted tangent trace
+
+**Conjecture.** For unequal degrees, replace the ordinary anti-diagonal by the
+tangent flow
+
+```
+(s_1, s_2) -> (s_1 + i d_G t, s_2 - i d_F t).
+```
+
+It is tangent to the polar hyperplanes with normal `(d_F,d_G)`.  On a finite
+Kaczorowski--Perelli fibre its `(m,n)` term has frequency
+
+```
+d_G log m - d_F log n,
+```
+
+so its Bohr mean survives exactly when `m^d_G = n^d_F`.
+
+**Proof / failure to reach Selberg pairing.** The finite-fibre Fourier proof is
+the same as for `(SF)`, with this weighted frequency.  It supplies an exact
+degree-resonance trace and stays tangent to polar geometry, but it gives the
+same-index condition `m=n` only when `d_F=d_G`.  Thus it cannot establish
+Selberg orthogonality for unequal degrees.
+
+**Strongest positive survivor.** The finite residue fibre carries a canonical
+degree-resonance trace, selected by the unique polar-tangent direction.  This
+is stronger than the earlier geometric dichotomy: it gives the exact surviving
+coefficient relation rather than only saying that the ordinary flow is
+transverse.
+
+**Lean status.** Scratch formalization of the finite Bohr/Fourier resonance is
+in progress.  It must be dependency-closed before this no-go closure can move
+to Stage 2.
+
+- 2026-08-15 -- literature audit verified Kaczorowski--Perelli Theorems 1--2
+  and their gamma-cleared entire quotient; it also verified that their theorem
+  contains no Selberg-orthogonality or prime-correlation implication.  The
+  unbounded-flow and `alpha -> 0` uniformity remain the exact open core.

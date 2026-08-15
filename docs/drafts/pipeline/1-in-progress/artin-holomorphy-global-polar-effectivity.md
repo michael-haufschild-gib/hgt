@@ -245,3 +245,6 @@ the non-factorizing arithmetic source-to-divisor law itself is closed on paper.
   global divisor coherence to a non-factorizing Frobenius-source-to-divisor law.
 - 2026-08-15 -- user correction: build missing paper-closed literature infrastructure before any
   new route; opened the integral finite-abelian Fourier basis as first audited bridge.
+- 2026-08-15 -- finite-abelian integral Fourier basis formalized and target-built; it closes the
+  complex-span/integral-closure interface only and leaves the non-factorizing
+  Frobenius-source-to-divisor open core unchanged.

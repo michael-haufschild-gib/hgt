@@ -101,6 +101,39 @@ theorem one_le_xiSpeed {s t : ℝ} (hs1 : s ≤ 1) (ht : 1 < t) : 1 ≤ xiSpeed 
   have h := Real.sqrt_le_sqrt hratio
   rwa [Real.sqrt_one, ← xiSpeed] at h
 
+/-! ## The phase grows at least linearly -/
+
+/-- The exterior phase dominates the arclength: `ξ_s(z) ≥ z − 1`. -/
+theorem sub_one_le_xiEndpointPhase {s z : ℝ} (hs : 0 ≤ s) (hs1 : s ≤ 1) (hz : 1 ≤ z) :
+    z - 1 ≤ xiEndpointPhase s z := by
+  have hint : IntervalIntegrable (xiSpeed s) MeasureTheory.volume 1 z :=
+    intervalIntegrable_xiSpeed hs hz
+  have hone : IntervalIntegrable (fun _ : ℝ => (1 : ℝ)) MeasureTheory.volume 1 z :=
+    intervalIntegrable_const
+  have hae : (fun _ : ℝ => (1 : ℝ))
+      ≤ᵐ[MeasureTheory.volume.restrict (Set.Icc (1 : ℝ) z)] xiSpeed s := by
+    have hnull : MeasureTheory.volume.restrict (Set.Icc (1 : ℝ) z) {(1 : ℝ)} = 0 := by
+      simp
+    filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Icc,
+      MeasureTheory.compl_mem_ae_iff.mpr hnull] with t ht hne
+    have ht1 : (1 : ℝ) < t := lt_of_le_of_ne ht.1 (by
+      intro h
+      exact hne (by simp [h.symm]))
+    exact one_le_xiSpeed hs1 ht1
+  have hmono := intervalIntegral.integral_mono_ae_restrict hz hone hint hae
+  have hconst : (∫ _ in (1 : ℝ)..z, (1 : ℝ)) = z - 1 := by
+    simp
+  rw [hconst] at hmono
+  exact hmono
+
+/-- **The dilated phase dominates the radius.** -/
+theorem le_dilatedRadialPhase {s r x : ℝ} (hs : 0 ≤ s) (hs1 : s ≤ 1) (hr : 2 ≤ r) (hx : 1 ≤ x) :
+    x ≤ dilatedRadialPhase s r x := by
+  have hrx : (1 : ℝ) ≤ r * x := by nlinarith
+  have h := sub_one_le_xiEndpointPhase hs hs1 hrx
+  have hlin : x ≤ r * x - 1 := by nlinarith
+  exact le_trans hlin (by rw [dilatedRadialPhase]; exact h)
+
 /-- **The dilated phase curvature decays like `1/(r x³)`.** -/
 theorem abs_dilatedRadialPhaseAccel_le {s r x : ℝ} (hs : 0 ≤ s) (hs1 : s ≤ 1 / 2)
     (hr : 2 ≤ r) (hx : 1 ≤ x) :

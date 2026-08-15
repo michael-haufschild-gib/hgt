@@ -1,7 +1,7 @@
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
-import Mathlib.MeasureTheory.Integral.Lebesgue.Add
+import Mathlib.MeasureTheory.Function.JacobianOneDim
 import Mathlib.Analysis.SpecialFunctions.Sqrt
-import Mathlib.MeasureTheory.Integral.IntegralEqImproper
+import Mathlib.MeasureTheory.Measure.Lebesgue.Integral
 
 /-!
 # The squared-variable substitution
@@ -26,9 +26,10 @@ theorem image_sq_Ioi_zero : (fun x : ℝ => x ^ 2) '' Ioi 0 = Ioi 0 := by
   ext u
   constructor
   · rintro ⟨x, hx, rfl⟩
-    exact pow_pos hx 2
+    exact pow_pos (mem_Ioi.1 hx) 2
   · intro hu
     refine ⟨Real.sqrt u, Real.sqrt_pos.2 hu, ?_⟩
+    show Real.sqrt u ^ 2 = u
     rw [Real.sq_sqrt (le_of_lt hu)]
 
 theorem injOn_sq_Ioi_zero : InjOn (fun x : ℝ => x ^ 2) (Ioi 0) := by
@@ -67,23 +68,16 @@ theorem integral_Ioi_sq_density (Φ : ℝ → ℝ) :
 
 /-! ## The full line -/
 
-theorem integral_Iio_zero_comp_sq (Φ : ℝ → ℝ) :
-    (∫ x in Iio (0 : ℝ), Φ (x ^ 2)) = ∫ x in Ioi (0 : ℝ), Φ (x ^ 2) := by
-  have h := MeasureTheory.integral_comp_neg_Iio (a := (0 : ℝ)) (fun x : ℝ => Φ (x ^ 2))
-  rw [neg_zero] at h
-  rw [← h]
-  refine setIntegral_congr_fun measurableSet_Iio fun x _ => ?_
-  rw [neg_pow, neg_one_pow_eq_one_iff_even (by norm_num : (-1 : ℝ) ≠ 1) |>.2 (by decide), one_mul]
-
 /-- **The squared-variable substitution on the line.**  An even state integrates against the
 square-root density of the half-line. -/
 theorem integral_comp_sq_eq_integral_Ioi (Φ : ℝ → ℝ) :
     (∫ x : ℝ, Φ (x ^ 2)) = ∫ u in Ioi (0 : ℝ), Φ u / Real.sqrt u := by
-  have hsplit : (∫ x : ℝ, Φ (x ^ 2))
-      = (∫ x in Iio (0 : ℝ), Φ (x ^ 2)) + ∫ x in Ioi (0 : ℝ), Φ (x ^ 2) := by
-    rw [← integral_Iio_add_Ioi_eq_integral_univ, setIntegral_univ]
-  rw [hsplit, integral_Iio_zero_comp_sq, ← two_mul, ← integral_Ioi_sq_density,
-    ← integral_const_mul]
+  have habs : (∫ x : ℝ, Φ (x ^ 2)) = ∫ x : ℝ, (fun y : ℝ => Φ (y ^ 2)) |x| := by
+    refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+    show Φ (x ^ 2) = Φ (|x| ^ 2)
+    rw [sq_abs]
+  have hcomp := integral_comp_abs (f := fun y : ℝ => Φ (y ^ 2))
+  rw [habs, hcomp, ← integral_Ioi_sq_density, ← integral_const_mul]
   refine setIntegral_congr_fun measurableSet_Ioi fun u hu => ?_
   have hu0 : (0 : ℝ) < u := hu
   have hs : (0 : ℝ) < Real.sqrt u := Real.sqrt_pos.2 hu0

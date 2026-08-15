@@ -418,3 +418,40 @@ The three numerical inputs it still wants for the actual radial PSWF solutions a
    `abs_radialAmpCos_le`/`abs_radialAmpSin_le` together with `radialInteractionTotal_le_exp`;
 3. `|P'(Φ(x))Φ'(x)| ≤ K'/x²` — the transported derivative bound, which is
    `‖ψ‖‖W‖/(2c)` times the bounded phase speed, with `ψ = O(ξ^{-2})`.
+
+### Input 1 of the symbol record is closed
+
+`formal/GaloisForLFunctions/RHTower/RadialLiouvilleAmplitudeSymbol.lean` (wired, axiom-clean):
+
+```text
+abs_xiAmplitude_le        |A_s(x)| ≤ 2/√x              for x > 1
+abs_xiAmplitude_logFactor_le
+    |P_s(x)/2 − x/(2(x²−s))| ≤ 26/(21x)                for x ≥ 2
+abs_xiAmplitudeDeriv_le   |A_s'(x)| ≤ 3/(x√x)          for x ≥ 2
+```
+
+using the corpus's `xiAmplitude_le` and `abs_phaseLogDefect_le_far` together with
+`x² − 1 ≥ (3/4)x²` and `x² − s ≥ (7/8)x²` on `x ≥ 2`.  So the Liouville amplitude is a half-power
+symbol with `C = 2`, `C' = 3`, which is the first of the three inputs
+`symbolTwoBranch_of_composition` asks for.  The remaining two are the uniform bound on the
+interaction amplitudes (already `abs_radialAmpCos_le` + `radialInteractionTotal_le_exp`) and the
+transported derivative bound `|P'(Φ(x))Φ'(x)| ≤ K'/x²`.
+
+### Inputs 2 and 3 of the symbol record
+
+`RadialPSWFAmplitudeVariation.lean` now also proves the derivative half:
+
+```text
+abs_transport_deriv_re_le    |P'(t)| = |2 Re a₊'(t)| ≤ ‖ψ(t)‖‖W(t)‖ / c
+abs_transport_deriv_im_le    the same for the sine amplitude
+abs_transport_deriv_comp_le  ‖ψ(Φ x)‖ ≤ κ/x² , ‖W(Φ x)‖ ≤ K , |Φ'(x)| ≤ L
+                             ⟹ |P'(Φ x) Φ'(x)| ≤ (κ K L / c)/x²
+```
+
+so `K' = κ K L / c` — one power of the bandwidth small, as the card's `(3)` asserts.  Input 2, the
+uniform bound `|P|, |Q| ≤ K`, is `abs_radialAmpCos_le`/`abs_radialAmpSin_le` together with
+`radialInteractionTotal_le_exp`, both already formal.
+
+**All three numerical inputs of `symbolTwoBranch_of_composition` are therefore reduced to two
+statements about the actual radial normal form**: the potential decay `‖ψ(ξ)‖ = O(ξ^{-2})` and the
+comparison `Φ(x) ≳ x` that converts it into `κ/x²`.

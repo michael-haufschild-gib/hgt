@@ -61,9 +61,11 @@ theorem fidelity_phaseOrbit_le_one {q : d → ℝ} (hq : ∀ j, 0 ≤ q j) (hqsu
   have h2 : Real.sqrt (∑ j, ‖z j‖ ^ 2) ≤ 1 := by
     rw [show (1 : ℝ) = Real.sqrt 1 by simp]
     exact Real.sqrt_le_sqrt hz
-  have hle : ‖finiteComplexInner (phaseOrbit q x) z‖ ≤ 1 :=
-    le_trans hbase (by nlinarith [Real.sqrt_nonneg (∑ j, q j),
-      Real.sqrt_nonneg (∑ j, ‖z j‖ ^ 2)])
+  have hprod : Real.sqrt (∑ j, q j) * Real.sqrt (∑ j, ‖z j‖ ^ 2) ≤ 1 := by
+    have hs1 := Real.sqrt_nonneg (∑ j, q j)
+    have hs2 := Real.sqrt_nonneg (∑ j, ‖z j‖ ^ 2)
+    nlinarith
+  have hle : ‖finiteComplexInner (phaseOrbit q x) z‖ ≤ 1 := le_trans hbase hprod
   rw [finitePureStateFidelity]
   nlinarith [norm_nonneg (finiteComplexInner (phaseOrbit q x) z)]
 
@@ -91,7 +93,7 @@ theorem measureReal_capture_le_return_add_replicaMoment
     {p : d → ℝ} (hp : ∀ j, 0 ≤ p j) (hpsum : ∑ j, p j ≤ 1) {a : ℝ} (ha : 0 < a)
     (z : C → (d → ℂ)) (hz : ∀ c, finiteComplexInner (z c) (z c) = 1)
     (hznorm : ∀ c, ∑ j, ‖z c j‖ ^ 2 ≤ 1)
-    {R Q : Set (d → ℝ)} (hR : MeasurableSet R) (hQ : MeasurableSet Q)
+    {R Q : Set (d → ℝ)} (hR : MeasurableSet R)
     (hcap : ∀ x ∈ Q \ R, ∃ c, a ≤ finitePureStateFidelity (phaseOrbit p x) (z c))
     (r : ℕ) :
     (volume.restrict (torusBox d)).real Q ≤
@@ -193,10 +195,14 @@ theorem measureReal_capture_le_return_add_replicaMoment
       (a / 4) ^ r =
       (Module.finrank ℂ (replicaTargetSpan r z) : ℝ) * (r.factorial : ℝ) *
         (16 * occupationCollision p / a ^ 2) ^ r := by
-    rw [hτdef, ← div_pow]
-    congr 2
-    field_simp
-    ring
+    have hbasepow : (4 * occupationCollision p / a) ^ r / (a / 4) ^ r =
+        (16 * occupationCollision p / a ^ 2) ^ r := by
+      rw [← div_pow]
+      congr 1
+      have hane : a ≠ 0 := ne_of_gt ha
+      field_simp
+      ring
+    rw [hτdef, mul_div_assoc, hbasepow]
   rw [← hscale]
   linarith
 

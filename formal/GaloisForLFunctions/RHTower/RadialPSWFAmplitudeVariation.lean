@@ -161,6 +161,63 @@ theorem hasDerivAt_radialAmpSin {c x : ℝ} (hc : c ≠ 0) {W V psi : ℝ → �
   have him := Complex.imCLM.hasFDerivAt.comp_hasDerivAt x h
   exact (him.const_mul 2).neg
 
+/-- The transported derivative of the cosine amplitude is `‖ψ‖‖W‖/c`. -/
+theorem abs_transport_deriv_re_le {c : ℝ} (hc : 0 < c) (psi W : ℝ → ℂ) (x : ℝ) :
+    |2 * (Complex.exp (-Complex.I * (c : ℂ) * (x : ℂ)) * psi x * W x
+        / (2 * Complex.I * (c : ℂ))).re|
+      ≤ ‖psi x‖ * ‖W x‖ / c := by
+  have hnorm := norm_transport_deriv hc psi W x
+  have hre := Complex.abs_re_le_norm
+    (Complex.exp (-Complex.I * (c : ℂ) * (x : ℂ)) * psi x * W x / (2 * Complex.I * (c : ℂ)))
+  rw [abs_mul, abs_of_nonneg (by norm_num : (0:ℝ) ≤ 2)]
+  have hstep : 2 * |(Complex.exp (-Complex.I * (c : ℂ) * (x : ℂ)) * psi x * W x
+      / (2 * Complex.I * (c : ℂ))).re| ≤ 2 * (‖psi x‖ * ‖W x‖ / (2 * c)) := by
+    refine mul_le_mul_of_nonneg_left ?_ (by norm_num)
+    exact hre.trans hnorm.le
+  have hval : (2 : ℝ) * (‖psi x‖ * ‖W x‖ / (2 * c)) = ‖psi x‖ * ‖W x‖ / c := by
+    field_simp
+  linarith [hstep, hval.le, hval.ge]
+
+/-- The transported derivative of the sine amplitude obeys the same bound. -/
+theorem abs_transport_deriv_im_le {c : ℝ} (hc : 0 < c) (psi W : ℝ → ℂ) (x : ℝ) :
+    |(-(2 * (Complex.exp (-Complex.I * (c : ℂ) * (x : ℂ)) * psi x * W x
+        / (2 * Complex.I * (c : ℂ))).im))|
+      ≤ ‖psi x‖ * ‖W x‖ / c := by
+  have hnorm := norm_transport_deriv hc psi W x
+  have him := Complex.abs_im_le_norm
+    (Complex.exp (-Complex.I * (c : ℂ) * (x : ℂ)) * psi x * W x / (2 * Complex.I * (c : ℂ)))
+  rw [abs_neg, abs_mul, abs_of_nonneg (by norm_num : (0:ℝ) ≤ 2)]
+  have hstep : 2 * |(Complex.exp (-Complex.I * (c : ℂ) * (x : ℂ)) * psi x * W x
+      / (2 * Complex.I * (c : ℂ))).im| ≤ 2 * (‖psi x‖ * ‖W x‖ / (2 * c)) := by
+    refine mul_le_mul_of_nonneg_left ?_ (by norm_num)
+    exact him.trans hnorm.le
+  have hval : (2 : ℝ) * (‖psi x‖ * ‖W x‖ / (2 * c)) = ‖psi x‖ * ‖W x‖ / c := by
+    field_simp
+  linarith [hstep, hval.le, hval.ge]
+
+/-- **The transported derivative bound in symbol form.**  A short-range potential decaying like
+`κ/x²` along the phase, a bounded solution, and a bounded phase speed give the `K'/x²` decay a
+symbol record wants, with `K' = κ K L / c` — one power of the bandwidth small. -/
+theorem abs_transport_deriv_comp_le {c κ K L x : ℝ} (hc : 0 < c) (hκ : 0 ≤ κ) (hK : 0 ≤ K)
+    (hx : 0 < x) {psi W : ℝ → ℂ} {Φ Φ' : ℝ → ℝ}
+    (hpsi : ‖psi (Φ x)‖ ≤ κ / x ^ 2) (hWb : ‖W (Φ x)‖ ≤ K) (hΦ : |Φ' x| ≤ L) :
+    |2 * (Complex.exp (-Complex.I * (c : ℂ) * ((Φ x : ℝ) : ℂ)) * psi (Φ x) * W (Φ x)
+        / (2 * Complex.I * (c : ℂ))).re * Φ' x| ≤ (κ * K * L / c) / x ^ 2 := by
+  have hL : (0 : ℝ) ≤ L := le_trans (abs_nonneg _) hΦ
+  have hbase := abs_transport_deriv_re_le hc psi W (Φ x)
+  have hmul : ‖psi (Φ x)‖ * ‖W (Φ x)‖ ≤ (κ / x ^ 2) * K :=
+    mul_le_mul hpsi hWb (norm_nonneg _) (by positivity)
+  rw [abs_mul]
+  have hstep : |2 * (Complex.exp (-Complex.I * (c : ℂ) * ((Φ x : ℝ) : ℂ)) * psi (Φ x) * W (Φ x)
+      / (2 * Complex.I * (c : ℂ))).re| * |Φ' x|
+      ≤ ((κ / x ^ 2) * K / c) * L := by
+    refine mul_le_mul ?_ hΦ (abs_nonneg _) (by positivity)
+    refine hbase.trans ?_
+    gcongr
+  have hval : ((κ / x ^ 2) * K / c) * L = (κ * K * L / c) / x ^ 2 := by
+    field_simp
+  linarith [hstep, hval.le, hval.ge]
+
 section
 
 variable (hc : 0 < c)
