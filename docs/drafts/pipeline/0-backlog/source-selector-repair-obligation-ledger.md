@@ -260,7 +260,7 @@ tail bounds.
 
 ## 2026-06-24 finite-degree discriminant domination has a matrix gate
 
-`../2-fully-proven/finite-degree-shifted-hankel-tail-stability.md` gives the
+`../3-formalized/not_new_scientific_knowledge/finite-degree-shifted-hankel-tail-stability.md` gives the
 all-degree finite-height replacement for informal `d~H` bulk domination. For a
 split `H_d=B_d+R_d`, positivity follows from
 

@@ -46,14 +46,27 @@ Promotion recipe:
 | `two-replica-singlet-pauli-hall-expansion` | `(7)` on any register, global `(11)`, both directions of `(12)`, and the assembly `(14)`–`(17)` giving the boxed `(4)` | `HTGeometry/TwoReplicaTensorHilbertSchmidt`, `TwoReplicaEdgeHallExpansion`, `TwoReplicaEdgeHallAssembly` (all new) |
 | `traceless-local-two-query-haar-separation-law` | identity-coordinate gap; the literal product-stabilizer score with its transfer expansion `(5)`; the exact Haar value `(3)` for that score; the comparison capstone `(4)` | `HTGeometry/TracelessPauliIdentityCoordinate`, `ProductStabilizerPhysicalScore`, `FiniteUnitaryHaarReindex`, `RankOneProjectionConjugation`, `LiteralTwoQueryHaarBenchmark` (all new) |
 | `positive-source-weights-do-not-bound-loewner-budget` | arbitrary-source Finsupp Loewner assembly, unbounded positive-cone scaling obstruction, and exact normalized mass-cap equivalence | `RHTower/PositiveSourceLoewnerBudget` (new) |
+| `li-kernel-not-coefficient-positive` | literal reciprocal-seam first-kind Chebyshev kernel, exact first/second Taylor coefficients, strict sign obstruction, and `n = 1` certificate | `RHTower/LiReciprocalKernelCoefficientSign` (new) |
 | `scale-invariant-source-orientation-cannot-pay-budget` | form-level scale-invariant source-orientation cone theorem and one-sided recession gate | `RHTower/SourceNormalizationBudgetGates` (new) |
 | `finite-source-normalizations-leave-budget-recession` | exact affine normalization class, preserved recession directions, two-sided zero gate, and PSD corollary | `RHTower/SourceNormalizationBudgetGates` (new) |
 | `degree-one-discriminant-tail-stability` | exact five-term tail expansion and error budget, strict-margin positivity, conjugate-pair negative square, and finite-bulk pair update | `HTGeometry/DegreeOneDiscriminantTailStability` (new) |
+| `finite-degree-shifted-hankel-tail-stability` | literal Rayleigh `lambda_min`, exact Frobenius/row-sum budgets, both strict tail gates, and every principal determinant | `HTGeometry/FiniteDegreeShiftedHankelTailStability` (new) |
 | `real-axis-kernel-positivity-nonselector` | literal three-by-three Hermitian inverse pair, negative index two, full real-axis kernel polynomial and explicit off-curve negative direction | `HTGeometry/RealAxisKernelPositivityNonselector` (new) |
+| `dirichlet-real-analytic-postcomposition-high-line-sign-rigidity` | generic real-analytic germ capstone, literal every-height coordinate corollary, and Route-I sharp-window specialization | `HTGeometry/DirichletAnalyticPostcompositionSignRigidity`, `RHTower/CCMSharpPrimeWindowAnalyticPostcompositionNoGo` (re-audited) |
 | `square-zero-compatibility-defect` | exact polarization, square-zero compatibility equivalence, and symmetric two-scalar form over arbitrary commutative rings | `HTGeometry/SquareZeroCompatibilityDefect` (re-audited) |
 | `involution-selects-minimal-event-record` | complementary involution projectors, exact kernel/range and cokernel record, and trace-two `4/6/4` specialization | `HTGeometry/EventInvolutionComplement` (re-audited) |
 | `noninvertible-event-complementary-record-boundary` | postcomposition kernel no-go, faithful-record dimension lower bound, equal-parent kernel/cokernel bijection, rank-six boundary, and scaling noncanonicity | `HTGeometry/EventComplementaryRecord` (re-audited) |
 | `fixed-carrier-quadratic-variation-flatness` | exact absorption cocycle, diamond flatness, Gram-square restriction defect, compression curvature, and unit-test converse | `HTGeometry/NestedProjectionQuadraticVariation` (re-audited) |
+| `pure-spinor-color-cancellation-normal-selection` | literal Cartan coordinate pairing, all same-sector and weak-scalar exclusions, and surjectivity for every nonzero colour bivector | `HTGeometry/PureSpinorColorNormalSelection` (re-audited) |
+| `color-gram-minkowski-orbit-theorem` | Gram positivity, Cauchy--Binet/Lorentz cone, left-unitary orbit equivalence, positive-cone surjectivity, and quotient homeomorphism | `HTGeometry/ColorGramMinkowskiCone`, `ColorGramMinkowskiOrbit` (re-audited) |
+| `split-event-quadratic-soldering-boundary` | complete split-event block classification, universal endpoint-soldering no-go, quadratic covariant cancellation, parallel composite, and conjugacy lock | `HTGeometry/EventSecondOrderSoldering` (re-audited) |
+| `sonin-aperture-ward-curvature-transgression` | trace-class compression curvature, literal negative Hilbert--Schmidt square, faithful flatness, and canonical Ward transgression | `RHTower/TraceClassCompressionCurvature`, `SoninApertureCurvatureTrace`, `SoninApertureWardCurvature` (re-audited) |
+| `sonin-aperture-ward-cohomology-fourier-parity-no-go` | aperture Bianchi/gauge coboundary, Fourier parity, invariant-reader annihilation, and exact Ward-energy flatness iff | `RHTower/SoninApertureWardPotential`, `SoninApertureFourierParityNoGo` (re-audited) |
+| `square-aperture-positive-excess-convex-duality` | literal nonnegative finite square-aperture dual, exact optimizer/defect, prime-side Fubini identity, sharp-source normalization, and explicit conditional RH consumer | `RHTower/CCMSharpPrimeWindowSquarePositiveExcessDuality` (re-audited) |
+| `strict-two-group-kernel-abelian-boundary` | minimal Peiffer-kernel centrality, centre inclusion, pair commutativity, and faithful-source abelianness | `HTGeometry/PeifferKernelAbelianBoundary` (re-audited) |
+| `crossed-pure-factorization-refinement` | arbitrary-field crossed block factorization and exact four one-index factor refinement | `HTGeometry/CrossedPureFactorizationRefinement` (re-audited) |
+| `finite-carrier-spacelike-compression-defect` | finite tensor-square kernel lower bound, noninjectivity, injectivity classification, surjective equality, and self-equivalence corollary | `HTGeometry/FiniteCarrierSpacelikeCompression` (re-audited) |
+| `independent-composition-boundary-record-conservation` | exact finite record lower bound, minimal-completion bijectivity/surjectivity, kernel-record equivalence, and total reconstruction equivalence | `HTGeometry/IndependentCompositionBoundaryRecord` (re-audited) |
 
 | `burnol-divided-shift-evaluation-separation-law` | none (verified only) | `RHTower/BurnolDividedShiftEvaluationSeparation` |
 | `burnol-holonomy-cauchy-sector-separation` | none (verified only) | `RHTower/BurnolHolonomyCauchySectorSeparation` |
@@ -1859,3 +1872,113 @@ imported environments agree.  Any file importing two of them failed with "enviro
 contains …", so the `HTGeometry` umbrella could not build even though every module passed
 `lake env lean` and its own `lake build`.  All of them now carry explicit per-module instance
 names, and a scratch file importing all fifteen session modules at once compiles.
+
+### Update: the measurable spectral collision and its ensemble law (2026-08-15)
+
+Two new modules, wired and axiom-clean.  Together they remove the obstruction that had blocked
+`(21)`/`(26)` of `local-clifford-return-excised-phase-incidence-law`: an eigenbasis is not a
+measurable function of the matrix, so `Pr_H{C_H(Ω) > …}` was not even a statement about a
+measurable set.
+
+`HTGeometry/SpectralCollisionFunctional.lean`
+
+- `IsOrthoEigenBasis H e lam` — orthonormal eigenbasis with real eigenvalues, together with
+  **`exists_isOrthoEigenBasis`**: every Hermitian matrix has one, so the eigenbasis input is never
+  a restriction;
+- `stateMoment H ψ r = ⟨ψ, Hʳψ⟩` and `stateMoment_eq` — the moment is `∑_j p_j λ_jʳ`;
+- `regCollisionC`, **`regCollisionC_eq`** — the binomially expanded gap regularization equals
+  `∑_{j,k} p_j p_k (1 − (λ_j−λ_k)²/c)^m`, so it is simultaneously a polynomial in the matrix
+  entries and a spectral gap weight;
+- `capC H = 1 + 4‖H‖_F²`, `sq_gap_lt_capC` — a continuous cap dominating every squared gap;
+- `cappedRegCollision`, **`continuous_cappedRegCollision`**,
+  `sum_eigenWeight_sq_le_cappedRegCollision` (it dominates the collision at every order) and
+  **`tendsto_cappedRegCollision`** (it converges to the collision at a simple spectrum).
+
+`HTGeometry/CollisionEnsembleLaw.lean`
+
+- `sum_eigenWeight_eq` (Parseval), `spectralCollision_le_one`, `cappedRegCollision_le_one`;
+- **`isOrthoEigenBasis_conj`** — unitary conjugation transports an eigenbasis and preserves the
+  eigenvalues;
+- **`spectralCollision_eq_of_isOrthoEigenBasis`** — at a simple spectrum the collision does not
+  depend on the eigenbasis, because both eigenbases compute the same limit;
+- **`spectralCollision_conj_eq`** — the card's `C_{U†HU}(ψ) = C_H(Uψ)` in eigenbasis form;
+- `measurable_cappedRegCollision_comp`, **`aemeasurable_spectralCollision`** — for a family with
+  entrywise measurable matrix and almost surely simple spectrum, the collision is a.e. measurable;
+- `integrable_spectralCollision`;
+- **`measureReal_spectralCollision_ge_le`** — the card's `(21)` in abstract form:
+  `Pr{C ≥ L c₀} ≤ 1/L` whenever the mean collision is at most `c₀`;
+- **`integral_spectralCollision_conj_eq`** — the card's `(23)` in abstract form: if a
+  measure-preserving reparametrization carries the family onto its conjugate by `U`, the mean
+  collision at `ψ` equals the mean collision at `Uψ`.
+
+**Remaining for `local-clifford-return-excised-phase-incidence-law`:** instantiate
+`integral_spectralCollision_conj_eq` at the fixed-weight Pauli Gaussian ensemble — the signed
+permutation of Pauli labels induced by a product Clifford, and the invariance of the product
+Gaussian law under it — then combine with `sum_spectralCollision_prodStab_le` to get `(26)` and
+with `measureReal_spectralCollision_ge_le` to get `(21)`; `(27)` is already carried by the corpus
+(`twoLocal_projectivelyIndependent_ae`, `pauliTraceless_projectivelyIndependent_ae`); `(28)` needs
+the completed-time transfer, and `(29)`--`(33)` are arithmetic bookkeeping on top of `(22)`.
+
+### Promotion update: source-test partition universality (2026-08-15)
+
+| Card | New Lean work | Modules |
+|---|---|---|
+| `source-test-partition-universality` | none (re-audited); exact quotient recognizer with deterministic, exhaustive, and observationally exact presentation | `HTGeometry/SourceTestPartitionUniversality` (re-audited) |
+
+### Update: sitewise product action and decoupled evolution (2026-08-15)
+
+`HTGeometry/LocalProductStateAction.lean` (wired, axiom-clean)
+
+- `localProductState w x = ∏_s w s (x s)`;
+- **`finiteLocalMatrix_mulVec_localProductState`** — a matrix that factors over the qubits acts on
+  a product state one qubit at a time (the distributive law `Finset.prod_univ_sum`);
+- `sum_normSq_localProductState` — the squared length of a product state factors.
+
+This is the vector-side companion of the corpus's `finiteLocalMatrix` algebra
+(`FinitePauliConjugationLaw`), needed to identify a product Clifford image of `|0…0⟩` with a
+product stabilizer state.
+
+`HTGeometry/DecoupledEvolutionFactorization.lean` (wired, axiom-clean) — **this closes the last
+mechanism of Theorem A of `weak-cut-complexity-onset-capacity-separation-law`, equation `(8)`**:
+
+- `kroneckerRightHom`, `kroneckerLeftHom` — tensoring with the identity is a ring homomorphism,
+  with `kroneckerRightLinear`/`kroneckerLeftLinear` giving continuity in finite dimension;
+- `exp_kronecker_one`, `exp_one_kronecker` — a continuous ring homomorphism commutes with the
+  exponential;
+- `commute_kronecker_one_one_kronecker`, **`exp_kroneckerSum`** —
+  `exp(A ⊗ 1 + 1 ⊗ B) = exp A ⊗ exp B`;
+- **`unitaryEvolution_kroneckerSum`** and
+  **`unitaryEvolution_kroneckerSum_mulVec_tensorVec`** — the card's `(8)`,
+  `e^{-itH₀}(χ_A ⊗ χ_B) = (e^{-itH_A}χ_A) ⊗ (e^{-itH_B}χ_B)`.
+
+**State of `weak-cut-complexity-onset-capacity-separation-law`:** Theorem A is closed
+(`(3)`,`(4)`,`(6)`,`(7)`,`(8)`); Theorem B `(9)` is closed.  Theorem C composes the two stage-2
+parents `cubic-phase-seeded-…` and (through them) `local-clifford-…`, so it waits on those.
+Theorems D and E still need the Pauli Hilbert–Schmidt/operator-norm comparison `(19)`,`(21)`, the
+contiguous-cut union sandwich `(23)` (structurally unconditional once the norms are in), and the
+beta projection law `(17)`--`(18)` — for which the card explicitly allows an explicit sphere-tube
+lower bound instead.
+
+**Corpus assets located for the remaining local-Clifford construction:**
+`TwoReplicaGlobalCliffordHallSymmetryReduction.finiteProductCliffordGate` with
+`finiteProductCliffordGate_unitary` and **`finiteProductCliffordGate_conj_finitePauliMatrix`**
+(conjugation sends a Pauli word to a scalar times another Pauli word *of the same weight*, which is
+exactly the label permutation preserving the two-local support);
+`FinitePauliConjugationLaw.finiteLocalMatrix`, `finitePauliConjugationSign`,
+`finitePauliConjugationSign_sq`; the vendored `QuantumAlg.…QubitTwoDesign` (`BinaryOctahedral`,
+card 48, quaternion model) and `QuantumAlg.…ProductClifford` (`productQubitClifford`,
+`productQubitClifford_unitary`, `productQubitClifford_twirl_singleSite`), the latter already
+indexed by `Fin 2` like `StabilizerTwoDesign.prodStabAmp`.
+
+### Promotion update: finite squarefree Euler complement rigidity (2026-08-15)
+
+| Card | New Lean work | Modules |
+|---|---|---|
+| `finite-squarefree-euler-complement-rigidity` | literal complex FE sampled at all negative integers; distinct-squarefree Vandermonde coefficient recovery; exact local-square/epsilon classification; literal FE converse; zero-line theorem | `RHTower/FiniteSquarefreeEulerFunctionalEquation` (new), `RHTower/FiniteSquarefreeEulerComplementRigidity` (reused core) |
+
+Moved `2-fully-proven/not_new_scientific_knowledge/finite-squarefree-euler-complement-rigidity.md`
+to `3-formalized/not_new_scientific_knowledge/` with companion
+`finite-squarefree-euler-complement-rigidity-formalized.md`. Direct source check and focused leaf
+build passed; capstone axiom audit contains only `propext`, `Classical.choice`, and `Quot.sound`.
+The `RHTower` umbrella import is wired; no umbrella build was run. Inbound-link scan found no
+references to the old Stage-2 path.

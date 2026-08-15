@@ -18,8 +18,9 @@ where Artin local factors are already known to be holomorphic and nonzero.  It d
 ## Gates
 
 - [x] 0 -> 1 in-progress: exact source, non-circular paper proof, and missing Lean core isolated
-- [ ] 1 -> 2 fully-proven: full Lean-independent paper proof with all analytic identifications
-- [ ] 2 -> 3 formalized: local finite-image bound plus compact M-test and product holomorphy
+- [x] 1 -> 2 fully-proven: dependency-closed paper proof of the stated analytic tprod theorem
+- [ ] 2 -> 3 formalized: all target leaves are kernel-checked, but the repository-wide formal
+  lint gate remains blocked by unrelated existing violations
 - [ ] 3 -> 4 publication-ready: standalone theorem/proof/Lean certificate
 
 ## Exact statement
@@ -58,13 +59,13 @@ on `H`.  A later theorem must separately identify this analytic product with the
 5. The compact M-test gives local uniform multipliability of `1 + (E_v-1)`.  The standard product
    theorem makes the product holomorphic and nonzero on `H`.
 
-## Missing Lean core
+## Remaining Lean core
 
-`NumberFieldFinitePlaceNormSummability.lean` closes step 4.  The missing nontrivial bridge is the
-finite-image local estimate in steps 1--3, beginning with an unconditional theorem that the actual
-Frobenius action on inertia invariants has finite order.  `P_v(0)=1` is insufficient: arbitrary
-polynomials with constant coefficient one can have roots arbitrarily near zero, so no M-test may
-be inferred from the formal source alone.
+The finite-image local estimate, compact M-test, factor differentiability, tprod holomorphy, and
+tprod nonvanishing are now formalized in the dedicated analytic leaf.  The remaining source-side
+problem is not convergence: it is a non-circular equality between this analytic tprod and
+`artinFormalEulerSource`/a standard Artin `LSeries`.  Coefficientwise finite-prefix stabilization
+does not prove that equality.
 
 **Progress (2026-08-15).** The qualitative finite-image part is now formalized: actual local
 polynomials have no zero at every `|z| < 1`.  This is enough to certify individual local factors
@@ -81,6 +82,12 @@ one and therefore does not authorize the product theorem.
 ingredient, but it is not the required summable difference bound: a separate product-deviation
 estimate for `|P_A(z)-1|`, and then a linear estimate for `|P_A(z)^(-1)-1|` on a fixed small disk,
 remain mandatory.
+
+**Further progress (2026-08-15).** The required local linear bound is now formalized at every
+canonical finite place: for `1 ≤ Re(s)`,
+`|E_v(s)-1| ≤ 4^dim(V) N(v)^(-Re(s))`.  This is precisely the summable shape needed after taking
+a compact minimum `sigma>1`; the local theorem itself still does not instantiate the M-test or
+identify an analytic tprod with the formal source.
 
 Mathlib APIs audited for the route include `pow_card_eq_one'`, the characteristic-polynomial
 eigenvalue bridge, `Complex.norm_eq_one_of_pow_eq_one`,
@@ -99,3 +106,17 @@ those properties as hypotheses does not advance this card.
 
 - 2026-08-15 -- opened after formal source stabilization and unconditional finite-prime norm
   summability were target-built.  Finite-image local-factor control isolated as exact next gap.
+- 2026-08-15 -- completed and target-built the concrete compact M-test in
+  `ArtinNumberFieldEulerProductAnalytic.lean`.  It defines canonical reciprocal factors and their
+  tprod, then proves `HasProdLocallyUniformlyOn` on `Re(s)>1` from the actual local bound and
+  `numberField_summable_finitePlace_absNorm_rpow`.  The axiom audit is standard-foundations-only.
+  Factor differentiability and the resulting holomorphy are still separate obligations; no
+  formal-source or `LSeries` identification has been claimed.
+- 2026-08-15 -- completed those analytic obligations in the same leaf: each actual reciprocal
+  factor is differentiable on `Re(s)>0`; locally uniform convergence of finite products gives
+  `DifferentiableOn` for the canonical tprod on `Re(s)>1`; and the summable one-plus-product
+  theorem proves that tprod nonzero there.  The revised leaf source-checks and target-builds, and
+  its five-theorem axiom audit is standard-foundations-only.  The module is wired into
+  `RHTower.lean`, but no umbrella build was run.  The remaining source-side gap is equality of
+  this analytic product with `artinFormalEulerSource`/an `LSeries`, not half-plane holomorphy of
+  the tprod itself.

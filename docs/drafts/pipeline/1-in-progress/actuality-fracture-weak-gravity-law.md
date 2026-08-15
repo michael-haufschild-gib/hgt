@@ -168,9 +168,9 @@ make their composite a nondegenerate Lorentzian solder form, and derive Einstein
 failure of those composites to glue. Kernel/cokernel dimension counting cannot do this.
 
 Paper proof:
-`../2-fully-proven/not_new_scientific_knowledge/split-event-quadratic-soldering-boundary.md`.
+`../3-formalized/not_new_scientific_knowledge/split-event-quadratic-soldering-boundary.md`.
 Lean certificate:
-`../3-formalized/split-event-quadratic-soldering-boundary.md`.
+`../3-formalized/not_new_scientific_knowledge/split-event-quadratic-soldering-boundary-formalized.md`.
 
 ## Second exact obstruction: invertible symmetry erases event coupling
 

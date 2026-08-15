@@ -46,6 +46,38 @@ structure IsOrthoEigenBasis (H : Matrix α α ℂ) (e : α → α → ℂ) (lam 
   eigen : ∀ j, H *ᵥ e j = ((lam j : ℝ) : ℂ) • e j
   complete : ∀ ψ : α → ℂ, ∑ j, finiteComplexInner (e j) ψ • e j = ψ
 
+/-- **Every Hermitian matrix carries an orthonormal eigenbasis.**  The eigenbasis hypothesis of
+this file is therefore never a restriction. -/
+theorem exists_isOrthoEigenBasis (H : Matrix α α ℂ) (hH : H.IsHermitian) :
+    ∃ (e : α → α → ℂ) (lam : α → ℝ), IsOrthoEigenBasis H e lam := by
+  classical
+  have hbridge : ∀ j : α, ∀ v : α → ℂ,
+      finiteComplexInner ((hH.eigenvectorBasis j).ofLp) v =
+        inner ℂ (hH.eigenvectorBasis j) (WithLp.toLp 2 v) := by
+    intro j v
+    rw [EuclideanSpace.inner_eq_star_dotProduct, finiteComplexInner, dotProduct]
+    refine Finset.sum_congr rfl fun x _ => ?_
+    simp [Pi.star_apply]
+    ring
+  refine ⟨fun j => (hH.eigenvectorBasis j).ofLp, hH.eigenvalues, ?_, ?_, ?_⟩
+  · intro j k
+    have h0 := hH.eigenvectorBasis.orthonormal
+    rw [orthonormal_iff_ite] at h0
+    rw [hbridge j ((hH.eigenvectorBasis k).ofLp)]
+    exact h0 j k
+  · intro j
+    rw [hH.mulVec_eigenvectorBasis j]
+    funext i
+    simp [Complex.real_smul]
+  · intro ψ
+    simp only [hbridge]
+    have h := hH.eigenvectorBasis.sum_repr' (WithLp.toLp 2 ψ)
+    calc (∑ j, inner ℂ (hH.eigenvectorBasis j) (WithLp.toLp 2 ψ) • ((hH.eigenvectorBasis j).ofLp))
+        = (∑ j, inner ℂ (hH.eigenvectorBasis j) (WithLp.toLp 2 ψ) •
+            hH.eigenvectorBasis j).ofLp := by simp
+      _ = (WithLp.toLp 2 ψ).ofLp := by rw [h]
+      _ = ψ := rfl
+
 /-- The spectral weight of a state on one eigenvector. -/
 def eigenWeight (e : α → α → ℂ) (ψ : α → ℂ) (j : α) : ℝ :=
   ‖finiteComplexInner (e j) ψ‖ ^ 2

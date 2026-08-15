@@ -28,7 +28,7 @@ sum_(m<=M) (2u_m d_m-u_m^2) <= C_delta M^(1+delta).
 ```
 
 Exact duality certificate:
-`../2-fully-proven/not_new_scientific_knowledge/square-aperture-positive-excess-convex-duality.md`.
+`../3-formalized/not_new_scientific_knowledge/square-aperture-positive-excess-convex-duality.md`.
 
 ## Why this looked like a surviving pivot
 

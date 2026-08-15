@@ -332,3 +332,37 @@ The finite-fibre trace is therefore a `[BRIDGE]`, while this card is
 
 These are audit findings about the current source version, not a claim that
 the continuation theorem or Selberg C1/C2 is false.
+
+## Later verification update
+
+- 2026-08-15 — `RHTower/SelbergClass/BarnesFiniteRectangleIntegral.lean`
+  subsequently passed a foreground source check and exact target-module build.
+  It proves the two fixed-rectangle identities
+  `rectangleIntegral_barnesJ_eq_sumResiduesIn` and
+  `rectangleIntegral_barnesJ_eq_finset_sum`; the second reduces the rectangle
+  integral to the finite set of concrete residues.  This corrects the earlier
+  proof-engineering status above.  It still proves neither the horizontal-edge
+  limit, line integrability, the `m → ∞` passage, Barnes Lemma 6, nor a K--P
+  contour shift.
+- 2026-08-15 — `RHTower/SelbergClass/BarnesTwoGammaLineIntegrable.lean`
+  now proves the previously missing full vertical-line integrability for the
+  actual scalar Barnes integrand.  The proof is exact: both Gamma arguments
+  remain in the positive real half-plane on the compact middle interval, and
+  the verified strict tail rate `π - |arg η|` supplies an integrable global
+  majorant outside it.  This corrects the preceding status only at the
+  line-integrability node.  Horizontal-edge decay, the infinite rectangle,
+  `m → ∞`, Barnes Lemma 6, and K--P's contour transformation remain open.
+- 2026-08-15 — `RHTower/SelbergClass/BarnesFiniteRectangleExplicitSum.lean`
+  closed the finite-sum normalization: the fixed rectangle is exactly
+  `Σ_{n=0}^m (-1)^n Γ(ξ+n) η^n/n!`.  The proof uses the concrete pole
+  enumeration and injectivity of `n ↦ -n`, rather than a generic residue
+  interface.  This is a finite bridge only; it supplies no height limit or
+  infinite binomial/Barnes evaluation.
+- 2026-08-15 — `RHTower/SelbergClass/BarnesHorizontalEdges.lean` proved the
+  exact signed top and bottom horizontal-edge limits for every fixed finite
+  Barnes rectangle.  Its key new internal bridge extends Gamma's vertical
+  polynomial--exponential estimate to arbitrary compact real strips by a
+  finite recurrence.  Together with the separately formalized two vertical
+  line integrability, this closes all scalar fixed-rectangle analytic inputs;
+  the finite-to-infinite left-edge limit, its residue-series summation, Barnes
+  Lemma 6, and the K--P contour transform remain distinct open nodes.

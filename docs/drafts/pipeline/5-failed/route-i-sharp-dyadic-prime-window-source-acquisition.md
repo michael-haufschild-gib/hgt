@@ -33,7 +33,7 @@ two-sided sign defect.
 `[FORMALIZED]` More strongly, every nonconstant real-analytic scalar germ at the far-right real
 source limit preserves a conjugate high-line sign pair.  Its finite analytic vanishing order only
 multiplies the first logarithmic Dirichlet frequency.  Paper certificate:
-`../2-fully-proven/not_new_scientific_knowledge/dirichlet-real-analytic-postcomposition-high-line-sign-rigidity.md`.
+`../3-formalized/not_new_scientific_knowledge/dirichlet-real-analytic-postcomposition-high-line-sign-rigidity.md`.
 Lean modules: `HTGeometry/DirichletAnalyticPostcompositionSignRigidity.lean` and
 `RHTower/CCMSharpPrimeWindowAnalyticPostcompositionNoGo.lean`.
 

@@ -89,7 +89,7 @@ can distinguish connections only inside one already-matched topological sector.
 - **Formal status:** the exact split-event obstruction and quadratic survivor are unconditionally
   Lean-proven in
   `../../../../formal/GaloisForLFunctions/HTGeometry/EventSecondOrderSoldering.lean` and documented in
-  `../3-formalized/split-event-quadratic-soldering-boundary.md`. Additive topological-debt
+  `../3-formalized/not_new_scientific_knowledge/split-event-quadratic-soldering-boundary.md`. Additive topological-debt
   conservation and finite-history telescoping are unconditionally Lean-proven in
   `../../../../formal/GaloisForLFunctions/HTGeometry/EventTopologicalDebt.lean`. Mathlib presently has no
   Chern/Euler/Pontryagin characteristic-class infrastructure with which to formalize (1)--(4);

@@ -852,3 +852,44 @@ The amplitude cancels, so **no normalization of the profile has to be pinned**: 
 from local uniform convergence of `u` up to scale together with the normalized second-moment bound
 `∫ξ²u² / ∫u² = c ∫x²Φ² / ∫Φ² ≤ c·s = μ`, which controls both tails.  The target value checks out on
 the ground mode: with `φ₀ = e^{−ξ²/2}`, `(∫φ₀)²/(√(2π)∫φ₀²) = 2π/(√(2π)√π) = √2 = (2^{1/4})²`.
+
+## Correction — the eigenvalue half is not closed by the centre-value pairing
+
+An earlier note on this card recorded that the *eigenvalue* half `c·s(c) → 2n+1` "is now a Lean
+theorem given the instantiation", via `RHTower/ProlateCentreValuePairing.lean`
+(`tendsto_zero_of_ladderPin`).  That is wrong, and the reason is structural rather than technical.
+
+`tendsto_integral_rescaled_mul` and `tendsto_zero_of_ladderPin` take **one fixed** profile `Φ` and
+let the bandwidth act only through the rescaling `Φ(ξ/√c)`; the flattening that produces
+`Φ(0)·∫V` in the limit is dominated convergence for that single function.  The prolate family does
+not have that shape: its profile `Φ_c` is itself the `c`-dependent eigenfunction, so there is no
+fixed `Φ` to rescale.  The two theorems remain correct and reusable, but they do not instantiate
+here.
+
+### What the eigenvalue half actually needs
+
+With the window machinery now in place the missing input is one classical rigidity statement:
+
+```text
+if v ∈ L²(ℝ) is even and solves  v″ = (ξ² − μ) v  on all of ℝ,  then μ = 2n+1 for some even n,
+and v is a multiple of the corresponding Hermite function.
+```
+
+Given it, both halves follow from the same argument.  Normalize `Ψ_c = u_c/u_c(0)` (legitimate:
+`Φ(0) ≠ 0` is `SlepianKernelScaledFubini.value_zero_ne_of_even_joint_prolate_band_eigen`).  The
+separation constants `μ_c` are bounded, so along any subsequence `μ_c → μ*`, and
+`tendsto_prolateProfile_window` gives `Ψ_c → Ψ*` locally uniformly with `Ψ*″ = (ξ² − μ*)Ψ*`,
+`Ψ*(0) = 1`, `Ψ*′(0) = 0`.  The normalized second-moment bound
+`∫ξ²Ψ_c² ≤ μ_c ∫Ψ_c²` (now formal as `integral_rescaled_secondMoment_le`) makes the family tight, so
+`∫_{-K}^{K}Ψ_c²` is bounded below a constant multiple of `∫Ψ_c²` uniformly, `Ψ* ∈ L²`, and the
+rigidity statement forces `μ* = 2n+1` and `Ψ* = φ_n/φ_n(0)`.  Every subsequential limit is the same,
+so the full limits hold — the eigenvalue half — and the coordinate limit then follows in the
+scale-free form recorded above.
+
+The corpus owns the oscillator ladder on Schwartz space
+(`HTGeometry/SchwartzOscillatorAlgebra.lean`, `HTGeometry/HermiteOrthogonality.lean` with
+`creationCLM`, `annihilationCLM` and the commutator `BA − AB = 4π`,
+`HTGeometry/HermiteNumberOperator.lean`), but not the passage from *an `L²` solution of the ODE* to
+that ladder, which is where the rigidity statement has to be built: `A = d/dξ + ξ` satisfies
+`A†A = −d²/dξ² + ξ² − 1`, so `‖Av‖² = (μ−1)‖v‖²` forces `μ ≥ 1`, `Av` solves the same equation at
+`μ−2`, and iterating must terminate, with `Av = 0` solved only by `Ce^{−ξ²/2}`.

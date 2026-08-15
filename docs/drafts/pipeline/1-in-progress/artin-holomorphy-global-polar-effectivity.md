@@ -311,3 +311,10 @@ the non-factorizing arithmetic source-to-divisor law itself is closed on paper.
 - 2026-08-15 -- transported that nonvanishing to every canonical base finite place at the genuine
   Euler argument whenever `Re(s)>0`, with source/target/axiom checks.  This eliminates no global
   pole and does not make an infinite product; quantitative local control remains the next gap.
+- 2026-08-15 -- completed the full finite-place absolute-convergence chamber in the wired leaf
+  `ArtinNumberFieldEulerProductAnalytic.lean`: actual canonical factors have a locally uniform
+  tprod on `Re(s)>1`, which is differentiable and nonzero there.  The proof uses the concrete
+  finite-order inverse-difference estimate and finite-prime norm summability; all five exported
+  results source-check, target-build, and have standard-foundations-only axiom audits.  This is
+  `[LITERATURE] [BRIDGE] [NOT NEW]`; it remains neither an equality to `artinFormalEulerSource`
+  nor a continuation or polar-effectivity law.

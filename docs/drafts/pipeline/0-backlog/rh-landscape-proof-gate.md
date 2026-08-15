@@ -588,7 +588,7 @@ not justify a `d~H` determinant range without degree-dependent summed margins.
 
 ## 2026-06-24 finite-degree determinant range requires eigenvalue margin
 
-Created `../2-fully-proven/finite-degree-shifted-hankel-tail-stability.md`.
+Created `../3-formalized/not_new_scientific_knowledge/finite-degree-shifted-hankel-tail-stability.md`.
 For every finite degree `d`, a height-cut proof must show
 `lambda_min(B_d) > ||R_d||_op` after splitting the shifted Hankel matrix into
 verified positive real bulk plus unverified tail.

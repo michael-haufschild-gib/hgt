@@ -316,7 +316,7 @@ The higher-gauge pressure test sharpens it again:
 
 The exact Peiffer obstruction is paper-proved and Lean-formalized:
 
-- [paper theorem](../2-fully-proven/not_new_scientific_knowledge/strict-two-group-kernel-abelian-boundary.md)
+- [paper theorem](../3-formalized/not_new_scientific_knowledge/strict-two-group-kernel-abelian-boundary.md)
 - [formalization](../3-formalized/strict-two-group-kernel-abelian-boundary.md)
 - [`PeifferKernelAbelianBoundary.lean`](../../../../formal/GaloisForLFunctions/HTGeometry/PeifferKernelAbelianBoundary.lean)
 

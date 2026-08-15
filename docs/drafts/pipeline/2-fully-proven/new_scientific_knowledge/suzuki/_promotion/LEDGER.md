@@ -8665,3 +8665,71 @@ construction giving no shortcut.
 
 Neither card is blocked by open research in the promotion sense; both are blocked by named,
 buildable Lean objects, two of which (Riemann–von Mangoldt, `>5/12`) are large standalone projects.
+
+## ABD. `(14)`, `(15)`, `(19)` for the literal Gamma wall, and the tail Hardy bridge
+
+```text
+RHTower/WallGeneratorLogCoercivity.lean       (14),(15) the logarithmic floor and its resolvent
+HTGeometry/ResolventSymbolTailDecay.lean      (19) the two surviving amplitudes, quantitatively
+RHTower/SuzukiWallTailAmplitude.lean          the transported amplitude is a Hardy density
+RHTower/SuzukiWallTailSplit.lean              the split at the threshold + finite-sum closure
+```
+
+**The symbol grows like `2 log|x|`, and both digammas are needed to see it.**  The first attempt
+bounded `Re ψ((1+σ)−ix)` below by its value on the real axis — a constant — and so recovered only
+*half* the growth, `Re r ≥ log(2+|x|) − C`.  That is not enough: with `Re r/2 ≥ (1/2)log(2+|x|)` the
+threshold `X_m = C₀e^{max(0,−m)}` yields a floor `m/2 + O(1)`, which is unbounded below as
+`m → −∞`, and the block-uniformity of `(11)` fails.  The repair is the digamma recurrence:
+
+```text
+psi((1+sigma) - ix) = psi(sigma - ix) + (sigma - ix)^{-1},
+Re (sigma - ix)^{-1} = sigma/(sigma^2+x^2) >= 0,
+```
+
+so the upper abscissa is moved into `(0,1]`, where the archimedean coercivity
+`_root_.RHTower.re_digamma_vertical_ge` applies, and *both* digammas contribute a full logarithm:
+
+```text
+Re r(x+i sigma) >= 2 log(2+|x|) - C_sigma,   C_sigma = K(1-sigma) + K(sigma) - 2 EulerGamma.
+```
+
+Now `Re B ≥ log(2+|x|) − C_σ/2 − ‖T‖/2` and the threshold works: beyond `C₀e^{max(0,−m)}` the
+logarithm supplies `max(0,−m)`, and `max(0,−m) + m = max(m,0) ≥ 0` cancels the block position
+**exactly**, leaving the block-free floor `log C₀ − C_σ/2 − ‖T‖/2`.  `exists_threshold_wallFloor`
+turns this around: any prescribed floor `μ₀` is achieved by `C₀ = exp(μ₀ + C_σ/2 + ‖T‖/2)`.  This is
+the precise sense in which the card's `(14)` is a *choice*, not an estimate.
+
+**The branch factor is free.**  `i/(2z)` on the upper shifted line has real part
+`2σ/‖2z‖² ≥ 0` — it can only help, so it never enters a constant.
+
+**`(19)` needs no new inequality, only the symbol jets.**  With `‖C⁻¹‖ ≤ Λ` on the tail and the
+owned jet bounds `‖C'‖ ≤ c₁(1+t)^{-1}`, `‖C''‖ ≤ c₂(1+t)^{-2}` of `(4)`, the algebraic bounds of
+`InverseFamilyDerivative` give at once
+
+```text
+||C^{-1}(C^{-1})'|| <= L^3 c_1 (1+t)^{-1},
+||[C^{-1}(C^{-1})']'|| <= (3 L^4 c_1^2 + L^3 c_2)(1+t)^{-2}.
+```
+
+The first is already square integrable on a ray by itself — the second boundary term of `(18)`
+needs no Laplace argument at all, only `2 > 1`.  Only the *first* boundary term, which does not
+decay, requires the accretive Laplace representation `(21)`–`(22)`.
+
+**The propagator growth is absorbed exactly.**  In the Hardy normalization the surviving integrand
+is `t^{1-p}‖H(t)^{-1}A₂(t)‖ ≤ K₂a·t^{1-p}(1+t)^{p-2}`, and
+
+```text
+t^{1-p}(1+t)^{p-2} <= (1+t)^p t^{-1-p}   iff   t^2 <= (1+t)^2,
+```
+
+so the transported amplitude is dominated by `wallTailDensity p`, whose square is integrable for
+every `p > 1/2`.  The card's three regimes `p<1`, `p=1`, `p>1` never appear.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+**What `(11)` still needs.**  Only the generator equation `(1)` for the literal propagator:
+`H' = iBH` on the shifted line.  Since `H(z) = a(z)·exp(−izT/2)` with
+`a(z) = z^{-1/2}e^{iγz}E(z)`, this is the scalar identity `−i a'/a = r/2 + i/(2z)`, which needs the
+branch `E` to be *differentiable* — a property `E² = gammaRatio` alone does not supply.  So the
+remaining object is a holomorphic branch on the strip together with
+`logDeriv gammaRatio(z) = i(psi(1+iz) + psi(1-iz))`.

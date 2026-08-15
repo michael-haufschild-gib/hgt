@@ -65,6 +65,7 @@ theorem frankensteinRoutePMeyerTateFiniteSourceCell_eq_tailFluxTwoSheetFiniteCel
     frankensteinRoutePMeyerTateFiniteSourceCell pe n =
       frankensteinRoutePTailFluxTwoSheetFiniteCell pe n := by
   simp only [frankensteinRoutePMeyerTateFiniteSourceCell,
+    frankensteinRoutePMeyerTateRawSource,
     deningerGammaSixCofinalMeyerTateCompletedDifferential_primeAtom,
     frankensteinTwoSheetMeyerTateAntiLift,
     frankensteinRoutePTailFluxTwoSheetFiniteCell,
@@ -76,8 +77,13 @@ theorem tendsto_frankensteinRoutePMeyerTateFiniteSourceCell
     (pe : Nat.Primes × ℕ) :
     Tendsto (frankensteinRoutePMeyerTateFiniteSourceCell pe) atTop
       (nhds (frankensteinRoutePTailFluxTwoSheetCell pe)) := by
-  simpa only [frankensteinRoutePMeyerTateFiniteSourceCell_eq_tailFluxTwoSheetFiniteCell]
-    using tendsto_frankensteinRoutePTailFluxTwoSheetFiniteCell pe
+  have hfun :
+      frankensteinRoutePMeyerTateFiniteSourceCell pe =
+        frankensteinRoutePTailFluxTwoSheetFiniteCell pe := by
+    funext n
+    exact frankensteinRoutePMeyerTateFiniteSourceCell_eq_tailFluxTwoSheetFiniteCell pe n
+  rw [hfun]
+  exact tendsto_frankensteinRoutePTailFluxTwoSheetFiniteCell pe
 
 /-- Every finite literal source cell has the exact horizontal physical
 readout of its P-tail coefficient; no finite-stage scalarization occurs. -/
@@ -101,7 +107,7 @@ theorem frankensteinTwoSheetPhysicalTransport_meyerTateFiniteSourceCell_eq_zero_
   rw [frankensteinTwoSheetPhysicalTransport_meyerTateFiniteSourceCell,
     smul_eq_zero, Complex.ofReal_eq_zero,
     deningerGammaSixFixedSoninPhysicalReceiver_eq_zero_iff]
-  simp only [(routePPrimitiveBurnolApertureDefectFlux_pos pe).ne', false_or]
+  simp [(routePPrimitiveBurnolApertureDefectFlux_pos pe).ne']
 
 /-- **Coefficient-faithful, non-equivariant common-carrier alignment.**  At
 one divisor's horizontal grade, the P two-sheet transport and the
@@ -136,7 +142,7 @@ theorem frankensteinPCCMMeyerTateXiGreenPhysicalAlignment_left_eq_zero_iff
     reflectedGaussianHorizonGreenProvenance_apply_eq_zero_iff,
     Complex.ofReal_eq_zero,
     deningerGammaSixFixedSoninPhysicalReceiver_eq_zero_iff]
-  simp only [(routePPrimitiveBurnolApertureDefectFlux_pos pe).ne', false_or]
+  simp only [(routePPrimitiveBurnolApertureDefectFlux_pos pe).ne', or_false]
   have hgrade :
       2 * (q.1 : ℂ).re - 1 = 0 ↔ (q.1 : ℂ).re = 1 / 2 := by
     constructor <;> intro h <;> linarith

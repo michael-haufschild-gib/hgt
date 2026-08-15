@@ -477,3 +477,11 @@ and expose Gelfond--Schneider as the two-logarithm corollary/compatibility theor
   The module is wired into `RHTower.lean`; scratch/source and targeted OLean audits close, and
   `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.  `[OPEN CORE]`:
   full integral component-jet matrix and its Siegel kernel.
+- 2026-08-15 — formalized `BakerGeneralProof.PolynomialAuxiliaryMatrix`: closed-form mixed
+  component jets (binomial lowering/diagonal expansion for the constant direction), integrality of
+  every entry, exact full column cardinality `U * V^n`, finite house control, nonzero zero-jet
+  witness, and unconditional scale-plus-Siegel-kernel existence under the paper’s dimension
+  inequality `S*T^n < U*V^n`.  The source and targeted OLean audit close; the module is wired into
+  `RHTower.lean`; key `#print axioms` audits report only `propext`, `Classical.choice`, and
+  `Quot.sound`.  `[OPEN CORE]`: prove the closed component-jet formula equals the corresponding
+  iterated commuting derivations, then map its kernel rows to analytic initial zeros.

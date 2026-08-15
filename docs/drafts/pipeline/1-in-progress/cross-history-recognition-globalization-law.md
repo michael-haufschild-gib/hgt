@@ -5,7 +5,7 @@
 - **Type:** UNIVERSAL PHYSICS CONJECTURE / NEW-MATHEMATICS TARGET
 - **Parent:** `actuality-creates-future-law.md`
 - **Exact trigger:**
-  `../3-formalized/source-test-partition-universality.md`
+  `../3-formalized/not_new_scientific_knowledge/source-test-partition-universality.md`
 - **Scientific status:**
   `[CONJECTURE] [NOVELTY UNVERIFIED] [MATHEMATICAL OBJECT OPEN]`
   `[FINITE ITEM-6 REALIZATION FAILED] [NO PHYSICAL CLAIM PROVED]`

@@ -357,7 +357,7 @@ horizontal nonintegrability is candidate gravity, and mixed persistent defects a
 matter.
 
 The exact new finite bridge is paper- and Lean-proved in
-[`independent-composition-boundary-record-conservation.md`](../2-fully-proven/not_new_scientific_knowledge/independent-composition-boundary-record-conservation.md).
+[`independent-composition-boundary-record-conservation.md`](../3-formalized/not_new_scientific_knowledge/independent-composition-boundary-record-conservation.md).
 For a faithful pair
 
 \[
@@ -680,7 +680,7 @@ postulates
 [van de Wetering](https://arxiv.org/abs/1801.05798)).
 
 Worse, the internal
-[`source-test-partition-universality.md`](../3-formalized/source-test-partition-universality.md)
+[`source-test-partition-universality.md`](../3-formalized/not_new_scientific_knowledge/source-test-partition-universality.md)
 theorem proves that every desired source identity relation has an exact deterministic exhaustive
 test presentation. Therefore a local fixed point of
 

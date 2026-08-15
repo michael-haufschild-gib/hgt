@@ -16,8 +16,10 @@ by `P(0)=1`: those facts contain no radius or norm control.
 ## Gates
 
 - [x] 0 -> 1 in-progress: dependency-closed paper proof and source-checked primitive APIs
-- [ ] 1 -> 2 fully-proven: full generic polynomial proof, including factorization transport
-- [ ] 2 -> 3 formalized: generic finite-order theorem plus actual Frobenius specialization
+- [x] 1 -> 2 fully-proven: full generic polynomial proof, including factorization transport
+- [ ] 2 -> 3 formalized: generic, Frobenius, and canonical finite-place leaves are
+  kernel-checked, but the repository-wide formal lint gate remains blocked by unrelated existing
+  violations
 - [ ] 3 -> 4 publication-ready: standalone proof and Lean certificate
 
 ## Exact generic theorem
@@ -28,8 +30,8 @@ For a finite-dimensional complex vector space `W`, `A : End_C(W)`, and natural `
 ```text
 |z| < 1  ->  P_A(z) != 0,
 
-|z| <= (2(m+1))^(-1)  ->
-  |P_A(z)^(-1) - 1| <= 2^(m+1) (m+1) |z|.
+|z| <= 1/2  ->
+  |P_A(z)^(-1) - 1| <= 4^m |z|.
 ```
 
 The Frobenius specialization uses `W = V^(I_v)`, `A = rho^I(Frob_v)`, and
@@ -113,3 +115,12 @@ is needed to certify the full unit-disk root-free statement and an explicit unif
   roots, not a continuity assumption.  The leaf source-checks and target-builds; its axiom audit
   reports only `propext`, `Classical.choice`, and `Quot.sound`.  This still does not bound
   `|P_A(z)^(-1)-1|` linearly, so the compact M-test bridge remains open.
+- 2026-08-15 -- completed the generic linear difference estimate
+  `finiteOrder_charpoly_reverse_eval_inv_sub_one_norm_le` by a direct root-multiset induction:
+  on `|z| ≤ 1/2`, `|P_A(z)^(-1)-1| ≤ 4^dim(W)|z|`.  It is transported first to genuine
+  Frobenius--inertia factors and then to canonical number-field finite places, where for
+  `1 ≤ Re(s)` it gives the uniform majorant
+  `4^dim(V) N(v)^(-Re(s))`.  `ArtinFiniteOrderLocalPolynomialBound` and
+  `ArtinNumberFieldFinitePlaceNonvanishing` source-check and target-build; the ten-theorem
+  axiom audit is standard-foundations-only.  The remaining task is the compact M-test and not a
+  local-factor estimate.

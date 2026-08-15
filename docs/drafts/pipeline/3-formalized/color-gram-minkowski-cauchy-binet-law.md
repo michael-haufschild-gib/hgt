@@ -5,7 +5,7 @@
 - **Type:** THEOREM
 - **Status:** `[LEAN-PROVEN] [REDISCOVERED] [BRIDGE]`
 - **Physical parent:** `../1-in-progress/color-blind-event-gram-spacetime-law.md`
-- **Paper parent:** `../2-fully-proven/not_new_scientific_knowledge/color-gram-minkowski-orbit-theorem.md`
+- **Paper parent:** `not_new_scientific_knowledge/color-gram-minkowski-orbit-theorem.md`
 - **Lean:** `formal/GaloisForLFunctions/HTGeometry/ColorGramMinkowskiCone.lean`
 
 ## Exact theorem

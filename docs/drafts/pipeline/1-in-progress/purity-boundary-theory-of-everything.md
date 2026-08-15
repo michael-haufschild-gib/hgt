@@ -273,7 +273,7 @@ Thus the local normal four-carrier is not an arbitrary complement at quadratic o
 full image of a forced colour-cancelling cross-contraction. The result is proved on paper and
 unconditionally in
 `formal/GaloisForLFunctions/HTGeometry/PureSpinorColorNormalSelection.lean`, with certificates in
-`../2-fully-proven/not_new_scientific_knowledge/pure-spinor-color-cancellation-normal-selection.md`
+`../3-formalized/not_new_scientific_knowledge/pure-spinor-color-cancellation-normal-selection.md`
 and
 `../3-formalized/not_new_scientific_knowledge/pure-spinor-color-cancellation-normal-selection.md`.
 

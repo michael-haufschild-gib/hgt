@@ -2553,7 +2553,7 @@ meaning of independent joint composition.
 
 ### Exact finite shadow now proved
 
-[`independent-composition-boundary-record-conservation.md`](../2-fully-proven/not_new_scientific_knowledge/independent-composition-boundary-record-conservation.md)
+[`independent-composition-boundary-record-conservation.md`](../3-formalized/not_new_scientific_knowledge/independent-composition-boundary-record-conservation.md)
 proves the following unconditional finite-dimensional law.
 
 For
@@ -2899,7 +2899,7 @@ Canonical active card:
 
 ### Exact killing theorem
 
-[`source-test-partition-universality.md`](../3-formalized/source-test-partition-universality.md)
+[`source-test-partition-universality.md`](../3-formalized/not_new_scientific_knowledge/source-test-partition-universality.md)
 proves unconditionally that every equivalence relation \(s\) on every source type \(A\) is exactly
 the observational equivalence of a deterministic, exhaustive source-test presentation.
 

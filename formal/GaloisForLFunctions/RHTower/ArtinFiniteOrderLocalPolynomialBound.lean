@@ -20,6 +20,8 @@ universe u v w x
 
 namespace GaloisForLFunctions
 
+open scoped Pointwise
+
 variable {W : Type u} [AddCommGroup W] [Module ℂ W] [FiniteDimensional ℂ W]
 
 section PolynomialFactorization
@@ -343,6 +345,41 @@ theorem frobeniusInertiaEulerPolynomial_eval_norm_inv_le_of_norm_lt_one_finrank
       apply pow_le_pow_right₀
       · exact (one_le_inv₀ (sub_pos.mpr hz)).mpr (sub_le_self _ (norm_nonneg _))
       · exact Submodule.finrank_le _
+
+/-- On the half unit disk, an actual Frobenius--inertia Euler reciprocal differs from one by a
+finite-image bound with its precise invariant dimension. -/
+theorem frobeniusInertiaEulerPolynomial_eval_inv_sub_one_norm_le_of_norm_le_half
+    (Q : Ideal S) [Q.IsPrime] [Finite (S ⧸ Q)]
+    (ρ : Representation ℂ G V) {z : ℂ} (hz : ‖z‖ ≤ (2 : ℝ)⁻¹) :
+    ‖((frobeniusInertiaEulerPolynomial (R := R) Q ρ).eval z)⁻¹ - 1‖ ≤
+      (4 : ℝ) ^ Module.finrank ℂ
+        (Representation.invariants
+          ((ρ.comp (MulAction.stabilizer G Q).subtype).comp
+            (Q.inertia (MulAction.stabilizer G Q)).subtype)) * ‖z‖ := by
+  rw [frobeniusInertiaEulerPolynomial_eq_action]
+  exact finiteOrder_charpoly_reverse_eval_inv_sub_one_norm_le
+    (frobeniusInertiaAction (R := R) Q ρ) Nat.card_pos.ne'
+    (frobeniusInertiaAction_pow_natCard_eq_one (R := R) Q ρ) hz
+
+/-- A uniform half-unit-disk difference bound for actual Frobenius--inertia Euler reciprocals,
+depending only on the ambient representation dimension. -/
+theorem frobeniusInertiaEulerPolynomial_eval_inv_sub_one_norm_le_of_norm_le_half_finrank
+    (Q : Ideal S) [Q.IsPrime] [Finite (S ⧸ Q)]
+    (ρ : Representation ℂ G V) {z : ℂ} (hz : ‖z‖ ≤ (2 : ℝ)⁻¹) :
+    ‖((frobeniusInertiaEulerPolynomial (R := R) Q ρ).eval z)⁻¹ - 1‖ ≤
+      (4 : ℝ) ^ Module.finrank ℂ V * ‖z‖ := by
+  calc
+    ‖((frobeniusInertiaEulerPolynomial (R := R) Q ρ).eval z)⁻¹ - 1‖ ≤
+        (4 : ℝ) ^ Module.finrank ℂ
+          (Representation.invariants
+            ((ρ.comp (MulAction.stabilizer G Q).subtype).comp
+              (Q.inertia (MulAction.stabilizer G Q)).subtype)) * ‖z‖ :=
+      frobeniusInertiaEulerPolynomial_eval_inv_sub_one_norm_le_of_norm_le_half
+        (R := R) Q ρ hz
+    _ ≤ (4 : ℝ) ^ Module.finrank ℂ V * ‖z‖ := by
+      apply mul_le_mul_of_nonneg_right
+      · exact pow_le_pow_right₀ (by norm_num) (Submodule.finrank_le _)
+      · exact norm_nonneg _
 
 end ArithmeticSpecialization
 

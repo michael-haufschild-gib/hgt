@@ -15,7 +15,7 @@ The identity is Cauchy's formula after the algebraic split
 
 * `HTGeometry.SliceHolomorphic`, `HTGeometry.wCoeff`, `HTGeometry.wDiff`;
 * `HTGeometry.wDiff_mul`;
-* `HTGeometry.weierstrass_division`;
+* `HTGeometry.weierstrass_division_divQuot`;
 * `HTGeometry.divRemCoeff_top_eq_zero`, `HTGeometry.divRem_eq_sum_range`.
 -/
 
@@ -36,7 +36,7 @@ noncomputable def wCoeff (f : (Fin (n + 1) → ℂ) → ℂ) (t : ℝ) (k j : �
   (-1) ^ (k - j) * (sliceRoots f t y).esymm (k - j)
 
 /-- The Weierstrass polynomial written in its coefficients. -/
-theorem sliceWeierstrass_eq_sum {f : (Fin (n + 1) → ℂ) → ℂ} {t : ℝ} {y : Fin n → ℂ} {k : ℕ}
+theorem sliceWeierstrass_eq_sum_wCoeff {f : (Fin (n + 1) → ℂ) → ℂ} {t : ℝ} {y : Fin n → ℂ} {k : ℕ}
     (hcard : Multiset.card (sliceRoots f t y) = k) (z : ℂ) :
     sliceWeierstrass f t (Fin.cons z y) = ∑ j ∈ Finset.range (k + 1), wCoeff f t k j y * z ^ j := by
   rw [sliceWeierstrass_cons, multisetLinearProd_eq_sum, hcard]
@@ -54,7 +54,7 @@ theorem wDiff_mul {f : (Fin (n + 1) → ℂ) → ℂ} {t : ℝ} {y : Fin n → �
     (hcard : Multiset.card (sliceRoots f t y) = k) (ζ z : ℂ) :
     wDiff f t k y ζ z * (ζ - z)
       = sliceWeierstrass f t (Fin.cons ζ y) - sliceWeierstrass f t (Fin.cons z y) := by
-  rw [sliceWeierstrass_eq_sum hcard ζ, sliceWeierstrass_eq_sum hcard z, wDiff]
+  rw [sliceWeierstrass_eq_sum_wCoeff hcard ζ, sliceWeierstrass_eq_sum_wCoeff hcard z, wDiff]
   exact (GaloisForLFunctions.HTGeometry.sum_pow_sub_sum_pow_eq
     (fun j => wCoeff f t k j y) (k + 1) ζ z).symm
 
@@ -97,7 +97,7 @@ theorem divRemCoeff_top_eq_zero (f : (Fin (n + 1) → ℂ) → ℂ) (t : ℝ) (g
 /-- **Weierstrass' division theorem.**  A holomorphic function is the Weierstrass polynomial of a
 slice times a holomorphic quotient, plus a remainder that is a polynomial in the distinguished
 variable of degree below that of the polynomial. -/
-theorem weierstrass_division {f g : (Fin (n + 1) → ℂ) → ℂ} {t : ℝ} (ht : 0 < t)
+theorem weierstrass_division_divQuot {f g : (Fin (n + 1) → ℂ) → ℂ} {t : ℝ} (ht : 0 < t)
     {y : Fin n → ℂ} (hy : SliceAdmissible f t y) (hg : SliceHolomorphic g t y)
     {k : ℕ} (hcard : Multiset.card (sliceRoots f t y) = k) {z : ℂ} (hz : ‖z‖ < t) :
     g (Fin.cons z y)

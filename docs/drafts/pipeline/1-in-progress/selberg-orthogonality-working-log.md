@@ -15573,3 +15573,68 @@ These modules remove three semantic/infrastructure gaps.  The remaining decisive
 prime-sensitive quadratic trace (Rankin--Selberg-like object or equivalent positivity); neither
 ordinary convolution nor K--P additive-twist continuation supplies it.  Therefore C1/C2 remain
 unproved and undisproved in the full Selberg class.
+
+---
+
+## 252. Degree-one C2 reduction and exact boundary wall (2026-08-15)
+
+### 252.1 [LEAN-PROVED] finite quotient-character reduction
+
+For characters represented at one selected common level,
+`dirichletCharacterPrimeHarmonicCross_eq_quotient` proves the exact cutoff
+identity
+```
+Σ_{p≤N} χ(p) overline(ψ(p))/p = Σ_{p≤N} (χ ψ⁻¹)(p)/p.
+```
+The quotient is trivial exactly when the two selected-level characters are
+equal.  This includes level-dividing primes correctly (both sides vanish).
+
+### 252.2 Conjecture → fail/pivot
+
+**Conjecture.** Existing Dirichlet `L` infrastructure immediately turns the
+nontrivial quotient into the C2 `O(1)` bound.
+
+**Failure.** `LFunction_apply_one_ne_zero` and an Euler identity on `Re s>1`
+do not yield convergence of the *ordered* boundary sum `Σ_{p≤N} η(p)/p`.
+Using `Summable` would be false: it asks for unordered/absolute convergence.
+
+**Pivot / missing theorem.** Formalize an unconditional Mertens theorem in
+arithmetic progressions (or an equivalent boundary Tauberian theorem) that
+uses the nonvanishing at `1` and controls the ordered prime reciprocal sum.
+Classical theory proves this degree-one statement; the dependency-closed Lean
+bridge is absent.  This is a precise formalization frontier, not a proof of
+full Selberg C2.
+
+---
+
+## 253. Ordinary product closure confirms the tensor gap (2026-08-15)
+
+### 253.1 [LEAN-PROVED] full carrier closure
+
+`SelbergClass.mul` now constructs the ordinary product of two full carriers:
+Dirichlet-convolution coefficients, additive Euler-log coefficients, multiplied
+continuation values, concatenated Gamma data, and multiplied root number.  The
+Ramanujan field is discharged by the unconditional divisor bound.  This is an
+actual full-carrier closure theorem, not merely a raw arithmetic-function fact.
+
+### 253.2 Failed implication, now structurally explicit
+
+At a prime, ordinary convolution has the first-order law
+```
+a_{F·G}(p) = a_F(p) + a_G(p),
+```
+whereas C2 needs the second-order local covariance
+`a_F(p) overline(a_G(p))`.  Thus ordinary product closure cannot be renamed a
+Rankin--Selberg construction.  The same distinction explains why the
+additive-twist/Barnes machinery can propagate analytic data without creating
+the prime-pair trace required by C1/C2.
+
+### 253.3 Universal-shadow working conjecture (unproved)
+
+The correct missing primitive is a prime-local tensor/Hadamard functor on full
+Selberg data whose local Euler logarithm has prime coefficient
+`a_F(p) overline(a_G(p))`, together with an analytic continuation and a
+positive trace theorem.  Rankin--Selberg functoriality is its automorphic
+shadow; K--P additive tensors, Euler-log linearization, and ordinary products
+are lower-order shadows.  A construction or a counterexample to this
+primitive—not more ordinary product algebra—is the genuine route to C1/C2.

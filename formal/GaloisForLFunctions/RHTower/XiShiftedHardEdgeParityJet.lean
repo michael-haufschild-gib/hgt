@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.XiShiftedHardEdgeDensityMeasure
+import GaloisForLFunctions.HTGeometry.PartialFractionIndependence
 
 /-!
 # The divided-jet Gram law of the hard-edge form and its parity companion
@@ -432,10 +433,11 @@ theorem linearIndependent_routeUJetDescendant (r : ℝ) (G : ℝ → ℝ) (m : �
 
 /-- Two independent families placed in complementary factors of a product stay independent. -/
 theorem linearIndependent_prod_blocks {M N : Type*} [AddCommGroup M] [Module ℝ M]
-    [AddCommGroup N] [Module ℝ N] {p q : ℕ} {a : Fin p → M} {b : Fin q → N}
+    [AddCommGroup N] [Module ℝ N] {ι κ : Type*} [Fintype ι] [Fintype κ]
+    {a : ι → M} {b : κ → N}
     (ha : LinearIndependent ℝ a) (hb : LinearIndependent ℝ b) :
     LinearIndependent ℝ
-      (Sum.elim (fun i : Fin p => (a i, (0 : N))) (fun j : Fin q => ((0 : M), b j))) := by
+      (Sum.elim (fun i : ι => (a i, (0 : N))) (fun j : κ => ((0 : M), b j))) := by
   classical
   rw [Fintype.linearIndependent_iff] at ha hb ⊢
   intro g hg i
@@ -479,6 +481,175 @@ theorem linearIndependent_routeUParityDirections (r : ℝ) (G : ℝ → ℝ) (m 
       exact Fin.ext (by omega)
     exact hbase.comp (fun j : Fin (m - 1) => (⟨(j : ℕ) + 1, by omega⟩ : Fin (m + 1))) hinj
   exact linearIndependent_prod_blocks heven hodd
+
+/-! ## The multi-root parity count -/
+
+section MultiRoot
+
+variable {k : ℕ}
+
+theorem multiJetDescendant_eq_routeUJetDescendant (r : Fin k → ℝ) (m : Fin k → ℕ) (G : ℝ → ℝ)
+    (i : Fin k) (p : ℕ) :
+    multiJetDescendant r m G i p
+      = routeUJetDescendant (m i) (r i) (multiRegular r m G i) p := rfl
+
+/-- The `1 + 2E` parity directions of a state with root set `r` and multiplicities `m`: the state
+itself, its `E = ∑ (m i - 1)` nonterminal divided principal parts, and their odd twins. -/
+def routeUParityFamily (r : Fin k → ℝ) (m : Fin k → ℕ) (G : ℝ → ℝ) :
+    (Unit ⊕ ((i : Fin k) × Fin (m i - 1))) ⊕ ((i : Fin k) × Fin (m i - 1)) →
+      (ℝ → ℝ) × (ℝ → ℝ) :=
+  Sum.elim (fun x => (multiJetEvenFamily r m G x, (0 : ℝ → ℝ)))
+    (fun y => ((0 : ℝ → ℝ), multiJetDescendant r m G y.1 ((y.2 : ℕ) + 1)))
+
+/-- **(HPJI.11) The parity directions are independent.**  The rational principal parts at distinct
+roots are independent, and the even and odd sectors are independent of each other. -/
+theorem linearIndependent_routeUParityFamily {r : Fin k → ℝ} (hr : Function.Injective r)
+    (m : Fin k → ℕ) (G : ℝ → ℝ) {S : Set ℝ} (hS : S.Infinite) (hG : ∀ u ∈ S, G u ≠ 0) :
+    LinearIndependent ℝ (routeUParityFamily r m G) := by
+  have heven := linearIndependent_multiJetEvenFamily hr m G hS hG
+  have hodd : LinearIndependent ℝ
+      (fun y : ((i : Fin k) × Fin (m i - 1)) =>
+        multiJetDescendant r m G y.1 ((y.2 : ℕ) + 1)) :=
+    heven.comp Sum.inr Sum.inr_injective
+  exact linearIndependent_prod_blocks heven hodd
+
+/-- **(HPJI.11) The parity directions span a space of dimension `1 + 2E`.** -/
+theorem finrank_routeUParityFamily {r : Fin k → ℝ} (hr : Function.Injective r)
+    (m : Fin k → ℕ) (G : ℝ → ℝ) {S : Set ℝ} (hS : S.Infinite) (hG : ∀ u ∈ S, G u ≠ 0) :
+    Module.finrank ℝ (Submodule.span ℝ (Set.range (routeUParityFamily r m G)))
+      = 1 + 2 * ∑ i : Fin k, (m i - 1) := by
+  rw [finrank_span_eq_card (linearIndependent_routeUParityFamily hr m G hS hG)]
+  simp only [Fintype.card_sum, Fintype.card_sigma, Fintype.card_fin, Fintype.card_unit]
+  ring
+
+/-- **Every even parity direction has zero even energy.**  The state itself is the null state, and
+each nonterminal divided principal part is annihilated by the divided-jet Gram law. -/
+theorem routeUParityFamily_even_diag_eq_zero (σ : ℝ) (r : Fin k → ℝ) (m : Fin k → ℕ) (G : ℝ → ℝ)
+    (hnull : routeUHardEdgeEvenForm σ (multiJetBase r m G) (multiJetBase r m G) = 0)
+    (hzero : ∀ i : Fin k, ∀ j : ℕ, 1 ≤ j → j < 2 * m i →
+      routeUJetMoment σ (multiRegular r m G i) (r i) (2 * m i - j) = 0)
+    (x : Unit ⊕ ((i : Fin k) × Fin (m i - 1))) :
+    routeUHardEdgeEvenForm σ (multiJetEvenFamily r m G x) (multiJetEvenFamily r m G x) = 0 := by
+  rcases x with ⟨⟩ | ⟨i, j⟩
+  · exact hnull
+  · have hjlt := j.isLt
+    exact routeUJetDescendant_diag_eq_zero σ (multiRegular r m G i) (r i) (m i) ((j : ℕ) + 1)
+      (by omega) (by omega) (hzero i)
+
+/-- **(HPJI.10) Every odd parity direction has zero odd energy.**  Multiplication by the coordinate
+lands in the span of the descendant and its predecessor, both of which annihilate the even form. -/
+theorem routeUParityFamily_odd_diag_eq_zero (σ : ℝ) (r : Fin k → ℝ) (m : Fin k → ℕ) (G : ℝ → ℝ)
+    (hzero : ∀ i : Fin k, ∀ j : ℕ, 1 ≤ j → j < 2 * m i →
+      routeUJetMoment σ (multiRegular r m G i) (r i) (2 * m i - j) = 0)
+    (i : Fin k) (j : Fin (m i - 1))
+    (h1 : IntegrableOn (fun u : ℝ =>
+      r i * (multiJetDescendant r m G i ((j : ℕ) + 1) u
+          * multiJetDescendant r m G i ((j : ℕ) + 1) u)
+        * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+    (h2 : IntegrableOn (fun u : ℝ =>
+      multiJetDescendant r m G i (j : ℕ) u * multiJetDescendant r m G i ((j : ℕ) + 1) u
+        * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0)) :
+    routeUHardEdgeOddForm σ (multiJetDescendant r m G i ((j : ℕ) + 1))
+      (multiJetDescendant r m G i ((j : ℕ) + 1)) = 0 := by
+  have hjlt := j.isLt
+  have hrad : routeUHardEdgeEvenForm σ
+      (routeUJetDescendant (m i) (r i) (multiRegular r m G i) ((j : ℕ) + 1))
+      (routeUJetDescendant (m i) (r i) (multiRegular r m G i) ((j : ℕ) + 1)) = 0 := by
+    rw [routeUEvenForm_descendant]
+    have hidx : (m i - ((j : ℕ) + 1)) + (m i - ((j : ℕ) + 1))
+        = 2 * m i - 2 * ((j : ℕ) + 1) := by omega
+    rw [hidx]
+    exact hzero i (2 * ((j : ℕ) + 1)) (by omega) (by omega)
+  have hrad' : routeUHardEdgeEvenForm σ
+      (routeUJetDescendant (m i) (r i) (multiRegular r m G i) ((j : ℕ) + 1 - 1))
+      (routeUJetDescendant (m i) (r i) (multiRegular r m G i) ((j : ℕ) + 1)) = 0 := by
+    rw [routeUEvenForm_descendant]
+    have hidx : (m i - ((j : ℕ) + 1 - 1)) + (m i - ((j : ℕ) + 1))
+        = 2 * m i - (2 * (j : ℕ) + 1) := by omega
+    rw [hidx]
+    exact hzero i (2 * (j : ℕ) + 1) (by omega) (by omega)
+  exact routeUOddForm_of_radical σ (multiRegular r m G i) (r i) (m i) ((j : ℕ) + 1)
+    (routeUJetDescendant (m i) (r i) (multiRegular r m G i) ((j : ℕ) + 1))
+    (by omega) (by omega) hrad hrad' h1 h2
+
+/-! ## The sharpened count with the terminal alternatives -/
+
+/-- The parity directions selected by an even order set `A` and an odd order set `B`. -/
+def routeUParitySubfamily (r : Fin k → ℝ) (m : Fin k → ℕ) (G : ℝ → ℝ) (A B : Fin k → Finset ℕ) :
+    (Unit ⊕ ((i : Fin k) × {p // p ∈ A i})) ⊕ ((i : Fin k) × {p // p ∈ B i}) →
+      (ℝ → ℝ) × (ℝ → ℝ) :=
+  Sum.elim (fun x => (multiJetSubfamily r m G A x, (0 : ℝ → ℝ)))
+    (fun y => ((0 : ℝ → ℝ), multiJetDescendant r m G y.1 (y.2 : ℕ)))
+
+theorem linearIndependent_routeUParitySubfamily {r : Fin k → ℝ} (hr : Function.Injective r)
+    (m : Fin k → ℕ) (G : ℝ → ℝ) (A B : Fin k → Finset ℕ)
+    (hA : ∀ i, A i ⊆ Finset.Icc 1 (m i)) (hB : ∀ i, B i ⊆ Finset.Icc 1 (m i))
+    {S : Set ℝ} (hS : S.Infinite) (hG : ∀ u ∈ S, G u ≠ 0) :
+    LinearIndependent ℝ (routeUParitySubfamily r m G A B) := by
+  have heven := linearIndependent_multiJetSubfamily hr m G A hA hS hG
+  have hodd : LinearIndependent ℝ
+      (fun y : ((i : Fin k) × {p // p ∈ B i}) => multiJetDescendant r m G y.1 (y.2 : ℕ)) :=
+    (linearIndependent_multiJetSubfamily hr m G B hB hS hG).comp Sum.inr Sum.inr_injective
+  exact linearIndependent_prod_blocks heven hodd
+
+theorem card_Icc_union_terminal (n : ℕ) (hn : 1 ≤ n) (b : Prop) [Decidable b] :
+    (Finset.Icc 1 (n - 1) ∪ (if b then {n} else ∅)).card = (n - 1) + (if b then 1 else 0) := by
+  by_cases hb : b
+  · rw [if_pos hb, if_pos hb,
+      Finset.card_union_of_disjoint
+        (by simp only [Finset.disjoint_singleton_right, Finset.mem_Icc]; omega),
+      Nat.card_Icc, Finset.card_singleton]
+    omega
+  · rw [if_neg hb, if_neg hb, Finset.union_empty, Nat.card_Icc]
+    omega
+
+theorem sum_ite_mem_card {k : ℕ} (Z : Finset (Fin k)) :
+    ∑ i : Fin k, (if i ∈ Z then 1 else 0) = Z.card := by
+  rw [Finset.sum_ite_mem, Finset.univ_inter, Finset.sum_const, smul_eq_mul, mul_one]
+
+/-- **(HPJI.12) The sharpened finite-set dimension law.**  `Z` collects the roots whose terminal
+mass vanishes — both terminal descendants are then zero-energy — and `Z₀` collects the roots that
+are themselves zero with positive terminal mass, where only the terminal odd descendant is.  The
+selected parity directions are independent and span a space of dimension
+`1 + 2E + 2|Z| + |Z₀|`. -/
+theorem finrank_routeUParityTerminalFamily {r : Fin k → ℝ} (hr : Function.Injective r)
+    (m : Fin k → ℕ) (hm : ∀ i, 1 ≤ m i) (G : ℝ → ℝ)
+    {S : Set ℝ} (hS : S.Infinite) (hG : ∀ u ∈ S, G u ≠ 0)
+    (Z Z₀ : Finset (Fin k)) (hdisj : Disjoint Z Z₀) :
+    Module.finrank ℝ (Submodule.span ℝ (Set.range (routeUParitySubfamily r m G
+        (fun i => Finset.Icc 1 (m i - 1) ∪ (if i ∈ Z then {m i} else ∅))
+        (fun i => Finset.Icc 1 (m i - 1) ∪ (if i ∈ Z ∪ Z₀ then {m i} else ∅)))))
+      = 1 + 2 * (∑ i : Fin k, (m i - 1)) + 2 * Z.card + Z₀.card := by
+  have hsub : ∀ (W : Finset (Fin k)) (i : Fin k),
+      Finset.Icc 1 (m i - 1) ∪ (if i ∈ W then {m i} else ∅) ⊆ Finset.Icc 1 (m i) := by
+    intro W i
+    refine Finset.union_subset (Finset.Icc_subset_Icc_right (Nat.sub_le (m i) 1)) ?_
+    by_cases hi : i ∈ W
+    · rw [if_pos hi]
+      simp only [Finset.singleton_subset_iff, Finset.mem_Icc]
+      exact ⟨hm i, le_refl _⟩
+    · rw [if_neg hi]
+      exact Finset.empty_subset _
+  have hAsum : ∑ i : Fin k,
+      (Finset.Icc 1 (m i - 1) ∪ (if i ∈ Z then ({m i} : Finset ℕ) else ∅)).card
+        = (∑ i : Fin k, (m i - 1)) + Z.card := by
+    rw [Finset.sum_congr rfl fun i (_ : i ∈ Finset.univ) =>
+      card_Icc_union_terminal (m i) (hm i) (i ∈ Z), Finset.sum_add_distrib, sum_ite_mem_card]
+  have hBsum : ∑ i : Fin k,
+      (Finset.Icc 1 (m i - 1) ∪ (if i ∈ Z ∪ Z₀ then ({m i} : Finset ℕ) else ∅)).card
+        = (∑ i : Fin k, (m i - 1)) + (Z.card + Z₀.card) := by
+    rw [Finset.sum_congr rfl fun i (_ : i ∈ Finset.univ) =>
+      card_Icc_union_terminal (m i) (hm i) (i ∈ Z ∪ Z₀), Finset.sum_add_distrib,
+      sum_ite_mem_card, Finset.card_union_of_disjoint hdisj]
+  rw [finrank_span_eq_card (linearIndependent_routeUParitySubfamily hr m G _ _
+    (hsub Z) (hsub (Z ∪ Z₀)) hS hG)]
+  rw [Fintype.card_sum, Fintype.card_sum, Fintype.card_unit, Fintype.card_sigma,
+    Fintype.card_sigma]
+  simp only [Fintype.card_coe]
+  rw [hAsum, hBsum]
+  ring
+
+end MultiRoot
 
 end RHTower
 

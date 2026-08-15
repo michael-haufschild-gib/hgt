@@ -3,7 +3,7 @@
 - **ID:** monomial-tail-gate-height-linear-no-go
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper) / route guardrail
-- **Source:** `finite-degree-shifted-hankel-tail-stability.md`;
+- **Source:** `../../3-formalized/not_new_scientific_knowledge/finite-degree-shifted-hankel-tail-stability.md`;
   `gamma-tail-law-shifted-square-tests.md`
 - **Statement:** The coefficient-norm finite-degree tail gate cannot prove a
   height-linear determinant range. In the monomial basis, the verified bulk
@@ -21,7 +21,7 @@ with `0<x<=R<1`, and let
 `B_d=[L_{i+j+1}]_{i,j=0}^d`.
 
 Let a remaining tail have absolute moment bound `eta_1`, so any Frobenius or
-row-sum tail bound in `finite-degree-shifted-hankel-tail-stability.md` satisfies
+row-sum tail bound in `../../3-formalized/not_new_scientific_knowledge/finite-degree-shifted-hankel-tail-stability.md` satisfies
 
 `F_d(eta)>=eta_1` and `G_d(eta)>=eta_1`.
 
@@ -72,7 +72,7 @@ L_{2d+1} = sum_x M_x x^(2d+1)
 
 Also `F_d(eta)>=eta_1` and `G_d(eta)>=eta_1`, because the `(0,0)` tail entry is
 bounded by `eta_1`. Therefore either sufficient condition from
-`finite-degree-shifted-hankel-tail-stability.md` implies
+`../../3-formalized/not_new_scientific_knowledge/finite-degree-shifted-hankel-tail-stability.md` implies
 
 `eta_1 < lambda_min(B_d) <= L_1 R^(2d)`.
 
@@ -90,7 +90,7 @@ which is the stated logarithmic restriction on `d`.
 ## Consequence For The RH Route
 
 This theorem kills a false repair of the finite-range discriminant claim. The
-matrix gate in `finite-degree-shifted-hankel-tail-stability.md` is a valid
+matrix gate in `../../3-formalized/not_new_scientific_knowledge/finite-degree-shifted-hankel-tail-stability.md` is a valid
 sufficient condition, but in the monomial coefficient norm it is much too crude
 to prove a range comparable to the RH verification height.
 
