@@ -105,5 +105,5 @@ critical line. This module does not assume that boundary membership or estimate.
 ## Verification
 
 - direct `lake env lean` on leaf: pass
-- targeted leaf build: pending final audit
-- declaration axiom audit: pending final audit
+- targeted leaf build: pass
+- declaration axiom audit: only `propext`, `Classical.choice`, and `Quot.sound`

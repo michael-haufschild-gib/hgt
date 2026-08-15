@@ -193,7 +193,8 @@ theorem ccmGuinandWeilArchimedeanDiagonalFirstJet_limit
       (nhds (1 / 2 - 1 / (2 * a))) := by
   have hlimit := ccmGuinandWeilArchimedeanFirstJet_limit
     (hasDerivAt_ccmGuinandWeilDiagonalLogTest_zero ha mode)
-  convert hlimit using 1 <;> simp [ccmGuinandWeilDiagonalLogTest]
+  convert hlimit using 1
+  all_goals simp [ccmGuinandWeilDiagonalLogTest]
   field_simp [ha.ne']
   ring
 

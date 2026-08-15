@@ -3,63 +3,61 @@
 Companion to `nsk-toplevel-stage3-sweep`.
 
 ## CLOSED this session
-- `halasz-reciprocal-coarea-optimality-law` → 3-formalized
-  (`RHTower/ReciprocalCoareaOptimality.lean`, `RHTower/ReciprocalCoareaEnergy.lean`).
-- `route-e-source-faithful-euler-tilt-unit-shell-law` → 3-formalized.  Final pieces:
-  `RHTower/EulerTiltCharacteristic.lean` ((24) `eulerTiltCharacteristic_eq`, (25)
-  `abs_two_log_norm_add_euler_le`, `primeRpowSum`, `abs_primeRpowSum_sub_logLog_le`),
-  `RHTower/EulerTiltAmplitude.lean` (`quadraticHead_le`, `harmonicTail_le`,
-  `abs_primeCosineDefect_le_const`, `exists_bound_primeCosineDefect`, **(14)**
-  `exists_bound_log_norm_eulerTiltCharacteristic`), `RHTower/TerminalPrimeBand.lean` ((23)
-  `terminalBandMass_le`, `tendsto_terminalBandMass`), `RHTower/RouteESaddleLowTilt.lean` ((20) for
-  every σ ∈ (0,1)).
+- `halasz-reciprocal-coarea-optimality-law` → 3-formalized.
+- `route-e-source-faithful-euler-tilt-unit-shell-law` → 3-formalized (modules
+  EulerTiltCharacteristic / EulerTiltAmplitude / TerminalPrimeBand / RouteESaddleLowTilt).
 
 ## IN PROGRESS: real-twist-zeta-deficit-transfer-law
-Done (compiling, wired into RHTower.lean, axiom-clean):
-- `RHTower/PretentiousDistance.lean` — `unitDiskDist`, `sqrt_unitDiskDist_triangle`,
-  `sqrt_sum_le_of_sqrt_le` (Minkowski over a Finset), `pretentiousDistSq`,
-  `sqrt_pretentiousDistSq_triangle`, `primeChar`, `pretentiousDistSq_primeChar`,
-  `pretentiousDistSq_real_reflect` (Z9), `pretentiousDistSq_primeChar_le_four_mul` (**Z10**).
-- `RHTower/ZetaEulerLogPrimeSum.lean` — `zetaLinePoint`, `log_norm_riemannZeta_eq_re_eulerLog`
-  (via corpus `exp_canonicalEulerLogZeta_eq_riemannZeta`), `primeCosTsum`,
-  `norm_log_one_sub_sub_self_le`, `abs_re_neg_log_one_sub_sub_re_le`,
-  **`abs_re_eulerLog_sub_primeCosTsum_le`** (≤ invSquareTailConst).
+All of the following compile, are wired into `RHTower.lean`, and audit
+`[propext, Classical.choice, Quot.sound]`:
+- `RHTower/PretentiousDistance.lean` — **thin wrapper over the corpus distance layer**
+  (`Sieve/DistanceTriangle.lean` has `mulDistSqPair`, `charFn`, `conj_charFn`;
+  `Sieve/DistanceDiscTriangle.lean` has `sqrt_mulDistSqPair_triangle_disc`,
+  `mulDistSqPair_nonneg_disc`, `sqrt_one_sub_re_triangle`, `sqrt_sum_sq_add_le`).
+  New content only: `pretentiousDistSq_primeChar`, `pretentiousDistSq_real_reflect` (Z9),
+  `pretentiousDistSq_primeChar_le_four_mul` (**Z10**).
+- `RHTower/ZetaEulerLogPrimeSum.lean` — `zetaLinePoint`, `log_norm_riemannZeta_eq_re_eulerLog`,
+  `primeCosTsum`, `abs_re_eulerLog_sub_primeCosTsum_le`.
 - `RHTower/ZetaOneLineDeficit.lean` — `primeRpowCoeff`/`primeRpowLogCoeff`/`primeCosCoeff`,
-  `tsum_primeRpowLogCoeff_le` (≤ 1/δ + C₀), `tsum_tail_primeRpowCoeff_le`,
-  `abs_sum_primeCos_shift_le`, `primeClockEnergy`, `zetaDeficitConst`,
-  **`abs_zeta_deficit_sub_primeClockEnergy_le` = (Z2a)**.
+  `tsum_primeRpowLogCoeff_le`, `tsum_tail_primeRpowCoeff_le`, `abs_sum_primeCos_shift_le`,
+  `primeClockEnergy`, `zetaDeficitConst`, **`abs_zeta_deficit_sub_primeClockEnergy_le` = (Z2a)**.
 - `RHTower/RealTwistDeficitTransfer.lean` — `zetaLineDeficit`,
-  `zetaLineDeficit_sub_le_primeClockEnergy`, `pretentiousDistSq_primeChar_eq_primeClockEnergy`,
   **`quarter_zetaLineDeficit_le_pretentiousDistSq` = (Z3)/(Z8)+(Z10)**.
-- `RHTower/Sieve/DirichletPrefixLittlewood.lean` — the ENTIRE Littlewood chain re-derived with a
-  free right endpoint `M ≤ 2^(topExponent t + 1)`: `dirichlet_tail_dyadic_prefix`,
-  `norm_dirichlet_partial_two_regime_prefix`, `..._shape_prefix`, `..._endpoints_prefix`,
-  `..._const_prefix`, `..._pow_two_prefix`, `..._exponent_prefix`, `..._assembled_prefix`,
-  `..._canonical_prefix`, `..._capstone_prefix`, `..._explicit_prefix`, `..._balanced_prefix`,
-  `littlewood_threshold_prefix`, `..._order_prefix`, **`..._rate_prefix`**.
-  (Key: the corpus block bound `dirichlet_block_saving_of_small_factorial` already accepts a
-  partial block `N ≤ M ≤ 2N+1`, so only the assembly needed redoing.)
+- `RHTower/Sieve/DirichletPrefixLittlewood.lean` — the whole Littlewood chain re-derived with a
+  free right endpoint (…_shape/endpoints/const/pow_two/exponent/assembled/canonical/capstone/
+  explicit/balanced/threshold/order/**rate**`_prefix`).
 - `RHTower/Sieve/ZetaShiftedLineRate.lean` — `cpow_shift_split`,
-  `norm_dirichlet_shifted_prefix_le` (Abel via corpus `abel_block_bound`, weight `n^{-δ}`),
-  **`norm_riemannZeta_shifted_line_rate`**: for `16π ≤ t`, the two order conditions, and
-  `δ ∈ [0,1]`, `‖ζ(1+δ+it)‖ ≤ 33 + 2L/(orderLowerBound L − 4/3)`, `L = log(t/2π)`.  This is (Z2c)
-  in raw form.
+  `norm_dirichlet_shifted_prefix_le` (Abel with weight `n^{-δ}` via corpus `abel_block_bound`),
+  **`norm_riemannZeta_shifted_line_rate`** = (Z2c) raw.
+- `RHTower/ZetaLittlewoodDeficit.lean` — `littlewoodFreqThreshold`, `zetaHorizonLogThreshold`,
+  `log_le_half`, `log_le_sqrt`, `littlewood_small_scale_le`, `littlewood_large_scale_le`,
+  **`norm_riemannZeta_horizon_le`** (uniform `C_B log x/log log x` over `1 ≤ |τ| ≤ x^B`),
+  **`zetaLineDeficit_ge` = (Z2d)**, **`quarter_littlewoodDeficit_le_pretentiousDistSq`**,
+  `zetaLineDeficit_ge_of_power_law` = (Z14)⇒(Z15), `power_law_twist_gap` = (Z16).
+- `RHTower/ZetaLineLowerBound.lean` — `zetaPoleFactor` (removable singularity), its continuity,
+  `zetaLowRectangle` compactness, `exists_pos_le_norm_riemannZeta_low_freq`, `primeCosPlusSum`,
+  `pretentiousDistSq_neg_one_eq` = (Z18c), `sum_norm_one_add_primeChar_sq`,
+  `primeCosPlusSum_ge_low_freq` = (Z18d), **`exists_antiscale_frame` = (Z18b)**.
 
-### NEXT STEPS
-1. (Z2d): turn the shifted rate into `∃ C T, ∀ x ≥ T, ∀ 1 ≤ |τ| ≤ x^B,
-   log log log x − C ≤ zetaLineDeficit τ x`.  Plan: conjugation for τ < 0 (`riemannZeta_conj`);
-   an absolute bound on the compact range `1 ≤ |τ| ≤ T₀` from `norm_riemannZeta_le_partialSum`
-   with a FIXED N; for `|τ| ≥ T₀` split on `L ≤ √ℓ` vs `L > √ℓ` (ℓ = log x) to avoid needing
-   monotonicity of `u/(a log u + b)`; then `Δ ≥ log ℓ − log(C ℓ/log ℓ) = log log ℓ − log C`.
-2. Then the card's power-law corollary and the polynomial-horizon antiscale frame.
-3. The GHS cellwise transfer (Z11)–(Z13) needs the sharp GHS theorem in ENTROPY form
-   (`ρ log(C/ρ)`); the corpus has ~60 `Sieve/Ghs*.lean` modules + `HalaszGhsMasterBound.lean`
-   (`exists_norm_sum_Icc_mul_log_le`, in `sieveMeanSquare` form) — check
-   `HalaszGhsSharpCutoff.lean` for the cutoff/entropy shape before building anything new.
+### REMAINING for this card
+1. (Z11)–(Z13), (Z17), (Z18), (Z18a): the cellwise GHS transfer.  The corpus Halász bound
+   `Sieve/HalaszGhsSharpCutoff.lean::norm_sum_Icc_mul_log_le_damped` is stated **in terms of
+   `mulDistSqPair f (charFn t) (Nat.primesLE z)`** — i.e. exactly the distance my transfer lower
+   bounds.  Start there; the entropy shape `ρ log(C/ρ)` may need assembling from `dampedSize`.
+2. (Z19)/(Z19b)/(Z19c): finite-prime no-go — rational independence of prime logs (HTGeometry has
+   it) + Kronecker/Dirichlet simultaneous approximation (check Mathlib coverage first).
+
+## HARD-LEARNED: search the corpus for EVERY object before defining it
+I re-derived the pretentious distance, its pointwise triangle inequality and Minkowski before
+finding `Sieve/DistanceTriangle.lean` + `DistanceDiscTriangle.lean` + `MultiplicativeDistance.lean`
++ `FrequencySeparation.lean`.  The module was rewritten as a wrapper.  `formal_tools.py research`
+missed it because I searched for "pretentious"; the corpus calls it **multiplicative distance**
+(`mulDistSq`, `mulDistSqPair`, `charFn`, `distVec`).
 
 ## Discipline notes
-- No full/umbrella builds; `lake env lean --json <file>` (with a python filter) for positions.
-- Heartbeats are per declaration — split long theorems into lemmas.
-- `obtain ⟨x, hx⟩ : ∃ x, x = e := ⟨_, rfl⟩` instead of `set ... with`.
-- Never rewrite a hypothesis into an expanded form the other hypotheses do not share (linarith
-  then sees different atoms) — rewrite the goal instead.
+- No full/umbrella builds; `lake env lean --json <file>` + python filter for error positions.
+- Heartbeats are per declaration — split long theorems.
+- `obtain ⟨x, hx⟩ : ∃ x, x = e := ⟨_, rfl⟩` instead of `set … with`.
+- Never rewrite a hypothesis into a form the goal does not share (linarith needs common atoms);
+  pass definitional equations as `h.le, h.ge` instead.
+- `4 ≤ Real.log x` does NOT imply `0 < x` (Real.log is even); carry positivity explicitly.

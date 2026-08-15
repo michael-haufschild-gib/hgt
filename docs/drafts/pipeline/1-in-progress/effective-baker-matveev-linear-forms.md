@@ -96,8 +96,10 @@ Layers, each a self-contained unconditional module:
 ## Gates
 
 - [x] 0 → 1  well-posed, source identified, existing corpus/mathlib inventory taken
-- [ ] A. statement, reductions, Liouville baseline, S-unit reformulation
-- [ ] B. small-linear-form relation object and perturbed normalization
+- [x] A. statement, reductions, Liouville baseline, S-unit reformulation
+      — `RHTower/Matveev/LinearFormBasic.lean`
+- [x] B. small-linear-form relation object and perturbed normalization
+      — `RHTower/Matveev/SmallForm.lean`
 - [ ] C. auxiliary function and matrix with error term
 - [ ] D. extrapolation with error
 - [ ] E. terminal contradiction, the effective theorem
@@ -107,4 +109,26 @@ Layers, each a self-contained unconditional module:
 
 ## Log
 - 2026-08-15 — created; corpus inventory shows qualitative Baker is already unconditional, the
-  effective form is not.  Layer A started.
+  effective form is not.
+- 2026-08-15 — Layers A and B closed and axiom-audited.
+
+  **A** (`RHTower/Matveev/LinearFormBasic.lean`).  `primeLogForm`, `coeffHeight`, `primeBound`;
+  the transported `ℤ`-independence `primeLog_linearIndependent_fin` and hence
+  `primeLogForm_eq_zero_iff`; the `S`-unit decomposition `primeLogForm_eq_log_sub`; the elementary
+  `1 − t⁻¹ ≤ log t` and its consequence `inv_le_log_sub_log`; the Liouville baseline
+  `inv_max_le_abs_primeLogForm` and `inv_pow_le_abs_primeLogForm`
+  (`|Λ| ≥ Q^{−|ν|₁}`); the statement `EffectiveBakerBound`; and the reduction
+  `effectiveBakerBound_of_large` — the polynomial bound need only be proved above any fixed
+  height, since below it the Liouville baseline is a uniform positive constant and shrinking `c`
+  absorbs it.  No finiteness argument is used.
+
+  **B** (`RHTower/Matveev/SmallForm.lean`).  `coeffSup`, its comparison with `coeffHeight`,
+  `exists_max_pivot`; the `SmallForm` structure (nonzero integer coefficients with a maximal
+  pivot); `normCoeff` with `|normCoeff i| ≤ 1` and `normCoeff pivot = 1`; and the perturbed
+  normalization
+
+  ```text
+  log p_pivot = −Σ_{i≠pivot} normCoeff i · log pᵢ + Λ / b_pivot,
+  ```
+
+  the exact analogue of the corpus `Relation.pivot_log_eq` with the error term carried.

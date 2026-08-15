@@ -4601,3 +4601,76 @@ the reusable layers, `RHTower` for the route-specific ones.
     is the *realization*: exhibiting the constrained source whose Fourier samples are this profile,
     i.e. upgrading the selected mode from a band eigenfunction to a finite-Fourier eigenfunction and
     running the two-mode mean-zero construction on it.
+
+- 2026-08-15 (hundred-and-forty-eighth instalment) -- **Every even mode is a finite-Fourier
+  eigenfunction.**  New module `RHTower/ProlateFourierBandEigen.lean`, wired, axiom-clean.
+
+  The variational selection produces a *band* eigenfunction; the source construction needs a
+  *finite-Fourier* eigenfunction.  The gap closes because the two operators share their eigenlines.
+
+  * **`fourierBandTransform`, `realFourierBandTransform`** -- the aperture transform with kernel
+    `exp(i c x t)` and its real channel; derivative and second-derivative identifications by
+    differentiation under the integral (`hasDerivAt_bandKernelTransform`,
+    `hasDerivAt_bandTransformDeriv`).
+  * **`prolateSLAction_realFourierBandTransform`** -- the prolate action commutes with the
+    transform: the operator acts identically on the two variables of the kernel, and the weight
+    `1 - t²` vanishes at both endpoints, so the `t`-derivatives move onto the amplitude with no
+    boundary term.  Hence the transform of a prolate eigenfunction is one again, with the same
+    separation value.
+  * **`even_realFourierBandTransform`, `fourierBandTransform_ofReal_even`** -- on an even real
+    profile the transform is even and real (the sine channel is an odd integrand).
+  * **`exists_eqOn_Icc_realFourierBandTransform`** -- the even prolate eigenline is one dimensional
+    on the aperture (matching value and derivative at the centre plus ODE uniqueness), so the
+    transform is a scalar `mu` there.
+  * **`bandTransform_eq_kappa_mul_sq`** -- the band transform *is* `kappa` times the square of the
+    finite Fourier transform, by the corpus's scaled Fubini kernel identity.
+  * **`exists_realFourierBandTransform_eigen`** -- combining the two: the scalar is nonzero,
+    `kappa · mu² = lam`, and
+
+    ```text
+    realFourierBandTransform (2 pi kappa) Phi x = mu · Phi x   at every real x,
+    ```
+
+    not merely on the aperture.  This is the self-reciprocity of the *selected* mode, and it is
+    exactly what turns the mode into a cut-off source whose Fourier transform is the mode again.
+
+- 2026-08-15 (hundred-and-forty-ninth instalment) -- **The cut-off source of a mode.**  New module
+  `RHTower/ProlateModeSource.lean`, wired, axiom-clean.
+
+  * **`prolateModeSource a Φ`** -- the mode restricted to its aperture with the symmetric
+    half-endpoint convention; even, measurable, bounded, compactly supported, integrable.
+  * **`fourier_prolateModeSource`** -- `Fourier(source)(a x) = a · (finite Fourier transform of the
+    mode)(x)`, by the corpus's aperture rescaling `fourier_compactSupport_unitScale`; with
+    instalment 148 the right-hand side is `a mu Phi x`.
+  * **`tendsto_symmetricLebesgue_prolateModeSource`** -- the half-endpoint convention makes the
+    source's periodization continuous at the origin
+    (`continuousAt_realL1Periodization_symmetricHalfEndpointCutoff_zero`), so the Poisson--Muntz
+    symmetric-Lebesgue boundary condition is automatic.
+
+- 2026-08-15 (hundred-and-fiftieth instalment) -- **The mean-zero source.**  New module
+  `RHTower/ProlateMeanZeroSource.lean`, wired, axiom-clean.
+
+  A single cut-off mode has mass `a mu Phi(0) ≠ 0`.  Subtracting the mass-matched dilate cancels
+  it, and needs no second variational selection because dilating a source dilates its Fourier
+  transform.
+
+  * **`integrable_fourier_integrand`, `fourier_sub'`, `fourier_const_mul'`, `fourier_comp_div`** --
+    linearity of the Fourier integral and the dilation law `Fourier(g(·/lam))(w) = lam ·
+    Fourier(g)(lam w)`, from the change of variables `Measure.integral_comp_mul_left`.
+  * **`prolateModeSource_dilate`** -- dilating the aperture is dilating the argument.
+  * **`prolateMeanZeroSource a lam Φ`** -- the difference; even, measurable, bounded, compactly
+    supported, integrable.
+  * **`fourier_prolateMeanZeroSource`** -- `Fourier(F)(a x) = a (T Phi x - T Phi (lam x))`: both
+    terms are the mode itself, at radial arguments differing by the dilation.
+  * **`integral_prolateMeanZeroSource`** -- hence the mass is `Fourier(F)(0) = 0`.
+  * **`summable_shift_of_support`, `realL1Periodization_sub`,
+    `tendsto_symmetricLebesgue_prolateMeanZeroSource`** -- a compactly supported profile has
+    finitely many nonzero integer translates, so the periodization is additive and the
+    symmetric-Lebesgue condition passes to the difference.
+
+  Every structural hypothesis of the transport theorem
+  `abs_halfLineExpPrimitive_radialFullLogSource_le_of_channel_bound` -- integrable, even, compactly
+  supported, bounded, mean zero, symmetric-Lebesgue -- now holds for an explicitly constructed
+  source whose Fourier samples are the selected low-separation mode.  What remains is the change of
+  variables turning the channel primitives of that source into the radial primitives bounded by
+  `exists_radialProlate_channel_bound`.

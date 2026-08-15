@@ -419,6 +419,53 @@ theorem quarter_littlewoodDeficit_le_pretentiousDistSq {r : ℕ → ℝ} (hr : �
         - Real.log (37 + littlewoodFreqThreshold + 24 * B * Real.log 2) - zetaDeficitConst
         ≤ zetaLineDeficit (2 * α) x - zetaDeficitConst := by linarith
     exact div_le_div_of_nonneg_right hnum (by norm_num : (0:ℝ) ≤ 4)
+  linarith [hmono, htransfer]
+
+/-! ## The power-law corollary -/
+
+/-- **(Z14)⇒(Z15) A power-law one-line bound gives a proportional deficit.** -/
+theorem zetaLineDeficit_ge_of_power_law {C θ x τ : ℝ} (hC : 0 < C) (hx : Real.exp 1 ≤ x)
+    (hbound : ‖riemannZeta (zetaLinePoint (1 + 1 / Real.log x) τ)‖
+      ≤ C * Real.log x ^ θ) :
+    (1 - θ) * Real.log (Real.log x) - Real.log C ≤ zetaLineDeficit τ x := by
+  have hx0 : (0 : ℝ) < x := lt_of_lt_of_le (Real.exp_pos 1) hx
+  have hl1 : (1 : ℝ) ≤ Real.log x := by
+    have h := Real.log_le_log (Real.exp_pos 1) hx
+    rwa [Real.log_exp] at h
+  have hl0 : (0 : ℝ) < Real.log x := by linarith
+  have hpow : (0 : ℝ) < Real.log x ^ θ := Real.rpow_pos_of_pos hl0 _
+  have hprod : (0 : ℝ) < C * Real.log x ^ θ := by positivity
+  have hre : 1 < (zetaLinePoint (1 + 1 / Real.log x) τ).re := by
+    rw [zetaLinePoint_re]
+    have : 0 < 1 / Real.log x := by positivity
+    linarith
+  have hne := riemannZeta_ne_zero_of_one_lt_re hre
+  have hpos : 0 < ‖riemannZeta (zetaLinePoint (1 + 1 / Real.log x) τ)‖ := by
+    rw [norm_pos_iff]
+    exact hne
+  have hlogle : Real.log ‖riemannZeta (zetaLinePoint (1 + 1 / Real.log x) τ)‖
+      ≤ Real.log (C * Real.log x ^ θ) := Real.log_le_log hpos hbound
+  have hlogpow : Real.log (C * Real.log x ^ θ) = Real.log C + θ * Real.log (Real.log x) := by
+    rw [Real.log_mul (ne_of_gt hC) (ne_of_gt hpow), Real.log_rpow hl0]
+  rw [hlogpow] at hlogle
+  rw [zetaLineDeficit]
+  linarith
+
+/-- **(Z16) The power-law twist gap.** -/
+theorem power_law_twist_gap {r : ℕ → ℝ} (hr : ∀ n, |r n| ≤ 1) {C θ x α : ℝ} (hC : 0 < C)
+    (hx : Real.exp 2 ≤ x)
+    (hbound : ‖riemannZeta (zetaLinePoint (1 + 1 / Real.log x) (2 * α))‖
+      ≤ C * Real.log x ^ θ) :
+    ((1 - θ) * Real.log (Real.log x) - Real.log C - zetaDeficitConst) / 4
+      ≤ pretentiousDistSq (fun n => (r n : ℂ)) (primeChar α) x := by
+  have hexp1 : Real.exp 1 ≤ Real.exp 2 := Real.exp_le_exp.mpr (by norm_num)
+  have hx1 : Real.exp 1 ≤ x := le_trans hexp1 hx
+  have hdef := zetaLineDeficit_ge_of_power_law hC hx1 hbound
+  have htransfer := quarter_zetaLineDeficit_le_pretentiousDistSq (r := r) hr (α := α) (x := x) hx
+  have hnum : (1 - θ) * Real.log (Real.log x) - Real.log C - zetaDeficitConst
+      ≤ zetaLineDeficit (2 * α) x - zetaDeficitConst := by linarith
+  have hmono := div_le_div_of_nonneg_right hnum (by norm_num : (0:ℝ) ≤ 4)
+  linarith [hmono, htransfer]
 
 end
 

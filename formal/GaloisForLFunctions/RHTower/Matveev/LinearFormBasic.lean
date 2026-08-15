@@ -274,9 +274,10 @@ theorem inv_pow_le_abs_primeLogForm (p : Fin d → ℕ) (hp : Function.Injective
     exact_mod_cast this
   have hcast : ((primeBound p ^ coeffHeight ν : ℕ) : ℝ)
       = (primeBound p : ℝ) ^ coeffHeight ν := by push_cast; ring
+  have hgoal := one_div_le_one_div_of_le hposmax hmaxR
+  rw [one_div, one_div] at hgoal
   rw [← hcast]
-  exact one_div_le_one_div_of_le hposmax hmaxR |>.trans_eq (by rw [one_div, one_div])
-    |>.trans_eq rfl
+  exact hgoal
 
 /-! ## The effective statement and the large-height reduction -/
 
@@ -302,7 +303,7 @@ theorem effectiveBakerBound_of_large (p : Fin d → ℕ) (hp : Function.Injectiv
     have h2C : (0 : ℝ) < (2 : ℝ) ^ C := Real.rpow_pos_of_pos (by norm_num) C
     have : (0 : ℝ) < ((primeBound p : ℝ) ^ B₀)⁻¹ := by positivity
     positivity
-  refine ⟨min c₀ c₁, lt_min hc₀ hc₁, hC, fun ν hν => ?_⟩
+  refine ⟨min c₀ c₁, C, lt_min hc₀ hc₁, hC, fun ν hν => ?_⟩
   have hheight : (0 : ℝ) ≤ (coeffHeight ν : ℝ) := Nat.cast_nonneg _
   have hbase : (2 : ℝ) ≤ 2 + (coeffHeight ν : ℝ) := by linarith
   have hbasepos : (0 : ℝ) < 2 + (coeffHeight ν : ℝ) := by linarith
@@ -326,8 +327,10 @@ theorem effectiveBakerBound_of_large (p : Fin d → ℕ) (hp : Function.Injectiv
     have hpowmono : (primeBound p : ℝ) ^ coeffHeight ν ≤ (primeBound p : ℝ) ^ B₀ :=
       pow_le_pow_right₀ (by linarith) (by omega)
     have hinvmono : ((primeBound p : ℝ) ^ B₀)⁻¹ ≤ ((primeBound p : ℝ) ^ coeffHeight ν)⁻¹ := by
-      refine one_div_le_one_div_of_le (by positivity) hpowmono |>.trans_eq ?_
-      rw [one_div, one_div]
+      have hmono := one_div_le_one_div_of_le
+        (show (0 : ℝ) < (primeBound p : ℝ) ^ coeffHeight ν by positivity) hpowmono
+      rw [one_div, one_div] at hmono
+      exact hmono
     have hfinal : min c₀ c₁ * (2 + (coeffHeight ν : ℝ)) ^ (-C)
         ≤ ((primeBound p : ℝ) ^ B₀)⁻¹ := by
       have hstep : min c₀ c₁ * (2 + (coeffHeight ν : ℝ)) ^ (-C)

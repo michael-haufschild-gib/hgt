@@ -578,6 +578,31 @@ Burnol window space before Xi-zero expansion. The only unclosed passage is bound
 restriction from these canonical Euler nodes to actual completed-Xi divisor nodes; constructing
 another abstract Gram or source window cannot address it.
 
+P-G187 proves that the P-G185 and P-G186 walls are one aperture semigroup law. On
+`L2(R_+,dL)`, define
+
+```text
+(T_c f)(L)=L/(L+c) f(L+c),     c>=0.                                (E9e)
+```
+
+Then `T_c T_d=T_(c+d)`, `||T_c f||_2<=||f||_2`, and every universal Burnol conormal feature is an
+eigenvector. On the primitive Euler feature at `lambda=log n`, squared energy is multiplied by
+
+```text
+exp(-2c lambda)=n^(-2c).                                             (E9f)
+```
+
+Thus `s=2c`, the shifted primitive feature energy is literally the P-G185 joint-damping weight,
+and the full dynamically damped diagonal is summable exactly for `c>=0`. The wall is also sharp
+at operator level: for every `c<0`, the finite-energy datum `1_(0,1)` acquires a nonintegrable
+reciprocal-square pole at `L=-c`.
+
+This rules out ordinary backward aperture evolution as the completed transport. Combined with
+W-H185's exponential-type range obstruction, the positive survivor is a concrete design law:
+polar--Gamma/functional-equation completion must enter as an additional boundary/dilation defect
+channel before Hermitian Gram comparison, create the slower completed modes, and remain globally
+trace-neutral. Identifying that defect channel source-theoretically is open.
+
 ### Sharpened live conjecture `[W-H181 -- RAW MODULAR CONORMAL TRACE]`
 
 Construct, before divisor expansion, a two-sided pole--Gamma--von-Mangoldt conormal relation whose
@@ -630,6 +655,10 @@ P-G182's normalized receiver, and P-G183's multiplicity split are no longer sepa
   with exact von Mangoldt square-root amplitude and proved that the full inverse-Burnol-window
   aperture Gram is the P-G181 base cube. Source-window construction is closed; only completed
   restriction from Euler nodes to actual Xi divisor nodes remains.
+- 2026-08-15 -- P-G187 constructed the exact weighted-aperture contraction semigroup, identified
+  its primitive energy time with joint damping by `s=2c`, and proved the zero-time wall is sharp on
+  an explicit finite-energy datum. Replaced backward Hilbert-space evolution by the requirement
+  for a completed boundary/dilation defect channel.
 
 ## Cross-corpus CCM--Route-P source identification `[PROVED IN LEAN]`
 
@@ -1059,7 +1088,7 @@ source-derived construction is the genuine open content of W-H184.
 - 2026-08-15 -- Formulated the matrix-complete Cauchy-Riesz operator transport W-H184 (Attack 22),
   isolated the trace capacity reduction, and strictly defined the open operator-norm gate `||T_F|| <= 1`.
 
-## Attack 23: The spectral excitation energy gap and the weighted-space norm equivocation `[FALSIFIED AS UNCONDITIONAL CLOSURE]`
+## Attack 23: Spectral excitation and the missing intertwiner `[FALSIFIED AS UNCONDITIONAL CLOSURE; ORIGINAL MEASURE DIAGNOSIS RETRACTED]`
 
 ### 1. The Proposed Energy Gap Argument
 
@@ -1073,18 +1102,32 @@ Attack 23 attempted to close RH by comparing two operator norms:
    projection on `L2(R, dt)`, satisfying `||P_+||_L2 = 1`.
 3. **Apparent Contradiction:** Asserting `1 >= ||T_boundary||^2 >= ||T_required||^2 > 1 ==> 1 > 1`.
 
-### 2. Fatal Defect: Weighted-Space Norm Equivocation `[HOSTILE AUDIT]`
+### 2. Correct hostile audit: there is no source/target measure mismatch
 
-A rigorous functional-analytic audit against the Lean corpus exposes the fatal flaw in this argument:
-- **Norm Mismatch:** The unitary bound `||P_+|| = 1` holds strictly on the **unweighted** frequency space `L2(R, dt)`.
-- **Source Weighting:** The source trace `B_base < 2` is computed with respect to the **cubically regularized scale measure** `dL / L^3` (giving cell weights `Lambda(n)/[4 n (log n)^3]`, Lean-proved in `P-G184`).
-- **Target Weighting:** The zero charge `Q_raw(rho) = 1/(4a^3)` is computed with respect to the **radial conormal measure** `L2(R_+, dL)`.
-- **Radon-Nikodym Distortion:** The transfer operator `T_boundary: H_source -> H_zero` between the two differently weighted Hilbert spaces contains the Radon-Nikodym conversion factor between `dL/L^3` and `dL`.
-- Consequently, `||T_boundary||_(H_source -> H_zero)` is **not equal to 1**; the change of weight introduces an operator gain that can exceed 1 without violating the unweighted contractivity of `P_+`.
+The original diagnosis above was false.  P-G186 and
+`XiWardCubicBurnolWindowConormalIncidence.lean` put both families in the same ordinary radial
+space `L2(R_+,dL)`:
 
-**Conclusion:** Quoting the unweighted Riesz norm `||P_+||_L2 = 1` does **not** prove that the weighted operator norm satisfies `||T||_(H_source -> H_zero) <= 1`.  Proving that the weighted operator norm remains bounded by 1 is **strictly equivalent to proving W-H184**, not a proof of it.
+```text
+source: phi_(p,e,kappa)(L)=sqrt(Lambda(n)/n) L exp[-(log n+i kappa)L],
+target: psi_rho(L)=L exp[-(a_rho+i gamma_rho)L].
+```
 
-- 2026-08-15 -- Audited Attack 23, exposed the fatal weighted-space norm equivocation (unweighted `L2(dt)` vs. cubically weighted `dL/L^3`), and confirmed that weighted contractivity remains the open core W-H184.
+The inverse logarithmic cube is produced by the ordinary norm
+
+```text
+integral_0^infinity |L exp(-lambda L)|^2 dL=1/(4 lambda^3),
+```
+
+not by a measure `dL/L^3`.  Hence no Radon--Nikodym conversion occurs.  The Riesz argument still
+fails, but for the logically prior reason: no coefficient-faithful completed boundary
+intertwiner has been constructed that maps P-G186's source columns to actual Xi conormal columns.
+The equality `||P_+||=1` on an ambient unweighted space says nothing about whether the desired
+source-to-divisor incidence is `P_+`, whether it preserves prime-depth coefficients, or whether
+its Gamma/polar cross terms have the P-G181 trace.
+
+- 2026-08-15 -- Retracted the `dL/L^3`/`dL` diagnosis.  Both exact Grams use `dL`; Attack 23 fails
+  because it assumes the missing completed intertwiner, not because of a change of measure.
 
 ## Attack 24: Disjoint scale expectation `[ALGEBRA PROVED; LOCALIZATION CLAIM FALSIFIED]`
 
@@ -1225,6 +1268,45 @@ exactly the damping that makes the series finite.
 - 2026-08-15 -- Falsified the divergent ordinate-only majorant.  Retained the exact damped
   cross-overlap series `(E70*)` as the sole positive survivor for proof and Lean formalization.
 
+`FrankensteinPrimitiveXiMixedBurnolSchurGap.lean` now proves `(E68)`--`(E69)` atomwise in Lean,
+with primitive prime-depth amplitude and both ordinate clocks retained.  Summability and a useful
+uniform bound for the full series `(E70*)` remain open.
+
+## Attack 27: Mixed Burnol block gives the wrong Schur direction `[LEAN-PROVED NO-GO; SIGNED SURVIVOR]`
+
+For positive radial rates `a,b` and ordinate difference `kappa`, normalize the mixed cubic
+conormal overlap by its two diagonal energies.  Its squared coherence is exactly
+
+```text
+C(a,b,kappa) = 64 a^3 b^3 / (((a+b)^2+kappa^2)^3).                     (E71)
+```
+
+AM--GM gives `4ab <= (a+b)^2+kappa^2`, with equality only when `a=b` and `kappa=0`.  Hence
+`C<1` whenever the two nodes differ, and the real determinant of their two-column Gram is
+
+```text
+D(a,b,kappa)
+ = 1/(4a^3) 1/(4b^3) - |2/(a+b+i kappa)^3|^2
+ = [1/(16a^3b^3)] (1-C(a,b,kappa)) > 0.                               (E72)
+```
+
+For a primitive Euler node, `a=log(p^(e+1)) >= log 2 > 1/2`; for a strict-right Xi node,
+`0<b<1/2`.  Thus `(E72)` is strict for **every** primitive label and every ordinate clock,
+including matched ordinates.  The Xi conormal column always has a nonzero residual after
+projection onto one raw Euler Burnol column.
+
+This kills the conjecture that positivity of the combined source/target Gram could itself yield
+W-H184.  Block positivity and its Schur complement say that the target residual is nonnegative;
+they do not say that the target Gram is dominated by the source Gram.  The positive survivor is
+sharper: rate separation forces a strictly positive residual which the completed boundary theorem
+must **short with opposite sign**.  Therefore the polar--Gamma channel must enter before
+Hermitianization as a signed/relative (`J`-oriented) channel.  Appending it as another positive
+Gram feature can only increase the residual.
+
+- 2026-08-15 -- Proved exact mixed primitive/Xi overlap, normalized coherence, strict Euler/Xi
+  rate separation, and positive two-node Schur determinant in Lean.  Retired pure positive-Gram
+  boundary landing; retained signed polar--Gamma shorting as the next producer.
+
 ## Structural Reduction: Matrix-Complete Operator Boundary Transport
 
 ### The Proven Foundations in Lean 4
@@ -1244,14 +1326,22 @@ exactly the damping that makes the series finite.
 4. **Primitive Burnol source Gram (`P-G186`):**
    `RoutePPrimitiveBurnolWindowGramSquare.lean` identifies the entire labelled source-window Gram
    entrywise with the P-G181 base Cauchy cube and retains its `<2` trace budget.
-5. **CCM--Route-P source seam:**
+5. **Aperture damping semigroup (`P-G187`):**
+   `RoutePPrimitiveBurnolApertureDampingSemigroup.lean` identifies joint damping `s=2c` with
+   contractive Burnol aperture time, proves shifted primitive energy equals the P-G185 weight, and
+   proves every negative time fails on an explicit finite-energy boundary datum.
+6. **CCM--Route-P source seam:**
    `FrankensteinCCMRoutePBaseCubicGreenSourceBridge.lean` identifies the same source mass inside the
    literal CCM prime functional and isolates polar--Gamma surplus as the completion fracture.
-6. **Matrix-complete receiver and scalar no-go:**
+7. **Matrix-complete receiver and scalar no-go:**
    `FrankensteinMatrixCompleteBoundaryRestriction.lean` gives a positive two-column Gram with trace
    `2` and coherent sum `0`, proves Loewner trace monotonicity for the order
    `A <=_L B :<=> (B-A).PosSemidef`, and proves that the finite direct restriction law is equivalent
    to RH.  This closes the receiver, not the producer.
+8. **Mixed primitive/Xi Schur gap:**
+   `FrankensteinPrimitiveXiMixedBurnolSchurGap.lean` computes the coefficient-faithful mixed
+   Burnol overlap and proves every Euler/Xi two-node Gram determinant is strictly positive.
+   Ordinary positive-Gram projection therefore leaves target residual rather than shorting it.
 
 Attacks 24--25 provide exact one-profile moment formulas but no operator obstruction.  Attack 26's
 claimed high-frequency bound is false; only the damped overlap series `(E70*)` survives.
@@ -1296,11 +1386,14 @@ Because operator trace is strictly monotone under Loewner order (`A <= B ==> Tr(
 | **Balanced Source Codiagonal `< 2` (P-G184)** | **LEAN PROVED** | `RoutePPrimitiveBaseBalancedReflectionCodiagonal.lean` |
 | **Sharp Damping Wall `s >= 0` (P-G185)** | **LEAN PROVED** | `RoutePPrimitiveBaseJointDampingWall.lean` |
 | **Primitive Burnol Window Gram Square (P-G186)** | **LEAN PROVED** | `RoutePPrimitiveBurnolWindowGramSquare.lean` |
+| **Burnol Aperture Damping Semigroup and Sharp Backward Wall (P-G187)** | **LEAN PROVED** | `RoutePPrimitiveBurnolApertureDampingSemigroup.lean` |
 | **Single Zero Quantum $Q_{\text{raw}} \ge 2$** | **LEAN PROVED** | `XiWardCubicRawConormalModularDoublet.lean` |
 | **Multiplicity $1/m$ Fiber Split** | **LEAN PROVED** | `RoutePCompletedXiConormalMultiplicitySplit.lean` |
 | **CCM--Route-P cubic Green source identity** | **LEAN PROVED** | `FrankensteinCCMRoutePBaseCubicGreenSourceBridge.lean` |
 | **PSD Gram trace survives coherent cancellation** | **LEAN PROVED** | `FrankensteinMatrixCompleteBoundaryRestriction.lean` |
 | **Direct matrix restriction law iff RH** | **LEAN PROVED (TERMINAL RECEIVER ONLY)** | `FrankensteinMatrixCompleteBoundaryRestriction.lean` |
+| **Exact primitive/Xi mixed Burnol overlap** | **LEAN PROVED** | `FrankensteinPrimitiveXiMixedBurnolSchurGap.lean` |
+| **Strict positive mixed Schur residual** | **LEAN PROVED; PURE-GRAM LANDING RETIRED** | `FrankensteinPrimitiveXiMixedBurnolSchurGap.lean` |
 | **One-profile weighted Plancherel norm identity** | **PAPER ALGEBRA ONLY** | Attack 20 |
 | **Hardy off-line quartet local sign window** | **PAPER ALGEBRA ONLY** | Attack 21 |
 | **Scale expectation/dispersion formulas** | **PAPER ALGEBRA; NO TRANSPORT CONSEQUENCE** | Attacks 24--25 |
@@ -1309,5 +1402,189 @@ Because operator trace is strictly monotone under Loewner order (`A <= B ==> Tr(
 | **Smooth de Bruijn-Newman Variance $dV/dt \ge 0$** | **FALSIFIED (COLLISION SINGULARITY)** | Attack 11 |
 | **Global Total Positivity via $\operatorname{PF}_\infty$** | **FALSIFIED (CIRCULAR VIA SCHOENBERG)** | Attack 14 |
 | **Analytical Moment Saturation $\sum 2/\gamma_k^2 = \sigma_1$** | **FALSIFIED (CIRCULAR WITH RH)** | Attack 16 |
-| **Unweighted Riesz Extinction $\|P_+\|=1$** | **FALSIFIED (NORM EQUIVOCATION)** | Attack 23 |
+| **Unweighted Riesz Extinction $\|P_+\|=1$** | **FALSIFIED (MISSING SOURCE-DERIVED INTERTWINER; NO MEASURE MISMATCH)** | Attack 23 |
 | **Source-derived Matrix-Complete Transport (W-H184)** | **GENUINE OPEN PRODUCER** | Construct `T_F` from completed source boundary data; direct domination alone is RH-equivalent |
+
+## Attack 27: Primitive spectral-floor/Douglas-range obstruction `[W-H185] [PAPER PROOF COMPLETE; LEAN SCRATCH CLOSED]`
+
+P-G186 removes the false weighted-space explanation but exposes a sharper obstruction.  Write
+`I=Nat.Primes x Nat`, `n_i=p^(e+1)`, `lambda_i=log n_i`, and
+`b_i=Lambda(n_i)/n_i`.  For arbitrary signed ordinate clocks `kappa_i`, its source columns are
+
+```text
+phi_i(L)=sqrt(b_i) L exp[-(lambda_i+i kappa_i)L] in L2(R_+,dL),
+lambda_i>=lambda_0:=log 2.                                             (E72)
+```
+
+Because `sum_i ||phi_i||^2=B_base<2`, finite synthesis extends uniquely to a Hilbert--Schmidt map
+
+```text
+J_kappa:l2(I)->L2(R_+,dL).                                             (E73)
+```
+
+For `lambda>0` and `R>=0`, direct antiderivative calculation gives the exact cubic tail law
+
+```text
+T(lambda,R):=integral_R^infinity L^2 exp(-2 lambda L)dL
+ =exp(-2 lambda R)
+   [R^2/(2lambda)+R/(2lambda^2)+1/(4lambda^3)].                        (E74)
+```
+
+Let `Q_R` restrict a radial function to `[R,infinity)`.  Hilbert--Schmidt/Cauchy--Schwarz gives
+
+```text
+||Q_R J_kappa c||^2 <= ||c||_2^2 sum_i b_i T(lambda_i,R).              (E75)
+```
+
+For `R>=1`, use `lambda_i>=lambda_0` in `(E74)` before summing:
+
+```text
+sum_i b_i T(lambda_i,R)
+ <= A_2 exp[-2lambda_0(R-1)]
+      [R^2/(2lambda_0)+R/(2lambda_0^2)+1/(4lambda_0^3)],               (E76)
+
+A_2:=sum_i b_i exp(-2lambda_i)<infinity.                               (E77)
+```
+
+Indeed, `(E77)` is
+
+```text
+sum_p sum_(e>=0) log(p)/p^(3(e+1))
+ =sum_p [log(p)/p^3]/[1-p^(-3)]
+ <=(8/7) sum_p 1/p^2<infinity,                                        (E78)
+```
+
+using `log p<=p` and `p>=2`.
+
+Now let `rho` be any strict-right Xi copy and put
+`a=(rho-1/2).re`.  Then `0<a<1/2<log 2`, while its raw conormal column is
+
+```text
+psi_rho(L)=L exp[-(a+i gamma)L],
+||Q_R psi_rho||^2=T(a,R)
+ >=exp(-2aR) R^2/(2a).                                                 (E79)
+```
+
+If `psi_rho=J_kappa c` for some `c in l2(I)`, `(E75)`--`(E79)` and
+`R^2+R+1<=3R^2` after coefficient rescaling would imply
+
+```text
+exp[2(lambda_0-a)R] <= C(a,lambda_0,A_2,||c||)                         (E80)
+```
+
+for every `R>=1`.  Since `lambda_0-a>0`, the left side tends to infinity.  Contradiction.
+
+### W-H185 conclusion
+
+```text
+[W-H185 -- BARE PRIMITIVE DOUGLAS-RANGE NO-GO]
+No actual strict-right Xi conormal column belongs to the range of P-G186's bare primitive
+Burnol-window Hilbert--Schmidt synthesis, for any choice of primitive ordinate clocks.
+```
+
+Thus P-G186's positive source Gram cannot directly Douglas-factor even one strict-right zero
+column.  A viable completion must act before the Gram comparison and must change the primitive
+spectral floor through the signed polar--Gamma/functional-equation sector while preserving the
+global `<2` trace.  This does **not** rule out arbitrary bounded nonlocal operators: such an
+operator can move tail mass.  It rules out the precise direct-range identification that would
+otherwise turn the already-built primitive square into the missing contraction.
+
+This also explains the earlier shadows at a more universal level.  The scale expectation and
+dispersion gaps were moments of a stronger fact: source and hypothetical zero columns have
+disjoint exponential types.  The P-G185 zero-width continuation wall is the analytic boundary
+version of the same spectral-floor gap.  Gamma/polar completion is therefore not a bounded
+afterthought attached to the positive prime covariance; it must be the trace-neutral signed
+mechanism that creates the slower completed modes.
+
+P-G187 supplies the operator-side counterpart: the same `s=0` boundary is the maximal lifetime
+of the positive-aperture weighted-translation semigroup, and every negative time produces a local
+reciprocal-square boundary pole on finite-energy data. The two no-gos jointly suggest a higher
+principle: completed Gamma--polar transport must be a dilation/defect extension of unilateral
+aperture dynamics, not continuation within the bare primitive range. The extension and its
+trace-neutral matrix-complete compression remain the open producer.
+
+Lean scratch proves `(E74)`, exponential-rate divergence for every `a<lambda`, and its
+specialization to every `XiRightZeroCopy` with `a<1/2<log 2`, without numerical computation or
+new axioms.  Repository promotion is `XiWardCubicPrimitiveTailRateNoGo.lean`.
+
+## Attack 28: Signed Krein--CCM--Route-P residue handoff `[LEAN PROVED; PRE-RADIAL PRODUCER OPEN]`
+
+The updated cross-route frontier shows that W-H184 cannot be produced by another positive Gram.
+The literal primitive/depth source already has a signed carrier: the Krein off-diagonal pairing in
+`EulerPrimitiveJointDepthKreinXiLanding.lean`.  Its pole-filled Gamma completion is the source-only
+meromorphic family
+
+```text
+S(u)=i[regularizedCriticalMellinDefect(u)+gammaRealLogConnection(u+1)].       (E81)
+```
+
+For every complete Xi-divisor point `rho`, put `p_rho=rho-1` and let `m_rho` be its analytic
+multiplicity.  CCM divisor tomography and analyticity of the Gamma connection at `rho` give the
+exact signed residue
+
+```text
+lim_(u->p_rho) (u-p_rho) S(u) = i m_rho.                                  (E82)
+```
+
+Attach Route-P's moving radial column before taking the residue:
+
+```text
+C(u,r)=S(u) r exp[-((u+1)-1/2)r].                                          (E83)
+```
+
+Then, with no simple-zero or RH premise,
+
+```text
+lim_(u->p_rho) (u-p_rho) C(u,r)
+  = i m_rho r exp[-(rho-1/2)r],                                            (E84)
+```
+
+and division by `i m_rho` recovers exactly P-G181's base conormal feature.  Hence the finite Gram
+of normalized residues of the literal signed source is exactly
+`routePStrictRightZeroBaseCauchyCubicKernelMatrix`.  This is the missing coefficient-faithful
+CCM--Route-P identification theorem; the source carrier, divisor multiplicity, and coordinate are
+not replaced by zero-indexed packets.
+
+Both reflection orientations occur in the same family.  Critical-line reflection becomes
+
+```text
+p_(1-conj rho) = -1-conj(p_rho),                                           (E85)
+```
+
+so it is reflection about the balanced wall `Re u=-1/2`.  However, the ordinary radial
+cross-pairing of the two normalized features is exactly
+
+```text
+conj[r exp(-(rho-1/2)r)]
+  * r exp(-((1-conj rho)-1/2)r) = r^2.                                    (E86)
+```
+
+Consequently that cross-pairing is not integrable on `(0,infinity)`.  The scalar continuation
+wall of the primitive-depth Krein source and the Route-P reflected radial completion wall are one
+literal obstruction, not analogous failures.  Hermitianization after residue extraction is too
+late: it either retains only the strict-right orientation or encounters `(E86)`.
+
+Formalization:
+
+- `FrankensteinKreinCCMRoutePSignedConormalResidueBridge.lean` proves `(E82)`--`(E86)`, normalized
+  multiplicity-faithful residue recovery, nonintegrability of the reflected cross-carrier, and the
+  exact source-residue Gram equality with P-G181.
+- All theorems are unconditional; no `RiemannHypothesis` premise or zero-location assumption is
+  used.
+
+### Surviving producer after Attack 28
+
+W-H184 must now be replaced upstream by a **pre-radial signed shorting law**.  It must act on the
+two Krein orientations before `(E83)` is completed in ordinary `L²`, cancel the balanced `r^2`
+channel trace-neutrally, and leave the strict-right diagonal residue energy unchanged.  Any law
+stated only after the normalized residue Gram is formed is again the RH-equivalent receiver.
+
+Ledger delta:
+
+| Component | Status | Rigorous Location |
+| :--- | :--- | :--- |
+| Signed primitive-depth completed-trace residue `i m_rho` | **LEAN PROVED** | `FrankensteinKreinCCMRoutePSignedConormalResidueBridge.lean` |
+| Coefficient-faithful signed source residue -> Route-P conormal feature | **LEAN PROVED** | same |
+| Both reflected orientations on same CCM carrier | **LEAN PROVED** | same |
+| Reflected radial cross-pairing equals nonintegrable `r^2` | **LEAN PROVED; POST-RESIDUE KREIN GRAM RETIRED** | same |
+| Pre-radial signed polar--Gamma shorting law | **OPEN PRODUCER** | must precede ordinary radial completion |

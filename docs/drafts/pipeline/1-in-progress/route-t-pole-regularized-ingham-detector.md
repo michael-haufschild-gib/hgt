@@ -272,3 +272,39 @@ fourth moment with the mollifier second moment to bound the raw critical error o
 windows, then prove Gaussian decay absorbs polynomial growth under arbitrary imaginary
 translation. Both public theorems are axiom-clean modulo Lean's standard `propext`,
 `Classical.choice`, and `Quot.sound`; module is umbrella-wired and target-built.
+
+### C5h: uniform translated critical Gaussian endpoint
+
+Status: **FORMALIZED; RIGHT TRANSLATED ENDPOINT REMAINS**.
+
+Three axiom-clean modules now close the full left endpoint required by concrete Gabriel
+interpolation:
+
+- `Sieve/InghamCriticalGlobalErrorMoment.lean` proves, uniformly for `4<=X<=N`,
+  ```text
+  integral_[-N,N] |zeta(1/2+it) M_X(1/2+it)-1|^(4/3) dt
+    <= C N^(251/250).
+  ```
+- `Sieve/InghamGaussianWindowAbsorption.lean` proves the universal translation invariant
+  ```text
+  exp(-(4/3) ((|tau|-X)_+/X)^2) ceil(|tau|+X)^(251/250)
+    <= K X^(251/250).
+  ```
+- `Sieve/InghamCriticalGaussianTranslatedMoment.lean` combines interval translation/inclusion,
+  the contractive pole-clearing factor, exact Gaussian modulus, and that absorption law to prove
+  for every point `z` on `Re z=1/2`
+  ```text
+  integral_[-X,X] |poleClearedGaussianError_X(z+it)|^(4/3) dt
+    <= C_left X^(251/250).
+  ```
+
+This proves the actual uniform left-moment premise, not an abstract adapter. Key new principle is
+that raw moments need only polynomial control on expanding symmetric windows; Gaussian damping
+then restores uniformity over all imaginary translates. Pointwise zeta growth is never inserted,
+so sharp `X` exponent survives. All modules are umbrella-wired, target-built, and depend only on
+Lean's standard `propext`, `Classical.choice`, and `Quot.sound`.
+
+Sole remaining input to the already-formal concrete Gabriel interpolation theorem is now the
+uniform translated right-edge `L2` estimate for the same Gaussian pole-cleared field. After it,
+center interpolation gives the formal `8263/11850` exponent; detector zero-density and prime
+supply still remain.

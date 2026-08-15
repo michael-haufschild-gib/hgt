@@ -2886,3 +2886,198 @@ boundary counterterm plus moving prime cutoff is exactly the continued Xi Ward c
 
 Formal source:
 `formal/GaloisForLFunctions/RHTower/CCMGuinandWeilArchimedeanOddSource.lean`.
+
+## C61 endpoint first jet and whole centered source matrix `[PROVED AND LEAN-FORMALIZED]`
+
+C60 exposed the diagonal Gamma endpoint as an order-one problem. For every differentiable real
+test `F`, the renormalized quotient has the universal right-endpoint law
+
+```text
+(exp(h/2)F(h)-F(0))/(exp(h)-exp(-h))
+  -> F'(0)/2+F(0)/4.                                           (C61.1)
+```
+
+For the physical tent--cosine test
+
+```text
+F_(a,n)(h)=2(1-h/(2a)) cos(pi*n*h/a),                           (C61.2)
+```
+
+Lean proves `F_(a,n)(0)=2` and `F'_(a,n)(0)=-1/a` for every integer mode. Hence
+
+```text
+renormalizedGammaEndpoint(a,n)=1/2-1/(2a),                     (C61.3)
+```
+
+independent of `n`. The singular diagonal has one aperture counterterm, not an unstructured family
+of mode counterterms.
+
+The polar--prime continuous functional reads `(C61.2)` exactly as the real critical-Mellin pairing.
+Adding the restricted-Weil Gamma first-jet action gives the full published diagonal. Extending the
+odd dictionary from natural to all integer modes and restricting to centered modes `{-N,...,N}`
+then yields
+
+```text
+ccmGuinandWeilCompletedCenteredSourceMatrix(a,N)
+  = ccmPublishedRestrictedWeilMatrix(a,N)                       (C61.4)
+```
+
+for every `a>0` and `N`. Equation `(C61.4)` is whole-matrix equality with pole, prime, odd-Gamma,
+and diagonal-Gamma channels retained before addition.
+
+**Conjecture passed.** Endpoint-renormalized weighted-cosine normalization and the complete finite
+source dictionary are closed. What remains is not another finite matrix formula but the connection
+of this distinguished mixed-order source path and its orientation.
+
+**Higher principle exposed.** Gamma odd and diagonal sectors are adjacent degrees of a graded
+distributional source complex. Sine vanishing lowers order; weighted-cosine retains the universal
+first jet. The finite matrix is the common quotient shadow of both degrees.
+
+**Next conjecture C62.** Differentiate the pre-quotient arithmetic source in aperture. First audit
+the moving prime cutoff: if floor truncation destroys ordinary differentiability, extract the exact
+event-wall residue and replace a naive smooth connection by its correct BV/jump connection. Compare
+that residue with the diagonal first jet and the already-formal continued Xi Ward column.
+
+Formal sources:
+`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilArchimedeanFirstJet.lean` and
+`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilCompletedCenteredSourceMatrix.lean`.
+
+## C62 four-unit prime-entry source--codiagonal incidence `[PROVED AND LEAN-FORMALIZED]`
+
+Naively differentiating the floor-truncated source globally conflates two aperture notions. A
+prime-power index `k>1` enters the moving physical horizon at
+
+```text
+a_k=log(k)/2,
+omega_k(a)=1-(log(k)/2)/a.                                     (C62.1)
+```
+
+Lean proves `omega_k(a_k)=0` and `omega'_k(a_k)=2/log(k)`. The actual single-atom contributions to
+the existing odd-source and diagonal reporters are
+
+```text
+b_(k,n)(omega)=-w_k sin(2*pi*n*omega)/pi,
+d_(k,n)(omega)=-2 w_k omega cos(2*pi*n*omega),                  (C62.2)
+```
+
+with `w_k=Lambda(k)/sqrt(k)`. Both vanish at the entry wall, so the new atom creates no value jump.
+Their event tangents are
+
+```text
+b'_(k,n)(a_k)=-4 n w_k/log(k),
+d'_(k,n)(a_k)=-4 w_k/log(k),
+b'_(k,n)(a_k)=n d'_(k,n)(a_k).                                 (C62.3)
+```
+
+The first-clock `n=1` odd entry value, one-sided slope, and prime-power tomography were already
+formalized in `CCMFirstClockPrimeEntrySlopeTomography` using full aperture `L=2a`. C62's new content
+is the literal Guinand--Weil reporter identification, arbitrary integer-mode law, weighted-cosine
+diagonal tangent, and source--codiagonal relation `(C62.3)`.
+
+The diagonal entry tangent is mode-independent, exactly like the Gamma diagonal first jet. The
+factor four is forced before matrix quotienting by Fourier phase and horizon-entry velocity.
+
+**Conjecture passed after pivot.** The cutoff does not erase first-order incidence; it concentrates
+it at arithmetic event walls. Ordinary smooth aperture transport is therefore the wrong global
+category. The correct connection must contain an absolutely continuous pole/Gamma part and atomic
+prime-entry residues satisfying `(C62.3)`.
+
+**Higher principle exposed.** Four-unit incidence is a local residue law of the source path, not a
+scalar property recovered from a finite matrix. Source and diagonal are the degree-one and
+degree-zero faces of the same prime-entry event. This explains both quotient nonselection and the
+persistence of a canonical incidence before quotient loss.
+
+**Next conjecture C63.** Construct the source path as a vector-valued BV/Stieltjes object. Prove its
+atomic derivative is the sum of C62 residues and its continuous derivative is the pole plus Gamma
+first-jet connection. Then identify the resulting completed connection, after centered Mellin
+continuation rather than floor truncation, with the corpus's
+`continuedPrimeArchSourceRelativeTrace` / Xi Ward column. The needed bridge must distinguish
+physical truncation aperture from the smooth Julia phase parameter and give a source-derived
+orientation; a mere equality of already-published matrices is insufficient.
+
+Formal source:
+`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPrimeEntryIncidence.lean`.
+
+## C63 rank-one whole-matrix event orientation `[PROVED AND LEAN-FORMALIZED]`
+
+C62's odd event tangent is linear in centered mode while its diagonal tangent is the same constant
+
+```text
+r_k=-4 criticalMellinAtomWeight(k)/log(k).                      (C63.1)
+```
+
+For the whole centered divided-difference packet, every off-diagonal derivative is therefore
+
+```text
+(c_i r_k-c_j r_k)/(c_i-c_j)=r_k,                               (C63.2)
+```
+
+and every diagonal derivative is already `r_k`. Lean proves the entrywise matrix identity
+
+```text
+T_(k,N)=r_k vecMulVec(e,e),                                     (C63.3)
+```
+
+where `e` is the constant CCM boundary vector. It also proves `rank(T_(k,N))<=1`.
+
+For a genuine prime power, `criticalMellinAtomWeight(k)>0` and `log(k)>0`, hence `r_k<0`. The exact
+quadratic form is
+
+```text
+v^T T_(k,N) v=r_k (sum_i v_i)^2 <= 0.                           (C63.4)
+```
+
+**Conjecture passed and strengthened.** Atomic prime-entry incidence is not only canonical; it is
+negative semidefinite on the whole finite packet and supported on one fixed boundary line. The
+divided-difference quotient preserves rather than obscures this source-derived orientation.
+
+**Higher principle exposed.** Every prime event is a rank-one boundary contraction. Arithmetic
+complexity remains entirely in scalar event rate and event location; matrix direction is universal.
+Thus the atomic part of the desired BV connection should factor as one scalar Stieltjes measure
+times the fixed projector `vecMulVec(e,e)`.
+
+**Next conjecture C64.** Prove the finite and locally finite aggregate factorization of all prime
+events, obtaining a scalar positive atomic variation measure and a negative rank-one matrix-valued
+derivative. Then compute the continuous pole/Gamma aperture derivative in the same boundary/interior
+decomposition and test whether its centered Mellin continuation is the existing Xi Ward column.
+
+Formal source:
+`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPrimeEntryRankOneTangent.lean`.
+
+## C64 finite atomic connection factorization `[PROVED AND LEAN-FORMALIZED]`
+
+Since every C63 event tangent uses the same boundary projector, any finite event set `S` satisfies
+
+```text
+R_S=sum_(k in S) -4 criticalMellinAtomWeight(k)/log(k),
+T_(S,N)=R_S vecMulVec(e,e).                                    (C64.1)
+```
+
+Lean proves `(C64.1)` and `rank(T_(S,N))<=1`. For every index `k>1`, von-Mangoldt nonnegativity and
+`log(k)>0` give a nonpositive event rate, whether or not `k` is a prime power. Therefore
+
+```text
+v^T T_(S,N) v=R_S (sum_i v_i)^2 <= 0                           (C64.2)
+```
+
+whenever `S` contains only indices above one. In particular, `(C64.2)` holds unconditionally for
+the literal visible cutoff `S={2,...,floor(exp(2a))}` at every aperture.
+
+**Conjecture passed.** Finite atomic part of the proposed BV connection is fully factorized and
+oriented. No matrix-valued variation complexity remains: arithmetic locations and masses form one
+scalar negative event stream, while matrix geometry is the fixed constant-boundary projector.
+
+**Higher principle exposed.** Prime source complexity and CCM matrix geometry separate exactly.
+Atomic arithmetic is a scalar Stieltjes connection; the universal four-unit incidence functor sends
+it to one rank-one boundary contraction. This is the pre-quotient selection datum that finite matrix
+inversion could never recover.
+
+**Next conjecture C65.** Compute the continuous aperture derivative of pole and Gamma channels on
+the centered packet. Test whether it splits into the same boundary projector plus a zero-sum
+interior connection. Then continue the scalar prime event stream and continuous Gamma connection in
+the centered Mellin variable and identify their sum with
+`continuedPrimeArchSourceRelativeTrace` / Xi Ward transport. The remaining sign question is the
+continuous interior part, not the atomic prime events.
+
+Formal source:
+`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPrimeEntryAtomicConnection.lean`.

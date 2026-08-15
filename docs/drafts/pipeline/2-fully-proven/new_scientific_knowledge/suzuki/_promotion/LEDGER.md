@@ -7552,3 +7552,122 @@ the normalized multiplier is a bounded operator of norm at most `S`
 (`re_inner_gammaJumpNormalizedMulCLM_nonneg`), the `σ = 0` endpoint `κ₀ = 0`, `Re⟨RU,U⟩ ≥ 0`.
 
 Every declaration named here audits to `[propext, Classical.choice, Quot.sound]`.
+
+## WW. The Matveev dependency of `log-recurrence-polynomial-carrier-trichotomy`
+
+That card's `(5)` — `τ₀(ν) ≤ C log(2+|ν|₁)` for `ℓ(ν) = Σ νₚ log p` — is Baker's theorem in
+*effective* form.  The elementary route gives only the exponential Liouville bound
+`|ℓ(ν)| ≥ Q^{−|ν|₁}`, which yields finite exponential recurrence type `R(a) < ∞` but not the finite
+**logarithmic** type `T_log(a) < ∞` the card admits on.
+
+The corpus already proves the *qualitative* theorem unconditionally
+(`RHTower.bakerLinearIndependence_holds`, on `RHTower/BakerProof/`), but from an exactly vanishing
+relation, so it gives no lower bound.  The effective form is being built as its own pipeline card,
+`docs/drafts/pipeline/1-in-progress/effective-baker-matveev-linear-forms.md`, with
+
+```text
+RHTower/Matveev/LinearFormBasic.lean   statement, S-unit decomposition, Liouville baseline,
+                                       and the large-height reduction
+RHTower/Matveev/SmallForm.lean         the maximal-pivot small form and its perturbed
+                                       normalization `log p_pivot = −Σ normCoeff·log p + Λ/b_pivot`
+```
+
+closed and audited.  Until that card reaches its terminal theorem,
+`suzuki-log-recurrence-polynomial-carrier-trichotomy` stays at stage 2.
+
+## XX. The Gamma commutator convolution envelope — `(7)` of `flat-primitive-flux-volterra-liouville`
+
+```text
+RHTower/SuzukiGammaCommutatorConvolution.lean
+```
+
+Audit of that card shows it is far closer than the FQ table recorded: `HTGeometry/FlatVolterraDecay.lean`
+(the flat Volterra lemma), `RHTower/SuzukiFlatPrimitiveFluxAssembly.lean`
+(`flat_flux_exponential_decay` — the coupled block system `(11)`+`(13)` ⟹ `(21)`,
+`terminal_flux_eq_neg_integral` = `(12)`, `expEnvelope` and its decay lemma = `(8)`),
+`RHTower/SuzukiFlatFluxChargeAutomatic.lean` (`(11a)`), and
+`HTGeometry/CoerciveResolutionBound.lean` (`(10)` in abstract form) are all already unconditional.
+The card's own §10 names the remaining debt: "full Bochner/Gamma application".
+
+The new module supplies its analytic core.  Each cutoff difference across a gap `s` cancels the
+Gamma kernel's singularity at the origin and inherits its exponential decay past it
+(`gammaJumpKernel_mul_cutoffDiff_le`), so
+
+```text
+‖[R,χ]F(L)‖ₑ ≤ ∫⁻_{s>0} 4Λe^{-s} (‖F(L+s)‖ₑ + ‖F(L−s)‖ₑ) ds
+```
+
+(`enorm_gammaWallCommutator_le_lintegral`), a convolution against a fixed kernel whose one-sided
+mass is exactly `4Λ` (`lintegral_exp_envelope`).  Everything is in `ℝ≥0∞`, so no integrability or
+measurability hypothesis on `F` is needed.
+
+What remains for `(7)` itself is the block refinement: Cauchy–Schwarz on each unit interval turns
+the convolution bound into `‖[R,χ_n]F‖_{L²} ≤ C Σ_m e^{-μ|n-m|}‖F‖_{L²(I_m)}`, which is the
+exponentially localized block matrix `flat_flux_exponential_decay` already consumes.
+
+## YY. `(7)` is closed — the Gamma commutator's exponentially localized block matrix
+
+```text
+RHTower/SuzukiGammaCommutatorBlock.lean
+```
+
+`blockNormSq`/`blockNorm` are the `L²` mass of a profile on the unit block `[m,m+1)`, and
+
+```text
+‖[R,χ]F(L)‖ₑ ≤ Σ_{m∈ℤ} 4Λe·e^{−|n−m|} · ‖F‖_{L²([m,m+1))},   L ∈ [n,n+1]
+```
+
+is `enorm_gammaWallCommutator_le_blockSum` — exactly `(7)` of
+`flat-primitive-flux-volterra-liouville`, and exactly the exponentially localized block matrix
+`expEnvelope` and `flat_flux_exponential_decay` consume.
+
+Three steps.  The convolution bound of section XX is turned into an integral against `t` by the
+reflection-translation invariance of Lebesgue measure (`lintegral_sub_left_eq_self`).  The line is
+then cut into the unit blocks `Ico m (m+1)`, which tile it disjointly
+(`pairwise_disjoint_unitBlocks`, `iUnion_Ico_intCast`), so the integral is the sum of the block
+integrals (`lintegral_iUnion`).  On a pair of blocks the kernel is almost constant, because
+`|L−t| ≥ |n−m| − 1` costs exactly one factor `e` (`gammaCommKernel_block_le`), and on a block of
+length one Cauchy–Schwarz turns the `L¹` mass into the `L²` mass with no constant at all
+(`lintegral_block_le_blockNorm`, from the corpus `lintegral_weighted_sq_le` with unit weight).
+
+The unlocalized form `‖[R,χ]F‖_{L²} ≤ 8Λ‖F‖_{L²}` is `lintegral_enorm_sq_gammaWallCommutator_le`
+in section XX, by Young against the two-sided kernel of mass `8Λ`.
+
+What remains on that card is the operator assembly: `(9)` + `(10)` + `(7)` ⟹ `(11)` and
+`(12)` + the block decay of `D` ⟹ `(13)`, after which `flat_flux_exponential_decay` gives `(21)`
+and `(22)`.
+
+## ZZ. The envelope algebra — the absorption engine behind `(11)`
+
+```text
+HTGeometry/ExpEnvelopeAlgebra.lean
+```
+
+`expEnvelopeZ μ a n = Σ_{m∈ℤ} e^{−μ|n−m|} a_m`, stated in `ℝ≥0∞` so that no summability hypothesis
+is needed anywhere.  It is monotone, additive, homogeneous, and dominates its argument.
+
+The load-bearing fact is the **mixed-rate composition bound**.  Composing two envelopes of the
+*same* rate degrades it — `expEnvelopeZ_comp_le` gives only `E_μ ∘ E_μ ≤ S·E_{μ/2}`, because the
+diagonal is summed over — and a degrading rate cannot be absorbed, since `E_{μ/2} ≥ E_μ`.  The fix
+is to compose *different* rates: from
+
+```text
+ν|n−m| + μ|m−j| = ν(|n−m|+|m−j|) + (μ−ν)|m−j| ≥ ν|n−j| + (μ−ν)|m−j|
+```
+
+one gets `E_ν ∘ E_μ ≤ expRowMass(μ−ν) · E_ν` (`expEnvelopeZ_comp_le_mixed`) with **no loss of the
+outer rate**, and `expRowMass ρ = Σ_{k∈ℤ}e^{−ρ|k|}` is finite for `ρ > 0`
+(`expRowMass_ne_top`, via the two-sided geometric series).
+
+`expEnvelopeZ_absorb` is then the sequence engine of `(11)`: if
+
+```text
+f_m ≤ α_m + b · (E_μ f)_m   for every m,   b · expRowMass(μ−ν) ≤ 1/2,   (E_ν f)_n ≠ ⊤,
+```
+
+then `(E_ν f)_n ≤ 2 (E_ν α)_n`.  The smallness of `b` is exactly what the card's growing
+coefficient `2(n−1) − ‖B‖` supplies on the terminal ray.
+
+This meets `enorm_gammaWallCommutator_le_blockSum` of section YY, whose right-hand side is
+`4Λe · expEnvelopeZ 1 (blockNorm F) n`: the commutator produces an envelope at rate `1`, and the
+absorption consumes it at any rate `ν < 1`.

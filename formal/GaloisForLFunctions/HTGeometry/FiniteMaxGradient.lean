@@ -117,6 +117,30 @@ theorem lipschitzWith_finiteMax {X : ι → E → ℝ} {L : NNReal}
   have := (h z).dist_le_mul x y
   rwa [Real.dist_eq] at this
 
+theorem abs_finiteMax_sub_finiteMax_le_of_family (X Y : ι → E → ℝ) (x : E) :
+    |finiteMax X x - finiteMax Y x| ≤
+      Finset.univ.sup' Finset.univ_nonempty fun z => |X z x - Y z x| := by
+  have hbound : ∀ P Q : ι → E → ℝ, finiteMax P x - finiteMax Q x ≤
+      Finset.univ.sup' Finset.univ_nonempty fun z => |P z x - Q z x| := by
+    intro P Q
+    obtain ⟨z, hz⟩ := exists_eq_finiteMax P x
+    have h1 : Q z x ≤ finiteMax Q x := le_finiteMax Q x z
+    have h2 : P z x - Q z x ≤ |P z x - Q z x| := le_abs_self _
+    have h3 : |P z x - Q z x| ≤ Finset.univ.sup' Finset.univ_nonempty
+        fun w => |P w x - Q w x| :=
+      Finset.le_sup' (fun w => |P w x - Q w x|) (Finset.mem_univ z)
+    rw [← hz]
+    linarith
+  have hsymm : (Finset.univ.sup' Finset.univ_nonempty fun z => |Y z x - X z x|) =
+      Finset.univ.sup' Finset.univ_nonempty fun z => |X z x - Y z x| := by
+    refine Finset.sup'_congr _ rfl fun z _ => ?_
+    rw [abs_sub_comm]
+  rw [abs_le]
+  refine ⟨?_, hbound X Y⟩
+  have := hbound Y X
+  rw [hsymm] at this
+  linarith
+
 end FiniteMax
 
 end GaloisForLFunctions.HTGeometry
