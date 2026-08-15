@@ -670,3 +670,46 @@ pairings of the profile against fixed Gaussian-decaying weights — the numerato
 `ξ²(ξ²−2n−1)φₙ + 2ξφₙ′` and the denominator against `φₙ` — plus the decay hypotheses that make the
 two integrations by parts legitimate.  That is a non-degeneracy statement about one function against
 one fixed weight, not an asymptotic expansion.
+
+## Lean progress — the eigenvalue half of the prolate-to-Hermite gate closes
+
+The residue recorded in the previous section was a lower bound on `|⟨u, φₙ⟩|`, uniform in the
+bandwidth.  It is not an obstruction: the Hermite rescaling *flattens* the profile, so the pairing
+has an explicit limit.
+
+`GaloisForLFunctions/RHTower/ProlateCentreValuePairing.lean` (wired):
+
+```text
+tendsto_div_sqrt_atTop            ξ/√c → 0
+tendsto_integral_rescaled_mul     ∫ Φ(ξ/√c) W(ξ) dξ ⟶ Φ(0) · ∫ W        (W integrable)
+tendsto_zero_of_ladderPin
+    d(c)·⟨u_c, V⟩ = ⟨u_c, W⟩/c ,  Φ(0)·∫V ≠ 0   ⟹   d(c) → 0
+```
+
+The pairing limit is dominated convergence with the two cheapest possible hypotheses on `Φ`:
+continuity at the origin and boundedness.  Both are free — the profile is continuous by
+construction, and `abs_le_of_bandTransform_eigen` makes it decay, hence bounded.
+
+Applied to the ladder pin with `V = φₙ` and `W = ξ²(ξ²−2n−1)φₙ + 2ξφₙ′`, the denominator pairing
+tends to `Φ(0)·∫φₙ` and the numerator pairing stays bounded, so
+
+```text
+c·s(c) − (2n+1) ⟶ 0 .
+```
+
+The nonvanishing hypothesis `Φ(0)·∫φₙ ≠ 0` is not an extra asymptotic input.  `∫φₙ ≠ 0` holds for
+the even Hermite indices this card uses.  And `Φ(0) ≠ 0` follows from the data already in hand,
+by ODE uniqueness rather than by assumption: the profile is **even**, so `Φ′(0) = 0`; the prolate
+equation `(1 − x²)Φ″ − 2xΦ′ − c²x²Φ = χΦ` has leading coefficient `1` at `x = 0`, so the origin is
+an ordinary point; hence `Φ(0) = 0` together with `Φ′(0) = 0` would force `Φ ≡ 0`, contradicting
+`Φ ≠ 0`.
+
+(An earlier draft of this note claimed `Φ(0) ≠ 0` was supplied by
+`exists_even_prolateHermiteRescale_of_signedMode`'s hypothesis `evenProlateSignedValue a n ≠ 0`.
+That is not so: `evenProlateSignedValue` is the signed *eigenvalue* `sgVal (evenTimeBandFourier a) n`,
+not the centre value.  The uniqueness argument above is what supplies it.)
+
+**Status of this card's gate.**  The *eigenvalue* half of the prolate-to-Hermite limit —
+`c·s(c) → 2n+1`, equivalently the fixed-index prolate eigenvalue asymptotic at leading order — is
+now a Lean theorem given the instantiation.  What the card still needs beyond it is the
+*eigenvector* half, `ℓ_j(λ) → |ĥ_{4j}(0)|`, and the Fuchs identification of the leakage rates.

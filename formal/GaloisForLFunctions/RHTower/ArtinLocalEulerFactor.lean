@@ -58,6 +58,19 @@ theorem localEulerPolynomial_eval_zero
 
 end FiniteDimensional
 
+section FiniteImage
+
+variable [Finite D]
+
+/-- The action induced on inertia invariants still has finite order.  This is the finite-image
+input behind root-free local Euler factors in the absolute-convergence half-plane. -/
+theorem toInvariants_pow_natCard_eq_one
+    (ρ : Representation k D V) (I : Subgroup D) [I.Normal] (φ : D) :
+    (Representation.toInvariants ρ I φ) ^ Nat.card D = 1 := by
+  rw [← map_pow, pow_card_eq_one', map_one]
+
+end FiniteImage
+
 /-- Inertia acts trivially on its invariant subrepresentation. -/
 theorem toInvariants_frobenius_right_mul
     (ρ : Representation k D V) (I : Subgroup D) [I.Normal]
@@ -123,6 +136,13 @@ noncomputable def frobeniusInertiaAction
 section FiniteDimensional
 
 variable [FiniteDimensional ℂ V]
+
+/-- The actual arithmetic Frobenius action on inertia invariants has finite order. -/
+theorem frobeniusInertiaAction_pow_natCard_eq_one
+    (Q : Ideal S) [Q.IsPrime] [Finite (S ⧸ Q)]
+    (ρ : Representation ℂ G V) :
+    (frobeniusInertiaAction (R := R) Q ρ) ^ Nat.card (MulAction.stabilizer G Q) = 1 := by
+  exact toInvariants_pow_natCard_eq_one _ _ _
 
 /-- The Artin local Euler polynomial attached to Mathlib's actual arithmetic Frobenius at `Q`. -/
 noncomputable def frobeniusInertiaEulerPolynomial

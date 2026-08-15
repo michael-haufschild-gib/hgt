@@ -96,6 +96,9 @@ silently normalize them away.
 - Exact affine-Gamma principal coefficients
   `(-1)^n/(n! b)` at that lattice:
   `RHTower/SelbergClass/AffineGammaResidues.lean`.
+- Sharp scalar Barnes two-Gamma/cpow vertical-tail majorant at the full
+  sector threshold `|arg η|<π`:
+  `RHTower/SelbergClass/BarnesTwoGammaTail.lean`.
 - Lean counterexample showing why an accumulating complex hyperplane is not a
   several-variable uniqueness set:
   `MultivariableVitaliAccumulationCounterexample.lean`.
@@ -288,6 +291,12 @@ The finite-fibre trace is therefore a `[BRIDGE]`, while this card is
   or a K–P contour shift.  The infinite-line passage remains blocked by a
   two-Gamma tail estimate for `|arg η|<π`; the existing one-Gamma sector bound
   only covers `|arg η|<π/2`, while the source's `η=iω_X` need not lie there.
+- 2026-08-15 — `RHTower/SelbergClass/BarnesTwoGammaTail.lean` closed that
+  pointwise tail gap at the correct threshold: for `0<c<Re ξ` and
+  `|arg η|<π`, the scalar Barnes integrand is bounded by
+  `C |t|^N exp(-(π-|arg η|)|t|)` once `|t|≥|Im ξ|+1`.  Full line
+  integrability and the infinite-rectangle limit remain to be assembled from
+  this bound; neither was asserted prematurely.
 
 ## Source-correction ledger
 

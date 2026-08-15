@@ -12,6 +12,7 @@ import GaloisForLFunctions.RHTower.SelbergClass.AsymmetricFunctionalEquation
 import GaloisForLFunctions.RHTower.SelbergClass.GammaTailRegularity
 import GaloisForLFunctions.RHTower.SelbergClass.GammaTailDecay
 import GaloisForLFunctions.RHTower.SelbergClass.GammaTailDecayProduct
+import GaloisForLFunctions.RHTower.SelbergClass.BarnesTwoGammaTail
 import GaloisForLFunctions.RHTower.SelbergClass.AffineGammaPoleLattice
 import GaloisForLFunctions.RHTower.SelbergClass.AffineGammaResidues
 import GaloisForLFunctions.RHTower.SelbergClass.TwistFrontierData

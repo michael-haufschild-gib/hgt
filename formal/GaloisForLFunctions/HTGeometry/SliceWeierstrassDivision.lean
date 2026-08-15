@@ -387,6 +387,7 @@ namespace HTGeometry
 
 open Complex Metric Set
 open scoped Real Topology
+open GaloisForLFunctions.HTGeometry (dividedDifferenceCoeff)
 
 variable {n : ℕ}
 
@@ -413,5 +414,109 @@ theorem sliceDivRemainderCoeff_eq_integral (f g : (Fin (n + 1) → ℂ) → ℂ)
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [sliceWeierstrassCoeff, hcard]
   rw [sliceDivRemainderCoeff, hfun]
+
+end HTGeometry
+
+namespace HTGeometry
+
+open Complex Metric Set
+open scoped Real Topology
+
+variable {n : ℕ}
+
+theorem differentiableOn_divRemIntegrand {f g : (Fin (n + 1) → ℂ) → ℂ}
+    {U : Set (Fin (n + 1) → ℂ)} {V : Set (Fin n → ℂ)}
+    (hU : IsOpen U) (hV : IsOpen V) (hf : DifferentiableOn ℂ f U) (hgU : DifferentiableOn ℂ g U)
+    {t : ℝ} (ht : 0 < t)
+    (hdisc : ∀ y ∈ V, ∀ z : ℂ, ‖z‖ ≤ t → (Fin.cons z y : Fin (n + 1) → ℂ) ∈ U)
+    (hnez : ∀ y ∈ V, ∀ ζ : ℂ, ‖ζ‖ = t → f (Fin.cons ζ y) ≠ 0)
+    (hadm : ∀ y ∈ V, SliceAdmissible f t y) (hVconn : IsPreconnected V)
+    {y₀ : Fin n → ℂ} (hy₀ : y₀ ∈ V) (d k : ℕ) :
+    DifferentiableOn ℂ (divRemIntegrand f g t d k)
+      (U ∩ ({w : Fin (n + 1) → ℂ | Fin.tail w ∈ V} ∩
+        (sliceWeierstrass f t) ⁻¹' {(0 : ℂ)}ᶜ)) := by
+  classical
+  set Wv : Set (Fin (n + 1) → ℂ) := {w : Fin (n + 1) → ℂ | Fin.tail w ∈ V} with hWv
+  set S : Set (Fin (n + 1) → ℂ) := U ∩ (Wv ∩ (sliceWeierstrass f t) ⁻¹' {(0 : ℂ)}ᶜ) with hS
+  have hSU : S ⊆ U := fun w hw => hw.1
+  have hSWv : S ⊆ Wv := fun w hw => hw.2.1
+  have htail : DifferentiableOn ℂ (fun w : Fin (n + 1) → ℂ => Fin.tail w) S :=
+    ((tailLin : (Fin (n + 1) → ℂ) →L[ℂ] (Fin n → ℂ)).differentiable).differentiableOn
+  have hmaps : Set.MapsTo (fun w : Fin (n + 1) → ℂ => Fin.tail w) S V := fun w hw => hw.2.1
+  have hproj : DifferentiableOn ℂ (fun w : Fin (n + 1) → ℂ => w 0) S :=
+    ((ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : Fin (n + 1) => ℂ)
+      (0 : Fin (n + 1))).differentiable).differentiableOn
+  have hterm : ∀ j ∈ Finset.Ico (k + 1) (d + 1), DifferentiableOn ℂ (fun w : Fin (n + 1) → ℂ =>
+      ((-1 : ℂ) ^ (d - j) * (sliceRoots f t (Fin.tail w)).esymm (d - j)) * (w 0) ^ (j - 1 - k)) S := by
+    intro j _
+    have hesymm : DifferentiableOn ℂ (fun w : Fin (n + 1) → ℂ =>
+        (sliceRoots f t (Fin.tail w)).esymm (d - j)) S :=
+      (differentiableOn_esymm_sliceRoots hU hV hf ht hdisc hnez hadm (d - j)).comp htail hmaps
+    exact (hesymm.const_mul ((-1 : ℂ) ^ (d - j))).mul (hproj.pow (j - 1 - k))
+  have hsum := DifferentiableOn.sum (u := Finset.Ico (k + 1) (d + 1))
+    (A := fun j (w : Fin (n + 1) → ℂ) =>
+      ((-1 : ℂ) ^ (d - j) * (sliceRoots f t (Fin.tail w)).esymm (d - j)) * (w 0) ^ (j - 1 - k))
+    hterm
+  have hfun : (∑ j ∈ Finset.Ico (k + 1) (d + 1),
+      fun w : Fin (n + 1) → ℂ =>
+        ((-1 : ℂ) ^ (d - j) * (sliceRoots f t (Fin.tail w)).esymm (d - j)) * (w 0) ^ (j - 1 - k))
+      = fun w : Fin (n + 1) → ℂ => ∑ j ∈ Finset.Ico (k + 1) (d + 1),
+          ((-1 : ℂ) ^ (d - j) * (sliceRoots f t (Fin.tail w)).esymm (d - j)) *
+            (w 0) ^ (j - 1 - k) := by
+    funext w
+    rw [Finset.sum_apply]
+  rw [hfun] at hsum
+  have hWS : DifferentiableOn ℂ (sliceWeierstrass f t) S :=
+    (differentiableOn_sliceWeierstrass hU hV hf ht hdisc hnez hadm hVconn hy₀).mono hSWv
+  have hWne : ∀ w ∈ S, sliceWeierstrass f t w ≠ 0 := fun w hw => hw.2.2
+  exact ((hgU.mono hSU).mul hsum).div hWS hWne
+
+/-- **The remainder coefficients are holomorphic in the parameters.** -/
+theorem differentiableAt_sliceDivRemainderCoeff {f g : (Fin (n + 1) → ℂ) → ℂ}
+    {U : Set (Fin (n + 1) → ℂ)} {V : Set (Fin n → ℂ)}
+    (hU : IsOpen U) (hV : IsOpen V) (hf : DifferentiableOn ℂ f U) (hgU : DifferentiableOn ℂ g U)
+    {t : ℝ} (ht : 0 < t)
+    (hdisc : ∀ y ∈ V, ∀ z : ℂ, ‖z‖ ≤ t → (Fin.cons z y : Fin (n + 1) → ℂ) ∈ U)
+    (hnez : ∀ y ∈ V, ∀ ζ : ℂ, ‖ζ‖ = t → f (Fin.cons ζ y) ≠ 0)
+    (hadm : ∀ y ∈ V, SliceAdmissible f t y) (hVconn : IsPreconnected V)
+    {y₀ : Fin n → ℂ} (hy₀ : y₀ ∈ V) (k : ℕ) :
+    DifferentiableAt ℂ (fun y : Fin n → ℂ => sliceDivRemainderCoeff f g t y k) y₀ := by
+  classical
+  set d : ℕ := Multiset.card (sliceRoots f t y₀) with hd
+  have hcard : ∀ y ∈ V, Multiset.card (sliceRoots f t y) = d := fun y hy =>
+    card_sliceRoots_const_of_isPreconnected hU hV hf ht hdisc hnez hadm hVconn hy hy₀
+  set Wv : Set (Fin (n + 1) → ℂ) := {w : Fin (n + 1) → ℂ | Fin.tail w ∈ V} with hWv
+  have hWvopen : IsOpen Wv := by
+    have hcont : Continuous fun w : Fin (n + 1) → ℂ => Fin.tail w :=
+      (tailLin : (Fin (n + 1) → ℂ) →L[ℂ] (Fin n → ℂ)).continuous
+    exact hV.preimage hcont
+  have hWdiff : DifferentiableOn ℂ (sliceWeierstrass f t) Wv :=
+    differentiableOn_sliceWeierstrass hU hV hf ht hdisc hnez hadm hVconn hy₀
+  set N : Set (Fin (n + 1) → ℂ) := Wv ∩ (sliceWeierstrass f t) ⁻¹' {(0 : ℂ)}ᶜ with hN
+  have hNopen : IsOpen N :=
+    hWdiff.continuousOn.isOpen_inter_preimage hWvopen isOpen_compl_singleton
+  have hΩopen : IsOpen (U ∩ N) := hU.inter hNopen
+  have hint : DifferentiableOn ℂ (divRemIntegrand f g t d k) (U ∩ N) :=
+    differentiableOn_divRemIntegrand hU hV hf hgU ht hdisc hnez hadm hVconn hy₀ d k
+  have hmemU : ∀ (θ : ℝ) (y : Fin n → ℂ), y ∈ V →
+      (Fin.cons (circleMap 0 t θ) y : Fin (n + 1) → ℂ) ∈ U ∩ N := by
+    intro θ y hy
+    have hζt : ‖circleMap 0 t θ‖ = t := by simpa using abs_of_pos ht
+    refine ⟨hdisc y hy _ (le_of_eq hζt), ?_, ?_⟩
+    · rw [hWv, Set.mem_setOf_eq, Fin.tail_cons]
+      exact hy
+    · exact sliceWeierstrass_ne_zero_of_norm_eq ht (hadm y hy) hζt
+  have hcirc := differentiableAt_circleIntegral_slice_open hΩopen hV hint ht
+    (fun _ => (1 : ℂ)) (by fun_prop) hmemU hy₀
+  have hcongr : (fun y : Fin n → ℂ =>
+      ∮ ζ in C(0, t), (1 : ℂ) • divRemIntegrand f g t d k (Fin.cons ζ y))
+      = fun y : Fin n → ℂ => ∮ ζ in C(0, t), divRemIntegrand f g t d k (Fin.cons ζ y) := by
+    funext y
+    simp
+  rw [hcongr] at hcirc
+  have hscaled := hcirc.const_mul (2 * (Real.pi : ℂ) * Complex.I)⁻¹
+  refine hscaled.congr_of_eventuallyEq ?_
+  filter_upwards [hV.mem_nhds hy₀] with y hy
+  exact sliceDivRemainderCoeff_eq_integral f g t y (hcard y hy) k
 
 end HTGeometry
