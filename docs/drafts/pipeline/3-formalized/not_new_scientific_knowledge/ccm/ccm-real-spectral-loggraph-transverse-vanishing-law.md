@@ -123,3 +123,38 @@ No such identification is currently available.
 - [x] periodic-pencil dimension kept separate from Hardy channel count
 - [ ] prove the CCM divisor limit or the cofinal Weil floor
 - [ ] RH
+
+## Lean status
+
+`[FORMALIZED]` — module `formal/GaloisForLFunctions/RHTower/CCMRealSpectralLogGraph.lean`
+(4 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
+`formal/GaloisForLFunctions/RHTower.lean`).
+
+What is proved in Lean:
+
+- `antiCausal_coordinate_ne_zero` — **equation (7), nonvanishing**: the anti-causal rank-one
+  coordinate `x ↦ c/(x-w)` attached to an upper half-plane pole is a nonzero function whenever the
+  residue is nonzero.  The exact causal/anti-causal split of the Cauchy insertion itself is
+  `CCMTwoChannelGraph.cauchy_insertion_split` (card
+  `ccm-logderivative-closed-two-channel-graph-law`), reused here.
+- `cauchy_coeff_eq_zero_of_vanishing_on_real` — **section 2, independence step**: a finite
+  combination of Cauchy kernels with *distinct non-real* poles that vanishes on the whole real line
+  has all coefficients zero.  This is the "distinct pole coordinates cannot cancel" step that turns
+  one nonzero evaluation coordinate per off-line zero into nonvanishing of the operator.  The proof
+  clears denominators into a polynomial identity, uses that a polynomial vanishing on ℝ is zero, and
+  evaluates at each pole.
+- `eq_zero_of_tendsto_of_forall_eq_zero` — **equations (8)–(9)**: a convergent family of zero
+  operators has zero limit, so graph-core convergence from identically-zero finite stages forces the
+  limit to vanish.
+- `eq_zero_of_forall_compression_zero` — **section 3, compression step**: if every compression
+  `Q_u D` vanishes and the compressions converge back, then `D = 0`.  Together with the previous
+  item this is exactly the card's deduction `(8)` + `(9)` ⟹ `D_Ξ = 0` ⟹ RH.
+
+Deliberately outside the Lean statement (cited parents, not results of this card):
+
+- the Smirnov maximum principle and the Smirnov-class membership of the logarithmic derivative of a
+  real-rooted Cartwright product, i.e. `(4)` and hence `(3)`;
+- the Hardy characterization of zero Hankel symbols;
+- the analytic construction of the closed anti-causal operator `D_Ξ` from its maximal
+  multiplication domain, and the equivalence `(6)` itself;
+- the CCM simple-even hypothesis and the removal of the aperture phase in section 3.

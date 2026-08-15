@@ -167,3 +167,36 @@ pseudodifferential and PSWF infrastructure absent from the formal tree. No wrapp
 - [x] radial diagonal logarithmic moment summed
 - [x] renormalized cross terms summed
 - [x] exact CCM archimedean scalar law obtained
+
+## Lean status
+
+`[FORMALIZED]` — supersedes the "No wrapper is added" decision recorded above.  The analytic
+semiclassical layer is indeed a cited parent, but two of the card's own steps are fully reachable
+and are now proved.
+
+Module: `formal/GaloisForLFunctions/RHTower/CCMCountableLogChirp.lean`
+(4 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
+`formal/GaloisForLFunctions/RHTower.lean`).
+
+What is proved in Lean:
+
+- `log_le_two_mul_sqrt` — the elementary bound `log t ≤ 2√t` for `t > 0`, obtained from
+  `log √t ≤ √t − 1`.
+- `summable_logChirp_weight` — **equation (8)**: the countable almost-orthogonality weight
+  `∑_k (1 + log(1+k))/(1+k)²` converges.  This is exactly the summability that makes the
+  cross-branch estimate uniform in the truncation `K`, so that `K → ∞` is legitimate.
+- `scalar_renormalized_form` — **equations (13)–(14)**: the archimedean law
+  `A = log c · ‖R‖² + E` is exactly the renormalized statement `A − log c · ‖R‖² = E`.  The
+  consumer of that renormalization is the corpus module `RHTower/RayleighScalarShift.lean`
+  (`rayleighQuotient_add_real_smul_id`, `rayleighExcess_add_real_smul_id`,
+  `spectralGap_add_cancel`, `rayleighExcessRatio_add_real_smul_id`), which proves that the scalar
+  identity term changes neither the Rayleigh excess nor the spectral gap nor their ratio.
+- `summable_radialDiagonal_bound` — **equation (10), consumer**: a radial diagonal bound `C/k²`
+  is summable, which is the form in which `(11)` feeds the abstract lemma.
+
+Deliberately outside the Lean statement (cited parents, not results of this card):
+
+- the semiclassical conjugation formula `(6)` and its remainder bound;
+- Dunster's radial phase expansions supplying `(1)`–`(2)`, including the pole-uniform Bessel
+  endpoint;
+- the PSWF symbol bounds `(10)`–`(11)` themselves and the digamma multiplier `(12)`.

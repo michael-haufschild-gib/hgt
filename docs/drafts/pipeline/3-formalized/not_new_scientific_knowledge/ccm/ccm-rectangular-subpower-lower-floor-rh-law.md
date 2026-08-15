@@ -166,3 +166,27 @@ rectangular Weil values.
 - [x] fixed-exponent horizontal zero-free conclusion `(3)` formalized
 - [ ] derive one source-defined subpower lower floor
 - [ ] RH
+
+## Lean status
+
+`[FORMALIZED]` — verified complete. The three modules named in the "Lean decision" section above
+exist, are wired into `formal/GaloisForLFunctions/RHTower.lean`, and every declaration in them is
+unconditional with axioms exactly `[propext, Classical.choice, Quot.sound]` (18 theorems audited):
+
+- `formal/GaloisForLFunctions/RHTower/CCMRectangularSubpowerLowerGate.lean` —
+  `riemannHypothesis_of_xiRectangularRightSubpowerLower` and
+  `riemannHypothesis_of_xiRectangularWeilTailSubpowerLower`, together with the power-corrected
+  Landau coefficient, its Dirichlet-series continuation
+  (`LSeries_xiRectangularPowerLandauCoefficient_eq_continuation`), the differentiability of the
+  continuation on the Landau ball, and the left-summability transfer.  This is `(4)`, `(10)`–`(12)`
+  and the scale-local Landau step.
+- `formal/GaloisForLFunctions/RHTower/CCMRectangularPowerLowerZeroFree.lean` —
+  `xiRightTransverseSup_le_of_xiRectangularRightPowerLower` and
+  `xiRightCenteredZero_re_le_of_xiRectangularRightPowerLower`, the fixed-exponent quantitative
+  conclusion `(3)`/`(13)` on the divisor carrier.
+- `formal/GaloisForLFunctions/RHTower/CCMRectangularObservablePowerLowerZeroFree.lean` — the
+  bounded-remainder absorption `(8)`–`(9)` and the source-facing endpoint
+  `ξ ρ = 0 → re ρ ≤ 1/2 + α` for the observable rectangular Weil values.
+
+All checked gates of this card are therefore Lean-certified; the two unchecked gates (derive one
+source-defined subpower lower floor; RH) are route gates, not statements of this card.

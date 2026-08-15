@@ -2151,3 +2151,89 @@ This is the last *mathematical* input for `(26)`; what remains is bookkeeping:
    `σ → Bool` along `b ↦ if b then 1 else 0`;
 4. averaging `integral_spectralCollision_pauliEnsemble_clifford_eq` over the `6ⁿ` choices of `σ`
    and applying `measureReal_spectralCollision_ge_le`, giving `(26)` and then `(21)`.
+
+### Update: equations `(21)`, `(25)`, `(26)` of the local-Clifford card are closed (2026-08-15)
+
+Three further modules, wired, built, axiom-clean.
+
+`HTGeometry/ProductStabilizerCliffordOrbit.lean`
+
+- `zeroProductState`, `prodBoolStabAmp`, `localProductState_smul`;
+- **`finiteProductCliffordGate_stabClifford_mulVec`** — the product stabilizer states are exactly
+  the product-Clifford images of the all-zero state, each up to a unit phase;
+- `spectralCollision_smul` (phase invariance), `spectralCollision_comp_equiv` and
+  `sum_normSq_comp_equiv` (index-bijection invariance);
+- `boolFin2Equiv`, `configEquiv`, `prodBoolStabAmp_eq` — the `Bool`/`Fin 2` bridge.
+
+`HTGeometry/CliffordOrbitCollisionBound.lean`
+
+- `normSq_rt2inv`, `sum_normSq_boolStabAmp`, `sum_normSq_prodBoolStabAmp`;
+- **`sum_spectralCollision_cliffordOrbit_le`** — the card's `(25)` on the orbit:
+  `∑_{τ ∈ (Fin 6)ⁿ} C_e(C_τ|0…0⟩) ≤ |D| 2ⁿ`.
+
+`HTGeometry/CliffordEnsembleCollisionMean.lean`
+
+- `sum_normSq_zeroProductState`, `sum_normSq_cliffordOrbitState`;
+- **`integral_spectralCollision_zeroProductState_le`** — the card's boxed **`(26)`**:
+  `E_H C_H(Ω) ≤ (2/3)ⁿ` for the centred Pauli Gaussian ensemble with support-invariant weights,
+  unconditionally;
+- **`measureReal_spectralCollision_zeroProductState_ge_le`** — the card's boxed **`(21)`**:
+  `Pr_H{C_H(Ω) ≥ L(2/3)ⁿ} ≤ 1/L`.
+
+**State of `local-clifford-return-excised-phase-incidence-law`:** `(1)`–`(19)` closed (with the
+sharp constant), `(21)`, `(23)`, `(24)`, `(25)`, `(26)` closed.  Remaining: `(22)` (arithmetic
+composition of `(5)` with `(21)`), `(27)` (discharge the almost-sure simple-spectrum hypothesis
+`hae` from the corpus genericity `pauliTraceless_projectivelyIndependent_ae` /
+`twoLocal_projectivelyIndependent_ae`, plus Krylov cyclicity), `(28)` (completed-time transfer),
+and `(29)`–`(33)` (finite-alphabet circuit counting).
+
+### Promotion update: dyadic-prime Dirichlet high-line sign rigidity (2026-08-15)
+
+| Card | New Lean work | Modules |
+|---|---|---|
+| `dyadic-prime-dirichlet-high-line-sign-rigidity` | raw-impedance tail witnesses/no-gos and a universal phase-selection capstone for every first nonzero real Dirichlet coefficient | `HTGeometry/DirichletHalfPlaneSignRigidity` (extended), `RHTower/CCMSharpPrimeWindowPassiveNoGo` (re-audited) |
+
+Moved `2-fully-proven/not_new_scientific_knowledge/dyadic-prime-dirichlet-high-line-sign-rigidity.md`
+to `3-formalized/not_new_scientific_knowledge/` with its Lean certificate.  Direct generic source
+check and focused Route-I leaf build passed after the phase extension.  The exact generic capstone
+`realLSeriesRawImpedance_not_fixedSign_of_firstNonzero` and the literal dyadic endpoint depend
+only on `propext`, `Classical.choice`, and `Quot.sound`.  Both existing umbrella imports remained
+wired; no umbrella build was run.  No stale inbound Stage-2 link remains.
+
+### Promotion update: dyadic-prime completed passive transfer to horizontal Xi growth (2026-08-15)
+
+| Card | New Lean work | Modules |
+|---|---|---|
+| `dyadic-prime-completed-passive-transfer-to-horizontal-xi-growth` | none (re-audited); literal source normalization, completed-Xi coordinate identification, RH equivalence, horizontal-bound strictness, and real Möbius closure | `RHTower/CCMSharpPrimeWindowCompletedPassiveTransfer`, `CCMSharpPrimeWindowMobiusPassiveNoGo` (re-audited) |
+
+Moved `2-fully-proven/not_new_scientific_knowledge/dyadic-prime-completed-passive-transfer-to-horizontal-xi-growth.md`
+to `3-formalized/not_new_scientific_knowledge/` with its Lean certificate.  Direct source check
+and focused final completed-transfer leaf build passed.  Every audited endpoint depends only on
+`propext`, `Classical.choice`, and `Quot.sound`; no forbidden declaration occurs in either leaf.
+The existing `RHTower` imports were retained, no umbrella build was run, and the failed-route
+inbound link was repointed.
+
+### Update: equation `(22)` and the eigenbasis existence for the ensemble (2026-08-15)
+
+`HTGeometry/ReturnExcisedCollisionBoundedIncidence.lean` (wired, built, axiom-clean) — the card's
+boxed **`(22)`**:
+
+- **`measureReal_capture_le_return_add_replicaMoment_of_collision_le`** — the return-excised
+  complete-target bound `(5)` with any upper bound substituted for the spectral collision, since
+  the estimate is monotone in it.  At `c₀ = L(2/3)ⁿ` (from `(21)`) this is exactly `(22)`.
+
+Added to `HTGeometry/CliffordEnsembleCollisionMean.lean`:
+
+- `isHermitian_pauliEnsemble` and **`exists_isOrthoEigenBasis_pauliEnsemble`** — every member of
+  the weighted Pauli ensemble is Hermitian and therefore carries an orthonormal eigenbasis, so the
+  existence half of the `hae` hypothesis is discharged for every coefficient vector.
+
+**What `(27)` still needs:** the *almost-sure injectivity* of the eigenvalues for the Gaussian
+coefficient law.  The corpus proves exactly this for its own parametrization —
+`PauliTwoLocalEmbedding.pauliTraceless_projectivelyIndependent_ae (n) (hq : 2 ≤ q) (hμ : μ ≪ volume)`
+gives `∀ᵐ p ∂μ, Function.Injective (isHermitian_pauliTracelessFinEval p).eigenvalues ∧
+MaximallyProjectiveEnergy …` — so the remaining work is the parametrization bridge: identify
+`pauliEnsemble w J` with `pauliTracelessFinEval` at the reindexed coefficients (for `w` supported
+on the nonidentity labels of weight at most `q`) and check that the pushforward of
+`centredProductGaussian` under that affine reindexing is absolutely continuous, which
+`PiMeasureAbsoluteContinuity.productGaussian_absolutelyContinuous` supplies.

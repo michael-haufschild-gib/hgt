@@ -8902,3 +8902,64 @@ powers" as the first.  That is true but wasteful: the extra resolvent power alre
 the Laplace representation is needed only for the first term, which does not decay at all.
 
 All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ABI. The propagated remainder, and what the first boundary term still needs
+
+`RHTower/WallTailRayEstimates.lean` now also carries the scalar Hardy transfer on a ray and the
+remainder estimate.
+
+**The remainder never needs the vector Hardy inequality.**  Its bound factorises: the propagated
+integrand is `≤ K₁(1+x)^{-p}·(∫ of the amplitude)·‖g(L)‖`, and the amplitude factor does *not* depend
+on the block variable.  So the block integral contributes only the `L¹` mass `∫⁻_{I_m}‖g‖ₑ`, and the
+Hardy inequality is applied once, in its scalar `ℝ≥0∞` form, to the density
+`Ne·K₂·C_amp·wallTailDensity p`.  The whole estimate is carried out in `ℝ≥0∞`, so **no integrability
+hypothesis** is needed anywhere: `enorm_intervalIntegral_le` and `enorm_integral_le_lintegral_enorm`
+hold unconditionally, and the only finiteness used is `∫⁻_{I_m}‖g‖ₑ ≠ ⊤`, which is `IntegrableOn g`.
+
+**Status of the four propagated tail terms of `(18)`:**
+
+```text
+propagated datum         H(x)c                      done  (decay p > 1/2)
+first boundary  (20)     e^{-ixL} C(x,L)^{-1}       OPEN  (no decay; needs (21),(22))
+second boundary          e^{-ixL} C^{-1}(C^{-1})'   done  (decay 1 > 1/2)
+remainder                Hardy average              done  (wallTailDensity, p > 1/2)
+```
+
+**What `(20)` needs.**  Three objects: (a) the accretive Laplace representation of the literal
+`C(x,L)^{-1}` — the abstract form is owned (`resolvent_integral_apply`), so this is instantiation at
+`wallGenerator` with the floor; (b) vector-valued Plancherel for the block transform
+`x ↦ ∫_{I_m}e^{-ixL}e^{-sL}g(L)dL`, which is also the card's `(12)` and is therefore needed for the
+*window* half of `(11)` as well; (c) the `s`↔`L` interchange.  Then `lintegral_sq_blockLaplace_le`
+(owned) closes it, with the slice rate `μ₀ + m` supplied by ABA.
+
+Because `lintegral_sq_blockLaplace_le` quantifies over the whole frequency line while the resolvent
+exists only above the threshold, the profile must be taken as the indicator of the ray times the
+transform; the slice bound then follows from the full Plancherel identity by monotonicity.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ABJ. `(12)`: vector-valued Plancherel in the angular convention
+
+```text
+RHTower/VectorFourierPlancherelIntegral.lean
+```
+
+The corpus had Plancherel for the *classical* Fourier integral only in the scalar case
+(`FourierPlancherelIntegral.lean`) and the angular Parseval identity only for a specific scalar
+primitive (`SuzukiL2GramRepair`).  The block estimate needs it for Hilbert-valued profiles, so the
+three steps are redone with `H` in place of `ℂ`: the squared `L²` norm as an integral of squared
+norms (`L2.inner_def`), the identification of mathlib's class-level transform with the classical
+integral (the corpus' own `l2_vector_fourier_coeFn_eq_l1_fourier_of_integrable`), and
+`MeasureTheory.Lp.norm_fourier_eq`, which is already stated for an arbitrary Hilbert codomain.
+
+The card's transform is `ẑ ↦ ∫ e^{-izx}f(x)dx`, which is mathlib's at frequency `z/2π`; the scaling
+of the frequency variable contributes exactly `2π`, so
+
+```text
+int ||fhat(z)||^2 dz = 2 pi int ||f(x)||^2 dx.
+```
+
+That is `(12)`, and the constant `C_F` of the card is `sqrt(2 pi)`.  It is needed twice: for the
+window half of `(11)` and for the slice bound of the first boundary term `(20)`.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.

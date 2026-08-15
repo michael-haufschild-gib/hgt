@@ -334,6 +334,28 @@ theorem routeUHardEdgePairing_nonneg_of_tendsto (σ : ℝ) (Φ : ℕ → ℝ →
   ge_of_tendsto'
     (routeUHardEdgePairing_tendsto σ Φ Ψ g hmeas hg hdom hptw hpolar) hnn
 
+/-- **(HHWB.6) The finite null rows pass to the limit.**  A dominated limit of states with
+vanishing pairing has vanishing pairing: the literal finite-prime Euler equation of the hard-edge
+limit. -/
+theorem routeUHardEdgePairing_eq_zero_of_tendsto (σ : ℝ) (Φ : ℕ → ℝ → ℝ) (Ψ : ℝ → ℝ) (g : ℝ → ℝ)
+    (hmeas : ∀ n, AEStronglyMeasurable
+      (fun u : ℝ => Φ n u * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u)
+      (volume.restrict (Ioi 0)))
+    (hg : IntegrableOn g (Ioi 0))
+    (hdom : ∀ n, ∀ᵐ u ∂(volume.restrict (Ioi (0 : ℝ))),
+      ‖Φ n u * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u‖ ≤ g u)
+    (hptw : ∀ᵐ u ∂(volume.restrict (Ioi (0 : ℝ))),
+      Tendsto (fun n => Φ n u * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) atTop
+        (nhds (Ψ u * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u)))
+    (hpolar : Tendsto (fun n => Φ n (-1 / 4)) atTop (nhds (Ψ (-1 / 4))))
+    (hzero : ∀ n, routeUHardEdgePairing σ (Φ n) = 0) :
+    routeUHardEdgePairing σ Ψ = 0 := by
+  have hlim := routeUHardEdgePairing_tendsto σ Φ Ψ g hmeas hg hdom hptw hpolar
+  have hconst : Tendsto (fun n => routeUHardEdgePairing σ (Φ n)) atTop (nhds 0) := by
+    simp only [hzero]
+    exact tendsto_const_nhds
+  exact tendsto_nhds_unique hlim hconst
+
 end RHTower
 
 end

@@ -199,10 +199,16 @@ partition functions is therefore insufficient to manufacture a letterwise Coxete
   curvature selects or transports signed-word histories, and the resulting support class or
   Hermitian pencil has a proved stability-preserving insertion law whose normalized scalar
   specialization converges locally uniformly to `A`.
-- `[OPEN CORE]` Extract an actual source-derived four-label weight law without Xi coefficients or
-  zeros; decide whether its curvature vanishes.  If nonzero, construct the exact support-selection
-  or matrix transport replacing scalar `kappa`.  If zero, test the rank-one factors against the
-  theta coefficient ratios and cofinal normality.
+- `[PROVED FINITE SURVIVOR]` The first-trace Boolean Euler connection already has nonzero
+  support-valued square curvature, while completed-face scalar characters kill it.  A rank-two
+  Pluecker/Gram pencil retains any four-label curvature `Delta` as the stable coefficient
+  `Delta^2 z w`; see
+  `../3-formalized/needs-audit/prime-gamma-signed-eulerian-curvature-plucker-lift.md`.
+- `[OPEN CORE]` Construct the cofinal source matrix `K_N` from literal all-prime
+  Euler--Gamma/Mobius curvature sections and prove that
+  `det(I+u K_N K_N^T)` converges locally uniformly to `A(u)`.  First close the trace and squared
+  two-minor comparisons with `a_1,a_2`; no Xi coefficient or zero may define an individual source
+  column.
 
 ## Primary parent results
 
@@ -228,9 +234,12 @@ positive results.
 - [x] direct scalar descent-local cocycle generically excluded by four-label curvature
 - [x] four-letter curvature invariant and rank-one positive survivor paper-proved
 - [x] corrected first decisive finite insertion test from rank three to rank four
+- [x] literal support-valued source insertion curvature located
+- [x] curvature-preserving stable Pluecker/Gram finite consumer constructed
 - [ ] completed weights of all signed orders on two and three prime labels extracted
 - [ ] completed weights on the fiber-colliding four-label pair extracted
-- [ ] stability-preserving type-B insertion recurrence proved or defect computed
-- [ ] cofinal signed-descent family constructed
+- [ ] source curvature sections identified with completed signed-word columns
+- [ ] cofinal Gram family constructed from all-prime Euler--Gamma/Mobius source
+- [ ] trace and squared-minor coefficient comparisons proved
 - [ ] locally uniform limit identified with `A`
 - [ ] RH capstone formalized

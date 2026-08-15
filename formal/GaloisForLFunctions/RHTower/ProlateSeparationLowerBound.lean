@@ -222,18 +222,26 @@ theorem separation_algebra {A g S W E mu : ℝ}
   exact le_of_mul_le_mul_right hkey hS
 
 set_option maxHeartbeats 2000000 in
-/-- **Uniform lower bound for the oscillator separation constant.**  For every window scale
-`δ₀ ∈ (0, 1/4]` the separation constant `μ = c·s` of a nonzero even smooth prolate eigenfunction
-satisfies `c δ₀² (1 − 4δ₀²) ≤ μ (5(1 − 4δ₀²) + c δ₀²)`, so at fixed `δ₀` it is asymptotically at
-least `1 − 4δ₀²`. -/
-theorem bandwidthSeparation_lower {c chi delta0 : ℝ} {Phi : ℝ → ℝ}
+/-- **Gaussian defect bound.**  On a window `[−δ, δ]` with `δ ∈ [δ₀, 2δ₀]` the deviation of the
+prolate eigenfunction from the Gaussian shape, measured by `∫ (Φ′ + cxΦ)²`, is controlled by how far
+the separation constant `μ = c·s` exceeds the first oscillator rung:
+
+`δ₀²(1 − 4δ₀²) ∫_{−δ}^{δ}(Φ′ + cxΦ)² ≤ ∫Φ² · (5μ(1 − 4δ₀²) + cδ₀²μ − cδ₀²(1 − 4δ₀²))` .
+
+Nonnegativity of the left side is the uniform lower bound for `μ`; the estimate itself is the
+quantitative form, saying that once `μ` approaches `1` the mode approaches `e^{−cx²/2}`. -/
+theorem exists_bandwidthSeparation_defect {c chi delta0 : ℝ} {Phi : ℝ → ℝ}
     (hc : 0 < c) (hd0 : 0 < delta0) (hd1 : delta0 ≤ 1 / 4)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Phi)
     (heven : Function.Even Phi)
-    (hpos : 0 < ∫ x in (-1 : ℝ)..1, Phi x ^ 2)
     (heig : ∀ x ∈ Icc (-1 : ℝ) 1, prolateSLAction c Phi x = chi * Phi x) :
-    c * delta0 ^ 2 * (1 - 4 * delta0 ^ 2)
-      ≤ (c * radialSeparationRatio c chi) * (5 * (1 - 4 * delta0 ^ 2) + c * delta0 ^ 2) := by
+    ∃ delta ∈ Icc delta0 (2 * delta0),
+      delta0 ^ 2 * (1 - 4 * delta0 ^ 2)
+          * (∫ x in (-delta)..delta, (deriv Phi x + c * x * Phi x) ^ 2)
+        ≤ (∫ x in (-1 : ℝ)..1, Phi x ^ 2)
+          * (5 * (c * radialSeparationRatio c chi) * (1 - 4 * delta0 ^ 2)
+            + c * delta0 ^ 2 * (c * radialSeparationRatio c chi)
+            - c * delta0 ^ 2 * (1 - 4 * delta0 ^ 2)) := by
   have hcne : c ≠ 0 := ne_of_gt hc
   have h1 : Differentiable ℝ Phi := (contDiff_infty_iff_deriv.mp hsm).1
   have hdd : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (deriv Phi) := (contDiff_infty_iff_deriv.mp hsm).2
@@ -249,7 +257,7 @@ theorem bandwidthSeparation_lower {c chi delta0 : ℝ} {Phi : ℝ → ℝ}
   obtain ⟨M, hM⟩ : ∃ M : ℝ, M = ∫ x in (-1 : ℝ)..1, x ^ 2 * Phi x ^ 2 := ⟨_, rfl⟩
   obtain ⟨G, hG⟩ : ∃ G : ℝ, G = ∫ x in (-1 : ℝ)..1, (1 - x ^ 2) * (deriv Phi x) ^ 2 := ⟨_, rfl⟩
   obtain ⟨mu, hmu⟩ : ∃ mu : ℝ, mu = c * radialSeparationRatio c chi := ⟨_, rfl⟩
-  rw [← hS] at hpos hRay
+  rw [← hS] at hRay
   rw [← hM] at hMnn hbase hRay
   rw [← hS] at hbase
   rw [← hG] at hGnn hRay
@@ -305,13 +313,20 @@ theorem bandwidthSeparation_lower {c chi delta0 : ℝ} {Phi : ℝ → ℝ}
     continuous_id.mul (hcPhi.mul h2c)
   have hcont2 : Continuous fun x : ℝ => c * (x ^ 2 * Phi x ^ 2) + (deriv Phi x) ^ 2 / c := by
     fun_prop
+  obtain ⟨D, hD⟩ : ∃ D : ℝ, D = ∫ x in (-delta)..delta, (deriv Phi x + c * x * Phi x) ^ 2 :=
+    ⟨_, rfl⟩
+  have hDnn : (0 : ℝ) ≤ D := by
+    rw [hD]
+    exact intervalIntegral.integral_nonneg (by linarith) fun x _ => sq_nonneg _
+  have hcontD : Continuous fun x : ℝ => (deriv Phi x + c * x * Phi x) ^ 2 := by fun_prop
   have hstep : (∫ x in (-delta)..delta, -(2 * (x * (Phi x * deriv Phi x))))
-      ≤ ∫ x in (-delta)..delta, (c * (x ^ 2 * Phi x ^ 2) + (deriv Phi x) ^ 2 / c) := by
-    refine intervalIntegral.integral_mono_on (by linarith)
-      ((hcont1.const_mul (2 : ℝ)).neg.intervalIntegrable _ _)
-      (hcont2.intervalIntegrable _ _) ?_
-    intro x _
-    exact virial_amgm hc
+      = (∫ x in (-delta)..delta, (c * (x ^ 2 * Phi x ^ 2) + (deriv Phi x) ^ 2 / c))
+        - D / c := by
+    rw [hD, ← intervalIntegral.integral_div, ← intervalIntegral.integral_sub
+      (hcont2.intervalIntegrable _ _) ((hcontD.div_const c).intervalIntegrable _ _)]
+    refine intervalIntegral.integral_congr fun x _ => ?_
+    field_simp
+    ring
   have hleft : (∫ x in (-delta)..delta, -(2 * (x * (Phi x * deriv Phi x))))
       = -(2 * ∫ x in (-delta)..delta, x * (Phi x * deriv Phi x)) := by
     have hcongr : (∫ x in (-delta)..delta, -(2 * (x * (Phi x * deriv Phi x))))
@@ -353,27 +368,32 @@ theorem bandwidthSeparation_lower {c chi delta0 : ℝ} {Phi : ℝ → ℝ}
         (fun x hx => prolateWeight_nonneg hx.1 hx.2)
         (by linarith) (by linarith) hdle1
     linarith
-  have hWup : (1 - 4 * delta0 ^ 2) * W ≤ (1 - 4 * delta0 ^ 2) * E + mu * S := by
+  have hWeq : W = E + (c * Mw + Vw / c) - D / c := by
     rw [hleft, hsplit] at hstep
-    have hraw : W ≤ E + (c * Mw + Vw / c) := by
-      rw [hvir]
-      linarith [hstep]
-    have hmul := mul_le_mul_of_nonneg_left hraw hgap.le
-    have hA : (1 - 4 * delta0 ^ 2) * (c * Mw) ≤ c * M := by
-      have hp1 : (0 : ℝ) ≤ c * Mw := mul_nonneg hc.le hmomnn
-      have hp2 : c * Mw ≤ c * M := mul_le_mul_of_nonneg_left hmom hc.le
-      nlinarith [hp1, hp2, hgap1]
-    have hB : (1 - 4 * delta0 ^ 2) * (Vw / c) ≤ G / c := by
-      rw [mul_div_assoc']
-      gcongr
-    linarith [hmul, hA, hB, hmuS]
+    linarith [hvir, hstep]
+  have hWeq' : c * W = c * E + (c * (c * Mw) + Vw) - D := by
+    rw [hWeq]
+    field_simp
+  have hA : (1 - 4 * delta0 ^ 2) * (c * Mw) ≤ c * M := by
+    have hp1 : (0 : ℝ) ≤ c * Mw := mul_nonneg hc.le hmomnn
+    have hp2 : c * Mw ≤ c * M := mul_le_mul_of_nonneg_left hmom hc.le
+    nlinarith [hp1, hp2, hgap1]
+  have hmuSc : c * (mu * S) = G + c * (c * M) := by
+    rw [hmuS]
+    field_simp
+  have hAB : (1 - 4 * delta0 ^ 2) * (c * (c * Mw) + Vw) ≤ c * (mu * S) := by
+    have hAc : (1 - 4 * delta0 ^ 2) * (c * (c * Mw)) ≤ c * (c * M) := by
+      have := mul_le_mul_of_nonneg_left hA hc.le
+      nlinarith [this]
+    linarith [hAc, hgrad, hmuSc]
   -- the endpoint contribution
   have hEnd : c * delta0 ^ 2 * E ≤ 4 * (mu * S) := by
     have hstep2 : delta0 * Phi delta ^ 2 ≤ (1 / delta0 ^ 2) * M := by
       have hsub2 : (∫ t in delta0..(2 * delta0), t ^ 2 * Phi t ^ 2) ≤ M := by
         rw [hM]
         exact integral_sub_le_aperture ((continuous_id.pow 2).mul (hcPhi.pow 2))
-          (fun x _ => mul_nonneg (sq_nonneg x) (sq_nonneg (Phi x))) (by linarith) (by linarith) (by nlinarith)
+          (fun x _ => mul_nonneg (sq_nonneg x) (sq_nonneg (Phi x))) (by linarith) (by linarith)
+          (by nlinarith)
       have hmono : (∫ t in delta0..(2 * delta0), Phi t ^ 2)
           ≤ (1 / delta0 ^ 2) * ∫ t in delta0..(2 * delta0), t ^ 2 * Phi t ^ 2 := by
         rw [← intervalIntegral.integral_const_mul]
@@ -401,16 +421,54 @@ theorem bandwidthSeparation_lower {c chi delta0 : ℝ} {Phi : ℝ → ℝ}
     have hchain : c * delta0 ^ 2 * E ≤ c * delta0 ^ 2 * (4 * delta0 * Phi delta ^ 2) := by
       rw [hE]
       have hstep3 : 2 * delta * Phi delta ^ 2 ≤ 4 * delta0 * Phi delta ^ 2 := by
-        exact mul_le_mul_of_nonneg_right (by linarith) hsqnn
+        nlinarith [hsqnn, hdhigh]
       exact mul_le_mul_of_nonneg_left hstep3 hnn
     have hnext : c * delta0 ^ 2 * (4 * delta0 * Phi delta ^ 2) ≤ 4 * (c * M) := by
       nlinarith [hphi, hc]
     linarith [hMle]
-  -- assemble
-  have hApos : (0 : ℝ) < c * delta0 ^ 2 := mul_pos hc hd0sq
-  have hres := separation_algebra (A := c * delta0 ^ 2) (g := 1 - 4 * delta0 ^ 2)
-    (S := S) (W := W) (E := E) (mu := mu) hgap hApos hpos hWlow hWup hEnd
-  rw [← hmu]
-  linarith [hres]
+  -- assemble the defect bound
+  refine ⟨delta, hdmem, ?_⟩
+  rw [← hD, ← hS, ← hmu]
+  have hEbd : (1 - 4 * delta0 ^ 2) * (c * delta0 ^ 2 * E)
+      ≤ (1 - 4 * delta0 ^ 2) * (4 * (mu * S)) := mul_le_mul_of_nonneg_left hEnd hgap.le
+  have hABd : delta0 ^ 2 * ((1 - 4 * delta0 ^ 2) * (c * (c * Mw) + Vw))
+      ≤ delta0 ^ 2 * (c * (mu * S)) := mul_le_mul_of_nonneg_left hAB hd0sq.le
+  have hWd : (1 - 4 * delta0 ^ 2) * (c * delta0 ^ 2 * S - mu * S)
+      ≤ (1 - 4 * delta0 ^ 2) * (c * delta0 ^ 2 * W) :=
+    mul_le_mul_of_nonneg_left hWlow hgap.le
+  have hDeq : delta0 ^ 2 * (1 - 4 * delta0 ^ 2) * D
+      = (1 - 4 * delta0 ^ 2) * (c * delta0 ^ 2 * E)
+        + delta0 ^ 2 * ((1 - 4 * delta0 ^ 2) * (c * (c * Mw) + Vw))
+        - (1 - 4 * delta0 ^ 2) * (c * delta0 ^ 2 * W) := by
+    linear_combination (delta0 ^ 2 * (1 - 4 * delta0 ^ 2)) * hWeq'
+  linarith [hDeq, hEbd, hABd, hWd]
+
+/-- **Uniform lower bound for the oscillator separation constant.**  For every window scale
+`δ₀ ∈ (0, 1/4]` the separation constant `μ = c·s` of a nonzero even smooth prolate eigenfunction
+satisfies `c δ₀² (1 − 4δ₀²) ≤ μ (5(1 − 4δ₀²) + c δ₀²)`, so at fixed `δ₀` it is asymptotically at
+least `1 − 4δ₀²`. -/
+theorem bandwidthSeparation_lower {c chi delta0 : ℝ} {Phi : ℝ → ℝ}
+    (hc : 0 < c) (hd0 : 0 < delta0) (hd1 : delta0 ≤ 1 / 4)
+    (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Phi)
+    (heven : Function.Even Phi)
+    (hpos : 0 < ∫ x in (-1 : ℝ)..1, Phi x ^ 2)
+    (heig : ∀ x ∈ Icc (-1 : ℝ) 1, prolateSLAction c Phi x = chi * Phi x) :
+    c * delta0 ^ 2 * (1 - 4 * delta0 ^ 2)
+      ≤ (c * radialSeparationRatio c chi) * (5 * (1 - 4 * delta0 ^ 2) + c * delta0 ^ 2) := by
+  obtain ⟨delta, hdmem, hbd⟩ :=
+    exists_bandwidthSeparation_defect hc hd0 hd1 hsm heven heig
+  have hd0sq : (0 : ℝ) < delta0 ^ 2 := by positivity
+  have hgap : (0 : ℝ) < 1 - 4 * delta0 ^ 2 := by nlinarith
+  have hDnn : (0 : ℝ) ≤ ∫ x in (-delta)..delta, (deriv Phi x + c * x * Phi x) ^ 2 := by
+    have hdpos : 0 < delta := lt_of_lt_of_le hd0 hdmem.1
+    exact intervalIntegral.integral_nonneg (by linarith) fun x _ => sq_nonneg _
+  have hlhs : (0 : ℝ) ≤ delta0 ^ 2 * (1 - 4 * delta0 ^ 2)
+      * (∫ x in (-delta)..delta, (deriv Phi x + c * x * Phi x) ^ 2) := by positivity
+  have hkey : (0 : ℝ) ≤ (∫ x in (-1 : ℝ)..1, Phi x ^ 2)
+      * (5 * (c * radialSeparationRatio c chi) * (1 - 4 * delta0 ^ 2)
+        + c * delta0 ^ 2 * (c * radialSeparationRatio c chi)
+        - c * delta0 ^ 2 * (1 - 4 * delta0 ^ 2)) := le_trans hlhs hbd
+  have hfac := (mul_nonneg_iff_of_pos_left hpos).1 hkey
+  linarith
 
 end RHTower

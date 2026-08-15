@@ -311,7 +311,7 @@ pole and `Gamma_R` logarithmic derivatives, and rotating by `i` gives exactly
 Sondow--Dumitrescu horizontal Xi-growth response and Planat theta-kernel problem tracked by Route
 C2.  Since Route C2 is already retired as a saturated divisor detector, it is not a live receiving
 route.  The collision exhausts this completion branch but does not close Route I.  Paper proof:
-`../2-fully-proven/not_new_scientific_knowledge/dyadic-prime-completed-passive-transfer-to-horizontal-xi-growth.md`.
+`../3-formalized/not_new_scientific_knowledge/dyadic-prime-completed-passive-transfer-to-horizontal-xi-growth.md`.
 
 An arbitrary bias such as `iB+F` is not retained as research salvage.  Its far-right positivity is
 generic for any absolutely convergent Dirichlet series, while a global analytic lift subtracts

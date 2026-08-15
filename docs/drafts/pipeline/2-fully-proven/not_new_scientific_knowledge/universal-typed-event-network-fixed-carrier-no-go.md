@@ -254,6 +254,25 @@ Quot.sound
 Repository formal lint passed. The completely-positive operational corollary remains
 paper-proved rather than Lean-formalized; it is not needed for the algebraic no-go.
 
+### Trace-class corner checkpoint (2026-08-15)
+
+`HTGeometry/TraceClassQuantumCorner.lean` now proves reusable unconditional infrastructure on
+the project’s actual approximation-number Schatten-one subtype:
+
+- `memSchattenClass_one_sandwich` and `traceClassSandwich_comp` close trace-class preservation
+  and exact composition for every bounded Hilbert sandwich;
+- `TraceClassQuantumOperation` closes composition, complete positivity at every finite matrix
+  level, trace nonincrease, and order-normality for operations carrying those proved properties;
+- `cornerLift_include`, `cornerLift_comp`, and
+  `trace_cornerLift_include_eq_of_tracePreserving` close exact valid-corner recovery,
+  compositionality, and normalization for certified corners.
+
+The focused leaf build and axiom audit pass with only `propext`, `Classical.choice`, and
+`Quot.sound`.  This does **not** yet construct the inclusion and compression operations for the
+literal Hilbert direct sum: their complete positivity, trace inequality, and normality are still
+fields of `TraceClassQuantumCorner`.  Therefore the completely-positive corollary remains open
+and this card stays in Stage 2.
+
 ## Gates
 
 - [x] exact all-history claim stated
@@ -262,6 +281,8 @@ paper-proved rather than Lean-formalized; it is not needed for the algebraic no-
 - [x] hostile falsity and rediscovery audit
 - [x] strongest positive survivor and new physical open core
 - [x] arbitrary-network algebraic theorem formalized in Lean
+- [x] genuine trace-class sandwich closure and certified-corner composition formalized in Lean
+- [ ] literal Hilbert-direct-sum corner proved completely positive, normal, and trace-nonincreasing
 - [ ] monoidal-locality obstruction derived from physics
 
 ## Log
@@ -271,3 +292,5 @@ paper-proved rather than Lean-formalized; it is not needed for the algebraic no-
   monoidal/locality preservation as the first physical structure not supplied by a direct sum.
 - 2026-07-29 — formalized the arbitrary-network algebraic core in
   `EventNetworkFixedCarrier.lean`; focused build, axiom audit, and repository lint passed.
+- 2026-08-15 — added and audited genuine trace-class sandwich and certified-corner infrastructure;
+  retained Stage 2 because the literal direct-sum CP corner construction remains unproved.

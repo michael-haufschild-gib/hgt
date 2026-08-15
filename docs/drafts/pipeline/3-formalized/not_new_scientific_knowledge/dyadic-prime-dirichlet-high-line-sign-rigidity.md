@@ -1,10 +1,14 @@
 # Dyadic-prime Dirichlet high-line sign rigidity
 
 - **ID:** `dyadic-prime-dirichlet-high-line-sign-rigidity`
-- **Stage:** `2-fully-proven`
+- **Stage:** `3-formalized`
 - **Type:** `[BRIDGE] [NO-GO] [POSITIVE CLASSIFICATION]`
-- **Scientific status:** `[PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
+- **Scientific status:** `[PROVED] [FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Route:** Route I, sharp dyadic prime window
+- **Formalized companion:** `dyadic-prime-dirichlet-high-line-sign-rigidity-formalized.md`
+- **Lean targets:**
+  `GaloisForLFunctions.HTGeometry.DirichletHalfPlaneSignRigidity`,
+  `GaloisForLFunctions.RHTower.CCMSharpPrimeWindowPassiveNoGo`
 
 ## Theorem
 
@@ -114,5 +118,18 @@ route, not unfinished Route I infrastructure.
 - [x] Herglotz and anti-Herglotz orientations both excluded above every height
 - [x] external prior-art and current-PNT audit
 - [x] positive survivor extracted
-- [x] sent to unconditional Lean formalization
+- [x] exact unconditional Lean formalization
+- [x] phase selected for every nonzero first surviving real coefficient
+- [x] direct source checks and focused final Route-I build
+- [x] axiom audit: only `propext`, `Classical.choice`, `Quot.sound`
 
+## Lean closure
+
+`realLSeriesRawImpedance_not_fixedSign_of_firstNonzero` proves the generic terminal claim for
+every first nonzero real coefficient after the constant term, at every specified height.  Its
+phase witness is constructed by
+`exists_opposite_imaginary_phase_of_ne_zero`; the two quarter-turn lemmas prove the required
+signs without any analytic or zero hypothesis.  The Route-I specialization then proves the
+literal dyadic source has positive and negative raw-impedance witnesses above every height.
+
+The formal certificate is `dyadic-prime-dirichlet-high-line-sign-rigidity-formalized.md`.

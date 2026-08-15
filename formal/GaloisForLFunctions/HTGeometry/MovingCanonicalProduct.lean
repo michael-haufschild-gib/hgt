@@ -706,6 +706,21 @@ theorem neg_logDeriv_realCanonicalProduct_eq {a : ℕ → ℝ} (hpos : ∀ n : �
   rw [hinv, mul_comm (A n - z) (A n)]
   rw [neg_div, neg_neg]
 
+/-- The logarithmic-derivative series of a real divisor is Schwarz-real. -/
+theorem realLogDerivative_conj (a : ℕ → ℝ) (z : ℂ) :
+    realLogDerivative a ((starRingEnd ℂ) z) =
+      (starRingEnd ℂ) (realLogDerivative a z) := by
+  set f : ℕ → ℂ := fun n => ((a n : ℂ) - z)⁻¹ - ((a n : ℂ))⁻¹ with hf
+  set g : ℕ → ℂ := fun n =>
+    ((a n : ℂ) - (starRingEnd ℂ) z)⁻¹ - ((a n : ℂ))⁻¹ with hg
+  have hgf : g = fun n => (starRingEnd ℂ) (f n) := by
+    funext n
+    simp [hf, hg]
+  rw [realLogDerivative, realLogDerivative]
+  change ∑' n, g n = (starRingEnd ℂ) (∑' n, f n)
+  rw [hgf]
+  exact (Complex.conjCLE.map_tsum).symm
+
 /-- Normally convergent negative logarithmic-derivative series of the moving divisor. -/
 def movingCanonicalLogDerivative (θ : BoundedRealSequence) (z : ℂ) : ℂ :=
   realLogDerivative (movingCanonicalZero θ) z
@@ -731,6 +746,13 @@ theorem neg_logDeriv_movingCanonicalProduct_eq
       movingCanonicalLogDerivative θ z :=
   neg_logDeriv_realCanonicalProduct_eq (movingCanonicalZero_pos θ)
     (summable_movingCanonicalZero_inv_sq θ) hz
+
+/-- The moving canonical logarithmic derivative is Schwarz-real. -/
+theorem movingCanonicalLogDerivative_conj
+    (θ : BoundedRealSequence) (z : ℂ) :
+    movingCanonicalLogDerivative θ ((starRingEnd ℂ) z) =
+      (starRingEnd ℂ) (movingCanonicalLogDerivative θ z) :=
+  realLogDerivative_conj (movingCanonicalZero θ) z
 
 end
 

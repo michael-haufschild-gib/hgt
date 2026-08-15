@@ -5,7 +5,7 @@
 - **Type:** `[BRIDGE] [ROUTE COLLISION] [EXACT CLASSIFICATION]`
 - **Scientific status:** `[FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Paper proof:**
-  `../2-fully-proven/not_new_scientific_knowledge/dyadic-prime-completed-passive-transfer-to-horizontal-xi-growth.md`
+  `dyadic-prime-completed-passive-transfer-to-horizontal-xi-growth.md`
 
 ## Möbius closure
 

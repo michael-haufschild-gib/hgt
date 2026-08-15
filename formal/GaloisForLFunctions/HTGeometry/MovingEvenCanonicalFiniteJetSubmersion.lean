@@ -32,25 +32,6 @@ def movingEvenCanonicalCarrier
   movingCanonicalLogDerivative θ z -
     movingCanonicalLogDerivative θ (-z)
 
-/-- The moving canonical logarithmic derivative is Schwarz-real. -/
-theorem movingCanonicalLogDerivative_conj
-    (θ : BoundedRealSequence) (z : ℂ) :
-    movingCanonicalLogDerivative θ ((starRingEnd ℂ) z) =
-      (starRingEnd ℂ) (movingCanonicalLogDerivative θ z) := by
-  let f : ℕ → ℂ := fun n =>
-    ((movingCanonicalZero θ n : ℂ) - z)⁻¹ -
-      (movingCanonicalZero θ n : ℂ)⁻¹
-  let g : ℕ → ℂ := fun n =>
-    ((movingCanonicalZero θ n : ℂ) - (starRingEnd ℂ) z)⁻¹ -
-      (movingCanonicalZero θ n : ℂ)⁻¹
-  have hgf : g = fun n => (starRingEnd ℂ) (f n) := by
-    funext n
-    simp [f, g]
-  rw [movingCanonicalLogDerivative, movingCanonicalLogDerivative]
-  change ∑' n, g n = (starRingEnd ℂ) (∑' n, f n)
-  rw [hgf]
-  exact (Complex.conjCLE.map_tsum).symm
-
 /-- Iterated complex derivatives commute with conjugate reflection. -/
 theorem iteratedDeriv_star_comp_star
     (f : ℂ → ℂ) (n : ℕ) :

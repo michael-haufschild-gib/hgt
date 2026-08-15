@@ -1,4 +1,6 @@
 import GaloisForLFunctions.HTGeometry.CirclePolynomialSupBound
+import GaloisForLFunctions.RHTower.XiShiftedHardEdgeCayleyNumerator
+import GaloisForLFunctions.RHTower.EntireMontel
 
 /-!
 # Uniform complex bounds for the hard-edge Cayley packets
@@ -122,6 +124,169 @@ theorem norm_eval_hardEdgeCoordinate_le {a R : ℝ} (hR : 0 ≤ R) (hRa : R < a)
     _ ≤ Real.exp (2 * R * (d + 2) / (a - R)) := by
         have := ratio_pow_le_exp hR hRa (d + 2)
         simpa using this
+
+/-- **The normalized hard-edge numerator is bounded on every disc.**  Writing the numerator as the
+cleared substitution and passing to a square root of the variable, the packet bound applies. -/
+theorem norm_scaledCayleyNumerator_le {a : ℝ} {d : ℕ} {P : Polynomial ℂ} (hd : P.natDegree ≤ d)
+    {R : ℝ} (hR : 0 ≤ R) (hsq : Real.sqrt R < a) {u : ℂ} (hu : ‖u‖ ≤ R) :
+    ‖((((a : ℝ) : ℂ) ^ 2) ^ d)⁻¹ * (cayleyNumerator a d P).eval u‖
+      ≤ (1 + R / a ^ 2) ^ d * (Real.sqrt (2 * d + 2) * Real.sqrt (cayleyEnergy P)
+          * Real.exp (2 * Real.sqrt R * (d + 2) / (a - Real.sqrt R))) := by
+  have hRs : 0 ≤ Real.sqrt R := Real.sqrt_nonneg R
+  have hapos : 0 < a := lt_of_le_of_lt hRs hsq
+  obtain ⟨z, hz⟩ : ∃ z : ℂ, z ^ 2 = u := IsSepClosed.exists_pow_nat_eq u 2
+  have hznorm : ‖z‖ ≤ Real.sqrt R := by
+    have hn : ‖z‖ ^ 2 = ‖u‖ := by rw [← hz, norm_pow]
+    have hle : ‖z‖ ^ 2 ≤ R := by rw [hn]; exact hu
+    have := Real.sqrt_le_sqrt hle
+    rwa [Real.sqrt_sq (norm_nonneg z)] at this
+  have hnorma : ‖((a : ℝ) : ℂ)‖ = a := by
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hapos.le]
+  have hzI : ‖z * I‖ = ‖z‖ := by rw [norm_mul, Complex.norm_I, mul_one]
+  have h₁ : ((a : ℝ) : ℂ) + z * I ≠ 0 := by
+    intro hcon
+    have h := norm_sub_norm_le (((a : ℝ) : ℂ)) (-(z * I))
+    rw [hnorma, norm_neg, hzI, sub_neg_eq_add, hcon, norm_zero] at h
+    linarith
+  have h₂ : ((a : ℝ) : ℂ) - z * I ≠ 0 := by
+    intro hcon
+    have h := norm_sub_norm_le (((a : ℝ) : ℂ)) (z * I)
+    rw [hnorma, hzI, hcon, norm_zero] at h
+    linarith
+  have hane : (((a : ℝ) : ℂ) ^ 2) ≠ 0 := by
+    intro hcon
+    have := norm_ofReal_sq a
+    rw [hcon, norm_zero] at this
+    nlinarith
+  have hsum : (((a : ℝ) : ℂ) ^ 2 + u) ≠ 0 := by
+    intro hcon
+    have heq : u = -(((a : ℝ) : ℂ) ^ 2) := by linear_combination hcon
+    have hnu : ‖u‖ = a ^ 2 := by rw [heq, norm_neg, norm_ofReal_sq]
+    have hRa : R < a ^ 2 := by
+      have := Real.sq_sqrt hR
+      nlinarith
+    linarith
+  have heval := eval_cayleyNumerator a d P hd u hsum
+  rw [heval, ← hz]
+  have hsplit : ((((a : ℝ) : ℂ) ^ 2) ^ d)⁻¹ *
+      ((((a : ℝ) : ℂ) ^ 2 + z ^ 2) ^ d *
+        P.eval (((((a : ℝ) : ℂ) ^ 2 - z ^ 2) / (((a : ℝ) : ℂ) ^ 2 + z ^ 2))))
+      = (1 + z ^ 2 / (((a : ℝ) : ℂ) ^ 2)) ^ d *
+        P.eval (((((a : ℝ) : ℂ) ^ 2 - z ^ 2) / (((a : ℝ) : ℂ) ^ 2 + z ^ 2))) := by
+    have hbase : (1 + z ^ 2 / (((a : ℝ) : ℂ) ^ 2))
+        = ((((a : ℝ) : ℂ) ^ 2)⁻¹) * (((a : ℝ) : ℂ) ^ 2 + z ^ 2) := by
+      rw [mul_add, inv_mul_cancel₀ hane, div_eq_inv_mul]
+    rw [hbase, mul_pow, inv_pow]
+    ring
+  rw [hsplit, norm_mul]
+  have hfac : ‖(1 + z ^ 2 / (((a : ℝ) : ℂ) ^ 2)) ^ d‖ ≤ (1 + R / a ^ 2) ^ d := by
+    rw [norm_pow]
+    refine pow_le_pow_left₀ (norm_nonneg _) ?_ d
+    have hbound : ‖z ^ 2 / (((a : ℝ) : ℂ) ^ 2)‖ ≤ R / a ^ 2 := by
+      have hz2 : ‖z ^ 2‖ ≤ R := by rw [hz]; exact hu
+      have ha2 : (0 : ℝ) < a ^ 2 := by positivity
+      rw [norm_div, norm_ofReal_sq]
+      gcongr
+    calc ‖(1 : ℂ) + z ^ 2 / (((a : ℝ) : ℂ) ^ 2)‖
+        ≤ ‖(1 : ℂ)‖ + ‖z ^ 2 / (((a : ℝ) : ℂ) ^ 2)‖ := norm_add_le _ _
+      _ ≤ 1 + R / a ^ 2 := by rw [norm_one]; linarith
+  have hpacket := norm_eval_hardEdgeCoordinate_le hRs hsq d P hd hznorm h₁ h₂
+  have hnn : (0 : ℝ) ≤ Real.sqrt (2 * d + 2) * Real.sqrt (cayleyEnergy P)
+      * Real.exp (2 * Real.sqrt R * (d + 2) / (a - Real.sqrt R)) := by positivity
+  exact mul_le_mul hfac hpacket (norm_nonneg _) (pow_nonneg (by positivity) d)
+
+open Filter in
+/-- **Uniform normality bound.**  With circle energy and degree controlled by the aperture, the
+normalized numerators are eventually bounded on every disc by one constant. -/
+theorem eventually_norm_scaledCayleyNumerator_le {a : ℕ → ℝ} {d : ℕ → ℕ} {P : ℕ → Polynomial ℂ}
+    {B K : ℝ} (hd : ∀ n, (P n).natDegree ≤ d n) (hK : 0 ≤ K)
+    (hdeg : ∀ᶠ n in atTop, (d n : ℝ) ≤ K * a n)
+    (hE : ∀ n, (2 * (d n : ℝ) + 2) * cayleyEnergy (P n) ≤ B)
+    (hlarge : Tendsto a atTop atTop) (R : ℝ) (hR : 0 ≤ R) :
+    ∀ᶠ n in atTop, ∀ u ∈ Metric.ball (0 : ℂ) R,
+      ‖((((a n : ℝ) : ℂ) ^ 2) ^ (d n))⁻¹ * (cayleyNumerator (a n) (d n) (P n)).eval u‖
+        ≤ Real.exp (K * R) * (Real.sqrt B * Real.exp (2 * Real.sqrt R * (2 * K + 4))) := by
+  have hRs : 0 ≤ Real.sqrt R := Real.sqrt_nonneg R
+  filter_upwards [hdeg, hlarge.eventually_ge_atTop (max 1 (2 * Real.sqrt R + 1))]
+    with n hdn han u hu
+  have ha1 : (1 : ℝ) ≤ a n := le_trans (le_max_left _ _) han
+  have haR : 2 * Real.sqrt R + 1 ≤ a n := le_trans (le_max_right _ _) han
+  have hsq : Real.sqrt R < a n := by linarith
+  have hunorm : ‖u‖ ≤ R := by
+    have := Metric.mem_ball.1 hu
+    rw [dist_zero_right] at this
+    exact this.le
+  have hmain := norm_scaledCayleyNumerator_le (hd n) hR hsq hunorm
+  refine hmain.trans ?_
+  have hapos : (0 : ℝ) < a n := by linarith
+  have ha2 : (0 : ℝ) < (a n) ^ 2 := by positivity
+  have hfac1 : (1 + R / (a n) ^ 2) ^ (d n) ≤ Real.exp (K * R) := by
+    have h1 : (1 : ℝ) + R / (a n) ^ 2 ≤ Real.exp (R / (a n) ^ 2) := by
+      have h := Real.add_one_le_exp (R / (a n) ^ 2)
+      linarith
+    have h2 : (1 + R / (a n) ^ 2) ^ (d n) ≤ (Real.exp (R / (a n) ^ 2)) ^ (d n) :=
+      pow_le_pow_left₀ (by positivity) h1 _
+    have h3 : (Real.exp (R / (a n) ^ 2)) ^ (d n) = Real.exp ((d n : ℝ) * (R / (a n) ^ 2)) := by
+      rw [← Real.exp_nat_mul]
+    have h4 : (d n : ℝ) * (R / (a n) ^ 2) ≤ K * R := by
+      rw [mul_div_assoc', div_le_iff₀ ha2]
+      have e1 : (d n : ℝ) * R ≤ (K * a n) * R := mul_le_mul_of_nonneg_right hdn hR
+      have e2 : (0 : ℝ) ≤ K * R * (a n) * (a n - 1) :=
+        mul_nonneg (mul_nonneg (mul_nonneg hK hR) hapos.le) (by linarith)
+      nlinarith [e1, e2]
+    calc (1 + R / (a n) ^ 2) ^ (d n) ≤ (Real.exp (R / (a n) ^ 2)) ^ (d n) := h2
+      _ = Real.exp ((d n : ℝ) * (R / (a n) ^ 2)) := h3
+      _ ≤ Real.exp (K * R) := Real.exp_le_exp.2 h4
+  have hfac2 : Real.sqrt (2 * (d n : ℝ) + 2) * Real.sqrt (cayleyEnergy (P n)) ≤ Real.sqrt B := by
+    rw [← Real.sqrt_mul (by positivity)]
+    exact Real.sqrt_le_sqrt (hE n)
+  have hden : (0 : ℝ) < a n - Real.sqrt R := by linarith
+  have hfac3 : Real.exp (2 * Real.sqrt R * ((d n : ℝ) + 2) / (a n - Real.sqrt R))
+      ≤ Real.exp (2 * Real.sqrt R * (2 * K + 4)) := by
+    refine Real.exp_le_exp.2 ?_
+    rw [div_le_iff₀ hden]
+    have hAs : (a n + 1) / 2 ≤ a n - Real.sqrt R := by linarith
+    have hkey : (d n : ℝ) + 2 ≤ (2 * K + 4) * (a n - Real.sqrt R) := by
+      have h1 : (2 * K + 4) * ((a n + 1) / 2) ≤ (2 * K + 4) * (a n - Real.sqrt R) :=
+        mul_le_mul_of_nonneg_left hAs (by linarith)
+      nlinarith [h1, hdn, hK, ha1]
+    have h2 : (2 * Real.sqrt R) * ((d n : ℝ) + 2)
+        ≤ (2 * Real.sqrt R) * ((2 * K + 4) * (a n - Real.sqrt R)) :=
+      mul_le_mul_of_nonneg_left hkey (by linarith)
+    nlinarith [h2]
+  have hnn1 : (0 : ℝ) ≤ (1 + R / (a n) ^ 2) ^ (d n) := by positivity
+  have hnn2 : (0 : ℝ) ≤ Real.sqrt (2 * (d n : ℝ) + 2) * Real.sqrt (cayleyEnergy (P n)) := by
+    positivity
+  calc (1 + R / (a n) ^ 2) ^ (d n) *
+        (Real.sqrt (2 * (d n : ℝ) + 2) * Real.sqrt (cayleyEnergy (P n))
+          * Real.exp (2 * Real.sqrt R * ((d n : ℝ) + 2) / (a n - Real.sqrt R)))
+      ≤ Real.exp (K * R) * (Real.sqrt B * Real.exp (2 * Real.sqrt R * (2 * K + 4))) := by
+        refine mul_le_mul hfac1 ?_ (by positivity) (Real.exp_nonneg _)
+        exact mul_le_mul hfac2 hfac3 (Real.exp_nonneg _) (Real.sqrt_nonneg _)
+
+open Filter in
+/-- **(HHWB.11)/(HHWB.13) Normality of the normalized hard-edge numerators.**  Under the same
+control of circle energy and degree, a subsequence of the normalized numerators converges locally
+uniformly on the plane. -/
+theorem exists_subseq_tendstoLocallyUniformly_scaledCayleyNumerator
+    {a : ℕ → ℝ} {d : ℕ → ℕ} {P : ℕ → Polynomial ℂ} {B K : ℝ}
+    (hd : ∀ n, (P n).natDegree ≤ d n) (hK : 0 ≤ K)
+    (hdeg : ∀ᶠ n in atTop, (d n : ℝ) ≤ K * a n)
+    (hE : ∀ n, (2 * (d n : ℝ) + 2) * cayleyEnergy (P n) ≤ B)
+    (hlarge : Tendsto a atTop atTop) :
+    ∃ (φ : ℕ → ℕ) (g : ℂ → ℂ), StrictMono φ ∧
+      TendstoLocallyUniformly
+        (fun k u => ((((a (φ k) : ℝ) : ℂ) ^ 2) ^ (d (φ k)))⁻¹ *
+          (cayleyNumerator (a (φ k)) (d (φ k)) (P (φ k))).eval u) g atTop := by
+  refine exists_subseq_tendstoLocallyUniformly_of_eventually_bounded
+    (F := fun n u => ((((a n : ℝ) : ℂ) ^ 2) ^ (d n))⁻¹ *
+      (cayleyNumerator (a n) (d n) (P n)).eval u)
+    (fun n => (Polynomial.differentiable_aeval _).const_mul _) fun R => ?_
+  by_cases hR : 0 ≤ R
+  · exact ⟨_, eventually_norm_scaledCayleyNumerator_le hd hK hdeg hE hlarge R hR⟩
+  · refine ⟨0, Filter.Eventually.of_forall fun n z hz => ?_⟩
+    rw [Metric.ball_eq_empty.2 (by linarith)] at hz
+    exact absurd hz (Set.not_mem_empty z)
 
 end RHTower
 

@@ -131,6 +131,99 @@ theorem tendsto_zero_atTop : Tendsto (D.zero θ) atTop atTop := by
     tendsto_atTop_mono (fun n => by have := D.radius_le_one n; linarith) hsub
   exact tendsto_atTop_mono (fun n => D.base_sub_le_zero θ n) hmid
 
+/-! ### Bounds uniform in the parameter -/
+
+theorem base_sub_radius_pos (n : ℕ) : 0 < D.base n - D.radius n := by
+  induction n with
+  | zero =>
+    have := D.base_first
+    linarith
+  | succ n ih =>
+    have hgap := D.base_gap n
+    have hr := D.radius_pos n
+    linarith
+
+theorem tendsto_base_sub_radius_div :
+    Tendsto (fun n : ℕ => (D.base n - D.radius n) / ((n : ℝ) + 1)) atTop (𝓝 1) := by
+  have hrad : Tendsto (fun n : ℕ => D.radius n / ((n : ℝ) + 1)) atTop (𝓝 0) := by
+    have hmaj : Tendsto (fun n : ℕ => 1 / ((n : ℝ) + 1)) atTop (𝓝 0) := by
+      have h : Tendsto (fun n : ℕ => ((n : ℝ) + 1)⁻¹) atTop (𝓝 0) :=
+        tendsto_inv_atTop_zero.comp (tendsto_atTop_add_const_right _ 1 tendsto_natCast_atTop_atTop)
+      simpa [one_div] using h
+    refine squeeze_zero (fun n => le_of_lt (div_pos (D.radius_pos n) (by positivity)))
+      (fun n => ?_) hmaj
+    have h1 := D.radius_le_one n
+    have hn : (0 : ℝ) < (n : ℝ) + 1 := by positivity
+    gcongr
+  have hsub := D.density.sub hrad
+  rw [sub_zero] at hsub
+  refine hsub.congr fun n => ?_
+  rw [sub_div]
+
+theorem tendsto_base_add_radius_div :
+    Tendsto (fun n : ℕ => (D.base n + D.radius n) / ((n : ℝ) + 1)) atTop (𝓝 1) := by
+  have hrad : Tendsto (fun n : ℕ => D.radius n / ((n : ℝ) + 1)) atTop (𝓝 0) := by
+    have hmaj : Tendsto (fun n : ℕ => 1 / ((n : ℝ) + 1)) atTop (𝓝 0) := by
+      have h : Tendsto (fun n : ℕ => ((n : ℝ) + 1)⁻¹) atTop (𝓝 0) :=
+        tendsto_inv_atTop_zero.comp (tendsto_atTop_add_const_right _ 1 tendsto_natCast_atTop_atTop)
+      simpa [one_div] using h
+    refine squeeze_zero (fun n => le_of_lt (div_pos (D.radius_pos n) (by positivity)))
+      (fun n => ?_) hmaj
+    have h1 := D.radius_le_one n
+    have hn : (0 : ℝ) < (n : ℝ) + 1 := by positivity
+    gcongr
+  have hadd := D.density.add hrad
+  rw [add_zero] at hadd
+  refine hadd.congr fun n => ?_
+  rw [add_div]
+
+/-- **A lower linear bound valid for every parameter.** -/
+theorem exists_uniform_lower_linear :
+    ∃ c : ℝ, 0 < c ∧ ∀ (θ : ℕ → ℝ) (n : ℕ), c * ((n : ℝ) + 1) ≤ D.zero θ n := by
+  classical
+  have hev : ∀ᶠ n : ℕ in atTop, (1 / 2 : ℝ) < (D.base n - D.radius n) / ((n : ℝ) + 1) :=
+    D.tendsto_base_sub_radius_div (Ioi_mem_nhds (by norm_num))
+  obtain ⟨N, hN⟩ := eventually_atTop.1 hev
+  have hsne : (Finset.range (N + 1)).Nonempty := ⟨0, Finset.mem_range.2 (Nat.succ_pos N)⟩
+  have hc₀pos :
+      0 < (Finset.range (N + 1)).inf' hsne
+        (fun n => (D.base n - D.radius n) / ((n : ℝ) + 1)) := by
+    rw [Finset.lt_inf'_iff]
+    intro n _
+    exact div_pos (D.base_sub_radius_pos n) (by positivity)
+  refine ⟨min (1 / 2)
+      ((Finset.range (N + 1)).inf' hsne
+        (fun n => (D.base n - D.radius n) / ((n : ℝ) + 1))),
+    lt_min (by norm_num) hc₀pos, fun θ n => ?_⟩
+  have hpos : (0 : ℝ) < (n : ℝ) + 1 := by positivity
+  refine le_trans ?_ (D.base_sub_le_zero θ n)
+  rw [← le_div_iff₀ hpos]
+  rcases le_or_gt n N with hn | hn
+  · have hmem : n ∈ Finset.range (N + 1) := Finset.mem_range.2 (by omega)
+    exact le_trans (min_le_right _ _)
+      (Finset.inf'_le (fun n => (D.base n - D.radius n) / ((n : ℝ) + 1)) hmem)
+  · exact le_trans (min_le_left _ _) (le_of_lt (hN n (by omega)))
+
+/-- **An upper linear bound valid for every parameter.** -/
+theorem exists_uniform_upper_linear :
+    ∃ C : ℝ, 0 < C ∧ ∀ (θ : ℕ → ℝ) (n : ℕ), D.zero θ n ≤ C * ((n : ℝ) + 1) := by
+  classical
+  have hev : ∀ᶠ n : ℕ in atTop, (D.base n + D.radius n) / ((n : ℝ) + 1) < 2 :=
+    D.tendsto_base_add_radius_div (Iio_mem_nhds (by norm_num))
+  obtain ⟨N, hN⟩ := eventually_atTop.1 hev
+  have hsne : (Finset.range (N + 1)).Nonempty := ⟨0, Finset.mem_range.2 (Nat.succ_pos N)⟩
+  refine ⟨max 2 ((Finset.range (N + 1)).sup' hsne
+      (fun n => (D.base n + D.radius n) / ((n : ℝ) + 1))),
+    lt_of_lt_of_le (by norm_num) (le_max_left _ _), fun θ n => ?_⟩
+  have hpos : (0 : ℝ) < (n : ℝ) + 1 := by positivity
+  refine le_trans (D.zero_lt_base_add θ n) ?_
+  rw [← div_le_iff₀ hpos]
+  rcases le_or_gt n N with hn | hn
+  · have hmem : n ∈ Finset.range (N + 1) := Finset.mem_range.2 (by omega)
+    exact le_trans (Finset.le_sup' (fun n => (D.base n + D.radius n) / ((n : ℝ) + 1)) hmem)
+      (le_max_right _ _)
+  · exact le_trans (le_of_lt (hN n (by omega))) (le_max_left _ _)
+
 end MovingDivisor
 
 end GaloisForLFunctions.HTGeometry
@@ -185,16 +278,26 @@ theorem exists_upper_linear : ∃ C : ℝ, 0 < C ∧ ∀ n : ℕ, D.zero θ n �
       (le_max_right _ _)
   · exact le_trans (le_of_lt (hN n (by omega))) (le_max_left _ _)
 
+/-- The speed of the coordinate displacement. -/
+noncomputable def coordinateSpeed (n : ℕ) (t : ℝ) : ℝ := D.radius n * (1 / Real.cosh t ^ 2)
+
 /-- The coordinate displacement is a smooth strictly increasing reparametrization. -/
 theorem coordinate_hasDerivAt (n : ℕ) (t : ℝ) :
     HasDerivAt (fun s : ℝ => D.base n + D.radius n * Real.tanh s)
-      (D.radius n * (1 / Real.cosh t ^ 2)) t :=
+      (D.coordinateSpeed n t) t :=
   ((_root_.HTGeometry.hasDerivAt_tanh t).const_mul (D.radius n)).const_add (D.base n)
 
-theorem coordinate_speed_pos (n : ℕ) (t : ℝ) : 0 < D.radius n * (1 / Real.cosh t ^ 2) := by
+theorem coordinate_speed_pos (n : ℕ) (t : ℝ) : 0 < D.coordinateSpeed n t := by
   have h1 := D.radius_pos n
   have h2 : (0 : ℝ) < Real.cosh t ^ 2 := by positivity
+  rw [coordinateSpeed]
   positivity
+
+theorem continuous_coordinateSpeed (n : ℕ) : Continuous (D.coordinateSpeed n) := by
+  refine continuous_const.mul (continuous_const.div ?_ ?_)
+  · exact (Real.continuous_cosh.pow 2)
+  · intro t
+    positivity
 
 /-- The reciprocal squares of the displaced locations are summable. -/
 theorem summable_inv_sq : Summable (fun n : ℕ => (D.zero θ n)⁻¹ ^ 2) := by

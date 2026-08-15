@@ -160,8 +160,8 @@ def id (H : Type*) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpa
     intro ρ hρ
     exact le_rfl
   normal := by
-    intro u hu s hs
-    simpa using hs
+    intro u hu hdir s hsup
+    simpa using hsup
 
 /-- Composition of normal completely-positive trace-nonincreasing operations. -/
 def comp (ψ : TraceClassQuantumOperation K L)

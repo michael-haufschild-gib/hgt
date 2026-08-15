@@ -5,7 +5,7 @@
 - **Type:** `[BRIDGE] [NO-GO] [POSITIVE CLASSIFICATION]`
 - **Scientific status:** `[PROVED] [FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Paper proof:**
-  `../2-fully-proven/not_new_scientific_knowledge/dyadic-prime-dirichlet-high-line-sign-rigidity.md`
+  `dyadic-prime-dirichlet-high-line-sign-rigidity.md`
 
 ## Generic module
 
@@ -17,9 +17,13 @@
 - `eventually_LSeriesSummable_sub_const`;
 - `lseriesPeeledPowerTwist_im_eq_LSeries_sub`;
 - `eventually_realLSeries_sub_im_pos` and `_im_neg`.
+- `nat_cpow_quarterTurn_im_eq_one` and `_neg_quarterTurn_im_eq_neg_one`;
+- `exists_opposite_imaginary_phase_of_ne_zero`;
+- `realLSeriesRawImpedance_not_fixedSign_of_firstNonzero`.
 
 The last two theorems formalize arbitrary-first-mode high-line sign rigidity for real ordinary
-Dirichlet series.  No continuation or zero hypothesis occurs.
+Dirichlet series, including construction of a phase for every nonzero first surviving real
+coefficient.  No continuation or zero hypothesis occurs.
 
 ## Dyadic specialization
 
@@ -49,6 +53,8 @@ canonical completed survivor with the already-existing horizontal Xi-growth resp
 - `lake env lean GaloisForLFunctions/HTGeometry/DirichletHalfPlaneSignRigidity.lean`: pass.
 - `lake env lean GaloisForLFunctions/RHTower/CCMSharpPrimeWindowPassiveNoGo.lean`: pass.
 - `lake build GaloisForLFunctions.RHTower.CCMSharpPrimeWindowPassiveNoGo`: pass.
+- final direct check after generic phase selection: pass.
+- final focused Route-I build after generic phase selection: pass.
 - `lake env lean GaloisForLFunctions/RHTower/CCMSharpPrimeWindowMobiusPassiveNoGo.lean`: pass.
 - `lake env lean GaloisForLFunctions/RHTower/CCMSharpPrimeWindowCompletedPassiveTransfer.lean`:
   pass.
@@ -56,8 +62,8 @@ canonical completed survivor with the already-existing horizontal Xi-growth resp
 - formal lint without build initially passed; final repository-wide rerun reports only seven
   unrelated concurrently added RHTower modules missing umbrella reachability.  All Route-I modules
   are reachable and no Route-I lint error is reported.
-- `#print axioms` for generic sign theorems, coefficient positivity, high witnesses, and both
-  no-go capstones: only `propext`, `Classical.choice`, and `Quot.sound`.
+- `#print axioms` for generic sign/phase theorems, coefficient positivity, high witnesses, and
+  both no-go capstones: only `propext`, `Classical.choice`, and `Quot.sound`.
 - no `sorry`, `admit`, project `axiom`, `opaque`, or `unsafe` declaration introduced.
 
 ## Route impact

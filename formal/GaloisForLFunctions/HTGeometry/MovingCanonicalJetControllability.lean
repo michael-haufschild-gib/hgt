@@ -381,41 +381,52 @@ theorem movingCanonicalLocationJetRealLinearCombination_surjective
       (movingCanonicalZero_injective θ)
       (fun a => ne_of_gt (movingCanonicalZero_pos θ a))
 
-/-- Coordinatewise multiplication by the exact positive speed of the moving canonical divisor. -/
-def movingCanonicalSpeedFinsuppLinearMap
-    (θ : BoundedRealSequence) :
+/-- Coordinatewise multiplication by a prescribed speed. -/
+def positiveSpeedFinsuppLinearMap (s : ℕ → ℝ) :
     (ℕ →₀ ℝ) →ₗ[ℝ] (ℕ →₀ ℝ) :=
-  Finsupp.linearCombination ℝ
-    (fun a => Finsupp.single a (canonicalZeroSpeed (θ a)))
+  Finsupp.linearCombination ℝ (fun a => Finsupp.single a (s a))
 
 @[simp]
-theorem movingCanonicalSpeedFinsuppLinearMap_single
-    (θ : BoundedRealSequence) (a : ℕ) (r : ℝ) :
-    movingCanonicalSpeedFinsuppLinearMap θ (Finsupp.single a r) =
-      Finsupp.single a (canonicalZeroSpeed (θ a) * r) := by
+theorem positiveSpeedFinsuppLinearMap_single (s : ℕ → ℝ) (a : ℕ) (r : ℝ) :
+    positiveSpeedFinsuppLinearMap s (Finsupp.single a r) =
+      Finsupp.single a (s a * r) := by
   ext b
-  simp [movingCanonicalSpeedFinsuppLinearMap, mul_comm]
+  simp [positiveSpeedFinsuppLinearMap, mul_comm]
 
-/-- Positive coordinate speeds make the diagonal parameter-to-location map onto. -/
-theorem movingCanonicalSpeedFinsuppLinearMap_surjective
-    (θ : BoundedRealSequence) :
-    Function.Surjective (movingCanonicalSpeedFinsuppLinearMap θ) := by
+/-- Nonvanishing coordinate speeds make the diagonal parameter-to-location map onto. -/
+theorem positiveSpeedFinsuppLinearMap_surjective {s : ℕ → ℝ} (hs : ∀ a, s a ≠ 0) :
+    Function.Surjective (positiveSpeedFinsuppLinearMap s) := by
   intro y
   induction y using Finsupp.induction with
   | zero =>
       exact ⟨0, map_zero _⟩
   | @single_add a r y ha hr ih =>
       obtain ⟨p, hp⟩ := ih
-      let speed := canonicalZeroSpeed (θ a)
-      have hspeed : speed ≠ 0 := ne_of_gt (canonicalZeroSpeed_pos (θ a))
-      refine ⟨p + Finsupp.single a (r / speed), ?_⟩
-      rw [map_add, hp, movingCanonicalSpeedFinsuppLinearMap_single]
-      dsimp only [speed]
-      change y + Finsupp.single a
-          (canonicalZeroSpeed (θ a) * (r / canonicalZeroSpeed (θ a))) =
-        Finsupp.single a r + y
-      rw [mul_div_cancel₀ r hspeed]
+      refine ⟨p + Finsupp.single a (r / s a), ?_⟩
+      rw [map_add, hp, positiveSpeedFinsuppLinearMap_single]
+      change y + Finsupp.single a (s a * (r / s a)) = Finsupp.single a r + y
+      rw [mul_div_cancel₀ r (hs a)]
       exact add_comm _ _
+
+/-- Coordinatewise multiplication by the exact positive speed of the moving canonical divisor. -/
+def movingCanonicalSpeedFinsuppLinearMap
+    (θ : BoundedRealSequence) :
+    (ℕ →₀ ℝ) →ₗ[ℝ] (ℕ →₀ ℝ) :=
+  positiveSpeedFinsuppLinearMap (fun a => canonicalZeroSpeed (θ a))
+
+@[simp]
+theorem movingCanonicalSpeedFinsuppLinearMap_single
+    (θ : BoundedRealSequence) (a : ℕ) (r : ℝ) :
+    movingCanonicalSpeedFinsuppLinearMap θ (Finsupp.single a r) =
+      Finsupp.single a (canonicalZeroSpeed (θ a) * r) :=
+  positiveSpeedFinsuppLinearMap_single _ a r
+
+/-- Positive coordinate speeds make the diagonal parameter-to-location map onto. -/
+theorem movingCanonicalSpeedFinsuppLinearMap_surjective
+    (θ : BoundedRealSequence) :
+    Function.Surjective (movingCanonicalSpeedFinsuppLinearMap θ) :=
+  positiveSpeedFinsuppLinearMap_surjective
+    (fun a => ne_of_gt (canonicalZeroSpeed_pos (θ a)))
 
 /-- Exact first-order jet map for variations of the bounded canonical parameter `θ`. -/
 def movingCanonicalParameterJetRealLinearCombination

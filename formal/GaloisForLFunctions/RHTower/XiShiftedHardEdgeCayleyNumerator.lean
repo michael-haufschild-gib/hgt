@@ -23,6 +23,9 @@ noncomputable section
 
 namespace RHTower
 
+theorem norm_ofReal_sq (a : ℝ) : ‖((a : ℂ) ^ 2)‖ = a ^ 2 := by
+  rw [norm_pow, Complex.norm_real, Real.norm_eq_abs, sq_abs]
+
 /-- The degree-`d` numerator of `P((a² - u)/(a² + u))`. -/
 def cayleyNumerator (a : ℝ) (d : ℕ) (P : Polynomial ℂ) : Polynomial ℂ :=
   ∑ k ∈ Finset.range (d + 1),

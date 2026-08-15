@@ -40,9 +40,6 @@ theorem norm_one_add_pow_sub_one_le (w : ℂ) (d : ℕ) :
     _ = d * (1 + ‖w‖) ^ d := by
         rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
 
-theorem norm_ofReal_sq (a : ℝ) : ‖((a : ℂ) ^ 2)‖ = a ^ 2 := by
-  rw [norm_pow, Complex.norm_real, Real.norm_eq_abs, sq_abs]
-
 /-- **(HHWB.12) The cleared Cayley denominator tends to one.**  When the degree is small compared
 with the square of the aperture, `(1 + u/a²)^d → 1` locally uniformly. -/
 theorem tendstoLocallyUniformly_one_add_div_pow {a : ℕ → ℝ} {d : ℕ → ℕ}

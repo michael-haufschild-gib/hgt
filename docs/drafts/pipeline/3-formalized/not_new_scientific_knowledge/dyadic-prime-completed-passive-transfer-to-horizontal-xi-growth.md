@@ -1,11 +1,14 @@
 # Dyadic-prime completed passive transfer to horizontal Xi growth
 
 - **ID:** `dyadic-prime-completed-passive-transfer-to-horizontal-xi-growth`
-- **Stage:** `2-fully-proven`
+- **Stage:** `3-formalized`
 - **Type:** `[BRIDGE] [ROUTE COLLISION] [EXACT CLASSIFICATION]`
-- **Scientific status:** `[PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
+- **Scientific status:** `[PROVED] [FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Source route:** Route I, sharp dyadic prime window
 - **Collision target:** retired Route C2, published horizontal Xi growth / theta-kernel positivity
+- **Formalized companion:** `dyadic-prime-completed-passive-transfer-to-horizontal-xi-growth-formalized.md`
+- **Lean target:**
+  `GaloisForLFunctions.RHTower.CCMSharpPrimeWindowCompletedPassiveTransfer`
 
 ## Theorem
 
@@ -117,4 +120,15 @@ source endpoint open.
 - [x] strict horizontal bound transfer proved
 - [x] exact collision with retired Route C2 identified; no live handoff claimed
 - [x] tautological biased analytic lift rejected by anti-theatre audit
-- [x] sent to unconditional Lean formalization
+- [x] exact unconditional Lean formalization
+- [x] direct source check and focused final leaf build
+- [x] axiom audit: only `propext`, `Classical.choice`, `Quot.sound`
+
+## Lean closure
+
+`dyadicSharpPrimeZetaLogDerivCore_eq` proves literal recovery of the shifted zeta logarithmic
+derivative on the source overlap.  `dyadicSharpPrimeCompletedSourceNormalization_eq_passiveResponse`
+then proves the exact completed coordinate equality, while
+`dyadicSharpPrimeCompletedPassiveResponseNonnegative_iff_riemannHypothesis` and
+`dyadicSharpPrimeCompletedPassiveResponse_im_pos_of_halfPlaneBound` prove the two terminal
+passivity statements.  The companion certificate also records the fully formal Möbius closure.
