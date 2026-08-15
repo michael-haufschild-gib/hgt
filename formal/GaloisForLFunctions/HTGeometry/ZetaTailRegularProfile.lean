@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.GammaShiftRatio
+import GaloisForLFunctions.HTGeometry.GammaRealShiftProfile
 import GaloisForLFunctions.HTGeometry.GevreyZetaTailBounds
 import GaloisForLFunctions.HTGeometry.ZetaTailClosedModulus
 import GaloisForLFunctions.HTGeometry.IrrationalSineSubsequence
@@ -100,7 +100,13 @@ theorem infinite_setOf_profile_le_abs_zetaTailModulus {s : ℝ} (hs : 0 < s) (hi
   have hfac : (1 : ℝ) ≤ zetaTailFactor s k := one_le_zetaTailFactor hs k
   rw [div_le_div_iff₀ (by positivity) Real.pi_pos]
   have hsin0 : (0 : ℝ) ≤ |Real.sin (Real.pi * s * k / 2)| := abs_nonneg _
-  nlinarith [hk, hfac, hsin0, Real.pi_pos]
+  have h1 : (1 : ℝ) / 2 * 1 ≤ |Real.sin (Real.pi * s * k / 2)| * zetaTailFactor s k :=
+    mul_le_mul hk hfac zero_le_one hsin0
+  have h1' : (1 : ℝ) / 2 ≤ |Real.sin (Real.pi * s * k / 2)| * zetaTailFactor s k := by linarith
+  have h2 : (1 : ℝ) / 2 * (2 * Real.pi)
+      ≤ (|Real.sin (Real.pi * s * k / 2)| * zetaTailFactor s k) * (2 * Real.pi) :=
+    mul_le_mul_of_nonneg_right h1' (by positivity)
+  linarith [h2]
 
 /-- **The zeta tail has a regular profile**: bounded above by it everywhere and below by a fixed
 multiple of it infinitely often. -/

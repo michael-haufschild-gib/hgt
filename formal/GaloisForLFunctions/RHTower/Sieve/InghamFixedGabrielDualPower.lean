@@ -253,6 +253,66 @@ theorem continuous_inghamFixedGabrielDualPower_const
     filter_upwards [hev] with u hu
     simp [inghamFixedGabrielDualPower, hu]
 
+/-- The dual power is jointly continuous in datum and strip variable wherever the affine exponent
+has positive real part. This includes the datum-zero seam, where continuity follows from variable
+real-power continuity rather than a phase choice. -/
+theorem continuousAt_inghamFixedGabrielDualPower_pair
+    {w z : ℂ} (hz : 0 < (inghamFixedGabrielDualExponent z).re) :
+    ContinuousAt
+      (fun p : ℂ × ℂ => inghamFixedGabrielDualPower p.1 p.2) (w, z) := by
+  by_cases hw : w = 0
+  · subst w
+    rw [ContinuousAt, show inghamFixedGabrielDualPower 0 z = 0 by
+      simp [inghamFixedGabrielDualPower], tendsto_zero_iff_norm_tendsto_zero]
+    have hqcont : Continuous fun u : ℂ => (inghamFixedGabrielDualExponent u).re := by
+      unfold inghamFixedGabrielDualExponent
+      fun_prop
+    have hpow : Tendsto
+        (fun p : ℂ × ℂ => ‖p.1‖ ^ (inghamFixedGabrielDualExponent p.2).re)
+        (𝓝 ((0 : ℂ), z)) (𝓝 0) := by
+      simpa only [Function.comp_apply, norm_zero, Real.zero_rpow hz.ne'] using
+        (continuous_fst.norm.tendsto ((0 : ℂ), z)).rpow
+          ((hqcont.comp continuous_snd).tendsto ((0 : ℂ), z)) (Or.inr hz)
+    have hpos : ∀ᶠ p : ℂ × ℂ in 𝓝 ((0 : ℂ), z),
+        0 < (inghamFixedGabrielDualExponent p.2).re :=
+      ((hqcont.comp continuous_snd).continuousAt.eventually (Ioi_mem_nhds hz))
+    apply hpow.congr'
+    filter_upwards [hpos] with p hp
+    exact (norm_inghamFixedGabrielDualPower_of_pos_re p.2 p.1 hp).symm
+  · have hev : ∀ᶠ p : ℂ × ℂ in 𝓝 (w, z), p.1 ≠ 0 :=
+      (continuous_fst.continuousAt.eventually (eventually_ne_nhds hw))
+    have hnormR : ContinuousAt (fun p : ℂ × ℂ => ‖p.1‖) (w, z) :=
+      continuous_fst.norm.continuousAt
+    have hnormC : ContinuousAt (fun p : ℂ × ℂ => (‖p.1‖ : ℂ)) (w, z) :=
+      Complex.continuous_ofReal.continuousAt.comp hnormR
+    have hphase : ContinuousAt
+        (fun p : ℂ × ℂ => p.1 / (‖p.1‖ : ℂ)) (w, z) :=
+      continuous_fst.continuousAt.div hnormC
+        (Complex.ofReal_ne_zero.mpr (norm_ne_zero_iff.mpr hw))
+    have hlogR : ContinuousAt (fun p : ℂ × ℂ => Real.log ‖p.1‖) (w, z) :=
+      ContinuousAt.comp (f := fun p : ℂ × ℂ => ‖p.1‖)
+        (Real.continuousAt_log (norm_ne_zero_iff.mpr hw)) hnormR
+    have hlogC : ContinuousAt
+        (fun p : ℂ × ℂ => (Real.log ‖p.1‖ : ℂ)) (w, z) :=
+      Complex.continuous_ofReal.continuousAt.comp hlogR
+    have hq : ContinuousAt
+        (fun p : ℂ × ℂ => inghamFixedGabrielDualExponent p.2) (w, z) := by
+      unfold inghamFixedGabrielDualExponent
+      fun_prop
+    have hcand : ContinuousAt (fun p : ℂ × ℂ =>
+        p.1 / (‖p.1‖ : ℂ) * Complex.exp
+          (inghamFixedGabrielDualExponent p.2 * (Real.log ‖p.1‖ : ℂ))) (w, z) :=
+      hphase.mul (Complex.continuous_exp.continuousAt.comp (hq.mul hlogC))
+    apply hcand.congr_of_eventuallyEq
+    filter_upwards [hev] with p hp
+    simp [inghamFixedGabrielDualPower, hp]
+
+theorem continuousOn_inghamFixedGabrielDualPower_pair :
+    ContinuousOn (fun p : ℂ × ℂ => inghamFixedGabrielDualPower p.1 p.2)
+      {p | 0 < (inghamFixedGabrielDualExponent p.2).re} := by
+  intro p hp
+  exact (continuousAt_inghamFixedGabrielDualPower_pair hp).continuousWithinAt
+
 end
 
 end RHTower.Sieve

@@ -4386,3 +4386,101 @@ the reusable layers, `RHTower` for the route-specific ones.
   `R 1 = 1` and the ODE (`eventually_signedModeRadialData_*`).  The second is a PSWF concentration
   estimate: `radialSeparationRatio_le_of_prolateSLAction` gives `s <= 1 + E/(c² M)`, and the tree's
   route to `s -> 0` currently takes the inverse-bandwidth envelope as a hypothesis.
+
+- 2026-08-15 (hundred-and-thirty-seventh instalment) -- **Self-reciprocity is exact and global.**
+  New module `RHTower/ProlateGlobalBandEigen.lean`, wired, axiom-clean.
+
+  The canonical source of a live signed mode obeys its finite-Fourier eigen-equation only inside the
+  physical aperture, because the equation is the cutoff equation.  Its unit-band *extension*
+  `q(x) = chi^{-1} · Fourier-representative(a x)` obeys the same equation at **every** real point:
+  the compact-support rescaling `fourier_compactSupport_unitScale` carries no restriction on the
+  frequency, and the extension agrees with the rescaled source almost everywhere on the band.
+
+  * **`evenProlateSignedUnitExtension_unitScale_eigen`** -- the global unit-scale eigen-relation
+    `a · integral_{-1}^{1} e(-(a t)(a x)) q(t) dt = chi · q(x)`, for all real `x`.
+  * **`evenProlateSignedUnitExtension_bandIntegral_eigen_global`** -- composing it with itself
+    through the scaled Fubini kernel gives `bandTransform (2 pi a^2) q x = chi^2 q(x)` for all real
+    `x`; the corpus previously had this only on the open band.
+  * **`bandTransform_evenProlateSignedUnitExtension_re_global`, `..._im_global`** -- the real and
+    imaginary channels are global real Slepian eigenfunctions.
+  * **`fourier_evenProlateSignedPointwiseSource_eq_unitExtension`** and its real-part form -- the
+    **exact pointwise self-reciprocity**
+
+    ```text
+    Fourier(source)(w) = chi · q(w / a),        every real w,
+    ```
+
+    which is the identification the channel bound needs arbitrarily far outside the aperture.
+
+- 2026-08-15 (hundred-and-thirty-eighth instalment) -- **Spectral simplicity is no longer needed.**
+  New module `RHTower/ProlateEvenEigenspaceDecomposition.lean`, wired, axiom-clean.
+
+  The classical passage from the band equation to the differential equation assumes the Slepian
+  eigenvalue is simple.  It is not needed: the even part of a live band eigenspace is
+  finite dimensional and carries the prolate action as a symmetric endomorphism, so the
+  finite-dimensional spectral theorem diagonalizes it.
+
+  * **`finiteDimensional_evenBandEigenspace`** -- the even part inherits finite dimensionality from
+    `finiteDimensional_bandEigenspace` through the injection into the full eigenspace.
+  * **`bandClass_mem_evenBandEigenspace`** -- a continuous even *global* band eigenfunction lands in
+    that space; this is where the previous instalment's globality is used.
+  * **`exists_joint_prolate_decomposition_of_even_bandEigen`** -- every such eigenfunction is a
+    finite real combination `psi = sum_j coef_j Phi_j` of smooth even functions that solve both the
+    band equation at the same eigenvalue and the prolate differential equation.  Downstream the
+    radial estimates are linear in the profile, so a finite sum is as good as a single mode.
+
+- 2026-08-15 (hundred-and-thirty-ninth instalment) -- **The Gaussian trial profile.**  New modules
+  `RHTower/ProlateGaussianTrial.lean` and `RHTower/ProlateGaussianTrialPositive.lean`, wired,
+  axiom-clean.
+
+  The separation bound `s <= 1/2` cannot hold for every prolate mode -- high modes have `s > 1` and
+  their turning point leaves the aperture.  It is a statement about *low* modes, and the honest way
+  to reach it is variational.  This instalment builds the test vector.
+
+  * **`gaussianTrial`, `prolateSLAction_gaussianTrial`** -- the centred Gaussian `exp(-c x^2/2)` is
+    an exact test vector: `L_c v = (-c + 3 c x^2 - c^2 x^4) v`, a quartic multiple of itself.
+  * **`gaussianTrialIntegrand_ge_center`, `..._nonneg_annulus`, `..._ge_edge`** -- the shifted
+    integrand `(c^2/2 - c + 3 c x^2 - c^2 x^4) e^{-c x^2}` is at least `c^2/(4e)` on the
+    concentration scale `|x| <= c^{-1/2}`, nonnegative out to `|x| <= 2^{-1/2}`, and at worst
+    `-(c + c^2) e^{-c/2}` in the edge layer.
+  * **`edge_defect_lt_core`** -- `2(c + c^2) e^{-c/2} < c/(2e)` for `c >= 400`, by squaring
+    `1 + c/4 <= exp(c/4)`.
+  * **`integral_gaussianTrialIntegrand_pos`, `prolate_gaussian_rayleigh_gt`** -- hence for every
+    `c >= 400`
+
+    ```text
+    integral_{-1}^{1} (L_c v) v  >  -(c^2/2) integral_{-1}^{1} v^2,        v = exp(-c x^2/2).
+    ```
+
+    A Rayleigh quotient strictly above the half threshold: if *every* joint prolate/band mode had
+    separation ratio above `1/2`, the spectral decomposition of `v` would force the opposite
+    inequality.  What remains for that contradiction is the `L^2` completeness of the joint
+    eigensystem, which mathlib's spectral theorem for compact self-adjoint operators supplies
+    (`ContinuousLinearMap.orthogonalComplement_iSup_eigenspaces_eq_bot`) together with the corpus's
+    `isCompactOperator_bandOperatorL2` and `bandOperatorL2_symmetric`.
+
+- 2026-08-15 (hundred-and-fortieth instalment) -- **The finite-dimensional half of the variational
+  selection.**  New module `RHTower/ProlateEvenEigenspaceQuadratic.lean`, wired, axiom-clean.
+
+  * **`exists_joint_even_prolate_eigen_gt`** -- on the even part of a live band eigenspace the
+    prolate action is symmetric on a finite-dimensional space, so its quadratic form is bounded by
+    its largest eigenvalue.  Contrapositive: one vector `u` with
+
+    ```text
+    -K ‖u‖²  <  ⟪L u, u⟫
+    ```
+
+    already produces an even joint band/prolate eigenfunction with prolate eigenvalue above `-K`,
+    i.e. radial separation ratio below `K/c²`.  Proved by expanding in the eigenvector basis:
+    `⟪Lu,u⟫ = sum_j eta_j ⟪b_j,u⟫²` and `‖u‖² = sum_j ⟪b_j,u⟫²`.
+
+  With instalment 139 the two halves of `s <= 1/2` are in place at the level of a *single* band
+  eigenspace: the Gaussian gives a vector with large form value, and this gives the mode.  The
+  remaining link is the `L²` bridge -- decomposing the Gaussian's band class over the eigenspaces of
+  the compact symmetric band operator -- so that the Gaussian's form value is distributed over the
+  eigenspaces and one of them must carry it.  The needed inputs are
+  `ContinuousLinearMap.orthogonalComplement_iSup_eigenspaces_eq_bot` (mathlib),
+  `isCompactOperator_bandOperatorL2` and `bandOperatorL2_symmetric` (corpus), the Hilbert-sum
+  decomposition `IsHilbertSum.mkInternal`, and injectivity of the band operator to dispose of the
+  eigenvalue `0` (reachable from `HTGeometry.ae_eq_zero_of_fourierIntegral_eq_zero` and
+  `HTGeometry.compactFourier_eq_zero_of_vanishing_on_real_interval`).

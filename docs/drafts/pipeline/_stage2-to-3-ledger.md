@@ -1315,3 +1315,41 @@ dominated-convergence or a.e.-differentiability argument is needed anywhere.
 Cards that need the product-circle Poincaré law (`low-replica-complete-incidence-influence-law`,
 `onset-recurrence-dimension-independence-law`, `cubic-phase-seeded-static-local-full-scale-plateau-law`)
 can now consume it; the remaining work there is the a.e.-gradient bound that supplies the hypothesis.
+
+## Shared infrastructure: the gradient of a finite maximum
+
+`HTGeometry/FiniteMaxGradient` proves that wherever a finite maximum of differentiable functions is
+differentiable, its derivative equals the derivative of an active member.  The proof needs no
+convexity and no uniqueness of the maximizer: the difference `max − X_z` has a local minimum at the
+point in every direction, so its directional derivative vanishes.
+
+- `hasFDerivAt_finiteMax_eq`, `exists_fderiv_finiteMax_eq`: the derivative identification.
+- `norm_fderiv_finiteMax_le`: a uniform derivative bound passes to the maximum.
+- `lipschitzWith_finiteMax`, `abs_finiteMax_sub_finiteMax_le`: the Lipschitz transfer.
+
+This is the missing step behind every card whose observable is a complete-dictionary maximum: the
+card proofs say "at almost every differentiability point the gradient lies in the convex hull of the
+active gradients", and this module supplies exactly that in the form the estimates use.
+
+## Remaining stage-2 cards: what each still needs
+
+The cards left in `2-fully-proven` all need genuinely new mathematics, not plumbing.  Triage:
+
+- **Torus/variance cluster** (`low-replica-complete-incidence-influence-law`,
+  `onset-recurrence-dimension-independence-law`,
+  `cubic-phase-seeded-static-local-full-scale-plateau-law`): the two new modules above are the hard
+  half.  What remains is the transfer chain — lift a Lipschitz torus observable to a periodic
+  function on `ℝ^d`, apply Rademacher, and turn the a.e. gradient bound into the translate-difference
+  hypothesis of `integral_sq_sub_sq_integral_le` by dominated convergence.
+- **Projective Haar cluster** (`static-ensemble-coverage-time-barrier-law`): needs the Beta law of a
+  coordinate of a Haar-random unit vector, i.e. the measure of a projective ball.  Mathlib has the
+  sphere measure but not this law.
+- **Diamond-norm cluster** (`markovian-return-recovery-complexity-reflection-law`): needs the
+  completely bounded norm and the classification of CPTP maps with CPTP inverse.
+- **Analytic-number-theory cluster** (`route-e-*`, `route-t-*`): rests on published all-interval
+  theorems (Matomäki--Teräväinen) that are not in mathlib.
+- **Special-function cluster** (`mass-bessel-*`): needs Bessel `K` asymptotics from scratch.
+- **Diophantine cluster** (`local-chain-metric-recurrence-exponents`): rests on Kleinbock--Margulis
+  extremality.
+- **Operator-ideal cluster** (`determinant-defect-completion-law`): needs Schatten classes and
+  regularized determinants.

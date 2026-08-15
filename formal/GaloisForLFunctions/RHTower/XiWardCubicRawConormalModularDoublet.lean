@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.RoutePCompletedXiConormalBaseResidue
+import GaloisForLFunctions.RHTower.XiWardEdgeL2CrossKernel
 
 /-!
 # Cubic raw-conormal modular doublet
@@ -101,6 +102,52 @@ theorem no_additive_scalar_multiplicity_halfDensity :
   have ha := hadd 1 1
   norm_num at h1 h2 ha
   rcases h1 with h1 | h1 <;> nlinarith
+
+/-! ## Boundary Hardy--Sobolev form of the same cubic charge -/
+
+/-- Double pole obtained by differentiating one logarithmic-current pole on the critical
+boundary. -/
+def xiWardCubicBoundaryDoublePole (a gamma t : ℝ) : ℂ :=
+  (((a : ℂ) + I * ((t - gamma : ℝ) : ℂ))⁻¹) ^ 2
+
+theorem normSq_xiWardCubicBoundaryDoublePole
+    {a : ℝ} (ha : 0 < a) (gamma t : ℝ) :
+    Complex.normSq (xiWardCubicBoundaryDoublePole a gamma t) =
+      1 / (a ^ 2 + (t - gamma) ^ 2) ^ 2 := by
+  rw [xiWardCubicBoundaryDoublePole, pow_two, Complex.normSq_mul,
+    Complex.normSq_inv, Complex.normSq_apply]
+  simp [Complex.mul_re, Complex.mul_im]
+  field_simp
+
+/-- Exact vertical Hardy--Sobolev energy of one double pole. -/
+theorem integral_normSq_xiWardCubicBoundaryDoublePole
+    {a : ℝ} (ha : 0 < a) (gamma : ℝ) :
+    ∫ t : ℝ, Complex.normSq (xiWardCubicBoundaryDoublePole a gamma t) =
+      Real.pi / (2 * a ^ 3) := by
+  rw [show (fun t : ℝ =>
+      Complex.normSq (xiWardCubicBoundaryDoublePole a gamma t)) =
+      fun t : ℝ => (1 / a ^ 2) *
+        (a / (a ^ 2 + (t + (-gamma)) ^ 2)) ^ 2 by
+    funext t
+    rw [normSq_xiWardCubicBoundaryDoublePole ha]
+    field_simp [ha.ne']
+    ring]
+  rw [MeasureTheory.integral_const_mul,
+    integral_sq_lorentzianHalf ha (-gamma)]
+  field_simp [ha.ne']
+
+/-- On every actual strict-right zero, double-pole boundary energy is exactly `2π` times the
+P-G181 base charge.  This is the analytic-current form of the bilateral radial identity. -/
+theorem integral_normSq_xiWardCubicBoundaryDoublePole_actualZero
+    (q : XiRightZeroCopy) :
+    ∫ t : ℝ, Complex.normSq
+        (xiWardCubicBoundaryDoublePole
+          (xiRightCenteredZero q).re (xiRightCenteredZero q).im t) =
+      2 * Real.pi * (1 / (4 * (xiRightCenteredZero q).re ^ 3)) := by
+  rw [integral_normSq_xiWardCubicBoundaryDoublePole
+    (xiRightCenteredZero_re_pos q)]
+  field_simp [(xiRightCenteredZero_re_pos q).ne']
+  ring
 
 end
 

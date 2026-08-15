@@ -2759,3 +2759,62 @@ the theorem must retain the channel decomposition in `S`.
 
 Formal source:
 `formal/GaloisForLFunctions/RHTower/CCMGuinandWeilContinuousSourceQuotient.lean`.
+
+## C59 literal polar--prime source weld `[PROVED AND LEAN-FORMALIZED]`
+
+C58 supplied the continuous source space but not the arithmetic point in it. For positive
+half-aperture `a`, transport logarithmic position by
+
+```text
+omega_a(h)=1-h/(2a),  0<=h<=2a.                                 (C59.1)
+```
+
+Lean constructs the pole and prime channels separately in `C([0,1],R)^*`:
+
+```text
+L_pole(f)=integral_0^(2a) f(omega_a(h)) 2 cosh(h/2) dh,
+L_prime(f)=sum_(2<=k<=floor(exp(2a)))
+             -Lambda(k)/sqrt(k) f(omega_a(log k)).               (C59.2)
+```
+
+The first is an explicitly bounded continuous linear functional. The second is a finite atomic
+functional, and every visible `log k` is formally inside the aperture. At physical frequency
+`xi_n=pi*n/a`, integer periodicity gives the exact reflection law
+
+```text
+sin(2*pi*n*omega_a(h))=-sin(xi_n h).                              (C59.3)
+```
+
+Consequently the source value of `L_pole+L_prime` is precisely the published polar--prime
+coefficient:
+
+```text
+psi_(L_pole+L_prime)(n)
+  = ccmPublishedPolarPrimeSineCoefficient(a,xi_n).                (C59.4)
+```
+
+This closes the cutoff, sign, endpoint, and `pi` normalizations in Lean. It also keeps arithmetic
+provenance before quotienting: `(C59.4)` is obtained from two named functionals, not by defining an
+abstract functional from the target coefficient.
+
+**Conjecture passed, but only for two channels.** C58's proposed full packet equality cannot yet be
+claimed: the finite archimedean sine channel has not been represented in the continuous dual, and
+the published matrix also contains diagonal weighted-cosine data. C59 proves the maximal exact
+polar--prime survivor and exposes those two precise remaining obligations.
+
+**Higher principle exposed.** The source quotient is not merely compatible with arithmetic after
+matrix formation. Physical-mode periodicity is a natural transformation from logarithmic
+Stieltjes channels to horizon sine coordinates. The sign in the published source is the horizon
+reflection sign. Thus source provenance and Fourier normalization can be transported exactly before
+the nonfaithful finite observer; no source decoder is needed or possible.
+
+**Next conjecture C60.** Construct the cutoff archimedean source functional in `C([0,1],R)^*` whose
+physical sine values are `ccmPublishedArchimedeanSineCoefficient`. Add it to C59 and prove equality
+with `ccmPublishedSourceSineCoefficient` for every physical mode. Then construct and identify its
+weighted-cosine diagonal coordinates; only after both odd and diagonal families close, prove whole
+packet equality with `ccmPublishedRestrictedWeilMatrix`. If the archimedean density is singular at
+`h=0`, pivot from a raw measure to its correct finite-part/distributional functional rather than
+forcing a false bounded-measure model.
+
+Formal source:
+`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilLiteralPolarPrimeSource.lean`.

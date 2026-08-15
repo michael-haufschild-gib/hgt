@@ -284,6 +284,20 @@ theorem integral_sq_sub_sq_integral_le (f : C(UnitAddTorus d, ℂ)) {C : ℝ}
   rw [hsplit, hzero]
   linarith
 
+/-- The Poincaré inequality in the form supplied by an approximate translate bound: if for every
+positive slack the translate differences are eventually bounded by the slackened constant, the
+variance obeys the sharp bound. -/
+theorem integral_sq_sub_sq_integral_le_of_slack (f : C(UnitAddTorus d, ℂ)) {C : ℝ}
+    (hC : ∀ ε > 0, ∀ᶠ h : ℝ in 𝓝[≠] (0 : ℝ),
+      ∑ j : d, (∫ t, ‖f (t + coordShift j h) - f t‖ ^ 2) ≤ (C + ε) * h ^ 2) :
+    (∫ t, ‖f t‖ ^ 2) - ‖∫ t, f t‖ ^ 2 ≤ C / (4 * Real.pi ^ 2) := by
+  have hpi : (0 : ℝ) < 4 * Real.pi ^ 2 := by positivity
+  refine le_of_forall_pos_le_add fun ε hε => ?_
+  have hslack := integral_sq_sub_sq_integral_le f (C := C + ε * (4 * Real.pi ^ 2))
+    (hC (ε * (4 * Real.pi ^ 2)) (by positivity))
+  rw [add_div, mul_div_assoc, div_self hpi.ne', mul_one] at hslack
+  exact hslack
+
 end Poincare
 
 end GaloisForLFunctions.HTGeometry

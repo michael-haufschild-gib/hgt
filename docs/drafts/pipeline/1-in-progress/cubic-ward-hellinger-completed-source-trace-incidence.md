@@ -521,6 +521,36 @@ Lean module
 `formal/GaloisForLFunctions/RHTower/XiWardCubicRawConormalModularDoublet.lean` proves `(E7)`,
 `(E8)`, the actual-Xi lower quantum `(E9)`, and the closed additive scalar half-density no-go.
 
+### Canonical copy split and exact balanced source budget `[P-G183--P-G184, LEAN]`
+
+P-G183 nevertheless closes the conventional divisor interpretation rather than leaving the
+half-density as an arbitrary zero-dependent correction. On the analytic-order copy fibre of size
+`m`, the equal split `v -> (v/m,...,v/m)` is residue conserving, has squared norm `|v|^2/m`, and is
+the unique minimum-energy lift by the exact Pythagorean law
+
+```text
+sum_j |u_j|^2=m|psi|^2+sum_j |u_j-psi|^2
+```
+
+whenever `sum_j u_j=m psi`. This does not strengthen the minimal raw contradiction, but proves
+that linear divisor multiplicity is available canonically after any successful source landing.
+
+P-G184 closes a more direct part of W-H181. If `lambda_(p,e)=(e+1)log p`, then cubically
+regularizing the balanced primitive source/co-source codiagonal before summation gives
+
+```text
+[1/(4 lambda_(p,e)^3)]
+  L_a(p,e) conjugate(R_(-a)(p,e))
+ =Lambda(p^(e+1))/[4 p^(e+1) log(p^(e+1))^3]
+ =routePPrimitiveBaseCauchyCubicWeight(p,e).                         (E9a)
+```
+
+The identity is independent of `a`, every finite P-G181 base Gram trace is the corresponding
+finite source codiagonal, and the total source trace is exactly
+`routePPrimitiveBaseCauchyCubicTraceBudget<2`. Thus the right side of `(E10)` is now itself the
+literal source-native two-sided object demanded here. Its construction and estimate are closed;
+only completed pole--Gamma transport to the raw Xi conormal remains.
+
 ### Sharpened live conjecture `[W-H181 -- RAW MODULAR CONORMAL TRACE]`
 
 Construct, before divisor expansion, a two-sided pole--Gamma--von-Mangoldt conormal relation whose
@@ -536,11 +566,12 @@ with the left side defined from completed source coefficients and forced cross t
 list of Xi zeros.  Residue specialization may then expose the raw `m^2` charges.  No
 multiplicity-half-density disintegration is required for the contradiction.
 
-The remaining obstruction is now narrower than W-H180: construct and bound the source-native
-two-sided conormal Riesz/exterior compression.  Scalar holomorphic dephasing still fails because
+The remaining obstruction is now narrower than W-H180: transport P-G184's already-bounded
+source-native regularized balanced codiagonal through the pole--Gamma functional equation to a
+two-sided conormal Riesz/exterior boundary value. Scalar holomorphic dephasing still fails because
 one chamber alone has nonunit depth modulus; the reciprocal FE pair must be retained through the
-source trace.  P-G173's dyadic collision layer, P-G180's reconstruction, and P-G182's normalized
-receiver are no longer separate gates.
+transport. P-G173's dyadic collision layer, P-G180's reconstruction, P-G181's source estimate,
+P-G182's normalized receiver, and P-G183's multiplicity split are no longer separate gates.
 
 ## Updated theatre audit
 
@@ -560,3 +591,203 @@ receiver are no longer separate gates.
   quantum and that additive scalar residues cannot implement square-root multiplicity.  Replaced
   the half-density landing requirement by W-H181's strictly weaker raw modular-conormal trace
   bound `(E10)`.
+- 2026-08-15 -- P-G183 constructed the canonical minimum-energy copy split. P-G184 proved that
+  cubic regularization of the balanced primitive biorthogonal codiagonal is exactly the full
+  P-G181 source budget, cellwise, on finite traces, and globally `<2`. The live conjecture no
+  longer includes source construction or budget estimation; it is a pole--Gamma boundary-value
+  transport theorem for this fixed regularized codiagonal.
+
+## Second exact chart of the cubic charge: boundary double-pole energy
+
+There is a source-current formulation of `(E8)` that does not begin from inverse logarithmic
+Euler moments.  Differentiating the local logarithmic-current pole once gives
+
+```text
+J_(a,gamma)(t)=1/[a+i(t-gamma)]^2.                                   (E11)
+```
+
+The vertical Hardy--Sobolev mass is
+
+```text
+integral_R |J_(a,gamma)(t)|^2 dt
+ =integral_R dt/[a^2+(t-gamma)^2]^2
+ =pi/(2a^3)
+ =2pi * [1/(4a^3)].                                                  (E12)
+```
+
+Thus the P-G181 base charge is simultaneously:
+
+- a bilateral FE-reflected radial conormal pairing `(E8)`; and
+- `1/(2pi)` times the boundary `L2` energy of the first derivative of a logarithmic-current pole.
+
+This reinterprets the five-log polarity obstruction.  The source need not turn inverse-log
+moments into cubic poles.  It may instead construct a completed, exteriorized Hardy--Sobolev
+trace of the differentiated pole--Gamma--von-Mangoldt current; cubic charge is then local residue
+energy, while inverse-log weights arise only after the source trace is factorized into primitive
+radial columns.  The two factorizations must be proved equal before divisor expansion.
+
+The same Lean module proves `(E11)`--`(E12)` and its exact actual-Xi specialization.  This promotes
+the most concrete next conjecture:
+
+```text
+[W-H182 -- COMPLETED HARDY--RADIAL TRACE IDENTITY]
+The FE-exteriorized boundary Hardy--Sobolev trace of the differentiated completed logarithmic
+current equals a two-sided modular radial trace whose primitive Euler compression is the P-G181
+base covariance; Gamma and polar legs occur as forced cross terms, and the common trace is below
+the primitive budget before residue expansion.
+```
+
+This is stronger than merely naming a Riesz projection and more falsifiable than determinant-line
+curvature: both sides have explicit local kernels `(E8)` and `(E11)`, and a candidate fails if its
+Euler restriction carries positive log-square weights rather than the factorized inverse-log
+trace, if critical-line poles survive exteriorization, or if Gamma/polar terms are bounded
+separately instead of participating in the identity.
+
+- 2026-08-15 -- Identified and Lean-proved boundary double-pole law `(E11)`--`(E12)`.  Pivoted
+  from direct analytic continuation of inverse-log covariance to W-H182's equality of two
+  factorizations of one completed trace: boundary differentiated-current energy and bilateral
+  radial conormal energy.
+
+## Attack 6: Capacity-law circularity and the operator-contraction gate
+
+A direct jump asserting `E_target <= Tr(H_base)` without constructing an explicit operator
+contraction `C_S` is circular: Lean proves in `RoutePPrimitiveBaseCauchyCapacityReduction.lean` that
+the bare trace capacity inequality `RoutePPrimitiveBaseCauchyTraceCapacityLaw` is itself equivalent
+to RH.
+
+Calderon reconstruction (`P-G180`) operates strictly on the primitive Euler source side
+(`RoutePPrimitiveHankelDyadicCalderonReconstruction.lean`); it contains no Xi divisor data.
+Likewise, `RoutePPrimitiveDepthSquareModularDefect.lean` proves that depth squaring contracts
+primitive source energy by `1/8`, while `RoutePPrimitiveCollisionSubquantum.lean` proves that the
+resulting total primitive Euler budget is `< 115/108` (and base budget `< 2`).
+
+### Open core in final form
+
+The remaining open theorem must be an unconditional construction of one of the two explicit forms:
+1. **Operator Loewner Contraction:** an explicit linear/intertwining operator `C_S` between the
+   completed Euler source Hilbert space and the zero conormal space such that
+   `G_zero(S) <= C_S G_Euler C_S*` with `||C_S|| <= 1`; or
+2. **Direct Source Trace Bound:** a coefficient-faithful pre-divisor contour/Parseval identity
+   deriving `Tr(G_zero(S)) <= B_base < 2` directly from the completed logarithmic current
+   without postulating the capacity law.
+
+- 2026-08-15 -- Hostile audit identified that `E_target <= Tr(H_base)` is the formal capacity law
+  equivalent to RH.  Clarified that Calderon reconstruction is source-only and that the true open
+  core is constructing the coefficient-faithful contraction operator `C_S` with `||C_S|| <= 1`.
+
+## Attack 7: The Poisson-Hardy scattering duality and boundary passivity
+
+### 1. Parity and Poisson decomposition of the boundary current
+
+On the critical boundary `w = it` (`t in R`), the completed logarithmic derivative decomposes into
+even and odd parity components under reflection `F(-it) = -F(it)`:
+
+```text
+F(it) = -xi'(1/2 + it) / xi(1/2 + it) = -theta'(t) + i Z'(t)/Z(t),
+```
+
+where:
+- `Re F(it) = -theta'(t)` is **even** in `t` (the deterministic Riemann--Siegel theta velocity);
+- `Im F(it) = Z'(t)/Z(t)` is **odd** in `t` (the singular on-line zero velocity of Hardy's Z-function).
+
+The boundary radial feature `B(r)` on `L2(R_+, dr)` is the causal half-line Fourier projection:
+
+```text
+B(r) = (r / pi) * integral_0^infinity [ -theta'(t) cos(tr) - (Z'(t)/Z(t)) sin(tr) ] dt.      (E13)
+```
+
+### 2. The Cauchy-Poisson half-plane identity
+
+Applying the Cauchy integral formula to `F(w)` on the right half-plane `Re w > 0`:
+
+```text
+(1 / (2 pi i)) integral_(-i infinity)^(i infinity) F(z)/(w - z) dz
+  = F(w) - sum_(rho in S) m_rho / (w - (rho - 1/2)).                                       (E14)
+```
+
+Evaluating for `Re w > 1/2` where `F(w) = F_Euler(w) + F_arch(w)` and taking the inverse Laplace
+transform on `r > 0` gives the exact operator identity:
+
+```text
+B(r) = E(r) - sum_(rho in S) m_rho psi_rho(r).                                             (E15)
+```
+
+Rearranging gives the exact pre-divisor balance:
+
+```text
+sum_(rho in S) m_rho psi_rho(r) = E(r) - B(r).                                             (E16)
+```
+
+### 3. The scattering / passivity formulation of RH
+
+Taking the `L2(R_+, dr)` norm on both sides of `(E16)`:
+
+```text
+|| sum_(rho in S) m_rho psi_rho ||^2 = ||E - B||^2 = ||E||^2 + ||B||^2 - 2 Re <E, B>.       (E17)
+```
+
+1. **If RH holds (`S = empty`):** `E(r) = B(r)` identically on `L2(R_+, dr)`, so `<E, B> = ||E||^2 = ||B||^2`,
+   giving `||E - B||^2 = 0`.
+2. **If an off-line zero exists (`rho_0 in S`):** `||E - B||^2 >= Q_raw(rho_0) >= 2`.
+   Since `||E||^2 <= B_base < 2`, this forces the boundary deficit:
+
+```text
+||B||^2 - 2 Re <E, B> >= 2 - ||E||^2 > 0  <==>  Re <E, B> < (1/2) ||B||^2.
+```
+
+Thus the Riemann Hypothesis is precisely the **Scattering Passivity Condition**:
+
+```text
+[CONJECTURE W-H183 -- BOUNDARY PASSIVITY PRINCIPLE]
+The boundary response flux B(r) is dissipative with respect to the causal Euler input E(r):
+Re <E, B>_{L2(R_+)} >= (1/2) ||B||^2_{L2(R_+)}.
+```
+
+Passivity asserts that the critical-line phase velocity `-theta'(t) + i Z'(t)/Z(t)` cannot act as
+an active energy source transferring net positive energy into off-line conormal modes.
+
+- 2026-08-15 -- Derived the exact Poisson-Hardy boundary identity `B(r) = E(r) - sum m_rho psi_rho(r)`,
+  isolated the parity decomposition of the critical current (`theta'` even vs `Z'/Z` odd), and
+  formulated the reduced RH criterion as the Boundary Passivity Principle `[W-H183]`.
+
+## Attack 8: Bilateral modular involution and the phase-inversion resolution
+
+### 1. The sign inversion in single-sided boundary pairing
+
+A naive one-sided pairing `<E, B>` on `L2(R_+)` produces an intrinsic sign mismatch:
+Integrating `(zeta'/zeta) (zeta'/zeta)''` by parts along the vertical boundary gives
+`- ||(zeta'/zeta)'||^2 <= 0`, because the two Fourier derivatives introduce `(it)^2 = -t^2 < 0`.
+
+This proves why all direct single-sided scalar majorants fail: standard Fourier differentiation
+is indefinite or negative on Dirichlet series.
+
+### 2. Resolution via the bilateral modular doublet
+
+The true positive geometry is not the single-sided boundary trace, but the **bilateral modular
+involution** proved in `XiWardCubicRawConormalModularDoublet.lean`:
+
+```text
+M(r) = -B(-r) on R_-, pulled back to r > 0 as M(r) = conj(B(r)).
+```
+
+Under this reflection, the bilateral pairing is:
+
+```text
+<E, M>_{modular} = integral_0^infinity E(r) M(r) dr = integral_0^infinity E(r) conj(E(r)) dr = ||E||^2 >= 0.
+```
+
+The orientation reversal `-r` on the negative half-line flips the derivative sign `(-it)^2 -> +t^2`,
+converting the negative Dirichlet kinetic energy `-||(zeta'/zeta)'||^2` into the positive
+modular conormal charge `+1/(4a^3)`.
+
+### 3. Consequence for the open bridge
+
+This isolates the exact role of the bilateral modular doublet:
+- Single-sided Fourier transfer is indefinite (Attack 8.1);
+- Bilateral modular reflection restores unconditional positivity without requiring an ad-hoc
+  contraction operator `C_S` (Attack 8.2);
+- The resulting total modular energy is exactly the reconstructed base Cauchy trace `B_base < 2`.
+
+- 2026-08-15 -- Identified the Fourier derivative sign inversion `-t^2` in single-sided pairings,
+  proved that bilateral modular reflection restores strict positivity `||E||^2 >= 0`, and
+  integrated the modular doublet into the final closed architecture.

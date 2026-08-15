@@ -1380,3 +1380,44 @@ The chain, in dependency order (all modules umbrella-wired, build green, axioms
 
 Only item (5) remains: the sine forms of `MultipleGammaMonomialCoefficients` and
 `MultipleGammaAnnihilatorExact`, i.e. the card's capstone `Ann_DA(L_V) = I_{N-1}`.
+
+### Item 5 is closed: the exact annihilator `Ann_DA(L_V) = I_{N-1}`
+
+**`HTGeometry/MultipleSineAnnihilatorExact.differentialAlgebraicOver_xApply_multipleSine_iff_mem_veroneseIdeal`**
+is proved, unconditionally and axiom-clean.  For a ray period family `ω_k = μ·rad_k` with positive
+radii, rationally independent, and `Fintype.card ι = r + 1`:
+
+```text
+xApply ω P (L_V)  is differentially algebraic over ℂ(z)   ↔   P ∈ I_r,
+```
+
+i.e. equation `(12)` of this card with `r = N − 1`.  The two inclusions:
+
+- `⊇` — every monomial using at least `N − 1` distinct directions annihilates:
+  `differentialAlgebraicOver_listShiftDiff_of_compl_le_one` peels the iterated difference until the
+  face retains one period, where the coordinate is the order-one source
+  (`differentialAlgebraicOver_frameSourceMero_singleton`).  No lower bound on `N` is needed: the
+  degenerate cases `N ≤ 1` are the empty and order-one sources themselves.
+- `⊆` — the reverse inclusion is the new content.  Two modules:
+  - `HTGeometry/MultipleSineMonomialCoefficients` — the **monomial synthesis identity**
+    `listShiftDiff_sub_sineNatSynth_mem`:
+
+    ```text
+    ∏_{q ∈ l} (T_q − 1) L_V  ≡  (−1)^{|l|} · Σ_n c_n T^{n·ω} F_{l}      (mod ℂ(z)),
+    ```
+
+    where `c = listCoeff l` is the corpus's purely combinatorial coefficient function.  Both
+    structural steps appear: a difference in an already deleted direction shifts the exponent
+    (`meroShiftDiff_sineNatSynth`, exact), and a difference in a surviving direction deletes that
+    direction, **flips the sign and leaves a rational remainder**
+    (`meroShiftDiff_sineNatSynth_notMem`) — the two places where the multiple sine differs from the
+    elliptic gamma, both invisible to differential algebraicity.
+  - `HTGeometry/MultipleSineAnnihilatorExact` — the pair coordinate `(face, exponent)` is faithful
+    on the union of all proper-face packets (`sineDeepCoordinate_injective`, from the separation
+    theorem above), so grading an operator by the support of its monomials writes its action as a
+    single combination over that coordinate, modulo `ℂ(z)`; a maximal-degree narrow monomial then
+    carries a nonzero pair coefficient (`listCoeff_top`), and the joint independence makes the whole
+    combination hypertranscendental (`hypertranscendentalOver_sinePairSynth`).
+
+With items 1–5 closed, the analytic core of the card — equations `(6)`, `(10)` and `(12)` — is
+formalized unconditionally.

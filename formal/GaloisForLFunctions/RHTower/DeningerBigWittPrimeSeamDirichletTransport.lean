@@ -288,7 +288,6 @@ theorem deningerBigWittXiPrimeSeamSourceEnergySubmass_iff_riemannHypothesis :
     deningerBigWittPrimeSeamSourceEnergy_eq_primePairDifferenceEnergy]
     using xiPrimeSeamPairEnergySubmass_iff_riemannHypothesis
 
-+
 /-- Pair source whose two faces are scaled by the physical seam difference. -/
 def deningerBigWittPrimeSeamPairStokesSource
     (a : Nat.Primes → ℂ) (p q : Nat.Primes) :
