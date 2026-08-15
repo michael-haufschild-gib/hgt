@@ -324,8 +324,9 @@ theorem gaugeExpandedPacketValue_eq_familyJetVec
       = iteratedDeriv (t.2 : ℕ)
         (fun w => (fun u => W u * Complex.exp ((g : C(ℂ, ℂ)) u)) (w + shift.1 t.1))
         (packet.1 r) := rfl
-  rw [hrhs, iteratedDeriv_comp_add_right]
-  rfl
+  rw [hrhs]
+  exact (iteratedDeriv_comp_add_right (fun u => W u * Complex.exp ((g : C(ℂ, ℂ)) u))
+    (shift.1 t.1) (t.2 : ℕ) (packet.1 r)).symm
 
 /-- **No finite family of distinct complex translates of a relation-free gauged source satisfies an
 algebraic differential relation over the rational functions.** -/

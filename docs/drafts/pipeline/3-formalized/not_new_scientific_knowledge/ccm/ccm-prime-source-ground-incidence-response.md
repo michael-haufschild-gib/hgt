@@ -1,7 +1,7 @@
 # CCM prime-source ground incidence and divisor response
 
 - **ID:** `ccm-prime-source-ground-incidence-response`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized (paper proof; Lean certificate alongside)
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent theories:** concavity of variational spectral floors, Hellmann--Feynman, and Kato
@@ -226,3 +226,38 @@ Hellmann--Feynman would be wrapper work. No Lean file is added.
 - [ ] cofinal radial-prolate reduced-resolvent bound
 - [ ] parity-margin preservation at the actual von Mangoldt point
 - [ ] locally uniform divisor-carrying CCM determinant limit
+
+## Lean status
+
+**Formalized unconditionally, 2026-08-15**, in
+`formal/GaloisForLFunctions/RHTower/CCMPrimeSourceGroundIncidence.lean`, on the corpus
+Hellmann--Feynman layer `HTGeometry/HellmannFeynman.lean`.  The earlier decision ("formalizing
+abstract finite-dimensional Hellmann--Feynman would be wrapper work") is out of date twice over: the
+tree already owns Hellmann--Feynman in infinite dimensions, and the card's own `[PROVED]` content is
+the concavity, the Lipschitz bound, the eigenvector response and the readout response, none of which
+is finite dimensional.
+
+- `weilEnergy`, `weilFloor` — equations `(1)`, `(3)`.
+- **`weilEnergy_affine`** — the energy is affine in the coefficient vector, which is the whole
+  mechanism of the concavity proof.
+- **`weilFloor_concave`** — concavity of the floor as the pointwise infimum of an affine family.
+- **`abs_weilFloor_sub_le`** — local Lipschitz continuity, with the explicit modulus
+  `M * sum_n |b_n - b'_n|` coming from a uniform bound on the correlation forms.
+- **`eigenvector_response`** — equation `(8)`: along a differentiable eigenpair,
+  `(A - nu) xi' = nu' xi - w`, where `w = -v_h xi` is the source direction.  Neither the
+  normalization nor the phase condition is needed for the identity; they are what make the reduced
+  resolvent invert it.
+- **`hessian_nonpos`** — the sign statement of `(6)`--`(7)`: a nonnegative reduced resolvent makes
+  the Hessian form nonpositive.
+- **`readout_response`** — equation `(10)`: any continuous linear readout of the ground state has
+  derivative the readout of the eigenvector response; the Mellin transform is one such readout.
+- Equation `(4)` is the corpus theorem `HTGeometry.hellmann_feynman`, applied along the coordinate
+  line `t ↦ b + t e_n` with `w = -v_n xi`.
+
+All statements are unconditional: `#print axioms` returns only
+`[propext, Classical.choice, Quot.sound]`.
+
+Not formalized, and imported: Kato's bounded-form perturbation theorem supplying the differentiable
+local eigenpair under the simple-isolated hypothesis, and positivity of the reduced resolvent, which
+is what the sign statement consumes.  The cofinal estimates of the route consequence are the card's
+own open gates.

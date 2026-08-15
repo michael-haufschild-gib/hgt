@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.CompletedPrimeGammaMomentFarRightAsymptotic
 import GaloisForLFunctions.RHTower.PrimeArchScaledHausdorffDivisorValueRelation
+import GaloisForLFunctions.RHTower.CompletedPrimeGammaResolvedMomentColligation
 
 /-!
 # Strict center sign for the second completed odd moment
@@ -114,6 +115,24 @@ theorem completedOddLogDerivPolynomialHankelReal_X_one_half_pos :
       (Polynomial.X : Polynomial ℝ) (1 / 2) := by
   rw [completedOddLogDerivPolynomialHankelReal_X]
   simpa using completedOddLogDerivMoment_two_one_half_re_pos
+
+/-- At the paper's far-right test point, the second completed moment equals its resolved source. -/
+theorem completedOddLogDerivMoment_two_ten_re_eq_resolved :
+    (completedOddLogDerivMoment (10 : ℂ) 2).re =
+      completedPrimeGammaResolvedMoment 10 2 := by
+  simpa using congrArg Complex.re
+    (completedOddLogDerivMoment_ofReal_eq_resolved
+      (x := (10 : ℝ)) (by norm_num) 2)
+
+/-- The far-right test moment is exactly its Euler, Gamma, and polar decomposition. -/
+theorem completedOddLogDerivMoment_two_ten_re_eq_source :
+    (completedOddLogDerivMoment (10 : ℂ) 2).re =
+      infiniteVonMangoldtGammaRawMoment 9 5 / 120 +
+        (1 / 2 : ℝ) ^ 6 * HTGeometry.gammaBoseMoment 5 4 -
+          (((10 : ℝ) ^ 6)⁻¹ + ((9 : ℝ) ^ 6)⁻¹) := by
+  rw [completedOddLogDerivMoment_two_ten_re_eq_resolved]
+  norm_num [completedPrimeGammaResolvedMoment, completedPrimeFactorialMoment,
+    completedGammaSpectralMoment, completedPolarPairMoment]
 
 /-- One explicit negative value of the second moment falsifies the global right-even
 factorization interface.  The positive endpoint is supplied unconditionally above. -/

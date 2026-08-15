@@ -329,7 +329,7 @@ Consequence: the seam-log/source tower is well-defined only in the canonical com
 
 Status: proof-route guardrail added, not an RH proof.
 
-Created `../2-fully-proven/finite-rank-boundary-schur-index.md`. For a finite-rank boundary extension `H=B+VCV*`, the repaired negative index is determined by the boundary Schur matrix `S=-C^{-1}-V*B^{-1}V`, up to the fixed inertias of `B` and `-C^{-1}`. In the common positive-bulk/negative-boundary convention, `kappa_-(H)=kappa_-(S)`.
+Created `../3-formalized/not_new_scientific_knowledge/finite-rank-boundary-schur-index.md`. For a finite-rank boundary extension `H=B+VCV*`, the repaired negative index is determined by the boundary Schur matrix `S=-C^{-1}-V*B^{-1}V`, up to the fixed inertias of `B` and `-C^{-1}`. In the common positive-bulk/negative-boundary convention, `kappa_-(H)=kappa_-(S)`.
 
 Consequence: the corrected semilocal route cannot certify the faithful index by the single scalar `s_d` unless a source theorem proves the omitted boundary channels carry no negative directions. The proof target is a source-built matrix/index theorem, uniform in degree and channel scale.
 

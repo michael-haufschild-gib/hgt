@@ -483,7 +483,7 @@ Thus `L_src` cannot claim a softer finite-rank positivity target from smooth, av
 
 ## 2026-06-24 matrix Schur gate for semilocal boundary selection
 
-`../2-fully-proven/finite-rank-boundary-schur-index.md` sharpens the boundary-selection target. Once the proof object is promoted from the first-trivial-zero scalar to a semilocal family of pole, Gamma, protector, and finite-place channels, the finite boundary decision is the inertia of `S=-C^{-1}-V*B^{-1}V`, not a single scalar shadow.
+`../3-formalized/not_new_scientific_knowledge/finite-rank-boundary-schur-index.md` sharpens the boundary-selection target. Once the proof object is promoted from the first-trivial-zero scalar to a semilocal family of pole, Gamma, protector, and finite-place channels, the finite boundary decision is the inertia of `S=-C^{-1}-V*B^{-1}V`, not a single scalar shadow.
 
 Thus `L_src` must source-build the channel map `V`, the boundary form `C`, and a uniform sign/index theorem for the Schur matrix. A scalar `s_d>0` certificate is insufficient unless the source construction proves all other boundary/complement directions are nonnegative.
 

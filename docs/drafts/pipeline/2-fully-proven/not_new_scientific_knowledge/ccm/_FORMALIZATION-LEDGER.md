@@ -44,6 +44,9 @@ tree.
 | `ccm-prime-free-aperture-characteristic-pair-law` | `CCMPrimeFreeApertureCharacteristicPair` (new) |
 | `ccm-transverse-index-trace-slope-coercivity-law` | `CCMTransverseIndexTraceSlopeCoercivity` (new) |
 | `ccm-hankel-gap-trace-slope-rh-criterion` | `CCMHankelGapTraceSlope` (new) |
+| `ccm-gauss-paired-quantized-differential-incidence-law` | `CCMGaussPairedQuantizedDifferential` (new) |
+| `ccm-generic-ground-separating-incidence-law` | `HTGeometry.SeparatingGramLocus` (new), `CCMGenericGroundSeparatingIncidence` (new) |
+| `ccm-prime-source-ground-incidence-response` | `CCMPrimeSourceGroundIncidence` (new) |
 
 ## Open — Lean to be built
 
@@ -67,8 +70,6 @@ Each entry names the statements the card proves that must be formalized.
 | `ccm-exact-radial-nonstationary-sector-bound` | off-diagonal radial Gram nonstationary sector bound |
 | `ccm-exterior-inverse-symbol-graph-norm-law` | exterior inverse-symbol graph-norm law |
 | `ccm-gamma-damped-cauchy-frame-trace-law` | Gamma-damped Cauchy frame trace law |
-| `ccm-gauss-paired-quantized-differential-incidence-law` | retention of local incidence under a finite product of commuting unitary local-ratio multipliers |
-| `ccm-generic-ground-separating-incidence-law` | open dense set of separating ground states in the compressed prime-shift space |
 | `ccm-growing-aperture-mellin-determinant-transfer` | Mellin-evaluation norm determines the determinant transfer on the growing aperture |
 | `ccm-hankel-boundary-relative-trace-four-unit-law` | the relative-trace four-unit law replacing full trace class |
 | `ccm-infinitesimal-half-unit-cauchy-seam-law` | infinitesimal half-unit Cauchy seam law |
@@ -80,7 +81,6 @@ Each entry names the statements the card proves that must be formalized.
 | `ccm-poisson-jensen-outer-defect-rh-law` | Poisson–Jensen outer defect law |
 | `ccm-polar-euler-frame-minus-level-law` | `(2)`–`(16)` of the polar Euler frame minus-level law |
 | `ccm-prime-log-crowding-separating-margin-law` | prime-log crowding separating margin |
-| `ccm-prime-source-ground-incidence-response` | ground incidence response of the prime source |
 | `ccm-prolate-endpoint-jet-resummation-law` | endpoint jet resummation |
 | `ccm-radial-prime-first-row-reduction` | radial prime first-row reduction |
 | `ccm-radial-prolate-global-defect-measure` | `(16)`, `(20)` from the imported `(13)` |
@@ -116,6 +116,12 @@ Each entry names the statements the card proves that must be formalized.
   transforms, and the real-axis limit of the shift-covariant symbol.
 - `RHTower/CCMTransverseIndexTraceSlopeCoercivity.lean` — the exact Cauchy energy of a divisor
   packet and the four-unit coercivity.
+- `HTGeometry/SeparatingGramLocus.lean` — Gram criterion for separation, openness and density of the
+  separating locus, the projection criterion, and preservation under approximation.
+- `RHTower/CCMGaussPairedQuantizedDifferential.lean` — crossed-homomorphism law of the logarithmic
+  quantized differential and its cyclic-coinvariant descent.
+- `RHTower/CCMPrimeSourceGroundIncidence.lean` — concavity and Lipschitz continuity of the
+  coefficient-pointed floor, and the eigenvector/readout response.
 - `RHTower/CCMHankelGapTraceSlope.lean` — the gap profile, its difference-quotient sandwich, the
   initial-slope identity, and the exact first-moment Laplace integral
   `∫_u^∞ (t−u)e^{-bt} = e^{-bu}/b²`.

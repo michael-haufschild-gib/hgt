@@ -8192,3 +8192,42 @@ All declarations audit to `[propext, Classical.choice, Quot.sound]`.  Theorem 1 
 `(3)`/`(4)` (the Stirling and polygamma bounds on `H` and `B`), `(13)` (variation of constants),
 `(17)`/`(18)` (assembling the two integrations by parts from the pieces above), and `(22)` (the
 Plancherel–Minkowski step through the Laplace representation `(21)`).
+
+## AAO. `(3)`, `(5)` at the exact exponent, and Minkowski's integral inequality
+
+```text
+HTGeometry/MinkowskiIntegralInequality.lean   the mathlib gap, plus the superposition estimate
+RHTower/GammaRatioLineDecay.lean              (3) quantitative: carrier ≍ (1+|x|)^{-(1/2+σ)}
+RHTower/StripPropagatorLineDecay.lean         (3) propagator and inverse halves, (5)
+```
+
+**What the corpus already had, and what was actually missing.**  `SuzukiGammaForcedStripHardy.lean`
+already proves `(3)` in *carrier* form — `‖H(x+iσ)‖ ≤ c₁ · suzukiGammaStripCarrier σ x` and the
+reciprocal for the inverse — and `(13)` as `forcedStripRay`.  `GammaRatioStripUniform.lean` already
+proves the substrip Gamma quotient is bounded *above by a constant* and *below by* `c(1+|x|)^{-2σ}`.
+The missing half was the upper bound *with* the decay, on a fixed line.  It follows from the same
+parameter-uniform vertical law `exists_twoSided_gamma_vertical_ratio` read in the other direction
+(`a = 1−σ`, `δ = 2σ`, `τ = |x|`), glued to a compactness bound on the unit box, and it is what pins
+the exponent to `p = 1/2 + σ`: the vertical Stirling gain of raising the real part by `2σ` is
+`|x|^{-2σ}`, its square root `|x|^{-σ}` enters the propagator, and the explicit factor `z^{-1/2}`
+supplies the remaining `|x|^{-1/2}` — the comparison `1+|x| ≤ (1+σ⁻¹)‖z‖` needing `σ > 0`, which the
+card has.
+
+**`(5)` needs no ordering hypothesis.**  The paper states the transport ratio bound for `x, t` of
+one sign with `|x| ≥ |t|`.  Estimating the two factors separately gives
+`‖H(x+iσ)H(t+iσ)^{-1}‖ ≤ K[(1+|t|)/(1+|x|)]^p` for *every* pair; the outward-tail restriction is how
+the estimate is used, not what it requires.
+
+**Minkowski's integral inequality was a genuine mathlib gap.**  Mathlib has `lintegral_Lp_add_le`
+only for a *sum of two* functions; the continuum version does not exist.  The square case is proved
+here in `ℝ≥0∞`: pairing the superposition with itself, Tonelli exchanges the integrations and
+Cauchy–Schwarz factors out one copy, giving `A ≤ A^{1/2}B`.  The division by `A^{1/2}` is only legal
+for finite `A`, so the argument runs on the truncations `min(H,n)·1_{Sₙ}` — finite because
+`μ(spanningSets μ n) < ∞` — and `lintegral_iSup` with `ENNReal.iSup_pow` restores the full statement.
+The packaged consequence `lintegral_sq_superposition_le` is `(22)`'s mechanism in operator-free
+form: a profile dominated by the total mass of a two-parameter family has `L²` norm at most the
+integral of the slice `L²` norms, with no integrability hypothesis anywhere.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.  Theorem 1 now needs only `(4)`
+— the `x`-derivative bounds on `B(x+iσ)`, for which the sharp vertical polygamma order
+`norm_iteratedDeriv_succ_digamma_vertical_pow` is the exact input — and the assembly `(17)`/`(18)`.

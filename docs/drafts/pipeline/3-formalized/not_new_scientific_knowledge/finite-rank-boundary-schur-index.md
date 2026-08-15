@@ -1,7 +1,7 @@
 # Finite-Rank Boundary Schur Index
 
 - **ID:** finite-rank-boundary-schur-index
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / proof-route guardrail
 - **Source:** `finite-rank-one-selector-no-free-lunch.md`,
   `finite-rank-counterterm-kernel-visibility.md`,
@@ -142,7 +142,7 @@ For any semilocal boundary-Weyl proof:
 
 - [x] 0 -> 1 in-progress: matrix boundary index gate isolated.
 - [x] 1 -> 2 fully-proven: block Schur/Sylvester inertia proof completed.
-- [ ] 2 -> 3 formalized: optional finite-dimensional Hermitian Schur theorem.
+- [x] 2 -> 3 formalized: exact finite-dimensional Hermitian Schur theorem closed in Lean.
 
 ## Log
 
@@ -174,4 +174,20 @@ Target remains the exact finite-dimensional theorem, including all three inertia
 `M = Uᴴ (B ⊕ S) U` for `U = [I, B⁻¹V; 0, I]`, and
 `M = Tᴴ (H ⊕ (-C⁻¹)) T` for `T = [I, 0; -CV*, I]`.
 
-Formal work is active in a new `HTGeometry` leaf; promotion remains blocked until every displayed identity and the positive-definite gate are closed with no axioms.
+Formal work completed in `HTGeometry/FiniteRankBoundarySchurIndex.lean`; every displayed inertia identity and both definiteness gates are closed without added axioms.
+
+## Lean formalization — 2026-08-15
+
+- New reusable infrastructure: `HTGeometry/BlockHermitianInertia.lean`, proving exact positive,
+  negative, and null index additivity for heterogeneous block diagonals.
+- Exact card theorem: `HTGeometry/FiniteRankBoundarySchurIndex.lean`, with
+  `finiteRankBoundary_inertia_balanced`, `finiteRankBoundary_inertia`,
+  `finiteRankBoundary_posSemidef_iff_boundarySchur_posSemidef`,
+  `finiteRankBoundary_posDef_iff_boundarySchur_posDef`, and the opposite-sign gate
+  `finiteRankBoundary_posDef_iff_boundarySchurPlus_negDef`.
+- Verified directly with `lake env lean` for both leaves, then only the needed target builds:
+  `GaloisForLFunctions.HTGeometry.BlockHermitianInertia` and
+  `GaloisForLFunctions.HTGeometry.FiniteRankBoundarySchurIndex`. The `HTGeometry` umbrella was
+  wired but not built.
+- `#print axioms` for the infrastructure, inertia theorem, and both definiteness gates reports
+  only `propext`, `Classical.choice`, and `Quot.sound`.
