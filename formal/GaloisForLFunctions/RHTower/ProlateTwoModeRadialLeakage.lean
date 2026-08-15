@@ -174,6 +174,247 @@ theorem tendsto_integral_Ioi_twoModeRadialDensity
   unfold twoModeRadialDensity twoModeRadialProfile
   ring
 
+/-! ## Uniform exterior mass on the full ray -/
+
+/-- The exterior density of a canonical signed mode is integrable on the whole exterior ray, with a
+total exterior mass bounded independently of the aperture: the endpoint collar costs `O(c⁻¹)` and
+everything beyond the Dunster crossing radius is dominated by the arcsine envelope. -/
+theorem exists_bound_integral_Ioi_one_signedModeRadialDensity (n : ℕ) :
+    ∃ M : ℝ, ∀ᶠ a : ℝ in atTop,
+      IntegrableOn (radialProlateDensity (signedModeRadialBandwidth a)
+        (signedModeRadialData a n).R) (Ioi 1) ∧
+      (∫ x in Ioi (1 : ℝ), radialProlateDensity (signedModeRadialBandwidth a)
+        (signedModeRadialData a n).R x) ≤ M := by
+  refine ⟨9 / 40 + 4 * radialProlateDensityEnvelopeConstant * (radialAngle 2 / Real.pi)
+    + 2 * radialProlateDensityEnvelopeConstant, ?_⟩
+  have hsHalf : ∀ᶠ a : ℝ in atTop, (signedModeRadialData a n).s ≤ 1 / 2 :=
+    ((tendsto_signedModeRadialData_s_zero n).eventually
+      (eventually_lt_nhds (by norm_num : (0 : ℝ) < 1 / 2))).mono fun _ h => h.le
+  have hc5 : ∀ᶠ a : ℝ in atTop, 5 ≤ signedModeRadialBandwidth a :=
+    tendsto_signedModeRadialBandwidth_atTop.eventually (eventually_ge_atTop 5)
+  have hcross := tendsto_dunsterEndpointCrossing_comp_atTop_one
+    tendsto_signedModeRadialBandwidth_atTop
+  have hcross2 : ∀ᶠ a : ℝ in atTop,
+      dunsterEndpointCrossing (signedModeRadialBandwidth a) ≤ 2 :=
+    (hcross.eventually (eventually_lt_nhds (by norm_num : (1 : ℝ) < 2))).mono fun _ h => h.le
+  filter_upwards [eventually_signedModeRadialData_s_nonneg n, hsHalf, hc5, hcross2,
+    eventually_signedModeRadialData_R_one n,
+    eventually_signedModeRadialData_hasDerivAt n,
+    eventually_signedModeRadialData_hasSecondDerivAt n,
+    eventually_signedModeRadialData_ode n] with
+      a hs0 hs1 hc hcrossa hR1 hR hDR hode
+  set K := radialProlateDensityEnvelopeConstant with hKdef
+  have hK0 : (0 : ℝ) ≤ K := radialProlateDensityEnvelopeConstant_nonneg
+  have hc0 : (0 : ℝ) < signedModeRadialBandwidth a := lt_of_lt_of_le (by norm_num) hc
+  have hRc : Continuous (signedModeRadialData a n).R :=
+    continuous_iff_continuousAt.mpr fun x => (hR x).continuousAt
+  have hcont : Continuous (radialProlateDensity (signedModeRadialBandwidth a)
+      (signedModeRadialData a n).R) := by
+    unfold radialProlateDensity
+    fun_prop
+  have hIoc : IntegrableOn (radialProlateDensity (signedModeRadialBandwidth a)
+      (signedModeRadialData a n).R) (Ioc (1 : ℝ) 2) := hcont.integrableOn_Ioc
+  have hIoi2 : IntegrableOn (radialProlateDensity (signedModeRadialBandwidth a)
+      (signedModeRadialData a n).R) (Ioi 2) :=
+    integrableOn_Ioi_radialProlateDensity hs0 hs1 hc (by norm_num) hcrossa hR1 hR hDR hode
+  have hunion : Ioc (1 : ℝ) 2 ∪ Ioi 2 = Ioi 1 :=
+    Ioc_union_Ioi_eq_Ioi (by norm_num)
+  have hInt : IntegrableOn (radialProlateDensity (signedModeRadialBandwidth a)
+      (signedModeRadialData a n).R) (Ioi 1) := by
+    rw [← hunion]
+    exact hIoc.union hIoi2
+  refine ⟨hInt, ?_⟩
+  have hsplit : (∫ x in Ioi (1 : ℝ), radialProlateDensity (signedModeRadialBandwidth a)
+        (signedModeRadialData a n).R x)
+      = (∫ x in Ioc (1 : ℝ) 2, radialProlateDensity (signedModeRadialBandwidth a)
+          (signedModeRadialData a n).R x)
+        + ∫ x in Ioi (2 : ℝ), radialProlateDensity (signedModeRadialBandwidth a)
+          (signedModeRadialData a n).R x := by
+    rw [← hunion]
+    exact setIntegral_union (Ioc_disjoint_Ioi le_rfl) measurableSet_Ioi hIoc hIoi2
+  have hcollar : (∫ x in Ioc (1 : ℝ) 2, radialProlateDensity (signedModeRadialBandwidth a)
+      (signedModeRadialData a n).R x) ≤ 9 / 40 + 4 * K * (radialAngle 2 / Real.pi) := by
+    have h := integral_radialProlateDensity_endpoint_le hs0 hs1 hc
+      (by norm_num : (1 : ℝ) < 2) hcrossa hR1 hR hDR hode
+    rw [intervalIntegral.integral_of_le (by norm_num : (1 : ℝ) ≤ 2)] at h
+    have hbd : 9 / (8 * signedModeRadialBandwidth a) ≤ 9 / 40 := by
+      rw [div_le_div_iff₀ (by positivity) (by norm_num : (0 : ℝ) < 40)]
+      nlinarith
+    linarith
+  have htail : (∫ x in Ioi (2 : ℝ), radialProlateDensity (signedModeRadialBandwidth a)
+      (signedModeRadialData a n).R x) ≤ 2 * K := by
+    have hdom : IntegrableOn
+        (fun x : ℝ => K * profileWeight (signedModeRadialData a n).s x) (Ioi 2) :=
+      (integrableOn_profileWeight hs0 hs1 (by norm_num)).const_mul K
+    have hmono : (∫ x in Ioi (2 : ℝ), radialProlateDensity (signedModeRadialBandwidth a)
+        (signedModeRadialData a n).R x)
+        ≤ ∫ x in Ioi (2 : ℝ), K * profileWeight (signedModeRadialData a n).s x := by
+      refine integral_mono_ae hIoi2 hdom ?_
+      filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
+      exact radialProlateDensity_le_profileWeight hs0 hs1 hc hR1 hR hDR hode
+        (hcrossa.trans hx.le)
+    have hconst : (∫ x in Ioi (2 : ℝ), K * profileWeight (signedModeRadialData a n).s x)
+        = K * ∫ x in Ioi (2 : ℝ), profileWeight (signedModeRadialData a n).s x :=
+      integral_const_mul _ _
+    have hweight : (∫ x in Ioi (2 : ℝ), profileWeight (signedModeRadialData a n).s x) ≤ 2 :=
+      integral_Ioi_profileWeight_le_two hs0 hs1 (by norm_num)
+    have := mul_le_mul_of_nonneg_left hweight hK0
+    rw [hconst] at hmono
+    linarith
+  rw [hsplit]
+  linarith
+
+/-- Every fixed dilation of a canonical signed radial profile is a uniformly square-bounded family
+on the exterior ray. -/
+theorem sqBoundedFamily_signedModeRadialDilatedProfile (n : ℕ) {j M : ℝ} (hj : 1 ≤ j)
+    (hM : ∀ᶠ a : ℝ in atTop,
+      IntegrableOn (radialProlateDensity (signedModeRadialBandwidth a)
+        (signedModeRadialData a n).R) (Ioi 1) ∧
+      (∫ x in Ioi (1 : ℝ), radialProlateDensity (signedModeRadialBandwidth a)
+        (signedModeRadialData a n).R x) ≤ M) :
+    GaloisForLFunctions.HTGeometry.SqBoundedFamily (volume.restrict (Ioi (1 : ℝ))) atTop M
+      (fun a x => radialProlateRescaledProfile (signedModeRadialBandwidth a)
+        (signedModeRadialData a n).R (j * x)) := by
+  have hj0 : (0 : ℝ) < j := lt_of_lt_of_le zero_lt_one hj
+  filter_upwards [hM, eventually_signedModeRadialData_hasDerivAt n] with a ⟨hInt, hle⟩ hR
+  have hRc : Continuous (signedModeRadialData a n).R :=
+    continuous_iff_continuousAt.mpr fun x => (hR x).continuousAt
+  have hcont : Continuous (fun x : ℝ =>
+      radialProlateRescaledProfile (signedModeRadialBandwidth a)
+        (signedModeRadialData a n).R (j * x)) := by
+    unfold radialProlateRescaledProfile
+    fun_prop
+  have hsub : Ioi (j * 1) ⊆ Ioi (1 : ℝ) := Ioi_subset_Ioi (by simpa using hj)
+  have hdil : IntegrableOn (fun x : ℝ =>
+      radialProlateDensity (signedModeRadialBandwidth a)
+        (signedModeRadialData a n).R (j * x)) (Ioi 1) :=
+    (integrableOn_Ioi_comp_mul_left_iff _ 1 hj0).mpr (hInt.mono_set hsub)
+  have hsqeq : (fun x : ℝ =>
+      radialProlateRescaledProfile (signedModeRadialBandwidth a)
+        (signedModeRadialData a n).R (j * x) ^ 2)
+      = fun x : ℝ => radialProlateDensity (signedModeRadialBandwidth a)
+        (signedModeRadialData a n).R (j * x) := by
+    funext x
+    exact signedModeRadialRescaledProfile_sq a n (j * x)
+  refine ⟨hcont.aestronglyMeasurable, ?_, ?_⟩
+  · rw [hsqeq]
+    exact hdil
+  · rw [hsqeq]
+    have hscale := integral_comp_mul_left_Ioi
+      (radialProlateDensity (signedModeRadialBandwidth a) (signedModeRadialData a n).R) 1 hj0
+    have hnn : ∀ᵐ x ∂(volume.restrict (Ioi (1 : ℝ))),
+        0 ≤ radialProlateDensity (signedModeRadialBandwidth a)
+          (signedModeRadialData a n).R x := by
+      filter_upwards with x
+      unfold radialProlateDensity signedModeRadialBandwidth
+      positivity
+    have hmono : (∫ x in Ioi (j * 1), radialProlateDensity (signedModeRadialBandwidth a)
+        (signedModeRadialData a n).R x)
+        ≤ ∫ x in Ioi (1 : ℝ), radialProlateDensity (signedModeRadialBandwidth a)
+          (signedModeRadialData a n).R x :=
+      setIntegral_mono_set hInt hnn (Eventually.of_forall hsub)
+    have hnn2 : (0 : ℝ) ≤ ∫ x in Ioi (j * 1), radialProlateDensity (signedModeRadialBandwidth a)
+        (signedModeRadialData a n).R x := by
+      refine setIntegral_nonneg measurableSet_Ioi fun x _ => ?_
+      unfold radialProlateDensity signedModeRadialBandwidth
+      positivity
+    have hjinv : j⁻¹ ≤ 1 := by
+      rw [inv_le_one₀ hj0]
+      exact hj
+    rw [hscale, smul_eq_mul]
+    calc j⁻¹ * ∫ x in Ioi (j * 1), radialProlateDensity (signedModeRadialBandwidth a)
+          (signedModeRadialData a n).R x
+        ≤ 1 * ∫ x in Ioi (j * 1), radialProlateDensity (signedModeRadialBandwidth a)
+          (signedModeRadialData a n).R x := mul_le_mul_of_nonneg_right hjinv hnn2
+      _ = ∫ x in Ioi (j * 1), radialProlateDensity (signedModeRadialBandwidth a)
+          (signedModeRadialData a n).R x := one_mul _
+      _ ≤ M := hmono.trans hle
+
+/-! ## Radial dilation Gram entries of the two-mode source -/
+
+/-- Exterior dilation Gram entry of the constrained two-mode source. -/
+def twoModeRadialGramEntry (a : ℝ) (n₀ n₁ : ℕ) (α β j k : ℝ) : ℝ :=
+  ∫ x in Ioi (1 : ℝ),
+    twoModeRadialProfile α β (signedModeRadialBandwidth a)
+        (signedModeRadialData a n₀).R (signedModeRadialData a n₁).R (j * x) *
+      twoModeRadialProfile α β (signedModeRadialBandwidth a)
+        (signedModeRadialData a n₀).R (signedModeRadialData a n₁).R (k * x)
+
+/-- A diagonal two-mode Gram entry is the reciprocal-dilation multiple of one density tail. -/
+theorem twoModeRadialGramEntry_diag_eq (a : ℝ) (n₀ n₁ : ℕ) (α β : ℝ) {k : ℝ} (hk : 0 < k) :
+    twoModeRadialGramEntry a n₀ n₁ α β k k
+      = k⁻¹ * ∫ x in Ioi k, twoModeRadialDensity α β (signedModeRadialBandwidth a)
+          (signedModeRadialData a n₀).R (signedModeRadialData a n₁).R x := by
+  have hpoint : (fun x : ℝ =>
+      twoModeRadialProfile α β (signedModeRadialBandwidth a)
+          (signedModeRadialData a n₀).R (signedModeRadialData a n₁).R (k * x) *
+        twoModeRadialProfile α β (signedModeRadialBandwidth a)
+          (signedModeRadialData a n₀).R (signedModeRadialData a n₁).R (k * x))
+      = fun x : ℝ => twoModeRadialDensity α β (signedModeRadialBandwidth a)
+          (signedModeRadialData a n₀).R (signedModeRadialData a n₁).R (k * x) := by
+    funext x
+    rw [twoModeRadialDensity, sq]
+  rw [twoModeRadialGramEntry, hpoint, integral_comp_mul_left_Ioi _ 1 hk, mul_one, smul_eq_mul]
+
+/-- **The two-mode radial dilation spectrum.**  Every diagonal Gram entry of the constrained
+two-mode source converges to the `1/k`-scaled arcsine tail, weighted by the square of the limiting
+dominant coefficient. -/
+theorem tendsto_twoModeRadialGramEntry_diag
+    (n₀ n₁ : ℕ) {k : ℝ} (hk : 1 < k) {α β : ℝ → ℝ} {β₀ : ℝ}
+    (hα : Tendsto α atTop (𝓝 0)) (hβ : Tendsto β atTop (𝓝 β₀)) :
+    Tendsto (fun a : ℝ => twoModeRadialGramEntry a n₀ n₁ (α a) (β a) k k) atTop
+      (𝓝 (β₀ ^ 2 * (Real.arcsin (1 / k) / (Real.pi * k)))) := by
+  have hk0 : (0 : ℝ) < k := lt_trans zero_lt_one hk
+  have h := (tendsto_integral_Ioi_twoModeRadialDensity n₀ n₁ hk hα hβ).const_mul k⁻¹
+  have hval : k⁻¹ * (β₀ ^ 2 * (Real.arcsin (1 / k) / Real.pi))
+      = β₀ ^ 2 * (Real.arcsin (1 / k) / (Real.pi * k)) := by
+    field_simp
+  rw [hval] at h
+  refine h.congr fun a => ?_
+  exact (twoModeRadialGramEntry_diag_eq a n₀ n₁ (α a) (β a) hk0).symm
+
+/-- **Every fixed off-diagonal two-mode Gram entry vanishes.**  The dominant-dominant block already
+cancels; the three blocks involving the subordinate mode stay bounded by Cauchy--Schwarz and are
+removed by the subordinate coefficient. -/
+theorem tendsto_twoModeRadialGramEntry_of_ne
+    (n₀ n₁ : ℕ) {j k : ℝ} (hj : 1 ≤ j) (hk : 1 ≤ k) (hjk : j ≠ k)
+    {α β : ℝ → ℝ} {β₀ : ℝ}
+    (hα : Tendsto α atTop (𝓝 0)) (hβ : Tendsto β atTop (𝓝 β₀)) :
+    Tendsto (fun a : ℝ => twoModeRadialGramEntry a n₀ n₁ (α a) (β a) j k) atTop (𝓝 0) := by
+  obtain ⟨M₀, hM₀⟩ := exists_bound_integral_Ioi_one_signedModeRadialDensity n₀
+  obtain ⟨M₁, hM₁⟩ := exists_bound_integral_Ioi_one_signedModeRadialDensity n₁
+  set M := max M₀ M₁ with hMdef
+  have hb₀j := (sqBoundedFamily_signedModeRadialDilatedProfile n₀ hj hM₀).mono
+    (le_max_left M₀ M₁)
+  have hb₁j := (sqBoundedFamily_signedModeRadialDilatedProfile n₁ hj hM₁).mono
+    (le_max_right M₀ M₁)
+  have hb₀k := (sqBoundedFamily_signedModeRadialDilatedProfile n₀ hk hM₀).mono
+    (le_max_left M₀ M₁)
+  have hb₁k := (sqBoundedFamily_signedModeRadialDilatedProfile n₁ hk hM₁).mono
+    (le_max_right M₀ M₁)
+  have hcross : Tendsto (fun a : ℝ => ∫ x in Ioi (1 : ℝ),
+      radialProlateRescaledProfile (signedModeRadialBandwidth a)
+          (signedModeRadialData a n₁).R (j * x) *
+        radialProlateRescaledProfile (signedModeRadialBandwidth a)
+          (signedModeRadialData a n₁).R (k * x)) atTop (𝓝 0) :=
+    tendsto_signedModeRadialGramEntry_of_ne n₁ hj hk hjk
+  have hmain := GaloisForLFunctions.HTGeometry.tendsto_integral_mul_two_mode
+    (μ := volume.restrict (Ioi (1 : ℝ)))
+    (u₀ := fun a : ℝ => fun x : ℝ => radialProlateRescaledProfile (signedModeRadialBandwidth a)
+      (signedModeRadialData a n₀).R (j * x))
+    (u₁ := fun a : ℝ => fun x : ℝ => radialProlateRescaledProfile (signedModeRadialBandwidth a)
+      (signedModeRadialData a n₁).R (j * x))
+    (v₀ := fun a : ℝ => fun x : ℝ => radialProlateRescaledProfile (signedModeRadialBandwidth a)
+      (signedModeRadialData a n₀).R (k * x))
+    (v₁ := fun a : ℝ => fun x : ℝ => radialProlateRescaledProfile (signedModeRadialBandwidth a)
+      (signedModeRadialData a n₁).R (k * x))
+    (α := α) (β := β) (β₀ := β₀)
+    hb₀j hb₁j hb₀k hb₁k hcross hα hβ
+  refine hmain.congr fun a => ?_
+  refine setIntegral_congr_fun measurableSet_Ioi fun x _ => ?_
+  unfold twoModeRadialProfile
+  ring
+
 /-! ## The constrained CCM source -/
 
 /-- Constrained seed weight of the subordinate mode. -/
@@ -257,6 +498,36 @@ theorem tendsto_integral_Ioi_ccmTwoModeRadialDensity
     field_simp
   rw [integral_Ioi_nuInfinityDensity hb.le, ← heq]
   exact h
+
+
+/-- **The constrained arcsine dilation spectrum.**  Every diagonal Gram entry of the constrained
+two-mode source converges to `(8/(11 π k)) arcsin(1/k)`. -/
+theorem tendsto_ccmTwoModeRadialGramEntry_diag
+    (n₀ n₁ : ℕ) {A₀ A₁ : ℝ} (hA₀ : 0 < A₀) (hA₁ : 0 < A₁) {k : ℝ} (hk : 1 < k) :
+    Tendsto (fun a : ℝ => twoModeRadialGramEntry a n₀ n₁
+        (ccmSubordinateCoeff A₀ A₁ a) ccmDominantCoeff k k) atTop
+      (𝓝 (8 / (11 * Real.pi * k) * Real.arcsin (1 / k))) := by
+  have hk0 : k ≠ 0 := (lt_trans zero_lt_one hk).ne'
+  have hpi : Real.pi ≠ 0 := Real.pi_ne_zero
+  have h := tendsto_twoModeRadialGramEntry_diag n₀ n₁ hk
+    (tendsto_ccmSubordinateCoeff_zero hA₀ hA₁)
+    (tendsto_const_nhds (x := ccmDominantCoeff) (f := (atTop : Filter ℝ)))
+  rw [ccmDominantCoeff_sq] at h
+  have heq : (8 : ℝ) / 11 * (Real.arcsin (1 / k) / (Real.pi * k))
+      = 8 / (11 * Real.pi * k) * Real.arcsin (1 / k) := by
+    field_simp
+  rwa [heq] at h
+
+/-- **Every fixed off-diagonal constrained Gram entry vanishes.**  The constrained radial dilation
+Gram matrix is therefore asymptotically diagonal. -/
+theorem tendsto_ccmTwoModeRadialGramEntry_of_ne
+    (n₀ n₁ : ℕ) {A₀ A₁ : ℝ} (hA₀ : 0 < A₀) (hA₁ : 0 < A₁)
+    {j k : ℝ} (hj : 1 ≤ j) (hk : 1 ≤ k) (hjk : j ≠ k) :
+    Tendsto (fun a : ℝ => twoModeRadialGramEntry a n₀ n₁
+        (ccmSubordinateCoeff A₀ A₁ a) ccmDominantCoeff j k) atTop (𝓝 0) :=
+  tendsto_twoModeRadialGramEntry_of_ne n₀ n₁ hj hk hjk
+    (tendsto_ccmSubordinateCoeff_zero hA₀ hA₁)
+    (tendsto_const_nhds (x := ccmDominantCoeff) (f := (atTop : Filter ℝ)))
 
 end RHTower
 

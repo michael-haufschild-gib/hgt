@@ -14,8 +14,8 @@ subspace on which the form is negative definite.  Three facts are proved.
 * `HasNegDefSubspaceOfDim.mono` and `morseCharge_mono` — the charge is **monotone** under enlargement
   of the trial domain.  In the aperture representation the enlargement is literal inclusion of
   submodules, so zero extension is not an extra construction and no isometry has to be built.
-* `morseCharge_eq_zero_iff_nonneg` — the charge vanishes exactly when the form is nonnegative on the
-  domain.  One direction is immediate; the other produces an explicit one-dimensional negative
+* `negDefDims_eq_zero_iff_nonneg` and `morseCharge_eq_zero_of_nonneg` — the charge vanishes exactly
+  when the form is nonnegative on the domain.  One direction is immediate; the other produces an explicit one-dimensional negative
   subspace from a single negative vector, which is where homogeneity of the form is used.
 * `exists_crossing_of_pos_of_neg` — the first-crossing step: a continuous aperture-indexed bottom
   eigenvalue that is positive at a small aperture and negative at a larger one must vanish somewhere

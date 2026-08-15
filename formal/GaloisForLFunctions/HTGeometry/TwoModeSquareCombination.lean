@@ -140,4 +140,103 @@ theorem tendsto_integral_sq_two_mode {f g : ι → ℝ → ℝ} {b c : ι → �
     filter_upwards with x
     ring
 
+/-! ## Bilinear form of the two-mode combination -/
+
+/-- A family that is eventually measurable, eventually square-integrable, and whose squared masses
+are eventually bounded by one fixed constant. -/
+def SqBoundedFamily (μ : Measure ℝ) (l : Filter ι) (M : ℝ) (u : ι → ℝ → ℝ) : Prop :=
+  ∀ᶠ i in l, AEStronglyMeasurable (u i) μ ∧ Integrable (fun x => u i x ^ 2) μ
+    ∧ ∫ x, u i x ^ 2 ∂μ ≤ M
+
+theorem SqBoundedFamily.mono {M M' : ℝ} {u : ι → ℝ → ℝ} (h : SqBoundedFamily μ l M u)
+    (hMM : M ≤ M') : SqBoundedFamily μ l M' u :=
+  Filter.Eventually.mono h fun _ hi => ⟨hi.1, hi.2.1, hi.2.2.trans hMM⟩
+
+/-- A bilinear pairing of two uniformly square-bounded families vanishes once it is weighted by a
+coefficient tending to zero: Cauchy--Schwarz keeps the pairing bounded. -/
+theorem tendsto_mul_integral_mul_of_tendsto_zero {u v : ι → ℝ → ℝ} {w : ι → ℝ} {M : ℝ}
+    (hu : SqBoundedFamily μ l M u) (hv : SqBoundedFamily μ l M v)
+    (hw : Tendsto w l (𝓝 0)) :
+    Tendsto (fun i => w i * ∫ x, u i x * v i x ∂μ) l (𝓝 0) := by
+  refine squeeze_zero_norm' (a := fun i => |w i| * M) ?_ ?_
+  · filter_upwards [hu, hv] with i ⟨hum, hu2, hUM⟩ ⟨hvm, hv2, hVM⟩
+    have hnnu : (0 : ℝ) ≤ ∫ x, u i x ^ 2 ∂μ := integral_nonneg fun x => sq_nonneg _
+    have hnnv : (0 : ℝ) ≤ ∫ x, v i x ^ 2 ∂μ := integral_nonneg fun x => sq_nonneg _
+    have hM : (0 : ℝ) ≤ M := hnnu.trans hUM
+    have hprod : (∫ x, u i x ^ 2 ∂μ) * (∫ x, v i x ^ 2 ∂μ) ≤ M * M :=
+      mul_le_mul hUM hVM hnnv hM
+    have hsqrt : Real.sqrt ((∫ x, u i x ^ 2 ∂μ) * ∫ x, v i x ^ 2 ∂μ) ≤ M := by
+      rw [show M = Real.sqrt (M * M) from (Real.sqrt_mul_self hM).symm]
+      exact Real.sqrt_le_sqrt hprod
+    rw [Real.norm_eq_abs, abs_mul]
+    exact mul_le_mul_of_nonneg_left
+      ((abs_integral_mul_le_sqrt hum hvm hu2 hv2).trans hsqrt) (abs_nonneg _)
+  · have h := hw.abs.mul_const M
+    simpa using h
+
+/-- Expanding a bilinear pairing of two two-mode combinations into its four blocks. -/
+theorem integral_mul_two_mode_expand {u₀ u₁ v₀ v₁ : ℝ → ℝ} {α β : ℝ}
+    (h00 : Integrable (fun x => u₀ x * v₀ x) μ)
+    (h01 : Integrable (fun x => u₀ x * v₁ x) μ)
+    (h10 : Integrable (fun x => u₁ x * v₀ x) μ)
+    (h11 : Integrable (fun x => u₁ x * v₁ x) μ) :
+    ∫ x, (α * u₀ x + β * u₁ x) * (α * v₀ x + β * v₁ x) ∂μ
+      = α ^ 2 * (∫ x, u₀ x * v₀ x ∂μ) + α * β * (∫ x, u₀ x * v₁ x ∂μ)
+        + α * β * (∫ x, u₁ x * v₀ x ∂μ) + β ^ 2 * ∫ x, u₁ x * v₁ x ∂μ := by
+  have hA := h00.const_mul (α ^ 2)
+  have hB := h01.const_mul (α * β)
+  have hC := h10.const_mul (α * β)
+  have hD := h11.const_mul (β ^ 2)
+  calc ∫ x, (α * u₀ x + β * u₁ x) * (α * v₀ x + β * v₁ x) ∂μ
+      = ∫ x, ((α ^ 2 * (u₀ x * v₀ x) + α * β * (u₀ x * v₁ x)) + α * β * (u₁ x * v₀ x))
+            + β ^ 2 * (u₁ x * v₁ x) ∂μ := by
+        refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+        ring
+    _ = (∫ x, ((α ^ 2 * (u₀ x * v₀ x) + α * β * (u₀ x * v₁ x)) + α * β * (u₁ x * v₀ x)) ∂μ)
+          + ∫ x, β ^ 2 * (u₁ x * v₁ x) ∂μ := integral_add ((hA.add hB).add hC) hD
+    _ = ((∫ x, (α ^ 2 * (u₀ x * v₀ x) + α * β * (u₀ x * v₁ x)) ∂μ)
+          + ∫ x, α * β * (u₁ x * v₀ x) ∂μ) + ∫ x, β ^ 2 * (u₁ x * v₁ x) ∂μ := by
+        congr 1
+        exact integral_add (hA.add hB) hC
+    _ = (((∫ x, α ^ 2 * (u₀ x * v₀ x) ∂μ) + ∫ x, α * β * (u₀ x * v₁ x) ∂μ)
+          + ∫ x, α * β * (u₁ x * v₀ x) ∂μ) + ∫ x, β ^ 2 * (u₁ x * v₁ x) ∂μ := by
+        congr 2
+        exact integral_add hA hB
+    _ = α ^ 2 * (∫ x, u₀ x * v₀ x ∂μ) + α * β * (∫ x, u₀ x * v₁ x ∂μ)
+          + α * β * (∫ x, u₁ x * v₀ x ∂μ) + β ^ 2 * ∫ x, u₁ x * v₁ x ∂μ := by
+        rw [integral_const_mul, integral_const_mul, integral_const_mul, integral_const_mul]
+
+/-- **Off-diagonal vanishing for a two-mode combination.**  If the dominant-dominant block already
+vanishes and the subordinate coefficient tends to zero, the whole pairing vanishes: the three
+remaining blocks stay bounded by Cauchy--Schwarz and are killed by their coefficients. -/
+theorem tendsto_integral_mul_two_mode {u₀ u₁ v₀ v₁ : ι → ℝ → ℝ} {α β : ι → ℝ} {M β₀ : ℝ}
+    (hu₀ : SqBoundedFamily μ l M u₀) (hu₁ : SqBoundedFamily μ l M u₁)
+    (hv₀ : SqBoundedFamily μ l M v₀) (hv₁ : SqBoundedFamily μ l M v₁)
+    (hcross : Tendsto (fun i => ∫ x, u₁ i x * v₁ i x ∂μ) l (𝓝 0))
+    (hα : Tendsto α l (𝓝 0)) (hβ : Tendsto β l (𝓝 β₀)) :
+    Tendsto (fun i => ∫ x, (α i * u₀ i x + β i * u₁ i x) * (α i * v₀ i x + β i * v₁ i x) ∂μ)
+      l (𝓝 0) := by
+  have hαsq : Tendsto (fun i => α i ^ 2) l (𝓝 0) := by
+    have := hα.pow 2
+    simpa using this
+  have hαβ : Tendsto (fun i => α i * β i) l (𝓝 0) := by
+    have := hα.mul hβ
+    simpa using this
+  have hT1 := tendsto_mul_integral_mul_of_tendsto_zero hu₀ hv₀ hαsq
+  have hT2 := tendsto_mul_integral_mul_of_tendsto_zero hu₀ hv₁ hαβ
+  have hT3 := tendsto_mul_integral_mul_of_tendsto_zero hu₁ hv₀ hαβ
+  have hT4 : Tendsto (fun i => β i ^ 2 * ∫ x, u₁ i x * v₁ i x ∂μ) l (𝓝 0) := by
+    have := (hβ.pow 2).mul hcross
+    simpa using this
+  have hsum := ((hT1.add hT2).add hT3).add hT4
+  rw [show (0 : ℝ) + 0 + 0 + 0 = 0 from by norm_num] at hsum
+  refine hsum.congr' ?_
+  filter_upwards [hu₀, hu₁, hv₀, hv₁] with i ⟨hu₀m, hu₀2, _⟩ ⟨hu₁m, hu₁2, _⟩
+    ⟨hv₀m, hv₀2, _⟩ ⟨hv₁m, hv₁2, _⟩
+  exact (integral_mul_two_mode_expand
+    (integrable_mul_of_sq_integrable hu₀m hv₀m hu₀2 hv₀2)
+    (integrable_mul_of_sq_integrable hu₀m hv₁m hu₀2 hv₁2)
+    (integrable_mul_of_sq_integrable hu₁m hv₀m hu₁2 hv₀2)
+    (integrable_mul_of_sq_integrable hu₁m hv₁m hu₁2 hv₁2)).symm
+
 end GaloisForLFunctions.HTGeometry

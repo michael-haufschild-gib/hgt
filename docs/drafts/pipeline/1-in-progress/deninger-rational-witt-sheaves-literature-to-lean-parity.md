@@ -472,6 +472,11 @@ the missing rational-Witt comparison is logically prior.
   support, splits finite Euler polynomials after an injective algebraic-closure map, and proves the
   law type is a subsingleton over arbitrary commutative rings. Nilpotent targets enter only by
   universal evaluation and are not reduced or embedded into fields.
+- 2026-08-15 — exposed the defining gcd--lcm identity as an unconditional public Lean theorem for
+  literal positive-degree Euler factors. For all commutative rings, including nonreduced rings, the
+  canonical product of degrees `m,n` is the `gcd(m,n)`-fold Witt sum of the degree `lcm(m,n)` factor
+  with coefficient `a^(lcm/m)b^(lcm/n)`. Ghost injectivity is used only in the free integer
+  polynomial source before natural evaluation into the target.
 - 2026-08-12 — closed the first half of that reduction.  Fixed-degree resultants multiply
   normalized polynomials without degree-specialization failure; algebraically closed splitting,
   universal integer-polynomial descent, and coefficient evaluation prove compatibility over

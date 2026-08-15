@@ -81,6 +81,10 @@ natural under coefficient-ring maps.
    finitely many variables. Kill the remaining variables, inject the finite Euler polynomials into
    an algebraic closure, split them into linear Teichmüller factors, and descend the forced equality
    to every commutative target ring.
+10. Expose the defining single-factor formula itself as a public unconditional theorem over every
+    commutative target: the product of degree-`m` and degree-`n` Euler factors is the
+    `gcd(m,n)`-fold Witt sum of the degree-`lcm(m,n)` factor. Prove it by universal polynomial-ring
+    descent so nilpotent targets never pass through their reduced quotients.
 
 ## Failure conditions
 
@@ -102,6 +106,9 @@ Formal modules:
   absorption, and distributivity to arbitrary commutative rings; literal `CommRing`, functorial ring
   maps, Teichmüller multiplication, positive ghost-component ring homomorphisms, injectivity of the
   Teichmüller map, and exact preservation/reflection of every vanishing power and nilpotence.
+- `DeningerBigWittEulerFactorLaw.lean`: literal positive-degree Euler-factor carriers and the exact
+  arbitrary-ring gcd--lcm multiplication theorem, both on the carrier and in canonical Witt-ring
+  notation, with the gcd exponent identified as repeated Witt addition.
 - `DeningerBigWittCanonicity.lean`: automatic universal-polynomial dependence of every natural
   candidate multiplication coefficient, finite Euler splitting, and the unconditional theorem
   that the type of functorial distributive Teichmüller multiplication laws is a subsingleton.

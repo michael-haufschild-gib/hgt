@@ -94,7 +94,10 @@ budget contraction. Because the four-leg Gram equals the full upper graph Gram, 
 discarded or bounded by notation. Remaining theorem must construct a coefficient-faithful
 contraction/shorting from P-G194's primitive source colligation into this four-leg graph carrier,
 while paying P-G199's unbounded `1/(2a^2)` generator cost and preserving P-G196's commutator
-anomaly. Any scalar or two-leg positivity argument is now formally excluded.
+anomaly. P-G203 further proves that identifying the positive fourth leg with the original upper
+graph, at even one fixed nonzero amplitude and upper pole, is equivalent to RH. Any scalar,
+same-leg, or two-leg positivity argument is now formally excluded unless it independently proves
+the full critical-line statement.
 
 ## Hostile novelty audit
 
@@ -159,5 +162,6 @@ Verification:
 - [x] scratch verification and exact leaf build only
 - [x] axiom and forbidden-declaration audit
 - [x] umbrella wired without umbrella build
+- [x] classify collapse of the fourth leg onto the original upper graph (P-G203: equivalent to RH)
 - [ ] construct coefficient-faithful P-G194-to-four-leg graph contraction/shorting
 - [ ] instantiate W-H184 and prove unconditional RH

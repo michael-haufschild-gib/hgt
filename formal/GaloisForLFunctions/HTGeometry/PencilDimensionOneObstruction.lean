@@ -1,5 +1,8 @@
 import GaloisForLFunctions.HTGeometry.PencilHTDimension
 import GaloisForLFunctions.HTGeometry.ScalarSRRealizationBridge
+import GaloisForLFunctions.HTGeometry.EntireFacetRealizationCodimension
+import GaloisForLFunctions.HTGeometry.RankTwoRealDependentPeriods
+import GaloisForLFunctions.HTGeometry.EllipticLiouvilleFacetCodimension
 
 /-!
 # One variable cannot realize a facet that omits three vertices
@@ -73,30 +76,30 @@ theorem not_htRealizableDim_zero [Nonempty α] (facets : Finset (Finset α)) :
 /-! ### One variable is impossible past three omitted vertices -/
 
 set_option maxHeartbeats 4000000 in
-/-- **No complex with a facet omitting three vertices is realized in one variable.** -/
-theorem not_htRealizableDim_one_of_three_omitted (facets : Finset (Finset α))
-    (hanti : FacetAntichain (↑facets : Set (Finset α))) {V A : Finset α}
-    (hA : A ∈ facets) (hAne : A.Nonempty) (hcard : 3 ≤ (V \ A).card) :
-    ¬ HTRealizableDim facets 1 := by
+/-- **The facet carrier of a one-variable realization.**  Each facet monomial has an entire scalar
+carrier, periodic under every step its facet omits, and nonconstant. -/
+theorem exists_facetCarrier_of_htRealizableDim_one (facets : Finset (Finset α))
+    (hanti : FacetAntichain (↑facets : Set (Finset α))) {A : Finset α}
+    (hA : A ∈ facets) (hAne : A.Nonempty) (h : HTRealizableDim facets 1) :
+    ∃ (ω' : α → ℂ) (carrier : ℂ → ℂ), LinearIndependent ℚ ω' ∧ Differentiable ℂ carrier ∧
+      (∀ v ∉ A, Function.Periodic carrier (ω' v)) ∧ ¬ (∀ x y, carrier x = carrier y) := by
   classical
-  rintro ⟨ω, w, Y, hY, hindep, hper, hann, -⟩
+  obtain ⟨ω, w, Y, hY, hindep, hper, hann, -⟩ := h
   set F : (Fin 1 → ℂ) → ℂ := fun y => ∑ B : facets, Y B y with hFdef
   have hFa : AnalyticOnNhd ℂ F Set.univ := Finset.analyticOnNhd_fun_sum _ fun B _ => hY B
   set P := facetMonomial A with hP
   set carrier : ℂ → ℂ := fun t => seedCarrierPoly ω F P (fun _ => t) with hcarrier
   have hproj : Function.Injective (fun x : Fin 1 → ℂ => x 0) := by
-    intro x y h
+    intro x y hxy
     funext i
     rw [Subsingleton.elim i 0]
-    exact h
+    exact hxy
   have hindep' : LinearIndependent ℚ (fun v => ω v 0) :=
     hindep.map' (LinearMap.proj (R := ℚ) (0 : Fin 1)) (LinearMap.ker_eq_bot.mpr hproj)
   have hdiff : Differentiable ℂ carrier := by
     have h1 : Differentiable ℂ (seedCarrierPoly ω F P) := fun z =>
       ((analyticOnNhd_seedCarrierPoly ω hFa P) z (Set.mem_univ z)).differentiableAt
     exact h1.comp (differentiable_pi.mpr fun _ => differentiable_id)
-  have hmer : MeromorphicNFOn carrier Set.univ := fun z _ =>
-    ((hdiff.analyticAt z)).meromorphicNFAt
   have hconstpt : ∀ (u : α) (t : ℂ),
       seedCarrierPoly ω F (MvPolynomial.X u * P) (fun _ => t)
         = carrier (t + ω u 0) - carrier t := by
@@ -108,14 +111,13 @@ theorem not_htRealizableDim_one_of_three_omitted (facets : Finset (Finset α))
       rw [Subsingleton.elim i 0]
       rfl
     rw [hsum]
-  have hperiod : ∀ v ∈ V \ A, Function.Periodic carrier (ω v 0) := by
-    intro v hv t
-    have hvA : v ∉ A := (Finset.mem_sdiff.mp hv).2
+  have hperiod : ∀ v ∉ A, Function.Periodic carrier (ω v 0) := by
+    intro v hvA t
     have hzero : seedCarrierPoly ω F (MvPolynomial.X v * P) = 0 :=
       (hann _).mpr (X_mul_facetMonomial_mem facets hanti hA hvA)
-    have := hconstpt v t
-    rw [hzero] at this
-    have h0 : (0 : ℂ) = carrier (t + ω v 0) - carrier t := this
+    have hval := hconstpt v t
+    rw [hzero] at hval
+    have h0 : (0 : ℂ) = carrier (t + ω v 0) - carrier t := hval
     exact (sub_eq_zero.mp h0.symm)
   have hnonconst : ¬ (∀ x y, carrier x = carrier y) := by
     intro hconst
@@ -127,20 +129,66 @@ theorem not_htRealizableDim_one_of_three_omitted (facets : Finset (Finset α))
       rw [Subsingleton.elim i 0]
     rw [hz, hconstpt u (z 0), hconst (z 0 + ω u 0) (z 0), sub_self]
     rfl
-  obtain ⟨t, hts, htcard⟩ := Finset.exists_subset_card_eq hcard
-  set g := Finset.equivFinOfCardEq htcard with hg
-  set e : Fin 3 → α := fun i => (g.symm i : α) with he
-  have hinj : Function.Injective e := by
-    intro i j hij
-    have hsub : (g.symm i : { x // x ∈ t }) = g.symm j := Subtype.ext hij
-    simpa using congrArg g hsub
-  have hmem : ∀ i, e i ∈ V \ A := fun i => hts (g.symm i).2
-  have hindepe : LinearIndependent ℚ ((fun v => ω v 0) ∘ e) := hindep'.comp e hinj
-  have hpere : ∀ i, Function.Periodic carrier (((fun v => ω v 0) ∘ e) i) :=
-    fun i => hperiod (e i) (hmem i)
-  have hspan := periodic_of_mem_span_range (f := carrier) ((fun v => ω v 0) ∘ e) hpere
-  exact hnonconst (meromorphicNF_constant_of_rankThree_periods carrier hmer
-    ((fun v => ω v 0) ∘ e) hindepe hspan)
+  exact ⟨fun v => ω v 0, carrier, hindep', hdiff, hperiod, hnonconst⟩
+
+/-- **No complex with a facet omitting two vertices is realized in one variable.**  Two
+`ℚ`-independent periods make an entire carrier constant: by non-discreteness of the period group if
+the steps are `ℝ`-dependent, and by Liouville's theorem if they are not. -/
+theorem not_htRealizableDim_one_of_two_omitted (facets : Finset (Finset α))
+    (hanti : FacetAntichain (↑facets : Set (Finset α))) {V A : Finset α}
+    (hA : A ∈ facets) (hAne : A.Nonempty) (hcard : 2 ≤ (V \ A).card) :
+    ¬ HTRealizableDim facets 1 := by
+  classical
+  intro h
+  obtain ⟨ω', carrier, hindep, hdiff, hperiod, hnonconst⟩ :=
+    exists_facetCarrier_of_htRealizableDim_one facets hanti hA hAne h
+  obtain ⟨a, ha, b, hb, hab⟩ := Finset.one_lt_card.mp (by omega : 1 < (V \ A).card)
+  have haA : a ∉ A := (Finset.mem_sdiff.mp ha).2
+  have hbA : b ∉ A := (Finset.mem_sdiff.mp hb).2
+  have hspan : ∀ p ∈ Submodule.span ℤ (Set.range ![ω' a, ω' b]),
+      Function.Periodic carrier p := by
+    refine periodic_of_mem_span_range ![ω' a, ω' b] (fun i => ?_)
+    fin_cases i
+    · exact hperiod a haA
+    · exact hperiod b hbA
+  by_cases hdep : LinearIndependent ℝ ![ω' a, ω' b]
+  · set L : PeriodPair := ⟨ω' a, ω' b, hdep⟩ with hL
+    have hlat : ∀ p ∈ L.lattice, Function.Periodic carrier p := by
+      intro p hp
+      refine hspan p ?_
+      rw [range_cons_two]
+      exact hp
+    exact hnonconst (const_of_lattice_periodic_differentiable L hdiff hlat)
+  · have hinj : Function.Injective ![a, b] := by
+      intro i j hij
+      fin_cases i <;> fin_cases j <;> simp_all
+    have hQ : LinearIndependent ℚ ![ω' a, ω' b] := by
+      have hcomp := hindep.comp ![a, b] hinj
+      rwa [comp_cons_two] at hcomp
+    have hmer : MeromorphicNFOn carrier Set.univ := fun z _ =>
+      ((hdiff.analyticAt z)).meromorphicNFAt
+    exact hnonconst (meromorphicNF_constant_of_rankTwo_realDependent_periods carrier hmer
+      ![ω' a, ω' b] hQ hdep hspan)
+
+/-- **No complex with a facet omitting three vertices is realized in one variable.** -/
+theorem not_htRealizableDim_one_of_three_omitted (facets : Finset (Finset α))
+    (hanti : FacetAntichain (↑facets : Set (Finset α))) {V A : Finset α}
+    (hA : A ∈ facets) (hAne : A.Nonempty) (hcard : 3 ≤ (V \ A).card) :
+    ¬ HTRealizableDim facets 1 :=
+  not_htRealizableDim_one_of_two_omitted facets hanti hA hAne (V := V) (by omega)
+
+/-- **The facet-codimension law in one variable.**  Every facet of a one-variable realization omits
+at most one ambient vertex. -/
+theorem facetComplementRankOne_of_htRealizableDim_one (facets : Finset (Finset α))
+    (hanti : FacetAntichain (↑facets : Set (Finset α))) (V : Finset α)
+    (hsub : ∀ F ∈ facets, F ⊆ V) (hnef : ∀ F ∈ facets, F.Nonempty)
+    (h : HTRealizableDim facets 1) :
+    FacetComplementRankOne V (↑facets : Set (Finset α)) := by
+  intro F hF
+  refine ⟨hsub F (Finset.mem_coe.mp hF), ?_⟩
+  by_contra hcon
+  exact not_htRealizableDim_one_of_two_omitted facets hanti (Finset.mem_coe.mp hF)
+    (hnef F (Finset.mem_coe.mp hF)) (V := V) (by omega) h
 
 end
 
