@@ -68,6 +68,7 @@ theorem gammaJumpNormalizedSymbol_nonneg (ξ : ℝ) :
 
 variable {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℂ X] [CompleteSpace X]
 
+omit [CompleteSpace X] in
 /-- **`(19)`: the jump operator factors through the first-order weight.**  The `L²` seminorm of the
 jump multiple is bounded by `S` times the `L²` seminorm of the first-order multiple; this is the
 quantitative form of `R : H¹(ℝ;X) → L²(ℝ;X)`. -/

@@ -158,7 +158,7 @@ theorem xDiffApply_sub_pairRowSum_differentialAlgebraic (ω : ι → ℂ) (hω :
       = ∑ d ∈ narrow, (rowOf d).sum
         (fun p b => differentialOperatorApply b (sinePairTranslate ω hω p)) := by
     rw [sinePairRow, ← hnarrow]
-    exact (Finsupp.sum_finset_sum_index
+    exact (Finsupp.sum_finsetSum_index
       (fun p => differentialOperatorApply_zero (sinePairTranslate ω hω p))
       (fun p b₁ b₂ => differentialOperatorApply_add b₁ b₂ (sinePairTranslate ω hω p))).symm
   have hnarrowRat : (∑ d ∈ narrow, differentialOperatorApply (MvPolynomial.coeff d P)
@@ -247,10 +247,18 @@ theorem multipleSineOperatorFamilyMatroid {μ : ℂ} {rad : ι → ℝ} (hrad : 
             differentialOperatorApply b
               (sinePairTranslate (fun k => μ * (rad k : ℂ)) hω p)) := by
     intro k
-    rw [differentialOperatorRowApply, Finset.sum_coe_sort (sinePairIndex P)
-      (fun p => differentialOperatorApply (sinePairRow (P k) p)
+    have h1 : differentialOperatorRowApply
+        (fun k (p : ↥(sinePairIndex P)) => sinePairRow (P k) (p : Finset ι × (ι →₀ ℕ))) x k
+        = ∑ p : ↥(sinePairIndex P), differentialOperatorApply
+            (sinePairRow (P k) (p : Finset ι × (ι →₀ ℕ)))
+            (sinePairTranslate (fun k => μ * (rad k : ℂ)) hω
+              (p : Finset ι × (ι →₀ ℕ))) := rfl
+    rw [h1, Finset.sum_coe_sort (sinePairIndex P)
+      (fun p : Finset ι × (ι →₀ ℕ) => differentialOperatorApply (sinePairRow (P k) p)
         (sinePairTranslate (fun k => μ * (rad k : ℂ)) hω p))]
-    refine (Finsupp.sum_of_support_subset _ ?_ _ ?_).symm
+    refine (Finsupp.sum_of_support_subset (sinePairRow (P k)) ?_
+      (fun p b => differentialOperatorApply b
+        (sinePairTranslate (fun k => μ * (rad k : ℂ)) hω p)) ?_).symm
     · intro p hp
       exact Finset.mem_biUnion.mpr ⟨k, Finset.mem_univ k, hp⟩
     · intro p _

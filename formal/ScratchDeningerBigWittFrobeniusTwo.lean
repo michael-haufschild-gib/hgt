@@ -340,10 +340,27 @@ theorem scratch_tendsto_frobeniusTwo_polarizedAggregate_ghost_one_div_mass
           primeReciprocalMass s)
       Filter.atTop
       (nhds (-4 * orbitwisePrimeSeamWeightedNormSq rho)) := by
-  have h :=
-    (tendsto_deningerBigWittPrimeSeamSourceEnergy_div_mass hstrip).neg.const_mul
-      (2 : ℝ)
-  simpa [scratchBigWittFrobeniusTwo_polarizedAggregate_ghost_one] using h
+  have hneg :=
+    (tendsto_deningerBigWittPrimeSeamSourceEnergy_div_mass hstrip).neg
+  have h := hneg.add hneg
+  convert h using 1
+  · funext s
+    rw [scratchBigWittFrobeniusTwo_polarizedAggregate_ghost_one]
+    change
+      (-2 * deningerBigWittPrimeSeamSourceEnergy
+          (fun p : Nat.Primes =>
+            orbitwiseNatPrimeSeamCharge (p : ℕ) rho) s) /
+          primeReciprocalMass s =
+        -(deningerBigWittPrimeSeamSourceEnergy
+              (fun p : Nat.Primes =>
+                orbitwiseNatPrimeSeamCharge (p : ℕ) rho) s /
+            primeReciprocalMass s) +
+          -(deningerBigWittPrimeSeamSourceEnergy
+              (fun p : Nat.Primes =>
+                orbitwiseNatPrimeSeamCharge (p : ℕ) rho) s /
+            primeReciprocalMass s)
+    ring
+  · ring
 
 #check Complex.mul_conj
 #check Complex.normSq_eq_norm_sq

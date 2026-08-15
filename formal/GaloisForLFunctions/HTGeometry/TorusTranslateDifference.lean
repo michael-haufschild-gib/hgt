@@ -237,6 +237,16 @@ theorem translate_diff_le_of_ae_fderiv_bound (F : C(UnitAddTorus d, ℂ)) {L : N
   rw [Finset.sum_congr rfl fun j _ => hrewrite j, ← Finset.sum_mul]
   exact mul_le_mul_of_nonneg_right hh hh2.le
 
+/-- **Variance bound from an almost-everywhere gradient bound.**  A Lipschitz torus observable whose
+lift has squared coordinate gradient bounded by `K` almost everywhere has variance at most
+`K / (4π²)`; on the torus of circumference `2π` this is the Poincaré inequality with constant one. -/
+theorem variance_le_of_ae_fderiv_bound (F : C(UnitAddTorus d, ℂ)) {L : NNReal} {K : ℝ}
+    (hLip : LipschitzWith L (torusLift F))
+    (hK : ∀ᵐ x : d → ℝ, ∑ j : d, ‖fderiv ℝ (torusLift F) x (Pi.single j 1)‖ ^ 2 ≤ K) :
+    (∫ t : UnitAddTorus d, ‖F t‖ ^ 2) - ‖∫ t : UnitAddTorus d, F t‖ ^ 2 ≤
+      K / (4 * Real.pi ^ 2) :=
+  integral_sq_sub_sq_integral_le_of_slack F (translate_diff_le_of_ae_fderiv_bound F hLip hK)
+
 end Transfer
 
 end GaloisForLFunctions.HTGeometry

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.BurnolBocksteinLimit
+import GaloisForLFunctions.RHTower.BurnolCollarKernelSeries
 import GaloisForLFunctions.RHTower.BurnolFirstWallTailMass
 
 /-!

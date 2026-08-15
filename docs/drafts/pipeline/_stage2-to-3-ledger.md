@@ -1353,3 +1353,20 @@ The cards left in `2-fully-proven` all need genuinely new mathematics, not plumb
   extremality.
 - **Operator-ideal cluster** (`determinant-defect-completion-law`): needs Schatten classes and
   regularized determinants.
+
+## Shared infrastructure: gradient bound to variance bound on the torus
+
+`HTGeometry/TorusTranslateDifference` closes the chain from an almost-everywhere gradient bound to
+the sharp variance bound.  A Lipschitz torus observable lifts to the vector model, mathlib's
+Rademacher theorem gives almost-everywhere differentiability, coordinate translate differences on the
+torus equal coordinate difference quotients of the lift on the fundamental box, and dominated
+convergence converts the pointwise gradient bound into the quadratic translate hypothesis of
+`UnitTorusPoincare`.
+
+- `integral_torus_eq_integral_box`, `integral_translate_diff_eq`: the lift and its integral transfer.
+- `tendsto_integral_diffQuotient`: the dominated-convergence step.
+- `translate_diff_le_of_ae_fderiv_bound`: the translate hypothesis, with slack.
+- `variance_le_of_ae_fderiv_bound`: **`Var(F) ≤ K / (4π²)`** from `∑_j |∂_j F̃|² ≤ K` a.e.
+
+Together with `FiniteMaxGradient` this is the complete analytic engine the torus/variance cluster
+needs; what remains per card is the concrete phase-orbit computation of the gradient bound.

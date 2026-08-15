@@ -32,9 +32,11 @@ theorem cpow_shift_split {n : ℕ} (hn : 1 ≤ n) (δ t : ℝ) :
       = ((-δ : ℝ) : ℂ) + (-1 - Complex.I * (t : ℂ)) := by
     push_cast
     ring
+  have hbase : ((n : ℝ) : ℂ) = (n : ℂ) := by push_cast; ring
   rw [hsplit, Complex.cpow_add _ _ hn0]
   congr 1
-  rw [← Complex.ofReal_cpow hnR]
+  rw [← hbase]
+  exact (Complex.ofReal_cpow hnR (-δ)).symm
 
 /-- **Abel summation moves the prefix bound to a shifted abscissa.** -/
 theorem norm_dirichlet_shifted_prefix_le {t δ : ℝ} (hδ : 0 ≤ δ) {M : ℕ} {P : ℝ}
@@ -57,8 +59,7 @@ theorem norm_dirichlet_shifted_prefix_le {t δ : ℝ} (hδ : 0 ≤ δ) {M : ℕ}
       have hm1 : (1 : ℝ) ≤ ((m : ℕ) : ℝ) := by exact_mod_cast hm
       have hle : ((m : ℕ) : ℝ) ≤ ((m + 1 : ℕ) : ℝ) := by
         exact_mod_cast Nat.le_succ m
-      have h := Real.rpow_le_rpow_of_exponent_nonpos (by linarith) hle (by linarith : -δ ≤ 0)
-      exact h
+      exact Real.rpow_le_rpow_of_nonpos (by linarith) hle (by linarith : -δ ≤ 0)
     have hw0 : (0 : ℝ) ≤ ((M : ℕ) : ℝ) ^ (-δ) :=
       Real.rpow_nonneg (Nat.cast_nonneg M) _
     have habel := abel_block_bound (fun n => (n : ℂ) ^ (-1 - Complex.I * (t : ℂ)))
@@ -75,7 +76,7 @@ theorem norm_riemannZeta_shifted_line_rate {t δ : ℝ} (ht16 : 16 * Real.pi ≤
     (hd : 4 / 3 < orderLowerBound (Real.log (t / (2 * Real.pi))))
     (hδ0 : 0 ≤ δ) (hδ1 : δ ≤ 1) :
     ‖riemannZeta (((1 + δ : ℝ) : ℂ) + Complex.I * (t : ℂ))‖
-      ≤ 32 + 2 * Real.log (t / (2 * Real.pi))
+      ≤ 33 + 2 * Real.log (t / (2 * Real.pi))
           / (orderLowerBound (Real.log (t / (2 * Real.pi))) - 4 / 3) := by
   have hπ := Real.pi_pos
   have ht8 : 8 * Real.pi ≤ t := by linarith
@@ -133,7 +134,9 @@ theorem norm_riemannZeta_shifted_line_rate {t δ : ℝ} (ht16 : 16 * Real.pi ≤
         rw [Complex.sub_im, hwim]
         simp
       rw [him', abs_of_pos ht] at h
-      have h16 : (1 : ℝ) ≤ t := by nlinarith [hπ]
+      have h16 : (1 : ℝ) ≤ t := by
+        have hpi3 := Real.pi_gt_three
+        linarith
       linarith
     have h3 : (0 : ℝ) < ‖w - 1‖ := by linarith
     rw [div_le_one h3]
@@ -194,10 +197,15 @@ theorem norm_riemannZeta_shifted_line_rate {t δ : ℝ} (ht16 : 16 * Real.pi ≤
         have hq : (2 : ℝ) ≤ t / (8 * Real.pi) := by
           rw [le_div_iff₀ (by positivity)]
           nlinarith [hπd]
-        have hq2 : t / (8 * Real.pi) = t / (8 * Real.pi) := rfl
-        have hlin : t ≤ 8 * Real.pi * (t / (8 * Real.pi)) := by
+        have hπhi : Real.pi < 3.15 := by
+          have := Real.pi_lt_315
+          linarith
+        have hlin : t = 8 * Real.pi * (t / (8 * Real.pi)) := by
           field_simp
-        nlinarith [hq, hπd, ht16', hlin]
+        have hcubelow : 4 * (t / (8 * Real.pi))
+            ≤ t / (8 * Real.pi) * (t / (8 * Real.pi)) * (t / (8 * Real.pi)) := by
+          nlinarith [hq]
+        nlinarith [hq, hπhi, hlin, hcubelow]
       rw [mul_one_div, div_le_iff₀ hNpos]
       nlinarith [hbig, hcubeLow, hNpos]
     linarith
