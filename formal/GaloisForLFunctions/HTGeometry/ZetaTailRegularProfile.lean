@@ -1,5 +1,7 @@
 import GaloisForLFunctions.HTGeometry.GammaShiftRatio
 import GaloisForLFunctions.HTGeometry.GevreyZetaTailBounds
+import GaloisForLFunctions.HTGeometry.ZetaTailClosedModulus
+import GaloisForLFunctions.HTGeometry.IrrationalSineSubsequence
 
 /-!
 # The zeta tail is a bounded oscillation times a regular profile
@@ -44,7 +46,6 @@ theorem zetaTailModulus_eq_profile {s : ℝ} (hs : 0 < s) (k : ℕ) :
   have hpi : Real.pi ≠ 0 := ne_of_gt Real.pi_pos
   rw [zetaTailModulus_eq hs, two_pi_rpow_split, gammaProfile, zetaTailBase, inv_pow]
   field_simp
-  ring
 
 /-- The profile itself. -/
 noncomputable def zetaTailProfile (s : ℝ) (k : ℕ) : ℝ :=
@@ -73,7 +74,7 @@ theorem abs_zetaTailModulus_le_profile {s : ℝ} (hs : 0 < s) (k : ℕ) :
         ≤ 1 * zetaTailFactor s k := mul_le_mul_of_nonneg_right hsin hfac0
       _ = zetaTailFactor s k := by ring
       _ ≤ max 1 ‖riemannZeta ((1 + s : ℝ) : ℂ)‖ := hfac
-  exact div_le_div_of_nonneg_right hprod Real.pi_pos
+  exact div_le_div_of_nonneg_right hprod (le_of_lt Real.pi_pos)
 
 /-- **The tail meets a fixed multiple of the profile infinitely often.** -/
 theorem infinite_setOf_profile_le_abs_zetaTailModulus {s : ℝ} (hs : 0 < s) (hirr : Irrational s) :
@@ -87,12 +88,16 @@ theorem infinite_setOf_profile_le_abs_zetaTailModulus {s : ℝ} (hs : 0 < s) (hi
   have hK1 : (1 : ℝ) ≤ K := le_max_left _ _
   have hgp : 0 < gammaProfile s (zetaTailBase s) k :=
     gammaProfile_pos (le_of_lt hs) (zetaTailBase_pos s) k
-  refine mul_le_mul_of_nonneg_right ?_ (le_of_lt hgp)
-  have hfac : (1 : ℝ) ≤ zetaTailFactor s k := one_le_zetaTailFactor hs k
+  have hKne : K ≠ 0 := by linarith
   have hstep : 1 / (2 * K) * (K / Real.pi) = 1 / (2 * Real.pi) := by
     field_simp
+  have hassoc : 1 / (2 * K) * (K / Real.pi * gammaProfile s (zetaTailBase s) k)
+      = (1 / (2 * Real.pi)) * gammaProfile s (zetaTailBase s) k := by
+    rw [← hstep]
     ring
-  rw [hstep]
+  rw [hassoc]
+  refine mul_le_mul_of_nonneg_right ?_ (le_of_lt hgp)
+  have hfac : (1 : ℝ) ≤ zetaTailFactor s k := one_le_zetaTailFactor hs k
   rw [div_le_div_iff₀ (by positivity) Real.pi_pos]
   have hsin0 : (0 : ℝ) ≤ |Real.sin (Real.pi * s * k / 2)| := abs_nonneg _
   nlinarith [hk, hfac, hsin0, Real.pi_pos]

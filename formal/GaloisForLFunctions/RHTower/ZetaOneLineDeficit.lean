@@ -62,8 +62,7 @@ theorem primeRpowLogCoeff_le_logDiv (σ : ℝ) (n : ℕ) :
   · rename_i hp
     have hn0 : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hp.pos
     rw [Real.rpow_neg hn0.le]
-    rw [div_eq_mul_inv]
-    ring
+    exact le_of_eq (by rw [div_eq_mul_inv]; ring)
   · rcases Nat.eq_zero_or_pos n with rfl | hn
     · simp
     · have h1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
@@ -114,7 +113,9 @@ theorem sum_primesLE_rpowLog_le {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ ≤ 1) (N 
       refine Finset.sum_eq_zero fun p hp => ?_
       have hprime := Nat.prime_of_mem_primesLE hp
       have hple : p ≤ N := (Nat.mem_primesLE.mp hp).1
-      omega_nat
+      have h2 := hprime.two_le
+      exfalso
+      omega
     rw [hzero]
     positivity
   · have hNR : (2 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
@@ -147,19 +148,55 @@ theorem tsum_primeRpowLogCoeff_le {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ ≤ 1) :
     ∑' n : ℕ, primeRpowLogCoeff (1 + δ) n ≤ 1 / δ + tiltedPrimeLogTotalConst := by
   have hsummable : Summable (primeRpowLogCoeff (1 + δ)) :=
     summable_primeRpowLogCoeff (by linarith)
-  refine tsum_le_of_sum_le hsummable fun s => ?_
-  obtain ⟨k, hk⟩ := s.exists_nat_subset_range
-  have hmono : ∑ n ∈ s, primeRpowLogCoeff (1 + δ) n
-      ≤ ∑ n ∈ Finset.range k, primeRpowLogCoeff (1 + δ) n :=
-    Finset.sum_le_sum_of_subset_of_nonneg hk fun n _ _ => primeRpowLogCoeff_nonneg _ n
+  refine hsummable.tsum_le_of_sum_range_le fun k => ?_
   rcases Nat.eq_zero_or_pos k with rfl | hkpos
   · have hzero : ∑ n ∈ Finset.range 0, primeRpowLogCoeff (1 + δ) n = 0 := by simp
     have hconst := tiltedPrimeLogTotalConst_nonneg
     have hδinv : 0 < 1 / δ := by positivity
-    linarith [hmono, hzero.le, hzero.ge]
+    rw [hzero]
+    linarith
   · obtain ⟨m, rfl⟩ : ∃ m : ℕ, k = m + 1 := ⟨k - 1, by omega⟩
-    rw [sum_range_primeRpowLogCoeff] at hmono
-    exact le_trans hmono (sum_primesLE_rpowLog_le hδ0 hδ1 m)
+    rw [sum_range_primeRpowLogCoeff]
+    exact sum_primesLE_rpowLog_le hδ0 hδ1 m
+
+/-! ## The prime cosine coefficient and the tail -/
+
+/-- The prime cosine coefficient, extended by zero. -/
+def primeCosCoeff (σ τ : ℝ) (n : ℕ) : ℝ :=
+  if n.Prime then (n : ℝ) ^ (-σ) * Real.cos (τ * Real.log n) else 0
+
+theorem abs_primeCosCoeff_le (σ τ : ℝ) (n : ℕ) :
+    |primeCosCoeff σ τ n| ≤ primeRpowCoeff σ n := by
+  rw [primeCosCoeff, primeRpowCoeff]
+  split
+  · rename_i hp
+    have hn0 : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hp.pos
+    have hnn : (0 : ℝ) ≤ (n : ℝ) ^ (-σ) := Real.rpow_nonneg hn0.le _
+    rw [abs_mul, abs_of_nonneg hnn]
+    have hcos : |Real.cos (τ * Real.log n)| ≤ 1 := Real.abs_cos_le_one _
+    nlinarith [hcos, hnn]
+  · simp
+
+theorem summable_primeCosCoeff {σ τ : ℝ} (hσ : 1 < σ) : Summable (primeCosCoeff σ τ) := by
+  refine Summable.of_norm_bounded (summable_primeRpowCoeff hσ) fun n => ?_
+  rw [Real.norm_eq_abs]
+  exact abs_primeCosCoeff_le σ τ n
+
+theorem primeCosTsum_eq_tsum_coeff {σ τ : ℝ} :
+    primeCosTsum σ τ = ∑' n : ℕ, primeCosCoeff σ τ n := by
+  rw [primeCosTsum, ← tsum_subtype {n : ℕ | n.Prime} (fun n => (n : ℝ) ^ (-σ)
+    * Real.cos (τ * Real.log n))]
+  · rfl
+
+theorem tsum_indicator_eq (σ τ : ℝ) :
+    ∑' n : ℕ, Set.indicator {n : ℕ | n.Prime}
+        (fun n => (n : ℝ) ^ (-σ) * Real.cos (τ * Real.log n)) n
+      = ∑' n : ℕ, primeCosCoeff σ τ n := by
+  refine tsum_congr fun n => ?_
+  rw [Set.indicator_apply, primeCosCoeff]
+  by_cases hp : n.Prime
+  · rw [if_pos (Set.mem_setOf_eq ▸ hp), if_pos hp]
+  · rw [if_neg (by simpa [Set.mem_setOf_eq] using hp), if_neg hp]
 
 end
 

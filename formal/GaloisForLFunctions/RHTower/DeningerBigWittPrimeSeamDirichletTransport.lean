@@ -23,7 +23,7 @@ No boundedness premise or zero-location conclusion is asserted.
 -/
 
 open Complex Function Set Topology Filter
-open scoped ENNReal
+open scoped ENNReal BigOperators
 
 namespace RHTower
 
@@ -288,6 +288,172 @@ theorem deningerBigWittXiPrimeSeamSourceEnergySubmass_iff_riemannHypothesis :
     deningerBigWittPrimeSeamSourceEnergy_eq_primePairDifferenceEnergy]
     using xiPrimeSeamPairEnergySubmass_iff_riemannHypothesis
 
++
+/-- Pair source whose two faces are scaled by the physical seam difference. -/
+def deningerBigWittPrimeSeamPairStokesSource
+    (a : Nat.Primes → ℂ) (p q : Nat.Primes) :
+    DeningerBigWittRing ℝ :=
+  let d := ‖a p - a q‖
+  deningerBigWittTeichmullerCrossEffect
+    (d * (1 / (p : ℝ))) (d * (1 / (q : ℝ)))
+
+theorem deningerBigWittPrimeSeamPairStokesSource_ghost_one
+    (a : Nat.Primes → ℂ) (p q : Nat.Primes) :
+    deningerBigWittGhostComponent 1 Nat.zero_lt_one
+        (deningerBigWittPrimeSeamPairStokesSource a p q) = 0 := by
+  exact deningerBigWittTeichmullerCrossEffect_ghost_one _ _
+
+theorem deningerBigWittPrimeSeamPairStokesSource_ghost_two
+    (a : Nat.Primes → ℂ) (p q : Nat.Primes) :
+    deningerBigWittGhostComponent 2 (by norm_num)
+        (deningerBigWittPrimeSeamPairStokesSource a p q) =
+      -2 * deningerBigWittPrimePairExtendedPhysicalAtom p q *
+        ‖a p - a q‖ ^ 2 := by
+  rw [deningerBigWittPrimeSeamPairStokesSource,
+    deningerBigWittTeichmullerCrossEffect]
+  simp only [map_sub, map_add,
+    deningerBigWittGhostComponent_teichmuller]
+  rw [deningerBigWittPrimePairExtendedPhysicalAtom_eq]
+  ring
+
+/-- Single finite Big-Witt source obtained before extracting its physical
+quadratic ghost. -/
+def deningerBigWittPrimeSeamAggregateStokesSource
+    (a : Nat.Primes → ℂ) (s : Finset Nat.Primes) :
+    DeningerBigWittRing ℝ :=
+  ∑ p ∈ s, ∑ q ∈ s,
+    deningerBigWittPrimeSeamPairStokesSource a p q
+
+theorem deningerBigWittPrimeSeamAggregateStokesSource_ghost_one
+    (a : Nat.Primes → ℂ) (s : Finset Nat.Primes) :
+    deningerBigWittGhostComponent 1 Nat.zero_lt_one
+        (deningerBigWittPrimeSeamAggregateStokesSource a s) = 0 := by
+  simp [deningerBigWittPrimeSeamAggregateStokesSource,
+    deningerBigWittPrimeSeamPairStokesSource_ghost_one]
+
+/-- Second ghost of one finite aggregate source is exactly minus twice the
+physical source Dirichlet energy. -/
+theorem deningerBigWittPrimeSeamAggregateStokesSource_ghost_two
+    (a : Nat.Primes → ℂ) (s : Finset Nat.Primes) :
+    deningerBigWittGhostComponent 2 (by norm_num)
+        (deningerBigWittPrimeSeamAggregateStokesSource a s) =
+      -2 * deningerBigWittPrimeSeamSourceEnergy a s := by
+  calc
+    deningerBigWittGhostComponent 2 (by norm_num)
+        (deningerBigWittPrimeSeamAggregateStokesSource a s) =
+        ∑ p ∈ s, ∑ q ∈ s,
+          deningerBigWittGhostComponent 2 (by norm_num)
+            (deningerBigWittPrimeSeamPairStokesSource a p q) := by
+      simp [deningerBigWittPrimeSeamAggregateStokesSource]
+    _ = ∑ p ∈ s, ∑ q ∈ s,
+          -2 * deningerBigWittPrimePairExtendedPhysicalAtom p q *
+            ‖a p - a q‖ ^ 2 := by
+      apply Finset.sum_congr rfl
+      intro p hp
+      apply Finset.sum_congr rfl
+      intro q hq
+      exact deningerBigWittPrimeSeamPairStokesSource_ghost_two a p q
+    _ = -2 * deningerBigWittPrimeSeamSourceEnergy a s := by
+      rw [deningerBigWittPrimeSeamSourceEnergy, Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro p hp
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro q hq
+      ring
+
+theorem deningerBigWittPrimeSeamAggregateStokesSource_ne_zero_of_energy_ne_zero
+    {a : Nat.Primes → ℂ} {s : Finset Nat.Primes}
+    (henergy : deningerBigWittPrimeSeamSourceEnergy a s ≠ 0) :
+    deningerBigWittPrimeSeamAggregateStokesSource a s ≠ 0 := by
+  intro hsource
+  have hghost := congrArg
+    (deningerBigWittGhostComponent 2 (by norm_num)) hsource
+  rw [deningerBigWittPrimeSeamAggregateStokesSource_ghost_two,
+    map_zero] at hghost
+  apply henergy
+  exact (mul_eq_zero.mp hghost).resolve_left (by norm_num)
+
+theorem exists_nonzero_deningerBigWittPrimeSeamAggregateStokesSource_of_re_ne_half
+    {rho : ℂ} (hstrip : 0 < rho.re ∧ rho.re < 1)
+    (hoff : rho.re ≠ 1 / 2) :
+    ∃ s : Finset Nat.Primes,
+      deningerBigWittPrimeSeamAggregateStokesSource
+        (fun p : Nat.Primes =>
+          orbitwiseNatPrimeSeamCharge (p : ℕ) rho) s ≠ 0 := by
+  obtain ⟨s, hs⟩ := orbitwisePrimeSeamPairEnergy_unbounded_of_re_ne_half
+    hstrip hoff 0
+  refine ⟨s,
+    deningerBigWittPrimeSeamAggregateStokesSource_ne_zero_of_energy_ne_zero
+      ?_⟩
+  rw [deningerBigWittPrimeSeamSourceEnergy_eq_primePairDifferenceEnergy]
+  exact ne_of_gt hs
+
+theorem deningerBigWittPrimeSeamAggregateStokesSource_eq_zero_of_re_eq_half
+    {rho : ℂ} (hstrip : 0 < rho.re ∧ rho.re < 1)
+    (hre : rho.re = 1 / 2) (s : Finset Nat.Primes) :
+    deningerBigWittPrimeSeamAggregateStokesSource
+      (fun p : Nat.Primes =>
+        orbitwiseNatPrimeSeamCharge (p : ℕ) rho) s = 0 := by
+  have hcoherent : OrbitwisePrimeSeamChargesCoherent rho :=
+    (orbitwisePrimeSeamChargesCoherent_iff_re_eq_half hstrip).mpr hre
+  have htwo : orbitwiseNatPrimeSeamCharge 2 rho = 0 := by
+    rw [orbitwiseNatPrimeSeamCharge_two_eq_firstPrime]
+    exact (orbitwiseFirstPrimeSeamCharge_eq_zero_iff rho).mpr hre
+  have hzero : ∀ p : Nat.Primes,
+      orbitwiseNatPrimeSeamCharge (p : ℕ) rho = 0 := by
+    intro p
+    exact (hcoherent (p : ℕ) 2 p.prop (by norm_num)).trans htwo
+  have hpair : ∀ p q : Nat.Primes,
+      deningerBigWittPrimeSeamPairStokesSource
+        (fun r : Nat.Primes =>
+          orbitwiseNatPrimeSeamCharge (r : ℕ) rho) p q = 0 := by
+    intro p q
+    rw [deningerBigWittPrimeSeamPairStokesSource,
+      hzero p, hzero q, sub_self, norm_zero, zero_mul]
+    simp [deningerBigWittTeichmullerCrossEffect]
+  rw [deningerBigWittPrimeSeamAggregateStokesSource]
+  apply Finset.sum_eq_zero
+  intro p hp
+  apply Finset.sum_eq_zero
+  intro q hq
+  exact hpair p q
+
+/-- Every finite aggregate Big-Witt seam source vanishes on every actual Xi
+divisor fibre. -/
+def DeningerBigWittXiPrimeSeamAggregateStokesSourcesVanish : Prop :=
+  ∀ rho : XiDivisorSupport, ∀ s : Finset Nat.Primes,
+    deningerBigWittPrimeSeamAggregateStokesSource
+      (fun p : Nat.Primes =>
+        orbitwiseNatPrimeSeamCharge (p : ℕ) (rho : ℂ)) s = 0
+
+/-- A single honest Big-Witt source family now carries the full RH detector:
+all its finite Xi-divisor aggregates vanish exactly under RH. -/
+theorem deningerBigWittXiPrimeSeamAggregateStokesSourcesVanish_iff_riemannHypothesis :
+    DeningerBigWittXiPrimeSeamAggregateStokesSourcesVanish ↔
+      RiemannHypothesis := by
+  constructor
+  · intro hsource
+    apply deningerBigWittXiPrimeSeamSourceEnergyBounded_iff_riemannHypothesis.mp
+    intro rho
+    refine ⟨0, ?_⟩
+    intro s
+    have hghost := congrArg
+      (deningerBigWittGhostComponent 2 (by norm_num)) (hsource rho s)
+    rw [deningerBigWittPrimeSeamAggregateStokesSource_ghost_two,
+      map_zero] at hghost
+    have henergy : deningerBigWittPrimeSeamSourceEnergy
+        (fun p : Nat.Primes =>
+          orbitwiseNatPrimeSeamCharge (p : ℕ) (rho : ℂ)) s = 0 :=
+      (mul_eq_zero.mp hghost).resolve_left (by norm_num)
+    rw [henergy]
+  · intro hRH rho s
+    have hstrip := xi_divisor_support_re_mem_open_unit rho
+    apply deningerBigWittPrimeSeamAggregateStokesSource_eq_zero_of_re_eq_half
+      hstrip
+    exact (orbitwisePrimeSeamChargesCoherent_iff_re_eq_half hstrip).mp
+      (xiPrimeSeamChargesCoherent_iff_riemannHypothesis.mpr hRH rho)
+
 theorem DAC_DENINGER_BIG_WITT_PHYSICAL_HALF_DENSITY_WALL :
     Summable (fun i : DeningerCalderonWittCrossPrimePacketIndex =>
       ‖deningerBigWittCrossPrimePacketRawCoefficient i‖ ^ 2) ∧
@@ -308,6 +474,12 @@ theorem DAC_DENINGER_BIG_WITT_PRIME_SEAM_DIRICHLET_TRANSPORT :
     (∀ (a : Nat.Primes → ℂ) (s : Finset Nat.Primes),
       deningerBigWittPrimeSeamSourceEnergy a s =
         primePairDifferenceEnergy a s) ∧
+      (∀ (a : Nat.Primes → ℂ) (s : Finset Nat.Primes),
+        deningerBigWittGhostComponent 2 (by norm_num)
+            (deningerBigWittPrimeSeamAggregateStokesSource a s) =
+          -2 * deningerBigWittPrimeSeamSourceEnergy a s) ∧
+      (DeningerBigWittXiPrimeSeamAggregateStokesSourcesVanish ↔
+        RiemannHypothesis) ∧
       (DeningerBigWittXiPrimeSeamSourceEnergyBounded ↔
         RiemannHypothesis) ∧
       (DeningerBigWittXiPrimeSeamSourceEnergySubmass ↔
@@ -316,6 +488,8 @@ theorem DAC_DENINGER_BIG_WITT_PRIME_SEAM_DIRICHLET_TRANSPORT :
         ∀ i : DeningerCalderonWittCrossPrimePacketIndex,
           ‖z i‖ ^ 2 = deningerBigWittCrossPrimePhysicalAtom i := by
   exact ⟨deningerBigWittPrimeSeamSourceEnergy_eq_primePairDifferenceEnergy,
+    deningerBigWittPrimeSeamAggregateStokesSource_ghost_two,
+    deningerBigWittXiPrimeSeamAggregateStokesSourcesVanish_iff_riemannHypothesis,
     deningerBigWittXiPrimeSeamSourceEnergyBounded_iff_riemannHypothesis,
     deningerBigWittXiPrimeSeamSourceEnergySubmass_iff_riemannHypothesis,
     no_deningerBigWittPhysicalHalfDensity_packet⟩

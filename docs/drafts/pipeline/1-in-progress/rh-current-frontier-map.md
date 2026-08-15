@@ -731,7 +731,7 @@ existing route.
 | Route | Status | First unresolved source theorem |
 |---|---|---|
 | A | terminalized | none below its RH-equivalent source orientation |
-| CCM-FU | open, unlettered; finite source-faithful whole-`L2` completion, literal parity blocks, parity-free simple-ground Fourier law, fixed-support mean-square zero transfer, and CCM--Suzuki mixed-form bridge closed; CCM--E seam open | Lean constructs literal `sigma_S`, proves exact Fourier fixedness and S-unit coefficients, and identifies its actual theta core and unique source-faithful whole-`L2` transport; the coefficient is exactly `mu(n)/n` and survives finite Fourier transport. Independently, the literal centered published restricted-Weil packet has exact PSD parity blocks and rank-one cross commutator; its spectral-floor shift is unconditionally PSD and singular, and every simple full odd ground automatically supplies normalized finite odd data forcing real regular Fourier-resolvent zeros. Every strict complex CCM source form is now exactly the compressed Suzuki screw pairing and Suzuki's actual Xi-zero Weil distribution. Fixed-support mean-square convergence promotes finite zero laws to any nonzero compact-Fourier limit. Corpus still lacks canonical arithmetic approximating family, simple-floor selection, and compressed-ground orientation. First unresolved CCM theorem is canonical `Pi(lambda,k)` formation together with cofinal simple-ground and mean-square approximation plus four-unit orientation. The CCM--E seam becomes a route only if one comparison also transports E's Hall/load/flux mechanism. |
+| CCM-FU | open, unlettered; finite source-faithful whole-`L2` completion, literal parity blocks, parity-free simple-ground Fourier law, fixed-support mean-square zero transfer, CCM--Suzuki bridge, and exact finite continuous-source quotient closed; CCM--E seam open | Lean constructs literal `sigma_S`, exact `mu(n)/n` Fourier transport, the published PSD parity packet, and the CCM--Suzuki mixed form. Fixed-support mean-square convergence promotes finite zero laws to nonzero compact-Fourier limits. The full finite Guinand--Weil matrix now factors exactly through `2N+1` coordinates for every continuous source functional, including finite measures; finite matrices therefore cannot select an overcomplete physical source after quotienting. First unresolved CCM theorem is pre-quotient canonical `Pi(lambda,k)` formation with cofinal simple-ground/mean-square approximation and four-unit orientation. The CCM--E seam becomes a route only if one comparison transports E's Hall/load/flux mechanism. |
 | B | retired | fixed-width scalar mechanism exhausted |
 | C1 | open, advanced | Source-derived real-spectrum/positive-closure theorem for the fixed theta-source inverse, or an Euler-product/intersection inequality dominating the deviation-weighted divided-difference moment. The numeric Weil-positivity cone is unconditional but spectrally silent on detector vectors; the probe-circle law shows every off-line response is an on-line response at displaced probes. The literal Gauss--Hodge source-resolvent field sharpens the producer to complete monotonicity only in `n>=19`, `0<X<(n+1)^2`; all complementary sectors are already unconditionally signed. Missing theorem is a pre-zero reflection-doubled trace/Markov identity proving this wedge, not more finite ray jets or post-divisor moments. Widening assembly remains only on the explicit-form branch. |
 | C2 | retired | detector saturated |
@@ -753,7 +753,7 @@ existing route.
 | Q | open, secondary | direct Cassini--Jensen/jet saturation, or a source-derived label-sensitive plateau quotient; the selected continuous power-reciprocal carrier is retired by the all-degree support no-go |
 | R | terminalized as independent producer | The intrinsic pre-polar annihilator type is empty. Lean exhausts the surviving audited interfaces—external positive polar comparison, pointwise two-orientation non-amplification, collective compactness of the fixed `(2,3)` receiver, singular Xi/Calkin factorization, compact first-Xi-jet principal coefficient, and loss-zero fixed Fisher landing—and proves each branch, and their disjunction, equivalent to RH. Hyperbolic-gauge quadratic positivity is universally zero; the surviving quartic amplitude equals the physical Stokes excess but its annihilation is RH-equivalent. Coefficient-faithful pre-divisor Gamma-corona globalization is also impossible outside neutral grade, independently of packet-horizon gauge. Finite Kunneth/Bockstein enlargement, Poisson theta shear, local anomaly cancellation, positive invariant means, bounded multipliers, and compact counterterms do not produce annihilation. |
 | S | upstream | source algebraicity or divisor-preserving dynamics with typed Xi handoff |
-| T | open after unconditional exact-AFE fourth-moment closure | Lean proves separate `N^(101/100)` dyadic budgets for literal primal, diagonal dual, and confluent pole summands, then combines the exact identity `zeta^2=P+D-R` with a three-source norm inequality to prove `integral_[N,2N]|zeta(1/2+it)|^4<=C N^(101/100)`. It identifies the same moment in Ingham's detector, proves the mollifier second moment and the mollified-error `4/3` moment `O(N^(251/250))`, and verifies the absorbed height exponent is `<7/10`. Repeated short-block freezing remains dead at `T^(5/3)`. First unresolved theorem is the actual Ingham--Gabriel coefficient-three interpolation/zero-counting theorem, then density-to-`7/10` prime supply and source-faithful composition; Wold chart separately requires signed pole-preserving continuation. |
+| T | open after unconditional exact-AFE fourth-moment and concrete Gabriel integral-interpolation closure | Lean proves separate `N^(101/100)` budgets for primal, dual, and pole terms and hence the critical fourth moment; detector mollifier and `4/3` errors give absorbed height exponent `<7/10`. Fixed-right-edge coefficient-gap analysis gives genuine `X^(-1/180)` mean-square decay. The concrete scalar-family theorem now derives the exact `237/364` center inequality from strip regularity/boundedness and uniform translated left-`4/3`/right-`2` moments; boundedness of the base field implies scalar-family boundedness. First unresolved theorem is its pole-cleared Gaussian instantiation—remaining strip regularity/base bound and translated endpoint moments—followed by detector zero counting, density-to-`7/10` prime supply, and source-faithful composition. Wold chart separately requires signed pole-preserving continuation. |
 | U | open at fixed-carrier antipodal diagonal-or-cross source classification; Nyquist mixed-flux, heat-uniform orientation, and global scalar Gamma renormalization retired | False RH is equivalent to one fixed carrier producing cofinal negative Hankel packets whose quadratic is a positive Laplace average of complete Gamma--polar--von Mangoldt balance. Post-cutoff antipodal polarization makes false RH equivalent to a cofinal labelled even, odd, or cross anomaly. Exact source-matched heat integration leaves only `gammaHardyPhaseRate(x)-gammaHardyPhaseRate(a^2/x)`. Its fixed-log-radius chart has defect `-1`, while fixed physical boundary has defect `-log(a)+O(1)`; Lean proves no arbitrary scalar counterterm can make both finite. Live theorem is therefore chart-local, source-specific prime--polar completion of this Gamma commutator for fixed carrier. Universal positivity remains RH-equivalent. |
 
 The live independent count is ten lettered routes plus CCM-FU. This count is conditional only
@@ -1632,6 +1632,12 @@ ContinuedPrimeArchPositiveFrequencyAboveImBoundedAbove 4  iff  RH.
 imaginary continued relative trace above four extends by reflection and excludes off-line poles.
 If RH is false, continued source is cofinally unbounded, not merely wrong-signed locally.
 
+`ZetaEulerLogPrimeSum.lean` now fixes the convergent-side source exactly. For `sigma>1`,
+`log|zeta(sigma+i tau)|` is the real canonical Euler logarithm, and that logarithm differs from
+`sum_p p^(-sigma)cos(tau log p)` by at most the absolute prime-square tail constant, uniformly in
+`tau`. Prime-power correction and safe-line phase extraction are therefore closed. This does not
+continue the cosine source through the critical strip or supply a high-frequency ceiling.
+
 **Open core.** Derive any finite uniform ceiling from literal analytically continued prime--Gamma
 source in critical strip and frequency greater than four. Euler-convergent sieve tails and larger
 finite verified bands do not cross this continuation wall.
@@ -2420,6 +2426,22 @@ Var_(sigma,Y)/(Y^(1-sigma) log Y) -> 2/(1-sigma).
 The second-order tilt deficit is only logarithmic relative to the power-scale main term. Thus the
 center and variance of the physical positive Euler law are no longer heuristic inputs. This does
 not provide parity cancellation inside the shell.
+
+`RouteESaddleLowTilt.lean` removes the former half-density restriction: for every fixed
+`0<sigma<1`, both center and variance have the same leading laws with coefficient
+`2/(1-sigma)`. `EulerTiltAmplitude.lean` then controls every cumulant at the actual saddle escape
+frequency and proves
+
+```text
+log |Phi| = -2 log(apertureLog)+O(1).
+```
+
+Thus the exact parity--energy characteristic amplitude is only logarithmically small, not
+Gaussian-small. `TerminalPrimeBand.lean` proves every fixed top logarithmic band
+`Y/(log Y)^K<p<=Y` has harmonic mass tending to zero. The escape variance is genuinely all-scale,
+so neither a scalar central-limit estimate nor a terminal-band selector can produce the missing
+strict-half cancellation. A live proof must retain and condition the full shell before
+scalarization, exactly as the fixed grade-recurrent relation requires.
 
 Active-tree `RouteEGibbsTerminalChamber.lean` proves that parity cancellation fails maximally on a
 literal terminal shell. At `t_X=pi/log X`, every prime in `(X/e,X]` has phase in
@@ -3326,6 +3348,29 @@ sites `0,1`; their reciprocal adjacency squares to the identity, has an exact co
 exponential, is uniformly bounded in frequency, and is the compression of the literal fractional
 shift. One-prime operator/terminal propagator infrastructure is closed. Higher apertures and the
 completed physical forcing/trace selection are not.
+
+The forced-strip and rough-source layers are now Lean-closed beyond that paper statement.
+`SuzukiForcedStripParticular.lean` through `SuzukiForcedStripDatum.lean` prove exact half-power
+branch cancellation, `O(z)` behavior, holomorphy through the origin on the whole strip, polynomial
+substrip growth, equality of segment and horizontal variation-of-constants primitives, the forced
+gluing/half-log-trace equivalence, and one Fourier profile carrying every interior line.
+`SuzukiOnePrimeTerminalSimilarityTransport.lean` identifies the literal nonnormal two-site
+adjacency as an exact diagonal similarity of the Hermitian swap, including the complete Gamma
+propagator and both high-frequency rays. `SuzukiOnePrimeTerminalForcedHardy.lean` transports the
+full forced Hardy theorem through that similarity.
+
+More decisively, `SuzukiOnePrimeRoughPrimitiveFourierForcing.lean` proves that every literal
+one-prime `L2` source has canonical inverse-derivative multiplier forcing with finite global first
+moment and unconditional Hardy admission on both rays at `sigma=3/4`.
+`SuzukiOnePrimeRoughPrimitiveFourierIdentification.lean` proves that for every literal `L2` weak
+derivative pair this canonical forcing is almost everywhere the Fourier transform of the physical
+primitive. `SuzukiOnePrimeInteriorCutoff.lean` constructs the actual interior cutoff and exact `L2`
+weak Leibniz event source; `SuzukiCutoffForcingIdentity.lean` isolates the residual as cutoff
+commutator plus undifferentiated event terms. Thus the one-prime forcing-moment and nonnormality
+premises are closed. The remaining exterior theorem is complete-source identification: prove the
+all-aperture physical Suzuki forcing is this weak derivative pair with the full cutoff/jump source,
+then orient its half-log trace and return coherently. One-prime terminal admission alone cannot
+select higher-rank/all-aperture ground data.
 
 The CCM/Suzuki mixed-source modules also close the exact complex cross term: arbitrary form-domain
 pairs satisfy the full sesquilinear polar--prime minus archimedean Weil identity, with literal CCM
@@ -4496,9 +4541,10 @@ is stronger than needed.
 
 This advances formal status beyond “concrete radial PSWF realization missing.” Core
 special-function primitives, exterior channel, inward regularization, sharp trial-to-floor
-domination, transverse amplification, and sampled-growth consumers are Lean-closed. Lean currently
-uses the exact variational lower-bound/positivity interface; it does not reconstruct the published
-closed CCM operator itself.
+domination, transverse amplification, and sampled-growth consumers are Lean-closed.
+`SuzukiGroundEnergyContinuity.lean` now identifies the interval floor with the actual
+CCM/Friedrichs ground and proves its continuity at every positive aperture; the closed operator is
+no longer missing. This still gives no large-aperture lower orientation.
 
 **Completed-Evans/log-seam subbranch, formal.** `SuzukiGammaMollifiedEquation.lean` and
 `SuzukiGammaWeakDomainUpgrade.lean` close the weak regularity step that this branch previously
@@ -4544,7 +4590,7 @@ visibility/normalization in the simple full odd branch. These results still earn
 whole-ground credit: simple-floor selection and literal compressed-ground mean-square convergence
 remain open, and neither supplies the comparison `eta(a)=exp(o(a))`.
 
-**Provisional prolate-ground and full-charge results.** The full zero-integral positive-even
+**Prolate-ground and full-charge status split.** The full zero-integral positive-even
 prolate leakage compression now has a simple ground state. Paper proof shows its unit vector
 converges to CCM's normalized `h_0`--`h_4` seed at rate `O(lambda^-7)`, its ground leakage divided
 by the first `h_4` leakage tends to `8/11`, and its next constrained gap has normalized liminf at
@@ -4642,8 +4688,44 @@ ground vector or on whether smooth physical sources can approximate it. Its RH-b
 to classify/select that attained vector from the source and compare it with the explicit prolate
 family, or otherwise prove the required lower floor control.
 
-Combining the paper-proved complete radial prime response, Poisson center, critical-Mellin
-coupling, polar contribution, and constrained prolate seed gives
+The actual ground operator is now substantially more rigid. `SuzukiGroundEnergyContinuity.lean`
+identifies the interval and CCM/Friedrichs ground energies, proves antitonicity and continuity on
+all positive apertures, and extracts compact limits of normalized right-ground extensions.
+`SuzukiSmallApertureGroundEnergy.lean` proves eventual positivity of the actual lowest eigenvalue.
+`SuzukiSmallApertureGroundAsymptotic.lean` proves the explicit two-sided estimate
+
+```text
+|lambda_a-[log(1/a)+mu_1-log(2*pi)+psi(2)-1]| <= C a.
+```
+
+`SuzukiLimitingLogOperator.lean` realizes the limiting finite-part logarithmic form as a closed
+self-adjoint compact-resolvent operator, proves its source core agrees with the literal Weil
+finite-part block, and proves its ground is attained by a genuine eigenstate. These results close
+operator existence, continuity, small-aperture sign, and limiting-core identification. They do not
+control the cofinal large-aperture floor: monotonicity permits a later negative spectral birth, so
+small-aperture positivity is not an RH argument.
+
+The concrete prolate source is now formal rather than merely represented by an abstract leakage
+mode. `ProlateGlobalBandEigen.lean` extends each canonical unit-band mode to a global Slepian
+eigenfunction and proves exact Fourier self-reciprocity. `ProlateEvenEigenspaceDecomposition.lean`
+proves every continuous even global band eigenfunction with nonzero eigenvalue is a finite sum of
+smooth even joint prolate modes, removing spectral simplicity from the band-to-ODE passage.
+`ConstrainedProlateTwoModeInhabited.lean` proves the first two signed modes are simultaneously live
+at every large aperture and form an actual compactly supported even zero-mean source.
+
+The Poisson/radial assembly has moved correspondingly. `PoissonMuntzRadialSource.lean` identifies
+the square-root-normalized Abel boundary with the full radial source, including Poisson center and
+physical lattice charge. `PoissonAbelUniformBound.lean` gives radius-uniform domination;
+`PoissonAbelRadialInterchange.lean` commutes the Abel limit with the growing radial primitive; and
+`PoissonAbelChannelSplit.lean` proves the exact channel decomposition and transfers any uniform
+summed-channel primitive bound to the actual full radial primitive. The last clause is an
+implication, not the missing estimate. Seed-level science is now precisely the quantitative
+actual-PSWF/Dunster comparison, inverse-bandwidth separation, and a uniform bound for the *sum* of
+channel primitives with intact polar--prime cross terms. Per-channel `k^-2` mass is insufficient
+by itself. Whole-ground lower control remains the separate RH-bearing wall.
+
+Combining the Lean-closed Poisson/Abel/radial interfaces with the still paper-level full summed
+polar--prime charge evaluation, critical-Mellin coupling, and constrained seed asymptotic gives
 
 ~~~
 QW_lambda(a_lambda,a_lambda)
@@ -13913,7 +13995,8 @@ assembly. RH remains open.
 
 ### Route T concrete Gabriel-family advance
 
-Five new axiom-clean modules now close the exact finite-dimensional and pole geometry behind the
+Six axiom-clean modules now close the exact finite-dimensional, pole, and integral-interpolation
+geometry behind the
 coefficient-three interpolation:
 
 - `InghamFixedGabrielScalarCore.lean`: exact Hadamard cancellation and `237/364` center exponent;
@@ -13925,9 +14008,20 @@ coefficient-three interpolation:
   raw-error identity, vertical Gaussian decay, contractive pole factor on `Re z>=1/2`, and reverse
   center transfer with cost `(7/3)e^kappa`;
 - `InghamDetectorLogMoment.lean`: literal detector logarithm bounded by the resulting
-  `364/237` moment.
+  `364/237` moment;
+- `InghamFixedGabrielIntegralInterpolation.lean`: the literal scalar integral satisfies the exact
+  center inequality
+  ```text
+  I_center^(237/364) <= L^(165/364) R^(72/364)
+  ```
+  from closed-strip differentiability/boundedness and uniform translated left `4/3` and right `2`
+  moments. The same module proves that a bounded base field makes the concrete scalar family
+  bounded on the closed strip.
 
-This is frontier progress, but not yet a zero-density theorem. Current first open theorem is the
-sharp endpoint Hölder/boundedness audit for the concrete Gaussian scalar integral. Once closed,
-the existing scalar Hadamard core yields the interior moment with formal exponent
-`8263/11850 = 7/10-16/5925`; detector zero counting and density-to-prime supply remain after it.
+This is frontier progress, but not yet a zero-density theorem. Abstract Gabriel interpolation and
+scalar-family boundedness are no longer open. Current first theorem is the concrete substitution
+`f =` pole-cleared Gaussian mollified error: prove its remaining closed-strip regularity/base-field
+bound and the two uniform translated endpoint moments with the formal critical and right-edge
+budgets. The existing scalar core then yields interior exponent
+`8263/11850 = 7/10-16/5925`; quantitative detector zero counting and density-to-prime supply remain
+after it.
