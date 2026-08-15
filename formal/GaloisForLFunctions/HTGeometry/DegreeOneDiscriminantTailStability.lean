@@ -2,6 +2,7 @@ import Mathlib.Data.Complex.Basic
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Tactic.GCongr
 import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.Positivity
 import Mathlib.Tactic.Ring
 
@@ -192,12 +193,36 @@ def degreeOneConjugatePairMoment (mu : ℝ) (y : ℂ) (k : ℕ) : ℝ :=
 def degreeOneConjugatePairCross (y : ℂ) (x : ℝ) : ℝ :=
   (y * (y - x) ^ 2).re
 
+/-- Coordinate agreement for a conjugate-pair moment. -/
+theorem degreeOneConjugatePairMoment_coord (mu u v : ℝ) (k : ℕ) :
+    degreeOneConjugatePairMoment mu ((u : ℂ) + v * Complex.I) k =
+      degreeOnePairMoment mu u v k := rfl
+
+/-- Coordinate agreement for a conjugate-pair cross term. -/
+theorem degreeOneConjugatePairCross_coord (u v x : ℝ) :
+    degreeOneConjugatePairCross ((u : ℂ) + v * Complex.I) x =
+      degreeOneDiscriminantCross u v x := rfl
+
+/-- Squared modulus in real-imaginary coordinates. -/
+theorem normSq_ofReal_add_mul_I (u v : ℝ) :
+    Complex.normSq ((u : ℂ) + v * Complex.I) = u ^ 2 + v ^ 2 := by
+  simp [Complex.normSq_apply, Complex.mul_re, Complex.mul_im]
+  ring
+
+/-- Imaginary coordinate in real-imaginary coordinates. -/
+theorem im_ofReal_add_mul_I (u v : ℝ) : ((u : ℂ) + v * Complex.I).im = v := by
+  simp [Complex.mul_im]
+
 /-- The real moment is the sum of the two conjugate weighted moments. -/
 theorem degreeOneConjugatePairMoment_eq_pair_sum (mu : ℝ) (y : ℂ) (k : ℕ) :
     degreeOneConjugatePairMoment mu y k =
       (mu * y ^ k + mu * ((starRingEnd ℂ) y) ^ k).re := by
-  rw [← map_pow]
-  simp [degreeOneConjugatePairMoment, Complex.mul_re]
+  have hconj : (((starRingEnd ℂ) y) ^ k).re = (y ^ k).re := by
+    rw [← map_pow]
+    rfl
+  rw [Complex.add_re, Complex.mul_re, Complex.mul_re, hconj]
+  simp only [Complex.ofReal_re, Complex.ofReal_im]
+  unfold degreeOneConjugatePairMoment
   ring
 
 /-- The isolated pair determinant is its negative imaginary-defect square. -/
@@ -207,8 +232,12 @@ theorem degreeOneConjugatePair_det (mu : ℝ) (y : ℂ) :
       (degreeOneConjugatePairMoment mu y 3) =
       -4 * mu ^ 2 * Complex.normSq y * y.im ^ 2 := by
   rcases y with ⟨u, v⟩
-  simpa [degreeOneConjugatePairMoment, Complex.normSq_apply] using
-    degreeOnePairMoment_det mu u v
+  have hcoord : ({ re := u, im := v } : ℂ) = (u : ℂ) + v * Complex.I := by
+    apply Complex.ext <;> simp [Complex.mul_re, Complex.mul_im]
+  rw [hcoord, degreeOneConjugatePairMoment_coord,
+    degreeOneConjugatePairMoment_coord, degreeOneConjugatePairMoment_coord,
+    normSq_ofReal_add_mul_I, im_ofReal_add_mul_I]
+  exact degreeOnePairMoment_det mu u v
 
 /-- Exact degree-one determinant change after adjoining one complex conjugate pair. -/
 theorem degreeOneBulkConjugatePair_update
@@ -223,8 +252,17 @@ theorem degreeOneBulkConjugatePair_update
       2 * mu * ∑ x ∈ B, M x * x * degreeOneConjugatePairCross y x -
         4 * mu ^ 2 * Complex.normSq y * y.im ^ 2 := by
   rcases y with ⟨u, v⟩
-  simpa [degreeOneConjugatePairMoment, degreeOneConjugatePairCross,
-    Complex.normSq_apply] using degreeOneBulkPair_update B M mu u v
+  have hcoord : ({ re := u, im := v } : ℂ) = (u : ℂ) + v * Complex.I := by
+    apply Complex.ext <;> simp [Complex.mul_re, Complex.mul_im]
+  rw [hcoord, degreeOneConjugatePairMoment_coord,
+    degreeOneConjugatePairMoment_coord, degreeOneConjugatePairMoment_coord]
+  have hcross : ∀ x : ℝ,
+      degreeOneConjugatePairCross ((u : ℂ) + v * Complex.I) x =
+        degreeOneDiscriminantCross u v x :=
+    degreeOneConjugatePairCross_coord u v
+  simp_rw [hcross]
+  rw [normSq_ofReal_add_mul_I, im_ofReal_add_mul_I]
+  exact degreeOneBulkPair_update B M mu u v
 
 /-- A genuinely nonreal pair of nonzero weight has strictly negative degree-one determinant. -/
 theorem degreeOneConjugatePair_det_neg {mu : ℝ} {y : ℂ}
@@ -233,17 +271,18 @@ theorem degreeOneConjugatePair_det_neg {mu : ℝ} {y : ℂ}
       (degreeOneConjugatePairMoment mu y 2)
       (degreeOneConjugatePairMoment mu y 3) < 0 := by
   rcases y with ⟨u, v⟩
-  rw [show degreeOneConjugatePairMoment mu { re := u, im := v } 1 =
-      degreeOnePairMoment mu u v 1 by rfl,
-    show degreeOneConjugatePairMoment mu { re := u, im := v } 2 =
-      degreeOnePairMoment mu u v 2 by rfl,
-    show degreeOneConjugatePairMoment mu { re := u, im := v } 3 =
-      degreeOnePairMoment mu u v 3 by rfl,
+  have hcoord : ({ re := u, im := v } : ℂ) = (u : ℂ) + v * Complex.I := by
+    apply Complex.ext <;> simp [Complex.mul_re, Complex.mul_im]
+  rw [hcoord, degreeOneConjugatePairMoment_coord,
+    degreeOneConjugatePairMoment_coord, degreeOneConjugatePairMoment_coord,
     degreeOnePairMoment_det]
   have hmu2 : 0 < mu ^ 2 := sq_pos_of_ne_zero hmu
   have hv2 : 0 < v ^ 2 := sq_pos_of_ne_zero hy
-  have hnorm : 0 < u ^ 2 + v ^ 2 := by positivity
-  nlinarith [mul_pos hmu2 (mul_pos hnorm hv2)]
+  have hnorm : 0 < u ^ 2 + v ^ 2 :=
+    add_pos_of_nonneg_of_pos (sq_nonneg u) hv2
+  rw [show -4 * mu ^ 2 * (u ^ 2 + v ^ 2) * v ^ 2 =
+    -(4 * mu ^ 2 * (u ^ 2 + v ^ 2) * v ^ 2) by ring]
+  exact neg_lt_zero.mpr (mul_pos (mul_pos (mul_pos (by norm_num) hmu2) hnorm) hv2)
 
 /-- Nonnegative real atoms and weights give nonnegative bulk moments. -/
 theorem degreeOneBulkMoment_nonneg

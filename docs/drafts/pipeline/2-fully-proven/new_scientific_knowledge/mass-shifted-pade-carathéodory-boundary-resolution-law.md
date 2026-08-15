@@ -385,3 +385,29 @@ conservativity laws.
   finite-jet blindness proved; ordinary Padé-capacity attack retired.
 - 2026-08-11 — growing finite-head depletion falsified by exact boundary-jet covariance; enlarged
   half-plane and inserted head budget shown to be one conservative operation.
+
+## Lean status (updated)
+
+The classical input named in section 1 — **Carathéodory's coefficient inequality** — is not in
+mathlib.  It is now built, unconditional and axiom-clean, in
+`HTGeometry/CaratheodoryCoefficient.lean`:
+
+    cauchyCoeff f R n                          the `n`-th Cauchy coefficient on the circle of
+                                               radius `R` about the origin
+    cauchyCoeff_eq_circleAverage               it is the negative-frequency circle average of `f`
+    circleAverage_pow_mul_eq_zero              the positive-frequency averages of a holomorphic
+                                               function vanish (mean value property)
+    circleAverage_conj, circleAverage_const_mul,
+      circleAverage_re, norm_circleAverage_le,
+      circleAverage_sub                        the elementary calculus of circle averages
+    inv_eq_conj_div                            `z⁻¹ = conj z / R²` on the circle
+    circleAverage_inv_pow_mul_conj_eq_zero     hence the negative-frequency average of `conj f`
+                                               vanishes too
+    cauchyCoeff_eq_two_mul_re_average          therefore the coefficient is twice the
+                                               negative-frequency average of `Re f` alone
+    norm_cauchyCoeff_mul_pow_le                **(PCR.5)**: `‖c_n‖ · R^n ≤ 2 · Re f 0` for every
+                                               `n ≥ 1`, whenever `Re f ≥ 0` on the circle
+
+What remains for this card is the source side: the literal positive-real resolvent `(PCR.1)`-`(PCR.2)`
+on the half-plane `Re Y > -81/4`, the disk chart `(PCR.3)`, and the Padé covariance of sections 2-4,
+which rest on the moving-center Padé worldline card.

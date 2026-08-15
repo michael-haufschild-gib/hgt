@@ -504,3 +504,28 @@ Remaining on the Siegel gate: joint holomorphy of the quotient and of the remain
 `CircleIntegralParamOpen` is already owned), uniqueness of the division, factoriality of the germ
 ring by induction on the dimension through division and Gauss' lemma, local reduced fractions, and
 then the Siegel counting assembly.
+
+### The division is holomorphic in all the variables
+
+The same module adds the parametric half, so Weierstrass division is now available as an identity
+between *holomorphic* objects, not only slicewise:
+
+```text
+HTGeometry.differentiableOn_sliceDivQuotient
+HTGeometry.divRemIntegrand, HTGeometry.sliceDivRemainderCoeff_eq_integral
+HTGeometry.differentiableOn_divRemIntegrand
+HTGeometry.differentiableAt_sliceDivRemainderCoeff
+```
+
+`differentiableOn_sliceDivQuotient` is the preparation-theorem argument with the numerator replaced:
+the integrand is holomorphic on the open set where the contour variable avoids the evaluation point
+and the zeros of the distinguished polynomial, so the corpus's parametric contour theorem
+(`differentiableAt_circleIntegral_slice_open`) applies.  For the remainder coefficients the root
+count is constant on a connected parameter set (`card_sliceRoots_const_of_isPreconnected`) and the
+coefficients of the distinguished polynomial are holomorphic
+(`differentiableOn_esymm_sliceRoots`), so the integrand of `a_k` is holomorphic in the parameters as
+well, and the same parametric theorem gives holomorphy of `a_k`.
+
+Remaining on the Siegel gate: uniqueness of the division, factoriality of the germ ring by induction
+on the dimension through division and Gauss' lemma, local reduced fractions, and the Siegel counting
+assembly.

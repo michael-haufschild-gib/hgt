@@ -297,3 +297,17 @@ the non-factorizing arithmetic source-to-divisor law itself is closed on paper.
   uniform reciprocal-local-factor estimate, then compact M-test machinery gives a holomorphic
   product only on `Re(s)>1`.  This does not touch continuation or the non-factorizing
   source-to-divisor open core.
+- 2026-08-15 -- split out the prerequisite `artin-finite-order-local-polynomial-bound` card.
+  The exact finite-order local action is now formalized; characteristic-polynomial root control
+  and the quantitative inverse bound are the remaining source-side proof obligation.
+- 2026-08-15 -- target-built the finite-order action and finite-order characteristic-root norm
+  lemmas with a standard-foundations-only axiom audit.  This makes the root-of-unity input real;
+  it still does not establish local-factor nonvanishing or an Euler product.
+- 2026-08-15 -- completed and target-built the root-free local-polynomial bridge: finite-order
+  characteristic roots have norm one, the reversed characteristic polynomial factors as
+  `∏(1-μT)`, and every actual Frobenius--inertia polynomial is nonzero on `|T|<1`.  The missing
+  uniform reciprocal estimate and compact product proof remain, so no analytic continuation or
+  polar-effectivity conclusion follows.
+- 2026-08-15 -- transported that nonvanishing to every canonical base finite place at the genuine
+  Euler argument whenever `Re(s)>0`, with source/target/axiom checks.  This eliminates no global
+  pole and does not make an infinite product; quantitative local control remains the next gap.

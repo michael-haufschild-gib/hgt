@@ -8631,3 +8631,37 @@ on each tail give the bound on the line, with no hypothesis linking them.  This 
 `(11)` is assembled on.
 
 All declarations audit to `[propext, Classical.choice, Quot.sound]`; lint clean.
+
+## ABC. Audit of the two remaining unexamined cards
+
+**`critical-radical-anchor-finite-head-reduction`** (438 lines).  Every *proof* gate is checked; the
+open gates are specialist priority audit, finite-head charge elimination, safe-shift minor
+positivity, source-selected two-angle Suzuki limit, and RH — all research, none of them missing
+Lean.  But the card's own Lean decision is explicit about what formalization needs, and it forbids
+the shortcut:
+
+```text
+first add a reusable pairwise infinite-variance identity, then prove the fixed-anchor cofinite
+theorem.  The annular corollary additionally needs formal providers for Riemann–von Mangoldt and
+the published >5/12 theorem; no hypothesis wrapper or axiom should be introduced in their place.
+```
+
+So the debt splits sharply.  Items 1–2 (the pairwise infinite-variance identity and the fixed-anchor
+cofinite theorem) are the card's own new content and are ordinary work.  Item 3, Riemann–von
+Mangoldt `N(T) ~ (T/2π)log(T/2π) − T/2π`, is not in mathlib and is a substantial but standard
+project.  Item 4 is Pratt–Robles–Zaharescu–Zeindler 2020, `liminf N₀(T)/N(T) > 5/12` — a research
+paper whose formalization is comparable in size to Levinson's method plus mollifier optimisation.
+Read-only providers the card already relies on: `SuzukiSafeShiftResponseChargeCancellation.lean`,
+`SuzukiSafeShiftTransverseChargeBudget.lean`, `SquaredXiCompleteMonotonicity.lean`,
+`XiCenteredOrdersSeventeenEighteenSourcePositivity.lean`.
+
+**`log-recurrence-polynomial-carrier-trichotomy`.**  Ten proof gates checked; the first open gate is
+literally "formalize exact theorem chain in Lean", the rest research.  Its `(5)` rests on Matveev's
+theorem on linear forms in logarithms — see the separate card
+`docs/drafts/pipeline/1-in-progress/effective-baker-matveev-linear-forms.md`, which records that the
+corpus already proves *qualitative* Baker unconditionally
+(`RHTower.bakerLinearIndependence_holds`) but that the effective lower bound is a genuinely separate
+construction giving no shortcut.
+
+Neither card is blocked by open research in the promotion sense; both are blocked by named,
+buildable Lean objects, two of which (Riemann–von Mangoldt, `>5/12`) are large standalone projects.

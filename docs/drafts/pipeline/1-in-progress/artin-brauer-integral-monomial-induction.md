@@ -121,3 +121,9 @@ Heilbronn order character.  None may be replaced by a generic analytic interface
 - 2026-08-15 — added the concrete `BrauerElementarySubgroup` carrier and monomial index, then
   source-checked, target-built, axiom-audited, and wired it.  This is necessary data for the
   theorem, not evidence of integral generation; the card remains Stage 1.
+- 2026-08-15 — reduced the subgroup-closure lemma to a concrete checked component argument for
+  `K ≤ C × P`: define the `snd=1` and `fst=1` parts, use coprimality to make the relevant power
+  map bijective on the `p`-part, and recover both coordinates of each `K` element.  Projection
+  injections and the component separation source-check; packaging the multiplication equivalence
+  and transporting it through the existing elementary witness remains unverified Lean work.  No
+  closure theorem is claimed yet.

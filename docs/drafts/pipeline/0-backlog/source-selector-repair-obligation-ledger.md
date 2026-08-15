@@ -143,13 +143,13 @@ Thus `K_d<=I` is not an additional source selector after `Q_0,d` has been formed
 
 ## 2026-06-24 source orientation must fix scale
 
-`../2-fully-proven/scale-invariant-source-orientation-cannot-pay-budget.md` adds a scale test to rows A3--A7. If a source-orientation predicate is unchanged under `R -> tR` for every `t>0`, then it can imply a fixed budget `B+R>=0` only when every admissible residual is already PSD.
+`../3-formalized/not_new_scientific_knowledge/scale-invariant-source-orientation-cannot-pay-budget.md` adds a scale test to rows A3--A7. If a source-orientation predicate is unchanged under `R -> tR` for every `t>0`, then it can imply a fixed budget `B+R>=0` only when every admissible residual is already PSD.
 
 Thus an Euler/Gamma source theorem for `-R^P<=M_triv` must identify the source datum that fixes the actual scale of `R^P`: exact weights, normalization, multiplicativity at the correct magnitude, archimedean cancellation, or a completed explicit-formula identity. Orientation without scale does not discharge A6--A7.
 
 ## 2026-06-24 finite source normalizations leave recession directions
 
-`../2-fully-proven/finite-source-normalizations-leave-budget-recession.md` adds the affine version of the scale test. A finite list of linear source normalizations can imply a fixed budget `B+R>=0` only if every remaining recession direction is already nonnegative, or absent in the two-sided case.
+`../3-formalized/not_new_scientific_knowledge/finite-source-normalizations-leave-budget-recession.md` adds the affine version of the scale test. A finite list of linear source normalizations can imply a fixed budget `B+R>=0` only if every remaining recession direction is already nonnegative, or absent in the two-sided case.
 
 Thus adding conductor, pole, Gamma-boundary, finite Euler, or finite finite-part constraints does not by itself discharge A6--A7. The proof must audit the residual recession space and show it contains no budget-negative direction, or replace the finite data with an all-order source identity or boundary/index theorem.
 
@@ -215,7 +215,7 @@ Thus rows A6--A7 cannot use a positive `nu'` as a feeder object. A valid source 
 
 ## 2026-06-24 real-axis kernel positivity does not discharge A6--A7
 
-`../2-fully-proven/real-axis-kernel-positivity-nonselector.md` gives an exact finite model: an indefinite form `H` can have `e(t)^T H^{-1} e(t)>0` for every real evaluation point `t`. The moment curve can miss negative directions.
+`../3-formalized/not_new_scientific_knowledge/real-axis-kernel-positivity-nonselector.md` gives an exact finite model: an indefinite form `H` can have `e(t)^T H^{-1} e(t)>0` for every real evaluation point `t`. The moment curve can miss negative directions.
 
 Thus rows A6--A7 cannot be discharged by proving positivity of a Christoffel/reproducing kernel only as a real-axis scalar function. The source theorem must prove the full form positivity, the full Pick/Nevanlinna condition, or an equivalent completed Schur/index statement.
 
@@ -245,7 +245,7 @@ identity proving positivity directly.
 
 ## 2026-06-24 degree-one discriminant repair is a tail-margin test
 
-`../2-fully-proven/degree-one-discriminant-tail-stability.md` gives the
+`../3-formalized/not_new_scientific_knowledge/degree-one-discriminant-tail-stability.md` gives the
 summed replacement for the deleted `det H_1` termwise proof. If a positive real
 bulk has moments `L_k` and determinant margin `Delta_B=L_1L_3-L_2^2`, and the
 remaining tail has absolute moment bounds `eta_k`, then the sufficient condition
@@ -413,8 +413,8 @@ Thus rows A3--A7 cannot be discharged by "make the repaired packet infinite". A 
 
 ## 2026-06-24 finite-normalization recession gate formalized
 
-`../3-formalized/source-budget-recession-gates.md` formalizes the core of
-`../2-fully-proven/finite-source-normalizations-leave-budget-recession.md` in
+`../3-formalized/not_new_scientific_knowledge/source-budget-recession-gates.md` formalizes the core of
+`../3-formalized/not_new_scientific_knowledge/finite-source-normalizations-leave-budget-recession.md` in
 Lean. A one-sided source-normalization ray can preserve a fixed budget only if
 its recession direction is nonnegative on every test vector; a two-sided affine
 line can preserve the budget only if its direction vanishes.

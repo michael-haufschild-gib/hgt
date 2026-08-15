@@ -1,8 +1,9 @@
 # Finite Source Normalizations Leave Budget Recession Directions
 
 - **ID:** finite-source-normalizations-leave-budget-recession
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / source-transfer guardrail
+- **Formalized companion:** `finite-source-normalizations-leave-budget-recession-formalized.md`
 - **Source:** `scale-invariant-source-orientation-cannot-pay-budget.md`;
   `positive-source-weights-do-not-bound-loewner-budget.md`;
   `finite-codimension-landscape-rh-nonselection.md`;
@@ -155,7 +156,7 @@ for all-order source domination.
 
 - [x] 0 -> 1 in-progress: finite-normalization loophole isolated.
 - [x] 1 -> 2 fully-proven: recession-direction proof completed.
-- [ ] 2 -> 3 formalized: optional finite-dimensional affine-cone theorem.
+- [x] 2 -> 3 formalized: exact affine linear-normalization cone theorem closed.
 
 ## Log
 
@@ -165,7 +166,7 @@ for all-order source domination.
 
 ## 2026-06-24 Lean formalization of the recession core
 
-`../../3-formalized/source-budget-recession-gates.md` records the Lean
+`source-budget-recession-gates.md` records the Lean
 formalization of the algebraic core in
 `formal/GaloisForLFunctions/RHTower/SourceRecession.lean`:
 
@@ -180,3 +181,29 @@ This formalizes the finite-normalization audit, not the source-built
 boundary-Weyl repair theorem. The remaining RH-bearing obligation is still the
 construction of an all-order Euler/Gamma/FE boundary object whose residual
 recession directions are source-closed before the Schur/index sign is read.
+
+## 2026-08-15 Lean formalization: exact affine cone
+
+`formal/GaloisForLFunctions/RHTower/SourceNormalizationBudgetGates.lean`
+now formalizes the card's actual affine residual class, not only its scalar
+recession core:
+
+- `sourceNormalizationAffine L c R` expresses every equation `L_j(R)=c_j`;
+- `sourceNormalizationRecession L D` expresses every homogeneous equation
+  `L_j(D)=0`;
+- `sourceNormalizationAffine_add_smul_recession` proves that every real
+  multiple of a recession direction remains in the affine class;
+- `finite_source_normalizations_budget_force_recession_zero` proves the
+  stronger two-sided conclusion `D=0`;
+- `finite_source_normalizations_budget_force_recession_posSemidef` gives the
+  card's stated positive-semidefinite conclusion; and
+- `source_budget_one_sided_recession_posSemidef` records the one-sided ray
+  variant from the paper proof.
+
+The formal theorem quantifies over an arbitrary index type of linear
+normalizations, so it strictly strengthens the finite-list formulation and
+does not require finite-dimensionality or a prior `B>=0` assumption.  It uses
+the real quadratic cone, covering real symmetric forms and realifications of
+complex Hermitian forms.  Targeted leaf build passed on 2026-08-15; all five
+exported closure theorems audit to only `propext`, `Classical.choice`, and
+`Quot.sound`.

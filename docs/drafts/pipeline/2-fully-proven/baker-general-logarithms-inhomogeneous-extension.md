@@ -468,3 +468,12 @@ and expose Gelfond--Schneider as the two-logarithm corollary/compatibility theor
   component scale.  The module is wired into `RHTower.lean`; its source and targeted OLean audit
   close, and `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.  Next
   core: package the simultaneous-eigenvalue sample rows as an integral Siegel matrix.
+- 2026-08-15 — `[LOCAL-RESEARCH]` hostile parameter audit ruled out the exponential-only Siegel
+  matrix as a capstone route: its row/column inequality forces exponential width beyond the available
+  first extrapolation decay.  The positive survivor is the paper’s full additive--exponential basis,
+  which increases coefficient dimension without increasing frequency width.  Formalized
+  `BakerGeneralProof.PolynomialAuxiliaryMonomial`: bounded columns `Y₀^a ∏ Yᵢ^mᵢ` and exact solved
+  component action, including the indispensable constant-component additive-degree lowering term.
+  The module is wired into `RHTower.lean`; scratch/source and targeted OLean audits close, and
+  `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.  `[OPEN CORE]`:
+  full integral component-jet matrix and its Siegel kernel.

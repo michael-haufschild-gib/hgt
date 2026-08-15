@@ -286,6 +286,42 @@ The Lean tree can express finite Hermitian inertia, but it does not contain the 
 feature independence or the CCM relative determinant. Formalizing only the resulting signature
 matrix would be a wrapper around the missing analytic specialization. No Lean file is added.
 
+**Superseded, 2026-08-15.**  The analytic Cauchy-feature independence *is* now formalized, so the
+module is not a wrapper: it proves the signed Cauchy decomposition `(10)` and the residue argument
+that makes the features independent, which is exactly the step the earlier decision called missing.
+
+## Lean status
+
+Module `formal/GaloisForLFunctions/RHTower/CCMRelativeLogDerivCoordinateIndex.lean` (wired,
+axiom-clean, 6 declarations).
+
+- `cauchyFeature`, **`conj_cauchyFeature`** — equation `(8)` and the conjugate form
+  `conj (phi_t v) = 1/(conj v + i t)` for real `t`.
+- **`cauchyFeature_pick`** — equation `(9)`: each Cauchy feature is a rank-one Pick square,
+  `(phi_t w + conj (phi_t v))/(w + conj v) = phi_t w * conj (phi_t v)`.
+- `relativeLogDeriv`, **`relativeLogDeriv_pick_decomp`** — equations `(7)`, `(10)`: the Pick kernel
+  of the relative logarithmic derivative is the exact signed sum
+
+  ```text
+  sum_e m_e phi_e(w) conj(phi_e(v)) - sum_j phi_(d_j)(w) conj(phi_(d_j)(v)) ,
+  ```
+
+  one positive square per perturbed zero and one negative square per active base coordinate.
+- **`cauchyFeature_residue`** — the residue extraction: multiplying by `w - i t_k` isolates the
+  `k`-th coefficient up to terms vanishing at the node.
+- **`cauchyFeature_coeff_eq_zero`** — the independence step of section 3: a combination of Cauchy
+  features vanishing on a punctured neighbourhood of a node has vanishing coefficient there.  This
+  is the analytic input the negative-index lower bound consumes.
+- **`card_active_ge`** — equation `(23)`: if every integer node inside a window of half-width `K` is
+  active, the active set has at least `2K + 1` elements.
+
+`#print axioms` on all six declarations returns exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+Imported, not reproved: the CCM relative-determinant formula `(15)`, reality of the perturbed
+spectrum, the Pontryagin-space realization and Sylvester inertia converting the signed decomposition
+into the exact index `(11)`, and the residual-lattice rule of Proposition 5.9 feeding `(22)`.
+
 ## Gates
 
 - [x] rational relative determinant factored

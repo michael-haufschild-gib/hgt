@@ -227,3 +227,26 @@ would surface.
   (13), the explicit completed factorization (7), the scalar conjugacy (5), and the critical
   degeneration (20).  Renamed `shiftedTheta` to `shiftedXiQuotient` to avoid clashing with
   `RHTower.shiftedTheta` in `DeningerWeightOnePolarization`.
+
+- `ccm-euler-pick-logderivative-transfer-boundary-law` → stage 3.
+  New module `RHTower/CCMEulerPickTransferBoundary` (9 theorems): the paired-zero kernel identity
+  (6), closure of the PSD cone under entrywise limits (the section-2 transfer step), the aperture
+  defect (14), the periodic background (14a)-(14c) with its finite-aperture indefiniteness, and the
+  relative Herglotz criterion (24).
+  Note: `Matrix.PosSemidef` over ℂ needs `open scoped ComplexOrder`.
+
+- `ccm-relative-logderivative-coordinate-negative-index-law` → stage 3.
+  New module `RHTower/CCMRelativeLogDerivCoordinateIndex` (6 theorems): the Cauchy-feature Pick
+  identity (9), the signed decomposition (10), the residue extraction and the resulting linear
+  independence of Cauchy features (section 3), and the active-coordinate floor (23).
+
+- `ccm-completed-quotient-weighted-schur-seam-law` → stage 3.
+  New module `RHTower/CCMWeightedSchurSeam` (9 theorems): the strict contraction (2)/(7) via
+  `d/dt |X|^2 = 2|X|^2 Re(X'/X)`, the exact factorwise comparison (10d) and its consequence, the
+  invariant half-unit (25a), the rotation (12), the Schur substitution (15)-(16), and the Blaschke
+  zero (30).  Reused `HTGeometry.hasDerivAt_normSq_comp` instead of redefining it.
+
+- `ccm-logderivative-closed-two-channel-graph-law` → stage 3.
+  New module `RHTower/CCMTwoChannelGraph` (5 theorems): abstract paired-graph closedness for
+  complementary bounded idempotents, the rank-one residue split (12)-(13), the inverse-horizontal
+  energy (20), and the bilateral atom factorization (17a).

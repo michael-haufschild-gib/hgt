@@ -549,13 +549,13 @@ Thus `L_src` cannot treat positive source weights as a repair theorem. It must p
 
 ## 2026-06-24 source orientation must not be scale-free
 
-`../2-fully-proven/scale-invariant-source-orientation-cannot-pay-budget.md` adds a direct test for the live `L_src` implication. If `prime-source orientation` still holds after replacing `R^P_d` by `tR^P_d`, then it cannot by itself imply the fixed repair inequality against `M_triv,d` unless the admissible residuals are already PSD.
+`../3-formalized/not_new_scientific_knowledge/scale-invariant-source-orientation-cannot-pay-budget.md` adds a direct test for the live `L_src` implication. If `prime-source orientation` still holds after replacing `R^P_d` by `tR^P_d`, then it cannot by itself imply the fixed repair inequality against `M_triv,d` unless the admissible residuals are already PSD.
 
 Therefore a noncircular `L_src` theorem must specify which source datum fixes the actual Euler scale before proving the Krein threshold side.
 
 ## 2026-06-24 finite normalization requires recession audit
 
-`../2-fully-proven/finite-source-normalizations-leave-budget-recession.md` adds the next `L_src` audit. If `prime-source orientation` is supplemented by finitely many source equalities, the remaining affine recession directions must be checked. Any remaining budget-negative direction can be amplified while preserving those finite equalities.
+`../3-formalized/not_new_scientific_knowledge/finite-source-normalizations-leave-budget-recession.md` adds the next `L_src` audit. If `prime-source orientation` is supplemented by finitely many source equalities, the remaining affine recession directions must be checked. Any remaining budget-negative direction can be amplified while preserving those finite equalities.
 
 Therefore finite conductor, pole, Gamma-boundary, Euler-coefficient, or finite-part data can type the object but cannot prove the repair side unless their kernel is already harmless for the `M_triv` budget.
 

@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.XiShiftedHardEdgeArchimedeanDensity
 import GaloisForLFunctions.HTGeometry.SquaredVariableSubstitution
 import GaloisForLFunctions.HTGeometry.DigammaGaussSeries
 import GaloisForLFunctions.HTGeometry.PsdHankelJetVanishing
+import GaloisForLFunctions.RHTower.HardyZ
 
 /-!
 # The literal finite-prime hard-edge density and its squared-variable pairing
@@ -116,6 +117,23 @@ theorem integral_density_comp_sq_eq_pairing (σ : ℝ) (Φ : ℝ → ℝ) :
   rw [habs, hcos]
   ring
 
+
+
+/-! ## The archimedean rate is the Hardy phase rate -/
+
+theorem routeUArchimedeanPoint_eq_linePt (x : ℝ) :
+    routeUArchimedeanPoint x = linePt x / 2 := by
+  rw [routeUArchimedeanPoint, linePt]
+  push_cast
+  ring
+
+/-- **The Route-U archimedean rate is the Gamma--Hardy phase rate.**  Both are
+`(Re ψ(1/4 + i x/2) - log π)/2`, so the literal hard-edge density and the literal
+Connes--Consani source use one and the same archimedean term. -/
+theorem routeUArchimedeanRate_eq_gammaHardyPhaseRate (x : ℝ) :
+    routeUArchimedeanRate x = gammaHardyPhaseRate x := by
+  rw [routeUArchimedeanRate, gammaHardyPhaseRate, routeUArchimedeanPoint_eq_linePt]
+  ring
 
 /-! ## The literal restricted-Weil forms of the two parity sectors -/
 

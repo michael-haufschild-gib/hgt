@@ -352,6 +352,48 @@ The formal tree has no half-plane Hardy decomposition, outer majorant theorem, o
 multiplication operators. A finite-dimensional graph shadow would not certify `(16)` or `(22)`, so
 no Lean file is added.
 
+**Superseded, 2026-08-15.**  A Lean module is added.  It does not claim `(16)` for the actual Xi
+source or `(22)`; it proves the *structural* content that does not depend on the Hardy layer: the
+paired-graph closedness argument in the abstract two-projection form, the exact rank-one residue
+split, the inverse-horizontal energy, and the bilateral atom factorization.
+
+## Lean status
+
+Module `formal/GaloisForLFunctions/RHTower/CCMTwoChannelGraph.lean` (wired, axiom-clean, 5
+declarations).
+
+- **`pairedGraph_closed`** — section 1, statement 2, in the form the proof actually uses: for
+  complementary bounded idempotents `P_+`, `P_-` on a normed space and a *closed* source map `T`,
+  the paired map `f |-> (P_+(Tf), P_-(Tf))` is closed.  The two channels recombine to `Tf`, which
+  is exactly the card's remark that closedness belongs to the full source constraint and not to
+  either projected channel separately.
+- **`cauchy_insertion_split`** — equation `(12)`: the exact split
+
+  ```text
+  c f(z)/(z - w) = c (f z - f w)/(z - w) + c f w /(z - w) ,
+  ```
+
+  whose second summand is the rank-one anti-causal residue coordinate `(13)`.
+- **`residue_vector_energy`** — equation `(20)`: the reflected Paley--Wiener residue vector
+  `c e^{-a t} e^{-i b t}` has `L^2` energy exactly `|c|^2/(2a)`.  This is the inverse-horizontal
+  charge law recovered inside the graph rather than imposed.
+- `integral_cexp_unit`, **`bilateral_atom_factorization`** — equation `(17a)`:
+
+  ```text
+  (e^{-i c t} - e^{-i z t})/(z - c) = i t int_0^1 e^{-i t (1-u) z} e^{-i t u c} du ,
+  ```
+
+  the atomic bilateral factorization through `L^2(0,1)` whose two feature maps have opposite causal
+  orientation.
+
+`#print axioms` on all five declarations returns exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+Imported, not reproved: the half-plane Hardy decomposition and its projections, the outer-function
+majorant `(5)`/`(8b)` giving the dense core and the dense adjoint core, closedness of multiplication
+by a measurable a.e.-finite function on `L^2`, the Cartwright/bounded-type property of the centred
+Xi source `(15)`, and the Euler-region expansion `(17)`.
+
 ## Gates
 
 - [x] dense outer core

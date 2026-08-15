@@ -4,7 +4,7 @@
 - **Stage:** 5-failed
 - **Type:** FALSIFIED MECHANISM
 - **Parent:** `../1-in-progress/actuality-creates-future-law.md`
-- **Killing theorem:** `../2-fully-proven/not_new_scientific_knowledge/fixed-carrier-quadratic-variation-flatness.md`
+- **Killing theorem:** `../3-formalized/not_new_scientific_knowledge/fixed-carrier-quadratic-variation-flatness.md`
 
 ## Failed route
 

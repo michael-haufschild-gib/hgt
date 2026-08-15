@@ -469,7 +469,13 @@ theorem differentiableOn_divRemIntegrand {f g : (Fin (n + 1) → ℂ) → ℂ}
   have hWS : DifferentiableOn ℂ (sliceWeierstrass f t) S :=
     (differentiableOn_sliceWeierstrass hU hV hf ht hdisc hnez hadm hVconn hy₀).mono hSWv
   have hWne : ∀ w ∈ S, sliceWeierstrass f t w ≠ 0 := fun w hw => hw.2.2
-  exact ((hgU.mono hSU).mul hsum).div hWS hWne
+  have hres : DifferentiableOn ℂ (fun w : Fin (n + 1) → ℂ =>
+      (g w * ∑ j ∈ Finset.Ico (k + 1) (d + 1),
+        ((-1 : ℂ) ^ (d - j) * (sliceRoots f t (Fin.tail w)).esymm (d - j)) *
+          (w 0) ^ (j - 1 - k)) * (sliceWeierstrass f t w)⁻¹) S :=
+    ((hgU.mono hSU).mul hsum).mul (hWS.inv hWne)
+  refine hres.congr fun w hw => ?_
+  rw [divRemIntegrand, div_eq_mul_inv]
 
 /-- **The remainder coefficients are holomorphic in the parameters.** -/
 theorem differentiableAt_sliceDivRemainderCoeff {f g : (Fin (n + 1) → ℂ) → ℂ}

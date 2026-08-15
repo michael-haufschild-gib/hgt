@@ -55,8 +55,7 @@ theorem SolvedRelation.deriv_auxiliaryPoint
       MvPolynomial.eval (R.auxiliaryPoint z) (R.analyticVector v) := by
   rcases v with _ | i
   · simp [SolvedRelation.auxiliaryPoint, SolvedRelation.analyticVector]
-  · have h := ((hasDerivAt_id z).const_mul (R.lambda i)).cexp.deriv
-    simpa [SolvedRelation.auxiliaryPoint, SolvedRelation.analyticVector, mul_comm] using h
+  · simp [SolvedRelation.auxiliaryPoint, SolvedRelation.analyticVector, mul_comm]
 
 theorem SolvedRelation.differentiableAt_eval_auxiliaryPoint
     (R : SolvedRelation) (z : ℂ) (P : MvPolynomial R.Variable ℂ) :

@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** EXACT LINEAR-ALGEBRA RECONSTRUCTION / PHYSICS BOUNDARY
 - **Status:** `[PAPER-PROVED] [LEAN-PROVED] [REDISCOVERED] [NOT NEW SCIENTIFIC KNOWLEDGE]`
-- **Parent:** `../../2-fully-proven/not_new_scientific_knowledge/noninvertible-event-complementary-record-boundary.md`
+- **Parent:** `noninvertible-event-complementary-record-boundary.md`
 - **Research target:** `../../1-in-progress/actuality-conservation-boundary-colligation-law.md`
 - **Lean:** `formal/GaloisForLFunctions/HTGeometry/EventRangeRecordCompletion.lean`
 

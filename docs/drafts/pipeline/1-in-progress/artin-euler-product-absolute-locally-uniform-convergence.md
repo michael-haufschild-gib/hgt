@@ -66,6 +66,22 @@ Frobenius action on inertia invariants has finite order.  `P_v(0)=1` is insuffic
 polynomials with constant coefficient one can have roots arbitrarily near zero, so no M-test may
 be inferred from the formal source alone.
 
+**Progress (2026-08-15).** The qualitative finite-image part is now formalized: actual local
+polynomials have no zero at every `|z| < 1`.  This is enough to certify individual local factors
+in the absolute-convergence regime after the norm argument is transported to finite places.  It
+does not give a summable bound for `|E_v(s)-1|`; the explicit inverse estimate remains mandatory
+before the compact M-test may be invoked.
+
+That transport is now also formalized: for every finite place and every `Re(s)>0`, the canonical
+denominator at `N(v)^(-s)` is nonzero.  This still supplies no majorant for the difference from
+one and therefore does not authorize the product theorem.
+
+**Further progress (2026-08-15).** The generic finite-order leaf now also bounds
+`|P_A(z)^(-1)|` by `(1-|z|)^(-dim W)` throughout the unit disk.  This is a necessary quantitative
+ingredient, but it is not the required summable difference bound: a separate product-deviation
+estimate for `|P_A(z)-1|`, and then a linear estimate for `|P_A(z)^(-1)-1|` on a fixed small disk,
+remain mandatory.
+
 Mathlib APIs audited for the route include `pow_card_eq_one'`, the characteristic-polynomial
 eigenvalue bridge, `Complex.norm_eq_one_of_pow_eq_one`,
 `Summable.multipliableUniformlyOn_one_add`, and

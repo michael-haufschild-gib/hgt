@@ -1,8 +1,9 @@
 # Degree-One Discriminant Tail Stability
 
 - **ID:** degree-one-discriminant-tail-stability
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / route guardrail
+- **Formalized companion:** `degree-one-discriminant-tail-stability-formalized.md`
 - **Source:** `discriminant-cross-positive-interval.md`;
   `discriminant-bulk-cross-sign-needs-scale-separation.md`;
   `docs/consolidated/revision01/bridge-theorem.md`
@@ -115,7 +116,12 @@ tail estimate. The all-order bridge remains the source-built positivity problem.
 
 - [x] 0 -> 1 in-progress: degree-one summed repair isolated.
 - [x] 1 -> 2 fully-proven: determinant perturbation and one-pair formulas proved.
-- [ ] 2 -> 3 formalized: optional polynomial identity plus norm inequality.
+- [x] 2 -> 3 formalized: `GaloisForLFunctions.HTGeometry`
+  `DegreeOneDiscriminantTailStability.lean` proves the exact tail expansion,
+  absolute perturbation bound, strict-margin positivity criterion, finite
+  positive-bulk specialization, conjugate-pair determinant identity, and
+  finite-bulk conjugate-pair update. Targeted leaf build and axiom audit pass
+  with only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Log
 
@@ -123,3 +129,9 @@ tail estimate. The all-order bridge remains the source-built positivity problem.
   card converts the surviving finite-height `d=1` route into an explicit
   determinant-margin inequality and blocks the old termwise shortcut from
   re-entering as informal "bulk domination."
+
+- 2026-08-15 -- Lean formalization completed in
+  `formal/GaloisForLFunctions/HTGeometry/DegreeOneDiscriminantTailStability.lean`.
+  The certificate retains the exact five-term error budget and the exact
+  conjugate-pair local square; it does not replace either with a looser
+  determinant or norm bound.

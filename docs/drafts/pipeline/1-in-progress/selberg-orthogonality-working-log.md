@@ -15490,3 +15490,86 @@ The finite residue trace, C^N gamma-cleared presentation, source spectrum, and g
 Gamma inversion are now axiom-clean Lean bridges.  The variable-line Fubini proof and a correctly
 stated C^N locally-uniform-limit theorem are in active formalization.  No theorem in this log proves
 or disproves C1 or C2.
+
+---
+
+## 249. Literature correction (2026-08-15) — published automorphic scope is not all ranks
+
+The statement in §1 that the automorphic side is “CLOSED” is **retracted**.  It relied on
+Jiang's arXiv-only claim `arXiv:2507.20653`; that source has no verified journal publication and
+must not be used as an established theorem.
+
+Published evidence audited here supports the prime-sum normality and cross-orthogonality analogues
+for unitary cuspidal automorphic `GL_m × GL_{m'}` only through `m,m' ≤ 4`; higher-rank published
+arguments retain Rudnick--Sarnak Hypothesis H.  The full Selberg-class C1/C2 remain open.  The
+degree-`≤1` Selberg-class classification is a genuine published subcase where both conjectures
+hold; no result here upgrades that subcase to arbitrary `S`.
+
+This correction reinforces, rather than weakens, the frontier rule: Kaczorowski--Perelli's
+multiple-standard-twist continuation is a separate additive-twist theorem.  It does not supply a
+published all-rank Rankin--Selberg pairing or a proof of C1/C2.
+
+---
+
+## 250. Carrier-semantics audit (2026-08-15) — exact missing bridge before any C1/C2 claim
+
+`RHTower.SelbergClass` presently stores both the Dirichlet coefficients `a_F` and an Euler-log
+coefficient system `b_F`, but only relates their *L-series* by
+`L(a_F)=exp(L(b_F))` on `Re s>1`.  No existing Lean theorem proves the indispensable prime identity
+`a_F(p)=b_F(p)`.  The smallest honest target is to differentiate that equality, use L-series
+injectivity, and specialize the resulting convolution recursion at a prime.  This is known
+mathematics and an unconditional semantic bridge, not a C1/C2 premise.
+
+Likewise, the current finite prime-square identity is for raw arithmetic functions.  There is no
+full-class product, conjugate closure, primitive predicate, factorization theorem, or C1/C2
+definition.  A field-by-field audit found the ordinary Dirichlet-convolution product of two full
+carriers constructible from existing axioms; its only missing analytic helper is closure of the
+project's `EntireFiniteOrder` witness under multiplication.  Ordinary product closure is necessary
+to state the prime-square reformulation at the carrier level, but it is **not** a Rankin--Selberg
+construction and therefore cannot be advertised as C2.
+
+**Conjecture → fail/pivot.** An arbitrary Dirichlet character's prime energy was initially treated
+as having a finite *conductor*-prime correction.  This is false for imprimitive characters: zeros
+occur at primes dividing the chosen level, not necessarily the conductor.  The corrected exact
+target uses the nonzero level; the primitive-character version then has the conductor correction.
+This is the degree-one C1 bridge only, not a classification theorem for full `S`.
+
+---
+
+## 251. Carrier repair and degree-one C1 boundary (2026-08-15)
+
+### 251.1 [LEAN-PROVED] Euler logarithm has the actual prime coefficient
+
+`RHTower.SelbergClass.coeff_prime_eq_eulerLogCoeff` now proves, without any new class field or
+analytic hypothesis,
+```
+a_F(p) = b_F(p)
+```
+for every prime `p`.  It differentiates the existing Euler identity on `Re s > 1`, identifies the
+resulting absolutely convergent L-series by coefficient injectivity, and evaluates the convolution
+at the two divisor pairs of a prime.  Thus any future Euler-log prime statement applies to the
+actual coefficients appearing in C1/C2.
+
+### 251.2 [LEAN-PROVED] finite-order multiplication
+
+`EntireFiniteOrder.mul` closes the missing analytic witness for pointwise products of the existing
+entire finite-order carrier.  This is necessary infrastructure for an ordinary full-class product
+constructor.  It is not a Rankin--Selberg construction and gives no C2 pairing by itself.
+
+### 251.3 [LEAN-PROVED] exact Dirichlet-character C1 normalisation
+
+For every complex character of positive selected level `q`, the formal result is exactly
+```
+Σ_{p≤N} |χ(p)|²/p = Σ_{p≤N} 1/p − Σ_{p≤N, p∣q} 1/p,
+```
+with the corresponding Mertens limit.  Applying it to `χ.primitiveCharacter` replaces `q` by the
+conductor.  This proves the known degree-one character coefficient calculation, while preserving
+the counterexample to the false imprimitive conductor correction.  It neither constructs the
+degree-one Selberg-class classification nor addresses C2.
+
+### 251.4 Status
+
+These modules remove three semantic/infrastructure gaps.  The remaining decisive gap is still a
+prime-sensitive quadratic trace (Rankin--Selberg-like object or equivalent positivity); neither
+ordinary convolution nor K--P additive-twist continuation supplies it.  Therefore C1/C2 remain
+unproved and undisproved in the full Selberg class.

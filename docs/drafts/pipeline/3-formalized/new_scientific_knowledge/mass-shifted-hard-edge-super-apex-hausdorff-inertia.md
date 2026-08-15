@@ -1,10 +1,10 @@
 # Hard-edge super-apex Hausdorff inertia and finite ancestry
 
 - **ID:** `mass-shifted-hard-edge-super-apex-hausdorff-inertia`
-- **Stage:** 2-fully-proven / needs independent specialist audit
+- **Stage:** 3-formalized / needs independent specialist audit
 - **Route:** U, selected shifted-Xi null faces
 - **Type:** THEOREM + NO-GO (paper)
-- **Scientific status:** `[PAPER-PROVED] [CORPUS-NOVEL] [EXTERNAL NOVELTY UNVERIFIED] [LEAN NOT STARTED]`
+- **Scientific status:** `[PAPER-PROVED] [CORPUS-NOVEL] [EXTERNAL NOVELTY UNVERIFIED] [FORMALIZED]`
 - **Source:** `mass-shifted-hard-edge-hyperbolic-weil-boundary`,
   `mass-shifted-hard-edge-parity-jet-inertia`
 - **Statement:** A negative hard-edge root is not a negative finite Hankel node. It is the
@@ -528,3 +528,43 @@ difference negative, and `(SAHI.27)` gives the bounded negative hard limit.  Wha
 the packaging of the countermodel as a weakly arcsine-convergent sequence of atomic measures; that
 needs the finite-degree positive form (`PositiveMomentFormBelow`) of an explicit perturbed
 quadrature, which the corpus's `FiniteGaussQuadrature` layer supports but which has not been built.
+
+## Card status: formalized
+
+Every assertion of sections 1-6 is Lean-proved and axiom-clean
+(`[propext, Classical.choice, Quot.sound]`), on the corpus's existing Gauss quadrature layer and
+the corpus's own shifted-Xi moment ODE and local Hurwitz step.  Closing additions:
+
+    HTGeometry/HausdorffDifferenceInertia.lean (final)
+      cayleyHardArgument, cayleyNode_hardNode  **(SAHI.6)/(SAHI.7)**: the hard substitution, and the
+                                               Cayley coordinate of the node attached to `u`
+      natDegree_lagrangeCombination_le,
+        eval_lagrangeCombination,
+        hausdorffDifferenceForm_lagrangeCombination
+                                               **(SAHI.4)**: exact diagonalization on the Lagrange
+                                               basis of the Gauss nodes, with diagonal entries
+                                               `w_i (1 - y x_i)` — the inertia count itself
+
+    HTGeometry/OutlierQuadratureCountermodel.lean  (axiom-clean, wired, built)
+      outlierPairing, outlierMoments           the Gauss quadrature perturbed by one atom of weight
+                                               `eps` at `t`
+      outlierMoments_eq                        **(SAHI.25)**: its moments are the convex combination
+                                               up to the exactness degree
+      outlierPairing_hausdorff_neg             **(SAHI.26)**: the orthogonal polynomial annihilates
+                                               every quadrature node, so only the outlier
+                                               contributes and the first Hausdorff difference is
+                                               already negative — the Christoffel weight of the
+                                               outlier may be arbitrarily small
+      tendsto_outlierMoments,
+        tendsto_arcsine_outlierMoments         every fixed moment recedes to the unperturbed one, and
+                                               with the arcsine (normalized central binomial)
+                                               moments to the arcsine moment, so every fixed Hankel
+                                               block has the positive-definite arcsine limit
+
+Together with `(SAHI.27)` (`tendsto_hardCoordinate_outlier`) this is exactly the no-go of section 6:
+fixed-degree arcsine recession, weak convergence and exact flat quadrature are jointly compatible
+with a bounded negative hard-root precursor.
+
+The card moves to stage 3.  What it does **not** claim, and what remains open as the card itself
+states, is the survivor target of section 7: a literal completed-Xi no-bounded-super-apex theorem,
+or the sufficient first-Hausdorff flux positivity `(SAHI.19)` for the actual selected moving degree.

@@ -46,6 +46,14 @@ Promotion recipe:
 | `two-replica-singlet-pauli-hall-expansion` | `(7)` on any register, global `(11)`, both directions of `(12)`, and the assembly `(14)`–`(17)` giving the boxed `(4)` | `HTGeometry/TwoReplicaTensorHilbertSchmidt`, `TwoReplicaEdgeHallExpansion`, `TwoReplicaEdgeHallAssembly` (all new) |
 | `traceless-local-two-query-haar-separation-law` | identity-coordinate gap; the literal product-stabilizer score with its transfer expansion `(5)`; the exact Haar value `(3)` for that score; the comparison capstone `(4)` | `HTGeometry/TracelessPauliIdentityCoordinate`, `ProductStabilizerPhysicalScore`, `FiniteUnitaryHaarReindex`, `RankOneProjectionConjugation`, `LiteralTwoQueryHaarBenchmark` (all new) |
 | `positive-source-weights-do-not-bound-loewner-budget` | arbitrary-source Finsupp Loewner assembly, unbounded positive-cone scaling obstruction, and exact normalized mass-cap equivalence | `RHTower/PositiveSourceLoewnerBudget` (new) |
+| `scale-invariant-source-orientation-cannot-pay-budget` | form-level scale-invariant source-orientation cone theorem and one-sided recession gate | `RHTower/SourceNormalizationBudgetGates` (new) |
+| `finite-source-normalizations-leave-budget-recession` | exact affine normalization class, preserved recession directions, two-sided zero gate, and PSD corollary | `RHTower/SourceNormalizationBudgetGates` (new) |
+| `degree-one-discriminant-tail-stability` | exact five-term tail expansion and error budget, strict-margin positivity, conjugate-pair negative square, and finite-bulk pair update | `HTGeometry/DegreeOneDiscriminantTailStability` (new) |
+| `real-axis-kernel-positivity-nonselector` | literal three-by-three Hermitian inverse pair, negative index two, full real-axis kernel polynomial and explicit off-curve negative direction | `HTGeometry/RealAxisKernelPositivityNonselector` (new) |
+| `square-zero-compatibility-defect` | exact polarization, square-zero compatibility equivalence, and symmetric two-scalar form over arbitrary commutative rings | `HTGeometry/SquareZeroCompatibilityDefect` (re-audited) |
+| `involution-selects-minimal-event-record` | complementary involution projectors, exact kernel/range and cokernel record, and trace-two `4/6/4` specialization | `HTGeometry/EventInvolutionComplement` (re-audited) |
+| `noninvertible-event-complementary-record-boundary` | postcomposition kernel no-go, faithful-record dimension lower bound, equal-parent kernel/cokernel bijection, rank-six boundary, and scaling noncanonicity | `HTGeometry/EventComplementaryRecord` (re-audited) |
+| `fixed-carrier-quadratic-variation-flatness` | exact absorption cocycle, diamond flatness, Gram-square restriction defect, compression curvature, and unit-test converse | `HTGeometry/NestedProjectionQuadraticVariation` (re-audited) |
 
 | `burnol-divided-shift-evaluation-separation-law` | none (verified only) | `RHTower/BurnolDividedShiftEvaluationSeparation` |
 | `burnol-holonomy-cauchy-sector-separation` | none (verified only) | `RHTower/BurnolHolonomyCauchySectorSeparation` |
@@ -1822,3 +1830,32 @@ Still remaining for the cubic-phase card: the variance half of `(8)` (needs `(13
 bound `∑_a |∂_a f|² ≤ 16 ∑_j |y_j|⁶`, and unitarity), Theorem A (Reed–Muller `RM(3,n)^⊥` minimum
 weight sixteen, hence fifteen-wise independence), the finite-to-continuous moment transfer, and
 Theorem C, which composes the two stage-2 parents.
+
+### Update: the variance half of the basis-uniform collision concentration (2026-08-15)
+
+New module `HTGeometry/PhaseSeedCollisionVariance.lean` (wired, axiom-clean).  This closes the
+second half of `(8)` of `cubic-phase-seeded-static-local-full-scale-plateau-law`, i.e. the Poincaré
+chain `(12)`--`(14)` of that card, in unnormalized form.
+
+- `pderiv_mul_of_hasFDerivAt`, `pderiv_finsetSum_of_hasFDerivAt` — product and sum rules for the
+  coordinate derivative on the phase box;
+- `phaseAmp`, `phaseAmpConj` — the pairing `y_j = ⟨seed, e_j⟩` and its conjugate, each a character
+  combination, with `pderiv_phaseAmp`, `pderiv_phaseAmpConj`;
+- `quarticSum`, `quarticFreq`, `quarticCoeff`, **`quarticSum_eq_trigLift`** — the collision
+  `f = ∑_j |y_j|⁴` *is* a character combination, so the torus spectral gap applies to it;
+- **`pderiv_quarticSum`** — the card's `(13)` in exact form:
+  `∂_b f = 4πi (v_b − conj v_b)` with `v_b = ζ_b ∑_j |y_j|² y_j conj(e_j b)`;
+- `sum_normSq_dual` — orthonormality turns `∑_b |v_b|²` into `∑_j |y_j|⁶`, the card's unitarity
+  step;
+- `sum_normSq_pderiv_quarticSum_le` — `∑_b |∂_b f|² ≤ 64π² ∑_j |y_j|⁶`;
+- **`integral_box_variance_collision_le`** — `Var f ≤ 96 |ι|`, which after the `D⁻²` seed
+  normalization is the card's `Var C ≤ 96/D³` at `|ι| = D`.
+
+The sixth moment `(14)` enters as `integral_box_fidelity_pow_le` at `r = 3`, i.e. `E|y_j|⁶ ≤ 3!`.
+
+Also repaired this session: nine of the torus modules opened with *anonymous* `local instance`
+declarations for the `UnitAddCircle` measure space, which Lean auto-names identically whenever the
+imported environments agree.  Any file importing two of them failed with "environment already
+contains …", so the `HTGeometry` umbrella could not build even though every module passed
+`lake env lean` and its own `lake build`.  All of them now carry explicit per-module instance
+names, and a scratch file importing all fifteen session modules at once compiles.

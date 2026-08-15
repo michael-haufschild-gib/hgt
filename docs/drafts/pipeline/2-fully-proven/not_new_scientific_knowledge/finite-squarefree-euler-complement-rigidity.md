@@ -118,5 +118,21 @@ contains that coupling.
   `m ↦ (∏ p∈T p)^m`; Vandermonde recovery gives every complement-coefficient identity, from which
   the top coefficient and one-prime complements force `a_p^2 = p`.  The converse is then proved
   coefficientwise before restoring the entire functional equation.
-- **Status:** formal implementation active; no unproved analytic, spectral, or arithmetic premise
-  will be introduced.
+- **Closed Lean core:**
+  `RHTower/FiniteSquarefreeEulerComplementRigidity.lean` now proves both
+  directions of the exact Boolean-complement coefficient algebra:
+  `finiteEulerComplement_coefficients_force_localSquares` and
+  `finiteEulerComplement_coefficients_of_localSquares`; it also now proves the
+  literal centered epsilon formula
+  `finiteEulerComplement_epsilon_formula` and its exact square consequence
+  `finiteEulerComplement_epsilon_sq`.  The source type is an arbitrary finite
+  prime set; no one-prime or finite-sample surrogate is used.
+- **Still required for card closure:** derive those literal coefficient
+  identities from the stated complex functional equation at all negative
+  integers, restore the full analytic functional equation in the converse, and
+  formalize the zero-line consequence.  The card remains Stage 2 until that
+  wrapper is closed.
+- **Audit:** direct `lake env lean`, targeted
+  `lake build GaloisForLFunctions.RHTower.FiniteSquarefreeEulerComplementRigidity`,
+  and `#print axioms` for all closed core theorems passed; axioms are only
+  `propext`, `Classical.choice`, and `Quot.sound`.

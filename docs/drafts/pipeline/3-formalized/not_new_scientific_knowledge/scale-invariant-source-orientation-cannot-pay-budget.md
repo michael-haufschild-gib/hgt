@@ -1,8 +1,9 @@
 # Scale-Invariant Source Orientation Cannot Pay A Fixed Budget
 
 - **ID:** scale-invariant-source-orientation-cannot-pay-budget
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / source-transfer guardrail
+- **Formalized companion:** `scale-invariant-source-orientation-cannot-pay-budget-formalized.md`
 - **Source:** `positive-source-weights-do-not-bound-loewner-budget.md`;
   `loewner-contraction-congruence-normalization.md`;
   `source-selector-repair-obligation-ledger.md`
@@ -130,7 +131,7 @@ needed by the bridge.
 
 - [x] 0 -> 1 in-progress: scale-invariant orientation loophole isolated.
 - [x] 1 -> 2 fully-proven: scaling proof completed.
-- [ ] 2 -> 3 formalized: optional finite-dimensional Hermitian cone lemma.
+- [x] 2 -> 3 formalized: form-level fixed-budget cone theorem closed.
 
 ## Log
 
@@ -143,3 +144,23 @@ needed by the bridge.
 `finite-source-normalizations-leave-budget-recession.md` gives the affine constraint version. If finitely many source normalizations cut the residual class to `L_j(R)=c_j`, the fixed budget can hold on that class only after every remaining recession direction is nonnegative, or zero in the two-sided case.
 
 Thus finite scale data repair the scale-free orientation objection only if their kernel has no budget-negative direction. Otherwise amplification along the kernel breaks the budget.
+
+## 2026-08-15 Lean formalization
+
+The exact fixed-budget cone statement is now closed in
+`formal/GaloisForLFunctions/RHTower/SourceNormalizationBudgetGates.lean`:
+
+- `GaloisForLFunctions.sourceOrientationScaleInvariant` is precisely closure
+  under every positive real rescaling;
+- `GaloisForLFunctions.source_orientation_fixed_budget_forces_posSemidef`
+  proves that `B + R` positive semidefinite for every selected `R` forces each
+  selected residual `R` positive semidefinite;
+- `GaloisForLFunctions.source_budget_one_sided_recession_posSemidef` records
+  the ray form used by the proof.
+
+The Lean theorem is stronger than the paper statement: it needs neither a
+finite-dimensionality assumption nor prior positivity of `B`.  It is stated
+for real bilinear forms, which is the real quadratic cone of both real
+symmetric and realified complex Hermitian forms.  Targeted leaf build passed
+on 2026-08-15, and the axiom audit reports only Lean's standard `propext`,
+`Classical.choice`, and `Quot.sound`.

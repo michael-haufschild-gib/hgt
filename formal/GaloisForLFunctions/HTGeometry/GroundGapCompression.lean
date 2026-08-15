@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.PsdHankelJetVanishing
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 import Mathlib.Analysis.SpecialFunctions.Sqrt
@@ -172,6 +173,35 @@ theorem tendsto_norm_sub_ground (T : E →ₗ[ℝ] E)
     (hc.const_mul (2 : ℝ))
   simpa using h
 
+
+
+/-! ## Zero energy is the kernel -/
+
+/-- **A zero-energy vector of a nonnegative symmetric operator lies in its kernel.**  This is the
+step that turns "radical of the form" into "kernel of the operator". -/
+theorem eq_zero_of_inner_self_eq_zero (T : E →ₗ[ℝ] E)
+    (hsymm : ∀ x y : E, (inner ℝ (T x) y : ℝ) = inner ℝ x (T y))
+    (hpsd : ∀ x : E, 0 ≤ (inner ℝ (T x) x : ℝ))
+    {v : E} (hv : (inner ℝ (T v) v : ℝ) = 0) : T v = 0 := by
+  have hexp : ∀ (t : ℝ) (x y : E),
+      (inner ℝ (T (x + t • y)) (x + t • y) : ℝ)
+        = inner ℝ (T x) x + 2 * t * inner ℝ (T x) y + t ^ 2 * inner ℝ (T y) y := by
+    intro t x y
+    have hTy : (inner ℝ (T y) x : ℝ) = inner ℝ (T x) y := by
+      rw [hsymm, real_inner_comm, hsymm]
+    simp only [map_add, map_smul, inner_add_left, inner_add_right, real_inner_smul_left,
+      real_inner_smul_right]
+    rw [hTy]
+    ring
+  have hcs : ∀ w : E, (inner ℝ (T v) w : ℝ) ^ 2 ≤ inner ℝ (T v) v * inner ℝ (T w) w :=
+    fun w => symmBilin_sq_le (comb := fun t x y => x + t • y) hexp hpsd v w
+  have hzero : ∀ w : E, (inner ℝ (T v) w : ℝ) = 0 := by
+    intro w
+    have h := hcs w
+    rw [hv, zero_mul] at h
+    nlinarith [sq_nonneg (inner ℝ (T v) w : ℝ)]
+  have hself : (inner ℝ (T v) (T v) : ℝ) = 0 := hzero (T v)
+  exact inner_self_eq_zero.1 hself
 
 /-! ## A simple ground has definite parity -/
 

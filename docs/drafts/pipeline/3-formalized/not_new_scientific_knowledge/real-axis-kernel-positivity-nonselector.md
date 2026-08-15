@@ -1,8 +1,9 @@
 # Real-Axis Kernel Positivity Is Not A Selector
 
 - **ID:** real-axis-kernel-positivity-nonselector
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / proof-route guardrail
+- **Formalized companion:** `real-axis-kernel-positivity-nonselector-formalized.md`
 - **Source:** `docs/consolidated/revision01/bridge-theorem.md`;
   `seam-log-markov-pick-rh-equivalence.md`;
   `rank-one-scalar-shadow-needs-kernel-exhaustion.md`
@@ -99,10 +100,20 @@ testing the full form.
 - [x] 0 -> 1 in-progress: real-axis scalar-kernel shortcut isolated.
 - [x] 1 -> 2 fully-proven: explicit indefinite matrix with positive real-axis
   kernel written.
-- [ ] 2 -> 3 formalized: optional finite matrix/inertia calculation.
+- [x] 2 -> 3 formalized: `GaloisForLFunctions.HTGeometry`
+  `RealAxisKernelPositivityNonselector.lean` gives the displayed inverse pair,
+  real Hermitian symmetry, exact inertia `2`, exact scalar polynomial
+  `1+t^2+t^4`, its strict real-axis positivity, and an explicit negative
+  off-curve direction. Direct source and targeted leaf build pass; the axiom
+  audit contains only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Log
 
 - 2026-06-24 -- Codex: created under the private RH continuation after reading
   the bridge-theorem caveat that real-axis Christoffel positivity can survive an
   off-curve defect. The card gives an exact finite model of that failure.
+
+- 2026-08-15 -- Lean certificate completed in
+  `formal/GaloisForLFunctions/HTGeometry/RealAxisKernelPositivityNonselector.lean`.
+  It retains the literal three-by-three inverse form and the full real moment
+  curve, rather than weakening the counterexample to a sampled kernel test.

@@ -447,7 +447,7 @@ Consequence: the contraction route is live only as a source theorem proving `sou
 
 Status: source-transfer guardrail added, not an RH proof.
 
-Created `../2-fully-proven/scale-invariant-source-orientation-cannot-pay-budget.md`. If a residual class `C` is closed under positive scaling and a fixed budget `B` satisfies `B+R>=0` for every `R in C`, then every `R in C` is PSD. The proof is the one-line scaling test on a negative vector.
+Formalized `../3-formalized/not_new_scientific_knowledge/scale-invariant-source-orientation-cannot-pay-budget.md`. If a residual class `C` is closed under positive scaling and a fixed budget `B` satisfies `B+R>=0` for every `R in C`, then every `R in C` is PSD. The proof is the one-line scaling test on a negative vector.
 
 Consequence: a landscape proof cannot use an Euler/local-factor orientation predicate that survives `R^P -> tR^P` as the source theorem for `-R^P<=M_triv`. The proof must use the actual scale `t=1` from source data.
 
@@ -455,7 +455,7 @@ Consequence: a landscape proof cannot use an Euler/local-factor orientation pred
 
 Status: source-transfer guardrail added, not an RH proof.
 
-Created `../2-fully-proven/finite-source-normalizations-leave-budget-recession.md`. For a finite affine constraint class `L_j(R)=c_j`, budget positivity `B+R>=0` on the whole class forces every remaining recession direction to be nonnegative, and forces two-sided recession directions to vanish.
+Formalized `../3-formalized/not_new_scientific_knowledge/finite-source-normalizations-leave-budget-recession.md`. For a finite affine constraint class `L_j(R)=c_j`, budget positivity `B+R>=0` on the whole class forces every remaining recession direction to be nonnegative, and forces two-sided recession directions to vanish.
 
 Consequence: a landscape proof cannot repair scale-free Euler orientation by adding finitely many normalizations unless it proves the recession-space audit. The source theorem must be all-order or must directly exclude every budget-negative residual direction.
 
@@ -543,7 +543,7 @@ Gate consequence: any proof that begins with positive `nu'`, a positive Markov r
 
 Status: proof-route guardrail added, not an RH proof.
 
-Created `../2-fully-proven/real-axis-kernel-positivity-nonselector.md`. It gives an explicit indefinite symmetric form `H` for which the scalar kernel `e(t)^T H^{-1}e(t)` is positive for every real `t`. The negative directions live off the point-evaluation curve.
+Created `../3-formalized/not_new_scientific_knowledge/real-axis-kernel-positivity-nonselector.md`. It gives an explicit indefinite symmetric form `H` for which the scalar kernel `e(t)^T H^{-1}e(t)` is positive for every real `t`. The negative directions live off the point-evaluation curve.
 
 Consequence: a landscape proof cannot replace the full shifted square-test cone, full Pick/Nevanlinna positivity, or full Schur/index condition by positivity of a real-axis Christoffel kernel. Scalar kernel positivity along `R` is a shadow, not the faithful index.
 
@@ -577,7 +577,7 @@ needs a summed domination theorem for the actual divisor. The previous
 
 ## 2026-06-24 degree-one determinant has a valid finite-height gate
 
-Created `../2-fully-proven/degree-one-discriminant-tail-stability.md`. The
+Created `../3-formalized/not_new_scientific_knowledge/degree-one-discriminant-tail-stability.md`. The
 corrected `d=1` route is no longer termwise positivity. It is a perturbation
 criterion: verified positive real bulk margin must dominate the absolute tail
 error in `T_1,T_2,T_3`.

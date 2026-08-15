@@ -93,6 +93,119 @@ theorem finiteEulerComplement_coefficients_of_localSquares
   rw [← hTsq, ← hunion, Finset.prod_union hdisj]
   field_simp [hTne]
 
+/-- The finite prime mass in the centered functional equation. -/
+def finiteEulerPrimeMass (P : Finset ℕ) : ℝ := ∏ p ∈ P, (p : ℝ)
+
+/-- The Boolean-complement parity sign. -/
+def finiteEulerComplementSign (P : Finset ℕ) : ℂ := (-1 : ℂ) ^ P.card
+
+/-- The positive square root of the finite prime mass, embedded in `ℂ`. -/
+def finiteEulerComplementRoot (P : Finset ℕ) : ℂ :=
+  (Real.sqrt (finiteEulerPrimeMass P) : ℂ)
+
+/-- The centered complement constant `ε (-1)^|P| √Q`. -/
+def finiteEulerFunctionalConstant (P : Finset ℕ) (ε : ℂ) : ℂ :=
+  ε * finiteEulerComplementSign P * finiteEulerComplementRoot P
+
+theorem finiteEulerPrimeMass_pos {P : Finset ℕ} (hP : ∀ p ∈ P, p.Prime) :
+    0 < finiteEulerPrimeMass P := by
+  unfold finiteEulerPrimeMass
+  apply Finset.prod_pos
+  intro p hp
+  exact_mod_cast (Nat.Prime.pos (hP p hp))
+
+theorem finiteEulerComplementRoot_ne_zero {P : Finset ℕ} (hP : ∀ p ∈ P, p.Prime) :
+    finiteEulerComplementRoot P ≠ 0 := by
+  unfold finiteEulerComplementRoot
+  rw [Complex.ofReal_ne_zero]
+  exact (Real.sqrt_pos.2 (finiteEulerPrimeMass_pos hP)).ne'
+
+theorem finiteEulerComplementSign_sq (P : Finset ℕ) :
+    finiteEulerComplementSign P * finiteEulerComplementSign P = 1 := by
+  unfold finiteEulerComplementSign
+  rw [← pow_add]
+  have h : P.card + P.card = 2 * P.card := by omega
+  rw [h]
+  exact (even_two.mul_right P.card).neg_one_pow
+
+/-- The top Boolean coefficient identifies the centered epsilon exactly. -/
+theorem finiteEulerComplement_epsilon_formula
+    {P : Finset ℕ} (hP : ∀ p ∈ P, p.Prime) (a : ℕ → ℂ) (ε : ℂ)
+    (hcoeff : ∀ S, S ⊆ P → (∏ q ∈ S, a q) =
+      finiteEulerComplementCoefficient P S a (finiteEulerFunctionalConstant P ε)) :
+    ε = finiteEulerComplementSign P * (∏ q ∈ P, a q) /
+      finiteEulerComplementRoot P := by
+  have htop := finiteEulerComplement_topCoefficient P a (finiteEulerFunctionalConstant P ε) hcoeff
+  rw [finiteEulerFunctionalConstant] at htop
+  have hroot := finiteEulerComplementRoot_ne_zero hP
+  have hsign := finiteEulerComplementSign_sq P
+  apply (eq_div_iff hroot).2
+  rw [htop]
+  calc
+    ε * finiteEulerComplementRoot P =
+        (finiteEulerComplementSign P * finiteEulerComplementSign P) *
+          (ε * finiteEulerComplementRoot P) := by
+            rw [hsign]
+            ring
+    _ = finiteEulerComplementSign P *
+        (ε * finiteEulerComplementSign P * finiteEulerComplementRoot P) := by
+          ring
+
+theorem finiteEulerPrimeMass_cast (P : Finset ℕ) :
+    (finiteEulerPrimeMass P : ℂ) = ∏ p ∈ P, (p : ℂ) := by
+  unfold finiteEulerPrimeMass
+  simp
+
+theorem finiteEulerComplementRoot_sq {P : Finset ℕ} (hP : ∀ p ∈ P, p.Prime) :
+    finiteEulerComplementRoot P ^ 2 = (finiteEulerPrimeMass P : ℂ) := by
+  unfold finiteEulerComplementRoot
+  rw [← Complex.ofReal_pow, Real.sq_sqrt (finiteEulerPrimeMass_pos hP).le]
+
+theorem finiteEulerProduct_sq_eq_primeMass
+    {P : Finset ℕ} (a : ℕ → ℂ)
+    (hlocal : ∀ p ∈ P, a p ^ 2 = (p : ℂ)) :
+    (∏ p ∈ P, a p) ^ 2 = (finiteEulerPrimeMass P : ℂ) := by
+  rw [← Finset.prod_pow]
+  calc
+    (∏ p ∈ P, a p ^ 2) = ∏ p ∈ P, (p : ℂ) := by
+      apply Finset.prod_congr rfl
+      intro p hp
+      exact hlocal p hp
+    _ = (finiteEulerPrimeMass P : ℂ) := (finiteEulerPrimeMass_cast P).symm
+
+/-- The exact Boolean coefficient system with nonzero epsilon forces `ε² = 1`. -/
+theorem finiteEulerComplement_epsilon_sq
+    {P : Finset ℕ} (hP : ∀ p ∈ P, p.Prime) (a : ℕ → ℂ) (ε : ℂ)
+    (hε : ε ≠ 0)
+    (hcoeff : ∀ S, S ⊆ P → (∏ q ∈ S, a q) =
+      finiteEulerComplementCoefficient P S a (finiteEulerFunctionalConstant P ε)) :
+    ε ^ 2 = 1 := by
+  have hC : finiteEulerFunctionalConstant P ε ≠ 0 := by
+    unfold finiteEulerFunctionalConstant
+    exact mul_ne_zero (mul_ne_zero hε (by simp [finiteEulerComplementSign]))
+      (finiteEulerComplementRoot_ne_zero hP)
+  have hlocal := finiteEulerComplement_coefficients_force_localSquares hP a
+    (finiteEulerFunctionalConstant P ε) hC hcoeff
+  have hprod := finiteEulerProduct_sq_eq_primeMass a hlocal
+  have hroot := finiteEulerComplementRoot_sq hP
+  have htop := finiteEulerComplement_topCoefficient P a (finiteEulerFunctionalConstant P ε) hcoeff
+  rw [finiteEulerFunctionalConstant] at htop
+  have hsign := finiteEulerComplementSign_sq P
+  have hsignpow : finiteEulerComplementSign P ^ 2 = 1 := by
+    simpa [pow_two] using hsign
+  have hEq : ε ^ 2 * finiteEulerComplementRoot P ^ 2 =
+      finiteEulerComplementRoot P ^ 2 := by
+    calc
+      ε ^ 2 * finiteEulerComplementRoot P ^ 2 =
+          (ε * finiteEulerComplementSign P * finiteEulerComplementRoot P) ^ 2 := by
+            rw [mul_pow, mul_pow, hsignpow]
+            ring
+      _ = (∏ q ∈ P, a q) ^ 2 := by rw [← htop]
+      _ = finiteEulerPrimeMass P := hprod
+      _ = finiteEulerComplementRoot P ^ 2 := hroot.symm
+  apply (mul_right_cancel₀ (pow_ne_zero 2 (finiteEulerComplementRoot_ne_zero hP)))
+  simpa using hEq
+
 end
 
 end RHTower

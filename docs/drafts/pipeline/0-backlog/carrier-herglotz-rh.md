@@ -56,7 +56,7 @@ So a carrier route cannot stop at a generic statement about `Xi'/Xi` or `-Xi'/Xi
 
 ## 2026-06-24 real-axis scalar kernels are too weak
 
-`../2-fully-proven/real-axis-kernel-positivity-nonselector.md` records the finite algebra behind the bridge-theorem caveat: `K(y)=e(y)^T H^{-1}e(y)>0` for all real `y` does not imply `H>=0`.
+`../3-formalized/not_new_scientific_knowledge/real-axis-kernel-positivity-nonselector.md` records the finite algebra behind the bridge-theorem caveat: `K(y)=e(y)^T H^{-1}e(y)>0` for all real `y` does not imply `H>=0`.
 
 Therefore a carrier/Herglotz route must prove the full upper-half-plane Pick/Nevanlinna condition or the full moment square-test cone. A real-axis kernel check is not enough.
 

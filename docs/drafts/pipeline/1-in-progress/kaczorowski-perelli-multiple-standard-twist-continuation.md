@@ -297,6 +297,15 @@ The finite-fibre trace is therefore a `[BRIDGE]`, while this card is
   `C |t|^N exp(-(π-|arg η|)|t|)` once `|t|≥|Im ξ|+1`.  Full line
   integrability and the infinite-rectangle limit remain to be assembled from
   this bound; neither was asserted prematurely.
+- 2026-08-15 — `RHTower/SelbergClass/BarnesFiniteRectangle.lean` made the
+  finite Barnes rectangle fully concrete: it defines
+  `J_{ξ,η}(w)=Γ(ξ-w)Γ(w)η^{-w}`, proves the exact residue at every crossed
+  negative-integer pole, and classifies the interior pole set of the
+  half-integral rectangle as `{0,-1,…,-m}` under `0<c<Re ξ`.  The final
+  `RectangleIntegral'`-to-finite-sum reduction was not claimed: its current
+  `Finset.sum_image` normalization exceeded the bounded Lean elaboration
+  pass.  This leaves a proof-engineering closure, not a license to assert
+  Barnes Lemma 6 or a K–P contour shift.
 
 ## Source-correction ledger
 

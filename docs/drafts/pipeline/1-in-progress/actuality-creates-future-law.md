@@ -883,7 +883,7 @@ Current status:
 ## Ninth hostile descent: consequence closure is not the universal law
 
 The exact audit in
-`../2-fully-proven/not_new_scientific_knowledge/noninvertible-event-complementary-record-boundary.md`
+`../3-formalized/not_new_scientific_knowledge/noninvertible-event-complementary-record-boundary.md`
 kills `(F6)` as the primitive law.
 
 For a noninjective event `T`, every later report formed by postcomposition has

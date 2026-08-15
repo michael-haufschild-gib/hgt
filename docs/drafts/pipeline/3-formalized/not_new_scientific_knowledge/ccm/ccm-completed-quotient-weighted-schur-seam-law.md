@@ -525,6 +525,58 @@ The formal tree lacks xi's analytic Hadamard product, Hardy multipliers, unbound
 conjugation, and generalized negative-square kernels. Formalizing a symbolic shift identity would
 not certify `(17)` or `(23)`. No Lean file is added.
 
+**Superseded, 2026-08-15.**  A Lean module is added.  It certifies more than a symbolic shift: the
+strict contraction `(2)`/`(7)` from the positive logarithmic-derivative real part, and the exact
+factorwise comparison `(10d)` that produces the unconditional safe width.  It does not claim `(17)`
+or `(23)`, which stay imports.
+
+## Lean status
+
+Module `formal/GaloisForLFunctions/RHTower/CCMWeightedSchurSeam.lean` (wired, axiom-clean, 9
+declarations), reusing `HTGeometry.hasDerivAt_normSq_comp` rather than redefining it.
+
+- **`re_mul_conj_eq_normSq_mul`** — `(X' conj X).re = |X|^2 (X'/X).re`, the bridge from the
+  squared-modulus derivative to the logarithmic derivative.
+- **`strictMonoOn_normSq_shift`** — equation `(7)`: along the horizontal segment `[c, c + 2 omega]`
+  the squared modulus is *strictly increasing* whenever `Re (X'/X) > 0` there, because
+
+  ```text
+  d/dt |X(c+t)|^2 = 2 |X(c+t)|^2 Re (X'/X)(c+t) > 0 .
+  ```
+
+- **`normSq_lt_normSq_shift`** — equation `(2)`: hence `|X(c)| < |X(c + 2 omega)|`, i.e. the
+  completed causal quotient is a *strict* contraction on the region where the logarithmic
+  derivative has positive real part.  The classical zero strip supplies that region for
+  `Re w > 1/2` via the corpus's `re_hadamardPair_pos`.
+- **`normSq_shift_difference`** — equation `(10d`) exactly:
+
+  ```text
+  |d + omega + i t - mu|^2 - |d - omega + i t - mu|^2 = 4 omega (d - Re mu) .
+  ```
+
+- **`normSq_shift_le`** — its consequence: every paired canonical-product factor is no larger on the
+  left line than on the right one whenever `Re mu <= d`.  This is the factorwise comparison behind
+  the unconditional safe width `0 <= a <= omega`.
+- `distinguishedExponent`, **`distinguishedExponent_sub_safeWidth`** — equations `(11)` and `(25a)`:
+  the target width minus the safe width is exactly `1/2`, at every positive shift.  The half-unit is
+  not an artifact of the limit.
+- **`shifted_quotient_arguments`** — equation `(12)`: conjugation by `a_omega` moves the two
+  arguments to `1/2 - omega + z` and `1/2 + omega + z`, the symmetric shifted form.
+- **`schur_denominator_substitution`** — equations `(15)`-`(16)`: the substitution
+  `u = z + a_omega`, `q = v + a_omega` turns the ordinary Schur denominator `u + conj q` into the
+  shifted Cauchy denominator `1 + 2 omega + z + conj v` of `(14)`.
+- `blaschkeZero`, **`re_blaschkeZero_pos`** — equation `(30)`: every zero beyond the layer gives a
+  Blaschke zero in the open right half-plane.
+
+`#print axioms` on all nine declarations returns exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+Imported, not reproved: the Hadamard product `(5)` and its locally uniform symmetric summation, the
+Smirnov maximum principle upgrading `(10e)` to `(10b)`, the Paley--Wiener multiplier theorem, the
+shifted Hermite--Biehler/Suzuki criterion, the negative-index formula `(17)`, the inner-outer
+factorization `(18)`-`(21)` and the model-space dimension count, and the Poisson--Muntz range
+identification `(28)`.
+
 ## Gates
 
 - [x] unconditional completed causal Schur contraction proved

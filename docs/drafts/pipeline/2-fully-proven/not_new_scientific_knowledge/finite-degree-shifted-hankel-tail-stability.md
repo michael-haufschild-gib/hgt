@@ -3,7 +3,7 @@
 - **ID:** finite-degree-shifted-hankel-tail-stability
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper) / finite-height gate
-- **Source:** `degree-one-discriminant-tail-stability.md`;
+- **Source:** `../../3-formalized/not_new_scientific_knowledge/degree-one-discriminant-tail-stability.md`;
   `docs/consolidated/revision01/bridge-theorem.md`
 - **Statement:** A finite shifted Hankel block remains positive after an
   unverified tail only when the verified positive-bulk eigenvalue margin
@@ -109,7 +109,7 @@ finite-range bridge obligation into a checkable matrix inequality.
 ## Relation To The Degree-One Card
 
 For `d=1`, this matrix theorem gives a sufficient eigenvalue-margin test. The
-separate card `degree-one-discriminant-tail-stability.md` gives a sharper
+separate card `../../3-formalized/not_new_scientific_knowledge/degree-one-discriminant-tail-stability.md` gives a sharper
 scalar determinant identity:
 
 `Delta-Delta_B=L_1E_3+L_3E_1-2L_2E_2+E_1E_3-E_2^2`.

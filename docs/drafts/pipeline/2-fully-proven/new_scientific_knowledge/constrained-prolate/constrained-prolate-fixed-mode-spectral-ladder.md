@@ -713,3 +713,142 @@ not the centre value.  The uniqueness argument above is what supplies it.)
 `c·s(c) → 2n+1`, equivalently the fixed-index prolate eigenvalue asymptotic at leading order — is
 now a Lean theorem given the instantiation.  What the card still needs beyond it is the
 *eigenvector* half, `ℓ_j(λ) → |ĥ_{4j}(0)|`, and the Fuchs identification of the leakage rates.
+
+## The eigenvector half: why the Hermite-coefficient route is blocked, and what replaces it
+
+The natural way to get `ℓ_j(λ) → |ĥ_{4j}(0)|` from the ladder pin is to expand the rescaled profile
+in the Hermite basis.  The pin already forces every coordinate off the `n`-th rung to vanish:
+
+```text
+(μ − (2m+1)) · ⟨u, φ_m⟩ = ⟨u, ξ²(ξ²−2m−1)φ_m + 2ξφ_m′⟩ / c ,
+```
+
+so `|⟨u,φ_m⟩| ≤ ‖W_m‖ / (c |μ − (2m+1)|) → 0` for each fixed `m ≠ n`.  Coordinatewise vanishing plus
+unit mass does **not** give `⟨u,φ_n⟩² → 1`: mass can drift to high rungs.  What closes that gap is a
+uniform bound on the harmonic-oscillator energy `∑ (2m+1)⟨u,φ_m⟩² = ‖u′‖² + ‖ξu‖²` — boundedness
+suffices, no rate (see `HTGeometry/OscillatorMassNoEscape.lean`).
+
+**That energy is infinite for both natural normalizations of a prolate mode**, and this is not an
+artefact:
+
+- the compactly supported representative `e = ψ·1_{[−λ,λ]}` has finite `∫ t²e²` but a jump at `±λ`,
+  hence `‖e′‖ = ∞`;
+- the entire bandlimited profile `ψ` has finite `‖ψ′‖ ≤ 2πλ‖ψ‖` (it is bandlimited) but decays only
+  like `1/t` — its Fourier transform is the truncated mode, which jumps — so `∫ t²ψ² = ∞`.
+
+Neither object lies in the oscillator form domain.  The obstruction is exactly the time–frequency
+duality that makes the prolate problem interesting, so the coefficient route cannot be repaired by
+choosing the normalization better; it would need a fractional energy `⟨u, H^s u⟩` with `s < 1/2`.
+
+### The route that does close it: linear ODE comparison on a fixed window
+
+The rescaled profile satisfies, with **no convergence premise**,
+
+```text
+u″ − ξ²u + μu = (ξ²u″ + 2ξu′)/c ,     i.e.    u″ = [(ξ² − μ)u + (2ξ/c)u′] / (1 − ξ²/c) ,
+```
+
+which on a fixed window `|ξ| ≤ K` is a *regular* linear ODE as soon as `c > K²`, with coefficients
+converging uniformly to those of the Hermite equation `v″ = (ξ² − (2n+1))v`.  Writing
+`u = α_c · Ψ_c` with `Ψ_c(0) = 1`, `Ψ_c′(0) = 0` (the profile is even, so `u′(0) = 0`), linearity
+removes the unknown amplitude from the comparison, and Grönwall gives
+
+```text
+Ψ_c → φ_n / φ_n(0)   uniformly on [−K, K] .
+```
+
+Uniqueness of the even solution of the Hermite equation at eigenvalue `2n+1` identifies the limit;
+no decay condition at infinity is needed, because the initial-value problem already determines it.
+
+The amplitude is then pinned by the normalization *together with the time second moment*, which is
+finite and uniformly bounded — this is the one moment that survives:
+
+```text
+∫ t² e_λ(t)² dt / ∫ e_λ² = λ² ∫ x²Φ² / ∫ Φ² ≤ λ² μ / c = μ / (2π) ,
+```
+
+using only the prolate quadratic form `∫(1−x²)Φ′² + c²∫x²Φ² = μc` and `c = 2πλ²`.  Chebyshev then
+gives `∫_{|t|>K} e_λ² ≤ M/K²` uniformly, so passing `1 = ∫e_λ²` to the limit yields
+`α_c² → φ_n(0)²/‖φ_n‖²`, and the same second moment controls the far part of the integral
+(`RHTower/SecondMomentIntegralTail.lean`:
+`|∫_K^R f| ≤ (1+M)/(2√K)` from `∫x²f² ≤ M`).  Hence
+
+```text
+(∫ e_λ)² → (∫ φ_n)² / ‖φ_n‖² ,
+```
+
+which is the eigenvector half in squared form — the form the downstream cards consume
+(`tendsto_ellSqRatio_of_hermiteLimits` takes `ell_j²` limits).
+
+No `L²` compactness, no Parseval, no Riesz–Kolmogorov and no energy bound is used anywhere in this
+route; the only analytic engine is Grönwall on a compact window.
+
+## Lean progress — the window-comparison engine, and the scale-free form of the coordinate limit
+
+New (wired, axiom-clean):
+
+```text
+HTGeometry/LinearSecondOrderComparison.lean
+    phasePair, norm_phasePair, hasDerivAt_phasePair
+    phasePair_norm_le      a priori exponential phase bound for u'' = P u + Q u'
+    phasePair_dist_le      Grönwall separation of u'' = P_c u + Q_c u' from v'' = P v
+                           with the same initial phase vector
+
+HTGeometry/LinearSecondOrderLimit.lean
+    phasePair_dist_le_uniform            the envelope taken at the right endpoint
+    tendsto_sup_dist_of_coeff_tendsto    vanishing coefficient perturbation ⇒ vanishing envelope
+    abs_intervalIntegral_sub_le_of_uniform
+
+HTGeometry/OscillatorMassNoEscape.lean
+    tsum_nat_add_le_of_moment_le          tail ≤ C/(2M+3) from ∑(2m+1)f m ≤ C
+    tendsto_coeff_of_vanishing_of_moment_le
+
+RHTower/HermiteCoefficientPin.lean
+    tendsto_coeff_zero_of_pin, tendsto_coeffSq_of_ladderPin
+
+RHTower/SecondMomentIntegralTail.lean
+    abs_le_weighted_split                 |f| ≤ (s/x² + x²f²/s)/2
+    abs_integral_le_of_secondMoment_sqrt  |∫_K^R f| ≤ (1+M)/(2√K) from ∫x²f² ≤ M
+    abs_integral_le_of_sq_and_secondMoment
+    tendsto_integral_of_tendsto_sq_of_secondMoment
+
+RHTower/ProlateRescaledCoefficients.lean
+    rescaledProlateP, rescaledProlateQ, hermiteRungP
+    deriv2_eq_of_hermiteDefect            normal form of the exact Hermite-scale defect identity
+    abs_rescaledProlateP_sub_le           ≤ 2|μ−(2n+1)| + 2K²(K²+2n+1)/c
+    abs_rescaledProlateQ_le               ≤ 4K/c
+
+RHTower/ProlateProfileWindowLimit.lean
+    prolateProfile_window_dist_le         the explicit Grönwall envelope on [0,K]
+    prolateProfile_window_phase_le        a priori phase bound on [0,K]
+    tendsto_prolateWindow_envelope
+    tendsto_prolateProfile_window         u_c → v pointwise on [0,K] once μ_c → 2n+1, c → ∞
+```
+
+Two corpus assets close what looked like separate obligations:
+
+- `SlepianKernelScaledFubini.value_zero_ne_of_even_joint_prolate_band_eigen` already proves
+  `Φ(0) ≠ 0` for a nonzero smooth even joint band/prolate eigenfunction, by exactly the
+  ODE-uniqueness argument recorded above — so the centre-value nonvanishing input is not open.
+- `ProlateSeparationEnergy.neg_separation_div_sq_mul_integral_sq_eq` is the exact Rayleigh identity
+
+  ```text
+  s · ∫_{-1}^{1} Φ² = (∫_{-1}^{1}(1−x²)Φ′²)/c² + ∫_{-1}^{1} x²Φ² ,      s = −χ/c² ,
+  ```
+
+  whose first term is nonnegative, so `∫x²Φ² ≤ s ∫Φ²` — the second-moment bound, with no new
+  integration by parts.
+
+### The coordinate limit is scale-free
+
+Writing the unit-norm mode as `e(t) = κ Φ(t/λ)` with `∫_{-λ}^{λ} e² = 1` gives
+`ℓ² = λ(∫_{-1}^{1}Φ)²/∫_{-1}^{1}Φ²`, and in the Hermite variable `ξ = √c x`, `c = 2πλ²`,
+
+```text
+ℓ² = (∫ u)² / (√(2π) · ∫ u²) .
+```
+
+The amplitude cancels, so **no normalization of the profile has to be pinned**: the limit follows
+from local uniform convergence of `u` up to scale together with the normalized second-moment bound
+`∫ξ²u² / ∫u² = c ∫x²Φ² / ∫Φ² ≤ c·s = μ`, which controls both tails.  The target value checks out on
+the ground mode: with `φ₀ = e^{−ξ²/2}`, `(∫φ₀)²/(√(2π)∫φ₀²) = 2π/(√(2π)√π) = √2 = (2^{1/4})²`.

@@ -506,6 +506,47 @@ regularized determinant, the general real-rooted spectral-factor Pick kernel, or
 dephased convergence `(8)`.  A finite-matrix closure wrapper would omit those remaining analytic
 inputs, so no Lean file is added here.
 
+**Superseded, 2026-08-15.**  A Lean module is added.  It is not a closure wrapper: it proves the
+paired-zero kernel identity `(6)`, the closure of the positive cone (the transfer step of section
+2), the aperture defect `(14)`, the complete periodic-background analysis `(14a)`-`(14c)` including
+the finite-aperture indefiniteness, and the relative Herglotz criterion `(24)`.
+
+## Lean status
+
+Module `formal/GaloisForLFunctions/RHTower/CCMEulerPickTransferBoundary.lean` (wired, axiom-clean,
+9 declarations).
+
+- `pairedZeroKernel`, **`pairedZeroKernel_eq`** — equation `(6)`: the logarithmic-derivative
+  contribution of one paired spectral zero is exactly the sum of two rank-one Gram kernels.  This is
+  the mechanism behind positivity of `(2)`.
+- **`posSemidef_of_tendsto_entrywise`** — the transfer step of section 2: the positive cone of
+  finite Hermitian complex matrices is closed under entrywise limits.  So convergence `(8)` really
+  does transport positivity to the limit kernel `(9)`; no compactness or uniformity is used beyond
+  entrywise convergence, exactly as the card states.
+- `rightCauchyKernel`, **`aperturePhaseDefect`** — equation `(14)`: the canonically phased kernel is
+  the spectral-factor kernel minus `2a` times the Cauchy kernel.
+- `periodicBackground`, **`hasDerivAt_periodicBackground`**, `periodicBackgroundLogDeriv`,
+  **`periodicBackgroundLogDeriv_eq`** — equations `(14a)`, `(14b)`:
+  `D_{0,a}(-iw) = 1 - e^{-2aw}` and its logarithmic derivative `2a/(e^{2aw} - 1)`.
+- **`norm_periodicBackgroundLogDeriv_le`** — equation `(14c)`:
+  `|L_{0,a}(w)| <= 2a/(e^{2a sigma} - 1)` for `Re w >= sigma > 0`, so the background is cofinally
+  invisible on every compact subset of the Euler half-plane.
+- **`periodicBackgroundLogDeriv_neg`** — the finite-aperture indefiniteness: at
+  `w = x + i pi/(2a)` the background logarithmic derivative equals the *negative real* number
+  `2a/(-e^{2ax} - 1)`, so its diagonal Pick value is negative.
+- `relativeDeterminant`, **`im_relativeDeterminant`** — equation `(24)`:
+  `Im R(z) = sum_j c_j (Im z)/((d_j - Re z)^2 + (Im z)^2)`.
+- **`im_relativeDeterminant_nonneg`** — the sufficiency half of the relative Herglotz criterion:
+  nonnegative coefficients make the relative determinant map the upper half-plane to its closure.
+
+`#print axioms` on all nine declarations returns exactly `[propext, Classical.choice, Quot.sound]`.
+
+Imported, not reproved: the Hadamard factorization `(3)` (already in the tree as
+`XiC_eq_constant_mul_canonicalProduct` and `XiRelativeResolventTrace`), the CCM regularized
+determinant `(11)`, the complete-detector theorem identifying `(9)` with Weil positivity, the
+integral identity `(16)` and hence the spectral-discrepancy representation `(17)`-`(18)`, and the
+Harnack/Stirling incompatibility `(24g)`-`(24h)`.
+
 ## Gates
 
 - [x] positive kernel of dephased finite spectral factors
