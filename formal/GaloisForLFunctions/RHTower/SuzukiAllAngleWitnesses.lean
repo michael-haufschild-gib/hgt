@@ -145,4 +145,14 @@ theorem suzukiHerglotz_cayleyPow_im_nonneg {n : ℕ} (hn : n ≠ 0)
   suzukiHerglotz_im_nonneg (continuous_sub_I_pow n) (continuous_add_I_pow n)
     (sub_I_pow_I_eq_zero hn) (suzukiAllAngleRealZeros_cayleyPow hn) hz
 
+/-- The linear Cayley pair has real zeros for every unitary characteristic angle. -/
+theorem suzukiAllAngleRealZeros_cayleyLinear :
+    SuzukiAllAngleRealZeros (fun z : ℂ => z - I) (fun z => z + I) := by
+  simpa using (suzukiAllAngleRealZeros_cayleyPow (n := 1) one_ne_zero)
+
+/-- The linear Cayley factor is Hermite--Biehler. -/
+theorem suzukiHermiteBiehler_addI_linear :
+    SuzukiHermiteBiehler (fun z : ℂ => z + I) := by
+  simpa using (suzukiHermiteBiehler_addI_pow (n := 1) one_ne_zero)
+
 end GaloisForLFunctions.RHTower

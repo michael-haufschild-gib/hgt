@@ -3,6 +3,8 @@ import GaloisForLFunctions.SelbergClass.MultipleStandardTwistHolomorphy
 import GaloisForLFunctions.SelbergClass.MultipleStandardTwistTensor
 import GaloisForLFunctions.SelbergClass.MultipleStandardTwistInitialHolomorphy
 import GaloisForLFunctions.SelbergClass.ComplexRayMellinInversion
+import GaloisForLFunctions.SelbergClass.MultipleStandardTwistMellinBarnes
+import GaloisForLFunctions.SelbergClass.MeromorphicTensor
 
 /-!
 # Selberg-class infrastructure

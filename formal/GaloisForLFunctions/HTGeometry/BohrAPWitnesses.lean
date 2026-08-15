@@ -152,6 +152,10 @@ theorem isBohrAP_trigPoly {n : ℕ} (a : Fin n → ℂ) (lam : Fin n → ℝ) :
       exact (ih (fun i => a i.castSucc) (fun i => lam i.castSucc)).add
         ((isBohrAP_bcfChar (lam (Fin.last n))).smul (a (Fin.last n)))
 
+/-- The unit-frequency character has compact translation orbit. -/
+theorem isBohrAP_bcfChar_one : IsBohrAP (bcfChar 1) :=
+  isBohrAP_bcfChar 1
+
 end
 
 end GaloisForLFunctions

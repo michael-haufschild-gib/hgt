@@ -83,6 +83,13 @@ theorem isActionStable_primeLogLattice_of_primeIndexedExpansion
   isActionStable_primeLogLattice_of_smul_primeLog fun g p hp =>
     (h g p hp).mem_primeLogLattice
 
+/-- The first two prime logarithms have an explicit finite prime-log expansion. -/
+theorem primeLogExpansion_log_two_add_log_three :
+    PrimeLogExpansion (Real.log (2 : ℕ) + Real.log (3 : ℕ)) :=
+  PrimeLogExpansion.add
+    (primeLogExpansion_log_prime Nat.prime_two)
+    (primeLogExpansion_log_prime Nat.prime_three)
+
 end RHTower
 
 end GaloisForLFunctions

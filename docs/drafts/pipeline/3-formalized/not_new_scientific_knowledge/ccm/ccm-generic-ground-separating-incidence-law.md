@@ -1,7 +1,7 @@
 # The CCM prime-channel separating locus is open dense
 
 - **ID:** `ccm-generic-ground-separating-incidence-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized (paper proof; Lean certificate alongside)
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent results:** separating vectors for a finite operator space, Kato's simple-eigenvalue
@@ -430,3 +430,58 @@ added.
 - [ ] combine with the reduced-resolvent and Mellin-growth bounds
 - [ ] prove divisor-preserving convergence or complete Weil positivity
 - [ ] RH
+
+## Lean status
+
+**Formalized unconditionally, 2026-08-15**, in
+`formal/GaloisForLFunctions/HTGeometry/SeparatingGramLocus.lean` (the abstract separating-locus
+theory) and `formal/GaloisForLFunctions/RHTower/CCMGenericGroundSeparatingIncidence.lean` (the
+compressed-shift construction), on the compressed shifts of
+`RHTower/CCMCompressedShiftIndependence.lean`.
+
+Section 1, in `HTGeometry/SeparatingGramLocus.lean`:
+
+- `gramMatrix`, `separatingGramDet`, `separatingLocus` — equations `(1)`--`(3)`.
+- **`det_gramMatrix_ne_zero_iff`** — a vector is separating exactly when the Gram determinant is
+  nonzero.  Proved from the Hermitian energy identity, valid in any complex inner-product space.
+- **`det_gramMatrix_ne_zero_of_orthogonal`** — pairwise orthogonal nonzero images are separating.
+- **`isOpen_separatingLocus`** — `(3)` is open, from continuity of the Gram determinant.
+- `gramLinePoly`, `gramLinePoly_eval`, `natDegree_gramLinePoly_le`,
+  **`coeff_det_gramLinePoly`**, `eval_det_gramLinePoly` — equation `(4)`: along the line
+  `x + t x_0` the Gram determinant is the evaluation of a polynomial of degree at most `2(k+1)`
+  whose top coefficient is exactly `Delta_A(x_0)`.
+- **`dense_separatingLocus`** — the density conclusion of section 1.
+- **`isClosed_compl_separatingLocus`**, **`interior_compl_separatingLocus_eq_empty`** — equation
+  `(20)`: the seam `(19)` is closed with empty interior.
+- **`linearIndependent_proj_iff`** — equation `(11)`, the projection criterion of section 3, in the
+  form that makes `(13)` injective.
+- **`eventually_det_gramMatrix_ne_zero`** — equations `(18b)`--`(18d)`: separation survives every
+  family of approximations converging to a separating configuration, which is the Galerkin
+  preservation statement of section 4a.
+- `integral_conj_mul_eq_zero_of_disjoint`, **`linearIndependent_of_disjoint_support`** — the disjoint
+  support mechanism.
+
+Section 2, in `RHTower/CCMGenericGroundSeparatingIncidence.lean`:
+
+- `separatingBump`, `separatingBump_eq_zero_of_notMem`, `separatingBump_zero` — the test vector `x_0`
+  of `(7)`.
+- **`compressedShift_separatingBump_eq_zero`**, **`compressedShift_separatingBump_apply`** — the
+  support law: `T_(A,h)x_0` is carried in `[h, h+ε]` and is nonzero at the label.
+- `separatingChannels`, `channelWindow`, `separatingChannels_eq_zero_of_notMem`,
+  **`channelWindow_unique`** — the channel family and the pairwise disjointness of its windows.
+- **`linearIndependent_separatingChannels`** — equation `(8)`: the bump together with its compressed
+  shifts is linearly independent whenever the labels are separated by more than the bump width and
+  bounded away from the origin.  Combined with section 1 this makes the separating locus open and
+  dense.
+- **`primePowerLabel_inj`** — equation `(10f)`: `m log p = ℓ log q` with `m, ℓ ≥ 1` forces `p = q`
+  and `m = ℓ`, from rational independence of the prime logarithms.  This is the unique-factorization
+  step that makes the prime and prime-ray labels distinct.
+
+All statements are unconditional: `#print axioms` returns only
+`[propext, Classical.choice, Quot.sound]`.
+
+Not formalized, and imported: the Kato response formula `(16)`, which is the content of
+`ccm-prime-source-ground-incidence-response.md`; injectivity of the compact-support Mellin
+transform, used in `(18)`; and the simple-isolated-ground-state hypotheses of section 4.  The Lean
+statements deliver sections 1, 2, 3, 4a and 5 — the separating locus, its openness and density, the
+projection criterion, Galerkin preservation, and the seam.

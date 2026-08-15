@@ -334,8 +334,8 @@ theorem exists_hasOrder_of_ne_zero {f : PowerSeries K} (hf : f ≠ 0) : ∃ n, H
   refine ⟨Nat.find hex, Nat.find_spec hex, fun i hi => ?_⟩
   exact not_not.mp (Nat.find_min hex hi)
 
-/-- The first three coefficients, as a linear map. -/
-def lowCoeffs : PowerSeries K →ₗ[K] (Fin 3 → K) where
+/-- The first `n` coefficients, as a linear map. -/
+def lowCoeffs (n : ℕ) : PowerSeries K →ₗ[K] (Fin n → K) where
   toFun f := fun i => coeff (i : ℕ) f
   map_add' f g := by
     funext i
@@ -352,7 +352,7 @@ theorem finrank_le_three {L : Submodule K (PowerSeries K)}
     {f : PowerSeries K} (hfL : f ∈ L) (hf : HasOrder f 0) :
     Module.finrank K L ≤ 3 := by
   classical
-  have hinj : Function.Injective (lowCoeffs.comp L.subtype) := by
+  have hinj : Function.Injective ((lowCoeffs 3).comp L.subtype) := by
     rw [← LinearMap.ker_eq_bot]
     rw [Submodule.eq_bot_iff]
     intro x hx
@@ -367,8 +367,58 @@ theorem finrank_le_three {L : Submodule K (PowerSeries K)}
       have := congrFun hx ⟨n, by omega⟩
       simpa [lowCoeffs] using this
     exact hn.1 hcoeff
-  have h := LinearMap.finrank_le_finrank_of_injective (f := lowCoeffs.comp L.subtype) hinj
+  have h := LinearMap.finrank_le_finrank_of_injective (f := (lowCoeffs 3).comp L.subtype) hinj
   simpa [Module.finrank_pi] using h
+
+
+/-- If no element vanishes to order two, the first two coefficients already separate points. -/
+theorem finrank_le_two_of_no_order_two {L : Submodule K (PowerSeries K)}
+    [FiniteDimensional K L] (hL : IsVfSubalgebra L)
+    {f : PowerSeries K} (hfL : f ∈ L) (hf : HasOrder f 0)
+    (hno : ¬ ∃ w ∈ L, HasOrder w 2) :
+    Module.finrank K L ≤ 2 := by
+  classical
+  have hinj : Function.Injective ((lowCoeffs 2).comp L.subtype) := by
+    rw [← LinearMap.ker_eq_bot, Submodule.eq_bot_iff]
+    intro x hx
+    rw [LinearMap.mem_ker] at hx
+    by_contra hxne
+    have hxv : (x : PowerSeries K) ≠ 0 := fun h => hxne (Subtype.ext h)
+    obtain ⟨n, hn⟩ := exists_hasOrder_of_ne_zero hxv
+    have hle : n ≤ 2 := hasOrder_le_two_of_finiteDimensional hL hfL hf x.2 hn
+    have hne2 : n ≠ 2 := by
+      intro h
+      subst h
+      exact hno ⟨(x : PowerSeries K), x.2, hn⟩
+    have hn2 : n < 2 := by omega
+    have hcoeff : coeff n (x : PowerSeries K) = 0 := by
+      have := congrFun hx ⟨n, hn2⟩
+      simpa [lowCoeffs] using this
+    exact hn.1 hcoeff
+  have h := LinearMap.finrank_le_finrank_of_injective (f := (lowCoeffs 2).comp L.subtype) hinj
+  simpa [Module.finrank_pi] using h
+
+/-- **The realized orders of a three-dimensional transitive algebra are exactly `0, 1, 2`.** -/
+theorem exists_hasOrder_zero_one_two {L : Submodule K (PowerSeries K)}
+    [FiniteDimensional K L] (hL : IsVfSubalgebra L)
+    {f : PowerSeries K} (hfL : f ∈ L) (hf : HasOrder f 0)
+    (hdim : 3 ≤ Module.finrank K L) :
+    (∃ w ∈ L, HasOrder w 0) ∧ (∃ w ∈ L, HasOrder w 1) ∧ (∃ w ∈ L, HasOrder w 2) := by
+  have htwo : ∃ w ∈ L, HasOrder w 2 := by
+    by_contra hno
+    have := finrank_le_two_of_no_order_two hL hfL hf hno
+    omega
+  obtain ⟨w, hwL, hw⟩ := htwo
+  refine ⟨⟨f, hfL, hf⟩, ?_, ⟨w, hwL, hw⟩⟩
+  exact exists_hasOrder_of_le hL hfL hf 2 w hwL hw 1 (by omega)
+
+/-- **The transitive rank is exactly three when it is at least three.** -/
+theorem finrank_eq_three {L : Submodule K (PowerSeries K)}
+    [FiniteDimensional K L] (hL : IsVfSubalgebra L)
+    {f : PowerSeries K} (hfL : f ∈ L) (hf : HasOrder f 0)
+    (hdim : 3 ≤ Module.finrank K L) :
+    Module.finrank K L = 3 :=
+  le_antisymm (finrank_le_three hL hfL hf) hdim
 
 end GaloisForLFunctions.HTGeometry
 

@@ -345,6 +345,16 @@ theorem hasLogRatApprox_digamma_one_shift_firstJet :
   exact
     (hasRatApprox_iteratedDeriv_digamma_shift (lam := (1 : ℝ)) h_one 0).hasLogRatApprox
 
+/-- Digamma itself is logarithmically rationally approximable on vertical tubes. -/
+theorem hasLogRatApprox_digamma :
+    HasLogRatApprox (fun z : ℂ => Complex.digamma z) := by
+  simpa using (hasLogRatApprox_digamma_shift (lam := (0 : ℝ)) le_rfl)
+
+/-- Digamma has polynomial growth on every fixed vertical tube. -/
+theorem hasTubePolyGrowth_digamma :
+    HasTubePolyGrowth (fun z : ℂ => Complex.digamma z) :=
+  HasLogRatApprox.hasTubePolyGrowth hasLogRatApprox_digamma
+
 end
 
 end GaloisForLFunctions.HTGeometry

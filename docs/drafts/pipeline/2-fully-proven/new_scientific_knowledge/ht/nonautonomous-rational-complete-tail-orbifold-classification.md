@@ -928,3 +928,22 @@ algebra to `⟨∂, z∂, z²∂⟩`, and the groupoid-side statement (a proper 
 differential groupoid is the invariance groupoid of a `k`-form, an affine connection, or a
 projective connection).  The rank bound is the part that needed new mathematics; the normal forms
 are a conjugation argument on top of it.
+
+### The rank statement is complete
+
+`LieCartanFormalVectorFields.lean` now proves the full rank half of the trichotomy:
+
+```text
+finrank_le_three            a finite-dimensional transitive bracket-closed subspace has dim ≤ 3
+                            (every element is determined by its first three coefficients)
+finrank_le_two_of_no_order_two
+exists_hasOrder_zero_one_two
+    dim ≥ 3 ⟹ the realized orders are exactly 0, 1, 2
+finrank_eq_three            hence dim = 3 exactly
+```
+
+So `(4)`–`(6)`'s "rank at most three", and the fact that the top case has a basis of orders
+`0, 1, 2`, are formal.  What remains of the imported classification is the *normal-form* half: that
+the three-dimensional case is, after a formal change of variable, `⟨∂, z∂, z²∂⟩` — equivalently that
+it preserves a projective connection — together with the groupoid-side translation into `(4)`, `(5)`,
+`(6)`.

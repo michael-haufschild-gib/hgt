@@ -53,6 +53,82 @@ theorem oscBudget_le_of_product_symbol {a b m P Q N : ℝ}
     oscBudget a b m w w' Θ'' ≤ 2 * P / m + Q / m + P * N / (3 * m ^ 2) :=
   oscBudget_le_of_symbolBounds ha hab hm hP hQ hN hwc hw'c hΘc hw hw' hΘ
 
+/-- **Building a symbol record by composition.**  A Liouville amplitude with `|A| ≤ C/√x`,
+`|A'| ≤ C'/(x√x)` multiplied by interaction amplitudes bounded by `K` whose transported derivatives
+decay like `K'/x²` produces a half-power symbol pair with constants `C K` and `C' K + C K'`. -/
+theorem symbolTwoBranch_of_composition {a b C C' K K' : ℝ}
+    (ha : 1 ≤ a) (hC : 0 ≤ C) (hC' : 0 ≤ C') (hK' : 0 ≤ K')
+    {A A' P P' Q Q' Φ Φ' : ℝ → ℝ}
+    (hAd : ∀ x ∈ Icc a b, HasDerivAt A (A' x) x)
+    (hPd : ∀ t, HasDerivAt P (P' t) t) (hQd : ∀ t, HasDerivAt Q (Q' t) t)
+    (hΦd : ∀ x ∈ Icc a b, HasDerivAt Φ (Φ' x) x)
+    (hAc : ContinuousOn A (Icc a b)) (hA'c : ContinuousOn A' (Icc a b))
+    (hPc : Continuous P) (hP'c : Continuous P') (hQc : Continuous Q) (hQ'c : Continuous Q')
+    (hΦc : ContinuousOn Φ (Icc a b)) (hΦ'c : ContinuousOn Φ' (Icc a b))
+    (hA : ∀ x ∈ Icc a b, |A x| ≤ C / Real.sqrt x)
+    (hA'b : ∀ x ∈ Icc a b, |A' x| ≤ C' / (x * Real.sqrt x))
+    (hPb : ∀ t, |P t| ≤ K) (hQb : ∀ t, |Q t| ≤ K)
+    (hP'b : ∀ x ∈ Icc a b, |P' (Φ x) * Φ' x| ≤ K' / x ^ 2)
+    (hQ'b : ∀ x ∈ Icc a b, |Q' (Φ x) * Φ' x| ≤ K' / x ^ 2) :
+    SymbolTwoBranch a b (C * K) (C' * K + C * K')
+      (fun x => A x * P (Φ x)) (fun x => A x * Q (Φ x))
+      (fun x => A' x * P (Φ x) + A x * (P' (Φ x) * Φ' x))
+      (fun x => A' x * Q (Φ x) + A x * (Q' (Φ x) * Φ' x)) := by
+  have hxpos : ∀ x ∈ Icc a b, (0 : ℝ) < x := fun x hx => lt_of_lt_of_le zero_lt_one
+    (le_trans ha hx.1)
+  have hbound : ∀ (R R' : ℝ → ℝ), (∀ t, HasDerivAt R (R' t) t) → (∀ t, |R t| ≤ K) →
+      (∀ x ∈ Icc a b, |R' (Φ x) * Φ' x| ≤ K' / x ^ 2) →
+      (∀ x ∈ Icc a b, |A x * R (Φ x)| ≤ C * K / Real.sqrt x) ∧
+      (∀ x ∈ Icc a b, |A' x * R (Φ x) + A x * (R' (Φ x) * Φ' x)|
+        ≤ (C' * K + C * K') / (x * Real.sqrt x)) := by
+    intro R R' _ hRb hR'b
+    constructor
+    · intro x hx
+      have hx0 := hxpos x hx
+      have hs : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.mpr hx0
+      rw [abs_mul]
+      calc |A x| * |R (Φ x)| ≤ (C / Real.sqrt x) * K :=
+            mul_le_mul (hA x hx) (hRb _) (abs_nonneg _) (div_nonneg hC hs.le)
+        _ = C * K / Real.sqrt x := by ring
+    · intro x hx
+      have hx0 := hxpos x hx
+      have hx1 : (1 : ℝ) ≤ x := le_trans ha hx.1
+      have hs : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.mpr hx0
+      have h1 : |A' x * R (Φ x)| ≤ C' * K / (x * Real.sqrt x) := by
+        rw [abs_mul]
+        calc |A' x| * |R (Φ x)| ≤ (C' / (x * Real.sqrt x)) * K :=
+              mul_le_mul (hA'b x hx) (hRb _) (abs_nonneg _)
+                (div_nonneg hC' (by positivity))
+          _ = C' * K / (x * Real.sqrt x) := by ring
+      have h2 : |A x * (R' (Φ x) * Φ' x)| ≤ C * K' / (x * Real.sqrt x) := by
+        rw [abs_mul]
+        have hstep : |A x| * |R' (Φ x) * Φ' x| ≤ (C / Real.sqrt x) * (K' / x ^ 2) :=
+          mul_le_mul (hA x hx) (hR'b x hx) (abs_nonneg _) (div_nonneg hC hs.le)
+        have hval : (C / Real.sqrt x) * (K' / x ^ 2) = C * K' / (x ^ 2 * Real.sqrt x) := by
+          ring
+        have hmono : C * K' / (x ^ 2 * Real.sqrt x) ≤ C * K' / (x * Real.sqrt x) := by
+          refine div_le_div_of_nonneg_left (by positivity) (by positivity) ?_
+          have hxx : x ≤ x ^ 2 := by nlinarith
+          nlinarith [hs, hxx]
+        rw [hval] at hstep
+        exact hstep.trans hmono
+      have hsum : C' * K / (x * Real.sqrt x) + C * K' / (x * Real.sqrt x)
+          = (C' * K + C * K') / (x * Real.sqrt x) := by ring
+      calc |A' x * R (Φ x) + A x * (R' (Φ x) * Φ' x)|
+          ≤ |A' x * R (Φ x)| + |A x * (R' (Φ x) * Φ' x)| := abs_add_le _ _
+        _ ≤ C' * K / (x * Real.sqrt x) + C * K' / (x * Real.sqrt x) := add_le_add h1 h2
+        _ = (C' * K + C * K') / (x * Real.sqrt x) := hsum
+  obtain ⟨hPval, hPder⟩ := hbound P P' hPd hPb hP'b
+  obtain ⟨hQval, hQder⟩ := hbound Q Q' hQd hQb hQ'b
+  refine ⟨fun x hx => (hAd x hx).mul ((hPd (Φ x)).comp x (hΦd x hx)),
+    fun x hx => (hAd x hx).mul ((hQd (Φ x)).comp x (hΦd x hx)),
+    hAc.mul (hPc.comp_continuousOn hΦc), ?_, hAc.mul (hQc.comp_continuousOn hΦc), ?_,
+    hPval, hPder, hQval, hQder⟩
+  · exact (hA'c.mul (hPc.comp_continuousOn hΦc)).add
+      (hAc.mul ((hP'c.comp_continuousOn hΦc).mul hΦ'c))
+  · exact (hA'c.mul (hQc.comp_continuousOn hΦc)).add
+      (hAc.mul ((hQ'c.comp_continuousOn hΦc).mul hΦ'c))
+
 /-- **The exterior radial off-diagonal entry, with all constants explicit.** -/
 theorem abs_integral_radial_twoBranch_symbol_le
     {s j k a b c : ℝ} (hs : 0 ≤ s) (hs1 : s ≤ 1 / 2)

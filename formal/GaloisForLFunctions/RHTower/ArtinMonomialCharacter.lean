@@ -40,6 +40,32 @@ theorem linearCharacterRepresentation_character {H : Type u} [Group H]
   rw [hmul, map_smul]
   simp
 
+/-- The concrete genuine character associated to a linear character. -/
+def linearGenuineCharacter (G : Type u) [Group G] [Fintype G]
+    (χ : LinearCharacter G) : GenuineCharacter G :=
+  ⟨(linearCharacterRepresentation χ).character,
+    AddSubmonoid.subset_closure
+      (representation_character_mem_fdCharacterSet G (linearCharacterRepresentation χ))⟩
+
+/-- The concrete virtual character associated to a linear character. -/
+def linearVirtualCharacter (G : Type u) [Group G] [Fintype G]
+    (χ : LinearCharacter G) : VirtualCharacter G :=
+  GenuineCharacter.toVirtual G (linearGenuineCharacter G χ)
+
+/-- A concrete genuine linear character has its expected pointwise values. -/
+@[simp]
+theorem linearGenuineCharacter_apply (G : Type u) [Group G] [Fintype G]
+    (χ : LinearCharacter G) (g : G) :
+    (linearGenuineCharacter G χ).val g = (χ g : ℂ) :=
+  linearCharacterRepresentation_character χ g
+
+/-- A concrete virtual linear character has its expected pointwise values. -/
+@[simp]
+theorem linearVirtualCharacter_apply (G : Type u) [Group G] [Fintype G]
+    (χ : LinearCharacter G) (g : G) :
+    (linearVirtualCharacter G χ).val g = (χ g : ℂ) :=
+  linearGenuineCharacter_apply G χ g
+
 @[simp]
 theorem linearCharacterRepresentation_character_one {H : Type u} [Group H]
     (χ : LinearCharacter H) :

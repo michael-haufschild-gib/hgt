@@ -1597,3 +1597,63 @@ stated at the value `(2^n-1)/16` so the parent plugs in verbatim once formalized
 
 Stage 2 now holds 41 cards: 40 of the original 43 minus the three promoted, plus
 `baker-general-logarithms-inhomogeneous-extension.md`, added concurrently by another agent.
+
+## In flight: local-Clifford return-excised phase-incidence law (2026-08-15)
+
+Target: `docs/drafts/pipeline/2-fully-proven/local-clifford-return-excised-phase-incidence-law.md`.
+
+**Already built and axiom-clean** (`HTGeometry/TorusReplicaMomentBound.lean`, wired):
+
+- `occupationSet d r`, `occupationWeight r α = r!/∏(α_j)!`, `occupationFreq α = (α_j : ℤ)` and its
+  injectivity;
+- `replicaPairing p r w x` — the card's `(11)`, the pairing of `Φ_L(ζ)^{⊗r}` with a replica tensor
+  in the occupation basis, realized as a `trigLift` over `occupationSet`;
+- `integral_box_normSq_replicaPairing` — the card's exact identity `(12)`, obtained from
+  `integral_box_normSq_trigLift_of_injOn` (new in `TorusPhaseTrigCalculus`: Parseval at pairwise
+  distinct frequencies);
+- `integral_box_normSq_replicaPairing_le` — the card's `(13)`, `∫|⟨Φ_L^{⊗r},w⟩|² ≤ r! τ^r ‖w‖²`;
+- `occupationCollision`, `heavySector`, `lightWeights`, `sum_heavySector_le` — the card's `(6)`,
+  `(9)` heavy-sector mass bound.
+
+Working with the *occupation basis* (multi-indices α with `Σα_j = r`) rather than tuples
+`Fin r → D` is what makes this cheap: the `r!/α!` normalization appears as a coefficient, so the
+bound needs only `α! ≥ 1`, and no count of tuples with a given occupation (hence no
+multinomial-cardinality lemma, no permutation argument).
+
+**Remaining for the card:**
+
+1. `(7)`/`(10)` — `‖Φ_A‖² ≤ a/4` from `sum_heavySector_le` with `τ = 4C_H/a`, and the transfer
+   `|⟨Φ_H,z⟩|² ≥ a ⟹ |⟨Φ_L,z⟩|² ≥ a/4` by the triangle inequality.
+2. `(14)`--`(19)` — the projection/design assembly.  **Do not rebuild the optimal design:**
+   `HTGeometry/ReturnExcisedOptimalDesignCoareaLaw.lean` already has
+   `exists_finiteOptimalDesign_pointwise` (the D/G-optimal design law `(16)`),
+   `exists_replicaTarget_optimalDesign_pointwise`, and
+   `measure_completeTargetCapture_le_optimalDesignMoments` (a return-excised capture bound of
+   exactly the shape of `(5)`).
+3. Section "Ordinary bounded-degree static-local ensemble" `(20)`--`(24)` — Gaussian ensemble,
+   product-Clifford transitivity, `E_H C_H(Ω) ≤ (2/3)^n`, a.e. simple spectrum and maximal
+   projective rational spectral rank.  This is the heavy half.
+
+`HTGeometry/TorusReplicaMomentBound.lean` is expected to serve the other replica cards
+(`all-replica-*`, `cubic-phase-seeded-*`, `stabilizer-seeded-*`,
+`fixed-shell-angular-dephasing-*`) as well.
+
+### Update: `(13)` closed in the corpus fidelity form (2026-08-15)
+
+`HTGeometry/TorusReplicaMomentBound.lean` now also contains, all axiom-clean:
+
+- `charLift_pow`, `charLift_prod_index` (new in `TorusPhaseTrigCalculus`);
+- `phaseOrbit p x j = √(p j) · e(x_j)` — the card's `Φ_H` / `Φ_L`;
+- `occupationSet_eq_piAntidiag`, `multinomial_le_factorial_of_mem`;
+- `finiteComplexInner_phaseOrbit`, `inner_phaseOrbit_pow` — the multinomial expansion of
+  `⟨Φ(x), z⟩^r` as a character combination over occupation multi-indices (mathlib's
+  `Finset.sum_pow_eq_sum_piAntidiag`);
+- **`integral_box_fidelity_pow_le`** — the card's `(13)` in exactly the shape that
+  `HTGeometry/ReturnExcisedOptimalDesignCoareaLaw.lean` consumes:
+
+  `∫_{box} finitePureStateFidelity (phaseOrbit p x) z ^ r ≤ r! · τ^r`
+
+  whenever `0 ≤ p j ≤ τ` for all `j` and `∑ ‖z j‖² ≤ 1`.
+
+So the abstract theorem `(5)` now needs only the heavy-sector transfer `(7)`/`(10)` and the
+assembly with `measure_completeTargetCapture_le_optimalDesignMoments`.

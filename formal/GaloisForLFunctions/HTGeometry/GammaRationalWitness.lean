@@ -214,4 +214,9 @@ theorem rank_expLine_pos_and_finite (μ : ℝ) (hμ : μ ≠ 0) :
   obtain ⟨K, hK⟩ := rank_finite_expLine μ hμ
   exact ⟨K, one_le_rank_expLineBC μ hμ 2, hK⟩
 
+/-- The unit-frequency exponential is almost periodic on the unit vertical strip. -/
+theorem isStripAlmostPeriodic_expLine_one_zero_one :
+    IsStripAlmostPeriodic (expLine 1) 0 1 :=
+  isStripAlmostPeriodic_expLine 1 0 1
+
 end GaloisForLFunctions

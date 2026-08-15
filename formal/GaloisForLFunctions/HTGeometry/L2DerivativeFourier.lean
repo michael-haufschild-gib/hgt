@@ -364,6 +364,19 @@ theorem norm_restrictLp_fourier_limit_le {u : ℕ → Lp ℂ 2 (volume : Measure
   rw [zero_add] at hlim
   exact ge_of_tendsto' hlim hstep
 
+
+theorem ae_eq_zero_of_restrictLp_eq_zero {α : Type*} [MeasurableSpace α] {μ : Measure α}
+    {S : Set α} (hS : MeasurableSet S) {u : Lp ℂ 2 μ} (h : restrictLp S u = 0) :
+    ∀ᵐ x ∂μ, x ∈ S → (u : α → ℂ) x = 0 := by
+  have h0 : (restrictLp S u : α → ℂ) =ᵐ[μ.restrict S] 0 := by
+    rw [h]
+    exact Lp.coeFn_zero ℂ 2 (μ.restrict S)
+  have h1 : ∀ᵐ x ∂μ.restrict S, (u : α → ℂ) x = 0 := by
+    filter_upwards [(coeFn_restrictLp S u).symm, h0] with x hx hx0
+    rw [hx, hx0]
+    rfl
+  rwa [← ae_restrict_iff' hS]
+
 end GaloisForLFunctions.HTGeometry
 
 end

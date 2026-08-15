@@ -114,6 +114,25 @@ theorem charLift_eq_mFourier (n : d → ℤ) (x : d → ℝ) :
     ring
   rw [hrhs, charLift, charPhase_apply, Complex.exp_sum]
 
+
+theorem charLift_pow (n : d → ℤ) (x : d → ℝ) (m : ℕ) :
+    charLift n x ^ m = charLift ((m : ℤ) • n) x := by
+  induction m with
+  | zero => simp [charLift_zero_index]
+  | succ m ih =>
+      rw [pow_succ, ih, ← charLift_add_index]
+      congr 1
+      push_cast
+      module
+
+theorem charLift_prod_index {ι : Type*} (s : Finset ι) (n : ι → (d → ℤ)) (x : d → ℝ) :
+    (∏ i ∈ s, charLift (n i) x) = charLift (∑ i ∈ s, n i) x := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp [charLift_zero_index]
+  | insert i s hi ih =>
+      rw [Finset.prod_insert hi, Finset.sum_insert hi, ih, ← charLift_add_index]
+
 end CharacterLift
 
 section PartialDerivative

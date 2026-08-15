@@ -245,3 +245,11 @@ the plane — `M` is a tail event, so `Haar(M) ∈ {0,1}` and only `Haar(M) ≠ 
 With `M_r = C√d₁/r` this is `O(d₁/(c j k (j−k)))` — the card's `(8)`.  The only remaining step for the
 two consumer cards is producing the `SymbolTwoBranch` record for the actual PSWF solutions and the
 phase-curvature bound; both are compositions of already-formal pieces.
+
+### Lie--Cartan: the rank half is complete
+
+    finrank_le_three, finrank_eq_three, exists_hasOrder_zero_one_two
+
+A finite-dimensional transitive bracket-closed subspace of formal vector fields has dimension at most
+three, and when it is three the realized orders are exactly `0, 1, 2`.  Remaining: the normal forms
+and the groupoid-side translation.

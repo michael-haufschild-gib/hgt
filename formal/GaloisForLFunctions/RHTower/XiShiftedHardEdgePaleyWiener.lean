@@ -289,6 +289,38 @@ theorem routeUHardEdge_limit_fourier_support {C : ℝ} (hC : 0 < C)
     rfl
   exact routeUCayleyPacket_limit_highFrequency_eq_zero hC ha haT hNC hnorm' hU hδ
 
+
+/-- **(CSHC.20) in support form.**  The Fourier transform of the limit vanishes almost everywhere
+above frequency `2C`. -/
+theorem routeUHardEdge_limit_fourier_ae_eq_zero {C : ℝ} (hC : 0 < C)
+    {a : ℕ → ℝ} {p : ℕ → Polynomial ℝ} {N : ℕ → ℕ} {b : ℕ → ℕ → ℝ}
+    (ha : ∀ k : ℕ, 0 < a k)
+    (haT : Filter.Tendsto a Filter.atTop Filter.atTop)
+    (hb : ∀ k : ℕ, routeUHardEdgeAngularPoly (a k) (p k)
+      = ∑ j ∈ Finset.range (N k + 1),
+        Polynomial.C (b k j) * Polynomial.Chebyshev.T ℝ (j : ℤ))
+    (hNC : ∀ k : ℕ, ((N k : ℕ) : ℝ) ≤ C * a k)
+    (hnorm : ∀ k : ℕ, (∫ x : ℝ, routeUHardEdgeRationalTest (a k) (p k) x ^ 2) = 1)
+    {L : Lp ℝ 2 (volume : Measure ℝ)}
+    (hL : Filter.Tendsto (fun k : ℕ =>
+      (memLp_routeUHardEdgeRationalTest (ha k) (p k)).toLp
+        (routeUHardEdgeRationalTest (a k) (p k))) Filter.atTop (nhds L)) :
+    ∀ᵐ ξ : ℝ, 2 * C < 2 * Real.pi * |ξ| →
+      ((𝓕 (ofRealLp L) : Lp ℂ 2 (volume : Measure ℝ)) : ℝ → ℂ) ξ = 0 := by
+  have hn : ∀ n : ℕ, ∀ᵐ ξ : ℝ, ξ ∈ highFrequencySet (2 * C + 1 / ((n : ℝ) + 1)) →
+      ((𝓕 (ofRealLp L) : Lp ℂ 2 (volume : Measure ℝ)) : ℝ → ℂ) ξ = 0 := by
+    intro n
+    have hpos : (0 : ℝ) < 1 / ((n : ℝ) + 1) := by positivity
+    exact ae_eq_zero_of_restrictLp_eq_zero (measurableSet_highFrequencySet _)
+      (routeUHardEdge_limit_fourier_support hC ha haT hb hNC hnorm hL hpos)
+  have hall := MeasureTheory.ae_all_iff.2 hn
+  filter_upwards [hall] with ξ hξ hgt
+  obtain ⟨n, hn'⟩ := exists_nat_one_div_lt
+    (show (0 : ℝ) < 2 * Real.pi * |ξ| - 2 * C by linarith)
+  refine hξ n ?_
+  simp only [highFrequencySet, Set.mem_setOf_eq]
+  linarith
+
 end RHTower
 
 end

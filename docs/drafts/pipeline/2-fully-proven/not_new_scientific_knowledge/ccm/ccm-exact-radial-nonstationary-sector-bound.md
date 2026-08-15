@@ -393,3 +393,28 @@ abs_integral_radial_twoBranch_symbol_le'  (0 ≤ s ≤ 1/2, 2 ≤ k < j, 1 ≤ a
 ```
 
 takes **only the two `SymbolTwoBranch` records** as input: nothing about the phase is assumed.
+
+### The symbol record is now built by composition
+
+`RadialSymbolTwoBranchBound.lean` states `SymbolTwoBranch` in the **half-power class** the problem
+actually produces — `|g| ≤ M/√x`, `|g'| ≤ M'/(x√x)` — since a Liouville-transformed amplitude decays
+like `x^{-1/2}`; it is the *product* of two such that lands in the `1/x` class the budget consumes
+(`abs_mul_le_of_halfSymbol`, `abs_mul_le_of_halfSymbol_deriv` and the four
+`abs_half_{add,sub}_halfSymbol` variants).
+
+```text
+symbolTwoBranch_of_composition
+    |A| ≤ C/√x , |A'| ≤ C'/(x√x) ,  |P|,|Q| ≤ K ,  |P'(Φ)Φ'|,|Q'(Φ)Φ'| ≤ K'/x²
+      ⟹ SymbolTwoBranch a b (C K) (C' K + C K')
+           (A·(P∘Φ)) (A·(Q∘Φ)) (A'·(P∘Φ) + A·(P'∘Φ)Φ') (A'·(Q∘Φ) + A·(Q'∘Φ)Φ')
+```
+
+That is exactly the composition of the Liouville amplitude with the interaction-picture amplitudes.
+The three numerical inputs it still wants for the actual radial PSWF solutions are:
+
+1. `|A| ≤ C/√x` and `|A'| ≤ C'/(x√x)` for the Liouville amplitude — the first is the corpus's
+   `xiAmplitude_le` (`≤ 2^{1/4}/√x`); the second is its derivative bound;
+2. `|P|, |Q| ≤ K` with `K = 2 A(a) exp((1/c)∫‖ψ‖)` — this is
+   `abs_radialAmpCos_le`/`abs_radialAmpSin_le` together with `radialInteractionTotal_le_exp`;
+3. `|P'(Φ(x))Φ'(x)| ≤ K'/x²` — the transported derivative bound, which is
+   `‖ψ‖‖W‖/(2c)` times the bounded phase speed, with `ψ = O(ξ^{-2})`.
