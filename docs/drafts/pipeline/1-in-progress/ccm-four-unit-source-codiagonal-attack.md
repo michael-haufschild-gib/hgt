@@ -2635,3 +2635,53 @@ defect is the continued Xi Ward column. Any lift defined only from `(C56.1)` is 
 
 Formal source:
 `formal/GaloisForLFunctions/RHTower/CCMGuinandWeilFullSourceObserver.lean`.
+
+## C57 strict-positive source nonselection `[PROVED AND LEAN-FORMALIZED]`
+
+C56 produced a nonzero signed kernel vector `alpha` whenever `R>2N+1`. A possible escape was that
+the physical source lies in a positive cone, while arbitrary signed kernel directions might leave
+that cone. This escape fails even in the cone's interior. Decompose pointwise
+
+```text
+alpha = alpha^+ - alpha^-,
+left  = 1 + alpha^+,
+right = 1 + alpha^-.                                             (C57.1)
+```
+
+Every coordinate of `left` and `right` is strictly positive, and `left!=right` because
+`alpha!=0`. Linearity and `(C56.2)` give
+
+```text
+T_(N,R)(left)=T_(N,R)(right),
+Q_(N,R)(left)=Q_(N,R)(right).                                    (C57.2)
+```
+
+Therefore no map at all—not only no linear or continuous map—can be a left inverse recovering all
+indexed source weights from the full finite CCM matrix. Lean proves the stronger typed version with
+the source domain restricted to strictly positive weights. For injective horizon placement, the two
+vectors represent distinct positive atomic sources on the same support.
+
+**Failed conjecture and pivot.** C56 proposed attacking a sharp confluent determinant below the
+`2N+1` threshold. That remains a legitimate finite interpolation question, but it cannot select the
+completed prime--pole--archimedean source once its event complexity is overcomplete. C57 therefore
+pivots to the applicable question and closes it: neither full-matrix data nor strict source
+positivity can reconstruct the physical source. Spending the next loop on generic undercomplete
+conditioning would not move CCM-FU's actual frontier.
+
+**Higher principle exposed.** Positivity is a property of a source fibre, not a section of the
+source quotient. An open positive cone can contain multiple points of the same affine kernel fibre.
+Thus a positive closure theorem after finite matrix formation can orient a chosen representative
+but cannot explain why that representative is the arithmetic one. Arithmetic provenance must be a
+pre-quotient datum, and the continued Xi Ward column must be the curvature/connection of its
+transport rather than a function of the finite matrix alone.
+
+**Next conjecture C58.** Construct the source-native measure/distribution space containing
+Groskin's literal finite prime atoms, pole push-forward, and archimedean continuous source. Define
+the `2N+1` reporter on that space, prove its finite atomic specialization is C56, and identify the
+actual completed coordinate vector. Then seek a canonical all-jet transport whose quotient is the
+published CCM matrix and whose connection defect is the already-formal continued prime--Gamma/Xi
+Ward source. Any construction depending only on the quotient matrix or positivity of its source
+weights is killed by C57.
+
+Formal source:
+`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPositiveSourceNonselection.lean`.

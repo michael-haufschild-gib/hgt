@@ -2,8 +2,9 @@
 
 - **Status:** LEAN-FORMALIZED
 - **Lane:** CCM-FU / finite Guinand--Weil source quotient
-- **Novelty scope:** corpus-new exact kernel equivalence between full finite source coordinates and
-  whole CCM packet, plus forced whole-matrix ambiguity above dimension; rank--nullity is classical
+- **Novelty scope:** Lean formalization of Groskin's externally stated exact source quotient;
+  corpus-new forced whole-matrix ambiguity consequence and source-selection interpretation;
+  rank--nullity is classical
 - **External anchor:** Akiva Groskin, arXiv:2607.02828, Lemma 2.3 and Corollary 2.4
 - **Formal source:**
   `formal/GaloisForLFunctions/RHTower/CCMGuinandWeilFullSourceObserver.lean`

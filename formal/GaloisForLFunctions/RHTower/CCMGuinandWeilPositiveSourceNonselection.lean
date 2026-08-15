@@ -96,4 +96,35 @@ theorem ccmGuinandWeilFiniteEventPacketMatrix_no_source_decoder
       congrArg recover heq
     _ = right := hrecover right
 
+/-- Strictly positive indexed event-weight vectors. -/
+def CCMGuinandWeilStrictlyPositiveWeights (R : ℕ) :=
+  {weight : Fin R → ℝ // ∀ i, 0 < weight i}
+
+/-- Even after restricting the domain to the interior of the positive source cone, whole finite
+CCM matrices admit no decoder recovering every source-weight vector. -/
+theorem ccmGuinandWeilFiniteEventPacketMatrix_no_strictlyPositive_source_decoder
+    {N R : ℕ} (hNR : 2 * N + 1 < R) (horizon : Fin R → ℝ) :
+    ¬ ∃ recover : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ →
+        CCMGuinandWeilStrictlyPositiveWeights R,
+      Function.LeftInverse recover
+        (fun weight : CCMGuinandWeilStrictlyPositiveWeights R =>
+          ccmGuinandWeilFiniteEventPacketMatrix (N := N) weight.1 horizon) := by
+  obtain ⟨left, right, hne, hl, hr, _hobserver, heq⟩ :=
+    ccmGuinandWeilFiniteSource_exists_distinct_strictlyPositive_same_observation
+      hNR horizon
+  let leftPositive : CCMGuinandWeilStrictlyPositiveWeights R := ⟨left, hl⟩
+  let rightPositive : CCMGuinandWeilStrictlyPositiveWeights R := ⟨right, hr⟩
+  rintro ⟨recover, hrecover⟩
+  apply hne
+  have hsubtype : leftPositive = rightPositive := by
+    calc
+      leftPositive = recover
+          (ccmGuinandWeilFiniteEventPacketMatrix (N := N) left horizon) :=
+        (hrecover leftPositive).symm
+      _ = recover
+          (ccmGuinandWeilFiniteEventPacketMatrix (N := N) right horizon) :=
+        congrArg recover heq
+      _ = rightPositive := hrecover rightPositive
+  exact congrArg Subtype.val hsubtype
+
 end RHTower

@@ -1102,6 +1102,15 @@ zero. Restoring the diagonal therefore raises the unavoidable ambiguity threshol
 `2N+1`; it does not recover source provenance. This is a theorem about finite signed atomic events,
 not yet the literal prime--pole--archimedean measure or its canonical physical-horizon lift.
 
+**Strict-positive source nonselection.**
+`CCMGuinandWeilPositiveSourceNonselection.lean` proves that positivity does not remove this fibre.
+For every `R>2N+1` and every horizon placement, there are distinct event-weight vectors with every
+weight strictly positive, yet with identical full `2N+1` coordinates and identical whole CCM
+matrices. Consequently no decoder—even nonlinear—can recover all source weights from the matrix,
+including after restricting its domain to the interior of the positive cone. Thus the missing
+positive closure cannot be a post-quotient source selector; it must use arithmetic provenance or a
+source-native connection unavailable in the finite matrix.
+
 **Open core.** Literal finite-stage theta core and its unique source-faithful whole-`L2` completion
 now exist. The finite simple-ground real-zero implication is also parity-free: odd ground no longer
 requires an even-ground reduction. The fixed-support analytic passage from mean-square source
@@ -1111,9 +1120,8 @@ hypotheses cofinally, produce the required fixed-support arithmetic mean-square 
 nonzero limit, and construct a noncompact family joining the
 four-unit corner and physical jet horizon to the continued Xi Ward column and complete ground
 selector while preserving source provenance and four-unit orientation. At event-dictionary level,
-identify the literal completed prime--pole--archimedean coordinate vector, determine the sharp
-injectivity boundary for nondegenerate undercomplete full observers, and construct its canonical
-source-horizon lift before quotienting. Prove that the lift's
+identify the literal completed prime--pole--archimedean measure in a source-native space and
+construct its canonical source-horizon lift before quotienting. Prove that the lift's
 weighted-cosine/connection defect lands in the continued Xi Ward column and obeys the four-unit
 bound. Uniform sine-moment conditioning is relevant only on undercomplete subfamilies; it cannot
 select an overcomplete or continuous source representative.

@@ -700,4 +700,33 @@ theorem suzukiLimitingLogClosedForm_core_eq_weilFinitePartBlock
       push_cast
       ring
 
+/-- Covariance-defined bottom energy is the Rayleigh floor on the entire closed form domain. -/
+theorem suzukiLimitingLogOperatorGroundEnergy_mul_formNorm_sq_le
+    (u : CCMArchimedeanFormDomain suzukiLimitingUnitAperture) :
+    suzukiLimitingLogOperatorGroundEnergy *
+          ‖suzukiLimitingLogFormEmbedding u‖ ^ 2 ≤
+      (suzukiLimitingLogClosedForm u u).re := by
+  exact boundedPerturbedForm_ground_mul_norm_sq_le
+    suzukiLimitingLogFormEmbedding
+    suzukiLimitingLogBoundedRemainder
+    suzukiLimitingLogBoundedRemainder_isSelfAdjoint
+    suzukiLimitingLogFormEmbedding_injective
+    denseRange_suzukiLimitingLogFormEmbedding
+    u
+
+/-- Covariance-defined bottom energy lies below every real eigenvalue of the limiting operator. -/
+theorem suzukiLimitingLogOperatorGroundEnergy_le_eigenvalue
+    {lam : ℝ} (x : suzukiLimitingLogOperator.domain)
+    (hxne : (x : SuzukiApertureIntervalL2 1) ≠ 0)
+    (hx : suzukiLimitingLogOperator x =
+      (lam : ℂ) • (x : SuzukiApertureIntervalL2 1)) :
+    suzukiLimitingLogOperatorGroundEnergy ≤ lam := by
+  exact boundedPerturbedFriedrichsOperator_ground_le_eigenvalue
+    suzukiLimitingLogFormEmbedding
+    suzukiLimitingLogBoundedRemainder
+    suzukiLimitingLogBoundedRemainder_isSelfAdjoint
+    suzukiLimitingLogFormEmbedding_injective
+    denseRange_suzukiLimitingLogFormEmbedding
+    x hxne hx
+
 end RHTower
