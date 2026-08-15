@@ -1,3 +1,6 @@
+import GaloisForLFunctions.RHTower.BurnolCoPoissonConormalReflectionCover
+import GaloisForLFunctions.RHTower.XiWardCubicRawConormalModularDoublet
+
 /-!
 # Cubic Ward/Burnol window--conormal incidence
 
@@ -12,9 +15,6 @@ copy.  Their aperture pairing is therefore the cubic Ward self-charge
 Burnol aperture tomography and the completed-Xi conormal residue; no norm contraction from the
 Euler source is asserted here.
 -/
-
-import GaloisForLFunctions.RHTower.BurnolCoPoissonConormalReflectionCover
-import GaloisForLFunctions.RHTower.XiWardCubicRawConormalModularDoublet
 
 open Complex Set Filter Topology MeasureTheory
 

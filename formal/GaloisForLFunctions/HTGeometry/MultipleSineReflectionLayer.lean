@@ -55,7 +55,7 @@ theorem veroneseFaceComplex_sub_one [Nontrivial R] {N : ℕ} (hN : 1 ≤ N) :
     veroneseFaceComplex R σ (N - 1)
       = veroneseFaceComplex R σ N \ {J : Finset σ | J.card = N - 1} := by
   ext J
-  rw [Set.mem_diff, mem_veroneseFaceComplex_iff, mem_veroneseFaceComplex_iff,
+  rw [Set.mem_sdiff, mem_veroneseFaceComplex_iff, mem_veroneseFaceComplex_iff,
     Set.mem_setOf_eq]
   omega
 

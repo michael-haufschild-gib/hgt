@@ -4484,3 +4484,46 @@ the reusable layers, `RHTower` for the route-specific ones.
   decomposition `IsHilbertSum.mkInternal`, and injectivity of the band operator to dispose of the
   eigenvalue `0` (reachable from `HTGeometry.ae_eq_zero_of_fourierIntegral_eq_zero` and
   `HTGeometry.compactFourier_eq_zero_of_vanishing_on_real_interval`).
+
+- 2026-08-15 (hundred-and-forty-first instalment) -- **The band operator diagonalizes the aperture
+  `L²`.**  New module `RHTower/ProlateBandHilbertSum.lean`, wired, axiom-clean.
+
+  * **`isSymmetric_bandOperatorL2`, `bandEigenspace_eq_eigenspace`,
+    `completeSpace_bandOperator_eigenspace`** -- the corpus's band operator, its eigenspaces and
+    their completeness, transported to mathlib's spectral vocabulary.
+  * **`bandEigenspaces_topologicalClosure`** -- compactness plus symmetry make the span of the
+    eigenspaces dense, by `ContinuousLinearMap.orthogonalComplement_iSup_eigenspaces_eq_bot`.
+  * **`isHilbertSum_bandEigenspaces`, `bandComponent`, `hasSum_bandComponent`** -- hence `L²[-1,1]`
+    is the Hilbert sum of the band eigenspaces and every vector is the unconditional sum of its
+    eigencomponents.
+  * **`inner_eq_inner_bandComponent`, `inner_self_bandComponent`** -- the projection property:
+    pairing against an element of the `μ`-eigenspace only sees the `μ`-component, and pairing a
+    vector against its own component returns that component's squared norm.
+
+- 2026-08-15 (hundred-and-forty-second instalment) -- **Reflection.**  New module
+  `RHTower/ProlateReflection.lean`, wired, axiom-clean.
+
+  * **`bandTransform_comp_neg`, `prolateSLAction_comp_neg`** -- both operators intertwine `x ↦ -x`:
+    the sinc kernel is even in the difference of its arguments, and the prolate coefficients are
+    even.
+  * **`bandTransform_sub`, `bandTransform_div_two`, `bandTransform_oddPart`** -- hence the odd part
+    of a global band eigenfunction is again one, at the same eigenvalue.
+  * **`integral_even_mul_odd_eq_zero`** -- an even and an odd profile are orthogonal on the
+    aperture.
+
+- 2026-08-15 (hundred-and-forty-third instalment) -- **Eigencomponents of an even profile are
+  even.**  New module `RHTower/ProlateBandComponentEven.lean`, wired, axiom-clean.
+
+  * **`bandClass_mem_bandEigenspace`** -- the band class of a continuous global band eigenfunction
+    lies in the eigenspace.
+  * **`bandComponent_mem_evenBandEigenspace`** -- for an even continuous profile `g` and a live
+    eigenvalue `mu`, the `mu`-component of `bandClass g` lies in the **even** band eigenspace.  The
+    argument is self-contained: the odd part `Po` of the component's smooth representative is again
+    a band eigenfunction, so it lies in the eigenspace; `⟪bandClass g, Po⟫ = 0` by parity; the
+    projection property turns this into `⟪Po, Po⟫ = 0`; hence `Po = 0` in `L²`, and the
+    reconstruction `eigenExtension (bandClass Po) = Po` makes it identically zero.
+
+  The variational selection of a mode with `s <= 1/2` now needs only one more input: injectivity of
+  the band operator, which removes the eigenvalue `0` from the decomposition of the Gaussian test
+  vector.  With it, every eigencomponent lands in an **even** eigenspace at a **nonzero** eigenvalue,
+  where instalment 140 applies.

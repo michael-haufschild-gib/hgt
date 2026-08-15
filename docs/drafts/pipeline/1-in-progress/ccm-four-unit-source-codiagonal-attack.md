@@ -2689,8 +2689,8 @@ Formal source:
 ## C58 continuous source quotient `[PROVED AND LEAN-FORMALIZED]`
 
 C54--C57 were finite atomic. Groskin's pole source is a push-forward of an absolutely continuous
-measure, and the archimedean source is continuous as well, so an atomic-only obstruction would not
-close the literal source dictionary. Put
+finite-aperture measure, so an atomic-only obstruction would not close even the order-zero source
+dictionary. Put
 
 ```text
 H=[0,1],
@@ -2738,9 +2738,10 @@ T_N(L_atomic)=the C56 atomic observer,
 Q_N(L_atomic)=the C56 whole event packet.                          (C58.6)
 ```
 
-Thus the continuous source is not an exceptional limit outside the finite dictionary; atomic,
-pole, and archimedean channels share one exact nonfaithful quotient. C57's no-decoder conclusion is
-therefore the correct structural warning for the literal source, not an artefact of finite sums.
+Thus finite-measure continuous sources are not exceptional limits outside the finite dictionary;
+atomic and pole channels share one exact nonfaithful quotient. C60 later proves that the literal
+Gamma density has a first-order endpoint pole and requires a mixed-order refinement, so C58 does
+not assert that raw archimedean density is a finite measure.
 
 **Higher principle exposed.** Reporter dimension and source topology are separate layers. Moving
 from atoms to measures completes the source topology but does not add finite reporter coordinates.
@@ -2749,9 +2750,10 @@ prime/pole/Gamma provenance before `T_N`, while the CCM matrix is only its finit
 Ward incidence should be sought as the connection of that distinguished source path, not as an
 inverse to `(C58.4)`.
 
-**Next conjecture C59.** Instantiate Groskin's literal channels in `S`: the finite prime-power
-atomic functional with weights `-Lambda(q)/sqrt(q)`, the pole push-forward of
-`2 cosh(y/2)L dy`, and the cutoff-free archimedean functional. Prove their sum's packet equals the
+**Next conjecture C59.** Instantiate Groskin's literal order-zero channels in `S`: the finite
+prime-power atomic functional with weights `-Lambda(q)/sqrt(q)` and the pole push-forward of
+`2 cosh(y/2)L dy`. Audit the Gamma endpoint order rather than assuming a finite measure. Prove the
+completed mixed-order source packet equals the
 already-formal `ccmPublishedRestrictedWeilMatrix` after the exact aperture/mode normalization. Then
 differentiate the source path in aperture and compare its connection defect with the continued
 prime--Gamma/Xi Ward source already present in corpus. Equality of matrices alone is insufficient;
@@ -2818,3 +2820,69 @@ forcing a false bounded-measure model.
 
 Formal source:
 `formal/GaloisForLFunctions/RHTower/CCMGuinandWeilLiteralPolarPrimeSource.lean`.
+
+## C60 mixed-order Gamma source and complete odd dictionary `[PROVED AND LEAN-FORMALIZED]`
+
+C59 proposed placing the cutoff archimedean channel in the same continuous dual as finite measures.
+That order-zero conjecture fails for the literal density
+
+```text
+rho_Gamma(h)=exp(h/2)/(exp(h)-exp(-h)).                           (C60.1)
+```
+
+Lean proves the exact endpoint principal coefficient
+
+```text
+h rho_Gamma(h) -> 1/2  as h -> 0+.                              (C60.2)
+```
+
+The Gamma source therefore cannot be treated as another bounded density on the horizon. The
+positive survivor is sharper: every physical sine supplies exactly the missing first-order zero,
+
+```text
+sin(xi h) rho_Gamma(h) -> xi/2,                                  (C60.3)
+```
+
+and Lean proves this product interval-integrable on every positive aperture by an explicit bound.
+After the affine source reflection, define the archimedean odd coordinate only after cancellation:
+
+```text
+A_a(n)=-(1/pi) integral_0^(2a)
+       sin(2*pi*n*omega_a(h)) rho_Gamma(h) dh.                    (C60.4)
+```
+
+Then Lean proves
+
+```text
+A_a(n)=ccmPublishedArchimedeanSineCoefficient(a,pi*n/a),         (C60.5)
+```
+
+and combining C59 with `(C60.5)` yields the complete physical odd source:
+
+```text
+psi_pole-prime(a,n)+A_a(n)
+  = ccmPublishedSourceSineCoefficient(a,pi*n/a).                 (C60.6)
+```
+
+**Failed conjecture and pivot.** A common `C([0,1],R)^*` measure model is correct for finite primes
+and compact pole density but has the wrong analytic order for the raw Gamma endpoint. C60 does not
+force that false representation. It retains the order-zero pole--prime functional and adjoins the
+sine-renormalized Gamma odd jet. This closes the entire published odd family while exposing the
+precise unclosed half: weighted-cosine diagonals require the full endpoint counterterm.
+
+**Higher principle exposed.** Arithmetic source is a graded distributional complex, not one measure
+space. Odd sine coordinates descend one order by vanishing at the endpoint; diagonal tent--cosine
+tests generally do not and must retain the endpoint value/counterterm. The long-standing split
+between easy codiagonal formulas and difficult diagonal/source normalization is exactly this order
+drop. Four-unit central mass lives in the counterterm-bearing diagonal sector, while odd Ward
+incidence lives in the cancellation sector.
+
+**Next conjecture C61.** Lift the full `ccmPublishedRestrictedArchimedeanPairing` to a source-native
+first-jet object carrying endpoint value and renormalized difference quotient. Prove exact action on
+the weighted-cosine coordinate `2 omega cos(2*pi*n*omega)` and combine with the analogous
+pole--prime diagonal action. Only then prove whole centered-packet equality with
+`ccmPublishedRestrictedWeilMatrix`. Differentiate this mixed-order aperture path; test whether its
+boundary counterterm plus moving prime cutoff is exactly the continued Xi Ward column.
+
+Formal source:
+`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilArchimedeanOddSource.lean`.

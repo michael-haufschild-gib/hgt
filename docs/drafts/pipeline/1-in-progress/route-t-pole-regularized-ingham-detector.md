@@ -225,3 +225,26 @@ Gaussian cost is at most `exp(kappa)`. Hence Lean proves
 Remaining Gabriel core is no longer exponent algebra, dual construction, pole regularity, or
 center transfer. It is: prove analytic/bounded scalar-family integration and sharp global
 Gaussian endpoint Hölder bounds from the already-formal critical and right-edge moments.
+
+### C5f: Gaussian closed-strip boundedness and actual scalar analyticity
+
+Status: **FORMALIZED; ENDPOINT MOMENT SUBSTITUTION REMAINS**.
+
+`Sieve/InghamGabrielPoleClearedBound.lean` proves unconditional global boundedness of the actual
+Gaussian residue-unit error on the fixed closed Gabriel strip. At large height it combines the
+formal polynomial vertical-strip zeta bound, `|M_X(s)|<=X`, and
+`t^n exp(-c|t|)<=n!/c^n`; bounded height is a compact subset separated from `z=0`. It then proves
+the concrete coefficient-three scalar family satisfies Hadamard's `BddAbove` premise.
+
+The datum-zero phase seam was not ignored: `InghamFixedGabrielDualPower.lean` now proves joint
+continuity of `(w,z) -> dualPower(w,z)` whenever `Re q(z)>0`, including `w=0` via continuity of
+the variable real power `|w|^Re(q(z))`. Using that theorem,
+`Sieve/InghamGabrielScalarAnalytic.lean` differentiates the actual compact scalar integral on the
+safe half-plane `Re z>1/4` by a uniform Cauchy estimate and proves its exact `DiffContOnCl` premise
+on the Gabriel strip.
+
+All new public theorems are axiom-clean modulo Lean's standard `propext`, `Classical.choice`, and
+`Quot.sound`; both modules are wired and target-built. Thus no scalar regularity or global
+boundedness premise remains. The first open Gabriel theorem is now only the sharp uniform
+translated left `4/3` and right `2` endpoint moment substitution for the Gaussian pole-cleared
+field, followed immediately by the already-formal interpolation theorem.

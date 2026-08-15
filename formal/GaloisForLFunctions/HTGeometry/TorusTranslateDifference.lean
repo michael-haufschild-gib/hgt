@@ -136,13 +136,11 @@ theorem tendsto_integral_diffQuotient (F : C(UnitAddTorus d, ℂ)) {L : NNReal}
       (𝓝[≠] (0 : ℝ))
       (𝓝 (∫ x in torusBox d, ‖fderiv ℝ (torusLift F) x (Pi.single j 1)‖ ^ 2)) := by
   have hcont := continuous_torusLift F
+  set G : (d → ℝ) → ℂ := torusLift F with hG
+  set Φ : ℝ → (d → ℝ) → ℝ := fun h x => ‖G (x + Pi.single j h) - G x‖ ^ 2 / h ^ 2 with hΦ
+  set g : (d → ℝ) → ℝ := fun x => ‖fderiv ℝ G x (Pi.single j 1)‖ ^ 2 with hgdef
   refine tendsto_integral_filter_of_dominated_convergence
-    (μ := (volume : Measure (d → ℝ)).restrict (torusBox d))
-    (l := 𝓝[≠] (0 : ℝ))
-    (F := fun (h : ℝ) (x : d → ℝ) =>
-      ‖torusLift F (x + Pi.single j h) - torusLift F x‖ ^ 2 / h ^ 2)
-    (f := fun x : d → ℝ => ‖fderiv ℝ (torusLift F) x (Pi.single j 1)‖ ^ 2)
-    (bound := fun _ => ((L : ℝ)) ^ 2) ?_ ?_ ?_ ?_
+    (bound := fun _ : d → ℝ => ((L : ℝ)) ^ 2) ?_ ?_ ?_ ?_
   · filter_upwards with h
     refine Continuous.aestronglyMeasurable ?_
     refine Continuous.div_const ?_ _
@@ -150,28 +148,94 @@ theorem tendsto_integral_diffQuotient (F : C(UnitAddTorus d, ℂ)) {L : NNReal}
   · filter_upwards [self_mem_nhdsWithin] with h hh
     filter_upwards with x
     have hh0 : h ≠ 0 := hh
-    have hdist : ‖torusLift F (x + Pi.single j h) - torusLift F x‖ ≤ (L : ℝ) * |h| := by
-      have := hLip.dist_le_mul (x + Pi.single j h) x
-      rw [dist_eq_norm, dist_eq_norm] at this
-      simpa [norm_single, Real.norm_eq_abs] using this
-    have hnn : (0 : ℝ) ≤ ‖torusLift F (x + Pi.single j h) - torusLift F x‖ := norm_nonneg _
-    have hsq : ‖torusLift F (x + Pi.single j h) - torusLift F x‖ ^ 2 ≤ ((L : ℝ)) ^ 2 * h ^ 2 := by
-      have hsq' := mul_self_le_mul_self hnn hdist
-      calc ‖torusLift F (x + Pi.single j h) - torusLift F x‖ ^ 2
-          = ‖torusLift F (x + Pi.single j h) - torusLift F x‖ *
-            ‖torusLift F (x + Pi.single j h) - torusLift F x‖ := by ring
-        _ ≤ ((L : ℝ) * |h|) * ((L : ℝ) * |h|) := hsq'
-        _ = ((L : ℝ)) ^ 2 * h ^ 2 := by
-            rw [← sq_abs h]
-            ring
+    have hdist : ‖G (x + Pi.single j h) - G x‖ ≤ (L : ℝ) * |h| := by
+      have hd := hLip.dist_le_mul (x + Pi.single j h) x
+      rw [dist_eq_norm, dist_eq_norm] at hd
+      have hsub : x + Pi.single j h - x = (Pi.single j h : d → ℝ) := by
+        rw [add_sub_cancel_left]
+      rw [hsub, norm_single, Real.norm_eq_abs] at hd
+      exact hd
+    have hnn : (0 : ℝ) ≤ ‖G (x + Pi.single j h) - G x‖ := norm_nonneg _
+    have habs : ((L : ℝ) * |h|) * ((L : ℝ) * |h|) = ((L : ℝ)) ^ 2 * h ^ 2 := by
+      rw [← sq_abs h]
+      ring
+    have hsq : ‖G (x + Pi.single j h) - G x‖ ^ 2 ≤ ((L : ℝ)) ^ 2 * h ^ 2 := by
+      rw [sq]
+      exact le_trans (mul_self_le_mul_self hnn hdist) (le_of_eq habs)
     have hh2 : (0 : ℝ) < h ^ 2 := by positivity
     rw [Real.norm_eq_abs, abs_of_nonneg (by positivity), div_le_iff₀ hh2]
     exact hsq
-  · refine integrableOn_const.mpr (Or.inr ?_)
-    rw [volume_torusBox]
-    exact one_lt_top
-  · filter_upwards [hLip.ae_differentiableAt] with x hx
+  · have hfin : IsFiniteMeasure ((volume : Measure (d → ℝ)).restrict (torusBox d)) := by
+      refine ⟨?_⟩
+      rw [Measure.restrict_apply_univ, volume_torusBox]
+      exact ENNReal.one_lt_top
+    exact integrable_const _
+  · filter_upwards [ae_restrict_of_ae hLip.ae_differentiableAt] with x hx
     exact tendsto_diffQuotient_sq hx j
+
+theorem isFiniteMeasure_restrict_torusBox :
+    IsFiniteMeasure ((volume : Measure (d → ℝ)).restrict (torusBox d)) := by
+  refine ⟨?_⟩
+  rw [Measure.restrict_apply_univ, volume_torusBox]
+  exact ENNReal.one_lt_top
+
+theorem integrableOn_sq_fderiv (F : C(UnitAddTorus d, ℂ)) {L : NNReal}
+    (hLip : LipschitzWith L (torusLift F)) (j : d) :
+    IntegrableOn (fun x => ‖fderiv ℝ (torusLift F) x (Pi.single j 1)‖ ^ 2) (torusBox d) := by
+  have hfin := isFiniteMeasure_restrict_torusBox (d := d)
+  refine Integrable.mono' (integrable_const ((L : ℝ) ^ 2)) ?_ ?_
+  · refine Measurable.aestronglyMeasurable ?_
+    exact (measurable_fderiv_apply (torusLift F) (Pi.single j 1)).norm.pow_const 2
+  · filter_upwards [ae_restrict_of_ae hLip.ae_differentiableAt] with x hx
+    have hop : ‖fderiv ℝ (torusLift F) x‖ ≤ (L : ℝ) := norm_fderiv_le_of_lipschitz ℝ hLip
+    have hval : ‖fderiv ℝ (torusLift F) x (Pi.single j 1)‖ ≤ (L : ℝ) := by
+      refine le_trans ((fderiv ℝ (torusLift F) x).le_opNorm _) ?_
+      rw [norm_single]
+      simpa using hop
+    have hnn : (0 : ℝ) ≤ ‖fderiv ℝ (torusLift F) x (Pi.single j 1)‖ := norm_nonneg _
+    rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+    nlinarith [hval, hnn]
+
+/-- **Translate-difference bound from an almost-everywhere gradient bound.**  This is exactly the
+hypothesis consumed by the torus Poincaré inequality. -/
+theorem translate_diff_le_of_ae_fderiv_bound (F : C(UnitAddTorus d, ℂ)) {L : NNReal} {K : ℝ}
+    (hLip : LipschitzWith L (torusLift F))
+    (hK : ∀ᵐ x : d → ℝ, ∑ j : d, ‖fderiv ℝ (torusLift F) x (Pi.single j 1)‖ ^ 2 ≤ K) :
+    ∀ ε > 0, ∀ᶠ h : ℝ in 𝓝[≠] (0 : ℝ),
+      ∑ j : d, (∫ t : UnitAddTorus d, ‖F (t + coordShift j h) - F t‖ ^ 2) ≤ (K + ε) * h ^ 2 := by
+  intro ε hε
+  have hfin := isFiniteMeasure_restrict_torusBox (d := d)
+  have hsum : Tendsto (fun h : ℝ => ∑ j : d, ∫ x in torusBox d,
+      ‖torusLift F (x + Pi.single j h) - torusLift F x‖ ^ 2 / h ^ 2) (𝓝[≠] (0 : ℝ))
+      (𝓝 (∑ j : d, ∫ x in torusBox d,
+        ‖fderiv ℝ (torusLift F) x (Pi.single j 1)‖ ^ 2)) :=
+    tendsto_finsetSum _ fun j _ => tendsto_integral_diffQuotient F hLip j
+  have hswap : (∑ j : d, ∫ x in torusBox d, ‖fderiv ℝ (torusLift F) x (Pi.single j 1)‖ ^ 2) =
+      ∫ x in torusBox d, ∑ j : d, ‖fderiv ℝ (torusLift F) x (Pi.single j 1)‖ ^ 2 :=
+    (integral_finsetSum _ fun j _ => integrableOn_sq_fderiv F hLip j).symm
+  have hlimle : (∑ j : d, ∫ x in torusBox d,
+      ‖fderiv ℝ (torusLift F) x (Pi.single j 1)‖ ^ 2) ≤ K := by
+    rw [hswap]
+    have hconst : (∫ _x in torusBox d, K) = K := by
+      rw [setIntegral_const, measureReal_def, volume_torusBox]
+      simp
+    rw [← hconst]
+    refine setIntegral_mono_ae ?_ (integrable_const K) ?_
+    · exact integrable_finsetSum _ fun j _ => integrableOn_sq_fderiv F hLip j
+    · exact hK
+  have hevent : ∀ᶠ h : ℝ in 𝓝[≠] (0 : ℝ), (∑ j : d, ∫ x in torusBox d,
+      ‖torusLift F (x + Pi.single j h) - torusLift F x‖ ^ 2 / h ^ 2) ≤ K + ε := by
+    refine hsum.eventually_le_const ?_
+    linarith
+  filter_upwards [hevent, self_mem_nhdsWithin] with h hh hh0
+  have hne : h ≠ 0 := hh0
+  have hh2 : (0 : ℝ) < h ^ 2 := by positivity
+  have hrewrite : ∀ j : d, (∫ t : UnitAddTorus d, ‖F (t + coordShift j h) - F t‖ ^ 2) =
+      (∫ x in torusBox d, ‖torusLift F (x + Pi.single j h) - torusLift F x‖ ^ 2 / h ^ 2) * h ^ 2 := by
+    intro j
+    rw [integral_div, div_mul_cancel₀ _ hh2.ne', integral_translate_diff_eq]
+  rw [Finset.sum_congr rfl fun j _ => hrewrite j, ← Finset.sum_mul]
+  exact mul_le_mul_of_nonneg_right hh hh2.le
 
 end Transfer
 

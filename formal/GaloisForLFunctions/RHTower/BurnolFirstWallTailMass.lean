@@ -98,6 +98,13 @@ theorem burnolZeroDividedSource_eq_centered {ρ : ℂ} (hρ0 : 0 < ρ.re) (hρ1 
 /-- The constant in the quadratic exterior-mass bound. -/
 def burnolTailMassConstant (ρ : ℂ) : ℝ := ‖ρ + 1‖ * (1 + ‖ρ + 2‖ / (ρ.re + 2)) + 4
 
+theorem burnolTailMassConstant_nonneg {ρ : ℂ} (hρ : -2 < ρ.re) : 0 ≤ burnolTailMassConstant ρ := by
+  have hquot : (0 : ℝ) ≤ ‖ρ + 2‖ / (ρ.re + 2) := div_nonneg (norm_nonneg _) (by linarith)
+  have hprod : (0 : ℝ) ≤ ‖ρ + 1‖ * (1 + ‖ρ + 2‖ / (ρ.re + 2)) :=
+    mul_nonneg (norm_nonneg _) (by linarith)
+  rw [burnolTailMassConstant]
+  linarith
+
 /-- **The exterior mass of the forward divided shift is `O(T^{-2})`.** -/
 theorem norm_integral_burnolZeroDividedSource_Ioi_le {ρ : ℂ} (hρ0 : 0 < ρ.re) (hρ1 : ρ.re < 1)
     {T : ℝ} (hT : 0 < T) :
@@ -116,9 +123,10 @@ theorem norm_integral_burnolZeroDividedSource_Ioi_le {ρ : ℂ} (hρ0 : 0 < ρ.r
     have h := norm_integral_burnolCenteredPrimitiveKernel_Ioi_le (ρ := (0 : ℂ))
       (by rw [Complex.zero_re]; norm_num) hT
     rw [Complex.zero_re, show ((0 : ℂ) + 2) = 2 by ring,
-      show ‖(2 : ℂ)‖ = 2 by norm_num] at h
-    norm_num at h
-    exact h
+      show ‖(2 : ℂ)‖ = 2 by norm_num, show (0 : ℝ) + 2 = 2 by norm_num] at h
+    calc ‖∫ t in Ioi T, burnolCenteredPrimitiveKernel 0 t‖
+        ≤ 2 * (1 + 2 / 2) * T ^ (-2 : ℝ) := h
+      _ = 4 * T ^ (-2 : ℝ) := by rw [show (2 : ℝ) * (1 + 2 / 2) = 4 by norm_num]
   -- the tail term, already one power better
   have hB : ‖∫ t in Ioi T, (burnolZeroDividedSource ρ t + burnolCenteredPrimitiveKernel 0 t)‖
       ≤ ‖ρ + 1‖ * (1 + ‖ρ + 2‖ / (ρ.re + 2)) * T ^ (-2 : ℝ) := by

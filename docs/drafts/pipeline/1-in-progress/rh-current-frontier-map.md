@@ -3,12 +3,12 @@
 ## Research map of HTGeometry, HilbertMetric, and RHTower
 
 **Corpus cutoff:** 15 August 2026, committed snapshot
-**f98cdcde330b5bb6b5b40094089c2c460bdf3636**, plus explicitly identified post-cutoff
+**2fa3ffa2aefc97dd5969f1431648e61021bf37f9**, plus explicitly identified post-cutoff
 shared-tree declarations audited the same day.
 
 This map follows theorem statements, not module placement or research chronology. `Lean-proved`
 means an unconditional declaration at the audit tip. Historical `Active-tree Lean` wording in
-route paragraphs records live-tree audit provenance; commit `f98cdcde3` contains those
+route paragraphs records live-tree audit provenance; commit `2fa3ffa2a` contains those
 declarations unless a paragraph explicitly says `post-cutoff active-tree`.
 Paper-only claims remain labelled.
 
@@ -50,6 +50,10 @@ Current mathematical changes are:
   frequency at `s=1+1/log x+i tau`, `log log x-log|zeta(s)|` equals the finite prime-clock energy
   `sum_(p<=x)(1-cos(tau log p))/p` up to one absolute constant. Safe-line phase extraction,
   prime-power tail, cutoff tail, abscissa shift, and Mertens normalization are therefore closed.
+  Lean also transfers this source law to pretentious geometry: for every real prime sequence
+  `r(p)` in the closed unit disc, its squared distance from `p^(i alpha)` is at least one quarter
+  of the doubled-frequency zeta-line deficit, up to the same absolute constant. This is a genuine
+  source bridge from D2 into real-twist exclusion, but it remains on the Euler-convergent line.
   The remaining D2 wall is continuation: no theorem transports this positive source identity into
   the critical strip or bounds the continued prime--Gamma trace above frequency four.
 - **G exterior:** whole-frequency assembly is closed. Lean now retains both frequency rays,
@@ -98,7 +102,8 @@ Current mathematical changes are:
   nonzero exactly inside the physical aperture, and the paired primitive identity contains no
   derivative of the event source. Post-cutoff active-tree Lean further expands the prime-normal
   resolvent cross-section as a norm-convergent central-binomial functional-calculus series, retaining
-  every descendant grade. It does not supply the completed forcing, derivative regularity,
+  every descendant grade. It does not identify the complete physical source with the now-available
+  weak-derivative adapter, supply the completed forcing,
   or trace orientation. Post-cutoff active-tree Lean proves the sharp polynomial-carrier wall:
   the distorted Gamma square density is integrable exactly for transport degree `kappa<sigma`,
   and a radial lattice-square-summable/Gamma-integrable exponent window exists exactly in ranks
@@ -118,7 +123,19 @@ Current mathematical changes are:
   source core. The cross-sign interaction is nonnegative and strictly positive whenever both signs
   occur; hence taking absolute value strictly lowers energy for every sign-changing core vector.
   This closes Markov contraction and strict core irreducibility. It does not prove positivity of
-  the ground energy or identify the ground with the arithmetic source. The floor branch still needs
+  the ground energy or identify the ground with the arithmetic source. The analytic adapter layer
+  has also advanced: the literal Gamma-jump multiplier is twice a vertical digamma real part,
+  grows at most logarithmically, is differentiable with an explicit convergent series, and has
+  derivative `O((1+|eta|)^(-1))`. Real globally Lipschitz `L2` profiles with `L2` derivative and
+  vanishing endpoints have their literal derivative as complex weak derivative; smooth activation
+  promotes every exponentially decaying Lipschitz tail satisfying the declared derivative bound
+  to such a whole-line `H1` pair. Lean now applies this machinery to the literal endpoint-centered
+  one-prime Suzuki polar trace: its clamped centered trace has an explicit exponential envelope,
+  is globally Lipschitz with the physical polar constant, has exponentially decaying derivative,
+  and its smooth-onset primitive and derivative lie in `L2` and form the exact complex tempered
+  weak-derivative pair. Thus one-prime polar source membership is closed. What remains is completed
+  all-prime/all-aperture source assembly with the full cutoff/jump commutator, global two-ray
+  support reduction, and physical zero-half-log trace orientation and return. The floor branch still needs
   source-derived exhaustion/lower control of every
   restricted-Weil near-ground direction.
 - **CCM-FU:** finite-stage Sonin formation is now literal. Lean constructs the tensor-product
@@ -175,12 +192,18 @@ Current mathematical changes are:
   this warning demanded: the pole is the transported density `2 cosh(h/2) dh`, visible prime
   powers are literal von-Mangoldt atoms, and at every physical sine mode their combined continuous
   functional equals the published polar--prime CCM coefficient with exact signs and `pi` factor.
-  Thus finite-aperture polar--prime source formation and its landing in the continuous quotient are
-  closed. Positivity of the completed matrix and a canonical cofinal ground selector are not.
+  The singular archimedean odd channel is now closed too: Lean proves its endpoint principal
+  coefficient is `1/2`, the physical sine cancels the pole with endpoint value `xi/2`, the
+  cancelled channel is interval-integrable, and its horizon landing is exactly the published
+  archimedean sine coefficient. Adding it to the pole--prime functional gives the complete
+  published physical odd source at every mode. Thus the finite-aperture physical odd-source
+  dictionary is exact. The endpoint-renormalized weighted-cosine diagonal, positivity of the
+  completed matrix, and a canonical cofinal ground selector are not closed.
   Remaining CCM
   core is canonical `Pi(lambda,k)` formation, proof that
   its simple-ground/block hypotheses hold cofinally, source-specific fixed-support mean-square
-  convergence with nonzero Xi landing, and four-unit ground orientation. The CCM--E
+  convergence with nonzero Xi landing, the singular weighted-cosine completion, and four-unit
+  ground orientation. The CCM--E
   seam is a real architecture opening, but not yet a route: no
   cofinal theorem transports Route E's Hall/load/flux law into CCM's floor selector.
 - **L:** the reciprocal-prime seam form is now internal to a literal finite Big-Witt Stokes
@@ -228,9 +251,16 @@ Current mathematical changes are:
   half-separation threshold for every bandwidth `c>=400`; this is a strict trial witness, not a
   whole-ground lower bound. Post-cutoff finite-dimensional spectral selection now turns any such
   quadratic-form witness *inside a live even band eigenspace* into a nonzero smooth even joint
-  band/prolate eigenfunction above the same separation threshold. This closes the variational
-  selector conditional on putting the witness into a physical band eigenspace; the current
-  Gaussian trial is not yet proved to lie in one. Its Abel boundary is the full radial source, the Abel
+  band/prolate eigenfunction above the same separation threshold. Lean now also diagonalizes the
+  unit-band `L2` space as the Hilbert sum of all band eigenspaces, constructs every orthogonal band
+  component, and proves their unconditional sum recovers the original vector. Reflection
+  intertwines both band and prolate actions, while even and odd parts are aperture-orthogonal.
+  Lean now further proves every nonzero-eigenvalue band component of a continuous even profile
+  belongs to the even band eigenspace. Thus existence of band projections and parity reduction are
+  closed componentwise. The precise remaining
+  selector theorem is quadratic-form threshold inheritance: prove that the Gaussian's strict
+  inequality is retained by at least one nonzero live even band component. No current declaration
+  decomposes that prolate quadratic inequality across the Hilbert sum. Its Abel boundary is the full radial source, the Abel
   family is uniformly bounded, Abel limit commutes with the growing radial primitive, and the
   channel split is exact. What remains at seed level is the actual-PSWF quantitative comparison
   and a uniform bound on the summed channel primitives; the Abel theorem transfers such a bound
@@ -311,11 +341,31 @@ Current mathematical changes are:
   cubically regularized balanced primitive Euler source/co-source codiagonal. Every finite base
   Gram trace is exactly a finite source codiagonal before zero expansion, and the total source
   trace is independent of reflection displacement. Arithmetic budget construction and estimation
-  are therefore closed, not part of the continuation conjecture.
-  Remaining producer is independent of multiplicity and source estimation: a coefficient-faithful
-  support-level pole--Gamma continuation carrying this exact regularized balanced codiagonal to
-  the raw completed-Xi conormal current before divisor specialization; canonical copy resolution
-  is already contractive.
+  are therefore closed, not part of the continuation conjecture. P-G185 now proves the exact
+  absolute-convergence chamber of that same biorthogonal codiagonal: after total joint damping
+  `s`, its coefficient is the P-G181 base weight times `n^(-s)`, it is summable exactly for
+  `s>=0`, and every `s<0` diverges already on the depth-zero prime face. Cubic regularization
+  reaches the reflection wall and its boundary but cannot cross it by ordinary absolute source
+  summation. Any successful continuation must therefore be a boundary-value, closed-graph, or
+  genuinely completed theorem rather than a source-series contour shift.
+  Independently, Lean closes the target support incidence that the previous map still listed as
+  open. Burnol's actual nested-window top-conormal coordinate, after inversion and one conormal
+  clock, is exactly the normalized residue feature of the completed-Xi conormal column; reflection
+  gives its Hermitian mate, and their aperture integral is the exact cubic charge
+  `1/(4*(Re rho-1/2)^3)`. P-G186 now constructs the source-to-window square itself. Each primitive
+  Euler cell at its canonical right-half-plane node defines a coefficient-weighted inverse Burnol
+  window; their full aperture Gram is entrywise the P-G181 base Cauchy cube for arbitrary ordinate
+  clocks. Positivity, the balanced-source trace identity, and the uniform `<2` budget therefore
+  hold before Xi-zero expansion. Remaining producer is only the completed boundary-value
+  restriction carrying this universal source-window Gram from canonical Euler nodes to actual
+  completed-Xi divisor nodes. Multiplicity normalization, target support landing, source-window
+  formation, and source budget are closed.
+  A new CCM--P seam identifies the same base budget before zeros: evaluating each literal critical
+  CCM prime atom on the continuous cubic Green test gives exactly its Route-P natural-number base
+  mass, the whole finite-aperture CCM prime functional is the negative truncated base budget, and
+  pole completion is exactly polar surplus minus that budget. This is a coefficient-faithful
+  source isogeny, not a new route; it localizes the missing completed law to shorting the polar--
+  Gamma surplus before quadratic conormal landing.
   A sharper raw-residue lane does not need copy resolution for RH exclusion: functional-equation
   reflection pairs the positive-half conormal with an oriented negative-half mate, giving exact
   cubic charge `1/(4a^3)`, while raw multiplicity makes every strict-right zero cost at least `2`.
@@ -323,7 +373,7 @@ Current mathematical changes are:
   Lean identifies the same cubic charge as the exact vertical Hardy--Sobolev energy of the
   differentiated boundary pole, `pi/(2a^3)`, and on each actual strict-right zero as `2*pi` times
   the P-G181 base charge. Thus either
-  construct the normalized support-level continuation just described, or prove the weaker
+  construct the completed Euler-node-to-Xi-divisor boundary restriction just described, or prove the weaker
   two-sided raw modular-conormal source trace is `<2` before residue expansion; both share the same
   missing pole--Gamma--von-Mangoldt source comparison.
   Curvature lane separately retains its finite high-tail ceiling.
@@ -386,11 +436,14 @@ Current mathematical changes are:
   Hence both closed-strip regularity and scalar-family boundedness premises are closed for the
   actual field. Post-cutoff Lean also proves the complex dual-power map is jointly continuous in
   datum and strip variable wherever the affine exponent has positive real part, including the
-  datum-zero seam; no arbitrary phase choice is hidden there. One formal interface remains because
-  the current interpolation declaration asks
-  for global continuity of `f`, whereas the concrete quotient is only certified away from its
-  irrelevant auxiliary point `0`; this must be localized to the strip or discharged by a
-  continuous extension. The first unresolved scientific theorem is the pair of uniform translated
+  datum-zero seam; no arbitrary phase choice is hidden there. Active-tree Lean now closes the
+  former continuity adapter completely: the concrete pole-cleared Gabriel scalar family is
+  differentiable on the safe half-plane and `DiffContOnCl` on the exact Hadamard strip. No global
+  extension across the irrelevant auxiliary point is needed. Lean also upgrades Littlewood's
+  dyadic Dirichlet bound from one terminal cutoff to every prefix below the canonical truncation,
+  including endpoint-reduced, constant-order, and power-of-two forms. This supplies the
+  prefix-uniform input needed by Abel transport; it does not prove the translated Gabriel moments.
+  The first unresolved scientific theorem is the pair of uniform translated
   endpoint moments—left `4/3`, right `2`—and their substitution into the closed interpolation theorem,
   followed by detector zero counting. This is followed by the
   `7/10` prime-supply theorem and source-faithful Route-T composition. The Wold chart separately
@@ -492,8 +545,9 @@ Current mathematical changes are:
 
 No new independent lettered route appears. T and U remain the latest distinct architectures.
 G/CCM and O still share one ground-space problem—control every true restricted-Weil near-ground
-direction—but retain different source mechanisms. Latest theorems narrow G, CCM-FU, O, P, T, U, and
-adjacent L infrastructure; none proves or disproves RH.
+direction—but retain different source mechanisms. Latest theorems narrow G, CCM-FU, O, P, T, U,
+and adjacent L/R infrastructure, and create a literal CCM--P source seam; none proves or disproves
+RH.
 
 ## Abstract
 
@@ -553,9 +607,13 @@ than one zero-side quantum. P-G176 proves that imposing the corresponding scalar
 all strict-right zero packets is exactly RH. P-G178 supplies a coefficient-faithful pre-zero
 arithmetic incidence between primitive scales: depth squaring doubles the clock, retains amplitude
 with modular gain `sqrt n`, and is an exact `1/8` contraction in cubic source measure despite being
-unbounded in counting norm. What remains absent is the completed Gamma--Euler/Xi landing from that
-source block to divisors; it must derive capacity rather than assume it. Route P is therefore not
-added to the Route-V count.
+unbounded in counting norm. P-G186 now constructs the entire primitive Burnol source-window Gram,
+and the CCM cubic-Green seam identifies its base mass atomwise inside the literal pre-quotient prime
+functional. What remains is the completed boundary restriction from canonical Euler nodes to
+actual Xi divisor nodes, equivalently polar--Gamma surplus shorting before conormal landing; it
+must derive capacity rather than assume it. This creates a literal CCM--P architecture opening but
+not a Route-V addition, because its first unresolved producer is Route P's same completed boundary
+law.
 Formal Green-square analysis also suggests a possible future quotient of P into C1:
 both endpoints meet at positive spectrum of the same source-built `B^2`, with all nonpositive bulk
 localized to one rank-two boundary current. The present Lean comparison reaches the P endpoints
@@ -569,17 +627,19 @@ displacement with their formation parameter or lands their neutral selector in a
 
 These additions do not instantiate Route V. The dephased Ward--Green exterior construction is a
 second Route-P lane because it uses the same completed prime--Gamma/Hedenmalm source family and
-asks for the same kind of source-side arithmetic budget; it is not a separate letter. The CCM
+asks for the same kind of source-side arithmetic budget; it is not a separate letter. The new
+CCM--P cubic-Green source isogeny likewise shares P's completed boundary restriction and CCM's
+pre-quotient source, so it is a seam rather than an independent letter. The CCM
 operator chain remains G/CCM's localized operator layer, while collision and probe-circle laws
 without pre-zero source budgets are receivers. First open source theorems are now: U's
 common-filter diagonal classification for the fixed cofinal carrier after its mixed Nyquist flux
 closed to zero; G/CCM's complete-ground selection and lower control, with G's separate global
 two-ray tempered subtraction/return and physical trace selection; P's high-tail curvature ceiling
-or a completed Gamma--Euler/Xi landing carrying P-G178's exact cubic-weighted depth-square
-contraction through a two-variable/determinant-line conormal form and deriving, rather than
-assuming, the P-G176 terminal capacity law;
-T's strip-local continuity adapter and uniform translated Gabriel endpoint moments from its now-
-closed fourth-moment/detector/interpolation budgets, followed by quantitative zero counting, prime
+or the completed Euler-node-to-Xi-divisor boundary restriction at P-G185's exact balanced damping
+wall, carrying P-G186's `<2` source-window Gram into the actual completed-Xi conormal feature and
+deriving, rather than assuming, the P-G176 terminal capacity law;
+T's uniform translated Gabriel endpoint moments from its now-closed fourth-moment, detector,
+interpolation, strip-analytic, and prefix-Littlewood budgets, followed by quantitative zero counting, prime
 supply, and signed Perron/cell/gap/current composition,
 plus pole-preserving Wold continuation; and L's
 singular source-to-fixed-physical specialization. Route R's former Calkin/Fisher alternatives are
@@ -793,30 +853,30 @@ existing route.
 | Route | Status | First unresolved source theorem |
 |---|---|---|
 | A | terminalized | none below its RH-equivalent source orientation |
-| CCM-FU | open, unlettered; finite source-faithful whole-`L2` completion, literal parity blocks, parity-free simple-ground Fourier law, fixed-support mean-square zero transfer, CCM--Suzuki bridge, and exact finite continuous-source quotient closed; CCM--E seam open | Lean constructs literal `sigma_S`, exact `mu(n)/n` Fourier transport, the published PSD parity packet, and the CCM--Suzuki mixed form. Fixed-support mean-square convergence promotes finite zero laws to nonzero compact-Fourier limits. The full finite Guinand--Weil matrix now factors exactly through `2N+1` coordinates for every continuous source functional, including finite measures; finite matrices therefore cannot select an overcomplete physical source after quotienting. First unresolved CCM theorem is pre-quotient canonical `Pi(lambda,k)` formation with cofinal simple-ground/mean-square approximation and four-unit orientation. The CCM--E seam becomes a route only if one comparison transports E's Hall/load/flux mechanism. |
+| CCM-FU | open, unlettered; finite source-faithful whole-`L2` completion, literal parity blocks, parity-free simple-ground Fourier law, fixed-support mean-square zero transfer, CCM--Suzuki bridge, exact finite continuous-source quotient, and complete physical odd-source weld closed; CCM--E seam open | Lean constructs literal `sigma_S`, exact `mu(n)/n` Fourier transport, published PSD parity packet, and CCM--Suzuki mixed form. Fixed-support mean-square convergence promotes finite zero laws to nonzero compact-Fourier limits. Full finite Guinand--Weil matrix factors exactly through `2N+1` coordinates for every continuous source functional, including finite measures; finite matrices therefore cannot select an overcomplete physical source after quotienting. Before quotienting, transported pole density plus literal finite von-Mangoldt atoms give exactly the published polar--prime sine coefficient. Endpoint-cancelled singular Gamma density is integrable and supplies exactly the published archimedean sine coefficient, so their sum is the complete published odd source at every physical mode. First unresolved CCM theorem is canonical `Pi(lambda,k)` formation with cofinal simple-ground/mean-square approximation, endpoint-renormalized weighted-cosine completion, and four-unit orientation. CCM--E seam becomes a route only if one comparison transports E's Hall/load/flux mechanism. |
 | B | retired | fixed-width scalar mechanism exhausted |
 | C1 | open, advanced | Source-derived real-spectrum/positive-closure theorem for the fixed theta-source inverse, or an Euler-product/intersection inequality dominating the deviation-weighted divided-difference moment. The numeric Weil-positivity cone is unconditional but spectrally silent on detector vectors; the probe-circle law shows every off-line response is an on-line response at displaced probes. The literal Gauss--Hodge source-resolvent field sharpens the producer to complete monotonicity only in `n>=19`, `0<X<(n+1)^2`; all complementary sectors are already unconditionally signed. Missing theorem is a pre-zero reflection-doubled trace/Markov identity proving this wedge, not more finite ray jets or post-divisor moments. Widening assembly remains only on the explicit-form branch. |
 | C2 | retired | detector saturated |
 | D | retired | finite prime--archimedean Hankel mechanism exhausted |
-| D2 | open | Lean identifies `log|zeta(sigma+i tau)|` on `sigma>1` with the absolutely convergent prime-cosine sum up to one uniform prime-square correction. This fixes the safe source boundary but does not continue or bound it at critical high frequency. First unresolved theorem remains a finite high-frequency ceiling for the continued literal prime--Gamma source. |
+| D2 | open, safe-line deficit and real-twist transfer closed | At `sigma=1+1/log x`, Lean proves `log log x-log|zeta(sigma+i tau)|` equals the finite prime-clock energy up to one absolute constant, uniformly in `tau`. Euler phase, prime-square tail, cutoff tail, head shift, and Mertens normalization are closed. One quarter of the doubled-frequency deficit lower-bounds pretentious distance from every real unit-disc prime sequence to `p^(i alpha)`. First unresolved theorem remains continuation of this control to a finite high-frequency ceiling for the literal continued prime--Gamma source. |
 | E | open, advanced; whole-anchor and unconditioned scalar saddle/determinant lanes retired | Lean proves the Euler logarithmic deficit equals antiscale energy up to a Mertens remainder and transports it to `pi^2 Y^a/(a^3 log^3 Y)`; every fixed-power unconditioned coercivity estimate fails and Gamma completion does not attenuate the escape. The saddle center/variance laws hold for every `0<sigma<1`. At the source-faithful escape frequency the full characteristic amplitude is only `(log Y)^(-2)e^{O(1)}`, while every fixed terminal logarithmic prime band has vanishing harmonic mass: neither Gaussian scalar decay nor terminal-band selection can rescue the lane. At `t_X=pi/log X`, every odd determinant grade reinforces and the full critical cosine batch is asymptotic to `-2sqrt(X)/log X`. The combinatorial successor is paper-level `R_X^gr`; first unresolved theorem is `ENTROPY-SPREAD-GRADE-RECURRENT-CUBE-CAPACITY`: source-first weights with unit incoming co-degree, interval Hall expansion for distinct opposite-parity integers, weighted moving zero/one-large-prime flux, and strict-half mixed cost. Multi-node/slot separation preserves squarefree jet multiplicity, but does not prove physical capacity. |
 | F | retired | finite-height Sonin transfer has wrong asymptotic order |
-| G | open, narrowed; two internal branches | Floor branch has the literal Friedrichs operator, compact resolvent, an attained ground vector, dense smooth source range with the same Rayleigh infimum, exact mixed complex source form, and formally self-adjoint `D†G_aD`. It still needs source-derived identification/lower control of the attained ground family. Exterior branch has whole-ray classification, no point-supported solution, forced-particular holomorphy and strip datum, exact gluing `c_-=-i*c_+`, one Fourier profile across all interior heights, and two-sided Gamma bounds. Exact similarity closes nonnormal one-prime transport; every literal one-prime `L2` source and every `L2` weak derivative pair has the required first-moment/Hardy admission on both rays. First unresolved theorem is complete all-aperture physical weak-derivative/source identification with its cutoff commutator, global two-ray support reduction, and physical zero-half-log trace orientation/return. |
+| G | open, narrowed; two internal branches | Floor branch has literal Friedrichs operator, compact resolvent, attained ground vector, dense smooth source range with the same Rayleigh infimum, exact mixed complex source form, formally self-adjoint `D†G_aD`, and strict Beurling--Deny core irreducibility under modulus. It still needs source-derived identification/lower control of the attained ground family. Exterior branch has whole-ray classification, no point-supported solution, forced-particular holomorphy and strip datum, exact gluing `c_-=-i*c_+`, one Fourier profile across all interior heights, and two-sided Gamma bounds. Gamma-jump logarithmic growth and reciprocal derivative decay are formal; smooth onset gives a general whole-line weak-derivative activation theorem. The literal endpoint-centered one-prime polar trace now satisfies it with explicit exponential value/derivative bounds, so its onset primitive is an unconditional `L2` weak-derivative pair. Exact similarity closes nonnormal one-prime transport and the required first-moment/Hardy admission on both rays. First unresolved exterior theorem is completed all-prime/all-aperture source assembly with full cutoff/jump commutator, global two-ray support reduction, and physical zero-half-log trace orientation/return. |
 | G2 | retired | required germ is RH-equivalent |
 | H | retired | finite Taylor/theta current loses required source information |
 | I | retired | exact collision with C2 width |
 | J | retired negatively | unrenormalized energy budget impossible |
 | K | retired | all-order survivor belongs to P |
-| L | open, advanced | Completed Xi Green primitive, coefficient-faithful Green-to-Calderon--Witt incidence, Burnol conormal classification, ordinary-integer BV boundary, all-cross-prime Koszul cycle, and rational-adelic strict resolved-Xi chain provenance are Lean-proved. Finite-complex Garland localization, codifferential/Hodge passage, and cohomological vanishing under the link-gap hypothesis are also complete; projective-plane incidence supplies the rank-two gap algebra. These advance the adjacent real-Milnor/tame-kernel carrier, not the RH core. First unresolved Route-L theorem remains the source-derived singular comparison making the resolved boundary exactly the fixed Burnol/Deninger physical landing, preserving multiplicity and ordinary-prime provenance before divisor specialization and without assuming `K_n(rho)=0`. |
+| L | open, advanced | Completed Xi Green primitive, coefficient-faithful Green-to-Calderon--Witt incidence, Burnol conormal classification, ordinary-integer BV boundary, all-cross-prime Koszul cycle, and rational-adelic strict resolved-Xi chain provenance are Lean-proved. The reciprocal-prime seam is now a literal Big-Witt Stokes source with first ghost zero and second ghost `-2` times physical Dirichlet energy; normalized submass and aggregate vanishing are sharp RH-equivalent receivers, not producers. Finite-complex Garland localization, codifferential/Hodge passage, and cohomological vanishing under the link-gap hypothesis are also complete. First unresolved Route-L theorem remains the source-derived singular comparison making the resolved boundary exactly the fixed Burnol/Deninger physical landing, preserving multiplicity and ordinary-prime provenance before divisor specialization and without assuming `K_n(rho)=0`. |
 | M | terminalized | remaining source-flatness statement is RH |
 | N | terminalized, receiver merged with R wall | none below RH-equivalent zero Kadison fracture on every Xi conormal |
-| O | open, advanced; actual ground continuity/small-aperture asymptotic, floor attainment, prolate source formation, Abel/radial transport, and projective-limit transfer closed; two internal producer branches | Lean identifies the true floor with the actual CCM/Friedrichs ground, proves continuity for every positive aperture, eventual small-aperture positivity and explicit `O(a)` ground asymptotic, and realizes the limiting log operator with compact resolvent and attained ground. The global band extension is self-reciprocal; every continuous even live band eigenfunction is a finite sum of joint prolate modes, and the first two modes form an actual compact zero-mean source. Abel boundary equals the full radial source, Abel/radial primitive interchange and channel splitting are exact, while ODE decay gives per-channel control. Missing seed-level inputs are actual-PSWF-to-leading/inverse-bandwidth estimates and a uniform summed-channel primitive bound. RH-bearing theorem remains source-derived exhaustion/lower control of every attained true near-ground direction; small-aperture positivity gives no cofinal large-aperture lower bound. Completed-Evans branch still needs higher-aperture source-selected return and raw positivity. |
-| P | open, advanced; arbitrary-cluster positivity, subquantum capacity, exact weighted depth-square contraction, balanced source codiagonal budget, completed-Xi conormal Gram identification, and multiplicity half-density resolution closed | Literal four-contour source and non-diagonal Hermitian graph-normal Gram are constructed. The moving-ordinate cubic collision matrix is a signed compression of a doubled Hardy Gram's third Schur power, hence PSD for arbitrary frequencies; its trace is `sum_i 115/(864*a_i^3)`. P-G174 congruences full kernel onto primitive Euler cells with resolved von Mangoldt amplitudes and gives one packet-size/frequency-independent trace budget. P-G175 proves complete budget is `<115/108`, below least charge of one strict-right zero. P-G176 proves universal target trace-capacity law itself equivalent to RH, so it cannot be assumed as producer. P-G177 identifies canonical Euler Hankel synthesis and linear moment-polarity wall. P-G178 realizes doubled Hardy clock by arithmetic depth squaring: amplitude preservation needs unbounded gain `sqrt n`, yet cubic source density absorbs its square exactly and yields `1/8` finite-packet energy contraction. P-G179 identifies that arithmetic contraction under Hankel synthesis with physical dilation `f(r)->f(2r)/2`. P-G180 factors collision feature as `(I-V)` of a base Laplace column and proves exact Calderón reconstruction with remainder energy `8^(-N)`; dyadic block is invertible source geometry, not singular producer. P-G181 proves base Cauchy cube is PSD and preserves strict capacity gap: primitive budget `<2`, each strict-right zero charge `>=2`, and bare base capacity law remains RH-equivalent. P-G182 proves this target matrix is exactly the Gram of normalized completed-Xi conormal residues. P-G183 closes its `m^2` versus `m` normalization mismatch by the unique minimum-energy equal split over Xi copies. P-G184 proves the full `<2` primitive base budget is exactly the cubically regularized balanced Euler source/co-source codiagonal, cellwise, on finite traces, and globally. The raw modular-doublet theorem proves RH exclusion needs even less: bilateral FE-reflected conormals have charge `1/(4a^3)` and raw multiplicity makes each strict-right zero cost at least `2`. Clustering, source collision summability, scalar capacity, source budget estimation, source-side modular contraction, dyadic conjugation, receiver identification, and divisor multiplicity are not obstructions. Sole exterior science is a pre-residue pole--Gamma--von-Mangoldt boundary-value comparison carrying this exact regularized source codiagonal to the raw completed-Xi conormal; canonical copy splitting is available afterward but unnecessary for raw RH exclusion. Curvature lane separately allows finite high-tail ceiling. |
+| O | open, advanced; actual ground continuity/small-aperture asymptotic, floor attainment, limiting-core irreducibility, prolate source/variational selection, full band Hilbert decomposition, Abel/radial transport, and projective-limit transfer closed; two internal producer branches | Lean identifies the true floor with the actual CCM/Friedrichs ground, proves continuity for every positive aperture, eventual small-aperture positivity and explicit `O(a)` ground asymptotic, realizes the limiting log operator with compact resolvent and attained ground, and proves strict modulus contraction for every sign-changing core vector. Global band extension is self-reciprocal; every continuous even live band eigenfunction is a finite sum of joint prolate modes, and first two modes form an actual compact zero-mean source. A Gaussian trial beats the half-separation threshold for `c>=400`, and any such witness already inside a live even band eigenspace selects a genuine smooth joint prolate mode. All band eigenspaces form a Hilbert sum of unit-band `L2`, with exact orthogonal components; reflection preserves both operators, and every nonzero-eigenvalue component of a continuous even profile is itself in the even band eigenspace. Missing seed-level input is not projection or parity but proof that some nonzero component inherits the Gaussian quadratic threshold, plus actual-PSWF-to-leading/inverse-bandwidth estimates and a uniform summed-channel primitive bound. RH-bearing theorem remains source-derived exhaustion/lower control of every attained true near-ground direction; small-aperture positivity gives no cofinal large-aperture lower bound. Completed-Evans branch still needs higher-aperture source-selected return and raw positivity. |
+| P | open, advanced; arbitrary-cluster positivity, subquantum capacity, exact weighted depth-square contraction, balanced source codiagonal budget and sharp wall, literal primitive Burnol source-window Gram, actual Burnol-window/Xi-conormal support incidence, and multiplicity half-density resolution closed | Literal four-contour source and non-diagonal Hermitian graph-normal Gram are constructed. Moving-ordinate cubic collision matrix is a signed compression of a doubled Hardy Gram's third Schur power, hence PSD for arbitrary frequencies; its trace is `sum_i 115/(864*a_i^3)`. P-G174 congruences full kernel onto primitive Euler cells with resolved von Mangoldt amplitudes and gives one packet-size/frequency-independent trace budget. P-G175 proves complete budget is `<115/108`, below least charge of one strict-right zero. P-G176 proves universal target trace-capacity law itself equivalent to RH. P-G177--P-G180 identify Euler Hankel synthesis, exact depth-square/physical-dilation contraction, and invertible Calderón source geometry. P-G181 gives the PSD base cube with primitive budget `<2`; P-G182 identifies its target as normalized completed-Xi conormal residues; P-G183 resolves multiplicity; P-G184 identifies the budget with the balanced Euler codiagonal; P-G185 proves the sharp convergence wall `s>=0`. P-G186 constructs primitive inverse-Burnol-window features whose entire Gram is exactly that base cube, with positivity, source trace, and `<2` budget before zero expansion. A literal CCM cubic-Green test identifies each critical prime atom with the same Route-P base mass and exposes polar surplus minus budget. Clustering, summability, budget, source-window formation, target support, and multiplicity are closed. Sole exterior science is the completed boundary-value restriction from canonical Euler nodes to actual Xi divisor nodes, equivalently shorting the polar--Gamma surplus before conormal landing; curvature lane separately permits a finite high-tail ceiling. |
 | Q | open, secondary | direct Cassini--Jensen/jet saturation, or a source-derived label-sensitive plateau quotient; the selected continuous power-reciprocal carrier is retired by the all-degree support no-go |
 | R | terminalized as independent producer | The intrinsic pre-polar annihilator type is empty. Lean exhausts the surviving audited interfaces—external positive polar comparison, pointwise two-orientation non-amplification, collective compactness of the fixed `(2,3)` receiver, singular Xi/Calkin factorization, compact first-Xi-jet principal coefficient, and loss-zero fixed Fisher landing—and proves each branch, and their disjunction, equivalent to RH. Hyperbolic-gauge quadratic positivity is universally zero; the surviving quartic amplitude equals the physical Stokes excess but its annihilation is RH-equivalent. Coefficient-faithful pre-divisor Gamma-corona globalization is also impossible outside neutral grade, independently of packet-horizon gauge. Finite Kunneth/Bockstein enlargement, Poisson theta shear, local anomaly cancellation, positive invariant means, bounded multipliers, and compact counterterms do not produce annihilation. |
 | S | upstream | source algebraicity or divisor-preserving dynamics with typed Xi handoff |
-| T | open after unconditional exact-AFE fourth-moment and concrete Gabriel integral-interpolation closure | Lean proves separate `N^(101/100)` budgets for primal, dual, and pole terms and hence the critical fourth moment; detector mollifier and `4/3` errors give absorbed height exponent `<7/10`. Fixed-right-edge coefficient-gap analysis gives genuine `X^(-1/180)` mean-square decay. The concrete scalar-family theorem derives the exact `237/364` center inequality from strip regularity/boundedness and uniform translated left-`4/3`/right-`2` moments. For the actual pole-cleared Gaussian field, closed-strip regularity, global strip boundedness, and scalar-family boundedness are Lean-proved. A local formal adapter must replace the interpolation theorem's stronger global-continuity hypothesis by the proved strip continuity (or use a continuous extension). First unresolved scientific theorem is the two uniform translated endpoint moment estimates and their substitution, followed by detector zero counting, density-to-`7/10` prime supply, and source-faithful composition. Wold chart separately requires signed pole-preserving continuation. |
-| U | open at fixed-carrier antipodal diagonal-or-cross source classification; Nyquist mixed-flux, heat-uniform orientation, and global scalar Gamma renormalization retired | False RH is equivalent to one fixed carrier producing cofinal negative Hankel packets whose quadratic is a positive Laplace average of complete Gamma--polar--von Mangoldt balance. Post-cutoff antipodal polarization makes false RH equivalent to a cofinal labelled even, odd, or cross anomaly. Exact source-matched heat integration leaves only `gammaHardyPhaseRate(x)-gammaHardyPhaseRate(a^2/x)`. Its fixed-log-radius chart has defect `-1`, while fixed physical boundary has defect `-log(a)+O(1)`; Lean proves no arbitrary scalar counterterm can make both finite. Live theorem is therefore chart-local, source-specific prime--polar completion of this Gamma commutator for fixed carrier. Universal positivity remains RH-equivalent. |
+| T | open after unconditional exact-AFE fourth-moment, concrete Gabriel interpolation, and strip-analytic adapter closure | Lean proves separate `N^(101/100)` budgets for primal, dual, and pole terms and hence critical fourth moment; detector mollifier and `4/3` errors give absorbed height exponent `<7/10`. Fixed-right-edge coefficient-gap analysis gives genuine `X^(-1/180)` mean-square decay. Concrete scalar-family theorem derives exact `237/364` center inequality from strip regularity/boundedness and uniform translated left-`4/3`/right-`2` moments. For actual pole-cleared Gaussian field, global strip boundedness and `DiffContOnCl` on exact Hadamard strip are Lean-proved. Free-prefix Littlewood bounds and Abel transport now give an explicit uniform bound for `zeta(1+delta+it)` throughout `0<=delta<=1`. First unresolved scientific theorem remains the two uniform translated endpoint moment estimates and their substitution, followed by detector zero counting, density-to-`7/10` prime supply, and source-faithful composition. Wold chart separately requires signed pole-preserving continuation. |
+| U | open at fixed-carrier antipodal diagonal-or-cross source classification; Nyquist mixed-flux, heat-uniform orientation, and global scalar Gamma renormalization retired | False RH is equivalent to one fixed carrier producing cofinal negative Hankel packets whose quadratic is a positive Laplace average of complete Gamma--polar--von Mangoldt balance. Finite hard-edge periodization is now exactly a Chebyshev packet evaluation at every complex frequency with nonzero Cayley denominators, giving source-pure access to the explicit-formula pole but no sign. Post-cutoff antipodal polarization makes false RH equivalent to a cofinal labelled even, odd, or cross anomaly. Exact source-matched heat integration leaves only `gammaHardyPhaseRate(x)-gammaHardyPhaseRate(a^2/x)`. Its fixed-log-radius chart has defect `-1`, while fixed physical boundary has defect `-log(a)+O(1)`; Lean proves no arbitrary scalar counterterm can make both finite. Live theorem is therefore chart-local, source-specific prime--polar completion of this Gamma commutator for fixed carrier. Universal positivity remains RH-equivalent. |
 
 The live independent count is ten lettered routes plus CCM-FU. This count is conditional only
 on current corpus identification: future comparison could merge routes, and a constructed
@@ -1240,8 +1300,9 @@ the continuous dual of `C([0,1],R)`. Finite Borel measures act by integration, a
 literally Groskin's weighted-horizon, sine, and weighted-cosine moment vector. Lean proves for every
 continuous source functional that this vector vanishes exactly when its entire finite CCM packet
 vanishes. Finite atomic functionals specialize exactly—not only up to kernel—to the preceding
-atomic observer and event matrix. Hence continuous pole/archimedean sources no longer sit outside
-the formal quotient theory.
+atomic observer and event matrix. Hence every order-zero finite-measure source, including the pole
+channel, lies inside the formal quotient theory. The literal Gamma density is singular and requires
+the mixed-order refinement below.
 
 **Literal polar--prime source weld.**
 `CCMGuinandWeilLiteralPolarPrimeSource.lean` instantiates two arithmetic pre-quotient channels.
@@ -1254,6 +1315,16 @@ normalization. Thus pole and prime provenance now land in the finite CCM source 
 post-quotient decoder. Remaining arithmetic dictionary debt is exact archimedean functional plus
 weighted-cosine diagonal identification; full published-matrix equality is not yet claimed.
 
+**Singular Gamma source and complete odd dictionary.**
+`CCMGuinandWeilArchimedeanOddSource.lean` proves that the literal Gamma density has exact endpoint
+principal coefficient `h*rho_Gamma(h)->1/2`; it is not another bounded horizon density. A physical
+sine cancels this pole exactly, with `sin(xi*h)*rho_Gamma(h)->xi/2`, and the cancelled product is
+formally interval-integrable. Its reflected horizon coordinate equals
+`ccmPublishedArchimedeanSineCoefficient`. Adding it to the C59 pole--prime functional gives exactly
+`ccmPublishedSourceSineCoefficient` at every physical nonnegative mode. Thus the full odd source
+dictionary is closed, but source space is now visibly graded by analytic order. Remaining whole-
+matrix debt is endpoint-renormalized weighted-cosine diagonal action, not another odd-source sign.
+
 **Open core.** Literal finite-stage theta core and its unique source-faithful whole-`L2` completion
 now exist. The finite simple-ground real-zero implication is also parity-free: odd ground no longer
 requires an even-ground reduction. The fixed-support analytic passage from mean-square source
@@ -1263,8 +1334,9 @@ hypotheses cofinally, produce the required fixed-support arithmetic mean-square 
 nonzero limit, and construct a noncompact family joining the
 four-unit corner and physical jet horizon to the continued Xi Ward column and complete ground
 selector while preserving source provenance and four-unit orientation. At event-dictionary level,
-instantiate the cutoff archimedean functional beside the now-formal literal pole and finite-prime
-channels, prove the full odd and weighted-cosine source dictionary, and construct its canonical
+construct the endpoint-renormalized Gamma first-jet beside the now-formal literal pole and finite-
+prime channels, prove the weighted-cosine source dictionary (the full odd dictionary is now closed),
+and construct its canonical
 source-horizon lift before quotienting. Prove that the lift's
 weighted-cosine/connection defect lands in the continued Xi Ward column and obeys the four-unit
 bound. Uniform sine-moment conditioning is relevant only on undercomplete subfamilies; it cannot
@@ -1723,7 +1795,20 @@ The proof combines the canonical Euler logarithm, an absolute prime-square remai
 tail past `x`, the abscissa-shift error on the head, and explicit Mertens comparison. Thus the
 one-line deficit is now a literal prime-clock energy up to one absolute constant; it is no longer
 only a proposed identity. This is a genuine D2 source advance, but it remains entirely on the
-Euler-convergent line `Re s=1+1/log x`. It supplies neither analytic continuation of that positive
+Euler-convergent line `Re s=1+1/log x`.
+
+`RealTwistDeficitTransfer.lean` adds an unconditional geometric consequence. Character separation
+is exactly the prime-clock energy at doubled frequency, and for every real prime sequence
+`|r(p)|<=1`,
+
+~~~
+(log log x - log|zeta(1+1/log x+2i alpha)| - C)/4
+  <= D_x(r,p^(i alpha))^2.
+~~~
+
+This converts D2's positive safe-line source into a universal real-twist gap without assuming
+multiplicativity or RH. It does not orient a complex twist or cross the Euler wall. The route still
+supplies neither analytic continuation of that positive
 deficit into the critical strip nor a uniform ceiling for the continued relative trace.
 
 **Open core.** Derive any finite uniform ceiling from literal analytically continued prime--Gamma
@@ -3349,8 +3434,17 @@ the left root and preserves it at the right root, decomposes each translated sam
 centered marked descendant plus center value, and constructs a smooth scale-buffered cutoff that is
 nonzero exactly when the sampled physical point lies in `(-a,a)`. Its paired primitive identity
 places derivatives only in the primitive bracket and leaves event terms at order zero. What remains
-is analytic and source-specific: completed forcing, derivative regularity, global tempered
+is analytic and source-specific: prove the actual all-aperture source satisfies the generic
+weak-derivative hypotheses, identify its completed forcing, perform global tempered
 two-ray subtraction, and physical trace orientation.
+
+`RealL2LipschitzWeakDerivative.lean` and active-tree `RealL2SmoothOnsetTail.lean` close the generic
+regularity theorem behind that requirement. A globally Lipschitz real `L2` function whose classical
+derivative is `L2` and whose endpoints vanish has that derivative as its complex tempered-
+distribution derivative. Multiplication by the canonical smooth onset promotes any bounded
+exponentially decaying Lipschitz tail, with the stated derivative decay, to such a whole-line `H1`
+pair. This removes pointwise differentiability and cutoff activation as abstract gaps. It does not
+prove the complete Suzuki event source has the required bounds.
 
 Active-tree `SuzukiGammaStripBranch.lean` and `SuzukiGammaStripGluing.lean` close homogeneous strip
 mechanics. On `|Im z|<1`, `Gamma(1+iz)/Gamma(1-iz)` has a nonvanishing holomorphic square root
@@ -3463,11 +3557,17 @@ moment and unconditional Hardy admission on both rays at `sigma=3/4`.
 derivative pair this canonical forcing is almost everywhere the Fourier transform of the physical
 primitive. `SuzukiOnePrimeInteriorCutoff.lean` constructs the actual interior cutoff and exact `L2`
 weak Leibniz event source; `SuzukiCutoffForcingIdentity.lean` isolates the residual as cutoff
-commutator plus undifferentiated event terms. Thus the one-prime forcing-moment and nonnormality
-premises are closed. The remaining exterior theorem is complete-source identification: prove the
-all-aperture physical Suzuki forcing is this weak derivative pair with the full cutoff/jump source,
-then orient its half-log trace and return coherently. One-prime terminal admission alone cannot
-select higher-rank/all-aperture ground data.
+commutator plus undifferentiated event terms. Active-tree
+`SuzukiOnePrimePolarSource.lean` now instantiates the weak-derivative premise for the literal polar
+channel itself. The endpoint-centered trace, clamped to the physical logarithmic half-line, has an
+explicit exponential envelope and derivative envelope, is globally Lipschitz, and its canonical
+smooth-onset primitive and classical derivative are both in `L2`; their complex representatives
+satisfy the exact tempered-distribution derivative identity. Thus one-prime polar source
+membership, forcing moment, and nonnormality are closed. Remaining exterior theorem is completed
+source assembly: join all prime/aperture channels and singular Gamma contribution with the full
+cutoff/jump commutator, perform global two-ray support reduction, then orient the physical half-log
+trace and return coherently. One-prime polar admission alone cannot select higher-rank/all-aperture
+ground data.
 
 The CCM/Suzuki mixed-source modules also close the exact complex cross term: arbitrary form-domain
 pairs satisfy the full sesquilinear polar--prime minus archimedean Weil identity, with literal CCM
@@ -4850,9 +4950,15 @@ trial-space opening, not whole-ground control.
 On any live even band eigenspace, if one vector has prolate quadratic form above `-K` times its
 mass, some nonzero smooth even joint band/prolate eigenfunction has separation eigenvalue above
 `-K`. Hence a half-threshold witness already inside the physical band eigenspace selects a genuine
-low-separation mode without a simplicity hypothesis. The missing bridge is now literal: place the
-Gaussian or another source-derived witness in a live band eigenspace with the required inequality.
-The current Gaussian calculation alone does not do that projection.
+low-separation mode without a simplicity hypothesis. `ProlateBandHilbertSum.lean` closes existence
+and completeness of the relevant projections: the compact symmetric band operator's eigenspaces
+form a Hilbert sum of the whole unit-band `L2` space, every vector is the unconditional sum of its
+orthogonal band components, and pairing with an eigenspace sees exactly its component.
+Active-tree `ProlateReflection.lean` proves reflection commutes with both band and prolate actions
+and gives the even/odd orthogonal split. The missing bridge is therefore no longer construction of
+a band projection. It is a quadratic-form decomposition theorem proving that at least one nonzero
+even component of the Gaussian retains the strict half-threshold inequality. The current Hilbert
+sum declarations do not distribute the prolate quadratic form or its threshold across components.
 
 The Poisson/radial assembly has moved correspondingly. `PoissonMuntzRadialSource.lean` identifies
 the square-root-normalized Abel boundary with the full radial source, including Poisson center and
@@ -5971,6 +6077,14 @@ classifier; they are not live open routes at this cutoff.
 - cofinite singular wall trace and folded-mode Witt bridge;
 - actual zero-divided first-wall source, source mass/decay/exterior mass, crossing correlation,
   residue polarization, and reflected source;
+- centered periodic first primitive with zero cell mean, bounded periodic second primitive, two
+  integrations by parts, and the unconditional quadratic exterior-mass bound
+  `||integral_(T,infinity) g_rho|| <= C_rho T^(-2)` for every `0<Re rho<1`—without assuming
+  `xi(rho)=0`;
+- cubic collar-kernel decay against the stable mode, integrability against the stronger
+  `exp(-5r/2)` mode, the exact crossing-correlation residue error, and a uniform depth-profile
+  error `O(4^(-n) exp(-5r/2))`; consequently every quadratic-tail first-wall source has normalized
+  collar reading `O(4^(-n))`;
 - uniform integrable Bockstein majorant, continuity of crossing correlation, forward/reflected
   Bockstein-reading limits, exact head-flux limit, collar-depth limit, no constant plateau, and
   equality with same-fibre dyadic Stokes boundary norm difference;
@@ -9441,8 +9555,18 @@ rational coordinate field, a signed synthesis on its faithfully indexed `(face, 
 no cancellation can occur between widths. For `r+1` rationally independent ray periods, a
 difference operator sends the multiple-sine source into the differentially algebraic locus if and
 only if its polynomial lies in the squarefree Veronese ideal `I_r`. The annihilator is therefore
-classified completely, not merely bounded from below. This is a completed source-rigidity theorem,
-not an Xi landing. The exact Selberg-class carrier, continuation uniqueness, coefficientwise character
+classified completely, not merely bounded from below. `MultipleSineReflectionLayer.lean` identifies
+the geometric change under reflection: a squarefree monomial lies in `I_r` exactly when its support
+has at least `r` variables, reflection removes precisely the maximal proper face layer, and the
+resulting inclusion `I_N<I_(N-1)` is strict for `N` variables. Active-tree
+`MultipleSineCompleteDifferentialMatroid.lean` strengthens independence to the complete finite
+nonlinear matroid: every packet of constant-coefficient differential-operator outputs has exactly
+the ordinary localized row matroid, and differential transcendence rank equals localized row rank.
+`DifferentialIndependentPerturbation.lean` closes the natural perturbative escape: translation by
+base-field constants preserves algebraic and differential independence, and coordinatewise
+differentially algebraic perturbations preserve the entire differential family matroid. Thus no
+differentially algebraic correction can lower the classified nonlinear packet rank. These are
+completed source-rigidity and rank-classification theorems, not an Xi landing. The exact Selberg-class carrier, continuation uniqueness, coefficientwise character
 twists/depletion, multiple-standard-twist holomorphy, and concrete Artin character induction/
 reciprocity layers enlarge the L-function platform. The Stark module proves only the finite integer
 order classifier from its Artin--Takagi and Foote--Murty hypotheses; it does not derive those
@@ -9458,7 +9582,11 @@ equation, so this is a sharp test for future differential routes, not Route V.
 `GammaJumpSymbolIdentity.lean` identifies the literal digamma jump symbol, not only a model
 multiplier, with the explicit nonnegative Gauss series
 `2 sum_(n>=1) eta^2/(n(n^2+eta^2))` and imports its affine growth bound. The Gamma jump's sign is
-therefore closed at symbol level. `PolygammaVerticalSharpDecay.lean` proves the uniform sharp
+therefore closed at symbol level. `GammaJumpMultiplierBounds.lean` now identifies it with twice
+the real part of vertical digamma plus the Euler constant, proves evenness and
+`O(log(2+|eta|))` growth, differentiates the full series, and proves the sharp usable bound
+`r'(eta)=O((1+|eta|)^(-1))`. Symbol growth and first commutator-order decay are closed; no theorem
+yet applies them to the complete route source. `PolygammaVerticalSharpDecay.lean` proves the uniform sharp
 vertical order `|t|^{-(m+1)}` for the order-`m+1` digamma jet, with constant independent of positive
 abscissa; this is the derivative control needed by Gamma-frequency symbol arguments, not a source
 orientation theorem.
@@ -9467,10 +9595,16 @@ orientation theorem.
 active branch, preserves a uniform derivative bound, and is Lipschitz with the common branch
 constant. `UnitTorusPoincare.lean` derives the sharp torus Poincare inequality from quadratic
 translate-difference control, including an arbitrarily small slack form. Post-cutoff
-`TorusTranslateDifference.lean` currently proves the torus/vector lift, fundamental-box integral
-identity, and pointwise convergence of coordinate difference quotients at differentiability
-points. Its headline's final dominated-convergence passage from an almost-everywhere gradient
-bound to the global translate bound is not yet a declaration and must not be counted as closed.
+`TorusTranslateDifference.lean` now proves the torus/vector lift, fundamental-box integral
+identity, pointwise coordinate difference-quotient limit, and the final dominated-convergence
+theorem: for a Lipschitz torus lift, integrated squared translate quotients converge to integrated
+coordinate derivative energy. It also turns an almost-everywhere summed coordinate-gradient bound
+directly into the small-translate quadratic estimate consumed by Poincare. The advertised analytic
+passage is closed. `LpBoundedSmulMultiplier.lean` and `VectorL2FourierMultiplier.lean` construct
+bounded scalar multipliers on vector-valued `Lp`, their composition and almost-everywhere
+congruence laws, and the conjugated Hilbert-valued Plancherel multiplier with exact symbol norm
+bound; nonnegative real symbols give accretive `L2` multipliers. This closes a generic
+vector-valued multiplier adapter, not a source-specific positivity theorem.
 None of these generic theorems is yet connected in Lean to a route's complete source object or
 first open premise.
 
@@ -9490,10 +9624,10 @@ Across live routes, first unresolved statements fall into five mathematical clas
 | Class | Routes | Missing knowledge |
 |---|---|---|
 | singular source descent | C1, L, CCM-FU | positive closure or coefficient-faithful comparison before scalar quotient; L needs the global ideal-preserving completed-Green/BV lift into the fixed physical landing, while CCM-FU has closed finite-stage source completion and now needs canonical cofinal `Pi(lambda,k)` transport of four-unit incidence into full floor orientation |
-| all-prime oscillatory transport | D2, E, T | cancellation or finite ceiling retaining arithmetic phase and physical normalization; E's unconditioned saddle coercivity and whole-prefix scalar cancellation are formally impossible. T has closed its exact-AFE fourth moment, concrete Gabriel interpolation, pole-cleared strip regularity/boundedness, and detector exponent budget; after a local strip-continuity adapter it needs uniform translated endpoint moments, quantitative zero counting, density-to-`7/10` prime supply, and signed source composition, or pole-preserving Wold continuation |
+| all-prime oscillatory transport | D2, E, T | cancellation or finite ceiling retaining arithmetic phase and physical normalization; E's unconditioned saddle coercivity and whole-prefix scalar cancellation are formally impossible. D2's safe-line deficit now controls every real pretentious twist but has no critical-strip continuation. T has closed its exact-AFE fourth moment, concrete Gabriel interpolation, pole-cleared strip regularity/boundedness, scalar-family strip analyticity, prefix-uniform Littlewood bounds, and detector exponent budget; it needs uniform translated endpoint moments, quantitative zero counting, density-to-`7/10` prime supply, and signed source composition, or pole-preserving Wold continuation |
 | adaptive spectral orientation | G, U | G needs source classification/lower control of its attained smooth-visible ground vector or completed physical forcing with the proved Hardy moment, global two-ray subtraction, physical zero-trace selection, and coupled all-aperture return. U's complete-divisor and common-filter prime--Gamma mixed flux both vanish unconditionally, leaving only source-specific diagonal classification for the fixed cofinal carrier |
-| whole-space coercivity | O | classify the attained restricted-Weil ground direction and prove it is controlled by the explicit prolate/prime source; radial ODE tails and smooth visibility are already closed. N's analogous receiver has been terminalized |
-| positive carrier / source-budget existence | P, Q | P needs a finite high-tail curvature ceiling or a completed primitive-Euler-to-Xi incidence/contraction; arbitrary-cluster positivity, exact spacing-free collision trace, and a primitive source budget below one strict-right zero quantum are closed. Q needs literal compact-measure/plateau formation after coupled pole--zeta--Gamma cancellation |
+| whole-space coercivity | O | classify the attained restricted-Weil ground direction and prove it is controlled by the explicit prolate/prime source; radial ODE tails, smooth visibility, complete band Hilbert decomposition, and parity reduction are closed. Seed selector still needs quadratic-threshold inheritance by one band component. N's analogous receiver has been terminalized |
+| completed boundary transport | P, Q | P needs a finite high-tail curvature ceiling or the completed Euler-to-Burnol-window comparison at the exact `s=0` damping wall; source budget, sharp convergence chamber, actual Xi-conormal support incidence, arbitrary-cluster positivity, and multiplicity resolution are closed. Q needs literal compact-measure/plateau formation after coupled pole--zeta--Gamma cancellation |
 
 This explains repeated stalls. Classical functional analysis supplies receivers once sign,
 boundedness, or coercivity is present. Corpus no-gos show these properties are not inherited from
@@ -9608,8 +9742,10 @@ open. Numerical evidence is not accepted as proof or disproof.
 1. **P:** prove one of two explicit source budgets. Curvature lane: derive any finite uniform upper
    ceiling for the curvature-normalized positive tail on `|Im s|>233/20`; the central band is
    unconditional and the tail ceiling is exactly RH. Exterior lane: construct a completed,
-   coefficient-faithful incidence/contraction from the primitive Euler collision carrier to the Xi-
-   divisor collision carrier before divisor expansion. Lean already proves arbitrary-cluster PSD,
+   coefficient-faithful boundary-value/closed-graph comparison from P-G184's balanced primitive
+   Euler codiagonal to the actual Burnol nested-window conormal channel before divisor expansion.
+   P-G185 proves this must be formed at the exact `s=0` wall because every negative joint damping
+   diverges. Burnol-window/Xi-conormal support incidence is already exact. Lean also proves arbitrary-cluster PSD,
    the spacing-free zero trace, the P-G174 global primitive-source trace budget, and P-G175's
    strict inequality putting that entire budget below one zero quantum;
    neither clustering nor source collision summability remains open. A diagonal `N/4` budget still
@@ -9626,8 +9762,7 @@ open. Numerical evidence is not accepted as proof or disproof.
    Hazewinkel's printed pivot-division step is formally false in its stated coefficient algebra,
    but the separate monic Gröbner/projective-chart repair is now Lean-closed. No Witt/Hankel
    algebraic premise remains available to substitute for this RH-bearing comparison.
-3. **T:** localize the interpolation theorem's global continuity input to its closed strip (or
-   construct a continuous extension), prove the uniform translated left-`4/3` and right-`2`
+3. **T:** prove the uniform translated left-`4/3` and right-`2`
    moments for the actual pole-cleared Gaussian error, substitute them into the now-Lean-closed Gabriel interpolation,
    and prove the quantitative detector zero-counting theorem from the closed critical fourth
    moment, mollifier second moment, `4/3` detector-error moment, pole-regularized detector, and
@@ -9635,7 +9770,8 @@ open. Numerical evidence is not accepted as proof or disproof.
    the density-to-short-interval consequence at exponent `7/10` and compose lower/upper phase,
    shell, layer, count, consecutive-prime-gap moment, and centered current. Exact AFE formation,
    primal/dual/pole budgets, unconditional `N^(101/100)` fourth moment, and detector exponent
-   arithmetic are closed. Wold chart separately needs signed/coherent continuation retaining
+   arithmetic, exact strip analyticity of the scalar family, and free-prefix Littlewood bounds are
+   closed. Wold chart separately needs signed/coherent continuation retaining
    critical residues; repeated short-block freezing is dead.
 4. **U:** prove a common-filter diagonal classification for the one fixed cofinal polynomial--
    Gaussian carrier: source-specifically lower-bound its even/detail diagonal capitals, or prove
@@ -10801,30 +10937,43 @@ declarations change mechanisms, not route count:
 - CCM-FU now contains a literal finite Sonin theta source whose signed periodization is twice a
   Boolean Euler cube with coefficient `mu(n)/n`; the actual theta half-density and dense-source
   Euler operator carry that same expansion. This opens a coefficient-faithful CCM--E seam, but no
-  theorem yet carries E's cofinal Hall/load/flux law into CCM's floor orientation.
+  theorem yet carries E's cofinal Hall/load/flux law into CCM's floor orientation. Pole, prime,
+  and singular archimedean sine channels now combine to the exact published physical odd source;
+  endpoint-renormalized weighted-cosine completion and the cofinal selector remain.
 - G's whole-frequency, half-line distributional classification, flat terminal-charge matching, and
   point-support problems are closed through the full weak Gamma equation. Homogeneous strip
   gluing, one-profile Fourier globalization, two-sided carrier control, wall-commutator bounds, and
-  the forced-ray Hardy implication are closed. Its exterior wall is physical forcing formation/
-  first-moment control, global two-ray subtraction, trace selection, and all-aperture return. Its
+  the forced-ray Hardy implication are closed. The literal endpoint-centered one-prime polar trace
+  now has an explicit `L2` smooth-onset weak-derivative realization, so the one-prime physical
+  source-membership premise is closed. Its exterior wall is completed all-prime/all-aperture
+  source assembly with the full jump/cutoff law, global two-ray subtraction, trace selection, and return. Its
   floor has an attained ground vector visible to dense smooth sources; source selection/lower
   control remains.
 - O's exact floor attainment and smooth Rayleigh infimum, radial ODE decay, channel square
   summability, per-channel polar bound, constrained prolate ladder, Dunster leading diagonal, and
-  abstract projective transfer are closed. Actual-PSWF comparison and whole-channel assembly remain
+  abstract projective transfer are closed. Band eigenspaces form the whole unit-band Hilbert sum,
+  and every nonzero component of an even continuous profile is even. Threshold inheritance by at
+  least one such component—not projection or parity—is the remaining Gaussian selector theorem.
+  Actual-PSWF comparison and whole-channel assembly remain
   below the RH-bearing selection/control of the attained restricted-Weil ground direction.
+- Route R's Burnol first wall now has a quantitative normalized collar-depth rate `O(4^(-n))`
+  under the already-proved quadratic exterior-mass hypothesis. This strengthens a closed carrier;
+  terminal producer classification and route count do not change.
 - P's scalar and smooth-unitary repairs are closed negatively; its complex pointed source, cubic
   tangent, and physical moving-ordinate realization are closed. Fixed unequal ordinates
   diagonalize, but `sigma-1` collision gaps retain a nonzero cubic Cauchy kernel. P-G174/P-G175 put
   the entire kernel on a globally summable primitive Euler carrier whose total trace is below one
-  strict-right zero quantum. Its exterior wall is only the completed coefficient-faithful
-  primitive-Euler-to-Xi incidence/contraction, not cluster control or scalar capacity.
+  strict-right zero quantum. P-G185 proves the balanced source wall is the exact boundary of
+  absolute convergence, and actual Burnol window tomography is already the completed-Xi conormal
+  residue feature. Its exterior wall is only the completed Euler-to-window boundary comparison,
+  not cluster control, target support incidence, or scalar capacity.
 - T's literal primal, dual, and confluent-pole AFE summands each satisfy the required dyadic budget.
   Exact AFE equality and a three-source inequality prove the unconditional critical fourth moment
   `O(N^(101/100))`; Ingham's critical moment, mollifier second moment, `4/3` detector-error moment,
   and absorbed `<7/10` height exponent are also closed. Concrete Gabriel interpolation and the
-  actual pole-cleared field's strip regularity/global strip boundedness are closed. Surviving
-  arithmetic architecture begins with a strip-local continuity adapter and uniform translated
+  actual pole-cleared field's strip regularity/global strip boundedness are closed. The concrete
+  scalar family is now `DiffContOnCl` on the Hadamard strip and Littlewood estimates hold uniformly
+  at every free prefix. Surviving arithmetic architecture begins with uniform translated
   endpoint moments, then quantitative coefficient-three zero counting, `7/10` prime supply, and
   source composition.
 - U is reduced to excluding one fixed carrier's cofinal super-aperture completed-source inversion.
@@ -12170,7 +12319,7 @@ uses only standard quotient/classical axioms already admitted by the corpus.
 
 ## 13. Current frontier conclusion
 
-At committed cutoff `bb1411afe4443137baf28d38521ab418d4d3a59f`, with the explicitly audited
+At committed cutoff `2fa3ffa2aefc97dd5969f1431648e61021bf37f9`, with the explicitly audited
 post-cutoff shared-tree declarations above, RH and its negation remain
 unproved. Live independent lettered routes are C1, D2, E, G, L, O, P, Q, T, and U, with CCM-FU as
 a live unlettered lane. Route R is terminalized as an independent producer. No Route V is
@@ -12198,11 +12347,13 @@ Current first unresolved theorems are:
   exactly by `c_-=-i*c_+`, equivalently zero half-log endpoint trace, and the glued solution is
   square-integrable on every interior strip line. A single Fourier profile now represents every
   interior height, and the forced-ray Hardy theorem reduces `L2` propagation to a first-moment
-  bound on the forcing. Exterior path now needs the completed physical forcing with that moment,
-  global two-ray subtraction, support reduction of the residual to the full equation, and a source
-  theorem forcing the physical trace relation with all-aperture orientation. Rooted prime signs,
-  centered descendant algebra, exact support cutoff, wall-commutator bounds, and one-prime terminal
-  propagator are closed; forcing formation/trace selection are not. Flat terminal charge and
+  bound on the forcing. The literal endpoint-centered one-prime polar channel now supplies an
+  unconditional whole-line `L2` weak-derivative pair with exponential value and derivative tails.
+  Exterior path therefore needs completed all-prime/all-aperture assembly, global two-ray
+  subtraction, support reduction of the residual to the full equation, and a source theorem
+  forcing the physical trace relation with all-aperture orientation. Rooted prime signs, centered
+  descendant algebra, exact support cutoff, wall-commutator bounds, one-prime polar source, and
+  one-prime terminal propagator are closed; completed assembly/trace selection are not. Flat terminal charge and
   bounded-dipole matching are automatic. Suzuki natural-product
   symmetry, the complex mixed source form, and its exact equality with the compressed Suzuki screw
   and actual Xi-zero Weil distribution are closed. CCM-FU's parity-free finite
@@ -12210,7 +12361,9 @@ Current first unresolved theorems are:
   field-one/Suzuki four-half-step factorization are closed. It must construct canonical
   `Pi(lambda,k)`, prove its block/simple-ground hypotheses cofinally, prove the canonical arithmetic
   sources satisfy the transfer theorem with nonzero Xi limit, and orient its four-unit incidence in
-  the complete ground selector. Its exact finite `mu(n)/n`
+  the complete ground selector. Its pole--prime and singular archimedean sine channels already form
+  the exact published physical odd source; only endpoint-renormalized weighted-cosine completion
+  remains in the source dictionary. Its exact finite `mu(n)/n`
   seam to Route E is a new opening, but lacks a cofinal
   Hall/load/flux-to-floor comparison and is not yet another route.
 - L must construct the global strict ideal-preserving completed-Green/BV lift into the fixed
@@ -12221,11 +12374,15 @@ Current first unresolved theorems are:
   whole-channel assembly that instantiate its closed arithmetic diagonal/projective trace-limit
   chain, then compare the canonically selected, quantitatively gapped constrained Hermite ladder
   with the attained true restricted-Weil ground vector. ODE radial decay, channel square
-  summability, per-channel polar control, ground attainment, and smooth-source visibility are
-  closed.
+  summability, per-channel polar control, ground attainment, smooth-source visibility, complete
+  band-eigenspace Hilbert decomposition, and reflection parity are closed. The local selector now
+  needs a quadratic-form theorem showing some nonzero even Gaussian band component retains the
+  strict half-threshold inequality.
 - P must prove either a finite uniform ceiling for the positive high-frequency curvature-normalized
-  tail or a completed coefficient-faithful incidence/contraction from primitive Euler collision
-  cells to Xi-divisor collision space. Arbitrary zero clusters are PSD; their trace is spacing-free;
+  tail or a completed coefficient-faithful Euler-to-Burnol-window boundary comparison at the exact
+  balanced joint-damping wall. P-G185 proves ordinary absolute continuation cannot cross that wall;
+  actual Burnol window tomography already equals the completed-Xi conormal residue feature.
+  Arbitrary zero clusters are PSD; their trace is spacing-free;
   P-G174 places the entire kernel on primitive Euler cells with one global source trace budget; and
   P-G175 proves that entire budget is strictly below the least charge of one strict-right zero.
   The former diagonal `N/4` budget is still insufficient because it supplies no carrier transport,
@@ -12236,8 +12393,9 @@ Current first unresolved theorems are:
   the unconditional critical fourth moment `O(N^(101/100))`. Lean identifies the Ingham critical
   moment, proves the mollifier second moment, the literal detector-error `4/3` moment
   `O(N^(251/250))`, and the absorbed height exponent `<7/10`. It has also closed concrete Gabriel
-  interpolation and the pole-cleared field's strip regularity/global strip bound. It must now
-  localize the theorem's global-continuity interface, prove uniform translated endpoint moments,
+  interpolation, the pole-cleared field's strip regularity/global strip bound, `DiffContOnCl` of
+  the concrete scalar family on the exact strip, and free-prefix Littlewood bounds. It must now
+  prove uniform translated endpoint moments,
   and run quantitative zero counting, then density-to-`7/10` prime supply and source-faithful
   composition. Repeated short-block freezing remains dead at
   `T^(5/3)`; the other chart still needs signed pole-preserving continuation.
@@ -13704,10 +13862,9 @@ sum_j |u_j|^2=m|psi|^2+sum_j |u_j-psi|^2.             (P-G183.2)
 
 Thus equal splitting is the unique minimum-energy lift, its operator norm is `1/sqrt(m)`, and
 applying it to P-G182's actual raw completed-Xi conormal residue gives one base radial feature on
-every multiplicity copy. Multiplicity is no longer open. The sole Route P producer is now the
-support-level coefficient-faithful continuation from primitive base synthesis to the raw
-completed-Xi conormal current, with a pre-residue norm bound; copy resolution can only decrease
-energy.
+every multiplicity copy. Multiplicity is no longer open and copy resolution can only decrease
+energy. The later P-G184/P-G185 and Burnol-window theorems below identify the current producer more
+sharply.
 
 P-G184 closes the source side of that comparison. For primitive cell `i=(p,e)`, log-frequency
 `lambda_i=(e+1)log p`, and balanced source/co-source coefficients `L_a,R_{-a}`, define
@@ -13728,6 +13885,38 @@ and `Q_a(i)` is independent of `a`. Hence P-G181's budget is already a literal t
 codiagonal regularized before summation; no target norm was inserted. Remaining exterior theorem
 is only the pole--Gamma boundary-value/closed-graph transport of this exact codiagonal to P-G182's
 raw completed-Xi conormal residues. Ordinary source construction and `<2` estimation are retired.
+
+P-G185 proves that this boundary formulation is forced. With total joint damping `s`, the exact
+regularized cell is
+
+```text
+w_s(p,e)=w_base(p,e) p^(-(e+1)s),
+Summable(w_s) iff 0<=s.                               (P-G185.1)
+```
+
+The nonnegative side is dominated by `w_base`. If `s<0`, the depth-zero prime face is eventually
+at least `1/(4p)` because `(log p)^2<=p^(-s)`, so Euler divergence applies. Cubic regularization
+therefore includes the balanced FE wall with zero spare strip width. Ordinary absolute contour
+crossing is retired; remaining producer must be a completed boundary-value, distributional, or
+closed-graph transport formed at `s=0`.
+
+`XiWardCubicRawConormalModularDoublet.lean` now identifies the analytic boundary norm behind the
+same charge. Differentiating one critical-boundary current pole gives
+
+```text
+D_(a,gamma)(t)=(a+i(t-gamma))^-2,
+integral_R |D_(a,gamma)(t)|^2 dt=pi/(2a^3).
+```
+
+At every actual strict-right zero this is exactly `2*pi` times the P-G181/P-G184 base charge.
+Thus the balanced Euler codiagonal and raw modular conormal are matched at the level of their
+local Hardy--Sobolev density. `XiWardCubicBurnolWindowConormalIncidence.lean` now closes the actual
+target support coordinate: Burnol's doubled nested-window top-conormal ratio, centered and
+inverted with one aperture clock, equals the normalized completed-Xi conormal residue feature at
+every positive aperture; its functional-equation mate is the Hermitian adjoint, and their
+continuous aperture trace is `1/(4a^3)`. The missing result is no longer target support landing.
+It is the global pre-residue Euler-to-Burnol comparison carrying P-G184's balanced codiagonal into
+this actual window/conormal channel while preserving the `<2` source bound.
 
 ### Route T exact dual carrier: Gaussian tail and height variation close
 
@@ -14202,8 +14391,8 @@ inghamRouteTHeightExponent(3/250,1/1000) < 7/10.
 Route T is therefore no longer blocked on AFE formation, primal/dual/pole pricing, cross-term
 assembly, the critical fourth moment, mollifier loss, or exponent bookkeeping. The later concrete
 Gabriel theorem closes the interpolation mechanism itself. Current scientific input is the
-uniform translated endpoint-moment pair for the pole-cleared field; after a strip-local continuity
-adapter, it feeds quantitative detector zero counting. Then come the density-to-short-interval
+uniform translated endpoint-moment pair for the pole-cleared field; the strip-local continuity
+adapter is now Lean-closed below. It then feeds quantitative detector zero counting. Next come the density-to-short-interval
 prime theorem at exponent `7/10` and source-faithful composition into the centered Route-T current.
 
 ### Route T fixed-right-edge correction and power-saving endpoint
@@ -14263,11 +14452,38 @@ coefficient-three interpolation:
   killed by Gaussian decay at large height, compactness controls bounded height, and the actual
   pole-cleared field and its scalar family are globally bounded on the fixed closed strip.
 
-This is frontier progress, but not yet a zero-density theorem. Abstract Gabriel interpolation and
-the actual field's closed-strip regularity and boundedness are no longer open. The declaration
-still requests global continuity of `f`, while the quotient is certified only away from `0`; a
-strip-local version or continuous-extension adapter is formal backlog. First scientific theorem is
+`Sieve/InghamGabrielScalarAnalytic.lean` closes the former adapter without extending through the
+irrelevant point `0`: it differentiates the actual scalar height integral on the safe half-plane
+and proves `DiffContOnCl` on the exact Hadamard strip. This is frontier progress, but not yet a
+zero-density theorem. Abstract Gabriel interpolation, actual field closed-strip regularity and
+boundedness, dual datum-zero continuity, and scalar-family strip analyticity are no longer open.
+First scientific theorem is
 the two uniform translated endpoint moments for the pole-cleared Gaussian mollified error, using
 the formal critical and right-edge budgets. The existing scalar core then yields interior exponent
 `8263/11850 = 7/10-16/5925`; quantitative detector zero counting and density-to-prime supply remain
 after it.
+
+### Route T Gaussian scalar-family closure
+
+Two further axiom-clean modules remove the last qualitative Gabriel premises:
+
+- `InghamGabrielPoleClearedBound.lean` proves the actual Gaussian pole-cleared mollified error is
+  globally bounded on `1/2<=Re z<=181/180`, using polynomial zeta growth times Gaussian decay at
+  large height and compactness at bounded height. It also instantiates the concrete scalar
+  family's Hadamard `BddAbove` premise.
+- `InghamGabrielScalarAnalytic.lean` proves the actual scalar family is `DiffContOnCl` on that
+  strip. Its proof first closes the genuine datum-zero seam by joint continuity of the dual power,
+  then differentiates under the compact height integral using local Cauchy derivative bounds.
+
+These are frontier advances, not RH: actual scalar boundedness and analyticity are now closed, but
+the sharp translated Gaussian endpoint moments have not yet been substituted. That endpoint pair
+is the sole remaining input to the formal coefficient-three interpolation theorem; detector
+zero-density assembly, density-to-prime supply at exponent `7/10`, and Route T composition still
+follow.
+
+`Sieve/DirichletPrefixLittlewood.lean` also closes the free-prefix form of Littlewood's dyadic
+estimate. Every terminal subinterval of a dyadic block obeys the same derivative-test bound, so
+all prefixes below the canonical truncation receive the two-regime, endpoint-reduced,
+constant-order, and power-of-two estimates with unchanged constants. This is the exact
+prefix-uniform input required by Abel shifting; it does not establish either translated Gabriel
+endpoint moment.

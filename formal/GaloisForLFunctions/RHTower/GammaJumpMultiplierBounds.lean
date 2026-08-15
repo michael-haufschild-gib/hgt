@@ -104,11 +104,16 @@ theorem gammaJumpMultiplier_abs (η : ℝ) :
 the logarithm of the modulus; below it the elementary linear bound already suffices. -/
 theorem exists_gammaJumpMultiplier_log_bound :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ η : ℝ, gammaJumpMultiplier η ≤ C * Real.log (2 + |η|) := by
-  set S : ℝ := ∑' n : ℕ, (1 : ℝ) / (((n : ℝ) + 1) ^ 2) with hS
-  have hSnn : 0 ≤ S := tsum_nonneg fun n => by positivity
+  obtain ⟨S, hSnn, hSbound⟩ :
+      ∃ S : ℝ, 0 ≤ S ∧ ∀ η : ℝ, gammaJumpMultiplier η ≤ S * (1 + |η|) := by
+    refine ⟨∑' n : ℕ, (1 : ℝ) / (((n : ℝ) + 1) ^ 2), tsum_nonneg fun n => by positivity,
+      fun η => le_trans (le_abs_self _) (abs_gammaJumpMultiplier_le η)⟩
   have hpi := Real.pi_pos
-  set K : ℝ := max (2 * S) (4 + Real.pi + 2 * |Real.eulerMascheroniConstant|) with hK
-  have hKnn : 0 ≤ K := le_trans (by positivity) (le_max_left _ _)
+  obtain ⟨K, hKnn, hK1, hK2⟩ :
+      ∃ K : ℝ, 0 ≤ K ∧ 2 * S ≤ K ∧
+        4 + Real.pi + 2 * |Real.eulerMascheroniConstant| ≤ K :=
+    ⟨max (2 * S) (4 + Real.pi + 2 * |Real.eulerMascheroniConstant|),
+      le_trans (by positivity) (le_max_left _ _), le_max_left _ _, le_max_right _ _⟩
   have hlog2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
   refine ⟨2 + K / Real.log 2, by positivity, fun η => ?_⟩
   have habs : 0 ≤ |η| := abs_nonneg η
@@ -119,10 +124,8 @@ theorem exists_gammaJumpMultiplier_log_bound :
     le_abs_self _
   have hcrude : gammaJumpMultiplier η ≤ 2 * Real.log (2 + |η|) + K := by
     rcases le_or_gt |η| 1 with hsmall | hbig
-    · have h1 : gammaJumpMultiplier η ≤ S * (1 + |η|) :=
-        le_trans (le_abs_self _) (abs_gammaJumpMultiplier_le η)
+    · have h1 := hSbound η
       have h2 : S * (1 + |η|) ≤ 2 * S := by nlinarith
-      have h3 : 2 * S ≤ K := le_max_left _ _
       linarith
     · have hpos : (0 : ℝ) < |η| := lt_trans one_pos hbig
       have hbound := _root_.RHTower.re_digamma_vertical_bound_uncond
@@ -145,9 +148,15 @@ theorem exists_gammaJumpMultiplier_log_bound :
         nlinarith
       have hmul := gammaJumpMultiplier_eq_re_digamma |η|
       rw [gammaJumpMultiplier_abs] at hmul
-      have hKge : 4 + Real.pi + 2 * |Real.eulerMascheroniConstant| ≤ K := le_max_right _ _
-      rw [hmul]
-      linarith [hup, hlogsq, hinv, hinv2, hgamma, hKge]
+      obtain ⟨D, A, B, L1, hDmul, hAB, hA1, hB1, hL1⟩ :
+          ∃ D A B L1 : ℝ,
+            gammaJumpMultiplier η = 2 * D + 2 * Real.eulerMascheroniConstant
+              ∧ D ≤ (1 / 2) * L1 + (A + B)
+              ∧ A ≤ 1 ∧ B ≤ Real.pi / 2
+              ∧ L1 ≤ 2 * Real.log (2 + |η|) :=
+        ⟨_, _, _, _, hmul, hup, hinv, hinv2, hlogsq⟩
+      rw [hDmul]
+      linarith
   have hKterm : K ≤ (K / Real.log 2) * Real.log (2 + |η|) := by
     rw [div_mul_eq_mul_div, le_div_iff₀ hlog2]
     nlinarith
@@ -167,10 +176,8 @@ theorem hasDerivAt_gammaJumpTerm (η : ℝ) (n : ℕ) :
   have hAne : a * (a ^ 2 + η ^ 2) ≠ 0 := by positivity
   have hnum : HasDerivAt (fun y : ℝ => y ^ 2) (2 * η) η := by
     simpa using hasDerivAt_pow 2 η
-  have hden : HasDerivAt (fun y : ℝ => a * (a ^ 2 + y ^ 2)) (a * (2 * η)) η := by
-    have h1 : HasDerivAt (fun y : ℝ => a ^ 2 + y ^ 2) (2 * η) η := by
-      simpa using (hasDerivAt_const η (a ^ 2)).add (by simpa using hasDerivAt_pow 2 η)
-    simpa using h1.const_mul a
+  have h1 : HasDerivAt (fun y : ℝ => a ^ 2 + y ^ 2) (2 * η) η := hnum.const_add (a ^ 2)
+  have hden : HasDerivAt (fun y : ℝ => a * (a ^ 2 + y ^ 2)) (a * (2 * η)) η := h1.const_mul a
   have hdiv := hnum.div hden hAne
   have hrw : (2 * η * (a * (a ^ 2 + η ^ 2)) - η ^ 2 * (a * (2 * η)))
       / (a * (a ^ 2 + η ^ 2)) ^ 2 = 2 * η * a / ((a ^ 2 + η ^ 2) ^ 2) := by
@@ -212,14 +219,19 @@ theorem hasDerivAt_gammaJumpMultiplier (η : ℝ) :
     refine hasDerivAt_tsum (u := fun n : ℕ => 1 / (((n : ℝ) + 1) ^ 2)) summable_inv_succ_sq
       (fun n y => hasDerivAt_gammaJumpTerm y n) (fun n y => ?_)
       (y₀ := η) (summable_gammaJumpTerm η) η
-    simpa [Real.norm_eq_abs] using abs_deriv_gammaJumpTerm_le_inv_sq y n
-  simpa [gammaJumpMultiplier] using hbase.const_mul (2 : ℝ)
+    rw [Real.norm_eq_abs]
+    exact abs_deriv_gammaJumpTerm_le_inv_sq y n
+  have hmul : HasDerivAt (fun y : ℝ => 2 * ∑' n : ℕ, gammaJumpTerm y n)
+      (2 * ∑' n : ℕ, 2 * η * ((n : ℝ) + 1) / ((((n : ℝ) + 1) ^ 2 + η ^ 2) ^ 2)) η :=
+    hbase.const_mul 2
+  exact hmul
 
 /-- The derivative series is summable. -/
 theorem summable_deriv_gammaJumpTerm (η : ℝ) :
     Summable (fun n : ℕ => 2 * η * ((n : ℝ) + 1) / ((((n : ℝ) + 1) ^ 2 + η ^ 2) ^ 2)) := by
   refine Summable.of_norm_bounded summable_inv_succ_sq (fun n => ?_)
-  simpa [Real.norm_eq_abs] using abs_deriv_gammaJumpTerm_le_inv_sq η n
+  rw [Real.norm_eq_abs]
+  exact abs_deriv_gammaJumpTerm_le_inv_sq η n
 
 /-- The trigamma majorant of the derivative series is summable. -/
 theorem summable_trigamma_majorant (η : ℝ) :
@@ -228,33 +240,46 @@ theorem summable_trigamma_majorant (η : ℝ) :
   apply one_div_le_one_div_of_le (by positivity)
   nlinarith [sq_nonneg η]
 
+/-- The derivative series is bounded by the trigamma sum. -/
+theorem abs_tsum_deriv_gammaJumpTerm_le (η : ℝ) :
+    |∑' n : ℕ, 2 * η * ((n : ℝ) + 1) / ((((n : ℝ) + 1) ^ 2 + η ^ 2) ^ 2)|
+      ≤ ∑' n : ℕ, 1 / (((n : ℝ) + 1) ^ 2 + η ^ 2) := by
+  have hnorm := norm_tsum_le_tsum_norm (summable_deriv_gammaJumpTerm η).norm
+  have hmono : ∑' n : ℕ, ‖2 * η * ((n : ℝ) + 1) / ((((n : ℝ) + 1) ^ 2 + η ^ 2) ^ 2)‖
+      ≤ ∑' n : ℕ, 1 / (((n : ℝ) + 1) ^ 2 + η ^ 2) := by
+    refine Summable.tsum_mono (summable_deriv_gammaJumpTerm η).norm
+      (summable_trigamma_majorant η) (fun n => ?_)
+    rw [Real.norm_eq_abs]
+    exact abs_deriv_gammaJumpTerm_le η n
+  have hfin := hnorm.trans hmono
+  rwa [Real.norm_eq_abs] at hfin
+
 /-- **`r'(η) = O(1/(1+|η|))`.**  Each derivative term is bounded by the corresponding trigamma
 term, and the arctan telescope sums those to `1/η² + π/(2|η|)`. -/
 theorem exists_deriv_gammaJumpMultiplier_bound :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ η : ℝ,
       |2 * ∑' n : ℕ, 2 * η * ((n : ℝ) + 1) / ((((n : ℝ) + 1) ^ 2 + η ^ 2) ^ 2)|
         ≤ C / (1 + |η|) := by
-  set S : ℝ := ∑' n : ℕ, (1 : ℝ) / (((n : ℝ) + 1) ^ 2) with hS
-  have hSnn : 0 ≤ S := tsum_nonneg fun n => by positivity
   have hpi := Real.pi_pos
-  refine ⟨max (2 * (2 + Real.pi)) (4 * S), le_trans (by positivity) (le_max_left _ _), fun η => ?_⟩
-  have hstep : |∑' n : ℕ, 2 * η * ((n : ℝ) + 1) / ((((n : ℝ) + 1) ^ 2 + η ^ 2) ^ 2)|
-      ≤ ∑' n : ℕ, 1 / (((n : ℝ) + 1) ^ 2 + η ^ 2) := by
-    have hnorm := norm_tsum_le_tsum_norm (summable_deriv_gammaJumpTerm η).norm
-    have hmono : ∑' n : ℕ, ‖2 * η * ((n : ℝ) + 1) / ((((n : ℝ) + 1) ^ 2 + η ^ 2) ^ 2)‖
-        ≤ ∑' n : ℕ, 1 / (((n : ℝ) + 1) ^ 2 + η ^ 2) :=
-      Summable.tsum_mono (summable_deriv_gammaJumpTerm η).norm (summable_trigamma_majorant η)
-        (fun n => by simpa [Real.norm_eq_abs] using abs_deriv_gammaJumpTerm_le η n)
-    simpa [Real.norm_eq_abs] using hnorm.trans hmono
+  obtain ⟨S, hSnn, hSbound⟩ :
+      ∃ S : ℝ, 0 ≤ S ∧ ∀ η : ℝ, ∑' n : ℕ, 1 / (((n : ℝ) + 1) ^ 2 + η ^ 2) ≤ S := by
+    refine ⟨∑' n : ℕ, (1 : ℝ) / (((n : ℝ) + 1) ^ 2), tsum_nonneg fun n => by positivity,
+      fun η => ?_⟩
+    refine Summable.tsum_mono (summable_trigamma_majorant η) summable_inv_succ_sq (fun n => ?_)
+    apply one_div_le_one_div_of_le (by positivity)
+    nlinarith [sq_nonneg η]
+  obtain ⟨C, hCnn, hC1, hC2⟩ :
+      ∃ C : ℝ, 0 ≤ C ∧ 2 * (2 + Real.pi) ≤ C ∧ 4 * S ≤ C :=
+    ⟨max (2 * (2 + Real.pi)) (4 * S), le_trans (by positivity) (le_max_left _ _),
+      le_max_left _ _, le_max_right _ _⟩
+  refine ⟨C, hCnn, fun η => ?_⟩
+  have hstep := abs_tsum_deriv_gammaJumpTerm_le η
   have hden : (0 : ℝ) < 1 + |η| := by positivity
+  rw [abs_mul, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 2), le_div_iff₀ hden]
   rcases le_or_gt |η| 1 with hsmall | hbig
-  · have hsum : ∑' n : ℕ, 1 / (((n : ℝ) + 1) ^ 2 + η ^ 2) ≤ S := by
-      refine Summable.tsum_mono (summable_trigamma_majorant η) summable_inv_succ_sq (fun n => ?_)
-      apply one_div_le_one_div_of_le (by positivity)
-      nlinarith [sq_nonneg η]
-    rw [abs_mul, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 2), le_div_iff₀ hden]
-    have h4S : 4 * S ≤ max (2 * (2 + Real.pi)) (4 * S) := le_max_right _ _
-    nlinarith [hstep, hsum, abs_nonneg η, hsmall, hSnn]
+  · have hsum := hSbound η
+    nlinarith [hstep, hsum, abs_nonneg η, hsmall, hSnn, abs_nonneg
+      (∑' n : ℕ, 2 * η * ((n : ℝ) + 1) / ((((n : ℝ) + 1) ^ 2 + η ^ 2) ^ 2))]
   · have hpos : (0 : ℝ) < |η| := lt_trans one_pos hbig
     have harctan : ∑' n : ℕ, 1 / (((n : ℝ) + 1) ^ 2 + η ^ 2)
         ≤ 1 / |η| ^ 2 + Real.pi / (2 * |η|) := by
@@ -273,20 +298,20 @@ theorem exists_deriv_gammaJumpMultiplier_bound :
       rw [hpiterm] at harctan
       linarith
     have hle2 : 1 + |η| ≤ 2 * |η| := by linarith
-    rw [abs_mul, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 2), le_div_iff₀ hden]
-    have hkey : 2 * |∑' n : ℕ, 2 * η * ((n : ℝ) + 1) / ((((n : ℝ) + 1) ^ 2 + η ^ 2) ^ 2)|
-        ≤ 2 * ((1 + Real.pi / 2) / |η|) := by linarith
+    have hkey : |∑' n : ℕ, 2 * η * ((n : ℝ) + 1) / ((((n : ℝ) + 1) ^ 2 + η ^ 2) ^ 2)|
+        ≤ (1 + Real.pi / 2) / |η| := le_trans hstep hcomb
     have hmul : 2 * ((1 + Real.pi / 2) / |η|) * (1 + |η|)
         ≤ 2 * ((1 + Real.pi / 2) / |η|) * (2 * |η|) :=
       mul_le_mul_of_nonneg_left hle2 (by positivity)
     have hsimp : 2 * ((1 + Real.pi / 2) / |η|) * (2 * |η|) = 2 * (2 + Real.pi) := by
       field_simp
-      ring
-    have hCge : 2 * (2 + Real.pi) ≤ max (2 * (2 + Real.pi)) (4 * S) := le_max_left _ _
     have hmul2 : 2 * |∑' n : ℕ, 2 * η * ((n : ℝ) + 1) / ((((n : ℝ) + 1) ^ 2 + η ^ 2) ^ 2)|
-        * (1 + |η|) ≤ 2 * ((1 + Real.pi / 2) / |η|) * (1 + |η|) :=
-      mul_le_mul_of_nonneg_right hkey hden.le
-    linarith [hmul2, hmul, hsimp.le, hsimp.ge, hCge]
+        * (1 + |η|) ≤ 2 * ((1 + Real.pi / 2) / |η|) * (1 + |η|) := by
+      have := mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left hkey (by norm_num : (0:ℝ) ≤ 2)) hden.le
+      linarith
+    rw [hsimp] at hmul
+    linarith
 
 end
 

@@ -57,9 +57,10 @@ is an equality inside the source-native quotient, not a post-hoc comparison of s
 
 The polar and finite-prime pieces of the published restricted-Weil source now have an explicit
 pre-quotient provenance in the same continuous dual used by the exact `2N+1` observer theorem.
-The remaining source dictionary debt is the archimedean channel. After it is instantiated, the full
-source value should equal `ccmPublishedSourceSineCoefficient`; only then is a full packet-matrix
-weld justified. No positivity, Ward transport, or RH conclusion is claimed here.
+C60 subsequently proves that the literal Gamma density is a singular mixed-order channel and closes
+the full odd value against `ccmPublishedSourceSineCoefficient`. Remaining packet-matrix debt is the
+endpoint-renormalized weighted-cosine diagonal. No positivity, Ward transport, or RH conclusion is
+claimed here.
 
 ## Lean declarations
 

@@ -17,8 +17,10 @@ S = C(H,R)^*                                                     (1)
 ```
 
 be the continuous real dual. Finite Borel measures act on `S` by integration; differences and
-linear combinations represent finite signed sources. This puts finite prime atoms and continuous
-pole/archimedean channels in one typed source space before finite matrix formation.
+linear combinations represent finite signed sources. This puts finite prime atoms and every finite
+order-zero continuous channel in one typed source space before finite matrix formation. The later
+C60 audit proves that the literal Gamma density has a first-order endpoint pole, so its raw channel
+requires endpoint cancellation and is not claimed here to be a finite measure.
 
 For `L in S`, Lean defines
 
@@ -70,15 +72,16 @@ This is equality of whole matrices, not only equality of kernels or selected ent
 
 ## CCM-FU consequence
 
-Continuous source topology does not repair finite observer nonfaithfulness. Atom, pole, and
-archimedean channels now inhabit the same pre-quotient space, while `T_N` remains only
-`2N+1`-dimensional. A canonical CCM-FU producer must therefore retain the literal arithmetic channel
+Continuous source topology does not repair finite observer nonfaithfulness. Atoms and finite
+order-zero channels inhabit this pre-quotient space, while `T_N` remains only `2N+1`-dimensional.
+The singular Gamma channel requires the mixed-order refinement in C60. A canonical CCM-FU producer
+must therefore retain the literal arithmetic channel
 decomposition in `S` and transport it through a source-native connection; it cannot reconstruct
 that decomposition from the finite matrix.
 
-Next target is the literal prime/pole/archimedean functional and its normalized equality with the
-published restricted-Weil matrix, followed by aperture differentiation into the continued Xi Ward
-source. RH is not proved here.
+Next target is the literal prime/pole functional plus the endpoint-renormalized Gamma source and
+their normalized equality with the published restricted-Weil matrix, followed by aperture
+differentiation into the continued Xi Ward source. RH is not proved here.
 
 ## Lean declarations
 

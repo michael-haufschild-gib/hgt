@@ -9,9 +9,10 @@ reads the weighted-horizon, sine, and weighted-cosine coordinate functions from 
 For every such source, not only for finite atomic packets, this file proves that the `2N+1`
 coordinates vanish exactly when the entire finite CCM divided-difference packet vanishes.  It also
 constructs the integration functional of a finite measure and proves that finite atomic functionals
-specialize exactly to the earlier atomic observer and event-packet matrix.  Thus continuous pole and
-archimedean measures belong to the same exact source quotient; their arithmetic identification and
-canonical pre-quotient transport remain separate tasks.
+specialize exactly to the earlier atomic observer and event-packet matrix. Thus every order-zero
+finite-measure channel belongs to the same exact source quotient. The literal Gamma density has a
+first-order endpoint pole and is treated separately by endpoint cancellation in
+`CCMGuinandWeilArchimedeanOddSource`; it is not asserted here to be a finite measure.
 -/
 import GaloisForLFunctions.RHTower.CCMGuinandWeilPositiveSourceNonselection
 import Mathlib.MeasureTheory.Integral.BoundedContinuousFunction
