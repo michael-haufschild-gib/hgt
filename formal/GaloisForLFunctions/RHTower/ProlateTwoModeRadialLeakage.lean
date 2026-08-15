@@ -1,5 +1,7 @@
 import GaloisForLFunctions.HTGeometry.TwoModeSquareCombination
+import GaloisForLFunctions.RHTower.ArcsineZetaDerivativeSpectrum
 import GaloisForLFunctions.RHTower.ProlateCanonicalSeparationLimit
+import GaloisForLFunctions.RHTower.RadialGramOffDiagonalDecay
 import GaloisForLFunctions.RHTower.RadialLeakageWeakConvergenceTransfer
 import GaloisForLFunctions.RHTower.TwoModeFuchsLimit
 
@@ -330,6 +332,103 @@ theorem sqBoundedFamily_signedModeRadialDilatedProfile (n : ℕ) {j M : ℝ} (hj
           (signedModeRadialData a n).R x := one_mul _
       _ ≤ M := hmono.trans hle
 
+/-! ## Uniform inverse-square decay of the diagonal -/
+
+/-- Jordan's inequality in inverse form: `arcsin` lies below its chord on `[0,1]`. -/
+theorem arcsin_le_pi_div_two_mul {u : ℝ} (h0 : 0 ≤ u) (h1 : u ≤ 1) :
+    Real.arcsin u ≤ Real.pi / 2 * u := by
+  have harc0 : 0 ≤ Real.arcsin u := Real.arcsin_nonneg.mpr h0
+  have harc1 : Real.arcsin u ≤ Real.pi / 2 := Real.arcsin_le_pi_div_two u
+  have hjordan := Real.mul_le_sin harc0 harc1
+  rw [Real.sin_arcsin (by linarith : (-1 : ℝ) ≤ u) h1] at hjordan
+  have hpi : 0 < Real.pi := Real.pi_pos
+  have hpine : Real.pi ≠ 0 := hpi.ne'
+  have h := mul_le_mul_of_nonneg_left hjordan (by positivity : (0:ℝ) ≤ Real.pi / 2)
+  rw [show Real.pi / 2 * (2 / Real.pi * Real.arcsin u) = Real.arcsin u from by
+    field_simp] at h
+  exact h
+
+/-- The limiting profile density has inverse-linear tail mass. -/
+theorem integral_Ioi_profileDensity_le {k : ℝ} (hk : 1 ≤ k) :
+    (∫ x in Ioi k, profileDensity x) ≤ 1 / (2 * k) := by
+  have hk0 : (0 : ℝ) < k := lt_of_lt_of_le zero_lt_one hk
+  have hval : (∫ x in Ioi k, profileDensity x) = Real.arcsin (1 / k) / Real.pi := by
+    rw [integral_Ioi_profileDensity_eq hk, radialAngle_eq_pi_div_two_sub_arcsin hk]
+    field_simp
+    ring
+  have hinv0 : (0 : ℝ) ≤ 1 / k := by positivity
+  have hinv1 : 1 / k ≤ 1 := by
+    rw [div_le_one hk0]
+    exact hk
+  have harc := arcsin_le_pi_div_two_mul hinv0 hinv1
+  have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
+  rw [hval, div_le_div_iff₀ hpi (by positivity : (0:ℝ) < 2 * k)]
+  have : Real.pi / 2 * (1 / k) * (2 * k) = Real.pi := by field_simp
+  nlinarith [harc, hk0]
+
+/-- Uniform inverse-linear exterior tail mass of a single canonical signed mode, simultaneously for
+every dilation beyond the second: the Dunster crossing radius passes below `2` once and for all. -/
+theorem eventually_integral_Ioi_signedModeRadialDensity_le (n : ℕ) :
+    ∀ᶠ a : ℝ in atTop, ∀ k : ℝ, 2 ≤ k →
+      IntegrableOn (radialProlateDensity (signedModeRadialBandwidth a)
+        (signedModeRadialData a n).R) (Ioi k) ∧
+      (∫ x in Ioi k, radialProlateDensity (signedModeRadialBandwidth a)
+        (signedModeRadialData a n).R x)
+        ≤ 2 * radialProlateDensityEnvelopeConstant / k := by
+  have hsHalf : ∀ᶠ a : ℝ in atTop, (signedModeRadialData a n).s ≤ 1 / 2 :=
+    ((tendsto_signedModeRadialData_s_zero n).eventually
+      (eventually_lt_nhds (by norm_num : (0 : ℝ) < 1 / 2))).mono fun _ h => h.le
+  have hc5 : ∀ᶠ a : ℝ in atTop, 5 ≤ signedModeRadialBandwidth a :=
+    tendsto_signedModeRadialBandwidth_atTop.eventually (eventually_ge_atTop 5)
+  have hcross := tendsto_dunsterEndpointCrossing_comp_atTop_one
+    tendsto_signedModeRadialBandwidth_atTop
+  have hcrossk : ∀ᶠ a : ℝ in atTop,
+      dunsterEndpointCrossing (signedModeRadialBandwidth a) ≤ 2 :=
+    (hcross.eventually (eventually_lt_nhds (by norm_num : (1:ℝ) < 2))).mono fun _ h => h.le
+  filter_upwards [eventually_signedModeRadialData_s_nonneg n, hsHalf, hc5, hcrossk,
+    eventually_signedModeRadialData_R_one n,
+    eventually_signedModeRadialData_hasDerivAt n,
+    eventually_signedModeRadialData_hasSecondDerivAt n,
+    eventually_signedModeRadialData_ode n] with
+      a hs0 hs1 hc hcross2 hR1 hR hDR hode
+  intro k hk
+  have hk1 : (1 : ℝ) < k := lt_of_lt_of_le (by norm_num) hk
+  have hcrossa : dunsterEndpointCrossing (signedModeRadialBandwidth a) ≤ k := hcross2.trans hk
+  have hK0 : (0 : ℝ) ≤ radialProlateDensityEnvelopeConstant :=
+    radialProlateDensityEnvelopeConstant_nonneg
+  have hInt : IntegrableOn (radialProlateDensity (signedModeRadialBandwidth a)
+      (signedModeRadialData a n).R) (Ioi k) :=
+    integrableOn_Ioi_radialProlateDensity hs0 hs1 hc hk1 hcrossa hR1 hR hDR hode
+  have hdom : IntegrableOn
+      (fun x : ℝ => 4 * radialProlateDensityEnvelopeConstant * profileDensity x) (Ioi k) :=
+    (integrableOn_profileDensity.mono_set (Ioi_subset_Ioi hk1.le)).const_mul
+      (4 * radialProlateDensityEnvelopeConstant)
+  have hmono : (∫ x in Ioi k, radialProlateDensity (signedModeRadialBandwidth a)
+      (signedModeRadialData a n).R x)
+      ≤ ∫ x in Ioi k, 4 * radialProlateDensityEnvelopeConstant * profileDensity x := by
+    refine integral_mono_ae hInt hdom ?_
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
+    have hxk : k ≤ x := hx.le
+    have hdens := radialProlateDensity_le_profileWeight hs0 hs1 hc hR1 hR hDR hode
+      (hcrossa.trans hxk)
+    have hweight := profileWeight_le_four_mul_profileDensity hs0 hs1 (hk1.trans hx)
+    nlinarith [hdens, hweight, hK0]
+  have hconst : (∫ x in Ioi k, 4 * radialProlateDensityEnvelopeConstant * profileDensity x)
+      = 4 * radialProlateDensityEnvelopeConstant * ∫ x in Ioi k, profileDensity x :=
+    integral_const_mul _ _
+  have htail : (∫ x in Ioi k, profileDensity x) ≤ 1 / (2 * k) :=
+    integral_Ioi_profileDensity_le hk1.le
+  have hk0 : (0 : ℝ) < k := lt_trans zero_lt_one hk1
+  have hfin : 4 * radialProlateDensityEnvelopeConstant * (∫ x in Ioi k, profileDensity x)
+      ≤ 2 * radialProlateDensityEnvelopeConstant / k := by
+    have h := mul_le_mul_of_nonneg_left htail
+      (by positivity : (0:ℝ) ≤ 4 * radialProlateDensityEnvelopeConstant)
+    calc 4 * radialProlateDensityEnvelopeConstant * (∫ x in Ioi k, profileDensity x)
+        ≤ 4 * radialProlateDensityEnvelopeConstant * (1 / (2 * k)) := h
+      _ = 2 * radialProlateDensityEnvelopeConstant / k := by field_simp; ring
+  rw [hconst] at hmono
+  exact ⟨hInt, by linarith⟩
+
 /-! ## Radial dilation Gram entries of the two-mode source -/
 
 /-- Exterior dilation Gram entry of the constrained two-mode source. -/
@@ -414,6 +513,164 @@ theorem tendsto_twoModeRadialGramEntry_of_ne
   refine setIntegral_congr_fun measurableSet_Ioi fun x _ => ?_
   unfold twoModeRadialProfile
   ring
+
+/-- **Uniform inverse-square decay of the two-mode diagonal Gram entries.**  Beyond the second
+dilation the constrained diagonal is dominated by `C/k²`, simultaneously for every dilation and
+uniformly in the aperture. -/
+theorem eventually_twoModeRadialGramEntry_diag_le
+    (n₀ n₁ : ℕ) (α β : ℝ → ℝ) :
+    ∀ᶠ a : ℝ in atTop, ∀ k : ℝ, 2 ≤ k →
+      twoModeRadialGramEntry a n₀ n₁ (α a) (β a) k k
+        ≤ 4 * radialProlateDensityEnvelopeConstant * (α a ^ 2 + β a ^ 2) / k ^ 2 := by
+  filter_upwards [eventually_integral_Ioi_signedModeRadialDensity_le n₀,
+    eventually_integral_Ioi_signedModeRadialDensity_le n₁] with a h₀ h₁
+  intro k hk
+  have hk1 : (1 : ℝ) < k := lt_of_lt_of_le (by norm_num) hk
+  have hk0 : (0 : ℝ) < k := lt_trans zero_lt_one hk1
+  obtain ⟨hI₀, hb₀⟩ := h₀ k hk
+  obtain ⟨hI₁, hb₁⟩ := h₁ k hk
+  set K := radialProlateDensityEnvelopeConstant with hKdef
+  have hK0 : (0 : ℝ) ≤ K := radialProlateDensityEnvelopeConstant_nonneg
+  have hdom : IntegrableOn (fun x : ℝ =>
+      2 * α a ^ 2 * radialProlateDensity (signedModeRadialBandwidth a)
+          (signedModeRadialData a n₀).R x
+        + 2 * β a ^ 2 * radialProlateDensity (signedModeRadialBandwidth a)
+          (signedModeRadialData a n₁).R x) (Ioi k) :=
+    (hI₀.const_mul (2 * α a ^ 2)).add (hI₁.const_mul (2 * β a ^ 2))
+  have hle : (∫ x in Ioi k, twoModeRadialDensity (α a) (β a) (signedModeRadialBandwidth a)
+      (signedModeRadialData a n₀).R (signedModeRadialData a n₁).R x)
+      ≤ ∫ x in Ioi k,
+          (2 * α a ^ 2 * radialProlateDensity (signedModeRadialBandwidth a)
+              (signedModeRadialData a n₀).R x
+            + 2 * β a ^ 2 * radialProlateDensity (signedModeRadialBandwidth a)
+              (signedModeRadialData a n₁).R x) := by
+    refine integral_mono_of_nonneg (Filter.Eventually.of_forall fun x =>
+      twoModeRadialDensity_nonneg _ _ _ _ _ x) hdom ?_
+    filter_upwards with x
+    have h₀ := signedModeRadialRescaledProfile_sq a n₀ x
+    have h₁ := signedModeRadialRescaledProfile_sq a n₁ x
+    unfold twoModeRadialDensity twoModeRadialProfile
+    rw [← h₀, ← h₁]
+    nlinarith [sq_nonneg (α a * radialProlateRescaledProfile (signedModeRadialBandwidth a)
+        (signedModeRadialData a n₀).R x
+      - β a * radialProlateRescaledProfile (signedModeRadialBandwidth a)
+        (signedModeRadialData a n₁).R x)]
+  have hsplit : (∫ x in Ioi k,
+      (2 * α a ^ 2 * radialProlateDensity (signedModeRadialBandwidth a)
+          (signedModeRadialData a n₀).R x
+        + 2 * β a ^ 2 * radialProlateDensity (signedModeRadialBandwidth a)
+          (signedModeRadialData a n₁).R x))
+      = 2 * α a ^ 2 * (∫ x in Ioi k, radialProlateDensity (signedModeRadialBandwidth a)
+          (signedModeRadialData a n₀).R x)
+        + 2 * β a ^ 2 * ∫ x in Ioi k, radialProlateDensity (signedModeRadialBandwidth a)
+          (signedModeRadialData a n₁).R x := by
+    rw [integral_add (hI₀.const_mul (2 * α a ^ 2)) (hI₁.const_mul (2 * β a ^ 2)),
+      integral_const_mul, integral_const_mul]
+  have hbound : (∫ x in Ioi k, twoModeRadialDensity (α a) (β a) (signedModeRadialBandwidth a)
+      (signedModeRadialData a n₀).R (signedModeRadialData a n₁).R x)
+      ≤ 4 * K * (α a ^ 2 + β a ^ 2) / k := by
+    rw [hsplit] at hle
+    have h₀ := mul_le_mul_of_nonneg_left hb₀ (by positivity : (0:ℝ) ≤ 2 * α a ^ 2)
+    have h₁ := mul_le_mul_of_nonneg_left hb₁ (by positivity : (0:ℝ) ≤ 2 * β a ^ 2)
+    have hid : 2 * α a ^ 2 * (2 * K / k) + 2 * β a ^ 2 * (2 * K / k)
+        = 4 * K * (α a ^ 2 + β a ^ 2) / k := by field_simp; ring
+    linarith [hle, h₀, h₁, hid.ge, hid.le]
+  rw [twoModeRadialGramEntry_diag_eq a n₀ n₁ (α a) (β a) hk0]
+  have hnn : (0 : ℝ) ≤ ∫ x in Ioi k, twoModeRadialDensity (α a) (β a) (signedModeRadialBandwidth a)
+      (signedModeRadialData a n₀).R (signedModeRadialData a n₁).R x :=
+    setIntegral_nonneg measurableSet_Ioi fun x _ => twoModeRadialDensity_nonneg _ _ _ _ _ x
+  have hstep := mul_le_mul_of_nonneg_left hbound (by positivity : (0:ℝ) ≤ k⁻¹)
+  have hid2 : k⁻¹ * (4 * K * (α a ^ 2 + β a ^ 2) / k)
+      = 4 * K * (α a ^ 2 + β a ^ 2) / k ^ 2 := by
+    field_simp
+  linarith [hstep, hid2.ge, hid2.le]
+
+/-- Diagonal two-mode Gram entries are nonnegative. -/
+theorem twoModeRadialGramEntry_diag_nonneg (a : ℝ) (n₀ n₁ : ℕ) (α β : ℝ) {k : ℝ} (hk : 0 < k) :
+    0 ≤ twoModeRadialGramEntry a n₀ n₁ α β k k := by
+  rw [twoModeRadialGramEntry_diag_eq a n₀ n₁ α β hk]
+  refine mul_nonneg (by positivity) ?_
+  exact setIntegral_nonneg measurableSet_Ioi fun x _ => twoModeRadialDensity_nonneg _ _ _ _ _ x
+
+/-- The divisor-weighted diagonal majorant is summable. -/
+theorem summable_log_div_sq :
+    Summable (fun n : ℕ => Real.log ((n : ℝ) + 2) / ((n : ℝ) + 2) ^ 2) := by
+  refine Summable.of_nonneg_of_le (fun n => ?_) (fun n => ?_) summable_weighted_rowMajorant
+  · have hn0 : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
+    have hlog : 0 ≤ Real.log ((n : ℝ) + 2) := Real.log_nonneg (by linarith)
+    positivity
+  · have hn0 : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
+    have hx : (1 : ℝ) ≤ (n : ℝ) + 2 := by linarith
+    have hlog : 0 ≤ Real.log ((n : ℝ) + 2) := Real.log_nonneg hx
+    have hpos : (0 : ℝ) < ((n : ℝ) + 2) ^ 2 := by positivity
+    rw [div_le_div_iff_of_pos_right hpos]
+    nlinarith
+
+/-- **The divisor-weighted diagonal series limit.**  Weights trapped between zero and `log k`, and
+stabilizing at every fixed dilation, may be summed against the uniformly `C/k²`-dominated diagonal:
+the limit is the weighted arcsine spectrum. -/
+theorem tendsto_tsum_weighted_twoModeRadialGramEntry_diag
+    (n₀ n₁ : ℕ) {α β : ℝ → ℝ} {β₀ : ℝ}
+    (hα : Tendsto α atTop (𝓝 0)) (hβ : Tendsto β atTop (𝓝 β₀))
+    {w : ℝ → ℕ → ℝ}
+    (hw0 : ∀ a k, 0 ≤ w a k) (hwle : ∀ a k, w a k ≤ Real.log ((k : ℝ) + 2))
+    (hwev : ∀ k, ∀ᶠ a : ℝ in atTop, w a k = Real.log ((k : ℝ) + 2)) :
+    Tendsto (fun a : ℝ => ∑' k : ℕ,
+        w a k * twoModeRadialGramEntry a n₀ n₁ (α a) (β a) ((k : ℝ) + 2) ((k : ℝ) + 2))
+      atTop (𝓝 (∑' k : ℕ, Real.log ((k : ℝ) + 2) *
+        (β₀ ^ 2 * (Real.arcsin (1 / ((k : ℝ) + 2)) / (Real.pi * ((k : ℝ) + 2)))))) := by
+  set K := radialProlateDensityEnvelopeConstant with hKdef
+  have hK0 : (0 : ℝ) ≤ K := radialProlateDensityEnvelopeConstant_nonneg
+  set B : ℝ := 1 + (|β₀| + 1) ^ 2 with hBdef
+  have hB0 : (0 : ℝ) ≤ B := by positivity
+  refine tendsto_tsum_of_dominated_convergence
+    (bound := fun k : ℕ => 4 * K * B * (Real.log ((k : ℝ) + 2) / ((k : ℝ) + 2) ^ 2))
+    (summable_log_div_sq.mul_left (4 * K * B)) ?_ ?_
+  · intro k
+    have hk2 : (1 : ℝ) < (k : ℝ) + 2 := by
+      have := Nat.cast_nonneg (α := ℝ) k
+      linarith
+    have hG := tendsto_twoModeRadialGramEntry_diag n₀ n₁ hk2 hα hβ
+    have hwk : Tendsto (fun a : ℝ => w a k) atTop (𝓝 (Real.log ((k : ℝ) + 2))) :=
+      Tendsto.congr' ((hwev k).mono fun a h => h.symm) tendsto_const_nhds
+    exact hwk.mul hG
+  · have hαsmall : ∀ᶠ a : ℝ in atTop, |α a| ≤ 1 := by
+      have habs : Tendsto (fun a : ℝ => |α a|) atTop (𝓝 0) := by
+        have h := hα.abs
+        simpa using h
+      exact (habs.eventually (eventually_lt_nhds (by norm_num : (0:ℝ) < 1))).mono
+        fun a h => le_of_lt h
+    have hβsmall : ∀ᶠ a : ℝ in atTop, |β a| ≤ |β₀| + 1 := by
+      have habs : Tendsto (fun a : ℝ => |β a|) atTop (𝓝 |β₀|) := hβ.abs
+      exact (habs.eventually (eventually_lt_nhds (by linarith : |β₀| < |β₀| + 1))).mono
+        fun a h => le_of_lt h
+    filter_upwards [eventually_twoModeRadialGramEntry_diag_le n₀ n₁ α β, hαsmall, hβsmall] with
+      a hdiag hαa hβa
+    intro k
+    have hk2 : (2 : ℝ) ≤ (k : ℝ) + 2 := by
+      have := Nat.cast_nonneg (α := ℝ) k
+      linarith
+    have hk0 : (0 : ℝ) < (k : ℝ) + 2 := by linarith
+    have hGnn : 0 ≤ twoModeRadialGramEntry a n₀ n₁ (α a) (β a) ((k : ℝ) + 2) ((k : ℝ) + 2) :=
+      twoModeRadialGramEntry_diag_nonneg a n₀ n₁ (α a) (β a) hk0
+    have hGle := hdiag ((k : ℝ) + 2) hk2
+    have hcoef : α a ^ 2 + β a ^ 2 ≤ B := by
+      have h1 : α a ^ 2 ≤ 1 := by nlinarith [abs_nonneg (α a), sq_abs (α a)]
+      have h2 : β a ^ 2 ≤ (|β₀| + 1) ^ 2 := by
+        nlinarith [abs_nonneg (β a), sq_abs (β a), abs_nonneg β₀]
+      simpa [hBdef] using add_le_add h1 h2
+    have hlognn : 0 ≤ Real.log ((k : ℝ) + 2) := Real.log_nonneg (by linarith)
+    have hstep : twoModeRadialGramEntry a n₀ n₁ (α a) (β a) ((k : ℝ) + 2) ((k : ℝ) + 2)
+        ≤ 4 * K * B / ((k : ℝ) + 2) ^ 2 := by
+      refine hGle.trans ?_
+      have hnum : 4 * K * (α a ^ 2 + β a ^ 2) ≤ 4 * K * B :=
+        mul_le_mul_of_nonneg_left hcoef (by positivity)
+      exact div_le_div_of_nonneg_right hnum (by positivity)
+    rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (hw0 a k) hGnn)]
+    calc w a k * twoModeRadialGramEntry a n₀ n₁ (α a) (β a) ((k : ℝ) + 2) ((k : ℝ) + 2)
+        ≤ Real.log ((k : ℝ) + 2) * (4 * K * B / ((k : ℝ) + 2) ^ 2) :=
+          mul_le_mul (hwle a k) hstep hGnn hlognn
+      _ = 4 * K * B * (Real.log ((k : ℝ) + 2) / ((k : ℝ) + 2) ^ 2) := by ring
 
 /-! ## The constrained CCM source -/
 
@@ -528,6 +785,42 @@ theorem tendsto_ccmTwoModeRadialGramEntry_of_ne
   tendsto_twoModeRadialGramEntry_of_ne n₀ n₁ hj hk hjk
     (tendsto_ccmSubordinateCoeff_zero hA₀ hA₁)
     (tendsto_const_nhds (x := ccmDominantCoeff) (f := (atTop : Filter ℝ)))
+
+
+/-- **The constrained diagonal von Mangoldt charge.**  Twice the divisor-weighted diagonal Gram
+series converges to the arithmetic trace `∑ κ_k`, hence to the negative of the constrained prolate
+prime constant.  The weights only have to be trapped between `0` and `log k` and to stabilize at
+every fixed dilation, which is exactly what a truncated divisor weight does. -/
+theorem tendsto_two_mul_tsum_weighted_ccmTwoModeRadialGramEntry_diag
+    (n₀ n₁ : ℕ) {A₀ A₁ : ℝ} (hA₀ : 0 < A₀) (hA₁ : 0 < A₁)
+    {w : ℝ → ℕ → ℝ}
+    (hw0 : ∀ a k, 0 ≤ w a k) (hwle : ∀ a k, w a k ≤ Real.log ((k : ℝ) + 2))
+    (hwev : ∀ k, ∀ᶠ a : ℝ in atTop, w a k = Real.log ((k : ℝ) + 2)) :
+    Tendsto (fun a : ℝ => 2 * ∑' k : ℕ,
+        w a k * twoModeRadialGramEntry a n₀ n₁ (ccmSubordinateCoeff A₀ A₁ a) ccmDominantCoeff
+          ((k : ℝ) + 2) ((k : ℝ) + 2))
+      atTop (𝓝 (-GaloisForLFunctions.constrainedProlatePrimeConstant)) := by
+  have h := tendsto_tsum_weighted_twoModeRadialGramEntry_diag n₀ n₁
+    (tendsto_ccmSubordinateCoeff_zero hA₀ hA₁)
+    (tendsto_const_nhds (x := ccmDominantCoeff) (f := (atTop : Filter ℝ))) hw0 hwle hwev
+  rw [ccmDominantCoeff_sq] at h
+  have hterm : ∀ k : ℕ, 2 * (Real.log ((k : ℝ) + 2) *
+      ((8 : ℝ) / 11 * (Real.arcsin (1 / ((k : ℝ) + 2)) / (Real.pi * ((k : ℝ) + 2)))))
+      = GaloisForLFunctions.constrainedProlateArithmeticEigenvalue k := by
+    intro k
+    rw [GaloisForLFunctions.constrainedProlateArithmeticEigenvalue_eq]
+    have hpi : Real.pi ≠ 0 := Real.pi_ne_zero
+    have hk : ((k : ℝ) + 2) ≠ 0 := by positivity
+    push_cast
+    field_simp
+    ring
+  have h2 := h.const_mul 2
+  have hval : 2 * ∑' k : ℕ, Real.log ((k : ℝ) + 2) *
+      ((8 : ℝ) / 11 * (Real.arcsin (1 / ((k : ℝ) + 2)) / (Real.pi * ((k : ℝ) + 2))))
+      = -GaloisForLFunctions.constrainedProlatePrimeConstant := by
+    rw [← tsum_mul_left, tsum_congr hterm,
+      GaloisForLFunctions.tsum_constrainedProlateArithmeticEigenvalue]
+  rwa [hval] at h2
 
 end RHTower
 

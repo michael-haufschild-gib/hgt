@@ -1,88 +1,104 @@
 # CCM (not-new-scientific-knowledge) Stage-2 → Stage-3 formalization ledger
 
-Goal: every card in this folder gets an unconditional Lean 4 theorem (no hypotheses, no axioms,
-`#print axioms` = `[propext, Classical.choice, Quot.sound]`), a `-formalized.md` certificate, and a
-move to `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm/`.
+Goal: every card in this folder gets an unconditional Lean 4 theorem (no unproved mathematical
+premise, no added axioms; `#print axioms` = `[propext, Classical.choice, Quot.sound]`), a
+`-formalized.md` certificate, and a move to
+`docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm/`.
 
-Status legend: `TODO` · `AUDIT` (module found, clause audit running) · `BUILD` (writing Lean) ·
-`DONE` (promoted).
+Standard applied: formalize every statement the card **proves itself**. Statements the card *cites*
+from the literature (Suzuki's screw representation, Krein–Langer, Yoshida's criterion, Weil's
+criterion, Connes–Consani radical membership, …) are parents, not theorems of the card, and are
+recorded in the certificate under "deliberately outside the Lean statement".
 
-| # | card | candidate module(s) | status |
-|---|---|---|---|
-| 1 | `ccm-aperture-morse-hardymodel-index-exhaustion-law` | | TODO |
-| 2 | `ccm-aperture-morse-index-conservation-law` | | TODO |
-| 3 | `ccm-boundary-strip-weak-compactness-transfer-law` | | TODO |
-| 4 | `ccm-bv-muntz-graph-domain-extension` | | TODO |
-| 5 | `ccm-causal-pick-affine-conjugacy-law` | | TODO |
-| 6 | `ccm-characteristic-crossing-interior-mode-reduction-law` | | TODO |
-| 7 | `ccm-characteristic-evans-boundary-infinite-rank-law` | | TODO |
-| 8 | `ccm-cofinal-prime-sawtooth-incidence-law` | | TODO |
-| 9 | `ccm-cofinal-weil-spectral-floor-criterion` | | TODO |
-| 10 | `ccm-coherent-euler-logarithm-square-exclusion-law` | | TODO |
-| 11 | `ccm-completed-quotient-weighted-schur-seam-law` | | TODO |
-| 12 | `ccm-compressed-prime-shift-arithmetic-complement-law` | | TODO |
-| 13 | `ccm-constrained-endpoint-euler-response-constant` | | TODO |
-| 14 | `ccm-countable-log-chirp-renormalization-law` | | TODO |
-| 15 | `ccm-critical-mellin-defect-abscissa-rh-law` | | TODO |
-| 16 | `ccm-diagonal-fock-polar-prime-mellin-incidence-law` | | TODO |
-| 17 | `ccm-endpoint-oscillation-poisson-tail-bound` | | TODO |
-| 18 | `ccm-euler-gamma-radon-nikodym-frame-law` | | TODO |
-| 19 | `ccm-euler-observability-relative-index-allocation-law` | | TODO |
-| 20 | `ccm-euler-pick-logderivative-transfer-boundary-law` | | TODO |
-| 21 | `ccm-evans-gram-requires-determinant-line-lift` | | TODO |
-| 22 | `ccm-exact-finite-aperture-first-row-vanishing` | | TODO |
-| 23 | `ccm-exact-high-radial-first-row-bv-bound` | | TODO |
-| 24 | `ccm-exact-radial-nonstationary-sector-bound` | | TODO |
-| 25 | `ccm-exterior-inverse-symbol-graph-norm-law` | | TODO |
-| 26 | `ccm-exterior-range-observability-law` | | TODO |
-| 27 | `ccm-finite-prime-parity-hankel-carrier` | | TODO |
-| 28 | `ccm-fredholm-schur-resolvent-carrier-law` | | TODO |
-| 29 | `ccm-galerkin-cofinal-diagonal-transfer` | | TODO |
-| 30 | `ccm-gamma-damped-cauchy-frame-trace-law` | | TODO |
-| 31 | `ccm-gauss-paired-quantized-differential-incidence-law` | | TODO |
-| 32 | `ccm-generic-ground-separating-incidence-law` | | TODO |
-| 33 | `ccm-growing-aperture-mellin-determinant-transfer` | | TODO |
-| 34 | `ccm-hankel-boundary-relative-trace-four-unit-law` | | TODO |
-| 35 | `ccm-hankel-gap-trace-slope-rh-criterion` | | TODO |
-| 36 | `ccm-higher-subset-covariance-fock-lift` | | TODO |
-| 37 | `ccm-infinitesimal-half-unit-cauchy-seam-law` | | TODO |
-| 38 | `ccm-infinitesimal-real-euler-ray-logderivative-index-law` | | TODO |
-| 39 | `ccm-leading-endpoint-archimedean-log-law` | | TODO |
-| 40 | `ccm-limiting-radial-first-row-weber-bound` | | TODO |
-| 41 | `ccm-log-symbol-dirichlet-exterior-reconstruction-law` | | TODO |
-| 42 | `ccm-logderivative-closed-two-channel-graph-law` | | TODO |
-| 43 | `ccm-parity-split-evans-gram-law` | | TODO |
-| 44 | `ccm-poisson-jensen-outer-defect-rh-law` | | TODO |
-| 45 | `ccm-polar-euler-frame-minus-level-law` | | TODO |
-| 46 | `ccm-prime-free-aperture-characteristic-pair-law` | | TODO |
-| 47 | `ccm-prime-log-crowding-separating-margin-law` | | TODO |
-| 48 | `ccm-prime-source-ground-incidence-response` | | TODO |
-| 49 | `ccm-prolate-endpoint-jet-resummation-law` | | TODO |
-| 50 | `ccm-quartet-resolvent-bilateral-polarization-law` | | TODO |
-| 51 | `ccm-radial-dilation-divisibility-carrier` | | TODO |
-| 52 | `ccm-radial-prime-first-row-reduction` | | TODO |
-| 53 | `ccm-radial-prolate-global-defect-measure` | | TODO |
-| 54 | `ccm-radial-prolate-two-scale-boundary-carrier` | | TODO |
-| 55 | `ccm-rational-residual-finite-evans-matrix-law` | | TODO |
-| 56 | `ccm-rayleigh-excess-determinant-transfer` | | TODO |
-| 57 | `ccm-rayleigh-transfer-collapses-to-spectral-floor` | | TODO |
-| 58 | `ccm-real-euler-ray-loewner-index-law` | | TODO |
-| 59 | `ccm-real-spectral-loggraph-transverse-vanishing-law` | | TODO |
-| 60 | `ccm-rectangular-critical-mellin-tent-floor-law` | | TODO |
-| 61 | `ccm-rectangular-subpower-lower-floor-rh-law` | | TODO |
-| 62 | `ccm-relative-logderivative-coordinate-negative-index-law` | | TODO |
-| 63 | `ccm-restricted-weil-square-evans-determinant-law` | | TODO |
-| 64 | `ccm-safe-kernel-diagonal-fock-lift-rh-law` | | TODO |
-| 65 | `ccm-screw-null-global-log-regularity-law` | | TODO |
-| 66 | `ccm-shift-covariant-pole-divisor-capacity-law` | | TODO |
-| 67 | `ccm-sonin-log-position-edge-trace-correction-law` | | TODO |
-| 68 | `ccm-sonin-three-grade-relative-carrier-law` | | TODO |
-| 69 | `ccm-source-normalized-nonschatten-birman-schwinger-line-law` | | TODO |
-| 70 | `ccm-spectral-parameter-evans-completion-carrier-law` | | TODO |
-| 71 | `ccm-suzuki-deficiency-line-zero-shift-floor-equivalence` | | TODO |
-| 72 | `ccm-transverse-index-trace-slope-coercivity-law` | | TODO |
-| 73 | `ccm-unit-riesz-markov-virial-landau-law` | | TODO |
-| 74 | `ccm-unit-riesz-mobius-wavelet-reduction` | | TODO |
-| 75 | `ccm-universal-boundary-laplace-frame-saturation-law` | | TODO |
-| 76 | `ccm-weierstrass-stabilized-square-evans-line-law` | | TODO |
-| 77 | `ccm-weil-exterior-tail-quotient-gate` | | TODO |
+Verification per card: `lake env lean` on a scratch file importing the modules and `#print axioms`
+on every non-private theorem; umbrella wiring checked; declaration names cross-checked against the
+tree.
+
+## Promoted (Stage 3)
+
+| card | modules |
+|---|---|
+| `ccm-aperture-morse-index-conservation-law` | `CCMApertureMorseCharge` |
+| `ccm-boundary-strip-weak-compactness-transfer-law` | `CCMBoundaryStripTransfer`, `MobiusFisherContactWardBudget` |
+| `ccm-bv-muntz-graph-domain-extension` | `CCMBVMuntzSummation` |
+| `ccm-cofinal-prime-sawtooth-incidence-law` | `CCMSawtoothDilationMean`, `CCMSawtoothDilationIncidence`, `CCMSawtoothExteriorTail`, `SawtoothFourierSeries` |
+| `ccm-cofinal-weil-spectral-floor-criterion` | `CCMCofinalFloorCriterion`, `CCMNestedFloorNoEvacuation` |
+| `ccm-coherent-euler-logarithm-square-exclusion-law` | `CCMCoherentSquareExclusion` |
+| `ccm-compressed-prime-shift-arithmetic-complement-law` | `CCMCompressedShiftIndependence` |
+| `ccm-endpoint-oscillation-poisson-tail-bound` | `SawtoothFourierSeries`, `PeriodicFourierDecay`, `PoissonSummationPiecewise`, `CCMEndpointFourierJet`, `CCMTwoModeDeficitScale` |
+| `ccm-exact-finite-aperture-first-row-vanishing` | `ArcoshComparison`, `IntegralGronwall`, `BesselJZero{Envelope,ODE,Phase,SecondSolution}`, `CCMFirstRow{StationaryPhase,VanDerCorputBlocks,EnvelopeTail,DunsterModel}`, `CCMRadialProlate{Defect,EndpointLayer}` |
+| `ccm-exterior-range-observability-law` | `HTGeometry.RangeObservabilityDuality` |
+| `ccm-finite-prime-parity-hankel-carrier` | `SuzukiParityHankelDecomposition`, `SuzukiPrimeHankelCarrier` |
+| `ccm-galerkin-cofinal-diagonal-transfer` | `CCMGalerkinDiagonalTransfer`, `CCMRayleighExcessAngle` |
+| `ccm-higher-subset-covariance-fock-lift` | `CCMSubsetCovarianceFock` |
+| `ccm-parity-split-evans-gram-law` | `CCMParityInvolutionGrading` |
+| `ccm-quartet-resolvent-bilateral-polarization-law` | `CCMQuartetResolventPolarization`, `CCMQuartetPaleyWiener` |
+| `ccm-radial-dilation-divisibility-carrier` | `CCMRadialDivisibilityCarrier` |
+| `ccm-rayleigh-excess-determinant-transfer` | `CCMRayleighExcessAngle` |
+| `ccm-rayleigh-transfer-collapses-to-spectral-floor` | `CCMCofinalFloorCriterion` |
+| `ccm-suzuki-deficiency-line-zero-shift-floor-equivalence` | `CCMDeficiencyLineZeroShift` |
+| `ccm-weil-exterior-tail-quotient-gate` | `CCMWeilRadicalTailQuotient` |
+
+## Open — Lean to be built
+
+Each entry names the statements the card proves that must be formalized.
+
+| card | what must be built |
+|---|---|
+| `ccm-aperture-morse-hardymodel-index-exhaustion-law` | `(9)` conjugate-pair polarization; `(11)` continuous-kernel negative-index exhaustion by bounded apertures; `(12)` base-point vanishing of the screw series; `(17)` monotone cofinal supremum of the Hardy denominator dimension |
+| `ccm-causal-pick-affine-conjugacy-law` | affine conjugacy normal form of the coupled signed-Möbius causal transform |
+| `ccm-characteristic-crossing-interior-mode-reduction-law` | interior-mode reduction under the invertible change of variable |
+| `ccm-characteristic-evans-boundary-infinite-rank-law` | infinite rank of the characteristic Evans boundary map |
+| `ccm-completed-quotient-weighted-schur-seam-law` | positive weighted-contraction normal form of the completed causal quotient |
+| `ccm-constrained-endpoint-euler-response-constant` | Fuchs asymptotic `(9)`, constrained-prolate limit `(12)`, and the two branch inputs consumed by `(4)`–`(5)` |
+| `ccm-countable-log-chirp-renormalization-law` | the exact constrained radial sum renormalization |
+| `ccm-critical-mellin-defect-abscissa-rh-law` | exponential-type ⇒ abscissa statement |
+| `ccm-diagonal-fock-polar-prime-mellin-incidence-law` | diagonal Fock polar–prime Mellin incidence |
+| `ccm-euler-gamma-radon-nikodym-frame-law` | the Radon–Nikodym frame identity |
+| `ccm-euler-observability-relative-index-allocation-law` | relative index allocation in a source-defined finite realization |
+| `ccm-euler-pick-logderivative-transfer-boundary-law` | positivity of the logarithmic-derivative Pick transfer for even real-rooted factors |
+| `ccm-evans-gram-requires-determinant-line-lift` | the obstruction: Gram data alone does not determine the determinant line |
+| `ccm-exact-high-radial-first-row-bv-bound` | high-radial first-row bounded-variation bound |
+| `ccm-exact-radial-nonstationary-sector-bound` | off-diagonal radial Gram nonstationary sector bound |
+| `ccm-exterior-inverse-symbol-graph-norm-law` | exterior inverse-symbol graph-norm law |
+| `ccm-fredholm-schur-resolvent-carrier-law` | Fredholm–Schur resolvent carrier law |
+| `ccm-gamma-damped-cauchy-frame-trace-law` | Gamma-damped Cauchy frame trace law |
+| `ccm-gauss-paired-quantized-differential-incidence-law` | retention of local incidence under a finite product of commuting unitary local-ratio multipliers |
+| `ccm-generic-ground-separating-incidence-law` | open dense set of separating ground states in the compressed prime-shift space |
+| `ccm-growing-aperture-mellin-determinant-transfer` | Mellin-evaluation norm determines the determinant transfer on the growing aperture |
+| `ccm-hankel-boundary-relative-trace-four-unit-law` | the relative-trace four-unit law replacing full trace class |
+| `ccm-hankel-gap-trace-slope-rh-criterion` | anti-causal residue energy = negative initial trace slope |
+| `ccm-infinitesimal-half-unit-cauchy-seam-law` | infinitesimal half-unit Cauchy seam law |
+| `ccm-infinitesimal-real-euler-ray-logderivative-index-law` | infinitesimal real Euler-ray log-derivative index law |
+| `ccm-leading-endpoint-archimedean-log-law` | archimedean Weil form of the normalized leading lower-endpoint profile |
+| `ccm-limiting-radial-first-row-weber-bound` | first row of the limiting radial Bessel Gram matrix |
+| `ccm-log-symbol-dirichlet-exterior-reconstruction-law` | exterior reconstruction from the logarithmic symbol |
+| `ccm-logderivative-closed-two-channel-graph-law` | the closed two-channel graph of the completed logarithmic source |
+| `ccm-poisson-jensen-outer-defect-rh-law` | Poisson–Jensen outer defect law |
+| `ccm-polar-euler-frame-minus-level-law` | `(2)`–`(16)` of the polar Euler frame minus-level law |
+| `ccm-prime-free-aperture-characteristic-pair-law` | `(2)`–`(3)`: `a₀ > 0` and the symmetric real characteristic pair of `W_a` |
+| `ccm-prime-log-crowding-separating-margin-law` | prime-log crowding separating margin |
+| `ccm-prime-source-ground-incidence-response` | ground incidence response of the prime source |
+| `ccm-prolate-endpoint-jet-resummation-law` | endpoint jet resummation |
+| `ccm-radial-prime-first-row-reduction` | radial prime first-row reduction |
+| `ccm-radial-prolate-global-defect-measure` | `(16)`, `(20)` from the imported `(13)` |
+| `ccm-radial-prolate-two-scale-boundary-carrier` | two-scale boundary carrier |
+| `ccm-rational-residual-finite-evans-matrix-law` | finite Evans matrix law for rational residuals |
+| `ccm-real-euler-ray-loewner-index-law` | real Euler-ray Loewner index law |
+| `ccm-real-spectral-loggraph-transverse-vanishing-law` | transverse vanishing on the real spectral log-graph |
+| `ccm-rectangular-critical-mellin-tent-floor-law` | tent-floor law beyond the already-formalized divisor-side equivalence |
+| `ccm-rectangular-subpower-lower-floor-rh-law` | remaining half beyond `CCMRectangularSubpowerLowerGate` |
+| `ccm-relative-logderivative-coordinate-negative-index-law` | relative log-derivative coordinate negative-index law |
+| `ccm-restricted-weil-square-evans-determinant-law` | restricted Weil square Evans determinant law |
+| `ccm-safe-kernel-diagonal-fock-lift-rh-law` | safe-kernel diagonal Fock lift |
+| `ccm-screw-null-global-log-regularity-law` | global log regularity of screw null vectors |
+| `ccm-shift-covariant-pole-divisor-capacity-law` | shift-covariant pole-divisor capacity law |
+| `ccm-sonin-log-position-edge-trace-correction-law` | distributional edge identity `(3)` in a tempered-distribution pairing; Sobolev step completing `(14)` |
+| `ccm-sonin-three-grade-relative-carrier-law` | `(11)` and the bundling of the three grades |
+| `ccm-source-normalized-nonschatten-birman-schwinger-line-law` | source-normalized non-Schatten Birman–Schwinger line law |
+| `ccm-spectral-parameter-evans-completion-carrier-law` | spectral-parameter Evans completion carrier law |
+| `ccm-transverse-index-trace-slope-coercivity-law` | transverse index trace-slope coercivity |
+| `ccm-unit-riesz-markov-virial-landau-law` | global convolution, zeta Laplace transform of the Markov density, pole retention, Landau step |
+| `ccm-unit-riesz-mobius-wavelet-reduction` | the wavelet reduction beyond the already-formalized cell algebra |
+| `ccm-universal-boundary-laplace-frame-saturation-law` | universal boundary Laplace frame saturation |
+| `ccm-weierstrass-stabilized-square-evans-line-law` | Weierstrass-stabilized square Evans line law |

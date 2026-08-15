@@ -88,6 +88,40 @@ Sigma(u_N) = 1.
 Therefore `j u_N -> 0` while `Sigma(u_N) -> 1`; `Sigma` is sequentially
 nonclosable relative to the actual Hilbert admission.
 
+## Exact singular graph and coherent-source exclusion
+
+The graph completion of `(j,Sigma)` is now constructed rather than invoked:
+
+```text
+G = ell^2(I,C) direct-sum C,
+c |-> (j(c), Sigma(c)).
+```
+
+Finite labelled packets are dense in `G`; uniform averages converge to the
+nonzero vertical generator `(0,1)`. But this generic saturation is not an
+arithmetic source theorem. Every complete coherent right-leg fibre has trace
+zero, so continuity of the graph trace gives the strict closure separation
+
+```text
+closure { graph(R_S) : coherent finite fibres R_S }
+  subset ker(graphTrace),
+(0,1) notin closure { graph(R_S) }.
+```
+
+Thus arbitrary averaging packets cannot lawfully replace coherent Frobenius
+fibres. The minimal source-level survivor is explicit: puncture one selected
+ordered edge `i=(r,t)` before coherent summation. Its trace is exactly
+`-R_rt`, selected edge plus punctured complement reconstructs the coherent
+fibre, and the continuous fixed-left graph readout satisfies
+
+```text
+GraphReadout_(p,q)(punctured_(r,t) R_S) = -C_(p,q;r,t).
+```
+
+This is a label-faithful selected singular compensator. It does not provide
+the still-missing canonical Xi/Green rule selecting `(r,t)` or prove physical
+annihilation.
+
 ## Proof architecture
 
 1. Use the arbitrary-ring Frobenius ghost-shift theorem and the universal
@@ -102,6 +136,12 @@ nonclosable relative to the actual Hilbert admission.
    `sqrt(card)`, excluding every bounded extension.
 7. On uniform averages, prove Hilbert norm tends to zero while trace is one,
    excluding sequential closability.
+8. Prove trivial joint annihilator of ambient admission and trace, hence full
+   graph saturation.
+9. Use continuity of graph trace to separate closure of coherent right-leg
+   fibres from vertical singular generator.
+10. Puncture one selected edge and prove exact reconstruction and negative
+    four-label Frobenius readout.
 
 ## Anti-theatre audit
 
@@ -122,11 +162,13 @@ identification and obstruction, not the component lemmas in isolation.
 
 ## Exact surviving frontier
 
-Construct a label-faithful four-edge Gamma incidence source and a
-Xi/Green-provenance-selected renormalized partial-trace domain. It cannot be a
-continuous or sequentially closable extension of coordinate summation on all
-finite packets. It must nevertheless retain the physical diagonal and prove
-the off-diagonal contribution cyclically invisible or cofinally submass.
+Construct canonical Xi/Green-provenance rule selecting or renormalizing the
+punctured ordered edge before coherent summation, then compare that selected
+graph vector with actual four-edge Gamma incidence. Full coherent fibres are
+formally trapped in the trace kernel, while arbitrary vertical averages are
+not source-derived. Surviving rule must retain divisor/multiplicity labels and
+prove selected punctured compensator physically annihilated without assuming
+the four-label coefficient vanishes.
 
 ## Lean certificates
 
@@ -134,6 +176,7 @@ the off-diagonal contribution cyclically invisible or cofinally submass.
 formal/GaloisForLFunctions/RHTower/
   DeningerBigWittFrobeniusCrossPairStrictGammaBVDescent.lean
   DeningerBigWittFrobeniusCrossPairSingularOneLegTrace.lean
+  DeningerBigWittFrobeniusCrossPairSingularOneLegGraphCompletion.lean
 ```
 
 Capstones:
@@ -145,12 +188,15 @@ Capstones:
 - `deningerBigWittCrossPairFrobenius_groundReadout_invisibility_iff_physical_zero`;
 - `deningerBigWittCrossPairFrobeniusFiberCoefficient_eq_singularOneLegContraction`;
 - `deningerBigWittCrossPairAlgebraicOneLegTrace_noContinuousExtension`;
-- `deningerBigWittCrossPairAlgebraicOneLegTrace_not_closable`.
+- `deningerBigWittCrossPairAlgebraicOneLegTrace_not_closable`;
+- `deningerBigWittCrossPairFiniteOneLegGraph_closure_eq_top`;
+- `deningerBigWittCrossPairOneLegGraphSingularVector_not_mem_coherent_closure`;
+- `deningerBigWittCrossPairOneLegGraphFiberReadout_selectedPuncturedRightLegPacket`.
 
 ## Verification
 
-- direct `lake env lean` on both leaves: pass;
-- exact leaf-only `lake build` on both leaves: pass;
+- direct `lake env lean` on all three leaves: pass;
+- exact leaf-only `lake build` on all three leaves: pass;
 - umbrella imports wired; umbrella not built;
 - capstone axiom audit: only `propext`, `Classical.choice`, `Quot.sound`;
 - forbidden declaration scan: pass;

@@ -276,7 +276,7 @@ finite recurrence
 
 This restores differentiated finite-type assembly at the source-norm level. The two endpoint
 cosets, exterior events, exact rooted signs, and physical primitive term are now assembled in
-`../../../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-literal-paired-source-assembly.md`.
+`./suzuki-literal-paired-source-assembly.md`.
 That theorem also identifies the total antisymmetric source moment with the continuous physical
 seam jump. The nonnormal derivative issue is handled by the primitive-flux graph reduction.
 The later dyadic orbit-chart theorem closes compact-middle coverage. Direct rough-primitive Hardy

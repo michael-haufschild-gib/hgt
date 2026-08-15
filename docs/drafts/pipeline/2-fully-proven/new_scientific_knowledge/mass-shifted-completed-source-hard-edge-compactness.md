@@ -498,3 +498,34 @@ Remaining steps, in order:
    `a >= 4`) and the tail bound into `totallyBounded_of_finiteDimensional_approx`.
 5. The nonzero limit, and then (CSHC.18)-(CSHC.20): the Cayley angular-momentum operator, its
    moment bound, and the Paley-Wiener support of the limit.
+
+### (CSHC.5) precompactness: done
+
+Mathlib has no Kolmogorov–Riesz criterion, so a general one was built and is now formal and
+axiom-clean:
+
+    HTGeometry/IntervalPoincare.lean         int (g - g(alpha))^2 <= h^2 int g'^2 on a length-h cell
+    HTGeometry/UniformGridStep.lean          uniform grids, their left-endpoint step functions, the
+                                             telescoping of an interval integral over a grid, and
+                                             `integral_sub_gridStep_sq_le`
+    HTGeometry/L2GridApproximation.lean      the L^2 norm identities for representatives, the grid
+                                             step class as an element of a finite-dimensional
+                                             subspace of `Lp R 2 volume`, and
+                                             `totallyBounded_toLp_of_tight_deriv`:
+                                             uniform L^2 bound + uniform tightness + uniform L^2
+                                             derivative bound  ==>  totally bounded in L^2
+
+Its instantiation on the hard-edge family:
+
+    RHTower/XiShiftedHardEdgePrecompactness.lean
+      routeUHardEdgeTestDeriv                       the derivative in a Chebyshev frame
+      integrable_routeUHardEdgeTestDeriv_sq         its square is integrable
+      memLp_routeUHardEdgeRationalTest              the test is in L^2
+      totallyBounded_routeUHardEdgeFamily           (CSHC.5): the normalized nonpositive family of
+                                                    scaled degree <= C and mass >= 4 is totally
+                                                    bounded in L^2(R)
+      exists_subseq_tendsto_routeUHardEdge          a strongly convergent subsequence whose limit is
+                                                    a unit vector
+
+Only (CSHC.18)-(CSHC.20) remain: the Cayley angular-momentum operator, the moment bound
+`‖(L_a/a)^m g‖ <= C^m ‖g‖`, and the Paley-Wiener support `supp ghat subset [-2C, 2C]` of the limit.

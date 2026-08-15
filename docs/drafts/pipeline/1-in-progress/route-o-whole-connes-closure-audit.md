@@ -668,7 +668,7 @@ has only the half-log root `tau=1/2`, while a `beta/L` dipole produces the uncan
 `-beta log L` and is impossible against the bounded completed source.  After zero half-log trace,
 no independent physical dipole or flat-flux matching remains. The exact marked-descendant
 source assembly is now proved in
-`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-literal-paired-source-assembly.md`.
+`../3-formalized/new_scientific_knowledge/suzuki/suzuki-literal-paired-source-assembly.md`.
 Optional low-frequency counterterms are subcritical. The formalized dyadic chart theorem covers
 the whole compact aperture once weighted derivatives exist. The sharp Gamma dimension wall and
 three-step rough-primitive theorem close that admission in rank zero/one. Current finite-type gate

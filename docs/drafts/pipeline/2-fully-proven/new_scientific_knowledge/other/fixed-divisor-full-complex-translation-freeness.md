@@ -282,3 +282,41 @@ holomorphic jet maps.  A partial finite-rank or polynomial lemma would not justi
   divisor remains fixed.
 - 2026-07-11 -- Completed the proof audit and preliminary literature search.  Exact prior art was
   not located, but scientific novelty remains unverified pending independent specialist review.
+
+## Lean progress — the codimension engine: polynomial zero sets have Hausdorff dimension `n-1`
+
+Step 5 of the proof removes the shift parameter by comparing the codimension of the rank-defect
+locus with the dimension of shift-configuration space.  Formalized, that comparison is a Hausdorff
+dimension count: mathlib's `dense_compl_of_dimH_lt_finrank` turns
+`dimH (bad set of gauges) < dim_ℝ V` into the density that the Baire passage
+(`GaloisForLFunctions.BaireGenericAvoidance`) consumes, and
+`dimH_image_le_of_locally_lipschitzOn` transports the bound through the parametrisation.  The
+missing quantitative input is the dimension of one rank-defect equation, i.e. of a polynomial zero
+set.
+
+`formal/GaloisForLFunctions/HTGeometry/PolynomialZeroSetDimension.lean` (umbrella-wired,
+axiom-clean, `[propext, Classical.choice, Quot.sound]`) supplies it, for an arbitrary finite index
+type:
+
+> **`dimH_setOf_eval_eq_zero_le`.**  For a nonzero `P ∈ ℝ[x_v : v ∈ ι]` with `ι` finite,
+> `dimH {x : ι → ℝ | eval x P = 0} ≤ card ι - 1`.
+
+The proof needs no stratification and no implicit function theorem:
+
+- `dimH_le_of_locally` — a Hausdorff dimension bound is local, by mathlib's `bsupr_limsup_dimH`;
+- `hasDerivAt_mvPolynomial_eval_curve_real` — the chain rule for polynomial evaluation along a real
+  curve, by induction on the polynomial;
+- `exists_pderiv_inner_eq_zero` — between two zeros lying in a convex set, Rolle's theorem produces
+  an interior point at which the gradient is orthogonal to their difference;
+- `dist_le_of_zero_of_pderiv_bounds` — hence, on a region where one partial derivative is bounded
+  below and all of them are bounded above, forgetting the corresponding coordinate is
+  **antilipschitz** on the zero set;
+- `dimH_regular_zeroSet_le` — so the noncritical part of the zero set has, by
+  `AntilipschitzWith.le_dimH_image` and `Real.dimH_univ_pi`, dimension at most `card ι - 1`;
+- `totalDegree_pderiv_lt`, `exists_pderiv_ne_zero` — the critical part lies in the zero set of a
+  nonzero partial derivative of strictly smaller total degree, so induction on the total degree
+  closes the bound.
+
+This is the finite-dimensional core of steps 3–5.  What the card still needs on top of it is the
+incidence bookkeeping — the rank-defect locus as a union over the projective coefficient parameter,
+and the Hermite-interpolation submersion — and the passage from complex to real coordinates.

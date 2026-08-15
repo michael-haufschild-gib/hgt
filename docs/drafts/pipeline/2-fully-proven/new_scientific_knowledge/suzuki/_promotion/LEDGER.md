@@ -15,7 +15,7 @@ that name and its relative links deepened by one level.  Inbound links are repai
 restricted-Weil trace", "specialist novelty review", "3 → 4 publication-ready") do not block
 promotion; gates that name missing Lean do.
 
-## A. Promoted (69 of 104)
+## A. Promoted (70 of 104)
 
 - `suzuki-affine-resolvent-krein-defect`
 - `suzuki-affine-sewn-weil-robin-far-tail-factorization`
@@ -55,6 +55,7 @@ promotion; gates that name missing Lean do.
 - `suzuki-homogeneous-projective-resolvent-plucker-lift`
 - `suzuki-interior-excursion-shift-selection`
 - `suzuki-jump-kernel-loewner-growth-gap`
+- `suzuki-literal-paired-source-assembly`
 - `suzuki-localized-orbit-lift-selfadjointness-trilemma`
 - `suzuki-low-frequency-boundary-counterterm-renormalization`
 - `suzuki-mangoldt-apex-lock-rigidity`
@@ -7894,5 +7895,155 @@ transition on the right factor forces `e^L(a−x) ∈ [1,2]`, hence
 
 (`rightEvent_window`): the block sits at `−log|a−x|` and has width exactly `log 2`.  That is the
 card's "each transition block has length `O(1)` and is centred at `−log|a∓x| + O(1)`".
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AAH. `(3)` and `(21)` of `literal-paired-source-assembly`
+
+```text
+RHTower/SuzukiPairedSourceL2Bound.lean                the uniform ℓ² bound (3)
+HTGeometry/ExponentialPolynomialLatticeWeight.lean    the recurrence source weight (21)
+```
+
+**`(3)`.**  Each coordinate of the paired source is a weighted centred difference
+`F_i(L) = w_i[u(x_i + o_i e^{-L}) − u(x_i)]`, so it is bounded by `2‖u‖_∞ w_i` uniformly in the
+scale — only boundedness of `u`, no continuity and no modulus.  Squaring and summing gives
+
+```text
+‖F(L)‖²_{ℓ²} ≤ (2‖u‖_∞)² ‖w‖²_{ℓ²},
+```
+
+both in extended form (`tsum_sq_pairedSourceEntry_le`, no summability hypothesis) and in real form
+with the square summability of the profile as a conclusion (`summable_sq_pairedSourceEntry`).  The
+statement is indexed by an arbitrary type, so it applies verbatim to `{+,−} × G × {±1}`.
+
+*On the displayed constant.*  The card writes `2√2‖u‖_∞‖w_κ‖_{ℓ²}`.  Each entry is at most
+`2‖u‖_∞w_κ(ν)` and the index set carries four sign combinations per `ν`, so the direct bound over
+`G` alone is `4‖u‖_∞‖w_κ‖_{ℓ²(G)}`, which exceeds `2√2`.  The display is correct under the reading
+`‖w_κ‖_{ℓ²}` = norm over the whole index set `ℋ`, where the bound is `2‖u‖_∞‖w_κ‖_{ℓ²(ℋ)}` and
+`2 ≤ 2√2`.  The Lean statement is index-agnostic and proves the constant `2` against the norm over
+whatever index set is used, so it gives the card's display under that reading and does not assert
+the other.
+
+**`(21)`.**  A geometric weight in the `ℓ¹` length beats any fixed polynomial factor:
+`Σ_{ν∈ℤ^d}(1+|ν|₁)^N r^{|ν|₁} < ∞` for `0 ≤ r < 1` (`summable_latticeExpPoly`).  Both factors split
+over the coordinates — exactly for the geometric one, and by `1 + Σaᵢ ≤ ∏(1+aᵢ)`
+(`one_add_sum_le_prod`) for the polynomial one — so the weight is dominated by a product of
+one-dimensional geometric-times-polynomial weights (`summable_int_polyGeom`), and the product over
+a finite rank is summable by induction (`summable_prod_polyGeom`).
+
+`summable_recurrenceSourceWeight` is then `(21)` itself: for a recurrence clock with
+`τ_ν ≤ R|ν|₁ + c` and a slope gap `σR < κ`,
+
+```text
+Σ_ν e^{−2κ|ν|₁} e^{2στ_ν} (1+τ_ν)^N < ∞,
+```
+
+because `1 + τ_ν ≤ (1+c)(1+R)(1+|ν|₁)` moves the clock into the lattice length and the exponentials
+combine to `e^{2σc}·(e^{2σR−2κ})^{|ν|₁}` with ratio below one.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.  What remains on that card is
+the vector-valued distribution extension of §6.
+
+## AAI. `suzuki-literal-paired-source-assembly` is promoted
+
+The card's only Lean-naming gate — "formalize vector-valued distribution extension and analytic
+weighted estimates" — is closed.
+
+**The distribution extension** is `HTGeometry/LpSingleExtension.lean`.  Every `ℓᵖ` vector with
+`p ≠ ∞` is the unconditional sum of its coordinate singles (`tendsto_sum_single`), so finitely
+supported vectors are dense and two continuous linear maps agreeing on singles agree everywhere
+(`ext_of_eq_on_single`).  That is exactly §6: only finitely many coordinates are ever tested at
+once, and the passage to the whole carrier is continuity of the pairing — no interchange of an
+infinite sum with an integral occurs.
+
+**The weighted estimates** are sections AAG and AAH: `(2)` the uniform cutoff derivative bound,
+`(5)` and `(20)` the two event windows, the root behaviour, `(3)` the uniform `ℓ²` bound, and
+`(10)`/`(21)` the finite-recurrence source summability.
+
+Also added while auditing: `leftEvent_window` (the left factor of `(5)`, giving `(20)`'s second
+family), `rootOutward_cutoff_eq_zero` and `rootInward_cutoff_eq_one` (item 4 of §1 — at a physical
+root the outward puncture cutoff is identically zero, its right buffer argument being the constant
+`−1`, and the inward one is eventually one).
+
+The remaining unchecked gates — finite-order expansion, all-orders-flat residual, finite-type
+trace-zero `H¹₀`, recurrence-infinite apertures, raw Evans positivity — are open *research*, so by
+the promotion rule they do not block.
+
+The card is moved to `3-formalized/new_scientific_knowledge/suzuki/` with the certificate
+`suzuki-literal-paired-source-assembly-formalized.md`, its §11 rewritten to name the new modules,
+and four inbound relative links repaired.
+
+**The constant in `(3)` is recorded rather than papered over.**  The display `2√2‖u‖_∞‖w_κ‖_{ℓ²}`
+is correct only when `‖w_κ‖_{ℓ²}` is read over the whole index set `ℋ` (giving `2`); against
+`‖w_κ‖_{ℓ²(G)}` the true constant is `4`.  The Lean statement is index-agnostic and proves the
+constant `2` against whichever index set is supplied, so it gives the card's display under the
+first reading and does not assert the second.
+
+## AAJ. `(9)`, `(10)`, `(14)` of `root-retained-exterior-dilation`
+
+```text
+HTGeometry/InverseSqrtBinomialSeries.lean
+```
+
+The card's grade-one mechanism is that `(I − T/2L)^{-1/2}` differs from the identity by `O(1/L)`,
+so projecting away the grade-zero coordinate leaves only the tail.  Formalized without any
+functional calculus: the binomial series **is** the definition, which is exactly what the card's
+all-grade expansion `(14)` asserts.
+
+`invSqrtTail S = Σ_{k≥1} binom(2k,k)4^{-k} S^k` in any Banach algebra.  Every coefficient lies in
+`(0,1]` — the corpus already proves `normalizedCentralBinom_le_one` — so the series is dominated
+termwise by `‖S‖^k` (`norm_invSqrtTail_term_le`, using `‖S^k‖ ≤ ‖S‖^k`) and
+
+```text
+‖invSqrtTail S‖ ≤ ‖S‖/(1 − ‖S‖)                    norm_invSqrtTail_le
+```
+
+for `‖S‖ < 1`.  With `S = T/(2L)` and `L ≥ ‖T‖` the norm is at most `1/2`, so `x/(1−x) ≤ 2x` gives
+
+```text
+‖invSqrtTail (T/2L)‖ ≤ ‖T‖/L                       norm_invSqrtTail_scaled_le
+```
+
+— the card's `(9)` with the explicit constant `C_T = ‖T‖`, hence `(10)` after the `L^{-1/2}`
+prefactor.  `invSqrtTail_scaled_eq` rewrites the scaled series with coefficients
+`binom(2k,k)8^{-k}L^{-k}`, which is `(14)` verbatim.
+
+**Trap worth recording.**  `Summable.norm` is *false* in infinite dimensions — unconditional
+summability does not imply absolute summability — and mathlib's version carries a
+`FiniteDimensional` hypothesis.  The norm-summability here has to come from the geometric
+domination directly, not from the summability of the series.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.  Remaining on that card:
+`(11)`/`(12)` the derivative formulas, `(13)`, the energy estimate `(23)`, and the dyadic block
+bound `(24)`/`(25)`.
+
+## AAK. `(13)`'s integrability, and the exact shape of what `(11)`/`(12)` still need
+
+```text
+HTGeometry/PowerTailSquareIntegrable.lean
+```
+
+`lintegral_sq_powerTail_ne_top`: a profile bounded by `C L^{-p}` on a terminal ray has finite
+squared mass there through `p > 1/2`, because the square is `C²L^{-2p}` and `−2p < −1`.  Stated in
+the extended norm, so the bound alone gives the conclusion — no measurability or integrability
+hypothesis on the profile.  This is what converts the grade-one decay rates into membership of `L²`
+and `H¹` on a terminal ray, which is `(13)` of `root-retained-exterior-dilation`.
+
+**What `(11)` and `(12)` still need, precisely.**  Their displayed closed forms are
+`P_T(β)'(L) = −½(LI − T/2)^{-3/2}β` and `P_T(β)''(L) = ¾(LI − T/2)^{-5/2}β`, i.e. they name the
+resolvent at exponents `−3/2` and `−5/2`.  The `−1/2` series of section AAJ does not define those,
+so the honest route is to add the corresponding generalized binomial series:
+
+```text
+(1−s)^{-3/2} = Σ_k (2k+1)·binom(2k,k)4^{-k} s^k
+```
+
+whose coefficients are `(2k+1)·normalizedCentralBinom k` — already expressible with the corpus
+central-binomial infrastructure — and the analogous `−5/2` series.  Termwise differentiation of the
+`−1/2` series on `Ioi L₀` is available (`hasDerivAt_tsum_of_isPreconnected` takes the derivative
+bound only on an open preconnected set, which is what a terminal ray gives); what must then be
+checked is the coefficient identity relating the differentiated `−1/2` series to the `−3/2` one.
+That identity, not the analysis, is the remaining content.
 
 All declarations audit to `[propext, Classical.choice, Quot.sound]`.

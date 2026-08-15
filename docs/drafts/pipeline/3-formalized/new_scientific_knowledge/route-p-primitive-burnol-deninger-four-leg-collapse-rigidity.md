@@ -66,6 +66,11 @@ that identification must already control every off-line zero. Surviving source t
 remain asymmetric/nonholomorphic and prove a one-sided contraction or shorting inequality without
 equating the two graph legs.
 
+P-G204 realizes this pivot exactly. The upper-minus-fourth-leg difference is reflection-odd, has
+Weil energy `-||d||^2`, and is the strong limit of explicit finite mixed upper/conjugate-lower
+prime--Gamma secants. Hence `not RH` produces a finite negative source packet. Remaining task is a
+source-side nonnegativity theorem for that concrete finite family, not a graph contraction.
+
 ## Hostile novelty audit
 
 The corpus already contained fixed-Cauchy orientation-defect RH equivalences. P-G203 is not a
@@ -113,5 +118,6 @@ Verification:
 - [x] scratch verification and exact leaf build only
 - [x] axiom and forbidden-declaration audit
 - [x] umbrella wired without umbrella build
-- [ ] construct asymmetric coefficient-faithful P-G194-to-four-leg contraction/shorting
+- [x] extract finite reflection-odd mixed-source witness (P-G204)
+- [ ] prove nonnegativity of the explicit P-G204 finite mixed-sector source energies
 - [ ] instantiate W-H184 and prove unconditional RH

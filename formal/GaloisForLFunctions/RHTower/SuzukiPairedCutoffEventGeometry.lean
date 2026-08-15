@@ -175,4 +175,46 @@ theorem rightEvent_window {a x L : ℝ} (hax : 0 < a - x)
   rw [Real.log_one] at hlog1
   exact ⟨by linarith, by linarith⟩
 
+
+/-- **`(5)`, left factor: the left event block sits at `−log(a+x)` and has width `log 2`.** -/
+theorem leftEvent_window {a x L : ℝ} (hax : 0 < a + x)
+    (hmem : suzukiLeftScaleBufferArgument a x (-1) L ∈ Icc (0 : ℝ) 1) :
+    -Real.log (a + x) ≤ L ∧ L ≤ Real.log 2 - Real.log (a + x) := by
+  rw [suzukiLeftScaleBufferArgument_eq] at hmem
+  have h1 : (1 : ℝ) ≤ Real.exp L * (a + x) := by linarith [hmem.1]
+  have h2 : Real.exp L * (a + x) ≤ 2 := by linarith [hmem.2]
+  have hlog1 : Real.log 1 ≤ Real.log (Real.exp L * (a + x)) :=
+    Real.log_le_log (by norm_num) h1
+  have hlog2 : Real.log (Real.exp L * (a + x)) ≤ Real.log 2 :=
+    Real.log_le_log (by positivity) h2
+  rw [Real.log_mul (Real.exp_ne_zero L) (ne_of_gt hax), Real.log_exp] at hlog1 hlog2
+  rw [Real.log_one] at hlog1
+  exact ⟨by linarith, by linarith⟩
+
+/-! ## Behaviour at a physical root -/
+
+/-- **At a physical root the outward puncture cutoff vanishes identically.**  The right buffer
+argument is the constant `−o`, which is nonpositive for the outward orientation. -/
+theorem rootOutward_cutoff_eq_zero (a L : ℝ) :
+    suzukiScaleBufferedCutoff a a 1 L = 0 := by
+  have harg : suzukiRightScaleBufferArgument a a 1 L = -1 := by
+    rw [suzukiRightScaleBufferArgument_eq]
+    ring_nf
+  rw [suzukiScaleBufferedCutoff, harg,
+    Real.smoothTransition.zero_of_nonpos (by norm_num : (-1 : ℝ) ≤ 0), zero_mul]
+
+/-- **At a physical root the inward puncture cutoff is eventually one.**  The right buffer argument
+is the constant `1`, and the left one grows without bound. -/
+theorem rootInward_cutoff_eq_one {a L : ℝ} (hL : (1 : ℝ) ≤ Real.exp L * (2 * a) - 1) :
+    suzukiScaleBufferedCutoff a a (-1) L = 1 := by
+  have hargR : suzukiRightScaleBufferArgument a a (-1) L = 1 := by
+    rw [suzukiRightScaleBufferArgument_eq]
+    ring_nf
+  have hargL : suzukiLeftScaleBufferArgument a a (-1) L = Real.exp L * (2 * a) - 1 := by
+    rw [suzukiLeftScaleBufferArgument_eq]
+    ring_nf
+  rw [suzukiScaleBufferedCutoff, hargR, hargL,
+    Real.smoothTransition.one_of_one_le (le_refl (1 : ℝ)),
+    Real.smoothTransition.one_of_one_le hL, one_mul]
+
 end GaloisForLFunctions.RHTower

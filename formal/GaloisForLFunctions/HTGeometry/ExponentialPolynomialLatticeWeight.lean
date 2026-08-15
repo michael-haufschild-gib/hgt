@@ -110,8 +110,7 @@ theorem summable_latticeExpPoly (d N : ℕ) {r : ℝ} (hr0 : 0 ≤ r) (hr : r < 
   have hell : latticeEll1 ν = ∑ i, (((ν i).natAbs : ℕ) : ℝ) := by
     rw [latticeEll1]
     refine Finset.sum_congr rfl fun i _ => ?_
-    rw [← Int.cast_abs, Int.abs_eq_natAbs]
-    push_cast
+    simp
   have hpoly : (1 + latticeEll1 ν) ^ N ≤ ∏ i, (1 + (((ν i).natAbs : ℕ) : ℝ)) ^ N := by
     have hstep : (1 + latticeEll1 ν) ≤ ∏ i, (1 + (((ν i).natAbs : ℕ) : ℝ)) := by
       rw [hell]
@@ -126,5 +125,73 @@ theorem summable_latticeExpPoly (d N : ℕ) {r : ℝ} (hr0 : 0 ≤ r) (hr : r < 
         exact mul_le_mul_of_nonneg_right hpoly (Finset.prod_nonneg fun i _ => pow_nonneg hr0 _)
     _ = ∏ i, (1 + (((ν i).natAbs : ℕ) : ℝ)) ^ N * r ^ (ν i).natAbs := by
         rw [← Finset.prod_mul_distrib]
+
+
+/-! ## The recurrence source weight -/
+
+theorem latticeEll1_eq_sum_natAbs {d : ℕ} (ν : Fin d → ℤ) :
+    latticeEll1 ν = ∑ i, (((ν i).natAbs : ℕ) : ℝ) := by
+  rw [latticeEll1]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  simp
+
+theorem exp_mul_latticeEll1 {d : ℕ} (a : ℝ) (ν : Fin d → ℤ) :
+    Real.exp (a * latticeEll1 ν) = (Real.exp a) ^ (∑ i, ((ν i).natAbs)) := by
+  rw [latticeEll1_eq_sum_natAbs, ← Real.exp_nat_mul]
+  congr 1
+  push_cast
+  ring
+
+/-- **`(21)`: the finite-recurrence source weight is summable.**  A recurrence clock growing at most
+linearly in the `ℓ¹` length is absorbed by an exponential weight of strictly larger slope, together
+with any fixed polynomial factor in the clock. -/
+theorem summable_recurrenceSourceWeight {d N : ℕ} {κ σ R c : ℝ}
+    (hσ : 0 ≤ σ) (hR : 0 ≤ R) (hc : 0 ≤ c) (hgap : σ * R < κ)
+    (τ : (Fin d → ℤ) → ℝ) (hτ0 : ∀ ν, 0 ≤ τ ν)
+    (hτ : ∀ ν, τ ν ≤ R * latticeEll1 ν + c) :
+    Summable fun ν : Fin d → ℤ =>
+      Real.exp (-(2 * κ) * latticeEll1 ν) * Real.exp (2 * σ * τ ν) * (1 + τ ν) ^ N := by
+  set r : ℝ := Real.exp (2 * σ * R - 2 * κ) with hrdef
+  have hr0 : 0 ≤ r := (Real.exp_pos _).le
+  have hr : r < 1 := by
+    rw [hrdef, Real.exp_lt_one_iff]
+    nlinarith [hgap]
+  set K : ℝ := Real.exp (2 * σ * c) * ((1 + c) ^ N * (1 + R) ^ N) with hKdef
+  have hK0 : 0 ≤ K := by positivity
+  refine Summable.of_nonneg_of_le (fun ν => ?_) (fun ν => ?_)
+    (((summable_latticeExpPoly d N hr0 hr).mul_left K))
+  · have hb : (0 : ℝ) ≤ 1 + τ ν := by linarith [hτ0 ν]
+    exact mul_nonneg (mul_nonneg (Real.exp_pos _).le (Real.exp_pos _).le) (pow_nonneg hb N)
+  have hell0 : 0 ≤ latticeEll1 ν := latticeEll1_nonneg ν
+  have hτν := hτ ν
+  have hτ0ν := hτ0 ν
+  -- the exponential factor
+  have hexp : Real.exp (2 * σ * τ ν) ≤ Real.exp (2 * σ * (R * latticeEll1 ν + c)) :=
+    Real.exp_le_exp.mpr (by nlinarith)
+  have hexpsplit : Real.exp (-(2 * κ) * latticeEll1 ν)
+      * Real.exp (2 * σ * (R * latticeEll1 ν + c))
+      = Real.exp (2 * σ * c) * r ^ (∑ i, ((ν i).natAbs)) := by
+    rw [hrdef, ← exp_mul_latticeEll1, ← Real.exp_add, ← Real.exp_add]
+    congr 1
+    ring
+  -- the polynomial factor
+  have hpoly : (1 + τ ν) ^ N ≤ ((1 + c) ^ N * (1 + R) ^ N) * (1 + latticeEll1 ν) ^ N := by
+    have hstep : 1 + τ ν ≤ (1 + c) * (1 + R) * (1 + latticeEll1 ν) := by
+      nlinarith [hτν, hell0, hR, hc, mul_nonneg hc hR, mul_nonneg hc hell0,
+        mul_nonneg (mul_nonneg hc hR) hell0, mul_nonneg hR hell0]
+    calc (1 + τ ν) ^ N ≤ ((1 + c) * (1 + R) * (1 + latticeEll1 ν)) ^ N :=
+          pow_le_pow_left₀ (by linarith) hstep N
+      _ = ((1 + c) ^ N * (1 + R) ^ N) * (1 + latticeEll1 ν) ^ N := by
+          rw [mul_pow, mul_pow]
+  have hnn1 : (0 : ℝ) ≤ Real.exp (-(2 * κ) * latticeEll1 ν) := (Real.exp_pos _).le
+  have hnn2 : (0 : ℝ) ≤ (1 + τ ν) ^ N := by positivity
+  calc Real.exp (-(2 * κ) * latticeEll1 ν) * Real.exp (2 * σ * τ ν) * (1 + τ ν) ^ N
+      ≤ Real.exp (-(2 * κ) * latticeEll1 ν) * Real.exp (2 * σ * (R * latticeEll1 ν + c))
+          * (((1 + c) ^ N * (1 + R) ^ N) * (1 + latticeEll1 ν) ^ N) := by
+        refine mul_le_mul (mul_le_mul_of_nonneg_left hexp hnn1) hpoly hnn2 ?_
+        exact mul_nonneg hnn1 (Real.exp_pos _).le
+    _ = K * ((1 + latticeEll1 ν) ^ N * r ^ (∑ i, ((ν i).natAbs))) := by
+        rw [hexpsplit, hKdef]
+        ring
 
 end GaloisForLFunctions.HTGeometry

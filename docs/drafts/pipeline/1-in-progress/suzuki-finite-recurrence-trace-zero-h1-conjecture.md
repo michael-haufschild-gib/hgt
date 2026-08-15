@@ -211,7 +211,7 @@ When it is outside, \(u=0\); the discrepancy is a boundary-event source, classif
 
 The exact marked-descendant decomposition, canonical literal-support cutoff, two-coset
 distributional assembly, and finite-recurrence source estimate are now proved in
-`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-literal-paired-source-assembly.md`.
+`../3-formalized/new_scientific_knowledge/suzuki/suzuki-literal-paired-source-assembly.md`.
 
 ## 5. Boundary events and the zero-order recurrence budget
 

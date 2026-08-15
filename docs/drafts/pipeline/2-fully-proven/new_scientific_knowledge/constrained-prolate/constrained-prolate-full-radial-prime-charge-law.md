@@ -213,8 +213,54 @@ convergence of its total mass. The card remains at stage 2.
 - [x] primary formula search found no parent statement
 - [x] the arcsine value in the diagonal limit `(4)` formalized in Lean as an exact measure tail
 - [x] exact a.e.-density-plus-mass implication to diagonal convergence `(4)` formalized in Lean
-- [x] the diagonal convergence `(4)` itself in Lean
+- [x] the diagonal convergence `(4)` itself in Lean, **unconditionally** (the earlier tick was
+  stale: it rested on an a.e.-convergence hypothesis that is false for this family)
+- [x] uniform diagonal bound `(5)` `G_λ(k,k)/d₁ ≤ C/k²` in Lean
+- [x] divisor-weighted diagonal limit `(6)` in Lean, identified with the arithmetic trace
 - [ ] independent normalization and sign audit
 - [ ] combine with central correction and archimedean form
 - [ ] true restricted-Weil Rayleigh comparison
 - [ ] RH
+
+## Lean update — `(4)`, `(5)`, `(6)` are now unconditional
+
+The stale gate above ("the diagonal convergence `(4)` itself in Lean") rested on
+`nuLambdaDensity_tendsto_radialGramDiagonal`, which derives `(4)` from **a.e. pointwise** convergence
+of the finite density — a hypothesis that is false for this family (see the correction on
+`constrained-prolate-radial-leakage-divisibility-spectrum.md`).  `(4)` is now proved by the genuine
+weak route, together with `(5)` and `(6)`, in
+`GaloisForLFunctions/RHTower/ProlateTwoModeRadialLeakage.lean` (axiom-clean, wired):
+
+```text
+tendsto_ccmTwoModeRadialGramEntry_diag (n₀ n₁) (0 < A₀) (0 < A₁) (1 < k) :
+    Tendsto (fun a => twoModeRadialGramEntry a n₀ n₁
+        (ccmSubordinateCoeff A₀ A₁ a) ccmDominantCoeff k k)
+      atTop (𝓝 (8 / (11 π k) * arcsin (1/k)))                              -- (4)
+
+eventually_twoModeRadialGramEntry_diag_le (n₀ n₁) (α β : ℝ → ℝ) :
+    ∀ᶠ a in atTop, ∀ k ≥ 2,
+      twoModeRadialGramEntry a n₀ n₁ (α a) (β a) k k ≤ 4 K (α a² + β a²) / k²   -- (5)
+
+tendsto_two_mul_tsum_weighted_ccmTwoModeRadialGramEntry_diag (n₀ n₁) (0 < A₀) (0 < A₁)
+    (0 ≤ w a k) (w a k ≤ log k) (∀ k, ∀ᶠ a, w a k = log k) :
+    Tendsto (fun a => 2 * ∑' k, w a k * twoModeRadialGramEntry a n₀ n₁ … (k+2) (k+2))
+      atTop (𝓝 (-constrainedProlatePrimeConstant))                         -- (6)
+```
+
+`(5)` is proved from the Dunster envelope `radialProlateDensity_le_profileWeight` together with the
+new chord bound `arcsin u ≤ (π/2) u` (Jordan's inequality, `arcsin_le_pi_div_two_mul`), which turns
+the exact arcsine tail into the `1/k` decay the diagonal needs; the two-mode square is reduced to the
+two single-mode densities by `2ab ≤ a² + b²`.  `(6)` is dominated convergence over `k` against
+`Σ log(k+2)/(k+2)²` — summable via the corpus's `summable_weighted_rowMajorant` — with the
+per-`k` limit supplied by `(4)` and the uniform-in-`k` majorant by `(5)`.  The weight hypotheses are
+exactly `(3)` of this card: `0 ≤ a_λ(k) ≤ log k` and `a_λ(k) = log k` eventually at each fixed `k`.
+
+The limit is identified with the already-formalized arithmetic trace
+`∑ₖ constrainedProlateArithmeticEigenvalue k = -constrainedProlatePrimeConstant`, so the diagonal
+half of `(9)` — the card's equation `(6)` — is closed end to end.
+
+**What remains for this card** is the off-diagonal half: `(7)`, `(8)`, `(8a)`.  Those come from two
+parent cards that are themselves still at stage 2,
+`2-fully-proven/not_new_scientific_knowledge/ccm/ccm-exact-radial-nonstationary-sector-bound.md`
+and `.../ccm-exact-high-radial-first-row-bv-bound.md`; the missing analytic input is the quantitative
+row bound `|G_λ(j,k)| ≤ C d₁ /(c j k |j−k|)`, not anything about the diagonal.

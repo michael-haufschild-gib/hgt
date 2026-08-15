@@ -2077,3 +2077,48 @@ The existing Hedenmalm rank-one translation anomaly and dilation abscissa-shift 
 structurally relevant: construct a source-only anomaly channel matching the displayed spectral gap,
 then retain it in P-G194's augmented conservation. The current Möbius--Gamma Hardy derivative is
 target-fed through `XiRightZeroCopy` and cannot itself discharge source purity.
+
+### Attack 32 — P-G189 square-root tail covariance is the transverse CCM third jet (formalized)
+
+The updated corpus contains the higher-jet channel which Attack 31's positive Gamma pairing was
+missing.  The CCM prime-entry first and second jets are central rank-one channels and vanish after
+coefficient centering, but the actual third aperture jet has centered quadratic law
+[
+  \langle v,J^{(3)}_n v\rangle
+   =2\pi^2 q_n\Bigl(\sum_i h_i v_i\Bigr)^2,
+  \qquad \sum_i v_i=0,
+]
+with (q_n=32\,\Lambda(n)n^{-1/2}/\log^3n>0) on prime powers.  P-G189's distributed
+tail coefficient is not merely compatible with this channel: atomwise it is exactly
+[
+  \Phi_n
+   = \frac{\log n}{64\sqrt n}\,q_n.
+]
+The dressing is positive and source-derived.  For (n=p^{e+1}), Lean proves this equality both at
+the natural-number atom and at the retained primitive label `(p,e)`.
+
+Consequently every finite primitive packet defines a positive transverse CCM matrix with exact
+centered square law
+[
+  \langle v,J^{\mathrm{tail}}_S v\rangle
+   =2\pi^2\Bigl(\sum_{(p,e)\in S}\Phi_{p,e}\Bigr)
+      \Bigl(\sum_i h_i v_i\Bigr)^2.
+]
+More importantly, this matrix is not attached after differentiation: the literal P-G188
+distributed tail-energy matrix differentiates entrywise at the aperture wall to
+(J^{\mathrm{tail}}_S).  Thus the tail vector's mandatory square-root singularity becomes a finite
+first covariance variation and lands exactly in CCM's first source-derived channel visible after
+centering.  Scalar-dressing rigidity is bypassed by changing matrix direction, not magnitude;
+prime labels, depth, and P-G189 coefficients remain intact.
+
+Lean status: unconditional in
+`GaloisForLFunctions/RHTower/FrankensteinRoutePTailFluxCCMThirdJetBridge.lean`.  Direct Lean and
+exact leaf build pass.  Axiom audit of coefficient, finite-matrix, strict-positivity, and literal
+derivative theorems reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+**New live handoff.** The missing global producer is now narrower than “find a non-scalar
+coupling.”  It must compare the centered CCM clock outer-product selected above with the
+opposite-radial W-H186/W-H187 iterated-residue Gram, while the finite-time P-G188 colligation still
+retains the `<2` primitive budget.  The next conjecture is a coefficient-faithful clock-moment to
+radial-moment transform before divisor residues; bare positive synthesis remains excluded by
+W-H185.
