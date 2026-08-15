@@ -22,6 +22,14 @@ The underlying first-clock odd slope has prior corpus provenance in
 `CCMFirstClockPrimeEntrySlopeTomography`; the all-mode diagonal relation and whole-matrix collapse
 below are the new step.
 
+The separate audit module `CCMGuinandWeilPrimeEntryFirstClockBridge` proves the exact normalization
+
+```text
+r_k=(2/pi) ccmFirstClockPrimeEntrySlope(k),                     (1a)
+```
+
+and rewrites the new matrix tangent as the old scalar slope times the fixed boundary projector.
+
 On centered clock `c_i`, differentiate the whole divided-difference packet. Diagonal entries give
 `r_k`; for `i != j`,
 
@@ -72,7 +80,11 @@ continuous pole/Gamma connection without losing sign.
 - `ccmGuinandWeilPrimeEntryRankOneTangent_quadratic`
 - `ccmGuinandWeilPrimeEntryRankOneTangent_quadratic_nonpos`
 - `ccmGuinandWeilPrimeEntryRankOneTangent_rank_le_one`
+- `ccmGuinandWeilPrimeEntryMatrixRate_eq_firstClockSlope`
+- `ccmGuinandWeilPrimeEntryRankOneTangent_eq_firstClockSlope`
 
 Targeted direct Lean check and `lake build
 GaloisForLFunctions.RHTower.CCMGuinandWeilPrimeEntryRankOneTangent` pass. Principal
 `#print axioms` reports only Lean's standard `propext`, `Classical.choice`, and `Quot.sound`.
+The exact prior-corpus dictionary in `CCMGuinandWeilPrimeEntryFirstClockBridge` passes the same
+targeted checks and axiom audit.

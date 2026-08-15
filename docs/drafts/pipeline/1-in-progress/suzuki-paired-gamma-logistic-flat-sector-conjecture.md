@@ -54,7 +54,7 @@ Y=(2L+R-B)F-G
 
 for a right side \(G'+H\). It proves the exact flux system and a weighted graph estimate in which
 arbitrary nonnormal \(B\) costs only \(\|B\|\). The subsequent
-`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-flat-primitive-flux-volterra-liouville.md`
+`../3-formalized/new_scientific_knowledge/suzuki/suzuki-flat-primitive-flux-volterra-liouville.md`
 proves flat-tempered flux Liouville.  Complementary primitive flux subsequently closes
 physical-root derivative propagation, and
 `../3-formalized/new_scientific_knowledge/suzuki/suzuki-flat-flux-charge-automaticity.md`

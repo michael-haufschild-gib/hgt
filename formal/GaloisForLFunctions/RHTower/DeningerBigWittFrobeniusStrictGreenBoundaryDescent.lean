@@ -310,7 +310,6 @@ theorem deningerBigWittFrobeniusPrimeSeamFiniteBVGreenChain_groundReadout
   rw [Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro q hq
-  push_cast
   ring
 
 end

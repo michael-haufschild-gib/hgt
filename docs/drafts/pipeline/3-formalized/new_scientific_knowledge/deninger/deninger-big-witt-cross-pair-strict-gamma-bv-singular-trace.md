@@ -1,0 +1,157 @@
+# Deninger Big-Witt cross-pair strict descent and singular one-leg trace
+
+- **ID:** `deninger-big-witt-cross-pair-strict-gamma-bv-singular-trace`
+- **Stage:** 3-formalized
+- **Type:** CONSTRUCTION + EXACT COMPARISON + SHARP NO-GO
+- **Route:** L
+- **RH used:** no
+- **Xi-zero location used:** no
+- **Added axiom used:** no
+- **Computation used:** no
+- **Parents:** `deninger-big-witt-frobenius-cross-pair-coherent-compensator.md`, `DeningerBigWittFrobeniusStrictGreenBoundaryDescent.lean`
+
+## New frontier statement
+
+Write the four-label Frobenius coefficient as
+
+```text
+C_(p,q;r,t) = ghost_1(F_2 Cross(L_pq,R_rt))
+            = -2 L_pq R_rt,
+L_pq = (a_p-a_q)/(pq),
+R_rt = conjugate(a_r-a_t).
+```
+
+For every fixed left edge `(p,q)`, every coefficient `C_(p,q;r,t)` has two
+literal realizations:
+
+1. its scalar multiple of the actual ordered `(p,q)` Calderón--Witt Gamma
+   witness;
+2. an ordinary-integer degree-`pq` Hochschild Green chain with weight
+   `-2(a_p-a_q)R_rt`.
+
+The normalized incidence coordinate and BV ground boundary readout are both
+exactly `C_(p,q;r,t)`. Actual Gamma reflection-boundary and co-Poisson
+transport preserve this coefficient and multiply it by their genuine modular
+exterior.
+
+The complete finite right-edge fiber vanishes sourcewise:
+
+```text
+sum_(r,t in S^2) C_(p,q;r,t) = 0,
+sum_(r,t in S^2) GammaSource_(p,q;r,t) = 0,
+sum_(r,t in S^2) BVChain_(p,q;r,t) = 0.
+```
+
+Its diagonal is exactly the physical pair source. Therefore its off-diagonal
+complement is exactly the negative physical source in both actual carriers.
+The existing BV ground reader sees the same sign:
+
+```text
+ground(offDiagonal_(p,q)) = - physicalCoefficient_(p,q).
+```
+
+Hence invisibility under that reader is equivalent to physical vanishing; it
+cannot be obtained formally from the coherent decomposition alone.
+
+## Singular one-leg transport
+
+Let `I` be the actual ordered cross-prime packet index and `H = ell^2(I,C)`
+the existing Calderón packet Hilbert space. Finite packets admit a faithful
+linear inclusion
+
+```text
+j : C^(I)_fin -> H
+```
+
+and an algebraic one-leg trace
+
+```text
+Sigma(c) = sum_i c_i.
+```
+
+For the finite right-leg packet `R_S`, Lean proves the non-tautological
+factorization
+
+```text
+FiberCoefficient_(p,q)(S) = (-2 L_pq) Sigma(R_S).
+```
+
+Thus coherent cancellation uses exactly `Sigma`, not an unspecified scalar
+map. But `Sigma` has no continuous extension to `H`. More sharply, there are
+uniform averaging packets `u_N` with
+
+```text
+norm(j u_N)^2 = 1/(N+1),
+Sigma(u_N) = 1.
+```
+
+Therefore `j u_N -> 0` while `Sigma(u_N) -> 1`; `Sigma` is sequentially
+nonclosable relative to the actual Hilbert admission.
+
+## Proof architecture
+
+1. Use the arbitrary-ring Frobenius ghost-shift theorem and the universal
+   Teichmüller cross-effect identity to obtain `C=-2LR`.
+2. Use normalized independence of actual Calderón Gamma witnesses to recover
+   `C` at the left-edge coordinate.
+3. Insert reciprocal ordinary degree `1/(pq)` through the existing BV Green
+   boundary; the chosen chain weight reconstructs `C` exactly.
+4. Factor every fixed-left finite fiber by the antisymmetric right-leg sum.
+5. Construct algebraic finite-packet admission and coordinate summation.
+6. On normalized finite indicators, compute Hilbert norm one and trace
+   `sqrt(card)`, excluding every bounded extension.
+7. On uniform averages, prove Hilbert norm tends to zero while trace is one,
+   excluding sequential closability.
+
+## Anti-theatre audit
+
+This does **not** prove RH and does **not** call a scalar zero a new boundary.
+The first leaf explicitly records that current one-edge Calderón transport
+forgets the right label. The second leaf then identifies the exact functional
+needed to restore the right-leg contraction and proves that the standard
+completed carrier cannot support it continuously or as a closable graph.
+
+Finite antisymmetric cancellation and noncontinuity of the all-ones row on
+`ell^2` are classical separately. Literature checked includes Deninger--Mellit
+on Witt-vector algebra, Blumberg--Gerhardt--Hill--Lawson on Witt vectors and
+twisted Hochschild homology, and Deninger-style dynamical/cohomological zeta
+formalism. No located source joins the concrete four-label Big-Witt
+coefficient, actual Calderón Gamma witness, ordinary BV Green chain, and the
+proved nonclosable one-leg trace. Novelty claim is this exact Route-L
+identification and obstruction, not the component lemmas in isolation.
+
+## Exact surviving frontier
+
+Construct a label-faithful four-edge Gamma incidence source and a
+Xi/Green-provenance-selected renormalized partial-trace domain. It cannot be a
+continuous or sequentially closable extension of coordinate summation on all
+finite packets. It must nevertheless retain the physical diagonal and prove
+the off-diagonal contribution cyclically invisible or cofinally submass.
+
+## Lean certificates
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  DeningerBigWittFrobeniusCrossPairStrictGammaBVDescent.lean
+  DeningerBigWittFrobeniusCrossPairSingularOneLegTrace.lean
+```
+
+Capstones:
+
+- `deningerBigWittCrossPairFrobeniusStrictDescent`;
+- `deningerBigWittCrossPairFrobeniusAllFiberIncidenceSource_zero`;
+- `deningerBigWittCrossPairFrobeniusAllFiberBVGreenChain_zero`;
+- `deningerBigWittCrossPairFrobeniusOffDiagonalStrictDescent`;
+- `deningerBigWittCrossPairFrobenius_groundReadout_invisibility_iff_physical_zero`;
+- `deningerBigWittCrossPairFrobeniusFiberCoefficient_eq_singularOneLegContraction`;
+- `deningerBigWittCrossPairAlgebraicOneLegTrace_noContinuousExtension`;
+- `deningerBigWittCrossPairAlgebraicOneLegTrace_not_closable`.
+
+## Verification
+
+- direct `lake env lean` on both leaves: pass;
+- exact leaf-only `lake build` on both leaves: pass;
+- umbrella imports wired; umbrella not built;
+- capstone axiom audit: only `propext`, `Classical.choice`, `Quot.sound`;
+- forbidden declaration scan: pass;
+- no stale Lean process.

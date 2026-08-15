@@ -146,6 +146,21 @@ theorem norm_gaussSampleRatioDefect_sq_mul_sq_mul_sq_le
       rw [hright]
       nlinarith
 
+/-- Closed three-component cubic defect cap with its arithmetic constant constructed internally. -/
+theorem exists_gaussTripleDefectCap (k : Fin 3) (p : Nat.Primes) :
+    ∃ K : ℝ, 0 < K ∧ ∀ (I : ℕ) (j l r : ℤ),
+      ‖gaussSampleRatioDefect k p j (I : ℤ)‖ ^ 2 *
+          ‖gaussSampleRatioDefect k p l (I : ℤ)‖ ^ 2 *
+            ‖gaussSampleRatioDefect k p r (I : ℤ)‖ ^ 2
+        ≤ 64 + 12 * K * (I : ℝ) / (((I : ℤ) + j).natAbs : ℝ) +
+            12 * K * (I : ℝ) / (((I : ℤ) + l).natAbs : ℝ) +
+            12 * K * (I : ℝ) / (((I : ℤ) + r).natAbs : ℝ) := by
+  obtain ⟨K, hK, hKb⟩ := exists_norm_gaussSampleValue_pow_ratio_bound
+    (m := 3) (by omega : 1 ≤ 3) k p
+  refine ⟨K, hK, fun I j l r => ?_⟩
+  exact norm_gaussSampleRatioDefect_sq_mul_sq_mul_sq_le
+    (m := 3) (by omega) k p hK.le hKb I j l r
+
 end
 
 end RHTower

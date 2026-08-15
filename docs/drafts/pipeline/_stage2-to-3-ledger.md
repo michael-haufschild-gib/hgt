@@ -1371,28 +1371,123 @@ convergence converts the pointwise gradient bound into the quadratic translate h
 Together with `FiniteMaxGradient` this is the complete analytic engine the torus/variance cluster
 needs; what remains per card is the concrete phase-orbit computation of the gradient bound.
 
-## In flight: low-replica complete-incidence influence law
+## Promoted: low-replica complete-incidence influence law
 
-The analytic engine is complete and axiom-clean; what is left is assembly.
+Complete.  Every boxed statement `(5)`--`(23)` is Lean-certified and the card is in
+`3-formalized`.  Two modules closed the last gap:
 
-Built:
+- `HTGeometry/ReplicaScheduleAsymptotics` — `(6)`--`(10)`: the prescribed-error, logarithmic and
+  observation-time replica schedules, and the two asymptotic transfers `(8)`/`(9)` over an arbitrary
+  sequence of probability spaces (`Ω : ℕ → Type*`), so no fixed ambient torus is assumed.
+- `HTGeometry/ThresholdTransportLightFilter` — `(18)`--`(23)`: the calibrated cutoff `C/ρ²`, the
+  two threshold event inclusions, and the two-sided transport of the light-filtered reporter mean to
+  the unfiltered incidence probability.
 
-- `HTGeometry/BinomialTailDerivativeBound` — `(11)`: the replica reporter's derivative is at most the
-  replica order, because a binomial probability term is one summand of an expansion of one; plus the
-  Lipschitz form on the unit interval.
-- `HTGeometry/PhaseOrbitGradient` — `(15)`: the overlap amplitude, its exact coordinate derivative
-  `-(2πi)e^{-2πix_j}⟪z,u_j⟫`, the score `‖A‖²` differentiated by mathlib's `HasFDerivAt.norm_sq`,
-  the squared-gradient bound `∑_j |∂_j X_z|² ≤ 16π²p` for `‖A‖ ≤ 1`, the same bound for the complete
-  maximum via `FiniteMaxGradient`, and `(12)` for a Lipschitz reporter of the maximum.
-- `HTGeometry/FiniteMaxGradient`, `HTGeometry/UnitTorusPoincare`,
-  `HTGeometry/TorusTranslateDifference` — the general engine.
+Reusable for the remaining torus/variance cards: `UnitTorusPoincare` (sharp Fourier Poincaré),
+`TorusTranslateDifference` (a.e. gradient to variance), `FiniteMaxGradient` (active gradient of a
+finite max), `PhaseOrbitGradient` (phase-orbit overlap derivatives, Bessel step, light filter),
+`BinomialTail*` and `ReplicaReporterExpectation` (bounded replica reporter and its mean brackets).
 
-Remaining for the card:
 
-1. the torus form of the orbit (`fourier (-1) (t j)` in place of `exp(-2πi x_j)`) and the identity
-   `torusLift (torus score) = completeScore`, so the observable is a `C(UnitAddTorus d, ℂ)`;
-2. `‖A‖ ≤ 1` from `∑_j ‖u_j‖² ≤ 1` — the Bessel step `(14)` itself is done
-   (`sum_sq_inner_le_of_orthogonal`);
-3. `(13)` by `variance_le_of_ae_fderiv_bound` with `K = 16π²r²p_*`, giving exactly `4r²p_*`;
-4. Theorem A `(5)`--`(10)` from `BinomialTailBetaThreshold` plus the replica-order arithmetic;
-5. Theorem C `(16)`--`(23)`, elementary given Theorem B.
+## Promoted: local-interaction replica collision extremality
+
+Theorems A and B were already in `HTGeometry/ReplicaCollisionExtremality`.  New this round:
+
+- **E** `(8)`--`(9)` — `HTGeometry/SpectralFormFactorMoments`: `replicaPairCount`, `sffMoment`, the
+  identity `sffMoment D m = D^m * fidelityReplicaPermutationFloor (uniform) m`, and
+  `normalizedSpectralFormFactorMean_tendsto` (the long-time moment of the normalized spectral form
+  factor of a maximally projective spectrum is `a_{D,m}`).
+- **F** `(10)`--`(12)` — `HTGeometry/MethodOfMomentsReal` (new reusable engine: factorial moment
+  bound → bilateral exponential window → tightness → Prokhorov → moment passage to weak limits →
+  `tendsto_of_tendsto_moments`) plus `HTGeometry/SpectralFormFactorExponentialLimit`
+  (`integral_torusSFF_pow`, `sffLaw`, `unitExpLaw`, `tendsto_sffLaw_unitExpLaw`).  The determinacy
+  input is the corpus's `HTGeometry.measure_eq_of_moments_eq_of_bilateral_exponential_window`.
+- **D** `(7)` — `HTGeometry/ProjectivePhaseHaarStatistic`: the anchoring map pushes product Haar to
+  product Haar (`map_projectiveTorusMap_haar`) and the sampled phase law to the relative phase law,
+  the survival amplitude modulus is diagonal-invariant, and
+  `tendsto_timeAverage_fidelityStatistic` is the card's boxed independent-phase time law.
+- **C** `(6)` — `HTGeometry/GenericLocalCollisionExtremality`: membership in the canonical
+  maximal-rank locus *is* maximal projective rationality
+  (`maximallyProjective_of_mem_realAffineHermitianMaximalSet`), so
+  `exists_quditPath_generic_collisionFloor` and `exists_quditPath_generic_survivalFidelityFloor`
+  give the dense/residual/full-measure statement for every positive weight and every replica order.
+
+C2 is done too: `BlockAffineLineAvoidance` (one-knob lines through a coordinate splitting; the
+merge at line parameter one is a measure-preserving equivalence, so the bad set is null),
+`OneKnobProjectiveActivation` and `OneKnobOnsiteActivation` (the same Encodable obstruction
+enumeration as the corpus's genericity theorem, fed to the line-avoidance lemma), and
+`SeparableSpectrumRankBound` (`anchoredTemporalRank_le_of_separable`, `separable_rank_lt`).  The
+card is in `3-formalized`.
+
+Reusable beyond this card: `MethodOfMomentsReal` (method of moments on ℝ, including tightness and
+Prokhorov), `BlockAffineLineAvoidance`, `SeparableSpectrumRankBound`,
+`ProjectivePhaseHaarStatistic` (anchoring pushes Haar to Haar).
+
+## Promoted: static ensembles obey a parameter--time--coverage barrier
+
+Theorem A is done: `HTGeometry/ParameterCoverageBarrier` has `coveringNumber`,
+`card_le_of_separated` (a `δ`-separated subset of a Euclidean `R`-ball has
+`card · (δ/2)^m ≤ (R+δ/2)^m`, by disjoint balls), `exists_separated_net` (a maximal separated
+subset exists and is a net, by `Nat.sSup_mem` on the bounded cardinality set), and
+`exists_cover_card_le` — the card's `(1)`, with the `L = 0` and `K = ∅` cases handled separately.
+
+Theorem C `(8)` is then Duhamel plus Cauchy–Schwarz plus Theorem A and B; the corollary `(13)` is
+arithmetic.  Both are short once B is available.
+
+Theorem B `(4)` is **done**: `HTGeometry/ProjectiveBallVolume` proves
+`volume_projectiveBallCone` — for every unit centre `φ` and every `0 < r < 1`,
+`volume {x | ‖x‖² ≤ 1 ∧ ‖x‖² − |⟪φ,x⟫|² ≤ r²‖x‖²} = r^{2n} · volume {x | ‖x‖² ≤ 1}` in
+`Fin (n+1) → ℂ` — and `one_le_card_mul_pow`, the card's `(5)`.  The route that was carried out:
+
+1. Work in `Fin D → ℂ` with the pi Lebesgue measure (an additive Haar measure on a `2D`-dimensional
+   real space) and write every set with explicit sums: `sqNorm x = ∑ i, ‖x i‖^2`, the unit ball
+   `{x | sqNorm x ≤ 1}`, and the cone `{x | sqNorm x - ‖∑ i, conj (φ i) * x i‖^2 ≤ r^2 * sqNorm x}`.
+   The projective-ball Haar probability is the normalized cone-in-ball volume — this is exactly
+   mathlib's `Measure.toSphere` normalization (`toSphere_apply'`), so no sphere measure is needed.
+2. Unitary invariance: a matrix with `Uᴴ * U = 1` has `|det_ℂ U| = 1`, so by
+   `LinearMap.det_restrictScalars` (`det_ℝ = Algebra.norm ℝ (det_ℂ) = |det_ℂ|²`) its real
+   determinant is one, and `Measure.addHaar_preimage_linearMap` gives volume invariance.  Any unit
+   `φ` is the first column of such a `U`, which reduces `(4)` to the centre `e₀`.
+3. At `e₀` the cone is `{x | ‖x 0‖^2 ≥ s · sqNorm x}` with `s = 1 - r^2`.  Split off coordinate `0`
+   with `volume_preserving_piFinSuccAbove`, use `Measure.addHaar_smul` for the volume of the
+   `(D-1)`-dimensional ball of radius `min (c‖x 0‖) √(1 - ‖x 0‖²)` (`c = √((1-s)/s)`), then
+   `Complex.integral_comp_polarCoord_symm` in the remaining plane.  The two elementary integrals
+   `∫_0^{√s} c^{2D-2} a^{2D-1}` and `∫_{√s}^1 (1-a²)^{D-1} a` sum to `(1-s)^{D-1}/(2D)`, giving the
+   ratio `(1-s)^{D-1} = r^{2D-2}`.
+4. `(5)` follows without any sphere measure: a cover of the sphere by `q` balls of radius `r` gives
+   a cover of the unit ball by the corresponding cones, so `1 ≤ q · r^{2D-2}`.
+
+### Complete
+
+All six mathematical boxed statements are Lean-certified and the card is in `3-formalized`:
+`(1)` `exists_cover_card_le`, `(2)` `le_lipschitz_of_covering`, `(4)` `volume_projectiveBallCone`,
+`(5)` `one_le_card_mul_pow`, `(8)` `coverage_time_lower_bound`, `(13)` `coverage_time_exponential`.
+The Duhamel step `(9)` reuses the corpus's `QuantumAlg.norm_unitaryEvolution_mulVec_sub_le`; the
+coefficient Cauchy--Schwarz `(10)` is `norm_generatorCombination_sub_le`.
+
+Reusable beyond this card: `ParameterCoverageBarrier` (separated-net volume bound, covering
+numbers, the root-form Lipschitz lower bound) and `ProjectiveBallVolume` (uniform measure of a
+projective ball at every centre, unitary invariance of the pi Lebesgue measure, plane polar
+reduction of a radial lintegral).
+
+## In flight: quenched causal replica-action law
+
+New reusable engine, axiom-clean:
+
+- `HTGeometry/GibbsVariationalPrinciple` — the Donsker–Varadhan/Gibbs duality on any probability
+  space, which mathlib does not have.  `llr_tilted_right` shifts the log-likelihood ratio against a
+  tilted measure by the potential and the log partition function; `neg_log_integral_exp_le_gibbsAction`
+  is the lower bound (via `InformationTheory.integral_llr_add_sub_measure_univ_nonneg`);
+  `gibbsAction_tilted` and `isLeast_gibbsAction` give the exact infimum, attained at the tilted law.
+- `HTGeometry/QuenchedReplicaAction` — `quenchedReplicaMass ρ F r = ∫ F^r`, its Laplace-transform
+  form `(3)`, monotonicity `(15)`, the discount bound `(6)`/`(18c)`
+  (`measureReal_le_quenchedReplicaMass`), the rare-carrier lower bound `(17)`
+  (`quenchedReplicaMass_ge_of_carrier`), and the card's Theorem B `(8)`/`(9)`
+  (`isLeast_quenchedReplicaAction`).
+
+The card's parent is already formalized (`RHTower/CircuitCausalAccessibility`:
+`causalAccessibility`, `preparationAction`, `pow_le_causalAccessibility`), so `(6)` instantiates
+directly.  Remaining for the card: the product-incidence identity `(5)` (Fubini for `ρ ⊗ π_z^{⊗r}`
+against the causal success event), the soft-reporter form `(7)`, the event-projection form `(10)`,
+the certificate criterion `(12)`/`(14)`, and the `L^p`-limit statements `(16)`/`(18b)`
+(`lim Z_r^{1/r} = ‖F‖_∞`), which need an `essSup` layer.

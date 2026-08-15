@@ -917,7 +917,7 @@ The primitive-forced equation has a second formulation, proved in
 `../3-formalized/new_scientific_knowledge/suzuki/suzuki-primitive-flux-nonnormal-graph-reduction.md`.
 With \(Y=(2L+R-B)F-G\), it becomes a first-order graph system whose weighted a priori estimate
 uses only \(\|B\|\), not the group \(\exp(-ixB/2)\). The flat-tempered theorem in
-`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-flat-primitive-flux-volterra-liouville.md`
+`../3-formalized/new_scientific_knowledge/suzuki/suzuki-flat-primitive-flux-volterra-liouville.md`
 then proves exponential value/flux decay from zero finite charge. Hatano--Nelson is not an
 intrinsic no-go for the equation. Remaining problem is propagation of weighted flux regularity to
 the physical root derivative.

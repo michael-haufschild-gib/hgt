@@ -8,10 +8,10 @@ noncomputable section
 
 /-- Affine dual exponent for the fixed `4/3 -> 2` Gabriel interpolation. -/
 def inghamFixedGabrielDualExponent (z : ℂ) : ℂ :=
-  (1 + 180 * z) / 127
+  (50 + 9000 * z) / 6341
 
 @[simp] theorem inghamFixedGabrielDualExponent_re (z : ℂ) :
-    (inghamFixedGabrielDualExponent z).re = (1 + 180 * z.re) / 127 := by
+    (inghamFixedGabrielDualExponent z).re = (50 + 9000 * z.re) / 6341 := by
   simp [inghamFixedGabrielDualExponent]
 
 @[simp] theorem inghamFixedGabrielDualExponent_center :
@@ -19,13 +19,13 @@ def inghamFixedGabrielDualExponent (z : ℂ) : ℂ :=
   norm_num [inghamFixedGabrielDualExponent, inghamFixedGabrielSigma]
 
 theorem inghamFixedGabrielDualExponent_re_left {z : ℂ} (hz : z.re = 1 / 2) :
-    (inghamFixedGabrielDualExponent z).re = 91 / 127 := by
+    (inghamFixedGabrielDualExponent z).re = 4550 / 6341 := by
   rw [inghamFixedGabrielDualExponent_re, hz]
   norm_num
 
 theorem inghamFixedGabrielDualExponent_re_right {z : ℂ}
     (hz : z.re = inghamPowerSavingRightEdge) :
-    (inghamFixedGabrielDualExponent z).re = 182 / 127 := by
+    (inghamFixedGabrielDualExponent z).re = 9100 / 6341 := by
   rw [inghamFixedGabrielDualExponent_re, hz]
   norm_num [inghamPowerSavingRightEdge]
 
@@ -75,7 +75,7 @@ theorem norm_inghamFixedGabrielDualPower {w z : ℂ} (hw : w ≠ 0) :
   ring
 
 theorem norm_inghamFixedGabrielDualPower_left (w z : ℂ) (hz : z.re = 1 / 2) :
-    ‖inghamFixedGabrielDualPower w z‖ = ‖w‖ ^ (91 / 127 : ℝ) := by
+    ‖inghamFixedGabrielDualPower w z‖ = ‖w‖ ^ (4550 / 6341 : ℝ) := by
   by_cases hw : w = 0
   · subst w
     simp [inghamFixedGabrielDualPower]
@@ -84,7 +84,7 @@ theorem norm_inghamFixedGabrielDualPower_left (w z : ℂ) (hz : z.re = 1 / 2) :
 
 theorem norm_inghamFixedGabrielDualPower_right (w z : ℂ)
     (hz : z.re = inghamPowerSavingRightEdge) :
-    ‖inghamFixedGabrielDualPower w z‖ = ‖w‖ ^ (182 / 127 : ℝ) := by
+    ‖inghamFixedGabrielDualPower w z‖ = ‖w‖ ^ (9100 / 6341 : ℝ) := by
   by_cases hw : w = 0
   · subst w
     simp [inghamFixedGabrielDualPower]
@@ -95,10 +95,10 @@ theorem norm_inghamFixedGabrielDualPower_right (w z : ℂ)
 positive, while its norm has the conjugate-power exponent `127/237`. -/
 def inghamFixedGabrielDualSeed (w : ℂ) : ℂ :=
   if w = 0 then 0 else
-    starRingEnd ℂ w / (‖w‖ : ℂ) * (↑(‖w‖ ^ (127 / 237 : ℝ)) : ℂ)
+    starRingEnd ℂ w / (‖w‖ : ℂ) * (↑(‖w‖ ^ (6341 / 11859 : ℝ)) : ℂ)
 
 @[simp] theorem norm_inghamFixedGabrielDualSeed (w : ℂ) :
-    ‖inghamFixedGabrielDualSeed w‖ = ‖w‖ ^ (127 / 237 : ℝ) := by
+    ‖inghamFixedGabrielDualSeed w‖ = ‖w‖ ^ (6341 / 11859 : ℝ) := by
   by_cases hw : w = 0
   · subst w
     simp [inghamFixedGabrielDualSeed]
@@ -109,7 +109,7 @@ def inghamFixedGabrielDualSeed (w : ℂ) : ℂ :=
       Real.norm_of_nonneg (Real.rpow_nonneg (norm_nonneg w) _), div_self hn.ne', one_mul]
 
 @[simp] theorem mul_inghamFixedGabrielDualSeed (w : ℂ) :
-    w * inghamFixedGabrielDualSeed w = (↑(‖w‖ ^ (364 / 237 : ℝ)) : ℂ) := by
+    w * inghamFixedGabrielDualSeed w = (↑(‖w‖ ^ (18200 / 11859 : ℝ)) : ℂ) := by
   by_cases hw : w = 0
   · subst w
     simp [inghamFixedGabrielDualSeed]
@@ -122,20 +122,20 @@ def inghamFixedGabrielDualSeed (w : ℂ) : ℂ :=
     rw [← mul_assoc, hphase, ← Complex.ofReal_mul]
     norm_cast
     calc
-      ‖w‖ * ‖w‖ ^ (127 / 237 : ℝ) =
-          ‖w‖ ^ (1 : ℝ) * ‖w‖ ^ (127 / 237 : ℝ) := by rw [Real.rpow_one]
-      _ = ‖w‖ ^ ((1 : ℝ) + 127 / 237) := (Real.rpow_add hn _ _).symm
-      _ = ‖w‖ ^ (364 / 237 : ℝ) := by norm_num
+      ‖w‖ * ‖w‖ ^ (6341 / 11859 : ℝ) =
+          ‖w‖ ^ (1 : ℝ) * ‖w‖ ^ (6341 / 11859 : ℝ) := by rw [Real.rpow_one]
+      _ = ‖w‖ ^ ((1 : ℝ) + 6341 / 11859) := (Real.rpow_add hn _ _).symm
+      _ = ‖w‖ ^ (18200 / 11859 : ℝ) := by norm_num
 
 /-- Left boundary dual fourth power is exactly the center `364/237` density. -/
 theorem norm_inghamFixedGabrielDualPower_seed_left_pow_four
     (w z : ℂ) (hz : z.re = 1 / 2) :
     ‖inghamFixedGabrielDualPower (inghamFixedGabrielDualSeed w) z‖ ^ 4 =
-      ‖w‖ ^ (364 / 237 : ℝ) := by
+      ‖w‖ ^ (18200 / 11859 : ℝ) := by
   rw [norm_inghamFixedGabrielDualPower_left _ _ hz,
     norm_inghamFixedGabrielDualSeed]
   rw [← Real.rpow_mul (norm_nonneg w)]
-  rw [show (127 / 237 : ℝ) * (91 / 127) = 91 / 237 by norm_num]
+  rw [show (6341 / 11859 : ℝ) * (4550 / 6341) = 4550 / 11859 by norm_num]
   rw [← Real.rpow_natCast]
   rw [← Real.rpow_mul (norm_nonneg w)]
   congr 1
@@ -145,11 +145,11 @@ theorem norm_inghamFixedGabrielDualPower_seed_left_pow_four
 theorem norm_inghamFixedGabrielDualPower_seed_right_pow_two
     (w z : ℂ) (hz : z.re = inghamPowerSavingRightEdge) :
     ‖inghamFixedGabrielDualPower (inghamFixedGabrielDualSeed w) z‖ ^ 2 =
-      ‖w‖ ^ (364 / 237 : ℝ) := by
+      ‖w‖ ^ (18200 / 11859 : ℝ) := by
   rw [norm_inghamFixedGabrielDualPower_right _ _ hz,
     norm_inghamFixedGabrielDualSeed]
   rw [← Real.rpow_mul (norm_nonneg w)]
-  rw [show (127 / 237 : ℝ) * (182 / 127) = 182 / 237 by norm_num]
+  rw [show (6341 / 11859 : ℝ) * (9100 / 6341) = 9100 / 11859 by norm_num]
   rw [← Real.rpow_natCast]
   rw [← Real.rpow_mul (norm_nonneg w)]
   congr 1
@@ -165,19 +165,19 @@ theorem continuous_inghamFixedGabrielDualSeed :
     rw [ContinuousAt, show inghamFixedGabrielDualSeed 0 = 0 by
       simp [inghamFixedGabrielDualSeed], tendsto_zero_iff_norm_tendsto_zero]
     rw [show (fun z : ℂ => ‖inghamFixedGabrielDualSeed z‖) =
-        fun z : ℂ => ‖z‖ ^ (127 / 237 : ℝ) by
+        fun z : ℂ => ‖z‖ ^ (6341 / 11859 : ℝ) by
       funext z
       exact norm_inghamFixedGabrielDualSeed z]
     have hnorm : Tendsto (fun z : ℂ => ‖z‖) (𝓝 0) (𝓝 0) :=
       by simpa using
         (((continuous_norm : Continuous fun z : ℂ => ‖z‖).continuousAt :
           ContinuousAt (fun z : ℂ => ‖z‖) (0 : ℂ)).tendsto)
-    simpa [Function.comp_def, Real.zero_rpow (by norm_num : (127 / 237 : ℝ) ≠ 0)] using
+    simpa [Function.comp_def, Real.zero_rpow (by norm_num : (6341 / 11859 : ℝ) ≠ 0)] using
       (Real.continuous_rpow_const
-        (by norm_num : (0 : ℝ) ≤ 127 / 237)).continuousAt.tendsto.comp hnorm
+        (by norm_num : (0 : ℝ) ≤ 6341 / 11859)).continuousAt.tendsto.comp hnorm
   · have hev : ∀ᶠ z : ℂ in 𝓝 w, z ≠ 0 := eventually_ne_nhds hw
     have hcand : ContinuousAt (fun z : ℂ => starRingEnd ℂ z / (‖z‖ : ℂ) *
-        (↑(‖z‖ ^ (127 / 237 : ℝ)) : ℂ)) w := by
+        (↑(‖z‖ ^ (6341 / 11859 : ℝ)) : ℂ)) w := by
       have hstar : ContinuousAt (fun z : ℂ => star z) w :=
         (continuous_star : Continuous fun z : ℂ => star z).continuousAt
       have hnormR : ContinuousAt (fun z : ℂ => ‖z‖) w :=
@@ -186,10 +186,10 @@ theorem continuous_inghamFixedGabrielDualSeed :
         Complex.continuous_ofReal.continuousAt.comp hnormR
       have hdiv := hstar.div hnormC
         (Complex.ofReal_ne_zero.mpr (norm_ne_zero_iff.mpr hw))
-      have hrpowR : ContinuousAt (fun z : ℂ => ‖z‖ ^ (127 / 237 : ℝ)) w :=
-        (Real.continuous_rpow_const (by norm_num : (0 : ℝ) ≤ 127 / 237)).continuousAt.comp hnormR
+      have hrpowR : ContinuousAt (fun z : ℂ => ‖z‖ ^ (6341 / 11859 : ℝ)) w :=
+        (Real.continuous_rpow_const (by norm_num : (0 : ℝ) ≤ 6341 / 11859)).continuousAt.comp hnormR
       have hrpowC : ContinuousAt
-          (fun z : ℂ => (↑(‖z‖ ^ (127 / 237 : ℝ)) : ℂ)) w :=
+          (fun z : ℂ => (↑(‖z‖ ^ (6341 / 11859 : ℝ)) : ℂ)) w :=
         Complex.continuous_ofReal.continuousAt.comp hrpowR
       exact hdiv.mul hrpowC
     apply hcand.congr_of_eventuallyEq
@@ -200,7 +200,7 @@ theorem norm_inghamFixedGabrielDualPower_of_pos_re
     (z w : ℂ) (hz : 0 < (inghamFixedGabrielDualExponent z).re) :
     ‖inghamFixedGabrielDualPower w z‖ =
       ‖w‖ ^ (inghamFixedGabrielDualExponent z).re := by
-  have hz' : 0 < (1 + 180 * z.re) / 127 := by simpa using hz
+  have hz' : 0 < (50 + 9000 * z.re) / 6341 := by simpa using hz
   by_cases hw : w = 0
   · subst w
     rw [show inghamFixedGabrielDualPower 0 z = 0 by
@@ -214,7 +214,7 @@ including at datum zero. -/
 theorem continuous_inghamFixedGabrielDualPower_const
     (z : ℂ) (hz : 0 < (inghamFixedGabrielDualExponent z).re) :
     Continuous fun w : ℂ => inghamFixedGabrielDualPower w z := by
-  have hz' : 0 < (1 + 180 * z.re) / 127 := by simpa using hz
+  have hz' : 0 < (50 + 9000 * z.re) / 6341 := by simpa using hz
   rw [continuous_iff_continuousAt]
   intro w
   by_cases hw : w = 0

@@ -171,7 +171,7 @@ theorem inv_norm_inghamGabrielGaussian_center_le_exp
   have hquot : kappa * t ^ 2 / T ^ 2 ≤ kappa := by
     apply (div_le_iff₀ hT2).mpr
     exact mul_le_mul_of_nonneg_left htSq hkappa
-  have hleft : -(kappa * (49 / 100 : ℝ) / T ^ 2) ≤ 0 :=
+  have hleft : -(kappa * (488601 / 1000000 : ℝ) / T ^ 2) ≤ 0 :=
     neg_nonpos.mpr (div_nonneg (mul_nonneg hkappa (by norm_num)) hT2.le)
   have hright : 0 ≤ kappa - kappa * t ^ 2 / T ^ 2 := sub_nonneg.mpr hquot
   simpa only [sub_eq_add_neg, neg_div] using hleft.trans hright

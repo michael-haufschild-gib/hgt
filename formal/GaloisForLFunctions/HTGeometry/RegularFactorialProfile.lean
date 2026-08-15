@@ -96,6 +96,22 @@ theorem block_upper (h : IsRegularFactorialProfile s c₁ c₂ Θ) {a b : ℕ} (
       refine mul_le_mul_of_nonneg_left ?_ h.c₂_pos.le
       exact mul_le_mul_of_nonneg_left ih (Real.rpow_nonneg hpos.le s)
 
+/-- Scaling a profile by a positive constant keeps it regular, with the same constants. -/
+theorem const_mul (h : IsRegularFactorialProfile s c₁ c₂ Θ) {K : ℝ} (hK : 0 < K) :
+    IsRegularFactorialProfile s c₁ c₂ (fun k => K * Θ k) where
+  c₁_pos := h.c₁_pos
+  c₂_pos := h.c₂_pos
+  pos k := mul_pos hK (h.pos k)
+  lower k := by
+    have h1 := mul_le_mul_of_nonneg_left (h.lower k) hK.le
+    calc c₁ * (((k : ℝ) + 1) ^ s * (K * Θ k))
+        = K * (c₁ * (((k : ℝ) + 1) ^ s * Θ k)) := by ring
+      _ ≤ K * Θ (k + 1) := h1
+  upper k := by
+    have h1 := mul_le_mul_of_nonneg_left (h.upper k) hK.le
+    calc K * Θ (k + 1) ≤ K * (c₂ * (((k : ℝ) + 1) ^ s * Θ k)) := h1
+      _ = c₂ * (((k : ℝ) + 1) ^ s * (K * Θ k)) := by ring
+
 end IsRegularFactorialProfile
 
 /-! ### The gamma profile is a regular factorial profile -/

@@ -35,32 +35,32 @@ namespace GaloisForLFunctions.HTGeometry
 /-! ### The action -/
 
 /-- The operator determined by a family of shift polynomials. -/
-noncomputable def shiftOp (Φ : ℕ → Polynomial ℂ) (F : PowerSeries ℂ) : PowerSeries ℂ :=
+noncomputable def eulerShiftOp (Φ : ℕ → Polynomial ℂ) (F : PowerSeries ℂ) : PowerSeries ℂ :=
   PowerSeries.mk fun n => ∑ k ∈ Finset.range (n + 1),
     (Φ (n - k)).eval ((k : ℕ) : ℂ) * PowerSeries.coeff k F
 
-@[simp] theorem coeff_shiftOp (Φ : ℕ → Polynomial ℂ) (F : PowerSeries ℂ) (n : ℕ) :
-    PowerSeries.coeff n (shiftOp Φ F)
+@[simp] theorem coeff_eulerShiftOp (Φ : ℕ → Polynomial ℂ) (F : PowerSeries ℂ) (n : ℕ) :
+    PowerSeries.coeff n (eulerShiftOp Φ F)
       = ∑ k ∈ Finset.range (n + 1),
           (Φ (n - k)).eval ((k : ℕ) : ℂ) * PowerSeries.coeff k F :=
   PowerSeries.coeff_mk _ _
 
 /-- An operator written with coefficients of powers of `θ` is the operator of its shift
 polynomials. -/
-theorem shiftOp_shiftPolynomial {m : ℕ} (B : Fin (m + 1) → PowerSeries ℂ) (F : PowerSeries ℂ) :
-    shiftOp (shiftPolynomial B) F = eulerLinearOp B F := by
+theorem eulerShiftOp_shiftPolynomial {m : ℕ} (B : Fin (m + 1) → PowerSeries ℂ) (F : PowerSeries ℂ) :
+    eulerShiftOp (shiftPolynomial B) F = eulerLinearOp B F := by
   ext n
-  rw [coeff_shiftOp, coeff_eulerLinearOp_range]
+  rw [coeff_eulerShiftOp, coeff_eulerLinearOp_range]
 
-theorem shiftOp_add (Φ : ℕ → Polynomial ℂ) (F G : PowerSeries ℂ) :
-    shiftOp Φ (F + G) = shiftOp Φ F + shiftOp Φ G := by
+theorem eulerShiftOp_add (Φ : ℕ → Polynomial ℂ) (F G : PowerSeries ℂ) :
+    eulerShiftOp Φ (F + G) = eulerShiftOp Φ F + eulerShiftOp Φ G := by
   ext n
-  rw [coeff_shiftOp, map_add, coeff_shiftOp, coeff_shiftOp, ← Finset.sum_add_distrib]
+  rw [coeff_eulerShiftOp, map_add, coeff_eulerShiftOp, coeff_eulerShiftOp, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [map_add]
   ring
 
-theorem shiftOp_zero_family (F : PowerSeries ℂ) : shiftOp (fun _ => 0) F = 0 := by
+theorem eulerShiftOp_zero_family (F : PowerSeries ℂ) : eulerShiftOp (fun _ => 0) F = 0 := by
   ext n
   simp
 
@@ -73,18 +73,18 @@ noncomputable def shiftComp (Ψ Φ : ℕ → Polynomial ℂ) : ℕ → Polynomia
     (Ψ (ν - b)).comp (Polynomial.X + Polynomial.C ((b : ℕ) : ℂ)) * Φ b
 
 /-- **The convolution of shift polynomials is composition of operators.** -/
-theorem shiftOp_shiftComp (Ψ Φ : ℕ → Polynomial ℂ) (F : PowerSeries ℂ) :
-    shiftOp (shiftComp Ψ Φ) F = shiftOp Ψ (shiftOp Φ F) := by
+theorem eulerShiftOp_shiftComp (Ψ Φ : ℕ → Polynomial ℂ) (F : PowerSeries ℂ) :
+    eulerShiftOp (shiftComp Ψ Φ) F = eulerShiftOp Ψ (eulerShiftOp Φ F) := by
   classical
   ext n
-  rw [coeff_shiftOp, coeff_shiftOp]
+  rw [coeff_eulerShiftOp, coeff_eulerShiftOp]
   have hR : ∑ k ∈ Finset.range (n + 1),
-        (Ψ (n - k)).eval ((k : ℕ) : ℂ) * PowerSeries.coeff k (shiftOp Φ F)
+        (Ψ (n - k)).eval ((k : ℕ) : ℂ) * PowerSeries.coeff k (eulerShiftOp Φ F)
       = ∑ k ∈ Finset.range (n + 1), ∑ j ∈ Finset.range (k + 1),
           (Ψ (n - k)).eval ((k : ℕ) : ℂ) * ((Φ (k - j)).eval ((j : ℕ) : ℂ)
             * PowerSeries.coeff j F) := by
     refine Finset.sum_congr rfl fun k _ => ?_
-    rw [coeff_shiftOp, Finset.mul_sum]
+    rw [coeff_eulerShiftOp, Finset.mul_sum]
   rw [hR, Finset.sum_comm' (t' := Finset.range (n + 1)) (s' := fun j => Finset.Icc j n)
     (by intro x y; simp only [Finset.mem_range, Finset.mem_Icc]; omega)]
   refine Finset.sum_congr rfl fun j hj => ?_

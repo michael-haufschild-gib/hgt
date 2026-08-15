@@ -308,3 +308,155 @@ Sole remaining input to the already-formal concrete Gabriel interpolation theore
 uniform translated right-edge `L2` estimate for the same Gaussian pole-cleared field. After it,
 center interpolation gives the formal `8263/11850` exponent; detector zero-density and prime
 supply still remain.
+
+### C5i: both translated endpoints and actual Gabriel center moment
+
+Status: **FORMALIZED; DETECTOR ZERO-DENSITY TRANSFER REMAINS**.
+
+`Sieve/InghamRightGaussianTranslatedMoment.lean` closes the right endpoint uniformly over every
+imaginary translate on `Re z=181/180`:
+
+```text
+integral_[-X,X] |poleClearedGaussianError_X(z+it)|^2 dt
+  <= C_right X^(-1/180).
+```
+
+Its proof first upgrades the affine right-edge mean square to arbitrary symmetric raw windows and
+then applies the same Gaussian-versus-polynomial absorption mechanism as the critical endpoint.
+
+The apparent final obstruction was an overstrong adapter premise: the generic Holder lemmas asked
+for global continuity of the field, but the pole-cleared field is deliberately only used away from
+the auxiliary singular point `0`. `InghamFixedGabrielScalarFamily.lean` and
+`InghamFixedGabrielIntegralInterpolation.lean` now prove the exact stronger formulation requiring
+only continuity of vertical paths in `Re z>=1/2`; their former global-continuity APIs remain as
+wrappers.
+
+`Sieve/InghamGabrielCenterMoment.lean` then instantiates the actual scalar family, both translated
+endpoint moments, strip `DiffContOnCl`, and global `BddAbove`. It proves first
+
+```text
+centerMoment_X^(237/364) <= C X^(8263/18200)
+```
+
+and unpowers exactly to
+
+```text
+centerMoment_X <= C X^(8263/11850),
+8263/11850 = 7/10 - 16/5925.
+```
+
+No epsilon or logarithmic loss appears. All public theorems are target-built, umbrella-wired, and
+axiom-clean modulo Lean's standard `propext`, `Classical.choice`, and `Quot.sound`. This closes the
+entire actual Gabriel interpolation chain. It is genuine Route T frontier progress, but not RH:
+next open core is transfer from the pole-cleared center moment to the raw detector logarithmic
+moment and quantitative zero-density/prime-supply chain.
+
+### C5j: raw center moment and integrated detector logarithm
+
+Status: **FORMALIZED; ZERO-COUNTING CONTOUR GEOMETRY REMAINS**.
+
+`Sieve/InghamDetectorCenterLogMoment.lean` reverses pole clearing on `|t|<=X`, raises the exact
+pointwise factor `(7/3) exp(1)` to the Gabriel power `364/237`, and proves
+
+```text
+integral_[-X,X] |zeta(7/10+it) M_X(7/10+it)-1|^(364/237) dt
+  <= C X^(8263/11850).
+```
+
+The pointwise detector inequality then gives the same exponent for the integrated logarithm of
+the literal classical detector `1-(zeta M_X-1)^2`. Detector zeros were not treated as continuity
+points: the restriction to the center path is proved real analytic and hence meromorphic, and
+mathlib's meromorphic log-norm theorem supplies interval integrability across its zero set. Thus
+the integrated inequality is mathematically valid rather than a Bochner-integral default at
+nonintegrable logarithmic singularities.
+
+Both public estimates are target-built, umbrella-wired, and axiom-clean modulo Lean's standard
+`propext`, `Classical.choice`, and `Quot.sound`. Next hard issue is no longer Gabriel or detector
+moment control. Quantitative Littlewood use needs a zero-free selected left contour strictly to the
+left of the target zero threshold. The present fixed center equals `7/10`; blindly applying the
+existing zero-free-boundary theorem would be invalid. The surviving exponent margin suggests a
+nearby rational interpolation center below `7/10`, followed by a fixed positive layer-cake gap.
+
+### C5k: movable center and admissible-contour closure
+
+Status: **FORMALIZED**. Label: `[BRIDGE]`.
+
+Center moved from `7/10` to `699/1000`, with exact Lean-certified budget
+
+```text
+inghamFixedGabrielRouteTExponent = 1036276/1482375,
+7/10 - inghamFixedGabrielRouteTExponent = 2773/2964750 > 0.
+```
+
+Conjecture that weighted Littlewood required left-edge nonvanishing failed. Positive survivor:
+`EntireWeightedLittlewoodLeftClosure.lean` proves exact identity with left-boundary zeros, using
+`VerticalLogNormIntegralContinuity.lean`. Detector weighted-Littlewood theorems now have no
+left-nonvanishing premise.
+
+`InghamDetectorRightEdgeNonvanishing.lean` proves eventual uniform nonvanishing for every fixed
+`beta>1`. `InghamDetectorAdmissibleContour.lean` selects zero-free bottom/top slices in prescribed
+unit height intervals and assembles unconditional admissible rectangles. Contour existence is
+closed; horizontal variation is not estimated here.
+
+### C5l: pole-gauge cancellation and movable counting edge
+
+Status: **FORMALIZED**. Label: `[BRIDGE]`.
+
+Naive conjecture—estimate pole-cleared detector edges independently—failed. Gauge `(s-1)^2`
+creates artificial height-sized logarithms. `InghamDetectorPoleGaugeCancellation.lean` proves
+
+```text
+weightedLittlewoodBoundary ((s-1)^2) c d T1 T2 = 4*pi*(1-c),
+Boundary(poleClearedDetector) = Boundary(classicalDetector) + 4*pi*(1-c).
+```
+
+Left-edge detector zeros are allowed: log factorization is only needed almost everywhere, and
+finiteness of compact-rectangle zeros supplies null exceptional set.
+
+Higher-level reinterpretation: Gabriel interpolation edge and Littlewood counting edge are
+independent coordinates. Initial `d=2` made value tail easy but retained needless logarithmically
+weighted derivative bookkeeping. Pivot to `d=4` removes that fake sharpness. On this line,
+`tau(n)<=n` and `log n<=n` give exact tail powers without subpower divisor bounds.
+
+### C5m: all non-horizontal Littlewood terms closed
+
+Status: **FORMALIZED; HORIZONTAL ARGUMENT VARIATION OPEN**. Label: `[BRIDGE]`.
+
+`InghamDetectorFarRightBoundary.lean` proves unconditionally
+
+```text
+inghamRightEdgeAbsoluteTail 4 X <= X^(-2)/2,
+norm (deriv (zeta*M_X-1) (4+it)) <= X^(-1),
+classicalDetector_X(4+it) != 0,
+combined selected-contour right loss <= 1.
+```
+
+Exact remaining term is
+
+```text
+inghamClassicalHorizontalBoundary X c d T1 T2
+  = integral_c^d (x-c) Im(h'/h)(x+iT1) dx
+    - integral_c^d (x-c) Im(h'/h)(x+iT2) dx.
+```
+
+Final unconditional theorem:
+
+```text
+exists K >= 0, eventually in X, exists selected T1,T2,
+  2*pi * weightedZetaZeroMass([699/1000,4] x [T1,T2])
+    <= K * X^(1036276/1482375)
+       + inghamClassicalHorizontalBoundary X (699/1000) 4 T1 T2.
+```
+
+This is first dependency-closed Route T theorem isolating exactly one analytic boundary term. It
+advances RH frontier substantially but is not RH. Next loop must attack selected horizontal
+argument variation directly; another contour adapter, equivalent RH criterion, or edge
+decomposition would be theatre.
+
+External audit: pole subtraction and Littlewood counting are classical (Ingham, 1940); modern
+explicit account appears in Chourasiya--Simonič, arXiv:2507.15184. No external novelty claimed.
+New route-specific knowledge is obstruction removal, exact formal dependency closure, and finding
+that movable counting edge `4` collapses all vertical costs.
+
+Lean audit: module umbrella-wired; source check and exact target build pass. Public endpoint
+theorems depend only on `propext`, `Classical.choice`, and `Quot.sound`.

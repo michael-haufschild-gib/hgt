@@ -15,7 +15,7 @@ that name and its relative links deepened by one level.  Inbound links are repai
 restricted-Weil trace", "specialist novelty review", "3 → 4 publication-ready") do not block
 promotion; gates that name missing Lean do.
 
-## A. Promoted (68 of 104)
+## A. Promoted (69 of 104)
 
 - `suzuki-affine-resolvent-krein-defect`
 - `suzuki-affine-sewn-weil-robin-far-tail-factorization`
@@ -43,6 +43,7 @@ promotion; gates that name missing Lean do.
 - `suzuki-finite-morse-resolvent-jet-completion`
 - `suzuki-finite-shift-flat-projective-resolvent-holonomy`
 - `suzuki-full-frequency-neumann-holonomy-survivor`
+- `suzuki-flat-primitive-flux-volterra-liouville`
 - `suzuki-forced-gamma-upper-strip-gluing`
 - `suzuki-gamma-three-grade-delay-root-observability`
 - `suzuki-gamma-weighted-tail-coercivity`
@@ -7671,3 +7672,227 @@ coefficient `2(n−1) − ‖B‖` supplies on the terminal ray.
 This meets `enorm_gammaWallCommutator_le_blockSum` of section YY, whose right-hand side is
 `4Λe · expEnvelopeZ 1 (blockNorm F) n`: the commutator produces an envelope at rate `1`, and the
 absorption consumes it at any rate `ν < 1`.
+
+## AAA. `(11)` at the sequence level, and the commutator bound as an envelope
+
+```text
+RHTower/SuzukiFlatFluxBlockValue.lean
+```
+
+`blockSum_eq_expEnvelope` identifies the right-hand side of section YY's block estimate with
+`ofReal(4Λe) · expEnvelopeZ 1 (blockNorm F) n`, so `enorm_gammaWallCommutator_le_envelope` states
+the Gamma cutoff commutator bound *literally* as a rate-one exponential envelope of the block norms
+— the object the absorption engine of section ZZ consumes.
+
+`block_div_of_coercive` divides the terminal Gamma block's coercive constant out of a block
+inequality, and
+
+* `blockValue_absorb` is `(11)` at the sequence level: a profile carried on a terminal ray
+  (`f m = 0` below the threshold, so the pointwise inequality extends to the whole lattice with no
+  separate treatment of the initial blocks), dominated blockwise by the flux and the source plus a
+  small multiple of its own rate-`μ` envelope, has slow envelope at most twice the slow envelopes
+  of the flux and the source;
+* `blockValue_of_coercive` is the same statement with the coercive constant explicit: from
+  `c·f_m ≤ y_m + g_m + e·(E_μ f)_m` and `(c⁻¹e)·expRowMass(μ−ν) ≤ 1/2` one gets
+  `(E_ν f)_n ≤ 2(E_ν c⁻¹y)_n + 2(E_ν c⁻¹g)_n`.
+
+The smallness hypothesis is exactly what the card's growing terminal coefficient
+`c = 2(n−1) − ‖B‖` supplies: `c⁻¹e → 0`.
+
+Every declaration audits to `[propext, Classical.choice, Quot.sound]`.
+
+## AAB. `(13)` is closed — the backward flux tail in unit blocks
+
+```text
+RHTower/SuzukiFlatFluxBlockTail.lean
+```
+
+A flux with no terminal charge is the backward integral of its source (`(12)`, already
+`terminal_flux_eq_neg_integral`), so its size on a unit block is at most the total mass of the
+source past that block.  The terminal ray is cut into unit blocks — `Ici a = ⋃_{k∈ℕ} [a+k, a+k+1)`
+by taking `k = ⌊x−a⌋₊`, disjointly — and Cauchy–Schwarz on each block turns the mass into block
+norms:
+
+```text
+∫⁻_{(n,∞)} ‖G‖ₑ ≤ Σ_{k≥0} ‖G‖_{L²([n+k, n+k+1))}      (lintegral_Ioi_le_blockTail)
+```
+
+`blockNorm_le_of_bound` converts a uniform pointwise bound on a unit block into a block-norm bound
+(the block has measure one, so no constant appears), and `blockNorm_flux_le_blockTail` combines the
+two: a flux given on a block by the backward integral of `g` has
+
+```text
+‖Y‖_{L²([n,n+1))} ≤ Σ_{k≥0} ‖g‖_{L²([n+k,n+k+1))}.
+```
+
+`blockTail_le` is then `(13)` itself: with the source blocks dominated by `d·(E_μ f)_m + h_m` — the
+exponential off-block kernel of `D` — one gets
+
+```text
+y_n ≤ d Σ_{k≥0} (E_μ f)_{n+k} + Σ_{k≥0} h_{n+k}.
+```
+
+Everything is in `ℝ≥0∞`, so the tail sums exist unconditionally and no integrability hypothesis on
+the flux or the source is needed.  All six declarations audit to
+`[propext, Classical.choice, Quot.sound]`.
+
+**State of `flat-primitive-flux-volterra-liouville`.**  The chain is now continuous from the Gamma
+kernel to the exponential decay:
+
+```text
+(6) commutator integrand → (7) block estimate       XX, YY
+(7) → rate-one envelope                             AAA
+envelope absorption                                 ZZ
+→ (11) localized value                              AAA
+(12) → (13) backward tail                           AAB
+(11) + (13) → (21), (22)                            flat_flux_exponential_decay (pre-existing)
+```
+
+What remains is the bridge between the `ℤ → ℝ≥0∞` block sequences used here and the `ℕ → ℝ`
+sequences `flat_flux_exponential_decay` is stated over, together with the superpolynomial-flatness
+hypothesis `(3)`.
+
+## AAC. The `1/n` in `(11)` — a linear weight costs only a drop in rate
+
+The card writes `(11)` as `(E f)_n ≤ A₀ n^{-1}(E y)_n + C₀e^{-δ₀n}`, keeping the reciprocal of the
+growing coercive constant *outside* the envelope.  That is not free: the coercive division happens
+blockwise, so what one first gets is `E_ν(c⁻¹y)_n`, and `c⁻¹` cannot simply be pulled out.  It can
+be pulled out up to a linear weight, because `c` grows linearly:
+
+```text
+c_n / c_m ≤ K (1 + |n − m|)   for m, n past the terminal threshold.
+```
+
+`ExpEnvelopeAlgebra.lean` gains the corresponding envelope fact:
+
+```text
+(1+t)e^{-εt} ≤ 1/ε            for t ≥ 0, 0 < ε ≤ 1     one_add_mul_exp_neg_le
+K_ν(n,m)·(1+|n−m|) ≤ ε⁻¹ K_{ν'}(n,m)                   expKernel_mul_linear_le
+E_ν(w·y)_n ≤ K ε⁻¹ · E_{ν'}(y)_n   for w_m ≤ K(1+|n−m|)  expEnvelopeZ_weighted_le
+```
+
+with `ε = ν − ν'`.  So a linearly growing weight inside the envelope costs only a drop of the rate
+from `ν` to any `ν' < ν`, and the reciprocal rate gap as a constant — exactly the trade the
+absorption of section ZZ already tolerates, since it only needs *some* positive rate.
+
+All three audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AAD. The bridge to the real Volterra system, `(9)`, `(10)`, and the weighted mass
+
+```text
+RHTower/SuzukiFlatFluxEnvelopeBridge.lean   ℝ≥0∞/ℤ  →  ℝ/ℕ transfer, then the coupled decay
+RHTower/SuzukiFlatFluxCoercive.lean         (9) and the position part of (10)
+RHTower/SuzukiFlatFluxWeightedL2.lean       weighted L² mass ≤ weighted block sum
+```
+
+**The bridge.**  The block estimates are naturally `ℝ≥0∞`-valued and `ℤ`-indexed, because that is
+where they need no summability or integrability hypothesis; `flat_flux_exponential_decay` is stated
+for nonnegative real sequences indexed by `ℕ`.  `envelopeSeq ν a n = (expEnvelopeZ ν a n).toReal`,
+and with the envelopes finite — which is exactly blockwise square integrability —
+`envelopeSeq_value_le` and `envelopeSeq_flux_le` produce the two hypotheses verbatim, so
+`envelopeSeq_exponential_decay` closes `(14) ⟹ (21)` end to end from the extended-norm estimates.
+Finiteness is not an extra mathematical assumption: an infinite envelope makes the `ℝ≥0∞` estimate
+vacuous and `toReal` sends it to zero.
+
+**`(9)`.**  `primitiveFlux_cut_of_commuting`: if the bounded prime adjacency commutes with the
+scalar cutoff, cutting the flux leaves exactly the Gamma commutator — the position multiplier and
+`B` both commute with a cutoff, only `R` does not.
+
+**`(10)`, position part.**  `lintegral_position_ge`: a profile vanishing below `a` has position
+quadratic form at least `a` times its squared norm.  With the accretivity of the jump operator
+(section VV) and the crude bound for `B`, the corpus `reInner_sub_ge` assembles the coercive
+constant `2(n−1) − ‖B‖`.
+
+**The weighted mass.**  An exponential weight is almost constant on a unit block, so
+
+```text
+∫ e^{2δL}‖F(L)‖² dL ≤ Σ_{n∈ℤ} e^{2δ(n+1)} ‖F‖²_{L²([n,n+1))}
+```
+
+(`lintegral_weighted_sq_le_blockSum`), and `weighted_blockTerm_le` turns a block-decay bound
+`‖F‖²_{L²([n,n+1))} ≤ C e^{−2δ''n}` into the geometric term `C e^{2δ} e^{2(δ−δ'')n}`.  For
+`δ < δ''` that series converges, which is `(21)`.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AAE. `(21)` is closed — the flat primitive flux enters every smaller weighted space
+
+`RHTower/SuzukiFlatFluxWeightedL2.lean` gains the terminal geometric sum and the capstone.
+
+`natEquivIntGe` indexes the terminal ray of the lattice by the naturals, and
+`tsum_int_eq_tsum_nat_of_support` reindexes a lattice sum supported there;
+`tsum_geometric_ofReal_ne_top` is the finiteness of an extended-real geometric series.  Together
+with the weighted-mass bound of section AAD:
+
+```text
+lintegral_weighted_sq_ne_top :
+  blocks vanish below N and satisfy ‖F‖²_{L²([n,n+1))} ≤ C e^{−2δ''n}
+    ⟹ ∫ e^{2δL}‖F(L)‖² dL < ∞   for every δ < δ''.
+```
+
+The capstone `flatFlux_weighted_mass_ne_top` states it in the form the chain produces: a profile
+carried on a terminal ray whose *block envelope* decays at rate `δ''` — which is what
+`envelopeSeq_exponential_decay` delivers — has finite `e^{2δL}`-weighted `L²` mass for every
+`δ < δ''`.  The step from envelope to block uses `le_expEnvelopeZ` (the envelope dominates its
+argument) and `blockNorm_sq` (`blockNorm² = blockNormSq`, the rpow round trip).
+
+That is `(21)`, and with `Y' = DF − H` and the block decay of `D` it is `(22)`, hence `(4)`.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AAF. `suzuki-flat-primitive-flux-volterra-liouville` is promoted
+
+`(22)` closes with `ennreal_add_sq_le` and `lintegral_weighted_sq_sub_ne_top` — `(a+b)² ≤ 4(a²+b²)`
+in `ℝ≥0∞`, so the weighted mass of `Y' = DF − H` is finite once both parts are.  The envelope also
+*preserves* exponential decay at any rate strictly below its own
+(`expEnvelopeZ_le_of_exp_decay`, via `expKernel_mul_exp_le`), which is what carries the block decay
+of `F` to `DF`.  `linearCommutator_sub` is `(25)`.
+
+Line-by-line audit of the card against Lean: `(1)`,`(2)`,`(3)`,`(6)`,`(7)`,`(8)`,`(9)`,`(10)`,
+`(11)`,`(11a)`,`(12)`,`(13)`,`(14)`,`(15)`–`(20)`,`(21)`,`(22)`,`(23)`,`(25)` all have
+unconditional declarations auditing to `[propext, Classical.choice, Quot.sound]`; `(24)` and `(26)`
+are frontier tables, not theorems.  The two unchecked gates — trace-zero modes entering `H¹₀`, and
+raw Evans injectivity — are open *research*, so by the promotion rule they do not block.
+
+The card is moved to `3-formalized/new_scientific_knowledge/suzuki/` with the certificate
+`suzuki-flat-primitive-flux-volterra-liouville-formalized.md`, its §10 "Lean decision" updated to
+name the modules, and the two inbound relative links in `1-in-progress` repaired.
+
+## AAG. `(2)` and `(5)` of `literal-paired-source-assembly`
+
+```text
+HTGeometry/SmoothTransitionDerivBound.lean       the canonical transition has bounded derivative
+RHTower/SuzukiPairedCutoffEventGeometry.lean     (2) uniform cutoff derivative, (5) event window
+```
+
+`Real.smoothTransition` is smooth, vanishes on `(−∞,0]` and is one on `[1,∞)`, so its derivative is
+continuous and vanishes off `[0,1]` (`deriv_smoothTransition_eq_zero_of_notMem`, by local
+constancy); compactness of the unit interval then bounds it globally
+(`exists_bound_deriv_smoothTransition`).  That is the constant `Λ` the card's "fixed smooth
+transition has bounded derivative" refers to, and it is now a theorem rather than an appeal.
+
+**`(2)`.**  The buffer arguments are `A^R(L) = e^L(a−x) − o` and `A^L(L) = e^L(a+x) + o`, so
+`(A^R)' = A^R + o` and `(A^L)' = A^L − o` (`hasDerivAt_rightScaleBufferArgument`,
+`hasDerivAt_leftScaleBufferArgument`) — the card's affine identities, now with the derivative
+attached.  The chain-rule factor `ϑ'(A^R)·(A^R)'` vanishes unless `A^R ∈ [0,1]`, and there
+`|A^R + o| ≤ 2` for `|o| ≤ 1`; so it is bounded by `2Λ` *globally*
+(`abs_deriv_transition_bufferArgument_le`).  With `0 ≤ ϑ ≤ 1` the product rule gives
+
+```text
+|d/dL χ_{ε,ν,o}(L)| ≤ 4Λ
+```
+
+(`abs_deriv_scaleBufferedCutoff_le`), uniform in the aperture, the coordinate, the orientation and
+the scale — exactly `(2)`.
+
+**`(5)`.**  The same support restriction locates the event.  For the inward orientation `o = 1`, a
+transition on the right factor forces `e^L(a−x) ∈ [1,2]`, hence
+
+```text
+−log(a−x) ≤ L ≤ log 2 − log(a−x)
+```
+
+(`rightEvent_window`): the block sits at `−log|a−x|` and has width exactly `log 2`.  That is the
+card's "each transition block has length `O(1)` and is centred at `−log|a∓x| + O(1)`".
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.

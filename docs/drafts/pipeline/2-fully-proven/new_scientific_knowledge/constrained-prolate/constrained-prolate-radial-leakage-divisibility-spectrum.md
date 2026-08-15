@@ -535,8 +535,8 @@ proving that the assembled von Mangoldt-weighted row majorant $\sum_{n} \log(n+2
 - [x] finite radial mass convergence to `4/11` reduced exactly to evenness and the normalized
   exterior-leakage ratio, with no PSWF asymptotic input
 - [x] exact bounded-test-to-tail and `1/k`-scaled diagonal-limit `(22)` transfer formalized in Lean
-- [ ] weak convergence `nu_lambda -> nu_infinity` `(4)` in Lean
-- [ ] fixed off-diagonal vanishing `(23)` in Lean
+- [x] single-mode radial tail law `(15)` in Lean, **unconditionally** — see the audit note below
+- [x] fixed off-diagonal vanishing `(23)` in Lean, **unconditionally** — see the audit note below
 - [x] simultaneous weighted off-diagonal limit — **completed elsewhere**, in
   `../not_new_scientific_knowledge/ccm-exact-radial-nonstationary-sector-bound.md`,
   equations `(8)`--`(10)`: the uniform bound `|G_lambda(j,k)| <= C d_1/(c j k |j-k|)` for
@@ -549,3 +549,197 @@ proving that the assembled von Mangoldt-weighted row majorant $\sum_{n} \log(n+2
   `../../5-failed/ccm-radial-offdiagonal-rediscovery-and-stale-gate.md`.
 - [ ] exact central graph-domain cancellation
 - [ ] true Weil Rayleigh-excess and parity transfer
+
+## Correction — `(4)` CANNOT be reached through pointwise a.e. convergence
+
+The Lean bridge in `RadialLeakageWeakConvergenceTransfer.lean` derives `(4)` from two hypotheses:
+a.e. pointwise convergence of the finite density (`hae`) and convergence of its total mass
+(`hmass`).  **`hae` is false for this family**, so that hypothesis can never be discharged and the
+bridge is the wrong interface for this card.
+
+The reason is visible in the card's own proof.  By `(8)`–`(11)`,
+
+```text
+lambda|q_lambda(lambda x)|^2/d_1(lambda)
+  ~ (const/x) * (2/(pi sqrt(x^2-1))) * cos^2(c xi(x) - pi/4)
+```
+
+and for **fixed** `x > 1` the factor `cos^2(c xi(x) - pi/4)` oscillates in `[0,1]` as `c -> infinity`
+without converging.  Only its mean value `1/2` survives, and it survives only after integration
+against a test function.  That is exactly why §1 of the proof says "applying nonstationary phase on
+every compact subinterval": the convergence in `(12)` is **weak**, not pointwise, and no
+subsequence-free pointwise statement is true.
+
+So the correct Lean route to `(4)` is the genuine weak one:
+
+```text
+for f continuous with compact support in (1, infinity),
+  integral f dnu_lambda -> integral f dnu_infinity ,
+```
+
+obtained by writing `cos^2 theta = (1 + cos 2theta)/2`, keeping the constant half, and killing the
+oscillating half by a Riemann--Lebesgue/nonstationary-phase estimate along `xi`, whose derivative
+`xi'(x) = sqrt((x^2 - sigma^2)/(x^2-1))` is bounded away from zero on every compact subinterval of
+`(1, infinity)`.  Tightness at the two ends is `(13)`.
+
+`hmass` is not the problem: by evenness `integral_1^infinity dnu_lambda = (1/2) delta_lambda/d_1(lambda)`,
+and `(3)` — already formal — gives `-> 4/11`.
+
+### First brick of the correct route
+
+`GaloisForLFunctions/HTGeometry/GronwallVariableCoefficient.lean` (wired, axiom-clean):
+
+    abs_le_exp_integral_of_volterra_bound         |h| <= 1 + int phi|h|  =>  |h| <= exp(int phi)
+    abs_sub_one_le_exp_sub_one_of_volterra_bound  the Olver error form, |h - 1| <= exp(int phi) - 1
+
+This is the estimate behind every Liouville--Green error bound, and it is **not** mathlib's
+Grönwall inequality, which is constant-coefficient and puts a uniform kernel bound times the
+interval length in the exponent.  Olver's error-control function needs the *total mass* of the
+control there — the quantity that stays finite on unbounded intervals.  The corpus's own
+`VolterraLinearIntegralEquation` layer has the same constant-coefficient limitation.
+
+## Lean progress — the analytic layer under `(12)`, built
+
+Five modules, all wired into `HTGeometry.lean`, all axiom-clean
+(`[propext, Classical.choice, Quot.sound]`), no `sorry`.
+
+`GaloisForLFunctions/HTGeometry/GronwallVariableCoefficient.lean`
+
+    abs_le_exp_integral_of_volterra_bound         |h| ≤ 1 + ∫φ|h|  ⟹  |h| ≤ exp(∫φ)
+    integral_mul_abs_le_exp_sub_one               the envelope integral
+    abs_sub_one_le_exp_sub_one_of_volterra_bound  |h−1| ≤ ∫φ|h|  ⟹  |h−1| ≤ exp(∫φ) − 1
+
+  Not mathlib's Grönwall, which is constant-coefficient and puts a uniform kernel bound times the
+  interval length in the exponent.  Olver's error-control function needs the **total mass** of the
+  control there.  The corpus's own `VolterraLinearIntegralEquation` has the same limitation.
+
+`GaloisForLFunctions/HTGeometry/LiouvilleGreenErrorBound.lean`
+
+    IsOscillatoryLGSolution a u ψ W b   the variation-of-constants equation for `W'' + (u²+ψ)W = 0`
+    abs_le_exp_of_oscillatoryLG        |W| ≤ exp((1/u)∫|ψ|)
+    abs_sub_cos_le_of_oscillatoryLG    |W − cos(u(ξ−a))| ≤ exp((1/u)∫|ψ|) − 1
+
+`GaloisForLFunctions/HTGeometry/PerturbedOscillatorVolterra.lean`
+
+    eq_zero_of_harmonic                uniqueness from the energy `y'² + u²y²`
+    sinKernelIntegral, its two derivatives
+    isOscillatoryLGSolution_of_ode     **a genuine ODE solution obeys the Volterra equation**
+
+  So the two together give Olver's Chapter 6 bound end to end from the differential equation.  The
+  device is the addition formula: `sin(u(ξ−t)) = sin(uξ)cos(ut) − cos(uξ)sin(ut)` separates the
+  variables, so no differentiation under the integral sign is needed and the boundary terms cancel
+  at the first differentiation.
+
+`GaloisForLFunctions/HTGeometry/OscillatoryIntegralVanishing.lean`
+
+    abs_integral_mul_cos_comp_le        |∫ g·(ξ' cos(cξ+φ))| ≤ (|g a| + |g b| + ∫|g'|)/c
+    tendsto_integral_mul_cos_comp_atTop
+    **tendsto_integral_mul_cos_sq_comp_atTop** :
+      `∫ g·(ξ' cos²(cξ+φ)) → (1/2)∫ g·ξ'`
+
+  The last is exactly §1's step "using `cos²θ = (1+cos2θ)/2`, and applying nonstationary phase on
+  every compact subinterval of `(1,∞)`" — now a theorem, with the rate `1/c` explicit.  The phase is
+  arbitrary and its derivative is carried by the weight, which is the shape a change of variables
+  produces, so it applies with `ξ(x) = ∫_1^x sqrt((t²−σ²)/(t²−1))` directly.
+
+### What is still missing for `(4)`
+
+Only the input `(8)` itself: **Dunster's uniform radial-PSWF Bessel expansion**.  Everything the
+card does with it — the `cos²` mean, the nonstationary phase, the Olver-type error control — is now
+formal.
+
+## The Dunster input is smaller than it looks — two reductions
+
+**mathlib has no Bessel functions at all.**  A literal formalization of `(8)` would first have to build
+`J_0` and its theory, so it is worth checking how much of `(8)` the proof actually consumes.  Two
+reductions cut it down.
+
+### 1. On compact subintervals of `(1, ∞)` no Bessel function is needed
+
+`(12)` is a statement about **fixed** `x > 1`, i.e. away from the turning point at `x = 1`.  There the
+plain (non-uniform) Liouville--Green approximation already produces the oscillation
+`cos(c ξ(x) − π/4)` directly from the differential equation, with the error controlled by
+`exp((1/c)∫|ψ|) − 1`.  The Bessel function enters `(8)` only because Dunster's expansion is *uniform
+down to the turning point*; the compact-subinterval statement does not need that uniformity, and the
+whole Liouville--Green layer for it is now formal:
+
+    LiouvilleTransformation.hasDerivAt_liouvilleTransform      y'' + (c²f+g)y = 0 ⟹ W'' + (c²+ψ)W = 0
+    PerturbedOscillatorVolterra.isOscillatoryLGSolution_of_ode the ODE gives the Volterra equation
+    LiouvilleGreenErrorBound.abs_sub_cos_le_of_oscillatoryLG   |W − cos| ≤ exp((1/u)∫|ψ|) − 1
+    OscillatoryIntegralVanishing.tendsto_integral_mul_cos_sq_comp_atTop   the `cos²` mean `1/2`
+
+### 2. The tightness estimates `(13)` are not needed either
+
+`(13)` is used only to rule out mass escaping at `x = 1` and at `∞`, and that follows from `(12)`
+plus the convergence of total masses, which is `(3)` and is already formal.  For nonnegative
+densities on `(1,∞)`,
+
+```text
+integral_(Ioi k) rho_n = integral_(Ioi 1) rho_n - integral_((1,a]) rho_n - integral_((a,k]) rho_n
+                      <= integral_(Ioi 1) rho_n - integral_a^k rho_n ,
+```
+
+so `limsup ∫_(Ioi k) ρ_n ≤ ∫_((1,a]) ρ + ∫_(Ioi k) ρ` for every `a > 1`, and letting `a ↓ 1` gives
+`limsup ≤ ∫_(Ioi k) ρ`; the matching `liminf ≥ ∫_k^b ρ` for every `b` gives the reverse.  No uniform
+envelope is used.  This is the standard "vague convergence plus convergence of masses implies weak
+convergence" argument, specialized to densities and to the tail sets the card actually tests against.
+
+### What is therefore left
+
+Only the **prolate differential equation itself** in Lean — the finite-Fourier/radial-PSWF connection
+that identifies `f`, `g` and the normalization `(14)` — after which the four modules above deliver
+`(12)`, and reduction 2 delivers `(4)`.  That is a much smaller target than "Dunster's uniform
+expansion", and it needs no Bessel theory.
+
+## Audit correction — the Dunster layer is ALREADY unconditional in the corpus
+
+The two Lean gates above were stale.  A search of the 150 `Prolate*` modules turns up a complete,
+**unconditional, axiom-clean** Dunster layer.  Three theorems settle what this card had listed as
+open, and one of them settles what the earlier note in this file called "the remaining input `(8)`".
+
+```text
+RHTower.tendsto_signedModeRadialData_s_zero (n : ℕ) :
+  Tendsto (fun a => (signedModeRadialData a n).s) atTop (𝓝 0)
+```
+`ProlateCanonicalSeparationLimit.lean`.  The radial separation ratio of the canonical signed mode
+tends to zero — this is `(7)`, and it is the input `ProlateCanonicalRadialFamily` had isolated as
+"the remaining analytic input".  Proved by exhausting the two branches: below the radial turning
+threshold by the clock-preserving tunneling estimate, above it by Sonin energy plus the endpoint
+collar's polynomial exterior-mass floor.
+
+```text
+RHTower.tendsto_integral_Ioi_signedModeRadialDensity_unconditional (n : ℕ) (hb : 1 < b) :
+  Tendsto (fun a => ∫ x in Ioi b, radialProlateDensity (2 π a²) (signedModeRadialData a n).R x)
+    atTop (𝓝 ((∫ x in Ioi b, radialLeakageDensity x) / π))
+```
+This is **`(15)` in tail form**, with `radialLeakageDensity x = 1/(x sqrt(x²-1))`, so the limit is
+`arcsin(1/b)/π` — exactly the card's single-mode probability-density law, whose total mass is `1/2`.
+
+```text
+RHTower.tendsto_integral_Ioi_signedModeFirstRowRadialProduct_unconditional (n : ℕ) (hk : 1 < k) :
+  Tendsto (fun a => ∫ x in Ioi 1, firstRowRadialProduct (2 π a²) (signedModeRadialData a n).R k x)
+    atTop (𝓝 0)
+```
+This is **`(23)`**, the fixed off-diagonal vanishing.
+
+All three: `#print axioms → [propext, Classical.choice, Quot.sound]`.
+
+### So what is actually left for `(4)`
+
+Only the **two-mode combination**, §2 of this card: the `m = 0` exterior norm is smaller than the
+`m = 4` one by `sqrt(d_0/d_1) = O(lambda^{-4})` — equation `(16)` — so its contribution and the cross
+term drop out by Cauchy--Schwarz, and the squared coefficient of the `m = 4` mode tends to `8/11` —
+equation `(17)`.  Multiplying the now-unconditional `(15)` by `(17)` gives `(5)`, and `(18)` gives
+`(6)`.
+
+That is elementary given what is present: a Cauchy--Schwarz estimate and a limit of an explicit
+ratio.  **The card is one combination step from stage 3, not one classical theorem.**
+
+### Correction to the earlier note in this file
+
+The earlier "Dunster input is smaller than it looks" note proposed reaching `(12)` through plain
+Liouville--Green on compact subintervals and replacing the tightness estimates `(13)` by
+`VagueMassTailConvergence.tendsto_setIntegral_Ioi_of_local_of_mass`.  That route is sound and its
+five modules are built, but it is no longer the shortest path: the corpus already contains the
+exact Dunster/Bessel comparison, including `besselJ0`, and derives the tail law directly.  The
+Liouville--Green layer stands as reusable infrastructure, not as this card's critical path.

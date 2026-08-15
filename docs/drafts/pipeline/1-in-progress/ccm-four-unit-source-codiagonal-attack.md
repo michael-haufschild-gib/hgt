@@ -3020,6 +3020,15 @@ T_(k,N)=r_k vecMulVec(e,e),                                     (C63.3)
 
 where `e` is the constant CCM boundary vector. It also proves `rank(T_(k,N))<=1`.
 
+An explicit corpus bridge verifies
+
+```text
+r_k=(2/pi) ccmFirstClockPrimeEntrySlope(k),                     (C63.3a)
+```
+
+so the new theorem is exactly the prior scalar first-clock tomography lifted to all modes,
+diagonal data, and the whole matrix—not a competing slope normalization.
+
 For a genuine prime power, `criticalMellinAtomWeight(k)>0` and `log(k)>0`, hence `r_k<0`. The exact
 quadratic form is
 
@@ -3042,7 +3051,8 @@ derivative. Then compute the continuous pole/Gamma aperture derivative in the sa
 decomposition and test whether its centered Mellin continuation is the existing Xi Ward column.
 
 Formal source:
-`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPrimeEntryRankOneTangent.lean`.
+`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPrimeEntryRankOneTangent.lean` and
+`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPrimeEntryFirstClockBridge.lean`.
 
 ## C64 finite atomic connection factorization `[PROVED AND LEAN-FORMALIZED]`
 
@@ -3081,3 +3091,350 @@ continuous interior part, not the atomic prime events.
 
 Formal source:
 `formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPrimeEntryAtomicConnection.lean`.
+
+## C65 central-channel classification `[PROVED AND LEAN-FORMALIZED]`
+
+C64's negative-semidefinite orientation initially suggested that atomic event accumulation might
+directly orient the centered CCM/Xi sector. Exact multiplication falsifies that conjecture. With
+`d=2N+1`, constant boundary vector `e`, and coefficient packet `v`, Lean proves
+
+```text
+T_(k,N)v=r_k (sum_i v_i)e.                                  (C65.1)
+```
+
+For a genuine prime power `r_k<0`, hence
+
+```text
+ker T_(k,N)={v : sum_i v_i=0},
+rank T_(k,N)=1,
+T_(k,N)e=d r_k e,
+trace T_(k,N)=d r_k<0.                                      (C65.2)
+```
+
+The same theorem holds for every finite packet supported above one and containing a genuine prime
+power. Canonical mean subtraction `C(v)=v-(sum v/d)e` therefore satisfies
+
+```text
+T_(S,N)C(v)=0.                                               (C65.3)
+```
+
+**Conjecture failed and pivoted.** Atomic negativity alone cannot orient centered Xi transport.
+The whole first-order event connection is a central boundary channel and is exactly blind on the
+zero-sum packet sector. Accumulating events changes its one eigenvalue but never creates an interior
+direction.
+
+**Higher principle exposed.** Prime-entry first jet is gauge/central data. The repeated failure of
+scalar source budgets is the shadow of a direction mismatch, not merely a missing estimate. The
+route needs a transverse coupling from central boundary incidence into centered dynamics.
+
+**Next conjecture C66.** Test whether atom-dependent Julia or Gamma attenuation can break the blind
+sector. If every scalar dressing still factors through `e e^T`, retire the entire scalar-dressing
+bridge and require a non-scalar or higher-jet connection.
+
+Formal source:
+`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPrimeEntryCentralChannel.lean`.
+
+## C66 scalar-dressing rigidity `[PROVED AND LEAN-FORMALIZED]`
+
+Let `d_k` be arbitrary real atomwise weights. Define
+
+```text
+T_(d,S,N)=sum_(k in S) d_k T_(k,N),
+R_(d,S)=sum_(k in S) d_k r_k.
+```
+
+Lean proves without sign assumptions
+
+```text
+T_(d,S,N)=R_(d,S)e e^T,
+T_(d,S,N)v=R_(d,S)(sum_i v_i)e,
+rank T_(d,S,N)<=1,
+T_(d,S,N)C(v)=0.                                             (C66.1)
+```
+
+If `d_k>=0` on a packet above one and at least one genuine prime power has `d_k>0`, then
+
+```text
+R_(d,S)<0,
+ker T_(d,S,N)={v : sum_i v_i=0},
+trace T_(d,S,N)<0,
+rank T_(d,S,N)=1.                                            (C66.2)
+```
+
+**Conjecture failed as bridge, positive survivor proved.** Positive Julia attenuation preserves
+negative orientation but cannot unlock the centered sector. More strongly, no scalar atomwise
+cutoff, damping, or renormalization changes event direction. This is consistent with the corpus's
+independent Julia diagonal-capacity no-go, but closes a distinct matrix-direction mechanism.
+
+**Higher principle exposed.** Magnitude regularization and geometric transport are different
+operations. CCM-FU's missing arrow must change direction: a pole--Gamma commutator, a higher
+aperture jet whose mode dependence survives divided differences, or another source-derived
+non-scalar coupling. Scalar BV/Stieltjes weighting is now retired as a centered Xi bridge.
+
+**Next conjecture C67.** Compute the second aperture jet of a prime-entry event and its whole
+divided-difference matrix. Determine whether mean-centering removes the universal first jet but
+leaves a mode-dependent transverse second jet. In parallel, compute the continuous pole/Gamma
+first and second jets in the same decomposition. Test exact cancellation or coupling before
+attempting Xi Ward continuation.
+
+Formal source:
+`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPrimeEntryScalarDressingRigidity.lean`.
+
+## C67 third-jet transverse activation `[PROVED AND LEAN-FORMALIZED]`
+
+C66 forced a change of jet order. Write `ell=log k`, `a_k=ell/2`, and `w_k` for critical atom
+weight. The moving horizon has entry jets
+
+```text
+omega'=2/ell,  omega''=-8/ell^2,  omega'''=48/ell^3.       (C67.1)
+```
+
+Lean differentiates actual odd and diagonal reporter profiles, pulls them through this horizon,
+and proves the whole matrix derivative chain. Second entry jets are
+
+```text
+b''_(k,c)=16 c w_k/ell^2,
+d''_(k,c)=16 w_k/ell^2.                                    (C67.2)
+```
+
+Thus the second whole-matrix jet is another multiple of `e e^T` and canonical centering kills it.
+The conjectured second-order transverse survivor fails.
+
+Third jets are the first nonlinear clock layer:
+
+```text
+b'''_(k,c)=32 c w_k(2 pi^2 c^2-3)/ell^3,
+d'''_(k,c)=96 w_k(2 pi^2 c^2-1)/ell^3.                    (C67.3)
+```
+
+The diagonal is the clock derivative of the cubic odd source, so their divided-difference packet
+is the cubic Loewner matrix
+
+```text
+M3_(k,N)(i,j)
+ =q_k[2 pi^2(c_i^2+c_i c_j+c_j^2)-3],
+q_k=32 w_k/ell^3.                                          (C67.4)
+```
+
+For every `sum_i v_i=0`, the complete outer-product decomposition collapses to
+
+```text
+v^T M3_(k,N)v=2 pi^2 q_k(sum_i c_i v_i)^2.                (C67.5)
+```
+
+For a genuine prime power `q_k>0`; `(C67.5)` is nonnegative and is strict when clock moment is
+nonzero.
+
+**Conjecture failed at second order and passed at third.** Prime entry has exact jet filtration:
+negative central first jet, central second jet, positive transverse third jet. The missing centered
+direction is not created by damping; it is created by cubic clock curvature.
+
+**Prior boundary.** Suzuki's formal causal-entry law independently finds a third-order endpoint
+defect for denominator-matched delayed hinges. It neither states nor implies the Guinand--Weil
+reporter formulas or centered Loewner square above. Agreement of order is evidence for a bridge,
+not an equality claim.
+
+**Higher principle exposed.** Centering is a jet-order selector. It removes affine source response,
+so divided differences stay central through order two; cubic source curvature is the first term
+that produces a transverse clock Gram. Reasons prior routes got stuck were shadows of this
+filtration.
+
+**Next conjecture C68.** Aggregate all finite third-jet prime events. Prove exact factorization as
+one nonnegative scalar arithmetic rate times the universal cubic Loewner matrix, including positive
+atomwise dressings. Then compute whether the continuous polar--Gamma third jet supplies the exact
+renormalization needed for a cofinal finite-energy limit and identify its endpoint trace with the
+Suzuki third-jet current.
+
+Formal source:
+`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPrimeEntryThirdJetTransverse.lean`.
+
+## C68 finite positive third-jet connection `[PROVED AND LEAN-FORMALIZED]`
+
+C67's cubic Loewner direction is independent of arithmetic index. Put
+
+```text
+U_N(i,j)=2 pi^2(c_i^2+c_i c_j+c_j^2)-3,
+q_k=32 criticalMellinAtomWeight(k)/log(k)^3.
+```
+
+Then every event is `M3_(k,N)=q_k U_N`. For arbitrary atomwise dressing `d_k` and finite packet
+`S` above one, Lean proves
+
+```text
+M3_(d,S,N)=Q_(d,S)U_N,
+Q_(d,S)=sum_(k in S)d_k q_k.                              (C68.1)
+```
+
+If `d_k>=0`, every summand rate is nonnegative. If one positively dressed index is a genuine prime
+power, `Q_(d,S)>0`. On every zero-sum packet,
+
+```text
+v^T M3_(d,S,N)v
+ =2 pi^2 Q_(d,S)(sum_i c_i v_i)^2.                       (C68.2)
+```
+
+Consequently every finite nonnegatively dressed third-jet connection is positive semidefinite on
+the centered sector and is strict on a visible first clock moment once a prime power is active.
+The literal cutoff `{2,...,floor(exp(2a))}` satisfies this centered PSD law unconditionally at every
+aperture.
+
+**Conjecture passed.** Finite aggregation introduces no new matrix complexity and cannot destroy
+transverse positivity under nonnegative dressing. Arithmetic complexity again lies in one scalar
+rate, but at third order the universal direction is the useful cubic Loewner channel rather than
+the blind constant-boundary channel.
+
+**Higher principle exposed.** Scalar dressing is grade-sensitive. It cannot repair wrong geometry
+at first order, yet it legitimately regularizes the already-transverse third-order producer while
+preserving sign. This separates admissible cofinal renormalization from the retired first-jet
+attenuation mechanism.
+
+**Next conjecture C69.** Compute the polar and Gamma aperture jets through order three in the same
+centered Loewner coordinates. Determine whether their third-order constant and clock moments cancel
+or renormalize the cofinal arithmetic rate. Reject any normalization chosen before that exact
+continuous calculation. Then test an equality with Suzuki's endpoint third-jet current and the
+continued Xi Ward column.
+
+Formal source:
+`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPrimeEntryThirdJetConnection.lean`.
+
+## C69 phase-complete CCM--Suzuki wall-field weld `[PROVED AND LEAN-FORMALIZED]`
+
+For `k=p^(e+1)`, wall aperture `a_k=log(k)/2`, wall field `W_k(t)`, and CCM cubic rate `q_k`,
+
+```text
+q_k exp(i t log k)=(4/a_k^3)W_k(t)^2.                    (C69.1)
+```
+
+This is exact in phase, not only at zero height. At `t=0`, `q_k=4|W_k(0)|^2/a_k^3>0`, so the whole
+cubic Loewner matrix and centered clock square are normalized Suzuki wall-field energy.
+
+**Conjecture passed after pivot.** C68 asked first for continuous polar--Gamma third jets. Corpus
+inspection showed the stronger local question had to be settled first: whether CCM and Suzuki
+third-order sources were genuinely identical. They are, after the unique cubic wall calibration.
+
+**Higher principle exposed.** Centered CCM cubic incidence is the symmetric square of the Suzuki
+entry field. The “four units” are not a numerical coincidence; they are the half-delay conversion
+`log(k)=2a_k` cubed against the coefficient `32`.
+
+**Next conjecture C70.** Apply the forced weight `32/h^3` to literal polar and Gamma sources and
+perform exact finite-window Stieltjes cancellation before selecting any cofinal normalization.
+
+Formal source:
+`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPrimeEntryWallFieldWeld.lean`.
+
+## C70 forced completed third-grade connection `[PROVED AND LEAN-FORMALIZED]`
+
+For `0<b<=H`, finite Stieltjes integration by parts gives
+
+```text
+prime3(b,H)-polar3(b,H)
+ =32E(b)/b^3-32E(H)/H^3-integral_b^H 96E(h)/h^4 dh.      (C70.1)
+```
+
+The literal Gamma tail in the same forced grade is absolutely integrable. Hence completed
+third-grade convergence is equivalent to convergence of the completed-error endpoint/flux channel.
+
+**Conjecture passed.** Prime and polar exponential growth cancel exactly before the limit. No free
+damping or counterterm remains. Gamma is closed and cannot be the obstruction.
+
+**Higher principle exposed.** Local jet order fixes global renormalization. Cubic incidence becomes
+inverse-cubic Stieltjes grade, and differentiation moves the entire open core into one `E/h^4`
+flux.
+
+**Next conjecture C71.** Identify this completed reporter with the literal Suzuki screw/Xi divisor
+Green current, not only with the completed Mellin error.
+
+Formal source:
+`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilThirdGradeCompletedConnection.lean`.
+
+## C71 Xi-screw Green connection `[PROVED AND LEAN-FORMALIZED]`
+
+Suzuki's screw is the smooth polar--Gamma sector minus prime hinges. Its right slope is
+
+```text
+screwRightSlope(h)=E(h)+screwLinearCoeff/2-screwLerchTail1(h). (C71.1)
+```
+
+Two exact integrations by parts prove
+
+```text
+completedThirdGradeRate(b,H)=xiScrewThirdGradeGreen(b,H). (C71.2)
+```
+
+The affine codiagonal is the literal Xi divisor codiagonal. Therefore completed-rate convergence,
+Xi-screw Green convergence, and C70 error-flux convergence are equivalent.
+
+**Conjecture passed.** The requested Suzuki and Xi Ward bridge is closed without RH. Remaining
+issue is not representation mismatch but convergence of one explicit zero-divisor Green reporter.
+
+**Higher principle exposed.** Completed critical Mellin error is the boundary current of Xi screw,
+up to a convergent archimedean slope correction. C70's flux is intrinsic divisor geometry.
+
+**Next conjecture C72.** Decide whether convergence is a genuinely weaker estimate or already an
+RH-complete analytic-continuation condition.
+
+Formal source:
+`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilXiScrewGreenConnection.lean`.
+
+## C72 cubic Abel completeness `[PROVED AND LEAN-FORMALIZED]`
+
+Let `A_b` be the measurable cumulative literal third-grade prime-minus-polar source. Three spectral
+derivatives of its Abel transform cancel inverse-cubic grade exactly:
+
+```text
+(d/du)^3 Abel(A_b)(u)=32*(polar tail-active prime L-series). (C72.1)
+```
+
+Finite prime head and compact polar head form an entire wall term. A uniform bound on `A_b` therefore
+continues the regularized critical Mellin defect to `Re(s)>-1/2`; the identity theorem and centered
+Xi log-derivative transport exclude every off-critical zero. Thus
+
+```text
+bounded A_b -> RH,
+completed third-grade convergence -> RH.                 (C72.2)
+```
+
+Under non-RH, `A_b` is unbounded beyond every positive wall and no completed third-grade finite
+limit exists.
+
+**Conjecture passed, proposed easy tail closure falsified.** Convergence is not post-processing. It
+contains the entire missing half-unit of analytic continuation and is RH-complete.
+
+**Higher principle exposed.** Source grade is spectral primitive order. Wall changes alter only an
+entire head; singular obstruction is base-wall invariant. Earlier cofinal-normalization failures
+were shadows of trying to prove analytic continuation through a scalar tail estimate.
+
+**Next conjecture C73.** Classify concrete growth conditions on `E` that close cubic flux, and find
+the exact grade threshold rather than privileging a quadratic guess.
+
+Formal source:
+`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilThirdGradeAbelCompleteness.lean`.
+
+## C73 subcubic grade--growth completeness `[PROVED AND LEAN-FORMALIZED]`
+
+For every real `alpha<3`, any tail bound
+
+```text
+|E(h)|<=C h^alpha                                         (C73.1)
+```
+
+kills the endpoint by `H^{alpha-3}` and absolutely integrates the bulk by `h^{alpha-4}`. Lean
+therefore proves the exact completed flux/window limits and RH. If RH fails, `E` escapes every
+fixed subcubic envelope after every positive wall.
+
+**Conjecture strengthened.** Quadratic growth works, but the real theorem is the full subcubic
+range. Exponent three is the common scaling boundary of endpoint decay and absolute bulk
+integrability.
+
+**Higher principle exposed.** Grade and admissible source growth are dual: an order-`m` primitive
+can absorb exactly strict sub-`m` power growth by the absolute Abel mechanism. For CCM-FU, every
+subcubic completed-error estimate is already a complete RH theorem.
+
+**Current open core C74.** Produce a genuine source-side cancellation theorem implying one C72/C73
+tail condition, without assuming zero locations or importing an RH-equivalent bound under another
+name. Existing unconditional bound is exponential and misses every subcubic envelope. Candidate
+mechanisms must exploit arithmetic oscillation before absolute values; fixed scalar damping,
+wall motion, finite-jet recomputation, and separate prime/polar estimates are ruled out.
+
+Formal source:
+`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilThirdGradeSubcubicCompleteness.lean`.

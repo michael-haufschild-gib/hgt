@@ -241,6 +241,78 @@ theorem integral_lightReporter_le_measure_threshold (u : d → V) (z : Z → V)
     ENNReal.toReal_mono (measure_ne_top _ _) (measure_mono hsub)
   linarith
 
+
+/-- The cutoff calibrated to a collision weight and a prescribed slack. -/
+def collisionCutoff (C ρ : ℝ) : ℝ := C / ρ ^ 2
+
+theorem collisionCutoff_pos {C ρ : ℝ} (hC : 0 < C) (hρ : 0 < ρ) : 0 < collisionCutoff C ρ := by
+  rw [collisionCutoff]
+  positivity
+
+theorem sum_norm_pow_four_le_calibrated (u : d → V) {C ρ : ℝ} (hρ : 0 < ρ)
+    (hC : ∑ j : d, ‖u j‖ ^ 4 ≤ C) :
+    ∑ j : d, ‖u j‖ ^ 4 ≤ ρ ^ 2 * collisionCutoff C ρ := by
+  rw [collisionCutoff]
+  have hρ2 : (0 : ℝ) < ρ ^ 2 := by positivity
+  rw [mul_div_cancel₀ C (ne_of_gt hρ2)]
+  exact hC
+
+/-- **Discarded weight at the calibrated cutoff.**  Retaining only the components of weight at most
+the calibrated cutoff discards at most the squared slack. -/
+theorem norm_sq_phaseOrbit_sub_calibrated_le (u : d → V)
+    (horth : ∀ i j : d, i ≠ j → (inner ℂ (u i) (u j) : ℂ) = 0) {C ρ : ℝ} (hC0 : 0 < C)
+    (hρ : 0 < ρ) (hC : ∑ j : d, ‖u j‖ ^ 4 ≤ C) (x : d → ℝ) :
+    ‖phaseOrbit u x - phaseOrbit (lightFamily u (collisionCutoff C ρ)) x‖ ^ 2 ≤ ρ ^ 2 := by
+  refine le_trans (norm_sq_phaseOrbit_sub_lightFamily_le u horth
+    (collisionCutoff_pos hC0 hρ) x) ?_
+  rw [div_le_iff₀ (collisionCutoff_pos hC0 hρ)]
+  exact sum_norm_pow_four_le_calibrated u hρ hC
+
+/-- **Light-filtered influence at the calibrated cutoff.**  The variance of the light-filtered
+bounded replica reporter is at most four times the squared replica order times the collision weight
+divided by the squared slack, with no dependence on the number of targets. -/
+theorem variance_calibrated_reporter_le [DecidableEq V] (u : d → V) (z : Z → V) {B : ℝ → ℝ}
+    (hB : Continuous B) {B' : ℝ → ℝ} (hBderiv : ∀ s : ℝ, HasDerivAt B (B' s) s) {r C ρ : ℝ}
+    (hr : 0 ≤ r) (hC0 : 0 < C) (hρ : 0 < ρ)
+    (hB'bound : ∀ s : ℝ, 0 ≤ s → s ≤ 1 → |B' s| ≤ r)
+    (hBlip : ∀ a b : ℝ, 0 ≤ a → a ≤ 1 → 0 ≤ b → b ≤ 1 → |B a - B b| ≤ r * |a - b|)
+    (horth : ∀ i j : d, i ≠ j → (inner ℂ (u i) (u j) : ℂ) = 0)
+    (hu : ∑ j : d, ‖u j‖ ^ 2 ≤ 1) (hz : ∀ w : Z, ‖z w‖ ≤ 1) :
+    (∫ t : UnitAddTorus d,
+        ‖torusReporterMap (lightFamily u (collisionCutoff C ρ)) z hB t‖ ^ 2) -
+        ‖∫ t : UnitAddTorus d,
+          torusReporterMap (lightFamily u (collisionCutoff C ρ)) z hB t‖ ^ 2 ≤
+      4 * r ^ 2 * (C / ρ ^ 2) :=
+  variance_lightFamily_reporter_le u z hB hBderiv hr (collisionCutoff_pos hC0 hρ).le
+    hB'bound hBlip horth hu hz
+
+/-- **Collision-controlled influence.**  A collision weight inversely proportional to the dimension
+makes the light-filtered variance inversely proportional to the dimension. -/
+theorem variance_calibrated_reporter_le_of_collision [DecidableEq V] (u : d → V) (z : Z → V)
+    {B : ℝ → ℝ} (hB : Continuous B) {B' : ℝ → ℝ} (hBderiv : ∀ s : ℝ, HasDerivAt B (B' s) s)
+    {r C ρ c D : ℝ} (hr : 0 ≤ r) (hC0 : 0 < C) (hρ : 0 < ρ) (hD : 0 < D) (hcD : C ≤ c / D)
+    (hB'bound : ∀ s : ℝ, 0 ≤ s → s ≤ 1 → |B' s| ≤ r)
+    (hBlip : ∀ a b : ℝ, 0 ≤ a → a ≤ 1 → 0 ≤ b → b ≤ 1 → |B a - B b| ≤ r * |a - b|)
+    (horth : ∀ i j : d, i ≠ j → (inner ℂ (u i) (u j) : ℂ) = 0)
+    (hu : ∑ j : d, ‖u j‖ ^ 2 ≤ 1) (hz : ∀ w : Z, ‖z w‖ ≤ 1) :
+    (∫ t : UnitAddTorus d,
+        ‖torusReporterMap (lightFamily u (collisionCutoff C ρ)) z hB t‖ ^ 2) -
+        ‖∫ t : UnitAddTorus d,
+          torusReporterMap (lightFamily u (collisionCutoff C ρ)) z hB t‖ ^ 2 ≤
+      4 * c * r ^ 2 / (ρ ^ 2 * D) := by
+  refine le_trans (variance_calibrated_reporter_le u z hB hBderiv hr hC0 hρ hB'bound hBlip
+    horth hu hz) ?_
+  have hρ2 : (0 : ℝ) < ρ ^ 2 := by positivity
+  have hCD : C * D ≤ c := by
+    rw [← le_div_iff₀ hD]
+    exact hcD
+  have hr2 : (0 : ℝ) ≤ 4 * r ^ 2 := by positivity
+  rw [le_div_iff₀ (by positivity : (0 : ℝ) < ρ ^ 2 * D)]
+  have hexp : 4 * r ^ 2 * (C / ρ ^ 2) * (ρ ^ 2 * D) = 4 * r ^ 2 * (C * D) := by
+    field_simp
+  rw [hexp]
+  nlinarith [hCD, hr2]
+
 end Transport
 
 end

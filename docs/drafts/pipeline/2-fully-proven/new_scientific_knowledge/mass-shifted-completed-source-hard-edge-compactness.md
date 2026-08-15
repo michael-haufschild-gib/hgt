@@ -385,3 +385,116 @@ trigonometric Cayley substitution, contour shift with endpoint indentation, coef
 prime tail, Gamma lower coercivity, rational Bernstein estimate, Kolmogorov--Riesz compactness, and
 the canonical Xi null-row limit. An abstract compactness theorem supplied with source estimates as
 hypotheses would not meet the route's unconditional Lean requirement.
+
+## Lean formalization status
+
+Formalized so far (all unconditional, axiom profile `[propext, Classical.choice, Quot.sound]`):
+
+| Equation | Lean |
+|---|---|
+| (CSHC.1) | `RHTower.routeUHardEdgeRationalTest`, `routeUHardEdgeRationalTestSq` (`XiShiftedHardEdgeRationalTest`) |
+| (CSHC.2) | `RHTower.tsum_routeUHardEdgeRationalTestSq_eq` |
+| (CSHC.4)/(CSHC.17) | `RHTower.integral_deriv_routeUHardEdgeRationalTest_sq_le` (`XiShiftedHardEdgeBernstein`) |
+| (CSHC.6) base | `RHTower.tsum_routeUHardEdgeRationalTestSq_one_eq_arithmetic` |
+| (CSHC.6) finite reduction | `RHTower.tsum_routeUHardEdgeRationalTestSq_eq_moments`, `..._eq_iteratedDeriv` |
+| (CSHC.7) | `RHTower.re_digamma_vertical_ge` (`DigammaVerticalLogGrowth`); companion upper bound `RHTower.abs_re_digamma_vertical_le` (`DigammaVerticalGrowthBound`) |
+| (CSHC.8) | `RHTower.integral_routeUHardEdgeRationalTest_sq` |
+| (CSHC.9) | `RHTower.routeUHardEdgeFourierSq_eq` |
+| (CSHC.10) | `RHTower.re_routeUCayleyMobius_le` |
+| (CSHC.11) | `RHTower.norm_routeUHardEdgeFourierSq_le` — see deviation note below |
+| (CSHC.12) | `RHTower.norm_routeUHardEdgeFourierSq_le_l2` |
+| (CSHC.13) | `RHTower.routeUHardEdgePrimeSum_le` |
+| (CSHC.16) | `RHTower.routeUHardEdgeRationalTest_tan` |
+| Kolmogorov–Riesz covering half of (CSHC.5) | `GaloisForLFunctions.HTGeometry.totallyBounded_of_finiteDimensional_approx` |
+
+Deviation recorded for (CSHC.11): the Lean proof replaces the card's Parseval-on-the-shifted-circle
+step by a Chebyshev-coefficient bound, giving the constant `2(N+1)e^{2Nσ}` in place of `e^{2Nσ}`.
+The extra factor is polynomial in the degree and is absorbed by the exponential aperture decay, so
+(CSHC.13) and everything downstream is unaffected.
+
+### Remaining build: the density form of (CSHC.6)
+
+The corpus proves (CSHC.6) in *divisor/resolvent-moment* coordinates.  The tightness argument
+(CSHC.14) needs it in *density* coordinates, i.e. with the archimedean term as
+`(1/pi) int g^2 theta_infty` and the prime term as `(1/pi) sum Lambda(n) n^{-1/2} hat{g^2}(log n)`.
+The build plan, module by module:
+
+1. `HTGeometry/PoissonKernelIntegrals` — `int (a^2+x^2)^{-1} = pi/a`,
+   `int ((a^2+x^2)(b^2+x^2))^{-1} = pi/(ab(a+b))` (no separation of the heights). **Done.**
+2. `HTGeometry/LogWeightedPoisson` — `log(2+|x|)(a^2+x^2)^{-1}` is integrable. **Done.**
+3. `RHTower/DigammaVerticalGrowthBound` — `|Re psi(c+iy)| <= K(c) + log(2+|y|)`. **Done.**
+4. `RHTower/PoissonDigammaReproduction` — the Poisson kernel of height `a` reproduces the
+   archimedean rate: `(1/pi) int a/(a^2+x^2) Re psi(c + i x/2) dx = psi(c + a/2)`. **Done.**
+5. `HTGeometry/CauchyKernelFourier` — `int (a^2+x^2)^{-1} e^{-iLx} dx = (pi/a) e^{-a|L|}`, by
+   Fourier inversion against the two-sided exponential.
+6. `HTGeometry/MassDerivativeTransfer` — for `w` with `‖w(x)‖ <= K + log(2+|x|)`,
+   `d/dX int w(x) (X+x^2)^{-(n+1)} dx = -(n+1) int w(x) (X+x^2)^{-(n+2)} dx`.  One lemma serves both
+   the archimedean weight and the Fourier kernel.
+7. Archimedean moments `A_n(X) = int theta_infty(x)(X+x^2)^{-(n+1)}dx`, with
+   `A_0(X) = (pi/sqrt X)(logDeriv Gamma_R(1/2+sqrt X)).re` from module 4.
+8. Fourier moments `F_n(X,L)`, with exponential decay in `L` obtained by polarizing the corpus cone
+   (`u^k` lies in the span of `{u p(u)^2}`), and the prime function
+   `Pi_n(X) = (1/pi) sum_m Lambda(m) m^{-1/2} F_n(X, log m)` differentiated termwise.
+9. Monomial density identity by induction on `n`:
+   `M_n(X) = 2(X-1/4)^{-(n+1)} + (1/pi) A_n(X) - Pi_n(X)`, then (CSHC.6) in density form for every
+   real `p` by linearity.
+10. (CSHC.14)/(CSHC.15) tightness, the approximating-subspace half of (CSHC.5), and the Cayley
+    angular-momentum Paley–Wiener support (CSHC.18)–(CSHC.20).
+
+### Density-form build: completed
+
+Modules 1–10 of the plan above are now Lean-proved and axiom-clean
+(`[propext, Classical.choice, Quot.sound]`):
+
+| Item | Lean |
+|---|---|
+| Poisson rational integrals | `GaloisForLFunctions.HTGeometry.integral_inv_sq_add_sq`, `integral_inv_sq_add_sq_mul'` |
+| Logarithmic Poisson integrability | `GaloisForLFunctions.HTGeometry.integrable_log_mul_inv_sq_add_sq` |
+| Two-sided vertical digamma bound | `RHTower.abs_re_digamma_vertical_le` |
+| Poisson reproduction of the archimedean rate | `RHTower.integral_poissonWeight_mul_re_digamma_half` |
+| Fourier transform of the Cauchy kernel | `GaloisForLFunctions.HTGeometry.integral_inv_sq_add_sq_mul_cexp_neg` |
+| Mass-derivative transfer | `GaloisForLFunctions.HTGeometry.hasDerivAt_massPairing`, `iteratedDeriv_massPairing` |
+| Exponential frequency aperture of the mass kernel | `GaloisForLFunctions.HTGeometry.norm_massPairing_cauchyFourierWeight_le` |
+| Archimedean moments and (CSHC.7) | `RHTower.routeUArchimedeanMoment_zero_eq`, `RHTower.routeUArchimedeanRate_ge` |
+| Prime moments and their closed form | `RHTower.hasDerivAt_routeUPrimeMoment`, `RHTower.routeUPrimeMoment_zero_eq` |
+| Monomial density identity | `RHTower.xiResolventMoment_eq_routeUDensityMoment` |
+| (CSHC.6) in density coordinates | `RHTower.tsum_routeUHardEdgeRationalTestSq_eq_density` |
+| (CSHC.13), mass-uniform | `RHTower.routeUHardEdgePrimeSum_uniform_le` |
+| (CSHC.3)/(CSHC.14) | `RHTower.routeUHardEdge_log_moment_le` |
+| (CSHC.15) | `RHTower.routeUHardEdge_tail_le` |
+
+Second deviation recorded: the Lean (CSHC.13) fixes the aperture depth at `sigma = 1` and the
+threshold at `L_C = 8C + 4`, and states the mass restriction as `a >= 4` rather than an implicit
+`a >= a_C`.  With those explicit choices the gain is `L_C·rate(1) - 2C >= 1`, which is what makes the
+bound uniform in the mass; the constant is
+`B_C = (2C+2)·e^{8C+4}·sum_m Lambda(m) m^{-3/2}`.
+
+Remaining: the approximating-subspace half of (CSHC.5), and the Cayley angular-momentum
+Paley–Wiener support (CSHC.18)–(CSHC.20).
+
+### Next: the `L²` precompactness half of (CSHC.5)
+
+Mathlib has no Kolmogorov–Riesz criterion, so it is being built.  The covering half is
+`GaloisForLFunctions.HTGeometry.totallyBounded_of_finiteDimensional_approx`; the quantitative half
+is the grid approximation.  Its elementary engine is now formal:
+
+    HTGeometry/IntervalPoincare.lean
+      sq_integral_le_length_mul                Cauchy-Schwarz against the constant one
+      sq_sub_left_le_of_hasDerivAt             |g(x) - g(a)|^2 <= h * int g'^2 on a length-h interval
+      integral_sub_left_sq_le_of_hasDerivAt    int (g - g(a))^2 <= h^2 * int g'^2
+
+Remaining steps, in order:
+
+1. `MemLp (routeUHardEdgeRationalTest a p) 2 volume` and the `L^2`-norm identities
+   `‖toLp g‖^2 = int g^2`, `‖toLp g - toLp v‖^2 = int (g - v)^2` (both scratch-verified: the second
+   is `MemLp.toLp_sub` with `real_inner_self_eq_norm_sq` and `L2.inner_def`).
+2. The grid step space: `Submodule.span ℝ` of finitely many indicator classes, finite-dimensional
+   because the spanning set is finite.
+3. The approximation estimate: on `[-R,R]` with mesh `h`, the left-endpoint step function `v`
+   satisfies `int (g - v)^2 <= tail(R) + h^2 * int g'^2`, by summing
+   `integral_sub_left_sq_le_of_hasDerivAt` over the grid and adding `routeUHardEdge_tail_le`.
+4. Feed the derivative bound `integral_deriv_routeUHardEdgeRationalTest_sq_le` (which gives
+   `int g'^2 <= 4(N+1/2)^2/a^2 * int g^2`, hence `<= (2C+1/2)^2 * int g^2` when `N <= Ca` and
+   `a >= 4`) and the tail bound into `totallyBounded_of_finiteDimensional_approx`.
+5. The nonzero limit, and then (CSHC.18)-(CSHC.20): the Cayley angular-momentum operator, its
+   moment bound, and the Paley-Wiener support of the limit.

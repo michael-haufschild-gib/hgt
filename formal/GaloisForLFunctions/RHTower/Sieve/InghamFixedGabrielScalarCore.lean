@@ -22,8 +22,8 @@ theorem inghamFixedGabriel_of_scalarFamily
     (hright : ∀ z ∈ Complex.re ⁻¹' {inghamPowerSavingRightEdge},
       ‖H z‖ ≤ R ^ (1 / 2 : ℝ) * I ^ (1 / 2 : ℝ))
     (hcenter : ‖H (inghamFixedGabrielSigma : ℂ)‖ = I) :
-    I ^ (237 / 364 : ℝ) ≤
-      L ^ (165 / 364 : ℝ) * R ^ (72 / 364 : ℝ) := by
+    I ^ (11859 / 18200 : ℝ) ≤
+      L ^ (8277 / 18200 : ℝ) * R ^ (3582 / 18200 : ℝ) := by
   have hstrip : (inghamFixedGabrielSigma : ℂ) ∈
       Complex.HadamardThreeLines.verticalClosedStrip
         (1 / 2) inghamPowerSavingRightEdge := by
@@ -37,44 +37,44 @@ theorem inghamFixedGabriel_of_scalarFamily
       (by norm_num [inghamPowerSavingRightEdge]) hstrip hd hB hleft hright
   have hweights :
       1 - (inghamFixedGabrielSigma - (1 / 2 : ℝ)) /
-          (inghamPowerSavingRightEdge - (1 / 2 : ℝ)) = 55 / 91 ∧
+          (inghamPowerSavingRightEdge - (1 / 2 : ℝ)) = 2759 / 4550 ∧
       (inghamFixedGabrielSigma - (1 / 2 : ℝ)) /
-          (inghamPowerSavingRightEdge - (1 / 2 : ℝ)) = 36 / 91 := by
+          (inghamPowerSavingRightEdge - (1 / 2 : ℝ)) = 1791 / 4550 := by
     constructor <;> norm_num [inghamFixedGabrielSigma, inghamPowerSavingRightEdge]
   rw [hcenter] at hthree
   simp only [ofReal_re] at hthree
   rw [hweights.1, hweights.2] at hthree
   have hfactor :
-      (L ^ (3 / 4 : ℝ) * I ^ (1 / 4 : ℝ)) ^ (55 / 91 : ℝ) *
-          (R ^ (1 / 2 : ℝ) * I ^ (1 / 2 : ℝ)) ^ (36 / 91 : ℝ) =
-        (L ^ (165 / 364 : ℝ) * R ^ (72 / 364 : ℝ)) *
-          I ^ (127 / 364 : ℝ) := by
+      (L ^ (3 / 4 : ℝ) * I ^ (1 / 4 : ℝ)) ^ (2759 / 4550 : ℝ) *
+          (R ^ (1 / 2 : ℝ) * I ^ (1 / 2 : ℝ)) ^ (1791 / 4550 : ℝ) =
+        (L ^ (8277 / 18200 : ℝ) * R ^ (3582 / 18200 : ℝ)) *
+          I ^ (6341 / 18200 : ℝ) := by
     rw [Real.mul_rpow (Real.rpow_nonneg hL.le _) (Real.rpow_nonneg hI.le _),
       Real.mul_rpow (Real.rpow_nonneg hR.le _) (Real.rpow_nonneg hI.le _)]
     rw [← Real.rpow_mul hL.le, ← Real.rpow_mul hI.le,
       ← Real.rpow_mul hR.le, ← Real.rpow_mul hI.le]
-    rw [show (3 / 4 : ℝ) * (55 / 91) = 165 / 364 by norm_num,
-      show (1 / 4 : ℝ) * (55 / 91) = 55 / 364 by norm_num,
-      show (1 / 2 : ℝ) * (36 / 91) = 72 / 364 by norm_num]
+    rw [show (3 / 4 : ℝ) * (2759 / 4550) = 8277 / 18200 by norm_num,
+      show (1 / 4 : ℝ) * (2759 / 4550) = 2759 / 18200 by norm_num,
+      show (1 / 2 : ℝ) * (1791 / 4550) = 3582 / 18200 by norm_num]
     calc
-      L ^ (165 / 364 : ℝ) * I ^ (55 / 364 : ℝ) *
-          (R ^ (72 / 364 : ℝ) * I ^ (72 / 364 : ℝ)) =
-        (L ^ (165 / 364 : ℝ) * R ^ (72 / 364 : ℝ)) *
-          (I ^ (55 / 364 : ℝ) * I ^ (72 / 364 : ℝ)) := by ring
-      _ = (L ^ (165 / 364 : ℝ) * R ^ (72 / 364 : ℝ)) *
-          I ^ (127 / 364 : ℝ) := by
+      L ^ (8277 / 18200 : ℝ) * I ^ (2759 / 18200 : ℝ) *
+          (R ^ (3582 / 18200 : ℝ) * I ^ (3582 / 18200 : ℝ)) =
+        (L ^ (8277 / 18200 : ℝ) * R ^ (3582 / 18200 : ℝ)) *
+          (I ^ (2759 / 18200 : ℝ) * I ^ (3582 / 18200 : ℝ)) := by ring
+      _ = (L ^ (8277 / 18200 : ℝ) * R ^ (3582 / 18200 : ℝ)) *
+          I ^ (6341 / 18200 : ℝ) := by
         rw [← Real.rpow_add hI]
         congr 2
         norm_num
   rw [hfactor] at hthree
-  have hIq : 0 < I ^ (127 / 364 : ℝ) := Real.rpow_pos_of_pos hI _
+  have hIq : 0 < I ^ (6341 / 18200 : ℝ) := Real.rpow_pos_of_pos hI _
   apply le_of_mul_le_mul_right _ hIq
   calc
-    I ^ (237 / 364 : ℝ) * I ^ (127 / 364 : ℝ) = I := by
-      rw [← Real.rpow_add hI, show (237 / 364 : ℝ) + 127 / 364 = 1 by norm_num,
+    I ^ (11859 / 18200 : ℝ) * I ^ (6341 / 18200 : ℝ) = I := by
+      rw [← Real.rpow_add hI, show (11859 / 18200 : ℝ) + 6341 / 18200 = 1 by norm_num,
         Real.rpow_one]
-    _ ≤ (L ^ (165 / 364 : ℝ) * R ^ (72 / 364 : ℝ)) *
-        I ^ (127 / 364 : ℝ) := hthree
+    _ ≤ (L ^ (8277 / 18200 : ℝ) * R ^ (3582 / 18200 : ℝ)) *
+        I ^ (6341 / 18200 : ℝ) := hthree
 
 end
 

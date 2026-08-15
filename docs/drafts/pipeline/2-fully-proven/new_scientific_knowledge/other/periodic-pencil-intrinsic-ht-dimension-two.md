@@ -1278,3 +1278,674 @@ coefficients.  Note this is not an obstruction for the pencil application when t
 `(a_v, ell_A, omega_A)` may be chosen algebraic — in particular for the explicit wedge realization —
 since then the translations of `(17)` are algebraic; it is an obstruction only for the general orbit
 lemma with prescribed transcendental translations.
+
+### Lean progress — the algebraicity hypothesis on the dilations is gone
+
+The item recorded above as the last obstruction to `(11)` — that the capstone required the dilations
+`q_alpha = e^(2 pi i alpha)` to be algebraic, while the orbit lemma allows arbitrary countable
+translation sets — is now removed, unconditionally and axiom-clean.
+
+The obstruction was structural rather than quantitative.  The single-series survival argument groups
+the atom keys by valuation, isolates one key by bounded-relation confinement, and then forbids
+cancellation between the remaining valuation fibres with the finite Lindemann--Weierstrass theorem.
+That last step is what forces algebraicity: the fibre coefficients carry the factors
+`q_i^(index)`, so they must be algebraic for the theorem to apply.
+
+Replacing Lindemann--Weierstrass by a *transcendence* separation removes the hypothesis entirely,
+because the source may be chosen after the dilations are given.  Take a source whose Taylor
+coefficients are the powers of a single base,
+
+```text
+coeff n H = t^(e n),
+```
+
+with `e` an integer profile having bounded-relation confinement.  Every atom is then a single power
+of `t`: the atom of the key `nu` is `t^(sum_i nu_i e_i)`.  Grouping the expansion by that exponent
+turns a vanishing relation into a *polynomial identity in `t`* whose coefficients are the grouped
+weights.  If `t` is transcendental over a field `K` carrying all the weights, every grouped
+coefficient vanishes; confinement makes the chosen key alone in its group, so its weight vanishes,
+contradicting the slot-sequence separation.  Nothing is asked of the dilations except membership in
+`K`.
+
+Five modules, all umbrella-wired, build green, `#print axioms` clean.
+
+- `HTGeometry/TranscendentalProfileSurvival.lean` — `atomProd_eq_pow_boundedAtomValuation` (the atom
+  of a power profile is one power of the base), `sum_atomProd_regrouped_by_pow`,
+  `eq_zero_of_transcendental_pow_sum` (the separation), `famWeight_mem`, `famAevalWeight_mem`, and
+  **`exists_coeff_ne_zero_famJets_of_transcendentalProfile`**: for `t` transcendental over a subfield
+  `K` of `ℂ`, a confined profile `e`, and injective nonzero dilations lying in `K`, every nonzero jet
+  polynomial with coefficients in `K` fails at some coefficient degree.
+- `HTGeometry/ConfinedExponentProfile.lean` — an explicit super-increasing profile
+  `e n = (n + 1) · (e 0 + ⋯ + e (n-1)) + 1`, whose partial sums obey `S (n+1) = (n+2) · S n + 1`.
+  `boundedRelationConfinement_confinedProfile`: in a relation of height at most `D`, the largest
+  participating index cannot be at least `D`, since its own term already exceeds `D` times the total
+  mass of all smaller terms.  `sq_le_confinedProfile` gives `n^2 <= e n`, so the profile is
+  superlinear and the series is entire for `|t| < 1`.
+- `HTGeometry/TranscendentalProfileJointHypertranscendence.lean` —
+  **`algebraicIndependent_famJets_of_transcendentalProfile`** and
+  **`jointlyHypertranscendental_dilates_of_transcendentalProfile`**.  The complex-coefficient
+  relation is first normalized to one with algebraic coefficients by the family Mahler descent, so
+  the field `K` need only contain the algebraic numbers and the dilations.
+- `HTGeometry/TranscendentalBaseExistence.lean` — `countable_subfield_closure` (from
+  `Subfield.cardinalMk_closure_le_max`), `countable_isAlgebraic_rat`,
+  `exists_transcendental_mem_Ioo` (the numbers algebraic over a countable subfield form a null set
+  of the real line), and **`exists_transcendental_base`**: for every countable family of dilations
+  and every `epsilon > 0` there are a subfield `K` containing the algebraic numbers and all the
+  dilations, and a real `x` in `(0, epsilon)` transcendental over `K`.
+- `HTGeometry/TranscendentalProfileRealization.lean` and
+  `HTGeometry/TranscendentalProfileCountableFamily.lean` — the analytic carrier
+  `transcendentalProfileFunction x e = sum_n x^(e n) z^n`, its entirety, its exact Taylor
+  coefficients, its full support, the finite-restriction principle
+  `jointlyHypertranscendental_of_finite_restrictions`, and the capstones
+
+  > **`exists_entire_dilates_jointlyHypertranscendental`** and
+  > **`exists_entire_dilates_jointlyHypertranscendental_countable`.**  For every countable family of
+  > *distinct nonzero complex* dilations `q_i` — no arithmetic hypothesis whatsoever — there is an
+  > entire `F` with full Taylor support such that no algebraic differential equation with complex
+  > coefficients relates the point to the jets of all the dilates `z |-> F (q_i z)`.
+
+**What `(11)` still needs.**  One item, and it is the multi-form half rather than the orbit half:
+the card's family runs over several linear forms `u_j`, and after the substitution
+`xi_j = e^(2 pi i u_j(z))` the members of different forms are *not* dilates of one another in a
+single variable.  Separating them is the card's "character separation", which
+`PrimeExpLogFiberRigidity.expPoly_rigidity` performs once the frequencies of distinct integer
+vectors have pairwise distinct real parts — and `GenericDirectionRatIndependence` supplies that from
+`Q`-linear independence of the forms `u_j`.  That independence is *not* implied by the periodic-pencil
+axioms `(1)-(3)`, so either the pencil data must be normalized to make the facet forms
+`Q`-independent, or the card's own Baire--Runge proof of the orbit lemma must be formalized, which
+needs no separation at all.  The single-form case of `(11)` — one linear form, an arbitrary countable
+set of shift classes — is now covered by the capstones above, up to the pencil-carrier bridge from
+`z |-> F (q z)` to `z |-> F (q e^(2 pi i u(z)))` that `EulerOperatorDiagonal` and
+`PencilDirectionalDerivation` already prepare.
+
+### Why the explicit-source route cannot reach the multi-frequency half, and the route that can
+
+Three facts, checked while closing the algebraicity gap, fix the shape of the remaining work.
+
+1. **The facet frequencies cannot be made commensurable.**  Along `delta = D_w` the facet carrier
+   has inner variable `xi_A = exp(L_A z)` and frequency `lambda_A = L_A(w)`.  For the explicit wedge
+   `(24)-(27)` the admissible phases are forced: the complement of each facet spans `C^2`, and
+   integrality plus transcendence of `pi` pin `L_A` to an integer multiple of
+   `2 pi i pi^(-k) z_i`.  Hence `lambda_A` ranges over `w_2·{k/pi, m/pi^2, p}` and
+   `w_1·{k/pi^2, k'/pi, k'', k'''/pi^3}`, and `k/pi = p` has no nonzero integer solution.  No `w`
+   makes the frequencies rationally commensurable, so the family is never a dilate family in one
+   inner variable.
+
+2. **A multi-variable formal reduction is unavailable.**  With `L` facet frequencies the carriers are
+   `G(xi_1, ..., xi_L)` for an entire `G` on `C^L`, and a relation says only that `G` vanishes on the
+   curve `t |-> (e^(lambda_1 t), ..., e^(lambda_L t))`.  The moduli `|e^(lambda_A t)|` fill a
+   *two*-real-dimensional subspace of `R^L`, so for `L >= 3` that curve is not analytically dense and
+   an entire `G` can vanish on it without being zero.  Coefficient extraction — the step that makes
+   the single-frequency case a formal power-series argument — has no analogue.
+
+3. **Grouping by character does not finitize.**  Restricting to a line and grouping by the frequency
+   form gives `R(t) = sum_f A_f e^(2 pi i f(b) t)` with *infinitely many* `f`, so finite
+   exponential-polynomial rigidity (`expPoly_rigidity`) does not apply, and the competition between
+   the growth `e^(Re mu_f t)` and the decay of the coefficients is exactly the hard analysis the card
+   avoids.
+
+So the multi-frequency half needs the card's own Baire--Runge proof.  It can be formalized without
+any Fréchet-space theory, on a **compact** parameter space:
+
+```text
+P = prod_(n in N) closedBall(0, M n) subset (N -> C),   M n = 2^(-n^2),
+```
+
+with the product topology.  `P` is compact (Tychonoff) and metrizable (countable product of metric
+spaces), hence a Baire space, and every point of `P` is the coefficient sequence of an entire
+function.  A basic open set of `P` constrains only finitely many coordinates, so "the dependence
+locus has empty interior" becomes the statement that, with finitely many coefficients arbitrary, the
+remaining high-index coefficients can be chosen to make one evaluation determinant nonzero — which
+is the card's dominance choice of far-out nodes, not a Runge approximation.  The parameter space for
+`L` sources is `P^L`, again compact metrizable.  This is the concrete plan for `(11)`; nothing else
+on the card depends on it.
+
+### The build plan for `(11)`
+
+The Baire step is *not* about approximating a given function: it is about making finitely many
+evaluation determinants nonzero, and every ingredient is elementary.
+
+**What has to be proved.**  A joint relation is a polynomial in the point and in the jets, so it is a
+`C`-linear combination of finitely many *distinct monomials* in those variables.  Joint differential
+independence is therefore exactly:
+
+```text
+for every finite set of distinct monomials M_1, ..., M_K in (z, jets),
+the functions z |-> M_i(z, jets(z)) are C-linearly independent.        (B0)
+```
+
+Countably many finite monomial sets, so Baire on a compact parameter space applies.
+
+**Step 1 — free jets from high-index coefficients.**  For distinct nonzero nodes `x_1, ..., x_K` and
+a multiplicity `m`, the map
+
+```text
+(c_0, ..., c_(Km-1)) |-> ( d^r/dz^r [ z^N sum_i c_i z^i ] (x_a) )_(a, r<m)
+```
+
+is bijective.  Indeed a polynomial `z^N q(z)` with `deg q < Km` vanishing to order `m` at every
+`x_a != 0` is divisible by `prod_a (z - x_a)^m`, of degree `Km`, hence zero.  Consequently the jets
+of the tail of a coefficient sequence at finitely many distinct nonzero nodes are *free*, and — since
+a nonzero polynomial cannot vanish on a nonempty open set — a bound `|c_n| <= epsilon` on the free
+coefficients is no restriction at all for a determinant argument.
+
+**Step 2 — from source jets to carrier jets.**  `dirDeriv_iterate_phaseComp` already gives
+`D_w^r (Psi o exp o L) = (L w)^r · (Theta^r Psi) o exp o L`, and
+`Theta^r Psi (x) = sum_(k<=r) S(r,k) x^k Psi^(k)(x)` is triangular in the source jets with diagonal
+`x^r != 0`.  So at a node `x != 0` the carrier jets are an invertible triangular image of the source
+jets: prescribing one prescribes the other.
+
+**Step 3 — the nodes.**  Choose `b` outside every `ker u_j` and put `z_a = t_a b`.  The nodes
+`exp(2 pi i (u_j(z_a) + alpha))` must be pairwise distinct for each fixed `j` as `(alpha, a)` varies,
+and nonzero (automatic).  Distinctness fails only on a countable union of proper conditions on the
+`t_a`, so a generic choice works; pushing the `t_a` along a ray also sends the nodes to `0` or
+`infinity`, which is what makes the bounded free coefficients reach large jet values.
+
+**Step 4 — Baire.**  Parameter space `P^L` with `P = prod_n closedBall(0, 2^(-n^2))`, compact
+metrizable, hence Baire.  For each finite monomial set the good locus is open (the determinant is
+continuous in the parameter, by the `M`-test on the box) and dense (Steps 1--3).  A point of the
+countable intersection is a simultaneous source family, and `(B0)` holds for it.
+
+**Step 5 — assembly.**  Feed the resulting sources to `PencilSeparation.seed`-style carriers in place
+of `exp`; `(8)` needs only full Taylor support, which the construction can also demand, and `(9)`
+then follows from `(B0)` by the corpus's `DifferentialOperatorMatroid` rank law exactly as in the
+multiple-elliptic-gamma and multiple-sine capstones.
+
+The corpus already owns the evaluation lemma this needs —
+`HTGeometry.exists_injective_evaluation_minor_of_linearIndependent`: a finite linearly independent
+family of scalar functions admits pairwise distinct sample points with nonsingular evaluation matrix.
+
+### Lean progress — the first five bricks of the Baire route for `(11)`
+
+All five are umbrella-wired, build green, and `#print axioms` clean.
+
+`HTGeometry/HighDegreeJetFreedom.lean` — **free derivative jets from a high-degree window.**
+`eq_zero_of_le_rootMultiplicity` and `eq_zero_of_shifted_iterate_derivative_eval_eq_zero`: a
+polynomial `X^N q` with `deg q < K·m` whose first `m` derivatives vanish at `K` distinct *nonzero*
+points has `K·m` roots with multiplicity, so `q = 0` — multiplying by `X^N` does not change the
+multiplicity at a nonzero point.  Hence `windowJetMap_injective`, and by equality of dimensions
+`windowJetMap_surjective` and **`exists_windowLin_jets`**: for every jet target at `K` distinct
+nonzero nodes and every starting degree `N`, some coefficient vector supported in `[N, N + K·m)`
+realizes it.
+
+`HTGeometry/PolynomialEulerJet.lean` — **the Euler operator is triangular on jets.**
+`polyEuler_iterate_eq`: `Θ^r p = ∑_{k ≤ r} S(r,k) · X^k · p^(k)` with the Stirling recursion
+`S(r+1,k) = k·S(r,k) + S(r,k-1)` and `S(r,r) = 1`.  `eulerTransform_injective` /
+`eulerTransform_surjective`: at nonzero nodes the transform from derivative jets to Euler jets is
+triangular with diagonal `x^r`, hence bijective — proved by strong induction on the jet order, no
+matrix theory.  Consequently **`exists_windowLin_eulerJets`**: the *Euler* jets are freely
+prescribable from a high-degree window.
+
+`HTGeometry/ExpCompositeEulerJet.lean` — **the carrier jets are Euler jets.**
+`iteratedDeriv_expComp`: `d^r/dt^r [Ψ (exp (λ t + c))] = λ^r · (Θ^r Ψ)(exp (λ t + c))`, by induction
+with the chain rule; `eulerOp_iterate_polynomial` identifies the analytic and polynomial Euler
+operators, and `iteratedDeriv_expComp_polynomial` combines them.  The affine shift `c` is the
+translation of the orbit, so this is the one-variable form of the card's `(16)`.
+
+`HTGeometry/BlockMonomialDeterminant.lean` — **the algebraic core of the genericity step.**
+`blockMonomialMatrix_det_ne_zero`: `K` *distinct* monomials evaluated on `K` independent copies of
+the variables have nonzero determinant.  Expanding, the term of a permutation is the monomial
+`∑_a` (block `a` of the exponent of the `π a`-th monomial); disjointness of the blocks recovers `π`
+from that exponent, so distinct permutations contribute distinct monomials and nothing cancels.
+This is exactly the statement that a family of distinct monomials in the point and in free jet
+variables stays independent after evaluation at independent sample blocks.
+
+`HTGeometry/PolynomialZeroSetNowhereDense.lean` — **the genericity plumbing.**
+`infinite_ball_complex`, `exists_eval_ne_zero_of_isOpen` (a nonzero polynomial does not vanish on a
+nonempty open set — a ball is a box of infinite sides, and `MvPolynomial.funext_set` applies),
+`interior_zeroSet_eq_empty`, `zeroSet_dense_compl`, `isOpen_nonvanishing`.
+
+`HTGeometry/DistinctDifferenceTuple.lean` — **node distinctness.**  Two members of one source share
+a node exactly when the difference of the sample points lies in a fixed countable set, so
+`exists_scale_zsmul_notMem` and **`exists_sample_diff_notMem`** produce sample points from one
+scale: the progression `t n = n·s` has differences `(m-n)·s`, and the scales failing the condition
+form a countable union of countable sets while `ℂ` is uncountable.  (Members of one source share the
+*same* frequency, so the `a = b` collisions are excluded by distinctness of the translation classes
+alone, with no genericity at all.)
+
+**What remains for `(11)`.**  Three assemblies.
+
+1. *The Euler jets of a limit source.*  The partial sums of a coefficient series with
+   `‖c n‖ ≤ (n!)⁻¹` converge locally uniformly, so `Θ^r` of the limit is the limit of `Θ^r` of the
+   partial sums (Weierstrass, `TendstoLocallyUniformlyOn.deriv`); the tail bound needs
+   `Summable fun n => n^r R^n / n!`, which follows from boundedness of `(2R)^n/n!` and
+   `summable_pow_mul_geometric_of_norm_lt_one`.
+2. *The density step.*  For a finite family of distinct jet monomials: pick sample points with
+   distinct nodes and with the determinant polynomial not identically zero, then pick jet values in a
+   small ball around the current ones where the determinant is nonzero, then realize them by a
+   high-degree window with small coefficients.
+3. *The construction.*  Either Baire on the compact box `∏_n closedBall(0,(n!)⁻¹)` — the good set is
+   open by continuity of the jets in the parameter and dense by step 2 — or the equivalent nested
+   construction, in which the tail of stage `k+1` is chosen small enough to preserve the finitely
+   many determinants already made nonzero.
+
+### Lean progress — the analytic and evaluation layers of the Baire route
+
+`HTGeometry/EntireSeriesEulerJet.lean` (umbrella-wired, axiom-clean) — **the Euler operator acts
+termwise on an entire power series.**
+
+- `summable_pow_mul_of_factorial_decay`: for `‖c n‖ ≤ (n!)⁻¹` the jet-weighted series
+  `∑ n^r ‖c n‖ R^n` converges — `(2R)^n/n!` is bounded because it is summable, which leaves
+  `∑ n^r (1/2)^n`.
+- `polyEuler_monomial`, `polyEuler_iterate_monomial`: `Θ^r (a X^n) = n^r a X^n`, so on the partial
+  sums the Euler operator is diagonal (`eval_polyEuler_iterate_partialPoly`).
+- `tendstoLocallyUniformlyOn_jetPartial`: the jet-weighted partial sums converge locally uniformly
+  (Weierstrass `M`-test on each compact set, reindexed along `Finset.range`).
+- `differentiable_jetSeriesFun`, `contDiff_jetSeriesFun`: the limit is entire.
+- **`eulerOp_jetSeriesFun`** and **`eulerOp_iterate_jetSeriesFun`**: locally uniform convergence
+  passes to the derivative (`TendstoLocallyUniformlyOn.deriv`), so
+  `Θ^r (∑ c n u^n) (x) = ∑ n^r c n x^n`; uniqueness of limits does the rest.
+- **`iteratedDeriv_expComp_jetSeriesFun`**: hence the carrier jets of an entire power-series source
+  along an exponential phase are `λ^r` times the jet-weighted series at the node.
+
+`HTGeometry/BlockMonomialEval.lean` (umbrella-wired, axiom-clean) — **the evaluation half.**
+`eval_blockMonomial` and `det_eval_blockMonomialMatrix` identify the evaluated determinant with the
+evaluation of the polynomial determinant (determinants commute with ring maps), and
+**`exists_blockValues_det_ne_zero`**: for distinct monomials, *every nonempty open set* of block
+values contains one with nonsingular evaluation matrix.
+
+With these, the density step of `(11)` is the following purely bookkeeping chain, with no circular
+dependency between the choices: the open set of block values is (sample points with distinct nodes)
+× (all jet values), which gives the sample points; substituting them into the determinant polynomial
+gives a nonzero polynomial in the jet values alone; a second application of the same lemma on a small
+ball around the *current* jet values gives the target jets; and the free Euler jets of a high-degree
+window realize the increment with coefficients inside the box, the radius of the ball being chosen
+after the sample points are fixed.
+
+### Lean progress — the parameter space, the orbit family, and the perturbation
+
+Five further modules, umbrella-wired and axiom-clean.
+
+`HTGeometry/SourceBox.lean` — **the compact parameter space.**  `sourceBox = ∀ n, closedBall(0,(n!)⁻¹)`
+is compact, Hausdorff, Baire and nonempty, every point is the coefficient sequence of an entire
+function, and `continuous_jetSeriesFun_box`: the jet-weighted series at a fixed point is a
+*continuous* function of the coefficient sequence, by the `M`-test (`continuous_tsum`).  So any
+condition on finitely many jets is open on the box.
+
+`HTGeometry/OrbitFamilyJets.lean` — **the orbit family.**  A member is a source index with an
+additive shift; `orbNode` is its node and `orbFun` its carrier, and `iteratedDeriv_orbFun` /
+`famJetPoint_orbFun` express every jet of the family as `λ^r` times the jet-weighted series of the
+source at that node.  `continuous_famJetPoint_orbFun` and `continuous_orbEvalMatrix_det` then give
+**`isOpen_orbGood`**: *having a nonsingular evaluation matrix at some sample points is an open
+condition on the sources*.  `linearIndependent_of_orbEvalMatrix_det_ne_zero` is the converse use: a
+nonsingular evaluation matrix forces the jet monomials to be linearly independent, which is exactly
+the joint-hypertranscendence criterion `(B0)`.
+
+`HTGeometry/EulerWindowEquiv.lean` — **the perturbation is bounded.**  `eulerWindowMap`, the
+composite of the window jet map with the triangular Euler transform, is a linear *bijection*
+(`eulerWindowMap_bijective`), hence a linear equivalence between finite-dimensional spaces, whose
+inverse is continuous.  **`exists_small_window`**: for every `ε > 0` there is a `δ > 0` such that an
+Euler-jet target of norm below `δ` is realized by window coefficients of norm below `ε` — this is
+what keeps the perturbation inside the coefficient box.
+
+`HTGeometry/OrbitNodeGenericity.lean` and `HTGeometry/OrbitSampleOpen.lean` — **the sample points.**
+Two members of one source collide at two sample points exactly when the difference of the sample
+points lies in the countable `orbCollisionSet`, and at one sample point exactly when their shifts
+have equal exponentials.  Hence `exists_sample_orbNode_injective` and `exists_goodSamples`, while
+`isOpen_goodSamples` shows node distinctness is *open* — the complement of finitely many closed
+coincidence conditions.
+
+What is left of `(11)` is now the density assembly itself: choose block values in
+(good samples) × (all jets) to fix the sample points, substitute them into the determinant polynomial,
+choose jet values in a `δ`-ball around the jets of the window-zeroed source, and realize the increment
+by `exists_small_window`.  Baire on `Fin L → sourceBox` then meets the countably many open dense
+conditions at once.
+
+### Lean progress — the orbit lemma `(11)` is proved in one variable
+
+Four further modules close the Baire route.  All umbrella-wired, build green, `#print axioms` clean.
+
+`HTGeometry/WindowBox.lean` — writing a bounded window into a zeroed degree range of a point of the
+coefficient box, with `boxSeq_setWindowBox`: the resulting coefficient sequence is the zeroed one
+plus the window sequence.
+
+`HTGeometry/OrbitDensity.lean` — **the density step.**  `specDetPoly` substitutes the sample points
+into the block-monomial determinant, and `eval_specDetPoly` identifies its evaluation with the
+evaluation matrix of the jet monomials.  `fiberNode_injective` gives, for each source, pairwise
+distinct nonzero nodes.  The capstone
+
+> **`exists_orbGood_agreeing`.**  For every finite family of distinct jet monomials, every source
+> family and every frozen coefficient prefix, there is a source family agreeing on that prefix whose
+> evaluation matrix is nonsingular.
+
+The proof runs exactly the chain designed above: block values in (good samples) × (all jets) fix the
+sample points; substitution leaves a nonzero polynomial in the jet values; a `δ`-ball around the jets
+of the window-zeroed source contains a nonvanishing point; and `exists_small_window` realizes the
+increment with coefficients inside the box, the radius being chosen after the sample points.
+
+`HTGeometry/OrbitBaire.lean` — **the Baire assembly.**  `exists_prefix_subset_nhds` (a neighbourhood
+of a source family contains every family agreeing on a long enough prefix, by unfolding the product
+filter twice), hence `dense_orbGood`; the tasks form a countable type, so
+`dense_iInter_of_isOpen` gives **`exists_source_orbGood_all`** — one source family good for *every*
+finite jet-monomial family.  `jointlyHypertranscendental_of_orbGood_all` converts that into joint
+hypertranscendence: a joint relation is a `ℂ`-combination of the distinct monomials of its support,
+and a nonsingular evaluation matrix forces all its coefficients to vanish.
+
+`HTGeometry/OrbitBaireCountable.lean` — **the countable form.**  Tasks indexed by a finite member set
+together with a jet-monomial family over it are still countable, and a joint relation involves only
+finitely many members, so:
+
+> **`exists_source_jointlyHypertranscendental_countable`.**  For finitely many *nonzero complex
+> frequencies* `λ_j` and a *countable* set of members whose translation classes are pairwise distinct
+> on each source, there are entire sources such that the whole orbit family
+> `t ↦ H_{src i} (exp (λ_{src i} t + sh i))` satisfies **no algebraic differential equation with
+> complex coefficients**.
+
+This is the card's orbit lemma `(11)` in one variable, with no arithmetic hypothesis on the
+frequencies or the translations — in particular the multi-frequency case that the explicit-source
+route provably could not reach.
+
+**What `(11)` still needs.**  Only the passage from one variable to `C^d`: a relation over
+`C(z_1, ..., z_d)` for the family `h_A(u_A(z) + alpha)` with `delta = D_w` restricts, along a generic
+line `z = z_0 + t w`, to a relation over `C(t)` for the family
+`t |-> H_A (exp (lambda_A t + c_{A,alpha}))` with `lambda_A = u_A(w) != 0` — which is exactly the
+family above.  What has to be checked is only that the restriction of a nonzero relation to a generic
+line stays nonzero.
+
+### Lean progress — `(11)` is proved in several variables
+
+`HTGeometry/PencilLineRestriction.lean` and `HTGeometry/PencilOrbitSeveralVariable.lean`
+(umbrella-wired, axiom-clean) close the passage from one variable to `C^d`.
+
+**The line restriction.**  `dirJetPoint` is the jet point of a family on `C^d` for the constant
+derivation `D_w`, and `JointlyDirHypertranscendental w f` says no nonzero polynomial in the
+coordinates and those jets vanishes identically.  Along `z = z_0 + s·w` the coordinates become affine
+functions of `s` and the directional jets become the ordinary jets of the restricted family
+(`dirJetPoint_line`, by `iteratedDeriv_comp_const_add`).  The restricted relation is nonzero for a
+suitable base point: `exists_pointSubst_ne_zero_mem` shows that a polynomial whose coordinate
+specialization vanishes on a *box with infinite sides* vanishes — via `MvPolynomial.funext_set` —
+so **`jointlyDirHypertranscendental_of_lines_mem`**: joint hypertranscendence on the lines through
+such a box gives joint hypertranscendence over `C(z_1, ..., z_d)` for `D_w`.
+`jointlyHypertranscendental_comp_injective` records that an injective reindexing of a jointly
+hypertranscendental family is jointly hypertranscendental.
+
+**The assembly.**  Along a line the pencil carrier `z |-> H_j (exp (L_j z + sh))` becomes the
+one-variable orbit carrier with frequency `L_j(w)` and shift `L_j(z_0) + sh`.  Taking the base points
+in the rational-Gaussian box keeps the *union* of the shift classes over all base points countable,
+and indexing the members by the classes themselves makes the distinctness hypothesis automatic;
+the restriction to one line is then an injective reindexing of that big orbit family, because
+`exp(L_j z_0 + sh i) = exp(L_j z_0 + sh i')` reduces to `exp(sh i) = exp(sh i')`.  Hence
+
+> **`exists_source_pencil_jointlyDirHypertranscendental`.**  For finitely many linear forms with
+> `L_j(w) != 0` and a countable set of members whose translation classes are pairwise distinct on each
+> form, there are entire sources such that the pencil family
+> `z |-> H_{src i} (exp (L_{src i} z + sh i))` satisfies **no algebraic differential equation over
+> `C(z_1, ..., z_d)` for the constant derivation `D_w`**.
+
+This is the card's orbit lemma `(11)`, unconditionally and in the stated generality: arbitrary
+nonzero complex frequencies, arbitrary countable translation sets, no arithmetic hypotheses.
+
+**Gate update.**  `(11)` is closed.  What remains on the card is `(9)`: expand `P(T)F` in the free
+orbit support and identify the resulting differential matroid with the localized Stanley--Reisner row
+matroid, which is the corpus's `DifferentialOperatorMatroid` rank law applied to the now-independent
+orbit family — the same final step as in the multiple-elliptic-gamma and multiple-sine capstones.
+
+### Lean progress — the differential field for `(9)`, and what `(8)` now costs
+
+`HTGeometry/SeveralVariableDirectionalDifferential.lean` (umbrella-wired, axiom-clean) builds the
+differential-field carrier that `(9)` needs on `C^d`.  A constant direction `w` gives
+`dirDerivFun w f z = fderiv f z w`; it descends to germs along an open set
+(`dirDerivFun_congr`), preserves analytic germs (`analyticOnNhd_dirDerivFun`: the derivative of an
+analytic map is analytic and evaluation at `w` is continuous linear), and satisfies the Leibniz rule,
+so `analyticSubringGenDirDerivation` is a derivation on the several-variable analytic-germ domain and
+`meroFieldGenDirDifferential` extends it by the quotient rule to `meroFieldGen`.  This is the exact
+several-variable analogue of `MeromorphicDifferentialField`, whose one-variable version the corpus
+already used for every elliptic-gamma and multiple-sine matroid capstone.
+
+**`(8)` is now a corollary of `(11)`, for the new source.**  The inclusion `I_Delta subset Ann(F)` is
+periodicity and needs nothing.  Conversely, if `P notin I_Delta` then some facet coordinate
+`rho_A(P)` is nonzero, and `(20)` writes `P(T)F` as a nonzero constant-coefficient combination of
+*distinct* members of the orbit family; joint hypertranscendence makes that nonzero.  So the
+exponential seed of `PencilExponentialSeed` is no longer needed for `(8)` either — the same source
+now serves `(8)` and `(9)`.
+
+**What `(9)` still needs.**  Three bookkeeping layers, all of them interface work rather than new
+mathematics: (i) the pencil carriers as elements of `meroFieldGen` with `differentialJet` identified
+with the iterates of `dirDerivFun` — the identity
+`(dirDerivFun w)^[r] f z = iteratedDeriv r (fun s => f (z + s·w)) 0` by induction with the chain rule;
+(ii) `JointlyDirHypertranscendental` transported to `DifferentialIndependent C` in that field, which
+is the statement that a nonzero polynomial in the coordinates and the jets has nonzero germ;
+(iii) the identification of the pencil translations with the localized Stanley--Reisner Laurent rows,
+after which `differentialFamilyMatroid_stanleyReisnerLaurentRows_eq` and
+`differentialOperatorRows_stanleyReisnerLaurent_eRk_eq_finrank_span` — both already in the corpus —
+give `(9)` verbatim.
+
+### Lean progress — layers (i) and (ii) of `(9)` are closed
+
+`HTGeometry/DirectionalIterateJet.lean` — **`dirDerivFun_iterate_eq_iteratedDeriv`**: for an entire
+function the `r`-fold directional derivative at `z` is the `r`-th derivative at `0` of the restriction
+to the line through `z`.  One step is the chain rule (`hasDerivAt_line`, `deriv_line_eq`) and the
+induction runs because the directional derivative of an analytic function is analytic.  This
+identifies the differential jets of the several-variable differential field with the jets a
+line-restriction argument produces.
+
+`HTGeometry/PencilDifferentialIndependence.lean` — the transport.  `entireGermGen` embeds an entire
+function into the analytic-germ domain, with `entireGermGen_eq_zero_iff` (the germ vanishes exactly
+when the function does), and the germ is compatible with sums, products, constants and the
+directional derivative.  Hence `differentialJet_entireGermGen`: the differential jets of an entire
+germ are the germs of its iterated directional derivatives.  `exists_entireGermGen_aeval` evaluates
+a polynomial in entire germs as the germ of the corresponding function, by induction on the
+polynomial.  Together:
+
+> **`differentialIndependent_of_jointlyDirHypertranscendental`.**  A family of entire functions with
+> no algebraic differential relation over `C(z_1, ..., z_d)` for `D_w` is `DifferentialIndependent`
+> over `C` in the several-variable meromorphic field with the directional derivation.
+
+Mechanism: a relation in the field pulls back through the injective `algebraMap` into the germ
+domain, evaluates to the germ of a vanishing function, and — after renaming the finitely many jet
+orders into `Fin (n+1)` and injecting into the coordinate-plus-jet variable type — is exactly a
+relation of the kind `JointlyDirHypertranscendental` forbids.
+
+With `(11)` this gives the differential independence that
+`differentialFamilyMatroid_stanleyReisnerLaurentRows_eq` consumes.  The single remaining layer of
+`(9)` is layer (iii): identifying the pencil translations `T_{a_v}` acting on the orbit family with
+the localized Stanley--Reisner Laurent rows, after which the corpus's rank law gives `(9)` verbatim.
+
+### Lean progress — a general pencil source, and full Taylor support
+
+`HTGeometry/PencilGeneralSeed.lean` (umbrella-wired, axiom-clean) removes the exponential seed from
+the annihilator half.  For an arbitrary choice `Psi` of one source per facet,
+`PencilSeparation.genSeed S Psi z = sum_A Psi A (exp (phase A z))`, and:
+
+- `shiftAlgHom_stepVar_facetSource` — a step outside a facet leaves that facet's source invariant,
+  because `exp (phase A (omega v)) = 1`;
+- **`genSeedAnnihilates`** — hence every nonface product of difference operators annihilates the
+  carrier, for *any* facet sources: `I_Delta subset Ann(F)` costs nothing;
+- **`seedCarrierPoly_genSeed`** — and the carrier of a difference operator is the explicit finite
+  combination `sum_A sum_gamma c_gamma · Psi A (exp (phase A z) · exp (phase A gamma))` of translates
+  of the individual facet sources.
+
+`HTGeometry/OrbitBaireFullSupport.lean` (umbrella-wired, axiom-clean) supplies the one extra property
+the converse inclusion asks of the source.  `exists_ne_zero_mem_of_nhds` (a neighbourhood of a point
+of a ball of positive radius contains a nonzero point), `isOpen_boxSeq_ne_zero` and
+`dense_boxSeq_ne_zero` show that "the coefficient of degree `n` of source `j` is nonzero" is an open
+dense condition on the coefficient box; adding those countably many conditions to the genericity
+intersection gives
+
+> **`exists_source_orbGood_all_fullSupport`.**  One source family that is simultaneously jointly
+> hypertranscendental on its whole orbit *and* has every Taylor coefficient nonzero.
+
+That is exactly the hypothesis the corpus's `exists_ne_seedCarrierPoly` uses of `exp` — its argument
+isolates one facet, reads the positive-level Taylor coefficients of the surviving dilate combination
+as the symbols, and needs only that those coefficients do not vanish.  So `(8)` now holds for the same
+source that carries `(9)`, and what remains of `(9)` is the identification of the grouped operator
+coefficients with the localized Stanley--Reisner Laurent rows.
+
+### Lean progress — layer (iii) of `(9)`: the pencil orbit is the Stanley--Reisner coordinate packet
+
+`HTGeometry/PencilFacetRestriction.lean` (umbrella-wired, axiom-clean) supplies the coordinate form
+of the facet prime.  `facetRestrict A` sets the vertex variables outside `A` to zero;
+`facetRestrict_monomial` computes it on monomials, and
+
+> **`facetRestrict_eq_zero_iff_mem_facetIdeal`** — its kernel is exactly the facet ideal.
+
+On the source of a facet the restriction changes nothing, because a variable outside the facet
+already annihilates that source (`seedCarrierPoly_facetSource_facetRestrict`, by induction on the
+polynomial with `seedCarrierPoly_X_mul` inside the facet and
+`shiftAlgHom_stepVar_facetSource` outside).  Summing over the facets gives the card's expansion
+`(20)`:
+
+> **`seedCarrierPoly_genSeed_eq_sum_facetRestrict`** — the carrier of a difference operator on a
+> general pencil source is the sum over facets of the carriers of its facet restrictions.
+
+`HTGeometry/StanleyReisnerLaurentRowSupport.lean` (umbrella-wired, axiom-clean) is the combinatorial
+fact the matroid law needs of the coordinate packet.  A facet translation coordinate is a polynomial
+in the variables of its own facet (`support_facetTranslationPolynomialEmbedding_eq_zero`, from
+`support_rename_of_injective` and `Finsupp.mapDomain_notin_range`), and the common denominator shift
+only subtracts an exponent visible on that facet, so
+
+> **`finiteFinsuppRowIndex_stanleyReisnerLaurentRows_eq_zero`** — every Laurent exponent occurring in
+> the finite coordinate packet of a Stanley--Reisner Laurent family vanishes outside its own facet.
+
+`HTGeometry/PencilStanleyReisnerMatroid.lean` (umbrella-wired, axiom-clean) closes `(9)`.  The
+several-variable meromorphic field with a constant directional derivation is a differential algebra
+over the constants (`meroFieldGenDir_deriv_complexConstant`,
+`meroFieldGenDirDifferentialAlgebra`, `genCharZero`), and the pencil member of a facet is the entire
+function `z ↦ H_A(exp(L_A z))` for a source `H_A` of the compact coefficient box
+(`pencilFacetMember`, `analyticOnNhd_pencilFacetMember`), with a step outside the facet acting
+trivially (`pencilFacetMember_add_of_notMem`).
+
+The packet index `(A, g)` is sent to the orbit member `Y_A(· + ∑_v g_v a_v)`.  By the support lemma
+`g` is carried by `A`, so two distinct packet entries on the same facet differ by a nonzero integer
+vector supported on `A`; condition `(3)` — in the form
+`exp(∑_{v ∈ A} g_v L_A(a_v)) = 1 → g|_A = 0` — makes their translation classes distinct.  The orbit
+lemma `(11)` in several variables therefore applies verbatim, and
+`differentialIndependent_of_jointlyDirHypertranscendental` transports its conclusion into the field:
+
+> **`exists_pencilSource_differentialIndependent`.**  There are entire facet sources, periodic under
+> every step outside their facet, whose translates along the finite coordinate packet of any
+> Stanley--Reisner Laurent family are differentially independent over `ℂ`.
+
+That is exactly the hypothesis of the corpus's localized rank law, so
+
+> **`exists_pencilSource_stanleyReisnerLaurentDifferentialFamilyMatroid_eq`.**  For the same sources,
+> the differential-family matroid of the operator outputs equals `stanleyReisnerLaurentMatroid`, and
+> the extended rank of every finite selection equals
+> `finrank_{C(δ)} span {localized Laurent rows}`.
+
+The first conjunct is `(9)` as a matroid identity — every dependence, circuit and rank of a
+periodic-pencil realization is the Stanley--Reisner one — and the second is its numerical form,
+the card's `dtrdeg = dim_{C(δ)} span{Pbar_i}`.  The empty coordinate packet is handled separately by
+`algebraicIndependent_empty_type_iff`, so no nonemptiness hypothesis is carried.
+
+### Lean progress — `(9)` in its native form: `P_i(T)F` and its differential matroid
+
+The matroid law of the previous section is stated in the corpus's operator-row coordinates.  Five
+further modules identify those coordinates with the genuine operator action `P(T)F`, so `(9)` now
+holds verbatim for the pencil source.
+
+`HTGeometry/PencilTranslationExpansion.lean` (axiom-clean) is the combinatorial identification.
+`rename_facetPolynomialRestriction` and `rename_differenceToTranslationHom` show that the facet
+coordinate of a class, re-expanded in translation variables, is the translation expansion of the
+facet restriction of any representative:
+
+> **`stanleyReisnerFacetTranslationCoordinates_mk`** —
+> `coord_A [P] = differenceToTranslation (facetRestrict A P)`,
+
+together with `quotientFacetEmbedding_mk` and `stanleyReisnerFacetPolynomialCoordinates_mk`, which
+compute the CRT embedding on a class of a representative.
+
+`HTGeometry/PencilOperatorCarrier.lean` (axiom-clean) is the analytic identification.
+**`polyShift_eq_mapDomain`** says that evaluating a polynomial at the difference operators `T_v - 1`
+is expanding it in translation variables and reading each monomial as one translation — both sides
+are algebra maps sending `x_v` to `T_{ω v} - 1` — whence
+
+> **`seedCarrierPoly_apply_translation`** —
+> `(P(T)F)(z) = ∑_e coeff_e(differenceToTranslation P) · F(z + ∑_v e_v ω_v)`.
+
+`opPoly n Q = ∑_{r<n} δ^r ⊗ Q_r` is the operator ring element of a finite list of difference
+operators, `opCarrier w ω F n Q = ∑_{r<n} (δ^r F)(T)`-carrier of `Q_r` its action on a source, and
+**`opCarrier_eq`** proves the two readings agree — `δ` may be applied before or after the difference
+operator, because a constant directional derivation commutes with translation
+(`dirDerivFun_iterate_comp_add_const`, `dirDerivFun_iterate_translation_sum`).
+**`coeff_differenceToTranslationHom_opPoly`** extracts the derivation coefficients, and
+**`seedCarrierPoly_sum_facetRestrict`** is `(20)` for an arbitrary family of facet sources periodic
+outside their facet.
+
+`HTGeometry/PencilRowCarrier.lean` (axiom-clean) does the row bookkeeping.  The Laurent exponent of a
+row is the translation of the facet restriction minus the facet-visible denominator
+(`intTranslation_facetLaurentExponentShift`), and the missing part of the denominator is a period of
+that facet's source (`periodic_zsmul`, `periodic_finset_sum`, `sub_facet_denominator_eq`).  Hence
+
+> **`facetRowSum_eq_seedCarrier`** — one facet's Laurent row, summed against the orbit, is the
+> difference operator of the facet restriction applied to that facet's source, translated by the
+> common denominator;
+> **`rowSum_eq_seedCarrier_sum`** — summing over the whole finite coordinate packet gives
+> `∑_{r<n} (Q_r(T)) (δ^r F)(· − τ_d)` for `F = ∑_A Y_A`.
+
+`HTGeometry/PencilRowGerm.lean` (axiom-clean) transports this into the meromorphic field.
+`entireGerm` is additive, commutes with complex scalars and with finite sums
+(`entireGerm_add`, `entireGerm_const_mul`, `entireGerm_finset_sum`), carriers of entire sources are
+entire (`analyticOnNhd_seedCarrierPoly`, `analyticOnNhd_opCarrier`), the derivation jets of a germ
+are the germs of the iterated directional derivatives, and the row coefficients above the operator
+degree vanish (`coeff_stanleyReisnerLaurentRows_opPoly_eq_zero`).  Therefore
+
+> **`differentialOperatorRowApply_eq_entireGerm_opCarrier`** — the corpus's operator-row application
+> on the pencil orbit *is* the germ of `P(T)F` for the source `F = ∑_A Y_A`, translated by the common
+> denominator.
+
+`HTGeometry/PencilOperatorMatroidLaw.lean` (umbrella-wired, axiom-clean) combines this with the
+differential independence of the orbit:
+
+> **`exists_pencilSource_operatorCarrier_matroid_eq`.**  For facet phases whose steps outside a facet
+> are periods and whose steps inside a facet are integrally independent modulo the periods, there are
+> entire facet sources `Y_A`, each periodic under every step outside its facet, such that for every
+> finite family of operators `P_i = ∑_{r<n} δ^r Q_{i,r}`,
+>
+> ```text
+> differentialFamilyMatroid_ℂ (P_i(T)F)_i = stanleyReisnerLaurentMatroid (P̄_i)_i,
+> ```
+>
+> and the extended rank of every finite selection `I` equals
+> `finrank_{ℂ(δ)} span {localized Laurent rows of P_i : i ∈ I}`.
+
+The first conjunct is `(9)` as a matroid identity — every dependence, circuit and rank of the family
+`(P_1(T)F, …, P_m(T)F)` is the Stanley--Reisner one — and the second is the card's numerical form
+`dtrdeg_D D⟨P_1(T)F,…,P_m(T)F⟩_δ = dim_{ℂ(δ)} span{P̄_i}`.  Both `(8)` and `(9)` now hold for the
+same explicit source, with no hypotheses beyond the periodic-pencil separation data.
+
+### Lean progress — one source for the whole orbit, `(8)` and `(9)` together, and `htDim`
+
+The matroid law of the previous section fixes the source after the operator family.  Four further
+modules remove that order, so a single source realizes the complex completely.
+
+`HTGeometry/PencilFullOrbit.lean` (umbrella-wired, axiom-clean).
+`jointlyDirHypertranscendental_comp_injective` restricts a joint relation to an injectively indexed
+subfamily (rename the jet variables along the injection), and
+`jointlyDirHypertranscendental_of_isEmpty` handles the void complex (a nonzero polynomial in the
+coordinates alone cannot vanish identically, by `MvPolynomial.funext`).  The **full orbit index**
+`pencilOrbitIndex facets` is a facet together with an integral exponent supported on that facet — a
+countable type — and the finite coordinate packet of any Stanley--Reisner Laurent family injects into
+it (`rowIndexToOrbit`, `rowIndexToOrbit_injective`, using the support lemma).  Running the orbit
+lemma on that index gives
+
+> **`exists_pencilSource_orbit_jointlyDirHypertranscendental`.**  There are entire facet sources,
+> periodic under every step outside their facet, whose *whole* translation orbit satisfies no
+> algebraic differential relation over `ℂ(z₁,…,z_d)`.
+
+`HTGeometry/PencilRealizationLaw.lean` (umbrella-wired, axiom-clean) draws both halves of the
+realization from that single source.  `mem_stanleyReisnerIdeal_iff_facetRestrict` reads the ideal
+through facet restrictions, `mul_mapC_notMem_stanleyReisnerIdeal` is the torsion-freeness of the
+quotient over `ℂ[δ]`, and `not_differentialIndependent_of_eq_zero` says a family containing `0` is
+never differentially independent.  Then:
+
+> **`pencilOrbit_matroid_eq`** — for *every* finite family of operators `∑_{r<n} δ^r Q_r`, every
+> denominator and every index type, the differential matroid of the outputs is the Stanley--Reisner
+> quotient-class matroid.  This is `(9)`, now with the source fixed once and for all.
+>
+> **`pencilOrbit_seedCarrier_eq_zero_iff`** — and the annihilator of the source among difference
+> operators is exactly the Stanley--Reisner ideal.  This is `(8)`: the inclusion `I_Δ ⊆ Ann` is
+> `(20)` plus `facetRestrict P = 0`, and the converse is `(9)` applied to the one-element family
+> `P`, whose output is the zero function, so its Stanley--Reisner class is a torsion element and
+> hence `P ∈ I_Δ`.
+
+`HTGeometry/PencilHTDimension.lean` (umbrella-wired, axiom-clean) formalizes the card's analytic
+dimension.  `HTRealizableDim facets d` says: there are `ℚ`-independent translation steps on `ℂ^d`, a
+constant direction, and an entire scalar source whose annihilator is exactly `I_Δ` and for which the
+differential matroid of every finite family of operator outputs is the Stanley--Reisner
+quotient-class matroid — i.e. `(8)` **and** `(9)`.  `htDim facets = sInf {d | HTRealizableDim facets d}`.
+
+> **`htRealizableDim_of_pencil`** — a periodic-pencil separation in dimension `d`, with a direction
+> off every facet kernel and `ℚ`-independent steps, realizes the complex in dimension `d`;
+> **`htDim_le_of_pencil`** — hence `htDim(Δ) ≤ d`, the card's `htDim ≤ ppDim` in the
+> `(8)`-and-`(9)` sense.

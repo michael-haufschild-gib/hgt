@@ -603,6 +603,48 @@ polar--Gamma/functional-equation completion must enter as an additional boundary
 channel before Hermitian Gram comparison, create the slower completed modes, and remain globally
 trace-neutral. Identifying that defect channel source-theoretically is open.
 
+P-G188 constructs the semigroup defect instead of leaving it abstract. After `u=L+c`, transported
+energy has multiplier `((u-c)/u)^2` on `u>c`. The complementary positive energy splits into
+
+```text
+B_c f = 1_(0,c] f,
+D_c f = 1_(c,infinity) sqrt(1-((u-c)/u)^2) f,
+||T_c f||_2^2 + ||B_c f||_2^2 + ||D_c f||_2^2 = ||f||_2^2.        (E9g)
+```
+
+For primitive cell `(p,e)`, the joint defect mass is exactly
+
+```text
+(1-exp(-2c lambda_(p,e))) routePPrimitiveBaseCauchyCubicWeight(p,e). (E9h)
+```
+
+It is nonnegative and summable for every `c>=0`, and total defect plus transported mass equals the
+fixed P-G181 budget. This closes the generic dilation-defect construction. The remaining producer
+problem is coefficient-faithful: identify polar--Gamma completion with this source-side
+colligation, or prove the additional channel it requires. Because primitive features vanish
+linearly at `L=0`, the hard-edge interval carries no leading first-order loss; the distributed
+tail cocycle is the candidate infinitesimal completion current.
+
+P-G189 proves that candidate's complete first-jet law. For every primitive cell,
+
+```text
+E(B_c F_(p,e,kappa))/c -> 0,
+E(D_c F_(p,e,kappa))/c -> J(p,e)=2 lambda_(p,e) w_(p,e)>0,          (E9i)
+J(p,e)=1/[2 p log p] p^(-e)(e+1)^(-2).                             (E9j)
+```
+
+The full family `J` is summable, `M_c(p,e)/c<=J(p,e)`, and dominated convergence proves
+
+```text
+[sum_(p,e) M_c(p,e)]/c -> sum_(p,e) J(p,e).                        (E9k)
+```
+
+Thus first-order loss is wholly distributed tail flux and remains globally trace finite. Any
+Hilbert vector whose squared norm equals this tail energy is necessarily nondifferentiable at the
+wall: finite derivative would force zero norm-square derivative, contradicting `(E9i)`. This
+closes smooth block-unitary dilation as a producer and replaces it with a sharply typed target:
+coefficient-faithful polar--Gamma sewing into a pre-scalar square-root/Wold channel.
+
 ### Sharpened live conjecture `[W-H181 -- RAW MODULAR CONORMAL TRACE]`
 
 Construct, before divisor expansion, a two-sided pole--Gamma--von-Mangoldt conormal relation whose
@@ -659,6 +701,14 @@ P-G182's normalized receiver, and P-G183's multiplicity split are no longer sepa
   its primitive energy time with joint damping by `s=2c`, and proved the zero-time wall is sharp on
   an explicit finite-energy datum. Replaced backward Hilbert-space evolution by the requirement
   for a completed boundary/dilation defect channel.
+- 2026-08-15 -- P-G188 constructed that semigroup's exact positive defect colligation: deleted
+  boundary interval plus distributed tail cocycle. Proved atomwise missing-energy formula and
+  global conservation of the fixed primitive `<2` budget. Replaced an abstract dilation request by
+  the coefficient-faithful task of matching polar--Gamma completion to explicit source channels.
+- 2026-08-15 -- P-G189 falsified hard-edge-first completion: primitive boundary-interval energy is
+  first-order flat. Proved the entire opening flux lies in the tail cocycle, computed its exact
+  summable Euler density, passed the derivative through the full primitive sum, and proved the tail
+  vector must have square-root/nondifferentiable wall regularity.
 
 ## Cross-corpus CCM--Route-P source identification `[PROVED IN LEAN]`
 
@@ -1330,15 +1380,23 @@ Gram feature can only increase the residual.
    `RoutePPrimitiveBurnolApertureDampingSemigroup.lean` identifies joint damping `s=2c` with
    contractive Burnol aperture time, proves shifted primitive energy equals the P-G185 weight, and
    proves every negative time fails on an explicit finite-energy boundary datum.
-6. **CCM--Route-P source seam:**
+6. **Aperture defect colligation (`P-G188`):**
+   `RoutePPrimitiveBurnolApertureDefectColligation.lean` constructs explicit boundary and tail
+   defect channels, proves exact energy conservation, and conserves the full primitive source
+   budget atomwise and globally.
+7. **Aperture tail first flux (`P-G189`):**
+   `RoutePPrimitiveBurnolApertureDefectFirstFlux.lean` proves hard-edge first-order flatness,
+   exact tail-flux concentration, global flux summability/interchange, and unavoidable
+   square-root Hilbert regularity.
+8. **CCM--Route-P source seam:**
    `FrankensteinCCMRoutePBaseCubicGreenSourceBridge.lean` identifies the same source mass inside the
    literal CCM prime functional and isolates polar--Gamma surplus as the completion fracture.
-7. **Matrix-complete receiver and scalar no-go:**
+9. **Matrix-complete receiver and scalar no-go:**
    `FrankensteinMatrixCompleteBoundaryRestriction.lean` gives a positive two-column Gram with trace
    `2` and coherent sum `0`, proves Loewner trace monotonicity for the order
    `A <=_L B :<=> (B-A).PosSemidef`, and proves that the finite direct restriction law is equivalent
    to RH.  This closes the receiver, not the producer.
-8. **Mixed primitive/Xi Schur gap:**
+10. **Mixed primitive/Xi Schur gap:**
    `FrankensteinPrimitiveXiMixedBurnolSchurGap.lean` computes the coefficient-faithful mixed
    Burnol overlap and proves every Euler/Xi two-node Gram determinant is strictly positive.
    Ordinary positive-Gram projection therefore leaves target residual rather than shorting it.
@@ -1387,6 +1445,8 @@ Because operator trace is strictly monotone under Loewner order (`A <= B ==> Tr(
 | **Sharp Damping Wall `s >= 0` (P-G185)** | **LEAN PROVED** | `RoutePPrimitiveBaseJointDampingWall.lean` |
 | **Primitive Burnol Window Gram Square (P-G186)** | **LEAN PROVED** | `RoutePPrimitiveBurnolWindowGramSquare.lean` |
 | **Burnol Aperture Damping Semigroup and Sharp Backward Wall (P-G187)** | **LEAN PROVED** | `RoutePPrimitiveBurnolApertureDampingSemigroup.lean` |
+| **Burnol Aperture Defect Colligation and Budget Conservation (P-G188)** | **LEAN PROVED** | `RoutePPrimitiveBurnolApertureDefectColligation.lean` |
+| **Burnol Tail First Flux and Square-Root Wall (P-G189)** | **LEAN PROVED** | `RoutePPrimitiveBurnolApertureDefectFirstFlux.lean` |
 | **Single Zero Quantum $Q_{\text{raw}} \ge 2$** | **LEAN PROVED** | `XiWardCubicRawConormalModularDoublet.lean` |
 | **Multiplicity $1/m$ Fiber Split** | **LEAN PROVED** | `RoutePCompletedXiConormalMultiplicitySplit.lean` |
 | **CCM--Route-P cubic Green source identity** | **LEAN PROVED** | `FrankensteinCCMRoutePBaseCubicGreenSourceBridge.lean` |
@@ -1588,3 +1648,432 @@ Ledger delta:
 | Both reflected orientations on same CCM carrier | **LEAN PROVED** | same |
 | Reflected radial cross-pairing equals nonintegrable `r^2` | **LEAN PROVED; POST-RESIDUE KREIN GRAM RETIRED** | same |
 | Pre-radial signed polar--Gamma shorting law | **OPEN PRODUCER** | must precede ordinary radial completion |
+
+## Attack 29: Quadratic completed pair current `[LEAN PROVED; CONTRACTION OPEN]`
+
+The target is a Gram matrix, so scalar completed-source identities discard exactly the data the
+capacity argument needs.  Form the quadratic completed conormal current before taking any
+divisor residue.  Write
+
+```text
+F_z(r)=r exp[-(z-1/2)r],
+F_z^vee(r)=-F_(1-conj z)(-r)=conj(F_z(r)),
+C(z,r)=(xi'/xi)(z)F_z(r),
+C^vee(z,r)=(xi'/xi)(z)F_z^vee(r).                                  (E87)
+```
+
+For independent spectral variables define
+
+```text
+Q(z,w;r)=C^vee(z,r) C(w,r).                                         (E88)
+```
+
+This definition precedes restriction to the Xi divisor.  Successive logarithmic residues at
+`rho,tau` give, for arbitrary analytic multiplicities `m_rho,m_tau`,
+
+```text
+Res_z=rho Res_w=tau Q(z,w;r)
+ =m_rho m_tau F_rho^vee(r) F_tau(r).                                (E89)
+```
+
+If both points lie strictly right of the critical line, aperture integration is exact:
+
+```text
+integral_(0,infinity) F_rho^vee(r)F_tau(r)dr
+ =2/[((rho-1/2)^*+(tau-1/2))^3].                                   (E90)
+```
+
+Thus every finite raw pair-residue matrix is the diagonal multiplicity congruence of the existing
+base Cauchy-cube zero Gram.  It is PSD, its diagonal is
+
+```text
+m_rho^2/[4(Re rho-1/2)^3],                                          (E91)
+```
+
+and every strict-right copy costs at least two base units.  No inverse-square-root multiplicity
+normalization is required for first-zero exclusion.
+
+Lean promotion is `XiWardCubicCompletedPairResidueIncidence.lean`.  It proves the two residue
+limits, `(E90)`, exact matrix entry/integral identification, PSD, the trace formula, and the
+`2*N` lower bound.  Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+This closes matrix-complete pre-divisor incidence for the completed Xi current.  It does not yet
+identify `(E88)` with the literal signed primitive-depth CCM source or bound its completed trace.
+
+## Attack 30: Opposite-radial signed CCM/Krein source `[LEAN PROVED; GLOBAL SHORTING OPEN]`
+
+Attack 28's nonintegrable `r^2` wall came from taking both reflected residues on the positive
+radial leg and only then Hermitianizing.  That order is not forced by the signed source.  Let
+`S(u,r)` be the literal pole-filled primitive-depth CCM/Krein conormal column from `(E83)`, so
+
+```text
+Res_(u=p_rho) S(u,r)=i m_rho F_rho(r).                               (E92)
+```
+
+Form the source quadratic current at opposite radial orientations:
+
+```text
+Q_K(u,v;r)=S(u,-r) S(v,r).                                          (E93)
+```
+
+Take the first residue at the line-reflected support
+`rho^vee=1-conj rho` and the second at `tau`.  Reflection preserves analytic multiplicity, and
+
+```text
+F_(rho^vee)(-r)=-F_rho^vee(r).                                      (E94)
+```
+
+The orientation sign in `(E94)` cancels the two signed residues because `i^2=-1`.  Therefore
+
+```text
+Res_(u=p_(rho^vee)) Res_(v=p_tau) Q_K(u,v;r)
+ =m_rho m_tau F_rho^vee(r)F_tau(r).                                 (E95)
+```
+
+After integration, `(E95)` is exactly every entry of Attack 29's PSD raw residue matrix.  This is
+not a relabeling of the post-residue Gram: `Q_K` is defined for arbitrary CCM spectral variables
+from the same literal signed source family before either residue.  It resolves the reflected
+radial wall by showing that analytic reflection and radial orientation reversal must precede
+positive Hilbert polarization.
+
+Lean promotion is `XiWardCubicKreinOppositeRadialPairIncidence.lean`.  It proves multiplicity
+reflection, `(E94)`, both residue limits, `(E95)`, the aperture integral, and exact equality with
+each W-H186 matrix entry.  Direct checks and the targeted leaf olean build pass; axiom audit again
+reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+### New surviving producer
+
+The missing theorem is now narrower than the pre-radial incidence requested after Attack 28.
+Incidence, orientation, multiplicity, matrix completeness, positivity after landing, and cubic
+self-charge are all source-realized.  What remains is an unconditional **global polar--Gamma
+shorting/trace law for the opposite-radial quadratic current `(E93)`** on an Euler-convergent
+boundary, followed by boundary continuation to its iterated residues.  The law must retain the
+signed pre-Hilbert pairing until shorting; W-H185 forbids replacing it by a bounded map out of the
+bare positive primitive synthesis.
+
+Ledger delta:
+
+| Component | Status | Rigorous Location |
+| :--- | :--- | :--- |
+| Quadratic completed current before divisor evaluation | **LEAN PROVED** | `XiWardCubicCompletedPairResidueIncidence.lean` |
+| Iterated residues recover all raw zero-pair Gram entries | **LEAN PROVED** | same |
+| Raw finite residue matrices PSD with trace at least `2*N` | **LEAN PROVED** | same |
+| Literal signed CCM/Krein realization at opposite radial orientations | **LEAN PROVED** | `XiWardCubicKreinOppositeRadialPairIncidence.lean` |
+| Attack-28 `r^2` wall removed before polarization | **LEAN PROVED** | same |
+| Global polar--Gamma shorting and trace bound for `(E93)` | **OPEN PRODUCER** | next analytic core |
+
+## Attack 29: Entire W-H186 quadratic matrix lifted before divisor residues `[LEAN PROVED]`
+
+Attack 28 still attached one Route-P column to the signed source and formed a finite Gram only after
+normalizing individual divisor residues.  The stronger handoff keeps both variables meromorphic.
+Write
+
+```text
+F(u,r)=-i S(u) r exp[-((u+1)-1/2)r],
+R(u,r)=-i S(u) r exp[-((1-(u+1))-1/2)r],
+Q(u,v;r)=R(u,r)F(v,r).                                             (E87)
+```
+
+Here `S` is the literal completed primitive-depth/CCM trace from `(E81)`.  Both columns have
+positive multiplicity residues, and the iterated residue of the source-only two-variable current is
+
+```text
+Res_(u=rho-1) Res_(v=tau-1) Q(u,v;r)
+ =m_rho m_tau M_rho(r) C_tau(r),                                   (E88)
+```
+
+where `M_rho` is W-H186's reflected conormal mate and `C_tau` is the Route-P base conormal feature.
+After radial integration, the finite matrix of `(E88)` is entrywise exactly
+`xiWardCubicRawCompletedPairResidueMatrix`.  Thus W-H186's last zero-fed logarithmic-derivative
+column has been removed: its complete raw multiplicity matrix is an iterated residue of one literal
+source current before either divisor is listed.
+
+Formalization:
+
+- `FrankensteinKreinCCMRoutePQuadraticSourceBridge.lean` proves both one-variable residue laws,
+  the two-variable right and iterated residue laws, and exact finite matrix equality.
+- All declarations are unconditional and axiom-audit to Lean's standard quotient/classical axioms.
+
+This closes quadratic carrier provenance, not `(E10)`.  Residue extraction can increase local
+energy, and ordinary radial Hermitianization still encounters the nonintegrable balanced channel
+`r^2`.  Remaining theorem must control or short `Q` before radial integration and before taking
+both residues.
+
+## Attack 30: P-G188 tail-cocycle flux is the literal CCM quadratic Green current `[LEAN PROVED; MATRIX SHORTING OPEN]`
+
+The updated frontier map proposed P-G188's distributed defect as the possible source form of
+polar--Gamma completion.  Its first variation can be identified exactly.  For primitive cell
+`pe`, let `lambda_pe=log(p^(e+1))`, `w_pe` be the P-G184 cubic base weight, and
+
+```text
+Phi_pe=2 lambda_pe w_pe.                                            (E89)
+```
+
+Differentiating P-G188's exact missing mass at the balanced wall gives
+
+```text
+d/dc [(1-exp(-2c lambda_pe))w_pe]_(c=0)=Phi_pe.                     (E90)
+```
+
+This flux is entirely distributed.  For every primitive Burnol feature,
+
+```text
+d/dc ||B_c f_pe||^2_(0+)=0,
+d/dc ||D_c f_pe||^2_(0+)=Phi_pe.                                   (E91)
+```
+
+Thus a boundary-interval Gamma model is rigorously too small at first order; the tail cocycle is
+the unique nonzero first-order channel in P-G188's explicit split.
+
+The flux also has a literal CCM identity.  Define the quadratic Green profile
+
+```text
+G_2(h)=exp(-h/2)/(2 max(h,log 2)^2).                                (E92)
+```
+
+At every arithmetic atom `n>=2`,
+
+```text
+criticalMellinAtomWeight(n) G_2(log n)
+ =2 log(n) routePPrimeGammaBaseCubicWeight(n).                      (E93)
+```
+
+Under `n=p^(e+1)`, the right side is exactly `Phi_pe`; prime label and valuation depth are
+unchanged.  Every finite CCM prime functional on the transported horizon test is therefore the
+negative truncated P-G188 flux, and the completed polar--prime functional has the exact fracture
+
+```text
+polar quadratic-Green flux - truncated P-G188 tail flux.           (E94)
+```
+
+Formalization is `FrankensteinCCMRoutePApertureTailFluxBridge.lean`; targeted direct Lean and leaf
+builds pass, and key declarations use only `propext`, `Classical.choice`, and `Quot.sound`.
+
+### Surviving producer after Attack 30
+
+P-G188's candidate completion current is no longer unidentified: its infinitesimal distributed
+channel is coefficient-faithfully the CCM quadratic Green current.  What remains is genuinely
+matrix-valued.  Prove a signed polar--Gamma tangent colligation whose two-variable coefficient is
+the pre-residue current `(E87)`, whose causal prime compression is `(E93)`, and whose balanced
+reflection channel is shorted before ordinary radial `L2`.  The required trace inequality must
+then be proved on that source tangent colligation; scalar control of `(E94)` alone cannot bound
+W-H186's matrix residues.
+
+Ledger delta:
+
+| Component | Status | Rigorous location |
+| :--- | :--- | :--- |
+| Full two-variable source current -> W-H186 raw matrix | **LEAN PROVED** | `FrankensteinKreinCCMRoutePQuadraticSourceBridge.lean` |
+| P-G188 total defect first variation | **LEAN PROVED** | `FrankensteinCCMRoutePApertureTailFluxBridge.lean` |
+| Deleted edge has zero first variation | **LEAN PROVED** | same |
+| Distributed tail carries full first-order flux | **LEAN PROVED** | same |
+| Tail flux = literal CCM quadratic Green current, atomwise and at finite aperture | **LEAN PROVED** | same |
+| Signed matrix polar--Gamma tangent shorting before residues | **OPEN PRODUCER** | must bind `(E87)` to `(E94)` before radial scalarization |
+
+### Attack 31 — P-G188/CCM positive tail flux cannot short physical Gamma coorientation (formalized)
+
+The updated Route-P aperture defect has now been tested against Route-R's actual cooriented
+Gamma exterior, using the coefficient-faithful identification from Attack 30.  On promoted cells
+(i,j), the natural Schur weight
+[
+  w_{ij}=\Phi_i\Phi_j,
+  \qquad \Phi_i=2\lambda_i e^{-\lambda_i/2}>0,
+]
+is symmetric and strictly positive.  Before coorientation is retained, reflection oddness gives
+exact swap cancellation.  After physical horizontal coorientation is restored, the orientation
+sign reverses together with the exterior sign.  For distinct cells and (a\ne0), the paired charge
+factors as
+[
+  a^2\bigl(w_{ij}G_{ij}(a)+w_{ji}G_{ji}(a)\bigr)>0,
+]
+where both Gamma gauges are positive.  Thus the literal P-G188 infinitesimal tail current cannot
+kill horizontal charge through positive reflection pairing.
+
+Lean status: unconditional in
+`GaloisForLFunctions/RHTower/FrankensteinTailFluxGammaCoorientedShortingNoGo.lean`, with exact
+uncooriented annihilation and strict cooriented no-shorting theorems.  Direct Lean and exact leaf
+build pass; axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+**No-go survivor.** Reflection parity is not the missing sign.  Any successful pre-scalar source
+shorting must carry genuinely sign-changing cross-incidence data whose sign survives physical
+coorientation; a positive symmetric prime-depth kernel, even the exact Route-P/CCM flux kernel,
+is impossible.  Next conjecture should test existing coefficient-faithful signed cross-pair laws
+(Big-Witt/Calderón, cyclic modular, or Ward residue incidence) against this exact cooriented carrier.
+
+### Attack 32 — P-G189 flux is the sharp double-Green Gamma-sewn current (formalized)
+
+Attack 30 identified the scalar CCM quadratic Green profile, but did not show whether its Green
+order was canonical or minimal. P-G190 uses the existing Deninger Kummer generator. On primitive
+axis `(p,e)`, its frequency is `(e+1)log p`, while the critical Gamma-sewn Stokes coefficient is
+`log p * p^(-(e+1))`. One Green inverse therefore has prime slice `1/p` and diverges. Half the
+second Green inverse is exactly P-G189's aperture tail flux and is summable.
+
+The identification is operator-level:
+
+```text
+<tailFlux,a> = EulerDualCurrent_(s=1) ((1/2) deningerGreen^2 a).
+```
+
+It also improves the current to an order-zero functional, bounded by total tail flux times the
+zeroth Kummer height seminorm. Thus two Green steps are the sharp scalar trace threshold, not a
+fitted smoothing exponent.
+
+Formalization is
+`RoutePPrimitiveGammaSewnCriticalGreenThreshold.lean`; scratch, exact leaf build, axiom audit, and
+forbidden-declaration scan pass. Umbrella import is wired without umbrella build.
+
+**Survivor.** Scalar producer and its minimal source regularization are closed. Attack 31 still
+rules out positive symmetric cooriented shorting. Next construction must apply a genuinely signed
+cross-incidence operator to this order-zero double-Green current before the two-variable residue
+matrix is polarized.
+
+### Attack 33 — physical Gamma shorting forces the antidiagonal (formalized)
+
+The obvious Big-Witt reciprocal-horizon candidate fails Attack 31 because its pair coefficients
+are positive and symmetric. Retaining the two ordered Calderón--Witt channels gives the correct
+pivot, but P-G191 proves a classification rather than only one example.
+
+Physical coorientation makes the reflection-odd Gamma exterior symmetric under cell exchange.
+Hence its resolved two-channel reporter is exactly one Gamma pair exterior times codiagonal. For
+nonzero displacement and distinct cells that exterior is nonzero, giving
+
+```text
+ker(physical Gamma reporter)
+  = ker(codiagonal)
+  = range(antidiagonal).
+```
+
+Thus every possible two-channel shorting coefficient is forced to have form `(x,-x)`. The
+P-G190 flux supplies canonical amplitude `x=sqrt(Q_i Q_j)`. Its resolved current is nonzero,
+shorts exactly, retains energy `2 Q_i Q_j`, and the all-pair energy is summable. The same current
+produces nonzero doubled reflection-odd signal before coorientation, so cancellation has not
+erased source orientation.
+
+Formalization is
+`RoutePPrimitiveGammaResolvedAntidiagonalShorting.lean`; scratch, exact leaf build, axiom audit,
+and forbidden-declaration scan pass. Umbrella import is wired without umbrella build.
+
+**Survivor.** Sign and minimal two-channel architecture are closed. P-G192 subsequently proves
+that quotienting through this antidiagonal cannot control the complete Gram trace. The channel
+must be retained as defect energy inside a matrix-complete colligation.
+
+### Attack 34 — antidiagonal shorting is trace-blind (formalized no-go)
+
+The proposed coefficientwise lift of `(E87)` into P-G191's forced antidiagonal fails the actual
+W-H184 endpoint. For physical pair exterior `E`, Lean proves
+
+```text
+2 E^2 (x^2+y^2)
+  = physicalReporter_E(x,y)^2 + E^2(x-y)^2.
+```
+
+The P-G190 amplitude `A_ij=sqrt(Q_iQ_j)` gives a literal source packet `(A_ij,-A_ij)` with zero
+physical report but strictly positive Gram trace `2Q_iQ_j`. These traces are globally summable,
+yet no post-reporter observer is conservative on their span, no reporter-square coercive bound
+exists, and the packet Gram is not Loewner-dominated by zero.
+
+Formalization is `RoutePPrimitiveGammaAntidiagonalTraceBlindness.lean`; scratch, exact leaf build,
+axiom audit, and forbidden-declaration scan pass. Umbrella import is wired without umbrella build.
+
+**No-go survivor.** Antidiagonal is a genuine hidden Wold energy channel, not an annihilator of
+matrix energy. W-H184 must be built as a lossless/contractive pole--Gamma colligation retaining
+both codiagonal and antidiagonal outputs within P-G184's `<2` budget, followed by coefficient-faithful
+boundary restriction to the raw completed-Xi conormal matrix. Coherent shorting after codiagonal is
+retired.
+
+### Attack 35 — finite-aperture hidden Wold energy fits the source budget (formalized)
+
+Directly comparing P-G190's infinitesimal flux trace with P-G184's finite budget is the wrong
+order problem and would require an avoidable global numerical prime estimate. P-G193 instead uses
+P-G188's finite-aperture defect mass `m_c` and the forced P-G191 packet
+
+```text
+(sqrt(m_c(i)m_c(j)), -sqrt(m_c(i)m_c(j))).
+```
+
+Lean proves its complete ordered-pair energy is exactly
+
+```text
+2 * (sum_i m_c(i))^2.
+```
+
+P-G189's right first-flux theorem implies `sum_i m_c(i)->0`, so hidden energy vanishes quadratically
+and lies strictly inside the fixed positive P-G184 budget for some positive aperture. Formalization
+is `RoutePPrimitiveGammaFiniteApertureHiddenBudget.lean`; scratch, exact leaf build, axiom audit,
+and forbidden-declaration scan pass. Umbrella import is wired without umbrella build.
+
+**Survivor.** Finite-aperture hidden-channel budget feasibility is closed. Still missing is an exact
+common conservation identity with the visible transported packet and a coefficient-faithful map to
+the raw completed-Xi conormal Gram. Budget smallness alone is not W-H184.
+
+### Attack 36 — P-G188 polarizes to a matrix-complete colligation (formalized)
+
+P-G193's rank-one pair envelope proves budget feasibility but is not P-G188's literal defect
+space. The stronger pivot retains the actual three half-line channels. For arbitrary continuous
+finite-energy complex data, P-G194 proves
+
+```text
+<T_c f,T_c g> + <B_c f,B_c g> + <D_c f,D_c g> = <f,g>.
+```
+
+Lifting these functions into half-line L2 and applying the identity to every pair of primitive
+features gives the exact finite-matrix law
+
+```text
+P-G186 source Gram = transported Gram + hard-boundary Gram + tail-cocycle Gram.
+```
+
+All three output matrices are literal positive Grams. Thus the transported complete Gram is
+Loewner-dominated by the source Gram with explicit positive defect remainder. Formalization is
+`RoutePPrimitiveBurnolMatrixCompleteColligation.lean`; scratch, exact leaf build, axiom audit, and
+forbidden-declaration scan pass. Umbrella import is wired without umbrella build.
+
+**Survivor.** Matrix-complete source conservation is closed. Remaining hard problem is no longer a
+colligation construction: prove coefficient-faithful completed-Xi residue restriction into one
+contractive output of this colligation, then instantiate W-H184.
+
+### Attack 37 — fixed P-G194 channel mixing cannot land on Xi (formalized no-go)
+
+The first boundary-restriction conjecture was that a fixed fibre functional on P-G194's three
+literal outputs might already produce a completed-Xi conormal. P-G195 proves this impossible. Past
+the aperture boundary, each raw channel is pointwise bounded by its primitive source feature, so
+every constant mixer decays at primitive rate `lambda_pe >= log 2`. A strict-right Xi conormal has
+centered rate `a<1/2`; equality would bound the exponential-tail ratio
+
+```text
+exp(-2aL) / exp(-2lambda_pe L),
+```
+
+which tends to infinity. Formalization is
+`RoutePPrimitiveBurnolConstantChannelLandingNoGo.lean`; scratch, exact leaf build, axiom audit, and
+forbidden-declaration scan pass. Umbrella import is wired without umbrella build.
+
+**No-go survivor.** P-G194's matrix conservation remains exact, but divisor landing must be
+rate-changing and therefore cannot be a source-local constant channel projection. Construct the
+polar--Gamma analytic boundary continuation or radius-nonlocal operator first, then prove it is a
+contractive output of the conserved source space. Arbitrary nonlocal contractions are not excluded.
+
+### Attack 38 — aperture intertwining cannot change the conormal rate (formalized no-go)
+
+P-G195 left arbitrary radius-nonlocal maps open. P-G196 tests the natural equivariant class. The
+P-G187 weighted shift diagonalizes both source and target columns, but their eigencharacters have
+strictly different real rates. A linear operator commuting with even one positive aperture step
+therefore cannot map any primitive P-G186 column to a strict-right Xi conormal. This uses no
+boundedness or locality hypothesis.
+
+More importantly, every landing has the exact forced anomaly
+
+```text
+A S_c phi - S_c A phi
+  = (mu_source-mu_target) psi_q != 0.
+```
+
+Formalization is `RoutePPrimitiveBurnolApertureIntertwinerRigidity.lean`; scratch, exact leaf
+build, axiom audit, and forbidden-declaration scan pass. Umbrella import is wired without umbrella
+build.
+
+**No-go survivor.** W-H184's producer must be an anomalous/noncommuting polar--Gamma transport.
+The existing Hedenmalm rank-one translation anomaly and dilation abscissa-shift law now become
+structurally relevant: construct a source-only anomaly channel matching the displayed spectral gap,
+then retain it in P-G194's augmented conservation. The current Möbius--Gamma Hardy derivative is
+target-fed through `XiRightZeroCopy` and cannot itself discharge source purity.

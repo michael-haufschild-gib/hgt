@@ -5,24 +5,29 @@ namespace RHTower.Sieve
 
 noncomputable section
 
-/-- Fixed Route T zero-density ordinate. -/
-noncomputable def inghamFixedGabrielSigma : ℝ := 7 / 10
+/-- Fixed Route T left contour, placed a rational distance below the `7/10` counting threshold. -/
+noncomputable def inghamFixedGabrielSigma : ℝ := 699 / 1000
+
+/-- Exact positive layer-cake gap between the counting threshold and selected Gabriel contour. -/
+theorem seven_tenths_sub_inghamFixedGabrielSigma :
+    (7 / 10 : ℝ) - inghamFixedGabrielSigma = 1 / 1000 := by
+  norm_num [inghamFixedGabrielSigma]
 
 theorem inghamFixedGabrielLeftWeight_eq :
     inghamGabrielLeftWeight inghamFixedGabrielSigma inghamPowerSavingRightEdge =
-      55 / 91 := by
+      2759 / 4550 := by
   norm_num [inghamGabrielLeftWeight, inghamFixedGabrielSigma,
     inghamPowerSavingRightEdge]
 
 theorem inghamFixedGabrielRightWeight_eq :
     inghamGabrielRightWeight inghamFixedGabrielSigma inghamPowerSavingRightEdge =
-      36 / 91 := by
+      1791 / 4550 := by
   norm_num [inghamGabrielRightWeight, inghamFixedGabrielSigma,
     inghamPowerSavingRightEdge]
 
 theorem inghamFixedGabrielMomentParameter_eq :
     inghamGabrielMomentParameter inghamFixedGabrielSigma inghamPowerSavingRightEdge =
-      237 / 364 := by
+      11859 / 18200 := by
   rw [inghamGabrielMomentParameter_eq]
   norm_num [inghamFixedGabrielSigma, inghamPowerSavingRightEdge]
 
@@ -32,7 +37,7 @@ noncomputable def inghamFixedGabrielInteriorPower : ℝ :=
     inghamPowerSavingRightEdge)⁻¹
 
 theorem inghamFixedGabrielInteriorPower_eq :
-    inghamFixedGabrielInteriorPower = 364 / 237 := by
+    inghamFixedGabrielInteriorPower = 18200 / 11859 := by
   rw [inghamFixedGabrielInteriorPower, inghamFixedGabrielMomentParameter_eq]
   norm_num
 
@@ -59,13 +64,13 @@ noncomputable def inghamFixedGabrielRightShare : ℝ :=
     inghamGabrielMomentParameter inghamFixedGabrielSigma inghamPowerSavingRightEdge
 
 theorem inghamFixedGabrielCriticalShare_eq :
-    inghamFixedGabrielCriticalShare = 55 / 79 := by
+    inghamFixedGabrielCriticalShare = 2759 / 3953 := by
   rw [inghamFixedGabrielCriticalShare, inghamFixedGabrielLeftWeight_eq,
     inghamFixedGabrielMomentParameter_eq]
   norm_num
 
 theorem inghamFixedGabrielRightShare_eq :
-    inghamFixedGabrielRightShare = 24 / 79 := by
+    inghamFixedGabrielRightShare = 1194 / 3953 := by
   rw [inghamFixedGabrielRightShare, inghamFixedGabrielRightWeight_eq,
     inghamFixedGabrielMomentParameter_eq]
   norm_num
@@ -82,14 +87,14 @@ noncomputable def inghamFixedGabrielRouteTExponent : ℝ :=
     (-(1 / 180 : ℝ)) * inghamFixedGabrielRightShare
 
 theorem inghamFixedGabrielRouteTExponent_eq :
-    inghamFixedGabrielRouteTExponent = 8263 / 11850 := by
+    inghamFixedGabrielRouteTExponent = 1036276 / 1482375 := by
   rw [inghamFixedGabrielRouteTExponent,
     inghamFixedGabrielCriticalShare_eq, inghamFixedGabrielRightShare_eq]
   norm_num
 
 /-- Exact surviving margin below Route T's target after both formal endpoint losses. -/
 theorem seven_tenths_sub_inghamFixedGabrielRouteTExponent :
-    (7 / 10 : ℝ) - inghamFixedGabrielRouteTExponent = 16 / 5925 := by
+    (7 / 10 : ℝ) - inghamFixedGabrielRouteTExponent = 2773 / 2964750 := by
   rw [inghamFixedGabrielRouteTExponent_eq]
   norm_num
 

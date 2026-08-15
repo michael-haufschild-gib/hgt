@@ -9,7 +9,7 @@ noncomputable section
 /-- Truncated center moment appearing in fixed Gabriel interpolation. -/
 def inghamFixedGabrielCenterMoment (f : ℂ → ℂ) (T : ℝ) : ℝ :=
   ∫ t in Icc (-T) T, ‖f ((inghamFixedGabrielSigma : ℂ) + t * I)‖ ^
-    (364 / 237 : ℝ)
+    (18200 / 11859 : ℝ)
 
 /-- Actual scalar analytic family obtained by pairing the shifted field with its fixed center dual
 datum. -/
@@ -34,13 +34,13 @@ theorem inghamFixedGabrielScalarFamily_center (f : ℂ → ℂ) (T : ℝ) :
           (inghamFixedGabrielSigma : ℂ)) =
         ∫ t in Icc (-T) T,
           (↑(‖f ((inghamFixedGabrielSigma : ℂ) + t * I)‖ ^
-            (364 / 237 : ℝ)) : ℂ) := by
+            (18200 / 11859 : ℝ)) : ℂ) := by
       apply integral_congr_ae
       filter_upwards [] with t
       rw [inghamFixedGabrielDualPower_center, mul_inghamFixedGabrielDualSeed]
     _ = (↑(∫ t in Icc (-T) T,
         ‖f ((inghamFixedGabrielSigma : ℂ) + t * I)‖ ^
-          (364 / 237 : ℝ)) : ℂ) := integral_ofReal
+          (18200 / 11859 : ℝ)) : ℂ) := integral_ofReal
 
 /-- The truncated center moment is nonnegative when the interval has its natural orientation. -/
 theorem inghamFixedGabrielCenterMoment_nonneg (f : ℂ → ℂ) (T : ℝ) :
@@ -64,8 +64,12 @@ private theorem memLp_restrict_Icc_of_continuous
   filter_upwards [ae_restrict_mem measurableSet_Icc] with x hx
   exact hK (mem_image_of_mem (fun u => ‖g u‖) hx)
 
-theorem norm_inghamFixedGabrielScalarFamily_left_le
-    {f : ℂ → ℂ} (hf : Continuous f) (T : ℝ) {z : ℂ} (hz : z.re = 1 / 2) :
+theorem norm_inghamFixedGabrielScalarFamily_left_le_of_vertical_continuous
+    {f : ℂ → ℂ} (T : ℝ) {z : ℂ}
+    (hFcont : Continuous fun t : ℝ => f (z + (t : ℂ) * I))
+    (hcenterCont : Continuous fun t : ℝ =>
+      f ((inghamFixedGabrielSigma : ℂ) + (t : ℂ) * I))
+    (hz : z.re = 1 / 2) :
     ‖inghamFixedGabrielScalarFamily f T z‖ ≤
       (∫ t in Icc (-T) T, ‖f (z + (t : ℂ) * I)‖ ^ (4 / 3 : ℝ)) ^ (3 / 4 : ℝ) *
         (inghamFixedGabrielCenterMoment f T) ^ (1 / 4 : ℝ) := by
@@ -75,9 +79,8 @@ theorem norm_inghamFixedGabrielScalarFamily_left_le
     inghamFixedGabrielDualPower
       (inghamFixedGabrielDualSeed
         (f ((inghamFixedGabrielSigma : ℂ) + (t : ℂ) * I))) z
-  have hFcont : Continuous F := by
-    dsimp only [F]
-    fun_prop
+  have hFcont' : Continuous F := by
+    simpa only [F] using hFcont
   have hzexp : 0 < (inghamFixedGabrielDualExponent z).re := by
     rw [inghamFixedGabrielDualExponent_re_left hz]
     norm_num
@@ -85,9 +88,9 @@ theorem norm_inghamFixedGabrielScalarFamily_left_le
     dsimp only [G]
     exact (continuous_inghamFixedGabrielDualPower_const z hzexp).comp
       (continuous_inghamFixedGabrielDualSeed.comp
-        (hf.comp (by fun_prop)))
+        hcenterCont)
   have hFLp : MemLp F (ENNReal.ofReal (4 / 3 : ℝ)) mu :=
-    memLp_restrict_Icc_of_continuous hFcont (-T) T _
+    memLp_restrict_Icc_of_continuous hFcont' (-T) T _
   have hGLp : MemLp G (ENNReal.ofReal (4 : ℝ)) mu :=
     memLp_restrict_Icc_of_continuous hGcont (-T) T _
   have hpq : (4 / 3 : ℝ).HolderConjugate 4 := by
@@ -125,8 +128,21 @@ theorem norm_inghamFixedGabrielScalarFamily_left_le
     _ = (∫ t in Icc (-T) T, ‖f (z + (t : ℂ) * I)‖ ^ (4 / 3 : ℝ)) ^
           (3 / 4 : ℝ) * (inghamFixedGabrielCenterMoment f T) ^ (1 / 4 : ℝ) := rfl
 
-theorem norm_inghamFixedGabrielScalarFamily_right_le
-    {f : ℂ → ℂ} (hf : Continuous f) (T : ℝ) {z : ℂ}
+theorem norm_inghamFixedGabrielScalarFamily_left_le
+    {f : ℂ → ℂ} (hf : Continuous f) (T : ℝ) {z : ℂ} (hz : z.re = 1 / 2) :
+    ‖inghamFixedGabrielScalarFamily f T z‖ ≤
+      (∫ t in Icc (-T) T, ‖f (z + (t : ℂ) * I)‖ ^ (4 / 3 : ℝ)) ^ (3 / 4 : ℝ) *
+        (inghamFixedGabrielCenterMoment f T) ^ (1 / 4 : ℝ) := by
+  apply norm_inghamFixedGabrielScalarFamily_left_le_of_vertical_continuous T
+  · exact hf.comp (by fun_prop)
+  · exact hf.comp (by fun_prop)
+  · exact hz
+
+theorem norm_inghamFixedGabrielScalarFamily_right_le_of_vertical_continuous
+    {f : ℂ → ℂ} (T : ℝ) {z : ℂ}
+    (hFcont : Continuous fun t : ℝ => f (z + (t : ℂ) * I))
+    (hcenterCont : Continuous fun t : ℝ =>
+      f ((inghamFixedGabrielSigma : ℂ) + (t : ℂ) * I))
     (hz : z.re = inghamPowerSavingRightEdge) :
     ‖inghamFixedGabrielScalarFamily f T z‖ ≤
       (∫ t in Icc (-T) T, ‖f (z + (t : ℂ) * I)‖ ^ (2 : ℝ)) ^ (1 / 2 : ℝ) *
@@ -137,9 +153,8 @@ theorem norm_inghamFixedGabrielScalarFamily_right_le
     inghamFixedGabrielDualPower
       (inghamFixedGabrielDualSeed
         (f ((inghamFixedGabrielSigma : ℂ) + (t : ℂ) * I))) z
-  have hFcont : Continuous F := by
-    dsimp only [F]
-    fun_prop
+  have hFcont' : Continuous F := by
+    simpa only [F] using hFcont
   have hzexp : 0 < (inghamFixedGabrielDualExponent z).re := by
     rw [inghamFixedGabrielDualExponent_re_right hz]
     norm_num
@@ -147,9 +162,9 @@ theorem norm_inghamFixedGabrielScalarFamily_right_le
     dsimp only [G]
     exact (continuous_inghamFixedGabrielDualPower_const z hzexp).comp
       (continuous_inghamFixedGabrielDualSeed.comp
-        (hf.comp (by fun_prop)))
+        hcenterCont)
   have hFLp : MemLp F (ENNReal.ofReal (2 : ℝ)) mu :=
-    memLp_restrict_Icc_of_continuous hFcont (-T) T _
+    memLp_restrict_Icc_of_continuous hFcont' (-T) T _
   have hGLp : MemLp G (ENNReal.ofReal (2 : ℝ)) mu :=
     memLp_restrict_Icc_of_continuous hGcont (-T) T _
   have hholder := integral_mul_norm_le_Lp_mul_Lq
@@ -183,6 +198,17 @@ theorem norm_inghamFixedGabrielScalarFamily_right_le
         (inghamFixedGabrielCenterMoment f T) ^ (1 / 2 : ℝ) := hholder
     _ = (∫ t in Icc (-T) T, ‖f (z + (t : ℂ) * I)‖ ^ (2 : ℝ)) ^
           (1 / 2 : ℝ) * (inghamFixedGabrielCenterMoment f T) ^ (1 / 2 : ℝ) := rfl
+
+theorem norm_inghamFixedGabrielScalarFamily_right_le
+    {f : ℂ → ℂ} (hf : Continuous f) (T : ℝ) {z : ℂ}
+    (hz : z.re = inghamPowerSavingRightEdge) :
+    ‖inghamFixedGabrielScalarFamily f T z‖ ≤
+      (∫ t in Icc (-T) T, ‖f (z + (t : ℂ) * I)‖ ^ (2 : ℝ)) ^ (1 / 2 : ℝ) *
+        (inghamFixedGabrielCenterMoment f T) ^ (1 / 2 : ℝ) := by
+  apply norm_inghamFixedGabrielScalarFamily_right_le_of_vertical_continuous T
+  · exact hf.comp (by fun_prop)
+  · exact hf.comp (by fun_prop)
+  · exact hz
 
 
 end

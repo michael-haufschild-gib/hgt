@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.EntireWeightedLittlewoodRectangle
+import GaloisForLFunctions.RHTower.EntireWeightedLittlewoodLeftClosure
 import GaloisForLFunctions.RHTower.Sieve.InghamPoleRegularizedDetector
 import GaloisForLFunctions.RHTower.Sieve.ZetaResidueUnitRectanglePeeling
 
@@ -23,8 +23,7 @@ theorem exists_inghamDetector_weighted_littlewood_rectangle
     (X : ℕ) {c d T₁ T₂ : ℝ} (hcd : c < d) (hT : T₁ < T₂)
     (hbot : ∀ x ∈ uIcc c d, inghamDetector X ((x : ℂ) + T₁ * I) ≠ 0)
     (htop : ∀ x ∈ uIcc c d, inghamDetector X ((x : ℂ) + T₂ * I) ≠ 0)
-    (hright : ∀ t ∈ uIcc T₁ T₂, inghamDetector X ((d : ℂ) + t * I) ≠ 0)
-    (hleft : ∀ t ∈ uIcc T₁ T₂, inghamDetector X ((c : ℂ) + t * I) ≠ 0) :
+    (hright : ∀ t ∈ uIcc T₁ T₂, inghamDetector X ((d : ℂ) + t * I) ≠ 0) :
     ∃ Z : Finset ℂ,
       (∀ z : ℂ, z ∈ Z ↔
         z ∈ (uIcc c d ×ℂ uIcc T₁ T₂) ∧ inghamDetector X z = 0) ∧
@@ -33,27 +32,26 @@ theorem exists_inghamDetector_weighted_littlewood_rectangle
             ((analyticOrderAt (inghamDetector X) w).toNat : ℝ) * (w.re - c)) =
         inghamLittlewoodBoundary X c d T₁ T₂ := by
   have hne : ∃ z : ℂ, inghamDetector X z ≠ 0 :=
-    ⟨(c : ℂ) + T₁ * I, hleft T₁ left_mem_uIcc⟩
+    ⟨(c : ℂ) + T₁ * I, hbot c left_mem_uIcc⟩
   simpa [inghamLittlewoodBoundary] using
-    (exists_entire_weighted_littlewood_rectangle
-      (inghamDetector_analyticOnNhd_univ X) hne hcd hT hbot htop hright hleft)
+    (exists_entire_weighted_littlewood_rectangle_left_boundary_zeros
+      (inghamDetector_analyticOnNhd_univ X) hne hcd hT hbot htop hright)
 
 theorem two_pi_mul_zetaZeroMass_le_inghamLittlewoodBoundary
     (X : ℕ) {c d T₁ T₂ : ℝ} (hcd : c < d) (hT : T₁ < T₂)
     (hbot : ∀ x ∈ uIcc c d, inghamDetector X ((x : ℂ) + T₁ * I) ≠ 0)
     (htop : ∀ x ∈ uIcc c d, inghamDetector X ((x : ℂ) + T₂ * I) ≠ 0)
-    (hright : ∀ t ∈ uIcc T₁ T₂, inghamDetector X ((d : ℂ) + t * I) ≠ 0)
-    (hleft : ∀ t ∈ uIcc T₁ T₂, inghamDetector X ((c : ℂ) + t * I) ≠ 0) :
+    (hright : ∀ t ∈ uIcc T₁ T₂, inghamDetector X ((d : ℂ) + t * I) ≠ 0) :
     2 * Real.pi *
         (∑ w ∈ zetaResidueUnitClosedRectangleZeros
             ((c : ℂ) + T₁ * I) ((d : ℂ) + T₂ * I),
           ((analyticOrderAt zetaResidueUnit w).toNat : ℝ) * (w.re - c)) ≤
       inghamLittlewoodBoundary X c d T₁ T₂ := by
   have hne : ∃ z : ℂ, inghamDetector X z ≠ 0 :=
-    ⟨(c : ℂ) + T₁ * I, hleft T₁ left_mem_uIcc⟩
+    ⟨(c : ℂ) + T₁ * I, hbot c left_mem_uIcc⟩
   obtain ⟨Z, hmem, hboundary⟩ :=
     exists_inghamDetector_weighted_littlewood_rectangle X hcd hT
-      hbot htop hright hleft
+      hbot htop hright
   let ZG : Finset ℂ := zetaResidueUnitClosedRectangleZeros
     ((c : ℂ) + T₁ * I) ((d : ℂ) + T₂ * I)
   have hsub : ZG ⊆ Z := by

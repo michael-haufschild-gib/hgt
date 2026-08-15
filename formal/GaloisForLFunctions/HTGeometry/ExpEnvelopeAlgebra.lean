@@ -263,4 +263,116 @@ theorem expEnvelopeZ_absorb {ν μ : ℝ} (hν : 0 ≤ ν)
     _ ≤ y + y := add_le_add hhalf hhalf
     _ = 2 * y := by ring
 
+
+/-! ## Absorbing a linear weight by dropping the rate -/
+
+/-- `(1+t)e^{-εt} ≤ 1/ε` for `t ≥ 0` and `0 < ε ≤ 1`. -/
+theorem one_add_mul_exp_neg_le {ε t : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1) (ht : 0 ≤ t) :
+    (1 + t) * Real.exp (-ε * t) ≤ 1 / ε := by
+  have hlin : 1 + ε * t ≤ Real.exp (ε * t) := by
+    have := Real.add_one_le_exp (ε * t)
+    linarith
+  have hpos : (0 : ℝ) < 1 + ε * t := by positivity
+  have hexp : Real.exp (-ε * t) ≤ 1 / (1 + ε * t) := by
+    rw [show -ε * t = -(ε * t) by ring, Real.exp_neg, inv_eq_one_div]
+    exact one_div_le_one_div_of_le hpos hlin
+  have hstep : (1 + t) * Real.exp (-ε * t) ≤ (1 + t) / (1 + ε * t) := by
+    rw [div_eq_mul_one_div]
+    exact mul_le_mul_of_nonneg_left hexp (by linarith)
+  refine hstep.trans ?_
+  rw [div_le_div_iff₀ hpos hε]
+  nlinarith [ht, hε1, hε]
+
+/-- **A linear weight costs only a drop in rate.** -/
+theorem expKernel_mul_linear_le {ν ν' : ℝ} (hε : 0 < ν - ν') (hε1 : ν - ν' ≤ 1) (n m : ℤ) :
+    expKernel ν n m * ENNReal.ofReal (1 + |(n : ℝ) - m|)
+      ≤ ENNReal.ofReal (1 / (ν - ν')) * expKernel ν' n m := by
+  have ht : (0 : ℝ) ≤ |(n : ℝ) - m| := abs_nonneg _
+  have hkey : Real.exp (-ν * |(n : ℝ) - m|) * (1 + |(n : ℝ) - m|)
+      ≤ (1 / (ν - ν')) * Real.exp (-ν' * |(n : ℝ) - m|) := by
+    have hsplit : Real.exp (-ν * |(n : ℝ) - m|)
+        = Real.exp (-ν' * |(n : ℝ) - m|) * Real.exp (-(ν - ν') * |(n : ℝ) - m|) := by
+      rw [← Real.exp_add]
+      congr 1
+      ring
+    rw [hsplit]
+    have hbound := one_add_mul_exp_neg_le hε hε1 ht
+    have hexp0 : (0 : ℝ) ≤ Real.exp (-ν' * |(n : ℝ) - m|) := (Real.exp_pos _).le
+    calc Real.exp (-ν' * |(n : ℝ) - m|) * Real.exp (-(ν - ν') * |(n : ℝ) - m|)
+          * (1 + |(n : ℝ) - m|)
+        = Real.exp (-ν' * |(n : ℝ) - m|)
+            * ((1 + |(n : ℝ) - m|) * Real.exp (-(ν - ν') * |(n : ℝ) - m|)) := by ring
+      _ ≤ Real.exp (-ν' * |(n : ℝ) - m|) * (1 / (ν - ν')) :=
+          mul_le_mul_of_nonneg_left hbound hexp0
+      _ = (1 / (ν - ν')) * Real.exp (-ν' * |(n : ℝ) - m|) := by ring
+  rw [expKernel, expKernel, ← ENNReal.ofReal_mul (Real.exp_pos _).le,
+    ← ENNReal.ofReal_mul (by positivity : (0 : ℝ) ≤ 1 / (ν - ν'))]
+  exact ENNReal.ofReal_le_ofReal hkey
+
+/-- **The weighted envelope bound.**  A weight growing at most linearly in the block distance is
+absorbed by dropping the envelope rate, at the cost of the reciprocal rate gap. -/
+theorem expEnvelopeZ_weighted_le {ν ν' : ℝ} (hε : 0 < ν - ν') (hε1 : ν - ν' ≤ 1)
+    {w : ℤ → ℝ≥0∞} {K : ℝ≥0∞} {n : ℤ}
+    (hw : ∀ m, w m ≤ K * ENNReal.ofReal (1 + |(n : ℝ) - m|)) (y : ℤ → ℝ≥0∞) :
+    expEnvelopeZ ν (fun m => w m * y m) n
+      ≤ (K * ENNReal.ofReal (1 / (ν - ν'))) * expEnvelopeZ ν' y n := by
+  have hterm : ∀ m : ℤ, expKernel ν n m * (w m * y m)
+      ≤ (K * ENNReal.ofReal (1 / (ν - ν'))) * (expKernel ν' n m * y m) := by
+    intro m
+    calc expKernel ν n m * (w m * y m)
+        ≤ expKernel ν n m * ((K * ENNReal.ofReal (1 + |(n : ℝ) - m|)) * y m) :=
+          mul_le_mul' le_rfl (mul_le_mul' (hw m) le_rfl)
+      _ = K * ((expKernel ν n m * ENNReal.ofReal (1 + |(n : ℝ) - m|)) * y m) := by ring
+      _ ≤ K * ((ENNReal.ofReal (1 / (ν - ν')) * expKernel ν' n m) * y m) :=
+          mul_le_mul' le_rfl (mul_le_mul' (expKernel_mul_linear_le hε hε1 n m) le_rfl)
+      _ = (K * ENNReal.ofReal (1 / (ν - ν'))) * (expKernel ν' n m * y m) := by ring
+  calc expEnvelopeZ ν (fun m => w m * y m) n
+      ≤ ∑' m : ℤ, (K * ENNReal.ofReal (1 / (ν - ν'))) * (expKernel ν' n m * y m) :=
+        ENNReal.tsum_le_tsum hterm
+    _ = (K * ENNReal.ofReal (1 / (ν - ν'))) * expEnvelopeZ ν' y n := by
+        rw [ENNReal.tsum_mul_left, expEnvelopeZ]
+
+
+/-! ## The envelope preserves exponential decay -/
+
+/-- The kernel against an exponentially decaying weight. -/
+theorem expKernel_mul_exp_le {μ δ : ℝ} (hδ : 0 ≤ δ) (n m : ℤ) {C : ℝ} (hC : 0 ≤ C) :
+    expKernel μ n m * ENNReal.ofReal (C * Real.exp (-δ * (m : ℝ)))
+      ≤ ENNReal.ofReal (C * Real.exp (-δ * (n : ℝ))) * expKernel (μ - δ) n m := by
+  have hkey : -μ * |(n : ℝ) - m| + -δ * (m : ℝ)
+      ≤ -δ * (n : ℝ) + -(μ - δ) * |(n : ℝ) - m| := by
+    have h : δ * ((n : ℝ) - m) ≤ δ * |(n : ℝ) - m| :=
+      mul_le_mul_of_nonneg_left (le_abs_self _) hδ
+    nlinarith [h]
+  rw [expKernel, expKernel, ← ENNReal.ofReal_mul (Real.exp_pos _).le,
+    ← ENNReal.ofReal_mul (by positivity : (0 : ℝ) ≤ C * Real.exp (-δ * (n : ℝ)))]
+  refine ENNReal.ofReal_le_ofReal ?_
+  calc Real.exp (-μ * |(n : ℝ) - m|) * (C * Real.exp (-δ * (m : ℝ)))
+      = C * Real.exp (-μ * |(n : ℝ) - m| + -δ * (m : ℝ)) := by
+        rw [Real.exp_add]
+        ring
+    _ ≤ C * Real.exp (-δ * (n : ℝ) + -(μ - δ) * |(n : ℝ) - m|) :=
+        mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hkey) hC
+    _ = C * Real.exp (-δ * (n : ℝ)) * Real.exp (-(μ - δ) * |(n : ℝ) - m|) := by
+        rw [Real.exp_add]
+        ring
+
+/-- **The envelope preserves exponential decay at any rate strictly below its own**, at the cost of
+the row mass of the rate difference. -/
+theorem expEnvelopeZ_le_of_exp_decay {μ δ : ℝ} (hδ : 0 ≤ δ) {a : ℤ → ℝ≥0∞} {C : ℝ} (hC : 0 ≤ C)
+    (ha : ∀ m : ℤ, a m ≤ ENNReal.ofReal (C * Real.exp (-δ * (m : ℝ)))) (n : ℤ) :
+    expEnvelopeZ μ a n
+      ≤ ENNReal.ofReal (C * Real.exp (-δ * (n : ℝ))) * expRowMass (μ - δ) := by
+  calc expEnvelopeZ μ a n
+      ≤ ∑' m : ℤ, expKernel μ n m * ENNReal.ofReal (C * Real.exp (-δ * (m : ℝ))) :=
+        ENNReal.tsum_le_tsum fun m => mul_le_mul' le_rfl (ha m)
+    _ ≤ ∑' m : ℤ, ENNReal.ofReal (C * Real.exp (-δ * (n : ℝ))) * expKernel (μ - δ) n m :=
+        ENNReal.tsum_le_tsum fun m => expKernel_mul_exp_le hδ n m hC
+    _ = ENNReal.ofReal (C * Real.exp (-δ * (n : ℝ))) * ∑' m : ℤ, expKernel (μ - δ) n m := by
+        rw [ENNReal.tsum_mul_left]
+    _ = ENNReal.ofReal (C * Real.exp (-δ * (n : ℝ))) * expRowMass (μ - δ) := by
+        congr 1
+        rw [← tsum_expKernel_eq_rowMass (μ - δ) n]
+        exact tsum_congr fun m => expKernel_symm (μ - δ) n m
+
 end GaloisForLFunctions.HTGeometry
