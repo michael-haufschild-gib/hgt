@@ -949,7 +949,7 @@ Thus using the same global ten-bundle on both sides still forces stable equality
 kernel and spacetime cokernel classes. Rank change alone does not evade this absolute identity;
 localized topology requires additional relative/clutching data of the event map. The exact
 paper and Lean theorem is recorded in
-`../2-fully-proven/not_new_scientific_knowledge/event-topological-debt-conservation.md`.
+`../3-formalized/not_new_scientific_knowledge/event-topological-debt-conservation.md`.
 
 New open core:
 

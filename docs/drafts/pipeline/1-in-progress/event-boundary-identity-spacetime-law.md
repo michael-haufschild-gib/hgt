@@ -309,8 +309,8 @@ collapsing the geometry to absolute ordered layers.
 
 The exact equivalence is proved on paper and unconditionally in Lean:
 
-- [paper proof](../2-fully-proven/not_new_scientific_knowledge/canonical-event-slice-weak-order-collapse.md)
-- [formalization](../3-formalized/canonical-event-slice-weak-order-collapse.md)
+- [paper proof](../3-formalized/not_new_scientific_knowledge/canonical-event-slice-weak-order-collapse.md)
+- [formalization](../3-formalized/not_new_scientific_knowledge/canonical-event-slice-weak-order-collapse-formalized.md)
 - [`CanonicalEventSlice.lean`](../../../../formal/GaloisForLFunctions/HTGeometry/CanonicalEventSlice.lean)
 
 This theorem is rediscovered order theory, not new scientific knowledge. Its positive physical

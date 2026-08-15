@@ -195,3 +195,48 @@ formalization, so no wrapper is added.
 - [x] prove the logarithmic regularity gate for every original screw null vector
 - [ ] prove `det Gram_a>0` for every aperture
 - [ ] RH
+
+## Lean status
+
+`[FORMALIZED]` — supersedes the "no wrapper is added" decision recorded above, which is stale: the
+finite-dimensional layer of the card (the residual space, the cross-boundary expansion, the Bessel
+tail stability, and the Gram determinant criterion) is fully reachable, and the infinite
+reconstruction stays explicitly outside the statement.
+
+Module: `formal/GaloisForLFunctions/RHTower/CCMRationalResidualEvansMatrix.lean`
+(18 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired
+into `formal/GaloisForLFunctions/RHTower.lean`).
+
+What is proved in Lean:
+
+- `residualPoly`, `residualPoly_ne_zero`, `natDegree_residualPoly` — the residual space is the
+  solution space of `(D-1)^{L}(D+1)^{L}`, of degree `2 L`.
+- `rootMultiplicity_residualPoly_one`, `rootMultiplicity_residualPoly_neg_one` — each of the two
+  frequencies `±1` has multiplicity exactly `L`.
+- `residualSpace`, **`finrank_residualSpace`** — **equation (5)**: `dim R_L = 2 L = d_a`, obtained
+  from `HTGeometry.finrank_solutionSpace` (built for
+  `ccm-characteristic-crossing-interior-mode-reduction-law`).
+- `charMode_one_mem_residualSpace`, `charMode_neg_one_mem_residualSpace` — the listed modes
+  `x^j e^{x}`, `x^j e^{-x}` with `j < L` all lie in `R_L`.
+- `crossKernel_expansion_right` — **equation (11)**: against a right exterior point the Bessel tail
+  `e^{-(y-x)} Q(y-x)` with `deg Q < L` expands as `∑_{j<L} α_j(y) · x^j e^{x}`, with the exact
+  coefficients `α_j(y) = e^{-y} (Q ∘ (y - X))_j`.
+- `crossKernel_expansion_left` — **equation (12)**: the reflected expansion into `x^j e^{-x}`.
+- `deriv_besselTail`, `natDegree_besselTail_le` — **equation (10)**: `(e^{-t}Q(t))' = e^{-t}(Q'-Q)(t)`
+  and the polynomial factor never gains degree.
+- `evansGramMatrix`, `posSemidef_evansGramMatrix`, `evansGram_quadratic` — **equation (15)**:
+  `⟪x, Gram x⟫ = ‖A x‖²`, and the Gram matrix is positive semidefinite.
+- `evansGramMatrix_mulVec_eq_zero_iff`, `det_evansGramMatrix_ne_zero_iff`,
+  `posDef_evansGramMatrix_iff`, **`det_evansGramMatrix_pos_iff`** — **equation (7)**: the residual
+  map is injective ⟺ the Gram matrix is positive definite ⟺ its determinant is positive.
+- `dotProduct_star_self_eq_zero_iff` — the auxiliary nondegeneracy of the Hermitian form.
+
+Reused, not rebuilt: `HTGeometry.charMode`, `solutionSpace`, `finrank_solutionSpace`,
+`realConstCoeffOp_charMode`, `contDiff_charMode`, `polyExp`, `deriv_polyExp`, `expShiftPoly`.
+
+Deliberately outside the Lean statement (cited analytic parents, not results of this card):
+
+- the unbounded logarithmic Dirichlet realization `C_{a,I}` and its inverse in `(3)` and `(5)`;
+- the identification `(9)` of `k_L` as the inverse Fourier transform of `(1+ξ²)^{-L}`;
+- the endpoint distributions `(13)` and the distributional identity `(14)`;
+- the continuity of the exterior moments on `L²`.

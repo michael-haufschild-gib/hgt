@@ -87,6 +87,13 @@ def WallIndistinguishable (side : W → X → Bool) (x y : X) : Prop :=
 def WallsSeparatePoints (side : W → X → Bool) : Prop :=
   ∀ ⦃x y⦄, WallIndistinguishable side x y → x = y
 
+/-- The exact wall-indistinguishability quotient of states. -/
+def wallIndistinguishableSetoid (side : W → X → Bool) : Setoid X where
+  r := WallIndistinguishable side
+  iseqv := ⟨fun _ _ => rfl,
+    fun {_} {_} h w => (h w).symm,
+    fun {_} {_} {_} hxy hyz w => (hxy w).trans (hyz w)⟩
+
 theorem actualityWallProfile_eq_iff (side : W → X → Bool) (base x y : X) :
     actualityWallProfile side base x = actualityWallProfile side base y ↔
       WallIndistinguishable side x y := by
@@ -112,6 +119,40 @@ theorem actualityWallProfile_injective_iff (side : W → X → Bool) (base : X) 
     exact (actualityWallProfile_eq_iff side base x y).2 hxy
   · intro hsep x y hxy
     exact hsep ((actualityWallProfile_eq_iff side base x y).1 hxy)
+
+/-- The profile descends to the quotient that identifies exactly wall-indistinguishable states. -/
+def actualityWallProfileQuotient
+    (side : W → X → Bool) (base : X) :
+    Quotient (wallIndistinguishableSetoid side) → W → Bool :=
+  Quotient.lift (actualityWallProfile side base) (by
+    intro x y hxy
+    exact (actualityWallProfile_eq_iff side base x y).mpr hxy)
+
+/-- After fixing a basepoint, the wall-indistinguishability quotient embeds in Boolean profiles. -/
+theorem actualityWallProfileQuotient_injective
+    (side : W → X → Bool) (base : X) :
+    Function.Injective (actualityWallProfileQuotient side base) := by
+  intro q r hqr
+  revert hqr
+  refine Quotient.inductionOn₂ q r ?_
+  intro x y hxy
+  apply Quotient.sound
+  apply (actualityWallProfile_eq_iff side base x y).mp
+  change actualityWallProfile side base x = actualityWallProfile side base y at hxy
+  exact hxy
+
+/-- Changing basepoint translates the quotient embedding by one fixed Boolean profile. -/
+theorem actualityWallProfileQuotient_changeBase
+    (side : W → X → Bool) (base newBase : X)
+    (q : Quotient (wallIndistinguishableSetoid side)) :
+    actualityWallProfileQuotient side newBase q =
+      fun w => Bool.xor
+        (actualityWallProfileQuotient side base q w)
+        (actualityWallProfile side base newBase w) := by
+  refine Quotient.inductionOn q ?_
+  intro x
+  change actualityWallProfile side newBase x = _
+  exact actualityWallProfile_changeBase side base newBase x
 
 /-- Every global wall coordinate is a Boolean vertex coboundary and hence has zero holonomy
 on every closed walk, on every graph of states. -/

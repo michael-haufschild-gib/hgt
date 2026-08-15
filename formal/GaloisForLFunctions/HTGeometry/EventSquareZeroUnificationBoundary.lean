@@ -145,6 +145,20 @@ def diagonal (a : Module.End R K) (d : Module.End R I) :
     mul (radical b) (radical c) = 0 := by
   ext <;> simp [mul, radical]
 
+/-- Left multiplication by any upper block preserves the event radical. -/
+@[simp] theorem mul_radical
+    (x : EventUpperBlock (R := R) (K := K) (I := I))
+    (c : I →ₗ[R] K) :
+    mul x (radical c) = radical (x.left.comp c) := by
+  ext <;> simp [mul, radical]
+
+/-- Right multiplication by any upper block preserves the event radical. -/
+@[simp] theorem radical_mul
+    (c : I →ₗ[R] K)
+    (x : EventUpperBlock (R := R) (K := K) (I := I)) :
+    mul (radical c) x = radical (c.comp x.right) := by
+  ext <;> simp [mul, radical]
+
 /-- The left endpoint acts on an event channel by postcomposition. -/
 @[simp] theorem diagonal_mul_radical
     (a : Module.End R K) (d : Module.End R I) (b : I →ₗ[R] K) :

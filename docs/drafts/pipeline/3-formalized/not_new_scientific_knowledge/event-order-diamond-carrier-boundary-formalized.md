@@ -3,7 +3,7 @@
 - **ID:** `event-order-diamond-carrier-boundary`
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean) / CARRIER CLASSIFICATION / NO-SELECTION BOUNDARY
-- **Paper proof:** `../2-fully-proven/not_new_scientific_knowledge/event-order-diamond-carrier-boundary.md`
+- **Paper proof:** `event-order-diamond-carrier-boundary.md`
 - **Lean module:** `GaloisForLFunctions.HTGeometry.EventOrderDiamond`
 - **Scientific status:** `[FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 

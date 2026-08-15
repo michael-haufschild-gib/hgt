@@ -127,3 +127,16 @@ Heilbronn order character.  None may be replaced by a generic analytic interface
   injections and the component separation source-check; packaging the multiplication equivalence
   and transporting it through the existing elementary witness remains unverified Lean work.  No
   closure theorem is claimed yet.
+- 2026-08-15 — formalized and target-built the central component-extraction lemmas in
+  `ArtinBrauerElementary.lean`: any subgroup of a finite coprime `C × P` product contains both
+  coordinates of each of its elements, and the result transports through a recorded elementary
+  multiplication equivalence.  The five-theorem axiom audit is standard-foundations-only.  This
+  closes a real subgroup-closure sublemma, but not the required intersection/equivalence packaging
+  and emphatically not the integral Finsupp-surjectivity theorem.
+- 2026-08-15 — the coordinate extraction now gives the exact direct-product equality
+  `K = (K.map fst).prod (K.map snd)` for every subgroup `K ≤ C × P` with `C` finite of order
+  coprime to `p` and `P` a `p`-group.  The isolated scratch proof is source-green and has only
+  standard Lean foundations.  It is integrated as
+  `subgroup_prod_eq_prod_maps_of_card_coprime`; the full transport to a new
+  `BrauerElementarySubgroup` witness still needs the intersection/subgroup-image multiplication
+  equivalence.  No integral-induction or span claim is made.

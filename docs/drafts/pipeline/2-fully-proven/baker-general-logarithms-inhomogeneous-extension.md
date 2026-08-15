@@ -485,3 +485,22 @@ and expose Gelfond--Schneider as the two-logarithm corollary/compatibility theor
   `RHTower.lean`; key `#print axioms` audits report only `propext`, `Classical.choice`, and
   `Quot.sound`.  `[OPEN CORE]`: prove the closed component-jet formula equals the corresponding
   iterated commuting derivations, then map its kernel rows to analytic initial zeros.
+- 2026-08-15 — formalized `BakerGeneralProof.PolynomialComponentJet`: the closed full matrix
+  coefficient is proved equal to the actual commuting solved-component jet of each
+  additive--exponential monomial, including its algebraic natural-sample evaluation.  Targeted
+  source/OLean and axiom audits close with only `propext`, `Classical.choice`, and `Quot.sound`.
+- 2026-08-15 — formalized `BakerGeneralProof.PolynomialAuxiliaryFunction`: each integral kernel
+  row is transported into the coefficient field, its common denominator factor is cancelled, and
+  the resulting exact algebraic component zero is mapped to an analytic zero on the auxiliary
+  curve.  The full jet polynomial has literal component-shift identities and an unconditional
+  scaled ordinary-derivative recurrence.  Module is wired into `RHTower.lean`; targeted
+  source/OLean and axiom audits close with only `propext`, `Classical.choice`, and `Quot.sound`.
+  `[OPEN CORE]`: convert the bounded component-jet zero box into ordinary derivative multiplicity,
+  then formalize the quantitative extrapolation and contradiction stages.
+- 2026-08-15 — formalized `BakerGeneralProof.PolynomialAuxiliaryMultiplicity`: the full initial
+  component-jet box now propagates to ordinary derivative zeros through the entire row cutoff.
+  The proof is a coordinatewise strong induction over derivative order; it uses the certified
+  nonzero integral component scale and keeps every shifted index inside the box.  Module is wired
+  into `RHTower.lean`; source, targeted OLean, and axiom audits close with only `propext`,
+  `Classical.choice`, and `Quot.sound`.  `[OPEN CORE]`: analytic-order packaging and quantitative
+  multipoint Schwarz extrapolation for these full additive--exponential auxiliary functions.

@@ -15638,3 +15638,165 @@ positive trace theorem.  Rankin--Selberg functoriality is its automorphic
 shadow; K--P additive tensors, Euler-log linearization, and ordinary products
 are lower-order shadows.  A construction or a counterexample to this
 primitive—not more ordinary product algebra—is the genuine route to C1/C2.
+
+---
+
+## 254. External-frontier re-audit (2026-08-15)
+
+### 254.1 [LITERATURE] what the newest multiple-twist result proves
+
+Kaczorowski--Perelli, *[Multiple standard twists of
+L-functions](https://arxiv.org/abs/2603.13885)* (arXiv:2603.13885, posted
+2026-03-14), proves meromorphic continuation in `C^N` and describes its
+hyperplane polar geometry.  Its Theorem 1 / Corollary 1 are exactly a
+continuation-and-polar-structure result; they do not form a Rankin--Selberg
+object or establish a prime covariance asymptotic.  The formal Barnes,
+Mellin--Barnes, spectrum, and tensor-presentation work is therefore a
+source-faithful infrastructure track, not evidence for C1/C2.
+
+### 254.2 [LITERATURE] known orthogonality is structurally narrower
+
+Liu--Wang--Ye, *[A proof of Selberg's orthogonality for automorphic
+L-functions](https://doi.org/10.1007/s00229-005-0563-4)* proves the
+automorphic result under its stated self-contragredience and degree
+conditions (unconditionally through the stated low-rank cases, and under
+Hypothesis H otherwise).  Its mechanism uses Rankin--Selberg information,
+precisely the prime-local tensor object absent from general Selberg-class
+axioms.
+
+### 254.3 Hostile verdict
+
+**Verdict: BRIDGE, not a proof route.**  No audited result supplies a
+general-Selberg tensor continuation with prime coefficient
+`a_F(p) overline(a_G(p))`; the universal-shadow conjecture in §253.3 remains
+an unproved structural conjecture.  C1/C2 are not promoted, weakened, or
+claimed from this audit.
+
+---
+
+## 255. [LEAN-PROVED] conjugation closure, still no tensor (2026-08-15)
+
+`SelbergClass.conjugate` now closes coefficientwise complex conjugation of the
+full carrier: coefficients and Euler-log coefficients are starred; the
+continuation is `s ↦ star (F(star s))`; Gamma shifts and root number are
+conjugated; all analytic, Euler, Ramanujan, and codiscrete-FE fields are
+discharged.  This removes a real carrier gap needed to state a would-be
+pairing faithfully.
+
+**Hostile check.**  Combining `F` with `F.conjugate` through the newly proved
+ordinary product still has prime coefficient `a_F(p) + overline(a_F(p))`, not
+`|a_F(p)|²`.  Conjugation therefore survives the earlier objection but does
+not evade it: a prime-local tensor/Hadamard construction remains the first
+missing structural object for C1/C2.
+
+---
+
+## 256. Pair-tensor audit: exact operator-level obstruction (2026-08-15)
+
+### 256.1 [CORPUS] carrier boundary
+
+`RHTower/SelbergClass/Full.lean` stores one Euler-log coefficient system and
+one global continuation/functional equation.  `SelbergClass.mul` makes that
+Euler-log data additive, and `SelbergClass.conjugate` only stars it.  Therefore
+the strongest available prime expression is exactly
+```
+b_{F · conjugate(G)}(p) = b_F(p) + overline(b_G(p))
+                          = a_F(p) + overline(a_G(p)),
+```
+where the second equality is the proved prime Euler-log bridge.  C2 instead
+requires the bilinear local datum
+```
+a_F(p) overline(a_G(p)) = b_F(p) overline(b_G(p)).
+```
+This is an operator-level obstruction in the present carrier, not an
+impossibility theorem about all future mathematics.
+
+### 256.2 [LOCAL-RESEARCH] strongest survivors
+
+`RHTower/SatakeTensor.lean` contains finite local Satake-pair algebra, while
+`LocalFactorDuality.lean` explicitly excludes global Rankin--Selberg
+continuation.  `MeromorphicTensor.lean` is a genuine `C^N` quotient-of-entire
+presentation but intentionally does not construct a continuation.  The
+degree-one character quotient identity and the raw equality above are the
+strongest present pair survivors.
+
+### 256.3 [LITERATURE] hostile comparison
+
+Jacquet--Piatetski-Shapiro--Shalika's *[Rankin--Selberg
+Convolutions](https://www.math.columbia.edu/~hj/Rankin%20Selberg%20convolutions.pdf)*
+constructs the pair object from automorphic local data.  The 2025 Jiang
+preprint *[On Hypothesis H and Selberg orthogonality for automorphic
+L-functions](https://arxiv.org/abs/2507.20653)* is an unrefereed automorphic
+claim, marked “Comments welcome”; it cannot furnish a general-Selberg theorem.
+
+**Verdict: SURVIVES PRELIMINARY ATTACK only as a structural conjecture.**
+The next exact `[OPEN CORE]` is a global meromorphic continuation, gamma rule,
+and functional equation for genuinely bilinear pair-local data.  Adding a
+Lean interface that assumes these would encode the desired theorem and is
+forbidden.  No pair module was created from this audit.
+
+---
+
+## 257. C1/C2 statement audit: do not confuse definitions with proof (2026-08-15)
+
+Finite prime-square algebra is already formalized for arbitrary arithmetic
+functions in `RHTower/SelbergPairingPrimeSquare.lean`; degree-one character C1
+also has an actual Mertens theorem.  But the full carrier has no extensional
+equivalence, trivial-object/monoid layer, primitive predicate, factorization
+theorem, or packaged prime cutoff function.  Raw Lean-record inequality is
+not a correct substitute for distinct L-functions because continuation and
+Gamma presentations need not be definitionally identical.
+
+The minimal faithful future statement would compare coefficients extensionally,
+use a finite prime cutoff energy/cross sum, and formulate `O(1)` at `atTop`.
+It must not be created as an assumed `Prop` merely to make C1/C2 look
+formalized.  The infrastructure part is separable; the general diagonal
+density/integer multiplicity and off-diagonal boundedness are mathematical
+open cores.  No fake conjecture interface was added.
+
+---
+
+## 258. Conjecture loop: why the multiple-twist trace route stops (2026-08-15)
+
+### Loop A — [CONJECTURE]
+
+The Kaczorowski--Perelli multiple-twist residues, averaged along a suitable
+imaginary flow, should recover the prime diagonal and hence C2.
+
+### Hostile attack — [FALSIFIED]
+
+The exact finite Bohr calculation formalized in
+`MultipleStandardTwistDegreeResonanceTrace.lean` selects
+```
+m ^ d_G = n ^ d_F,
+```
+not the prime diagonal.  When degrees agree this reduces to `m=n`, but only
+inside a finite spectral fibre; it still supplies no unbounded regular-part
+prime trace.  For unequal degrees even the selected relation is different.
+Thus continuation/polar data cannot be renamed C2.
+
+### Loop B — [CONJECTURE]
+
+A degree-aware flow plus ordinary product and conjugation should repair the
+trace.
+
+### Hostile attack — [FALSIFIED]
+
+The full-carrier product/conjugation audit in §256 is linear at every prime.
+Changing the flow cannot turn `a_F(p)+overline(a_G(p))` into
+`a_F(p)overline(a_G(p))`; the failure is representation-level, not contour
+choice.
+
+### Loop C — [CONJECTURE]
+
+There exists a canonical prime-local pair tensor for general Selberg carriers,
+with Rankin--Selberg-style global analytic data and a positive prime trace.
+
+### Current verdict — [OPEN CORE]
+
+This absorbs both earlier obstructions and is the first structurally adequate
+route.  It survives those two attacks, but is already the general
+Rankin--Selberg/functoriality gap; no paper proof, novelty claim, or Lean
+theorem exists.  The formal task is therefore to build verified consequences
+and prerequisite analytic infrastructure, not to pretend the conjecture is a
+construction.

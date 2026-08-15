@@ -2,6 +2,8 @@ import Mathlib.Data.Real.Basic
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Algebra.Polynomial.Eval.Degree
 import Mathlib.Tactic.LinearCombination
+import Mathlib.RingTheory.Polynomial.Basic
+import Mathlib.LinearAlgebra.FiniteDimensional.Basic
 
 /-!
 # Independence of the divided principal parts at distinct roots
@@ -438,6 +440,102 @@ theorem linearIndependent_multiJetSubfamily {r : Fin k → ℝ} (hr : Function.I
   · exact hzero
   · rw [← hcval i q]
     exact hrest i (q : ℕ) (hA i q.2)
+
+/-- **The even flag has dimension `1 + E`.**  The state and its `E = ∑ (m i - 1)` nonterminal
+divided principal parts span a space of that dimension. -/
+theorem finrank_multiJetEvenFamily {r : Fin k → ℝ} (hr : Function.Injective r)
+    (m : Fin k → ℕ) (G : ℝ → ℝ) {S : Set ℝ} (hS : S.Infinite) (hG : ∀ u ∈ S, G u ≠ 0) :
+    Module.finrank ℝ (Submodule.span ℝ (Set.range (multiJetEvenFamily r m G)))
+      = 1 + ∑ i : Fin k, (m i - 1) := by
+  rw [finrank_span_eq_card (linearIndependent_multiJetEvenFamily hr m G hS hG)]
+  simp only [Fintype.card_sum, Fintype.card_sigma, Fintype.card_fin, Fintype.card_unit]
+
+/-! ## Saturation of the polynomial module -/
+
+/-- The root product together with all of its divided principal parts, as polynomials. -/
+def dividedPartFamily (r : Fin k → ℝ) (m : Fin k → ℕ) :
+    Unit ⊕ ((i : Fin k) × {p // p ∈ Finset.Icc 1 (m i)}) → Polynomial ℝ :=
+  Sum.elim (fun _ => rootProduct r m) (fun x => dividedPart r m x.1 (x.2 : ℕ))
+
+theorem linearIndependent_dividedPartFamily {r : Fin k → ℝ} (hr : Function.Injective r)
+    (m : Fin k → ℕ) : LinearIndependent ℝ (dividedPartFamily r m) := by
+  classical
+  rw [Fintype.linearIndependent_iff]
+  intro g hg
+  obtain ⟨c, hc⟩ : ∃ c : Fin k → ℕ → ℝ,
+      c = fun i p => ∑ q ∈ (Finset.Icc 1 (m i)).attach,
+        if (q : ℕ) = p then g (Sum.inr ⟨i, q⟩) else 0 := ⟨_, rfl⟩
+  have hcval : ∀ (i : Fin k) (q : {p // p ∈ Finset.Icc 1 (m i)}),
+      c i (q : ℕ) = g (Sum.inr ⟨i, q⟩) := by
+    intro i q
+    simp only [hc]
+    rw [Finset.sum_eq_single q]
+    · rw [if_pos rfl]
+    · intro b _ hb
+      exact if_neg fun h => hb (Subtype.ext h)
+    · intro hq
+      exact absurd (Finset.mem_attach _ q) hq
+  have hsum : Polynomial.C (g (Sum.inl ())) * rootProduct r m
+      + ∑ i : Fin k, ∑ p ∈ Finset.Icc 1 (m i),
+          Polynomial.C (c i p) * dividedPart r m i p = 0 := by
+    rw [Fintype.sum_sum_type] at hg
+    simp only [dividedPartFamily, Sum.elim_inl, Sum.elim_inr, Finset.univ_unique,
+      Finset.sum_singleton, Polynomial.smul_eq_C_mul] at hg
+    have hblocks : ∀ i : Fin k,
+        ∑ p ∈ Finset.Icc 1 (m i), Polynomial.C (c i p) * dividedPart r m i p
+          = ∑ q ∈ (Finset.Icc 1 (m i)).attach,
+              Polynomial.C (g (Sum.inr ⟨i, q⟩)) * dividedPart r m i (q : ℕ) := by
+      intro i
+      rw [← Finset.sum_attach (Finset.Icc 1 (m i))
+        (fun p => Polynomial.C (c i p) * dividedPart r m i p)]
+      exact Finset.sum_congr rfl fun q _ => by rw [hcval i q]
+    have hsigma : ∑ x : ((i : Fin k) × {p // p ∈ Finset.Icc 1 (m i)}),
+        Polynomial.C (g (Sum.inr x)) * dividedPart r m x.1 (x.2 : ℕ)
+          = ∑ i : Fin k, ∑ q ∈ (Finset.Icc 1 (m i)).attach,
+              Polynomial.C (g (Sum.inr ⟨i, q⟩)) * dividedPart r m i (q : ℕ) := by
+      rw [← Finset.univ_sigma_univ, Finset.sum_sigma]
+      exact Finset.sum_congr rfl fun i _ => by rw [Finset.univ_eq_attach]
+    rw [Finset.sum_congr rfl fun i (_ : i ∈ Finset.univ) => hblocks i, ← hsigma]
+    exact hg
+  obtain ⟨hzero, hrest⟩ := base_and_dividedPart_eq_zero_of_sum_eq_zero hr m _ c hsum
+  rintro (⟨⟩ | ⟨i, q⟩)
+  · exact hzero
+  · rw [← hcval i q]
+    exact hrest i (q : ℕ) q.2
+
+theorem degree_dividedPartFamily_lt (r : Fin k → ℝ) (m : Fin k → ℕ)
+    (x : Unit ⊕ ((i : Fin k) × {p // p ∈ Finset.Icc 1 (m i)})) :
+    (dividedPartFamily r m x).degree < (((∑ l : Fin k, m l) + 1 : ℕ) : WithBot ℕ) := by
+  have hbound : ∀ P : Polynomial ℝ, P.natDegree ≤ ∑ l : Fin k, m l →
+      P.degree < (((∑ l : Fin k, m l) + 1 : ℕ) : WithBot ℕ) := by
+    intro P hP
+    refine lt_of_le_of_lt (Polynomial.degree_le_natDegree) ?_
+    exact_mod_cast Nat.lt_succ_of_le hP
+  rcases x with ⟨⟩ | ⟨i, q⟩
+  · exact hbound _ (le_of_eq (natDegree_rootProduct r m))
+  · refine hbound _ ?_
+    show (dividedPart r m i (q : ℕ)).natDegree ≤ ∑ l : Fin k, m l
+    rw [natDegree_dividedPart r m i (Finset.mem_Icc.1 q.2).2]
+    omega
+
+/-- **The divided principal parts saturate the polynomial module.**  The root product and its
+`∑ m i` divided principal parts are `1 + ∑ m i` independent polynomials of degree at most
+`∑ m i`, hence a basis of that space. -/
+theorem span_dividedPartFamily {r : Fin k → ℝ} (hr : Function.Injective r) (m : Fin k → ℕ) :
+    Submodule.span ℝ (Set.range (dividedPartFamily r m))
+      = Polynomial.degreeLT ℝ ((∑ l : Fin k, m l) + 1) := by
+  classical
+  haveI : Module.Finite ℝ (Polynomial.degreeLT ℝ ((∑ l : Fin k, m l) + 1)) :=
+    Module.Finite.equiv (Polynomial.degreeLTEquiv ℝ ((∑ l : Fin k, m l) + 1)).symm
+  refine Submodule.eq_of_le_of_finrank_eq ?_ ?_
+  · rw [Submodule.span_le]
+    rintro _ ⟨x, rfl⟩
+    exact Polynomial.mem_degreeLT.2 (degree_dividedPartFamily_lt r m x)
+  · rw [finrank_span_eq_card (linearIndependent_dividedPartFamily hr m),
+      (Polynomial.degreeLTEquiv ℝ ((∑ l : Fin k, m l) + 1)).finrank_eq]
+    simp only [Fintype.card_sum, Fintype.card_sigma, Fintype.card_coe, Fintype.card_unit,
+      Nat.card_Icc, Module.finrank_fin_fun, Nat.add_sub_cancel]
+    omega
 
 end GaloisForLFunctions.HTGeometry
 

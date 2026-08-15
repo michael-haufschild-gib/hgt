@@ -244,7 +244,7 @@ Current Nature verdict: `[DO NOT WRITE MANUSCRIPT]`.
 ## Post-freeze typed-diamond carrier boundary
 
 The first exact algebraic carrier is now isolated in
-`../2-fully-proven/not_new_scientific_knowledge/event-order-diamond-carrier-boundary.md`.
+`../3-formalized/not_new_scientific_knowledge/event-order-diamond-carrier-boundary.md`.
 It does not alter the frozen conjecture.
 
 Modeling two opposite histories only as \(BA\) and \(AB\) assumes one history-independent event

@@ -572,6 +572,17 @@ theorem routeUParityFamily_odd_diag_eq_zero (σ : ℝ) (r : Fin k → ℝ) (m : 
     (routeUJetDescendant (m i) (r i) (multiRegular r m G i) ((j : ℕ) + 1))
     (by omega) (by omega) hrad hrad' h1 h2
 
+/-- **(RJRR.15) A repeated root forces excess degeneracy.**  The parity count already exceeds the
+even flag by more than one, so a positive multiplicity excess gives at least `E + 2` independent
+zero-energy directions. -/
+theorem finrank_routeUParityFamily_ge {r : Fin k → ℝ} (hr : Function.Injective r)
+    (m : Fin k → ℕ) (G : ℝ → ℝ) {S : Set ℝ} (hS : S.Infinite) (hG : ∀ u ∈ S, G u ≠ 0)
+    (hE : 0 < ∑ i : Fin k, (m i - 1)) :
+    (∑ i : Fin k, (m i - 1)) + 2
+      ≤ Module.finrank ℝ (Submodule.span ℝ (Set.range (routeUParityFamily r m G))) := by
+  rw [finrank_routeUParityFamily hr m G hS hG]
+  omega
+
 /-! ## The sharpened count with the terminal alternatives -/
 
 /-- The parity directions selected by an even order set `A` and an odd order set `B`. -/

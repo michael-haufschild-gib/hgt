@@ -335,3 +335,85 @@ analytic canonical product in one theorem.  Partial formalization would not just
 - 2026-07-11 -- Proved residual full complex translation independence, exact order one, all-power
   maximal HT, and a rational-quartet same-profield pair with identical real gap process and opposite
   real-zero predicates.
+
+## 2026-08-15 — the probability half is formalized
+
+The prescribed-process half of the theorem, sections *Prescribed stationary gap process* and *Exact
+preservation of the gap-process law*, is now Lean-closed and unconditional.  Every capstone below
+reports only `propext`, `Classical.choice`, `Quot.sound`.
+
+**Birkhoff's pointwise ergodic theorem had to be built.**  Mathlib carries `birkhoffSum`,
+`birkhoffAverage`, `Ergodic`, and the *mean* ergodic theorem, but not the pointwise one.
+
+- `formal/GaloisForLFunctions/HTGeometry/MaximalErgodicTheorem.lean` proves Garsia's maximal
+  ergodic theorem `setIntegral_nonneg_of_maxBirkhoff_pos`: with
+  `maxBirkhoff T f N = max (S_0 f, …, S_N f)`, the integral of `f` over `{maxBirkhoff > 0}` is
+  nonnegative.  Where the running maximum is positive it is attained at a positive index, so
+  `M_N ≤ f + M_N ∘ T` there, while `M_N` vanishes off the set and `∫ M_N ∘ T = ∫ M_N`.
+- `formal/GaloisForLFunctions/HTGeometry/BirkhoffPointwise.lean` proves
+  `ae_tendsto_birkhoffAverage`.  The proof avoids `limsup` entirely.  The superlevel set of the
+  upper limit is realized as
+
+  ```text
+  limsupGT T f a = ⋃ (r : ℚ) (_ : a < r), {x | r n < S_n f x for infinitely many n},
+  ```
+
+  which is measurable and **exactly** `T`-invariant — the rational cushion absorbs the additive
+  defect `S_n f (T x) = S_{n+1} f x − f x`.  Ergodicity makes each such set null or conull, the
+  maximal theorem bounds the threshold `sSup {a | μ (limsupGT T f a) = 1}` above by `∫ f`, and the
+  same bound applied to `−f` bounds the lower threshold, so both thresholds equal the mean and the
+  averages converge.
+
+**Reducing the uncountable family of block observables to a countable one.**
+`formal/GaloisForLFunctions/HTGeometry/CountableTestFamily.lean` builds
+
+```text
+testFamily E = {clampFun m ψ : m : ℕ, ψ ∈ testDense E} ∪ {bumpFun R : R : ℕ}
+```
+
+from a countable dense subset of `C(E, ℝ)` for uniform convergence on compact sets, plus the radial
+cut-offs `bumpFun R`.  Its `tendsto_average_of_testFamily` upgrades convergence of the empirical
+averages along `testFamily` to convergence for **every** bounded continuous function: the cut-offs
+supply the uniform tail control that turns approximation on a ball into approximation everywhere.
+
+**The generic sequence.**
+`formal/GaloisForLFunctions/HTGeometry/GenericGapSequence.lean` proves `exists_generic_sequence`:
+for a shift-ergodic probability law `P` on `ℕ → ℝ` with integrable, mean-one first coordinate and
+almost surely positive coordinates there is a deterministic `g` with `g_j > 0`,
+`N⁻¹ ∑_{j<N} g_j → 1`, and, for every block length `k` and every bounded continuous
+`Φ : (Fin k → ℝ) → ℝ`,
+
+```text
+N⁻¹ ∑_{j<N} Φ (g_j, …, g_{j+k-1}) → ∫ Φ (ω_0, …, ω_{k-1}) dP.
+```
+
+This is `(1)`–`(2)`, with bounded continuous in place of bounded Lipschitz.
+
+**The shrinking locations and the preservation law.**
+`formal/GaloisForLFunctions/HTGeometry/GapBlockLawStability.lean` defines
+`gapPartialSum`, `gapRadius g j = (1/2)^j · min (1, g_{j-1}, g_j) / 16`, and
+`gapLocation g θ j = gapPartialSum g j + gapRadius g j · tanh (θ_j)`, and proves `(4)`–`(8)`:
+
+```text
+tendsto_gapLocation_diff_sub          d_j(θ) − g_j → 0
+gapLocation_strictMono                the locations are strictly increasing
+gapLocation_pos                       the locations are positive
+tendsto_gapLocation_div               λ_j(θ) / j → 1
+tendsto_block_average_of_tendsto_sub  a null perturbation preserves every Lipschitz block average
+exists_prescribedGapProcess_locations the assembled statement, for every θ
+```
+
+The last is the exact content of `(8)`: for every parameter `θ`, every block length `k` and every
+bounded Lipschitz `Φ`, the perturbed gaps have the prescribed limit `∫ Φ dP_k`.
+
+**What remains.**  Only the canonical-product half.  The corpus already owns the complete residual
+maximal-translation-freeness engine, but for the *clock* divisor
+`movingCanonicalZero θ n = n + 1 + (1/4)·tanh (θ_n)`, with capstone
+`movingEvenCanonical_fullTranslationFreeness_denseResidual` over `θ ∈ ℓ^∞(ℝ)`.  Transporting it to
+the locations built here requires parameterizing that chain by an arbitrary base sequence and
+arbitrary shrinking radii.  The interface actually consumed downstream is small — positivity, strict
+monotonicity, injectivity, divergence, the coordinate derivative, positive coordinate speed, square
+summability of the reciprocals, and exponent of convergence one — but `SpacedRayNodePacket.lean`
+currently derives its row separation from `n + 3/4 < ζ_n < n + 5/4` and must instead *select* a
+spaced subsequence, which the divergence of the base supplies.  After that: the rational-quartet
+surgery and the all-power profield equality `T_n(F) = T_n(E)`.

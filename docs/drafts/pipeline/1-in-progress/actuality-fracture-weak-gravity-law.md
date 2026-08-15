@@ -214,9 +214,9 @@ This is a derived bridge, not a replacement for the frozen conjecture. It does n
 event channel, prove that it is physical actualization, or derive any force.
 
 Paper proof:
-`../2-fully-proven/not_new_scientific_knowledge/event-square-zero-unification-boundary.md`.
+`../3-formalized/not_new_scientific_knowledge/event-square-zero-unification-boundary.md`.
 Lean certificate:
-`../3-formalized/event-square-zero-unification-boundary.md`.
+`../3-formalized/not_new_scientific_knowledge/event-square-zero-unification-boundary-formalized.md`.
 
 ## First open core after the exact obstructions
 
@@ -322,4 +322,4 @@ Current Nature verdict: `[DO NOT WRITE MANUSCRIPT]`.
   insufficient for topology. A viable realization must derive a nonzero parent virtual class, a
   localized relative event class with clutching data, or a base-free index theory that reconstructs
   the continuum instead of assuming it. See
-  `../2-fully-proven/not_new_scientific_knowledge/event-topological-debt-conservation.md`.
+  `../3-formalized/not_new_scientific_knowledge/event-topological-debt-conservation.md`.

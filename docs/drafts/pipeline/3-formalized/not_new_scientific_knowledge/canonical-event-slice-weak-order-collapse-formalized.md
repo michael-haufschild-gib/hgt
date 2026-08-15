@@ -1,13 +1,12 @@
 # Canonical event-slice weak-order collapse
 
-- **ID:** `canonical-event-slice-weak-order-collapse`
+- **ID:** `canonical-event-slice-weak-order-collapse-formalized`
 - **Stage:** 3-formalized
 - **Type:** ORDER-THEORETIC NO-GO / POSITIVE CLASSIFICATION / SPACETIME BRIDGE
 - **Status:** `[LEAN-PROVED] [REDISCOVERED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
-- **Paper proof:**
-  `../2-fully-proven/not_new_scientific_knowledge/canonical-event-slice-weak-order-collapse.md`
+- **Paper proof:** `canonical-event-slice-weak-order-collapse.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/HTGeometry/CanonicalEventSlice.lean`
+  `../../../../../formal/GaloisForLFunctions/HTGeometry/CanonicalEventSlice.lean`
 
 ## Exact formal theorem
 
@@ -41,6 +40,13 @@ Additional exact declarations:
 - `greatestCausalSlices_iff_augmentedIncomparable_transitive`
 - `canonicalCausalSlice_eq_iff`
 - `lt_or_gt_of_not_augmentedIncomparable`
+- `augmentedIncomparable_equivalence`
+- `greatestCausalSliceAt_eq_canonical`
+- `canonicalCausalSlice_causalAntichain`
+- `canonicalCausalSlice_eq_or_lt_or_gt`
+- `canonicalCausalSlice_lt_wellDefined`
+- `finite_uniqueMaximalCausalAntichains_iff_augmentedIncomparable_transitive`
+- `exists_maximalCausalAntichain_superset`
 
 ## Exact conclusion
 
@@ -61,7 +67,7 @@ lake env lean GaloisForLFunctions/HTGeometry/CanonicalEventSlice.lean
 lake build GaloisForLFunctions.HTGeometry.CanonicalEventSlice
 ```
 
-Both passed. Dedicated module build completed `429/429`.
+Both passed. The re-audited dedicated module build completed `728/728`.
 
 The separate `#print axioms` audit reports:
 
@@ -69,10 +75,19 @@ The separate `#print axioms` audit reports:
 orderGreatestCausalSlices_iff_augmentedIncomparable_transitive
   [propext]
 
-canonicalCausalSlice_eq_iff
+finite_uniqueMaximalCausalAntichains_iff_augmentedIncomparable_transitive
+  [propext, Classical.choice, Quot.sound]
+
+augmentedIncomparable_equivalence
+  []
+
+greatestCausalSliceAt_eq_canonical
   [propext, Quot.sound]
 
-lt_or_gt_of_not_augmentedIncomparable
+canonicalCausalSlice_lt_wellDefined
+  [propext, Classical.choice, Quot.sound]
+
+canonicalCausalSlice_eq_or_lt_or_gt
   [propext, Classical.choice, Quot.sound]
 ```
 
@@ -100,3 +115,5 @@ maximal antichain determined by causal order alone.
 
 - 2026-07-29 — formalized the exact positive classification extracted from the causality-only
   canonical-slice no-go.
+- 2026-08-15 — added finite maximal-antichain extension, the stated finite iff, and the exact
+  representative-independent quotient-order facts; direct source and focused build audits passed.

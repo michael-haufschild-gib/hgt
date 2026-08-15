@@ -136,3 +136,54 @@ contradict the theorem's content, so no Lean wrapper is added.
 - [x] construct its exact finite effective residual while retaining the infinite boundary resolvent
 - [ ] prove its kernel is zero through every aperture
 - [ ] RH
+
+## Lean status
+
+`[FORMALIZED]` — supersedes the "no Lean wrapper is added" decision recorded above, which is stale.
+The worry there was that a *finite-dimensional* shadow would contradict the theorem; the module
+below states the theorem in its genuine direction — no finite-dimensional space contains the Hankel
+columns — so nothing is weakened.
+
+Module: `formal/GaloisForLFunctions/RHTower/CCMEvansBoundaryInfiniteRank.lean`
+(10 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired
+into `formal/GaloisForLFunctions/RHTower.lean`).
+
+What is proved in Lean:
+
+- `exterior_displacement_split` — **equations (5) → (6)**: `x - y = (x-a) + (a-y)`, the exact change
+  of variables that turns the exterior trace into a Hankel kernel.
+- `hankelColumn`, `hankelColumn_eq_realTranslate` — **equation (6)**: the columns `t ↦ k(s+t)` of
+  the Hankel kernel are exactly the translates of `k`.
+- `mem_expPolySpace_of_hankelColumns` — **section 3, Kronecker step**: if every Hankel column lies
+  in one finite-dimensional space then the translation span of `k` is finite-dimensional, so by the
+  Anselone–Korevaar equivalence (`HTGeometry.mem_expPolySpace_iff_finiteDimensional_translationSpan`,
+  the continuous form of Kronecker's finite-rank Hankel theorem, already in the corpus) `k` is an
+  exponential polynomial.
+- `exists_finite_frequencies` — **equation (7)**: such a kernel is a finite sum of blocks
+  `P_j(t) e^{λ_j t}`, i.e. it has only finitely many frequencies.
+- `exists_entire_extension_of_hankelColumns` — the regularity step: a finite-rank Hankel kernel
+  extends to an **entire** function, so its continuation has no singularity at all.
+- `not_hankelColumns_finiteDimensional` — **the infinite-rank theorem**: contrapositively, a
+  continuous kernel with no entire extension admits *no* finite-dimensional space containing all of
+  its Hankel columns.  This is the card's conclusion for `E_{a,+}`.
+- `digammaArgument_eq_neg_natCast_iff`, `digammaArgumentNeg_eq_neg_natCast_iff` — **equation (4)**:
+  the two digamma arguments `1/4 ± i z/2` hit the nonpositive integer `-n` exactly at
+  `z = ± i(2n + 1/2)`.
+- `gammaPoleLattice`, `gammaPoleLattice_infinite` — the pole lattice is infinite.
+- `not_subset_rootSet_of_gammaPoleLattice` — **section 1, conclusion**: the lattice is not contained
+  in the zero set of any nonzero polynomial, so a rational factorization cannot absorb it and `c_a`
+  is not rational.
+
+Reused, not rebuilt: `HTGeometry.realTranslate`, `translationSpan`,
+`mem_expPolySpace_iff_finiteDimensional_translationSpan`,
+`exists_expMonomialSpace_of_mem_expPolySpace` (`AnseloneKorevaarTranslationRank`);
+`expPolySpace`, `exists_entire_extension`, `analyticOnNhd_of_mem_expPolySpaceC`
+(`RealExponentialPolynomial`); `expMonomialSpace_le_blockSpan` (`ExponentialPolynomialModes`, built
+for `ccm-characteristic-crossing-interior-mode-reduction-law`).
+
+Deliberately outside the Lean statement (cited parents, not results of this card):
+
+- The distribution kernel `k_a` of `c_a(D)` and the integral form `(5)` of the exterior trace.
+- The meromorphic continuation `(3)` of the Gamma symbol and the identification of its poles with
+  the poles of `Γ` — only the *lattice* `(4)` is formalized.
+- The identification of the Laplace transform of the kernel with the half-plane branch of `c_a`.

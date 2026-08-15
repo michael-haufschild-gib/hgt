@@ -1,9 +1,10 @@
 # Irreversible event coupling is square-zero and vanishes in the symmetry quotient
 
-- **ID:** `event-square-zero-unification-boundary`
+- **ID:** `event-square-zero-unification-boundary-formalized`
 - **Stage:** 3-formalized
-- **Type:** THEOREM (Lean) / NONSEMISIMPLE UNIFICATION BOUNDARY
-- **Parent:** `../2-fully-proven/not_new_scientific_knowledge/event-square-zero-unification-boundary.md`
+- **Type:** CERTIFICATE (Lean 4)
+- **Paper proof:** `event-square-zero-unification-boundary.md`
+- **Status:** `[LEAN-FORMALIZED] [UNCONDITIONAL]`
 - **Scientific status:** `[LEAN-PROVED] [REDISCOVERED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Lean module:** `GaloisForLFunctions.HTGeometry.EventSquareZeroUnificationBoundary`
 
@@ -27,8 +28,9 @@ The Lean module proves unconditionally:
 1. `EventUpperBlock.toEnd_injective` — block parameters are faithfully represented as
    endomorphisms of \(K\times I\);
 2. `EventUpperBlock.toEnd_mul` — block multiplication is ordinary endomorphism composition;
-3. `EventUpperBlock.radical_mul_radical` — every product of two pure off-diagonal channels is
-   zero;
+3. `EventUpperBlock.radical_mul_radical`, `EventUpperBlock.mul_radical`, and
+   `EventUpperBlock.radical_mul` — the pure off-diagonal channels square to zero and are a
+   two-sided radical direction under every upper block;
 4. `EventUpperBlock.diagonal_mul_radical` and
    `EventUpperBlock.radical_mul_diagonal` — endpoint algebras act on the event direction from the
    left and right;
@@ -44,6 +46,9 @@ The Lean module proves unconditionally:
 8. `EventUpperBlock.commutator_eq`, `EventUpperBlock.radical_commutator`, and
    `EventUpperBlock.commutator_radical` — the pure event direction is commutative under its own
    bracket and transforms by the exact endpoint bimodule commutator \(ac-cd\).
+9. `splitQuadraticSolder_covariant_cancellation` from the imported
+   `EventSecondOrderSoldering` module — opposite typed event channels retain their quadratic
+   composite while the intermediate endpoint action cancels from its covariant defect.
 
 No dimension, field, finite-rank, semisimplicity, Lie-group, spacetime, gauge-force, or physical
 event hypothesis is used.
@@ -73,7 +78,8 @@ quotient with Lorentz and Standard Model symmetries gives no unification.
   `lake env lean GaloisForLFunctions/HTGeometry/EventSquareZeroUnificationBoundary.lean`
 - [x] final module build with
   `lake build GaloisForLFunctions.HTGeometry.EventSquareZeroUnificationBoundary`
-- [x] axiom audit: strongest declarations use only Lean's standard `propext` and `Quot.sound`
+- [x] axiom audit: certified declarations use only Lean's standard `propext`,
+  `Classical.choice`, and `Quot.sound`
 - [x] formal lint
 
 ## Gates

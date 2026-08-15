@@ -1,7 +1,8 @@
 # Event topology is conserved as source--target debt
 
 - **ID:** `event-topological-debt-conservation`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Formalized companion:** `event-topological-debt-conservation-formalized.md`
 - **Type:** THEOREM (paper)
 - **Status:** `[PAPER-PROVED] [LEAN-PROVEN] [REDISCOVERED] [BRIDGE]`
 - **Parent conjectures:**
@@ -243,3 +244,5 @@ infrastructure exists in this Lean toolchain.
 - 2026-07-29 — formalized the exact arbitrary-additive-group theorem and finite telescope. Focused
   build `GaloisForLFunctions.HTGeometry.EventTopologicalDebt` passed 8475/8475 jobs. Axiom audit
   found only `propext`, `Classical.choice`, and `Quot.sound`.
+- 2026-08-15 — re-audited from source with `lake env lean` and focused leaf build; all five
+  capstones remain closed with only `propext`, `Classical.choice`, and `Quot.sound`.

@@ -1,9 +1,11 @@
 # Typed event-order diamonds are gauge-covariant but select no force
 
 - **ID:** `event-order-diamond-carrier-boundary`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / CARRIER CLASSIFICATION / NO-SELECTION BOUNDARY
 - **Parent:** `../../1-in-progress/actuality-order-curvature-law.md`
+- **Formalized companion:**
+  `event-order-diamond-carrier-boundary-formalized.md`
 - **Scientific status:** `[PAPER-PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** A two-history defect through different intermediate event types is covariant under
   arbitrary vertex-frame changes and needs no inverse event, but every linear map occurs as such a

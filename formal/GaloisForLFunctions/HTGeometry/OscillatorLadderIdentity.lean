@@ -104,9 +104,118 @@ theorem integral_oscLower_sq_interval {mu : ℝ} {v v' : ℝ → ℝ} (R : ℝ)
     refine intervalIntegral.integral_eq_sub_of_hasDerivAt
       (fun x _ => hasDerivAt_oscBoundary hv hv' x) ?_
     exact (hcL.add (continuous_const.mul hcs)).intervalIntegrable _ _
-  rw [intervalIntegral.integral_add (hcL.intervalIntegrable _ _)
-    ((continuous_const.mul hcs).intervalIntegrable _ _),
-    intervalIntegral.integral_const_mul] at hFTC
+  have hf : IntervalIntegrable (fun x : ℝ => oscLower v v' x ^ 2) volume (-R) R := by
+    apply Continuous.intervalIntegrable
+    exact hcL
+  have hg : IntervalIntegrable (fun x : ℝ => (1 - mu) * v x ^ 2) volume (-R) R := by
+    apply Continuous.intervalIntegrable
+    exact continuous_const.mul hcs
+  have hsplit : (∫ x in (-R)..R, (oscLower v v' x ^ 2 + (1 - mu) * v x ^ 2))
+      = (∫ x in (-R)..R, oscLower v v' x ^ 2)
+        + ∫ x in (-R)..R, (1 - mu) * v x ^ 2 :=
+    intervalIntegral.integral_add hf hg
+  have hconst : (∫ x in (-R)..R, (1 - mu) * v x ^ 2)
+      = (1 - mu) * ∫ x in (-R)..R, v x ^ 2 :=
+    intervalIntegral.integral_const_mul _ _
+  rw [hsplit, hconst] at hFTC
   linarith
+
+/-- The symmetric truncations of the ladder identity are uniformly bounded, so the lowered solution
+is square integrable. -/
+theorem integrable_oscLower_sq {mu : ℝ} {v v' : ℝ → ℝ}
+    (hv : ∀ x, HasDerivAt v (v' x) x)
+    (hv' : ∀ x, HasDerivAt v' ((x ^ 2 - mu) * v x) x)
+    (hB : Tendsto (fun R : ℝ => oscBoundary v v' R) atTop (𝓝 0))
+    (hBneg : Tendsto (fun R : ℝ => oscBoundary v v' (-R)) atTop (𝓝 0))
+    (hint : Integrable (fun x => v x ^ 2)) :
+    Integrable (fun x => oscLower v v' x ^ 2) := by
+  have hcv : Continuous v := continuous_of_hasDerivAt hv
+  have hcv' : Continuous v' := continuous_of_hasDerivAt hv'
+  have hcL : Continuous fun x => oscLower v v' x ^ 2 := by
+    have hc : Continuous fun x => oscLower v v' x := by
+      simp only [oscLower]
+      exact hcv'.add (continuous_id.mul hcv)
+    exact hc.pow 2
+  have hB1 : ∀ᶠ R : ℝ in atTop, |oscBoundary v v' R| < 1 := by
+    have := hB.eventually (eventually_lt_nhds (by norm_num : (0 : ℝ) < 1))
+    filter_upwards [hB.eventually (Metric.ball_mem_nhds (0 : ℝ) one_pos)] with R hR
+    simpa [Real.dist_eq] using hR
+  have hB2 : ∀ᶠ R : ℝ in atTop, |oscBoundary v v' (-R)| < 1 := by
+    filter_upwards [hBneg.eventually (Metric.ball_mem_nhds (0 : ℝ) one_pos)] with R hR
+    simpa [Real.dist_eq] using hR
+  refine MeasureTheory.integrable_of_intervalIntegral_norm_bounded
+    (2 + |mu - 1| * ∫ x, v x ^ 2) (a := fun R : ℝ => -R) (b := fun R : ℝ => R)
+    (l := atTop) ?_ (Filter.tendsto_neg_atBot_iff.2 Filter.tendsto_id) Filter.tendsto_id ?_
+  · intro R
+    exact (hcL.integrableOn_Icc).mono_set Set.Ioc_subset_Icc_self
+  · filter_upwards [hB1, hB2, eventually_ge_atTop (0 : ℝ)] with R h1 h2 hR0
+    have hid := integral_oscLower_sq_interval (mu := mu) R hv hv'
+    have hnorm : (∫ x in (-R)..R, ‖oscLower v v' x ^ 2‖)
+        = ∫ x in (-R)..R, oscLower v v' x ^ 2 := by
+      refine intervalIntegral.integral_congr fun x _ => ?_
+      rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
+    rw [hnorm, hid]
+    have hsub : (∫ x in (-R)..R, v x ^ 2) ≤ ∫ x, v x ^ 2 := by
+      rw [intervalIntegral.integral_of_le (by linarith)]
+      exact MeasureTheory.setIntegral_le_integral hint
+        (Filter.Eventually.of_forall fun x => sq_nonneg _)
+    have hsubnn : (0 : ℝ) ≤ ∫ x in (-R)..R, v x ^ 2 := by
+      rw [intervalIntegral.integral_of_le (by linarith)]
+      exact MeasureTheory.setIntegral_nonneg measurableSet_Ioc fun x _ => sq_nonneg _
+    have hmul : (mu - 1) * (∫ x in (-R)..R, v x ^ 2) ≤ |mu - 1| * ∫ x, v x ^ 2 := by
+      have h3 : (mu - 1) * (∫ x in (-R)..R, v x ^ 2)
+          ≤ |mu - 1| * (∫ x in (-R)..R, v x ^ 2) :=
+        mul_le_mul_of_nonneg_right (le_abs_self _) hsubnn
+      have h4 : |mu - 1| * (∫ x in (-R)..R, v x ^ 2) ≤ |mu - 1| * ∫ x, v x ^ 2 :=
+        mul_le_mul_of_nonneg_left hsub (abs_nonneg _)
+      linarith
+    have hb1 : oscBoundary v v' R ≤ 1 := le_of_lt (lt_of_le_of_lt (le_abs_self _) h1)
+    have hb2 : -oscBoundary v v' (-R) ≤ 1 := by
+      have := neg_le_abs (oscBoundary v v' (-R))
+      linarith
+    linarith
+
+/-- **Ladder norm identity.**  With vanishing boundary terms the lowered solution's square norm is
+`(μ − 1)` times the original's. -/
+theorem integral_oscLower_sq_eq {mu : ℝ} {v v' : ℝ → ℝ}
+    (hv : ∀ x, HasDerivAt v (v' x) x)
+    (hv' : ∀ x, HasDerivAt v' ((x ^ 2 - mu) * v x) x)
+    (hB : Tendsto (fun R : ℝ => oscBoundary v v' R) atTop (𝓝 0))
+    (hBneg : Tendsto (fun R : ℝ => oscBoundary v v' (-R)) atTop (𝓝 0))
+    (hint : Integrable (fun x => v x ^ 2)) :
+    (∫ x, oscLower v v' x ^ 2) = (mu - 1) * ∫ x, v x ^ 2 := by
+  have hintL := integrable_oscLower_sq hv hv' hB hBneg hint
+  have h1 : Tendsto (fun R : ℝ => ∫ x in (-R)..R, oscLower v v' x ^ 2) atTop
+      (𝓝 (∫ x, oscLower v v' x ^ 2)) :=
+    MeasureTheory.intervalIntegral_tendsto_integral hintL
+      (Filter.tendsto_neg_atBot_iff.2 Filter.tendsto_id) Filter.tendsto_id
+  have h2 : Tendsto (fun R : ℝ => ∫ x in (-R)..R, v x ^ 2) atTop (𝓝 (∫ x, v x ^ 2)) :=
+    MeasureTheory.intervalIntegral_tendsto_integral hint
+      (Filter.tendsto_neg_atBot_iff.2 Filter.tendsto_id) Filter.tendsto_id
+  have h3 : Tendsto (fun R : ℝ => oscBoundary v v' R - oscBoundary v v' (-R)
+      + (mu - 1) * ∫ x in (-R)..R, v x ^ 2) atTop
+      (𝓝 (0 - 0 + (mu - 1) * ∫ x, v x ^ 2)) :=
+    (hB.sub hBneg).add (h2.const_mul (mu - 1))
+  have heq : (fun R : ℝ => ∫ x in (-R)..R, oscLower v v' x ^ 2)
+      = fun R : ℝ => oscBoundary v v' R - oscBoundary v v' (-R)
+        + (mu - 1) * ∫ x in (-R)..R, v x ^ 2 :=
+    funext fun R => integral_oscLower_sq_interval R hv hv'
+  rw [heq] at h1
+  have := tendsto_nhds_unique h1 h3
+  simpa using this
+
+/-- **The separation constant is at least one** for a nontrivial square-integrable solution. -/
+theorem one_le_of_integrable_of_pos {mu : ℝ} {v v' : ℝ → ℝ}
+    (hv : ∀ x, HasDerivAt v (v' x) x)
+    (hv' : ∀ x, HasDerivAt v' ((x ^ 2 - mu) * v x) x)
+    (hB : Tendsto (fun R : ℝ => oscBoundary v v' R) atTop (𝓝 0))
+    (hBneg : Tendsto (fun R : ℝ => oscBoundary v v' (-R)) atTop (𝓝 0))
+    (hint : Integrable (fun x => v x ^ 2))
+    (hpos : 0 < ∫ x, v x ^ 2) : 1 ≤ mu := by
+  have hid := integral_oscLower_sq_eq hv hv' hB hBneg hint
+  have hnn : (0 : ℝ) ≤ ∫ x, oscLower v v' x ^ 2 :=
+    MeasureTheory.integral_nonneg fun x => sq_nonneg _
+  rw [hid] at hnn
+  nlinarith
 
 end GaloisForLFunctions.HTGeometry

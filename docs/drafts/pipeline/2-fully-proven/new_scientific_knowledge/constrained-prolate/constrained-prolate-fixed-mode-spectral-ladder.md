@@ -893,3 +893,100 @@ The corpus owns the oscillator ladder on Schwartz space
 that ladder, which is where the rigidity statement has to be built: `A = d/dξ + ξ` satisfies
 `A†A = −d²/dξ² + ξ² − 1`, so `‖Av‖² = (μ−1)‖v‖²` forces `μ ≥ 1`, `Av` solves the same equation at
 `μ−2`, and iterating must terminate, with `Av = 0` solved only by `Ce^{−ξ²/2}`.
+
+## Lean progress — spectral rigidity of the harmonic oscillator is now formal
+
+The classical statement named above as the single missing input is now an unconditional Lean
+theorem, built from scratch (mathlib has no oscillator spectral theory in ODE form).  All
+declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+```text
+HTGeometry/OscillatorEnergyMonotone.lean
+    oscEnergy mu v v' ξ = v′² − (ξ²−μ)v²        E′ = −2ξv²,  antitone on the positive axis
+    oscRatio  mu v v' ξ = −E/(ξ²−μ)             G′ = 2ξv′²/(ξ²−μ)² ≥ 0,  G ≤ v²
+
+HTGeometry/OscillatorProductMonotone.lean
+    oscProduct v v' ξ = v v′                    (v v′)′ = v′² + (ξ²−μ)v² ≥ 0 past the turning point
+    not_integrableOn_Ici_of_le                  a positive floor on a half line kills integrability
+    hasDerivAt_reflect                          the potential is even, so ξ ↦ v(−ξ) solves the same
+    oscProduct_neg_of_integrableOn              L² ⇒ v v′ < 0 past the turning point
+    oscEnergy_nonneg_of_integrableOn            L² ⇒ E ≥ 0
+
+HTGeometry/OscillatorRecessiveLimits.lean
+    not_deriv_le_neg_of_nonneg                  the one mechanism used throughout
+    sign_const_of_ne_zero                       a nowhere-zero continuous function has one sign
+    tendsto_oscProduct_zero, tendsto_deriv_zero_of_pos
+    tendsto_weighted_sq_zero, tendsto_mul_sq_zero
+
+HTGeometry/OscillatorLadderIdentity.lean
+    oscLower v v' = v′ + ξv,  oscBoundary v v' = v v′ + ξv²
+    hasDerivAt_oscBoundary                      B′ = (Av)² + (1−μ)v²
+    hasDerivAt_oscLower, hasDerivAt_oscLowerDeriv   Av solves the same equation at μ−2
+    integral_oscLower_sq_interval               ∫_{−R}^{R}(Av)² = B(R) − B(−R) + (μ−1)∫v²
+    integrable_oscLower_sq, integral_oscLower_sq_eq   ‖Av‖² = (μ−1)‖v‖²
+    one_le_of_integrable_of_pos                 μ ≥ 1
+
+HTGeometry/OscillatorBoundaryVanishing.lean
+    tendsto_oscBoundary_atTop_zero, tendsto_oscBoundary_atBot_zero
+
+HTGeometry/OscillatorSpectralRigidity.lean
+    eq_zero_of_phase_zero                       ODE uniqueness in both directions, from Grönwall
+    integral_sq_pos_of_nontrivial
+    exists_rung_of_integrable :
+        v″ = (ξ²−μ)v ,  v nontrivial ,  v ∈ L²   ⟹   ∃ n : ℕ, μ = 2n+1
+```
+
+The proof uses no decay rate, no spectral theorem, no compactness and no Fourier analysis.  Every
+step is one monotone quantity plus the observation that a nonnegative function cannot have a
+derivative bounded above by a negative constant.  The energy `E` separates recessive from dominant
+behaviour; the product `v v′` supplies the sign, the boundary limits and the integrability of `Av`;
+the ladder identity is a single application of the fundamental theorem of calculus to
+`B = v v′ + ξ v²`; and the induction on `μ ≤ 2n+1` terminates because `Av` either vanishes
+identically — pinning `μ = 1` — or is again a nontrivial `L²` solution at `μ − 2`.
+
+With this in hand the remaining prolate obligations are: a two-sided bound on the separation
+constants `μ_c = c·s_c` (the lower bound `s ≥ 0` is already in
+`exists_even_prolateHermiteRescale_of_signedMode`), a subsequence argument on the resulting compact
+range, and the identification of the limiting index with the mode index.
+
+## The remaining prolate chain, in order
+
+With oscillator spectral rigidity formal, the eigenvalue half reduces to four steps, each with a
+definite route and no literature import.
+
+1. **A uniform upper bound `μ_c ≤ M_n`.**  This is the only genuinely variational step, and it is
+   where the mode *index* enters: `μ_c = c·s_c` is the oscillator energy of the rescaled mode, and
+   bounding it for a fixed index is the min–max principle against an `(n+1)`-dimensional trial
+   space.  The corpus already owns the `n = 0` machinery in the crude form — `ProlateGaussianTrial`
+   (the exact action `L_c v = (−c + 3cx² − c²x⁴)v` for `v = e^{−cx²/2}`),
+   `ProlateGaussianTrialPositive` (`Rayleigh(v) > −c²/2·‖v‖²`), and
+   `ProlateLowSeparationMode.exists_even_joint_prolate_eigen_separation_lt_half` (the eigenspace
+   decomposition turning a trial estimate into an actual mode).  The sharp threshold is the same
+   computation at the right scale: `Rayleigh(v) ≥ −c‖v‖²` is exactly
+
+   ```text
+   ∫_{-1}^{1} (3c x² − c² x⁴) e^{−c x²} dx ≥ 0 ,
+   ```
+
+   which after `t = √c x` is `∫_{−√c}^{√c} t²(3 − t²)e^{−t²}dt ≥ 0`, positive in the limit because
+   `∫_ℝ t²(3−t²)e^{−t²} = (3/4)√π > 0`, with an exponentially small truncation defect.  That gives
+   `μ_0 ≤ 1`.  For index `n` the same argument runs with the `(n+1)`-dimensional span of
+   `H_k(√c x)e^{−c x²/2}`, `k ≤ n`.
+
+2. **The limit profile.**  `Ψ_c = u_c/u_c(0)` is uniformly Cauchy in `C¹` on every window: the
+   Grönwall comparison of `LinearSecondOrderComparison` applies to *two* perturbed members as well
+   as to a member against the limit equation (a one-line generalization of `phasePair_dist_le` to
+   `v″ = P₂v + Q₂v′`).  Completeness of `ℝ` then defines `Ψ*(x) = lim_c Ψ_c(x)`, `Ψ*′` likewise, and
+   passing the integral form `Ψ_c′(x) = ∫_0^x (P_cΨ_c + Q_cΨ_c′)` to the limit — legitimate by
+   uniform convergence on the compact window — shows `Ψ*″ = (ξ² − μ*)Ψ*`.  No ODE existence theory
+   is needed, only the family itself.
+
+3. **`Ψ* ∈ L²`.**  `integral_rescaled_secondMoment_le` gives `∫ξ²u_c² ≤ μ_c ∫u_c²`, so Chebyshev
+   bounds the mass outside a window by `μ_c/K²` times the total; the window integrals converge, and
+   the total is therefore bounded.  Fatou on windows gives `∫Ψ*² < ∞`.
+
+4. **`exists_rung_of_integrable`** then forces `μ* = 2m+1`, and every subsequential limit of the
+   bounded family `μ_c` is such an `m`; identifying `m` with the mode index `n` is the last step,
+   and follows from the ordering of the greedy signed values
+   (`ProlateSignedLeakageOrdering.abs_sgVal_antitone`) together with the strict separation of the
+   rungs.

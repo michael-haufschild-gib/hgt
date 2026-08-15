@@ -33,7 +33,7 @@ theorem phase_ibp_step {E Eder V Vder G : ℝ → R} {a b : ℝ}
     (hVint : IntervalIntegrable Vder volume a b)
     (hprod₁ : IntervalIntegrable (fun t => Eder t * V t) volume a b)
     (hprod₂ : IntervalIntegrable (fun t => E t * Vder t) volume a b)
-    (hrel : ∀ t, E t * G t = (Complex.I : ℂ) • (Eder t * V t)) :
+    (hrel : ∀ t ∈ uIcc a b, E t * G t = (Complex.I : ℂ) • (Eder t * V t)) :
     (∫ t in a..b, E t * G t)
       = (Complex.I : ℂ) • ((E b * V b - E a * V a) - ∫ t in a..b, E t * Vder t) := by
   have hIBP := intervalIntegral.integral_deriv_mul_eq_sub hE hV hEint hVint
@@ -48,7 +48,7 @@ theorem phase_ibp_step {E Eder V Vder G : ℝ → R} {a b : ℝ}
   have hcongr : (∫ t in a..b, E t * G t)
       = (Complex.I : ℂ) • ∫ t in a..b, Eder t * V t := by
     rw [← intervalIntegral.integral_smul]
-    exact intervalIntegral.integral_congr fun t _ => hrel t
+    exact intervalIntegral.integral_congr fun t ht => hrel t ht
   rw [hcongr, hfirst]
 
 /-! ## The relation supplied by the phase equation -/
@@ -56,12 +56,12 @@ theorem phase_ibp_step {E Eder V Vder G : ℝ → R} {a b : ℝ}
 omit [CompleteSpace R] in
 /-- **The phase equation inverts.**  From `E' = −i E C` with `C` a unit, `E` is recovered as
 `i E' C⁻¹`, and the same holds after multiplying by any amplitude. -/
-theorem phase_rel_of_generator {E Eder C : ℝ → R}
-    (hgen : ∀ t, Eder t = (-(Complex.I) : ℂ) • (E t * C t))
-    (hu : ∀ t, IsUnit (C t)) (G : ℝ → R) (t : ℝ) :
+theorem phase_rel_of_generator {E Eder C : ℝ → R} {t : ℝ}
+    (hgen : Eder t = (-(Complex.I) : ℂ) • (E t * C t))
+    (hu : IsUnit (C t)) (G : ℝ → R) :
     E t * G t = (Complex.I : ℂ) • (Eder t * (invFamily C t * G t)) := by
-  have hcancel : C t * invFamily C t = 1 := Ring.mul_inverse_cancel _ (hu t)
-  rw [hgen t, smul_mul_assoc, smul_smul]
+  have hcancel : C t * invFamily C t = 1 := Ring.mul_inverse_cancel _ hu
+  rw [hgen, smul_mul_assoc, smul_smul]
   have hnum : (Complex.I : ℂ) * (-(Complex.I) : ℂ) = 1 := by
     simp [Complex.I_mul_I]
   rw [hnum, one_smul, mul_assoc, ← mul_assoc (C t), hcancel, one_mul]
@@ -72,9 +72,10 @@ theorem phase_rel_of_generator {E Eder C : ℝ → R}
 power of the resolvent, leaving the two boundary terms and a remainder whose amplitude is
 `[C⁻¹(C⁻¹)']'`. -/
 theorem phase_ibp_twice {E Eder C C₁ C₂ : ℝ → R} {a b : ℝ}
-    (hgen : ∀ t, Eder t = (-(Complex.I) : ℂ) • (E t * C t))
-    (hu : ∀ t, IsUnit (C t))
-    (hC : ∀ t, HasDerivAt C (C₁ t) t) (hC₁ : ∀ t, HasDerivAt C₁ (C₂ t) t)
+    (hgen : ∀ t ∈ uIcc a b, Eder t = (-(Complex.I) : ℂ) • (E t * C t))
+    (hu : ∀ t ∈ uIcc a b, IsUnit (C t))
+    (hC : ∀ t ∈ uIcc a b, HasDerivAt C (C₁ t) t)
+    (hC₁ : ∀ t ∈ uIcc a b, HasDerivAt C₁ (C₂ t) t)
     (hE : ∀ t ∈ uIcc a b, HasDerivAt E (Eder t) t)
     (hEint : IntervalIntegrable Eder volume a b)
     (hDint : IntervalIntegrable (invFamilyDeriv C C₁) volume a b)
@@ -88,21 +89,21 @@ theorem phase_ibp_twice {E Eder C C₁ C₂ : ℝ → R} {a b : ℝ}
         + (E b * invFamilyProduct C C₁ b - E a * invFamilyProduct C C₁ a)
         - ∫ t in a..b, E t * invFamilyProductDeriv C C₁ C₂ t := by
   have hDderiv : ∀ t ∈ uIcc a b, HasDerivAt (invFamily C) (invFamilyDeriv C C₁ t) t :=
-    fun t _ => hasDerivAt_invFamily (hC t) (hu t)
+    fun t ht => hasDerivAt_invFamily (hC t ht) (hu t ht)
   have hPderiv : ∀ t ∈ uIcc a b,
       HasDerivAt (invFamilyProduct C C₁) (invFamilyProductDeriv C C₁ C₂ t) t :=
-    fun t _ => hasDerivAt_invFamilyProduct hC hu hC₁ t
+    fun t ht => hasDerivAt_invFamilyProduct (hC t ht) (hu t ht) (hC₁ t ht)
   -- first step, amplitude `1`
-  have hrel₁ : ∀ t, E t * (1 : R) = (Complex.I : ℂ) • (Eder t * invFamily C t) := by
-    intro t
-    have := phase_rel_of_generator hgen hu (fun _ => (1 : R)) t
+  have hrel₁ : ∀ t ∈ uIcc a b, E t * (1 : R) = (Complex.I : ℂ) • (Eder t * invFamily C t) := by
+    intro t ht
+    have := phase_rel_of_generator (hgen t ht) (hu t ht) (fun _ => (1 : R))
     simpa using this
   have hstep₁ := phase_ibp_step (G := fun _ => (1 : R)) hE hDderiv hEint hDint hp₁ hp₂ hrel₁
   -- second step, amplitude `(C⁻¹)'`
-  have hrel₂ : ∀ t, E t * invFamilyDeriv C C₁ t
+  have hrel₂ : ∀ t ∈ uIcc a b, E t * invFamilyDeriv C C₁ t
       = (Complex.I : ℂ) • (Eder t * invFamilyProduct C C₁ t) := by
-    intro t
-    have := phase_rel_of_generator hgen hu (invFamilyDeriv C C₁) t
+    intro t ht
+    have := phase_rel_of_generator (hgen t ht) (hu t ht) (invFamilyDeriv C C₁)
     rw [invFamilyProduct]
     exact this
   have hstep₂ := phase_ibp_step (G := invFamilyDeriv C C₁) hE hPderiv hEint hPint hp₃ hp₄ hrel₂

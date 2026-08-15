@@ -53,16 +53,16 @@ theorem hasDerivAt_invFamily {C C₁ : ℝ → R} {t : ℝ} (hC : HasDerivAt C (
   simp [ContinuousLinearMap.mulLeftRight_apply]
 
 /-- **The second derivative of the inverse family.** -/
-theorem hasDerivAt_invFamilyDeriv {C C₁ C₂ : ℝ → R}
-    (hC : ∀ s, HasDerivAt C (C₁ s) s) (hu : ∀ s, IsUnit (C s))
-    (hC₁ : ∀ s, HasDerivAt C₁ (C₂ s) s) (t : ℝ) :
+theorem hasDerivAt_invFamilyDeriv {C C₁ C₂ : ℝ → R} {t : ℝ}
+    (hC : HasDerivAt C (C₁ t) t) (hu : IsUnit (C t))
+    (hC₁ : HasDerivAt C₁ (C₂ t) t) :
     HasDerivAt (invFamilyDeriv C C₁) (invFamilyDeriv2 C C₁ C₂ t) t := by
-  have hD : ∀ s, HasDerivAt (invFamily C) (invFamilyDeriv C C₁ s) s :=
-    fun s => hasDerivAt_invFamily (hC s) (hu s)
+  have hD : HasDerivAt (invFamily C) (invFamilyDeriv C C₁ t) t :=
+    hasDerivAt_invFamily hC hu
   have hprod : HasDerivAt (fun s => invFamily C s * C₁ s * invFamily C s)
       ((invFamilyDeriv C C₁ t * C₁ t + invFamily C t * C₂ t) * invFamily C t
         + invFamily C t * C₁ t * invFamilyDeriv C C₁ t) t :=
-    ((hD t).mul (hC₁ t)).mul (hD t)
+    (hD.mul hC₁).mul hD
   have hneg := hprod.neg
   refine hneg.congr_deriv ?_
   rw [invFamilyDeriv2, invFamilyDeriv]
@@ -124,11 +124,11 @@ def invFamilyProduct (C C₁ : ℝ → R) (s : ℝ) : R := invFamily C s * invFa
 def invFamilyProductDeriv (C C₁ C₂ : ℝ → R) (s : ℝ) : R :=
   invFamilyDeriv C C₁ s * invFamilyDeriv C C₁ s + invFamily C s * invFamilyDeriv2 C C₁ C₂ s
 
-theorem hasDerivAt_invFamilyProduct {C C₁ C₂ : ℝ → R}
-    (hC : ∀ s, HasDerivAt C (C₁ s) s) (hu : ∀ s, IsUnit (C s))
-    (hC₁ : ∀ s, HasDerivAt C₁ (C₂ s) s) (t : ℝ) :
+theorem hasDerivAt_invFamilyProduct {C C₁ C₂ : ℝ → R} {t : ℝ}
+    (hC : HasDerivAt C (C₁ t) t) (hu : IsUnit (C t))
+    (hC₁ : HasDerivAt C₁ (C₂ t) t) :
     HasDerivAt (invFamilyProduct C C₁) (invFamilyProductDeriv C C₁ C₂ t) t :=
-  (hasDerivAt_invFamily (hC t) (hu t)).mul (hasDerivAt_invFamilyDeriv hC hu hC₁ t)
+  (hasDerivAt_invFamily hC hu).mul (hasDerivAt_invFamilyDeriv hC hu hC₁)
 
 omit [NormedAlgebra ℝ R] [CompleteSpace R] in
 theorem norm_invFamilyProduct_le (C C₁ : ℝ → R) (t : ℝ) :

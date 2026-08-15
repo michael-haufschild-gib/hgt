@@ -24,27 +24,27 @@ variable {R : Type*} [NormedRing R] [NormedAlgebra ℝ R] [CompleteSpace R]
 omit [NormedAlgebra ℝ R] [CompleteSpace R] in
 /-- **The surviving amplitude of the two-fold integration by parts is `O((1+t)^{-2})`.** -/
 theorem norm_invFamilyProductDeriv_le_of_symbolDecay {C C₁ C₂ : ℝ → R} {Λ c₁ c₂ : ℝ}
-    (hΛ : ∀ t, ‖invFamily C t‖ ≤ Λ)
-    (h₁ : ∀ t, 0 ≤ t → ‖C₁ t‖ ≤ c₁ * (1 + t)⁻¹)
-    (h₂ : ∀ t, 0 ≤ t → ‖C₂ t‖ ≤ c₂ * ((1 + t)⁻¹) ^ 2)
-    {t : ℝ} (ht : 0 ≤ t) :
+    {t : ℝ} (ht : 0 ≤ t)
+    (hΛ : ‖invFamily C t‖ ≤ Λ)
+    (h₁ : ‖C₁ t‖ ≤ c₁ * (1 + t)⁻¹)
+    (h₂ : ‖C₂ t‖ ≤ c₂ * ((1 + t)⁻¹) ^ 2) :
     ‖invFamilyProductDeriv C C₁ C₂ t‖
       ≤ (3 * Λ ^ 4 * c₁ ^ 2 + Λ ^ 3 * c₂) * ((1 + t)⁻¹) ^ 2 := by
-  have hΛ0 : 0 ≤ Λ := le_trans (norm_nonneg _) (hΛ t)
+  have hΛ0 : 0 ≤ Λ := le_trans (norm_nonneg _) hΛ
   have hw0 : (0 : ℝ) < (1 + t)⁻¹ := by positivity
-  have hD := hΛ t
+  have hD := hΛ
   have hDnn : (0 : ℝ) ≤ ‖invFamily C t‖ := norm_nonneg _
   have hc₁ : 0 ≤ c₁ := by
-    have := le_trans (norm_nonneg _) (h₁ t ht)
+    have := le_trans (norm_nonneg _) h₁
     nlinarith [hw0]
   have hw2 : (0 : ℝ) < ((1 + t)⁻¹) ^ 2 := by positivity
   have hc₂ : 0 ≤ c₂ := by
-    have := le_trans (norm_nonneg _) (h₂ t ht)
+    have := le_trans (norm_nonneg _) h₂
     nlinarith [hw2]
   have h4 : ‖invFamily C t‖ ^ 4 ≤ Λ ^ 4 := pow_le_pow_left₀ hDnn hD 4
   have h3 : ‖invFamily C t‖ ^ 3 ≤ Λ ^ 3 := pow_le_pow_left₀ hDnn hD 3
   have hs₁ : ‖C₁ t‖ ^ 2 ≤ c₁ ^ 2 * ((1 + t)⁻¹) ^ 2 := by
-    have := pow_le_pow_left₀ (norm_nonneg _) (h₁ t ht) 2
+    have := pow_le_pow_left₀ (norm_nonneg _) h₁ 2
     calc ‖C₁ t‖ ^ 2 ≤ (c₁ * (1 + t)⁻¹) ^ 2 := this
       _ = c₁ ^ 2 * ((1 + t)⁻¹) ^ 2 := by ring
   have hbase := norm_invFamilyProductDeriv_le C C₁ C₂ t
@@ -61,7 +61,7 @@ theorem norm_invFamilyProductDeriv_le_of_symbolDecay {C C₁ C₂ : ℝ → R} {
     calc ‖invFamily C t‖ ^ 3 * ‖C₂ t‖
         ≤ Λ ^ 3 * ‖C₂ t‖ := mul_le_mul_of_nonneg_right h3 (norm_nonneg _)
       _ ≤ Λ ^ 3 * (c₂ * ((1 + t)⁻¹) ^ 2) :=
-          mul_le_mul_of_nonneg_left (h₂ t ht) (by positivity)
+          mul_le_mul_of_nonneg_left h₂ (by positivity)
       _ = Λ ^ 3 * c₂ * ((1 + t)⁻¹) ^ 2 := by ring
   calc ‖invFamilyProductDeriv C C₁ C₂ t‖
       ≤ 3 * ‖invFamily C t‖ ^ 4 * ‖C₁ t‖ ^ 2 + ‖invFamily C t‖ ^ 3 * ‖C₂ t‖ := hbase
@@ -74,18 +74,18 @@ omit [NormedAlgebra ℝ R] [CompleteSpace R] in
 derivative, so it is one power of `(1+t)^{-1}` smaller than the first boundary term and no smaller;
 that single power is already enough for square integrability on a terminal ray. -/
 theorem norm_invFamilyProduct_le_of_symbolDecay {C C₁ : ℝ → R} {Λ c₁ : ℝ}
-    (hΛ : ∀ t, ‖invFamily C t‖ ≤ Λ)
-    (h₁ : ∀ t, 0 ≤ t → ‖C₁ t‖ ≤ c₁ * (1 + t)⁻¹)
-    {t : ℝ} (ht : 0 ≤ t) :
+    {t : ℝ} (ht : 0 ≤ t)
+    (hΛ : ‖invFamily C t‖ ≤ Λ)
+    (h₁ : ‖C₁ t‖ ≤ c₁ * (1 + t)⁻¹) :
     ‖invFamilyProduct C C₁ t‖ ≤ (Λ ^ 3 * c₁) * (1 + t)⁻¹ := by
   have hDnn : (0 : ℝ) ≤ ‖invFamily C t‖ := norm_nonneg _
-  have h3 : ‖invFamily C t‖ ^ 3 ≤ Λ ^ 3 := pow_le_pow_left₀ hDnn (hΛ t) 3
+  have h3 : ‖invFamily C t‖ ^ 3 ≤ Λ ^ 3 := pow_le_pow_left₀ hDnn hΛ 3
   have hw0 : (0 : ℝ) < (1 + t)⁻¹ := by positivity
   calc ‖invFamilyProduct C C₁ t‖
       ≤ ‖invFamily C t‖ ^ 3 * ‖C₁ t‖ := norm_invFamilyProduct_le C C₁ t
     _ ≤ Λ ^ 3 * ‖C₁ t‖ := mul_le_mul_of_nonneg_right h3 (norm_nonneg _)
     _ ≤ Λ ^ 3 * (c₁ * (1 + t)⁻¹) := by
-        refine mul_le_mul_of_nonneg_left (h₁ t ht) ?_
+        refine mul_le_mul_of_nonneg_left h₁ ?_
         have : (0 : ℝ) ≤ ‖invFamily C t‖ ^ 3 := by positivity
         nlinarith [h3, this]
     _ = (Λ ^ 3 * c₁) * (1 + t)⁻¹ := by ring

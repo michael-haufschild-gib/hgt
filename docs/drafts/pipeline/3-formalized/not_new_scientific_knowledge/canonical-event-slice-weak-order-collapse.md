@@ -1,9 +1,10 @@
 # Canonical event-slice weak-order collapse
 
 - **ID:** `canonical-event-slice-weak-order-collapse`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Formalized companion:** `canonical-event-slice-weak-order-collapse-formalized.md`
 - **Type:** ORDER-THEORETIC NO-GO / POSITIVE CLASSIFICATION / SPACETIME BRIDGE
-- **Status:** `[PAPER-PROVED] [REDISCOVERED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
+- **Status:** `[PAPER-PROVED] [LEAN-PROVEN] [REDISCOVERED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Parent:** `../../1-in-progress/event-boundary-identity-spacetime-law.md`
 
 ## Exact statement
@@ -170,9 +171,17 @@ augmented incomparability is transitive.
 ```
 
 The main declaration is
-`orderGreatestCausalSlices_iff_augmentedIncomparable_transitive`. The module also proves that the
-canonical slice is the augmented-incomparability class and that two events have the same canonical
-slice exactly when they are augmented-incomparable.
+`orderGreatestCausalSlices_iff_augmentedIncomparable_transitive`. The module additionally proves
+the advertised consequences without a finite surrogate:
+
+1. `augmentedIncomparable_equivalence` makes augmented incomparability an equivalence relation;
+2. `greatestCausalSliceAt_eq_canonical` and `canonicalCausalSlice_causalAntichain` identify each
+   unique greatest slice with its exact equivalence class;
+3. `canonicalCausalSlice_eq_or_lt_or_gt` and `canonicalCausalSlice_lt_wellDefined` prove that
+   distinct classes are strictly comparable in a representative-independent direction;
+4. `finite_uniqueMaximalCausalAntichains_iff_augmentedIncomparable_transitive` proves the stated
+   finite-poset equivalence with unique inclusion-maximal antichain membership, using
+   `exists_maximalCausalAntichain_superset` for the literal finite extension step.
 
 No physical statement is claimed.
 
@@ -192,3 +201,6 @@ No physical statement is claimed.
 - 2026-07-29 — exact theorem formalized in `CanonicalEventSlice.lean`; direct Lean check and
   dedicated module build passed. Axiom report contains only standard logical quotient/extensionality
   principles.
+- 2026-08-15 — formalized the previously omitted finite maximal-antichain equivalence and the
+  exact representative-independent quotient-order facts; direct source check and focused leaf
+  build passed with only standard Lean foundations.

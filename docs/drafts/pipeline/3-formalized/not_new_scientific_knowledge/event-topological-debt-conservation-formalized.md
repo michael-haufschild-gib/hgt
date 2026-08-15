@@ -1,13 +1,12 @@
 # Event topological-debt conservation — Lean certificate
 
-- **ID:** `event-topological-debt-conservation`
+- **ID:** `event-topological-debt-conservation-formalized`
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Status:** `[LEAN-PROVEN] [REDISCOVERED] [BRIDGE]`
-- **Paper proof:**
-  `../2-fully-proven/not_new_scientific_knowledge/event-topological-debt-conservation.md`
+- **Paper proof:** `event-topological-debt-conservation.md`
 - **Lean module:**
-  `../../../../formal/GaloisForLFunctions/HTGeometry/EventTopologicalDebt.lean`
+  `../../../../../formal/GaloisForLFunctions/HTGeometry/EventTopologicalDebt.lean`
 
 ## Certified statements
 
@@ -85,3 +84,6 @@ three other `HTGeometry` modules. It does not report
 - 2026-07-29 — formalized one-event conservation, same-parent rigidity, finite-history
   telescoping, and closed-history zero debt.
 - 2026-07-29 — focused build and axiom audit passed; no stale Lean process remained.
+- 2026-08-15 — re-audited with `lake env lean /tmp/event_topological_debt_audit.lean` and
+  `lake build GaloisForLFunctions.HTGeometry.EventTopologicalDebt` (8,655 jobs); the source
+  declaration scan remains free of `sorry`, `admit`, custom `axiom`, `opaque`, and `unsafe`.

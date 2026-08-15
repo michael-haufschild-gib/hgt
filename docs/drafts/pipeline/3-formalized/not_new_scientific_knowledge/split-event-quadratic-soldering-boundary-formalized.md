@@ -1,9 +1,9 @@
 # Split-event quadratic soldering boundary — Lean certificate
 
-- **ID:** `split-event-quadratic-soldering-boundary`
+- **ID:** `split-event-quadratic-soldering-boundary-formalized`
 - **Stage:** 3-formalized
-- **Type:** THEOREM (Lean)
-- **Status:** `[LEAN-PROVEN] [AXIOM-AUDITED] [REDISCOVERED] [BRIDGE]`
+- **Type:** CERTIFICATE (Lean 4)
+- **Status:** `[LEAN-FORMALIZED] [UNCONDITIONAL] [AXIOM-AUDITED] [REDISCOVERED] [BRIDGE]`
 - **Paper proof:** `split-event-quadratic-soldering-boundary.md`
 - **Lean module:** `GaloisForLFunctions.HTGeometry.EventSecondOrderSoldering`
 - **Statement:** A split event admits two arbitrary one-way off-diagonal channels but no universal

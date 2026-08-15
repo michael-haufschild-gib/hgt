@@ -8733,3 +8733,56 @@ All declarations audit to `[propext, Classical.choice, Quot.sound]`.
 branch `E` to be *differentiable* — a property `E² = gammaRatio` alone does not supply.  So the
 remaining object is a holomorphic branch on the strip together with
 `logDeriv gammaRatio(z) = i(psi(1+iz) + psi(1-iz))`.
+
+## ABE. `(1)` and `(17)` for the literal Gamma propagator
+
+```text
+RHTower/GammaRatioBranchDerivative.lean   logDeriv of the Gamma ratio and of its branch
+RHTower/WallGeneratorEquation.lean        (1) H' = iBH, (17) the phase-weighted form, and IsUnit
+```
+
+**The branch had to be differentiated, and `E² = gammaRatio` alone does not do it.**  The corpus
+already constructs a *holomorphic* branch (`exists_gammaRatioSqrt`: differentiable, nonvanishing,
+normalised at the origin), so differentiability is available unconditionally — but it must be carried
+as a hypothesis of the generator equation, because a bare square root need not even be measurable.
+With it, differentiating `E² = Γ(1+iz)/Γ(1−iz)` on the open strip and dividing by `2E` gives
+
+```text
+E'(z) = E(z) (i/2)(psi(1+iz) + psi(1-iz)),
+```
+
+the quotient's logarithmic derivative `i(psi(1+iz)+psi(1-iz))` coming from `logDeriv Gamma = psi`
+and the two inner derivatives `±i`, whose signs cancel against the quotient.
+
+**The generator equation is a scalar identity plus a commuting exponential.**  Writing
+`H(z) = a(z)exp(−izT/2)` with `a(z) = z^{-1/2}e^{iγz}E(z)`,
+
+```text
+-i a'/a = i/(2z) + EulerGamma + (1/2)(psi(1+iz) + psi(1-iz)) = r(z)/2 + i/(2z),
+```
+
+which is exactly `wallGeneratorScalar`.  The operator factor contributes only `−iT/2`, because
+`((i/2)z)·T` splits as `t·((i/2)T)` plus a constant multiple of `T`, and the two commute.  Hence
+
+```text
+(H^{-1})' = -i H^{-1} B,     B = wallGenerator,
+E(t,L)' = -i E(t,L) C(t,L),  C = wallGenerator + L·I,
+```
+
+the second being `(17)` verbatim.  The identification `1 + i(t+iσ) = (1−σ)+it`,
+`1 − i(t+iσ) = (1+σ)−it` is what makes the card's `r(z)` and the corpus' `wallSymbol σ t` the same
+function — so the coercivity of ABD and the jets of `(4)` apply to the literal generator.
+
+**The unit hypothesis of the integration by parts is exactly the gap condition.**  Wherever
+`wallFloor + L > 0`, the two-sided inverse produced by the coercive-operator theorem makes
+`C(t,L)` a unit of the operator ring and `Ring.inverse C(t,L)` its inverse, with
+`‖C(t,L)^{-1}‖ ≤ (wallFloor + L)^{-1}`.  That is precisely `hu` and the resolvent bound consumed by
+`phase_ibp_twice`, so the abstract two-fold expansion now applies to the literal Gamma transport
+with no further hypothesis.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`; lint reports nothing on the new
+modules.
+
+**Remaining for `(11)`:** the frequency-derivative bounds of `C` itself (from the owned symbol jets
+`(4)` together with the elementary derivatives of `i/(2z)`), then the integration by parts applied
+under the block integral (Fubini), and the three-region assembly.

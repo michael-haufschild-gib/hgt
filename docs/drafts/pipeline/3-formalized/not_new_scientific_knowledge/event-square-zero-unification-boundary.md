@@ -1,8 +1,9 @@
 # Irreversible event coupling is square-zero and vanishes in the symmetry quotient
 
 - **ID:** `event-square-zero-unification-boundary`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / NONSEMISIMPLE UNIFICATION BOUNDARY
+- **Formalized companion:** `event-square-zero-unification-boundary-formalized.md`
 - **Parent:** `../../1-in-progress/actuality-fracture-weak-gravity-law.md`
 - **Scientific status:** `[PAPER-PROVED] [REDISCOVERED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** Upper-triangular event couplings form a square-zero ideal. Quotienting them out

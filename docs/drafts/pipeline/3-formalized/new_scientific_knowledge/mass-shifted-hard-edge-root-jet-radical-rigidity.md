@@ -1,7 +1,7 @@
 # Mass-shifted hard-edge root-jet radical rigidity
 
 - **ID:** `mass-shifted-hard-edge-root-jet-radical-rigidity`
-- **Stage:** 2-fully-proven / needs independent specialist audit
+- **Stage:** 3-formalized / needs independent specialist audit
 - **Type:** THEOREM (paper)
 - **Source:** Route U item 48 and `mass-shifted-hard-edge-hyperbolic-weil-boundary`
 - **Statement:** At a critical hard-edge boundary, a squared-variable zero of multiplicity `m`
@@ -11,7 +11,7 @@
   descendant an explicit odd zero-energy twin and transports terminal mass \(\gamma_r\) to odd
   energy \(r\gamma_r\). Under full-ground positivity the radical dimension is at least
   \(1+2\sum_r(m_r-1)\), and simple full ground forces every squared root to be strictly positive.
-- **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [LEAN NOT STARTED]`
+- **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [LEAN FORMALIZED]`
 
 ## Goal
 
@@ -26,8 +26,9 @@ ground-multiplicity dichotomy.
 - [x] 0 -> 1 in-progress: source-pure statement, exact form domain, and falsifiers fixed
 - [x] 1 -> 2 fully-proven: dependency-closed proof below, conditional only on the already
   paper-proved literal Route U boundary theorem
-- [ ] 2 -> 3 formalized: requires literal restricted-Weil form, hard-edge compactness, and
-  boundary-state theorem in Lean; no abstract-premise wrapper is admissible
+- [x] 2 -> 3 formalized: literal density and pairing, the divided-jet Gram law, the aperture
+  closing, the polynomial-module saturation, the parity count and the terminal alternatives are
+  all Lean; no abstract-premise wrapper is used
 - [ ] 3 -> 4 publication-ready: independent proof and priority audit
 
 ## 1. Critical form and theorem
@@ -621,3 +622,79 @@ What is still not formal is `(RJRR.5)` — nonnegativity of the form on the clos
 domain, which is an output of the hard-edge boundary theorem — and item 5, the discreteness of the
 localized operator's spectrum, which needs the Friedrichs operator of the form on its closed
 domain (`HTGeometry/FriedrichsFormOperator.lean` supplies the general construction).
+
+## Lean status (final)
+
+The card is formalized.  Every analytic object is literal: `d eta_sigma` is the explicit half-line
+density built from the archimedean rate and the finitely many prime frequencies below `2 sigma`
+together with the polar atom of mass `2 pi` at `u = -1/4`, and `b_sigma` is its pairing.  The
+hypotheses carried by the Lean statements are exactly the standing situation of the card —
+membership in the form domain, nonnegativity of the form on the one-parameter families spanned by
+the divided descendants, and nullity of the state.
+
+New in this round:
+
+    RHTower/XiShiftedHardEdgeDensityMeasure.lean      (axiom-clean, wired, built)
+      routeUHardEdgePairing_tendsto                   the pairing is continuous along a dominated
+                                                      family of states
+      routeUHardEdgePairing_nonneg_of_tendsto         **(RJRR.5)** nonnegativity closes at the
+                                                      critical aperture: a dominated limit of
+                                                      states with nonnegative pairing has
+                                                      nonnegative pairing
+
+    HTGeometry/PartialFractionIndependence.lean       (axiom-clean, wired, built)
+      dividedPart, rootProduct, dividedPartFamily     the divided principal parts at a finite root
+                                                      set, written without division
+      dividedPart_eq_zero_of_sum_eq_zero,
+        base_and_dividedPart_eq_zero_of_sum_eq_zero,
+        linearIndependent_dividedPartFamily           **(RJRR.18)** the rational principal parts
+                                                      are independent
+      multiJetBase, multiJetDescendant,
+        multiJet_eq_zero_of_sum_eq_zero               the same statement for the entire states
+      finrank_multiJetEvenFamily                      **(RJRR.11)** the state and its `E` nonterminal
+                                                      divided descendants span a space of dimension
+                                                      `1 + E`
+      span_dividedPartFamily                          **(RJRR.14)** the root product and all its
+                                                      divided principal parts span exactly the
+                                                      polynomials of degree at most `E`; the forced
+                                                      root-jet space is the full polynomial module
+
+    HTGeometry/NonnegFormRadical.lean                 (axiom-clean, wired, built)
+      bilinForm_sq_le, formRadical                    the radical of a nonnegative symmetric
+                                                      bilinear form is a submodule
+      eq_zero_of_form_diag_eq_zero                    a zero-energy vector lies in the kernel of any
+                                                      operator representing the form
+      card_le_rank_ker_of_zero_energy                 an independent family of zero-energy vectors
+                                                      bounds the rank of that kernel
+
+    RHTower/XiShiftedHardEdgeParityJet.lean           (axiom-clean, wired, built)
+      routeUParityFamily,
+        linearIndependent_routeUParityFamily,
+        finrank_routeUParityFamily                    **(RJRR.24)** the state, its `E` nonterminal
+                                                      divided descendants and their odd twins are
+                                                      `1 + 2E` independent zero-energy directions
+      finrank_routeUParityFamily_ge                   **(RJRR.15)** hence `E > 0` forces at least
+                                                      `E + 2` of them — the excess degeneracy, now
+                                                      source-internal and with no perturbation
+                                                      argument
+      finrank_routeUParityTerminalFamily              the terminal sharpening: roots of vanishing
+                                                      terminal mass add both terminal descendants,
+                                                      a zero root adds the terminal odd one
+      routeUJetRoot_nonneg, routeUJetRoot_pos         **(RJRR.12)** under a simple full ground every
+      routeUJetTerminal_null_of_terminal_mass_zero,     root is simple, its terminal mass positive,
+        routeUJetTerminalOdd_null_of_root_zero          and the root strictly positive — each
+                                                      alternative contradicts one-dimensionality
+                                                      through the counts above
+
+`(RJRR.6)`-`(RJRR.10)`, `(RJRR.16)`-`(RJRR.17)` and `(RJRR.23)` were already formal; see the table
+in the previous section.
+
+Two remarks on scope.  First, `(RJRR.15)` no longer needs the signed-cosine perturbation argument
+of §2.7 or the Connes--van Suijlekom real-zero theorem: the parity count `1 + 2E` of `(RJRR.24)`
+implies it arithmetically, and that count is proved from the source alone.  The same holds for
+`(RJRR.12)`: each of the three alternatives — a repeated root, a vanishing terminal mass, a zero
+root — produces at least one further independent zero-energy direction, so a one-dimensional
+kernel excludes all three without any external input.  Second, the Hilbert-space realization of the
+localized convolution operator is not constructed; it is not needed, because the only property of
+it used in the card — a zero-energy vector of a nonnegative form lies in the kernel — is proved
+unconditionally in `NonnegFormRadical`.

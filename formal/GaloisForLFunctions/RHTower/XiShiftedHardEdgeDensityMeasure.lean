@@ -293,6 +293,47 @@ theorem routeUHardEdgeOddForm_eq (σ : ℝ) (H K : ℝ → ℝ) :
   funext u
   ring
 
+/-! ## Closing the aperture -/
+
+open Filter Topology
+
+/-- **The pairing is continuous along a dominated family.**  Pointwise convergence of the states
+on the half line, a common integrable dominating function, and convergence of the polar values give
+convergence of the pairing. -/
+theorem routeUHardEdgePairing_tendsto (σ : ℝ) (Φ : ℕ → ℝ → ℝ) (Ψ : ℝ → ℝ) (g : ℝ → ℝ)
+    (hmeas : ∀ n, AEStronglyMeasurable
+      (fun u : ℝ => Φ n u * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u)
+      (volume.restrict (Ioi 0)))
+    (hg : IntegrableOn g (Ioi 0))
+    (hdom : ∀ n, ∀ᵐ u ∂(volume.restrict (Ioi (0 : ℝ))),
+      ‖Φ n u * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u‖ ≤ g u)
+    (hptw : ∀ᵐ u ∂(volume.restrict (Ioi (0 : ℝ))),
+      Tendsto (fun n => Φ n u * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) atTop
+        (nhds (Ψ u * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u)))
+    (hpolar : Tendsto (fun n => Φ n (-1 / 4)) atTop (nhds (Ψ (-1 / 4)))) :
+    Tendsto (fun n => routeUHardEdgePairing σ (Φ n)) atTop
+      (nhds (routeUHardEdgePairing σ Ψ)) := by
+  have hint := MeasureTheory.tendsto_integral_of_dominated_convergence g hmeas hg hdom hptw
+  exact hint.add (hpolar.const_mul (2 * Real.pi))
+
+/-- **(RJRR.5) Nonnegativity closes at the critical aperture.**  If the state is a dominated limit
+of states at which the pairing is nonnegative, the pairing is nonnegative at the state itself. -/
+theorem routeUHardEdgePairing_nonneg_of_tendsto (σ : ℝ) (Φ : ℕ → ℝ → ℝ) (Ψ : ℝ → ℝ) (g : ℝ → ℝ)
+    (hmeas : ∀ n, AEStronglyMeasurable
+      (fun u : ℝ => Φ n u * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u)
+      (volume.restrict (Ioi 0)))
+    (hg : IntegrableOn g (Ioi 0))
+    (hdom : ∀ n, ∀ᵐ u ∂(volume.restrict (Ioi (0 : ℝ))),
+      ‖Φ n u * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u‖ ≤ g u)
+    (hptw : ∀ᵐ u ∂(volume.restrict (Ioi (0 : ℝ))),
+      Tendsto (fun n => Φ n u * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) atTop
+        (nhds (Ψ u * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u)))
+    (hpolar : Tendsto (fun n => Φ n (-1 / 4)) atTop (nhds (Ψ (-1 / 4))))
+    (hnn : ∀ n, 0 ≤ routeUHardEdgePairing σ (Φ n)) :
+    0 ≤ routeUHardEdgePairing σ Ψ :=
+  ge_of_tendsto'
+    (routeUHardEdgePairing_tendsto σ Φ Ψ g hmeas hg hdom hptw hpolar) hnn
+
 end RHTower
 
 end

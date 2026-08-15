@@ -59,6 +59,7 @@ Promotion recipe:
 | `fixed-carrier-quadratic-variation-flatness` | exact absorption cocycle, diamond flatness, Gram-square restriction defect, compression curvature, and unit-test converse | `HTGeometry/NestedProjectionQuadraticVariation` (re-audited) |
 | `pure-spinor-color-cancellation-normal-selection` | literal Cartan coordinate pairing, all same-sector and weak-scalar exclusions, and surjectivity for every nonzero colour bivector | `HTGeometry/PureSpinorColorNormalSelection` (re-audited) |
 | `color-gram-minkowski-orbit-theorem` | Gram positivity, Cauchy--Binet/Lorentz cone, left-unitary orbit equivalence, positive-cone surjectivity, and quotient homeomorphism | `HTGeometry/ColorGramMinkowskiCone`, `ColorGramMinkowskiOrbit` (re-audited) |
+| `event-square-zero-unification-boundary` | exact generic two-sided radical closure, square-zero product, endpoint bimodule actions, upper-block product/commutator, direct-product quotient, and typed quadratic cancellation | `HTGeometry/EventSquareZeroUnificationBoundary`, `EventSecondOrderSoldering` (re-audited) |
 | `split-event-quadratic-soldering-boundary` | complete split-event block classification, universal endpoint-soldering no-go, quadratic covariant cancellation, parallel composite, and conjugacy lock | `HTGeometry/EventSecondOrderSoldering` (re-audited) |
 | `sonin-aperture-ward-curvature-transgression` | trace-class compression curvature, literal negative Hilbert--Schmidt square, faithful flatness, and canonical Ward transgression | `RHTower/TraceClassCompressionCurvature`, `SoninApertureCurvatureTrace`, `SoninApertureWardCurvature` (re-audited) |
 | `sonin-aperture-ward-cohomology-fourier-parity-no-go` | aperture Bianchi/gauge coboundary, Fourier parity, invariant-reader annihilation, and exact Ward-energy flatness iff | `RHTower/SoninApertureWardPotential`, `SoninApertureFourierParityNoGo` (re-audited) |
@@ -67,6 +68,7 @@ Promotion recipe:
 | `crossed-pure-factorization-refinement` | arbitrary-field crossed block factorization and exact four one-index factor refinement | `HTGeometry/CrossedPureFactorizationRefinement` (re-audited) |
 | `finite-carrier-spacelike-compression-defect` | finite tensor-square kernel lower bound, noninjectivity, injectivity classification, surjective equality, and self-equivalence corollary | `HTGeometry/FiniteCarrierSpacelikeCompression` (re-audited) |
 | `independent-composition-boundary-record-conservation` | exact finite record lower bound, minimal-completion bijectivity/surjectivity, kernel-record equivalence, and total reconstruction equivalence | `HTGeometry/IndependentCompositionBoundaryRecord` (re-audited) |
+| `event-order-diamond-carrier-boundary` | typed endpoint-gauge covariance, attachment, matrix trace boundary, universality, and exact one-carrier block-diamond reconstruction | `HTGeometry/EventOrderDiamond` (re-audited) |
 
 | `burnol-divided-shift-evaluation-separation-law` | none (verified only) | `RHTower/BurnolDividedShiftEvaluationSeparation` |
 | `burnol-holonomy-cauchy-sector-separation` | none (verified only) | `RHTower/BurnolHolonomyCauchySectorSeparation` |
@@ -1980,5 +1982,87 @@ Moved `2-fully-proven/not_new_scientific_knowledge/finite-squarefree-euler-compl
 to `3-formalized/not_new_scientific_knowledge/` with companion
 `finite-squarefree-euler-complement-rigidity-formalized.md`. Direct source check and focused leaf
 build passed; capstone axiom audit contains only `propext`, `Classical.choice`, and `Quot.sound`.
-The `RHTower` umbrella import is wired; no umbrella build was run. Inbound-link scan found no
-references to the old Stage-2 path.
+The `RHTower` umbrella import is wired; no umbrella build was run. The inbound-link scan found no
+external reference to the old Stage-2 path (this ledger is its sole historical mention).
+
+### Update: Hilbert–Schmidt size of a Pauli combination (2026-08-15)
+
+`HTGeometry/PauliHilbertSchmidtNorm.lean` (wired, axiom-clean) — the first half of `(21)` of
+`weak-cut-complexity-onset-capacity-separation-law`:
+
+- `ofReal_frobSq_eq_trace` — the squared Hilbert–Schmidt size is `tr(M* M)`;
+- **`frobSq_pauliCombination`** — `‖∑_P J_P P‖_HS² = 2^{|σ|} ∑_P |J_P|²`, using the corpus
+  orthogonality `trace_star_finitePauliMatrix_mul`.  On a two-qubit edge (`|σ| = 2`) this is the
+  card's `‖V_e‖_HS = 2ρ_e`.
+
+Still open for `(21)`: the operator-norm sandwich `ρ_e ≤ ‖V_e‖₂ ≤ 3ρ_e`, which needs
+`‖P‖₂ ≤ 1` for a Pauli word (unitary, via `finitePauliMatrix_mul_self`) for the upper bound and
+`‖M‖_HS² ≤ (dim) ‖M‖₂²` for the lower bound; then `(22)`--`(23)` are the union sandwich.
+
+### Promotion update: event topological-debt conservation (2026-08-15)
+
+| Card | New Lean work | Modules |
+|---|---|---|
+| `event-topological-debt-conservation` | none (re-audited); exact arbitrary-additive-group conservation, same-parent rigidity, finite telescope, and closed-history zero debt | `HTGeometry/EventTopologicalDebt` (re-audited) |
+
+Moved `2-fully-proven/not_new_scientific_knowledge/event-topological-debt-conservation.md` to
+`3-formalized/not_new_scientific_knowledge/` with its Lean certificate. Direct source check and
+focused leaf build passed; capstone axiom audit contains only `propext`, `Classical.choice`, and
+`Quot.sound`. The `HTGeometry` import was already wired; no umbrella build was run. Two inbound
+card links were repointed, and no stale direct Stage-2 link remains.
+
+### Update: the Pauli operator-norm sandwich (2026-08-15)
+
+`HTGeometry/PauliOperatorNormSandwich.lean` (wired, axiom-clean) — **this closes `(19)` and `(21)`
+of `weak-cut-complexity-onset-capacity-separation-law`**:
+
+- `sum_normSq_column_le_opNorm_sq`, **`frobSq_le_card_mul_opNorm_sq`** — `‖M‖_HS² ≤ dim ‖M‖₂²`;
+- `finitePauliMatrix_mem_unitary`, **`norm_finitePauliMatrix`** — every Pauli word is unitary and
+  has operator norm one;
+- **`opNorm_pauliCombination_le`** and **`opNorm_pauliCombination_le_sqrt_card`** — the card's
+  `(19)`: `‖V_e‖₂ ≤ ∑|J| ≤ √|S| ρ_e`, which at the nine two-site orientations is `3ρ_e`;
+- **`le_opNorm_pauliCombination`** — the card's lower half `ρ_e ≤ ‖V_e‖₂`, from
+  `frobSq_pauliCombination` (`‖V_e‖_HS = 2ρ_e` at a two-qubit edge) and the dimension bound.
+
+Remaining for Theorems D/E of that card: the contiguous-cut union sandwich `(22)`--`(23)`, which is
+now purely a probability statement over the edges (a single-edge lower bound plus a union bound),
+and the beta projection law `(17)`--`(18)`, for which the card explicitly permits an explicit
+sphere-tube lower bound in place of the exact beta distribution function.
+
+### Promotion update: canonical event-slice weak-order collapse (2026-08-15)
+
+| Card | New Lean work | Modules |
+|---|---|---|
+| `canonical-event-slice-weak-order-collapse` | finite maximal-antichain extension and exact finite iff; equivalence, canonical-class, and representative-independent class-order consequences | `HTGeometry/CanonicalEventSlice` (extended and re-audited) |
+
+Moved `2-fully-proven/not_new_scientific_knowledge/canonical-event-slice-weak-order-collapse.md`
+to `3-formalized/not_new_scientific_knowledge/` with its Lean certificate. Direct source check and
+focused leaf build passed; the expanded capstone audit contains only `propext`, `Classical.choice`,
+and `Quot.sound` (the equivalence theorem is axiom-free). The existing `HTGeometry` umbrella import
+remained in place; no umbrella build was run. The parent paper and formalization links were repointed.
+
+### Update: the contiguous-cut sandwich and the delay floor mechanism (2026-08-15)
+
+`HTGeometry/CutConductanceUnionSandwich.lean` (wired) — **the card's `(22)`--`(23)`**:
+
+- `cutConductance nrm θ = min_e ‖V_e(θ)‖` with `cutConductance_le` and
+  `exists_le_of_cutConductance_le`;
+- `subset_setOf_cutConductance_le`, `setOf_cutConductance_le_subset` — one small block forces a
+  small conductance, and a small conductance forces some small block;
+- **`measure_cutConductance_sandwich`** — `μ{ρ_{e₀} ≤ x/3} ≤ μ{g_path ≤ x} ≤ ∑_e μ{ρ_e ≤ x}`, with
+  no independence between edges, exactly as the card states;
+- `blockRadius`, `blockMatrix`, `blockRadius_le_norm_blockMatrix`, `norm_blockMatrix_le` and
+  **`measure_cutConductance_pauliBlocks_sandwich`** — the same sandwich for the nine-orientation
+  two-site Pauli block, where the factor three is `√9`.
+
+`HTGeometry/WeakCutDelayFloor.lean` (wired) —
+**`approxComplexity_le_of_blockRadius_le`**: if the edge coefficient length is at most
+`(ε − η)/(3L)` then the interacting orbit stays inside the split-system synthesis cap for every
+`|t| ≤ L`.  This is the exact mechanism of `(20)`: the delay event contains the small-block event,
+so `Pr{T_full > L} ≥ Pr{ρ_{e₀} ≤ (ε−η)/(3L)}`.
+
+**State of `weak-cut-complexity-onset-capacity-separation-law`:** Theorem A closed; Theorem B `(9)`
+closed; Theorem E `(21)`--`(23)` closed; Theorem D closed except the *evaluation* of
+`Pr{ρ_e ≤ x}` — the reduction `(19)`--`(20)` is done, and only the beta projection law `(17)`--`(18)`
+(or the sphere-tube lower bound the card permits instead) remains.  Theorem C still composes the
+two stage-2 parents.

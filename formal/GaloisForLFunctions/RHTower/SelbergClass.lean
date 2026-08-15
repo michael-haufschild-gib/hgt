@@ -6,6 +6,7 @@ import GaloisForLFunctions.RHTower.SelbergClass.FiniteOrder
 import GaloisForLFunctions.RHTower.SelbergClass.EntireFiniteOrderAlgebra
 import GaloisForLFunctions.RHTower.SelbergClass.Full
 import GaloisForLFunctions.RHTower.SelbergClass.FullProduct
+import GaloisForLFunctions.RHTower.SelbergClass.FullConjugate
 import GaloisForLFunctions.RHTower.SelbergClass.FullEulerLogPrime
 import GaloisForLFunctions.RHTower.SelbergClass.DirichletCharacterC1
 import GaloisForLFunctions.RHTower.SelbergClass.DirichletCharacterC2
@@ -21,6 +22,7 @@ import GaloisForLFunctions.RHTower.SelbergClass.BarnesTwoGammaTail
 import GaloisForLFunctions.RHTower.SelbergClass.BarnesTwoGammaLineIntegrable
 import GaloisForLFunctions.RHTower.SelbergClass.BarnesFiniteRectangle
 import GaloisForLFunctions.RHTower.SelbergClass.BarnesHorizontalEdges
+import GaloisForLFunctions.RHTower.SelbergClass.BarnesVerticalShift
 import GaloisForLFunctions.RHTower.SelbergClass.BarnesFiniteRectangleIntegral
 import GaloisForLFunctions.RHTower.SelbergClass.BarnesFiniteRectangleExplicitSum
 import GaloisForLFunctions.RHTower.SelbergClass.AffineGammaPoleLattice

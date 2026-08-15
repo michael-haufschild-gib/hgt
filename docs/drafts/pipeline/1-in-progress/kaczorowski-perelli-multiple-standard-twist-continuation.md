@@ -366,3 +366,13 @@ the continuation theorem or Selberg C1/C2 is false.
   line integrability, this closes all scalar fixed-rectangle analytic inputs;
   the finite-to-infinite left-edge limit, its residue-series summation, Barnes
   Lemma 6, and the K--P contour transform remain distinct open nodes.
+- 2026-08-15 — `RHTower/SelbergClass/BarnesVerticalShift.lean` now composes
+  those fixed-rectangle inputs into the correctly oriented finite displacement
+  theorem
+  `V'_c(J_{ξ,η}) - V'_{-(m+1/2)}(J_{ξ,η}) =
+  Σ_{n=0}^m (-1)^n Γ(ξ+n)η^n/n!` for `0<c<Re ξ` and `|arg η|<π`.
+  Its negative half-line is independently integrable via half-integer pole
+  avoidance and the arbitrary-strip bound; no positive-line theorem is
+  misapplied.  Target source/build and axiom audit passed.  The `m → ∞`
+  passage, full-sector binomial branch, Barnes Lemma 6, and K--P contour
+  transformation remain `[OPEN CORE]`.
