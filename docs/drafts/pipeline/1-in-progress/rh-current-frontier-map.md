@@ -7,9 +7,9 @@ It records current proof architectures, theorem chains, first open source statem
 mechanisms, and structural conclusions shared across routes. It is not a chronology or build log.
 
 **Corpus cutoff:** 15 August 2026, committed snapshot
-`f893bc91097e4e95ef83c0a56ac982372d930a2c`, together with declaration-level review of the current
-working tree. Working-tree import/name repairs add no scientific claim; the one new analytic
-wrapper and one generic signed-permutation invariance result are qualified below.
+`ed380bbef2dc9ca785ea1b606caeb0eacab83f49`, together with declaration-level review of current
+working tree. The uncommitted critical-Mellin abscissa module formalizes analytic consequences
+under supplied von Koch/polynomial hypotheses; it adds no unconditional source producer.
 
 RH and its negation remain unproved. Current independent live count is:
 
@@ -18,7 +18,8 @@ RH and its negation remain unproved. Current independent live count is:
 - four incomplete CCM candidate openings: **CCM-HG** (Hankel boundary relative-trace slope),
   **CCM-GS** (cofinal ground-separating incidence), **CCM-UR** (unit-Riesz
   causal-complement wavelet), and **CCM-EP** (dephased Euler--Pick boundary transfer);
-- one non-CCM candidate opening: **SP-E** (prime--Gamma signed-permutation Eulerian limit);
+- two non-CCM candidate openings: **SP-E** (prime--Gamma signed-permutation Pluecker determinant)
+  and **TC-HS** (theta--Cayley half-step reflection transport);
 - no instantiated Route V;
 - Route R terminalized as an independent producer.
 
@@ -38,11 +39,11 @@ route under corpus source-isogenies.
 | E | squarefree central Wold shell → fixed opposite-parity relation → Hall/load/flux/cost transport → Mertens cancellation → RH | Prove `ENTROPY-SPREAD-GRADE-RECURRENT-CUBE-CAPACITY` for fixed source-first relation with unit incoming co-degree, interval Hall expansion, moving cutoff flux, and strict-half cost. |
 | G | Suzuki/CCM source → restricted-Weil Morse floor or root-retained two-ray meromorphic exterior → Hermite–Biehler orientation → RH | Floor: identify full aperture Morse index with right-half Xi charge and exclude its first increase. Exterior: instantiate exact infinite-boundary reconstruction and prove injectivity/orientation of the resulting finite residual source map at every aperture. |
 | L | completed Xi Green/BV source → logarithmic Gamma-six Wold coface → prime-harmonic singular graph comparison → fixed Burnol/Deninger reader → `K_n(rho)=0` → RH | Prove a distinguished non-universal arithmetic Stokes identity annihilating the specific completed-Green-weighted cofinal chain while retaining divisor/prime provenance. Singular source production and fixed physical comparison exist; universal continuous boundary annihilation is formally impossible. |
-| O | restricted-Weil operator → explicit constrained prolate source → fixed-window oscillator limit and two-scale profile classification → whole-ground control → nonnegative cofinal floor → RH | Prove a uniform prolate spectral ladder with mode-index identification, then exhaust every restricted-Weil near-ground sequence and control its complement. The limiting oscillator is now rigorously quantized, but the varying prolate family has not yet been shown to enter and exhaust those rungs. |
+| O | restricted-Weil operator → explicit constrained prolate source → prolate/oscillator spectral pin and two-scale classification → whole-ground control → nonnegative cofinal floor → RH | Ground separation now converges unconditionally to first oscillator rung. Prove higher fixed-depth prolate ladder/mode-index theorem, then exhaust every restricted-Weil near-ground sequence and control its complement. |
 | P | primitive Euler/Burnol budget → finite reflection-odd secants plus exact fundamental-symmetry correction → completed adaptive half-density transport → capacity contradiction → RH | Construct source-faithful pre-divisor completed transport producing and controlling positive fundamental-symmetry correction from primitive cubic budget. Raw finite energy is always nonpositive and its nonnegativity at any one index is already RH-equivalent; it cannot serve as intermediate producer. |
 | Q | theta–Cassini source → source quantization or direct jet saturation → inward saturation → transverse charge zero → RH | Prove direct Cassini–Jensen/jet saturation, or construct a source-derived label-sensitive discontinuous plateau quotient. Selected continuous power carrier is retired. |
 | T | exact AFE/moment source → translated Gabriel interpolation → detector zero count → `7/10` prime supply → physical current composition → RH | Detector analytic chain and fixed-gap zero-density theorem are closed. Derive uniform prime supply in `(x,x+x^(7/10)]` and compose it with source-faithful current. |
-| U | shifted-Xi Hankel first crossing → hard-edge finite-type limit → parity-doubled root-jet classification or super-apex/flux contradiction → positivity → RH | Prove odd-sector admission at the self-selected even boundary, or transport first-contact ancestry strongly enough that a negative odd descendant contradicts the prior positive chamber. Generic parity-jet rigidity is closed; source-specific boundary admission remains. |
+| U | shifted-Xi Hankel first crossing → locally uniform real-rooted hard-edge limit → parity-doubled root-jet classification or super-apex/flux contradiction → positivity → RH | Pass literal finite null row/source equation and smaller-aperture positivity to nonzero limit, then prove odd-sector admission or a negative-descendant ancestry contradiction. Normal-family and real-rooted limit are now formal under exact packet bounds. |
 
 ## Live architectures
 
@@ -368,9 +369,11 @@ The literal wall-generator adapter is now substantially closed. Lean differentia
 constructs its holomorphic square-root branch, proves exact inverse and phase-shifted generator
 equations, obtains a logarithmic coercive floor and first/second frequency-jet decay, and combines
 inverse-family differentiation with two integrations by parts to give quadratic amplitude tails.
-Current working tree adds an automatic compact-interval integrability wrapper under continuous
-second derivative. These theorems remove generator regularity as an obstacle; they do not construct
-the completed source mode or decide return sign.
+Compact-interval hypotheses now imply required integrability automatically. Literal one-block
+source transform commutes with inverse propagator and frequency window; evaluated twofold
+expansion, endpoint transport cancellation, and square-integrability of second boundary and
+quadratic tail remainder on terminal rays are formal. These theorems remove generator/block-tail
+regularity as obstacle; they do not construct completed source mode or decide return sign.
 
 The exterior Evans problem is now source-shaped rather than formally infinite-dimensional. Finite
 analytic characteristic packets have exact exponential-polynomial mode spaces. Complete Gamma
@@ -413,6 +416,9 @@ symbol bounds do not advance exterior branch.
 `WallGeneratorLogCoercivity.lean`, `WallGeneratorFrequencyJets.lean`,
 `HTGeometry/InverseFamilyDerivative.lean`, `HTGeometry/ResolventSymbolTailDecay.lean`,
 `HTGeometry/PhaseGeneratorIntegrationByParts.lean`,
+`HTGeometry/BlockWindowFubini.lean`, `WallBlockSourceExpansion.lean`,
+`WallBoundaryTransportCancellation.lean`, `WallTailIntegrationByParts.lean`,
+`WallTailRayEstimates.lean`,
 `GammaJumpNearDiagonalLipschitz.lean`, `GammaJumpCommutatorKernel.lean`,
 `SuzukiWallBlockSliceBound.lean`, `SuzukiWallWindowEstimate.lean`,
 `ShiftedGammaNumericalRange.lean`, `FrequencyLineSplit.lean`,
@@ -689,18 +695,20 @@ eventually positive seed law and `r_lambda->0`. Seed-side science is closed prov
 Lean now closes diagonal spectrum, exact normal-form two-branch estimate, high-row BV tail,
 summable logarithmic majorant, finite defect mass, two-scale carrier law, and abstract convergent
 assembly. Certification debt is literal dictionary instantiating these generic records with the
-normalized constrained-prolate source. A second, logically prior gap is now explicit: prove that
-varying rescaled prolate eigenfunctions converge to correctly indexed oscillator rungs. This one
+normalized constrained-prolate source. Ground-mode separation is now pinned without profile
+convergence; higher fixed-depth ladder still needs source-indexed spectral control. This selected
 seed direction must then be promoted to lower control of every near-ground direction. Rayleigh–Ritz
 gives only `epsilon_lambda<=r_lambda`; RH requires opposite control.
 
 **Established structure.** Finite restricted-Weil matrix, reflection, real-rooted completion,
 nested-floor monotonicity/no-evacuation, true Friedrichs ground attainment and continuity,
 small-aperture asymptotic, limiting-core modulus irreducibility, abstract prolate ladder algebra,
-and Gaussian strict half-threshold trial are closed. Compact band operator is injective, so zero
+and sharp Gaussian trial are closed. Compact band operator is injective, so zero
 eigenspace and zero band
-component vanish. For every bandwidth `c>=400`, Lean selects a nonzero even joint band/prolate mode
-with separation ratio below `1/2`; no classical PSWF asymptotic is assumed. From this mode corpus
+component vanish. For every `c>0`, Lean selects a nonzero even joint band/prolate mode with
+oscillator-scale separation `mu_c=c s_c<1`; an exact virial/Chebyshev uncertainty lower bound valid
+for every mode then proves one such selected family satisfies `mu_c->1`. No eigenfunction
+asymptotics or oscillator spectral theorem enters this ground-mode pin. From this mode corpus
 constructs explicit even compactly supported mean-zero source, proves bounded variation, sums every
 radial channel from common left endpoint, and obtains unconditional primitive and polar-charge
 bounds, including `O(1/lambda)` polar charge. The four constraint targets are identified with
@@ -711,6 +719,11 @@ proves fixed off-diagonal radial Gram entries vanish, diagonal entries converge 
 spectrum `8/(11 pi k) arcsin(1/k)`, diagonal is uniformly `O(k^-2)`, and divisor-weighted diagonal
 series converges to negative constrained-prolate prime constant. High-radial tail, Poisson center,
 lattice/channel transport, and diagonal physical-PSWF realization are closed.
+
+Countable log-chirp and endpoint modules isolate universal leading archimedean scalar law, including
+endpoint constant `8*pi/33`; scalar identity renormalization leaves Rayleigh excess/gap ratio
+unchanged. This prices exact closed-Weil remainder cancellation but cannot provide ground lower
+bound. It strengthens seed comparison, not RH-bearing whole-ground control.
 
 Generic first-derivative nonstationary-phase test is formal: a phase-speed lower bound `m>0`
 controls bare oscillatory integral by `1/c` times endpoint/variation terms with costs `m^-1` and
@@ -746,10 +759,10 @@ shortcuts: every nontrivial real solution of `v''=(x^2-mu)v` with integrable squ
 lowering identity, and spectral rigidity are Lean-proved. Rescaled prolate coefficients have exact
 oscillator normal form and uniform fixed-window errors; a Grönwall theorem gives window convergence
 provided `mu_c -> 2n+1`, bandwidth escapes, and a uniform profile phase bound holds. Exact second-
-moment bounds and Gaussian Rayleigh primitive close required `n=0` compactness/upper-trial pieces.
-Higher fixed `n` still needs uniform min--max upper bounds from Hermite trial spaces, followed by
-mode-index identification. Paper-level two-mode floor separation is therefore provisional, not a
-Lean theorem about literal varying PSWF family.
+moment bounds and Gaussian Rayleigh primitive support compactness route, but ground eigenvalue pin
+now bypasses profile limit entirely. Higher fixed `n=4j`, `j>=1`, still needs uniform min--max upper
+bounds from Hermite trial spaces, followed by rung/mode-index identification. Paper-level full
+fixed-depth constrained ladder remains provisional; ground separation limit is Lean-proved.
 
 `HTGeometry/OscillatorMassNoEscape.lean` adds exact tightness adapter: unit nonnegative Hermite
 mass with uniform first oscillator moment cannot escape to high ladder indices; if every other
@@ -762,10 +775,10 @@ restricted-Weil near-ground equation; generic saturation is no whole-ground clas
 tail integral `O(K^-1/2)`, permitting integral passage from local/norm convergence once literal
 family supplies hypotheses.
 
-**Open core.** First prove fixed-depth prolate spectral convergence: uniform `mu_c` upper bounds,
-subsequential window limits, global `L2` retention from second moment, and equality between
-oscillator rung and prolate mode index. Then prove source-only exhaustion of true restricted-Weil
-near-ground space:
+**Open core.** Extend proved ground pin `mu_c->1` to higher fixed-depth prolate ladder: uniform
+min--max upper bounds, subsequential/global retention as needed, and equality between oscillator
+rung and prolate mode index. Then prove source-only exhaustion of true restricted-Weil near-ground
+space:
 
 ```text
 u_n = oscillator-pinned prolate ladder
@@ -799,6 +812,8 @@ Principal closure/profile modules are `RadialSymbolTwoBranchInstance.lean`,
 `ProlateDefectTransfer.lean`, `ProlateCentreValuePairing.lean`,
 `ProlateSecondMoment.lean`, `ProlateRescaledCoefficients.lean`,
 `ProlateProfileWindowLimit.lean`, `ProlateGaussianSharpRayleigh.lean`,
+`ProlateSharpSeparationMode.lean`, `ProlateSeparationLowerBound.lean`,
+`ProlateSeparationLimit.lean`,
 `HTGeometry/OscillatorEnergyMonotone.lean`, `HTGeometry/OscillatorProductMonotone.lean`,
 `HTGeometry/OscillatorRecessiveLimits.lean`, `HTGeometry/OscillatorLadderIdentity.lean`,
 `HTGeometry/OscillatorBoundaryVanishing.lean`, `HTGeometry/OscillatorSpectralRigidity.lean`,
@@ -1154,9 +1169,13 @@ on form-domain, PSD, nullity, and factorization hypotheses. No theorem yet passe
 from finite first-contact packets to strong limit or admits odd descendants at the self-selected
 even boundary.
 
-Two additional limits are now sharp. Real-rooted Cayley numerators have real zeros, and local-
-uniform convergence to nonzero entire function preserves this reality; source-specific normality,
-local-uniform convergence, and null-row passage remain open. Finite-degree Hankel tails have exact
+Hard-edge complex normality is now substantially closed. Exact circle-energy reproducing bound and
+degree-linear aperture control make normalized Cayley numerators locally uniformly bounded; Montel
+gives a locally uniform subsequence. Cleared denominators converge to one when `d/a^2->0`, and a
+nonzero packet limit has only real zeros in squared variable. Exact root-division Cauchy law is also
+formal once limit state `(u-r)G` is admitted as null. Remaining passage is literal finite Hankel
+null row/source equation and smaller-aperture positivity into that nonzero limit, not generic
+normal-family or real-root closure. Finite-degree Hankel tails have exact
 Frobenius and row-sum positivity gates, but only relative to a lower bound for the bulk smallest
 eigenvalue. Absolute monomial-tail control cannot replace source-relative margin at degree linear
 in hard-edge height.
@@ -1170,13 +1189,17 @@ cofinal Julia-normalized atom, not stronger ordinary Padé convergence.
 
 **Open core.** Prove odd-sector admission at self-selected even first-contact boundary, or transport
 finite first-contact ancestry strongly enough that negative terminal odd descendant contradicts
-smaller-aperture nonnegativity. This requires exact null flag, literal completed source equation,
-PSD, factorization/multiplicity, form-domain integrability, and boundary convergence for nonzero
-finite-type limit. Equivalent diagonal alternatives are source-specific exclusion of bounded
+smaller-aperture nonnegativity. Normal subsequence and real-rooted finite-type limit are available;
+one must pass exact finite null row, literal completed source equation, PSD/form-domain data, and
+smaller-aperture nonnegativity to it. Equivalent diagonal alternatives are source-specific exclusion of bounded
 super-apex nodes, positivity of first Hausdorff radial flux, or vanishing of Julia-normalized
 boundary atom. Cross branch still requires von Mangoldt source orienting chart-local charge against
 exact Gamma commutator; pole cannot do it. More ordinary Padé capacity, unweighted Carathéodory
 jets, finite-head depletion, fixed-degree recession, or source-free compactness is dead work.
+Post-formation strict-frontier wall integrability is also dead: numerator is continuous and
+positive while newborn admission norm vanishes at most linearly, forcing a nonintegrable `1/(v-y)`
+pole. The all-frontier integrability predicate is exactly RH; any cross-route bridge must prevent
+frontier formation before division, not regularize its quotient afterward.
 
 **Principal Lean evidence.** shifted-Hankel/null-flag modules,
 `XiShiftedHardEdgeCofinalLinearFiniteHankelDimension.lean`,
@@ -1188,7 +1211,10 @@ modules, `XiShiftedHardEdgePrimeGammaPolarPolyphaseValuation.lean`,
 `XiShiftedHardEdgePrecompactness.lean`, `CosinePhaseParseval.lean`, and
 `XiShiftedHardEdgeAngularMomentum.lean`, `XiShiftedHardEdgeDerivativeBound.lean`,
 `XiShiftedHardEdgePaleyWiener.lean`, `XiShiftedHardEdgeDensityMeasure.lean`,
-`XiShiftedHardEdgeCayleyNumerator.lean`, `HTGeometry/CaratheodoryCoefficient.lean`, and
+`XiShiftedHardEdgeCayleyPacketBound.lean`, `XiShiftedHardEdgeCayleyNumerator.lean`,
+`XiShiftedHardEdgeCayleyLimit.lean`, `XiShiftedHardEdgeRootDivision.lean`,
+`XiShiftedStrictFrontierSourceWallIntegrabilityGate.lean`,
+`HTGeometry/CaratheodoryCoefficient.lean`, and
 `HTGeometry/FiniteDegreeShiftedHankelTailStability.lean`. `SliceWeierstrassDivision.lean` supplies
 local division infrastructure only.
 `HTGeometry/PsdHankelJetVanishing.lean`, `XiShiftedHardEdgeParityJet.lean`,
@@ -1417,6 +1443,12 @@ object is source-derived endpoint density/slope law, not graph closure. Converse
 negative Cauchy square and any cofinal Xi-carrying relative determinant needs linearly growing
 negative index. No fixed-index scalar relative background can absorb completed source.
 
+Gamma-damped Cauchy synthesis is now a positive channel-resolved Hilbert--Schmidt frame: trace is
+additive without deleting off-diagonal covariance. Exact Euler-log diagonal is obtained by bounded
+positive Radon--Nikodym correction, but critical von-Mangoldt correction grows cofinally like
+`(log p)p^(k/2)` and cannot live in same bounded frame. Distinguished Sonin compression plus
+archimedean relative channel and trace-slope domination are exact remaining carrier theorem.
+
 It is not yet a route. Missing theorem must construct one canonical completed-Xi leak profile from
 literal Euler--Gamma source before divisor selection, prove the profile hypotheses and source-side
 boundary-density bound `<=4`, and identify its divisor-side density strongly enough that any
@@ -1489,28 +1521,50 @@ the half-strip boundary, or positive operator-valued background covariance recom
 defect. Current Lean module formalizes paired-zero kernel, PSD-limit transfer, phase/background
 laws, and Herglotz sufficiency; it does not instantiate actual cofinal CCM factors or give a Lean
 source-to-RH endpoint. Hence CCM-EP is candidate, not live route.
+Poisson--Jensen analysis makes receiver boundary explicit: half-unit seam creates nonnegative outer
+defect whose vanishing is shifted RH. Dephased real-spectrum logarithmic graph is identically zero,
+whereas Xi transverse graph vanishes exactly under RH; graph-core convergence from real finite
+factors to Xi is therefore already RH-equivalent. Lawful producer must preserve transverse charge
+at finite stage or use divisor-preserving determinant/floor convergence, not convergence of zero
+log graphs.
 
 ### SP-E — prime--Gamma signed-permutation Eulerian limit
 
-This non-CCM candidate asks whether completed functional-equation reflection produces an
-order-sensitive positive type-`B` Eulerian cocycle. Signed prime words would lie in hyperoctahedral
-Coxeter groups; nonnegative descent-position specialization of a stable multivariate type-`B`
-Eulerian polynomial would have only negative real zeros. A cofinal locally uniform limit to the
-square-coordinate Xi function would then force RH.
+This non-CCM candidate is now a concrete determinantal architecture. Scalar specialization through
+known Visontai--Williams type-`B` ascent/descent-top signature is dead: words `3142` and `3241`
+have same signature but different adjacent edges, forcing every compatible positive edge kernel to
+zero four-label multiplicative curvature and hence rank-one separation. Order-blind scaling also
+has vanishing normalized quadratic coefficient, incompatible with theta source.
 
-Corpus supplies genuine ingredients: lossless support-cardinality jets, Born-sector exchange and
-graded KMS classification, signed-reflection parity, exact theta/Xi Taylor coefficients, and source
-tomography. Current working tree additionally proves centered product Gaussian invariance under
-signed coordinate permutations. None constructs completed prime--Gamma descent weights or a
-stability-preserving insertion recurrence.
+Positive survivor is Pluecker lift. Corpus exhibits nonzero Boolean first-trace insertion curvature
+before scalar boundary realization. For edge matrix `K`, rank-two Hermitian pencil has determinant
+`det(K)^2 z w`; its normalized Gram determinant
+`det(I+u K K^T)=1+S(K)u+det(K)^2u^2` has only negative real zeros, with squared curvature exactly
+retained. Lean proves source path discrepancy, scalar annihilation, top-fibre collision/rank-one
+no-go, stable curvature pencil, discriminant factorization, and negative-root law. Thus finite
+stability can retain completed source curvature, but only matrix-valued before scalarization.
 
-The order-blind multiplicative version is already dead: after universal type-`B` scaling its
-normalized quadratic coefficient tends to zero, while theta source has strictly positive limiting
-ratio. Any survivor must retain insertion order and Gamma reflection through a positive descent
-cocycle. Missing chain is: extract explicit two- and three-label completed weights; prove stable
-insertion or identify controlled defect; construct cofinal family; and prove local-uniform Xi
-limit. With neither source cocycle nor Lean RH endpoint, SP-E is candidate architecture, not an
-eleventh route.
+Exact open core is `SP_E_COFINAL_SOURCE_GRAM_COMPARISON`: construct cofinal `K_N` from literal
+all-prime Euler--Gamma/Mobius curvature sections before Xi divisor reading; prove trace and squared-
+minor limits to first Xi coefficients; extend all-degree Cauchy--Binet comparison; and prove
+trace-class/local-uniform determinant convergence
+`det(I+u K_N K_N^T)->XiC(sqrt(-u))/XiC(0)`. Gram squares orientation, so reflection sign must remain
+in graded state before determinant. No such source comparison or Lean RH endpoint exists; SP-E is
+candidate, not eleventh route.
+
+### TC-HS — theta--Cayley half-step reflection transport
+
+Paper-level direct theta-source Cayley orbit has exact eigenline port defect: sign is horizontal Xi
+orientation and vanishing is critical-line placement. Functional-equation reflection sends Cayley
+time `n` to `-n-1` and gives weighted same-time annihilation with coefficient `|k_q|^(4n+2)`, not
+unweighted cancellation. This kills ordinary integer-time Green telescoping and identifies fixed
+reflection time `-1/2`.
+
+Surviving candidate is source-native `U^(-1/2)` transport, or equivalent coefficient-neutralizing
+density, constructed before divisor scalarization while preserving prime labels, multiplicity, and
+both orientations. If it turns forced weighted reflection law into equal-coefficient annihilation,
+the port reader closes RH. The defect/reflection theorem is paper-proved but its planned Lean module
+and source half-step producer do not yet exist; TC-HS is candidate architecture, not live route.
 
 ### CCM causal-Pick and diagonal-Fock receivers
 
@@ -1593,8 +1647,11 @@ Baker corpus defines qualitative target and closes relation extraction, auxiliar
 transport, gap-free exponential-polynomial growth including repeated frequencies, and terminal
 zero estimate. It now constructs full additive-exponential integral Siegel matrix and kernel,
 identifies component jets with source derivations, turns kernel rows into analytic zeros, and
-packages derivative multiplicity/order. Missing work is quantitative multipoint Schwarz
-extrapolation and terminal parameter contradiction; `BakerTheorem` remains undeclared. These are
+packages derivative multiplicity/order. It now also constructs exact denominator-cleared algebraic
+integer jet, norm-discreteness zero criterion, one-step multipoint-Schwarz extrapolation to exact
+later zero, and finite house bounds. Missing work is uniform additive-jet coefficient/conjugate
+boundary estimates, iteration parameter inequality, and terminal contradiction; `BakerTheorem`
+remains undeclared. These are
 substantive adjacent programmes, not Riemann-RH routes, and do not change live count.
 
 Lie--Cartan normal-form infrastructure proves affine connection for a bracket-closed
@@ -1765,9 +1822,11 @@ Highest-value research topics are those capable of supplying one of these consti
   Xi divisor after fact;
 - source-relative intersection/compressed-trace identities controlling Hermitian deviation sector;
 - noncommutative or singular mixing mechanisms that preserve reflection-odd horizontal class until
-  annihilation, rather than radical-preserving normalization.
-- order-sensitive positive type-`B` prime--Gamma insertion cocycles with stable specialization and
-  locally uniform Xi limit.
+  annihilation, rather than radical-preserving normalization;
+- cofinal prime--Gamma curvature matrices with Cauchy--Binet/Xi coefficient comparison and
+  trace-class locally uniform determinant limit;
+- source-native theta--Cayley half-step transport neutralizing reflection weight before divisor
+  scalarization.
 
 The separate literature-exchange paper records external state of art and proposed imports:
 [`rh-route-literature-exchange-august-2026.md`](./rh-route-literature-exchange-august-2026.md).
@@ -1839,9 +1898,9 @@ incidence. Novelty of architecture does not imply completion: every live route s
 source theorem not presently supplied by corpus or external literature.
 
 No additional independent route follows from current seams. CCM-HG, CCM-GS, source-specific
-CCM-UR, dephased-boundary CCM-EP, and non-CCM SP-E remain candidates because completed source-to-RH
+CCM-UR, dephased-boundary CCM-EP, and non-CCM SP-E/TC-HS remain candidates because completed source-to-RH
 chains are absent. Latest wall-generator, oscillator-rigidity, parity-jet, Evans-residual, and
-signed-permutation results advance existing architectures or candidates; they do not instantiate
+signed-permutation/Pluecker results advance existing architectures or candidates; they do not instantiate
 an eleventh route. Causal-Pick quotient and diagonal-Fock packages are exact receivers, not producers. No
 live route is closed to RH. No formal disproof route exists. Frontier advances only when one named open core
 above is proved or falsified with a positive survivor; additional RH equivalences, finite

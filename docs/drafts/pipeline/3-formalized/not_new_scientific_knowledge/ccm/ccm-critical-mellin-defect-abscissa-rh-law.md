@@ -176,3 +176,37 @@ added.
 - [x] positive zero-type CCM carrier law extracted
 - [ ] prove `omega_R=0` from the Euler--Gamma source
 - [ ] RH
+
+## Lean status
+
+`[FORMALIZED]` — supersedes the "no Lean file is added" decision recorded above.  The
+Laplace–Stieltjes continuation and the zeta pole interface do remain cited parents, but the card's
+own section-3 chain `(i) → (ii) → (iii)` is fully reachable and is now proved.
+
+Module: `formal/GaloisForLFunctions/RHTower/CCMCriticalMellinAbscissa.lean`
+(5 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
+`formal/GaloisForLFunctions/RHTower.lean`).
+
+What is proved in Lean:
+
+- `integral_log_sq_div_self` — the exact logarithmic integral
+  `∫_1^X (log t)²/t dt = (log X)³/3`, which is the source of the `O(h³)` term in `(10)`.
+- `vonKoch_endpoint_bound` — **equation (9), endpoint term**: under the von Koch bound
+  `|Ψ(X) − X| ≤ K √X (log X)²`, the endpoint contribution `e^{-h/2}|Ψ(e^h) − e^h|` is at most
+  `K h²`.
+- `vonKoch_integral_bound` — **equation (9), integral term**: the integral contribution is at most
+  `K h³/3`, by monotone comparison against `K (log t)²/t` and the exact integral above.
+- `eventually_le_exp_of_poly_bound` — **(10) → (ii)**: a polynomial bound `C(1 + h³)` is eventually
+  below `exp(ε h)` for every `ε > 0`, so polynomial growth is subexponential.
+- `tendsto_logAbscissa_zero` — **(ii) → (iii)**: subexponential growth forces
+  `log(1 + |R(h)|)/h → 0`, i.e. the exponential abscissa `ω_R` of `(11)` vanishes.
+
+Together these are the card's proof that RH implies `(ii)` and that `(ii)` and `(iii)` agree — the
+half of the equivalence `(7)` that does not need the analytic continuation.
+
+Deliberately outside the Lean statement (cited parents, not results of this card):
+
+- the Laplace–Stieltjes source identity `(2)` and the integration-by-parts form `(5)`;
+- the identity theorem / continuation step and the zeta zero-to-pole correspondence `(6)`, hence
+  the implication `(3) → (4)` and the quantitative regions `(12)`–`(13)`;
+- the von Koch theorem `(8)` itself and the partial-summation identity `(9)`.

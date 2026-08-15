@@ -464,3 +464,33 @@ ground-pole alternative.
   finite-response/ground-pole dichotomy for Route U's limiting positive-axis Padé atom.
 - 2026-08-11 — derived the exact regularized zero-edge decomposition and proved the positive-mass
   Lorentzian `sqrt(tau)` spike versus zero-mass `O(tau)` collapse.
+
+## Lean status (updated)
+
+Section 3 — the exact capacity law — is formal and axiom-clean, in the generality the card uses: a
+nonnegative symmetric form, a source functional, and a vector representing the form on that
+functional.
+
+    HTGeometry/NonnegFormRadical.lean                 (axiom-clean, wired, built)
+      bilinForm_sq_le, form_pairing_eq_zero_of_diag   Cauchy-Schwarz and the radical of a
+      formRadical                                     nonnegative symmetric bilinear form
+      form_capacity                                   **(HSC.14)-(HSC.17)** a unit-source vector
+                                                      representing the form has energy `rho`, and
+                                                      no unit-source vector has smaller energy:
+                                                      `Cap = rho`
+      source_eq_zero_on_radical                       **(HSC.19) first half** a nonzero capacity
+                                                      forces the source to annihilate the whole
+                                                      radical, so it lies in the orthogonal
+                                                      complement of the kernel
+      mem_formRadical_of_capacity_eq_zero             **(HSC.22) first half** vanishing capacity
+                                                      puts the normalized source vector in the
+                                                      radical while keeping unit source, so the
+                                                      ground projection of the source is nonzero
+      eq_zero_of_form_diag_eq_zero,
+        card_le_rank_ker_of_zero_energy               radical vectors are kernel vectors of any
+                                                      operator representing the form
+
+Still to formalize: section 2, the weak hyperbolic source equation (HSC.8)-(HSC.9), which needs the
+distributional classification of even solutions of `-w'' + kappa² w = 0` on an interval; and
+sections 4-5, the reduced-resolvent dichotomy (HSC.21)-(HSC.23) and the square-root capacity spike
+(HSC.25)-(HSC.29), which need the spectral decomposition of the localized operator at zero.

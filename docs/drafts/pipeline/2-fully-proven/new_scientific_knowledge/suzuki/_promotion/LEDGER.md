@@ -8963,3 +8963,32 @@ That is `(12)`, and the constant `C_F` of the card is `sqrt(2 pi)`.  It is neede
 window half of `(11)` and for the slice bound of the first boundary term `(20)`.
 
 All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ABK. `(21)` for the literal wall, and the floor region in the slice bound
+
+```text
+RHTower/WallResolventLaplace.lean            (21) instantiated at the Gamma-wall generator
+RHTower/SuzukiWallBlockSliceBound.lean       floor required only on a region; profile vanishes off it
+HTGeometry/BlockWindowFubini.lean            + product-majorant Fubini and the block x ray case
+```
+
+**Why the slice bound had to be regionalised.**  `lintegral_sq_blockLaplace_le` quantified the
+numerical floor over the whole frequency line.  For the Gamma wall the floor is
+`log(2+|x|) − C_σ/2 − ‖T‖/2`, whose global infimum is the value at `x = 0`; with that value the
+slice rate `μ₀ + m` is negative for a block far down the negative ray, and the estimate is vacuous.
+What is true is the *threshold* statement: on `|x| ≥ C₀e^{max(0,−m)}` the floor is at least
+`μ₀ − m`, so the slice rate is `(μ₀ − m) + m = μ₀`, uniformly.  So the floor is now required only on
+a region `A`, with the slice profile vanishing off `A` — which is exactly how the threshold enters,
+and the proof is unchanged apart from a case split where the profile is zero.
+
+**`(21)` is uniqueness, not a new computation.**  The abstract orbit integral solves
+`(B + L·I)w = u`; since the shifted generator is a unit wherever the floor is open, `w` *is* the ring
+inverse applied to `u`.  That is the form the integration by parts produces, so no separate resolvent
+calculus is needed.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+**What the first boundary term still needs:** the `L`↔`s` interchange (now available as
+`integral_swap_block_ray_of_dominated`), the slice identity `Ψ(x,s) = ` angular transform of
+`e^{-Ls}1_{I_m}g`, its Plancherel bound (ABJ) against the block weight `e^{-sm}`, and the joint
+measurability of `(x,s) ↦ ‖e^{-sB(x)}Ψ(x,s)‖ₑ`.

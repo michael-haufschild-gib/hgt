@@ -13,7 +13,7 @@ on that disc by its circle energy times `((a+R)/(a-R))^{d+2}`, and the last fact
 this is the normality hypothesis of the hard-edge limit.
 -/
 
-open Complex
+open Complex Filter
 
 noncomputable section
 
@@ -195,7 +195,6 @@ theorem norm_scaledCayleyNumerator_le {a : ℝ} {d : ℕ} {P : Polynomial ℂ} (
       * Real.exp (2 * Real.sqrt R * (d + 2) / (a - Real.sqrt R)) := by positivity
   exact mul_le_mul hfac hpacket (norm_nonneg _) (pow_nonneg (by positivity) d)
 
-open Filter in
 /-- **Uniform normality bound.**  With circle energy and degree controlled by the aperture, the
 normalized numerators are eventually bounded on every disc by one constant. -/
 theorem eventually_norm_scaledCayleyNumerator_le {a : ℕ → ℝ} {d : ℕ → ℕ} {P : ℕ → Polynomial ℂ}
@@ -264,7 +263,6 @@ theorem eventually_norm_scaledCayleyNumerator_le {a : ℕ → ℝ} {d : ℕ → 
         refine mul_le_mul hfac1 ?_ (by positivity) (Real.exp_nonneg _)
         exact mul_le_mul hfac2 hfac3 (Real.exp_nonneg _) (Real.sqrt_nonneg _)
 
-open Filter in
 /-- **(HHWB.11)/(HHWB.13) Normality of the normalized hard-edge numerators.**  Under the same
 control of circle energy and degree, a subsequence of the normalized numerators converges locally
 uniformly on the plane. -/
@@ -286,7 +284,7 @@ theorem exists_subseq_tendstoLocallyUniformly_scaledCayleyNumerator
   · exact ⟨_, eventually_norm_scaledCayleyNumerator_le hd hK hdeg hE hlarge R hR⟩
   · refine ⟨0, Filter.Eventually.of_forall fun n z hz => ?_⟩
     rw [Metric.ball_eq_empty.2 (by linarith)] at hz
-    exact absurd hz (Set.not_mem_empty z)
+    exact absurd hz (by simp)
 
 end RHTower
 

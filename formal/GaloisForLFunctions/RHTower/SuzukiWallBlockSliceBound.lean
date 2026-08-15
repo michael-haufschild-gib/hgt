@@ -64,15 +64,22 @@ theorem lintegral_sq_exp_weight_block_le {g : ℝ → X} {m s : ℝ} (hs : 0 ≤
   exact le_trans (lintegral_mono hpt)
     (le_of_eq (lintegral_const_mul' _ _ ENNReal.ofReal_ne_top))
 
-/-- **The semigroup costs `e^{-μ₀ s}`, uniformly in the frequency.** -/
-theorem lintegral_sq_semigroup_apply_le {B : ℝ → (X →L[ℂ] X)} {μ₀ s : ℝ}
-    (hB : ∀ x : ℝ, ∀ u : X, μ₀ * ‖u‖ ^ 2 ≤ (inner ℂ (B x u) u).re) (hs : 0 ≤ s) (v : ℝ → X) :
+/-- **The semigroup costs `e^{-μ₀ s}` wherever the floor holds.**  The profile is required to vanish
+off the region where the floor is available, which is what lets a frequency threshold enter: below it
+the profile is not seen at all. -/
+theorem lintegral_sq_semigroup_apply_le {B : ℝ → (X →L[ℂ] X)} {μ₀ s : ℝ} {A : Set ℝ}
+    (hB : ∀ x ∈ A, ∀ u : X, μ₀ * ‖u‖ ^ 2 ≤ (inner ℂ (B x u) u).re) (hs : 0 ≤ s) (v : ℝ → X)
+    (hsupp : ∀ x, x ∉ A → v x = 0) :
     (∫⁻ x : ℝ, ‖accretiveSemigroup (B x) s (v x)‖ₑ ^ 2)
       ≤ ENNReal.ofReal (Real.exp (-(2 * μ₀ * s))) * ∫⁻ x : ℝ, ‖v x‖ₑ ^ 2 := by
   have hpt : ∀ x : ℝ, ‖accretiveSemigroup (B x) s (v x)‖ₑ ^ 2
       ≤ ENNReal.ofReal (Real.exp (-(2 * μ₀ * s))) * ‖v x‖ₑ ^ 2 := by
     intro x
-    have hbase := norm_accretiveSemigroup_apply_le (hB x) (v x) hs
+    by_cases hx : x ∈ A
+    swap
+    · rw [hsupp x hx]
+      simp
+    have hbase := norm_accretiveSemigroup_apply_le (hB x hx) (v x) hs
     have hnn : (0 : ℝ) ≤ Real.exp (-(μ₀ * s)) := (Real.exp_pos _).le
     have hnorm : ‖accretiveSemigroup (B x) s (v x)‖ₑ
         ≤ ENNReal.ofReal (Real.exp (-(μ₀ * s))) * ‖v x‖ₑ := by
@@ -92,13 +99,13 @@ theorem lintegral_sq_semigroup_apply_le {B : ℝ → (X →L[ℂ] X)} {μ₀ s :
 
 /-- **The two gains multiply.**  A slice built from a block profile and the semigroup decays at the
 sum of the two rates. -/
-theorem lintegral_sq_slice_le {B : ℝ → (X →L[ℂ] X)} {μ₀ s m : ℝ}
-    (hB : ∀ x : ℝ, ∀ u : X, μ₀ * ‖u‖ ^ 2 ≤ (inner ℂ (B x u) u).re) (hs : 0 ≤ s)
-    {w : ℝ → X} {E : ℝ≥0∞}
+theorem lintegral_sq_slice_le {B : ℝ → (X →L[ℂ] X)} {μ₀ s m : ℝ} {A : Set ℝ}
+    (hB : ∀ x ∈ A, ∀ u : X, μ₀ * ‖u‖ ^ 2 ≤ (inner ℂ (B x u) u).re) (hs : 0 ≤ s)
+    {w : ℝ → X} {E : ℝ≥0∞} (hsupp : ∀ x, x ∉ A → w x = 0)
     (hw : (∫⁻ x : ℝ, ‖w x‖ₑ ^ 2) ≤ ENNReal.ofReal (Real.exp (-(2 * s * m))) * E) :
     (∫⁻ x : ℝ, ‖accretiveSemigroup (B x) s (w x)‖ₑ ^ 2)
       ≤ ENNReal.ofReal (Real.exp (-(2 * (μ₀ + m) * s))) * E := by
-  have hstep := lintegral_sq_semigroup_apply_le hB hs w
+  have hstep := lintegral_sq_semigroup_apply_le hB hs w hsupp
   refine hstep.trans ?_
   refine le_trans (mul_le_mul' le_rfl hw) (le_of_eq ?_)
   have hadd : Real.exp (-(2 * μ₀ * s)) * Real.exp (-(2 * s * m))
@@ -114,10 +121,10 @@ theorem lintegral_sq_slice_le {B : ℝ → (X →L[ℂ] X)} {μ₀ s m : ℝ}
 numerical floor and the block index add in the slice decay rate, so the superposition constant is
 `(μ₀ + m)^{-1}`; choosing the frequency threshold so that the floor grows with the block makes it
 uniform in the block. -/
-theorem lintegral_sq_blockLaplace_le {B : ℝ → (X →L[ℂ] X)} {μ₀ m K : ℝ}
-    (hB : ∀ x : ℝ, ∀ u : X, μ₀ * ‖u‖ ^ 2 ≤ (inner ℂ (B x u) u).re)
+theorem lintegral_sq_blockLaplace_le {B : ℝ → (X →L[ℂ] X)} {μ₀ m K : ℝ} {A : Set ℝ}
+    (hB : ∀ x ∈ A, ∀ u : X, μ₀ * ‖u‖ ^ 2 ≤ (inner ℂ (B x u) u).re)
     (hgap : 0 < μ₀ + m) (hK : 0 ≤ K)
-    {Φ : ℝ → X} {Ψ : ℝ → ℝ → X}
+    {Φ : ℝ → X} {Ψ : ℝ → ℝ → X} (hsupp : ∀ s : ℝ, ∀ x, x ∉ A → Ψ x s = 0)
     (hmeas : Measurable
       (Function.uncurry fun (x : ℝ) (s : ℝ) => ‖accretiveSemigroup (B x) s (Ψ x s)‖ₑ))
     (hΦ : ∀ x : ℝ, ‖Φ x‖ₑ ≤ ∫⁻ s in Ioi (0 : ℝ), ‖accretiveSemigroup (B x) s (Ψ x s)‖ₑ)
@@ -126,7 +133,7 @@ theorem lintegral_sq_blockLaplace_le {B : ℝ → (X →L[ℂ] X)} {μ₀ m K : 
     (∫⁻ x : ℝ, ‖Φ x‖ₑ ^ 2) ^ ((1 : ℝ) / 2) ≤ ENNReal.ofReal (K / (μ₀ + m)) := by
   refine GaloisForLFunctions.HTGeometry.lintegral_sq_laplaceSuperposition_le_ray
     hK hgap hmeas hΦ fun s hs => ?_
-  have hsq := lintegral_sq_slice_le hB hs.le (hslice s hs)
+  have hsq := lintegral_sq_slice_le hB hs.le (hsupp s) (hslice s hs)
   have hval : ENNReal.ofReal (Real.exp (-(2 * (μ₀ + m) * s))) * ENNReal.ofReal (K ^ 2)
       = ENNReal.ofReal (K * Real.exp (-(μ₀ + m) * s)) ^ 2 := by
     rw [← ENNReal.ofReal_mul (Real.exp_pos _).le,

@@ -94,6 +94,47 @@ theorem card_le_rank_ker_of_zero_energy {H : Type*} [NormedAddCommGroup H]
     _ = Module.rank ℝ (Submodule.span ℝ (Set.range v)) := Module.finrank_eq_rank _ _
     _ ≤ Module.rank ℝ (LinearMap.ker A) := Submodule.rank_mono hmem
 
+/-! ## Capacity of a unit-source constraint -/
+
+/-- **The capacity law.**  If `ζ` has unit source and represents the form on the source functional,
+`B ζ ψ = ρ · v ψ`, then its energy is `ρ` and no vector of unit source has smaller energy. -/
+theorem form_capacity (B : W →ₗ[ℝ] W →ₗ[ℝ] ℝ) (hsymm : ∀ x y, B x y = B y x)
+    (hnn : ∀ x, 0 ≤ B x x) (v : W →ₗ[ℝ] ℝ) (ζ : W) (ρ : ℝ)
+    (hunit : v ζ = 1) (hrep : ∀ ψ, B ζ ψ = ρ * v ψ) :
+    B ζ ζ = ρ ∧ ∀ ψ : W, v ψ = 1 → ρ ≤ B ψ ψ := by
+  have hζ : B ζ ζ = ρ := by rw [hrep ζ, hunit, mul_one]
+  refine ⟨hζ, fun ψ hψ => ?_⟩
+  have hd : v (ψ - ζ) = 0 := by
+    rw [map_sub, hψ, hunit, sub_self]
+  have hcross : B ζ (ψ - ζ) = 0 := by rw [hrep, hd, mul_zero]
+  have hexp : B ψ ψ = B ζ ζ + 2 * B ζ (ψ - ζ) + B (ψ - ζ) (ψ - ζ) := by
+    have hsplit : ψ = ζ + (ψ - ζ) := by abel
+    nth_rewrite 1 [hsplit]
+    nth_rewrite 2 [hsplit]
+    simp only [map_add, LinearMap.add_apply]
+    rw [hsymm (ψ - ζ) ζ]
+    ring
+  rw [hexp, hζ, hcross]
+  have := hnn (ψ - ζ)
+  linarith
+
+/-- **The source is orthogonal to the radical when the capacity is nonzero.** -/
+theorem source_eq_zero_on_radical (B : W →ₗ[ℝ] W →ₗ[ℝ] ℝ) (hsymm : ∀ x y, B x y = B y x)
+    (hnn : ∀ x, 0 ≤ B x x) (v : W →ₗ[ℝ] ℝ) (ζ : W) (ρ : ℝ) (hρ : ρ ≠ 0)
+    (hrep : ∀ ψ, B ζ ψ = ρ * v ψ) {k : W} (hk : B k k = 0) : v k = 0 := by
+  have h1 : B ζ k = 0 := by
+    rw [hsymm]
+    exact form_pairing_eq_zero_of_diag B hsymm hnn hk ζ
+  rw [hrep k] at h1
+  exact (mul_eq_zero.1 h1).resolve_left hρ
+
+/-- **Vanishing capacity puts the normalized source vector in the radical.** -/
+theorem mem_formRadical_of_capacity_eq_zero (B : W →ₗ[ℝ] W →ₗ[ℝ] ℝ)
+    (hsymm : ∀ x y, B x y = B y x) (hnn : ∀ x, 0 ≤ B x x) (v : W →ₗ[ℝ] ℝ) (ζ : W)
+    (hunit : v ζ = 1) (hrep : ∀ ψ, B ζ ψ = (0 : ℝ) * v ψ) :
+    ζ ∈ formRadical B hsymm hnn ∧ v ζ = 1 :=
+  ⟨(form_capacity B hsymm hnn v ζ 0 hunit hrep).1, hunit⟩
+
 end
 
 end GaloisForLFunctions.HTGeometry

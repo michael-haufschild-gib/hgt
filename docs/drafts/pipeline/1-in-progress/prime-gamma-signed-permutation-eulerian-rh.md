@@ -209,6 +209,13 @@ partition functions is therefore insufficient to manufacture a letterwise Coxete
   `det(I+u K_N K_N^T)` converges locally uniformly to `A(u)`.  First close the trace and squared
   two-minor comparisons with `a_1,a_2`; no Xi coefficient or zero may define an individual source
   column.
+- `[FALSIFIED METRIC]` Literal nested first-trace edges in uniform Boolean `L^2` have normalized
+  quadratic coefficient at most `13/98`, while theta moment log-convexity forces
+  `a_2/a_1^2 >= 1/6`.  No scalar normalization can repair the gap; see
+  `../2-fully-proven/prime-gamma-uniform-boolean-gram-quadratic-no-go.md`.
+- `[REFINED OPEN CORE]` Build the Gamma/co-Poisson metric on nonnested two-face curvature sections.
+  Any candidate must reduce the Gram inverse-participation ratio below `2/3` and pass the exact
+  degree-two theta comparison before an all-degree construction is attempted.
 
 ## Primary parent results
 
@@ -236,8 +243,10 @@ positive results.
 - [x] corrected first decisive finite insertion test from rank three to rank four
 - [x] literal support-valued source insertion curvature located
 - [x] curvature-preserving stable Pluecker/Gram finite consumer constructed
+- [x] uniform Boolean Gram metric excluded by exact rational quadratic gap
 - [ ] completed weights of all signed orders on two and three prime labels extracted
 - [ ] completed weights on the fiber-colliding four-label pair extracted
+- [ ] Gamma/co-Poisson metric on two-face curvature sections constructed
 - [ ] source curvature sections identified with completed signed-word columns
 - [ ] cofinal Gram family constructed from all-prime Euler--Gamma/Mobius source
 - [ ] trace and squared-minor coefficient comparisons proved

@@ -46,10 +46,14 @@ structure IsOrthoEigenBasis (H : Matrix α α ℂ) (e : α → α → ℂ) (lam 
   eigen : ∀ j, H *ᵥ e j = ((lam j : ℝ) : ℂ) • e j
   complete : ∀ ψ : α → ℂ, ∑ j, finiteComplexInner (e j) ψ • e j = ψ
 
+/-- The orthonormal eigenbasis of a Hermitian matrix, as plain coordinate vectors. -/
+def hermitianEigenBasis (H : Matrix α α ℂ) (hH : H.IsHermitian) : α → α → ℂ :=
+  fun j => (hH.eigenvectorBasis j).ofLp
+
 /-- **Every Hermitian matrix carries an orthonormal eigenbasis.**  The eigenbasis hypothesis of
 this file is therefore never a restriction. -/
-theorem exists_isOrthoEigenBasis (H : Matrix α α ℂ) (hH : H.IsHermitian) :
-    ∃ (e : α → α → ℂ) (lam : α → ℝ), IsOrthoEigenBasis H e lam := by
+theorem isOrthoEigenBasis_hermitian (H : Matrix α α ℂ) (hH : H.IsHermitian) :
+    IsOrthoEigenBasis H (hermitianEigenBasis H hH) hH.eigenvalues := by
   classical
   have hbridge : ∀ j : α, ∀ v : α → ℂ,
       finiteComplexInner ((hH.eigenvectorBasis j).ofLp) v =
@@ -59,7 +63,8 @@ theorem exists_isOrthoEigenBasis (H : Matrix α α ℂ) (hH : H.IsHermitian) :
     refine Finset.sum_congr rfl fun x _ => ?_
     simp [Pi.star_apply]
     ring
-  refine ⟨fun j => (hH.eigenvectorBasis j).ofLp, hH.eigenvalues, ?_, ?_, ?_⟩
+  show IsOrthoEigenBasis H (fun j => (hH.eigenvectorBasis j).ofLp) hH.eigenvalues
+  refine ⟨?_, ?_, ?_⟩
   · intro j k
     have h0 := hH.eigenvectorBasis.orthonormal
     rw [orthonormal_iff_ite] at h0
@@ -77,6 +82,10 @@ theorem exists_isOrthoEigenBasis (H : Matrix α α ℂ) (hH : H.IsHermitian) :
             hH.eigenvectorBasis j).ofLp := by simp
       _ = (WithLp.toLp 2 ψ).ofLp := by rw [h]
       _ = ψ := rfl
+
+theorem exists_isOrthoEigenBasis (H : Matrix α α ℂ) (hH : H.IsHermitian) :
+    ∃ (e : α → α → ℂ) (lam : α → ℝ), IsOrthoEigenBasis H e lam :=
+  ⟨hermitianEigenBasis H hH, hH.eigenvalues, isOrthoEigenBasis_hermitian H hH⟩
 
 /-- The spectral weight of a state on one eigenvector. -/
 def eigenWeight (e : α → α → ℂ) (ψ : α → ℂ) (j : α) : ℝ :=

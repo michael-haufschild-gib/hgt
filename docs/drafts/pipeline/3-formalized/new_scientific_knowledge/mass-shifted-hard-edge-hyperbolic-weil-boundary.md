@@ -1,9 +1,9 @@
 # Mass-shifted hard-edge hyperbolic Weil boundary
 
 - **ID:** `mass-shifted-hard-edge-hyperbolic-weil-boundary`
-- **Stage:** 2-fully-proven / needs independent specialist audit
+- **Stage:** 3-formalized / needs independent specialist audit
 - **Route:** U, canonical cofinal first-contact limit
-- **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [LEAN NOT STARTED]`
+- **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [LEAN FORMALIZED]`
 - **Depends on:** `mass-shifted-hard-edge-paley-wiener-compactification`,
   `mass-shifted-completed-source-hard-edge-compactness`, and the Lean-proved finite-face
   real-rootedness/null-row theorems
@@ -392,3 +392,53 @@ uniform convergence of the normalized packets — together with `a_j -> infinity
 
 Still to formalize for this card: section 3, the passage of the finite Hankel null row to the
 limit (HHWB.6), and section 4, the root-division Cauchy law (HHWB.16).
+
+## Lean status (final)
+
+Sections 1--4 are formal and axiom-clean.  Added since the previous note:
+
+    RHTower/EntireMontel.lean                         (axiom-clean, wired, built)
+      exists_subseq_tendstoUniformlyOn_closedBall     one extraction step of Montel's theorem
+      exists_subseq_tendstoLocallyUniformly           **Montel for entire families**: a family
+                                                      bounded on every ball has a subsequence
+                                                      converging locally uniformly on the plane,
+                                                      by diagonalizing along the ball exhaustion
+      exists_subseq_tendstoLocallyUniformly_of_eventually_bounded
+                                                      the same with an eventual bound
+
+    RHTower/XiShiftedHardEdgeCayleyPacketBound.lean   (axiom-clean, wired, built)
+      norm_scaledCayleyNumerator_le                   the normalized numerator obeys the packet
+                                                      bound after passing to a square root of the
+                                                      variable
+      eventually_norm_scaledCayleyNumerator_le        with circle energy and degree controlled by
+                                                      the aperture the bound is one constant on
+                                                      each disc
+      exists_subseq_tendstoLocallyUniformly_scaledCayleyNumerator
+                                                      **(HHWB.11)/(HHWB.13)** hence a subsequence
+                                                      of the normalized numerators converges
+                                                      locally uniformly to an entire limit
+
+    RHTower/XiShiftedHardEdgeDensityMeasure.lean      (axiom-clean, wired, built)
+      routeUHardEdgePairing_tendsto                   the literal pairing is continuous along a
+                                                      dominated family
+      routeUHardEdgePairing_eq_zero_of_tendsto        **(HHWB.6)** the finite null rows pass to the
+                                                      limit: the hard-edge limit satisfies the
+                                                      literal finite-prime Euler equation
+      routeUHardEdgePairing_nonneg_of_tendsto         every strictly smaller aperture keeps
+                                                      nonnegativity in the limit
+
+    RHTower/XiShiftedHardEdgeRootDivision.lean        (axiom-clean, wired, built)
+      routeUHardEdge_rootDivision                     **(HHWB.16)/(HHWB.20)** the root-division
+                                                      Cauchy law: dividing the null state by a real
+                                                      zero gives the exact signed barycentre
+                                                      identity, polar atom included
+      routeUHardEdge_rootDivision_jetMoment           the same as the vanishing of the first
+                                                      divided moment
+
+Nothing analytic is assumed away.  The Möbius numerator, its real-rootedness, the reproducing-kernel
+bound, Montel's theorem on the plane, the Laguerre--Pólya closure, the cleared-denominator limit,
+the passage of the null rows and the root-division law are all proved.  What the Lean statements
+carry as hypotheses is exactly the data of the card: the finite real-rootedness (a Lean-proved
+corpus theorem), the aperture growth `a_j -> infinity` with `d_j/a_j -> tau`, the normalization of
+the packets, and the form-domain integrability and domination that define the logarithmic
+Paley--Wiener form domain.
