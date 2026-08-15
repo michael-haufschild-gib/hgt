@@ -1287,3 +1287,16 @@ for `1 - b` small in terms of `c`.
 - [ ] exact archimedean endpoint response
 - [ ] subleading/interior incidence remainder `o(d_1)`
 - [ ] true Weil Rayleigh-excess or cofinal-floor transfer
+
+## Promotion audit, 2026-08-15
+
+All 39 Lean modules named above exist, are wired into their umbrellas
+(`GaloisForLFunctions.RHTower`, `GaloisForLFunctions.HTGeometry`), build, contain no `sorry`,
+`admit`, `axiom` or `opaque`, and `#print axioms` on every one of their 305 named theorems returns
+exactly `[propext, Classical.choice, Quot.sound]`.
+
+Twenty-six of the twenty-eight Lean gates above are ticked. The two that are not correspond exactly
+to the card's own declared *imports* from the parent literature — Fuchs's lower leakage rate and
+Slepian's prolate-to-Hermite coefficient limits — not to anything the card proves. Everything the
+card itself proves is machine-checked. The card is promoted to stage 3 on that basis; the two
+classical imports are recorded in the formalization certificate.

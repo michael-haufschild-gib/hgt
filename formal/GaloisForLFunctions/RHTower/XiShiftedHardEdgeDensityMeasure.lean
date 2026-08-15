@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.XiShiftedHardEdgeArchimedeanDensity
 import GaloisForLFunctions.HTGeometry.SquaredVariableSubstitution
 import GaloisForLFunctions.HTGeometry.DigammaGaussSeries
+import GaloisForLFunctions.HTGeometry.PsdHankelJetVanishing
 
 /-!
 # The literal finite-prime hard-edge density and its squared-variable pairing
@@ -172,6 +173,66 @@ theorem routeUHardEdgePairing_add (σ : ℝ) (Φ Ψ : ℝ → ℝ)
     ring
   rw [routeUHardEdgePairing, routeUHardEdgePairing, routeUHardEdgePairing, hint]
   ring
+
+
+/-! ## The quadratic expansion and Cauchy--Schwarz on the form domain -/
+
+/-- The quadratic expansion of the even form along a one-parameter family. -/
+theorem routeUEvenForm_expand (σ : ℝ) (t : ℝ) (H K : ℝ → ℝ)
+    (hHH : IntegrableOn (fun u : ℝ =>
+      H u * H u * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+    (hHK : IntegrableOn (fun u : ℝ =>
+      2 * t * (H u * K u) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+    (hKK : IntegrableOn (fun u : ℝ =>
+      t ^ 2 * (K u * K u) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0)) :
+    routeUHardEdgeEvenForm σ (fun u => H u + t * K u) (fun u => H u + t * K u)
+      = routeUHardEdgeEvenForm σ H H
+        + 2 * t * routeUHardEdgeEvenForm σ H K
+        + t ^ 2 * routeUHardEdgeEvenForm σ K K := by
+  have hsplit : (fun u : ℝ => (H u + t * K u) * (H u + t * K u))
+      = fun u : ℝ => (H u * H u + 2 * t * (H u * K u)) + t ^ 2 * (K u * K u) := by
+    funext u
+    ring
+  have hadd1 : IntegrableOn (fun u : ℝ =>
+      (H u * H u + 2 * t * (H u * K u)) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u)
+      (Ioi 0) := by
+    refine (hHH.add hHK).congr_fun ?_ measurableSet_Ioi
+    intro u _
+    simp only [Pi.add_apply]
+    ring
+  rw [routeUHardEdgeEvenForm, routeUHardEdgeEvenForm, routeUHardEdgeEvenForm,
+    routeUHardEdgeEvenForm, hsplit,
+    routeUHardEdgePairing_add σ _ _ hadd1 hKK,
+    routeUHardEdgePairing_add σ _ _ hHH hHK,
+    routeUHardEdgePairing_const_mul σ (2 * t) (fun u => H u * K u),
+    routeUHardEdgePairing_const_mul σ (t ^ 2) (fun u => K u * K u)]
+
+
+/-- **Cauchy--Schwarz for the even hard-edge form on its domain.** -/
+theorem routeUEvenForm_sq_le (σ : ℝ) (H K : ℝ → ℝ)
+    (hHH : IntegrableOn
+      (fun u : ℝ => H u * H u * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+    (hHK : IntegrableOn
+      (fun u : ℝ => H u * K u * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+    (hKK : IntegrableOn
+      (fun u : ℝ => K u * K u * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+    (hpsd : ∀ t : ℝ,
+      0 ≤ routeUHardEdgeEvenForm σ (fun u => H u + t * K u) (fun u => H u + t * K u)) :
+    routeUHardEdgeEvenForm σ H K ^ 2
+      ≤ routeUHardEdgeEvenForm σ H H * routeUHardEdgeEvenForm σ K K := by
+  refine sq_le_of_quadratic_nonneg fun t => ?_
+  have hHKt : IntegrableOn
+      (fun u : ℝ => 2 * t * (H u * K u) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u)
+      (Ioi 0) := by
+    refine (hHK.const_mul (2 * t)).congr (Filter.Eventually.of_forall fun u => ?_)
+    ring
+  have hKKt : IntegrableOn
+      (fun u : ℝ => t ^ 2 * (K u * K u) * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u)
+      (Ioi 0) := by
+    refine (hKK.const_mul (t ^ 2)).congr (Filter.Eventually.of_forall fun u => ?_)
+    ring
+  rw [← routeUEvenForm_expand σ t H K hHH hHKt hKKt]
+  exact hpsd t
 
 /-! ## The parity recursion on divided jets -/
 

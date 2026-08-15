@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.GammaRatioLineDecay
+import GaloisForLFunctions.HTGeometry.GlobalPowerTailSquareIntegrable
 
 /-!
 # The Gamma propagator on a shifted line, at the exact exponent
@@ -86,5 +87,25 @@ theorem exists_bound_stripPropagator_ratio (hT : IsSelfAdjoint T)
     _ ≤ (K₁ * (1 + |x|) ^ (-(1 / 2 + σ))) * (K₂ * (1 + |t|) ^ (1 / 2 + σ)) :=
         mul_le_mul (hb₁ x) (hb₂ t) (norm_nonneg _) (by positivity)
     _ = K₁ * K₂ * ((1 + |t|) ^ (1 / 2 + σ) * (1 + |x|) ^ (-(1 / 2 + σ))) := by ring
+
+/-! ## The homogeneous component is square integrable on the line -/
+
+/-- **The homogeneous term of a shifted-line solution is in `L²(ℝ)`.**  The propagator exponent
+`p = 1/2 + σ` exceeds `1/2` for every `σ > 0`, which is exactly the threshold at which the square of
+the propagator becomes integrable — the reason Theorem 2's homogeneous remainder needs no further
+hypothesis. -/
+theorem lintegral_sq_stripPropagator_apply_ne_top (hT : IsSelfAdjoint T)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z) {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
+    (c : X) :
+    (∫⁻ x : ℝ, ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I) c‖ₑ ^ 2) ≠ ⊤ := by
+  obtain ⟨K, hK, hbound⟩ := exists_bound_stripPropagator_line hT hE hσ0 hσ1
+  refine GaloisForLFunctions.HTGeometry.lintegral_sq_globalPowerTail_ne_top
+    (C := K * ‖c‖) (p := 1 / 2 + σ) (by linarith) fun x => ?_
+  calc ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I) c‖
+      ≤ ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)‖ * ‖c‖ :=
+        ContinuousLinearMap.le_opNorm _ _
+    _ ≤ (K * (1 + |x|) ^ (-(1 / 2 + σ))) * ‖c‖ :=
+        mul_le_mul_of_nonneg_right (hbound x) (norm_nonneg _)
+    _ = K * ‖c‖ * (1 + |x|) ^ (-(1 / 2 + σ)) := by ring
 
 end GaloisForLFunctions.RHTower

@@ -261,3 +261,79 @@ operator. Supplying these as hypotheses would repeat theorem laundering.
 - 2026-08-11 — derived exact odd-sector measure identity and complete odd divided-jet Gram law.
 - 2026-08-11 — proved parity-doubled full-ground kernel bound and strict-positive-root simple-ground
   consequence; classified the former excess non-jet modes explicitly.
+
+## Lean status (updated)
+
+The literal hard-edge density, its squared-variable pairing, and both parity sectors are now
+formal, axiom-clean, and wired.  No abstract form is substituted for the source objects: the
+density is the explicit finite-prime expression and the pairing is the explicit half-line integral
+with the polar atom.
+
+    HTGeometry/SquaredVariableSubstitution.lean       (axiom-clean, wired, built)
+      integral_Ioi_comp_sq, integral_Ioi_sq_density   the substitution u = x^2 on the half-line
+      integral_comp_sq_eq_integral_Ioi                int_R Phi(x^2) dx = int_{u>0} Phi(u)/sqrt u du
+
+    HTGeometry/JetMomentAlgebra.lean                  (axiom-clean, wired, built)
+      jetMoment, jetCrossMoment                       division-free divided-jet moments
+      integral_coord_mul_jet                          the coordinate recursion
+      integral_coord_mul_jet_terminal                 terminal odd energy = r * terminal even mass
+      jetMoment_even_nonneg                           an even moment is a square integral
+
+    HTGeometry/PsdHankelJetVanishing.lean             (axiom-clean, wired, built)
+      sq_le_of_quadratic_nonneg                       a nonnegative real quadratic has nonpositive
+                                                      discriminant
+      symmBilin_sq_le                                 Cauchy-Schwarz for a nonnegative symmetric
+                                                      form from its one-parameter expansion
+      psdHankel_jet_vanishing                         the bootstrap: M j = 0 for 1<=j<=m forces
+                                                      M j = 0 for 1<=j<2m
+      psdHankel_gram_off_terminal                     the Gram matrix is zero off the terminal corner
+
+    RHTower/XiShiftedHardEdgeDensityMeasure.lean      (axiom-clean, wired, built)
+      digamma_conj, routeUArchimedeanRate_neg/_abs    the archimedean rate is even
+      routeUHardEdgeDensity sigma x                   V_sigma(x) = theta_infty(x)
+                                                        - sum_{2<=n, log n <= 2 sigma}
+                                                            Lambda(n) n^{-1/2} cos(x log n)
+      routeUHardEdgePairing sigma Phi                 int_{u>0} Phi(u) V_sigma(sqrt u)/sqrt u du
+                                                        + 2 pi Phi(-1/4)   —  the literal eta_sigma
+      routeUHardEdgeEvenForm / routeUHardEdgeOddForm  the two parity sectors in the squared variable
+      routeUEvenWeil / routeUOddWeil                  the same two forms written on the spectral line
+      integral_density_comp_sq_eq_pairing             the line form equals the half-line pairing
+      routeUEvenWeil_eq                               (the even sector)
+      routeUOddWeil_eq                                **(HPJI.3)**: the odd restricted-Weil form of
+                                                      z H(z^2), z K(z^2) is the pairing of u H K,
+                                                      polar sign included
+      routeUHardEdgePairing_const_mul / _add          linearity on the form domain
+      routeUEvenForm_expand                           the one-parameter quadratic expansion
+      routeUEvenForm_sq_le                            Cauchy-Schwarz on the form domain
+      routeUHardEdgePairing_coord_jet                 **(HPJI.6)** the one-step divided-jet recursion
+      routeUHardEdgePairing_coord_jet_terminal        **(HPJI.7)** terminal odd energy = r gamma_r
+
+    RHTower/XiShiftedHardEdgeParityJet.lean           (axiom-clean, wired, built)
+      routeUJetMoment / routeUJetDescendant           the moment sequence and the division-free
+                                                      divided descendants of (u-r)^m G
+      routeUEvenForm_descendant                       the even Gram entry is N((m-p)+(m-q))
+      routeUOddForm_descendant                        **(HPJI.6)** the odd Gram entry is
+                                                      N(...+1) + r N(...)
+      routeUOddForm_terminal                          **(HPJI.7)** in the terminal corner
+      routeUJetMoment_cauchySchwarz                   the Hankel Cauchy-Schwarz of the sequence
+      routeUJetMoment_base_of_null                    **(RJRR.6)** a null state annihilates its own
+                                                      divided descendants
+      routeUJetMoment_eq_zero_of_null                 **(RJRR.9)** all moments below the terminal one
+                                                      vanish
+      routeUEvenForm_descendant_eq_zero,
+        routeUJetGram_of_null                         **(HPJI.9)/(RJRR.10)** the complete Gram law
+      coord_mul_routeUJetDescendant                   u F_{r,k} = r F_{r,k} + F_{r,k-1}
+      routeUOddForm_of_radical                        **(HPJI.10)** the odd twin of a radical
+                                                      descendant is again zero-energy
+      routeUJetDescendant_eq_zero_of_sum_eq_zero      the divided principal parts of a state that is
+                                                      nonzero on an infinite set are independent
+
+What the Lean statements carry as hypotheses is exactly the form domain — integrability of the
+divided jets against the literal density on the half-line — and the standing situation of the card:
+nonnegativity of the even form on the one-parameter families spanned by the descendants, and
+nullity of the state.  Nothing analytic is assumed away: the density, the atom, the substitution,
+the recursion, the Cauchy-Schwarz bootstrap and the Gram law are all proved.
+
+Still to build for this card: the localized convolution operator itself, so that the radical of the
+form can be identified with its kernel, and the parity-doubled dimension count
+(HPJI.11)-(HPJI.12) assembled from the independence lemma and the odd twins.

@@ -134,6 +134,8 @@ theorem compact_injectiveShiftPatch_has_dense_completeAtlas_gauge
   set hm := le_ordersBound orders with hhm
   set nodes : Fin n → (ι → ℂ) → row × ι → ℂ := fun j h x => (packets j).1 x.1 + h x.2 with hnodes
   set ambientPiece : Fin n → Set (ι → ℂ) := fun j => Subtype.val '' pieces j with hambient
+  set pd : GaugeProbe (row × ι) m (Fintype.card (row × ι) * m) :=
+    windowProbe (row × ι) m 0 (Fintype.card (row × ι) * m) with hpd
   set family : Fin n → (EntireGauge × (ι → ℂ)) →
       row × Fin (Fintype.card (Σ i, Fin (orders i))) → ℂ := fun j =>
     gaugeExpandedActualJetFamily W m orders hm (nodes j) with hfamily
@@ -159,13 +161,14 @@ theorem compact_injectiveShiftPatch_has_dense_completeAtlas_gauge
     constructor
     · have := compact_gaugeExpandedActualEvaluation_avoidance_dense
         (row := row) (κ := κ) (ι := ι) (H := ι → ℂ)
-        degree orders m hm (packets j).1 (packets j).2 exponent hexponent hrows hWd
+        degree orders pd hm (packets j).1 (packets j).2 exponent hexponent hrows hWd
         (nodes j) (hnodesSmooth j)
         (gaugeGoodCombinedRowPacketAmbientSet (ι := ι) W (packets j)) (ambientPiece j)
         (gaugeGoodCombinedRowPacketAmbientSet_isOpen (ι := ι) hWd.continuous (packets j))
         (hKjUj j)
-        (fun h hh => injective_of_mem_gaugeGoodCombinedRowPacketAmbientSet hh)
-        (fun h hh x => ne_zero_of_mem_gaugeGoodCombinedRowPacketAmbientSet hh x)
+        (fun h hh => surjective_windowProbe_jet m 0
+          (injective_of_mem_gaugeGoodCombinedRowPacketAmbientSet hh)
+          (fun x => ne_zero_of_mem_gaugeGoodCombinedRowPacketAmbientSet hh x))
         (fun h hh x => source_ne_zero_of_mem_gaugeGoodCombinedRowPacketAmbientSet hh x)
         hdim
       exact this

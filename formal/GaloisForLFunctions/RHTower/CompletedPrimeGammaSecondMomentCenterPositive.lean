@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.CompletedPrimeGammaMomentFarRightAsymptotic
 import GaloisForLFunctions.RHTower.PrimeArchScaledHausdorffDivisorValueRelation
 import GaloisForLFunctions.RHTower.CompletedPrimeGammaResolvedMomentColligation
 import GaloisForLFunctions.Hurwitz.ShiftedPowerTailAsymptotic
+import GaloisForLFunctions.RHTower.Sieve.DirichletTruncationError
 
 /-!
 # Strict center sign for the second completed odd moment
@@ -153,6 +154,70 @@ theorem gammaBoseMoment_five_four_eq_shiftedPowerTail :
   simpa using
     (GaloisForLFunctions.hzeta_nat_ofReal_eq_shiftedPowerTail 5
       (x := (5 : ℝ)) (by positivity))
+
+private theorem reciprocalSixth_eq_rpow (j : ℕ) :
+    (1 : ℝ) / ((j : ℝ) + 5) ^ 6 =
+      ((j + 5 : ℕ) : ℝ) ^ (-(6 : ℝ)) := by
+  push_cast
+  rw [Real.rpow_neg (by positivity), one_div]
+  change (((j : ℝ) + 5) ^ (6 : ℕ))⁻¹ = (((j : ℝ) + 5) ^ (6 : ℝ))⁻¹
+  exact congrArg (fun t : ℝ => t⁻¹) (Real.rpow_natCast ((j : ℝ) + 5) 6).symm
+
+private theorem gammaBoseMoment_five_four_eq_head_eight_tail :
+    HTGeometry.gammaBoseMoment 5 4 =
+      (1 : ℝ) / 5 ^ 6 + 1 / 6 ^ 6 + 1 / 7 ^ 6 + 1 / 8 ^ 6 +
+        1 / 9 ^ 6 + 1 / 10 ^ 6 + 1 / 11 ^ 6 + 1 / 12 ^ 6 +
+        ∑' j : ℕ, ((j + 13 : ℕ) : ℝ) ^ (-(6 : ℝ)) := by
+  let f : ℕ → ℝ := fun j => (1 : ℝ) / ((j : ℝ) + 5) ^ 6
+  have hsum : Summable f := by
+    refine ((Real.summable_one_div_nat_add_rpow 5 6).mpr (by norm_num)).congr ?_
+    intro j
+    dsimp [f]
+    rw [abs_of_pos (by positivity)]
+    exact congrArg (fun t : ℝ => 1 / t) (Real.rpow_natCast ((j : ℝ) + 5) 6)
+  have hsplit := hsum.sum_add_tsum_nat_add 8
+  have htail :
+      (∑' j : ℕ, f (j + 8)) =
+        ∑' j : ℕ, ((j + 13 : ℕ) : ℝ) ^ (-(6 : ℝ)) := by
+    apply tsum_congr
+    intro j
+    simpa [f, Nat.add_assoc] using reciprocalSixth_eq_rpow (j + 8)
+  rw [gammaBoseMoment_five_four_eq_reciprocalSixth]
+  change (∑' j : ℕ, f j) = _
+  rw [← hsplit, htail]
+  norm_num [f, Finset.sum_range_succ]
+
+/-- The completed Gamma contribution at `x = 10`, order two, is below its polar atom plus a
+strict rational margin. -/
+theorem completedGammaMoment_two_ten_lt :
+    (1 / 2 : ℝ) ^ 6 * HTGeometry.gammaBoseMoment 5 4 <
+      ((10 : ℝ) ^ 6)⁻¹ + 3 / 5000000 := by
+  have htail := RHTower.Sieve.tsum_tail_rpow_neg_le
+    (σ := (6 : ℝ)) (by norm_num) (L := 12) (by norm_num)
+  have htail' :
+      (∑' j : ℕ, ((j + 13 : ℕ) : ℝ) ^ (-(6 : ℝ))) ≤
+        (12 : ℝ) ^ (1 - (6 : ℝ)) / ((6 : ℝ) - 1) := by
+    calc
+      (∑' j : ℕ, ((j + 13 : ℕ) : ℝ) ^ (-(6 : ℝ))) =
+          ∑' j : ℕ, ((j + 12 + 1 : ℕ) : ℝ) ^ (-(6 : ℝ)) := by
+            apply tsum_congr
+            intro j
+            congr 2
+      _ ≤ (12 : ℝ) ^ (1 - (6 : ℝ)) / ((6 : ℝ) - 1) := htail
+  rw [gammaBoseMoment_five_four_eq_head_eight_tail]
+  have hfac : 0 ≤ (1 / 2 : ℝ) ^ 6 := by positivity
+  calc
+    (1 / 2 : ℝ) ^ 6 *
+        (1 / 5 ^ 6 + 1 / 6 ^ 6 + 1 / 7 ^ 6 + 1 / 8 ^ 6 +
+          1 / 9 ^ 6 + 1 / 10 ^ 6 + 1 / 11 ^ 6 + 1 / 12 ^ 6 +
+          ∑' j : ℕ, ((j + 13 : ℕ) : ℝ) ^ (-(6 : ℝ))) ≤
+        (1 / 2 : ℝ) ^ 6 *
+          (1 / 5 ^ 6 + 1 / 6 ^ 6 + 1 / 7 ^ 6 + 1 / 8 ^ 6 +
+            1 / 9 ^ 6 + 1 / 10 ^ 6 + 1 / 11 ^ 6 + 1 / 12 ^ 6 +
+            (12 : ℝ) ^ (1 - (6 : ℝ)) / ((6 : ℝ) - 1)) := by
+      apply mul_le_mul_of_nonneg_left _ hfac
+      linarith
+    _ < ((10 : ℝ) ^ 6)⁻¹ + 3 / 5000000 := by norm_num
 
 /-- One explicit negative value of the second moment falsifies the global right-even
 factorization interface.  The positive endpoint is supplied unconditionally above. -/

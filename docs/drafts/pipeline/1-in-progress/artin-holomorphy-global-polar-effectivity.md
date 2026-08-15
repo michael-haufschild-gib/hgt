@@ -248,3 +248,17 @@ the non-factorizing arithmetic source-to-divisor law itself is closed on paper.
 - 2026-08-15 -- finite-abelian integral Fourier basis formalized and target-built; it closes the
   complex-span/integral-closure interface only and leaves the non-factorizing
   Frobenius-source-to-divisor open core unchanged.
+- 2026-08-15 -- genuine Frobenius--inertia local Euler polynomials formalized and target-built
+  in `ArtinLocalEulerFactor.lean`, including arithmetic lift-independence.  This closes the
+  local source definition absent from C2, but it still supplies no global Euler product,
+  continuation, or source-to-divisor/effectivity law.
+- 2026-08-15 -- local Euler polynomials formalized to multiply under actual binary direct sums in
+  `ArtinLocalEulerProduct.lean`.  This closes the first source-additivity identity, while prime
+  descent, global product/continuation, and the non-factorizing source-to-divisor law remain open.
+- 2026-08-15 -- Maschke’s actual finite simple-module decomposition formalized in
+  `ArtinMaschkeDecomposition.lean`.  It supplies the carrier below irreducible-character and
+  Brauer-lattice work, but does not itself establish any analytic continuation or effectivity.
+- 2026-08-15 -- virtual-character Frobenius reciprocity formalized in
+  `ArtinVirtualFrobeniusReciprocity.lean`: every monomial coefficient is the corresponding
+  linear multiplicity after restriction.  This is the exact finite transport underlying a future
+  Heilbronn restriction law, not that analytic law itself.

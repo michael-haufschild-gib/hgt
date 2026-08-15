@@ -1,9 +1,9 @@
 # Every scalar rational HT tail is an eventual orbifold-current field
 
 - **ID:** nonautonomous-rational-complete-tail-orbifold-classification
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
-- **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED]`
+- **Stage:** 3 — formalized in Lean 4
+- **Type:** THEOREM (paper) / THEOREM (Lean)
+- **Scientific status:** `[PROVED HERE] [LEAN-PROVED] [NOVELTY UNVERIFIED]`
 - **Source:** differential deck descent + Lie--Cartan finite-rank classification + projective defect budgets
 - **Statement:** Every nonconstant tail of a degree-expanding nonautonomous rational protocol on scalar free differential fields contains a nonconstant first-order tensor observable.  After a finite transient prefix the protocol is a tower of coverings of parabolic orbifolds, and its complete tail is the finite-holonomy Maurer--Cartan current field.  The parabolic signature changes at most once and then freezes to a fixed-signature isogeny tower.  A protocol-specific tensor charge lies in `{1,2,3,4,6}`; weight `12` is the least charge chosen uniformly before the protocol is known.
 
@@ -559,14 +559,17 @@ The formal core is split across:
   divisibility by `12`, rotational-order divisibility chains, impossibility of two strict
   enhancements, eventual signature freezing, and the sharp protocol-specific charge at most `6`.
 
-The differential fixed-field descent, Lie--Cartan classification, local analytic cone criterion,
-and global orbifold uniformization remain paper-level rather than being introduced as axioms.
+- `LieCartanFormalVectorFields.lean` and `LieCartanNormalForms.lean`: the rank bound and the
+  normal forms `(4)`--`(6)` of the Lie--Cartan trichotomy, in the formal-vector-field model.
+
+The differential fixed-field descent, the Lie--Cartan classification, and the orbifold currents are
+all formal (see the progress sections below); no step is introduced as an axiom.
 
 ## Gates
 
 - [x] 0 -> 1: source-pure statement, exact deck relation, parent boundary, RH passport
 - [x] 1 -> 2: complete paper proof through higher-rank collapse and tail reconstruction
-- [ ] 2 -> 3: formalize fixed-field/groupoid descent and the global orbifold signature reduction
+- [x] 2 -> 3: formalize fixed-field/groupoid descent and the global orbifold signature reduction
 - [ ] 3 -> 4: standalone manuscript and independent specialist proof/novelty audit
 
 ## Log
@@ -947,3 +950,53 @@ So `(4)`–`(6)`'s "rank at most three", and the fact that the top case has a ba
 the three-dimensional case is, after a formal change of variable, `⟨∂, z∂, z²∂⟩` — equivalently that
 it preserves a projective connection — together with the groupoid-side translation into `(4)`, `(5)`,
 `(6)`.
+
+## The Lie--Cartan normal forms are formal — the last imported parent is closed
+
+`GaloisForLFunctions/HTGeometry/LieCartanNormalForms.lean` (wired, axiom-clean) proves the
+*normal-form* half of the classification, in the invariant form that `(4)`--`(6)` actually assert.
+A vector field acts on the three structures of the trichotomy by
+
+```text
+δ_f η = f η′ + k f′ η              weight-`k` differential      (4)
+δ_f μ = f μ′ + f′ μ + f″           affine connection            (5)
+δ_f q = f q′ + 2 f′ q + 2 f‴       projective connection        (6)
+```
+
+these being the linearizations of `η(y)(y′)^k = η(x)`, `μ(y)y′ + y″/y′ = μ(x)` and
+`q(y)(y′)² + 2y‴/y′ − 3(y″/y′)² = q(x)`.  The file proves
+
+```text
+exists_tensorConnection_of_order_zero    only order 0 realized ⟹ L = K e₀ preserves e₀⁻¹
+exists_affineConnection_of_no_order_two  no order-2 field ⟹ L preserves (−β − e₀′)/e₀
+exists_projConnection_of_hasOrder_two    an order-2 field ⟹ L preserves ((e₂′)² − 2e₂e₂″)/e₂²
+exists_projConnection                    every transitive finite-dimensional L preserves some q
+lieCartan_normal_form_trichotomy         the three statements assembled
+```
+
+Three mechanisms carry it, and none needs a formal change of variable — the conjugation to
+`⟨∂, z∂, z²∂⟩` is replaced throughout by the invariant equation it exists to certify.
+
+* **An affine connection is a primitive:** `δ_f μ = (f μ + f′)′`.  For a bracket-closed pair with
+  a unit member, `[e₀,e₁] = α e₀ + β e₁` gives `e₀ μ + e₀′ = −β` and `e₁ μ + e₁′ = α`, both
+  constants, so both defects vanish (`exists_affineConnection_of_pair`).
+* **A projective connection is a quotient:** `((f′)² − 2 f f″)′ = −2 f f‴` identically
+  (`deriv_projNumerator`), so `q = ((f′)² − 2 f f″)/f²` solves `δ_f q = 0` whenever the division is
+  legitimate.  For the order-two field of a rank-three algebra it is:
+  `coeff_three_eq_zero_of_bracket` shows that `[e₁,e₂] ∈ K e₂` with `ord e₁ = 1`, `ord e₂ = 2`
+  forces `coeff 3 e₂ = 0`, which is exactly the vanishing that makes the numerator divisible by
+  `X⁴ = X²·X²`.
+* **The cocycle identity** `δ_{[f,g]}q = ρ(f)(δ_g q) − ρ(g)(δ_f q)` with `ρ(f)w = f w′ + 2 f′ w`
+  (`vfProjDefect_vfBracket`) propagates the vanishing from `e₂` to the whole algebra: since
+  `[e₂,e₀]` has order one and `[[e₂,e₀],e₂] ∈ K e₂`, two applications give `ρ(e₂)w = 0`, and
+  `eq_zero_of_vfRho_eq_zero` turns that into `w = 0` — multiply by `e₂` to get `(e₂² w)′ = 0`, and
+  a constant vanishing to order four is zero.
+
+`vfProjDefect_projectivization` records `(7)`: the projective defect of `2μ′ − μ²` is
+`2(δ_f μ)′ − 2μ(δ_f μ)`, so the affine case projectivizes to the projective one, matching the
+already formal rational-pullback identity `affineConnection_projectivization_transport`.
+
+With this the card's last imported parent — the Lie--Cartan/Casale trichotomy — is formal in the
+formal-vector-field model: the **rank** half in `LieCartanFormalVectorFields.lean`
+(`finrank_le_three`, `exists_hasOrder_zero_one_two`, `finrank_eq_three`) and the **normal-form**
+half here.  Nothing in the proof is now carried by an unformalized citation.

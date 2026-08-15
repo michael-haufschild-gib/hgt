@@ -40,44 +40,72 @@ structure GaugeProbe (X : Type*) [Fintype X] (m D : ℕ) where
   polyJet_contDiff : ∀ k : ℕ, ContDiff ℝ ⊤ (fun q : (Fin D → ℂ) × ℂ =>
     (Polynomial.derivative^[k] (poly q.1)).eval q.2)
 
-/-! ### The window probe -/
+/-! ### Probes given by a real combination of fixed polynomials -/
 
-/-- The jets of a window polynomial at a family of nodes. -/
-def windowProbeJetLin (m N D : ℕ) (ν : X → ℂ) : (Fin D → ℂ) →ₗ[ℂ] (X → Fin m → ℂ) :=
-  LinearMap.pi fun x => LinearMap.pi fun k : Fin m =>
-    (Polynomial.leval (ν x)).comp
-      ((Polynomial.derivative (R := ℂ) ^ ((k : ℕ))).comp (windowLin N D))
+/-- A real-linear combination of two fixed polynomial families. -/
+def realCombPoly (D : ℕ) (Gp Kp : Fin D → Polynomial ℂ) (c : Fin D → ℂ) : Polynomial ℂ :=
+  ∑ i : Fin D, (Polynomial.C (((c i).re : ℂ)) * Gp i + Polynomial.C (((c i).im : ℂ)) * Kp i)
 
-omit [Fintype X] in
-theorem windowProbeJetLin_apply (m N D : ℕ) (ν : X → ℂ) (c : Fin D → ℂ) (x : X) (k : Fin m) :
-    windowProbeJetLin m N D ν c x k
-      = (Polynomial.derivative^[(k : ℕ)] (windowLin N D c)).eval (ν x) := by
-  rw [windowProbeJetLin, LinearMap.pi_apply, LinearMap.pi_apply, LinearMap.comp_apply,
-    LinearMap.comp_apply, Module.End.pow_apply]
-  rfl
-
-omit [Fintype X] in
-theorem windowProbeJetLin_eq_gaugeJetVec (m N D : ℕ) (ν : X → ℂ) (c : Fin D → ℂ) (x : X) :
-    windowProbeJetLin m N D ν c x
-      = gaugeJetVec m (fun w => Polynomial.eval w (windowLin N D c)) (ν x) := by
-  funext k
-  rw [windowProbeJetLin_apply, gaugeJetVec, iteratedDeriv_polynomial_eval]
+theorem realCombPoly_zero (D : ℕ) (Gp Kp : Fin D → Polynomial ℂ) :
+    realCombPoly D Gp Kp 0 = 0 := by
+  refine Finset.sum_eq_zero fun i _ => ?_
+  simp
 
 theorem iterate_derivative_eq_pow (k : ℕ) (P : Polynomial ℂ) :
     Polynomial.derivative^[k] P = ((Polynomial.derivative (R := ℂ)) ^ k) P :=
   (Module.End.pow_apply _ _ _).symm
 
-/-- The jets of a window polynomial expand linearly in the coefficient vector. -/
-theorem windowLin_iterate_derivative_eval (N D k : ℕ) (c : Fin D → ℂ) (ζ : ℂ) :
-    (Polynomial.derivative^[k] (windowLin N D c)).eval ζ
-      = ∑ i : Fin D, c i *
-        (Polynomial.derivative^[k] (Polynomial.monomial (N + (i : ℕ)) (1 : ℂ))).eval ζ := by
-  rw [iterate_derivative_eq_pow, windowLin_apply, map_sum, Polynomial.eval_finsetSum]
+theorem eval_iterate_derivative_C_mul (k : ℕ) (a : ℂ) (P : Polynomial ℂ) (ζ : ℂ) :
+    (Polynomial.derivative^[k] (Polynomial.C a * P)).eval ζ
+      = a * (Polynomial.derivative^[k] P).eval ζ := by
+  rw [iterate_derivative_eq_pow, iterate_derivative_eq_pow,
+    show (Polynomial.C a * P : Polynomial ℂ) = a • P from (Polynomial.smul_eq_C_mul a).symm,
+    map_smul, Polynomial.eval_smul, smul_eq_mul]
+
+theorem eval_iterate_derivative_realCombPoly (D : ℕ) (Gp Kp : Fin D → Polynomial ℂ)
+    (c : Fin D → ℂ) (k : ℕ) (ζ : ℂ) :
+    (Polynomial.derivative^[k] (realCombPoly D Gp Kp c)).eval ζ
+      = ∑ i : Fin D, ((Polynomial.derivative^[k] (Gp i)).eval ζ * ((c i).re : ℂ)
+          + (Polynomial.derivative^[k] (Kp i)).eval ζ * ((c i).im : ℂ)) := by
+  rw [iterate_derivative_eq_pow, realCombPoly, map_sum, Polynomial.eval_finsetSum]
   refine Finset.sum_congr rfl fun i _ => ?_
-  have hmon : (Polynomial.monomial (N + (i : ℕ)) (c i) : Polynomial ℂ)
-      = c i • Polynomial.monomial (N + (i : ℕ)) (1 : ℂ) := by
-    rw [Polynomial.smul_monomial, smul_eq_mul, mul_one]
-  rw [hmon, map_smul, Polynomial.eval_smul, iterate_derivative_eq_pow, smul_eq_mul]
+  rw [map_add, Polynomial.eval_add, ← iterate_derivative_eq_pow, ← iterate_derivative_eq_pow,
+    eval_iterate_derivative_C_mul, eval_iterate_derivative_C_mul]
+  ring
+
+/-- A real-linear functional given by separate coefficients on real and imaginary parts. -/
+def realDotLin (D : ℕ) (a b : Fin D → ℂ) : (Fin D → ℂ) →ₗ[ℝ] ℂ where
+  toFun c := ∑ i : Fin D, (a i * ((c i).re : ℂ) + b i * ((c i).im : ℂ))
+  map_add' := by
+    intro c d
+    rw [← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    simp only [Pi.add_apply, Complex.add_re, Complex.add_im, Complex.ofReal_add]
+    ring
+  map_smul' := by
+    intro r c
+    rw [RingHom.id_apply, Complex.real_smul, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    simp only [Pi.smul_apply, Complex.real_smul, Complex.mul_re, Complex.mul_im,
+      Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero, Complex.ofReal_mul]
+    push_cast
+    ring
+
+/-- The jets of a real combination at a family of nodes. -/
+def realCombJetCLM (m D : ℕ) (Gp Kp : Fin D → Polynomial ℂ) (ν : X → ℂ) :
+    (Fin D → ℂ) →L[ℝ] (X → Fin m → ℂ) :=
+  ContinuousLinearMap.pi fun x => ContinuousLinearMap.pi fun k : Fin m =>
+    LinearMap.toContinuousLinearMap
+      (realDotLin D (fun i => (Polynomial.derivative^[(k : ℕ)] (Gp i)).eval (ν x))
+        (fun i => (Polynomial.derivative^[(k : ℕ)] (Kp i)).eval (ν x)))
+
+omit [Fintype X] in
+theorem realCombJetCLM_apply (m D : ℕ) (Gp Kp : Fin D → Polynomial ℂ) (ν : X → ℂ)
+    (c : Fin D → ℂ) (x : X) (k : Fin m) :
+    realCombJetCLM m D Gp Kp ν c x k
+      = (Polynomial.derivative^[(k : ℕ)] (realCombPoly D Gp Kp c)).eval (ν x) := by
+  rw [eval_iterate_derivative_realCombPoly]
+  rfl
 
 theorem contDiff_of_entire {f : ℂ → ℂ} (hf : Differentiable ℂ f) : ContDiff ℝ ⊤ f := by
   have hC : ContDiff ℂ ⊤ f := by
@@ -86,23 +114,51 @@ theorem contDiff_of_entire {f : ℂ → ℂ} (hf : Differentiable ℂ f) : ContD
     exact ((hf.differentiableOn.analyticOnNhd isOpen_univ) x (Set.mem_univ x)).contDiffAt
   exact hC.restrict_scalars ℝ
 
-/-- The unconstrained coefficient window, as a probe family. -/
-def windowProbe (X : Type*) [Fintype X] (m N D : ℕ) : GaugeProbe X m D where
-  poly c := windowLin N D c
-  jet ν := (LinearMap.toContinuousLinearMap (windowProbeJetLin m N D ν)).restrictScalars ℝ
-  jet_eq ν c x := windowProbeJetLin_eq_gaugeJetVec m N D ν c x
-  poly_zero := map_zero _
+/-- A probe family given by a real combination of two fixed polynomial families. -/
+def realCombProbe (X : Type*) [Fintype X] (m D : ℕ) (Gp Kp : Fin D → Polynomial ℂ) :
+    GaugeProbe X m D where
+  poly c := realCombPoly D Gp Kp c
+  jet ν := realCombJetCLM m D Gp Kp ν
+  jet_eq ν c x := by
+    funext k
+    rw [gaugeJetVec, iteratedDeriv_polynomial_eval]
+    exact realCombJetCLM_apply m D Gp Kp ν c x k
+  poly_zero := realCombPoly_zero D Gp Kp
   polyJet_contDiff k := by
     have hfun : (fun q : (Fin D → ℂ) × ℂ =>
-          (Polynomial.derivative^[k] (windowLin N D q.1)).eval q.2)
-        = fun q : (Fin D → ℂ) × ℂ => ∑ i : Fin D, q.1 i *
-            (Polynomial.derivative^[k] (Polynomial.monomial (N + (i : ℕ)) (1 : ℂ))).eval q.2 := by
+          (Polynomial.derivative^[k] (realCombPoly D Gp Kp q.1)).eval q.2)
+        = fun q : (Fin D → ℂ) × ℂ => ∑ i : Fin D,
+            ((Polynomial.derivative^[k] (Gp i)).eval q.2 * (((q.1 i).re : ℝ) : ℂ)
+              + (Polynomial.derivative^[k] (Kp i)).eval q.2 * (((q.1 i).im : ℝ) : ℂ)) := by
       funext q
-      rw [windowLin_iterate_derivative_eval]
+      rw [eval_iterate_derivative_realCombPoly]
     rw [hfun]
     refine ContDiff.sum fun i _ => ?_
-    exact ((contDiff_apply ℝ ℂ i).comp contDiff_fst).mul
-      ((contDiff_of_entire (Polynomial.differentiable _)).comp contDiff_snd)
+    have hcoord : ContDiff ℝ ⊤ (fun q : (Fin D → ℂ) × ℂ => q.1 i) :=
+      (contDiff_apply ℝ ℂ i).comp contDiff_fst
+    have hre : ContDiff ℝ ⊤ (fun q : (Fin D → ℂ) × ℂ => (((q.1 i).re : ℝ) : ℂ)) :=
+      Complex.ofRealCLM.contDiff.comp (Complex.reCLM.contDiff.comp hcoord)
+    have him : ContDiff ℝ ⊤ (fun q : (Fin D → ℂ) × ℂ => (((q.1 i).im : ℝ) : ℂ)) :=
+      Complex.ofRealCLM.contDiff.comp (Complex.imCLM.contDiff.comp hcoord)
+    exact (((contDiff_of_entire (Polynomial.differentiable _)).comp contDiff_snd).mul hre).add
+      (((contDiff_of_entire (Polynomial.differentiable _)).comp contDiff_snd).mul him)
+
+/-! ### The window probe -/
+
+/-- The unconstrained coefficient window, as a probe family. -/
+def windowProbe (X : Type*) [Fintype X] (m N D : ℕ) : GaugeProbe X m D :=
+  realCombProbe X m D (fun i => Polynomial.monomial (N + (i : ℕ)) (1 : ℂ))
+    (fun i => Polynomial.monomial (N + (i : ℕ)) Complex.I)
+
+theorem windowProbe_poly (m N D : ℕ) (c : Fin D → ℂ) :
+    (windowProbe X m N D).poly c = windowLin N D c := by
+  show realCombPoly D _ _ c = _
+  rw [realCombPoly, windowLin_apply]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [Polynomial.C_mul_monomial, Polynomial.C_mul_monomial, ← map_add]
+  congr 1
+  rw [mul_one]
+  exact Complex.re_add_im (c i)
 
 /-- **The window jet map at distinct nonzero nodes is onto every jet target.** -/
 theorem surjective_windowProbe_jet [DecidableEq X] (m N : ℕ) {ν : X → ℂ}
@@ -120,8 +176,8 @@ theorem surjective_windowProbe_jet [DecidableEq X] (m N : ℕ) {ν : X → ℂ}
   funext x k
   have hval := congrFun hc (e x, k)
   rw [windowJetMap_apply] at hval
-  show windowProbeJetLin m N (Fintype.card X * m) ν c x k = target x k
-  rw [windowProbeJetLin_apply]
+  have hjet := congrFun ((windowProbe X m N (Fintype.card X * m)).jet_eq ν c x) k
+  rw [hjet, gaugeJetVec, iteratedDeriv_polynomial_eval, windowProbe_poly]
   have hnode : y (e x) = ν x := by rw [hy]; simp
   rw [← hnode, hval]
   simp

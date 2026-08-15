@@ -1684,3 +1684,29 @@ So `(6)`--`(19)` of `local-clifford-return-excised-phase-incidence-law` are all 
 `(20)`--`(24)`: the Gaussian coefficient ensemble, product-Clifford transitivity,
 `E_H C_H(Ω) ≤ (2/3)^n`, and almost-sure simple spectrum with maximal projective rational spectral
 rank.
+
+### Update: the local-Clifford collision estimate `(24)`--`(25)` is closed (2026-08-15)
+
+New module `HTGeometry/StabilizerTwoDesign.lean` (wired, axiom-clean):
+
+- `stabAmp s` — the six single-qubit stabilizer amplitudes in terms of `s = 1/√2`;
+- **`sum_stabAmp_four`** — the card's `(24)`, the single-qubit two-design identity
+  `∑_t ψ_t(x)ψ_t(u)conj(ψ_t(y))conj(ψ_t(v)) = δ_{xy}δ_{uv} + δ_{xv}δ_{uy}`,
+  proved by the sixteen index cases with `s^4 = 1/4` and `I^2 = -1`;
+- `prodStabAmp`, `mixOn`, `mixSwap`, `mixOn_involutive`, `mixSwap_involutive`;
+- `sum_prodStabAmp_kernel` — the `n`-qubit fourth-moment kernel as a product over qubits
+  (`Finset.prod_univ_sum`);
+- `prod_delta_eq` — the delta product collapses to the indicator of `q = mixSwap A p`;
+- `norm_mix_term_le` — each subset term is at most `(∑‖e‖²)²`, by Cauchy--Schwarz on pairs
+  **plus the mixing involution** (no splitting of the index set into `A` and its complement, which
+  is what makes this cheap);
+- **`sum_prodStab_fourth_le`** — the card's `(25)`:
+  `∑_{σ ∈ (Fin 6)^n} |⟨e, φ_σ⟩|⁴ ≤ 2^n (∑_b ‖e b‖²)²`, i.e. the normalized average is `≤ 3^{-n}`;
+- `sum_collision_le` — summing over an orthonormal family: `∑_σ ∑_j |⟨e_j,φ_σ⟩|⁴ ≤ |D| · 2^n`,
+  which at `|D| = 2^n` is the card's `4^n`, i.e. average collision `≤ (2/3)^n`.
+
+**Still remaining for `local-clifford-return-excised-phase-incidence-law`:** `(23)` (invariance of
+the Gaussian coefficient law under product-Clifford conjugation, hence equality of
+`E_H C_H(φ)` across the `6^n` product stabilizer inputs), `(26)` and `(21)` (Markov), `(27)` (the
+Krylov determinant genericity and the nearest-neighbour spectral-maximality theorem), and the
+physical-time and complete-circuit consequences `(28)`--`(33)`.

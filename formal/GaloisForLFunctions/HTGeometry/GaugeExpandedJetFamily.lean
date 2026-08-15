@@ -277,6 +277,7 @@ variable {row κ ι : Type} [Fintype row] [DecidableEq row] [Fintype κ] [Decida
   [Fintype ι] [DecidableEq ι]
   {H : Type} [NormedAddCommGroup H] [NormedSpace ℝ H] [FiniteDimensional ℝ H]
 
+omit [DecidableEq ι] in
 theorem compact_gaugeExpandedProbeEvaluation_avoidance_dense
     (degree : ℕ) (orders : ι → ℕ) {m D : ℕ} (pd : GaugeProbe (row × ι) m D)
     (hm : ∀ i, orders i ≤ m)
@@ -304,6 +305,7 @@ theorem compact_gaugeExpandedProbeEvaluation_avoidance_dense
       (hprobe h hh) (hWne h hh)
   · exact hdim
 
+omit [DecidableEq ι] in
 /-- **Compact-patch density for a gauged source, along a chart of any parameter space.**  Densely
 many parameters give full expanded-evaluation rank at every shift of a compact patch, with the
 divisor of `W` unchanged. -/
@@ -335,15 +337,19 @@ theorem compact_gaugeExpandedActualEvaluation_avoidance_dense_of_chart
   have hdenseProbe := compact_gaugeExpandedProbeEvaluation_avoidance_dense
     degree orders pd hm z hz exponent hexponent hrows hW (incl s).2 nodes hnodes U K hU hKU
     hprobe hWne hdim
-  intro V hVopen hVne
-  obtain ⟨c, hcgood, hcV⟩ := hdenseProbe.exists_mem_open hVopen hVne
-  refine ⟨c, ?_, hcV⟩
-  intro h hh
-  have hval := hcgood h hh
-  rw [gaugeExpandedProbeJetFamily_eq_actual hW pd orders hm nodes (chart s c) c
-    (fun w => hchartApply s c w) h] at hval
-  exact hval
+  have hfamEq : (fun p : (Fin D → ℂ) × H =>
+      gaugeExpandedActualJetFamily W m orders hm nodes (incl (chart s p.1), p.2))
+      = gaugeExpandedProbeJetFamily W (⇑((incl s : EntireGauge) : C(ℂ, ℂ))) pd orders hm nodes := by
+    funext p
+    exact (gaugeExpandedProbeJetFamily_eq_actual hW pd orders hm nodes (incl (chart s p.1)) p.1
+      (fun w => hchartApply s p.1 w) p.2).symm
+  show Dense (compactConfigurationAvoidance
+    (fun p : (Fin D → ℂ) × H =>
+      gaugeExpandedActualJetFamily W m orders hm nodes (incl (chart s p.1), p.2)) _ K)
+  rw [hfamEq]
+  exact hdenseProbe
 
+omit [DecidableEq ι] in
 /-- Compact-patch density on the full gauge space, along the probe chart. -/
 theorem compact_gaugeExpandedActualEvaluation_avoidance_dense
     (degree : ℕ) (orders : ι → ℕ) {m D : ℕ} (pd : GaugeProbe (row × ι) m D)

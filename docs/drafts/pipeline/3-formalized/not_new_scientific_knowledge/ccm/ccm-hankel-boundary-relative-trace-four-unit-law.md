@@ -286,3 +286,54 @@ kernel shadow would not certify the source construction in `(18)`, so no Lean fi
 - [x] extended relative trace constructed directly from the closed Xi source graph
 - [ ] prove the relative-trace estimate `(18)`
 - [ ] RH
+
+## Lean status
+
+Section 7 above said "no Lean file is added" because the tree lacked half-line Hankel operators.
+That reasoning was too pessimistic: the whole proved content of this card is a statement about the
+*kernel* `ell`, not about the operator, and the geometric heart of the card — that the strip removed
+by the one-sided output cutoff has antidiagonal length `min(t,u)` — is an honest Tonelli computation
+that Lean can carry unconditionally.
+
+Module: `GaloisForLFunctions.RHTower.CCMBoundaryRelativeTrace` (new), built on the pre-existing
+`GaloisForLFunctions.RHTower.CCMHankelGapTraceSlope`.
+
+- `boundaryBlockEnergy` — equation `(5a)`, the squared Hilbert--Schmidt mass of the output-boundary
+  block of the Hankel kernel `k(x,y)=ell(x+y)`, as an `ENNReal`-valued quantity that is defined with
+  no trace-class hypothesis whatsoever.
+- **`boundaryBlockEnergy_eq_lintegral`** — equations `(5a)`--`(6)`: the block energy is
+  `integral min(t,u)|ell(t)|^2 dt`. Proved by translating the inner half-line, swapping with Tonelli
+  and evaluating `vol(Ioo 0 u inter Iio t) = min(t,u)`. This is exactly the card's line-segment
+  length argument `(8)`.
+- **`boundaryBlockEnergy_eq`** — the block energy is finite and equals `Delta_ell(u)` under the sole
+  `L^2` hypothesis `(2)`.
+- `boundaryRelativeTrace`, `cornerTrace`, `crossTrace` — equations `(6)`, `(8b)` and the
+  projection-commutator block of `(8a)`.
+- **`boundaryRelativeTrace_eq`** — equations `(7)` and `(8a)`: local corner plus cutoff interface.
+- **`boundaryRelativeTrace_eq_gap_sub`** — equation `(11)`: `Delta_ell(u)=F_ell(0)-F_ell(u)`.
+- **`boundaryRelativeTrace_div`** — equation `(9)`: the difference quotient is the
+  `min(t/u,1)`-weighted residue integral.
+- **`tendsto_boundaryRelativeTrace_div`** — equation `(10)`: the density at the origin is
+  `||ell||_2^2`.
+- **`cornerTrace_div_le`** — equation `(8c)`: the local corner is negligible at first order (proved
+  in the sharper form `corner/u <= integral_0^u |ell|^2`).
+- **`tendsto_crossTrace_div`** — equation `(8d)`: the entire first-order charge crosses the cutoff
+  interface, i.e. the commutator density is the full residue energy.
+- **`hankelGapProfile_polePacket`**, **`boundaryRelativeTrace_polePacket`** — equation `(13)`:
+  `Delta_pole(u)=4(1-e^(-u))` exactly.
+- **`tendsto_boundaryRelativeTrace_div_polePacket`** — equation `(14)`.
+- **`tendsto_boundaryRelativeTrace_div_divisorPacket`**, **`tendsto_boundaryRelativeTrace_ratio`** —
+  the divisor-packet density and the completed-to-pole ratio limit.
+- **`boundaryRelativeTrace_ratio_le_one_iff`**, **`boundaryRelativeTrace_density_le_four_iff`** —
+  equations `(16)`--`(17)`: for a finite right-half Xi divisor packet the nonexpansive
+  boundary-relative-trace density holds if and only if the packet is empty.
+
+All statements are unconditional: `#print axioms` returns exactly
+`[propext, Classical.choice, Quot.sound]` on all nineteen theorems.
+
+Deliberately imported rather than reproved: the operator-side reading of `(3)`--`(5)` (that the
+three removed blocks are the Hilbert--Schmidt pieces of `Q_a H_ell Q_a`, `Q_a H_ell P_a`,
+`P_a H_ell Q_a`, and that their total is the one-sided block `Q_u H_ell`) is Hilbert--Schmidt kernel
+calculus; the Lean module works with the kernel-side energies these norms equal, which is where all
+the card's mathematics lives. The extended-norm construction `(17a)`, the source estimate `(18)`,
+`(19)`, `(19a)`, and the rational-gauge obstruction of section 6 are the card's own open gates.

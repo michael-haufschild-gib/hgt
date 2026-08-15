@@ -132,3 +132,24 @@ The corpus is very large.  Before building anything, grep `formal/LEAN_API.md` f
 only for the card's own wording: the vertical digamma coercivity needed by the prime-free aperture
 card was already in `RHTower/DigammaVerticalLogGrowth.lean` under a name none of the card's keywords
 would surface.
+
+- `ccm-hankel-boundary-relative-trace-four-unit-law` → stage 3.
+  Module `RHTower/CCMBoundaryRelativeTrace` (19 theorems). Kernel-level Tonelli proof of the exact
+  `min(t,u)` boundary-block kernel `(5a)`–`(6)`, the corner/commutator splitting `(7)`, `(8a)`–`(8d)`,
+  the gap-increment identity `(11)`, the exact pole trace `4(1−e^{−u})` `(13)`–`(14)`, and the
+  RH-equivalent nonexpansive density criterion `(16)`–`(17)`.
+  Also exported `leakDensity_polePacketProfile` from `RHTower/CCMHankelGapTraceSlope`.
+  Lesson: a card that says "no Lean file is added" because the *operator* layer is missing is often
+  still fully formalizable at the *kernel* layer, which is where its proof actually runs.
+
+- `ccm-constrained-endpoint-euler-response-constant` → stage 3.
+  Promotion audit only: 39 pre-existing modules, 305 theorems, all axiom-clean and umbrella-wired;
+  26/28 Lean gates ticked, the 2 open ones being the card's own declared classical imports (Fuchs's
+  lower leakage rate, Slepian's prolate-to-Hermite limits).
+  Lesson: several stage-2 cards already carry huge Lean-status sections. Audit before building.
+
+- `ccm-exact-radial-nonstationary-sector-bound` → stage 3.
+  New module `RHTower/RadialSymbolTwoBranchInstance` (15 theorems) closes the card's last Lean gate:
+  the dilated Liouville amplitude's half-power symbol bounds, a composition lemma whose amplitude
+  bound is needed only along the phase, and the instantiated entry estimate
+  `abs_integral_radial_entry_le` for genuine solutions of the exterior normal form.

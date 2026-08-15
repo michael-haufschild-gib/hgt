@@ -5,6 +5,8 @@ import GaloisForLFunctions.RHTower.SelbergClass.DirichletFourierGauss
 import GaloisForLFunctions.RHTower.SelbergClass.FiniteOrder
 import GaloisForLFunctions.RHTower.SelbergClass.Full
 import GaloisForLFunctions.RHTower.SelbergClass.GammaPoleOrder
+import GaloisForLFunctions.RHTower.SelbergClass.FunctionalEquationLocal
+import GaloisForLFunctions.RHTower.SelbergClass.GammaCriticalLine
 import GaloisForLFunctions.RHTower.SelbergClass.TwistFrontierData
 
 /-!

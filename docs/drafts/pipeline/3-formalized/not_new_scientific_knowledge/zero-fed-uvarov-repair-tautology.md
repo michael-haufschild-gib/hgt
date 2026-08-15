@@ -1,7 +1,7 @@
 # Zero-Fed Uvarov Repair Tautology
 
 - **ID:** zero-fed-uvarov-repair-tautology
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / proof-route guardrail
 - **Source:** `rh-landscape-proof-gate.md`, `no-boundary-selection-of-zeta.md`,
   `finite-rank-one-selector-no-free-lunch.md`, and
@@ -99,8 +99,10 @@ landscape/self-selection theorem.
 
 - [x] 0 -> 1 in-progress: zero-fed Uvarov circularity isolated.
 - [x] 1 -> 2 fully-proven: tautology and Schur scalar equivalence written.
-- [ ] 2 -> 3 formalized: optional; follows from the same finite Hermitian
-  rank-one update theorem as `finite-rank-one-selector-no-free-lunch.md`.
+- [x] 2 -> 3 formalized: `HTGeometry/ZeroFedUvarovRepairTautology.lean`
+  proves the exact finite Hermitian rank-one identity, the PSD equivalence,
+  positive Schur-scalar iff positive-definiteness, and the wall/negative-side
+  inertia conclusions.
 
 ## Log
 
@@ -116,3 +118,22 @@ landscape/self-selection theorem.
 ## 2026-06-24 non-atomic finite-rank quotient check
 
 `non-atomic-finite-rank-counterterms-rh-strength.md` isolates the zero-feeding risk in finite-rank repairs. If the quotient boundary data are non-atomic on the reciprocal support, the repair cannot hide any off-line atom. If the quotient does see atom-isolators, the proof must explain how those atom evaluations were source-built before the divisor was used.
+
+## 2026-08-15 Lean formalization
+
+Formalized in
+`formal/GaloisForLFunctions/HTGeometry/ZeroFedUvarovRepairTautology.lean`.
+`zeroFedUvarovRepairTautology` proves the complete stated finite-dimensional
+certificate without added hypotheses or axioms: the remove-and-restore identity,
+PSD equivalence, the Schur-scalar/positive-definiteness equivalence, and the
+zero/negative scalar inertia alternatives. The formal statement interprets
+`inertia (d,1)` as positive index `d`, negative index `1`, and null index `0`;
+this repairs the card's ambiguous dimension notation. The rank-one energy is
+the real scalar whose complex coercion is the card's Hermitian resolvent
+quadratic expression (`rankOneEnergy_coe`).
+
+Validated with `lake env lean
+GaloisForLFunctions/HTGeometry/ZeroFedUvarovRepairTautology.lean` and targeted
+`lake build GaloisForLFunctions.HTGeometry.ZeroFedUvarovRepairTautology`.
+`#print axioms` for the package theorem and its core identity reports only
+`propext`, `Classical.choice`, and `Quot.sound`.

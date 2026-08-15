@@ -8345,3 +8345,53 @@ pattern as `(16)` of `root-retained-exterior-dilation`, and the reason this card
 before the wall-block card.
 
 All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AAT. `(35)` and Schur's test — the two halves of the order-minus-one commutator
+
+```text
+RHTower/GammaJumpNearDiagonalLipschitz.lean   (35) the weighted near-diagonal Lipschitz bound
+HTGeometry/SchurTest.lean                     Schur's test in ℝ≥0∞, general kernel
+```
+
+**`(35)` is where the `H¹` weight is paid for.**  On the near-diagonal region `|ξ−η| ≤ (1+|η|)/2`
+every point `θ` of the segment still satisfies `1+|θ| ≥ (1+|η|)/2`, so the owned derivative bound
+`|r'| ≤ C/(1+|η|)` is uniform along it; the mean value theorem then gives
+`|r(ξ)−r(η)| ≤ 2C|ξ−η|/(1+|η|)`, and `1+|ξ| ≤ (3/2)(1+|η|)` on the same region, so the factor
+`1+|ξ|` demanded by an `H¹` bound is absorbed entirely by the symbol difference:
+`(1+|ξ|)|r(ξ)−r(η)| ≤ 3C|ξ−η|`.
+
+**Schur's test was not in the corpus.**  Only the Carleman-kernel special case
+(`CarlemanOperatorBound.lean`) existed.  The general form is now owned: uniformly bounded rows and
+columns give the `L²` bound `A·B`, proved by splitting `K = K^{1/2}·K^{1/2}`, paying the row bound
+with Cauchy–Schwarz and the column bound after Tonelli.  Stated in `ℝ≥0∞`, so only measurability of
+the kernel and the density is needed.
+
+What `(32)` still needs is the *far* region — where `|ξ−η|` controls `1+|ξ|+|η|` and the Schwartz
+decay of `χ̂` must absorb the logarithm of `(34)` — and the assembly of the two regions through
+Schur's test into the kernel identity `(33)`.  The identity `(33)` itself involves the
+distributional transform of a cutoff constant on each exterior half-line, whose delta contribution
+cancels against `r(ξ)−r(η)`; that cancellation is the remaining formal step.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AAU. Theorem 5 `(47)`, necessity half
+
+```text
+RHTower/ScatteringChargeNecessity.lean
+```
+
+`lintegral_sq_add_eq_top`: a profile with infinite squared mass plus one with finite squared mass
+still has infinite squared mass — otherwise subtracting the finite part would make the infinite one
+finite.  `charge_eq_zero_of_lintegral_sq_ne_top` is its contrapositive in the form Theorem 5 uses:
+once every remainder term of the three-fold expansion `(45)` is square integrable after
+multiplication by `x`, and the leading term `xH(x+iσ)d_±` is square integrable only when `d_± = 0`,
+the whole profile is square integrable only when both charges vanish.
+
+The non-integrability of the leading term is already owned:
+`not_integrable_suzukiGammaStripDerivativeNormSq` in `SuzukiGammaWallHardyBoundary.lean` is `(42)`,
+the sharp derivative wall, valid throughout `0 < σ < 1`.  What remains for `(47)` is the
+*sufficiency* half — that all boundary and remainder terms of `(45)` are square integrable after
+multiplication by `x` — which needs the three-fold expansion, i.e. one more integration by parts on
+top of `phase_ibp_twice`.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.

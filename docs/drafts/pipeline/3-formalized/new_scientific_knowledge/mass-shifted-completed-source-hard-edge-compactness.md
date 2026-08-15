@@ -1,9 +1,9 @@
 # Mass-shifted completed-source hard-edge compactness
 
 - **ID:** `mass-shifted-completed-source-hard-edge-compactness`
-- **Stage:** 2-fully-proven / needs specialist audit
+- **Stage:** 3-formalized / needs specialist audit
 - **Route:** U, compactified first-contact source
-- **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [LEAN NOT STARTED]`
+- **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [FORMALIZED]`
 - **Depends on:** `mass-shifted-hard-edge-paley-wiener-compactification` and the completed Weil
   source formula
 
@@ -622,3 +622,77 @@ Remaining for (CSHC.20): iterate `trigCayleyStep` `m` times (degree `N + m`, nor
 `prod_{i<m} (1/a)(1/2 + 2(N+i))`), identify the `m`-fold iterate with the profile of `g^{(m)}`
 through `integral_routeUCayleyLift_sq`, and then apply Plancherel
 (`MeasureTheory.Lp.norm_fourier_eq`) and Fatou to pass to the limit.
+
+### (CSHC.20): done — the Paley–Wiener support of the limit
+
+Mathlib carries the `L²` Fourier transform as a linear isometry equivalence
+(`MeasureTheory.Lp.fourierTransformₗᵢ`) and the derivative/multiplier exchange on tempered
+distributions, but not the bridge between them for a concrete function.  That bridge — the
+distributional derivative of an `L²` function with an `L²` classical derivative is the class of
+that derivative — was built, and with it the whole multiplier calculus:
+
+    HTGeometry/L2DerivativeFourier.lean            (axiom-clean, wired, built)
+      norm_lpTwo_sq, norm_lpTwo_real_sq        ‖u‖^2 = int ‖u‖^2 for an L^2 class
+      restrictLp, norm_restrictLp_sq,
+        restrictLp_add, norm_restrictLp_le     the restriction of an L^2 class to a set, its
+                                               energy, additivity, and the contraction bound
+      ofRealLp, norm_ofRealLp, ofRealLp_toLp   the isometric complexification of a real L^2 class
+      lineDerivOp_toTemperedDistribution_eq    the distributional derivative of an L^2 function
+                                               with an L^2 classical derivative is its class
+                                               (global integration by parts against Schwartz tests)
+      coeFn_fourier_deriv_ae                   F(f') = 2 pi i xi · F(f) almost everywhere
+      coeFn_fourier_iter_ae                    F(f^(m)) = (2 pi i xi)^m · F(f)
+      highFrequencySet r                       { xi : r <= 2 pi |xi| }
+      highFrequency_integral_le                r^(2m) int_{high} |F(f)|^2 <= ‖f^(m)‖_2^2
+      norm_restrictLp_fourier_le               its norm form
+      norm_restrictLp_fourier_limit_le         a uniform tail bound passes to a strong L^2 limit
+      ae_eq_zero_of_restrictLp_eq_zero         a vanishing restricted class is a.e. zero on the set
+
+    HTGeometry/RealTrigDegree.lean (additions)
+      RealTrigDeg.sum                          the degree filtration is closed under finite sums
+      realTrigDeg_cos_natMul                   cos(j th) has degree j
+      RealTrigDeg.exists_bound                 a real trigonometric polynomial is bounded
+
+    RHTower/XiShiftedHardEdgeDerivativeBound.lean  (axiom-clean, wired, built)
+      realTrigDeg_cosPoly                      cosPoly N b has trigonometric degree N
+      cos_half_inverseChart_sq                 cos(psi(x)/2)^2 = a^2/(a^2+x^2)
+      hasDerivAt_routeUCayleyLift_step         d/dx of a Cayley lift is the Cayley lift of T F
+      iteratedDeriv_routeUCayleyLift           the m-th derivative is the lift of T^m F
+      integral_iteratedDeriv_routeUCayleyLift_sq_le
+                                               int ((d/dx)^m lift F)^2
+                                                 <= (prod_{i<m}(1/a)(1/2+2(D+i)))^2 int (lift F)^2
+
+    RHTower/XiShiftedHardEdgePaleyWiener.lean      (axiom-clean, wired, built)
+      memLp_routeUCayleyLift                   a Cayley lift of a bounded profile lies in L^2
+      routeUCayleyChain                        the complexified chain of spectral derivatives
+      hasDerivAt_routeUCayleyChain             consecutive members are derivatives of each other
+      routeUCayleyPacket                       the L^2 class of a packet
+      routeUCayleyPacket_eq_ofRealLp           it is the complexification of the rational test
+      routeUCayley_highFrequency_le            r^m ‖1_{2 pi |xi| >= r} F(g)‖
+                                                 <= (prod_{i<m}(1/a)(1/2+2(N+i))) ‖g‖
+      routeUCayleyPacket_limit_highFrequency_eq_zero
+      routeUHardEdge_limit_fourier_support     (CSHC.20): for a normalized family with
+                                               N_k <= C a_k and a_k -> infinity, every strong
+                                               L^2 limit L has
+                                               1_{2 pi |xi| >= 2C + delta} F(L) = 0 for every
+                                               delta > 0
+      routeUHardEdge_limit_fourier_ae_eq_zero  the same in support form: F(L)(xi) = 0 for almost
+                                               every xi with 2 pi |xi| > 2C, obtained by
+                                               intersecting the countably many delta = 1/(n+1)
+
+Third deviation recorded.  The Lean (CSHC.20) reaches the support statement through the plain
+spectral derivative rather than through the angular-momentum operator and a weak limit of test
+functions.  In the angular chart the plain derivative acts on the profile as
+`T F = (1/a)(-(1/2) sin th · F + (1 + cos th) F')`, which raises the trigonometric degree by exactly
+one with `‖T F‖ <= (1/a)(1/2 + 2D)‖F‖`; iterating and transporting through the Cayley isometry gives
+`‖g^(m)‖ <= (prod_{i<m}(1/a)(1/2 + 2(N+i)))·‖g‖`, whose limit along `N <= Ca`, `a -> infinity` is
+`(2C)^m`.  The hypothesis `a_k -> infinity` is explicit in the Lean statement; the paper argument
+uses it silently when it replaces `(L_a/a)^m` by `((-i partial_x)/2)^m`.  No distribution-theoretic
+convergence of test functions and no Fatou step are needed: Plancherel plus the multiplier identity
+give the tail bound for each packet, and the passage to the limit is taken in the
+`L^2(high-frequency set)` norm.
+
+### Card status
+
+(CSHC.1)-(CSHC.20) are Lean-proved and axiom-clean
+(`[propext, Classical.choice, Quot.sound]`).  The card moves to stage 3.

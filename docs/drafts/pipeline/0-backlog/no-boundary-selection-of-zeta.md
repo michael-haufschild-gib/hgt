@@ -385,7 +385,7 @@ Thus `L_src` cannot weaken the target to alternating derivative signs of `G_src(
 
 ## 2026-06-24 zero-fed Uvarov repair guardrail
 
-`../2-fully-proven/zero-fed-uvarov-repair-tautology.md` sharpens the source-selection requirement. The decomposition
+`../3-formalized/not_new_scientific_knowledge/zero-fed-uvarov-repair-tautology.md` sharpens the source-selection requirement. The decomposition
 
 `H^0_d = H^-_d + a_*v_*v_*^*`
 

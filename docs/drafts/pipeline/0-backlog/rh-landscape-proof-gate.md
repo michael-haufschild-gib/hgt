@@ -177,7 +177,7 @@ Consequence: a source proof that establishes only alternating derivative signs f
 
 Status: proof-route guardrail added, not an RH proof.
 
-Created `../2-fully-proven/zero-fed-uvarov-repair-tautology.md`. It isolates the exact circularity risk in the first-trivial-zero / Uvarov boundary language. If one begins with the zero-fed repaired form
+Created `../3-formalized/not_new_scientific_knowledge/zero-fed-uvarov-repair-tautology.md`. It isolates the exact circularity risk in the first-trivial-zero / Uvarov boundary language. If one begins with the zero-fed repaired form
 
 `H^0_d=[T_{i+j+1}]`
 

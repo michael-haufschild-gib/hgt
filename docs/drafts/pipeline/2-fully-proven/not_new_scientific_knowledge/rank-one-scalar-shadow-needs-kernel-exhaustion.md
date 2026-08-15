@@ -167,3 +167,17 @@ For the RH route this comparison is downstream of kernel exhaustion, not a subst
 `n1-signed-bulk-exterior-monotonicity-fails.md` gives an exact signed-moment counterexample: an `N_1` bulk can reverse the expected exterior repair-threshold order. Thus knowing that an unrepaired form has one negative square does not make scalar comparisons faithful across boundary points.
 
 The scalar route still needs the source proof of kernel exhaustion and the Schur sign for the actual boundary channel.
+
+## 2026-08-15 Lean partial formalization
+
+`HTGeometry/FiniteRankCountertermKernelVisibility.lean` formally proves the
+card's kernel-exhaustion necessity in reusable real quadratic-form form:
+`finiteRankCounterterm_nonneg_on_ker` and
+`finiteRankCounterterm_pos_on_ker` show that no rank-one or finite-rank boundary
+repair can change an invisible kernel direction. The negative-witness corollary
+is `finiteRankCounterterm_no_negative_kernel_witness`.
+
+The card remains Stage 2 because its full complex-Hermitian scalar-shadow
+equivalence needs the explicit `ker beta ⊕ Cq` transport and a positive-block
+Schur theorem with the card's sign convention; the existing rank-one selector
+uses a different scalar and cannot be substituted directly.

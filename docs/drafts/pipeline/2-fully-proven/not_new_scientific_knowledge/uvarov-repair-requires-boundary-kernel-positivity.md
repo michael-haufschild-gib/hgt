@@ -128,3 +128,17 @@ Thus this card's kernel pre-gate is useful as a finite local decomposition of th
 `rank-one-scalar-shadow-needs-kernel-exhaustion.md` packages this card's necessary kernel condition into the scalar-shadow warning used by the semilocal route. The scalar Weyl sign decides the rank-one repair only after `A|_{ker beta}` has been proved nonnegative.
 
 Therefore a first-trivial-zero scalar certificate must be read as a two-part theorem: kernel positivity on `p(y_*)=0`, then the scalar Schur sign. Omitting the first clause is exactly the scalar-shadow failure.
+
+## 2026-08-15 Lean partial formalization
+
+The necessary kernel gates are now closed in
+`HTGeometry/FiniteRankCountertermKernelVisibility.lean`: repaired
+nonnegativity forces base nonnegativity on `ker L`
+(`finiteRankCounterterm_nonneg_on_ker`), while strict repaired positivity
+forces strict base positivity there
+(`finiteRankCounterterm_pos_on_ker`). These are unconditional Lean proofs for
+the real-quadratic-form abstraction of the first two displayed implications.
+
+The full card remains Stage 2: the arbitrary complex-Hermitian boundary
+functional to `ker beta ⊕ Cq` coordinate bridge, and its exact scalar Schur
+reduction, have not yet been formalized.

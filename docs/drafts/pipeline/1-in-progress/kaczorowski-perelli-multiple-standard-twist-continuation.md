@@ -114,3 +114,11 @@ The finite-fibre trace is therefore a `[BRIDGE]`, while this card is
   source-checked, exact-module-built, and axiom-clean.  This supersedes item 1
   in the “still required” list; functional-equation contour analysis,
   undamping/Vitali, and source residues remain open.
+- 2026-08-15 — Mathlib audit found no multivariable Montel/Vitali theorem for
+  functions `(Fin N → ℂ) → ℂ`.  The available
+  `Complex.analyticOnNhd_iff_differentiableOn` and locally-uniform derivative
+  APIs are one-variable only and cannot be applied by coercion.  The required
+  replacement is an honest finite-dimensional polydisc normal-family layer:
+  analytic certificates for the damped sums, compact-polydisc equicontinuity,
+  Arzelà–Ascoli plus diagonal exhaustion, and a Cⁿ Vitali uniqueness theorem.
+  No current module supplies this result.

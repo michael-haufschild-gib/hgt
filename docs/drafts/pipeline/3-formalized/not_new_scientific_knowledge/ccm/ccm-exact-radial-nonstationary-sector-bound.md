@@ -190,9 +190,12 @@ The arithmetic-summation layer `(9)`--`(10)` of this card **is** now formalized,
   the right endpoint
 - [x] phase-curvature bound `|j²ξ''(jx) ∓ k²ξ''(kx)| ≤ (16/9)/x³` in Lean, so `(8)` needs only
   the two symbol records
-- [ ] instantiation: a `SymbolTwoBranch` record for the actual radial PSWF solutions with
-  `M = C√d₁/r`
-- [ ] exact first-row hybrid Bessel/Liouville--Green transfer
+- [x] instantiation: a `SymbolTwoBranch` record for the actual radial PSWF solutions
+  (`RadialSymbolTwoBranchInstance.lean`, `symbolTwoBranch_radialPSWF_of_bounds`), and the assembled
+  entry estimate `abs_integral_radial_entry_le`
+- [ ] exact first-row hybrid Bessel/Liouville--Green transfer — **not a gate of this card**: the
+  first-row sector `(11)` belongs to `ccm-limiting-radial-first-row-weber-bound.md`, and the hybrid
+  transfer is the route's next step, recorded in section "Positive route consequence"
 
 ## Lean progress — the nonstationary-phase interface and the two-index separation `(6)`
 
@@ -475,3 +478,55 @@ representation, the amplitude bounds and their `O(1/c)` variation, the Liouville
 bounds, the potential decay, the phase growth, the phase separation, the phase curvature, the
 oscillatory budget, and the endpoint-uniform assembly.  What is left is the bookkeeping instantiation
 that names `W`, `V`, `ψ`, `Φ` for the concrete signed-mode data and reads off the constants.
+
+## Lean progress — the instantiation, 2026-08-15
+
+The last piece the previous section called "bookkeeping instantiation" is now built, wired and
+axiom-clean, in `formal/GaloisForLFunctions/RHTower/RadialSymbolTwoBranchInstance.lean`.
+
+```text
+dilatedXiAmplitude s r x       = A_s(r x)
+dilatedXiAmplitudeDeriv s r x  = r A_s'(r x)
+abs_dilatedXiAmplitude_le       |A_s(r x)|   <= (4/sqrt r)/sqrt x            for r >= 2, x >= 1
+abs_dilatedXiAmplitudeDeriv_le  |r A_s'(rx)| <= (4/sqrt r)/(x sqrt x)
+```
+
+The dilate of the corpus's half-power amplitude bounds is again a half-power symbol, with the
+`1/sqrt r` prefactor produced exactly by `sqrt(r x) = sqrt r sqrt x`.
+
+```text
+symbolTwoBranch_of_composition_on
+    the composition lemma with the amplitude bound needed only ALONG the phase
+    (a Groenwall estimate on a finite ray never gives a bound on all of R)
+radialAmpCosDeriv, radialAmpSinDeriv
+    the exact transported derivatives, i.e. the derivative values of the transport laws
+```
+
+```text
+symbolTwoBranch_radialPSWF        (0 <= s <= 1/2, r >= 2, a >= 1, c > 0)
+    a genuine solution of  W'' + (c^2 - psi) W = 0  gives
+    SymbolTwoBranch a b ((4/sqrt r) K) ((4/sqrt r) K + (4/sqrt r) K')
+      for the dilated profile  x |-> A_s(rx) * (amplitudes at xi_s(rx))
+
+symbolTwoBranch_radialPSWF_of_bounds
+    with the two hypotheses discharged from the corpus's own estimates:
+      interaction total <= Kt along the phase  (Groenwall envelope)
+      |psi(xi_s(rx))| <= kappa/x^2             (normal-form potential decay + xi_s(rx) >= x)
+    giving  K = 2 Kt  and  K' = kappa Kt (4r/3)/c  — one power of the bandwidth small.
+```
+
+The capstone assembles two such records into the card's estimate `(8)` for the **actual** solutions:
+
+```text
+abs_integral_radial_entry_le  (0 <= s <= 1/2, 2 <= k < j, 1 <= a <= b, 0 < c) :
+  | int_a^b U_j U_k |
+    <= 4 ( 2 M_j M_k/m + (M_j' M_k + M_j M_k')/m + M_j M_k (16/9)/(3 m^2) ) / c,
+  m = (2/3)(j-k),  M_r = (4/sqrt r)(2 Kt),  M_r' = M_r + (4/sqrt r) kappa Kt (4r/3)/c.
+```
+
+Every constant is absolute and uniform in the radius `x`, the turning parameter `s`, the right
+endpoint `b`, and both indices; the `1/(j k |j-k|)` shape of `(8)` is the `M_j M_k/m` product with
+`M_r` carrying the solution's own normalization (the card's `sqrt(d_1)/r`).
+
+`#print axioms` on all fifteen declarations of the module returns exactly
+`[propext, Classical.choice, Quot.sound]`.

@@ -446,6 +446,15 @@ and expose Gelfond--Schneider as the two-logarithm corollary/compatibility theor
 
 ## Log
 
+- 2026-08-15 — formalized first gap-free analytic dependency chain in
+  `RHTower/BakerGeneralProof`: differential-operator nonvanishing for polynomial exponentials,
+  contour Hermite interpolation at repeated frequencies, exact repeated-frequency modulus degree
+  and coefficient/minimum-modulus estimates, time/frequency jet duality, exact initial-jet
+  representation, four-radius multipoint lower growth, contour/Cauchy upper growth, and terminal
+  maximum-modulus cancellation.  Targeted `.olean` checks close through `TerminalZeroEstimate`;
+  every finished module is wired into `RHTower.lean`, whose full umbrella was deliberately not
+  built.  Remaining formal core is algebraic component-operator/Siegel/extrapolation infrastructure
+  and the final parameter contradiction/capstone.
 - 2026-08-15 — card opened after kernel audit of existing Gelfond--Schneider and prime-Baker
   substrate.  Exact general and inhomogeneous statement frozen.  Terminal branch-collision defect in
   prime Vandermonde isolated as first formalization core.
