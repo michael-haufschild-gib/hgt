@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.DeningerBigWittCrossPrimeIncidenceHorizon
-import GaloisForLFunctions.RHTower.XiPrimeSeamPairEnergy
+import GaloisForLFunctions.RHTower.XiPrimeSeamPairAsymptotics
 
 /-!
 # Big-Witt source transport to the physical prime-seam Dirichlet form
@@ -230,6 +230,64 @@ theorem deningerBigWittXiPrimeSeamSourceEnergyBounded_iff_riemannHypothesis :
         (h rho)
   exact hident.trans xiPrimeSeamPairEnergyBounded_iff_riemannHypothesis
 
+/-! ## Canonical cofinal residue -/
+
+/-- The singular Big-Witt source transport has an exact cofinal residue:
+after division by reciprocal-prime mass, it converges to twice the full
+one-particle seam square energy. -/
+theorem tendsto_deningerBigWittPrimeSeamSourceEnergy_div_mass
+    {rho : ℂ} (hstrip : 0 < rho.re ∧ rho.re < 1) :
+    Filter.Tendsto
+      (fun s : Finset Nat.Primes =>
+        deningerBigWittPrimeSeamSourceEnergy
+            (fun p : Nat.Primes =>
+              orbitwiseNatPrimeSeamCharge (p : ℕ) rho) s /
+          primeReciprocalMass s)
+      Filter.atTop
+      (nhds (2 * orbitwisePrimeSeamWeightedNormSq rho)) := by
+  simpa only [deningerBigWittPrimeSeamSourceEnergy_eq_primePairDifferenceEnergy]
+    using tendsto_orbitwisePrimeSeamPairEnergy_div_mass hstrip
+
+/-- Submass growth of the source-defined Big-Witt seam form on one strip
+fibre.  This is strictly weaker than a uniform energy bound. -/
+def OrbitwiseDeningerBigWittPrimeSeamSourceEnergySubmass
+    (rho : ℂ) : Prop :=
+  Filter.Tendsto
+    (fun s : Finset Nat.Primes =>
+      deningerBigWittPrimeSeamSourceEnergy
+          (fun p : Nat.Primes =>
+            orbitwiseNatPrimeSeamCharge (p : ℕ) rho) s /
+        primeReciprocalMass s)
+    Filter.atTop (nhds 0)
+
+/-- The cofinal Big-Witt residue vanishes exactly on the critical line. -/
+theorem orbitwiseDeningerBigWittPrimeSeamSourceEnergySubmass_iff_re_eq_half
+    {rho : ℂ} (hstrip : 0 < rho.re ∧ rho.re < 1) :
+    OrbitwiseDeningerBigWittPrimeSeamSourceEnergySubmass rho ↔
+      rho.re = 1 / 2 := by
+  simpa only [OrbitwiseDeningerBigWittPrimeSeamSourceEnergySubmass,
+    OrbitwisePrimeSeamPairEnergySubmass,
+    deningerBigWittPrimeSeamSourceEnergy_eq_primePairDifferenceEnergy]
+    using orbitwisePrimeSeamPairEnergySubmass_iff_re_eq_half hstrip
+
+/-- Submass growth of the canonical Big-Witt source form on every actual Xi
+divisor fibre. -/
+def DeningerBigWittXiPrimeSeamSourceEnergySubmass : Prop :=
+  ∀ rho : XiDivisorSupport,
+    OrbitwiseDeningerBigWittPrimeSeamSourceEnergySubmass (rho : ℂ)
+
+/-- Global weakened endpoint: sublinear, rather than uniformly bounded,
+Big-Witt source energy on the Xi divisor is already equivalent to RH. -/
+theorem deningerBigWittXiPrimeSeamSourceEnergySubmass_iff_riemannHypothesis :
+    DeningerBigWittXiPrimeSeamSourceEnergySubmass ↔
+      RiemannHypothesis := by
+  simpa only [DeningerBigWittXiPrimeSeamSourceEnergySubmass,
+    XiPrimeSeamPairEnergySubmass,
+    OrbitwiseDeningerBigWittPrimeSeamSourceEnergySubmass,
+    OrbitwisePrimeSeamPairEnergySubmass,
+    deningerBigWittPrimeSeamSourceEnergy_eq_primePairDifferenceEnergy]
+    using xiPrimeSeamPairEnergySubmass_iff_riemannHypothesis
+
 theorem DAC_DENINGER_BIG_WITT_PHYSICAL_HALF_DENSITY_WALL :
     Summable (fun i : DeningerCalderonWittCrossPrimePacketIndex =>
       ‖deningerBigWittCrossPrimePacketRawCoefficient i‖ ^ 2) ∧
@@ -252,11 +310,14 @@ theorem DAC_DENINGER_BIG_WITT_PRIME_SEAM_DIRICHLET_TRANSPORT :
         primePairDifferenceEnergy a s) ∧
       (DeningerBigWittXiPrimeSeamSourceEnergyBounded ↔
         RiemannHypothesis) ∧
+      (DeningerBigWittXiPrimeSeamSourceEnergySubmass ↔
+        RiemannHypothesis) ∧
       ¬ ∃ z : DeningerCalderonWittCrossPrimePacketHilbert,
         ∀ i : DeningerCalderonWittCrossPrimePacketIndex,
           ‖z i‖ ^ 2 = deningerBigWittCrossPrimePhysicalAtom i := by
   exact ⟨deningerBigWittPrimeSeamSourceEnergy_eq_primePairDifferenceEnergy,
     deningerBigWittXiPrimeSeamSourceEnergyBounded_iff_riemannHypothesis,
+    deningerBigWittXiPrimeSeamSourceEnergySubmass_iff_riemannHypothesis,
     no_deningerBigWittPhysicalHalfDensity_packet⟩
 
 end

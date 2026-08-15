@@ -406,3 +406,157 @@ source theorem identifies their completed conormal second fundamental form with 
   scalar majorant diverges vertically.  Exact source-shift analysis exposed the reflection-odd
   moving modular wall `(D3)`.  Pivoted from ordinary positivity to W-H180's completed modularly
   graded incidence.
+
+## Dependency sharpening: P-G180--P-G182
+
+Three later receiver theorems simplify the live comparison without changing route identity.
+
+1. P-G180 proves that the collision column is the dyadic innovation `(I-V)psi`, with
+   `Vf(r)=f(2r)/2`, and reconstructs the base column by a Calderon telescope with remainder energy
+   `8^(-N)`.  The dyadic difference is invertible source geometry, not the singular producer.
+2. P-G181 therefore reduces the receiver to the base Cauchy cube
+
+   ```text
+   B(rho,tau)=2/[conj(rho-1/2)+(tau-1/2)]^3,                          (E1)
+   ```
+
+   whose diagonal is `1/(4a^3)`.  Its complete primitive source budget is strictly below `2`,
+   while every strict-right zero costs at least `2`.
+3. P-G182 identifies `(E1)` exactly as the Gram of normalized residues of the source-defined
+   completed conormal
+
+   ```text
+   C(z,r)=logDeriv(xi)(z) r exp(-(z-1/2)r).                           (E2)
+   ```
+
+   At a zero of multiplicity `m`, its raw residue is `m r exp(-(rho-1/2)r)`.  Exact divisor trace
+   would divide the raw amplitude by `sqrt(m)`.
+
+Thus the live arrow is no longer an unidentified cubic zero kernel.  It is a source bound for a
+specific completed logarithmic-conormal residue trace.
+
+## Attack 4: critical-feature Plancherel inversion is unbounded
+
+The existing critical-feature prime--Gamma Gram is a genuine source-to-zero construction, so a
+natural conjecture was to recover `(E2)` by Fourier inversion of that frame.  The exact source
+profile already formalized in `HedenmalmCriticalFeatureWardGreenPlancherelFracture.lean` is
+
+```text
+f_z(x)=exp(-|x|) sourceChar(z,x).                                    (E3)
+```
+
+Hence removing the critical-feature smoothing multiplies by `exp(|x|)`.  This inverse is
+unbounded on every translation-invariant `L2` source domain: if `g_N` is a unit vector supported
+in `[N,N+1]`, then
+
+```text
+||exp(|x|)g_N||_2 >= exp(N)||g_N||_2.                                (E4)
+```
+
+Equivalently, multiplication by `exp(-|x|)` has no positive lower bound.  This is the same
+analytic wall seen in four earlier guises: genuine height translation attenuates by
+`exp(-tau a)`; zero-selected Lagrange lifts have uncontrolled norm; the scalar Gamma majorant
+diverges vertically; and continuation from the safe Euler boundary is an ill-posed inverse.
+
+**Conjecture failed.** Critical-feature Fourier inversion cannot be the bounded source contraction.
+Its strongest survivor is diagnostic: every successful producer must pair the two FE chambers
+before attempting to undo their one-sided attenuation.
+
+## Attack 5 and positive survivor: bilateral raw-conormal modular doublet
+
+The P-G182 half-density conclusion is necessary for exact equality with linear divisor
+multiplicity, but it is stronger than needed for the one-quantum contradiction.  Let
+
+```text
+lambda=rho-1/2=a+i gamma,       a>0,
+rho^dagger=1-conj(rho),
+psi_rho(r)=r exp(-lambda r),    r>0.                                 (E5)
+```
+
+Put the reflected conormal on the negative half-line and pull it back with orientation:
+
+```text
+M_rho(r)=-psi_(rho^dagger)(-r), r>0.                                 (E6)
+```
+
+Since `rho^dagger-1/2=-conj(lambda)`, direct algebra gives
+
+```text
+M_rho(r)=conj(psi_rho(r)).                                           (E7)
+```
+
+Therefore the bilinear FE-reflection incidence, before Hermitian scalarization, is already the
+positive cubic base charge:
+
+```text
+integral_0^infinity psi_rho(r) M_rho(r) dr
+ =integral_0^infinity r^2 exp(-2ar)dr
+ =1/(4a^3).                                                          (E8)
+```
+
+This is the missing modular mechanism at atomic level.  The growing reflected column never lives
+on the wrong half-line; causal and anti-causal chambers are paired by orientation reversal, and
+the Radon--Nikodym/FE mate becomes the Hermitian conjugate only after that pairing.
+
+### Raw multiplicity removes the half-density gate `[PROVED HERE + LEAN]`
+
+At multiplicity `m>=1`, the raw logarithmic residues in the two legs contribute
+
+```text
+Q_raw(rho)=m^2/(4a^3) >= 1/(4a^3) >= 2.                              (E9)
+```
+
+P-G181's complete primitive budget is `<2`.  Consequently a completed source bound on the raw
+modular-conormal trace would already exclude the first strict-right zero.  Copy resolution and
+the factor `1/sqrt(m)` are not part of the minimal RH theorem; they are needed only to identify
+the resulting norm exactly with the conventional linear-multiplicity divisor trace.
+
+This distinction is structural.  A scalar logarithmic residue is additive in divisor order.  No
+additive amplitude `A:N->R` can satisfy `A(m)^2=m` for every `m`: additivity gives
+`A(2)=2A(1)`, while the square laws at `1` and `2` give `A(1)^2=1` and `A(2)^2=2`, hence `4=2`.
+Thus square-root multiplicity must come from an orthogonal copy fibre/GNS disintegration, never
+from scalar meromorphic functional calculus.  Retaining raw residues avoids this nonadditive step.
+
+Lean module
+`formal/GaloisForLFunctions/RHTower/XiWardCubicRawConormalModularDoublet.lean` proves `(E7)`,
+`(E8)`, the actual-Xi lower quantum `(E9)`, and the closed additive scalar half-density no-go.
+
+### Sharpened live conjecture `[W-H181 -- RAW MODULAR CONORMAL TRACE]`
+
+Construct, before divisor expansion, a two-sided pole--Gamma--von-Mangoldt conormal relation whose
+right causal and reflected left anti-causal radial legs specialize to `(E5)`--`(E8)`.  Its finite
+contour/Riesz compressions must satisfy
+
+```text
+Tr_raw(completed reflected conormal compression)
+  <= routePPrimitiveBaseCauchyCubicTraceBudget < 2,                   (E10)
+```
+
+with the left side defined from completed source coefficients and forced cross terms, not from a
+list of Xi zeros.  Residue specialization may then expose the raw `m^2` charges.  No
+multiplicity-half-density disintegration is required for the contradiction.
+
+The remaining obstruction is now narrower than W-H180: construct and bound the source-native
+two-sided conormal Riesz/exterior compression.  Scalar holomorphic dephasing still fails because
+one chamber alone has nonunit depth modulus; the reciprocal FE pair must be retained through the
+source trace.  P-G173's dyadic collision layer, P-G180's reconstruction, and P-G182's normalized
+receiver are no longer separate gates.
+
+## Updated theatre audit
+
+- A raw-residue trace *defined after listing zeros* is still target-fed and proves nothing.
+- Exact half-density normalization is no longer allowed to delay the RH implication; raw
+  multiplicity is stronger for the capacity contradiction.
+- The bilateral identity `(E8)` is an atomic landing, not the global trace estimate `(E10)`.
+- Progress on `(E10)` must exhibit finite pole--Gamma--von-Mangoldt coefficients or a
+  source-defined contour/Riesz relation and prove the `<2` norm before residue expansion.
+
+## Log continuation
+
+- 2026-08-15 -- P-G180/P-G181 reduced the receiver to one base Cauchy cube; P-G182 identified it
+  with completed-Xi conormal residue Gram.  Critical-feature inversion failed by the exact
+  `exp(|x|)` deconvolution wall.  Bilateral FE reflection produced the positive raw-conormal
+  modular doublet `(E5)`--`(E8)`.  Proved that raw multiplicity already has the strict two-unit
+  quantum and that additive scalar residues cannot implement square-root multiplicity.  Replaced
+  the half-density landing requirement by W-H181's strictly weaker raw modular-conormal trace
+  bound `(E10)`.

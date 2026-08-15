@@ -2685,3 +2685,77 @@ weights is killed by C57.
 
 Formal source:
 `formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPositiveSourceNonselection.lean`.
+
+## C58 continuous source quotient `[PROVED AND LEAN-FORMALIZED]`
+
+C54--C57 were finite atomic. Groskin's pole source is a push-forward of an absolutely continuous
+measure, and the archimedean source is continuous as well, so an atomic-only obstruction would not
+close the literal source dictionary. Put
+
+```text
+H=[0,1],
+S=C(H,R)^*.                                                        (C58.1)
+```
+
+For `L in S`, define the full reporter
+
+```text
+T_N(L)=
+  (L(omega),
+   (L(sin(2*pi*(k+1)*omega)))_(0<=k<N),
+   (L(omega*cos(2*pi*(k+1)*omega)))_(0<=k<N)).                    (C58.2)
+```
+
+Define its odd source values and diagonal values by
+
+```text
+psi_L(n)=L(sin(2*pi*n*omega))/pi,
+d_L(n)=2 L(omega*cos(2*pi*n*omega)),                              (C58.3)
+```
+
+and form the whole divided-difference packet `Q_N(L)` on modes `0,...,N`. The zero edge and
+diagonal recover every coordinate in `(C58.2)`, while coordinate vanishing kills all source values
+in `(C58.3)` and therefore every off-diagonal divided difference. Lean proves
+
+```text
+T_N(L)=0  <=>  Q_N(L)=0                                           (C58.4)
+```
+
+for every continuous functional `L`, with no atomicity premise.
+
+Every finite Borel measure `mu` on `H` now has a formal continuous source functional
+
+```text
+L_mu(f)=integral_H f dmu,                                         (C58.5)
+```
+
+and Lean reduces `(C58.2)` definitionally to Groskin's three moment families. Signed finite
+measures are represented by linear combinations in `S`. For finite weighted atoms, Lean proves
+both exact specializations
+
+```text
+T_N(L_atomic)=the C56 atomic observer,
+Q_N(L_atomic)=the C56 whole event packet.                          (C58.6)
+```
+
+Thus the continuous source is not an exceptional limit outside the finite dictionary; atomic,
+pole, and archimedean channels share one exact nonfaithful quotient. C57's no-decoder conclusion is
+therefore the correct structural warning for the literal source, not an artefact of finite sums.
+
+**Higher principle exposed.** Reporter dimension and source topology are separate layers. Moving
+from atoms to measures completes the source topology but does not add finite reporter coordinates.
+The canonical arithmetic object must therefore be a distinguished point or path in `S`, selected by
+prime/pole/Gamma provenance before `T_N`, while the CCM matrix is only its finite shadow. The missing
+Ward incidence should be sought as the connection of that distinguished source path, not as an
+inverse to `(C58.4)`.
+
+**Next conjecture C59.** Instantiate Groskin's literal channels in `S`: the finite prime-power
+atomic functional with weights `-Lambda(q)/sqrt(q)`, the pole push-forward of
+`2 cosh(y/2)L dy`, and the cutoff-free archimedean functional. Prove their sum's packet equals the
+already-formal `ccmPublishedRestrictedWeilMatrix` after the exact aperture/mode normalization. Then
+differentiate the source path in aperture and compare its connection defect with the continued
+prime--Gamma/Xi Ward source already present in corpus. Equality of matrices alone is insufficient;
+the theorem must retain the channel decomposition in `S`.
+
+Formal source:
+`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilContinuousSourceQuotient.lean`.

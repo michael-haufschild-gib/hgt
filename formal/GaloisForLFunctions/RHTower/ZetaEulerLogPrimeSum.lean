@@ -53,10 +53,8 @@ theorem natCast_cpow_neg_zetaLinePoint {p : ℕ} (hp : 0 < p) (σ τ : ℝ) :
     ring
   rw [hval, Complex.exp_add]
   congr 1
-  rw [Real.rpow_def_of_pos hpR]
-  rw [← Complex.ofReal_exp]
-  congr 1
-  ring
+  rw [Real.rpow_def_of_pos hpR, ← Complex.ofReal_exp,
+    show Real.log (p : ℝ) * -σ = -σ * Real.log (p : ℝ) from mul_comm _ _]
 
 theorem re_natCast_cpow_neg_zetaLinePoint {p : ℕ} (hp : 0 < p) (σ τ : ℝ) :
     ((p : ℂ) ^ (-(zetaLinePoint σ τ))).re = (p : ℝ) ^ (-σ) * Real.cos (τ * Real.log p) := by
@@ -138,7 +136,8 @@ theorem abs_re_neg_log_one_sub_sub_re_le {z : ℂ} (hz : ‖z‖ ≤ 1 / 2) :
     |(-Complex.log (1 - z)).re - z.re| ≤ ‖z‖ ^ 2 := by
   have h := norm_log_one_sub_sub_self_le hz
   have hval : (-Complex.log (1 - z)).re - z.re = -((Complex.log (1 - z) + z).re) := by
-    simp [Complex.add_re, Complex.neg_re]
+    rw [Complex.neg_re, Complex.add_re]
+    ring
   rw [hval, abs_neg]
   exact le_trans (Complex.abs_re_le_norm _) h
 
@@ -192,7 +191,7 @@ theorem abs_re_eulerLog_sub_primeCosTsum_le {σ τ : ℝ} (hσ : 1 < σ) :
     exact Complex.re_tsum hsummable
   have hresumdiff : Summable (fun p : Nat.Primes =>
       (-Complex.log (1 - (p : ℂ) ^ (-(zetaLinePoint σ τ)))).re) :=
-    hsummable.re
+    hsummable.map Complex.reAddGroupHom Complex.continuous_re
   have hcosre : primeCosTsum σ τ
       = ∑' p : Nat.Primes, ((p : ℂ) ^ (-(zetaLinePoint σ τ))).re := by
     rw [primeCosTsum]
@@ -223,23 +222,26 @@ theorem abs_re_eulerLog_sub_primeCosTsum_le {σ τ : ℝ} (hσ : 1 < σ) :
   have hdiffsum : Summable (fun p : Nat.Primes =>
       (-Complex.log (1 - (p : ℂ) ^ (-(zetaLinePoint σ τ)))).re
         - ((p : ℂ) ^ (-(zetaLinePoint σ τ))).re) := hresumdiff.sub hcosre_summable
+  have habs : Summable (fun p : Nat.Primes =>
+      ‖(-Complex.log (1 - (p : ℂ) ^ (-(zetaLinePoint σ τ)))).re
+        - ((p : ℂ) ^ (-(zetaLinePoint σ τ))).re‖) := by
+    refine Summable.of_nonneg_of_le (fun p => norm_nonneg _) (fun p => ?_) hinvsum
+    rw [Real.norm_eq_abs]
+    exact hbound p
   have hnormle : |∑' p : Nat.Primes,
       ((-Complex.log (1 - (p : ℂ) ^ (-(zetaLinePoint σ τ)))).re
         - ((p : ℂ) ^ (-(zetaLinePoint σ τ))).re)|
       ≤ ∑' p : Nat.Primes, 1 / ((p : ℕ) : ℝ) ^ (2 : ℝ) := by
-    have h := hdiffsum.norm_tsum_le_tsum_norm ?_
-    · refine le_trans ?_ (h.trans ?_)
-      · exact le_of_eq (Real.norm_eq_abs _).symm
-      · refine Summable.tsum_le_tsum ?_ ?_ hinvsum
-        · intro p
-          rw [Real.norm_eq_abs]
-          exact hbound p
-        · refine Summable.of_norm_bounded hinvsum fun p => ?_
-          rw [Real.norm_eq_abs, abs_abs]
-          exact hbound p
-    · refine Summable.of_norm_bounded hinvsum fun p => ?_
-      rw [Real.norm_eq_abs, abs_abs]
+    have h1 := norm_tsum_le_tsum_norm habs
+    have h2 : ∑' p : Nat.Primes,
+        ‖(-Complex.log (1 - (p : ℂ) ^ (-(zetaLinePoint σ τ)))).re
+          - ((p : ℂ) ^ (-(zetaLinePoint σ τ))).re‖
+        ≤ ∑' p : Nat.Primes, 1 / ((p : ℕ) : ℝ) ^ (2 : ℝ) := by
+      refine Summable.tsum_le_tsum (fun p => ?_) habs hinvsum
+      rw [Real.norm_eq_abs]
       exact hbound p
+    rw [Real.norm_eq_abs] at h1
+    linarith [h1, h2]
   refine le_trans hnormle ?_
   rw [invSquareTailConst]
   refine Summable.tsum_le_tsum_of_inj (fun p : Nat.Primes => (p : ℕ)) ?_ ?_ ?_ hinvsum

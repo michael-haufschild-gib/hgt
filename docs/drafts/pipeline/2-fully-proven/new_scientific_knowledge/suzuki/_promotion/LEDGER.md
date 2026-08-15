@@ -15,7 +15,7 @@ that name and its relative links deepened by one level.  Inbound links are repai
 restricted-Weil trace", "specialist novelty review", "3 → 4 publication-ready") do not block
 promotion; gates that name missing Lean do.
 
-## A. Promoted (67 of 103)
+## A. Promoted (68 of 104)
 
 - `suzuki-affine-resolvent-krein-defect`
 - `suzuki-affine-sewn-weil-robin-far-tail-factorization`
@@ -63,6 +63,7 @@ promotion; gates that name missing Lean do.
 - `suzuki-marked-secant-midpoint-lorentz-completion`
 - `suzuki-negative-projector-coherent-completion`
 - `suzuki-negative-shift-defect-escape`
+- `suzuki-one-prime-terminal-pruned-propagator`
 - `suzuki-parity-hankel-infinite-negative-index`
 - `suzuki-parity-hankel-infinite-rank-no-go`
 - `suzuki-parity-resolvent-transport-budget`
@@ -7451,3 +7452,46 @@ is the concrete `(12)`, `(13)` at `(κ,σ) = (2/3,3/4)`.
 `L²`".  Its homogeneous half is exactly `(9)`, now certified; its forced half is Theorem 2 of
 `gamma-wall-block-hardy-and-derivative-scattering`, which is still open.  The card is held at
 stage 2 until that lands.
+
+## UU. `suzuki-one-prime-terminal-pruned-propagator` is promoted
+
+```text
+RHTower/SuzukiOnePrimeTerminalChannel.lean   channel classification, degree zero, tail squares
+```
+
+The card arrived with `RHTower/SuzukiOnePrimeTerminalPrunedPropagator.lean` already carrying the
+support theory `(6)`–`(13)`, the weight ratios `(16)`, the literal compression `(2)`/`(17)`, the
+involution `(3)`, the exact exponential `(4)`/`(18)` and the uniform group bound `(5)` with an
+arbitrary real prime coupling.  Three displayed blocks were not yet in Lean; the new module supplies
+them.
+
+**Channel classification (§3).**  Below the first prime displacement the closed aperture holds only
+the root valuation (`onePrimeRightCenter_index_eq_zero`, `onePrimeLeftCenter_index_eq_zero`), and a
+root-supported carrier state is annihilated by the compressed symmetric shift, because both of its
+neighbours are outside the surviving support (`onePrimeTerminalCompression_eq_zero_of_rootSupported`).
+At the resonance `2a = log 2` the first prime site *is* the opposite endpoint
+(`onePrimeRightCenter_one_eq_neg_of_resonant`), and the two endpoints admit opposite inward
+orientations: the right one needs `o e^{-L} < 0`, the left one `o e^{-L} > 0`, so
+`onePrimeResonant_not_both_active` shows no orientation activates both and every fixed-orientation
+block is one-site.  In the open window `log 2 < 2a < log 3` site `1` is strictly interior
+(`onePrimeRightCenter_one_mem_Ioo`) and is activated by every orientation with `|o| ≤ 1` once
+`e^{-L} < min(2a − log 2, log 2)` (`onePrimeRightSite_one_cutoff_ne_zero_of_interior`), while the
+root endpoint is dropped by the outward orientation
+(`onePrimeRightRoot_cutoff_eq_zero_of_outward`) and retained by the inward one
+(`onePrimeRightRoot_cutoff_ne_zero_of_inward`).  That is exactly the card's "one orientation carries
+`B_r`, the other carries the zero block".
+
+**Degree zero `(19)`.**  `onePrimeTerminalGroup_degree_zero`: there is a constant — `1 + ‖B_r‖` —
+bounding `‖exp(−itcB_r)‖` by `C(1+|t|)^0` for every real coupling `c` and every frequency `t`.  The
+exponent is literally zero, not `2/3`.
+
+**Tail squares `(20)`.**  `integrableOn_sq_rpow_neg_of_half_lt`: `(x^{-p})²` is integrable on
+`(1,∞)` exactly through `p > 1/2`, since `(x^{-p})² = x^{-2p}` and `−2p < −1`.  At Gamma height
+`σ = 3/4` the slow exponent is `p = 5/4` (`onePrimeSlowExponent`,
+`integrableOn_sq_onePrimeSlowTail`), and `integrableOn_sq_onePrimeNearEndRemainder` gives the same
+for every near-end remainder `x^{1-N}` with `N ≥ 2`.
+
+Every displayed statement of the card now has an unconditional Lean declaration auditing to
+`[propext, Classical.choice, Quot.sound]`, and the card is moved to
+`3-formalized/new_scientific_knowledge/suzuki/` with the certificate
+`suzuki-one-prime-terminal-pruned-propagator-formalized.md`.

@@ -1295,3 +1295,23 @@ Four cards whose Lean target was a single interface theorem:
 - `independent-periods-fraction-field-connector` → new
   `HTGeometry/IndepPeriodsFractionFieldConnector`; integral and rational period independence are the
   same interface, and the `i`, `i√2` witness now discharges `IndepPeriods` unconditionally.
+
+## Shared infrastructure: the torus Poincaré inequality
+
+`HTGeometry/UnitTorusPoincare` proves the sharp Poincaré inequality on `UnitAddTorus d` from
+mathlib's multivariate Fourier basis.  Mathlib has neither Wirtinger nor any Poincaré inequality, so
+this is new corpus mathematics.
+
+The proof avoids both integration by parts and Fubini: translation invariance of Haar gives
+`ĉ_n(f(·+a)) = mFourier n a · ĉ_n(f)`, Parseval turns the squared translate difference into
+`∑_n |mFourier n a − 1|² |ĉ_n|²`, and dividing by `h²` and letting `h → 0` along a punctured
+neighbourhood replaces each weight by `4π² n_j²` — the limit is taken on finite frequency sets, so no
+dominated-convergence or a.e.-differentiability argument is needed anywhere.
+
+- `sum_freq_sq_mul_sq_mFourierCoeff_le`: the Fourier form, for every finite frequency set.
+- `integral_sq_sub_sq_integral_le`: the variance form `Var(f) ≤ C/(4π²)` from a quadratic bound on
+  coordinate translate differences.
+
+Cards that need the product-circle Poincaré law (`low-replica-complete-incidence-influence-law`,
+`onset-recurrence-dimension-independence-law`, `cubic-phase-seeded-static-local-full-scale-plateau-law`)
+can now consume it; the remaining work there is the a.e.-gradient bound that supplies the hypothesis.

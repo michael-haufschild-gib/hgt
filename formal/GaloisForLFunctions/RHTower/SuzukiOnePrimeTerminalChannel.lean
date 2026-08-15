@@ -26,6 +26,8 @@ noncomputable section
 
 open MeasureTheory Set
 
+open scoped Matrix Matrix.Norms.Operator
+
 /-! ## Sub-threshold aperture: only the root site survives -/
 
 /-- Below the first prime displacement, the closed aperture contains only the root valuation. -/
@@ -129,7 +131,7 @@ theorem onePrimeRightCenter_one_mem_Ioo (a : ℝ) (h : Real.log 2 < 2 * a) :
     onePrimeRightCenter a 1 ∈ Set.Ioo (-a) a := by
   have hlog2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
   rw [onePrimeRightCenter_one]
-  constructor <;> simp only [Set.mem_Ioo] <;> linarith
+  exact Set.mem_Ioo.mpr ⟨by linarith, by linarith⟩
 
 /-- The outward orientation never sees the root endpoint. -/
 theorem onePrimeRightRoot_cutoff_eq_zero_of_outward (a o L : ℝ) (ho : 0 < o) :
@@ -157,8 +159,7 @@ theorem onePrimeRightRoot_cutoff_ne_zero_of_inward (a o L : ℝ)
 
 /-- The strictly interior first prime site is seen by every orientation once the physical scale is
 finer than both of its distances to the walls. -/
-theorem onePrimeRightSite_one_cutoff_ne_zero_of_interior (a o L : ℝ)
-    (h : Real.log 2 < 2 * a) (ho : |o| ≤ 1)
+theorem onePrimeRightSite_one_cutoff_ne_zero_of_interior (a o L : ℝ) (ho : |o| ≤ 1)
     (hL : Real.exp (-L) < min (2 * a - Real.log 2) (Real.log 2)) :
     GaloisForLFunctions.RHTower.suzukiScaleBufferedCutoff a
       (onePrimeRightCenter a 1) o L ≠ 0 := by
@@ -194,9 +195,9 @@ theorem integrableOn_sq_rpow_neg_of_half_lt {p : ℝ} (hp : 1 / 2 < p) :
     (integrableOn_Ioi_rpow_iff (by norm_num : (0 : ℝ) < 1)).mpr (by linarith)
   refine h.congr_fun (fun x hx => ?_) measurableSet_Ioi
   have hx0 : (0 : ℝ) < x := lt_trans one_pos hx
-  rw [pow_two, ← Real.rpow_add hx0]
-  congr 1
-  ring
+  show x ^ (-(2 * p)) = (x ^ (-p)) ^ 2
+  have hsplit : -(2 * p) = -p + -p := by ring
+  rw [hsplit, Real.rpow_add hx0, ← pow_two]
 
 /-- The slow exponent at Gamma height `3/4` is `5/4`. -/
 theorem onePrimeSlowExponent : (1 : ℝ) / 2 + 3 / 4 = 5 / 4 := by norm_num

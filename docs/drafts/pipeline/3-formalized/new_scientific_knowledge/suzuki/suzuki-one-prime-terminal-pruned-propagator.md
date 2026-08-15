@@ -1,7 +1,7 @@
 # Literal one-prime terminal pruning is a two-site involution
 
 - **ID:** `suzuki-one-prime-terminal-pruned-propagator`
-- **Stage:** 2 — fully proved on paper
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** LITERAL SOURCE PRUNING / FINITE PROPAGATOR / PRIOR-PROOF REPAIR
 - **Scientific status:** `[PROVED HERE] [UNCONDITIONAL] [NEW SCIENTIFIC KNOWLEDGE]`
   `[NOVELTY UNVERIFIED] [NOT RH]`
