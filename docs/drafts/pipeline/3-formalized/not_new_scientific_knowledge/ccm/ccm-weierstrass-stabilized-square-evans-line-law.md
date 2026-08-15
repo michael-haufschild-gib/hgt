@@ -187,3 +187,37 @@ or its logarithmic Dirichlet reduction, so a faithful formalization is not curre
 - [x] select one continuous explicit source chamber in the aperture
 - [ ] prove its zero divisor avoids `lambda<=0` for every aperture
 - [ ] RH
+
+## Lean status
+
+`[FORMALIZED]` — supersedes the "a faithful formalization is not currently available" note above.
+The analytic Fredholm family and its Dirichlet reduction remain cited parents, but the card's own
+algebraic claims — conjugate pairing of the stabilized roots, positivity of the stabilized quotient,
+and the determinant restatement — are reachable and are now proved.
+
+Module: `formal/GaloisForLFunctions/RHTower/CCMWeierstrassStabilizedEvans.lean`
+(6 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
+`formal/GaloisForLFunctions/RHTower.lean`).
+
+What is proved in Lean:
+
+- `eval_conj_of_real` — a real polynomial takes conjugate values at conjugate points.
+- `isRoot_conj_iff` — **claim 2 of (2)**: the nonreal zeros of the real stabilized polynomial occur
+  in conjugate pairs.  This is exactly why a vanishing real root pair is *retained* as a nonreal
+  conjugate pair and the degree `2L_α` does not jump at a characteristic birth.
+- `eval_pos_of_monic_no_real_root` — **claim 3 of (2), root-free factor**: a monic real polynomial
+  with no real root is strictly positive everywhere.  Proof: the degree-zero case is `p = 1`;
+  otherwise the polynomial tends to `+∞` and a negative value would give a real root by the
+  intermediate value theorem.
+- `one_add_sq_pow_pos`, `stabilized_quotient_pos` — **claim 3 of (2)**: with positive numerator and
+  positive `(1+ξ²)^{L_α}` the quotient `(3)` is strictly positive on the real axis.
+- `evans_zero_divisor_empty_iff` — **equation (12)**: the section has empty zero divisor on
+  `(-∞, 0]` exactly when it has no zero there.
+
+Deliberately outside the Lean statement (cited parents, not results of this card):
+
+- Weierstrass preparation and the construction of the charts `(2)`;
+- the analytic solution bundle `(9)`, its constant rank, and the analytic square map `(4)`;
+- the finite Grushin reduction, the determinant-line functor `(10)` and the gluing `(6)`;
+- analytic Fredholm theory identifying vanishing order with multiplicity `(7)`;
+- the logarithmic decomposition `(8)`.

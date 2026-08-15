@@ -1,8 +1,9 @@
 # Route U polar polyphase valuation two
 
 - **ID:** `route-u-polar-polyphase-valuation-two`
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Status:** `[LEAN-PROVED]` `[NOVELTY UNVERIFIED]`
 - **Parent:** `route-u-kelvin-gamma-two-chart-renormalization-no-go`
 - **Exact claim:** after the actual common source-matched filter, the polarized pole term of the
   explicit cofinal Route-U packet has hard-edge valuation two; its leading coefficient is one half
@@ -23,8 +24,8 @@ localize the missing charge to the von-Mangoldt cross source.
 ## Gates
 
 - [x] 0 → 1 in-progress: literal source isolated, exact attack, Door passport below
-- [ ] 1 → 2 fully-proven: dependency-closed paper proof and hostile audit
-- [ ] 2 → 3 formalized: closed Lean theorem, scratch verification, leaf `.olean`, axiom audit
+- [x] 1 → 2 fully-proven: dependency-closed paper proof and hostile audit
+- [x] 2 → 3 formalized: closed Lean theorem, scratch verification, leaf `.olean`, axiom audit
 - [ ] 3 → 4 publication-ready: standalone theorem, literature audit, expert novelty audit
 
 ## Exact frontier
@@ -170,8 +171,23 @@ Let `A_n` be the real-even compact approximation of `g`, `h_k=2/a_k`,
    the finite valuation-two limit by `a_k^2->+infinity`.
 
 The proof uses no Xi zero, RH assumption, numerical computation, or asymptotic degree estimate.
-Current Stage-1 dependency: formalize `(PV.6)` and `(PV.7)` for the literal pole point and close all
-five steps in Lean before promoting this card.
+All five steps, including `(PV.6)` and `(PV.7)` at the literal pole point, are closed in Lean.
+
+## Lean certificate
+
+- Generic complex finite-Chebyshev sampling:
+  `GaloisForLFunctions.RHTower.XiShiftedHardEdgeComplexFiniteChebyshevSample`.
+- Exact source theorem:
+  `GaloisForLFunctions.RHTower.XiShiftedHardEdgePrimeGammaPolarPolyphaseValuation`.
+- Capstones:
+  `tendsto_routeUPolarNormalizedCrossCapital_valuation_two`,
+  `tendsto_routeUPolarNormalizedCrossCapital_zero`,
+  `routeUHardEdgeFilteredPolarCrossCapital_eq`, and
+  `routeUExplicitFilteredPolarCrossCapital_eq_normalized`.
+- Verification: both exact leaf files pass `lake env lean`; both exact leaf `.olean`s were emitted
+  directly; the two imports are wired into `GaloisForLFunctions.RHTower`; no umbrella build was run.
+- `#print axioms` on all four capstones reports only `propext`, `Classical.choice`, and `Quot.sound`.
+- Forbidden-token audit is empty for both new modules.
 
 ## Hostile audit
 
@@ -182,8 +198,7 @@ five steps in Lean before promoting this card.
   nonvanishing.
 - The half-alias mechanism itself is a known sampling phenomenon.  The research delta is its exact
   identification inside the literal pole source together with source-matched degree cancellation.
-- Novelty remains `[PROVISIONAL]`; promotion requires Lean closure and another literature/priority
-  audit.
+- Novelty remains `[NOVELTY UNVERIFIED]`; Lean closure does not establish priority.
 
 ## No-go closure
 
@@ -209,3 +224,4 @@ five steps in Lean before promoting this card.
 
 - 2026-08-15 — created in Stage 1 after exact filter/reversal calculation falsified pole charge one
   and exposed the valuation-two survivor.
+- 2026-08-15 — dependency-closed paper proof and exact Lean theorem verified; promoted to Stage 3.

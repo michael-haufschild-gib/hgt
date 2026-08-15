@@ -333,3 +333,58 @@ What is still missing is the moving half: the `y`-derivative statements `(MPW.5)
 `(MPW.13)` and `(MPW.14)`.  Those need the moment ODE `s_y'(k) = -(k+1)s_y(k+1)` together with
 differentiability of the Gauss nodes and weights in `y`, which is an implicit-function argument on
 the orthogonal polynomial's simple roots.
+
+## Lean status (moving half)
+
+The moving half of the card — the node velocity `(MPW.8)` — is now formal and axiom-clean.  The
+setup is the card's own: an interval on which the nodes and weights are smoothly enumerated, with
+quadrature exact through degree `2n-1` and the literal moment ODE.
+
+    HTGeometry/MovingGaussNodes.lean                  (axiom-clean, wired, built)
+      momentFlowPoly, momentFunctional_momentFlowPoly the polynomial operator `g -> X (X g)'` dual
+                                                      to the moment flow
+      hasDerivAt_momentFunctional                     **(MPW.1)** the moment functional moves by
+                                                      that dual flow
+      nodePoly, nodeCofactorPoly, nodeSeparation      the monic node polynomial, its cofactors, and
+                                                      `p'(x_i) = prod_{j != i}(x_i - x_j)`
+      nodeVelocityTest,
+        eval_nodeVelocityTest,
+        eval_derivative_nodeVelocityTest              the degree-`2n-1` test polynomial that
+                                                      vanishes at every node and whose derivative
+                                                      is the indicator of one node
+      momentFunctional_eq_quadSum_add_top             **(MPW.6)** exactness extends one degree with
+                                                      the single defect `h = L(p^2)`
+      moving_master                                   differentiating exactness: the node and
+                                                      weight velocities pair with the dual flow
+      weight_mul_nodeVelocity                         `w_i x_i' = -(w_i x_i^2 + 2n h / p'(x_i)^2)`
+      nodeEnergy, hasDerivAt_hardCoordinate           **(MPW.8)** the centred reciprocal coordinate
+                                                      `y - 1/x_i` moves with velocity
+                                                      `-2n h / (x_i^2 gamma_i)`
+      hardCoordinateVelocity_neg                      in a positive chamber that velocity is
+                                                      strictly negative: every real Padé pole moves
+                                                      strictly left
+
+Together with the static half already recorded (`HTGeometry/GaussResolventError.lean`:
+`gaussSum_resolvent_eq` for **(MPW.11)** and `momentFunctional_nodeResidual_eq_zero` for
+**(MPW.12)**), the card's exact worldline mechanism is formal.  What remains is the packaged
+resolvent form of `(MPW.5)` and the residue transport `(MPW.13)`-`(MPW.14)`, both of which are
+consequences of the same master identity applied to further test polynomials, and the
+divergence no-go `(MPW.18)`.
+
+### Total residue growth
+
+    HTGeometry/MovingGaussNodes.lean (continued)      (axiom-clean, wired, built)
+      reciprocalNodeTest                              the Hermite interpolant `(1 - p²/p(0)²)/X`
+                                                      of `1/X` at the nodes
+      X_mul_reciprocalNodeTest,
+        eval_reciprocalNodeTest,
+        eval_derivative_reciprocalNodeTest            it interpolates `1/x` to first order at every
+                                                      node
+      hasDerivAt_totalResidue                         **(MPW.14)** the total reciprocal weight
+                                                      `sum w_i/x_i` grows at the exact rate
+                                                      `2n L(p²)/p(0)²`, which is positive in a
+                                                      positive chamber
+
+With `(MPW.8)` and `(MPW.14)` the worldline dynamics is formal: pole positions move strictly left
+while the total absolute residue grows.  What remains is the packaged resolvent form `(MPW.5)`,
+the individual residue transport `(MPW.13)`, and the divergence no-go `(MPW.18)`.

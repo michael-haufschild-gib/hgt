@@ -221,3 +221,36 @@ wrapper would not capture the theorem, so no Lean file is added.
 - [x] prove the initial local logarithmic-elliptic factorization for every screw null vector
 - [ ] prove `E_a^eff` injective for every aperture
 - [ ] RH
+
+## Lean status
+
+`[FORMALIZED]` — supersedes the "no Lean file is added" decision recorded above.  The multiplier,
+heat-kernel and unbounded-form layers remain cited parents, but the card's own structural steps —
+the positive infimum, the Carleman domination, the coercive inverse bound and the observability
+estimate — are reachable and are now proved.
+
+Module: `formal/GaloisForLFunctions/RHTower/CCMLogSymbolDirichlet.lean`
+(4 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
+`formal/GaloisForLFunctions/RHTower.lean`).
+
+What is proved in Lean:
+
+- `exists_pos_lower_bound_of_tendsto_atTop` — **equation (2), `γ_a > 0`**: a continuous everywhere
+  positive symbol that tends to `+∞` at infinity has a strictly positive infimum.  Proof: outside a
+  compact set the symbol is `≥ 1`; on the compact set it attains a positive minimum.
+- `log_cross_kernel_le_carleman` — **equations (14)–(15)**: with `s = x−a > 0`, `t = a−y > 0` the
+  logarithmic cross kernel `−e^{-(s+t)}/(s+t)` is dominated in absolute value by the Carleman kernel
+  `1/(s+t)`.  The exterior displacement identity `x − y = s + t` itself is
+  `CCMEvansBoundaryInfiniteRank.exterior_displacement_split`, reused.
+- `norm_le_of_coercive` — **equations (17)–(18)**: from the coercivity `γ‖u‖² ≤ ⟪f,u⟫` and
+  Cauchy–Schwarz, `‖u_f‖ ≤ γ^{-1}‖f‖`.
+- `observability_bound` — **equations (8)–(9)**: composing with a bounded cross block gives
+  `‖v_E(f)‖ ≤ ‖K‖ γ^{-1}‖f‖`, so the observability constant is finite for every interior forcing and
+  `F_a^adm = F_a`.
+
+Deliberately outside the Lean statement (cited parents, not results of this card):
+
+- the heat-semigroup representation `(13)` and the explicit kernel `(14)`;
+- the boundedness (norm `π`) of the classical Carleman operator;
+- the first representation theorem producing `C_{a,I}` and the multiplier calculus for `c_a(D)`;
+- the asymptotics `(10)`–`(12)` of the corrected aperture symbol.

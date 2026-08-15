@@ -182,3 +182,42 @@ would be wrapper work, so no Lean file is added.
 - [ ] couple it to the finite characteristic packet and the two screw anchors
 - [ ] prove the resulting relation has zero kernel for every aperture
 - [ ] RH
+
+## Lean status
+
+`[FORMALIZED]` — supersedes the "no Lean file is added" decision recorded above.  Plancherel and the
+exterior compression remain cited parents, but the card's own proof happens on the Fourier side, and
+every step there is reachable.
+
+Module: `formal/GaloisForLFunctions/RHTower/CCMExteriorInverseSymbol.lean`
+(6 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]` — two are
+axiom-free — wired into `formal/GaloisForLFunctions/RHTower.lean`).
+
+What is proved in Lean:
+
+- `symbol_quadratic_nonneg` — **equation (6a), positivity**: a nonnegative symbol gives a
+  nonnegative quadratic form `∫ m |f̂|²`.
+- `symbol_quadratic_eq_zero` — **equation (6a), injectivity**: with a *strictly* positive symbol the
+  form vanishes only when the Fourier profile vanishes almost everywhere, which is exactly the
+  card's injectivity argument.
+- `tendsto_integral_modulated_symbol` — **equations (8)–(9)**: the dominated-convergence heart of
+  the fixed-support modulated wave packets.  If the symbol is measurable, bounded, and tends to `0`
+  at infinity, then `∫ |m(η+n)|² |χ̂(η)|² dη → 0`; domination is by `‖m‖_∞² |χ̂|²` and the pointwise
+  limit is `0` because `η + n → ∞`.
+- `not_boundedBelow_of_tendsto_zero` — **equations (6), (10)**: a sequence of unit vectors whose
+  images tend to zero refutes every lower bound, hence the compression is not bounded below and its
+  range is not closed.
+- `range_incidence`, `range_incidence_unique` — **equations (12a)–(12b)**: for an injective operator
+  the exterior datum exists *uniquely* exactly when the interior forcing lies in the range, which is
+  the card's reformulation of the Evans relation as a range-incidence condition.
+
+Deliberately outside the Lean statement (cited parents, not results of this card):
+
+- the symmetric characteristic factorization `(1)` and the growth `(2)`–`(3)` of the exact symbol;
+- Plancherel and modulation covariance, which convert `(7)` into the Fourier integral `(8)`;
+- the exterior compression `(5)` and its contractivity;
+- the closed-range theorem step from "not bounded below" to "range not closed", and the
+  self-adjointness identity `(6b)`.
+
+The prime–Gamma resource wall quoted in section "Positive CCM carrier law" is the corpus theorem
+`GaloisForLFunctions.HTGeometry.not_summable_primeLogHerglotzTransportMassOrder_of_pos`.

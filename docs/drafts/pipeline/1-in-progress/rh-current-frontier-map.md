@@ -41,7 +41,7 @@ route under corpus source-isogenies.
 | L | completed Xi Green/BV source → logarithmic Gamma-six Wold coface → prime-harmonic singular graph comparison → fixed Burnol/Deninger reader → `K_n(rho)=0` → RH | Prove a distinguished non-universal arithmetic Stokes identity annihilating the specific completed-Green-weighted cofinal chain while retaining divisor/prime provenance. Singular source production and fixed physical comparison exist; universal continuous boundary annihilation is formally impossible. |
 | O | restricted-Weil operator → explicit constrained prolate source → prolate/oscillator spectral pin and two-scale classification → whole-ground control → nonnegative cofinal floor → RH | Ground separation converges unconditionally to first oscillator rung and normalized Gaussian defect vanishes. Certify remaining ground coordinate law, prove higher fixed-depth prolate ladder/mode-index theorem, then exhaust every restricted-Weil near-ground sequence and control its complement. |
 | P | primitive Euler/Burnol budget → finite reflection-odd secants plus exact fundamental-symmetry correction → completed adaptive half-density transport → capacity contradiction → RH | Construct source-faithful pre-divisor completed transport producing and controlling positive fundamental-symmetry correction from primitive cubic budget. Raw finite energy is always nonpositive and its nonnegativity at any one index is already RH-equivalent; it cannot serve as intermediate producer. |
-| Q | theta–Cassini source → source quantization or direct jet saturation → inward saturation → transverse charge zero → RH | Prove direct Cassini–Jensen/jet saturation, or construct a source-derived label-sensitive discontinuous plateau quotient. Selected continuous power carrier is retired. |
+| Q | theta–Cassini source → source-intrinsic orientation or direct jet saturation → inward saturation → transverse charge zero → RH | Prove direct Cassini–Jensen/jet saturation, or a source-intrinsic upper barycenter law for the canonical plateau reporter. Arbitrary positive-fibre plateau existence is now unconditionally constructed and cannot supply orientation; selected continuous power carrier remains retired. |
 | T | exact AFE/moment source → translated Gabriel interpolation → detector zero count → `7/10` prime supply → physical current composition → RH | Detector analytic chain and fixed-gap zero-density theorem are closed. Derive uniform prime supply in `(x,x+x^(7/10)]` and compose it with source-faithful current. |
 | U | shifted-Xi Hankel first crossing → locally uniform real-rooted hard-edge limit → parity-doubled root-jet classification or super-apex/flux contradiction → positivity → RH | Exclude or orient the admitted nonzero hyperbolic Weil-boundary state. Under exact dominated form-domain hypotheses, finite null rows and smaller-aperture nonnegativity now pass to the limit. Remaining alternatives are odd-sector admission/prime–Gamma sign in the simple-root branch, or a source-derived contradiction at degenerate first birth. |
 
@@ -269,6 +269,13 @@ coercivity fails at explicit antiscale resonance; Gamma completion does not atte
 characteristic amplitude decays only logarithmically, fixed terminal prime bands carry vanishing
 harmonic mass, and terminal odd determinant grades reinforce rather than cancel.
 
+Cross-route information geometry now identifies a quantitative capacity coordinate. For a
+balanced two-column physical packet with positive rates `a,b`, Route-E chi-square is
+`chi=((a-b)/(a+b))^2`. Route P's cubic Cauchy Pluecker defect is exactly
+`chi(3-3chi+chi^2)`, between `chi` and `3chi`. Thus projective rate dispersion and cubic Gram area
+are equivalent producers. Orbit count or pair-switch connectivity without rate dispersion can
+still coalesce quadratically and cannot force capacity.
+
 **Open core.** For fixed source-first grade-recurrent relation `R_X^gr`, prove
 `ENTROPY-SPREAD-GRADE-RECURRENT-CUBE-CAPACITY`:
 
@@ -276,6 +283,11 @@ harmonic mass, and terminal odd determinant grades reinforce rather than cancel.
 - interval Hall expansion by distinct opposite-parity integers;
 - crossing of moving zero/one-large-prime cutoff with correct signed flux;
 - total mixed-difference Gibbs cost `X^(1/2+o(1))` at `H=X^(1/2+o(1))`.
+
+The new local law sharpens producer burden: prove weighted pairwise projective rate dispersion on
+the grade-recurrent cube, uniformly in every interval, in addition to cardinality expansion. Such
+a bound transfers directly to cubic Pluecker mass with universal factor three, but does not by
+itself give unit incoming co-degree.
 
 Multi-node and slot-sequence separation preserve squarefree jet multiplicity, but do not create
 capacity. Additional scalar moments, Gaussian approximations, patch estimates, or complete-
@@ -954,6 +966,18 @@ Hellinger self-charge exactly. For `a<=1/4`, however, `2a` is below every primit
 frequency. This rate must be generated collectively by the completed pre-divisor bichamber
 current; it cannot be selected from one Euler cell after divisor formation.
 
+There is now also an exact source-side information law for the base cubic carrier. For positive
+primitive rates `a,b`, its normalized Schur/Pluecker defect is the cubic transform
+`Delta_3=chi(3-3chi+chi^2)` of balanced Route-E load chi-square
+`chi=((a-b)/(a+b))^2`, and `chi<=Delta_3<=3chi`. Twice iterating the primitive depth-square map
+gives a canonical rate-four partner and exact unit-diagonal ratio `11529/62500`. This proves
+quantitative source separation and supplies SP-E's first viable unit-diagonal local metric block.
+The source-faithful audit is negative and exact: two coefficient-preserving depth-square steps
+contract transported cubic diagonal by `1/64`, so actual pair ratio is
+`737856/66015625 < 13/98 < 1/6`. Restoring balance uniquely requires extra nonnegative amplitude
+`8` and incurs trace debt `63w/64`. Completed four-leg shorting must produce and pay this exact
+Radon--Nikodym correction inside global `<2` budget.
+
 Scalar coherent restriction is now excluded even abstractly: PSD Gram of columns `[1,-1]` has
 trace two and coherent sum zero, so no universal trace-to-squared-sum inequality exists. Genuine
 finite Loewner domination avoids this cancellation and implies required conormal trace bound, but
@@ -1025,8 +1049,17 @@ closure. Its pushforward has positive mass outside countable Xi thermal nodes, w
 all-degree witness is rigidly canonical atomic Xi measure. Continuous injective or strictly
 monotone scalar transforms are therefore impossible.
 
-**Positive survivor.** Complete moment matching requires source-side quantization: successful
-reporter needs positive-measure plateau fibres over Xi thermal atoms.
+**Closed plateau-existence result.** A measurable reporter from the literal theta law to the
+canonical self-weighted Xi thermal measure now exists unconditionally.  It has positive-measure
+fibres over every enumerated thermal atom and reproduces every positive thermal moment.  Its first
+moment excess over the completed source is exactly the nonnegative thermal orientation energy, and
+both zero excess and complete moment-witness status are equivalent to RH.  Thus arbitrary
+positive-fibre plateau existence is kinematic and cannot be the missing producer.
+
+**Positive survivor.** Route Q now needs a source-intrinsic orientation law: prove the canonical
+plateau barycenter is at most the completed theta/source barycenter.  The reverse inequality and
+its exact RH-equivalent defect are already unconditional.  Any useful quotient must therefore
+retain arithmetic labels or order beyond its pushforward law, not merely be discontinuous.
 
 Centered source-budget hierarchy has advanced one finite step: complete sixth reciprocal trace
 equals `normalizedPrimeArchMoment 2`, and Lean now proves this moment strictly positive at the
@@ -1047,16 +1080,17 @@ and exact closed interval-mass formulas for every even power weight. This replac
 quadrature at first-atom level, but no theorem yet sums certificates into missing global source
 upper bound or Cassini saturation.
 
-**Open core.** Direct Cassini–Jensen/jet saturation, or source-derived label-sensitive
-discontinuous plateau quotient. Paper-level verified low-zero height floor `T>9` and signed first-
-moment comparison remain formal certification backlog, but they do not revive retired continuous
-carrier.
+**Open core.** Direct Cassini–Jensen/jet saturation, or a source-derived label/order law proving
+the missing upper barycenter orientation for the canonical plateau transport.  Paper-level verified
+low-zero height floor `T>9` and signed first-moment comparison remain formal certification backlog,
+but they do not revive retired continuous carrier or arbitrary measure-theoretic quantization.
 
 **Principal Lean evidence.** Cassini/theta saturation modules,
 `ThetaCuspCalibratedPowerReciprocalAllDegreeNoGo.lean`, and structural absolute-moment height-gate
 modules, including `XiCenteredOrderTwentyOneSixthTraceFloor.lean` and
 `PrimeArchThetaFirstAtomWardObstructionScaleQuadrature.lean`, together with
-`CompletedPrimeGammaSecondMomentCenterPositive.lean`.
+`CompletedPrimeGammaSecondMomentCenterPositive.lean` and
+`PrimeArchThetaCanonicalPlateauQuantizerOrientationWall.lean`.
 
 ### Route T — mass-shifted critical outgoing current
 
@@ -1399,10 +1433,13 @@ formally insufficient.
 
 ### 6. Quantization is a real constraint
 
-Q proves continuous monotone source carrier cannot land on atomic Xi all-degree measure. P and U
-also expose indivisible conormal/contact charges. Successful source selection may require
-label-sensitive discontinuous plateau fibres, boundary indices, or singular graphs—not smoother
-scalar reporters.
+Q proves continuous monotone source carrier cannot land on atomic Xi all-degree measure, while an
+arbitrary measurable positive-fibre plateau carrier always can and still leaves exactly the
+RH-equivalent orientation energy.  Therefore discontinuity and atomic realization alone are not
+constraints strong enough to produce RH.  P and U also expose indivisible conormal/contact charges.
+Successful source selection must retain label/order or arithmetic incidence beyond the pushforward
+law—through source-intrinsic plateau geometry, boundary indices, or singular graphs—not merely a
+smoother or more discontinuous scalar reporter.
 
 ### 7. Formal source complexity need not constrain divisor
 
@@ -1580,11 +1617,27 @@ log-convexity forces Xi square-coordinate ratio to be at least `1/6`. No scalar 
 repair mismatch. Any surviving Pluecker carrier must reweight or rotate curvature columns in a
 nonuniform completed Gamma/co-Poisson metric before taking Gram determinant.
 
-Exact open core begins with degree-two source gate: construct source-native nonuniform
-Gamma/co-Poisson metric whose first-trace Gram data meet theta ratio. Only then construct cofinal
-`K_N` from literal all-prime Euler--Gamma/Mobius curvature sections before Xi divisor reading;
-prove trace and squared-minor limits to first Xi coefficients; extend all-degree Cauchy--Binet
-comparison; and prove
+The first source-derived unit-diagonal nonuniform metric block is exact. Route P's cubic Cauchy/Hellinger
+coherence and Route E's balanced two-column load chi-square are related by
+`Delta_3=chi(3-3chi+chi^2)`, with `chi<=Delta_3<=3chi`. Iterating Route P's canonical primitive
+depth-square map twice gives frequency ratio four, hence `chi=9/25` and unit-diagonal normalized
+Gram ratio `11529/62500 > 1/6 > 13/98`. This clears the former local degree-two floor without Xi
+coefficients or zeros only after unit normalization.
+
+That normalization cannot be silently imported into source assembly. Coefficient-faithful
+fourth-depth transport has partner diagonal `w/64`, so its exact weighted ratio is
+`737856/66015625 < 13/98 < 1/6`. Equal-diagonal restoration forces unique nonnegative amplitude
+`8` and adds exact trace `63w/64`. Thus raw canonical fourth-depth repetition is now formally
+retired. Positive survivor is an exact completion specification: a Gamma/co-Poisson/Stokes
+channel must supply squared gain `64` and offset its trace debt within primitive cubic budget.
+
+Exact open core now begins one gate earlier: construct source-derived completed correction that
+supplies amplitude `8` on fourth-depth channel and pays `63w/64` trace debt without violating
+Route P's `<2` budget. Then place corrected cubic Gamma/Hellinger blocks on literal nonnested
+all-prime Euler--Gamma/Mobius curvature sections and prove their weighted aggregate quadratic
+ratio equals theta's exact ratio. Then construct cofinal `K_N` before Xi
+divisor reading; prove trace and squared-minor limits to first Xi coefficients; extend all-degree
+Cauchy--Binet comparison; and prove
 trace-class/local-uniform determinant convergence
 `det(I+u K_N K_N^T)->XiC(sqrt(-u))/XiC(0)`. Gram squares orientation, so reflection sign must remain
 in graded state before determinant. No such source comparison or Lean RH endpoint exists; SP-E is

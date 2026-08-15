@@ -9024,3 +9024,148 @@ that extension is not an extra hypothesis — it follows from `MemLp g 2` and th
 since the block has finite measure.
 
 All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ABM. The first boundary term is a Laplace superposition
+
+```text
+RHTower/WallFirstBoundaryLaplace.lean
+```
+
+The identity
+
+```text
+int_R e^{-ixL} C(x,L)^{-1} g(L) dL = int_0^infty e^{-sB(x+i sigma)} Psi(x,s) ds,
+Psi(x,s) = int_R e^{-ixL} e^{-Ls} g(L) dL,
+```
+
+is now proved for the literal wall.  Three moves: substitute `(21)` inside the block integral (the
+floor is available for every `L` in the block because `L ≥ m` and the threshold gives
+`floor + m ≥ μ₀ > 0`); interchange the block with the Laplace ray, which is dominated by the
+*product* `‖g(L)‖·e^{-μ₀ s}` — the semigroup contributing `e^{-floor·s}` and the physical weight
+`e^{-Ls} ≤ e^{-ms}`, the two exponentials adding exactly as in ABA; and finally move the semigroup out
+of the block integral, which is legitimate because it is a bounded operator.
+
+The block profile is used as its zero extension, so the `L`-integral runs over the whole line and the
+inner object is literally `vectorAngularTransform (blockWeighted g s)`.  Joint measurability of the
+kernel comes from the evaluation pairing again, with `g∘fst` and `s ↦ e^{-sB(x)}` — the latter
+continuous because `s ↦ exp(s•A)` is differentiable.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+**What remains for `(20)`:** feeding this into `lintegral_sq_blockLaplace_le` — the slice bound is
+ABL, the floor region is ABK, and the only open side condition is the joint measurability of
+`(x,s) ↦ ‖e^{-sB(x)}Ψ(x,s)‖ₑ`, which needs a strongly measurable representative of the block profile
+so that the parametrised integral is strongly measurable in `(x,s)`.
+
+## ABN. `(20)` is closed — all four propagated tail terms of `(11)` are done
+
+```text
+RHTower/WallFirstBoundarySquareIntegrable.lean
+```
+
+```text
+||first boundary||_{L2(ray)} <= mu_0^{-1} sqrt(2 pi int ||g||^2).
+```
+
+The estimate is entirely the Laplace mechanism: each slice acts on the angular transform of the
+weighted block profile, whose frequency energy is `2π e^{-2sm}` times the physical block energy
+(ABL), while the semigroup contributes `e^{-2(μ₀−m)s}` from the floor available above the threshold
+(ABK).  The two rates **add** to `μ₀`, and Minkowski in the Laplace variable turns that into the
+factor `μ₀^{-1}`.  The constant does not see the block — which is exactly what makes `(11)` uniform
+in `m`.
+
+**The measurability side condition was real work.**  Minkowski needs genuine joint measurability of
+`(x,s) ↦ ‖e^{-sB(x)}Ψ(x,s)‖ₑ`, not merely a.e.  The semigroup half is jointly *continuous*: the
+generator depends continuously on the frequency (its scalar part is differentiable) and
+`NormedSpace.exp` is continuous on the operator algebra.  The slice half is a parametrised Bochner
+integral whose integrand is jointly strongly measurable in `((x,s),L)`, so
+`StronglyMeasurable.integral_prod_right'` applies; this is why the block profile enters through a
+strongly measurable representative, which changes none of the integrals.
+
+**Status of `(11)`:**
+
+```text
+window half              done   lintegral_sq_forcedWindowPart_le
+propagated datum         done   decay p > 1/2
+first boundary (20)      done   Laplace + Plancherel, this section
+second boundary          done   decay 1 > 1/2
+remainder                done   Hardy average
+```
+
+What is left is the assembly: the three-region composition (owned), the reflection to the negative
+ray, and the statement of Theorem 1 itself with the block-independent constant.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ABO. A constant to repair before `(11)` is assembled
+
+The window estimate `lintegral_sq_forcedWindowPart_le` (ABB) bounds the transport ratio on the window
+by its worst case `K(1+W)^p`, which makes the window contribution `W^{1+p}‖b‖₂` — more than the one
+power of `X_m` that `(11)` claims, and therefore not `e^{max(0,−m)}`.
+
+The card's `(16)` is sharper for the reason recorded in `(5)`: inside the moving-endpoint integral
+the frequency `t` lies **between `0` and `x`**, so `|t| ≤ |x|` and the transport ratio
+
+```text
+||H(x+i sigma) H(t+i sigma)^{-1}|| <= K [(1+|t|)/(1+|x|)]^p <= K
+```
+
+with no window factor at all.  Then Cauchy–Schwarz on `[0,X_m]` costs `X_m^{1/2}`, and the outer `L²`
+norm over the window costs another `X_m^{1/2}` — one power in total, which is exactly
+`e^{max(0,−m)}`.
+
+So before assembling `(11)` the window estimate must be redone with the ordering hypothesis
+`|t| ≤ |x|` in place of the uniform window bound.  The ratio lemma
+`exists_bound_stripPropagator_ratio` already has no ordering hypothesis, so the improvement is a
+sharper use of it, not a new estimate.
+
+## ABP. The window constant is repaired, and the same sharpening is needed on the ray
+
+`exists_bound_lintegral_sq_forcedWindowPart` replaces the old window estimate: the constant `M` is
+now quantified **before** the window, and equals `K₁K₂` with no window factor.  The mechanism is the
+ordering `|t| ≤ |x|` inside the moving-endpoint integral, which makes the transport ratio bounded by
+a constant; the window then contributes exactly one power of its length, once from Cauchy--Schwarz
+inside and once from the outer average.  This is the card's `(16)` verbatim.
+
+**The same sharpening is needed for the propagated boundary value at the threshold, and there it is
+not optional.**  Bounding `‖H(x)c_m‖` by the *whole-line* mass of `(1+|x|)^{-p}` gives
+
+```text
+C (1+X_m)^p X_m^{1/2} ||b||_2 = C X_m^{p+1/2} ||b||_2 = C X_m^{1+sigma} ||b||_2,
+```
+
+and with `X_m = C₀e^{max(0,−m)}` the weight becomes `e^{(1+σ)max(0,−m)}` instead of
+`e^{max(0,−m)}`.  That is fatal for Theorem 2: on the negative blocks the summand
+`e^{max(0,−m)}‖e^{σL}G‖_{L²(I_m)}` is `O(e^{-σk})` and summable, whereas with the exponent `1+σ` it
+is `O(1)` and the series diverges.  So the exponent is not cosmetic.
+
+The repair is the *ray* mass rather than the line mass: on `|x| ≥ X` one has
+
+```text
+int_{|x|>=X} (1+|x|)^{-2p} dx = 2 (1+X)^{1-2p}/(2p-1),
+```
+
+which **decays** like `X^{1/2-p}` in norm and exactly cancels the growth `X^{p+1/2}` of the
+accumulated boundary datum.  Product: one power of `X_m`, as the card states.  So
+`exists_bound_lintegral_sq_stripPropagator_apply` needs a ray refinement with the explicit
+`X`-dependence before `(11)` can be assembled with the right weight.
+
+## ABQ. The ray decay of the propagated datum
+
+```text
+RHTower/StripPropagatorRayMass.lean
+```
+
+```text
+||H(.+i sigma) c||_{L2(|x|>Y)} <= C Y^{-sigma} ||c||,
+```
+
+from the ray mass `∫_{|x|>Y}(1+|x|)^{-2p} = O(Y^{1-2p})` and the owned power-tail integral
+`integral_powerTail_Ioi`.  The constant is quantified before the radius, so it is usable in the
+one-block estimate where the radius is the block threshold.
+
+This is the missing half of ABP: the accumulated datum below the threshold grows like
+`X_m^{p+1/2}`, the propagator ray mass decays like `X_m^{1/2−p}`, and the product is a *single* power
+of `X_m` — hence the block weight `e^{max(0,−m)}` and the convergence of Theorem 2's series.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.

@@ -180,3 +180,36 @@ endpoint substitution alone would be a wrapper. No Lean file is added.
 - [ ] exact fixed-mode radial-prolate boundary profile in CCM normalization
 - [ ] arithmetic correlations of the resummed profile
 - [ ] true Weil Rayleigh-excess and parity transfer
+
+## Lean status
+
+`[FORMALIZED]` — supersedes the "No Lean file is added" decision recorded above.  The prolate
+Sturm–Liouville theory and the fixed-mode asymptotic `(5)` remain cited parents, but the card's own
+computations `(2)`, `(4)`, `(6)`, `(11)`–`(12)` are reachable and are now proved.
+
+Module: `formal/GaloisForLFunctions/RHTower/CCMProlateEndpointJet.lean`
+(5 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
+`formal/GaloisForLFunctions/RHTower.lean`).
+
+What is proved in Lean:
+
+- `prolate_endpoint_identity` — **equation (2)**: evaluating the prolate equation at `x = 1` kills
+  the `(1-x²)` coefficient and leaves the exact first-order endpoint relation
+  `2ψ'(1) = (κ − c²)ψ(1)`.
+- `hasDerivAt_scaledMode` — the derivative of the CCM-scaled mode `x ↦ N ψ(x/λ)` at the endpoint
+  `x = λ` is `N ψ'(1)/λ`.
+- `scaled_logDeriv_eq` — **equation (4)**: hence the endpoint logarithmic derivative of the scaled
+  mode is exactly `(κ − c²)/(2λ)`, independently of the normalization `N`.
+- `critical_scale_logDeriv` — **equation (6)**: in the CCM scaling `c = 2πλ²` this equals exactly
+  `−2π²λ³ + κ/(2λ)`.
+- `jet_ratio_ge` — **equations (11)–(12)**: with an eigenvalue remainder of size `O(λ)` the ratio of
+  the second endpoint term to the first at `y = λ` is at least `πλ² − C/(2π)`, so it grows
+  polynomially.  This is the quantitative failure of any fixed endpoint-jet truncation to be
+  cofinal.
+
+Deliberately outside the Lean statement (cited parents, not results of this card):
+
+- the prolate Sturm–Liouville operator and the regularity of the fixed-mode branch;
+- the fixed-mode eigenvalue asymptotic `(5)` and the deficit/endpoint-response laws `(8)`, `(14)`;
+- the integration-by-parts expansion `(10)`;
+- the two-scale radial-prolate boundary laws of the companion cards.

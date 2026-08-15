@@ -1117,3 +1117,97 @@ Dividing the defect bound by `c ∫Ψ_c²` and using `∫x²Ψ_c² ≤ (μ_c/c)�
 so the selected mode becomes the prolate Gaussian in mean square.  That is the first half of the
 eigenvector gate; what remains is to convert the mean-square shape statement into the coordinate
 limit `ℓ_0² = λ(∫Φ)²/∫Φ² → √2`.
+
+## The eigenvector half, reduced to one scalar asymptotic — and the structural gap that remains
+
+Two reductions make the remaining content explicit.
+
+**1.  The coordinate is a peak-to-mass ratio, not an integral.**  The corpus's evaluation identity
+(`ConstrainedProlateEvaluationIdentity.timeBandEigenSourceIntegral_eq_mul_pointwiseSource_zero`)
+gives `ℓ = χ·e(0)` for the unit-norm compact representative.  Writing `e(t) = κΦ(t/λ)` and using
+`∫_{-λ}^{λ}e² = 1`,
+
+```text
+ℓ² = λ (∫_{-1}^{1}Φ)² / ∫_{-1}^{1}Φ²  =  χ² Φ(0)² / (λ ∫_{-1}^{1}Φ²) ,
+```
+
+so with `χ² → 1` the eigenvector half is exactly the single scalar asymptotic
+
+```text
+Φ(0)² √(π/c) / ∫_{-1}^{1}Φ²  →  1 ,          c = 2πλ² ,
+```
+
+whose value `√2` for `ℓ₀²` is the Gaussian one: the shape `(1−x²)^{c/2}` has `Φ(0) = 1` and
+`∫Φ² = ∫(1−x²)^c ≈ √(π/c)`.  Note the shape is `(1−x²)^{c/2}`, not `e^{−cx²/2}`; the two agree to
+leading order on the concentration scale, and the former is the exact solution of the mean-square
+relation `(1−x²)Φ′ = −cxΦ` that `integral_prolateGaussianDefect_le` controls.
+
+**2.  Cauchy--Schwarz is not enough, by a full power.**  From the band equation at the centre,
+`Φ(0) ≤ ‖K_c(0,·)‖ ‖Φ‖ / χ²` with `‖K_c(0,·)‖² ≍ c/π`, giving only
+`Φ(0)²/∫Φ² ≲ c/π` against the truth `≍ √(c/π)`.  So the sharp constant needs the actual profile,
+not a norm bound: the mean-square shape estimate has to be converted into control of `Φ(0)²/∫Φ²`.
+
+**The structural gap.**  The family produced by the variational principle
+(`exists_ground_family`) consists of eigenfunctions of the *band* operator, `bandTransform c Φ =
+λ Φ`.  The card's `ℓ_j` is defined through the *finite Fourier* eigen-equation, and it is that
+equation — not the band one — which yields `∫e = χ e(0)`; the sinc kernel at the centre is
+`sin(cy)/(πy)`, not a constant, so the band equation alone gives no evaluation identity.  Closing
+the eigenvector half therefore needs the selected ground mode to be identified with a *signed*
+Fourier mode, i.e. the square root of the band eigenvalue realized on the same eigenfunction.  The
+corpus owns both spectra (`ConstrainedProlateSignedSpectrum`, `ProlateBandJointSpectrum`,
+`ProlateJointEigen`); what is missing is the statement that the variationally selected band mode is
+the signed mode of index `0`.
+
+### The identification step, and the corpus asset for it
+
+`SlepianKernelScaledFubini.bandEigenvalue_eq_of_same_even_prolate_eigen` — "a nontrivial regular
+even separation mode cannot carry two different live band eigenvalues; one separation value
+determines one band eigenline" — is exactly the injectivity needed: the separation constant pins the
+band eigenline.  Since `bandwidthSeparation_ge` gives *every* mode `μ ≥ c/(c+3)` and
+`exists_even_joint_prolate_eigen_bandwidth_separation_lt_one` gives *one* mode with `μ < 1`, that
+mode's separation constant is pinned to `1`, and by the injectivity its band eigenline is determined.
+
+What is still needed to call it the signed mode of index `0` is the *ordering*: that the smallest
+separation constant goes with the largest band eigenvalue.  The corpus has both spectra
+(`ConstrainedProlateSignedSpectrum`, `ProlateBandJointSpectrum`,
+`ProlateJointEigenExistence.exists_joint_prolate_band_eigen`,
+`SlepianKernelScaledFubini.exists_joint_even_prolate_band_eigen_of_signedMode`) and the antitonicity
+of `|χ_n|` (`ProlateSignedLeakageOrdering.abs_sgVal_antitone`), but not the cross-monotonicity.  That
+single statement — larger band eigenvalue ⟺ smaller separation constant, on the even joint spectrum —
+is the last link between the variationally selected family and the card's indexed modes.
+
+## Lean progress — the profile limit needs no construction: it is the Gaussian, explicitly
+
+The plan recorded earlier called for building the limit profile as a `C¹` limit of the family.  That
+is unnecessary at the first rung.  The limiting Hermite equation there is `v″ = (ξ² − 1)v`, whose
+even solution with `v(0) = 1` is `e^{−ξ²/2}` — an explicit function.  So the Grönwall window
+comparison can be run against it directly.
+
+`HTGeometry/LinearSecondOrderComparison.lean` (extended, wired, axiom-clean):
+
+```text
+phasePair_dist_le_pair    Grönwall comparison of two *perturbed* equations
+                          u″ = P_u u + Q_u u′  against  v″ = P_v v + Q_v v′
+```
+
+`RHTower/ProlateGaussianWindowLimit.lean` (wired, axiom-clean):
+
+```text
+gaussianProfile ξ = e^{−ξ²/2},  gaussianProfileDeriv ξ = −ξ e^{−ξ²/2}
+hasDerivAt_gaussianProfile, hasDerivAt_gaussianProfileDeriv
+    the second is exactly  v″ = hermiteRungP 0 · v ,  i.e.  v″ = (ξ² − 1)v
+prolateProfile_window_gaussian_dist_le :
+    max |u − e^{−ξ²/2}| |u′ + ξe^{−ξ²/2}|
+      ≤ ((ε_P + ε_Q)·B / L)(exp(L·K) − 1)      on [0, K],
+    ε_P = 2|μ − 1| + 2K²(K² + 1)/c ,  ε_Q = 4K/c
+tendsto_prolateProfile_gaussian :
+    μ_i → 1 and c_i → ∞  ⟹  u_i → e^{−ξ²/2}  pointwise on [0, K], with a uniform envelope
+```
+
+The hypotheses are exactly what is already proved: `μ_c → 1` is
+`exists_tendsto_bandwidthSeparation_one` / `exists_ground_family`, the normal form and the
+coefficient bounds are `ProlateRescaledCoefficients`, and the a priori phase bound `B` is
+`prolateProfile_window_phase_le`.  What has to be supplied to instantiate is the normalization
+`u(0) = 1`, `u′(0) = 0` — the first from `Φ(0) ≠ 0`
+(`SlepianKernelScaledFubini.value_zero_ne_of_even_joint_prolate_band_eigen`), the second from
+evenness.

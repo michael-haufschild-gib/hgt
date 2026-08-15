@@ -198,3 +198,37 @@ formalization of `(2)`--`(16)` would certify this bridge but would not prove the
 - [x] even RH core restated as the sharp lower-frame inequality
 - [ ] prove the lower-frame inequality `(17)`
 - [ ] RH
+
+## Lean status
+
+`[FORMALIZED]` — supersedes the "No wrapper-only Lean file is added" decision recorded above.  The
+lower-frame bound `(17)` is indeed the open analytic core and stays open; what is now certified is
+the card's own exact assembly `(2)`–`(16)`, i.e. that the identity really is *frame minus level*.
+
+Module: `formal/GaloisForLFunctions/RHTower/CCMPolarEulerFrameLevel.lean`
+(9 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
+`formal/GaloisForLFunctions/RHTower.lean`).
+
+What is proved in Lean:
+
+- `re_inv_add_mul_I`, `digamma_term_identity`, `digamma_term_nonneg` — **equations (2)–(3),
+  termwise**: `Re(1/(A+ib)) = A/(A²+b²)` and hence
+  `1/A − Re(1/(A+ib)) = b²/(A(A²+b²)) ≥ 0`.  Every digamma-increment summand is a nonnegative
+  resolvent square, which is what makes `(5)` a positive frame form.
+- `normSq_one_sub_exp`, `prime_difference_square` — **equation (7)**: `|1 − e^{iθ}|² = 2 − 2cos θ`,
+  hence `−2c cos(hξ) = c|1 − e^{i h ξ}|² − 2c`.  Every visible prime power is an explicit positive
+  translation-difference channel plus a contribution to the scalar level `μ_a`.
+- `polar_kernel_split` — **equation (10)**: `2cosh((x−y)/2) = 2cosh(x/2)cosh(y/2) −
+  2sinh(x/2)sinh(y/2)`, the exact even/odd polar splitting behind `(11)`–`(12)`.
+- `frame_minus_level_even` — **equations (14) → (15)**: on an even vector the odd polar feature
+  vanishes and the exact identity is frame minus level.
+- `frame_minus_level_odd` — **equation (16)**: on an odd vector the even polar feature drops out.
+- `lower_frame_iff` — **equation (17)**: positivity of the even form is *exactly* the lower-frame
+  inequality `‖B_a v‖² ≥ μ_a‖v‖²`.
+
+Deliberately outside the Lean statement (cited parents, not results of this card):
+
+- the digamma partial-fraction series itself and its rescaling to `(2)`;
+- Plancherel and the resolvent operators `(4)`, `(8)`, `(13)`;
+- the Paley–Wiener aperture compression and the corrected finite-aperture symbol;
+- Yoshida's even Weil criterion and the absence of real nontrivial zeta zeros in `0 < s < 1`.

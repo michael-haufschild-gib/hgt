@@ -2276,3 +2276,51 @@ closed unconditionally.  Remaining: `(28)` (the completed-time transfer, for whi
 supplies `CompletedObserverTimeTorus`, `StaticChoiProjectiveComplexityPlateau` and the
 `MaximallyProjectiveEnergy` input just proved) and `(29)`–`(33)` (finite-alphabet circuit
 counting on top of `(22)`).
+
+### Update: equations `(29)`--`(32)` of the local-Clifford card (2026-08-15)
+
+`HTGeometry/CircuitCountingCollisionBound.lean` (wired, built, axiom-clean):
+
+- **`factorial_mul_pow_le_two_pow_neg`** — at a replica order below the reciprocal collision scale
+  (`x ≤ 1/(2r)`), `r! xʳ ≤ 2^{-r}`, using `r! ≤ rʳ`.  This is the card's `(29)`--`(30)` mechanism;
+- `finrank_replicaTargetSpan_le_card` — the incidence rank is at most the number of targets, i.e.
+  `ι ≤ h_r(Z_s) ≤ M_n^{s+1}`;
+- **`measureReal_capture_le_return_add_card_mul_two_pow`** — the card's `(30)`:
+  `m_H(Q) ≤ m_H(R) + |Z| 2^{-r}`;
+- `card_mul_two_pow_le_rpow` — the card's `(31)`: `(s+1) log M ≤ (r/2) log 2` gives
+  `M^{s+1} 2^{-r} ≤ 2^{-r/2}`;
+- **`measureReal_capture_le_return_add_two_rpow`** — the card's boxed `(32)`:
+  `m_H(E_a(Z_s)) ≤ m_H(R) + 2^{-r/2}`.
+
+**Remaining on the card: `(28)` only** (plus the purely verbal `(33)`, which is `(32)` read as a
+complexity lower bound).  The corpus supplies the transfer mechanism directly:
+`FiniteSpectralRecurrenceFrequencyLaw.rationallyIndependent_closedTarget_limsup_le_volume` —
+"every closed target inherits its Haar upper bound as a completed-time upper frequency under a
+rationally independent finite phase flow".  What is needed to apply it:
+
+1. the completed target is closed (a finite union of closed fidelity super-level sets, each closed
+   by `continuous_fidelity_phaseOrbit`);
+2. a measure transfer between the phase box `torusBox d` and `UnitAddTorus d` along `torusProj`,
+   upgrading the existing integral transfer `TorusTranslateDifference.integral_torus_eq_integral_box`
+   to sets;
+3. the bridge from `MaximallyProjectiveEnergy` (proved almost surely for the ensemble in
+   `PauliEnsembleSimpleSpectrum.maximallyProjectiveEnergy_pauliEnsemble_ae`) to
+   `RationallyIndependentFrequency` of the projective gap vector, as used by
+   `FiniteSpectralHaarRecurrenceLaw.projectivePhaseProbabilityMeasure_tendsto_haar`.
+
+## `projective-horizon-all-depth-cusped-building` → stage 3
+
+The card's `2 → 3` gate was `(5)` "as a statement about homotopy types", recorded as needing a model
+structure on `SSet` that mathlib does not have.  That diagnosis was wrong on both counts.
+
+Symmetry and composability of `SSet.Homotopy` are needed only to make the homotopy *relation* an
+equivalence relation.  A deformation retract does not use the relation: it is two maps plus a
+homotopy from each identity to the corresponding composite, which is unambiguous for an arbitrary,
+non-Kan target.  That is `HTGeometry/SSetStrongHomotopyEquivalence.SSetStrongHomotopyEquiv`.
+
+And the corpus already contained the whole construction: `HTGeometry/NerveHomotopy.lean`
+(`nerveHomotopy` from a functor out of `C × [1]`, `nerveHomotopyOfLE` from `f ≤ g`,
+`SSetDeformationRetract`), and `HTGeometry/CuspedHorizonHomotopy.lean` through
+`cuspBuildingStrongHomotopyEquiv`.  All axiom-clean.
+
+Card moved to `3-formalized/new_scientific_knowledge/projective-horizon/`.

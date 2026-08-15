@@ -235,3 +235,37 @@ added.
 - [x] square Evans and Birman--Schwinger determinant lines identified
 - [ ] prove `mu_a||R_a||<1` for every aperture
 - [ ] RH
+
+## Lean status
+
+`[FORMALIZED]` — supersedes the "no faithful Lean theorem is added" note above.  The analytic
+restricted-Weil operator and its logarithmic spectral asymptotics remain cited parents, but the
+card's own operator-algebraic and comparison steps are reachable and are now proved.
+
+Module: `formal/GaloisForLFunctions/RHTower/CCMNonSchattenBirmanSchwinger.lean`
+(5 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
+`formal/GaloisForLFunctions/RHTower.lean`).
+
+What is proved in Lean:
+
+- `birmanSchwinger_factorization` — **equation (4)**: with `H = A + μ` invertible,
+  `A − λ = H(1 − (μ+λ)H^{-1})`, the exact factorization through the Birman–Schwinger pencil.
+- `birmanSchwinger_identity_at_normalization` — **equation (5)**: at `λ = −μ` the pencil is the
+  identity, which is the canonical source normalization requiring no characteristic-root basis.
+- `posDef_one_sub_smul` — **equation (11), sufficient direction**: if `μ‖R‖ < 1` then
+  `⟪(I − μR)x, x⟫ > 0` for every `x ≠ 0`.  This is the half of the equivalence that does not need
+  spectral-radius theory.
+- `inv_sqrt_le_telescope` — the exact telescoping estimate `1/√n ≤ 2(√n − √(n−1))` behind the prime
+  sum bound `∑_{2 ≤ n ≤ N} n^{-1/2} < 2√N` of `(16)`, hence behind the explicit chamber
+  `μ_a < 8a e^{a} − m(0)` of `(17)`.
+- `not_summable_of_eventually_inv_nat_le` — **equation (8), comparison core**: a sequence that
+  eventually dominates `1/n` is not summable.  Applied to the singular-value law
+  `s_n = 1/(log n + O(1))` of `(15)` — for which `s_n^p ≥ 1/n` eventually, for every finite `p` —
+  this is exactly the statement that `R_a` lies outside every Schatten class.
+
+Deliberately outside the Lean statement (cited parents, not results of this card):
+
+- the analytic restricted-Weil operator `A_a^+`, its compact resolvent, and the frame identity `(2)`;
+- the form comparison `(12)` and the logarithmic eigenvalue asymptotics `(13)`–`(15)`;
+- the min–max principle;
+- Yoshida's even criterion and the determinant-line identification `(20)`.

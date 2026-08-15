@@ -224,6 +224,40 @@ theorem exists_uniform_upper_linear :
       (le_max_right _ _)
   · exact le_trans (le_of_lt (hN n (by omega))) (le_max_left _ _)
 
+/-! ### The uniform majorant constant -/
+
+/-- A positive constant with `c (n+1) ≤ Λ_n(θ)` for every parameter. -/
+noncomputable def lowerConst : ℝ := (D.exists_uniform_lower_linear).choose
+
+theorem lowerConst_pos : 0 < D.lowerConst := (D.exists_uniform_lower_linear).choose_spec.1
+
+theorem lowerConst_mul_le (θ : ℕ → ℝ) (n : ℕ) :
+    D.lowerConst * ((n : ℝ) + 1) ≤ D.zero θ n :=
+  (D.exists_uniform_lower_linear).choose_spec.2 θ n
+
+/-- The constant in the reciprocal-square majorant of the divisor. -/
+noncomputable def majorantConst : ℝ := 1 / D.lowerConst ^ 2
+
+theorem majorantConst_pos : 0 < D.majorantConst := by
+  have h := D.lowerConst_pos
+  rw [majorantConst]
+  positivity
+
+theorem inv_sq_le_majorant (θ : ℕ → ℝ) (a : ℕ) :
+    1 / ‖((D.zero θ a : ℝ) : ℂ)‖ ^ 2 ≤ D.majorantConst / ((a : ℝ) + 1) ^ 2 := by
+  have hc := D.lowerConst_pos
+  have hzp := D.zero_pos θ a
+  have hap : (0 : ℝ) < (a : ℝ) + 1 := by positivity
+  rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos hzp]
+  have hl := D.lowerConst_mul_le θ a
+  have hsq : (D.lowerConst * ((a : ℝ) + 1)) ^ 2 ≤ (D.zero θ a) ^ 2 :=
+    pow_le_pow_left₀ (by positivity) hl 2
+  rw [div_le_div_iff₀ (by positivity) (by positivity), majorantConst]
+  have hexp : D.lowerConst ^ 2 * ((a : ℝ) + 1) ^ 2 = (D.lowerConst * ((a : ℝ) + 1)) ^ 2 := by
+    ring
+  rw [div_mul_eq_mul_div, le_div_iff₀ (by positivity : (0 : ℝ) < D.lowerConst ^ 2)]
+  nlinarith [hsq]
+
 end MovingDivisor
 
 end GaloisForLFunctions.HTGeometry

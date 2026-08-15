@@ -638,3 +638,42 @@ Only targeted leaf checks are used; no full build is run.
   giving one transposition, together with primitivity of the monodromy action.  Irreducibility
   remains needed for the card's *other* assertion — that the ramification divisor maps generically
   one-to-one to the branch divisor — but not for the monodromy group.
+
+## Corpus audit — the two Lean-statable inputs that remain for `(4)`
+
+An audit of the tree against this card's `(4)` finds the whole deduction already formal except for
+two hypotheses, both of which are ordinary Lean statements about objects the corpus already defines.
+
+Formal and unconditional (all `[propext, Classical.choice, Quot.sound]`):
+
+```text
+OccupationSubsetPrimitivity.lean
+    criticalOccupationRootAction                    root permutations on the m-subset labels
+    criticalOccupationRootAction_isPreprimitive     primitive when m ≠ n
+    criticalMonodromy_isPreprimitive_of_rootAction_le
+    criticalMonodromy_eq_top_of_rootAction_of_isSwap
+        root action ≤ monodromy  +  one transposition  ⟹  monodromy = S_D      (m ≠ n)
+OccupationSubsetJohnson.criticalMonodromy_eq_top_of_rootAction_of_adjacentSwap
+CriticalMonodromyJordan.lean                        Jordan's theorem, wrapped
+CriticalSchurInertiaAction.lean
+    criticalSchurInertiaAction_range_le_monodromy   Schur inertia ⊆ monodromy
+    exists_criticalGeometricMonodromy_isSwap_of_simple_nontrivial_inertia
+CriticalSchurCollisionInertia.exists_criticalGeometricMonodromy_isSwap_of_collisionSupport_ncard_le_two
+TranspositionTransitive.eq_top_of_meridian_isSwap_of_orbit_eq_univ
+```
+
+What is **not** yet a theorem, and is exactly what `(4)` still consumes:
+
+1. `criticalOccupationRootAction K m n` has range inside `criticalGeometricMonodromy K m n` — that
+   permuting the `L` roots of the pure critical fibre is realized by geometric monodromy.  A grep of
+   the tree finds no statement of this; the corpus has the analogous inclusion only for the Schur
+   *inertia* subgroup (`criticalSchurInertiaAction_range_le_monodromy`).
+2. `Nontrivial (criticalSchurInertiaGroup K hm hn)` together with
+   `∀ g, criticalSchurInertiaAction g = 1 ∨ (criticalSchurInertiaAction g).IsSwap` — simple
+   nontrivial inertia at the Schur collision.  This is the "one meridian is one transposition"
+   input, and `CriticalSchurCollisionInertia` already reduces it to a collision support of
+   cardinality at most two.
+
+With 1 and 2, `criticalMonodromy_eq_top_of_rootAction_of_isSwap` gives `(4)` for `m ≠ n`
+unconditionally; the balanced case `m = n` still needs the geometric no-hidden-block argument, since
+complement pairs are a genuine block system for the abstract `m`-subset action.

@@ -213,9 +213,20 @@ partition functions is therefore insufficient to manufacture a letterwise Coxete
   quadratic coefficient at most `13/98`, while theta moment log-convexity forces
   `a_2/a_1^2 >= 1/6`.  No scalar normalization can repair the gap; see
   `../3-formalized/needs-audit/prime-gamma-uniform-boolean-gram-quadratic-no-go.md`.
-- `[REFINED OPEN CORE]` Build the Gamma/co-Poisson metric on nonnested two-face curvature sections.
-  Any candidate must reduce the Gram inverse-participation ratio below `2/3` and pass the exact
-  degree-two theta comparison before an all-degree construction is attempted.
+- `[PROVED UNIT-DIAGONAL METRIC PRODUCER]` Route P's normalized cubic Cauchy/Hellinger columns convert balanced
+  Route-E load chi-square `chi` into Pluecker defect `chi(3-3chi+chi^2)`, between `chi` and
+  `3chi`.  Pairing every primitive cell with its twice-iterated depth-square partner gives
+  `chi=9/25` and normalized Gram ratio `11529/62500 > 1/6 > 13/98`, without Xi data; see
+  `../3-formalized/needs-audit/route-e-p-sp-e-cubic-hellinger-plucker-load-bridge.md`.
+- `[FALSIFIED SOURCE-FAITHFUL LIFT]` Two coefficient-faithful depth-square transports contract
+  cubic diagonal energy by exactly `1/64`. Actual rate-four pair ratio is
+  `737856/66015625 < 13/98 < 1/6`. Equal-diagonal repair uniquely requires extra nonnegative
+  amplitude `8` and adds trace `63w/64`; see
+  `../3-formalized/needs-audit/route-e-p-sp-e-cubic-source-normalization-debt.md`.
+- `[REFINED OPEN CORE]` Produce amplitude-eight correction intrinsically from completed
+  Gamma/co-Poisson/Stokes transport while paying exact `63w/64` trace debt inside Route P's `<2`
+  budget. Only after that source-faithfulness gate may corrected cubic blocks be assembled
+  cofinally and compared with theta's exact ratio.
 
 ## Primary parent results
 
@@ -244,9 +255,11 @@ positive results.
 - [x] literal support-valued source insertion curvature located
 - [x] curvature-preserving stable Pluecker/Gram finite consumer constructed
 - [x] uniform Boolean Gram metric excluded by exact rational quadratic gap
+- [x] source-native cubic Gamma/Hellinger metric block constructed
+- [x] canonical primitive fourth-depth block clears exact `1/6` quadratic floor
 - [ ] completed weights of all signed orders on two and three prime labels extracted
 - [ ] completed weights on the fiber-colliding four-label pair extracted
-- [ ] Gamma/co-Poisson metric on two-face curvature sections constructed
+- [ ] cubic Gamma/co-Poisson metric assembled on full two-face curvature family
 - [ ] source curvature sections identified with completed signed-word columns
 - [ ] cofinal Gram family constructed from all-prime Euler--Gamma/Mobius source
 - [ ] trace and squared-minor coefficient comparisons proved

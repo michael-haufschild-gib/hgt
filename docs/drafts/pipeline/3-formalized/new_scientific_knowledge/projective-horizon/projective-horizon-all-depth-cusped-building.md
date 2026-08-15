@@ -1,7 +1,7 @@
 # The all-depth projective horizon space is a cusped spherical building
 
 - **ID:** `projective-horizon-all-depth-cusped-building`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** ALL-DEPTH INFORMATION TOPOLOGY / SOLOMON--TITS PERSISTENCE
 - **Scientific status:** `[PROVED CONSEQUENCE] [NOVEL TOPOLOGICAL SYNTHESIS CANDIDATE]`
 - **Parents:** `projective-horizon-solomon-tits-topological-charge`,
@@ -154,11 +154,12 @@ positivity map or zero-location mechanism is known.
   incidence simplices and no homology (`hasDimensionLT_nerve_depthSlice`,
   `isZero_homology_nerve_depthSlice`), while the depth-one slice is the building and carries
   the whole homology of the all-depth complex (`depthZeroSliceHomologyIso`, `slice_phase_law`)
-- [ ] `(5)` as a statement about *homotopy types*: this needs a homotopy category for simplicial
-  sets, and mathlib has no model structure on `SSet` (`AlgebraicTopology/ModelCategory` and
-  `AnodyneExtensions` are an unfinished upstream project); `SSet.Homotopy` alone is not symmetric
-  for a non-fibrant target, so homotopies cannot be composed.  The homological content of `(5)`,
-  which is `(6)`, is proved
+- [x] `(5)` as a statement about *homotopy types*: `cuspBuildingStrongHomotopyEquiv`
+  (`HTGeometry/CuspedHorizonHomotopy.lean`) exhibits the all-depth complex and the building as
+  strongly simplicially homotopy equivalent — two maps together with a homotopy from each identity
+  to the corresponding composite.  No model structure and no fibrancy is used; `SSet.Homotopy`'s
+  lack of symmetry is irrelevant because a deformation retract is witnessed directly, not through a
+  homotopy class
 - [ ] independent specialist audit
 
 ## Log
@@ -1016,42 +1017,66 @@ modules against the rest of the tree found no other clash.
 
   Audit after removal: `lake build GaloisForLFunctions.HTGeometry` green, 15150 jobs.
 
-## Correction — gate `(5)` does not need a model structure on `SSet`
+## Correction — gate `(5)` is already closed, and the model structure was never needed
 
-The open gate says `(5)` "needs a homotopy category for simplicial sets, and mathlib has no model
-structure on `SSet` (`AlgebraicTopology/ModelCategory` and `AnodyneExtensions` are an unfinished
-upstream project); `SSet.Homotopy` alone is not symmetric for a non-fibrant target, so homotopies
-cannot be composed."
+The open gate said `(5)` "needs a homotopy category for simplicial sets, and mathlib has no model
+structure on `SSet` … `SSet.Homotopy` alone is not symmetric for a non-fibrant target, so homotopies
+cannot be composed."  Two things are wrong with that.
 
-Symmetry and composability are only needed if one wants the *homotopy relation* to be an equivalence
-relation.  `(5)` does not need that.  What `(5)` asserts is that the all-depth complex deformation
-retracts to the building, and a deformation retract is exhibited by **explicit maps and explicit
-homotopies**, not by a homotopy class:
+**First, symmetry and composability are not needed.**  They matter only if one wants the homotopy
+*relation* to be an equivalence relation.  `(5)` asserts a deformation retract, which is witnessed by
+explicit maps together with explicit homotopies, each running from an identity to a composite.  That
+is a completely unambiguous notion for an arbitrary, non-Kan target.
 
-```text
-i : Δ_Tits(V*) → 𝒫      the inclusion of the depth-one part
-r : 𝒫 → Δ_Tits(V*)      the retraction sending a jet-tail cusp to its elementary horizon vertex
-r ∘ i = id ,            i ∘ r ≤ id_𝒫   (pointwise in the poset order)
-```
-
-For **posets** the second condition already produces the homotopy, with no model structure and no
-fibrancy: if `f, g : P →o Q` satisfy `f ≤ g` pointwise then the assignment
+**Second, the corpus already contains the whole construction, and it is axiom-clean.**
 
 ```text
-(x : Fin(n+1) ⥤ P, α : Fin(n+1) →mono Fin 2)  ↦  (i ↦ if α i = 0 then f (x i) else g (x i))
+HTGeometry/NerveHomotopy.lean
+    catInterval, cylinderIncl, prodPreorderFunctor
+    nerveHomotopy         a functor out of `C × [1]` is a simplicial homotopy of nerves
+    leCylinder, nerveHomotopyOfLE :  f ≤ g  (monotone)  ⟹  SSet.Homotopy (N f) (N g)
+    SSetDeformationRetract, orderIsoNerveIso, …
+
+HTGeometry/SSetStrongHomotopyEquivalence.lean
+    SSetStrongHomotopyEquiv    two maps and a homotopy from each identity to the composite
+    SSetDeformationRetract.toStrongHomotopyEquiv
+
+HTGeometry/CuspedHorizonHomotopy.lean
+    cuspCylinderFunctor, cuspCylinder_zero, cuspCylinder_one
+    cuspNerveHomotopy, cuspDeformationRetract
+    depthOneNerveIso, cuspBuildingDeformationRetract
+    cuspBuildingStrongHomotopyEquiv :
+        the all-depth cusped horizon complex and the spherical building have the same
+        simplicial homotopy type
 ```
 
-is a well-defined monotone family — the four cases `α i, α j ∈ {0,1}` with `i ≤ j` are exactly
-`f x_i ≤ f x_j`, `f x_i ≤ f x_j ≤ g x_j`, `g x_i ≤ g x_j`, and the impossible `1 ≤ 0` — and it is
-natural in `⦋n⦌`, so it is a morphism `N(P) ⊗ Δ[1] ⟶ N(Q)` restricting to `N(f)` at `0` and `N(g)`
-at `1`.  That is precisely mathlib's `SSet.Homotopy (nerveMap f) (nerveMap g)`, which exists
-(`Mathlib/AlgebraicTopology/SimplicialSet/Homotopy.lean`) and requires nothing of the target.
+Axiom audit of `nerveHomotopyOfLE`, `cuspNerveHomotopy`, `cuspDeformationRetract`,
+`cuspBuildingDeformationRetract` and `cuspBuildingStrongHomotopyEquiv`:
+`[propext, Classical.choice, Quot.sound]`.
 
-Composability is then unnecessary: `N(r) ∘ N(i) = N(id) = id` on the nose, and `N(i) ∘ N(r)` is
-homotopic to `id` by the single explicit homotopy above.  Both directions of the equivalence are
-therefore witnessed, which is what "deformation retracts" means.
+`cuspBuildingStrongHomotopyEquiv` **is** `(5)` as a statement about homotopy types — stronger than,
+and logically prior to, the homology isomorphism `(6)` that the gate list already ticks.  The gate is
+therefore satisfied and the card's `2 → 3` obstruction is removed.
 
-Mathlib has `nerve`, `nerveMap`, `nerveFunctor`, `nerveAdjunction` and `SSet.Homotopy`, but **not**
-the statement that a natural transformation induces a simplicial homotopy of nerves.  That is the
-one piece of missing infrastructure this gate actually needs, it is elementary for preorders, and it
-is what should be built here.
+## Stage 3 — formalization complete
+
+Every mathematical assertion of this card is an unconditional Lean theorem, all auditing to
+`[propext, Classical.choice, Quot.sound]`:
+
+| card statement | Lean |
+|---|---|
+| `(3)` the classification of all-depth intersections | `CuspedHorizonPoset.lean` (the poset itself) |
+| `(4)` the deformation retraction | `cuspDeformationRetract`, `cuspBuildingDeformationRetract` |
+| `(5)` the homotopy type | `cuspBuildingStrongHomotopyEquiv` |
+| `(6)` the homology | `cuspBuildingHomologyIso`, `isZero_cuspHomology_of_ne`, `isFreeOver_cuspHomology`, `not_isZero_cuspHomology_top`, `epi_cuspApartmentClasses` |
+| slice-versus-global phase law | `hasDimensionLT_nerve_depthSlice`, `isZero_homology_nerve_depthSlice`, `depthZeroSliceHomologyIso`, `slice_phase_law` |
+| the current-algebra mechanism | `arOneSidedCurrentLie_eq_arPolynomialCurrentLie` |
+
+The gate that held the card at stage 2 — `(5)` as a statement about homotopy types — was recorded as
+blocked on a model structure for `SSet`.  It was not: a deformation retract is witnessed by explicit
+maps together with a homotopy from each identity to the corresponding composite, which is exactly
+`SSetStrongHomotopyEquiv`, and the corpus already carried the construction end to end.  Nothing in it
+uses fibrancy, anodyne extensions, or composability of homotopies.
+
+The remaining unticked item, an independent specialist audit, is a review gate rather than a
+formalization gate.

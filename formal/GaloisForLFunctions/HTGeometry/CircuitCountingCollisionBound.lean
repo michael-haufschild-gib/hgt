@@ -46,7 +46,7 @@ theorem factorial_mul_pow_le_two_pow_neg (r : ℕ) (hr : 1 ≤ r) {x : ℝ} (hx0
     _ = (1 / 2 : ℝ) ^ r := hprod
 
 /-- **A dictionary whose logarithm is below half the replica order leaves `2^{-r/2}`.** -/
-theorem card_mul_two_pow_le_rpow {N M : ℝ} (hN : 0 ≤ N) {s r : ℕ} (hM : 1 < M)
+theorem card_mul_two_pow_le_rpow {N M : ℝ} (_hN : 0 ≤ N) {s r : ℕ} (hM : 1 < M)
     (hNle : N ≤ M ^ (s + 1))
     (hs : ((s : ℝ) + 1) * Real.log M ≤ ((r : ℝ) / 2) * Real.log 2) :
     N * (1 / 2 : ℝ) ^ r ≤ (2 : ℝ) ^ (-((r : ℝ) / 2)) := by

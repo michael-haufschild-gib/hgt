@@ -195,3 +195,38 @@ only the algebraic rearrangement would be wrapper work, so no new Lean file is a
 - [ ] derive the colligation from the genuine Gauss-paired/Sonin source operator
 - [ ] prove cofinal passivity `(19)`
 - [ ] RH
+
+## Lean status
+
+`[FORMALIZED]` — supersedes the "no new Lean file is added" decision recorded above.  The infinite
+Laplace identity `(7)` remains a cited parent, but the card's own channel constructions and the
+passivity rewriting are reachable and are now proved.
+
+Module: `formal/GaloisForLFunctions/RHTower/CCMDiagonalFockColligation.lean`
+(7 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
+`formal/GaloisForLFunctions/RHTower.lean`).
+
+What is proved in Lean:
+
+- `cauchy_channel_eq` — **equation (9)**: `C(x,y) = ∫_0^∞ e^{-xh}e^{-yh}dh = 1/(x+y)`.
+- `polar_channel_eq` — **equation (11)**: `B(x,y) = ∫_0^∞ e^{-(x+1/2)h}e^{-(y+1/2)h}dh = 1/(s+1)`.
+  Both reuse the corpus ray integral `RHTower.integral_exp_ray`
+  (`CCMHalfUnitCauchySeam.lean`, card `ccm-half-unit-cauchy-seam`), not rebuilt here.
+- `prime_feature_mul` — **equation (10), termwise**: the von Mangoldt feature multiplies to
+  `(Λ(n)/n) n^{-(x+y)}`, exhibiting `E` as an explicit positive Gram.
+- `colligation_rearrange`, `colligation_rearrange'` — **equations (8) → (6)**: the exact incidence
+  rearrangement `M = C + B − E ⟺ C = E − B + M`.
+- `quadratic_colligation` — **equation (18)**: the kernel colligation passes to every finite
+  quadratic form, so the four channel energies satisfy the same signed identity.
+- `passivity_iff` — **equation (19)**: under that identity, the contraction criterion
+  `‖v‖²_A − ‖T₀v‖² ≥ 0` is exactly the four-channel passivity inequality
+  `‖T_E v‖² + [T_R v, T_R v]_R ≤ ‖v‖²_A + ‖T_B v‖²`.
+
+Deliberately outside the Lean statement (cited parents, not results of this card):
+
+- the Laplace–Stieltjes identity `(7)` of `ccm-polar-prime-critical-mellin-defect-law`;
+- the Krein Gram representation `(12)` of the signed defect channel;
+- the safe completed RKHS `H_A` and the diagonal Fock theorem identifying the difference kernel
+  with `J_RH`;
+- the reflected Paley–Wiener identification of `T₀` with the residue bundle of the closed source
+  graph.

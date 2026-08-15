@@ -1082,3 +1082,35 @@ and `Quot.sound`.  No full or module build was run.
   Its reverse half is already formalized — `genericRecip_mem_genericRawAlgebra` in
   `GenericRecipMemAdjoin.lean`, the statement that the inverse recursion never leaves the algebra
   it starts in — and the forward half rests on `(4)`, which is the parent card's degree bound.
+
+## Corpus audit — `(4)` is one assembly away, given full monodromy
+
+The card's step 3 was recorded as open through its forward inclusion, which rests on `(4)`.  An
+audit shows `(4)` itself is now a short assembly of theorems that are already in the tree:
+
+```text
+CriticalObservationField.lean
+    criticalObservationField, criticalSourceField, criticalObservationField_le_criticalSourceField
+    postcriticalRawFieldElement, postcriticalReciprocalFieldElement
+    postcriticalRawFieldElement_transcendental_criticalSourceField
+    postcriticalRawFieldElement_transcendental_criticalObservationField
+    postcriticalReciprocalFieldElement_notMem_criticalObservation_sup_raw
+        y_L ∉ O ⊔ K(x_L)      — the escape, unconditional for m, n ≥ 1
+CriticalGeometricDegreeExact.finrank_criticalSourceField_eq_criticalHorizonMultiplicity
+        [J : O] = C(L, m)     — the degree, unconditional
+CriticalGeometricFieldPrimitivity.eq_bot_or_eq_criticalSourceNormalClosureFieldRange_of_full_monodromy
+        no proper intermediate field between O and J, given full monodromy
+FreeParameterBaseChange.lean            adjoining the free parameter x_L keeps the Galois group
+GenericRecipMemAdjoin.genericRecip_mem_genericRawAlgebra      y_L ∈ J_L
+```
+
+The assembly is: base-change along the transcendental `x_L`, so `[J(x_L) : O(x_L)] = C(L,m)` with the
+same Galois group; `y_L ∈ J(x_L)` by the reciprocal recursion and `y_L ∉ O(x_L)` by the escape; field
+primitivity leaves no field strictly between `O(x_L)` and `J(x_L)`; hence
+`O(x_L)(y_L) = J(x_L) = J_L`, which is `(4)`.  Step 3's forward inclusion is then generator
+bookkeeping: `O_{m,n;N} ⊇ O_{m,n;L-1}(x_L, y_L) = J_L` and `x_{L+1}, …, x_N ∈ O_{m,n;N}`, so
+`J_N ⊆ O_{m,n;N}`; the reverse inclusion is `genericRecip_mem_genericRawAlgebra`.
+
+So this card's only genuinely open input is **full monodromy**, i.e. the two hypotheses recorded on
+`projective-horizon-full-symmetric-monodromy`: that the root-permutation action lies inside the
+geometric monodromy, and that the Schur inertia is nontrivial and simple.  Both cards close together.

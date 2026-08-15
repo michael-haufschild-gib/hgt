@@ -182,3 +182,36 @@ translation calculus. It is a route-useful bridge, not new scientific knowledge.
 - [x] infinite-dimensional frame-level saturation proved
 - [ ] prove the one-sided subleading lower-frame remainder
 - [ ] RH
+
+## Lean status
+
+`[FORMALIZED]` — module
+`formal/GaloisForLFunctions/RHTower/CCMBoundaryLaplaceSaturation.lean`
+(5 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
+`formal/GaloisForLFunctions/RHTower.lean`).
+
+What is proved in Lean:
+
+- `polar_two_edge_expansion` — **equation (5), exact form**:
+  `2(e^{a/2}F_- + e^{-a/2}F_+)² = 2e^{a}F_-² + 4F_-F_+ + 2e^{-a}F_+²`, the exact two-edge polar
+  expansion.
+- `polar_two_edge_remainder_le` — **equation (5), remainder**: for `a ≥ 0` the remainder after the
+  leading term `2e^{a}F_-²` is bounded by `4|F_-||F_+| + 2F_+²`, i.e. `O_f(1)` uniformly in the
+  aperture.
+- `expWeight_autocorrelation_eq` — the exponential character factors across the autocorrelation:
+  `e^{-r/2}∫f(t)f(r-t)dt = ∫ (e^{-t/2}f(t))(e^{-(r-t)/2}f(r-t)) dt`.
+- `integral_expWeight_autocorrelation` — **equation (9), last equality**: hence
+  `∫ e^{-r/2}(f ⋆ f)(r) dr = (∫ e^{-s/2}f(s)ds)² = |F_-|²`, the exact Fubini step, obtained from
+  `MeasureTheory.integral_convolution`.
+- `tendsto_frame_saturation` — **equations (13)–(16)**: if the restricted Weil value is `o(e^a)` and
+  the scalar level satisfies `μ_a/e^a → 4`, then with `‖v_a‖² = 2‖f‖²` and
+  `‖B_a v_a‖² = QW_a + μ_a‖v_a‖²` the relative Rayleigh ratio
+  `‖B_a v_a‖²/(μ_a‖v_a‖²)` tends to `1`.  This is the frame-saturation conclusion for every fixed
+  profile.
+
+Deliberately outside the Lean statement (cited parents, not results of this card):
+
+- the prime number theorem and the weak convergence `(8)` of the rescaled prime boundary measure;
+- the two-edge correlation identity `(7)` and the norm identity `(3)`;
+- the Gamma bound `(12)` (Riemann–Lebesgue for the digamma multiplier);
+- the exact analysis map `B_a`, the scalar level `μ_a` and the asymptotic `(14)`.
