@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.GammaJumpMultiplierBounds
+import GaloisForLFunctions.RHTower.GammaJumpFourierMultiplier
 import Mathlib.Analysis.Calculus.MeanValue
 
 /-!
@@ -73,5 +74,53 @@ theorem exists_bound_gammaJump_nearDiagonal :
         refine mul_le_mul hcomp hMVT (abs_nonneg _) (by positivity)
     _ = 3 * C₀ * |ξ - η| := by
         field_simp
+
+/-! ## The far region -/
+
+/-- Off the near-diagonal region the frequency separation controls both frequencies. -/
+theorem one_add_abs_le_of_far {ξ η : ℝ} (hfar : (1 + |η|) / 2 < |ξ - η|) :
+    1 + |η| ≤ 2 * |ξ - η| ∧ 1 + |ξ| ≤ 3 * |ξ - η| := by
+  have h1 : 1 + |η| ≤ 2 * |ξ - η| := by linarith
+  refine ⟨h1, ?_⟩
+  have h2 : |ξ| ≤ |η| + |ξ - η| := by
+    have := abs_sub_abs_le_abs_sub ξ η
+    linarith
+  linarith
+
+/-- **The far-region bound.**  Where the frequencies are separated, the weighted symbol difference
+is at most a fixed multiple of the square of the separation — a factor any Schwartz cutoff transform
+absorbs. -/
+theorem abs_gammaJump_farRegion_le {ξ η : ℝ} (hfar : (1 + |η|) / 2 < |ξ - η|) :
+    (1 + |ξ|) * |gammaJumpMultiplier ξ - gammaJumpMultiplier η|
+      ≤ 15 * gammaJumpConst * |ξ - η| ^ 2 := by
+  obtain ⟨hη, hξ⟩ := one_add_abs_le_of_far hfar
+  have hS : (0 : ℝ) ≤ gammaJumpConst := gammaJumpConst_nonneg
+  have hbξ : |gammaJumpMultiplier ξ| ≤ gammaJumpConst * (1 + |ξ|) := abs_gammaJumpMultiplier_le ξ
+  have hbη : |gammaJumpMultiplier η| ≤ gammaJumpConst * (1 + |η|) := abs_gammaJumpMultiplier_le η
+  have hdiff : |gammaJumpMultiplier ξ - gammaJumpMultiplier η| ≤ 5 * gammaJumpConst * |ξ - η| := by
+    have htri : |gammaJumpMultiplier ξ - gammaJumpMultiplier η|
+        ≤ |gammaJumpMultiplier ξ| + |gammaJumpMultiplier η| := abs_sub _ _
+    nlinarith [htri, hbξ, hbη, hS, hη, hξ]
+  have hsep : (0 : ℝ) ≤ |ξ - η| := abs_nonneg _
+  calc (1 + |ξ|) * |gammaJumpMultiplier ξ - gammaJumpMultiplier η|
+      ≤ (3 * |ξ - η|) * (5 * gammaJumpConst * |ξ - η|) := by
+        refine mul_le_mul hξ hdiff (abs_nonneg _) (by positivity)
+    _ = 15 * gammaJumpConst * |ξ - η| ^ 2 := by ring
+
+/-- **The global weighted-difference bound.**  Combining the two regions, the weighted symbol
+difference is controlled by the separation alone, at first and second order. -/
+theorem exists_bound_gammaJump_global :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ ξ η : ℝ,
+      (1 + |ξ|) * |gammaJumpMultiplier ξ - gammaJumpMultiplier η|
+        ≤ C * (|ξ - η| + |ξ - η| ^ 2) := by
+  obtain ⟨C₁, hC₁, hnear⟩ := exists_bound_gammaJump_nearDiagonal
+  refine ⟨C₁ + 15 * gammaJumpConst, by linarith [gammaJumpConst_nonneg], fun ξ η => ?_⟩
+  have hS : (0 : ℝ) ≤ gammaJumpConst := gammaJumpConst_nonneg
+  have hsep : (0 : ℝ) ≤ |ξ - η| := abs_nonneg _
+  rcases le_or_gt |ξ - η| ((1 + |η|) / 2) with h | h
+  · have hb := hnear ξ η h
+    nlinarith [hb, hC₁, hS, hsep, sq_nonneg (|ξ - η|)]
+  · have hb := abs_gammaJump_farRegion_le h
+    nlinarith [hb, hC₁, hS, hsep, sq_nonneg (|ξ - η|)]
 
 end GaloisForLFunctions.RHTower

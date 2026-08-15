@@ -280,3 +280,48 @@ re-proposing them as frontier research.
 - [x] cell positivity/gluing and finite virial algebra formalized
 - [ ] prove source-specific Markov--virial lower bound `(23)`
 - [ ] RH
+
+## Lean status — the exact zeta transform, 2026-08-15
+
+`formal/GaloisForLFunctions/RHTower/CCMUnitRieszMarkovTransform.lean` (wired, axiom-clean, 26
+declarations) proves the analytic heart of sections 2 and 4.
+
+- `unitRieszAtom` — the `r`-th arithmetic atom `1_{log r <= v}(exp(-v) - sqrt r exp(-3v/2))`, with
+  `unitRieszAtom_nonneg` (each atom is nonnegative on its own support, vanishing exactly at the
+  switch-on point) and `unitRieszAtom_le` (each atom is bounded by `exp(-v)`).
+- **`unitRieszLogProfile_eq_tsum`** — the corpus's cell-assembled profile *is* the atom series:
+  `w(v) = 3 sum_r unitRieszAtom r v` for `v >= 0`.
+- `integral_Ioi_translate`, `integral_Ioi_cexp_neg_mul_shift`, `integral_Ioi_rexp_neg_mul_shift`,
+  `setIntegral_Ioi_of_vanishing` — the elementary half-line toolbox.
+- **`integral_unitRieszAtomIntegrand`** — each atom's Laplace integral in closed form:
+  `exp(-(z+1) log r) ((z+1)^{-1} - (z+3/2)^{-1})`; the `sqrt r` is absorbed exactly by
+  `sqrt r = exp(log r / 2)`, so no cpow algebra is needed.
+- **`summable_integral_norm_unitRieszAtomIntegrand`** — absolute convergence: the `r`-th norm
+  integral is at most `r^{-(Re z + 1)}/(Re z + 1)`, summable for `Re z > 0`.
+- **`unitRieszLaplace_eq`** — equation `(6)`:
+
+  ```text
+  Lw(z) = (3/2) zeta(1+z) / ((z+1)(z+3/2)),      Re z > 0,
+  ```
+
+  by term-by-term integration (`integral_tsum_of_summable_integral_norm`) and the Dirichlet series
+  of zeta.  No asymptotics, no unproved interchange.
+- `unitRieszMarkovTransform`, **`unitRieszMarkovTransform_eq_mul`** — equation `(7)`:
+  `D(z) = z Lw(z) = 3 z zeta(1+z)/(2(z+1)(z+3/2))`.
+- **`tendsto_unitRieszMarkovTransform_zero`** — `D(0) = 1`: the zeta pole at `1` supplies exactly
+  the unit mass, so the aperture kernel is a probability transform.
+- `unitRieszCausalTransform`, **`hasDerivAt_unitRieszCausalTransform`** — equation `(14)` and its
+  derivative, off the zeta pole and off the zeta zeros.
+- **`unitRieszCoefficientTransform_eq`** — equations `(15)`-`(16)`: the complete simplification
+
+  ```text
+  D(z)[H(z)/z + H'(z)] = 3/(2(z+1)(z+3/2)) [zeta(1+z)/(1+z)^2 + zeta'(1+z)/zeta(1+z)].
+  ```
+
+- **`tendsto_unitRieszCoefficientResidue`** — equation `(17)`: at a zeta zero `rho` of
+  logarithmic-derivative residue `m`, the coefficient transform has residue
+  `3m/(2 rho (rho + 1/2))`.  The probability multiplier's own zero cancels one order of the double
+  reciprocal-zeta pole but cannot censor the logarithmic-derivative pole.
+
+Still to formalize for this card: the total-mass statement `(5)` in its direct form
+(`w(v) -> 1`), the causal-convolution factorization `(11)`, and the Landau connector `(18)`-`(22)`.

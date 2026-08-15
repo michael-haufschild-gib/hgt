@@ -67,7 +67,7 @@ theorem tendsto_weighted_projective_of_rowBound
     -- diagonal dominated convergence
     {M : ℕ → ℝ} (hM : Summable (fun k => 2 * Ω k * M k))
     (hdiag_le : ∀ x k, |E x k k| ≤ M k)
-    (hdiag_ev : ∀ k, ∀ᶠ x in L, E x k k = 0) :
+    (hdiag_tendsto : ∀ k, Tendsto (fun x => E x k k) L (𝓝 0)) :
     Tendsto (fun x => ∑' p : ℕ × ℕ, (Ω p.1 + Ω p.2) * |E x p.1 p.2|) L (𝓝 0) := by
   -- diagonal part tends to zero
   have hdef0 : ∀ x k, 0 ≤ 2 * Ω k * |E x k k| := fun x k =>
@@ -76,10 +76,17 @@ theorem tendsto_weighted_projective_of_rowBound
     have h2Ω : 0 ≤ 2 * Ω k := by nlinarith [hΩ k]
     exact mul_le_mul_of_nonneg_left (hdiag_le x k) h2Ω
   have hdiag_tend : Tendsto (fun x => ∑' k : ℕ, 2 * Ω k * |E x k k|) L (𝓝 0) := by
-    refine tendsto_tsum_of_eventually_pointwise_zero hdef0 hdefle hM ?_
-    intro k
-    filter_upwards [hdiag_ev k] with x hx
-    rw [hx, abs_zero, mul_zero]
+    have h := tendsto_tsum_of_dominated_convergence (𝓕 := L)
+      (f := fun x k => 2 * Ω k * |E x k k|) (g := fun _ : ℕ => (0 : ℝ))
+      (bound := fun k => 2 * Ω k * M k) hM
+      (fun k => by
+        have habs : Tendsto (fun x => |E x k k|) L (𝓝 0) := by
+          simpa using (hdiag_tendsto k).abs
+        simpa using habs.const_mul (2 * Ω k))
+      (Eventually.of_forall fun x k => by
+        rw [Real.norm_eq_abs, abs_of_nonneg (hdef0 x k)]
+        exact hdefle x k)
+    simpa using h
   -- off-diagonal part tends to zero
   have hoff_tend := tendsto_tsum_offDiag_of_inv_bandwidth hc hoff_sum
   have hcpos : ∀ᶠ x in L, 0 ≤ (c x)⁻¹ := by
@@ -143,12 +150,12 @@ theorem arithmeticDilation_projective_tendsto_discharged
     (hoff : ∀ x, ∀ j k, j ≠ k → (Ω j + Ω k) * |E x j k| ≤ (c x)⁻¹ * offBound (j, k))
     {M : ℕ → ℝ} (hM : Summable (fun k => 2 * Ω k * M k))
     (hdiag_le : ∀ x k, |E x k k| ≤ M k)
-    (hdiag_ev : ∀ k, ∀ᶠ x in L, E x k k = 0)
+    (hdiag_tendsto : ∀ k, Tendsto (fun x => E x k k) L (𝓝 0))
     (hEsum : ∀ x, Summable fun p : ℕ × ℕ => (Ω p.1 + Ω p.2) * |E x p.1 p.2|) :
     Tendsto (fun x => ∑' p : ℕ × ℕ,
         |(a x p.1 + a x p.2) * (E x p.1 p.2 + diagMatrix w p)
           - diagMatrix (fun k => 2 * Lw k * w k) p|) L (𝓝 0) := by
-  have hE := tendsto_weighted_projective_of_rowBound hc hΩ0 hoff0 hoff_sum hoff hM hdiag_le hdiag_ev
+  have hE := tendsto_weighted_projective_of_rowBound hc hΩ0 hoff0 hoff_sum hoff hM hdiag_le hdiag_tendsto
   exact arithmeticDilation_projective_tendsto hw hΩ ha0 haL haev hLw hEsum hE
 
 /-- **Full discharge of the arithmetic trace-norm limit**: combining the raw off-diagonal
@@ -169,7 +176,7 @@ theorem arithmeticDilation_traceClass_traceNorm_limit_discharged
     (hoff : ∀ x, ∀ j k, j ≠ k → (Ω j + Ω k) * |E x j k| ≤ (c x)⁻¹ * offBound (j, k))
     {M : ℕ → ℝ} (hM : Summable (fun k => 2 * Ω k * M k))
     (hdiag_le : ∀ x k, |E x k k| ≤ M k)
-    (hdiag_ev : ∀ k, ∀ᶠ x in L, E x k k = 0)
+    (hdiag_tendsto : ∀ k, Tendsto (fun x => E x k k) L (𝓝 0))
     (hEsum : ∀ x, Summable fun p : ℕ × ℕ => (Ω p.1 + Ω p.2) * |E x p.1 p.2|) :
     (∀ x, MemSchattenClass 1
         (absoluteMatrixOperator (arithmeticDilationComplexMatrix a E w x))) ∧
@@ -178,7 +185,7 @@ theorem arithmeticDilation_traceClass_traceNorm_limit_discharged
       Tendsto (fun x => traceNorm ArithmeticDilationHilbert
         (absoluteMatrixOperator (arithmeticDilationComplexMatrix a E w x) -
           absoluteMatrixOperator (arithmeticDilationLimitComplexMatrix Lw w))) L (nhds 0) := by
-  have hE := tendsto_weighted_projective_of_rowBound hc hΩ0 hoff0 hoff_sum hoff hM hdiag_le hdiag_ev
+  have hE := tendsto_weighted_projective_of_rowBound hc hΩ0 hoff0 hoff_sum hoff hM hdiag_le hdiag_tendsto
   exact arithmeticDilation_traceClass_traceNorm_limit hw hΩ ha0 haL haev hLw hEsum hE
 
 end RHTower

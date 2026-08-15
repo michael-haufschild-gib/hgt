@@ -462,3 +462,9 @@ and expose Gelfond--Schneider as the two-logarithm corollary/compatibility theor
   argument by a contour Hermite interpolant, obtaining a uniform zero bound with harmless logarithmic
   loss.  Exact row/column, extrapolation, and terminal exponents close for every `n≥1`, including
   `n=1`; `n=0` is immediate.  Promoted to Stage 2 for Lean formalization.
+- 2026-08-15 — formalized `BakerGeneralProof.ExponentialMonomial`: the exponential subalgebra is
+  invariant under every solved component derivation, each bounded exponent monomial is a simultaneous
+  eigenvector, and each component eigenvalue is an algebraic integer under the existing common
+  component scale.  The module is wired into `RHTower.lean`; its source and targeted OLean audit
+  close, and `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.  Next
+  core: package the simultaneous-eigenvalue sample rows as an integral Siegel matrix.

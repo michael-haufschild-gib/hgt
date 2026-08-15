@@ -164,7 +164,7 @@ For the RH route this comparison is downstream of kernel exhaustion, not a subst
 
 ## 2026-06-24 N1 anatomy does not order scalar thresholds
 
-`n1-signed-bulk-exterior-monotonicity-fails.md` gives an exact signed-moment counterexample: an `N_1` bulk can reverse the expected exterior repair-threshold order. Thus knowing that an unrepaired form has one negative square does not make scalar comparisons faithful across boundary points.
+`../../3-formalized/not_new_scientific_knowledge/n1-signed-bulk-exterior-monotonicity-fails.md` gives an exact signed-moment counterexample: an `N_1` bulk can reverse the expected exterior repair-threshold order. Thus knowing that an unrepaired form has one negative square does not make scalar comparisons faithful across boundary points.
 
 The scalar route still needs the source proof of kernel exhaustion and the Schur sign for the actual boundary channel.
 
@@ -181,3 +181,19 @@ The card remains Stage 2 because its full complex-Hermitian scalar-shadow
 equivalence needs the explicit `ker beta ⊕ Cq` transport and a positive-block
 Schur theorem with the card's sign convention; the existing rank-one selector
 uses a different scalar and cannot be substituted directly.
+
+## 2026-08-15 Lean split-coordinate Schur closure
+
+`HTGeometry/RankOneScalarShadow.lean` now closes the complex-Hermitian part
+after a split coordinate system has been supplied. Its
+`rankOneScalarShadowBlock_posSemidef_iff` and
+`rankOneScalarShadowBlock_posDef_iff` prove exactly that a positive-definite
+kernel block `B` reduces the repaired block to the nonnegative, respectively
+strictly positive, scalar `a + t - ell* B⁻¹ ell`. Its principal-block lemmas
+formally prove the converse kernel gate, and its literal `Fin 1 ⊕ Fin 1`
+counterexample has scalar `1` but is not positive semidefinite.
+
+This is unconditional Lean coverage of the supplied-coordinate theorem. The
+card remains Stage 2: it still needs a reusable construction transporting an
+arbitrary nonzero complex-linear `beta` to `ker beta ⊕ Cq`, then identifying
+the original form with this block form.

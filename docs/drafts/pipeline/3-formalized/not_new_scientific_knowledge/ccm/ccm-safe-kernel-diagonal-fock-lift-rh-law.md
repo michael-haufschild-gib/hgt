@@ -268,6 +268,51 @@ The formal tree has finite Gram and tensor-product primitives but no Xi safe ker
 or cofinal Gauss/Sonin limit. Formalizing the abstract implication alone would be a wrapper, so no
 Lean file is added.
 
+**Superseded, 2026-08-15.**  A Lean file *is* added, and it is not a wrapper: the Cauchy factor's
+positivity is proved from its exponential Gram realization rather than assumed, so the diagonal
+tensor feature is constructed rather than posited.
+
+## Lean status
+
+Module `formal/GaloisForLFunctions/RHTower/CCMDiagonalFockLift.lean` (wired, axiom-clean, 10
+declarations), over `RHTower/CCMHalfUnitCauchySeam.lean` from the parent card.
+
+- `cauchyKernel`, `kernelMatrix` — equation `(2)` and the Gram matrix of a kernel at a finite node
+  family.
+- `integrableOn_expPair`, **`cauchy_quadratic_form`** — equation `(5)` at the level of quadratic
+  forms:
+
+  ```text
+  sum_(i,j) alpha_i alpha_j /(x_i + x_j)
+    = int_0^infinity (sum_i alpha_i exp(-x_i t))^2 dt .
+  ```
+
+- **`posSemidef_cauchyMatrix`** — hence the Cauchy kernel is positive semidefinite *because it is a
+  Gram matrix of the exponential feature `c_x(t) = exp(-x t)`*, which is exactly the realization
+  `(5)` the diagonal Fock lift uses.
+- **`fockMatrix_eq_hadamard`** — equation `(3)`: `D = A o C` is a Schur product.
+- **`posSemidef_fockMatrix`** — equation `(3)`, positivity: the Schur product theorem applied to the
+  safe kernel and the Cauchy kernel.
+- **`rhMatrix_eq_sub`** — equation `(4)`: `J_RH = A - D`, exactly.
+- **`defect_form_eq`** — equations `(10)`-`(12)`: on every finite kernel core,
+
+  ```text
+  alpha* A alpha - alpha* D alpha = alpha* J_RH alpha ,
+  ```
+
+  i.e. the defect form `I - T_0^* T_0` *is* the `J_RH` form.  In particular the two forms have the
+  same negative index, which is equation `(8)`.
+- **`contractive_iff_rhForm_nonneg`** — equation `(7)` at form level: the diagonal Fock lift is
+  contractive on a finite kernel core exactly when the RH quadratic form is nonnegative there.
+
+`#print axioms` on all ten declarations returns exactly `[propext, Classical.choice, Quot.sound]`.
+
+Imported, not reproved: positive semidefiniteness of the safe kernel `A` (the de
+Branges--Rovnyak positive-real theorem, a hypothesis of `posSemidef_fockMatrix`), the equivalence
+`(13)` `J_RH >= 0 iff RH` from the infinitesimal Euler-ray index card, and the analytic RKHS
+completion.  The formal prime-log transport wall `(15b)`, `(15c)` is already in the tree, in
+`HTGeometry/PrimeLogHerglotz.lean` and `HTGeometry/PrimeLogCauchySeamRank.lean`.
+
 ## Gates
 
 - [x] half-unit loss written as a positive Schur-product kernel

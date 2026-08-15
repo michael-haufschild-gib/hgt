@@ -1,7 +1,7 @@
 # N1 Signed Bulk Exterior Monotonicity Fails
 
 - **ID:** n1-signed-bulk-exterior-monotonicity-fails
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / proof-route guardrail
 - **Source:** `stieltjes-bulk-exterior-christoffel-monotonicity.md`;
   `boundary-weyl-thresholds-have-no-formal-monotonicity.md`;
@@ -175,7 +175,8 @@ Stieltjes bulk.
 
 - [x] 0 -> 1 in-progress: signed-bulk monotonicity question isolated.
 - [x] 1 -> 2 fully-proven: exact signed atomic counterexample written.
-- [ ] 2 -> 3 formalized: optional rational matrix/inertia calculation.
+- [x] 2 -> 3 formalized: exact rational Gram/inverse/inertia and Hermitian
+  rank-one crossing certificate closed in Lean.
 
 ## Log
 
@@ -188,3 +189,19 @@ Stieltjes bulk.
 `../../3-formalized/not_new_scientific_knowledge/positive-stieltjes-pole-plus-first-atom-insufficient.md` gives a complementary positive-bulk countermodel. Even before passing to a signed `N_1` bulk, the formal data of a positive Stieltjes bulk, pole mass `4`, and first-trivial-zero mass `4/25` do not force repair.
 
 Together the two cards isolate two missing source facts: a positivity or kernel-exhaustion theorem for the bulk, and a mass/domination theorem for the actual completed carrier.
+
+## 2026-08-15 Lean formalization
+
+`HTGeometry/N1SignedBulkExteriorMonotonicity.lean` now proves the literal
+three-atom Gram form, its explicit inverse, its real inertia `(2,1,0)`, both
+inverse energies, both thresholds, and their strict reversed order.  The same
+leaf embeds that exact form as a complex Hermitian matrix and instantiates the
+already-closed `FiniteRankOneSelector` crossing theorem, proving for every
+positive repair mass that positive definiteness occurs exactly above the two
+displayed thresholds.
+
+Main certificates are
+`HTGeometry.n1SignedBulkExteriorMonotonicityFails` and
+`GaloisForLFunctions.HTGeometry.n1SignedComplexRankOneThresholdCertificate`.
+They use no added axioms; direct `lake env lean` and the targeted module build
+both passed.

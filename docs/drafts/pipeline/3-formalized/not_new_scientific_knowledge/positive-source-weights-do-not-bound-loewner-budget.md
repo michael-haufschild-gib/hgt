@@ -1,8 +1,9 @@
 # Positive Source Weights Do Not Bound Loewner Budget
 
 - **ID:** positive-source-weights-do-not-bound-loewner-budget
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / source-transfer guardrail
+- **Formalized companion:** `positive-source-weights-do-not-bound-loewner-budget-formalized.md`
 - **Source:** `positive-source-weights-require-pointwise-hankel-kernels.md`,
   `axis-positivity-does-not-imply-hankel-positivity.md`,
   `source-selector-repair-obligation-ledger.md`
@@ -155,12 +156,26 @@ the proof also supplies scale control.
 
 - [x] 0 -> 1 in-progress: Loewner budget gap isolated.
 - [x] 1 -> 2 fully-proven: scaling proof and normalized variant completed.
-- [ ] 2 -> 3 formalized: finite PSD cone lemma.
+- [x] 2 -> 3 formalized: arbitrary-source Finsupp PSD cone lemma, unbounded
+  scaling obstruction, and normalized mass-cap equivalence.
 
 ## Log
 
 - 2026-06-24 -- Codex: created to separate source sign positivity from the
   fixed archimedean-budget domination required by the bridge theorem.
+
+## Lean formalization
+
+- `GaloisForLFunctions.RHTower.PositiveSourceLoewnerBudget` proves the exact
+  arbitrary-source statement over finitely supported real weights:
+  `positiveSource_unbounded_budget_forces_zero`.
+- It also proves the normalized variant without reducing `X` to a finite type:
+  `positiveSource_normalized_budget_iff`.  The proof uses the exact remainder
+  decomposition `normalizedSource_decomposition`.
+- 2026-08-15 -- Codex: target module built with `lake build
+  GaloisForLFunctions.RHTower.PositiveSourceLoewnerBudget`; both main
+  declarations have only Lean's standard `propext`, `Classical.choice`, and
+  `Quot.sound` in their axiom audit.
 
 ## 2026-06-24 contraction form is the same Loewner budget
 

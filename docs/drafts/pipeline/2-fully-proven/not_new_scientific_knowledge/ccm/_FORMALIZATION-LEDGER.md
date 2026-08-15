@@ -164,3 +164,66 @@ would surface.
   New module `RHTower/CCMRadialTwoScaleCarrier` (11 theorems): the exact two-mode exterior leakage
   (3), the scale-uniform exterior mass `α δ/(2|q(λ)|²)` covering (9) and (16), the outer/inner mass
   limits (10)/(16), and the endpoint-slope identities (11)–(15) — the scale separation is algebra.
+
+- `ccm-unit-riesz-markov-virial-landau-law` — IN PROGRESS (still stage 2).
+  New module `RHTower/CCMUnitRieszMarkovTransform` (26 theorems, axiom-clean): equations (6), (7),
+  (14), (15)-(16), (17).  The atom-series form of the profile, the term-by-term Laplace transform,
+  the exact zeta closed form, `D(0)=1`, the derivative of the causal transform, the complete
+  algebraic simplification, and the residue at an off-critical zero.
+  Remaining: (5) `w -> 1`, (11) the causal-convolution factorization, (18)-(22) the Landau
+  connector (the corpus already owns `RHTower.landau_complexMGF_integrable_transfer`).
+
+### Work plan for the two unit-Riesz cards (as of 2026-08-15)
+
+`ccm-unit-riesz-markov-virial-landau-law` (stage 2):
+- DONE: `RHTower/CCMUnitRieszMarkovTransform` — (6), (7), (14), (15)-(16), (17).
+- DONE: `RHTower/CCMUnitRieszProfileLimit` — (5): `3 A_m <= 2(m+1)sqrt(m+1)`, `w <= 1`,
+  `1 - 9 e^{-v/2} <= w`, `w -> 1`.
+- TODO (11): causal convolution factorization.  Plan: extend causal functions by zero and reuse
+  mathlib's `MeasureTheory.convolution` + `convolution_assoc`; then
+  `I(T) = conv h w T - conv (id*h) d T = conv d V_h T`.
+- TODO (18)-(22): the Landau connector.  The corpus already owns
+  `RHTower.landau_complexMGF_integrable_transfer` (continuous Landau transfer) and the
+  `CCMFirstClockLandau*` family showing how to set it up.
+
+`ccm-unit-riesz-mobius-wavelet-reduction` (stage 2):
+- Already formal: (1), (2), (9), (13) in `RHTower/CCMCriticalMellinRieszMobiusRenewal`.
+- TODO (4)-(6): the layer-cake representation `g(t) = int_0^1 floor(tv) dv/(2 sqrt v)`,
+  `eta(t) = int_0^1 {tv} dv/(2 sqrt v)`, hence `0 <= eta <= min(1, t/3)` and `1 - W(t) <= 3/t`.
+  This also sharpens `CCMUnitRieszProfileLimit`'s envelope from `9 e^{-v/2}` to `3 e^{-v}`.
+- TODO (7), (10), (11), (15), (18), (20)-(23), (25).
+
+- `ccm-unit-riesz-mobius-wavelet-reduction` — IN PROGRESS (still stage 2).
+  New module `RHTower/CCMUnitRieszQuadratureDefect` (19 theorems, axiom-clean): equations (4), (5),
+  (6), and the sharp cutoff bound `1 - W(exp v) <= 3 exp(-v)`.
+  Remaining: (7), (10), (15), (18), (20)-(23), (25).
+
+- `ccm-infinitesimal-half-unit-cauchy-seam-law` → stage 3.
+  New module `RHTower/CCMHalfUnitCauchySeam` (8 theorems): the termwise proof of (2), the Schur
+  factorization (5), the exact two-point minor (6) with its sign, non-positive-semidefiniteness of
+  the seam matrix, and the diagonal Fock covariance with its Cauchy Gram factor.
+  Reused `RHTower.re_inv_pos_of_re_pos` rather than redefining it.
+
+- `ccm-safe-kernel-diagonal-fock-lift-rh-law` → stage 3.
+  New module `RHTower/CCMDiagonalFockLift` (10 theorems): the exponential Gram realization of the
+  Cauchy kernel (so the diagonal tensor feature is constructed, not posited), the Schur-product
+  factorization D = A o C, J_RH = A - D, the defect-form identity (10)-(12), and contractivity
+  <=> RH-form nonnegativity.
+  Note: this mathlib's `Matrix.PosSemidef` quantifies over `n ->0 R` (Finsupp), not `n -> R`.
+
+- `ccm-infinitesimal-real-euler-ray-logderivative-index-law` → stage 3.
+  New module `RHTower/CCMEulerRayLogDerivativeIndex` (13 theorems): the packet algebra (7)-(8),
+  positivity of critical-line packets (9), the exact negative minor of off-line packets (10), the
+  quartet polarization, the diagonal identity (17), and the infinitesimal derivation (11)-(13).
+
+- `ccm-real-euler-ray-loewner-index-law` → stage 3.
+  New module `RHTower/CCMEulerRayLoewner` (9 theorems): the ray restriction (13) and (9)->(2), the
+  two-value determinant obstruction `-(r1-r2)^2` separating scalar from kernel positivity, and
+  positivity of every Euler factor of (15)-(16).
+
+- `ccm-causal-pick-affine-conjugacy-law` → stage 3.
+  New module `RHTower/CCMCausalPickAffineConjugacy` (9 theorems): the affine embedding (9), the
+  quotient identification (11), the Cauchy-denominator collapse (12), the pulled-back Pick kernel
+  (13), the explicit completed factorization (7), the scalar conjugacy (5), and the critical
+  degeneration (20).  Renamed `shiftedTheta` to `shiftedXiQuotient` to avoid clashing with
+  `RHTower.shiftedTheta` in `DeningerWeightOnePolarization`.

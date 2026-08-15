@@ -262,3 +262,38 @@ the non-factorizing arithmetic source-to-divisor law itself is closed on paper.
   `ArtinVirtualFrobeniusReciprocity.lean`: every monomial coefficient is the corresponding
   linear multiplicity after restriction.  This is the exact finite transport underlying a future
   Heilbronn restriction law, not that analytic law itself.
+- 2026-08-15 -- monomial-multiplicity separation formalized in
+  `ArtinMonomialMultiplicitySeparation.lean`: all induced-linear multiplicities jointly determine
+  a concrete virtual character.  This is a finite-character detection theorem, not integral
+  Brauer induction or analytic effectivity.
+- 2026-08-15 -- conjugate-prime invariance of the actual local Artin Euler polynomial formalized
+  in `ArtinLocalEulerPrimeDescent.lean`, including inertia transport, invariant-space conjugacy,
+  conjugated arithmetic Frobenius, and residue-finiteness transport.  Arbitrary base-prime choice,
+  global product/continuation, and the non-factorizing source-to-divisor law remain open.
+- 2026-08-15 -- the arbitrary-prime choice is now removed at the number-field finite-place level:
+  `ArtinNumberFieldLocalEulerFactor.lean` defines a canonical polynomial on
+  `HeightOneSpectrum (𝓞 K)` and proves every prime above that base finite prime computes it.  This
+  supplies the genuine local source C2 lacked, but still neither an infinite Euler product nor a
+  law connecting that product's continuation to coefficientwise polar effectivity.
+- 2026-08-15 -- direct-sum multiplicativity now holds for that exact finite-place polynomial in
+  `ArtinNumberFieldLocalEulerProduct.lean`.  Thus the local source is choice-free and additive in
+  actual representations; the next missing mathematical object is a convergent global Euler
+  product, not another local compatibility wrapper.
+- 2026-08-15 -- `ArtinFormalEulerSource.lean` constructs the genuine coefficientwise global Euler
+  source from the canonical local factors and proves finite-product stabilization at every
+  coefficient.  It closes the formal global-source gap but not absolute/local-uniform convergence
+  in `Re(s)>1`, equality with an analytic product, continuation, or polar effectivity.
+- 2026-08-15 -- renewed literature/frontier audit identifies full integral Brauer induction from
+  linear characters of Brauer-elementary subgroups as the first nonlocal continuation bridge.
+  Rational Artin induction and monomial-profile separation are explicitly insufficient.  The new
+  `artin-brauer-integral-monomial-induction` card remains at Stage 1 pending a complete concrete
+  finite-lattice paper-to-Lean proof plan.
+- 2026-08-15 -- formalized unconditional number-field finite-prime norm summability for every
+  exponent greater than one, including the complex-norm form needed for Euler arguments.  This is
+  the actual M-test budget missing from the formal Euler source; a uniform local-factor estimate
+  and locally uniform product proof remain open.
+- 2026-08-15 -- isolated the next source-side literature bridge in
+  `artin-euler-product-absolute-locally-uniform-convergence.md`: finite image must first give a
+  uniform reciprocal-local-factor estimate, then compact M-test machinery gives a holomorphic
+  product only on `Re(s)>1`.  This does not touch continuation or the non-factorizing
+  source-to-divisor open core.

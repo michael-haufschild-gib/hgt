@@ -8462,3 +8462,172 @@ real axis (the card's own dependency-closed proof: Euler product for `s > 1`, th
 series against `1 − 2^{1−s} < 0` for `0 < s < 1`, the functional equation for `s < 0`, and the
 completed endpoint values at `0, 1`).  These are the real cost of `(19)`, and they are ordinary
 mathematics, not open research.
+
+## AAX. Landau's theorem, closed
+
+```text
+RHTower/LaplaceTransformMomentDerivative.lean
+```
+
+The bridge named in AAW is built.  Differentiation under the integral sign gives, for every real
+point strictly right of the abscissa,
+
+```text
+d/dσ ∫ u^n e^{-σu} dν = −∫ u^{n+1} e^{-σu} dν,
+iteratedDeriv k (laplaceReal ν) a = (−1)^k ∫ u^k e^{-au} dν,
+```
+
+the domination closing because `u^n e^{-δu} ≤ n!/δ^n` — from `x^n/n! ≤ e^x`
+(`Real.pow_div_factorial_le_exp`) — so every moment kernel is dominated by a constant multiple of an
+exponential kernel strictly right of the abscissa, which the abscissa itself makes integrable.
+
+`not_summable_moment_beyond_abscissa` and its derivative form
+`not_summable_iteratedDeriv_beyond_abscissa` are then Landau's theorem in exactly the shape the
+torque card's proof uses: a convergent Taylor expansion at a real point `a > σ_c` with radius
+exceeding `a − σ_c` would, through the already-owned `ℝ≥0∞` identity `landau_exchange`, make the
+transform converge strictly left of the abscissa.  No Tauberian input, no analytic-continuation
+machinery: the whole content is the moment identity plus the derivative tower.
+
+**What `(19)` still needs**, and it is the only thing: the two arithmetic providers — existence of a
+nontrivial zero of `ξ` in the critical strip, and nonvanishing of `ξ` on the real axis.  Both are
+ordinary mathematics; neither is open research.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AAY. Both arithmetic providers for the torque card's `(19)`
+
+```text
+RHTower/RiemannXiRealRayNonvanishing.lean
+```
+
+Provider 1 was **already owned** and should not be rebuilt:
+`RHTower.exists_riemannZeta_zero_mem_openStrip` in `RHTower/RiemannXiZerosInfinite.lean` —
+"some `ρ` with `0 < Re ρ < 1` satisfies `ζ(ρ) = 0`", proved there from the growth envelope of `ξ`
+and finite-zero subquadratic rigidity.
+
+Provider 2 is now built.  On the positive real ray the archimedean factor `Gammaℝ` is nonvanishing
+(`Gammaℝ_ne_zero_of_re_pos`), so `riemannZeta_def_of_ne_zero` turns a zero of the completed function
+into a zero of `ζ`, and there is none: `riemannZeta_ne_zero_of_one_lt_re` for `σ > 1`, the corpus's
+`RHTower.riemannZeta_ne_zero_of_ofReal_mem_Ioo` (the alternating-eta comparison) for `0 < σ < 1`,
+and the value `ξ(1) = 1/2` for the remaining point, where `ζ` has its pole and `ξ` is regular.  So
+`riemannXi_ne_zero_of_ofReal_pos` covers the whole ray, in particular the card's window
+`σ_c ∈ (1/2, 3/2]`.
+
+**Namespace trap.**  `riemannXi`, `riemannXi_one`, `riemannXi_eq_mul_completedRiemannZeta`,
+`riemannZeta_ne_zero_of_ofReal_mem_Ioo` and `exists_riemannZeta_zero_mem_openStrip` all live in the
+*root* `RHTower` namespace, not `GaloisForLFunctions.RHTower`; from inside the latter they need
+`_root_.RHTower.` prefixes.
+
+With ledger AAX this completes the toolkit for `(19)`: Landau's theorem, a nontrivial `ξ` zero, and
+real-axis regularity.  What remains is the card-specific assembly — the torque's transform formula
+`(16)`, the double pole at `p = ρ + 1/2`, and the two one-sign contradictions.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AAZ. `(25)`, Theorem 2's summation, and `(32)` reduced to its kernel identity
+
+```text
+HTGeometry/ContourShiftWeight.lean                (25) the shift is the physical weight
+HTGeometry/MinkowskiIntegralInequality.lean       + lintegral_sq_sum_le, the block summation
+RHTower/GammaJumpNearDiagonalLipschitz.lean       + the far region and the global kernel bound
+RHTower/GammaJumpCommutatorKernel.lean            (32) via Young, and the constant cancellation
+```
+
+**`(25)` is an exponent identity, not an analytic theorem.**  `e^{-i(x+iσ)L} = e^{-ixL}e^{σL}`, so
+the shifted-line transform *is* the transform of `e^{σL}F` — pointwise in the integrand, hence with
+no integrability hypothesis whatsoever.  Plancherel then makes `f(·+iσ) ∈ L²` and `e^{σL}F ∈ L²` the
+same statement read on the two sides of the transform.
+
+**Theorem 2's summation is Minkowski over the counting measure.**  `lintegral_sq_sum_le`: a profile
+dominated by the total mass of a countable family has `L²` norm at most the sum of the blockwise
+`L²` norms.  It is the continuum Minkowski specialised to `Measure.count`, which is `σ`-finite on a
+countable index type — no separate argument needed.
+
+**The two regions of `(32)` collapse into one bound.**  In the far region `|ξ−η| > (1+|η|)/2` the
+separation controls both frequencies, `1+|η| ≤ 2|ξ−η|` and `1+|ξ| ≤ 3|ξ−η|`, so the *affine* symbol
+bound `|r| ≤ S(1+|·|)` already gives `|r(ξ)−r(η)| ≤ 5S|ξ−η|` and hence
+`(1+|ξ|)|r(ξ)−r(η)| ≤ 15S|ξ−η|²` — the logarithm of `(34)` is not even needed there.  Combined with
+the near-diagonal bound `(35)`, `exists_bound_gammaJump_global` gives
+
+```text
+(1+|ξ|)|r(ξ) − r(η)| ≤ C(|ξ−η| + |ξ−η|²)      for every pair,
+```
+
+with **no** region hypothesis — cleaner than the card's two-region split.  Against a Schwartz cutoff
+transform this is the convolution kernel `C|χ̂(t)|(|t|+t²)`, integrable because a Schwartz function
+has finite moments of every order, and the already-owned Young inequality
+(`lintegral_enorm_sq_le_of_convolution_bound` in `YoungConvolutionL2.lean`) closes the `L²` bound.
+
+**The delta cancellation is a one-line remark in the operator formulation.**  A constant
+multiplication operator commutes with every linear multiplier, so `[R, χ] = [R, χ − c]`: the
+exterior constants never enter, and no distributional transform of a non-decaying cutoff is needed.
+
+What `(32)` still needs is only the kernel identity `(33)` itself — that the Fourier transform of
+`[R,χ]F` is the stated double integral — which is the Fourier-analytic bookkeeping, not an estimate.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ABA. `(22)` in block form: why the constant is block-independent
+
+```text
+RHTower/SuzukiWallBlockSliceBound.lean
+HTGeometry/LaplaceSuperpositionBound.lean    + the ray variant of the slice hypothesis
+HTGeometry/MinkowskiIntegralInequality.lean  + the a.e. superposition variant
+```
+
+Each Laplace slice carries two exponential gains, and separating them makes the block-independence
+transparent:
+
+```text
+physical weight :  supp g ⊆ [m, m+1]  ⇒  ‖e^{-sL}g‖₂ ≤ e^{-sm}‖g‖₂,
+semigroup       :  floor μ₀            ⇒  ‖e^{-sB(x)}‖ ≤ e^{-μ₀ s}  for every x at once.
+```
+
+So the slice decays at rate `μ₀ + m` — the floor and the block index **add** — and
+`lintegral_sq_blockLaplace_le` turns that into the `L²` bound with constant `K/(μ₀+m)`.  This is
+exactly why the card's `(11)` is uniform in `m`: the frequency threshold `X_m = C₀e^{max(0,−m)}` is
+chosen so that the floor `log(1+|x|)` grows like `−m` on the tail, making `μ₀ + m` bounded below by
+a constant independent of the block.  Nothing about the block enters the constant except through
+that sum.
+
+**Two hypothesis weakenings made along the way**, both genuine improvements rather than
+convenience: the superposition estimate now needs its slice bound only almost everywhere
+(`lintegral_sq_superposition_le_ae`), and the Laplace form only on the open ray
+(`lintegral_sq_laplaceSuperposition_le_ray`) — slices at nonpositive parameter are never seen by the
+integral, so requiring a bound there was an artefact of the first statement.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ABB. `(16)` closed for the actual propagator, and the three-region composition
+
+```text
+HTGeometry/FrequencyLineSplit.lean            window + two tails compose to the line
+RHTower/StripPropagatorLineDecay.lean         + the uniform transport bound on a window
+RHTower/SuzukiWallWindowEstimate.lean         (16) for the literal variation-of-constants solution
+```
+
+**`(16)` is now a theorem about the actual Gamma propagator, not a template.**
+`lintegral_sq_forcedWindowPart_le` bounds the squared window mass of
+
+```text
+H(x+iσ) ∫₀^x H(t+iσ)^{-1} b(t) dt
+```
+
+by `M²(2W)²` times the window energy of `b`, with `M = K₁K₂(1+W)^p` read off from the two line
+bounds of `(3)`.  Inside the window neither factor is allowed to decay — the propagator is bounded
+by its value at the origin, the inverse by its value at the window edge — so the moving-endpoint
+integral is dominated by a *single fixed* density, the window mass of the forcing, and the window
+estimate charges exactly one power of the length.  The frequency decay of the Gamma propagator plays
+no role here at all; that is the whole reason the card's finite-interval bound costs `X_m` and no
+more.
+
+**The moving endpoint never leaves the window.**  `enorm_intervalIntegral_le_window`: for `|x| ≤ W`
+the interval `Ι 0 x` sits inside `[−W, W]`, so the interval integral is dominated by the window mass
+— stated in the extended norm, so no integrability of `b` is presupposed.
+
+**The three regions compose by additivity alone.**  `lintegral_sq_le_of_window_and_tails`: the
+complement of the open window is the union of the two closed rays, so a bound on the window and one
+on each tail give the bound on the line, with no hypothesis linking them.  This is the skeleton
+`(11)` is assembled on.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`; lint clean.

@@ -142,4 +142,29 @@ theorem lintegral_sq_globalPowerTail_ne_top {f : ℝ → A} {C p : ℝ} (hp : 1 
   exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top
     (lintegral_oneAddAbsWeight_ne_top (by linarith))
 
+/-- **The quantitative global power tail.**  The squared line mass is at most `C²` times the mass of
+the weight, an explicit finite constant for `p > 1/2`. -/
+theorem lintegral_sq_globalPowerTail_le {f : ℝ → A} {C p : ℝ}
+    (hf : ∀ x : ℝ, ‖f x‖ ≤ C * (1 + |x|) ^ (-p)) :
+    (∫⁻ x : ℝ, ‖f x‖ₑ ^ 2)
+      ≤ ENNReal.ofReal (C ^ 2) * ∫⁻ x : ℝ, oneAddAbsWeight (2 * p) x := by
+  have hmaj : ∀ x : ℝ, ‖f x‖ₑ ^ 2
+      ≤ ENNReal.ofReal (C ^ 2) * oneAddAbsWeight (2 * p) x := by
+    intro x
+    have hx0 : (0 : ℝ) < 1 + |x| := by positivity
+    have hbase := hf x
+    have hsq : ‖f x‖ ^ 2 ≤ C ^ 2 * (1 + |x|) ^ (-(2 * p)) := by
+      refine (pow_le_pow_left₀ (norm_nonneg _) hbase 2).trans (le_of_eq ?_)
+      rw [mul_pow, ← Real.rpow_natCast ((1 + |x|) ^ (-p)) 2, ← Real.rpow_mul hx0.le]
+      congr 2
+      push_cast
+      ring
+    calc ‖f x‖ₑ ^ 2 = ENNReal.ofReal (‖f x‖ ^ 2) := by
+          rw [← ofReal_norm, ← ENNReal.ofReal_pow (norm_nonneg _)]
+      _ ≤ ENNReal.ofReal (C ^ 2 * (1 + |x|) ^ (-(2 * p))) := ENNReal.ofReal_le_ofReal hsq
+      _ = ENNReal.ofReal (C ^ 2) * oneAddAbsWeight (2 * p) x := by
+          rw [oneAddAbsWeight, ← ENNReal.ofReal_mul (by positivity)]
+  refine le_trans (lintegral_mono hmaj) (le_of_eq ?_)
+  exact lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+
 end GaloisForLFunctions.HTGeometry

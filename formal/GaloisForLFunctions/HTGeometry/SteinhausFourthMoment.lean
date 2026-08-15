@@ -19,12 +19,15 @@ noncomputable section
 
 namespace GaloisForLFunctions.HTGeometry
 
-local instance : MeasureSpace UnitAddCircle := ⟨AddCircle.haarAddCircle⟩
+local instance steinhausFourthMomentMeasureSpace : MeasureSpace UnitAddCircle :=
+  ⟨AddCircle.haarAddCircle⟩
 
-local instance : Measure.IsAddHaarMeasure (volume : Measure UnitAddCircle) :=
+local instance steinhausFourthMomentIsAddHaarMeasure :
+    Measure.IsAddHaarMeasure (volume : Measure UnitAddCircle) :=
   inferInstanceAs (Measure.IsAddHaarMeasure AddCircle.haarAddCircle)
 
-local instance : IsProbabilityMeasure (volume : Measure UnitAddCircle) :=
+local instance steinhausFourthMomentIsProbabilityMeasure :
+    IsProbabilityMeasure (volume : Measure UnitAddCircle) :=
   inferInstanceAs (IsProbabilityMeasure AddCircle.haarAddCircle)
 
 set_option linter.unusedSectionVars false

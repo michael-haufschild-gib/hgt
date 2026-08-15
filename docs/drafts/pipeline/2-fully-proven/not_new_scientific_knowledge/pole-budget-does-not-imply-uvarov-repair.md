@@ -141,7 +141,7 @@ This does not rescue pole-budget transfer by itself. It says exactly what extra 
 
 ## 2026-06-24 N1 signed moment monotonicity is insufficient
 
-`n1-signed-bulk-exterior-monotonicity-fails.md` gives a signed-moment version of the pole-to-Uvarov failure. Even an `N_1` moment bulk supported to the right of both `-4` and `-4/25` can reverse the repair-threshold order between those two boundary points.
+`../../3-formalized/not_new_scientific_knowledge/n1-signed-bulk-exterior-monotonicity-fails.md` gives a signed-moment version of the pole-to-Uvarov failure. Even an `N_1` moment bulk supported to the right of both `-4` and `-4/25` can reverse the repair-threshold order between those two boundary points.
 
 Thus pole-to-Uvarov transfer cannot be rescued by saying that the unrepaired carrier has exactly one negative square. The proof still needs a source-built positivity or monotonicity theorem for the actual completed carrier.
 

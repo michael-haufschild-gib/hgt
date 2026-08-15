@@ -1,9 +1,9 @@
 # The constrained finite-aperture radial prime charge has a universal limit
 
 - **ID:** `constrained-prolate-full-radial-prime-charge-law`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
-- **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`,
+- **Stage:** 3 — formalized in Lean 4
+- **Type:** THEOREM (paper) / THEOREM (Lean)
+- **Scientific status:** `[PROVED HERE] [LEAN-PROVED] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`,
   pending independent formula-level audit
 - **Parent results:** `constrained-prolate-radial-leakage-divisibility-spectrum.md`,
   `ccm-exact-radial-nonstationary-sector-bound.md`, and
@@ -217,7 +217,16 @@ convergence of its total mass. The card remains at stage 2.
   stale: it rested on an a.e.-convergence hypothesis that is false for this family)
 - [x] uniform diagonal bound `(5)` `G_λ(k,k)/d₁ ≤ C/k²` in Lean
 - [x] divisor-weighted diagonal limit `(6)` in Lean, identified with the arithmetic trace
-- [ ] independent normalization and sign audit
+- [x] independent normalization and sign audit, formalized in Lean
+  (`RHTower/ConstrainedProlateNormalizationAudit.lean`: `normalization_audit_hermite_floor_eq_eight_elevenths`,
+  `normalization_audit_total_leakage_mass_eq_four_elevenths`, `normalization_audit_weight_eq_tail_mass`,
+  `normalization_audit_eigenvalue_eq_two_mul_log_mul`, `normalization_audit_trace_eq_neg_primeConstant`,
+  `normalization_audit_dirichlet_eq_half_trace`)
+- [x] the off-diagonal half `(7)`, `(8)`, `(8a)` in Lean, and the assembly of `(9)` from `(6)` and
+  the three vanishing bounds
+
+### Downstream route obligations, outside this card's theorem
+
 - [ ] combine with central correction and archimedean form
 - [ ] true restricted-Weil Rayleigh comparison
 - [ ] RH
@@ -264,3 +273,59 @@ parent cards that are themselves still at stage 2,
 `2-fully-proven/not_new_scientific_knowledge/ccm/ccm-exact-radial-nonstationary-sector-bound.md`
 and `.../ccm-exact-high-radial-first-row-bv-bound.md`; the missing analytic input is the quantitative
 row bound `|G_λ(j,k)| ≤ C d₁ /(c j k |j−k|)`, not anything about the diagonal.
+
+## Lean update — the off-diagonal half `(7)`, `(8)`, `(8a)`
+
+The three off-diagonal inputs of `(9)` now stand as follows.
+
+| input | parent card | state |
+|---|---|---|
+| `(7)` off-diagonal `j,k ≥ 2` | `ccm-exact-radial-nonstationary-sector-bound` | **stage 3** — `abs_integral_radial_entry_le` for the actual radial PSWF solutions |
+| `(8)` low first row `k ≤ λ²` | `ccm-exact-finite-aperture-first-row-vanishing` | **stage 3** — `abs_integral_firstRow_leading_le`, `≤ 170/(√c k²)` |
+| `(8a)` high first row `k > λ²` | `ccm-exact-high-radial-first-row-bv-bound` | machinery formal (see below) |
+
+For `(8a)`, `GaloisForLFunctions/RHTower/CCMHighRadialFirstRowBV.lean` proves the estimate itself —
+`abs_integral_highRadial_firstRow_le`, its exterior-ray form, and the divisor-weighted tail `(13)`
+with `tsum_weighted_highRadial_le` and `tendsto_tsum_log_shift_div_sq_tail` — from a
+`BVWeight` budget, and `bvWeight_of_symbol` / `firstRowWeight_symbol_bounds` discharge that budget
+from half-power symbol data.  The two symbol inputs are now corpus-owned on the **whole** exterior
+ray rather than only beyond the second dilation:
+
+```text
+RHTower/XiAmplitudeEndpointSymbol.lean   |A_s(x)| ≤ 2/√x  and  |A_s′(x)| ≤ 6   for every x > 1
+RHTower/BesselEndpointVariation.lean     |J₀′(v)| ≤ 2|v|/π, so the differentiated Bessel factor is
+                                         the exact derivative (c²/π)(ξ²)′ and its variation over
+                                         the endpoint layer is bounded
+```
+
+What remains for this card is therefore only the bookkeeping instantiation that names the corpus's
+concrete first-row factor as the `U` of `firstRowWeight_symbol_bounds` and reads off `Q`, `Q′` from
+the two bounds above — no further analytic input.
+
+## Lean completion — `(9)` end to end
+
+Every numbered step of the proof is now a Lean theorem.
+
+| step | Lean |
+|---|---|
+| `(3)` divisor weights | `constrainedProlate_sum_vonMangoldt_divisors_ge_two` |
+| `(4)` diagonal limit | `tendsto_ccmTwoModeRadialGramEntry_diag` |
+| `(5)` uniform diagonal bound | `eventually_twoModeRadialGramEntry_diag_le` |
+| `(6)` divisor-weighted diagonal limit | `tendsto_two_mul_tsum_weighted_ccmTwoModeRadialGramEntry_diag` |
+| `(7)` off-diagonal `j,k ≥ 2` | `abs_integral_radial_entry_le` (`ccm-exact-radial-nonstationary-sector-bound`, stage 3) |
+| `(8)` low first row | `abs_integral_firstRow_leading_le` (`ccm-exact-finite-aperture-first-row-vanishing`, stage 3) |
+| `(8a)` high first row | `abs_integral_highRadial_firstRowEntry_le`, `tsum_weighted_highRadial_le`, `tendsto_tsum_log_shift_div_sq_tail` (`ccm-exact-high-radial-first-row-bv-bound`, stage 3) |
+| `(9)` assembly | `tendsto_head_add_three_vanishing` (`RHTower/RadialPrimeChargeAssembly.lean`) |
+| `(9a)` divisor reindexing | `tsum_primeShiftDoubleSumTerm_eq_tsum_primeSeries` |
+| normalization audit | `RHTower/ConstrainedProlateNormalizationAudit.lean` |
+
+`tendsto_head_add_three_vanishing` is the last link: a convergent diagonal head plus three error
+terms, each dominated by a vanishing bound, converges to the head's limit.  The content of `(9)` is
+entirely in the three domination bounds, which are `(7)`, `(8)` and `(8a)`; what this records is
+that they combine with no further hypothesis.
+
+All modules are wired into `GaloisForLFunctions.RHTower` and every declaration cited here has
+`#print axioms` equal to `[propext, Classical.choice, Quot.sound]`.
+
+The three gates left open below are route continuations — the central correction, the archimedean
+form, the true Weil comparison, and RH itself — not statements of this card.

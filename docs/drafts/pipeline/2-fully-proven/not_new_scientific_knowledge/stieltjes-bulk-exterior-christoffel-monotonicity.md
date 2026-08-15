@@ -161,7 +161,7 @@ Christoffel monotonicity input from the missing source-built positivity theorem.
 
 ## 2026-06-24 N1 signed bulks do not inherit the monotonicity
 
-`n1-signed-bulk-exterior-monotonicity-fails.md` gives the exact boundary case. A signed moment form with inertia `(2,1)` and support `{0,1,2}` to the right of both `-4` and `-4/25` reverses the repair-threshold order: the farther-left boundary point has the larger threshold.
+`../../3-formalized/not_new_scientific_knowledge/n1-signed-bulk-exterior-monotonicity-fails.md` gives the exact boundary case. A signed moment form with inertia `(2,1)` and support `{0,1,2}` to the right of both `-4` and `-4/25` reverses the repair-threshold order: the farther-left boundary point has the larger threshold.
 
 Thus this card's positivity hypothesis is load-bearing. Exterior Christoffel monotonicity can be used only after a positive Stieltjes bulk has been source-built, not merely after an unrepaired `N_1` Krein scaffold has been identified.
 

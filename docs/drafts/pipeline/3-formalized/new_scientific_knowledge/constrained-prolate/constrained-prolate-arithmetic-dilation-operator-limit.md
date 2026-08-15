@@ -1,9 +1,9 @@
 # The constrained prolate prime response has an arithmetic trace-class spectrum
 
 - **ID:** `constrained-prolate-arithmetic-dilation-operator-limit`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
-- **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
+- **Stage:** 3 — formalized in Lean 4
+- **Type:** THEOREM (paper) / THEOREM (Lean)
+- **Scientific status:** `[PROVED HERE] [LEAN-PROVED] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parents:** `constrained-prolate-full-radial-prime-charge-law.md` and the weighted projective
   convergence proved in
   `universal-radial-prolate-arithmetic-dilation-spectrum.md`
@@ -372,6 +372,66 @@ and double-sum Dirichlet divisor reindexing. Axiom audit contains only standard 
 - [x] exact zero exponent of convergence `1/2` in Lean
 - [x] exact entire order `1/2` in Lean
 - [x] independent PSWF normalization audit
+### Downstream route obligations, outside this card's theorem
+
+As the card states above, "the polar--prime critical Mellin graph theorem remains necessary before
+`(22)` can be inserted into the complete restricted Weil form.  The present theorem does not assert
+Weil positivity or RH."
+
 - [ ] polar--prime critical Mellin graph-domain assembly
 - [ ] complete Weil-form lower bound
 - [ ] RH
+
+## Lean correction — the diagonal hypothesis of the projective discharge was too strong
+
+`RHTower/ArithmeticDilationWeightedProjectiveDischarge.lean` discharged the weighted projective
+hypothesis `(3)` from raw inputs, but one of those inputs was
+
+```text
+hdiag_ev : ∀ k, ∀ᶠ x in L, E x k k = 0
+```
+
+— the diagonal defect *exactly zero* eventually.  For the actual PSWF family that is false: `(4)`
+gives `G_λ(k,k)/d_λ → w_k`, so `E x k k → 0`, but it never vanishes.  The discharge therefore could
+not be applied to the family it was written for, even though the corresponding gate was ticked.
+
+The hypothesis is used only to make the diagonal series vanish termwise, so it has been weakened in
+place to the true statement
+
+```text
+hdiag_tendsto : ∀ k, Tendsto (fun x => E x k k) L (𝓝 0)
+```
+
+and the diagonal step reproved by Tannery's theorem
+(`tendsto_tsum_of_dominated_convergence`): pointwise convergence to zero plus the summable
+majorant `Σ 2 Ω_k M_k` gives convergence of the sum.  The three affected declarations —
+`tendsto_weighted_projective_of_rowBound`, `arithmeticDilation_projective_tendsto_discharged`,
+`arithmeticDilation_traceClass_traceNorm_limit_discharged` — now take the weakened hypothesis, which
+is exactly what `(4)` supplies.  Nothing else in the tree referred to them.
+
+With this, the discharge of `(3)` accepts the card's own inputs: the diagonal convergence `(4)`, the
+uniform diagonal bound `(5)`, and the inverse-bandwidth off-diagonal envelope `(7)`/`(8)`/`(8a)` of
+`constrained-prolate-full-radial-prime-charge-law` (now at stage 3).
+
+## Lean completion
+
+The card states that its "mathematical proof from `(3)`--`(4)` is complete".  Both inputs are now
+Lean theorems, and so is every step from them.
+
+| step | Lean |
+|---|---|
+| `(3)` weighted projective convergence | `tendsto_weighted_projective_of_rowBound` — discharged from the raw off-diagonal envelope and the dominated diagonal defect, with the corrected hypothesis `hdiag_tendsto` |
+| `(4)` divisor trap `0 ≤ a_λ(k) ≤ log k`, eventually `= log k` | `constrainedProlate_sum_vonMangoldt_divisors_ge_two` |
+| off-diagonal envelope feeding `(3)` | `abs_integral_radial_entry_le`, `abs_integral_firstRow_leading_le`, `abs_integral_highRadial_firstRowEntry_le` — all three parent cards now at stage 3 |
+| diagonal defect feeding `(3)` | `tendsto_ccmTwoModeRadialGramEntry_diag` `(4)`, `eventually_twoModeRadialGramEntry_diag_le` `(5)` |
+| `(9)` arithmetic projective convergence | `arithmeticDilation_projective_tendsto_discharged` |
+| trace-norm operator limit | `arithmeticDilation_traceClass_traceNorm_limit_discharged` |
+| limiting spectrum, trace, total charge `(20)`--`(21)` | `ArcsineZetaDerivativeSpectrum`, `ArithmeticDilationProjectiveLimit`, `ArithmeticDilationTraceClass` |
+| Fredholm determinant `(16)`, entirety, order and zero exponent `1/2` | `ArithmeticDilationStageDeterminant` |
+| normalization audit | `ConstrainedProlateNormalizationAudit` |
+
+The one correction made while completing this chain is recorded in the section above: the projective
+discharge previously required the diagonal defect to be *exactly* zero eventually, which the actual
+PSWF family does not satisfy.  It now requires only `E_λ(k,k) → 0`, which is what `(4)` gives, and
+the diagonal step is reproved by Tannery's theorem.  All three affected declarations are
+axiom-clean.

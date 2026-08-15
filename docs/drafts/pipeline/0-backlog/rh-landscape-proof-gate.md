@@ -397,7 +397,7 @@ Consequence: if the prime-source kernels are not pointwise PSD, the proof must u
 
 Status: proof-route guardrail added, not an RH proof.
 
-Created `../2-fully-proven/positive-source-weights-do-not-bound-loewner-budget.md`. Positive source weights can certify a favorable cone direction only after pointwise kernel positivity is known. They cannot by themselves prove a fixed upper Loewner budget: scaling a nonzero PSD point source breaks `S(w) <= B` for any fixed `B`.
+Formalized `../3-formalized/not_new_scientific_knowledge/positive-source-weights-do-not-bound-loewner-budget.md`. Positive source weights can certify a favorable cone direction only after pointwise kernel positivity is known. They cannot by themselves prove a fixed upper Loewner budget: scaling a nonzero PSD point source breaks `S(w) <= B` for any fixed `B`.
 
 Consequence: the live bridge `-R^P_d <= M_{triv,d}` is not an Euler-sign theorem. It must use actual weight magnitudes, normalization, multiplicativity, archimedean cancellation, or a completed source identity that proves scale-sensitive domination.
 
@@ -519,7 +519,7 @@ Consequence: pole-to-first-trivial-zero monotonicity is a valid lemma only after
 
 Status: proof-route guardrail added, not an RH proof.
 
-Created `../2-fully-proven/n1-signed-bulk-exterior-monotonicity-fails.md`. A signed atomic moment form with inertia `(2,1)` and support `{0,1,2}` has both exterior repair thresholds defined at `-4` and `-4/25`, but the farther-left threshold is larger.
+Created `../3-formalized/not_new_scientific_knowledge/n1-signed-bulk-exterior-monotonicity-fails.md`. A signed atomic moment form with inertia `(2,1)` and support `{0,1,2}` has both exterior repair thresholds defined at `-4` and `-4/25`, but the farther-left threshold is larger.
 
 Consequence: the landscape proof cannot treat the unrepaired `N_1` Krein scaffold as if it were a positive Stieltjes bulk. Pole-to-first-trivial-zero monotonicity requires either an actual positive bulk or a source-specific theorem for the completed carrier.
 

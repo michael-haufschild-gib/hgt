@@ -180,6 +180,6 @@ Thus the correct split is: arbitrary positive bulk forms have no boundary-thresh
 
 ## 2026-06-24 signed moment N1 counterexample
 
-`n1-signed-bulk-exterior-monotonicity-fails.md` strengthens the nonmonotonicity warning inside the moment category. Even a one-negative-square signed moment form with support to the right of the compared exterior points can reverse the pole-to-first-trivial-zero threshold order.
+`../../3-formalized/not_new_scientific_knowledge/n1-signed-bulk-exterior-monotonicity-fails.md` strengthens the nonmonotonicity warning inside the moment category. Even a one-negative-square signed moment form with support to the right of the compared exterior points can reverse the pole-to-first-trivial-zero threshold order.
 
 Therefore the missing source theorem cannot be weakened from positive Stieltjes bulk to `N_1` anatomy. The `N_1` signature must be accompanied by kernel exhaustion or a source-specific monotonicity theorem.

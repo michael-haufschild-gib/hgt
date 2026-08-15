@@ -236,6 +236,43 @@ The Lean tree does not contain the completed-zeta quotient, Hardy kernels, or ge
 squares. Formalizing only the scalar algebra in `(5)` would be wrapper work and would not certify
 the RH-bearing implication `(17)`. No Lean file is added.
 
+**Superseded, 2026-08-15.**  A Lean module is added.  It certifies the *coordinate identification*
+— which is the card's actual theorem — not the RH-bearing implication `(17)`, which stays an open
+gate.
+
+## Lean status
+
+Module `formal/GaloisForLFunctions/RHTower/CCMCausalPickAffineConjugacy.lean` (wired, axiom-clean,
+9 declarations).
+
+- `affineEmbed`, **`neg_I_mul_affineEmbed`** — equation `(9)` and the identity
+  `-i j_omega(z) = 1/2 + omega + z` that drives everything.
+- `shiftedXiQuotient` (the card's `Theta_omega`), `causalPhi` (the card's `Phi_omega`), and
+  **`shiftedXiQuotient_comp_affineEmbed`** — equation `(11)`: the affine embedding identifies the
+  shifted-Xi quotient with the causal quotient, with both arguments landing on `1 + z` and
+  `1 + 2 omega + z`.
+- **`affineEmbed_cauchy_denominator`** — equation `(12)`:
+  `i/(j_omega z - conj (j_omega v)) = 1/(1 + 2 omega + z + conj v)`, an unconditional identity.
+- `causalPickKernel`, **`schur_pullback_eq_causalPickKernel`** — equation `(13)`: the pulled-back
+  generalized Schur kernel is exactly the causal Pick kernel.
+- **`causalPhi_eq_explicit`** — equation `(7)`: from the completed-zeta formula, the causal quotient
+  factors into `pi^omega`, the polar ratio, the Gamma ratio and the Euler ratio.  The `pi` factors
+  combine by `cpow_add`; nothing is approximated.
+- `conjugacyScalar` (the card's `A_omega`), **`conjugacyScalar_mul_causalPhi`** — equation `(5)`:
+  the explicit scalar conjugacy turns the completed quotient into the first term of the
+  signed-Möbius causal transform.
+- **`causalPhi_zero_shift`**, **`causalPickKernel_zero_shift`**, **`conjugacyScalar_zero_shift`** —
+  equation `(20)`: at `omega = 0` the quotient is constant `1`, the scalar factor degenerates to
+  `1/(1+z)`, and the whole Pick carrier collapses to the zero kernel.  The transverse information
+  is the cofinal filtration, not the endpoint.
+
+`#print axioms` on all nine declarations returns exactly `[propext, Classical.choice, Quot.sound]`.
+
+Imported, not reproved: the completed-zeta formula `(6)` (an explicit hypothesis `hXi` of the two
+theorems that need it), the signed-Möbius causal transform `(2)`, the generalized Schur index
+theorem and locality of negative squares behind `(14)`, and the Schur-multiplier property of
+`tau_omega` `(16)`.
+
 ## Gates
 
 - [x] causal quotient factored through the completed shifted quotient

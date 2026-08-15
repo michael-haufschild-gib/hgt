@@ -213,6 +213,38 @@ The formal tree contains finite abstract Pick/inertia facts but not Xi's analyti
 Euler-product evaluation, or Pontryagin-space locality. A finite matrix wrapper would not certify
 `(3)`, so no Lean file is added.
 
+**Superseded, 2026-08-15.**  A Lean module is added.  It does not claim `(3)`, which needs
+Pontryagin-space locality and stays an explicit import; it proves the ray restriction, the
+scalar-versus-kernel separation, and the positivity of every displayed Euler factor.
+
+## Lean status
+
+Module `formal/GaloisForLFunctions/RHTower/CCMEulerRayLoewner.lean` (wired, axiom-clean, 9
+declarations), over `RHTower/CCMEulerRayLogDerivativeIndex.lean`.
+
+- **`ray_cauchy_denominator`** — equation `(13)`: on the vertical ray `z = i y`, `w = i x` the
+  complex Cauchy denominator collapses, `i/(i y - conj (i x)) = 1/(x+y)`.
+- **`schur_ray_eq_loewner`** — equations `(9)` -> `(2)`: the generalized Schur kernel restricted to
+  the ray *is* the real Cauchy--Loewner kernel `(1 - f(x) f(y))/(x+y)`, with no complex geometry
+  left.
+- `loewnerKernel`, **`loewnerKernel_diagonal`** — the kernel `(2)` and its diagonal
+  `(1 - f(x)^2)/(2x)`.
+- `contractionMatrix`, **`det_contractionMatrix`**, **`not_posSemidef_contractionMatrix`** — the
+  card's decisive counterexample: `det (1 - r_i r_j)_{i,j<=2} = -(r_1 - r_2)^2`, so two distinct
+  values already break positivity.  Pointwise bounds `0 < f_omega < 1` carry no kernel information;
+  the complete Cauchy--Loewner geometry is required.
+- **`eulerFactor_arch_pos`**, **`eulerFactor_polar_pos`**, **`eulerFactor_gamma_pos`**,
+  **`eulerFactor_local_mem`** — every factor of the explicit formula `(16)` is positive, and each
+  local Euler factor lies strictly in `(0,1)`.  This is the "every matrix entry written using
+  positive convergent Euler factors" gate: only real arguments beyond the abscissa occur.
+
+`#print axioms` on all nine declarations returns exactly `[propext, Classical.choice, Quot.sound]`.
+
+Imported, not reproved: the generalized Schur index theorem `(11)`, locality of negative squares in
+the reproducing-kernel Pontryagin space `(14)`, principal-matrix interlacing with density of the
+rational sections `(6)`, and the Euler product `(15)` for `xi` itself.  The infinitesimal closure of
+the cofinal family is `ccm-infinitesimal-real-euler-ray-logderivative-index-law`, now stage 3.
+
 ## Gates
 
 - [x] complex Euler uniqueness region reduced to one vertical ray

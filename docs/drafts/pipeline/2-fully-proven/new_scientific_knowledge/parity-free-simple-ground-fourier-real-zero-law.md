@@ -339,3 +339,40 @@ No parity hypothesis is needed.
   unconditional finite ground shift, and simple-full-odd-ground adapter formalized in
   `CCMPublishedRestrictedWeilParityBlocks.lean`; no source visibility or normalization premise
   remains in the odd branch.
+
+### The variational engine of section 4 is now formal
+
+`HTGeometry/GroundGapCompression.lean` (axiom-clean, wired, built) supplies both of the steps that
+were listed as open, in the exact generality section 4 uses — a symmetric operator on a real inner
+product space, with no spectral theorem:
+
+    norm_sub_ground_proj_sq_le      a unit vector of Rayleigh quotient at most `lam + eps` is
+                                    within `eps/Delta` in squared norm of the ground line
+    tendsto_norm_sub_ground_proj    hence a minimizing sequence converges to the ground line
+    tendsto_norm_sub_ground         with nonnegative ground overlap it converges to `xi` itself,
+                                    which is exactly the mean-square convergence consumed by
+                                    `CCMCompactFourierMeanSquareZeroTransfer`
+    eq_zero_of_rayleigh_lt_of_inner_eq_zero,
+      finrank_le_one_of_rayleigh_lt a subspace whose Rayleigh quotient stays strictly below
+                                    `lam + Delta` meets the orthogonal complement of the ground only
+                                    in zero, hence is at most a line — the simple-floor selection
+
+What is still missing for the card is not an estimate but an object: the literal
+truncated-convolution operator on `L^2([-L/2, L/2])` together with its compressions to the
+symmetric Fourier spaces `E_N`, so that these two lemmas can be applied to it and the compressed
+matrices identified with the finite packet of `CCMPublishedRestrictedWeilParityBlocks.lean`.
+
+Added: `HTGeometry/SymmetricCompressionGround.lean` (`compress`, `inner_compress`,
+`compress_isSymmetric`, `exists_compressed_ground`, `finrank_le_one_of_compressed_rayleigh_lt`) —
+the compression of a symmetric operator to a subspace, the existence of its ground state on a
+finite-dimensional subspace, and the transfer of the gap statements to it; and
+`reflection_ground_eq_or_neg` in `GroundGapCompression.lean` — a simple eigenvector of an operator
+commuting with an involution is either even or odd, which is the last sentence of section 4.
+
+The literal infinite-dimensional operator these are to be applied to already exists in the corpus:
+`RHTower/CCMRestrictedWeilFriedrichsOperator.lean` builds `ccmRestrictedWeilOperator` with a
+compact resolvent and a ground eigenstate, and `RHTower/CCMRestrictedWeilGroundParity.lean` builds
+its reflection and the even/odd splitting of the source quadratic form.  What remains is the
+wiring: choose the symmetric Fourier compressions `E_N`, identify the compressed matrices with the
+published parity packet, and feed the two convergence lemmas into
+`compactFourier_limit_zero_im_eq_zero_of_meanSquare`.

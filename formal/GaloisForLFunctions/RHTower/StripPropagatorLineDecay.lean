@@ -18,7 +18,8 @@ holds for every pair.  The restriction to an outward tail in the paper is only h
 used, not what it requires.
 -/
 
-open Complex Set
+open Complex MeasureTheory Set
+open scoped ENNReal
 
 noncomputable section
 
@@ -107,5 +108,73 @@ theorem lintegral_sq_stripPropagator_apply_ne_top (hT : IsSelfAdjoint T)
     _ ≤ (K * (1 + |x|) ^ (-(1 / 2 + σ))) * ‖c‖ :=
         mul_le_mul_of_nonneg_right (hbound x) (norm_nonneg _)
     _ = K * ‖c‖ * (1 + |x|) ^ (-(1 / 2 + σ)) := by ring
+
+/-! ## The uniform bound on a bounded frequency window -/
+
+/-- **`(16)`'s propagator input.**  On a bounded frequency window the transport ratio is uniformly
+bounded, with the explicit constant `K(1+X)^p`.  No decay is used: the window contributes only its
+length, which is why the finite-interval estimate costs one power of the window and nothing more. -/
+theorem exists_bound_stripPropagator_window (hT : IsSelfAdjoint T)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z) {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
+    {W : ℝ} (hW : 0 ≤ W) :
+    ∃ M : ℝ, 0 ≤ M ∧ ∀ x t : ℝ, |x| ≤ W → |t| ≤ W →
+      ‖(stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)).comp
+          (stripPropagatorInv E T ((t : ℂ) + (σ : ℂ) * Complex.I))‖ ≤ M := by
+  obtain ⟨K, hK, hratio⟩ := exists_bound_stripPropagator_ratio hT hE hσ0 hσ1
+  refine ⟨K * (1 + W) ^ (1 / 2 + σ), by positivity, fun x t hx ht => ?_⟩
+  have hx0 : (0 : ℝ) < 1 + |x| := by positivity
+  have ht0 : (0 : ℝ) < 1 + |t| := by positivity
+  have hp : (0 : ℝ) < 1 / 2 + σ := by linarith
+  have hxle : (1 + |x|) ^ (-(1 / 2 + σ)) ≤ 1 := by
+    refine Real.rpow_le_one_of_one_le_of_nonpos ?_ (by linarith)
+    have := abs_nonneg x
+    linarith
+  have htle : (1 + |t|) ^ (1 / 2 + σ) ≤ (1 + W) ^ (1 / 2 + σ) :=
+    Real.rpow_le_rpow (by positivity) (by linarith) hp.le
+  have hxnn : (0 : ℝ) ≤ (1 + |x|) ^ (-(1 / 2 + σ)) := Real.rpow_nonneg hx0.le _
+  have htnn : (0 : ℝ) ≤ (1 + |t|) ^ (1 / 2 + σ) := Real.rpow_nonneg ht0.le _
+  calc ‖(stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)).comp
+          (stripPropagatorInv E T ((t : ℂ) + (σ : ℂ) * Complex.I))‖
+      ≤ K * ((1 + |t|) ^ (1 / 2 + σ) * (1 + |x|) ^ (-(1 / 2 + σ))) := hratio x t
+    _ ≤ K * ((1 + W) ^ (1 / 2 + σ) * 1) := by
+        refine mul_le_mul_of_nonneg_left (mul_le_mul htle hxle hxnn (by positivity)) hK.le
+    _ = K * (1 + W) ^ (1 / 2 + σ) := by ring
+
+/-- **The propagated boundary vector, quantitatively.**  The squared line mass of `H(·+iσ)c` is at
+most a fixed constant times `‖c‖²`, the constant being the mass of the weight at exponent `1+2σ`.
+This is used twice in the one-block estimate: once for the homogeneous datum and once for the
+boundary value accumulated at the edge of the frequency window. -/
+theorem exists_bound_lintegral_sq_stripPropagator_apply (hT : IsSelfAdjoint T)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z) {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ c : X,
+      (∫⁻ x : ℝ, ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I) c‖ₑ ^ 2)
+        ≤ ENNReal.ofReal (C * ‖c‖ ^ 2) := by
+  obtain ⟨K, hK, hbound⟩ := exists_bound_stripPropagator_line hT hE hσ0 hσ1
+  set M : ℝ≥0∞ := ∫⁻ x : ℝ, GaloisForLFunctions.HTGeometry.oneAddAbsWeight (2 * (1 / 2 + σ)) x
+    with hMdef
+  have hMfin : M ≠ ⊤ := by
+    rw [hMdef]
+    exact GaloisForLFunctions.HTGeometry.lintegral_oneAddAbsWeight_ne_top (by linarith)
+  refine ⟨K ^ 2 * M.toReal, by positivity, fun c => ?_⟩
+  have hpt : ∀ x : ℝ, ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I) c‖
+      ≤ (K * ‖c‖) * (1 + |x|) ^ (-(1 / 2 + σ)) := by
+    intro x
+    calc ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I) c‖
+        ≤ ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)‖ * ‖c‖ :=
+          ContinuousLinearMap.le_opNorm _ _
+      _ ≤ (K * (1 + |x|) ^ (-(1 / 2 + σ))) * ‖c‖ :=
+          mul_le_mul_of_nonneg_right (hbound x) (norm_nonneg _)
+      _ = (K * ‖c‖) * (1 + |x|) ^ (-(1 / 2 + σ)) := by ring
+  have hbase := GaloisForLFunctions.HTGeometry.lintegral_sq_globalPowerTail_le hpt
+  refine hbase.trans (le_of_eq ?_)
+  have hMeq : M = ENNReal.ofReal M.toReal := (ENNReal.ofReal_toReal hMfin).symm
+  rw [← hMdef]
+  calc ENNReal.ofReal ((K * ‖c‖) ^ 2) * M
+      = ENNReal.ofReal ((K * ‖c‖) ^ 2) * ENNReal.ofReal M.toReal := by rw [← hMeq]
+    _ = ENNReal.ofReal ((K * ‖c‖) ^ 2 * M.toReal) :=
+        (ENNReal.ofReal_mul (by positivity)).symm
+    _ = ENNReal.ofReal (K ^ 2 * M.toReal * ‖c‖ ^ 2) := by
+        congr 1
+        ring
 
 end GaloisForLFunctions.RHTower

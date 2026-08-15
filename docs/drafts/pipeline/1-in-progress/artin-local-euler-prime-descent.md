@@ -4,9 +4,9 @@
 - **Stage:** 1-in-progress
 - **Type:** THEOREM (local Artin infrastructure)
 - **Status:** `[LITERATURE] [PAPER-PROVED] [BRIDGE] [NOT NEW]`
-- **Statement:** the local polynomial
-  \(\det(1-T\rho(\mathrm{Frob}_Q)\mid V^{I_Q})\) is unchanged when `Q` is replaced by a
-  conjugate prime above the same base prime.
+- **Statement:** construct the local polynomial
+  \(\det(1-T\rho(\mathrm{Frob}_Q)\mid V^{I_Q})\) as an actual function of a base prime of a
+  number-field Galois extension, with no selected prime ideal above it in its public interface.
 
 ## Goal
 
@@ -55,7 +55,7 @@ by a base prime cannot be honestly defined before this theorem.
 
 ## Formalized sublayer
 
-`formal/GaloisForLFunctions/RHTower/ArtinLocalEulerPrimeTransport.lean` now proves the exact
+`formal/GaloisForLFunctions/RHTower/ArtinLocalEulerPrimeTransport.lean` proves the exact
 ideal-action transport lemmas
 
 ```text
@@ -67,9 +67,43 @@ inertia_map_stabilizer_conj:
 ```
 
 These use no postulated equivariance: membership is transported directly through the pointwise
-ideal action.  Targeted source check and leaf build passed; the axiom audit reports only
-`[propext, Classical.choice, Quot.sound]`.  The leaf is wired into `RHTower.lean` without an
-umbrella build.  The remaining invariant-space and Frobenius conjugacy steps are still open.
+ideal action.
+
+`formal/GaloisForLFunctions/RHTower/ArtinLocalEulerPrimeDescent.lean` completes the conjugate
+prime layer.  It defines the concrete linear equivalence
+`inertiaInvariantConjLinearEquiv` induced by `rho(tau)`, proves the induced endomorphisms are
+conjugate, transports residue-field finiteness via `Ideal.quotientEquiv`, and proves
+
+```text
+frobeniusInertiaEulerPolynomial_smul (R := R) tau Q rho
+  = frobeniusInertiaEulerPolynomial (R := R) Q rho.
+```
+
+The left side is not a new abstract local-data object: it is exactly the existing local polynomial
+at `tau • Q`, with its prime and finite-residue instances derived from `Q`.  Targeted source
+checks and leaf builds passed; axiom audits report only `[propext, Classical.choice, Quot.sound]`.
+Both leaves are wired into `RHTower.lean` without an umbrella build.
+
+The local base-prime carrier is now present in
+`formal/GaloisForLFunctions/RHTower/ArtinNumberFieldLocalEulerFactor.lean`:
+
+```text
+numberFieldFinitePlaceLocalEulerPolynomial :
+  HeightOneSpectrum (𝓞 K) → Representation ℂ G V → Polynomial ℂ
+```
+
+It chooses a maximal ideal above the finite base prime internally by integral going-up, derives
+its primality and finite residue quotient from actual number-field instances, and proves
+
+```text
+frobeniusInertiaEulerPolynomial_eq_numberFieldFinitePlaceLocalEulerPolynomial:
+  Q.LiesOver v.asIdeal →
+  frobeniusInertiaEulerPolynomial (R := 𝓞 K) Q ρ =
+    numberFieldFinitePlaceLocalEulerPolynomial v ρ.
+```
+
+Thus no upstairs prime occurs in the public finite-place factor, and every valid choice computes
+the same polynomial.  No global Euler product or analytic statement is implied yet.
 
 ## Log
 
@@ -77,3 +111,16 @@ umbrella build.  The remaining invariant-space and Frobenius conjugacy steps are
   Artin prime-choice theorem is present in the project.
 - 2026-08-15 — formalized the inertia and decomposition-stabilizer conjugation transport.  This
   closes the initial target but not local-polynomial prime-choice independence.
+- 2026-08-15 — formalized invariant-space/Frobenius conjugacy and the exact equality for
+  conjugate primes, with residue finiteness transported rather than assumed.  The remaining
+  `under R` transitivity and base-prime packaging are open.
+- 2026-08-15 — formalized the same-base-prime equality through
+  `Algebra.IsInvariant.exists_smul_of_under_eq`.  The equality is complete; only the actual
+  number-field base-prime carrier and its supplied prime-above existence remain on this card.
+- 2026-08-15 — formalized the number-field finite-place wrapper using a chosen maximal ideal above
+  a base maximal ideal and proved its choice independence from the same-base-prime theorem.
+  `lake env lean` and the targeted `lake build
+  GaloisForLFunctions.RHTower.ArtinNumberFieldLocalEulerFactor` passed.  Its axiom audit reports
+  only `[propext, Classical.choice, Quot.sound]`; it is wired into `RHTower.lean` without an
+  umbrella build.  Repository-wide formal lint remains blocked by unrelated concurrent modules,
+  so this card remains Stage 1 rather than claiming a whole-tree formal-gate pass.

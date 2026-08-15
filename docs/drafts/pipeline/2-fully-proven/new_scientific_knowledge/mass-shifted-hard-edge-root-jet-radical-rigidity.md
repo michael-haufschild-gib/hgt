@@ -586,3 +586,38 @@ supplied abstract hypotheses.
   energy \(r\gamma_r\), every nonterminal jet has an odd zero-energy twin, full-ground kernel
   dimension is at least \(1+2E\), and simple full ground forces every squared root strictly
   positive. Excess modes are now explicit; odd-sector admission is the remaining gate.
+
+## Lean status (updated)
+
+The literal form of `(RJRR.1)`-`(RJRR.2)` is now formal.  `d eta_sigma` is not an abstract measure:
+it is the explicit half-line density `V_sigma(sqrt u)/sqrt u` built from the archimedean rate and
+the finitely many prime frequencies below `2 sigma`, together with the polar atom of mass `2 pi` at
+`u = -1/4`, and `b_sigma` is its pairing.  See
+`RHTower/XiShiftedHardEdgeDensityMeasure.lean` (`routeUHardEdgeDensity`,
+`routeUHardEdgePairing`, `routeUHardEdgeEvenForm`, `routeUEvenWeil_eq`) and
+`HTGeometry/SquaredVariableSubstitution.lean` for the substitution `u = x^2` that identifies the
+spectral-line form with the half-line pairing.
+
+Given the standing situation of the card — nonnegativity of the form on the one-parameter families
+spanned by the divided descendants, and nullity of the state — the following are Lean-proved and
+axiom-clean in `RHTower/XiShiftedHardEdgeParityJet.lean`:
+
+| statement | Lean |
+|---|---|
+| `(RJRR.6)` a null state annihilates its own divided descendants | `routeUJetMoment_base_of_null` |
+| `(RJRR.7)` orthogonality across distinct roots | `routeUEvenForm_eq_zero_of_factor`, `routeUEvenForm_distinct_roots` |
+| `(RJRR.8)` the nonterminal flag lies in the radical | `routeUJetDescendant_diag_eq_zero`, `routeUEvenForm_eq_zero_of_diag` |
+| `(RJRR.9)` all moments below the terminal one vanish | `routeUJetMoment_eq_zero_of_null` |
+| `(RJRR.10)` the complete divided-jet Gram law | `routeUEvenForm_descendant_eq_zero`, `routeUJetGram_of_null` |
+| `(RJRR.11)` independence of the divided principal parts, single root | `linearIndependent_routeUJetDescendant`, `linearIndependent_routeUParityDirections` |
+| the parity lift `gamma_r -> r gamma_r` | `routeUOddForm_descendant`, `routeUOddForm_terminal` |
+| strictly positive roots under a nonvanishing terminal odd energy | `routeUJetRoot_nonneg`, `routeUJetRoot_pos` |
+
+The Cauchy--Schwarz bootstrap behind `(RJRR.9)` is isolated as
+`HTGeometry/PsdHankelJetVanishing.lean` (`sq_le_of_quadratic_nonneg`, `symmBilin_sq_le`,
+`psdHankel_jet_vanishing`, `psdHankel_gram_off_terminal`).
+
+What is still not formal is `(RJRR.5)` — nonnegativity of the form on the closed critical-type
+domain, which is an output of the hard-edge boundary theorem — and item 5, the discreteness of the
+localized operator's spectrum, which needs the Friedrichs operator of the form on its closed
+domain (`HTGeometry/FriedrichsFormOperator.lean` supplies the general construction).

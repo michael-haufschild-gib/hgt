@@ -8,6 +8,12 @@ import GaloisForLFunctions.RHTower.SelbergClass.GammaPoleOrder
 import GaloisForLFunctions.RHTower.SelbergClass.InvariantRootNumber
 import GaloisForLFunctions.RHTower.SelbergClass.FunctionalEquationLocal
 import GaloisForLFunctions.RHTower.SelbergClass.GammaCriticalLine
+import GaloisForLFunctions.RHTower.SelbergClass.AsymmetricFunctionalEquation
+import GaloisForLFunctions.RHTower.SelbergClass.GammaTailRegularity
+import GaloisForLFunctions.RHTower.SelbergClass.GammaTailDecay
+import GaloisForLFunctions.RHTower.SelbergClass.GammaTailDecayProduct
+import GaloisForLFunctions.RHTower.SelbergClass.AffineGammaPoleLattice
+import GaloisForLFunctions.RHTower.SelbergClass.AffineGammaResidues
 import GaloisForLFunctions.RHTower.SelbergClass.TwistFrontierData
 
 /-!

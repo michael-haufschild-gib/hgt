@@ -49,10 +49,24 @@ silently normalize them away.
   `MultipleStandardTwistInitialHolomorphy.lean`.
 - Initial-domain analytic uniqueness for global candidates:
   `MultipleStandardTwistContinuationUniqueness.lean`.
+- Actual `X`-uniform local bound for the damped family on initial-domain balls:
+  `MultipleStandardTwistNormalFamily.lean`.
+- Actual uniform undamping on those initial-domain balls:
+  `MultipleStandardTwistInitialUndamping.lean`.
+- Actual locally-uniform undamping on the full exact initial domain:
+  `MultipleStandardTwistInitialUndampingLocal.lean`.
+- Finite-dimensional locally-uniform Weierstrass closure and open-set
+  identification of a subsequential limit:
+  `HTGeometry/MultivariableVitali.lean`.
 - Complex-ray Mellin inversion at the `2 + it` line:
   `ComplexRayMellinInversion.lean`.
+- Complex-ray Mellin inversion on every positive vertical line:
+  `ComplexRayMellinInversionGeneralLine.lean`.
 - Termwise Mellin–Barnes identity:
   `MultipleStandardTwistMellinBarnes.lean`.
+- General-positive-line Mellin–Barnes L¹ Fubini, including the exact shifted
+  initial-domain condition and an explicit common starting line:
+  `MultipleStandardTwistMellinBarnesGeneralLine.lean`.
 - Function-level multivariable quotient object and gamma-cleared denominator:
   `MeromorphicTensor.lean`, `MultipleStandardTwistGammaClearing.lean`.
 - Finite tangent-resonance projector for residue fibres:
@@ -65,24 +79,44 @@ silently normalize them away.
 - Codiscrete-to-pointwise functional-equation localization and critical-line
   analytic locus:
   `RHTower/SelbergClass/{FunctionalEquationLocal,GammaCriticalLine}.lean`.
+- Source-normalized asymmetric functional equation on its explicit
+  pair-analytic, Gamma-pole-free locus:
+  `RHTower/SelbergClass/AsymmetricFunctionalEquation.lean`.
+- Explicit finite Gamma-data height bound placing high vertical points in that
+  locus:
+  `RHTower/SelbergClass/GammaTailRegularity.lean`.
+- Source-L3 polynomial-times-exponential decay for each actual asymmetric
+  Gamma pair, using the valid lower height `K`:
+  `RHTower/SelbergClass/GammaTailDecay.lean`.
+- Finite-product assembly of that L3 decay at the exact total Gamma rate:
+  `RHTower/SelbergClass/GammaTailDecayProduct.lean`.
+- Exact simple affine-Gamma pole lattice, spacing, and vertical-line
+  uniqueness for contour bookkeeping:
+  `RHTower/SelbergClass/AffineGammaPoleLattice.lean`.
+- Exact affine-Gamma principal coefficients
+  `(-1)^n/(n! b)` at that lattice:
+  `RHTower/SelbergClass/AffineGammaResidues.lean`.
 - Lean counterexample showing why an accumulating complex hyperplane is not a
   several-variable uniqueness set:
   `MultivariableVitaliAccumulationCounterexample.lean`.
 
 ### Still required for the published theorem
 
-1. General-line Mellin–Barnes sum–integral interchange for every real `c`
-   satisfying `c > max(0, (1 - Re s_i)/κ_i)`, matching source equation (3.4).
-   The existing `Re w = 2` theorem is only its initial-domain special case.
-2. Functional-equation transformation of each factor, with codiscrete pole
-   handling made compatible with the contour argument.
-3. Uniform vertical Gamma estimates and contour displacement, including all
-   residues crossed by the source contours.
-4. Local-uniform limiting argument as damping is removed; a genuine
-   several-complex-variable Vitali/normal-family theorem at the required
-   strength.
-5. Source residue formula, its polynomial factor, and the non-identically-zero
-   residue conclusion.
+1. Extend the high-vertical regularity result to every selected contour
+   segment and every deformation endpoint, then use the local asymmetric
+   functional equation there.
+2. Combine factorwise L3 Gamma-pair decay with the remaining twist factors,
+   prove line integrability and contour displacement, including all residues
+   crossed by the source contours.
+3. Local-uniform limiting argument as damping is removed.  The raw family
+   already converges uniformly to the initial tensor on initial-domain balls,
+   and the C^N Weierstrass closure/open-set uniqueness halves are formalized.
+   What remains is the source's uniform bound for contour-transformed
+   remainders on domains crossing the initial boundary, then normal-family
+   compactness there.
+4. Combine the now-formal affine-Gamma principal coefficients with all other
+   contour factors to derive the source residue formula, its polynomial factor,
+   and the non-identically-zero residue conclusion.
 
 No item may be represented by a theorem parameter asserting a continuation,
 residue formula, spectral set, or normal-family bound.
@@ -115,7 +149,7 @@ The finite-fibre trace is therefore a `[BRIDGE]`, while this card is
   finite-fibre trace prerequisites formalized
 - [x] Initial-domain (`Re w = 2`) Mellin–Barnes L¹ Fubini module integrated
   and audited
-- [ ] General-line Mellin–Barnes formula matching source (3.4)
+- [x] General-line Mellin–Barnes formula matching source (3.4)
 - [ ] Functional-equation contour transformation formalized
 - [ ] Contour shift and source residue accounting formalized
 - [ ] Several-variable undamping/Vitali argument formalized
@@ -140,7 +174,9 @@ The finite-fibre trace is therefore a `[BRIDGE]`, while this card is
   replacement is an honest finite-dimensional polydisc normal-family layer:
   analytic certificates for the damped sums, compact-polydisc equicontinuity,
   Arzelà–Ascoli plus diagonal exhaustion, and a Cⁿ Vitali uniqueness theorem.
-  No current module supplies this result.
+  `HTGeometry/MultivariableVitali.lean` now supplies the closure and
+  open-set-uniqueness halves after such a locally uniform limit is obtained;
+  it deliberately does not supply normality or compactness.
 - 2026-08-15 — source-audit correction for arXiv:2603.13885v1: Lemma 7 states
   a several-variable Vitali theorem from convergence on a set with merely an
   accumulation point.  That is false in `C^N` for `N ≥ 2`: a coordinate
@@ -164,6 +200,94 @@ The finite-fibre trace is therefore a `[BRIDGE]`, while this card is
   explicit spectral-value map.  This supplies the uniform spectral separation
   needed to choose the source damping threshold; it supplies no contour shift
   or residue formula.
+- 2026-08-15 — `ComplexRayMellinInversionGeneralLine.lean` proved the exact
+  Gamma inversion formula on every line `Re w = c > 0`, with the sector Gamma
+  majorant needed for later Mellin--Barnes bounds.  It is source-checked,
+  exact-module-built, and axiom-clean.  This closes the one-variable inversion
+  prerequisite only; the shifted-series Fubini interchange remains the next
+  open source equation.
+- 2026-08-15 — `RHTower/SelbergClass/AsymmetricFunctionalEquation.lean`
+  formalized K–P (2.2) on the explicit intersection of the pair-analytic
+  completed-functional-equation locus and the two-Gamma-factor pole-free
+  locus.  This corrects the totalized-Gamma issue: it is not an everywhere
+  pointwise identity.  Contour regularity, decay, deformation, and residues
+  remain open.
+- 2026-08-15 — `HTGeometry/MultivariableVitali.lean` formalized the valid
+  C^N Weierstrass step: a locally uniformly convergent holomorphic sequence
+  has an analytic limit, and convergence on a nonempty open subset identifies
+  that limit on a preconnected domain.  It supplies neither a normal-family
+  theorem nor a locally-uniform subsequence, so it does not close the
+  undamping argument.
+- 2026-08-15 — `RHTower/SelbergClass/GammaTailRegularity.lean` proved a
+  source-correct high-tail condition: if every `|Im μ_j| < λ_j |t|`, then the
+  point `σ + it` lies in the local asymmetric-FE regular locus, provided its
+  displayed continuation singularity is excluded.  The finite sum height
+  `Σ |Im μ_j|/λ_j < |t|` discharges that exception even for rank-zero data.
+  This resolves only tail pole avoidance; it does not prove a contour shift.
+- 2026-08-15 — `MultipleStandardTwistMellinBarnesGeneralLine.lean` proved
+  source (3.4)'s L¹ sum--integral interchange for every `c > 0` with
+  `1 < Re(s_i) + κ_i c` in every coordinate.  Its exact coefficient identity
+  shifts by `κ_i c`, and the explicit
+  `c_*(s) = 1 + Σ_j max(0, (2 - Re(s_j))/κ_j)` is positive and satisfies all
+  shifted inequalities.  This closes the starting-line/Fubini step only;
+  contour deformation and undamping remain open.
+- 2026-08-15 — `MultipleStandardTwistNormalFamily.lean` proved an exact
+  initial-domain survivor of the failed global-normality attempt: on every
+  ball whose `2r` left shift remains coordinatewise to the right of `1`, the
+  actual family `D.damped X` has one summable majorant independent of `X>0`.
+  The direct bound necessarily stops there: outside the initial domain its
+  constants degenerate as `X → ∞`.  The missing source object is the
+  contour-transformed, residue-subtracted remainder bounded in (3.34)/(3.38).
+- 2026-08-15 — **[CONJECTURE → FAIL/PIVOT]** The raw damped series might be
+  uniformly locally bounded on a continuation domain for free.  Direct
+  majorization proves it only on the initial domain and loses control as
+  `X → ∞` beyond that domain.  **Pivot:** construct and bound the actual
+  functional-equation/contour-shift remainder before invoking C^N compactness;
+  no generic normal-family premise is introduced.
+- 2026-08-15 — `MultipleStandardTwistInitialUndamping.lean` completed the
+  positive initial-domain half: `D.damped X` tends uniformly to `D.initial`
+  as `X → ∞` on every ball with coordinatewise `Re(s₀_i - 2r) > 1`.
+  Its finite-head plus summable-tail proof gives the exact nonempty open
+  convergence set needed for the repaired C^N uniqueness step, but supplies
+  no bound past that domain.
+- 2026-08-15 — `MultipleStandardTwistInitialUndampingLocal.lean` upgraded
+  the ball theorem to `TendstoLocallyUniformlyOn` on the full exact initial
+  domain by taking the finite coordinatewise distance to its boundary.  Thus
+  the source's overlap `D ∩ C_1^N` has a Lean-valid local-uniform anchor;
+  only continuation-side transformed bounds and compactness are missing.
+- 2026-08-15 — `RHTower/SelbergClass/AffineGammaPoleLattice.lean` solved the
+  affine Gamma-pole geometry used by the contour variable: poles of
+  `Γ(b w + A)` are exactly `w = -(A+n)/b`, are simple, have one fixed
+  imaginary level, and for `b>0` have strictly decreasing real coordinates
+  with spacing `1/b`.  This is the residue-bookkeeping layer only; no residue
+  coefficient or contour displacement is claimed.
+- 2026-08-15 — `RHTower/SelbergClass/GammaTailDecay.lean` proved the
+  source-L3 bound for one actual asymmetric Gamma pair.  Under the explicit
+  factorwise `K` condition, its norm is polynomial in `v` times
+  `exp(-π λ_j κ v / 2)` for every `v ≥ K`.  The proof uses `K` throughout and
+  deliberately does not claim that the source's printed (3.6) supplies this
+  condition or that a full contour integral is controlled.
+- 2026-08-15 — `RHTower/SelbergClass/AffineGammaResidues.lean` proved the
+  exact principal coefficient of every affine Gamma pole:
+  `(w-p_n) Γ(bw+A) → (-1)^n/(n! b)` at `p_n = -(A+n)/b`.  This includes
+  negative slopes needed by reflected factors.  It is a local residue fact;
+  multiplying it by the remaining contour factors and invoking a contour
+  residue theorem are still required.
+- 2026-08-15 — `RHTower/SelbergClass/GammaTailDecayProduct.lean` assembled
+  the pairwise L3 estimate over all Gamma factors: the actual finite Gamma
+  product is bounded by `C v^N exp(-π (Σ_j λ_j) κ v / 2)` for `v ≥ K`, under
+  the explicit per-factor K-height inequalities.  Sine, conductor, phase,
+  Dirichlet, and contour factors remain deliberately outside this theorem.
+- 2026-08-15 — contour API audit identified the first finite, source-faithful
+  `[BRIDGE]`: for `J_{ξ,η}(w)=Γ(ξ-w)Γ(w)η^{-w}`, a finite rectangle from
+  `Re w=-m-1/2` to `Re w=c` should equal
+  `Σ_{n=0}^m (-1)^n Γ(ξ+n)η^n/n!` under `0<c<Re ξ`.  The existing
+  `RectangleIntegral'_eq_sumResiduesIn` API and the new affine-Gamma residue
+  theorem exactly support that statement once its concrete meromorphicity,
+  boundary, and finite-pole proofs are supplied.  This is not Barnes Lemma 6
+  or a K–P contour shift.  The infinite-line passage remains blocked by a
+  two-Gamma tail estimate for `|arg η|<π`; the existing one-Gamma sector bound
+  only covers `|arg η|<π/2`, while the source's `η=iω_X` need not lie there.
 
 ## Source-correction ledger
 
@@ -180,9 +304,9 @@ The finite-fibre trace is therefore a `[BRIDGE]`, while this card is
 - **Global-cover gap.** The source first restricts `D` to coordinatewise
   `Re s ≤ 3/2` but then says such `D` can be arbitrarily large to cover all
   `C^N`; that cannot cover mixed points such as `(3,0,…)`.  A variable
-  starting line `c_*(s)` and arbitrary bounded connected polydiscs is a
-  plausible repair, but it remains an unproved repair rather than a formalized
-  source theorem.
+  starting line `c_*(s)` is now formalized and supplies the needed initial
+  Mellin line at every point.  The separate assertion that contour/undamping
+  arguments cover arbitrary connected polydiscs remains unproved.
 - **Hidden arithmetic bounds.** The strict-sublevel finiteness of
   `{n : α_n < a}` and a positive right gap above a spectral value were used
   silently to choose uniform damping thresholds.  They are now direct Lean

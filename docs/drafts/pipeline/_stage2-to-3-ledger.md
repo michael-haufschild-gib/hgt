@@ -45,6 +45,7 @@ Promotion recipe:
 | `beta-threshold-complete-incidence-law` | all six Lean layers: Hoeffding sandwich, beta-density derivative, coarea `(12)`/`(17)`, return-paid-once `(18)`, replica projector `(19)`–`(22)`, monomial separation `(25)`–`(26)` | `HTGeometry/BinomialTailBetaThreshold`, `BetaThresholdIncidenceLaw`, `BoundedReplicaThresholdProjector` (all new) |
 | `two-replica-singlet-pauli-hall-expansion` | `(7)` on any register, global `(11)`, both directions of `(12)`, and the assembly `(14)`–`(17)` giving the boxed `(4)` | `HTGeometry/TwoReplicaTensorHilbertSchmidt`, `TwoReplicaEdgeHallExpansion`, `TwoReplicaEdgeHallAssembly` (all new) |
 | `traceless-local-two-query-haar-separation-law` | identity-coordinate gap; the literal product-stabilizer score with its transfer expansion `(5)`; the exact Haar value `(3)` for that score; the comparison capstone `(4)` | `HTGeometry/TracelessPauliIdentityCoordinate`, `ProductStabilizerPhysicalScore`, `FiniteUnitaryHaarReindex`, `RankOneProjectionConjugation`, `LiteralTwoQueryHaarBenchmark` (all new) |
+| `positive-source-weights-do-not-bound-loewner-budget` | arbitrary-source Finsupp Loewner assembly, unbounded positive-cone scaling obstruction, and exact normalized mass-cap equivalence | `RHTower/PositiveSourceLoewnerBudget` (new) |
 
 | `burnol-divided-shift-evaluation-separation-law` | none (verified only) | `RHTower/BurnolDividedShiftEvaluationSeparation` |
 | `burnol-holonomy-cauchy-sector-separation` | none (verified only) | `RHTower/BurnolHolonomyCauchySectorSeparation` |
@@ -1761,3 +1762,63 @@ Remaining for Theorem B: the bipartite reduction `(10)`, the second pairing `(12
 (`E_a q(a)² ≤ 2/d_A²`, which is the same lemma applied on the `A` factor to the row norms of `e`),
 the assembly to `(9)` `E ∑_j |⟨e_j, χ_A⊗χ_B⟩|⁴ ≤ 4/D`, and the transfer from Steinhaus phases to
 four-wise-independent cubic-phase seeds.
+
+### Update: bipartite product phase seeds and the torus spectral gap (2026-08-15)
+
+Three new modules, all wired into `GaloisForLFunctions/HTGeometry.lean`, all axiom-clean
+(`propext`, `Classical.choice`, `Quot.sound`):
+
+`HTGeometry/SpectralCollisionCovariance.lean`
+
+- `spectralCollision e ψ = ∑_j |⟨e_j, ψ⟩|⁴` — the card object `C_H(ψ)` written against an arbitrary
+  family rather than an eigenbasis;
+- `finiteComplexInner_conjTranspose_mulVec` and **`spectralCollision_conjTranspose_mulVec`** —
+  the unitary covariance `C_{U†HU}(ψ) = C_H(Uψ)` used by step `(23)` of
+  `local-clifford-return-excised-phase-incidence-law`;
+- `sum_spectralCollision_prodStab_le` — `(24)`–`(26)` in collision language:
+  `∑_{σ ∈ (Fin 6)^n} C_e(φ_σ) ≤ |D| 2^n`.
+
+`HTGeometry/BipartitePhaseSeedCollision.lean` — **Theorem B `(9)` of
+`weak-cut-complexity-onset-capacity-separation-law` is closed**:
+
+- `integral_box_normSq_trigLift_le_mul` — the general Parseval bound: if every frequency of a
+  character combination is carried by at most `N` terms then the mean square is at most
+  `N ∑ ‖a_p‖²`.  (This subsumes the pair count of `SteinhausFourthMoment`.)
+- `prodPairFreq`, `pairFreq_inl_of_prodPairFreq`, `pairFreq_inr_of_prodPairFreq`,
+  `card_filter_prodPairFreq_le` — the squared bipartite pairing has frequency
+  `⟨x⟩+⟨x'⟩+⟨y⟩+⟨y'⟩`, which determines both factor pairs as *unordered* pairs, so at most four
+  terms share it;
+- `phaseVec`, `prodPhaseSeed`, `sum_normSq_prodPhaseSeed`;
+- `integral_box_inner_phaseVec_fourth_le`, `integral_box_inner_prodPhaseSeed_fourth_le` and
+  **`integral_box_sum_inner_prodPhaseSeed_fourth_le`**:
+  `E_{h_A,h_B} ∑_j |⟨e_j, χ_A ⊗ χ_B⟩|⁴ ≤ 4|ι|/D²`, which at `|ι| = D` is the card's boxed `4/D`.
+
+The paper proof factors this through `(10)`–`(12)` (a conditional `B`-pairing followed by an
+`A`-pairing).  The Lean proof does the single four-fold pairing count directly on the product index,
+so `(10)`–`(12)` are not separate declarations: no Fubini split of the two phase families is needed.
+
+`HTGeometry/TorusTrigPoincare.lean` — the spectral gap of the unit torus:
+
+- `freqBlock` and `sum_ite_freq_eq_sum_freqBlock` — every frequency-diagonal quadratic form
+  regroups as a nonnegative weighted sum of squared fibre coefficients;
+- `integral_box_normSq_trigLift_eq_sum_freqBlock`, `integral_box_trigLift_eq_freqBlock_zero`;
+- `freqNormSq`, `one_le_freqNormSq` — a nonzero integer frequency has length at least one;
+- `integral_box_normSq_pderiv_trigLift` and
+  **`variance_trigLift_le_sum_integral_normSq_pderiv`** — the Poincaré inequality
+  `Var f ≤ (2π)^{-2} ∑_j ∫ ‖∂_j f‖²`, which is `(12)` of
+  `cubic-phase-seeded-static-local-full-scale-plateau-law`.
+
+`HTGeometry/PhaseSeedCollisionMoments.lean` — Theorem B of the cubic-phase card, mean part:
+
+- `uniformPhaseWeights`, `uniformPhaseSeed` — the equal-amplitude independent-phase seed as the
+  phase orbit of the uniform spectral weight;
+- `integral_box_fidelity_uniformPhaseSeed_pow_le` — the normalized replica moment
+  `E |⟨seed, z⟩|^{2r} ≤ r!/D^r`, whose cases `r = 2, 3` are the card's `(11)` and `(14)`
+  (`integral_box_fidelity_uniformPhaseSeed_sq_le`, `..._cube_le`);
+- **`integral_box_phaseCollision_le`** — `E_ζ C_e(χ_ζ) ≤ 2|ι|/D²`, i.e. the mean half of the
+  card's boxed `(8)` at `|ι| = D`.
+
+Still remaining for the cubic-phase card: the variance half of `(8)` (needs `(13)`, the derivative
+bound `∑_a |∂_a f|² ≤ 16 ∑_j |y_j|⁶`, and unitarity), Theorem A (Reed–Muller `RM(3,n)^⊥` minimum
+weight sixteen, hence fifteen-wise independence), the finite-to-continuous moment transfer, and
+Theorem C, which composes the two stage-2 parents.

@@ -1,9 +1,9 @@
 # The exact high radial first row is summable by bounded variation
 
 - **ID:** `ccm-exact-high-radial-first-row-bv-bound`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper), `[BRIDGE]`
-- **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
+- **Stage:** 3 — formalized in Lean 4
+- **Type:** THEOREM (paper) / THEOREM (Lean), `[BRIDGE]`
+- **Scientific status:** `[PROVED HERE] [LEAN-PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent theories:** Dunster's pole-uniform Bessel and exterior Liouville--Green expansions,
   exact interaction-picture transport, and nonstationary integration by parts
 - **Statement:** For the actual constrained prolate source and every
@@ -255,18 +255,110 @@ With `B = O(√d₁ c)` from `(7)` — the composition bound above with `Q′ = 
 - [x] the integration by parts `(10)` with the phase lower bound `(4)` and curvature `(5)`
 - [x] the exterior-ray form of the estimate
 - [x] the truncated-divisor weighted high tail `(13)` and its vanishing
-- [ ] the endpoint layer of `(7)` for the *actual* first factor: on `c²(x−1) ≤ 1` the Bessel
-  amplitude has the `(x−1)^{-1/4}` singularity, so the half-power symbol bound
-  `|U| ≤ Q/√x` used by `firstRowWeight_symbol_bounds` does not hold there and the analytic
-  coordinate `η = ξ_c²` must be used instead.  Everything on the complement is discharged.
+- [x] the endpoint layer of `(7)` for the *actual* first factor — closed by
+  `BesselEndpointVariation`, `XiAmplitudeEndpointSymbol`, `FirstRowModelVariation`,
+  `FirstRowModelSymbol` and `HighRadialFirstRowEntry`; see the two progress sections below.
+  The premise of this gate was wrong: Dunster's *pole-uniform* amplitude has no `(x−1)^{-1/4}`
+  singularity (it tends to `1` at the turning point), and `xiAmplitude_le` already held for every
+  `x > 1`.  What genuinely needed proving was the Bessel side, `|J₀′(v)| ≤ 2|v|/π`.
 
-### Residue
+### Residue (resolved)
 
-What the module does **not** yet do is name the corpus's concrete first-row factor as the `U` of
-`firstRowWeight_symbol_bounds`.  Away from the endpoint layer the two inputs it needs are already
-corpus-owned — the Liouville–Green amplitude bounds `abs_xiAmplitude_le_four`,
-`abs_xiAmplitudeDeriv_le` (`RHTower/XiAmplitudeDecay.lean`) and the exterior symbol record
-`symbolTwoBranch_radialPSWF` (`RHTower/RadialSymbolTwoBranchBound.lean`) — so the missing step is
-exactly the endpoint layer, where `RHTower/CCMRadialProlateEndpointLayer.lean` and
-`RHTower/CCMFirstRowEnvelopeTail.lean` already carry the `(x−1)^{-1/4}` analysis used by the *low*
-first row.
+The residue recorded here — naming the corpus's concrete first-row factor as the `U` of
+`firstRowWeight_symbol_bounds` — is closed by `FirstRowModelVariation`, `FirstRowModelSymbol` and
+`HighRadialFirstRowEntry` below.
+
+## Lean progress — the endpoint layer of `(7)`
+
+The residue recorded above was the endpoint layer: on `c²(x−1) ≤ 1` the amplitude bound
+`|U| ≤ Q/√x` used by `firstRowWeight_symbol_bounds` is not the right shape, because the
+differentiated Bessel factor is what carries the bandwidth there.  Two modules close it.
+
+`GaloisForLFunctions/RHTower/BesselEndpointVariation.lean` (wired, axiom-clean):
+
+```text
+integral_sin_zero_pi                  ∫₀^π sin θ dθ = 2
+abs_besselJ0Deriv_le_of_bound         a pointwise majorant M·sin θ of the integrand of
+                                      J₀′(v) = −(1/π)∫₀^π sin θ · sin(v sin θ) dθ gives |J₀′| ≤ 2M/π
+abs_besselJ0Deriv_le                  |J₀′(v)| ≤ 2/π                       (globally)
+abs_besselJ0Deriv_le_mul_abs          |J₀′(v)| ≤ 2|v|/π                    (flat at the origin)
+integral_abs_deriv_besselModulated_le
+    for |A| ≤ Q, |A′| ≤ Q′ and a nonnegative increasing phase Θ,
+      ∫_a^b |(A·J₀(cΘ))′| ≤ Q′·(b − a) + (Q c²/π)·(Θ(b)² − Θ(a)²)
+```
+
+The point is `abs_besselJ0Deriv_le_mul_abs`: the Bessel comparison function is **flat** at the
+turning point, because its argument `cξ` vanishes there.  So the differentiated Bessel term is an
+exact derivative, `|J₀′(cΘ)|·cΘ′ ≤ (2c²/π)·ΘΘ′ = (c²/π)(Θ²)′`, and its total variation over the
+endpoint layer is `(c²/π)ξ(b)²` — bounded precisely where `cξ` is.  This is the card's "analytic
+endpoint coordinate `η = ξ_c²`" step, with an explicit constant and no cancellation.
+
+`GaloisForLFunctions/RHTower/XiAmplitudeEndpointSymbol.lean` (wired, axiom-clean) supplies the
+amplitude side on the whole ray, which the corpus had only beyond the second dilation:
+
+```text
+abs_xiAmplitude_le_two_div_sqrt   |A_s(x)| ≤ 2/√x        for every x > 1
+abs_xiAmplitude_le_two            |A_s(x)| ≤ 2           for every x > 1
+abs_xiAmplitudeDeriv_le_near      |A_s′(x)| ≤ 6          for 1 < x ≤ 2
+abs_xiAmplitudeDeriv_le_six       |A_s′(x)| ≤ 6          for every x > 1
+```
+
+The amplitude bound needed no new analysis — `xiAmplitude_le` already holds for `1 < x`, so the
+`x ≥ 2` restriction in `abs_xiAmplitude_le_four` was an artefact of its statement.  The derivative
+bound at the turning point is the corpus's `abs_phaseLogDefect_le_near` together with an elementary
+rational estimate on `x/(x²−s)`, extracted from the inline argument inside
+`ProlateDunsterComparisonBridge`.
+
+With these, both inputs of `(7)` are corpus-owned on all of `[1,∞)`: the amplitude is a half-power
+symbol with a bounded derivative, and the Bessel modulation contributes a variation of
+`O(c²ξ²) = O(1)` on the endpoint layer and `O(c)` beyond it.
+
+## Lean progress — `(12)` for the actual leading factor
+
+Three further modules turn the machinery into the card's own estimate for the concrete first-row
+factor `U = A_s·J₀(c ξ_s)`.
+
+`GaloisForLFunctions/RHTower/FirstRowModelVariation.lean` (wired):
+
+```text
+firstRowModel s c x       = xiAmplitude s x * lgBesselModel s c x
+firstRowModelDeriv s c x  = xiAmplitudeDeriv s x * lgBesselModel s c x
+                              + xiAmplitude s x * lgBesselModelDeriv s c x
+hasDerivAt_firstRowModel
+integral_abs_firstRowModelDeriv_le   (0 ≤ s ≤ 1/2, 0 ≤ c, 1 < a ≤ b)
+    ∫_a^b |U′| ≤ 6 (b − a) + (2c²/π)(ξ_s(b)² − ξ_s(a)²)
+```
+
+The instantiation is exact rather than approximate: the corpus's `lgBesselModelDeriv` is
+*definitionally* `J₀′(cξ_s)·(c ξ_s′)`, which is the shape `integral_abs_deriv_besselModulated_le`
+consumes, so `(7)` for the leading factor is a substitution with `Q = 2`, `Q′ = 6`.
+
+`GaloisForLFunctions/RHTower/FirstRowModelSymbol.lean` (wired):
+
+```text
+xiSpeed_le_four_thirds        ξ_s′(x) ≤ 4/3        for x ≥ 2
+abs_firstRowModel_le          |U(x)| ≤ 2/√x        for x > 1
+abs_firstRowModelDeriv_le     |U′(x)| ≤ (4 + 16c/(3π))/√x   for x ≥ 2
+```
+
+Beyond the second dilation the flatness is not needed: the phase speed is bounded, so
+differentiating the Bessel factor costs exactly one power of the bandwidth — which is where the
+`O(c)` of the budget comes from, and nowhere else.
+
+`GaloisForLFunctions/RHTower/HighRadialFirstRowEntry.lean` (wired):
+
+```text
+firstRowWeight s c A x       = U(x)·A(x)/x
+firstRowWeightDeriv
+hasDerivAt_firstRowWeight
+bvWeight_firstRowWeight
+    BVWeight a b (2(2R) + ((4 + 16c/(3π))R + 2R′ + 2R)) V V′   and   ∫|V| ≤ 2(2R)
+abs_integral_highRadial_firstRowEntry_le  (0 ≤ s ≤ 1/2, 0 < c, 2 ≤ r, 2 ≤ a ≤ b) :
+    |∫_a^b U(x)A(x)/x · cos(c ξ_s(r x) + φ) dx|
+      ≤ ((2(2R) + ((4 + 16c/(3π))R + 2R′ + 2R))/r + 16(2(2R))/(9r³))/c
+```
+
+Since the budget is `O(c)` and the estimate divides by `c·r`, the entry is `O(1/r)`, and the outer
+`1/r` normalization of the exterior expansion `(2)` gives the card's `(12)`, `|G_λ(1,k)| ≤ C d₁/k²`.
+The only hypotheses left on the second factor are its own half-power symbol bounds `|A| ≤ R/√x`,
+`|A′| ≤ R′/(x√x)`, which is exactly the exterior record the sector-bound card already owns.

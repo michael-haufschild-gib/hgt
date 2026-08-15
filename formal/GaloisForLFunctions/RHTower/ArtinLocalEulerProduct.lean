@@ -11,6 +11,7 @@ submodules; it introduces no global L-function or analytic interface.
 -/
 
 open Polynomial Matrix
+open scoped Pointwise
 
 noncomputable section
 
@@ -70,5 +71,30 @@ theorem localEulerPolynomial_prod
   rw [invariantsProdLinearEquiv_conj_toInvariants]
   rw [LinearMap.charpoly_prodMap]
   exact Polynomial.reverse_mul_of_domain _ _
+
+section Arithmetic
+
+variable {R S G : Type u}
+variable [CommRing R] [CommRing S] [Algebra R S]
+variable [Group G] [Finite G] [MulSemiringAction G S] [SMulCommClass G R S]
+variable [Algebra.IsInvariant R S G]
+variable [Module ℂ V] [FiniteDimensional ℂ V]
+variable [Module ℂ W] [FiniteDimensional ℂ W]
+
+/-- Actual Frobenius--inertia local Euler polynomials multiply under direct sums of Artin
+representations. -/
+theorem frobeniusInertiaEulerPolynomial_prod
+    (Q : Ideal S) [Q.IsPrime] [Finite (S ⧸ Q)]
+    (ρV : Representation ℂ G V) (ρW : Representation ℂ G W) :
+    frobeniusInertiaEulerPolynomial (R := R) Q (ρV.prod ρW) =
+      frobeniusInertiaEulerPolynomial (R := R) Q ρV *
+        frobeniusInertiaEulerPolynomial (R := R) Q ρW := by
+  exact localEulerPolynomial_prod
+    (ρV.comp (MulAction.stabilizer G Q).subtype)
+    (ρW.comp (MulAction.stabilizer G Q).subtype)
+    (Q.inertia (MulAction.stabilizer G Q))
+    (arithmeticFrobeniusInStabilizer (R := R) (G := G) Q)
+
+end Arithmetic
 
 end GaloisForLFunctions

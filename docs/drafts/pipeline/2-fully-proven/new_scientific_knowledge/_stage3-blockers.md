@@ -352,3 +352,211 @@ boundary terms vanish because `1 − t²` does), followed by its `c → ∞` deg
 oscillator.  That layer — `L_c` commutes with `T_λ`, its spectrum is simple, and its eigenfunctions
 converge to Hermite functions after the parabolic rescaling — is the next brick for these three
 cards, and mathlib has none of it.
+
+### Correction — the prolate commuting-operator layer is already corpus-owned
+
+The note above ends by calling the commuting prolate differential operator "the next brick".  That
+is wrong: mathlib has none of it, but **this corpus already has all of it**, and a duplicate module
+written against that mistaken assumption was deleted.  What exists:
+
+```text
+HTGeometry/SturmSelfAdjoint.lean          integral_mul_sturm_symm — the Sturm operator crosses an
+                                          integral when the weight vanishes at both endpoints
+HTGeometry/ProlateKernelSymmetry.lean     prolateKernel, prolateSymbol, prolateSymbol_symm,
+                                          prolateOperator_kernel, prolateOperator_kernel_symm
+RHTower/ProlateCommutationKernel.lean     prolateAction_bandTransform_commutes, and
+                                          prolateAction_bandEigen_eq_smul: an eigenfunction of the
+                                          finite Fourier transform satisfies the prolate ODE
+RHTower/SlepianBandCommutation.lean       slepian_commutation, slepian_commutation_eigen
+RHTower/FuchsProlateScale.lean            prolateSLAction, hermiteSLAction, the exact scaling
+                                          identity prolateSLAction_sqrtScale, and the full
+                                          fuchsRate calculus
+RHTower/HermiteOscillatorEigen.lean       hermiteSLAction_hermiteFun (exact oscillator eigenvalue
+                                          −(2n+1)) and prolateSLAction_hermiteFun (the two-sided
+                                          quasimode at bandwidth c)
+RHTower/ProlateRadialODEBridge.lean       exists_global_even_radialProlate_of_signedMode
+RHTower/ProlateHermiteRescale.lean        exists_even_prolateHermiteRescale_of_signedMode:
+                                          every live signed mode has a smooth even global profile
+                                          whose Hermite rescaling satisfies
+                                            hermiteSLAction u + c·s·u = (ξ²u″ + 2ξu′)/c
+                                          EXACTLY, with no convergence premise
+```
+
+So the ODE side is finished.  **The single missing brick is spectral:** turning the exact `O(1/c)`
+oscillator defect into a statement about the eigenvalue and the eigenfunction, namely
+
+```text
+c · s_n(c) → 2n + 1        and        u_n(c) → hermiteFun n   (normalized) .
+```
+
+The natural formal route is the *quasimode principle* for the self-adjoint harmonic oscillator
+`H = −d²/dξ² + ξ²` on `L²(ℝ)`, whose spectrum is exactly `{2n+1}` with the Hermite functions as
+eigenvectors: for a unit vector `v` in the domain, `dist(μ, spec H) ≤ ‖(H − μ)v‖`.  Applied to the
+corpus's exact identity this reads
+
+```text
+dist(c·s_n(c), {2m+1 : m ∈ ℕ}) ≤ ‖ξ²u″ + 2ξu′‖ / (c ‖u‖) ,
+```
+
+so the remaining analytic input is an **a priori `L²` bound on `ξ²u″ + 2ξu′` in terms of `‖u‖`**
+for the rescaled prolate profile — not any asymptotic expansion.  Once the eigenvalue is pinned,
+the same estimate pins the eigenvector, and `ℓ_j(λ) → |ĥ_{4j}(0)|` follows from
+`ℓ_j = χ_{4j}·e_j(0)` together with `χ → 1`.  The Fuchs rate needs the same machinery carried to
+second order.
+
+### The oscillator-ladder pin — built
+
+`HTGeometry/WholeLineWronskianSymmetry.lean` and `RHTower/ProlateOscillatorLadderPin.lean`
+(both wired) supply the bridge identified above, and it turned out to be an **identity**, not an
+estimate.
+
+```text
+integral_deriv_eq_zero_of_tendsto_zero   a derivative whose primitive tends to 0 at ±∞ integrates
+                                         to 0 over the line
+hasDerivAt_wronskian                     (u′v − uv′)′ = u″v − uv″
+integral_secondDeriv_pairing_eq_zero     hence ∫(u″v − uv″) = 0 for a vanishing Wronskian
+integral_secondDeriv_mul_comm            ∫ u″v = ∫ u v″
+
+hasDerivAt_hermiteFun, hasDerivAt_deriv_hermiteFun
+                                         the oscillator eigenfunctions are twice differentiable
+
+hermitePairing_pin (n) :
+    hermiteSLAction u + μ·u = D  pointwise, plus a vanishing Wronskian against φₙ
+    ⟹ (μ − (2n+1)) · ⟨u, φₙ⟩ = ⟨D, φₙ⟩
+
+abs_sub_oscillatorLadder_eq (n) :
+    |μ − (2n+1)| = |⟨D, φₙ⟩| / |⟨u, φₙ⟩|
+```
+
+The `ξ²` potential cancels identically — it sits on both sides of the integration by parts — so no
+operator theory, no spectral theorem and no quasimode inequality is involved.
+
+Applied to the corpus's exact prolate identity
+`hermiteSLAction u + (c·s)·u = (ξ²u″ + 2ξu′)/c` this reads
+
+```text
+|c·s(c) − (2n+1)| = |⟨ξ²u″ + 2ξu′, φₙ⟩| / (c · |⟨u, φₙ⟩|) ,
+```
+
+so the **entire remaining analytic content of the prolate-to-Hermite gate** is now a single a priori
+bound: that the defect pairing `⟨ξ²u″ + 2ξu′, φₙ⟩` stays bounded relative to `⟨u, φₙ⟩` as the
+bandwidth grows.  That is a statement about one fixed rescaled profile against one fixed Gaussian
+weight — no expansion, no uniformity in the index — and it is the next brick.
+
+### Correction and progress — the endpoint layer of the high first row
+
+The note above said the corpus's amplitude bounds "hold only for `x ≥ 2`".  That is true of
+`abs_xiAmplitude_le_four` as *stated*, but not of the underlying estimate: `xiAmplitude_le`
+(`CCMFirstRowStationaryPhase`) already gives `A_s(x) ≤ √(√2)/√x` for every `x > 1`.  So the
+amplitude half-power bound needed no new analysis, only a restatement.
+
+Two modules now close the endpoint layer, both wired:
+
+```text
+RHTower/XiAmplitudeEndpointSymbol.lean
+    abs_xiAmplitude_le_two_div_sqrt   |A_s(x)| ≤ 2/√x     for every x > 1
+    abs_xiAmplitude_le_two            |A_s(x)| ≤ 2        for every x > 1
+    abs_xiAmplitudeDeriv_le_near      |A_s′(x)| ≤ 6       for 1 < x ≤ 2
+    abs_xiAmplitudeDeriv_le_six       |A_s′(x)| ≤ 6       for every x > 1
+
+RHTower/BesselEndpointVariation.lean
+    abs_besselJ0Deriv_le              |J₀′(v)| ≤ 2/π
+    abs_besselJ0Deriv_le_mul_abs      |J₀′(v)| ≤ 2|v|/π   — flat at the turning point
+    integral_abs_deriv_besselModulated_le
+        ∫_a^b |(A·J₀(cΘ))′| ≤ Q′(b − a) + (Q c²/π)(Θ(b)² − Θ(a)²)
+```
+
+The derivative bound at the turning point is the corpus's `abs_phaseLogDefect_le_near` plus an
+elementary rational estimate, extracted from an inline argument inside
+`ProlateDunsterComparisonBridge`.  The Bessel bound is the integral representation together with
+`|sin y| ≤ |y|`; its content is that `J₀(cξ)` is **flat** where `ξ` vanishes, so the differentiated
+Bessel term is the exact derivative `(c²/π)(ξ²)′` rather than an `O(c)` oscillation.
+
+With these, `(7)` of `ccm-exact-high-radial-first-row-bv-bound` has both of its symbol inputs on
+all of `[1,∞)`, and what remains for the charge-law and dilation-limit cards is the bookkeeping
+instantiation naming the concrete first-row factor — no further analytic input.
+
+## The prolate-to-Hermite gate, after the defect transfer and the profile decay
+
+Two further bricks (both wired, both axiom-clean) shrink this gate again.
+
+### The defect pairing carries no derivative of the profile
+
+`RHTower/ProlateDefectTransfer.lean`, with the first-order whole-line integration by parts
+`integral_deriv_mul_eq_neg` added to `HTGeometry/WholeLineWronskianSymmetry.lean`:
+
+```text
+integral_prolateDefect_transfer            ⟨ξ²u″ + 2ξu′, φₙ⟩ = ⟨u, ξ²φₙ″ + 2ξφₙ′⟩
+integral_prolateDefect_transfer_explicit   ⟨ξ²u″ + 2ξu′, φₙ⟩ = ⟨u, ξ²(ξ²−2n−1)φₙ + 2ξφₙ′⟩
+prolateLadder_pin_hermiteSide
+    (μ − (2n+1))·⟨u, φₙ⟩ = ⟨u, ξ²(ξ²−2n−1)φₙ + 2ξφₙ′⟩ / c
+```
+
+The earlier note called for an a priori bound on `⟨ξ²u″ + 2ξu′, φₙ⟩`.  That is the wrong target:
+two integrations by parts — second order against `ξ²φₙ`, first order against `2ξφₙ` — move both
+derivatives onto the Hermite factor.  The `4ξφₙ′` of the first and the `−2ξφₙ′` of the second leave
+`2ξφₙ′`; the two `±2φₙ` cancel; and `φₙ″ = (ξ²−2n−1)φₙ` makes the survivor explicit.
+
+### The profile decays like `1/|x|`, from the integral equation alone
+
+`RHTower/ProlateProfileDecay.lean`:
+
+```text
+abs_sincSmooth_le_inv              |sinc_c(u)| ≤ 1/(π|u|)
+abs_le_of_bandTransform_eigen      T̃_c Φ = χ²Φ  ⟹  |Φ(x)| ≤ (∫_{-1}^{1}|Φ|)/(|χ²| π (|x|−1))
+```
+
+The corpus's global profile is produced as a time–band eigenfunction, and the band integral runs
+only over `[-1,1]`, so every `|x| > 1` sees a kernel of size at most `1/(π(|x|−1))`.  No asymptotic
+analysis of the prolate differential equation is needed for the decay — the integral equation the
+profile already satisfies gives it directly.  This is what licenses the two integrations by parts
+against Gaussian weights: the Wronskian `u′·ξ²φₙ − u·(ξ²φₙ)′` and the product `u·2ξφₙ` both vanish
+at `±∞`.
+
+### What is left
+
+```text
+|c·s(c) − (2n+1)| = |⟨u, ξ²(ξ²−2n−1)φₙ + 2ξφₙ′⟩| / (c · |⟨u, φₙ⟩|)
+```
+
+with `u(ξ) = Φ(ξ/√c)`.  The remaining content is a **non-degeneracy comparison**: the pairing of the
+rescaled profile against `φₙ` must not decay faster than `1/c` relative to its pairing against the
+fixed weight `ξ²(ξ²−2n−1)φₙ + 2ξφₙ′`.  Both are pairings of one function against fixed
+Gaussian-decaying weights; no expansion and no derivative estimate is involved.  The decay bound
+above also supplies the integrability side conditions, since `1/|x|` against a Gaussian is
+integrable.
+
+### The derivative decays too — the side conditions are discharged
+
+Added to `RHTower/ProlateProfileDecay.lean` (wired, axiom-clean):
+
+```text
+abs_deriv_sincSmooth_le              |sinc_c′(u)| ≤ (|c||u| + 1)/(π u²)
+abs_deriv_le_of_bandTransform_eigen  |Φ′(x)| ≤ (|c|(|x|+1)+1)·(∫_{-1}^{1}|Φ|)/(|χ²| π (|x|−1)²)
+```
+
+Differentiating the band eigen-relation keeps the same mechanism: the differentiated sinc kernel is
+still `O(1/|u|)`, because the `u cos(cu)` numerator is killed by the `u²` denominator.  So both `Φ`
+and `Φ′` decay like `1/|x|`, and therefore so do `u` and `u′` after the rescaling `u(ξ) = Φ(ξ/√c)`.
+
+That discharges every side condition of the defect transfer: the Wronskian
+`u′·ξ²φₙ − u·(ξ²φₙ)′` and the product `u·2ξφₙ` each carry a Gaussian factor and vanish at `±∞`, and
+`1/|x|` against a Gaussian is integrable.
+
+### The single remaining statement
+
+```text
+|c·s(c) − (2n+1)| = |⟨u, ξ²(ξ²−2n−1)φₙ + 2ξφₙ′⟩| / (c · |⟨u, φₙ⟩|)
+```
+
+is now an identity with every step licensed.  What it does *not* yet give is which rung: pairing an
+`L²`-normalized `u` against the orthonormal Hermite basis gives `Σ_m ⟨u,φ̂_m⟩² = 1`, so some `m`
+carries mass and `dist(c·s(c), {2m+1}) = O(1/c)` for that `m`, but the index depends on how the
+profile's mass is distributed and that distribution is exactly what a fixed-index asymptotic would
+supply.  The honest residue is therefore:
+
+> a lower bound on `|⟨u, φₙ⟩|` for the *matching* index `n`, uniform in the bandwidth.
+
+That is a non-degeneracy statement about one function against one fixed Gaussian weight — no
+derivative estimate, no ODE asymptotics, no expansion — and it is the last thing these three cards
+need.

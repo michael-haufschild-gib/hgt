@@ -308,3 +308,28 @@ source bound would not close a Route-U obstruction and would repeat infrastructu
   mechanism.
 - 2026-08-11 — proved that the literal highest-moment absolute-divisor bound diverges throughout
   the Route-U critical scale; spectral-radius domination closed as a residue-vanishing mechanism.
+
+## Lean status (updated)
+
+The static half of section 3 — the orthogonal-polynomial identity `(MPW.11)` and the transversal
+vanishing `(MPW.12)` — is now formal and axiom-clean in
+`HTGeometry/GaussResolventError.lean`, on top of the corpus's existing Gauss quadrature layer
+(`HTGeometry/GaussQuadrature.lean`, `HTGeometry/FiniteGaussQuadrature.lean`):
+
+    dividedSquare p z                       the polynomial `(p(z)² - p(X)²)/(X - z)`
+    dividedSquare_mul, eval_dividedSquare   it really is that quotient
+    degree_dividedSquare_lt                 its degree is `2n+1`, so Gauss exactness applies
+    momentFunctional_dividedSquare          `L(dividedSquare) = p(z)²·Σ ω_i/(x_i - z)`
+    gaussSum_resolvent_eq                   **(MPW.11)**: the quadrature resolvent is
+                                            `L(dividedSquare)/p(z)²`, i.e. the `[n/n+1]` Padé
+                                            approximant of the moment resolvent
+    nodeCofactor, nodeResidual              the removable form `p(X)²/(x₀ - X) = -(X - x₀)(p/(X-x₀))²`
+    eval_nodeResidual_mul                   it really is that quotient
+    momentFunctional_nodeResidual_eq_zero   **(MPW.12)**: the residual source factor vanishes at
+                                            every Gauss node, because away from the node the
+                                            cofactor vanishes and at the node the linear factor does
+
+What is still missing is the moving half: the `y`-derivative statements `(MPW.5)`, `(MPW.8)`,
+`(MPW.13)` and `(MPW.14)`.  Those need the moment ODE `s_y'(k) = -(k+1)s_y(k+1)` together with
+differentiability of the Gauss nodes and weights in `y`, which is an implicit-function argument on
+the orthogonal polynomial's simple roots.

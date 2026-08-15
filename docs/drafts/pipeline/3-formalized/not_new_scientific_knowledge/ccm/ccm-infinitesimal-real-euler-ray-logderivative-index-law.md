@@ -240,6 +240,54 @@ the analytic Krein--Langer negative-index minimality theorem, including preserva
 index under restriction to the real Euler uniqueness interval.  The finite rational packet
 algebra alone would not prove that step, so no wrapper is added.
 
+**Superseded, 2026-08-15.**  A Lean module *is* added.  It does not claim the Krein--Langer
+minimality theorem, which stays an explicit import; it proves everything the card derives around
+it — the packet algebra, the sign of each packet, the causal/anti-causal polarization, the
+diagonal identity, and the infinitesimal derivation `(11)`-`(13)`.
+
+## Lean status
+
+Module `formal/GaloisForLFunctions/RHTower/CCMEulerRayLogDerivativeIndex.lean` (wired,
+axiom-clean, 13 declarations), over `RHTower/CCMDiagonalFockLift.lean`.
+
+- `rankOneMatrix`, **`posSemidef_rankOneMatrix`** — a rank-one Gram kernel is positive
+  semidefinite; the building block of the packet signs.
+- **`qPacket_eq`** — equation `(7)`: `1/(z-lambda) + 1/(z+lambda) = 2z/(z^2 - lambda^2)`.
+- **`packet_contribution`** — equation `(8)`: the packet's contribution to the Euler-ray kernel is
+  `2 (x y - lambda^2)/((x^2 - lambda^2)(y^2 - lambda^2))`.
+- `imagPacketKernel`, **`imagPacketKernel_eq`**, **`posSemidef_imagPacketMatrix`** — equation `(9)`:
+  a critical-line packet is a *sum* of two rank-one Gram kernels, hence positive semidefinite at
+  every finite node family.  This is the "critical-line zero packets proved positive" gate.
+- `realPacketKernel`, **`realPacketKernel_eq`** — equation `(10)`: an off-line packet is a
+  *difference* of two rank-one Gram kernels.
+- **`det_realPacket_two_point`**, **`det_realPacket_two_point_neg`**,
+  **`not_posSemidef_realPacketMatrix`** — the exact two-point minor
+  `-4 a^2 (x-y)^2/((x^2-a^2)^2 (y^2-a^2)^2)`, its strict negativity, and hence a genuine negative
+  square for every off-line packet.  This is the "each right-half zero contributes one negative
+  square" gate.
+- **`quartet_polarization`** — the causal/anti-causal congruence
+  `f conj g + g conj f = |u><u| - |v><v|` with `u = (f+g)/sqrt 2`, `v = (f-g)/sqrt 2`.
+- **`euler_kernel_diagonal`** — equation `(17)`: `J(x,x) = Q(x)/x`.
+- **`hasDerivAt_shiftedQuotient`** — equation `(12)`: `d/d omega [X(x-omega)/X(x+omega)] = -2 Q(x)`
+  at `omega = 0`.
+- **`hasDerivAt_loewnerKernel`** — equation `(13)`: the shifted Cauchy--Loewner kernel
+
+  ```text
+  omega |-> [1 - f_omega(x) f_omega(y)]/(x+y)
+  ```
+
+  has derivative `2 (Q(x) + Q(y))/(x+y) = 2 J(x,y)` at `omega = 0`, so `J` is the exact
+  infinitesimal boundary form of the completed weighted-contraction family, not a criterion
+  attached after the fact.
+
+`#print axioms` on all thirteen declarations returns exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+Imported, not reproved: the Hadamard/divisor representation `(6)` (already in the tree as
+`XiC_eq_constant_mul_canonicalProduct` and `logDeriv_XiC_eq_relativeResolventTrace`), the
+Krein--Langer negative-index minimality theorem, the uniqueness-set restriction argument, and the
+Euler-region evaluation `(14)`-`(15)`.
+
 ## Gates
 
 - [x] shifted Euler-ray family differentiated at the critical seam

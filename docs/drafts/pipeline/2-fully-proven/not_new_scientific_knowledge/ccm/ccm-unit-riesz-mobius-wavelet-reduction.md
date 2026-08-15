@@ -257,3 +257,33 @@ Stieltjes calculus; their value here is exact corpus closure and frontier locali
 - [ ] prove causal-complement coefficient bound `(25)`
 - [ ] compose with one-sided Landau connector
 - [ ] RH
+
+## Lean status — the layer-cake quadrature defect, 2026-08-15
+
+`formal/GaloisForLFunctions/RHTower/CCMUnitRieszQuadratureDefect.lean` (wired, axiom-clean, 19
+declarations) proves section 2 exactly.
+
+- `layerWeight`, **`integral_layerWeight`** — equation `(4)`:
+  `1 - sqrt a = int_a^1 dv/(2 sqrt v)`, by the fundamental theorem of calculus with primitive
+  `sqrt`; and `integral_layerWeight_unit`: the whole layer has mass `1`.
+- `rieszProgressionSum`, `rieszQuadratureDefect` — the card's `g(t)` and `eta(t) = t/3 - g(t)`.
+- **`sum_indicator_eq_floor`** — the counting identity
+  `sum_{r < floor t} 1_{(r+1)/t <= v} = floor (t v)` for `0 <= v <= 1`, which is what makes the
+  layer cake a single integral.
+- **`integral_floor_layerWeight`** — equation `(5)`, first half:
+  `g(t) = int_0^1 floor (t v) dv/(2 sqrt v)`.
+- **`integral_polar_layerWeight`** — the polar continuum in the same coordinates:
+  `int_0^1 t v dv/(2 sqrt v) = t/3`.
+- **`rieszQuadratureDefect_eq`** — equation `(5)`, second half:
+  `eta(t) = int_0^1 (t v - floor (t v)) dv/(2 sqrt v)`.
+- **`rieszQuadratureDefect_nonneg`**, **`rieszQuadratureDefect_le_one`**,
+  **`rieszQuadratureDefect_le_third`** — equation `(6)`: `0 <= eta(t) <= min (1, t/3)`, directly
+  from `0 <= {t v} <= min (1, t v)`.
+- **`unitRieszLogProfile_eq_progression`** — the corpus's cell-assembled profile is exactly
+  `W(t) = 3 g(t)/t` at `t = exp v`.
+- **`one_sub_unitRieszLogProfile_le`** — equation `(11)`'s sharp form:
+  `1 - W(t) = 3 eta(t)/t <= 3/t`, i.e. `1 - W(exp v) <= 3 exp(-v)`.  This is the estimate the
+  pole-channel bound `(22)` consumes.
+
+Still to formalize for this card: `(7)`, `(10)`, `(15)`, the Stieltjes partial summation `(18)`,
+the pole-channel saturation `(20)`-`(23)`, and the equivalence `(25)`.

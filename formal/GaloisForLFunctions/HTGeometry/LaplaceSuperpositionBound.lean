@@ -82,4 +82,24 @@ theorem lintegral_sq_laplaceSuperposition_le {Φ : ℝ → Y} {Ψ : ℝ → ℝ 
     hmeas hΦ hslice
   rwa [lintegral_exp_decay_Ioi hK hρ] at hbase
 
+/-- **`(22)` with the slice bound required only on the ray.**  The slices at nonpositive parameter
+are never seen by the superposition, so no bound is needed there. -/
+theorem lintegral_sq_laplaceSuperposition_le_ray {Φ : ℝ → Y} {Ψ : ℝ → ℝ → Y} {ρ K : ℝ}
+    (hK : 0 ≤ K) (hρ : 0 < ρ)
+    (hmeas : Measurable (Function.uncurry fun x s => ‖Ψ x s‖ₑ))
+    (hΦ : ∀ x, ‖Φ x‖ₑ ≤ ∫⁻ s in Ioi (0 : ℝ), ‖Ψ x s‖ₑ)
+    (hslice : ∀ s : ℝ, 0 < s → (∫⁻ x, ‖Ψ x s‖ₑ ^ 2) ^ ((1 : ℝ) / 2)
+      ≤ ENNReal.ofReal (K * Real.exp (-ρ * s))) :
+    (∫⁻ x, ‖Φ x‖ₑ ^ 2) ^ ((1 : ℝ) / 2) ≤ ENNReal.ofReal (K / ρ) := by
+  have hae : ∀ᵐ s ∂((volume : Measure ℝ).restrict (Ioi (0 : ℝ))),
+      (∫⁻ x, ‖Ψ x s‖ₑ ^ 2) ^ ((1 : ℝ) / 2)
+        ≤ ENNReal.ofReal (K * Real.exp (-ρ * s)) := by
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with s hs
+    exact hslice s hs
+  have hbase := lintegral_sq_superposition_le_ae (μ := (volume : Measure ℝ))
+    (ν := (volume : Measure ℝ).restrict (Ioi (0 : ℝ)))
+    (Φ := Φ) (Ψ := Ψ) (w := fun s => ENNReal.ofReal (K * Real.exp (-ρ * s)))
+    hmeas hΦ hae
+  rwa [lintegral_exp_decay_Ioi hK hρ] at hbase
+
 end GaloisForLFunctions.HTGeometry

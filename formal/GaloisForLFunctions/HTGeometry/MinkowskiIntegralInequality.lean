@@ -213,4 +213,42 @@ theorem lintegral_sq_superposition_le [SigmaFinite μ] [SFinite ν]
         lintegral_sq_lintegral_le hmeas
     _ ≤ ∫⁻ s, w s ∂ν := lintegral_mono hslice
 
+/-- The superposition estimate with the slice bound required only almost everywhere. -/
+theorem lintegral_sq_superposition_le_ae [SigmaFinite μ] [SFinite ν]
+    {Φ : α → Y} {Ψ : α → β → Y} {w : β → ℝ≥0∞}
+    (hmeas : Measurable (Function.uncurry fun x s => ‖Ψ x s‖ₑ))
+    (hΦ : ∀ x, ‖Φ x‖ₑ ≤ ∫⁻ s, ‖Ψ x s‖ₑ ∂ν)
+    (hslice : ∀ᵐ s ∂ν, (∫⁻ x, ‖Ψ x s‖ₑ ^ 2 ∂μ) ^ ((1 : ℝ) / 2) ≤ w s) :
+    (∫⁻ x, ‖Φ x‖ₑ ^ 2 ∂μ) ^ ((1 : ℝ) / 2) ≤ ∫⁻ s, w s ∂ν := by
+  have hstep : (∫⁻ x, ‖Φ x‖ₑ ^ 2 ∂μ) ≤ ∫⁻ x, (∫⁻ s, ‖Ψ x s‖ₑ ∂ν) ^ 2 ∂μ :=
+    lintegral_mono fun x => pow_le_pow_left' (hΦ x) 2
+  calc (∫⁻ x, ‖Φ x‖ₑ ^ 2 ∂μ) ^ ((1 : ℝ) / 2)
+      ≤ (∫⁻ x, (∫⁻ s, ‖Ψ x s‖ₑ ∂ν) ^ 2 ∂μ) ^ ((1 : ℝ) / 2) :=
+        ENNReal.rpow_le_rpow hstep (by norm_num)
+    _ ≤ ∫⁻ s, (∫⁻ x, ‖Ψ x s‖ₑ ^ 2 ∂μ) ^ ((1 : ℝ) / 2) ∂ν :=
+        lintegral_sq_lintegral_le hmeas
+    _ ≤ ∫⁻ s, w s ∂ν := lintegral_mono_ae hslice
+
+/-! ## The countable case: a summable family of `L²` blocks -/
+
+/-- **Minkowski for a countable family.**  A profile dominated pointwise by the total mass of a
+countable family has `L²` norm at most the sum of the blockwise `L²` norms.  This is the block
+summation step: the counting measure is `σ`-finite, so the continuum statement specialises. -/
+theorem lintegral_sq_sum_le [SigmaFinite μ] {ι : Type*} [Countable ι] [MeasurableSpace ι]
+    [MeasurableSingletonClass ι] {Φ : α → Y} {f : α → ι → Y} {w : ι → ℝ≥0∞}
+    (hmeas : ∀ m : ι, Measurable fun x => ‖f x m‖ₑ)
+    (hΦ : ∀ x, ‖Φ x‖ₑ ≤ ∑' m : ι, ‖f x m‖ₑ)
+    (hslice : ∀ m : ι, (∫⁻ x, ‖f x m‖ₑ ^ 2 ∂μ) ^ ((1 : ℝ) / 2) ≤ w m) :
+    (∫⁻ x, ‖Φ x‖ₑ ^ 2 ∂μ) ^ ((1 : ℝ) / 2) ≤ ∑' m : ι, w m := by
+  have hjoint : Measurable (Function.uncurry fun (x : α) (m : ι) => ‖f x m‖ₑ) := by
+    exact measurable_from_prod_countable_left hmeas
+  have hΦ' : ∀ x, ‖Φ x‖ₑ ≤ ∫⁻ m, ‖f x m‖ₑ ∂(Measure.count : Measure ι) := by
+    intro x
+    rw [lintegral_count]
+    exact hΦ x
+  have hslice' : ∀ m : ι, (∫⁻ x, ‖f x m‖ₑ ^ 2 ∂μ) ^ ((1 : ℝ) / 2) ≤ w m := hslice
+  have hmain := lintegral_sq_superposition_le (μ := μ) (ν := (Measure.count : Measure ι))
+    (Φ := Φ) (Ψ := f) (w := w) hjoint hΦ' hslice'
+  rwa [lintegral_count] at hmain
+
 end GaloisForLFunctions.HTGeometry

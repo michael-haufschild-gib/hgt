@@ -431,3 +431,100 @@ their abstract composition would add no unconditional completed-Xi theorem. Lean
 until the literal selected-face estimate (SAHI.19), the minimal leakage exclusion (SAHI.20), or an
 equivalent unconditional source theorem is proved. Supplying that estimate as a hypothesis would
 repeat theorem laundering.
+
+## Lean status (updated)
+
+Sections 1 and 2 are exact finite theorems, and they are now formal and axiom-clean in
+`HTGeometry/HausdorffDifferenceInertia.lean`, on the corpus's Gauss quadrature layer:
+
+    hausdorffDifferenceForm s y q                 `E_y(q) = L((1 - yX) q^2)`
+    hausdorffDifferenceForm_eq_gaussSum           **(SAHI.3)**: `E_y(q) = sum_i w_i (1 - y x_i) q(x_i)^2`
+                                                  for `deg q <= n`, by Gauss exactness on degree `2n+1`
+    lagrangeQuotient s n x0                       the unnormalised Lagrange quotient `p/(X - x0)`
+    eval_lagrangeQuotient_eq_zero,
+      eval_lagrangeQuotient_self_ne_zero          it vanishes at the other nodes and not at its own,
+                                                  the latter from simplicity of the roots
+    lagrangeEnergy, lagrangeEnergy_eq,
+      lagrangeEnergy_pos                          `gamma_i = w_i l_i(x_i)^2 > 0`
+    hausdorffDifferenceForm_lagrangeQuotient      **(SAHI.5)**: `E_y(l_i) = (1 - y x_i) gamma_i`
+    hausdorffDifferenceForm_lagrangeQuotient_neg,
+      hausdorffDifferenceForm_lagrangeQuotient_pos,
+      hausdorffDifferenceForm_nonneg              **(SAHI.4)/(SAHI.11)**: a super-apex node makes its
+                                                  own diagonal entry negative, a sub-apex node makes
+                                                  it positive, and with no super-apex node the whole
+                                                  form is nonnegative
+    hardCoordinate, normalizedNode, cayleyNode    the three node coordinates
+    one_sub_mul_eq_mul_hardCoordinate             **(SAHI.10)**: `1 - yX = X(X^{-1} - y)`
+    hausdorffDifferenceForm_lagrangeQuotient_hard **(SAHI.9)**: `E_y(l_i) = x_i u_i gamma_i`
+    hardCoordinate_neg_iff                        **(SAHI.11)**: `u_i < 0` iff `t_i > 1`
+    sub_inv_eq_hardCoordinate,
+      normalizedNode_sub_one, cayleyNode_sub_one  **(SAHI.12)/(SAHI.13)**: the exact boundary-layer
+                                                  scales in the three coordinates
+
+Sections 3-5 remain: the first Hausdorff difference of the actual Route-U normalized moments, the
+fixed-degree arcsine recession statement, and the vanishing-Christoffel-weight no-go, all of which
+need the literal `xiShiftedReciprocalMoment` normalization rather than a generic moment functional.
+
+### Sections 3 and 4 are formal
+
+    HTGeometry/HausdorffDifferenceInertia.lean (continued)
+      momentFunctional_C_mul_X_pow, sq_sum_C_mul_X_pow
+      hausdorffDifferenceForm_scaledPoly        **(SAHI.17)**: the quadratic form of the first
+                                                Hausdorff-difference matrix of the normalized
+                                                moments is `E_y` on the dilated polynomial
+      exists_coeff_scaledPoly                   the coefficient dilation `Q(T) -> Q(yX)` is onto
+                                                every polynomial of degree at most `n`
+      exists_neg_hausdorffDifferenceQuadratic   **(SAHI.18)**: a super-apex node makes the matrix
+                                                indefinite, with an explicit witness vector
+      hausdorffDifferenceQuadratic_nonneg       **(SAHI.19)**: with no super-apex node the matrix is
+                                                positive semidefinite
+
+    HTGeometry/RadialMomentFlux.lean            (axiom-clean, wired, built)
+      radialFluxTerm, hasDerivAt_radialFluxTerm the single-index flux law
+      radialFlux, hasDerivAt_radialFlux         **(SAHI.23)**: `Phi_c'(y)` is the quadratic form of
+                                                the first Hausdorff-difference matrix
+
+    RHTower/XiShiftedSuperApexFlux.lean         (axiom-clean, wired, built)
+      xiShiftedMomentTower                      the literal Route-U tower `Re xiShiftedReciprocalMoment`
+      hasDerivAt_xiShiftedMomentTower           **(SAHI.21)**: its unconditional first-order law,
+                                                from the corpus's `hasDerivAt_re_xiShiftedReciprocalMoment`
+      hasDerivAt_xiShiftedRadialFlux            **(SAHI.22)**: the literal first Hausdorff difference
+                                                is the derivative of the explicit radial flux
+      hasDerivAt_xiShiftedRadialFlux_nonneg,
+        exists_neg_xiShiftedRadialFlux_deriv    endpoint admission at a selected mass is exactly the
+                                                absence of a quadrature node above the moving apex
+
+Remaining for this card: section 5, the hard-edge ancestry theorem, which needs locally uniform
+convergence of the cleared hard polynomials `S_j -> F` and Hurwitz's theorem — the same normal-family
+input the hyperbolic-Weil-boundary card needs.  The corpus already has sequential Montel
+(`Bottcher/MontelNormal.lean`) and Hurwitz-type zero-locus transfer
+(`RHTower/CCMCompactFourierMeanSquareZeroTransfer.lean`).
+
+### Sections 5 and 6
+
+    HTGeometry/HausdorffDifferenceInertia.lean (continued)
+      hardCoordinate_eq_normalized       **(SAHI.8)**: `u = y(1-t)/t` in the normalized variable
+      hardNode y u, hardCoordinate_hardNode,
+        hardNode_pos                     the finite node `1/(y+u)` attached to a hard coordinate,
+                                         and that its hard coordinate is `u` again
+      normalizedNode_hardNode_gt_one     **(SAHI §5)**: a negative hard coordinate with positive
+                                         shifted mass is a super-apex node `t > 1`
+      hardCoordinate_outlier,
+        tendsto_hardCoordinate_outlier   **(SAHI.27)**: the outlier at `t = 1 + c/y` has hard
+                                         coordinate `-c/(1+c/y) -> -c`
+
+    RHTower/XiShiftedSuperApexFlux.lean (continued)
+      eventually_exists_hard_root_near   **(SAHI §5)**: the local Hurwitz existence step of the
+                                         corpus applied to the cleared hard polynomials — a negative
+                                         isolated root of the limit produces approximant roots nearby
+      normalizedNode_gt_one_of_near_negative_root
+                                         such a root is negative, so its finite node is super-apex;
+                                         this is `(SAHI.24)`'s mechanism
+      hardCoordinate_of_hard_root        and its hard coordinate is the root itself
+
+Section 6's mechanism is formal: `hausdorffDifferenceForm_lagrangeQuotient_neg` needs only a
+positive Christoffel weight, so a vanishing-weight outlier still makes the first Hausdorff
+difference negative, and `(SAHI.27)` gives the bounded negative hard limit.  What is not formal is
+the packaging of the countermodel as a weakly arcsine-convergent sequence of atomic measures; that
+needs the finite-degree positive form (`PositiveMomentFormBelow`) of an explicit perturbed
+quadrature, which the corpus's `FiniteGaussQuadrature` layer supports but which has not been built.

@@ -142,3 +142,18 @@ the real-quadratic-form abstraction of the first two displayed implications.
 The full card remains Stage 2: the arbitrary complex-Hermitian boundary
 functional to `ker beta ⊕ Cq` coordinate bridge, and its exact scalar Schur
 reduction, have not yet been formalized.
+
+## 2026-08-15 Lean split-coordinate Schur closure
+
+`HTGeometry/RankOneScalarShadow.lean` now proves the exact Hermitian Schur
+reduction once the boundary split has been supplied: a positive-definite
+kernel block is equivalent to the single scalar condition for both
+semidefinite and positive-definite repaired blocks. It also proves that a
+positive repaired block has a positive kernel principal block, matching the
+strict local pre-gate, and gives the explicit one-visible/one-invisible
+countermodel.
+
+The card remains Stage 2 because the theorem is stated for an arbitrary
+complex-linear boundary functional. The Lean library still needs its
+coordinate-free `ker beta ⊕ Cq` decomposition and congruence transport before
+this exact card statement is closed.

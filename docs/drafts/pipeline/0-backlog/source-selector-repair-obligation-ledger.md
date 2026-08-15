@@ -109,7 +109,7 @@ If the pointwise kernels are not PSD, the repair theorem must use more than Eule
 
 ## 2026-06-24 Loewner budget is not sign positivity
 
-`../2-fully-proven/positive-source-weights-do-not-bound-loewner-budget.md` sharpens row A3 against rows A6--A7. Even if Euler/local-factor orientation supplies positive weights and pointwise PSD kernels, that only puts the finite-place contribution in a cone. It does not prove the fixed domination `-R^P_d <= M_{triv,d}`.
+`../3-formalized/not_new_scientific_knowledge/positive-source-weights-do-not-bound-loewner-budget.md` sharpens row A3 against rows A6--A7. Even if Euler/local-factor orientation supplies positive weights and pointwise PSD kernels, that only puts the finite-place contribution in a cone. It does not prove the fixed domination `-R^P_d <= M_{triv,d}`.
 
 The scaling test is decisive: if the same sign argument survives multiplying the positive weights by `t`, it cannot be a budget proof. A3 can feed A6--A7 only through exact weight magnitudes, normalization, multiplicativity, archimedean cancellation, or a completed explicit-formula identity.
 
@@ -197,7 +197,7 @@ Thus rows A6--A7 cannot cite Christoffel monotonicity until the positive bulk ha
 
 ## 2026-06-24 N1 anatomy does not discharge A6--A7
 
-`../2-fully-proven/n1-signed-bulk-exterior-monotonicity-fails.md` blocks a signed-bulk monotonicity shortcut. A one-negative-square signed moment form can have support to the right of the pole and first-trivial-zero boundary points while reversing their repair-threshold order.
+`../3-formalized/not_new_scientific_knowledge/n1-signed-bulk-exterior-monotonicity-fails.md` blocks a signed-bulk monotonicity shortcut. A one-negative-square signed moment form can have support to the right of the pole and first-trivial-zero boundary points while reversing their repair-threshold order.
 
 Thus rows A6--A7 cannot be discharged by proving only `H^- in N_1`. The repair theorem also needs kernel exhaustion, the full Schur/index sign, or a source-specific monotonicity law for the actual Euler/Gamma/FE carrier.
 

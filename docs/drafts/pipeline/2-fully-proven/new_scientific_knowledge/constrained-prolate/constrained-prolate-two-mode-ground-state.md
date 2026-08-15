@@ -598,3 +598,101 @@ eventual nonvanishing and a fixed head floor.  Axiom audit: only `propext`, `Cla
 - [ ] independent literature review
 - [ ] true Weil residual and spectral-gap transfer
 - [ ] weighted/projective convergence sufficient for the regularized determinant
+
+## Lean progress — the oscillator-ladder pin, and what the prolate-to-Hermite gate now needs
+
+The open gate on this card is the pair of true-operator ℓ-side inputs: the prolate-to-Hermite
+coordinate limits and the Fuchs identification.  Their common foundation is now formal, and the
+last step turned out to be an identity rather than an asymptotic argument.
+
+What the corpus already owned (no new work): the whole commuting-operator layer —
+`HTGeometry/SturmSelfAdjoint.lean`, `HTGeometry/ProlateKernelSymmetry.lean`,
+`RHTower/ProlateCommutationKernel.lean` (`prolateAction_bandEigen_eq_smul`: an eigenfunction of the
+finite Fourier transform solves the prolate ODE), `RHTower/SlepianBandCommutation.lean`,
+`RHTower/FuchsProlateScale.lean` (the exact scaling identity `prolateSLAction_sqrtScale`),
+`RHTower/HermiteOscillatorEigen.lean` (`hermiteSLAction_hermiteFun`: eigenvalue `−(2n+1)`), and
+`RHTower/ProlateHermiteRescale.lean`, whose
+`exists_even_prolateHermiteRescale_of_signedMode` gives every live signed mode a smooth even global
+profile whose Hermite rescaling satisfies, **with no convergence premise**,
+
+```text
+hermiteSLAction u + (c·s)·u = (ξ² u″ + 2ξ u′)/c ,      c = 2πλ² .
+```
+
+New (wired, axiom-clean):
+
+```text
+HTGeometry/WholeLineWronskianSymmetry.lean
+    integral_deriv_eq_zero_of_tendsto_zero   a derivative whose primitive tends to 0 at ±∞
+                                             integrates to 0 over the line
+    hasDerivAt_wronskian                     (u′v − uv′)′ = u″v − uv″
+    integral_secondDeriv_pairing_eq_zero
+    integral_secondDeriv_mul_comm            ∫ u″v = ∫ u v″ for a vanishing Wronskian
+
+RHTower/ProlateOscillatorLadderPin.lean
+    hasDerivAt_hermiteFun, hasDerivAt_deriv_hermiteFun
+    hermitePairing_pin (n) :
+        hermiteSLAction u + μ·u = D  ⟹  (μ − (2n+1))·⟨u, φₙ⟩ = ⟨D, φₙ⟩
+    abs_sub_oscillatorLadder_eq (n) :
+        |μ − (2n+1)| = |⟨D, φₙ⟩| / |⟨u, φₙ⟩|
+```
+
+The `ξ²` potential cancels identically — it appears with the same sign on both sides of the
+integration by parts — so no spectral theorem, no operator domain and no quasimode inequality is
+used.  Applied to the prolate identity above,
+
+```text
+|c·s(c) − (2n+1)| = |⟨ξ²u″ + 2ξu′, φₙ⟩| / (c · |⟨u, φₙ⟩|) .
+```
+
+**Consequently the whole remaining analytic content of this card's prolate-to-Hermite gate is one a
+priori bound**: that the defect pairing `⟨ξ²u″ + 2ξu′, φₙ⟩` stays bounded relative to `⟨u, φₙ⟩` as
+the bandwidth grows.  That is a statement about a single rescaled profile against a single Gaussian
+weight; it needs no expansion and no uniformity in the index.  With it, the eigenvalue is pinned to
+the oscillator ladder at rate `1/c`, the same pairing pins the eigenvector, and
+`ℓ_j = χ_{4j}·e_j(0)` with `χ → 1` delivers the coordinate limits `ℓ_j → |ĥ_{4j}(0)|` whose targets
+`2^{1/4}` and `√3·2^{−5/4}` are already formal in `HermiteOriginConstraintTargets.lean`.
+
+## Lean progress — the defect pairing needs no derivative bound at all
+
+The note above reduced this card's prolate-to-Hermite gate to a single a priori bound on the defect
+pairing `⟨ξ²u″ + 2ξu′, φₙ⟩`.  That bound is no longer needed in that form: the pairing transfers
+entirely onto the Hermite side.
+
+`GaloisForLFunctions/HTGeometry/WholeLineWronskianSymmetry.lean` (extended, wired):
+
+```text
+integral_deriv_mul_eq_neg     ∫ u′v = −∫ u v′ when u v → 0 at both ends
+```
+
+`GaloisForLFunctions/RHTower/ProlateDefectTransfer.lean` (wired):
+
+```text
+hermiteSqWeight n x           = x² φₙ(x)          (with its two derivatives)
+hermiteLinWeight n x          = 2x φₙ(x)          (with its derivative)
+integral_prolateDefect_transfer :
+    ⟨ξ²u″ + 2ξu′, φₙ⟩ = ⟨u, ξ²φₙ″ + 2ξφₙ′⟩
+integral_prolateDefect_transfer_explicit :
+    ⟨ξ²u″ + 2ξu′, φₙ⟩ = ⟨u, ξ²(ξ² − 2n − 1)φₙ + 2ξφₙ′⟩
+prolateLadder_pin_hermiteSide :
+    (μ − (2n+1))·⟨u, φₙ⟩ = ⟨u, ξ²(ξ² − 2n − 1)φₙ + 2ξφₙ′⟩ / c
+```
+
+Two integrations by parts — one of second order against the weight `ξ²φₙ`, one of first order
+against `2ξφₙ` — move both derivatives of the profile onto the Hermite factor, and
+`φₙ″ = (ξ² − 2n − 1)φₙ` makes the surviving weight completely explicit.  The `4ξφₙ′` produced by the
+second-order transfer and the `−2ξφₙ′` produced by the first-order one combine to `2ξφₙ′`, and the
+two `±2φₙ` cancel.
+
+**Consequence for this card.**  The distance from the rescaled eigenvalue `c·s(c)` to the `n`-th rung
+of the oscillator ladder is now, exactly,
+
+```text
+|c·s(c) − (2n+1)| = |⟨u, ξ²(ξ² − 2n − 1)φₙ + 2ξφₙ′⟩| / (c · |⟨u, φₙ⟩|) ,
+```
+
+in which **no derivative of the prolate profile appears**.  What remains is a comparison of two
+pairings of the profile against fixed Gaussian-decaying weights — the numerator against
+`ξ²(ξ²−2n−1)φₙ + 2ξφₙ′` and the denominator against `φₙ` — plus the decay hypotheses that make the
+two integrations by parts legitimate.  That is a non-degeneracy statement about one function against
+one fixed weight, not an asymptotic expansion.

@@ -1,7 +1,7 @@
 # Symmetry-caged fixed-divisor full-orbit freeness
 
 - **ID:** `symmetry-caged-fixed-divisor-full-orbit-freeness`
-- **Stage:** 2-fully-proven / needs independent audit
+- **Stage:** 3-formalized / needs independent audit
 - **Type:** THEOREM (paper) — `[PROVED HERE] [NOVELTY UNVERIFIED]`
 - **Lane:** general hypertranscendence; constraint-compatible genericity; divisor fibers
 - **Statement:** Functional-equation symmetry, Schwarz reality, a prescribed entire
@@ -306,18 +306,17 @@ immediate quoted theorem.  They do not by themselves establish novelty.
 
 ## Lean status
 
-No Lean claim is made for the full theorem.  The repository already formalizes finite equivariant
-Hermite interpolation in `formal/GaloisForLFunctions/RHTower/FiniteHermiteCRT.lean`, including the
-real-even Schwarz-real polynomial and degree-bounded versions.  Baire category, Whitney
-stratification, algebraic codimension, and parametric transversality remain missing for the complete
-claim, so this card cannot enter stage 3.
+**Complete, unconditional, axiom-clean** (`[propext, Classical.choice, Quot.sound]`).  The capstone
+is `GaloisForLFunctions.HTGeometry.symmetryCaged_fullTranslationFreeness_denseResidual` in
+`formal/GaloisForLFunctions/HTGeometry/SymmetryCagedTranslationFreeness.lean`; see the assembly
+section below for the module chain.
 
 ## Gates
 
 - [x] 0 -> 1: exact claim and open core isolated
 - [x] 1 -> 2: complete unconditional paper proof
-- [ ] 2 -> 3: complete unconditional claim formalized in Lean
-- [ ] 3 -> 4: publication-ready preprint and independent novelty review
+- [x] 2 -> 3: complete unconditional claim formalized in Lean
+- [ ] independent specialist proof and novelty audit (human gate; not a formalization item)
 
 ## Log
 
@@ -329,3 +328,99 @@ claim, so this card cannot enter stage 3.
 - 2026-07-11 -- Rebuilt `FiniteHermiteCRT.lean`.  Its two equivariant Hermite theorems use only
   Lean's standard `propext`, `Classical.choice`, and `Quot.sound` axioms.  This verifies the finite
   interpolation anchor only; the complete theorem remains unformalized.
+
+## Lean assembly — the theorem is closed
+
+The route is the one that closed `fixed-divisor-full-complex-translation-freeness`, run inside the
+constraint space.  The corpus's own compact-patch codimension calculus
+(`expandedEvaluation_compactPatchAvoidance_dense`, together with
+`expandedDifferentialEvaluationRankDefect_finiteRegularStratification_unconditional`) already carries
+steps 3 and 5 unconditionally and stratification-free, so what this card had to add was the
+equivariant half of steps 2 and 4 and the constraint space itself.
+
+**Symmetric polynomials** (`SymmetricPolynomialJets.lean`).  `reflectPoly P = P(1-X)` and
+`conjPoly P = P` with conjugated coefficients are the two involutions; `avgPoly` averages over the
+group they generate.  `reflectPoly_avgPoly`, `conjPoly_avgPoly` give the two symmetries, and
+`iterate_derivative_avgPoly_eval` evaluates every jet of the average as the four-term equivariant
+combination.  This is the equivariant passport Hermite lemma of step 2, in the exact form the probe
+needs.
+
+**The passport multiplier** (`SymmetricPassportPolynomial.lean`).
+`symPassportPoly A dep = ∏_{a∈A} (X - a)^{2·dep a}` is invariant under both involutions when `A` and
+`dep` are (`reflectPoly_symPassportPoly`, `conjPoly_symPassportPoly` — the even exponent absorbs the
+sign), is nonzero off `A` (`eval_symPassportPoly_ne_zero`), and kills every prescribed jet
+(`eval_iterate_derivative_symPassportPoly_mul`, from
+`dvd_iterate_derivative`).
+
+**The constrained probe** (`SymmetricGaugeProbe.lean`).  `symProbe` is `symPassportPoly · avgPoly`
+applied to a coefficient window; `reflectPoly_symProbe_poly` and `conjPoly_symProbe_poly` say it
+stays in the cage.  **`surjective_symProbe_jet`** is the crux: at a node family whose symmetry orbit
+`orbitNode` is injective and off the origin and off `A`, the constrained probe still realizes every
+jet target.  The proof extends the target equivariantly to the four-point orbit, interpolates there
+with the corpus's `windowJetMap` isomorphism, and observes that the four averaged terms then
+contribute the same value at the representative; multiplication by the passport polynomial is
+inverted by `leibnizJetMatrix`.
+
+**The constraint space** (`SymmetricGaugeSpace.lean`).  `symGaugeSet A dep` is closed in the
+compact-open gauge space (`isClosed_symGaugeSet` — each of the two functional identities and each
+passport jet is a closed condition, by `continuous_gaugeEval` and `continuous_gaugeJet`), hence
+completely metrizable and `BaireSpace`.  `symChart` is the finite-dimensional chart: the probe stays
+inside the cage (`probeGaugeChart_mem_symGaugeSet`).
+
+**Free orbits** (`SymmetricRowPacketAtlas.lean`).  Translating a collision-free row packet along the
+diagonal `t ↦ t(1+i)` makes every orbit point an affine function of `t` with a nonzero coefficient,
+and the four coefficients `1±i, -(1±i)` are pairwise distinct (`orbitCoef_injective`).  So each bad
+condition excludes at most one real `t`, apart from the divisor of `W`, which excludes a countable
+set.  Since `ℝ` is uncountable a good `t` exists
+(`injectiveShiftConfigurations_covered_by_symGoodCombinedRowPackets`), and compactness gives a finite
+atlas.
+
+**The assembly** (`SymmetryCagedTranslationFreeness.lean`).
+
+```text
+compact_injectiveShiftPatch_has_dense_completeAtlas_symGauge
+global_injectiveShifts_symGaugeExpandedFullRankWitness_dense_residual
+allFinitePatterns_symGaugeExpandedFullRankWitness_dense_residual
+allFinitePatterns_symGaugeExpandedRelationFree_dense_residual
+not_familyDifferentiallyAlgebraicOn_symGaugeCarrier_of_relationFree
+symmetryCaged_fullTranslationFreeness_denseResidual      -- the theorem
+exists_symGauge_fullTranslationFreeness                  -- existence form
+iteratedDeriv_gaugeCarrier_eq_of_flat                    -- the passport survives
+exists_pair_symmetryCaged_criticalLine_blindness         -- the route consequence
+```
+
+The capstone reads: for a nonzero entire `W` with `W(1-z)=W(z)` and `W(conj z)=conj W(z)`, and for
+any finite set `A` and jet depths `dep` invariant under the group generated by the two involutions,
+the set of constrained gauges `g` for which every finite family of distinct complex translates of
+`W·exp(g)` satisfies no algebraic differential relation over the coordinate is **dense and residual**
+in the Baire constraint space `symGaugeSet A dep`, and for every such `g` the source `W·exp(g)`
+
+* has exactly the divisor of `W` (`analyticOrderAt` equal at every point);
+* satisfies `F(1-z)=F(z)` and `F(conj z)=conj F(z)`;
+* has the same jets as `W` through order `dep a − 1` at every `a ∈ A`.
+
+`exists_pair_symmetryCaged_criticalLine_blindness` instantiates this with
+`critSymDivisor t = ((z-1/2)² + t²)²` and `offSymDivisor a = ((z-1/2)² − a²)²((z-1/2)² − conj(a)²)²`:
+every zero of the first has real part `1/2` (`critSymDivisor_zero_re`) and no zero of the second does
+(`offSymDivisor_zero_re`), while both carry symmetric Schwarz-real sources whose full complex
+translation orbits are differentially algebraically independent over the coordinate.  So the
+critical-line divisor predicate is invisible to the differential-translation structure together with
+the two scalar symmetries.
+
+### Exact scope of the formalized pair
+
+`exists_pair_symmetryCaged_criticalLine_blindness` formalizes items 1, 3 and 4 of the
+"same-passport" list — the two scalar symmetries, the free full complex translation orbits, and the
+opposite critical-line divisor predicates — with the empty passport, for which item 2 ("identical
+prescribed finite jets at every point of `A`") is vacuous.  The Statement of the card, which is what
+gate `2 -> 3` asks for, is formalized in full including a nonempty invariant passport: for every
+`G`-invariant `A` and invariant depths `dep`, every gauge in the residual set keeps the jets of `W`
+through order `dep a − 1` at every `a ∈ A` (`iteratedDeriv_gaugeCarrier_eq_of_flat`).
+
+Matching a *nonempty* passport across the two different sources of the pair is a separate
+construction: replace `W_off` by `W_off·exp(u)` for a symmetric Schwarz-real polynomial `u`.  Every
+ingredient is present — `surjective_symProbe_jet` with the trivial multiplier realizes arbitrary
+jets by a symmetric polynomial, `iterate_derivative_reflectPoly` and `iterate_derivative_conjPoly`
+transport those jets across the orbit, and the triangular solve needs only the surjectivity of
+`expJetMap` onto vectors with nonvanishing head — but the assembly is not written, and no axiom or
+placeholder stands in for it.

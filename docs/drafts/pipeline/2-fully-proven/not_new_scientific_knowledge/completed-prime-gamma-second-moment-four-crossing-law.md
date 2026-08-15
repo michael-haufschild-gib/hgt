@@ -169,8 +169,8 @@ the strict sign change from (3) to (8).
 
 - [x] 0 -> 1 in-progress: explicit `P=X` specialization and rational witness selected
 - [x] 1 -> 2 fully-proven: exact source decomposition and strict rational bounds proved
-- [ ] 2 -> 3 formalized: formalize the `x=10` Euler/Gamma inequalities if this no-go needs a Lean
-  certificate
+- [x] 2 -> 3 formalized: exact `x=10` Euler/Gamma sign certificate and the resulting parity no-go
+  are Lean-proved; the broader crossing package remains paper-level
 - [ ] 3 -> 4 publication-ready: not a standalone publication target
 
 ## Lean certificate update — 2026-08-15

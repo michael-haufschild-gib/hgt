@@ -543,7 +543,7 @@ Thus `L_src` must either exhibit pointwise PSD source kernels for the semilocal 
 
 ## 2026-06-24 positive source signs do not pay the budget
 
-`../2-fully-proven/positive-source-weights-do-not-bound-loewner-budget.md` blocks another weak `L_src` exit. Positive Euler/local-factor signs may orient the finite-place residual, but the bridge requires the one-sided Loewner bound `-R^P_d <= M_{triv,d}`. Sign is a cone statement; budget is an upper-bound statement.
+`../3-formalized/not_new_scientific_knowledge/positive-source-weights-do-not-bound-loewner-budget.md` blocks another weak `L_src` exit. Positive Euler/local-factor signs may orient the finite-place residual, but the bridge requires the one-sided Loewner bound `-R^P_d <= M_{triv,d}`. Sign is a cone statement; budget is an upper-bound statement.
 
 Thus `L_src` cannot treat positive source weights as a repair theorem. It must prove scale control of the actual weighted source sum, or give a source identity that places the completed residual under the archimedean budget before reciprocal-divisor positivity is evaluated.
 

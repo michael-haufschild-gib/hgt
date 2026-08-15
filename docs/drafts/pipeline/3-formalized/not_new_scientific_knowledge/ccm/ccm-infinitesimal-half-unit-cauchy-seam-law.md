@@ -135,6 +135,41 @@ scientific knowledge.
 The determinant identity `(6)` is elementary and Lean-formalizable, but formalizing it alone would
 not represent `Q`, `(2)`, or the source transport in `(11)`. No wrapper is added.
 
+**Superseded, 2026-08-15.**  A wrapper *is* added, and it represents more than `(6)`: the
+termwise proof of `(2)`, the Schur factorization `(5)`, the indefiniteness of every two-point seam
+minor, the exclusion of universal scalar Schur transport, and the diagonal Fock covariance with its
+Cauchy Gram factor.  See the Lean status section below.
+
+## Lean status
+
+**Formalized, 2026-08-15.**  Module
+`formal/GaloisForLFunctions/RHTower/CCMHalfUnitCauchySeam.lean` (wired, axiom-clean, 8
+declarations).
+
+- **`re_hadamardPair_pos`** — the proof of `(2)` at the level of `(7)`: for `Re z > 1/2` and a
+  centred zero with `|Re lambda| < 1/2`, the Hadamard pair `1/(z-lambda) + 1/(z+lambda)` has
+  strictly positive real part, because each summand has positive-real-part denominator.  The
+  Hadamard representation `(7)` itself is the imported classical input.
+- `safeKernel`, `rhKernel`, `seamKernel`, `fockKernel` — equations `(3)`, `(4)`, `(5)` and the
+  diagonal Fock covariance `D = J_safe/(x+y)`.
+- **`rhKernel_eq_safe_mul_seam`** — equation `(5)`: `J_RH = J_safe * H` exactly.
+- **`rhKernel_eq_safe_sub_fock`** — `J_RH = J_safe - D` exactly, the form in which RH becomes
+  contractivity of the diagonal Fock lift.
+- **`integral_exp_ray`** — the Cauchy factor is a genuine Gram matrix:
+  `int_0^infinity e^{-xt} e^{-yt} dt = 1/(x+y)`, so `D` is the Schur product of `J_safe` with a
+  positive kernel.
+- **`det_seam_two_point`** — equation `(6)` exactly:
+  `H(x,x)H(y,y) - H(x,y)H(y,x) = -(x-y)^2 (2x+2y-1)/(4 x y (x+y)^2)`.
+- **`det_seam_two_point_neg`** — its strict negativity for distinct `x, y > 1/2`.
+- **`not_posSemidef_seamMatrix`** — hence the two-point seam matrix is *not* positive semidefinite,
+  so no universal scalar Schur multiplier transports `J_safe` to `J_RH`.
+
+`#print axioms` on all eight declarations returns exactly `[propext, Classical.choice, Quot.sound]`.
+
+Imported, not reproved: the Hadamard product representation `(7)` of `xi'/xi`, and the de
+Branges--Rovnyak positive-real kernel theorem giving positive semidefiniteness of `(9)`, hence of
+`J_safe`.  Both are classical and are the card's declared parents.
+
 ## Gates
 
 - [x] unconditional safe log-derivative kernel constructed

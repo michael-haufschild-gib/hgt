@@ -461,3 +461,46 @@ about: `sliceRoots` is not merely a multiset with the right power sums, it is th
 slice inside the circle.  Recall that `sliceRoots` is produced by `Classical.choose` from the
 argument principle and records only power sums, so this had to be proved, not assumed — via
 `multiset_eq_of_powerSum_eq` and the factorization.
+
+### Weierstrass division
+
+`formal/GaloisForLFunctions/HTGeometry/SliceWeierstrassDivision.lean`, unconditional and
+axiom-clean, closes the next step of the Siegel programme.
+
+```text
+GaloisForLFunctions.HTGeometry.dividedDifferenceCoeff
+GaloisForLFunctions.HTGeometry.poly_sub_eq_mul_dividedDifference
+HTGeometry.sliceWeierstrassCoeff, HTGeometry.sliceWeierstrass_eq_sum
+HTGeometry.divIntegrand, HTGeometry.sliceDivQuotient, HTGeometry.sliceDivRemainder
+HTGeometry.sliceDivRemainderCoeff
+HTGeometry.circleIntegrable_finsetSum, HTGeometry.circleIntegral_finsetSum
+HTGeometry.sliceDivRemainder_eq_sum
+HTGeometry.weierstrass_division
+```
+
+The quotient is the Cauchy integral of `g/W` against the kernel `(ζ − z)^{-1}`, exactly as the unit
+factor of the preparation theorem is the Cauchy integral of `f/W`.  Subtracting it from Cauchy's
+formula for `g` leaves the contour integral of
+
+```text
+g(ζ) · (W(ζ) − W(z)) / (W(ζ)(ζ − z)),
+```
+
+and `poly_sub_eq_mul_dividedDifference` — the statement that `P(ζ) − P(z)` is `(ζ − z)` times a
+polynomial of degree below `deg P` in `z` whose coefficients are polynomials in `ζ` — turns the
+kernel into a finite sum.  Interchanging that finite sum with the contour integral
+(`circleIntegral_finsetSum`, proved here because mathlib has no finite-sum lemma for
+`circleIntegral`) exhibits the remainder as
+
+```text
+r(z, y) = Σ_{k < d} a_k(y) z^k,   a_k(y) = (2πi)^{-1} ∮ g(ζ,y)·c_k(ζ,y)/W(ζ,y) dζ,
+```
+
+with `d = card (sliceRoots f t y)`.  This is Weierstrass' division theorem for one fixed parameter
+value.
+
+Remaining on the Siegel gate: joint holomorphy of the quotient and of the remainder coefficients
+(the same contour-integral argument as `differentiableOn_sliceUnit`, whose parametric machinery
+`CircleIntegralParamOpen` is already owned), uniqueness of the division, factoriality of the germ
+ring by induction on the dimension through division and Gauss' lemma, local reduced fractions, and
+then the Siegel counting assembly.

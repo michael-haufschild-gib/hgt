@@ -3,9 +3,10 @@
 - **ID:** `completed-prime-gamma-polynomial-even-factorization-to-rh`
 - **Stage:** 5-failed
 - **Type:** `FALSIFIED`
-- **Scientific status:** `[PROVED INTERFACE] [LEAN FAR-RIGHT INPUT] [FALSE PARITY PREMISE]`
+- **Scientific status:** `[PROVED INTERFACE] [LEAN FAR-RIGHT INPUT] [LEAN CLOSED NO-GO] [FALSE PARITY PREMISE]`
 - **Lean:** `formal/GaloisForLFunctions/RHTower/CompletedPrimeGammaMovingPolynomialParity.lean`;
-  `formal/GaloisForLFunctions/RHTower/CompletedPrimeGammaMomentFarRightAsymptotic.lean`
+  `formal/GaloisForLFunctions/RHTower/CompletedPrimeGammaMomentFarRightAsymptotic.lean`;
+  `formal/GaloisForLFunctions/RHTower/CompletedPrimeGammaSecondMomentCenterPositive.lean`
 
 ## Static moving test
 

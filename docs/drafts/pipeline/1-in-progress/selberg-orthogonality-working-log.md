@@ -15450,3 +15450,43 @@ Added to `formal/GaloisForLFunctions/HTGeometry/SatakeEnergyBound.lean` in cycle
 - `STEP1-EXPLICIT` (non-degeneracy of the universal quadratic form at `q_F = 2,3`);
 - the range `1 ≤ n_F < 4`, where Theorem 148 says the content is the gap density `δ₁(|g|²)`;
 - degree `≥ 3` entirely — and by Theorem 146′ the loop mechanism provably cannot reach it.
+
+---
+
+## 248. Frontier re-audit (2026-08-15) — separate published continuation from unverified automorphic claim
+
+### 248.1 [LITERATURE] status correction
+
+Kaczorowski--Perelli, *Multiple standard twists of L-functions*, is now a published JNT article
+(284 (2026), 188--213, DOI 10.1016/j.jnt.2026.01.003), not merely an arXiv route.  Its precise
+content is multivariable additive-twist continuation in `S^sharp`; it does **not** state a
+Rankin--Selberg construction, a prime pairing, or either Selberg orthogonality conjecture.
+
+Jiang, *On Hypothesis H of Rudnick and Sarnak*, arXiv:2507.20653, asserts Hypothesis H and
+automorphic Selberg orthogonality for all `GL_n`, but its author page still lists it as an arXiv
+preprint and no independent verification or publication was located.  It is therefore an
+**unverified external frontier claim**, usable neither as a theorem nor as a Lean source.
+
+### 248.2 Hostile route verdict
+
+**Conjecture.** Published multiple-standard-twist continuation can supply C1/C2 by a tangent
+diagonal mean.
+
+**Verdict: FALSIFIED as an implication.** The continuation is for an additive tensor in
+`S^sharp`; C1/C2 are prime-pairing statements for primitive elements of the full Selberg class.
+The finite residue trace selects all diagonal indices, while prime extraction and a
+Rankin--Selberg/nonvanishing input remain absent.  The full formal carrier has Euler-log data, but
+no primitive-pair or Rankin--Selberg construction.
+
+**Stronger survivor.** First reconstruct the published continuation exactly, then isolate the
+extra operation required for C1/C2 as a prime-sensitive Rankin--Selberg trace, rather than treating
+an unbounded tangent mean as that operation.  The current exact open core is the variable-line
+Mellin--Barnes/Fubini bridge in the published continuation proof; it is source-faithful and does
+not presuppose any C1/C2 statement.
+
+### 248.3 Lean status
+
+The finite residue trace, C^N gamma-cleared presentation, source spectrum, and general positive
+Gamma inversion are now axiom-clean Lean bridges.  The variable-line Fubini proof and a correctly
+stated C^N locally-uniform-limit theorem are in active formalization.  No theorem in this log proves
+or disproves C1 or C2.
