@@ -15,7 +15,7 @@ that name and its relative links deepened by one level.  Inbound links are repai
 restricted-Weil trace", "specialist novelty review", "3 → 4 publication-ready") do not block
 promotion; gates that name missing Lean do.
 
-## A. Promoted (66 of 103)
+## A. Promoted (67 of 103)
 
 - `suzuki-affine-resolvent-krein-defect`
 - `suzuki-affine-sewn-weil-robin-far-tail-factorization`
@@ -43,6 +43,7 @@ promotion; gates that name missing Lean do.
 - `suzuki-finite-morse-resolvent-jet-completion`
 - `suzuki-finite-shift-flat-projective-resolvent-holonomy`
 - `suzuki-full-frequency-neumann-holonomy-survivor`
+- `suzuki-forced-gamma-upper-strip-gluing`
 - `suzuki-gamma-three-grade-delay-root-observability`
 - `suzuki-gamma-weighted-tail-coercivity`
 - `suzuki-global-local-compound-bezoutian-weld`
@@ -123,7 +124,6 @@ All eight are wired into their area umbrella, build green, and are axiom-clean.
 - `suzuki-exterior-residual-rigged-wiener-realization`
 - `suzuki-finite-aperture-boundary-phase-locking`
 - `suzuki-flat-primitive-flux-volterra-liouville`
-- `suzuki-forced-gamma-upper-strip-gluing`
 - `suzuki-gamma-homogeneous-half-log-scattering-classification`
 - `suzuki-gamma-prime-normal-corona-equivalence`
 - `suzuki-gamma-skew-frequency-flux-liouville`
@@ -184,7 +184,6 @@ Each entry names the exact missing Lean object as the card itself states it.
 | `suzuki-exterior-feshbach-pruning-law` | analytic Feshbach–log conjugation `(37)`, infinite Neumann norm bound |
 | `suzuki-exterior-residual-rigged-wiener-realization` | no Lean section at all |
 | `suzuki-flat-primitive-flux-volterra-liouville` | Gamma commutator block estimate, exponential envelopes, infinite-tail Volterra lemma, Bochner block summation |
-| `suzuki-forced-gamma-upper-strip-gluing` | Gamma-ratio strip modulus and vector-valued Paley–Wiener translation |
 | `suzuki-gamma-homogeneous-half-log-scattering-classification` | Hilbert-valued oscillatory Fourier/Paley–Wiener connector; branch gluing `(21) → (25)` |
 | `suzuki-gamma-prime-normal-corona-equivalence` | forced-domain theorem `(21)` |
 | `suzuki-gamma-wall-block-hardy-and-derivative-scattering` | Hilbert-valued weighted Hardy inequality `(39)`, cutoff identity `(47)`, equivalence `(45)` |
@@ -7342,3 +7341,113 @@ i.e. `HasDerivAt Ψ (G z) z`, which follows from the parametric derivative
 with the `s`-fundamental theorem `∫₀¹ d/ds[s G(zs)]ds = G(z)`.  With a primitive in hand the
 horizontal FTC identifies the two brackets, `(15)` transfers to
 `stripSolution + forcedParticular`, and `exists_memLp_exp_smul_stripDatumFourier` delivers `(16)`.
+
+## QQ. The parameter fundamental theorem for the half-power segment integral
+
+`HTGeometry/SegmentParameterHolomorphy.lean` now exports the derivative itself
+(`hasDerivAt_integral_unitSegment`, with `differentiableAt_integral_unitSegment` a corollary), and
+`HTGeometry/SegmentParameterPrimitive.lean` (clean, wired, axiom-audited) adds
+
+```text
+segment_ftc_half :  (3/2)·∫₀¹ s^{1/2}G(zs)ds  +  z·∫₀¹ s^{3/2}G'(zs)ds  =  G(z)
+```
+
+for `G` holomorphic on an open set star-shaped about the origin.  The integrand on the left is
+`d/ds [s^{3/2}G(zs)]`, and the boundary values are `G(z)` at `s = 1` and `0` at `s = 0`; the
+half-integer power is only differentiable on the open parameter interval, so the theorem uses the
+one-sided form `integral_eq_sub_of_hasDeriv_right_of_le`.  Supporting: `cpow_ofReal_nonneg`,
+`continuousOn_cpow_ofReal`, `hasDerivAt_cpow_ofReal`.
+
+Since `∫_{[0,z]} w^{1/2}g(w)dw = z^{3/2}∫₀¹s^{1/2}g(zs)ds`, this identity says exactly that the
+segment integral is a primitive of `w^{1/2}g(w)` — the missing bridge of section PP.  What remains
+for `(16)` is mechanical: differentiate `z ↦ z^{3/2}Φ(z)`, conclude `Ψ' = H^{-1}b` on the open
+strip, integrate along the horizontal line to identify the two variation-of-constants brackets, and
+feed `stripSolution + forcedParticular` to `exists_memLp_exp_smul_stripDatumFourier`.
+
+## RR. `suzuki-forced-gamma-upper-strip-gluing` is promoted
+
+The bridge of section PP is closed by `RHTower/SuzukiForcedStripLineBridge.lean`:
+`hasDerivAt_forcedSegmentIntegral` proves that the segment integral is a primitive of `H^{-1}b` on
+the open strip (product rule on `z^{3/2}Φ(z)` plus `segment_ftc_half`),
+`forcedSegmentIntegral_line` integrates that along the horizontal line, and
+`stripSolution_add_forcedParticular_eq_forcedStripLine` identifies the glued forced solution with the
+variation-of-constants solution rebased at `iσ`.
+
+`RHTower/SuzukiForcedStripDatum.lean` then assembles `stripDatum_forcedStripSolution` — holomorphy,
+polynomial growth on closed substrips, and line `L²` — and `(16)` is
+`exists_memLp_exp_smul_forcedStripFourier`.
+
+`RHTower/SuzukiForcedStripGluing.lean` gains `forcedChannel_pos_unique` and
+`forcedChannel_neg_unique`, the uniqueness half of `(9)`.
+
+All three `[PROVED]` theorems of the card are now Lean-certified, every capstone audits to
+`[propext, Classical.choice, Quot.sound]`, and the card is moved to
+`3-formalized/new_scientific_knowledge/suzuki/` with the certificate
+`suzuki-forced-gamma-upper-strip-gluing-formalized.md`.
+
+## SS. The exact cutoff identity `(51)` and the Gamma jump multiplier
+
+```text
+RHTower/SuzukiCutoffForcingIdentity.lean   (51), in raw and commutator form
+RHTower/GammaJumpMultiplier.lean           r(η) and its elementary linear bound
+```
+
+`cutoff_forcing_identity` is `(51)` of `gamma-wall-block-hardy-and-derivative-scattering`: for linear
+maps on any module over a commutative ring, given the Leibniz rule for the cutoff, commutation of the
+jump operator with differentiation, and commutation of the operator and the coefficient with the
+scalar cutoff, a solution of `(2L+R-T)F' + F = 0` gives
+
+```text
+(2L+R-T)(χF)' + χF  =  ([R,χ]F)' + (2L+R-T)(χ'F) - [R,χ']F.
+```
+
+The identity is exact and contains no derivative of `F` inside a commutator.
+`cutoff_forcing_identity_commutator` is the same statement written with `cutoffCommutatorOp`.
+
+`gammaJumpMultiplier` is `r(η) = 2Σ_{n≥1} η²/(n(n²+η²))`.  Every term is nonnegative and, by
+`n²+η² ≥ 2n|η|`, at most `|η|/(2n²)`; hence the series converges and
+
+```text
+0 ≤ r(η) ≤ (Σ n^{-2}) |η|,     |r(η)| ≤ (Σ n^{-2})(1+|η|).
+```
+
+That affine bound is `(18)` of `suzuki-root-retained-exterior-dilation` and the growth half of `(34)`
+of the wall-block card; it is what puts the jump operator in `H¹(ℝ;X) → L²(ℝ;X)`.  The derivative
+bound `|r'(η)| ≤ C/(1+|η|)` — needed for the near region of the Schur test in `(32)` — follows the
+same pattern: `n/(n²+η²)² ≤ 1/(2|η|(n²+η²))` and `Σ_n 1/(n²+η²) ≤ π/(2|η|)`, giving
+`|r'(η)| ≤ π/|η|`.
+
+## TT. The polynomial-carrier Gamma dimension wall
+
+```text
+HTGeometry/LatticePolynomialWeight.lean          Σ_{ν∈ℤ^d} ⟨ν⟩^{-s} < ∞  ⟺  d < s
+RHTower/SuzukiPolynomialCarrierGammaWall.lean    (5)–(14), (17) of the dimension-wall card
+```
+
+**The lattice threshold `(1)`, `(10)`.**  `latticeBracket ν = 1 + |ν|₁` and
+`summable_latticeBracket_rpow_iff`: summability holds exactly above the dimension.  Sufficiency is
+the weighted arithmetic–geometric inequality `(∏_i(1+|ν_i|))^{1/d} ≤ ⟨ν⟩`, which dominates the
+radial weight by the product weight `∏_i(1+|ν_i|)^{-s/d}`, summable because `s/d > 1`
+(`geom_mean_le_latticeBracket`, `summable_prod_bracket_rpow`, `summable_int_bracket_rpow`).
+Necessity is a cube-annulus count (`card_annulus_ge`): between the cubes of half-side `N` and `2N`
+there are at least `N^d` points, each of bracket at most `4dN`, so every annulus carries at least
+`(4d)^{-s}` when `s ≤ d`, and nesting the annuli of half-side `2^k` makes the partial sums
+unbounded.
+
+**The Gamma threshold `(5)`–`(9)`.**  `suzukiGammaDistortedNormSq κ σ x = |x|^{2κ}q_σ(x)`;
+`suzukiGammaDistortedNormSq_rpow_tendsto` is `(8)`, and
+`integrable_suzukiGammaDistortedNormSq_iff` is the sharp `(9)`: integrable **exactly** when
+`κ < σ`, boundary included.  Divergence is the power-integral criterion applied to the exact
+vertical exponent; convergence is the same asymptotic against the corpus power tail plus continuity
+on the band.
+
+**The wall `(3)`, `(4)`, `(11)`–`(13)`, `(17)`.**  `exists_gamma_dimension_window_iff`:
+`∃ κ σ, d/2 < κ < σ < 1 ↔ d ≤ 1`; `no_gamma_dimension_window_of_two_le` is `(4)`;
+`summable_latticeBracket_two_kappa_iff` is `(1)` in the card's variables; `summable_rankOne_window`
+is the concrete `(12)`, `(13)` at `(κ,σ) = (2/3,3/4)`.
+
+**Not yet promoted.**  The card also displays `(15)`, the corrected direct theorem
+"uniform group growth `κ < σ` + Gamma block source + zero regular-singular charges → shifted value
+`L²`".  Its homogeneous half is exactly `(9)`, now certified; its forced half is Theorem 2 of
+`gamma-wall-block-hardy-and-derivative-scattering`, which is still open.  The card is held at
+stage 2 until that lands.

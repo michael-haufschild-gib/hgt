@@ -14,7 +14,7 @@ from each other.  Robust complexity and every circuit-length incidence shell are
 reflected about the midpoint of the cycle, up to that defect.
 -/
 
-open scoped BigOperators
+open scoped BigOperators ENNReal
 open Matrix
 
 set_option linter.unusedSectionVars false
@@ -323,7 +323,8 @@ theorem choiComplexity_reflect' (hn : 0 < Fintype.card n)
       choiComplexity dict ε (Uev t) := by
   rw [le_choiComplexity_iff]
   intro w hw
-  have hinvword := choiDist_inverseWord_reflect' dict inv Uev hn hinv hgroup hunit hdict hw
+  have hinvword := choiDist_inverseWord_reflect' dict inv Uev hn hinv hgroup hunit hdict
+    (R := R) hw
   refine le_trans
     (choiComplexity_le_of_word dict (ε + returnDefect Uev R) (Uev (R - t)) hinvword) ?_
   rw [length_inverseWord inv w]
@@ -369,6 +370,114 @@ theorem sublevel_reflect_subset (hn : 0 < Fintype.card n)
       {t : ℝ | choiComplexity dict (ε + returnDefect Uev R) (Uev t) ≤ s} := by
   rintro u ⟨t, ht, rfl⟩
   exact choiComplexity_reflect_le dict inv Uev hn hinv hgroup hunit hdict ε R t ht
+
+/-- Reversal with gatewise inversion, as a length-preserving map of word shells. -/
+def inverseWordVector (inv : Γ → Γ) (ℓ : ℕ) (w : List.Vector Γ ℓ) : List.Vector Γ ℓ :=
+  ⟨(w.1.map inv).reverse, by simp [w.2]⟩
+
+theorem inverseWordVector_injective {inv : Γ → Γ} (hinvol : Function.Involutive inv) (ℓ : ℕ) :
+    Function.Injective (inverseWordVector inv ℓ) := by
+  intro w v h
+  have h1 : (w.1.map inv).reverse = (v.1.map inv).reverse := congrArg Subtype.val h
+  have h2 : w.1.map inv = v.1.map inv := List.reverse_injective h1
+  have h3 : w.1 = v.1 := List.map_injective_iff.mpr hinvol.injective h2
+  exact Subtype.ext h3
+
+/-- **Every circuit-length shell is reflected.**  The incidence shell at the reflected time is
+bounded by the shell at the time itself, at resolution enlarged by the return defect. -/
+theorem shellIncidence_reflect (hn : 0 < Fintype.card n)
+    (hinv : ∀ g, dict (inv g) = (dict g)ᴴ) (hinvol : Function.Involutive inv)
+    (hgroup : ∀ s t, Uev (s + t) = Uev s * Uev t) (hunit : ∀ t, (Uev t)ᴴ * Uev t = 1)
+    (hdict : ∀ g, (dict g)ᴴ * dict g = 1) (ε R t : ℝ) (ℓ : ℕ) :
+    shellIncidence dict ε ℓ (Uev (R - t)) ≤
+      shellIncidence dict (ε + returnDefect Uev R) ℓ (Uev t) := by
+  classical
+  have hcard : (Finset.univ.filter fun w : List.Vector Γ ℓ =>
+      choiDist (wordProd dict w.1) (Uev (R - t)) ≤ ε).card ≤
+      (Finset.univ.filter fun w : List.Vector Γ ℓ =>
+        choiDist (wordProd dict w.1) (Uev t) ≤ ε + returnDefect Uev R).card := by
+    refine Finset.card_le_card_of_injOn (inverseWordVector inv ℓ) (fun w hw => ?_)
+      (fun w _ v _ h => inverseWordVector_injective hinvol ℓ h)
+    refine Finset.mem_filter.mpr ⟨Finset.mem_univ _, ?_⟩
+    exact choiDist_inverseWord_reflect dict inv Uev hn hinv hgroup hunit hdict
+      (Finset.mem_filter.mp hw).2
+  have hpow : (0 : ℝ) ≤ (Fintype.card Γ : ℝ) ^ ℓ := by positivity
+  rw [shellIncidence, shellIncidence]
+  gcongr
+
+/-- The reflected form of the shell reflection. -/
+theorem shellIncidence_reflect' (hn : 0 < Fintype.card n)
+    (hinv : ∀ g, dict (inv g) = (dict g)ᴴ) (hinvol : Function.Involutive inv)
+    (hgroup : ∀ s t, Uev (s + t) = Uev s * Uev t) (hunit : ∀ t, (Uev t)ᴴ * Uev t = 1)
+    (hdict : ∀ g, (dict g)ᴴ * dict g = 1) (ε R t : ℝ) (ℓ : ℕ) :
+    shellIncidence dict ε ℓ (Uev t) ≤
+      shellIncidence dict (ε + returnDefect Uev R) ℓ (Uev (R - t)) := by
+  classical
+  have hcard : (Finset.univ.filter fun w : List.Vector Γ ℓ =>
+      choiDist (wordProd dict w.1) (Uev t) ≤ ε).card ≤
+      (Finset.univ.filter fun w : List.Vector Γ ℓ =>
+        choiDist (wordProd dict w.1) (Uev (R - t)) ≤ ε + returnDefect Uev R).card := by
+    refine Finset.card_le_card_of_injOn (inverseWordVector inv ℓ) (fun w hw => ?_)
+      (fun w _ v _ h => inverseWordVector_injective hinvol ℓ h)
+    refine Finset.mem_filter.mpr ⟨Finset.mem_univ _, ?_⟩
+    exact choiDist_inverseWord_reflect' dict inv Uev hn hinv hgroup hunit hdict (R := R)
+      (Finset.mem_filter.mp hw).2
+  rw [shellIncidence, shellIncidence]
+  gcongr
+
+/-- At an exact projective return every incidence shell is symmetric about the midpoint. -/
+theorem shellIncidence_eq_of_exact_return (hn : 0 < Fintype.card n)
+    (hinv : ∀ g, dict (inv g) = (dict g)ᴴ) (hinvol : Function.Involutive inv)
+    (hgroup : ∀ s t, Uev (s + t) = Uev s * Uev t) (hunit : ∀ t, (Uev t)ᴴ * Uev t = 1)
+    (hdict : ∀ g, (dict g)ᴴ * dict g = 1) {R : ℝ} (hR : returnDefect Uev R = 0) (ε t : ℝ)
+    (ℓ : ℕ) :
+    shellIncidence dict ε ℓ (Uev (R - t)) = shellIncidence dict ε ℓ (Uev t) := by
+  have h1 := shellIncidence_reflect dict inv Uev hn hinv hinvol hgroup hunit hdict ε R t ℓ
+  have h2 := shellIncidence_reflect' dict inv Uev hn hinv hinvol hgroup hunit hdict ε R t ℓ
+  rw [hR, add_zero] at h1 h2
+  exact le_antisymm h1 h2
+
+/-- The extended positive partition function of the incidence shells. -/
+noncomputable def shellPartition (dict : Γ → Matrix n n ℂ) (b : ℕ → ℝ) (ε : ℝ)
+    (U : Matrix n n ℂ) : ℝ≥0∞ :=
+  ∑' ℓ : ℕ, ENNReal.ofReal (b ℓ * shellIncidence dict ε ℓ U)
+
+/-- **The complete incidence spectrum is reflected.**  Every nonnegative length weighting of the
+incidence shells obeys the same reflection. -/
+theorem shellPartition_reflect (hn : 0 < Fintype.card n)
+    (hinv : ∀ g, dict (inv g) = (dict g)ᴴ) (hinvol : Function.Involutive inv)
+    (hgroup : ∀ s t, Uev (s + t) = Uev s * Uev t) (hunit : ∀ t, (Uev t)ᴴ * Uev t = 1)
+    (hdict : ∀ g, (dict g)ᴴ * dict g = 1) {b : ℕ → ℝ} (hb : ∀ ℓ, 0 ≤ b ℓ) (ε R t : ℝ) :
+    shellPartition dict b ε (Uev (R - t)) ≤
+      shellPartition dict b (ε + returnDefect Uev R) (Uev t) := by
+  refine ENNReal.tsum_le_tsum fun ℓ => ENNReal.ofReal_le_ofReal ?_
+  exact mul_le_mul_of_nonneg_left
+    (shellIncidence_reflect dict inv Uev hn hinv hinvol hgroup hunit hdict ε R t ℓ) (hb ℓ)
+
+/-- At an exact projective return the whole incidence spectrum is symmetric. -/
+theorem shellPartition_eq_of_exact_return (hn : 0 < Fintype.card n)
+    (hinv : ∀ g, dict (inv g) = (dict g)ᴴ) (hinvol : Function.Involutive inv)
+    (hgroup : ∀ s t, Uev (s + t) = Uev s * Uev t) (hunit : ∀ t, (Uev t)ᴴ * Uev t = 1)
+    (hdict : ∀ g, (dict g)ᴴ * dict g = 1) (b : ℕ → ℝ) {R : ℝ} (hR : returnDefect Uev R = 0)
+    (ε t : ℝ) :
+    shellPartition dict b ε (Uev (R - t)) = shellPartition dict b ε (Uev t) := by
+  refine tsum_congr fun ℓ => ?_
+  rw [shellIncidence_eq_of_exact_return dict inv Uev hn hinv hinvol hgroup hunit hdict hR ε t ℓ]
+
+
+/-- The reflected superlevel set of the enlarged complexity history is contained in the
+superlevel set at the original resolution. -/
+theorem superlevel_reflect_subset (hn : 0 < Fintype.card n)
+    (hinv : ∀ g, dict (inv g) = (dict g)ᴴ)
+    (hgroup : ∀ s t, Uev (s + t) = Uev s * Uev t) (hunit : ∀ t, (Uev t)ᴴ * Uev t = 1)
+    (hdict : ∀ g, (dict g)ᴴ * dict g = 1) (ε R : ℝ) (s : ℕ∞) :
+    (fun t : ℝ => R - t) ''
+        {t : ℝ | ¬ choiComplexity dict (ε + returnDefect Uev R) (Uev t) ≤ s} ⊆
+      {t : ℝ | ¬ choiComplexity dict ε (Uev t) ≤ s} := by
+  rintro u ⟨t, ht, rfl⟩
+  intro hc
+  exact ht (le_trans (choiComplexity_reflect dict inv Uev hn hinv hgroup hunit hdict ε R t) hc)
+
 
 end Reflection
 

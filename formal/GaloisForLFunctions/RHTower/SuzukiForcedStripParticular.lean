@@ -63,20 +63,25 @@ def forcedParticular (E : ℂ → ℂ) (T : X →L[ℂ] X) (b : ℂ → X) (z : 
 def forcedParticularKernel (E : ℂ → ℂ) (T : X →L[ℂ] X) (b : ℂ → X) (z : ℂ) : X :=
   ∫ s in (0 : ℝ)..1, ((s : ℂ) ^ ((1 : ℂ) / 2)) • stripTransportInv E T (z * (s : ℂ)) (b (z * (s : ℂ)))
 
+/-- The half power of the segment parameter factors out of the inverse-propagator integral. -/
+theorem integral_stripPropagatorInv_segment (E : ℂ → ℂ) (T : X →L[ℂ] X) (b : ℂ → X)
+    {z : ℂ} (hz : z ≠ 0) :
+    (∫ s in (0 : ℝ)..1, stripPropagatorInv E T (z * (s : ℂ)) (b (z * (s : ℂ))))
+      = (z ^ ((1 : ℂ) / 2)) • forcedParticularKernel E T b z := by
+  rw [forcedParticularKernel, ← intervalIntegral.integral_smul]
+  refine intervalIntegral.integral_congr_ae (Filter.Eventually.of_forall ?_)
+  intro s hs
+  rw [Set.uIoc_of_le (by norm_num : (0 : ℝ) ≤ 1)] at hs
+  have hs0 : 0 < s := hs.1
+  rw [stripPropagatorInv_eq_cpow_smul E T (z * (s : ℂ)), smul_apply,
+    cpow_half_mul_ofReal hz hs0, smul_smul]
+
 /-- **Theorem 1, branch cancellation.**  Every half power in the particular solution cancels: it is
 `z` times a single-valued transport of the branch-free kernel.  In particular the particular
 solution is single-valued across the frequency origin and vanishes to first order there. -/
 theorem forcedParticular_eq (E : ℂ → ℂ) (T : X →L[ℂ] X) (b : ℂ → X) {z : ℂ} (hz : z ≠ 0) :
     forcedParticular E T b z = z • stripTransport E T z (forcedParticularKernel E T b z) := by
-  have hsplit : (∫ s in (0 : ℝ)..1, stripPropagatorInv E T (z * (s : ℂ)) (b (z * (s : ℂ))))
-      = (z ^ ((1 : ℂ) / 2)) • forcedParticularKernel E T b z := by
-    rw [forcedParticularKernel, ← intervalIntegral.integral_smul]
-    refine intervalIntegral.integral_congr_ae (Filter.Eventually.of_forall ?_)
-    intro s hs
-    rw [Set.uIoc_of_le (by norm_num : (0 : ℝ) ≤ 1)] at hs
-    have hs0 : 0 < s := hs.1
-    rw [stripPropagatorInv_eq_cpow_smul E T (z * (s : ℂ)), smul_apply,
-      cpow_half_mul_ofReal hz hs0, smul_smul]
+  have hsplit := integral_stripPropagatorInv_segment E T b hz
   have hcancel : z ^ (-(1 : ℂ) / 2) * z ^ ((1 : ℂ) / 2) = 1 := by
     rw [show -(1 : ℂ) / 2 = -((1 : ℂ) / 2) by ring, ← Complex.cpow_add _ _ hz]
     norm_num

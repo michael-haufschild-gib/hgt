@@ -2360,7 +2360,7 @@ physical horizon through polarized Gamma/co-Poisson/Hodge descent to the resolve
 antidiagonal, identify its boundary column with `continuedXiAntiCausalWardResponse`, and preserve
 the four-unit energy. Any post-divisor weighting or bounded scalar projection remains excluded.
 
-## C52 finite Guinand--Weil event reflection `[FROZEN CONJECTURE]`
+## C52 finite Guinand--Weil event reflection `[PROVED AND LEAN-FORMALIZED]`
 
 The 2026 finite Guinand--Weil dictionary changes the finite source variables. For an integer
 Fourier mode `n` and an event `omega in [0,1]`, put
@@ -2391,7 +2391,7 @@ be a central diagonal trace of source reflection, not evidence for positive orie
 immediate falsifier is a nonzero mode where the right side of `(C52.2)` is negative. If such a
 mode exists, eventwise reflected Gamma/pole pairing cannot be the missing positive incidence.
 
-## C52 proof and C53 pivot `[PAPER-PROVED; MIRROR-POSITIVITY FALSIFIED]`
+## C52 proof and C53 pivot `[LEAN-FORMALIZED; MIRROR-POSITIVITY FALSIFIED]`
 
 For every integer `n`, periodicity gives
 
@@ -2459,3 +2459,179 @@ non-atomwise factorization of its reflection-odd sector through the source-defin
 physical horizon whose Schur complement against the diagonal sector is nonnegative cofinally.
 Falsifier: any construction decomposing into positive reflected single-event blocks is killed by
 `(C53.1)` before a limit is taken.
+
+Formal source: `formal/GaloisForLFunctions/RHTower/CCMGuinandWeilSourceReflection.lean`.
+Lean proves `(C52.3)--(C52.5)`, the arbitrary finite signed-packet diagonalization, the zero-mode
+mass law, central value `4` at total event weight `2`, the exact half-horizon value `-2`, and the
+resulting failure of positive semidefiniteness. The declarations are unconditional and use no
+project-added axioms.
+
+## C54 square finite cross-event odd cancellation `[LEAN-FORMALIZED SUBCLASS]`
+
+C53 ruled out positive reflected single-event blocks but left open whether distinct event orbits
+could cancel the reflection-odd sector at a finite stage. Freeze `N` orbit representatives
+`0<omega_i<1/2`, put `theta_i=2*pi*omega_i`, and form the first `N` sine-moment matrix
+
+```text
+S_N(k,i)=sin((k+1)*theta_i),       0<=k,i<N.               (C54.1)
+```
+
+Chebyshev's identity
+
+```text
+sin((k+1)*theta)=U_k(cos theta)*sin(theta)
+```
+
+gives the exact factorization of `S_N` through the evaluation matrix of the first `N` second-kind
+Chebyshev polynomials. Since `U_k` has degree `k` and leading coefficient `2^k`,
+
+```text
+det S_N
+ = (prod_i sin theta_i)
+   *(prod_(k=0)^(N-1) 2^k)
+   *prod_(i<j)(cos theta_j-cos theta_i).                  (C54.2)
+```
+
+Distinct `omega_i` in `(0,1/2)` have distinct cosine nodes and positive sine factors, so `(C54.2)`
+is nonzero.
+
+Now give `Q_(omega_i)` weight `a_i` and `Q_(1-omega_i)` weight `a_i*`. On the integral carrier
+`0,...,N`, the edge from mode zero to mode `k+1` is exactly
+
+```text
+Packet(k+1,0)
+ = [sum_i (a_i-a_i*)*sin((k+1)*theta_i)]/[pi*(k+1)].       (C54.3)
+```
+
+Therefore all first `N` zero edges vanish if and only if
+
+```text
+a_i=a_i* for every reflection orbit i.                    (C54.4)
+```
+
+This falsifies cancellation only in the square `N`-orbit packet, and by restriction in every
+undercomplete packet with at most `N` distinct nondegenerate orbits. Exact codiagonal erasure there
+is orbitwise reflection balance; C52 then makes the square packet diagonal, where C53 still supplies
+a negative mode. Lean also proves the exact square degeneracy classification: `det S_N=0` if and
+only if some `sin(theta_i)=0` or two cosine nodes collide.
+
+This result does **not** cover more than `N` event orbits or a continuous source measure. Groskin's
+literal completed source has both possibilities, so treating C54 as a no-go for arbitrary finite
+cross-event cancellation would be theatre.
+
+Formal source:
+`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilReflectionOddRigidity.lean`. Lean proves the
+Chebyshev/Vandermonde factorization, exact determinant, moment injectivity, literal packet edge law,
+the balance equivalence, and automatic nondegeneracy for distinct horizons in `(0,1/2)`.
+
+## C55 codiagonal observer-dimension phase transition `[PROVED AND LEAN-FORMALIZED]`
+
+For `R` reflection orbits and `N` observed positive modes, put
+
+```text
+S_(N,R)(k,i)=sin((k+1)*theta_i),    0<=k<N, 0<=i<R.       (C55.1)
+```
+
+The exact phase transition is:
+
+```text
+R<=N + distinct nondegenerate nodes  => ker S_(N,R)={0};
+N<R                                  => ker S_(N,R)!={0}. (C55.2)
+```
+
+The first implication restricts to the square Chebyshev--Vandermonde minor `(C54.2)`. The second is
+rank--nullity and holds for every horizon placement, without endpoint or collision degeneration.
+For the literal paired Guinand--Weil packet, Lean constructs unequal forward/reflected weights with
+
+```text
+Packet(k+1,0)=0,                    0<=k<N,                (C55.3)
+```
+
+whenever `R>N`.
+
+This corrects the initial C55 pivot. Nonuniform conditioning is one possible escape at `R<=N`, but
+the completed source has a more basic exact kernel: at level `N`, the codiagonal is only an
+`N`-dimensional reporter. Groskin's prime source may contain more than `N` atoms, while the pole and
+archimedean sources are continuous measures. Cross-event codiagonal cancellation is therefore not
+exceptional; it is forced by overcompleteness.
+
+The theorem is deliberately not a whole-matrix kernel statement. The diagonal additionally sees
+the weighted cosine coordinates in Groskin's exact `2N+1` source quotient. Thus a vanishing
+codiagonal can coexist with nonzero diagonal data, just as four-unit central mass coexists with
+unoriented nonzero modes.
+
+**Higher principle exposed.** CCM-FU's selection problem is an observer-dimension problem. Below
+the reporter dimension, source reflection is rigid. Above it, the finite matrix forgets source
+provenance. A canonical `Pi(lambda,k)` or complete-ground selector cannot be reconstructed from the
+finite codiagonal after quotienting; it must be selected in the source-defined physical horizon and
+then transported into the quotient. This is the precise common origin of source ambiguity,
+fixed-compact blindness, and the failure of four-unit scalar normalization to orient the Ward
+column.
+
+**Next conjecture C56.** Build the full `2N+1` Guinand--Weil source-coordinate observer, prove its
+undercomplete/overcomplete kernel threshold, and identify the literal prime--pole--archimedean
+coordinate vector. Then seek a source-defined canonical lift from those coordinates through the
+all-jet physical horizon whose connection defect is the continued Xi Ward column. A lift chosen
+only from quotient coordinates is noncanonical by `(C55.2)` and is rejected.
+
+Formal source:
+`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilCodiagonalObserverDimension.lean`.
+
+## C56 full source observer and whole-matrix overcompleteness `[PROVED AND LEAN-FORMALIZED]`
+
+For `R` signed atomic events at horizons `omega_i`, the complete finite source reporter on modes
+`0,...,N` is
+
+```text
+T_(N,R)(alpha) =
+  (sum_i alpha_i omega_i,
+   (sum_i alpha_i sin(2*pi*(k+1)*omega_i))_(0<=k<N),
+   (sum_i alpha_i omega_i cos(2*pi*(k+1)*omega_i))_(0<=k<N)).       (C56.1)
+```
+
+Its codomain has dimension exactly `2N+1`. Let `Q_(N,R)(alpha)` be the whole CCM event packet,
+not only its zero codiagonal. The zero-mode diagonal reads twice the first coordinate of `(C56.1)`;
+the positive diagonals read twice its weighted-cosine coordinates; the zero-to-positive edge reads
+its sine coordinates up to the nonzero factors `pi*(k+1)`. Conversely, the event-source
+divided-difference formula shows every remaining off-diagonal entry is a difference of the same
+sine-source values. Lean therefore proves the exact kernel identity
+
+```text
+T_(N,R)(alpha)=0  <=>  Q_(N,R)(alpha)=0.                            (C56.2)
+```
+
+Rank--nullity now gives, for every horizon placement,
+
+```text
+R>2N+1  =>  exists alpha!=0, Q_(N,R)(alpha)=0.                      (C56.3)
+```
+
+This is stronger than C55: the invisible source annihilates the entire finite CCM matrix, including
+all diagonal weighted-cosine data. It also corrects a tempting but false inference from Groskin's
+exact source quotient. Completeness of the `2N+1` reporter means it determines the event matrix; it
+does not mean it determines an overcomplete source representative. Four-unit central normalization
+is one coordinate inside this quotient and cannot repair the lost kernel.
+
+**Higher principle exposed.** Finite CCM matrix formation is a quotient functor on sources. Its
+entire kernel is already visible in the `2N+1` moment reporter, and the kernel is forced once source
+complexity outruns reporter dimension. Hence no matrix-internal rule can canonically recover the
+prime/pole/archimedean representative: every such rule is constant on nontrivial source fibres.
+Canonical `Pi(lambda,k)` selection must precede this quotient and be transported forward with
+source provenance. The previously separate four-unit, codiagonal, and ground-selection stalls are
+shadows of this same nonfaithful source-to-matrix map.
+
+The result is finite and atomic. It neither identifies Groskin's literal prime--pole--archimedean
+coordinate vector nor supplies the canonical all-jet lift. It also proves only the forced-kernel
+side above dimension; injectivity at or below `2N+1` requires additional nondegeneracy and is not
+claimed.
+
+**Next conjecture C57.** Determine the full observer's sharp finite injectivity criterion. The
+weighted-cosine rows suggest a confluent trigonometric/Hermite interpolation law rather than the
+ordinary Vandermonde law of C54. Attack that determinant directly; on failure, extract its exact
+collision classification. In parallel, express the literal prime, pole, and archimedean measures
+as a source-horizon element before quotienting and test whether their canonical lift's connection
+defect is the continued Xi Ward column. Any lift defined only from `(C56.1)` is rejected by
+`(C56.3)`.
+
+Formal source:
+`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilFullSourceObserver.lean`.

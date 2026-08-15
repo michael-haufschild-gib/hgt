@@ -179,3 +179,49 @@ still compatible with Route T's `7/10` reserve once combined with the formal cri
 `251/250`. Thus the right endpoint is no longer the hard core. Remaining analytic obstruction is
 the actual Gabriel integral interpolation theorem, followed by detector boundary/zero-counting
 assembly.
+
+### C5e: fixed Gabriel scalar core and pole-cleared Gaussian field
+
+Status: **PARTIALLY FORMALIZED; ACTUAL INTEGRAL INTERPOLATION STILL OPEN**.
+
+The abstract numerical step is now closed by
+`Sieve/InghamFixedGabrielScalarCore.lean`: Hadamard three-lines with left exponent `4/3`, right
+exponent `2`, and strip `(1/2,181/180)` gives exactly
+
+```text
+I^(237/364) <= L^(165/364) R^(72/364).
+```
+
+This is not yet claimed as Gabriel's integral theorem. The concrete dual construction is formalized
+in `Sieve/InghamFixedGabrielDualPower.lean`. The affine exponent unexpectedly collapses to
+
+```text
+q(z) = (1+180z)/127,
+```
+
+with real parts `91/127`, `1`, and `182/127` on left, center, and right. Lean proves analyticity,
+exact center pairing, and that the left fourth power and right square of the dual multiplier both
+equal the center `364/237` density. `Sieve/InghamFixedGabrielScalarFamily.lean` constructs the
+actual truncated scalar integral and proves its value at the center is exactly that moment.
+
+The unweighted-family conjecture is **FALSIFIED AS A GLOBAL HADAMARD INPUT**: it need not be
+bounded on the infinite vertical strip. The positive survivor is the Gaussian residue-unit field
+in `Sieve/InghamGabrielPoleClearedError.lean`. It is analytic across the zeta pole on the full
+Gabriel strip and agrees off the pole with
+
+```text
+exp(kappa (z/T)^2) ((z-1)/z) (zeta(z) M_X(z)-1).
+```
+
+New exact geometry: `(z-1)/z` is contractive whenever `Re z>=1/2`, so pole clearing costs no
+boundary moment. On the center line, its inverse costs at most `7/3`; on `|t|<=T`, inverse
+Gaussian cost is at most `exp(kappa)`. Hence Lean proves
+
+```text
+|zeta(7/10+it) M_X(7/10+it)-1|
+  <= (7/3) exp(kappa) |poleClearedGaussianError(7/10+it)|.
+```
+
+Remaining Gabriel core is no longer exponent algebra, dual construction, pole regularity, or
+center transfer. It is: prove analytic/bounded scalar-family integration and sharp global
+Gaussian endpoint Hölder bounds from the already-formal critical and right-edge moments.

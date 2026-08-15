@@ -1268,3 +1268,30 @@ prime/zeta/divisor theorem.  See
   `p`-norm sandwich with the one-hot saturation and the entropy--temperature price `(21)`/`(22)`.
 - Verification: targeted foreground `lake env lean` green; `#print axioms` on every capstone
   reports only `propext`, `Classical.choice`, `Quot.sound`.
+
+## ARR-1 — autonomous return complexity reflection law
+
+- Promoted `2-fully-proven/autonomous-return-complexity-reflection-law.md` → `3-formalized/`.
+- `RHTower/AutonomousReturnReflection` builds the projective Choi distance on unitaries out of the
+  corpus `pureStateTraceDistance`, so the triangle inequality is inherited rather than reproved;
+  bi-invariance and inversion invariance are trace identities.  Robust complexity is `ℕ∞`-valued, so
+  the unreachable case is a genuine infinity and no reachability hypothesis appears anywhere.
+- Certified: `(4)`, `(5)`, `(6)`--`(8)`, `(B1)`--`(B6)`.
+
+## Small-card sweep
+
+Four cards whose Lean target was a single interface theorem:
+
+- `cofinal-typed-obstruction-identity-model` → new `HTGeometry/IdentityRationalObstructionModel`;
+  the constant rational model's typed obstruction is the number of positive decompositions of the
+  weight, acting on the rational line.
+- `digamma-gamma-hypertranscendental-near-connector` → already carried by
+  `HTGeometry/DigammaGammaHypertranscendentalNear`; verified, wired, axiom-audited, promoted.
+- `spectral-character-prescribed-birth-realizability` → new
+  `HTGeometry/SpectralCharacterBirthRealizability`; the coordinate jet realizes any prescribed birth
+  order exactly for nonzero projective characters.
+- `schanuel-stage-one-hermite-lindemann` → already carried by `RHTower/SchanuelStageWitnesses`;
+  verified, axiom-audited, promoted.
+- `independent-periods-fraction-field-connector` → new
+  `HTGeometry/IndepPeriodsFractionFieldConnector`; integral and rational period independence are the
+  same interface, and the `i`, `i√2` witness now discharges `IndepPeriods` unconditionally.

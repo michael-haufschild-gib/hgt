@@ -4310,3 +4310,79 @@ the reusable layers, `RHTower` for the route-specific ones.
   `exists_global_even_radialProlate_of_signedMode` already gives that solution, and the band
   eigen-equation holds at *every* real point, which is exactly the self-reciprocity the
   identification needs.
+
+- 2026-08-14 (hundred-and-thirty-fifth instalment) -- **The Abel limit commutes with the radial
+  primitive.**  New module `RHTower/PoissonAbelRadialInterchange.lean`, wired, axiom-clean.
+
+  * **`norm_fourier_le_integral_norm`** -- the elementary `|Fourier(g)(w)| <= ‖g‖_1`, read off the
+    explicit exponential form.
+  * **`continuous_poissonMuntzAbelSum_aperture`** -- the Abel sum is continuous in the *aperture*:
+    each sampled term is continuous (the Fourier integral of an `L¹` source is), and the geometric
+    Abel weight gives the uniform majorant `r^(n+1) ‖g‖_1` that `continuous_tsum` consumes.
+  * **`exists_vanishing_radius_abs`** -- evenness upgrades the one-sided vanishing radius of a
+    compactly supported source to the two-sided one the periodization count needs.
+  * **`tendsto_intervalIntegral_sqrt_mul_poissonMuntzAbelSum`** -- **the interchange**:
+
+    ```text
+    integral_0^t exp(s/2) · (sqrt a · AbelSum(f, a, r))_re ds
+      -> halfLineExpPrimitive (radialFullLogSource f lambda) t     as r -> 1⁻,
+    ```
+
+    by dominated convergence.  The dominating constant is the previous instalment's uniform bound
+    evaluated at the largest aperture in `[0, t]`: `exp(t/2) (2 lambda e^t L + 1) C_f / (2 sqrt
+    lambda)`.  Every hypothesis of the dominated-convergence lemma is discharged -- measurability
+    from the continuity in the aperture, the bound from Poisson positivity, the pointwise limit
+    from the tree's boundary law through the identification of the previous instalments.
+
+  The transport of `(11)` is therefore reduced to two remaining steps, both on the Abel side at a
+  *fixed* radius `r < 1`, where everything converges absolutely:
+
+  1. `integral_0^t exp(s/2)(sqrt a · AbelSum)_re ds = (1/sqrt lambda) sum_n r^(n+1) integral over
+     the n-th channel` -- a term-by-term integration (uniform majorant `r^(n+1)`) followed by the
+     exponential substitution `u = lambda e^s`;
+  2. the channel bound `sum_k |channel primitive| <= C`, which the tree already proves for the exact
+     radial mode, applied through the identification of the cut-off mode's Fourier samples with that
+     mode -- `exists_global_even_radialProlate_of_signedMode` supplies the solution and the band
+     eigen-equation holds at every real point, which is the self-reciprocity the identification
+     needs.  Its side conditions (`s <= 1/2`, `c >= 5`, the endpoint normalization `R 1 = 1`) are
+     the last unexamined inputs.
+
+- 2026-08-14 (hundred-and-thirty-sixth instalment) -- **The transport of `(11)` is closed modulo the
+  channel bound itself.**  New module `RHTower/PoissonAbelChannelSplit.lean`, wired, axiom-clean.
+
+  * **`summable_abelSample`, `re_poissonMuntzAbelSum`** -- at a fixed Abel radius the sampled series
+    is absolutely summable (geometric weight times the source's total mass), so the real part passes
+    through the sum: `Complex.reCLM.map_tsum` is exactly the statement that a continuous linear map
+    commutes with an absolutely convergent series.
+  * **`expHalf_mul_sqrt_mul_poissonMuntzAbelSum_re`** -- the pointwise identity
+
+    ```text
+    exp(s/2) (sqrt a · AbelSum)_re = (1/sqrt lambda) sum_n r^(n+1) · a · (Fourier f (a(n+1)))_re,
+    ```
+
+    whose only content is `exp(s/2) sqrt(lambda e^s) = (lambda e^s)/sqrt lambda`.
+  * **`intervalIntegral_expHalf_mul_sqrt_mul_poissonMuntzAbelSum_eq_tsum`** -- the term-by-term
+    integration, by `integral_tsum_of_summable_integral_norm` with the majorant
+    `r^(n+1) (lambda e^t) ‖f‖_1 t`.
+  * **`channelPrimitive`, `channelPrimitive_eq_integral`** -- the `n`-th channel primitive, and the
+    exponential substitution `u = e^s` turning it into the radial integral
+    `integral_1^{e^t} lambda (Fourier f (lambda x (n+1)))_re dx` -- the exact shape the exterior
+    estimate bounds.
+  * **`abs_halfLineExpPrimitive_radialFullLogSource_le_of_channel_bound`** -- **the transport**:
+
+    ```text
+    sum_n |channel primitive| <= B    ==>    |A_lambda(t)| <= B / sqrt lambda,
+    ```
+
+    uniformly in the endpoint `t`.  Combining the channel split at fixed radius with the previous
+    instalment's dominated-convergence interchange, and `|r^(n+1)| <= 1`.
+
+  `(11)` for the lattice source is therefore reduced to exactly one statement -- the channel bound
+  for the Fourier samples of the constrained source -- which the tree already proves for the exact
+  radial mode (`tsum_norm_integral_radialProlate_all_channels_le`).  Two inputs stand between the
+  two: the identification of `(Fourier f (lambda ·))_re` with that mode, and the mode's separation
+  ratio bound `s <= 1/2`.  The first is self-reciprocity -- the band eigen-equation holds at every
+  real point -- and the tree's canonical radial data already carries the endpoint normalisation
+  `R 1 = 1` and the ODE (`eventually_signedModeRadialData_*`).  The second is a PSWF concentration
+  estimate: `radialSeparationRatio_le_of_prolateSLAction` gives `s <= 1 + E/(c² M)`, and the tree's
+  route to `s -> 0` currently takes the inverse-bandwidth envelope as a hypothesis.

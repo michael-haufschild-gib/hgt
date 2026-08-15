@@ -58,6 +58,46 @@ theorem forcedGlue_of_channel {E : ℂ → ℂ} {T : X →L[ℂ] X} (b : ℂ →
         + forcedParticular E T b (η : ℂ) := by
   rw [stripSolution_ofReal_neg E T cp hη, h]
 
+omit [Nontrivial X] in
+/-- **`(9)`, uniqueness of the positive channel vector.**  The forced boundary solution determines
+its channel vector, because the particular solution is common to both representations and the
+transport is injective. -/
+theorem forcedChannel_pos_unique {E : ℂ → ℂ} {T : X →L[ℂ] X} (b : ℂ → X) {η : ℝ} (hη : 0 < η)
+    (hE : E ((η : ℝ) : ℂ) ≠ 0) (c c' : X)
+    (h : stripSolution E T c ((η : ℝ) : ℂ) + forcedParticular E T b ((η : ℝ) : ℂ)
+      = stripSolution E T c' ((η : ℝ) : ℂ) + forcedParticular E T b ((η : ℝ) : ℂ)) :
+    c = c' := by
+  have hhom : stripSolution E T c ((η : ℝ) : ℂ) = stripSolution E T c' ((η : ℝ) : ℂ) :=
+    add_right_cancel h
+  rw [stripSolution_ofReal_pos E T c hη, stripSolution_ofReal_pos E T c' hη] at hhom
+  have hscal : ((η ^ (-(1 : ℝ) / 2) : ℝ)) ≠ 0 :=
+    ne_of_gt (Real.rpow_pos_of_pos hη _)
+  have hsub : stripTransport E T ((η : ℝ) : ℂ) c = stripTransport E T ((η : ℝ) : ℂ) c' := by
+    have hz := sub_eq_zero.mpr hhom
+    rw [← smul_sub] at hz
+    have := (smul_eq_zero.mp hz).resolve_left (by simpa using hscal)
+    exact sub_eq_zero.mp this
+  exact stripTransport_injective hE hsub
+
+omit [Nontrivial X] in
+/-- **`(9)`, uniqueness of the negative channel vector.** -/
+theorem forcedChannel_neg_unique {E : ℂ → ℂ} {T : X →L[ℂ] X} (b : ℂ → X) {η : ℝ} (hη : η < 0)
+    (hE : E ((η : ℝ) : ℂ) ≠ 0) (c c' : X)
+    (h : (((-η) ^ (-(1 : ℝ) / 2) : ℝ)) • stripTransport E T ((η : ℝ) : ℂ) c
+          + forcedParticular E T b ((η : ℝ) : ℂ)
+      = (((-η) ^ (-(1 : ℝ) / 2) : ℝ)) • stripTransport E T ((η : ℝ) : ℂ) c'
+          + forcedParticular E T b ((η : ℝ) : ℂ)) :
+    c = c' := by
+  have hhom := add_right_cancel h
+  have hscal : (((-η) ^ (-(1 : ℝ) / 2) : ℝ)) ≠ 0 :=
+    ne_of_gt (Real.rpow_pos_of_pos (by linarith) _)
+  have hsub : stripTransport E T ((η : ℝ) : ℂ) c = stripTransport E T ((η : ℝ) : ℂ) c' := by
+    have hz := sub_eq_zero.mpr hhom
+    rw [← smul_sub] at hz
+    have := (smul_eq_zero.mp hz).resolve_left (by simpa using hscal)
+    exact sub_eq_zero.mp this
+  exact stripTransport_injective hE hsub
+
 end Gluing
 
 section LineBounds

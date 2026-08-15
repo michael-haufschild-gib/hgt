@@ -1,0 +1,408 @@
+# Cubic Ward/Hellinger completed source-trace incidence
+
+- **ID:** `cubic-ward-hellinger-completed-source-trace-incidence`
+- **Stage:** 1-in-progress
+- **Type:** `[CROSS-ROUTE WARD/CCM/R OPENING] [THEOREM (paper)] [NO-GO] [OPEN GRADED PRODUCER]`
+- **Source:** `rh-current-frontier-map.md` · `Cubic Ward/Hellinger source-trace opening`
+- **Statement:** P-G173--P-G179 are dependency and receiver blocks for the committed cubic
+  Ward/Hellinger opening, not its route identity.  The unresolved theorem is a completed
+  coefficient-faithful pole--Gamma--von-Mangoldt pre-divisor incidence retaining signed ordinate
+  control.  The positive cubic Euler covariance is exact source infrastructure, but it has the
+  opposite von-Mangoldt sign from the scalar Ward majorant, and the source-shift energy defect
+  behind the positive zero feature is an intrinsically reflection-odd, indefinite primal form.
+  Therefore neither scalar functional-equation absorption nor ordinary positive compression can
+  be the missing trace contraction.
+
+## Goal
+
+Construct the completed coefficient-faithful pre-divisor incidence demanded by the cubic
+Ward/Hellinger source-trace opening.  It must start from the source-only pole--Gamma--von-Mangoldt
+functional-equation decomposition, retain signed ordinate control before real-part scalarization,
+carry the exact P-G178/P-G179 depth-square block, and contract onto the P-G173 collision carrier.
+Any surviving successor must explain how inverse logarithmic source moments become a third-order
+Hermitian divisor singularity without inserting Xi copies or their norm.
+
+This is not Route P.  P-G labels name already-committed dependency theorems used by this
+cross-route Ward/CCM/R opening.  This card does not assume a zero-side trace capacity law:
+P-G176 already proves that law equivalent to RH.
+
+## Gates
+
+- [x] 0 -> 1 in-progress: source-pure operator, exact attack, internal/external novelty sketch
+- [ ] 1 -> 2 fully-proven: complete paper proof of every promoted theorem, `[PROVED HERE]`
+- [ ] 2 -> 3 formalized: Lean theorem(s), targeted leaf checks/build, axiom/lint pass
+- [ ] 3 -> 4 publication-ready: standalone theorem/proof/novelty certificate
+
+## Exact primitive synthesis `[DEPENDENCY P-G177-A] [PAPER PROOF COMPLETE]`
+
+Let `I=Nat.Primes x Nat`, and for `i=(p,e)` put
+
+```text
+n_i=p^(e+1),
+lambda_i=log n_i,
+b_i=Lambda(n_i)/n_i,
+phi_i(r)=sqrt(b_i) r (exp(-lambda_i r)-exp(-2 lambda_i r)),  r>0.       (A1)
+```
+
+All data in `(A1)` are primitive-Euler data.  No Xi zero, divisor copy, ordinate, target Gram, or
+fitted normalization occurs.  On finitely supported `c:I->C`, define
+
+```text
+S_0 c = sum_i c_i phi_i  in L2(R_+,dr).                                (A2)
+```
+
+Then:
+
+1. `S_0^*S_0` has matrix entries
+
+   ```text
+   <phi_j,phi_i>
+    =sqrt(b_i b_j) C_1(lambda_i,lambda_j;0),                            (A3)
+   ```
+
+   so it is exactly P-G174's primitive collision matrix at `R=1`, `kappa=0`.
+
+2. The column norm is exactly
+
+   ```text
+   ||phi_i||_2^2
+    =b_i * 115/(864 lambda_i^3)
+    =115/[864 (e+1)^3 p^(e+1)(log p)^2].                               (A4)
+   ```
+
+3. P-G174 summability therefore extends `S_0` uniquely to a Hilbert--Schmidt synthesis
+
+   ```text
+   S:l2(I)->L2(R_+),
+   ||S||_HS^2=Tr(S^*S)=routePPrimitiveCollisionCubicTraceBudget.        (A5)
+   ```
+
+4. The covariance `H_E=SS^*` is a positive trace-class integral operator.  For `r,s>0`, its
+   kernel is the coefficient-faithful Euler current
+
+   ```text
+   K_E(r,s)
+    =r s sum_i b_i
+       (exp(-lambda_i r)-exp(-2lambda_i r))
+       (exp(-lambda_i s)-exp(-2lambda_i s))
+
+    =r s [A(1+r+s)-A(1+r+2s)-A(1+2r+s)+A(1+2r+2s)],                  (A6)
+
+   A(z)=-zeta'(z)/zeta(z)=sum_(n>=2) Lambda(n)n^(-z), Re z>1.          (A7)
+   ```
+
+5. The two trace presentations agree:
+
+   ```text
+   Tr(H_E)=sum_i b_i*115/(864 lambda_i^3)
+          =(115/1728) integral_0^infinity t^2 A(1+t)dt
+          =(115/864) integral_1^infinity (sigma-1)log zeta(sigma)ds.   (A8)
+   ```
+
+   The last expression is the weighted determinant-line free energy of the literal Euler
+   determinant `det(I-diag(p^(-sigma)))=1/zeta(sigma)`.
+
+### Paper proof of P-G177-A `[PROVED HERE]`
+
+For `(A3)`, expand the product in `(A1)` and use
+
+```text
+integral_0^infinity r^2 exp(-u r)dr=2/u^3, u>0.
+```
+
+The four resulting terms are the definition of `C_1(lambda_i,lambda_j;0)`; this is also the
+feature proof underlying P-G173.  Setting `i=j` gives
+
+```text
+integral_0^infinity r^2(exp(-lambda r)-exp(-2lambda r))^2dr
+ =1/(4lambda^3)-4/(27lambda^3)+1/(32lambda^3)
+ =115/(864lambda^3),
+```
+
+which proves `(A4)`.  The identities `lambda_i=(e+1)log p` and
+`b_i=log(p)/p^(e+1)` give its second form.
+
+P-G174 proves `sum_i ||phi_i||^2<infinity`.  The standard Hilbert synthesis theorem therefore
+extends `(A2)` to a Hilbert--Schmidt map and gives `(A5)`.  Expanding the rank-one covariance
+`sum_i |phi_i><phi_i|` gives the first line of `(A6)`.  Absolute nonnegative convergence permits
+termwise regrouping; the prime-power identity for `A` gives the second line.
+
+Finally, Tonelli and
+
+```text
+integral_0^infinity t^2 exp(-lambda t)dt=2/lambda^3
+```
+
+give the middle equality in `(A8)`.  The Euler expansion
+
+```text
+log zeta(sigma)=sum_(n>=2) Lambda(n)n^(-sigma)/log n
+```
+
+and `integral_1^infinity (sigma-1)n^(-sigma)ds=1/[n(log n)^2]` give the
+last equality.  All interchanges are Tonelli interchanges of nonnegative terms.  `QED`
+
+## First continuation conjecture
+
+```text
+[CONJECTURE P-G177-B -- LINEAR HANKEL CONTINUATION]
+The anti-causal polar part of the meromorphic continuation of H_E is a trace-contractive copy of
+the strict-right cubic Xi collision operator.
+```
+
+This would combine `(A5)` with P-G175 and prove RH.  It is not accepted merely because the
+covariance kernel contains `-zeta'/zeta`.
+
+## Attack 1: moment-polarity classification `[P-G177-B FALSIFIED]`
+
+The subquantum trace and the desired divisor charge use opposite functional calculi.  For a
+Dirichlet atom `b exp(-lambda s)`:
+
+```text
+two s-derivatives:       b lambda^2 exp(-lambda s),
+three primitives:        b lambda^(-3) exp(-lambda s).                 (B1)
+```
+
+At a Xi/zeta zero `rho` of multiplicity `m`, `(A7)` has local part
+
+```text
+A(s)=-m/(s-rho)+holomorphic.                                           (B2)
+```
+
+Consequently
+
+```text
+A''(s)=-2m/(s-rho)^3+holomorphic,                                     (B3)
+```
+
+which has the third-order pole required by a cubic resolvent carrier, but its Euler boundary
+coefficients are `Lambda(n)(log n)^2/n`.  Their positive prime subseries dominates a positive
+constant times `sum_p 1/p`, hence is not summable.
+
+In contrast, the threefold primitive normalized at `+infinity` has coefficients
+`Lambda(n)/[n(log n)^3]`, exactly `(A8)`, but the primitive of `(B2)` has local singularity
+
+```text
+-(m/2)(s-rho)^2 log(s-rho)+holomorphic polynomial,                     (B4)
+```
+
+not an inverse-cubic pole.  It vanishes in modulus at the puncture and retains only logarithmic
+monodromy.  Thus a linear one-variable operation cannot simultaneously preserve the trace-class
+inverse-log source weight and create the cubic divisor pole.  The equality of P-G173 and P-G174
+diagonal constants comes from transposing one Laplace synthesis (`S^*S` versus `SS^*`), not from
+an explicit-formula trace identity.
+
+### No-go closure
+
+- **Exact killing mechanism:** derivative/primitive polarity `(B1)`--`(B4)`.  Pole raising costs
+  five powers of `log n` relative to the P-G174 trace weight and destroys critical Euler
+  summability.
+- **Strongest positive survivor:** P-G177-A constructs a canonical positive Euler covariance,
+  not the completed Ward source operator.  A viable continuation must be nonlinear or genuinely two-variable
+  before codiagonalization: closed-graph inversion, a Fredholm resolvent/determinant, a
+  Gauss--Codazzi second fundamental form, or a signed Krein index can turn a soft branch defect
+  into a pole.  A bounded linear Hankel projection cannot.
+- **New insight:** P-G176's missing incidence is not another linear trace formula.  It is a
+  curvature/inversion theorem for the determinant line of `H_E`, and it must retain the
+  anti-holomorphic source real structure before scalar trace.
+- **Status:** internal search found the CCM polar--prime Cauchy colligation and many source Hankel
+  criteria, but not `(A1)`--`(A8)` or the exact polarity classification.  Primary-literature
+  search found general Laplace--Carleson and positive-Hankel theory, not this von-Mangoldt cubic
+  synthesis or its Xi continuation.  Lean formalization remains gated on final paper audit of the
+  strongest exact statement.
+
+## Attack 2: scalar Ward absorption does not commute with cubic compression
+
+The exact source-only Ward majorant is
+
+```text
+S_W(w)=2 Re[ (1/2+w)^(-1)+(1/2+w-1)^(-1)
+             +logDeriv Gamma_R(1/2+w)-LSeries(Lambda,1/2+w) ].         (C1)
+```
+
+Functional-equation absorption proves a pointwise scalar inequality for the continued Ward
+response.  It does not prove a Loewner inequality of two-variable kernels.  This distinction is
+forced by the arithmetic sign.  The positive covariance `(A6)` is the four-point mixed difference
+of
+
+```text
+A(s)=+LSeries(Lambda,s)=-zeta'(s)/zeta(s),                              (C2)
+```
+
+whereas the von-Mangoldt component in `(C1)` is `-LSeries`.  Atom by atom, the cubic/Hellinger
+mixed difference of `+LSeries` is a positive product of two exponential differences; the same
+operation applied to `-LSeries` is its negative.
+
+Moreover, the mixed difference has signed coefficients `(+,-,-,+)`.  Therefore it is not a
+positive functional on pointwise order: from `F(w)<=G(w)` one cannot infer
+`Delta_(r,s)F(w)<=Delta_(r,s)G(w)`.  The scalar Ward inequality cannot be differentiated, finite-
+differenced, or cubically compressed to produce the P-G174 covariance bound.  Pole and Gamma
+terms might repair the sign only inside a completed matrix identity established before taking real
+parts; dropping them, bounding them separately, or using absolute values loses the needed
+cancellation.  This is not optional: the committed vertical-divergence theorem proves that the
+already-scalarized Gamma majorant has no height-uniform finite budget.
+
+### Scalar-absorption no-go `[PAPER PROOF COMPLETE]`
+
+Let `Delta_(r,s)` denote the four-point operator in `(A6)`.  For the positive Dirichlet atom
+`F_lambda(t)=exp(-lambda t)`, direct factorization gives
+
+```text
+Delta_(r,s) F_lambda(1)
+ =exp(-lambda)
+  (exp(-lambda r)-exp(-2lambda r))
+  (exp(-lambda s)-exp(-2lambda s)) >= 0.                              (C3)
+```
+
+For `-F_lambda` the value is nonpositive and is strict when `lambda,r,s>0`.  Yet constants may be
+added to either side without changing `Delta`, and a sufficiently large constant makes either
+atom pointwise dominate the other on any prescribed compact Ward window.  Thus pointwise order
+contains no information about the sign or size of the mixed difference.  Summing `(C3)` with
+von-Mangoldt coefficients proves the sign opposition `(C1)`--`(C2)` wherever the Euler series is
+absolute.  QED.
+
+**Consequence.** P-G177's Euler covariance is source-pure and trace class, but it is not the
+functional-equation-absorbed pole--Gamma--von-Mangoldt source demanded by this opening.  Calling
+it the completed incidence would silently reverse the prime current and discard the divergent
+archimedean channel.
+
+## Attack 3: exact modular chamber of the source-shift defect
+
+The horizontal zero feature does come from the fixed critical source translations
+
+```text
+(T_L f)(x)=exp(-L/2)f(x+L).
+```
+
+But positivity after conormal evaluation is not positivity of the corresponding source operator.
+For `L>0`, change variables in the critical norm to obtain
+
+```text
+ exp(L)||T_L f||^2-exp(2L)||T_(2L) f||^2
+   =integral_R |f(x)|^2 D_L(x) dx,                                   (D1)
+
+ D_L(x)=exp(|x-L|)-exp(|x-2L|).                                      (D2)
+```
+
+The defect has the exact moving-wall law
+
+```text
+ D_L(3L-x)=-D_L(x),
+ D_L(x)<0  iff x<3L/2,
+ D_L(x)=0  iff x=3L/2,
+ D_L(x)>0  iff x>3L/2.                                                (D3)
+```
+
+Indeed, reflection exchanges the two distances.  Since `exp` is strictly increasing, the sign is
+the sign of `|x-L|-|x-2L|`; squaring the nonnegative distances reduces it to
+
+```text
+(x-L)^2-(x-2L)^2=L(2x-3L).
+```
+
+Consequently the quadratic form in `(D1)` takes both signs on compactly supported vectors: use a
+nonzero vector supported strictly to the left or right of `3L/2`.  No Loewner-positive difference
+of the two prime-normalized shift energies exists.
+
+This does not contradict the strict-right conormal calculation.  If horizontal displacement is
+`a>0`, the dual evaluation eigencharacter reads
+
+```text
+ exp(-2aL)-exp(-4aL)>0.                                               (D4)
+```
+
+Thus zero-side positivity is a polarized dual phenomenon sitting over an indefinite primal
+modular defect.  The Lebesgue density `(D2)` is reflection-odd, while the critical Hilbert density
+adds the nontrivial Radon--Nikodym factor `exp(-|x|)`.  Hence ordinary Hilbert reflection does not
+turn `(D1)` into a positive compression; a modular half-density must be retained.
+
+### Positive survivor: completed modularly graded incidence `[CONJECTURE W-H180]`
+
+The repeated sign failures are shadows of one higher principle.  Functional-equation absorption
+must be lifted before scalarization to a completed, matrix-valued *graded* colligation, not merely
+to a positive scalar kernel.  Its minimum exact specification is:
+
+1. one source-defined carrier contains pole, Gamma, and resolved von-Mangoldt channels with their
+   literal signs and forced cross terms;
+2. the reflection exchanging the two shift-depth chambers carries its Radon--Nikodym
+   half-density, so the indefinite defect `(D1)` becomes a `J`-oriented matrix coefficient rather
+   than a falsely positive operator;
+3. depth squaring with modular gain `sqrt(n)` is the primitive Euler restriction of that same
+   reflection cocycle, and its cubic source norm is exactly the P-G178/P-G179 `1/8` contraction;
+4. cubic tensor/Schur compression is applied to this completed matrix identity before real part
+   or scalar trace, landing exactly on P-G173 with signed ordinate entries;
+5. the completed source trace, including Gamma/polar cross terms, is bounded by the P-G175 budget
+   without reading a Xi zero or assuming P-G176.
+
+Clause 2 explains simultaneously why holomorphic height translation cannot be scalar-normalized,
+why the source-shift energy difference is indefinite, and why the arithmetic depth-square gain is
+unbounded in counting norm but contractive in cubic measure.  The common obstruction is omitted
+modular half-density, not a missing scalar constant.
+
+### Hostile falsifiers for W-H180
+
+- A pointwise consequence of `(C1)` is insufficient by `(C3)`.
+- A positive operator inequality between the two shift energies is false by `(D3)`.
+- Multiplying the integer-shift tensor by `n` to manufacture unit ordinate phase is not a
+  contraction and fails source trace control.
+- An Euler-only covariance has wrong completed-source sign.
+- Gamma and polar channels may cancel or orient inside one exact colligation; discarding either by
+  a separate upper bound is forbidden by vertical divergence.
+- A landing defined from the Xi divisor, the target collision Gram, or P-G176 capacity is a
+  terminal receiver and fails source purity.
+
+## One possible realization, not route commitment
+
+```text
+[CONJECTURE P-G177-C -- DETERMINANT-LINE CURVATURE]
+There is a Gamma-completed meromorphic Fredholm/closed-graph family built from H_E before divisor
+expansion such that:
+
+1. its Euler-region logarithmic determinant is the literal Gamma--Euler determinant, not Xi by
+   definition;
+2. its conormal resolvent has strict-right polar second fundamental form equal to the P-G173
+   collision Gram, with multiplicity;
+3. causal/polar curvature is nonnegative, so the anti-causal trace is at most Tr(H_E);
+4. continuation and graph limits preserve the P-G175 trace bound.
+```
+
+This is one successor capable of crossing the moment-polarity wall.  It is currently open and is
+not privileged over a completed graded Ward colligation, Krein/Fredholm realization, or other
+source construction satisfying W-H180.
+Existing diagonal Gamma--prime Fredholm operators realize reciprocal Gamma and reciprocal zeta
+only in `Re s>1`; their prime branch ceases to be trace class at the critical boundary, and no
+source theorem identifies their completed conormal second fundamental form with P-G173.
+
+## Novelty and theatre audit
+
+- P-G177-A is more than a renamed finite Gram: it constructs the infinite synthesis, identifies
+  its transposed trace-class covariance with a literal four-point logarithmic-current kernel, and
+  identifies the P-G174 budget with determinant-line free energy.
+- P-G177-B is recorded as false, not used as an RH premise.
+- P-G177-C/W-H180 is not counted as progress until a finite coefficient formula, graph domain, and
+  nonexpansive curvature identity are proved independently of Xi zeros.
+- Any construction defining its determinant, conormal range, norm, or negative subspace from the
+  Xi divisor fails the source-purity gate.
+
+## Lean targets after paper promotion
+
+1. `XiWardCubicTranslationModularChamber.lean`: exact pulled-back critical-shift defect density,
+   reflection law, moving-wall sign classification, and explicit two-sign witnesses.
+2. `XiWardCubicScalarAbsorptionCompressionNoGo.lean`: four-point exponential factorization and
+   failure of scalar order to control signed mixed compression.
+3. Promote the infinite Euler synthesis only if its covariance becomes an input to an exact
+   completed pole--Gamma--prime colligation; do not formalize it merely to enlarge infrastructure.
+4. Wire finished leaf modules into `RHTower.lean`; run only scratch checks and targeted leaf builds,
+   never the umbrella build.
+
+## Log
+
+- 2026-08-15 -- P-G177-A originated and paper-proved after complete Route-P/curvature/Deninger
+  audit.  Linear Hankel continuation P-G177-B failed under exact moment-polarity attack.  Pivoted
+  to determinant-line/closed-graph curvature P-G177-C.
+- 2026-08-15 -- Corrected route identity: this card attacks the cross-route cubic Ward/Hellinger
+  source-trace opening, while P-G173--P-G179 remain dependencies.  Scalar Ward absorption failed
+  to commute with cubic compression because its prime current has the opposite sign and the Gamma
+  scalar majorant diverges vertically.  Exact source-shift analysis exposed the reflection-odd
+  moving modular wall `(D3)`.  Pivoted from ordinary positivity to W-H180's completed modularly
+  graded incidence.
