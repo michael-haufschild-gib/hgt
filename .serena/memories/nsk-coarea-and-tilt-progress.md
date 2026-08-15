@@ -1,67 +1,65 @@
-# In-flight work: Euler tilt card (2026-08-14/15)
+# In-flight work: real-twist / zeta-deficit card (2026-08-15)
 
 Companion to `nsk-toplevel-stage3-sweep`.
 
-## halasz-reciprocal-coarea-optimality-law — PROMOTED to 3-formalized
-Modules `RHTower/ReciprocalCoareaOptimality.lean` (certificate analysis: `coareaRatioCost`,
-`coareaStationaryDefect`, derivative/sign lemmas, `exists_unique_coareaStationaryRatio` = (R13),
-`coareaRatioCost_min`, `coareaMinCost_eq` = (R10), `log_le_card_mul_log_of_ratio_le` /
-`card_ge_log_div_log` = (R8), `coareaPartitionCost` = (R9),
-`coareaMinCost_mul_log_le_partitionCost` = (R11), `coareaPartitionCost_geometric_le` = (R12),
-`coareaPartitionCost_geometric_optimal_le`) and `RHTower/ReciprocalCoareaEnergy.lean`
-(`primeLogWindowMass`, `abs_primeLogWindowMass_sub_le` = (R2)/(R3) from the corpus Mertens layer,
-`coareaOuterEnergy_le`, `coareaInnerEnergy_le` = (R5), `sqrt_coareaEnergy_product_le` = (R6),
-`sqrt_coareaEnergy_product_geometric_le` = (R7)).  Both wired, axiom-clean.
+## CLOSED this session
+- `halasz-reciprocal-coarea-optimality-law` → 3-formalized
+  (`RHTower/ReciprocalCoareaOptimality.lean`, `RHTower/ReciprocalCoareaEnergy.lean`).
+- `route-e-source-faithful-euler-tilt-unit-shell-law` → 3-formalized.  Final pieces:
+  `RHTower/EulerTiltCharacteristic.lean` ((24) `eulerTiltCharacteristic_eq`, (25)
+  `abs_two_log_norm_add_euler_le`, `primeRpowSum`, `abs_primeRpowSum_sub_logLog_le`),
+  `RHTower/EulerTiltAmplitude.lean` (`quadraticHead_le`, `harmonicTail_le`,
+  `abs_primeCosineDefect_le_const`, `exists_bound_primeCosineDefect`, **(14)**
+  `exists_bound_log_norm_eulerTiltCharacteristic`), `RHTower/TerminalPrimeBand.lean` ((23)
+  `terminalBandMass_le`, `tendsto_terminalBandMass`), `RHTower/RouteESaddleLowTilt.lean` ((20) for
+  every σ ∈ (0,1)).
 
-## route-e-source-faithful-euler-tilt-unit-shell-law — (18)/(19)/(9) DONE, (10)–(14) REMAIN
-Compiling, wired, axiom-clean:
-- `RHTower/ThetaRelativeErrorMass.lean` — `∫_2^∞|θ(t)/t−1|dt/t < ∞` (`thetaRelMass`),
-  `abs_integral_thetaError_mul_rpow_le` (uniform in δ ≥ 0), `exists_abs_thetaError_le`,
-  `integrableOn_inv_mul_log_sq`, `exp_neg_le_inv_sq`.
-- `RHTower/TiltedPrimeLogSum.lean` — `integral_rpow_sub_one_of_ne` (negative exponent),
-  `integral_derivRpow_mul_theta_eq_of_ne`, `tiltedPrimeLogSum`, `tiltedPrimeLogSum_eq`,
-  **`abs_tiltedPrimeLogSum_sub_le`**: |∑_{2<p≤Y}p^{-1-δ}log p − (1−Y^{-δ})/δ| ≤ 4log4+8+2·thetaRelMass
-  for δ ∈ (0,1], Y ≥ 2.
-- `RHTower/EulerTiltMeanEnergy.lean` — `logSquareTailConst` (= ∑ log n/n², via
-  `Mertens.summable_log_div_rpow`), `eulerTiltMeanEnergy`, `tiltedPrimeLogSumLE`,
-  `abs_eulerTiltMeanEnergy_sub_le` (Euler-denominator correction), `abs_exp_neg_sub_quadratic_le`
-  (REUSES the corpus `expNegTruncError_le_pow_div_factorial` at P = 3 — do not re-derive Taylor
-  bounds for exp; `SpurCumulantBounds.lean` has the general truncation bound),
-  **`abs_eulerTiltMeanEnergy_sub_expansion_le`** = card (18).
-- `RHTower/EulerTiltSaddle.lean` — `eulerTiltSaddleDefect`, strict monotonicity in the tilt
-  (`eulerTiltMeanEnergy_strictAnti`, `eulerTiltSaddleDefect_strictAnti`,
-  `eulerTiltSaddleDefect_injOn`), **`abs_saddle_sub_cofactor_le`** = card (19).
-- `RHTower/EulerTiltSaddleAperture.lean` — `cofinalAperture L = 2L e^L`,
-  `log_cofinalAperture` (= L + log L + log 2 exactly), continuity of the defect,
-  `saddleDefect_le`/`le_saddleDefect`, `exists_unique_saddle_root`,
-  `abs_saddle_root_sub_expansion_le`, the three aperture limits, and the capstone
-  **`eventually_saddle_root_expansion`** = card (9) (unconditional: eventual in the aperture).
-- `RHTower/MertensLogSquareSum.lean` (NEW, reusable) — `primeLogSqSumIoc`,
-  `primeLogSqSumIoc_eq` (Abel against `log t/t`), `integral_one_sub_log_div_id`,
-  `integral_abs_thetaError_div_le`, **`abs_primeLogSqSumIoc_sub_le`**:
-  |∑_{2<p≤Y}(log p)²/p − (log Y)²/2| ≤ mertensLogSqConst·(1+log Y).
+## IN PROGRESS: real-twist-zeta-deficit-transfer-law
+Done (compiling, wired into RHTower.lean, axiom-clean):
+- `RHTower/PretentiousDistance.lean` — `unitDiskDist`, `sqrt_unitDiskDist_triangle`,
+  `sqrt_sum_le_of_sqrt_le` (Minkowski over a Finset), `pretentiousDistSq`,
+  `sqrt_pretentiousDistSq_triangle`, `primeChar`, `pretentiousDistSq_primeChar`,
+  `pretentiousDistSq_real_reflect` (Z9), `pretentiousDistSq_primeChar_le_four_mul` (**Z10**).
+- `RHTower/ZetaEulerLogPrimeSum.lean` — `zetaLinePoint`, `log_norm_riemannZeta_eq_re_eulerLog`
+  (via corpus `exp_canonicalEulerLogZeta_eq_riemannZeta`), `primeCosTsum`,
+  `norm_log_one_sub_sub_self_le`, `abs_re_neg_log_one_sub_sub_re_le`,
+  **`abs_re_eulerLog_sub_primeCosTsum_le`** (≤ invSquareTailConst).
+- `RHTower/ZetaOneLineDeficit.lean` — `primeRpowCoeff`/`primeRpowLogCoeff`/`primeCosCoeff`,
+  `tsum_primeRpowLogCoeff_le` (≤ 1/δ + C₀), `tsum_tail_primeRpowCoeff_le`,
+  `abs_sum_primeCos_shift_le`, `primeClockEnergy`, `zetaDeficitConst`,
+  **`abs_zeta_deficit_sub_primeClockEnergy_le` = (Z2a)**.
+- `RHTower/RealTwistDeficitTransfer.lean` — `zetaLineDeficit`,
+  `zetaLineDeficit_sub_le_primeClockEnergy`, `pretentiousDistSq_primeChar_eq_primeClockEnergy`,
+  **`quarter_zetaLineDeficit_le_pretentiousDistSq` = (Z3)/(Z8)+(Z10)**.
+- `RHTower/Sieve/DirichletPrefixLittlewood.lean` — the ENTIRE Littlewood chain re-derived with a
+  free right endpoint `M ≤ 2^(topExponent t + 1)`: `dirichlet_tail_dyadic_prefix`,
+  `norm_dirichlet_partial_two_regime_prefix`, `..._shape_prefix`, `..._endpoints_prefix`,
+  `..._const_prefix`, `..._pow_two_prefix`, `..._exponent_prefix`, `..._assembled_prefix`,
+  `..._canonical_prefix`, `..._capstone_prefix`, `..._explicit_prefix`, `..._balanced_prefix`,
+  `littlewood_threshold_prefix`, `..._order_prefix`, **`..._rate_prefix`**.
+  (Key: the corpus block bound `dirichlet_block_saving_of_small_factorial` already accepts a
+  partial block `N ≤ M ≤ 2N+1`, so only the assembly needed redoing.)
+- `RHTower/Sieve/ZetaShiftedLineRate.lean` — `cpow_shift_split`,
+  `norm_dirichlet_shifted_prefix_le` (Abel via corpus `abel_block_bound`, weight `n^{-δ}`),
+  **`norm_riemannZeta_shifted_line_rate`**: for `16π ≤ t`, the two order conditions, and
+  `δ ∈ [0,1]`, `‖ζ(1+δ+it)‖ ≤ 33 + 2L/(orderLowerBound L − 4/3)`, `L = log(t/2π)`.  This is (Z2c)
+  in raw form.
 
-### NEXT STEPS for (10)–(14)
-1. Weights `w_p = p^{-σ}/(1+p^{-σ})²`.  Since `w_p = p^{-σ}(1+O(p^{-σ}))`, all three sums reduce
-   to tilted prime sums plus absolutely convergent corrections (same pattern as
-   `abs_eulerTiltMeanEnergy_sub_le`, with `logSquareTailConst` for the log-weighted one and
-   `∑ n^{-2}` for the unweighted one; for the (log p)²-weighted one use `∑ (log n)²/n²`, again via
-   `Mertens.summable_log_div_rpow` after `log² n ≤ C n^{1/2}`).
-2. `A = ∑ w_p = log ℓ + O(1)`: use corpus `Sieve.mertensS` + `abs_mertensS_sub_logLog_sub_const_le`
-   (`logLog N = log(log N)`, and `log log Y = log ℓ`), plus the tilt correction
-   `∑ p^{-1}(1−p^{-δ}) ≤ δ ∑ log p/p = O(δℓ)`.
-3. `B = ∑ w_p log p = ℓ − log ℓ + O(1)`: from `abs_tiltedPrimeLogSum_sub_le` and (9).
-4. `C = ∑ w_p (log p)² = ℓ²/2 + O(ℓ log ℓ)`: from `abs_primeLogSqSumIoc_sub_le` and
-   `∑ p^{-1}(1−p^{-δ})(log p)² ≤ δ ℓ ∑ (log p)²/p = O(δℓ³)`.
-5. Then (12) `t* = πB/C = 2π/ℓ + O(log ℓ/ℓ²)`, `D = π²(A − B²/C) = π² log ℓ + O(1)`, and (13)
-   `t*E* = 2π + O(log ℓ/ℓ)` are algebra on 2–4.
-6. (14) `|E e^{i(πN − t*E)}| = ℓ^{-2}e^{O(1)}` needs the oscillatory Mertens sum
-   `∑_{p≤Y} p^{-σ} cos(t* log p) = log ℓ + O(1)` — the one genuinely new analytic estimate left
-   (card (25)–(27); the convergence input is `∫_0^1 (cos 2πu − 1)/u du > −∞`).
+### NEXT STEPS
+1. (Z2d): turn the shifted rate into `∃ C T, ∀ x ≥ T, ∀ 1 ≤ |τ| ≤ x^B,
+   log log log x − C ≤ zetaLineDeficit τ x`.  Plan: conjugation for τ < 0 (`riemannZeta_conj`);
+   an absolute bound on the compact range `1 ≤ |τ| ≤ T₀` from `norm_riemannZeta_le_partialSum`
+   with a FIXED N; for `|τ| ≥ T₀` split on `L ≤ √ℓ` vs `L > √ℓ` (ℓ = log x) to avoid needing
+   monotonicity of `u/(a log u + b)`; then `Δ ≥ log ℓ − log(C ℓ/log ℓ) = log log ℓ − log C`.
+2. Then the card's power-law corollary and the polynomial-horizon antiscale frame.
+3. The GHS cellwise transfer (Z11)–(Z13) needs the sharp GHS theorem in ENTROPY form
+   (`ρ log(C/ρ)`); the corpus has ~60 `Sieve/Ghs*.lean` modules + `HalaszGhsMasterBound.lean`
+   (`exists_norm_sum_Icc_mul_log_le`, in `sieveMeanSquare` form) — check
+   `HalaszGhsSharpCutoff.lean` for the cutoff/entropy shape before building anything new.
 
-## Discipline notes added this session
-- Do not run full/umbrella builds; `lake env lean <file>` to check, `lake build <module>` only for
-  the oleans a new file imports.
-- Do not add hypotheses standing for analytic inputs; structural hypotheses that define an object
-  (e.g. "δ solves the tilt equation") are fine when existence is also proved.
-- Search the corpus before writing any new estimate (`../scripts/formal_tools.py research "..."`).
+## Discipline notes
+- No full/umbrella builds; `lake env lean --json <file>` (with a python filter) for positions.
+- Heartbeats are per declaration — split long theorems into lemmas.
+- `obtain ⟨x, hx⟩ : ∃ x, x = e := ⟨_, rfl⟩` instead of `set ... with`.
+- Never rewrite a hypothesis into an expanded form the other hypotheses do not share (linarith
+  then sees different atoms) — rewrite the goal instead.

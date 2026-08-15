@@ -553,7 +553,6 @@ theorem routeUHardEdgeFilteredPolarCrossCapital_eq
   have hQprod : Qe.eval (-(1 / 4 : ℝ)) * Qo.eval (-(1 / 4 : ℝ)) =
       c ^ (2 * d) * (P.eval z ^ 2 - P.eval (-z) ^ 2) / 4 := by
     rw [hQe, hQo]
-    change c ^ d * E.eval z * (c ^ d * O.eval z) = _
     have hEO : E.eval z * O.eval z =
         (P.eval z ^ 2 - P.eval (-z) ^ 2) / 4 := by
       simpa only [E, O] using eval_routeUHardEdgeEvenChannel_mul_oddChannel P z

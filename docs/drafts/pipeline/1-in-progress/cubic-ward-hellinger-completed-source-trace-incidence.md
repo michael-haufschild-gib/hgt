@@ -563,6 +563,21 @@ reaches and includes the balanced wall but has zero continuation width beyond it
 formulated as a completed boundary value, distributional identity, or closed-graph transport at
 the wall; an absolutely convergent two-sided source strip does not exist.
 
+P-G186 closes the source-to-window square that remained between the Euler codiagonal and Burnol's
+target-support incidence. Put the primitive cell `(p,e)` at the canonical right-half-plane node
+
+```text
+z_(p,e)(kappa)=1/2+(e+1)log p+i kappa
+```
+
+and scale its inverse Burnol window feature by
+`sqrt(Lambda(p^(e+1))/p^(e+1))`. The full aperture Gram of these features, including every
+off-diagonal ordinate interaction, is entrywise the P-G181 primitive base Cauchy cube. Its
+positivity, balanced-source trace identity, and uniform `<2` budget therefore hold in the literal
+Burnol window space before Xi-zero expansion. The only unclosed passage is boundary-value
+restriction from these canonical Euler nodes to actual completed-Xi divisor nodes; constructing
+another abstract Gram or source window cannot address it.
+
 ### Sharpened live conjecture `[W-H181 -- RAW MODULAR CONORMAL TRACE]`
 
 Construct, before divisor expansion, a two-sided pole--Gamma--von-Mangoldt conormal relation whose
@@ -578,9 +593,9 @@ with the left side defined from completed source coefficients and forced cross t
 list of Xi zeros.  Residue specialization may then expose the raw `m^2` charges.  No
 multiplicity-half-density disintegration is required for the contradiction.
 
-The remaining obstruction is now narrower than W-H180: transport P-G184's already-bounded
-source-native regularized balanced codiagonal through the pole--Gamma functional equation to a
-two-sided conormal Riesz/exterior boundary value at the sharp P-G185 wall. Scalar holomorphic dephasing still fails because
+The remaining obstruction is now narrower than W-H180: transport P-G186's already-bounded
+source-defined Burnol window Gram through the pole--Gamma functional equation to its restriction
+on actual completed-Xi divisor nodes at the sharp P-G185 wall. Scalar holomorphic dephasing still fails because
 one chamber alone has nonunit depth modulus; the reciprocal FE pair must be retained through the
 transport. P-G173's dyadic collision layer, P-G180's reconstruction, P-G181's source estimate,
 P-G182's normalized receiver, and P-G183's multiplicity split are no longer separate gates.
@@ -611,6 +626,40 @@ P-G182's normalized receiver, and P-G183's multiplicity split are no longer sepa
 - 2026-08-15 -- P-G185 proved the regularized joint-damping chamber is exactly `s>=0`. The
   balanced source trace exists at `s=0`, but every negative damping diverges on primes. Replaced
   ordinary contour continuation by a sharp completed boundary-value/closed-graph transport.
+- 2026-08-15 -- P-G186 placed every primitive Euler cell at its canonical right-half-plane node
+  with exact von Mangoldt square-root amplitude and proved that the full inverse-Burnol-window
+  aperture Gram is the P-G181 base cube. Source-window construction is closed; only completed
+  restriction from Euler nodes to actual Xi divisor nodes remains.
+
+## Cross-corpus CCM--Route-P source identification `[PROVED IN LEAN]`
+
+`FrankensteinCCMRoutePBaseCubicGreenSourceBridge.lean` identifies the same labelled arithmetic
+mass inside the literal CCM critical-Mellin source, before Xi-zero expansion.  For
+
+```text
+G(h)=exp(-h/2)/(4 max(h,log 2)^3),
+```
+
+the clamp changes only the prime-free interval `0<=h<log 2`, and every arithmetic atom satisfies
+
+```text
+criticalMellinAtomWeight(n) G(log n)
+  =Lambda(n)/(4 n log(n)^3)
+  =routePPrimeGammaBaseCubicWeight(n).                              (E9c)
+```
+
+Pullback along `n=p^(e+1)` is exactly the P-G184 prime-depth weight, preserving prime label and
+valuation depth.  Its global sum is the P-G181 budget `<2`; every finite CCM prime functional on
+the transported horizon test is the negative truncated Route-P budget; and the full CCM
+pole--prime functional is exactly
+
+```text
+pole surplus - truncated Route-P budget.                            (E9d)
+```
+
+Carrier identification and prime summability are therefore closed across CCM and Route P.  This
+does **not** bound a Xi-divisor trace.  It isolates the completed fracture: polar--Gamma surplus
+must be shorted at the P-G185 boundary before P-G186's source Gram is transported to divisor copies.
 
 ## Second exact chart of the cubic charge: boundary double-pole energy
 
@@ -692,22 +741,25 @@ The remaining open theorem must be an unconditional construction of one of the t
 
 ## Attack 7: The Poisson-Hardy scattering duality and the coherent-norm obstruction `[FALSIFIED / EXPLORATORY]`
 
-### 1. Parity and decomposition of the logarithmic currents
+### 1. Completed and uncompleted logarithmic currents must remain distinct
 
-On the critical line `s = 1/2 + it`, the completed logarithmic derivative `-xi'/xi` decomposes into:
-- `-Re(xi'/xi(1/2+it)) = -theta'(t)` (even, the deterministic Riemann--Siegel theta velocity from the Archimedean Gamma frame);
-- `-Im(xi'/xi(1/2+it)) = Z'(t)/Z(t)` (odd, the singular on-line zero velocity of Hardy's Z-function).
+For the centered completed entire function `Xi_c(w)=xi(1/2+w)`, functional-equation symmetry makes
+`Xi_c` even.  Hence `-Xi_c'/Xi_c` is odd and is purely imaginary on `w=it` away from its poles.
+The decomposition containing the Riemann--Siegel velocity and Hardy's `Z'/Z` belongs instead to the
+**uncompleted zeta logarithmic derivative** (with sign depending on the theta convention).  The
+earlier identification of both expressions as `-xi'/xi` was false and is retracted.
 
-(Note: For the completed centered entire function `Xi(w) = xi(1/2+w)`, its logarithmic derivative on the imaginary axis `w = it` is purely imaginary: `-Xi'(it)/Xi(it) = i Z'(t)/Z(t)`.)
-
-An exploratory Cauchy half-plane contour integral for `Re w > 0` suggests the spatial balance:
+An exploratory **regularized** Cauchy half-plane contour for `Re w>0` suggests the spatial balance:
 
 ```text
 B(r) = E(r) - sum_(rho in S) m_rho psi_rho(r),                                             (E15)
 sum_(rho in S) m_rho psi_rho(r) = E(r) - B(r)   in L2(R_+, dr),                            (E16)
 ```
 
-where `B(r) = (r / pi) int_0^infinity [ -theta'(t) cos(tr) - (Z'(t)/Z(t)) sin(tr) ] dt`.
+where the displayed Fourier formula for `B` must be interpreted using the uncompleted current and
+principal values at critical-line zeros.  Neither `(E15)` nor its `L2` boundary limit is yet
+paper-proved: contour truncation, indentation, infinite residue convergence, inverse-Laplace
+interchange, and the `L2(R_+)` limit remain open analytic obligations.
 
 ### 2. Fatal Defect: Coherent-norm vs. Gram-trace confusion `[NO-GO ON SCALAR PASSIVITY]`
 
@@ -816,17 +868,18 @@ smooth ODE alone.
 - 2026-08-15 -- Corrected collision variance absorption (continuous, not discontinuous) and retracted
   unconditional collision-time bounds.
 
-## Attack 13: Degree-4 Jensen discriminant positivity and the Pólya frequency boundary `[FALSIFIED AS RH PROOF]`
+## Attack 13: Degree-4 Jensen discriminant and the Pólya frequency boundary `[FALSIFIED AS RH PROOF]`
 
-1. The degree-4 Jensen polynomial of `Xi_0(w)` at `n = 0` has discriminant
-   `Delta(0) = 4(9 M_2^2 - M_0 M_4) = +0.011157... > 0`, unconditionally proving that all four roots
-   are strictly real at degree 4 (`[VERIFIED THEOREM]`).
+1. Numerical evaluation of the degree-4 Jensen polynomial at `n=0` gives
+   `Delta(0)=4(9 M_2^2-M_0 M_4)=+0.011157...`.  This is strong numerical evidence, not yet an
+   unconditional theorem in this card: an exact symbolic inequality or certified interval proof is
+   still required before the degree-4 claim can be promoted.
 2. **Fatal Defect:** Extending this reality to all degrees `d in N` by asserting that `Phi` is a
    Pólya frequency function of infinite order (`Phi in PF_infinity`) is **strictly equivalent to RH**
    by Schoenberg's Theorem (1951).
 
-- 2026-08-15 -- Verified degree-4 Jensen discriminant `Delta(0) > 0`; falsified `PF_infinity` extension
-  as circular with RH.
+- 2026-08-15 -- Recorded the positive degree-4 numerical margin; falsified the `PF_infinity`
+  extension as circular with RH.  Degree-4 exact certification remains separate.
 
 ## Attack 14: Forensic audit of the Schoenberg equivalence `[CIRCULARITY RETRACTED]`
 
@@ -836,10 +889,11 @@ RH, not an independent proof.
 
 - 2026-08-15 -- Formalized Schoenberg no-go on all-degree Hankel total positivity.
 
-## Attack 15: Exact Hadamard moment decomposition `[FALSIFIED AS RH PROOF]`
+## Attack 15: Hadamard moment displacement `[LOCAL ALGEBRA; RH CLOSURE FALSIFIED]`
 
-1. The Taylor-Hadamard moment decomposes as `sigma_1 = sum_(on-line k) 2/gamma_k^2 + sum_(off-line rho) Delta_1(a_rho, gamma_rho)`
-   with `Delta_1(a, gamma) = (3 a^2 gamma^2 + a^4)/(gamma^2 (a^2 + gamma^2)^2) > 0` for `a > 0` (`[PAPER PROVED]`).
+1. After fixing one centered-coordinate and quartet convention, the local algebraic displacement
+   `Delta_1(a,gamma)=(3a^2 gamma^2+a^4)/(gamma^2(a^2+gamma^2)^2)>0` for `a>0` is valid.  The former
+   displayed global `sigma_1` decomposition mixed sign conventions and is not promoted here.
 2. **Fatal Defect:** Claiming that certified critical-line zeros numerically saturate `sigma_1` proves RH
    is circular: proving that the infinite on-line series exhausts `sigma_1` without off-line remainder
    assumes the absence of uncomputed off-line zeros.
@@ -853,16 +907,17 @@ equivalent to RH.
 
 - 2026-08-15 -- Formalized moment saturation no-go.
 
-## Attack 17: The indented half-plane Carathéodory-Herglotz integral `[PAPER PROVED]`
+## Attack 17: Reflection-pair zero count `[SYMMETRY IDENTITY ONLY]`
 
-Integrating `-Xi'/Xi` around the indented right half-plane proves the exact topological balance:
+Once the finite counting functions and boundary convention are fixed, functional-equation
+reflection gives the bookkeeping identity:
 
 ```text
 N_offline(R) = (1/2) [ N_total(R) - N_online(R) ].                                        (E37)
 ```
 
-This is an exact topological identity relating on-line and off-line counts; it does not compute
-`N_offline` independently.
+This merely rewrites `N_total=N_online+2N_offline`; it neither requires a Herglotz argument nor
+computes `N_offline` independently.
 
 - 2026-08-15 -- Derived the exact indented Carathéodory-Herglotz topological identity `(E37)`.
 
@@ -881,7 +936,7 @@ Because `||Z||^2 = m^* G_zero m` can experience destructive interference, this s
 
 - 2026-08-15 -- Proved the exact inner product space surplus identity `(E38)`.
 
-## Attack 19: The Laplace boundary regularization and the delta-derivative phase cancellation `[PAPER PROVED]`
+## Attack 19: Laplace boundary regularization `[SIGN CORRECTED; ANALYTIC PASSAGE OPEN]`
 
 Evaluating the Laplace transform of `B(r)` as `s -> 0+`:
 1. Cosine term gives the Archimedean second moment `sigma_1`.
@@ -890,21 +945,25 @@ Evaluating the Laplace transform of `B(r)` as `s -> 0+`:
    lim_(s -> 0+) int_0^infinity (Z'(t)/Z(t)) [ 2 s t / (s^2 + t^2)^2 ] dt
      = (pi / 2) (Z''(0) / Z(0)) = - (pi / 2) <delta', Z'/Z>.                              (E41)
    ```
-3. Combined with Hadamard's formula for `Z''(0)/Z(0)`, the sine boundary limit identically cancels
-   `L[Z](0)` via Cauchy principal-value regularization.
+3. Formally combining this with the Hadamard formula reproduces the zero terms.  Because `Z'/Z`
+   has real-axis poles, this remains a distributional/PV calculation until the regularized test
+   space, indentation limit, and interchange with the zero sum are proved.
 
-- 2026-08-15 -- Proved distributional boundary action by `- (pi/2) delta'(t)` matching `Z''(0)/Z(0)`.
+- 2026-08-15 -- Corrected the standard-distribution sign to `-(pi/2)delta'`; retained the result as
+  an analytic target, not a completed paper proof.
 
-## Attack 20: The exact Plancherel isometry on L2(R+, dr/r^2) and quadruple-pole conormal conservation `[PAPER PROVED]`
+## Attack 20: Weighted Plancherel profile identity `[LOCAL IDENTITY ONLY]`
 
 Under bilateral reflection `B(-u) = -conj(B(u))`:
 - Frequency domain: `(1 / (4 pi)) * 4 * int_R u^2 / (u^2 + a_0^2)^2 du = 1 / (2 a_0)`.
 - Spatial domain: `int_0^infinity |psi_rho0(r)|^2 / r^2 dr = 1 / (2 a_0)`.
-The mapping from critical-line velocity fluctuations to spatial conormal features is an exact **unitary isometry**.
+These equal one-profile norms.  They do not by themselves define a unitary operator on a dense
+domain or prove preservation of cross inner products.  The global isometry claim is retracted.
 
-- 2026-08-15 -- Derived the exact bilateral Plancherel isometry on `L2(dr/r^2)` (Attack 20).
+- 2026-08-15 -- Retained the exact one-profile weighted norm identity; global unitary transport
+  requires a separately constructed operator and polarization proof.
 
-## Attack 21: Hardy phase-velocity monotonicity and local off-line positive-slope windows `[PAPER PROVED]`
+## Attack 21: Hardy phase-velocity summands `[LOCAL LAW; GLOBAL CLASSIFICATION UNPROVED]`
 
 Differentiating the logarithmic phase velocity of Hardy's function:
 
@@ -915,11 +974,13 @@ d / dt ( Z'(t) / Z(t) )
 ```
 
 1. On-line zeros contribute strictly negative quadratic poles `- 1 / (t - gamma_k)^2 < 0`.
-2. An off-line zero of abscissa `a_rho > 0` creates a local positive-slope window `(a_rho^2 - (t - gamma_rho)^2) > 0`
-   of width `2 a_rho` centered at `t = gamma_rho`.
-3. `d/dt (Z'/Z) <= 0` everywhere on `R \ {zeros}  <===>  S = emptyset (RH)`.
+2. The **individual quartet summand** from an off-line zero has a positive-slope region of width
+   `2a_rho` centered at `gamma_rho`.
+3. Other on-line and off-line summands can mask that local sign.  Therefore the claimed global
+   equivalence `d/dt(Z'/Z)<=0 iff RH` is not proved by the summand calculation.
 
-- 2026-08-15 -- Proved that off-line zeros create positive-slope windows of width `2 a_rho` in `Z'/Z`.
+- 2026-08-15 -- Isolated the local quartet sign window and retracted the unsupported global
+  monotonicity classification.
 
 ## Attack 22: The Cauchy-Riesz boundary-value conormal transport and the matrix-complete operator bridge `[CANDIDATE ARCHITECTURE & OPEN CORE]`
 
@@ -1015,7 +1076,7 @@ A rigorous functional-analytic audit against the Lean corpus exposes the fatal f
 
 - 2026-08-15 -- Audited Attack 23, exposed the fatal weighted-space norm equivocation (unweighted `L2(dt)` vs. cubically weighted `dL/L^3`), and confirmed that weighted contractivity remains the open core W-H184.
 
-## Attack 24: The disjoint scale-expectation gap and macroscopic zero localization `[PAPER PROOF COMPLETE]`
+## Attack 24: Disjoint scale expectation `[ALGEBRA PROVED; LOCALIZATION CLAIM FALSIFIED]`
 
 On `L2(R_+, dL)`, let `M_L` be the multiplication operator `(M_L f)(L) = L f(L)`.
 For any conormal feature `psi_lambda(L) = L exp(-lambda L)` with `lambda > 0`:
@@ -1053,22 +1114,19 @@ The normalized scale expectation is the exact rational function:
                = 3 - 3 / (2 log 2) = 0.835957431... > 0.                                      (E63)
    ```
 
-### 3. Mathematical Rigidity and Consequences
+### 3. Hostile audit: expectation is not spectral support
 
-Identity `(E63)` proves an exact, non-perturbative **spectral localization theorem**:
-- **Microscopic Source Chamber:** All primitive Euler prime pulses are strictly confined to the
-  microscopic scale window `L in (0, 2.165]`.
-- **Macroscopic Zero Chamber:** All off-line zero conormal features are strictly localized in the
-  macroscopic scale window `L in [3.000, infinity)`.
-- **Scale Barrier:** The two chambers are separated by the positive scale barrier `Delta_scale > 0.835`.
-  No scale-preserving or sub-unitary transport can interpolate between the prime source and off-line
-  zero features without overcoming this macroscopic scale-dilation defect.
+Identity `(E63)` proves only a gap between normalized **first moments** of `M_L`.  Every exponential
+profile above has support on all `L>0`; neither family is confined to the displayed expectation
+interval.  Moreover an arbitrary rank-one isometry can send one normalized profile to another
+while changing its `M_L` expectation.  Therefore `(E63)` obstructs a transport only if that
+transport is also proved to intertwine `M_L`, preserve its quadratic form, or satisfy an appropriate
+order inequality.  None of those properties follows from contractivity alone.
 
-- 2026-08-15 -- Discovered and proved the Disjoint Scale Gap `Delta_scale = 3 - 3/(2 log 2) = 0.8359... > 0`
-  (Attack 24), proving that all off-line zero features are strictly separated from the primitive
-  Euler source by a macroscopic scale barrier.
+- 2026-08-15 -- Retained the exact expectation gap and retracted the false localization and
+  sub-unitary-transport conclusions.  A useful successor must construct an `M_L`-intertwining law.
 
-## Attack 25: The universal relative conormal scale dispersion and standard deviation gap `[PAPER PROOF COMPLETE]`
+## Attack 25: Universal conormal scale dispersion `[ALGEBRA PROVED; NO TRANSPORT OBSTRUCTION]`
 
 ### 1. Second Scale Moment and Exact Conormal Variance
 
@@ -1107,13 +1165,14 @@ sigma(M_L)_(psi_lambda) = sqrt(3) / (2 lambda).                                 
      ```text
      Delta_sigma = sqrt(3) (1 - 1 / (2 log 2)) = 0.482570... > 0.                          (E67)
      ```
-   Every off-line zero conormal mode is strictly broader across scale than any primitive Euler prime packet.
+   This compares normalized one-profile variances only.  It does not prevent a bounded or
+   contractive operator from mapping between the profiles unless variance or `M_L` is intertwined.
 
-- 2026-08-15 -- Proved the universal conormal relative dispersion `1/sqrt(3)` and the absolute
-  dispersion gap `Delta_sigma = sqrt(3)(1 - 1/(2 log 2)) = 0.4825... > 0` (Attack 25).
+- 2026-08-15 -- Proved the one-profile relative-dispersion formula and absolute moment gap;
+  explicitly ruled out using either as a standalone transport obstruction.
 
 
-## Attack 26: High-ordinate conormal cross-overlap cubic decoupling deficit `[PAPER PROOF COMPLETE]`
+## Attack 26: High-ordinate conormal cross overlap `[FAILED MAJORANT; SUMMABLE SURVIVOR]`
 
 ### 1. Exact Conormal Cross-Overlap Formula
 
@@ -1133,31 +1192,28 @@ The squared overlap modulus is:
 
 ### 2. The Cubic Frequency Decoupling Deficit
 
-Summing over all primes `n >= 2`, the total cross-coupling energy is bounded by the ordinate:
+The attempted ordinate-only bound was
 
 ```text
-E_cross(rho) = sum_(n >= 2) |<phi_n, psi_rho>|^2 <= 4 / gamma_rho^6 * sum_(n >= 2) Lambda(n)/n. (E70)
+E_cross(rho) <= 4/gamma_rho^6 * sum_(n>=2) Lambda(n)/n.                                  (E70)
 ```
 
-For the first Riemann zero ordinate `gamma_1 = 14.134725...`:
-```text
-gamma_1^6 = (14.134725)^6 = 7,815,690.4... ~ 7.82 * 10^6.
-```
-Thus, the maximum total conormal coupling between the prime system and any off-line zero at or above
-the first zero ordinate satisfies:
+This is useless because `sum Lambda(n)/n` diverges.  The claimed numerical bound `(E71)` and
+six-orders-of-magnitude deficit are retracted.
+
+The strongest positive survivor is the **undiscarded logarithmic denominator**:
 
 ```text
-E_cross(rho) <= 4 / (7.82 * 10^6) * (prime sum) < 10^(-6) << 2 <= Q_raw(rho).              (E71)
+E_cross(rho)
+ =sum_(n>=2) [Lambda(n)/n] * 4/((log n+a_rho)^2+gamma_rho^2)^3.                          (E70*)
 ```
 
-**The Overlap Deficit:** For all $|\gamma_\rho| \ge 14.13$, the total excitation energy transferable
-from the entire prime tower to the zero mode is suppressed by at least six orders of magnitude
-($\le 10^{-6}$), leaving an unconditional energy deficit of $\ge 2 - 10^{-6} \approx 2$ relative
-to the required single-zero conormal charge $Q_{\text{raw}}(\rho) \ge 2$.
+This series is expected to converge because its tail retains six inverse logarithms, but a useful
+result needs a rigorous uniform quantitative bound on `(E70*)`; factoring out `gamma^-6` destroys
+exactly the damping that makes the series finite.
 
-- 2026-08-15 -- Proved the high-ordinate conormal cross-overlap cubic decoupling theorem (Attack 26),
-  showing that for all $|\gamma| \ge 14.13$, total prime-to-zero conormal coupling is bounded by
-  `E_cross < 10^(-6) << 2 <= Q_raw(rho)`.
+- 2026-08-15 -- Falsified the divergent ordinate-only majorant.  Retained the exact damped
+  cross-overlap series `(E70*)` as the sole positive survivor for proof and Lean formalization.
 
 ## Structural Reduction: Matrix-Complete Operator Boundary Transport
 
@@ -1175,15 +1231,15 @@ to the required single-zero conormal charge $Q_{\text{raw}}(\rho) \ge 2$.
 3. **Single-Zero Conormal Quantum:**
    `XiWardCubicRawConormalModularDoublet.lean` proves that for every off-line zero `rho`,
    `G_zero(rho, rho) = Q_raw(rho) = m_rho^2 / (4 a_rho^3) >= 2`.
-4. **Disjoint Scale Barrier (`Attack 24`):**
-   Exact conormal scale expectation gap `Delta_scale = 3 - 3/(2 log 2) = 0.8359... > 0` separating
-   all primitive source atoms (`<= 2.165`) from all off-line zero modes (`>= 3.000`).
-5. **Universal Dispersion Gap (`Attack 25`):**
-   Exact scale width gap `Delta_sigma = sqrt(3)(1 - 1/(2 log 2)) = 0.4825... > 0` with universal
-   relative dispersion `CV = 1/sqrt(3)`.
-6. **High-Frequency Decoupling Deficit (`Attack 26`):**
-   Exact conormal cross-coupling bound `E_cross(rho) <= 4/gamma_rho^6 * sum(Lambda(n)/n) < 10^(-6) << 2`
-   for all $|\gamma_\rho| \ge 14.13$.
+4. **Primitive Burnol source Gram (`P-G186`):**
+   `RoutePPrimitiveBurnolWindowGramSquare.lean` identifies the entire labelled source-window Gram
+   entrywise with the P-G181 base Cauchy cube and retains its `<2` trace budget.
+5. **CCM--Route-P source seam:**
+   `FrankensteinCCMRoutePBaseCubicGreenSourceBridge.lean` identifies the same source mass inside the
+   literal CCM prime functional and isolates polar--Gamma surplus as the completion fracture.
+
+Attacks 24--25 provide exact one-profile moment formulas but no operator obstruction.  Attack 26's
+claimed high-frequency bound is false; only the damped overlap series `(E70*)` survives.
 
 ### The Genuine Open Core: Matrix-Complete Operator Transport `[CONJECTURE W-H184]`
 
@@ -1218,18 +1274,17 @@ Because operator trace is strictly monotone under Loewner order (`A <= B ==> Tr(
 | **Reconstructed Base Cauchy Trace `< 2`** | **LEAN PROVED** | `RoutePPrimitiveHankelDyadicCalderonReconstruction.lean` |
 | **Balanced Source Codiagonal `< 2` (P-G184)** | **LEAN PROVED** | `RoutePPrimitiveBaseBalancedReflectionCodiagonal.lean` |
 | **Sharp Damping Wall `s >= 0` (P-G185)** | **LEAN PROVED** | `RoutePPrimitiveBaseJointDampingWall.lean` |
+| **Primitive Burnol Window Gram Square (P-G186)** | **LEAN PROVED** | `RoutePPrimitiveBurnolWindowGramSquare.lean` |
 | **Single Zero Quantum $Q_{\text{raw}} \ge 2$** | **LEAN PROVED** | `XiWardCubicRawConormalModularDoublet.lean` |
 | **Multiplicity $1/m$ Fiber Split** | **LEAN PROVED** | `RoutePCompletedXiConormalMultiplicitySplit.lean` |
-| **Plancherel Isometry on $L^2(dr/r^2)$** | **PAPER PROVED** | Attack 20 |
-| **Hardy Phase Derivative Classification** | **PAPER PROVED** | Attack 21 |
-| **Disjoint Scale-Expectation Gap $\Delta_{\text{scale}} > 0.835$** | **PAPER PROVED** | Attack 24 |
-| **Universal Scale Dispersion Gap $\Delta_\sigma > 0.482$** | **PAPER PROVED** | Attack 25 |
-| **High-Ordinate Decoupling Deficit $\mathcal{E}_{\text{cross}} < 10^{-6}$** | **PAPER PROVED** | Attack 26 |
+| **CCM--Route-P cubic Green source identity** | **LEAN PROVED** | `FrankensteinCCMRoutePBaseCubicGreenSourceBridge.lean` |
+| **One-profile weighted Plancherel norm identity** | **PAPER ALGEBRA ONLY** | Attack 20 |
+| **Hardy off-line quartet local sign window** | **PAPER ALGEBRA ONLY** | Attack 21 |
+| **Scale expectation/dispersion formulas** | **PAPER ALGEBRA; NO TRANSPORT CONSEQUENCE** | Attacks 24--25 |
+| **High-ordinate decoupling deficit `<10^-6`** | **FALSIFIED (DIVERGENT MAJORANT)** | Attack 26 |
 | **Scalar Passivity $\|\sum m_\rho \psi_\rho\|^2 \ge 2$** | **FALSIFIED (COHERENT INTERFERENCE)** | Attack 7 |
 | **Smooth de Bruijn-Newman Variance $dV/dt \ge 0$** | **FALSIFIED (COLLISION SINGULARITY)** | Attack 11 |
 | **Global Total Positivity via $\operatorname{PF}_\infty$** | **FALSIFIED (CIRCULAR VIA SCHOENBERG)** | Attack 14 |
 | **Analytical Moment Saturation $\sum 2/\gamma_k^2 = \sigma_1$** | **FALSIFIED (CIRCULAR WITH RH)** | Attack 16 |
 | **Unweighted Riesz Extinction $\|P_+\|=1$** | **FALSIFIED (NORM EQUIVOCATION)** | Attack 23 |
 | **Matrix-Complete Operator Transport (W-H184)** | **GENUINE OPEN CORE** | Unconditional weighted operator norm ‖T_F‖ ≤ 1 |
-
-

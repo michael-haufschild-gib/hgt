@@ -7495,3 +7495,60 @@ Every displayed statement of the card now has an unconditional Lean declaration 
 `[propext, Classical.choice, Quot.sound]`, and the card is moved to
 `3-formalized/new_scientific_knowledge/suzuki/` with the certificate
 `suzuki-one-prime-terminal-pruned-propagator-formalized.md`.
+
+## VV. The Gamma jump symbol: identity, sharp bounds, and the vector-valued multiplier
+
+```text
+HTGeometry/PolygammaVerticalSharpDecay.lean   ‖ψ⁽ᵐ⁺¹⁾(σ+it)‖ ≤ (m+1)!(1+π/2)|t|^{-(m+1)}
+RHTower/GammaJumpSymbolIdentity.lean          ψ(1+iη)+ψ(1−iη)+2γ = 2Σ η²/(n(n²+η²))
+RHTower/GammaJumpMultiplierBounds.lean        (34): r ≤ C log(2+|η|), |r'| ≤ C/(1+|η|)
+HTGeometry/LpBoundedSmulMultiplier.lean       scalar symbol acting on Lᵖ(μ;H)
+HTGeometry/VectorL2FourierMultiplier.lean     Fourier multiplier on L²(E;F), accretivity
+RHTower/GammaJumpFourierMultiplier.lean       (19), (21) of root-retained-exterior-dilation
+```
+
+**The sharp polygamma order.**  A Cauchy estimate on a disc of fixed radius gives only `O(|t|^{-1})`
+at every jet order, which is too weak for the Gamma-symbol derivative bounds `(4)` of the wall-block
+card.  The series route is sharp: from the corpus polygamma series
+`ψ⁽ᵐ⁺¹⁾(s) = (−1)ᵐ(m+1)! Σ_n (s+n)^{−(m+2)}`, factor
+
+```text
+|s+n|^{m+2} = ((σ+n)² + t²) · |s+n|^m ≥ ((σ+n)² + t²) · |t|^m,
+```
+
+which pulls the whole excess power out of the sum and leaves the arctan telescope
+`Σ_n ((σ+n)²+t²)^{-1} ≤ |t|^{-2} + π/(2|t|)` (corpus `sum_inv_sq_add_le`).  The constant
+`(m+1)!(1+π/2)` does not depend on the abscissa at all.
+
+**The symbol identity.**  Pairing the two Gauss series for digamma at `1±iη` cancels Euler's
+constant and both harmonic tails, and each conjugate pair of reciprocals collapses by
+`2/a − 1/(a+iη) − 1/(a−iη) = 2η²/(a(a²+η²))`.  Hence `gammaJumpSymbol η = gammaJumpMultiplier η`:
+the literal Gamma symbol *is* the explicit nonnegative series, so the elementary bounds proved for
+the series are bounds on the Gamma symbol, not on a model of it.
+
+**`(34)`.**  Taking real parts of that identity and using evenness of `Re ψ` in the height gives
+`r(η) = 2 Re ψ(1+iη) + 2γ`; the corpus vertical digamma bound then yields
+`r(η) ≤ C log(2+|η|)` (`exists_gammaJumpMultiplier_log_bound`).  Termwise differentiation —
+legitimate because `|2ηn/(n²+η²)²| ≤ (n²+η²)^{-1} ≤ n^{-2}` uniformly in `η` — gives
+`r'(η) = 4η Σ_n n/(n²+η²)²` and `|r'(η)| ≤ C/(1+|η|)`
+(`hasDerivAt_gammaJumpMultiplier`, `exists_deriv_gammaJumpMultiplier_bound`).
+
+**The Hilbert-valued multiplier.**  `lpBoundedSmulCLM` is scalar multiplication by a bounded
+measurable symbol on `Lᵖ(μ;H)` — the vector-valued analogue of the corpus scalar multiplier —
+and `vectorFourierMulCLM` conjugates it by mathlib's vector-valued Plancherel
+`Lp.fourierTransformₗᵢ E F`, giving a Fourier multiplier of operator norm at most the symbol bound.
+A nonnegative real symbol is accretive (`re_inner_lpBoundedSmulCLM_nonneg`).
+
+**`(19)`, `(21)` of `root-retained-exterior-dilation`.**  Dividing the jump symbol by the
+first-order weight leaves a symbol bounded by `S = Σ n^{-2}`, so
+
+```text
+‖r(·)u‖_{L²} ≤ S ‖(1+|·|)u‖_{L²}
+```
+
+(`eLpNorm_gammaJumpMultiplier_smul_le`) — the quantitative form of `R : H¹(ℝ;X) → L²(ℝ;X)` — and
+the normalized multiplier is a bounded operator of norm at most `S`
+(`norm_gammaJumpNormalizedMulCLM_le`) which is accretive
+(`re_inner_gammaJumpNormalizedMulCLM_nonneg`), the `σ = 0` endpoint `κ₀ = 0`, `Re⟨RU,U⟩ ≥ 0`.
+
+Every declaration named here audits to `[propext, Classical.choice, Quot.sound]`.

@@ -1421,3 +1421,42 @@ i.e. equation `(12)` of this card with `r = N − 1`.  The two inclusions:
 
 With items 1–5 closed, the analytic core of the card — equations `(6)`, `(10)` and `(12)` — is
 formalized unconditionally.
+
+### The complete differential matroid and the reflection comparison
+
+Three further modules, all umbrella-wired, build green, axiom-clean:
+
+- `HTGeometry/MultipleSineCompleteDifferentialMatroid` — **`multipleSineCompleteDifferentialMatroid`**
+  (and its `_rationalBase` and `_Rank` forms): for any injective finite selection of translated
+  proper-face coordinates and any finite family of constant-coefficient differential-operator rows,
+  the nonlinear differential matroid of the outputs is the ordinary row matroid over `Frac(ℂ[∂])`,
+  and the differential transcendence rank of a finite output packet is the localized row rank.  This
+  is the analogue of the parent elliptic-gamma law, now with the multiple-sine source packet.
+- `HTGeometry/DifferentialIndependentPerturbation` — **differential independence is insensitive to
+  differentially algebraic perturbations** (`differentialIndependent_of_sub_differentialAlgebraic`,
+  `differentialFamilyMatroid_congr_of_sub_differentialAlgebraic`): shifting a family by base-field
+  elements is the polynomial automorphism `X ↦ X + C` on the jet variables, and adjoining
+  differentially algebraic elements to the base changes no independence statement.  This is what
+  lets the rational remainders of the multiple-sine calculus be discarded at the matroid level.
+- `HTGeometry/MultipleSineOperatorMatroid` — equation `(11)`:
+  **`multipleSineOperatorFamilyMatroid`**.  For every finite family of difference-differential
+  operators `P_k ∈ ℂ[∂][x_1,…,x_N]`,
+
+  ```text
+  differentialFamilyMatroid ℂ (fun k => P_k(x) L_V)  =  differentialOperatorRowMatroid (pair rows),
+  ```
+
+  where the pair row of `P` is its `(face, exponent)` coefficient vector `sinePairRow P`.  The proof
+  identifies `P(x) L_V` with the row applied to the face-coordinate translates modulo the
+  differentially algebraic locus (`xDiffApply_sub_pairRowSum_differentialAlgebraic`) — the wide
+  monomials are differentially algebraic, the narrow ones are the signed pair synthesis, and the
+  rational remainders are absorbed by the perturbation lemma.  The row matroid is identified with
+  the localized Stanley–Reisner quotient matroid by the corpus's
+  `stanleyReisnerLaurentMatroid_indep_iff`, which is the algebra side of `(11)`.
+- `HTGeometry/MultipleSineReflectionLayer` — equation `(14)` in comparison form:
+  `veroneseFaceComplex_sub_one` shows the face complex of `I_{N-1}` is that of `I_N` with the layer
+  `|J| = N - 1` deleted, and `veroneseIdeal_lt_sub_one` shows the inclusion `I_N < I_{N-1}` is
+  strict — **reflection removes exactly the maximal proper-face layer**, and nothing more.
+
+The card's analytic content — `(6)`, `(10)`, `(11)`, `(12)` and the layer comparison behind `(14)` —
+is now formalized unconditionally in Lean.

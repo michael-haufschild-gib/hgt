@@ -9,9 +9,9 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local committed cutoff is
-`564cc8e43cc50c9da397073afc6ff56b131e4d19`, plus explicitly identified post-cutoff shared-tree
+`a0c096c0f9ba79510b6b9c44911175a3fd6fd290`, plus explicitly identified post-cutoff shared-tree
 declarations audited on 15 August. Historical `Active-tree Lean` wording records live-tree audit
-provenance; `564cc8e43` contains those declarations unless a paragraph says `post-cutoff`.
+provenance; `a0c096c0f` contains those declarations unless a paragraph says `post-cutoff`.
 Scientific
 comparison follows declaration content rather than module placement.
 
@@ -106,7 +106,10 @@ terminalized. Latest local results change these route exchanges:
   descendant grade. Post-cutoff active-tree Lean further proves the sharp polynomial-carrier
   Gamma wall: integrability holds exactly for `kappa<sigma`, and a simultaneous radial lattice/
   Gamma window exists iff rank `d<=1`. Rank one survives; higher-rank radial polynomial enlargement
-  is closed. Assembling the complete all-prime/all-aperture physical source in the proved weak-
+  is closed. Active-tree Lean now normalizes the actual Gamma-jump symbol by `1+|eta|`, constructs
+  its bounded Hilbert-valued Fourier multiplier, proves the explicit `sum n^-2` operator bound and
+  accretivity, and derives the exact first-order `H1 -> L2` jump estimate. Jump-domain geometry is
+  closed; identification with the complete physical cutoff source is not. Assembling the complete all-prime/all-aperture physical source in the proved weak-
   derivative architecture, retaining its cutoff/jump commutator, orienting its trace, and proving coupled
   return remain. Floor branch still
   needs complete near-ground profile exhaustion/lower
@@ -3408,7 +3411,8 @@ and periodic, and two integrations by parts prove the unconditional exterior-mas
 `BurnolFirstWallCollarDepthDecay.lean` converts that exterior mass into a quantitative collar law:
 the collar kernel against the stable mode has cubic exponential decay, its `5/2` weighted mass is
 integrable, the normalized depth-profile error is `O(4^(-n)e^(-5r/2))`, and the normalized collar
-reading is `O(4^(-n))`. This sharpens the already-closed first-wall carrier without reopening Route
+reading is `O(4^(-n))`. Restoring both depth weights gives raw pairing `O(8^(-n))`; Lean
+instantiates both rates for every zero-divided Xi-divisor source in `0<Re rho<1`. This sharpens the already-closed first-wall carrier without reopening Route
 R as a producer.
 The Gamma--Bockstein limit layer is now complete: uniform integrable
 majorant, crossing continuity, forward/reflected reading limits, exact head-flux and collar-depth
@@ -4981,7 +4985,9 @@ The analytic symbol layer is also sharper. Lean identifies the literal digamma G
 with the explicit nonnegative Gauss series and proves the sharp abscissa-uniform vertical decay
 `|t|^{-(m+1)}` for its order-`m+1` jets. `GammaJumpMultiplierBounds.lean` adds exact vertical-
 digamma identification, evenness, logarithmic growth, termwise differentiability, and
-`O((1+|eta|)^(-1))` derivative decay. Finite maxima inherit active gradients and common
+`O((1+|eta|)^(-1))` derivative decay. `GammaJumpFourierMultiplier.lean` turns the normalized
+nonnegative symbol into a bounded Hilbert-valued Plancherel multiplier, proves its explicit
+operator norm and accretivity, and establishes raw first-order `H1 -> L2` control. Finite maxima inherit active gradients and common
 Lipschitz constants; torus Poincare has the sharp translate-difference and slack formulations.
 The new torus-lift file now reaches the final dominated-convergence theorem: integrated squared
 translate difference quotients of a Lipschitz torus lift converge to integrated coordinate-
@@ -5408,7 +5414,8 @@ parity or abstract zero transfer. Suzuki's whole-frequency and full point-suppor
 are closed, with whole-ray distributional classification, flat terminal-charge automaticity, and
 exact natural-product symmetry available; remaining exterior work is global two-ray tempered
 channel subtraction/support reduction and a source theorem forcing the already-classified zero-
-half-log-trace gluing relation with physical return. The literal one-prime polar channel now has
+half-log-trace gluing relation with physical return. Normalized Gamma jump is now a bounded
+accretive Hilbert-valued Fourier multiplier with exact first-order domain control. The literal one-prime polar channel now has
 its own unconditional `L2` weak-derivative realization, so remaining source work is completed all-
 prime/all-aperture assembly, not generic or one-prime membership. CCM's pole--prime and singular
 archimedean sine channels now form the exact published physical odd source; endpoint-renormalized
@@ -5458,7 +5465,8 @@ bilateral repair, Barnes asymptotics, q-ladders, and Schanuel classifiers have n
 faithful Xi landing and do not create a route.
 
 Route R's quantitative Burnol collar profile now decays as `O(4^(-n))` after normalized depth
-scaling for every source with the proved quadratic exterior mass. This improves terminal carrier
+scaling and its raw pairing as `O(8^(-n))`; both apply to every zero-divided Xi-divisor source in
+the open strip. This improves terminal carrier
 control but does not alter the producer classification or route count.
 
 The remaining scientific gap is spectral reality/positive symmetrization; the parallel

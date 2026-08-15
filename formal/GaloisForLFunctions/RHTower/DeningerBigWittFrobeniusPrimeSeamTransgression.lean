@@ -1,6 +1,32 @@
-import GaloisForLFunctions.RHTower.DeningerGammaSixBigWittStokesSource
 import GaloisForLFunctions.RHTower.DeningerBigWittPrimeSeamDirichletTransport
 import Mathlib.RingTheory.PowerSeries.Expand
+
+/-!
+# Big-Witt Frobenius-two prime-seam transgression
+
+This module resolves the ghost-degree mismatch left by the prime-seam
+Dirichlet source.  It constructs the degree-two big-Witt norm directly from
+the literal series model
+
+`f(T) ↦ f(T) f(-T) ∈ A[[T²]]`,  `F₂(f)_n = [T²ⁿ](f(T)f(-T))`.
+
+The construction is division-free and natural over every commutative ring;
+nilpotents and additive torsion are retained.  Its first ghost is proved
+unconditionally to equal the input second ghost, and Teichmüller elements map
+to their squares.
+
+For the Deninger prime seam, a polarized complex source retains conjugate
+phase before norm extraction. Functional-equation reflection reverses its
+ordered prime pair. Its finite aggregate is reflection-invariant, while
+Frobenius two moves the exact physical Dirichlet energy from ghost degree two
+to ghost degree one. The normalized first ghost has cofinal residue
+`-4 * orbitwisePrimeSeamWeightedNormSq rho`.
+
+This removes ghost-degree mismatch. Remaining Route L frontier is geometric:
+identify this explicit first-ghost object as an actual strict Green/BV
+boundary with a source-side submass estimate; no such estimate is assumed
+here.
+-/
 
 open Complex
 open scoped BigOperators
@@ -13,33 +39,36 @@ open PowerSeries
 
 variable {A B : Type*} [CommRing A] [CommRing B]
 
-def scratchBigWittFrobeniusTwoNormSeries
+/-- Division-free series norm defining the degree-two big-Witt Frobenius
+operation over an arbitrary commutative ring. -/
+def deningerBigWittFrobeniusTwoNormSeries
     (w : DeningerBigWittRing A) : PowerSeries A :=
   let f := deningerBigWittRingSeries w
   PowerSeries.mk fun n =>
     PowerSeries.coeff (2 * n) (f * PowerSeries.rescale (-1 : A) f)
 
-@[simp] theorem scratchBigWittFrobeniusTwoNormSeries_constantCoeff
+@[simp] theorem deningerBigWittFrobeniusTwoNormSeries_constantCoeff
     (w : DeningerBigWittRing A) :
-    PowerSeries.constantCoeff (scratchBigWittFrobeniusTwoNormSeries w) = 1 := by
+    PowerSeries.constantCoeff (deningerBigWittFrobeniusTwoNormSeries w) = 1 := by
   rw [← PowerSeries.coeff_zero_eq_constantCoeff]
-  simp [scratchBigWittFrobeniusTwoNormSeries,
+  simp [deningerBigWittFrobeniusTwoNormSeries,
     deningerBigWittRingSeries, PowerSeries.coeff_mul]
 
-def scratchBigWittFrobeniusTwo
+/-- Degree-two Frobenius norm on the literal canonical big-Witt carrier. -/
+def deningerBigWittFrobeniusTwo
     (w : DeningerBigWittRing A) : DeningerBigWittRing A :=
   ⟨Additive.ofMul
     (deningerBigWittOfSeries
-      (scratchBigWittFrobeniusTwoNormSeries w)
-      (scratchBigWittFrobeniusTwoNormSeries_constantCoeff w))⟩
+      (deningerBigWittFrobeniusTwoNormSeries w)
+      (deningerBigWittFrobeniusTwoNormSeries_constantCoeff w))⟩
 
-@[simp] theorem scratchBigWittRingSeries_frobeniusTwo
+@[simp] theorem deningerBigWittRingSeries_frobeniusTwo
     (w : DeningerBigWittRing A) :
-    deningerBigWittRingSeries (scratchBigWittFrobeniusTwo w) =
-      scratchBigWittFrobeniusTwoNormSeries w := by
+    deningerBigWittRingSeries (deningerBigWittFrobeniusTwo w) =
+      deningerBigWittFrobeniusTwoNormSeries w := by
   rfl
 
-theorem scratch_ghost_one_eq_neg_coeff_one
+theorem deningerBigWittGhost_one_eq_neg_coeff_one
     (w : DeningerBigWittRing A) :
     deningerBigWittGhostComponent 1 Nat.zero_lt_one w =
       -PowerSeries.coeff 1 (deningerBigWittRingSeries w) := by
@@ -58,7 +87,7 @@ theorem scratch_ghost_one_eq_neg_coeff_one
   simp [deningerBigWittEulerGhost, deningerBigWittEulerSeries_coeff,
     deningerBigWittEulerPartial, deningerBigWittFactor]
 
-theorem scratch_ghost_two_eq_coeff_formula
+theorem deningerBigWittGhost_two_eq_coeff_formula
     (w : DeningerBigWittRing A) :
     deningerBigWittGhostComponent 2 (by norm_num) w =
       PowerSeries.coeff 1 (deningerBigWittRingSeries w) ^ 2 -
@@ -91,16 +120,18 @@ theorem scratch_ghost_two_eq_coeff_formula
   rw [hg]
   ring
 
-theorem scratch_frobeniusTwo_ghost_one
+/-- The source second ghost becomes the transgressed first ghost.  This proof
+uses coefficients only, so no torsion-freeness or ghost injectivity enters. -/
+theorem deningerBigWittFrobeniusTwo_ghost_one
     (w : DeningerBigWittRing A) :
     deningerBigWittGhostComponent 1 Nat.zero_lt_one
-        (scratchBigWittFrobeniusTwo w) =
+        (deningerBigWittFrobeniusTwo w) =
       deningerBigWittGhostComponent 2 (by norm_num) w := by
-  rw [scratch_ghost_one_eq_neg_coeff_one,
-    scratchBigWittRingSeries_frobeniusTwo,
-    scratchBigWittFrobeniusTwoNormSeries,
+  rw [deningerBigWittGhost_one_eq_neg_coeff_one,
+    deningerBigWittRingSeries_frobeniusTwo,
+    deningerBigWittFrobeniusTwoNormSeries,
     PowerSeries.coeff_mk,
-    scratch_ghost_two_eq_coeff_formula]
+    deningerBigWittGhost_two_eq_coeff_formula]
   rw [PowerSeries.coeff_mul]
   simp only [Nat.mul_one]
   rw [Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
@@ -110,13 +141,13 @@ theorem scratch_frobeniusTwo_ghost_one
     exact deningerBigWittSeries_constantCoeff _]
   ring
 
-theorem scratchBigWittFrobeniusTwoNormSeries_natural
+theorem deningerBigWittFrobeniusTwoNormSeries_natural
     (f : A →+* B) (w : DeningerBigWittRing A) :
-    PowerSeries.map f (scratchBigWittFrobeniusTwoNormSeries w) =
-      scratchBigWittFrobeniusTwoNormSeries (deningerBigWittRingMap f w) := by
+    PowerSeries.map f (deningerBigWittFrobeniusTwoNormSeries w) =
+      deningerBigWittFrobeniusTwoNormSeries (deningerBigWittRingMap f w) := by
   apply PowerSeries.ext
   intro n
-  simp only [PowerSeries.coeff_map, scratchBigWittFrobeniusTwoNormSeries,
+  simp only [PowerSeries.coeff_map, deningerBigWittFrobeniusTwoNormSeries,
     PowerSeries.coeff_mk]
   have hs : deningerBigWittRingSeries (deningerBigWittRingMap f w) =
       PowerSeries.map f (deningerBigWittRingSeries w) := by
@@ -124,18 +155,19 @@ theorem scratchBigWittFrobeniusTwoNormSeries_natural
   rw [hs, show (-1 : B) = f (-1 : A) by simp,
     PowerSeries.rescale_map, ← map_mul, PowerSeries.coeff_map]
 
-theorem scratchBigWittFrobeniusTwo_natural
+/-- Frobenius-two norm commutes with every base-ring homomorphism. -/
+theorem deningerBigWittFrobeniusTwo_natural
     (f : A →+* B) (w : DeningerBigWittRing A) :
-    deningerBigWittRingMap f (scratchBigWittFrobeniusTwo w) =
-      scratchBigWittFrobeniusTwo (deningerBigWittRingMap f w) := by
+    deningerBigWittRingMap f (deningerBigWittFrobeniusTwo w) =
+      deningerBigWittFrobeniusTwo (deningerBigWittRingMap f w) := by
   apply deningerBigWittRingSeries_injective
-  rw [scratchBigWittRingSeries_frobeniusTwo]
+  rw [deningerBigWittRingSeries_frobeniusTwo]
   change PowerSeries.map f
-      (scratchBigWittFrobeniusTwoNormSeries w) = _
-  exact scratchBigWittFrobeniusTwoNormSeries_natural f w
+      (deningerBigWittFrobeniusTwoNormSeries w) = _
+  exact deningerBigWittFrobeniusTwoNormSeries_natural f w
 
-theorem scratchBigWittFrobeniusTwoNormSeries_teichmuller (a : A) :
-    scratchBigWittFrobeniusTwoNormSeries
+theorem deningerBigWittFrobeniusTwoNormSeries_teichmuller (a : A) :
+    deningerBigWittFrobeniusTwoNormSeries
         (deningerBigWittRingTeichmuller a) =
       deningerBigWittFactor (a ^ 2) 1 := by
   let h : PowerSeries A :=
@@ -169,28 +201,29 @@ theorem scratchBigWittFrobeniusTwoNormSeries_teichmuller (a : A) :
     ring
   apply PowerSeries.ext
   intro n
-  rw [scratchBigWittFrobeniusTwoNormSeries,
+  rw [deningerBigWittFrobeniusTwoNormSeries,
     deningerBigWittRingSeries_teichmuller]
   rw [PowerSeries.coeff_mk]
   change PowerSeries.coeff (2 * n) h = _
   rw [hh, PowerSeries.coeff_expand_mul]
 
-@[simp] theorem scratchBigWittFrobeniusTwo_teichmuller (a : A) :
-    scratchBigWittFrobeniusTwo (deningerBigWittRingTeichmuller a) =
+/-- Frobenius two squares Teichmüller representatives over every ring. -/
+@[simp] theorem deningerBigWittFrobeniusTwo_teichmuller (a : A) :
+    deningerBigWittFrobeniusTwo (deningerBigWittRingTeichmuller a) =
       deningerBigWittRingTeichmuller (a ^ 2) := by
   apply deningerBigWittRingSeries_injective
-  rw [scratchBigWittRingSeries_frobeniusTwo,
-    scratchBigWittFrobeniusTwoNormSeries_teichmuller,
+  rw [deningerBigWittRingSeries_frobeniusTwo,
+    deningerBigWittFrobeniusTwoNormSeries_teichmuller,
     deningerBigWittRingSeries_teichmuller]
 
-theorem scratchBigWittTeichmullerCrossEffect_comm (a b : A) :
+theorem deningerBigWittTeichmullerCrossEffect_comm (a b : A) :
     deningerBigWittTeichmullerCrossEffect a b =
       deningerBigWittTeichmullerCrossEffect b a := by
   simp only [deningerBigWittTeichmullerCrossEffect]
   rw [add_comm a b, add_comm (deningerBigWittRingTeichmuller a)
     (deningerBigWittRingTeichmuller b)]
 
-theorem scratchBigWittTeichmullerCrossEffect_ghost_two_scaled_conj
+theorem deningerBigWittTeichmullerCrossEffect_ghost_two_scaled_conj
     (u v : ℝ) (z : ℂ) :
     deningerBigWittGhostComponent 2 (by norm_num)
         (deningerBigWittTeichmullerCrossEffect
@@ -204,7 +237,9 @@ theorem scratchBigWittTeichmullerCrossEffect_ghost_two_scaled_conj
   rw [← Complex.mul_conj]
   ring
 
-def scratchBigWittPolarizedPrimeSeamPairSource
+/-- Ordered prime-pair source retaining the seam difference and its conjugate
+before the quadratic ghost is extracted. -/
+def deningerBigWittPolarizedPrimeSeamPairSource
     (a : Nat.Primes → ℂ) (p q : Nat.Primes) :
     DeningerBigWittRing ℂ :=
   let d := a p - a q
@@ -212,41 +247,43 @@ def scratchBigWittPolarizedPrimeSeamPairSource
     (((1 / (p : ℝ) : ℝ) : ℂ) * d)
     (((1 / (q : ℝ) : ℝ) : ℂ) * (starRingEnd ℂ) d)
 
-theorem scratchBigWittPolarizedPrimeSeamPairSource_ghost_one
+theorem deningerBigWittPolarizedPrimeSeamPairSource_ghost_one
     (a : Nat.Primes → ℂ) (p q : Nat.Primes) :
     deningerBigWittGhostComponent 1 Nat.zero_lt_one
-        (scratchBigWittPolarizedPrimeSeamPairSource a p q) = 0 := by
+        (deningerBigWittPolarizedPrimeSeamPairSource a p q) = 0 := by
   exact deningerBigWittTeichmullerCrossEffect_ghost_one _ _
 
-theorem scratchBigWittPolarizedPrimeSeamPairSource_ghost_two
+theorem deningerBigWittPolarizedPrimeSeamPairSource_ghost_two
     (a : Nat.Primes → ℂ) (p q : Nat.Primes) :
     deningerBigWittGhostComponent 2 (by norm_num)
-        (scratchBigWittPolarizedPrimeSeamPairSource a p q) =
+        (deningerBigWittPolarizedPrimeSeamPairSource a p q) =
       ((-2 * deningerBigWittPrimePairExtendedPhysicalAtom p q *
         ‖a p - a q‖ ^ 2 : ℝ) : ℂ) := by
-  rw [scratchBigWittPolarizedPrimeSeamPairSource]
-  rw [scratchBigWittTeichmullerCrossEffect_ghost_two_scaled_conj]
+  rw [deningerBigWittPolarizedPrimeSeamPairSource]
+  rw [deningerBigWittTeichmullerCrossEffect_ghost_two_scaled_conj]
   congr 2
   rw [deningerBigWittPrimePairExtendedPhysicalAtom_eq]
   ring
 
-theorem scratchBigWittPolarizedPrimeSeamPairSource_negStar_reverse
+theorem deningerBigWittPolarizedPrimeSeamPairSource_negStar_reverse
     (a : Nat.Primes → ℂ) (p q : Nat.Primes) :
-    scratchBigWittPolarizedPrimeSeamPairSource
+    deningerBigWittPolarizedPrimeSeamPairSource
         (fun r => -(starRingEnd ℂ) (a r)) p q =
-      scratchBigWittPolarizedPrimeSeamPairSource a q p := by
-  rw [scratchBigWittPolarizedPrimeSeamPairSource,
-    scratchBigWittPolarizedPrimeSeamPairSource]
+      deningerBigWittPolarizedPrimeSeamPairSource a q p := by
+  rw [deningerBigWittPolarizedPrimeSeamPairSource,
+    deningerBigWittPolarizedPrimeSeamPairSource]
   simp only [map_sub, map_neg, Complex.conj_conj]
-  rw [scratchBigWittTeichmullerCrossEffect_comm]
+  rw [deningerBigWittTeichmullerCrossEffect_comm]
   congr 1 <;> push_cast <;> ring
 
-theorem scratchBigWittPolarizedPrimeSeamPairSource_one_sub_reverse
+/-- Functional-equation reflection is literal reversal of the ordered prime
+pair at the source-object level. -/
+theorem deningerBigWittPolarizedPrimeSeamPairSource_one_sub_reverse
     (rho : ℂ) (p q : Nat.Primes) :
-    scratchBigWittPolarizedPrimeSeamPairSource
+    deningerBigWittPolarizedPrimeSeamPairSource
         (fun r : Nat.Primes =>
           orbitwiseNatPrimeSeamCharge (r : ℕ) (1 - rho)) p q =
-      scratchBigWittPolarizedPrimeSeamPairSource
+      deningerBigWittPolarizedPrimeSeamPairSource
         (fun r : Nat.Primes =>
           orbitwiseNatPrimeSeamCharge (r : ℕ) rho) q p := by
   have hfun :
@@ -258,33 +295,34 @@ theorem scratchBigWittPolarizedPrimeSeamPairSource_one_sub_reverse
     exact orbitwiseNatPrimeSeamCharge_one_sub
       (r : ℕ) r.prop.pos rho
   rw [hfun]
-  exact scratchBigWittPolarizedPrimeSeamPairSource_negStar_reverse _ _ _
+  exact deningerBigWittPolarizedPrimeSeamPairSource_negStar_reverse _ _ _
 
-def scratchBigWittPolarizedPrimeSeamAggregateSource
+/-- Finite polarized source summed over all ordered prime pairs. -/
+def deningerBigWittPolarizedPrimeSeamAggregateSource
     (a : Nat.Primes → ℂ) (s : Finset Nat.Primes) :
     DeningerBigWittRing ℂ :=
   ∑ p ∈ s, ∑ q ∈ s,
-    scratchBigWittPolarizedPrimeSeamPairSource a p q
+    deningerBigWittPolarizedPrimeSeamPairSource a p q
 
-theorem scratchBigWittPolarizedPrimeSeamAggregateSource_ghost_one
+theorem deningerBigWittPolarizedPrimeSeamAggregateSource_ghost_one
     (a : Nat.Primes → ℂ) (s : Finset Nat.Primes) :
     deningerBigWittGhostComponent 1 Nat.zero_lt_one
-        (scratchBigWittPolarizedPrimeSeamAggregateSource a s) = 0 := by
-  simp [scratchBigWittPolarizedPrimeSeamAggregateSource,
-    scratchBigWittPolarizedPrimeSeamPairSource_ghost_one]
+        (deningerBigWittPolarizedPrimeSeamAggregateSource a s) = 0 := by
+  simp [deningerBigWittPolarizedPrimeSeamAggregateSource,
+    deningerBigWittPolarizedPrimeSeamPairSource_ghost_one]
 
-theorem scratchBigWittPolarizedPrimeSeamAggregateSource_ghost_two
+theorem deningerBigWittPolarizedPrimeSeamAggregateSource_ghost_two
     (a : Nat.Primes → ℂ) (s : Finset Nat.Primes) :
     deningerBigWittGhostComponent 2 (by norm_num)
-        (scratchBigWittPolarizedPrimeSeamAggregateSource a s) =
+        (deningerBigWittPolarizedPrimeSeamAggregateSource a s) =
       ((-2 * deningerBigWittPrimeSeamSourceEnergy a s : ℝ) : ℂ) := by
   calc
     deningerBigWittGhostComponent 2 (by norm_num)
-        (scratchBigWittPolarizedPrimeSeamAggregateSource a s) =
+        (deningerBigWittPolarizedPrimeSeamAggregateSource a s) =
         ∑ p ∈ s, ∑ q ∈ s,
           deningerBigWittGhostComponent 2 (by norm_num)
-            (scratchBigWittPolarizedPrimeSeamPairSource a p q) := by
-      simp [scratchBigWittPolarizedPrimeSeamAggregateSource]
+            (deningerBigWittPolarizedPrimeSeamPairSource a p q) := by
+      simp [deningerBigWittPolarizedPrimeSeamAggregateSource]
     _ = ∑ p ∈ s, ∑ q ∈ s,
           ((-2 * deningerBigWittPrimePairExtendedPhysicalAtom p q *
             ‖a p - a q‖ ^ 2 : ℝ) : ℂ) := by
@@ -292,7 +330,7 @@ theorem scratchBigWittPolarizedPrimeSeamAggregateSource_ghost_two
       intro p hp
       apply Finset.sum_congr rfl
       intro q hq
-      exact scratchBigWittPolarizedPrimeSeamPairSource_ghost_two a p q
+      exact deningerBigWittPolarizedPrimeSeamPairSource_ghost_two a p q
     _ = ((-2 * deningerBigWittPrimeSeamSourceEnergy a s : ℝ) : ℂ) := by
       rw [deningerBigWittPrimeSeamSourceEnergy, Finset.mul_sum]
       push_cast
@@ -303,38 +341,42 @@ theorem scratchBigWittPolarizedPrimeSeamAggregateSource_ghost_two
       intro q hq
       ring
 
-theorem scratchBigWittPolarizedPrimeSeamAggregateSource_one_sub
+/-- Pair reversal makes the full polarized aggregate invariant under the
+functional equation. -/
+theorem deningerBigWittPolarizedPrimeSeamAggregateSource_one_sub
     (rho : ℂ) (s : Finset Nat.Primes) :
-    scratchBigWittPolarizedPrimeSeamAggregateSource
+    deningerBigWittPolarizedPrimeSeamAggregateSource
         (fun r : Nat.Primes =>
           orbitwiseNatPrimeSeamCharge (r : ℕ) (1 - rho)) s =
-      scratchBigWittPolarizedPrimeSeamAggregateSource
+      deningerBigWittPolarizedPrimeSeamAggregateSource
         (fun r : Nat.Primes =>
           orbitwiseNatPrimeSeamCharge (r : ℕ) rho) s := by
-  rw [scratchBigWittPolarizedPrimeSeamAggregateSource,
-    scratchBigWittPolarizedPrimeSeamAggregateSource]
-  simp_rw [scratchBigWittPolarizedPrimeSeamPairSource_one_sub_reverse]
+  rw [deningerBigWittPolarizedPrimeSeamAggregateSource,
+    deningerBigWittPolarizedPrimeSeamAggregateSource]
+  simp_rw [deningerBigWittPolarizedPrimeSeamPairSource_one_sub_reverse]
   rw [Finset.sum_comm]
 
-theorem scratchBigWittFrobeniusTwo_polarizedAggregate_ghost_one
+/-- Frobenius-two transgression puts exact physical prime-seam energy in the
+first ghost, with no comparison constant or RH-equivalent premise. -/
+theorem deningerBigWittFrobeniusTwo_polarizedAggregate_ghost_one
     (a : Nat.Primes → ℂ) (s : Finset Nat.Primes) :
     deningerBigWittGhostComponent 1 Nat.zero_lt_one
-        (scratchBigWittFrobeniusTwo
-          (scratchBigWittPolarizedPrimeSeamAggregateSource a s)) =
+        (deningerBigWittFrobeniusTwo
+          (deningerBigWittPolarizedPrimeSeamAggregateSource a s)) =
       ((-2 * deningerBigWittPrimeSeamSourceEnergy a s : ℝ) : ℂ) := by
-  rw [scratch_frobeniusTwo_ghost_one,
-    scratchBigWittPolarizedPrimeSeamAggregateSource_ghost_two]
+  rw [deningerBigWittFrobeniusTwo_ghost_one,
+    deningerBigWittPolarizedPrimeSeamAggregateSource_ghost_two]
 
 /-- After Frobenius-two transgression, the normalized physical first ghost
 has the exact nonzero cofinal residue `-4 ‖δ(ρ)‖²`. -/
-theorem scratch_tendsto_frobeniusTwo_polarizedAggregate_ghost_one_div_mass
+theorem tendsto_deningerBigWittFrobeniusTwo_polarizedAggregate_ghost_one_div_mass
     {rho : ℂ} (hstrip : 0 < rho.re ∧ rho.re < 1) :
     Filter.Tendsto
       (fun s : Finset Nat.Primes =>
         Complex.re
             (deningerBigWittGhostComponent 1 Nat.zero_lt_one
-              (scratchBigWittFrobeniusTwo
-                (scratchBigWittPolarizedPrimeSeamAggregateSource
+              (deningerBigWittFrobeniusTwo
+                (deningerBigWittPolarizedPrimeSeamAggregateSource
                   (fun p : Nat.Primes =>
                     orbitwiseNatPrimeSeamCharge (p : ℕ) rho) s))) /
           primeReciprocalMass s)
@@ -345,7 +387,7 @@ theorem scratch_tendsto_frobeniusTwo_polarizedAggregate_ghost_one_div_mass
   have h := hneg.add hneg
   convert h using 1
   · funext s
-    rw [scratchBigWittFrobeniusTwo_polarizedAggregate_ghost_one]
+    rw [deningerBigWittFrobeniusTwo_polarizedAggregate_ghost_one]
     change
       (-2 * deningerBigWittPrimeSeamSourceEnergy
           (fun p : Nat.Primes =>
@@ -360,12 +402,7 @@ theorem scratch_tendsto_frobeniusTwo_polarizedAggregate_ghost_one_div_mass
                 orbitwiseNatPrimeSeamCharge (p : ℕ) rho) s /
             primeReciprocalMass s)
     ring
-  · ring
-
-#check Complex.mul_conj
-#check Complex.normSq_eq_norm_sq
-#check deningerBigWittRingMap
-#check PowerSeries.coeff_map
+  · ring_nf
 
 end
 

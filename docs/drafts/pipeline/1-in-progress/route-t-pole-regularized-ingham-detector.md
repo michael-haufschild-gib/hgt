@@ -248,3 +248,27 @@ All new public theorems are axiom-clean modulo Lean's standard `propext`, `Class
 boundedness premise remains. The first open Gabriel theorem is now only the sharp uniform
 translated left `4/3` and right `2` endpoint moment substitution for the Gaussian pole-cleared
 field, followed immediately by the already-formal interpolation theorem.
+
+### C5g: dyadic critical moment globalizes without exponent loss
+
+Status: **FORMALIZED; RAW-ERROR AND GAUSSIAN TRANSLATION STEPS REMAIN**.
+
+`Sieve/InghamCriticalGlobalMoment.lean` proves that the formal dyadic zeta fourth-moment estimate
+on `[N,2N]` extends first to `[0,N]` and then, by conjugation symmetry, to `[-N,N]`:
+
+```text
+exists D >= 0, forall natural N >= 4,
+  integral_[-N,N] |zeta(1/2+it)|^4 dt <= D N^(101/100).
+```
+
+No logarithmic loss is introduced. The reason is structural: the exponent `101/100` is strictly
+larger than one, so at each doubled scale the previous cumulative moment and next dyadic shell are
+both absorbed by the new endpoint power. `Nat.clog` then controls arbitrary natural endpoints by
+a fixed factor, and `zeta(conj s)=conj(zeta s)` supplies the negative half-line exactly.
+
+This is the first quantitative bridge from centered dyadic input to translated Gaussian endpoint
+control. It does not yet prove the needed `4/3` endpoint theorem: next one must combine this global
+fourth moment with the mollifier second moment to bound the raw critical error on symmetric
+windows, then prove Gaussian decay absorbs polynomial growth under arbitrary imaginary
+translation. Both public theorems are axiom-clean modulo Lean's standard `propext`,
+`Classical.choice`, and `Quot.sound`; module is umbrella-wired and target-built.
