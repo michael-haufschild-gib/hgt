@@ -166,3 +166,12 @@ Therefore the semilocal matrix/index route must identify a source-built object b
 `rank-one-scalar-shadow-needs-kernel-exhaustion.md` records the rank-one specialization as a separate guardrail. A positive scalar Schur sign certifies the repaired form only after the boundary kernel is already nonnegative. Otherwise the scalar repairs the visible channel and can leave a negative square in an invisible direction.
 
 Thus the scalar `s_d` is not a faithful index certificate unless the source theorem has already exhausted the omitted or kernel directions. In the multi-channel semilocal route, the replacement is the full boundary Schur matrix and its inertia.
+
+## Lean formalization checkpoint — 2026-08-15
+
+Target remains the exact finite-dimensional theorem, including all three inertia components and the positive-definite Schur gate; it is not being reduced to a negative-index-only surrogate. Existing reusable infrastructure is `HTGeometry/HermitianInertia.lean` (congruence invariance and diagonal inertia) plus Mathlib block-Schur identities. The missing project lemma is heterogeneous block-diagonal inertia additivity for `Matrix.fromBlocks A 0 0 D`; its spectral proof combines the two existing unitary diagonalizations and splits the finite `Sum` cardinality. With that lemma, the two exact congruences are
+
+`M = Uᴴ (B ⊕ S) U` for `U = [I, B⁻¹V; 0, I]`, and
+`M = Tᴴ (H ⊕ (-C⁻¹)) T` for `T = [I, 0; -CV*, I]`.
+
+Formal work is active in a new `HTGeometry` leaf; promotion remains blocked until every displayed identity and the positive-definite gate are closed with no axioms.

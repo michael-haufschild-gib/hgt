@@ -225,8 +225,14 @@ through any pointwise order-character package, even one carrying full functional
 
 ## Lean gate
 
-Closed paper proof absent.  Under the mandatory cost gate, no Artin Lean definitions or proof
-infrastructure may be written yet.  Read-only corpus inspection only.
+The open-core conjecture has no closed paper proof and may not be formalized through a surrogate
+interface.  The user has explicitly authorized formalization of paper-closed, standard literature
+infrastructure first.  That authorization is narrow: every such module must state its exact
+classical theorem, record its non-novel status, and leave the open source-to-divisor law untouched.
+Current priority is the integral finite-abelian Fourier basis in
+`artin-finite-abelian-integral-fourier-basis.md`; then the genuine Frobenius--inertia local Euler
+polynomial, then the Brauer/Heilbronn/Stark layers.  No module may claim to prove this card until
+the non-factorizing arithmetic source-to-divisor law itself is closed on paper.
 
 ## Log
 
@@ -237,3 +243,5 @@ infrastructure may be written yet.  Read-only corpus inspection only.
 - 2026-08-14 -- C2 killed by an explicit symmetric synthetic L-package realizing the same fake
   order character while satisfying all divisor-formalism constraints.  Pivot sharpened from
   global divisor coherence to a non-factorizing Frobenius-source-to-divisor law.
+- 2026-08-15 -- user correction: build missing paper-closed literature infrastructure before any
+  new route; opened the integral finite-abelian Fourier basis as first audited bridge.

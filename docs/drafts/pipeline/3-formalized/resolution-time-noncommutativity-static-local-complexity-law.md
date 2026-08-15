@@ -1,11 +1,11 @@
 # Resolution and time do not commute for static-local complexity
 
 - **ID:** `resolution-time-noncommutativity-static-local-complexity-law`
-- **Stage:** 2 -- fully proved on paper
+- **Stage:** 3 -- formalized in Lean 4
 - **Type:** theorem / singular observer-resolution law / static-local complexity
 - **Parents:** `algebraic-two-local-instant-exact-complexity.md`,
   `instant-exact-complexity-calibration-singularity-law.md`
-- **Status:** `[PAPER-PROVED] [FRONTIER ADVANCE] [NOVELTY UNVERIFIED] [LEAN DEFERRED]`
+- **Status:** `[PAPER-PROVED] [FRONTIER ADVANCE] [NOVELTY UNVERIFIED] [LEAN CERTIFIED]`
 - **Date:** 2026-08-09
 
 ## Public sentence
@@ -191,7 +191,9 @@ open core.
 4. Candidate novelty lies in the static-local complexity synthesis.  Order-of-limits phenomena and
    compact-set separation are classical mechanisms, so external priority remains unverified.
 5. The theorem inherits the unformalized rational-specialization and circuit-transcendence layers
-   of its first parent and may not enter the final paper before exact Lean closure.
+   of its first parent and may not enter the final paper before exact Lean closure.  Every
+   statement of *this* card is Lean-certified with the parent's conclusions `(7)` and `(9)` as
+   explicit hypotheses, exactly as on paper.
 
 ## Exact next move
 
@@ -201,3 +203,42 @@ local ensemble: one constant `epsilon>0`, circuit depth
 This is precisely the positive-radius separation that neither algebraic independence nor the
 exact Bellman value supplies.
 
+
+## Lean certificate
+
+Unconditional and closed in Lean 4; every declaration below has axiom set
+`[propext, Classical.choice, Quot.sound]`.
+
+The gate model is the corpus circuit layer of `HTGeometry/ExactPenaltyCircuitBellman.lean`:
+`wordAct` is the action of a gate word, `reachSet act chi s` is the compact set `Z_s` of states
+preparable by at most `s` gates, `layerDist act chi s x` is `d(x, Z_s)`, and
+`approxComplexity act chi eps x` is `C_eps(x)`.
+
+| Card statement | Lean declaration |
+|---|---|
+| `(1)` orbit and budget | `HTGeometry.evolvedState`, `HTGeometry.reachSet`, `HTGeometry.approxComplexity` |
+| `(2)` threshold history | `HTGeometry.ThresholdHistory`, `HTGeometry.thresholdIndicator` |
+| compactness of `Z_s` | `HTGeometry.isCompact_reachSet` |
+| `(6)` Duhamel | `HTGeometry.dist_evolvedState_le`, `HTGeometry.norm_evolvedState_sub_le` |
+| `(3)` easy interval at positive resolution | `HTGeometry.approxComplexity_eq_zero_of_dist_le`, `HTGeometry.approxComplexity_orbit_eq_zero`, `HTGeometry.approxComplexity_evolvedState_eq_zero`, `HTGeometry.not_thresholdHistory_of_dist_le` |
+| `(8)` positive layer distance | `HTGeometry.layerDist_pos_of_le_approxComplexity` |
+| `(4)` no short circuit enters the ball | `HTGeometry.lt_dist_wordAct_of_lt_layerDist`, `HTGeometry.exists_pos_resolution_threshold` |
+| `(4)` complexity form | `HTGeometry.thresholdHistory_of_lt_layerDist`, `HTGeometry.thresholdHistory_of_lt_layerDist_of_exact` (with `HTGeometry.nonempty_approxSet_of_le_approxComplexity`) |
+| `(5)` first iterated limit `lim_ε lim_t I = 0` | `HTGeometry.tendsto_thresholdIndicator_time` |
+| `(5)` second iterated limit `lim_t lim_ε I = 1` | `HTGeometry.tendsto_thresholdIndicator_resolution` |
+| `(5)` both limits for the Schrödinger orbit | `HTGeometry.noncommuting_resolution_time` |
+| `(11)`, `(12)`, `(10)` uniform window threshold | `HTGeometry.exists_pos_uniform_resolution` (compactness of `K` and continuity of the orbit give a positive minimum layer distance) |
+
+Dependency note.  Equations `(7)` and `(9)` — the exponential exact bound
+`C_0(ψ_n(t)) ≥ (D-1)/16` and local finiteness of the low exact-complexity times — are Theorems A
+and B of the parent card `algebraic-two-local-instant-exact-complexity.md`.  They are the
+*hypotheses* of this card's own proofs, and appear as hypotheses in Lean: `(4)` and `(5)` take
+`k ≤ approxComplexity act chi 0 x`, and `(10)` takes `∀ t ∈ K, k ≤ approxComplexity act chi 0 (ψ t)`
+with `K` compact.  This matches hostile-audit item 5 of the card.
+
+New module: `HTGeometry/ResolutionTimeNoncommutativity.lean`.
+
+Reused rather than rebuilt: `HTGeometry/ExactPenaltyCircuitBellman.lean` (`wordAct`, `reachSet`,
+`layerDist`, `approxComplexity`, `isCompact_reachSet`, `lt_layerDist_of_lt_approxComplexity`,
+`layerDist_le_dist`) and `HTGeometry/InstantCalibrationSingularity.lean`
+(`evolvedState`, `dist_evolvedState_le`).

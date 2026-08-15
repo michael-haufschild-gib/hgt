@@ -188,8 +188,10 @@ The arithmetic-summation layer `(9)`--`(10)` of this card **is** now formalized,
   two-branch representations on a finite exterior interval
 - [x] `(8)` with every constant explicit, for any symbol-decaying two-branch pair, uniformly in
   the right endpoint
+- [x] phase-curvature bound `|j²ξ''(jx) ∓ k²ξ''(kx)| ≤ (16/9)/x³` in Lean, so `(8)` needs only
+  the two symbol records
 - [ ] instantiation: a `SymbolTwoBranch` record for the actual radial PSWF solutions with
-  `M = C√d₁/r`, plus the phase-curvature bound `|j²ξ''(jx) ∓ k²ξ''(kx)| ≤ N/x³`
+  `M = C√d₁/r`
 - [ ] exact first-row hybrid Bessel/Liouville--Green transfer
 
 ## Lean progress — the nonstationary-phase interface and the two-index separation `(6)`
@@ -370,3 +372,24 @@ parameter, and both indices.
 (`RadialPSWFAmplitudeVariation`: real two-branch form, `A(x) ≤ A(a)exp((1/c)∫‖ψ‖)`, `O(V/c)` total
 variation) composed with the Liouville amplitude `xiAmplitude_le` (`≤ 2^{1/4}/√x`); the second is an
 elementary computation with `xiSpeedDeriv`.
+
+### The phase curvature is now proved, not assumed
+
+`RadialTwoIndexOscillatoryBound.lean` adds
+
+```text
+one_le_xiSpeed                         1 ≤ ξ'_s(t) for s ≤ 1, t > 1
+abs_dilatedRadialPhaseAccel_le         |r² ξ''_s(r x)| ≤ (16/9)/(r x³)   for r ≥ 2, x ≥ 1
+abs_dilatedRadialPhaseAccel_{sub,add}_le
+                                       |j² ξ''(jx) ∓ k² ξ''(kx)| ≤ (16/9)/x³
+```
+
+proved from `ξ''_s(t) = t(s−1)/((t²−1)² ξ'_s(t))` together with `ξ' ≥ 1` and `t² − 1 ≥ (3/4)t²`.
+Consequently
+
+```text
+abs_integral_radial_twoBranch_symbol_le'  (0 ≤ s ≤ 1/2, 2 ≤ k < j, 1 ≤ a ≤ b, 0 < c) :
+    |∫_a^b U_j U_k| ≤ 4 (2 M_j M_k/m + (M_j' M_k + M_j M_k')/m + M_j M_k (16/9)/(3m²)) / c
+```
+
+takes **only the two `SymbolTwoBranch` records** as input: nothing about the phase is assumed.

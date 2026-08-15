@@ -327,4 +327,112 @@ theorem abs_half_mul_deriv_sub_le' {x Mj Mj' Mk Mk' p p' q q' r r' t t' : ℝ} (
       = 1 / 2 * (p' * q + p * q' - (r' * t + r * t')) := by ring
   rwa [hrw] at h
 
+
+/-! ## The half-power symbol class
+
+The amplitudes of a Liouville-transformed solution decay like `x^{-1/2}`, not like `x^{-1}`; it is
+their *product* that lives in the `1/x` class.  These lemmas make that passage explicit.
+-/
+
+theorem abs_mul_le_of_halfSymbol {x Mj Mk p q : ℝ} (hx : 1 ≤ x)
+    (hp : |p| ≤ Mj / Real.sqrt x) (hq : |q| ≤ Mk / Real.sqrt x) :
+    |p * q| ≤ Mj * Mk / x := by
+  have hx0 : (0 : ℝ) < x := lt_of_lt_of_le zero_lt_one hx
+  have hs : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.mpr hx0
+  have hss : Real.sqrt x * Real.sqrt x = x := Real.mul_self_sqrt hx0.le
+  rw [abs_mul]
+  have h := mul_le_mul hp hq (abs_nonneg _) (le_trans (abs_nonneg _) hp)
+  calc |p| * |q| ≤ (Mj / Real.sqrt x) * (Mk / Real.sqrt x) := h
+    _ = Mj * Mk / (Real.sqrt x * Real.sqrt x) := by ring
+    _ = Mj * Mk / x := by rw [hss]
+
+theorem abs_mul_le_of_halfSymbol_deriv {x Mj' Mk p' q : ℝ} (hx : 1 ≤ x)
+    (hp' : |p'| ≤ Mj' / (x * Real.sqrt x)) (hq : |q| ≤ Mk / Real.sqrt x) :
+    |p' * q| ≤ Mj' * Mk / x ^ 2 := by
+  have hx0 : (0 : ℝ) < x := lt_of_lt_of_le zero_lt_one hx
+  have hs : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.mpr hx0
+  have hss : Real.sqrt x * Real.sqrt x = x := Real.mul_self_sqrt hx0.le
+  rw [abs_mul]
+  have h := mul_le_mul hp' hq (abs_nonneg _) (le_trans (abs_nonneg _) hp')
+  calc |p'| * |q| ≤ (Mj' / (x * Real.sqrt x)) * (Mk / Real.sqrt x) := h
+    _ = Mj' * Mk / (x * (Real.sqrt x * Real.sqrt x)) := by ring
+    _ = Mj' * Mk / x ^ 2 := by rw [hss]; ring_nf
+
+theorem abs_half_add_halfSymbol {x Mj Mk p q r t : ℝ} (hx : 1 ≤ x)
+    (hp : |p| ≤ Mj / Real.sqrt x) (hq : |q| ≤ Mk / Real.sqrt x)
+    (hr : |r| ≤ Mj / Real.sqrt x) (ht : |t| ≤ Mk / Real.sqrt x) :
+    |1 / 2 * (p * q + r * t)| ≤ Mj * Mk / x := by
+  have h1 := abs_mul_le_of_halfSymbol hx hp hq
+  have h2 := abs_mul_le_of_halfSymbol hx hr ht
+  have hstep : |1 / 2 * (p * q + r * t)| ≤ 1 / 2 * (|p * q| + |r * t|) := by
+    rw [abs_mul, abs_of_nonneg (by norm_num : (0:ℝ) ≤ 1 / 2)]
+    exact mul_le_mul_of_nonneg_left (abs_add_le _ _) (by norm_num)
+  linarith
+
+theorem abs_half_sub_halfSymbol {x Mj Mk p q r t : ℝ} (hx : 1 ≤ x)
+    (hp : |p| ≤ Mj / Real.sqrt x) (hq : |q| ≤ Mk / Real.sqrt x)
+    (hr : |r| ≤ Mj / Real.sqrt x) (ht : |t| ≤ Mk / Real.sqrt x) :
+    |1 / 2 * (p * q - r * t)| ≤ Mj * Mk / x := by
+  have h1 := abs_mul_le_of_halfSymbol hx hp hq
+  have h2 := abs_mul_le_of_halfSymbol hx hr ht
+  have hstep : |1 / 2 * (p * q - r * t)| ≤ 1 / 2 * (|p * q| + |r * t|) := by
+    rw [abs_mul, abs_of_nonneg (by norm_num : (0:ℝ) ≤ 1 / 2)]
+    refine mul_le_mul_of_nonneg_left ?_ (by norm_num)
+    exact abs_sub _ _
+  linarith
+
+theorem abs_half_deriv_add_halfSymbol {x Mj Mj' Mk Mk' p p' q q' r r' t t' : ℝ} (hx : 1 ≤ x)
+    (hp : |p| ≤ Mj / Real.sqrt x) (hp' : |p'| ≤ Mj' / (x * Real.sqrt x))
+    (hq : |q| ≤ Mk / Real.sqrt x) (hq' : |q'| ≤ Mk' / (x * Real.sqrt x))
+    (hr : |r| ≤ Mj / Real.sqrt x) (hr' : |r'| ≤ Mj' / (x * Real.sqrt x))
+    (ht : |t| ≤ Mk / Real.sqrt x) (ht' : |t'| ≤ Mk' / (x * Real.sqrt x)) :
+    |1 / 2 * (p' * q + p * q' + (r' * t + r * t'))| ≤ (Mj' * Mk + Mj * Mk') / x ^ 2 := by
+  have h1 := abs_mul_le_of_halfSymbol_deriv hx hp' hq
+  have h2 : |p * q'| ≤ Mk' * Mj / x ^ 2 := by
+    rw [mul_comm p q']
+    exact abs_mul_le_of_halfSymbol_deriv hx hq' hp
+  have h3 := abs_mul_le_of_halfSymbol_deriv hx hr' ht
+  have h4 : |r * t'| ≤ Mk' * Mj / x ^ 2 := by
+    rw [mul_comm r t']
+    exact abs_mul_le_of_halfSymbol_deriv hx ht' hr
+  have hstep : |1 / 2 * (p' * q + p * q' + (r' * t + r * t'))|
+      ≤ 1 / 2 * (|p' * q| + |p * q'| + (|r' * t| + |r * t'|)) := by
+    rw [abs_mul, abs_of_nonneg (by norm_num : (0:ℝ) ≤ 1 / 2)]
+    refine mul_le_mul_of_nonneg_left ?_ (by norm_num)
+    have hA : |p' * q + p * q' + (r' * t + r * t')|
+        ≤ |p' * q + p * q'| + |r' * t + r * t'| := abs_add_le _ _
+    have hB : |p' * q + p * q'| ≤ |p' * q| + |p * q'| := abs_add_le _ _
+    have hC : |r' * t + r * t'| ≤ |r' * t| + |r * t'| := abs_add_le _ _
+    linarith
+  have hsum : (Mj' * Mk / x ^ 2 + Mk' * Mj / x ^ 2 + (Mj' * Mk / x ^ 2 + Mk' * Mj / x ^ 2))
+      = 2 * ((Mj' * Mk + Mj * Mk') / x ^ 2) := by ring
+  linarith
+
+theorem abs_half_deriv_sub_halfSymbol {x Mj Mj' Mk Mk' p p' q q' r r' t t' : ℝ} (hx : 1 ≤ x)
+    (hp : |p| ≤ Mj / Real.sqrt x) (hp' : |p'| ≤ Mj' / (x * Real.sqrt x))
+    (hq : |q| ≤ Mk / Real.sqrt x) (hq' : |q'| ≤ Mk' / (x * Real.sqrt x))
+    (hr : |r| ≤ Mj / Real.sqrt x) (hr' : |r'| ≤ Mj' / (x * Real.sqrt x))
+    (ht : |t| ≤ Mk / Real.sqrt x) (ht' : |t'| ≤ Mk' / (x * Real.sqrt x)) :
+    |1 / 2 * (p' * q + p * q' - (r' * t + r * t'))| ≤ (Mj' * Mk + Mj * Mk') / x ^ 2 := by
+  have h1 := abs_mul_le_of_halfSymbol_deriv hx hp' hq
+  have h2 : |p * q'| ≤ Mk' * Mj / x ^ 2 := by
+    rw [mul_comm p q']
+    exact abs_mul_le_of_halfSymbol_deriv hx hq' hp
+  have h3 := abs_mul_le_of_halfSymbol_deriv hx hr' ht
+  have h4 : |r * t'| ≤ Mk' * Mj / x ^ 2 := by
+    rw [mul_comm r t']
+    exact abs_mul_le_of_halfSymbol_deriv hx ht' hr
+  have hstep : |1 / 2 * (p' * q + p * q' - (r' * t + r * t'))|
+      ≤ 1 / 2 * (|p' * q| + |p * q'| + (|r' * t| + |r * t'|)) := by
+    rw [abs_mul, abs_of_nonneg (by norm_num : (0:ℝ) ≤ 1 / 2)]
+    refine mul_le_mul_of_nonneg_left ?_ (by norm_num)
+    have hA : |p' * q + p * q' - (r' * t + r * t')|
+        ≤ |p' * q + p * q'| + |r' * t + r * t'| := abs_sub _ _
+    have hB : |p' * q + p * q'| ≤ |p' * q| + |p * q'| := abs_add_le _ _
+    have hC : |r' * t + r * t'| ≤ |r' * t| + |r * t'| := abs_add_le _ _
+    linarith
+  have hsum : (Mj' * Mk / x ^ 2 + Mk' * Mj / x ^ 2 + (Mj' * Mk / x ^ 2 + Mk' * Mj / x ^ 2))
+      = 2 * ((Mj' * Mk + Mj * Mk') / x ^ 2) := by ring
+  linarith
+
 end GaloisForLFunctions.HTGeometry

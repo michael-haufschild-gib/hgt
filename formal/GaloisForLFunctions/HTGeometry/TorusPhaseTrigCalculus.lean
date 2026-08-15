@@ -356,6 +356,30 @@ theorem integral_box_normSq_trigLift_le {ι : Type*} [DecidableEq ι] (P : Finse
     _ = M ^ 2 * (((P ×ˢ P).filter fun pq => ν pq.1 = ν pq.2).card : ℝ) := by
         rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul, mul_comm]
 
+
+/-- **Parseval at distinct frequencies.**  When the frequencies are pairwise distinct the mean
+square of a character combination is the sum of the squared coefficient moduli. -/
+theorem integral_box_normSq_trigLift_of_injOn {ι : Type*} (P : Finset ι) (ν : ι → (d → ℤ))
+    (a : ι → ℂ) (hinj : ∀ p ∈ P, ∀ q ∈ P, ν p = ν q → p = q) :
+    (∫ x in torusBox d, ‖trigLift P ν a x‖ ^ 2) = ∑ p ∈ P, ‖a p‖ ^ 2 := by
+  classical
+  have hcomplex := ofReal_integral_box_normSq_trigLift P ν a
+  have hdiag : (∑ p ∈ P, ∑ q ∈ P, if ν p = ν q then a p * (starRingEnd ℂ) (a q) else 0) =
+      ∑ p ∈ P, ((‖a p‖ ^ 2 : ℝ) : ℂ) := by
+    refine Finset.sum_congr rfl fun p hp => ?_
+    rw [Finset.sum_eq_single p]
+    · rw [if_pos rfl, Complex.mul_conj]
+      norm_cast
+      exact (Complex.sq_norm (a p)).symm
+    · intro q hq hqp
+      rw [if_neg]
+      intro hcon
+      exact hqp (hinj q hq p hp hcon.symm)
+    · intro hcon
+      exact absurd hp hcon
+  rw [hdiag, ← Complex.ofReal_sum] at hcomplex
+  exact_mod_cast hcomplex
+
 end Parseval
 
 end GaloisForLFunctions.HTGeometry

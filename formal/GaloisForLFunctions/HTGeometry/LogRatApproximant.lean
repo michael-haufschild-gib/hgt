@@ -338,6 +338,13 @@ theorem hasLogRatApprox_digamma_shift {lam : ℝ} (hlam : 0 ≤ lam) :
   have hpow : t ^ N ≤ t ^ (N + 1) := pow_le_pow_right₀ ht1 (by omega)
   exact div_le_div_of_nonneg_left hC (by positivity) hpow
 
+/-- The first digamma jet at the unit translate is logarithmically rationally approximable. -/
+theorem hasLogRatApprox_digamma_one_shift_firstJet :
+    HasLogRatApprox (fun z => iteratedDeriv 1 Complex.digamma (z + (1 : ℂ))) := by
+  have h_one : (0 : ℝ) ≤ 1 := zero_le_one
+  exact
+    (hasRatApprox_iteratedDeriv_digamma_shift (lam := (1 : ℝ)) h_one 0).hasLogRatApprox
+
 end
 
 end GaloisForLFunctions.HTGeometry

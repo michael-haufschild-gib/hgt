@@ -115,4 +115,22 @@ theorem cofinalIntegralLedgerOuterPowerWindowData_iff_riemannHypothesis :
   · intro hRH B
     exact ⟨B, le_rfl, integralLedgerOuterPowerWindowData_of_riemannHypothesis hRH B⟩
 
+/-- The second-moment outer-power interface is inhabited at the empty height window. -/
+theorem secondMomentOrthogonalSavingOuterPowerWindowData_zero :
+    SecondMomentOrthogonalSavingOuterPowerWindowData (0 : ℝ) :=
+  (secondMomentOrthogonalSavingOuterPowerWindowData_iff_boxZeros_empty 0).mpr
+    (boxZeros_eq_empty_of_nonpos le_rfl)
+
+/-- The anchor-mass outer-power interface is inhabited at the empty height window. -/
+theorem anchorMassOuterPowerWindowData_zero :
+    AnchorMassOuterPowerWindowData (0 : ℝ) :=
+  (anchorMassOuterPowerWindowData_iff_boxZeros_empty 0).mpr
+    (boxZeros_eq_empty_of_nonpos le_rfl)
+
+/-- The integral-ledger outer-power interface is inhabited at the empty height window. -/
+theorem integralLedgerOuterPowerWindowData_zero :
+    IntegralLedgerOuterPowerWindowData (0 : ℝ) :=
+  (integralLedgerOuterPowerWindowData_iff_boxZeros_empty 0).mpr
+    (boxZeros_eq_empty_of_nonpos le_rfl)
+
 end RHTower

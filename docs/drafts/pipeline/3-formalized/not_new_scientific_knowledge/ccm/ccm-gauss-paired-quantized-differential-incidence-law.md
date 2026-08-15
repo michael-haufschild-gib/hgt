@@ -1,7 +1,7 @@
 # Gauss-paired quantized differentials transport prime incidence linearly through the trace
 
 - **ID:** `ccm-gauss-paired-quantized-differential-incidence-law`
-- **Stage:** 2-fully-proven / paper proof complete
+- **Stage:** 3-formalized (paper proof; Lean certificate alongside)
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent sources:** Connes--Consani's quantized-calculus formulation of local Weil terms and their
@@ -290,3 +290,43 @@ analytic theorem rather than progress on RH. No Lean file is added.
 - [ ] semilocal Sonin trace-remainder positivity
 - [ ] index/divisor transport to the true restricted-Weil operator or `Xi`
 - [ ] RH
+
+## Lean status
+
+**Formalized unconditionally, 2026-08-15**, in
+`formal/GaloisForLFunctions/RHTower/CCMGaussPairedQuantizedDifferential.lean`, on the commutator
+calculus of `RHTower/CCMSoninEdgeTrace.lean`.  The earlier decision ("formalizing only the finite
+Leibniz identity would be a wrapper") measured the wrong object: the card's `[PROVED]` list is
+exactly `(4)`, `(7)`, the coinvariant descent `(8a)`--`(8e)`, the reflection form `(15)`, and the
+frequency module `(18)`, and none of these needs the analytic Hardy/quasi-inner layer.
+
+- `logQuantizedDifferential F U = U⁻¹ [F, U]` and `logQuantizedDifferential_one` — equation `(8a)`.
+- **`logQuantizedDifferential_mul`** — equation `(8b)`, the crossed-homomorphism law.  Only the
+  Leibniz rule and `U⁻¹U = 1` are used; `F² = 1` and self-adjointness are not.
+- `channelSum`, **`logQuantizedDifferential_list_prod`** — equations `(4)`--`(5)`: the exact
+  conjugated channel decomposition of a finite factorization, with the tail conjugations retained.
+  Stated for `List Rˣ`, so no commutativity of the factors is assumed.
+- **`trace_logQuantizedDifferential_list_prod`** — equation `(7)`: any conjugation-invariant additive
+  functional turns the channel decomposition into a plain sum over the factors.  This is the exact
+  algebraic content of the card's trace step; the trace-class hypothesis `(6)` is what supplies such
+  a functional and is not re-proved.
+- `conjCoboundary`, `CyclicCoinvariants`, `conj_sub_mem_conjCoboundary`,
+  **`coinv_logQuantizedDifferential_mul`**, **`coinv_logQuantizedDifferential_list_prod`** —
+  equations `(8c)`--`(8d)`.
+- **`coinv_sum_eq_of_prod_eq`** — equation `(8e)`: two finite factorizations of the same unit have
+  the same total class, so the Gauss splitting and the component/prime pairing create no ambiguity.
+- **`logQuantizedDifferential_reflection`** — equation `(15)`, `U^*[F_H,U] = 2(U^*PU - P)` for
+  `F_H = 2P - 1`.
+- **`coefficientState_quotient_trivial`** — equation `(19)`: a coefficient hull contained in the
+  frequency module leaves no residual state charge.
+
+Equation `(18)` is already in the corpus: `HTGeometry/PrimeEulerProductAperture.lean` proves
+`bohrFrequencyModule (eulerProductLine N σ) = primeApertureCharacterModule N`, the span of the prime
+logarithms, and `finrank_bohrFrequencyModule_eulerProductLine` gives its exact rational dimension.
+
+All statements are unconditional: `#print axioms` returns only
+`[propext, Classical.choice, Quot.sound]`.
+
+Not formalized, and either imported or explicitly `[NOT PROVED]` in the card: the Connes--Consani
+Gauss factorization and quasi-innerness, the trace-class hypothesis `(6)`, and the four cofinal
+obligations of section 5.

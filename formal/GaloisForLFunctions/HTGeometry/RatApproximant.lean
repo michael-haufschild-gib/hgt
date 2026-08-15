@@ -210,6 +210,18 @@ theorem hasRatApprox_iteratedDeriv_digamma_shift {lam : ℝ} (hlam : 0 ≤ lam) 
     omega
   refine div_le_div_of_nonneg_left hC (by positivity) hpow
 
+/-- The first digamma jet at the unit translate is rationally approximable on every vertical tube. -/
+theorem hasRatApprox_digamma_one_shift_firstJet :
+    HasRatApprox (fun z => iteratedDeriv 1 Complex.digamma (z + (1 : ℂ))) := by
+  have h_one : (0 : ℝ) ≤ 1 := zero_le_one
+  simpa using
+    (hasRatApprox_iteratedDeriv_digamma_shift (lam := (1 : ℝ)) h_one 0)
+
+/-- The same concrete first digamma jet has polynomial tube growth. -/
+theorem hasTubePolyGrowth_digamma_one_shift_firstJet :
+    HasTubePolyGrowth (fun z => iteratedDeriv 1 Complex.digamma (z + (1 : ℂ))) :=
+  hasRatApprox_digamma_one_shift_firstJet.hasTubePolyGrowth
+
 end
 
 end GaloisForLFunctions.HTGeometry

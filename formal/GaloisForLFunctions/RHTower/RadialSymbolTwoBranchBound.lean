@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.RadialTwoIndexOscillatoryBound
 
 Bundling the regularity and the symbol decay of a two-branch amplitude pair into one predicate turns
 the two-index oscillatory bound into a single numerical statement.  For indices `j > k ≥ 2`, a radius
-ray starting at `1`, symbol decay `|g| ≤ M/x`, `|g'| ≤ M'/x²` for both pairs, and phase curvature
+ray starting at `1`, symbol decay `|g| ≤ M/√x`, `|g'| ≤ M'/(x√x)` for both pairs, and phase curvature
 `≤ N/x³`,
 
 ```text
@@ -27,7 +27,9 @@ noncomputable section
 
 namespace GaloisForLFunctions.RHTower
 
-/-- A two-branch amplitude pair on `[a,b]` with symbol decay `|g| ≤ M/x`, `|g'| ≤ M'/x²`. -/
+/-- A two-branch amplitude pair on `[a,b]` in the half-power symbol class:
+`|g| ≤ M/√x`, `|g'| ≤ M'/(x√x)`.  This is the decay a Liouville-transformed solution has; the
+*product* of two such pairs lands in the `1/x` class the budget bound consumes. -/
 structure SymbolTwoBranch (a b M M' : ℝ) (g₁ g₂ g₁' g₂' : ℝ → ℝ) : Prop where
   deriv₁ : ∀ x ∈ Icc a b, HasDerivAt g₁ (g₁' x) x
   deriv₂ : ∀ x ∈ Icc a b, HasDerivAt g₂ (g₂' x) x
@@ -35,10 +37,10 @@ structure SymbolTwoBranch (a b M M' : ℝ) (g₁ g₂ g₁' g₂' : ℝ → ℝ)
   cont₁' : ContinuousOn g₁' (Icc a b)
   cont₂ : ContinuousOn g₂ (Icc a b)
   cont₂' : ContinuousOn g₂' (Icc a b)
-  bound₁ : ∀ x ∈ Icc a b, |g₁ x| ≤ M / x
-  bound₁' : ∀ x ∈ Icc a b, |g₁' x| ≤ M' / x ^ 2
-  bound₂ : ∀ x ∈ Icc a b, |g₂ x| ≤ M / x
-  bound₂' : ∀ x ∈ Icc a b, |g₂' x| ≤ M' / x ^ 2
+  bound₁ : ∀ x ∈ Icc a b, |g₁ x| ≤ M / Real.sqrt x
+  bound₁' : ∀ x ∈ Icc a b, |g₁' x| ≤ M' / (x * Real.sqrt x)
+  bound₂ : ∀ x ∈ Icc a b, |g₂ x| ≤ M / Real.sqrt x
+  bound₂' : ∀ x ∈ Icc a b, |g₂' x| ≤ M' / (x * Real.sqrt x)
 
 /-- The budget of a product weight, in the form the four branches share. -/
 theorem oscBudget_le_of_product_symbol {a b m P Q N : ℝ}
@@ -118,27 +120,27 @@ theorem abs_integral_radial_twoBranch_symbol_le
     (((hj.cont₂'.mul hkk.cont₁).add (hj.cont₂.mul hkk.cont₁')).add
       ((hj.cont₁'.mul hkk.cont₂).add (hj.cont₁.mul hkk.cont₂'))).const_smul (1 / 2 : ℝ)
   have hb₁ := oscBudget_le_of_product_symbol (m := m) ha hab hm hP hQ hN hw₁ hw₁' hΘD
-    (fun x hx => abs_half_mul_add_le' (haIcc x hx) hMj hMk (hj.bound₁ x hx) (hkk.bound₁ x hx)
+    (fun x hx => abs_half_add_halfSymbol (haIcc x hx) (hj.bound₁ x hx) (hkk.bound₁ x hx)
       (hj.bound₂ x hx) (hkk.bound₂ x hx))
-    (fun x hx => abs_half_mul_deriv_add_le' (haIcc x hx) hMj hMj' hMk hMk'
+    (fun x hx => abs_half_deriv_add_halfSymbol (haIcc x hx)
       (hj.bound₁ x hx) (hj.bound₁' x hx) (hkk.bound₁ x hx) (hkk.bound₁' x hx)
       (hj.bound₂ x hx) (hj.bound₂' x hx) (hkk.bound₂ x hx) (hkk.bound₂' x hx)) hND
   have hb₂ := oscBudget_le_of_product_symbol (m := m) ha hab hm hP hQ hN hw₂ hw₂' hΘS
-    (fun x hx => abs_half_mul_sub_le' (haIcc x hx) hMj hMk (hj.bound₁ x hx) (hkk.bound₁ x hx)
+    (fun x hx => abs_half_sub_halfSymbol (haIcc x hx) (hj.bound₁ x hx) (hkk.bound₁ x hx)
       (hj.bound₂ x hx) (hkk.bound₂ x hx))
-    (fun x hx => abs_half_mul_deriv_sub_le' (haIcc x hx) hMj hMj' hMk hMk'
+    (fun x hx => abs_half_deriv_sub_halfSymbol (haIcc x hx)
       (hj.bound₁ x hx) (hj.bound₁' x hx) (hkk.bound₁ x hx) (hkk.bound₁' x hx)
       (hj.bound₂ x hx) (hj.bound₂' x hx) (hkk.bound₂ x hx) (hkk.bound₂' x hx)) hNS
   have hb₃ := oscBudget_le_of_product_symbol (m := m) ha hab hm hP hQ hN hw₃ hw₃' hΘD
-    (fun x hx => abs_half_mul_sub_le' (haIcc x hx) hMj hMk (hj.bound₂ x hx) (hkk.bound₁ x hx)
+    (fun x hx => abs_half_sub_halfSymbol (haIcc x hx) (hj.bound₂ x hx) (hkk.bound₁ x hx)
       (hj.bound₁ x hx) (hkk.bound₂ x hx))
-    (fun x hx => abs_half_mul_deriv_sub_le' (haIcc x hx) hMj hMj' hMk hMk'
+    (fun x hx => abs_half_deriv_sub_halfSymbol (haIcc x hx)
       (hj.bound₂ x hx) (hj.bound₂' x hx) (hkk.bound₁ x hx) (hkk.bound₁' x hx)
       (hj.bound₁ x hx) (hj.bound₁' x hx) (hkk.bound₂ x hx) (hkk.bound₂' x hx)) hND
   have hb₄ := oscBudget_le_of_product_symbol (m := m) ha hab hm hP hQ hN hw₄ hw₄' hΘS
-    (fun x hx => abs_half_mul_add_le' (haIcc x hx) hMj hMk (hj.bound₂ x hx) (hkk.bound₁ x hx)
+    (fun x hx => abs_half_add_halfSymbol (haIcc x hx) (hj.bound₂ x hx) (hkk.bound₁ x hx)
       (hj.bound₁ x hx) (hkk.bound₂ x hx))
-    (fun x hx => abs_half_mul_deriv_add_le' (haIcc x hx) hMj hMj' hMk hMk'
+    (fun x hx => abs_half_deriv_add_halfSymbol (haIcc x hx)
       (hj.bound₂ x hx) (hj.bound₂' x hx) (hkk.bound₁ x hx) (hkk.bound₁' x hx)
       (hj.bound₁ x hx) (hj.bound₁' x hx) (hkk.bound₂ x hx) (hkk.bound₂' x hx)) hNS
   have hmain := abs_integral_radial_twoBranch_product_le hs hs1 hk2 hkj ha hab hc
@@ -161,6 +163,30 @@ theorem abs_integral_radial_twoBranch_symbol_le
         + (Mj * Mk) * N / (3 * m ^ 2)) := by
     linarith [hb₁, hb₂, hb₃, hb₄]
   gcongr
+
+
+/-- **The exterior radial off-diagonal entry, with the phase curvature discharged.**  Nothing about
+the phase is assumed: its curvature bound `|j²ξ''(jx) ∓ k²ξ''(kx)| ≤ (16/9)/x³` is proved, so the
+only inputs are the two symbol records. -/
+theorem abs_integral_radial_twoBranch_symbol_le'
+    {s j k a b c : ℝ} (hs : 0 ≤ s) (hs1 : s ≤ 1 / 2)
+    (hk2 : 2 ≤ k) (hkj : k < j) (ha : 1 ≤ a) (hab : a ≤ b) (hc : 0 < c)
+    {Mj Mj' Mk Mk' : ℝ} (hMj : 0 ≤ Mj) (hMj' : 0 ≤ Mj') (hMk : 0 ≤ Mk) (hMk' : 0 ≤ Mk')
+    {g₁ g₂ g₁' g₂' g₃ g₄ g₃' g₄' : ℝ → ℝ}
+    (hj : SymbolTwoBranch a b Mj Mj' g₁ g₂ g₁' g₂')
+    (hkk : SymbolTwoBranch a b Mk Mk' g₃ g₄ g₃' g₄') :
+    |∫ x in a..b,
+        (g₁ x * Real.cos (c * dilatedRadialPhase s j x)
+            + g₂ x * Real.sin (c * dilatedRadialPhase s j x))
+          * (g₃ x * Real.cos (c * dilatedRadialPhase s k x)
+            + g₄ x * Real.sin (c * dilatedRadialPhase s k x))|
+      ≤ 4 * (2 * (Mj * Mk) / (2 / 3 * (j - k)) + (Mj' * Mk + Mj * Mk') / (2 / 3 * (j - k))
+        + (Mj * Mk) * (16 / 9) / (3 * (2 / 3 * (j - k)) ^ 2)) / c := by
+  have hjge : (2 : ℝ) ≤ j := le_trans hk2 hkj.le
+  exact abs_integral_radial_twoBranch_symbol_le hs hs1 hk2 hkj ha hab hc hMj hMj' hMk hMk'
+    (by norm_num) hj hkk
+    (fun x hx => abs_dilatedRadialPhaseAccel_sub_le hs hs1 hjge hk2 (le_trans ha hx.1))
+    (fun x hx => abs_dilatedRadialPhaseAccel_add_le hs hs1 hjge hk2 (le_trans ha hx.1))
 
 end GaloisForLFunctions.RHTower
 

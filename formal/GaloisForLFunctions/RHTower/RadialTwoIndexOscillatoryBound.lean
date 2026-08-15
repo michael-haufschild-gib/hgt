@@ -132,11 +132,9 @@ theorem abs_dilatedRadialPhaseAccel_le {s r x : ℝ} (hs : 0 ≤ s) (hs1 : s ≤
   have hfinal : |dilatedRadialPhaseAccel s r x| ≤ r ^ 2 * (16 / 9 / (r * x) ^ 3) := by
     rw [dilatedRadialPhaseAccel, abs_mul, abs_of_nonneg (by positivity : (0:ℝ) ≤ r ^ 2)]
     refine mul_le_mul_of_nonneg_left ?_ (by positivity)
-    rw [hval] at hquotient
     exact le_trans (le_of_eq hval) hquotient
   have hid : r ^ 2 * (16 / 9 / (r * x) ^ 3) = 16 / 9 / (r * x ^ 3) := by
     field_simp
-    ring
   rwa [hid] at hfinal
 
 theorem abs_dilatedRadialPhaseAccel_sub_le {s j k x : ℝ} (hs : 0 ≤ s) (hs1 : s ≤ 1 / 2)
@@ -149,14 +147,16 @@ theorem abs_dilatedRadialPhaseAccel_sub_le {s j k x : ℝ} (hs : 0 ≤ s) (hs1 :
   have hbk := abs_dilatedRadialPhaseAccel_le hs hs1 hk hx
   have hstep : |dilatedRadialPhaseAccel s j x - dilatedRadialPhaseAccel s k x|
       ≤ |dilatedRadialPhaseAccel s j x| + |dilatedRadialPhaseAccel s k x| := abs_sub _ _
+  have hx3 : (0 : ℝ) < x ^ 3 := by positivity
   have hj2 : 16 / 9 / (j * x ^ 3) ≤ 16 / 9 / (2 * x ^ 3) := by
     apply div_le_div_of_nonneg_left (by norm_num) (by positivity)
-    nlinarith
+    nlinarith [hx3, hj]
   have hk2 : 16 / 9 / (k * x ^ 3) ≤ 16 / 9 / (2 * x ^ 3) := by
     apply div_le_div_of_nonneg_left (by norm_num) (by positivity)
-    nlinarith
+    nlinarith [hx3, hk]
   have hid : 16 / 9 / (2 * x ^ 3) + 16 / 9 / (2 * x ^ 3) = 16 / 9 / x ^ 3 := by
     field_simp
+    ring
   linarith
 
 theorem abs_dilatedRadialPhaseAccel_add_le {s j k x : ℝ} (hs : 0 ≤ s) (hs1 : s ≤ 1 / 2)
@@ -169,14 +169,16 @@ theorem abs_dilatedRadialPhaseAccel_add_le {s j k x : ℝ} (hs : 0 ≤ s) (hs1 :
   have hbk := abs_dilatedRadialPhaseAccel_le hs hs1 hk hx
   have hstep : |dilatedRadialPhaseAccel s j x + dilatedRadialPhaseAccel s k x|
       ≤ |dilatedRadialPhaseAccel s j x| + |dilatedRadialPhaseAccel s k x| := abs_add_le _ _
+  have hx3 : (0 : ℝ) < x ^ 3 := by positivity
   have hj2 : 16 / 9 / (j * x ^ 3) ≤ 16 / 9 / (2 * x ^ 3) := by
     apply div_le_div_of_nonneg_left (by norm_num) (by positivity)
-    nlinarith
+    nlinarith [hx3, hj]
   have hk2 : 16 / 9 / (k * x ^ 3) ≤ 16 / 9 / (2 * x ^ 3) := by
     apply div_le_div_of_nonneg_left (by norm_num) (by positivity)
-    nlinarith
+    nlinarith [hx3, hk]
   have hid : 16 / 9 / (2 * x ^ 3) + 16 / 9 / (2 * x ^ 3) = 16 / 9 / x ^ 3 := by
     field_simp
+    ring
   linarith
 
 /-- **The two-index exterior radial oscillatory bound.**  Any two two-branch representations

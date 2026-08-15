@@ -196,6 +196,23 @@ theorem xiZeroHalfPlaneBound_iff_projectiveReflectionRadius_le
         ((xiRectangularWeilTailPowerLower_iff_transverseSup_le_global
           (L := 1) one_pos halpha).2 hsup)
 
+/-- The unconditional critical-strip radius gives the half-width Xi zero bound. -/
+theorem xiZeroHalfPlaneBound_half : XiZeroHalfPlaneBound (1 / 2 : ℝ) := by
+  apply (xiZeroHalfPlaneBound_iff_projectiveReflectionRadius_le (by positivity)).mpr
+  exact xiProjectiveReflectionRadius_le_half
+
+/-- The inverse-tilted source is analytic strictly above the unconditional half-width. -/
+theorem inverseTiltedDyadicSourceAnalyticAbove_half :
+    InverseTiltedDyadicSourceAnalyticAbove (1 / 2 : ℝ) :=
+  (xiZeroHalfPlaneBound_iff_inverseTiltedDyadicSourceAnalyticAbove (by positivity)).mp
+    xiZeroHalfPlaneBound_half
+
+/-- The critical Mellin defect is analytic strictly above the unconditional half-width. -/
+theorem criticalMellinDefectAnalyticAbove_half :
+    CriticalMellinDefectAnalyticAbove (1 / 2 : ℝ) :=
+  (xiZeroHalfPlaneBound_iff_criticalMellinDefectAnalyticAbove (by positivity)).mp
+    xiZeroHalfPlaneBound_half
+
 theorem xiRectangularPrimeGamma_abscissa_eq_projectiveRadius_of_not_rh
     {L : ℝ} (hL : 0 < L) {N : ℕ}
     (hN : ∀ n : ℕ, N ≤ n → 1 ≤ n ∧ L ≤ Real.log n / 2)

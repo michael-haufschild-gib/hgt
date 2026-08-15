@@ -104,3 +104,19 @@ contains that coupling.
 - [ ] 2 -> 3: intentionally not prioritized; the theorem is routine bridge infrastructure.
 - [ ] 3 -> 4: ineligible as a standalone new-science result.
 
+## Lean formalization checkpoint — 2026-08-15
+
+- **Exact target retained:** the full finite-prime functional equation, local-square classification,
+  zero-line consequence, and converse; no quotient, finite-sample, or coefficient-only surrogate is
+  being promoted as the card theorem.
+- **Corpus reuse audited:** `RHTower/Sieve/EulerExpansion.lean` supplies the squarefree expansion
+  and injectivity of `T ↦ ∏ p∈T p`; `Hurwitz/JointPowerOrbit.lean` supplies Vandermonde recovery for
+  distinct power sequences; `RHProofLab/EulerProductArithmetic.lean` supplies compatible finite
+  Euler-product algebra.
+- **Closed proof architecture:** specialize the functional equation at every negative integer
+  `s = -m`.  Both sides become finite linear combinations of the distinct sequences
+  `m ↦ (∏ p∈T p)^m`; Vandermonde recovery gives every complement-coefficient identity, from which
+  the top coefficient and one-prime complements force `a_p^2 = p`.  The converse is then proved
+  coefficientwise before restoring the entire functional equation.
+- **Status:** formal implementation active; no unproved analytic, spectral, or arithmetic premise
+  will be introduced.
