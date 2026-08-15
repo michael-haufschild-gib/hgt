@@ -2237,3 +2237,42 @@ MaximallyProjectiveEnergy …` — so the remaining work is the parametrization 
 on the nonidentity labels of weight at most `q`) and check that the pushforward of
 `centredProductGaussian` under that affine reindexing is absolutely continuous, which
 `PiMeasureAbsoluteContinuity.productGaussian_absolutelyContinuous` supplies.
+
+### Update: `(21)`, `(26)`, `(27)` are unconditional for the Pauli Gaussian ensemble (2026-08-15)
+
+Two further modules, wired, built, axiom-clean.
+
+`HTGeometry/GaussianCoordinateSelection.lean`
+
+- **`map_pi_restrict_subtype`** — marginalizing a product of probability measures onto a subfamily
+  of coordinates gives the product of that subfamily;
+- `map_pi_gaussian_scale` — rescaling each coordinate rescales the variances;
+- **`map_selection_centredProductGaussian`** — the law of a rescaled selection of distinct
+  coordinates of a centred product Gaussian is again a centred product Gaussian.
+
+`HTGeometry/PauliEnsembleSimpleSpectrum.lean`
+
+- `tracelessCoefficients`, `map_tracelessCoefficients`,
+  **`absolutelyContinuous_map_tracelessCoefficients`** — the ensemble's coefficient vector in the
+  traceless bounded-weight presentation has an absolutely continuous law when the weights are
+  nonzero;
+- **`injective_eigenvalues_pauliEnsemble_ae`** and
+  **`maximallyProjectiveEnergy_pauliEnsemble_ae`** — the card's `(27)`: almost surely the `2ⁿ`
+  energies are pairwise distinct and admit no balanced integer relation, obtained from the corpus
+  genericity `pauliTraceless_projectivelyIndependent_ae` through the parametrization bridge;
+- **`isOrthoEigenBasis_injective_pauliEnsemble_ae`** — the eigenbasis datum consumed by the
+  quenched bounds, now discharged rather than assumed;
+- **`integral_collision_pauliEnsemble_zeroProductState_le`** — `(26)` with *no* eigenbasis
+  hypothesis: `E_H C_H(Ω) ≤ (2/3)ⁿ`;
+- **`measureReal_collision_pauliEnsemble_zeroProductState_ge_le`** — `(21)` with no eigenbasis
+  hypothesis: `Pr_H{C_H(Ω) ≥ L(2/3)ⁿ} ≤ 1/L`.
+
+Also refactored: `SpectralCollisionFunctional.exists_isOrthoEigenBasis` now factors through the
+named construction `hermitianEigenBasis` and `isOrthoEigenBasis_hermitian`, so the eigenbasis can
+be referred to by name in downstream statements.
+
+**State of `local-clifford-return-excised-phase-incidence-law`:** `(1)`–`(19)`, `(21)`–`(27)` are
+closed unconditionally.  Remaining: `(28)` (the completed-time transfer, for which the corpus
+supplies `CompletedObserverTimeTorus`, `StaticChoiProjectiveComplexityPlateau` and the
+`MaximallyProjectiveEnergy` input just proved) and `(29)`–`(33)` (finite-alphabet circuit
+counting on top of `(22)`).

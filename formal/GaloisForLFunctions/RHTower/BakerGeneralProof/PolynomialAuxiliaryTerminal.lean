@@ -152,4 +152,20 @@ theorem SolvedRelation.polynomialComponentJetAuxiliaryFunction_zero_ne_zero_of_e
     R.exponentialFrequency_injective
     (R.polynomialAuxiliaryCoefficient_ne_zero_of_eta_ne_zero eta heta)
 
+/-- The additive-degree cutoff is an exact degree cutoff for every terminal coefficient
+polynomial. -/
+theorem SolvedRelation.polynomialAuxiliaryCoefficient_natDegree_lt
+    (R : SolvedRelation) {U V : ℕ} (hU : 0 < U)
+    (eta : R.AuxiliaryColumn U V → 𝓞 R.CoefficientField)
+    (m : R.ExponentialColumn V) :
+    (R.polynomialAuxiliaryCoefficient eta m).natDegree < U := by
+  unfold SolvedRelation.polynomialAuxiliaryCoefficient
+  have hdegree : (∑ a : Fin U, Polynomial.monomial (a : ℕ)
+      (R.embedding ((algebraMap (𝓞 R.CoefficientField) R.CoefficientField) (eta (a, m))))).natDegree ≤
+      U - 1 := by
+    apply Polynomial.natDegree_sum_le_of_forall_le
+    intro a ha
+    exact (Polynomial.natDegree_monomial_le _).trans (by omega)
+  omega
+
 end GaloisForLFunctions.RHTower.BakerGeneralProof

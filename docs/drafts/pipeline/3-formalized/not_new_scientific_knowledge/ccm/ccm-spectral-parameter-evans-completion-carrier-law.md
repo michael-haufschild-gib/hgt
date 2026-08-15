@@ -177,3 +177,46 @@ Primary source:
 - [ ] identify its determinant line with the restricted-Weil spectral-flow line
 - [ ] prove zero negative Morse charge for every aperture
 - [ ] RH
+
+## Lean status
+
+`[FORMALIZED]` — supersedes the "No abstract wrapper is added" decision recorded above.  The closed
+screw form, its completion and the logarithmic multiplier do remain cited parents, but the card's
+own deductions — the reduction `(2)` → `(7)`, the shifted symbol `(5)`, and the conditional finite
+Morse formula `(9)` → `(10)`/`(11)` — are reachable and are now proved.
+
+Module: `formal/GaloisForLFunctions/RHTower/CCMSpectralParameterEvans.lean`
+(7 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
+`formal/GaloisForLFunctions/RHTower.lean`).
+
+What is proved in Lean:
+
+- `shiftedSymbol`, `shiftedSymbol_apply`, `shiftedSymbol_mul_eq_zero_iff` — **equation (5)**: the
+  shifted exact symbol `W_{a,λ} = W_a − λ`, and the equivalence of its null equation with the
+  eigenvalue equation for the multiplier.
+- `multiplier_eq_of_generalized` — **equations (2) → (7)**: given the two operator identities that
+  Suzuki's construction supplies, `L ∘ G = W` and `L ∘ K = id` (the second being `−Δ_N K_a u = u`),
+  the generalized eigenvalue equation `G u = λ K u` becomes `W u = λ u`.
+- `shiftedOperator_eq_zero_of_generalized` — the same conclusion as vanishing of the shifted
+  operator `(W − λ) u = 0`, which is `(7)`.
+- `finrank_ker_eq_of_linearEquiv`, `sum_finrank_ker_eq` — **equations (9) → (10)**: under the
+  fibrewise isomorphism the kernel dimensions agree and the negative Morse charge is the sum of the
+  finite Evans kernel dimensions.
+- `forall_ker_eq_bot_iff` — **equation (11)**: under the same isomorphism, triviality of all
+  spectral kernels is equivalent to injectivity of all the finite Evans maps.
+
+The isomorphism `(9)` is deliberately kept as a hypothesis: it is exactly the card's missing
+regularity-lift branch of `(4)`, and the card's whole point is that it does not come for free.
+
+Reused, not rebuilt: the prime–Gamma resource consequence is the corpus theorem
+`GaloisForLFunctions.HTGeometry.not_summable_primeLogHerglotzTransportMassOrder_of_pos`
+(`HTGeometry/PrimeLogHerglotz.lean`), which the card cites verbatim.
+
+Deliberately outside the Lean statement (cited parents, not results of this card):
+
+- the closed screw form `Q_W^a`, its positive compact form `S_{a,μ}` and the completion
+  `H(S_{a,μ})`;
+- the non-inclusion `(3)`, `H(S_{a,μ}) ⊄ L²(−a,a)`, which is Suzuki's Section 8 theorem;
+- the Neumann inverse `K_a`, the screw convolution and the exact polar–Euler–Gamma multiplier
+  `W_a(D)`;
+- the isometry `(6)` between the form Hilbert space and the completion.

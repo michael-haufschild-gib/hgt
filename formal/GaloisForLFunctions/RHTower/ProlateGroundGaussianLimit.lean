@@ -89,12 +89,21 @@ theorem exists_ground_family :
     have hmom := integral_sq_mul_sq_le_separation hcne hsm (fun x _ => hprolate x)
     have hdef := integral_prolateGaussianDefect_le hc hsm (fun x _ => hprolate x)
     refine ⟨lam, chi, hlam, hsm, hne, heven, hband, hprolate, hval, hposS, ?_, ?_⟩
-    · rw [hval]
+    · show (∫ x in (-1 : ℝ)..1, x ^ 2 * ((Classical.choose (hex c)).2 x) ^ 2)
+          ≤ ((Classical.choose (hex c)).1 / c)
+            * ∫ x in (-1 : ℝ)..1, ((Classical.choose (hex c)).2 x) ^ 2
+      rw [hval]
       have hid : c * radialSeparationRatio c chi / c = radialSeparationRatio c chi := by
         field_simp
       rw [hid]
       exact hmom
-    · rw [hval]
+    · show (∫ x in (-1 : ℝ)..1,
+          (c * x * (Classical.choose (hex c)).2 x
+            + (1 - x ^ 2) * deriv ((Classical.choose (hex c)).2) x) ^ 2)
+          ≤ c * (((Classical.choose (hex c)).1 - 1)
+            * (∫ x in (-1 : ℝ)..1, ((Classical.choose (hex c)).2 x) ^ 2)
+            + 3 * ∫ x in (-1 : ℝ)..1, x ^ 2 * ((Classical.choose (hex c)).2 x) ^ 2)
+      rw [hval]
       exact hdef
 
 end RHTower

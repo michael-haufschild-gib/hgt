@@ -177,3 +177,40 @@ Lean file is added.
 - [x] uniform `c^(-1/2)k^(-2)` bound proved
 - [x] logarithmically weighted first row summed
 - [ ] exact nonzero-`sigma` and Dunster-remainder transfer
+
+## Lean status
+
+`[FORMALIZED]` — supersedes the "No Lean file is added" decision recorded above.  The Bessel symbol
+decomposition, stationary phase and the Weber transform do remain cited parents, but the card's own
+exact phase computations `(7)`, `(8)`, `(10)` and the arithmetic summation `(4)` are fully
+reachable and are now proved.
+
+Module: `formal/GaloisForLFunctions/RHTower/CCMLimitingRadialWeber.lean`
+(8 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
+`formal/GaloisForLFunctions/RHTower.lean`).
+
+What is proved in Lean:
+
+- `radialPhase`, `radialPhaseDeriv`, `hasDerivAt_radialPhase` — **equation (7)** and the exact
+  derivative `1 − k²r/√(k²r²+k²−1)` of the bulk difference phase.
+- `radialPhaseDeriv_critical` — **equation (8), critical point**: the phase is stationary exactly at
+  `r = 1/k`.
+- `radialPhaseSecondDeriv`, `hasDerivAt_radialPhaseDeriv`, `radialPhaseSecondDeriv_critical` —
+  **equation (8), curvature**: the second derivative is
+  `−k²/√(…) + k⁴r²/(√(…))³`, and at `r = 1/k` it equals exactly `−(k²−1)/k`.
+- `weberPhase`, `hasDerivAt_weberPhase`, `weberPhase_deriv_ne_zero` — **equation (10)**: after
+  `w = z²` the endpoint phase has derivative `k²/(2√(k²w+c²(k²−1)))`, which never vanishes; this is
+  why the endpoint region is nonstationary and one integration by parts suffices.
+- `weighted_firstRow_le`, `tsum_weighted_firstRow_le` — **equation (4)**: the uniform bound `(3)`
+  makes the logarithmically weighted first row bounded by `C c^{-1/2}` times the convergent
+  arithmetic constant `∑_k log k/k²`.  The convergence itself is the corpus lemma
+  `GaloisForLFunctions.summable_log_div_sq` (`RHTower/ArcsineZetaTransform.lean`), reused rather
+  than rebuilt.
+
+Deliberately outside the Lean statement (cited parents, not results of this card):
+
+- Dunster's uniform radial Bessel model and the identity `(1)`–`(2)`;
+- the Bessel symbol decomposition `(5)` and its derivative bounds;
+- the one-dimensional stationary-phase lemma and the dyadic integration-by-parts estimates
+  `(6)`, `(9)`, `(11)`;
+- the coalescence expansion `(12)` and the Weber transform `(13)`.

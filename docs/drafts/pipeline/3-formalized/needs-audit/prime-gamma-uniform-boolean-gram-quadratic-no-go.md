@@ -1,14 +1,14 @@
 # Uniform Boolean Gram lift has insufficient Xi quadratic mass
 
 - **ID:** `prime-gamma-uniform-boolean-gram-quadratic-no-go`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / SP-E METRIC NO-GO
 - **Scientific status:** `[PROVED HERE] [CORPUS-NEW] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Parent:**
-  `../3-formalized/needs-audit/prime-gamma-signed-eulerian-curvature-plucker-lift.md`
+  `prime-gamma-signed-eulerian-curvature-plucker-lift.md`
 - **Source inputs:**
-  - `not_new_scientific_knowledge/prime-sieve-boolean-first-trace-connection-curvature.md`;
-  - `../3-formalized/not_new_scientific_knowledge/prime-sieve-boolean-first-trace-curvature-ideal-law.md`;
+  - `../../2-fully-proven/not_new_scientific_knowledge/prime-sieve-boolean-first-trace-connection-curvature.md`;
+  - `../not_new_scientific_knowledge/prime-sieve-boolean-first-trace-curvature-ideal-law.md`;
   - `formal/GaloisForLFunctions/HTGeometry/PrimeSieveDensityTelescope.lean`;
   - `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailMomentLogConvex.lean`.
 
@@ -175,9 +175,34 @@ metric supplied by the all-prime Euler--Gamma/Mobius transgression.
 - [x] normalized quadratic coefficient ceiling `13/98` proved
 - [x] theta-source quadratic floor `1/6` proved
 - [x] all scalar normalizations excluded
-- [ ] Lean formalization
+- [x] Lean formalization
 - [ ] construct source-native Gamma/co-Poisson metric on curvature sections
 - [ ] pass degree-two gate in that metric
 - [ ] all-degree coefficient comparison and local-uniform limit
 - [ ] RH
 
+## Lean certificate
+
+Module:
+`formal/GaloisForLFunctions/RHTower/PrimeGammaUniformBooleanGramQuadraticNoGo.lean`
+
+Headline declarations:
+
+```text
+GaloisForLFunctions.HTGeometry.uniformBooleanTailTrace_le_one_div_fortyEight
+GaloisForLFunctions.HTGeometry.gramNormalizedQuadraticRatio_le_thirteen_div_ninetyEight
+GaloisForLFunctions.HTGeometry.one_div_sixtyFour_le_gramEntrySqSum_of_zero_zero
+GaloisForLFunctions.HTGeometry.sieveFirstTraceWeight_le_one_div_six
+GaloisForLFunctions.HTGeometry.sum_sieveFirstTraceWeight_tail_le_half
+GaloisForLFunctions.HTGeometry.sieveUniformBooleanTailTrace_le_one_div_fortyEight
+GaloisForLFunctions.HTGeometry.sieveUniformBooleanTrace_mem_Icc
+RHTower.one_div_six_le_thetaSquareCoordinateQuadraticRatio
+RHTower.uniformBooleanGramRatio_ne_thetaSquareCoordinateQuadraticRatio
+```
+
+Verification on 15 August 2026:
+
+- direct module check passed;
+- target-only build passed: `8968/8968` jobs;
+- module wired into `RHTower.lean`; umbrella build intentionally not run;
+- axiom audit: only `propext`, `Classical.choice`, and `Quot.sound`.

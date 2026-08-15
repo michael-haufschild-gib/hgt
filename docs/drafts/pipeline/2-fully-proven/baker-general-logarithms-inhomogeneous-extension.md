@@ -532,3 +532,12 @@ and expose Gelfond--Schneider as the two-logarithm corollary/compatibility theor
   targeted OLean, and axiom audits close with only `propext`, `Classical.choice`, and `Quot.sound`;
   module is wired into `RHTower.lean`.  `[OPEN CORE]`: derive uniform bounds for additive jet
   coefficients and analytic boundary values, then close the long parameter inequality.
+- 2026-08-15 — formalized `BakerGeneralProof.PolynomialAuxiliaryTerminal`: the zero-jet full
+  auxiliary function is regrouped exactly as a polynomially weighted exponential sum.  Its
+  frequencies are injective directly from the original rational independence hypothesis, its
+  polynomial coefficients recover the integral Siegel vector, and therefore a nonzero vector gives
+  a nonzero terminal entire function by the already-formalized exponential-polynomial independence
+  theorem.  Source, targeted OLean, and axiom audits close with only `propext`,
+  `Classical.choice`, and `Quot.sound`; module is wired into `RHTower.lean`.
+  `[OPEN CORE]`: complete uniform quantitative full-jet bounds and the staged extrapolation that
+  supplies enough terminal zeros to contradict the gap-free terminal zero estimate.

@@ -212,7 +212,7 @@ partition functions is therefore insufficient to manufacture a letterwise Coxete
 - `[FALSIFIED METRIC]` Literal nested first-trace edges in uniform Boolean `L^2` have normalized
   quadratic coefficient at most `13/98`, while theta moment log-convexity forces
   `a_2/a_1^2 >= 1/6`.  No scalar normalization can repair the gap; see
-  `../2-fully-proven/prime-gamma-uniform-boolean-gram-quadratic-no-go.md`.
+  `../3-formalized/needs-audit/prime-gamma-uniform-boolean-gram-quadratic-no-go.md`.
 - `[REFINED OPEN CORE]` Build the Gamma/co-Poisson metric on nonnested two-face curvature sections.
   Any candidate must reduce the Gram inverse-participation ratio below `2/3` and pass the exact
   degree-two theta comparison before an all-degree construction is attempted.

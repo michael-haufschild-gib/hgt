@@ -1063,3 +1063,57 @@ by averaging `Φ²` over `[δ₀, 2δ₀]`.  Dividing by `∫Φ² > 0` gives
 The oscillator spectral rigidity theorem built earlier is therefore not needed for the ground mode.
 It remains the tool for the higher rungs `n = 4j`, `j ≥ 1`, where the trial space is
 `(j+1)`-dimensional and the limit is `2·4j + 1`; and it is a reusable statement in its own right.
+
+## Lean progress — the aperture virial: a sharper and much shorter route, plus the Gaussian shape
+
+The window/averaging estimate recorded above is superseded.  The weight `x(1−x²)` vanishes at *both*
+aperture endpoints, so the virial identity has no boundary term at all:
+
+```text
+(x(1−x²)Φ²)′ = (1 − 3x²)Φ² + 2x(1−x²)ΦΦ′       ⟹     ∫Φ² − 3∫x²Φ² = −2∫ x(1−x²)ΦΦ′ .
+```
+
+Splitting the right-hand side exactly against the bandwidth,
+
+```text
+−2x(1−x²)ΦΦ′ = c x²Φ² + (1−x²)²Φ′²/c − (cxΦ + (1−x²)Φ′)²/c ,
+```
+
+and using `(1−x²)² ≤ 1−x²` on the aperture together with the Rayleigh identity gives, in one step,
+
+```text
+∫(cxΦ + (1−x²)Φ′)² ≤ c ((μ − 1) ∫Φ² + 3 ∫x²Φ²) .
+```
+
+`RHTower/ProlateApertureVirial.lean` (wired, axiom-clean):
+
+```text
+hasDerivAt_apertureVirialWeight, integral_apertureVirial, apertureVirial_split
+integral_prolateGaussianDefect_le      the displayed estimate
+bandwidthSeparation_ge :  c ≤ μ (c + 3)
+```
+
+`RHTower/ProlateGroundGaussianLimit.lean` (wired, axiom-clean):
+
+```text
+tendsto_one_of_sandwich_sharp          c ≤ μ(c+3) below and μ < 1 above force μ → 1
+exists_ground_family :
+    ∃ μ Ψ,  μ_c → 1  and at every c > 0 the function Ψ_c is an even joint band/prolate mode
+    with separation constant μ_c, positive aperture mass, second moment ≤ (μ_c/c)∫Ψ_c², and
+    ∫(cxΨ_c + (1−x²)Ψ_c′)² ≤ c((μ_c − 1)∫Ψ_c² + 3∫x²Ψ_c²)
+```
+
+No window, no averaging over `[δ₀, 2δ₀]`, no Chebyshev, no endpoint value — and the bound
+`μ ≥ c/(c+3)` is sharper than `1 − 4δ₀²`.  The earlier window machinery
+(`ProlateSeparationLowerBound.lean`) is kept: its `exists_bandwidthSeparation_defect` localizes the
+Gaussian defect to a window, which the aperture version does not.
+
+Dividing the defect bound by `c ∫Ψ_c²` and using `∫x²Ψ_c² ≤ (μ_c/c)∫Ψ_c²`,
+
+```text
+∫(cxΨ_c + (1−x²)Ψ_c′)² / (c ∫Ψ_c²)  ≤  (μ_c − 1) + 3μ_c/c  →  0 ,
+```
+
+so the selected mode becomes the prolate Gaussian in mean square.  That is the first half of the
+eigenvector gate; what remains is to convert the mean-square shape statement into the coordinate
+limit `ℓ_0² = λ(∫Φ)²/∫Φ² → √2`.

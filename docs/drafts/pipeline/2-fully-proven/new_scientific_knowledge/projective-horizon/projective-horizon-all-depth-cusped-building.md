@@ -1015,3 +1015,43 @@ modules against the rest of the tree found no other clash.
   (`isZero_homology_building_of_ne`, `isFreeOver_cuspHomology`, `not_isZero_cuspHomology_top`).
 
   Audit after removal: `lake build GaloisForLFunctions.HTGeometry` green, 15150 jobs.
+
+## Correction — gate `(5)` does not need a model structure on `SSet`
+
+The open gate says `(5)` "needs a homotopy category for simplicial sets, and mathlib has no model
+structure on `SSet` (`AlgebraicTopology/ModelCategory` and `AnodyneExtensions` are an unfinished
+upstream project); `SSet.Homotopy` alone is not symmetric for a non-fibrant target, so homotopies
+cannot be composed."
+
+Symmetry and composability are only needed if one wants the *homotopy relation* to be an equivalence
+relation.  `(5)` does not need that.  What `(5)` asserts is that the all-depth complex deformation
+retracts to the building, and a deformation retract is exhibited by **explicit maps and explicit
+homotopies**, not by a homotopy class:
+
+```text
+i : Δ_Tits(V*) → 𝒫      the inclusion of the depth-one part
+r : 𝒫 → Δ_Tits(V*)      the retraction sending a jet-tail cusp to its elementary horizon vertex
+r ∘ i = id ,            i ∘ r ≤ id_𝒫   (pointwise in the poset order)
+```
+
+For **posets** the second condition already produces the homotopy, with no model structure and no
+fibrancy: if `f, g : P →o Q` satisfy `f ≤ g` pointwise then the assignment
+
+```text
+(x : Fin(n+1) ⥤ P, α : Fin(n+1) →mono Fin 2)  ↦  (i ↦ if α i = 0 then f (x i) else g (x i))
+```
+
+is a well-defined monotone family — the four cases `α i, α j ∈ {0,1}` with `i ≤ j` are exactly
+`f x_i ≤ f x_j`, `f x_i ≤ f x_j ≤ g x_j`, `g x_i ≤ g x_j`, and the impossible `1 ≤ 0` — and it is
+natural in `⦋n⦌`, so it is a morphism `N(P) ⊗ Δ[1] ⟶ N(Q)` restricting to `N(f)` at `0` and `N(g)`
+at `1`.  That is precisely mathlib's `SSet.Homotopy (nerveMap f) (nerveMap g)`, which exists
+(`Mathlib/AlgebraicTopology/SimplicialSet/Homotopy.lean`) and requires nothing of the target.
+
+Composability is then unnecessary: `N(r) ∘ N(i) = N(id) = id` on the nose, and `N(i) ∘ N(r)` is
+homotopic to `id` by the single explicit homotopy above.  Both directions of the equivalence are
+therefore witnessed, which is what "deformation retracts" means.
+
+Mathlib has `nerve`, `nerveMap`, `nerveFunctor`, `nerveAdjunction` and `SSet.Homotopy`, but **not**
+the statement that a natural transformation induces a simplicial homotopy of nerves.  That is the
+one piece of missing infrastructure this gate actually needs, it is elementary for preorders, and it
+is what should be built here.

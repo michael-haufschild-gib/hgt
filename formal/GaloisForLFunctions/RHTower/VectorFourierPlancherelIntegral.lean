@@ -136,6 +136,18 @@ theorem integral_norm_sq_vectorAngularTransform_eq {f : ℝ → H} (hf1 : Integr
   have h2 := integral_comp_div_two_pi (fun w : ℝ => ‖𝓕 f w‖ ^ 2)
   rw [h1, h2, integral_norm_sq_fourier_eq_vector hf1 hf2]
 
+/-- The angular spectral density of an integrable square-integrable profile is integrable. -/
+theorem integrable_norm_sq_vectorAngularTransform {f : ℝ → H} (hf1 : Integrable f)
+    (hf2 : MemLp f 2 (volume : Measure ℝ)) :
+    Integrable (fun z : ℝ => ‖vectorAngularTransform f z‖ ^ 2) (volume : Measure ℝ) := by
+  have hbase : Integrable (fun w : ℝ => ‖𝓕 f w‖ ^ 2) (volume : Measure ℝ) :=
+    integrable_norm_sq_fourier_vector hf1 hf2
+  have hpi : (2 * Real.pi : ℝ) ≠ 0 := ne_of_gt (by positivity)
+  have hscaled := hbase.comp_div hpi
+  refine hscaled.congr ?_
+  filter_upwards with z
+  rw [vectorAngularTransform_eq_fourier]
+
 end GaloisForLFunctions.RHTower
 
 end

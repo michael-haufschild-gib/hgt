@@ -8992,3 +8992,35 @@ All declarations audit to `[propext, Classical.choice, Quot.sound]`.
 `integral_swap_block_ray_of_dominated`), the slice identity `Ψ(x,s) = ` angular transform of
 `e^{-Ls}1_{I_m}g`, its Plancherel bound (ABJ) against the block weight `e^{-sm}`, and the joint
 measurability of `(x,s) ↦ ‖e^{-sB(x)}Ψ(x,s)‖ₑ`.
+
+## ABL. The slice profile of the first boundary term
+
+```text
+RHTower/WallBlockSliceProfile.lean
+RHTower/VectorFourierPlancherelIntegral.lean  + angular spectral density integrability
+```
+
+Substituting `(21)` into the first boundary term makes it a superposition of semigroup slices acting
+on the angular transform of the *weighted* block profile,
+
+```text
+Psi(x,s) = int_{I_m} e^{-ixL} e^{-Ls} g(L) dL.
+```
+
+Its frequency energy is exact: Plancherel in the angular convention gives `2π`, and on a block
+supported in `[m, m+1]` the weight satisfies `e^{-Ls} ≤ e^{-ms}` for `s ≥ 0`, so
+
+```text
+int ||Psi(.,s)||^2 = 2 pi e^{-2sm} int ||g||^2.
+```
+
+That is exactly the slice hypothesis of `lintegral_sq_blockLaplace_le`, whose semigroup factor
+contributes `e^{-2 mu s}`; the two rates add, and the block index cancels against the frequency
+threshold (ABA, ABK).
+
+A detail worth recording: the block profile is used as its **zero extension** to the line, so the
+block integral is a full-line integral and no indicator survives in the transform.  Integrability of
+that extension is not an extra hypothesis — it follows from `MemLp g 2` and the support condition,
+since the block has finite measure.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
