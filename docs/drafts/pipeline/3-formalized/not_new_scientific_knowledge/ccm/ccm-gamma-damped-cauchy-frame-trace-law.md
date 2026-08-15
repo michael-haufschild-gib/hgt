@@ -157,3 +157,44 @@ a channel-resolved positive operator whose diagonal is proved to be the arithmet
 - [ ] add the exact archimedean/boundary relative channel
 - [ ] transport Pick inertia cofinally
 - [ ] RH
+
+## Lean status
+
+`[FORMALIZED]` — module `formal/GaloisForLFunctions/RHTower/CCMGammaDampedCauchyFrame.lean`
+(10 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired
+into `formal/GaloisForLFunctions/RHTower.lean`).
+
+The operator statements are proved over the data of a pointed unitary system — a complex inner
+product space, a one-parameter family of norm-preserving operators with the group law, and a unit
+vector — which is exactly the structure the cited archimedean cyclic representation supplies.
+
+What is proved in Lean:
+
+- `rankOneProj`, `rankOneProj_idem` — the rank-one projection onto the pointed line.
+- `rankOneProj_compression` — **equation (1)**: `P_ξ U P_ξ = ⟪ξ, U ξ⟫ · P_ξ`; the scalar overlap is
+  the entire compression, for *any* operator `U`.
+- `gammaDampingProfile_pos`, `halfDensity`, `halfDensity_sq`, `halfDensity_pos` — **equations
+  (2)–(3)**: the canonical half-density `d(t) = √(φ(2t))` is positive and squares back to `φ(2t)`.
+- `norm_sq_synthesis_column` — **equations (4)–(5), one channel**: the synthesis column
+  `a · d · U_t ξ` has squared norm exactly `|a|² d²`.
+- `sum_norm_sq_synthesis`, `sum_channel_energy` — **equations (5), (9)**: the frame energy is the
+  diagonal sum `∑ |a_i|² φ(2 t_i)`; **no cross-channel terms appear**, which is the card's point
+  about channel resolution.
+- `gram_entry_synthesis` — **equation (8)**: the Gram entry is
+  `conj(a_p) a_q d_p d_q ⟪ξ, U_{t_q - t_p} ξ⟫`, so the complete off-diagonal Gamma covariance
+  survives in the operator even though the trace reads only the diagonal.
+- `gammaDiagSq_prime` — **equation (10)**: `φ(2 log p) = √2 p/√(p⁴+1)`, obtained from
+  `gammaDiagSq_eq` at `k = 1`.
+
+Reused, not rebuilt: `gammaDampingProfile`, `gammaDiagSq`, `gammaDiagSq_eq`,
+`gammaDampingProfile_eq_inv_sqrt`, and the Euler/critical corrections
+(`ccm-euler-gamma-radon-nikodym-frame-law`, module `CCMEulerGammaRadonNikodym`), which already
+carry `r_{p,k}` and the unbounded critical correction quoted in section 4 of this card.
+
+Deliberately outside the Lean statement (cited parents, not results of this card):
+
+- the existence of the archimedean cyclic measure `μ_∞` with characteristic function
+  `(cosh t)^{-1/2}` and the concrete realization `H_∞ = L²(μ_∞)`;
+- the Hilbert–Schmidt synthesis theorem extending `(4)` from the finite basis, and the trace-class
+  statement for `G = T^*T`;
+- the summability theorem `summable_gammaDampedPrimeLogCauchyPacketEnergy` quoted as `(5)`.

@@ -58,6 +58,34 @@ theorem integral_deriv_eq_zero_of_hasCompactSupport {g g' : ℝ → ℝ}
       (hg'c.intervalIntegrable _ _)
   rw [hrestrict, hIcc, hftc, hgR, hgnR, sub_self]
 
+/-- Complex-valued compactly supported `C¹` functions also have derivative integral zero. -/
+theorem integral_complex_deriv_eq_zero_of_hasCompactSupport {F : ℝ → ℂ}
+    (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F) :
+    (∫ x : ℝ, deriv F x) = 0 := by
+  obtain ⟨R, hR⟩ := hFc.isCompact.isBounded.subset_closedBall (0 : ℝ)
+  have hout : ∀ x : ℝ, R < x → x ∉ tsupport F := by
+    intro x hx hmem
+    have hxR := hR hmem
+    simp only [Metric.mem_closedBall, Real.dist_eq, sub_zero] at hxR
+    linarith [(abs_le.mp hxR).2]
+  have hderiv0 : ∀ x : ℝ, R < x → deriv F x = 0 := by
+    intro x hx
+    have hev : F =ᶠ[nhds x] 0 := by
+      filter_upwards [isOpen_Ioi.mem_nhds hx] with y hy
+      exact image_eq_zero_of_notMem_tsupport (hout y hy)
+    simpa using hev.deriv_eq
+  have hFR : F (R + 1) = 0 :=
+    image_eq_zero_of_notMem_tsupport (hout (R + 1) (by linarith))
+  have hIic := HasCompactSupport.integral_Iic_deriv_eq hF hFc (R + 1)
+  rw [hFR] at hIic
+  have hfull : (∫ x : ℝ in Iic (R + 1), deriv F x) = ∫ x : ℝ, deriv F x := by
+    refine MeasureTheory.setIntegral_eq_integral_of_forall_compl_eq_zero ?_
+    intro x hx
+    refine hderiv0 x ?_
+    simp only [Set.mem_Iic, not_le] at hx
+    linarith
+  rw [← hfull, hIic]
+
 /-- **The derivative moves from the profile onto the kernel.**  This is the card's `(19)`: a
 convolution against the derivative of the profile equals the convolution of the profile against the
 derivative of the kernel. -/

@@ -30,13 +30,14 @@ descent number.  The ordinary type-B Eulerian polynomial
 B_N(u)=sum_(sigma in B_N) u^des_B(sigma)
 ```
 
-has only negative real zeros.  More strongly, stable multivariate type-B Eulerian polynomials
-refine each descent by its position and sign sector.  Any common-phase nonnegative specialization
-of that stable refinement remains real-rooted, and its positive coefficients put its zeros on the
-negative real axis.
+has only negative real zeros.  More strongly, Visontai--Williams refine a signed word by its
+descent-top set, ascent-top set, and number of negative letters.  The top attached to an adjacent
+pair is the maximum absolute label, not its position and not the ordered edge.  Their polynomial
+`B_N(x,y;q)` is stable for `q>0`, and nonnegative real specialization followed by diagonalization
+remains real-rooted.  Positive coefficients then put its zeros on the nonpositive real axis.
 
-This multivariate refinement is essential: arbitrary positive weights on signed permutations do
-not inherit real-rootedness.
+This distinction is essential.  Position-indexed Eulerian refinements can fail stability, and
+arbitrary positive weights on signed permutations do not inherit real-rootedness.
 
 ## The closed chain
 
@@ -54,7 +55,7 @@ Seek a triangular family of completed signed-permutation packets `E_N`:
 ordered prime labels log p_1 < ... < log p_N
   + functional-equation reflection / graded parity
   -> signed prime words in B_N
-  -> nonnegative local weights attached to signed descent positions
+  -> nonnegative top-label activities, or a new proved stable refinement
   -> stability-preserving specialization E_N(u) of the multivariate type-B Eulerian polynomial
                                                                [OPEN CORE A]
   -> every zero of E_N is negative real                         [KNOWN]
@@ -105,22 +106,23 @@ converge coefficientwise or locally uniformly to `A`.
 
 ## Positive statement from the no-go
 
-Completion must create a genuinely order-sensitive positive cocycle.  The minimal datum is a local
-factor
+The former proposed minimal datum was a genuinely order-sensitive positive local factor
 
 ```text
 kappa_N(p_i,p_j; sign_i,sign_j)
 ```
 
-attached when adjacent signed prime letters form a descent.  It must satisfy the insertion
-recurrence of the stable multivariate type-B polynomial.  The raw no-go proves that dependence only
-on the unordered prime content is insufficient; adjacent prime ratios, the Gamma seam, or the
-graded half-shift must survive until after descents are formed.
+attached when adjacent signed prime letters form a descent.  The four-letter fiber-curvature theorem
+in `../3-formalized/needs-audit/prime-gamma-descent-top-fiber-curvature-obstruction.md` now shows that direct
+specialization of the Visontai--Williams polynomial forces every positive-sector `2 x 2`
+multiplicative minor of `kappa` to vanish.  Hence `kappa` is rank-one separable on descending pairs.
+Generic order-sensitive Gamma curvature cannot survive as a scalar top activity.
 
-This gives an exact first test: for two and three prime labels, compute the completed weights of
-all signed orders, group them by refined descent set, and test whether the insertion from `B_2` to
-`B_3` is realized by one of the known stability-preserving operators.  A failed recurrence leaves
-its signed insertion defect as the positive invariant.
+The first tests are now two-tiered.  Extract two- and three-label completed weights to identify the
+candidate source law, but also extract four-label weights and compare the fiber-colliding words
+`(3,1,4,2)` and `(3,2,4,1)`.  Their weight ratio is the first scalar-stability discriminator.  A
+nonunit ratio is the signed insertion curvature and rules out direct top specialization even if the
+`B_2 -> B_3` recurrence passes.
 
 ## Candidate source mechanism
 
@@ -129,15 +131,17 @@ reflection-graded pair signatures.  The proposed bridge is:
 
 ```text
 KMS integer/half-integer sector exchange
-  -> sign change of a reflected prime letter
-  -> type-B simple reflection
-  -> descent-position variable
-  -> stable signed Eulerian insertion operator.
+  -> sign change of a reflected prime letter                 [NOT YET CONSTRUCTED]
+  -> type-B simple reflection                                [NOT YET CONSTRUCTED]
+  -> top-signature support or matrix holonomy
+  -> proved stable signed Eulerian or determinantal operator.
 ```
 
-The bridge must be proved on finite prime words before any thermodynamic/KMS limit.  Equality of
-ungraded partition functions is insufficient because the raw no-go shows that the missing
-information is precisely order-sensitive.
+The bridge must be proved on finite prime words before any thermodynamic/KMS limit.  Current corpus
+only proves a global exchange of two completed analytic sectors; it does not act on individual
+prime letters.  `SignedReflectionParity.lean` further proves that functional-equation sign controls
+fixed-point order parity and explicitly fails away from the fixed point.  Equality of ungraded
+partition functions is therefore insufficient to manufacture a letterwise Coxeter action.
 
 ## Attacks and positive successors
 
@@ -164,6 +168,41 @@ information is precisely order-sensitive.
    **Positive successor:** realize signs as the signed-permutation state, leaving the numerical
    descent activities nonnegative.  If a negative activity remains, preserve it as a frustration
    cocycle and retire the stable consumer.
+7. **Top-fiber attack.**  The known stable polynomial is indexed by ascent/descent tops, not ordered
+   adjacent edges.  The words `3142` and `3241` have identical type-B top signatures but descent
+   edge products `kappa(3,1)kappa(4,2)` and `kappa(3,2)kappa(4,1)`.
+   **Verdict:** `FALSE` for generic scalar edge cocycles.  **Positive survivor:** four-label
+   multiplicative curvature; compatibility forces curvature zero and positive kernels become
+   rank-one.  **Stronger replacement conjecture:** completion curvature changes allowed signed-word
+   support or enters a matrix-stable pencil before scalarization, rather than weighting edges in a
+   fixed top-signature fiber.
+8. **Global-to-letter reflection attack.**  Corpus functional-equation reflection is one global
+   involution and its signed parity theorem reaches only the fixed point.
+   **Verdict:** `FALSE` for the claim that reflection alone canonically signs every prime letter.
+   **Positive survivor:** any genuine letter sign must be supplied by a source disintegration
+   compatible with the global sector exchange; it cannot be inferred from Xi symmetry.
+
+## Gate-1 reset and current conjecture loop (15 August 2026)
+
+- `[LITERATURE]` Visontai--Williams stability tracks `DT_B`, `AT_B`, and negative-letter count; its
+  insertion operator is `(q x + y) + (1+q)xy partial`.  It does not accept arbitrary edge weights.
+- `[CORPUS]` The four-letter curvature obstruction and positive rank-one classification are
+  `[LEAN-PROVED]` at
+  `../3-formalized/needs-audit/prime-gamma-descent-top-fiber-curvature-obstruction.md` and
+  `formal/GaloisForLFunctions/HTGeometry/SignedEulerianTopFiberCurvature.lean`.
+- `[CORPUS]` `PrimeWordEnsembleBoundaryTomography.lean` recovers support-cardinality aggregates,
+  not word order.  `BornSectorExchange.lean` exchanges completed sectors globally.
+  `SignedReflectionParity.lean` proves fixed-point-only parity reach.  None constructs a signed
+  prime-word action.
+- `[FALSIFIED]` Direct generic adjacent-edge specialization inside the known type-B stable cone.
+- `[CONJECTURE]` **Support-curvature transmutation:** the completed prime--Gamma four-letter
+  curvature selects or transports signed-word histories, and the resulting support class or
+  Hermitian pencil has a proved stability-preserving insertion law whose normalized scalar
+  specialization converges locally uniformly to `A`.
+- `[OPEN CORE]` Extract an actual source-derived four-label weight law without Xi coefficients or
+  zeros; decide whether its curvature vanishes.  If nonzero, construct the exact support-selection
+  or matrix transport replacing scalar `kappa`.  If zero, test the rank-one factors against the
+  theta coefficient ratios and cofinal normality.
 
 ## Primary parent results
 
@@ -186,9 +225,11 @@ positive results.
 - [x] type-B stable finite consumer identified
 - [x] two-ended signed-permutation-to-RH chain closed
 - [x] raw order-blind Euler weighting rigorously excluded by coefficient asymptotics
-- [x] positive descent-local completion cocycle isolated
-- [x] first finite insertion test stated
+- [x] direct scalar descent-local cocycle generically excluded by four-label curvature
+- [x] four-letter curvature invariant and rank-one positive survivor paper-proved
+- [x] corrected first decisive finite insertion test from rank three to rank four
 - [ ] completed weights of all signed orders on two and three prime labels extracted
+- [ ] completed weights on the fiber-colliding four-label pair extracted
 - [ ] stability-preserving type-B insertion recurrence proved or defect computed
 - [ ] cofinal signed-descent family constructed
 - [ ] locally uniform limit identified with `A`

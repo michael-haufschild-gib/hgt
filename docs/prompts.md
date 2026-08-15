@@ -33,7 +33,8 @@ where mathematical knowledge is missing use the /hgtl7 skill to create it.
 ## formalize goal
 /goal
 
-formalize UNCONDITIONALLY in lean any proven theorem from these cards: docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/suzuki
+formalize UNCONDITIONALLY in lean any proven theorem from all of the cards in these folders: 
+- docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/ccm
 
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
@@ -192,7 +193,13 @@ goal is met when paper is written and passes a hostile review that confirms that
 
 ## research Route
 
-use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge about route P from docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md
+use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge about all Connes / CCM releated rotues from docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md
+- Route O
+- CCM-UR
+- CCM-FU
+- CCM-HG
+- CCM-GS
+- CCM-EP
 
 collect enough novel and significant knowledge to overcome the obstacles. do not get married to a specific route. our research corpus is ahead of your training data and literature, never assume how the solution must look like but let our research corpus guide you. 
 

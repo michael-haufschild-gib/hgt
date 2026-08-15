@@ -212,3 +212,40 @@ bounded Euler-region frame cannot be substituted for the critical prime--archime
 - [ ] add the exact archimedean/boundary relative channel on the same domain
 - [ ] transport Pick inertia cofinally
 - [ ] RH
+
+## Lean status
+
+`[FORMALIZED]` — module `formal/GaloisForLFunctions/RHTower/CCMEulerGammaRadonNikodym.lean`
+(9 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
+`formal/GaloisForLFunctions/RHTower.lean`).
+
+What is proved in Lean:
+
+- `gammaDampingProfile`, `eulerAtom`, `gammaDiagSq`, `gammaDampingProfile_eq_inv_sqrt` — the two
+  canonical weights of `(1)`–`(2)`.
+- `gammaDiagSq_eq` — **equation (4)**: the exact Gamma diagonal
+  `φ(2 k log p) = √2 · p^k / √(p^{4k}+1)`, proved from `cosh(2k log p) = (p^{4k}+1)/(2p^{2k})`.
+- `radonNikodym`, `radonNikodym_eq` — **equations (3), (5)**: the exact correction
+  `r_{p,k} = √(p^{4k}+1)/(√2 k p^{2k})`.
+- `radonNikodym_lower`, `radonNikodym_upper` — **equation (6)**:
+  `1/(√2 k) ≤ r_{p,k} ≤ 1/k`, so the correction is a positive diagonal contraction.
+- `radonNikodym_mul_gammaDiagSq` — **equation (7)**: the correction is exactly the factor making the
+  Gamma diagonal equal the Euler atom, with no cutoff-dependent normalization.
+- `tsum_eulerAtom_tail_le` — **equation (10)**: for each prime the deep prime-power tail satisfies
+  `∑_{k≥2} 1/(k p^k) ≤ 1/(p(p-1))`, which is the absolute summability behind the Hilbert–Schmidt
+  bound `(9)`.
+- `vonMangoldtMagnitude`, `criticalCorrection`, `criticalCorrection_lower` — **equations (13)–(15)**:
+  the diagonal factor matching the critical von Mangoldt magnitude is at least
+  `(log p) p^{k/2}/√2`.
+- `criticalCorrection_unbounded` — **equation (16)**: that factor is cofinally unbounded, so the
+  bounded Euler-region contraction does **not** extend to the centered source; no bounded diagonal
+  renormalization of the Gamma frame produces the critical source.
+
+Reused, not rebuilt: `CCMTwoChannelGraph.bilateral_atom_factorization` already carries the exact
+bilateral factorization of the exponential divided-difference kernel `(17)`.
+
+Deliberately outside the Lean statement (cited parents, not results of this card):
+
+- the pointed Gamma cyclic representation `(H_∞, U, ξ)` and the synthesis columns `(8)`;
+- the Hilbert–Schmidt/trace-class operator statements `(9)`, `(11)`, `(12)`;
+- the prime sum `∑_p 1/(p (log p)²) < ∞` used for the `k = 1` layer.

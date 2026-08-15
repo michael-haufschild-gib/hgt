@@ -504,3 +504,31 @@ and expose Gelfond--Schneider as the two-logarithm corollary/compatibility theor
   into `RHTower.lean`; source, targeted OLean, and axiom audits close with only `propext`,
   `Classical.choice`, and `Quot.sound`.  `[OPEN CORE]`: analytic-order packaging and quantitative
   multipoint Schwarz extrapolation for these full additive--exponential auxiliary functions.
+- 2026-08-15 — formalized `BakerGeneralProof.PolynomialAuxiliaryAnalytic`: the full auxiliary
+  curve and every component-jet auxiliary function are entire, and the initial box multiplicity is
+  converted to the exact `analyticOrderAt` lower bound needed by generic multipoint Schwarz.  The
+  base jet has order at least `T` at every initial sample.  Module is wired into `RHTower.lean`;
+  source, targeted OLean, and axiom audits close with only `propext`, `Classical.choice`, and
+  `Quot.sound`.  `[OPEN CORE]`: derive the explicit height, boundary, and conjugate estimates that
+  make the Schwarz bound force exact later zeros.
+- 2026-08-15 — formalized `BakerGeneralProof.PolynomialAuxiliaryArithmetic`: every full
+  polynomial--exponential component jet at a natural sample now has an explicit algebraic-integer
+  representative after its exact common base-denominator scale.  Its distinguished embedding is
+  proved equal to that scaled analytic jet, and the generic number-field norm-discreteness theorem
+  yields an exact zero from a strict normalized norm/house bound.  Source, targeted OLean, and
+  axiom audits close with only `propext`, `Classical.choice`, and `Quot.sound`; module is wired into
+  `RHTower.lean`.  `[OPEN CORE]`: package multipoint Schwarz with this norm bridge and derive the
+  quantitative distinguished and conjugate bounds that prove its strict inequality.
+- 2026-08-15 — formalized `BakerGeneralProof.PolynomialAuxiliaryExtrapolation`: the entire
+  initial jet-order box is now fed into generic multipoint Schwarz and then into the new exact
+  denominator-cleared norm criterion.  Consequently a single strict finite real inequality gives
+  an exact later full-jet zero.  Source, targeted OLean, and axiom audits close with only
+  `propext`, `Classical.choice`, and `Quot.sound`; module is wired into `RHTower.lean`.
+  `[OPEN CORE]`: derive explicit full-jet analytic and conjugate bounds and prove the parameter
+  inequality needed for iterated extrapolation.
+- 2026-08-15 — formalized `BakerGeneralProof.PolynomialAuxiliaryBounds`: added the exact finite
+  house sum for every cleared full jet, its nonnegativity, the upper bound for the actual integral
+  representative, and termwise propagation of a uniform Siegel-vector house bound.  Source,
+  targeted OLean, and axiom audits close with only `propext`, `Classical.choice`, and `Quot.sound`;
+  module is wired into `RHTower.lean`.  `[OPEN CORE]`: derive uniform bounds for additive jet
+  coefficients and analytic boundary values, then close the long parameter inequality.

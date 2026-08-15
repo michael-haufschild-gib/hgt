@@ -92,6 +92,35 @@ theorem cayleyNumerator_root_im_eq_zero (a : ℝ) (ha : a ≠ 0) (d : ℕ) (P : 
         exact hw'
       rw [hsolve, Complex.ofReal_im]
 
+/-- Locally uniform convergence transfers along the squaring map: if the squared-variable family
+converges locally uniformly after substituting `u = z²`, it converges locally uniformly in `u`. -/
+theorem tendstoLocallyUniformly_of_comp_sq {G : ℕ → ℂ → ℂ} {g : ℂ → ℂ}
+    (h : TendstoLocallyUniformly (fun n z => G n (z ^ 2)) (fun z => g (z ^ 2)) Filter.atTop) :
+    TendstoLocallyUniformly G g Filter.atTop := by
+  rw [tendstoLocallyUniformly_iff_forall_isCompact] at h ⊢
+  intro K hK
+  obtain ⟨R, hR⟩ := hK.isBounded.subset_closedBall (0 : ℂ)
+  refine TendstoUniformlyOn.mono ?_ hR
+  rw [Metric.tendstoUniformlyOn_iff]
+  intro ε hε
+  have hb := h (Metric.closedBall (0 : ℂ) (Real.sqrt (max R 0))) (isCompact_closedBall _ _)
+  rw [Metric.tendstoUniformlyOn_iff] at hb
+  filter_upwards [hb ε hε] with n hn u hu
+  obtain ⟨z, hz⟩ : ∃ z : ℂ, z ^ 2 = u := IsSepClosed.exists_pow_nat_eq u 2
+  have hunorm : ‖u‖ ≤ max R 0 := by
+    have := Metric.mem_closedBall.1 hu
+    rw [dist_zero_right] at this
+    exact le_trans this (le_max_left _ _)
+  have hzmem : z ∈ Metric.closedBall (0 : ℂ) (Real.sqrt (max R 0)) := by
+    rw [Metric.mem_closedBall, dist_zero_right]
+    have hnorm : ‖z‖ ^ 2 = ‖u‖ := by rw [← hz, norm_pow]
+    have hle : ‖z‖ ^ 2 ≤ max R 0 := by rw [hnorm]; exact hunorm
+    have := Real.sqrt_le_sqrt hle
+    rwa [Real.sqrt_sq (norm_nonneg z)] at this
+  have hres := hn z hzmem
+  rw [hz] at hres
+  exact hres
+
 /-- **(HHWB.3) The hard-edge limit has only real zeros.**  The Cayley numerators of real-rooted
 polynomials are real-rooted, and a nonzero entire locally uniform limit inherits the closed real
 axis as its zero locus.  This is the Laguerre--Pólya closure step of the hard-edge passage. -/
@@ -109,6 +138,25 @@ theorem cayleyNumerator_limit_zero_im_eq_zero
     (isClosed_eq Complex.continuous_im continuous_const)
     (Filter.Eventually.of_forall fun n _ hw =>
       cayleyNumerator_root_im_eq_zero (a n) (ha n) (d n) (P n) (hd n) (hreal n) hw)
+    hb hz
+
+/-- **(HHWB.3) with a normalization.**  Rescaling each numerator by a nonzero constant does not
+move its zeros, so the same conclusion holds for the normalized hard-edge polynomials. -/
+theorem scaled_cayleyNumerator_limit_zero_im_eq_zero
+    {a : ℕ → ℝ} {d : ℕ → ℕ} {P : ℕ → Polynomial ℂ} {c : ℕ → ℂ} {F : ℂ → ℂ}
+    (ha : ∀ n, a n ≠ 0) (hc : ∀ n, c n ≠ 0) (hd : ∀ n, (P n).natDegree ≤ d n)
+    (hreal : ∀ n, ∀ ρ : ℂ, (P n).eval ρ = 0 → ρ.im = 0)
+    (hconv : TendstoLocallyUniformly
+      (fun n w => c n * (cayleyNumerator (a n) (d n) (P n)).eval w) F Filter.atTop)
+    (hF : AnalyticOnNhd ℂ F Set.univ)
+    {b z : ℂ} (hb : F b ≠ 0) (hz : F z = 0) : z.im = 0 :=
+  zero_mem_closed_of_tendstoLocallyUniformly hconv hF
+    (Filter.Eventually.of_forall fun n =>
+      (Polynomial.differentiable_aeval (cayleyNumerator (a n) (d n) (P n))).const_mul (c n))
+    (isClosed_eq Complex.continuous_im continuous_const)
+    (Filter.Eventually.of_forall fun n _ hw =>
+      cayleyNumerator_root_im_eq_zero (a n) (ha n) (d n) (P n) (hd n) (hreal n)
+        ((mul_eq_zero.1 hw).resolve_left (hc n)))
     hb hz
 
 end RHTower

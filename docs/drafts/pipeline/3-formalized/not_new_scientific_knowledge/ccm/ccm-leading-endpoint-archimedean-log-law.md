@@ -258,3 +258,41 @@ interface. Formalizing Parseval for a finite chirp would not certify `(15)`. No 
 - [ ] renormalized exact-tail remainder `(19)`
 - [ ] true Weil Rayleigh-excess comparison
 - [ ] cofinal floor or determinant transfer
+
+## Lean status
+
+`[FORMALIZED]` — supersedes the "No Lean file is added" decision recorded above, which is stale.
+That decision judged that Parseval for a finite chirp alone would not certify `(15)`; the module
+below instead formalizes the three exact steps the card's own proof turns on — the sawtooth mass,
+the logarithmic rescaling `(9)`, and the exact constant arithmetic of `(12)`–`(15)`/`(17)` — and
+leaves the digamma multiplier and the semiclassical measure explicitly as cited parents.
+
+Module: `formal/GaloisForLFunctions/RHTower/CCMEndpointArchimedeanLog.lean`
+(7 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
+`formal/GaloisForLFunctions/RHTower.lean`).
+
+What is proved in Lean:
+
+- `sawtoothCoeffSq`, `hasSum_sawtoothEnergy`, `tsum_sawtoothEnergy` — **equation (11)**: the
+  sawtooth Fourier coefficients have `|p_k|² = 1/(4k²)`, and counting both signs of the frequency
+  the total energy is exactly `π²/12` (Basel).
+- `tendsto_logMultiplier_ratio` — **equation (9)**: for any multiplier with
+  `|M(ξ) − log|ξ|| ≤ C` beyond a fixed radius and any fixed `η > 0`, `M(Lη)/log L → 1` as `L → ∞`.
+  This is the step that converts the semiclassical measure into a pure logarithmic scale; the
+  proof isolates `log(Lη) = log L + log η` and squeezes the bounded error against `log L`.
+- `endpoint_constant_eq` — the exact constant arithmetic of `(15)`:
+  `(16/(11π)) · (π²/12) · 2 = 8π/33`.
+- `endpoint_scale_factorization`, `tendsto_endpoint_archimedean_scale` — **equations (12)–(15)**:
+  from the sawtooth mass `π²/12`, the constrained response constant `16/(11π)` of
+  `ccm-constrained-endpoint-euler-response-constant.md`, and the doubling
+  `log L_λ / log λ → 2`, the archimedean endpoint scale is exactly `8π/33`.
+- `tendsto_lowerOrder_response` — **equation (17)**: a response whose ratio to `d₁(λ)` converges is
+  one logarithmic order below, so it contributes `0` to the leading scale; the combined limit is
+  still `8π/33 > 0`.
+
+Deliberately outside the Lean statement (cited parents, not results of this card):
+
+- the digamma Fourier multiplier `(1)` and its expansion `(2)`;
+- the semiclassical/stationary-phase measure `(8)` for the logarithmic chirp;
+- the logarithmic energy estimate `(10)` and the removal of the Fourier and amplitude cutoffs;
+- the PSWF endpoint interface and the signed prime theorem `(16)`.

@@ -2078,3 +2078,76 @@ to `3-formalized/not_new_scientific_knowledge/` with its Lean certificate. Direc
 focused leaf build passed; capstone axioms are limited to `propext` and `Quot.sound` (the global
 closed-walk flatness theorem is axiom-free). The existing `HTGeometry` import was retained; no
 umbrella build was run. The parent paper and formalization links were repointed.
+
+### Update: equation `(23)` is closed at the concrete Pauli Gaussian ensemble (2026-08-15)
+
+Three new modules, wired, built, axiom-clean.
+
+`HTGeometry/GaussianSignedPermutationInvariance.lean`
+
+- `centredProductGaussian ι v = Measure.pi fun _ => gaussianReal 0 v`, a probability measure;
+- `gaussianReal_map_neg` — a centred Gaussian is invariant under sign reversal;
+- `measurePreserving_signFlip`, `measurePreserving_permMap` and
+  **`measurePreserving_signedPerm`** — every signed permutation of coordinates preserves the
+  centred product Gaussian.
+
+`HTGeometry/ProductCliffordLabelAction.lean`
+
+- `qubitCliffordRelabel`, `qubitCliffordPhase` — the sitewise Pauli relabelling and phase chosen
+  once from `exists_booleanQubitClifford_conj_boolPauliOption`;
+- `productCliffordRelabel`, `productCliffordPhase`, **`productCliffordRelabel_none_iff`** (the
+  relabelling preserves the support of every label, sitewise — strictly stronger than the weight
+  preservation the corpus previously exposed);
+- **`finiteProductCliffordGate_conj_finitePauliMatrix_relabel`** — the conjugation identity with the
+  relabelling as a *function* of the label rather than an existential;
+- **`productCliffordPhase_sq`**, `productCliffordPhase_eq_one_or_neg_one` — the phase is a sign,
+  because conjugation of an involution is an involution;
+- **`productCliffordRelabel_injective`** (via `finitePauliMatrix_linearIndependent`) and
+  `productCliffordRelabelEquiv`, the relabelling as a permutation of labels.
+
+`HTGeometry/PauliEnsembleCliffordCovariance.lean`
+
+- `SupportInvariantWeight` — weights depending only on the support, as in the card's `σ_S`;
+- `pauliEnsemble w J = ∑_P (w_P J_P) P` and `cliffordCoefficientMap`;
+- **`pauliEnsemble_conj`** — conjugating the ensemble by a product Clifford is exactly applying
+  the induced signed permutation to the coefficients;
+- **`measurePreserving_cliffordCoefficientMap`** — that signed permutation preserves the centred
+  product Gaussian;
+- `measurable_pauliEnsemble_entry`;
+- **`integral_spectralCollision_pauliEnsemble_clifford_eq`** — the card's `(23)`:
+  `E_H C_H(C_g† Ω) = E_H C_H(Ω)` for every product Clifford `g`, unconditionally.
+
+**What `(26)` still needs:** the pointwise average bound over the Clifford orbit of `|0…0⟩`.  The
+corpus already proves `sum_spectralCollision_prodStab_le` — `∑_{σ ∈ (Fin 6)^n} C_e(φ_σ) ≤ |D| 2^n`,
+i.e. average `≤ (2/3)^n` — for the *product stabilizer amplitudes* `prodStabAmp`, indexed by
+`Fin n → Fin 2`.  The gap is the identification of the Clifford orbit `{C_g† |0…0⟩}` with those
+amplitudes: an index bridge `Fin 2 ≃ Bool` plus, for each of the six single-qubit stabilizer
+states, one `BinaryOctahedral` element carrying `|0⟩` to it up to phase.  `LocalProductStateAction`
+supplies the sitewise action needed for that identification; the alternative route is the corpus's
+two-replica product-Clifford twirl (`TwoReplicaGlobalCliffordTwirlRange`).
+
+### Update: the six stabilizer states are an explicit Clifford orbit (2026-08-15)
+
+`HTGeometry/StabilizerCliffordOrbit.lean` (wired, built, axiom-clean):
+
+- `boolZeroState`, `boolStabAmp t b = stabAmp rt2inv t (if b then 1 else 0)` — the six single-qubit
+  stabilizer amplitudes over `Bool`, at the amplitude `rt2inv` for which `s² = 1/2` and `s̄ = s`,
+  exactly the hypotheses of `sum_stabAmp_four`;
+- `mulVec_boolZeroState` — acting on the computational zero reads off the first column;
+- `stabClifford : Fin 6 → BinaryOctahedral := ![1, Vₓ², V_y⁻¹, V_y, Vₓ, Vₓ⁻¹]` built from
+  `cliffordQuarterTurnCode`, with `booleanQubitClifford_quarterTurn_inv_matrix` giving
+  `V⁻¹ = 2^{-1/2}(1 − iP)`;
+- `stabClifford_mulVec_zero` … `stabClifford_mulVec_five` and
+  **`booleanQubitClifford_stabClifford_mulVec`**: for every `t` there is a unit phase `c` with
+  `C_{stabClifford t} |0⟩ = c · φ_t`.
+
+This is the last *mathematical* input for `(26)`; what remains is bookkeeping:
+
+1. the product statement `C_{g_σ}|0…0⟩ = (∏ c) · φ_σ`, from
+   `finiteLocalMatrix_mulVec_localProductState` (already proved) plus
+   `finiteProductCliffordGate = finiteLocalMatrix ∘ booleanQubitClifford`;
+2. phase invariance of `spectralCollision` under a unit scalar;
+3. the index transport of `sum_spectralCollision_prodStab_le` from `Fin n → Fin 2` to
+   `σ → Bool` along `b ↦ if b then 1 else 0`;
+4. averaging `integral_spectralCollision_pauliEnsemble_clifford_eq` over the `6ⁿ` choices of `σ`
+   and applying `measureReal_spectralCollision_ge_le`, giving `(26)` and then `(21)`.

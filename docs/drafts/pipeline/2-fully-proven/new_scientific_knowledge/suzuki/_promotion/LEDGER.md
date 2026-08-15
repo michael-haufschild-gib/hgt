@@ -8786,3 +8786,119 @@ modules.
 **Remaining for `(11)`:** the frequency-derivative bounds of `C` itself (from the owned symbol jets
 `(4)` together with the elementary derivatives of `i/(2z)`), then the integration by parts applied
 under the block integral (Fubini), and the three-region assembly.
+
+## ABF. `(18)` for the literal Gamma wall, and the interval-restricted integration by parts
+
+```text
+HTGeometry/InverseFamilyDerivative.lean         hypotheses weakened to a single point
+HTGeometry/PhaseGeneratorIntegrationByParts.lean hypotheses weakened to the interval;
+                                                 + phase_ibp_twice_of_continuousOn
+RHTower/WallGeneratorFrequencyJets.lean          (4) for the generator, both orders
+RHTower/WallTailIntegrationByParts.lean          (18) for the literal wall, with the amplitudes
+```
+
+**The global unit hypothesis had to go.**  `phase_ibp_twice` originally required `IsUnit (C t)` for
+*every* real `t`.  That is false for the blocks the card actually needs: the floor is
+`log(2+|t|) + L − C`, and for a block far down the negative ray (`L ≈ m ≪ 0`) it is negative near
+zero frequency — which is exactly why the card integrates by parts only above the threshold `X_m`.
+So the hypotheses of `phase_ibp_twice`, `phase_rel_of_generator`, `hasDerivAt_invFamilyDeriv` and
+`hasDerivAt_invFamilyProduct` are now interval-restricted (resp. pointwise); the proofs used them
+only there.  This is a strict generalisation, and no other module depended on the old form.
+
+**Integrability is now automatic.**  `phase_ibp_twice_of_continuousOn` discharges all seven
+interval-integrability hypotheses from differentiability on the interval plus continuity of the
+second symbol derivative: on a compact interval where the generator is a unit, `invFamily C` is
+differentiable, hence every integrand of the expansion is continuous.
+
+**The frequency jets of the generator.**  `C(t,L)` depends on `t` only through the scalar
+`r(t+iσ)/2 + i/(2z)`, so `C' = c₁(t)·I` and `C'' = c₂(t)·I` with
+
+```text
+c_1 = r'/2 - i/(2z^2),   c_2 = r''/2 + i/z^3,
+||c_1|| <= (3+pi)(1+t)^{-1},   ||c_2|| <= 4(3+pi)(1+t)^{-2}   for t >= 1,
+```
+
+the symbol halves from the sharp vertical polygamma order `(m+1)!(1+π/2)|t|^{-(m+1)}` and the branch
+halves elementary.  Combined with `‖C^{-1}‖ ≤ μ₀^{-1}` on the tail this gives the two amplitudes
+
+```text
+||C^{-1}(C^{-1})'|| <= mu^{-3}(3+pi)(1+t)^{-1},
+||[C^{-1}(C^{-1})']'|| <= (3 mu^{-4}(3+pi)^2 + 4 mu^{-3}(3+pi))(1+t)^{-2}.
+```
+
+**Consequence for the card's three tail terms.**  The second boundary term already decays like
+`(1+t)^{-1}`, whose square is integrable on a ray — it needs no Laplace argument at all, contrary to
+the card's remark that it is handled "the same way" as the first.  Only the first boundary term,
+which does not decay, needs `(21)`–`(22)`.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+**Remaining for `(11)`:** the interchange of the block integral with the frequency integral (Fubini
+for Bochner integrals on `I_m × [X_m, x]`, with the joint bound `M‖g(L)‖`), and the assembly of the
+four resulting terms on the two outward rays.
+
+## ABG. The block source, the interchange, and the expansion applied to a block vector
+
+```text
+HTGeometry/BlockWindowFubini.lean            block x window exchange under a dominating profile
+RHTower/WallBlockSourceExpansion.lean        b(t) -> block average of pointwise expansions
+```
+
+**The block profile must stay rough, so continuity cannot be assumed.**  The card's whole point is
+that `G` may be arbitrarily rough inside its unit block; only the *frequency* dependence is smooth.
+So the exchange of `∫_{I_m}dL` with `∫_a^b dt` is not the continuous-integrand Fubini already in the
+corpus (`RHTower.Sieve.interval_integral_swap_of_continuous_vec`) but the dominated one:
+`(L,t) ↦ e^{-itL}H(t+iσ)^{-1}g(L)` is jointly measurable — continuous in `t`, merely measurable in
+`L` — and dominated by `M‖g(L)‖` with `M` the uniform transport bound on the compact window.  Joint
+measurability comes from `ContinuousLinearMap.aestronglyMeasurable_comp₂` applied to the evaluation
+pairing, with `g∘fst` and `H^{-1}∘snd`.
+
+**Three interchanges, all bounded-operator ones.**  The propagator enters the block integral
+(`ContinuousLinearMap.integral_comp_comm`); the block and frequency integrals commute (Fubini);
+evaluation passes through the frequency integral
+(`ContinuousLinearMap.intervalIntegral_comp_comm` with `apply v`).  Composing them,
+
+```text
+int_a^b H(t+i sigma)^{-1} b(t) dt
+  = -(i/2) int_{I_m} [ (int_a^b E(t,L) dt) g(L) ] dL,
+```
+
+and the inner operator integral is exactly what the two-fold integration by parts computes.  So the
+card's `(45)` now holds after evaluation at the block vector, with the two boundary operators and the
+remainder integral.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+**Next for `(11)`:** the transport cancellation `H(x)·E(x,L) = e^{-ixL}` — already owned as
+`stripPropagator_stripPropagatorInv` — turns the two boundary terms at the moving endpoint into the
+propagator-free `e^{-ixL}C(x,L)^{-1}` and `e^{-ixL}C^{-1}(C^{-1})'(x,L)`; the first is `(20)` and
+needs `(22)`, the second decays like `(1+x)^{-1}` and is square integrable on a ray by itself.
+
+## ABH. The transport cancellation and three of the four propagated tail terms
+
+```text
+RHTower/WallBoundaryTransportCancellation.lean   H(x)E(x,L) = e^{-ixL}
+RHTower/WallTailRayEstimates.lean                ray power tail, scalar Hardy transfer,
+                                                 second boundary term, propagated datum
+```
+
+**The boundary terms are transport-free.**  Variation of constants puts `H(x+iσ)` in front of the
+whole integral, and the expansion's boundary terms sit at the moving endpoint, where the phase map is
+`H(x+iσ)^{-1}e^{-ixL}`.  So the product is exactly `e^{-ixL}·I`, and the propagated boundary terms
+are `e^{-ixL}C(x,L)^{-1}` and `e^{-ixL}C^{-1}(C^{-1})'(x,L)` with *no* transport factor.  This is
+what makes the card's `(20)` a pure resolvent average.
+
+**Three of the four terms need only decay.**  The propagated datum decays like `(1+|x|)^{-p}`,
+`p = 1/2+σ > 1/2` — square integrable on the line, hence on any ray.  The *second* boundary term
+carries one power of the resolvent derivative, so it decays like `(1+x)^{-1}`, and `2 > 1` — no
+oscillation, no Laplace representation.  Its block average costs only the `L¹` mass of the profile,
+because the resolvent bound is uniform over the block once the floor is open there.  The remainder
+is a Hardy average whose density is the *same* function for every block vector, only the mass
+changing, so the block integral factors out before the Hardy inequality is used — which is why the
+scalar form `lintegral_sq_le_of_hardyBound_scalar` suffices and the vector transfer is not needed.
+
+The card claims the second boundary term is handled "the same argument, using the higher resolvent
+powers" as the first.  That is true but wasteful: the extra resolvent power already gives decay, and
+the Laplace representation is needed only for the first term, which does not decay at all.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.

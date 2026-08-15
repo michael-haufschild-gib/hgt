@@ -276,3 +276,43 @@ the infinite factorization or `(16)`. No Lean file is added.
 - [x] dephased real-spectrum scalar transfer theorem proved sufficient for RH
 - [ ] prove logarithmic-boundary convergence `(16)` from the CCM finite source
 - [ ] RH
+
+## Lean status
+
+`[FORMALIZED]` — supersedes the "No Lean file is added" decision recorded above, which is stale.
+That decision judged that positivity of a finite logarithmic sum alone would not certify the
+infinite factorization; the module below formalizes the card's *own* computations — the exact
+Blaschke defect `(10)`–`(11)`, its positivity and exact detection `(12)`–`(13)`, the dephasing
+identity `(20)`–`(21)`, and the limit subtraction `(15)`–`(18)` — and leaves the inner–outer
+factorization and the Poisson representation explicitly as cited parents.
+
+Module: `formal/GaloisForLFunctions/RHTower/CCMPoissonJensenOuterDefect.lean`
+(10 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired
+into `formal/GaloisForLFunctions/RHTower.lean`).
+
+What is proved in Lean:
+
+- `halfPlaneBlaschke`, `normSq_ofReal_sub`, `normSq_ofReal_add_conj`, `norm_sq_halfPlaneBlaschke` —
+  **equation (10)**: the elementary factor `(z-b)/(z+conj b)` and its exact squared modulus
+  `((x-a)²+γ²)/((x+a)²+γ²)` at a real point.
+- `outerDefectTerm`, `neg_log_norm_halfPlaneBlaschke` — **equation (11)**:
+  `-log|b_b(x)| = ½ log(((x+a)²+γ²)/((x-a)²+γ²))`, proved including the degenerate point.
+- `outerDefectTerm_nonneg` — **equation (12)**: every term is nonnegative for `x > 0`, `a > 0`.
+- `outerDefectTerm_pos` — the strict form away from the degenerate point: each off-line zero
+  contributes strictly, with its horizontal displacement `a_ρ` and ordinate `γ_ρ`.
+- `sum_outerDefect_eq_zero_iff` — **equation (13), finite form**: a finite defect sum with positive
+  multiplicities vanishes exactly when the divisor beyond the layer is empty.  This is the exact
+  detection statement, at the level the card's own argument establishes it.
+- `log_norm_meanType_interior`, `log_norm_meanType_boundary` — **equations (20)–(21)**: the
+  exponential mean type `e^{-τ z}` is unimodular on the imaginary axis and shifts the interior
+  logarithmic modulus by exactly `-τ x`, which is the term `τ_N x` the card insists cannot be
+  discarded.
+- `defect_limit_eq_zero` — **equations (15)–(18)**: if the interior and boundary logarithmic data
+  converge and the finite defects tend to zero, the limiting defect is zero.
+
+Deliberately outside the Lean statement (cited parents, not results of this card):
+
+- the Hardy inner–outer factorization `(4)` and the absence of a singular inner factor;
+- the Poisson representation `(9)` of the outer factor and the Poisson–Jensen integral `(5)`;
+- the Blaschke convergence condition for the infinite product;
+- the analytic zeta multiplier `(2)` and its right half-plane zero set `(3)`.

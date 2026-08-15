@@ -245,6 +245,114 @@ theorem realLSeriesRawImpedance_not_lowerHalfPlaneValued_above
     exists_high_realLSeriesRawImpedance_im_pos n t Y hf hzero hlimit
   exact not_le_of_gt hpos (htail z hz)
 
+/-- The phase `π / (2 log m)` turns every positive integer `m ≥ 2` by one quarter turn. -/
+theorem nat_cpow_quarterTurn_im_eq_one
+    (m : ℕ) (hm : 2 ≤ m) :
+    ((m : ℂ) ^ (((Real.pi / (2 * Real.log (m : ℝ)) : ℝ) : ℂ) * Complex.I)).im = 1 := by
+  have hmpos : 0 < (m : ℝ) := by positivity
+  have hlogpos : 0 < Real.log (m : ℝ) :=
+    Real.log_pos (by exact_mod_cast lt_of_lt_of_le (by norm_num : 1 < 2) hm)
+  have hlogne : Real.log (m : ℝ) ≠ 0 := hlogpos.ne'
+  have hmcast : (m : ℂ) = ((m : ℝ) : ℂ) := by norm_cast
+  rw [Complex.cpow_def_of_ne_zero (by exact_mod_cast Nat.ne_of_gt (lt_of_lt_of_le (by norm_num) hm))]
+  have hphase : (Real.pi / (2 * Real.log (m : ℝ))) * Real.log (m : ℝ) = Real.pi / 2 := by
+    field_simp
+  have harg :
+      Complex.log (m : ℂ) *
+          (((Real.pi / (2 * Real.log (m : ℝ)) : ℝ) : ℂ) * Complex.I) =
+        ((Real.pi / 2 : ℝ) : ℂ) * Complex.I := by
+    rw [hmcast, ← Complex.ofReal_log hmpos.le]
+    calc
+      ((Real.log (m : ℝ) : ℝ) : ℂ) *
+          (((Real.pi / (2 * Real.log (m : ℝ)) : ℝ) : ℂ) * Complex.I) =
+          (((Real.pi / (2 * Real.log (m : ℝ))) * Real.log (m : ℝ) : ℝ) : ℂ) * Complex.I := by
+            push_cast
+            ring
+      _ = ((Real.pi / 2 : ℝ) : ℂ) * Complex.I := by rw [hphase]
+  rw [harg, Complex.exp_ofReal_mul_I_im, Real.sin_pi_div_two]
+
+/-- The opposite quarter-turn phase has imaginary part `-1`. -/
+theorem nat_cpow_neg_quarterTurn_im_eq_neg_one
+    (m : ℕ) (hm : 2 ≤ m) :
+    ((m : ℂ) ^ (-(((Real.pi / (2 * Real.log (m : ℝ)) : ℝ) : ℂ) * Complex.I))).im = -1 := by
+  rw [show -(((Real.pi / (2 * Real.log (m : ℝ)) : ℝ) : ℂ) * Complex.I) =
+    ((-Real.pi / (2 * Real.log (m : ℝ)) : ℝ) : ℂ) * Complex.I by push_cast; ring]
+  have hmpos : 0 < (m : ℝ) := by positivity
+  have hmcast : (m : ℂ) = ((m : ℝ) : ℂ) := by norm_cast
+  rw [Complex.cpow_def_of_ne_zero (by exact_mod_cast Nat.ne_of_gt (lt_of_lt_of_le (by norm_num) hm))]
+  have hlogpos : 0 < Real.log (m : ℝ) :=
+    Real.log_pos (by exact_mod_cast lt_of_lt_of_le (by norm_num : 1 < 2) hm)
+  have hlogne : Real.log (m : ℝ) ≠ 0 := hlogpos.ne'
+  have hphase : (-Real.pi / (2 * Real.log (m : ℝ))) * Real.log (m : ℝ) = -Real.pi / 2 := by
+    field_simp
+  have harg :
+      Complex.log (m : ℂ) *
+          (((-Real.pi / (2 * Real.log (m : ℝ)) : ℝ) : ℂ) * Complex.I) =
+        ((-Real.pi / 2 : ℝ) : ℂ) * Complex.I := by
+    rw [hmcast, ← Complex.ofReal_log hmpos.le]
+    calc
+      ((Real.log (m : ℝ) : ℝ) : ℂ) *
+          (((-Real.pi / (2 * Real.log (m : ℝ)) : ℝ) : ℂ) * Complex.I) =
+          (((-Real.pi / (2 * Real.log (m : ℝ))) * Real.log (m : ℝ) : ℝ) : ℂ) * Complex.I := by
+            push_cast
+            ring
+      _ = ((-Real.pi / 2 : ℝ) : ℂ) * Complex.I := by rw [hphase]
+  rw [harg, Complex.exp_ofReal_mul_I_im]
+  have hneg : -Real.pi / 2 = -(Real.pi / 2) := by ring
+  rw [hneg, Real.sin_neg, Real.sin_pi_div_two]
+
+/-- Every nonzero real coefficient at an integer `m ≥ 2` admits a phase with opposite signs on
+the conjugate high lines. -/
+theorem exists_opposite_imaginary_phase_of_ne_zero
+    {f : ℕ → ℝ} (m : ℕ) (hm : 2 ≤ m) (hcoeff : f m ≠ 0) :
+    ∃ t : ℝ,
+      0 < (((f m : ℝ) : ℂ) * ((m : ℕ) : ℂ) ^ ((t : ℂ) * Complex.I)).im ∧
+        (((f m : ℝ) : ℂ) * ((m : ℕ) : ℂ) ^ (-((t : ℂ) * Complex.I))).im < 0 := by
+  let τ : ℝ := Real.pi / (2 * Real.log (m : ℝ))
+  have hphase_pos : ((m : ℂ) ^ ((τ : ℂ) * Complex.I)).im = 1 := by
+    simpa [τ] using nat_cpow_quarterTurn_im_eq_one m hm
+  have hphase_neg : ((m : ℂ) ^ (-((τ : ℂ) * Complex.I))).im = -1 := by
+    simpa [τ] using nat_cpow_neg_quarterTurn_im_eq_neg_one m hm
+  rcases lt_or_gt_of_ne hcoeff with hneg | hpos
+  · refine ⟨-τ, ?_, ?_⟩
+    · have hphase : ((m : ℂ) ^ (((-τ : ℝ) : ℂ) * Complex.I)).im = -1 := by
+        rw [show ((-τ : ℝ) : ℂ) * Complex.I = -((τ : ℂ) * Complex.I) by push_cast; ring]
+        exact hphase_neg
+      rw [Complex.mul_im]
+      simp only [Complex.ofReal_re, Complex.ofReal_im, zero_mul]
+      rw [hphase]
+      linarith
+    · have hphase : ((m : ℂ) ^ (-(((-τ : ℝ) : ℂ) * Complex.I))).im = 1 := by
+        rw [show -(((-τ : ℝ) : ℂ) * Complex.I) = (τ : ℂ) * Complex.I by push_cast; ring]
+        exact hphase_pos
+      rw [Complex.mul_im]
+      simp only [Complex.ofReal_re, Complex.ofReal_im, zero_mul]
+      rw [hphase]
+      linarith
+  · refine ⟨τ, ?_, ?_⟩
+    · rw [Complex.mul_im]
+      simp only [Complex.ofReal_re, Complex.ofReal_im, zero_mul]
+      rw [hphase_pos]
+      linarith
+    · rw [Complex.mul_im]
+      simp only [Complex.ofReal_re, Complex.ofReal_im, zero_mul]
+      rw [hphase_neg]
+      linarith
+
+/-- A real Dirichlet series with a first nonzero mode after its constant term cannot have either
+fixed raw-impedance half-plane orientation on any upper tail. -/
+theorem realLSeriesRawImpedance_not_fixedSign_of_firstNonzero
+    {f : ℕ → ℝ} (n : ℕ) (Y : ℝ) (hn : 1 ≤ n)
+    (hf : LSeries.abscissaOfAbsConv (fun m => ((f m : ℝ) : ℂ)) < ⊤)
+    (hzero : ∀ m : ℕ, 2 ≤ m → m ≤ n → f m = 0)
+    (hcoeff : f (n + 1) ≠ 0) :
+    ¬ (∀ z : ℂ, Y < z.im → 0 ≤ (realLSeriesRawImpedance f z).im) ∧
+      ¬ (∀ z : ℂ, Y < z.im → (realLSeriesRawImpedance f z).im ≤ 0) := by
+  obtain ⟨t, hpos, hneg⟩ :=
+    exists_opposite_imaginary_phase_of_ne_zero (f := f) (n + 1) (by omega) hcoeff
+  exact ⟨realLSeriesRawImpedance_not_upperHalfPlaneValued_above n t Y hf hzero hneg,
+    realLSeriesRawImpedance_not_lowerHalfPlaneValued_above n t Y hf hzero hpos⟩
+
 end
 
 end GaloisForLFunctions

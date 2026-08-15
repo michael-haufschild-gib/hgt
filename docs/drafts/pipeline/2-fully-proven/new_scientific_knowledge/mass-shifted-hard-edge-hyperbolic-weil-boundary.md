@@ -324,3 +324,71 @@ theorem plus the source-specific compactness theorem, complex normal-family pass
 numerator real-root preservation, Laguerre--Polya closure, Paley--Wiener support, and the literal
 finite-prime null-row limit.  An abstract theorem assuming compact convergence or the Euler
 equation would not formalize this result.
+
+## Lean status (updated)
+
+The Möbius/Cayley half of the theorem — sections 1 and 2 — is now formal and axiom-clean.
+
+    HTGeometry/HardyCrossParseval.lean                (pre-existing corpus asset)
+      circleAverage_poly_mul_conj                     polarized polynomial Parseval on a circle
+
+    HTGeometry/CirclePolynomialSupBound.lean          (axiom-clean, wired, built)
+      norm_polySum_le                                 Cauchy-Schwarz sup bound from coefficient
+                                                      energy
+      sum_normSq_coeff_eq_circleAverage               the coefficient energy is the mean square on
+                                                      the unit circle
+      zhukovskyLift, eval_zhukovskyLift,
+        natDegree_zhukovskyLift_le                    `w^d P((w+w⁻¹)/2)` as a polynomial of degree
+                                                      at most `2d`
+      cayleyEnergy                                    the mean square of `P` on the Cayley interval
+      norm_eval_cayley_le, norm_eval_cayley_le'       **the reproducing-kernel bound**: off the
+                                                      interval, `|P|` is at most
+                                                      `sqrt(2d+2) sqrt(energy) max(|w|,|w|⁻¹)^(d+2)`
+
+    HTGeometry/LocallyUniformProduct.lean             (axiom-clean, wired, built)
+      tendstoUniformlyOn_mul_of_bound,
+        tendstoLocallyUniformly_mul                   products of locally uniformly convergent
+                                                      complex families with continuous limits
+
+    RHTower/XiShiftedHardEdgeCayleyPacketBound.lean   (axiom-clean, wired, built)
+      hardEdgeDiskVariable                            `w = (a + iz)/(a - iz)`
+      zhukovsky_hardEdgeDiskVariable                  the hard-edge coordinate `(a²-z²)/(a²+z²)` is
+                                                      its Zhukovsky image
+      max_norm_hardEdgeDiskVariable_le                on `|z| <= R` the disc variable stays within
+                                                      `(a+R)/(a-R)` of the circle
+      ratio_pow_le_exp                                `((a+R)/(a-R))^n <= exp(2Rn/(a-R))`
+      norm_eval_hardEdgeCoordinate_le                 **the normality bound**: a degree-`d` packet
+                                                      is bounded on `|z| <= R` by its circle energy
+                                                      times `exp(2R(d+2)/(a-R))`, uniform when the
+                                                      degree grows proportionally to the aperture
+
+    RHTower/XiShiftedHardEdgeCayleyNumerator.lean     (axiom-clean, wired, built)
+      cayleyNumerator                                 **(HHWB.9)** the degree-`d` numerator of
+                                                      `P((a²-u)/(a²+u))`
+      eval_cayleyNumerator                            **(HHWB.8)** it is the cleared substitution
+      cayleyNumerator_root_im_eq_zero                 **(HHWB.10)** the numerator of a real-rooted
+                                                      polynomial is real-rooted: the exceptional
+                                                      value `-1` would force `a = 0`
+      tendstoLocallyUniformly_of_comp_sq              locally uniform convergence transfers along
+                                                      the squaring map `u = z²`
+      cayleyNumerator_limit_zero_im_eq_zero,
+        scaled_cayleyNumerator_limit_zero_im_eq_zero  Laguerre--Pólya closure: a nonzero entire
+                                                      locally uniform limit of the numerators has
+                                                      only real zeros
+
+    RHTower/XiShiftedHardEdgeCayleyLimit.lean         (axiom-clean, wired, built)
+      norm_one_add_pow_sub_one_le                     `|(1+w)^d - 1| <= d(1+|w|)^d |w|`
+      tendstoLocallyUniformly_one_add_div_pow         **(HHWB.12)** `(1 + u/a²)^d -> 1` locally
+                                                      uniformly when `d/a² -> 0`
+      tendstoLocallyUniformly_scaled_cayleyNumerator  **(HHWB.13)** the normalized numerators have
+                                                      the same limit as the packets
+      hardEdgeCayleyLimit_zero_im_eq_zero             **(HHWB.3)/(HHWB.4)** the hard-edge limit is
+                                                      real-rooted
+
+What the last theorem consumes is exactly the output of the parent compactness card — locally
+uniform convergence of the normalized packets — together with `a_j -> infinity` and
+`d_j / a_j² -> 0`, both of which follow from `d_j/a_j -> tau`.  The normality bound
+`norm_eval_hardEdgeCoordinate_le` is the estimate the parent card's Montel argument needs.
+
+Still to formalize for this card: section 3, the passage of the finite Hankel null row to the
+limit (HHWB.6), and section 4, the root-division Cauchy law (HHWB.16).

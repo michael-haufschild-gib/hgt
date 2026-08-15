@@ -1016,3 +1016,50 @@ as a parameter rather than the hard-coded `c²/2`: its body uses `−(c²/2)` on
 multiplier, so a threshold-parametric restatement instantiates at `K = c` and yields an even joint
 band/prolate eigenfunction with `−η < c`, i.e. **`μ = c·s < 1`** — the `n = 0` case of the uniform
 bound.
+
+## Lean progress — THE EIGENVALUE HALF CLOSES FOR THE GROUND MODE, UNCONDITIONALLY
+
+`c·s(c) → 1` is now a Lean theorem with no hypotheses beyond the bandwidth being positive:
+
+```text
+RHTower/ProlateLowSeparationMode.lean   (generalized in place)
+    exists_even_joint_prolate_eigen_gt_of_rayleigh_gt
+        any Gaussian Rayleigh bound `⟨L_c v, v⟩ > −K‖v‖²` produces a joint band/prolate mode
+        with `−K < η`; the old `c²/2` statement is now a one-line corollary
+
+RHTower/ProlateSharpSeparationMode.lean
+    exists_even_joint_prolate_eigen_bandwidth_separation_lt_one
+        at every `c > 0` some even joint mode has `c·s < 1`
+
+RHTower/ProlateSeparationLowerBound.lean
+    hasDerivAt_virialWeight, integral_sq_window     ∫_{−δ}^{δ}Φ² = 2δΦ(δ)² − 2∫ xΦΦ′
+    integral_sub_le_aperture, integral_sq_outside_le (Chebyshev), exists_le_average
+    virial_amgm                                     −2xΦΦ′ ≤ c x²Φ² + Φ′²/c
+    separation_algebra
+    bandwidthSeparation_lower :
+        c δ₀²(1 − 4δ₀²) ≤ μ (5(1 − 4δ₀²) + c δ₀²)   for every δ₀ ∈ (0, 1/4]
+
+RHTower/ProlateSeparationLimit.lean
+    integral_sq_pos_of_band_eigen, tendsto_one_of_sandwich
+    exists_tendsto_bandwidthSeparation_one :
+        ∃ μ, μ_c → 1  and every μ_c is the separation constant of an actual even joint
+        band/prolate eigenfunction at bandwidth c
+```
+
+**The route bypasses the limit-profile construction entirely.**  The plan recorded above needed a
+`C¹` limit of the rescaled profiles, its `L²` membership and then the ladder rigidity.  None of that
+is used: the upper bound is the sharp Gaussian trial, and the lower bound is an *uncertainty*
+estimate that holds for every mode at once —
+
+```text
+∫_{−δ}^{δ}Φ² ≤ 2δΦ(δ)² + μ ∫Φ²/(1 − 4δ₀²) ,     ∫Φ² − ∫_{−δ}^{δ}Φ² ≤ (μ/(cδ₀²)) ∫Φ² ,
+2δΦ(δ)² ≤ (4μ/(cδ₀²)) ∫Φ² ,
+```
+
+the last two both from the second-moment bound `∫x²Φ² ≤ (μ/c)∫Φ²`, with the window endpoint chosen
+by averaging `Φ²` over `[δ₀, 2δ₀]`.  Dividing by `∫Φ² > 0` gives
+`1 ≤ 5μ/(cδ₀²) + μ/(1 − 4δ₀²)`, so `liminf μ ≥ 1 − 4δ₀²` for every `δ₀`.
+
+The oscillator spectral rigidity theorem built earlier is therefore not needed for the ground mode.
+It remains the tool for the higher rungs `n = 4j`, `j ≥ 1`, where the trial space is
+`(j+1)`-dimensional and the limit is `2·4j + 1`; and it is a reusable statement in its own right.
