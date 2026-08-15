@@ -1,7 +1,7 @@
 # A finite CCM Evans determinant must retain the infinite boundary resolvent
 
 - **ID:** `ccm-fredholm-schur-resolvent-carrier-law`
-- **Stage:** 2-fully-proven / not-new
+- **Stage:** 3-formalized (paper proof; Lean certificate alongside)
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parents:** the block-operator Schur-complement identity,
@@ -155,3 +155,34 @@ unbounded Feshbach map, not the algebraic identity `(3)`.
 - [x] attach mean zero and the exact screw anchors
 - [ ] prove `det S_a != 0` for every aperture
 - [ ] RH
+
+## Lean status
+
+**Formalized unconditionally, 2026-08-15**, in
+`formal/GaloisForLFunctions/HTGeometry/SchurComplementKernel.lean`.  The earlier decision declined a
+wrapper on the ground that the substantive missing statement is the source-defined graph relation,
+not the algebraic identity `(3)`.  That remains true of the open gate, but `(3)`--`(5)` are exactly
+what the card proves, and they are now theorems rather than a template.
+
+- `schurBlockOperator`, `schurComplement` — equations `(1)`--`(2)`: the block operator on `F × H`
+  assembled from four blocks, and the Schur complement `S = A - B D⁻¹ C` written with an explicit
+  inverse of the boundary block.
+- **`schurBlockOperator_apply_eq_zero_iff`** — equations `(6)`--`(7)`: a vector lies in the kernel of
+  the block operator exactly when its first component lies in the kernel of `S` and its second
+  component is the forced boundary response `-D⁻¹ C x`.  Only the two inverse relations for `D` are
+  used; no norm, no topology and no finite dimension enter.
+- **`kerSchurBlockOperatorEquivKerSchur`** — equations `(3)`--`(4)`: projection to `F` is a linear
+  isomorphism `ker E_a ≅ ker S_a`, with the card's explicit inverse `x ↦ (x, -D⁻¹ C x)`.
+- **`ker_schurBlockOperator_eq_bot_iff`** — the kernel-triviality form of `(3)`.
+- **`ker_schurBlockOperator_eq_bot_iff_det_ne_zero`** — equation `(5)`: with `F` finite free over a
+  domain, `ker E_a = 0` exactly when `det S_a ≠ 0`.
+
+All statements are unconditional: `#print axioms` returns only
+`[propext, Classical.choice, Quot.sound]`.
+
+The prime-log source obligation is already formalized in the corpus and is not re-proved here:
+`HTGeometry/PrimeLogHerglotz.lean` (`not_summable_primeLogHerglotzTransportMassOrder_of_pos`) and
+`HTGeometry/PrimeLogCauchySeamRank.lean` (`summable_primeLogCauchyPacketTransportEnergy_iff`).
+
+Not formalized, and the card's own open gate: the source-defined graph relation and its unbounded
+Feshbach map replacing the bounded template `(2)`, and `det S_a ≠ 0` at every aperture.

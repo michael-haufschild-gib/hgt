@@ -350,6 +350,79 @@ theorem tendsto_deningerArithmeticCompletedGreenPrimeTwoRightNormalizedPacket_fi
     deningerBigWittCrossPairOneLegGraphFiberReadout_singularVector,
     smul_eq_mul] using hc
 
+/-! ## Actual Gamma boundary on the source-derived vertical sector -/
+
+/-- Continuous Gamma-boundary readout on the singular one-leg graph.  It pairs
+the graph trace with the already-identified normalized base Gamma defect. -/
+def deningerBigWittCrossPairOneLegGraphGammaBoundaryReadout
+    (r : XiZeroCopy) :
+    DeningerBigWittCrossPairSingularOneLegGraph →L[ℂ] ℂ :=
+  deningerBigWittCrossPairOneLegGraphTrace.smulRight
+    (deningerCalderonWittNormalizedBaseGammaBoundaryDefectCoefficient r)
+
+/-- On the vertical graph sector, the actual Gamma readout is exactly scalar
+multiplication by the normalized base Gamma defect coefficient. -/
+@[simp] theorem deningerBigWittCrossPairOneLegGraphGammaBoundaryReadout_smul_singularVector
+    (r : XiZeroCopy) (z : ℂ) :
+    deningerBigWittCrossPairOneLegGraphGammaBoundaryReadout r
+        (z • deningerBigWittCrossPairOneLegGraphSingularVector) =
+      z * deningerCalderonWittNormalizedBaseGammaBoundaryDefectCoefficient r := by
+  change deningerBigWittCrossPairOneLegGraphTrace
+      (z • deningerBigWittCrossPairOneLegGraphSingularVector) •
+        deningerCalderonWittNormalizedBaseGammaBoundaryDefectCoefficient r = _
+  rw [map_smul, deningerBigWittCrossPairOneLegGraphTrace_singularVector]
+  simp [smul_eq_mul]
+
+/-- For the reflected-Gaussian completed-Xi provenance, vanishing of the
+source-derived singular graph Gamma readout is equivalent to the critical-line
+condition.  The comparison is anchored at the literal nonzero `(2,3)`
+Big-Witt cross-prime coefficient, so no cancellation or RH premise enters. -/
+theorem deningerBigWittCrossPairOneLegGraphGammaBoundaryReadout_reflectedGaussian_eq_zero_iff
+    (r : XiZeroCopy) :
+    deningerBigWittCrossPairOneLegGraphGammaBoundaryReadout r
+        (DeningerMeyerGaussianGreen.reflectedGaussianHorizonGreenProvenance r •
+          deningerBigWittCrossPairOneLegGraphSingularVector) = 0 ↔
+      (r.1 : ℂ).re = 1 / 2 := by
+  let i := deningerCalderonWittTwoThreePacketIndex
+  have hcompare :
+      deningerCalderonWittAllCrossPrimeGammaAdmissionOperator
+          (deningerBigWittRawAllCrossPrimeXiIncidenceComparison
+            DeningerMeyerGaussianGreen.reflectedGaussianHorizonGreenProvenance) r i =
+        deningerBigWittCrossPairOneLegGraphGammaBoundaryReadout r
+            (DeningerMeyerGaussianGreen.reflectedGaussianHorizonGreenProvenance r •
+              deningerBigWittCrossPairOneLegGraphSingularVector) *
+          deningerBigWittCrossPrimePacketRawCoefficient i := by
+    rw [deningerCalderonWittAllCrossPrimeGammaAdmissionOperator_apply]
+    change deningerCalderonWittNormalizedBaseGammaBoundaryDefectCoefficient r *
+        deningerBigWittRawAllCrossPrimeXiIncidenceComparison
+          DeningerMeyerGaussianGreen.reflectedGaussianHorizonGreenProvenance r i = _
+    rw [deningerBigWittRawAllCrossPrimeXiIncidenceComparison_apply,
+      deningerBigWittCrossPairOneLegGraphGammaBoundaryReadout_smul_singularVector]
+    change deningerCalderonWittNormalizedBaseGammaBoundaryDefectCoefficient r *
+        (DeningerMeyerGaussianGreen.reflectedGaussianHorizonGreenProvenance r *
+          deningerBigWittCrossPrimePacketRawCoefficient i) =
+      (DeningerMeyerGaussianGreen.reflectedGaussianHorizonGreenProvenance r *
+        deningerCalderonWittNormalizedBaseGammaBoundaryDefectCoefficient r) *
+          deningerBigWittCrossPrimePacketRawCoefficient i
+    simpa only [mul_assoc] using congrArg
+      (fun z : ℂ => z * deningerBigWittCrossPrimePacketRawCoefficient i)
+      (mul_comm
+        (deningerCalderonWittNormalizedBaseGammaBoundaryDefectCoefficient r)
+        (DeningerMeyerGaussianGreen.reflectedGaussianHorizonGreenProvenance r))
+  have hraw : deningerBigWittCrossPrimePacketRawCoefficient i ≠ 0 :=
+    deningerBigWittCrossPrimePacketRawCoefficient_ne_zero i
+  calc
+    deningerBigWittCrossPairOneLegGraphGammaBoundaryReadout r
+          (DeningerMeyerGaussianGreen.reflectedGaussianHorizonGreenProvenance r •
+            deningerBigWittCrossPairOneLegGraphSingularVector) = 0 ↔
+        deningerCalderonWittAllCrossPrimeGammaAdmissionOperator
+          (deningerBigWittRawAllCrossPrimeXiIncidenceComparison
+            DeningerMeyerGaussianGreen.reflectedGaussianHorizonGreenProvenance) r i = 0 := by
+          rw [hcompare, mul_eq_zero, or_iff_left hraw]
+    _ ↔ (r.1 : ℂ).re = 1 / 2 :=
+      deningerCalderonWittAllCrossPrimeGammaAdmissionOperator_bigWittReflectedGaussian_eq_zero_iff
+        r i
+
 end
 
 end RHTower

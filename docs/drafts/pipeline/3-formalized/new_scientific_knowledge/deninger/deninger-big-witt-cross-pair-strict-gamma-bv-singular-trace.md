@@ -122,6 +122,29 @@ This is a label-faithful selected singular compensator. It does not provide
 the still-missing canonical Xi/Green rule selecting `(r,t)` or prove physical
 annihilation.
 
+## Prime-harmonic arithmetic source and Gamma boundary
+
+The vertical graph generator now has a canonical Big-Witt source. Fix the
+ordered row from prime two to every later prime. Its literal raw coefficients
+are `1/(2q)`. Euler divergence sends finite row trace to infinity, while the
+existing square-summable all-cross-prime horizon uniformly bounds ambient
+`ell^2` norm. Normalizing each finite row by its own trace therefore gives
+actual labelled packets with trace one, ambient limit zero, and graph limit
+`(0,1)`.
+
+Multiplying these packets by any completed-Xi provenance coefficient gives
+the corresponding vertical fibre. On every retained coordinate, undoing the
+finite normalization recovers exactly the existing raw all-cross-prime Xi
+incidence comparison. For completed Green provenance this constructs the
+source Green vertical vector without a generic Hilbert averaging substitute.
+
+The actual normalized Gamma defect is a continuous readout on this vertical
+sector. For reflected-Gaussian provenance its value vanishes exactly when
+`Re(s)=1/2`; proof compares with actual all-cross-prime Gamma admission at the
+literal nonzero `(2,3)` raw coefficient. This identifies exact physical
+boundary carried by the constructed source. It does not prove that boundary
+vanishes at completed-Xi zeros.
+
 ## Proof architecture
 
 1. Use the arbitrary-ring Frobenius ghost-shift theorem and the universal
@@ -142,6 +165,14 @@ annihilation.
    fibres from vertical singular generator.
 10. Puncture one selected edge and prove exact reconstruction and negative
     four-label Frobenius readout.
+11. Normalize the literal prime-two Big-Witt row by its divergent finite
+    trace; use uniform horizon norm control to obtain the vertical graph
+    generator from arithmetic packets.
+12. Weight by completed Xi Green provenance and recover raw incidence on each
+    retained coordinate after undoing finite normalization.
+13. Pair graph trace with actual normalized Gamma defect and compare through
+    the nonzero `(2,3)` coefficient, proving reflected-Gaussian readout
+    vanishes exactly on the critical line.
 
 ## Anti-theatre audit
 
@@ -162,13 +193,13 @@ identification and obstruction, not the component lemmas in isolation.
 
 ## Exact surviving frontier
 
-Construct canonical Xi/Green-provenance rule selecting or renormalizing the
-punctured ordered edge before coherent summation, then compare that selected
-graph vector with actual four-edge Gamma incidence. Full coherent fibres are
-formally trapped in the trace kernel, while arbitrary vertical averages are
-not source-derived. Surviving rule must retain divisor/multiplicity labels and
-prove selected punctured compensator physically annihilated without assuming
-the four-label coefficient vanishes.
+Prove an unconditional source Green--Stokes identity that annihilates the
+explicit actual-Gamma readout on every completed-Xi zero. Source construction,
+Xi/Green coefficient transport, retained-coordinate incidence, and physical
+Gamma boundary comparison are now formalized. What remains is not selection,
+completion, or target identification: it is the new analytic theorem forcing
+the resulting nontrivial boundary scalar to vanish without assuming RH, a
+zero-location premise, or vanishing of the four-label coefficient.
 
 ## Lean certificates
 
@@ -177,6 +208,7 @@ formal/GaloisForLFunctions/RHTower/
   DeningerBigWittFrobeniusCrossPairStrictGammaBVDescent.lean
   DeningerBigWittFrobeniusCrossPairSingularOneLegTrace.lean
   DeningerBigWittFrobeniusCrossPairSingularOneLegGraphCompletion.lean
+  DeningerBigWittCrossPrimeHarmonicSingularGraphSource.lean
 ```
 
 Capstones:
@@ -191,12 +223,16 @@ Capstones:
 - `deningerBigWittCrossPairAlgebraicOneLegTrace_not_closable`;
 - `deningerBigWittCrossPairFiniteOneLegGraph_closure_eq_top`;
 - `deningerBigWittCrossPairOneLegGraphSingularVector_not_mem_coherent_closure`;
-- `deningerBigWittCrossPairOneLegGraphFiberReadout_selectedPuncturedRightLegPacket`.
+- `deningerBigWittCrossPairOneLegGraphFiberReadout_selectedPuncturedRightLegPacket`;
+- `tendsto_deningerBigWittCrossPairFiniteOneLegGraphAdmission_primeTwoRightEdgeNormalizedPacket`;
+- `deningerBigWittXiProvenancePrimeTwoRightNormalizedPacket_coordinate_eq_rawComparison`;
+- `tendsto_deningerArithmeticCompletedGreenPrimeTwoRightNormalizedPacket_graph`;
+- `deningerBigWittCrossPairOneLegGraphGammaBoundaryReadout_reflectedGaussian_eq_zero_iff`.
 
 ## Verification
 
-- direct `lake env lean` on all three leaves: pass;
-- exact leaf-only `lake build` on all three leaves: pass;
+- direct `lake env lean` on all four leaves: pass;
+- exact leaf-only `lake build` on all four leaves: pass;
 - umbrella imports wired; umbrella not built;
 - capstone axiom audit: only `propext`, `Classical.choice`, `Quot.sound`;
 - forbidden declaration scan: pass;

@@ -574,3 +574,40 @@ parts are distinct, which the card's nonnegative distinct real shifts supply.
 | **codensity of `M`, `boundary(M) = Ω`, nowhere-continuous indicator, no continuous factorization** | **formal, unconditional** |
 | `Haar(M) = 0` (Saksman--Webb/Seip) | open |
 | divisor surjectivity (Andersson Thm 5) | open |
+
+## Lean progress — the Haar-nullity half becomes a strict inequality
+
+`GaloisForLFunctions/HTGeometry/FiniteModificationZeroOne.lean` (wired, axiom-clean) proves the
+zero–one law that the continuation stratum satisfies for structural reasons, before any asymptotic
+input:
+
+```text
+coordSigma n                     the σ-algebra of the n-th coordinate of a countable product
+truncateBelow a n                replacing every coordinate below n by a reference point
+measurableSet_limsup_of_invariant
+    a measurable set invariant under modification of finitely many coordinates lies in the tail
+    σ-algebra  limsup coordSigma atTop
+measure_eq_zero_or_one_of_invariant
+    under any measure making the coordinates independent, such a set has measure 0 or 1
+iIndep_coordSigma_infinitePi     the coordinates of a countable product measure are independent
+measure_infinitePi_eq_zero_or_one_of_invariant   the same, for the product measure itself
+```
+
+The proof is exactly the card's own Euler-modification observation, read measure-theoretically:
+changing finitely many prime phases multiplies `Z_χ` by a finite Euler factor, which is meromorphic
+on the plane, so **membership in `M` does not depend on any finite set of coordinates**.  Hence `M`
+is a tail event and
+
+```text
+Haar(M) ∈ {0, 1} .
+```
+
+The remaining content of `Haar(M) = 0` is therefore the single strict inequality `Haar(M) ≠ 1` —
+"the continuable stratum is not almost everything" — rather than the full Saksman--Webb asymptotic
+`σ(χ) = 1/2` a.s.  Nothing else on the card depends on it: density, codensity,
+`boundary(M) = Ω`, nowhere-continuity of `1_M`, and the no-continuous-factorization theorem are all
+already unconditional.
+
+The formal statement above is stated for an arbitrary countable product of probability spaces, so it
+applies verbatim to `Ω = ∏_p S¹` with Haar product measure once `M` is defined there; what it needs
+from the analytic side is only measurability of `M` and the finite-modification invariance.

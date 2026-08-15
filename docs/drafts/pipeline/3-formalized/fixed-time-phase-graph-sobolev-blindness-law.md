@@ -1,7 +1,7 @@
 # Fixed-time phase-graph Sobolev blindness law
 
 - **ID:** `fixed-time-phase-graph-sobolev-blindness-law`
-- **Stage:** 2 -- fully proved on paper
+- **Stage:** 3 -- formalized in Lean 4
 - **Type:** sharp no-go / graph-capacity law / Brown-front correction
 - **Parents:** `low-replica-complete-incidence-influence-law.md`,
   `observer-dimension-replica-action-crowding-law.md`
@@ -430,8 +430,9 @@ graph**.
 7. **No claim of external novelty yet.**  Specialist review must decide whether the static-phase
    graph application and tracking-capacity formulation are new.  The mathematical correction is
    unconditional regardless of priority.
-8. **Lean status.**  No final manuscript may use the result until the finite-torus bump/scaling
-   statement and corollaries pass Lean after the active refactor.
+8. **Lean status.**  Closed.  Theorems A--C and their corollaries are unconditional in Lean 4; the
+   realized counterexample family is a trigonometric detector rather than a scaled bump, with the
+   same boxed conclusions at the same rates.
 
 ## 10. External boundary checked
 
@@ -448,9 +449,70 @@ graph**.
 
 ## 11. Lean plan after refactor
 
-1. finite-torus translation graph measure on a finite product model;
-2. scaled bump mean and derivative identities `(10)--(11)`;
-3. phase-Dirichlet counterexample `(5)--(7)`;
-4. integer derivative scaling `(14)--(16)`;
-5. Duhamel Lipschitz bound and Euclidean covering transfer `(19)--(25)`;
-6. abstract no-uniform-dual-bound corollaries and static-local parameter specialization.
+All six steps are complete; see the Lean certificate below.
+
+1. [x] finite-torus translation graph measure on a finite product model;
+2. [x] detector mean and derivative identities `(10)--(11)`;
+3. [x] phase-Dirichlet counterexample `(5)--(7)`;
+4. [x] integer derivative scaling `(14)--(16)`;
+5. [x] Duhamel Lipschitz bound and Euclidean covering transfer `(19)--(25)`;
+6. [x] abstract no-uniform-dual-bound corollaries and static-local parameter specialization.
+
+## Lean certificate
+
+Unconditional and closed in Lean 4; every declaration below has axiom set
+`[propext, Classical.choice, Quot.sound]`.
+
+Phase-space model: `UnitAddTorus (Fin d) = (ℝ/ℤ)^d` with normalized Haar measure, integrated over
+the fundamental box `torusBox` of the vector model.  The card's period `2π` is a normalization and
+normalized Haar makes it irrelevant; the frequency `2π n` appears in the derivative weights
+accordingly.  Phase derivatives `∂^α_φ` are the iterated coordinate partial derivatives of the lift,
+`pderiv i G x = fderiv ℝ G x (Pi.single i 1)` iterated along `multiIndexList α`.
+
+| Card statement | Lean declaration |
+|---|---|
+| `(1)`--`(3)` graph and completed laws and their expectations | `HTGeometry.graphExpectation`, `HTGeometry.completedExpectation`, `HTGeometry.completedSq`, `HTGeometry.completedVar`, `HTGeometry.completedDirichlet` |
+| `(4)` the family `F_ε` with values in `[0,1]`, smooth in the phase | `HTGeometry.phaseDetector`, `HTGeometry.graphDetector`, `HTGeometry.contDiff_phaseDetector`, `HTGeometry.phaseDetector_nonneg`, `HTGeometry.phaseDetector_le_one`, `HTGeometry.phaseDetector_im` |
+| `(5)` `E_graph F_ε = 1` | `HTGeometry.graphExpectation_graphDetector` (pointwise `HTGeometry.phaseDetector_self`) |
+| `(6)` `E_comp F_ε = O_d(ε^d)` | `HTGeometry.completedExpectation_graphDetector_scale` (exactly `ε^d`) |
+| `(6)` `Var_λ(F_ε) = O_d(ε^d)` | `HTGeometry.completedVar_graphDetector_le_scale` |
+| `(6)` `∫‖∇_φ F_ε‖² = O_d(ε^{d-2})` | `HTGeometry.completedDirichlet_graphDetector_le_scale` |
+| `(7)` `|E_graph - E_comp| → 1` | `HTGeometry.tendsto_graph_completed_gap` |
+| `(8)`--`(11)` scaled construction and its mean/derivative identities | realized by the trigonometric detector: `HTGeometry.phaseDetector_eq`, `HTGeometry.integral_box_phaseDetector`, `HTGeometry.pderivList_phaseDetector`, `HTGeometry.card_matching_pairs_le`, `HTGeometry.integral_box_normSq_pderivList_phaseDetector_le`, `HTGeometry.integral_box_normSq_pderivList_phaseDetector_eq` |
+| `(12)` Corollary A.1, no uniform Dirichlet-dual bound | `HTGeometry.exists_resolution_violating_dirichlet_bound` |
+| `(13)` the conditional phase Sobolev quantity | `HTGeometry.phaseSobolevSq`, `HTGeometry.multiIndexList`, `HTGeometry.multiIndexSet`, `HTGeometry.pderivList` |
+| `(14)` `‖F_ε‖²_{H^k} = O_{d,k}(ε^{d-2k}) → 0` | `HTGeometry.phaseSobolevSq_graphDetector_le_scale`, `HTGeometry.tendsto_phaseSobolevSq_graphDetector` |
+| `(14)` graph restriction unbounded on `H^k` | `HTGeometry.exists_resolution_violating_sobolev_bound` |
+| `(15)` derivative scaling of the family | `HTGeometry.pderivList_trigLift`, `HTGeometry.ofReal_integral_box_normSq_trigLift`, `HTGeometry.integral_box_normSq_trigLift_le` |
+| `(16)` Corollary B.1, `k < (D-1)/2` | `HTGeometry.exists_resolution_violating_sobolev_bound_projective` |
+| `(16)` qubit form: every `poly(n)` order is subcritical for `D = 2^n` | `HTGeometry.eventually_polynomial_order_subcritical` |
+| `(17)`--`(18)` static-local specialization | direct instantiation: Theorems A and B are proved for *every* map `Φ : Ω → (Fin d → ℝ)` with no regularity, measurability, or nondegeneracy hypothesis, so `Φ_t` of `(17)` is an instance |
+| `(19)` `H(θ) = ∑ θ_j h_j`, `B = (∑‖h_j‖²)^{1/2}` | `HTGeometry.generatorCombination`, `HTGeometry.dictionaryScale` |
+| `(20)` the time-`t` image `O_t` | `HTGeometry.evolvedSeed` |
+| `(21)` `N_ε(O_t) ≤ (1 + 2R|t|B/ε)^m` | `HTGeometry.exists_orbit_net_card_le` (via `HTGeometry.exists_image_net_card_le`) |
+| `(22)` Cauchy--Schwarz in the coefficient index | `HTGeometry.norm_generatorCombination_sub_le` |
+| `(23)`--`(24)` Duhamel and the endpoint Lipschitz bound | `QuantumAlg.norm_unitaryEvolution_mulVec_sub_le`, `HTGeometry.traceDist_evolvedSeed_le` |
+| projective distance no larger than vector distance | `HTGeometry.traceDist_le_norm_sub`, `HTGeometry.traceDist_eq_pureStateTraceDistance` |
+| `(25)` `log N_ε(O_t) = O(n²)` | `HTGeometry.log_orbit_net_card_le`, `HTGeometry.log_orbit_net_card_quadratic` |
+
+New modules built for this card:
+
+- `HTGeometry/TorusPhaseTrigCalculus.lean` — torus characters on the vector model, their coordinate
+  partial derivatives, the box orthogonality relations, and Parseval in the form that tolerates
+  repeated frequencies (`ofReal_integral_box_normSq_trigLift`, `integral_box_normSq_trigLift_le`).
+- `HTGeometry/PhaseGraphDetector.lean` — the detector as the normalized squared modulus of a shifted
+  Dirichlet sum, its unit-interval range, smoothness, exact completed mean, and the crude
+  coincidence count that bounds every derivative mean square.
+- `HTGeometry/PhaseGraphSobolevBlindness.lean` — the graph experiment, Theorem A, Corollary A.1,
+  Theorem B, Corollary B.1, and the many-body order barrier.
+
+Reused from the corpus rather than rebuilt: `HTGeometry/TorusTranslateDifference.lean`
+(`torusProj`, `torusBox`, `integral_torus_eq_integral_box`), `HTGeometry/ParameterCoverageBarrier.lean`
+and `HTGeometry/StaticEnsembleCoverageBarrier.lean` (all of Theorem C), and mathlib's
+`UnitAddTorus` Fourier package.
+
+The counterexample family realized in Lean is a trigonometric detector — the normalized squared
+modulus of the Dirichlet sum over a coordinate frequency box — rather than the scaled compactly
+supported bump of `(8)`--`(9)`.  It is a trigonometric polynomial, hence periodic and analytic with
+no periodization step, and it satisfies the same boxed conclusions `(5)`--`(7)` and `(14)` at the
+same rates, with `ε = 1/(N+1)` the reciprocal resolution.

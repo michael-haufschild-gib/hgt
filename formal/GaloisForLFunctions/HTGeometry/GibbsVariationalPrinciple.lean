@@ -32,16 +32,8 @@ logarithm of the partition function. -/
 theorem llr_tilted_right (q ρ : Measure α) [SigmaFinite q] [IsProbabilityMeasure ρ] {f : α → ℝ}
     (hf : Integrable (fun x => Real.exp (f x)) ρ) (hq : q ≪ ρ) :
     llr q (ρ.tilted f) =ᵐ[q] fun x => llr q ρ x - f x + Real.log (∫ x, Real.exp (f x) ∂ρ) := by
-  have hZ : 0 < ∫ x, Real.exp (f x) ∂ρ := integral_exp_pos hf
-  have hbase := hq.ae_le (rnDeriv_tilted_right q ρ hf)
-  have hposq : ∀ᵐ x ∂q, 0 < q.rnDeriv ρ x := Measure.rnDeriv_pos hq
-  have hfinq : ∀ᵐ x ∂q, q.rnDeriv ρ x ≠ ⊤ := hq.ae_le (q.rnDeriv_ne_top ρ)
-  filter_upwards [hbase, hposq, hfinq] with x hx hxpos hxfin
-  have hz : 0 < (q.rnDeriv ρ x).toReal := ENNReal.toReal_pos (ne_of_gt hxpos) hxfin
-  rw [llr, llr, hx]
-  rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal (by positivity)]
-  rw [Real.log_mul (by positivity) (ne_of_gt hz), Real.log_mul (by positivity)
-    (ne_of_gt hZ), Real.log_exp]
+  filter_upwards [_root_.MeasureTheory.llr_tilted_right hq hf] with x hx
+  rw [hx]
   ring
 
 /-- **Gibbs lower bound.**  Every absolutely continuous candidate law has action at least the

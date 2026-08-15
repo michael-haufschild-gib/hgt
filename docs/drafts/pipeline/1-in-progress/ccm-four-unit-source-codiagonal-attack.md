@@ -3438,3 +3438,60 @@ wall motion, finite-jet recomputation, and separate prime/polar estimates are ru
 
 Formal source:
 `formal/GaloisForLFunctions/RHTower/CCMGuinandWeilThirdGradeSubcubicCompleteness.lean`.
+
+## C74 second-Abel/Cesàro completeness `[PROVED AND LEAN-FORMALIZED]`
+
+Write
+
+```text
+q_b(H)=ccmGuinandWeilThirdGradeCumulativeMeasurable(b,H),
+Q_b(H)=integral_b^H q_b(h) dh.
+```
+
+If `b>0` and `|Q_b(H)|<=C(H+1)` for every `H>b`, then the second Abel continuation
+
+```text
+B2_b(u)=u^2 integral_(b,infinity) exp(-uH)Q_b(H)dH
+```
+
+is analytic on `Re(u)>0`. On every safe real `r>1`, absolute-continuity integration by parts and
+endpoint damping prove
+
+```text
+integral_(b,infinity) exp(-rH)q_b(H)dH
+  =r integral_(b,infinity) exp(-rH)Q_b(H)dH.             (C74.1)
+```
+
+The identity theorem extends `(C74.1)` to `Re(u)>1`, so `B2_b` equals C72's original Abel source
+continuation there. Three complex derivatives recover the same critical Mellin tail defect. After
+the shift `u=s+1/2` and addition of the entire wall head, the regularized critical Mellin defect
+continues to `Re(s)>-1/2`; hence RH follows.
+
+Contrapositively, under non-RH, for every `b>0` and every `C>=0` there exists `H>b` with
+
+```text
+C(H+1)<|Q_b(H)|.                                         (C74.2)
+```
+
+**Conjecture passed after three pivots.** The unconditional square-root exponential error bound
+cannot feed C73; bounded screw values do not control signed screw slopes; and a triangular reporter
+would need a separate forward source theorem. Integrating once before the Abel tilt instead gives
+the strictly weaker averaged gate above without adding a receiver-side premise.
+
+**Higher principle exposed.** An extra source primitive lowers growth order before spectral
+continuation. Pointwise barriers in C72/C73 were shadows of taking absolute values before arithmetic
+cancellation. The invariant is not raw source size but the least primitive order whose exponential
+tilt crosses the required half-plane.
+
+**Current open core C75.** Prove the literal source-side estimate
+
+```text
+for some b>0 and C>=0, every H>b satisfies |Q_b(H)|<=C(H+1),
+```
+
+or produce a genuinely weaker source-pure continuation theorem. This must use cancellation between
+prime staircase and polar channel before absolute values. C74 does not prove that estimate and does
+not prove RH unconditionally.
+
+Formal source:
+`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilThirdGradeCesaroCompleteness.lean`.

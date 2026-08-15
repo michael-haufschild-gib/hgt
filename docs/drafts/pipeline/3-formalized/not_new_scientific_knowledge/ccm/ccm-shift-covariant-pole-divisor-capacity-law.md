@@ -1,7 +1,7 @@
 # Shift-covariant pole-to-divisor transfer costs one norm unit per divisor copy
 
 - **ID:** `ccm-shift-covariant-pole-divisor-capacity-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized (paper proof; Lean certificate alongside)
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent results:** the commutant theorem for the unilateral translation semigroup and elementary
@@ -156,3 +156,41 @@ knowledge.
 - [ ] construct the source-selected cutoff transfer
 - [ ] prove its four-unit boundary density
 - [ ] RH
+
+## Lean status
+
+**Formalized unconditionally, 2026-08-15**, in
+`formal/GaloisForLFunctions/RHTower/CCMShiftCovariantPoleDivisorCapacity.lean`.
+
+- `polePacketProfile`, `divisorPacketProfile`, `divisorPacketMultiplicity`,
+  `poleDivisorMultiplier` — equations `(2)`, `(4)`, `(7)`.
+- **`laplace_polePacketProfile`**, **`laplace_divisorPacketProfile`** — equation `(9)`, both
+  transforms, computed on `Re z > 0` from the half-line exponential integral
+  `integral_Ioi_cexp_neg_mul` of `CCMQuartetPaleyWiener.lean`.
+- **`poleDivisorMultiplier_mul_pole`** — equations `(5)`, `(7)`: the rational symbol carries the
+  pole transform onto the divisor transform, which is what forces `(7)` once the commutant theorem
+  supplies *some* multiplier.
+- **`tendsto_inv_add_atTop`**, **`tendsto_ratio_one`**,
+  **`tendsto_poleDivisorMultiplier_atTop`** — equation `(10)`: along the positive real axis the
+  symbol tends to `kappa(D)`, because each factor `(x + 1/2)/(x + lambda_j)` tends to one.
+- **`divisorPacketMultiplicity_le_of_bound`** — equation `(6)` in the form the card uses: every
+  uniform bound for the symbol on the right half-plane is at least the total multiplicity.  No
+  supremum has to be formed, and no `H^infinity` norm theory is needed.
+- **`two_le_divisorPacketMultiplicity`** — equation `(11)`: a nonempty packet closed under
+  conjugation with no real point has total multiplicity at least two.  The proof needs no
+  injectivity of `lambda`: a fixed point of the conjugation involution would have zero imaginary
+  part.
+- **`not_contractive_poleDivisorMultiplier`** — equation `(12)`: no contractive shift-covariant
+  symbol carries a nonempty conjugation-closed divisor packet.
+- **`riemannZeta_zero_im_ne_zero`** — the functional-equation input of section 3: a zeta zero in the
+  open critical strip is not real, from the corpus theorem
+  `RHTower.riemannZeta_ne_zero_of_ofReal_mem_Ioo`.
+
+All statements are unconditional: `#print axioms` returns only
+`[propext, Classical.choice, Quot.sound]`.
+
+Not formalized, and cited as a parent: the commutant theorem `(8)` identifying bounded
+translation-covariant operators on `L^2(0, infinity)` with `H^infinity` multipliers of the right
+half-plane.  The Lean statements work directly with the symbol, so the theorem is used only to know
+that a symbol exists at all; the cost computation `(6)`, `(10)` and the exclusion `(12)` are proved
+about the symbol itself.

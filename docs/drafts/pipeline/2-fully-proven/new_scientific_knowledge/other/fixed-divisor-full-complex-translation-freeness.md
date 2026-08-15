@@ -317,6 +317,247 @@ The proof needs no stratification and no implicit function theorem:
   nonzero partial derivative of strictly smaller total degree, so induction on the total degree
   closes the bound.
 
-This is the finite-dimensional core of steps 3–5.  What the card still needs on top of it is the
-incidence bookkeeping — the rank-defect locus as a union over the projective coefficient parameter,
-and the Hermite-interpolation submersion — and the passage from complex to real coordinates.
+The passage to the complex jet coordinates is in the same module.  `rePoly` and `imPoly` take the
+coefficientwise real and imaginary parts of a polynomial with complex coefficients
+(`eval_rePoly`, `eval_imPoly`, `rePoly_ne_zero_or_imPoly_ne_zero`), `complexSplitSubst` is the
+injective substitution `x_j ↦ x_{inl j} + i·x_{inr j}` (`complexSplitSubst_ne_zero`,
+`eval_complexSplitSubst`), and `realifyPoint` reads a real point of the doubled index set as a
+complex point, Lipschitz with constant `2` (`lipschitzWith_realifyPoint`).  Hence
+
+> **`dimH_setOf_complex_eval_eq_zero_le`.**  For a nonzero `Q ∈ ℂ[x_v : v ∈ κ]` with `κ` finite,
+> `dimH {z : κ → ℂ | eval z Q = 0} ≤ 2·card κ - 1`.
+
+This is the finite-dimensional core of steps 3–5, in the coordinates the card uses.  What the card
+still needs on top of it is the incidence bookkeeping — the rank-defect locus as a union over the
+projective coefficient parameter, with one nontrivial equation per active evaluation row — and the
+Hermite-interpolation submersion that converts that codimension into a bound on the gauge
+parameter.
+
+## Lean progress — the parametric codimension calculus
+
+Hausdorff dimension alone does not survive the parametric step: an upper bound for `dimH (A × B)` in
+terms of `dimH A` and `dimH B` is false in general, and the shift parameter `h` has to be crossed
+with the rank-defect locus.  `formal/GaloisForLFunctions/HTGeometry/LipschitzCoveredDimension.lean`
+(umbrella-wired, axiom-clean) replaces the dimension by a property that does survive products.
+
+`IsLipschitzCovered k s` says that `s` is contained in a countable union of Lipschitz images of
+subsets of `ℝ^k`.  Its calculus:
+
+- `IsLipschitzCovered.dimH_le` — it implies `dimH s ≤ k`;
+- `IsLipschitzCovered.mono`, `.union`, `.iUnion`, `.iUnion_countable`, `isLipschitzCovered_empty`;
+- `IsLipschitzCovered.image` — stable under Lipschitz images, so it transports along any
+  parametrisation;
+- `isLipschitzCovered_pi` — every subset of a coordinate space of dimension at most `k`;
+- **`IsLipschitzCovered.prod`** — `k` and `l` give `k + l`, via the `1`-Lipschitz surjection
+  `ℝ^{k+l} → ℝ^k × ℝ^l`; this is the step Hausdorff dimension cannot supply;
+- **`IsLipschitzCovered.piFin`** — hence a finite product of row sets is covered in the sum of their
+  dimensions, which is the shape of the rank-defect locus `∏_a Z_a ⊆ X^N`;
+- **`dense_compl_of_isLipschitzCovered`** — a bad parameter set covered in dimension `< dim_ℝ V` has
+  dense complement.  This is the codimension replacement for parametric transversality, and it is
+  exactly the hypothesis that `BaireGenericAvoidance` consumes.
+
+The zero-set input is upgraded from a dimension bound to a parametrisation:
+`lipschitzOnWith_invFunOn` and `subset_image_invFunOn` turn the antilipschitz projection of the
+previous section into an actual Lipschitz chart, a countable subcover
+(`TopologicalSpace.isOpen_iUnion_countable`) makes it global on the noncritical part, and induction
+on the total degree gives
+
+> **`isLipschitzCovered_setOf_eval_eq_zero`.**  The zero set of a nonzero `P ∈ ℝ[x_v : v ∈ ι]` is
+> covered by countably many Lipschitz images of subsets of `ℝ^{card ι - 1}`.
+
+With `IsLipschitzCovered.piFin` this gives the codimension of a product of `N` row conditions
+directly.  In the exact shape of step 3 that is
+
+> **`isLipschitzCovered_pi_zeroSets`.**  If on `J` of the `N` independent copies of the row jet space
+> a nonzero polynomial equation is imposed, the solution set is covered in dimension
+> `N · card ι − card J`.
+
+This is inequality `(1)` of the card, in real codimension: since `N` is free, taking `N` past
+`q + card J`-many rows makes the codimension exceed the real dimension `2m` of shift-configuration
+space, and `dense_compl_of_isLipschitzCovered` converts that into density of the good gauges.  What
+remains is the *fibered* form — the charts of the individual row conditions have to forget a jet
+coordinate rather than a coefficient coordinate, so that the incidence set over the projective
+coefficient parameter is a fiber product of charts over a common base — together with the Hermite
+interpolation that makes the jet map a submersion.
+
+## A stratification-free replacement for step 3: disjoint determinant blocks
+
+The incidence variety over `P^(R-1)` in step 3 is what forces the fibered form.  It can be removed
+entirely, at no cost in the conclusion.
+
+Linear dependence of the `R` supported functions implies that **every** `R × R` minor of the
+evaluation matrix vanishes.  Partition the `N` evaluation rows into `floor(N/R)` **disjoint** blocks
+of `R` rows.  The minors of distinct blocks involve **disjoint** groups of row-jet variables, so the
+rank-defect locus is contained in a decoupled system
+
+```text
+B  subset  {x in X^N : det_b(x)=0 for every block b},
+```
+
+one nonzero polynomial equation per block, on independent copies of `X`.  That is exactly the shape
+of `isLipschitzCovered_pi_zeroSets`, so
+
+```text
+IsLipschitzCovered (N·dim_R X - floor(N/R)) B,
+```
+
+and choosing `N = R·(2m+1)` makes the codimension `2m+1`, strictly larger than the real dimension
+`2m` of `Conf_m(C)`.  No projective parameter, no incidence variety, no Whitney stratification, and
+no fibered covering calculus are needed.
+
+The one input this needs is that each block determinant is a nonzero polynomial.  Treating the
+evaluation points `z_a` as variables as well,
+
+```text
+det_b = sum_sigma sgn(sigma) prod_s z_s^(k_(sigma(s))) x_s^(alpha_(sigma(s))),
+```
+
+and two permutations produce the same monomial in `(z, x)` exactly when
+`M_(sigma(s)) = M_(tau(s))` for every `s`, i.e. exactly when `sigma = tau`, because the `R`
+expanded differential monomials are distinct.  So no cancellation occurs and `det_b` is a nonzero
+polynomial in `(z, x)`; a choice of evaluation points off its zero set — which exists because a
+nonzero polynomial does not vanish identically — makes `det_b(z, ·)` a nonzero polynomial in the
+row jets.
+
+With this replacement the remaining formalization of the theorem is:
+
+1. distinct monomials give a nonzero block determinant (no-cancellation, above);
+2. a choice of evaluation points making every block determinant nonzero in the jets;
+3. `isLipschitzCovered_pi_zeroSets` on the disjoint blocks, then
+   `dense_compl_of_isLipschitzCovered`;
+4. Hermite interpolation making the polynomial-to-jet map a local diffeomorphism, to transport the
+   bound from jet coordinates to gauge coordinates;
+5. the reduction of an arbitrary differential relation over `C(z)` to a finite monomial support, and
+   the countable Baire assembly, which `BaireGenericAvoidance` already provides.
+
+### Lean progress — steps 1–3 of that route are closed, and the transport is in place
+
+1. **The block determinant is a nonzero polynomial.**  Already corpus-owned:
+   `GaloisForLFunctions.HTGeometry.blockMonomialMatrix_det_ne_zero` (`BlockMonomialDeterminant.lean`)
+   proves exactly the no-cancellation statement — distinct monomials evaluated on disjoint variable
+   blocks give a determinant whose permutation terms are pairwise distinct monomials, because the
+   block exponent recovers the permutation (`blockExponent_injective`).  Taking the monomial variable
+   type to be the evaluation-point slot together with the jet slots puts the card's
+   `M_j(z,Y) = z^(k_j) Y^(alpha_j)` in exactly that form.
+
+2. **A choice of evaluation points.**  `exists_partial_specialization_ne_zero`
+   (`PolynomialZeroSetDimension.lean`): a nonzero polynomial stays nonzero after specializing any
+   subset of its variables at a point where it does not vanish.  Applied to the block determinant
+   with the evaluation-point variables specialized, this produces the `z_a` for which every block
+   determinant is a nonzero polynomial in the row jets.
+
+3. **The codimension.**  `isLipschitzCovered_pi_complex_zeroSets`
+   (`LipschitzCoveredDimension.lean`): `B` independent complex row equations cut the real dimension
+   by `B`.  With `J = univ` and one block determinant per block this is the card's `(1)`, in the
+   form the Baire step consumes:
+   `IsLipschitzCovered (B·(2 dim_C X) − B)` for the rank-defect locus, and
+   `dense_compl_of_isLipschitzCovered` turns `B > 2m` into density of the good gauges.
+   The complex layer rests on `isLipschitzCovered_setOf_complex_eval_eq_zero` and
+   `isLipschitzCovered_univ_complex`.
+
+4. **The transport from jets to gauges.**  `IsLipschitzCovered.preimage`: if every point of the
+   parameter space has a neighbourhood on which the jet map admits a Lipschitz left inverse, the
+   preimage of a covered set is covered in the same dimension.  The Hermite half of that hypothesis
+   is corpus-owned and is even linear: `windowJetMap` is a linear isomorphism from the degree window
+   `[N, N + K·m)` onto the jets of order `< m` at `K` distinct nonzero nodes
+   (`windowJetMap_injective`, `windowJetMap_surjective`, `exists_windowLin_jets`, in
+   `HighDegreeJetFreedom.lean`).
+
+What is left is the analytic half of step 4 — the triangular local biholomorphism from the jets of
+`g` to the jets of `W exp(g)` at a point where `W` does not vanish — together with the monomial
+bookkeeping of step 5 (a differential relation over `C(z)` reduces to a finite expanded support) and
+the countable Baire assembly, which `BaireGenericAvoidance` already supplies.
+
+### The analytic half of step 4 needs only Leibniz, not Faa di Bruno
+
+The card describes the jet map `p |-> j^r(W exp(g_0+p))` as triangular with diagonal the function
+value.  Written that way it needs the Bell/Faa di Bruno expansion of `(exp g)^(l)`.  It does not:
+only the *derivative* of the jet map is needed for the inverse function theorem, and that derivative
+is linear with no exponential in it.
+
+Along `p_t = p + t q`,
+
+```text
+d/dt|_0  W exp(g_0 + p + t q) = W exp(g_0+p) · q = F · q,
+```
+
+so the differential of `Psi_c : c |-> (j^r_{z_a+h_i} F)` is
+
+```text
+dPsi(c) : delta |-> ( j^r (F · windowLin delta) ).
+```
+
+That is the composition of two linear isomorphisms:
+
+* `windowLin`/`windowJetMap`, which is a linear isomorphism from the degree window onto the jets at
+  the nodes (`windowJetMap_injective`, `windowJetMap_surjective`, corpus-owned);
+* the Leibniz map `j^r q |-> j^r (F q)` at one node, which is triangular in the jet order with
+  constant diagonal `F(node)`, hence invertible exactly when `F` does not vanish at the node — which
+  is how the evaluation points were chosen (`W != 0` there, and `exp` never vanishes).
+
+So the only analytic inputs are the Leibniz rule for a finite jet, joint smoothness of
+`c |-> j^r_{z}(W exp(g_0 + windowLin c))`, and mathlib's inverse function theorem; the hypothesis of
+`IsLipschitzCovered.preimage` then holds and the codimension bound transports from jet coordinates
+to gauge coordinates.  No Bell polynomials, no Whitney stratification, and no parametric
+transversality theorem enter the formalization.
+
+The Leibniz half is formalized in `formal/GaloisForLFunctions/HTGeometry/LeibnizJetMatrix.lean`
+(umbrella-wired, axiom-clean):
+
+```text
+leibnizJetCoeff, leibnizJetMatrix
+leibnizJetMatrix_blockTriangular
+det_leibnizJetMatrix              : det = (value of the fixed factor)^m
+det_leibnizJetMatrix_ne_zero      : invertible exactly when that value is nonzero
+iteratedDeriv_mul_eq_leibnizJetMatrix
+                                  : j^l (F·q) = sum_j (Leibniz matrix)_{l,j} · j^j q
+```
+
+so multiplication by the source is a linear isomorphism on jets of any finite order at any point
+where the source does not vanish.  Composed with the corpus's `windowJetMap` isomorphism this is the
+full derivative `dPsi(c)`, and the only remaining input for step 4 is the joint smoothness of the
+parametrised jet together with mathlib's inverse function theorem.
+
+### Lean progress — the exponential jet polynomials, and smoothness of the parametrised jet
+
+The one remaining input of step 4 is that `c |-> j^r_{z_a}(W exp(g_0 + windowLin c))` is smooth with
+invertible derivative.  Both follow from an explicit formula for the jets of an exponential
+composite, now formalized in
+`formal/GaloisForLFunctions/HTGeometry/ExpJetPolynomial.lean` (umbrella-wired, axiom-clean):
+
+```text
+jetShiftDeriv                     -- the derivation X_j |-> X_(j+1) of the jet ring
+hasDerivAt_eval_jets              -- differentiating a polynomial in the jets applies that shift
+expJetPoly                        -- B_0 = 1,  B_(l+1) = D B_l + B_l · X_1
+iteratedDeriv_exp_comp            -- (exp o p)^(l)(x) = exp(p x) · eval (jets of p at x) B_l
+differentiable_iteratedDeriv_of_entire
+```
+
+together with the triangularity that makes the jet map a polynomial shear:
+
+```text
+jetSub l                          -- the subalgebra generated by X_1, ..., X_l
+jetShiftDeriv_mem_jetSub          -- the shift raises the level by one
+pderiv_eq_zero_of_mem_jetSub      -- a derivative above the level kills that subalgebra
+expJetPoly_eq_X_add               -- B_(l+1) = X_(l+1) + (element of jetSub l)
+pderiv_expJetPoly_self            -- so the leading coefficient is 1
+pderiv_expJetPoly_eq_zero         -- and B_l does not involve any jet variable above order l
+```
+
+Consequently the parametrised jet factors as
+
+```text
+c  --windowJetMap-->  jets of p   --E-->  jets of exp(p)   --Leibniz-->  jets of W exp(g_0) exp(p),
+```
+
+the first and third arrows being linear isomorphisms (`windowJetMap_injective/_surjective`,
+`det_leibnizJetMatrix_ne_zero`), and the middle one being
+`E(w)_l = exp(w_0) · eval w B_l`, whose Jacobian is triangular with constant diagonal `exp(w_0)`
+by `pderiv_expJetPoly_self` and `pderiv_expJetPoly_eq_zero`, hence invertible everywhere.  So `Psi`
+is smooth with everywhere invertible derivative, mathlib's inverse function theorem supplies the
+local Lipschitz inverses, and `IsLipschitzCovered.preimage` transports the codimension bound to the
+gauge parameter.
+
+What remains is the assembly: the explicit composite `Psi`, its derivative computation from the two
+triangular matrices, and the step-5 bookkeeping reducing a differential relation over `C(z)` to a
+finite expanded monomial support.

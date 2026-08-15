@@ -118,3 +118,118 @@ limit once and both follow.
   `arithmeticDilation_traceClass_traceNorm_limit_discharged`) still carry hypotheses `hoff`,
   `hdiag_le`, `hdiag_ev` about the actual radial Gram defect `E`.  Instantiating them needs the same
   quantitative row bound `|G_λ(j,k)| ≤ C d₁/(c j k |j−k|)` as the prime-charge card.
+
+## Progress on input **(B)**: the four target constants are now *derived*, not quoted
+
+`formal/GaloisForLFunctions/HTGeometry/HermiteOriginValues.lean` and
+`formal/GaloisForLFunctions/RHTower/HermiteOriginConstraintTargets.lean` (both wired, axiom-clean)
+identify the CCM constraint-coordinate targets with the actual orthonormal Hermite basis the corpus
+already builds in `HermiteOrthogonality.lean`:
+
+```text
+derivative_hermitePoly_succ        p_{n+1}' = 2(n+1) p_n          (Appell law)
+eval_zero_hermitePoly_add_two      p_{n+2}(0) = −((n+1)/π) p_n(0)
+schwartzPair_hermiteSchwartz_self_eq   ⟨h_n, h_n⟩ = n!/(πⁿ√2)
+norm_hermiteSchwartz_toLp_sq       ‖h_n‖² = n!/(πⁿ√2)
+hermiteOriginValue n = p_n(0)/‖h_n‖
+hermiteOriginValue_sq_{zero,two,four,six} = √2, √2/2, 3√2/8, 5√2/16
+abs_hermiteOriginValue_{zero,two,four,six} = 2^{1/4}, 2^{−1/4}, √3·2^{−5/4}, √5·2^{−7/4}
+```
+
+The normalization is the corpus's own self-dual one, `h_n = p_n·e^{−πx²}`, and that is exactly the
+normalization the problem produces: the prolate operator at aperture `λ` scales to the oscillator at
+bandwidth `c = 2πλ²`, so the concentration length is `λ/√c = (2π)^{−1/2}`, an absolute constant, and
+the limiting profile is literally `e^{−πx²}`.  Hence no `(2π)^{1/4}` bookkeeping factor is needed;
+the four constants are `|ĥ_n(0)|`, and `hermiteOriginValue_sq_eq_targetSq_*` proves agreement with
+the squared targets already recorded in `ConstraintCoordinateHermiteValues`.
+
+**What is left of (B)** is only the convergence itself, `ℓ_j(λ) → |ĥ_{4j}(0)|`, i.e. the statement
+that the actual signed prolate mode converges, after the `x = t/√c` rescaling, to the Hermite
+function.  The three ingredients the corpus already owns for it:
+
+- `SlepianSincCommutation.prolateSLAction_sincKernel` — the commuting-operator identity,
+- `HermiteOscillatorEigen.prolateSLAction_hermiteFun` — the exact prolate action on a rescaled
+  Hermite function, `−(2n+1)c·φ` plus a `c`-independent defect,
+- `ConstrainedProlateSignedSpectrum` — the actual signed modes of `P_λ F P_λ`.
+
+The missing link is the identification of the signed modes with prolate-ODE eigenfunctions
+(operator commutation plus simplicity of the prolate spectrum) and the singular-perturbation limit.
+
+### Input **(A)** is smaller than "Fuchs asymptotics"
+
+The three cards do not consume the full Fuchs formula.  What their statements use is only
+
+```text
+d_0/d_1 → 0 ,   d_1/d_2 → 0 ,   d_2 − d_1 ∼ d_2 ,
+```
+
+i.e. **strict scale separation between consecutive `4j` concentration eigenvalues**, plus the
+already-formal Bessel bound.  That is a separation statement of the same type as the radial
+`tendsto_signedModeRadialData_s_zero` the corpus proves by clock-preserving tunneling plus Sonin
+energy — look there before starting a WKB build.
+
+## Progress on input **(C)**: the radial row bound
+
+The parent card `not_new_scientific_knowledge/ccm/ccm-exact-radial-nonstationary-sector-bound.md`
+listed three absent pieces.  All three are now built, wired, axiom-clean:
+
+    HTGeometry/NonstationaryPhaseLowerBound.lean   the first-derivative test in the form
+                                                   |∫ g cos(cξ)| ≤ (…)/(c·m) when |ξ'| ≥ m
+    RHTower/RadialDilatedPhaseSeparation.lean      (2/3)(j−k) ≤ speed(j) − speed(k) and
+                                                   j+k ≤ speed(j) + speed(k), for j,k ≥ 2, x ≥ 1,
+                                                   uniformly in the turning parameter — no
+                                                   differentiation in the index is used
+    HTGeometry/GronwallScaledBound.lean            Grönwall with an arbitrary initial size
+    RHTower/RadialPSWFAmplitudeVariation.lean      A(x) ≤ A(a)exp((1/c)∫‖ψ‖) and the O(V/c)
+                                                   total variation of the interaction amplitudes
+
+What remains for `(8)` is the **assembly**: insert the two-phase decomposition into the product,
+integrate by parts once in each of the four phase branches with the separation `(6)` as the
+nonstationarity constant, and sum.  After that, the arithmetic layer `(9)`–`(10)` is already formal
+in `RadialGramOffDiagonalDecay.lean`, and the two consumers — the prime-charge card and the
+arithmetic-dilation card — reduce to their remaining first-row sector.
+
+### The `(8)` assembly is built
+
+    HTGeometry/NonstationaryPhaseLowerBound.lean   first-derivative test, global and fully local
+    HTGeometry/TwoPhaseOscillatoryProduct.lean     product-to-sum expansion + four-branch estimate
+    RHTower/RadialTwoIndexOscillatoryBound.lean    the same for the exterior radial phases:
+        |∫_a^b U_j U_k| ≤ (four budgets / ((2/3)(j−k))) / c   for 2 ≤ k < j, 1 ≤ a ≤ b, 0 ≤ s ≤ 1/2
+    RHTower/RadialPSWFAmplitudeVariation.lean      real two-branch form of a real solution:
+        (W x).re = radialAmpCos·cos(cx) + radialAmpSin·sin(cx), with derivatives and |·| ≤ 2‖a₊‖
+
+All axiom-clean, all wired.  The remaining step for the actual Gram entries is the composition of
+these amplitudes through the Liouville variable `ξ_s(rx)`, the `x^{−1/2}` geometric prefactor, the
+`d_1` normalization, and the tail beyond a finite interval.
+
+## Progress on the `nonautonomous` card: the Lie--Cartan rank bound
+
+`HTGeometry/LieCartanFormalVectorFields.lean` (wired, axiom-clean) proves the algebraic core of the
+classification the card imports:
+
+    vfBracket f g = f g' − f' g
+    hasOrder_vfBracket                  ord f ≠ ord g ⟹ ord [f,g] = ord f + ord g − 1
+    hasOrder_le_two_of_finiteDimensional
+        a finite-dimensional bracket-closed subspace containing a field of order 0 has
+        every order ≤ 2, hence dimension ≤ 3
+
+mathlib has no theory of Lie algebras of formal vector fields; this is built from scratch on
+`PowerSeries` with an explicit `HasOrder` predicate, so no `ℕ∞` arithmetic is involved.  What
+remains of the parent theorem is the conjugation to the normal forms `⟨∂⟩`, `⟨∂, z∂⟩`,
+`⟨∂, z∂, z²∂⟩` and the groupoid-side translation into `(4)`–`(6)`.
+
+## Progress on the `helson` card
+
+The card is much further along than "three published inputs": Pong's conclusion for `Z_χ` itself and
+the labelled isomorphism `Φ_(χ,ψ)` are already formal and unconditional, as are density, codensity,
+`boundary(M) = Ω`, nowhere-continuity and the no-continuous-factorization theorem.  Two items were
+open: `Haar(M) = 0` (Saksman--Webb/Seip) and Andersson's divisor surjectivity.
+
+`HTGeometry/FiniteModificationZeroOne.lean` (wired, axiom-clean) reduces the first one:
+
+    measurableSet_limsup_of_invariant     finite-modification invariance ⟹ tail event
+    measure_eq_zero_or_one_of_invariant   ⟹ measure 0 or 1 under independent coordinates
+    iIndep_coordSigma_infinitePi          coordinates of a product measure are independent
+
+Since changing finitely many prime phases multiplies `Z_χ` by a finite Euler factor — meromorphic on
+the plane — `M` is a tail event, so `Haar(M) ∈ {0,1}` and only `Haar(M) ≠ 1` remains.

@@ -15,7 +15,10 @@ that name and its relative links deepened by one level.  Inbound links are repai
 restricted-Weil trace", "specialist novelty review", "3 → 4 publication-ready") do not block
 promotion; gates that name missing Lean do.
 
-## A. Promoted (70 of 104)
+## A. Promoted (96 of 104; 8 cards remain in stage 2)
+
+*This list records the promotions carried out through this ledger.  The stage-2 directory
+itself is the authority on what remains; the eight cards still there are named in section B.*
 
 - `suzuki-affine-resolvent-krein-defect`
 - `suzuki-affine-sewn-weil-robin-far-tail-factorization`
@@ -42,9 +45,9 @@ promotion; gates that name missing Lean do.
 - `suzuki-dyadic-orbit-chart-h1-coverage`
 - `suzuki-finite-morse-resolvent-jet-completion`
 - `suzuki-finite-shift-flat-projective-resolvent-holonomy`
-- `suzuki-full-frequency-neumann-holonomy-survivor`
 - `suzuki-flat-primitive-flux-volterra-liouville`
 - `suzuki-forced-gamma-upper-strip-gluing`
+- `suzuki-full-frequency-neumann-holonomy-survivor`
 - `suzuki-gamma-three-grade-delay-root-observability`
 - `suzuki-gamma-weighted-tail-coercivity`
 - `suzuki-global-local-compound-bezoutian-weld`
@@ -77,6 +80,7 @@ promotion; gates that name missing Lean do.
 - `suzuki-rectangular-positive-arch-lag-completion`
 - `suzuki-rectangular-ward-defect-semiboundedness`
 - `suzuki-resolvent-jet-homogeneous-plucker-tomography`
+- `suzuki-root-retained-exterior-dilation`
 - `suzuki-screw-cesaro-curvature-recurrence`
 - `suzuki-screw-compact-hull-parity-law`
 - `suzuki-shift-spectral-monotone-likelihood-transfer`
@@ -113,42 +117,16 @@ HTGeometry/HadamardFinitePart.lean                   punctured Cauchy kernel in 
 
 All eight are wired into their area umbrella, build green, and are axiom-clean.
 
-## B. Remaining (37)
+## B. Not yet promoted (8)
 
-- `bv-copoisson-sharp-critical-half-weight-log-flux`
-- `suzuki-arithmetic-tangent-inverse-moment-holography`
-- `suzuki-boundary-log-nonclock-nonflat-tangent`
-- `suzuki-carleman-flat-port-weighted-strip-barrier`
-- `suzuki-complementary-primitive-flux-derivative-recovery`
-- `suzuki-coordinate-cutoff-covariance-classification`
-- `suzuki-coordinate-cutoff-primitive-flux-identity`
-- `suzuki-exact-log-remainder-signed-trace-rigidity`
-- `suzuki-exterior-feshbach-pruning-law`
-- `suzuki-exterior-residual-rigged-wiener-realization`
-- `suzuki-finite-aperture-boundary-phase-locking`
-- `suzuki-flat-primitive-flux-volterra-liouville`
-- `suzuki-gamma-homogeneous-half-log-scattering-classification`
-- `suzuki-gamma-prime-normal-corona-equivalence`
-- `suzuki-gamma-skew-frequency-flux-liouville`
+- `suzuki-coalescing-anchor-parity-locking-reduction`
+- `suzuki-critical-radical-anchor-finite-head-reduction`
 - `suzuki-gamma-wall-block-hardy-and-derivative-scattering`
-- `suzuki-interior-seam-indicial-dipole-exclusion`
 - `suzuki-log-recurrence-polynomial-carrier-trichotomy`
-- `suzuki-neumann-dominated-shift-cone-obstruction`
-- `suzuki-paired-seam-carleman-logistic-normal-form`
-- `suzuki-physical-log-grade-nuclear-summability`
-- `suzuki-polar-remainder-lipschitz-gamma-subcriticality`
-- `suzuki-prime-normal-binomial-resolvent`
-- `suzuki-primitive-flux-nonnormal-graph-reduction`
-- `suzuki-residual-overcrowding-entire-pair-closure`
-- `suzuki-root-retained-exterior-dilation`
+- `suzuki-one-prime-rough-primitive-hardy-closure`
+- `suzuki-polynomial-carrier-gamma-dimension-wall`
 - `suzuki-scalar-analytic-forcing-trace-zero-h1`
-- `suzuki-tempered-orbit-carrier-aperture-recurrence-dichotomy`
-- `suzuki-two-port-return-redundancy-and-interior-null-core`
-- `suzuki-weak-signed-half-log-trace`
 - `suzuki-weil-position-torque-recurrence`
-- `suzuki-wiener-cutoff-closed-graph-relation`
-- `suzuki-wiener-neumann-plancherel-order-repair`
-- `suzuki-wiener-nuclear-boundary-carrier`
 
 Every one is listed in section C with the exact Lean object it still needs.
 
@@ -197,7 +175,6 @@ Each entry names the exact missing Lean object as the card itself states it.
 | `suzuki-physical-log-grade-nuclear-summability` | the exact physical word-profile object `(16)` |
 | `suzuki-polar-remainder-lipschitz-gamma-subcriticality` | Suzuki's literal polar kernel and completed convolution operator |
 | `suzuki-prime-normal-binomial-resolvent` | `(2)`: parameter derivative of the continuous functional calculus of `A_L^{-1/2}` |
-| `suzuki-root-retained-exterior-dilation` | root-retained boundary-log-domain theorem `(23)` |
 | `suzuki-scalar-analytic-forcing-trace-zero-h1` | vector-valued Paley–Wiener strip translation, Gamma-ratio modulus, block `L²` convolution, weak mollifier passage |
 | `suzuki-tempered-orbit-carrier-aperture-recurrence-dichotomy` | `ℓ²(ℤ^d)` weighted shifts, prime-log recurrence, Borel–Cantelli, physical boundary chart |
 | `suzuki-weak-signed-half-log-trace` | half-line/whole-line identity `(6)–(7)`, commutator `(17)`, moving mollifier `(21)`, penalized extrema |
@@ -5742,7 +5719,6 @@ Remaining per-card debt, updated:
 | `gamma-wall-block-hardy-and-derivative-scattering` | Hilbert-valued weighted Hardy inequality `(39)`, cutoff identity `(47)`, equivalence `(45)` |
 | `log-recurrence-polynomial-carrier-trichotomy` | lattice shell summability `(8)`, polynomial shift ratios `(14)`, iterated position commutator `(15)`, polynomial group estimate `(17)`, symbol ellipse `(21)`–`(24)`, Borel–Cantelli aperture theorem `(28)` |
 | `paired-seam-carleman-logistic-normal-form` | the two seam substitutions `(9)`–`(14)` (improper, with difference cancellation), the scalar `∫₀^∞ dv/(1+e^{v-L}) = L + log(1+e^{-L})`, the beta evaluation `m_σ = Γ(1+σ)Γ(1-σ)` and Young's `L²` bound `(7)` |
-| `root-retained-exterior-dilation` | root-retained boundary-log-domain theorem `(23)` |
 | `scalar-analytic-forcing-trace-zero-h1` | vector-valued Paley–Wiener strip translation, Gamma-ratio modulus, block `L²` convolution, weak mollifier passage |
 | `tempered-orbit-carrier-aperture-recurrence-dichotomy` | `(9)` above, the carrier norm `(3)`/`(4)`, intertwining `(15)`–`(19)`, finite-type summability `(26)`, Borel–Cantelli full measure `(27)`, dense Liouville apertures `(28)`–`(31)` |
 | `weil-position-torque-recurrence` | moving-cutoff torque continuity and exponential order, Landau's theorem for the tail transform, the cofinal sign theorem `(19)` |
@@ -8047,3 +8023,172 @@ checked is the coefficient identity relating the differentiated `−1/2` series 
 That identity, not the analysis, is the remaining content.
 
 All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AAL. `root-retained-exterior-dilation` closed and promoted
+
+```text
+HTGeometry/ResolventHalfPowerProfile.lean     (11), (12), (13)
+HTGeometry/ResolventVectorProfile.lean        (7), (8), (10), (14), (30)
+HTGeometry/LogChartEnergyTransfer.lean        (6a)
+HTGeometry/FourierFirstOrderWeight.lean       the H¹ → first-order-weight bridge
+HTGeometry/NonstationaryPhaseIteration.lean   the (25) gain mechanism
+RHTower/SuzukiRootRetainedProjectedSource.lean  (5), (27), (28), (29)
+RHTower/SuzukiRootRetainedEnergyEstimate.lean   (17), (22), (23)
+RHTower/SuzukiRootRetainedTerminalBlocks.lean   (24), (25) summation, (31)
+RHTower/SuzukiRootRetainedJumpSource.lean       (20), (26)
+```
+
+**The differentiation family, which removes the need for new binomial series.**  Section AAK
+recorded that `(11)` and `(12)` name the resolvent at exponents `−3/2` and `−5/2` and concluded that
+the corresponding generalized binomial series had to be added.  That turned out to be unnecessary,
+and the reason is worth recording.  Write the profile with the scale factored out and an arbitrary
+coefficient weight,
+
+```text
+Π(a, g)(L) = Σ_k binom(2k,k) 4^{-k} 2^{-k} g(k) L^{-(k+a)} T^k .
+```
+
+Differentiating in `L` never leaves this family: it is exactly the substitution
+
+```text
+(a, g) ↦ (a + 1, k ↦ −(k + a)·g(k)) .
+```
+
+Starting at `(1/2, 1)` the first step produces the weight `−(k + 1/2) = −(2k+1)/2` and the second
+`(k+1/2)(k+3/2) = (2k+1)(2k+3)/4`.  Those *are* the coefficient sequences of `(1−s)^{-3/2}` and
+`(1−s)^{-5/2}` against the central binomials, so the classical `−1/2` and `3/4` constants of `(11)`
+and `(12)` are produced by the differentiation itself.  No coefficient identity has to be proved and
+no second series has to be constructed — the general family collapses the whole tower into one
+termwise-differentiation lemma, `hasDerivAt_resolventProfileG`, with `summable_of_le_polyGeom`
+discharging the majorant for every weight of at most quadratic growth.
+
+**The correct majorant carries the vector too.**  A first attempt bounded only the scalar
+coefficient and then tried to absorb `‖T^k‖`; the geometric ratio must be `‖T‖/(2L₀)`, so the
+majorant has to be formed for the whole term `resolventCoeffG a g k L • T^k`.  The clean statement
+is the one at the evaluation point itself, `‖term‖ ≤ |g k| (‖T‖/2L)^k L^{-a}`, from which the
+uniform ray bound follows by monotonicity in *both* factors; going the other way round
+(`L₀^{-a} ≤ L^{-a}`) is false for `a ≥ 0` and was the first thing to break.
+
+**Projection is a tail shift, and that is the whole grade-one gain.**  With `Pβ = 0` the `k = 0`
+term of the vector profile dies and nothing else does, so `P Π(L)β` is the `k ≥ 1` tail.  Summing
+the tail geometrically on the ray `L ≥ ‖T‖`, where `ρ = ‖T‖/2L ≤ 1/2` and hence `ρ/(1−ρ) ≤ 2ρ`,
+gives `(10)` with the explicit constant `‖P‖‖T‖‖β‖`.  `(14)` and `(30)` are the same statement read
+as a path expansion: projection deletes grade zero, not any adjacency word.
+
+**The energy estimate needs no operator hypotheses at all.**  Stated for the three paired *values*
+— position, jump, adjacency — rather than for operators, it reads: coercivity `μ‖v‖² ≤ Re⟪Mv, v⟫`,
+accretivity `0 ≤ Re⟪Rv, v⟫` and boundedness `‖Tv‖ ≤ τ‖v‖` give `(μ − τ)‖v‖ ≤ ‖w‖`.  In that form a
+cut-off equation is covered verbatim: the residual simply joins `w`.  The forced equation `(17)` is
+pure algebra on the same values.
+
+**`(20)` is a one-derivative statement, and the derivative is the Fourier weight.**  `(19)` already
+gave `‖r·u‖₂ ≤ S‖(1+|ξ|)u‖₂`.  What was missing is that the first-order weight of a transform is
+the transform of the derivative: `|ξ|‖𝓕v(ξ)‖ = (2π)⁻¹‖𝓕(v')(ξ)‖`, from `Real.fourier_deriv`.  So a
+profile with square-integrable value and derivative has square-integrable jump.  Note that the
+`ℝ≥0∞` route needs measurability to split the sum, and it is free here: the transform of an
+integrable profile is continuous.
+
+**`(25)` splits into a gain and a summation, both now unconditional.**  Against `e^{iLη}` the phase
+antiderivative is the phase over `iL`, so one integration by parts on an amplitude vanishing at the
+block endpoints trades one derivative for one factor `|L|⁻¹`; iterating along an explicitly supplied
+chain of derivatives gives `|L|^{-N}` against the `N`-th mass.  Stating the chain explicitly, rather
+than through iterated differentiability, keeps the induction to four lines and matches how the
+amplitudes actually arise.  Separately, a block bound `C 2^{j(m+1/2−N)}(L+j)^{-N}` is geometric in
+`j` precisely when `N > m + 1/2` — and `m ≥ 0` is needed, since without it `N` can be negative and
+`(L+j)^{-N}` grows.  What is *not* formalized is the bookkeeping that reads `C_{m,N}` off the
+explicit nonstationary Gamma representation; that representation belongs to the open source-core
+gate, and the certificate says so.
+
+**`(6a)` is a genuine theorem in both directions.**  The chart identity
+`∫‖∂_r u‖² dr = ∫ e^{L}‖F'(L)‖² dL` follows from `integral_image_eq_integral_abs_deriv_smul` on
+`Ioi L₀` once the image `Ioo 0 e^{-L₀}` and injectivity are established.  Its converse half — that
+polynomial decay never suffices for the spatial norm — is `tendsto_exp_div_rpow_atTop`: past some
+point the integrand exceeds `1`, and `Ioi` has infinite measure.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.  The card is promoted; its four
+remaining gates (source identification, global cutoff intertwining, the weighted trace-zero upgrade,
+two-port return injectivity) are open research, not missing Lean.
+
+## AAM. `(15)` and `(21)` of the wall-block card: the coercive resolvent and its Laplace form
+
+```text
+HTGeometry/CoerciveOperatorInverse.lean         (15) invertibility + reciprocal bound
+HTGeometry/AccretiveSemigroupDecay.lean         ‖e^{-sB}‖ ≤ e^{-μs}
+HTGeometry/ResolventLaplaceRepresentation.lean  (21) (B+L)⁻¹ = ∫₀^∞ e^{-Ls}e^{-sB} ds
+```
+
+**The floor is the whole hypothesis.**  `(15)` asks for invertibility of `C(x,L) = B(x+iσ) + L·I`
+with `‖C⁻¹‖ ≤ 1/(log(1+|x|)+L−C)`.  Nothing about `B` is needed beyond a numerical-range floor:
+`c‖u‖² ≤ Re⟪Au,u⟫` gives `c‖u‖ ≤ ‖Au‖` by Cauchy–Schwarz, hence injectivity and — via
+`AntilipschitzWith.isClosed_range` — closed range; and a vector orthogonal to the range is
+orthogonal to *its own* image, so the floor forces it to vanish and the range is everything.  The
+inverse then inherits the bound verbatim.  `exists_inverse_of_shifted` packages the card's shape:
+scalar part with real part `≥ μ`, self-adjoint part bounded by `τ`, shift `L`, floor `μ + L − τ`.
+
+**The semigroup bound is one differentiation.**  `‖e^{-sB}u₀‖² ` has derivative exactly
+`−2 Re⟪B u(s), u(s)⟫ ≤ −2μ‖u(s)‖²`, so `e^{2μs}‖u(s)‖²` is antitone and `‖e^{-sB}‖ ≤ e^{-μs}`.  No
+spectral theory: `hasDerivAt_exp_smul_const` plus `HasDerivAt.inner` plus
+`antitone_of_deriv_nonpos`.  The one subtlety is that the exponential's derivative comes out as
+`exp(s•(−B)) * (−B)`, which must be commuted past `B` — `Commute.exp_left` on
+`(Commute.refl B).smul_left` — before it reads as `−B u(s)`.
+
+**`(21)` is the fundamental theorem of calculus on a ray.**  The orbit
+`v(s) = e^{-Ls}e^{-sB}u` obeys `v' = −(B+L)v`, `v(0) = u`, and `‖v(s)‖ ≤ e^{-(μ+L)s}‖u‖`, so with
+`μ + L > 0` it is integrable on `Ioi 0` and vanishes at infinity.  Then
+`integral_Ioi_of_hasDerivAt_of_tendsto` gives `∫ v' = 0 − u`, and
+`ContinuousLinearMap.integral_comp_comm` moves `(B+L)` outside, leaving
+`(B+L)(∫₀^∞ v) = u`.  This is exactly the representation the card needs, and it is the reason a
+shift that grows with the frequency contributes an exponential gain in `s` rather than only a
+reciprocal.
+
+**Lean note.**  Every composition of a `ℂ`-continuous-linear map with a curve `ℝ → X` needs
+`restrictScalars ℝ` before `HasFDerivAt.comp_hasDerivAt` will unify — the composition lemma is over
+the curve's scalar field, not the operator's.  Likewise `ContinuousLinearMap.integral_comp_comm`
+must be fed the `ℝ`-restriction.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.  Still open on Theorem 1:
+`(3)`/`(4)` the Stirling and polygamma bounds on `H` and `B`, `(13)` variation of constants,
+`(16)` the finite-interval weighted Hardy estimate, `(17)`–`(19)` the two integrations by parts and
+the derivative bounds on `C⁻¹`, `(22)` the Plancherel–Minkowski step, and `(23)` the tail estimate.
+
+## AAN. `(16)`, `(19)`, `(23)` of the wall-block card
+
+```text
+HTGeometry/FiniteWindowAverage.lean            (16) the bounded frequency window
+HTGeometry/InverseFamilyDerivative.lean        (19) the derivatives of C⁻¹
+RHTower/SuzukiGammaWallTailEstimate.lean       (23) the surviving tail
+```
+
+**`(16)` costs exactly one window length.**  On a bounded window Cauchy–Schwarz gives
+`(∫_S G)² ≤ |S|∫_S G²`, so a profile dominated by `M∫_S G` has squared mass at most `M²|S|²∫_S G²`.
+No decay of the propagator is used — only its uniform bound on the window — which is why the card's
+finite-interval estimate pays `X_m` and nothing more.  Stated in `ℝ≥0∞`, so the profile needs no
+measurability; only the dominating density does.
+
+**`(19)` is one lemma about inverses, not three estimates.**  Differentiating an inverse family
+costs one extra copy of the inverse each time:
+
+```text
+(C⁻¹)'  = −C⁻¹C'C⁻¹,
+(C⁻¹)'' = 2C⁻¹C'C⁻¹C'C⁻¹ − C⁻¹C''C⁻¹,
+[C⁻¹(C⁻¹)']' = (C⁻¹)'(C⁻¹)' + C⁻¹(C⁻¹)''.
+```
+
+so `‖(C⁻¹)'‖ ≤ ‖C⁻¹‖²‖C'‖`, `‖C⁻¹(C⁻¹)'‖ ≤ ‖C⁻¹‖³‖C'‖`, and the card's `A₂` obeys
+`‖A₂‖ ≤ 3‖C⁻¹‖⁴‖C'‖² + ‖C⁻¹‖³‖C''‖`.  Feeding the card's `‖C⁻¹‖ ≤ 1/log(1+|t|)` and
+`‖C^{(j)}‖ ≤ C_j(1+|t|)^{-j}` reproduces its three displayed bounds.  Two Lean notes: mathlib's
+`hasFDerivAt_ringInverse` is stated at a *unit*, so the point must be rewritten to `↑x` before
+composing with the curve; and `ring` cannot close these identities — the algebra is
+noncommutative, so `noncomm_ring` is required.
+
+**`(23)` collapses the card's three regimes into one.**  Read the surviving tail as a Hardy average
+with density `h(t) = (1+t)^p t^{-1-p}`.  On a terminal ray `1 + t ≤ 2t`, so `h(t) ≤ 2^p t⁻¹` and
+`∫₁^∞ h² ≤ 4^p∫₁^∞ t^{-2} < ∞` for *every* `p ≥ 0`.  The already-owned Hardy transfer
+(`lintegral_enorm_sq_lt_top_of_hardyBound`) then gives square integrability for every `p > 1/2`
+directly — the case split `p<1`, `p=1`, `p>1` in the paper proof is an artefact of estimating the
+inner integral by hand, and disappears once the propagator is absorbed into the Hardy average.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.  Theorem 1 now needs only
+`(3)`/`(4)` (the Stirling and polygamma bounds on `H` and `B`), `(13)` (variation of constants),
+`(17)`/`(18)` (assembling the two integrations by parts from the pieces above), and `(22)` (the
+Plancherel–Minkowski step through the Laplace representation `(21)`).

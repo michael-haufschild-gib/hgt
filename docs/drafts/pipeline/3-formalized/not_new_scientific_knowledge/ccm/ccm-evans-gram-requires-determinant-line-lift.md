@@ -6,7 +6,7 @@
 > `suzuki-completed-zero-mode-corona-seam-law.md`.
 
 - **ID:** `ccm-evans-gram-requires-determinant-line-lift`
-- **Stage:** 2-fully-proven / not-new
+- **Stage:** 3-formalized (paper proof; Lean certificate alongside)
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parents:** exterior algebra, Fredholm determinant lines, spectral flow, and
@@ -149,3 +149,49 @@ complex and the comparison `(5)` are absent from Lean, so no wrapper is added.
 - [ ] transport the prime--Gamma source orientation through that quasi-isomorphism
 - [ ] prove zero spectral flow through all apertures
 - [ ] RH
+
+## Lean status
+
+**Formalized unconditionally, 2026-08-15**, in
+`formal/GaloisForLFunctions/RHTower/CCMEvansDeterminantLine.lean`, on new reusable infrastructure
+`formal/GaloisForLFunctions/HTGeometry/ComplexGramPlucker.lean`.  The earlier decision ("the
+analytic Fredholm complex and the comparison `(5)` are absent from Lean, so no wrapper is added")
+measured the wrong thing: `(3)`, `(4)` and the whole obstruction are finite linear algebra over `ℂ`,
+and none of them needs the analytic complex.
+
+- `hermFeatureMinor`, `hermFeatureWedge`, `hermFeatureGram`, `hermPluckerNormSq`, `finiteHermDual`,
+  `hermFeatureWedgeDual` — the maximal coordinate minors, the top exterior power, the Hermitian Gram
+  matrix, and the exterior dual pairing.
+- **`det_hermFeatureGram_eq_pluckerNormSq`** — equation `(3)`: complex Cauchy–Binet, absent from
+  mathlib.  The Gram determinant equals `∑_s |minor_s|²`, that is, the squared norm of the top
+  exterior power in the induced coordinate basis of the exterior power.  The proof pairs the
+  exterior dual wedge of the Hermitian row functionals against the feature wedge, expands in the
+  exterior basis, and uses that the dual wedge reads each basis vector as the conjugate of the
+  matching minor.
+- **`det_hermFeatureGram_ne_zero_iff`**, **`hermFeatureWedge_eq_zero_iff`**,
+  **`det_evansGram_ne_zero_iff`**, **`evansPlucker_eq_zero_iff`** — equation `(4)`: the Pluecker
+  vector vanishes exactly when the presentation has a kernel, and so does the Gram determinant.  The
+  Gram half is proved directly from the Hermitian energy identity
+  `∑_i conj(c_i)(G c)_i = ∑_k |∑_j c_j v_j(k)|²`, so no exterior-power independence lemma is needed.
+- `det_evansGram_eq_nonneg_real`, `hermPluckerNormSq_nonneg` — the Gram determinant is a nonnegative
+  real.
+- **`finrank_exteriorPower_evansExcessTarget`**, **`one_lt_finrank_exteriorPower_evansExcessTarget`**,
+  **`not_nonempty_linearEquiv_exteriorPower_evansExcessTarget`** — the obstruction of the paragraph
+  after `(4)`: `dim ⋀^{d} Y = binomial(d+3, d) > 1` at every positive `d`, so `⋀^{d} Y` is not a
+  line and admits no linear isomorphism with the scalars.  `P_a` is therefore not a section of a
+  determinant line.
+- **`evansPlucker_update_neg`**, **`hermPluckerNormSq_update_neg`**, **`det_evansGram_update_neg`** —
+  "squaring its norm removes crossing orientation", as a theorem: reversing the sign of one source
+  vector reverses the Pluecker vector and leaves the Gram determinant unchanged.
+- **`exists_scalar_extraction_disagreement`** — "changing a basis of the complement changes any
+  scalar extracted from `P_a`", in its sharpest form: at every kernel-free presentation there are two
+  scalar extractions of `P_a`, one nonzero and one vanishing.  A scalar read off the rectangular
+  Pluecker vector therefore does not detect the kernel, while the Gram determinant does.
+
+All statements are unconditional: `#print axioms` returns only
+`[propext, Classical.choice, Quot.sound]`.
+
+Not formalized, and imported rather than proved here: the exact finite Evans reduction identifying
+`ker M_a` with `ker G_a`, which is the content of `ccm-rational-residual-finite-evans-matrix-law.md`;
+and the analytic Fredholm determinant line with its crossing form, which is the missing carrier the
+card names.

@@ -38,6 +38,10 @@ tree.
 | `ccm-rayleigh-transfer-collapses-to-spectral-floor` | `CCMCofinalFloorCriterion` |
 | `ccm-suzuki-deficiency-line-zero-shift-floor-equivalence` | `CCMDeficiencyLineZeroShift` |
 | `ccm-weil-exterior-tail-quotient-gate` | `CCMWeilRadicalTailQuotient` |
+| `ccm-evans-gram-requires-determinant-line-lift` | `HTGeometry.ComplexGramPlucker` (new), `CCMEvansDeterminantLine` (new) |
+| `ccm-fredholm-schur-resolvent-carrier-law` | `HTGeometry.SchurComplementKernel` (new) |
+| `ccm-shift-covariant-pole-divisor-capacity-law` | `CCMShiftCovariantPoleDivisorCapacity` (new) |
+| `ccm-prime-free-aperture-characteristic-pair-law` | `CCMPrimeFreeApertureCharacteristicPair` (new) |
 
 ## Open — Lean to be built
 
@@ -57,11 +61,9 @@ Each entry names the statements the card proves that must be formalized.
 | `ccm-euler-gamma-radon-nikodym-frame-law` | the Radon–Nikodym frame identity |
 | `ccm-euler-observability-relative-index-allocation-law` | relative index allocation in a source-defined finite realization |
 | `ccm-euler-pick-logderivative-transfer-boundary-law` | positivity of the logarithmic-derivative Pick transfer for even real-rooted factors |
-| `ccm-evans-gram-requires-determinant-line-lift` | the obstruction: Gram data alone does not determine the determinant line |
 | `ccm-exact-high-radial-first-row-bv-bound` | high-radial first-row bounded-variation bound |
 | `ccm-exact-radial-nonstationary-sector-bound` | off-diagonal radial Gram nonstationary sector bound |
 | `ccm-exterior-inverse-symbol-graph-norm-law` | exterior inverse-symbol graph-norm law |
-| `ccm-fredholm-schur-resolvent-carrier-law` | Fredholm–Schur resolvent carrier law |
 | `ccm-gamma-damped-cauchy-frame-trace-law` | Gamma-damped Cauchy frame trace law |
 | `ccm-gauss-paired-quantized-differential-incidence-law` | retention of local incidence under a finite product of commuting unitary local-ratio multipliers |
 | `ccm-generic-ground-separating-incidence-law` | open dense set of separating ground states in the compressed prime-shift space |
@@ -76,7 +78,6 @@ Each entry names the statements the card proves that must be formalized.
 | `ccm-logderivative-closed-two-channel-graph-law` | the closed two-channel graph of the completed logarithmic source |
 | `ccm-poisson-jensen-outer-defect-rh-law` | Poisson–Jensen outer defect law |
 | `ccm-polar-euler-frame-minus-level-law` | `(2)`–`(16)` of the polar Euler frame minus-level law |
-| `ccm-prime-free-aperture-characteristic-pair-law` | `(2)`–`(3)`: `a₀ > 0` and the symmetric real characteristic pair of `W_a` |
 | `ccm-prime-log-crowding-separating-margin-law` | prime-log crowding separating margin |
 | `ccm-prime-source-ground-incidence-response` | ground incidence response of the prime source |
 | `ccm-prolate-endpoint-jet-resummation-law` | endpoint jet resummation |
@@ -92,7 +93,6 @@ Each entry names the statements the card proves that must be formalized.
 | `ccm-restricted-weil-square-evans-determinant-law` | restricted Weil square Evans determinant law |
 | `ccm-safe-kernel-diagonal-fock-lift-rh-law` | safe-kernel diagonal Fock lift |
 | `ccm-screw-null-global-log-regularity-law` | global log regularity of screw null vectors |
-| `ccm-shift-covariant-pole-divisor-capacity-law` | shift-covariant pole-divisor capacity law |
 | `ccm-sonin-log-position-edge-trace-correction-law` | distributional edge identity `(3)` in a tempered-distribution pairing; Sobolev step completing `(14)` |
 | `ccm-sonin-three-grade-relative-carrier-law` | `(11)` and the bundling of the three grades |
 | `ccm-source-normalized-nonschatten-birman-schwinger-line-law` | source-normalized non-Schatten Birman–Schwinger line law |
@@ -102,3 +102,20 @@ Each entry names the statements the card proves that must be formalized.
 | `ccm-unit-riesz-mobius-wavelet-reduction` | the wavelet reduction beyond the already-formalized cell algebra |
 | `ccm-universal-boundary-laplace-frame-saturation-law` | universal boundary Laplace frame saturation |
 | `ccm-weierstrass-stabilized-square-evans-line-law` | Weierstrass-stabilized square Evans line law |
+
+
+## Reusable infrastructure added while closing these cards
+
+- `HTGeometry/RealQuadraticMargin.lean` — uniform margin of a negative definite real quadratic form,
+  and stability of negative definiteness under a small entrywise perturbation.
+- `HTGeometry/ComplexGramPlucker.lean` — complex Cauchy–Binet: the Hermitian Gram determinant is the
+  squared Pluecker norm; kernel detection.
+- `HTGeometry/SchurComplementKernel.lean` — Schur-complement kernel isomorphism and its determinant
+  form.
+
+## Working note
+
+The corpus is very large.  Before building anything, grep `formal/LEAN_API.md` for the *concept*, not
+only for the card's own wording: the vertical digamma coercivity needed by the prime-free aperture
+card was already in `RHTower/DigammaVerticalLogGrowth.lean` under a name none of the card's keywords
+would surface.

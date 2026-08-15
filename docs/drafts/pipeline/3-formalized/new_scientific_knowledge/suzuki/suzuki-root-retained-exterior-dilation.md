@@ -1,7 +1,7 @@
 # Retaining Suzuki's endpoint roots makes the strict-interior Gamma carrier boundary-log regular
 
 - **ID:** `suzuki-root-retained-exterior-dilation`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** EXACT EXTERIOR DILATION / PHYSICAL-DOMAIN THEOREM
 - **Scientific status:** `[PROVED HERE] [NEW SCIENTIFIC KNOWLEDGE]`
   `[NOVELTY UNVERIFIED] [NOT RH]`

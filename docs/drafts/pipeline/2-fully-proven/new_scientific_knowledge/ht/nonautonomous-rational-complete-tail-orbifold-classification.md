@@ -879,3 +879,52 @@ is `affineConnection_projectivization_transport` together with
 building the theory of transitive Lie pseudogroups and `D`-envelopes on a curve, which mathlib does
 not have in any form.  The card stays at `2-fully-proven` until that layer exists; nothing else in
 the proof is open.
+
+## Lean progress — the algebraic core of the Lie--Cartan classification
+
+`formal/GaloisForLFunctions/HTGeometry/LieCartanFormalVectorFields.lean` (wired, axiom-clean) builds
+the order calculus that forces the rank bound behind `(4)`--`(6)`.  A formal vector field on a line
+is `f ∂` with `f` a power series, and
+
+```text
+vfBracket f g = f g' − f' g .
+```
+
+The whole rigidity comes from one computation:
+
+```text
+coeff_vfBracket_of_hasOrder   coeff (a+b−1) [f,g] = (b − a)·(coeff a f)(coeff b g)
+hasOrder_vfBracket            ord f = a ≠ b = ord g  ⟹  ord [f,g] = a + b − 1
+```
+
+In characteristic zero the factor `b − a` never vanishes, so no cancellation can occur.  Orders are
+handled by an explicit predicate `HasOrder f n` — `coeff n f ≠ 0` and all earlier coefficients zero
+— so no `ℕ∞` arithmetic appears.
+
+Inside a bracket-closed subspace `L` this gives the two moves of the classification:
+
+```text
+exists_hasOrder_sub_one   an order-zero field lowers any positive order by one   (transitivity)
+exists_hasOrder_add_one   an order-two field raises any order ≥ 3 by one
+exists_hasOrder_of_le     every order below a realized one is realized
+exists_hasOrder_add       a realized order m ≥ 3 realizes m + k for every k
+linearIndependent_of_hasOrder_injective   distinct orders ⟹ linearly independent
+```
+
+and the capstone
+
+```text
+hasOrder_le_two_of_finiteDimensional :
+  L finite-dimensional, bracket-closed, containing a field of order 0
+  ⟹ every field in L has order ≤ 2
+```
+
+so `dim L ≤ 3` and the realized orders are exactly `{0, 1, 2}` — the `G1`/`G2`/`G3` trichotomy's
+rank statement, in the formal-vector-field model.
+
+**What is still missing** for the card's cited parent is the passage from this rank bound to the
+three *rational* normal forms `(4)`, `(5)`, `(6)`: the conjugation of a three-dimensional transitive
+algebra to `⟨∂, z∂, z²∂⟩`, and the groupoid-side statement (a proper transitive rational
+differential groupoid is the invariance groupoid of a `k`-form, an affine connection, or a
+projective connection).  The rank bound is the part that needed new mathematics; the normal forms
+are a conjugation argument on top of it.

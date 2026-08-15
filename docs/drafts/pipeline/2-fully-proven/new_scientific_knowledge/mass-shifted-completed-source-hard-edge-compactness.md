@@ -529,3 +529,96 @@ Its instantiation on the hard-edge family:
 
 Only (CSHC.18)-(CSHC.20) remain: the Cayley angular-momentum operator, the moment bound
 `‖(L_a/a)^m g‖ <= C^m ‖g‖`, and the Paley-Wiener support `supp ghat subset [-2C, 2C]` of the limit.
+
+### (CSHC.18)-(CSHC.19): done
+
+    RHTower/CosinePhaseParseval.lean
+      integral_sin_int_mul                  the full-period integral of an integer-frequency sine
+      integral_cos_shift_mul_cos_shift      orthogonality of phase-shifted cosines
+      cosPhasePoly                          the m-th derivative frame  sum_j b_j j^m cos(j th + m pi/2)
+      hasDerivAt_cosPhasePoly               it really is the derivative frame
+      integral_cosPhasePoly_sq              Parseval for it
+      integral_cosPhasePoly_sq_le           the L^2 Bernstein inequality  ‖q^(m)‖ <= N^m ‖q‖
+
+    RHTower/XiShiftedHardEdgeAngularMomentum.lean
+      routeUCayleyLift                      (U F)(x) = cos(psi(x)/2) F(psi(x))
+      routeUCayleyMomentum_lift             (CSHC.18): ((a^2+x^2)/(2a)) d/dx + x/(2a) acts on lifts
+                                            as d/d(theta) — the real form of L_a, the half-density
+                                            factor supplying exactly the x/(2a) term
+      integral_routeUCayleyLift_sq          the lift is an isometry up to the factor a/2
+      routeUAngularDescendant_zero          the zeroth descendant is the rational hard-edge test
+      integral_routeUAngularDescendant_sq_le_test
+                                            (CSHC.19): ‖A_a^m g‖ <= N^m ‖g‖
+
+### The one remaining step: (CSHC.20)
+
+Mathlib now has Plancherel as an `L^2` isometry (`MeasureTheory.Lp.norm_fourier_eq`), so the
+Paley–Wiener support can be reached without distribution theory, by the plain-derivative route:
+
+1. In the angular chart the plain derivative acts on the profile as
+   `T F = (1/a)·(-(1/2) sin(th) F + (1 + cos th) F')`, which sends a trigonometric polynomial of
+   degree `D` to one of degree `D+1` with `‖T F‖ <= (1/a)(2D + 1/2)‖F‖`.
+2. Iterating, `‖g^{(m)}‖ <= ((2N + 2m)/a)^m ‖g‖`, which for fixed `m` tends to `(2C)^m` along the
+   family because `N <= Ca` and `a -> infinity`.
+3. Plancherel converts this into `int (2 pi |xi|)^{2m} |ghat_j|^2 <= (2C + 2m/a_j)^{2m}`, and Fatou
+   along an a.e.-convergent subsequence of `ghat_j -> ghat` gives
+   `int (2 pi |xi|)^{2m} |ghat|^2 <= (2C)^{2m}` for every `m`.
+4. If `ghat` had positive mass where `2 pi |xi| > 2C` the left side would grow geometrically faster
+   than the right, so `supp ghat` is contained in `2 pi |xi| <= 2C`, i.e. exponential type `2C`.
+
+What has to be built for step 1 is a general trigonometric-polynomial layer: full Parseval for
+`sum_j (b_j cos j th + c_j sin j th)`, closure of the degree filtration under multiplication by
+`sin th` and `cos th` and under differentiation, and the `L^2` Bernstein inequality in that
+generality.  `CosinePhaseParseval.lean` is the cosine half of it.
+
+### (CSHC.20) build: the trigonometric layer
+
+    HTGeometry/ComplexTrigPolynomial.lean          (axiom-clean, wired, built)
+      expMon, integral_expMon, integral_expMon_mul_conj   orthogonality of e^{ik th} on the period
+      trigExp D f                                          the degree-D trigonometric polynomial
+      integral_normSq_trigExp                              Parseval:  int ‖G‖^2 = 2 pi sum ‖f k‖^2
+      hasDerivAt_trigExp                                   d/d th multiplies the k-th coefficient by ik
+      integral_normSq_trigExp_deriv_le                     L^2 Bernstein:  ‖G'‖ <= D ‖G‖
+      TrigSupp, trigExp_eq_of_supp, trigSupp_*             the degree filtration
+      expMon_one_mul_trigExp, expMon_neg_one_mul_trigExp   multiplication by e^{±i th} is the
+                                                           coefficient shift, degree D -> D+1
+
+The complex-exponential encoding was chosen because the shift has no edge case at frequency zero,
+unlike the real cosine/sine description.
+
+Still to write for (CSHC.20):
+
+1. `RealTrigDeg D F := ∃ f, TrigSupp D f ∧ ∀ th, (F th : ℂ) = trigExp D f th`, with closure under
+   the derivative and under multiplication by `sin th` and `cos th` (degree `D+1`), all immediate
+   from the shift lemmas and `cos th = (e^{i th} + e^{-i th})/2`, `sin th = (e^{i th} - e^{-i th})/(2i)`.
+2. Minkowski for `int (A+B)^2` on `[-pi, pi]` — from the corpus's real Cauchy–Schwarz
+   `HTGeometry.sq_integral_mul_le` — giving `‖T F‖ <= (1/a)((1/2) + 2D)‖F‖` for
+   `T F = (1/a)(-(1/2) sin th · F + (1 + cos th) F')`.
+3. The iteration `‖T^m F‖ <= (1/a)^m prod_{i<m}(2(N+i) + 1/2) ‖F‖`, and hence
+   `‖g^{(m)}‖ <= ((2N + 2m)/a)^m ‖g‖` through the Cayley isometry
+   `integral_routeUCayleyLift_sq`.
+4. Plancherel (`MeasureTheory.Lp.norm_fourier_eq`) and Fatou to pass to the limit, then the
+   support conclusion.
+
+### (CSHC.20) build: the real trigonometric layer landed
+
+    HTGeometry/RealTrigDegree.lean                (axiom-clean, wired, built)
+      expMon_one_add_neg_one, expMon_one_sub_neg_one   Euler for the two shift monomials
+      RealTrigDeg D F                                   F real with (F : C) of degree at most D
+      RealTrigDeg.mono / .deriv / .mul_cos / .mul_sin / .add / .smul / .congr / .continuous
+                                                        the closure calculus: differentiating keeps
+                                                        the degree, multiplying by cos or sin raises
+                                                        it by one
+      RealTrigDeg.integral_deriv_sq_le                  L^2 Bernstein for real trig polynomials
+      trigNorm, trigNorm_sq, trigNorm_add_le            the L^2 norm on the period and Minkowski,
+                                                        the latter from the corpus's real
+                                                        Cauchy-Schwarz `sq_integral_mul_le`
+      trigNorm_le_of_sq_le, trigNorm_deriv_le           pointwise domination and Bernstein in norm form
+      trigCayleyStep a F F'                             (1/a)(-(1/2) sin th F + (1 + cos th) F')
+      realTrigDeg_trigCayleyStep                        it raises the degree by exactly one
+      trigNorm_trigCayleyStep_le                        ‖T F‖ <= (1/a)(1/2 + 2D) ‖F‖
+
+Remaining for (CSHC.20): iterate `trigCayleyStep` `m` times (degree `N + m`, norm factor
+`prod_{i<m} (1/a)(1/2 + 2(N+i))`), identify the `m`-fold iterate with the profile of `g^{(m)}`
+through `integral_routeUCayleyLift_sq`, and then apply Plancherel
+(`MeasureTheory.Lp.norm_fourier_eq`) and Fatou to pass to the limit.

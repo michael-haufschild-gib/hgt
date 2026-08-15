@@ -105,11 +105,8 @@ theorem tendsto_xiWardCubicAdaptiveSecantHalfDensity_charge
       (nhds (((345 / 2048 : ℝ) * a) *
         xiWardCubicCoalescentLowerSecantReflectionDefect (2 * a) a ^ 2)) :=
     (hdef.pow 2).const_mul ((345 / 2048 : ℝ) * a)
-  convert hscaled using 1
-  · funext c
-    ring
   rw [cubicLogMomentHellingerHorizontalKernel_eq_adaptiveSecantHalfDensity ha]
-  ring
+  simpa only [mul_assoc] using hscaled
 
 /-- W-H199's pre-divisor holomorphic chamber map generates exactly the doubled horizontal rate
 appearing in the adaptive half-density identity. -/

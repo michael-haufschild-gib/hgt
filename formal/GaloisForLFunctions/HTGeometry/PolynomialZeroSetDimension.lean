@@ -2,6 +2,8 @@ import GaloisForLFunctions.HTGeometry.MvPolynomialSmoothEvaluation
 import Mathlib.Topology.MetricSpace.HausdorffDimension
 import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Analysis.Calculus.LocalExtr.Rolle
+import Mathlib.Algebra.MvPolynomial.Monad
+import Mathlib.Algebra.MvPolynomial.Funext
 
 /-!
 # The Hausdorff dimension of a real polynomial zero set
@@ -407,6 +409,235 @@ theorem dimH_zeroSet_le {ι : Type*} [Fintype ι] [DecidableEq ι] :
 theorem dimH_setOf_eval_eq_zero_le {ι : Type*} [Fintype ι] [DecidableEq ι] (P : MvPolynomial ι ℝ) (hP : P ≠ 0) :
     dimH {x : ι → ℝ | MvPolynomial.eval x P = 0} ≤ ((Fintype.card ι - 1 : ℕ) : ENNReal) :=
   dimH_zeroSet_le P.totalDegree P le_rfl hP
+
+/-! ### Complex polynomial zero sets -/
+
+variable {κ : Type*} [Fintype κ] [DecidableEq κ]
+
+/-- The coefficientwise real part of a polynomial with complex coefficients. -/
+def rePoly (Q : MvPolynomial κ ℂ) : MvPolynomial κ ℝ :=
+  (AddMonoidAlgebra.coeffLinearEquiv ℝ).symm
+    (Finsupp.mapRange Complex.re Complex.zero_re (AddMonoidAlgebra.coeff Q))
+
+/-- The coefficientwise imaginary part of a polynomial with complex coefficients. -/
+def imPoly (Q : MvPolynomial κ ℂ) : MvPolynomial κ ℝ :=
+  (AddMonoidAlgebra.coeffLinearEquiv ℝ).symm
+    (Finsupp.mapRange Complex.im Complex.zero_im (AddMonoidAlgebra.coeff Q))
+
+omit [Fintype κ] [DecidableEq κ] in
+@[simp] theorem coeff_rePoly (Q : MvPolynomial κ ℂ) (d : κ →₀ ℕ) :
+    MvPolynomial.coeff d (rePoly Q) = (MvPolynomial.coeff d Q).re := rfl
+
+omit [Fintype κ] [DecidableEq κ] in
+@[simp] theorem coeff_imPoly (Q : MvPolynomial κ ℂ) (d : κ →₀ ℕ) :
+    MvPolynomial.coeff d (imPoly Q) = (MvPolynomial.coeff d Q).im := rfl
+
+omit [Fintype κ] [DecidableEq κ] in
+theorem support_rePoly_subset (Q : MvPolynomial κ ℂ) : (rePoly Q).support ⊆ Q.support := by
+  intro d hd
+  rw [MvPolynomial.mem_support_iff] at hd ⊢
+  intro hzero
+  exact hd (by rw [coeff_rePoly, hzero, Complex.zero_re])
+
+omit [Fintype κ] [DecidableEq κ] in
+theorem support_imPoly_subset (Q : MvPolynomial κ ℂ) : (imPoly Q).support ⊆ Q.support := by
+  intro d hd
+  rw [MvPolynomial.mem_support_iff] at hd ⊢
+  intro hzero
+  exact hd (by rw [coeff_imPoly, hzero, Complex.zero_im])
+
+omit [DecidableEq κ] in
+theorem eval_rePoly (Q : MvPolynomial κ ℂ) (u : κ → ℝ) :
+    MvPolynomial.eval u (rePoly Q) = (MvPolynomial.eval (fun v => (u v : ℂ)) Q).re := by
+  classical
+  rw [MvPolynomial.eval_eq', MvPolynomial.eval_eq', Complex.re_sum,
+    Finset.sum_subset (f := fun d => MvPolynomial.coeff d (rePoly Q) * ∏ i, u i ^ d i)
+      (support_rePoly_subset Q) (fun d _ hd => by
+        rw [MvPolynomial.notMem_support_iff.mp hd, zero_mul])]
+  refine Finset.sum_congr rfl fun d _ => ?_
+  have hprod : (∏ i, (u i : ℂ) ^ d i) = ((∏ i, u i ^ d i : ℝ) : ℂ) := by
+    push_cast
+    rfl
+  rw [hprod, coeff_rePoly, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero,
+    sub_zero]
+
+omit [DecidableEq κ] in
+theorem eval_imPoly (Q : MvPolynomial κ ℂ) (u : κ → ℝ) :
+    MvPolynomial.eval u (imPoly Q) = (MvPolynomial.eval (fun v => (u v : ℂ)) Q).im := by
+  classical
+  rw [MvPolynomial.eval_eq', MvPolynomial.eval_eq', Complex.im_sum,
+    Finset.sum_subset (f := fun d => MvPolynomial.coeff d (imPoly Q) * ∏ i, u i ^ d i)
+      (support_imPoly_subset Q) (fun d _ hd => by
+        rw [MvPolynomial.notMem_support_iff.mp hd, zero_mul])]
+  refine Finset.sum_congr rfl fun d _ => ?_
+  have hprod : (∏ i, (u i : ℂ) ^ d i) = ((∏ i, u i ^ d i : ℝ) : ℂ) := by
+    push_cast
+    rfl
+  rw [hprod, coeff_imPoly, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, mul_zero,
+    zero_add]
+
+omit [Fintype κ] [DecidableEq κ] in
+theorem rePoly_ne_zero_or_imPoly_ne_zero {Q : MvPolynomial κ ℂ} (hQ : Q ≠ 0) :
+    rePoly Q ≠ 0 ∨ imPoly Q ≠ 0 := by
+  classical
+  by_contra hcon
+  push Not at hcon
+  refine hQ (MvPolynomial.ext _ _ fun d => ?_)
+  have hre : (MvPolynomial.coeff d Q).re = 0 := by
+    rw [← coeff_rePoly, hcon.1, MvPolynomial.coeff_zero]
+  have him : (MvPolynomial.coeff d Q).im = 0 := by
+    rw [← coeff_imPoly, hcon.2, MvPolynomial.coeff_zero]
+  rw [MvPolynomial.coeff_zero]
+  exact Complex.ext hre him
+
+/-- Reading a real point of the doubled index set as a complex point. -/
+def realifyPoint (u : (κ ⊕ κ) → ℝ) : κ → ℂ := fun j => ⟨u (Sum.inl j), u (Sum.inr j)⟩
+
+omit [DecidableEq κ] in
+theorem lipschitzWith_realifyPoint : LipschitzWith 2 (realifyPoint (κ := κ)) := by
+  refine LipschitzWith.of_dist_le_mul fun u u' => ?_
+  refine (dist_pi_le_iff (by positivity)).mpr fun j => ?_
+  have hre : |u (Sum.inl j) - u' (Sum.inl j)| ≤ dist u u' := by
+    have := dist_le_pi_dist u u' (Sum.inl j)
+    rwa [Real.dist_eq] at this
+  have him : |u (Sum.inr j) - u' (Sum.inr j)| ≤ dist u u' := by
+    have := dist_le_pi_dist u u' (Sum.inr j)
+    rwa [Real.dist_eq] at this
+  have hbound : ‖realifyPoint u j - realifyPoint u' j‖
+      ≤ |u (Sum.inl j) - u' (Sum.inl j)| + |u (Sum.inr j) - u' (Sum.inr j)| := by
+    have hsub : realifyPoint u j - realifyPoint u' j
+        = ⟨u (Sum.inl j) - u' (Sum.inl j), u (Sum.inr j) - u' (Sum.inr j)⟩ := rfl
+    rw [hsub]
+    exact Complex.norm_le_abs_re_add_abs_im _
+  rw [Complex.dist_eq]
+  calc ‖realifyPoint u j - realifyPoint u' j‖ ≤ _ := hbound
+    _ ≤ dist u u' + dist u u' := add_le_add hre him
+    _ = 2 * dist u u' := by ring
+    _ = ((2 : NNReal) : ℝ) * dist u u' := by norm_num
+
+/-- The substitution `x_j ↦ x_{inl j} + i x_{inr j}`. -/
+def complexSplitSubst : MvPolynomial κ ℂ →ₐ[ℂ] MvPolynomial (κ ⊕ κ) ℂ :=
+  MvPolynomial.aeval fun j => MvPolynomial.X (Sum.inl j)
+    + MvPolynomial.C Complex.I * MvPolynomial.X (Sum.inr j)
+
+omit [Fintype κ] [DecidableEq κ] in
+theorem complexSplitSubst_ne_zero {Q : MvPolynomial κ ℂ} (hQ : Q ≠ 0) :
+    complexSplitSubst Q ≠ 0 := by
+  intro hzero
+  refine hQ ?_
+  have hret : (MvPolynomial.aeval (Sum.elim (MvPolynomial.X : κ → MvPolynomial κ ℂ)
+      (fun _ => 0))).comp (complexSplitSubst (κ := κ)) = AlgHom.id ℂ (MvPolynomial κ ℂ) := by
+    apply MvPolynomial.algHom_ext
+    intro j
+    show MvPolynomial.aeval (Sum.elim (MvPolynomial.X : κ → MvPolynomial κ ℂ) (fun _ => 0))
+      (complexSplitSubst (MvPolynomial.X j)) = MvPolynomial.X j
+    rw [complexSplitSubst, MvPolynomial.aeval_X]
+    simp
+  have := congrArg (fun f : MvPolynomial κ ℂ →ₐ[ℂ] MvPolynomial κ ℂ => f Q) hret
+  simp only [AlgHom.coe_comp, Function.comp_apply, AlgHom.coe_id, id_eq] at this
+  rw [hzero, map_zero] at this
+  exact this.symm
+
+omit [Fintype κ] [DecidableEq κ] in
+theorem eval_complexSplitSubst (Q : MvPolynomial κ ℂ) (u : (κ ⊕ κ) → ℝ) :
+    MvPolynomial.eval (fun v => (u v : ℂ)) (complexSplitSubst Q)
+      = MvPolynomial.eval (realifyPoint u) Q := by
+  have hbind : complexSplitSubst Q = MvPolynomial.bind₁
+      (fun j => MvPolynomial.X (Sum.inl j)
+        + MvPolynomial.C Complex.I * MvPolynomial.X (Sum.inr j)) Q := rfl
+  rw [hbind]
+  show MvPolynomial.eval₂Hom (RingHom.id ℂ) (fun v => (u v : ℂ)) _ = _
+  rw [MvPolynomial.eval₂Hom_bind₁]
+  show MvPolynomial.eval (fun j => MvPolynomial.eval (fun v => (u v : ℂ))
+    (MvPolynomial.X (Sum.inl j) + MvPolynomial.C Complex.I * MvPolynomial.X (Sum.inr j))) Q
+    = MvPolynomial.eval (realifyPoint u) Q
+  have hpt : (fun j => MvPolynomial.eval (fun v => (u v : ℂ))
+      (MvPolynomial.X (Sum.inl j) + MvPolynomial.C Complex.I * MvPolynomial.X (Sum.inr j)))
+      = realifyPoint u := by
+    funext j
+    show MvPolynomial.eval (fun v => (u v : ℂ))
+        (MvPolynomial.X (Sum.inl j) + MvPolynomial.C Complex.I * MvPolynomial.X (Sum.inr j))
+      = realifyPoint u j
+    rw [map_add, map_mul, MvPolynomial.eval_X, MvPolynomial.eval_X, MvPolynomial.eval_C]
+    apply Complex.ext <;> simp [realifyPoint]
+  rw [hpt]
+
+/-- **A nonzero complex polynomial has a zero set of Hausdorff dimension at most
+`2 · card κ - 1`.** -/
+theorem dimH_setOf_complex_eval_eq_zero_le (Q : MvPolynomial κ ℂ) (hQ : Q ≠ 0) :
+    dimH {z : κ → ℂ | MvPolynomial.eval z Q = 0}
+      ≤ ((2 * Fintype.card κ - 1 : ℕ) : ENNReal) := by
+  classical
+  set Q' := complexSplitSubst Q with hQ'
+  have hQ'ne : Q' ≠ 0 := complexSplitSubst_ne_zero hQ
+  obtain hP | hP := rePoly_ne_zero_or_imPoly_ne_zero hQ'ne
+  · refine le_trans (dimH_mono (?_ : {z : κ → ℂ | MvPolynomial.eval z Q = 0}
+      ⊆ realifyPoint '' {u : (κ ⊕ κ) → ℝ | MvPolynomial.eval u (rePoly Q') = 0})) ?_
+    · intro z hz
+      refine ⟨Sum.elim (fun j => (z j).re) (fun j => (z j).im), ?_, ?_⟩
+      · show MvPolynomial.eval _ (rePoly Q') = 0
+        rw [eval_rePoly]
+        have hpt : realifyPoint (Sum.elim (fun j => (z j).re) (fun j => (z j).im)) = z := by
+          funext j
+          exact Complex.ext rfl rfl
+        rw [eval_complexSplitSubst, hpt, hz, Complex.zero_re]
+      · funext j
+        exact Complex.ext rfl rfl
+    · refine le_trans (lipschitzWith_realifyPoint.dimH_image_le _) ?_
+      refine le_trans (dimH_setOf_eval_eq_zero_le (rePoly Q') hP) ?_
+      simp [Fintype.card_sum, two_mul]
+  · refine le_trans (dimH_mono (?_ : {z : κ → ℂ | MvPolynomial.eval z Q = 0}
+      ⊆ realifyPoint '' {u : (κ ⊕ κ) → ℝ | MvPolynomial.eval u (imPoly Q') = 0})) ?_
+    · intro z hz
+      refine ⟨Sum.elim (fun j => (z j).re) (fun j => (z j).im), ?_, ?_⟩
+      · show MvPolynomial.eval _ (imPoly Q') = 0
+        rw [eval_imPoly]
+        have hpt : realifyPoint (Sum.elim (fun j => (z j).re) (fun j => (z j).im)) = z := by
+          funext j
+          exact Complex.ext rfl rfl
+        rw [eval_complexSplitSubst, hpt, hz, Complex.zero_im]
+      · funext j
+        exact Complex.ext rfl rfl
+    · refine le_trans (lipschitzWith_realifyPoint.dimH_image_le _) ?_
+      refine le_trans (dimH_setOf_eval_eq_zero_le (imPoly Q') hP) ?_
+      simp [Fintype.card_sum, two_mul]
+
+/-! ### Partial specialization keeps a polynomial nonzero -/
+
+/-- **A nonzero polynomial stays nonzero after specializing some variables at a good point.**
+Evaluating the specialization at the same point recovers the original value, so any point where the
+polynomial does not vanish supplies admissible values for the specialized variables. -/
+theorem exists_partial_specialization_ne_zero {γ : Type} [Fintype γ] [DecidableEq γ]
+    (S : Finset γ) (D : MvPolynomial γ ℂ) (hD : D ≠ 0) :
+    ∃ v : γ → ℂ, MvPolynomial.aeval
+      (fun g => if g ∈ S then MvPolynomial.C (v g) else MvPolynomial.X g) D ≠ 0 := by
+  classical
+  obtain ⟨w, hw⟩ : ∃ w : γ → ℂ, MvPolynomial.eval w D ≠ 0 := by
+    by_contra hcon
+    push Not at hcon
+    exact hD (MvPolynomial.funext fun x => by rw [hcon x, map_zero])
+  refine ⟨w, fun hzero => hw ?_⟩
+  have hbind : MvPolynomial.aeval
+      (fun g => if g ∈ S then MvPolynomial.C (w g) else MvPolynomial.X g) D
+      = MvPolynomial.bind₁
+        (fun g => if g ∈ S then MvPolynomial.C (w g) else MvPolynomial.X g) D := rfl
+  have hev : MvPolynomial.eval w
+      (MvPolynomial.aeval (fun g => if g ∈ S then MvPolynomial.C (w g)
+        else MvPolynomial.X g) D) = MvPolynomial.eval w D := by
+    rw [hbind]
+    show MvPolynomial.eval₂Hom (RingHom.id ℂ) w _ = _
+    rw [MvPolynomial.eval₂Hom_bind₁]
+    show MvPolynomial.eval (fun g => MvPolynomial.eval w
+      (if g ∈ S then MvPolynomial.C (w g) else MvPolynomial.X g)) D = _
+    have hpt : (fun g => MvPolynomial.eval w
+        (if g ∈ S then MvPolynomial.C (w g) else MvPolynomial.X g)) = w := by
+      funext g
+      by_cases hg : g ∈ S
+      · rw [if_pos hg, MvPolynomial.eval_C]
+      · rw [if_neg hg, MvPolynomial.eval_X]
+    rw [hpt]
+  rw [hzero, map_zero] at hev
+  exact hev.symm
 
 end
 

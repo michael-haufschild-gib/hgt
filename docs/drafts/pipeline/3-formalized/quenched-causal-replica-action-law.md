@@ -1,14 +1,14 @@
 # Quenched causal replica-action law
 
 - **ID:** `quenched-causal-replica-action-law`
-- **Stage:** 2 -- fully proved on paper
+- **Stage:** 3 -- formalized in Lean 4
 - **Type:** theorem / quenched replica law / Brown-front advance
 - **Parents:** `concurrent-causal-heap-accessibility-law.md`,
   `circuit-complexity-selection-synthesis-divergence-law.md`,
   `quenched-observer-spectral-action-law.md`
 - **Status:** `[PAPER-PROVED] [PROVED HERE] [FRONTIER ADVANCE]
   [CLASSICAL ENTROPY-DUALITY ENGINE] [APPLICATION NOVELTY UNVERIFIED]
-  [LEAN DEFERRED]`
+  [LEAN CERTIFIED]`
 - **Date:** 2026-08-13
 
 ## Public sentence
@@ -471,7 +471,8 @@ geometry must still prove the positive gap in `(25)`.
 8. **Finite alphabet and fugacity remain explicit.**  Continuous gate parameters require a robust
    net and its coding measure.
 9. **Priority remains provisional.**  Negative targeted search is not a priority certificate.
-10. **Lean deferred by instruction.**  No formal source is written during the shared refactor.
+10. **Lean certified.**  Every proved statement of this card is closed unconditionally in Lean 4;
+    only the open core `(25)` carries no formal obligation.
 
 ## 9. External boundary
 
@@ -495,4 +496,59 @@ geometry must still prove the positive gap in `(25)`.
 - [x] soft dimension-free replica regularity
 - [x] hostile audit
 - [ ] ordinary static-local action gap `(25)`
-- [ ] Lean formalization after corpus refactor
+- [x] Lean formalization of every proved statement
+
+## Lean certificate
+
+Unconditional and closed in Lean 4; every declaration below has axiom set
+`[propext, Classical.choice, Quot.sound]`.
+
+| Card statement | Lean declaration |
+|---|---|
+| `(2)` accessibility `F`, preparation action `J` | `RHTower.causalAccessibility`, `RHTower.preparationAction`, `HTGeometry.preparationActionOf` |
+| `(3)` quenched replica mass `Z_r` | `HTGeometry.quenchedReplicaMass`, `HTGeometry.quenchedReplicaMass_eq_integral_exp` |
+| `(4)` replicated incidence event `E_H^{(r)}` | `RHTower.replicaIncidenceEvent`, `RHTower.measurableSet_replicaIncidenceEvent` |
+| `(5)` exact quenched replica incidence | `RHTower.measure_replicaIncidenceEvent`, `RHTower.measureReal_replicaIncidenceEvent` |
+| `(6)` growing-replica complete-circuit bound | `RHTower.measureReal_heapAccessible_le_quenchedReplicaMass` |
+| `(7)` soft-reporter form | `RHTower.measureReal_heapAccessible_le_softReplicaMass` |
+| `(7)` Lipschitz constant `r/δ` | `RHTower.abs_softCausalReporter_pow_sub_le`, `RHTower.lipschitzWith_softCausalReporter` |
+| `(8)` quenched replica-action law | `HTGeometry.isLeast_quenchedReplicaAction`, `HTGeometry.isLeast_gibbsAction` |
+| `(9)` minimizing density `dq_r^*/dρ = F^r/Z_r` | `HTGeometry.rnDeriv_tilted_quenched` |
+| `(10)` event-projection form | `HTGeometry.isLeast_relativeEntropy_conditioned` (with `(5)` for the event mass) |
+| `(11)` relative-entropy expansion | `HTGeometry.integral_llr_tilted_quenched` |
+| `(12)` exact certificate criterion | `HTGeometry.quenchedReplicaMass_le_exp_iff` |
+| `(13)`–`(14)` normalized separation inequality | `HTGeometry.quenchedReplicaMass_le_exp_iff_normalized` |
+| `(15)` `1 ≥ Z_r ≥ Z_{r+1} ≥ 0` | `HTGeometry.quenchedReplicaMass_le_one'`, `HTGeometry.quenchedReplicaMass_antitone'`, `HTGeometry.quenchedReplicaMass_nonneg'` |
+| log-convexity in `r` | `HTGeometry.quenchedReplicaMass_sq_le` |
+| `(16)` `lim Z_r^{1/r} = ‖F‖_∞ = e^{-ess inf J}` | `HTGeometry.tendsto_quenchedReplicaMass_rpow`, `HTGeometry.essSup_eq_exp_neg_essInf`, `HTGeometry.essInf_preparationActionOf` |
+| `(17)` rare-carrier lower bound and its converse | `HTGeometry.quenchedReplicaMass_ge_of_carrier`, `HTGeometry.measureReal_le_quenchedReplicaMass` |
+| `(18a)` normalized replica action `a_r` | `HTGeometry.quenchedReplicaAction`, `HTGeometry.quenchedReplicaAction_eq` |
+| `(18b)` `a_{r+1} ≤ a_r`, `lim a_r = ess inf J` | `HTGeometry.quenchedReplicaAction_antitone`, `HTGeometry.tendsto_quenchedReplicaAction` |
+| `(18c)` `ρ{C_A ≤ s} ≤ e^{-Γ_r(s)}` | `RHTower.measureReal_heapAccessible_le_exp` |
+| `(18)`, `(18d)` amortization and schedule ceiling | `HTGeometry.quenchedReplicaAction_le_of_carrier`, `HTGeometry.lt_of_pos_certificate_exponent` |
+| `(19)` empty-heap mass `p_0 > 0` | `RHTower.traceLaw_singleton`, `RHTower.traceWeight_one_pos`, `RHTower.traceWeight_one_le_one` |
+| `(20)` `F = 1 ⟺ x ∈ A` | `RHTower.causalAccessibility_eq_one_iff` |
+| `(21)` `x ∉ A ⟹ F ≤ 1 - p_0` | `RHTower.causalAccessibility_add_traceWeight_one_le_one` |
+| `(22)` two-sided recurrence sandwich | `RHTower.measureReal_recurrent_le_quenchedReplicaMass`, `RHTower.quenchedReplicaMass_le_recurrent_add` |
+| `(23)` `lim Z_r = ρ{x(H) ∈ A}` | `RHTower.tendsto_quenchedReplicaMass_recurrent` |
+
+Supporting infrastructure built for this card:
+
+- `HTGeometry/GibbsVariationalPrinciple.lean` — the Gibbs/Donsker--Varadhan duality on an arbitrary
+  probability space (`gibbsAction`, `neg_log_integral_exp_le_gibbsAction`, `gibbsAction_tilted`,
+  `isLeast_gibbsAction`).  Not in mathlib.
+- `HTGeometry/ConditionalInformationProjection.lean` — the information projection onto an event:
+  the least relative entropy of a law carried by an event is the negative logarithm of its mass,
+  attained by the conditioned law.  Not in mathlib.
+- `HTGeometry/PowerMeanEssSupLimit.lean` — power means of a unit-bounded density increase with the
+  exponent (Hölder against the constant one) and converge to the essential supremum.  Not in
+  mathlib.
+- `RHTower/CircuitTraceLaw.lean` — the Boltzmann weights of the trace monoid as a probability
+  measure on circuit heaps, with `traceLaw (causalSuccessEvent) = ofReal (causalAccessibility)`.
+- `RHTower/QuenchedCausalReplicaIncidence.lean`, `RHTower/QuenchedCausalRecurrenceExtraction.lean`
+  — the Fubini product-incidence identity and the recurrence extraction.
+
+Sections 6 and 7 of this card are the open core and the audit; `(24)`--`(25)` state the remaining
+open problem rather than a proved theorem, so they carry no Lean obligation.  By `(12)`--`(14)` the
+criterion `(25)` is exactly `quenchedReplicaMass_le_exp_iff_normalized` instantiated at the
+static-local source, which remains open.

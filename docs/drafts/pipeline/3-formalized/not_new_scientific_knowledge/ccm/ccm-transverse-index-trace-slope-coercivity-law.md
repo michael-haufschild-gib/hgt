@@ -1,7 +1,7 @@
 # Every transverse divisor unit costs more than four units of CCM trace slope
 
 - **ID:** `ccm-transverse-index-trace-slope-coercivity-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized (paper proof; Lean certificate alongside)
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent results:** prime-zeta divisor monodromy, shifted-Xi leakage index, and the Hankel
@@ -199,3 +199,36 @@ source budget, so no Lean file is added.
 - [x] nonexpansive marked transfer shown sufficient for RH
 - [ ] source proof of the four-unit trace budget
 - [ ] RH
+
+## Lean status
+
+**Formalized unconditionally, 2026-08-15**, in
+`formal/GaloisForLFunctions/RHTower/CCMTransverseIndexTraceSlopeCoercivity.lean`, on the divisor
+profile and half-line exponential integral of
+`RHTower/CCMShiftCovariantPoleDivisorCapacity.lean`.
+
+- `divisorPacketEnergy` — the right-hand side of `(5)`, `E(D) = ||ell_D||_2^2`, defined as the
+  `L^2(0, infinity)` energy of the anti-causal residue profile `(3)`.
+- `cauchyWeight`, `cauchyWeight_pos`, `cauchyWeight_self`, `re_div_add_conj` — the positive Cauchy
+  weight `(a_j+a_k)/((a_j+a_k)^2+(gamma_j-gamma_k)^2)` and its identification with the real part of
+  the resolvent pairing.
+- **`ofReal_divisorPacketEnergy`**, **`divisorPacketEnergy_eq`** — equation `(7)`, first half: the
+  energy is the exact positive Cauchy form `4 sum_(j,k) m_j m_k (a_j+a_k)/((a_j+a_k)^2+(gamma_j-gamma_k)^2)`.
+  Proved by expanding `|ell_D|^2 = ell_D conj(ell_D)` into a double exponential sum and integrating
+  each term.
+- **`diagonal_le_divisorPacketEnergy`** — equation `(7)`, second half: every Cauchy term is positive,
+  so the energy dominates its own diagonal `2 sum_j m_j^2 / a_j`.
+- **`four_mul_multiplicity_lt_divisorPacketEnergy`** — equations `(6)`, `(8)`: for a nonempty packet
+  with `0 < a_j < 1/2` and `m_j >= 1`, `E(D) > 4 kappa(D)`.
+- `polePacketEnergy`, **`polePacketEnergy_eq_four`** — equation `(11)`: the incoming pole at
+  transverse depth `1/2` has energy exactly `4`.
+- **`divisorPacket_isEmpty_of_energy_le_pole`** — equation `(13)`: a nonexpansive pole-to-divisor
+  transfer admits no divisor unit at all.
+
+All statements are unconditional: `#print axioms` returns only
+`[propext, Classical.choice, Quot.sound]`.
+
+Not formalized here, and imported: the trace-slope identity `(5)` itself, i.e. the identification of
+`-F_D'(0+)` with `||ell_D||_2^2`, which is the content of
+`ccm-hankel-gap-trace-slope-rh-criterion.md`; the three realizations of the quantized charge listed
+in section 1; and the source budget `(12)`, which the card explicitly leaves open.

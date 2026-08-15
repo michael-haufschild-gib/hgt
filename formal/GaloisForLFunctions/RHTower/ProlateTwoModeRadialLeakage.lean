@@ -593,7 +593,7 @@ theorem twoModeRadialGramEntry_diag_nonneg (a : ℝ) (n₀ n₁ : ℕ) (α β : 
   exact setIntegral_nonneg measurableSet_Ioi fun x _ => twoModeRadialDensity_nonneg _ _ _ _ _ x
 
 /-- The divisor-weighted diagonal majorant is summable. -/
-theorem summable_log_div_sq :
+theorem summable_log_shift_div_sq :
     Summable (fun n : ℕ => Real.log ((n : ℝ) + 2) / ((n : ℝ) + 2) ^ 2) := by
   refine Summable.of_nonneg_of_le (fun n => ?_) (fun n => ?_) summable_weighted_rowMajorant
   · have hn0 : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
@@ -625,7 +625,7 @@ theorem tendsto_tsum_weighted_twoModeRadialGramEntry_diag
   have hB0 : (0 : ℝ) ≤ B := by positivity
   refine tendsto_tsum_of_dominated_convergence
     (bound := fun k : ℕ => 4 * K * B * (Real.log ((k : ℝ) + 2) / ((k : ℝ) + 2) ^ 2))
-    (summable_log_div_sq.mul_left (4 * K * B)) ?_ ?_
+    (summable_log_shift_div_sq.mul_left (4 * K * B)) ?_ ?_
   · intro k
     have hk2 : (1 : ℝ) < (k : ℝ) + 2 := by
       have := Nat.cast_nonneg (α := ℝ) k

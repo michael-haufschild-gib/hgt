@@ -1491,3 +1491,86 @@ directly.  Remaining for the card: the product-incidence identity `(5)` (Fubini 
 against the causal success event), the soft-reporter form `(7)`, the event-projection form `(10)`,
 the certificate criterion `(12)`/`(14)`, and the `L^p`-limit statements `(16)`/`(18b)`
 (`lim Z_r^{1/r} = ‖F‖_∞`), which need an `essSup` layer.
+
+## Promoted: quenched causal replica-action law (2026-08-15)
+
+`quenched-causal-replica-action-law` moved to `3-formalized`.  All proved statements of the card,
+`(2)`--`(23)`, are closed unconditionally in Lean 4 with axiom set
+`[propext, Classical.choice, Quot.sound]`; `(24)`--`(25)` are the card's open core and carry no
+formal obligation.
+
+New modules:
+
+- `HTGeometry/GibbsVariationalPrinciple.lean` — Gibbs/Donsker--Varadhan duality (extended with
+  `rnDeriv_tilted_quenched`, `integral_llr_tilted_quenched` in `QuenchedReplicaAction`).
+- `HTGeometry/ConditionalInformationProjection.lean` — least relative entropy over laws carried by
+  an event equals the negative logarithm of the event mass, attained by the conditioned law.
+- `HTGeometry/PowerMeanEssSupLimit.lean` — power means increase with the exponent and converge to
+  the essential supremum on a probability space.
+- `HTGeometry/QuenchedReplicaLimits.lean` — log-convexity, normalized replica action, its
+  monotonicity and limit, rare-carrier amortization, schedule ceiling, certificate criterion.
+- `RHTower/CircuitTraceLaw.lean` — the Boltzmann law of circuit heaps as a probability measure.
+- `RHTower/QuenchedCausalReplicaIncidence.lean` — Fubini product-incidence identity `(5)`, the
+  complete-circuit bound `(6)`, its certificate-exponent form `(18c)`, and the soft-reporter
+  form `(7)` with its `r/δ` Lipschitz constant.
+- `RHTower/QuenchedCausalRecurrenceExtraction.lean` — Theorem D, `(20)`--`(23)`.
+
+Reused from mathlib rather than rebuilt: `Measure.tilted`, `llr`, `llr_tilted_right`,
+`integral_llr_tilted_right`, `rnDeriv_tilted_left_self`, `InformationTheory.klDiv` nonnegativity,
+`ProbabilityTheory.cond`, `Measure.pi_pi`, `Measure.prod_apply`,
+`integral_mul_le_Lp_mul_Lq_of_nonneg`, `essSup`/`essInf`.
+
+42 cards remain in `2-fully-proven` (top level).
+
+## In flight: fixed-time phase-graph Sobolev blindness law (2026-08-15)
+
+Target: `docs/drafts/pipeline/2-fully-proven/fixed-time-phase-graph-sobolev-blindness-law.md`.
+
+Formalization design (unit torus model; the card's `2π` period is a normalization, and
+normalized Haar makes the period irrelevant):
+
+- phase space `UnitAddTorus (Fin D)` with `volume` (needs the three `local instance`s
+  `MeasureSpace`/`IsAddHaarMeasure`/`IsProbabilityMeasure` on `UnitAddCircle`, as in
+  `HTGeometry/TorusTranslateDifference.lean`);
+- lift to `Fin D → ℝ` via `torusProj`, integrals via `integral_torus_eq_integral_box`;
+- `∂^α_φ` defined on the lift by iterated `fun x => fderiv ℝ G x (Pi.single i 1)`;
+- the counterexample family is a **Fejér-type trigonometric polynomial**, not a compactly
+  supported bump: `h_N(t) = (N+1)^{-2} |∑_{m≤N} e^{2πimt}|²` has Fourier coefficients
+  `b_m = (1-|m|/(N+1))/(N+1)` on `|m| ≤ N`, satisfies `h_N(0)=1`, `0 ≤ h_N ≤ 1`, is a
+  trigonometric polynomial (so smooth and periodic for free, no periodization needed), and
+  `∑_m m^{2k} b_m² ≤ (2N+1)N^{2k}/(N+1)² ≍ N^{2k-1} = ε^{1-2k}` with `ε = 1/(N+1)`;
+- `g_N(φ) = ∏_i h_N(φ_i)`, `F_N(ω,φ) = g_N(φ - Φ(ω))`; all torus integrals of `|∂^α|²` are
+  Parseval sums over the (finite) coefficient support, and translation by `Φ(ω)` only multiplies
+  each coefficient by a unit modulus, so `E_comp` and every Sobolev quantity are `Φ`-independent.
+
+Remaining: Theorem A `(5)`--`(7)`, Corollary A.1 `(12)`, Theorem B `(13)`--`(14)`,
+Corollary B.1 `(16)`.  Theorem C `(21)`--`(25)` should reuse
+`HTGeometry/ParameterCoverageBarrier.lean` (`exists_cover_card_le`, `exists_image_net_card_le`)
+and `HTGeometry/StaticEnsembleCoverageBarrier.lean` (`norm_generatorCombination_sub_le`,
+`log_orbit_net_card_quadratic`) — check those first.
+
+## Promoted: fixed-time phase-graph Sobolev blindness law (2026-08-15)
+
+`fixed-time-phase-graph-sobolev-blindness-law` moved to `3-formalized`.  Theorems A, B, C and all
+corollaries are closed unconditionally in Lean 4 with axiom set
+`[propext, Classical.choice, Quot.sound]`.
+
+Design note (supersedes the in-flight entry above): the counterexample family is realized as a
+**trigonometric detector** — `phaseDetector N a x = ‖∑_{J ∈ [0,N]^d} e(⟨J, x-a⟩)‖² / ((N+1)^d)²` —
+rather than a scaled compactly supported bump.  Being a trigonometric polynomial it is periodic and
+analytic with no periodization step, and all completed quantities are Parseval sums over difference
+frequencies.  Every needed bound follows from *crude counting*: a difference frequency together with
+three of the four box indices determines the fourth, so the number of coincident pairs is at most
+`((N+1)^d)^3`, which gives `∫‖∂^α F‖² ≤ (2πN)^{2|α|}/(N+1)^d` — exactly `ε^{d-2|α|}` with
+`ε = 1/(N+1)`.  No binomial asymptotics, no Fejér positivity identity, no bump scaling lemma.
+
+New modules: `HTGeometry/TorusPhaseTrigCalculus.lean`, `HTGeometry/PhaseGraphDetector.lean`,
+`HTGeometry/PhaseGraphSobolevBlindness.lean`.
+
+Theorem C `(19)`--`(25)` needed no new work: `HTGeometry/ParameterCoverageBarrier.lean` and
+`HTGeometry/StaticEnsembleCoverageBarrier.lean` (built earlier for
+`static-ensemble-coverage-time-barrier-law`) already contain `exists_orbit_net_card_le`,
+`norm_generatorCombination_sub_le`, `traceDist_evolvedSeed_le`, `log_orbit_net_card_le` and
+`log_orbit_net_card_quadratic`.
+
+41 cards remain in `2-fully-proven` (top level).

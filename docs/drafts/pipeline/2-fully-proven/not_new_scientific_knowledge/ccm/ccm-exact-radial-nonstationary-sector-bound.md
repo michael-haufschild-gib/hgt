@@ -181,4 +181,150 @@ The arithmetic-summation layer `(9)`--`(10)` of this card **is** now formalized,
 - [x] Olver remainder retained inside oscillatory branches
 - [x] exact `j,k>=2` Gram estimate proved
 - [x] logarithmically weighted arithmetic sector summed
+- [x] nonstationary-phase interface `|∫ g cos(cξ)| ≤ …/(c·m)` in Lean
+- [x] two-index phase separation `(6)` in Lean, uniform in `x`, `s`, and both indices
+- [x] amplitude symbol bounds `(3)` in Lean (`O(c⁻¹)` interaction-picture total variation)
+- [x] four-branch assembly of `(2)`, `(3)`, `(6)` into the entry estimate `(8)`, for arbitrary
+  two-branch representations on a finite exterior interval
+- [ ] composition of the actual solutions' amplitudes through the Liouville variable, with the
+  `x^{-1/2}` prefactor, the `d_1` normalization, and the tail beyond a finite interval
 - [ ] exact first-row hybrid Bessel/Liouville--Green transfer
+
+## Lean progress — the nonstationary-phase interface and the two-index separation `(6)`
+
+Two of the three pieces the "Lean decision" above listed as absent are now built, wired and
+axiom-clean.
+
+`formal/GaloisForLFunctions/HTGeometry/NonstationaryPhaseLowerBound.lean`
+
+```text
+abs_integral_mul_cos_phase_le
+    |∫_a^b g cos(cξ + φ)| ≤ (1/c)[ (|g a| + |g b|)/m + ∫ (|g'|/m + |g||ξ''|/m²) ]
+    whenever |ξ'| ≥ m > 0
+```
+
+This is the first-derivative test in the form the two-index product consumes.  It is obtained from
+the corpus's `abs_integral_mul_cos_comp_le` — which bounds `∫ g·(ξ' cos(cξ + φ))`, i.e. the weight
+already carrying the phase speed — by dividing the weight by `ξ'`; the quotient's variation costs one
+power of `m` on `g'` and two on the phase curvature `ξ''`.
+
+`formal/GaloisForLFunctions/RHTower/RadialDilatedPhaseSeparation.lean`
+
+```text
+dilatedPhaseSpeed s r x = r · xiSpeed s (r x) = r √((r²x² − s)/(r²x² − 1))     -- (5)
+dilatedPhaseSpeed_sq        = r² + (1 − s) r²/(r²x² − 1)
+le_dilatedPhaseSpeed        r ≤ speed
+dilatedPhaseSpeed_le        speed ≤ (4/3) r
+sub_dilatedPhaseSpeed_ge    (2/3)(j − k) ≤ speed(j) − speed(k)     for 2 ≤ k ≤ j, x ≥ 1   -- (6)
+le_add_dilatedPhaseSpeed    j + k ≤ speed(j) + speed(k)                                    -- (6)
+```
+
+`(6)` is proved **without differentiating in the index**.  The squared speed is
+`r² + (1 − s)r²/(r²x² − 1)`; its two-index difference of correction terms is
+`(1 − s)(j² − k²)/((k²x² − 1)(j²x² − 1))`, and both denominator factors are at least `3` once
+`j, k ≥ 2` and `x ≥ 1`, so that difference is at most `(j² − k²)/9`.  Hence the difference of squares
+is at least `(8/9)(j² − k²)`, the sum of speeds is at most `(4/3)(j + k)`, and the quotient gives the
+gap.  All constants are absolute and uniform in `x`, in the turning parameter `s ∈ [0, 1/2]`, and in
+the two indices.
+
+**What is still absent** is only the amplitude side: the symbol bounds `(3)`
+`|a| ≤ Cx^{−1/2}`, `|a'| ≤ Cx^{−3/2}`, i.e. the `O(c⁻¹)` total-variation estimate for the
+interaction-picture amplitudes driven by the short-range potential.  The variable-coefficient
+Grönwall inequality that estimate needs — total mass of the control in the exponent, not a uniform
+bound times the interval length — is already formal in
+`formal/GaloisForLFunctions/HTGeometry/GronwallVariableCoefficient.lean`.
+
+## Lean progress — the amplitude variation estimate
+
+The third missing piece, the `O(c⁻¹)` total-variation bound on the interaction-picture amplitudes,
+is now built.  Two modules, wired, axiom-clean.
+
+`formal/GaloisForLFunctions/HTGeometry/GronwallScaledBound.lean`
+
+```text
+abs_le_const_mul_exp_of_volterra_bound
+    |h| ≤ K + ∫ φ|h|   ⟹   |h| ≤ K · exp(∫ φ)        for every K ≥ 0
+```
+
+The corpus's variable-coefficient Grönwall inequality is normalized at `1`; a Volterra inequality
+coming from an actual differential equation carries the initial size instead, and that size may be
+zero.  Rescaling by `K + ε` and shrinking `ε` removes the normalization with no positivity
+hypothesis on `K`, so the `K = 0` case is the uniqueness statement.
+
+`formal/GaloisForLFunctions/RHTower/RadialPSWFAmplitudeVariation.lean`
+
+```text
+radialInteractionTotal c W V x = ‖a₊(x)‖ + ‖a₋(x)‖
+norm_le_radialInteractionTotal        ‖W‖ ≤ A                          (|e^{±icx}| = 1)
+radialInteractionTotal_volterra       A(x) ≤ A(a) + ∫_a^x (‖ψ‖/c) A
+radialInteractionTotal_le_exp         A(x) ≤ A(a) · exp((1/c)∫_a^x ‖ψ‖)
+integral_norm_deriv_radialInteraction_le
+    ∫_a^b ‖ψ‖‖W‖/(2c)  ≤  A(a)·(exp((1/c)∫_a^b ‖ψ‖) − 1)/2
+```
+
+The last is the total variation of each amplitude — `‖a₊'‖ = ‖a₋'‖ = ‖ψ‖‖W‖/(2c)` exactly, by the
+transport laws — so with `V = ∫‖ψ‖` finite the amplitudes move by `O(V/c)` over the whole exterior
+ray.  This is the statement the card calls "their total variation is therefore `O(c⁻¹)`, uniformly
+on the exterior sector"; the geometric prefactor `x^{−1/2}` of `(3)` is the corpus's already-formal
+`xiAmplitude_le`.
+
+Everything the card lists as absent is therefore built.  What remains is the assembly: combine the
+two-phase decomposition, the symbol bounds, the two-index separation `(6)`, and the first-derivative
+test into the four-branch integration by parts that yields `(8)`.
+
+## Lean progress — the four-branch assembly
+
+The assembly of `(2)`, `(3)`, `(6)` into an entry estimate of the shape `(8)` is now formal, wired
+and axiom-clean, in three layers.
+
+`formal/GaloisForLFunctions/HTGeometry/NonstationaryPhaseLowerBound.lean`
+
+```text
+abs_integral_mul_cos_phase_le      the first-derivative test, global hypotheses
+abs_integral_mul_cos_phase_le_on   the same with EVERY hypothesis local to [a,b]:
+                                   |∫ g cos(cξ+φ)| ≤ (1/c)[(|g a|+|g b|)/m + ∫(|g'|/m + |g||ξ''|/m²)]
+```
+
+The local version is the one the exterior radial phase can actually feed: `ξ_s(rx)` is smooth and
+fast only on the ray, and the division by the phase speed happens under the integral sign, so it is
+enough to have `|ξ'| ≥ m` there.  The proof is one integration by parts against `sin(cξ+φ)/c`.
+
+`formal/GaloisForLFunctions/HTGeometry/TwoPhaseOscillatoryProduct.lean`
+
+```text
+oscBudget a b m g g' Θ''            = (|g a| + |g b|)/m + ∫(|g'|/m + |g||Θ''|/m²)
+twoBranch_product_eq                the product-to-sum expansion of
+                                    (g₁cos cΦ + g₂ sin cΦ)(g₃cos cΨ + g₄ sin cΨ)
+                                    into four oscillations on Φ−Ψ and Φ+Ψ
+abs_integral_fourOsc_le(_on)        each weight pays its own budget against its own phase
+abs_integral_twoBranch_product_le(_on)
+                                    the assembled product estimate, four explicit budgets over c
+```
+
+`formal/GaloisForLFunctions/RHTower/RadialTwoIndexOscillatoryBound.lean`
+
+```text
+dilatedPhase s r x  = ξ_s(r x)  ,  dilatedPhaseAccel s r x = r² ξ''_s(r x)
+hasDerivAt_dilatedPhase, hasDerivAt_dilatedPhaseSpeed, continuity on every Icc a b with a ≥ 1
+abs_integral_radial_twoBranch_product_le  (0 ≤ s ≤ 1/2, 2 ≤ k < j, 1 ≤ a ≤ b, 0 < c) :
+    |∫_a^b U_j U_k| ≤ (four budgets, each divided by (2/3)(j − k)) / c
+```
+
+That is `(8)` for the exterior radial phases, with absolute constants uniform in the radius, the
+turning parameter, and both indices — modulo supplying the two-branch representations of the actual
+solutions, which is the next item.
+
+`formal/GaloisForLFunctions/RHTower/RadialPSWFAmplitudeVariation.lean` supplies the bridge to those
+representations:
+
+```text
+radialAmpCos c W V = 2 Re a₊ ,   radialAmpSin c W V = −2 Im a₊
+realPart_eq_twoBranch      a real solution is  radialAmpCos · cos(cx) + radialAmpSin · sin(cx)
+abs_radialAmpCos_le, abs_radialAmpSin_le      both amplitudes are ≤ 2‖a₊‖
+hasDerivAt_radialAmpCos, hasDerivAt_radialAmpSin
+```
+
+together with the already-recorded `A(x) ≤ A(a)exp((1/c)∫‖ψ‖)` and the `O(V/c)` total variation.
+What is left is the composition step: transporting these amplitudes through the Liouville variable
+`ξ_s(rx)` and inserting the `x^{−1/2}` geometric prefactor and the `d₁` normalization, then the
+tail beyond a finite interval.

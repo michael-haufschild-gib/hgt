@@ -112,6 +112,37 @@ theorem quenchedReplicaMass_ge_of_carrier (ρ : Measure Ω) [IsProbabilityMeasur
   rw [mul_comm]
   exact hmono
 
+/-- **The replica-tilted law.**  The density of the minimizing source law against the original
+source is the replicated accessibility normalized by the replica mass. -/
+theorem rnDeriv_tilted_quenched (ρ : Measure Ω) [IsProbabilityMeasure ρ] {F : Ω → ℝ}
+    (hF : ∀ H, 0 < F H) (r : ℕ)
+    (hmeas : AEMeasurable (fun H => -((r : ℝ) * preparationActionOf F H)) ρ) :
+    (ρ.tilted fun H => -((r : ℝ) * preparationActionOf F H)).rnDeriv ρ =ᵐ[ρ]
+      fun H => ENNReal.ofReal (F H ^ r / quenchedReplicaMass ρ F r) := by
+  have hpt : ∀ H : Ω, Real.exp (-((r : ℝ) * preparationActionOf F H)) = F H ^ r := by
+    intro H
+    show Real.exp (-((r : ℝ) * -Real.log (F H))) = F H ^ r
+    rw [show -((r : ℝ) * -Real.log (F H)) = (r : ℝ) * Real.log (F H) by ring,
+      Real.exp_nat_mul, Real.exp_log (hF H)]
+  have hmass := quenchedReplicaMass_eq_integral_exp ρ hF r
+  filter_upwards [rnDeriv_tilted_left_self hmeas] with H hH
+  rw [hH, hpt H, hmass]
+
+/-- **Entropy expansion at the replica tilt.**  The relative entropy against the minimizing source
+law is the source rarity plus the replicated preparation action plus the logarithm of the replica
+mass. -/
+theorem integral_llr_tilted_quenched (ρ : Measure Ω) [IsProbabilityMeasure ρ] {F : Ω → ℝ}
+    (hF : ∀ H, 0 < F H) (r : ℕ)
+    (hint : Integrable (fun H => Real.exp (-((r : ℝ) * preparationActionOf F H))) ρ)
+    {q : Measure Ω} [IsProbabilityMeasure q] (hq : q ≪ ρ) (hllr : Integrable (llr q ρ) q)
+    (hfq : Integrable (fun H => -((r : ℝ) * preparationActionOf F H)) q) :
+    (∫ H, llr q (ρ.tilted fun H => -((r : ℝ) * preparationActionOf F H)) H ∂q) =
+      (∫ H, llr q ρ H ∂q) + (r : ℝ) * (∫ H, preparationActionOf F H ∂q) +
+        Real.log (quenchedReplicaMass ρ F r) := by
+  rw [_root_.MeasureTheory.integral_llr_tilted_right hq hfq hint hllr,
+    quenchedReplicaMass_eq_integral_exp ρ hF r, integral_neg, integral_const_mul]
+  ring
+
 /-- **Quenched replica-action law.**  The negative logarithm of the replica mass is the least value
 of source rarity plus replicated preparation action. -/
 theorem isLeast_quenchedReplicaAction (ρ : Measure Ω) [IsProbabilityMeasure ρ] {F : Ω → ℝ}
