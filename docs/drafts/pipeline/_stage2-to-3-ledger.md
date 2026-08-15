@@ -1574,3 +1574,26 @@ Theorem C `(19)`--`(25)` needed no new work: `HTGeometry/ParameterCoverageBarrie
 `log_orbit_net_card_quadratic`.
 
 41 cards remain in `2-fully-proven` (top level).
+
+## Promoted: instant exact-complexity calibration singularity law (2026-08-15)
+
+`instant-exact-complexity-calibration-singularity-law` moved to `3-formalized`.  Every statement of
+the card is closed unconditionally in Lean 4 with axiom set
+`[propext, Classical.choice, Quot.sound]`.
+
+New module: `HTGeometry/InstantCalibrationSingularity.lean` — the quotient form of the certificate
+condition number `(4)`, the exact-penalty form `(9)` via the empty gate word, the Duhamel
+displacement `(5)`/`(10)` (`unitaryEvolution 0 t = 1` plus the corpus two-generator bound), the
+instant-jump instantiation `(7)`, and the uniform-divergence statement.
+
+Most of `(4)`/`(8)` was already in `HTGeometry/ExactPenaltyCircuitBellman.lean`
+(`le_lipschitzConstant_of_certificate`,
+`le_mul_lipschitzConstant_of_certificate_of_linear_approach`) — check that module first for any
+Bellman/circuit-certificate card.
+
+Note on `(6)`: the exponential exact-complexity bound is the parent card
+`algebraic-two-local-instant-exact-complexity.md` and is *not* used in any proof here; `(7)` is
+stated at the value `(2^n-1)/16` so the parent plugs in verbatim once formalized.
+
+Stage 2 now holds 41 cards: 40 of the original 43 minus the three promoted, plus
+`baker-general-logarithms-inhomogeneous-extension.md`, added concurrently by another agent.

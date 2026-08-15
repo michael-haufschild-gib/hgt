@@ -1,11 +1,11 @@
 # Instant exact complexity forces calibration singularity
 
 - **ID:** `instant-exact-complexity-calibration-singularity-law`
-- **Stage:** 2 -- fully proved on paper
+- **Stage:** 3 -- formalized in Lean 4
 - **Type:** theorem / robustness boundary / exact-complexity conditioning law
 - **Parents:** `algebraic-two-local-instant-exact-complexity.md`,
   `exact-penalty-robust-circuit-bellman-duality.md`
-- **Status:** `[PAPER-PROVED] [FRONTIER CORRECTION] [NOVELTY UNVERIFIED] [LEAN DEFERRED]`
+- **Status:** `[PAPER-PROVED] [FRONTIER CORRECTION] [NOVELTY UNVERIFIED] [LEAN CERTIFIED]`
 - **Date:** 2026-08-09
 
 ## Public sentence
@@ -122,7 +122,9 @@ tube.
    is inferred.
 4. The application inherits every unformalized dependency of
    `algebraic-two-local-instant-exact-complexity.md` and may not enter the final manuscript before
-   those dependencies are Lean-proved.
+   those dependencies are Lean-proved.  Every statement of *this* card is Lean-certified; the
+   inherited dependency is only equation `(6)`, which supplies the value at which `(7)` is
+   instantiated, and is not used in any proof here.
 
 ## Exact survivor
 
@@ -133,3 +135,36 @@ The robust frontier can be stated without transcendence language:
 
 Any arithmetic certificate used for that task must carry a dimension-uniform quantitative
 separation estimate, not only nonvanishing or algebraic independence.
+
+## Lean certificate
+
+Unconditional and closed in Lean 4; every declaration below has axiom set
+`[propext, Classical.choice, Quot.sound]`.
+
+| Card statement | Lean declaration |
+|---|---|
+| `(1)` linear-in-time approach | hypothesis `dist x chi ≤ v * |t|`; realized for the Schrödinger orbit by `HTGeometry.dist_evolvedState_le` |
+| `(3)` Bellman certificate class | `HTGeometry.IsBellmanSubsolution` (in `HTGeometry/ExactPenaltyCircuitBellman.lean`), `HTGeometry.bellmanSubsolution_le_mul_dist` |
+| `(4)` first inequality `λ_t ≥ c_t / d(x(t),χ)` | `HTGeometry.div_dist_le_lipschitzConstant_of_certificate` |
+| `(4)` second inequality `λ_t ≥ c_t / (v|t|)` | `HTGeometry.div_le_lipschitzConstant_of_linear_approach` |
+| `(8)` the Lipschitz chain | `HTGeometry.le_lipschitzConstant_of_certificate`, `HTGeometry.le_mul_lipschitzConstant_of_certificate_of_linear_approach` |
+| `(9)` exact-penalty value bounded by the empty word | `HTGeometry.penaltyValue_le_mul_dist`, `HTGeometry.div_dist_le_penalty_of_penaltyValue` |
+| `(5)`, `(10)` Duhamel displacement `‖e^{-itH}Ω - Ω‖ ≤ |t| ‖H‖` | `HTGeometry.norm_evolvedState_sub_le`, `HTGeometry.evolvedState_zero_generator`, `HTGeometry.unitaryEvolution_zero` |
+| `(7)` `λ_{n,t} ≥ (2^n-1)/(16|t| ‖H_n‖)` | `HTGeometry.instant_jump_condition_number` (general form `HTGeometry.div_le_lipschitzConstant_of_evolvedState`) |
+| "no finite `λ_n` certifies uniformly on a punctured neighbourhood of zero" | `HTGeometry.exists_time_lipschitzConstant_gt`, `HTGeometry.exists_time_lipschitzConstant_gt_evolvedState` |
+
+Dependency note.  Equation `(6)`, `C_0(e^{-itH_n}Ω) ≥ (2^n-1)/16`, is the conclusion of the parent
+card `algebraic-two-local-instant-exact-complexity.md` and is not re-proved here.  It is not needed
+for any statement of *this* card: `(4)` and `(7)` are conditioned on the certificate reaching the
+value, which is hypothesis `(3)`, exactly as on paper.  `HTGeometry.instant_jump_condition_number`
+is stated at the value `(2^n-1)/16` so that the parent's bound plugs in verbatim once formalized.
+This matches hostile-audit item 4 of the card.
+
+New module: `HTGeometry/InstantCalibrationSingularity.lean`.
+
+Reused from the corpus rather than rebuilt: `HTGeometry/ExactPenaltyCircuitBellman.lean`
+(`penaltyValue`, `wordCost`, `IsBellmanSubsolution`, `le_lipschitzConstant_of_certificate`,
+`le_mul_lipschitzConstant_of_certificate_of_linear_approach`),
+`HTGeometry/ObserverProfileStability.lean` (`unitaryEvolution`, `norm_unitaryEvolution_sub_le`)
+and `HTGeometry/ObserverInvisibleTubeShortcut.lean`
+(`QuantumAlg.norm_unitaryEvolution_mulVec_sub_le`).

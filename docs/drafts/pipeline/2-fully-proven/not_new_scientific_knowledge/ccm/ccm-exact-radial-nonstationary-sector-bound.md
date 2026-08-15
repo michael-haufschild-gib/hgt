@@ -186,8 +186,10 @@ The arithmetic-summation layer `(9)`--`(10)` of this card **is** now formalized,
 - [x] amplitude symbol bounds `(3)` in Lean (`O(c⁻¹)` interaction-picture total variation)
 - [x] four-branch assembly of `(2)`, `(3)`, `(6)` into the entry estimate `(8)`, for arbitrary
   two-branch representations on a finite exterior interval
-- [ ] composition of the actual solutions' amplitudes through the Liouville variable, with the
-  `x^{-1/2}` prefactor, the `d_1` normalization, and the tail beyond a finite interval
+- [x] `(8)` with every constant explicit, for any symbol-decaying two-branch pair, uniformly in
+  the right endpoint
+- [ ] instantiation: a `SymbolTwoBranch` record for the actual radial PSWF solutions with
+  `M = C√d₁/r`, plus the phase-curvature bound `|j²ξ''(jx) ∓ k²ξ''(kx)| ≤ N/x³`
 - [ ] exact first-row hybrid Bessel/Liouville--Green transfer
 
 ## Lean progress — the nonstationary-phase interface and the two-index separation `(6)`
@@ -328,3 +330,43 @@ together with the already-recorded `A(x) ≤ A(a)exp((1/c)∫‖ψ‖)` and the 
 What is left is the composition step: transporting these amplitudes through the Liouville variable
 `ξ_s(rx)` and inserting the `x^{−1/2}` geometric prefactor and the `d₁` normalization, then the
 tail beyond a finite interval.
+
+## Lean progress — `(8)` with every constant explicit
+
+`formal/GaloisForLFunctions/HTGeometry/OscBudgetSymbolBound.lean` and
+`formal/GaloisForLFunctions/RHTower/RadialSymbolTwoBranchBound.lean` (wired, axiom-clean) turn the
+four-branch estimate into the numerical shape of `(8)`.
+
+```text
+integral_one_div_sq_le          ∫_a^b x⁻² ≤ 1/a
+integral_one_div_pow_four_le    ∫_a^b x⁻⁴ ≤ 1/(3a³)
+oscBudget_le_of_symbolBounds
+    |g| ≤ M/x , |g'| ≤ M'/x² , |Θ''| ≤ N/x³ on a ray from 1
+      ⟹ oscBudget a b m g g' Θ'' ≤ 2M/m + M'/m + M N/(3m²)
+abs_half_mul_{add,sub}_le'        the four product weights obey |w| ≤ M_j M_k/x
+abs_half_mul_deriv_{add,sub}_le'  and |w'| ≤ (M_j' M_k + M_j M_k')/x²
+```
+
+The budget is **independent of the right endpoint**, which is the property `(8)` needs to survive the
+passage to the whole exterior ray (available as
+`HTGeometry.abs_setIntegral_Ioi_le_of_tendsto`).
+
+```text
+SymbolTwoBranch a b M M' g₁ g₂ g₁' g₂'
+    the two amplitudes are C¹ on [a,b] with |g| ≤ M/x and |g'| ≤ M'/x²
+
+abs_integral_radial_twoBranch_symbol_le  (0 ≤ s ≤ 1/2, 2 ≤ k < j, 1 ≤ a ≤ b, 0 < c) :
+    |∫_a^b U_j U_k| ≤ 4 (2 M_j M_k/m + (M_j' M_k + M_j M_k')/m + M_j M_k N/(3m²)) / c ,
+    m = (2/3)(j − k)
+```
+
+That is `(8)`: with the geometric prefactor `√d₁/r` folded into `M_j = C√d₁/j`, `M_k = C√d₁/k`, the
+right-hand side is `O(d₁/(c j k (j−k)))`, with absolute constants uniform in the radius, the turning
+parameter, and both indices.
+
+**What is left** is only the *instantiation*: producing, for the actual radial PSWF solutions, a
+`SymbolTwoBranch` record with `M = C√d₁/r` and `M' = C√d₁/r`, and the phase-curvature bound
+`|ξ''_s(jx) j² ∓ ξ''_s(kx) k²| ≤ N/x³`.  The first comes from the interaction-picture amplitudes
+(`RadialPSWFAmplitudeVariation`: real two-branch form, `A(x) ≤ A(a)exp((1/c)∫‖ψ‖)`, `O(V/c)` total
+variation) composed with the Liouville amplitude `xiAmplitude_le` (`≤ 2^{1/4}/√x`); the second is an
+elementary computation with `xiSpeedDeriv`.

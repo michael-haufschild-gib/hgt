@@ -209,7 +209,7 @@ theorem oscBudget_le_of_symbolBounds {a b m M M' N : ℝ}
 theorem abs_half_mul_add_le {x Mj Mk p q r t : ℝ} (hx : 1 ≤ x)
     (hMj : 0 ≤ Mj) (hMk : 0 ≤ Mk)
     (hp : |p| ≤ Mj / x) (hq : |q| ≤ Mk / x) (hr : |r| ≤ Mj / x) (ht : |t| ≤ Mk / x)
-    (ε : ℝ) (hε : ε = 1 ∨ ε = -1) :
+    (ε : ℝ) (hε : |ε| = 1) :
     |1 / 2 * (p * q + ε * (r * t))| ≤ Mj * Mk / x := by
   have hx0 : (0 : ℝ) < x := lt_of_lt_of_le zero_lt_one hx
   have hx2 : (0 : ℝ) < x ^ 2 := by positivity
@@ -223,8 +223,7 @@ theorem abs_half_mul_add_le {x Mj Mk p q r t : ℝ} (hx : 1 ≤ x)
     have := mul_le_mul hr ht (abs_nonneg _) (by positivity)
     calc |r| * |t| ≤ (Mj / x) * (Mk / x) := this
       _ = Mj * Mk / x ^ 2 := by ring
-  have hεabs : |ε| = 1 := by
-    rcases hε with rfl | rfl <;> norm_num
+  have hεabs : |ε| = 1 := hε
   have hsum : |1 / 2 * (p * q + ε * (r * t))| ≤ Mj * Mk / x ^ 2 := by
     have hstep : |1 / 2 * (p * q + ε * (r * t))| ≤ 1 / 2 * (|p * q| + |ε * (r * t)|) := by
       rw [abs_mul, abs_of_nonneg (by norm_num : (0:ℝ) ≤ 1 / 2)]
@@ -243,7 +242,7 @@ theorem abs_half_mul_deriv_le {x Mj Mj' Mk Mk' p p' q q' r r' t t' : ℝ} (hx : 
     (hq : |q| ≤ Mk / x) (hq' : |q'| ≤ Mk' / x ^ 2)
     (hr : |r| ≤ Mj / x) (hr' : |r'| ≤ Mj' / x ^ 2)
     (ht : |t| ≤ Mk / x) (ht' : |t'| ≤ Mk' / x ^ 2)
-    (ε : ℝ) (hε : ε = 1 ∨ ε = -1) :
+    (ε : ℝ) (hε : |ε| = 1) :
     |1 / 2 * (p' * q + p * q' + ε * (r' * t + r * t'))|
       ≤ (Mj' * Mk + Mj * Mk') / x ^ 2 := by
   have hx0 : (0 : ℝ) < x := lt_of_lt_of_le zero_lt_one hx
@@ -263,8 +262,7 @@ theorem abs_half_mul_deriv_le {x Mj Mj' Mk Mk' p p' q q' r r' t t' : ℝ} (hx : 
   have h4 : |r * t'| ≤ Mk' * Mj / x ^ 3 := by
     rw [mul_comm r t']
     exact hbound hMk' hMj ht' hr
-  have hεabs : |ε| = 1 := by
-    rcases hε with rfl | rfl <;> norm_num
+  have hεabs : |ε| = 1 := hε
   have hstep : |1 / 2 * (p' * q + p * q' + ε * (r' * t + r * t'))|
       ≤ 1 / 2 * (|p' * q| + |p * q'| + (|r' * t| + |r * t'|)) := by
     rw [abs_mul, abs_of_nonneg (by norm_num : (0:ℝ) ≤ 1 / 2)]
@@ -286,5 +284,47 @@ theorem abs_half_mul_deriv_le {x Mj Mj' Mk Mk' p p' q q' r r' t t' : ℝ} (hx : 
     apply div_le_div_of_nonneg_left (by positivity) (by positivity)
     nlinarith
   linarith
+
+
+theorem abs_half_mul_add_le' {x Mj Mk p q r t : ℝ} (hx : 1 ≤ x)
+    (hMj : 0 ≤ Mj) (hMk : 0 ≤ Mk)
+    (hp : |p| ≤ Mj / x) (hq : |q| ≤ Mk / x) (hr : |r| ≤ Mj / x) (ht : |t| ≤ Mk / x) :
+    |1 / 2 * (p * q + r * t)| ≤ Mj * Mk / x := by
+  have h := abs_half_mul_add_le hx hMj hMk hp hq hr ht 1 (by norm_num)
+  simpa using h
+
+theorem abs_half_mul_sub_le' {x Mj Mk p q r t : ℝ} (hx : 1 ≤ x)
+    (hMj : 0 ≤ Mj) (hMk : 0 ≤ Mk)
+    (hp : |p| ≤ Mj / x) (hq : |q| ≤ Mk / x) (hr : |r| ≤ Mj / x) (ht : |t| ≤ Mk / x) :
+    |1 / 2 * (p * q - r * t)| ≤ Mj * Mk / x := by
+  have h := abs_half_mul_add_le hx hMj hMk hp hq hr ht (-1) (by norm_num)
+  have hrw : 1 / 2 * (p * q + (-1 : ℝ) * (r * t)) = 1 / 2 * (p * q - r * t) := by ring
+  rwa [hrw] at h
+
+theorem abs_half_mul_deriv_add_le' {x Mj Mj' Mk Mk' p p' q q' r r' t t' : ℝ} (hx : 1 ≤ x)
+    (hMj : 0 ≤ Mj) (hMj' : 0 ≤ Mj') (hMk : 0 ≤ Mk) (hMk' : 0 ≤ Mk')
+    (hp : |p| ≤ Mj / x) (hp' : |p'| ≤ Mj' / x ^ 2)
+    (hq : |q| ≤ Mk / x) (hq' : |q'| ≤ Mk' / x ^ 2)
+    (hr : |r| ≤ Mj / x) (hr' : |r'| ≤ Mj' / x ^ 2)
+    (ht : |t| ≤ Mk / x) (ht' : |t'| ≤ Mk' / x ^ 2) :
+    |1 / 2 * (p' * q + p * q' + (r' * t + r * t'))|
+      ≤ (Mj' * Mk + Mj * Mk') / x ^ 2 := by
+  have h := abs_half_mul_deriv_le hx hMj hMj' hMk hMk' hp hp' hq hq' hr hr' ht ht' 1
+    (by norm_num)
+  simpa using h
+
+theorem abs_half_mul_deriv_sub_le' {x Mj Mj' Mk Mk' p p' q q' r r' t t' : ℝ} (hx : 1 ≤ x)
+    (hMj : 0 ≤ Mj) (hMj' : 0 ≤ Mj') (hMk : 0 ≤ Mk) (hMk' : 0 ≤ Mk')
+    (hp : |p| ≤ Mj / x) (hp' : |p'| ≤ Mj' / x ^ 2)
+    (hq : |q| ≤ Mk / x) (hq' : |q'| ≤ Mk' / x ^ 2)
+    (hr : |r| ≤ Mj / x) (hr' : |r'| ≤ Mj' / x ^ 2)
+    (ht : |t| ≤ Mk / x) (ht' : |t'| ≤ Mk' / x ^ 2) :
+    |1 / 2 * (p' * q + p * q' - (r' * t + r * t'))|
+      ≤ (Mj' * Mk + Mj * Mk') / x ^ 2 := by
+  have h := abs_half_mul_deriv_le hx hMj hMj' hMk hMk' hp hp' hq hq' hr hr' ht ht' (-1)
+    (by norm_num)
+  have hrw : 1 / 2 * (p' * q + p * q' + (-1 : ℝ) * (r' * t + r * t'))
+      = 1 / 2 * (p' * q + p * q' - (r' * t + r * t')) := by ring
+  rwa [hrw] at h
 
 end GaloisForLFunctions.HTGeometry

@@ -327,6 +327,43 @@ theorem ofRealLp_toLp {α : Type*} [MeasurableSpace α] {μ : Measure α} {h : �
     (memLp_ofReal hh).coeFn_toLp] with x h1 h2 h3
   rw [h1, h2, h3]
 
+
+/-! ## Passing the tail bound to a strong limit -/
+
+theorem fourier_lp_sub (u v : Lp ℂ 2 (volume : Measure ℝ)) :
+    (𝓕 (u - v) : Lp ℂ 2 (volume : Measure ℝ)) = 𝓕 u - 𝓕 v :=
+  (Lp.fourierTransformₗᵢ ℝ ℂ).map_sub u v
+
+/-- A uniform frequency-tail bound along a strongly convergent sequence passes to the limit. -/
+theorem norm_restrictLp_fourier_limit_le {u : ℕ → Lp ℂ 2 (volume : Measure ℝ)}
+    {U : Lp ℂ 2 (volume : Measure ℝ)}
+    (hu : Filter.Tendsto u Filter.atTop (nhds U)) (S : Set ℝ) {c : ℕ → ℝ} {c₀ : ℝ}
+    (hc : ∀ k : ℕ, ‖restrictLp S (𝓕 (u k))‖ ≤ c k)
+    (hcL : Filter.Tendsto c Filter.atTop (nhds c₀)) :
+    ‖restrictLp S (𝓕 U)‖ ≤ c₀ := by
+  have hdiff : Filter.Tendsto (fun k : ℕ => ‖U - u k‖) Filter.atTop (nhds 0) := by
+    have h : Filter.Tendsto (fun k : ℕ => U - u k) Filter.atTop (nhds (U - U)) :=
+      tendsto_const_nhds.sub hu
+    rw [sub_self] at h
+    simpa using h.norm
+  have hstep : ∀ k : ℕ, ‖restrictLp S (𝓕 U)‖ ≤ ‖U - u k‖ + c k := by
+    intro k
+    have hsum : (𝓕 (U - u k) : Lp ℂ 2 (volume : Measure ℝ)) + 𝓕 (u k) = 𝓕 U := by
+      rw [fourier_lp_sub]
+      abel
+    calc ‖restrictLp S (𝓕 U)‖
+        = ‖restrictLp S (𝓕 (U - u k)) + restrictLp S (𝓕 (u k))‖ := by
+          rw [← restrictLp_add, hsum]
+      _ ≤ ‖restrictLp S (𝓕 (U - u k))‖ + ‖restrictLp S (𝓕 (u k))‖ := norm_add_le _ _
+      _ ≤ ‖U - u k‖ + c k := by
+          refine add_le_add ?_ (hc k)
+          refine le_trans (norm_restrictLp_le _ _) ?_
+          rw [Lp.norm_fourier_eq]
+  have hlim : Filter.Tendsto (fun k : ℕ => ‖U - u k‖ + c k) Filter.atTop (nhds (0 + c₀)) :=
+    hdiff.add hcL
+  rw [zero_add] at hlim
+  exact ge_of_tendsto' hlim hstep
+
 end GaloisForLFunctions.HTGeometry
 
 end

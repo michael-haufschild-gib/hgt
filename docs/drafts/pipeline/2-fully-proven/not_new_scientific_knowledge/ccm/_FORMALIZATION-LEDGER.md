@@ -42,6 +42,8 @@ tree.
 | `ccm-fredholm-schur-resolvent-carrier-law` | `HTGeometry.SchurComplementKernel` (new) |
 | `ccm-shift-covariant-pole-divisor-capacity-law` | `CCMShiftCovariantPoleDivisorCapacity` (new) |
 | `ccm-prime-free-aperture-characteristic-pair-law` | `CCMPrimeFreeApertureCharacteristicPair` (new) |
+| `ccm-transverse-index-trace-slope-coercivity-law` | `CCMTransverseIndexTraceSlopeCoercivity` (new) |
+| `ccm-hankel-gap-trace-slope-rh-criterion` | `CCMHankelGapTraceSlope` (new) |
 
 ## Open — Lean to be built
 
@@ -69,7 +71,6 @@ Each entry names the statements the card proves that must be formalized.
 | `ccm-generic-ground-separating-incidence-law` | open dense set of separating ground states in the compressed prime-shift space |
 | `ccm-growing-aperture-mellin-determinant-transfer` | Mellin-evaluation norm determines the determinant transfer on the growing aperture |
 | `ccm-hankel-boundary-relative-trace-four-unit-law` | the relative-trace four-unit law replacing full trace class |
-| `ccm-hankel-gap-trace-slope-rh-criterion` | anti-causal residue energy = negative initial trace slope |
 | `ccm-infinitesimal-half-unit-cauchy-seam-law` | infinitesimal half-unit Cauchy seam law |
 | `ccm-infinitesimal-real-euler-ray-logderivative-index-law` | infinitesimal real Euler-ray log-derivative index law |
 | `ccm-leading-endpoint-archimedean-log-law` | archimedean Weil form of the normalized leading lower-endpoint profile |
@@ -97,7 +98,6 @@ Each entry names the statements the card proves that must be formalized.
 | `ccm-sonin-three-grade-relative-carrier-law` | `(11)` and the bundling of the three grades |
 | `ccm-source-normalized-nonschatten-birman-schwinger-line-law` | source-normalized non-Schatten Birman–Schwinger line law |
 | `ccm-spectral-parameter-evans-completion-carrier-law` | spectral-parameter Evans completion carrier law |
-| `ccm-transverse-index-trace-slope-coercivity-law` | transverse index trace-slope coercivity |
 | `ccm-unit-riesz-markov-virial-landau-law` | global convolution, zeta Laplace transform of the Markov density, pole retention, Landau step |
 | `ccm-unit-riesz-mobius-wavelet-reduction` | the wavelet reduction beyond the already-formalized cell algebra |
 | `ccm-universal-boundary-laplace-frame-saturation-law` | universal boundary Laplace frame saturation |
@@ -112,6 +112,13 @@ Each entry names the statements the card proves that must be formalized.
   squared Pluecker norm; kernel detection.
 - `HTGeometry/SchurComplementKernel.lean` — Schur-complement kernel isomorphism and its determinant
   form.
+- `RHTower/CCMShiftCovariantPoleDivisorCapacity.lean` — divisor/pole profiles, their Laplace
+  transforms, and the real-axis limit of the shift-covariant symbol.
+- `RHTower/CCMTransverseIndexTraceSlopeCoercivity.lean` — the exact Cauchy energy of a divisor
+  packet and the four-unit coercivity.
+- `RHTower/CCMHankelGapTraceSlope.lean` — the gap profile, its difference-quotient sandwich, the
+  initial-slope identity, and the exact first-moment Laplace integral
+  `∫_u^∞ (t−u)e^{-bt} = e^{-bu}/b²`.
 
 ## Working note
 

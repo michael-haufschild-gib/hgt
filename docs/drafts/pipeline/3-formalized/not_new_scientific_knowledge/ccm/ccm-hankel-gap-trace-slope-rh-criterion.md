@@ -1,7 +1,7 @@
 # The CCM residue energy is an initial Hankel gap-trace slope
 
 - **ID:** `ccm-hankel-gap-trace-slope-rh-criterion`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized (paper proof; Lean certificate alongside)
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[PROVED] [NOT NEW SCIENTIFIC KNOWLEDGE] [RH-EQUIVALENT TARGET]`
 - **Parent results:** Hilbert--Schmidt norm formula for Hankel kernels and the positive Cauchy-energy
@@ -284,3 +284,51 @@ added.
 - [ ] close the source-defined infinitesimal leakage graph and construct its shifted traces
 - [ ] prove the slope order `(18)`
 - [ ] RH
+
+## Lean status
+
+**Formalized unconditionally, 2026-08-15**, in
+`formal/GaloisForLFunctions/RHTower/CCMHankelGapTraceSlope.lean`, on the divisor/pole profiles of
+`RHTower/CCMShiftCovariantPoleDivisorCapacity.lean` and the Cauchy energy form of
+`RHTower/CCMTransverseIndexTraceSlopeCoercivity.lean`.
+
+- `leakDensity`, `tailLeakEnergy`, `hankelGapProfile`, `LeakProfile` — the leakage density, the tail
+  energy, the gap profile `F_ell(u) = int_u^infinity (t-u)|ell|^2`, and hypothesis `(1)`.
+- **`hankelGapProfile_eq_shift`** — the two forms of `(4)`, related by the measure-preserving
+  translation of the half-line.
+- **`hankelGapProfile_sub`** — the exact splitting `F(u) - F(k) = (k-u) T(k) + int_(u,k] (t-u)|ell|^2`,
+  which is `(7)` in exact form.
+- `tailLeakEnergy_sub`, `remainder_nonneg`, **`remainder_le`** — the two bounds on the remainder.
+- **`tailLeakEnergy_le_diff_quotient`** — the sandwich `T(k) <= (F(u)-F(k))/(k-u) <= T(u)`.  This
+  replaces the card's two-term limit argument by an exact two-sided inequality.
+- **`tendsto_tailLeakEnergy_right`** — right continuity of the tail energy, from absolute continuity
+  of the integral.
+- **`tendsto_diff_quotient_hankelGapProfile`**, **`tendsto_initial_slope`** — equations `(5)`--`(6)`:
+  the one-sided derivative of the gap profile is minus the tail energy, and at the origin
+  `-F'(0+) = ||ell||_2^2`.  No boundary value `ell(0)` and no derivative of `ell` is used.
+- **`hankelGapProfile_antitone`** — the monotonicity assertion of `(4)`.
+- `exists_uniform_re_bound`, `integrableOn_one_add_mul_exp_neg`, `norm_divisorPacketProfile_le`,
+  **`leakProfile_divisorPacket`**, **`leakProfile_polePacket`** — the two concrete profiles satisfy
+  hypothesis `(1)`.
+- **`ofReal_leakDensity_divisorPacket`**, `integrableOn_sub_mul_cexp_neg_mul`,
+  `tendsto_linear_mul_exp_neg`, **`integral_Ioi_sub_mul_cexp_neg_mul`**,
+  **`hankelGapProfile_divisorPacket`** — equations `(8)`, `(12)`, `(9)`: the exact first-moment
+  Laplace integral `int_u^infinity (t-u)exp(-b t)dt = exp(-b u)/b^2` for `Re b > 0` (proved by the
+  fundamental theorem of calculus with the antiderivative `((u-s)/b - 1/b^2)exp(-b s)`), and the
+  closed form of the gap profile of a finite divisor packet.
+- **`tendsto_initial_slope_divisorPacket`** — equation `(10)`: the initial trace slope of a finite
+  divisor packet is its residue energy, whose Cauchy form and diagonal bound `(11)` are
+  `divisorPacketEnergy_eq` and `diagonal_le_divisorPacketEnergy`.
+- `tailLeakEnergy_polePacket_zero`, **`tendsto_initial_slope_polePacket`** — equation `(14)`: the
+  incoming pole has initial trace slope exactly `-4`.
+- **`divisorPacketEnergy_le_four_iff`** — equations `(16)`--`(17)` at the packet level: a right-half
+  packet has initial trace loss at most the pole value exactly when it is empty.
+
+All statements are unconditional: `#print axioms` returns only
+`[propext, Classical.choice, Quot.sound]`.
+
+Not formalized, and imported: the Hilbert--Schmidt norm formula identifying `Tr(H_u^* H_u)` of the
+shifted Hankel operator `(2)` with the first-moment tail `(4)` — the card's parent result — and the
+identification of the Xi divisor with the packet data, which is what turns the packet criterion
+`(16)`--`(17)` into the RH equivalence.  The source-side obligation `(18)`--`(20b)` is the card's own
+open gate.

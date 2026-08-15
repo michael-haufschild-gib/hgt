@@ -233,3 +233,15 @@ open: `Haar(M) = 0` (Saksman--Webb/Seip) and Andersson's divisor surjectivity.
 
 Since changing finitely many prime phases multiplies `Z_χ` by a finite Euler factor — meromorphic on
 the plane — `M` is a tail event, so `Haar(M) ∈ {0,1}` and only `Haar(M) ≠ 1` remains.
+
+### `(8)` is now numerical
+
+    HTGeometry/OscBudgetSymbolBound.lean        oscBudget ≤ 2M/m + M'/m + MN/(3m²) under symbol
+                                                decay, uniformly in the right endpoint
+    RHTower/RadialSymbolTwoBranchBound.lean     SymbolTwoBranch bundles the regularity + decay;
+        abs_integral_radial_twoBranch_symbol_le :
+        |∫_a^b U_j U_k| ≤ 4(2M_jM_k/m + (M_j'M_k + M_jM_k')/m + M_jM_kN/(3m²))/c, m = (2/3)(j−k)
+
+With `M_r = C√d₁/r` this is `O(d₁/(c j k (j−k)))` — the card's `(8)`.  The only remaining step for the
+two consumer cards is producing the `SymbolTwoBranch` record for the actual PSWF solutions and the
+phase-curvature bound; both are compositions of already-formal pieces.

@@ -141,6 +141,7 @@ def gaugeProbeJetPacket (W g : ℂ → ℂ) (m N D : ℕ) (nodes : H → X → �
     (blockJetMap m (fun _ : X => expJetMap m)
       (fun x => gaugeJetVec m g (nodes p.2 x) + probeJetLin m N D (nodes p.2) p.1 x))
 
+omit [Fintype X] [NormedAddCommGroup H] [NormedSpace ℝ H] in
 /-- **The probe jet packet is the actual jet packet of the perturbed gauged source.** -/
 theorem gaugeProbeJetPacket_eq {W g : ℂ → ℂ} (hW : Differentiable ℂ W) (hg : Differentiable ℂ g)
     (m N D : ℕ) (nodes : H → X → ℂ) (p : (Fin D → ℂ) × H) (x : X) (j : Fin m) :
@@ -194,6 +195,7 @@ theorem hasFDerivAt_gaugeProbeJetPacket (W g : ℂ → ℂ) (m N D : ℕ) (nodes
   filter_upwards [] with v
   rfl
 
+omit [NormedAddCommGroup H] [NormedSpace ℝ H] in
 theorem surjective_gaugeProbeJetCLM [DecidableEq X] {W g : ℂ → ℂ} (m N : ℕ)
     (nodes : H → X → ℂ) (c : Fin (Fintype.card X * m) → ℂ) (h : H)
     (hinj : Function.Injective (nodes h)) (hne : ∀ x, nodes h x ≠ 0)
@@ -225,6 +227,92 @@ theorem surjective_gaugeProbeJetCLM [DecidableEq X] {W g : ℂ → ℂ} (m N : �
           + probeJetLin m N (Fintype.card X * m) (nodes h) c x)).restrictScalars ℝ)
         (probeJetLin m N (Fintype.card X * m) (nodes h) y3)) = y
   rw [hy3, hy2, hy1]
+
+end
+
+end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+noncomputable section
+
+variable {X : Type*} [Fintype X] {H : Type*} [NormedAddCommGroup H] [NormedSpace ℝ H]
+
+/-! ### Joint smoothness of the probe jet packet -/
+
+theorem contDiff_probeFst (D : ℕ) (i : Fin D) :
+    ContDiff ℝ ⊤ (fun p : (Fin D → ℂ) × H => p.1 i) :=
+  (contDiff_apply ℝ ℂ i).comp contDiff_fst
+
+theorem contDiff_nodeComp {D : ℕ} {F : ℂ → ℂ} (hF : Differentiable ℂ F) {nodes : H → X → ℂ}
+    (hnodes : ContDiff ℝ ⊤ nodes) (x : X) :
+    ContDiff ℝ ⊤ (fun p : (Fin D → ℂ) × H => F (nodes p.2 x)) :=
+  (contDiff_of_entire hF).comp
+    (((contDiff_apply ℝ ℂ x).comp hnodes).comp contDiff_snd)
+
+theorem contDiff_gaugeJetVec_node {D : ℕ} {g : ℂ → ℂ} (hg : Differentiable ℂ g) (m : ℕ)
+    {nodes : H → X → ℂ} (hnodes : ContDiff ℝ ⊤ nodes) (x : X) :
+    ContDiff ℝ ⊤ (fun p : (Fin D → ℂ) × H => gaugeJetVec m g (nodes p.2 x)) := by
+  rw [contDiff_pi]
+  intro k
+  exact contDiff_nodeComp (differentiable_iteratedDeriv_of_entire hg (k : ℕ)) hnodes x
+
+theorem contDiff_probeJetLin_node (m N D : ℕ) {nodes : H → X → ℂ}
+    (hnodes : ContDiff ℝ ⊤ nodes) (x : X) :
+    ContDiff ℝ ⊤ (fun p : (Fin D → ℂ) × H => probeJetLin m N D (nodes p.2) p.1 x) := by
+  rw [contDiff_pi]
+  intro k
+  have hfun : (fun p : (Fin D → ℂ) × H => probeJetLin m N D (nodes p.2) p.1 x k)
+      = fun p : (Fin D → ℂ) × H => ∑ i : Fin D, p.1 i *
+          (Polynomial.derivative^[(k : ℕ)]
+            (Polynomial.monomial (N + (i : ℕ)) (1 : ℂ))).eval (nodes p.2 x) := by
+    funext p
+    rw [probeJetLin_apply, windowLin_iterate_derivative_eval]
+  rw [hfun]
+  refine ContDiff.sum fun i _ => ?_
+  exact (contDiff_probeFst D i).mul
+    (contDiff_nodeComp (Polynomial.differentiable _) hnodes x)
+
+/-- **The probe jet packet is jointly smooth in the probe and the shift.** -/
+theorem contDiff_gaugeProbeJetPacket {W g : ℂ → ℂ} (hW : Differentiable ℂ W)
+    (hg : Differentiable ℂ g) (m N D : ℕ) {nodes : H → X → ℂ} (hnodes : ContDiff ℝ ⊤ nodes) :
+    ContDiff ℝ ⊤ (gaugeProbeJetPacket W g m N D nodes) := by
+  classical
+  rw [contDiff_pi]
+  intro x
+  rw [contDiff_pi]
+  intro j
+  have hv : ContDiff ℝ ⊤ (fun p : (Fin D → ℂ) × H =>
+      gaugeJetVec m g (nodes p.2 x) + probeJetLin m N D (nodes p.2) p.1 x) :=
+    (contDiff_gaugeJetVec_node hg m hnodes x).add (contDiff_probeJetLin_node m N D hnodes x)
+  have hexp : ContDiff ℝ ⊤ (fun p : (Fin D → ℂ) × H =>
+      expJetMap m (gaugeJetVec m g (nodes p.2 x) + probeJetLin m N D (nodes p.2) p.1 x)) :=
+    (contDiff_real_expJetMap m).comp hv
+  have hfun : (fun p : (Fin D → ℂ) × H => gaugeProbeJetPacket W g m N D nodes p x j)
+      = fun p : (Fin D → ℂ) × H => ∑ l : Fin m,
+          leibnizJetMatrix m (fun r => iteratedDeriv r W (nodes p.2 x)) j l *
+            expJetMap m (gaugeJetVec m g (nodes p.2 x)
+              + probeJetLin m N D (nodes p.2) p.1 x) l := by
+    funext p
+    rw [gaugeProbeJetPacket, leibnizBlockLin_apply, Matrix.mulVec, dotProduct]
+    rfl
+  rw [hfun]
+  refine ContDiff.sum fun l _ => ?_
+  refine ContDiff.mul ?_ (((contDiff_apply ℝ ℂ l).comp hexp))
+  have hcoeff : (fun p : (Fin D → ℂ) × H =>
+        leibnizJetMatrix m (fun r => iteratedDeriv r W (nodes p.2 x)) j l)
+      = fun p : (Fin D → ℂ) × H =>
+        if (l : ℕ) ≤ (j : ℕ) then ((Nat.choose (j : ℕ) (l : ℕ) : ℂ)) *
+          iteratedDeriv ((j : ℕ) - (l : ℕ)) W (nodes p.2 x) else 0 := by
+    funext p
+    rfl
+  rw [hcoeff]
+  by_cases hjl : (l : ℕ) ≤ (j : ℕ)
+  · simp only [if_pos hjl]
+    exact contDiff_const.mul
+      (contDiff_nodeComp (differentiable_iteratedDeriv_of_entire hW _) hnodes x)
+  · simp only [if_neg hjl]
+    exact contDiff_const
 
 end
 

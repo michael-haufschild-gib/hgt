@@ -70,6 +70,22 @@ theorem integrableOn_tail (h : LeakProfile ℓ) {u : ℝ} (hu : 0 ≤ u) :
     IntegrableOn (leakDensity ℓ) (Ioi u) volume :=
   h.integrable.mono_set (Ioi_subset_Ioi hu)
 
+/-- **Equation (4), shifted form.**  The gap profile in the shifted variable. -/
+theorem hankelGapProfile_eq_shift (ℓ : ℝ → ℂ) (u : ℝ) :
+    hankelGapProfile ℓ u = ∫ r in Ioi (0 : ℝ), r * leakDensity ℓ (u + r) := by
+  have hmp := measurePreserving_add_left (volume : Measure ℝ) u
+  have hme : MeasurableEmbedding (fun x : ℝ => u + x) :=
+    (MeasurableEquiv.addLeft u).measurableEmbedding
+  have hpre : (fun x : ℝ => u + x) ⁻¹' (Ioi u) = Ioi (0 : ℝ) := by
+    ext x
+    simp
+  have hkey := hmp.setIntegral_preimage_emb hme (fun t => (t - u) * leakDensity ℓ t) (Ioi u)
+  rw [hpre] at hkey
+  unfold hankelGapProfile
+  rw [← hkey]
+  refine setIntegral_congr_fun measurableSet_Ioi fun r _ => ?_
+  ring_nf
+
 /-! ## The exact splitting identity -/
 
 theorem hankelGapProfile_sub (h : LeakProfile ℓ) {u k : ℝ} (hu : 0 ≤ u) (huk : u < k) :

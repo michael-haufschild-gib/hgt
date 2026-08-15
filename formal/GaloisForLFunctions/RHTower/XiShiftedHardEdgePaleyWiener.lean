@@ -51,7 +51,6 @@ theorem memLp_routeUCayleyLift {a : ℝ} (ha : 0 < a) {F : ℝ → ℝ} (hF : Co
   rw [Real.norm_eq_abs, abs_of_nonneg (by positivity), hsq]
   refine le_trans (mul_le_mul_of_nonneg_left hFb hfrac) (le_of_eq ?_)
   field_simp
-  ring
 
 /-! ## The complexified derivative chain -/
 
@@ -107,7 +106,7 @@ theorem norm_toLp_routeUCayleyChain_le {a : ℝ} (ha : 0 < a) {D : ℕ} {F : ℝ
   have hsq : ‖(memLp_routeUCayleyChain ha hF m).toLp (routeUCayleyChain a F m)‖ ^ 2
       ≤ ((∏ i ∈ Finset.range m, (1 / a) * (1 / 2 + 2 * ((D : ℝ) + (i : ℝ))))
         * ‖(memLp_routeUCayleyChain ha hF 0).toLp (routeUCayleyChain a F 0)‖) ^ 2 := by
-    rw [mul_pow, norm_toLp_routeUCayleyChain_sq, norm_toLp_routeUCayleyChain_sq,
+    rw [mul_pow, norm_toLp_routeUCayleyChain_sq ha hF m, norm_toLp_routeUCayleyChain_sq ha hF 0,
       trigCayleyIter_zero]
     exact hbase
   exact (pow_le_pow_iff_left₀ (norm_nonneg _) (by positivity) two_ne_zero).1 hsq
