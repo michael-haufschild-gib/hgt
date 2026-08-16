@@ -1,6 +1,6 @@
 # Suzuki Cauchy reporter-secant sharp transition
 
-- **Status:** Formalized; targeted source check passes
+- **Status:** Formalized; targeted source check, leaf build, and axiom audit pass
 - **Routes:** CCM-UR, CCM-FU, CCM-HG, Route O, Suzuki reflected-wall assembly
 - **Labels:** `[NEW]` `[SOURCE-SPECIFIC]` `[UNCONDITIONAL]` `[SHARP-CLASSIFICATION]`
 - **Lean module:** `GaloisForLFunctions.RHTower.SuzukiCauchyReporterSecantSharpTransition`
@@ -87,4 +87,11 @@ Principal declarations:
 - `SuzukiReporterSecantSharpNegativePair.gram_neg`
 - `SuzukiReporterSecantSharpPositivePair.gram_pos`
 
-Targeted `lake env lean` passes. Final leaf build and axiom audit are recorded after module wiring.
+Verification after umbrella wiring:
+
+- `lake env lean GaloisForLFunctions/RHTower/SuzukiCauchyReporterSecantSharpTransition.lean`
+  passes;
+- `lake build GaloisForLFunctions.RHTower.SuzukiCauchyReporterSecantSharpTransition` passes;
+- `#print axioms` on factorization, strict antitonicity, unique transition, transition zero,
+  sign trichotomy, and sharp positive/negative theorems reports only `propext`,
+  `Classical.choice`, and `Quot.sound`.

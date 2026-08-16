@@ -1683,3 +1683,31 @@ the `sigma`-stable pole multiset in the non-monomial branch and the partial-frac
 `nu = 1` monomial branch — with no missing infrastructure between the card's setup and it.
 Closing it also closes `floquet-orbifold-tail-emergence` and
 `orbifold-tail-holographic-reconstruction`, whose only outstanding input is this classification.
+
+- 2026-08-16 — `rational-coarse-graining-orbifold-tail-classification` advanced, not yet closed.
+  Two new unconditional axiom-clean modules, both umbrella-wired:
+  `HTGeometry/TwistedScalingDescent.lean` (generic: a twisted affine substitution on polynomials
+  over a field preserves degrees, scales leading coefficients, and — for a coprime fraction that is
+  an eigenvector — splits the cross identity into separate scalar relations for numerator and
+  denominator, with the scalars linked by the eigenvalue; for a pure scaling every coefficient
+  satisfies its own eigen-relation) and `HTGeometry/JetSubstitutionDescent.lean` (jet-side: the
+  prefix fields `C(y_0,…,y_(M-1))`, their identification with the elements of order below `M` via
+  the corpus support-kernel theorem, transcendence of `y_M` over them, `Phi_R`-stability and the
+  restricted endomorphism, the affine normal form `Phi_R(y_M) = R'(y_0)·y_M + L` with `ord L < M`,
+  and the transport `Phi_R(P(y_M)) = (twist P)(y_M)`).
+  The resulting theorems: `exists_coprime_slicing`, `substitutionEigen_leadingRatio`,
+  `exists_substitutionEigen_pred` (order descends by one, exponent shifts by the degree
+  difference), `exists_isInvariantDifferential_of_substitutionEigen` and
+  `exists_isInvariantDifferential_of_eigen` — *every* finite-order eigenvector of `Phi_R` carries an
+  invariant differential with the same eigenvalue — `exists_nonzero_isInvariantDifferential_or_eq_one`
+  (the weight is nonzero unless the eigenvalue is one), and, at order one where the substitution is
+  an exact scaling, the complete hard direction
+  `exists_nonzero_isInvariantDifferential_of_order_one`,
+  `exists_nonzero_isInvariantDifferential_of_pd_one_ne_zero`, and
+  `exists_differentialAdjoin_invariantCurrent_le_orbifoldTail`.
+  Remaining for this card: the weight-zero exit above order one — at `M ≥ 2` the affine remainder
+  `L` is nonzero so only the leading coefficients satisfy per-coefficient relations.  The route is
+  recorded on the card: the next-to-leading coefficient of the split relation solves
+  `Phi_R(t) - R'·t = -L`, so `z = y_M + t` normalizes the substitution to a pure scaling whenever
+  `deg P ≥ 1`, after which the residual configuration is the explicit family `w = e·z^(-kappa)`
+  with `e` a coefficient constant.  Closure count unchanged.

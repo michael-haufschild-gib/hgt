@@ -4666,3 +4666,111 @@ Both are unconditional and quantitative, with no limit hypothesis: they hold at 
 The proof of the lower bound splits on whether the root is already below `S_k/S_(k+1)`: if it is,
 the singular term is bounded by `S_(k+1)/d_(k+1)` and the equation gives the bound directly; if it
 is not, the bound is immediate because `S_k/(S_(k+1) + T/(M-1)) <= S_k/S_(k+1)`.
+
+## Lean progress — the coordinate half of `(3)`: the tail machinery
+
+The remaining item on this card was the coordinate limit `ell_j(lambda) -> a_j`.  Its two analytic
+ingredients are now theorems, in `RHTower/SecondMomentTailBound.lean` (wired, axiom-clean).
+
+The obstruction is that an `L^2` bound alone does **not** control the tail of `int Psi_c`: the tail
+of a unit-`L^2` function can carry all its `L^1` mass.  What controls it is the *second moment*,
+which the corpus already bounds (`integral_rescaled_secondMoment_le`).  The bound is Cauchy-Schwarz,
+but it is obtained here with no Hoelder machinery at all:
+
+```
+abs_le_secondMoment_split      |f(xi)| <= (t/2)(1/xi^2) + (1/(2t)) xi^2 f(xi)^2     (t, xi > 0)
+integral_Ioi_one_div_sq        int_{xi > K} xi^(-2)  =  1/K
+integrableOn_Ioi_one_div_sq
+integral_Ioi_abs_le_param      int_{xi > K} |f|  <=  t/(2K) + (1/(2t)) int_{xi > K} xi^2 f^2
+integral_Ioi_abs_le_sqrt       int_{xi > K} |f|  <=  sqrt(N/K)      when the moment is <= N
+```
+
+The pointwise split is the identity
+
+```
+(t/2)(1/xi^2) + (1/(2t)) xi^2 f^2 - |f|  =  (t - xi^2 |f|)^2 / (2 t xi^2) ,
+```
+
+and setting `t = sqrt(N K)` balances the two halves, recovering the sharp constant.  So a family
+with a uniform second-moment bound `N` has integral tails `<= sqrt(N/K)`, uniformly — as small as
+one likes.
+
+The second ingredient is the passage from that to the limit of the integrals:
+
+```
+tendsto_integral_of_compact_of_tail
+    convergence of  int_{[-K,K]} F_i  for every K,  plus uniformly small tails,
+    gives  int F_i -> int f
+```
+
+the three-epsilon argument, stated for an arbitrary filter so it applies to the bandwidth family
+directly.
+
+With `tendsto_prolateProfile_oscProfile` for the compact half and
+`integral_rescaled_secondMoment_le` for the tails, these give `int Psi_c -> int Psi^*` — and with
+`Psi^* = phi_n/phi_n(0)` from the rigidity theorem, that is the coordinate limit `(3)`.
+
+## Lean progress — the tail hypothesis, instantiated for the prolate family
+
+`RHTower/ProlateTailIntegralBound.lean` (wired, axiom-clean) discharges, for the actual normalized
+prolate profiles, the tail hypothesis that `tendsto_integral_of_compact_of_tail` consumes:
+
+```
+intervalIntegral_secondMoment_mono   the window second moment dominates any sub-interval's
+normalizedProlate_tail_le           |int_K^{sqrt c} Psi_c|  <=  sqrt(N/K)
+normalizedProlate_tail_lt           and it is below any target delta once  K > N/delta^2
+```
+
+The input is the corpus's own `normalizedProlate_secondMoment_le`; the mechanism is the
+second-moment tail bound.  The bound is uniform in the bandwidth: `N` is any bound for the window
+second moment, which `normalizedProlate_total_mass_le` supplies with a constant depending only on
+the window and the separation bound.
+
+So all three ingredients of the coordinate half of `(3)` are now theorems:
+
+```
+compact half   tendsto_prolateProfile_oscProfile        (corpus)
+tail half      normalizedProlate_tail_lt                (new)
+transfer       tendsto_integral_of_compact_of_tail      (new)
+```
+
+and by evenness of the profile (`even_normalizedProlateProfile`) the negative tail is the same.
+
+## Lean progress — the growing-window transfer, and `(3)`'s coordinate half assembled
+
+`RHTower/SecondMomentTailBound.lean` now carries both halves of the transfer the prolate family
+needs, plus the growing-window form its integrals actually have:
+
+```
+tendsto_setIntegral_Icc_of_tendsto_of_bounded
+    pointwise convergence + a uniform bound  ==>  convergence of the window integrals
+    (dominated convergence on a finite-measure window)
+
+tendsto_intervalIntegral_growing_window
+    integrals over every fixed window converge to g K,  g K -> A,
+    and the tails past any large enough cut are uniformly small
+      ==>  int_{-R_i}^{R_i} F_i -> A
+```
+
+The second is the shape the prolate integrals have: the window is `[-sqrt c, sqrt c]` and grows with
+the bandwidth, so neither a fixed-domain dominated-convergence argument nor a fixed-tail argument
+applies directly.  The proof is the four-epsilon split
+
+```
+int_{-R}^{R} F_i - A
+  = (int_{-K}^{K} F_i - g K) + (g K - A) + int_{-R}^{-K} F_i + int_{K}^{R} F_i ,
+```
+
+with `K` chosen past both the tail threshold and the window-value threshold.
+
+The three inputs for the prolate family are now all theorems:
+
+```
+pointwise convergence   tendsto_prolateProfile_oscProfile   (corpus)
+uniform bound           normalizedProlate_phase_le          (corpus)
+uniform tails           normalizedProlate_tail_lt           (this session)
+```
+
+so the coordinate half of `(3)`, `ell_j(lambda) -> a_j`, has every ingredient in Lean.  What is left
+is to instantiate the transfer at the prolate family with those three, which is substitution rather
+than mathematics.

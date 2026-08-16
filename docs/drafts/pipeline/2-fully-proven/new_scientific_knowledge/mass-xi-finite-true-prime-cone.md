@@ -5927,7 +5927,7 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   transport leaves the scalar Chebyshev-error quotient and absolute `PNTPlus` control retains type
   `1/2`; ordinary Selberg floor averaging is square-root bounded precisely because its `zeta`
   symbol annihilates zero modes; generalized Dirichlet mean square requires exponential prime-log
-  aperture.  Extracted the Jordan-floor symbol law
+  aperture `[(24.22)--(24.23) LEAN-PROVED]`.  Extracted the Jordan-floor symbol law
   `Mellin(T_k R)=(-1)^k zeta^(k) Mellin(R)` and the exact critical-scale hierarchy sufficient to
   expose zeros of every finite multiplicity without dividing by `zeta`.  Also extracted the
   critically stable harmonic-floor coordinate `Q=T_(1/n)R`, with exact inverse
@@ -5950,7 +5950,7 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   finite Fubini gives `sum_D w_D C_N(D)=B_N(N)-Q(N)-2γ H_N`.  Thus signed harmonic transport is
   precisely original stable core in new coordinates.  Exact positive path kernel (24.42)--(24.43)
   shows why diagonal energy loses order `N^2`, and its first path value already contains `R(N)`.
-- 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` superluminal causal-compression rigidity: for every
+- 2026-08-08 — `[PROVED HERE; (24.45)--(24.47) LEAN-PROVED; (24.49) LEAN DEFERRED]` superluminal causal-compression rigidity: for every
   `H>u>=0`, the critically gauged massive half-wave compressed to `(0,H)` retains exact operator
   norm `exp(lambda u)`.  Negative-corona modulation packets prove sharpness.  Fixed analytic
   damping and actual outgoing differential retain exact type `lambda` on every cone `H=kappa u`,
@@ -5963,7 +5963,7 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
 - 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` Selberg anchor/mass-horizon mismatch: acquiring
   critical relative error `delta=X^(-1/2+epsilon)` from harmonic small-value theorem requires
   log-window width `>40 X^(1/2-epsilon)`, exponential in mass log-time.  Any `O(h)` mass window
-  yields only `delta=Omega(1/h)` and retains type `1/2`.
+  yields only `delta=Omega(1/h)` and retains type `1/2` `[(24.58)--(24.60) LEAN-PROVED]`.
 - 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` exact harmonic-primitive/mass-adjoint reduction:
   finite Abel summation replaces `R(n)` by vanishing `E_n=J_n+2γ`, but adjoint cell quotient
   restores precisely displaced-zero exponent `beta-1/2`.  Separate norm or BV estimates remain
@@ -5977,7 +5977,7 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   has symbol `1/2-i*xi`.  Their product is `-1` frequency-by-frequency; cell quotient is exact
   weighted average of same outgoing inverse.  Only noncommuting phase/prime-adaptive transforms can
   change proof burden.
-- 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` smooth Bessel-phase gauge no-go: exact covariant Abel
+- 2026-08-08 — `[PROVED HERE; (24.79)--(24.83) LEAN-PROVED; (24.84) LEAN DEFERRED]` smooth Bessel-phase gauge no-go: exact covariant Abel
   identity moves receiver phase into harmonic source tail, but on each timelike ray gauge is only a
   bounded local Mellin twist.  Every displaced-zero mode keeps scale `n^(beta-1/2)`; useful
   connection must be genuinely arithmetic and scale-growing.
@@ -7269,3 +7269,119 @@ only the power family.  The two negative statements are the exact reason the ord
 Tatuzawa--Iseki average escapes the class: both it and its Möbius inverse have critical condition
 number of order `√N`, and the signed replacement `∑_{d≤N} μ(d)/√d = N^{o(1)}` is itself
 RH-strength.
+
+### Lean progress: §24 C43-G — the superluminal causal-compression law
+
+    HTGeometry/MassGaugeRadiationLimit.lean
+      massGaugeRadiationModel                  the amplified outgoing plane wave `e^{uλ} e^{iuξ}`
+      massGaugeHalfWaveSymbol_eq_planeWave_mul the exact factorization
+                                               `e^{-iuω} = e^{iuξ} · e^{-iu(ω+ξ)}`
+      tendsto_massGaugeHalfWaveCorrection_atBot,
+        tendsto_massGaugeHalfWaveSymbol_sub_radiation_atBot
+                                               **(24.44)** the symbol converges to the amplified
+                                               plane wave at the outgoing frequency end
+
+    RHTower/MassGaugeSuperluminalCompression.lean
+      superluminalSymbol, superluminalModel,
+        superluminalDiff, superluminalBound     the symbol pair in the `2π`-normalized frequency
+      tendsto_superluminalDiff_atBot            **(24.44)** in the analyst normalization
+      superluminalHalfWave                      `U_u = 𝓕⁻¹ M_{e^{-iuω}} 𝓕` on `L²(ℝ)`
+      windowSymbol, windowCutoff,
+        windowCutoff_eq_self                    the causal cutoff and its fixed data
+      causalPacket, norm_causalPacket,
+        causalPacketMod                         the unit packet on `(u, H)` and its modulations
+      lpBoundedMulCLM_additiveTranslation        a translated multiplier is the multiplier of the
+                                               translated symbol
+      superluminalModelMul_apply                the model multiplier is the amplified translation
+      superluminalDefect, superluminalDefect_eq,
+        norm_superluminalDefect,
+        tendsto_norm_superluminalDefect         **(24.46)** `‖U_u φ_R − e^{λu} φ_R(·+u)‖₂ → 0`
+                                               by dominated convergence on the frequency side
+      windowCompression,
+        norm_windowCompression_le,
+        le_norm_windowCompression               the compressed norm is exactly `e^{λu}` for every
+                                               window containing `(u,H)` and `(0,H−u)`
+      norm_causalCompression_eq                 **(24.45)** `H > u ≥ 0 ⟹ ‖P_H U_u P_H‖ = e^{λu}`
+      norm_causalHalfLineCompression_eq         **(24.47)** `‖P_+ U_u P_+‖ = e^{λu}`
+      one_lt_outgoingConeSlope,
+        one_lt_besselBalanceSlope               **(24.52)** both exact RH cores have aperture slope
+                                               strictly above one, hence live in regime (24.45)
+
+The lower bound is obtained without Hardy factorization: the amplified end of the symbol is reached
+by translating a fixed unit `L²` packet in frequency, the difference between the propagated packet
+and its amplified translate is a multiplier with a symbol that tends to zero pointwise under a
+fixed uniform bound, and both the packet and its translate are supported inside the window.  The
+statement `le_norm_windowCompression` needs no sign condition on `u` at all; only the two support
+inclusions.
+
+Still deferred on this item: the analytically damped propagator `S_{σ,u}` of (24.48) and its
+exponential-type limit (24.49), which needs the uniform wave-packet expansion (24.50)--(24.51) at
+the sub-linear frequency scale `r = u^q`.
+
+### Lean progress: §24 C43-C, C43-I, C43-M
+
+    RHTower/PrimeLogSeparationAperture.lean
+      exists_pair_dist_le                      pigeonhole in an interval: `k` values inside a
+                                               window of length `L` contain a pair at distance at
+                                               most `L/(k-1)`
+      log_succ_sub_log_ge, log_separation_of_lt,
+        log_separation                         **(24.22)** distinct integers in `[1,N]` have
+                                               logarithms separated by at least `1/N`
+      log_separation_sharp                     the exponent in (24.22) is exact: the top pair
+                                               realizes `1/(N-1)`
+      exists_primeLog_gap_le                   the prime logarithms below `x` contain a pair
+                                               separated by at most `log x/(π(x)-1)`
+      primeLogAperture_lower                   **(24.23)** every uniform separation `δ` forces
+                                               `π(x)/δ ≥ π(x)(π(x)-1)/log x`
+      chebyshevPrimeLower_div_log_le_card       Chebyshev's `π(x) ≥ θ(x)/log x`
+      primeLogApertureBound,
+        tendsto_primeLogApertureBound_div_id,
+        eventually_le_primeLogApertureBound     the forced aperture eventually exceeds the whole
+                                               frequency range `x = e^H`, i.e. it is exponential in
+                                               the vertical parameter
+
+    RHTower/SmallValueHorizonMismatch.lean
+      smallValueTarget_mul                     **(24.58)** at `X = e^h` the type-zero target is
+                                               exactly the relative error `δ = X^{-1/2+ε}`
+      smallValueWindowDemand                   **(24.59)** the demanded window width is
+                                               `40 e^{(1/2-ε)h} + 2`
+      tendsto_exp_div_id_atTop,
+        eventually_lt_smallValueWindowDemand,
+        no_admissible_window                   for all large `h` no window inside a linear cone
+                                               `log(z/y) ≤ C h` is admissible
+      smallValueParameter_lower                **(24.60)** a linear horizon forces
+                                               `δ > 40/(C h - 2)`
+      tendsto_criticalNormalizedBound_atTop     the critically normalized bound it produces,
+                                               `40 e^{h/2}/(C h - 2)`, diverges: the criterion
+                                               retains exponential type `1/2`
+
+    RHTower/GaugeCovariantPrimitiveLadder.lean
+      gaugeAbelPairing, gaugeDiscreteDeriv,
+        gaugeAbelPairing_real,
+        gaugeDiscreteDeriv_real                 the pairing and difference quotient over an
+                                               arbitrary field, agreeing with the real ladder
+      gaugeAbelPairing_recursion                the Abel recursion against a primitive required to
+                                               be one only on the pairing range
+      gaugeAbelPairing_gauge                   **(24.79)** `C_M(f,A) = C_M(gf, g^{-1}A)` for every
+                                               nonvanishing gauge
+      gaugeAbelPairing_covariant               **(24.80)** the covariant Abel identity
+      tailPrimitive, tailPrimitive_diff,
+        tailPrimitive_top, gaugeAbelPairing_tail
+                                               **(24.81)** the truncated covariant source tail is a
+                                               primitive on the whole range, and drives the
+                                               identity with a single endpoint term
+      polarGauge, norm_polarGauge,
+        div_polarGauge, gaugeAbelPairing_polar   the exact polar gauge turns the receiver into its
+                                               positive amplitude
+      mellinTwistGauge, mellinTwistGauge_ratio,
+        mellinTwistGauge_ratio_scale           **(24.83)** a constant-frequency phase gauge is
+                                               exactly a local Mellin twist, depending only on the
+                                               multiplicative displacement
+
+The separation bound and the pigeonhole are stated for arbitrary integers and arbitrary index
+families, so they apply verbatim to any Dirichlet frequency set, not only prime logarithms.  The
+gauge-covariance chain is stated over an arbitrary field and needs no hypothesis on the source at
+all: it is a coordinate identity, which is exactly the content of the no-go.
+
+Still deferred on these items: the displaced-mode tail comparison (24.84), which needs the
+oscillatory tail asymptotics of `∑_{m>n} m^{β-1+iτ}`.

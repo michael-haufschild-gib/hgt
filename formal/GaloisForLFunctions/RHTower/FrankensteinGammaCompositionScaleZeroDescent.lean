@@ -1,5 +1,7 @@
 import GaloisForLFunctions.RHTower.FrankensteinSourceGammaCenteredMonodromyCartier
 import GaloisForLFunctions.RHTower.XiDepthSuccessorStokesNormalLayer
+import GaloisForLFunctions.RHTower.XiHedenmalmThetaJetSource
+import GaloisForLFunctions.RHTower.XiSpectralSupportCriterion
 import GaloisForLFunctions.HTGeometry.GammaMultiplication
 
 /-!
@@ -229,6 +231,152 @@ theorem frankensteinXiInverseAdjointNearbyCycleDescendsAt_constructs_reporter
         (primeDepthBVWoldXiCenteredRate rho)) := by
   apply frankensteinXiTwoOrientationUnitalScaleZeroDescendsAt_constructs_reporter rho
   exact (frankensteinXiTwoOrientationUnitalScaleZeroDescendsAt_iff_nearbyCycle rho).2 h
+
+/-! ## Exact theta-source multiplicity-jet producer -/
+
+/-- First nonzero jet of the literal one-sided theta-source reflection defect at one logarithmic
+cut.  Its order is the actual Xi divisor multiplicity, not a fitted degree. -/
+def xiThetaTerminalMultiplicityCutJet
+    (rho : XiDivisorSupport) (x : ℝ) : ℂ :=
+  iteratedDeriv (xiSupportMultiplicity rho)
+    (thetaCuspBoundaryReflectionDefect x)
+    (xiSpectralPointSupport rho)
+
+/-- The terminal source jet has an exact horizontal cut-gain. -/
+theorem norm_xiThetaTerminalMultiplicityCutJet_eq
+    (rho : XiDivisorSupport) (x : ℝ) :
+    ‖xiThetaTerminalMultiplicityCutJet rho x‖ =
+      Real.exp (-(x * (xiSpectralPointSupport rho).im)) *
+        ‖∫ y : ℝ, thetaCuspFourierLaplaceJetIntegrand
+          (xiSupportMultiplicity rho) (xiSpectralPointSupport rho) y‖ := by
+  rw [xiThetaTerminalMultiplicityCutJet,
+    iteratedDeriv_thetaCuspBoundaryReflectionDefect_at_supportMultiplicity,
+    norm_mul, Complex.norm_exp]
+  congr 2
+  simp [Complex.mul_re, Complex.mul_im]
+  ring
+
+/-- Exact multiplicity division never erases the retained divisor coefficient. -/
+theorem xiThetaTerminalMultiplicityCutJet_ne_zero
+    (rho : XiDivisorSupport) (x : ℝ) :
+    xiThetaTerminalMultiplicityCutJet rho x ≠ 0 := by
+  exact iteratedDeriv_thetaCuspBoundaryReflectionDefect_ne_zero_at_supportMultiplicity rho x
+
+/-- Cut covariance is projective for every divisor.  The exact scalar is retained here because
+discarding it is precisely what makes ordinary equivariant descent character-blind. -/
+theorem xiThetaTerminalMultiplicityCutJet_eq_exp_mul_zero
+    (rho : XiDivisorSupport) (x : ℝ) :
+    xiThetaTerminalMultiplicityCutJet rho x =
+      Complex.exp (Complex.I * xiSpectralPointSupport rho * (x : ℂ)) *
+        xiThetaTerminalMultiplicityCutJet rho 0 := by
+  rw [xiThetaTerminalMultiplicityCutJet,
+    iteratedDeriv_thetaCuspBoundaryReflectionDefect_at_supportMultiplicity,
+    xiThetaTerminalMultiplicityCutJet,
+    iteratedDeriv_thetaCuspBoundaryReflectionDefect_at_supportMultiplicity]
+  simp
+
+/-- **Multiplicity-jet/prime-energy weld.**  The existing coefficient-faithful theta
+prime-translation energy is exactly the inverse square of the genuine terminal-jet norm gain at
+the same prime-log cut. -/
+theorem frankensteinThetaPrimeTranslationEnergy_eq_inverse_sq_terminalJetGain
+    (q : XiZeroCopy) (p : Nat.Primes) :
+    HedenmalmThetaSource.frankensteinThetaPrimeTranslationEnergy q p =
+      (‖xiThetaTerminalMultiplicityCutJet q.1 0‖ /
+        ‖xiThetaTerminalMultiplicityCutJet q.1 (Real.log (p : ℝ))‖) ^ 2 := by
+  rw [HedenmalmThetaSource.frankensteinThetaPrimeTranslationEnergy_eq,
+    norm_xiThetaTerminalMultiplicityCutJet_eq,
+    norm_xiThetaTerminalMultiplicityCutJet_eq]
+  simp only [zero_mul, neg_zero, Real.exp_zero, one_mul]
+  have hp : (0 : ℝ) < (p : ℝ) := by exact_mod_cast p.2.pos
+  have hM : ‖∫ y : ℝ, thetaCuspFourierLaplaceJetIntegrand
+      (xiSupportMultiplicity q.1) (xiSpectralPointSupport q.1) y‖ ≠ 0 := by
+    rw [norm_ne_zero_iff]
+    exact ((xiSupportMultiplicity_eq_iff_thetaCuspFourierLaplaceJet q.1
+      (xiSupportMultiplicity q.1)).mp rfl).2
+  field_simp [hM]
+  rw [Real.rpow_def_of_pos hp]
+  rw [← Real.exp_nat_mul, ← Real.exp_add]
+  rw [xiSpectralPointSupport_im, primeDepthBVWoldXiCenteredRate]
+  ring_nf
+  simp
+
+/-- Genuine source-cut unitarity of the first surviving Xi multiplicity jet. -/
+def XiThetaTerminalMultiplicityCutIsometricAt
+    (rho : XiDivisorSupport) (x : ℝ) : Prop :=
+  ‖xiThetaTerminalMultiplicityCutJet rho x‖ =
+    ‖xiThetaTerminalMultiplicityCutJet rho 0‖
+
+/-- One nontrivial cut detects the exact horizontal grade because the retained terminal source
+coefficient is nonzero. -/
+theorem xiThetaTerminalMultiplicityCutIsometricAt_iff
+    (rho : XiDivisorSupport) {x : ℝ} (hx : x ≠ 0) :
+    XiThetaTerminalMultiplicityCutIsometricAt rho x ↔
+      (rho : ℂ).re = 1 / 2 := by
+  rw [XiThetaTerminalMultiplicityCutIsometricAt,
+    norm_xiThetaTerminalMultiplicityCutJet_eq,
+    norm_xiThetaTerminalMultiplicityCutJet_eq]
+  simp only [zero_mul, neg_zero, Real.exp_zero, one_mul]
+  have hM : ‖∫ y : ℝ, thetaCuspFourierLaplaceJetIntegrand
+      (xiSupportMultiplicity rho) (xiSpectralPointSupport rho) y‖ ≠ 0 := by
+    rw [norm_ne_zero_iff]
+    exact ((xiSupportMultiplicity_eq_iff_thetaCuspFourierLaplaceJet rho
+      (xiSupportMultiplicity rho)).mp rfl).2
+  constructor
+  · intro h
+    have hexp : Real.exp (-(x * (xiSpectralPointSupport rho).im)) = 1 := by
+      apply mul_right_cancel₀ hM
+      simpa only [one_mul] using h
+    have hmul : x * (xiSpectralPointSupport rho).im = 0 := by
+      have hzero := (Real.exp_eq_one_iff _).mp hexp
+      linarith
+    have him : (xiSpectralPointSupport rho).im = 0 :=
+      (mul_eq_zero.mp hmul).resolve_left hx
+    exact (xiSpectralPointSupport_im_eq_zero_iff rho).1 him
+  · intro hline
+    have him := (xiSpectralPointSupport_im_eq_zero_iff rho).2 hline
+    rw [him]
+    simp
+
+/-- Prime-labelled form: compare the terminal jet at the genuine prime-log cut. -/
+def FrankensteinXiPrimeThetaTerminalMultiplicityJetDescendsAt
+    (p : Nat.Primes) (rho : XiDivisorSupport) : Prop :=
+  XiThetaTerminalMultiplicityCutIsometricAt rho (Real.log (p : ℝ))
+
+theorem frankensteinXiPrimeThetaTerminalMultiplicityJetDescendsAt_iff
+    (p : Nat.Primes) (rho : XiDivisorSupport) :
+    FrankensteinXiPrimeThetaTerminalMultiplicityJetDescendsAt p rho ↔
+      (rho : ℂ).re = 1 / 2 := by
+  apply xiThetaTerminalMultiplicityCutIsometricAt_iff
+  exact (Real.log_pos (by exact_mod_cast p.2.two_le)).ne'
+
+/-- The actual theta-source multiplicity jet and the rational Xi normal layer are the same
+pointwise descent producer. -/
+theorem frankensteinXiPrimeThetaTerminalMultiplicityJetDescendsAt_iff_nearbyCycle
+    (p : Nat.Primes) (rho : XiDivisorSupport) :
+    FrankensteinXiPrimeThetaTerminalMultiplicityJetDescendsAt p rho ↔
+      FrankensteinXiInverseAdjointNearbyCycleDescendsAt rho := by
+  rw [frankensteinXiPrimeThetaTerminalMultiplicityJetDescendsAt_iff,
+    frankensteinXiInverseAdjointNearbyCycleDescendsAt_iff]
+
+/-- Prime-cut terminal-jet descent constructs Cartier landing at the same retained prime label. -/
+theorem frankensteinXiPrimeThetaTerminalMultiplicityJetDescendsAt_constructs_cartier
+    (p : Nat.Primes) (rho : XiDivisorSupport)
+    (h : FrankensteinXiPrimeThetaTerminalMultiplicityJetDescendsAt p rho) :
+    CCMRationalAdelicPrimeXiRationalCartierLanding p rho := by
+  exact (ccmRationalAdelicPrimeXiRationalCartierLanding_iff_re_eq_half p rho).2
+    ((frankensteinXiPrimeThetaTerminalMultiplicityJetDescendsAt_iff p rho).1 h)
+
+/-- The same literal source jet constructs the prime-independent source-natural Gamma reporter. -/
+theorem frankensteinXiPrimeThetaTerminalMultiplicityJetDescendsAt_constructs_reporter
+    (p : Nat.Primes) (rho : XiDivisorSupport)
+    (h : FrankensteinXiPrimeThetaTerminalMultiplicityJetDescendsAt p rho) :
+    Nonempty
+      (PrimeGammaTwoThreeSourceNaturalReporter
+        (primeDepthBVWoldXiCenteredRate rho)) := by
+  apply (primeGammaTwoThreeSourceNaturalReporter_nonempty_iff _).2
+  apply (primeGammaTwoThreeSourceNaturalInverseGhost_iff _).2
+  exact (primeDepthBVWoldXiCenteredRate_eq_zero_iff rho).2
+    ((frankensteinXiPrimeThetaTerminalMultiplicityJetDescendsAt_iff p rho).1 h)
 
 def EveryFrankensteinXiTwoOrientationUnitalScaleZeroDescends : Prop :=
   ∀ rho : XiDivisorSupport,

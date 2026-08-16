@@ -79,6 +79,7 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-16 | `acyclic-finite-fibers-derived-limit-zero` | `RHTower/AcyclicFiniteFibersDerivedLimit.lean` |
 | 2026-08-16 | `translation-invariant-defect-form-orbit-classification` | `RHTower/TranslationInvariantDefectForm.lean` |
 | 2026-08-16 | `xi-hurwitz-scalar-comparison-codimension-no-go` | `RHTower/HurwitzScalarComparisonNoGo.lean` |
+| 2026-08-16 | `involutive-reflection-quadratic-rigidity` | `HTGeometry/InvolutiveReflectionQuadraticRigidity.lean` (+ `HTGeometry/FiniteOrderHadamard.lean`) |
 
 ## Already carrying a stage-3 certificate (verify, then move the paper card)
 
@@ -103,8 +104,16 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
    `RHTower/XiZerosInfinite.lean`), together with a complete Xi Hadamard factorization in
    `RHTower/XiHadamardFactorization.lean`. Use those wherever a card cites `N(T) = O(T log T)`
    only to get convergence of `Σ_ρ |ρ|^{-k}`, `k ≥ 2`.
-3. **Hadamard factorization for finite-order entire functions** (zero-free ⇒ `exp(polynomial)`):
-   needed by `involutive-reflection-quadratic-rigidity`.
+3. ~~Hadamard factorization for finite-order entire functions~~ — **built**:
+   `HTGeometry/FiniteOrderHadamard.lean` proves
+   `exists_polynomial_exp_of_ne_zero_of_growth` (zero-free entire with
+   `‖f z‖ ≤ exp(C(1+‖z‖)^d)` ⇒ `f = exp(polynomial)`) from `exists_entire_log_of_ne_zero`,
+   `borel_caratheodory` and `exists_polynomial_of_polyGrowth`, together with the reusable
+   `FiniteOrderEnvelope` predicate and its closure API.  **Still open:** the *divisor-carrying*
+   Hadamard product (finitely many zeros ⇒ `polynomial · exp(polynomial)`) at order ≥ 2 — the
+   corpus owns only the subquadratic case
+   `RHTower.exists_finiteDivisorFactor_mul_exp_of_finite_zeroSet`.  That is what
+   `polynomial-drift-rational-outer-factor-rigidity` still needs.
 4. **von Neumann algebra generation** (`W*(S)` for a set of operators, and
    `W*(D, H_x) = B(ℓ²)`): needed by `additive-heat-diagonal-generates-full-operator-algebra`.
    mathlib has `VonNeumannAlgebra` but no generated-algebra API.
@@ -115,6 +124,14 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 
 ## New reusable infrastructure added by this sweep
 
+- `HTGeometry/FiniteOrderHadamard.lean` — the `FiniteOrderEnvelope` growth predicate with full
+  closure API (`const`, `add`, `sub`, `neg`, `mul`, `compAffine`, `of_sq`, polynomials,
+  exponentials of polynomials) and **Hadamard's zero-free factorization at every finite order**:
+  a nowhere-vanishing entire function with envelope `exp(C(1+‖z‖)^d)` equals `exp(p)` for a
+  polynomial `p`.  Generalizes the corpus's order-one `exists_linear_of_ne_zero_of_growth`.
+- `HTGeometry/InvolutiveReflectionQuadraticRigidity.lean` — the reflection difference-of-squares
+  split, its hyperexponential normal form, the resulting order-one ADE, and the
+  `sin z - z cos z` witness.
 - `HTGeometry/InvolutionIdempotentHost.lean` — self-inverse elements ↔ idempotents over a
   commutative ring with `2` invertible.
 - `HTGeometry/ScalarMonodromyAlgebraicIndependence.lean` — unbounded scalar monodromy forces

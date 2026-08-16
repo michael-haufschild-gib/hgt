@@ -5,7 +5,7 @@
 - **Stage:** 1-in-progress
 - **Type:** OWN CONJECTURE / QUANTITATIVE SOURCE BUDGET
 - **RH status:** open
-- **Computation used:** pending numerical pre-certification
+- **Computation used:** mpmath constant audit plus exact rational Lean audit
 - **Source:** `HedenmalmCriticalFeatureHolomorphicSectorCoercivity.lean` and
   `HedenmalmWardDefectTransverseGreenSource.lean`
 - **Statement:** Sum the explicit real-centered critical-feature prime–Gamma diagonal over the
@@ -34,6 +34,10 @@ Already Lean-proved:
 Needed source estimate: a lattice-window bound strong enough to imply that strict-right
 multiplicity is at most one eighth of total multiplicity.
 
+The formalized sharp receiver now uses the diagonal-subtracted budget directly: if the corrected
+lattice budget is at most `(4/25) N`, then strict-right multiplicity is at most `N/8`, hence at
+least `3N/4` copies lie on the critical line.
+
 ## Approach
 
 1. Expand the four source cups defining `criticalFeaturePrimeGammaSourceDiagonal` into pole,
@@ -61,18 +65,33 @@ multiplicity is at most one eighth of total multiplicity.
 ## Gates
 
 - [x] 0 → 1: well-posed source-pure target and exact receiver identified
-- [ ] explicit finite lattice source formula
-- [ ] numerical `1/8` margin pre-certified
-- [ ] hostile circularity audit passed
-- [ ] complete paper proof
-- [ ] Lean theorem and targeted build
-- [ ] axiom and formal lint audit
+- [x] explicit finite lattice source formula
+- [x] numerical `1/8` margin pre-certified
+- [x] hostile circularity audit passed for raw and corrected algebraic budgets
+- [x] complete paper proof of raw no-go, exact diagonal subtraction, and 75% receiver
+- [x] Lean theorem and targeted build
+- [x] axiom and module lint audit (standard `propext`/choice/quotient axioms only; global lint's
+      remaining failure is unrelated `HTGeometry.SteinbergIndexAvoidance` umbrella reachability)
+- [ ] pre-divisor pole--Gamma--von-Mangoldt upper bound `correctedBudget ≤ (4/25) N`
 
 ## No-go closure
 
-- **Exact killing theorem/mechanism:** pending.
-- **Strongest positive survivor:** pending.
-- **New insight:** pending.
+- **Exact killing theorem/mechanism:**
+  `card_mul_thirtyTwo_twentyFive_le_rawLatticeBudget` proves every multiplicity copy deposits at
+  least `32/25` in the raw nearest-integer prime--Gamma diagonal.  The nominal 75% source scale is
+  `8/2025`; `(32/25)/(8/2025)=324`.  Therefore
+  `rawLatticeBudget_threeQuartersScale_forces_empty` proves that raw target can hold only for an
+  empty packet.  Summing uncorrected diagonals is dead.
+- **Strongest positive survivor:** subtract the exact critical-line feature energy before lattice
+  summation.  `criticalFeatureHermitian_add_line_le_two_sourceDiagonal` sharpens the sector bound
+  on the line, and
+  `finite_strictRight_card_mul_thirtyTwo_twentyFive_le_offLineLatticeBudget` gives the corrected
+  count without the coarse Ward constant.  The exact receiver is
+  `three_quarters_line_of_sharp_primeGammaOffLineLatticeBudget`.
+- **New insight:** diagonal subtraction changes the useful source threshold from the impossible
+  raw `8/2025` scale to the sharp corrected `4/25` scale.  Abel traces converge to the correction,
+  but are still divisor-indexed; the remaining producer must evaluate or dominate the corrected
+  Abel lattice budget using only pole, Gamma, and von Mangoldt data.
 - **Status:** active.
 
 ## Log
@@ -80,3 +99,8 @@ multiplicity is at most one eighth of total multiplicity.
 - 2026-08-16 — card created after improved declaration search found an unconditional nearest-integer
   Ward–Green quantum and fixed-feature prime–Gamma Hermitian majorant, but no lattice-summed source
   budget.
+- 2026-08-16 — Formalized raw lattice no-go, exact line/off-line source separation, corrected
+  lattice budget, Abel convergence, multiplicity-exact count, and sharp 75% receiver in
+  `HedenmalmCriticalFeatureLatticePrimeGammaBudget.lean`.  Targeted Lean build passed.  mpmath
+  confirmed the raw factor-324 obstruction and exposed the old Ward constant `C ≈ 4645.542`; the
+  sharp corrected receiver eliminates `C` entirely.

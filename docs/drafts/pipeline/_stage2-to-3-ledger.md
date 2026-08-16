@@ -3489,3 +3489,53 @@ that the last term of `(HJLG.2)` is the sole finite-admission boundary source: t
 band-local and truncates exactly.  What is left of item 3 is only the untruncated frame identity
 `J' = [J,A] - J²`, which is the moment-derivative law plus `XK - KX = -X²` read in the orthonormal
 frame.
+
+## `mass-shifted-hard-jacobi-leakage-gramian-law` -- promoted to stage 3 (2026-08-16)
+
+Items 3 and 4 are closed and the card is promoted.  Five new modules, all umbrella-wired and
+axiom-clean:
+
+- `HTGeometry/JacobiTodaRiccatiLaw` -- the infinite Lax law `J' = [J,A] - J²` for a tridiagonal
+  pair is *equivalent* to the closed scalar system
+  `b_n' = 2(n-1)a_n² - 2(n+1)a_{n+1}² - b_n²`, `a_{n+1}' = a_{n+1}((n-1/2)b_n - (n+3/2)b_{n+1})`
+  (`JacobiTodaDeriv`, `laxSum_eq_jacobiEntry`); composed with the truncation identity this gives
+  `(HJLG.2)` with its exact `-2n a_n² ee^T` boundary source
+  (`jacobiCompression_deriv_eq_riccati`).  Both matrices are banded, so each entry of the Lax
+  right side is a three-term sum and the whole identity is a finite case analysis on `|j-k|`.
+- `HTGeometry/MatrixInverseCurveDerivative` -- Cramer differentiability: the determinant,
+  adjugate and inverse of an entrywise differentiable matrix curve are differentiable where the
+  determinant does not vanish, and `(J⁻¹)' = -J⁻¹J'J⁻¹` (`matrixHasDerivAt_inv`).  This removes
+  the paper proof's tacit assumption that the inverse curve is differentiable.
+- `HTGeometry/JacobiNodeBoundaryMonotonicity` -- the three ingredients of `(HJLG.6)`: a commutator
+  has vanishing Rayleigh quotient at an eigenvector of a symmetric matrix
+  (`dotProduct_commutator_eigenvector`); a differentiable unit eigenvector branch moves its
+  eigenvalue by the Rayleigh quotient of the matrix velocity
+  (`eigenvalue_hasDerivAt_eq_rayleigh`, Hellmann--Feynman from scratch); and an eigenvector of an
+  irreducible Jacobi compression has nonzero last coordinate
+  (`jacobiCompression_eigenvector_last_ne_zero`, by upward propagation from the bottom row).
+- `RHTower/XiShiftedJacobiFrameToda` -- the frame bundle `ShiftedJacobiFrame` (degree filtration,
+  three-term recurrence, `(HJLG.1)` ladder) and the derivation of everything from it:
+  `covariantRecurrence` (the generator cancels against the recurrence, leaving `X²φ_k`),
+  `jacobiTodaDeriv`, `jacobiVelocityLevel_eq` = `(HJLG.2)`,
+  `matrixHasDerivAt_centeredInverseLevel` = `(HJLG.3)`--`(HJLG.4)`,
+  `conjugatedCenteredInverse_increment` + `boundaryGramian_nonneg` = `(HJLG.5)`,
+  `centeredNode_deriv_pos` = `(HJLG.6)`.
+- `HTGeometry/SkewConjugatedRiccatiGramian` gained `dotProduct_conj_eq` and
+  `dotProduct_smul_vecMulVec_nonneg`, and `HTGeometry/JacobiTodaRiccatiLaw` gained
+  `jacobiEntry_symm` / `jacobiCompression_symm`.
+
+Method note worth reusing: to derive a matrix Lax law from a frame, do *not* manipulate infinite
+matrices.  Convert the law into the equivalent finite scalar system for the recurrence
+coefficients, prove that system from the differentiated recurrence by equating coefficients along
+the degree filtration, and convert back.  Equating coefficients is cheap because `deg φ_k = k`
+makes any three consecutive frame vectors independent -- no linear-independence machinery is
+needed beyond `Polynomial.coeff_eq_zero_of_natDegree_lt`.
+
+Correction found by formalising: `(HJLG.7)` as displayed is normalization-dependent.  The
+invariant statement, and the one certified, is `u_i' = 2n a_n² x_i^{-2}(v_i·e)² > 0` in
+eigenvector coordinates; rewriting `a_n²(v_i·e)²` as `h_n/γ_i` depends on which of the monic and
+orthonormal conventions `h_n` and `γ_i` are taken in.
+
+Two build traps, recorded: `Mathlib.Analysis.Matrix` and `Mathlib.Data.Matrix.Notation` have no
+usable `.olean` in this checkout, and inside `namespace RHTower` a bare `open Matrix` resolves to
+a relative namespace and silently fails to bring in `ᵀ` / `*ᵥ`; use `open _root_.Matrix`.

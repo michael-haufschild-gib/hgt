@@ -1,7 +1,7 @@
 # Involutive-reflection quadratic rigidity
 
 - **ID:** `involutive-reflection-quadratic-rigidity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Scientific status:** `[BRIDGE] [PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Lane:** general hypertranscendence; primitive ramification
@@ -75,6 +75,43 @@ The proof is a difference-of-squares application of Hadamard factorization. It i
 - [x] Zero and nonzero reflection constants classified.
 - [x] `z sin z` derivative example excluded.
 - [x] Anti-theatre gate; bridge verdict.
+- [x] Formalized in Lean 4, unconditionally.
+
+## Lean formalization
+
+`formal/GaloisForLFunctions/HTGeometry/InvolutiveReflectionQuadraticRigidity.lean`
+
+Supporting infrastructure built for this card:
+`formal/GaloisForLFunctions/HTGeometry/FiniteOrderHadamard.lean` — the finite-order growth
+envelope `FiniteOrderEnvelope` with its closure properties (`add`, `sub`, `mul`, `const`,
+`compAffine`, `of_sq`, polynomials and exponentials of polynomials), and **Hadamard's zero-free
+factorization at every finite order**
+
+```
+exists_polynomial_exp_of_ne_zero_of_growth :
+  Differentiable ℂ f → (∀ z, f z ≠ 0) → 0 ≤ C →
+  (∀ z, ‖f z‖ ≤ Real.exp (C * (1 + ‖z‖) ^ d)) →
+  ∃ p : Polynomial ℂ, ∀ z, f z = Complex.exp (p.eval z)
+```
+
+proved from the corpus's `exists_entire_log_of_ne_zero`, `borel_caratheodory` and
+`exists_polynomial_of_polyGrowth`.  (The corpus previously owned only the order-one case,
+`exists_linear_of_ne_zero_of_growth`.)
+
+Card statements:
+
+| Card claim | Lean declaration |
+|---|---|
+| `g(σz)² + g(z)² = C - 2a` | `reflection_square_sum` |
+| `(g∘σ - i g)(g∘σ + i g) = g(σ·)² + g²` | `reflectionFactor_mul` |
+| `C - 2a = 0` forces `g ≡ 0` | `inner_eq_zero_of_reflection_const_eq` |
+| `A = c exp S`, `B = d exp(-S)`, `cd = C - 2a` | `involutive_reflection_hyperexponential` |
+| the first-order ADE `S'² g² - g'² = (C-2a) S'²` | `involutive_reflection_firstOrder_relation` |
+| `g` has differential order at most one | `involutive_reflection_differentiallyAlgebraicOfOrder_one` |
+| `W = sin z - z cos z` is odd, finite order, `W' = z sin z` | `sinPrimitive_reflection`, `finiteOrderEnvelope_sinPrimitive`, `hasDerivAt_sinPrimitive` |
+| no order-two quadratic inner factor of `sin z - z cos z` | `sinPrimitive_quadratic_inner_firstOrder` |
+
+All declarations audited with `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`.
 
 ## Primary reference
 

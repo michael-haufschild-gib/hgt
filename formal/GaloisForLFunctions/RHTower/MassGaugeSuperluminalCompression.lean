@@ -112,7 +112,7 @@ theorem tendsto_superluminalDiff_atBot {a lambda : ℝ} (ha : lambda ≤ a) (hla
   refine hcomp.congr fun w => ?_
   rw [Function.comp_apply, superluminalDiff, superluminalSymbol, superluminalModel_eq]
 
-/-! ## The three operators -/
+/-! ## The half-wave propagator and the causal windows -/
 
 /-- The gauged massive half-wave propagator on `L²(ℝ)`. -/
 def superluminalHalfWave {a lambda : ℝ} (ha : lambda < a) (hlambda : 0 < lambda) (u : ℝ) :
@@ -120,46 +120,47 @@ def superluminalHalfWave {a lambda : ℝ} (ha : lambda < a) (hlambda : 0 < lambd
   fourierMulCLM (measurable_superluminalSymbol ha hlambda.le u) (Real.exp_nonneg _)
     (norm_superluminalSymbol_le ha hlambda u)
 
-/-- The causal window symbol on `(0, H)`. -/
-def causalWindow (H : ℝ) (h : ℝ) : ℂ := Set.indicator (Set.Ioo (0 : ℝ) H) (fun _ => (1 : ℂ)) h
+/-- The indicator symbol of a window. -/
+def windowSymbol (S : Set ℝ) (h : ℝ) : ℂ := Set.indicator S (fun _ => (1 : ℂ)) h
 
-theorem measurable_causalWindow (H : ℝ) : Measurable (causalWindow H) :=
-  measurable_const.indicator measurableSet_Ioo
+theorem measurable_windowSymbol {S : Set ℝ} (hS : MeasurableSet S) :
+    Measurable (windowSymbol S) :=
+  measurable_const.indicator hS
 
-theorem norm_causalWindow_le (H h : ℝ) : ‖causalWindow H h‖ ≤ 1 := by
-  rw [causalWindow]
-  by_cases hh : h ∈ Set.Ioo (0 : ℝ) H
+theorem norm_windowSymbol_le (S : Set ℝ) (h : ℝ) : ‖windowSymbol S h‖ ≤ 1 := by
+  rw [windowSymbol]
+  by_cases hh : h ∈ S
   · rw [Set.indicator_of_mem hh]
     simp
   · rw [Set.indicator_of_notMem hh]
     simp
 
-theorem causalWindow_eq_one {H h : ℝ} (hh : h ∈ Set.Ioo (0 : ℝ) H) : causalWindow H h = 1 :=
+theorem windowSymbol_eq_one {S : Set ℝ} {h : ℝ} (hh : h ∈ S) : windowSymbol S h = 1 :=
   Set.indicator_of_mem hh _
 
-/-- Multiplication by the causal window. -/
-def causalCutoff (H : ℝ) : Lp (α := ℝ) ℂ 2 →L[ℂ] Lp (α := ℝ) ℂ 2 :=
-  lpBoundedMulCLM (p := 2) (μ := (volume : Measure ℝ)) (measurable_causalWindow H)
-    zero_le_one (norm_causalWindow_le H)
+/-- Multiplication by the indicator of a window. -/
+def windowCutoff {S : Set ℝ} (hS : MeasurableSet S) :
+    Lp (α := ℝ) ℂ 2 →L[ℂ] Lp (α := ℝ) ℂ 2 :=
+  lpBoundedMulCLM (p := 2) (μ := (volume : Measure ℝ)) (measurable_windowSymbol hS)
+    zero_le_one (norm_windowSymbol_le S)
 
-theorem norm_causalCutoff_le (H : ℝ) : ‖causalCutoff H‖ ≤ 1 :=
-  norm_lpBoundedMulCLM_le (p := 2) (μ := (volume : Measure ℝ)) (measurable_causalWindow H)
-    zero_le_one (norm_causalWindow_le H)
+theorem norm_windowCutoff_le {S : Set ℝ} (hS : MeasurableSet S) : ‖windowCutoff hS‖ ≤ 1 :=
+  norm_lpBoundedMulCLM_le (p := 2) (μ := (volume : Measure ℝ)) (measurable_windowSymbol hS)
+    zero_le_one (norm_windowSymbol_le S)
 
-theorem causalCutoff_coeFn (H : ℝ) (f : Lp (α := ℝ) ℂ 2) :
-    (causalCutoff H f : ℝ → ℂ) =ᵐ[volume] fun h => causalWindow H h * (f : ℝ → ℂ) h :=
-  lpBoundedMulCLM_coeFn (p := 2) (μ := (volume : Measure ℝ)) (measurable_causalWindow H)
-    zero_le_one (norm_causalWindow_le H) f
+theorem windowCutoff_coeFn {S : Set ℝ} (hS : MeasurableSet S) (f : Lp (α := ℝ) ℂ 2) :
+    (windowCutoff hS f : ℝ → ℂ) =ᵐ[volume] fun h => windowSymbol S h * (f : ℝ → ℂ) h :=
+  lpBoundedMulCLM_coeFn (p := 2) (μ := (volume : Measure ℝ)) (measurable_windowSymbol hS)
+    zero_le_one (norm_windowSymbol_le S) f
 
-/-- A datum vanishing outside the causal window is fixed by the cutoff. -/
-theorem causalCutoff_eq_self {H : ℝ} {f : Lp (α := ℝ) ℂ 2}
-    (hf : ∀ᵐ h : ℝ, h ∉ Set.Ioo (0 : ℝ) H → (f : ℝ → ℂ) h = 0) :
-    causalCutoff H f = f := by
+/-- A datum vanishing outside the window is fixed by the cutoff. -/
+theorem windowCutoff_eq_self {S : Set ℝ} (hS : MeasurableSet S) {f : Lp (α := ℝ) ℂ 2}
+    (hf : ∀ᵐ h : ℝ, h ∉ S → (f : ℝ → ℂ) h = 0) : windowCutoff hS f = f := by
   refine Lp.ext ?_
-  filter_upwards [causalCutoff_coeFn H f, hf] with h h1 h2
+  filter_upwards [windowCutoff_coeFn hS f, hf] with h h1 h2
   rw [h1]
-  by_cases hmem : h ∈ Set.Ioo (0 : ℝ) H
-  · rw [causalWindow_eq_one hmem, one_mul]
+  by_cases hmem : h ∈ S
+  · rw [windowSymbol_eq_one hmem, one_mul]
   · rw [h2 hmem, mul_zero]
 
 /-! ## The translation dictionary -/
@@ -273,18 +274,18 @@ theorem causalPacketMod_vanishing (u H t : ℝ) :
     with h h1 h2 hnot
   rw [causalPacketMod, h1, h2 hnot, mul_zero]
 
-theorem causalCutoff_causalPacketMod {u H : ℝ} (hu : 0 ≤ u) (t : ℝ) :
-    causalCutoff H (causalPacketMod u H t) = causalPacketMod u H t := by
-  refine causalCutoff_eq_self ?_
+theorem windowCutoff_causalPacketMod {u H : ℝ} {S : Set ℝ} (hS : MeasurableSet S)
+    (hin : Set.Ioo u H ⊆ S) (t : ℝ) :
+    windowCutoff hS (causalPacketMod u H t) = causalPacketMod u H t := by
+  refine windowCutoff_eq_self hS ?_
   filter_upwards [causalPacketMod_vanishing u H t] with h hh hnot
-  refine hh fun hmem => hnot ?_
-  rw [Set.mem_Ioo] at hmem ⊢
-  exact ⟨lt_of_le_of_lt hu hmem.1, hmem.2⟩
+  exact hh fun hmem => hnot (hin hmem)
 
-theorem causalCutoff_translated {u H : ℝ} (hu : 0 ≤ u) (t : ℝ) :
-    causalCutoff H (additiveTranslationUnitary u (causalPacketMod u H t))
+theorem windowCutoff_translated {u H : ℝ} {S : Set ℝ} (hS : MeasurableSet S)
+    (hout : Set.Ioo 0 (H - u) ⊆ S) (t : ℝ) :
+    windowCutoff hS (additiveTranslationUnitary u (causalPacketMod u H t))
       = additiveTranslationUnitary u (causalPacketMod u H t) := by
-  refine causalCutoff_eq_self ?_
+  refine windowCutoff_eq_self hS ?_
   have hshift : ∀ᵐ h : ℝ, h + u ∉ Set.Ioo u H →
       (causalPacketMod u H t : ℝ → ℂ) (h + u) = 0 := by
     simpa [Function.comp_def, realTranslationEquiv] using
@@ -292,7 +293,7 @@ theorem causalCutoff_translated {u H : ℝ} (hu : 0 ≤ u) (t : ℝ) :
         (causalPacketMod_vanishing u H t)
   filter_upwards [translation_coeFn u (causalPacketMod u H t), hshift] with h h1 h2 hnot
   rw [h1]
-  refine h2 fun hmem => hnot ?_
+  refine h2 fun hmem => hnot (hout ?_)
   rw [Set.mem_Ioo] at hmem ⊢
   exact ⟨by linarith [hmem.1], by linarith [hmem.2]⟩
 
@@ -359,7 +360,7 @@ theorem superluminalDefect_eq {a lambda : ℝ} (ha : lambda < a) (hlambda : 0 < 
     refine lpBoundedMulCLM_additiveTranslation _ _ _ _ _ (-t) (fun x => ?_) G
     rw [superluminalShiftedDiff, sub_neg_eq_add]
   rw [superluminalDefect, superluminalHalfWave, fourierMulCLM_apply, ← hmodel, ← map_sub,
-    ← ContinuousLinearMap.sub_apply, ← hsub, hfour, hshifted]
+    ← sub_apply, ← hsub, hfour, hshifted]
 
 theorem norm_superluminalDefect {a lambda : ℝ} (ha : lambda < a) (hlambda : 0 < lambda)
     (u H t : ℝ) :
@@ -391,35 +392,39 @@ theorem tendsto_norm_superluminalDefect {a lambda : ℝ} (ha : lambda < a) (hlam
   have hzero := lpBoundedMulCLM_eq_zero (p := 2) (μ := (volume : Measure ℝ))
     (measurable_const (a := (0 : ℂ))) (superluminalBound_nonneg lambda u) hbnd
     (Filter.Eventually.of_forall fun _ => rfl)
-  rw [hzero, ContinuousLinearMap.zero_apply] at hbase
+  rw [hzero, zero_apply] at hbase
   have hnorm := tendsto_zero_iff_norm_tendsto_zero.1 hbase
   exact hnorm.congr fun t => (norm_superluminalDefect ha hlambda u H t).symm
 
 /-! ## The exact compression law -/
 
-/-- The causal compression of the gauged massive half-wave. -/
-def causalCompression {a lambda : ℝ} (ha : lambda < a) (hlambda : 0 < lambda) (u H : ℝ) :
-    Lp (α := ℝ) ℂ 2 →L[ℂ] Lp (α := ℝ) ℂ 2 :=
-  (causalCutoff H).comp ((superluminalHalfWave ha hlambda u).comp (causalCutoff H))
+/-- The compression of the gauged massive half-wave to a window. -/
+def windowCompression {a lambda : ℝ} (ha : lambda < a) (hlambda : 0 < lambda) (u : ℝ)
+    {S : Set ℝ} (hS : MeasurableSet S) : Lp (α := ℝ) ℂ 2 →L[ℂ] Lp (α := ℝ) ℂ 2 :=
+  (windowCutoff hS).comp ((superluminalHalfWave ha hlambda u).comp (windowCutoff hS))
 
-theorem norm_causalCompression_le {a lambda : ℝ} (ha : lambda < a) (hlambda : 0 < lambda)
-    (u H : ℝ) : ‖causalCompression ha hlambda u H‖ ≤ Real.exp (|u| * lambda) := by
+theorem norm_windowCompression_le {a lambda : ℝ} (ha : lambda < a) (hlambda : 0 < lambda)
+    (u : ℝ) {S : Set ℝ} (hS : MeasurableSet S) :
+    ‖windowCompression ha hlambda u hS‖ ≤ Real.exp (|u| * lambda) := by
   have hU : ‖superluminalHalfWave ha hlambda u‖ ≤ Real.exp (|u| * lambda) :=
     norm_fourierMulCLM_le _ _ _
-  have hP := norm_causalCutoff_le (H := H)
-  have hstep1 : ‖(superluminalHalfWave ha hlambda u).comp (causalCutoff H)‖
+  have hP := norm_windowCutoff_le hS
+  have hstep1 : ‖(superluminalHalfWave ha hlambda u).comp (windowCutoff hS)‖
       ≤ Real.exp (|u| * lambda) * 1 := by
     refine le_trans (ContinuousLinearMap.opNorm_comp_le _ _) ?_
     exact mul_le_mul hU hP (norm_nonneg _) (Real.exp_nonneg _)
   refine le_trans (ContinuousLinearMap.opNorm_comp_le _ _) ?_
-  calc ‖causalCutoff H‖ * ‖(superluminalHalfWave ha hlambda u).comp (causalCutoff H)‖
+  calc ‖windowCutoff hS‖ * ‖(superluminalHalfWave ha hlambda u).comp (windowCutoff hS)‖
       ≤ 1 * (Real.exp (|u| * lambda) * 1) :=
         mul_le_mul hP hstep1 (norm_nonneg _) zero_le_one
     _ = Real.exp (|u| * lambda) := by ring
 
-theorem le_norm_causalCompression {a lambda : ℝ} (ha : lambda < a) (hlambda : 0 < lambda)
-    {u H : ℝ} (hu : 0 ≤ u) (huH : u < H) :
-    Real.exp (u * lambda) ≤ ‖causalCompression ha hlambda u H‖ := by
+/-- **(24.45) The compressed half-wave retains the full radiation norm** as soon as the window
+contains both the input interval `(u, H)` and the propagated interval `(0, H - u)`. -/
+theorem le_norm_windowCompression {a lambda : ℝ} (ha : lambda < a) (hlambda : 0 < lambda)
+    {u H : ℝ} (huH : u < H) {S : Set ℝ} (hS : MeasurableSet S)
+    (hin : Set.Ioo u H ⊆ S) (hout : Set.Ioo 0 (H - u) ⊆ S) :
+    Real.exp (u * lambda) ≤ ‖windowCompression ha hlambda u hS‖ := by
   have hlim : Tendsto
       (fun t : ℝ => Real.exp (u * lambda) - ‖superluminalDefect ha hlambda u H t‖) atBot
       (nhds (Real.exp (u * lambda))) := by
@@ -428,59 +433,119 @@ theorem le_norm_causalCompression {a lambda : ℝ} (ha : lambda < a) (hlambda : 
     rwa [sub_zero] at hstep
   refine le_of_tendsto hlim (Filter.Eventually.of_forall fun t => ?_)
   have hnorm1 : ‖causalPacketMod u H t‖ = 1 := norm_causalPacketMod huH t
-  have happly : causalCompression ha hlambda u H (causalPacketMod u H t)
+  have happly : windowCompression ha hlambda u hS (causalPacketMod u H t)
       = ((Real.exp (u * lambda) : ℝ) : ℂ) •
           additiveTranslationUnitary u (causalPacketMod u H t)
-        + causalCutoff H (superluminalDefect ha hlambda u H t) := by
+        + windowCutoff hS (superluminalDefect ha hlambda u H t) := by
     have hsplit : superluminalHalfWave ha hlambda u (causalPacketMod u H t)
         = ((Real.exp (u * lambda) : ℝ) : ℂ) •
             additiveTranslationUnitary u (causalPacketMod u H t)
           + superluminalDefect ha hlambda u H t := by
       rw [superluminalDefect]
       abel
-    rw [causalCompression, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
-      causalCutoff_causalPacketMod hu t, hsplit, map_add, map_smul,
-      causalCutoff_translated hu t]
+    rw [windowCompression, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
+      windowCutoff_causalPacketMod hS hin t, hsplit, map_add, map_smul,
+      windowCutoff_translated hS hout t]
   have htr : ‖((Real.exp (u * lambda) : ℝ) : ℂ) •
       additiveTranslationUnitary u (causalPacketMod u H t)‖ = Real.exp (u * lambda) := by
     rw [norm_smul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (Real.exp_nonneg _),
       (additiveTranslationUnitary u).norm_map, hnorm1, mul_one]
-  have hdef : ‖causalCutoff H (superluminalDefect ha hlambda u H t)‖
+  have hdef : ‖windowCutoff hS (superluminalDefect ha hlambda u H t)‖
       ≤ ‖superluminalDefect ha hlambda u H t‖ := by
-    calc ‖causalCutoff H (superluminalDefect ha hlambda u H t)‖
-        ≤ ‖causalCutoff H‖ * ‖superluminalDefect ha hlambda u H t‖ :=
+    calc ‖windowCutoff hS (superluminalDefect ha hlambda u H t)‖
+        ≤ ‖windowCutoff hS‖ * ‖superluminalDefect ha hlambda u H t‖ :=
           ContinuousLinearMap.le_opNorm _ _
       _ ≤ 1 * ‖superluminalDefect ha hlambda u H t‖ :=
-          mul_le_mul_of_nonneg_right (norm_causalCutoff_le H) (norm_nonneg _)
+          mul_le_mul_of_nonneg_right (norm_windowCutoff_le hS) (norm_nonneg _)
       _ = ‖superluminalDefect ha hlambda u H t‖ := one_mul _
   have hlow : Real.exp (u * lambda) - ‖superluminalDefect ha hlambda u H t‖
-      ≤ ‖causalCompression ha hlambda u H (causalPacketMod u H t)‖ := by
+      ≤ ‖windowCompression ha hlambda u hS (causalPacketMod u H t)‖ := by
     set A := ((Real.exp (u * lambda) : ℝ) : ℂ) •
       additiveTranslationUnitary u (causalPacketMod u H t) with hA
-    set B := causalCutoff H (superluminalDefect ha hlambda u H t) with hB
+    set B := windowCutoff hS (superluminalDefect ha hlambda u H t) with hB
     have htri : ‖A‖ ≤ ‖A + B‖ + ‖B‖ := by
       have hstep := norm_sub_le (A + B) B
       rwa [add_sub_cancel_right] at hstep
-    rw [happly, ← hA, ← hB]
-    rw [hA, htr] at htri
-    linarith [hdef]
-  have hop : ‖causalCompression ha hlambda u H (causalPacketMod u H t)‖
-      ≤ ‖causalCompression ha hlambda u H‖ := by
-    have := ContinuousLinearMap.le_opNorm (causalCompression ha hlambda u H)
+    rw [happly]
+    linarith [htri, htr, hdef]
+  have hop : ‖windowCompression ha hlambda u hS (causalPacketMod u H t)‖
+      ≤ ‖windowCompression ha hlambda u hS‖ := by
+    have hle := ContinuousLinearMap.le_opNorm (windowCompression ha hlambda u hS)
       (causalPacketMod u H t)
-    rwa [hnorm1, mul_one] at this
+    rwa [hnorm1, mul_one] at hle
   linarith
 
-/-- **(24.45) The exact superluminal causal-compression law.**  For every window strictly wider
-than the propagation distance, the compressed gauged massive half-wave retains the full radiation
-norm `e^{λu}`. -/
+/-! ## The two causal cores -/
+
+/-- The compression to the causal interval `(0, H)`. -/
+def causalCompression {a lambda : ℝ} (ha : lambda < a) (hlambda : 0 < lambda) (u H : ℝ) :
+    Lp (α := ℝ) ℂ 2 →L[ℂ] Lp (α := ℝ) ℂ 2 :=
+  windowCompression ha hlambda u (measurableSet_Ioo (a := (0 : ℝ)) (b := H))
+
+/-- **(24.45)** For every window strictly wider than the propagation distance, the compressed
+gauged massive half-wave retains the exact radiation norm `e^{λu}`. -/
 theorem norm_causalCompression_eq {a lambda : ℝ} (ha : lambda < a) (hlambda : 0 < lambda)
     {u H : ℝ} (hu : 0 ≤ u) (huH : u < H) :
     ‖causalCompression ha hlambda u H‖ = Real.exp (u * lambda) := by
-  refine le_antisymm ?_ (le_norm_causalCompression ha hlambda hu huH)
+  have hin : Set.Ioo u H ⊆ Set.Ioo (0 : ℝ) H := by
+    intro x hx
+    rw [Set.mem_Ioo] at hx ⊢
+    exact ⟨lt_of_le_of_lt hu hx.1, hx.2⟩
+  have hout : Set.Ioo (0 : ℝ) (H - u) ⊆ Set.Ioo (0 : ℝ) H := by
+    intro x hx
+    rw [Set.mem_Ioo] at hx ⊢
+    exact ⟨hx.1, by linarith [hx.2]⟩
+  refine le_antisymm ?_ (le_norm_windowCompression ha hlambda huH _ hin hout)
   have habs : |u| = u := abs_of_nonneg hu
-  have := norm_causalCompression_le ha hlambda u H
-  rwa [habs] at this
+  have hle := norm_windowCompression_le ha hlambda u (measurableSet_Ioo (a := (0 : ℝ)) (b := H))
+  rwa [habs] at hle
+
+/-- The compression to the causal half line. -/
+def causalHalfLineCompression {a lambda : ℝ} (ha : lambda < a) (hlambda : 0 < lambda) (u : ℝ) :
+    Lp (α := ℝ) ℂ 2 →L[ℂ] Lp (α := ℝ) ℂ 2 :=
+  windowCompression ha hlambda u (measurableSet_Ioi (a := (0 : ℝ)))
+
+/-- **(24.47)** The causal half-line projection retains the exact radiation norm as well: half-line
+support is not corona polarization. -/
+theorem norm_causalHalfLineCompression_eq {a lambda : ℝ} (ha : lambda < a) (hlambda : 0 < lambda)
+    {u : ℝ} (hu : 0 ≤ u) :
+    ‖causalHalfLineCompression ha hlambda u‖ = Real.exp (u * lambda) := by
+  have huH : u < u + 1 := by linarith
+  have hin : Set.Ioo u (u + 1) ⊆ Set.Ioi (0 : ℝ) := by
+    intro x hx
+    rw [Set.mem_Ioo] at hx
+    exact Set.mem_Ioi.2 (lt_of_le_of_lt hu hx.1)
+  have hout : Set.Ioo (0 : ℝ) (u + 1 - u) ⊆ Set.Ioi (0 : ℝ) := by
+    intro x hx
+    rw [Set.mem_Ioo] at hx
+    exact Set.mem_Ioi.2 hx.1
+  refine le_antisymm ?_
+    (le_norm_windowCompression ha hlambda huH (measurableSet_Ioi (a := (0 : ℝ))) hin hout)
+  have habs : |u| = u := abs_of_nonneg hu
+  have hle := norm_windowCompression_le ha hlambda u (measurableSet_Ioi (a := (0 : ℝ)))
+  rwa [habs] at hle
+
+/-! ## Both exact cores are superluminal -/
+
+/-- **(24.52)** The elementary outgoing cone strictly outruns the light cone. -/
+theorem one_lt_outgoingConeSlope {d : ℝ} (hd : 1 / 2 < d) : 1 < d / (d - 1 / 2) := by
+  have hpos : 0 < d - 1 / 2 := by linarith
+  rw [lt_div_iff₀ hpos]
+  linarith
+
+/-- **(24.52)** The sharp Bessel aperture strictly outruns the light cone. -/
+theorem one_lt_besselBalanceSlope {a : ℝ} (ha : 1 / 2 < a) :
+    1 < a / Real.sqrt (a ^ 2 - 1 / 4) := by
+  have hapos : 0 < a := by linarith
+  have hrad : 0 < a ^ 2 - 1 / 4 := by nlinarith
+  have hsq : 0 < Real.sqrt (a ^ 2 - 1 / 4) := Real.sqrt_pos.2 hrad
+  have hlt : Real.sqrt (a ^ 2 - 1 / 4) < a := by
+    have hle : Real.sqrt (a ^ 2 - 1 / 4) < Real.sqrt (a ^ 2) := by
+      refine Real.sqrt_lt_sqrt hrad.le ?_
+      linarith
+    rwa [Real.sqrt_sq hapos.le] at hle
+  rw [lt_div_iff₀ hsq]
+  linarith
 
 end
 

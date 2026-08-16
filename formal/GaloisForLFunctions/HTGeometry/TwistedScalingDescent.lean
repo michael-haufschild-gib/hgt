@@ -168,4 +168,122 @@ theorem coeff_eigen_of_twistComp_scale (Φ : K →+* K) {ρ c : K} {P : Polynomi
   have hj := congrArg (fun p : Polynomial K => p.coeff j) h
   simpa only [coeff_twistComp_scale, coeff_C_mul] using hj
 
+/-! ## The affine cocycle -/
+
+theorem twistComp_C_mul_X_pow (Φ : K →+* K) (T : Polynomial K) (u : K) (m : ℕ) :
+    twistComp Φ T (Polynomial.C u * Polynomial.X ^ m) = Polynomial.C (Φ u) * T ^ m := by
+  rw [twistComp, Polynomial.map_mul, Polynomial.map_C, Polynomial.map_pow, Polynomial.map_X,
+    Polynomial.mul_comp, Polynomial.C_comp, Polynomial.pow_comp, Polynomial.X_comp]
+
+theorem affineSubst_eq (ρ L : K) (hρ : ρ ≠ 0) :
+    (Polynomial.C ρ * Polynomial.X + Polynomial.C L : Polynomial K)
+      = Polynomial.C ρ * (Polynomial.X + Polynomial.C (L / ρ)) := by
+  rw [mul_add, ← Polynomial.C_mul]
+  field_simp
+
+theorem coeff_affine_pow (ρ L : K) (hρ : ρ ≠ 0) (m k : ℕ) :
+    ((Polynomial.C ρ * Polynomial.X + Polynomial.C L : Polynomial K) ^ m).coeff k
+      = ρ ^ k * L ^ (m - k) * (m.choose k : K) := by
+  rw [affineSubst_eq ρ L hρ, mul_pow, ← Polynomial.C_pow, Polynomial.coeff_C_mul,
+    Polynomial.coeff_X_add_C_pow]
+  rcases le_or_gt k m with hk | hk
+  · have hsplit : ρ ^ m = ρ ^ (m - k) * ρ ^ k := by
+      rw [← pow_add]
+      congr 1
+      omega
+    rw [div_pow, hsplit]
+    field_simp
+  · rw [Nat.choose_eq_zero_of_lt hk]
+    simp
+
+/-- **The affine cocycle.**  In a split relation for an affine twisted substitution the ratio of
+the two top coefficients solves the inhomogeneous linear equation whose solution translates the
+substitution into a pure scaling. -/
+theorem twistComp_affine_cocycle (Φ : K →+* K) {ρ L c : K} (hρ : ρ ≠ 0)
+    {P : Polynomial K} {a : ℕ} (hdeg : P.natDegree = a + 1)
+    (hcP : twistComp Φ (Polynomial.C ρ * Polynomial.X + Polynomial.C L) P
+      = Polynomial.C c * P) :
+    Φ (P.coeff a / P.coeff (a + 1))
+      = ρ * (P.coeff a / P.coeff (a + 1)) - ((a : K) + 1) * L := by
+  classical
+  set T : Polynomial K := Polynomial.C ρ * Polynomial.X + Polynomial.C L with hTdef
+  have hTdeg : T.natDegree = 1 := natDegree_linear hρ
+  have hTpow : ∀ m k : ℕ, (T ^ m).coeff k = ρ ^ k * L ^ (m - k) * (m.choose k : K) := by
+    intro m k
+    rw [hTdef]
+    exact coeff_affine_pow ρ L hρ m k
+  have hP0 : P ≠ 0 := by
+    intro hh
+    rw [hh, Polynomial.natDegree_zero] at hdeg
+    omega
+  have hlead : P.coeff (a + 1) ≠ 0 := by
+    rw [← hdeg]
+    exact Polynomial.leadingCoeff_ne_zero.mpr hP0
+  set P₂ : Polynomial K :=
+    P - Polynomial.C (P.coeff (a + 1)) * Polynomial.X ^ (a + 1)
+      - Polynomial.C (P.coeff a) * Polynomial.X ^ a with hP2def
+  have hP2 : ∀ j : ℕ, a ≤ j → P₂.coeff j = 0 := by
+    intro j hj
+    rw [hP2def]
+    simp only [Polynomial.coeff_sub, Polynomial.coeff_C_mul, Polynomial.coeff_X_pow]
+    rcases eq_or_lt_of_le hj with rfl | hlt
+    · simp
+    · rcases eq_or_lt_of_le (Nat.succ_le_of_lt hlt) with heq | hgt
+      · rw [← heq]
+        simp
+      · rw [if_neg (by omega), if_neg (by omega)]
+        simp [Polynomial.coeff_eq_zero_of_natDegree_lt (by omega : P.natDegree < j)]
+  have hsplit : P = Polynomial.C (P.coeff (a + 1)) * Polynomial.X ^ (a + 1)
+      + Polynomial.C (P.coeff a) * Polynomial.X ^ a + P₂ := by
+    rw [hP2def]; ring
+  have hzero : (twistComp Φ T P₂).coeff a = 0 := by
+    rcases Nat.eq_zero_or_pos a with rfl | hapos
+    · have hP20 : P₂ = 0 := by
+        ext j
+        rw [hP2 j (Nat.zero_le j), Polynomial.coeff_zero]
+      rw [hP20, twistComp_zero, Polynomial.coeff_zero]
+    · refine Polynomial.coeff_eq_zero_of_natDegree_lt ?_
+      rw [natDegree_twistComp Φ hTdeg]
+      have hle : P₂.natDegree ≤ a - 1 :=
+        Polynomial.natDegree_le_iff_coeff_eq_zero.mpr (fun j hj => hP2 j (by omega))
+      omega
+  have hzero' : (twistComp Φ T P₂).coeff (a + 1) = 0 := by
+    rcases Nat.eq_zero_or_pos a with rfl | hapos
+    · have hP20 : P₂ = 0 := by
+        ext j
+        rw [hP2 j (Nat.zero_le j), Polynomial.coeff_zero]
+      rw [hP20, twistComp_zero, Polynomial.coeff_zero]
+    · refine Polynomial.coeff_eq_zero_of_natDegree_lt ?_
+      rw [natDegree_twistComp Φ hTdeg]
+      have hle : P₂.natDegree ≤ a - 1 :=
+        Polynomial.natDegree_le_iff_coeff_eq_zero.mpr (fun j hj => hP2 j (by omega))
+      omega
+  have hexp : twistComp Φ T P
+      = Polynomial.C (Φ (P.coeff (a + 1))) * T ^ (a + 1)
+        + Polynomial.C (Φ (P.coeff a)) * T ^ a + twistComp Φ T P₂ := by
+    conv_lhs => rw [hsplit]
+    rw [twistComp_add, twistComp_add, twistComp_C_mul_X_pow, twistComp_C_mul_X_pow]
+  rw [hexp] at hcP
+  have hca := congrArg (fun p : Polynomial K => p.coeff a) hcP
+  have hca1 := congrArg (fun p : Polynomial K => p.coeff (a + 1)) hcP
+  simp only [Polynomial.coeff_add, Polynomial.coeff_C_mul, hTpow, hzero, hzero',
+    add_zero] at hca hca1
+  simp only [Nat.sub_self, Nat.choose_self, Nat.choose_succ_self_right,
+    Nat.add_sub_cancel_left] at hca hca1
+  have hchoose : (Nat.choose a (a + 1) : K) = 0 := by
+    rw [Nat.choose_eq_zero_of_lt (by omega)]
+    norm_num
+  rw [hchoose, mul_zero, mul_zero, add_zero] at hca1
+  have hΦl : Φ (P.coeff (a + 1)) ≠ 0 :=
+    fun hh => hlead ((map_eq_zero_iff Φ Φ.injective).mp hh)
+  push_cast at hca hca1
+  have hclear : Φ (P.coeff a) * P.coeff (a + 1)
+      = ρ * P.coeff a * Φ (P.coeff (a + 1))
+        - ((a : K) + 1) * L * Φ (P.coeff (a + 1)) * P.coeff (a + 1) := by
+    refine mul_left_cancel₀ (pow_ne_zero a hρ) ?_
+    linear_combination (P.coeff (a + 1)) * hca - (P.coeff a) * hca1
+  rw [map_div₀]
+  field_simp
+  linear_combination hclear
+
 end GaloisForLFunctions.HTGeometry

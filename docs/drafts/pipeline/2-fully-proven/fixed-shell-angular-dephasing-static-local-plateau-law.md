@@ -492,3 +492,84 @@ No Lean work is authorized during the current refactor. Later dependency order:
 4. analytic/coarea Fourier-decay interface and angular-phase weak convergence `(16)`;
 5. fixed-shell local-Clifford collision transfer;
 6. composition with completed-phase incidence and the capstone `(20)`.
+
+## Lean progress -- Theorem A, algebraic layer
+
+The refactor-time instruction that forbade Lean work on this card is superseded; formalisation is
+now in progress.  Two new modules, both umbrella-wired and axiom-clean.
+
+`formal/GaloisForLFunctions/HTGeometry/QuadraticRateSpectralRigidity.lean` proves the base case of
+Lemma A2, in a form strictly stronger than the card's `D=4` argument.
+
+| Card item | Declaration |
+|---|---|
+| the defect `(∑ c_jE_j)² − κ∑E_j²` of a candidate quadratic-rate identity `(7)` | `quadraticRateDefect` |
+| the defect along a line is a quadratic polynomial in the line parameter whose leading coefficient is the defect of the direction | `quadraticRateDefect_affine` |
+| three points of one line kill that leading coefficient | `quadraticRateDefect_eq_zero_of_symmetric_pair` |
+| every direction is reached symmetrically inside a neighbourhood | `exists_symmetric_pair_of_mem_nhds` |
+| **localisation**: `(7)` on a neighbourhood of one traceless point holds on the whole traceless hyperplane | `quadraticRateDefect_eq_zero_of_nhds` |
+| the two-level traceless test directions and their three sums | `levelPairDirection`, `sum_levelPairDirection`, `sum_mul_levelPairDirection`, `sum_sq_levelPairDirection`, `quadraticRateDefect_levelPairDirection` |
+| **Lemma A2, base case**: for `D ≥ 3`, no zero-sum `c` and no `κ` satisfy `(7)` | `quadraticRate_traceless_rigidity` |
+| the same from a merely local identity | `quadraticRate_traceless_rigidity_of_nhds` |
+
+The proof is the three-difference argument: with `u = c_i−c_j`, `v = c_i−c_l`, `w = c_j−c_l` one
+has `u = v−w` and `u² = v² = w² = 2κ`, whence `vw = κ` and `κ² = 4κ²`, so `κ = 0`; every level
+difference then vanishes and the zero sum forces `c = 0`.  Only three levels are needed, so the
+card's two-qubit base case is a special case and the same lemma covers every `D ≥ 3` block.
+
+`formal/GaloisForLFunctions/HTGeometry/QuadraticRateOrbitPolynomial.lean` builds the symmetrised
+obstruction `(14)`, mirroring the corpus's linear `SpectralRelationOrbitPolynomial`.
+
+| Card item | Declaration |
+|---|---|
+| the relation `(∑ c_iX_i)² − κ∑X_i²` as a polynomial in the spectrum | `quadraticRateRelationPolynomial` |
+| **the symmetrised obstruction `(14)`**, the product over every labeling | `quadraticRateOrbitPolynomial`, `quadraticRateOrbitValue` |
+| its factors are the defects of the relabelled coefficient packets | `quadraticRateOrbitValue_factor`, `quadraticRateOrbitValue_eq_zero_iff` |
+| real evaluation | `eval₂_quadraticRateRelationPolynomial_real`, `eval₂_quadraticRateOrbitPolynomial_real` |
+| **the obstruction is symmetric**, hence a polynomial in the characteristic coefficients | `quadraticRateOrbitPolynomial_isSymmetric`, `quadraticRateCoefficientPolynomial`, `esymmAlgHom_quadraticRateCoefficientPolynomial`, `eval₂_quadraticRateCoefficientPolynomial_real_esymm` |
+| the relation is a nonzero polynomial unless the multiple and the packet both vanish | `quadraticRateRelationPolynomial_eq_zero_iff` |
+| hence so are the orbit and coefficient obstructions | `quadraticRateOrbitPolynomial_ne_zero`, `quadraticRateCoefficientPolynomial_ne_zero` |
+
+`formal/GaloisForLFunctions/HTGeometry/AffinePoleResidueRigidity.lean` proves the residue step
+`(11)`--`(12)` in the exact shape the induction needs, over an arbitrary finite pole packet.
+
+| Card item | Declaration |
+|---|---|
+| cleared numerator of `L(w)·∑ c_i/(z_i − w) − cst` for an affine multiplier `L` | `affinePolePacketNumerator` |
+| such an identity on any infinite pole-free set clears to the zero numerator -- no meromorphic continuation is used | `affinePolePacketNumerator_eq_zero_of_identity` |
+| **the residue law `(12)`**: at every node, `c_i · L(z_i) = 0` | `affinePoleResidue_eq_zero`, `affinePoleCoefficient_eq_zero` |
+| **at most one surviving residue**: a nonzero affine multiplier has one root, so at most one ordered pair may be omitted | `affinePole_support_subsingleton`, `affinePole_eq_zero_of_ne` |
+| a vanishing multiplier forces the constant to vanish, which is the `kappa=0` branch | `affinePole_const_eq_zero_of_multiplier_zero` |
+
+`formal/GaloisForLFunctions/HTGeometry/BipartiteCrossPairRigidity.lean` proves the connectivity
+step: the bipartite graph with all edges `(alpha,0)--(beta,1)`, `alpha != beta`, is the crown
+graph, and for at least three labels it stays connected after deleting one edge.
+
+| Card item | Declaration |
+|---|---|
+| with at least three labels every pair admits a third | `exists_third_label` |
+| two labels with a common admissible partner have equal values | `crossPair_eq_of_common` |
+| **crown rigidity**: cross equalities on every ordered pair of distinct labels except at most one force all values on both layers to coincide | `crossPair_constant` |
+
+The proof exhibits the explicit two-step path `x → y → beta → x → y`, so no graph-connectivity API
+is needed and the bound `3 <= D_old` is exactly the card's.
+
+### What remains for Theorem A
+
+1. homogeneity of the eigenvalue branches, turning flatness of `phi_k` on a sphere patch into the
+   cone identity `(13)`;
+2. gluing: a polynomial vanishing on a nonempty open set of parameters vanishes identically
+   (`HTGeometry.AlgebraicIndependenceFromDifferentials.mvPolynomial_eq_zero_of_eqOn_zero_isOpen`),
+   and a finite product of analytic functions on a connected chart vanishes only if one factor
+   does (`HTGeometry.DirectionalMeromorphicField.analyticOnNhd_domain'`);
+3. the *analytic* half of Lemma A2's induction, `(8)`--`(11)`: attach a qubit, write the
+   block-diagonal base and the edge perturbation `V_A = A ⊗ X`, and evaluate the corpus's exact
+   second-order eigenbranch law (`HTGeometry.AffineEigenbranchGeneralSecondOrderLaw`) in that
+   basis to produce the simple-pole packet.  The two steps after it -- the residue extraction and
+   the connectivity conclusion -- are now formal.
+4. Lemma A1's endpoint-complete witness, on top of the corpus's
+   `HTGeometry.CompleteObserverSpectralSeed`, `HTGeometry.ChartProbeFamilyReduction` and the
+   already-formalized `exists_uniformQubitChainMaximalRank_dense_residual_fullMeasure` of the
+   parent card, which supplies simple spectrum, `MaximallyProjectiveEnergy` and
+   `maximallyProjectiveEnergy_orientedGap_injective` (distinctness of all nonzero ordered gaps --
+   exactly the pole-injectivity hypothesis of `affinePoleResidue_eq_zero`).

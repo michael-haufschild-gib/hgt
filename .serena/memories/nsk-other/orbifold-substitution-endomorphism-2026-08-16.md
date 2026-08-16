@@ -1,52 +1,70 @@
-# The orbifold tail lane — state after 2026-08-16
+# Orbifold-tail card: the substitution endomorphism and its order descent
 
 Card: `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/other/rational-coarse-graining-orbifold-tail-classification.md`
-(the last six sections of the card hold the details; ledger entry also written).
 
-## Modules (unconditional, axiom-clean, `HTGeometry` umbrella)
+## What is built (all unconditional, axiom-clean, umbrella-wired)
 
-`HTGeometry/EigenLogDerivNormalization.lean`
-- `deriv_eigen_of_chain_rule`, `eigen_logDeriv_of_chain_rule` — field-generic `(T1) → (T3)`;
-  the chain-rule hypothesis is needed **only at the eigenvector itself**.
-- `coeff_comp_C_mul_X`, `coeff_eigen_of_comp_scale`, `coeff_eigen_pow_of_comp_scale` —
-  `Q^Phi(rho·T) = rho^d Q(T)  ⇒  Phi(q_j) = rho^(d-j) q_j`.
+`HTGeometry/JetRationalSubstitution.lean`
+- `substitutionValue R = R(y0)`, `substitutionJet R l = delta^l R(y0)`, `substitutionDeriv R = R'(y0)`
+- `jetSubstitution R hR : JetField C Unit →ₐ[C] JetField C Unit` (Jacobian criterion, triangular
+  with constant diagonal `R'(y0)`), injective, differential (`jetSubstitution_deriv`)
+- `orbifoldTail R hR = stableRangeCore`, derivation-closed, `Phi_R` restricts to an automorphism
+- chain rule `pd_jetSubstitution_top`, `(T1) pd_eigen_of_jetSubstitution_eigen`,
+  `(T3) eigen_logDeriv_pd_of_jetSubstitution_eigen`
+- `jetSubstitution_jet_one : Phi_R(y1) = y1 * R'(y0)` — the order-one substitution is an EXACT scaling
+- `IsInvariantDifferential R hR k q lam`, `invariantCurrent k q = q * y1^k`,
+  `jetSubstitution_invariantCurrent`, `differentialAdjoin_le_orbifoldTail_of_isInvariantDifferential`
+- `isInvariantDifferential_pd_of_order_zero_eigen` — the order-zero exit
 
-`HTGeometry/JetRationalSubstitution.lean` (~550 lines)
-- `substitutionValue/Jet/Deriv`, triangularity, `algebraicIndependent_substitutionJet`,
-  `jetSubstitution` (via `IsFractionRing.liftAlgHom`), `jetSubstitution_deriv` (differential),
-  `orbifoldTail = stableRangeCore`, `derivationClosed_orbifoldTail`, `orbifoldTailAlgEquiv`.
-- Chain rule: `substitutionChainField`, `pd_jetSubstitution_top`.
-- `pd_commutator`, `pd_comm`, `pd_order_le`.
-- `(T1)` `pd_eigen_of_jetSubstitution_eigen`; `(T3)` `eigen_logDeriv_pd_of_jetSubstitution_eigen`
-  (needs `M ≥ 1`).
-- `substitutionJet_one`, `jetSubstitution_jet_one` — `Phi_R(y_1) = y_1·R'(y_0)` exactly.
-- `jetSubstitution_eulerQuotient` — the Euler quotient `y_1·pd_1 v / v` of a `(T3)`-eigenvector is
-  `Phi_R`-fixed; `mem_orbifoldTail_of_fixed`.
-- `IsInvariantDifferential`, `invariantCurrent k q = q·y_1^k`,
-  `jetSubstitution_invariantCurrent`, `adjoin_le_orbifoldTail_of_isInvariantDifferential`,
-  `differentialAdjoin_le_orbifoldTail_of_isInvariantDifferential` — the card's easy half of item
-  (1), now for the concrete `Phi_R`.
-- `isInvariantDifferential_pd_of_order_zero_eigen` — the **order-zero exit**: differentiating an
-  order-zero eigen-relation gives an invariant 1-differential with the same eigenvalue.
+`HTGeometry/TwistedScalingDescent.lean` (generic polynomial layer)
+- `twistComp Phi T P = (P.map Phi).comp T`; degree/leadingCoeff laws for `natDegree T = 1`
+- `exists_scalars_of_twisted_cross` — coprimality splits the cross identity
+- `coeff_eigen_of_twistComp_scale` — for `T = C rho * X`, every coefficient is an eigenvector
 
-## Two simplifications found
+`HTGeometry/JetSubstitutionDescent.lean`
+- `jetPrefixField C M` = subfield of `y_0..y_(M-1)`; `mem_jetPrefixField_iff` (order below M),
+  `transcendental_jet_over_jetPrefixField`, `jetPrefixField_succ`, `jetPrefixField_zero`,
+  `exists_algebraMap_of_forall_pd_eq_zero`
+- `jetSubstitutionPrefix` (restriction of Phi_R), `substitutionShift R M = delta^M R(y0) - R'*y_M`
+  with `ord < M`, `substitutionAffine`, `jetSubstitution_aeval` (transport)
+- `SubstitutionEigen R hR M kappa w lam` := `w != 0 ∧ ord w ≤ M ∧ Phi_R(w)*R'^kappa = lam*w`;
+  `IsInvariantDifferential = SubstitutionEigen … 0 …` (Iff.rfl)
+- `exists_coprime_slicing`, `substitutionEigen_leadingRatio`, `exists_substitutionEigen_pred`
+- `exists_isInvariantDifferential_of_substitutionEigen`, `exists_isInvariantDifferential_of_eigen`
+- `exists_nonzero_isInvariantDifferential_or_eq_one`
+- ORDER ONE CLOSED: `substitutionShift_one` (L = 0), `substitutionEigen_coeffRatio`,
+  `exists_nonzero_isInvariantDifferential_of_order_one`,
+  `exists_nonzero_isInvariantDifferential_of_pd_one_ne_zero`,
+  `exists_differentialAdjoin_invariantCurrent_le_orbifoldTail`
 
-1. The chain rule does **not** need "order ≤ m ⇒ membership in `adjoin C {y_0..y_m}`".  Use the
-   total-derivative formula on the finite jet slice every element inhabits.
-2. The degenerate branch `Phi_R(s) = s`, `ord s = 0` does **not** need the composition-degree
-   theory `deg(s∘R) = deg s · deg R`: if `s` is nonconstant then `pd_0 s ≠ 0` and `pd_0 s` *is* the
-   invariant 1-differential.
+## The one remaining obligation
 
-## What is left (hard direction)
+Weight-zero exit above order one.  At `M >= 2` the affine remainder `L != 0`, so only the LEADING
+coefficients satisfy per-coefficient relations and the descent can land on `k = 0` with a constant.
 
-The descent from `(T3)` at order `nu`.  Both remaining branches need one thing: a coprime
-representation of an element of `C(y_0)(y_1)` as `P(y_1)/Q(y_1)` over `F = C(y_0)`.  The route:
-`y_1` is transcendental over `F`, so `RatFunc.algEquivOfTranscendental` identifies `F⟮y_1⟯` with
-`RatFunc F`, whose `num`/`denom` are coprime by construction; `Phi_R` restricts to `F` (it sends
-`y_0 ↦ R(y_0)`) and acts on `y_1` by the scaling `y_1 ↦ R'(y_0)·y_1`, so in `RatFunc F` coordinates
-it is "apply `Phi_R|_F` to coefficients, then substitute `T ↦ rho·T`".  Coprimality then forces
-`Q^Phi(rho T) = rho^(deg Q) Q(T)` and likewise for `P`, and
-`coeff_eigen_pow_of_comp_scale` turns every coefficient into an order-zero eigen-relation, which
-`isInvariantDifferential_pd_of_order_zero_eigen` converts into an invariant differential.
-Estimated 300–500 lines.  For `nu ≥ 2` the same slicing is needed with `Phi_R(y_nu) = rho·y_nu + L`,
-`L ≠ 0`, which additionally requires solving the affine equation `Phi(z) = rho z - dL` in `F`.
+Route (derived, not yet formalized): the next-to-leading coefficient of `P^Phi . T = c*P` is
+exactly a solution of the affine cocycle equation `Phi_R(t) - R'*t = -L`, namely
+`t = P_(a-1)/(a*P_a)`, legitimate whenever `deg P >= 1`.  In the translated coordinate
+`z = y_M + t` the substitution becomes the pure scaling `z |-> R'*z`, so the full coefficient
+analysis applies at every order.  Trichotomy at level M then:
+  (i) `deg P = deg Q = 0`: `w` already has order <= M-1, descend with kappa unchanged;
+  (ii) normalize, non-monomial: escape with `kappa' != 0`, eigenvalue 1;
+  (iii) normalize, both monomials: `w = s*z^n`, `n = deg P - deg Q != 0`, `kappa' = kappa + n`.
+Residual configuration: `w = e * prod_j z_j^(n_j)` with `e` a coefficient constant and
+`sum n_j = -kappa`.  At `kappa = 0` this is a constant, excluded by nonconstancy — that is exactly
+why order one closes.  For `kappa != 0` a further input is needed; the natural candidate is the
+residue obstruction "`e/X` has no primitive in `F(X)`", which kills `kappa = 1` (the (T1) output)
+but not general `kappa`.
+
+Sanity check of the mechanism: `R = z^d` gives `P = C(1/y0)*X`, `Q = 1`, `s = 1/y0`, `k = 1`, i.e.
+the invariant differential `dz/z` — correct.
+
+## Dependent cards
+
+`floquet-orbifold-tail-emergence` needs `Tail(z^2+1) = C` and `Tail((z-1)^2) = C`.  Both would
+follow from the general weight-zero closure plus the orbit argument recorded on the orbifold card
+(critical-point order bookkeeping along the infinite forward and backward orbits of 0).
+`orbifold-tail-holographic-reconstruction` needs the same tail interface.
+Note: in ALL exceptional cases (power, Chebyshev, Lattes) the tail generator has jet order exactly
+one — `q(y0)*y1^k`.  So "the minimal order in a nonconstant tail is one" is an equivalent
+formulation of the remaining gap, and might be the easier statement to attack.

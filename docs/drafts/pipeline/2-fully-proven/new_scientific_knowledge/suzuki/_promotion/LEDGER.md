@@ -10617,3 +10617,68 @@ logarithmic-Liouville apertures, and the routine extension of `(17)` from finite
 to all of `ℓ²`.
 
 All new declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+### ADH.8 `(9)` and `(18)` are closed — the weighted group on all of `ℓ²`
+
+`(17)` as proved in ADH.7 lives on finitely supported fields and conjugates the evolution in the
+*up*-weighted direction.  The card's `(17)`/`(18)`/`(9)` want the reverse conjugation
+`D_w e^{-ixA} D_w^{-1}` with `D_w = ⟨X⟩^{-m}`, on all of `ℓ²`.  Both gaps are closed in
+`RHTower/SuzukiLatticeWeightedGroup.lean`.
+
+- Truncation.  `truncField` (a `Set.indicator`, so no decidability enters), `truncL2`, and
+  `tendsto_truncL2` — every `ℓ²` field is the limit of its finite truncations, directly from
+  `lp.hasSum_single`.  With `sum_sq_le_norm_sq`, `memℓp_of_forall_finset_sum_sq_le` and
+  `norm_le_of_forall_finset_sum_sq_le` this gives `exists_shellWeighted_exp`: `(17)` for an
+  arbitrary field whose shell weighting is square summable.  The mechanism is Fatou by finite
+  partial sums — each finite partial sum of `⟨X⟩^m e^{-ixA} v` is a limit of the corresponding
+  partial sums for the truncations, and each of those obeys the bound.
+
+- Time reversal.  `expIsometry` and `inner_exp_latticeAdjacency` (the evolution preserves inner
+  products), and `exp_latticeAdjacency_neg_apply`: `e^{-ixA} e^{ixA} = 1` from
+  `NormedSpace.exp_add_of_commute`.
+
+- Duality.  `invShellField`, `invShellL2`, `invShellLM` — multiplication by `⟨r⟩^{-m}`, a
+  contraction — and `denseRange_invShellLM`, whose range contains every finitely supported field.
+  Then **`exists_norm_invShell_exp_le`**, which is the card's `(17)`:
+
+  ```text
+  ‖ ⟨X⟩^{-m} e^{-ixA} η ‖ ≤ C (1+|x|)^m ‖ ⟨X⟩^{-m} η ‖    for every η ∈ ℓ².
+  ```
+
+  The proof pairs `w := D e^{-ixA}η` with `ζ := D w`: `⟪ζ, e^{-ixA}η⟫ = ⟪w,w⟫` termwise, and
+  `⟪ζ, e^{-ixA}η⟫ = ⟪e^{ixA}ζ, η⟫ = ⟪⟨X⟩^m e^{ixA}ζ, Dη⟫`, whose modulus the up-weighted estimate
+  at time `−x` bounds by `C(1+|x|)^m‖w‖·‖Dη‖`.  Cancelling one `‖w‖` is the whole content.
+
+- `(18)`, `(9)`.  `weightedEvolution` is `LinearMap.extendOfNorm` of `D ∘ e^{-ixA}` along `D`, so
+  `weightedEvolution_apply` is exactly `e^{-ixB_w} = D_w e^{-ixA} D_w^{-1}` on the dense range of
+  `D_w`, and `exists_norm_weightedEvolution_le` is `‖e^{-ixB_w}‖ ≤ C(1+|x|)^m`.
+  `exists_norm_weightedEvolution_add_le` is the card's two-sided display `(9)`.
+
+### ADH.9 §6 second half is closed — logarithmic-Liouville apertures are dense
+
+`RHTower/SuzukiApertureLiouvilleDense.lean`.  The card's nested-interval construction is replaced by
+the Baire form of the same argument, which is what makes it short and unconditional.
+
+- `HasInfiniteLogType τ`: for every `M`, `M log(2+|ν|₁) ≤ τ ν` for infinitely many `ν`.
+  `not_logType_of_hasInfiniteLogType` records that this is incompatible with any logarithmic bound,
+  so the two type classes are genuinely opposed.
+- `apertureLiouvilleStage ℓ k` — the apertures with a *nonresonant* event of depth `(2+|ν|₁)^{-k}`
+  from some `ν` of length at least `k`.  `isOpen_apertureLiouvilleStage`, and
+  `dense_apertureLiouvilleStage`: only finitely many `ν` are short, so a dense valuation lattice
+  minus a finite set is still dense (`Dense.sdiff_finite`), and displacing slightly off a lattice
+  centre keeps the aperture inside the given open set while making the event nonzero and as deep as
+  required.
+- `hasInfiniteLogType_of_mem_iInter` and **`dense_hasInfiniteLogType`**: the countable intersection
+  of the stages is comeagre, hence dense, and every aperture in it has infinite logarithmic type.
+- `prime_pow_ne_prime_pow` and **`dense_range_primeLogValuation`**: in rank at least two the
+  valuation lattice is dense, because two distinct prime logarithms have irrational ratio
+  (corpus `irrational_log_div_log`) so the group they generate is not cyclic
+  (corpus `dense_closure_pair_of_irrational`).  `dense_hasInfiniteLogType_primeLogValuation` is the
+  card's §6 conclusion.
+
+All new declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+What now remains for `suzuki-log-recurrence-polynomial-carrier-trichotomy` is exactly one item: the
+Matveev bound `(5)`, which is the zero-event half of `(28)`.  It is tracked by
+`docs/drafts/pipeline/1-in-progress/effective-baker-matveev-linear-forms.md`, Layers A and B closed,
+Layer C next.
