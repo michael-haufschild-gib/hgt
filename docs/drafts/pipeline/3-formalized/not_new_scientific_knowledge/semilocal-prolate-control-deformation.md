@@ -1,7 +1,7 @@
 # Semilocal prolate control deformation
 
 - **ID:** semilocal-prolate-control-deformation
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** EXACT REDUCTION / BRIDGE (paper)
 - **Scientific status:** NOT NEW SCIENTIFIC KNOWLEDGE
 - **Source:** Connes--Consani--Moscovici, *Zeta zeros and prolate wave operators*,
@@ -83,6 +83,30 @@ Compressing by the two Sonin projections and inserting (3) proves (4).
   a nonzero two-place boundary. Without this, nonvanishing of the control model does not transfer.
 - `[LIMIT]` Equation (2) is formal until the domain of the cyclic prolate operator is constructed.
   The reduction does not assume that missing conclusion.
+
+## Lean formalization
+
+`formal/GaloisForLFunctions/RHTower/SemilocalProlateControlDeformation.lean`
+
+The card's proved content is exactly ring algebra in an associative `ℂ`-algebra: the analytic
+content is the *hypothesis* that a common closed realization exists, and the Lean statements carry
+it as the explicit two-sided resolvent hypotheses `R (W - z) = 1`, `(W - z) R = 1`.
+
+| Card claim | Lean declaration |
+|---|---|
+| `θ_p D_∞ θ_p^{-1} = D_p` ⟹ `W^θ_{λ,p} = -D_p² + λ² θ N_∞ θ^{-1}` | `conj_prolate` (with `conj_mul`, `conj_smul`) |
+| `K_p = N_p - θ N_∞ θ^{-1}` | `gradingDeformation` |
+| **(2)** `W^cyc = W^θ + λ² K_p` | `cyclic_eq_transported_add_deformation` |
+| **(3)** `R_cyc - R_θ = -λ² R_cyc K_p R_θ` | `second_resolvent_identity` |
+| the corner `C(z) = (1-Q_p)(R η_p - η_p R_∞) Q_∞` | `relativeCorner` |
+| **(4)** `C_cyc = C_θ - λ² (1-Q_p) R_cyc K_p R_θ η_p Q_∞` | `relativeCorner_split` |
+
+The `[OPEN CORE]` items (constructing a common graph/boundary relation, Schatten control of the
+correction, and exclusion of exact cancellation) are explicitly open research and are not part of
+the proved theorem; `[LIMIT]` is respected because identity (4) is stated only under the resolvent
+hypotheses.
+
+All declarations audited with `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`.
 
 ## Novelty audit
 

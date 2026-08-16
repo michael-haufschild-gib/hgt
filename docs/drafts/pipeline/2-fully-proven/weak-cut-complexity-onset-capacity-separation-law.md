@@ -396,3 +396,28 @@ transverse perturbation, yet remains easy through any prescribed `L`.
 6. compose only after the existing plateau, recurrence, and locality parents are formalized.
 
 No Lean source or process was touched while the corpus refactor was active.
+
+## Lean progress -- Theorem A, the budgeting layer
+
+`formal/GaloisForLFunctions/HTGeometry/CircuitWordBudget.lean` (new, umbrella-wired, axiom-clean)
+proves the two budget laws that carry `(4)` and `(6)`, on top of the corpus's existing
+`HasCircuitWordApproximation` / `CircuitWordSeparated` and its Duhamel bound
+`HTGeometry.selfAdjoint_unitaryEvolution_norm_sub_le`.
+
+| Card item | Declaration |
+|---|---|
+| moving the endpoint by `δ` costs `δ` of tolerance and no gates -- the `\|t\|·‖V‖` term of `(4)` | `HasCircuitWordApproximation.transfer` |
+| **concatenating two circuits adds lengths and tolerances** -- "prepare the two factors and concatenate their disjoint circuits", giving `S_{n_A}(η_A) + S_{n_B}(η_B)` | `HasCircuitWordApproximation.mul` |
+| the separation form transfers with the radius reduced by exactly the displacement | `CircuitWordSeparated.transfer` |
+| **`(6)`**: hence a synthesis cap is a lower bound on the first time the endpoint can exceed it | `not_hasCircuitWordApproximation_of_separated` |
+
+Disjointness of the two registers is *not* needed as a hypothesis: the concatenation law asks only
+that composition be non-expanding on each side, which holds for unitary conjugation and for channel
+composition alike.  That is why the same lemma serves the Markovian reflection card.
+
+### What remains
+
+The tensor factorisation `(8)` `e^{-itH_0}χ = (e^{-itH_A}χ_A) ⊗ (e^{-itH_B}χ_B)` and the
+identification of `S_{n}(η)` with an explicit synthesis count, both of which need a Lean tensor
+formalism for the split register; and Theorems B and C, whose cores are the cubic-phase fourth-
+moment computations `(11)`--`(12)` and the onset construction.

@@ -31,7 +31,7 @@ def coordPartialSum (g : ∀ n, X n → E) (N : ℕ) (x : ∀ m, X m) : E :=
 def coordSeriesConverges (g : ∀ n, X n → E) : Set (∀ m, X m) :=
   {x | ∃ L : E, Tendsto (fun N => coordPartialSum g N x) atTop (𝓝 L)}
 
-omit [∀ n, MeasurableSpace (X n)] in
+omit [∀ n, MeasurableSpace (X n)] [TopologicalSpace E] [IsTopologicalAddGroup E] in
 /-- Modifying finitely many coordinates shifts all late partial sums by one constant. -/
 theorem coordPartialSum_sub_eq (g : ∀ n, X n → E) {x y : ∀ m, X m} {n₁ : ℕ}
     (hn₁ : ∀ m, n₁ ≤ m → x m = y m) {N : ℕ} (hN : n₁ ≤ N) :
@@ -85,6 +85,7 @@ theorem measurable_coordPartialSum (g : ∀ n, X n → E) (hg : ∀ n, Measurabl
   refine Finset.measurable_sum _ fun n _ => ?_
   exact (hg n).comp (measurable_pi_apply n)
 
+omit [IsTopologicalAddGroup E] in
 theorem measurableSet_coordSeriesConverges (g : ∀ n, X n → E) (hg : ∀ n, Measurable (g n)) :
     MeasurableSet (coordSeriesConverges g) :=
   measurableSet_exists_tendsto (fun N => measurable_coordPartialSum g hg N)

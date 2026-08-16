@@ -954,3 +954,50 @@ step 2 is now exactly:
 the affine-structure companion of the invariant-tensor statement.  Everything above it —
 Lüroth, the projective normalization, the principal symbol, `(T1)`, `(T3)`, the order descent, the
 normalization, and the order-one closure — is machine-checked and unconditional.
+
+### The obstruction is now a statement about rational maps, not about jets
+
+`formal/GaloisForLFunctions/HTGeometry/RationalInvariantDifferential.lean`, unconditional and
+axiom-clean, wired into the `HTGeometry` umbrella.
+
+An invariant `k`-differential is by definition an order-zero element of the free jet field, and
+order-zero elements are exactly the rational functions of the free generator.  The whole invariance
+relation therefore transports to `RatFunc C`:
+
+```text
+mem_adjoin_freeGen_of_order_zero,  exists_ratFunc_of_order_zero
+ratFuncDeriv R                      the derivative of a rational function, defined as the
+                                    rational function evaluating to R'(y_0)
+ratFuncEval_ratFuncDeriv,  ratFuncDeriv_X : (X)' = 1
+ratFuncDeriv_add, ratFuncDeriv_mul, ratFuncDeriv_C,  ratFuncDerivation
+                                    -- a genuine Derivation C (RatFunc C) (RatFunc C);
+                                       mathlib has none
+ratFuncEval_ratFuncSubstitution     evaluation intertwines substitution:
+                                       (Q ∘ R)(y_0) = Phi_R (Q(y_0))
+exists_ratFunc_relation_of_isInvariantDifferential :
+    IsInvariantDifferential R hR k q lam  ⇒  ∃ Q != 0,  Q∘R · (R')^k = lam · Q   in RatFunc C
+isInvariantDifferential_of_ratFunc_relation :   the converse
+```
+
+Consequently the two capstones of the descent read entirely classically:
+
+```text
+exists_ratFunc_relation_of_order_one :
+   a nonconstant eigenvector of order ≤ 1 with nonzero eigenvalue produces
+   Q != 0, k != 0, mu != 0 with  Q∘R · (R')^k = mu · Q
+exists_ratFunc_relation_or_hasNormalizingShift :
+   a nonconstant eigenvector of any finite order produces either such a Q,
+   or an invariant affine structure at some jet level at least two
+```
+
+So the single remaining obligation of the Casale-free route is now stated purely in terms of
+rational maps of the projective line: *a rational map of degree at least two which admits no
+nonzero-weight invariant rational differential admits no rational affine connection either*, the
+two halves of the classical exceptionality criterion.  Everything above it — Lüroth, the projective
+normalization, the principal symbol, `(T1)`, `(T3)`, the order descent, the normalization, and the
+order-one closure — is machine-checked and unconditional.
+
+The corpus's `HTGeometry/RationalPoleOrder.lean` (`poleOrder`, `RegularAt`) is the natural
+substrate for the orbit/pole argument that kills both halves for a non-exceptional map: what it
+still needs is the signed order `ord_a = zeroOrder − poleOrder`, its additivity, and the
+composition law `ord_a(Q ∘ R) = ord_a(R − R(a)) · ord_{R(a)}(Q)`.

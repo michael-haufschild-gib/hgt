@@ -1,7 +1,7 @@
 # Semilocal prolate unitary-transport trilemma
 
 - **ID:** semilocal-prolate-unitary-transport-trilemma
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / NO-GO (paper)
 - **Scientific status:** BRIDGE / NOT NEW SCIENTIFIC KNOWLEDGE
 - **Source input:** normalized semilocal cyclic pairs and
@@ -87,6 +87,30 @@ defines a unitary intertwining `N`, and the first part proves that it cannot als
 - `[OPEN CORE]` A genuine semilocal prolate realization must be constructed as a new self-adjoint
   extension of the deformed formal sum. It cannot inherit self-adjointness, Sonin reduction, and
   spectrum wholesale from the archimedean operator.
+
+## Lean formalization
+
+`formal/GaloisForLFunctions/RHTower/SemilocalProlateUnitaryTransport.lean`
+
+| Card claim | Lean declaration |
+|---|---|
+| a number-operator intertwiner sends the ground state to a unimodular multiple of the ground state | `exists_unimodular_of_ground_transport` |
+| **(1)** a simultaneous scaling/grading unitary forces `‖D_∞ p₀‖ = ‖D_P p₀‖` | `norm_scaling_ground_eq_of_unitary_transport` |
+| hence a strict first-Jacobi contraction forbids every such unitary | `not_exists_unitary_transport` |
+| `W_{λ,S} = -D_S² + λ² N_S` | `prolateOp` |
+| **(2)** two distinct parameters recover `U N_∞ = N_P U` and `U D_∞² = D_P² U` | `number_transport_of_two_prolate` |
+| and hence the same first-Jacobi equality via `⟪p₀, D² p₀⟫ = ‖D p₀‖²` | `norm_scaling_ground_eq_of_unitary_prolate_transport` |
+| the strict contraction `a_0(P)² < 1/2 = a_0(∅)²` | `semilocal_normalizedSecondMoment_lt_archimedean`, built on the corpus's `semilocalFinitePrimeNormalizedSecondMoment_lt_half` and `semilocalArchimedeanJacobiCoefficient_sq` |
+
+The three transport alternatives listed in the card are exactly this dichotomy: `θ_P` intertwines
+scaling but is not unitary (its Gram operator is the Euler metric), the Jacobi-basis unitary
+intertwines `N` but then `not_exists_unitary_transport` forbids it from intertwining `D`, and the
+polar unitarization is treated in the separate polar-corner card.
+
+The `[OPEN CORE]` item (constructing a genuine semilocal prolate self-adjoint extension) is
+explicitly open research.
+
+All declarations audited with `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`.
 
 ## Novelty audit
 

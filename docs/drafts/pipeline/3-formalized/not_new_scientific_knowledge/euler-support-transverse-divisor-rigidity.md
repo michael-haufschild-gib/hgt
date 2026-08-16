@@ -31,7 +31,37 @@ the logarithmic Euler discrepancy must fail absolute convergence.
 - [x] 0 -> 1 in-progress: exact analytic class, support exponent, proof mechanism, and falsifiers
   stated.
 - [x] 1 -> 2 fully-proven: complete paper proof with every quotient/finite-order step checked.
-- [ ] 2 -> 3 formalized: abstract normal-convergence and divisor-reflection theorem in Lean.
+- [x] 2 -> 3 formalized: `formal/GaloisForLFunctions/RHTower/RelativeStripDivisorReflection.lean`
+  carries the abstract normal-convergence and divisor-reflection theorem, axiom-clean.
+
+## Lean formalization
+
+`formal/GaloisForLFunctions/RHTower/RelativeStripDivisorReflection.lean`
+
+| Card claim | Lean declaration |
+|---|---|
+| the logarithmic discrepancy series converges normally on `Re s > σ_E` | `norm_dirichletTerm_le`, `summable_dirichletTerm` |
+| and defines a holomorphic function there | `differentiableAt_dirichletSeries` |
+| so `H = exp(D)` is holomorphic and zero-free (claim 1) | `exp_dirichletSeries_ne_zero` |
+| claims 2–3: a support avoiding `Re s > A` and stable under `s ↦ 1-s` lies in `1-A ≤ Re ρ ≤ A` | `mem_band_of_reflection` |
+| the transverse radius `\|Re ρ - 1/2\| ≤ A - 1/2` | `abs_re_sub_half_le_of_reflection` |
+| the outer-exponent form `max(Re ρ, 1-Re ρ) ≤ A` | `max_re_le_of_reflection` |
+| `σ_E ≤ 1/2` ⟹ the divisor is on the critical line | `re_eq_half_of_reflection` |
+| `σ_E < 1/2` ⟹ the divisor is empty | `eq_empty_of_reflection_lt_half` |
+| claim 5: `σ_E ≤ θ + δ(S)` from the sparse-support majorant | `summable_of_sparse_support` |
+| claim 6: `V_E(x) = O(x^β)` ⟹ `σ_E ≤ β`, hence the `limsup` lower bound | `summable_of_partialSum_bound` |
+
+The reflection theorem is stated for an arbitrary support set and an arbitrary reflection stability,
+which is exactly how the completed functional equation is used in the paper proof; the `A_∞` clause
+(the gamma quotient has no zero or pole in `Re s > 0`) enters only through the hypothesis
+`hright : ∀ ρ ∈ S, ρ.re ≤ A`.
+
+Claim 4 (`R = exp(As+B)` with `A = 0`, `exp B = 1`, hence `L₁ = L₂`) is the Hadamard clause; it is
+the finite-order zero-free factorization already owned by the corpus
+(`GaloisForLFunctions.HTGeometry.exists_polynomial_exp_of_ne_zero_of_growth`,
+`formal/GaloisForLFunctions/HTGeometry/FiniteOrderHadamard.lean`) applied to the completed quotient.
+
+All declarations audited with `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`.
 - [ ] 3 -> 4 publication-ready: primary-literature novelty audit and standalone theorem.
 
 ## Setup

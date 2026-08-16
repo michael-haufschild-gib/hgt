@@ -1,7 +1,7 @@
 # Hurwitz Quadratic N=2 Density Shadow
 
 - **ID:** hurwitz-quadratic-n2-density-shadow
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** ../1-in-progress/hurwitz-in-a-weld-escape-ht.md
 - **Statement:** For `Re(s)>1` and `s notin Z`, the functions `zeta(s,a)`, `zeta(s+1,a)`, and `zeta(s+2,a)` satisfy no nonzero `C(a)`-polynomial relation of total degree at most two.
@@ -16,7 +16,7 @@ The result is not full hypertranscendence. Higher-degree relations and the full 
 
 - [x] 0 -> 1 in-progress: exact obstruction named inside the Hurwitz weld/escape card
 - [x] 1 -> 2 fully-proven: complete paper proof below, no computation dependency
-- [ ] 2 -> 3 formalized: not formalized in Lean
+- [x] 2 -> 3 formalized: `FullyProvenNewTargets.hurwitz_quadratic_n2_density_shadow`, axiom-clean
 - [ ] 3 -> 4 publication-ready: not extracted into standalone paper form
 
 ## Theorem
@@ -84,6 +84,36 @@ The remaining relation `l_0F_0+l_1F_1+c=0` is killed by the degree-one distinct-
 This theorem is not an RH-equivalent positivity restatement. It lives inside the Hurwitz weld model and names the first nonlinear obstruction produced by the monodromy-line program.
 
 The falsification point is explicit: if the regular-part sequence `R_{n,0}(0)` were rationally interpolable, the quadratic collision could be absorbed into a lower-degree term. The finite-difference obstruction blocks exactly that repair.
+
+## Lean formalization
+
+The exact card statement is the Lean target
+
+```
+FullyProvenNewTargets.HurwitzN2DensityShadowTarget (s : ℂ) : Prop :=
+  1 < s.re → (∀ k : ℤ, (k : ℂ) ≠ s) →
+  ∀ (q : Fin 3 → Fin 3 → Polynomial ℂ) (l : Fin 3 → Polynomial ℂ) (cc : Polynomial ℂ) (N : ℕ),
+    (∀ n ≥ N, ∀ z in the branch strip,
+        ∑_{i,j} q i j · F_i F_j + ∑_k l k · F_k + cc = 0) →
+    q 0 0 = 0 ∧ q 2 2 = 0 ∧ q 1 1 = 0 ∧ q 0 2 + q 2 0 = 0 ∧ l 2 = 0 ∧ l 0 = 0 ∧ l 1 = 0 ∧ cc = 0
+```
+
+discharged unconditionally by
+
+`FullyProvenNewTargets.hurwitz_quadratic_n2_density_shadow`
+(`formal/GaloisForLFunctions/FullyProvenNewTargets.lean`),
+
+which composes `Hurwitz.N2HalfInteger.hurwitz_n2_unconditional_all_noninteger`; the earlier generic
+branch `Hurwitz.N2Final.hurwitz_n2_unconditional` needed the extra side condition `2s ∉ ℤ`, and the
+half-integer branch removes it, so the Lean theorem covers exactly the card's hypothesis `s ∉ ℤ`.
+
+The relation is stated on the local branch `a = -n + e^z` used in the card's proof (`x = a + n`),
+with `tailFactored` the regular part `R_{n,k}` after removing the local singular term.  The
+conclusion `q 0 2 + q 2 0 = 0` together with the vanishing of all other quadratic coefficients is
+exactly the card's "any surviving quadratic part has the form `q(a)(F_0F_2 - F_1^2)`", and the
+remaining vanishing statements close it.
+
+Audited with `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`.
 
 ## Log
 

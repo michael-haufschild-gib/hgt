@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.PrimeOccupationCompletionProduct
 import GaloisForLFunctions.HTGeometry.PrimePowerOccupationHypertranscendence
 import GaloisForLFunctions.HTGeometry.PrimeOccupationCofinalLimit
 import GaloisForLFunctions.HTGeometry.OccupationEulerProduct
+import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
 
 /-!
 # Cofinal completion of the prime occupation product
@@ -318,7 +319,7 @@ theorem hasDerivAt_primeOccupationFacePow_zero {r : ℕ} (hr : 2 ≤ r) (S : Fin
       ‖-(occupationRecip (ν : Nat.Primes →₀ ℕ) ^ r)‖) := by
     refine ((summable_norm_occupationRecip_pow hr).subtype (occupationSupported S)).congr
       fun ν => ?_
-    rw [norm_neg]
+    rw [Function.comp_apply, norm_neg]
   have hd := GaloisForLFunctions.HTGeometry.hasDerivAt_tprod_one_add_mul hqs
   have hfun : (fun x : ℂ => ∏' ν : ↥(occupationSupported S),
       (1 + x * -(occupationRecip (ν : Nat.Primes →₀ ℕ) ^ r)))
@@ -346,6 +347,101 @@ theorem tendsto_deriv_primeOccupationFacePow_zero {r : ℕ} (hr : 2 ≤ r) :
   have h := (tendsto_smoothPowerSum_riemannZeta hr).neg
   refine h.congr fun S => ?_
   exact (deriv_primeOccupationFacePow_zero hr S).symm
+
+/-! ## The logarithmic normal expansion -/
+
+set_option maxHeartbeats 1000000 in
+/-- **The logarithmic normal expansion of a packet product.**  On the unit disc the occupation
+product of a finite prime packet is the exponential of minus the series of its occupation power
+sums. -/
+theorem cexp_neg_logSeries_eq_primeOccupationFacePow {r : ℕ} (hr : 2 ≤ r)
+    (S : Finset Nat.Primes) {x : ℂ} (hx : ‖x‖ < 1) :
+    Complex.exp (-∑' n : ℕ, x ^ n / (n : ℂ) * smoothPowerSum S (r * n))
+      = primeOccupationFacePow r S x := by
+  classical
+  set T := ↥(occupationSupported S)
+  set q : T → ℂ := fun ν => occupationRecip (ν : Nat.Primes →₀ ℕ) ^ r with hqdef
+  have hq1 : ∀ ν : T, ‖q ν‖ ≤ 1 := by
+    intro ν
+    rw [hqdef, norm_pow]
+    exact pow_le_one₀ (norm_nonneg _) (norm_occupationRecip_le_one _)
+  have hxq : ∀ ν : T, ‖x * q ν‖ < 1 := by
+    intro ν
+    rw [norm_mul]
+    calc ‖x‖ * ‖q ν‖ ≤ ‖x‖ * 1 := by
+          exact mul_le_mul_of_nonneg_left (hq1 ν) (norm_nonneg _)
+      _ = ‖x‖ := mul_one _
+      _ < 1 := hx
+  have hqsum : Summable (fun ν : T => ‖q ν‖) := by
+    refine ((summable_norm_occupationRecip_pow hr).subtype (occupationSupported S)).congr
+      fun ν => ?_
+    rw [Function.comp_apply, hqdef]
+  have hbound : ∀ p : T × ℕ, ‖(x * q p.1) ^ p.2 / ((p.2 : ℕ) : ℂ)‖ ≤ ‖q p.1‖ * ‖x‖ ^ p.2 := by
+    rintro ⟨ν, n⟩
+    rcases Nat.eq_zero_or_pos n with rfl | hn
+    · simp only [pow_zero, Nat.cast_zero, div_zero, norm_zero]
+      positivity
+    · have hn1 : (1 : ℝ) ≤ ‖((n : ℕ) : ℂ)‖ := by
+        rw [Complex.norm_natCast]
+        exact_mod_cast hn
+      have hbase : (0 : ℝ) ≤ ‖x‖ * ‖q ν‖ := by positivity
+      rw [norm_div, norm_pow, norm_mul]
+      have h1 : (‖x‖ * ‖q ν‖) ^ n / ‖((n : ℕ) : ℂ)‖ ≤ (‖x‖ * ‖q ν‖) ^ n := by
+        rw [div_le_iff₀ (by linarith)]
+        nlinarith [pow_nonneg hbase n]
+      refine h1.trans ?_
+      rw [mul_pow]
+      have h2 : ‖q ν‖ ^ n ≤ ‖q ν‖ := by
+        have := pow_le_pow_of_le_one (norm_nonneg (q ν)) (hq1 ν) hn
+        simpa using this
+      nlinarith [pow_nonneg (norm_nonneg x) n, norm_nonneg (q ν), h2]
+  have hsummable : Summable (fun p : T × ℕ => ‖(x * q p.1) ^ p.2 / ((p.2 : ℕ) : ℂ)‖) := by
+    refine Summable.of_nonneg_of_le (fun p => norm_nonneg _) hbound ?_
+    exact Summable.mul_of_nonneg hqsum (summable_geometric_of_lt_one (norm_nonneg x) hx)
+      (fun ν => norm_nonneg _) (fun n => pow_nonneg (norm_nonneg x) n)
+  set L : ℂ := ∑' p : T × ℕ, (x * q p.1) ^ p.2 / ((p.2 : ℕ) : ℂ) with hLdef
+  have hHS : HasSum (fun p : T × ℕ => (x * q p.1) ^ p.2 / ((p.2 : ℕ) : ℂ)) L :=
+    hsummable.of_norm.hasSum
+  -- fibering over the occupation vectors
+  have hfibT : HasSum (fun ν : T => -Complex.log (1 - x * q ν)) L :=
+    hHS.prod_fiberwise fun ν => Complex.hasSum_taylorSeries_neg_log (hxq ν)
+  -- fibering over the exponents
+  have hswap : HasSum (fun p : ℕ × T => (x * q p.2) ^ p.1 / ((p.1 : ℕ) : ℂ)) L :=
+    ((Equiv.prodComm ℕ T).hasSum_iff).mpr hHS
+  have hfibN : HasSum (fun n : ℕ => x ^ n / (n : ℂ) * smoothPowerSum S (r * n)) L := by
+    refine hswap.prod_fiberwise fun n => ?_
+    rcases Nat.eq_zero_or_pos n with rfl | hn
+    · simp only [pow_zero, Nat.cast_zero, div_zero, zero_mul]
+      exact hasSum_zero
+    · have hk : 2 ≤ r * n := by nlinarith
+      have hsum : HasSum (fun ν : T => occupationRecip (ν : Nat.Primes →₀ ℕ) ^ (r * n))
+          (smoothPowerSum S (r * n)) := by
+        have hs := ((summable_norm_occupationRecip_pow hk).of_norm.subtype
+          (occupationSupported S))
+        exact hs.hasSum
+      have hmul := hsum.mul_left (x ^ n / (n : ℂ))
+      refine hmul.congr_fun fun ν => ?_
+      rw [hqdef, mul_pow, ← pow_mul, Nat.mul_comm r n, div_mul_eq_mul_div]
+  -- assemble
+  have hlogsum : Summable (fun ν : T => Complex.log (1 - x * q ν)) := by
+    have := hfibT.summable
+    simpa using this.neg
+  have hne : ∀ ν : T, (1 : ℂ) - x * q ν ≠ 0 := by
+    intro ν h
+    have : ‖x * q ν‖ = 1 := by
+      have h1 : x * q ν = 1 := by linear_combination -h
+      rw [h1, norm_one]
+    exact absurd this (ne_of_lt (hxq ν))
+  have hprod := Complex.cexp_tsum_eq_tprod hne hlogsum
+  have hLval : ∑' ν : T, Complex.log (1 - x * q ν) = -L := by
+    have h := hfibT.tsum_eq
+    rw [tsum_neg] at h
+    linear_combination -h
+  rw [hLval] at hprod
+  rw [hfibN.tsum_eq, hprod, primeOccupationFacePow_eq_tprod_occ]
+  refine tprod_congr fun ν => ?_
+  rw [occupationFactor, hqdef]
+  ring
 
 end
 

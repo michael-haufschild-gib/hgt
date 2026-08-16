@@ -244,3 +244,29 @@ near the return point. Replacing \(r\) by \(\sqrt\varepsilon\) proves `(7)`.
 - [ ] exact-object priority audit
 - [ ] specialist audit of algebraic symmetrization
 - [ ] formal metric-Diophantine dependency
+
+## Lean progress -- the Dirichlet half of `(3)`
+
+`formal/GaloisForLFunctions/RHTower/DiscreteRecurrenceDirichletBound.lean` (new, umbrella-wired,
+axiom-clean) proves the upper half of the discrete exponent law, for *every* spectrum, with no
+genericity and no metric theory.
+
+| Card item | Declaration |
+|---|---|
+| the first integer time at which every projective phase is within `r` of an integer | `discreteRecurrenceTime` |
+| **the Dirichlet bound** `T^disc(r) <= (⌈1/r⌉ + 1)^d`, from the corpus's simultaneous approximation `exists_fin_simultaneous_integer_approximation_quantitative` | `discreteRecurrenceTime_le_ceil` |
+| its real form `T^disc(r) <= (1/r + 2)^d` | `discreteRecurrenceTime_le_pow` |
+| **hence `log T^disc(r) <= d · log(1/r + 2)`**, so the exponent is at most `d` | `log_discreteRecurrenceTime_le` |
+| the comparison factor `log(N+2)/log N` tends to one, so the bound is asymptotically exactly `d` | `tendsto_dirichletShiftRatio` |
+
+No new pigeonhole was written: the corpus already owned quantitative simultaneous Dirichlet
+approximation in `d` coordinates, so this file is the exponent bookkeeping on top of it.
+
+### What remains
+
+The matching *lower* bound, which is where all the content of the sharp law sits.  It holds only
+for Lebesgue-almost every `H`, and it is exactly the imported Kleinbock--Margulis extremality of
+analytic nondegenerate manifolds: the gap map of the local chain must be shown nondegenerate, and
+extremality then rules out the exceptional Diophantine set.  Neither extremality nor the
+Khintchine--Groshev transfer it feeds is present in mathlib, so this is the card's genuine formal
+gap; the Dirichlet half above needs none of it.

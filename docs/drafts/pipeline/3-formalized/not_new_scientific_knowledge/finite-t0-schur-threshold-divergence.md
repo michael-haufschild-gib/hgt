@@ -1,7 +1,7 @@
 # Finite T0 Schur Threshold Divergence
 
 - **ID:** finite-t0-schur-threshold-divergence
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** `docs/consolidated/gpt/proof-route.md`, sections 1, 2, 7, 8
 - **Statement:** For a compact reciprocal Stieltjes model with infinite total mass but finite positive moments, no finite value of `T_0` can make the full unshifted Hankel tower PSD at all orders; the Schur thresholds for a finite `T_0` repair diverge.
@@ -14,7 +14,8 @@ Close a possible false repair of the `T_0` obstruction. It is not enough to choo
 
 - [x] 0 -> 1 in-progress: well-posed, source-pure, attack idea
 - [x] 1 -> 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 -> 3 formalized: Lean theorem `<name>`, `lake build` green, `check_axioms.sh` PASS
+- [x] 2 -> 3 formalized: `not_forall_hankelForm_nonneg` in
+  `formal/GaloisForLFunctions/RHTower/FiniteT0SchurThresholdDivergence.lean`, axiom-clean
 - [ ] 3 -> 4 publication-ready: standalone note if needed
 
 ## Proof
@@ -103,6 +104,38 @@ qquad
 Q_1[p] = sum_{i,j} c_i c_j T_{i+j+2}.
 ```
 
+## Lean formalization
+
+`formal/GaloisForLFunctions/RHTower/FiniteT0SchurThresholdDivergence.lean`
+
+The Lean proof replaces the Hausdorff-determinacy step by an explicit telescoping test, which
+proves the same statement directly and unconditionally.  For a compact atomic model
+`y : ι → (0,R]` with `ι` infinite (infinite total mass) and `Summable y` (finite first moment), the
+polynomials
+
+`Q_n(t) = R⁻¹ ∑_{j<n} (1 - t/R)^j`,   so   `t·Q_n(t) = 1 - (1 - t/R)^n`,
+
+satisfy `0 ≤ t Q_n(t) ≤ 1`, `t Q_n(t) ≤ n t/R` (Bernoulli, giving summability) and
+`t Q_n(t) → 1` for every `t > 0`.  Evaluating the Hankel form at the coefficient pair
+`(c₀, Q_n) = (-1, Q_n)` gives `∑_i t Q_n(t) ≤ a` for every `n`, while the left-hand side diverges
+because the family is infinite.
+
+| Card claim | Lean declaration |
+|---|---|
+| the telescoping identity `t Q_n(t) = 1 - (1-t/R)^n` | `eval_telescope` |
+| `0 ≤ t Q_n(t) ≤ 1` and `t Q_n(t) ≤ n t/R` | `telescopeValue_nonneg`, `telescopeValue_le_one`, `telescopeValue_le_mul` |
+| the test values are summable | `summable_telescopeValue` |
+| infinite mass makes the test sums exceed every bound | `exists_tsum_telescopeValue_gt` |
+| the unshifted tower with a chosen finite part `T_0 = a` | `unshiftedTower`, `hankelForm` |
+| the Hankel form in split coordinates | `hankelForm_eq_regularized`, `regularizedUnshiftedForm` |
+| **no finite `T_0` makes the tower PSD at all orders** | `not_forall_hankelForm_nonneg`, `not_forall_regularizedUnshiftedForm_nonneg` |
+| the Schur thresholds are unbounded | `schurThreshold_unbounded` |
+
+The numerical toy model (`y_n = 1/n²`, `a_d = d(2d+3)/2`) is illustrative and is deliberately not
+part of the Lean statement.
+
+All declarations audited with `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`.
+
 ## Log
 
-- 2026-06-21 -- Conway: created as Step-12 follow-up to `reciprocal-seam-admissible-domain-q1`.
+- 2026-06-21 -- Conway: created as Step-12 follow-up to `reciprocal-seam-admissible-domain-q1` (now in `3-formalized`).

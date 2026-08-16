@@ -85,6 +85,12 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-16 | `prime-translation-koszul-off-unitary-contractibility` | `RHTower/PrimeTranslationKoszulOffLine.lean` (+ `HTGeometry/KoszulCartanContraction.lean`, `RHTower/UnitaryResolventOffCircle.lean`) |
 | 2026-08-16 | `prime-loop-connectivity-mixed-word-obstruction` | `RHTower/PrimeLoopMixedWordObstruction.lean` |
 | 2026-08-16 | `reciprocal-seam-admissible-domain-q1` | `RHTower/ReciprocalSeamAdmissibleDomain.lean` |
+| 2026-08-16 | `finite-t0-schur-threshold-divergence` | `RHTower/FiniteT0SchurThresholdDivergence.lean` |
+| 2026-08-16 | `hurwitz-quadratic-n2-density-shadow` | `FullyProvenNewTargets.hurwitz_quadratic_n2_density_shadow` (pre-existing; verified + audited) |
+| 2026-08-16 | `semilocal-prolate-control-deformation` | `RHTower/SemilocalProlateControlDeformation.lean` |
+| 2026-08-16 | `semilocal-prolate-unitary-transport-trilemma` | `RHTower/SemilocalProlateUnitaryTransport.lean` |
+| 2026-08-16 | `euler-support-transverse-divisor-rigidity` | `RHTower/RelativeStripDivisorReflection.lean` |
+| 2026-08-16 | `euler-divisor-ultrametric-stability` | `RHTower/EulerDivisorUltrametricStability.lean` |
 
 ## Already carrying a stage-3 certificate (verify, then move the paper card)
 
@@ -126,6 +132,30 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
    `acyclic-finite-fibers-derived-limit-zero`.
 6. **Complex-dynamics layer** (Böttcher coordinate, equilibrium measure of a Cantor Julia set,
    winding-number integration): needed by the three `bottcher-*` monodromy cards.
+7. **Fredholm determinants and Riesz spectral theory for compact operators** (eigenvalue stability
+   under norm perturbation; `det_F(I + zB)` as the canonical limit of finite truncations): needed by
+   `semilocal-prolate-defect-triangular-determinant-blindness`.  The strict-lowering, local
+   nilpotence and finite-truncation-determinant parts are elementary; only the compact/trace-class
+   extension clauses need this layer.
+8. **Clunie composition growth** (`T(r, f ∘ g)/T(r,g) → ∞` for transcendental entire `f,g`, outside
+   an exceptional set): needed by `autonomous-cap-derivative-shadow-law` and
+   `asymptotically-exponential-algebraic-cascade-unit-cost`.
+9. **Lipshitz diagonal `D`-finiteness** (the diagonal of a `D`-finite series is `D`-finite): needed
+   by `G3-corank-dichotomy`.
+10. ~~Selberg-class relative-strip rigidity~~ — **built**:
+   `RHTower/RelativeStripDivisorReflection.lean` carries the abstract normal-convergence and
+   divisor-reflection theorem named by `euler-support-transverse-divisor-rigidity`'s 2→3 gate
+   (`differentiableAt_dirichletSeries`, `exp_dirichletSeries_ne_zero`, `mem_band_of_reflection`,
+   `max_re_le_of_reflection`, `re_eq_half_of_reflection`, `eq_empty_of_reflection_lt_half`,
+   `summable_of_sparse_support`, `summable_of_partialSum_bound`).  **Still open:** the concrete
+   Selberg-class instantiation (an actual completed Euler product with its functional equation);
+   the consumer `euler-divisor-ultrametric-stability` is now fully formalized and promoted, with
+   `(NE)` discharged by `divisorExponent_le_of_reflection`.
+11. **Torus shrinking targets** (Haar measure on `𝕋^V`, forest coordinates, Borel–Cantelli):
+   needed by `coherence-graph-volume-recurrence-exponent-law`.
+12. **Kummer/radical provider for `U0`** (`PhibKummerInputs` / `PhibRadicalData` /
+   `PhibSquareRootDeckData` discharged unconditionally): the `u0-phi-independence*` wrappers in
+   `FullyProvenNewTargets.lean` are otherwise complete.
 
 ## New reusable infrastructure added by this sweep
 
@@ -162,6 +192,21 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
   coordinate, and exactness of the Koszul complex of a linear functional.
 - `RHTower/UnitaryResolventOffCircle.lean` — a unitary minus a scalar off the unit circle is
   invertible, with the reverse-triangle lower bound `| |λ|-1 | ‖y‖ ≤ ‖(U-λ)y‖`.
+- `RHTower/FiniteT0SchurThresholdDivergence.lean` — the telescoping test
+  `t Q_n(t) = 1 - (1-t/R)^n` and the unshifted Hankel tower with a chosen finite part; no finite
+  zeroth moment makes the tower PSD at all orders.
+- `RHTower/SemilocalProlateControlDeformation.lean` — the second resolvent identity and the
+  relative-resolvent corner splitting, in an abstract associative `ℂ`-algebra.
+- `RHTower/SemilocalProlateUnitaryTransport.lean` — a scaling/grading unitary must match the first
+  Jacobi coefficient of two cyclic pairs; two distinct prolate parameters force the same.
+- `RHTower/EulerDivisorUltrametricStability.lean` — the max-triangle law for absolute-convergence
+  abscissae (`abscissa_le_max`) and for the outer divisor exponent (`divisorExponent_le_max`), the
+  two critical-ball threshold classes, the monotone `max`-preserving exponentiation, and
+  ultrametric path rigidity (`constant_of_connected_of_ultrametric`).
+- `RHTower/RelativeStripDivisorReflection.lean` — normal convergence and holomorphy of a
+  generalized Dirichlet series on its half-plane of absolute convergence, the sparse-support and
+  accumulated-variation abscissa bounds, and the divisor reflection band `1 - A ≤ Re ρ ≤ A` with its
+  two threshold classes.
 - `HTGeometry/InvolutionIdempotentHost.lean` — self-inverse elements ↔ idempotents over a
   commutative ring with `2` invertible.
 - `HTGeometry/ScalarMonodromyAlgebraicIndependence.lean` — unbounded scalar monodromy forces

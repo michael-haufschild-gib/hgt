@@ -60,8 +60,8 @@ theorem log_discreteRecurrenceTime_le {d : ℕ} (α : Fin d → ℝ) {r : ℝ} (
   · rw [h0]
     simp only [Nat.cast_zero, Real.log_zero]
     have hlog : 0 ≤ Real.log (1 / r + 2) :=
-      Real.log_nonneg (by positivity)
-    positivity
+      Real.log_nonneg (by nlinarith [one_div_pos.mpr hr])
+    exact mul_nonneg (Nat.cast_nonneg d) hlog
   · have hposR : (0 : ℝ) < (discreteRecurrenceTime α r : ℝ) := by exact_mod_cast hpos
     have hle := discreteRecurrenceTime_le_pow α hr
     have hlog := Real.log_le_log hposR hle
@@ -71,12 +71,18 @@ theorem log_discreteRecurrenceTime_le {d : ℕ} (α : Fin d → ℝ) {r : ℝ} (
 theorem tendsto_dirichletShiftRatio :
     Tendsto (fun N : ℝ => Real.log (N + 2) / Real.log N) atTop (𝓝 1) := by
   have hlog : Tendsto (fun N : ℝ => Real.log N) atTop atTop := Real.tendsto_log_atTop
-  have hzero : Tendsto (fun N : ℝ => Real.log (1 + 2 / N) / Real.log N) atTop (𝓝 0) := by
-    refine Filter.Tendsto.div_atTop ?_ hlog
-    have hin : Tendsto (fun N : ℝ => 1 + 2 / N) atTop (𝓝 (1 + 0)) :=
-      tendsto_const_nhds.add (tendsto_const_nhds.div_atTop tendsto_id)
-    rw [add_zero] at hin
-    simpa using (Real.continuous_log.continuousAt (x := (1 : ℝ)) (by norm_num)).tendsto.comp hin
+  have hin : Tendsto (fun N : ℝ => 1 + 2 / N) atTop (𝓝 (1 + 0)) :=
+    tendsto_const_nhds.add (tendsto_const_nhds.div_atTop tendsto_id)
+  rw [add_zero] at hin
+  have hnum : Tendsto (fun N : ℝ => Real.log (1 + 2 / N)) atTop (𝓝 0) := by
+    have hcont : ContinuousAt Real.log (1 : ℝ) :=
+      Real.continuousAt_log (by norm_num)
+    have h := hcont.tendsto.comp hin
+    have hfun : (Real.log ∘ fun N : ℝ => 1 + 2 / N) = fun N : ℝ => Real.log (1 + 2 / N) := rfl
+    rw [hfun] at h
+    simpa using h
+  have hzero : Tendsto (fun N : ℝ => Real.log (1 + 2 / N) / Real.log N) atTop (𝓝 0) :=
+    hnum.div_atTop hlog
   have hone : Tendsto (fun N : ℝ => 1 + Real.log (1 + 2 / N) / Real.log N) atTop (𝓝 (1 + 0)) :=
     tendsto_const_nhds.add hzero
   rw [add_zero] at hone

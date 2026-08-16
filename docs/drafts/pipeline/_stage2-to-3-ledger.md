@@ -3575,3 +3575,59 @@ Reusable method note: to kill a spectral identity by perturbation, do not manipu
 Work in the split eigenbasis, where the perturbation is a literal off-diagonal matrix; the corpus's
 adjugate-column eigenbranch laws then give the first and second variations as finite sums, and the
 whole argument becomes the residue calculus of one rational function of the attached local field.
+
+## Stage-2 sweep state, 2026-08-16
+
+Twenty-eight new modules, all umbrella-wired and axiom-clean.  One card promoted
+(`mass-shifted-hard-jacobi-leakage-gramian-law`); nine cards carry formal content.  Per-card state
+and the *exact* remaining input:
+
+| Card | Formalized | Remaining input |
+|---|---|---|
+| `mass-shifted-hard-jacobi-leakage-gramian-law` | **all of `(HJLG.1)`--`(HJLG.6)`; promoted to stage 3** | none |
+| `all-replica-incidence-normalized-local-word-leakage-law` | **Theorem B `(11)` in full** | Theorem A and the replica-uniform Casimir gap (replica tensor construction) |
+| `fixed-shell-angular-dephasing-static-local-plateau-law` | Lemma A2 entirely (base + induction), Lemma A1's induction step and its openness, the `(13)`/`(14)` globalisation | Lemma A1's physical realisation (tensor bookkeeping placing the split system inside `tracelessLocalHamiltonianSubmodule`); then Theorems B and C |
+| `determinant-defect-completion-law` | `(RE)` sharp rank--energy law; trichotomy items 2,3,4 | necessity/sufficiency of `(DC)` (needs `det_p` and the micro-spectrum construction) |
+| `route-t-fixed-short-interval-handoff` | the entire scalar composition C61 | primes in `(x, x+x^{7/10}]` -- Ingham `A(σ) ≤ 3/(2−σ)` plus density-to-short-ranges.  *Not* reachable from PNT with any error term |
+| `route-e-forbidden-support-e3-stability` | every step the card proves (earlier session) | Matomäki--Teräväinen all-interval `E₃` count and its two-dimensional sieve |
+| `mass-bessel-infinite-radiation-jet-obstruction` | item 3, PNT partial summation at every logarithmic order | items 1--2: all-orders sectorial `K₁` expansion and the coefficient polynomials `Q_{j,a}` |
+| `markovian-return-recovery-complexity-reflection-law` | Theorems A and B metric core, incidence interlacing, partition functions | diamond-norm theory; exact-return rigidity |
+| `local-chain-metric-recurrence-exponents` | the Dirichlet half of `(3)` | Kleinbock--Margulis extremality and Khintchine--Groshev transfer |
+| `weak-cut-complexity-onset-capacity-separation-law` | Theorem A budgeting layer | tensor factorisation `(8)`; Theorems B and C |
+
+### Classification of what blocks the rest
+
+Every remaining gap is one of four kinds, and none is a gap in the cards' own reasoning:
+
+1. **Deep published theorems absent from mathlib** -- Ingham zero density, Kleinbock--Margulis
+   extremality, Matomäki--Teräväinen all-interval `E₃`, Kirby exponential-algebraic closure,
+   Kargin's non-diagonal matrix Dyson equation.  Each is a self-contained formalisation project.
+2. **Missing analytic frameworks** -- diamond norm on channels; Schatten regularized determinants
+   `det_p`; a tensor formalism for split registers.
+3. **Large constructions** -- all-orders sectorial expansions, replica tensor towers, cubic-phase
+   seed moment calculus.
+4. **Bookkeeping on top of finished mathematics** -- the fixed-shell card's Lemma A1 realisation is
+   the only one of these left, and it is the shortest path to a second promotion.
+
+### Reusable infrastructure this sweep added
+
+`CircuitWordBudget` (error/length budgets; the concatenation law needs only non-expansiveness, not
+register disjointness, so it serves both the onset cards and the Markovian card),
+`ReturnRecoveryReflection` (reflection across an approximate return in any metric monoid),
+`IncidenceLeakageDimensionLoss` (two-projector energy accounting with no spectral theory),
+`RankEnergyPowerSum` (Jensen power-sum bound plus the Hermitian trace power),
+`MicroSpectrumMomentCollapse` (moment collapse and the alternating-binomial identities),
+`AnalyticFiniteProductDomain` (identity theorem for finite products; real polynomial vanishing on
+an open set), `QuadraticRateSpectralRigidity` / `AffinePoleResidueRigidity` /
+`BipartiteCrossPairRigidity` / `LocalExtensionQuadraticRate*` / `BlockExtensionSecondOrderResponse`
+/ `LayerExtensionEndpointCompleteness` / `LayerGermEndpointCompleteness` /
+`EndpointProbeTransitionCriterion` / `CompleteProbeCombination` (the whole spectral-rigidity stack),
+`MatrixInverseCurveDerivative`, `JacobiTodaRiccatiLaw`, `JacobiNodeBoundaryMonotonicity`,
+`DyadicVonMangoldtLogWeighted`, `DiscreteRecurrenceDirichletBound`,
+`RHTower/Sieve/RouteTShortIntervalHandoff`.
+
+### Checked-first savings
+
+Three times this sweep, searching the corpus before building avoided duplicating substantial work:
+quantitative simultaneous Dirichlet approximation, the Duhamel bound (three forms), and
+circuit-word approximation with its monotonicity lemmas all already existed.

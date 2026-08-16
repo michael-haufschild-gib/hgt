@@ -60,7 +60,7 @@
 - [ ] `periodic-pencil-intrinsic-ht-dimension-two`
 - [x] `power-canonical-product-exact-moment-borel-lattice-law`
 - [x] `prescribed-gap-process-order-one-maximal-ht-profield` — 2026-08-16, `exists_prescribedGapProcess_orderOneMaximalHTProfield`
-- [ ] `prime-completion-annihilates-hypertranscendence-at-even-temperature`
+- [x] `prime-completion-annihilates-hypertranscendence-at-even-temperature` — 2026-08-16, `cexp_neg_logSeries_eq_primeOccupationFacePow` + 7 more
 - [ ] `prime-euler-unit-tangent-completeness`
 - [ ] `prime-modulated-weyl-idealizer-collapse-on-xi-sampling`
 - [ ] `prime-occupation-polarized-gamma-phase-survival`
@@ -1763,3 +1763,41 @@ Closing it also closes `floquet-orbifold-tail-emergence` and
   (`hypertranscendental_primeOccupationFacePow`), by scaling the reciprocal-prime periods.
   Remaining: transport the occupation-vector indexing to the smooth-number indexing so that all
   items of the card refer to one object.  Closure count unchanged.
+
+- 2026-08-16 — **`prime-completion-annihilates-hypertranscendence-at-even-temperature` CLOSED and
+  promoted to stage 3.**  Every displayed equation of the exact theorem is an unconditional,
+  axiom-clean Lean theorem about a single object, the occupation face
+  `primeOccupationFacePow r S x = ∏_{ν ∈ ℕ^S}(1 - x ∏ p^{-r ν_p})`:
+  `(1)` the definition; `(2)` `hypertranscendental_primeOccupationFacePow` — every packet of size
+  at least two is hypertranscendental at every positive integer temperature; `(3)`+`(11)`
+  `tendsto_primeOccupationFacePow` with `occupationEquivNatPos` (unique factorization as an
+  equivalence with the positive integers); `(4)`
+  `cexp_neg_logSeries_eq_primeOccupationFacePow` (the logarithmic normal expansion on the unit
+  disc, by the Taylor series of `log(1-z)` and a Fubini rearrangement) and
+  `smoothPowerSum_eq_prod` (the finite Euler factorization of every occupation power sum);
+  `(5)` `tendsto_smoothPowerSum_riemannZeta`; `(6)` `deriv_primeOccupationFacePow_zero` and
+  `tendsto_deriv_primeOccupationFacePow_zero`; `(7)`
+  `differentiallyAlgebraic_occupationProduct_of_even`; `(8)` `pi_mul_occupationProduct_two` and
+  `occupationProduct_two_ode` (`4xΦ'' + 6Φ' + π²Φ = 0`); `(9)`
+  `periodsIntegrallyIndependent_primePowerNomePeriod`.
+  New modules: `HTGeometry/PrimeOccupationCompletionProduct.lean`,
+  `HTGeometry/PrimePowerOccupationHypertranscendence.lean`,
+  `HTGeometry/PrimeOccupationCompletionLimit.lean`; `HTGeometry/InfiniteProductNearOne.lean`
+  extended with the two-product comparison, first-order control, and the derivative at the origin
+  of a linear-family product.  Closure count: 5 closed in this sweep, 31 cards remain in the folder.
+
+- 2026-08-16 (later) — `rational-coarse-graining-orbifold-tail-classification`, third pass.
+  `HTGeometry/RationalInvariantDifferential.lean` (new, unconditional, axiom-clean, umbrella-wired)
+  transports the whole invariant-differential layer from the free jet field to `RatFunc C`:
+  `exists_ratFunc_of_order_zero`, `ratFuncDeriv` with `ratFuncDeriv_X : (X)' = 1` and the
+  bundled `ratFuncDerivation : Derivation C (RatFunc C) (RatFunc C)` (mathlib has no derivation on
+  `RatFunc`), `ratFuncEval_ratFuncSubstitution`, and the two-way bridge
+  `exists_ratFunc_relation_of_isInvariantDifferential` /
+  `isInvariantDifferential_of_ratFunc_relation`.  The descent capstones now read classically:
+  `exists_ratFunc_relation_of_order_one` and `exists_ratFunc_relation_or_hasNormalizingShift`.
+  The remaining obligation for this card and for `floquet-orbifold-tail-emergence` and
+  `orbifold-tail-holographic-reconstruction` is therefore a statement about rational maps alone:
+  a degree-≥2 map with no nonzero-weight invariant rational differential has no rational affine
+  connection.  Next substrate: the signed order on `RatFunc` (the corpus has `poleOrder` in
+  `HTGeometry/RationalPoleOrder.lean`) with additivity and the composition law
+  `ord_a(Q∘R) = ord_a(R − R(a))·ord_{R(a)}(Q)`.  Closure count unchanged.

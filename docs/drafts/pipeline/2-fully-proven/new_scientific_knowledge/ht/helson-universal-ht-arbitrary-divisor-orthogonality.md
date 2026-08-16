@@ -636,3 +636,306 @@ left of the half line — the first of the two steps that turn the zero-one law
 What remains of this input is the passage from `L^2` divergence to almost-sure non-continuability:
 the a.s. abscissa of convergence, and then the natural boundary.  Nothing else on the card depends
 on it.
+
+## Lean progress — Kolmogorov's zero–one law for a random series
+
+`HTGeometry/SeriesConvergenceZeroOne.lean` (wired, axiom-clean).
+
+```
+coordPartialSum g N x               sum_{n<N} g n (x n)   -- n-th term reads only coordinate n
+coordSeriesConverges g              { x | the partial sums converge }
+coordPartialSum_sub_eq              modifying coordinates below n1 shifts every later partial sum
+                                        by ONE constant
+coordSeriesConverges_invariant      hence convergence is invariant under finite modification
+measurable_coordPartialSum
+measurableSet_coordSeriesConverges  the convergence set is measurable
+measure_coordSeriesConverges_eq_zero_or_one
+    under a countable product of probability measures the series converges either almost
+    nowhere or almost everywhere
+```
+
+This is the step the Saksman--Webb input needs on top of
+`tendsto_integral_normSq_steinhausDirichletPoly_atTop`.  The `L^2` layer says the partial sums of
+`sum n^{-sigma} X_n` are unbounded in `L^2` for every `sigma <= 1/2`; the zero-one law says the
+*event* that the series converges at a fixed `s` is a tail event, so its probability is `0` or `1`
+and the abscissa of convergence is almost surely deterministic.
+
+The mechanism is the same finite-modification observation the card already uses for `M`, but applied
+to a series rather than to meromorphic continuation: altering finitely many prime phases changes
+every partial sum past that point by a single constant, and a constant shift cannot create or
+destroy convergence.  Stated for an arbitrary countable product with values in any
+second-countable completely-pseudo-metrizable topological abelian group, so it applies verbatim to
+`Omega = prod_p S^1` with values in `C`.
+
+What remains between here and `Haar(M) != 1` is unchanged: the passage from `L^2` divergence to
+almost-sure divergence (Lévy / Itô--Nisio for independent symmetric summands), and then from
+divergence of the series to non-continuability.  The zero-one law removes the need to prove anything
+about the *set* of `omega` at that point — only the dichotomy has to be broken, at a single `sigma`.
+
+## Lean progress — Paley–Zygmund, and the route to `Haar(M) != 1` that avoids Itô--Nisio
+
+`HTGeometry/PaleyZygmund.lean` (wired, axiom-clean).
+
+```
+le_half_add_sq_div    z <= t/2 + z^2/(2t)   for every t > 0   -- rearranges to (t - z)^2 >= 0
+paley_zygmund         (1 - th)^2 (E Z)^2 <= E[Z^2] * P(Z > th E Z),   0 <= th < 1
+```
+
+The proof avoids Hölder entirely.  Splitting the mean at the threshold gives
+`(1-th) E Z <= E[Z 1_A]`; the pointwise AM--GM bound integrates to
+`E[Z 1_A] <= (t/2) P(A) + E[Z^2]/(2t)`; and `t = sqrt(E[Z^2]/P(A))` makes the right side
+`sqrt(E[Z^2] P(A))` — Cauchy--Schwarz with the sharp constant, recovered without an L^p API.  This is
+the same device used for the prolate second-moment tail bound this session; it is worth noting that
+the trick is reusable exactly because the optimising `t` is chosen after integration.
+
+### Why this matters for the card
+
+The missing step was `L^2` divergence  ==>  almost-sure divergence, whose textbook proofs go through
+Kolmogorov's three-series theorem or Itô--Nisio — neither is in mathlib, and both need stopping
+times.  Paley--Zygmund replaces them with an elementary argument:
+
+1. `E|S_N|^2 = A_N := sum_{n<=N} |a_n|^2`                      (already formal)
+2. `E|S_N|^4 <= 2 A_N^2`                                        (Steinhaus fourth moment — TO DO)
+3. Paley--Zygmund with `Z = |S_N|^2`, `th = 1/2`:
+       `P(|S_N|^2 > A_N/2) >= (1/4) A_N^2 / E|S_N|^4 >= 1/8`     (this session)
+4. If the series converged a.s. then `sup_N |S_N| < infinity` a.s., so some `M` has
+   `P(sup_N |S_N| <= M) >= 9/10`; but `A_N -> infinity` gives `P(|S_N| > M) >= 1/8` for large `N`,
+   hence `P(sup > M) >= 1/8`, i.e. `P(sup <= M) <= 7/8 < 9/10` — contradiction.
+5. So convergence has probability `< 1`, and by the zero-one law
+   (`measure_coordSeriesConverges_eq_zero_or_one`, this session) probability `0`.
+
+Only item 2 remains, and it is a finite orthogonality computation, not a limit theorem.
+
+## Lean progress — the fourth-moment escape engine, and a correction to the plan
+
+`HTGeometry/FourthMomentEscape.lean` (wired, axiom-clean).
+
+```
+measure_sq_gt_half_ge   fourth moment <= C (second moment)^2  and second moment > 0
+                            ==>  P( g^2 > (E g^2)/2 ) >= 1/(4C)     -- uniform in the index
+measure_exists_gt_ge    second moments -> infinity  ==>  every level M is exceeded by some
+                            f N with probability >= 1/(4C)
+measure_unbounded_ge    hence  P( sup_N f N = infinity ) >= 1/(4C)
+```
+
+The decreasing intersection over integer levels is taken with `tendsto_measure_iInter_atTop`; the
+bound survives because `1/(4C)` does not depend on `N`.  This is the elementary replacement for
+Kolmogorov's three-series theorem: no stopping time, no maximal inequality, no martingale theory.
+
+### CORRECTION to the plan recorded above
+
+The step written earlier as
+
+```
+2.  E|S_N|^4 <= 2 A_N^2      (Steinhaus fourth moment)
+```
+
+is **FALSE as stated for the full Dirichlet polynomial** and must not be attempted in that form.
+Expanding,
+
+```
+E|S_N|^4 = sum_{n k = m l} a_n a_k a_m a_l ,
+```
+
+because `E[X_{nk} conj(X_{ml})] = 1` exactly when `nk = ml`.  Over all integers `n,k,m,l <= N` the
+diagonal `nk = ml` is a divisor-correlation sum, not `2 A^2`: the Steinhaus characters `X_n` are
+*not* independent across `n` (`X_6 = X_2 X_3`), so the four-fold sum picks up the divisor function
+and exceeds `A^2` by a logarithmic factor.
+
+The bound IS correct over **prime** indices, where the characters are genuinely independent and
+`p r = q s` forces `{p,r} = {q,s}`:
+
+```
+E| sum_p a_p X_p |^4 = 2 A^2 - sum_p a_p^4 <= 2 A^2 ,      A = sum_p a_p^2 .
+```
+
+So the chain must be run on the prime sub-series `sum_p p^{-sigma} X_p`, whose second moment
+`sum_p p^{-2 sigma}` still diverges for `sigma <= 1/2` by Mertens.  This is also the natural object
+for the card, since the Euler product is where the independent phases live.
+
+Revised remaining item for this route: the prime fourth-moment identity above (a finite
+orthogonality computation over `{p,r} = {q,s}`), plus `sum_p p^{-2 sigma} -> infinity`.
+
+## Lean progress — the two prime-side inputs
+
+`RHTower/PrimeSecondMomentDivergence.lean` (wired, axiom-clean).
+
+```
+prime_mul_eq_prime_mul       p r = q t with p,q,r prime  ==>  (p=q and r=t) or (p=t and r=q)
+primeCoeff sigma             the prime-supported sequence  n |-> [n prime] * n^{-2 sigma}
+not_summable_primeCoeff      sigma <= 1/2  ==>  not summable, by comparison with sum 1/p
+tendsto_sum_primeCoeff_atTop hence the partial sums escape to infinity
+```
+
+The arithmetic lemma is the exact combinatorial input that makes the prime fourth moment collapse:
+`E[X_{pr} conj(X_{qt})] = 1` iff `pr = qt`, and over primes that happens only on the two diagonals,
+giving `2 A^2 - sum a_p^4`.  It is also precisely the statement that fails over general integers,
+which is why the full Dirichlet polynomial has no such bound (see the correction above).
+
+Note the lemma needs only THREE of the four primality hypotheses: `t` is forced to be prime by the
+equation once `p, q, r` are.  Stated with the redundant hypothesis dropped.
+
+The analytic input is mathlib's `not_summable_one_div_on_primes` (Erdős's proof of the divergence of
+the sum of prime reciprocals), compared against `1/n <= n^{-2 sigma}` — which is the corpus's own
+`one_div_le_rpow_neg_two_mul`, already formal.  Divergence of the partial sums then comes from
+`not_summable_iff_tendsto_nat_atTop_of_nonneg`.
+
+With these, of the chain recorded above only the prime fourth-moment identity itself remains:
+
+```
+E | sum_{p in s} a_p X_p |^4  =  2 (sum_p a_p^2)^2 - sum_p a_p^4 ,
+```
+
+a finite sum manipulation over `s x s x s x s` split by `prime_mul_eq_prime_mul`, with no analysis
+in it.  The escape engine (`measure_unbounded_ge`) and the zero-one law
+(`measure_coordSeriesConverges_eq_zero_or_one`) then close `Haar(M) != 1`.
+
+## Lean progress — the four-fold diagonal collapse
+
+`HTGeometry/QuadrupleDiagonalSum.lean` (wired, axiom-clean).
+
+```
+diagonal_summand_eq
+    [p r = q t] a_p a_q a_r a_t
+      = [p=q] a_p a_q * [r=t] a_r a_t  +  [p=t] a_p a_t * [q=r] a_q a_r
+        - [p=q=r=t] a_p^4
+    (given that the constraint cuts out exactly the two diagonals)
+
+quadruple_diagonal_sum
+    sum_{p,q,r,t in s} [p r = q t] a_p a_q a_r a_t  =  2 (sum a_p^2)^2 - sum a_p^4
+```
+
+Inclusion--exclusion on the two diagonals: each contributes `A^2`, and their overlap — the full
+diagonal `p=q=r=t` — is counted twice and removed once.  The collapse is done one sum at a time from
+the inside out, each step being a `Finset.sum_ite_eq` after the compound condition is refactored as
+a single equality guarding a smaller conditional.
+
+Stated over an arbitrary commutative ring, with the diagonal description as a hypothesis, so the
+arithmetic input stays separate: `prime_mul_eq_prime_mul` supplies exactly that hypothesis for a
+`Finset` of primes.
+
+### Status of the `Haar(M) != 1` chain
+
+```
+1. E|S_N|^2 = sum_{p<=N} a_p^2                     formal   (integral_normSq_dpoly instantiated)
+2. the diagonal collapse                            formal   (this session)
+3. p r = q t over primes  <=>  two diagonals        formal   (this session)
+4. Paley--Zygmund                                   formal   (this session)
+5. escape engine: 4th moment bound => unbounded     formal   (this session)
+6. sum_p p^{-2 sigma} diverges for sigma <= 1/2     formal   (this session)
+7. zero-one law for series convergence              formal   (this session)
+```
+
+What is left is the *assembly*: expanding `|S_N|^4` as the four-fold sum in step 2 — i.e. the
+identity `E[X_p conj(X_q) X_r conj(X_t)] = [p r = q t]`, which is `X_mul` plus the corpus's
+`integral_X_mul_conj` — and then feeding steps 5 and 7 with it.  No further analytic input is
+needed, and in particular neither Kolmogorov's three-series theorem nor Itô--Nisio appears anywhere
+in the final chain.
+
+## Lean progress — the fourth moment of a Steinhaus Dirichlet polynomial
+
+`RHTower/SteinhausFourthMoment.lean` (wired, axiom-clean).
+
+```
+X_four_eq        X_p conj(X_q) X_r conj(X_t) = X_{pr} conj(X_{qt})     (complete multiplicativity)
+integral_X_four  E[ X_p conj(X_q) X_r conj(X_t) ] = [ p r = q t ]      (orthonormality)
+integrable_X_four, integrable_smul_X_four
+integral_normSq_sq_dpoly
+    E || sum_{n in s} a_n X_n ||^4  =  sum_{p,q,r,t in s} [ p r = q t ] a_p a_q a_r a_t
+```
+
+The expansion is a quadruple `Finset` distribution followed by a four-level exchange of integral and
+sum, each level justified by `integrable_finsetSum` over the unimodular four-fold products.
+
+One trap worth recording: `simp only [Finset.sum_mul, Finset.mul_sum]` distributes a product of four
+sums with the index order **reversed** — the outermost binder ends up on the last factor.  The
+resulting summand is `X_t conj(X_r) X_q conj(X_p)`, whose diagonal condition is `t q = r p`.  That is
+the same condition as `p r = q t` (commute both sides), but the two are not syntactically equal and
+the mismatch shows up only as a failing `ring` deep inside the proof.
+
+Combining with `quadruple_diagonal_sum` and `prime_mul_eq_prime_mul` gives, for a `Finset` of primes,
+
+```
+E || sum_{p in s} a_p X_p ||^4  =  2 (sum_p a_p^2)^2 - sum_p a_p^4  <=  2 (E || . ||^2)^2 ,
+```
+
+which is exactly the hypothesis `measure_unbounded_ge` wants with `C = 2`.
+
+## Lean progress — THE ESCAPE IS ASSEMBLED: the prime series has unbounded partial sums
+
+`RHTower/SteinhausPrimeUnbounded.lean` (wired, axiom-clean).
+
+```
+steinhausPrimePoly sigma N ω  =  sum_{p < N, p prime} p^{-sigma} X_p(ω)
+
+integral_normSq_steinhausPrimePoly       E ||S_N||^2 = sum_{p<N} p^{-2 sigma}
+integral_normSq_sq_steinhausPrimePoly    E ||S_N||^4 = 2 (sum p^{-2 sigma})^2 - sum p^{-4 sigma}
+norm_steinhausPrimePoly_le, measurable_steinhausPrimePoly
+integrable_normSq_steinhausPrimePoly, integrable_normSq_sq_steinhausPrimePoly
+sum_primeSet_eq, tendsto_integral_normSq_steinhausPrimePoly
+
+measure_steinhausPrimePoly_unbounded
+    sigma <= 1/2  ==>  Haar{ ω : sup_N ||S_N(ω)|| = infinity }  >=  1/8
+```
+
+Every step is unconditional.  The fourth moment is exactly `2 A^2 - sum a_p^4`, so the escape engine
+applies with `C = 2` and the bound `1/(4C) = 1/8` comes out with no slack wasted.
+
+This is the quantitative half of the Saksman--Webb input, obtained without Kolmogorov's three-series
+theorem, without Itô--Nisio, and without any maximal inequality — only Paley--Zygmund, the prime
+fourth moment, and Mertens.  Combined with
+`measure_coordSeriesConverges_eq_zero_or_one` (the convergence event is a tail event, so its measure
+is `0` or `1`), a positive probability of unbounded partial sums forces probability zero for
+convergence.
+
+What remains for `Haar(M) = 0` is the bridge from divergence of the prime Dirichlet series to
+non-continuability of `Z_chi` — i.e. that a.s. divergence of the Euler exponent past the half line
+obstructs meromorphic continuation.  That is the last analytic step; everything upstream of it is
+now formal.
+
+## Lean progress — ALMOST-SURE DIVERGENCE, unconditional
+
+`RHTower/SteinhausPrimeDivergence.lean` (wired, axiom-clean).
+
+```
+X_prime_eq                    p prime  =>  X_p(ω) = exp(2 pi i ω_p)
+                                  -- the prime characters read ONE coordinate each
+primeTerm sigma n             the n-th term as a function of the n-th coordinate alone
+coordPartialSum_primeTerm     its partial sums are exactly the prime Dirichlet polynomials
+not_unbounded_of_converges    a convergent series has bounded partial sums (CauchySeq.isBounded_range)
+
+measure_coordSeriesConverges_primeTerm_eq_zero
+    sigma <= 1/2  ==>  Haar { ω : sum_p p^{-sigma} X_p(ω) converges } = 0
+```
+
+The prime characters reading one coordinate each is what lets the abstract tail-event zero-one law
+apply verbatim: `steinhausMeasure` is definitionally `Measure.infinitePi` of the uniform phase
+measures, which is exactly the hypothesis shape of
+`measure_coordSeriesConverges_eq_zero_or_one`.  The escape bound gives the convergence event
+probability at most `7/8`, and the dichotomy then forces `0`.
+
+So the Saksman--Webb/Seip input needed by this card is now **proved unconditionally in Lean**, for
+every `sigma <= 1/2`, along a route that uses only:
+
+```
+Paley--Zygmund   +   the prime fourth moment   +   Mertens   +   Kolmogorov's zero-one law
+```
+
+and in particular no three-series theorem, no Itô--Nisio, no maximal inequality, and no martingale
+theory — none of which exist in mathlib.
+
+### Residue of this card
+
+| statement | status |
+|---|---|
+| labelled differential-field universality | formal |
+| Pong's conclusion for `Z_chi`, `Phi_(chi,psi)` | formal, unconditional |
+| density, codensity, `boundary(M) = Omega`, no continuous factorization | formal, unconditional |
+| `Haar(M) in {0,1}` (finite-modification zero-one law) | formal, unconditional |
+| **a.s. divergence of the prime series left of the half line** | **formal, unconditional** |
+| `Haar(M) = 0` | needs: divergence of the Euler exponent obstructs continuation |
+| divisor surjectivity (Andersson Thm 5) | open |
+
+The single remaining analytic step for `Haar(M) = 0` is the bridge from divergence of
+`sum_p p^{-sigma} X_p` to non-continuability of `Z_chi`.  Everything upstream of that bridge is now
+a theorem.

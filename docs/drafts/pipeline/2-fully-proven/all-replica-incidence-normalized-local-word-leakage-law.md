@@ -403,3 +403,51 @@ distance and is incompatible with low-support or singular static laws.  A valid 
 the exact directional pairing, fibre sheets, and occupied endpoint image.  It must still reconcile
 antisymmetric local commutator words with symmetric Fréchet jets of one static coefficient pencil;
 treating the static path as a free word source remains forbidden by the crossing-memory no-go.
+
+## Lean progress -- Theorem B, sharp bi-tight incidence leakage
+
+`formal/GaloisForLFunctions/HTGeometry/IncidenceLeakageDimensionLoss.lean` (new, umbrella-wired,
+axiom-clean) proves `(11)` in full, unconditionally.
+
+| Card item | Declaration |
+|---|---|
+| the real Hilbert--Schmidt energy, and its nonnegativity from the entrywise sum | `hsSqRe`, `trace_conjTranspose_mul_self`, `hsSqRe_eq_sum`, `hsSqRe_nonneg` |
+| for a projector `Q`, `‖YQ‖² = tr(Y*Y Q)` and `‖QX‖² = tr(X*QX)` | `hsSqRe_eq_trace_right`, `hsSqRe_eq_trace_left` |
+| a projector splits the energy on either side -- the Pythagoras step | `hsSqRe_split_right`, `hsSqRe_split_left` |
+| **`(12)`**: total emitted energy is the source dimension, from `∑ Bₐ*Bₐ = 1` | `sum_hsSqRe_mul_source` |
+| **`(13)`**: total capturable energy is the target dimension, from `∑ BₐBₐ* = 1` | `sum_hsSqRe_target_mul` |
+| **`(11)`**: `Leak_B(U,V) ≥ dim U − dim V` | `leak_ge_dim_sub` |
+
+Two points the formalisation makes explicit.  The "removing `P_U` can only increase captured
+energy" step of the paper proof is not a monotonicity principle but the *same* Pythagoras split
+applied on the right, so the two halves of `(13)` are one lemma used twice.  And no spectral
+theory, positivity ordering, or trace inequality for products of positive operators is needed
+anywhere: every step is an identity between traces of explicit products, plus `hsSqRe ≥ 0`.
+
+### What remains
+
+Theorem A (uniform frame coercivity and Hall do not control capacity) and section 3's
+replica-uniform Casimir gap, which rest on the replica tensor construction rather than on this
+two-projector identity.
+
+### Addendum -- the general pencil certificate `(6)`
+
+`formal/GaloisForLFunctions/HTGeometry/PencilCauchySchwarz.lean` (new, umbrella-wired,
+axiom-clean) proves `(6)` outright, with no hypothesis beyond `X > 0`:
+
+| Card item | Declaration |
+|---|---|
+| the scalar Cauchy--Schwarz bound `‖∑ᵢ cᵢwᵢ‖² ≤ ‖c‖₂² ∑ᵢ‖wᵢ‖²` in any complex normed space | `norm_sum_smul_sq_le` |
+| its unit-coefficient corollary `‖∑ᵢwᵢ‖² ≤ k ∑ᵢ‖wᵢ‖²` | `norm_sum_sq_le_card_mul` |
+| the quadratic form of `NᴴN` is the squared length of `Nv` | `quadForm_conjTranspose_mul_self` |
+| a congruence through a squared factor: `⟨v, MXMᴴv⟩ = ‖S Mᴴ v‖²` for `X = SS`, `Sᴴ = S` | `quadForm_congruence` |
+| the pencil's square-root image is the pencil of square-root images | `sqrt_pencil_mulVec` |
+| **`(6)` on quadratic forms**: `⟨v, BXBᴴv⟩ ≤ ‖c‖₂² ∑ᵢ⟨v, BᵢXBᵢᴴv⟩` for `B = ∑ᵢcᵢBᵢ`, `X > 0` | `quadForm_pencil_le` |
+| **`(6)` in Loewner order**: `‖c‖₂²∑ᵢBᵢXBᵢᴴ − BXBᴴ` is positive semidefinite | `posSemidef_pencil_bound` |
+
+The positive square root is the corpus continuous-functional-calculus root
+(`positiveMatrixSqrt_posDef`, `positiveMatrixSqrt_mul_self` in
+`ConstitutivePositiveConeMidpointRecovery`), so nothing spectral is assumed.
+
+What `(7)` still needs on top of this is determinant monotonicity on the positive cone,
+`0 ⪯ A ⪯ C ⟹ det A ≤ det C`, and the definition of `cap` as an infimum over the state.

@@ -339,3 +339,28 @@ than an artificial sharpness device -- is a consequence of these two displayed i
 The forward-difference identities are derived from mathlib's `fwdDiff_iter_pow_eq_zero_of_lt` and
 `fwdDiff_iter_eq_factorial` by evaluating `fwdDiff_iter_eq_sum_shift` at the origin, so the
 explicit alternating-binomial form the card uses is now available directly.
+
+## Lean progress -- the vanishing micro-spectrum construction
+
+`formal/GaloisForLFunctions/HTGeometry/RootBlockMomentSelection.lean` (new, umbrella-wired,
+axiom-clean) proves the selection mechanism of `(M)` and its cost law.
+
+| Card item | Declaration |
+|---|---|
+| the `k` diagonal eigenvalues `t ω^r` of one selecting block | `unitRoot`, `rootBlock`, `unitRoot_isPrimitiveRoot` |
+| **its trace moment of order `q` vanishes unless `k` divides `q`** | `sum_rootBlock_pow` |
+| **and its `k`-th moment is exactly `k t^k`** | `sum_rootBlock_pow_self` |
+| every eigenvalue of the block has modulus `\|t\|`, so its Schatten cost is `k N \|t\|^p` | `norm_rootBlock` |
+| **the cost `(kN)^{1-p/k}\|c\|^{p/k}` tends to zero as `N` grows, precisely because `k < p`** | `tendsto_rootBlock_schattenCost` |
+
+The cost law is stated so that the `k = p` degeneration is visible in the hypothesis: the limit is
+proved from `k < p` alone, and at `k = p` the exponent `1 - p/k` is zero and the statement is
+false.  Together with `(RE)` this is the card's claim that the cutoff `p-1` is forced
+quantitatively rather than chosen by convention -- one bound says a moment below the order can be
+written for free, the other says a moment at the order cannot.
+
+### What remains
+
+Assembling the blocks of `(M)` into a full pencil -- degrees in increasing order, absorbing higher
+moments into later targets, and the choice of multiplicities -- together with the necessity
+direction of `(DC)`, which needs `det_p` and the compact-open topology on holomorphic families.

@@ -1,7 +1,7 @@
 # Prime completion can annihilate hypertranscendence while preserving every Euler boundary jet
 
 - **ID:** `prime-completion-annihilates-hypertranscendence-at-even-temperature`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / SOURCE-PURE HT-TO-DA COMPLETION / EMERGENT-SYMMETRY LAW
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
   `[EXTERNAL EXACT-MATCH SEARCH NEGATIVE] [NOT AN RH RESULT]`
@@ -336,7 +336,7 @@ open core.
 - [x] hostile differential-axis, completion, and RH audit
 - [x] external exact/stronger/equivalent/mechanism search
 - [ ] independent specialist priority audit
-- [ ] 2 -> 3 formalized: unconditional Lean finite HT, prime completion, Euler jet, and DA limit
+- [x] 2 -> 3 formalized: unconditional Lean finite HT, prime completion, Euler jet, and DA limit
 - [ ] construct a nonzero completion-stable polarized survivor
 - [ ] connect that survivor to the Xi Pick-kernel domination problem
 
@@ -461,3 +461,53 @@ occupationEquivPNat_coe       : the value is the monomial ∏ p^{ν_p}
 `S`-smooth positive integers) along the restriction of `occupationEquivPNat` to a packet.  With
 that one reindexing, items `(2)`, `(3)`, `(5)`, `(6)`, `(7)` and `(8)` all refer to the same
 object and the card is complete.
+
+## Stage 3 — every displayed equation of the exact theorem is machine checked
+
+The whole statement now refers to a single Lean object, the occupation face of a finite prime
+packet at temperature `r`,
+
+```text
+primeOccupationFacePow r S x = ∏'_{ν : S →₀ ℕ} (1 - x · ∏_{p ∈ S} p^{-r ν_p})     -- equation (1)
+occupationProduct r x        = ∏'_{n ≥ 1} (1 - x / n^r)                            -- the completion
+```
+
+and every displayed equation is an unconditional axiom-clean theorem.
+
+| card | Lean name | module |
+|---|---|---|
+| `(1)` | `primeOccupationFacePow`, `primeOccupationFacePow_eq_tprod` | `PrimePowerOccupationHypertranscendence` |
+| `(2)` | `hypertranscendental_primeOccupationFacePow` (and `..._neg`) | `PrimePowerOccupationHypertranscendence` |
+| `(3)`, `(11)` | `tendsto_primeOccupationFacePow`, `occupationEquivNatPos` | `PrimeOccupationCompletionLimit` |
+| `(4)` | `cexp_neg_logSeries_eq_primeOccupationFacePow`, `smoothPowerSum_eq_prod` | `PrimeOccupationCompletionLimit` |
+| `(5)` | `tendsto_smoothPowerSum_riemannZeta`, `tendsto_prod_primePowerNome_riemannZeta` | `PrimeOccupationCompletionLimit` |
+| `(6)` | `deriv_primeOccupationFacePow_zero`, `tendsto_deriv_primeOccupationFacePow_zero` | `PrimeOccupationCompletionLimit` |
+| `(7)` | `differentiallyAlgebraic_occupationProduct_of_even` | `PrimeOccupationCompletionProduct` |
+| `(8)` | `pi_mul_occupationProduct_two`, `occupationProduct_two_ode` | `PrimeOccupationCompletionProduct` |
+| `(9)` | `periodsIntegrallyIndependent_primePowerNomePeriod` | `PrimePowerOccupationHypertranscendence` |
+| `(12)` | `powerCanonicalProduct_even_eq_prod_sinc` (corpus) | `EvenPowerCanonicalProductDA` |
+
+Three modules were added and two extended:
+
+* `HTGeometry/PrimeOccupationCompletionProduct.lean` — the completed product, its analyticity,
+  the even-temperature differential algebraicity, the sine collapse `π c Φ₂(c²) = sin(π c)` and the
+  second-order law `4 x Φ₂'' + 6 Φ₂' + π² Φ₂ = 0`, the smooth-number packet product and its cofinal
+  limit, the arithmetic Euler jet, and unique factorization;
+* `HTGeometry/PrimePowerOccupationHypertranscendence.lean` — the periods `i r log p / (2π)`, their
+  integral independence (scaling an independent family by a nonzero integer), the identification of
+  the backward multiple elliptic Gamma product with the occupation face in the multiplicative
+  coordinate, and hypertranscendence for every packet of size at least two at every positive
+  integer temperature;
+* `HTGeometry/PrimeOccupationCompletionLimit.lean` — the occupation-vector indexing: unique
+  factorization as an equivalence with the positive integers, the completed product read in that
+  indexing, the packet reindexing `(S →₀ ℕ) ≃ {ν | supp ν ⊆ S}`, the cofinal convergence, the
+  Euler factorization of every occupation power sum, the logarithmic normal expansion on the unit
+  disc, and the first Euler coefficient;
+* `HTGeometry/InfiniteProductNearOne.lean` — two new generic estimates: the comparison of two
+  products of factors near one, and first-order control `‖∏(1+u) − 1 − ∑u‖ ≤ (∑‖u‖)² e^{∑‖u‖}`,
+  from which the derivative at the origin of a linear-family product is `∑ q_i`;
+* the corpus's `EvenPowerCanonicalProductDA.lean` and `PrimeLinearOccupationHypertranscendence.lean`
+  supplied the two hard halves already.
+
+No hypothesis stands in for any part of the statement; every capstone's `#print axioms` reports
+only `propext`, `Classical.choice`, `Quot.sound`.

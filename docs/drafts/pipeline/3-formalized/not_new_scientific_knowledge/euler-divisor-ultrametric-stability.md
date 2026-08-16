@@ -1,7 +1,7 @@
 # Non-Archimedean stability of the Euler-to-divisor map
 
 - **ID:** euler-divisor-ultrametric-stability
-- **Stage:** 2-fully-proven/needs-audit
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) -- novelty audit open
 - **Source:** `euler-support-transverse-divisor-rigidity.md`; user question on the global constraint
   preventing off-line zeros from entering the critical line
@@ -22,7 +22,8 @@ absolute-convergence filtration of the Euler data.
 
 - [x] 0 -> 1: objects, triangle laws, and source theorem identified.
 - [x] 1 -> 2: complete paper proof below.
-- [ ] 2 -> 3: formalize the max-triangle and non-expansion skeleton in Lean.
+- [x] 2 -> 3: formalized in
+  `formal/GaloisForLFunctions/RHTower/EulerDivisorUltrametricStability.lean`, axiom-clean.
 - [ ] 3 -> 4: primary-literature novelty audit and standalone note.
 
 ## Setup
@@ -140,6 +141,34 @@ ball in an ultrametric space is also closed, so its connected subsets are single
 image of a connected space is connected; therefore every continuous path is constant. Any family
 whose divisor genuinely moves -- in particular, one in which an off-line zero enters the critical
 line -- must be discontinuous in the `d_E` topology.
+
+## Lean formalization
+
+`formal/GaloisForLFunctions/RHTower/EulerDivisorUltrametricStability.lean`
+
+| Card claim | Lean declaration |
+|---|---|
+| `σ_E` is defined by an absolute-convergence abscissa | `convSet`, `abscissa` |
+| **(1)** the max-triangle law for `σ_E` | `abscissa_le_max` |
+| `σ_D` as the outer horizontal exponent, `⊥` on the empty divisor | `divisorExponent`, `divisorExponent_empty` |
+| **(1)** the max-triangle law for `σ_D` | `divisorExponent_le_max` (with `divisorExponent_mono`) |
+| **(2)** non-expansion `σ_D ≤ σ_E` | `divisorExponent_le_of_forall`, and `divisorExponent_le_of_reflection` composing the relative-strip theorem `max_re_le_of_reflection` |
+| **(3)** exponentiation preserves the strong triangle law | `strong_triangle_of_monotone_max` |
+| **(4)** `σ_E ≤ 1/2` gives a fixed off-critical divisor | `re_eq_half_of_divisorExponent_le` |
+| **(4)** `σ_E < 1/2` gives a fixed nontrivial divisor | `eq_empty_of_divisorExponent_lt` |
+| **(5)** continuous families into the separated quotient are constant | `constant_of_connected_of_ultrametric` |
+
+The relative-strip input is now itself a Lean theorem:
+`formal/GaloisForLFunctions/RHTower/RelativeStripDivisorReflection.lean`
+(`mem_band_of_reflection`, `max_re_le_of_reflection`), so `(NE)` is discharged rather than assumed.
+The remaining "only one L-function" clause of **(4)** is the Hadamard clause of
+`euler-support-transverse-divisor-rigidity.md`, carried by the corpus's zero-free finite-order
+factorization `GaloisForLFunctions.HTGeometry.exists_polynomial_exp_of_ne_zero_of_growth`.
+
+Path rigidity uses mathlib's `IsUltrametricDist`: an ultrametric space is totally disconnected, so
+the connected image of a connected space is a singleton.
+
+All declarations audited with `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`.
 
 ## Scientific meaning
 

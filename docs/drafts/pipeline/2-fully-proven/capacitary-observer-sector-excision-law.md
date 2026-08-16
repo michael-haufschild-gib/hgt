@@ -1804,3 +1804,26 @@ component to estimate.
 - 2026-08-13 -- duplicate audit identified Theorem J's renewal core in the named parent; novelty
   attribution corrected.  Proved Theorem K by composing the all-late Choi plateau with the
   deterministic local-simulation cone, obtaining a no-mesh same-Hamiltonian backward shoulder.
+
+## Lean progress -- Corollary A.2, the leverage bound
+
+`formal/GaloisForLFunctions/HTGeometry/FeatureKernelResolventBound.lean` (new, umbrella-wired,
+axiom-clean) proves the mechanism of `(8b)`.
+
+| Card item | Declaration |
+|---|---|
+| the centred feature kernel `K_E^0(x,y) = ∑_j φ_j(x)φ_j(y)` and its nonnegative diagonal | `featureKernel`, `featureKernel_diag_nonneg` |
+| **the reproducing-kernel Cauchy--Schwarz inequality** `\|K^0(x,y)\|^2 ≤ K^0(x,x)K^0(y,y)` | `sq_featureKernel_le` |
+| **hence the leverage `L_E` bounds every kernel value**, diagonal and off-diagonal alike | `abs_featureKernel_le` |
+| **the geometric resolvent bound**: summands uniformly bounded by `a^m L` sum to at most `L/(1-a)` | `abs_tsum_le_of_geometric` |
+
+Together these are `(8b)`: each Neumann summand `a^m (P_x^m K_E^0)(x,y)` inherits the leverage
+bound because Markov powers are `L^∞` contractions, and the geometric series then sums to
+`L_E/(1-a)`.
+
+### What remains
+
+The Neumann expansion of the resolvent itself and the `L^∞`-contractivity of Markov powers, which
+need the Markov operator on `X` rather than the kernel algebra; the transitive-action case `(8c)`,
+where the diagonal is constant and integrates to the trace `K-1`; and Corollary A.3's unitary-group
+instance.

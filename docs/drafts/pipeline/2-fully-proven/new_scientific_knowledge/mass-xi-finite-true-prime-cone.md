@@ -6015,7 +6015,7 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   analytic mass jet equals positive Hermitian mass minus an explicit sum-of-squares phase defect;
   in heat limit `D_1(t)=sum exp(-tA_q)(1-cos(tB_q))`, whose all-time vanishing is exactly RH.
   Existing KMS/Gram positivity controls ambient mass but not required sharp orientation budget.
-- 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` completed source normalization repaired: rational
+- 2026-08-08 — `[PROVED HERE; (24.129)--(24.130) LEAN-PROVED]` completed source normalization repaired: rational
   polar terms produce positive residue; fixed-degree complete prime jet is superexponentially
   invisible, giving strict ultraviolet heat-Hankel positivity.
 - 2026-08-08 — `[PROVED HERE; (24.137)--(24.138) ELEMENTARY CORE LEAN-PROVED; (24.135) LEAN DEFERRED]` Hermite phase-space separation upgrades this to
@@ -6065,7 +6065,7 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   no-bootstrap theorem: stable transport of a degree-`d`, time-`T` Gaussian polynomial into the
   time-`t`, degree-`N` wedge requires `tN` comparable to `Td`.  Degree--time action is invariant;
   ultraviolet positivity cannot be squeezed to one all-degree positive time.
-- 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` first-off-line-shell filters can be chosen with only
+- 2026-08-08 — `[PROVED HERE; (24.189)--(24.190) LEAN-PROVED]` first-off-line-shell filters can be chosen with only
   positive real roots; their Gaussian-square Fourier transforms are strictly positive for all
   sufficiently late times.  The coherent prime packet is then an honest probability law, and
   completed Turan curvature reduces exactly to polar--Gamma/prime curvature compensation minus a
@@ -7635,3 +7635,101 @@ bottom frequencies is used.
 
 Still deferred on this item: the shell-gap tail contribution and the passage to the eventual
 criterion (24.153).
+
+### Lean progress: §24 C43-AO — the late filtered packet is positive
+
+    RHTower/DampedJetPositivity.lean
+      tendsto_abs_ratio_atTop,
+        tendsto_abs_ratio_atBot,
+        exists_ratio_bound                    a polynomial positive on the whole real line dominates
+                                              every polynomial of strictly smaller degree: the ratio
+                                              is continuous and tends to zero at both ends, so it is
+                                              bounded
+      jetSum_pos_of_small_tail               **(24.190)** a finite jet correction whose total
+                                              relative weight is below one cannot destroy positivity
+      tendsto_jetWeight_zero,
+        eventually_jetSum_pos                **(24.190)** for all large damping the corrected jet is
+                                              positive at every point
+
+This is the whole mechanism behind the late-time positivity of the Gaussian heat-filtered prime
+packet: the heat operator applied to a positive polynomial is that polynomial plus a finite sum of
+its higher derivatives with coefficients `O(t^{-j})`, and every derivative is dominated by the
+polynomial itself.  The statements are for an arbitrary positive function and an arbitrary finite
+family of dominated corrections, so nothing about the Gaussian is used beyond the coefficient decay.
+
+    RHTower/GaussianMomentFourier.lean
+      integrable_abs_pow_mul_exp_neg_mul_sq   every polynomial moment of a real Gaussian is
+                                              absolutely integrable
+      gaussPhase, norm_gaussPhase,
+        hasDerivAt_gaussPhase                 the phase `e^{-tx²-iξx}` and its `ξ`-derivative
+      gaussMoment,
+        hasDerivAt_gaussMoment                differentiation under the integral sign raises the
+                                              moment: `∂_ξ M_n = -i M_{n+1}`
+      gaussMoment_zero                        the zeroth moment is `√(π/t) e^{-ξ²/(4t)}`
+      gaussMoment_eq                          `M_n(ξ) = i^n √(π/t) q_n(ξ) e^{-ξ²/(4t)}`
+      gaussPolyFourier                        the transform of `p(x)e^{-tx²}` is the Gaussian times
+                                              an explicit polynomial in `ξ`
+
+    RHTower/HeatOperatorPolynomial.lean
+      heatShiftPoly, heatScale,
+        gaussJetPoly_eq_heatShift,
+        gaussJetPoly_eval_eq                  `q_n(ξ) = (-1)^n A_n(ξ/(2t))` for the rescaled
+                                              Hermite recursion `A_{n+1} = X A_n - A_n'/(2t)`
+      iterate_derivative_X_mul                the iterated Leibniz rule `(Xp)^{(k)} = X p^{(k)}
+                                              + k p^{(k-1)}`
+      heatOpTo, heatOpTo_sum,
+        heatOpTo_C_mul, heatOpTo_one          the truncated heat operator
+                                              `∑_{j≤m} ((-1/(4t))^j/j!) R^{(2j)}` and its linearity
+      heatOpTo_X_mul                          the commutator law `H(Xp) = X H(p) - (Hp)'/(2t)`
+      heatOpTo_X_pow, heatOpTo_eq_sum,
+        heatOp, heatOp_eq_sum                 the heat operator in the Hermite basis
+      gaussHeatFourier                       **(24.189)** `∫ R(ix)e^{-tx²-iξx} dx
+                                              = √(π/t) e^{-ξ²/(4t)} [e^{-(4t)^{-1}∂_u²}R](ξ/(2t))`
+      aeval_I_mul_sqComp,
+        gaussHeatFourier_sq                  **(24.189)** in the shell-filter form, for
+                                              `R(u) = Q(-u²)²`, i.e. for `Q(x²)²e^{-tx²}`
+
+The factorization is unconditional and exact: the moment recursion is proved by dominated
+differentiation under the integral against the `ξ`-free majorant `|x|^{n+1}e^{-tx²}`, the zeroth
+moment is the Gaussian contour integral, and the identification of the resulting polynomial with
+`e^{-(4t)^{-1}∂_u²}R` is the purely algebraic commutator law for the truncated heat operator.
+
+Still deferred on this item: the channel score/curvature law that follows from (24.189).
+
+### Lean progress: §24 C43-W — the first-prime heat horizon
+
+    RHTower/PrimeJetHorizon.lean
+      primeJetMajorant, primeJetMajorant_nonneg,
+        summable_primeJetMajorant             the time-free prime majorant
+                                              `Λ(n) n^{-1/2}(1 + (log n)^m) e^{-(log n)²/8}`
+                                              converges, for every fixed jet order `m`
+      sum_primeJet_le                         **(24.130)** under the fixed-degree jet bound
+                                              (24.129) the entire prime modulation carries the
+                                              uniform superexponential factor
+                                              `e^{-(log 2)²/(8t)}` for every `0 < t ≤ 1`
+
+The estimate is for the *complete* fixed-degree prime jet, not one atom at a time: the Gaussian is
+split in half, `log n ≥ log 2` extracts the horizon factor from one half and `t ≤ 1` makes the other
+half time-free, and `Λ(n) ≤ log n` closes the convergence.  No prime number theorem and no zero
+count enter.
+
+    RHTower/GaussianJetPolynomial.lean
+      gaussJetPoly, hasDerivAt_gaussJet,
+        iteratedDeriv_gaussKernel             every derivative of `e^{-x²/(4t)}` is its jet
+                                              polynomial times the Gaussian
+      gaussJetPoly_natDegree_le,
+        gaussJetConst, gaussJetPoly_coeff_bound  the jet polynomial has degree at most `k` and
+                                              every coefficient bounded by `C_k t^{-k}` for
+                                              `0 < t ≤ 1`
+      abs_gaussJetPoly_eval_le,
+        abs_gaussJetPoly_eval_le'             `|q_k(ξ)| ≤ (k+1)C_k t^{-k}(1+|ξ|^k)`
+      evenJetConst, abs_evenJetCombination_le,
+        gaussJetScale_rpow,
+        abs_evenDerivGaussian_le             **(24.129)** any finite combination of even
+                                              derivatives of `√(π/t)e^{-ξ²/(4t)}` is bounded by
+                                              `C t^{-2m-1/2}(1+|ξ|^{2m})e^{-ξ²/(4t)}`
+
+The bound is proved from the recursion `q_{k+1} = q_k' - (ξ/(2t))q_k` alone: differentiation
+lowers the degree and multiplies a coefficient by at most `k`, multiplication by `ξ/(2t)` raises
+the inverse power of `t` by one, and `0 < t ≤ 1` lets the two be compared at the common power.
+This closes the input (24.129) that (24.130) consumed.
