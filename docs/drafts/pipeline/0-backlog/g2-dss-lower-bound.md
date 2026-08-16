@@ -29,7 +29,7 @@ input named precisely:
 |---|---|---|
 | **A** Siegel in ∞ vars | **discharged** (import) | Bombieri–Vaaler 1983; on the friable space `friable-dirichlet-auxiliary.md` |
 | **B** zero/multiplicity estimate | **discharged** (PROVEN uniform-in-S) | `../3-formalized/not_new_scientific_knowledge/zero-estimate-uniformity.md` — height-controlled, Baker-free |
-| **C** arithmetic of the values | **reduced to a posed bound** | `../2-fully-proven/friable-dirichlet-auxiliary.md` §5 |
+| **C** arithmetic of the values | **reduced to a posed bound** | `../3-formalized/not_new_scientific_knowledge/friable-dirichlet-auxiliary.md` §5 |
 
 **The reduction of C (the new content).** Running the race on the friable auxiliary `F(s)=Σ_m λ_m n_m^{-s}`
 and evaluating at the Stieltjes edge `s=1`,
@@ -91,7 +91,7 @@ auxiliary space (`friable-dirichlet-auxiliary.md`) is the native auxiliary funct
   uniformity sub-piece.
 - 2026-06-19 (DeWitt) — moved 0→1; **architecture assembled.** A (Bombieri–Vaaler) and B
   (`../3-formalized/not_new_scientific_knowledge/zero-estimate-uniformity.md`, proven uniform) discharged; **obstruction C reduced**
-  via the friable auxiliary (`../2-fully-proven/friable-dirichlet-auxiliary.md` §5): `F^{(T)}(1)` is a
+  via the friable auxiliary (`../3-formalized/not_new_scientific_knowledge/friable-dirichlet-auxiliary.md` §5): `F^{(T)}(1)` is a
   ℚ-linear form in degree-`T` prime-log monomials ⟹ **C = effective algebraic independence of `{log p}` =
   quantitative Schanuel for prime logs**, height-bearing (escapes the §17.3 vacuum). Degree filtration
   `T=1`(linear, corank=∞, free) vs all-`T`(algebraic, Schanuel, wall) shows the field's G2 machine is

@@ -14,6 +14,10 @@ strictly alternate.
 
 This is the counting half of an argument-principle crossing estimate: the analytic input is the
 gain, and everything after it is monotone real analysis.
+
+`EdgeEventParity.exists_crossing_enum_parity` enumerates *all* crossings of the single class
+`sin θ = 0` and reads their parity; the statements here instead bound the number of crossings of a
+prescribed class from below by the gain, and interlace two antipodal classes.
 -/
 
 namespace GaloisForLFunctions.HTGeometry

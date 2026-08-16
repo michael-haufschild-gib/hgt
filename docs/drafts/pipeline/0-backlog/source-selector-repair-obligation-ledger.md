@@ -155,7 +155,7 @@ Thus adding conductor, pole, Gamma-boundary, finite Euler, or finite finite-part
 
 ## 2026-06-24 protector tail does not discharge A6--A7
 
-`../2-fully-proven/tail-e-zero-support-nonselector.md` adds the tail audit to rows A6--A7. Once the protector Hankel tail is represented by a finite signed measure on the shifted reciprocal zero support, the full tail sequence determines that signed measure.
+`../3-formalized/not_new_scientific_knowledge/tail-e-zero-support-nonselector.md` adds the tail audit to rows A6--A7. Once the protector Hankel tail is represented by a finite signed measure on the shifted reciprocal zero support, the full tail sequence determines that signed measure.
 
 Thus `E=mu_E` is a source finite-part identification and a zero-side coordinate transfer, not the repair theorem. A proof may use the tail only after it separately derives kernel/channel exhaustion and the completed boundary/index sign from source data.
 

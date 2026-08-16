@@ -17,7 +17,8 @@ on the large disc punctured by those small discs, and the maximum principle on t
 the two boundary bounds to the interior.
 
 With exactly vanishing derivatives the first step returns `0` and the statement collapses to the
-classical multipoint Schwarz bound.
+classical multipoint Schwarz bound `BakerProof.MultipointSchwarz.multipoint_schwarz_bound`, which
+factors out the node polynomial globally and therefore needs the analytic order at each node.
 -/
 
 noncomputable section

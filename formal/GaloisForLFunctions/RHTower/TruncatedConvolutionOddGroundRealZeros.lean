@@ -232,64 +232,66 @@ theorem tendsto_l2NormSq_phaseGround_sub {k k' : ℝ → ℝ} (hk : ∀ u, HasDe
     (w : ∀ N : ℕ, CCMCenteredParityIndex N → ℂ)
     (hw : ∀ N, w N ∈ truncConvSphere N)
     (hmin : ∀ N, ∀ v ∈ truncConvSphere N,
-      truncConvRayleigh k N (w N) ≤ truncConvRayleigh k N v)
-    (hc : ∀ N, l2Pair xi (truncConvModePoly (w N)) ≠ 0) :
+      truncConvRayleigh k N (w N) ≤ truncConvRayleigh k N v) :
     Tendsto (fun N : ℕ =>
         l2NormSq fun x => truncConvModePoly (phaseGround xi (w N)) x - xi x) atTop (𝓝 0) := by
   set P : ℕ → ℝ → ℂ := fun N => truncConvModePoly (phaseGround xi (w N)) with hP
   have hPc : ∀ N, Continuous (P N) := fun N => continuous_truncConvModePoly _
   set cn : ℕ → ℝ := fun N => ‖l2Pair xi (truncConvModePoly (w N))‖ with hcn
-  have hpair : ∀ N, l2Pair xi (P N) = ((cn N : ℝ) : ℂ) := fun N => l2Pair_xi_phaseGround (hc N)
-  have hnorm : ∀ N, l2NormSq (P N) = 1 := by
-    intro N
-    rw [hP, l2NormSq_truncConvModePoly]
-    exact phaseGround_mem_sphere (hw N) (hc N)
-  have hray : ∀ N, (l2Pair (P N) (truncConv k (P N))).re = truncConvRayleigh k N (w N) := by
-    intro N
-    rw [← truncConvRayleigh_phaseGround (k := k) (hc N)]
-    rfl
   set r : ℕ → ℝ → ℂ := fun N => truncConvResidual xi (P N) with hr
-  have hres : ∀ N, gap * l2NormSq (r N) ≤ truncConvRayleigh k N (w N) - lam := by
-    intro N
-    have h := truncConv_gap_estimate hk heven H (hPc N)
-    rw [hnorm N, mul_one, hray N] at h
-    exact h
   have hmu := tendsto_truncConvMin hk hk'c heven H w hw hmin
+  have hltev : ∀ᶠ N : ℕ in atTop, truncConvRayleigh k N (w N) < lam + gap :=
+    hmu.eventually (gt_mem_nhds (by linarith [H.gapPos]))
+  have hcev : ∀ᶠ N : ℕ in atTop, l2Pair xi (truncConvModePoly (w N)) ≠ 0 := by
+    filter_upwards [hltev] with N hN
+    exact truncConv_ground_pairing_ne_zero H (hw N) hN
   have hmusub : Tendsto (fun N : ℕ => truncConvRayleigh k N (w N) - lam) atTop (𝓝 0) := by
-    have := hmu.sub (tendsto_const_nhds (x := lam) (f := (atTop : Filter ℕ)))
-    simpa using this
+    have hstep := hmu.sub (tendsto_const_nhds (x := lam) (f := (atTop : Filter ℕ)))
+    simpa using hstep
   have hrlim : Tendsto (fun N : ℕ => l2NormSq (r N)) atTop (𝓝 0) := by
-    refine squeeze_zero (fun N => l2NormSq_nonneg _) (fun N => ?_)
+    refine squeeze_zero' (Filter.Eventually.of_forall fun N => l2NormSq_nonneg _) ?_
       (by simpa using hmusub.div_const gap)
+    filter_upwards [hcev] with N hcN
+    have hnorm : l2NormSq (P N) = 1 := by
+      rw [hP, l2NormSq_truncConvModePoly]
+      exact phaseGround_mem_sphere (hw N) hcN
+    have hray : (l2Pair (P N) (truncConv k (P N))).re = truncConvRayleigh k N (w N) := by
+      rw [← truncConvRayleigh_phaseGround (k := k) hcN]
+      rfl
+    have h := truncConv_gap_estimate hk heven H (hPc N)
+    rw [hnorm, mul_one, hray] at h
     rw [le_div_iff₀ H.gapPos]
-    have := hres N
-    linarith [this]
-  have hcsq : ∀ N, cn N ^ 2 = 1 - l2NormSq (r N) := by
-    intro N
+    linarith [h]
+  have hcsq : ∀ᶠ N : ℕ in atTop, cn N ^ 2 = 1 - l2NormSq (r N) := by
+    filter_upwards [hcev] with N hcN
+    have hnorm : l2NormSq (P N) = 1 := by
+      rw [hP, l2NormSq_truncConvModePoly]
+      exact phaseGround_mem_sphere (hw N) hcN
+    have hpair : l2Pair xi (P N) = ((cn N : ℝ) : ℂ) := l2Pair_xi_phaseGround hcN
     have h := l2NormSq_truncConvResidual H (hPc N)
-    rw [hnorm N, hpair N] at h
+    rw [hnorm, hpair] at h
     rw [hr]
     simp only
     rw [h, Complex.norm_real, Real.norm_eq_abs, sq_abs]
     ring
   have hclim : Tendsto cn atTop (𝓝 1) := by
     have hsq : Tendsto (fun N : ℕ => cn N ^ 2) atTop (𝓝 1) := by
-      have : Tendsto (fun N : ℕ => 1 - l2NormSq (r N)) atTop (𝓝 (1 - 0)) :=
+      have hstep : Tendsto (fun N : ℕ => 1 - l2NormSq (r N)) atTop (𝓝 (1 - 0)) :=
         tendsto_const_nhds.sub hrlim
-      rw [sub_zero] at this
-      exact this.congr fun N => (hcsq N).symm
+      rw [sub_zero] at hstep
+      exact hstep.congr' (hcsq.mono fun N h => h.symm)
     have hroot : Tendsto (fun N : ℕ => Real.sqrt (cn N ^ 2)) atTop (𝓝 (Real.sqrt 1)) :=
       (Real.continuous_sqrt.tendsto 1).comp hsq
     rw [Real.sqrt_one] at hroot
     exact hroot.congr fun N => Real.sqrt_sq (norm_nonneg _)
-  have hsplit : ∀ N, l2NormSq (fun x => P N x - xi x)
+  have hsplit : ∀ᶠ N : ℕ in atTop, l2NormSq (fun x => P N x - xi x)
       ≤ 2 * l2NormSq (r N) + 2 * ((cn N - 1) ^ 2 * l2NormSq xi) := by
-    intro N
+    filter_upwards [hcev] with N hcN
+    have hpair : l2Pair xi (P N) = ((cn N : ℝ) : ℂ) := l2Pair_xi_phaseGround hcN
     have hid : ∀ x, P N x - xi x = r N x + ((cn N : ℝ) - 1 : ℂ) * xi x := by
       intro x
       rw [hr]
-      simp only [truncConvResidual_eq, hpair N]
-      push_cast
+      simp only [truncConvResidual_eq, hpair]
       ring
     have hfun : (fun x => P N x - xi x)
         = fun x => r N x + (((cn N : ℝ) - 1 : ℂ)) * xi x := funext hid
@@ -304,12 +306,107 @@ theorem tendsto_l2NormSq_phaseGround_sub {k k' : ℝ → ℝ} (hk : ∀ u, HasDe
       (continuous_truncConvResidual H.contXi (hPc N)) (continuous_const.mul H.contXi)
     rw [hb] at hadd
     exact hadd
-  refine squeeze_zero (fun N => l2NormSq_nonneg _) hsplit ?_
+  refine squeeze_zero' (Filter.Eventually.of_forall fun N => l2NormSq_nonneg _) hsplit ?_
   have hlim2 : Tendsto (fun N : ℕ => 2 * l2NormSq (r N)
-      + 2 * ((cn N - 1) ^ 2 * l2NormSq xi)) atTop (𝓝 (2 * 0 + 2 * ((1 - 1) ^ 2 * l2NormSq xi))) := by
+      + 2 * ((cn N - 1) ^ 2 * l2NormSq xi)) atTop
+      (𝓝 (2 * 0 + 2 * ((1 - 1) ^ 2 * l2NormSq xi))) := by
     refine (tendsto_const_nhds.mul hrlim).add (tendsto_const_nhds.mul ?_)
     exact ((hclim.sub tendsto_const_nhds).pow 2).mul tendsto_const_nhds
   simpa using hlim2
+
+/-! ## The parity-free simple-ground Fourier real-zero law -/
+
+/-- **(PF.15) for a truncated convolution.**  If the truncated-convolution form on the unit
+interval has a simple isolated odd ground `ξ`, then every zero of the Fourier transform of `ξ` is
+real. -/
+theorem truncConvOddGround_compactFourier_zero_im_eq_zero
+    {k k' : ℝ → ℝ} (hk : ∀ u, HasDerivAt k (k' u) u) (hk'c : Continuous k')
+    (heven : ∀ u, k (-u) = k u) {lam gap : ℝ} {xi : ℝ → ℂ}
+    (H : TruncConvOddGround k lam gap xi) {z zw : ℂ}
+    (hzw : compactFourier (fun theta : ℝ => xi (theta / (2 * Real.pi))) 0 (2 * Real.pi) zw ≠ 0)
+    (hz : compactFourier (fun theta : ℝ => xi (theta / (2 * Real.pi))) 0 (2 * Real.pi) z = 0) :
+    z.im = 0 := by
+  classical
+  choose w hwmem hwmin using fun N : ℕ => exists_truncConv_compressed_ground hk hk'c heven N
+  have hmu := tendsto_truncConvMin hk hk'c heven H w hwmem hwmin
+  have hltev : ∀ᶠ N : ℕ in atTop, truncConvRayleigh k N (w N) < lam + gap :=
+    hmu.eventually (gt_mem_nhds (by linarith [H.gapPos]))
+  obtain ⟨N₀, hN₀⟩ := eventually_atTop.1 hltev
+  have hmean0 := tendsto_l2NormSq_phaseGround_sub hk hk'c heven H w hwmem hwmin
+  set M : ℕ → ℕ := fun n => n + N₀ with hM
+  set w' : ∀ n : ℕ, CCMCenteredParityIndex (M n) → ℂ :=
+    fun n => phaseGround xi (w (M n)) with hw'def
+  have hcne : ∀ n : ℕ, l2Pair xi (truncConvModePoly (w (M n))) ≠ 0 := fun n =>
+    truncConv_ground_pairing_ne_zero H (hwmem (M n)) (hN₀ (M n) (Nat.le_add_left N₀ n))
+  have hw'mem : ∀ n, w' n ∈ truncConvSphere (M n) := fun n =>
+    phaseGround_mem_sphere (hwmem (M n)) (hcne n)
+  have hray' : ∀ n, truncConvRayleigh k (M n) (w' n) = truncConvRayleigh k (M n) (w (M n)) :=
+    fun n => truncConvRayleigh_phaseGround (hcne n)
+  have hw'min : ∀ n, ∀ v ∈ truncConvSphere (M n),
+      truncConvRayleigh k (M n) (w' n) ≤ truncConvRayleigh k (M n) v := by
+    intro n v hv
+    rw [hray' n]
+    exact hwmin (M n) v hv
+  have hlt' : ∀ n, truncConvRayleigh k (M n) (w' n) < lam + gap := by
+    intro n
+    rw [hray' n]
+    exact hN₀ (M n) (Nat.le_add_left N₀ n)
+  have hodd : ∀ n, ∀ i, w' n (ccmCenteredParityReflection (M n) i) = -w' n i := fun n =>
+    truncConv_ground_odd hk hk'c heven H (hw'mem n) (hw'min n) (hlt' n)
+  set c : ∀ n : ℕ, Fin (M n) → ℂ := fun n => oddGroundCoeffOf (M n) (w' n) with hcdef
+  have hframe : ∀ n, ccmOddParityFrame (M n) *ᵥ c n = w' n := fun n =>
+    ccmOddParityFrame_mulVec_oddGroundCoeffOf (hodd n)
+  have hcne0 : ∀ n, c n ≠ 0 := by
+    intro n hzero
+    have hwz : w' n = 0 := by
+      rw [← hframe n, hzero]
+      simp
+    have hone : ∑ i, ‖w' n i‖ ^ 2 = 1 := hw'mem n
+    rw [hwz] at hone
+    simp at hone
+  have hpsd : ∀ n, (truncConvParityPacket k (M n)
+      (truncConvRayleigh k (M n) (w' n))).PosSemidef := fun n =>
+    truncConvParityPacket_posSemidef_of_min hk hk'c heven (hw'min n)
+  have hground : ∀ n, truncConvParityPacket k (M n) (truncConvRayleigh k (M n) (w' n))
+      *ᵥ (ccmOddParityFrame (M n) *ᵥ c n) = 0 := by
+    intro n
+    rw [hframe n]
+    exact truncConvParityPacket_ground_mulVec hk hk'c heven (hw'mem n) (hw'min n)
+  have hline : ∀ n, ∀ v : CCMCenteredParityIndex (M n) → ℂ,
+      truncConvParityPacket k (M n) (truncConvRayleigh k (M n) (w' n)) *ᵥ v = 0 →
+        ∃ zz : ℂ, v = zz • (ccmOddParityFrame (M n) *ᵥ c n) := by
+    intro n v hv
+    obtain ⟨zz, hzz⟩ := truncConv_kernel_line hk hk'c heven H (hw'mem n) (hw'min n) (hlt' n) v hv
+    refine ⟨zz, ?_⟩
+    rw [hframe n, hzz]
+    funext i
+    simp
+  have hshift : Tendsto (fun n : ℕ =>
+      l2NormSq fun x => truncConvModePoly (w' n) x - xi x) atTop (𝓝 0) :=
+    hmean0.comp (tendsto_add_atTop_nat N₀)
+  have hmean : Tendsto (fun n : ℕ => ∫ x in (0 : ℝ)..(2 * Real.pi),
+      ‖ccmTrigPoly (M n) (ccmOddGroundCoeff (M n) (c n)) x
+        - (fun theta : ℝ => xi (theta / (2 * Real.pi))) x‖ ^ 2) atTop (𝓝 0) := by
+    have hid : ∀ n : ℕ, (∫ x in (0 : ℝ)..(2 * Real.pi),
+        ‖ccmTrigPoly (M n) (ccmOddGroundCoeff (M n) (c n)) x - xi (x / (2 * Real.pi))‖ ^ 2)
+        = 2 * Real.pi * l2NormSq (fun x => truncConvModePoly (w' n) x - xi x) := by
+      intro n
+      rw [integral_ccmTrigPoly_sub_sq (M n) (c n) xi, hframe n]
+      rfl
+    have hlim : Tendsto (fun n : ℕ =>
+        2 * Real.pi * l2NormSq (fun x => truncConvModePoly (w' n) x - xi x)) atTop
+        (𝓝 (2 * Real.pi * 0)) := tendsto_const_nhds.mul hshift
+    rw [mul_zero] at hlim
+    exact hlim.congr fun n => (hid n).symm
+  exact ccmCenteredDividedDifferenceOddGroundLimit_compactFourier_zero_im_eq_zero
+    (N := M) (source := fun n => truncConvParitySource k (M n))
+    (diagonal := fun n => truncConvParityDiagonal k (M n))
+    (mu := fun n => truncConvRayleigh k (M n) (w' n))
+    (fun n i => truncConvParitySource_odd k (M n) i)
+    (fun n i => truncConvParityDiagonal_even heven (M n) i)
+    hpsd c hcne0 hground hline
+    (fun theta : ℝ => xi (theta / (2 * Real.pi)))
+    (H.contXi.comp (continuous_id.div_const _)) hmean hzw hz
 
 end
 

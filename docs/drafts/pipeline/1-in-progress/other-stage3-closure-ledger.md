@@ -1895,3 +1895,97 @@ Closing it also closes `floquet-orbifold-tail-emergence` and
 
   The coercion computations are factored into `coe_germPolyTail` and `coe_germDistinguished` in
   `GermPreparationAlgebraic.lean`.
+
+- 2026-08-16 (eighth pass) — `noncompact-period-quotient-facet-escape-law`, the two technical
+  hearts of Siegel step 7.  Two new unconditional axiom-clean umbrella-wired modules:
+  `HTGeometry/DistinguishedRootShrink.lean` — `norm_root_pow_le` (`‖ρ‖^d ≤ A·∑_{j<d} t^j` for a
+  root of a monic polynomial with coefficients bounded by `A` and `‖ρ‖ ≤ t`), `norm_root_lt`,
+  `exists_coeff_bound` (a coefficient bound achieving any prescribed root radius), and
+  `exists_param_ball_roots_lt`: for a *moving* monic polynomial whose coefficients are continuous
+  and vanish at the origin, every root inside the fixed disc lies inside any prescribed target disc
+  once the parameter is close enough to the origin.  This is precisely where distinguishedness is
+  used, and it is necessary: without it the independence below is false (`W = z − 5` on the unit
+  disc divides the constant `1` there).
+  `HTGeometry/SliceDivisionIndependence.lean` — `lowDegreePoly` with its coefficient, degree and
+  evaluation lemmas, `eval_multisetProd_eq_multisetLinearProd`, and the capstone
+  `lowDegree_and_quotient_eq_zero`: on a disc containing every root of the monic polynomial of a
+  multiset, `Q(z)·W(z) + ∑_{j<d} B_j z^j = 0` with `Q` continuous forces every `B_j` to vanish and
+  then `Q` itself to vanish.  This is the independence half of the free-module statement — the
+  powers `1, z, …, z^{d−1}` are independent over the parameter ring modulo the Weierstrass
+  polynomial — and rests on the pass-5 low-degree vanishing theorem together with the finite-set
+  continuity lemma.
+  Remaining for step 7: assemble these into the germ-ring independence (shrink to a common polydisc
+  using `exists_param_ball_roots_lt`, apply `lowDegree_and_quotient_eq_zero` for each parameter),
+  then the divisibility and irreducibility transfer to `C{z'}[X]`, then Gauss and the induction on
+  the dimension.  Closure count unchanged: 31 cards remain in the folder.
+
+- 2026-08-16 (ninth pass) — `noncompact-period-quotient-facet-escape-law`: the germ-level
+  free-module statement is proved.  New unconditional axiom-clean umbrella-wired module
+  `HTGeometry/GermDivisionIndependence.lean` with `prepPolydisc_subset_ball` and the capstone
+  `germ_division_independence`: for a germ regular in the distinguished coordinate there are a
+  degree `d`, coefficients `alpha_j` vanishing at the origin and a unit `u` with
+  `germ f = W · u`, `W = germCoord^d + sum_(j<d) germTail(alpha_j)·germCoord^j`, **and**
+
+  ```text
+  q · W + sum_(j<d) germTail(beta_j) · germCoord^j = 0  ==>  q = 0 and every beta_j = 0.
+  ```
+
+  Together with `germ_division_algebraic` this is the full free-module structure: the germ ring in
+  `n+1` variables is free of rank `d` over the parameter ring modulo `W`, on the basis
+  `1, germCoord, …, germCoord^(d-1)`.  The proof shrinks the polydisc once — that is where
+  distinguishedness enters, through `exists_param_ball_roots_lt` — and then applies
+  `lowDegree_and_quotient_eq_zero` parameter by parameter.
+
+  Duplication check (corpus search on "unique factorization analytic germ local ring",
+  "Weierstrass polynomial irreducible distinguished divisibility", "free module rank Weierstrass
+  division parameter ring", "coprime meromorphic germ reduced fraction local"): the only
+  pre-existing related assets are the two *slice-level* division modules
+  `HTGeometry/WeierstrassDivision.lean` (`divQuot`, `divRem`, `weierstrass_division_divQuot`) and
+  `HTGeometry/SliceWeierstrassDivision.lean`, the germ-ring basics in `AnalyticGermRing.lean` /
+  `AnalyticGermMaximalIdeal.lean`, and the DVR criteria in `LocalNoetherianNormalDVR.lean`.  None
+  of them states factoriality or any germ-level division, so nothing above duplicates existing work.
+
+  Remaining for step 7: the divisibility and irreducibility transfer from `C{z}` to `C{z'}[X]`
+  (a distinguished factor of a distinguished polynomial is distinguished, by uniqueness of the
+  preparation), then Gauss and the induction on the dimension.
+
+- 2026-08-16 (tenth pass) — `noncompact-period-quotient-facet-escape-law`: the divisibility
+  transfer.  New unconditional axiom-clean umbrella-wired module
+  `HTGeometry/GermPolynomialDivisibility.lean`.  `lowDegreePoly` in
+  `HTGeometry/SliceDivisionIndependence.lean` was generalized from `C` to an arbitrary commutative
+  ring so it can carry the coefficients of a distinguished polynomial over the parameter germ ring.
+  New: `germEval` (the ring homomorphism `C{z'}[X] → C{z}` evaluating at the distinguished
+  coordinate, as `eval₂RingHom (germTail n) (germCoord n)`), `distPoly` with `distPoly_monic` and
+  `degree_distPoly`, `germEval_eq_of_degree_lt`, `germEval_distPoly`, the predicate
+  `GermIndependent` (exactly the property `germ_division_independence` supplies),
+  `eq_zero_of_germEval_eq_zero` (evaluation is injective in degrees below `d`), and the capstone
+
+  ```text
+  dvd_germEval_iff : germEval W | germEval G  <->  W | G   in  C{z'}[X].
+  ```
+
+  The proof divides `G` by the monic `W` in the polynomial ring, evaluates, and applies the
+  germ-level independence to the remainder, whose degree is below `d`.  This is the step that makes
+  the factoriality induction work: from here a distinguished factor of a distinguished polynomial is
+  a polynomial factor, so irreducibility can be tested in `C{z'}[X]`, where Gauss applies to the
+  inductive hypothesis.  Closure count unchanged: 31 cards remain in the folder.
+
+- 2026-08-16 (eleventh pass) — `noncompact-period-quotient-facet-escape-law`: the circularity in
+  Siegel step 7b is removed.  `HTGeometry/DistinguishedRootShrink.lean` gained the Cauchy root
+  bound `norm_root_le_cauchy` (`‖rho‖ ≤ max 1 (A·d)` for a root of a monic polynomial with
+  coefficients bounded by `A`) and `exists_param_ball_roots_lt_monic`, the version with **no a
+  priori bound** on the roots.  New module
+  `HTGeometry/DistinguishedGermIndependence.lean`: `movingPoly` with its monicity, degree,
+  evaluation, root count (`ℂ` algebraically closed) and
+  `multisetLinearProd_roots_movingPoly`; the capstone
+  `germIndependent_of_distinguished` — *every* distinguished polynomial has the free-module
+  independence property, not only the Weierstrass polynomial of a prepared germ; and
+  `distPoly_eq_of_unit_mul`, the **uniqueness of the Weierstrass preparation**: two distinguished
+  polynomials whose evaluations differ by a unit are equal, by mutual divisibility through
+  `dvd_germEval_iff` plus monicity.
+  This was the missing piece: previously independence was only available for polynomials produced
+  by a preparation, so comparing a product of two prepared polynomials with a third was circular.
+  Remaining for the card: the irreducibility transfer (a factorization of a distinguished
+  polynomial in the germ ring becomes a polynomial factorization, via preparation of the factors
+  and this uniqueness), then Gauss and the induction on the dimension; then local reduced fractions
+  and the counting assembly.  Closure count unchanged: 31 cards remain in the folder.

@@ -15,6 +15,10 @@ that arc is controlled by the radial depth alone.
 
 This is the quantitative form of the statement that the total phase of a deep Blaschke section is
 recovered, up to `O((1 - r)/d²)`, on any fixed arc about its centre.
+
+The same squared distance appears in `SzegoOuterBoundary.norm_sub_circleMap_sq` in the polar normal
+form `r² - 2r cos(θ-φ) + 1`; the radial-defect form used here is what makes the tail bound
+algebraic.
 -/
 
 noncomputable section

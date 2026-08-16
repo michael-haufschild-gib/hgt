@@ -1556,3 +1556,267 @@ Route status:
         - Perron / Riesz-mean summation
         - the theorem
 ```
+
+## Lean progress — uniqueness of Dirichlet coefficients
+
+`RHTower/DirichletUniqueness.lean` (wired, axiom-clean).
+
+```
+coeff_eq_zero_of_tendstoUniformlyOn_zero   sum = 0 uniformly on a half-plane  ==>  every a_n = 0
+dirichletPartialSum_sub
+coeff_eq_of_tendstoUniformlyOn             two series with the same sum have the same coefficients
+```
+
+This is Bohr's coefficient estimate at `C = 0`: the bound `||a_n|| <= C (n+1)^sigma` degenerates to
+`||a_n|| <= 0`.  No separate argument is needed — in particular no analytic continuation and no
+identity theorem for holomorphic functions, both of which the textbook proofs use.
+
+It matters for the card because the Euler-product manipulations on `Z_chi` all presuppose that a
+Dirichlet expansion determines its coefficients; that is now a theorem in the conditionally
+convergent setting, where mathlib's `LSeries` uniqueness (absolutely convergent) does not reach.
+
+### Note on the size of what remains
+
+The remaining item, Perron/Riesz-mean summation, is the one genuinely heavy analytic step: it needs
+a contour representation of the Riesz mean
+
+```
+R_lambda(s)  =  (1/2 pi i) int_{(c)} F(s+w) e^{lambda w} / w^2 dw ,
+```
+
+hence residue calculus on vertical lines, none of which exists in mathlib in usable form.  This is
+correctly described as a multi-session build in its own right, not a final assembly.  Everything
+around it — the abscissa theory, both coefficient estimates, uniqueness, the two easy halves of the
+Bohr comparison — is now formal and independent of it.
+
+## CORRECTION — the Perron engine already exists in the corpus
+
+A corpus search (`formal_tools.py research "Perron formula vertical line integral contour Mellin"`)
+finds the Perron machinery is already built and unconditional.  The previous section's claim that
+Perron summation is "a multi-session build in its own right" was made without searching and is
+WRONG.  What exists:
+
+```
+RHTower/QuietCrossingRigidity.lean
+  perronKernelG                         the weight u |-> max(1-u, 0)
+  perronKernel_mellin                   mellin perronKernelG s = 1/(s(s+1))  for Re s > 0
+  perronKernel_mellinConvergent
+  perronKernel_verticalIntegrable       absolute convergence on Re s = c > 0
+  perronKernel_inversion                (1/2 pi) int y^{c+it}/((c+it)(c+it+1)) dt = max(1 - 1/y, 0)
+  smoothed_perron_sum                   sum_n a_n max(x-n, 0)
+                                          = (1/2 pi) int L(c+it) x^{(c+it)+1}/((c+it)((c+it)+1)) dt
+  perronE, perronKink_second_difference, perronSecondDiff_integral, quiet_crossing_rigidity
+
+HTGeometry/PerronKernelSegments.lean
+  norm_integral_horizontal_le, norm_integral_vertical_edge_cpow_le   (contour segment bounds)
+HTGeometry/VerticalStripContourShift.lean
+  integral_vertical_line_eq_of_horizontal_tendsto                    (contour shift)
+HTGeometry/SmoothWeightShift.lean
+  integral_mul_mellin_smoothWeight_shift    the Perron contour shift for F holomorphic and
+                                                polynomially bounded on a strip
+HTGeometry/integrable_inv_sq_add_sq                                  (already present)
+```
+
+`smoothed_perron_sum` is exactly the Riesz/Cesaro-mean representation Bohr's theorem needs, and the
+strip shift is exactly the step that moves the contour left toward the boundedness abscissa.  So the
+remaining assembly is: apply `smoothed_perron_sum` at an abscissa of absolute convergence (which
+exists by the width-one bound), shift the contour to `theta + eps` using
+`integral_mul_mellin_smoothWeight_shift`, bound the shifted integral by the sup norm of `F` times the
+kernel mass, and run the Tauberian step from `A_1(x) = O(x^{theta+eps+1})` back to convergence.
+
+## Lean progress — the bridge to the `LSeries` indexing
+
+`RHTower/DirichletLSeriesBridge.lean` (wired, axiom-clean).
+
+```
+term_succ_eq                             LSeries.term b s (n+1) = b (n+1) (n+1)^{-s}
+dirichletPartialSum_eq_sum_term          the two conventions have identical partial sums
+convergesAt_iff_tendsto_sum_term
+tendstoUniformlyOn_sum_term_of_uniformlyConvergesOn
+```
+
+The conditional-convergence development here indexes from zero (`sum a_n (n+1)^{-s}`), while
+mathlib's `LSeries` and the corpus's Perron engine index from one.  This bridge identifies the two,
+so the abscissa theory, both coefficient estimates and the uniqueness theorem apply directly to
+objects stated in the `LSeries` convention — in particular to `smoothed_perron_sum`.
+
+## AUDIT — the corpus already has a Bohr almost-periodic theory; what I duplicated
+
+A second search (`research "bohrCoefficient mean value almost periodic bound sup norm"`) shows the
+corpus carries a substantial Bohr theory that overlaps some of this session's work:
+
+```
+HTGeometry/BohrMeanValue.lean            exists_bound_of_isBohrAlmostPeriodic
+HTGeometry/BohrMeanInvariance.lean       norm_bohrCoefficient_sub_le   (coefficients 1-Lipschitz
+                                              for the uniform distance)
+HTGeometry/BohrParsevalIdentity.lean     tsum_normSq_bohrCoefficient
+HTGeometry/BohrUniqueness.lean           eq_of_bohrCoefficient_eq, exists_bohrCoefficient_ne_zero
+HTGeometry/BohrMeanTriangle.lean, BohrMeanMonotone.lean
+HTGeometry/StripAlmostPeriodicBounds.lean  exists_bound_of_isStripAlmostPeriodicOn,
+                                              exists_deriv_bound, exists_lipschitzOnWith_closedStrip
+HTGeometry/DirichletStripAlmostPeriodic.lean  isStripAlmostPeriodic_dirichlet
+HTGeometry/DirichletBohrSpectrum.lean    bohrCoefficient_dirichlet_line, isBohrHullFrequency_dirichlet
+```
+
+**What this means for the modules built earlier this session.**  `norm_bohrCoefficient_sub_le` with
+`g = 0` gives `||bohrCoefficient f lambda|| <= sup ||f||`, and `bohrCoefficient_dirichlet_line`
+identifies that coefficient with `a_m e^{-lambda_m sigma}`.  Together they give
+
+```
+||a_m|| <= C e^{lambda_m sigma} = C (m+1)^sigma ,
+```
+
+which is exactly `DirichletCoeffBound.norm_coeff_le`.  So that theorem — and the vertical-mean
+chain leading to it (`VerticalMeanCharacter`, `DirichletTermMean`, `DirichletCoeffFormula`) — was
+**derivable from the corpus** and should have been obtained that way.  The proofs written here are
+independent and self-contained (they use no almost-periodic theory at all), but they are not new
+capability, and the correct entry point for future work is the Bohr modules above.
+
+Not duplicated, and still the missing content:
+
+```
+Bohr's theorem  sigma_u <= sigma_b       -- absent from the corpus and from mathlib
+```
+
+plus the abscissa scaffolding built this session (`abscissaOfConv`, `abscissaOfUnifConv`,
+`abscissaOfBddHolo`, `abscissaOfAbsConvShift` and the chain
+`sigma_c <= sigma_u <= sigma_a <= sigma_c + 1`), which the corpus did not have.
+
+## Lean progress — the bridge to general Dirichlet exponents
+
+`RHTower/DirichletExponentBridge.lean` (wired, axiom-clean).
+
+```
+ordinaryExponent n  =  log(n+1)
+cpow_neg_eq_exp_neg_log        (n+1)^{-s} = exp(-log(n+1) s)
+dirichletPartialSum_eq_expSum  the partial sums are general Dirichlet partial sums
+ordinaryExponent_strictMono, ordinaryExponent_injective
+```
+
+This is the second bridge (after the `LSeries` one) and the one that matters for the audit above: it
+puts the ordinary series into the exact shape `sum a_n e^{-lambda_n s}` that
+`isStripAlmostPeriodic_dirichlet` and `bohrCoefficient_dirichlet_line` consume, with the injectivity
+of the exponents that the frequency-separation argument requires.  With it, the corpus's Bohr
+spectrum theory applies directly to the objects of this development.
+
+## Lean progress — the inverse of the smoothing
+
+`RHTower/SmoothedInverseMellin.lean` (wired, axiom-clean).  Searched first: not in the corpus.
+
+```
+aestronglyMeasurable_cpow_Ioi   measurability of x |-> x^w on a positive ray
+integral_Ioi_cpow_neg_succ      int_a^infty x^{-s-1} dx = a^{-s}/s          (Re s > 0)
+integral_Ioi_smoothed_kernel    int_n^infty (x - n) x^{-s-2} dx = n^{-s}/(s(s+1))
+```
+
+This is the exact inverse of `smoothed_perron_sum`: that theorem turns the Dirichlet series into
+`A_1(x) = sum a_n max(x-n, 0)`, and this one turns `A_1` back into the series, term by term, since
+
+```
+s(s+1) int_1^infty A_1(x) x^{-s-2} dx  =  sum_n a_n n^{-s} .
+```
+
+The proof is the improper fundamental theorem of calculus twice, with the antiderivative
+`-x^{-s}/s`, plus the identity `1/s - 1/(s+1) = 1/(s(s+1))` that gives the kernel its name.
+
+Why this is the operative step for Bohr: a growth bound `A_1(x) = O(x^alpha)` makes the integral
+above absolutely convergent for `Re s > alpha - 1`, which is how the contour-shifted Perron bound
+turns into a statement about the series.  The chain is now
+
+```
+smoothed_perron_sum       series  ->  A_1                       (corpus)
+contour shift             A_1(x) = O(x^{theta+eps+1})           (corpus: strip shift + sup bound)
+integral_Ioi_smoothed_kernel   A_1  ->  series, convergent for Re s > theta+eps   (this section)
+```
+
+with the third arrow's *absolute convergence* now available; what remains is the Tauberian passage
+from that to uniform convergence of the partial sums, and then `sigma_u <= sigma_b`.
+
+## Lean progress — the discrete side of the smoothing
+
+`RHTower/SmoothedPartialSumIdentity.lean` (wired, axiom-clean).  Searched: the corpus has discrete
+Abel summation (`HTGeometry/DiscreteAbelIcc.sum_mul_eq_partial_mul_diff`, real-valued) and a
+specialised discrete Fubini (`WeightedSigmaFubini.weighted_sigma_eq`), but not this identity.
+
+```
+sum_sub_mul_eq_sum_partialSum          sum_{n<N} (N-n) a_n  =  sum_{k<N} sum_{n<=k} a_n
+smoothedPartialSum a N                 the smoothed sum at an integer point
+smoothedPartialSum_succ                A_1(N+1) = A_1(N) + A(N+1)
+smoothedPartialSum_second_difference   A_1(N+2) - 2 A_1(N+1) + A_1(N) = a_{N+1}
+```
+
+Both sides of the first identity count the pairs `(n,k)` with `n <= k < N`, weighted by `a_n`; it is
+the discrete form of `A_1(x) = int_1^x A(u) du`.
+
+The second difference is the discrete inversion: **the smoothing can be undone exactly**, one
+coefficient at a time, with no analysis.  That is the discrete counterpart of the corpus's
+`perronKink_second_difference` (which does the same for the continuous kink at half-integers) and it
+is what makes a growth bound on `A_1` usable: bounding `A_1` bounds every second difference, hence
+every coefficient, and — via the first identity — every ordinary partial sum in terms of the
+smoothed ones.
+
+This is the Tauberian side of Bohr's theorem in its discrete form.  What remains on that side is the
+quantitative step: from `A_1(N) = O(N^alpha)` to uniform convergence of `sum a_n n^{-s}` for
+`Re s > alpha - 1`.
+
+## Lean progress — the unit first difference
+
+`RHTower/DirichletFirstDifference.lean` (wired, axiom-clean).
+
+```
+rpow_sub_rpow_succ_le            x^{-p} - (x+1)^{-p}  <=  p x^{-p-1}                (p > 0, x > 0)
+norm_cpow_neg_succ_sub_succ_le   || x^{-(s+1)} - (x+1)^{-(s+1)} ||  <=  ||s+1|| x^{-Re s - 2}
+```
+
+The real bound is the fundamental theorem of calculus on `[x, x+1]` with the integrand `p y^{-p-1}`
+bounded by its left-endpoint value.  Feeding it into the increment estimate of the kernel section at
+exponent `s+1` makes the factor `Re s + 1` **cancel exactly**, leaving a clean derivative-scale
+bound: one unit step costs one power of `x` and one factor of the exponent.
+
+This is the second rung of the estimate ladder:
+
+```
+||x^{-s} - y^{-s}||            <= (||s||/Re s)(x^{-Re s} - y^{-Re s})     kernel estimate
+||x^{-(s+1)} - (x+1)^{-(s+1)}|| <= ||s+1|| x^{-Re s - 2}                   this section
+||second difference of (n+1)^{-s}|| <= ||s|| ||s+1|| (n+1)^{-Re s - 2}     next
+```
+
+The third is what a doubly Abel-summed Dirichlet series needs: with the smoothed partial sums
+`A_1(j)` bounded by `C j^alpha`, the sum `sum_j ||A_1(j)|| ||Delta^2 b_j||` is dominated by
+`C ||s|| ||s+1|| sum_j j^{alpha - Re s - 2}`, convergent exactly when `Re s > alpha - 1` — which is
+the Tauberian conclusion needed for Bohr.
+
+## Lean progress — the second difference: the estimate ladder is complete
+
+`RHTower/DirichletSecondDifference.lean` (wired, axiom-clean).
+
+```
+cpow_neg_sub_eq_integral         a^{-s} - b^{-s} = int_a^b s x^{-s-1} dx        (Re s > 0)
+norm_second_difference_cpow_le   || x^{-s} - 2(x+1)^{-s} + (x+2)^{-s} ||
+                                     <=  ||s|| ||s+1|| x^{-Re s - 2}
+```
+
+The first difference is an integral of the derivative; subtracting the shifted copy collapses the
+second difference into a *single* integral of a first difference at exponent `s+1`, which the
+previous section bounds.  Two unit steps cost two powers of the exponent and two powers of `x`, with
+no constant left over.
+
+The estimate ladder is now complete:
+
+```
+||x^{-s} - y^{-s}||                  <= (||s||/Re s)(x^{-Re s} - y^{-Re s})
+||x^{-(s+1)} - (x+1)^{-(s+1)}||      <= ||s+1|| x^{-Re s - 2}
+||Delta^2 (n+1)^{-s}||               <= ||s|| ||s+1|| (n+1)^{-Re s - 2}
+```
+
+Together with `sum_sub_mul_eq_sum_partialSum` and `smoothedPartialSum_second_difference`, the
+Tauberian step is now a finite assembly: double Abel summation expresses the partial sums of
+`sum a_n (n+1)^{-s}` through `A_1(j)` and `Delta^2 b_j`, and the two bounds
+
+```
+||A_1(j)|| <= C j^alpha ,      ||Delta^2 b_j|| <= ||s|| ||s+1|| (j+1)^{-Re s - 2}
+```
+
+make the resulting series dominated by `C ||s|| ||s+1|| sum_j j^{alpha - Re s - 2}`, absolutely
+convergent precisely when `Re s > alpha - 1`, and locally uniformly so in `s`.  That is
+`sigma_c <= alpha - 1` with uniformity, which is the Tauberian half of Bohr.

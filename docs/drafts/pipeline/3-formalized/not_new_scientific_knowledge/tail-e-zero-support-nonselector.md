@@ -1,7 +1,7 @@
 # Tail-E Zero Support Is Not a Source Selector
 
 - **ID:** tail-e-zero-support-nonselector
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / source-selector guardrail
 - **Source:** `docs/consolidated/revision01/bridge-theorem.md`;
   `shifted-reciprocal-moments-determine-divisor.md`;
@@ -142,10 +142,35 @@ being promoted from source anatomy to a source selector.
   bridge consolidation.
 - [x] 1 -> 2 fully-proven: measure-determinacy proof written and applied to the
   protector Hankel tail.
-- [ ] 2 -> 3 formalized: optional compact-moment determinacy wrapper.
+- [x] 2 -> 3 formalized: `formal/GaloisForLFunctions/HTGeometry/AtomicMomentDeterminacy.lean`
+  supplies the moment-determinacy wrapper, Mergelyan-free; see the certificate below.
 
 ## Log
 
 - 2026-06-24 -- Codex: created under the private anti-theatre pass after the
   `tail-E` entropy selection. The result records that the tail is a
   zero-faithful signed-measure chart, not an independent RH proof mechanism.
+
+
+## Lean certificate — 2026-08-16 (2→3 gate closed)
+
+`formal/GaloisForLFunctions/HTGeometry/AtomicMomentDeterminacy.lean`, wired into the `HTGeometry`
+umbrella; every declaration audits to `[propext, Classical.choice, Quot.sound]`.
+
+The card's proof invokes Mergelyan on a general countable compact set with connected complement.
+mathlib has no Mergelyan theorem, and building one is not necessary here: in the protector situation
+the support is `{a_* + y_ρ} ∪ {a_*}`, so the atoms accumulate **only at the hard edge** `a_*`.  After
+translating to that point, the determinacy follows from an elementary maximal-modulus/Cesàro
+argument (see `shifted-reciprocal-moments-determine-divisor` for the mechanism), and the extra atom
+sitting at the accumulation point is handled by the order-zero moment.
+
+| Paper step | Lean |
+|---|---|
+| `∫ x^n dη = 0` for all `n` with `η` supported on the atom set | `coeff_eq_zero_of_atomicMoments_vanish` |
+| **`e_n(μ) = e_n(ν)` for all `n ≥ 0` ⇒ `μ = ν`** for atoms accumulating at one point, plus a mass at that point | `atomicData_withCenter_eq_of_moments_eq` |
+| the all-order Hankel tail `E_μ` determines `μ`, since `e_n = E_{0n}` | immediate from the above |
+
+Scope, stated honestly: the Lean theorem covers exactly the protector geometry the card actually
+uses — a summable atomic measure whose atoms accumulate only at the hard edge.  It does **not**
+prove Mergelyan, and therefore does not cover an arbitrary countable compact support with connected
+complement; that generality is never used by the card's application.

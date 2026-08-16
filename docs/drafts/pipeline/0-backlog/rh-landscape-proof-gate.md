@@ -131,7 +131,7 @@ Consequence: a viable RH landscape must be genuinely all-order/infinite-codimens
 
 Status: zero-feeding guardrail added, not an RH proof.
 
-Created `../2-fully-proven/shifted-reciprocal-moments-determine-divisor.md`. For reciprocal divisor data with `sum M_y |y| < infinity` and only `0` as possible accumulation point, equality of all shifted moments `T_k=sum_y M_y y^k` for `k>=1` forces equality of the weighted reciprocal divisor. The proof uses compact moment determinacy on the countable compact support via polynomial density.
+Created `../3-formalized/not_new_scientific_knowledge/shifted-reciprocal-moments-determine-divisor.md`. For reciprocal divisor data with `sum M_y |y| < infinity` and only `0` as possible accumulation point, equality of all shifted moments `T_k=sum_y M_y y^k` for `k>=1` forces equality of the weighted reciprocal divisor. The proof uses compact moment determinacy on the countable compact support via polynomial density.
 
 Consequence: the all-order shifted tower `[T_{i+j+1}]` is faithful to the zero divisor. It is a good RH chart, but not source-neutral data. A non-mirror proof must construct this tower, or an equivalent polarized object, from Euler/Gamma/FE source data without first reading zeros; otherwise it is zero-fed.
 
@@ -313,7 +313,7 @@ Consequence: a source-built finite-rank repair with non-atomic boundary function
 
 Status: source-domain normalization theorem added, not an RH proof.
 
-Created `../2-fully-proven/even-seam-finite-part-canonicality.md`. The raw reciprocal Weil pullback remains inadmissible, but under the completed even seam hypotheses its Hadamard finite part is regulator-independent and necessarily Hankel. This removes cutoff choice as an excuse for the scalar boundary form.
+Created `../3-formalized/not_new_scientific_knowledge/even-seam-finite-part-canonicality.md`. The raw reciprocal Weil pullback remains inadmissible, but under the completed even seam hypotheses its Hadamard finite part is regulator-independent and necessarily Hankel. This removes cutoff choice as an excuse for the scalar boundary form.
 
 Consequence: a regularized Weil-pullback route must now prove the source identification and scalar Weyl sign. It cannot hide the sign in an arbitrary finite-part prescription.
 
@@ -321,7 +321,7 @@ Consequence: a regularized Weil-pullback route must now prove the source identif
 
 Status: source-domain normalization theorem added, not an RH proof.
 
-Created `../2-fully-proven/reciprocal-seam-canonical-gauge-extraction.md`. Under a zero-free even gauge `Xi(w) -> exp(q(w^2))Xi(w)`, `q(w^2)=sum a_r w^{2r}`, the extracted reciprocal moments shift by the exact diagonal law `T_k -> T_k+2k(-1)^{k+1}a_k`; the shifted Hankel tower receives the local Hankel counterterm `2(i+j+1)(-1)^{i+j+2}a_{i+j+1}`.
+Created `../3-formalized/not_new_scientific_knowledge/reciprocal-seam-canonical-gauge-extraction.md`. Under a zero-free even gauge `Xi(w) -> exp(q(w^2))Xi(w)`, `q(w^2)=sum a_r w^{2r}`, the extracted reciprocal moments shift by the exact diagonal law `T_k -> T_k+2k(-1)^{k+1}a_k`; the shifted Hankel tower receives the local Hankel counterterm `2(i+j+1)(-1)^{i+j+2}a_{i+j+1}`.
 
 Consequence: the seam-log/source tower is well-defined only in the canonical completed `xi` gauge, or after this explicit subtraction. Gauge choice cannot be used as the source of positivity.
 
@@ -463,7 +463,7 @@ Consequence: a landscape proof cannot repair scale-free Euler orientation by add
 
 Status: zero-feeding guardrail added, not an RH proof.
 
-Created `../2-fully-proven/tail-e-zero-support-nonselector.md`. If a protector Hankel tail `E` is represented by a finite signed measure on the shifted reciprocal zero support, its all-order moments determine that signed measure by compact moment determinacy.
+Created `../3-formalized/not_new_scientific_knowledge/tail-e-zero-support-nonselector.md`. If a protector Hankel tail `E` is represented by a finite signed measure on the shifted reciprocal zero support, its all-order moments determine that signed measure by compact moment determinacy.
 
 Consequence: the identified tail `E=mu_E` is useful source anatomy, but it cannot be promoted to the landscape proof. A route through the tail must still prove, from Euler/Gamma/functional-equation source data, the boundary/index sign before reciprocal-zero support or Hankel positivity is read.
 

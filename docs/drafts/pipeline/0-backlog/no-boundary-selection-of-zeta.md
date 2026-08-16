@@ -347,7 +347,7 @@ Thus a no-boundary/source-selection principle cannot be a finite list of local a
 
 Status: source-selector warning added.
 
-`../2-fully-proven/shifted-reciprocal-moments-determine-divisor.md` proves that the full shifted reciprocal moment tower determines the weighted reciprocal divisor. Thus an `L_src` or no-boundary argument may use the tower only after deriving it from source data. Importing the tower as an axiom imports a zero-complete object.
+`../3-formalized/not_new_scientific_knowledge/shifted-reciprocal-moments-determine-divisor.md` proves that the full shifted reciprocal moment tower determines the weighted reciprocal divisor. Thus an `L_src` or no-boundary argument may use the tower only after deriving it from source data. Importing the tower as an axiom imports a zero-complete object.
 
 This separates the two failures: finite towers are blind, while the infinite tower is faithful but zero-fed unless source-built.
 

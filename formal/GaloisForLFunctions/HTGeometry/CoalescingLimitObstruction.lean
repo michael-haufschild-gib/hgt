@@ -16,6 +16,10 @@ along which `Fₙ` takes the constant values `a` and `b`, then `a = b`.
 Neither form needs the maps to be analytic or the values to be finite: the target is any Hausdorff
 (respectively, uniform Hausdorff) space, so `a = 0` and `b = ∞` on a compactified target are
 admissible.
+
+`Bottcher.MontelIterates.no_spherical_normal_limit_of_frontier` is the same obstruction realised
+concretely for quadratic iterates, where the two separated values are read off the third
+stereographic coordinate; the statements here are its value-free abstraction.
 -/
 
 namespace GaloisForLFunctions.HTGeometry

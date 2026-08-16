@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven / needs independent specialist audit
 - **Route:** U, full restricted-Weil ground selection
 - **Type:** THEOREM + FAILED CLOSURE AUDIT (paper)
-- **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [SECTIONS 1--3 LEAN-PROVED FOR EVERY PACKET] [SECTION 4 ANALYTIC LIMIT LEAN-PROVED] [COMPRESSION MATRIX IDENTIFICATION LEAN-PROVED] [VARIATIONAL ASSEMBLY OPEN]`
+- **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [FULLY LEAN-PROVED]`
 - **External parent:** Connes--van Suijlekom,
   [Quadratic Forms, Real Zeros and Echoes of the Spectral Action](https://arxiv.org/abs/2511.23257)
 - **Statement:** For the reflection-invariant truncated-convolution operators of
@@ -324,8 +324,8 @@ No parity hypothesis is needed.
   evaluation is unconstrained.
 - **Strongest positive survivor:** parity-free simple-ground Fourier real-zero law `(PF.15)`.
 - **New insight:** parity is not the obstruction.  Full-ground selection is.
-- **Status:** dependency-closed paper proof; external novelty unverified; finite odd core
-  and fixed-support analytic transfer Lean-closed; no Route-O ground-selection credit.
+- **Status:** dependency-closed paper proof, fully formalized in Lean 4 and unconditional;
+  external novelty unverified; no Route-O ground-selection credit.
 
 ## Log
 
@@ -337,6 +337,12 @@ No parity hypothesis is needed.
   trigonometric polynomials; the symmetry of the form, Parseval on the unit interval, the Lipschitz
   bound of the form, the mode-window bridge to the parity index, and the existence of the compressed
   ground with its spectral-floor and kernel properties are formalized.
+- 2026-08-16 — the variational assembly is formal: the spectral-gap estimate, the line structure of
+  the compressed kernel below the gap, the oddness of its generator, the convergence of the
+  compressed minima to the bottom of the form, and the mean-square convergence of the
+  phase-normalized compressed grounds.  `(PF.15)` is now an unconditional Lean theorem,
+  `RHTower.truncConvOddGround_compactFourier_zero_im_eq_zero`, with axiom footprint
+  `[propext, Classical.choice, Quot.sound]`.  Card moved to stage 3.
 - 2026-08-11 — odd (D^2) correction derived; common-zero closure falsified; paper proof closed.
 - 2026-08-14 — finite odd squared-frequency correction and non-pole Fourier-resolvent reality
   formalized in `CCMParityFreeOddGroundFourier.lean`.
@@ -631,8 +637,62 @@ are now literal statements about the truncated-convolution form on trigonometric
                                                 positive semidefinite
       truncConvParityPacket_ground_mulVec       the compressed ground lies in its kernel
 
-What remains is the selection step: below an isolated spectral gap the compressed kernel is a line,
-its generator is odd, the compressed minima converge to the bottom of the form, and the compressed
-grounds converge to the ground in mean square.  Every ingredient those four steps consume — the
-spectral floor, the kernel characterization, Parseval, and the Lipschitz form bound — is now
-formal.
+### The variational assembly is formal, and `(PF.15)` is closed
+
+The ground data are packaged as they are used, in variational form: `ξ` continuous, normalized and
+odd on the interval, an eigenfunction of the truncated convolution with eigenvalue `λ`, and the
+form bounded below by `λ + Δ` on the orthogonal complement of `ξ` with `Δ > 0`.  These are exactly
+the core and isolation hypotheses of the external parent, restated so that they refer only to the
+form.
+
+    RHTower/TruncatedConvolutionGapEstimate.lean
+      TruncConvOddGround                        the variational data of a simple isolated odd ground
+      truncConvResidual,
+        l2Pair_xi_truncConvResidual,
+        l2NormSq_truncConvResidual              the component orthogonal to the ground and Pythagoras
+      l2Pair_form_decompose                     the form splits along the ground line, the cross
+                                                terms vanishing by symmetry and the eigenvalue
+                                                equation
+      truncConv_gap_estimate                   **the spectral-gap estimate**
+                                                `Δ‖f − ⟨ξ,f⟩ξ‖² ≤ ⟨f,Af⟩ − λ‖f‖²`
+      truncConv_form_lower                      the bottom of the form is `λ`
+
+    RHTower/TruncatedConvolutionGroundSelection.lean
+      reflVec, truncConvModePoly_reflVec,
+        l2Pair_odd_reflect,
+        truncConvParityPacket_mulVec_reflVec    the reflection on coefficient vectors, on
+                                                trigonometric polynomials, on the pairing against an
+                                                odd ground, and its commutation with the packet
+      truncConv_ground_pairing_ne_zero          below the gap the compressed ground is not
+                                                orthogonal to the true ground
+      truncConv_kernel_line                    **the compressed kernel is a line**
+      truncConv_ground_odd                     **its generator is odd** — the reflected ground is a
+                                                multiple of the ground, and the pairing against `ξ`
+                                                pins the multiplier to `−1`
+      oddGroundCoeffOf,
+        ccmOddParityFrame_mulVec_oddGroundCoeffOf
+                                                an odd compressed vector is the odd frame applied to
+                                                its coordinates
+
+    RHTower/TruncatedConvolutionOddGroundRealZeros.lean
+      xiCoeffVec, truncConvModePoly_xiCoeffVec,
+        tendsto_l2NormSq_sub_xiCoeffVec,
+        tendsto_l2NormSq_xiCoeffVec             the projected ground and its Parseval limits
+      tendsto_form_xiCoeffVec                   its Rayleigh quotients converge to the bottom
+      tendsto_truncConvMin                     **the compressed minima converge to the bottom**, by
+                                                squeezing between the floor and the projected
+                                                quotient
+      phaseGround, l2Pair_xi_phaseGround,
+        truncConvRayleigh_phaseGround           the phase normalization that makes the pairing
+                                                against `ξ` positive
+      tendsto_l2NormSq_phaseGround_sub         **the compressed grounds converge to the ground in
+                                                mean square**
+      truncConvOddGround_compactFourier_zero_im_eq_zero
+                                               **`(PF.15)`**: every zero of the Fourier transform of
+                                                a simple isolated odd ground of a truncated
+                                                convolution is real
+
+The interval is normalized to `[0,1]`; a translation and a dilation carry any `[-L/2, L/2]` model
+to it, both of which conjugate a truncated convolution into a truncated convolution and carry the
+exponential basis to the exponential basis.  The rescaling `[0,1] → [0,2π]` at the end is the one
+already formal in the mode bridge.

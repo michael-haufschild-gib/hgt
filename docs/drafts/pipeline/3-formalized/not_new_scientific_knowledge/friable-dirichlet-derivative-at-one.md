@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Priority:** FOUNDATIONAL
-- **Source:** split from `../2-fully-proven/friable-dirichlet-auxiliary.md` §5
+- **Source:** split from `friable-dirichlet-auxiliary.md` §5
 - **Statement:** For a finite friable exponential Dirichlet auxiliary indexed by prime exponent vectors, the `T`-th derivative at `s=1` is `(-1)^T sum_m lambda_m (sum_p m_p log p)^T / n_m`.
 
 ## Goal

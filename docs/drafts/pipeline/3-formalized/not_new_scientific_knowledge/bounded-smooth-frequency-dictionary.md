@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Priority:** FOUNDATIONAL
-- **Source:** split from `../2-fully-proven/friable-dirichlet-auxiliary.md` §1
+- **Source:** split from `friable-dirichlet-auxiliary.md` §1
 - **Statement:** Bounded exponent vectors supported on a finite prime set `S` are equivalent to positive integers whose prime factorization is supported in `S` with all exponents bounded by `N`.
 
 ## Goal

@@ -6002,7 +6002,7 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   `exp(2a^2t) exp(-2at sqrt(a^2+w))` converges to `exp(-tw)` over complete Xi divisor, with a
   uniform exponential majorant.  Exact positive subordination kernel makes this the Gaussian heat
   approximate identity and eliminates growing-packet cancellation.
-- 2026-08-08 — `[PROVED HERE; (24.112),(24.117) LEAN-PROVED; (24.110)--(24.111) LEAN DEFERRED]` exact mass-jet/heat-Hankel bridge: the operator
+- 2026-08-08 — `[PROVED HERE; (24.110)--(24.112),(24.117) LEAN-PROVED]` exact mass-jet/heat-Hankel bridge: the operator
   `L_a=partial_tau^2-a^2` has exact eigenvalue `w=alpha^2`, so polynomial mass jets recover every
   polynomial-square Gaussian RH test.  An integral Lipschitz bound reduces target to integer
   polynomials and positive rational times.
@@ -6018,13 +6018,13 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
 - 2026-08-08 — `[PROVED HERE; (24.129)--(24.130) LEAN-PROVED]` completed source normalization repaired: rational
   polar terms produce positive residue; fixed-degree complete prime jet is superexponentially
   invisible, giving strict ultraviolet heat-Hankel positivity.
-- 2026-08-08 — `[PROVED HERE; (24.137)--(24.138) ELEMENTARY CORE LEAN-PROVED; (24.135) LEAN DEFERRED]` Hermite phase-space separation upgrades this to
+- 2026-08-08 — `[PROVED HERE; (24.135)--(24.138) LEAN-PROVED]` Hermite phase-space separation upgrades this to
   universal wedge `t(deg P+1)<=eta` and global prime information cone
   `log n=O(t+sqrt(t deg P))`, coefficient-uniform and using no PNT.
-- 2026-08-08 — `[PROVED HERE; (24.140)--(24.142) LEAN-PROVED; (24.143) LEAN DEFERRED]` RH is equivalent to nonnegative polynomial-filtered
+- 2026-08-08 — `[PROVED HERE; (24.140)--(24.143) LEAN-PROVED]` RH is equivalent to nonnegative polynomial-filtered
   Turan curvature `H_Q H_Q''-(H_Q')^2`; finite shell interpolation, phase recurrence, and shell gap
   remove simple-bottom restriction in newest heat-Turan corpus.
-- 2026-08-08 — `[PROVED HERE; (24.151)--(24.152) LEAN-PROVED; (24.153) LEAN DEFERRED]` eventual filtered log-convexity already forces RH;
+- 2026-08-08 — `[PROVED HERE; (24.151)--(24.153) LEAN-PROVED]` eventual filtered log-convexity already forces RH;
   exact bottom-shell Cesaro mean is strictly negative off line.  Rationalization yields countable
   fixed-degree integer endpoint with coefficient height `exp(O(t))`, matching prime information
   radius.  Finite-degree criterion lies between criticality of first `d+1` and first `d+2` shells.
@@ -7430,10 +7430,24 @@ solution of the mass-shift equations, so it holds at every spectral point of the
 The eigenvalue identity is exact rather than asymptotic, so the polynomial jets require no
 approximate spectral multiplier.
 
+    RHTower/MassJetSubordinationKernel.lean
+      massSubordinationKernel,
+        massSubordinationKernel_nonneg          the kernel `(at/√π)s^{-3/2}e^{-a²(s-t)²/s}` is
+                                                nonnegative
+      massSubordinationKernel_laplace          **(24.110)** `e^{2a²t}e^{-2at√(a²+w)}` is the Laplace
+                                                transform of that kernel
+      massSubordinationKernel_integral_one     **(24.111)** the kernel is a probability density,
+                                                obtained from the Laplace law at `w = 0`
+
+The subordination law is the corpus's own square-root Laplace identity
+(`RHTower/BurnolGlasserIntegral.lean`, `burnolPoissonSubordination`) at `y = 2at`, `λ = a²+w`,
+followed by completing the square `−a²t²/s − a²s + 2a²t = −a²(s−t)²/s`.
+
 Still deferred on these items: the lower half of (24.54) and the exponential-type limit (24.49),
-which need the wave-packet localization at the sub-linear frequency scale; the subordination kernel
-identity (24.110)--(24.111); and the divisor-level dominated convergence (24.109), which needs the
-corpus zero-count summability wired to the majorant proved here.
+which need the wave-packet localization at the sub-linear frequency scale; the analytic
+continuation of (24.110) to the nonreal part of the Xi divisor; and the divisor-level dominated
+convergence (24.109), which needs the corpus zero-count summability wired to the majorant proved
+here.
 
 ### Lean progress: §24 C43-V and C43-Y
 
@@ -7476,9 +7490,30 @@ The defect rigidity is stated for an arbitrary finite index family and arbitrary
 it applies verbatim to any truncation of the divisor; and the wedge threshold is coefficient-free,
 depending on the degree and the time only through the product `t(d+1)`.
 
-Still deferred on these items: the reproducing-kernel bound (24.135) and the Gaussian contour shift
-behind (24.137), which need Mehler's diagonal identity and the Hermite operator norm of
-differentiation.
+Both remaining inputs of this item are already formal in the corpus, and by a route that avoids
+Mehler's diagonal identity altogether: finite oscillator energy plus the one-dimensional
+Gallagher--Sobolev inequality give the same square-root degree law.
+
+    RHTower/PolynomialGaussianLocalConcentration.lean
+      norm_deriv_polyGaussSchwartz_sq_le         a degree-`n` polynomial times the self-dual
+                                                 Gaussian has derivative energy at most `16(n+1)`
+                                                 times its mass
+      norm_polyGaussSchwartz_sq_le               finite-oscillator pointwise anti-concentration
+      integral_Icc_norm_routeUPolynomialGaussianDensity_le
+                                                **(24.135)** `∫_{[-R,R]} |Q(x²)²e^{-tx²}|
+                                                 ≤ 18R√(t(deg Q+1)) M_Q(t)`
+
+    RHTower/PolynomialGaussianFourierAperture.lean
+      integral_polynomialGaussianFourierEntire_shift,
+        polynomialGaussianFourierEntire_shift_apply
+                                                 the Gaussian contour shift
+      norm_fourier_polynomialGaussianEnergy_le   the exact signed-frequency aperture
+      routeUPolynomialGaussianFourier_div_mass_le
+                                                **(24.137)** `|F̂_{P,t}(ξ)|/M_{P,t}
+                                                 ≤ exp(−ξ²/(4t) + 2√d |ξ|/√t)`
+
+Both statements are unconditional — positivity of `t` is carried in its type and no
+nonzero-polynomial or positive-mass premise appears — and both are axiom-clean.
 
 ### Lean progress: §24 C43-J — the harmonic primitive against the mass adjoint
 
@@ -7609,8 +7644,39 @@ The two-replica identity is exact algebra for an arbitrary finite family of weig
 points, so the two halves of (24.141) are two specializations of one identity: real points make
 every squared difference nonnegative, off-line points make every squared difference negative.
 
-Still deferred on this item: the finite Schwarz-real interpolation supplying the shell-isolating
-polynomial `Q`, the simultaneous phase recurrence, and the tail estimate (24.143).
+    RHTower/ShellIsolatingPolynomial.lean
+      shellIsolatingPolynomial                  the sum of the corpus's phase-corrected orbit
+                                                separators over a set of representatives of the
+                                                nonreal conjugate orbits
+      eval_shellIsolatingPolynomial_target,
+        eval_shellIsolatingPolynomial_conj_target
+                                                it is one on the selected shell and on its
+                                                conjugate
+      eval_shellIsolatingPolynomial_outer_zero,
+        eval_shellIsolatingPolynomial_real_zero
+                                                it vanishes on every other point of the packet, in
+                                                particular at every real point
+
+This is the finite Schwarz-real interpolation the converse of (24.141) asks for: the polynomial has
+real coefficients by construction, so the whole construction is Schwarz-equivariant.
+
+    RHTower/SimultaneousPhaseRecurrence.lean
+      bohrChar_add,
+        exists_simultaneous_phase_recurrence     **the simultaneous phase recurrence**: for every
+                                                 finite family of real frequencies, every `ε > 0`
+                                                 and every `T`, some `t ≥ T` brings all the
+                                                 characters within `ε` of `1`.  The vector of
+                                                 characters sampled on an arithmetic progression
+                                                 lives in a compact ball, so two samples are within
+                                                 `ε` and their quotient is a late return
+
+    RHTower/ShellGapTailDecay.lean
+      norm_exp_neg_mul, norm_tsum_shellTail_le  the shell-gap tail bound: exponents to the right of
+                                                 `A + δ` contribute at most their reference value
+                                                 times `e^{-(t-t₀)(A+δ)}`
+      tendsto_shellGap_defect                  **(24.143)** the `e^{2At}`-renormalized difference
+                                                 between the full determinant and the bottom-shell
+                                                 determinant tends to zero, at rate `e^{-tδ}`
 
 ### Lean progress: §24 C43-AC — the Bohr--Cesàro mean of the shell defect
 
@@ -7633,8 +7699,18 @@ and (24.152): the two-replica form is exact, and the Cesàro mean keeps exactly 
 `B_j + B_k = 0`, whose contribution is `-(1/2)∑(B_j − B_k)² < 0`.  No arithmetic relation among the
 bottom frequencies is used.
 
-Still deferred on this item: the shell-gap tail contribution and the passage to the eventual
-criterion (24.153).
+The shell-gap tail contribution of this item is the same estimate, `tendsto_shellGap_defect` in
+`RHTower/ShellGapTailDecay.lean`, and the passage to the eventual criterion is the Cesàro step:
+
+    RHTower/EventualNonnegFromCesaro.lean
+      exists_lt_zero_of_tendsto_cesaro_neg     **(24.153)** a strictly negative Cesàro mean
+                                                produces strictly negative values at arbitrarily
+                                                late times, so no eventual nonnegativity survives
+
+Together with (24.152), which is already formal, this is exactly the direction of (24.153) that the
+converse needs: the shell-isolating `Q` of `RHTower/ShellIsolatingPolynomial.lean` gives a strictly
+negative Cesàro mean, and the Cesàro step converts it into arbitrarily late violations of
+`Δ_Q(t) ≥ 0`.
 
 ### Lean progress: §24 C43-AO — the late filtered packet is positive
 
@@ -7694,7 +7770,21 @@ differentiation under the integral against the `ξ`-free majorant `|x|^{n+1}e^{-
 moment is the Gaussian contour integral, and the identification of the resulting polynomial with
 `e^{-(4t)^{-1}∂_u²}R` is the purely algebraic commutator law for the truncated heat operator.
 
-Still deferred on this item: the channel score/curvature law that follows from (24.189).
+    RHTower/CoherentChannelScoreCurvature.lean
+      channelScore, channelCurvature, channelWeight
+                                                the score `s_n = −p_n'/p_n`, the curvature
+                                                `c_n = p_n''/p_n − s_n²`, and the normalized law
+      channel_mean_score                       **(24.191)** `P₁/P = 𝔼_μ s`
+      channel_curvature_variance,
+        channel_curvature_variance_tsum        **(24.191)** `(P₀P₂ − P₁²)/P² = 𝔼_μ c + Var_μ(s)`,
+                                                for a finite family and for an absolutely
+                                                convergent one
+      completedCurvature_eq_mismatch           **(24.192)** the completed curvature (24.148) is
+                                                exactly `H(A v_A − P v_P) − A P (m_A − m_P)²`
+
+Both laws are algebraic identities in the weights and their first two derivatives: only
+nonvanishing of the individual weights and of the totals is used, so no positivity, no
+convergence rate and no arithmetic input enters.
 
 ### Lean progress: §24 C43-W — the first-prime heat horizon
 

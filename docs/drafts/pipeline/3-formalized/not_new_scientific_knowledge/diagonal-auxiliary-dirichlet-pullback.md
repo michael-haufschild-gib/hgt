@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Priority:** FOUNDATIONAL
-- **Source:** split from `../2-fully-proven/friable-dirichlet-auxiliary.md` §1
+- **Source:** split from `friable-dirichlet-auxiliary.md` §1
 - **Statement:** A finite monomial in prime Bohr coordinates `x_p=p^{-s}` pulls back on the diagonal to the Dirichlet frequency `n_m^{-s}`, and a finite auxiliary form pulls back termwise to a finite Dirichlet polynomial.
 
 ## Goal

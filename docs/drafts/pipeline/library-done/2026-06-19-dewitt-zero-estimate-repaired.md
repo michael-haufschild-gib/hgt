@@ -25,7 +25,7 @@ bound `|⟨m,ℓ⟩|≥H(m)^{-1}` + Vandermonde order bound) is unchanged.
   **restored**; these stand as previously ledgered. No status downgrade.
 - Card paths (both now in `2-fully-proven`):
   `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/zero-estimate-uniformity.md`,
-  `docs/drafts/pipeline/2-fully-proven/friable-dirichlet-auxiliary.md`.
+  `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/friable-dirichlet-auxiliary.md`.
 
 ## Notes
 

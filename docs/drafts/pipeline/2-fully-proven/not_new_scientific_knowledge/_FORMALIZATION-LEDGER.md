@@ -91,6 +91,11 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-16 | `semilocal-prolate-unitary-transport-trilemma` | `RHTower/SemilocalProlateUnitaryTransport.lean` |
 | 2026-08-16 | `euler-support-transverse-divisor-rigidity` | `RHTower/RelativeStripDivisorReflection.lean` |
 | 2026-08-16 | `euler-divisor-ultrametric-stability` | `RHTower/EulerDivisorUltrametricStability.lean` |
+| 2026-08-16 | `shifted-reciprocal-moments-determine-divisor` | new `HTGeometry/AtomicMomentDeterminacy.lean` |
+| 2026-08-16 | `tail-e-zero-support-nonselector` | `HTGeometry/AtomicMomentDeterminacy.lean` |
+| 2026-08-16 | `reciprocal-seam-canonical-gauge-extraction` | new `HTGeometry/ReciprocalSeamGaugeExtraction.lean` |
+| 2026-08-16 | `even-seam-finite-part-canonicality` | new `HTGeometry/EvenSeamFinitePart.lean` |
+| 2026-08-16 | `friable-dirichlet-auxiliary` | `RHTower/FriableAuxiliary.lean`, `HTGeometry/SmoothNumbers.lean`, `HTGeometry/ZeroEstimate.lean`, `RHTower/ZeroEstimateUniformity.lean` + new `HTGeometry/SimplexTestSet.lean`, `RHTower/FriableCoefficientSurjectivity.lean`, `RHTower/FriableEdgeCoefficients.lean` |
 | 2026-08-16 | `source-odd-quintic-successor-modulus` | `HTGeometry/SourceOddQuinticSuccessorModulus.lean` (pre-existing) + new `HTGeometry/SourceOddLowAritySuccessorOrbits.lean` |
 | 2026-08-16 | `dss-lower-bound-orbit-nogo` | `HTGeometry/PrimeTorusKroneckerDensity.lean`, `RHTower/SuzukiApertureLiouvilleDense.lean`, `HTGeometry/ZeroEstimate.lean` (pre-existing) + new `HTGeometry/DSSOrbitEdgeOrthogonality.lean` |
 | 2026-08-16 | `f1-two-face-criterion` | `HTGeometry/OrbitBalance.lean`, `HTGeometry/ArchimedeanCorank.lean` (pre-existing) + new `HTGeometry/F1TwoFaceCriterion.lean` |
@@ -121,16 +126,6 @@ directly.  None of these is blocked by open mathematics.
 - **The in-tree PNT layer is usable**: `GaloisForLFunctions/PNTPlus/` carries `nth_prime_asymp`,
   `log_nth_prime_asymp`, `pi_nth_prime_asymp`, all axiom-clean.  Reach for it whenever a card needs
   `p_N ~ N log N` or `π(x) ~ x/log x`.
-- `friable-dirichlet-auxiliary` — pillar **B** and the **PNT conversion** are now discharged by
-  `RHTower/ZeroEstimateUniformity.lean` (order bound, `S`-free determinant size bound, monomial count
-  `C(|S|+d,d)`, `p_N ≲ N log N`).  The term-by-term derivative identity and the word-level
-  multinomial expansion are already in `RHTower/FriableAuxiliary.lean`.  **Remaining:** `𝒜_{S,d}` as a
-  structure, the collection of the multinomial expansion into the coefficients `C_a`, and the §5a
-  **realizable-coefficient surjectivity** lemma.  The mathematical core of §5a is: a polynomial of
-  total degree `≤ T` in the integer variables `(m_p)` vanishing on the simplex `{‖m‖₁ ≤ d}`, `d ≥ T`,
-  is zero.  mathlib has no simplex test-set lemma; the box form (vanishing on `{0,…,T}^S`) is the
-  tractable route and needs `d ≥ |S|·T`, which is harmless for §5b since the card quantifies over all
-  degree bounds.
 - `critical-line-abscissa-of-convergence` — the threshold `Σ_p p^{-2σ} < ∞ ⟺ σ > 1/2` is immediate
   from mathlib's `Nat.Primes.summable_rpow`.  The card's a.s.-convergence dichotomy additionally needs
   **Kolmogorov's three-series theorem**, which mathlib does *not* have (only the Kolmogorov continuity
@@ -285,6 +280,33 @@ directly.  None of these is blocked by open mathematics.
   the variables is, up to one fixed power `E^c`, evaluation of the rescaled relation at `v` — with
   `k(d) = c + m·deg(d)` realizable in `ℕ` for either sign of `m`.  Gives
   `differentialAlgebraicOver_leadingCoeff_of_laurentRelation` and its contrapositive.
+- `HTGeometry/AtomicMomentDeterminacy.lean` — **Mergelyan-free moment determinacy**: a summable
+  atomic family whose atoms are nonzero and accumulate only at the origin is determined by its
+  moments of order `≥ 1`.  The proof normalizes by a maximal-modulus atom and applies Tannery's
+  theorem to the Cesàro averages; mathlib has no Mergelyan theorem and none is needed.  Includes the
+  closed-unit-disc Cesàro lemmas, the difference form, and the version with one extra atom at the
+  accumulation point.
+- `HTGeometry/ReciprocalSeamGaugeExtraction.lean` — the seam extractor as a Laurent residue pick
+  (`seamContributes_iff`: the residue occurs at exactly one term), canonical extraction
+  `E_k(Xi) = T_k`, the analytic gauge law `logDeriv_evenGauge`, the gauge shift
+  `2k(−1)^{k+1} a_k`, and the induced Hankel counterterm on the shifted `Q₀` tower.
+- `HTGeometry/EvenSeamFinitePart.lean` — the distribution-free even-seam finite-part package: seam
+  exponents are even and therefore never `-1` (no logarithm), the punctured-seam integral of a seam
+  monomial is a pure power with cutoff-independent finite part `1/(a+1)`, the contrasting logarithm
+  at the excluded exponent, the `t = ε u` scaling law that gives cutoff independence, and the Hankel
+  rearrangement of a convolution-only functional.
+- `HTGeometry/SimplexTestSet.lean` — **not in mathlib**: the nonnegative integer simplex
+  `{m : Σ mᵢ ≤ T}` is a test set for polynomials of total degree `≤ T`
+  (`eq_zero_of_eval_natCast_eq_zero_on_simplex`), with the contrapositive and the
+  monomial-coefficient-independence form.  mathlib carries only the *box* (Combinatorial
+  Nullstellensatz) version; the simplex version is what any `‖m‖₁ ≤ d` exponent index set needs.
+  Proof: induction on the number of variables via `MvPolynomial.finSuccEquiv`, using
+  `totalDegree_coeff_finSuccEquiv_add_le` and a univariate root count.
+- `RHTower/FriableCoefficientSurjectivity.lean` — the friable simplex index set, the edge-coefficient
+  rows, their linear independence, and **surjectivity of the coefficient map** by finite-dimensional
+  duality (`LinearMap.dualMap_injective_iff`), plus the weighted and no-soft-spot forms.
+- `RHTower/FriableEdgeCoefficients.lean` — the multinomial collection of `(Σ_p m_p log p)^T` and the
+  edge identity with the coefficients `C_a` isolated, plus `𝒜_{S,d}` as a `ℂ`-submodule.
 - `HTGeometry/SourceOddLowAritySuccessorOrbits.lean` — the full orbit classification of fully
   supported source-odd binary forms: arities two, three and four are single orbits, and the quintic
   cross invariant is **complete** (`sourceProjectivelyEquivalentOddQuintic_iff_cross_invariant`),

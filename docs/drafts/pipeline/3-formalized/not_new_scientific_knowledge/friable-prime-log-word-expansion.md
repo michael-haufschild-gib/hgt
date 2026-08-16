@@ -2,7 +2,7 @@
 
 - **ID:** friable-prime-log-word-expansion
 - **Stage:** 3-formalized
-- **Type:** THEOREM (Lean certificate split from `../2-fully-proven/friable-dirichlet-auxiliary.md`)
+- **Type:** THEOREM (Lean certificate split from `friable-dirichlet-auxiliary.md`)
 - **Owner:** Leaner
 - **Lean file:** `formal/GaloisForLFunctions/RHTower/FriableAuxiliary.lean`
 

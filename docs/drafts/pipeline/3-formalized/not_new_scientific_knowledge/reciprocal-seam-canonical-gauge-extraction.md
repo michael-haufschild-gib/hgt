@@ -1,7 +1,7 @@
 # Reciprocal Seam Canonical Gauge Extraction
 
 - **ID:** reciprocal-seam-canonical-gauge-extraction
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / source-domain normalization
 - **Source:** `even-seam-finite-part-canonicality.md`,
   `seam-log-hankel-rh-equivalence.md`,
@@ -152,9 +152,36 @@ For any proof using reciprocal seam moments:
 
 - [x] 0 -> 1 in-progress: reciprocal seam gauge ambiguity isolated.
 - [x] 1 -> 2 fully-proven: extractor law and Hankel counterterm proved.
-- [ ] 2 -> 3 formalized: optional Laurent-series residue theorem.
+- [x] 2 -> 3 formalized: the Laurent-series residue theorem, the gauge law and the Hankel
+  counterterm are `formal/GaloisForLFunctions/HTGeometry/ReciprocalSeamGaugeExtraction.lean`; see
+  the certificate below.
 
 ## Log
 
 - 2026-06-24 -- Codex: created to promote the reciprocal-seam version of the
   canonical-gauge law already present in consolidated proof notes.
+
+
+## Lean certificate — 2026-08-16 (2→3 gate closed)
+
+`formal/GaloisForLFunctions/HTGeometry/ReciprocalSeamGaugeExtraction.lean`, wired into the
+`HTGeometry` umbrella; every declaration audits to `[propext, Classical.choice, Quot.sound]`.  A
+corpus search first confirmed no existing seam-extractor or gauge-counterterm module.
+
+| Paper step | Lean |
+|---|---|
+| the exponent of the `n`-th term of `h_k · L` | `seamTermExponent` |
+| **the residue occurs only at `n = k − 1`** (`2n + 1 − 2k = −1` has a unique solution) | `seamContributes_iff` |
+| the extractor `E_k` on an odd germ, and its additivity | `seamExtract`, `seamExtract_add` |
+| the canonical divisor expansion `Xi'/Xi = Σ_n (−1)^n T_{n+1} w^{2n+1}` | `canonicalSeamGerm` |
+| **`E_k(Xi) = T_k`** | `seamExtract_canonical` |
+| the gauge germ `d/dw q(w²) = Σ_r 2 r a_r w^{2r−1}`, and its unique contributing term `r = k` | `gaugeSeamGerm`, `seamExtract_gaugeGerm` |
+| **the gauge law** `(e^{q}F)'/(e^{q}F) = q' + F'/F` | `logDeriv_evenGauge` |
+| **`E_k(F_q) = E_k(F) + 2k(−1)^{k+1} a_k`** | `seamExtract_gauged` |
+| the induced counterterm on the shifted `Q₀` tower | `gaugeHankelCounterterm`, `shiftedTowerEntry_gauged` |
+| **the counterterm is Hankel** — it depends on `(i,j)` only through `i+j` | `gaugeHankelCounterterm_isHankel` |
+
+The seam finite part itself is the distribution-free object certified by the parent card
+`even-seam-finite-part-canonicality` (`HTGeometry/EvenSeamFinitePart.lean`): there the parity
+obstruction rules out a logarithm and pins the cutoff-independent constant, and here the same
+exponent bookkeeping selects the single residue term in the extractor.

@@ -3631,3 +3631,30 @@ an open set), `QuadraticRateSpectralRigidity` / `AffinePoleResidueRigidity` /
 Three times this sweep, searching the corpus before building avoided duplicating substantial work:
 quantitative simultaneous Dirichlet approximation, the Duhamel bound (three forms), and
 circuit-word approximation with its monotonicity lemmas all already existed.
+
+## Promotion, 2026-08-16 -- `centralizer-phase-bandwidth-shortcut-extraction-law`
+
+Second stage-2 top-level card promoted to stage 3.  Every numbered result -- Theorem A `(7)`/`(8)`,
+Theorem B `(10)`--`(15)`, Theorem C `(17)`--`(23)`, Corollary D `(24)`--`(26)`, Theorem E
+`(27)`--`(29)`, Theorem F `(30)`--`(35)` -- is Lean-proved, unconditional, axiom-clean.
+
+Five new modules, all reachable from `GaloisForLFunctions.HTGeometry`:
+
+| Module | Content |
+|---|---|
+| `HTGeometry/SpectralPhaseBandwidth.lean` | circular distance, admissible lifts, the shortest lift, the McShane extension, `(7)` in bound form, `(8)` |
+| `HTGeometry/StaticOrbitBandwidth.lean` | orbit ratios, the exact-growth window, the pigeonhole clock horizon, recurrence |
+| `HTGeometry/ShortcutSpectralPhase.lean` | chord-to-arc, entry normalization, the extracted winding, the resolved-pair bound, the operator layer |
+| `HTGeometry/CentralizerBudgetSplit.lean` | iterated subadditivity, unitary telescoping, the one-qubit obstruction |
+| `HTGeometry/PhaseBandwidthInfimum.lean` | the bandwidth as an attained infimum, `(6)`, `(14)`, `(15)`, the diagonal model, the `ζ ↦ θ` bridge |
+
+Reusable pieces banked for other cards:
+
+- **`circDist` with its full group law** -- minimality, symmetry, translation invariance, inversion,
+  subadditivity, the triangle inequality, the `≤ π` bound, and `circDist = |·|` below `π`.  Any card
+  that measures phases modulo `2π` can use this instead of `Real.Angle`.
+- **`mcShaneLift`** -- a general Lipschitz interpolation of finite node data.  It replaces
+  piecewise-linear constructions wherever a prescribed-value Lipschitz function is needed.
+- **`norm_listProd_sub_le`** -- unitary telescoping in any normed ring with `‖·‖ ≤ 1` letters.
+- **`normSq_expI_sub`, `circDist_le_two_arcsin`** -- the exact chord `2 - 2cos(φ-ψ)` and the
+  chord-to-arc conversion.

@@ -49,7 +49,7 @@ By definition (Euler–Maclaurin), with `f(x) = (log x)^n/x`,
 The subtracted counterterm `∫_1^m (log x)^n/x dx` is **exactly the archimedean (continuous/integral) part**,
 and the sum `Σ_{k≤m} (log k)^n/k` is the **arithmetic (discrete, prime-built) part** — since
 `(log k)^n = (Σ_p v_p(k) log p)^n` is the all-integer version of the friable degree-`n` log-monomial form
-(`../2-fully-proven/friable-dirichlet-auxiliary.md` §5). Therefore
+(`../3-formalized/not_new_scientific_knowledge/friable-dirichlet-auxiliary.md` §5). Therefore
 
 > **`γ_n` = (arithmetic prime-side sum) − (archimedean integral) = the regularized discrete–continuous
 > defect = the archimedean–arithmetic SEAM made into a number.**

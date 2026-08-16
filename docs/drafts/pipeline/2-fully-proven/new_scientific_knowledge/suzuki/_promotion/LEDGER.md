@@ -11302,3 +11302,171 @@ stays above a full turn, and to feed the resulting level points to
 `not_continuousWithinAt_of_shrinking_levels`.
 
 All new declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADP.6. **Theorem D is closed.**  The schedule, and the non-normality conclusion
+
+Two upgrades finished it.  First, the Clark levels became *absolute*: with one extra full turn of
+gain a phase meets any prescribed unimodular value, so the carrier's `+1` and `-1` levels — not the
+endpoint value and its antipode — are the ones counted.  Second, the schedule: fixing three repeated
+turns and letting the radius rise to one, the foot descends to `x₀` and the depth vanishes, so both
+levels occur in an arbitrarily small window.
+
+```text
+HTGeometry/UnimodularLevelInterlacing.lean  (extended)
+  phaseRepresentative, le_phaseRepresentative, phaseRepresentative_lt, exp_phaseRepresentative
+  exists_interlacing_levels_of_gain_two_turns   any prescribed unimodular level, `2π(N+1)` gain
+
+RHTower/SuzukiCoalescingFragmentPole.lean  (extended)
+  norm_suzukiFragmentUnit                        the composite constant is unimodular
+  exists_interlacing_suzukiFragmentedDiskCarrier_clark
+                                                 **(38)** at the absolute levels `±1`
+
+RHTower/SuzukiCoalescingFragmentSchedule.lean
+  tendsto_suzukiFragmentPole_re / _im            foot → x₀, depth → 0
+  exists_radius_clark_levels_close               both levels inside any window
+  exists_schedule_clark_levels                   the shrinking-window schedule
+  not_continuousAt_of_schedule                   **the non-normality conclusion**
+```
+
+The arithmetic of the schedule is small: with `N = 3` turns the gain is `6π`, the level count needs
+`4π`, and the deficit `6 v (1/(β−u) + 1/(u−α))` is below `2π` once the depth satisfies
+`v < π δ / 24` on a window of half-width `δ/2` whose centre is within `δ/4` of the foot.  Both
+conditions are eventual as `r → 1`.
+
+**Every statement of Theorem D — `(34)`–`(42)` and the non-normality conclusion — is now an
+unconditional Lean theorem.**  Nothing in `§7` remains.
+
+**Corpus cross-check.**  Adjacent existing work was located and cited rather than re-proved:
+`EdgeEventParity.exists_crossing_enum_parity` (enumerates all crossings of `sin θ = 0` with parity,
+where the count here bounds a prescribed class from below by the gain),
+`SzegoOuterBoundary.norm_sub_circleMap_sq` (the same squared distance in polar rather than
+radial-defect form), `Bottcher.MontelIterates.no_spherical_normal_limit_of_frontier` (the same
+obstruction realised concretely for quadratic iterates), and
+`BakerProof.MultipointSchwarz.multipoint_schwarz_bound` (the exact-vanishing counterpart).  Each is
+now cross-referenced from the corresponding module header.
+
+All new declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADQ.1. Theorem A — two of its three inputs closed in general form
+
+`eventually_exists_suzukiCoalescingMatchingShift` already had the topological core, taking interior
+continuity, the free limit and the ground limit of `λ ↦ κ_{a,c}(λ)` as hypotheses.  Two of the three
+are now theorems, and neither needed spectral theory.
+
+```text
+HTGeometry/ResolventParameterContinuity.lean
+  continuousAt_resolvent / continuousOn_resolvent   the resolvent is continuous in its parameter
+  shift_mul_resolvent                                (algebraMap r − a)·R(r) = 1
+  tendsto_smul_resolvent                             **r • R(r) → 1** far from the spectrum
+  continuousAt_resolvent_inner                       quadratic forms are continuous in r
+  resolventPolarization                              (E − O)/(E + O) of a source pair
+  continuousAt_resolventPolarization                 interior continuity
+  tendsto_smul_resolvent_inner                       r·⟪u, R(r)u⟫ → ‖u‖²
+  tendsto_resolventPolarization                      **the free endpoint**
+
+RHTower/SuzukiDefectAngleResolvent.lean
+  suzukiDefectAngle_resolvent                        the angle *is* the resolvent polarization
+  continuousAt_suzukiDefectAngle_resolvent           Theorem A's continuity input
+  tendsto_suzukiDefectAngle_resolvent                Theorem A's free-limit input `(14)`
+```
+
+**Continuity is inversion, not spectral theory.**  `resolvent a r = Ring.inverse (algebraMap r − a)`
+composes an affine map with inversion, and inversion is continuous at units; the resolvent set is
+where the shift is a unit.  No functional calculus, no self-adjointness, and the statement holds in
+any complete normed algebra.
+
+**The free endpoint is the exact rate, not just decay.**  Mathlib gives `R(r) → 0` at infinity;
+multiplying `(algebraMap r − a)·R(r) = 1` out gives `r • R(r) = 1 + a·R(r) → 1`.  So
+`r·⟪u, R(r)u⟫ → ‖u‖²`, and since the defect angle is scale-invariant its free limit is the
+projective polarization `(‖u‖² − ‖v‖²)/(‖u‖² + ‖v‖²)` of the source pair alone — the card's `(14)`,
+computed with no reference to the operator.
+
+**What Theorem A still owes is the ground limit `(7)`**: as `λ ↑ λ₀`, the resolvent blows up along
+the ground eigenvector, so `κ` tends to the polarization of the two ground overlaps.  Unlike the
+other two this is genuinely spectral — it needs `λ₀` to be an isolated eigenvalue and the
+corresponding spectral projection.
+
+All new declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADQ.2. Theorem A — the ground endpoint, and all three inputs closed
+
+The remaining input `(7)` is an **identity**, not a limit theorem.  At an eigenvalue the resolvent
+acts on the eigenvector by the scalar resolvent, so
+
+```text
+R(t) g = (t − λ₀)⁻¹ • g,     hence     (t − λ₀) · ⟪u, R(t) g⟫ = ⟪u, g⟫
+```
+
+exactly, for every `t` in the resolvent set.  The residue of a quadratic form *is* the ground
+overlap; no spectral projection and no contour integral is needed to see it.  A source splits as
+ground eigenvector plus remainder, and if the remainder's resolvent stays bounded near the floor its
+contribution is `O(|t − λ₀|)` and vanishes.
+
+```text
+HTGeometry/ResolventParameterContinuity.lean  (extended)
+  resolvent_mul_shift                              the inverse on the other side
+  resolvent_apply_of_eigen                         R(t) g = (t − λ₀)⁻¹ • g
+  sub_mul_inner_resolvent_eigen                    the residue identity
+  tendsto_sub_mul_inner_resolvent_of_splitting     ground plus bounded remainder
+  tendsto_resolventPolarization_ground             **the ground endpoint of the polarization**
+
+RHTower/SuzukiDefectAngleResolvent.lean  (extended)
+  tendsto_suzukiDefectAngle_resolvent_ground       Theorem A's `(7)`
+```
+
+**All three inputs of Theorem A are now theorems**: interior continuity
+(`continuousAt_suzukiDefectAngle_resolvent`), the free endpoint `(14)`
+(`tendsto_suzukiDefectAngle_resolvent`), and the ground endpoint `(7)`
+(`tendsto_suzukiDefectAngle_resolvent_ground`).  Together with the corpus's
+`eventually_exists_suzukiCoalescingMatchingShift` — the intermediate-value core, already proved —
+and the strict endpoint orderings of `SuzukiCoalescingParityLocking`, the chain of Theorem A is
+complete at the general level.  What remains is instantiation: exhibiting Suzuki's `A_a` as a
+bounded self-adjoint operator whose floor is an eigenvalue with the locked parity bundle as ground
+space, so that the splitting hypothesis is discharged for the card's own sources.
+
+**Corpus cross-check.**  `formal_tools.py research` located `second_resolvent_identity` (two
+operators at one parameter, not one operator at two parameters), `norm_inverse_le_of_spectrum_far`
+(the resolvent norm bound, a Lipschitz route to the same continuity),
+`contDiffOn_projectiveResolventBanachDenominator_inverse` (the same unit-inversion mechanism applied
+to a specific Cayley denominator), and `RieszProjectionSpectral.not_mem_resolventSet_of_eigenvector`.
+None gives parameter-continuity or the eigenvector resolvent formula, so both are new.
+
+All new declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADR. §§9 and 14 — corpus inventory first, then the first-order rate engine
+
+**§9 is largely already owned.**  Searching before building found `SuzukiMovableAnchorClarkCoherence.lean`,
+written for this card and not previously inventoried here:
+
+```text
+suzukiMovableDonoghueKernel, _eq_nevanlinna     the movable Donoghue kernel and its decomposition
+suzukiMovableNevanlinnaWeight, _pos             the Nevanlinna atom mass
+suzukiMovableClarkPhaseSpeed_eq                 **(60)** the movable phase-speed law
+suzukiSourceCoherence, _of_norm_eq_one          **(59)** the squared T-angle cosine
+sum_suzukiSourceCoherence_le_one                **(61)** the coherence budget
+exists_suzukiSourceCoherence_le_card_inv        **(62)** N modes force one coherence ≤ 1/N
+card_mul_le_one_of_suzukiSourceCoherence_floor  the converse count bound
+```
+
+So Theorem G's statements `(59)`–`(62)` are closed.  What §9 still owes is `(63)`, the
+position-commutator identity `|H'(x)| = |⟪v_x, [A_a, X] v_x⟫|`, and the corollaries G.1–G.5.
+
+**§14's first-order engine is now built.**  Equations `(94)` and `(96)` both reduce to one limit:
+a characteristic tending to one at rate `c` has Cayley rate equal to minus half its first-order
+coefficient, because the denominator tends to `2`.
+
+```text
+RHTower/SuzukiCoalescingFirstOrderRate.lean
+  suzukiCoalescingCayleyRate                 (1 − Θ_c)/(c(1 + Θ_c))
+  tendsto_one_of_firstOrderRate              a first-order rate forces Θ_c → 1
+  tendsto_suzukiCoalescingCayleyRate         **the rate law**: (Θ_c−1)/c → 2w ⟹ rate → −w
+  tendsto_firstOrderRate_mul                 rates add across products
+  tendsto_suzukiCoalescingCayley_rate        the anchor's own rate `−2i/z` on the real axis
+```
+
+Composing the last two with the source-ratio rate `2H/G` gives `(94)`'s limit `i/z − H/G` directly,
+and `(96)` is the same computation with the analytic resolvent expansion in place of the ground-pole
+one.  What remains for §14 is the two *analytic* inputs — the expansion `(93)` of `F_c` and the
+reflection parities `(92)` — neither of which is rate algebra.
+
+All new declarations audit to `[propext, Classical.choice, Quot.sound]`.

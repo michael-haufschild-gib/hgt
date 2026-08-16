@@ -1,7 +1,7 @@
 # Shifted Reciprocal Moments Determine the Divisor
 
 - **ID:** shifted-reciprocal-moments-determine-divisor
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / zero-feeding guardrail
 - **Source:** RH landscape gate; reciprocal seam moment route
 - **Statement:** In the reciprocal seam chart, the all-order shifted tower
@@ -102,8 +102,8 @@ source data.
 
 - [x] 0 -> 1 in-progress: all-order shifted-tower zero-feeding risk isolated.
 - [x] 1 -> 2 fully-proven: compact moment determinacy proof written.
-- [ ] 2 -> 3 formalized: possible with an imported polynomial-density theorem, or by
-  a finite-atom approximation variant.
+- [x] 2 -> 3 formalized: `formal/GaloisForLFunctions/HTGeometry/AtomicMomentDeterminacy.lean`
+  proves the determinacy **without** any polynomial-density import; see the certificate below.
 
 ## Log
 
@@ -137,3 +137,36 @@ the Schur norm is exactly the zeroth source moment.  Its deficit from the radial
 exactly half the global reflection energy.  Thus disk-Schur approximation compresses the complete
 moment tower to the holomorphic source curvature; the complementary adjoint/polar channel carries
 the orientation information.
+
+
+## Lean certificate — 2026-08-16 (2→3 gate closed)
+
+`formal/GaloisForLFunctions/HTGeometry/AtomicMomentDeterminacy.lean`, wired into the `HTGeometry`
+umbrella; every declaration audits to `[propext, Classical.choice, Quot.sound]`.
+
+The Lean proof does **not** use Mergelyan, and needs no polynomial-density theorem at all — mathlib
+has neither.  The hypotheses of this card are stronger than "countable compact": the reciprocal
+atoms accumulate only at the origin.  That is enough for an elementary argument:
+
+1. normalize by an atom `z_{j₀}` of **maximal modulus** among those carrying nonzero weight — such an
+   atom exists because only finitely many atoms exceed any positive modulus;
+2. every normalized atom then lies in the closed unit disc, and `z_{j₀}` is the unique one equal
+   to `1` (injectivity of the atom map);
+3. average the vanishing moments over `n < N`.  Tannery's theorem exchanges the limit with the sum:
+   a geometric progression in the closed unit disc with ratio `≠ 1` has vanishing Cesàro mean, so
+   every other atom drops out and the surviving term is exactly the weight at `z_{j₀}`;
+4. hence that weight is zero — contradicting its choice.
+
+| Paper step | Lean |
+|---|---|
+| Cesàro means of a non-unit progression in the closed unit disc vanish | `norm_geomSum_le_of_norm_le_one`, `tendsto_geomSum_cesaro_of_norm_le_one`, `tendsto_shiftedGeomSum_cesaro` |
+| every power moment of summable atomic data converges | `summable_atomicMoment` |
+| **all moments vanish ⇒ all weights vanish** | `coeff_eq_zero_of_atomicMoments_vanish` |
+| **`T_k(D) = T_k(D')` for `k ≥ 1` ⇒ `D = D'`** | `atomicData_eq_of_moments_eq` |
+| the same with one extra atom at the accumulation point | `atomicData_withCenter_eq_of_moments_eq` |
+
+Instantiation for this card: take `c_y = M_y · y` (absolutely summable exactly by the card's
+hypothesis `Σ_y M_y |y| < ∞`) and `z_y = y`.  Then `Σ_y c_y y^{n} = T_{n+1}(D)`, so equality of the
+shifted tower for `k ≥ 1` is equality of all moments of `c`, and the theorem gives `M_y y = M'_y y`,
+hence `M_y = M'_y` since the atoms are nonzero.  Only moments of order `≥ 1` are consumed, which is
+exactly the tower the card supplies.

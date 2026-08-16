@@ -1,7 +1,7 @@
 # Even Seam Finite-Part Canonicality
 
 - **ID:** even-seam-finite-part-canonicality
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / source-domain normalization
 - **Source:** `xf1-square-tests-outside-weil-class.md`,
   `docs/consolidated/gpt/proof7.md`,
@@ -170,8 +170,9 @@ For any proposed regularized Weil-pullback proof, ask:
   singular Weil-pullback route.
 - [x] 1 -> 2 fully-proven: local expansion, cutoff independence, window
   independence, and Hankel form proved under stated source/tail hypotheses.
-- [ ] 2 -> 3 formalized: optional distribution-free lemma for even Laurent
-  finite parts and cutoff independence.
+- [x] 2 -> 3 formalized: the distribution-free lemmas for even Laurent finite parts, cutoff
+  independence and the Hankel shape are
+  `formal/GaloisForLFunctions/HTGeometry/EvenSeamFinitePart.lean`; see the certificate below.
 
 ## Log
 
@@ -183,3 +184,29 @@ For any proposed regularized Weil-pullback proof, ask:
 `reciprocal-seam-canonical-gauge-extraction.md` records the exact zero-free gauge law for the moments extracted by this finite-part domain. The finite part is regulator-canonical, but a different zero-free even representative of the completed function changes the extracted reciprocal tower by a local Hankel counterterm.
 
 Thus the finite-part construction must be paired with the canonical completed `xi` normalization, or with the explicit diagonal subtraction in that card.
+
+
+## Lean certificate — 2026-08-16 (2→3 gate closed)
+
+`formal/GaloisForLFunctions/HTGeometry/EvenSeamFinitePart.lean`, wired into the `HTGeometry`
+umbrella; every declaration audits to `[propext, Classical.choice, Quot.sound]`.  A corpus search
+first confirmed that the existing `HTGeometry/HadamardFinitePart.lean` is about the **Cauchy kernel**
+finite part (divided difference plus an explicit logarithm) and is a different object, so nothing
+here duplicates it.
+
+| Paper step | Lean |
+|---|---|
+| the seam exponent `2r − 2n − 2` from pairing `t^{-2n-2}` with the even jet `t^{2r}` | `seamExponent` |
+| **every seam exponent is even** | `even_seamExponent` |
+| **no logarithmic term**: `2r − 2n − 2 = −1` has no solution | `evenSeamExponent_ne_neg_one` |
+| the punctured-seam integral is a pure power of the regulator, with no logarithm | `integral_seamMonomial` |
+| the Hadamard finite part is the regulator-independent constant `1/(a+1)` | `finitePart_seamMonomial` |
+| the contrasting excluded case: exponent `−1` *does* give a logarithm | `integral_seamLog` |
+| **cutoff independence**: substituting `t = ε u` turns the cutoff-profile integral into `ε^{a+1}` times a regulator-free integral, so two seam cutoffs differ by a pure power and contribute no constant | `seamCutoffScaling` |
+| **the Hankel shape**: a functional seeing `p, q` only through the coefficients of `p q` is `Σ_{i,j} c_i d_j f_{i+j}` | `hankel_of_productCoeff` |
+
+The formalization is deliberately **distribution-free**, exactly as the card's gate asks: it proves
+the parity obstruction, the regulated-integral dichotomy, the scaling law behind cutoff
+independence, and the Hankel rearrangement, without positing a theory of source distributions.  The
+large-window (`ψ`) independence rests on the card's stated `O(log R / R)` tail hypothesis on the
+completed source, which is an assumption on the source object rather than a theorem of this card.

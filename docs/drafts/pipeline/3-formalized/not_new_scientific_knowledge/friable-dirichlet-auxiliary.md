@@ -1,7 +1,7 @@
 # The friable Dirichlet polynomial — the native auxiliary function (N5)
 
 - **ID:** friable-dirichlet-auxiliary
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
   `zero-estimate-uniformity.md` repaired by correcting the uniformity domain to the canonical exhaustion
   `S_N={first N primes}` (PNT: `P_S~N log N`); obstruction C **reduced** to an explicit
   posed bound — grade BRIDGE; the C-bound itself stays the open Fields-Medal residue)
@@ -171,16 +171,17 @@ linear form it must bound.
 - [x] 1 → 2  fully-proven (BRIDGE): object built; A, B discharged; **obstruction C reduced** to the explicit
   posed bound (effective Schanuel for prime logs) at `s=1`. The race-as-native-theorem holds modulo the
   explicit C-input, which is correctly external (a different card's open core).
-- [ ] 2 → 3  formalized — Lean anchor **DONE** for the term-by-term derivative identity:
+- [x] 2 → 3  formalized.  Lean anchor for the term-by-term derivative identity:
   `iteratedDeriv_friableExponentDirichletExp_at_one` in
   `formal/GaloisForLFunctions/RHTower/FriableAuxiliary.lean` proves
   `F^{(T)}(1)=(-1)^T Σ_m λ_m (Σ_p m_p log p)^T/n_m` for a finite exponent-vector auxiliary.
   Lean anchor **DONE** for the word-level multinomial/log-monomial expansion:
   `primeLogDot_pow_wordExpansion` and
   `iteratedDeriv_friableExponentDirichletExp_at_one_wordExpansion`, with split certificate
-  `../3-formalized/friable-prime-log-word-expansion.md`. Remaining Lean targets: `𝒜_{S,d}` as a structure,
-  coefficient collection into exponent vectors, PNT conversion, and the surjectivity/race bookkeeping. Reuses
-  `logPrime_height_bound`, `boundedExponentVectorEquivSmooth`.
+  `../3-formalized/friable-prime-log-word-expansion.md`.
+  The four remaining targets — `𝒜_{S,d}` as a structure, coefficient collection into exponent
+  vectors, the PNT conversion, and the surjectivity bookkeeping — are all now built; see the
+  certificate below.
 - [ ] 3 → 4  publication-ready
 
 ## Cross-references
@@ -262,3 +263,37 @@ Leaner's singleton `{huge p}` is a non-canonical `S`, correctly excluded. The pr
 conversion / race bookkeeping are **not yet formalized in Lean** — a Lean-infra limitation, not a paper gap.
 Moved `0-backlog-lean → 2-fully-proven`. Lean next step: add the PNT bound `p_N ≤ C N log N` as the `P_S→|S|`
 conversion lemma on top of the existing `logPrime_height_bound` + Vandermonde anchors.
+
+
+## Lean certificate — 2026-08-16 (2→3 gate closed)
+
+All four outstanding Lean targets are built, wired into their umbrellas, and axiom-audited to
+`[propext, Classical.choice, Quot.sound]`.
+
+| Card content | Lean |
+|---|---|
+| **§1** the native object `𝒜_{S,d}` as a `ℂ`-submodule of exponent-indexed coefficient families | `friableSpace`, `mem_friableSpace_iff` (`RHTower/FriableEdgeCoefficients.lean`) |
+| **§1** `m ↦ n_m` bijects bounded exponent vectors with `S`-smooth integers | `boundedExponentVectorEquivSmooth` (pre-existing) |
+| **§3 pillar B** order bound `≤ K−1`, constant one | `diagonalDirichlet_has_nonzero_iteratedDeriv_lt_card` (`RHTower/ZeroEstimateUniformity.lean`) |
+| **§3 pillar B** the `S`-free per-form height bound and the Vandermonde determinant size | `logPrime_height_bound`, `prod_inv_primeLogHeight_le_abs_det_vandermonde` |
+| **§2/§3** the monomial count `K = C(\|S\|+d, d)` | `card_boundedDegreeMonomials_le` |
+| **§3 PNT conversion** `p_N ≤ C·N log N`, so `P_S`-polynomial constants are `\|S\|`-polynomial | `eventually_nth_prime_le_two_mul`, `eventually_nth_prime_le_sq` |
+| **§5** `F^{(T)}(1) = (−1)^T Σ_m λ_m ⟨m,ℓ⟩^T / n_m` | `iteratedDeriv_friableExponentDirichletExp_at_one` |
+| **§5** the multinomial word expansion of `⟨m,ℓ⟩^T` | `primeLogDot_pow_wordExpansion` |
+| **§5 coefficient collection** `F^{(T)}(1) = (−1)^T Σ_{\|a\|=T} C_a ∏_p (log p)^{a_p}` with `C_a = multinomial(a)·Σ_m λ_m (∏_p m_p^{a_p})/n_m` | `primeLogDot_pow_collected`, `iteratedDeriv_friableExponentDirichletExp_at_one_collected`, `iteratedDeriv_at_one_collected_of_mem_friableSpace` |
+| **§5a surjectivity** the rows `((∏_p m_p^{a_p})/n_m)_m` are `ℚ`-independent | `friableRow_linearIndependent` (`RHTower/FriableCoefficientSurjectivity.lean`) |
+| **§5a** hence the coefficient map is **surjective** — every `ℚ`-form in degree-`T` prime-log monomials is realized | `friableCoefficientMap_surjective`, `friableCoefficientMap_weighted_surjective` |
+| **§5b no soft spot** — the realizable coefficients span everything at *every* truncation | `friable_no_soft_spot` |
+
+The §5a argument needed a lemma mathlib does not have: **a polynomial of total degree `≤ T`
+vanishing on the lattice simplex `{‖m‖₁ ≤ d}`, `d ≥ T`, is zero.**  mathlib only carries the *box*
+(Combinatorial Nullstellensatz grid) form, and the friable index set is a simplex, never a box.  It
+is now `formal/GaloisForLFunctions/HTGeometry/SimplexTestSet.lean`
+(`eq_zero_of_eval_natCast_eq_zero_on_simplex`, `exists_natCast_eval_ne_zero_on_simplex`,
+`coeff_eq_zero_of_monomialSum_vanishes_on_simplex`), proved by induction on the number of variables
+through `MvPolynomial.finSuccEquiv`: the leading coefficient in the split-off variable has total
+degree `≤ T − k`, so by induction it is nonzero somewhere on the smaller simplex, and specializing
+there leaves a univariate polynomial of degree exactly `k` with `k + 1` integer roots.
+
+**Not claimed, as the card states:** the C-bound itself (effective algebraic independence of
+`{log p}`) is the open Fields-Medal residue, external to this card.

@@ -1,13 +1,13 @@
 # Centralizer phase-bandwidth / shortcut-extraction law
 
 - **ID:** `centralizer-phase-bandwidth-shortcut-extraction-law`
-- **Stage:** 2 -- fully proved on paper
+- **Stage:** 3 -- formalized in Lean 4
 - **Type:** theorem / static-complexity frontier / failed-carrier replacement
 - **Parents:**
   `all-replica-static-centralizer-planar-separation-law.md`,
   `../3-formalized/circuit-word-anchor-rephasing-law.md`, and
   `gate-walk-green-bellman-tropicalization-law.md`
-- **Status:** `[PAPER-PROVED] [FRONTIER ADVANCE] [NOVELTY UNVERIFIED] [LEAN DEFERRED]`
+- **Status:** `[LEAN-PROVED] [FRONTIER ADVANCE] [NOVELTY UNVERIFIED]`
 - **Date:** 2026-08-10
 
 ## Public sentence
@@ -685,3 +685,48 @@ six modules:
 - `HTGeometry/PhaseBandwidthInfimum.lean`
 
 all reachable from `GaloisForLFunctions.HTGeometry`.
+
+## Lean certificate
+
+All declarations live in `GaloisForLFunctions.HTGeometry` and depend only on
+`propext`, `Classical.choice`, `Quot.sound`.
+
+| Card item | Declaration | Module |
+|---|---|---|
+| `(4)` circular geodesic distance, and its minimality | `phaseGap`, `circDist`, `circDist_le` | `SpectralPhaseBandwidth` |
+| `(5)` admissible lifts | `IsPhaseLift`, `phaseLiftConstants`, `phaseBandwidth` | `SpectralPhaseBandwidth`, `PhaseBandwidthInfimum` |
+| `(6)` robust bandwidth | `robustPhaseBandwidth` | `PhaseBandwidthInfimum` |
+| `(7)` **exact phase-bandwidth formula** | `phaseBandwidth_eq` | `PhaseBandwidthInfimum` |
+| `(9)` lower bound for every lift | `circDist_le_of_lip`, `step_ratio_le_of_lip` | `SpectralPhaseBandwidth` |
+| upper bound: shortest lift + McShane extension | `shortestLift`, `mcShaneLift`, `exists_phaseLift_of_step_lt` | `SpectralPhaseBandwidth`, `PhaseBandwidthInfimum` |
+| `(8)` subadditivity, inversion, phase invariance | `circDist_add_le`, `circDist_neg`, `circDist_add_const` | `SpectralPhaseBandwidth` |
+| `(10)` orbit ratios | `circDist_orbit_le` | `StaticOrbitBandwidth` |
+| `(11)` exact growth below the horizon | `circDist_orbit_ratio_eq`, `circDist_eq_abs_of_le_pi` | `StaticOrbitBandwidth` |
+| `(12)`, `(13)` pigeonhole clock horizon | `minGap_mul_le_width`, `lt_width_of_forall_lt`, `exists_gap_le_average` | `StaticOrbitBandwidth` |
+| `(14)` exact recurrence | `phaseBandwidth_eq_zero` | `PhaseBandwidthInfimum` |
+| `(15)` approximate recurrence | `robustPhaseBandwidth_eq_zero` | `PhaseBandwidthInfimum` |
+| `(17)` normalization, phase independence | `phaseNormalize`, `norm_phaseNormalize`, `diagonalEntry_phase_invariant` | `ShortcutSpectralPhase` |
+| `(18)` norm bounds | `diagonal_mulVec_norm_le` | `ShortcutSpectralPhase` |
+| `(20)`, `(21)` entry estimates | `one_sub_le_norm_of_close`, `norm_phaseNormalize_sub_le` | `ShortcutSpectralPhase` |
+| `(22)` chord to arc | `normSq_expI_sub`, `cos_sub_eq_cos_circDist`, `circDist_le_two_arcsin` | `ShortcutSpectralPhase` |
+| `(23)` circular triangle transfer | `circDist_triangle`, `circDist_extracted_ge` | `ShortcutSpectralPhase` |
+| `(19)` pair lower bound, no minimum gap | `pair_ratio_le_of_lip` | `ShortcutSpectralPhase` |
+| `(24)`, `(25)` resolved pair | `extracted_ratio_ge_half` | `ShortcutSpectralPhase` |
+| `(26)` quadratic carrier bandwidth | `quadratic_carrier_lip` | `ShortcutSpectralPhase` |
+| `(27)`--`(29)` the one-qubit obstruction | `circDist_pi_zero`, `exists_gap_bandwidth_gt` | `CentralizerBudgetSplit` |
+| `(30)`, `(31)` intrinsic budget | `circDist_sum_le`, `circDist_sum_le_nsmul` | `CentralizerBudgetSplit` |
+| `(32)`--`(35)` unitary telescoping | `norm_listProd_le_one`, `norm_listProd_sub_le` | `CentralizerBudgetSplit` |
+| `(3)` spectral torus in the eigenbasis | `sum_smul_spectralProj` | `PhaseBandwidthInfimum` |
+| `ζⱼ = e^{-iθⱼ}` is always solvable | `exists_phase_of_norm_one` | `PhaseBandwidthInfimum` |
+| the static orbit is diagonal in the eigenbasis | `exp_diagonal_orbit` | `PhaseBandwidthInfimum` |
+| admissible constants are nonnegative | `lip_nonneg`, `phaseBandwidth_nonneg` | `CentralizerBudgetSplit`, `PhaseBandwidthInfimum` |
+
+### Deviations from the paper proof
+
+- The upper bound in `(7)` uses the McShane extension `p(x) = minⱼ(qⱼ + L|x-Eⱼ|)` instead of linear
+  interpolation.  It is `L`-Lipschitz on all of `ℝ` by inspection and interpolates as soon as the
+  nodes are `L`-compatible, which is exactly the card's telescoping estimate.
+- `shortestLift_sub_le` needs neither monotonicity of the spectrum nor `0 ≤ L`; it is pure
+  telescoping.
+- `(19)` is stated across an arbitrary index pair rather than adjacent levels, which is the precise
+  form of the card's remark that no minimum gap is divided by.

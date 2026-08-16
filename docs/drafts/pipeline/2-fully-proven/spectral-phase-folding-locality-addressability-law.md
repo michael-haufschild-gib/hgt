@@ -1068,3 +1068,137 @@ gate changes a robust multiscale address functional by at most `poly(n)` while t
 recurrence set.  A successful functional must survive arbitrary transverse excursions, gate-word
 architecture union, and fixed operator-norm error; otherwise it is only another perturbative
 holonomy proxy.
+
+## Lean progress -- the arithmetic core of Theorem A and Theorem A.1
+
+`formal/GaloisForLFunctions/HTGeometry/LocalLogarithmRigidity.lean` (new, umbrella-wired,
+axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| `(14)`: if `r` pushes every anchored gap into `2πℤ`, all gaps lie on one rational line | `span_le_of_commensurable` |
+| **`(5a)` forces the physical slope**: two-gap irrationality makes `a = t` | `eq_zero_of_two_dim_span` |
+| `(13)` with the physical slope: all winding integers coincide | `winding_const` |
+| **`(10)`**: `diam spec(tH + cI) = \|t\| W_H`, so a scalar shift is invisible | `diam_affine` |
+| its four affine ingredients | `sup'_affine_of_nonneg`, `inf'_affine_of_nonneg`, `sup'_affine_of_nonpos`, `inf'_affine_of_nonpos` |
+| **the strict-diameter step of Theorem A.1**: same exponential and separation `< 2π` force equality | `eq_of_exp_eq_of_abs_sub_lt` |
+
+`eq_zero_of_two_dim_span` is the exact content of the card's "if `a ≠ t`, every nonzero anchored gap
+is an integer multiple of the same real number, so any two have rational ratio, contradicting `(5a)`":
+the commensurability puts the whole gap family inside the rational line `ℚ·(2π/r)`, whose rational
+dimension is at most one, so a family of rational dimension at least two forces `r = 0`.
+
+`eq_of_exp_eq_of_abs_sub_lt` is the collision step: on an eigenspace of `V` the Hermitian
+restriction of `K₀` has eigenvalues with equal exponentials, so they differ by a multiple of `2π`,
+and a strict diameter below `2π` makes the multiple zero -- hence `K₀` is scalar there.
+
+### The operator layer of Theorem A is closed too
+
+| Card item | Declaration |
+|---|---|
+| two phases with the same exponential differ by `2πℤ` | `exists_int_of_expI_eq` |
+| **`(7)` makes the orbit phases distinct** | `orbitPhase_injective` |
+| **`(11) ⟹ [K₀,H] = 0`**: commuting with a resolved orbit kills the off-diagonal entries, hence commutes with `H` | `commutes_diagonal_of_commutes_orbit` |
+| **`(13)`**: diagonalizing `(8)` gives the winding equations | `exists_int_winding` |
+| **Theorem A, `(9)`**: `a = t` and `b = 2πm - φ` | `localLogarithm_eq_physical` |
+
+The off-diagonal vanishing reuses the corpus commutant description
+(`mem_commutantSubmodule_diagonal` in `HistogramCentralizerDimension`) rather than reproving it.
+`localLogarithm_eq_physical` is the full arithmetic of Theorem A: `(13)` anchored at `j₁` gives
+`(14)`, two-gap irrationality gives `a = t` through `eq_zero_of_two_dim_span`, and the residual
+equation gives `b = 2πm - φ`.  With `diam_affine` this is `(9)` and `(10)`.
+
+### Theorem A at the matrix level
+
+| Card item | Declaration |
+|---|---|
+| the exponential of a diagonal matrix is the diagonal of the scalar exponentials | `exp_diagonal_entries` |
+| **`(12)` in the eigenbasis**: an element of the centralizer line is the diagonal of `a Eⱼ + b` | `centralizerLine_diagonal` |
+| **Theorem A as a matrix statement**: `(8)` in the eigenbasis forces `a = t` and `b = 2πm - φ` | `localLogarithm_eq_physical_matrix` |
+
+Theorem A is therefore complete at the matrix level: `commutes_diagonal_of_commutes_orbit` supplies
+`[K₀, H] = 0` from `(11)` and `(7)`; rigidity `(4)` -- a hypothesis of the card, not a claim --
+supplies `(12)`, which `centralizerLine_diagonal` puts in diagonal form; and
+`localLogarithm_eq_physical_matrix` closes `(9)`, with `diam_affine` giving `(10)`.
+
+### Theorem A.1: the collision case
+
+| Card item | Declaration |
+|---|---|
+| a spectrum of diameter below `2π` separates no two values by `2π` | `abs_sub_lt_of_diam_lt` |
+| **scalarity on the phase fibres**: below diameter `2π`, equal exponentials force equal eigenvalues | `eigenvalue_eq_of_exp_eq_of_diam_lt` |
+| **`[K₀,H] = 0` even at a phase collision** | `commutes_of_scalar_on_fiber` |
+
+This is the card's collision argument verbatim.  In the eigenbasis of `K₀`, the exponential `V` is
+the diagonal of `e^{-iκⱼ}`; `H` commuting with `V` kills every entry across distinct phases
+(the corpus commutant description again), and `eigenvalue_eq_of_exp_eq_of_diam_lt` makes `κ` constant
+across equal phases, so `[K₀, H] = 0` entry by entry regardless of collisions.  Feeding that into
+`localLogarithm_eq_physical_matrix` gives the first alternative of Theorem A.1, and its negation is
+the second.
+
+### Section 3: the folded generator and its branch ledger
+
+`formal/GaloisForLFunctions/HTGeometry/FoldedPhaseGenerator.lean` (new, umbrella-wired,
+axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| the symmetric gap lands in `[-π, π)` | `phaseGap_zero_mem` |
+| **`(15)`: the half-open representative `wr(x) ∈ (-π, π]`** | `phaseWrap`, `phaseWrap_mem` |
+| **`(15)`: `x - wr(x) ∈ 2πℤ`, with the branch integer explicit** | `branchIndex`, `sub_phaseWrap_eq` |
+| folding does not change the exponential | `exp_phaseWrap` |
+| **`(16)`: the folded generator `F_H(t)` and the branch ledger `N_H(t)`** | `foldedGenerator`, `branchLedger` |
+| **`(17)`: `F(t) = tH - 2π N(t)`** | `foldedGenerator_eq` |
+| **`(17)`: `e^{-iF(t)} = U_H(t)`** | `exp_foldedGenerator` |
+| **`(17)`: `spec F(t) ⊂ (-π, π]`** | `foldedGenerator_spec` |
+
+The branch integer is explicit -- `branchIndex x = -round(-x/2π)` -- so nothing here rests on choice.
+The window is half-open on the right, which is why the wrap is the negation of the symmetric gap:
+`phaseGap` lands in `[-π, π)` because mathlib's `round` breaks ties upward.
+
+### Theorem B: the locality fracture
+
+Same module.
+
+| Card item | Declaration |
+|---|---|
+| a spectrum inside the half-open window has diameter strictly below `2π` | `diam_lt_of_mem_window` |
+| **the folded spectrum has diameter strictly below `2π`** | `foldedSpectrum_diam_lt` |
+| **`(19)`**: if the folded generator is `tH + 2πm`, then `\|t\|W_H < 2π` | `abs_mul_width_lt_two_pi_of_physical` |
+
+`(18)` is Theorem A applied to the folded generator: `F_H(t)` is diagonal, so it commutes with `H`;
+rigidity `(4)` gives `F = aH + bI`; `exp_foldedGenerator` is exactly `(8)` at `φ = 0`; and
+`localLogarithm_eq_physical_matrix` returns `a = t` and `b = 2πm`.
+`abs_mul_width_lt_two_pi_of_physical` is then `(19)` in contrapositive form: the folded window forces
+diameter `< 2π`, while `diam_affine` says a physical folded generator has diameter exactly `\|t\|W_H`,
+so `\|t\|W_H ≥ 2π` is impossible -- after one full winding, bounded phase folding and two-locality
+cannot coexist.
+
+Note the strictness: values in `(-π, π]` differ by strictly less than `2π`, so the card's threshold
+`\|t\|W_H ≥ 2π` is exactly the right one and needs no separate boundary argument.
+
+### Theorem C: the quantitative fracture
+
+`formal/GaloisForLFunctions/HTGeometry/DiagonalCommutatorWidth.lean` (new, umbrella-wired,
+axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| the commutator against a diagonal is the entrywise product by the energy differences | `commutator_diagonal_apply` |
+| **the Hilbert--Schmidt commutator bound of `(25)`**: `‖[H,X]‖²_HS ≤ W_H² ‖X‖²_HS` | `hsSqRe_commutator_diagonal_le` |
+| every energy difference is bounded by the spectral width | `abs_sub_le_width` |
+| **`(26)`, the triangle step**, which infimizes to `(22)` | `infDist_le_of_tangent` |
+
+The commutator bound is proved exactly, entry by entry, so it needs neither operator-norm theory nor
+the card's centring at `c = (max E + min E)/2`, and the constant is the width `W_H` itself rather
+than `2‖H - cI‖`.  `infDist_le_of_tangent` is `(26)`: given `dist(K, S_H) ≤ (W_H/γ_H)‖K - F‖`, one
+triangle inequality yields `dist(F, S_H) ≤ (1 + W_H/γ_H)‖F - K‖`, and taking the infimum over
+`K ∈ L` is `(22)`.
+
+### What remains
+
+`(21)` as a definition (the tangent condition number `γ_H` as an infimum over the unit sphere of
+`L ∩ S_H^⊥`) and the step `dist(K,S_H) ≤ ‖[H,K]‖/γ_H` that instantiates it; `(27)`, the
+translation-and-scaling identity `dist(F_H(t), S_H) = 2π dist(N_H(t), S_H)`; and the later sections
+(Theorems C.1, D, F, G and their corollaries).  Theorems A, A.1, B, all of section 3, and the
+analytic core of Theorem C are fully formal.
