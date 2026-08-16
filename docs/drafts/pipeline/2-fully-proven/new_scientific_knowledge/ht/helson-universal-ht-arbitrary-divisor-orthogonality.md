@@ -1820,3 +1820,42 @@ Tauberian step is now a finite assembly: double Abel summation expresses the par
 make the resulting series dominated by `C ||s|| ||s+1|| sum_j j^{alpha - Re s - 2}`, absolutely
 convergent precisely when `Re s > alpha - 1`, and locally uniformly so in `s`.  That is
 `sigma_c <= alpha - 1` with uniformity, which is the Tauberian half of Bohr.
+
+## CORRECTION — the Tauberian implication I stated is FALSE
+
+The previous section claimed that the double Abel identity plus the bounds
+
+```
+||A_1(j)|| <= C j^alpha ,      ||Delta^2 b_j|| <= ||s|| ||s+1|| (j+1)^{-Re s - 2}
+```
+
+give `sigma_c <= alpha - 1`.  **That implication is false.**  The absolutely convergent part of the
+double Abel identity does converge for `Re s > alpha - 1`, but the two boundary terms do not: the
+term `b(N-1) A(N)` needs a bound on the *ordinary* partial sums, which `A_1 = O(N^alpha)` does not
+supply.
+
+Explicit counterexample: let the ordinary partial sums be `A(k) = (-1)^k k^alpha`.  Then
+`A_1(N) = sum_{k<N} A(k) = O(N^alpha)` (alternating), while `a_n = A(n) - A(n-1) ~ 2(-1)^n n^alpha`,
+so the series is `sum (-1)^n n^{alpha - s}`, whose abscissa of convergence is exactly `alpha`, not
+`alpha - 1`.
+
+So a growth bound on the *smoothed* sums alone loses a full unit relative to the naive count, and
+recovering it is precisely the genuine Tauberian content of Bohr's theorem — it is not a bookkeeping
+step.  Recorded here so the next pass does not attempt the false route.
+
+## Lean progress — the correct statement: polynomially bounded partial sums
+
+`RHTower/DirichletPolyBoundedAbel.lean` (wired, axiom-clean).
+
+```
+norm_cpow_unit_diff_le      || x^{-w} - (x+1)^{-w} ||  <=  ||w|| x^{-Re w - 1}   (Re w > 0)
+tendsto_dirichlet_partialSum_of_poly_bounded
+    || sum_{n<N} a_n ||  <=  C (N+1)^alpha      ==>   the series converges for Re s > alpha
+```
+
+This is the true theorem in the neighbourhood of the false one, and the counterexample above shows
+its exponent is **sharp**: with `A(k) = (-1)^k k^alpha` the abscissa is exactly `alpha`.  The bounded
+case `alpha = 0` is the earlier `tendsto_dirichlet_partialSum_of_bounded`.
+
+The first lemma generalises the unit-difference bound from exponent `s+1` to any exponent with
+positive real part, which is what the boundary-term analysis needs.

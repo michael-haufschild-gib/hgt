@@ -85,7 +85,7 @@ theorem tail_zero : (Fin.tail (0 : Fin (n + 1) → ℂ) : Fin n → ℂ) = 0 := 
   simp [Fin.tail]
 
 /-- **A distinguished polynomial of positive degree has a regular germ.** -/
-theorem germSlice_germEval_distPoly_ne_zero {d : ℕ} (hd : 0 < d)
+theorem germSlice_germEval_distPoly_ne_zero {d : ℕ}
     {α : ℕ → AnalyticGerm (0 : Fin n → ℂ)}
     (hzero : ∀ j, j < d → analyticGermValue (0 : Fin n → ℂ) (α j) = 0) :
     germSlice n (germEval n (distPoly d α)) ≠ 0 := by
@@ -108,8 +108,8 @@ theorem germSlice_germEval_distPoly_ne_zero {d : ℕ} (hd : 0 < d)
       (w 0) ^ d + ∑ j ∈ Finset.range d, a j (Fin.tail w) * (w 0) ^ j)
       (0 : Fin (n + 1) → ℂ) := by
     refine (analyticAt_coordZero.pow d).add ?_
-    refine Finset.analyticAt_sum _ fun j _ => ?_
-    exact (haAtail j).mul (analyticAt_coordZero.pow j)
+    exact Finset.analyticAt_fun_sum (Finset.range d) fun j _ =>
+      (haAtail j).mul (analyticAt_coordZero.pow j)
   have hgerm : germEval n (distPoly d α) = analyticGermOf hF := by
     refine Subtype.ext ?_
     rw [germEval_distPoly]

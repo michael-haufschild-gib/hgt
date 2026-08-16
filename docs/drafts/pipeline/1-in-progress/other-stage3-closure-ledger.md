@@ -1989,3 +1989,16 @@ Closing it also closes `floquet-orbifold-tail-emergence` and
   polynomial in the germ ring becomes a polynomial factorization, via preparation of the factors
   and this uniqueness), then Gauss and the induction on the dimension; then local reduced fractions
   and the counting assembly.  Closure count unchanged: 31 cards remain in the folder.
+
+- 2026-08-16 (twelfth pass) — `noncompact-period-quotient-facet-escape-law`: the regularity layer.
+  New unconditional axiom-clean umbrella-wired module `HTGeometry/GermSliceRegular.lean`:
+  `analyticAt_consZero`, the ring homomorphism `germSlice` restricting a germ at the origin of
+  `C^(n+1)` to the first coordinate axis (built from `analyticGermPullback`),
+  `germSlice_analyticGermOf`, and `germSlice_ne_zero_iff` — a germ is regular in the distinguished
+  coordinate exactly when its slice is nonzero.  Since `germSlice` is a ring homomorphism into a
+  domain, regularity is multiplicative: `germSlice_ne_zero_of_mul_ne_zero` and
+  `germSlice_mul_ne_zero`.  That is what will let a single linear change of coordinates make
+  finitely many germs regular at once — apply `exists_regular_coordinate_change` to their product.
+  Finally `germSlice_germEval_distPoly_ne_zero`: a distinguished polynomial has slice `z^d`, hence
+  is always regular.
+  Closure count unchanged: 31 cards remain in the folder.

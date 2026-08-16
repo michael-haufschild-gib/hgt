@@ -1195,10 +1195,25 @@ than `2‖H - cI‖`.  `infDist_le_of_tangent` is `(26)`: given `dist(K, S_H) �
 triangle inequality yields `dist(F, S_H) ≤ (1 + W_H/γ_H)‖F - K‖`, and taking the infimum over
 `K ∈ L` is `(22)`.
 
+### Theorem C completed: the tangent gap and the distance identity
+
+Same module.
+
+| Card item | Declaration |
+|---|---|
+| **`(21)` homogenized**: a gap on the unit sphere is a gap everywhere, so `γ_H‖A‖ ≤ ‖[H,A]‖` for every `A` | `gap_mul_norm_le` |
+| distance to a subspace is translation invariant | `infDist_add_mem`, `infDist_add_mem_submodule` |
+| distance to a subspace is absolutely homogeneous | `infDist_smul_submodule` |
+| **`(27)`**: `dist(p - cN, S) = \|c\| dist(N, S)` for `p ∈ S`, hence `dist(F_H(t),S_H) = 2π dist(N_H(t),S_H)` | `infDist_folded` |
+
+`gap_mul_norm_le` is the step that turns the unit-sphere definition `(21)` into the estimate
+`dist(K,S_H) ≤ ‖[H,K]‖/γ_H` of `(25)`: on the orthogonal complement the distance *is* the norm, and
+the commutator is homogeneous, so a gap on the sphere scales to every vector.  `infDist_folded`
+applied with `p = tH ∈ S_H` and `c = 2π` is `(27)` exactly, because `(17)` writes
+`F_H(t) = tH - 2π N_H(t)`.
+
 ### What remains
 
-`(21)` as a definition (the tangent condition number `γ_H` as an infimum over the unit sphere of
-`L ∩ S_H^⊥`) and the step `dist(K,S_H) ≤ ‖[H,K]‖/γ_H` that instantiates it; `(27)`, the
-translation-and-scaling identity `dist(F_H(t), S_H) = 2π dist(N_H(t), S_H)`; and the later sections
-(Theorems C.1, D, F, G and their corollaries).  Theorems A, A.1, B, all of section 3, and the
-analytic core of Theorem C are fully formal.
+The later sections only: Theorems C.1, D, F, G and their corollaries (approximate subwinding
+rigidity, the direction law, second-order vertical curvature, the address filtration).  Theorems A,
+A.1, B, C and all of section 3 are fully formal.

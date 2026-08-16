@@ -139,4 +139,60 @@ theorem infDist_add_mem (S : AddSubgroup V) (x v : V) (hv : v ∈ S) :
 end Distance
 
 
+section SubmoduleDistance
+
+variable {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+
+theorem infDist_add_mem_submodule (S : Submodule ℝ V) (x v : V) (hv : v ∈ S) :
+    Metric.infDist (x + v) (S : Set V) = Metric.infDist x (S : Set V) :=
+  infDist_add_mem S.toAddSubgroup x v hv
+
+/-- Distance to a subspace is absolutely homogeneous. -/
+theorem infDist_smul_submodule (S : Submodule ℝ V) (c : ℝ) (x : V) :
+    Metric.infDist (c • x) (S : Set V) = |c| * Metric.infDist x (S : Set V) := by
+  have hne : (S : Set V).Nonempty := ⟨0, S.zero_mem⟩
+  have half : ∀ (d : ℝ) (y : V), d ≠ 0 →
+      Metric.infDist (d • y) (S : Set V) ≤ |d| * Metric.infDist y (S : Set V) := by
+    intro d y hd
+    have hdpos : 0 < |d| := abs_pos.mpr hd
+    have hkey : ∀ s ∈ (S : Set V),
+        Metric.infDist (d • y) (S : Set V) / |d| ≤ dist y s := by
+      intro s hs
+      have hmem : d • s ∈ (S : Set V) := S.smul_mem d hs
+      have hle : Metric.infDist (d • y) (S : Set V) ≤ dist (d • y) (d • s) :=
+        Metric.infDist_le_dist_of_mem hmem
+      have heq : dist (d • y) (d • s) = |d| * dist y s := by
+        rw [dist_eq_norm, dist_eq_norm, ← smul_sub, norm_smul, Real.norm_eq_abs]
+      rw [heq] at hle
+      rw [div_le_iff₀ hdpos]
+      linarith [hle]
+    have h := (Metric.le_infDist hne).mpr hkey
+    rw [div_le_iff₀ hdpos] at h
+    linarith [h]
+  rcases eq_or_ne c 0 with hc | hc
+  · subst hc
+    simp [Metric.infDist_zero_of_mem S.zero_mem]
+  · refine le_antisymm (half c x hc) ?_
+    have hinv : c⁻¹ ≠ 0 := inv_ne_zero hc
+    have h2 := half c⁻¹ (c • x) hinv
+    rw [smul_smul, inv_mul_cancel₀ hc, one_smul] at h2
+    have hcpos : 0 < |c| := abs_pos.mpr hc
+    have habs : |c⁻¹| = |c|⁻¹ := abs_inv c
+    rw [habs] at h2
+    have hmul := mul_le_mul_of_nonneg_left h2 (le_of_lt hcpos)
+    calc |c| * Metric.infDist x (S : Set V)
+        ≤ |c| * (|c|⁻¹ * Metric.infDist (c • x) (S : Set V)) := hmul
+      _ = Metric.infDist (c • x) (S : Set V) := by field_simp
+
+/-- **`(27)`: folding by a physical multiple rescales the distance to the centralizer line.** -/
+theorem infDist_folded (S : Submodule ℝ V) {p : V} (hp : p ∈ S) (N : V) (c : ℝ) :
+    Metric.infDist (p - c • N) (S : Set V) = |c| * Metric.infDist N (S : Set V) := by
+  have hrw : p - c • N = (-c) • N + p := by
+    rw [neg_smul]
+    abel
+  rw [hrw, infDist_add_mem_submodule S _ p hp, infDist_smul_submodule, abs_neg]
+
+end SubmoduleDistance
+
+
 end GaloisForLFunctions.HTGeometry

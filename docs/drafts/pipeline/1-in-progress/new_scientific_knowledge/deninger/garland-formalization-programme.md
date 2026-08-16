@@ -1151,3 +1151,39 @@ Consequence for the programme: the root system's two orientations are identified
 so any Layer-B statement proved for `(i,j)` transfers to `(j,i)` at no cost, with `u |-> -u^{-1}` on
 Weyl parameters and `u |-> u^{-1}` on torus parameters.  This removes the orientation bookkeeping
 from the Matsumoto presentation, where the relations are stated for an unordered root pair.
+
+## Layer B — the torus is a homomorphism modulo K₂, PROVED
+
+`HTGeometry/SteinbergTorusQuotientHom.lean` (wired, axiom-clean).
+
+```
+commute_mk_steinbergTorus       the images of h(u), h(v) commute in St(R)/K₂
+steinbergTorusQuotientHom hij   u |-> [h_ij(u)]   as a group homomorphism  Rˣ -> St(R)/K₂
+steinbergSymbol_eq_torus_defect {u,v} = h(uv) (h(v) h(u))^{-1}
+```
+
+Both failures of the torus — multiplicativity and commutativity — live in K₂, so the map descends to
+an honest homomorphism on the quotient.  The last theorem says it plainly: the Steinberg symbol IS
+the multiplicativity defect of the torus, so it vanishes in the quotient by definition.
+
+This is the frame of Matsumoto's presentation.  `K₂` of a field is exactly the obstruction to
+splitting `St(R) -> St(R)/K₂` over the torus multiplicatively, and the symbol is the cocycle
+measuring it — already known here to be central, to satisfy the two-cocycle identity, and to have
+its asymmetry equal to the torus commutator.
+
+### Corpus audit for the Matsumoto target
+
+The corpus already carries Milnor K-theory, so the target of Matsumoto is expressible:
+
+```
+HTGeometry/MilnorKTheory.lean     MilnorK F, milnorSymbol, milnorSymbol_mul_oneSub (Steinberg),
+                                      milnorSymbol_mul_neg_self, milnorSymbol_anticomm
+HTGeometry/MilnorKGradedRing.lean MilnorKDeg F n, milnorMul, milnorPairClass with multilinearity
+                                      in each slot and the Steinberg relation at adjacent slots
+HTGeometry/MilnorWittKTheory.lean the Milnor-Witt variant, [u][1-u] = 0
+HTGeometry/MilnorKResidueSteinberg.lean  the Steinberg relation as an operator
+```
+
+So `K_2^M(F) = MilnorKDeg F 2` exists with all its relations.  What is missing is only the
+comparison map, and building it still requires `{u, 1-u} = 1` in `K₂` — i.e. Milnor's Dennis-Stein
+computation — which remains the single blocker for this layer.

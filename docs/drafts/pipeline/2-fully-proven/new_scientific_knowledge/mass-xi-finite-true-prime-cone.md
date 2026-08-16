@@ -7614,9 +7614,35 @@ the saddle cancellation is exact rather than asymptotic; and the separation argu
 an arbitrary contraction in an arbitrary real inner product space, so it does not depend on the
 oscillator realization at all.
 
-Still deferred on these items: identifying the tilted von-Mangoldt weight of (24.167) with the
-Gaussian saddle moments (24.170), and the creation--annihilation derivation of (24.186)--(24.187)
-for the actual Hermite states.
+    HTGeometry/HermiteCoordinateMoments.lean
+      schwartzPair_mulXCLM                      multiplication by the coordinate is self-adjoint
+                                                for the bilinear pairing
+      mulXCLM_hermiteSchwartz                   the coordinate acts on the Hermite basis by the
+                                                ladder `x h_n = ½h_{n+1} + (n/2π)h_{n-1}`, read off
+                                                from the corpus's `A + B = 4πx`
+      schwartzPair_hermiteSchwartz_succ_self    the norm recursion
+                                                `⟨h_{n+1},h_{n+1}⟩ = ((n+1)/π)⟨h_n,h_n⟩`, from
+                                                adjointness of the creation and annihilation
+                                                operators
+      schwartzPair_hermiteSchwartz_second_moment,
+        schwartzPair_mulXCLM_hermiteSchwartz_cross,
+        schwartzPair_hermiteSchwartz_fourth_moment
+                                               **(24.186)** the exact second and fourth coordinate
+                                                moments of every Hermite state,
+                                                `(2n+1)/(4π)` and `3(2n²+2n+1)/(16π²)` times the
+                                                norm
+      hermiteCoordinateMomentRatio_ge          **(24.186)** the two coefficients have ratio at
+                                                least `1/3`, uniformly in the level — the actual
+                                                Hermite instance of the abstract bound already
+                                                formal in `RHTower/OscillatorActionWedge.lean`
+
+The whole derivation is the creation--annihilation calculus: the ladder, adjointness and
+orthogonality of the corpus's `HermiteOrthogonality` and `SchwartzOscillatorAlgebra`, with no
+special-function asymptotics.  In the self-dual normalization the level-`2d` ratio is
+`(4d+1)²/(3(8d²+4d+1))`, which is the card's `(T(2d+½))²/((3T²/4)(8d²+4d+1))`.
+
+Still deferred on this item: identifying the tilted von-Mangoldt weight of (24.167) with the
+Gaussian saddle moments (24.170).
 
 ### Lean progress: §24 C43-Z — the heat Turán defect as a two-replica sum
 

@@ -11470,3 +11470,65 @@ one.  What remains for §14 is the two *analytic* inputs — the expansion `(93)
 reflection parities `(92)` — neither of which is rate algebra.
 
 All new declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADR.1. `(63)` — the algebraic half was already owned; the differentiation half is now built
+
+Searching before building found that the commutator algebra of `(63)` is already in the corpus:
+
+```text
+CCMSoninEdgeCommutatorAlgebra.commutator_resolvent          X V − V X = V (X T − T X) V
+SuzukiSecondDefectParityCommutator
+  .inner_inverseCommutator_eq_inner_dressedCommutator       ⟪c, [R,X] s⟫ = ⟪Rc, [X,T](Rs)⟫
+  .inner_resolventPositionCommutator_eq_tiltDifference      the same matrix element as a tilt difference
+SuzukiResolventPositionTorquePromotion
+  .suzukiShiftedResolventScale_positionTorque_limit         the large-negative-shift torque coefficient
+```
+
+So the conjugation identity that turns `[R, X]` into `R [X, A] R` — the substantive half of `(63)` —
+did not need to be reproved.  What was missing is the differentiation step, now closed in general
+form:
+
+```text
+HTGeometry/SelfAdjointQuadraticDerivative.lean
+  inner_selfAdjoint_swap                a self-adjoint operator moves between the two slots
+  hasDerivAt_selfAdjoint_quadratic      d/dt ⟪v t, R (v t)⟫ = 2 ⟪v'(t), R (v t)⟫
+  hasDerivAt_norm_sq_along              the case `R = 1`
+```
+
+The point is that for a *self-adjoint* `R` the two cross terms of the product rule coincide, so the
+derivative of the quadratic form is a single pairing rather than a sum — which is what makes the
+subsequent passage to a commutator matrix element exact rather than approximate.  Composing this
+with the corpus's conjugation identity gives `(63)` once the velocity of the deficiency path is
+identified; that identification is the remaining step, and it is model-specific rather than general.
+
+All new declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADR.2. §§10–13 carry no formalization debt — a scoping result
+
+Reading §§10–13 line by line settles their status: **none of them states a proved theorem, so none
+of them owes Lean.**
+
+- **§10, conjecture loop.**  Eight entries, each recording an approach that *failed* and what
+  repaired it.  Every positive statement in it is a pointer to an equation proved elsewhere in the
+  card — `(7)`, `(13)`, `(19)`, `(21)`, `(43)` — not a new claim.
+- **§11, hostile scope audit.**  A list of things the card explicitly does **not** prove: no RH, no
+  source-provenance laundering, no fake uniformity, no boundary regularity, no claim at the joint
+  adjacent wall, no count/weight equivalence, no abstract angular bound, no multiplier laundering.
+  Negative statements about scope, formalizable only as the absence of a claim.
+- **§12, novelty boundary.**  Classical parents versus candidate-new content, plus the primary
+  comparisons.  Attribution, not mathematics.
+- **§13, exact post-admission Route-G statement.**  States the **open core**: construct cofinally,
+  from Suzuki's literal restricted-Weil source, a branch whose finite-source transform satisfies
+  `(107)` or `(112)`.  Explicitly open, and the section says so.
+
+This narrows the card's remaining formal debt to a definite list:
+
+```text
+Theorem A     instantiation of A_a as a bounded self-adjoint operator with an eigenvalue floor
+              (the three general inputs are proved: ADQ.1, ADQ.2)
+§8            Corollaries F.1 and F.2
+§9            (63)'s velocity identification; Corollaries G.1–G.5
+§14           the analytic inputs (92) and (93); the §14.1–14.5 statements
+```
+
+Everything else in the card — §§2–7 and `(59)`–`(62)` of §9 — is closed and axiom-audited.

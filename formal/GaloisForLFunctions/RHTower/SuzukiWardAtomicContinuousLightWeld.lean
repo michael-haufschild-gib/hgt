@@ -494,6 +494,48 @@ theorem suzukiUnitRieszReporterWeightedNegativeLightMass_nonneg
         (Complex.normSq_nonneg _)
     · simp [hle]
 
+/-- At spectral center, the two light energies of every prime-power cell are equal. -/
+theorem normSq_suzukiCriticalWallPositiveLightAmplitude_zero_eq_negative
+    (p : Nat.Primes) (e : ℕ) :
+    normSq (suzukiCriticalWallPositiveLightAmplitude 0 p e) =
+      normSq (suzukiCriticalWallNegativeLightAmplitude 0 p e) := by
+  rw [suzukiCriticalWallPositiveLightAmplitude,
+    suzukiCriticalWallNegativeLightAmplitude]
+  simp only [neg_zero]
+  simp [Complex.normSq_apply, Complex.mul_re, Complex.mul_im]
+  ring
+
+/-- At spectral center, the reporter-weighted prime mass splits equally between the two light
+channels. -/
+theorem suzukiUnitRieszReporterWeightedPositiveLightMass_zero_eq_negative
+    (N : ℕ) :
+    suzukiUnitRieszReporterWeightedPositiveLightMass N 0 =
+      suzukiUnitRieszReporterWeightedNegativeLightMass N 0 := by
+  rw [suzukiUnitRieszReporterWeightedPositiveLightMass,
+    suzukiUnitRieszReporterWeightedNegativeLightMass]
+  apply tsum_congr
+  intro pe
+  by_cases hle : xiGammaEulerValuationNat pe ≤ N
+  · simp only [if_pos hle]
+    rw [normSq_suzukiCriticalWallPositiveLightAmplitude_zero_eq_negative]
+  · simp [hle]
+
+theorem suzukiUnitRieszReporterWeightedPositiveLightMass_zero_eq_prime_half
+    {N : ℕ} (hN : 2 ≤ N) :
+    suzukiUnitRieszReporterWeightedPositiveLightMass N 0 =
+      unitRieszCoherentPrimeOutgoingCharge N / 2 := by
+  have hsum :=
+    unitRieszCoherentPrimeOutgoingCharge_eq_positiveLight_add_negativeLight hN 0
+  have heq := suzukiUnitRieszReporterWeightedPositiveLightMass_zero_eq_negative N
+  linarith
+
+theorem suzukiUnitRieszReporterWeightedNegativeLightMass_zero_eq_prime_half
+    {N : ℕ} (hN : 2 ≤ N) :
+    suzukiUnitRieszReporterWeightedNegativeLightMass N 0 =
+      unitRieszCoherentPrimeOutgoingCharge N / 2 := by
+  rw [← suzukiUnitRieszReporterWeightedPositiveLightMass_zero_eq_negative]
+  exact suzukiUnitRieszReporterWeightedPositiveLightMass_zero_eq_prime_half hN
+
 /-- The continuum debt left after exact negative-light payment. -/
 def suzukiUnitRieszLightCompletedRegularResidual
     (N : ℕ) (t : ℝ) : ℝ :=
