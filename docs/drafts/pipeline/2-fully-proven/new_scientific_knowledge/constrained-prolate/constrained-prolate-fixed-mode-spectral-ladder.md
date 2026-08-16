@@ -4628,3 +4628,41 @@ With `S = S_k = sum_{j<=k} ell_j^2` and `T = ell_(k+1)^2`, the root is `S_k/S_(k
 coordinate limits `ell_j^2 -> A q_j` turn that into `Q_k/Q_(k+1) = theta_k` — the card's `(8)`.  What
 remains between these and `(8)` is the uniformity: the passage from the exact equation at finite
 `lambda` to the degenerate one, which is where the Fuchs separation `d_j/d_(j+1) -> 0` enters.
+
+## Lean progress — `(8)`'s location statement, quantitatively
+
+The item recorded above as remaining — "the passage from the exact secular equation at finite
+`lambda` to the degenerate one" — is now a theorem.  Same module,
+`RHTower/SecularEquationInterlacing.lean`:
+
+```
+secular_split               the three-block decomposition around the gap
+secular_lower_block_le      lower block  <=  -S_k/mu
+secular_lower_block_ge      lower block  >=  -S_k/(mu - eps d_(k+1))
+secular_upper_block_bounds  upper block in  [0, T/((M-1) d_(k+1))]
+
+secular_root_le             mu/d_(k+1)  <=  S_k/S_(k+1) + eps
+le_secular_root             mu/d_(k+1)  >=  S_k/(S_(k+1) + T/(M-1))
+```
+
+where `S_k = sum_{j<=k} ell_j^2`, `T = sum_{j>k+1} ell_j^2`, and the two slack parameters are the
+Fuchs separation itself:
+
+```
+d_j <= eps · d_(k+1)     for j <= k          (the lower modes are much smaller)
+d_j >= M · d_(k+1)       for k+1 < j <= N    (the higher modes are much bigger)
+```
+
+As `eps -> 0` and `M -> infinity` both bounds converge to `S_k/S_(k+1)`, and the coordinate limits
+`ell_j^2 -> A q_j` turn that into `Q_k/Q_(k+1) = theta_k`.  So the card's `(8)` is now:
+
+- **interlacing** — `exists_unique_secular_root`, exactly one root per gap;
+- **location** — `secular_root_le` and `le_secular_root`, the root pinned between two explicit
+  expressions that squeeze to `theta_k` as the separation widens.
+
+Both are unconditional and quantitative, with no limit hypothesis: they hold at every finite
+`lambda` for which the two separation inequalities hold, which is what `(7)` supplies.
+
+The proof of the lower bound splits on whether the root is already below `S_k/S_(k+1)`: if it is,
+the singular term is bounded by `S_(k+1)/d_(k+1)` and the equation gives the bound directly; if it
+is not, the bound is immediate because `S_k/(S_(k+1) + T/(M-1)) <= S_k/S_(k+1)`.

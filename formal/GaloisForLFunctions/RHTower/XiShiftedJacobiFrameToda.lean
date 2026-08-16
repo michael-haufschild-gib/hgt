@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.XiShiftedHalfDensityMobiusSourceConnection
 import GaloisForLFunctions.HTGeometry.JacobiTodaRiccatiLaw
 import GaloisForLFunctions.HTGeometry.MatrixInverseCurveDerivative
+import GaloisForLFunctions.HTGeometry.JacobiNodeBoundaryMonotonicity
 
 /-!
 # The moving orthonormal frame of the shifted half-density connection
@@ -331,7 +332,7 @@ theorem jacobiTodaDeriv (y : ℝ) :
 section Compression
 
 open GaloisForLFunctions.HTGeometry
-open scoped _root_.Matrix
+open _root_.Matrix
 
 /-- The `m+1`-level Jacobi compression of the frame at parameter `y`. -/
 def jacobiLevel (m : ℕ) (y : ℝ) : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ :=
@@ -444,6 +445,85 @@ theorem boundaryGramian_nonneg (m : ℕ) (y₀ Y : ℝ) (hle : y₀ ≤ Y)
   refine dotProduct_integral_nonneg hle hint x fun v => ?_
   rw [boundaryGramianSource, dotProduct_conj_eq]
   exact dotProduct_smul_vecMulVec_nonneg (by positivity) _ _
+
+/-! ## The node shadow -/
+
+theorem dotProduct_boundaryUnit (m : ℕ) (v : Fin (m + 1) → ℝ) :
+    v ⬝ᵥ boundaryUnit m = v (Fin.last m) := by
+  simp only [dotProduct, boundaryUnit]
+  rw [Finset.sum_eq_single (Fin.last m)]
+  · simp
+  · intro i _ hi
+    have hne : (i : ℕ) ≠ m := by
+      intro h
+      exact hi (Fin.ext (by simpa using h))
+    simp [hne]
+  · intro h
+    exact absurd (Finset.mem_univ (Fin.last m)) h
+
+/-- **(HJLG.6).**  Every differentiable simple node branch of the centered inverse compression is
+strictly increasing.  The commutator is invisible to an eigenvector, the boundary square is
+visible to every eigenvector of an irreducible Jacobi compression, and the source is positive. -/
+theorem centeredNode_deriv_pos (m : ℕ) (y : ℝ)
+    (hdet : (F.jacobiLevel m y).det ≠ 0)
+    (hband : ∀ k, 1 ≤ k → k ≤ m → F.a k y ≠ 0) (htop : F.a (m + 1) y ≠ 0)
+    {v : ℝ → (Fin (m + 1) → ℝ)} {v' : Fin (m + 1) → ℝ} {u : ℝ → ℝ} {u' : ℝ}
+    (hv : ∀ i, HasDerivAt (fun w => v w i) (v' i) y) (hu : HasDerivAt u u' y)
+    (heig : ∀ w, ((F.jacobiLevel m w)⁻¹
+        - w • (1 : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ)) *ᵥ v w = u w • v w)
+    (hnorm : ∀ w, v w ⬝ᵥ v w = 1) :
+    0 < u' := by
+  have hunit : IsUnit (F.jacobiLevel m y).det := isUnit_iff_ne_zero.mpr hdet
+  have hBsym : ((F.jacobiLevel m y)⁻¹)ᵀ = (F.jacobiLevel m y)⁻¹ := by
+    rw [Matrix.transpose_nonsing_inv, F.jacobiLevel_transpose]
+  have hUsym : ((F.jacobiLevel m y)⁻¹
+      - y • (1 : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ))ᵀ
+      = (F.jacobiLevel m y)⁻¹ - y • (1 : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ) := by
+    rw [Matrix.transpose_sub, hBsym, Matrix.transpose_smul, Matrix.transpose_one]
+  -- the eigenvector is nonzero
+  have hvne : v y ≠ 0 := by
+    intro h
+    have := hnorm y
+    rw [h] at this
+    simp at this
+  -- the reciprocal eigenvalue
+  set mu : ℝ := u y + y with hmu
+  have hBeig : (F.jacobiLevel m y)⁻¹ *ᵥ v y = mu • v y := by
+    have h := heig y
+    rw [Matrix.sub_mulVec, smul_mulVec, Matrix.one_mulVec, sub_eq_iff_eq_add] at h
+    rw [h, hmu, add_smul]
+  have hmune : mu ≠ 0 := by
+    intro h
+    rw [h, zero_smul] at hBeig
+    have hj : F.jacobiLevel m y *ᵥ ((F.jacobiLevel m y)⁻¹ *ᵥ v y) = 0 := by
+      rw [hBeig, Matrix.mulVec_zero]
+    rw [Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ hunit, Matrix.one_mulVec] at hj
+    exact hvne hj
+  have hJeig : F.jacobiLevel m y *ᵥ v y = mu⁻¹ • v y := by
+    have hj : F.jacobiLevel m y *ᵥ ((F.jacobiLevel m y)⁻¹ *ᵥ v y) = v y := by
+      rw [Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ hunit, Matrix.one_mulVec]
+    rw [hBeig, Matrix.mulVec_smul] at hj
+    have := congrArg (fun z : Fin (m + 1) → ℝ => mu⁻¹ • z) hj
+    simpa [smul_smul, inv_mul_cancel₀ hmune] using this
+  have hlast : v y (Fin.last m) ≠ 0 :=
+    jacobiCompression_eigenvector_last_ne_zero (fun k => F.a k y) (fun k => F.b k y) m hband
+      hJeig hvne
+  -- the Rayleigh quotient of the velocity
+  have hrq := eigenvalue_hasDerivAt_eq_rayleigh
+    (F.matrixHasDerivAt_centeredInverseLevel m y hdet) hv hu heig hnorm hUsym
+  have hcomm := dotProduct_commutator_eigenvector
+    (U := (F.jacobiLevel m y)⁻¹ - y • (1 : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ))
+    (A := F.connectionLevel m y) hUsym (heig y)
+  have hport : v y ⬝ᵥ ((F.jacobiLevel m y)⁻¹ *ᵥ boundaryUnit m) = mu * v y (Fin.last m) := by
+    rw [Matrix.dotProduct_mulVec, ← hBsym, Matrix.vecMul_transpose, hBeig, smul_dotProduct,
+      smul_eq_mul, dotProduct_boundaryUnit]
+  have hval : u' = 2 * ((m : ℝ) + 1) * F.a (m + 1) y ^ 2 * (mu * v y (Fin.last m)) ^ 2 := by
+    rw [hrq, Matrix.add_mulVec, dotProduct_add, hcomm, zero_add,
+      dotProduct_smul_vecMulVec_eq, hport]
+  rw [hval]
+  have h1 : 0 < 2 * ((m : ℝ) + 1) * F.a (m + 1) y ^ 2 := by positivity
+  have h2 : 0 < (mu * v y (Fin.last m)) ^ 2 := by positivity
+  exact mul_pos h1 h2
 
 end Compression
 

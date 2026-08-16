@@ -306,46 +306,41 @@ theorem secular_split (hk : k + 1 ≤ N) (μ : ℝ) :
   rw [secular, Finset.range_eq_Ico, hsplit, ← Finset.range_eq_Ico, Finset.sum_range_succ]
 
 /-- The lower block is at most `−S/μ`: each denominator is at least `−μ`. -/
-theorem secular_lower_block_le (hdnn : ∀ j, 0 ≤ d j) (hμ0 : 0 < μ) :
+theorem secular_lower_block_le (hdnn : ∀ j, 0 ≤ d j) (_hμ0 : 0 < μ)
+    (hlt : ∀ j, j ≤ k → d j < μ) :
     (∑ j ∈ Finset.range (k + 1), (ℓ j) ^ 2 / (d j - μ))
       ≤ -((∑ j ∈ Finset.range (k + 1), (ℓ j) ^ 2) / μ) := by
-  rw [neg_div', ← Finset.sum_div, ← Finset.sum_neg_distrib]
-  refine Finset.sum_le_sum fun j _ => ?_
-  by_cases hpos : 0 < μ - d j
-  · rw [show (ℓ j) ^ 2 / (d j - μ) = -((ℓ j) ^ 2 / (μ - d j)) by rw [← neg_div, neg_sub],
-      show -((ℓ j) ^ 2) / μ = -((ℓ j) ^ 2 / μ) by rw [neg_div]]
-    have hstep : (ℓ j) ^ 2 / μ ≤ (ℓ j) ^ 2 / (μ - d j) :=
-      div_le_div_of_nonneg_left (sq_nonneg _) hpos (by linarith [hdnn j])
-    linarith
-  · have hge : μ ≤ d j := by linarith
-    have hnum : (0 : ℝ) ≤ (ℓ j) ^ 2 / μ := by positivity
-    have hle : (ℓ j) ^ 2 / (d j - μ) ≤ 0 := by
-      rcases eq_or_lt_of_le hge with h | h
-      · rw [← h]
-        simp
-      · have : (0 : ℝ) < d j - μ := by linarith
-        have : (0 : ℝ) ≤ (ℓ j) ^ 2 / (d j - μ) := by positivity
-        -- this branch cannot occur inside a gap, but the bound is still needed
-        exact absurd hpos (by simpa using not_lt.2 hge)
-    rw [show -((ℓ j) ^ 2) / μ = -((ℓ j) ^ 2 / μ) by rw [neg_div]]
-    linarith
+  rw [neg_div', ← Finset.sum_neg_distrib, Finset.sum_div]
+  refine Finset.sum_le_sum fun j hj => ?_
+  have hjk : j ≤ k := by
+    have := Finset.mem_range.1 hj
+    omega
+  have hpos : 0 < μ - d j := by linarith [hlt j hjk]
+  have hswap : (ℓ j) ^ 2 / (d j - μ) = -((ℓ j) ^ 2 / (μ - d j)) := by
+    rw [← div_neg, neg_sub]
+  rw [hswap, show -((ℓ j) ^ 2) / μ = -((ℓ j) ^ 2 / μ) by rw [neg_div]]
+  have hstep : (ℓ j) ^ 2 / μ ≤ (ℓ j) ^ 2 / (μ - d j) :=
+    div_le_div_of_nonneg_left (sq_nonneg _) hpos (by linarith [hdnn j])
+  linarith
 
 /-- The lower block is at least `−S/(μ − ε d)`: each denominator is at most `−(μ − ε d)`. -/
-theorem secular_lower_block_ge (hd1 : 0 < d (k + 1)) (hμ0 : 0 < μ)
-    (hε0 : 0 ≤ ε) (hεμ : ε * d (k + 1) < μ)
+theorem secular_lower_block_ge (_hd1 : 0 < d (k + 1)) (_hμ0 : 0 < μ)
+    (_hε0 : 0 ≤ ε) (hεμ : ε * d (k + 1) < μ)
     (hlow : ∀ j, j ≤ k → d j ≤ ε * d (k + 1)) :
     -((∑ j ∈ Finset.range (k + 1), (ℓ j) ^ 2) / (μ - ε * d (k + 1)))
       ≤ ∑ j ∈ Finset.range (k + 1), (ℓ j) ^ 2 / (d j - μ) := by
   have hden : 0 < μ - ε * d (k + 1) := by linarith
-  rw [neg_div', ← Finset.sum_div, ← Finset.sum_neg_distrib]
+  rw [neg_div', ← Finset.sum_neg_distrib, Finset.sum_div]
   refine Finset.sum_le_sum fun j hj => ?_
   have hjk : j ≤ k := by
     have := Finset.mem_range.1 hj
     omega
   have hdj : d j ≤ ε * d (k + 1) := hlow j hjk
   have hpos : 0 < μ - d j := by linarith
-  rw [show (ℓ j) ^ 2 / (d j - μ) = -((ℓ j) ^ 2 / (μ - d j)) by rw [← neg_div, neg_sub],
-    show -((ℓ j) ^ 2) / (μ - ε * d (k + 1)) = -((ℓ j) ^ 2 / (μ - ε * d (k + 1))) by rw [neg_div]]
+  have hswap : (ℓ j) ^ 2 / (d j - μ) = -((ℓ j) ^ 2 / (μ - d j)) := by
+    rw [← div_neg, neg_sub]
+  rw [hswap, show -((ℓ j) ^ 2) / (μ - ε * d (k + 1))
+    = -((ℓ j) ^ 2 / (μ - ε * d (k + 1))) by rw [neg_div]]
   have hstep : (ℓ j) ^ 2 / (μ - d j) ≤ (ℓ j) ^ 2 / (μ - ε * d (k + 1)) :=
     div_le_div_of_nonneg_left (sq_nonneg _) hden (by linarith)
   linarith
@@ -369,7 +364,7 @@ theorem secular_upper_block_bounds (hd1 : 0 < d (k + 1)) (hμ1 : μ < d (k + 1))
     have hle := hterm j hj
     have hpos : 0 < d j - μ := lt_of_lt_of_le hgap hle
     positivity
-  · rw [← Finset.sum_div]
+  · rw [Finset.sum_div]
     refine Finset.sum_le_sum fun j hj => ?_
     have hle := hterm j hj
     have hpos : 0 < d j - μ := lt_of_lt_of_le hgap hle
@@ -406,11 +401,12 @@ theorem secular_root_le (hd1 : 0 < d (k + 1)) (hk : k + 1 ≤ N)
     linarith
   have hfinal : μ * (S + L) ≤ S * d (k + 1) + ε * d (k + 1) * L := by nlinarith [hcross]
   rw [hS1, div_add' _ _ _ (ne_of_gt hS1pos), div_le_div_iff₀ hd1 hS1pos]
-  nlinarith [hfinal, hLnn, hSpos, hd1, hε0]
+  nlinarith [hfinal, mul_nonneg (mul_nonneg hε0 hd1.le) hSpos.le]
 
 /-- **The root sits above the limiting ratio, up to the upper-block slack.** -/
 theorem le_secular_root (hdnn : ∀ j, 0 ≤ d j) (hd1 : 0 < d (k + 1)) (hk : k + 1 ≤ N)
-    (hμ0 : 0 < μ) (hμ1 : μ < d (k + 1)) (hzero : secular d ℓ N μ = 0)
+    (hμ0 : 0 < μ) (hμ1 : μ < d (k + 1)) (hlt : ∀ j, j ≤ k → d j < μ)
+    (hzero : secular d ℓ N μ = 0)
     (hM : 1 < M) (hhigh : ∀ j, k + 1 < j → j ≤ N → M * d (k + 1) ≤ d j)
     (hSpos : 0 < ∑ j ∈ Finset.range (k + 1), (ℓ j) ^ 2) :
     (∑ j ∈ Finset.range (k + 1), (ℓ j) ^ 2)
@@ -441,7 +437,7 @@ theorem le_secular_root (hdnn : ∀ j, 0 ≤ d j) (hd1 : 0 < d (k + 1)) (hk : k 
       rw [div_le_div_iff₀ hden1 hd1]
       nlinarith [hmu]
     have hsplit := secular_split (d := d) (ℓ := ℓ) hk μ
-    have hAup := secular_lower_block_le (d := d) (ℓ := ℓ) (k := k) (μ := μ) hdnn hμ0
+    have hAup := secular_lower_block_le (d := d) (ℓ := ℓ) (k := k) (μ := μ) hdnn hμ0 hlt
     obtain ⟨_, hCup⟩ := secular_upper_block_bounds (d := d) (ℓ := ℓ) (k := k) (N := N) (μ := μ)
       (M := M) hd1 hμ1 hM hhigh
     have hkey : S / μ ≤ (S + L) / d (k + 1) + T / ((M - 1) * d (k + 1)) := by
@@ -449,8 +445,7 @@ theorem le_secular_root (hdnn : ∀ j, 0 ≤ d j) (hd1 : 0 < d (k + 1)) (hk : k 
       linarith
     have hTsplit : T / ((M - 1) * d (k + 1)) = (T / (M - 1)) / d (k + 1) := by
       rw [div_div]
-      ring_nf
-    rw [hTsplit, div_add_div_same] at hkey
+    rw [hTsplit, ← add_div] at hkey
     rw [div_le_div_iff₀ hdenom hd1]
     rw [div_le_div_iff₀ hμ0 hd1] at hkey
     nlinarith [hkey]

@@ -80,7 +80,8 @@ max(j,k)^2 < N*min(j,k).
 
 This is stronger than a dyadic heuristic: the deleted region and its favorable sign are exact at
 every natural aperture, with no asymptotic error and no hypotheses. It identifies the sole region
-where a positive cofinal contribution can survive.
+where a positive contribution can survive **inside the prime--prime block**. It does not classify
+prime--polar, prime--Gamma, or continuum--continuum blocks.
 
 The same module proves finite Ward capacity. For arbitrary finite real coefficients and
 nonnegative lags, literal lower-Hardy reporter amplitude is origin correlation of the signed
@@ -97,10 +98,11 @@ nonsummable cofinal mass. Far-scale reporter interactions are instead strictly n
 cofinal estimate should dyadically localize the energy and retain these negative interscale blocks;
 taking absolute values or diagonalizing first destroys the newly exposed cancellation.
 
-The remaining analytic target has therefore narrowed. It is not a bound on the original square of
-the total light mass: it is an upper bound on the thin multiplicative band
-`max(j,k)^2 < N*min(j,k)`, followed by sewing of polar and Gamma channels. Any estimate spending
-absolute values outside that band is provably unnecessary.
+The prime--prime part of the remaining analytic target has therefore narrowed. It is not a bound on
+the original square of total prime light mass: only the multiplicative band
+`max(j,k)^2 < N*min(j,k)` can contribute positively within that block. Completed-source closure is
+strictly harder because mixed prime--polar and prime--Gamma terms may be positive outside this band;
+their signed sewing remains part of the open theorem.
 
 This advances mechanism but does not close RH. Remaining hard theorem is source-specific: extend
 factor-two negativity through the literal prime--polar--Gamma completed current and prove a

@@ -564,4 +564,393 @@ theorem exists_eventually_physicalSlice_tail_base_or_secondAlternative_of_adjace
     · simpa only [N, v] using hmass
     · simpa only [N] using hcount
 
+/-- Arbitrary central interval, with exact even partition hidden after use.  The surviving sequence
+has unit spacing, retains a fixed fraction of signed mass, and already satisfies Route T's second
+count alternative. -/
+theorem eventually_physicalSlice_centralInterval_base_or_secondAlternative
+    {mu alpha eta : ℝ} (hmu : 0 < mu) (heta : 0 < eta)
+    (hbudget : mu * (1 - routeTGapMomentNu) + eta ≤ 2) :
+    ∀ᶠ T : ℝ in Filter.atTop,
+      ∀ {H R a b D Tord : ℝ} {Q : ℕ},
+        0 < H → 1 ≤ R → H ≤ R → R ≤ 2 * T ^ mu / T →
+        0 < D → 0 < Q → a + 2 ≤ b → 1 ≤ a → b + 1 ≤ Tord →
+        0 ≤ Tord → Tord ≤ T ^ mu →
+        (∀ y ∈ Set.Icc a b, |y| ≤ T ^ mu / (2 * R)) →
+        D ≤ ‖∫ y in a..b,
+          dirPoly ⌊T ^ mu + 2 * R⌋₊
+              (routeTVonMangoldtSliceCoeff ⌊T ^ mu⌋₊
+                ⌊T ^ mu + 2 * R⌋₊) (-y) *
+            (routeTNormalizedSmoothWindowMellin (T ^ mu) R
+                ((1 : ℂ) + (y : ℝ) * I) -
+              routeTNormalizedSmoothWindowMellin (T ^ mu) H
+                ((1 : ℂ) + (y : ℝ) * I))‖ →
+        (⌊T ^ mu + 2 * R⌋₊ : ℝ) *
+            (Real.log ⌊T ^ mu + 2 * R⌋₊ / ⌊T ^ mu⌋₊) ≤
+          (((2 ^ Q : ℕ) : ℝ) * (T ^ mu) ^ (alpha - 1)) →
+        D ≤ 8 * (b - a) * (T ^ mu) ^ (alpha - 1) ∨
+          ∃ lam : ℕ → ℝ, ∃ S : Finset ℕ, ∃ q : ℕ,
+            (∀ i, lam i + 1 ≤ lam (i + 1)) ∧ q < Q ∧
+            (∀ r ∈ S, (((2 ^ q : ℕ) : ℝ) * (T ^ mu) ^ (alpha - 1)) ≤
+              ‖dirPoly ⌊T ^ mu + 2 * R⌋₊
+                (routeTVonMangoldtSliceCoeff ⌊T ^ mu⌋₊
+                  ⌊T ^ mu + 2 * R⌋₊) (lam r)‖) ∧
+            D / (32 * (Q : ℝ)) ≤
+              (((2 ^ q : ℕ) : ℝ) * (T ^ mu) ^ (alpha - 1)) *
+                (S.card : ℝ) ∧
+            (S.card : ℝ) ≤
+              T * (T ^ mu) ^ (1 + routeTGapMomentNu - 2 * alpha) := by
+  have hexact :=
+    eventually_physicalSlice_central_base_or_secondAlternative_of_adjacent_defect
+      (alpha := alpha) hmu heta hbudget
+  filter_upwards [hexact] with T hexactT
+  intro H R a b D Tord Q hH hR hHR hwidth hD hQ hab ha hbandTop hTord hTordN
+    hcentral hdefect hP
+  obtain ⟨n, delta, hn, hdelta, hdeltaTwo, hb⟩ :=
+    exists_even_cells_unit_two_of_two_le_length hab
+  have hTband : a + ((2 * n : ℕ) : ℝ) * delta + delta / 2 ≤ Tord := by
+    rw [← hb]
+    linarith
+  have hcentral' : ∀ y ∈ Set.Icc a
+      (a + ((2 * n : ℕ) : ℝ) * delta),
+      |y| ≤ T ^ mu / (2 * R) := by
+    simpa only [← hb] using hcentral
+  have hdefect' : D ≤ ‖∫ y in a..(a + ((2 * n : ℕ) : ℝ) * delta),
+      dirPoly ⌊T ^ mu + 2 * R⌋₊
+          (routeTVonMangoldtSliceCoeff ⌊T ^ mu⌋₊
+            ⌊T ^ mu + 2 * R⌋₊) (-y) *
+        (routeTNormalizedSmoothWindowMellin (T ^ mu) R
+            ((1 : ℂ) + (y : ℝ) * I) -
+          routeTNormalizedSmoothWindowMellin (T ^ mu) H
+            ((1 : ℂ) + (y : ℝ) * I))‖ := by
+    simpa only [← hb] using hdefect
+  have hout := hexactT hH hR hHR hwidth hdelta hD hQ hcentral' hdefect' hP
+    (by linarith) hTband hTord hTordN
+  rcases hout with hbase | hhigh
+  · left
+    have hscale : 0 < 16 * delta := by positivity
+    have hraw : D ≤ (n : ℝ) * (T ^ mu) ^ (alpha - 1) * (16 * delta) :=
+      (div_le_iff₀ hscale).mp hbase
+    calc
+      D ≤ (n : ℝ) * (T ^ mu) ^ (alpha - 1) * (16 * delta) := hraw
+      _ = 8 * (b - a) * (T ^ mu) ^ (alpha - 1) := by
+        rw [hb]
+        push_cast
+        ring
+  · right
+    obtain ⟨lam, S, q, hgap, _hS, hq, _hmem, hlarge, hmass, hcount⟩ := hhigh
+    have hgapOne : ∀ i, lam i + 1 ≤ lam (i + 1) := by
+      intro i
+      nlinarith [hgap i]
+    have hdenSmall : 0 < 16 * delta * (Q : ℝ) := by positivity
+    have hdenLarge : 16 * delta * (Q : ℝ) ≤ 32 * (Q : ℝ) := by
+      have hQR : (0 : ℝ) < Q := by exact_mod_cast hQ
+      nlinarith
+    have hmassWeak : D / (32 * (Q : ℝ)) ≤
+        (((2 ^ q : ℕ) : ℝ) * (T ^ mu) ^ (alpha - 1)) * (S.card : ℝ) := by
+      exact (div_le_div_of_nonneg_left hD.le hdenSmall hdenLarge).trans hmass
+    exact ⟨lam, S, q, hgapOne, hq, hlarge, hmassWeak, hcount⟩
+
+/-- Arbitrary outer interval.  The quadratic transition cost is retained exactly; no endpoint
+trimming or logarithmic loss survives. -/
+theorem exists_eventually_physicalSlice_tailInterval_base_or_secondAlternative
+    {mu alpha eta : ℝ} (hmu : 0 < mu) (heta : 0 < eta)
+    (hbudget : mu * (1 - routeTGapMomentNu) + eta ≤ 2) :
+    ∃ C : ℝ, 1 ≤ C ∧
+      ∀ᶠ T : ℝ in Filter.atTop,
+        ∀ {H R U a b D Tord : ℝ} {Q : ℕ},
+          0 < H → 1 ≤ R → H ≤ R → R ≤ 2 * H →
+          R ≤ 2 * T ^ mu / T → 0 < U →
+          0 < D → 0 < Q → a + 2 ≤ b → 1 ≤ a → b + 1 ≤ Tord →
+          0 ≤ Tord → Tord ≤ T ^ mu →
+          (∀ y ∈ Set.Icc a b, U ≤ |y|) →
+          D ≤ ‖∫ y in a..b,
+            dirPoly ⌊T ^ mu + 2 * R⌋₊
+                (routeTVonMangoldtSliceCoeff ⌊T ^ mu⌋₊
+                  ⌊T ^ mu + 2 * R⌋₊) (-y) *
+              (routeTNormalizedSmoothWindowMellin (T ^ mu) R
+                  ((1 : ℂ) + (y : ℝ) * I) -
+                routeTNormalizedSmoothWindowMellin (T ^ mu) H
+                  ((1 : ℂ) + (y : ℝ) * I))‖ →
+          (⌊T ^ mu + 2 * R⌋₊ : ℝ) *
+              (Real.log ⌊T ^ mu + 2 * R⌋₊ / ⌊T ^ mu⌋₊) ≤
+            (((2 ^ Q : ℕ) : ℝ) * (T ^ mu) ^ (alpha - 1)) →
+          D ≤ 2 * (b - a) *
+                (65 * C * ((T ^ mu) / R) ^ 2 / U ^ 2) *
+                  (T ^ mu) ^ (alpha - 1) ∨
+            ∃ lam : ℕ → ℝ, ∃ S : Finset ℕ, ∃ q : ℕ,
+              (∀ i, lam i + 1 ≤ lam (i + 1)) ∧ q < Q ∧
+              (∀ r ∈ S, (((2 ^ q : ℕ) : ℝ) * (T ^ mu) ^ (alpha - 1)) ≤
+                ‖dirPoly ⌊T ^ mu + 2 * R⌋₊
+                  (routeTVonMangoldtSliceCoeff ⌊T ^ mu⌋₊
+                    ⌊T ^ mu + 2 * R⌋₊) (lam r)‖) ∧
+              D /
+                  (8 * (65 * C * ((T ^ mu) / R) ^ 2 / U ^ 2) * (Q : ℝ)) ≤
+                (((2 ^ q : ℕ) : ℝ) * (T ^ mu) ^ (alpha - 1)) *
+                  (S.card : ℝ) ∧
+              (S.card : ℝ) ≤
+                T * (T ^ mu) ^ (1 + routeTGapMomentNu - 2 * alpha) := by
+  obtain ⟨C, hC, hexact⟩ :=
+    exists_eventually_physicalSlice_tail_base_or_secondAlternative_of_adjacent_defect
+      (alpha := alpha) hmu heta hbudget
+  refine ⟨C, hC, ?_⟩
+  have hTtwo : ∀ᶠ T : ℝ in Filter.atTop, 2 ≤ T := Filter.eventually_ge_atTop 2
+  filter_upwards [hexact, hTtwo] with T hexactT hTtwoT
+  intro H R U a b D Tord Q hH hR hHR hRH hwidth hU hD hQ hab ha hbandTop
+    hTord hTordN haway hdefect hP
+  obtain ⟨n, delta, hn, hdelta, hdeltaTwo, hb⟩ :=
+    exists_even_cells_unit_two_of_two_le_length hab
+  have hNpos : 0 < T ^ mu := Real.rpow_pos_of_pos (by linarith) _
+  have hRpos : 0 < R := by linarith
+  have hTband : a + ((2 * n : ℕ) : ℝ) * delta + delta / 2 ≤ Tord := by
+    rw [← hb]
+    linarith
+  have haway' : ∀ y ∈ Set.Icc a
+      (a + ((2 * n : ℕ) : ℝ) * delta), U ≤ |y| := by
+    simpa only [← hb] using haway
+  have hdefect' : D ≤ ‖∫ y in a..(a + ((2 * n : ℕ) : ℝ) * delta),
+      dirPoly ⌊T ^ mu + 2 * R⌋₊
+          (routeTVonMangoldtSliceCoeff ⌊T ^ mu⌋₊
+            ⌊T ^ mu + 2 * R⌋₊) (-y) *
+        (routeTNormalizedSmoothWindowMellin (T ^ mu) R
+            ((1 : ℂ) + (y : ℝ) * I) -
+          routeTNormalizedSmoothWindowMellin (T ^ mu) H
+            ((1 : ℂ) + (y : ℝ) * I))‖ := by
+    simpa only [← hb] using hdefect
+  have hout := hexactT hH hR hHR hRH hwidth hU hdelta hD hQ haway' hdefect' hP
+    (by linarith) hTband hTord hTordN
+  rcases hout with hbase | hhigh
+  · left
+    let M : ℝ := 65 * C * ((T ^ mu) / R) ^ 2 / U ^ 2
+    have hC0 : 0 < C := lt_of_lt_of_le zero_lt_one hC
+    have hM : 0 < M := by dsimp only [M]; positivity
+    have hscale : 0 < 4 * delta * M := by positivity
+    have hraw : D ≤ (n : ℝ) * (T ^ mu) ^ (alpha - 1) * (4 * delta * M) := by
+      exact (div_le_iff₀ hscale).mp (by simpa only [M] using hbase)
+    calc
+      D ≤ (n : ℝ) * (T ^ mu) ^ (alpha - 1) * (4 * delta * M) := hraw
+      _ = 2 * (b - a) * M * (T ^ mu) ^ (alpha - 1) := by
+        rw [hb]
+        push_cast
+        ring
+      _ = 2 * (b - a) *
+            (65 * C * ((T ^ mu) / R) ^ 2 / U ^ 2) *
+              (T ^ mu) ^ (alpha - 1) := by rfl
+  · right
+    obtain ⟨lam, S, q, hgap, _hS, hq, _hmem, hlarge, hmass, hcount⟩ := hhigh
+    let M : ℝ := 65 * C * ((T ^ mu) / R) ^ 2 / U ^ 2
+    have hC0 : 0 < C := lt_of_lt_of_le zero_lt_one hC
+    have hM : 0 < M := by dsimp only [M]; positivity
+    have hgapOne : ∀ i, lam i + 1 ≤ lam (i + 1) := by
+      intro i
+      nlinarith [hgap i]
+    have hdenSmall : 0 < 4 * delta * M * (Q : ℝ) := by positivity
+    have hdenLarge : 4 * delta * M * (Q : ℝ) ≤ 8 * M * (Q : ℝ) := by
+      have hQR : (0 : ℝ) < Q := by exact_mod_cast hQ
+      nlinarith
+    have hmassWeak : D / (8 * M * (Q : ℝ)) ≤
+        (((2 ^ q : ℕ) : ℝ) * (T ^ mu) ^ (alpha - 1)) * (S.card : ℝ) := by
+      exact (div_le_div_of_nonneg_left hD.le hdenSmall hdenLarge).trans
+        (by simpa only [M] using hmass)
+    refine ⟨lam, S, q, hgapOne, hq, hlarge, ?_, hcount⟩
+    simpa only [M] using hmassWeak
+
+/-- Pointwise envelope of the actual floor-truncated physical von-Mangoldt slice. -/
+def routeTPhysicalSliceEnvelope (N R : ℝ) : ℝ :=
+  (⌊N + 2 * R⌋₊ : ℝ) *
+    (Real.log ⌊N + 2 * R⌋₊ / ⌊N⌋₊)
+
+/-- Signed mass surviving the exact central and far-tail localization costs. -/
+def routeTPhysicalSliceLocalizationSurplus
+    (C N R U V D : ℝ) : ℝ :=
+  D - 16 * routeTPhysicalSliceEnvelope N R * (R / N) * U ^ 2 -
+    routeTPhysicalSliceEnvelope N R * (130 * C * (N / R) ^ 2 / V)
+
+/-- Full physical-slice receiver at the universal transition `N/(2R)`.  Central and outer wings
+share one conclusion because quadratic Mellin decay is exactly constant at that transition. -/
+theorem exists_eventually_physicalSlice_annulus_base_or_secondAlternative
+    {mu alpha eta : ℝ} (hmu : 0 < mu) (heta : 0 < eta)
+    (hbudget : mu * (1 - routeTGapMomentNu) + eta ≤ 2) :
+    ∃ Cloc Ccell : ℝ, 1 ≤ Cloc ∧ 1 ≤ Ccell ∧
+      ∀ᶠ T : ℝ in Filter.atTop,
+        ∀ {H R U V D Tord : ℝ} {Q : ℕ},
+          0 < H → 1 ≤ R → H ≤ R → R ≤ 2 * H →
+          R ≤ 2 * T ^ mu / T → 1 ≤ U →
+          U + 2 ≤ (T ^ mu) / (2 * R) →
+          (T ^ mu) / (2 * R) + 2 ≤ V →
+          V + 1 ≤ Tord → 0 ≤ Tord → Tord ≤ T ^ mu →
+          0 < routeTPhysicalSliceLocalizationSurplus
+            Cloc (T ^ mu) R U V D →
+          D ≤ ‖∫ y : ℝ,
+            dirPoly ⌊T ^ mu + 2 * R⌋₊
+                (routeTVonMangoldtSliceCoeff ⌊T ^ mu⌋₊
+                  ⌊T ^ mu + 2 * R⌋₊) (-y) *
+              (routeTNormalizedSmoothWindowMellin (T ^ mu) R
+                  ((1 : ℂ) + (y : ℝ) * I) -
+                routeTNormalizedSmoothWindowMellin (T ^ mu) H
+                  ((1 : ℂ) + (y : ℝ) * I))‖ →
+          routeTPhysicalSliceEnvelope (T ^ mu) R ≤
+            (((2 ^ Q : ℕ) : ℝ) * (T ^ mu) ^ (alpha - 1)) →
+          0 < Q →
+          routeTPhysicalSliceLocalizationSurplus
+                Cloc (T ^ mu) R U V D ≤
+              32 * ((T ^ mu) / (2 * R) - U) *
+                (T ^ mu) ^ (alpha - 1) ∨
+            routeTPhysicalSliceLocalizationSurplus
+                Cloc (T ^ mu) R U V D ≤
+              2080 * Ccell * (V - (T ^ mu) / (2 * R)) *
+                (T ^ mu) ^ (alpha - 1) ∨
+            ∃ lam : ℕ → ℝ, ∃ S : Finset ℕ, ∃ q : ℕ,
+              (∀ i, lam i + 1 ≤ lam (i + 1)) ∧ q < Q ∧
+              (∀ r ∈ S, (((2 ^ q : ℕ) : ℝ) * (T ^ mu) ^ (alpha - 1)) ≤
+                ‖dirPoly ⌊T ^ mu + 2 * R⌋₊
+                  (routeTVonMangoldtSliceCoeff ⌊T ^ mu⌋₊
+                    ⌊T ^ mu + 2 * R⌋₊) (lam r)‖) ∧
+              routeTPhysicalSliceLocalizationSurplus
+                    Cloc (T ^ mu) R U V D /
+                  (8320 * Ccell * (Q : ℝ)) ≤
+                (((2 ^ q : ℕ) : ℝ) * (T ^ mu) ^ (alpha - 1)) *
+                  (S.card : ℝ) ∧
+              (S.card : ℝ) ≤
+                T * (T ^ mu) ^ (1 + routeTGapMomentNu - 2 * alpha) := by
+  obtain ⟨Cloc, hCloc, hlocalize⟩ :=
+    exists_positive_interval_norm_ge_quarter_of_physicalSlice_annulus
+  obtain ⟨Ccell, hCcell, houter⟩ :=
+    exists_eventually_physicalSlice_tailInterval_base_or_secondAlternative
+      (alpha := alpha) hmu heta hbudget
+  have hcentral := eventually_physicalSlice_centralInterval_base_or_secondAlternative
+    (alpha := alpha) hmu heta hbudget
+  refine ⟨Cloc, Ccell, hCloc, hCcell, ?_⟩
+  have hTtwo : ∀ᶠ T : ℝ in Filter.atTop, 2 ≤ T := Filter.eventually_ge_atTop 2
+  have hNtop : Filter.Tendsto (fun T : ℝ => T ^ mu) Filter.atTop Filter.atTop :=
+    tendsto_rpow_atTop hmu
+  have hNtwo : ∀ᶠ T : ℝ in Filter.atTop, 2 ≤ T ^ mu :=
+    (Filter.tendsto_atTop.1 hNtop) 2
+  filter_upwards [houter, hcentral, hTtwo, hNtwo] with T houterT hcentralT hTtwoT hNtwoT
+  intro H R U V D Tord Q hH hR hHR hRH hwidth hU hcentralLen houterLen
+    hTordTop hTord hTordN hsurplus hfull hP hQ
+  let N : ℝ := T ^ mu
+  let A : ℕ := ⌊N⌋₊
+  let B : ℕ := ⌊N + 2 * R⌋₊
+  let W : ℝ := N / (2 * R)
+  let E : ℝ := routeTPhysicalSliceLocalizationSurplus Cloc N R U V D
+  let v : ℝ := N ^ (alpha - 1)
+  have hT0 : 0 < T := by linarith
+  have hN0 : 0 < N := by dsimp only [N]; positivity
+  have hNtwoN : 2 ≤ N := by simpa only [N] using hNtwoT
+  have hR0 : 0 < R := by linarith
+  have hU0 : 0 < U := by linarith
+  have hW0 : 0 < W := by dsimp only [W]; positivity
+  have hV0 : 0 < V := by
+    change W + 2 ≤ V at houterLen
+    linarith
+  have hRN : R ≤ N := by
+    calc
+      R ≤ 2 * N / T := by simpa only [N] using hwidth
+      _ ≤ N := by
+        rw [div_le_iff₀ hT0]
+        nlinarith
+  have hUW : U ≤ W := by
+    dsimp only [W, N]
+    linarith
+  have hWV : W ≤ V := by
+    dsimp only [W, N]
+    linarith
+  have hWone : 1 ≤ W := hU.trans hUW
+  have hA : 1 ≤ A := by
+    have hfloor : N < (A : ℝ) + 1 := by
+      dsimp only [A]
+      exact Nat.lt_floor_add_one N
+    have hAcast : (1 : ℝ) ≤ (A : ℝ) := by linarith
+    exact_mod_cast hAcast
+  have hsmall : U * (2 * R / N) ≤ 1 := by
+    have hfac : 0 < 2 * R / N := by positivity
+    calc
+      U * (2 * R / N) ≤ W * (2 * R / N) :=
+        mul_le_mul_of_nonneg_right hUW hfac.le
+      _ = 1 := by
+        dsimp only [W]
+        field_simp
+  have hwingRaw := hlocalize (A := A) (B := B) hA hN0 hH hR0 hHR hRH hRN
+    (by linarith) hUW hWV hV0 hsmall (by simpa only [A, B, N] using hfull)
+  have hwing : E / 4 ≤ ‖∫ y in U..W,
+        dirPoly B (routeTVonMangoldtSliceCoeff A B) (-y) *
+          (routeTNormalizedSmoothWindowMellin N R
+              ((1 : ℂ) + (y : ℝ) * I) -
+            routeTNormalizedSmoothWindowMellin N H
+              ((1 : ℂ) + (y : ℝ) * I))‖ ∨
+      E / 4 ≤ ‖∫ y in W..V,
+        dirPoly B (routeTVonMangoldtSliceCoeff A B) (-y) *
+          (routeTNormalizedSmoothWindowMellin N R
+              ((1 : ℂ) + (y : ℝ) * I) -
+            routeTNormalizedSmoothWindowMellin N H
+              ((1 : ℂ) + (y : ℝ) * I))‖ := by
+    simpa only [E, routeTPhysicalSliceLocalizationSurplus,
+      routeTPhysicalSliceEnvelope, A, B, N, W] using hwingRaw
+  have hE : 0 < E := by simpa only [E, N] using hsurplus
+  have hEQ : (0 : ℝ) < Q := by exact_mod_cast hQ
+  rcases hwing with hcentralWing | houterWing
+  · have hcentralBand : ∀ y ∈ Set.Icc U W, |y| ≤ N / (2 * R) := by
+      intro y hy
+      have hy0 : 0 ≤ y := hU0.le.trans hy.1
+      rw [abs_of_nonneg hy0]
+      simpa only [W] using hy.2
+    have hcentralOut := hcentralT (D := E / 4) hH hR hHR
+      (by simpa only [N] using hwidth) (by positivity) hQ
+      (by simpa only [W, N] using hcentralLen) hU
+      (by dsimp only [W, N]; linarith) hTord
+      (by simpa only [N] using hTordN) hcentralBand
+      (by simpa only [A, B, N, W] using hcentralWing)
+      (by simpa only [routeTPhysicalSliceEnvelope, A, B, N, v] using hP)
+    rcases hcentralOut with hbase | hhigh
+    · left
+      dsimp only [E, v, W, N] at hbase ⊢
+      linarith
+    · right; right
+      obtain ⟨lam, S, q, hgap, hq, hlarge, hmass, hcount⟩ := hhigh
+      have hdenSmall : 0 < 128 * (Q : ℝ) := by positivity
+      have hdenLarge : 128 * (Q : ℝ) ≤ 8320 * Ccell * (Q : ℝ) := by
+        nlinarith
+      have hmassWeak : E / (8320 * Ccell * (Q : ℝ)) ≤
+          (((2 ^ q : ℕ) : ℝ) * v) * (S.card : ℝ) := by
+        have hmass' : E / (128 * (Q : ℝ)) ≤
+            (((2 ^ q : ℕ) : ℝ) * v) * (S.card : ℝ) := by
+          convert hmass using 1 <;> ring
+        exact (div_le_div_of_nonneg_left hE.le hdenSmall hdenLarge).trans hmass'
+      refine ⟨lam, S, q, hgap, hq, ?_, ?_, ?_⟩
+      · simpa only [A, B, N, v] using hlarge
+      · simpa only [E, N, v] using hmassWeak
+      · simpa only [N] using hcount
+  · have haway : ∀ y ∈ Set.Icc W V, W ≤ |y| := by
+      intro y hy
+      have hy0 : 0 ≤ y := hW0.le.trans hy.1
+      rw [abs_of_nonneg hy0]
+      exact hy.1
+    have houterOut := houterT (D := E / 4) (U := W) (a := W) (b := V)
+      hH hR hHR hRH
+      (by simpa only [N] using hwidth) hW0 (by positivity) hQ
+      (by simpa only [W, N] using houterLen) hWone hTordTop hTord
+      (by simpa only [N] using hTordN) haway
+      (by simpa only [A, B, N, W] using houterWing)
+      (by simpa only [routeTPhysicalSliceEnvelope, A, B, N, v] using hP)
+    have htransition :
+        65 * Ccell * (N / R) ^ 2 / W ^ 2 = 260 * Ccell := by
+      dsimp only [W]
+      field_simp
+      ring
+    rcases houterOut with hbase | hhigh
+    · right; left
+      dsimp only [E, v, N] at hbase ⊢
+      rw [htransition] at hbase
+      linarith
+    · right; right
+      obtain ⟨lam, S, q, hgap, hq, hlarge, hmass, hcount⟩ := hhigh
+      have hmass' : E / (8320 * Ccell * (Q : ℝ)) ≤
+          (((2 ^ q : ℕ) : ℝ) * v) * (S.card : ℝ) := by
+        rw [htransition] at hmass
+        convert hmass using 1 <;> ring
+      refine ⟨lam, S, q, hgap, hq, ?_, ?_, ?_⟩
+      · simpa only [A, B, N, v] using hlarge
+      · simpa only [E, N, v] using hmass'
+      · simpa only [N] using hcount
+
 end RHTower.Sieve

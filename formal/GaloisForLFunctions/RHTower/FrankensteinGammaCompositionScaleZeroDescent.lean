@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.FrankensteinSourceGammaCenteredMonodromyCartier
+import GaloisForLFunctions.RHTower.XiDepthSuccessorStokesNormalLayer
 import GaloisForLFunctions.HTGeometry.GammaMultiplication
 
 /-!
@@ -25,6 +26,8 @@ open Complex Filter Set Topology
 namespace RHTower
 
 noncomputable section
+
+open GaloisForLFunctions.HTGeometry
 
 /-! ## Ordinary Gamma composition is too weak -/
 
@@ -176,6 +179,56 @@ theorem frankensteinXiTwoOrientationUnitalScaleZeroDescendsAt_constructs_reporte
   apply (primeGammaTwoThreeSourceNaturalReporter_nonempty_iff _).2
   apply (primeGammaTwoThreeSourceNaturalInverseGhost_iff _).2
   exact (sourceCenteredTwoOrientationUnitalScaleZeroDescent_iff _).1 h
+
+/-! ## Exact identification with the multiplicity-faithful Xi nearby layer -/
+
+/-- Fixed-fibre equality of the actual source-inverse and analytic-adjoint nearby-cycle profiles.
+Unlike equality of orders, norms, or transported reflection fibres, this retains both pole
+locations and the full Xi multiplicity. -/
+def FrankensteinXiInverseAdjointNearbyCycleDescendsAt
+    (rho : XiDivisorSupport) : Prop :=
+  depthSuccessorNearbyCycle (-((rho : ℂ) - 1 / 2))
+      (analyticOrderAt xi (rho : ℂ)).toNat =
+    depthSuccessorNearbyCycle
+      ((starRingEnd ℂ) ((rho : ℂ) - 1 / 2))
+      (analyticOrderAt xi (rho : ℂ)).toNat
+
+/-- Equality of the two rational normal profiles is exactly critical-line placement. -/
+theorem frankensteinXiInverseAdjointNearbyCycleDescendsAt_iff
+    (rho : XiDivisorSupport) :
+    FrankensteinXiInverseAdjointNearbyCycleDescendsAt rho ↔
+      (rho : ℂ).re = 1 / 2 := by
+  constructor
+  · intro h
+    exact criticalLine_of_inverse_adjoint_nearbyCycle_eq
+      (xi_eq_zero_of_mem_divisor_support rho) h
+  · intro hline
+    have hshift : -((rho : ℂ) - 1 / 2) =
+        (starRingEnd ℂ) ((rho : ℂ) - 1 / 2) := by
+      apply Complex.ext
+      · simp [hline]
+      · simp
+    unfold FrankensteinXiInverseAdjointNearbyCycleDescendsAt
+    rw [hshift]
+
+/-- Cross-corpus identification: source-zero regularity and equality of the two genuine Xi normal
+layers are one producer, not merely two conditions with the same global RH endpoint. -/
+theorem frankensteinXiTwoOrientationUnitalScaleZeroDescendsAt_iff_nearbyCycle
+    (rho : XiDivisorSupport) :
+    FrankensteinXiTwoOrientationUnitalScaleZeroDescendsAt rho ↔
+      FrankensteinXiInverseAdjointNearbyCycleDescendsAt rho := by
+  rw [frankensteinXiTwoOrientationUnitalScaleZeroDescendsAt_iff,
+    frankensteinXiInverseAdjointNearbyCycleDescendsAt_iff]
+
+/-- A same-fibre nearby-cycle descent constructs the requested source-natural Gamma reporter. -/
+theorem frankensteinXiInverseAdjointNearbyCycleDescendsAt_constructs_reporter
+    (rho : XiDivisorSupport)
+    (h : FrankensteinXiInverseAdjointNearbyCycleDescendsAt rho) :
+    Nonempty
+      (PrimeGammaTwoThreeSourceNaturalReporter
+        (primeDepthBVWoldXiCenteredRate rho)) := by
+  apply frankensteinXiTwoOrientationUnitalScaleZeroDescendsAt_constructs_reporter rho
+  exact (frankensteinXiTwoOrientationUnitalScaleZeroDescendsAt_iff_nearbyCycle rho).2 h
 
 def EveryFrankensteinXiTwoOrientationUnitalScaleZeroDescends : Prop :=
   ∀ rho : XiDivisorSupport,

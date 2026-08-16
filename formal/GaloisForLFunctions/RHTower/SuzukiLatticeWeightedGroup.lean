@@ -59,26 +59,35 @@ theorem norm_le_of_forall_finset_sum_sq_le {f : H} {K : ℝ} (hK : 0 ≤ K)
 
 /-! ## Truncation to finitely many labels -/
 
+omit [Fintype P] [DecidableEq P] in
 /-- The truncation of a field to a finite set of labels. -/
 def truncField (S : Finset (P → ℤ)) (f : (P → ℤ) → ℂ) : (P → ℤ) → ℂ :=
-  fun r => if r ∈ S then f r else 0
+  Set.indicator (↑S : Set (P → ℤ)) f
 
+omit [Fintype P] [DecidableEq P] in
 theorem support_truncField_finite (S : Finset (P → ℤ)) (f : (P → ℤ) → ℂ) :
-    (Function.support (truncField S f)).Finite := by
-  refine Set.Finite.subset S.finite_toSet ?_
-  intro r hr
-  simp only [Function.mem_support, truncField] at hr
-  by_contra hc
-  exact hr (if_neg (by simpa using hc))
+    (Function.support (truncField S f)).Finite :=
+  Set.Finite.subset S.finite_toSet Set.support_indicator_subset
 
+omit [Fintype P] [DecidableEq P] in
+theorem norm_truncField_le (S : Finset (P → ℤ)) (f : (P → ℤ) → ℂ) (r : P → ℤ) :
+    ‖truncField S f r‖ ≤ ‖f r‖ := by
+  by_cases hr : r ∈ (↑S : Set (P → ℤ))
+  · rw [truncField, Set.indicator_of_mem hr]
+  · rw [truncField, Set.indicator_of_notMem hr, norm_zero]
+    exact norm_nonneg _
+
+omit [Fintype P] [DecidableEq P] in
 /-- The truncation of an `ℓ²` field, as an `ℓ²` field. -/
 def truncL2 (S : Finset (P → ℤ)) (v : H) : H :=
   l2OfFinSupp (truncField S ((v : H) : (P → ℤ) → ℂ)) (support_truncField_finite S _)
 
+omit [Fintype P] [DecidableEq P] in
 @[simp]
 theorem coe_truncL2 (S : Finset (P → ℤ)) (v : H) :
     ((truncL2 S v : H) : (P → ℤ) → ℂ) = truncField S ((v : H) : (P → ℤ) → ℂ) := rfl
 
+omit [DecidableEq P] in
 /-- **Truncations converge.**  Every `ℓ²` field is the limit of its finite truncations. -/
 theorem tendsto_truncL2 (v : H) :
     Filter.Tendsto (fun S : Finset (P → ℤ) => (truncL2 S v : H)) Filter.atTop (nhds v) := by
@@ -87,8 +96,11 @@ theorem tendsto_truncL2 (v : H) :
   refine Filter.Tendsto.congr (fun S => ?_) h
   refine lp.ext ?_
   funext r
-  rw [coe_truncL2, lp.coeFn_sum, Finset.sum_apply]
-  simp only [truncField, lp.single_apply, Pi.single_apply, Finset.sum_ite_eq]
+  rw [lp.coeFn_sum, Finset.sum_apply, coe_truncL2]
+  simp only [lp.single_apply, Pi.single_apply, Finset.sum_ite_eq, truncField]
+  by_cases hr : r ∈ S
+  · rw [if_pos hr, Set.indicator_of_mem (by simpa using hr)]
+  · rw [if_neg hr, Set.indicator_of_notMem (by simpa using hr)]
 
 /-! ## The reciprocal shell weight -/
 
@@ -96,12 +108,12 @@ theorem tendsto_truncL2 (v : H) :
 def invShellField (m : ℕ) (ψ : (P → ℤ) → ℂ) : (P → ℤ) → ℂ :=
   fun r => ((shellWeight m r : ℝ) : ℂ)⁻¹ * ψ r
 
-omit [Fintype P] [DecidableEq P] in
+omit [DecidableEq P] in
 theorem ofReal_shellWeight_ne_zero (m : ℕ) (r : P → ℤ) :
     ((shellWeight m r : ℝ) : ℂ) ≠ 0 := by
   simpa using (shellWeight_pos m r).ne'
 
-omit [Fintype P] [DecidableEq P] in
+omit [DecidableEq P] in
 /-- The reciprocal shell weight is a contraction. -/
 theorem norm_invShellField_le (m : ℕ) (ψ : (P → ℤ) → ℂ) (r : P → ℤ) :
     ‖invShellField m ψ r‖ ≤ ‖ψ r‖ := by
@@ -113,7 +125,7 @@ theorem norm_invShellField_le (m : ℕ) (ψ : (P → ℤ) → ℂ) (r : P → �
     exact one_le_shellWeight m r
   nlinarith [norm_nonneg (ψ r)]
 
-omit [Fintype P] [DecidableEq P] in
+omit [DecidableEq P] in
 /-- The shell weight undoes the reciprocal shell weight. -/
 theorem shellWeightField_invShellField (m : ℕ) (ψ : (P → ℤ) → ℂ) :
     shellWeightField m (invShellField m ψ) = ψ := by
@@ -121,7 +133,7 @@ theorem shellWeightField_invShellField (m : ℕ) (ψ : (P → ℤ) → ℂ) :
   simp only [shellWeightField, invShellField, ← mul_assoc,
     mul_inv_cancel₀ (ofReal_shellWeight_ne_zero (P := P) m r), one_mul]
 
-omit [Fintype P] [DecidableEq P] in
+omit [DecidableEq P] in
 /-- The reciprocal shell weight undoes the shell weight. -/
 theorem invShellField_shellWeightField (m : ℕ) (ψ : (P → ℤ) → ℂ) :
     invShellField m (shellWeightField m ψ) = ψ := by
@@ -129,18 +141,18 @@ theorem invShellField_shellWeightField (m : ℕ) (ψ : (P → ℤ) → ℂ) :
   simp only [shellWeightField, invShellField, ← mul_assoc,
     inv_mul_cancel₀ (ofReal_shellWeight_ne_zero (P := P) m r), one_mul]
 
-omit [Fintype P] [DecidableEq P] in
+omit [DecidableEq P] in
 /-- The reciprocal shell weight of an `ℓ²` field. -/
 def invShellL2 (m : ℕ) (ψ : H) : H :=
   ⟨invShellField m ((ψ : H) : (P → ℤ) → ℂ),
     memℓp_of_norm_le (u := ψ) fun r => norm_invShellField_le m _ r⟩
 
-omit [Fintype P] [DecidableEq P] in
+omit [DecidableEq P] in
 @[simp]
 theorem coe_invShellL2 (m : ℕ) (ψ : H) :
     ((invShellL2 m ψ : H) : (P → ℤ) → ℂ) = invShellField m ((ψ : H) : (P → ℤ) → ℂ) := rfl
 
-omit [Fintype P] [DecidableEq P] in
+omit [DecidableEq P] in
 /-- **The reciprocal shell weight as a diagonal operator.** -/
 def invShellLM (m : ℕ) : H →ₗ[ℂ] H where
   toFun := invShellL2 m
@@ -156,7 +168,7 @@ def invShellLM (m : ℕ) : H →ₗ[ℂ] H where
       RingHom.id_apply]
     ring
 
-omit [Fintype P] [DecidableEq P] in
+omit [DecidableEq P] in
 @[simp]
 theorem coe_invShellLM (m : ℕ) (ψ : H) :
     ((invShellLM m ψ : H) : (P → ℤ) → ℂ) = invShellField m ((ψ : H) : (P → ℤ) → ℂ) := rfl
@@ -225,11 +237,8 @@ theorem exists_shellWeighted_exp {Q : Finset (P → ℤ)} {c : (P → ℤ) → �
           (support_shellWeightField_subset m _)) : H)‖ ≤ ‖u‖ := by
       refine lp.norm_mono (by norm_num) fun r => ?_
       rw [coe_l2OfFinSupp, hu]
-      simp only [shellWeightField, truncField]
-      by_cases hr : r ∈ S
-      · simp [hr]
-      · simp only [hr, if_false, mul_zero, norm_zero]
-        positivity
+      simp only [shellWeightField, norm_mul]
+      exact mul_le_mul_of_nonneg_left (norm_truncField_le S _ r) (norm_nonneg _)
     have hwSK : ‖wS‖ ≤ K := by
       refine le_trans hwSn ?_
       rw [hKdef]
@@ -333,13 +342,13 @@ theorem exists_norm_invShell_exp_le {Q : Finset (P → ℤ)} {c : (P → ℤ) �
     refine tsum_congr fun r => ?_
     have hne := ofReal_shellWeight_ne_zero (P := P) m r
     simp only [RCLike.inner_apply, coe_invShellLM, congrFun hw'coe r, invShellField,
-      shellWeightField, map_mul, map_inv₀, Complex.conj_ofReal]
+      shellWeightField, map_mul, Complex.conj_ofReal]
     field_simp
   have hDη : (0 : ℝ) ≤ ‖invShellLM (P := P) m η‖ := norm_nonneg _
   have hcoef : (0 : ℝ) ≤ C * (1 + |x|) ^ m := mul_nonneg hC (by positivity)
   have hnormsq : ‖w‖ ^ 2 = ‖(inner ℂ w w : ℂ)‖ := by
-    rw [inner_self_eq_norm_sq_to_K, norm_pow, Complex.norm_real,
-      Real.norm_of_nonneg (norm_nonneg w)]
+    rw [inner_self_eq_norm_sq_to_K, norm_pow]
+    simp
   have hfinal : ‖w‖ ^ 2 ≤ (C * (1 + |x|) ^ m * ‖invShellLM (P := P) m η‖) * ‖w‖ := by
     rw [hnormsq, ← hinner1, hinner2, hinner3]
     refine le_trans (norm_inner_le_norm _ _) ?_
@@ -353,6 +362,7 @@ theorem exists_norm_invShell_exp_le {Q : Finset (P → ℤ)} {c : (P → ℤ) �
     exact mul_nonneg hcoef hDη
   · nlinarith [hfinal, h0]
 
+omit [DecidableEq P] in
 /-- **`(18)`: the weighted evolution.**  The continuous extension of `D_w e^{-ixA} D_w^{-1}`, where
 `D_w` is multiplication by `⟨X⟩^{-m}`. -/
 def weightedEvolution (Q : Finset (P → ℤ)) (c : (P → ℤ) → ℂ) (m : ℕ) (x : ℝ) : H →L[ℂ] H :=

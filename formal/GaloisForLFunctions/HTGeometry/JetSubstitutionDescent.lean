@@ -244,6 +244,199 @@ theorem jetSubstitution_aeval (R : RatFunc C) (hR : substitutionDeriv R ≠ 0) {
           Polynomial.X_comp]
       rw [hX, map_mul, map_pow, Polynomial.aeval_C, aeval_substitutionAffine,
         jetSubstitution_jet, jetSubstitution_algebraMap_prefix]
+      rfl
+
+/-! ## Eigen-relations and their descent -/
+
+/-- An **eigen-relation** for the substitution: a nonzero element of order at most `M`, multiplied
+by an integer power of the derivative factor, is a constant multiple of itself. -/
+def SubstitutionEigen (R : RatFunc C) (hR : substitutionDeriv R ≠ 0) (M : ℕ) (κ : ℤ)
+    (w : JetField C Unit) (lam : C) : Prop :=
+  w ≠ 0 ∧ (∀ j : ℕ, M < j → JetField.pd ((), j) w = 0) ∧
+    jetSubstitution R hR w * substitutionDeriv R ^ κ = algebraMap C (JetField C Unit) lam * w
+
+/-- An eigen-relation of order zero is exactly an invariant differential. -/
+theorem isInvariantDifferential_iff_substitutionEigen (R : RatFunc C)
+    (hR : substitutionDeriv R ≠ 0) (k : ℤ) (q : JetField C Unit) (lam : C) :
+    IsInvariantDifferential R hR k q lam ↔ SubstitutionEigen R hR 0 k q lam := Iff.rfl
+
+/-- **The coprime slicing of an eigen-relation.**  At order `M ≥ 1` an eigen-relation presents its
+element as a coprime fraction in the top jet coordinate over the prefix field, and coprimality
+splits the relation into two scalar relations linked by the eigenvalue. -/
+theorem exists_coprime_slicing (R : RatFunc C) (hR : substitutionDeriv R ≠ 0)
+    {M : ℕ} (hM : 1 ≤ M) {κ : ℤ} {w : JetField C Unit} {lam : C} (hlam : lam ≠ 0)
+    (h : SubstitutionEigen R hR M κ w lam) :
+    ∃ (P Q : Polynomial ↥(jetPrefixField C M)) (c d : ↥(jetPrefixField C M)),
+      P ≠ 0 ∧ Q ≠ 0 ∧ IsCoprime P Q ∧ c ≠ 0 ∧ d ≠ 0 ∧
+      w = Polynomial.aeval (JetField.jet ((), M) : JetField C Unit) P
+            / Polynomial.aeval (JetField.jet ((), M) : JetField C Unit) Q ∧
+      twistComp (jetSubstitutionPrefix R hR M).toRingHom (substitutionAffine R hM) P
+        = Polynomial.C c * P ∧
+      twistComp (jetSubstitutionPrefix R hR M).toRingHom (substitutionAffine R hM) Q
+        = Polynomial.C d * Q ∧
+      c * substitutionDerivPrefix R hM ^ κ
+        = algebraMap C ↥(jetPrefixField C M) lam * d := by
+  classical
+  obtain ⟨hw0, hwo, heig⟩ := h
+  set F : IntermediateField C (JetField C Unit) := jetPrefixField C M with hFdef
+  set y : JetField C Unit := JetField.jet ((), M) with hydef
+  have htr : Transcendental (↥F) y := transcendental_jet_over_jetPrefixField M
+  have hinj : Function.Injective (Polynomial.aeval (R := ↥F) y) :=
+    transcendental_iff_injective.mp htr
+  have hmem : w ∈ IntermediateField.adjoin (↥F) ({y} : Set (JetField C Unit)) :=
+    mem_adjoin_jet_of_order hwo
+  set f : RatFunc ↥F := (RatFunc.algEquivOfTranscendental y htr).symm ⟨w, hmem⟩ with hfdef
+  have hxeval : ratFuncEval y htr f = w := by
+    simp only [ratFuncEval, AlgHom.comp_apply, AlgEquiv.coe_toAlgHom, hfdef,
+      AlgEquiv.apply_symm_apply]
+    rfl
+  set P : Polynomial ↥F := f.num with hPdef
+  set Q : Polynomial ↥F := f.denom with hQdef
+  have hQ0 : Q ≠ 0 := RatFunc.denom_ne_zero f
+  have hcop : IsCoprime P Q := RatFunc.isCoprime_num_denom f
+  have hQy : Polynomial.aeval y Q ≠ 0 := fun hh => hQ0 (hinj (by simpa using hh))
+  have hwdiv : w = Polynomial.aeval y P / Polynomial.aeval y Q := by
+    rw [← hxeval, ratFuncEval_eq_div]
+  have hP0 : P ≠ 0 := by
+    intro hh
+    exact hw0 (by rw [hwdiv, hh, map_zero, zero_div])
+  have hPy : Polynomial.aeval y P ≠ 0 := fun hh => hP0 (hinj (by simpa using hh))
+  set Φ : ↥F →+* ↥F := (jetSubstitutionPrefix R hR M).toRingHom with hΦdef
+  set T : Polynomial ↥F := substitutionAffine R hM with hTdef
+  have hT : T.natDegree = 1 := natDegree_substitutionAffine R hR hM
+  set ρF : ↥F := substitutionDerivPrefix R hM with hρFdef
+  have hρF : ρF ≠ 0 := substitutionDerivPrefix_ne_zero R hR hM
+  have hρval : (algebraMap ↥F (JetField C Unit)) ρF = substitutionDeriv R := rfl
+  set μ : ↥F := ρF ^ κ with hμdef
+  set ν : ↥F := algebraMap C ↥F lam with hνdef
+  have hμ0 : μ ≠ 0 := zpow_ne_zero _ hρF
+  have hν0 : ν ≠ 0 := by
+    rw [hνdef]
+    exact fun hh => hlam ((algebraMap C ↥F).injective (by rw [hh, map_zero]))
+  have hμval : (algebraMap ↥F (JetField C Unit)) μ = substitutionDeriv R ^ κ := by
+    rw [hμdef, map_zpow₀, hρval]
+  have hνval : (algebraMap ↥F (JetField C Unit)) ν = algebraMap C (JetField C Unit) lam := by
+    rw [hνdef, ← IsScalarTower.algebraMap_apply]
+  have hTQ0 : twistComp Φ T Q ≠ 0 := twistComp_ne_zero Φ hT hQ0
+  have hTQy : Polynomial.aeval y (twistComp Φ T Q) ≠ 0 :=
+    fun hh => hTQ0 (hinj (by simpa using hh))
+  have hsub : jetSubstitution R hR w
+      = Polynomial.aeval y (twistComp Φ T P) / Polynomial.aeval y (twistComp Φ T Q) := by
+    rw [hwdiv, map_div₀, jetSubstitution_aeval R hR hM, jetSubstitution_aeval R hR hM]
+  rw [hsub, hwdiv, ← hμval, ← hνval] at heig
+  have hcrossJ : Polynomial.aeval y (twistComp Φ T P * Polynomial.C μ * Q)
+      = Polynomial.aeval y (Polynomial.C ν * P * twistComp Φ T Q) := by
+    simp only [map_mul, Polynomial.aeval_C]
+    field_simp at heig
+    linear_combination heig
+  have hcross := hinj hcrossJ
+  obtain ⟨c, d, hc0, hd0, hcP, hdQ, hcd⟩ :=
+    exists_scalars_of_twisted_cross Φ hT hP0 hQ0 hcop hμ0 hν0 hcross
+  exact ⟨P, Q, c, d, hP0, hQ0, hcop, hc0, hd0, hwdiv, hcP, hdQ, hcd⟩
+
+/-- **The leading-coefficient relation.**  The ratio of the two leading coefficients of a split
+eigen-relation satisfies an eigen-relation one order lower, with the exponent on the derivative
+factor shifted by the difference of the degrees. -/
+theorem substitutionEigen_leadingRatio (R : RatFunc C) (hR : substitutionDeriv R ≠ 0)
+    {M : ℕ} (hM : 1 ≤ M) {κ : ℤ} {lam : C}
+    {P Q : Polynomial ↥(jetPrefixField C M)} {c d : ↥(jetPrefixField C M)}
+    (hP0 : P ≠ 0) (hQ0 : Q ≠ 0)
+    (hcP : twistComp (jetSubstitutionPrefix R hR M).toRingHom (substitutionAffine R hM) P
+      = Polynomial.C c * P)
+    (hdQ : twistComp (jetSubstitutionPrefix R hR M).toRingHom (substitutionAffine R hM) Q
+      = Polynomial.C d * Q)
+    (hcd : c * substitutionDerivPrefix R hM ^ κ
+      = algebraMap C ↥(jetPrefixField C M) lam * d) :
+    SubstitutionEigen R hR (M - 1) (κ + (P.natDegree : ℤ) - (Q.natDegree : ℤ))
+      (algebraMap ↥(jetPrefixField C M) (JetField C Unit)
+        (P.leadingCoeff / Q.leadingCoeff)) lam := by
+  have hρF : substitutionDerivPrefix R hM ≠ 0 := substitutionDerivPrefix_ne_zero R hR hM
+  have hρval : (algebraMap ↥(jetPrefixField C M) (JetField C Unit))
+      (substitutionDerivPrefix R hM) = substitutionDeriv R := rfl
+  have hνval : (algebraMap ↥(jetPrefixField C M) (JetField C Unit))
+      (algebraMap C ↥(jetPrefixField C M) lam) = algebraMap C (JetField C Unit) lam := by
+    rw [← IsScalarTower.algebraMap_apply]
+  have hT : (substitutionAffine R hM).natDegree = 1 := natDegree_substitutionAffine R hR hM
+  have hTlead : (substitutionAffine R hM).leadingCoeff = substitutionDerivPrefix R hM :=
+    leadingCoeff_substitutionAffine R hR hM
+  have hp0 : P.leadingCoeff ≠ 0 := Polynomial.leadingCoeff_ne_zero.mpr hP0
+  have hq0 : Q.leadingCoeff ≠ 0 := Polynomial.leadingCoeff_ne_zero.mpr hQ0
+  have hlp : (jetSubstitutionPrefix R hR M).toRingHom P.leadingCoeff
+      * substitutionDerivPrefix R hM ^ P.natDegree = c * P.leadingCoeff := by
+    have h1 := leadingCoeff_twistComp (jetSubstitutionPrefix R hR M).toRingHom hT P
+    rw [hcP, hTlead, Polynomial.leadingCoeff_mul, Polynomial.leadingCoeff_C] at h1
+    exact h1.symm
+  have hlq : (jetSubstitutionPrefix R hR M).toRingHom Q.leadingCoeff
+      * substitutionDerivPrefix R hM ^ Q.natDegree = d * Q.leadingCoeff := by
+    have h1 := leadingCoeff_twistComp (jetSubstitutionPrefix R hR M).toRingHom hT Q
+    rw [hdQ, hTlead, Polynomial.leadingCoeff_mul, Polynomial.leadingCoeff_C] at h1
+    exact h1.symm
+  have hinjΦ : Function.Injective (jetSubstitutionPrefix R hR M).toRingHom :=
+    (jetSubstitutionPrefix R hR M).toRingHom.injective
+  have hΦp0 : (jetSubstitutionPrefix R hR M).toRingHom P.leadingCoeff ≠ 0 :=
+    fun hh => hp0 ((map_eq_zero_iff _ hinjΦ).mp hh)
+  have hΦq0 : (jetSubstitutionPrefix R hR M).toRingHom Q.leadingCoeff ≠ 0 :=
+    fun hh => hq0 ((map_eq_zero_iff _ hinjΦ).mp hh)
+  have hkey : (jetSubstitutionPrefix R hR M).toRingHom (P.leadingCoeff / Q.leadingCoeff)
+      * substitutionDerivPrefix R hM ^ (κ + (P.natDegree : ℤ) - (Q.natDegree : ℤ))
+      = algebraMap C ↥(jetPrefixField C M) lam * (P.leadingCoeff / Q.leadingCoeff) := by
+    have hzp : substitutionDerivPrefix R hM ^ (κ + (P.natDegree : ℤ) - (Q.natDegree : ℤ))
+        = substitutionDerivPrefix R hM ^ κ * substitutionDerivPrefix R hM ^ P.natDegree
+            / substitutionDerivPrefix R hM ^ Q.natDegree := by
+      rw [zpow_sub₀ hρF, zpow_add₀ hρF, zpow_natCast, zpow_natCast]
+    rw [map_div₀, hzp]
+    field_simp
+    linear_combination
+      (substitutionDerivPrefix R hM ^ κ * Q.leadingCoeff) * hlp
+        - (algebraMap C ↥(jetPrefixField C M) lam * P.leadingCoeff) * hlq
+        + (P.leadingCoeff * Q.leadingCoeff) * hcd
+  refine ⟨?_, ?_, ?_⟩
+  · have hs0 : P.leadingCoeff / Q.leadingCoeff ≠ 0 := div_ne_zero hp0 hq0
+    exact fun hh => hs0
+      ((algebraMap ↥(jetPrefixField C M) (JetField C Unit)).injective (by rw [hh, map_zero]))
+  · intro j hj
+    have hsmem : (algebraMap ↥(jetPrefixField C M) (JetField C Unit)
+        (P.leadingCoeff / Q.leadingCoeff)) ∈ jetPrefixField C M :=
+      (P.leadingCoeff / Q.leadingCoeff).2
+    rw [mem_jetPrefixField_iff] at hsmem
+    exact hsmem j (by omega)
+  · rw [jetSubstitution_algebraMap_prefix, ← hνval, ← hρval, ← map_zpow₀, ← map_mul, ← map_mul]
+    exact congrArg _ hkey
+
+/-- **The order descent.**  An eigen-relation at order `M ≥ 1` produces an eigen-relation with the
+same eigenvalue one order lower. -/
+theorem exists_substitutionEigen_pred (R : RatFunc C) (hR : substitutionDeriv R ≠ 0)
+    {M : ℕ} (hM : 1 ≤ M) {κ : ℤ} {w : JetField C Unit} {lam : C} (hlam : lam ≠ 0)
+    (h : SubstitutionEigen R hR M κ w lam) :
+    ∃ (κ' : ℤ) (s : JetField C Unit), SubstitutionEigen R hR (M - 1) κ' s lam := by
+  obtain ⟨P, Q, c, d, hP0, hQ0, hcop, hc0, hd0, hwdiv, hcP, hdQ, hcd⟩ :=
+    exists_coprime_slicing R hR hM hlam h
+  exact ⟨_, _, substitutionEigen_leadingRatio R hR hM hP0 hQ0 hcP hdQ hcd⟩
+
+/-- **Every finite-order eigenvector produces an invariant differential.**  Iterating the order
+descent down to order zero turns an eigen-relation of any order into an invariant differential
+with the same eigenvalue. -/
+theorem exists_isInvariantDifferential_of_substitutionEigen (R : RatFunc C)
+    (hR : substitutionDeriv R ≠ 0) {lam : C} (hlam : lam ≠ 0) :
+    ∀ (M : ℕ) (κ : ℤ) (w : JetField C Unit), SubstitutionEigen R hR M κ w lam →
+      ∃ (k : ℤ) (q : JetField C Unit), IsInvariantDifferential R hR k q lam := by
+  intro M
+  induction M with
+  | zero => exact fun κ w h => ⟨κ, w, h⟩
+  | succ M ih =>
+      intro κ w h
+      obtain ⟨κ', s, hs⟩ := exists_substitutionEigen_pred R hR (M := M + 1) (by omega) hlam h
+      simp only [Nat.add_sub_cancel] at hs
+      exact ih κ' s hs
+
+/-- **An eigenvector of the substitution carries an invariant differential.** -/
+theorem exists_isInvariantDifferential_of_eigen (R : RatFunc C) (hR : substitutionDeriv R ≠ 0)
+    {u : JetField C Unit} (hu0 : u ≠ 0) {M : ℕ}
+    (hu : ∀ j : ℕ, M < j → JetField.pd ((), j) u = 0) {lam : C} (hlam : lam ≠ 0)
+    (heig : jetSubstitution R hR u = algebraMap C (JetField C Unit) lam * u) :
+    ∃ (k : ℤ) (q : JetField C Unit), IsInvariantDifferential R hR k q lam := by
+  refine exists_isInvariantDifferential_of_substitutionEigen R hR hlam M 0 u ⟨hu0, hu, ?_⟩
+  rw [zpow_zero, mul_one, heig]
 
 end
 
