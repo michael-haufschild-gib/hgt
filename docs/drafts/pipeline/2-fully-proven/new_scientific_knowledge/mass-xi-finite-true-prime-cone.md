@@ -5946,7 +5946,7 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   exactly.  This closes all subpower-conditioned scalar preconditioners, not only power weights;
   any useful escape must pay positive type, prove RH-strength signed inverse cancellation, or use
   nonlinear prime-adaptive structure.
-- 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` harmonic triangular projection collapse: exact
+- 2026-08-08 — `[PROVED HERE; LEAN-PROVED]` harmonic triangular projection collapse: exact
   finite Fubini gives `sum_D w_D C_N(D)=B_N(N)-Q(N)-2γ H_N`.  Thus signed harmonic transport is
   precisely original stable core in new coordinates.  Exact positive path kernel (24.42)--(24.43)
   shows why diagonal energy loses order `N^2`, and its first path value already contains `R(N)`.
@@ -7101,3 +7101,32 @@ Newly formalized, axiom-clean, wired, built:
 The remaining C43-B content — the Jordan symbol law (24.5) and the source theorem (24.6) — is a
 statement about Mellin transforms of floor transforms, not about the mass receiver, and (24.6) is
 explicitly not available in the corpus.
+
+### Lean progress: §24 C43-F — the harmonic triangular projection
+
+    RHTower/HarmonicTriangularProjection.lean
+      harmonicSum, harmonicGap, harmonicGap_mul, harmonicGap_sq_mul, harmonicGap_nonneg
+      sum_harmonicGap, sum_mul_harmonicGap, sum_sq_mul_harmonicGap
+                                              the three telescoping moments of the increment weight
+      sum_ramp_harmonicGap                    **(24.38)** `∑_{D<q}(q−D)w_D = q − H_q`
+      sum_biramp_harmonicGap                  **(24.42)** `∑_{D<ℓ}(ℓ−D)(v−D)w_D
+                                              = ℓv + 2ℓ − (ℓ+v+1)H_ℓ`
+      hyperbolaSwap, shiftedSwap, shiftedSwap₂, tailSwap
+                                              the four hyperbola regroupings used below
+      sourcePartialSum, floorMoment, triangularTransport
+      tail_sourcePartialSum_eq_triangularTransport
+                                              **(24.32)** the transport is exactly the tail
+                                              `∑_{d>D} R(⌊N/d⌋)`
+      sum_harmonicSum_floor_eq                **(24.39)** `∑_{m≤N} a_m H_{⌊N/m⌋}
+                                              = (T_{1/n} R)(N)`, the harmonic floor transform of
+                                              the partial sums
+      harmonic_projection_triangularTransport **(24.41)** `∑_{D<N} w_D T_N(D)
+                                              = ∑_{m≤N} a_m⌊N/m⌋ − (T_{1/n}R)(N)`: the signed
+                                              harmonic projection is a change of coordinates
+      pathKernel, pathKernel_eq,
+        harmonic_pathEnergy_triangularTransport,
+        harmonic_pathEnergy_nonneg            **(24.42)--(24.43)** the exact quadratic path energy
+                                              and the positive semidefiniteness of its kernel
+
+All statements are for an arbitrary real source `a`, so they apply verbatim to `a_m = Λ(m) − 1`
+and to the centered source `c` of `(24.43)`.

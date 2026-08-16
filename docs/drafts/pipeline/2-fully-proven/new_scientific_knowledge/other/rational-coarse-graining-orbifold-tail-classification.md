@@ -652,3 +652,44 @@ require the chain rule only at the eigenvector itself.
 `sigma`-stable pole multiset, and the explicit `nu = 1` branch (where `L = 0` and
 `coeff_eigen_pow_of_comp_scale` applies directly).  No missing infrastructure remains between the
 card's setup and that descent.
+
+### The Euler dichotomy at order one
+
+`Phi_R` scales the first jet coordinate *exactly*: `delta(R(y_0)) = R'(y_0)·y_1`, with no lower-order
+remainder, because `L = 0` at `nu = 1`.  Formalized as
+
+```text
+substitutionJet_one        delta(R(y_0)) = y_1 · R'(y_0)
+jetSubstitution_jet_one    Phi_R(y_1) = y_1 · R'(y_0)
+```
+
+(the proof is the corpus's `freeCoordinate_chainRule` on the one-coordinate slice: the total
+derivative of an order-zero element is `y_1` times its `pd_0`).
+
+Consequently the Euler operator `E = y_1·pd_1` is intertwined by `Phi_R` up to the derivative
+factor, and the *logarithmic* Euler derivative of a `(T3)`-eigenvector is a genuine invariant:
+
+```text
+jetSubstitution_eulerQuotient :
+  v != 0,  ord v ≤ 1,  Phi_R(v)·R'(y_0) = v
+    ⇒  Phi_R( y_1 · pd_1 v / v ) = y_1 · pd_1 v / v
+mem_orbifoldTail_of_fixed :
+  Phi_R g = g  ⇒  g ∈ Tail(R)
+```
+
+The computation is three lines once the chain rule is available: `Phi_R v = v/R'`, hence
+`pd_1(Phi_R v) = pd_1 v / R'`, hence `Phi_R(pd_1 v) = pd_1 v / R'^2`, and the two factors `R'`
+cancel against `Phi_R(y_1) = R'·y_1` in the quotient.
+
+**The dichotomy this produces.**  Write `g := y_1·pd_1 v / v ∈ Tail(R)`, of order at most one.
+
+* If `g` is nonconstant, `Tail(R)` contains a nonconstant element of order at most one.
+* If `g ∈ C`, then `pd_1 v / v = g / y_1`; a rational function of `y_1` has logarithmic derivative
+  `Σ m_i/(y_1 - r_i)` with `m_i` integers, so all `r_i = 0`, `g = Σ m_i` is an integer, and
+  `v = c·y_1^g` with `c ∈ C(y_0)`.  Substituting into `(T3)` gives
+  `Phi_R(c)·R'^(g+1) = c` — an invariant `(g+1)`-differential unless `g = -1`, and `g = -1` is
+  impossible because `v` is the principal symbol `pd_1 u` of a rational `u` and `pd_1 u = c/y_1`
+  has no rational primitive in `y_1`.
+
+Only the partial-fraction step of the second bullet is not yet formalized; the first bullet is the
+statement `mem_orbifoldTail_of_fixed` applied to `jetSubstitution_eulerQuotient`, both proved.

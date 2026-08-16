@@ -10558,3 +10558,30 @@ Fourier transform.
 Left for `(17)`: `(1+|r|₁)^{2n} ≤ C(1 + Σ_p r_p^{2n})` to pass from coordinate moments to the
 `⟨r⟩`-weighted `ℓ²` bound, then Cauchy–Schwarz against `Σ_r ⟨r⟩^{-2s}`
 (`summable_orbitLength_rpow_neg`) and Schur's test with the owned ratio bound `(14)`.
+
+### ADH.6 `(15)` in sharp form — the exponent is not lost
+
+The Cauchy–Schwarz/Schur route of ADH.1 is **too lossy**: for the free lattice Laplacian
+`Σ_r |k_x(r)| ≍ √x`, so Schur's test only gives `(1+|x|)^{m+1/2}`, and the trichotomy needs the
+sharp `κ < σ < 1`.  The correct argument is the card's own: run the moment induction *against the
+moments of the initial vector*, not against `δ₀`.
+
+- `RHTower/SuzukiLatticeBinomialTransfer.lean` — `posPowField`, `stepPowWeighted`, and the binomial
+  transfer `r_p^j A = Σ_i C(j,i) A_{(j-i)} (r_p^i ·)`, from `r_p = (r+q)_p − q_p`.  The point is
+  that the transfer **never raises the moment order**.
+- `RHTower/SuzukiLatticeMomentTower.lean` — `l2OfFinSupp`, and
+  `norm_posPow_adjacencyField_le`: every moment of an adjacency image is bounded by the moments of
+  the field, with a constant depending only on `Q, c, p, j`.
+- `RHTower/SuzukiLatticeSharpMoment.lean` — **`exists_sharp_moment_bound`**:
+
+  ```text
+  ∃ C, ∀ x f (finitely supported) M,
+    (∀ i ≤ n, ‖r_p^i f‖ ≤ M) → ‖r_p^n (e^{-ixA} f)‖ ≤ C (1+|x|)^n M.
+  ```
+
+  The induction peels one coordinate factor, uses `eval_posMul_exp` to split into `M_p f` and
+  `A_p f`, and closes because the binomial transfer bounds the moments of `A_p f` by those of `f`.
+
+Applying this with `f = ⟨X⟩^{-m}ψ`, for which every moment of order `≤ m` is bounded by `‖ψ‖`,
+gives `(17)` with the sharp exponent `m`.  That last assembly, plus `⟨r⟩^m ≤ C(1 + Σ_p |r_p|^m)`
+and the density extension from finitely supported vectors, is what remains.

@@ -427,12 +427,10 @@ theorem substitutionJet_one (R : RatFunc C) :
   rw [Finset.sum_singleton] at h
   calc substitutionJet R 1 = JetField.jetDerivation (substitutionValue R) := by
         rw [substitutionJet, differentialJet_succ, differentialJet_zero, JetField.deriv_eq]
-    _ = JetField.jetDerivation (freeCoordinate C (Unit × ℕ) ((), 0)) *
-          freeCoordinateDerivation C (Unit × ℕ) ((), 0) (substitutionValue R) := h
+    _ = JetField.jetDerivation (JetField.jet ((), 0) : JetField C Unit) *
+          JetField.pd ((), 0) (substitutionValue R) := h
     _ = JetField.jet ((), 1) * substitutionDeriv R := by
-        rw [show (freeCoordinate C (Unit × ℕ) ((), 0) : JetField C Unit)
-            = JetField.jet ((), 0) from rfl, JetField.jetDerivation_jet]
-        rfl
+        rw [JetField.jetDerivation_jet, substitutionDeriv]
 
 theorem jetSubstitution_jet_one [CharZero C] (R : RatFunc C) (hR : substitutionDeriv R ≠ 0) :
     jetSubstitution R hR (JetField.jet ((), 1))

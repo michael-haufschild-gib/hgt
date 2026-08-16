@@ -4488,3 +4488,38 @@ besselEnergyFloor/(864 c)
 
 Both halves of `(beta)` are now Lean-proved, axiom-clean, and inside the precision budget
 (`sigma_+ + sigma_- = 5/2 < 7/2`).
+
+## `(beta)` delivered: the leakage, two-sided, at the sharp action
+
+`RHTower/ProlateLeakageTwoSided.lean` (wired, axiom-clean):
+
+```
+prolate_leakage_two_sided
+
+  besselEnergyFloor/(864 c)
+    / (2 (2 (3C+1) exp(2c(1 + (s/4) log s)
+                        + log((alpha^2-s)/(3s)) + log((1-4s)/(1-alpha^2)) + 10 c s)))
+      <=  leakage  <=
+  radialProlateExteriorMassConstant/c
+    · ((6 pi sqrt(c Xi_s(alpha)))^2 exp(2 E) / (b - 2 sqrt s))
+    · exp(-2(c Xi_s(2 sqrt s) + 6 log((1-alpha)/(1-2 sqrt s))))
+```
+
+with `E = (c b + 12)(b - 2 sqrt s)/(1 - b^2)` and `C` the anchor constant.  Both directions carry the
+same exponential `exp(-2 c Xi_s(2 sqrt s))`, and `Xi_s(2 sqrt s) <= A(s) = 1 + (s/4) log s + O(s)`,
+so with `cs = 2n+1` and `s ~ 1/c` the shared exponential is `exp(-2c) c^{n+1/2}` up to a bounded
+factor.  The gap between the two prefactors is `c^{5/2}`, inside the card's budget of `7/2`.
+
+The last new input was the interior mass from below, `RHTower/ProlateInteriorMassLower.lean`:
+
+```
+prolateFlux_sq_le_band            |(1-t^2) Phi'| <= (1-t^2)(barrier(t) + 6/(1-t)) |Phi|
+one_sub_sq_mul_band_barrier_le    (1-t^2)(barrier(t) + 6/(1-t))  <=  c b + 12      (t <= b)
+prolate_window_mass_lower         (b-y0)(Phi(y0) exp(-(cb+12)(b-y0)/(1-b^2)))^2 <= int_{y0}^b Phi^2
+prolate_aperture_mass_lower       the same against the full aperture
+```
+
+At `y0 = 2 sqrt s` the barrier constant `c b + 12` is `O(sqrt c)` for a fixed mode, so a window of
+width `1/(c b + 12)` costs a bounded exponential and contributes `Phi(y0)^2/(c b + 12)` — the true
+order.  No turning-point model function (Airy, parabolic cylinder, Liouville-Green error control)
+is used anywhere in either direction.

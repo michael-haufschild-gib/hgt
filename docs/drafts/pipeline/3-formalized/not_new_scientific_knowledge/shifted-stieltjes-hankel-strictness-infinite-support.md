@@ -1,7 +1,7 @@
 # Shifted Stieltjes Hankel Strictness From Infinite Support
 
 - **ID:** shifted-stieltjes-hankel-strictness-infinite-support
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / proof-route guardrail
 - **Source:** `wild-analogy-web-catalog.md` Clean Finding 61,
   `source-aware-q0-alone-reciprocal-positivity.md`,
@@ -114,9 +114,34 @@ mistaken for a new source selector in the rank-one boundary-Weyl route.
 
 - [x] 0 -> 1 in-progress: singular Schur loophole isolated from the catalog note.
 - [x] 1 -> 2 fully-proven: finite support / strictness proof written.
-- [ ] 2 -> 3 formalized: optional finite-dimensional moment Gram theorem.
+- [x] 2 -> 3 formalized: `HTGeometry/ShiftedHankelStrictPositivity.lean`.
 
 ## Log
 
 - 2026-06-24 -- Codex: promoted Clean Finding 61 into a focused guardrail card
   after the boundary/Uvarov duplicate audit.
+
+## 2026-08-16 Lean closure
+
+`HTGeometry/ShiftedHankelStrictPositivity.lean` proves the card unconditionally.
+
+`shiftedMomentOf mu r n = int x^(n+r) dmu` is `m_n^(r)` and
+`shiftedHankelMatrixOf mu r d` is the block `H_r(d)`.
+
+- `quadForm_shiftedMomentOf` is the card's identity
+  `sum_(i,j) c_i c_j m_(i+j)^(r) = int x^r p(x)^2 dmu` with `p = sum_i c_i X^i`, proved by
+  expanding the square and exchanging the finite double sum with the integral (each term is
+  integrable because every polynomial moment exists).
+- `shiftedHankel_quadForm_pos` is the strictness: for `c != 0` the coefficient polynomial is a
+  nonzero polynomial of degree at most `d`, hence has at most `d` roots
+  (`Polynomial.card_roots'`), so one of any `d+1` distinct positive points is not a root; the
+  integrand is continuous and strictly positive on a ball around that point, and the measure
+  charges that ball, so the integral is strictly positive
+  (`integral_pos_iff_support_of_nonneg_ae`).
+- `shiftedHankelMatrixOf_posDef` packages this as `Matrix.PosDef` for the block `H_r(d)`.
+- `not_forall_charged_of_not_posDef` is the contrapositive the card states: if `H_r(d)` fails to
+  be positive definite, then for any `d+1` distinct positive points the measure gives zero mass to
+  some ball around one of them — the support cannot contain `d+1` points.
+
+"Belongs to the support" is rendered exactly, as `0 < mu (ball x eps)` for every `eps > 0`, so no
+support construction is assumed.  Axioms: `propext`, `Classical.choice`, `Quot.sound`.

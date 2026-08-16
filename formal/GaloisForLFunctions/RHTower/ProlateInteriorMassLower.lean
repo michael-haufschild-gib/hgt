@@ -188,6 +188,34 @@ theorem prolate_window_mass_lower {c s y₀ b : ℝ} {Φ : ℝ → ℝ}
     exact pow_le_pow_left₀ h2 h1 2
   exact mul_le_mul_of_nonneg_left hprod (by linarith)
 
+/-- **The aperture mass from below.**  Any band window contributes; the rest of the aperture is
+nonnegative. -/
+theorem prolate_aperture_mass_lower {c s y₀ b : ℝ} {Φ : ℝ → ℝ}
+    (hc : 0 < c) (hs0 : 0 ≤ s) (hs1 : s < 1) (hcs : 4 ≤ c * s)
+    (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
+    (heig : ∀ y ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ y = -(s * c ^ 2) * Φ y)
+    (hΦ1 : Φ 1 = 1) (hy00 : 0 < y₀) (hsy0 : s < y₀ ^ 2) (hy0b : y₀ ≤ b) (hb1 : b < 1)
+    (hpos : ∀ u ∈ Icc y₀ 1, 0 < Φ u) :
+    (b - y₀) * (Φ y₀ * Real.exp (-((c * b + 12) * (b - y₀) / (1 - b ^ 2)))) ^ 2
+      ≤ ∫ y in (-1 : ℝ)..1, Φ y ^ 2 := by
+  have hwin := prolate_window_mass_lower hc hs0 hs1 hcs hsm heig hΦ1 hy00 hsy0 hy0b hb1 hpos
+  have hcont : Continuous fun y : ℝ => Φ y ^ 2 := hsm.continuous.pow 2
+  have hint : ∀ u v : ℝ, IntervalIntegrable (fun y : ℝ => Φ y ^ 2) MeasureTheory.volume u v :=
+    fun u v => hcont.intervalIntegrable u v
+  have hy0ge : (-1 : ℝ) ≤ y₀ := by linarith
+  have hb1' : b ≤ 1 := hb1.le
+  have hadd1 := intervalIntegral.integral_add_adjacent_intervals
+    (f := fun y : ℝ => Φ y ^ 2) (μ := MeasureTheory.volume) (a := (-1 : ℝ)) (b := y₀) (c := b)
+    (hint _ _) (hint _ _)
+  have hadd2 := intervalIntegral.integral_add_adjacent_intervals
+    (f := fun y : ℝ => Φ y ^ 2) (μ := MeasureTheory.volume) (a := (-1 : ℝ)) (b := b) (c := (1 : ℝ))
+    (hint _ _) (hint _ _)
+  have hleft : (0 : ℝ) ≤ ∫ y in (-1 : ℝ)..y₀, Φ y ^ 2 :=
+    intervalIntegral.integral_nonneg hy0ge fun _ _ => sq_nonneg _
+  have hright : (0 : ℝ) ≤ ∫ y in b..(1 : ℝ), Φ y ^ 2 :=
+    intervalIntegral.integral_nonneg hb1' fun _ _ => sq_nonneg _
+  linarith [hwin, hleft, hright, hadd1, hadd2]
+
 end GaloisForLFunctions.RHTower
 
 end

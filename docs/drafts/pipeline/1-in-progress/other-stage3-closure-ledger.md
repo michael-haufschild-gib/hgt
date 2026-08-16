@@ -1655,3 +1655,31 @@ in `m` (from `ρ⁴ ≤ ρ^(2m)`), not `1/m`; and for the iteration the amplitud
 exceed `3/4`, not `1/2` — the high-mode term is the binding constraint. The card is not promoted:
 what is left is the general-kernel restatement of (T) and the relative form of the `m`-fold
 telescope.
+
+### `rational-coarse-graining-orbifold-tail-classification` — the tail and its chain rule are formalized
+
+The card's central object existed only through abstract stand-ins.  It is now a Lean object, and
+so are the first two steps of the Casale-free route.  Two new modules, unconditional, axiom-clean,
+`HTGeometry`-wired:
+
+- `HTGeometry/EigenLogDerivNormalization.lean` — field-generic `(T1) → (T3)`
+  (`eigen_logDeriv_of_chain_rule`: the logarithmic derivative of an eigenvector is an eigenvector
+  with eigenvalue one, the chain rule being needed only at the eigenvector itself), and the
+  coefficient eigen-relations of a scaled substitution (`coeff_eigen_pow_of_comp_scale`).
+- `HTGeometry/JetRationalSubstitution.lean` — the rational substitution endomorphism `Phi_R` of the
+  free jet field (well-definedness = algebraic independence of the substituted jets, via the
+  corpus's Jacobian criterion with determinant `R'(y_0)^n`), its differentiality, the tail
+  `orbifoldTail R hR = stableRangeCore (jetSubstitution R hR)` with `derivationClosed_orbifoldTail`
+  and `orbifoldTailAlgEquiv`, the chain rule `pd_jetSubstitution_top`, the concrete `(T1)` and
+  `(T3)`, and the Euler dichotomy at order one.
+
+Two corrections worth carrying: the chain rule does **not** need "order ≤ m implies membership in
+`adjoin C {y_0..y_m}`" — the total-derivative formula on the finite jet slice every element
+inhabits suffices; and `(T3)` needs `ord u ≥ 1`, which is exactly what makes `R'(y_0)` a
+`pd_M`-constant.
+
+The card is **not** promoted.  What is left of the hard direction is the descent bookkeeping —
+the `sigma`-stable pole multiset in the non-monomial branch and the partial-fraction step of the
+`nu = 1` monomial branch — with no missing infrastructure between the card's setup and it.
+Closing it also closes `floquet-orbifold-tail-emergence` and
+`orbifold-tail-holographic-reconstruction`, whose only outstanding input is this classification.
