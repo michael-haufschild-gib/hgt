@@ -262,6 +262,52 @@ theorem norm_integral_growing_edge_le {a sigma u H : ℝ} (ha : 0 < a) (hsigma :
     nlinarith [hstep, hMnn]
   exact hchain
 
+/-- The prime part of a cutoff cone is bounded by a function of the cutoff alone. -/
+theorem norm_conePrimeIndexSum_le {a sigma : ℝ} (ha : 0 < a) (hsigma : 0 < sigma)
+    (u : ℝ) (M : ℕ) :
+    ‖∑ k ∈ conePrimeIndex M, xiMassCenteredPrimeAtom a ((sigma : ℂ) + (u : ℂ) * I) (k + 2)‖
+      ≤ (M : ℝ) * (Real.log ((M : ℝ) + 1) * xiMassVerticalBound sigma) := by
+  classical
+  have hMnn := xiMassVerticalBound_nonneg sigma
+  have hM0 : (0 : ℝ) ≤ (M : ℝ) := Nat.cast_nonneg M
+  have hlogM : (0 : ℝ) ≤ Real.log ((M : ℝ) + 1) := Real.log_nonneg (by linarith)
+  refine (norm_sum_le _ _).trans ?_
+  have hterm : ∀ k ∈ conePrimeIndex M,
+      ‖xiMassCenteredPrimeAtom a ((sigma : ℂ) + (u : ℂ) * I) (k + 2)‖
+        ≤ Real.log ((M : ℝ) + 1) * xiMassVerticalBound sigma := by
+    intro k hk
+    rw [mem_conePrimeIndex] at hk
+    refine (norm_xiMassCenteredPrimeAtom_le_verticalBound ha hsigma hk.2).trans ?_
+    have hle : ((k + 2 : ℕ) : ℝ) ≤ (M : ℝ) + 1 := by
+      have hstep : ((k + 2 : ℕ) : ℝ) ≤ (M : ℝ) := by exact_mod_cast hk.1
+      linarith
+    have hlog : Real.log ((k + 2 : ℕ) : ℝ) ≤ Real.log ((M : ℝ) + 1) :=
+      Real.log_le_log (by positivity) hle
+    exact mul_le_mul_of_nonneg_right hlog hMnn
+  have hcard : ((conePrimeIndex M).card : ℝ) ≤ (M : ℝ) := by
+    have h3 : (conePrimeIndex M).card ≤ M := by
+      rw [conePrimeIndex]
+      calc (Finset.filter (fun k => Nat.Prime (k + 2)) (Finset.range (M - 1))).card
+          ≤ (Finset.range (M - 1)).card := Finset.card_filter_le _ _
+        _ = M - 1 := Finset.card_range _
+        _ ≤ M := Nat.sub_le _ _
+    exact_mod_cast h3
+  refine (Finset.sum_le_card_nsmul _ _ _ hterm).trans ?_
+  rw [nsmul_eq_mul]
+  exact mul_le_mul_of_nonneg_right hcard (mul_nonneg hlogM hMnn)
+
+/-- The prime-part bound is monotone in the cutoff. -/
+theorem conePrimeIndexSumBound_mono {sigma : ℝ} {M N : ℕ} (h : M ≤ N)
+    (hV : 0 ≤ xiMassVerticalBound sigma) :
+    (M : ℝ) * (Real.log ((M : ℝ) + 1) * xiMassVerticalBound sigma)
+      ≤ (N : ℝ) * (Real.log ((N : ℝ) + 1) * xiMassVerticalBound sigma) := by
+  have hM0 : (0 : ℝ) ≤ (M : ℝ) := Nat.cast_nonneg M
+  have hMN : ((M : ℝ)) ≤ (N : ℝ) := by exact_mod_cast h
+  have hlog : Real.log ((M : ℝ) + 1) ≤ Real.log ((N : ℝ) + 1) :=
+    Real.log_le_log (by linarith) (by linarith)
+  have hlogM : (0 : ℝ) ≤ Real.log ((M : ℝ) + 1) := Real.log_nonneg (by linarith)
+  exact mul_le_mul hMN (mul_le_mul_of_nonneg_right hlog hV) (mul_nonneg hlogM hV) (by linarith)
+
 end
 
 end RHTower

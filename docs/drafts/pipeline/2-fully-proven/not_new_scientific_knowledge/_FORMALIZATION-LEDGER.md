@@ -52,6 +52,11 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-16 | `uvarov-repair-requires-boundary-kernel-positivity` | `HTGeometry/BoundaryKernelSchurSplit.lean` |
 | 2026-08-16 | `rank-one-scalar-shadow-needs-kernel-exhaustion` | `HTGeometry/BoundaryKernelSchurSplit.lean` |
 | 2026-08-16 | `stieltjes-bulk-exterior-christoffel-monotonicity` | `HTGeometry/StieltjesExteriorChristoffelMonotone.lean` |
+| 2026-08-16 | `test-space-closure-q0-visible-rh` | `RHTower/ReciprocalAtomTestSpaceClosure.lean` |
+| 2026-08-16 | `finite-rank-counterterm-kernel-visibility` | `RHTower/ReciprocalAtomCounterterm.lean` |
+| 2026-08-16 | `continuous-counterterm-atom-locality` | `RHTower/ReciprocalAtomCounterterm.lean` |
+| 2026-08-16 | `continuous-counterterm-local-domination-threshold` | `RHTower/ReciprocalAtomCounterterm.lean` |
+| 2026-08-16 | `non-atomic-finite-rank-counterterms-rh-strength` | `RHTower/ReciprocalAtomCounterterm.lean` |
 
 ## Already carrying a stage-3 certificate (verify, then move the paper card)
 
@@ -145,6 +150,16 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
   resulting exterior monotonicity of the Christoffel–Darboux diagonal and of the Christoffel
   function (`cdKernel_diag_strictAntiOn`, `christoffel_strictMonoOn`).  The monotonicity proof is
   purely algebraic — the node product, not the logarithmic derivative.
+- `RHTower/ReciprocalAtomTestSpaceClosure.lean` — **the whole reciprocal-atom test layer on the
+  actual `xi` divisor**: the folded atom set `Y`, the compact test set `K = Y ∪ {0}`
+  (`isCompact_xiReciprocalTestSet`), isolatedness of every nonzero point, the conjugation-symmetric
+  isolator and its continuity on `K`, the form `xiQZero`, its uniform-norm modulus
+  (`norm_xiQZero_sub_le`), transfer of positivity to uniform limits, and the atom-visibility
+  criterion equivalent to RH.  This is the reusable base for the whole `Q₀` card family.
+- `RHTower/ReciprocalAtomCounterterm.lean` — folded atom multiplicities (`xiAtomMultiplicity`,
+  finite fibers, conjugate equality), the exact isolator readings `M_a a ζ²` and `2 M_a Re(a ζ²)`,
+  and the counterterm layer: finite-rank kernel visibility, atom locality, the local domination
+  thresholds, the zero-fed rank-one countermodel, and the vanishing-point-mass criterion.
 
 ## Triage of the remaining folder (2026-08-16 scan)
 

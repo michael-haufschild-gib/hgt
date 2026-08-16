@@ -1,7 +1,7 @@
 # Test-Space Closure Q0 Visible RH
 
 - **ID:** test-space-closure-q0-visible-rh
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / route normalization
 - **Source:** `source-aware-q0-alone-reciprocal-positivity.md`,
   `support-vanishing-q0-filter-visible-rh.md`,
@@ -159,8 +159,7 @@ changed the test space without accounting for the lost visibility.
 
 - [x] 0 -> 1 in-progress: closed-test-space invariant isolated.
 - [x] 1 -> 2 fully-proven: complete closure/atom-isolation proof.
-- [ ] 2 -> 3 formalized: optional; requires a formal compact-support closure
-  theorem plus the finite-measure continuity estimate.
+- [x] 2 -> 3 formalized: `RHTower/ReciprocalAtomTestSpaceClosure.lean`.
 
 ## Log
 
@@ -177,3 +176,43 @@ This is the closed-test-space theorem with the closed image containing all atom-
 ## 2026-06-24 finite-rank counterterm kernel case
 
 `finite-rank-counterterm-kernel-visibility.md` is the finite-rank counterterm form of this closure theorem. If `C[f]=B(Lf)`, positivity of `Q_0+C` gives `Q_0>=0` on the closed test space `ker L`. The visible atoms are exactly those whose isolators lie in that kernel; all other atoms are quotient-hidden and require separate source control.
+
+## 2026-08-16 Lean closure
+
+`RHTower/ReciprocalAtomTestSpaceClosure.lean` and `RHTower/ReciprocalAtomCounterterm.lean` build the
+whole reciprocal-atom layer on the actual `xi` divisor, unconditionally.
+
+Setup.  `xiZeroCopyReciprocalSquare` is the inverse square of the centered spectral coordinate,
+indexed by the multiplicity-exact divisor copies, so folded multiplicities are automatic;
+`xiReciprocalAtomSet` is `Y` and `xiReciprocalTestSet` is `K = Y union {0}`.
+`summable_norm_xiZeroCopyReciprocalSquare` is the card's `sum_y M_y |y| < infinity`, and
+`isCompact_xiReciprocalTestSet` proves `K` compact.  `xiQZero f = sum_q y_q f(y_q)^2` is `Q_0`.
+`xiZeroCopyReciprocalSquare_conjEquiv` gives the conjugation symmetry of the folded support with
+equal multiplicities (`xiAtomMultiplicity_conj`).
+
+Isolators.  `xiAtomIsolator a zeta` is the card's `e_a` and `e_{a,zeta}`;
+`xiAtomIsolator_conjSymm` proves conjugation symmetry (with `zeta` real at a real atom),
+`xiReciprocalTestSet_singleton_mem_nhdsWithin` proves every nonzero point of `K` is isolated, and
+`continuousOn_xiAtomIsolator` therefore places the isolator in `C_sym(K)`.
+
+Continuity of `Q_0`.  `norm_xiQZero_sub_le` is the card's uniform estimate
+`|Q_0[f]-Q_0[g]| <= (||f||+||g||) ||f-g|| sum_y M_y |y|`, and
+`xiQZero_re_nonneg_of_uniform_approx` passes nonnegativity to uniform limits.
+
+Atom detection.  `xiQZero_atomIsolator_re_neg` proves that a strictly negative isolator reading
+forces `Q_0` strictly negative, and `xiReciprocalAtom_nonneg_of_isolator` converts that into the
+card's dichotomy through the corpus criterion
+`riemannHypothesis_iff_forall_xiZeroCopyReciprocalSquare_nonnegative`.  The exact local readings are
+`xiQZero_atomIsolator_re_of_eq_conj` (`M_a a zeta^2`) and `xiQZero_atomIsolator_re_of_ne_conj`
+(`2 M_a Re(a zeta^2)`).
+
+Axioms of every theorem listed: `propext`, `Classical.choice`, `Quot.sound`.
+
+Card-specific.  `xiReciprocalAtom_nonneg_of_visible` is the main theorem: every `S`-visible atom
+lies in `R_{>0}`.  `riemannHypothesis_of_visible_all` and
+`xiQZero_nonneg_on_iff_riemannHypothesis` are clause 1 (a uniformly dense conjugation-symmetric test
+space makes positivity equivalent to RH), and `xiReciprocalAtom_nonneg_of_dense_vanishing` is
+clause 2 (a test space dense only in the functions vanishing on a set `E` still forces every atom
+outside `E`; atoms inside `E` are untested).  The converse direction uses
+`xiQZero_re_nonneg_of_riemannHypothesis`: under RH every atom is a nonnegative real and every
+conjugation-symmetric bounded test gives a nonnegative form.

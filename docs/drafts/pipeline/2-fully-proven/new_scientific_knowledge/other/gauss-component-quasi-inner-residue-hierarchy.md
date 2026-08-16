@@ -2086,3 +2086,69 @@ factor is bounded (`2|n+j| ≥ n`); and, on the spike `2|n+j| < n`, the observat
    the second because `‖w''‖² ≲ (1+log n)/n` and `n^(1/2)·(1+log n)/n → 0`.
 
 Both are now purely mechanical against the modules above.
+
+### Lean status — pass 44: the named open core (T) is proved
+
+`RHTower/GaussLowModeKernelBound.lean` and `RHTower/GaussSpikeDefectVanishing.lean` close the
+core identified in pass 42.  Both are unconditional, axiom-clean and umbrella-wired.
+
+**The kernel layer** (`GaussLowModeKernelBound.lean`).
+
+```text
+spike_lowBand_separation                 2|n+l| < n, |j| ≤ n/4  ⇒  n ≤ 4(1 + |j-l|)
+norm_fourierCoeff_invSq_truncate_le      |ĉ(l-j)| ≤ 2/(1+|l-j|) ⇒
+                                           |(B^(-2) w')^(l)| ≤ (2/D)·‖ŵ'‖_(ℓ¹)
+norm_gaussSampleRatioDefect_le_of_lowBand   |j| ≤ n/4  ⇒  ‖defect_j‖ ≤ 5 + 3K
+sum_norm_fourierCoeff_lowBand_le            Σ_(|j|≤J) ‖ŵ(j)‖ ≤ 2A(5+3K)(1 + log(J+2))
+```
+
+The defect bound avoids a square root: from `‖defect‖² ≤ 4 + 3K` on the low band and
+`x ≤ 1 + x²` one gets the linear bound `5 + 3K` directly.
+
+**The assembly** (`GaussSpikeDefectVanishing.lean`).
+
+```text
+fourierCoeff_sub_lp, norm_fourierCoeff_defectVector,
+ofReal_norm_sq_eq_tsum, norm_fourierTruncate_le,
+ofReal_norm_sq_sub_fourierTruncate_le        ‖w''‖² ≤ 16A²(1+K)/(1+J) + 16KA²(1+log n)/n
+gaussShiftedBlockDiag_add
+norm_sq_gaussShiftedBlockDiag_le_global      ‖S̃v‖² ≤ (1 + (Kn)^(1/2))‖v‖²
+norm_sq_gaussShiftedBlockDiag_spike_le       ‖S̃v‖² ≤ (1+2K)‖v‖² + ε²(2+4K^(1/2))n
+                                               when |v̂(l)| ≤ ε on the spike
+sqrt_scale_bound, log_shift_le, sqrt_le_self_nat,
+tendsto_one_add_log_div_sqrt_atTop_zero and its scaled/squared forms
+norm_sq_shiftedDiag_invSq_highMode_le   ≤ C₂·(1 + log n)/n^(1/2)
+norm_sq_shiftedDiag_invSq_lowMode_le    ≤ (1+2K)‖w‖² + C₁·((1 + log n)/n^(1/2))²
+```
+
+**(T)**, in the exact form pass 42 named:
+
+```text
+tendsto_norm_gaussShiftedBlockDiag_invSq_defect_zero :
+  m ≥ 2, ‖ĝ_I(j)‖ ≤ A/(1+|j|)  ⇒
+    ‖ S̃_n ( B^(-2) ( (S̃*_n - T_(δ_n)) g_n ) ) ‖ → 0 .
+```
+
+The proof is the band split of the plan, with one simplification: the exponent carried through the
+spike is `1/2` rather than `1/m`.  For `m ≥ 2` one has `ρ⁴ ≤ ρ^(2m)`, so the fourth power already
+yields `ρ² ≤ 1 + (Kn/|n+l|)^(1/2)`, and every downstream estimate closes at that single exponent —
+uniformly in `m`, and exactly failing at `m = 1`, where the fold is needed instead.  The split is
+`S̃(B^(-2)w) = S̃(B^(-2)w') + S̃(B^(-2)w'')` at the operator level, so the two regimes never have to
+be recombined inside a single sum:
+
+* high modes: the global ratio bound `ρ² ≤ 1 + (Kn)^(1/2)` times the tail mass `O(log n / n)`;
+* low modes: off the spike the ratio is bounded by `1 + 2K` and the vector is small because the
+  defect is; on the spike the kernel gives `|v̂'(l)| ≤ 48A(5+3K)(1+log n)/n` and the spike carries
+  ratio mass at most `(2 + 4K^(1/2))·n`.
+
+**What remains on this card.**  With (T) in hand the `m ≥ 2` relative one-step error is
+
+```text
+R̃ f - a_δ f = B[ S̃ (B^(-2) (S̃* - T_δ)(Bf)) ] + B[ (S̃ - T_(-δ))(B^(-2) T_δ (Bf)) ] ,
+```
+
+whose second bracket is `tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv_family` and whose first
+bracket is now (T).  What is left is the iteration: restating (T) with `B^(-2)` replaced by an
+arbitrary member of the piecewise-exponential algebra — the proof above uses only
+`|ĉ(k)| ≤ C/(1+|k|)`, which `norm_fourierCoeff_of_isExpPiecewise` supplies for every member — and
+then running the `m`-fold telescope of pass 30 in the relative form.

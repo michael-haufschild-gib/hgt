@@ -242,4 +242,36 @@ theorem xiAtomFedCounterterm_cancels (a ζ : ℂ) :
   rw [xiRepairedForm, xiAtomFedCounterterm]
   simp [xiAtomIsolator]
 
+/-- The atom-fed counterterm is rank one: it factors through the single evaluation `f ↦ f a`. -/
+theorem xiAtomFedCounterterm_factors_eval (a : ℂ) {f g : ℂ → ℂ} (h : f a = g a) :
+    xiAtomFedCounterterm a f = xiAtomFedCounterterm a g := by
+  rw [xiAtomFedCounterterm, xiAtomFedCounterterm, h]
+
+/-- **A counterterm annihilating every atom-isolator is RH-transparent**, in the finite-rank form:
+if the boundary map kills every isolator, the repaired positivity is RH. -/
+theorem riemannHypothesis_of_boundaryMap_kills_isolators {r : ℕ}
+    (L : (ℂ → ℂ) →ₗ[ℝ] (Fin r → ℝ)) (B : QuadraticForm ℝ (Fin r → ℝ))
+    (hL : ∀ (q : XiZeroCopy) (ζ : ℂ),
+      L (xiAtomIsolator (xiZeroCopyReciprocalSquare q) ζ) = 0)
+    (hpos : ∀ f : ℂ → ℂ, 0 ≤ xiRepairedForm (fun g => B (L g)) f) : RiemannHypothesis :=
+  riemannHypothesis_of_counterterm_atomLocal _ (fun q ζ => by rw [hL q ζ]; simp) hpos
+
+/-- **Vanishing point masses annihilate the atom isolators.**  A boundary functional given by
+integration against a Borel measure carrying no mass at the two atom points kills the isolator.
+A signed boundary functional is the difference of two such integrals, so the same conclusion holds
+for it componentwise. -/
+theorem integral_xiAtomIsolator_eq_zero {μ : MeasureTheory.Measure ℂ} {a ζ : ℂ}
+    (ha : μ {a} = 0) (hca : μ {(starRingEnd ℂ) a} = 0) :
+    ∫ z, xiAtomIsolator a ζ z ∂μ = 0 := by
+  refine MeasureTheory.integral_eq_zero_of_ae ?_
+  rw [Filter.EventuallyEq, MeasureTheory.ae_iff]
+  refine MeasureTheory.measure_mono_null (t := ({a, (starRingEnd ℂ) a} : Set ℂ)) ?_ ?_
+  · intro z hz
+    by_contra hzc
+    simp only [Set.mem_insert_iff, Set.mem_singleton_iff] at hzc
+    push Not at hzc
+    exact hz (by simp only [Pi.zero_apply, xiAtomIsolator, if_neg hzc.1, if_neg hzc.2])
+  · rw [Set.insert_eq]
+    exact MeasureTheory.measure_union_null ha hca
+
 end RHTower

@@ -154,6 +154,36 @@ theorem besselMass_lower_window {α : ℝ} (hα : 1 ≤ α) :
     nlinarith [hnum, hden', besselEnergyFloor_pos]
   linarith [hmain, hstep]
 
+theorem continuous_besselNormalForm : Continuous besselNormalForm := by
+  have hfun : besselNormalForm = fun u : ℝ => Real.sqrt u * besselJ0 u := by
+    funext u
+    rw [besselNormalForm]
+  rw [hfun]
+  exact Real.continuous_sqrt.mul continuous_besselJ0
+
+/-- **Tiling the window bound.**  The mass of the Bessel normal form grows linearly: every four
+units of the exterior ray contribute a fixed amount. -/
+theorem besselMass_lower_tiled {α : ℝ} (hα : 1 ≤ α) (n : ℕ) :
+    (n : ℝ) * (4 / 9 * besselEnergyFloor)
+      ≤ ∫ u in α..(α + 4 * (n : ℝ)), besselNormalForm u ^ 2 := by
+  induction n with
+  | zero => simp
+  | succ k ih =>
+    have hk : (1 : ℝ) ≤ α + 4 * (k : ℝ) := by
+      have : (0 : ℝ) ≤ 4 * (k : ℝ) := by positivity
+      linarith
+    have hstep := besselMass_lower_window hk
+    have hcont : Continuous fun u : ℝ => besselNormalForm u ^ 2 :=
+      continuous_besselNormalForm.pow 2
+    have hadd := intervalIntegral.integral_add_adjacent_intervals
+      (f := fun u : ℝ => besselNormalForm u ^ 2) (μ := MeasureTheory.volume)
+      (a := α) (b := α + 4 * (k : ℝ)) (c := α + 4 * ((k : ℝ) + 1))
+      (hcont.intervalIntegrable _ _) (hcont.intervalIntegrable _ _)
+    have hshift : α + 4 * (k : ℝ) + 4 = α + 4 * ((k : ℝ) + 1) := by ring
+    rw [hshift] at hstep
+    push_cast
+    linarith [ih, hstep, hadd]
+
 end GaloisForLFunctions.RHTower
 
 end

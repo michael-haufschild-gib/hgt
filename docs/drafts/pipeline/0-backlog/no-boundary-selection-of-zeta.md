@@ -459,7 +459,7 @@ Thus `L_src` cannot evade the reciprocal-support audit by placing singular mass 
 
 ## 2026-06-24 operator images must declare their closed test space
 
-`../2-fully-proven/test-space-closure-q0-visible-rh.md` generalizes the filter/preconditioner audit from multiplicative weights to arbitrary source-built test spaces. Positivity on a subspace `S` sees exactly the reciprocal atoms that the uniform closure of `S` can isolate on `K=Y union {0}`.
+`../3-formalized/not_new_scientific_knowledge/test-space-closure-q0-visible-rh.md` generalizes the filter/preconditioner audit from multiplicative weights to arbitrary source-built test spaces. Positivity on a subspace `S` sees exactly the reciprocal atoms that the uniform closure of `S` can isolate on `K=Y union {0}`.
 
 Thus `L_src` cannot evade the `Q_0` wall by replacing polynomial tests with `A p` for a named operator. A dense operator image is still RH-strength. A non-dense image hides atoms, and those atoms need an independent source theorem. The no-boundary route must therefore compute the closed image before treating operator-image positivity as evidence.
 
@@ -471,13 +471,13 @@ Thus `L_src` cannot replace the all-order `Q_0` wall with a finite hard-edge cou
 
 ## 2026-06-24 finite-rank repair needs a quotient theorem
 
-`../2-fully-proven/finite-rank-counterterm-kernel-visibility.md` separates finite-rank repair into a kernel part and a quotient part. On the kernel of the boundary map `L`, the counterterm vanishes, so positivity is just the usual `Q_0` visibility test. Any atom whose isolator is not in the kernel is hidden in the finite-dimensional quotient.
+`../3-formalized/not_new_scientific_knowledge/finite-rank-counterterm-kernel-visibility.md` separates finite-rank repair into a kernel part and a quotient part. On the kernel of the boundary map `L`, the counterterm vanishes, so positivity is just the usual `Q_0` visibility test. Any atom whose isolator is not in the kernel is hidden in the finite-dimensional quotient.
 
 Thus `L_src` cannot treat finite-rank boundary positivity as source selection by itself. It must state the boundary map, identify which atoms the kernel sees, and prove from source data that the finite-dimensional quotient is not a zero-fed repair of the bad atom evaluations.
 
 ## 2026-06-24 non-atomic finite-rank boundary data cannot hide zeros
 
-`../2-fully-proven/non-atomic-finite-rank-counterterms-rh-strength.md` sharpens the finite-rank quotient audit. If the boundary functionals defining a finite-rank repair are non-atomic on the reciprocal support, then every reciprocal atom-isolator lies in the kernel, so positivity of the repaired form still implies RH.
+`../3-formalized/not_new_scientific_knowledge/non-atomic-finite-rank-counterterms-rh-strength.md` sharpens the finite-rank quotient audit. If the boundary functionals defining a finite-rank repair are non-atomic on the reciprocal support, then every reciprocal atom-isolator lies in the kernel, so positivity of the repaired form still implies RH.
 
 Thus `L_src` cannot claim a softer finite-rank positivity target from smooth, averaged, hard-edge, or otherwise non-atomic source boundary data. A weaker target requires atom-evaluation data in the quotient, and that must be source-built without reading the zero divisor.
 
@@ -501,13 +501,13 @@ Thus `L_src` cannot select zeta by adding the full summable exterior Gamma/prola
 
 ## 2026-06-24 nonlocal boundary data must pass the atom-local audit
 
-`../2-fully-proven/continuous-counterterm-atom-locality.md` gives the first test for any nonlocal or infinite-rank boundary object in `L_src`. If the counterterm vanishes on reciprocal atom-isolator subspaces, positivity remains RH-strength. If it does not vanish there, the proof must identify a source construction for those atom-local values before the reciprocal divisor is used.
+`../3-formalized/not_new_scientific_knowledge/continuous-counterterm-atom-locality.md` gives the first test for any nonlocal or infinite-rank boundary object in `L_src`. If the counterterm vanishes on reciprocal atom-isolator subspaces, positivity remains RH-strength. If it does not vanish there, the proof must identify a source construction for those atom-local values before the reciprocal divisor is used.
 
 Thus `L_src` cannot hide behind the word nonlocal. The semilocal object must either prove the faithful index before atom-local evaluation, or explain why its atom-local restrictions are source data rather than zero-fed repairs.
 
 ## 2026-06-24 atom-local domination is the boundary bill
 
-`../2-fully-proven/continuous-counterterm-local-domination-threshold.md` sharpens the continuous-counterterm audit. If `L_src` or any semilocal boundary object is nonzero on a reciprocal atom-isolator, all-order positivity forces an exact local domination: scalar payment at a negative real atom and two-dimensional Loewner payment at a non-real pair.
+`../3-formalized/not_new_scientific_knowledge/continuous-counterterm-local-domination-threshold.md` sharpens the continuous-counterterm audit. If `L_src` or any semilocal boundary object is nonzero on a reciprocal atom-isolator, all-order positivity forces an exact local domination: scalar payment at a negative real atom and two-dimensional Loewner payment at a non-real pair.
 
 Thus the corrected source route must either derive those atom-local restrictions from Euler/Gamma/FE source data before reading zeros, or bypass them by proving the faithful index earlier. Merely enlarging the boundary object does not select zeta.
 

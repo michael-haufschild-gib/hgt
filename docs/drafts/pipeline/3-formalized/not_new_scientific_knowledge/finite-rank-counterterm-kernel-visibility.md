@@ -1,7 +1,7 @@
 # Finite-Rank Counterterm Kernel Visibility
 
 - **ID:** finite-rank-counterterm-kernel-visibility
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / route normalization
 - **Source:** `test-space-closure-q0-visible-rh.md`,
   `finite-hard-edge-counterterm-q0-rh-strength.md`,
@@ -139,8 +139,7 @@ source selection theorem.
 
 - [x] 0 -> 1 in-progress: finite-rank kernel/quotient split isolated.
 - [x] 1 -> 2 fully-proven: kernel theorem and zero-fed countermodels proved.
-- [ ] 2 -> 3 formalized: optional finite-dimensional quotient theorem plus
-  closed-test-space visibility.
+- [x] 2 -> 3 formalized: `RHTower/ReciprocalAtomCounterterm.lean`.
 
 ## Log
 
@@ -207,3 +206,48 @@ base form is strictly positive on every nonzero vector in `ker L`. This is the
 exact reusable strict version required by rank-one Uvarov boundary repairs.
 It passed direct source and targeted module checks; its axiom audit reports
 only `propext`, `Classical.choice`, and `Quot.sound`.
+
+## 2026-08-16 Lean closure
+
+`RHTower/ReciprocalAtomTestSpaceClosure.lean` and `RHTower/ReciprocalAtomCounterterm.lean` build the
+whole reciprocal-atom layer on the actual `xi` divisor, unconditionally.
+
+Setup.  `xiZeroCopyReciprocalSquare` is the inverse square of the centered spectral coordinate,
+indexed by the multiplicity-exact divisor copies, so folded multiplicities are automatic;
+`xiReciprocalAtomSet` is `Y` and `xiReciprocalTestSet` is `K = Y union {0}`.
+`summable_norm_xiZeroCopyReciprocalSquare` is the card's `sum_y M_y |y| < infinity`, and
+`isCompact_xiReciprocalTestSet` proves `K` compact.  `xiQZero f = sum_q y_q f(y_q)^2` is `Q_0`.
+`xiZeroCopyReciprocalSquare_conjEquiv` gives the conjugation symmetry of the folded support with
+equal multiplicities (`xiAtomMultiplicity_conj`).
+
+Isolators.  `xiAtomIsolator a zeta` is the card's `e_a` and `e_{a,zeta}`;
+`xiAtomIsolator_conjSymm` proves conjugation symmetry (with `zeta` real at a real atom),
+`xiReciprocalTestSet_singleton_mem_nhdsWithin` proves every nonzero point of `K` is isolated, and
+`continuousOn_xiAtomIsolator` therefore places the isolator in `C_sym(K)`.
+
+Continuity of `Q_0`.  `norm_xiQZero_sub_le` is the card's uniform estimate
+`|Q_0[f]-Q_0[g]| <= (||f||+||g||) ||f-g|| sum_y M_y |y|`, and
+`xiQZero_re_nonneg_of_uniform_approx` passes nonnegativity to uniform limits.
+
+Atom detection.  `xiQZero_atomIsolator_re_neg` proves that a strictly negative isolator reading
+forces `Q_0` strictly negative, and `xiReciprocalAtom_nonneg_of_isolator` converts that into the
+card's dichotomy through the corpus criterion
+`riemannHypothesis_iff_forall_xiZeroCopyReciprocalSquare_nonnegative`.  The exact local readings are
+`xiQZero_atomIsolator_re_of_eq_conj` (`M_a a zeta^2`) and `xiQZero_atomIsolator_re_of_ne_conj`
+(`2 M_a Re(a zeta^2)`).
+
+Axioms of every theorem listed: `propext`, `Classical.choice`, `Quot.sound`.
+
+Card-specific.  `xiRepairedForm C f = Re Q_0[f] + C[f]` is `R_C`.  With `C[f] = B(L f)` for a real
+linear `L` into `R^r` and a real quadratic form `B`, `xiQZero_re_nonneg_on_ker` is the kernel
+theorem: repaired nonnegativity gives bare `Q_0` nonnegativity on `ker L`, because `B(0) = 0`.
+`riemannHypothesis_of_finiteRank_kernel_visible` is the visibility consequence: if the kernel test
+space still resolves every atom, the finite-rank repair is RH-strength.
+`riemannHypothesis_of_boundaryMap_kills_isolators` is the case where `L` annihilates every isolator.
+The zero-fed countermodel is `xiAtomFedCounterterm`, which by `xiAtomFedCounterterm_factors_eval`
+factors through the single evaluation `f |-> f(a)` — rank one — and by
+`xiAtomFedCounterterm_cancels` makes the repaired form vanish identically on that atom's isolator
+subspace, with `xiAtomFedCounterterm_eq_of_eq_conj` and `xiAtomFedCounterterm_eq_of_ne_conj`
+identifying it with the card's `-M_a a f(a)^2` and `-2 M_a Re(a f(a)^2)`.  The real-quadratic-form
+abstraction of the kernel gate remains available in
+`HTGeometry/FiniteRankCountertermKernelVisibility.lean`.

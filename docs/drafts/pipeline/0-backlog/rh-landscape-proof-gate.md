@@ -277,7 +277,7 @@ Consequence: a singular source weight near the accumulation point `y=0` cannot s
 
 Status: route-normalization theorem added, not an RH proof.
 
-Created `../2-fully-proven/test-space-closure-q0-visible-rh.md`. If `S` is a source-built test space inside the conjugation-symmetric continuous functions on `K=Y union {0}`, positivity of `Q_0` on `S` excludes exactly the bad reciprocal atoms that the uniform closure of `S` can isolate. Dense test spaces remain RH-strength; test spaces whose closure vanishes on a hidden set prove RH only off that hidden set.
+Created `../3-formalized/not_new_scientific_knowledge/test-space-closure-q0-visible-rh.md`. If `S` is a source-built test space inside the conjugation-symmetric continuous functions on `K=Y union {0}`, positivity of `Q_0` on `S` excludes exactly the bad reciprocal atoms that the uniform closure of `S` can isolate. Dense test spaces remain RH-strength; test spaces whose closure vanishes on a hidden set prove RH only off that hidden set.
 
 Consequence: replacing `p` by `A p` for a differential, difference, Christoffel, boundary, or renormalized operator does not by itself create a softer target. The proof must compute the closed image of `A` on the reciprocal compact support. If the image is dense, the RH wall is unchanged. If the image is not dense, the hidden atoms and their source control must be named explicitly.
 
@@ -297,7 +297,7 @@ Consequence: finite hard-edge renormalization can change presentation and low-or
 
 Status: route-normalization theorem added, not an RH proof.
 
-Created `../2-fully-proven/finite-rank-counterterm-kernel-visibility.md`. For a finite-rank counterterm `C[f]=B(Lf)`, positivity of `Q_0+C` implies ordinary `Q_0` positivity on `ker L`. Therefore it excludes exactly the bad reciprocal atoms whose isolators lie in the kernel. Atoms not visible in `ker L` have been moved into the finite-dimensional quotient.
+Created `../3-formalized/not_new_scientific_knowledge/finite-rank-counterterm-kernel-visibility.md`. For a finite-rank counterterm `C[f]=B(Lf)`, positivity of `Q_0+C` implies ordinary `Q_0` positivity on `ker L`. Therefore it excludes exactly the bad reciprocal atoms whose isolators lie in the kernel. Atoms not visible in `ker L` have been moved into the finite-dimensional quotient.
 
 The card also gives a countermodel: in an abstract reciprocal-divisor model, a rank-one counterterm using evaluation at a negative atom can cancel that atom exactly. Thus finite rank is not automatically harmless. A finite-rank repair is non-mirror only if the quotient map and quotient form are source-built before the divisor is read and a separate source theorem controls the quotient atoms.
 
@@ -305,7 +305,7 @@ The card also gives a countermodel: in an abstract reciprocal-divisor model, a r
 
 Status: route-normalization theorem added, not an RH proof.
 
-Created `../2-fully-proven/non-atomic-finite-rank-counterterms-rh-strength.md`. A continuous finite-rank counterterm `C[f]=B(Lf)` can affect an isolated reciprocal atom only if `L` sees that atom's isolator. If the boundary functionals have no point-mass component on the reciprocal support, then positivity of `Q_0+C` still implies RH.
+Created `../3-formalized/not_new_scientific_knowledge/non-atomic-finite-rank-counterterms-rh-strength.md`. A continuous finite-rank counterterm `C[f]=B(Lf)` can affect an isolated reciprocal atom only if `L` sees that atom's isolator. If the boundary functionals have no point-mass component on the reciprocal support, then positivity of `Q_0+C` still implies RH.
 
 Consequence: a source-built finite-rank repair with non-atomic boundary functionals does not soften the RH wall. To hide a bad atom, the finite-dimensional quotient must contain atom-evaluation data at reciprocal atoms, which is exactly the zero-feeding risk unless supplied by an independent source theorem.
 
@@ -353,13 +353,13 @@ Consequence: the full summable Gamma/prolate exterior measure is not a softer al
 
 Status: route-normalization theorem added, not an RH proof.
 
-Created `../2-fully-proven/continuous-counterterm-atom-locality.md`. For any continuous quadratic counterterm `C` on the reciprocal compact support, positivity of `Q_0+C` restricts to each finite-dimensional atom-isolator subspace. If `C` vanishes on those subspaces, positivity still implies RH by the usual atom-isolation contradiction.
+Created `../3-formalized/not_new_scientific_knowledge/continuous-counterterm-atom-locality.md`. For any continuous quadratic counterterm `C` on the reciprocal compact support, positivity of `Q_0+C` restricts to each finite-dimensional atom-isolator subspace. If `C` vanishes on those subspaces, positivity still implies RH by the usual atom-isolation contradiction.
 
 Consequence: nonlocal or infinite-rank language does not by itself escape the wall. A semilocal counterterm can affect a bad atom only through atom-local values on its isolator subspace, and those values need an independent source construction.
 
 ## 2026-06-24 continuous counterterms have an exact local bill
 
-Created `../2-fully-proven/continuous-counterterm-local-domination-threshold.md`. The atom-locality theorem says where a continuous counterterm must act; the new card says how much. A negative real atom requires `C[e_a] >= -M_a a`, and a non-real pair requires `C|_{E_a} >= -Q_0|_{E_a}` in real two-dimensional Loewner order.
+Created `../3-formalized/not_new_scientific_knowledge/continuous-counterterm-local-domination-threshold.md`. The atom-locality theorem says where a continuous counterterm must act; the new card says how much. A negative real atom requires `C[e_a] >= -M_a a`, and a non-real pair requires `C|_{E_a} >= -Q_0|_{E_a}` in real two-dimensional Loewner order.
 
 Consequence: a semilocal repair cannot be justified by scale or nonlocal vocabulary. If it can repair bad atoms, it must supply these atom-local domination values from source data, or prove the faithful index before those values are evaluated.
 

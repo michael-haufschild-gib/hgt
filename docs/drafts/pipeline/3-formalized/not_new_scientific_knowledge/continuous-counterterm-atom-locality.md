@@ -1,7 +1,7 @@
 # Continuous Counterterms Are Atom-Local At Obstructions
 
 - **ID:** continuous-counterterm-atom-locality
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / route normalization
 - **Source:** `test-space-closure-q0-visible-rh.md`,
   `finite-rank-counterterm-kernel-visibility.md`,
@@ -129,7 +129,7 @@ For any continuous nonlocal or semilocal counterterm:
 - [x] 0 -> 1 in-progress: general continuous-counterterm atom-local audit
   isolated.
 - [x] 1 -> 2 fully-proven: restriction-to-isolators proof completed.
-- [ ] 2 -> 3 formalized: optional compact-support finite-subspace theorem.
+- [x] 2 -> 3 formalized: `RHTower/ReciprocalAtomCounterterm.lean`.
 
 ## Log
 
@@ -142,3 +142,41 @@ For any continuous nonlocal or semilocal counterterm:
 `continuous-counterterm-local-domination-threshold.md` handles the complementary case where a continuous counterterm is nonzero on an atom-isolator subspace. Positivity then forces an exact atom-local bill: for a negative real atom, `C[e_a] >= -M_a a`; for a non-real pair, `C|_{E_a} >= -Q_0|_{E_a}` in the real two-dimensional Loewner order.
 
 Thus nonzero atom-local action is not a vague reserve. It is the precise scalar or matrix domination that any source-built repair must explain before the reciprocal divisor is used.
+
+## 2026-08-16 Lean closure
+
+`RHTower/ReciprocalAtomTestSpaceClosure.lean` and `RHTower/ReciprocalAtomCounterterm.lean` build the
+whole reciprocal-atom layer on the actual `xi` divisor, unconditionally.
+
+Setup.  `xiZeroCopyReciprocalSquare` is the inverse square of the centered spectral coordinate,
+indexed by the multiplicity-exact divisor copies, so folded multiplicities are automatic;
+`xiReciprocalAtomSet` is `Y` and `xiReciprocalTestSet` is `K = Y union {0}`.
+`summable_norm_xiZeroCopyReciprocalSquare` is the card's `sum_y M_y |y| < infinity`, and
+`isCompact_xiReciprocalTestSet` proves `K` compact.  `xiQZero f = sum_q y_q f(y_q)^2` is `Q_0`.
+`xiZeroCopyReciprocalSquare_conjEquiv` gives the conjugation symmetry of the folded support with
+equal multiplicities (`xiAtomMultiplicity_conj`).
+
+Isolators.  `xiAtomIsolator a zeta` is the card's `e_a` and `e_{a,zeta}`;
+`xiAtomIsolator_conjSymm` proves conjugation symmetry (with `zeta` real at a real atom),
+`xiReciprocalTestSet_singleton_mem_nhdsWithin` proves every nonzero point of `K` is isolated, and
+`continuousOn_xiAtomIsolator` therefore places the isolator in `C_sym(K)`.
+
+Continuity of `Q_0`.  `norm_xiQZero_sub_le` is the card's uniform estimate
+`|Q_0[f]-Q_0[g]| <= (||f||+||g||) ||f-g|| sum_y M_y |y|`, and
+`xiQZero_re_nonneg_of_uniform_approx` passes nonnegativity to uniform limits.
+
+Atom detection.  `xiQZero_atomIsolator_re_neg` proves that a strictly negative isolator reading
+forces `Q_0` strictly negative, and `xiReciprocalAtom_nonneg_of_isolator` converts that into the
+card's dichotomy through the corpus criterion
+`riemannHypothesis_iff_forall_xiZeroCopyReciprocalSquare_nonnegative`.  The exact local readings are
+`xiQZero_atomIsolator_re_of_eq_conj` (`M_a a zeta^2`) and `xiQZero_atomIsolator_re_of_ne_conj`
+(`2 M_a Re(a zeta^2)`).
+
+Axioms of every theorem listed: `propext`, `Classical.choice`, `Quot.sound`.
+
+Card-specific.  `xiRepairedForm_nonneg_on_isolator` is the first statement: nonnegativity of `R_C`
+on all test functions restricts to every atom-isolator subspace `E_a`.
+`riemannHypothesis_of_counterterm_atomLocal` is the consequence: if `C` vanishes on every
+atom-isolator subspace, then `R_C >= 0` implies RH.  No continuity or finite rank is needed for
+either statement — the counterterm is an arbitrary real functional on test functions, which is
+strictly more general than the card's continuous quadratic `C`.

@@ -1,7 +1,7 @@
 # Non-Atomic Finite-Rank Counterterms Are RH Strength
 
 - **ID:** non-atomic-finite-rank-counterterms-rh-strength
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / route normalization
 - **Source:** `finite-rank-counterterm-kernel-visibility.md`,
   `test-space-closure-q0-visible-rh.md`
@@ -117,8 +117,7 @@ functionals:
 
 - [x] 0 -> 1 in-progress: non-atomic finite-rank criterion isolated.
 - [x] 1 -> 2 fully-proven: atom-isolator proof completed.
-- [ ] 2 -> 3 formalized: optional; requires finite-measure representation of
-  continuous linear functionals on the compact support.
+- [x] 2 -> 3 formalized: `RHTower/ReciprocalAtomCounterterm.lean`.
 
 ## Log
 
@@ -129,3 +128,30 @@ functionals:
 ## 2026-06-24 continuous-counterterm generalization
 
 `continuous-counterterm-atom-locality.md` is the non-finite-rank version of this result. The non-atomic finite-rank theorem forces the boundary map to annihilate atom-isolators. The general theorem says any continuous quadratic counterterm is harmless exactly at the atoms where its restriction to the isolator subspace vanishes.
+
+## 2026-08-16 Lean closure
+
+`RHTower/ReciprocalAtomTestSpaceClosure.lean` and `RHTower/ReciprocalAtomCounterterm.lean` build the
+reciprocal-atom layer on the actual `xi` divisor, unconditionally.  `xiZeroCopyReciprocalSquare` is
+the multiplicity-exact folded reciprocal atom, `xiReciprocalAtomSet` is `Y`,
+`xiReciprocalTestSet` is `K = Y union {0}` (compact by `isCompact_xiReciprocalTestSet`),
+`xiQZero` is `Q_0`, and `xiAtomIsolator a zeta` is the conjugation-symmetric isolator, continuous on
+`K` by `continuousOn_xiAtomIsolator`.
+
+`riemannHypothesis_of_boundaryMap_kills_isolators` is this card's theorem: for a real linear
+boundary map `L` into `R^r` and a real quadratic form `B`, if `L` annihilates every reciprocal
+atom-isolator, then nonnegativity of `xiRepairedForm (B . L)` implies RH.  Its proof is
+`riemannHypothesis_of_counterterm_atomLocal` — a counterterm vanishing on every atom-isolator
+subspace is RH-transparent — together with the atom detection
+`xiQZero_atomIsolator_re_neg` and the corpus criterion
+`riemannHypothesis_iff_forall_xiZeroCopyReciprocalSquare_nonnegative`.  The exact local readings
+`M_a a zeta^2` and `2 M_a Re(a zeta^2)` are `xiQZero_atomIsolator_re_of_eq_conj` and
+`xiQZero_atomIsolator_re_of_ne_conj`, using `xiAtomMultiplicity_conj` for the equality of
+conjugate multiplicities.
+
+The measure-representation sufficient condition is `integral_xiAtomIsolator_eq_zero`: a boundary
+functional given by integration against a Borel measure with no point mass at the atom or at its
+conjugate annihilates that isolator, so a signed boundary functional with vanishing point masses on
+`Y` does too, componentwise.
+
+Axioms: `propext`, `Classical.choice`, `Quot.sound`.

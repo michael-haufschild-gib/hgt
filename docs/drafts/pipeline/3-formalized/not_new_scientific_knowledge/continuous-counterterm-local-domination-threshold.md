@@ -1,7 +1,7 @@
 # Continuous Counterterm Local Domination Threshold
 
 - **ID:** continuous-counterterm-local-domination-threshold
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / route normalization
 - **Source:** `continuous-counterterm-atom-locality.md`,
   `finite-rank-counterterm-kernel-visibility.md`
@@ -150,9 +150,49 @@ local domination bill at each bad reciprocal atom.
 - [x] 0 -> 1 in-progress: local domination threshold isolated from the
   continuous-counterterm audit.
 - [x] 1 -> 2 fully-proven: scalar and two-dimensional restrictions proved.
-- [ ] 2 -> 3 formalized: optional finite-dimensional quadratic-form theorem.
+- [x] 2 -> 3 formalized: `RHTower/ReciprocalAtomCounterterm.lean`.
 
 ## Log
 
 - 2026-06-24 -- Codex: created after the atom-locality card to make the
   nonzero-restriction case exact rather than rhetorical.
+
+## 2026-08-16 Lean closure
+
+`RHTower/ReciprocalAtomTestSpaceClosure.lean` and `RHTower/ReciprocalAtomCounterterm.lean` build the
+whole reciprocal-atom layer on the actual `xi` divisor, unconditionally.
+
+Setup.  `xiZeroCopyReciprocalSquare` is the inverse square of the centered spectral coordinate,
+indexed by the multiplicity-exact divisor copies, so folded multiplicities are automatic;
+`xiReciprocalAtomSet` is `Y` and `xiReciprocalTestSet` is `K = Y union {0}`.
+`summable_norm_xiZeroCopyReciprocalSquare` is the card's `sum_y M_y |y| < infinity`, and
+`isCompact_xiReciprocalTestSet` proves `K` compact.  `xiQZero f = sum_q y_q f(y_q)^2` is `Q_0`.
+`xiZeroCopyReciprocalSquare_conjEquiv` gives the conjugation symmetry of the folded support with
+equal multiplicities (`xiAtomMultiplicity_conj`).
+
+Isolators.  `xiAtomIsolator a zeta` is the card's `e_a` and `e_{a,zeta}`;
+`xiAtomIsolator_conjSymm` proves conjugation symmetry (with `zeta` real at a real atom),
+`xiReciprocalTestSet_singleton_mem_nhdsWithin` proves every nonzero point of `K` is isolated, and
+`continuousOn_xiAtomIsolator` therefore places the isolator in `C_sym(K)`.
+
+Continuity of `Q_0`.  `norm_xiQZero_sub_le` is the card's uniform estimate
+`|Q_0[f]-Q_0[g]| <= (||f||+||g||) ||f-g|| sum_y M_y |y|`, and
+`xiQZero_re_nonneg_of_uniform_approx` passes nonnegativity to uniform limits.
+
+Atom detection.  `xiQZero_atomIsolator_re_neg` proves that a strictly negative isolator reading
+forces `Q_0` strictly negative, and `xiReciprocalAtom_nonneg_of_isolator` converts that into the
+card's dichotomy through the corpus criterion
+`riemannHypothesis_iff_forall_xiZeroCopyReciprocalSquare_nonnegative`.  The exact local readings are
+`xiQZero_atomIsolator_re_of_eq_conj` (`M_a a zeta^2`) and `xiQZero_atomIsolator_re_of_ne_conj`
+(`2 M_a Re(a zeta^2)`).
+
+Axioms of every theorem listed: `propext`, `Classical.choice`, `Quot.sound`.
+
+Card-specific.  `counterterm_realAtom_threshold` is clause 1, `M_a a + C[e_a] >= 0` at a real atom,
+and `counterterm_nonrealAtom_threshold` is clause 2, `2 M_a Re(a zeta^2) + C[e_{a,zeta}] >= 0` for
+every `zeta` — which is exactly positive semidefiniteness of the two-real-dimensional form on `E_a`,
+i.e. `C_a >= -Q_a` in the Loewner order.  Sharpness is `xiAtomFedCounterterm_cancels`: the atom-fed
+counterterm `-Re Q_0[e_{a,f(a)}]`, identified with the card's `-M_a a f(a)^2` and
+`-2 M_a Re(a f(a)^2)` by `xiAtomFedCounterterm_eq_of_eq_conj` and
+`xiAtomFedCounterterm_eq_of_ne_conj`, makes the repaired form vanish identically on that atom's
+isolator subspace.
