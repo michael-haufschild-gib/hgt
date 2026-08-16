@@ -1631,3 +1631,27 @@ content of the card, and both are large named sub-projects:
    counterexample of the card's section 7.2 shows superlinearity is the sharp hypothesis.
 8. **Bochner--Schwartz** for positive-definite tempered distributions (the integral representation
    of a translation-invariant positive form). Missing from mathlib.
+
+### `gauss-component-quasi-inner-residue-hierarchy` — the named open core (T) is closed
+
+Six new unconditional modules, all axiom-clean and umbrella-wired (card passes 43–44 hold the
+details):
+
+- `HTGeometry/LatticeTailSums.lean` — the six elementary `ℤ`-lattice weights (quadratic tail,
+  harmonic band, punctured sub-unit power band, counting band, punctured harmonic band).
+- `RHTower/GaussShiftRatioWeight.lean` — the ratio-weighted Parseval identity for the normalized
+  shifted diagonal and the two regime bounds on the ratio.
+- `RHTower/GaussSpikeBandSum.lean` — the spike carries ratio mass at most `(2 + 4K^(1/2))·n`.
+- `RHTower/GaussDefectHighModeTail.lean` — the high-mode defect tail is
+  `O(1/J) + O(log n / n)`.
+- `RHTower/GaussLowModeKernelBound.lean` — spike/low-band separation, the truncation kernel bound,
+  and the constant defect bound `5 + 3K` on the low band.
+- `RHTower/GaussSpikeDefectVanishing.lean` — the assembly and the capstone
+  `tendsto_norm_gaussShiftedBlockDiag_invSq_defect_zero`, which is exactly the statement (T) that
+  pass 42 of the card named as its single open core for `m ≥ 2`.
+
+Two facts worth carrying forward: the right exponent to push through the spike is `1/2` uniformly
+in `m` (from `ρ⁴ ≤ ρ^(2m)`), not `1/m`; and for the iteration the amplitude decay exponent must
+exceed `3/4`, not `1/2` — the high-mode term is the binding constraint. The card is not promoted:
+what is left is the general-kernel restatement of (T) and the relative form of the `m`-fold
+telescope.

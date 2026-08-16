@@ -308,6 +308,32 @@ theorem conePrimeIndexSumBound_mono {sigma : ℝ} {M N : ℕ} (h : M ≤ N)
   have hlogM : (0 : ℝ) ≤ Real.log ((M : ℝ) + 1) := Real.log_nonneg (by linarith)
   exact mul_le_mul hMN (mul_le_mul_of_nonneg_right hlog hV) (mul_nonneg hlogM hV) (by linarith)
 
+/-! ## The integer cone edge -/
+
+theorem le_log_floor_exp_add_one (H : ℝ) : H ≤ Real.log ((⌊Real.exp H⌋₊ : ℝ) + 1) := by
+  have h1 : Real.exp H < (⌊Real.exp H⌋₊ : ℝ) + 1 := Nat.lt_floor_add_one _
+  have h2 := Real.log_lt_log (Real.exp_pos H) h1
+  rw [Real.log_exp] at h2
+  exact h2.le
+
+theorem log_floor_exp_add_one_le {H : ℝ} (hH : 0 ≤ H) :
+    Real.log ((⌊Real.exp H⌋₊ : ℝ) + 1) ≤ H + 1 := by
+  have hEpos : (0 : ℝ) < Real.exp H := Real.exp_pos H
+  have hflle : ((⌊Real.exp H⌋₊ : ℕ) : ℝ) ≤ Real.exp H := Nat.floor_le hEpos.le
+  have hexpH : (1 : ℝ) ≤ Real.exp H := Real.one_le_exp hH
+  have hle : ((⌊Real.exp H⌋₊ : ℝ) + 1) ≤ Real.exp (H + 1) := by
+    have hstep : Real.exp (H + 1) = Real.exp H * Real.exp 1 := Real.exp_add H 1
+    have he1 : (2 : ℝ) ≤ Real.exp 1 := by
+      have := Real.add_one_le_exp (1 : ℝ)
+      linarith
+    rw [hstep]
+    nlinarith [hflle, hexpH, he1]
+  have hpos : (0 : ℝ) < (⌊Real.exp H⌋₊ : ℝ) + 1 := by
+    have : (0 : ℝ) ≤ (⌊Real.exp H⌋₊ : ℝ) := Nat.cast_nonneg _
+    linarith
+  have hstep := Real.log_le_log hpos hle
+  rwa [Real.log_exp] at hstep
+
 end
 
 end RHTower

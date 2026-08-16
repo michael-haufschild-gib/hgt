@@ -2152,3 +2152,70 @@ bracket is now (T).  What is left is the iteration: restating (T) with `B^(-2)` 
 arbitrary member of the piecewise-exponential algebra — the proof above uses only
 `|ĉ(k)| ≤ C/(1+|k|)`, which `norm_fourierCoeff_of_isExpPiecewise` supplies for every member — and
 then running the `m`-fold telescope of pass 30 in the relative form.
+
+### The exponent the iteration needs: `θ > 3/4`, not `θ > 1/2`
+
+Running the band split of (T) with the amplitude decay `A/(1+|j|)^θ` in place of `A/(1+|j|)`
+changes the two contributions as follows (`J ≍ n`):
+
+```text
+‖w''‖²                    ≲ J^(1-2θ) + n^(-2θ)·n·Σ_(0<|r|<n) 1/|r|  ≲  n^(1-2θ) log n
+high-mode contribution    ≲ (Kn)^(1/2) · n^(1-2θ) log n = K^(1/2)·n^(3/2-2θ) log n
+‖ŵ'‖_(ℓ¹)                 ≲ A·J^(1-θ),   so   ε_n ≲ n^(-θ)
+low-mode spike term       ≲ ε_n²·n ≍ n^(1-2θ)
+```
+
+The low-mode term vanishes exactly when `θ > 1/2` — the same threshold as the `L²` defect
+estimate — but the **high-mode term needs `θ > 3/4`**.  This is the sharp constraint on the
+exponent ladder `θ_r = 1 - r·η` of the iteration: one needs `θ_(m-1) > 3/4`, i.e. `η < 1/(4(m-1))`,
+and `log_div_le_rpow_div` (pass 37) supplies exactly that, since it converts the one logarithm each
+application of `R_n` costs into an arbitrarily small power loss.  At `θ = 1` the proved case above
+has `3/2 - 2θ = -1/2` and `1 - 2θ = -1`, which are the two rates `(1+log n)/n^(1/2)` and
+`((1+log n)/n^(1/2))²` appearing in `norm_sq_shiftedDiag_invSq_highMode_le` and
+`norm_sq_shiftedDiag_invSq_lowMode_le`.
+
+### Correction and refinement: the decay class the iteration must carry
+
+The paragraph above assumed that the amplitude class `A/(1+|j|)^θ` is what propagates through the
+iteration, with `θ` dropping by a fixed amount per step.  A closer look at `R̃_n` shows that this is
+not the right class, and the reason is instructive.
+
+`R̃_n = B ∘ S̃ ∘ B^(-2) ∘ S̃* ∘ B` is built from two kinds of factor:
+
+* `B`, `B^(-2)` — multiplication by a piecewise-exponential *symbol*.  On the Fourier side this is
+  convolution with a harmonic kernel, which costs one logarithm, i.e. any fixed power loss
+  (`log_div_le_rpow_div`).  This is the effect the exponent ladder was designed for.
+* `S̃`, `S̃*` — *Fourier multipliers* with symbol `ρ_j = ‖d_(n+j)‖/‖d_n‖`.  These do not convolve at
+  all; they multiply coefficient `j` by `ρ_j`.  But `ρ_j ≍ (n/|n+j|)^(1/(2m))` is `O(1)` in the bulk
+  and as large as `(Kn)^(1/(2m))` at `j ≈ -n`.
+
+So a *uniform* bound `A/(1+|j|)^θ` is **not** preserved with a constant `A` independent of `n`: near
+`j = -n` the bound degrades by the factor `n^(1/(2m))`, and no drop of the exponent `θ` repairs
+that, because the damage is localised at a moving frequency rather than spread over the tail.
+
+The right class is therefore two-piece — a uniform harmonic part plus a spike part carried at the
+moving frequency `-n`:
+
+```text
+|ĝ(j)| ≤ A/(1+|j|)^θ  +  B · [ 2|n+j| < n ] · (n/|n+j|)^c .
+```
+
+Two features make this plausible as the invariant class.  The spike part is supported at distance
+`≍ n` from frequency `0`, and only the coefficient at `0` is read at the end
+(`⟪e_n, G^m e_n⟫` is `σ_n^m` times the `0`-th coefficient of `R̃_n^m f₀`, because `e_n` is a unitary
+multiplier); and a harmonic convolution moves mass from the spike to frequency `0` with the factor
+`1/(1+n)`, which is exactly the gain the pass-33 fold uses at `m = 1`.
+
+**Therefore the next step on this card is not a mechanical generalisation of (T).**  It is:
+
+1. fix the two-piece class above and compute how `B`, `B^(-2)`, `S̃`, `S̃*` act on it — the only new
+   estimate needed is how a harmonic convolution maps the spike part into the uniform part;
+2. prove the one-step estimate `‖(R̃_n - a_(δ_n)) u‖ → 0` for `u` in that class, of which the
+   already-proved (T) is the case where `u` has no spike part;
+3. run the pass-41 telescope `‖X^r v - Y^r v‖ ≤ Σ_i ‖Y‖^(r-1-i)‖(X-Y)(X^i v)‖` with `X = R̃_n`,
+   `Y = a_(δ_n)` — this is the direction that applies the growing operator only to `v`, and it is
+   the reason the class has to be invariant under `R̃_n` rather than under the model.
+
+The available `p`-series tail `GaloisForLFunctions.tsum_int_tail_rpow_le` (new, in
+`HTGeometry/PowerSeriesTailBound.lean`: `Σ_(|j|>J)(1+|j|)^(-s) ≤ 2(1+J)^(1-s)/(s-1)` for `s > 1`,
+by Bernoulli telescoping) is what any exponent below one will need in step 2.

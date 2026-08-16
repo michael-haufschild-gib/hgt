@@ -3382,3 +3382,33 @@ Reuse notes:
 - `norm_exp_neg_I_mul_real` already existed in `HTGeometry/ObserverInvisibleRayPreservation.lean`;
   the new one was renamed and made private.  Grep every new declaration name against the corpus
   before building the umbrella -- two modules in one namespace cannot share a name.
+
+## 2026-08-16 -- progress: mass-bessel-cofinal-radiation-divergence
+
+The card's only genuinely analytic dependency -- a *uniform sectorial* large-argument asymptotic for
+`K₁` -- is now proved unconditionally, together with the whole carrier calculus.
+
+- `HTGeometry/BesselOrderAbsoluteAsymptotic` -- `norm_besselK1C_sub_leading_le_norm`:
+  `‖K₁(w) − e^{-w}√(π/(2w))‖ ≤ e^{-Re w}√(π/Re w)/‖w‖` for `Re w > 0`.
+  The corpus's existing `norm_besselK1C_sub_leading_le` bounds the remainder by `(Re w)^{-3/2}`,
+  which is worthless on a ray approaching the imaginary axis.  One integration by parts against the
+  difference quotient of the profile defect converts a power of the integration variable into a
+  power of `w`; the difference quotient and its derivative are bounded by two, and both boundary
+  terms vanish.  This is a reusable asset for every deep-time Bessel estimate in the corpus.
+- `HTGeometry/MassBesselDeepTimeCarrier` -- the carrier `2atK₁(a√(t²+x²))/√(t²+x²)`, its deep-time
+  profile `√(2πa)e^{-at}/√t`, the exact split into profile times distortion plus remainder
+  (`massBesselCarrier_eq`), the shell geometry (`norm_massBesselRoot_sub_le`), and the assembled
+  estimate `norm_massBesselCarrier_sub_leading_le`.
+
+Remaining for the card: partial summation of `ψ(x) = x + o(x)` into
+`∑_{X<n≤2X}Λ(n)n^{-1/2} = 2(√2−1)√X + o(√X)`, and the dyadic assembly.  Both are bookkeeping; the
+prime input is corpus-owned (`RHTower.Sieve.tendsto_sum_vonMangoldt_div`), so the assembly module
+must live under `RHTower/` (HTGeometry may not import RHTower).
+
+The same two modules are the analytic core of `mass-bessel-infinite-radiation-jet-obstruction.md`,
+whose higher-order Poincaré remainders are iterated versions of the same integration by parts.
+
+Added `RHTower/DyadicVonMangoldtSqrtMass` -- the card's prime input:
+`eventually_dyadicSqrtVonMangoldtMass_ge` gives `∑_{X<n≤2X} Λ(n)n^{-1/2} ≥ √X/3` eventually, from
+`tendsto_chebyshevPsiReal_dyadic_sub` (`(ψ(2X)−ψ(X))/X → 1`).  The exact constant `2(√2−1)` needs a
+Riemann-sum refinement of the dyadic block; the divergence corollary needs only the crude bound.

@@ -424,3 +424,103 @@ and `ord_0(q) = 2 ord_1(q) + k`.  The forward orbit `0 -> 1 -> 2 -> 5 -> 26 -> .
 `ord` is constant along it, so `ord_1(q) = 0` and `ord_0(q) = k != 0`; then `ord` is constant along
 the *backward* orbit of `0`, which is infinite, so `q` has infinitely many zeros or poles — absurd.
 The same argument kills `(z-1)^2` after translating its critical point to the origin.
+
+### 2026-08-16 (later) — the gap has a normal form: the pole multiset is `sigma`-stable
+
+The leading-coefficient descent above throws away exactly the information that repairs it.  Here is
+the repaired step, still elementary and still inside the corpus's machinery.
+
+Start from `(T1)`: `Phi_R(w)·R'(y) = lambda·w`, `w != 0`, `nu := ord_y(w) >= 1`.  Apply `pd_nu` to
+both sides.  Since `R'(y)` does not involve `y_nu`, and since `pd_nu(Phi_R v) = Phi_R(pd_nu v)·R'`
+for `v` of order `<= nu` (`HTGeometry.pd_differentialJet_top`), this gives
+
+```text
+Phi_R(pd_nu w)·R'^2 = lambda·pd_nu w .
+```
+
+Dividing by `(T1)` and writing `v := pd_nu w / w` — the logarithmic derivative in the *top jet
+variable* — the eigenvalue cancels:
+
+```text
+Phi_R(v)·R'(y) = v ,        v != 0 ,        ord_y(v) <= nu .        (T3)
+```
+
+`v != 0` because `pd_nu w = 0` would contradict `ord_y(w) = nu`.
+
+Now `(T3)` is rigid, because `v` is a logarithmic derivative: over the field
+`F := C(y_0, ..., y_(nu-1))` write `w = c·prod_i (y_nu - r_i)^(m_i)` with distinct `r_i` in an
+algebraic closure of `F` and `m_i` nonzero integers.  Then
+
+```text
+v = sum_i m_i / (y_nu - r_i) .
+```
+
+Since `Phi_R(y_nu) = R'(y)·y_nu + L` with `L` of order `< nu`, substituting and multiplying by `R'`
+gives
+
+```text
+Phi_R(v)·R' = sum_i m_i / (y_nu - sigma(r_i)) ,
+   sigma(r) := (Phi_R(r) - L) / R' .
+```
+
+Comparing with `v` and using uniqueness of the partial-fraction decomposition over `F`:
+
+> **the finite multiset `{(r_i, m_i)}` is invariant under `sigma`.**
+
+That is the missing rigidity, and it survives the passage back to `F`.  `sigma` is the twist of the
+injective endomorphism `Phi_R` by the affine change `t |-> (t - L)/R'`, so it is injective; a finite
+`sigma`-stable multiset is therefore permuted.  Since `sigma` commutes with the `F`-conjugation
+action only after `Phi_R` is applied to `F` as well, the invariant statement to use is the one about
+*coefficients*, not roots: writing
+
+```text
+w = c · P(y_nu) / Q(y_nu) ,     P, Q in F[T] monic and coprime,
+```
+
+the multiset identity says exactly that the monic polynomial `P·Q` in `F[T]` obeys
+
+```text
+(P·Q)^(Phi_R) (R'·T + L)  =  R'^(deg(P·Q)) · (P·Q)(T) ,
+```
+
+an identity between polynomials whose coefficients lie in `F`, i.e. have order `<= nu - 1`.
+Comparing coefficients of `T^c` gives, for each `c`, a relation of the shape `(T1)` one order lower,
+with the *computable* eigenvalue `R'^(deg(P·Q) - c)` — so the exponent on `R'` is never lost, which
+is precisely what the old leading-coefficient descent could not guarantee.
+
+At `nu = 0` the relation `(T3)` reads `s(R(y))·R'(y) = s(y)` with `s in C(y)^x`.  That *is* an
+invariant `1`-differential; the `e_0 = 0` degeneration of the old descent cannot occur here, because
+`(T3)` carries the exponent `1` on `R'` by construction rather than by accident.
+
+**What is left to check.**  That the coefficient relations above are not all vacuous — i.e. that at
+least one coefficient of `P·Q` is nonconstant, or else that `P·Q = T^(deg)` and the relation becomes
+`R'^deg · T^deg = R'^deg T^deg`, in which case `w` is a monomial `c·y_nu^(a-b)` in `y_nu` and `(T1)`
+reduces directly to `Phi_R(c)·R'^(1 + a - b) = lambda·c` with `c in F`, i.e. `(T1)` one order lower
+with exponent `1 + a - b`.  Both branches decrease `nu`; the surviving obligation is to rule out
+`1 + a - b = 0` in the monomial branch, which is the same arithmetic accident as before but now
+isolated to a single, completely explicit case.
+
+**The monomial branch is almost always empty.**  `Phi_R(y_nu) = delta^nu(R(y_0))`, so
+
+```text
+nu = 1 :  Phi_R(y_1) = R'(y_0)·y_1 ,                       L = 0 ;
+nu = 2 :  Phi_R(y_2) = R''(y_0)·y_1^2 + R'(y_0)·y_2 ,      L = R''(y_0)·y_1^2 ;
+```
+
+and in general `L` is a nonzero polynomial in `y_1, ..., y_(nu-1)` as soon as `R'' != 0`, i.e. as
+soon as `R` is not affine.  If `w = c·y_nu^k` is a monomial with `k != 0`, then `(T1)` requires
+`(R'·y_nu + L)^k` to be proportional to `y_nu^k`, which forces `L = 0`.  Hence for a non-affine `R`
+the monomial branch survives only at `nu = 1`, where `(T1)` becomes
+
+```text
+Phi_R(c)·R'^(k+1) = lambda·c ,     c in C(y_0)^x .
+```
+
+If `k + 1 != 0` this is an invariant `(k+1)`-differential and the card's item `(1)` is proved.  If
+`k + 1 = 0`, i.e. `w = c/y_1`, then `c(R(y_0)) = lambda·c(y_0)`, so `c` is constant and `lambda = 1`
+by degree comparison; but `w = pd_1 u` with `u` in the *rational* jet field, and `pd_1 u = c/y_1`
+has no rational primitive in `y_1`.  Contradiction.
+
+So for non-affine `R` the descent has exactly two exits, an invariant tensor or a contradiction, at
+every stage except the passage `nu -> nu - 1` through the coefficient identity, which is the single
+remaining bookkeeping step.

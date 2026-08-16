@@ -392,6 +392,37 @@ theorem riemannHypothesis_iff_typeZero_movingPrimeCone {a c sigma : ℝ}
     have := hC u hu
     simpa using this
 
+/-! ## Stability of type zero -/
+
+theorem XiMassTypeZero.add {A B : ℝ → ℂ} (hA : XiMassTypeZero A) (hB : XiMassTypeZero B) :
+    XiMassTypeZero (fun u => A u + B u) := by
+  intro ε hε
+  obtain ⟨CA, hCA⟩ := hA ε hε
+  obtain ⟨CB, hCB⟩ := hB ε hε
+  refine ⟨CA + CB, ?_⟩
+  filter_upwards [hCA, hCB] with u hu1 hu2
+  refine (norm_add_le _ _).trans ?_
+  nlinarith [hu1, hu2]
+
+theorem XiMassTypeZero.sub {A B : ℝ → ℂ} (hA : XiMassTypeZero A) (hB : XiMassTypeZero B) :
+    XiMassTypeZero (fun u => A u - B u) := by
+  intro ε hε
+  obtain ⟨CA, hCA⟩ := hA ε hε
+  obtain ⟨CB, hCB⟩ := hB ε hε
+  refine ⟨CA + CB, ?_⟩
+  filter_upwards [hCA, hCB] with u hu1 hu2
+  refine (norm_sub_le _ _).trans ?_
+  nlinarith [hu1, hu2]
+
+theorem XiMassTypeZero.congr {A B : ℝ → ℂ} (hA : XiMassTypeZero A) (h : ∀ u, A u = B u) :
+    XiMassTypeZero B := by
+  intro ε hε
+  obtain ⟨C, hC⟩ := hA ε hε
+  refine ⟨C, ?_⟩
+  filter_upwards [hC] with u hu
+  rw [← h u]
+  exact hu
+
 end
 
 end RHTower

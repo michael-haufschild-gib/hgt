@@ -4121,3 +4121,50 @@ Landau                  →  |w₂′| ≤ 2C + M/2  ⟹  E₂ ≤ C'      abs_d
 E₁ floor                →  ∫ u J₀² ≥ κ                       besselMass_lower  ✔
 model mass              →  ∫_{x>1} R² ≥ κ/c                  density transfer (corpus) ✔
 ```
+
+## The exterior mass from below, at the sharp order
+
+```text
+integral_Ioi_radialProlate_sq_ge :
+  0 ≤ s ≤ 1/2,  8 ≤ c,  R(1) = 1 with the exterior radial equation
+  ⟹  besselEnergyFloor/432/c  −  2·radialProlateDensityTransferConstant/c²   ≤  ∫_{x>2} R² .
+```
+
+`≍ 1/c`, matching `integral_Ioi_one_radialProlate_sq_le`'s `C/c` from above.  The card recorded the
+available lower bound as `≥ 1/(32c²)`, "lossy by `c`"; that loss is gone.
+
+The route is exact wherever it can be, and the pieces are all new:
+
+```text
+besselEnergy_lower              (π/4)²/((K_V(1)²+K_V'(1)²)e^{1/2}) ≤ besselEnergy u   (u ≥ 1)
+besselMass_lower                virial identity + two-sided energy Grönwall
+besselMass_lower_window         ∫_α^{α+4} (√u J₀)² ≥ (4/9)·besselEnergyFloor
+besselMass_lower_tiled          n windows ⟹ linear growth in the ray length
+xiAmplitude_sq_eq_mul_xiSpeed   A_s² = Ξ_s/(x²−s) · Ξ_s'          — an identity
+besselDensity_ge_speed          B ≥ (1/8)·(cΞ')·J₀(cΞ)²  on [2,3]
+integral_speed_besselJ0_sq      change of variables u = cΞ(x)
+integral_besselJ0_sq_ge         ∫ J₀² = ∫ (√u J₀)²/u ≥ (tiled mass)/u₂
+integral_window_besselDensity_ge   ∫_2^3 B ≥ besselEnergyFloor/432
+```
+
+Two things are worth recording because they were not obvious.
+
+**The amplitude identity is what makes the change of variables possible.**  `A_s²/Ξ_s' = Ξ_s/(x²−s)`
+exactly — no estimate — so on a window bounded away from the endpoint the density dominates a constant
+multiple of `Ξ'(x)·J₀(cΞ(x))²`, which is precisely the shape `f'(x)·g(f(x))` that substitution
+consumes.  Without it the integrand is not a pullback of anything.
+
+**Tiling is where the factor `c` comes from.**  A single window gives a constant; the ray
+`u ∈ [cΞ(2), cΞ(3)]` has length `≍ c`, so `⌊c/4⌋` disjoint windows give mass `≍ c`, and dividing by
+`u₂ ≍ 3c` returns a constant for `∫ J₀²`.  The earlier attempt lost exactly this factor by bounding
+`∫ w²/u` with a single window.
+
+### `(β)`'s lower half: what is left
+
+```text
+exterior mass from below     integral_Ioi_radialProlate_sq_ge     ✔ sharp order
+interior mass from above     still `integral_sq_le_turning_amplitude_envelope`, lossy by c^{3/2}
+```
+
+One input remains, and it is the turning-layer amplitude — the same Airy-scale question the upper
+half sidestepped by anchoring at `2√s`.
