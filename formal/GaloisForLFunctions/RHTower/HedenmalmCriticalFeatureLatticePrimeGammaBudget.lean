@@ -187,10 +187,65 @@ def criticalFeaturePrimeGammaOffLineExcess (t : ℝ) : ℝ :=
   (criticalFeaturePrimeGammaSourceDiagonal t).re -
     criticalLineCriticalFeatureEnergyTrace t
 
+/-- The real holomorphic critical-feature diagonal never exceeds its Hermitian diagonal. -/
+theorem re_criticalFeaturePrimeGammaSourceDiagonal_le_hermitianEnergyTrace (t : ℝ) :
+    (criticalFeaturePrimeGammaSourceDiagonal t).re ≤
+      criticalFeatureHermitianEnergyTrace t := by
+  let F : ℂ → ℂ := criticalFeatureCauchyKernelTest t
+  have hnorm : Summable (fun q : XiZeroCopy =>
+      Complex.normSq (F (xiSpectralPoint q))) := by
+    simpa only [F] using criticalFeatureHermitianEnergy_summable t
+  have hsquareNorm : Summable (fun q : XiZeroCopy =>
+      ‖(F (xiSpectralPoint q)) ^ 2‖) := by
+    simpa only [norm_pow, Complex.normSq_eq_norm_sq] using hnorm
+  have hsquare : Summable (fun q : XiZeroCopy =>
+      (F (xiSpectralPoint q)) ^ 2) := summable_norm_iff.mp hsquareNorm
+  have hre : Summable (fun q : XiZeroCopy =>
+      ((F (xiSpectralPoint q)) ^ 2).re) := by
+    exact hsquare.map Complex.reCLM Complex.reCLM.continuous
+  have hpoint (q : XiZeroCopy) :
+      ((F (xiSpectralPoint q)) ^ 2).re ≤
+        Complex.normSq (F (xiSpectralPoint q)) := by
+    rw [Complex.normSq_apply]
+    simp only [pow_two, Complex.mul_re]
+    nlinarith [sq_nonneg (F (xiSpectralPoint q)).im]
+  have hsum := hre.tsum_le_tsum hpoint hnorm
+  calc
+    (criticalFeaturePrimeGammaSourceDiagonal t).re =
+        (xiWeilPolarization F F).re := by
+      rw [show xiWeilPolarization F F =
+          criticalFeaturePrimeGammaSourceDiagonal t by
+        simpa only [F] using
+          xiWeilPolarization_criticalFeatureCauchyKernelTest_eq_sourceDiagonal t]
+    _ = (∑' q : XiZeroCopy, (F (xiSpectralPoint q)) ^ 2).re := by
+      unfold xiWeilPolarization
+      rw [show xiWeilSharp F = F by
+        simpa only [F] using xiWeilSharp_criticalFeatureCauchyKernelTest t]
+      congr 2
+      funext q
+      ring
+    _ = ∑' q : XiZeroCopy, ((F (xiSpectralPoint q)) ^ 2).re := by
+      rw [Complex.re_tsum hsquare]
+    _ ≤ ∑' q : XiZeroCopy,
+        Complex.normSq (F (xiSpectralPoint q)) := hsum
+    _ = criticalFeatureHermitianEnergyTrace t := by rfl
+
 theorem offLineCriticalFeatureEnergyTrace_le_two_primeGammaOffLineExcess (t : ℝ) :
     offLineCriticalFeatureEnergyTrace t ≤
       2 * criticalFeaturePrimeGammaOffLineExcess t := by
   have henhanced := criticalFeatureHermitian_add_line_le_two_sourceDiagonal t
+  have hsplit := criticalFeatureHermitianEnergyTrace_eq_line_add_offLine t
+  rw [criticalFeaturePrimeGammaOffLineExcess]
+  linarith
+
+/-- The diagonal-subtracted source excess is at most the exact off-line Hermitian energy.  Together
+with `offLineCriticalFeatureEnergyTrace_le_two_primeGammaOffLineExcess`, this identifies the
+corrected quantity, up to the sharp sector factor two, as a post-divisor off-line energy. -/
+theorem primeGammaOffLineExcess_le_offLineCriticalFeatureEnergyTrace (t : ℝ) :
+    criticalFeaturePrimeGammaOffLineExcess t ≤
+      offLineCriticalFeatureEnergyTrace t := by
+  have hsource :=
+    re_criticalFeaturePrimeGammaSourceDiagonal_le_hermitianEnergyTrace t
   have hsplit := criticalFeatureHermitianEnergyTrace_eq_line_add_offLine t
   rw [criticalFeaturePrimeGammaOffLineExcess]
   linarith
@@ -202,6 +257,25 @@ theorem criticalFeaturePrimeGammaOffLineExcess_nonneg (t : ℝ) :
     rw [offLineCriticalFeatureEnergyTrace]
     exact tsum_nonneg (offLineCriticalFeatureEnergy_nonneg t)
   linarith
+
+/-- A single corrected feature channel vanishes exactly under RH. -/
+theorem criticalFeaturePrimeGammaOffLineExcess_eq_zero_iff_rh (t : ℝ) :
+    criticalFeaturePrimeGammaOffLineExcess t = 0 ↔ RiemannHypothesis := by
+  constructor
+  · intro hzero
+    apply (offLineCriticalFeatureEnergyTrace_eq_zero_iff_rh t).mp
+    have hlower := offLineCriticalFeatureEnergyTrace_le_two_primeGammaOffLineExcess t
+    have hnonneg : 0 ≤ offLineCriticalFeatureEnergyTrace t := by
+      rw [offLineCriticalFeatureEnergyTrace]
+      exact tsum_nonneg (offLineCriticalFeatureEnergy_nonneg t)
+    rw [hzero] at hlower
+    linarith
+  · intro hRH
+    have hoff := (offLineCriticalFeatureEnergyTrace_eq_zero_iff_rh t).mpr hRH
+    have hnonneg := criticalFeaturePrimeGammaOffLineExcess_nonneg t
+    have hupper := primeGammaOffLineExcess_le_offLineCriticalFeatureEnergyTrace t
+    rw [hoff] at hupper
+    linarith
 
 theorem fiveShiftCriticalFeatureWardGreenCurrent_le_offLineEnergy
     (t : ℝ) (q : XiZeroCopy) :
@@ -259,6 +333,41 @@ theorem primeGammaOffLineLatticeBudget_nonneg (K : Finset ℤ) :
   rw [criticalFeaturePrimeGammaOffLineLatticeBudget]
   exact Finset.sum_nonneg (fun k hk =>
     criticalFeaturePrimeGammaOffLineExcess_nonneg (k : ℝ))
+
+/-- The corrected lattice budget is bounded above by the corresponding exact off-line energy. -/
+theorem primeGammaOffLineLatticeBudget_le_offLineEnergy (K : Finset ℤ) :
+    criticalFeaturePrimeGammaOffLineLatticeBudget K ≤
+      ∑ k ∈ K, offLineCriticalFeatureEnergyTrace (k : ℝ) := by
+  rw [criticalFeaturePrimeGammaOffLineLatticeBudget]
+  gcongr with k hk
+  exact primeGammaOffLineExcess_le_offLineCriticalFeatureEnergyTrace (k : ℝ)
+
+/-- Every nonempty corrected lattice detects RH exactly at zero budget. -/
+theorem primeGammaOffLineLatticeBudget_eq_zero_iff_rh
+    {K : Finset ℤ} (hK : K.Nonempty) :
+    criticalFeaturePrimeGammaOffLineLatticeBudget K = 0 ↔ RiemannHypothesis := by
+  constructor
+  · intro hzero
+    obtain ⟨k, hk⟩ := hK
+    have htermNonneg :
+        0 ≤ criticalFeaturePrimeGammaOffLineExcess (k : ℝ) :=
+      criticalFeaturePrimeGammaOffLineExcess_nonneg (k : ℝ)
+    have htermLe :
+        criticalFeaturePrimeGammaOffLineExcess (k : ℝ) ≤
+          criticalFeaturePrimeGammaOffLineLatticeBudget K := by
+      rw [criticalFeaturePrimeGammaOffLineLatticeBudget]
+      exact Finset.single_le_sum (s := K) (a := k)
+        (f := fun j : ℤ => criticalFeaturePrimeGammaOffLineExcess (j : ℝ))
+        (fun j hj => criticalFeaturePrimeGammaOffLineExcess_nonneg (j : ℝ)) hk
+    have htermZero : criticalFeaturePrimeGammaOffLineExcess (k : ℝ) = 0 := by
+      rw [hzero] at htermLe
+      linarith
+    exact (criticalFeaturePrimeGammaOffLineExcess_eq_zero_iff_rh (k : ℝ)).mp htermZero
+  · intro hRH
+    rw [criticalFeaturePrimeGammaOffLineLatticeBudget]
+    apply Finset.sum_eq_zero
+    intro k hk
+    exact (criticalFeaturePrimeGammaOffLineExcess_eq_zero_iff_rh (k : ℝ)).mpr hRH
 
 theorem fiveShiftCriticalFeatureWardGreenLatticeTrace_le_budget (K : Finset ℤ) :
     fiveShiftCriticalFeatureWardGreenLatticeTrace K ≤

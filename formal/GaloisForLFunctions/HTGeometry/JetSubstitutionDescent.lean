@@ -365,12 +365,13 @@ theorem exists_coprime_slicing (R : RatFunc C) (hR : substitutionDeriv R ≠ 0)
 eigen-relation satisfies an eigen-relation one order lower, with the exponent on the derivative
 factor shifted by the difference of the degrees. -/
 theorem substitutionEigen_leadingRatio (R : RatFunc C) (hR : substitutionDeriv R ≠ 0)
-    {M : ℕ} (hM : 1 ≤ M) {κ : ℤ} {lam : C}
+    {M : ℕ} (hM : 1 ≤ M) {κ : ℤ} {lam : C} {Tx : Polynomial ↥(jetPrefixField C M)}
+    (hTx : Tx.natDegree = 1) (hTlead : Tx.leadingCoeff = substitutionDerivPrefix R hM)
     {P Q : Polynomial ↥(jetPrefixField C M)} {c d : ↥(jetPrefixField C M)}
     (hP0 : P ≠ 0) (hQ0 : Q ≠ 0)
-    (hcP : twistComp (jetSubstitutionPrefix R hR M).toRingHom (substitutionAffine R hM) P
+    (hcP : twistComp (jetSubstitutionPrefix R hR M).toRingHom Tx P
       = Polynomial.C c * P)
-    (hdQ : twistComp (jetSubstitutionPrefix R hR M).toRingHom (substitutionAffine R hM) Q
+    (hdQ : twistComp (jetSubstitutionPrefix R hR M).toRingHom Tx Q
       = Polynomial.C d * Q)
     (hcd : c * substitutionDerivPrefix R hM ^ κ
       = algebraMap C ↥(jetPrefixField C M) lam * d) :
@@ -383,9 +384,7 @@ theorem substitutionEigen_leadingRatio (R : RatFunc C) (hR : substitutionDeriv R
   have hνval : (algebraMap ↥(jetPrefixField C M) (JetField C Unit))
       (algebraMap C ↥(jetPrefixField C M) lam) = algebraMap C (JetField C Unit) lam := by
     rw [← IsScalarTower.algebraMap_apply]
-  have hT : (substitutionAffine R hM).natDegree = 1 := natDegree_substitutionAffine R hR hM
-  have hTlead : (substitutionAffine R hM).leadingCoeff = substitutionDerivPrefix R hM :=
-    leadingCoeff_substitutionAffine R hR hM
+  have hT : Tx.natDegree = 1 := hTx
   have hp0 : P.leadingCoeff ≠ 0 := Polynomial.leadingCoeff_ne_zero.mpr hP0
   have hq0 : Q.leadingCoeff ≠ 0 := Polynomial.leadingCoeff_ne_zero.mpr hQ0
   have hlp : (jetSubstitutionPrefix R hR M).toRingHom P.leadingCoeff
@@ -438,7 +437,8 @@ theorem exists_substitutionEigen_pred (R : RatFunc C) (hR : substitutionDeriv R 
     ∃ (κ' : ℤ) (s : JetField C Unit), SubstitutionEigen R hR (M - 1) κ' s lam := by
   obtain ⟨P, Q, c, d, hP0, hQ0, hcop, hc0, hd0, hwdiv, hcP, hdQ, hcd⟩ :=
     exists_coprime_slicing R hR hM hlam h
-  exact ⟨_, _, substitutionEigen_leadingRatio R hR hM hP0 hQ0 hcP hdQ hcd⟩
+  exact ⟨_, _, substitutionEigen_leadingRatio R hR hM (natDegree_substitutionAffine R hR hM)
+    (leadingCoeff_substitutionAffine R hR hM) hP0 hQ0 hcP hdQ hcd⟩
 
 /-- **Every finite-order eigenvector produces an invariant differential.**  Iterating the order
 descent down to order zero turns an eigen-relation of any order into an invariant differential
@@ -473,6 +473,13 @@ theorem substitutionShift_one (R : RatFunc C) : substitutionShift R 1 = 0 := by
   rw [substitutionShift, substitutionJet_one]
   ring
 
+theorem substitutionAffine_eq_scale (R : RatFunc C) {M : ℕ} (hM : 1 ≤ M)
+    (hscale : substitutionShift R M = 0) :
+    substitutionAffine R hM
+      = Polynomial.C (substitutionDerivPrefix R hM) * Polynomial.X := by
+  have h0 : substitutionShiftPrefix (C := C) R hM = 0 := Subtype.ext hscale
+  rw [substitutionAffine, h0, map_zero, add_zero]
+
 omit [CharZero C] in
 theorem jetPrefixField_zero : jetPrefixField C 0 = ⊥ := by
   rw [jetPrefixField]
@@ -495,8 +502,8 @@ two nonzero coefficients satisfies an eigen-relation of weight their index diffe
 eigenvalue one. -/
 theorem substitutionEigen_coeffRatio (R : RatFunc C) (hR : substitutionDeriv R ≠ 0)
     {M : ℕ} (hM : 1 ≤ M) {P : Polynomial ↥(jetPrefixField C M)} {c : ↥(jetPrefixField C M)}
-    (hscale : substitutionShift R M = 0)
-    (hcP : twistComp (jetSubstitutionPrefix R hR M).toRingHom (substitutionAffine R hM) P
+    (hcP : twistComp (jetSubstitutionPrefix R hR M).toRingHom
+        (Polynomial.C (substitutionDerivPrefix R hM) * Polynomial.X) P
       = Polynomial.C c * P)
     {i j : ℕ} (hi : P.coeff i ≠ 0) (hj : P.coeff j ≠ 0) :
     SubstitutionEigen R hR (M - 1) ((j : ℤ) - (i : ℤ))
@@ -504,11 +511,6 @@ theorem substitutionEigen_coeffRatio (R : RatFunc C) (hR : substitutionDeriv R �
   have hρF : substitutionDerivPrefix R hM ≠ 0 := substitutionDerivPrefix_ne_zero R hR hM
   have hρval : (algebraMap ↥(jetPrefixField C M) (JetField C Unit))
       (substitutionDerivPrefix R hM) = substitutionDeriv R := rfl
-  have haff : substitutionAffine R hM
-      = Polynomial.C (substitutionDerivPrefix R hM) * Polynomial.X := by
-    have h0 : substitutionShiftPrefix (C := C) R hM = 0 := Subtype.ext hscale
-    rw [substitutionAffine, h0, map_zero, add_zero]
-  rw [haff] at hcP
   have hei := coeff_eigen_of_twistComp_scale (jetSubstitutionPrefix R hR M).toRingHom hcP i
   have hej := coeff_eigen_of_twistComp_scale (jetSubstitutionPrefix R hR M).toRingHom hcP j
   have hinjΦ : Function.Injective (jetSubstitutionPrefix R hR M).toRingHom :=
@@ -558,7 +560,8 @@ theorem exists_nonzero_isInvariantDifferential_of_order_one (R : RatFunc C)
     ⟨hu0, hu, by rw [zpow_zero, mul_one, heig]⟩
   obtain ⟨P, Q, c, d, hP0, hQ0, hcop, hc0, hd0, hwdiv, hcP, hdQ, hcd⟩ :=
     exists_coprime_slicing R hR hM hlam heigen
-  have hlead := substitutionEigen_leadingRatio R hR hM hP0 hQ0 hcP hdQ hcd
+  have hlead := substitutionEigen_leadingRatio R hR hM (natDegree_substitutionAffine R hR hM)
+    (leadingCoeff_substitutionAffine R hR hM) hP0 hQ0 hcP hdQ hcd
   by_cases hab : (0 : ℤ) + (P.natDegree : ℤ) - (Q.natDegree : ℤ) = 0
   swap
   · exact ⟨_, _, lam, hab, hlam, hlead⟩
@@ -592,7 +595,8 @@ theorem exists_nonzero_isInvariantDifferential_of_order_one (R : RatFunc C)
   swap
   · obtain ⟨j, hj⟩ := not_forall.mp hPmono
     obtain ⟨hjne, hjc⟩ := Classical.not_imp.mp hj
-    have hres := substitutionEigen_coeffRatio R hR hM (substitutionShift_one R) hcP
+    rw [substitutionAffine_eq_scale R hM (substitutionShift_one R)] at hcP
+    have hres := substitutionEigen_coeffRatio R hR hM hcP
       (Polynomial.leadingCoeff_ne_zero.mpr hP0) hjc
     refine ⟨_, _, 1, ?_, one_ne_zero, hres⟩
     intro hh
@@ -601,7 +605,8 @@ theorem exists_nonzero_isInvariantDifferential_of_order_one (R : RatFunc C)
   swap
   · obtain ⟨j, hj⟩ := not_forall.mp hQmono
     obtain ⟨hjne, hjc⟩ := Classical.not_imp.mp hj
-    have hres := substitutionEigen_coeffRatio R hR hM (substitutionShift_one R) hdQ
+    rw [substitutionAffine_eq_scale R hM (substitutionShift_one R)] at hdQ
+    have hres := substitutionEigen_coeffRatio R hR hM hdQ
       (Polynomial.leadingCoeff_ne_zero.mpr hQ0) hjc
     refine ⟨_, _, 1, ?_, one_ne_zero, hres⟩
     intro hh
@@ -756,29 +761,29 @@ theorem jetSubstitution_jet_add (R : RatFunc C) (hR : substitutionDeriv R ≠ 0)
   rw [map_add, jetSubstitution_jet, hval, substitutionJet_eq_affine]
   ring
 
+/-- An **invariant affine structure** at jet level `M`: an element of order below `M` absorbing the
+lower-order remainder of the substitution on the top coordinate.  Its existence is exactly the
+condition that translates the affine action `y_M ↦ R'(y_0)·y_M + L` into the pure scaling
+`z ↦ R'(y_0)·z`. -/
+def HasNormalizingShift (R : RatFunc C) (hR : substitutionDeriv R ≠ 0) {M : ℕ} (hM : 1 ≤ M) :
+    Prop :=
+  ∃ t : ↥(jetPrefixField C M),
+    jetSubstitutionPrefix R hR M t
+      = substitutionDerivPrefix R hM * t - substitutionShiftPrefix R hM
+
 /-- **The normalization dichotomy.**  At order `M ≥ 1` an eigen-relation either already has order
-below `M`, or the top jet coordinate can be translated by an element of lower order into an exact
-eigenvector of the substitution. -/
-theorem lowerOrder_or_exists_scalingCoordinate (R : RatFunc C) (hR : substitutionDeriv R ≠ 0)
+below `M`, or the substitution admits an invariant affine structure at level `M`. -/
+theorem lowerOrder_or_hasNormalizingShift (R : RatFunc C) (hR : substitutionDeriv R ≠ 0)
     {M : ℕ} (hM : 1 ≤ M) {κ : ℤ} {w : JetField C Unit} {lam : C} (hlam : lam ≠ 0)
     (h : SubstitutionEigen R hR M κ w lam) :
-    (∀ j : ℕ, M - 1 < j → JetField.pd ((), j) w = 0) ∨
-    ∃ t : ↥(jetPrefixField C M),
-      jetSubstitution R hR
-          ((JetField.jet ((), M) : JetField C Unit)
-            + algebraMap ↥(jetPrefixField C M) (JetField C Unit) t)
-        = substitutionDeriv R
-            * ((JetField.jet ((), M) : JetField C Unit)
-              + algebraMap ↥(jetPrefixField C M) (JetField C Unit) t) := by
+    (∀ j : ℕ, M - 1 < j → JetField.pd ((), j) w = 0) ∨ HasNormalizingShift R hR hM := by
   classical
   obtain ⟨P, Q, c, d, hP0, hQ0, hcop, hc0, hd0, hwdiv, hcP, hdQ, hcd⟩ :=
     exists_coprime_slicing R hR hM hlam h
   by_cases hPd : 1 ≤ P.natDegree
-  · obtain ⟨t, ht⟩ := exists_normalizing_shift R hR hM hPd hcP
-    exact Or.inr ⟨t, jetSubstitution_jet_add R hR hM ht⟩
+  · exact Or.inr (exists_normalizing_shift R hR hM hPd hcP)
   by_cases hQd : 1 ≤ Q.natDegree
-  · obtain ⟨t, ht⟩ := exists_normalizing_shift R hR hM hQd hdQ
-    exact Or.inr ⟨t, jetSubstitution_jet_add R hR hM ht⟩
+  · exact Or.inr (exists_normalizing_shift R hR hM hQd hdQ)
   refine Or.inl ?_
   have hPc : P = Polynomial.C (P.coeff 0) :=
     Polynomial.eq_C_of_natDegree_eq_zero (by omega)
@@ -795,6 +800,150 @@ theorem lowerOrder_or_exists_scalingCoordinate (R : RatFunc C) (hR : substitutio
     exact (P.coeff 0 / Q.coeff 0).2
   rw [mem_jetPrefixField_iff] at hmem
   exact hmem j (by omega)
+
+/-- **The normalized trichotomy.**  At order `M ≥ 1` an eigen-relation either already has order
+below `M`, or, after normalizing the top jet coordinate into an exact eigenvector of the
+substitution, either some coefficient ratio of the split relation is an eigen-relation of nonzero
+weight and eigenvalue one one order lower, or the element is a monomial in the normalized
+coordinate and its leading ratio descends with a nonzero shift of the exponent. -/
+theorem substitutionEigen_normalized_trichotomy (R : RatFunc C) (hR : substitutionDeriv R ≠ 0)
+    {M : ℕ} (hM : 1 ≤ M) {κ : ℤ} {w : JetField C Unit} {lam : C} (hlam : lam ≠ 0)
+    (h : SubstitutionEigen R hR M κ w lam) :
+    (∀ j : ℕ, M - 1 < j → JetField.pd ((), j) w = 0)
+    ∨ (∃ (n : ℤ) (s : JetField C Unit), n ≠ 0 ∧ SubstitutionEigen R hR (M - 1) n s 1)
+    ∨ (∃ (n : ℤ) (s : JetField C Unit),
+        n ≠ 0 ∧ SubstitutionEigen R hR (M - 1) (κ + n) s lam) := by
+  classical
+  rcases lowerOrder_or_hasNormalizingShift R hR hM hlam h with hlow | ⟨t, ht0⟩
+  · exact Or.inl hlow
+  have ht := jetSubstitution_jet_add R hR hM ht0
+  obtain ⟨hw0, hwo, heig⟩ := h
+  have hρF : substitutionDerivPrefix R hM ≠ 0 := substitutionDerivPrefix_ne_zero R hR hM
+  have hxtr : Transcendental (jetPrefixField C M)
+      ((JetField.jet ((), M) : JetField C Unit)
+        + algebraMap ↥(jetPrefixField C M) (JetField C Unit) t) :=
+    transcendental_add_algebraMap (transcendental_jet_over_jetPrefixField M) t
+  have hmem : w ∈ IntermediateField.adjoin (jetPrefixField C M)
+      ({(JetField.jet ((), M) : JetField C Unit)
+        + algebraMap ↥(jetPrefixField C M) (JetField C Unit) t} : Set (JetField C Unit)) := by
+    rw [intermediateField_adjoin_add_algebraMap]
+    exact mem_adjoin_jet_of_order hwo
+  have hact : jetSubstitution R hR
+      ((JetField.jet ((), M) : JetField C Unit)
+        + algebraMap ↥(jetPrefixField C M) (JetField C Unit) t)
+      = Polynomial.aeval
+          ((JetField.jet ((), M) : JetField C Unit)
+            + algebraMap ↥(jetPrefixField C M) (JetField C Unit) t)
+          (Polynomial.C (substitutionDerivPrefix R hM) * Polynomial.X) := by
+    rw [map_mul, Polynomial.aeval_C, Polynomial.aeval_X]
+    exact ht
+  obtain ⟨P, Q, c, d, hP0, hQ0, hcop, hc0, hd0, hwdiv, hcP, hdQ, hcd⟩ :=
+    exists_coprime_slicing_of_coordinate R hR hM hxtr (natDegree_scaleSubst hρF) hact hlam hw0
+      hmem heig
+  by_cases hPmono : ∀ j : ℕ, j ≠ P.natDegree → P.coeff j = 0
+  swap
+  · obtain ⟨j, hj⟩ := not_forall.mp hPmono
+    obtain ⟨hjne, hjc⟩ := Classical.not_imp.mp hj
+    have hres := substitutionEigen_coeffRatio R hR hM hcP
+      (Polynomial.leadingCoeff_ne_zero.mpr hP0) hjc
+    exact Or.inr (Or.inl ⟨_, _, by intro hh; exact hjne (by omega), hres⟩)
+  by_cases hQmono : ∀ j : ℕ, j ≠ Q.natDegree → Q.coeff j = 0
+  swap
+  · obtain ⟨j, hj⟩ := not_forall.mp hQmono
+    obtain ⟨hjne, hjc⟩ := Classical.not_imp.mp hj
+    have hres := substitutionEigen_coeffRatio R hR hM hdQ
+      (Polynomial.leadingCoeff_ne_zero.mpr hQ0) hjc
+    exact Or.inr (Or.inl ⟨_, _, by intro hh; exact hjne (by omega), hres⟩)
+  have hlead := substitutionEigen_leadingRatio R hR hM (natDegree_scaleSubst hρF)
+    (leadingCoeff_scaleSubst hρF) hP0 hQ0 hcP hdQ hcd
+  have hXcop : ¬ ((Polynomial.X : Polynomial ↥(jetPrefixField C M)) ∣ P ∧
+      (Polynomial.X : Polynomial ↥(jetPrefixField C M)) ∣ Q) := by
+    rintro ⟨h1, h2⟩
+    exact Polynomial.not_isUnit_X (hcop.isUnit_of_dvd' h1 h2)
+  have hdeg : P.natDegree = 0 ∧ Q.natDegree = 0 ∨ P.natDegree ≠ Q.natDegree := by
+    by_cases hPa : P.natDegree = 0
+    · by_cases hQb : Q.natDegree = 0
+      · exact Or.inl ⟨hPa, hQb⟩
+      · exact Or.inr (by omega)
+    · by_cases hQb : Q.natDegree = 0
+      · exact Or.inr (by omega)
+      · exact absurd ⟨Polynomial.X_dvd_iff.mpr (hPmono 0 (by omega)),
+          Polynomial.X_dvd_iff.mpr (hQmono 0 (by omega))⟩ hXcop
+  rcases hdeg with ⟨hPa, hQb⟩ | hne
+  · refine Or.inl ?_
+    have hPc : P = Polynomial.C (P.coeff 0) := Polynomial.eq_C_of_natDegree_eq_zero hPa
+    have hQc : Q = Polynomial.C (Q.coeff 0) := Polynomial.eq_C_of_natDegree_eq_zero hQb
+    have hwF : w = algebraMap ↥(jetPrefixField C M) (JetField C Unit)
+        (P.coeff 0 / Q.coeff 0) := by
+      rw [hwdiv]
+      conv_lhs => rw [hPc, hQc]
+      rw [Polynomial.aeval_C, Polynomial.aeval_C, map_div₀]
+    intro j hj
+    have hmemF : w ∈ jetPrefixField C M := by
+      rw [hwF]
+      exact (P.coeff 0 / Q.coeff 0).2
+    rw [mem_jetPrefixField_iff] at hmemF
+    exact hmemF j (by omega)
+  · have hshift : SubstitutionEigen R hR (M - 1)
+        (κ + ((P.natDegree : ℤ) - (Q.natDegree : ℤ)))
+        (algebraMap ↥(jetPrefixField C M) (JetField C Unit)
+          (P.leadingCoeff / Q.leadingCoeff)) lam := by
+      rw [show κ + ((P.natDegree : ℤ) - (Q.natDegree : ℤ))
+          = κ + (P.natDegree : ℤ) - (Q.natDegree : ℤ) from by ring]
+      exact hlead
+    exact Or.inr (Or.inr ⟨_, _, by intro hh; exact hne (by omega), hshift⟩)
+
+/-- **The tensor-or-affine-structure dichotomy.**  A nonconstant eigenvector of the substitution of
+any finite jet order forces either an invariant differential of nonzero weight with nonzero
+eigenvalue, or an invariant affine structure at some jet level at least two.  At level one the
+remainder vanishes identically, so the second alternative carries no information there and the
+order-one analysis closes the case outright. -/
+theorem exists_nonzero_isInvariantDifferential_or_hasNormalizingShift
+    (R : RatFunc C) (hR : substitutionDeriv R ≠ 0) {lam : C} (hlam : lam ≠ 0) :
+    ∀ (M : ℕ) (u : JetField C Unit), (∀ j : ℕ, M < j → JetField.pd ((), j) u = 0) →
+      (∀ e : C, u ≠ algebraMap C (JetField C Unit) e) →
+      jetSubstitution R hR u = algebraMap C (JetField C Unit) lam * u →
+      (∃ (k : ℤ) (q : JetField C Unit) (μ : C),
+          k ≠ 0 ∧ μ ≠ 0 ∧ IsInvariantDifferential R hR k q μ)
+        ∨ ∃ (N : ℕ) (hN : 2 ≤ N), HasNormalizingShift R hR (le_trans one_le_two hN) := by
+  intro M
+  induction M with
+  | zero =>
+      intro u hu hnc heig
+      have hpd : JetField.pd ((), 0) u ≠ 0 := by
+        intro hh
+        obtain ⟨e, he⟩ := exists_algebraMap_of_forall_pd_eq_zero (v := u)
+          (fun j => by
+            rcases Nat.eq_zero_or_pos j with rfl | hj
+            · exact hh
+            · exact hu j hj)
+        exact hnc e he
+      exact Or.inl ⟨1, _, lam, one_ne_zero, hlam,
+        isInvariantDifferential_pd_of_order_zero_eigen R hR hu hpd heig⟩
+  | succ M ih =>
+      intro u hu hnc heig
+      rcases Nat.eq_zero_or_pos M with rfl | hMpos
+      · exact Or.inl (exists_nonzero_isInvariantDifferential_of_order_one R hR hu hnc hlam heig)
+      have hu0 : u ≠ 0 := fun hh => hnc 0 (by rw [hh, map_zero])
+      have heigen : SubstitutionEigen R hR (M + 1) 0 u lam :=
+        ⟨hu0, hu, by rw [zpow_zero, mul_one, heig]⟩
+      rcases lowerOrder_or_hasNormalizingShift R hR (M := M + 1) (by omega) hlam heigen with
+        hlow | hshift
+      · simp only [Nat.add_sub_cancel] at hlow
+        exact ih u hlow hnc heig
+      · exact Or.inr ⟨M + 1, by omega, hshift⟩
+
+/-- **The tensor-or-affine-structure dichotomy, stated for a fixed order.** -/
+theorem exists_nonzero_isInvariantDifferential_or_hasNormalizingShift_of_order
+    (R : RatFunc C) (hR : substitutionDeriv R ≠ 0) {M : ℕ} {u : JetField C Unit}
+    (hu : ∀ j : ℕ, M < j → JetField.pd ((), j) u = 0)
+    (hnc : ∀ e : C, u ≠ algebraMap C (JetField C Unit) e)
+    {lam : C} (hlam : lam ≠ 0)
+    (heig : jetSubstitution R hR u = algebraMap C (JetField C Unit) lam * u) :
+    (∃ (k : ℤ) (q : JetField C Unit) (μ : C),
+        k ≠ 0 ∧ μ ≠ 0 ∧ IsInvariantDifferential R hR k q μ)
+      ∨ ∃ (N : ℕ) (hN : 2 ≤ N), HasNormalizingShift R hR (le_trans one_le_two hN) :=
+  exists_nonzero_isInvariantDifferential_or_hasNormalizingShift R hR hlam M u hu hnc heig
 
 end
 

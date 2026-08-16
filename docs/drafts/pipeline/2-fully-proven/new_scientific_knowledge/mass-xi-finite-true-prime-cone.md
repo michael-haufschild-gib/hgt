@@ -5956,7 +5956,7 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   damping and actual outgoing differential retain exact type `lambda` on every cone `H=kappa u`,
   `kappa>1`.  Since both outgoing cone slope and Bessel caustic exceed light speed, Hardy support
   cannot remove critical radiation.
-- 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` fixed-causal-filter rigidity: every nonzero bounded
+- 2026-08-08 — `[PROVED HERE; (24.53) UPPER BOUND LEAN-PROVED; (24.54) LOWER HALF LEAN DEFERRED]` fixed-causal-filter rigidity: every nonzero bounded
   Hardy multiplier retains exact damped mass type `lambda` after superluminal compression.
   Lowering type requires moving exponential notch on every surviving negative-corona packet;
   inverse conditioning then pays same critical type.  This is microlocal twin of floor Wiener law.
@@ -5998,11 +5998,11 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   `a(u)=u^theta`, `1/3<theta<1/2`, exact chirp normal form and integral mean square prove finite
   conjugation-stable mass trace is `C_0` exactly when packet is critical.  Open bridge is uniform
   positive separation for growing full Xi packet plus prime-side control.
-- 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` parabolic mass blow-up: after removing rest mass,
+- 2026-08-08 — `[PROVED HERE; (24.106)--(24.108) LEAN-PROVED; (24.109) LEAN DEFERRED]` parabolic mass blow-up: after removing rest mass,
   `exp(2a^2t) exp(-2at sqrt(a^2+w))` converges to `exp(-tw)` over complete Xi divisor, with a
   uniform exponential majorant.  Exact positive subordination kernel makes this the Gaussian heat
   approximate identity and eliminates growing-packet cancellation.
-- 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` exact mass-jet/heat-Hankel bridge: the operator
+- 2026-08-08 — `[PROVED HERE; (24.112),(24.117) LEAN-PROVED; (24.110)--(24.111) LEAN DEFERRED]` exact mass-jet/heat-Hankel bridge: the operator
   `L_a=partial_tau^2-a^2` has exact eigenvalue `w=alpha^2`, so polynomial mass jets recover every
   polynomial-square Gaussian RH test.  An integral Lipschitz bound reduces target to integer
   polynomials and positive rational times.
@@ -7385,3 +7385,52 @@ all: it is a coordinate identity, which is exactly the content of the no-go.
 
 Still deferred on these items: the displaced-mode tail comparison (24.84), which needs the
 oscillatory tail asymptotics of `∑_{m>n} m^{β-1+iτ}`.
+
+### Lean progress: §24 C43-H, C43-R, C43-S
+
+    HTGeometry/MassGaugeDampedSymbol.lean
+      massGaugeDampedSymbol,
+        massGaugeDampedSymbol_zero_sigma        the damped symbol `e^{-(σ+iu)ω}` and its undamped
+                                                specialization
+      norm_massGaugeDampedSymbol                exact pointwise norm `e^{-σ Re ω + u Im ω}`
+      norm_massGaugeDampedSymbol_le             **(24.53)** `Re ω ≥ 0` and `|Im ω| < λ` keep the
+                                                radiation envelope `e^{λu}` for every `σ ≥ 0`
+
+    RHTower/DampedFilteredCausalType.lean
+      dampedSuperluminalSymbol, filteredDampedSymbol,
+        norm_filteredDampedSymbol_le            a bounded filter only rescales the envelope by its
+                                                own bound
+      filteredDampedHalfWave, filteredDampedCompression,
+        norm_filteredDampedCompression_le       **(24.54) upper bound**: the compressed filtered
+                                                damped propagator obeys `‖B‖_∞ e^{λu}` in every
+                                                window
+      tendsto_dampedTypeBound                   `(log(‖B‖_∞ e^{λu}))/u → λ`: neither damping nor a
+                                                fixed bounded filter can lower the causal type
+
+    RHTower/ParabolicMassBlowup.lean
+      massOrbit_upper                           **(24.93)** `M ≤ a + R` with no condition on the
+                                                transverse part
+      parabolic_gap_lower                       **(24.108)** `a(M-a) ≥ a(R²-1/4)/(2a+R)`
+      parabolic_gap_uniform_lower               **(24.108)** the uniform form `a(M-a) ≥ (35/108) R`
+                                                for every mass `a ≥ 1`
+      parabolic_remainder_identity              **(24.106)** `2a(β-a) = w - w²/(β+a)²`
+      parabolic_renormalized_exp,
+        tendsto_parabolic_remainder,
+        tendsto_parabolic_heat                  **(24.107)** `e^{2a²t} e^{-2atβ_a} → e^{-tw}`
+      massJetOp, massJetOp_expScaled,
+        massJetOp_iterate_expScaled             `L_a = ∂_τ² - a²` has `e^{-τβ}` as an exact
+                                                eigenvector with eigenvalue `β² - a²`
+      polyJet, polyJet_exp, polyJet_sq_exp,
+        polyJet_sq_exp_spectral                 **(24.112)** `P(L_a)² e^{-τβ_a} = P(w)² e^{-τβ_a}`
+      norm_exp_neg_mul_sub_le                   **(24.117)** the heat factor is Lipschitz in time
+                                                with constant `|w| e^{-t₀ Re w}` on `[t₀,∞)`
+
+The uniform gap bound is the exact domination that (24.109) needs: it is stated for an arbitrary
+solution of the mass-shift equations, so it holds at every spectral point of the divisor at once.
+The eigenvalue identity is exact rather than asymptotic, so the polynomial jets require no
+approximate spectral multiplier.
+
+Still deferred on these items: the lower half of (24.54) and the exponential-type limit (24.49),
+which need the wave-packet localization at the sub-linear frequency scale; the subordination kernel
+identity (24.110)--(24.111); and the divisor-level dominated convergence (24.109), which needs the
+corpus zero-count summability wired to the majorant proved here.

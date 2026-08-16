@@ -1,70 +1,77 @@
-# Orbifold-tail card: the substitution endomorphism and its order descent
+# Orbifold-tail card: the substitution endomorphism, its order descent, and the normalization
 
 Card: `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/other/rational-coarse-graining-orbifold-tail-classification.md`
+Dependent cards: `floquet-orbifold-tail-emergence`, `orbifold-tail-holographic-reconstruction`.
 
-## What is built (all unconditional, axiom-clean, umbrella-wired)
+## Built (all unconditional, axiom-clean, umbrella-wired)
 
-`HTGeometry/JetRationalSubstitution.lean`
-- `substitutionValue R = R(y0)`, `substitutionJet R l = delta^l R(y0)`, `substitutionDeriv R = R'(y0)`
-- `jetSubstitution R hR : JetField C Unit →ₐ[C] JetField C Unit` (Jacobian criterion, triangular
-  with constant diagonal `R'(y0)`), injective, differential (`jetSubstitution_deriv`)
-- `orbifoldTail R hR = stableRangeCore`, derivation-closed, `Phi_R` restricts to an automorphism
-- chain rule `pd_jetSubstitution_top`, `(T1) pd_eigen_of_jetSubstitution_eigen`,
-  `(T3) eigen_logDeriv_pd_of_jetSubstitution_eigen`
-- `jetSubstitution_jet_one : Phi_R(y1) = y1 * R'(y0)` — the order-one substitution is an EXACT scaling
-- `IsInvariantDifferential R hR k q lam`, `invariantCurrent k q = q * y1^k`,
-  `jetSubstitution_invariantCurrent`, `differentialAdjoin_le_orbifoldTail_of_isInvariantDifferential`
-- `isInvariantDifferential_pd_of_order_zero_eigen` — the order-zero exit
+`HTGeometry/JetRationalSubstitution.lean` — `jetSubstitution R hR` (= `Phi_R`), `orbifoldTail`,
+chain rule, `(T1)`, `(T3)`, `jetSubstitution_jet_one : Phi_R(y1) = y1·R'(y0)` (exact scaling at
+order one), `IsInvariantDifferential`, `invariantCurrent`,
+`differentialAdjoin_le_orbifoldTail_of_isInvariantDifferential`,
+`isInvariantDifferential_pd_of_order_zero_eigen`.
 
-`HTGeometry/TwistedScalingDescent.lean` (generic polynomial layer)
-- `twistComp Phi T P = (P.map Phi).comp T`; degree/leadingCoeff laws for `natDegree T = 1`
-- `exists_scalars_of_twisted_cross` — coprimality splits the cross identity
-- `coeff_eigen_of_twistComp_scale` — for `T = C rho * X`, every coefficient is an eigenvector
+`HTGeometry/TwistedScalingDescent.lean` — generic polynomial layer over any field:
+`twistComp Phi T P = (P.map Phi).comp T`; degree/leadingCoeff laws for `natDegree T = 1`;
+`exists_scalars_of_twisted_cross` (coprimality splits the cross identity);
+`coeff_eigen_of_twistComp_scale` (pure scaling ⇒ every coefficient is an eigenvector);
+`coeff_affine_pow`; **`twistComp_affine_cocycle`** (the two top coefficients of a split affine
+relation solve `Phi(g) = rho·g - (a+1)L`).
 
-`HTGeometry/JetSubstitutionDescent.lean`
-- `jetPrefixField C M` = subfield of `y_0..y_(M-1)`; `mem_jetPrefixField_iff` (order below M),
-  `transcendental_jet_over_jetPrefixField`, `jetPrefixField_succ`, `jetPrefixField_zero`,
-  `exists_algebraMap_of_forall_pd_eq_zero`
-- `jetSubstitutionPrefix` (restriction of Phi_R), `substitutionShift R M = delta^M R(y0) - R'*y_M`
-  with `ord < M`, `substitutionAffine`, `jetSubstitution_aeval` (transport)
-- `SubstitutionEigen R hR M kappa w lam` := `w != 0 ∧ ord w ≤ M ∧ Phi_R(w)*R'^kappa = lam*w`;
+`HTGeometry/JetSubstitutionDescent.lean` (~900 lines)
+- prefix fields `jetPrefixField C M` = `C(y_0..y_(M-1))`, `mem_jetPrefixField_iff` (order below M),
+  transcendence of `y_M`, `jetPrefixField_succ`, `jetPrefixField_zero`,
+  `exists_algebraMap_of_forall_pd_eq_zero`, `jetSubstitutionPrefix` (restriction of `Phi_R`)
+- affine normal form `substitutionShift R M`, `substitutionAffine R hM`,
+  `jetSubstitution_aeval_of_act` (transport in ANY coordinate on which `Phi_R` acts polynomially)
+- `SubstitutionEigen R hR M kappa w lam` := `w != 0 ∧ ord w ≤ M ∧ Phi_R(w)·R'^kappa = lam·w`;
   `IsInvariantDifferential = SubstitutionEigen … 0 …` (Iff.rfl)
-- `exists_coprime_slicing`, `substitutionEigen_leadingRatio`, `exists_substitutionEigen_pred`
+- `exists_coprime_slicing_of_coordinate` / `exists_coprime_slicing`
+- `substitutionEigen_leadingRatio` / `exists_substitutionEigen_pred` (order descends by one,
+  exponent shifts by the degree difference)
 - `exists_isInvariantDifferential_of_substitutionEigen`, `exists_isInvariantDifferential_of_eigen`
-- `exists_nonzero_isInvariantDifferential_or_eq_one`
-- ORDER ONE CLOSED: `substitutionShift_one` (L = 0), `substitutionEigen_coeffRatio`,
-  `exists_nonzero_isInvariantDifferential_of_order_one`,
+  — EVERY finite-order eigenvector carries an invariant differential with the same eigenvalue
+- `exists_nonzero_isInvariantDifferential_or_eq_one` — the weight is nonzero unless `lam = 1`
+- ORDER ONE CLOSED: `substitutionShift_one`, `substitutionAffine_eq_scale`,
+  `substitutionEigen_coeffRatio`, `exists_nonzero_isInvariantDifferential_of_order_one`,
   `exists_nonzero_isInvariantDifferential_of_pd_one_ne_zero`,
   `exists_differentialAdjoin_invariantCurrent_le_orbifoldTail`
+- **NORMALIZATION (2026-08-16 late)**: `exists_normalizing_shift`, `jetSubstitution_jet_add`
+  (`Phi_R(y_M + t) = R'·(y_M + t)`), `lowerOrder_or_exists_scalingCoordinate`,
+  `transcendental_add_algebraMap` (already existed in `RatFuncPositiveJetBranchSeparation` — reuse,
+  do not redeclare), `intermediateField_adjoin_add_algebraMap`, and the capstone
+  **`substitutionEigen_normalized_trichotomy`**:
+      SubstitutionEigen M kappa w lam, M ≥ 1, lam ≠ 0 ⇒
+        (i)  ord w ≤ M-1, or
+        (ii) ∃ n ≠ 0, s : SubstitutionEigen (M-1) n s 1, or
+        (iii) ∃ n ≠ 0, s : SubstitutionEigen (M-1) (kappa+n) s lam.
 
-## The one remaining obligation
+## The one remaining obligation — now pinned to order two
 
-Weight-zero exit above order one.  At `M >= 2` the affine remainder `L != 0`, so only the LEADING
-coefficients satisfy per-coefficient relations and the descent can land on `k = 0` with a constant.
+Following branch (iii) from `kappa = 0` writes `w = e·prod_j z_j^(n_j)` with `e` of order zero and
+`sum n_j = 0`, `z_j = y_j + t_j` the normalized coordinates.  The shift `t_2` must solve
 
-Route (derived, not yet formalized): the next-to-leading coefficient of `P^Phi . T = c*P` is
-exactly a solution of the affine cocycle equation `Phi_R(t) - R'*t = -L`, namely
-`t = P_(a-1)/(a*P_a)`, legitimate whenever `deg P >= 1`.  In the translated coordinate
-`z = y_M + t` the substitution becomes the pure scaling `z |-> R'*z`, so the full coefficient
-analysis applies at every order.  Trichotomy at level M then:
-  (i) `deg P = deg Q = 0`: `w` already has order <= M-1, descend with kappa unchanged;
-  (ii) normalize, non-monomial: escape with `kappa' != 0`, eigenvalue 1;
-  (iii) normalize, both monomials: `w = s*z^n`, `n = deg P - deg Q != 0`, `kappa' = kappa + n`.
-Residual configuration: `w = e * prod_j z_j^(n_j)` with `e` a coefficient constant and
-`sum n_j = -kappa`.  At `kappa = 0` this is a constant, excluded by nonconstancy — that is exactly
-why order one closes.  For `kappa != 0` a further input is needed; the natural candidate is the
-residue obstruction "`e/X` has no primitive in `F(X)`", which kills `kappa = 1` (the (T1) output)
-but not general `kappa`.
+    alpha(R(z))·R'(z)^2 - R'(z)·alpha(z) = -R''(z),   alpha rational,
 
-Sanity check of the mechanism: `R = z^d` gives `P = C(1/y0)*X`, `Q = 1`, `s = 1/y0`, `k = 1`, i.e.
-the invariant differential `dz/z` — correct.
+i.e. **`R` preserves a rational affine connection (Christoffel symbol) on P^1**.  Two facts checked
+by hand:
+- for `R = z^d` the solution is `alpha = -1/z`, and `Gamma' - Gamma^2/2 = 1/(2z^2)` is the invariant
+  quadratic differential (weight 2, eigenvalue `d^2`);
+- for `R = z^2+1` the equation forces a pole at `0`, hence at every point of the infinite backward
+  orbit of `0` — impossible for a rational `alpha`.  This is the same orbit mechanism as the card's
+  tensor argument.
+General identity (verified by hand, not yet formalized): if `Gamma` is an invariant affine
+connection then `P := Gamma' - Gamma^2/2` satisfies `P(R)·R'^2 = P - S_R` with `S_R` the Schwarzian
+— an eigen-relation only when `S_R` is proportional to `P`.  So "invariant connection ⇒ invariant
+tensor" is NOT automatic; the orbit/pole argument is the route.
 
-## Dependent cards
+To close: (a) Laurent normal form of the shift (slice `t` itself in the previous coordinate, where
+the substitution is again a pure scaling, so `substitutionEigen_coeffRatio` applies and every
+Laurent coefficient except the one at the exponent of `L` is an invariant differential);
+(b) "no invariant rational affine connection for a non-exceptional map" by the orbit/pole argument.
 
-`floquet-orbifold-tail-emergence` needs `Tail(z^2+1) = C` and `Tail((z-1)^2) = C`.  Both would
-follow from the general weight-zero closure plus the orbit argument recorded on the orbifold card
-(critical-point order bookkeeping along the infinite forward and backward orbits of 0).
-`orbifold-tail-holographic-reconstruction` needs the same tail interface.
-Note: in ALL exceptional cases (power, Chebyshev, Lattes) the tail generator has jet order exactly
-one — `q(y0)*y1^k`.  So "the minimal order in a nonconstant tail is one" is an equivalent
-formulation of the remaining gap, and might be the easier statement to attack.
+## Lean process notes
+- `set x := e with h` CLEARS AND RE-INTRODUCES every hypothesis whose type mentions `e`, making
+  them inaccessible (`P✝`).  Put all `set`s BEFORE any `obtain`, or avoid `set` entirely.
+- `not_imp` is ambiguous; use `Classical.not_imp`.
+- `refine ⟨_, _, …, hres⟩` only infers the holes if the determining term comes last.

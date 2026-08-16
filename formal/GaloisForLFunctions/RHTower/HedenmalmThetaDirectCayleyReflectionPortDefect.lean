@@ -68,7 +68,12 @@ theorem thetaXiBoundaryDirectCayleyMultiplier_reflect (q : XiZeroCopy) :
     thetaXiBoundaryDirectScaledEigenvalue_reflect]
   field_simp [one_add_thetaXiBoundaryDirectScaledEigenvalue_ne_zero q,
     one_sub_thetaXiBoundaryDirectScaledEigenvalue_ne_zero q]
-  <;> ring
+  ring
+
+theorem norm_thetaXiBoundaryDirectCayleyMultiplier_reflect (q : XiZeroCopy) :
+    ‖thetaXiBoundaryDirectCayleyMultiplier (xiZeroCopyReflectEquiv q)‖ =
+      ‖thetaXiBoundaryDirectCayleyMultiplier q‖⁻¹ := by
+  rw [thetaXiBoundaryDirectCayleyMultiplier_reflect, norm_inv]
 
 theorem thetaXiBoundaryDirectCayleyResolvedMode_eq
     (q : XiZeroCopy) (n : ℕ) :
@@ -187,7 +192,37 @@ theorem thetaXiBoundaryDirectCayleyPortDefect_weighted_reflect
   rw [← h]
   ring
 
+/-- Eigenline effect of centering the reflection clock at its forced half-time `-1/2`. -/
+def thetaXiBoundaryDirectCayleyHalfCenteredPortDefect
+    (q : XiZeroCopy) (n : ℕ) : ℝ :=
+  thetaXiBoundaryDirectCayleyPortDefect q n /
+    ‖thetaXiBoundaryDirectCayleyMultiplier q‖ ^ (2 * n + 1)
+
+/-- Half-step coefficient neutralization gives equal-coefficient reflected cancellation
+unconditionally.  It does not make either individual fibre defect vanish. -/
+theorem thetaXiBoundaryDirectCayleyHalfCenteredPortDefect_reflect_cancel
+    (q : XiZeroCopy) (n : ℕ) :
+    thetaXiBoundaryDirectCayleyHalfCenteredPortDefect q n +
+      thetaXiBoundaryDirectCayleyHalfCenteredPortDefect
+        (xiZeroCopyReflectEquiv q) n = 0 := by
+  rw [thetaXiBoundaryDirectCayleyHalfCenteredPortDefect,
+    thetaXiBoundaryDirectCayleyHalfCenteredPortDefect,
+    norm_thetaXiBoundaryDirectCayleyMultiplier_reflect, inv_pow, div_inv_eq_mul]
+  have hk : ‖thetaXiBoundaryDirectCayleyMultiplier q‖ ≠ 0 :=
+    norm_ne_zero_iff.mpr (thetaXiBoundaryDirectCayleyMultiplier_ne_zero q)
+  have h := thetaXiBoundaryDirectCayleyPortDefect_weighted_reflect q n
+  rw [show 4 * n + 2 = (2 * n + 1) + (2 * n + 1) by omega, pow_add] at h
+  field_simp [pow_ne_zero (2 * n + 1) hk]
+  nlinarith
+
+theorem thetaXiBoundaryDirectCayleyHalfCenteredPortDefect_eq_zero_iff_line
+    (q : XiZeroCopy) (n : ℕ) :
+    thetaXiBoundaryDirectCayleyHalfCenteredPortDefect q n = 0 ↔
+      (q.1 : ℂ).re = 1 / 2 := by
+  rw [thetaXiBoundaryDirectCayleyHalfCenteredPortDefect, div_eq_zero_iff,
+    thetaXiBoundaryDirectCayleyPortDefect_eq_zero_iff_line]
+  simp [norm_ne_zero_iff.mpr (thetaXiBoundaryDirectCayleyMultiplier_ne_zero q)]
+
 end
 
 end RHTower.HedenmalmThetaSource
-

@@ -163,6 +163,46 @@ theorem summable_harmonicKernel_mul_fourierCoeff {κ : ℤ → ℝ} {A : ℝ}
   nlinarith [sq_nonneg ((A / (1 + ((l - j).natAbs : ℝ))) -
     ‖fourierCoeff ((w : AddCircle (1 : ℝ) → ℂ)) l‖)]
 
+/-! ## The convolution bound for a general symbol -/
+
+/-- **Convolution bound.**  For a bounded real symbol whose Fourier coefficients decay
+harmonically with constant `A`, the coefficient of the multiplied vector is dominated by the
+convolution of the kernel `A/(1+|x|)` with the amplitude coefficients. -/
+theorem norm_fourierCoeff_lpBoundedMulCLM_le {c : AddCircle (1 : ℝ) → ℂ} (hc : Measurable c)
+    {C : ℝ} (hC0 : 0 ≤ C) (hC : ∀ x, ‖c x‖ ≤ C) (hreal : ∀ x, starRingEnd ℂ (c x) = c x)
+    {A : ℝ} (hA : ∀ x : ℤ, ‖fourierCoeff c x‖ ≤ A / (1 + (x.natAbs : ℝ)))
+    (w : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) (j : ℤ) :
+    ‖fourierCoeff ((MeasureTheory.lpBoundedMulCLM (p := 2)
+        (μ := AddCircle.haarAddCircle (T := (1 : ℝ))) hc hC0 hC w : AddCircle (1 : ℝ) → ℂ)) j‖
+      ≤ ∑' l : ℤ, A / (1 + ((l - j).natAbs : ℝ)) *
+          ‖fourierCoeff ((w : AddCircle (1 : ℝ) → ℂ)) l‖ := by
+  have hA0 : 0 ≤ A := by
+    have h0 := hA 0
+    simp only [Int.natAbs_zero, Nat.cast_zero, add_zero, div_one] at h0
+    exact le_trans (norm_nonneg _) h0
+  have hsum := hasSum_fourierCoeff_lpBoundedMulCLM hc hC0 hC hreal w j
+  have hmaj : Summable (fun l : ℤ =>
+      ‖starRingEnd ℂ (fourierCoeff c (l - j)) *
+        fourierCoeff ((w : AddCircle (1 : ℝ) → ℂ)) l‖) := by
+    have hbase := summable_harmonicKernel_mul_fourierCoeff
+      (κ := fun x => ‖fourierCoeff c x‖) (A := A) (fun x => norm_nonneg _) hA w j
+    refine hbase.congr fun l => ?_
+    rw [norm_mul, RCLike.norm_conj]
+  have heq : fourierCoeff ((MeasureTheory.lpBoundedMulCLM (p := 2)
+      (μ := AddCircle.haarAddCircle (T := (1 : ℝ))) hc hC0 hC w : AddCircle (1 : ℝ) → ℂ)) j
+      = ∑' l : ℤ, starRingEnd ℂ (fourierCoeff c (l - j)) *
+          fourierCoeff ((w : AddCircle (1 : ℝ) → ℂ)) l := hsum.tsum_eq.symm
+  rw [heq]
+  refine (norm_tsum_le_tsum_norm hmaj).trans ?_
+  have hterm : Summable (fun l : ℤ => A / (1 + ((l - j).natAbs : ℝ)) *
+      ‖fourierCoeff ((w : AddCircle (1 : ℝ) → ℂ)) l‖) :=
+    summable_harmonicKernel_mul_fourierCoeff
+      (κ := fun x => A / (1 + (x.natAbs : ℝ))) (A := A)
+      (fun x => by positivity) (fun x => le_refl _) w j
+  refine hmaj.tsum_le_tsum (fun l => ?_) hterm
+  rw [norm_mul, RCLike.norm_conj]
+  exact mul_le_mul_of_nonneg_right (hA (l - j)) (norm_nonneg _)
+
 /-! ## The convolution bound for the reciprocal-square block -/
 
 /-- **Convolution bound.**  The coefficient of `B⁻² w` is dominated by the convolution of the

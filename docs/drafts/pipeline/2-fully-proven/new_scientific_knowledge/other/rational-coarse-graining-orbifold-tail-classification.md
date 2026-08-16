@@ -837,3 +837,120 @@ full coefficient analysis applies at every order.  The residual configuration is
 family `w = e·z^(-kappa)` with `e` a constant — which at `kappa = 0` is excluded by nonconstancy,
 which is precisely why order one closes.  Ruling it out for `kappa != 0` is the single remaining
 step of the Casale-free route.
+
+### The normalization is formalized: the affine remainder can always be translated away
+
+The route recorded above — "the next-to-leading coefficient of the split relation solves
+`Phi_R(t) - R'·t = -L`" — is now a theorem, in `TwistedScalingDescent.lean` and
+`JetSubstitutionDescent.lean`, unconditional and axiom-clean.
+
+**The affine cocycle, generically.**  For a ring endomorphism `Phi` of a field and the affine
+substitution `T = rho·X + L` with `rho != 0`:
+
+```text
+coeff_affine_pow :   ((rho·X + L)^m).coeff k = rho^k · L^(m-k) · C(m,k)
+twistComp_affine_cocycle :
+   deg P = a+1,   (P^Phi) . T = c·P
+     ⇒  Phi(P_a / P_(a+1)) = rho·(P_a / P_(a+1)) - (a+1)·L
+```
+
+The proof is the comparison of the two top coefficients: the leading one gives
+`Phi(P_(a+1))·rho^(a+1) = c·P_(a+1)`, the next one gives
+`rho^a·(Phi(P_a) + (a+1)·Phi(P_(a+1))·L) = c·P_a`, and eliminating `c` leaves exactly the cocycle.
+
+**On the jet field.**  `substitutionShift R M := delta^M(R(y_0)) - R'(y_0)·y_M` has order below `M`,
+so the substitution acts on the top coordinate through the affine polynomial
+`substitutionAffine R hM = C R'(y_0)·X + C (substitutionShift R M)`.  Then
+
+```text
+exists_normalizing_shift :
+   a split relation with deg P ≥ 1 produces t of order < M with
+   Phi_R(t) = R'(y_0)·t - substitutionShift R M
+jetSubstitution_jet_add :
+   that t translates the top coordinate into an exact eigenvector:
+   Phi_R(y_M + t) = R'(y_0)·(y_M + t)
+lowerOrder_or_exists_scalingCoordinate :
+   an eigen-relation at order M ≥ 1 either already has order below M, or such a t exists
+```
+
+**Consequence: the coefficient analysis is available at every order.**  The slicing lemma was
+generalized to an arbitrary coordinate `x` with `Phi_R(x) = (aeval x) T_x`
+(`exists_coprime_slicing_of_coordinate`, `jetSubstitution_aeval_of_act`), and translation preserves
+both transcendence and the generated field (`transcendental_add_algebraMap`,
+`intermediateField_adjoin_add_algebraMap`).  Re-slicing in the normalized coordinate therefore has
+`T_x = R'(y_0)·X`, a pure scaling, so `substitutionEigen_coeffRatio` applies at every order — not
+only at order one, where the remainder happens to vanish.  The result is the exact trichotomy the
+descent needs:
+
+```text
+substitutionEigen_normalized_trichotomy :
+   SubstitutionEigen R hR M kappa w lam,  M ≥ 1,  lam != 0   ⇒
+     (i)  ord w ≤ M-1, or
+     (ii) ∃ n != 0, ∃ s,  SubstitutionEigen R hR (M-1) n s 1, or
+     (iii) ∃ n != 0, ∃ s,  SubstitutionEigen R hR (M-1) (kappa + n) s lam.
+```
+
+Branch (ii) is a non-monomial numerator or denominator in the normalized coordinate; branch (iii)
+is the monomial case, where coprimality forces one of the two degrees to vanish, so the exponent
+shift `n = deg P - deg Q` is nonzero.  Branch (i) is `deg P = deg Q = 0`.
+
+**What is left, exactly.**  Following branch (iii) all the way down from `kappa = 0` writes the
+eigenvector as `w = e·prod_j z_j^(n_j)` with `e` of order zero and `sum n_j = 0`, where
+`z_j = y_j + t_j` are the normalized coordinates.  The obstruction to this being vacuous is now
+completely explicit and lives at order **two**: the shift `t_2` must solve
+
+```text
+alpha(R(z))·R'(z)^2 - R'(z)·alpha(z) = -R''(z),     alpha rational,
+```
+
+which is exactly the statement that `R` preserves a rational **affine connection** (Christoffel
+symbol) on the projective line — the classical companion of the invariant-tensor condition.  For a
+non-exceptional map this fails by an orbit argument of the same shape as the one recorded for
+tensors: for `R = z^2 + 1` the equation forces `alpha` to have a pole at `0`, hence at every point
+of the infinite backward orbit of `0`, which no rational function has.  Formalizing "no invariant
+rational affine connection for a non-exceptional map", together with the Laurent normal form of the
+shift (obtained by slicing the shift itself in the previous coordinate, where the substitution is
+again a pure scaling), closes the Casale-free route.
+
+### The hard direction now reads: an invariant tensor, or an invariant affine structure
+
+With the normalization formalized, the whole Casale-free route collapses to a single
+hypothesis-free dichotomy, proved in `JetSubstitutionDescent.lean`:
+
+```text
+HasNormalizingShift R hR (hM : 1 ≤ M) :=
+  ∃ t of order < M,  Phi_R(t) = R'(y_0)·t - substitutionShift R M
+
+lowerOrder_or_hasNormalizingShift :
+  an eigen-relation at order M ≥ 1 either already has order below M,
+  or the substitution admits an invariant affine structure at level M
+
+exists_nonzero_isInvariantDifferential_or_hasNormalizingShift :
+  Phi_R u = lam·u,  u nonconstant of finite order,  lam != 0   ⇒
+    (∃ k != 0, q, mu != 0,  IsInvariantDifferential R hR k q mu)
+      ∨  ∃ N ≥ 2,  HasNormalizingShift R hR (level N)
+```
+
+The bound `N ≥ 2` is sharp and not cosmetic: at level one the remainder vanishes identically
+(`substitutionShift_one`), so `HasNormalizingShift` holds there for the trivial shift `t = 0` and
+carries no information — which is exactly why the order-one case closes outright and the obstruction
+first appears at order two.
+
+At level two the shift is an element of `C(y_0,y_1)` with `Phi_R(t) = R'·t - R''·y_1^2`, and slicing
+it in `y_1` — where the substitution is an exact scaling — puts it in Laurent form
+`t = c_1·y_1 + c_2·y_1^2` (every other Laurent coefficient is an invariant differential of nonzero
+weight, and `c_1` of order zero is either a weight-one differential or a constant).  The surviving
+coefficient `c_2 = alpha(y_0)` then satisfies
+
+```text
+alpha(R(z))·R'(z)^2 + R''(z) = alpha(z)·R'(z),
+```
+
+the transformation law of a rational **affine connection** on the projective line.  So the card's
+step 2 is now exactly:
+
+> a rational map of degree at least two preserving a rational affine connection is exceptional,
+
+the affine-structure companion of the invariant-tensor statement.  Everything above it —
+Lüroth, the projective normalization, the principal symbol, `(T1)`, `(T3)`, the order descent, the
+normalization, and the order-one closure — is machine-checked and unconditional.

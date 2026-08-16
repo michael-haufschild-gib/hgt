@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.EntireCascadeStateFieldOrder
+import GaloisForLFunctions.HTGeometry.UnivMeroFieldInstances
 
 /-!
 # The order bound for elements algebraic over a state field
@@ -42,35 +43,7 @@ theorem exists_jet_relation_of_algebraic_over_state_generators
 
 /-! ## The entire-function form -/
 
-/-- The domain of entire germs. -/
-local instance algStateDomain : IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
-  Bottcher.isDomain_analyticSubring (Set.univ : Set ℂ) isOpen_univ isPreconnected_univ
-    Set.univ_nonempty
-
-/-- The rational coordinate field inside the global meromorphic field. -/
-local instance algStateRatFuncAlgebra : Algebra (RatFunc ℂ) (meroField (Set.univ : Set ℂ)) :=
-  (ratfuncToMero (Set.univ : Set ℂ) isOpen_univ isPreconnected_univ Set.univ_nonempty
-    Set.infinite_univ).toAlgebra
-
-/-- The ordinary derivative as the differential structure on the global meromorphic field. -/
-local instance algStateDifferential : Differential (meroField (Set.univ : Set ℂ)) :=
-  meroFieldDifferential (U := (Set.univ : Set ℂ)) isOpen_univ isPreconnected_univ
-    Set.univ_nonempty
-
-/-- The global meromorphic field has characteristic zero. -/
-local instance algStateCharZero : CharZero (meroField (Set.univ : Set ℂ)) :=
-  charZero_of_injective_algebraMap
-    (algebraMap (RatFunc ℂ) (meroField (Set.univ : Set ℂ))).injective
-
-/-- The rational coordinate field with its own derivation. -/
-local instance algStateRatFuncDifferential : Differential (RatFunc ℂ) :=
-  ratFuncCoordinateDifferential
-
-/-- The rational coordinate embedding is differential. -/
-local instance algStateRatFuncDifferentialAlgebra :
-    DifferentialAlgebra (RatFunc ℂ) (meroField (Set.univ : Set ℂ)) :=
-  meroFieldRatFuncDifferentialAlgebra isOpen_univ isPreconnected_univ
-    Set.univ_nonempty Set.infinite_univ
+open scoped UnivMeroFieldInstances
 
 /-- **The order bound for an algebraic element.**  An entire function whose meromorphic realization
 is algebraic over the field generated over `ℂ(z)` by `n` states, each of whose derivatives is

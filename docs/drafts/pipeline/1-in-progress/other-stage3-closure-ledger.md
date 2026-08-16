@@ -1711,3 +1711,35 @@ Closing it also closes `floquet-orbifold-tail-emergence` and
   `Phi_R(t) - R'·t = -L`, so `z = y_M + t` normalizes the substitution to a pure scaling whenever
   `deg P ≥ 1`, after which the residual configuration is the explicit family `w = e·z^(-kappa)`
   with `e` a coefficient constant.  Closure count unchanged.
+
+- 2026-08-16 (later) — `rational-coarse-graining-orbifold-tail-classification`, second pass.
+  `TwistedScalingDescent.lean` gained the affine layer (`coeff_affine_pow`,
+  `twistComp_affine_cocycle`: the two top coefficients of a split affine relation solve
+  `Phi(g) = rho·g - (a+1)·L`).  `JetSubstitutionDescent.lean` gained the normalization
+  (`exists_normalizing_shift`, `jetSubstitution_jet_add`, `HasNormalizingShift`,
+  `lowerOrder_or_hasNormalizingShift`), the coordinate-generic slicing
+  (`jetSubstitution_aeval_of_act`, `exists_coprime_slicing_of_coordinate`,
+  `transcendental_add_algebraMap` reused from `RatFuncPositiveJetBranchSeparation`,
+  `intermediateField_adjoin_add_algebraMap`), the full trichotomy
+  `substitutionEigen_normalized_trichotomy`, and the capstone
+  `exists_nonzero_isInvariantDifferential_or_hasNormalizingShift`: a nonconstant finite-order
+  eigenvector of `Phi_R` forces either an invariant differential of nonzero weight and nonzero
+  eigenvalue, or an invariant affine structure at some jet level at least two.  The card's step 2
+  is thereby reduced from Casale's classification to its affine-structure companion.  Closure count
+  unchanged.
+
+- 2026-08-16 (later) — `gauss-component-quasi-inner-residue-hierarchy` advanced, not yet closed.
+  Item 1 of the two remaining obligations is done: the one-step spike-vanishing core `(T)` is now
+  proved for an arbitrary real symbol of modulus at most one with harmonic Fourier decay, and in
+  particular for every member of the piecewise-exponential algebra the prime-scale amplitudes
+  generate.  New/generalized: `norm_fourierCoeff_lpBoundedMulCLM_le`
+  (`RHTower/GaussConvolutionCoefficient.lean`), `norm_fourierCoeff_symbol_truncate_le`
+  (`RHTower/GaussLowModeKernelBound.lean`), and in `RHTower/GaussSpikeDefectVanishing.lean`
+  `norm_sq_shiftedDiag_symbol_highMode_le`, `norm_sq_shiftedDiag_symbol_lowMode_le`,
+  `tendsto_norm_gaussShiftedBlockDiag_symbol_defect_zero`,
+  `tendsto_norm_gaussShiftedBlockDiag_invSq_defect_zero` (the pass-44 statement, now a corollary)
+  and `tendsto_norm_gaussShiftedBlockDiag_expPiecewise_defect_zero`.
+  Remaining: the relative `m`-fold telescope, whose invariant amplitude class must be two-piece
+  because `S̃`, `S̃*` are Fourier multipliers degrading a uniform bound at the moving frequency
+  `-n`; the card's pass-44 correction records the class and the `theta > 3/4` constraint.
+  Closure count unchanged.

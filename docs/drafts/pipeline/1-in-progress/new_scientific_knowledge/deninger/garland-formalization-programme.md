@@ -779,3 +779,170 @@ KTwo_mem_center_of_card    and such an index exists as soon as the word does not
 Layer B's remaining steps are the ones after that bridge: Matsumoto's theorem `K_2(F) = K_2^M(F)`,
 the localization identifying the Milnor tame kernel of `O_S` with `K_2(O_S)`, and homological
 stability in degree two.
+
+## Layer B — the Steinberg symbol is normalized, PROVED
+
+`HTGeometry/SteinbergSymbolNormalization.lean` (wired, axiom-clean).  Matsumoto's theorem presents
+`K_2` of a field by the Steinberg symbols, so the first thing to establish about the symbol is its
+normalisation.
+
+- **`steinbergWeyl_neg`** — `w(-u) = w(u)^{-1}`.  Inverting `w(u) = x_ij(u) x_ji(-u^{-1}) x_ij(u)`
+  reverses the three factors and negates each entry, and `(-u)^{-1} = -u^{-1}` for units, so the
+  result is literally `w(-u)`.
+- **`steinbergTorus_one`** — `h(1) = w(1) w(-1) = w(1) w(1)^{-1} = 1`.
+- **`steinbergSymbol_one_left`**, **`steinbergSymbol_one_right`** — `{1, v} = {u, 1} = 1`.
+
+What Matsumoto still needs of the symbol is bimultiplicativity and the Steinberg relation
+`{u, 1-u} = 1`; with those the symbol descends from `K_2^M(F)` and the induced map is the
+isomorphism.
+
+## Layer B — the symbol is central, and satisfies the cocycle identity, PROVED
+
+`HTGeometry/SteinbergSymbolCocycle.lean` (wired, axiom-clean).  Centrality now pays off immediately.
+
+- `steinbergWeyl_mem_indexClosure`, `steinbergTorus_mem_indexClosure`,
+  `steinbergSymbol_mem_indexClosure` — the Weyl, torus and symbol elements are words in the two
+  indices of the Weyl element only.
+- **`steinbergSymbol_mem_center`** — **the Steinberg symbol is central**, as soon as a third index
+  exists: it lies in `K_2` (already proved) and its word avoids that index, so `KTwo_mem_center`
+  applies.
+- **`steinbergTorus_mul`** — `h(uv) = {u,v} h(v) h(u)`: the torus elements fail to be multiplicative
+  exactly by the symbol.
+- **`steinbergSymbol_cocycle`** — **`{uv,w}·{u,v} = {u,vw}·{v,w}`.**  Compute `h(uvw)` in the two
+  possible ways; centrality moves `{u,v}` past `h(w)` in the first; the common tail
+  `h(w) h(v) h(u)` cancels.
+
+This is the associativity constraint Matsumoto's presentation imposes.  What the symbol still needs
+for that route is bimultiplicativity and the Steinberg relation `{u, 1-u} = 1`.
+
+## Layer B — the symbol's asymmetry is the torus commutator, PROVED
+
+`HTGeometry/SteinbergSymbolSwap.lean` (wired, axiom-clean).
+
+Over a commutative ring `uv = vu`, so `h(uv) = {u,v} h(v) h(u)` and `h(vu) = {v,u} h(u) h(v)`
+describe the same element.  Comparing them isolates the symbol's failure to be symmetric:
+
+```
+steinbergSymbol_swap
+    {v,u}^{-1} {u,v}  =  h(u) h(v) h(u)^{-1} h(v)^{-1}
+
+steinbergSymbol_comm_of_torus_commute   the torus elements commute  ==>  {u,v} = {v,u}
+torus_commute_of_steinbergSymbol_comm   and conversely
+```
+
+Both sides lie in `K_2` — the images `d(u), d(v)` commute — so the discrepancy is central by
+`steinbergSymbol_mem_center`.  Together with `steinbergSymbol_cocycle` and the normalisation
+`{1,v} = {u,1} = 1`, the symbol now satisfies three of the four laws Matsumoto's presentation
+imposes; the remaining one is the Steinberg relation `{u, 1-u} = 1`, which is where the *ring*
+enters rather than just the group.
+
+## Layer B — the torus elements commute up to the centre, PROVED
+
+`HTGeometry/SteinbergTorusCommutator.lean` (wired, axiom-clean).
+
+```
+torus_commutator_mem_KTwo      [h(u), h(v)] lies in K_2
+torus_commutator_mem_center    and is central, given a third index
+steinbergToGL_torus_commutator its image is the identity
+```
+
+Immediate from the swap law: `[h(u), h(v)] = {v,u}^{-1} {u,v}`, a product of two symbols, each in
+`K_2` and each central.  So `u |-> h(u)` is a homomorphism into `St(R)/K_2 = E(R)`, whose image is
+the diagonal `d(u)` — which is what `steinbergToGL_torus` and `diagUnit_mul` already say on the
+matrix side.
+
+### Layer B status after this session
+
+```
+Steinberg group, presentation, relations                     done
+K_2 as the kernel of St(R) -> GL(R)                          done
+perfectness of St(R) and of E(R)                             done
+column subgroup: abelian, normal form, injectivity           done
+row subgroup: abelian, normal form, injectivity              done
+index avoidance: every word uses finitely many indices       done
+CENTRALITY of K_2                                            done
+  ==> St(R) -> E(R) is a central extension; with perfectness, the universal one,
+      i.e. K_2(R) = H_2(E(R), Z)
+symbol: normalisation, cocycle identity, swap law            done
+symbol: bimultiplicativity, Steinberg relation {u,1-u}=1     TO BUILD
+Matsumoto K_2(F) = K_2^M(F)                                  TO BUILD
+localization: Milnor tame kernel of O_S = K_2(O_S)           TO BUILD
+homological stability in degree two                          TO BUILD
+```
+
+The next brick is the Steinberg relation `{u, 1-u} = 1`.  Unlike everything above it needs the
+*ring* rather than just the group: the classical route is the Weyl conjugation formula
+`w_ij(u) x_ij(a) w_ij(u)^{-1} = x_ji(-u^{-1} a u^{-1})`, which has to be derived from the three
+Steinberg relations directly, since the map to matrices is not injective.
+
+## Layer B — the Weyl conjugation formula, PROVED
+
+`HTGeometry/SteinbergWeylConjugation.lean` (wired, axiom-clean).  This is the first Layer B step
+that could not be read off the matrices: the map `St(R) -> GL(R)` is not injective, so the group
+identity has to come from the three Steinberg relations alone.
+
+```
+steinbergX_conj_chain     x_ij(a) x_jk(b) x_ij(a)^{-1} = x_ik(ab) x_jk(b)
+steinbergX_conj_chain'    x_jk(b) x_ij(a) x_jk(b)^{-1} = x_ik(ab)^{-1} x_ij(a)
+
+steinbergWeyl_conj_first  w_ij(u) x_ik(a) w_ij(u)^{-1} = x_jk(-u^{-1} a)
+```
+
+The Weyl conjugation is three conjugations in sequence: the outer `x_ij(u)` commutes with `x_ik(a)`
+(disjoint positions); the middle `x_ji(-u^{-1})` chains it to `x_jk(-u^{-1} a) x_ik(a)`; the second
+`x_ij(u)` chains the new factor to `x_ik(-a) x_jk(-u^{-1}a)`, and the two `x_ik` factors — with
+entries `-a` and `a` — cancel by additivity.  The cancellation is exactly where `u u^{-1} = 1`
+enters.
+
+The mirror statement `w_ij(u) x_kj(a) w_ij(u)^{-1} = x_ki(a u^{-1})` is the same computation with
+the roles of the two chained relations exchanged, and composing the two along
+`x_ij(a) = [x_ik(a), x_kj(1)]` gives `w_ij(u) x_ij(a) w_ij(u)^{-1} = x_ji(-u^{-1} a u^{-1})` — the
+identity the Steinberg relation `{u, 1-u} = 1` runs on.
+
+## Layer B — the classical Weyl conjugation formula, PROVED
+
+Same module.  The mirror move and the composition are now theorems too:
+
+```
+steinbergWeyl_conj_second   w_ij(u) x_kj(b) w_ij(u)^{-1} = x_ki(b u^{-1})
+steinbergWeyl_conj_self     w_ij(u) x_ij(a) w_ij(u)^{-1} = x_ji(-u^{-1} a u^{-1})
+```
+
+The mirror is the same three-conjugation pattern with the two forms of the chained relation
+exchanged; the cancellation there is `b V U = b`, again `u u^{-1} = 1`.
+
+The composition is the point.  `x_ij(a) = [x_ik(a), x_kj(1)]` expresses a generator with only two
+indices as a commutator of two generators each involving the third, conjugation is a group
+homomorphism so it distributes over the commutator, and the two moves send those to
+`x_jk(-u^{-1} a)` and `x_ki(u^{-1})` — whose chained commutator is `x_ji(-u^{-1} a u^{-1})`.
+
+This is the identity Milnor's proof of the Steinberg relation `{u, 1-u} = 1` runs on, and it is the
+first place in Layer B where a genuinely three-index argument was needed: with only `i` and `j` the
+Steinberg relations say nothing about how `x_ij` and `x_ji` interact.
+
+## Layer B — the third Weyl move, PROVED
+
+Same module.
+
+```
+steinbergWeyl_conj_row   w_ij(u) x_jk(c) w_ij(u)^{-1} = x_ik(u c)
+```
+
+This is the move on a generator whose *first* index is `j`, and it completes the pattern: the Weyl
+element at `(i,j)` sends
+
+```
+x_ik(a)  |->  x_jk(-u^{-1} a)        (first index i -> j)
+x_jk(c)  |->  x_ik(u c)              (first index j -> i)
+x_kj(b)  |->  x_ki(b u^{-1})         (second index j -> i)
+x_ij(a)  |->  x_ji(-u^{-1} a u^{-1}) (both, by composing along a commutator)
+```
+
+The cancellation in this one is `V U = 1` rather than `U V = 1` — the two are different rewrites of
+the same unit law and both are needed, since the entries appear on opposite sides.  The collection
+step at the end is where the three `x_ik` entries `-Uc, Uc, Uc` add to `Uc` and the two `x_jk`
+entries `-c, c` cancel; the two families commute, which is what makes the collection legal.
+
+The remaining move is `w_ij(u) x_ki(d) w_ij(u)^{-1} = x_kj(-d u)`; with it, `x_ji(b) = [x_jk(b),
+x_ki(1)]` gives `w_ij(u) x_ji(b) w_ij(u)^{-1} = x_ij(-u b u)`, and the Weyl action is completely
+determined.  That is the last input Milnor's proof of `{u, 1-u} = 1` needs from the group side.

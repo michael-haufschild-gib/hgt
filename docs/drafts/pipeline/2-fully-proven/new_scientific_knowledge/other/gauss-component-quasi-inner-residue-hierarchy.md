@@ -2219,3 +2219,48 @@ multiplier); and a harmonic convolution moves mass from the spike to frequency `
 The available `p`-series tail `GaloisForLFunctions.tsum_int_tail_rpow_le` (new, in
 `HTGeometry/PowerSeriesTailBound.lean`: `Σ_(|j|>J)(1+|j|)^(-s) ≤ 2(1+J)^(1-s)/(s-1)` for `s > 1`,
 by Bernoulli telescoping) is what any exponent below one will need in step 2.
+
+## Pass 45 — (T) is now proved for the whole piecewise-exponential symbol algebra
+
+Item 1 of the two obligations left after pass 44 is closed.  The one-step spike-vanishing theorem
+never used anything about the reciprocal square beyond two facts: the symbol is real of modulus at
+most one, and its Fourier coefficients decay harmonically.  Both modules were generalized in place.
+
+`RHTower/GaussConvolutionCoefficient.lean`
+
+```text
+norm_fourierCoeff_lpBoundedMulCLM_le :
+  c measurable, real, |c| ≤ Cb,  |ĉ(x)| ≤ A/(1+|x|)
+    ⇒ |(c·w)^(j)| ≤ Σ_l A/(1+|l-j|) · |ŵ(l)|
+```
+
+`RHTower/GaussLowModeKernelBound.lean`
+
+```text
+norm_fourierCoeff_symbol_truncate_le :   the same kernel bound on a truncated vector,
+                                          with the separation constant D and constant A/D
+norm_fourierCoeff_invSq_truncate_le  :   its reciprocal-square specialization
+```
+
+`RHTower/GaussSpikeDefectVanishing.lean` — the three estimates and the capstone are now stated for
+an arbitrary such symbol:
+
+```text
+norm_sq_shiftedDiag_symbol_highMode_le    (uses only |c| ≤ 1, through the operator norm)
+norm_sq_shiftedDiag_symbol_lowMode_le     (uses the kernel constant A_k; the spike bound becomes
+                                           eps = 24·A_k·A·(5+3K)·(1+log I)/I)
+tendsto_norm_gaussShiftedBlockDiag_symbol_defect_zero          -- (T) for a general symbol
+tendsto_norm_gaussShiftedBlockDiag_invSq_defect_zero           -- B^(-2), the pass-44 statement
+tendsto_norm_gaussShiftedBlockDiag_expPiecewise_defect_zero    -- every piecewise exponential
+```
+
+The last one is exactly the form the card asked for: for a real symbol of modulus at most one that
+is `IsExpPiecewise alpha n t c`, the corpus's `norm_fourierCoeff_of_isExpPiecewise` supplies the
+harmonic constant `A_k = n·M·2·exp|alpha|`, and (T) follows with no further work.  Since the
+prime-scale amplitude, its powers, and the moving amplitude are all in that class
+(`isExpPiecewise_gaussPrimeScaleInvSqCircle`, `IsExpPiecewise.mul_gaussPrimeScale`,
+`IsExpPiecewise.mul_gaussPrimeScaleInvSq`, `isExpPiecewise_gaussMovingAmplitudeCircle`), every
+bracket of the `m`-fold telescope now has its one-step estimate.
+
+All unconditional and axiom-clean; the only remaining obligation on this card is the relative
+`m`-fold telescope of pass 30.

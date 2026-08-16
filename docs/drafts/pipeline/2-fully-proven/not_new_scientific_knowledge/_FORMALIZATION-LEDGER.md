@@ -80,6 +80,7 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-16 | `translation-invariant-defect-form-orbit-classification` | `RHTower/TranslationInvariantDefectForm.lean` |
 | 2026-08-16 | `xi-hurwitz-scalar-comparison-codimension-no-go` | `RHTower/HurwitzScalarComparisonNoGo.lean` |
 | 2026-08-16 | `involutive-reflection-quadratic-rigidity` | `HTGeometry/InvolutiveReflectionQuadraticRigidity.lean` (+ `HTGeometry/FiniteOrderHadamard.lean`) |
+| 2026-08-16 | `polynomial-drift-rational-outer-factor-rigidity` | `HTGeometry/PolynomialDriftRationalOuterFactorRigidity.lean` (+ `RHTower/FiniteZeroHadamardProduct.lean`, `HTGeometry/PolynomialDriftExpansion.lean`, `HTGeometry/FiniteOrderPolynomialDescent.lean`, `HTGeometry/AlgebraicOverStateFieldOrder.lean`) |
 
 ## Already carrying a stage-3 certificate (verify, then move the paper card)
 
@@ -104,16 +105,16 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
    `RHTower/XiZerosInfinite.lean`), together with a complete Xi Hadamard factorization in
    `RHTower/XiHadamardFactorization.lean`. Use those wherever a card cites `N(T) = O(T log T)`
    only to get convergence of `Σ_ρ |ρ|^{-k}`, `k ≥ 2`.
-3. ~~Hadamard factorization for finite-order entire functions~~ — **built**:
-   `HTGeometry/FiniteOrderHadamard.lean` proves
+3. ~~Hadamard factorization for finite-order entire functions~~ — **built, both halves**:
+   `HTGeometry/FiniteOrderHadamard.lean` proves the zero-free half
    `exists_polynomial_exp_of_ne_zero_of_growth` (zero-free entire with
    `‖f z‖ ≤ exp(C(1+‖z‖)^d)` ⇒ `f = exp(polynomial)`) from `exists_entire_log_of_ne_zero`,
    `borel_caratheodory` and `exists_polynomial_of_polyGrowth`, together with the reusable
-   `FiniteOrderEnvelope` predicate and its closure API.  **Still open:** the *divisor-carrying*
-   Hadamard product (finitely many zeros ⇒ `polynomial · exp(polynomial)`) at order ≥ 2 — the
-   corpus owns only the subquadratic case
-   `RHTower.exists_finiteDivisorFactor_mul_exp_of_finite_zeroSet`.  That is what
-   `polynomial-drift-rational-outer-factor-rigidity` still needs.
+   `FiniteOrderEnvelope` predicate and its closure API;
+   `RHTower/FiniteZeroHadamardProduct.lean` proves the divisor-carrying half
+   `exists_polynomial_mul_expPolynomial_of_envelope` (finite order + finitely many zeros ⇒
+   `p · exp q`) at every finite order, generalizing the corpus's subquadratic
+   `RHTower.exists_finiteDivisorFactor_mul_exp_of_finite_zeroSet`.
 4. **von Neumann algebra generation** (`W*(S)` for a set of operators, and
    `W*(D, H_x) = B(ℓ²)`): needed by `additive-heat-diagonal-generates-full-operator-algebra`.
    mathlib has `VonNeumannAlgebra` but no generated-algebra API.
@@ -132,6 +133,19 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 - `HTGeometry/InvolutiveReflectionQuadraticRigidity.lean` — the reflection difference-of-squares
   split, its hyperexponential normal form, the resulting order-one ADE, and the
   `sin z - z cos z` witness.
+- `RHTower/FiniteZeroHadamardProduct.lean` — the divisor-carrying Hadamard product at every
+  finite order: an entire function with a finite-order envelope and finitely many zeros is
+  `p · exp q` with `p, q` polynomials (`finiteDivisorPoly`,
+  `exists_polynomial_mul_expPolynomial_of_envelope`).
+- `HTGeometry/PolynomialDriftExpansion.lean` — the shift expansion `P(y+a) - P(y)` in the base
+  point, with the exact top coefficient `n · lead(P) · a` (`driftCoeff`,
+  `eval_driftCoeff_expansion`, `eval_driftCoeff_pred`).
+- `HTGeometry/FiniteOrderPolynomialDescent.lean` — a nonconstant polynomial dominates its argument
+  (`‖w‖ ≤ R + c‖P w‖`), so finite order descends through a polynomial outer factor.
+- `HTGeometry/AlgebraicOverStateFieldOrder.lean` — the differential-order bound for elements
+  *algebraic over* a state field; the corpus previously required membership in it.
+- `HTGeometry/ExpPolynomialRational.lean` — `G · exp T = Q` with `G, Q` nonzero polynomials forces
+  the exponent `T` to be constant, by an exact polynomial degree comparison.
 - `HTGeometry/InvolutionIdempotentHost.lean` — self-inverse elements ↔ idempotents over a
   commutative ring with `2` invertible.
 - `HTGeometry/ScalarMonodromyAlgebraicIndependence.lean` — unbounded scalar monodromy forces

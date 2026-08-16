@@ -40,24 +40,24 @@ theorem seriesTailBound_nonneg (u : ℕ → E) {R : ℝ} (hR : 0 < R) (r : ℕ) 
 set_option maxHeartbeats 1000000 in
 /-- **The tail beyond the leading coefficient is linear in the parameter.** -/
 theorem norm_sub_leading_le {u : ℕ → E} {R : ℝ} (hR : 0 < R)
-    (hsum : Summable fun k => ‖u k‖ * R ^ k) (r : ℕ) {c : ℝ} (hc : 0 < c) (hcR : c ≤ R)
+    (hsum : Summable fun k => ‖u k‖ * R ^ k) (r : ℕ) {c : ℝ} (hcR : |c| ≤ R)
     {G : E} (hG : HasSum (fun k => c ^ k • u (r + k)) G) :
-    ‖G - u r‖ ≤ c * seriesTailBound u R r := by
+    ‖G - u r‖ ≤ |c| * seriesTailBound u R r := by
   have hf0 : (fun k : ℕ => c ^ k • u (r + k)) 0 = u r := by simp
   have hshift : HasSum (fun n : ℕ => c ^ (n + 1) • u (r + (n + 1))) (G - u r) := by
     refine (hasSum_nat_add_iff (f := fun k : ℕ => c ^ k • u (r + k)) 1).mpr ?_
     simpa [hf0] using hG
-  have hmaj : ∀ n : ℕ, ‖c ^ (n + 1) • u (r + (n + 1))‖ ≤ c * (R ^ n * ‖u (r + 1 + n)‖) := by
+  have hmaj : ∀ n : ℕ, ‖c ^ (n + 1) • u (r + (n + 1))‖ ≤ |c| * (R ^ n * ‖u (r + 1 + n)‖) := by
     intro n
-    have hpowle : c ^ n ≤ R ^ n := pow_le_pow_left₀ hc.le hcR n
-    have hnorm : ‖c ^ (n + 1) • u (r + (n + 1))‖ = c ^ (n + 1) * ‖u (r + (n + 1))‖ := by
-      rw [norm_smul, Real.norm_eq_abs, abs_of_pos (pow_pos hc _)]
+    have hpowle : |c| ^ n ≤ R ^ n := pow_le_pow_left₀ (abs_nonneg c) hcR n
+    have hnorm : ‖c ^ (n + 1) • u (r + (n + 1))‖ = |c| ^ (n + 1) * ‖u (r + (n + 1))‖ := by
+      rw [norm_smul, Real.norm_eq_abs, abs_pow]
     rw [hnorm, show r + (n + 1) = r + 1 + n by omega, pow_succ]
     have hnn : (0 : ℝ) ≤ ‖u (r + 1 + n)‖ := norm_nonneg _
-    calc c ^ n * c * ‖u (r + 1 + n)‖ ≤ R ^ n * c * ‖u (r + 1 + n)‖ := by
-          have := mul_le_mul_of_nonneg_right hpowle hc.le
+    calc |c| ^ n * |c| * ‖u (r + 1 + n)‖ ≤ R ^ n * |c| * ‖u (r + 1 + n)‖ := by
+          have := mul_le_mul_of_nonneg_right hpowle (abs_nonneg c)
           exact mul_le_mul_of_nonneg_right this hnn
-      _ = c * (R ^ n * ‖u (r + 1 + n)‖) := by ring
+      _ = |c| * (R ^ n * ‖u (r + 1 + n)‖) := by ring
   have hshiftsum : Summable fun n : ℕ => ‖u (r + 1 + n)‖ * R ^ (r + 1 + n) := by
     have h := (summable_nat_add_iff (f := fun k : ℕ => ‖u k‖ * R ^ k) (r + 1)).mpr hsum
     refine h.congr fun n => ?_
@@ -80,25 +80,24 @@ theorem norm_sub_leading_le {u : ℕ → E} {R : ℝ} (hR : 0 < R)
       (fun a b hab => by dsimp only at hab; omega)
       (fun k _ => mul_nonneg (norm_nonneg _) (pow_nonneg hR.le _)) (fun n => le_of_eq rfl) hsum
   have hnormsum : Summable fun n : ℕ => ‖c ^ (n + 1) • u (r + (n + 1))‖ :=
-    Summable.of_nonneg_of_le (fun n => norm_nonneg _) hmaj (htail.mul_left c)
+    Summable.of_nonneg_of_le (fun n => norm_nonneg _) hmaj (htail.mul_left |c|)
   have hle : ‖G - u r‖ ≤ ∑' n : ℕ, ‖c ^ (n + 1) • u (r + (n + 1))‖ := by
     rw [← hshift.tsum_eq]
     exact norm_tsum_le_tsum_norm hnormsum
   refine hle.trans ?_
   calc ∑' n : ℕ, ‖c ^ (n + 1) • u (r + (n + 1))‖
-      ≤ ∑' n : ℕ, c * (R ^ n * ‖u (r + 1 + n)‖) :=
-        hnormsum.tsum_le_tsum hmaj (htail.mul_left c)
-    _ = c * ∑' n : ℕ, R ^ n * ‖u (r + 1 + n)‖ := tsum_mul_left
-    _ ≤ c * seriesTailBound u R r := mul_le_mul_of_nonneg_left htailsum hc.le
+      ≤ ∑' n : ℕ, |c| * (R ^ n * ‖u (r + 1 + n)‖) :=
+        hnormsum.tsum_le_tsum hmaj (htail.mul_left |c|)
+    _ = |c| * ∑' n : ℕ, R ^ n * ‖u (r + 1 + n)‖ := tsum_mul_left
+    _ ≤ |c| * seriesTailBound u R r := mul_le_mul_of_nonneg_left htailsum (abs_nonneg c)
 
 set_option maxHeartbeats 1000000 in
-/-- **The exact leading order of a vector power series.**  The squared norm of the sum divided by
-the `2r`-th power of the parameter converges to the squared norm of the first nonzero
-coefficient. -/
-theorem tendsto_normSq_div_pow_of_hasSum {u : ℕ → E} {R : ℝ} (hR : 0 < R)
+/-- **The rescaled sum converges to the leading coefficient.**  Dividing a vector power series by
+the power of its first nonzero index leaves that coefficient in the limit. -/
+theorem tendsto_smul_inv_pow_of_hasSum {u : ℕ → E} {R : ℝ} (hR : 0 < R)
     (hsum : Summable fun k => ‖u k‖ * R ^ k) {r : ℕ} (hzero : ∀ k, k < r → u k = 0)
     {g : ℝ → E} (hg : ∀ c : ℝ, 0 < c → c ≤ R → HasSum (fun k => c ^ k • u k) (g c)) :
-    Tendsto (fun c : ℝ => ‖g c‖ ^ 2 / c ^ (2 * r)) (𝓝[>] (0 : ℝ)) (𝓝 (‖u r‖ ^ 2)) := by
+    Tendsto (fun c : ℝ => (c ^ r)⁻¹ • g c) (𝓝[>] (0 : ℝ)) (𝓝 (u r)) := by
   have hshift : ∀ c : ℝ, 0 < c → c ≤ R →
       HasSum (fun k => c ^ k • u (r + k)) ((c ^ r)⁻¹ • g c) := by
     intro c hc hcR
@@ -117,22 +116,77 @@ theorem tendsto_normSq_div_pow_of_hasSum {u : ℕ → E} {R : ℝ} (hR : 0 < R)
         field_simp
       rw [smul_smul, hcoef, add_comm n r]
     rwa [hfun] at hscaled
-  have hlim : Tendsto (fun c : ℝ => (c ^ r)⁻¹ • g c) (𝓝[>] (0 : ℝ)) (𝓝 (u r)) := by
-    rw [tendsto_iff_norm_sub_tendsto_zero]
-    have hRmem : ∀ᶠ c : ℝ in 𝓝[>] (0 : ℝ), c ≤ R :=
-      eventually_nhdsWithin_of_eventually_nhds (eventually_le_nhds hR)
-    have hbound : ∀ᶠ c : ℝ in 𝓝[>] (0 : ℝ),
-        ‖(c ^ r)⁻¹ • g c - u r‖ ≤ c * seriesTailBound u R r := by
-      filter_upwards [self_mem_nhdsWithin, hRmem] with c hc hcR
-      exact norm_sub_leading_le hR hsum r (Set.mem_Ioi.mp hc) hcR
-        (hshift c (Set.mem_Ioi.mp hc) hcR)
-    have hzeroLim : Tendsto (fun c : ℝ => c * seriesTailBound u R r)
-        (𝓝[>] (0 : ℝ)) (𝓝 0) := by
-      have h0 : Tendsto (fun c : ℝ => c * seriesTailBound u R r) (𝓝 (0 : ℝ))
-          (𝓝 (0 * seriesTailBound u R r)) := tendsto_id.mul tendsto_const_nhds
-      rw [zero_mul] at h0
-      exact h0.mono_left nhdsWithin_le_nhds
-    exact squeeze_zero' (Filter.Eventually.of_forall fun c => norm_nonneg _) hbound hzeroLim
+  rw [tendsto_iff_norm_sub_tendsto_zero]
+  have hRmem : ∀ᶠ c : ℝ in 𝓝[>] (0 : ℝ), c ≤ R :=
+    eventually_nhdsWithin_of_eventually_nhds (eventually_le_nhds hR)
+  have hbound : ∀ᶠ c : ℝ in 𝓝[>] (0 : ℝ),
+      ‖(c ^ r)⁻¹ • g c - u r‖ ≤ |c| * seriesTailBound u R r := by
+    filter_upwards [self_mem_nhdsWithin, hRmem] with c hc hcR
+    exact norm_sub_leading_le hR hsum r
+      (by rw [abs_of_pos (Set.mem_Ioi.mp hc)]; exact hcR)
+      (hshift c (Set.mem_Ioi.mp hc) hcR)
+  have hzeroLim : Tendsto (fun c : ℝ => |c| * seriesTailBound u R r)
+      (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+    have h0 : Tendsto (fun c : ℝ => |c| * seriesTailBound u R r) (𝓝 (0 : ℝ))
+        (𝓝 (0 * seriesTailBound u R r)) := by
+      simpa using (continuous_abs.tendsto (0 : ℝ)).mul tendsto_const_nhds
+    rw [zero_mul] at h0
+    exact h0.mono_left nhdsWithin_le_nhds
+  exact squeeze_zero' (Filter.Eventually.of_forall fun c => norm_nonneg _) hbound hzeroLim
+
+set_option maxHeartbeats 1000000 in
+/-- **The two-sided rescaled limit.**  The same statement on a punctured neighbourhood of the
+origin, for a series whose sum is available at both signs of the parameter. -/
+theorem tendsto_smul_inv_pow_of_hasSum_punctured {u : ℕ → E} {R : ℝ} (hR : 0 < R)
+    (hsum : Summable fun k => ‖u k‖ * R ^ k) {r : ℕ} (hzero : ∀ k, k < r → u k = 0)
+    {g : ℝ → E} (hg : ∀ c : ℝ, c ≠ 0 → |c| ≤ R → HasSum (fun k => c ^ k • u k) (g c)) :
+    Tendsto (fun c : ℝ => (c ^ r)⁻¹ • g c) (𝓝[≠] (0 : ℝ)) (𝓝 (u r)) := by
+  have hshift : ∀ c : ℝ, c ≠ 0 → |c| ≤ R →
+      HasSum (fun k => c ^ k • u (r + k)) ((c ^ r)⁻¹ • g c) := by
+    intro c hc hcR
+    have hzeros : ∑ i ∈ Finset.range r, c ^ i • u i = 0 :=
+      Finset.sum_eq_zero fun i hi => by rw [hzero i (Finset.mem_range.mp hi), smul_zero]
+    have hadd : HasSum (fun n : ℕ => c ^ (n + r) • u (n + r)) (g c) := by
+      refine (hasSum_nat_add_iff (f := fun k : ℕ => c ^ k • u k) r).mpr ?_
+      simpa [hzeros] using hg c hc hcR
+    have hscaled : HasSum (fun n : ℕ => (c ^ r)⁻¹ • (c ^ (n + r) • u (n + r)))
+        ((c ^ r)⁻¹ • g c) := HasSum.const_smul ((c ^ r)⁻¹) hadd
+    have hfun : (fun n : ℕ => (c ^ r)⁻¹ • (c ^ (n + r) • u (n + r)))
+        = fun k : ℕ => c ^ k • u (r + k) := by
+      funext n
+      have hcoef : (c ^ r)⁻¹ * c ^ (n + r) = c ^ n := by
+        rw [pow_add]
+        field_simp
+      rw [smul_smul, hcoef, add_comm n r]
+    rwa [hfun] at hscaled
+  rw [tendsto_iff_norm_sub_tendsto_zero]
+  have hRmem : ∀ᶠ c : ℝ in 𝓝[≠] (0 : ℝ), |c| ≤ R := by
+    refine eventually_nhdsWithin_of_eventually_nhds ?_
+    have habs : Tendsto (fun c : ℝ => |c|) (𝓝 (0 : ℝ)) (𝓝 0) := by
+      simpa using continuous_abs.tendsto (0 : ℝ)
+    exact habs.eventually (eventually_le_nhds hR)
+  have hbound : ∀ᶠ c : ℝ in 𝓝[≠] (0 : ℝ),
+      ‖(c ^ r)⁻¹ • g c - u r‖ ≤ |c| * seriesTailBound u R r := by
+    filter_upwards [self_mem_nhdsWithin, hRmem] with c hc hcR
+    exact norm_sub_leading_le hR hsum r hcR (hshift c hc hcR)
+  have hzeroLim : Tendsto (fun c : ℝ => |c| * seriesTailBound u R r)
+      (𝓝[≠] (0 : ℝ)) (𝓝 0) := by
+    have h0 : Tendsto (fun c : ℝ => |c| * seriesTailBound u R r) (𝓝 (0 : ℝ))
+        (𝓝 (0 * seriesTailBound u R r)) := by
+      simpa using (continuous_abs.tendsto (0 : ℝ)).mul tendsto_const_nhds
+    rw [zero_mul] at h0
+    exact h0.mono_left nhdsWithin_le_nhds
+  exact squeeze_zero' (Filter.Eventually.of_forall fun c => norm_nonneg _) hbound hzeroLim
+
+set_option maxHeartbeats 1000000 in
+/-- **The exact leading order of a vector power series.**  The squared norm of the sum divided by
+the `2r`-th power of the parameter converges to the squared norm of the first nonzero
+coefficient. -/
+theorem tendsto_normSq_div_pow_of_hasSum {u : ℕ → E} {R : ℝ} (hR : 0 < R)
+    (hsum : Summable fun k => ‖u k‖ * R ^ k) {r : ℕ} (hzero : ∀ k, k < r → u k = 0)
+    {g : ℝ → E} (hg : ∀ c : ℝ, 0 < c → c ≤ R → HasSum (fun k => c ^ k • u k) (g c)) :
+    Tendsto (fun c : ℝ => ‖g c‖ ^ 2 / c ^ (2 * r)) (𝓝[>] (0 : ℝ)) (𝓝 (‖u r‖ ^ 2)) := by
+  have hlim := tendsto_smul_inv_pow_of_hasSum hR hsum hzero hg
   have hnorm : Tendsto (fun c : ℝ => ‖(c ^ r)⁻¹ • g c‖ ^ 2)
       (𝓝[>] (0 : ℝ)) (𝓝 (‖u r‖ ^ 2)) := (hlim.norm).pow 2
   refine hnorm.congr' ?_

@@ -554,6 +554,50 @@ graph, and for at least three labels it stays connected after deleting one edge.
 The proof exhibits the explicit two-step path `x → y → beta → x → y`, so no graph-connectivity API
 is needed and the bound `3 <= D_old` is exactly the card's.
 
+`formal/GaloisForLFunctions/HTGeometry/LocalExtensionQuadraticRateRigidity.lean` assembles the
+residue step into the exact statement the induction needs.
+
+| Card item | Declaration |
+|---|---|
+| the pole index of the extension: the zero gap plus every ordered off-diagonal old pair | `OrderedGapIndex`, `extensionPolePosition`, `extensionPoleResidue` |
+| distinct nonzero ordered gaps make the pole positions injective | `extensionPolePosition_injective` |
+| the double sum of `(10)` written over its poles | `extensionPole_sum_eq` |
+| the cleared numerator of the packet vanishes | `extensionPacket_numerator_eq_zero` |
+| **the residue at one ordered gap `(12)`**: either the affine multiplier vanishes there or the two layer coefficients agree through the probe weight | `extensionPacket_residue`, `extensionPacket_eq_of_probe` |
+| **the extension collapse**: an affine multiple of the `(10)` packet equal to a constant forces every layer coefficient to coincide | `extensionPacket_crossPair_constant` |
+| **the collapse for a probe *family***: the affine multiplier is probe-independent, so at most one ordered gap is exceptional and a family that sees every ordered pair collapses everything | `extensionKey_family_collapse` |
+
+`formal/GaloisForLFunctions/HTGeometry/BlockExtensionSecondOrderResponse.lean` computes the
+perturbation-theoretic input `(8)`--`(10)`.
+
+| Card item | Declaration |
+|---|---|
+| the uncoupled energies `(8)`, `E_alpha ± z/2` | `layerSplitEnergy`, `layerSplitEnergy_sub_cross`, `layerSplitEnergy_sub_cross'` |
+| `V_A = A ⊗ X` in the split eigenbasis: it acts only across layers, so its diagonal vanishes | `layerCrossPerturbation`, `layerCrossPerturbation_apply_same`, `_apply_cross`, `_diagonal` |
+| **`L_0` is affine in the new local field** | `layerSplitAction_affine` |
+| **the second-order response of one branch** is a simple-pole sum at the ordered old gaps | `layerCrossSecondOrder_response` |
+| **`(10)`**: the weighted response is exactly the crown pole packet | `layerCrossSecondOrder_weighted_sum` |
+
+`formal/GaloisForLFunctions/HTGeometry/QuadraticRateSecondVariation.lean` proves `(11)`: with a
+vanishing first variation, a quadratic-rate identity along a line reduces to the pole-free product
+identity `F(0)·F''(0) = kappa Q_V` (`quadraticRate_secondVariation`).
+
+`formal/GaloisForLFunctions/HTGeometry/LocalExtensionQuadraticRateCollapse.lean` closes the
+inductive half of Lemma A2 by composing all of the above with the corpus's exact eigenbranch laws
+`affineEigenbranch_firstDerivative_eq_diagonal` and `affineEigenbranch_secondDerivative_eq_general`.
+
+| Card item | Declaration |
+|---|---|
+| finite combinations of analytic germs are twice differentiable at the base point | `hasDerivAt_analyticCombination`, `hasDerivAt_analyticCombination_deriv` |
+| **`(11)` for an actual extension**: the affine-times-pole-packet identity at every admissible local field | `localExtension_quadraticRate_key` |
+| **Lemma A2, inductive step**: a quadratic-rate identity for a one-qubit extension makes every coefficient of the extended spectral action coincide | `localExtension_quadraticRate_collapse` |
+| **Lemma A2, conclusion**: a zero-sum such packet vanishes | `localExtension_quadraticRate_eq_zero` |
+
+The chain is: the first variation vanishes because `V_A` is off-diagonal in the split eigenbasis;
+the second variation then gives `L_0(z)·d²_x L(z,0) = kappa Q(V_A)`; the response is the pole
+packet at the ordered old gaps; residues vanish; a nonzero affine `L_0` has one root so at most one
+ordered pair escapes; the crown graph survives one deletion.  Every step is unconditional.
+
 ### What remains for Theorem A
 
 1. homogeneity of the eigenvalue branches, turning flatness of `phi_k` on a sphere patch into the
@@ -562,14 +606,9 @@ is needed and the bound `3 <= D_old` is exactly the card's.
    (`HTGeometry.AlgebraicIndependenceFromDifferentials.mvPolynomial_eq_zero_of_eqOn_zero_isOpen`),
    and a finite product of analytic functions on a connected chart vanishes only if one factor
    does (`HTGeometry.DirectionalMeromorphicField.analyticOnNhd_domain'`);
-3. the *analytic* half of Lemma A2's induction, `(8)`--`(11)`: attach a qubit, write the
-   block-diagonal base and the edge perturbation `V_A = A ⊗ X`, and evaluate the corpus's exact
-   second-order eigenbranch law (`HTGeometry.AffineEigenbranchGeneralSecondOrderLaw`) in that
-   basis to produce the simple-pole packet.  The two steps after it -- the residue extraction and
-   the connectivity conclusion -- are now formal.
-4. Lemma A1's endpoint-complete witness, on top of the corpus's
-   `HTGeometry.CompleteObserverSpectralSeed`, `HTGeometry.ChartProbeFamilyReduction` and the
-   already-formalized `exists_uniformQubitChainMaximalRank_dense_residual_fullMeasure` of the
+3. Lemma A1's endpoint-complete witness -- the only remaining *input* to Lemma A2 -- on top of the
+   corpus's `HTGeometry.CompleteObserverSpectralSeed`, `HTGeometry.ChartProbeFamilyReduction` and
+   the already-formalized `exists_uniformQubitChainMaximalRank_dense_residual_fullMeasure` of the
    parent card, which supplies simple spectrum, `MaximallyProjectiveEnergy` and
    `maximallyProjectiveEnergy_orientedGap_injective` (distinctness of all nonzero ordered gaps --
-   exactly the pole-injectivity hypothesis of `affinePoleResidue_eq_zero`).
+   exactly the `hgap` hypothesis of `localExtension_quadraticRate_collapse`).

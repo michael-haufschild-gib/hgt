@@ -318,8 +318,9 @@ theorem sqrt_scale_bound {D sK L : ℝ} (hD : 0 ≤ D) (hsK : 0 ≤ sK) (hL : 1 
 
 /-- The high modes of the defect are multiplied by a ratio of size `(K n)^{1/2}` but carry mass
 `O(log n / n)`, so they contribute `O(log n / n^{1/2})`. -/
-theorem norm_sq_shiftedDiag_invSq_highMode_le (hm : 2 ≤ m) (k : Fin m) (p : Nat.Primes)
-    {P : ℝ} (hP : 1 < P) {K : ℝ} (hK : 0 < K)
+theorem norm_sq_shiftedDiag_symbol_highMode_le (hm : 2 ≤ m) (k : Fin m) (p : Nat.Primes)
+    {c : AddCircle (1 : ℝ) → ℂ} (hc : Measurable c) (hC : ∀ x, ‖c x‖ ≤ 1)
+    {K : ℝ} (hK : 0 < K)
     (hKb : ∀ a b : ℤ, a ≠ 0 → b ≠ 0 →
       ‖gaussSampleValue k p a‖ ^ (2 * m) * (a.natAbs : ℝ)
         ≤ K * (‖gaussSampleValue k p b‖ ^ (2 * m) * (b.natAbs : ℝ)))
@@ -327,7 +328,7 @@ theorem norm_sq_shiftedDiag_invSq_highMode_le (hm : 2 ≤ m) (k : Fin m) (p : Na
     (hW : ∀ j : ℤ, ‖fourierCoeff ((W : AddCircle (1 : ℝ) → ℂ)) j‖
       ≤ (A / (1 + (j.natAbs : ℝ))) * ‖gaussSampleRatioDefect k p j (I : ℤ)‖) :
     ‖gaussShiftedBlockDiag (le_trans one_le_two hm) k p (I : ℤ)
-        (gaussPrimeScaleInvSqBlock hP
+        (MeasureTheory.lpBoundedMulCLM hc zero_le_one hC
           (W - fourierTruncate (Finset.Icc (-((I / 4 : ℕ) : ℤ)) ((I / 4 : ℕ) : ℤ)) W))‖ ^ (2 : ℝ)
       ≤ (2 * (1 + Real.sqrt K) * (64 * A ^ 2 * (1 + K) + 16 * K * A ^ 2)) *
           ((1 + Real.log (I : ℝ)) / Real.sqrt (I : ℝ)) := by
@@ -336,7 +337,7 @@ theorem norm_sq_shiftedDiag_invSq_highMode_le (hm : 2 ≤ m) (k : Fin m) (p : Na
   set W2 : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ))) :=
     W - fourierTruncate (Finset.Icc (-(J : ℤ)) (J : ℤ)) W with hW2def
   set V2 : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ))) :=
-    gaussPrimeScaleInvSqBlock hP W2 with hV2def
+    MeasureTheory.lpBoundedMulCLM hc zero_le_one hC W2 with hV2def
   have hIR : (1 : ℝ) ≤ (I : ℝ) := by exact_mod_cast hI
   have hIpos : (0 : ℝ) < (I : ℝ) := by linarith
   have hLlog : (0 : ℝ) ≤ Real.log (I : ℝ) := Real.log_nonneg hIR
@@ -344,9 +345,9 @@ theorem norm_sq_shiftedDiag_invSq_highMode_le (hm : 2 ≤ m) (k : Fin m) (p : Na
   have hA2 : (0 : ℝ) ≤ A ^ 2 := sq_nonneg A
   have h1 := norm_sq_gaussShiftedBlockDiag_le_global hm k p hK hKb I V2
   have hnormV2 : ‖V2‖ ≤ ‖W2‖ := by
-    have hop := (gaussPrimeScaleInvSqBlock hP).le_opNorm W2
-    have hb := norm_gaussPrimeScaleInvSqBlock_le hP
-    calc ‖V2‖ ≤ ‖gaussPrimeScaleInvSqBlock hP‖ * ‖W2‖ := hop
+    have hop := (MeasureTheory.lpBoundedMulCLM hc zero_le_one hC).le_opNorm W2
+    have hb := MeasureTheory.norm_lpBoundedMulCLM_le (p := 2) (μ := AddCircle.haarAddCircle (T := (1 : ℝ))) hc zero_le_one hC
+    calc ‖V2‖ ≤ ‖MeasureTheory.lpBoundedMulCLM hc zero_le_one hC‖ * ‖W2‖ := hop
       _ ≤ 1 * ‖W2‖ := mul_le_mul_of_nonneg_right hb (norm_nonneg _)
       _ = ‖W2‖ := one_mul _
   have h2 : ‖V2‖ ^ (2 : ℝ) ≤ ‖W2‖ ^ (2 : ℝ) :=
@@ -409,8 +410,11 @@ theorem norm_sq_shiftedDiag_invSq_highMode_le (hm : 2 ≤ m) (k : Fin m) (p : Na
 
 /-- The low modes are separated from the spike, so the kernel makes their transform small there,
 and the spike carries only linear ratio mass. -/
-theorem norm_sq_shiftedDiag_invSq_lowMode_le (hm : 2 ≤ m) (k : Fin m) (p : Nat.Primes)
-    {P : ℝ} (hP : 1 < P) {K : ℝ} (hK : 0 < K)
+theorem norm_sq_shiftedDiag_symbol_lowMode_le (hm : 2 ≤ m) (k : Fin m) (p : Nat.Primes)
+    {c : AddCircle (1 : ℝ) → ℂ} (hc : Measurable c) (hC : ∀ x, ‖c x‖ ≤ 1)
+    (hreal : ∀ x, starRingEnd ℂ (c x) = c x) {Ak : ℝ}
+    (hAk : ∀ x : ℤ, ‖fourierCoeff c x‖ ≤ Ak / (1 + (x.natAbs : ℝ)))
+    {K : ℝ} (hK : 0 < K)
     (hKb : ∀ a b : ℤ, a ≠ 0 → b ≠ 0 →
       ‖gaussSampleValue k p a‖ ^ (2 * m) * (a.natAbs : ℝ)
         ≤ K * (‖gaussSampleValue k p b‖ ^ (2 * m) * (b.natAbs : ℝ)))
@@ -419,26 +423,32 @@ theorem norm_sq_shiftedDiag_invSq_lowMode_le (hm : 2 ≤ m) (k : Fin m) (p : Nat
     (hW : ∀ j : ℤ, ‖fourierCoeff ((W : AddCircle (1 : ℝ) → ℂ)) j‖
       ≤ (A / (1 + (j.natAbs : ℝ))) * ‖gaussSampleRatioDefect k p j (I : ℤ)‖) :
     ‖gaussShiftedBlockDiag (le_trans one_le_two hm) k p (I : ℤ)
-        (gaussPrimeScaleInvSqBlock hP
+        (MeasureTheory.lpBoundedMulCLM hc zero_le_one hC
           (fourierTruncate (Finset.Icc (-((I / 4 : ℕ) : ℤ)) ((I / 4 : ℕ) : ℤ)) W))‖ ^ (2 : ℝ)
       ≤ (1 + 2 * K) * ‖W‖ ^ (2 : ℝ)
-        + ((48 * A * (5 + 3 * K)) ^ 2 * (2 + 4 * Real.sqrt K)) *
+        + ((24 * Ak * A * (5 + 3 * K)) ^ 2 * (2 + 4 * Real.sqrt K)) *
             ((1 + Real.log (I : ℝ)) / Real.sqrt (I : ℝ)) ^ 2 := by
   have hm1 : 1 ≤ m := le_trans one_le_two hm
   set J : ℕ := I / 4 with hJdef
   set W1 : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ))) :=
     fourierTruncate (Finset.Icc (-(J : ℤ)) (J : ℤ)) W with hW1def
   set V1 : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ))) :=
-    gaussPrimeScaleInvSqBlock hP W1 with hV1def
+    MeasureTheory.lpBoundedMulCLM hc zero_le_one hC W1 with hV1def
   have hIR : (1 : ℝ) ≤ (I : ℝ) := by exact_mod_cast hI
   have hIpos : (0 : ℝ) < (I : ℝ) := by linarith
   have hLlog : (0 : ℝ) ≤ Real.log (I : ℝ) := Real.log_nonneg hIR
   have hL : (1 : ℝ) ≤ 1 + Real.log (I : ℝ) := by linarith
   have h4J : 4 * J ≤ I := by rw [hJdef]; omega
-  set ε : ℝ := 48 * A * (5 + 3 * K) * ((1 + Real.log (I : ℝ)) / (I : ℝ)) with hεdef
+  set ε : ℝ := 24 * Ak * A * (5 + 3 * K) * ((1 + Real.log (I : ℝ)) / (I : ℝ)) with hεdef
+  have hAk0 : (0 : ℝ) ≤ Ak := by
+    have h0 := hAk 0
+    simp only [Int.natAbs_zero, Nat.cast_zero, add_zero, div_one] at h0
+    exact le_trans (norm_nonneg _) h0
   have hεnn : (0 : ℝ) ≤ ε := by
     rw [hεdef]
-    positivity
+    have hlog : (0 : ℝ) ≤ (1 + Real.log (I : ℝ)) / (I : ℝ) := by positivity
+    have : (0 : ℝ) ≤ 24 * Ak * A * (5 + 3 * K) := by positivity
+    exact mul_nonneg this hlog
   have hspikebound : ∀ l : ℤ, 2 * ((I : ℤ) + l).natAbs < I →
       ‖fourierCoeff ((V1 : AddCircle (1 : ℝ) → ℂ)) l‖ ≤ ε := by
     intro l hl
@@ -449,19 +459,19 @@ theorem norm_sq_shiftedDiag_invSq_lowMode_le (hm : 2 ≤ m) (k : Fin m) (p : Nat
       have hc : ((I : ℕ) : ℝ) ≤ ((4 * (1 + (j - l).natAbs) : ℕ) : ℝ) := by exact_mod_cast hnat
       push_cast at hc
       linarith
-    have hker := norm_fourierCoeff_invSq_truncate_le hP (Finset.Icc (-(J : ℤ)) (J : ℤ)) W l
+    have hker := norm_fourierCoeff_symbol_truncate_le hc zero_le_one hC hreal hAk (Finset.Icc (-(J : ℤ)) (J : ℤ)) W l
       (D := (I : ℝ) / 4) (by positivity) hsep
     have hl1 := sum_norm_fourierCoeff_lowBand_le hm1 k p hK hKb hA h4J hW
     have hlog := log_shift_le I hI
     have hAK : (0 : ℝ) ≤ A * (5 + 3 * K) := by positivity
-    have hcoef : (0 : ℝ) ≤ 2 / ((I : ℝ) / 4) := by positivity
+    have hcoef : (0 : ℝ) ≤ Ak / ((I : ℝ) / 4) := by positivity
     calc ‖fourierCoeff ((V1 : AddCircle (1 : ℝ) → ℂ)) l‖
-        ≤ (2 / ((I : ℝ) / 4)) *
+        ≤ (Ak / ((I : ℝ) / 4)) *
             ∑ j ∈ Finset.Icc (-(J : ℤ)) (J : ℤ),
               ‖fourierCoeff ((W : AddCircle (1 : ℝ) → ℂ)) j‖ := hker
-      _ ≤ (2 / ((I : ℝ) / 4)) * (A * (5 + 3 * K) * (2 * (1 + Real.log ((J : ℝ) + 2)))) :=
+      _ ≤ (Ak / ((I : ℝ) / 4)) * (A * (5 + 3 * K) * (2 * (1 + Real.log ((J : ℝ) + 2)))) :=
           mul_le_mul_of_nonneg_left hl1 hcoef
-      _ ≤ (2 / ((I : ℝ) / 4)) * (A * (5 + 3 * K) * (2 * (3 * (1 + Real.log (I : ℝ))))) := by
+      _ ≤ (Ak / ((I : ℝ) / 4)) * (A * (5 + 3 * K) * (2 * (3 * (1 + Real.log (I : ℝ))))) := by
           refine mul_le_mul_of_nonneg_left ?_ hcoef
           refine mul_le_mul_of_nonneg_left ?_ hAK
           linarith [hlog]
@@ -471,10 +481,10 @@ theorem norm_sq_shiftedDiag_invSq_lowMode_le (hm : 2 ≤ m) (k : Fin m) (p : Nat
           ring
   have hmain := norm_sq_gaussShiftedBlockDiag_spike_le hm k p hK hKb I V1 hεnn hspikebound
   have hnormV1 : ‖V1‖ ≤ ‖W‖ := by
-    have hop := (gaussPrimeScaleInvSqBlock hP).le_opNorm W1
-    have hb := norm_gaussPrimeScaleInvSqBlock_le hP
+    have hop := (MeasureTheory.lpBoundedMulCLM hc zero_le_one hC).le_opNorm W1
+    have hb := MeasureTheory.norm_lpBoundedMulCLM_le (p := 2) (μ := AddCircle.haarAddCircle (T := (1 : ℝ))) hc zero_le_one hC
     have h1 : ‖V1‖ ≤ ‖W1‖ := by
-      calc ‖V1‖ ≤ ‖gaussPrimeScaleInvSqBlock hP‖ * ‖W1‖ := hop
+      calc ‖V1‖ ≤ ‖MeasureTheory.lpBoundedMulCLM hc zero_le_one hC‖ * ‖W1‖ := hop
         _ ≤ 1 * ‖W1‖ := mul_le_mul_of_nonneg_right hb (norm_nonneg _)
         _ = ‖W1‖ := one_mul _
     exact h1.trans (norm_fourierTruncate_le _ W)
@@ -488,7 +498,7 @@ theorem norm_sq_shiftedDiag_invSq_lowMode_le (hm : 2 ≤ m) (k : Fin m) (p : Nat
       = (1 + Real.log (I : ℝ)) ^ 2 / (I : ℝ) := by
     rw [div_pow, Real.sq_sqrt (le_of_lt hIpos)]
   have hlast : ε ^ 2 * ((2 + 4 * Real.sqrt K) * (I : ℝ))
-      = ((48 * A * (5 + 3 * K)) ^ 2 * (2 + 4 * Real.sqrt K)) *
+      = ((24 * Ak * A * (5 + 3 * K)) ^ 2 * (2 + 4 * Real.sqrt K)) *
         ((1 + Real.log (I : ℝ)) / Real.sqrt (I : ℝ)) ^ 2 := by
     rw [hεdef, hR]
     field_simp
@@ -503,14 +513,16 @@ theorem norm_sq_shiftedDiag_invSq_lowMode_le (hm : 2 ≤ m) (k : Fin m) (p : Nat
 /-- **The relative one-step error on the spike vanishes.**  For `m ≥ 2` the normalized shifted
 diagonal applied to the reciprocal-square transform of the lattice defect of a harmonically
 decaying amplitude tends to zero in `L²`. -/
-theorem tendsto_norm_gaussShiftedBlockDiag_invSq_defect_zero (hm : 2 ≤ m) (k : Fin m)
-    (p : Nat.Primes) {P : ℝ} (hP : 1 < P)
+theorem tendsto_norm_gaussShiftedBlockDiag_symbol_defect_zero (hm : 2 ≤ m) (k : Fin m)
+    (p : Nat.Primes) {c : AddCircle (1 : ℝ) → ℂ} (hc : Measurable c) (hC : ∀ x, ‖c x‖ ≤ 1)
+    (hreal : ∀ x, starRingEnd ℂ (c x) = c x) {Ak : ℝ}
+    (hAk : ∀ x : ℤ, ‖fourierCoeff c x‖ ≤ Ak / (1 + (x.natAbs : ℝ)))
     (g : ℕ → Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) {A : ℝ} (hA : 0 ≤ A)
     (hg : ∀ (I : ℕ) (j : ℤ),
       ‖fourierCoeff ((g I : AddCircle (1 : ℝ) → ℂ)) j‖ ≤ A / (1 + (j.natAbs : ℝ))) :
     Tendsto (fun I : ℕ =>
       ‖gaussShiftedBlockDiag (le_trans one_le_two hm) k p (I : ℤ)
-        (gaussPrimeScaleInvSqBlock hP
+        (MeasureTheory.lpBoundedMulCLM hc zero_le_one hC
           (gaussShiftedBlockOf (le_trans one_le_two hm) k p (I : ℤ) (g I) -
             gaussRotationBlock ((gaussSamplePhase m p (I : ℤ) : ℝ) : AddCircle (1 : ℝ)) (g I)))‖)
       atTop (nhds 0) := by
@@ -537,7 +549,7 @@ theorem tendsto_norm_gaussShiftedBlockDiag_invSq_defect_zero (hm : 2 ≤ m) (k :
     refine h.congr fun I => ?_
     rw [← Real.rpow_natCast (‖W I‖) 2]
     norm_num
-  set C₁ : ℝ := (48 * A * (5 + 3 * K)) ^ 2 * (2 + 4 * Real.sqrt K) with hC₁
+  set C₁ : ℝ := (24 * Ak * A * (5 + 3 * K)) ^ 2 * (2 + 4 * Real.sqrt K) with hC₁
   set C₂ : ℝ := 2 * (1 + Real.sqrt K) * (64 * A ^ 2 * (1 + K) + 16 * K * A ^ 2) with hC₂
   set low : ℕ → ℝ := fun I => (1 + 2 * K) * ‖W I‖ ^ (2 : ℝ)
     + C₁ * ((1 + Real.log (I : ℝ)) / Real.sqrt (I : ℝ)) ^ 2 with hlow
@@ -567,20 +579,20 @@ theorem tendsto_norm_gaussShiftedBlockDiag_invSq_defect_zero (hm : 2 ≤ m) (k :
   set S : Finset ℤ := Finset.Icc (-((I / 4 : ℕ) : ℤ)) ((I / 4 : ℕ) : ℤ) with hS
   have hdecomp : W I = fourierTruncate S (W I) + (W I - fourierTruncate S (W I)) := by abel
   have hsplit :
-      ‖gaussShiftedBlockDiag hm1 k p (I : ℤ) (gaussPrimeScaleInvSqBlock hP (W I))‖
+      ‖gaussShiftedBlockDiag hm1 k p (I : ℤ) (MeasureTheory.lpBoundedMulCLM hc zero_le_one hC (W I))‖
         ≤ ‖gaussShiftedBlockDiag hm1 k p (I : ℤ)
-              (gaussPrimeScaleInvSqBlock hP (fourierTruncate S (W I)))‖
+              (MeasureTheory.lpBoundedMulCLM hc zero_le_one hC (fourierTruncate S (W I)))‖
           + ‖gaussShiftedBlockDiag hm1 k p (I : ℤ)
-              (gaussPrimeScaleInvSqBlock hP (W I - fourierTruncate S (W I)))‖ := by
+              (MeasureTheory.lpBoundedMulCLM hc zero_le_one hC (W I - fourierTruncate S (W I)))‖ := by
     conv_lhs => rw [hdecomp]
     rw [map_add, gaussShiftedBlockDiag_add hm1]
     exact norm_add_le _ _
-  have hlowbd := norm_sq_shiftedDiag_invSq_lowMode_le hm k p hP hK hKb hA hI (hWbound I)
-  have hhighbd := norm_sq_shiftedDiag_invSq_highMode_le hm k p hP hK hKb hI (hWbound I)
+  have hlowbd := norm_sq_shiftedDiag_symbol_lowMode_le hm k p hc hC hreal hAk hK hKb hA hI (hWbound I)
+  have hhighbd := norm_sq_shiftedDiag_symbol_highMode_le hm k p hc hC hK hKb hI (hWbound I)
   have hlow' : ‖gaussShiftedBlockDiag hm1 k p (I : ℤ)
-      (gaussPrimeScaleInvSqBlock hP (fourierTruncate S (W I)))‖ ≤ Real.sqrt (low I) := by
+      (MeasureTheory.lpBoundedMulCLM hc zero_le_one hC (fourierTruncate S (W I)))‖ ≤ Real.sqrt (low I) := by
     have hnat : ‖gaussShiftedBlockDiag hm1 k p (I : ℤ)
-        (gaussPrimeScaleInvSqBlock hP (fourierTruncate S (W I)))‖ ^ (2 : ℕ) ≤ low I := by
+        (MeasureTheory.lpBoundedMulCLM hc zero_le_one hC (fourierTruncate S (W I)))‖ ^ (2 : ℕ) ≤ low I := by
       rw [← Real.rpow_natCast _ 2]
       have hcast : ((2 : ℕ) : ℝ) = (2 : ℝ) := by norm_num
       rw [hcast]
@@ -588,9 +600,9 @@ theorem tendsto_norm_gaussShiftedBlockDiag_invSq_defect_zero (hm : 2 ≤ m) (k :
     have h := Real.sqrt_le_sqrt hnat
     rwa [Real.sqrt_sq (norm_nonneg _)] at h
   have hhigh' : ‖gaussShiftedBlockDiag hm1 k p (I : ℤ)
-      (gaussPrimeScaleInvSqBlock hP (W I - fourierTruncate S (W I)))‖ ≤ Real.sqrt (high I) := by
+      (MeasureTheory.lpBoundedMulCLM hc zero_le_one hC (W I - fourierTruncate S (W I)))‖ ≤ Real.sqrt (high I) := by
     have hnat : ‖gaussShiftedBlockDiag hm1 k p (I : ℤ)
-        (gaussPrimeScaleInvSqBlock hP (W I - fourierTruncate S (W I)))‖ ^ (2 : ℕ) ≤ high I := by
+        (MeasureTheory.lpBoundedMulCLM hc zero_le_one hC (W I - fourierTruncate S (W I)))‖ ^ (2 : ℕ) ≤ high I := by
       rw [← Real.rpow_natCast _ 2]
       have hcast : ((2 : ℕ) : ℝ) = (2 : ℝ) := by norm_num
       rw [hcast]
@@ -598,6 +610,45 @@ theorem tendsto_norm_gaussShiftedBlockDiag_invSq_defect_zero (hm : 2 ≤ m) (k :
     have h := Real.sqrt_le_sqrt hnat
     rwa [Real.sqrt_sq (norm_nonneg _)] at h
   exact le_trans hsplit (add_le_add hlow' hhigh')
+
+/-- **The reciprocal-square specialization.**  For `m ≥ 2` the normalized shifted diagonal applied
+to the reciprocal-square transform of the lattice defect of a harmonically decaying amplitude tends
+to zero in `L²`. -/
+theorem tendsto_norm_gaussShiftedBlockDiag_invSq_defect_zero (hm : 2 ≤ m) (k : Fin m)
+    (p : Nat.Primes) {P : ℝ} (hP : 1 < P)
+    (g : ℕ → Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) {A : ℝ} (hA : 0 ≤ A)
+    (hg : ∀ (I : ℕ) (j : ℤ),
+      ‖fourierCoeff ((g I : AddCircle (1 : ℝ) → ℂ)) j‖ ≤ A / (1 + (j.natAbs : ℝ))) :
+    Tendsto (fun I : ℕ =>
+      ‖gaussShiftedBlockDiag (le_trans one_le_two hm) k p (I : ℤ)
+        (gaussPrimeScaleInvSqBlock hP
+          (gaussShiftedBlockOf (le_trans one_le_two hm) k p (I : ℤ) (g I) -
+            gaussRotationBlock ((gaussSamplePhase m p (I : ℤ) : ℝ) : AddCircle (1 : ℝ)) (g I)))‖)
+      atTop (nhds 0) :=
+  tendsto_norm_gaussShiftedBlockDiag_symbol_defect_zero hm k p
+    (measurable_gaussPrimeScaleInvSqCircle P) (norm_gaussPrimeScaleInvSqCircle_le hP)
+    (gaussPrimeScaleInvSqCircle_conj P)
+    (norm_fourierCoeff_gaussPrimeScaleInvSqCircle_le hP) g hA hg
+
+/-- **The piecewise-exponential specialization.**  Every real symbol of modulus at most one that is
+piecewise exponential — the algebra the prime-scale amplitudes generate — has harmonic Fourier
+decay, so the one-step spike error vanishes for it as well. -/
+theorem tendsto_norm_gaussShiftedBlockDiag_expPiecewise_defect_zero (hm : 2 ≤ m) (k : Fin m)
+    (p : Nat.Primes) {α : ℝ} {n : ℕ} {t : ℕ → ℝ} {cc : ℕ → ℂ} {c : AddCircle (1 : ℝ) → ℂ}
+    (hpw : IsExpPiecewise α n t cc c) (hc : Measurable c) (hC : ∀ x, ‖c x‖ ≤ 1)
+    (hreal : ∀ x, starRingEnd ℂ (c x) = c x) {M : ℝ} (hM0 : 0 ≤ M) (hM : ∀ i, ‖cc i‖ ≤ M)
+    (g : ℕ → Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) {A : ℝ} (hA : 0 ≤ A)
+    (hg : ∀ (I : ℕ) (j : ℤ),
+      ‖fourierCoeff ((g I : AddCircle (1 : ℝ) → ℂ)) j‖ ≤ A / (1 + (j.natAbs : ℝ))) :
+    Tendsto (fun I : ℕ =>
+      ‖gaussShiftedBlockDiag (le_trans one_le_two hm) k p (I : ℤ)
+        (MeasureTheory.lpBoundedMulCLM (p := 2)
+          (μ := AddCircle.haarAddCircle (T := (1 : ℝ))) hc zero_le_one hC
+          (gaussShiftedBlockOf (le_trans one_le_two hm) k p (I : ℤ) (g I) -
+            gaussRotationBlock ((gaussSamplePhase m p (I : ℤ) : ℝ) : AddCircle (1 : ℝ)) (g I)))‖)
+      atTop (nhds 0) :=
+  tendsto_norm_gaussShiftedBlockDiag_symbol_defect_zero hm k p hc hC hreal
+    (norm_fourierCoeff_of_isExpPiecewise hpw hM0 hM) g hA hg
 
 end
 

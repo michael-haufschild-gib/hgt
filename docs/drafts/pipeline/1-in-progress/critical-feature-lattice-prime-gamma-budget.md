@@ -72,7 +72,9 @@ least `3N/4` copies lie on the critical line.
 - [x] Lean theorem and targeted build
 - [x] axiom and module lint audit (standard `propext`/choice/quotient axioms only; global lint's
       remaining failure is unrelated `HTGeometry.SteinbergIndexAvoidance` umbrella reachability)
-- [ ] pre-divisor pole--Gamma--von-Mangoldt upper bound `correctedBudget ≤ (4/25) N`
+- [x] exact spectral classification of the corrected excess
+- [ ] construct a genuinely pre-divisor replacement for the zero-indexed critical-line subtraction
+- [ ] prove its pole--Gamma--von-Mangoldt upper bound at scale `(4/25) N`
 
 ## No-go closure
 
@@ -94,6 +96,42 @@ least `3N/4` copies lie on the critical line.
   Abel lattice budget using only pole, Gamma, and von Mangoldt data.
 - **Status:** active.
 
+## Hostile source audit of the corrected budget
+
+The notation `criticalFeaturePrimeGammaOffLineExcess` does not make the corrected quantity
+pre-divisor.  Its second term is `criticalLineCriticalFeatureEnergyTrace`, an explicit sum over the
+Xi divisor restricted by the predicate `Re rho = 1/2`.  The Abel approximants retain the same
+zero-indexed trace.  Therefore the requested statement
+
+```text
+correctedBudget <= (4/25) N
+```
+
+is not yet a pole--Gamma--von-Mangoldt theorem: with the current definition it is an off-line
+spectral-energy estimate whose proved receiver is the desired 75% zero-proportion statement.
+
+Lean now proves the exact two-sided classification
+
+```text
+(1/2) offLineEnergy(t)
+  <= criticalFeaturePrimeGammaOffLineExcess(t)
+  <= offLineEnergy(t).
+```
+
+Equivalently, `offLineEnergy <= 2*excess` is the existing sector bound and the new theorem
+`primeGammaOffLineExcess_le_offLineCriticalFeatureEnergyTrace` is its converse comparison.  It also
+proves:
+
+```text
+criticalFeaturePrimeGammaOffLineExcess(t)=0  <-> RH,
+correctedLatticeBudget(K)=0 <-> RH           (K nonempty).
+```
+
+This is the exact obstruction: a successful producer must build the discontinuous critical-line
+projector before divisor expansion, or replace it by a centered source covariance with a proved
+arithmetic ceiling.  Merely expanding the first term into four source cups and retaining the
+zero-indexed subtraction is circular.
+
 ## Log
 
 - 2026-08-16 — card created after improved declaration search found an unconditional nearest-integer
@@ -104,3 +142,7 @@ least `3N/4` copies lie on the critical line.
   `HedenmalmCriticalFeatureLatticePrimeGammaBudget.lean`.  Targeted Lean build passed.  mpmath
   confirmed the raw factor-324 obstruction and exposed the old Ward constant `C ≈ 4645.542`; the
   sharp corrected receiver eliminates `C` entirely.
+- 2026-08-16 — Hostile pre-divisor audit found that the correction itself is a zero-indexed
+  critical-line projector.  Formalized the reverse comparison `excess <= offLineEnergy`, the
+  fixed-channel zero iff RH theorem, and the nonempty lattice zero iff RH theorem.  Current
+  `(4/25)N` target remains the 75% arithmetic core, not a proved source consequence.

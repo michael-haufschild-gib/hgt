@@ -32,15 +32,23 @@ theorem spike_lowBand_separation {I J : ℕ} (hJ : 4 * J ≤ I) {l j : ℤ}
 
 /-- **The kernel bound on the spike.**  A harmonic convolution kernel applied to a vector supported
 in the low band has small coefficients at every spike frequency. -/
-theorem norm_fourierCoeff_invSq_truncate_le {P : ℝ} (hP : 1 < P) (S : Finset ℤ)
-    (w : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) (l : ℤ) {D : ℝ} (hD : 0 < D)
+theorem norm_fourierCoeff_symbol_truncate_le {c : AddCircle (1 : ℝ) → ℂ} (hc : Measurable c)
+    {Cb : ℝ} (hC0 : 0 ≤ Cb) (hC : ∀ x, ‖c x‖ ≤ Cb) (hreal : ∀ x, starRingEnd ℂ (c x) = c x)
+    {A : ℝ} (hA : ∀ x : ℤ, ‖fourierCoeff c x‖ ≤ A / (1 + (x.natAbs : ℝ)))
+    (S : Finset ℤ) (w : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) (l : ℤ)
+    {D : ℝ} (hD : 0 < D)
     (hsep : ∀ j ∈ S, D ≤ (1 : ℝ) + (((j - l).natAbs : ℕ) : ℝ)) :
-    ‖fourierCoeff ((gaussPrimeScaleInvSqBlock hP (fourierTruncate S w) :
+    ‖fourierCoeff ((MeasureTheory.lpBoundedMulCLM (p := 2)
+        (μ := AddCircle.haarAddCircle (T := (1 : ℝ))) hc hC0 hC (fourierTruncate S w) :
         AddCircle (1 : ℝ) → ℂ)) l‖
-      ≤ (2 / D) * ∑ j ∈ S, ‖fourierCoeff ((w : AddCircle (1 : ℝ) → ℂ)) j‖ := by
+      ≤ (A / D) * ∑ j ∈ S, ‖fourierCoeff ((w : AddCircle (1 : ℝ) → ℂ)) j‖ := by
   classical
-  have hbase := norm_fourierCoeff_gaussPrimeScaleInvSqBlock_le hP (fourierTruncate S w) l
-  have hzero : ∀ j ∉ S, 2 / (1 + (((j - l).natAbs : ℕ) : ℝ)) *
+  have hA0 : 0 ≤ A := by
+    have h0 := hA 0
+    simp only [Int.natAbs_zero, Nat.cast_zero, add_zero, div_one] at h0
+    exact le_trans (norm_nonneg _) h0
+  have hbase := norm_fourierCoeff_lpBoundedMulCLM_le hc hC0 hC hreal hA (fourierTruncate S w) l
+  have hzero : ∀ j ∉ S, A / (1 + (((j - l).natAbs : ℕ) : ℝ)) *
       ‖fourierCoeff ((fourierTruncate S w : AddCircle (1 : ℝ) → ℂ)) j‖ = 0 := by
     intro j hj
     rw [fourierCoeff_fourierTruncate, if_neg hj, norm_zero, mul_zero]
@@ -52,7 +60,18 @@ theorem norm_fourierCoeff_invSq_truncate_le {P : ℝ} (hP : 1 < P) (S : Finset �
   refine mul_le_mul_of_nonneg_right ?_ (norm_nonneg _)
   have hsepj := hsep j hj
   rw [div_le_div_iff₀ (by positivity) hD]
-  linarith
+  nlinarith [hsepj, hA0, hD]
+
+/-- The reciprocal-square specialization of the kernel bound. -/
+theorem norm_fourierCoeff_invSq_truncate_le {P : ℝ} (hP : 1 < P) (S : Finset ℤ)
+    (w : Lp ℂ 2 (AddCircle.haarAddCircle (T := (1 : ℝ)))) (l : ℤ) {D : ℝ} (hD : 0 < D)
+    (hsep : ∀ j ∈ S, D ≤ (1 : ℝ) + (((j - l).natAbs : ℕ) : ℝ)) :
+    ‖fourierCoeff ((gaussPrimeScaleInvSqBlock hP (fourierTruncate S w) :
+        AddCircle (1 : ℝ) → ℂ)) l‖
+      ≤ (2 / D) * ∑ j ∈ S, ‖fourierCoeff ((w : AddCircle (1 : ℝ) → ℂ)) j‖ :=
+  norm_fourierCoeff_symbol_truncate_le (measurable_gaussPrimeScaleInvSqCircle P) zero_le_one
+    (norm_gaussPrimeScaleInvSqCircle_le hP) (gaussPrimeScaleInvSqCircle_conj P)
+    (norm_fourierCoeff_gaussPrimeScaleInvSqCircle_le hP) S w l hD hsep
 
 /-- On the low band the lattice defect is bounded by a constant. -/
 theorem norm_gaussSampleRatioDefect_le_of_lowBand (hm : 1 ≤ m) (k : Fin m) (p : Nat.Primes)

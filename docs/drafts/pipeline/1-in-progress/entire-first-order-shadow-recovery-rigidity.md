@@ -97,7 +97,7 @@ Equivalently, can a primitive-defect-one primitive of a first-order entire DA fu
 
 `[PROVED]` Not when `w` is autonomous. Writing `w=L(exp(az))`, a primitive-defect-one primitive has nonzero drift under the period `2 pi i/a`. One totally ramified value would then generate infinitely many, contradicting Nevanlinna. The proof is separated in `2-fully-proven/not_new_scientific_knowledge/drifting-periodic-primitive-ramification-exclusion.md`.
 
-`[PROVED]` No rational outer-factor exception survives when a primitive `W` has nonzero polynomial shift drift. The divided difference of `P(g_T)-P(g)` and Hadamard theory force the inner factor into an algebraic extension of a one-hyperexponential first-order field; a unique-pole substitution handles rational outers. This covers every `w=L(exp(cz))+P(z)` and is separated in `2-fully-proven/not_new_scientific_knowledge/polynomial-drift-rational-outer-factor-rigidity.md`.
+`[PROVED]` No rational outer-factor exception survives when a primitive `W` has nonzero polynomial shift drift. The divided difference of `P(g_T)-P(g)` and Hadamard theory force the inner factor into an algebraic extension of a one-hyperexponential first-order field; a unique-pole substitution handles rational outers. This covers every `w=L(exp(cz))+P(z)` and is separated in `3-formalized/not_new_scientific_knowledge/polynomial-drift-rational-outer-factor-rigidity.md`.
 
 `[PROVED]` No quadratic factor survives an affine reflection `W o sigma=C-W`. This covers the nonautonomous derivative `w=z sin z`, whose primitive `sin z-z cos z` is odd. See `3-formalized/not_new_scientific_knowledge/involutive-reflection-quadratic-rigidity.md`.
 

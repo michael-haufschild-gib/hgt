@@ -10682,3 +10682,131 @@ What now remains for `suzuki-log-recurrence-polynomial-carrier-trichotomy` is ex
 Matveev bound `(5)`, which is the zero-event half of `(28)`.  It is tracked by
 `docs/drafts/pipeline/1-in-progress/effective-baker-matveev-linear-forms.md`, Layers A and B closed,
 Layer C next.
+
+## ADI. `coalescing-anchor-parity-locking-reduction` — §§2–7 inventory and the `(5)` engine
+
+The card was recorded in AAR as never audited.  This section starts the audit at the recommended
+place, §§2–7 (Theorems A–G), and records what the corpus already owns.
+
+**Already in Lean, written for this card but never inventoried:**
+
+```text
+RHTower/SuzukiCoalescingXiSourceRate.lean         §3  (8)–(13): suzukiXiCoalescingDefect, its
+                                                  rate τ₀ = suzukiXiCoalescingSourceRate > 0,
+                                                  the log-derivative form, and κ_Ξ(c) < 1
+RHTower/SuzukiCoalescingParityLocking.lean        §2  (7) parity gap parity: |r−s| odd, so 1 or ≥3
+                                                  §4  (14): 2ac/sinh(2ac), rate a²/3, limit 1
+                                                  §5  Theorems A and B at the rate/selector level:
+                                                      the two strict endpoint orderings and the
+                                                      intermediate-value matching shift
+RHTower/SuzukiCoalescingHalfPlaneNormality.lean   §7  Theorem C: the Schwarz–Pick defect bound
+                                                      ‖1−Θ_c(z)‖ = O_K(c) from 1−κ_c ≤ Cc², local
+                                                      boundedness of R_c, and Montel normality
+RHTower/SuzukiCoalescingBlaschkeFragmentation.lean §7 Theorem D: the fragmented rational inner
+                                                      carrier, its anchor and first jet, and the
+                                                      radial budget N(1−r) ≤ −log κ_c
+```
+
+**The gap this section closes.**  Theorems A and B consume the ground-endpoint rates `(7)` as
+hypotheses, and `(7)` rests on the card's `(5)` — the Hilbert-valued Taylor expansion that turns the
+first *visible* even or odd polynomial degree into the exact rate of the parity energy.  Nothing in
+the corpus proved `(5)`.  Two new modules do.
+
+```text
+HTGeometry/VectorPowerSeriesLeadingOrder.lean
+  seriesTailBound, norm_sub_leading_le      the tail past the leading index is O(c)
+  tendsto_normSq_div_pow_of_hasSum          ‖g(c)‖²/c^{2r} → ‖u_r‖² for the first nonzero u_r
+  tendsto_normSq_div_pow_even               the same for a series in c²
+
+HTGeometry/ApertureHyperbolicL2Expansion.lean
+  apertureWindow_eq_sqrt                    the corpus aperture window is √(2a)
+  apertureMonomialL2, apertureCoshL2, apertureSinhL2, norm_apertureMonomialL2_le
+  hasSum_apertureCoshL2, hasSum_apertureSinhL2   the L² Taylor expansions on (−a,a)
+  evenMomentVector, oddMomentVector         P(x^{2k})/(2k)!, P(x^{2k+1})/(2k+1)!
+  summable_norm_{even,odd}MomentVector      entire coefficient growth, every radius
+  hasSum_{even,odd}MomentVector             the projected series as a power series in c²
+  tendsto_evenParityEnergy_rate             (5): ‖P cosh(cX)‖²/c^{4j} → ‖P(x^{2j}/(2j)!)‖²
+  tendsto_oddParityEnergy_rate              (5): ‖P sinh(cX)‖²/c^{4j+2} → ‖P(x^{2j+1}/(2j+1)!)‖²
+```
+
+Two points about the proofs.
+
+*The vector Taylor argument needs no completeness.*  `g` is given as the sum, so the factorisation
+`g(c) = c^r·(u_r + O(c))` is a rearrangement of the given `HasSum`, not an existence statement; only
+the coefficient majorant `Σ‖u_k‖R^k < ∞` is used.
+
+*The `L²` expansion is uniform convergence plus a finite measure.*  On `[−a,a]` the Taylor tail of
+`cosh(cx)` is bounded by the tail of `Σ(|c|a)^{2k}/(2k)!` **uniformly in x**, so
+`Lp.norm_le_of_ae_bound` converts it into an `L²` bound, and `tendsto_tsum_compl_atTop_zero` makes
+the Finset net of partial sums converge.  No dominated-convergence or a.e.-subsequence argument is
+needed, and the statement is a genuine `HasSum` in `L²`, which is what the leading-order theorem
+consumes.
+
+Applied with `P = P_e` (resp. `P_o`) the projection onto the ground eigenspace in the even (odd)
+sector, `tendsto_evenParityEnergy_rate` is `m_E(c) = A_r c^{2r}(1+o(1))` with `r = 2j` and
+`A_r = ‖P_e(x^r/r!)‖²`, which is exactly `(5)`, and it supplies the `heven`/`hodd` hypotheses of the
+already-owned `tendsto_suzukiDefectAngle_{even,odd}Leading_rate`.
+
+All new declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+**What §§2–7 still need.**  The definition of `r` and `s` as *minimal visible degrees* (`(2)`), which
+needs density of even/odd polynomials in the two `L²(−a,a)` parity sectors; the identification of
+`P_e`, `P_o` with the spectral projections of Suzuki's restricted-Weil operator at the common floor
+`(1)`; §6 `(20)`–`(21)`, the Cayley identity and the meromorphic limit of the blown-up antipodal
+quotient; and, in Theorem C, the reflection statement `(32)` for the lower half-plane and the
+`z²R_c` variant.  Theorem D still needs the boundary-argument crossing count `(38)`–`(42)`.
+
+## ADJ. `coalescing-anchor` — the complete theorem map and the RH split
+
+Sixty-one named results, `A … BD`.  The card header fixes the split; this is it, theorem by theorem,
+with the section each sits in.
+
+**Unconditional (formalization targets).**
+
+```text
+§5    A, B, Corollary            endpoint reachability, adjacent-moment wall, cofinal obstruction
+§7    C, D                       singular compactness; sharpness of the real-axis remainder
+§8    E, F, F.1, F.2             position-resolvent quotient; theta calibration; tangent and
+                                 boundary-layer schedules
+§9    G, G.1 … G.5               Clark mass as source coherence and its five corollaries
+§14.1 H                          full-carrier branch trichotomy
+§14.3 I                          one imaginary interval closes the endpoint (an implication)
+§14.6 J                          Clark–screw spectral rigidity (an equivalence)
+§14.13 T, U                      compactified spectral-shift convergence; smoothing-trace selector
+§14.14 V                         regular high-frequency phase mixing is a dead end
+§14.15 W                         Toeplitz `sech` wall and Hankel rapidity budget
+§14.16 X                         Hankel-edge/source-alignment dichotomy
+§14.17 Y                         relative-edge/parity-floor correspondence
+§14.18 Z                         microlocal prime seams have zero normalized-Hankel strength
+§14.19 AA, AB                    prime-reflection Dirichlet budget; PNT cancellation never uniform
+§14.20 AC (first-jet part only)  macroscopic safe-shift source blindness
+§14.30 AM                        infrared/ultraviolet marginal compatibility model
+```
+
+**RH-conditional or complete-identification-conditional** (to be formalized only as implications
+from a declared target datum, never as theorems): `K, L, M, N, O, P, Q, R, S, AC (complete-family
+part), AD, AE, AG, AH, AI, AJ, AK, AL, AN, AO, AP, AQ, AR, AS, AT, AU, AV, AW, AX, AY, AZ, BA, BB,
+BC, BD`.
+
+### Status of the unconditional targets
+
+```text
+A, B      Lean at the rate/selector level (SuzukiCoalescingParityLocking);
+          the ground rates they consume are now supplied by (5)
+C         Lean (SuzukiCoalescingHalfPlaneNormality); missing: the reflection statement (32)
+          for the lower half-plane and the harmless z² variant
+D         Lean for the carrier, its anchor, its jet and the radial budget (41)
+          (SuzukiCoalescingBlaschkeFragmentation); missing: the crossing count (38)–(42)
+E         Lean — new, see ADK
+F         Lean (SuzukiCoalescingXiSourceRate): (52) is
+          xiShiftedReciprocalMoment_zero_eq_normalizedPrimeArchMoment and (53) is
+          suzukiXiCoalescingSourceRate_eq_theta
+F.1       open — needs joint real-analyticity of Φ_a in (t,λ) and the analytic implicit function
+          theorem
+F.2       open — needs the simple-pole resolvent reduction (54l) and (5)
+G … G.5   open — needs the Livšic/Donoghue anchor apparatus at a movable base; G.2's (69)–(70) is
+          again the vector-Taylor leading-order theorem, this time for P₀e^{-ixX}
+H, I, J   open
+T … AB    open
+AC, AM    open
+```

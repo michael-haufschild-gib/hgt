@@ -1,7 +1,7 @@
 # Polynomial-drift rational-outer-factor rigidity
 
 - **ID:** `polynomial-drift-rational-outer-factor-rigidity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Scientific status:** `[BRIDGE] [PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Lane:** general hypertranscendence; primitive ramification
@@ -105,6 +105,45 @@ The proof is an application of Hadamard factorization to a polynomial divided di
 - [x] Zero and nonzero polynomial-drift cases classified.
 - [x] All rational outer factors excluded for the Laurent-exponential-plus-polynomial derivative class.
 - [x] Anti-theatre gate; bridge verdict.
+- [x] Formalized in Lean 4, unconditionally.
+
+## Lean formalization
+
+`formal/GaloisForLFunctions/HTGeometry/PolynomialDriftRationalOuterFactorRigidity.lean`
+
+| Card claim | Lean declaration |
+|---|---|
+| `A = g∘σ - g`, and `P(g+A) - P(g) = Q` | `affineDrift`, `drift_inner_relation` |
+| every zero of `A` is a zero of `Q`, so `A` has finitely many zeros | `drift_finite_zeroSet` |
+| `Q ≠ 0` forces `A ≢ 0` | `drift_ne_zero` |
+| `g`, hence `A`, has finite order because `P(g) = W` | `finiteOrderEnvelope_drift` (via `finiteOrderEnvelope_of_comp_polynomial`) |
+| Hadamard: `A = P₁ exp S₁` | `RHTower.exists_polynomial_mul_expPolynomial_of_envelope` |
+| `B` is a polynomial of degree `deg P - 1` in `g` with leading coefficient `deg P · lead P ≠ 0` | `driftCoeff`, `eval_driftCoeff_expansion`, `eval_driftCoeff_pred` |
+| `E′ = S₁′ E`, so `ℂ(z)⟨E⟩` has transcendence degree at most one | `deriv_analyticMeroElement_exp` + `exists_state_algebraic_of_polynomial_drift` |
+| `g` algebraic over `ℂ(z)(E)` ⟹ order-one ADE | `differentiallyAlgebraicOfOrder_of_algebraic_over_states` |
+| **the theorem** | `polynomial_drift_rigidity` |
+| rational outer factor: `u = 1/(g-a)` entire, `R(g)` polynomial in `u`, `g = a + 1/u` | `rational_outer_factor_rigidity` |
+
+New reusable infrastructure built for this card:
+
+* `HTGeometry/FiniteOrderHadamard.lean` — `FiniteOrderEnvelope` and zero-free Hadamard at every
+  finite order;
+* `RHTower/FiniteZeroHadamardProduct.lean` — the divisor-carrying Hadamard product at every finite
+  order (`f = p · exp q` for `f` entire of finite order with finitely many zeros);
+* `HTGeometry/PolynomialDriftExpansion.lean` — the shift expansion `P(y+a) - P(y)` with its exact
+  top coefficient `n · lead(P) · a`;
+* `HTGeometry/FiniteOrderPolynomialDescent.lean` — finite order descends through a polynomial
+  outer factor;
+* `HTGeometry/AlgebraicOverStateFieldOrder.lean` — the order bound for elements *algebraic over*
+  a state field (the corpus previously required membership);
+* `HTGeometry/ExpPolynomialRational.lean` — `G · exp T = Q` with `G, Q` nonzero polynomials forces
+  `T` constant.
+
+All declarations audited with `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`.
+
+The composition-consequence section (`w = L(exp cz) + R(z)`) is the specialization of
+`polynomial_drift_rigidity` to `Q(z) = R(z+T) - R(z)` with `T = 2πi/c`; the degenerate branch
+`Q = 0` is the Laurent-polynomial case, in which `W` itself is first-order DA.
 
 ## Primary reference
 

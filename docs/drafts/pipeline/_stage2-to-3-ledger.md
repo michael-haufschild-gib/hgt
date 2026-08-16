@@ -3539,3 +3539,39 @@ orthonormal conventions `h_n` and `γ_i` are taken in.
 Two build traps, recorded: `Mathlib.Analysis.Matrix` and `Mathlib.Data.Matrix.Notation` have no
 usable `.olean` in this checkout, and inside `namespace RHTower` a bare `open Matrix` resolves to
 a relative namespace and silently fails to bring in `ᵀ` / `*ᵥ`; use `open _root_.Matrix`.
+
+## `fixed-shell-angular-dephasing-static-local-plateau-law` -- Theorem A in progress (2026-08-16)
+
+The refactor-era instruction forbidding Lean work on this card is superseded.  Eight new modules,
+all umbrella-wired and axiom-clean, close **Lemma A2 entirely** (base case and inductive step).
+
+- `HTGeometry/QuadraticRateSpectralRigidity` -- the base case, stronger than the card's: the
+  three-difference argument needs only three levels, so the two-qubit `D=4` base is a special case
+  and the same lemma covers every `D >= 3` block.  Includes the localisation that upgrades an
+  identity on one open patch to the whole traceless hyperplane.
+- `HTGeometry/QuadraticRateOrbitPolynomial` -- the symmetrised obstruction `(14)`, mirroring the
+  corpus's linear `SpectralRelationOrbitPolynomial`, with its descent to characteristic
+  coefficients and its nonvanishing.
+- `HTGeometry/AffinePoleResidueRigidity` -- `L(w)·∑ c_i/(z_i − w) = const` forces `c_i·L(z_i) = 0`
+  at every node; a nonzero affine `L` has one root, so at most one residue survives.  Cleared
+  denominators only.
+- `HTGeometry/BipartiteCrossPairRigidity` -- the crown graph (complete bipartite minus a perfect
+  matching) stays connected after one deletion for at least three labels, by an explicit path.
+- `HTGeometry/LocalExtensionQuadraticRateRigidity` -- the pole index of the extension (zero gap
+  plus every ordered off-diagonal pair), `(10)` written over its poles, the residue law `(12)`, and
+  the collapse both for a single probe and for a probe family.
+- `HTGeometry/BlockExtensionSecondOrderResponse` -- `(8)`--`(10)`: the split energies `E_α ± z/2`,
+  the edge perturbation `A ⊗ X` in the split eigenbasis (off-diagonal, so the first variation
+  vanishes), the affine uncoupled action `L_0`, and the second-order response as a simple-pole
+  packet at the ordered old gaps.
+- `HTGeometry/QuadraticRateSecondVariation` -- `(11)`: with a vanishing first variation a
+  quadratic-rate identity along a line reduces to the pole-free `F(0)·F''(0) = kappa Q_V`.
+- `HTGeometry/LocalExtensionQuadraticRateCollapse` -- the composition with the corpus's exact
+  eigenbranch laws `affineEigenbranch_firstDerivative_eq_diagonal` and
+  `affineEigenbranch_secondDerivative_eq_general`.  `localExtension_quadraticRate_eq_zero` is
+  Lemma A2's conclusion: a zero-sum packet obeying a quadratic-rate identity vanishes.
+
+Reusable method note: to kill a spectral identity by perturbation, do not manipulate eigenvectors.
+Work in the split eigenbasis, where the perturbation is a literal off-diagonal matrix; the corpus's
+adjugate-column eigenbranch laws then give the first and second variations as finite sums, and the
+whole argument becomes the residue calculus of one rational function of the attached local field.

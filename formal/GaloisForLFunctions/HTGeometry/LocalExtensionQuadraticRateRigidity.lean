@@ -111,6 +111,73 @@ theorem extensionPole_sum_eq (E : A → ℂ) (u v : A → ℂ) (w : A → A → 
     intro a _ b _ hab
     exact congrArg Prod.fst hab)]
 
+/-- The cleared numerator of the extension pole packet vanishes. -/
+theorem extensionPacket_numerator_eq_zero
+    (E : A → ℂ) (u v : A → ℂ) (w : A → A → ℂ) {p q cst : ℂ}
+    {S : Set ℂ} (hS : S.Infinite)
+    (havoid : ∀ z ∈ S, z ≠ 0 ∧ ∀ α β : A, α ≠ β → z ≠ E β - E α)
+    (hidentity : ∀ z ∈ S,
+      (p + q * z) * (∑ α, ∑ β, (u α - v β) * w α β / (z + E α - E β)) = cst) :
+    affinePolePacketNumerator (extensionPolePosition (A := A) E)
+      (extensionPoleResidue u v w) p q cst = 0 := by
+  classical
+  have havoid' : ∀ z ∈ S, ∀ i, z ≠ extensionPolePosition (A := A) E i := by
+    intro z hz i
+    obtain ⟨hz0, hzgap⟩ := havoid z hz
+    match i with
+    | none => simpa [extensionPolePosition] using hz0
+    | some t => simpa [extensionPolePosition] using hzgap t.1.1 t.1.2 t.2
+  have hid : ∀ z ∈ S,
+      (p + q * z) * ∑ i, extensionPoleResidue u v w i / (extensionPolePosition E i - z) = cst := by
+    intro z hz
+    rw [extensionPole_sum_eq E u v w z]
+    exact hidentity z hz
+  exact affinePolePacketNumerator_eq_zero_of_identity
+    (extensionPolePosition (A := A) E) (extensionPoleResidue u v w) p q cst S hS havoid' hid
+
+/-- **The residue at one ordered old gap.**  Either the affine multiplier vanishes at that gap or
+the two layer coefficients agree through the probe weight. -/
+theorem extensionPacket_residue
+    {E : A → ℂ} (hE : Function.Injective E)
+    (hgap : ∀ α β γ δ : A, α ≠ β → γ ≠ δ → E β - E α = E δ - E γ → (α, β) = (γ, δ))
+    (u v : A → ℂ) (w : A → A → ℂ) {p q cst : ℂ}
+    {S : Set ℂ} (hS : S.Infinite)
+    (havoid : ∀ z ∈ S, z ≠ 0 ∧ ∀ α β : A, α ≠ β → z ≠ E β - E α)
+    (hidentity : ∀ z ∈ S,
+      (p + q * z) * (∑ α, ∑ β, (u α - v β) * w α β / (z + E α - E β)) = cst)
+    {α β : A} (hαβ : α ≠ β) :
+    (u α - v β) * w α β * (p + q * (E β - E α)) = 0 := by
+  classical
+  have hnum := extensionPacket_numerator_eq_zero E u v w hS havoid hidentity
+  have hZinj : Function.Injective (extensionPolePosition (A := A) E) :=
+    extensionPolePosition_injective hE hgap
+  have h := affinePoleResidue_eq_zero hZinj hnum (some ⟨(α, β), hαβ⟩)
+  simp only [extensionPoleResidue, extensionPolePosition] at h
+  have h' : -((u α - v β) * w α β) * (p + q * (E β - E α)) = 0 := h
+  rcases mul_eq_zero.mp h' with h1 | h2
+  · rw [neg_eq_zero] at h1
+    exact mul_eq_zero_of_left h1 _
+  · exact mul_eq_zero_of_right _ h2
+
+/-- If the affine multiplier does not vanish at an ordered gap and the probe sees that gap, the
+two layer coefficients agree. -/
+theorem extensionPacket_eq_of_probe
+    {E : A → ℂ} (hE : Function.Injective E)
+    (hgap : ∀ α β γ δ : A, α ≠ β → γ ≠ δ → E β - E α = E δ - E γ → (α, β) = (γ, δ))
+    (u v : A → ℂ) (w : A → A → ℂ) {p q cst : ℂ}
+    {S : Set ℂ} (hS : S.Infinite)
+    (havoid : ∀ z ∈ S, z ≠ 0 ∧ ∀ α β : A, α ≠ β → z ≠ E β - E α)
+    (hidentity : ∀ z ∈ S,
+      (p + q * z) * (∑ α, ∑ β, (u α - v β) * w α β / (z + E α - E β)) = cst)
+    {α β : A} (hαβ : α ≠ β) (hw : w α β ≠ 0) (hL : p + q * (E β - E α) ≠ 0) :
+    u α = v β := by
+  have h := extensionPacket_residue hE hgap u v w hS havoid hidentity hαβ
+  rcases mul_eq_zero.mp h with h1 | h2
+  · rcases mul_eq_zero.mp h1 with h3 | h4
+    · exact sub_eq_zero.mp h3
+    · exact absurd h4 hw
+  · exact absurd h2 hL
+
 /-- **The one-qubit extension collapse.**  A quadratic-rate identity for a one-qubit extension
 forces every layer coefficient of the old spectrum to coincide. -/
 theorem extensionPacket_crossPair_constant (hcard : 3 ≤ Fintype.card A)
@@ -166,6 +233,53 @@ theorem extensionPacket_crossPair_constant (hcard : 3 ≤ Fintype.card A)
     · exact sub_eq_zero.mp h
     · exact absurd h (hw x y hxy)
   exact crossPair_constant hcard u v exc hkey
+
+/-- **The extension collapse for a family of probes.**  The affine multiplier is the same for
+every probe, so at most one ordered gap is exceptional; a probe family that sees every ordered pair
+therefore collapses all layer coefficients. -/
+theorem extensionKey_family_collapse (hcard : 3 ≤ Fintype.card A)
+    {E : A → ℂ} (hE : Function.Injective E)
+    (hgap : ∀ α β γ δ : A, α ≠ β → γ ≠ δ → E β - E α = E δ - E γ → (α, β) = (γ, δ))
+    {P : Type*} {w : P → A → A → ℂ}
+    (hcover : ∀ α β : A, α ≠ β → ∃ s, w s α β ≠ 0)
+    (u v : A → ℂ) {p q : ℂ} {cst : P → ℂ} (hL : p ≠ 0 ∨ q ≠ 0)
+    {S : Set ℂ} (hS : S.Infinite)
+    (havoid : ∀ z ∈ S, z ≠ 0 ∧ ∀ α β : A, α ≠ β → z ≠ E β - E α)
+    (hkey : ∀ s : P, ∀ z ∈ S,
+      (p + q * z) * (∑ α, ∑ β, (u α - v β) * w s α β / (z + E α - E β)) = cst s) :
+    (∀ x y, u x = u y) ∧ (∀ x y, v x = v y) ∧ (∀ x y, u x = v y) := by
+  classical
+  obtain ⟨a₀⟩ : Nonempty A := by
+    rw [← Fintype.card_pos_iff]
+    omega
+  set exc : A × A :=
+    if h : ∃ t : OrderedGapIndex A, p + q * (E t.1.2 - E t.1.1) = 0 then
+      (Classical.choose h).1 else (a₀, a₀) with hexc
+  have hne : ∀ α β : A, α ≠ β → (α, β) ≠ exc → p + q * (E β - E α) ≠ 0 := by
+    intro α β hαβ hpair hzero
+    have hex : ∃ t : OrderedGapIndex A, p + q * (E t.1.2 - E t.1.1) = 0 :=
+      ⟨⟨(α, β), hαβ⟩, hzero⟩
+    have hspec := Classical.choose_spec hex
+    set t₀ := Classical.choose hex with ht₀
+    have hq : q ≠ 0 := by
+      rcases hL with hp | hq
+      · intro hq0
+        rw [hq0, zero_mul, add_zero] at hzero
+        exact hp hzero
+      · exact hq
+    have hgapeq : E β - E α = E t₀.1.2 - E t₀.1.1 := by
+      have h1 : q * (E β - E α) = -p := by linear_combination hzero
+      have h2 : q * (E t₀.1.2 - E t₀.1.1) = -p := by linear_combination hspec
+      exact mul_left_cancel₀ hq (by rw [h1, h2])
+    apply hpair
+    rw [hexc, dif_pos hex]
+    exact (hgap α β t₀.1.1 t₀.1.2 hαβ t₀.2 hgapeq)
+  have hcross : ∀ x y : A, x ≠ y → (x, y) ≠ exc → u x = v y := by
+    intro x y hxy hpair
+    obtain ⟨s, hs⟩ := hcover x y hxy
+    exact extensionPacket_eq_of_probe hE hgap u v (w s) hS havoid (hkey s) hxy hs
+      (hne x y hxy hpair)
+  exact crossPair_constant hcard u v exc hcross
 
 end
 
