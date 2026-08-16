@@ -80,35 +80,31 @@ theorem wallFloor_mono {σ Y t : ℝ} (hY : 0 ≤ Y) (hYt : Y ≤ t) :
 set_option maxHeartbeats 1000000 in
 /-- **The four ray estimates compose.**  The moving part of the propagated tail is bounded by four
 times the sum of the four terms' ray masses. -/
-theorem lintegral_sq_movingTail_le
+theorem lintegral_sq_movingTail_region_le
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
     (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
     (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0) (hT : IsSelfAdjoint T)
     {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
-    {g : ℝ → X} {m Y μ₀ : ℝ} (hg : IntegrableOn g (Icc m (m + 1)))
+    {g : ℝ → X} {m Y μ₀ : ℝ} {A : Set ℝ} (hmA : MeasurableSet A)
+    (hg : IntegrableOn g (Icc m (m + 1)))
     (hsupp : ∀ L : ℝ, L ∉ Icc m (m + 1) → g L = 0)
-    (hY1 : 1 ≤ Y) (hμ : 0 < μ₀)
-    (hgapY : ∀ L ∈ Icc m (m + 1), μ₀ ≤ wallFloor T σ Y + L) :
-    (∫⁻ x in Ioi Y, ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)
+    (hY1 : 1 ≤ |Y|) (hμ : 0 < μ₀)
+    (hgapY : ∀ L ∈ Icc m (m + 1), μ₀ ≤ wallFloor T σ Y + L)
+    (hxA : ∀ x ∈ A, 1 ≤ |x|)
+    (hgapA : ∀ x ∈ A, ∀ L ∈ Icc m (m + 1), μ₀ ≤ wallFloor T σ x + L)
+    (hgapI : ∀ x ∈ A, ∀ L ∈ Icc m (m + 1), ∀ t ∈ uIcc Y x, μ₀ ≤ wallFloor T σ t + L) :
+    (∫⁻ x in A, ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)
         (∫ t in Y..x, stripPropagatorInv E T ((t : ℂ) + (σ : ℂ) * Complex.I)
           (blockSource g m t))‖ₑ ^ 2)
-      ≤ 16 * ((∫⁻ x in Ioi Y, ‖firstBoundary T g σ x‖ₑ ^ 2)
-          + (∫⁻ x in Ioi Y, ‖secondBoundary T g m σ x‖ₑ ^ 2)
-          + (∫⁻ x in Ioi Y, ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)
+      ≤ 16 * ((∫⁻ x in A, ‖firstBoundary T g σ x‖ₑ ^ 2)
+          + (∫⁻ x in A, ‖secondBoundary T g m σ x‖ₑ ^ 2)
+          + (∫⁻ x in A, ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)
               (thresholdVector E T g m σ Y)‖ₑ ^ 2)
-          + ∫⁻ x in Ioi Y, ‖tailRemainder E T g m σ Y x‖ₑ ^ 2) := by
-  have hY0 : (0 : ℝ) ≤ Y := le_trans zero_le_one hY1
-  -- the floor propagates to every larger frequency
-  have hgapt : ∀ t : ℝ, Y ≤ t → ∀ L ∈ Icc m (m + 1), μ₀ ≤ wallFloor T σ t + L := by
-    intro t hYt L hL
-    have := hgapY L hL
-    have hmono := wallFloor_mono (T := T) (σ := σ) hY0 hYt
-    linarith
-  have hgapray : ∀ x ∈ Ioi Y, ∀ L ∈ Icc m (m + 1), 0 < wallFloor T σ x + L := by
-    intro x hx L hL
-    exact lt_of_lt_of_le hμ (hgapt x (le_of_lt hx) L hL)
+          + ∫⁻ x in A, ‖tailRemainder E T g m σ Y x‖ₑ ^ 2) := by
+  have hgapray : ∀ x ∈ A, ∀ L ∈ Icc m (m + 1), 0 < wallFloor T σ x + L := fun x hx L hL =>
+    lt_of_lt_of_le hμ (hgapA x hx L hL)
   -- the pointwise bound
-  have hpt : ∀ x ∈ Ioi Y, ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)
+  have hpt : ∀ x ∈ A, ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)
       (∫ t in Y..x, stripPropagatorInv E T ((t : ℂ) + (σ : ℂ) * Complex.I)
         (blockSource g m t))‖ₑ ^ 2
       ≤ 16 * (‖firstBoundary T g σ x‖ₑ ^ 2 + ‖secondBoundary T g m σ x‖ₑ ^ 2
@@ -116,14 +112,9 @@ theorem lintegral_sq_movingTail_le
               (thresholdVector E T g m σ Y)‖ₑ ^ 2
           + ‖tailRemainder E T g m σ Y x‖ₑ ^ 2) := by
     intro x hx
-    have hYx : Y ≤ x := le_of_lt hx
-    have hdec := stripPropagator_movingTail_decomposition hEdiff hE hEne hT hσ0 hσ1 hg hYx hY1 hμ
-      (fun L hL => hgapt x hYx L hL) hgapY
-      (fun L hL t ht => by
-        have hty : Y ≤ t := by
-          rcases (uIcc_of_le hYx) ▸ ht with ⟨h1, _⟩
-          exact h1
-        exact lt_of_lt_of_le hμ (hgapt t hty L hL))
+    have hdec := stripPropagator_movingTail_decomposition_abs hEdiff hE hEne hT hσ0 hσ1 hg
+      (hxA x hx) hY1 hμ (fun L hL => hgapA x hx L hL) hgapY
+      (fun L hL t ht => lt_of_lt_of_le hμ (hgapI x hx L hL t ht))
     rw [hdec, firstBoundaryBlock_eq_firstBoundary hsupp]
     have hnorm : ‖(-(Complex.I) / 2 : ℂ) • ((Complex.I : ℂ) • firstBoundary T g σ x
         + secondBoundary T g m σ x
@@ -180,36 +171,73 @@ theorem lintegral_sq_movingTail_le
                 (thresholdVector E T g m σ Y)‖ₑ ^ 2
             + ‖tailRemainder E T g m σ Y x‖ₑ ^ 2) := sq_add_four_le _ _ _ _
   -- the split
-  have hA0 : AEStronglyMeasurable (fun x => firstBoundary T g σ x) (volume.restrict (Ioi Y)) := by
-    have h := aestronglyMeasurable_firstBoundaryBlock (T := T) (m := m) (Y := Y) hσ0 hσ1
+  have hA0 : AEStronglyMeasurable (fun x => firstBoundary T g σ x) (volume.restrict (A)) := by
+    have h := aestronglyMeasurable_firstBoundaryBlock (T := T) (m := m) hσ0 hσ1 hmA
       hg.aestronglyMeasurable hgapray
     refine h.congr ?_
     filter_upwards with x
     exact firstBoundaryBlock_eq_firstBoundary hsupp
   have hB0 : AEStronglyMeasurable (fun x => secondBoundary T g m σ x)
-      (volume.restrict (Ioi Y)) :=
-    aestronglyMeasurable_secondBoundary (T := T) (Y := Y) hσ0 hσ1 hg.aestronglyMeasurable hgapray
+      (volume.restrict (A)) :=
+    aestronglyMeasurable_secondBoundary (T := T) hσ0 hσ1 hmA
+      hg.aestronglyMeasurable hgapray
   have hC0 : AEStronglyMeasurable (fun x : ℝ =>
       stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)
-        (thresholdVector E T g m σ Y)) (volume.restrict (Ioi Y)) := by
+        (thresholdVector E T g m σ Y)) (volume.restrict (A)) := by
     have hcont := continuous_stripPropagator_line (T := T) hEdiff hE hEne hσ0 hσ1
     exact (hcont.aestronglyMeasurable).apply_continuousLinearMap _
   have hA : AEMeasurable (fun x : ℝ => ‖firstBoundary T g σ x‖ₑ ^ 2)
-      (volume.restrict (Ioi Y)) := hA0.enorm.pow_const 2
+      (volume.restrict (A)) := hA0.enorm.pow_const 2
   have hB : AEMeasurable (fun x : ℝ => ‖secondBoundary T g m σ x‖ₑ ^ 2)
-      (volume.restrict (Ioi Y)) := hB0.enorm.pow_const 2
+      (volume.restrict (A)) := hB0.enorm.pow_const 2
   have hC : AEMeasurable (fun x : ℝ =>
       ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)
-        (thresholdVector E T g m σ Y)‖ₑ ^ 2) (volume.restrict (Ioi Y)) := hC0.enorm.pow_const 2
+        (thresholdVector E T g m σ Y)‖ₑ ^ 2) (volume.restrict (A)) := hC0.enorm.pow_const 2
   have hAB : AEMeasurable (fun x : ℝ => ‖firstBoundary T g σ x‖ₑ ^ 2
-      + ‖secondBoundary T g m σ x‖ₑ ^ 2) (volume.restrict (Ioi Y)) := hA.add hB
+      + ‖secondBoundary T g m σ x‖ₑ ^ 2) (volume.restrict (A)) := hA.add hB
   have hABC : AEMeasurable (fun x : ℝ => ‖firstBoundary T g σ x‖ₑ ^ 2
       + ‖secondBoundary T g m σ x‖ₑ ^ 2
       + ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)
-          (thresholdVector E T g m σ Y)‖ₑ ^ 2) (volume.restrict (Ioi Y)) := hAB.add hC
-  refine le_trans (setLIntegral_mono' measurableSet_Ioi hpt) ?_
+          (thresholdVector E T g m σ Y)‖ₑ ^ 2) (volume.restrict (A)) := hAB.add hC
+  refine le_trans (setLIntegral_mono' hmA hpt) ?_
   rw [lintegral_const_mul' _ _ (by simp : (16 : ℝ≥0∞) ≠ ⊤)]
   refine mul_le_mul' le_rfl (le_of_eq ?_)
   rw [lintegral_add_left' hABC, lintegral_add_left' hAB, lintegral_add_left' hA]
+
+/-- **The four ray estimates compose on the outward ray.** -/
+theorem lintegral_sq_movingTail_le
+    (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0) (hT : IsSelfAdjoint T)
+    {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
+    {g : ℝ → X} {m Y μ₀ : ℝ} (hg : IntegrableOn g (Icc m (m + 1)))
+    (hsupp : ∀ L : ℝ, L ∉ Icc m (m + 1) → g L = 0)
+    (hY1 : 1 ≤ Y) (hμ : 0 < μ₀)
+    (hgapY : ∀ L ∈ Icc m (m + 1), μ₀ ≤ wallFloor T σ Y + L) :
+    (∫⁻ x in Ioi Y, ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)
+        (∫ t in Y..x, stripPropagatorInv E T ((t : ℂ) + (σ : ℂ) * Complex.I)
+          (blockSource g m t))‖ₑ ^ 2)
+      ≤ 16 * ((∫⁻ x in Ioi Y, ‖firstBoundary T g σ x‖ₑ ^ 2)
+          + (∫⁻ x in Ioi Y, ‖secondBoundary T g m σ x‖ₑ ^ 2)
+          + (∫⁻ x in Ioi Y, ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)
+              (thresholdVector E T g m σ Y)‖ₑ ^ 2)
+          + ∫⁻ x in Ioi Y, ‖tailRemainder E T g m σ Y x‖ₑ ^ 2) := by
+  have hY0 : (0 : ℝ) ≤ Y := le_trans zero_le_one hY1
+  have hYabs : |Y| = Y := abs_of_nonneg hY0
+  have hgapt : ∀ t : ℝ, Y ≤ t → ∀ L ∈ Icc m (m + 1), μ₀ ≤ wallFloor T σ t + L := by
+    intro t hYt L hL
+    have := hgapY L hL
+    have hmono := wallFloor_mono (T := T) (σ := σ) hY0 hYt
+    linarith
+  refine lintegral_sq_movingTail_region_le hEdiff hE hEne hT hσ0 hσ1 measurableSet_Ioi hg hsupp
+    (by rw [hYabs]; exact hY1) hμ hgapY (fun x hx => ?_) (fun x hx => hgapt x (le_of_lt hx))
+    (fun x hx L hL t ht => ?_)
+  · rw [abs_of_nonneg (by linarith [mem_Ioi.mp hx] : (0 : ℝ) ≤ x)]
+    linarith [mem_Ioi.mp hx]
+  · have hYx : Y ≤ x := le_of_lt hx
+    have hty : Y ≤ t := by
+      rcases (uIcc_of_le hYx) ▸ ht with ⟨h1, _⟩
+      exact h1
+    exact hgapt t hty L hL
 
 end GaloisForLFunctions.RHTower

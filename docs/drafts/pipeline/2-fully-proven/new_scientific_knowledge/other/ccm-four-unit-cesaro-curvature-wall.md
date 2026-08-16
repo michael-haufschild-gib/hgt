@@ -3,7 +3,7 @@
 - **ID:** `ccm-four-unit-cesaro-curvature-wall`
 - **Stage:** `2-fully-proven/new_scientific_knowledge`
 - **Type:** EXACT REPORTER TRANSPORT / SIGNED TWO-CHANNEL LIFT / MERGER BOUNDARY
-- **Status:** `[PAPER-PROVED] [LEAN-PARTIAL] [NOVELTY UNVERIFIED] [NO RH CLAIM]`
+- **Status:** `[PAPER-PROVED] [LEAN-PROVED] [NOVELTY UNVERIFIED] [NO RH CLAIM]`
 - **Routes:** `CCM-FU`, `CCM-UR`, `CCM-HG`, `CCM-EP`, `G`, `O`, `CCM-GS`
 - **Parent:** `ccm-unit-riesz-completed-source-stieltjes-weld`
 
@@ -186,8 +186,11 @@ integral u|ell_fast|^2 = integral u|ell_slow|^2 = 3/32.             (19)
 ```
 
 The boundary counterterm `-(3/64)delta_0` cancels the mass mismatch, while the barycenters already
-match.  This is a canonical source-selected Krein covariance: positive as a two-channel matrix,
-signed only after applying the fundamental symmetry.  It is not a scalar Herglotz background.
+match.  This is a canonical **reporter-selected** Krein decomposition: each scalar channel is
+positive and the signed scalar reporter is recovered after applying the fundamental symmetry.  It
+is not yet a source-selected completed-Xi covariance, and it is not a scalar Herglotz background.
+The associated fast-minus-slow operator kernel is indefinite; the separate boundary-pulse card
+records the exact negative two-point determinant.
 
 ## 6. Autocorrelation obstruction at two units
 
@@ -215,12 +218,12 @@ autocorrelation.  Any attempted direct reduction to Route O or G-floor positivit
   does not multiply evidence.
 - **Route O / G-floor:** direct positive-ground or autocorrelation realization is excluded by
   `(20)--(21)`.  A lawful bridge must retain boundary orientation or an indefinite channel.
-- **CCM-HG:** `(18)--(19)` supplies a canonical completed-source relative leak pair and boundary
-  counterterm.  Missing work narrows to landing this pair in the literal completed-Xi Hankel graph
-  and proving the sharp density law; arbitrary scalar leak profiles are no longer the right target.
-- **CCM-EP:** the same pair is a concrete positive operator-valued lift of a signed scalar reporter.
-  It supplies the source-selected background covariance that scalar Herglotz transport lacked;
-  dephased determinant convergence and divisor preservation remain open.
+- **CCM-HG:** `(18)--(19)` supplies a canonical reporter-selected relative leak pair and boundary
+  counterterm.  It yields a positive scalar boundary pulse, but literal completed-Xi source landing
+  and the sharp density law remain absent.
+- **CCM-EP:** this pair does **not** provide a positive operator-valued lift.  Every separated
+  two-point covariance compression has negative determinant.  Any EP background must add genuinely
+  operator-valued completed-source structure beyond this rank-two difference.
 - **G-exterior:** the fast/slow pair carries a fixed orientation and is not a Gram determinant.
   It is a candidate two-port return class, but completed-mode/root-retained landing remains open.
 - **CCM-GS:** the affine-blind second-order law matches reduced-resolvent Hessian order, but gives no
@@ -269,5 +272,8 @@ not solution of remaining arithmetic orientation estimate.
 - literal Stieltjes test `(1)` and endpoint vanishing;
 - completed-error integration-by-parts identity `(2)`.
 
-Next leaf must formalize `(4)--(21)`, wire it into `RHTower.lean`, and retain exact source names.
-No hypothesis may stand in for the literal `E`, `q_b`, or `Q_b` transport.
+`CCMUnitRieszFUCurvatureTransport.lean` now formalizes the literal FU source identity, first and
+second integrations by parts, exact curvature transport, and endpoint coefficient.  The existing
+curvature leaf formalizes `(4)--(21)`.  `CCMUnitRieszHankelBoundaryPulse.lean` formalizes the
+fast/slow leak profiles, scalar pulse, four-unit square slack, and operator-covariance obstruction.
+All statements are unconditional; no hypothesis stands in for the literal `E`, `q_b`, or `Q_b`.

@@ -29,8 +29,8 @@
 
 - [ ] `abelian-multiplication-tail-manin-horizon`
 - [ ] `active-quasi-abelian-palette-exact-ht-dimension-classification`
-- [ ] `additive-heat-aperture-shifted-zeta-echo-ladder`
-- [ ] `additive-heat-aperture-zeta-zero-echo`
+- [x] `additive-heat-aperture-shifted-zeta-echo-ladder`
+- [x] `additive-heat-aperture-zeta-zero-echo`
 - [ ] `all-depth-compatible-pair-face-differential-matroid`
 - [ ] `all-depth-pair-face-signature-completeness`
 - [ ] `all-order-multiple-sine-stanley-reisner-differential-matroid`
@@ -59,7 +59,7 @@
 - [ ] `orbifold-tail-holographic-reconstruction`
 - [ ] `periodic-pencil-intrinsic-ht-dimension-two`
 - [x] `power-canonical-product-exact-moment-borel-lattice-law`
-- [ ] `prescribed-gap-process-order-one-maximal-ht-profield`
+- [x] `prescribed-gap-process-order-one-maximal-ht-profield` — 2026-08-16, `exists_prescribedGapProcess_orderOneMaximalHTProfield`
 - [ ] `prime-completion-annihilates-hypertranscendence-at-even-temperature`
 - [ ] `prime-euler-unit-tangent-completeness`
 - [ ] `prime-modulated-weyl-idealizer-collapse-on-xi-sampling`
@@ -1538,3 +1538,32 @@ hypothesis that Runge layer will consume.
   (adjoining over a derivation-closed base versus adjoining the base with the generators) and
   `DifferentialIndependentPerturbation` (differential independence, and the differential family
   matroid, are invariant under differentially algebraic perturbations).
+
+## 2026-08-16 pass — state of the sweep
+
+Closed this pass: `prescribed-gap-process-order-one-maximal-ht-profield`,
+`additive-heat-aperture-zeta-zero-echo`, `additive-heat-aperture-shifted-zeta-echo-ladder`.
+
+**Do not touch (another agent is mid-work):** the CCM unit-Riesz cluster
+`ccm-unit-riesz-aperture-resolvent-weld`, `ccm-unit-riesz-coherent-polar-sampling-no-go`,
+`ccm-unit-riesz-exponential-coherent-trace`, `ccm-unit-riesz-hankel-boundary-pulse` are untracked
+new files and `ccm-four-unit-cesaro-curvature-wall` is modified in the working tree.  Re-check
+`git status` before claiming any of them.
+
+**Blocker map for the rest of the queue** (from the gate lines and the Lean-status sections):
+
+- `gauss-component-quasi-inner-residue-hierarchy` — ~90% Lean; one named open core `(T)` (the
+  `L²` limit of `gaussShiftedBlockDiag (B^{-2}((S̃* - T_δ)(Bf)))`), with a full band-split proof
+  plan written at the end of the card.  **Best next target.**
+- `prime-modulated-weyl-idealizer-collapse-on-xi-sampling` — Theorem A (superlinear sampling
+  rigidity) is self-contained real analysis; the existing Lean module only does the abstract
+  jet-field core.  The section-4 application needs Conrey's positive-proportion theorem, which is
+  an external input the card itself flags as a paper theorem.
+- Differential-algebraic cards (`abelian-multiplication-tail-manin-horizon`,
+  `embedded-manin-horizon-isogeny-reconstruction`, `isogeny-tail-maurer-cartan-holography`,
+  `jet-horizon-translation-gauge-classification`, `differential-variational-building-balance-law`)
+  need Kolchin topology / Manin maps / DCF, absent from mathlib and from this corpus.
+- Geometry cards (`eigenplurivolume-log-crepant-orbifold`, `toric-log-calabi-yau-tail`,
+  `noncompact-period-quotient-facet-escape-law`) need divisor/pluricanonical or toric geometry.
+- `bessel-order-intensity-hypertranscendence` needs a special case of Dreyfus's
+  DA-to-periodic-exponential theorem.

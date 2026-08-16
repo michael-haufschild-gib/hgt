@@ -155,4 +155,46 @@ theorem lintegral_sq_blockLaplace_le {B : ℝ → (X →L[ℂ] X)} {μ₀ m K : 
           ← ENNReal.rpow_mul]
         norm_num
 
+/-- **The block Laplace bound with a linearly growing slice amplitude.**  Multiplication by the
+frequency turns the slice profile into its weighted corrected derivative, whose amplitude grows
+linearly in the Laplace variable; the accretive floor pays for the extra power. -/
+theorem lintegral_sq_blockLaplace_linear_le {B : ℝ → (X →L[ℂ] X)} {μ₀ m K₀ K₁ : ℝ} {A : Set ℝ}
+    (hB : ∀ x ∈ A, ∀ u : X, μ₀ * ‖u‖ ^ 2 ≤ (inner ℂ (B x u) u).re)
+    (hgap : 0 < μ₀ + m) (hK₀ : 0 ≤ K₀) (hK₁ : 0 ≤ K₁)
+    {Φ : ℝ → X} {Ψ : ℝ → ℝ → X} (hsupp : ∀ s : ℝ, ∀ x, x ∉ A → Ψ x s = 0)
+    (hmeas : Measurable
+      (Function.uncurry fun (x : ℝ) (s : ℝ) => ‖accretiveSemigroup (B x) s (Ψ x s)‖ₑ))
+    (hΦ : ∀ x : ℝ, ‖Φ x‖ₑ ≤ ∫⁻ s in Ioi (0 : ℝ), ‖accretiveSemigroup (B x) s (Ψ x s)‖ₑ)
+    (hslice : ∀ s : ℝ, 0 < s →
+      (∫⁻ x : ℝ, ‖Ψ x s‖ₑ ^ 2)
+        ≤ ENNReal.ofReal (Real.exp (-(2 * s * m))) * ENNReal.ofReal ((K₀ + K₁ * s) ^ 2)) :
+    (∫⁻ x : ℝ, ‖Φ x‖ₑ ^ 2) ^ ((1 : ℝ) / 2)
+      ≤ ENNReal.ofReal (K₀ / (μ₀ + m) + 4 * K₁ / (μ₀ + m) ^ 2) := by
+  refine GaloisForLFunctions.HTGeometry.lintegral_sq_laplaceSuperposition_le_ray_linear
+    hK₀ hK₁ hgap hmeas hΦ fun s hs => ?_
+  have hKs : (0 : ℝ) ≤ K₀ + K₁ * s := by positivity
+  have hsq := lintegral_sq_slice_le hB hs.le (hsupp s) (hslice s hs)
+  have hval : ENNReal.ofReal (Real.exp (-(2 * (μ₀ + m) * s))) * ENNReal.ofReal ((K₀ + K₁ * s) ^ 2)
+      = ENNReal.ofReal ((K₀ + K₁ * s) * Real.exp (-(μ₀ + m) * s)) ^ 2 := by
+    rw [← ENNReal.ofReal_mul (Real.exp_pos _).le,
+      ← ENNReal.ofReal_pow (by positivity : (0 : ℝ) ≤ (K₀ + K₁ * s) * Real.exp (-(μ₀ + m) * s))]
+    congr 1
+    have hexp : Real.exp (-(μ₀ + m) * s) ^ 2 = Real.exp (-(2 * (μ₀ + m) * s)) := by
+      rw [← Real.exp_nat_mul]
+      congr 1
+      push_cast
+      ring
+    rw [mul_pow, hexp]
+    ring
+  calc (∫⁻ x : ℝ, ‖accretiveSemigroup (B x) s (Ψ x s)‖ₑ ^ 2) ^ ((1 : ℝ) / 2)
+      ≤ (ENNReal.ofReal (Real.exp (-(2 * (μ₀ + m) * s)))
+          * ENNReal.ofReal ((K₀ + K₁ * s) ^ 2)) ^ ((1 : ℝ) / 2) :=
+        ENNReal.rpow_le_rpow hsq (by norm_num)
+    _ = (ENNReal.ofReal ((K₀ + K₁ * s) * Real.exp (-(μ₀ + m) * s)) ^ 2) ^ ((1 : ℝ) / 2) := by
+        rw [hval]
+    _ = ENNReal.ofReal ((K₀ + K₁ * s) * Real.exp (-(μ₀ + m) * s)) := by
+        rw [← ENNReal.rpow_natCast
+          (ENNReal.ofReal ((K₀ + K₁ * s) * Real.exp (-(μ₀ + m) * s))) 2, ← ENNReal.rpow_mul]
+        norm_num
+
 end GaloisForLFunctions.RHTower

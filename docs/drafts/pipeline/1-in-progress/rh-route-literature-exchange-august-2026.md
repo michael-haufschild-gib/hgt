@@ -47,8 +47,10 @@ CCM-UR and CCM-RF share CCM-FU's literal source, so neither is an independent ro
 affine conjugacy and diagonal-Fock contractivity are exact RH receivers, not additional candidates.
 Two non-CCM candidates are visible. SP-E now has a literal positive faithful Schatten-one
 prime/depth Pluecker operator, strictly negative-real-rooted reflected finite determinants, and
-locally uniform convergence to a stable entire determinant. It lacks arithmetic identification of
-that determinant or a renormalized boundary transfer with completed Xi. TC-HS is paper-level theta--Cayley half-step
+locally uniform convergence to a stable entire determinant. Direct `det2` and canonical ordinary
+Fredholm identification with Xi are now excluded at first jet by fixed-node Bernoulli capacity.
+It lacks a source-derived node-changing, amplifying, signed, or non-Bernoulli renormalized boundary
+transfer with completed Xi. TC-HS is paper-level theta--Cayley half-step
 transport: reflection gives weighted annihilation at time shift `n -> -n-1`, while source-native
 half-step neutralization remains unconstructed.
 Periodic-pencil boundary wedges have
@@ -311,6 +313,13 @@ is therefore source-isogenous to CCM-FU and remains a candidate reporter, not an
 by-parts steps: completed-error unit-Riesz response equals endpoint term plus curvature pairing
 against actual FU Cesàro primitive, without differentiating prime staircase. Remaining debt is
 Laplace/Landau endpoint plus arithmetic lower estimate, not reporter identification.
+`CCMUnitRieszHankelBoundaryPulse.lean` now realizes the canonical fast/slow pair as genuine HG leak
+profiles and computes its scalar boundary pulse exactly as
+`(3/32)(exp(-u/2)-exp(-u))`, positive for every `u>0` and sharply bounded by `3/128` at
+`u=2 log 2`. After four-unit normalization it still lies below incoming pole trace by the exact
+square `4(1-exp(-u/2))^2`. Every separated two-point covariance compression also has negative
+determinant. The pair therefore gives HG a canonical scalar pulse but cannot discharge its sharp
+pole bound or act as an EP positive operator background.
 
 The fifth candidate, **CCM-RF**, is now explicit. Existing Lean completeness makes eventual lower
 boundedness of one fixed-width logarithmically sampled rectangular Weil family equivalent to RH;
@@ -328,7 +337,8 @@ coordinates. Paper companion proves scalar cofinal Herglotz transport incompatib
 successful background cancellation must be signed or operator-valued. Missing source theorem is
 dephased log-derivative convergence of actual CCM factors across `Re(w)=1/2`, or a positive
 operator-valued relative background; neither actual factor convergence nor Lean RH handoff is
-present. This is a candidate transfer architecture, not a proved route.
+present. The canonical FU--UR fast/slow pair is now excluded for that role by its negative
+two-point covariance determinant. This is a candidate transfer architecture, not a proved route.
 
 The non-CCM **SP-E** candidate now has exact finite replacement. Lean proves scalar type-`B`
 top-signature specialization kills four-label adjacent curvature and forces positive edge kernel
@@ -337,22 +347,32 @@ boundary evaluation, and a rank-two Pluecker/Gram pencil retains its square with
 and negative real roots. Uniform Boolean Gram carrier is now excluded more sharply: normalized
 quadratic coefficient is at most `13/98`, while theta source requires at least `1/6`. That local
 repair is now bypassed by the full physical-overlap carrier. Lean proves its literal prime/depth
+six-minor covariance has strictly positive probabilities, is PSD with kernel exactly the constant
+direction, and has genuine off-diagonal coupling; this is
+`GammaSewnMobiusApertureStokesPhysicalPluckerCovariance.lean`. Lean then proves the global
 Pluecker operator positive, faithful, and Schatten-one; canonical finite reflected `det2`
 approximants have only strictly negative real zeros and converge locally uniformly to an entire
 stable determinant with the same zero ray. Source normalization, sewing, determinant existence,
 finite stability, and cofinal convergence are closed. Exact open core is arithmetic identification:
-compute source-native logarithmic coefficients and compare with completed Xi, or construct a
-renormalized zero-boundary transfer compatible with continuous zero spectrum. This is candidate
-progress, not a source-to-RH route.
+direct determinant is now excluded, so construct a source-derived transfer compatible with
+continuous zero spectrum that changes/amplifies nodes, adds a signed/indefinite completed channel,
+or leaves Bernoulli quadratic geometry. This is candidate progress, not a source-to-RH route.
 Lean capstone is
 `GammaSewnMobiusApertureStokesPhysicalPluckerEntireDeterminant.lean`.
 `GammaSewnMobiusApertureStokesPhysicalPluckerOrdinaryDeterminant.lean` then proves direct `det2`--Xi
 identification impossible at first jet: `det2` derivative is zero while Xi square-coordinate first
 coefficient is positive. Multiplication by canonical `exp(u*sourceTrace)` restores ordinary
-Fredholm determinant without moving zeros; source trace is positive/summable, finite determinants
-are literal `det(I+uT_s)`, and finite traces/determinants converge. Open arithmetic gate is now
-`sourceTrace = thetaCuspNormalizedEvenMoment 1 / 2` and all higher Fredholm coefficient identities,
-or a continuous-zero-compatible source boundary transfer if higher identity fails.
+Fredholm determinant without moving zeros. `NuclearRankOneTrace.lean` and the ordinary-determinant
+capstone now identify source trace with the literal nonnegative nuclear mass
+`sum blockWeight*physicalProbability*||centeredVector||^2`; finite determinants are literal
+`det(I+uT_s)`, and finite traces/determinants converge. The first Xi identity is exactly equality
+of this explicit source mass with `thetaCuspNormalizedEvenMoment 1 / 2`.
+`GammaSewnMobiusApertureStokesPhysicalPluckerFirstTraceNoGo.lean` now falsifies that equality:
+every packet node sum is `<2/25`, every real Bernoulli quadratic has apex `1/4`, and normalized
+positive sewing gives `sourceTrace<=1/50`, while Xi first coefficient is `>1/50`. This is
+independent of physical probabilities and excludes all fixed-node coordinate-mean reweightings.
+Higher direct Fredholm comparisons are retired; surviving task is a continuous-zero-compatible
+source boundary transfer outside fixed-positive-node Bernoulli class.
 
 The paper-level non-CCM **TC-HS** candidate starts from exact theta--Cayley port defect. Reflection
 sends time `n` to `-n-1` and produces weighted, not equal-coefficient, same-time annihilation.
@@ -1773,6 +1793,14 @@ remainder to inward ray, and `WallForcedProfileRay.lean` bounds forced profile b
 plus moving tail. `WallForcedProfileWindow.lean` closes window bound and three-region composition
 to whole frequency line. Generic one-block forced-profile estimate is closed, not literal
 completed-source realization or sign.
+`WallBlockSourceEnergy.lean` fixes normalization exactly: block-source frequency energy is
+`pi/2` times physical profile energy. `WallThresholdArithmetic.lean` and
+`WallBlockThreshold.lean` now make remaining block threshold explicit:
+`X_m=max(C_0,1)exp(max(0,-m))` opens the wall floor uniformly on `[m,m+1]`, unit-block `L1` mass
+costs at most `L2` mass, and exponent cancellation puts every tail contribution at exactly one
+squared threshold. `WallDatumRayBound.lean` composes these facts into the uniform outward-ray
+energy `C(||c||^2+Y^2 integral||g||^2)`. This closes propagated-datum bookkeeping, not completed-
+source realization or return orientation.
 Characteristic-mode modules identify finite exponential-polynomial spaces, while
 `CCMEvansBoundaryInfiniteRank.lean` proves complete Gamma boundary is infinite rank and invalidates
 raw finite determinant. `CCMRationalResidualEvansMatrix.lean` reduces reconstructed rational
@@ -2711,6 +2739,33 @@ constant is pinned to `2n+1`. `ProlateEvenEigenspaceRelativeBound.lean` and
 `HermiteFunctionOrthogonality.lean` adds exact finite-window Wronskian identity and vanishing
 cross-rung inner products. Missing pieces are rung-wise prolate Rayleigh bounds, band-class
 independence/multiplicity, cross-spectral ordering, and rung index.
+`ProlateRayleighForm.lean` now proves the exact boundary-free integration-by-parts identity:
+the prolate Rayleigh numerator is minus Dirichlet-plus-potential energy on `[-1,1]`.
+`HermiteGaussianEnvelope.lean` represents every Hermite mode and its derivative as polynomial
+times `exp(-x^2/2)`, proves absolute integrability, and gives a truncation-independent interval-
+integral bound. `ProlateActionLinear.lean` proves exact linearity on finite smooth families and
+expands the trial-space Rayleigh numerator as the pairwise Gram double sum. These close trial
+boundary terms, Gaussian domination, and finite-space expansion. They do not yet supply
+`c`-uniform rung-wise energy asymptotics, spectral ordering, multiplicity, or index theorem.
+`ProlateHermiteTrialFamily.lean` now evaluates those entries symbolically after Hermite rescaling:
+it proves exact derivative/action formulas, change of variables to `[-sqrt(c),sqrt(c)]`, pairwise
+norm, and pairwise numerator with main term `-c(2m+1)` plus explicit polynomial-Gaussian
+corrections. `ProlateHermiteTrialEstimate.lean` isolates this split and proves every fixed-pair
+correction integral uniformly bounded; the envelope module supplies its polynomial-Gaussian input.
+`HTGeometry/GramFormPositivity.lean` closes the final abstract finite-matrix positivity step: a
+positive diagonal floor, dimension-weighted small off-diagonal bound, bounded correction, and
+sufficiently large leading coefficient force strict positivity on every nonzero coefficient vector.
+Thus fixed-rung trial control is reduced to instantiating those explicit inequalities from the
+Hermite estimates. Uniformity over the required rung cutoff, the composed min--max estimate,
+multiplicity/index, and cross-spectral ordering remain open.
+`CCMGrowingApertureMellin.lean` now formalizes the determinant-transfer rate gate. Mellin
+evaluation on `[lambda^(-1),lambda]` has exact squared norm
+`sinh(2a log lambda)/a` at height `a`, and even parity removes no exponential power. Locally
+uniform convergence on `|Im z|<1/2` therefore needs
+`lambda^a||xi_lambda-k_lambda||_2->0` for every `a<1/2`; a sufficient form target is
+`lambda^(2a)(r_lambda-epsilon_lambda)/Gap_lambda->0`, in particular an `O(lambda^-1)` excess-gap
+ratio. Ordinary `o(1)` eigenvector convergence is insufficient. This sharpens post-selection
+landing but does not prove whole-ground selection or a gap.
 Immediate certification residue is cross-spectral ordering identifying that family with signed
 Fourier mode zero, not analytic profile or total-mass control. `CCMProlateEndpointJet.lean` also
 proves fixed endpoint-jet truncations are noncofinal.
@@ -3938,6 +3993,16 @@ mean-square saving under explicit divisor-count envelope. Endpoint motion is clo
 production is not.
 `Sieve/InghamMovingRightGaussianTranslatedMoment.lean` preserves that saving under Gaussian
 translation uniformly in ordinate, closing actual moving endpoint consumed by interpolation.
+`Sieve/InghamUniformGabrielDualBudget.lean` closes dual-datum geometry on
+`7/10<=sigma<=1`: interior power stays in `[4/3,2]`, seed exponent is positive, and affine dual
+exponent hits both moving-strip endpoints. `Sieve/InghamUniformGabrielDualPower.lean` now realizes
+the datum as an analytic complex power, proves exact fourth-power left-boundary and second-power
+right-boundary norm identities, and proves continuity at zero in both seed and moving pair. The
+dual interpolant itself is therefore closed. `Sieve/InghamUniformGabrielScalarFamily.lean` pairs it
+with the shifted field: center value is exactly the moving interior moment, and Hölder gives the
+required `L^(4/3)` left-edge and `L^2` right-edge bounds. Parameter-holomorphy/three-lines for this
+standalone family is not yet stated, but fixed-gap detector density is already closed by the
+separate detector chain. None supplies density-to-prime summation or physical-current composition.
 
 **Exchange verdict and Lean action.** Generic Lorentz mass shell, rapidity, causal chamber, Hankel
 scattering, and modified-Bessel transform are not novelty claims. Corpus-specific candidate delta
@@ -4012,6 +4077,24 @@ margin can preserve positivity. Thus one low minor needs source-derived pair iso
 not replace moving-degree super-apex/flux control.
 Active `XiShiftedHardEdgeDensityMeasure.lean` also identifies Route-U archimedean rate exactly with
 Gamma--Hardy phase rate of Connes--Consani source. This closes normalization seam, not sign.
+
+The generic flat-face jet has now caught up with this source picture.
+`HTGeometry/MovingGaussNodes.lean` proves that if
+`delta_(2n+2)=s_y(2n+2)-sum_i w_i x_i^(2n+2)` vanishes, every reciprocal hard coordinate
+`x_i^(-1)-y` is stationary and
+
+```text
+delta'_(2n+2)=-(2n+3) delta_(2n+3).
+```
+
+The same module proves exact root derivative for hard-edge normalized admission
+`S(u)=(1+u/y_0)^N p((y_0+u)^(-1))`, namely
+`S'(u_i)=-(1+u_i/y_0)^N x_i^2 p'(x_i)`. Thus normalization hides no root-motion sign, and the next
+omitted moment is the exact first-order exit variable. `HTGeometry/IteratedDerivVanishing.lean`
+also closes generic Leibniz step: a factor flat through order `m` makes its product flat at order
+`m`. Remaining theorem is route-specific all-contact-order Gauss-node/defect induction together
+with shifted-Xi contact-parity orientation of the first
+nonzero defect; generic positive quadrature dynamics still gives no sign.
 
 **Current frontier correction.** Non-RH least defective dimension is now formally
 `Theta(sqrt(y))`. Rational hard-edge tests have exact completed polar--Gamma--von-Mangoldt source,
@@ -5024,7 +5107,16 @@ finite-amplifier pattern/width caps, the formal abelian-zeta-gas response/socle/
 layers, and full finite one-replica Pauli generation. The formalized two-query eigenframe module
 adds exact Pauli twirling, Haar mean/tail, and for every fixed positive even body order a permanent
 strict separation: every nonzero autonomous Hamiltonian with that Majorana support stays above the
-Haar score at every time. It has no Xi typing or handoff. Derived-selection geometry
+Haar score at every time. It has no Xi typing or handoff.
+`HTGeometry/PauliSymplecticTransitivity.lean` also proves binary Pauli commutation is nondegenerate,
+symplectic transvections preserve it, and one or two transvections map any nonzero label to any
+other. `HTGeometry/LagrangianVectorFrequency.lean` then double-counts maximal commuting subgroups:
+every nonzero `n`-qubit label occurs in exactly one Lagrangian out of `2^n+1`. Bare symplectic label
+geometry therefore cannot canonically select one nonzero arithmetic direction. This is symmetry
+infrastructure, not a new RH route. `HTGeometry/PauliParseval.lean` adds exact energy accounting:
+sum of squared Pauli trace coefficients is `2^n` times Frobenius square;
+`HTGeometry/PauliProductLaw.lean` gives exact Klein-four label multiplication and accumulated
+fourth-root phase. Derived-selection geometry
 computes a Riemann pullback nontrivial exactly on the critical line. Constraint-relativity laws
 show that faithful re-encoding, fixed defect closure, bounded/static observers, unframed rank-one
 naturality, symmetry inheritance, and finite word filtrations do not promote a missing law. A
@@ -5355,12 +5447,19 @@ and every finite-product zero lies on `Re(s)=1/2`. This positive rigidity still 
 boundary: infinite Euler source has no top/cofinite Dirichlet coefficient, so finite functional-
 equation complements cannot converge into missing all-prime selector.
 
-Prescribed-gap synthesis supplies a stronger nonselection theorem at paper level. Any stationary
-ergodic positive mean-one gap law is realized by real zeros of even exact-order-one
-Laguerre--Pólya function with maximal translation differential-algebraic independence; multiplying
-by positive-on-real even polynomial adds off-real quartet without changing real gaps or profield.
-Lean proves ergodic/generic gap-sequence and block-law-stability components. Thus exact order,
-functional symmetry, local GUE-type gaps, and maximal HT cannot be RH producer without pointed
+Prescribed-gap synthesis supplies a stronger nonselection theorem. Any stationary ergodic positive
+mean-one gap law is realized by real zeros of even exact-order-one Laguerre--Pólya function with
+maximal translation differential-algebraic independence. `HTGeometry/QuartetPolynomial.lean` now
+formalizes the insertion factor `(z^2-tau^2)(z^2-conj(tau)^2)`: it is nonzero, even,
+Schwarz-real, has exactly the quartet `{±tau,±conj(tau)}`, has no real zero for
+`Im(tau)≠0`, and has an order-one envelope. `HTGeometry/TranslationPowerProfield.lean` proves
+every nonzero polynomial factor leaves every positive-power translation profield unchanged, while
+`HTGeometry/MovingDivisorQuartetSurgery.lean` instantiates the full carrier: same real zeros,
+exactly the added off-real quartet, maximal translation freeness at every positive power, and equal
+translated-power profields. `HTGeometry/PrescribedGapProcessEntireProfield.lean` closes the
+stationary-ergodic capstone for every positive mean-one gap law. Thus exact order, functional
+symmetry, local GUE-type gaps, maximal HT,
+and the whole translated-power differential field cannot be RH producer without pointed
 source/operator admission. No external gap-statistics theorem repairs this logical blindness.
 
 Gaber's July preprint
@@ -5452,14 +5551,22 @@ External material should be imported only where it shortens a current first open
    are formal. Work must construct dephased actual-CCM logarithmic-derivative convergence across
    `Re(w)=1/2` or signed/operator-valued background covariance; more real finite spectra do not
    cross boundary.
-11. **SP-E — identify already-stable physical determinant with Xi.** Literal physical-overlap
+11. **SP-E — transfer already-stable physical geometry to Xi.** Literal physical-overlap
     Pluecker operator, source normalization, positivity, faithfulness, Schatten-one class, finite
     negative-real-rooted determinants, locally uniform entire limit, and canonical ordinary
-    determinant trace restoration are formal. Direct `det2` identification is first-jet impossible.
-    Prove source trace equals half first theta moment and compare all higher ordinary Fredholm
-    coefficients with Xi; if higher identity fails, construct
-    continuous-zero-compatible renormalized boundary transfer. Do not revisit amplitude-eight or
-    local metric repair.
+    determinant trace restoration are formal. Direct `det2` and ordinary identification are
+    first-jet impossible: fixed-node Bernoulli source trace is `<=1/50`, Xi coefficient is `>1/50`.
+    P-G100--P-G102 classify canonical continuous-zero repair: weighted trace has exact four-unit
+    relative residue, but both bounded resolvent channels are contractions, and inverse gain eight
+    forces shell `1/8-eps` outside source spectrum for every `0<eps<21/200` because
+    `||T||<=1/50`. P-G103 proves positive Schur shorting cannot rebalance and uniquely fixes
+    one-negative-index target: polar pivot `-w`, cross `(sqrt 63 / 8)w`, determinant `-w^2`.
+    P-G104 proves this coefficient is canonical rather than fitted: two Route-P depth-square steps
+    have Hilbert amplitude `1/8`, Julia defect `sqrt(63)/8`, and parent--defect pairing exactly equal
+    to P-G103's cross. Identify that defect coordinate with literal oriented Gamma/polar co-source
+    before inversion; then identify full moments/divisor with Xi. Do not revisit scalar functional
+    calculus, probability reweighting, amplitude-eight insertion, local metric repair, or direct
+    higher Fredholm comparison.
 12. **TC-HS — half-step transport.** Formalize paper defect/reflection theorem, then construct
     source-native half-step or density neutralizing reflection coefficient before divisor reading.
 
@@ -5530,8 +5637,14 @@ Likewise every finite nonzero solution-jet prescription is locally realizable by
 logarithmic-derivative pair `E'=H E`, and induced full jet substitution is injective. Generic
 logarithmic-derivative differential algebra therefore supplies no hidden divisor selector; full
 jet independence of base family transfers to logarithmic-derivative solutions.
+`HTGeometry/DifferentialAdjoinBaseScaling.lean` further proves that multiplying each generator by
+an arbitrary nonzero coefficient-field scalar leaves the generated differential field unchanged.
+Amplitude normalization cannot repair this divisor blindness.
 `HTGeometry/RationalJetShift.lean` closes all-order denominator recursion for rational gauge shifts;
 this is bookkeeping, not arithmetic selection.
+`HTGeometry/MovingDivisorEntireFreeness.lean` upgrades carrier freeness off real axis to translated
+symmetric canonical products and every positive power. Even actual entire-product freeness remains
+compatible with arbitrary prescribed divisor/gap data and cannot select RH.
 
 These shifts strengthen central corpus diagnosis: missing mathematics is constitutive, not
 representational. Source already carries labels, depth, reflection, multiplicity, and exact
@@ -5552,9 +5665,16 @@ one edge commutator, and scalar observability deficit is paid by relative negati
 principal--relative carrier, rigged edge trace, finite-part descent, and cofinal index-preserving
 transport remain absent.
 SP-E and TC-HS are additional non-CCM candidates. SP-E has an unconditional source-native stable
-entire determinant; missing gate is completed-Xi arithmetic identification or renormalized boundary
-transfer, not metric or cofinal assembly. TC-HS has paper-level weighted reflection defect but lacks
-source-native half-step neutralization.
+entire determinant, but direct regularized and ordinary identification is formally excluded by a
+universal first-trace capacity wall. Canonical positive scalar boundary resolvent is now also
+excluded as normalization repair: fixed inverse gain localizes away from zero and exceeds physical
+spectral budget throughout zero-boundary neighborhood. One-negative-index shorting algebra is now
+exact, including unique cross `(sqrt 63 / 8)w`; P-G104 derives that cross as parent pairing with
+canonical Julia defect of literal fourth-depth contraction. Missing gate is oriented Gamma/polar
+realization of this already-forced defect coordinate before inversion, not coefficient selection,
+metric, cofinal assembly, or scalar singular transfer. TC-HS has
+paper-level weighted reflection defect but lacks source-native half-step
+neutralization.
 Periodic-pencil intrinsic dimension two, Cubic Ward/Hellinger, CCM–E, CCM–P–L two-sheet, and
 formation-completion seams remain route-design information rather than additional live routes.
 External SOTA

@@ -53,8 +53,8 @@ theorem continuous_semigroup_pair (T : X →L[ℂ] X) {σ : ℝ} (hσ0 : 0 < σ)
   exact NormedSpace.exp_continuous.comp hgen
 
 /-- The block slice cut to the terminal ray. -/
-def cutSlice (g : ℝ → X) (Y : ℝ) (x s : ℝ) : X :=
-  (Ioi Y).indicator (fun y => blockSlice g s y) x
+def cutSlice (g : ℝ → X) (A : Set ℝ) (x s : ℝ) : X :=
+  A.indicator (fun y => blockSlice g s y) x
 
 omit [CompleteSpace X] in
 theorem stronglyMeasurable_blockSlice_pair {g : ℝ → X} (hg : StronglyMeasurable g) :
@@ -76,33 +76,35 @@ theorem stronglyMeasurable_blockSlice_pair {g : ℝ → X} (hg : StronglyMeasura
   exact hint
 
 omit [CompleteSpace X] in
-theorem stronglyMeasurable_cutSlice_pair {g : ℝ → X} (hg : StronglyMeasurable g) (Y : ℝ) :
-    StronglyMeasurable fun p : ℝ × ℝ => cutSlice g Y p.1 p.2 := by
+theorem stronglyMeasurable_cutSlice_pair {g : ℝ → X} (hg : StronglyMeasurable g)
+    {A : Set ℝ} (hA : MeasurableSet A) :
+    StronglyMeasurable fun p : ℝ × ℝ => cutSlice g A p.1 p.2 := by
   have hbase := stronglyMeasurable_blockSlice_pair hg
-  have hset : MeasurableSet {p : ℝ × ℝ | p.1 ∈ Ioi Y} :=
-    measurableSet_Ioi.preimage measurable_fst
-  have heq : (fun p : ℝ × ℝ => cutSlice g Y p.1 p.2)
+  have hset : MeasurableSet {p : ℝ × ℝ | p.1 ∈ A} :=
+    hA.preimage measurable_fst
+  have heq : (fun p : ℝ × ℝ => cutSlice g A p.1 p.2)
       = fun p : ℝ × ℝ =>
-        Set.indicator {q : ℝ × ℝ | q.1 ∈ Ioi Y} (fun q : ℝ × ℝ => blockSlice g q.2 q.1) p := by
+        Set.indicator {q : ℝ × ℝ | q.1 ∈ A} (fun q : ℝ × ℝ => blockSlice g q.2 q.1) p := by
     funext p
     rw [cutSlice]
-    by_cases hp : p.1 ∈ Ioi Y
+    by_cases hp : p.1 ∈ A
     · rw [Set.indicator_of_mem hp,
-        Set.indicator_of_mem (show p ∈ {q : ℝ × ℝ | q.1 ∈ Ioi Y} from hp)]
+        Set.indicator_of_mem (show p ∈ {q : ℝ × ℝ | q.1 ∈ A} from hp)]
     · rw [Set.indicator_of_notMem hp,
-        Set.indicator_of_notMem (show p ∉ {q : ℝ × ℝ | q.1 ∈ Ioi Y} from hp)]
+        Set.indicator_of_notMem (show p ∉ {q : ℝ × ℝ | q.1 ∈ A} from hp)]
   rw [heq]
   exact hbase.indicator hset
 
-theorem measurable_semigroup_cutSlice {g : ℝ → X} (hg : StronglyMeasurable g) (Y : ℝ)
+theorem measurable_semigroup_cutSlice {g : ℝ → X} (hg : StronglyMeasurable g)
+    {A : Set ℝ} (hA : MeasurableSet A)
     {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) :
     Measurable (Function.uncurry fun x s : ℝ =>
-      ‖accretiveSemigroup (wallGenerator T σ x) s (cutSlice g Y x s)‖ₑ) := by
+      ‖accretiveSemigroup (wallGenerator T σ x) s (cutSlice g A x s)‖ₑ) := by
   have hsem : StronglyMeasurable fun p : ℝ × ℝ => accretiveSemigroup (wallGenerator T σ p.1) p.2 :=
     (continuous_semigroup_pair T hσ0 hσ1).stronglyMeasurable
-  have hcut := stronglyMeasurable_cutSlice_pair hg Y
+  have hcut := stronglyMeasurable_cutSlice_pair hg hA
   have hev : StronglyMeasurable fun p : ℝ × ℝ =>
-      accretiveSemigroup (wallGenerator T σ p.1) p.2 (cutSlice g Y p.1 p.2) := by
+      accretiveSemigroup (wallGenerator T σ p.1) p.2 (cutSlice g A p.1 p.2) := by
     have hcont : Continuous fun q : (X →L[ℂ] X) × X => q.1 q.2 :=
       isBoundedBilinearMap_apply.continuous
     exact hcont.comp_stronglyMeasurable (hsem.prodMk hcut)
@@ -124,12 +126,12 @@ block-independent constant.  It does not decay, so the estimate comes entirely f
 representation: each semigroup slice carries the frequency energy `2π e^{-2sm}` of the weighted block
 profile and the operator decay `e^{-2(μ₀−m)s}`, the two rates add to `μ₀`, and Minkowski in the
 Laplace variable turns that into the factor `μ₀^{-1}`. -/
-theorem lintegral_sq_firstBoundary_le {σ m μ₀ Y : ℝ} {g : ℝ → X}
-    (hσ0 : 0 < σ) (hσ1 : σ < 1) (hμ : 0 < μ₀)
+theorem lintegral_sq_firstBoundary_le {σ m μ₀ : ℝ} {A : Set ℝ} {g : ℝ → X}
+    (hA : MeasurableSet A) (hσ0 : 0 < σ) (hσ1 : σ < 1) (hμ : 0 < μ₀)
     (hg2 : MemLp g 2 (volume : Measure ℝ)) (hgm : StronglyMeasurable g)
     (hsupp : ∀ L : ℝ, L ∉ Icc m (m + 1) → g L = 0)
-    (hfloor : ∀ x ∈ Ioi Y, μ₀ - m ≤ wallFloor T σ x) :
-    (∫⁻ x : ℝ, ‖(Ioi Y).indicator (firstBoundary T g σ) x‖ₑ ^ 2) ^ ((1 : ℝ) / 2)
+    (hfloor : ∀ x ∈ A, μ₀ - m ≤ wallFloor T σ x) :
+    (∫⁻ x : ℝ, ‖(A).indicator (firstBoundary T g σ) x‖ₑ ^ 2) ^ ((1 : ℝ) / 2)
       ≤ ENNReal.ofReal (Real.sqrt ((2 * Real.pi) * ∫ L : ℝ, ‖g L‖ ^ 2) / μ₀) := by
   set K : ℝ := Real.sqrt ((2 * Real.pi) * ∫ L : ℝ, ‖g L‖ ^ 2) with hKdef
   have hEnn : (0 : ℝ) ≤ (2 * Real.pi) * ∫ L : ℝ, ‖g L‖ ^ 2 := by
@@ -138,20 +140,20 @@ theorem lintegral_sq_firstBoundary_le {σ m μ₀ Y : ℝ} {g : ℝ → X}
   have hKnn : 0 ≤ K := Real.sqrt_nonneg _
   have hKsq : K ^ 2 = (2 * Real.pi) * ∫ L : ℝ, ‖g L‖ ^ 2 := Real.sq_sqrt hEnn
   have hgap : 0 < (μ₀ - m) + m := by linarith
-  have hB : ∀ x ∈ Ioi Y, ∀ u : X,
+  have hB : ∀ x ∈ A, ∀ u : X,
       (μ₀ - m) * ‖u‖ ^ 2 ≤ (inner ℂ (wallGenerator T σ x u) u).re := by
     intro x hx u
     have hbase := re_inner_wallGenerator_ge (T := T) hσ0 hσ1 x u
     have hfl := hfloor x hx
     nlinarith [sq_nonneg ‖u‖, hbase, hfl]
-  have hcutsupp : ∀ s : ℝ, ∀ x, x ∉ Ioi Y → cutSlice g Y x s = 0 := by
+  have hcutsupp : ∀ s : ℝ, ∀ x, x ∉ A → cutSlice g A x s = 0 := by
     intro s x hx
     rw [cutSlice, Set.indicator_of_notMem hx]
-  have hΦ : ∀ x : ℝ, ‖(Ioi Y).indicator (firstBoundary T g σ) x‖ₑ
+  have hΦ : ∀ x : ℝ, ‖(A).indicator (firstBoundary T g σ) x‖ₑ
       ≤ ∫⁻ s in Ioi (0 : ℝ),
-          ‖accretiveSemigroup (wallGenerator T σ x) s (cutSlice g Y x s)‖ₑ := by
+          ‖accretiveSemigroup (wallGenerator T σ x) s (cutSlice g A x s)‖ₑ := by
     intro x
-    by_cases hx : x ∈ Ioi Y
+    by_cases hx : x ∈ A
     · have hfl : μ₀ ≤ wallFloor T σ x + m := by
         have := hfloor x hx
         linarith
@@ -162,7 +164,7 @@ theorem lintegral_sq_firstBoundary_le {σ m μ₀ Y : ℝ} {g : ℝ → X}
     · rw [Set.indicator_of_notMem hx]
       simp
   have hslice : ∀ s : ℝ, 0 < s →
-      (∫⁻ x : ℝ, ‖cutSlice g Y x s‖ₑ ^ 2)
+      (∫⁻ x : ℝ, ‖cutSlice g A x s‖ₑ ^ 2)
         ≤ ENNReal.ofReal (Real.exp (-(2 * s * m))) * ENNReal.ofReal (K ^ 2) := by
     intro s hs
     have hg1 : Integrable g := integrable_zeroExtension hg2 hsupp
@@ -171,10 +173,10 @@ theorem lintegral_sq_firstBoundary_le {σ m μ₀ Y : ℝ} {g : ℝ → X}
       memLp_blockWeighted hs.le hg2 hsupp
     have hsqint : Integrable (fun x : ℝ => ‖blockSlice g s x‖ ^ 2) (volume : Measure ℝ) :=
       integrable_norm_sq_vectorAngularTransform hw1 hw2
-    have hmono : (∫⁻ x : ℝ, ‖cutSlice g Y x s‖ₑ ^ 2)
+    have hmono : (∫⁻ x : ℝ, ‖cutSlice g A x s‖ₑ ^ 2)
         ≤ ∫⁻ x : ℝ, ‖blockSlice g s x‖ₑ ^ 2 := by
       refine lintegral_mono fun x => ?_
-      by_cases hx : x ∈ Ioi Y
+      by_cases hx : x ∈ A
       · rw [cutSlice, Set.indicator_of_mem hx]
       · rw [cutSlice, Set.indicator_of_notMem hx]
         simp
@@ -183,7 +185,7 @@ theorem lintegral_sq_firstBoundary_le {σ m μ₀ Y : ℝ} {g : ℝ → X}
       ← ENNReal.ofReal_mul (Real.exp_pos _).le]
     exact ENNReal.ofReal_le_ofReal (integral_norm_sq_blockSlice_le hs.le hg2 hsupp)
   have hfin := lintegral_sq_blockLaplace_le hB hgap hKnn hcutsupp
-    (measurable_semigroup_cutSlice hgm Y hσ0 hσ1) hΦ hslice
+    (measurable_semigroup_cutSlice hgm hA hσ0 hσ1) hΦ hslice
   have hsum : μ₀ - m + m = μ₀ := by ring
   rwa [hsum] at hfin
 

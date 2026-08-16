@@ -63,4 +63,65 @@ theorem integral_norm_sq_blockSource {g : ℝ → X} {m : ℝ}
   rw [hrw, integral_const_mul, hpar]
   ring
 
+open scoped ENNReal
+
+/-- The block source is square integrable on the line. -/
+theorem integrable_norm_sq_blockSource {g : ℝ → X} {m : ℝ}
+    (hg2 : MemLp g 2 (volume : Measure ℝ)) (hsupp : ∀ L : ℝ, L ∉ Icc m (m + 1) → g L = 0) :
+    Integrable (fun t : ℝ => ‖blockSource g m t‖ ^ 2) (volume : Measure ℝ) := by
+  have hg1 : Integrable g := integrable_zeroExtension hg2 hsupp
+  have hbase := integrable_norm_sq_vectorAngularTransform hg1 hg2
+  have hrw : (fun t : ℝ => ‖blockSource g m t‖ ^ 2)
+      = fun t : ℝ => (1 / 4 : ℝ) * ‖vectorAngularTransform g t‖ ^ 2 := by
+    funext t
+    rw [norm_blockSource hsupp]
+    ring
+  rw [hrw]
+  exact hbase.const_mul _
+
+/-- The extended frequency energy of the block source. -/
+theorem lintegral_enorm_sq_blockSource {g : ℝ → X} {m : ℝ}
+    (hg2 : MemLp g 2 (volume : Measure ℝ)) (hsupp : ∀ L : ℝ, L ∉ Icc m (m + 1) → g L = 0) :
+    (∫⁻ t : ℝ, ‖blockSource g m t‖ₑ ^ 2)
+      = ENNReal.ofReal ((Real.pi / 2) * ∫ L : ℝ, ‖g L‖ ^ 2) := by
+  rw [lintegral_enorm_sq_eq_ofReal_integral (integrable_norm_sq_blockSource hg2 hsupp),
+    integral_norm_sq_blockSource hg2 hsupp]
+
+omit [CompleteSpace X] in
+/-- The block source is measurable, being a parametrised Fourier integral. -/
+theorem aestronglyMeasurable_blockSource {g : ℝ → X} {m : ℝ}
+    (hg2 : MemLp g 2 (volume : Measure ℝ)) (hsupp : ∀ L : ℝ, L ∉ Icc m (m + 1) → g L = 0) :
+    AEStronglyMeasurable (fun t : ℝ => blockSource g m t) (volume : Measure ℝ) := by
+  have hrw : (fun t : ℝ => blockSource g m t)
+      = fun t : ℝ => (-(Complex.I) / 2 : ℂ) • vectorAngularTransform g t := by
+    funext t
+    exact blockSource_eq_angularTransform hsupp t
+  rw [hrw]
+  refine AEStronglyMeasurable.const_smul ?_ _
+  have hjoint : AEStronglyMeasurable (Function.uncurry fun (t : ℝ) (x : ℝ) =>
+      Complex.exp (-(Complex.I) * (t : ℂ) * (x : ℂ)) • g x)
+      ((volume : Measure ℝ).prod (volume : Measure ℝ)) := by
+    have hph : Continuous fun p : ℝ × ℝ =>
+        Complex.exp (-(Complex.I) * (p.1 : ℂ) * (p.2 : ℂ)) := by fun_prop
+    exact hph.aestronglyMeasurable.smul (hg2.aestronglyMeasurable.comp_snd)
+  exact hjoint.integral_prod_right'
+
+/-- **The `L¹` mass of the block source on the window costs one half power of the window.** -/
+theorem sq_lintegral_enorm_blockSource_window_le {g : ℝ → X} {m Y : ℝ}
+    (hg2 : MemLp g 2 (volume : Measure ℝ)) (hsupp : ∀ L : ℝ, L ∉ Icc m (m + 1) → g L = 0) :
+    (∫⁻ t in uIoc (0 : ℝ) Y, ‖blockSource g m t‖ₑ) ^ 2
+      ≤ ENNReal.ofReal |Y| * ENNReal.ofReal ((Real.pi / 2) * ∫ L : ℝ, ‖g L‖ ^ 2) := by
+  have hg1 : Integrable g := integrable_zeroExtension hg2 hsupp
+  have hmeas : AEMeasurable (fun t : ℝ => ‖blockSource g m t‖ₑ)
+      (volume.restrict (uIoc (0 : ℝ) Y)) :=
+    ((aestronglyMeasurable_blockSource hg2 hsupp).restrict).enorm
+  have hCS := GaloisForLFunctions.HTGeometry.sq_lintegral_le_measure_mul hmeas
+  refine hCS.trans ?_
+  have hvol : volume (uIoc (0 : ℝ) Y) = ENNReal.ofReal |Y| := by
+    rw [Real.volume_uIoc, sub_zero]
+  have hsub : (∫⁻ t in uIoc (0 : ℝ) Y, ‖blockSource g m t‖ₑ ^ 2)
+      ≤ ∫⁻ t : ℝ, ‖blockSource g m t‖ₑ ^ 2 := setLIntegral_le_lintegral _ _
+  rw [hvol]
+  exact mul_le_mul' le_rfl (hsub.trans (le_of_eq (lintegral_enorm_sq_blockSource hg2 hsupp)))
+
 end GaloisForLFunctions.RHTower

@@ -1,48 +1,45 @@
-# Polynomial-carrier Gamma dimension wall — Lean formalization
+# Polynomial orbit carriers meet a sharp Gamma dimension wall, formalized
 
-- **ID:** `suzuki-polynomial-carrier-gamma-dimension-wall-formalized`
+- **ID:** `suzuki-polynomial-carrier-gamma-dimension-wall`
 - **Stage:** 3 — formalized in Lean 4
-- **Paper proof:**
-  `../../../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-polynomial-carrier-gamma-dimension-wall.md`
-- **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiPolynomialCarrierGammaDimensionWall.lean`
-- **Status:** `[FORMALIZED CORE] [AXIOM-CLEAN] [NOT RH]`
+- **Claim:** `[PAPER-PROVED] [UNCONDITIONAL] [NEW SCIENTIFIC KNOWLEDGE]`
+- **Paper proof:** `./suzuki-polynomial-carrier-gamma-dimension-wall.md`
+- **Lean:**
+  - `formal/GaloisForLFunctions/RHTower/SuzukiPolynomialCarrierGammaWall.lean`
+  - `formal/GaloisForLFunctions/RHTower/SuzukiPolynomialCarrierGammaDimensionWall.lean`
+  - `formal/GaloisForLFunctions/RHTower/PolyDistortedHomogeneousThreshold.lean`
+  - `formal/GaloisForLFunctions/RHTower/PolyCarrierForcedClosure.lean`
+  - `formal/GaloisForLFunctions/RHTower/WallOneBlockEstimate.lean`
+  - `formal/GaloisForLFunctions/RHTower/WallBlockSeries.lean`
 
-## Certified theorem surface
+## Formal content
 
-The module proves the exact analytic and arithmetic collision, not a proxy matrix inequality.
-
-| Paper statement | Lean declaration |
+| Card | Lean |
 |---|---|
-| distorted squared carrier `(7)` | `suzukiPolynomialDistortedGammaNormSq` |
-| exact tail `(8)` | `suzukiPolynomialDistortedGammaNormSq_rpow_tendsto` |
-| integrability for `κ < σ` | `integrable_suzukiPolynomialDistortedGammaNormSq` |
-| nonintegrability for `σ <= κ` | `not_integrable_suzukiPolynomialDistortedGammaNormSq` |
-| sharp iff `(9)` | `integrable_suzukiPolynomialDistortedGammaNormSq_iff` |
-| common exponent window `(11)` | `suzukiPolynomialGammaDimensionWindow` |
-| dimension wall `(3)` | `suzukiPolynomialGammaDimensionWindow_iff` |
-| one-prime lattice square `(13)` | `summable_suzukiOnePrimePolynomialWeightSq` |
-| concrete survivor `(12)` | `suzukiOnePrimePolynomialGammaWindow` |
+| `(1)` lattice embedding threshold `κ > d/2` | `summable_latticeBracket_two_kappa_iff` |
+| `(2)` Gamma threshold `κ < σ` | `integrable_suzukiGammaDistortedNormSq_iff` |
+| `(3)` a common exponent exists exactly when `d ≤ 1` | `exists_gamma_dimension_window_iff`, `suzukiPolynomialGammaDimensionWindow_iff` |
+| `(4)` the rank-two wall | `no_gamma_dimension_window_of_two_le` |
+| `(5)`, `(7)` the distorted squared Gamma carrier | `suzukiGammaDistortedNormSq`, `suzukiPolynomialDistortedGammaNormSq` |
+| `(6)`, `(8)` the exact distorted tail exponent | `suzukiGammaDistortedNormSq_rpow_tendsto`, `suzukiPolynomialDistortedGammaNormSq_rpow_tendsto` |
+| `(9)` the sharp `L¹` threshold, both halves | `integrable_suzukiGammaDistortedNormSq`, `not_integrable_suzukiGammaDistortedNormSq`, `integrable_suzukiGammaDistortedNormSq_iff` |
+| `(10)`, `(11)` the lattice sum and the joint window | `summable_latticeBracket_two_kappa_iff`, `exists_gamma_dimension_window_iff` |
+| `(12)`, `(13)` the concrete rank-one window `(κ,σ) = (2/3,3/4)` | `summable_rankOne_window`, `summable_suzukiOnePrimePolynomialWeightSq`, `suzukiOnePrimePolynomialGammaWindow` |
+| `(14)` the distorted homogeneous density and its threshold | `integrableOn_polyDistortedDensity_iff`, `not_integrableOn_polyDistortedDensity`, `lintegral_sq_polyDistorted_ne_top` |
+| `(15)` the corrected direct theorem | `memLp_two_of_polyCarrier_and_forced`, with the forced half `memLp_forcedProfile_blockSource` and `exists_bound_lintegral_sq_forcedProfile_oneBlock` |
 
-The proof uses the already formalized exact Gamma-ratio asymptotic and derives both sides of the
-power-integrability threshold. The rank theorem is an iff. The concrete one-prime result certifies
-both the actual (mathbb Z)-sum and the exact distorted Gamma integral.
+## Notes
 
-## Scope boundary
+`(14)` is an exact threshold, not an estimate: the distorted homogeneous density is
+`|x|^{-1-2σ+2κ}`, and integrability on a terminal ray is `-1-2σ+2κ < -1`, i.e. `κ < σ`.  Both
+directions are recorded, because the card's point is the *negative* one — an arbitrary polynomial
+group degree is not enough, and at `κ ≥ σ` no constant rescues the homogeneous component, since
+forcing only changes the particular solution.
 
-This module certifies the sharp scalar majorant and exponent compatibility. It does not assume or
-claim the missing vector-valued primitive source transfer or a source-selected Evans cancellation.
-Those remain explicit paper-side gates; compact-middle coverage is already closed by dyadic orbit
-charts.
+`(15)` is the composition of the two halves.  Its forced half is the Gamma-wall block transfer: the
+one-block estimate `‖u‖₂ ≤ C(‖c‖ + e^{max(0,−m)}‖g‖₂)` and the summation of the blocks in `L²`.
 
-## Gates
+`(16)` and `(17)` are the card's survivor list and novelty boundary — route statements, not
+theorems.
 
-- [x] exact distorted density defined
-- [x] exact asymptotic proved
-- [x] both integrability directions proved
-- [x] dimension window iff proved
-- [x] concrete one-prime lattice and Gamma survivor proved
-- [x] wired into `GaloisForLFunctions.RHTower`
-- [x] compact-middle coverage available from dyadic orbit charts
-- [x] vector-valued rough primitive transfer paper-closed in rank one
-- [ ] formalize full one-prime trace-zero (H^1_0) after analytic infrastructure exists
+Every declaration audits to `[propext, Classical.choice, Quot.sound]`.

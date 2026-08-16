@@ -118,6 +118,33 @@ theorem exists_pow_factor_of_root {f : ℂ → ℂ} {U : Set ℂ}
       simp only [if_neg hza]
       field_simp
 
+/-- **A root of a nonzero entire function has positive finite order.**  The local nonvanishing
+hypothesis required by `exists_pow_factor_of_root` is automatic on the connected complex plane
+once one value of the entire function is nonzero.  Consequently the exact full power at any root
+divides globally, with an entire quotient nonzero at that root. -/
+theorem exists_positive_pow_factor_of_entire_root {f : ℂ → ℂ}
+    (hf : AnalyticOnNhd ℂ f Set.univ) {a : ℂ} (hfa : f a = 0)
+    (hne : ∃ z : ℂ, f z ≠ 0) :
+    ∃ (n : ℕ) (g : ℂ → ℂ), 0 < n ∧ AnalyticOnNhd ℂ g Set.univ ∧ g a ≠ 0 ∧
+      ∀ z : ℂ, f z = (z - a) ^ n * g z := by
+  obtain ⟨z, hz⟩ := hne
+  have hlocal : ¬ ∀ᶠ w in 𝓝 a, f w = 0 := by
+    intro hzero
+    have heq : Set.EqOn f 0 Set.univ :=
+      hf.eqOn_zero_of_preconnected_of_eventuallyEq_zero
+        isPreconnected_univ (Set.mem_univ a) hzero
+    exact hz (heq (Set.mem_univ z))
+  obtain ⟨n, g, hg, hga, hfactor⟩ :=
+    exists_pow_factor_of_root hf (Set.mem_univ a) hlocal
+  have hn : 0 < n := by
+    by_contra hn
+    have hn0 : n = 0 := Nat.eq_zero_of_not_pos hn
+    have ha := hfactor a (Set.mem_univ a)
+    rw [hfa, hn0] at ha
+    simp only [pow_zero, one_mul] at ha
+    exact hga ha.symm
+  exact ⟨n, g, hn, hg, hga, fun z => hfactor z (Set.mem_univ z)⟩
+
 /-- **The quotient inherits non-degeneracy.**  If a factorisation holds on an open set and the
 original function is not identically zero near a point, neither is the quotient.  This is what lets
 the extraction be iterated: the hypothesis of `exists_pow_factor_of_root` survives each step. -/

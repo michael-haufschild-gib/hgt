@@ -2472,3 +2472,689 @@ have the same moments as continuous phase on this exponent range") is now a theo
 **Remaining for the card:** Theorem C `(15)`--`(20)`, which composes `(9)` with the
 finite-alphabet circuit counting of `CircuitCountingCollisionBound` and the completed-time
 machinery, and the preparation-size statement `(3)`.
+
+## In flight: stabilizer-seeded static-local double-exponential plateau law (2026-08-16)
+
+Target: `docs/drafts/pipeline/2-fully-proven/stabilizer-seeded-static-local-double-exponential-plateau-law.md`.
+
+Theorem A of the card is the exact stabilizer two-design collision law
+`E_χ ∑_j |⟨e_j,χ⟩|⁴ = 2/(D+1)`.  The route chosen avoids the Clifford group and the commutant
+theorem entirely.  Writing a stabilizer state as `ρ = D⁻¹ ∑_{v ∈ V} s(v) P_v` over a Lagrangian `V`
+of the binary symplectic label space, averaging the sign function kills all cross terms, so
+
+  `E ⟨e_j|ρ|e_j⟩² = D⁻²( 1 + Pr[v ∈ V] · ∑_{v ≠ 0} ⟨e_j|P_v|e_j⟩² )`,
+
+and the Pauli–Parseval identity `∑_v ⟨e_j|P_v|e_j⟩² = D` turns the whole computation into the single
+combinatorial input `Pr[v ∈ V] = 1/(D+1)`.
+
+Two modules for that input are now wired, built and axiom-clean:
+
+`HTGeometry/PauliSymplecticTransitivity.lean`:
+
+- `PauliSymp n`, `symForm` and its bilinearity, symmetry, alternation and nondegeneracy
+  (`exists_symForm_eq_one`);
+- `exists_symForm_eq_one_pair` — any two nonzero labels have a common noncommuting partner (two
+  nonzero linear functionals over `𝔽₂` jointly attain one);
+- `transvection`, `transvection_add`, `transvection_involutive`, `symForm_transvection`,
+  `transvectionEquiv`;
+- **`exists_symplectic_equiv_map`** — transitivity of the binary symplectic group on nonzero
+  labels, by one transvection when the labels anticommute and two otherwise.  No symplectic basis,
+  no Witt extension.
+
+`HTGeometry/LagrangianVectorFrequency.lean`:
+
+- `IsLagr`, `lagrangians n`;
+- `isLagr_image`, `card_filter_mem_eq` — a form-preserving additive bijection permutes the
+  Lagrangians and matches those through `u` with those through `T u`;
+- **`card_filter_mem_eq_of_ne_zero`** — every nonzero label lies in the same number of Lagrangians;
+- `sum_card_filter_mem` — the label/Lagrangian incidence double count;
+- **`card_filter_mem_mul_succ`** — the exact frequency `#{V : v ∈ V} · (2ⁿ + 1) = #lagrangians`,
+  i.e. a fixed nonzero label lies in one Lagrangian out of `2ⁿ + 1`.
+
+**Next for Theorem A:** the dictionary between `PauliSymp n` and the corpus's
+`finitePauliMatrix` labels `σ → Option (Fin 3)`, the signed Pauli multiplication law (sitewise, via
+`finiteLocalMatrix_mul`), existence of a valid sign function on each Lagrangian (extend from a basis
+of `V`), the sign-character torsor, and Pauli–Parseval from
+`trace_star_finitePauliMatrix_mul`.
+
+### Update: Pauli algebra layer for the stabilizer two-design (2026-08-16)
+
+Two further modules, wired, built, axiom-clean:
+
+`HTGeometry/PauliParseval.lean`:
+
+- `pauliCoeff`, `sum_pauliCoeff_smul` (expansion in `finitePauliMatrixBasis`),
+  `trace_star_pauli_mul` (the Hilbert–Schmidt pairing recovers the coefficient);
+- **`sum_normSq_trace_star_pauli_mul`** — Parseval: `∑_P |Tr(P†A)|² = 2^{|σ|} · frobSq A`.  This is
+  the identity that turns `∑_{v ≠ 0} ⟨e_j|P_v|e_j⟩² = D − 1` into a one-line consequence of
+  `Tr(ρ_j²) = 1`.
+
+`HTGeometry/PauliProductLaw.lean`:
+
+- `optMul` (the Klein four-group law on single-qubit labels, written `(a+b)+(a+b)` so that no `Fin`
+  negation appears and the sixty-four-case check reduces), `optPhase` (the `±i` phase);
+- **`boolPauliOption_mul`** — the single-qubit signed product law;
+- **`finitePauliMatrix_mul`** — the Pauli string product law
+  `P·Q = (∏_s optPhase) • P⊙Q`, from `finiteLocalMatrix_mul` and
+  `finiteLocalMatrix_pointwise_smul`;
+- `optMul_self`, `optPhase_self`, `optMul_none_right`, `optPhase_none_right`, `optMul_comm`.
+
+**Still to build for Theorem A:** the label dictionary `PauliSymp n ≃ (Fin n → Option (Fin 3))`
+matching `symForm` with `boolPauliConjugationSign`, existence of a valid sign function on each
+Lagrangian (products of a basis of `V` give one), the sign-character torsor, and the assembly into
+`E_χ ∑_j |⟨e_j,χ⟩|⁴ = 2/(D+1)`.
+
+### Update: Theorem A of `stabilizer-seeded-…` — the exact two-design collision law (2026-08-16)
+
+**`HTGeometry/StabilizerTwoDesignCollision.sum_lagrBases_sign_collision`** is the card's `(5)`:
+
+  `(2ⁿ + 1) · ∑_{b ∈ lagrBases n} ∑_{ε} ∑_j (⟨e_j|ρ_{b,ε}|e_j⟩)² = #lagrBases n · 2^{n+1}`,
+
+i.e. averaged over the `#lagrBases n · 2ⁿ` stabilizer states the collision is exactly `2/(D+1)`.
+It holds against *any* family of unit states indexed by the configuration space — orthogonality of
+the family is never used, exactly as the card says ("No property of the eigenbasis, spectrum or
+Hamiltonian ensemble is used").
+
+The route deliberately avoids the Clifford group and the commutant theorem.  A stabilizer state is
+parametrized by an ordered Lagrangian basis `b` and a sign pattern `ε`, as the product of the local
+projectors `(1 + ε_i P_{b_i})/2`; the parametrization is exactly `#bases`-to-one onto stabilizer
+states, so uniformity over `(b, ε)` is uniformity over states.  Modules, all wired, built and
+axiom-clean:
+
+- `PauliLabelDictionary` — `sitePauli`, `pauliOf`, `signOf`, `optMul_sitePauli`, and
+  **`finitePauliConjugationSign_pauliOf`**: two Pauli strings commute exactly when their symplectic
+  form vanishes;
+- `LagrangianBasisFrequency` — `spanOf`, `IsLagrBasis`, `lagrBases`, `injOn_subsetSum`, and
+  **`card_filter_mem_spanOf_mul_succ`**: a fixed nonzero label lies in one span out of `2ⁿ + 1`
+  (transitivity of the symplectic group plus an incidence double count);
+- `PauliParseval` — **`sum_normSq_trace_star_pauli_mul`**;
+- `PauliProductLaw` — **`finitePauliMatrix_mul`**;
+- `StabilizerPauliProduct` — `pauliMat`, `labPhase`, `commute_pauliMat`, `labPhase_sq`,
+  `stabProd`, **`stabProd_eq_smul`** and **`stabSign_sq`**: a subset product of a commuting family
+  is a square root of one times the subset-sum Pauli matrix;
+- `StabilizerProjectorExpansion` — `stabFactor`, `commute_stabFactor`, `stabProjector`, and
+  **`stabProjector_eq_smul_expansion`**: the subset expansion of the product of local projectors;
+- `StabilizerSignOrthogonality` — **`sum_signOf_subsetSum_mul`**: subset sign characters are
+  orthogonal;
+- `StabilizerCollisionPerBasis` — `matDiag`, `rankOneMat`, `trace_star_mul_rankOneMat`,
+  `conj_matDiag`, `matDiag_sq`, **`sum_matDiag_pauliMat_sq`** (Parseval at a unit state),
+  **`sum_sign_matDiag_sq`** (the sign average leaves the span sum), `sum_labSum_eq_sum_span`;
+- `StabilizerTwoDesignCollision` — `stabProjectorOf`, `pauliDiagSq`,
+  `sum_sign_collision_of_mem_lagrBases`, `sum_lagrBases_span_collision`, and the capstone.
+
+**Next on the card:** the pure-state bridge (the projector is Hermitian, idempotent and of trace
+one, hence `⟨e_j|ρ|e_j⟩ = |⟨e_j,χ⟩|²` for a unit `χ`), the Markov step `(6)`, then Theorem B
+`(9)`--`(13)` — whose replica half is already Lean-certified in
+`ReturnExcisedPhaseIncidenceLaw` / `CircuitCountingCollisionBound` — and Theorem C.
+
+### Update: Theorem A of `stabilizer-seeded-…` in pure-state form (2026-08-16)
+
+`HTGeometry/StabilizerPureState.lean` (wired, built, axiom-clean) closes the identification of the
+stabilizer projector with an actual state:
+
+- **`exists_pure_state_of_projector`** — a Hermitian idempotent of trace one is `|χ⟩⟨χ|` for a unit
+  `χ`: its eigenvalues satisfy `λ² = λ` hence lie in `{0,1}`, they total the trace
+  (`Matrix.IsHermitian.trace_eq_sum_eigenvalues`), so exactly one is one, and the corpus
+  `IsOrthoEigenBasis` completeness turns the spectral sum into `ρ ψ = ⟨χ,ψ⟩ χ`;
+- `stabFactor_isHermitian`, `stabFactor_mul_self`, `commute_stabFactor_stabProjectorOn`,
+  **`stabProjectorOn_mul_self`**, **`stabProjectorOn_isHermitian`** — the local projectors are
+  commuting Hermitian idempotents, so their product is a Hermitian idempotent;
+- `trace_pauliMat` (a Pauli string is traceless unless trivial), `stabSign_empty`,
+  `labSum_eq_zero_iff`, **`trace_stabProjector`** — the trace is one because only the empty subset
+  survives;
+- **`exists_stabilizer_pure_state`** — every stabilizer projector is a pure state;
+- **`exists_stabilizer_states_collision_eq`** — the card's `(5)` in its literal form:
+
+    `(2ⁿ + 1) · ∑_{b ∈ lagrBases} ∑_ε ∑_j |⟨e_j, χ_{b,ε}⟩|⁴ = #lagrBases · 2^{n+1}`,
+
+  for unit states `χ_{b,ε}` — i.e. the mean collision over the `#lagrBases · 2ⁿ` stabilizer states
+  is exactly `2/(D+1)`, against an arbitrary family of unit states.
+
+**Next on the card:** the Markov step `(6)`, Theorem B `(9)`--`(13)` (its replica half is already
+Lean-certified in `ReturnExcisedPhaseIncidenceLaw` and `CircuitCountingCollisionBound`; the
+remaining input is the completed-time transfer, for which `SpectralOrbitCaptureDensity` now supplies
+the machinery), and Theorem C `(18)`--`(22)`.
+
+### Update: Markov `(6)` and circuit counting for the stabilizer card (2026-08-16)
+
+`HTGeometry/StabilizerCollisionMarkov.lean` (wired, built, axiom-clean):
+
+- **`finite_markov`** — Markov's inequality on a finite index set;
+- **`card_filter_collision_gt_mul_le`** — the card's `(6)`: at most a fraction `1/L` of the
+  stabilizer states have collision above `2L/(D+1)`, directly from the two-design total;
+- **`measureReal_capture_le_return_add_two_rpow_of_design`** — the card's `(15)`--`(16)`: at a
+  collision below `2L/D₁` and a replica order `r ≤ a²D₁/(64L)`, the complete-target capture bound
+  is `2^{-r/2}` above the return density.  This is the existing `CircuitCountingCollisionBound`
+  chain instantiated at the two-design collision scale; the arithmetic side condition
+  `16c₀/a² ≤ 1/(2r)` is exactly the card's floor definition of `r`.
+
+**Still open on the card:** `(13)`/`(11)` need the completed-time transfer.  The quenched form is
+already available (`SpectralOrbitCaptureDensity` under `MaximallyProjectiveEnergy`); the card's
+annealed form over the coefficient sphere needs the fixed-shell angular dephasing card.
+
+## In flight: path-local centralizer tangent rigidity law (2026-08-16)
+
+Target: `docs/drafts/pipeline/2-fully-proven/path-local-centralizer-tangent-rigidity-law.md`.
+
+Lemma A `(6)`--`(7)` is closed: `HTGeometry/CrossProductSynchronization.lean`,
+**`eq_smul_one_of_cross_sync`** — if `x × B y = (A x) × y` for all `x, y` in three-space then
+`A = B = λ I`.  Proved by evaluating the identity on the standard basis (twenty-seven scalar
+equations) rather than by the Levi-Civita contraction, which needs no tensor calculus.  Note the
+`Fin` traps: `fin_cases` leaves `⟨2, _⟩` where the hypotheses carry the numeral `2`, so the case
+split is done with `decide`-provided `p = 0 ∨ p = 1 ∨ p = 2` instead, and `norm_num +decide` is
+needed to evaluate `(0 : Fin 3) = 2`.
+
+`HTGeometry/PauliCommutator.lean` — **`boolPauliOption_commutator`** and
+**`finitePauliMatrix_commutator`**: the commutator of two Pauli strings is the difference of the two
+product phases times the product label.  This is the algebraic input for the card's `R_J` map.
+
+**Remaining on the card:** Lemma B (field rigidity of a generic coupling and its Zariski openness),
+Theorem C (the exact two-local centralizer classification `(13)`) and Corollary D.
+
+### Update: the abstract skeleton of Theorem C of `path-local-centralizer-tangent-rigidity-law` (2026-08-16)
+
+Everything in the card's proof except the Pauli-coefficient bridge is now Lean-certified.  Three
+modules, wired, built, axiom-clean:
+
+`HTGeometry/CrossProductSynchronization.lean` — the card's Lemma A `(6)`--`(7)`:
+**`eq_smul_one_of_cross_sync`**.
+
+`HTGeometry/EdgeCouplingSynchronization.lean`:
+
+- `mulVec_transpose_eq_sum_rows`, `mulVec_eq_sum_cols`;
+- **`exists_scalar_of_row_col_cross`** — the card's `(16)` ⟹ `(17)`: if the rows of an invertible
+  `J_v` cross the columns of `L_{v+1}` exactly as the rows of `L_v` cross the columns of an
+  invertible `J_{v+1}`, then `L_v = λ J_v` and `L_{v+1} = λ J_{v+1}`.  Invertibility turns the basis
+  relation into the synchronization identity by bilinearity, and Lemma A finishes;
+- `chain_scalar_eq_zero` and **`exists_common_scalar_of_chain`** — the card's `(18)`: the
+  consecutive scalars agree along a chain of nonzero couplings, so one scalar works for every edge.
+
+`HTGeometry/FieldRigidCoupling.lean`:
+
+- `fieldMap J a b f q = (col_q J × a)_f + (row_f J × b)_q` — the card's `R_J` in coordinates, and
+  `FieldRigid`;
+- **`fieldRigid_diagonal`** — the card's Lemma B witness `(11)`--`(12)`: a diagonal coupling whose
+  entries have pairwise distinct squares is field rigid, by the `2 × 2` determinant `d_f² − d_q²`
+  on each coordinate pair;
+- `eq_smul_of_cross_eq_zero`, **`eq_zero_of_cross_cols`**, **`eq_zero_of_cross_rows`** — an
+  invertible coupling kills only the zero field when the other slot vanishes (if every column were
+  parallel to a fixed nonzero vector the `3 × 3` determinant would vanish);
+- `cross_rows_eq_zero_of_fieldMap`, `cross_cols_eq_zero_of_fieldMap`, and
+  **`all_field_zero_of_chain`** — the card's `(21)`--`(22)`: one field-rigid edge plus invertibility
+  propagates `r_v = 0` along the whole chain in both directions.
+
+**Remaining for Theorem C:** the Pauli-coefficient bridge — that `[H, K] = 0` for `H, K` in the
+open-chain two-local shell forces (i) the three-site cross relations `(16)` and (ii) the weight-two
+relation `(20)` `fieldMap (J_v) (r_v) (r_{v+1}) = 0`.  The algebraic input is in place
+(`PauliCommutator.finitePauliMatrix_commutator`, `PauliProductLaw`,
+`FiniteQubitPauliComplexBasis` for coefficient extraction); what is left is the label bookkeeping
+that isolates the contributing pairs.
+
+### Update: the Pauli commutator-coefficient toolkit (2026-08-16)
+
+Three modules, wired, built, axiom-clean.  They are the general machinery for reading scalar
+equations off a vanishing commutator of Pauli combinations, which is what the whole static-local
+cluster needs (`path-local-centralizer-…`, `all-replica-*`, `centralizer-*`).
+
+`HTGeometry/PauliCommutatorCoefficient.lean`:
+
+- `optPhaseProd`, `optMulLabel`, `optMulLabel_comm`, `trace_pauli_mul`;
+- **`trace_pauli_commutator`** — pairing a single commutator against a Pauli string:
+  `Tr(P_R [P_S, P_T]) = (φ(S,T) − φ(T,S)) · D · [R = S·T]`;
+- **`trace_pauli_commutator_sum`** — the same for two arbitrary Pauli combinations, giving the
+  double sum over index pairs.  A vanishing commutator therefore becomes one scalar equation per
+  Pauli string.
+
+`HTGeometry/PauliLabelSupport.lean`:
+
+- `labelSupport`, `optMul_eq_none_iff`, `labelSupport_optMulLabel_subset`;
+- **`optPhaseProd_sub_eq_zero_of_disjoint`** — labels with disjoint supports commute, so only
+  overlapping index pairs can contribute;
+- **`card_inter_eq_one_of_card_three`** — a product supported on three sites forces both factors to
+  be two-site labels overlapping in exactly one site, with union the support of the product.  This
+  is the abstract form of the card's "only the pair of edges `(v,v+1)`, `(v+1,v+2)` contributes",
+  proved by cardinality rather than by case analysis over label families.
+
+`HTGeometry/PauliChainLabels.lean`:
+
+- `siteLabel`, `pairLabel` and their supports;
+- **`optPhaseProd_pairLabel`** — the phase of a product of two edge labels sharing their middle site
+  is the single-site phase there;
+- **`optMulLabel_pairLabel`** — the corresponding three-site product label;
+- **`sum_pauliComm_eq_cross`** — the bridge to Lemma A: summing the Pauli structure constants
+  `φ(b,d) − φ(d,b)` against two coefficient vectors gives `2i` times their cross product.
+
+**Remaining for Theorem C:** the final assembly — instantiate `trace_pauli_commutator_sum` at the
+open-chain two-local shell, use the support lemmas to discard every non-consecutive-edge pair, and
+feed the resulting cross-product relations into `exists_scalar_of_row_col_cross`,
+`exists_common_scalar_of_chain` and `all_field_zero_of_chain`.
+
+### Update: vanishing-commutator equations and chain edge structure (2026-08-16)
+
+Two further modules, wired, built, axiom-clean.
+
+`HTGeometry/PauliCommutatorVanishing.lean`:
+
+- `pairCoefficient S h k R i j` — the contribution of one index pair to the coefficient of the Pauli
+  string `R` in the commutator;
+- **`sum_pairCoefficient_eq_zero`** — a vanishing commutator of two Pauli combinations gives exactly
+  one scalar equation per Pauli string (the dimension factor cancels);
+- `pairCoefficient_eq_zero_of_disjoint`, `pairCoefficient_eq_zero_of_ne`,
+  **`pairCoefficient_eq_zero_of_card`** — at a three-site string only pairs of two-site labels
+  overlapping in exactly one site, with union the string's support, can contribute;
+- **`sum_pairCoefficient_filter_eq_zero`** — the scalar equation restricted to any predicate that
+  contains all such pairs.  This is the reusable form: to use it one only has to check that the
+  chosen "good pair" predicate covers the surviving pairs.
+
+`HTGeometry/ChainEdgeStructure.lean`:
+
+- `chainSites i = {i.castSucc, i.succ}`, `mem_chainSites`, `card_chainSites`;
+- **`consecutive_of_card_inter_eq_one`** — two chain edges meeting in exactly one site are
+  consecutive;
+- `chainSites_union_consecutive` and **`eq_of_chainSites_union`** — consecutive edges are determined
+  by the three sites they cover.
+
+**Remaining for Theorem C of `path-local-centralizer-tangent-rigidity-law`:** instantiate
+`sum_pairCoefficient_filter_eq_zero` at the open-chain shell with the good-pair predicate
+"both indices are edge terms on the two consecutive edges covering the string's support", evaluate
+the surviving sum with `optPhaseProd_pairLabel`, `optMulLabel_pairLabel` and
+`sum_pauliComm_eq_cross` to obtain the card's `(16)`, and repeat at a two-site string to obtain
+`(20)`.  The consumers `exists_scalar_of_row_col_cross`, `exists_common_scalar_of_chain` and
+`all_field_zero_of_chain` are already proved.
+
+### Update: path-local centralizer tangent rigidity — Theorem C and Corollary D (2026-08-16)
+
+The card `path-local-centralizer-tangent-rigidity-law` is now formalized end to end.  New modules,
+all wired into `GaloisForLFunctions/HTGeometry.lean`, built as oleans and axiom-audited clean.
+
+**Commutator-to-scalar machinery**
+
+- `HTGeometry/PauliCommutatorVanishing.lean` — `pairCoefficient`, `sum_pairCoefficient_eq_zero`,
+  `pairCoefficient_eq_zero_of_card`, `sum_pairCoefficient_filter_eq_zero`.
+- `HTGeometry/ChainEdgeStructure.lean` — `chainSites`, `consecutive_of_card_inter_eq_one`,
+  `eq_of_chainSites_union`.
+- `HTGeometry/ChainShellCommutator.lean` — two-family `pairCoeff2`,
+  `trace_commutator_eq_smul_sum`, `pairCoeff2_eq_zero_of_left/right_card_one`, `chainSiteLabel`,
+  `chainEdgeLabel`, `chainSiteOp`, `chainEdgeOp`.
+- `HTGeometry/ThreeSiteLabelProduct.lean` — `tripleLabel`, `optPhaseProd_pairLabel_rev`,
+  `tripleLabel_eq_optMulLabel_iff`, `tripleLabel_eq_optMulLabel_rev_iff`.
+- `HTGeometry/TwoSiteLabelProduct.lean` — the pair-times-site phase and product laws and the two
+  membership criteria `pairLabel_eq_optMulLabel_left/right_iff`.
+
+**The two scalar relations of the card**
+
+- `HTGeometry/ChainThreeSiteRelation.lean` — `chainBlock`, `sum_chainBlock_eq_zero`,
+  `chainBlock_consecutive`, `chainBlock_consecutive_rev`, and equation `(16)`:
+  **`crossProduct_chain_eq`**, the equality of the two row/column cross products at every pair of
+  consecutive edges.
+- `HTGeometry/ChainTwoSiteRelation.lean` — `chainEdgeSiteBlock`, `sum_chainEdgeSiteBlock_eq_zero`,
+  `chainEdgeSiteBlock_left/right`, and equation `(20)`: **`fieldMap_eq_zero_of_commute`**.
+
+**Theorem C and Corollary D**
+
+- `HTGeometry/ChainCentralizerClassification.lean` — **`exists_scalar_of_commute_chain`**: steps
+  `(17)`–`(22)` assembled, giving one scalar `c` with `L_v = c J_v` for every edge and
+  `k_v = c h_v` for every site.
+- `HTGeometry/QuantitativeKernelRigidity.lean` — **`exists_pos_infDist_le`**: a linear map out of a
+  finite-dimensional normed space controls the distance to its kernel (reusable).
+- `HTGeometry/ChainShellCentralizer.lean` — `shellMap`, `chainShell`, and equation `(13)`:
+  **`commute_shellMap_iff`**; equations `(25)`–`(26)`: **`exists_gamma_pos_infDist_le`**;
+  equations `(23)`–`(24)`: `commute_of_exp_smul_commute` and
+  **`exists_scalar_of_unitary_group_commute`**.
+- `HTGeometry/FieldRigidGeneric.lean` — Lemma B's genericity clause: `fieldMatrix`,
+  `fieldGramDet`, `fieldRigid_iff_gramDet_ne_zero`, **`isOpen_fieldRigid`**,
+  **`dense_fieldRigid`** (via a one-variable polynomial along the segment to a diagonal witness).
+
+**Remaining:** the final sentence of Corollary D — a uniform positive lower bound for `gamma_H` on a
+compact family of couplings.
+
+### Promotion: path-local-centralizer-tangent-rigidity-law → stage 3 (2026-08-16)
+
+The last open clause (a uniform `gamma_H` on a compact family) is closed by
+`HTGeometry/ChainUniformRigidity.lean`: `shellPlane`, `shellCommutator`, `shellTestSet`,
+`isCompact_shellTestSet`, `exists_mem_shellTestSet` and **`exists_uniform_gamma`**.  The argument
+replaces the sequential compactness sketch by a single compact test set of normalized shell
+directions that stay at distance `1/2` from the plane; the minimum of the commutator norm on it is
+the uniform constant, and any transverse operator is rescaled into the test set.
+
+The card carries a full `## Lean certificate` table and has been moved to
+`docs/drafts/pipeline/3-formalized/`.  Stage-2 top level now holds 38 cards.
+
+### Next target: all-replica-fixed-edge-singlet-hall-expansion-law (2026-08-16)
+
+A corpus survey shows this card is far better supported than its neighbours.  Already available:
+
+- `AllReplicaCollectivePauliCasimir` — `FiniteAllReplicaOperatorIndex I R`,
+  `finiteReplicatedSiteCollectivePauli I R i a` (the collective Pauli at a physical site),
+  `matrixCommutatorRepresentation` (the matrix of `ad`), the sitewise `su(2)` bracket, and the
+  cross-site commutation law;
+- `CentralCasimirCommonKernelCorrection` — `finiteAllReplicaCollectiveSingletSubspace I R`, which
+  is exactly the card's sitewise singlet sector `S_r` as a simultaneous kernel, plus the
+  central-family Hall law modulo a common kernel;
+- `TwoLocalPauliLieGeneration` — `dynamicalLieAlgebra_twoLocalPauliMatrices_eq_tracelessLie`, the
+  controllability input `(14)` of Theorem 3;
+- `FiniteReplicaCollectiveCommutantExact` — `replicaPermutationMatrix_span_eq_collectiveCommutant`,
+  the Schur–Weyl identification needed by the stable-range corollary.
+
+Missing pieces to build, in order:
+
+1. `fixedEdgeCollectivePauli I R i j a b = ∑ r, σ_a^{(i,r)} σ_b^{(j,r)}` and its Hermiticity;
+2. its bracket with the site-collective generators: rotating the endpoint axis,
+   `[C_c^{(i)}, Q^{(a,b)}] = ∑ k, f_{c a k} Q^{(k,b)}`;
+3. Theorem 1 in the elementary form found here — for `Z` in the site-`v` collective commutant,
+   `Tr(Z σ_a^{(v,ℓ)}) = 0`, because `σ_a^{(v,ℓ)}` is itself a bracket
+   `[C_b^{(v)}, σ_c^{(v,ℓ)}]` up to a nonzero constant.  This avoids the half-turn conjugation and
+   the matrix exponential entirely;
+4. Theorem 2 via the site Casimir: for `X` in the singlet sector, `A_e X` is an eigenvector of
+   `∑_c (ad C_c^{(v)})^2` with a nonzero eigenvalue at each endpoint `v` of `e`, hence orthogonal
+   to that site's kernel; distinct edges then land in orthogonal sectors because a site in the
+   symmetric difference separates them;
+5. Theorem 3 by rotating both endpoint axes and applying the Lie-generation theorem;
+6. Theorem 4 by rank–nullity plus the orthogonality of the edge images.
+
+### Progress: all-replica fixed-edge singlet Hall expansion — Theorems 1 and 2 (2026-08-16)
+
+Two modules, wired, built, axiom-clean.
+
+`HTGeometry/FixedEdgeCollectivePauli.lean`:
+
+- `ringCommutator_sum_diagonal` — a commutator of two sums collapses to its diagonal when the
+  off-diagonal pairs commute (reusable);
+- `fixedEdgeCollectivePauli I R i j a b = ∑ r, σ_a^{(i,r)} σ_b^{(j,r)}`, the card's `(4)`, with
+  `fixedEdgeCollectivePauli_isHermitian`;
+- **`collectivePauli_fixedEdge_bracket_left/right`** — bracketing with an endpoint's collective
+  generator rotates that endpoint's axis and leaves the other endpoint fixed;
+- `collectivePauli_fixedEdge_comm_of_notMem` — a site off the edge commutes with the edge operator.
+
+`HTGeometry/FixedEdgeSingletDefect.lean`:
+
+- `pauliStructureCoeff_double_contraction` — the adjoint Casimir eigenvalue is `8`;
+- `fixedEdgeCommutatorMatrix`, `siteCollectiveCasimir`, `mem_singlet_iff`;
+- `collectiveCommutator_apply_fixedEdge_left/right` — the rotation law on the singlet sector;
+- **`siteCollectiveCasimir_fixedEdge_left/right`** — the edge image of a singlet is an eigenvector
+  of each endpoint's collective Casimir with eigenvalue `8`;
+- `siteCollectiveCasimir_fixedEdge_notMem` — at a site off the edge that image stays in the kernel;
+- **`inner_fixedEdge_eq_zero_of_separating`** — the card's `(9)`+`(10)`: two edges separated by a
+  site have orthogonal images on the singlet sector.
+
+The Casimir route replaces the card's tensor-factor defect sectors `D_e` entirely: instead of
+proving `A_e(S_r) ⊆ S_i^⊥ ⊗ S_j^⊥ ⊗ …` and then `D_e ⊥ D_f`, the edge image is exhibited as a
+nonzero-eigenvalue eigenvector of a self-adjoint operator that kills the other edge's image.  This
+also subsumes the card's Theorem 1, which is the same statement in the trivial-isotypic direction,
+and it needs no commutant-of-a-tensor-factor theorem.
+
+**Remaining for this card:** Theorem 3 `(12)` — rotate both endpoint axes (a `Fin 3` case analysis
+on the structure constants shows that one vanishing fixed orientation forces all nine), then apply
+`dynamicalLieAlgebra_twoLocalPauliMatrices_eq_tracelessLie` and the collective-replication Lie
+homomorphism `(15)`; and Theorem 4 `(16)`/`(17)` by rank–nullity against the orthogonal images.
+
+### New infrastructure: connected-graph local controllability (2026-08-16)
+
+`HTGeometry/GraphEdgeLieGeneration.lean` proves the input the card calls "standard" in `(14)`, and
+which neither mathlib nor the corpus had (the corpus only had the complete-graph statement
+`dynamicalLieAlgebra_twoLocalPauliMatrices_eq_tracelessLie`):
+
+**`dynamicalLieAlgebra_graphTwoLocalPauliMatrices_eq_tracelessLie`** — for a connected
+`SimpleGraph (Fin n)`, the one-site Pauli generators together with the two-site generators
+supported on graph edges generate the full traceless Lie algebra.
+
+The proof avoids the card's spanning-tree tensor-factor induction.  Instead it propagates pairs
+along a walk by a two-bracket identity: from an edge `{i,j}` generator and a `{j,k}` two-site
+element, one bracket produces the three-site string `(a@i, m''@j, d@k)`, and bracketing that
+against the edge generator `(a'@i, m''@j)` squares the middle letter away and leaves
+`(a⊕a'@i, d@k)` — a two-site string on the far pair `{i,k}`.  Choosing `a' = a ⊕ p` realizes any
+prescribed letter `p` at `i`.  `pairString_mem_of_adj_of_mem` is that step; `pairString_mem_of_walk`
+is the `SimpleGraph.Walk` induction; `twoLocal_subset_graphLie` then feeds the corpus's
+complete-graph theorem.
+
+Supporting layer: `siteString`, `pairString`, `tripleString` with their supports, the `Fin 4`
+symplectic facts (`omega4_eq_one_of_ne`, `xor4_ne_zero_of_ne`, `xor4_xor_cancel`), the explicit
+`pauliXor`/`pauliOmega` evaluations on these strings, and
+`pauliMat_xor_mem_of_anticomm` (anticommuting strings in a Lie subalgebra give their product).
+
+### Progress: all-replica fixed-edge singlet Hall — Theorem 4 and the axis-freedom step (2026-08-16)
+
+`HTGeometry/FixedEdgeSingletHall.lean` proves the card's boxed `(16)`:
+
+- `edgeMap`, `edgeSumMap`, `inner_edgeMap_eq_zero`;
+- `edgeSumMap_apply_eq_zero_iff` — on the singlet sector the single map `∑_e A_e` has the same
+  kernel as the whole family, because the edge images of one vector are pairwise orthogonal;
+- **`finrank_le_edgeImages_add_kernel`** — the Hall inequality.
+
+The orthogonality lets the whole theorem run through rank–nullity for *one* linear map rather than
+the stacked map into `⊕_e D_e`; no direct-sum dimension formula for an orthogonal family is needed.
+The edge family is given abstractly by endpoint maps and axis maps together with the separation
+hypothesis `hsep` (distinct edges have a site in their symmetric difference), which is exactly what
+a simple graph supplies.
+
+`HTGeometry/FixedEdgeSingletDefect.lean` additionally gets:
+
+- `eq_zero_of_pauliStructure_relations` and **`fixedEdge_apply_eq_zero_of_axes`** — one vanishing
+  fixed orientation forces every one of the nine orientations of that edge to vanish, by the
+  structure-constant relations at both endpoints.  This is the first half of Theorem 3's proof.
+
+`HTGeometry/PauliLabelAnticommute.lean` starts the label-level layer needed for Theorem 3's second
+half: `optPhase_swap_of_ne`, `optPhaseProd_ne_zero`, **`optPhaseProd_swap_of_unique_site`** and
+`optPhaseProd_ne_of_unique_site` — labels differing at exactly one site anticommute.
+
+**Route for the rest of Theorem 3.** The collective commutant will be described by
+`collectiveString P = ∑_ℓ finitePauliMatrix (P at replica ℓ)`, whose brackets satisfy
+`[C_P, C_Q] = (Γ(P,Q) − Γ(Q,P)) • C_{P·Q}`.  The set of labels whose collective string commutes
+with a fixed `X` is therefore closed under products of anticommuting labels, so Theorem 3 reduces
+to a purely label-level generation statement on the site type: one-site labels plus graph-edge
+labels generate every label under anticommuting products.  That avoids bridging
+`FiniteQubitConfiguration I` to `Fin (2^n)` and reuses the `optMul`/`optPhase`/`labelSupport`
+toolkit already built for the path-local card.  Weight reduction is direct: for `|supp P| ≥ 3` pick
+two occupied sites `i, j`, set `Q = pairLabel i j (P i) c` with `c ≠ P j` nonzero; then `Q` and
+`Q·P` anticommute at `j` only, `Q·P` is strictly lighter, and `Q·(Q·P) = P`.
+
+### Progress: all-replica fixed-edge singlet Hall — Theorem 3 closed (2026-08-16)
+
+`HTGeometry/PauliLabelGraphGeneration.lean` — the label-level controllability theorem:
+
+- `optMul_optMul_self`, `optMul_some_ne_left`, `exists_letters_mul_eq`, `exists_letter_ne`;
+- `optMulLabel_tripleLabel_pairLabel`, `tripleLabel_eq_optMulLabel_of_mul`;
+- `pairLabel_mem_of_adj_of_mem` (two adjacent edges give the far pair) and
+  `pairLabel_mem_of_walk`;
+- `eq_siteLabel_of_support_singleton`, `eq_pairLabel_of_support_pair`;
+- **`label_mem_of_connected`** — a set of labels closed under products of anticommuting labels and
+  containing all one-site labels and all connected-graph edge labels contains every label.  The
+  weight reduction is explicit: for `|supp P| ≥ 3` take `Q = pairLabel i j (P i) c` with
+  `c ≠ P j`; then `Q` and `Q·P` anticommute at `j` alone, `Q·P` is lighter, and `Q·(Q·P) = P`.
+
+`HTGeometry/CollectivePauliString.lean` — the collective replication layer and Theorem 3:
+
+- `replicaLabel`, `collectivePauliString`, the replica disjointness lemmas,
+  `optMulLabel_replicaLabel`, `optPhaseProd_replicaLabel`;
+- `collectivePauliString_siteLabel`, `collectivePauliString_pairLabel` — the collective strings of
+  one-site and two-site labels are exactly the corpus's site generators and this card's edge
+  operators;
+- **`collectivePauliString_bracket`** — `[C_P, C_Q] = (Γ(P,Q) − Γ(Q,P)) • C_{P·Q}`;
+- **`collectivePauliString_commutator_apply_eq_zero`** and the fixed-orientation form
+  **`…_of_fixed`** — the card's `(12)`, and
+  `singlet_and_edge_of_collectivePauliString_commutator` for the reverse inclusion.
+
+`HTGeometry/FixedEdgeSingletHallCommutant.lean` — `collectiveCommutantSubspace` and
+**`finrank_le_edgeImages_add_collectiveCommutant`**: the card's `(16)` with the defect identified
+as the exact intersection with the global collective commutant.
+
+Formalizing Theorem 3 this way needed no bridge between `FiniteQubitConfiguration I` and
+`Fin (2^n)`: the closure argument is run on labels over the site type, where the corpus's
+`optMul`/`optPhase`/`labelSupport` toolkit applies directly.
+
+**Remaining for this card:** the stable-range corollary `(22)`, `dim U ≤ dim span{A_e U} + r!` for
+`r ≤ 2^|I|`.  Only the upper bound `dim N_r ≤ r!` is needed, which is the corpus's
+`finiteReplicaCollectiveCommutant_finrank_le_factorial`; connecting it requires the index
+equivalence `FiniteQubitConfiguration (I × R) ≃ (Fin r → Fin d)` and the fact that Pauli strings
+span the one-particle operator algebra (the corpus's `finitePauliMatrixBasis`).
+
+### Promotion: all-replica-fixed-edge-singlet-hall-expansion-law → stage 3 (2026-08-16)
+
+The stable-range corollary `(22)` is closed by two new modules.
+
+`HTGeometry/ReplicaConfigurationBridge.lean` — the regrouping of a replicated register by replica:
+
+- `configCurry` — `FiniteQubitConfiguration (I × R) ≃ (R → FiniteQubitConfiguration I)`;
+- **`submatrix_finitePauliMatrix_replicaLabel`** — a one-replica Pauli string is the physical
+  string tensored with identities, and `submatrix_collectivePauliString` for the collective sum;
+- **`commute_finiteReplicaCollectiveMatrix_of_pauli`** — commuting with every collectively
+  replicated Pauli string means commuting with the collective replication of every operator (via
+  the corpus's `finitePauliMatrixBasis`);
+- `piRelabelEquiv`, **`submatrix_finiteReplicaCollectiveMatrix`** — the collective replication
+  transports along relabellings of both the replica type and the one-particle space;
+- `vecLinearEquiv` and **`commutator_toEuclideanLin_eq_zero_iff`** — the vectorised commutator
+  condition is literal operator commutation.
+
+`HTGeometry/FixedEdgeSingletStableRange.lean`:
+
+- `bridgeMap`, `bridgeMap_injective`, **`bridgeMap_mem_commutant`** — the injection of the global
+  collective commutant into the corpus's `finiteReplicaCollectiveCommutant`;
+- **`finrank_collectiveCommutantSubspace_le_factorial`** — `dim N_r ≤ r!` in the stable range,
+  reusing the corpus's Schur–Weyl bound;
+- **`finrank_le_edgeImages_add_factorial`** — the card's `(22)`.
+
+The card carries a full `## Lean certificate` table and has been moved to
+`docs/drafts/pipeline/3-formalized/`.  Stage-2 top level now holds 37 cards.
+
+### New infrastructure: supermodularity of the Hall deficiency (2026-08-16)
+
+`HTGeometry/DeficiencySupermodular.lean`, wired, built, axiom-clean:
+
+- `shadow A U = ⨆ p, map (A p) U` and `deficiency A U = dim U − dim (shadow A U)`;
+- `shadow_sup`, `shadow_inf_le`;
+- **`deficiency_supermodular`** — `δ(U) + δ(W) ≤ δ(U ⊔ W) + δ(U ⊓ W)`, from the modular law
+  together with `shadow (U ⊔ W) = shadow U ⊔ shadow W` and `shadow (U ⊓ W) ≤ shadow U ⊓ shadow W`;
+- `deficiency_sup_of_max` — maximal-deficiency subspaces are closed under sums;
+- **`exists_greatest_deficiency_maximizer`** — the deficiency has a greatest maximizer.  The proof
+  avoids infinite suprema: maximize the deficiency first, then maximize the dimension among the
+  maximizers; any other maximizer joins with it without raising the dimension, so it is contained
+  in it.
+
+This is the `(10)`/`(11)` layer of `all-replica-one-step-local-pauli-hall-saturation-law`, and is
+reusable for any Hall-type expansion argument.
+
+### New infrastructure: products of commuting involutions (2026-08-16)
+
+`HTGeometry/CommutingInvolutionProduct.lean`, wired, built, axiom-clean:
+
+- `pow_of_sq_eq_one` — the even/odd powers of an involution;
+- **`exp_smul_of_sq_eq_one`** — `exp (t • x) = cosh t • 1 + sinh t • x` whenever `x * x = 1`,
+  proved by splitting the exponential series against `Complex.hasSum_cosh/​sinh`;
+- **`exp_halfPi_smul_of_sq_eq_one`** — at `t = iπ/2` this is `exp ((iπ/2) • x) = i • x`;
+- `noncommProd_smul` — scalars factor out of a `noncommProd` of commuting elements;
+- **`exp_halfPi_smul_sum`** — the product of a finite family of pairwise commuting involutions is
+  `i^{-|R|}` times `exp ((iπ/2) • ∑ x)`;
+- **`commute_noncommProd_of_commute_sum`** — hence anything commuting with the sum commutes with
+  the product.
+
+This is the group-action layer that `all-replica-one-step-local-pauli-hall-saturation-law` needs:
+the card's paired-Pauli conjugations `C_q` are products of the replica-wise single-site Paulis, and
+their sum is the collective generator, so every sitewise singlet is fixed by every `C_q` without
+invoking Haar measure or a Lie-group argument.
+
+### Progress: one-step Pauli Hall saturation — the conjugation layer (2026-08-16)
+
+`HTGeometry/AllReplicaSiteString.lean`, wired, built, axiom-clean:
+
+- `replicaSetLabel v a T` — the Pauli label carrying one letter at one physical site across a set
+  of replicas, with its support and the disjointness/product laws against a further single-site
+  string;
+- **`noncommProd_siteLabel_eq`** — the all-replica site string is exactly the product of the
+  replica-wise single-site strings (Finset induction on the replica set, using the phase-one
+  product law for disjointly supported labels);
+- `finitePauliMatrix_siteLabel_sq`, `commute_finitePauliMatrix_siteLabel`,
+  `sum_finitePauliMatrix_siteLabel` — the replica-wise strings are pairwise commuting involutions
+  whose sum is the collective generator;
+- **`commute_allReplicaSiteString_of_commute_collective`** — hence every sitewise singlet commutes
+  with the all-replica string at that site.
+
+This is the card's "every `s ∈ S_r` is fixed by all `C_q`" step, obtained with no Haar measure and
+no Lie-group argument.  Single-site conjugations suffice for the card's Lemma 4 because the
+single-qubit symplectic form already separates distinct letters, so only this per-site statement is
+needed.
+
+### Progress: one-step Pauli Hall saturation — the sign law (2026-08-16)
+
+`HTGeometry/AllReplicaSiteString.lean` extended, wired, built, axiom-clean:
+
+- `siteConjString I R v c` — the all-replica conjugating string at one physical site;
+- **`finitePauliConjugationSign_replicaSet_replicaLabel`** — conjugating a one-replica string by
+  the all-replica site string contributes exactly one single-site sign, the same for every replica;
+- **`siteConjString_conj_collectivePauliString`** — the card's `(18)`:
+  `C_q A_p C_q⁻¹ = (-1)^{⟨q,p⟩} A_p` in the collective-string form, with the sign
+  `boolPauliConjugationSign (some c) (p v)`.
+
+Corpus-reuse note: the conjugation law itself was already owned by the corpus
+(`FinitePauliConjugationLaw`: `boolPauliConjugationSign`, `finitePauliMatrix_conj`,
+`finitePauliConjugationSign_sq`).  A `PauliLabelSwapSign` module drafted here duplicated
+`boolPauliConjugationSign` under another name and was deleted rather than kept; only the
+replica-specific computation above is new.
+
+### Progress: one-step Pauli Hall saturation — the graded conjugation (2026-08-16)
+
+`HTGeometry/PauliConjugationGrading.lean`, wired, built, axiom-clean:
+
+- `matrixConjRepresentation Q = Qᵀ ⊗ₖ Q` with `matrixConjRepresentation_mulVec_vec`
+  (`conj Q *ᵥ vec X = vec (Q X Q)`) and `matrixConjRepresentation_conjTranspose` — conjugation by a
+  Hermitian matrix is a self-adjoint operator on vectorised operators;
+- `siteConjString_mul_self`, `siteConjString_conjTranspose` — the all-replica site string is a
+  Hermitian involution (both from the corpus's `finitePauliMatrix_mul_self` and
+  `finitePauliMatrix_isHermitian`);
+- `siteConjString_conj_of_commute` — conjugation by it fixes every sitewise singlet;
+- **`siteConjString_conj_commutator`** — the card's Lemma 4 grading: the collective commutator of a
+  physical label is multiplied by the single-site sign `boolPauliConjugationSign (some c) (p v)`.
+
+The duplicate `finitePauliMatrix_siteLabel_sq` written earlier in `AllReplicaSiteString` was
+removed in favour of the corpus's `finitePauliMatrix_mul_self`.
+
+**Remaining for this card:** the orthogonality conclusion `(19)` (the self-adjoint-involution
+eigenvalue argument, identical in shape to `inner_fixedEdge_eq_zero_of_separating`), then Lemma 5's
+quotient detector `(21)`–`(24)`, Lemma 6's edge Casimir `(25)`–`(27)`, and the mixed-layer
+assembly.
+
+### Progress: one-step Pauli Hall saturation — orthogonality and the rotated Casimir (2026-08-16)
+
+`HTGeometry/PauliConjugationGrading.lean` extended:
+
+- `toEuclideanLin_commutatorRep_vec`, `toEuclideanLin_conjRep_vec` — the vectorised forms of the
+  commutator and conjugation representations;
+- `star_boolPauliConjugationSign` — the grading signs are real;
+- **`inner_collectiveCommutator_eq_zero_of_sign_ne`** — the card's `(19)`: collective commutators
+  graded by different single-site signs have orthogonal images on the singlet sector.  The proof is
+  the self-adjoint-involution eigenvalue argument, the same shape as
+  `inner_fixedEdge_eq_zero_of_separating`.
+
+`HTGeometry/RotationQuadraticCasimir.lean`, new:
+
+- `pauliStructureCoeff_antisymmetric_right` — antisymmetry in the rotated pair;
+- `sum_antisymm_symm_eq_zero` — an antisymmetric coefficient contracted against a symmetric family
+  vanishes;
+- **`commute_sum_sq_of_rotation`** — if an element rotates a triple of operators by the Pauli
+  structure constants, the sum of their squares commutes with it.  This is the mechanism behind the
+  card's Lemma 6: summing `A_p²` over all nine orientations of an edge gives an operator commuting
+  with the collective generators at both endpoints, hence preserving the singlet sector.
+
+**Remaining for this card:** Lemma 6's injectivity and image statements `(26)`–`(27)`, Lemma 5's
+quotient detector `(21)`–`(24)`, Lemma 2/3's invariance of the greatest maximizer under the
+one-parameter groups `exp(t A_p)` and the resulting splitting `(14)`–`(15)`, and the assembly
+`(29)`.
+
+### Progress: one-step Pauli Hall saturation — the edge Casimir (2026-08-16)
+
+`HTGeometry/EdgeCasimirSinglet.lean`, wired, built, axiom-clean:
+
+- `edgeOrientationCasimir I R i j = ∑_{a,b} A_{ab}²`, the card's `K₂` restricted to one edge;
+- `commute_edgeOrientationCasimir_left/right/notMem` — it commutes with the collective generator at
+  either endpoint (via `commute_sum_sq_of_rotation` applied along the rotated axis) and trivially
+  with generators away from the edge;
+- **`edgeOrientationCasimir_mem_singlet`** — hence it preserves the sitewise singlet sector, the
+  card's `(26)` first half;
+- `fixedEdgeCommutatorMatrix_conjTranspose`, `adjoint_fixedEdgeCommutator` — the edge commutators
+  are self-adjoint;
+- **`inner_edgeOrientationCasimir_self`** — the card's `(28)`:
+  `⟪x, K₂ x⟫ = ∑_{a,b} ‖A_{ab} x‖²`;
+- **`edgeOrientationCasimir_apply_eq_zero_iff`** — hence the Casimir kernel is exactly the joint
+  edge kernel.
+
+Combined with the synchronized-kernel theorem from the promoted fixed-edge card, this gives `(26)`:
+`K₂` is injective on the singlet sector modulo the global collective commutant.

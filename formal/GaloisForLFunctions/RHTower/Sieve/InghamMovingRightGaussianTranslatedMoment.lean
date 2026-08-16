@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.Sieve.InghamMovingRightEdgePowerSaving
+import GaloisForLFunctions.RHTower.Sieve.InghamMovingRightEdgeExplicitPowerSaving
 import GaloisForLFunctions.RHTower.Sieve.InghamRightGaussianTranslatedMoment
 
 noncomputable section
@@ -340,6 +341,159 @@ theorem exists_inghamGabrielPoleClearedError_movingRight_translatedMoment_le
                 B * K * (X : ℝ) ^ (-delta)) := by rw [hpow]
         _ = C * (X : ℝ) ^ (-delta) := by
           dsimp only [C]
+          ring
+
+def inghamMovingRightTranslatedExplicitConstant (delta : ℝ) : ℝ :=
+  Real.exp 8 *
+    (5 * Real.pi * Real.exp 1 * (1 + 1 / delta) ^ 4 +
+      ((5 * Real.pi / 2) * (1 + 1 / delta) ^ 4) *
+        (4 * Real.exp (1 / 2 : ℝ)))
+
+theorem inghamGabrielPoleClearedError_movingRight_translatedMoment_le_explicit
+    {delta : ℝ} (hdelta : 0 < delta) (hdelta1 : delta ≤ 1) :
+    ∀ {X : ℕ}, 4 ≤ X → ∀ z : ℂ, z.re = 1 + delta →
+      (∫ t in Icc (-(X : ℝ)) (X : ℝ),
+        ‖inghamGabrielPoleClearedError X 1 (X : ℝ)
+          (z + (t : ℂ) * I)‖ ^ (2 : ℝ)) ≤
+        inghamMovingRightTranslatedExplicitConstant delta *
+          (X : ℝ) ^ (-delta) := by
+  let D : ℝ := (1 + 1 / delta) ^ 4
+  let A : ℝ := 5 * Real.pi * Real.exp 1 * D
+  let B : ℝ := (5 * Real.pi / 2) * D
+  let K : ℝ := 4 * Real.exp (1 / 2 : ℝ)
+  have hA : 0 ≤ A := by dsimp only [A, D]; positivity
+  have hB : 0 ≤ B := by dsimp only [B, D]; positivity
+  have hK : 0 ≤ K := by dsimp only [K]; positivity
+  intro X hX z hz
+  let tau : ℝ := z.im
+  let d : ℝ := max 0 (|tau| - (X : ℝ))
+  let N : ℕ := Nat.ceil (|tau| + (X : ℝ))
+  let E : ℝ := Real.exp (-2 * (d / (X : ℝ)) ^ 2)
+  let G : ℝ := Real.exp 8 * E
+  have hXpos : (0 : ℝ) < X := by exact_mod_cast (show 0 < X by omega)
+  have hcover : |tau| + (X : ℝ) ≤ (N : ℝ) := by
+    dsimp only [N]
+    exact Nat.le_ceil _
+  have hN1 : 1 ≤ N := by
+    have hX1 : (1 : ℝ) ≤ X := by exact_mod_cast (show 1 ≤ X by omega)
+    exact_mod_cast (show (1 : ℝ) ≤ N by linarith [abs_nonneg tau])
+  have hrawN :=
+    integral_Icc_normSq_inghamMollifiedError_movingRightEdge_symmetric_le_explicit
+      hdelta (X := X) (N := N) (by omega) hN1
+  have hrawN' :
+      (∫ t in Icc (-(N : ℝ)) (N : ℝ),
+        movingRightRawDensity delta X t) ≤
+        A * (X : ℝ) ^ (-delta) +
+          B * (X : ℝ) ^ (-(1 + delta)) * (N : ℝ) := by
+    have halg :
+        A * (X : ℝ) ^ (-delta) +
+            B * (X : ℝ) ^ (-(1 + delta)) * (N : ℝ) =
+          5 * Real.pi * Real.exp 1 *
+              ((X : ℝ) ^ (-delta) * (1 + 1 / delta) ^ 4) +
+            (5 * Real.pi / 2) *
+              ((X : ℝ) ^ (-(1 + delta)) * (1 + 1 / delta) ^ 4) *
+                (N : ℝ) := by
+      dsimp only [A, B, D]
+      ring
+    rw [halg]
+    simpa only [movingRightRawDensity, movingRightPoint, Real.rpow_two] using hrawN
+  have htranslate :=
+    translated_movingRightRawDensity_integral_le hdelta X N tau hcover
+  have hrawShift := htranslate.trans hrawN'
+  have hfieldCont : Continuous fun t : ℝ =>
+      ‖inghamGabrielPoleClearedError X 1 (X : ℝ)
+        (z + (t : ℂ) * I)‖ ^ (2 : ℝ) :=
+    (((continuous_movingRight_shift_poleCleared X hdelta hz).norm).rpow_const
+      (fun _ => Or.inr (by norm_num)))
+  have hrawShiftCont : Continuous fun t : ℝ =>
+      movingRightRawDensity delta X (tau + t) :=
+    (continuous_movingRightRawDensity hdelta X).comp (by fun_prop)
+  have hpointwise : ∀ t ∈ Icc (-(X : ℝ)) (X : ℝ),
+      ‖inghamGabrielPoleClearedError X 1 (X : ℝ)
+          (z + (t : ℂ) * I)‖ ^ (2 : ℝ) ≤
+        G * movingRightRawDensity delta X (tau + t) := by
+    intro t ht
+    simpa only [G, E, d, tau] using
+      poleCleared_movingRight_shift_rpow_le X hdelta hdelta1 hz hX ht
+  have hintegral :
+      (∫ t in Icc (-(X : ℝ)) (X : ℝ),
+        ‖inghamGabrielPoleClearedError X 1 (X : ℝ)
+          (z + (t : ℂ) * I)‖ ^ (2 : ℝ)) ≤
+        G * (∫ t in Icc (-(X : ℝ)) (X : ℝ),
+          movingRightRawDensity delta X (tau + t)) := by
+    calc
+      _ ≤ ∫ t in Icc (-(X : ℝ)) (X : ℝ),
+            G * movingRightRawDensity delta X (tau + t) := by
+        exact integral_mono_ae hfieldCont.integrableOn_Icc
+          ((continuous_const.mul hrawShiftCont).integrableOn_Icc)
+          (ae_restrict_of_forall_mem measurableSet_Icc hpointwise)
+      _ = _ := by rw [MeasureTheory.integral_const_mul]
+  have hE1 : E ≤ 1 := by
+    dsimp only [E]
+    rw [← Real.exp_zero]
+    apply Real.exp_le_exp.mpr
+    nlinarith [sq_nonneg (d / (X : ℝ))]
+  have hG0 : 0 ≤ G := by dsimp only [G]; positivity
+  have habsorb := gaussianLinearWindowAbsorption X tau hX
+  dsimp only at habsorb
+  have hEN : E * (N : ℝ) ≤ K * (X : ℝ) := by
+    simpa only [E, d, N, K] using habsorb
+  have hpow : (X : ℝ) ^ (-(1 + delta)) * (X : ℝ) =
+      (X : ℝ) ^ (-delta) := by
+    calc
+      (X : ℝ) ^ (-(1 + delta)) * (X : ℝ) =
+          (X : ℝ) ^ (-(1 + delta)) * (X : ℝ) ^ (1 : ℝ) := by
+        rw [Real.rpow_one]
+      _ = (X : ℝ) ^ (-(1 + delta) + 1) := by rw [Real.rpow_add hXpos]
+      _ = (X : ℝ) ^ (-delta) := by congr 1; ring
+  have hfirstE : E * (X : ℝ) ^ (-delta) ≤ (X : ℝ) ^ (-delta) := by
+    calc
+      E * (X : ℝ) ^ (-delta) ≤ 1 * (X : ℝ) ^ (-delta) :=
+        mul_le_mul hE1 le_rfl (Real.rpow_nonneg hXpos.le _) (by norm_num)
+      _ = _ := one_mul _
+  have hsecondE :
+      (X : ℝ) ^ (-(1 + delta)) * (E * (N : ℝ)) ≤
+        (X : ℝ) ^ (-(1 + delta)) * (K * (X : ℝ)) :=
+    mul_le_mul_of_nonneg_left hEN (Real.rpow_nonneg hXpos.le _)
+  calc
+    _ ≤ G * (∫ t in Icc (-(X : ℝ)) (X : ℝ),
+          movingRightRawDensity delta X (tau + t)) := hintegral
+    _ ≤ G * (A * (X : ℝ) ^ (-delta) +
+          B * (X : ℝ) ^ (-(1 + delta)) * (N : ℝ)) :=
+      mul_le_mul_of_nonneg_left hrawShift hG0
+    _ = Real.exp 8 *
+        (A * (E * (X : ℝ) ^ (-delta)) +
+          B * (X : ℝ) ^ (-(1 + delta)) * (E * (N : ℝ))) := by
+      dsimp only [G]
+      ring
+    _ ≤ Real.exp 8 *
+        (A * (X : ℝ) ^ (-delta) +
+          B * (X : ℝ) ^ (-(1 + delta)) * (K * (X : ℝ))) := by
+      apply mul_le_mul_of_nonneg_left _ (Real.exp_pos _).le
+      exact add_le_add
+        (mul_le_mul_of_nonneg_left hfirstE hA)
+        (by
+          calc
+            B * (X : ℝ) ^ (-(1 + delta)) * (E * (N : ℝ)) =
+                B * ((X : ℝ) ^ (-(1 + delta)) * (E * (N : ℝ))) := by ring
+            _ ≤ B * ((X : ℝ) ^ (-(1 + delta)) * (K * (X : ℝ))) :=
+              mul_le_mul_of_nonneg_left hsecondE hB
+            _ = B * (X : ℝ) ^ (-(1 + delta)) * (K * (X : ℝ)) := by ring)
+    _ = inghamMovingRightTranslatedExplicitConstant delta *
+          (X : ℝ) ^ (-delta) := by
+      calc
+        Real.exp 8 *
+            (A * (X : ℝ) ^ (-delta) +
+              B * (X : ℝ) ^ (-(1 + delta)) * (K * (X : ℝ))) =
+            Real.exp 8 *
+              (A * (X : ℝ) ^ (-delta) +
+                B * K * ((X : ℝ) ^ (-(1 + delta)) * (X : ℝ))) := by ring
+        _ = Real.exp 8 *
+              (A * (X : ℝ) ^ (-delta) + B * K * (X : ℝ) ^ (-delta)) := by
+          rw [hpow]
+        _ = inghamMovingRightTranslatedExplicitConstant delta *
+              (X : ℝ) ^ (-delta) := by
+          dsimp only [inghamMovingRightTranslatedExplicitConstant, A, B, D, K]
           ring
 
 end RHTower.Sieve

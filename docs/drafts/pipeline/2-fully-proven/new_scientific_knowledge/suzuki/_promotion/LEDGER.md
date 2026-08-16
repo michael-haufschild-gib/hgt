@@ -15,11 +15,10 @@ that name and its relative links deepened by one level.  Inbound links are repai
 restricted-Weil trace", "specialist novelty review", "3 → 4 publication-ready") do not block
 promotion; gates that name missing Lean do.
 
-## A. Promoted (96 of 104; 8 cards remain in stage 2)
+## A. Promoted (99 of 105; 6 cards remain in stage 2)
 
 *This list records the promotions carried out through this ledger.  The stage-2 directory
-itself is the authority on what remains; the eight cards still there are named in section B.*
-
+itself is the authority on what remains; the six cards still there are named in section B.*
 - `suzuki-affine-resolvent-krein-defect`
 - `suzuki-affine-sewn-weil-robin-far-tail-factorization`
 - `suzuki-aperture-rees-superpolynomial-conditioning`
@@ -43,12 +42,14 @@ itself is the authority on what remains; the eight cards still there are named i
 - `suzuki-critical-wall-field-square-root-weld`
 - `suzuki-donoghue-defect-spectral-measure-law`
 - `suzuki-dyadic-orbit-chart-h1-coverage`
+- `suzuki-energy-derivative-shifted-range-hyperplane-repair`
 - `suzuki-finite-morse-resolvent-jet-completion`
 - `suzuki-finite-shift-flat-projective-resolvent-holonomy`
 - `suzuki-flat-primitive-flux-volterra-liouville`
 - `suzuki-forced-gamma-upper-strip-gluing`
 - `suzuki-full-frequency-neumann-holonomy-survivor`
 - `suzuki-gamma-three-grade-delay-root-observability`
+- `suzuki-gamma-wall-block-hardy-and-derivative-scattering`
 - `suzuki-gamma-weighted-tail-coercivity`
 - `suzuki-global-local-compound-bezoutian-weld`
 - `suzuki-global-phase-conjugacy-divisor-flow`
@@ -73,6 +74,7 @@ itself is the authority on what remains; the eight cards still there are named i
 - `suzuki-parity-hankel-infinite-rank-no-go`
 - `suzuki-parity-resolvent-transport-budget`
 - `suzuki-physical-log-low-frequency-boundary-lock`
+- `suzuki-polynomial-carrier-gamma-dimension-wall`
 - `suzuki-position-torque-prime-clock-irreducibility`
 - `suzuki-prime-clock-atom-velocity-transference`
 - `suzuki-prime-seam-parity-hankel-strong-indefiniteness`
@@ -94,37 +96,11 @@ itself is the authority on what remains; the eight cards still there are named i
 - `suzuki-xireal-fe-bipolarization-completion`
 - `suzuki-zero-trace-cofinal-convex-recurrence`
 
-## New Lean modules written for this promotion
-
-```text
-HTGeometry/AlternatingChordLaw.lean                  2-alternating chord law + exterior instance
-HTGeometry/AtomicJumpForm.lean                       translation-pair identity, truncation
-                                                     coercivity, positive weighted combination
-HTGeometry/DyadicLatticeCover.lean                   lattice window cover, finite subcover, weight
-RHTower/SuzukiCausalEntryMovingCutRealization.lean   moving-cut integrals, their three derivative
-                                                     laws, hypothesis-free jet chain, entry law
-RHTower/SuzukiCriticalAperturePrimeCurrent.lean      absolute prime summability of the critical
-                                                     quarter-shift current; cofinal current
-RHTower/SuzukiPrimeClockPhysicalSine.lean            velocity = truncated critical sine transform
-RHTower/SuzukiProjectiveResolventBlade.lean          Plücker blade form of the resolvent chord
-RHTower/SuzukiSupportPrunedSeamCarrierBounds.lean    adjoint law, norm bounds, pruned action
-RHTower/SuzukiGammaShiftKappa.lean                   kappa_sigma finiteness, integrated
-                                                     numerical-range bound, multiplier form
-HTGeometry/MollifierPositionCommutator.lean          the position commutator of a mollifier
-HTGeometry/HadamardFinitePart.lean                   punctured Cauchy kernel in closed form and
-                                                     the exact cutoff finite-part split
-```
-
-All eight are wired into their area umbrella, build green, and are axiom-clean.
-
-## B. Not yet promoted (8)
-
+## B. Not yet promoted (6)
 - `suzuki-coalescing-anchor-parity-locking-reduction`
 - `suzuki-critical-radical-anchor-finite-head-reduction`
-- `suzuki-gamma-wall-block-hardy-and-derivative-scattering`
 - `suzuki-log-recurrence-polynomial-carrier-trichotomy`
 - `suzuki-one-prime-rough-primitive-hardy-closure`
-- `suzuki-polynomial-carrier-gamma-dimension-wall`
 - `suzuki-scalar-analytic-forcing-trace-zero-h1`
 - `suzuki-weil-position-torque-recurrence`
 
@@ -9427,5 +9403,715 @@ remainder            C Ne^2 <= C N2^2
 all of the form `C(‖c‖² + Y²N₂²) ≤ C(‖c‖ + e^{max(0,−m)}N₂)²`, which is `(11)`.  The exponent
 bookkeeping `2p − 2σ = 1` and `p + 1/2 = 1 + σ` is what makes every term land on a *single* power of
 the threshold.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ACB. The datum and the source mass, both hypothesis-free
+
+```text
+RHTower/WallThresholdDatum.lean     + enorm_thresholdDatum_le
+RHTower/WallBlockSourceEnergy.lean  + the window mass of the source
+```
+
+Restating the accumulated-datum bound in the **extended** norm removes every integrability
+hypothesis: `‖∫ f‖ₑ ≤ ∫⁻‖f‖ₑ` on an interval holds unconditionally, so
+
+```text
+||datum||_e <= ||c||_e + ofReal(K2 (1+Y)^p) * int_e_{uIoc 0 Y} ||b||_e
+```
+
+with no assumption on `b` at all.  The Cauchy--Schwarz step is then the owned `ℝ≥0∞` one:
+
+```text
+( int_e_{uIoc 0 Y} ||b||_e )^2 <= Y * (pi/2) int ||g||^2,
+```
+
+using the source energy of ACA.  This is why the real-valued Cauchy--Schwarz for Bochner integrals —
+which mathlib does not have in the convenient form — is never needed: the whole datum estimate lives
+in `ℝ≥0∞`, where the corresponding inequality is `sq_lintegral_le_measure_mul`, already owned.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ACC. The exponent bookkeeping of the one-block constant
+
+```text
+RHTower/WallThresholdArithmetic.lean
+```
+
+Every tail term carries the threshold differently, and they all land on a **single** power of it
+because of one identity:
+
+```text
+(1+Y)^{2p} Y^{1-2 sigma} <= 4^p Y^2,   p = 1/2 + sigma,  Y >= 1,
+```
+
+whose content is just `2p + (1−2σ) = 2`.  The accumulated datum grows like `(1+Y)^{2p}`; the
+propagator's ray mass decays like `Y^{1−2p}`; the exponents cancel to `2`, the square of the one
+power the card claims.  This is the same cancellation flagged in ABP/ABQ, now isolated as an
+inequality.
+
+Companion facts: `Y^{-2σ} ≤ 1` past the threshold, and on a *unit* block the `L¹` mass never exceeds
+the `L²` mass — the only place the block's unit length is used anywhere in the estimate.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ACD. The frequency threshold of a block
+
+```text
+RHTower/WallBlockThreshold.lean
+```
+
+`X_m = max(C₀,1)·e^{max(0,−m)}`.  Taking the maximum with `1` costs nothing and makes the threshold
+at least one, which every ray estimate assumes; the card leaves this implicit by writing "with `C₀`
+large enough".
+
+Two properties are all that is used downstream: the threshold opens the floor uniformly over the
+block (from `exists_threshold_wallFloor`, ABD), and it is exactly one power of the block weight
+`e^{max(0,−m)}` — the weight of `(11)`.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ACE. The propagated datum away from the threshold
+
+```text
+RHTower/StripPropagatorRayMass.lean       weight-parametric, both rays
+RHTower/WallDatumRayBound.lean            the datum's region estimate
+RHTower/WallThresholdDatum.lean           the datum's size, in the modulus of the base point
+RHTower/WallBlockSourceEnergy.lean        the window mass, in the modulus of the base point
+```
+
+`(1+Y)^{2p}·Y^{1−2σ} ≤ 4^p·Y²` with `p = 1/2 + σ` — this is `2p − 2σ = 1`, the card's exponent
+identity, and it is what turns the datum's growth below the threshold plus the propagator's ray decay
+into a *single* power of the threshold.
+
+The estimate is stated for a region and a signed base point `W` with `|W| = Y`: outwards `W = Y` and
+the region is `(Y,∞)`, inwards `W = −Y` and the region is `(−∞,−Y)`.  Only `|W|` enters, since the
+window `[0,W]` and the inverse propagator's growth on it see nothing else.
+
+## ACF. Everything even, made even
+
+```text
+HTGeometry/ResolventSymbolTailDecay.lean  weight-parametric symbol decay
+RHTower/WallEvenAmplitudeBounds.lean      the amplitudes in |t|
+RHTower/WallReversedBlockFubini.lean      the block Fubini in either orientation
+RHTower/WallTailBlockDecomposition.lean   the decomposition at |x|,|Y| ≥ 1
+RHTower/WallMovingTailBound.lean          the four-term composition on a region
+RHTower/WallFirstBoundarySquareIntegrable.lean  the first boundary on a region
+RHTower/WallTailRayEstimates.lean         the second boundary and the tail amplitude, pointwise
+```
+
+The card says the negative tail is "identical after reflection".  What that means precisely, and what
+is done here, is that **the estimates are even and the objects are not**.  Every bound in the tail
+passes through the symbol bound `‖r^{(m+1)}(t)‖ ≤ 2(m+1)!(1+π/2)/|t|^{m+1}`, which is already stated
+in `|t|`; carrying that modulus through the amplitudes makes every tail estimate hold on both rays.
+The generator itself has no symmetry in the frequency — its two digamma abscissas `1−σ` and `1+σ`
+are genuinely different — so no reflection of the *transport* is available or used.
+
+Three structural generalisations paid for the whole inward ray at once.  The symbol-decay estimates
+were restated for an arbitrary positive weight, so `(1+t)^{-1}` and `(1+|t|)^{-1}` are one lemma.
+The block Fubini and the position-average integrability were restated for either orientation of the
+interval, which is only `∫_a^b = −∫_b^a`.  And the four-term composition was restated for an
+arbitrary measurable region with an arbitrary base point, so the two rays are two instances.
+
+## ACG. The tail on the inward ray
+
+```text
+RHTower/WallInwardTailRemainder.lean
+```
+
+The remainder is the one genuinely one-sided term: the weighted Hardy inequality compares a moving
+average `x^{-p}∫_1^x` with its density, and that comparison has a direction.  Its amplitude is even,
+so reflecting the *integration variable* — `lintegral_neg_set_eq` for the inner interval,
+`lintegral_sq_Iio_neg_eq` for the outer — transfers the estimate verbatim.
+
+The threshold is taken strictly above one.  That costs nothing and makes the reflected interval
+`[Y,−x)` sit inside the Hardy interval `(1,−x]` without an appeal to the null set `{1}`.
+
+## ACH. The scalar inputs of the assembly
+
+```text
+RHTower/WallBlockAssemblyTools.lean
+```
+
+An indicator's squared mass is the squared mass on its region; on a unit block the squared `L¹` mass
+is at most the `L²` mass; the propagated datum has finite squared mass on the whole line (the weight
+`(1+|x|)^{-2p}` is integrable for `p > 1/2`); and the threshold vector is bounded by
+`K₂(1+|W|)^p(4+π)` times the block's `L¹` mass.
+
+## ACI. `(11)` — the one-block estimate, closed
+
+```text
+RHTower/WallBlockRayTotals.lean     the two rays
+RHTower/WallOneBlockEstimate.lean   the window, the three-region composition, and `(11)`
+```
+
+```text
+|| u ||_2 <= C_{sigma,T} ( ||c|| + e^{max(0,-m)} ||g||_2 ).
+```
+
+`exists_bound_lintegral_sq_forcedProfile_oneBlock`, unconditional, auditing to
+`[propext, Classical.choice, Quot.sound]`.
+
+The frequency line is cut at `X_m = max(C₀,2)e^{max(0,−m)}` into a window and two rays.  On each ray
+the profile is the propagated datum plus the four block averages of the two-fold expansion, and the
+five contributions are:
+
+```text
+propagated datum        C ( ||c||^2 + X^2 N )        (1+X)^{2p} X^{1-2sigma} <= 4^p X^2
+first boundary          2 pi N                       Plancherel, no threshold
+second boundary         (3+pi)^2 N                   one power of (1+|x|)^{-1}, no threshold
+propagated threshold    C X^2 N                      same identity, one power of X to spare
+remainder               C N                          Hardy, no threshold
+window                  C ( ||c||^2 + X^2 N )        one power of the window length squared
+```
+
+Where the threshold does its work: `max(0,−m) + m = max(m,0) ≥ 0`, so past `X_m` the logarithmic
+floor `log(2+|x|)` exceeds `1 − m` and the resolvent of the shifted generator is bounded by one,
+*uniformly over the block*.  That exact cancellation is why the block weight is `e^{max(0,−m)}` and
+not a higher power of it — and hence why Theorem 2's block series converges at all.
+
+## ACJ. Theorem 2 — the block transfer, closed
+
+```text
+RHTower/WallForcedProfileMemLp.lean   the block solution as a point of L²
+RHTower/WallBlockSeries.lean          `(24)` and `(25)`
+```
+
+`summable_blockSolutions` and `eLpNorm_vectorAngularTransform_eq`, both unconditional and auditing to
+`[propext, Classical.choice, Quot.sound]`.
+
+The whole content of `(24)` is that the one-block estimate's weight `e^{max(0,−m)}` is *the same
+weight* as the physical source norm `N_σ(G)`.  Finiteness of that norm therefore makes the block
+solutions absolutely summable in `L²(ℝ;X)`, and `L²` is complete.  Nothing is a limit theorem about
+individual blocks.
+
+To speak of a point of `L²` at all the block solution must be measurable, and that is where its
+continuity is needed: the transported source is interval integrable on every interval, so its
+primitive is continuous, and the Gamma transport is continuous along the shifted line.
+
+`(25)` is Plancherel — the physical and transported profiles have proportional `L²` norms with the
+constant `√(2π)`, the same constant as `(12)`.
+
+## ACK. The jump operator's multiplier, from its physical definition
+
+```text
+RHTower/GammaJumpBinetFormula.lean       the Binet formula, and the integrand's integrability
+RHTower/GammaJumpMultiplierAction.lean   the action on a character and on a superposition
+```
+
+The physical operator `(26)` is the second-difference average against the Laplace weight
+`1/(e^s−1)`.  On a character `e^{iLa}` its integrand is `e^{iLa}(2 − 2cos(as))/(e^s−1)`, and
+expanding the weight as `Σ_{n≥1} e^{-ns}` and integrating term by term gives
+
+```text
+integral_0^infinity (2 - 2 cos(eta s))/(exp s - 1) ds = 2 sum_{n>=1} eta^2/(n(n^2+eta^2)) = r(eta).
+```
+
+**Why the term integrals, and not the terms, carry the interchange.**  The crude bound on the `n`-th
+term integrates to `4/n`, which is not summable; the *exact* term integral is
+`2η²/(n(n²+η²)) = O(n^{-3})`, which is.  So the interchange is available only after the term integral
+has been computed — a small but load-bearing ordering.
+
+On a superposition of characters the operator inserts `r` under the integral sign.  That interchange
+is Fubini in the order *frequency first, scale second*: in the other order the `s`-integral diverges
+at the origin, the weight being `~1/s` there.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ACL. `(33)` and `(32)` — the order-minus-one commutator, closed
+
+```text
+RHTower/GammaJumpCommutatorFourierKernel.lean   `(33)`
+RHTower/GammaJumpCommutatorH1Bound.lean         `(32)`
+```
+
+Writing both factors as superpositions of characters — the cutoff over `t`, the profile over `η` —
+the jump operator inserts its multiplier under each integral sign, and the two insertions differ only
+in *which* frequency the multiplier is evaluated at: `r(ξ)` for the product, `r(η)` for the factor.
+Subtracting leaves the symbol *difference*, which is `(33)`:
+
+```text
+Fourier([R,chi]F)(xi) = integral chihat(xi-eta) [r(xi) - r(eta)] Fhat(eta) deta.
+```
+
+The convolution structure is the transform of a product, and the cutoff's exterior constants never
+appear: a constant multiplication operator commutes with every multiplier, so only the transform of
+the cutoff enters and no distributional transform of a non-decaying cutoff is needed.
+
+`(32)` then follows from the global symbol-difference bound and Young's inequality: the weight
+`1+|ξ|` demanded by `H¹` is absorbed into a convolution kernel in `ξ−η` alone, with **no** region
+hypothesis — cleaner than the card's near/far split, and the logarithm of `(34)` is never needed.
+
+Both audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ACM. `(45)` — the three-fold expansion
+
+```text
+HTGeometry/InverseFamilyThirdDerivative.lean          the amplitude `∂D₂ = O(w³)`
+HTGeometry/PhaseGeneratorThirdIntegrationByParts.lean the third step
+```
+
+The recursion is `D₀ = C⁻¹`, `D_{j+1} = C⁻¹ ∂ D_j`.  Two integrations by parts leave `∂D₁ = O(w²)`; a
+third leaves `∂D₂ = O(w³)`.
+
+**Why the third step is not optional.**  After transport the remaining integral carries the inverse
+propagator's growth `t^p`, so the two-fold remainder integrates `t^{p−2}` — divergent as soon as
+`p > 1`, i.e. `σ > 1/2`, which is exactly the range in which the derivative wall `(42)` bites — while
+the three-fold remainder integrates `t^{p−3}`, absolutely convergent for every `p < 2`.
+
+The step itself is the same step as the first two: `E·G = i(E'·C⁻¹G)` holds for *every* amplitude
+`G`, so with `G = ∂D₁` the new boundary amplitude is `C⁻¹∂D₁ = D₂`.  Only the differentiability data
+grows — a third symbol derivative, continuous — and on a compact interval that makes every integrand
+continuous, hence integrable.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ACN. `(45)` for the literal Gamma wall
+
+```text
+RHTower/WallGeneratorThirdJet.lean          the third frequency jet and its cubic decay
+RHTower/WallThirdIntegrationByParts.lean    the wall three-fold expansion
+```
+
+The generator's third frequency derivative is `r₃(z)/2 − 3i/z⁴`, and the symbol bound
+`‖r^{(m+1)}(t)‖ ≤ 2(m+1)!(1+π/2)/|t|^{m+1}` makes it `O((1+|t|)^{-3})` on both rays.  Feeding the
+three symbol bounds `O(w)`, `O(w²)`, `O(w³)` into the abstract amplitude estimate gives
+`‖∂D₂‖ ≤ wallAmplitude3Const μ₀ · (1+|t|)^{-3}`, and the abstract third step then gives `(45)` for the
+wall phase.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+**What Theorem 5 still needs**: the finite parts `(46)` (the blockwise subtraction and its limit),
+`(48)` — that the transported three-fold remainder is `O(x^{-2})`, hence square integrable after
+multiplication by `x` — and the same for each of the three boundary terms.  The necessity half is
+already owned (AAU).
+
+## ACO. `suzuki-polynomial-carrier-gamma-dimension-wall` is promoted
+
+```text
+RHTower/PolyCarrierForcedClosure.lean   (15), the corrected direct theorem
+```
+
+The card's only remaining debt was the *forced* half of `(15)`, which is the Gamma-wall block
+transfer.  With the one-block estimate `(11)` and its summation `(24)` now Lean-proved, `(15)`
+composes: below the Gamma shift the homogeneous carrier is square integrable on both rays, the
+particular part is square integrable by the block transfer, and their sum is the shifted value.
+
+Everything else was already Lean: `(1)`, `(3)`, `(4)`, `(7)`–`(13)` in
+`SuzukiPolynomialCarrierGammaWall` and `SuzukiPolynomialCarrierGammaDimensionWall`, `(14)` in
+`PolyDistortedHomogeneousThreshold`.  `(16)` and `(17)` are the survivor list and the novelty
+boundary — route statements, not theorems.
+
+Moved to `3-formalized/new_scientific_knowledge/suzuki/` with its `-formalized.md` companion.
+
+**A new card has appeared in stage 2** during this sweep:
+`suzuki-energy-derivative-shifted-range-hyperplane-repair`.  It is added to section B and has not
+yet been audited.
+
+## ACP. `suzuki-energy-derivative-shifted-range-hyperplane-repair` is promoted
+
+```text
+RHTower/SuzukiTaHilbertSpace.lean
+RHTower/SuzukiTaSmoothCore.lean
+RHTower/SuzukiTaDeficiencyIndices.lean
+```
+
+This card appeared in stage 2 during the sweep marked `[LEAN-IN-PROGRESS]`, and its entire Lean
+target list is in fact already proved, wired and axiom-clean: the exponential moment functionals,
+the exact core range `(3)`, the exact shifted-range closure `(1)`, the densely defined `LinearPMap`,
+and the two one-dimensional adjoint kernels, hence deficiency indices `(1,1)`.
+
+The repair is exactly what the Lean proof does: it never converts energy-continuity into
+`L²`-continuity.  Only the physical embedding `H(T_a) → L²(-a,a)` is used, and only in the direction
+it holds.  The adjoint *domain* is never described; the closure of the shifted core range is computed
+and `ker T* = (ran T)^⊥` is applied.
+
+Seven cards remain in stage 2.
+
+## ACQ. `(48)`: the transported three-fold remainder decays quadratically
+
+```text
+HTGeometry/PowerTailBochnerBound.lean          the tail of a power-dominated Bochner integral
+HTGeometry/InverseFamilyThirdDerivative.lean   + the amplitude continuity chain
+RHTower/WallThirdRemainderTail.lean            `(48)`
+```
+
+After three integrations by parts the remaining integrand is the inverse propagator against `∂D₂`,
+of size `K₂(1+|t|)^p · C(1+|t|)^{-3} ≤ K₂C|t|^{p-3}`.  Its tail past `x ≥ 1` is `O(x^{p-2})` —
+absolutely convergent for every `p < 2`, which is the whole range `0 < σ < 1` — and one more power
+of the propagator's own decay `x^{-p}` gives
+
+```text
+|| H(x) integral_x^infinity E d(D_2) || = O(x^{-2}).
+```
+
+So the remainder survives multiplication by the frequency and stays square integrable on a terminal
+ray.  The two-fold remainder does not: its tail integrates `t^{p-2}`, divergent as soon as `p > 1`.
+
+The amplitude continuity chain was extracted from the three-fold integration by parts, so the
+expansion and the tail estimate now share it instead of repeating it.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ACR. Multiplication by the frequency, on a block slice
+
+```text
+RHTower/BlockSliceFrequencyWeight.lean
+```
+
+In the angular convention the Fourier weight identity carries no constant at all:
+
+```text
+|z| ||hhat(z)|| = ||(h')hat(z)||.
+```
+
+On a block slice the differentiated profile is the *weighted corrected* derivative
+`e^{-Ls}(g′(L) − s g(L))`: the Laplace weight contributes its own `−s`.  That is exactly why the
+derivative statement costs one power of the block's `H¹` norm **and** one power of the Laplace
+variable — the second of which the accretive semigroup absorbs, turning `∫e^{-μs}ds = 1/μ` into
+`∫ s e^{-μs}ds = 1/μ²`.
+
+This is the mechanism by which `x·(first boundary term)` is square integrable precisely under the
+card's `(43)`: multiplication by the frequency is physical differentiation, and the block source's
+derivative is what `(43)` supplies.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ACS. The Laplace superposition with a linearly growing slice
+
+```text
+HTGeometry/LaplaceSuperpositionBound.lean   + the affine amplitude
+```
+
+Multiplication by the frequency on a block slice produces the weighted corrected derivative
+`e^{-Ls}(g′ − s g)`, so the slice amplitude grows *linearly* in the Laplace variable.  The
+superposition bound therefore needs
+
+```text
+integral_0^infinity (K_0 + K_1 s) exp(-rho s) ds <= K_0/rho + 4 K_1/rho^2,
+```
+
+which the half-rate domination `s ≤ (2/ρ)e^{ρs/2}` gives from the two exponential masses already
+owned — no fundamental theorem of calculus and no `Γ`-integral needed.  The point is only that the
+extra power of `s` costs one more power of the decay rate, and the accretive floor supplies it.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ACT. The first boundary term after multiplication by the frequency
+
+```text
+RHTower/SuzukiWallBlockSliceBound.lean       + the affine block Laplace bound
+RHTower/WallFrequencyFirstBoundary.lean      the frequency-weighted first boundary term
+```
+
+Multiplication by the frequency is physical differentiation.  On a block slice it replaces the
+profile by its *weighted corrected* derivative `e^{-Ls}(g′ − s g)`, so the Laplace amplitude picks up
+one power of `s`; the accretive floor pays for it, turning `K/μ` into `K₀/μ + 4K₁/μ²`.
+
+This is exactly the card's remark that the leading nonhomogeneous boundary term is square integrable
+after multiplication by the frequency **precisely** under the residual condition `(43)`: that
+condition supplies the block's derivative energy, and the resolvent contributes only the harmless
+extra power of the floor.
+
+Two small facts made the estimate hypothesis-free.  A profile vanishing off a *closed* block has a
+derivative vanishing there too — the complement is open — so no support hypothesis on the derivative
+is needed.  And the energy of the corrected derivative is bounded without Minkowski, by
+`‖a − b‖² ≤ 2(‖a‖² + b²)` and completing the square: the cross term of `(K₀ + K₁s)²` is free.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ACU. The second boundary term after multiplication by the frequency
+
+```text
+RHTower/WallPositionDerivative.lean          the amplitudes differentiated in the position
+RHTower/WallFrequencySecondBoundary.lean     the position integration by parts, and the bound
+```
+
+The second boundary term carries one power of `(1+|x|)^{-1}`, so multiplying by the frequency leaves
+it merely *bounded* — not square integrable.  The oscillation is what saves it.  Since
+`∂_L e^{-iLx} = -ix e^{-iLx}`, integrating by parts in the **position** trades the frequency for
+either one more resolvent power — the amplitude's own position derivative, since the shifted
+generator `B(x) + L` moves at unit speed in `L` — or the block profile's derivative.  Both keep
+`(1+|x|)^{-1}`, which is square integrable on a terminal ray.
+
+The boundary terms of that integration by parts vanish for a structural reason worth naming: a
+*differentiable* profile supported in a **closed** block vanishes at both endpoints, because the
+complement is open and the profile is eventually zero on both sides.  No separate endpoint
+hypothesis is needed.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ACV. The third boundary term after multiplication by the frequency
+
+```text
+RHTower/WallFrequencyThirdBoundary.lean
+```
+
+The third integration by parts produces a boundary amplitude with *two* powers of `(1+|x|)^{-1}`.
+Multiplying by the frequency spends one and leaves one, and one power is square integrable on a
+terminal ray — so unlike the first two boundary terms this one needs no oscillation argument at all;
+its pointwise bound already suffices.
+
+That is the precise sense in which the third integration by parts pays for the derivative statement:
+it converts the last boundary term from borderline to summable, and simultaneously turns the
+remainder's tail from `O(x^{p-2})` into `O(x^{-2})`.
+
+**All three boundary terms of `(45)` and its remainder are now square integrable after multiplication
+by the frequency.**  What `(47)` still needs is `(46)` — the finite parts, i.e. the limit of
+`∫_Y^x E dt` after subtracting the three endpoint terms at `x`, which converges because the
+three-fold remainder is absolutely integrable — and the assembly of the `iff` against the derivative
+wall `(42)` (necessity already owned, ledger AAU).
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ACW. A zero is a genuine singularity of the logarithmic derivative's curvature
+
+```text
+HTGeometry/LogDerivZeroPole.lean
+```
+
+If `f(z) = (z−ρ)^{n+1}g(z)` with `g` analytic and `g(ρ) ≠ 0`, then on a punctured neighbourhood
+
+```text
+(log f)'(z)  = (n+1)/(z-rho) + (log g)'(z),
+(log f)''(z) = -(n+1)/(z-rho)^2 + (log g)''(z),
+```
+
+and the second is **unbounded**: the correction `(log g)″` is analytic at `ρ` — `g` is analytic and
+nonvanishing there, so `logDeriv g` is too — while `(n+1)/‖z−ρ‖²` blows up.
+
+Mathlib has no meromorphic theory of `logDeriv`, so this is built from the factorisation directly.
+
+This is the exact shape the torque card's `(19)` needs at `p = ρ + 1/2`: it says the curvature of the
+logarithmic derivative cannot be extended continuously — let alone holomorphically — through a zero
+of `ξ`, so a Laplace transform equal to it on a half-plane cannot be holomorphic there either, which
+is what forces the abscissa `σ_c ≥ Re(ρ) + 1/2 > 1/2`.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ACX. `(46)` and `(47)` on the outward ray
+
+```text
+HTGeometry/InverseFamilyContinuityFromResolvent.lean  amplitudes continuous wherever C⁻¹ is
+RHTower/WallFinitePart.lean                           (46), the finite part at the threshold
+RHTower/WallThirdBlockDecomposition.lean              the third step, blockwise
+RHTower/WallTailOperatorRegularity.lean                the ray remainder as a function of L
+RHTower/WallVectorDerivativeWall.lean                  (42) in vector form
+RHTower/WallScatteringCharge.lean                      (46), the charge d_+
+RHTower/WallScatteringCriterion.lean                   (47) on Ioi Y
+```
+
+The chain that closes the outward half of Theorem 5.
+
+**The third step, blockwise.**  `phase_ibp_third_step_of_continuousOn` is the single step
+`∫E·∂D₁ = i[(E D₂)|_a^b − ∫E·∂D₂]`, extracted from `phase_ibp_thrice_of_continuousOn` so it can be
+applied *inside* an already-expanded block integral rather than redoing the whole expansion.
+`tailRemainder_third_decomposition` then rewrites the two-fold remainder of
+`stripPropagator_movingTail_decomposition` as `i(TB(x) − H(x)·thirdThresholdVector −
+H(x)·wallRemainderVector)`.
+
+**Why the frequency variable needed its own continuity chain.**  The charge is a block average of a
+*ray* integral, so `L ↦ ∫_Y^∞ E ∂D₂` must be measurable in the frequency.  The existing amplitude
+continuity lemmas are keyed on `hC : ∀ t ∈ S, HasDerivAt C (C₁ t) t`, which is a statement about the
+*position*; in the frequency variable `C₁,C₂,C₃` are constants and that hypothesis is false.  The
+fix is `InverseFamilyContinuityFromResolvent.lean`: the same chain keyed on
+`ContinuousOn (invFamily C) S` alone.  The amplitudes are polynomial in the resolvent, so nothing
+else is needed, and the same lemmas now serve both variables.  With it,
+`continuousOn_of_dominated` gives continuity of the ray remainder in `L` (the dominating power tail
+is frequency-free), hence `wallTailVector` exists and `wallRemainderVector Y x = wallTailVector Y −
+wallTailVector x`.
+
+**The vector wall.**  `(42)` as owned is scalar.  What `(47)` needs is: `xH(x+iσ)v ∈ L²(ray)` forces
+`v = 0`.  That does *not* need the sharp asymptotics.  `‖H⁻¹(x+iσ)‖ ≤ K₂(1+|x|)^{1/2+σ}` gives
+`‖H(x)v‖ ≥ ‖v‖/(K₂(1+x)^{1/2+σ})`, so the density dominates `x^{1−2σ}`, and `1−2σ > −1` for every
+`σ < 1`.  `lintegral_ofReal_rpow_Ioi_eq_top` is the divergence, via `integrableOn_Ioi_rpow_iff`.
+
+**The criterion.**  `forcedProfile_eq_charge_add_remainder` writes the profile as
+`H(x)·d_+ + wallScatteringRemainder(x)`, where `d_+` is `(46)`: the datum accumulated below the
+threshold, corrected by the three endpoint terms deposited there and by the ray remainder.  All four
+point-dependent terms survive multiplication by the frequency — the first boundary by
+`lintegral_sq_freqFirstBoundary_le`, the other three by a bare `(1+|x|)^{-1}` power tail — so
+`lintegral_sq_freq_wallScatteringRemainder_ne_top` holds, and
+`lintegral_sq_freq_forcedProfile_ray_ne_top_iff` is `(47)` on `Ioi Y`.
+
+Remaining for the card: the same statement on the inward ray `Iio (−Y)`, i.e. `d_−`.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ACY. `(47)` on both rays, `(35a)`, and the promotion of the wall-block card
+
+```text
+HTGeometry/PowerTailBochnerBoundInward.lean      the reflected power-tail Bochner estimates
+RHTower/WallInwardThirdTail.lean                 (48) on the inward ray
+RHTower/WallInwardScatteringCharge.lean          (46) on the inward ray
+RHTower/WallInwardScatteringCriterion.lean       (47) on Iio (−Y)
+RHTower/WallScatteringCriterionLine.lean         (47) on ℝ
+RHTower/ShiftedSymbolWeightedDifference.lean     the weighted symbol difference on Im z = σ
+RHTower/ShiftedJumpCommutatorH1Bound.lean        (35a)
+```
+
+**The inward ray costs almost nothing.**  Every estimate the three-fold expansion consumes is even —
+the amplitude bounds `‖∂D_j(t)‖ = O(|t|^{-j-1})` are stated in `|t|`, and both propagator bounds in
+`|y|` — so `stripPropagator_movingTail_decomposition_abs` and `tailRemainder_third_decomposition`
+apply verbatim with a negative threshold.  What changes is the orientation of the moving interval:
+outward `∫_Y^x = ∫_{(Y,∞)} − ∫_{(x,∞)}`, inward `∫_W^x = ∫_{(−∞,x]} − ∫_{(−∞,W]}`.  That single sign
+propagates into `wallScatteringChargeNeg` and `wallScatteringRemainderNeg`, and nothing else does.
+
+**The line statement.**  `ℝ = (−∞,−Y) ∪ [−Y,Y] ∪ (Y,∞)`; the middle is compact and the integrand is
+continuous, so it contributes a finite mass unconditionally.  Hence
+`lintegral_sq_freq_forcedProfile_line_ne_top_iff`: `x f(x+iσ) ∈ L²(ℝ;X)` iff both charges vanish —
+which is `(47)` exactly as displayed.
+
+**`(35a)`, the shifted commutator.**  Conjugation by `e^{σL}` replaces the jump multiplier `r(ξ)` by
+`r(ξ+iσ)`, which is the corpus's `wallSymbol σ`.  The order-minus-one estimate consumes only two
+facts about a multiplier: derivative decay `(1+|t|)^{-1}` and at-most-linear growth.  The first is
+the polygamma jet bound `2(1+π/2)/|x|` past the unit radius together with continuity on the collar
+`[−1,1]`; the second follows from it by the mean value theorem.  The two-region split then gives the
+global weighted difference bound `exists_bound_wallSymbol_global`, and the same Young argument gives
+`exists_bound_lintegral_sq_shiftedJumpCommutatorDensity`.  The logarithm the card's `(34)` displays
+is never needed on either line — in the far region the separation already controls both frequencies.
+
+**`suzuki-gamma-wall-block-hardy-and-derivative-scattering` is promoted.**  Every displayed statement
+of Theorems 1–5, the order-minus-one strengthening including `(35a)`, `(39)`, `(42)`, `(44)`–`(48)`
+and `(51)` now has an unconditional Lean declaration; the companion
+`suzuki-gamma-wall-block-hardy-and-derivative-scattering-formalized.md` tabulates them.  The card's
+last four gates are route statements, not theorems of the card.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ACZ. `scalar-analytic-forcing-trace-zero-h1`: six of its steps built
+
+```text
+HTGeometry/LogNormalDifferentiatedEquation.lean  (9), the differentiated equation
+RHTower/GammaWallTerminalBlockSource.lean        (15), the block class of a terminal-ray source
+HTGeometry/EndpointGermAnalytic.lean             (20), the analytic endpoint germ
+HTGeometry/EndpointGermDerivative.lean           (10), its differentiated rate
+HTGeometry/LogChartEnergyExtended.lean           (19) in extended form, and (8)
+RHTower/ShiftedGammaConjugation.lean             R_σ(e^{σ·}f) = e^{σ·}R f
+```
+
+**`(9)` the differentiated equation.**  `(P F)′ = 2F + 2LF′ − F = F + 2LF′` because the primitive
+cancels one copy, and the Gamma transport commutes with differentiation because its kernel does not
+see the evaluation point.  The domination for differentiating under the integral sign is the
+kernel's *first moment*: a Lipschitz derivative makes `|∂_L(second difference)| ≤ 2K s` uniformly in
+`L`, and `s·k(s)` is already known integrable on the whole ray — at the origin the factor `s`
+cancels the pole, at infinity the kernel decays.  So no second-derivative bound and no boundedness
+of `F′` beyond the Lipschitz constant are needed.  `hasDerivAt_source_of_logNormalEquation` states it
+in the strongest form: on the open ray where the equation holds, the *source* is differentiable and
+its derivative is `(2L + R)F′ + F`.
+
+**`(15)`, and why the card's source is one-sided.**  `gammaWallBlockNorm_lt_top_of_exp_wall` needs a
+two-sided wall of rate one, because the negative blocks carry weight `e^{|m|}`.  A source supported
+on a terminal ray has only finitely many nonzero negative blocks, and on the rest the weight is
+bounded by its value at the first surviving block; the only constraint left is `σ < δ`.  That is
+exactly the case `(14)` produces: `χG′` and the cutoff commutator both vanish below the transition
+region.
+
+**`(20)`, `(10)`.**  An entire datum composed with the endpoint map `r ↦ a − r` is entire, so its
+Taylor series at the endpoint converges everywhere; substituting `r = e^{-L}` gives the Dirichlet
+series `Σ b_n e^{-nL}`, and normal convergence on `[L₀,∞)` comes from evaluating the same series at
+`2e^{-L₀}` — the terms there are bounded, so the terms at `e^{-L₀}` are `O(2^{-n})`.  A finite
+exponential polynomial is entire, which is the card's `(20)`.  Differentiating,
+`G′(L) = −e^{-L}g′(e^{-L})`, and `g′` is bounded on the closed unit disc, so `(10)` holds with
+`δ = 1`.
+
+**`(19)` in extended form.**  The chart identity `∫‖∂_r u‖²dr = ∫e^{L}‖F′‖²dL` is an equality of
+Bochner integrals and therefore says nothing about finiteness.  Restated for `ℝ≥0∞` — the same
+change of variables, `lintegral_image_eq_lintegral_abs_deriv_mul` — it does, and then `e^{2σL}`
+with `σ > 1/2` dominates the chart's own `e^{L}` on the terminal ray.  That is `(8)`:
+`lintegral_sq_spatial_ne_top_of_weighted`.
+
+**The conjugation.**  `shiftedSecondDifference σ (e^{σ·}f) L s = e^{σL}·secondDifference f L s`
+identically — the weight splits off the base point and leaves `e^{∓σs}` on the two translates, which
+is the definition of the shifted difference.  Hence `R_σ(e^{σ·}f) = e^{σ·}(R f)` with no hypothesis
+at all.  This is the step §5 calls "conjugate `(14)` by `e^{σL}`".
+
+**What remains on this card.**  Two links: the *tested* form of the conjugated cutoff equation
+`(14)` — the corpus's coercivity theorem `suzukiGamma_profile_H1` consumes
+`SuzukiGammaTestedEquation σ τ V G`, so the strong equation must be paired against test functions,
+which needs the jump transpose `R_σᵀ = R_{−σ}` in direct-pairing form rather than the convolution
+form the corpus owns — and `(16)`, the block Hardy transfer applied to the glued solution, which is
+the Plancherel bridge `(25)` between the log side and the frequency side.  Everything else the card
+displays is now Lean.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADA. The Gamma jump's transpose, in direct-pairing form
+
+```text
+RHTower/GammaTestPairingMajorant.lean   the scale majorant with the test function inside
+RHTower/GammaJumpTranspose.lean          ∫ (R_σ U)φ = ∫ U (R_{−σ}φ)
+```
+
+The corpus owned the transpose only in convolution form (`integral_mul_shiftedGammaJump_comp_sub`),
+which is what the mollified equation needs.  The cutoff manipulations of `(14)` need the direct
+pairing, and that needs a *second* Fubini whose domination is different in kind: in
+`integrable_gammaPairing` the base-point integral is against the outer factor, so the corpus
+majorant applies as a product; when the test function sits **inside** the second difference the
+majorant must bound the *base-point integral* of the difference, uniformly in the scale.
+
+Both regimes are elementary once the test function's compact support is used.  At small scale the
+difference is `O(s)` pointwise (`abs_shiftedSecondDifference_le_mul`) and lives on the fixed interval
+`[−(R+1), R+1]`, so its base-point integral is `O(s)` and `s·k(s)` is bounded.  At large scale the
+support is useless — the translates have moved away — but translation invariance of the `L¹` norm
+gives `4e^{σs}‖φ‖₁`, and `k(s) ≤ 2e^{-s}` beats `e^{σs}` for every `σ < 1`.  That is
+`gammaTransposeMajorant`.
+
+The reflection `σ ↦ −σ` needed for the transposed side is
+`shiftedSecondDifference (−σ) φ L s = shiftedSecondDifference σ (φ∘neg) (−L) s`, so no bound has to
+be reproved for negative shifts.
+
+**A correction to the plan of ACZ.**  The transpose does *not* convert a strong solution into
+`SuzukiGammaTestedEquation`: in the card's setting `U = e^{σL}W′` is not known bounded a priori —
+that it is even `L²` is the conclusion `(18)`.  This is precisely the card's own hostile-audit point
+4, "no derivative premise; weighted-tail coercivity proves `(18)` weakly".  So the tested form is the
+*primitive* statement of `(2)`, `(9)` and `(14)`, not something to be derived from a classical
+solution, and the transpose's role is inside the cutoff algebra, where the factors are the cutoff and
+its derivative rather than the unknown profile.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADB. `(14)` with its hypotheses discharged, and the walls its terms obey
+
+```text
+RHTower/ShiftedGammaJumpDerivative.lean            R_σ commutes with d/dL
+HTGeometry/GammaCutoffDifferentiatedIdentity.lean  (14), exact
+HTGeometry/GammaCutoffIdentityBounds.lean          (14) for bounded C² data
+RHTower/GammaCutoffCommutatorBridge.lean           R(χF) − χRF is the corpus wall commutator
+RHTower/GammaCompactSupportWall.lean               compactly supported data and their transports
+```
+
+**`(14)` is pure algebra once three facts are in place.**  With `W = χF` the product rule gives
+`W′ = χ′F + χF′`, additivity splits `R(W′)`, and the differentiated commutator identity
+`([R,χ]F)′ = [R,χ′]F + [R,χ]F′` — itself just the product rule plus `R∘d/dL = d/dL∘R` — removes the
+derivative of `F` from inside the commutator.  Substituting `(9)` then gives
+
+```text
+(2L+R)W′ + W = χG′ + ([R,χ]F)′ + (2L+R)(χ′F) − [R,χ′]F
+```
+
+exactly as displayed.  `gammaCutoff_differentiated_identity` states it with the three facts as
+hypotheses; `gammaCutoff_differentiated_identity_of_bounds` discharges them for a bounded `C²`
+profile and a bounded `C²` cutoff, products of such data being again of that shape.
+
+**The commutator is the corpus's own object.**  `gammaWallCommutator χ F` was built for Theorem 3 of
+the wall-block card as the *integrand-level* commutator; identifying it with
+`R(χF) − χ·RF` is `gammaWallCommutator_integrand` plus additivity, and the two kernels agree on the
+positive ray.  With the identification, `norm_gammaWallCommutator_le_exp` transfers the two-sided
+`O(e^{-|L|})` wall to every commutator term of `(14)`.
+
+**The `χ′`-terms.**  `χ′` is supported in the transition region, so `χ′F` is bounded with compact
+support and obeys `|g(L)| ≤ Be^{R}e^{-|L|}` trivially.  Its *transport* obeys the same kind of bound
+for a different reason: past the support the diagonal term vanishes and the two translates can only
+reach the support at scale `s ≥ |L| − R − 1`, where `k(s) ≤ 2e^{-s}` has already decayed.  So
+`|R(g)(L)| ≤ 8Be^{R+1}e^{-|L|}`.  Both then land in the block class by
+`gammaWallBlockNorm_lt_top_of_exp_wall`, and `χG′` lands there by
+`gammaWallBlockNorm_lt_top_of_terminal_exp_wall` — which is `(15)`.
+
+**What is left on the card.**  `(16)`: the Gamma-wall block Hardy theorem applied to the glued
+solution.  That is the Plancherel bridge — the block estimate lives on the frequency side
+(`forcedProfile`, `blockSource`) and `W` lives on the log side, so `(25)`
+(`eLpNorm_vectorAngularTransform_eq`) and the strip-datum package have to be pointed at this
+concrete solution.  Everything else the card displays is now Lean.
 
 All declarations audit to `[propext, Classical.choice, Quot.sound]`.

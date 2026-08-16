@@ -251,6 +251,45 @@ theorem fourRatePluckerCovariance_self_eq_zero_iff_constant
 
 def fourRateCoordinateDelta (i j : Fin 4) : ℝ := if j = i then 1 else 0
 
+/-- A selected-pair coordinate observable is an indicator: a pair contains a fixed coordinate
+exactly zero or one times. -/
+theorem fourRateSelectedSum_coordinateDelta_sq
+    (i : Fin 4) (s : Fin 6) :
+    RHTower.fourRateSelectedSum (fourRateCoordinateDelta i) s ^ 2 =
+      RHTower.fourRateSelectedSum (fourRateCoordinateDelta i) s := by
+  fin_cases i <;> fin_cases s <;>
+    simp [RHTower.fourRateSelectedSum, RHTower.fourRatePairLeft,
+      RHTower.fourRatePairRight, fourRateCoordinateDelta]
+
+/-- The diagonal coordinate covariance is exactly the Bernoulli variance of pair inclusion.
+No normalization hypothesis is needed: it is an algebraic consequence of the indicator law. -/
+theorem fourRatePluckerCovariance_coordinateDelta_self_eq_bernoulliVariance
+    (weight : Fin 6 → ℝ) (i : Fin 4) :
+    fourRatePluckerCovariance weight
+        (fourRateCoordinateDelta i) (fourRateCoordinateDelta i) =
+      (∑ s, weight s *
+          RHTower.fourRateSelectedSum (fourRateCoordinateDelta i) s) *
+        (1 - ∑ s, weight s *
+          RHTower.fourRateSelectedSum (fourRateCoordinateDelta i) s) := by
+  unfold fourRatePluckerCovariance
+  have hsecond :
+      (∑ s, weight s *
+          RHTower.fourRateSelectedSum (fourRateCoordinateDelta i) s *
+            RHTower.fourRateSelectedSum (fourRateCoordinateDelta i) s) =
+        ∑ s, weight s *
+          RHTower.fourRateSelectedSum (fourRateCoordinateDelta i) s := by
+    apply Finset.sum_congr rfl
+    intro s _
+    calc
+      weight s * RHTower.fourRateSelectedSum (fourRateCoordinateDelta i) s *
+          RHTower.fourRateSelectedSum (fourRateCoordinateDelta i) s =
+          weight s *
+            RHTower.fourRateSelectedSum (fourRateCoordinateDelta i) s ^ 2 := by
+              ring
+      _ = _ := by rw [fourRateSelectedSum_coordinateDelta_sq]
+  rw [hsecond]
+  ring
+
 theorem fourRatePluckerCovariance_add_right
     (weight : Fin 6 → ℝ) (x y z : Fin 4 → ℝ) :
     fourRatePluckerCovariance weight x (y + z) =

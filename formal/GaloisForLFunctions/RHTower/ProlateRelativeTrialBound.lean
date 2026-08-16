@@ -247,17 +247,13 @@ theorem disjoint_trialSpace_orthogonal_highProlateSpan {c K : ℝ} (hc0 : 0 < c)
   obtain ⟨g, hgsm, hgeven, hweq, hpos⟩ := hV w hwV hne
   exact bandClass_notMem_orthogonal_highProlateSpan hc0 hgsm hgeven hpos (hweq ▸ hwO)
 
-/-- **Dimension count.**  Orthogonal projection onto the high-mode span is injective on such a
-trial space, so the span is at least as large. -/
-theorem rank_trialSpace_le_highProlateSpan {c K : ℝ} (hc0 : 0 < c)
+/-- **Dimension count from disjointness.**  Orthogonal projection onto the high-mode span is
+injective on any subspace meeting its orthogonal complement only in zero. -/
+theorem rank_le_of_disjoint_orthogonal {c K : ℝ}
     (V : Submodule ℝ (GaloisForLFunctions.RHTower.RealIntervalL2 (-1 : ℝ) 1))
     [(highProlateSpan c K).HasOrthogonalProjection]
-    (hV : ∀ w ∈ V, w ≠ 0 → ∃ (g : ℝ → ℝ) (hgsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g),
-      Function.Even g ∧ w = GaloisForLFunctions.RHTower.bandClass g hgsm.continuous ∧
-      -K * (∫ x in (-1 : ℝ)..1, g x * g x)
-        < ∫ x in (-1 : ℝ)..1, prolateSLAction c g x * g x) :
+    (hdisj : Disjoint V (highProlateSpan c K)ᗮ) :
     Module.rank ℝ V ≤ Module.rank ℝ (highProlateSpan c K) := by
-  have hdisj := disjoint_trialSpace_orthogonal_highProlateSpan hc0 V hV
   set f : V →ₗ[ℝ] (highProlateSpan c K) :=
     ((highProlateSpan c K).orthogonalProjectionOnto :
       GaloisForLFunctions.RHTower.RealIntervalL2 (-1 : ℝ) 1 →L[ℝ]
@@ -269,5 +265,17 @@ theorem rank_trialSpace_le_highProlateSpan {c K : ℝ} (hc0 : 0 < c)
       ∈ (highProlateSpan c K)ᗮ :=
     Submodule.orthogonalProjectionOnto_eq_zero_iff.1 hm
   exact Subtype.ext ((Submodule.disjoint_def.1 hdisj) _ m.2 hmem)
+
+/-- **Dimension count.**  A trial space on which the prolate form stays above `-K` injects into the
+high-mode span, so the span is at least as large. -/
+theorem rank_trialSpace_le_highProlateSpan {c K : ℝ} (hc0 : 0 < c)
+    (V : Submodule ℝ (GaloisForLFunctions.RHTower.RealIntervalL2 (-1 : ℝ) 1))
+    [(highProlateSpan c K).HasOrthogonalProjection]
+    (hV : ∀ w ∈ V, w ≠ 0 → ∃ (g : ℝ → ℝ) (hgsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g),
+      Function.Even g ∧ w = GaloisForLFunctions.RHTower.bandClass g hgsm.continuous ∧
+      -K * (∫ x in (-1 : ℝ)..1, g x * g x)
+        < ∫ x in (-1 : ℝ)..1, prolateSLAction c g x * g x) :
+    Module.rank ℝ V ≤ Module.rank ℝ (highProlateSpan c K) :=
+  rank_le_of_disjoint_orthogonal V (disjoint_trialSpace_orthogonal_highProlateSpan hc0 V hV)
 
 end RHTower

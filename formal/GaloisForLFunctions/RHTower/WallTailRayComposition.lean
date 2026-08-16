@@ -87,25 +87,26 @@ theorem continuousOn_invFamilyProduct_pair {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ
 set_option maxHeartbeats 1000000 in
 omit [Nontrivial X] in
 theorem aestronglyMeasurable_firstBoundaryBlock {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
-    {g : ℝ → X} {m Y : ℝ} (hg : AEStronglyMeasurable g (volume.restrict (Icc m (m + 1))))
-    (hgap : ∀ x ∈ Ioi Y, ∀ L ∈ Icc m (m + 1), 0 < wallFloor T σ x + L) :
-    AEStronglyMeasurable (fun x => firstBoundaryBlock T g m σ x) (volume.restrict (Ioi Y)) := by
-  set μ : Measure ℝ := volume.restrict (Ioi Y) with hμ
+    {g : ℝ → X} {m : ℝ} {A : Set ℝ} (hA : MeasurableSet A)
+    (hg : AEStronglyMeasurable g (volume.restrict (Icc m (m + 1))))
+    (hgap : ∀ x ∈ A, ∀ L ∈ Icc m (m + 1), 0 < wallFloor T σ x + L) :
+    AEStronglyMeasurable (fun x => firstBoundaryBlock T g m σ x) (volume.restrict (A)) := by
+  set μ : Measure ℝ := volume.restrict (A) with hμ
   set ν : Measure ℝ := volume.restrict (Icc m (m + 1)) with hν
-  have hprod : μ.prod ν = (volume.prod volume).restrict (Ioi Y ×ˢ Icc m (m + 1)) := by
+  have hprod : μ.prod ν = (volume.prod volume).restrict (A ×ˢ Icc m (m + 1)) := by
     rw [hμ, hν, Measure.prod_restrict]
-  have hset : MeasurableSet (Ioi Y ×ˢ Icc m (m + 1)) := measurableSet_Ioi.prod measurableSet_Icc
+  have hset : MeasurableSet (A ×ˢ Icc m (m + 1)) := hA.prod measurableSet_Icc
   -- the operator factor is continuous on the region
   have hAcont : ContinuousOn (fun p : ℝ × ℝ => invFamily (wallGeneratorShift T σ p.2) p.1)
-      (Ioi Y ×ˢ Icc m (m + 1)) := by
+      (A ×ˢ Icc m (m + 1)) := by
     have hswap : ContinuousOn (fun q : ℝ × ℝ => invFamily (wallGeneratorShift T σ q.1) q.2)
-        (Icc m (m + 1) ×ˢ Ioi Y) := by
+        (Icc m (m + 1) ×ˢ A) := by
       refine continuousOn_invFamily_pair (T := T) hσ0 hσ1 ?_
       intro q hq
       exact hgap q.2 hq.2 q.1 hq.1
     have hcont : Continuous (Prod.swap : ℝ × ℝ → ℝ × ℝ) := continuous_swap
-    have hmaps : MapsTo (Prod.swap : ℝ × ℝ → ℝ × ℝ) (Ioi Y ×ˢ Icc m (m + 1))
-        (Icc m (m + 1) ×ˢ Ioi Y) := by
+    have hmaps : MapsTo (Prod.swap : ℝ × ℝ → ℝ × ℝ) (A ×ˢ Icc m (m + 1))
+        (Icc m (m + 1) ×ˢ A) := by
       intro p hp
       obtain ⟨hp1, hp2⟩ := hp
       exact ⟨hp2, hp1⟩
@@ -133,26 +134,27 @@ theorem aestronglyMeasurable_firstBoundaryBlock {σ : ℝ} (hσ0 : 0 < σ) (hσ1
 set_option maxHeartbeats 1000000 in
 omit [Nontrivial X] in
 theorem aestronglyMeasurable_secondBoundary {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
-    {g : ℝ → X} {m Y : ℝ} (hg : AEStronglyMeasurable g (volume.restrict (Icc m (m + 1))))
-    (hgap : ∀ x ∈ Ioi Y, ∀ L ∈ Icc m (m + 1), 0 < wallFloor T σ x + L) :
-    AEStronglyMeasurable (fun x => secondBoundary T g m σ x) (volume.restrict (Ioi Y)) := by
-  set μ : Measure ℝ := volume.restrict (Ioi Y) with hμ
+    {g : ℝ → X} {m : ℝ} {A : Set ℝ} (hA : MeasurableSet A)
+    (hg : AEStronglyMeasurable g (volume.restrict (Icc m (m + 1))))
+    (hgap : ∀ x ∈ A, ∀ L ∈ Icc m (m + 1), 0 < wallFloor T σ x + L) :
+    AEStronglyMeasurable (fun x => secondBoundary T g m σ x) (volume.restrict (A)) := by
+  set μ : Measure ℝ := volume.restrict (A) with hμ
   set ν : Measure ℝ := volume.restrict (Icc m (m + 1)) with hν
-  have hprod : μ.prod ν = (volume.prod volume).restrict (Ioi Y ×ˢ Icc m (m + 1)) := by
+  have hprod : μ.prod ν = (volume.prod volume).restrict (A ×ˢ Icc m (m + 1)) := by
     rw [hμ, hν, Measure.prod_restrict]
-  have hset : MeasurableSet (Ioi Y ×ˢ Icc m (m + 1)) := measurableSet_Ioi.prod measurableSet_Icc
+  have hset : MeasurableSet (A ×ˢ Icc m (m + 1)) := hA.prod measurableSet_Icc
   have hAcont : ContinuousOn (fun p : ℝ × ℝ =>
       invFamilyProduct (wallGeneratorShift T σ p.2) (wallGeneratorD1 X σ) p.1)
-      (Ioi Y ×ˢ Icc m (m + 1)) := by
+      (A ×ˢ Icc m (m + 1)) := by
     have hswap : ContinuousOn (fun q : ℝ × ℝ =>
         invFamilyProduct (wallGeneratorShift T σ q.1) (wallGeneratorD1 X σ) q.2)
-        (Icc m (m + 1) ×ˢ Ioi Y) := by
+        (Icc m (m + 1) ×ˢ A) := by
       refine continuousOn_invFamilyProduct_pair (T := T) hσ0 hσ1 ?_
       intro q hq
       exact hgap q.2 hq.2 q.1 hq.1
     have hcont : Continuous (Prod.swap : ℝ × ℝ → ℝ × ℝ) := continuous_swap
-    have hmaps : MapsTo (Prod.swap : ℝ × ℝ → ℝ × ℝ) (Ioi Y ×ˢ Icc m (m + 1))
-        (Icc m (m + 1) ×ˢ Ioi Y) := by
+    have hmaps : MapsTo (Prod.swap : ℝ × ℝ → ℝ × ℝ) (A ×ˢ Icc m (m + 1))
+        (Icc m (m + 1) ×ˢ A) := by
       intro p hp
       obtain ⟨hp1, hp2⟩ := hp
       exact ⟨hp2, hp1⟩

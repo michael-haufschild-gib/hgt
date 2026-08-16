@@ -59,6 +59,74 @@ theorem routeUHardEdge_rootDivision_jetMoment (σ : ℝ) (G : ℝ → ℝ) (r : 
   rw [heq]
   exact h
 
+/-- At a nonnegative squared root, critical even positivity and nullity orient the divided odd
+descendant without any incoming-wall inequality. -/
+theorem routeUHardEdgeOddForm_divided_nonneg_of_nonnegative_root
+    (σ : ℝ) (G : ℝ → ℝ) (r : ℝ)
+    (hFF : IntegrableOn (fun u : ℝ =>
+      ((u - r) * G u) * ((u - r) * G u) *
+        routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+    (hFG : IntegrableOn (fun u : ℝ =>
+      ((u - r) * G u) * G u *
+        routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+    (hGG : IntegrableOn (fun u : ℝ =>
+      G u * G u * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+    (hpsd : ∀ t : ℝ, 0 ≤ routeUHardEdgeEvenForm σ
+      (fun u => (u - r) * G u + t * G u)
+      (fun u => (u - r) * G u + t * G u))
+    (hnull : routeUHardEdgeEvenForm σ
+      (fun u => (u - r) * G u) (fun u => (u - r) * G u) = 0)
+    (hr : 0 ≤ r)
+    (hGnonneg : 0 ≤ routeUHardEdgeEvenForm σ G G) :
+    0 ≤ routeUHardEdgeOddForm σ G G := by
+  have hvanish : routeUJetMoment σ G r 1 = 0 :=
+    routeUHardEdge_rootDivision_jetMoment σ G r hFF hFG hGG hpsd hnull
+  have h1 : IntegrableOn (fun u : ℝ =>
+      (u - r) ^ 1 * G u ^ 2 * routeUHardEdgeDensity σ (Real.sqrt u) /
+        Real.sqrt u) (Ioi 0) := by
+    refine hFG.congr_fun ?_ measurableSet_Ioi
+    intro u _
+    ring
+  have h2 : IntegrableOn (fun u : ℝ =>
+      r * ((u - r) ^ 0 * G u ^ 2) * routeUHardEdgeDensity σ (Real.sqrt u) /
+        Real.sqrt u) (Ioi 0) := by
+    refine (hGG.const_mul r).congr (ae_of_all _ fun u => ?_)
+    ring
+  have hterminal := routeUOddForm_terminal σ G r 0 h1 h2 hvanish
+  have hdesc : routeUJetDescendant 0 r G 0 = G := by
+    funext u
+    simp [routeUJetDescendant]
+  have hm0 : routeUJetMoment σ G r 0 = routeUHardEdgeEvenForm σ G G := by
+    rw [routeUJetMoment, routeUHardEdgeEvenForm]
+    congr 1
+    funext u
+    ring
+  rw [hdesc, hm0] at hterminal
+  rw [hterminal]
+  exact mul_nonneg hr hGnonneg
+
+/-- A symmetric real Fourier-zero pair has squared root `c² ≥ 0`; therefore the simple divided
+odd branch cannot be negative once the even quotient is admitted to the critical positive form. -/
+theorem routeUHardEdgeOddForm_divided_nonneg_of_symmetric_real_roots
+    (σ : ℝ) (G : ℝ → ℝ) (c : ℝ)
+    (hFF : IntegrableOn (fun u : ℝ =>
+      ((u - c ^ 2) * G u) * ((u - c ^ 2) * G u) *
+        routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+    (hFG : IntegrableOn (fun u : ℝ =>
+      ((u - c ^ 2) * G u) * G u *
+        routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+    (hGG : IntegrableOn (fun u : ℝ =>
+      G u * G u * routeUHardEdgeDensity σ (Real.sqrt u) / Real.sqrt u) (Ioi 0))
+    (hpsd : ∀ t : ℝ, 0 ≤ routeUHardEdgeEvenForm σ
+      (fun u => (u - c ^ 2) * G u + t * G u)
+      (fun u => (u - c ^ 2) * G u + t * G u))
+    (hnull : routeUHardEdgeEvenForm σ
+      (fun u => (u - c ^ 2) * G u) (fun u => (u - c ^ 2) * G u) = 0)
+    (hGnonneg : 0 ≤ routeUHardEdgeEvenForm σ G G) :
+    0 ≤ routeUHardEdgeOddForm σ G G :=
+  routeUHardEdgeOddForm_divided_nonneg_of_nonnegative_root
+    σ G (c ^ 2) hFF hFG hGG hpsd hnull (sq_nonneg c) hGnonneg
+
 end RHTower
 
 end

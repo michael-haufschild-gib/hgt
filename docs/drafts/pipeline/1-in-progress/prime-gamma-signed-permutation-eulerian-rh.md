@@ -8,7 +8,11 @@
   `formal/GaloisForLFunctions/RHTower/BornGradedKMSClassification.lean`,
   `formal/GaloisForLFunctions/RHTower/SignedReflectionParity.lean`,
   `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailTelescope.lean`, and
-  `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailCompletedSource.lean`
+  `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailCompletedSource.lean`, with current
+  determinant capstones
+  `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalPluckerOrdinaryDeterminant.lean`
+  and
+  `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalPluckerFirstTraceNoGo.lean`
 - **Statement:** `[CONJECTURE]` Functional-equation reflection upgrades finite ordered prime words
   to signed permutations whose completed descent weights are a nonnegative specialization of a
   stable type-B Eulerian polynomial.  A cofinal locally uniform limit of these negative-rooted
@@ -228,10 +232,108 @@ partition functions is therefore insufficient to manufacture a letterwise Coxete
   converge locally uniformly on every closed disc, and cofinal entire determinant has same strict
   zero ray; see
   `../3-formalized/needs-audit/prime-gamma-physical-plucker-entire-determinant.md`.
-- `[REFINED OPEN CORE]` Compute P-G98 determinant's trace and regularized logarithmic coefficients
-  from six-minor source series and compare them with `a_1,a_2`/`normalizedPrimeArchMoment` without
-  fitting. If direct identity with `A` fails, pivot to P-G97-compatible renormalized boundary
-  transfer and prove its completed moments or divisor equal Xi's.
+- `[FALSIFIED DIRECT DETERMINANT — P-G99]` `det2` has zero first jet. Canonical ordinary Fredholm
+  repair restores literal physical trace, but Lean proves exact Bernoulli diagonal formula and
+  universal fixed-node ceiling
+  `sourceTrace <= 1/50 < thetaCuspNormalizedEvenMoment 1 / 2`.  Bound holds for arbitrary real
+  coordinate means, so probability reweighting cannot repair it; see
+  `../3-formalized/needs-audit/prime-gamma-physical-plucker-first-trace-no-go.md`.
+- `[PIVOT PROVED — P-G100]` Canonical continuous-zero transfer recovers one trace unit per finite
+  coordinate and is cofinally unbounded before source descent.  Source weights before boundary
+  limit select residue `4`; polar countercurrent cancels it; exact remaining defect is
+  `eps R(eps)`.  Scalar finite-limit renormalization of unweighted faces is impossible; see
+  `../3-formalized/needs-audit/prime-gamma-physical-plucker-boundary-trace-capacity.md`.
+- `[FALSIFIED BOUNDED AMPLIFICATION — P-G101]` P-G100 escape is rank accumulation, not gain. Both
+  bounded resolvent channels have norm one and cannot supply uniquely required fourth-depth
+  amplitude `8`; only unnormalized inverse survives, necessarily at `eps<=1/8`; see
+  `../3-formalized/needs-audit/prime-gamma-physical-plucker-boundary-amplification-no-go.md`.
+- `[FALSIFIED CANONICAL INVERSE AMPLIFICATION — P-G102]` Exact inverse gain `c` selects original
+  spectral shell `1/c-eps`.  At `c=8`, current positive physical operator has no such nonzero
+  vector for `0<eps<21/200`, because literal nuclear expansion gives
+  `||T||<=sourceTrace<=1/50<1/8-eps`.  Thus amplitude eight cannot persist toward zero boundary;
+  see `../3-formalized/needs-audit/prime-gamma-physical-plucker-boundary-spectral-shell-no-go.md`.
+- `[PIVOT PROVED — P-G103]` Positive source/source Schur shorting cannot increase fourth-depth
+  energy.  One negative polar pivot `-w` restores `w/64` to `w` iff cross square is
+  `(63/64)w^2`; unique nonnegative cross is `(sqrt 63 / 8)w` and block determinant is `-w^2`.
+  Full cross `w` returns `65w/64`, exactly original coefficient-faithful pair trace; see
+  `../3-formalized/needs-audit/route-e-p-sp-e-source-normalization-krein-shorting.md`.
+- `[COEFFICIENT PROVENANCE CLOSED — P-G104]` Two literal Route-P depth-square steps have
+  squared-energy factor `1/64`, so normalized Hilbert amplitude is `c=1/8`. Canonical Julia defect
+  is `sqrt(1-c^2)=sqrt(63)/8`; pairing parent amplitude `sqrt w` with defect amplitude
+  `(sqrt(63)/8)sqrt w` gives exactly P-G103's cross. This coefficient is source-forced, not fitted;
+  see `../3-formalized/needs-audit/route-e-p-sp-e-fourth-depth-julia-defect-krein-completion.md`.
+- `[LITERAL CO-POISSON COLLIGATION — P-G105]` P-G179's physical two-step map is exactly
+  `A=(1/8)U_4` on Burnol's even co-Poisson carrier, with `U_4` unitary. Its Julia defect is
+  `D=(sqrt 63/8)I`; child and defect remain at apertures `b/4` and `b`, full two-channel transport
+  is isometric, and parent--defect pairing is P-G103's cross.
+- `[EXACT KREIN PIVOT REALIZED — P-G105B]` Same Julia data canonically produce co-graph pivot
+  `p_f=((d/c)U_4f,(1/c)f)`. In source-exchange signature, child `x_f=(cU_4f,0)` and pivot have
+  exact block `[[w/64,dw],[dw,-w]]`, determinant `-w^2`, and Schur short `w`. Both pivot
+  coordinates stay in Burnol source ladder. Negative sign is Hadamard diagonalization of
+  source/co-source exchange, not fitted scalar orientation; see
+  `../3-formalized/needs-audit/route-p-fourth-depth-copoisson-julia-krein-pivot.md`.
+- `[MATRIX-COMPLETE KREIN LIFT — P-G105C]` Polarized Julia--Krein identities hold for arbitrary
+  pairs in P-G186's actual half-line feature carrier. Every finite completed Gram is exactly
+  `B tensor G`, where `B=[[1/64,d],[d,-1]]` and `det(B)=-1`; hence its determinant is
+  `(-1)^N det(G)^2` and completion is nondegenerate iff original P-G186 Gram is. All off-diagonal
+  prime/depth/ordinate incidence survives without orthogonality or fitted coefficients; see
+  `../3-formalized/needs-audit/route-p-primitive-burnol-julia-krein-matrix-completion.md`.
+- `[GAMMA-CYCLIC INTERTWINER — P-G105D]` For running prime odds `a`, unique thermal gauge
+  `T=(8+a)/7` forces literal co-Poisson Cayley coordinate `1/8`. Child and Gamma cyclic complement
+  are exactly `a/64` and `63a/64`; square of actual archimedean cyclic characteristic at
+  `artanh(1/8)` is Julia defect `sqrt(63)/8`. Gamma defect continuous linear map and both physical/
+  half-line co-graph pivots equal P-G105/P-G105B/P-G105C Julia objects exactly; see
+  `../3-formalized/needs-audit/route-p-fourth-depth-gamma-cyclic-julia-intertwiner.md`.
+- `[SCALAR SOURCE WELD FALSIFIED; LOG SURVIVOR — P-G105E]` Actual joint-depth Xi source and
+  reciprocal-promotion co-source satisfy `source(p,e)=log(p) coSource(p,e)`. Primes `2` and `3`
+  exclude every real and complex global scalar intertwiner. Exact Gamma--Julia replacement is
+  label-diagonal multiplier `(sqrt(63)/8)log(p)`, independent of depth and defined on literal
+  co-source vector. Universal Kronecker completion therefore cannot itself be called Xi landing;
+  see `../3-formalized/needs-audit/route-p-joint-depth-gamma-julia-scalar-intertwiner-no-go.md`.
+- `[PRIME-LOG MATRIX COMPLETION — P-G105F]` For every finite primitive packet,
+  `L=diag(log p_i)` retains full incidence as `(LGL)_ij=log(p_i)G_ij log(p_j)`. Completed matrix is
+  exactly `B tensor (LGL)` and has determinant `(-1)^N det(L)^4 det(G)^2`; it is nondegenerate iff
+  original `G` is. Thus operator-valued arithmetic weld changes finite volume but creates no hidden
+  degeneracy; see
+  `../3-formalized/needs-audit/route-p-joint-depth-gamma-julia-log-krein-matrix-completion.md`.
+- `[FINITE SIGNED BIVARIATE STABILITY — P-G105G]` Child/pivot row pencil
+  `I+((diag(z,w)B) tensor LGL)` is exact left channel action on P-G105F completion. Its determinant
+  factors over nonnegative Gram eigenvalues as
+  `product_lambda (1+lambda z/64-lambda w-lambda^2 z w)`. Every positive-lambda zero solver is an
+  orientation-reversing real Möbius map from upper to lower half-plane; zero eigenvalues contribute
+  `1`. Hence actual full finite P-G186 pencil is bivariate stable for every packet, without
+  injectivity or nondegeneracy; see
+  `../3-formalized/needs-audit/route-p-primitive-gamma-julia-signed-bivariate-stability.md`.
+- `[RAW COFINAL TRACE FALSIFIED; EULER-POLE SURVIVOR — P-G105H]` Prime-log congruence cancels
+  P-G186's two-log diagonal regularizer exactly. Actual finite trace density becomes
+  `(1/4)p^{-(e+1)}(e+1)^-3`, with depth-zero slice `1/(4p)`. Hence raw all-cell trace is
+  nonsummable and positive finite sums are unbounded. Exact survivor is Euler-pole coefficient
+  `1/4`, which a source-derived polar/Stokes completion must cancel; see
+  `../3-formalized/needs-audit/route-p-primitive-gamma-julia-log-cofinal-trace-no-go.md`.
+- `[SOURCE-TO-STOKES RESIDUE TRANSPORT — P-G105I]` Only depth-zero face is singular; all positive
+  depths are summable. Positive diagonal scale squared `32d log(p)p^(-2d)` sends exact P-G105H
+  density `1/(4p)` labelwise to literal oriented Stokes term
+  `8d log(p)p^{-(1+2d)}`. Congruence acts on actual finite P-G186 matrix. All-prime trace plus
+  explicit polar/Gamma countercurrent equals completed prime--Gamma current and tends to zero at
+  wall; see
+  `../3-formalized/needs-audit/route-p-primitive-gamma-julia-stokes-aperture-residue-transport.md`.
+- `[PHYSICAL STOKES STABLE SPECIALIZATION — P-G105J]` Forced pivot ratio
+  `r(d)=-polarCurrent(d)/primeCurrent(d)` tends `1` and is eventually positive. Physical pencil
+  specializes P-G105G by `z=64u`, `w=r(d)u`; actual aperture-conjugated P-G186 Gram stays PSD, so
+  every finite physical determinant is upper-half-plane stable near wall. Generator trace is
+  `(1-r(d))` times finite child trace and all-prime value is exactly completed prime--Gamma current;
+  see
+  `../3-formalized/needs-audit/route-p-primitive-gamma-julia-physical-stokes-stable-specialization.md`.
+- `[REFINED OPEN CORE]` Stop comparing higher coefficients of direct P-G98 determinant and stop
+  treating scalar functional calculus of current positive operator as normalization repair.
+  Local contraction, defect, sign, pivot, shorting, full finite matrix incidence, and Gamma cyclic
+  coefficient/operator provenance are closed. Constant source/co-source weld is now rigorously dead.
+  Prime-log operator-valued full finite algebra and signed bivariate finite stability are closed.
+  Raw trace-class cofinalization is rigorously dead with exact Euler-pole coefficient `1/4`.
+  Trace-level aperture/polar countertransport, forced physical channel ratio, and finite stable
+  specialization now exist exactly. Construct cofinal determinant for physical generators with
+  trace/determinant-class control and divisor retention, then identify completed divisor with Xi.
+  Do not normalize target holonomy.
 
 ## Primary parent results
 
@@ -272,6 +374,28 @@ positive results.
 - [ ] cubic Gamma/co-Poisson metric assembled on full two-face curvature family
 - [ ] source curvature sections identified with completed signed-word columns
 - [x] cofinal physical Pluecker determinant family constructed from prime--Gamma source
-- [ ] determinant trace/logarithmic coefficient comparisons with completed theta moments proved
+- [x] direct `det2` and canonical ordinary determinant identification excluded at first jet
+- [x] all real coordinate-mean reweightings on fixed physical nodes excluded by trace capacity
+- [x] canonical boundary transfer capacity and four-unit relative residue classified
+- [x] bounded transfer/normalized-inverse amplitude-eight correction excluded
+- [x] unnormalized-inverse amplitude-eight correction excluded near zero by exact spectral shell
+- [x] positive-pivot shorting excluded; unique one-negative-index cross target classified
+- [x] cross magnitude `(sqrt 63 / 8)w` derived from literal fourth-depth Julia defect pairing
+- [x] fourth-depth contraction and Julia defect realized on actual Burnol co-Poisson source spaces
+- [x] exact negative pivot, Krein block, determinant, and restored shorting realized locally
+- [x] Julia--Krein lift tensorized over full finite P-G186 Gram, including all off-diagonal entries
+- [x] Route-P Julia defect identified with literal Gamma cyclic characteristic/operator channel
+- [x] constant scalar identification with literal joint-depth Xi co-source excluded
+- [x] exact prime-log diagonal Gamma--Julia survivor constructed on joint-depth Hilbert source
+- [x] prime-log operator-valued completion constructed over arbitrary full finite source matrix
+- [x] signed bivariate finite stable pencil proved for full completed P-G186 incidence
+- [x] raw prime-log cofinal trace class excluded; exact depth-zero Euler-pole coefficient proved
+- [x] trace-level child source identified with literal source-derived Stokes orientation
+- [x] source-derived aperture/polar trace countertransport cancels exact raw Euler pole
+- [x] polar countercurrent fixes source-faithful projective pivot ratio near wall
+- [x] physical child/pivot specialization proved stable on every finite packet near wall
+- [ ] physical specialization proved stable through locally uniform cofinal determinant limit
+- [ ] exact `63w/64` fourth-depth trace debt paid by completed countercurrent
+- [ ] transferred logarithmic coefficients or divisor identified with completed theta source
 - [ ] locally uniform limit identified with `A`
 - [ ] RH capstone formalized

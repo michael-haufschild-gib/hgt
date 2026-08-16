@@ -224,6 +224,46 @@ theorem prolateCentreMassRatio_mul_totalMass
   field_simp
   nlinarith [hsc, sq_nonneg (Phi 0)]
 
+/-- **Uniform total mass of a normalized prolate profile.**  The a priori phase bound on one window
+plus the second-moment estimate caps the whole rescaled mass, with a constant depending only on the
+window and the separation bound. -/
+theorem normalizedProlate_total_mass_le {c mu chi lam K : ℝ} {Phi : ℝ → ℝ}
+    (hK : 0 < K) (hcK : 2 * K ^ 2 ≤ c)
+    (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Phi)
+    (hne : Phi ≠ 0) (heven : Function.Even Phi) (hlam : lam ≠ 0)
+    (hband : ∀ x : ℝ, bandTransform c Phi x = lam * Phi x)
+    (heig : ∀ x : ℝ, prolateSLAction c Phi x = chi * Phi x)
+    (hmuval : mu = c * radialSeparationRatio c chi)
+    (hP : prolateWindowEpsP c mu K 0 ≤ 1) (hQ : prolateWindowEpsQ c K ≤ 1) :
+    (∫ xi in (-Real.sqrt c)..(Real.sqrt c), (normalizedProlateProfile c Phi xi) ^ 2)
+        * (1 - mu / K ^ 2)
+      ≤ 2 * K * prolateWindowPhaseBound K ^ 2 := by
+  have hc : 0 < c := pos_of_window hK hcK
+  obtain ⟨hu, hu', hequ0, hval0, hval0'⟩ :=
+    normalizedProlate_window_package (K := K) hK hcK hsm hne heven hlam hband heig
+  have hequ : ∀ x ∈ Icc (0 : ℝ) K,
+      normalizedProlateDeriv2 c Phi x
+        = rescaledProlateP c mu x * normalizedProlateProfile c Phi x
+          + rescaledProlateQ c x * normalizedProlateDeriv c Phi x := by
+    rw [hmuval]
+    exact hequ0
+  have hB0 := normalizedProlate_phase_le hK hcK hu hu' hequ hval0 hval0' hP hQ
+  have heu : Function.Even (normalizedProlateProfile c Phi) :=
+    even_normalizedProlateProfile heven
+  have hBfull : ∀ x ∈ Icc (-K) K,
+      |normalizedProlateProfile c Phi x| ≤ prolateWindowPhaseBound K :=
+    abs_le_of_even_window heu (fun x hx => le_trans (le_max_left _ _) (hB0 x hx))
+  have hKS : K ≤ Real.sqrt c := by
+    calc K = Real.sqrt (K ^ 2) := (Real.sqrt_sq hK.le).symm
+      _ ≤ Real.sqrt c := Real.sqrt_le_sqrt (by nlinarith [sq_nonneg K])
+  have hmom : (∫ xi in (-Real.sqrt c)..(Real.sqrt c),
+      xi ^ 2 * (normalizedProlateProfile c Phi xi) ^ 2)
+      ≤ mu * ∫ xi in (-Real.sqrt c)..(Real.sqrt c), (normalizedProlateProfile c Phi xi) ^ 2 := by
+    rw [hmuval]
+    exact normalizedProlate_secondMoment_le hc hsm (fun x _ => heig x)
+  exact total_mass_le_of_window_bound hK hKS (continuous_normalizedProlateProfile hsm)
+    hBfull hmom
+
 /-- **The centre-mass asymptotic.**  For the variationally selected ground family the centre value,
 the bandwidth and the aperture mass satisfy
 

@@ -6383,3 +6383,372 @@ positivity argument would be theatre.
   nonpositive terminal mixed moment (24.256)--(24.258).
 - `[OPEN]` prove terminal anti-Stieltjes exclusion directly from completed prime--Gamma source.
   This is current noncircular frontier.  RH is not proved.
+
+## Lean status (in progress)
+
+Sections 1--4 were already formal in the corpus.  The four closed inputs of §2 are Lean theorems:
+
+    RHTower/XiMassCriticalCenteredAtomCone.lean
+      riemannHypothesis_iff_xiMassCriticalCenteredAtomConeLineBound   §2.1 centered finite cone
+    RHTower/XiMassCriticalIntegerFace.lean
+      norm_xiMassCriticalIntegerConeSum_le,
+        xiMassCriticalCentered_add_integer_eq_primeAtomConeSum,
+        riemannHypothesis_iff_xiMassCriticalPrimeAtomConeLineBound     §2.2 + §3 integer face
+    RHTower/XiMassPrimeSquareBoundaryResidue.lean
+      exists_norm_xiMassPrimeSquareLayer_vertical_bound               §2.3 full square layer
+    RHTower/XiMassCriticalPrimeSquareTail.lean
+      cone_exponent_le_neg_half                                       §4.1 cone half-decay
+      norm_xiMassCenteredPrimeSquareAtom_beyond_cone_le,
+        summable_norm_xiMassCriticalPrimeSquareConeTail,
+        norm_xiMassCriticalPrimeSquareConeTail_le                     §4.2 uniform square tail
+    RHTower/XiMassPrimePowerVerticalIdeal.lean
+      xiMassCenteredPrimeAtom_support_primePower,
+        summable_norm_xiMassHighPrimePowerAtom,
+        norm_xiMassHighPrimePowerTail_vertical_le                     §5 higher prime powers
+
+Newly formalized, axiom-clean (`[propext, Classical.choice, Quot.sound]`), wired, built:
+
+    RHTower/XiMassCriticalTruePrimeCone.lean
+      vonMangoldt_mul_dampedProfile_eq_centeredPrimeAtom   the cone summand is the depth-free
+                                                          centered prime atom
+      xiMassCriticalConeAtom, its support, summability     the cone as a truncated atom family
+      tsum_xiMassCriticalConeAtom_eq_primePower            the cone reindexed by prime powers
+      tsum_coneAtom_exponent_split,
+        tsum_xiMassCriticalConeAtom_eq_three               **(6.2)** the exact three-layer split
+                                                          `L_u = P_u + Q_u + R_u`
+      norm_xiMassCriticalHighCone_le                       **§5** `R_u` is uniformly bounded
+      xiMassPrimeSquareLayer_eq_cone_add_tail,
+        exists_norm_xiMassCriticalSquareCone_bound         **§4** `Q_u = S_{2,u} - T_u` is
+                                                          uniformly bounded
+      xiMassCriticalPrimeAtomConeLineBound_iff_truePrimeCone,
+        riemannHypothesis_iff_xiMassCriticalTruePrimeConeLineBound
+                                                          **(6.1)** RH is equivalent to uniform
+                                                          boundedness of the moving cone supported
+                                                          on true primes only
+      xiMassCriticalTruePrimeCone_eq_finsetSum             the true-prime cone as a finite sum
+      xiMassCriticalTruePrimeDirichletConePolynomial,
+        xiMassCriticalTruePrimeCone_eq_integral_dirichlet,
+        riemannHypothesis_iff_xiMassCriticalTruePrimeDirichletConePairingLineBound
+                                                          **(7.1)** the exact prime-supported
+                                                          Dirichlet face and its RH criterion
+
+    RHTower/XiMassRapidityPhaseGeometry.lean
+      timelikeRapidity, cosh/sinh_timelikeRapidity,
+        massPhase_timelike,
+        massPhase_timelike_stationary_iff                 **(8.2)** inside the cone the phase is
+                                                          `q cosh(t+η)` with the single stationary
+                                                          point `t = -η`
+      spacelikeRapidity, cosh/sinh_spacelikeRapidity,
+        massPhase_spacelike,
+        massPhase_spacelike_nonstationary                 **(8.3)** outside the cone the phase is
+                                                          `r sinh(t+η)`, never stationary
+      massPhase_onCone, massPhase_onCone_nonstationary     on the cone the phase is `u e^t`
+
+    HTGeometry/BesselExteriorEnvelope.lean
+      one_add_sq_div_two_le_cosh, cosh_le_exp,
+        integrable_exp_quadratic, integral_exp_quadratic
+      besselK1C, norm_besselK1C_integrand,
+        norm_besselK1C_le                                 **(17.8)-(17.9)** the exterior Bessel
+                                                          envelope for complex argument, with the
+                                                          square-root gain
+      sqrt_le_csqrtRe, normSq_ratio_le                    **(17.5)** Lemma 17.1, both halves
+
+      xiMassCriticalConeEdge, xiMassCriticalConeEdge_ge,
+        xiMassCriticalPrimeLogMeasure,
+        integral_dampedProfile_primeLogMeasure           **(9.1)** the atomic Stieltjes pairing
+                                                        `int K dTheta = P_u` with
+                                                        `dTheta = sum (log p) delta_{log p}`
+      xiMassCriticalPrimeQuadratureDefect,
+        xiMassCriticalTruePrimeConeLineBound_iff_quadratureDefect,
+        riemannHypothesis_iff_xiMassCriticalPrimeQuadratureDefectLineBound
+                                                        **(9.2)** RH is equivalent to uniform
+                                                        boundedness of the critical quadrature
+                                                        defect between the true-prime logarithmic
+                                                        measure and its continuum density
+
+Sections 10--13 are the conjecture/audit record and assert no new theorem.  Still to formalize:
+§8.1's rapidity integral representation, and sections 14--24.
+
+### Lean progress: sections 8, 14, 17.1--17.3
+
+Newly formalized, axiom-clean (`[propext, Classical.choice, Quot.sound]`), wired, built:
+
+    RHTower/XiMassRapidityMassPhase.lean
+      xiMassRapidityPhaseKernel,
+        xiMassHyperbolicFourierKernel_eq_rapidity,
+        stripFourier_xiMass_eq_integral_rapidityPhase      **(8.1)** the exact rapidity
+                                                           representation with real amplitude and
+                                                           the single mass phase
+      xiMassCriticalDampedFourierProfile_eq_integral_rapidityPhase
+      xiMassRapidityPhaseKernel_timelike/_spacelike/_onCone  **(8.2)-(8.3)** the collapsed kernel
+
+    RHTower/XiMassTruePrimeCoboundaryBridge.lean
+      xiMassCriticalTruePrimeCone_sub_outgoingFlux_eq      **(14.1)** exact coboundary identity
+      exists_norm_truePrimeCone_sub_outgoingFlux_bound     **(14.2)** bounded coboundary
+      exists_norm_truePrimeCone_depth_difference_bound     **(14.3)** annulus cancellation
+      exists_norm_primeAtomCone_sub_truePrimeCone_bound,
+        exists_norm_primeAtomCone_sub_centeredCone_bound   **(14.7)**
+      xiMassConeDepthOfSlope, _slope, _half_lt, _lt_iff    the depth realizing a prescribed slope
+      xiMassConeEdge_antitone, exists_depth_floor_stabilizes
+
+    RHTower/XiMassEndpointClosedCone.lean
+      xiMassCriticalOutgoingDeepShiftBound_eq/_mono        the deep-shift moment is affine in `d`
+      exists_uniform_norm_xiMassCriticalSquareCone_bound,
+        exists_uniform_norm_truePrimeCone_sub_outgoingFlux_bound
+                                                           one coboundary constant on `[d0,a)`
+      xiMassCriticalConeAtom_eq_of_floor_eq,
+        xiMassCriticalTruePrimeCone_eq_of_floor_eq,
+        exists_interior_depth_eq_endpoint                  prefix stabilization at the endpoint
+      exists_norm_endpointTruePrimeCone_sub_outgoingFlux_bound  **(14.10)**
+      riemannHypothesis_iff_xiMassCriticalEndpointConeLineBound  **(14.11)**
+      norm_integral_growingFourierProfile_at_endpointCone_le,
+        riemannHypothesis_iff_xiMassCriticalEndpointQuadratureDefectLineBound  **(14.13)-(14.14)**
+      integral_dampedProfile_endpointPrimeLogMeasure
+
+    HTGeometry/BesselOrderExteriorEnvelope.lean
+      ofReal_realModifiedBesselKOrder_one,
+        realModifiedBesselKOrder_one_le                    **(17.8)-(17.9)** the order-one
+                                                           Schlaefli envelope with square-root gain
+
+    RHTower/XiMassBesselConeEnvelope.lean
+      sqrt_fullGap_le_csqrtRe_propagationArgument,
+        sigma_le_csqrtRe_propagationArgument,
+        sqrt_slopeGap_mul_le_csqrtRe_propagationArgument   **(17.5)** Lemma 17.1, all three bounds
+      norm_stripFourier_xiMass_le_besselExterior           **(17.6)**
+      norm_stripFourier_xiMass_le_besselExteriorSqrt       **(17.7)** valid for every `u>0`
+
+    RHTower/PrimeLogRpowTail.lean
+      sum_prime_log_rpow_dyadic_block_le,
+        sum_prime_log_rpow_dyadic_tail_le,
+        sum_prime_log_rpow_tail_le                         Chebyshev tail `sum_{p>X} (log p)
+                                                           p^{-1-delta} <= C_delta X^{-delta}`
+
+    RHTower/XiMassBesselConeTail.lean
+      xiMassBesselConeExponent, _nonneg                    `eta_kappa >= 0` exactly from `kappa_B`
+      sub_add_sqrt_le_sqrt_gap,
+        xiMassBessel_exterior_exponent_le                  **(17.13)**
+      norm_xiMassCenteredPrimeAtom_exterior_le,
+        sum_norm_xiMassCenteredPrimeAtom_exterior_le       **(17.11)** exterior tail `C e^{-eta u}`
+      norm_xiMassCriticalTruePrimeCone_slope_difference_le uniform prime-annulus cancellation
+      riemannHypothesis_iff_xiMassCriticalBesselConeLineBound  **(17.12)** the closed sharp
+                                                           Bessel cone criterion
+
+Still to formalize: Corollary 17.4, Theorem 17.5, and sections 19--24.
+
+### Lean progress: 17.4 and section 20
+
+    RHTower/XiMassBesselConeQuadratureDefect.lean
+      norm_xiMassCriticalGrowingFourierProfile_exterior_le,
+        integral_exp_neg_shift_le,
+        norm_integral_growingFourierProfile_exterior_le      **(17.16)** the exterior continuum
+                                                             tail `C e^{-eta u}/(a-1/2)`
+      xiMassCriticalConeEdge_pos, xiMassCriticalConeEdge_mono_slope
+      exists_norm_integral_growingFourierProfile_at_besselCone_le
+                                                             the closed-cone continuum prefix is
+                                                             uniformly bounded
+      riemannHypothesis_iff_xiMassCriticalBesselQuadratureDefectLineBound  **(17.15)** Corollary
+                                                             17.4
+
+    RHTower/XiMassGradedBesselConePhase.lean
+      xiMassGradedConeSlope, one_le/one_lt_xiMassGradedConeSlope  **(20.1)**
+      xiMassBesselConeExponent_gradedConeSlope              **(20.2)** `Gamma_a(kappa_{a,lam})
+                                                             = lam`
+      xiMassGradedConeSlope_zero, _half                     `kappa_{a,0}=kappa_B`,
+                                                             `kappa_{a,1/2}=1`
+      xiMassBesselConeExponent_mono                         `Gamma_a` is antitone in the slope
+      XiMassCriticalOutgoingFluxLineGrowth,
+        xiMassBottomPrimeLineGrowth_iff_outgoingFluxLineGrowth,
+        xiMassCriticalOutgoingFluxLineGrowth_iff_nonnegative,
+        xiMassCriticalOutgoingFluxLineGrowth_iff_mass_displacement_le
+                                                             the graded source law transported to
+                                                             the outgoing current
+      exists_norm_besselCone_sub_outgoingFlux_type_le,
+        xiMassCriticalBesselConeLineGrowth_iff_mass_displacement_le,
+        xiMassCriticalBesselConeLineGrowth_gradedSlope_iff   **(20.3)** the graded Bessel cone
+                                                             criterion; `lam = 0` is Theorem 17.3
+
+Still to formalize: Theorem 17.5 and (20.4) (both need the uniform large-argument Bessel
+asymptotic), section 19 (needs the differentiated exterior envelope and `MediumPNT`), and
+sections 21--24.
+
+### Lean progress: the uniform Bessel asymptotic
+
+    HTGeometry/BesselOrderLaplaceAsymptotic.lean
+      integral_even_eq_two_mul_complex, integral_Ioi_gaussian,
+        sq_mul_exp_neg_mul_sq_le, integral_Ioi_sq_mul_exp_neg_mul_sq_le,
+        integrable_sq_mul_exp_neg_mul_sq                elementary Gaussian facts
+      besselLaplaceProfile, besselLaplaceProfile_sub_nonneg/_sub_le,
+        abs_besselLaplaceProfile_sub_le                 `0 <= P(v) - 1/sqrt 2 <= v^2/sqrt 2`
+      besselLaplaceKernel, besselK1C_eq_integral_laplaceKernel
+                                                        the substitution `v = sqrt 2 sinh(t/2)`
+                                                        turns the Schlaefli integral into an exact
+                                                        Gaussian integral against `P`
+      integral_Ioi_cexp_neg_mul_sq                      half-line complex Gaussian
+      besselK1C_sub_leading,
+        norm_besselK1C_sub_leading_le                   **the uniform large-argument asymptotic**
+                                                        `K_1(w) = e^{-w}(sqrt(pi/(2w)) + R)`,
+                                                        `|R| <= sqrt 2 e^{-Re w} sqrt(2 pi/Re w)
+                                                                /(e Re w)`
+
+This is the analytic input Theorem 17.5 and section 19 need.  What still separates them from a
+Lean proof is the exact Fourier--Bessel identity (17.1)
+
+    F_u(h) = 2 a tau_u / z_u(h) * K_1(a z_u(h)),
+
+which needs the complex-rapidity contour shift `t -> t - zeta` with
+`cosh zeta = tau_u/z_u(h)`, `sinh zeta = i h/z_u(h)`.  The corpus already owns the imaginary-shift
+half of that (`RHTower.integral_horizontal_shift_of_decay`,
+`integral_xiMassHyperbolicEntireKernel_shift_eq`); the real-translation half is Lebesgue
+invariance; what is missing is the uniform strip decay bound for a general complex rapidity.
+
+### Lean progress: the Fourier--Bessel identity at real vertical time
+
+    HTGeometry/BesselOrderLaplaceAsymptotic.lean (continued)
+      integrable_besselK1C_integrand,
+        integral_cosh_mul_exp_neg_cosh,
+        integral_odd_eq_zero                            whole-line Schlaefli integrals
+
+    RHTower/XiMassFourierBesselRealTime.lean
+      xiMassRealTimeRotation, its range, cos/sin        `theta = arctan(h/sigma)`
+      xiMassRealTimePhase_rotated                       `sigma cosh(x-i theta) + i h sinh(x-i theta)
+                                                         = sqrt(sigma^2+h^2) cosh x`
+      stripFourier_xiMass_realTime_eq_bessel            **(17.1) at `u = 0`**
+                                                        `F_0(h) = 2 a sigma/q * K_1(a q)`,
+                                                        `q = sqrt(sigma^2+h^2)`
+
+The remaining step to the general (17.1) is analytic continuation in `tau` from the positive real
+axis to the open right half plane.  All three ingredients are now standard:
+`hasDerivAt_integral_of_dominated_loc_of_deriv_le` applies verbatim with a complex parameter
+(`RCLike` covers `ℂ`), so `besselK1C` and `tau |-> stripFourier (xiMassAnalyticTest a tau) h` are
+both complex-differentiable on `Re tau > 0`; the principal root `sqrt(tau^2+h^2)` avoids the cut
+there (if its imaginary part vanishes its real part is positive); and the identity theorem applies
+because the positive reals cluster in the half plane.
+
+### Lean progress: (17.1) at complex vertical time
+
+    HTGeometry/PrincipalSquareRootDeriv.lean
+      csqrt_eq, continuousAt_csqrt, csqrt_ne_zero,
+        hasStrictDerivAt_csqrt, differentiableAt_csqrt,
+        differentiableOn_csqrt, csqrt_ofReal_of_pos      the principal square root is holomorphic
+                                                         on the right half plane (inverse-function
+                                                         theorem against `w -> w^2`)
+
+    HTGeometry/BesselOrderLaplaceAsymptotic.lean (continued)
+      integrable_exp_neg_mul_sq_shift,
+        cosh_sq_mul_exp_neg_mul_cosh_le,
+        integrable_cosh_sq_mul_exp_neg_mul_cosh          the differentiated Schlaefli majorant
+      norm_cosh_ofReal, hasDerivAt_besselK1C,
+        differentiableAt_besselK1C                       `K_1` is holomorphic on `Re w > 0`
+
+    RHTower/XiMassFourierBesselIdentity.lean
+      xiMassHyperbolicKernelC, its norm, integrability   the hyperbolic kernel at complex time
+      xiMassProfileC, xiMassProfileC_eq_stripFourier
+      hasDerivAt_xiMassProfileC                          the mass profile is holomorphic in `tau`
+      xiMassBesselStrip, convex/open/positive-argument   `V_h = {0 < Re tau, |Im tau| < h}`
+      xiMassBesselSide, differentiableAt_xiMassBesselSide
+      xiMassProfileC_eq_besselSide_real                  agreement on the positive real axis
+      xiMassProfileC_eq_besselSide,
+        stripFourier_xiMass_eq_bessel                    **(17.1)**
+                                                         `F_u(h) = 2 a tau / z * K_1(a z)`,
+                                                         `z = csqrt(tau^2 + h^2)`, on the whole
+                                                         spacelike strip `|u| < h`
+
+The strip covers every cone `h >= kappa u` with `kappa > 1`, so (17.1) is now available exactly
+where Theorem 17.5 and section 19 use it.
+
+### Lean progress: shell expansion toward Theorem 17.5
+
+    HTGeometry/PrincipalSquareRootDeriv.lean (continued)
+      cpow_half_re_pos, cpow_half_sq, csqrt_eq_cpow_half
+                                                        the principal root is the principal
+                                                        one-half power on the right half plane
+
+    HTGeometry/BesselOrderLaplaceAsymptotic.lean (continued)
+      re_ofReal_div_pos,
+        besselK1C_sub_leading_csqrt,
+        norm_besselK1C_sub_leading_csqrt_le             **(17.9)** the asymptotic in
+                                                        principal-square-root form
+
+    RHTower/XiMassSpacelikeShellExpansion.lean
+      xiMassShellArgument, its real part and positivity
+      xiMassShellDefect, xiMassShellRadius
+      xiMassShellArgument_sub_shellRadius_sq            **(17.19)** the exact, height-independent
+                                                        defect `sigma^2 + s^2 -
+                                                        (kappa s + i sigma)^2/(kappa^2-1)`
+      shellRadius_re_ge, csqrt_shellArgument_re_ge      both radii have real part at least `q u`
+      norm_csqrt_shellArgument_sub_shellRadius_le       **(17.19)** `|z - zeta| <= ‖defect‖/(2 q u)`,
+                                                        explicit and uniform on every window of `s`
+
+Remaining for Theorem 17.5: assemble (17.1), (17.9) and (17.19) into the shell asymptotic (17.20);
+then (17.21) — the shell prime sum, which needs the corpus PNT `theta(x) ~ x` plus finite Stieltjes
+partial summation — and finally the reverse-triangle assembly against the exterior tail (17.23),
+which is already available as `sum_norm_xiMassCenteredPrimeAtom_exterior_le` (its proof never used
+`eta_kappa >= 0`).
+
+    HTGeometry/PrincipalSquareRootDeriv.lean (continued)
+      csqrt_eq_of_sq_of_re_pos, re_ofReal_mul_pos, re_inv_pos,
+        csqrt_ofReal_mul, csqrt_inv                     multiplicative rules for the principal root
+
+    RHTower/XiMassShellLeadingTerm.lean
+      sqrt_two_pi_mul_eq, besselLeading_collapse        **(17.20, leading term)** the Schlaefli
+                                                        leading term of (17.1) collapses to
+                                                        `sqrt(2 pi a) * tau * e^{-a z} / (z sqrt z)`
+
+### Lean progress: the shell phase and radius
+
+    HTGeometry/PrincipalSquareRootDeriv.lean (continued)
+      norm_csqrt_sub_one_le, norm_mul_csqrt_sub_one_le  `csqrt` and `w -> w sqrt w` are Lipschitz
+                                                        at `1` on the right half plane
+
+    RHTower/XiMassShellPhase.lean
+      shellQ, shellQ_pos, shellQ_sq, xiMassShellRadius_eq
+      shellPhase, norm_shellPhase                       the fixed unit vector `i e^{-i a sigma/q}`
+      exp_neg_mul_shellRadius                           **(17.20)** `e^{-a zeta}` splits exactly
+                                                        into a positive real factor and that phase
+      shellModulus, shellModulus_pos, shellLeadingDamped,
+        shellLeadingDamped_eq, norm_shellLeadingDamped  the damped leading amplitude is a positive
+                                                        real multiple of one `s`-independent phase
+
+    RHTower/XiMassShellRelativeRadius.lean
+      norm_xiMassShellDefect_le                         explicit window bound for the defect
+      norm_csqrt_shellArgument_sub_rapidity_le          `‖z - q u‖ <= D_L` on every window,
+                                                        uniformly in the height
+
+    HTGeometry/PrincipalSquareRootDeriv.lean (continued)
+      norm_csqrt, norm_mul_sub_one_le, norm_inv_sub_one_le
+                                                        `‖csqrt w‖ = sqrt ‖w‖`; near-unit products
+                                                        and inverses stay near-unit
+
+    RHTower/XiMassShellAmplitudeRatio.lean
+      shellRadiusBound, shellRadiusBound_nonneg
+      norm_shellRadius_ratio_sub_one_le                 `‖z/(q u) - 1‖ <= D_L/(q u)`
+      mul_csqrt_ofReal_mul                              positive real scalars factor out of the
+                                                        `z sqrt z` amplitude
+
+### Lean progress: the shell ratio (17.20)
+
+    HTGeometry/PrincipalSquareRootDeriv.lean (continued)
+      norm_mul3_sub_one_le                              a triple product of near-units
+
+    RHTower/XiMassShellBesselRemainder.lean
+      norm_besselLeadingFactor                          modulus of the Schlaefli leading factor
+      norm_besselRemainder_le_relative                  **(17.9)** the remainder is smaller than
+                                                        its own leading term by the factor
+                                                        `2/(e a Re z) sqrt(2‖z‖/Re z)`
+
+    RHTower/XiMassShellRatio.lean
+      shellRoot, its real part and nonvanishing
+      shellRatio, shellLeading_eq_model_mul_ratio       **exact** factorization of the shell
+                                                        leading term as model times ratio
+      norm_shellBoost_sub_one                           `‖tau/(iu) - 1‖ = sigma/u`
+      norm_shellExpFactor_sub_one_le                    `‖e^{-a(z-zeta)} - 1‖ <= a D/(q u)`
+      shellAmplitude_ratio_eq,
+        norm_shellAmplitudeFactor_sub_one_le            `‖(qu)^{3/2}/(z sqrt z) - 1‖ <= 5 B/(q u)`
+      exists_shellRatio_bound                           **(17.20)** `‖R - 1‖ <= C/u`, uniformly on
+                                                        every window `0 <= s <= L`
+
+    RHTower/XiMassShellAsymptotic.lean
+      norm_shellArgument_le, norm_shellRoot_le          `‖z‖ <= sqrt(q^2+M) u` on every window
+      shellRemainder_relative_le                        the Schlaefli remainder factor is `<= C/u`
+      exists_shellProfile_relative_error                **(17.20)** the uniform shell asymptotic
+                                                        `‖K_u(kappa u+s) - Lambda‖ <= (C/u)|Lambda|`

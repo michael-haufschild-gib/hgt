@@ -950,6 +950,156 @@ theorem iteratedDeriv_moment {s : ℝ → ℕ → ℝ}
       push_cast
       ring
 
+/-! ## Flat faces -/
+
+/-- **(GJRS.19) at order one.**  At a flat face the top-moment defect vanishes, so every hard node
+coordinate is stationary. -/
+theorem hasDerivAt_hardNodeCoordinate_flat {s : ℝ → ℕ → ℝ} {y : ℝ} {x w : Fin (n + 1) → ℝ → ℝ}
+    {x' w' : Fin (n + 1) → ℝ}
+    (hs : ∀ k, HasDerivAt (fun t => s t k) (-(((k : ℝ) + 1) * s y (k + 1))) y)
+    (hx : ∀ i, HasDerivAt (x i) (x' i) y) (hw : ∀ i, HasDerivAt (w i) (w' i) y)
+    (hquad : ∀ t : ℝ, ∀ g : Polynomial ℝ, g.natDegree ≤ 2 * n + 1 →
+      momentFunctional (s t) g = ∑ i, w i t * g.eval (x i t))
+    (i₀ : Fin (n + 1)) (hsep : nodeSeparation (fun j => x j y) i₀ ≠ 0)
+    (hw0 : w i₀ y ≠ 0) (hx0 : x i₀ y ≠ 0)
+    (hflat : momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2) = 0) :
+    HasDerivAt (fun t => (x i₀ t)⁻¹ - t) 0 y := by
+  have h := hasDerivAt_hardNodeCoordinate hs hx hw hquad i₀ hsep hw0 hx0
+  rw [hflat] at h
+  simpa using h
+
+set_option maxHeartbeats 2000000 in
+/-- **(GJRS.16) The first jet of the top quadrature moment at a flat face.**  With the defect
+absent, the quadrature moment of order `2N` moves exactly as the atomic Möbius flow. -/
+theorem hasDerivAt_topQuadratureMoment_flat {s : ℝ → ℕ → ℝ} {y : ℝ} {x w : Fin (n + 1) → ℝ → ℝ}
+    {x' w' : Fin (n + 1) → ℝ}
+    (hs : ∀ k, HasDerivAt (fun t => s t k) (-(((k : ℝ) + 1) * s y (k + 1))) y)
+    (hx : ∀ i, HasDerivAt (x i) (x' i) y) (hw : ∀ i, HasDerivAt (w i) (w' i) y)
+    (hquad : ∀ t : ℝ, ∀ g : Polynomial ℝ, g.natDegree ≤ 2 * n + 1 →
+      momentFunctional (s t) g = ∑ i, w i t * g.eval (x i t))
+    (hsep : ∀ i, nodeSeparation (fun j => x j y) i ≠ 0)
+    (hdist : ∀ i : Fin (n + 1), ∀ k ∈ Finset.univ.erase i, x i y - x k y ≠ 0)
+    (hflat : momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2) = 0) :
+    HasDerivAt (fun t => ∑ i, w i t * (x i t) ^ (2 * n + 2))
+      (-(2 * (n : ℝ) + 3) * ∑ i, w i y * (x i y) ^ (2 * n + 3)) y := by
+  have hterm : ∀ i : Fin (n + 1),
+      HasDerivAt (fun t => w i t * (x i t) ^ (2 * n + 2))
+        (w' i * (x i y) ^ (2 * n + 2)
+          + w i y * (((2 * n + 2 : ℕ) : ℝ) * (x i y) ^ (2 * n + 1) * x' i)) y := by
+    intro i
+    have hpow : HasDerivAt (fun t => (x i t) ^ (2 * n + 2))
+        (((2 * n + 2 : ℕ) : ℝ) * (x i y) ^ (2 * n + 2 - 1) * x' i) y := (hx i).pow _
+    have hpow' : HasDerivAt (fun t => (x i t) ^ (2 * n + 2))
+        (((2 * n + 2 : ℕ) : ℝ) * (x i y) ^ (2 * n + 1) * x' i) y := by
+      have hidx : 2 * n + 2 - 1 = 2 * n + 1 := by omega
+      rwa [hidx] at hpow
+    exact (hw i).mul hpow'
+  have hsum0 : HasDerivAt (∑ i : Fin (n + 1), fun t : ℝ => w i t * (x i t) ^ (2 * n + 2))
+      (∑ i : Fin (n + 1), (w' i * (x i y) ^ (2 * n + 2)
+        + w i y * (((2 * n + 2 : ℕ) : ℝ) * (x i y) ^ (2 * n + 1) * x' i))) y := by
+    refine HasDerivAt.sum (A := fun i t => w i t * (x i t) ^ (2 * n + 2))
+      (A' := fun i => w' i * (x i y) ^ (2 * n + 2)
+        + w i y * (((2 * n + 2 : ℕ) : ℝ) * (x i y) ^ (2 * n + 1) * x' i)) fun i _ => hterm i
+  have hfun : (∑ i : Fin (n + 1), fun t : ℝ => w i t * (x i t) ^ (2 * n + 2))
+      = fun t : ℝ => ∑ i : Fin (n + 1), w i t * (x i t) ^ (2 * n + 2) := by
+    funext t
+    rw [Finset.sum_apply]
+  rw [hfun] at hsum0
+  have hval : ∀ i : Fin (n + 1),
+      w' i * (x i y) ^ (2 * n + 2)
+        + w i y * (((2 * n + 2 : ℕ) : ℝ) * (x i y) ^ (2 * n + 1) * x' i)
+        = -(2 * (n : ℝ) + 3) * (w i y * (x i y) ^ (2 * n + 3)) := by
+    intro i
+    have hwv := weightVelocity hs hx hw hquad i (hsep i) (hdist i)
+    have hxv := weight_mul_nodeVelocity hs hx hw hquad i (hsep i)
+    rw [hflat] at hwv hxv
+    simp only [mul_zero, zero_div, add_zero] at hwv hxv
+    have hrw : w i y * (((2 * n + 2 : ℕ) : ℝ) * (x i y) ^ (2 * n + 1) * x' i)
+        = ((2 * n + 2 : ℕ) : ℝ) * (x i y) ^ (2 * n + 1) * (w i y * x' i) := by ring
+    rw [hwv, hrw, hxv]
+    push_cast
+    ring
+  rw [Finset.sum_congr rfl fun i _ => hval i, ← Finset.mul_sum] at hsum0
+  exact hsum0
+
+/-- **(GJRS.16) The defect ladder at a flat face.**  The top-moment defect moves with rate
+`-(2N+1)` times the next defect. -/
+theorem hasDerivAt_topDefect_flat {s : ℝ → ℕ → ℝ} {y : ℝ} {x w : Fin (n + 1) → ℝ → ℝ}
+    {x' w' : Fin (n + 1) → ℝ}
+    (hs : ∀ k, HasDerivAt (fun t => s t k) (-(((k : ℝ) + 1) * s y (k + 1))) y)
+    (hx : ∀ i, HasDerivAt (x i) (x' i) y) (hw : ∀ i, HasDerivAt (w i) (w' i) y)
+    (hquad : ∀ t : ℝ, ∀ g : Polynomial ℝ, g.natDegree ≤ 2 * n + 1 →
+      momentFunctional (s t) g = ∑ i, w i t * g.eval (x i t))
+    (hsep : ∀ i, nodeSeparation (fun j => x j y) i ≠ 0)
+    (hdist : ∀ i : Fin (n + 1), ∀ k ∈ Finset.univ.erase i, x i y - x k y ≠ 0)
+    (hflat : momentFunctional (s y) ((nodePoly (fun j => x j y)) ^ 2) = 0) :
+    HasDerivAt (fun t => s t (2 * n + 2) - ∑ i, w i t * (x i t) ^ (2 * n + 2))
+      (-(2 * (n : ℝ) + 3) * (s y (2 * n + 3) - ∑ i, w i y * (x i y) ^ (2 * n + 3))) y := by
+  have hquadDeriv := hasDerivAt_topQuadratureMoment_flat hs hx hw hquad hsep hdist hflat
+  have hsderiv : HasDerivAt (fun t => s t (2 * n + 2))
+      (-((2 * (n : ℝ) + 3) * s y (2 * n + 3))) y := by
+    have h := hs (2 * n + 2)
+    have hcast : (((2 * n + 2 : ℕ) : ℝ) + 1) = 2 * (n : ℝ) + 3 := by push_cast; ring
+    rw [hcast] at h
+    have hidx : 2 * n + 2 + 1 = 2 * n + 3 := by omega
+    rwa [hidx] at h
+  have hsub := hsderiv.sub hquadDeriv
+  have hval : -((2 * (n : ℝ) + 3) * s y (2 * n + 3))
+      - -(2 * (n : ℝ) + 3) * ∑ i, w i y * (x i y) ^ (2 * n + 3)
+      = -(2 * (n : ℝ) + 3) * (s y (2 * n + 3) - ∑ i, w i y * (x i y) ^ (2 * n + 3)) := by
+    ring
+  rwa [hval] at hsub
+
+/-! ## The hard-edge normalization -/
+
+/-- **(GJRS.25)-(GJRS.26) The derivative of the hard-edge normalized polynomial at a root.**
+`S(u) = (1 + u/y₀)^n p(1/(y₀+u))` has `S'(u_i) = -(1+u_i/y₀)^n x_i² p'(x_i)` at a root. -/
+theorem hasDerivAt_hardEdgeNormalization_root (y₀ : ℝ) (hy₀ : y₀ ≠ 0) (nn : ℕ)
+    (p : Polynomial ℝ) (u : ℝ) (hu : y₀ + u ≠ 0)
+    (hroot : p.eval ((y₀ + u)⁻¹) = 0) :
+    HasDerivAt (fun v => (1 + v / y₀) ^ nn * p.eval ((y₀ + v)⁻¹))
+      (-((1 + u / y₀) ^ nn * ((y₀ + u)⁻¹) ^ 2 * p.derivative.eval ((y₀ + u)⁻¹))) u := by
+  have hlin : HasDerivAt (fun v : ℝ => 1 + v / y₀) (1 / y₀) u := by
+    have h : HasDerivAt (fun v : ℝ => v / y₀) (1 / y₀) u := by
+      simpa using (hasDerivAt_id u).div_const y₀
+    simpa using h.const_add (1 : ℝ)
+  have hpow : HasDerivAt (fun v : ℝ => (1 + v / y₀) ^ nn)
+      ((nn : ℝ) * (1 + u / y₀) ^ (nn - 1) * (1 / y₀)) u := hlin.pow nn
+  have hinv : HasDerivAt (fun v : ℝ => (y₀ + v)⁻¹) (-1 / (y₀ + u) ^ 2) u := by
+    have hbase : HasDerivAt (fun v : ℝ => y₀ + v) 1 u := by
+      simpa using (hasDerivAt_id u).const_add y₀
+    exact hbase.inv hu
+  have hp : HasDerivAt (fun v : ℝ => p.eval ((y₀ + v)⁻¹))
+      (p.derivative.eval ((y₀ + u)⁻¹) * (-1 / (y₀ + u) ^ 2)) u := by
+    have h2 : HasDerivAt (fun x : ℝ => p.eval x) (p.derivative.eval ((y₀ + u)⁻¹))
+        ((y₀ + u)⁻¹) := Polynomial.hasDerivAt p ((y₀ + u)⁻¹)
+    exact h2.comp u hinv
+  have hmul := hpow.mul hp
+  have hval : (nn : ℝ) * (1 + u / y₀) ^ (nn - 1) * (1 / y₀) * p.eval ((y₀ + u)⁻¹)
+      + (1 + u / y₀) ^ nn * (p.derivative.eval ((y₀ + u)⁻¹) * (-1 / (y₀ + u) ^ 2))
+      = -((1 + u / y₀) ^ nn * ((y₀ + u)⁻¹) ^ 2 * p.derivative.eval ((y₀ + u)⁻¹)) := by
+    rw [hroot, mul_zero, zero_add, inv_pow]
+    field_simp
+  rwa [hval] at hmul
+
+/-- **(GJRS.29) The scale-invariant residue law.**  The Padé residue `ω/x` is the hard-edge energy
+`y₀ x⁴ γ` divided by `t^{2n+1} S'(u)²`. -/
+theorem gaussNodeResidue_law (y₀ x ω pd : ℝ) (ht : y₀ * x ≠ 0) (hx : x ≠ 0) (hpd : pd ≠ 0)
+    (nn : ℕ) :
+    (y₀ * x ^ 4 * (ω * pd ^ 2))
+      / ((y₀ * x) ^ (2 * nn + 1) * (-(((y₀ * x) ^ nn)⁻¹ * x ^ 2 * pd)) ^ 2)
+      = ω / x := by
+  have hy₀ : y₀ ≠ 0 := by
+    intro h
+    exact ht (by rw [h]; ring)
+  have htn : ((y₀ * x) ^ nn) ≠ 0 := pow_ne_zero _ ht
+  have hsplit : (y₀ * x) ^ (2 * nn + 1) = ((y₀ * x) ^ nn) ^ 2 * (y₀ * x) := by
+    rw [← pow_mul, ← pow_succ]
+    congr 1
+    omega
+  rw [hsplit]
+  field_simp
+
 end HTGeometry
 
 end

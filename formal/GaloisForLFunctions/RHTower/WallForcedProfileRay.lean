@@ -60,16 +60,17 @@ theorem intervalIntegrable_stripPropagatorInv_blockSource
 omit [Nontrivial X] in
 /-- **The forced profile on the terminal ray splits into the propagated datum and the moving
 tail.** -/
-theorem lintegral_sq_forcedProfile_ray_le
+theorem lintegral_sq_forcedProfile_region_le
     (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
     (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
     (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0)
     {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
-    {g : ℝ → X} {m Y : ℝ} (hg : IntegrableOn g (Icc m (m + 1))) (c : X) :
-    (∫⁻ x in Ioi Y, ‖forcedProfile E T (blockSource g m) c σ x‖ₑ ^ 2)
-      ≤ 4 * ((∫⁻ x in Ioi Y, ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)
+    {g : ℝ → X} {m : ℝ} (hg : IntegrableOn g (Icc m (m + 1))) (c : X)
+    {A : Set ℝ} (hA : MeasurableSet A) (Y : ℝ) :
+    (∫⁻ x in A, ‖forcedProfile E T (blockSource g m) c σ x‖ₑ ^ 2)
+      ≤ 4 * ((∫⁻ x in A, ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)
                 (thresholdDatum E T (blockSource g m) c σ Y)‖ₑ ^ 2)
-          + ∫⁻ x in Ioi Y, ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)
+          + ∫⁻ x in A, ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)
                 (∫ t in Y..x, stripPropagatorInv E T ((t : ℂ) + (σ : ℂ) * Complex.I)
                   (blockSource g m t))‖ₑ ^ 2) := by
   have hpair : ∀ u v : ℝ≥0∞, (u + v) ^ 2 ≤ 4 * (u ^ 2 + v ^ 2) := by
@@ -83,7 +84,7 @@ theorem lintegral_sq_forcedProfile_ray_le
     calc (u + v) ^ 2 ≤ (2 * max u v) ^ 2 := pow_le_pow_left' h1 2
       _ = 4 * max u v ^ 2 := by ring
       _ ≤ 4 * (u ^ 2 + v ^ 2) := mul_le_mul' le_rfl h2
-  have hpt : ∀ x ∈ Ioi Y, ‖forcedProfile E T (blockSource g m) c σ x‖ₑ ^ 2
+  have hpt : ∀ x ∈ A, ‖forcedProfile E T (blockSource g m) c σ x‖ₑ ^ 2
       ≤ 4 * (‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)
                 (thresholdDatum E T (blockSource g m) c σ Y)‖ₑ ^ 2
           + ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)
@@ -97,12 +98,45 @@ theorem lintegral_sq_forcedProfile_ray_le
     exact le_trans (pow_le_pow_left' (enorm_add_le _ _) 2) (hpair _ _)
   have hmeasA : AEMeasurable (fun x : ℝ =>
       ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)
-        (thresholdDatum E T (blockSource g m) c σ Y)‖ₑ ^ 2) (volume.restrict (Ioi Y)) := by
+        (thresholdDatum E T (blockSource g m) c σ Y)‖ₑ ^ 2) (volume.restrict (A)) := by
     have hcont := continuous_stripPropagator_line (T := T) hEdiff hE hEne hσ0 hσ1
     exact ((hcont.aestronglyMeasurable).apply_continuousLinearMap _).enorm.pow_const 2
-  refine le_trans (setLIntegral_mono' measurableSet_Ioi hpt) ?_
+  refine le_trans (setLIntegral_mono' hA hpt) ?_
   rw [lintegral_const_mul' _ _ (by simp : (4 : ℝ≥0∞) ≠ ⊤)]
   refine mul_le_mul' le_rfl (le_of_eq ?_)
   rw [lintegral_add_left' hmeasA]
+
+omit [Nontrivial X] in
+/-- **The forced profile on the terminal ray splits into the propagated datum and the moving
+tail.** -/
+theorem lintegral_sq_forcedProfile_ray_le
+    (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0)
+    {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
+    {g : ℝ → X} {m Y : ℝ} (hg : IntegrableOn g (Icc m (m + 1))) (c : X) :
+    (∫⁻ x in Ioi Y, ‖forcedProfile E T (blockSource g m) c σ x‖ₑ ^ 2)
+      ≤ 4 * ((∫⁻ x in Ioi Y, ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)
+                (thresholdDatum E T (blockSource g m) c σ Y)‖ₑ ^ 2)
+          + ∫⁻ x in Ioi Y, ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)
+                (∫ t in Y..x, stripPropagatorInv E T ((t : ℂ) + (σ : ℂ) * Complex.I)
+                  (blockSource g m t))‖ₑ ^ 2) :=
+  lintegral_sq_forcedProfile_region_le hEdiff hE hEne hσ0 hσ1 hg c measurableSet_Ioi Y
+
+omit [Nontrivial X] in
+/-- **The forced profile on the inward ray**, split at the reflected threshold. -/
+theorem lintegral_sq_forcedProfile_negRay_le
+    (hEdiff : DifferentiableOn ℂ E (imStrip (-1) 1))
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    (hEne : ∀ z ∈ imStrip (-1) 1, E z ≠ 0)
+    {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
+    {g : ℝ → X} {m Y : ℝ} (hg : IntegrableOn g (Icc m (m + 1))) (c : X) :
+    (∫⁻ x in Iio (-Y), ‖forcedProfile E T (blockSource g m) c σ x‖ₑ ^ 2)
+      ≤ 4 * ((∫⁻ x in Iio (-Y), ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)
+                (thresholdDatum E T (blockSource g m) c σ (-Y))‖ₑ ^ 2)
+          + ∫⁻ x in Iio (-Y), ‖stripPropagator E T ((x : ℂ) + (σ : ℂ) * Complex.I)
+                (∫ t in (-Y)..x, stripPropagatorInv E T ((t : ℂ) + (σ : ℂ) * Complex.I)
+                  (blockSource g m t))‖ₑ ^ 2) :=
+  lintegral_sq_forcedProfile_region_le hEdiff hE hEne hσ0 hσ1 hg c measurableSet_Iio (-Y)
 
 end GaloisForLFunctions.RHTower

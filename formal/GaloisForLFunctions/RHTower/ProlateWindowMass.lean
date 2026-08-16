@@ -59,6 +59,25 @@ theorem abs_sub_le_of_even_window {u : ℝ → ℝ} {K E : ℝ}
   have := hbound |x| habs
   rwa [hu, hg] at this
 
+/-- Evenness transports a difference bound against an arbitrary even comparison function from
+`[0, K]` to `[−K, K]`. -/
+theorem abs_sub_le_of_even_window' {u v : ℝ → ℝ} {K E : ℝ}
+    (heu : Function.Even u) (hev : Function.Even v)
+    (hbound : ∀ x ∈ Icc (0 : ℝ) K, |u x - v x| ≤ E) :
+    ∀ x ∈ Icc (-K) K, |u x - v x| ≤ E := by
+  intro x hx
+  have habs : |x| ∈ Icc (0 : ℝ) K := ⟨abs_nonneg x, abs_le.2 ⟨hx.1, hx.2⟩⟩
+  have hu : u |x| = u x := by
+    rcases abs_cases x with ⟨h, _⟩ | ⟨h, _⟩
+    · rw [h]
+    · rw [h, heu]
+  have hv : v |x| = v x := by
+    rcases abs_cases x with ⟨h, _⟩ | ⟨h, _⟩
+    · rw [h]
+    · rw [h, hev]
+  have hb := hbound |x| habs
+  rwa [hu, hv] at hb
+
 /-- Evenness transports an absolute bound from `[0, K]` to `[−K, K]`. -/
 theorem abs_le_of_even_window {u : ℝ → ℝ} {K B : ℝ}
     (heu : Function.Even u) (hB : ∀ x ∈ Icc (0 : ℝ) K, |u x| ≤ B) :

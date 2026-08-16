@@ -591,3 +591,54 @@ The residue construction is now assembled into the row it belongs to, in every d
 
 This is the general-degree form of the card's degree-two reduction.  It changes nothing about the
 outstanding input, which remains the torsion of the degree-two tame kernel.
+
+## Corpus audit — the card is one classical input away, and `(3)` was already formal
+
+A session-start audit of the formal tree against this card was **not** run before writing new code,
+and the result was a duplicate module (`HTGeometry/TorsionTensorReal.lean`) reproving work the tree
+already contained.  The duplicate has been deleted and unwired.  Recorded here so no later session
+repeats it.
+
+What the tree already proves, unconditionally:
+
+```text
+DeningerMilnorAmplitude.lean
+    deningerTorsion_tmul_real_eq_zero          a torsion element tensored with a real vanishes
+    deningerTorsionTensorReal_eq_zero          the realification of the torsion submodule vanishes
+    deningerRealification_torsionQuotient_bijective
+    deningerRealificationTorsionEquiv          **the realification isomorphism `(3)`**
+    deningerGradedDegreeOne_mul_eq_zero        vanishing degree two makes degree one square zero
+DeningerCharacterShapeFormality.lean
+    deningerUnitSpace_isTorsionFree            the torsion subgroup of the units is exactly μ_∞
+DeningerMilnorRealShape.lean
+    deningerMilnorDegZeroRealEquiv             **degree zero realifies to ℝ**            — `(2)` q=0
+    deningerMilnorDegOneRealEquiv              **degree one realifies to F^× ⊗ ℝ**       — `(2)` q=1
+    deningerMilnorDegTensorReal_eq_zero        degree ≥ 2 realifies to zero once degree two is torsion
+    deningerMilnorRealVanishing_of_finiteSubextension
+    deningerMilnorRealVanishing_of_tameKernelTorsion
+```
+
+and, supporting these, a full Milnor `K`-theory development that mathlib does not have:
+`MilnorKTheory` (the ring, the symbol, Steinberg, `{a,−a}=0`, anticommutativity), `MilnorKGrading`,
+`MilnorKGradedRing(Assoc)`, `MilnorKFiniteField` (`milnorKDegTwo_eq_zero_of_finite`),
+`MilnorKResidue*`, `MilnorKTame{Symbol,Valuation,Dedekind,Kernel,ResidueFinite}`, `MilnorKGersten`,
+`MilnorKDegFunctoriality`, `MilnorKAlgebraicReduction`, and the Milnor–Witt comparison tower.
+
+### The single remaining input
+
+`deningerMilnorRealVanishing_of_tameKernelTorsion` reduces the card's `(1)` — and with it `(2)` in
+degrees `≥ 2` and hence `(4)` — to exactly one classical statement:
+
+```text
+for every number field K, every element of the degree-two tame kernel of K is torsion
+```
+
+that is, Garland's theorem (finiteness of `K_2(O_K)`), or just its torsion consequence.  Everything
+between that and the card's conclusion is proved: the tame symbols at the finite places, finiteness
+of the residue fields, almost-everywhere vanishing of the residues, the reduction of an arbitrary
+algebraic extension to its finite subextensions, and the passage from degree two to all higher
+degrees.
+
+So the accurate status of this card is **one named classical input**, not "no formalization" and not
+"blocked on Borel" — the reduction past Borel's rank computation to the tame kernel is already done
+here.

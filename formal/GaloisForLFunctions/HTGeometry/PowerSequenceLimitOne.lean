@@ -190,4 +190,50 @@ theorem tendsto_atTop_absoluteDivisorSum {y a : ℕ → ℝ} {m : ℕ → ℕ} (
   tendsto_atTop_of_forall_partial_sum
     (fun q => tendsto_norm_ratio_pow_one (ζ q) hy hA ha hm) hS
 
+/-- **(GJRS.30) The hard-edge scale factor.**  With bounded shifts and an exponent small compared
+with the centre, `(y/(y+u))^m → 1`. -/
+theorem tendsto_centerRatio_pow_one {u y : ℕ → ℝ} {m : ℕ → ℕ} {U : ℝ} (hU0 : 0 ≤ U)
+    (hU : ∀ j, |u j| ≤ U) (hy : Tendsto y atTop atTop)
+    (hm : Tendsto (fun j => (m j : ℝ) / y j) atTop (nhds 0)) :
+    Tendsto (fun j => (y j / (y j + u j)) ^ (m j)) atTop (nhds 1) := by
+  have hev : ∀ᶠ j in atTop, 2 * (U + 1) ≤ y j := hy.eventually_ge_atTop _
+  have hbound : ∀ᶠ j in atTop, |y j / (y j + u j) - 1| ≤ 2 * U / y j := by
+    filter_upwards [hev] with j hj
+    have hUj := hU j
+    have hupos : |u j| ≤ U := hUj
+    have hu1 : -U ≤ u j := by
+      have := neg_abs_le (u j)
+      linarith
+    have hypos : (0 : ℝ) < y j := by linarith
+    have hden : y j / 2 ≤ y j + u j := by linarith
+    have hdenpos : (0 : ℝ) < y j + u j := by linarith
+    have hdiff : y j / (y j + u j) - 1 = -(u j) / (y j + u j) := by
+      field_simp
+      ring
+    rw [hdiff, abs_div, abs_neg, abs_of_pos hdenpos]
+    rw [div_le_div_iff₀ hdenpos hypos]
+    nlinarith [hupos, hypos, hden, abs_nonneg (u j)]
+  have hbig : Tendsto (fun j => 2 * U / y j) atTop (nhds 0) := by
+    have h := hy.inv_tendsto_atTop
+    have h2 := h.const_mul (2 * U)
+    simpa [div_eq_mul_inv] using h2
+  have hr1 : Tendsto (fun j => y j / (y j + u j)) atTop (nhds 1) := by
+    rw [← sub_zero (1 : ℝ)]
+    refine tendsto_sub_nhds_zero_iff.1 ?_
+    refine squeeze_zero_norm' ?_ hbig
+    filter_upwards [hbound] with j hj
+    simpa [Real.norm_eq_abs] using hj
+  have hmr : Tendsto (fun j => (m j : ℝ) * (y j / (y j + u j) - 1)) atTop (nhds 0) := by
+    have hub : Tendsto (fun j => 2 * U * ((m j : ℝ) / y j)) atTop (nhds 0) := by
+      have h := hm.const_mul (2 * U)
+      simpa using h
+    refine squeeze_zero_norm' ?_ hub
+    filter_upwards [hbound] with j hj
+    have hk0 : (0 : ℝ) ≤ (m j : ℝ) := Nat.cast_nonneg _
+    rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg hk0]
+    calc (m j : ℝ) * |y j / (y j + u j) - 1| ≤ (m j : ℝ) * (2 * U / y j) :=
+          mul_le_mul_of_nonneg_left hj hk0
+      _ = 2 * U * ((m j : ℝ) / y j) := by ring
+  exact tendsto_pow_of_tendsto_one hr1 hmr
+
 end GaloisForLFunctions.HTGeometry

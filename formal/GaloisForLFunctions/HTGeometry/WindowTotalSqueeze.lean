@@ -161,4 +161,115 @@ theorem window_le_total {f : ℝ → ℝ} {K R : ℝ}
     intervalIntegral.integral_nonneg hKR (fun x _ => sq_nonneg _)
   linarith [hsplitL, hsplitR, hleft, hright]
 
+/-- **Tail bound for a symmetric window pairing.**  Two functions with controlled second moments
+have window pairings that differ from the total pairing by at most `K⁻²` times the total second
+moments. -/
+theorem abs_window_pairing_sub_le_of_secondMoment {f g : ℝ → ℝ} {K R : ℝ}
+    (hK : 0 < K) (hKR : K ≤ R) (hf : Continuous f) (hg : Continuous g) :
+    |(∫ x in (-R)..R, f x * g x) - ∫ x in (-K)..K, f x * g x|
+      ≤ (1 / (2 * K ^ 2))
+        * ((∫ x in (-R)..R, x ^ 2 * f x ^ 2) + ∫ x in (-R)..R, x ^ 2 * g x ^ 2) := by
+  have hprod : Continuous fun x : ℝ => f x * g x := hf.mul hg
+  have hmom : Continuous fun x : ℝ =>
+      1 / (2 * K ^ 2) * (x ^ 2 * f x ^ 2 + x ^ 2 * g x ^ 2) :=
+    continuous_const.mul (((continuous_pow 2).mul (hf.pow 2)).add
+      ((continuous_pow 2).mul (hg.pow 2)))
+  have hKR' : -R ≤ -K := neg_le_neg hKR
+  have hKK : -K ≤ K := by linarith
+  have hdom : ∀ x : ℝ, K ^ 2 ≤ x ^ 2 →
+      |f x * g x| ≤ 1 / (2 * K ^ 2) * (x ^ 2 * f x ^ 2 + x ^ 2 * g x ^ 2) := by
+    intro x hx
+    have hK2 : (0 : ℝ) < 2 * K ^ 2 := by positivity
+    have hbase : |f x * g x| ≤ (f x ^ 2 + g x ^ 2) / 2 := by
+      rw [abs_mul]
+      nlinarith [sq_nonneg (|f x| - |g x|), sq_abs (f x), sq_abs (g x),
+        abs_nonneg (f x), abs_nonneg (g x)]
+    have h1 : K ^ 2 * f x ^ 2 ≤ x ^ 2 * f x ^ 2 :=
+      mul_le_mul_of_nonneg_right hx (sq_nonneg _)
+    have h2 : K ^ 2 * g x ^ 2 ≤ x ^ 2 * g x ^ 2 :=
+      mul_le_mul_of_nonneg_right hx (sq_nonneg _)
+    have hscale : (f x ^ 2 + g x ^ 2) / 2
+        ≤ 1 / (2 * K ^ 2) * (x ^ 2 * f x ^ 2 + x ^ 2 * g x ^ 2) := by
+      rw [one_div, inv_mul_eq_div, le_div_iff₀ hK2]
+      nlinarith [h1, h2]
+    exact le_trans hbase hscale
+  have hsL : (∫ x in (-R)..(-K), f x * g x) + ∫ x in (-K)..K, f x * g x
+      = ∫ x in (-R)..K, f x * g x :=
+    intervalIntegral.integral_add_adjacent_intervals (hprod.intervalIntegrable _ _)
+      (hprod.intervalIntegrable _ _)
+  have hsR : (∫ x in (-R)..K, f x * g x) + ∫ x in K..R, f x * g x
+      = ∫ x in (-R)..R, f x * g x :=
+    intervalIntegral.integral_add_adjacent_intervals (hprod.intervalIntegrable _ _)
+      (hprod.intervalIntegrable _ _)
+  have hmL : (∫ x in (-R)..(-K), 1 / (2 * K ^ 2) * (x ^ 2 * f x ^ 2 + x ^ 2 * g x ^ 2))
+      + ∫ x in (-K)..K, 1 / (2 * K ^ 2) * (x ^ 2 * f x ^ 2 + x ^ 2 * g x ^ 2)
+      = ∫ x in (-R)..K, 1 / (2 * K ^ 2) * (x ^ 2 * f x ^ 2 + x ^ 2 * g x ^ 2) :=
+    intervalIntegral.integral_add_adjacent_intervals (hmom.intervalIntegrable _ _)
+      (hmom.intervalIntegrable _ _)
+  have hmR : (∫ x in (-R)..K, 1 / (2 * K ^ 2) * (x ^ 2 * f x ^ 2 + x ^ 2 * g x ^ 2))
+      + ∫ x in K..R, 1 / (2 * K ^ 2) * (x ^ 2 * f x ^ 2 + x ^ 2 * g x ^ 2)
+      = ∫ x in (-R)..R, 1 / (2 * K ^ 2) * (x ^ 2 * f x ^ 2 + x ^ 2 * g x ^ 2) :=
+    intervalIntegral.integral_add_adjacent_intervals (hmom.intervalIntegrable _ _)
+      (hmom.intervalIntegrable _ _)
+  have hleft : |∫ x in (-R)..(-K), f x * g x|
+      ≤ ∫ x in (-R)..(-K), 1 / (2 * K ^ 2) * (x ^ 2 * f x ^ 2 + x ^ 2 * g x ^ 2) := by
+    refine le_trans (intervalIntegral.abs_integral_le_integral_abs hKR') ?_
+    refine intervalIntegral.integral_mono_on hKR' ((hprod.abs).intervalIntegrable _ _)
+      (hmom.intervalIntegrable _ _) (fun x hx => hdom x ?_)
+    nlinarith [hx.2, hK]
+  have hright : |∫ x in K..R, f x * g x|
+      ≤ ∫ x in K..R, 1 / (2 * K ^ 2) * (x ^ 2 * f x ^ 2 + x ^ 2 * g x ^ 2) := by
+    refine le_trans (intervalIntegral.abs_integral_le_integral_abs hKR) ?_
+    refine intervalIntegral.integral_mono_on hKR ((hprod.abs).intervalIntegrable _ _)
+      (hmom.intervalIntegrable _ _) (fun x hx => hdom x ?_)
+    nlinarith [hx.1, hK]
+  have hmid : (0 : ℝ) ≤ ∫ x in (-K)..K, 1 / (2 * K ^ 2) * (x ^ 2 * f x ^ 2 + x ^ 2 * g x ^ 2) :=
+    intervalIntegral.integral_nonneg hKK (fun x _ => by positivity)
+  have hfull : (∫ x in (-R)..R, 1 / (2 * K ^ 2) * (x ^ 2 * f x ^ 2 + x ^ 2 * g x ^ 2))
+      = (1 / (2 * K ^ 2))
+        * ((∫ x in (-R)..R, x ^ 2 * f x ^ 2) + ∫ x in (-R)..R, x ^ 2 * g x ^ 2) := by
+    rw [intervalIntegral.integral_const_mul]
+    congr 1
+    exact intervalIntegral.integral_add
+      (((continuous_pow 2).mul (hf.pow 2)).intervalIntegrable _ _)
+      (((continuous_pow 2).mul (hg.pow 2)).intervalIntegrable _ _)
+  have hdiff : (∫ x in (-R)..R, f x * g x) - ∫ x in (-K)..K, f x * g x
+      = (∫ x in (-R)..(-K), f x * g x) + ∫ x in K..R, f x * g x := by
+    linarith [hsL, hsR]
+  rw [hdiff]
+  refine le_trans (abs_add_le _ _) ?_
+  linarith [hleft, hright, hmid, hmL, hmR, hfull]
+
+/-- **Uniform total mass from a window bound.**  A pointwise bound on a fixed window, together with
+a second-moment estimate, caps the total mass — with a constant that does not depend on the outer
+radius. -/
+theorem total_mass_le_of_window_bound {f : ℝ → ℝ} {S K B mu : ℝ}
+    (hK : 0 < K) (hKS : K ≤ S) (hf : Continuous f)
+    (hB : ∀ x ∈ Set.Icc (-K) K, |f x| ≤ B)
+    (hmom : (∫ x in (-S)..S, x ^ 2 * f x ^ 2) ≤ mu * ∫ x in (-S)..S, f x ^ 2) :
+    (∫ x in (-S)..S, f x ^ 2) * (1 - mu / K ^ 2) ≤ 2 * K * B ^ 2 := by
+  have hK2 : (0 : ℝ) < K ^ 2 := by positivity
+  have hKK : (-K : ℝ) ≤ K := by linarith
+  -- the window mass is at most `2K B²`
+  have hwin : (∫ x in (-K)..K, f x ^ 2) ≤ 2 * K * B ^ 2 := by
+    have hconst : (∫ x in (-K)..K, B ^ 2) = 2 * K * B ^ 2 := by
+      rw [intervalIntegral.integral_const, smul_eq_mul]
+      ring
+    rw [← hconst]
+    refine intervalIntegral.integral_mono_on hKK ((hf.pow 2).intervalIntegrable _ _)
+      intervalIntegrable_const fun x hx => ?_
+    have hbx := hB x hx
+    nlinarith [abs_nonneg (f x), sq_abs (f x), hbx]
+  -- Chebyshev bounds the tail
+  have htail := window_tail_le_of_secondMoment hK hKS hf
+  have hstep : (∫ x in (-S)..S, f x ^ 2) - (∫ x in (-K)..K, f x ^ 2)
+      ≤ (1 / K ^ 2) * (mu * ∫ x in (-S)..S, f x ^ 2) := by
+    refine le_trans htail ?_
+    exact mul_le_mul_of_nonneg_left hmom (by positivity)
+  have hdiv : (1 / K ^ 2) * (mu * ∫ x in (-S)..S, f x ^ 2)
+      = (mu / K ^ 2) * ∫ x in (-S)..S, f x ^ 2 := by
+    field_simp
+  rw [hdiv] at hstep
+  nlinarith [hstep, hwin]
+
 end GaloisForLFunctions.HTGeometry

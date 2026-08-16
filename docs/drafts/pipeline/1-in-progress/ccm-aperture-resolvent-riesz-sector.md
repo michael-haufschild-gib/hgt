@@ -6,6 +6,8 @@
 - **Scientific status:** `[CONJECTURE] [CONNES/CCM SOURCE-SPECIFIC] [RH-SUFFICIENT GATE OPEN]`
 - **Parent result:**
   `../2-fully-proven/new_scientific_knowledge/ccm-critical-mellin-aperture-resolvent-law.md`
+- **Exact route-collapse result:**
+  `../2-fully-proven/new_scientific_knowledge/other/ccm-unit-riesz-aperture-resolvent-weld.md`
 - **Statement:** The unit aperture-resolvent mean of the normalized Chebyshev error has a
   one-sided all-epsilon subpower upper bound.
 
@@ -83,6 +85,15 @@ prime and polar channels are coupled before scalar absolute values.
 
 - `[PROVED]` exact aperture-resolvent filter `(3)`;
 - `[PROVED]` causal Volterra cancellation and source identity `(1)`;
+- `[LEAN-PROVED]` exact pointwise identity between completed-current unit-Riesz response and this
+  same aperture resolvent:
+
+  ```text
+  U(t)=3(t-3)exp(-t)+8exp(-3t/2)-(3/2)exp(-t/2)J(exp t).
+  ```
+
+  Thus CCM-UR lower law and `(2)` are one arithmetic theorem, with opposite orientation and no
+  exponent loss; they are not independent candidate producers;
 - `[PAPER-PROVED]` admissible aperture tail cannot censor `0<Re(w)<1/2` modes;
 - `[PAPER-PROVED]` one-sided Landau connector for the equivalent Markov--virial coefficient;
 - `[OPEN RH CORE]` unconditional source-sector bound `(2)`.
@@ -94,10 +105,13 @@ connector does.
 
 - [x] 0 → 1: well-posed, source-pure, falsifiable, exact transform route
 - [ ] 1 → 2: prove source bound `(2)` without zero assumptions
-- [ ] 2 → 3: formalize source identity, connector, and composition to `RiemannHypothesis`
+- [ ] 2 → 3: source identity and exact CCM-UR composition are formalized; formalize remaining
+  source bound and its endpoint composition to `RiemannHypothesis`
 - [ ] 3 → 4: novelty and publication audit
 
 ## Log
 
 - 2026-07-22 — created after aperture averaging eliminated detector-phase and admissible-tail
   obstructions; isolated weighted Chebyshev Riesz sector as surviving Connes source theorem.
+- 2026-08-16 — exact Lean unit-Riesz/aperture-resolvent weld proves CCM-UR's source lower law is
+  pointwise equivalent to this upper-sector problem. Only one arithmetic producer remains.

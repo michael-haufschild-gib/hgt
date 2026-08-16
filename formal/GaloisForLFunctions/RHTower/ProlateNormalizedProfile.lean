@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.ProlateGaussianWindowLimit
 import GaloisForLFunctions.RHTower.ProlateHermiteRescale
 import GaloisForLFunctions.RHTower.SlepianKernelScaledFubini
+import GaloisForLFunctions.RHTower.ProlateSecondMoment
 
 /-!
 # The rescaled prolate profile normalized at the centre
@@ -118,5 +119,25 @@ theorem normalizedProlate_window_package {c lam chi K : ℝ} {Phi : ℝ → ℝ}
   exact ⟨hasDerivAt_normalizedProlateProfile hsm, hasDerivAt_normalizedProlateDeriv hsm,
     normalizedProlate_ode hK hcK heig, normalizedProlateProfile_zero c h0,
     normalizedProlateDeriv_zero c heven⟩
+
+/-- **Orthogonality transfers to the rescaled window.**  If two profiles are orthogonal on the
+aperture, their normalized rescalings are orthogonal on the window `[−√c, √c]`. -/
+theorem integral_normalizedProlate_mul_eq_zero {c : ℝ} (hc : 0 < c) {Phi Psi : ℝ → ℝ}
+    (horth : (∫ x in (-1 : ℝ)..1, Phi x * Psi x) = 0) :
+    (∫ xi in (-Real.sqrt c)..(Real.sqrt c),
+        normalizedProlateProfile c Phi xi * normalizedProlateProfile c Psi xi) = 0 := by
+  have hbase := integral_comp_div_sqrt hc (fun x => Phi x * Psi x)
+  have hrw : (∫ xi in (-Real.sqrt c)..(Real.sqrt c),
+      normalizedProlateProfile c Phi xi * normalizedProlateProfile c Psi xi)
+      = (1 / (Phi 0 * Psi 0))
+        * ∫ xi in (-Real.sqrt c)..(Real.sqrt c),
+            Phi (xi / Real.sqrt c) * Psi (xi / Real.sqrt c) := by
+    rw [← intervalIntegral.integral_const_mul]
+    refine intervalIntegral.integral_congr fun xi _ => ?_
+    rw [normalizedProlateProfile, normalizedProlateProfile, prolateHermiteRescale,
+      prolateHermiteRescale]
+    ring
+  rw [hrw, hbase, horth]
+  ring
 
 end RHTower

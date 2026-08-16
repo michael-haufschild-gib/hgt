@@ -75,27 +75,25 @@ theorem norm_thresholdDatum_le (hT : IsSelfAdjoint T)
 /-- **The accumulated datum, in the extended norm.**  Stated this way the bound needs no
 integrability at all: the extended norm of an interval integral is at most the extended mass of the
 integrand, unconditionally. -/
-theorem enorm_thresholdDatum_le (hT : IsSelfAdjoint T)
+theorem enorm_thresholdDatum_le' (hT : IsSelfAdjoint T)
     (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
     {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ (Y : ℝ), 0 < Y → ∀ (b : ℝ → X) (c : X),
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (Y : ℝ) (b : ℝ → X) (c : X),
       ‖thresholdDatum E T b c σ Y‖ₑ
-        ≤ ‖c‖ₑ + ENNReal.ofReal (C * (1 + Y) ^ (1 / 2 + σ))
+        ≤ ‖c‖ₑ + ENNReal.ofReal (C * (1 + |Y|) ^ (1 / 2 + σ))
             * ∫⁻ t in uIoc (0 : ℝ) Y, ‖b t‖ₑ := by
   obtain ⟨K₂, hK₂, hb₂⟩ := exists_bound_stripPropagatorInv_line hT hE hσ0 hσ1
-  refine ⟨K₂, hK₂.le, fun Y hY b c => ?_⟩
+  refine ⟨K₂, hK₂.le, fun Y b c => ?_⟩
   have hp : (0 : ℝ) ≤ 1 / 2 + σ := by linarith
   have hstep : ∀ t ∈ uIoc (0 : ℝ) Y,
       ‖stripPropagatorInv E T ((t : ℂ) + (σ : ℂ) * Complex.I) (b t)‖ₑ
-        ≤ ENNReal.ofReal (K₂ * (1 + Y) ^ (1 / 2 + σ)) * ‖b t‖ₑ := by
+        ≤ ENNReal.ofReal (K₂ * (1 + |Y|) ^ (1 / 2 + σ)) * ‖b t‖ₑ := by
     intro t ht
-    have habs : |t| ≤ Y := by
-      have h := GaloisForLFunctions.HTGeometry.abs_le_abs_of_mem_uIoc_zero ht
-      rwa [abs_of_pos hY] at h
-    have hmono : (1 + |t|) ^ (1 / 2 + σ) ≤ (1 + Y) ^ (1 / 2 + σ) :=
+    have habs : |t| ≤ |Y| := GaloisForLFunctions.HTGeometry.abs_le_abs_of_mem_uIoc_zero ht
+    have hmono : (1 + |t|) ^ (1 / 2 + σ) ≤ (1 + |Y|) ^ (1 / 2 + σ) :=
       Real.rpow_le_rpow (by positivity) (by linarith) hp
     have hop : ‖stripPropagatorInv E T ((t : ℂ) + (σ : ℂ) * Complex.I) (b t)‖
-        ≤ (K₂ * (1 + Y) ^ (1 / 2 + σ)) * ‖b t‖ := by
+        ≤ (K₂ * (1 + |Y|) ^ (1 / 2 + σ)) * ‖b t‖ := by
       refine le_trans (ContinuousLinearMap.le_opNorm _ _) ?_
       refine mul_le_mul_of_nonneg_right ?_ (norm_nonneg _)
       exact (hb₂ t).trans (mul_le_mul_of_nonneg_left hmono hK₂.le)
@@ -108,10 +106,23 @@ theorem enorm_thresholdDatum_le (hT : IsSelfAdjoint T)
           ‖stripPropagatorInv E T ((t : ℂ) + (σ : ℂ) * Complex.I) (b t)‖ₑ :=
         add_le_add le_rfl (GaloisForLFunctions.HTGeometry.enorm_intervalIntegral_le _ 0 Y)
     _ ≤ ‖c‖ₑ + ∫⁻ t in uIoc (0 : ℝ) Y,
-          ENNReal.ofReal (K₂ * (1 + Y) ^ (1 / 2 + σ)) * ‖b t‖ₑ :=
+          ENNReal.ofReal (K₂ * (1 + |Y|) ^ (1 / 2 + σ)) * ‖b t‖ₑ :=
         add_le_add le_rfl (setLIntegral_mono' measurableSet_Ioc hstep)
-    _ = ‖c‖ₑ + ENNReal.ofReal (K₂ * (1 + Y) ^ (1 / 2 + σ))
+    _ = ‖c‖ₑ + ENNReal.ofReal (K₂ * (1 + |Y|) ^ (1 / 2 + σ))
           * ∫⁻ t in uIoc (0 : ℝ) Y, ‖b t‖ₑ := by
         rw [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+
+/-- The accumulated datum below a positive threshold. -/
+theorem enorm_thresholdDatum_le (hT : IsSelfAdjoint T)
+    (hE : ∀ z ∈ imStrip (-1) 1, E z ^ 2 = gammaRatio z)
+    {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (Y : ℝ), 0 < Y → ∀ (b : ℝ → X) (c : X),
+      ‖thresholdDatum E T b c σ Y‖ₑ
+        ≤ ‖c‖ₑ + ENNReal.ofReal (C * (1 + Y) ^ (1 / 2 + σ))
+            * ∫⁻ t in uIoc (0 : ℝ) Y, ‖b t‖ₑ := by
+  obtain ⟨C, hC, h⟩ := enorm_thresholdDatum_le' hT hE hσ0 hσ1
+  refine ⟨C, hC, fun Y hY b c => ?_⟩
+  have := h Y b c
+  rwa [abs_of_pos hY] at this
 
 end GaloisForLFunctions.RHTower

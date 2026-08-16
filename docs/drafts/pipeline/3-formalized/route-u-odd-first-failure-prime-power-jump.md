@@ -125,8 +125,22 @@ remainder.  Sign loss forces the entering response strictly positive.
 new atom lowering the Weil form.  Positivity of the arithmetic coefficient alone gives no
 contradiction.
 
-**Verdict:** failed.  Remaining producer is an exact comparison between incoming odd margin and
-the single prime-power response, not a sign slogan.
+**Verdict:** failed. At this stage, remaining producer appeared to be an exact comparison between
+incoming odd margin and single prime-power response. U-J5 supersedes that diagnosis under endpoint
+admission.
+
+### U-J5 — endpoint Paley--Wiener admission forces the comparison
+
+**Conjecture.** Even for a genuinely admitted critical odd state, the one-atom response may
+consume incoming margin and needs a new arithmetic estimate.
+
+**Attack.** Put `g(x)=xH(x^2)`. At `sigma=log(n)/2`, Suzuki admission gives mathlib Fourier support
+`|xi|<=log(n)/(4 pi)`. Entering cosine frequency `log(n)` is exactly extreme difference frequency
+of this band. Plancherel makes translated supports orthogonal because they meet only at a null
+singleton.
+
+**Verdict:** false. Response is exactly zero. This supersedes earlier surviving-margin
+interpretation under endpoint admission; see `route-u-prime-wall-endpoint-invisibility.md`.
 
 ## Dependency-closed proof
 
@@ -149,28 +163,23 @@ then proves `(6)` and its strict response sign.
 
 ## Higher universal principle
 
-**Hard-edge aperture is an arithmetic staircase, not a continuous deformation.**  Gamma supplies
-the fixed chamber background; prime powers are the only walls.  A first spectral sign change is
-therefore a codimension-one source event carried by one von Mangoldt atom.
-
-This reinterprets Route U's former “odd-sector admission” problem.  For the fixed limit state to
-remain nonnegative below critical aperture but fail at critical aperture, it must meet a single
-prime-power wall with enough positive cosine response to exhaust the incoming margin.  Root-jet
-geometry determines candidate state; prime-power incidence determines crossing.
+**Hard-edge aperture is an arithmetic staircase whose wall frequency is locked to endpoint
+bandwidth.** Gamma supplies fixed chamber background; prime powers are only walls. For an admitted
+critical state, wall atom lies at twice its Fourier bandwidth and is quadratically invisible.
+Arithmetic quantization determines candidate crossing, while endpoint support forbids it.
 
 ## Significance and positive survivor
 
-The simple critical-ground branch no longer needs a global odd-sector theorem across all
-apertures.  Its exact surviving inequality at one prime power `n=p^k` is
+Earlier surviving inequality
 
 ```text
 J_n(H) <= OddForm_(sigma_n^-)(H).                            (9)
 ```
 
-Proving `(9)` for the source-selected divided state prevents first failure.  Alternatively, finite
-first-contact ancestry may identify strict violation of `(9)` with a super-apex or radial-flux
-event.  Either route is source-specific and one-atom; more continuous aperture compactness cannot
-advance it.
+is automatic for every endpoint-admitted state because `J_n(H)=0`. Simple critical-ground branch
+therefore no longer needs jump orientation. It needs source-selected divided state to enter
+Suzuki's exact critical form domain and inherit incoming nonnegativity. Once those are proved,
+first-loss positivity contradicts endpoint invisibility.
 
 In the degenerate branch, the same theorem localizes every negative terminal odd signature to one
 prime-power wall before parity-doubled nullity is invoked.  The higher contact source must therefore
@@ -215,3 +224,4 @@ Direct `lake env lean` and exact leaf `lake build` succeeded.  Axiom audit repor
 - 2026-08-16 — Continuous aperture-drift conjecture falsified from literal density.
 - 2026-08-16 — First odd failure classified at a prime-power wall.
 - 2026-08-16 — Exact one-atom response and strict sign formalized and axiom-audited.
+- 2026-08-16 — Endpoint admission proved response zero; former margin-comparison gate superseded.

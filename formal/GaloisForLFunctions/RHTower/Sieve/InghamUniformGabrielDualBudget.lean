@@ -6,10 +6,10 @@ namespace RHTower.Sieve
 
 noncomputable section
 
-private noncomputable def uniformGabrielDenominator (sigma : ℝ) : ℝ :=
+noncomputable def uniformGabrielDenominator (sigma : ℝ) : ℝ :=
   3 * inghamUniformGabrielRightEdge sigma - inghamUniformGabrielCenter sigma - 1
 
-private noncomputable def uniformGabrielSeedDenominator (sigma : ℝ) : ℝ :=
+noncomputable def uniformGabrielSeedDenominator (sigma : ℝ) : ℝ :=
   inghamUniformGabrielRightEdge sigma + inghamUniformGabrielCenter sigma - 1
 
 /-- Moving interior moment power in the `4/3 -> 2` Gabriel interpolation. -/

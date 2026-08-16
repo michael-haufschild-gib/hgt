@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.GammaSewnMobiusApertureStokesPhysicalPluckerEntireDeterminant
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailMomentLogConvex
+import GaloisForLFunctions.RHTower.NuclearRankOneTrace
 
 /-!
 # Trace restoration for the physical Pluecker determinant
@@ -124,6 +125,190 @@ theorem gammaSewnCriticalPhysicalPluckerSourceTrace_pos :
     (fun u => (gammaSewnCriticalPhysicalPlucker_basis_quadratic_pos u).le) (0, 0)
     (gammaSewnCriticalPhysicalPlucker_basis_quadratic_pos (0, 0))
 
+/-- Literal nuclear mass carried by the source-normalized positive rank-one expansion. -/
+def gammaSewnCriticalPhysicalPluckerNuclearTraceMass : ℝ :=
+  ∑' idx : (ℕ × ℕ) × Fin 6,
+    gammaSewnCriticalAdjacentPrime_PluckerBlockWeight idx.1 *
+      gammaSewnCriticalAdjacentPrime_PluckerProbability idx.1 idx.2 *
+        ‖gammaSewnCriticalPhysicalPluckerCenteredVector idx.1 idx.2‖ ^ 2
+
+theorem opTrace_gammaSewnCriticalPhysicalPluckerPositiveRankOneTerm
+    (idx : (ℕ × ℕ) × Fin 6) :
+    ContinuousLinearMap.opTrace
+      (gammaSewnCriticalPhysicalPluckerPositiveRankOneTerm idx) =
+      ((gammaSewnCriticalAdjacentPrime_PluckerBlockWeight idx.1 *
+        gammaSewnCriticalAdjacentPrime_PluckerProbability idx.1 idx.2 *
+          ‖gammaSewnCriticalPhysicalPluckerCenteredVector idx.1 idx.2‖ ^ 2 : ℝ) : ℂ) := by
+  rw [gammaSewnCriticalPhysicalPluckerPositiveRankOneTerm,
+    RHTower.opTrace_smul_rankOne_self]
+  push_cast
+  rfl
+
+/-- Exact first-trace source formula: no spectral data remain hidden in `opTrace`. -/
+theorem gammaSewnCriticalPhysicalPluckerSourceTrace_eq_nuclearTraceMass :
+    gammaSewnCriticalPhysicalPluckerSourceTrace =
+      (gammaSewnCriticalPhysicalPluckerNuclearTraceMass : ℂ) := by
+  rw [gammaSewnCriticalPhysicalPluckerSourceTrace,
+    gammaSewnCriticalPhysicalPluckerSpectralOperator,
+    RHTower.opTrace_tsum_rankOneTerms_of_summable_norm
+      gammaSewnCriticalPhysicalPluckerPositiveRankOneTerm
+      gammaSewnCriticalPhysicalPluckerPositiveRankOneTerm_hasRankLE
+      summable_norm_gammaSewnCriticalPhysicalPluckerPositiveRankOneTerm]
+  simp_rw [opTrace_gammaSewnCriticalPhysicalPluckerPositiveRankOneTerm]
+  rw [gammaSewnCriticalPhysicalPluckerNuclearTraceMass]
+  exact (Complex.ofReal_tsum _).symm
+
+/-- Squared norm of one four-cell centered source vector is its literal coordinate energy. -/
+theorem norm_gammaSewnCriticalPhysicalPluckerCenteredVector_sq
+    (z : ℕ × ℕ) (s : Fin 6) :
+    ‖gammaSewnCriticalPhysicalPluckerCenteredVector z s‖ ^ 2 =
+      ∑ i : Fin 4,
+        gammaSewnCriticalAdjacentPrime_PluckerCenteredNodeFeature z s i ^ 2 := by
+  have hortho : Orthonormal ℂ (fun i : Fin 4 =>
+      gammaSewnCriticalPhysicalPluckerBasis
+        (gammaSewnCriticalAdjacentPrime_PluckerPhysicalLabel z i)) := by
+    constructor
+    · intro i
+      exact norm_gammaSewnCriticalPhysicalPluckerBasis _
+    · intro i j hij
+      rw [inner_gammaSewnCriticalPhysicalPluckerBasis]
+      simp [gammaSewnCriticalAdjacentPrime_PluckerPhysicalLabel_injective z |>.ne hij]
+  have hsquare := hortho.orthogonalFamily.norm_sum
+    (fun i : Fin 4 =>
+      (gammaSewnCriticalAdjacentPrime_PluckerCenteredNodeFeature z s i : ℂ))
+    Finset.univ
+  simpa [gammaSewnCriticalPhysicalPluckerCenteredVector,
+    LinearIsometry.toSpanSingleton_apply, Complex.norm_real, Real.norm_eq_abs,
+    sq_abs] using hsquare
+
+/-- One packet's nuclear mass is exactly the trace of its source spectral matrix. -/
+theorem gammaSewnCriticalPhysicalPlucker_localNuclearTraceMass_eq_spectralTrace
+    (z : ℕ × ℕ) :
+    ∑ s : Fin 6,
+      gammaSewnCriticalAdjacentPrime_PluckerProbability z s *
+        ‖gammaSewnCriticalPhysicalPluckerCenteredVector z s‖ ^ 2 =
+      ∑ i : Fin 4, gammaSewnCriticalAdjacentPrime_PluckerSpectralBlock z i i := by
+  simp_rw [norm_gammaSewnCriticalPhysicalPluckerCenteredVector_sq,
+    gammaSewnCriticalAdjacentPrime_PluckerSpectralBlock_eq_centered]
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro s _
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro i _
+  ring
+
+theorem summable_gammaSewnCriticalPhysicalPluckerNuclearTraceMass_terms :
+    Summable (fun idx : (ℕ × ℕ) × Fin 6 =>
+      gammaSewnCriticalAdjacentPrime_PluckerBlockWeight idx.1 *
+        gammaSewnCriticalAdjacentPrime_PluckerProbability idx.1 idx.2 *
+          ‖gammaSewnCriticalPhysicalPluckerCenteredVector idx.1 idx.2‖ ^ 2) := by
+  exact summable_norm_gammaSewnCriticalPhysicalPluckerPositiveRankOneTerm.congr
+    (fun idx => norm_gammaSewnCriticalPhysicalPluckerPositiveRankOneTerm idx)
+
+/-- Global first trace is a normalized weighted average of explicit local `4 x 4` traces. -/
+theorem gammaSewnCriticalPhysicalPluckerNuclearTraceMass_eq_tsum_spectralTrace :
+    gammaSewnCriticalPhysicalPluckerNuclearTraceMass =
+      ∑' z : ℕ × ℕ,
+        gammaSewnCriticalAdjacentPrime_PluckerBlockWeight z *
+          (∑ i : Fin 4,
+            gammaSewnCriticalAdjacentPrime_PluckerSpectralBlock z i i) := by
+  rw [gammaSewnCriticalPhysicalPluckerNuclearTraceMass,
+    summable_gammaSewnCriticalPhysicalPluckerNuclearTraceMass_terms.tsum_prod]
+  apply tsum_congr
+  intro z
+  rw [tsum_fintype]
+  calc
+    ∑ s : Fin 6,
+        gammaSewnCriticalAdjacentPrime_PluckerBlockWeight z *
+          gammaSewnCriticalAdjacentPrime_PluckerProbability z s *
+            ‖gammaSewnCriticalPhysicalPluckerCenteredVector z s‖ ^ 2 =
+        gammaSewnCriticalAdjacentPrime_PluckerBlockWeight z *
+          ∑ s : Fin 6,
+            gammaSewnCriticalAdjacentPrime_PluckerProbability z s *
+              ‖gammaSewnCriticalPhysicalPluckerCenteredVector z s‖ ^ 2 := by
+          rw [Finset.mul_sum]
+          apply Finset.sum_congr rfl
+          intro s _
+          ring
+    _ = _ := by
+      rw [gammaSewnCriticalPhysicalPlucker_localNuclearTraceMass_eq_spectralTrace]
+
+/-- Every diagonal entry of a physical packet is a reciprocal-gap node times the Bernoulli
+variance of the corresponding coordinate's pair-inclusion event. -/
+theorem gammaSewnCriticalAdjacentPrime_PluckerSpectralBlock_diag_eq_bernoulliVariance
+    (z : ℕ × ℕ) (i : Fin 4) :
+    gammaSewnCriticalAdjacentPrime_PluckerSpectralBlock z i i =
+      gammaSewnCriticalPrimeDepthPacket_node z.1
+          (gammaSewnCriticalAdjacentPrime_lower z.2)
+          (gammaSewnCriticalAdjacentPrime_upper z.2) i *
+        gammaSewnCriticalAdjacentPrime_PluckerCoordinateMean z i *
+          (1 - gammaSewnCriticalAdjacentPrime_PluckerCoordinateMean z i) := by
+  let n := gammaSewnCriticalPrimeDepthPacket_node z.1
+    (gammaSewnCriticalAdjacentPrime_lower z.2)
+    (gammaSewnCriticalAdjacentPrime_upper z.2) i
+  have hn : 0 ≤ n :=
+    (gammaSewnCriticalPrimeDepthPacket_node_pos z.1
+      (gammaSewnCriticalAdjacentPrime_lower z.2)
+      (gammaSewnCriticalAdjacentPrime_upper z.2) i).le
+  rw [gammaSewnCriticalAdjacentPrime_PluckerSpectralBlock,
+    gammaSewnCriticalPrimeDepthPacket_PluckerSpectralMatrix_apply]
+  change Real.sqrt n *
+      fourRatePluckerCovariance
+        (gammaSewnCriticalAdjacentPrime_PluckerProbability z)
+        (fourRateCoordinateDelta i) (fourRateCoordinateDelta i) *
+        Real.sqrt n = _
+  rw [fourRatePluckerCovariance_coordinateDelta_self_eq_bernoulliVariance]
+  change Real.sqrt n *
+      (gammaSewnCriticalAdjacentPrime_PluckerCoordinateMean z i *
+        (1 - gammaSewnCriticalAdjacentPrime_PluckerCoordinateMean z i)) *
+        Real.sqrt n = _
+  have hsqrt : Real.sqrt n * Real.sqrt n = n := Real.mul_self_sqrt hn
+  change Real.sqrt n *
+      (gammaSewnCriticalAdjacentPrime_PluckerCoordinateMean z i *
+        (1 - gammaSewnCriticalAdjacentPrime_PluckerCoordinateMean z i)) *
+        Real.sqrt n =
+      n * gammaSewnCriticalAdjacentPrime_PluckerCoordinateMean z i *
+        (1 - gammaSewnCriticalAdjacentPrime_PluckerCoordinateMean z i)
+  calc
+    _ = (Real.sqrt n * Real.sqrt n) *
+        (gammaSewnCriticalAdjacentPrime_PluckerCoordinateMean z i *
+          (1 - gammaSewnCriticalAdjacentPrime_PluckerCoordinateMean z i)) := by ring
+    _ = _ := by rw [hsqrt]; ring
+
+/-- Packet trace after eliminating the full six-pair covariance matrix. -/
+theorem gammaSewnCriticalPhysicalPlucker_localTrace_eq_bernoulliTrace
+    (z : ℕ × ℕ) :
+    (∑ i : Fin 4,
+      gammaSewnCriticalAdjacentPrime_PluckerSpectralBlock z i i) =
+      ∑ i : Fin 4,
+        gammaSewnCriticalPrimeDepthPacket_node z.1
+            (gammaSewnCriticalAdjacentPrime_lower z.2)
+            (gammaSewnCriticalAdjacentPrime_upper z.2) i *
+          gammaSewnCriticalAdjacentPrime_PluckerCoordinateMean z i *
+            (1 - gammaSewnCriticalAdjacentPrime_PluckerCoordinateMean z i) := by
+  apply Finset.sum_congr rfl
+  intro i _
+  exact
+    gammaSewnCriticalAdjacentPrime_PluckerSpectralBlock_diag_eq_bernoulliVariance z i
+
+/-- The repaired determinant's first derivative is an explicit normalized prime-depth average of
+four reciprocal-gap Bernoulli variances per packet. -/
+theorem gammaSewnCriticalPhysicalPluckerNuclearTraceMass_eq_tsum_bernoulliTrace :
+    gammaSewnCriticalPhysicalPluckerNuclearTraceMass =
+      ∑' z : ℕ × ℕ,
+        gammaSewnCriticalAdjacentPrime_PluckerBlockWeight z *
+          (∑ i : Fin 4,
+            gammaSewnCriticalPrimeDepthPacket_node z.1
+                (gammaSewnCriticalAdjacentPrime_lower z.2)
+                (gammaSewnCriticalAdjacentPrime_upper z.2) i *
+              gammaSewnCriticalAdjacentPrime_PluckerCoordinateMean z i *
+                (1 - gammaSewnCriticalAdjacentPrime_PluckerCoordinateMean z i)) := by
+  rw [gammaSewnCriticalPhysicalPluckerNuclearTraceMass_eq_tsum_spectralTrace]
+  apply tsum_congr
+  intro z
+  rw [gammaSewnCriticalPhysicalPlucker_localTrace_eq_bernoulliTrace]
+
 /-- Ordinary Fredholm determinant in the reflected negative-zero convention. -/
 def gammaSewnCriticalPhysicalPluckerOrdinaryStableEntireDet (u : ℂ) : ℂ :=
   Complex.exp (u * gammaSewnCriticalPhysicalPluckerSourceTrace) *
@@ -169,6 +354,16 @@ theorem gammaSewnCriticalPhysicalPluckerOrdinaryStableEntireDet_deriv_zero :
   rw [deriv_mul hexp.differentiableAt hstable.differentiableAt,
     hexp.deriv, hstable.deriv]
   simp [gammaSewnCriticalPhysicalPluckerStableEntireDet2_zero_value]
+
+/-- The repaired determinant's first Xi identity is exactly one explicit source-mass identity. -/
+theorem gammaSewnCriticalPhysicalPluckerOrdinary_firstJet_eq_theta_iff :
+    deriv gammaSewnCriticalPhysicalPluckerOrdinaryStableEntireDet 0 =
+        ((thetaCuspNormalizedEvenMoment 1 / 2 : ℝ) : ℂ) ↔
+      gammaSewnCriticalPhysicalPluckerNuclearTraceMass =
+        thetaCuspNormalizedEvenMoment 1 / 2 := by
+  rw [gammaSewnCriticalPhysicalPluckerOrdinaryStableEntireDet_deriv_zero,
+    gammaSewnCriticalPhysicalPluckerSourceTrace_eq_nuclearTraceMass]
+  exact Complex.ofReal_inj
 
 /-- Trace of a finite physical coordinate compression. -/
 def gammaSewnCriticalPhysicalPluckerFiniteTrace

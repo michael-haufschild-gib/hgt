@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.WallBoundaryTransportCancellation
 import GaloisForLFunctions.RHTower.WallTailIntegrationByParts
+import GaloisForLFunctions.RHTower.WallEvenAmplitudeBounds
 import GaloisForLFunctions.RHTower.SuzukiWallTailAmplitude
 import GaloisForLFunctions.HTGeometry.FrequencyLineSplit
 import GaloisForLFunctions.RHTower.StripPropagatorRayMass
@@ -172,10 +173,51 @@ def secondBoundary (T : X →L[ℂ] X) (g : ℝ → X) (m σ x : ℝ) : X :=
   ∫ L in Icc m (m + 1), Complex.exp (-(Complex.I) * (L : ℂ) * (x : ℂ)) •
     (invFamilyProduct (wallGeneratorShift T σ L) (wallGeneratorD1 X σ) x (g L))
 
-/-- **The propagated second boundary term is square integrable on the terminal ray.**  It carries
-one power of the resolvent derivative, hence one power of `(1+x)^{-1}`, whose square has finite ray
-mass — no Laplace representation and no oscillation are needed for this term, and the bound does not
-grow with the threshold. -/
+/-- **The second boundary term decays like `(1+|x|)^{-1}`.**  It carries one power of the resolvent
+derivative and nothing else — no Laplace representation and no oscillation are needed, and the bound
+does not grow with the frequency. -/
+theorem norm_secondBoundary_le {σ m μ₀ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) (hμ : 0 < μ₀)
+    {g : ℝ → X} (hg : IntegrableOn g (Icc m (m + 1))) {x : ℝ} (hx1 : 1 ≤ |x|)
+    (hfloor : ∀ L ∈ Icc m (m + 1), μ₀ ≤ wallFloor T σ x + L) :
+    ‖secondBoundary T g m σ x‖
+      ≤ (((μ₀⁻¹) ^ 3 * (3 + Real.pi)) * ∫ L in Icc m (m + 1), ‖g L‖)
+        * (1 + |x|) ^ (-(1 : ℝ)) := by
+  set c : ℝ := (μ₀⁻¹) ^ 3 * (3 + Real.pi) with hc
+  set N : ℝ := ∫ L in Icc m (m + 1), ‖g L‖ with hN
+  have hpt : ∀ L ∈ Icc m (m + 1),
+      ‖Complex.exp (-(Complex.I) * (L : ℂ) * (x : ℂ)) •
+        (invFamilyProduct (wallGeneratorShift T σ L) (wallGeneratorD1 X σ) x (g L))‖
+        ≤ (c * (1 + |x|)⁻¹) * ‖g L‖ := by
+    intro L hL
+    rw [norm_smul, norm_expPhase, one_mul]
+    refine le_trans (ContinuousLinearMap.le_opNorm _ _) ?_
+    refine mul_le_mul_of_nonneg_right ?_ (norm_nonneg _)
+    exact norm_invFamilyProduct_wallGeneratorShift_le' hσ0 hσ1 hμ hx1 (hfloor L hL)
+  have hint : IntegrableOn (fun L => (c * (1 + |x|)⁻¹) * ‖g L‖) (Icc m (m + 1)) :=
+    hg.norm.const_mul _
+  have hle := MeasureTheory.norm_integral_le_of_norm_le hint
+    (by filter_upwards [ae_restrict_mem measurableSet_Icc] with L hL using hpt L hL)
+  have hconst : (∫ L in Icc m (m + 1), (c * (1 + |x|)⁻¹) * ‖g L‖) = (c * (1 + |x|)⁻¹) * N := by
+    rw [hN, integral_const_mul]
+  rw [hconst] at hle
+  have hbound : ‖secondBoundary T g m σ x‖ ≤ (c * (1 + |x|)⁻¹) * N := by
+    rw [secondBoundary]
+    exact hle
+  have hrw : (1 + |x|) ^ (-(1 : ℝ)) = (1 + |x|)⁻¹ := Real.rpow_neg_one _
+  rw [hrw]
+  calc ‖secondBoundary T g m σ x‖ ≤ (c * (1 + |x|)⁻¹) * N := hbound
+    _ = c * N * (1 + |x|)⁻¹ := by ring
+
+/-- The tail factor of a quadratically decaying profile is at most one past radius one. -/
+theorem ofReal_powerTail_one_le {Y : ℝ} (hY : 1 ≤ Y) :
+    ENNReal.ofReal (Y ^ (1 - 2 * (1 : ℝ)) / (2 * (1 : ℝ) - 1)) ≤ 1 := by
+  have hval : Y ^ (1 - 2 * (1 : ℝ)) / (2 * (1 : ℝ) - 1) = Y ^ (-(1 : ℝ)) := by norm_num
+  rw [hval]
+  refine (ENNReal.ofReal_le_one).mpr ?_
+  rw [Real.rpow_neg_one]
+  exact inv_le_one_of_one_le₀ hY
+
+/-- **The propagated second boundary term is square integrable on the terminal ray.** -/
 theorem lintegral_sq_secondBoundary_le {σ m μ₀ Y : ℝ}
     (hσ0 : 0 < σ) (hσ1 : σ < 1) (hμ : 0 < μ₀) (hY : 1 ≤ Y)
     {g : ℝ → X} (hg : IntegrableOn g (Icc m (m + 1)))
@@ -183,58 +225,22 @@ theorem lintegral_sq_secondBoundary_le {σ m μ₀ Y : ℝ}
     (∫⁻ x in Ioi Y, ‖secondBoundary T g m σ x‖ₑ ^ 2)
       ≤ ENNReal.ofReal
           ((((μ₀⁻¹) ^ 3 * (3 + Real.pi)) * ∫ L in Icc m (m + 1), ‖g L‖) ^ 2) := by
-  set c : ℝ := (μ₀⁻¹) ^ 3 * (3 + Real.pi) with hc
-  have hcnn : 0 ≤ c := by
-    have : (0 : ℝ) < Real.pi := Real.pi_pos
-    rw [hc]
-    positivity
-  set N : ℝ := ∫ L in Icc m (m + 1), ‖g L‖ with hN
-  have hNnn : 0 ≤ N := by
-    rw [hN]
-    exact integral_nonneg fun L => norm_nonneg _
   have hY0 : (0 : ℝ) < Y := lt_of_lt_of_le zero_lt_one hY
-  have hbase := lintegral_sq_ray_powerTail_le (f := secondBoundary T g m σ) (C := c * N)
-    (p := 1) (Y := Y) (by norm_num) hY0 ?_
-  · refine hbase.trans ?_
-    have htail : ENNReal.ofReal (Y ^ (1 - 2 * (1 : ℝ)) / (2 * (1 : ℝ) - 1)) ≤ 1 := by
-      have hval : Y ^ (1 - 2 * (1 : ℝ)) / (2 * (1 : ℝ) - 1) = Y ^ (-(1 : ℝ)) := by
-        norm_num
-      rw [hval]
-      refine (ENNReal.ofReal_le_one).mpr ?_
-      rw [Real.rpow_neg_one]
-      exact inv_le_one_of_one_le₀ hY
-    calc ENNReal.ofReal ((c * N) ^ 2)
-          * ENNReal.ofReal (Y ^ (1 - 2 * (1 : ℝ)) / (2 * (1 : ℝ) - 1))
-        ≤ ENNReal.ofReal ((c * N) ^ 2) * 1 := mul_le_mul' le_rfl htail
-      _ = ENNReal.ofReal ((c * N) ^ 2) := mul_one _
-  · intro x hx
+  refine (lintegral_sq_ray_powerTail_le (f := secondBoundary T g m σ)
+    (C := ((μ₀⁻¹) ^ 3 * (3 + Real.pi)) * ∫ L in Icc m (m + 1), ‖g L‖) (p := 1) (Y := Y)
+    (by norm_num) hY0 (fun x hx => ?_)).trans ?_
+  · refine norm_secondBoundary_le hσ0 hσ1 hμ hg ?_ (hfloor x hx)
     have hx1 : (1 : ℝ) ≤ x := le_trans hY (le_of_lt hx)
-    have hx0 : (0 : ℝ) < x := lt_of_lt_of_le zero_lt_one hx1
-    have habs : |x| = x := abs_of_pos hx0
-    have hpt : ∀ L ∈ Icc m (m + 1),
-        ‖Complex.exp (-(Complex.I) * (L : ℂ) * (x : ℂ)) •
-          (invFamilyProduct (wallGeneratorShift T σ L) (wallGeneratorD1 X σ) x (g L))‖
-          ≤ (c * (1 + x)⁻¹) * ‖g L‖ := by
-      intro L hL
-      rw [norm_smul, norm_expPhase, one_mul]
-      refine le_trans (ContinuousLinearMap.le_opNorm _ _) ?_
-      refine mul_le_mul_of_nonneg_right ?_ (norm_nonneg _)
-      exact norm_invFamilyProduct_wallGeneratorShift_le hσ0 hσ1 hμ hx1 (hfloor x hx L hL)
-    have hint : IntegrableOn (fun L => (c * (1 + x)⁻¹) * ‖g L‖) (Icc m (m + 1)) :=
-      hg.norm.const_mul _
-    have hle := MeasureTheory.norm_integral_le_of_norm_le hint
-      (by filter_upwards [ae_restrict_mem measurableSet_Icc] with L hL using hpt L hL)
-    have hconst : (∫ L in Icc m (m + 1), (c * (1 + x)⁻¹) * ‖g L‖) = (c * (1 + x)⁻¹) * N := by
-      rw [hN, integral_const_mul]
-    have hbound : ‖secondBoundary T g m σ x‖ ≤ (c * (1 + x)⁻¹) * N := by
-      rw [secondBoundary]
-      rw [hconst] at hle
-      exact hle
-    have hrw : (1 + |x|) ^ (-(1 : ℝ)) = (1 + x)⁻¹ := by
-      rw [habs, Real.rpow_neg_one]
-    rw [hrw]
-    calc ‖secondBoundary T g m σ x‖ ≤ (c * (1 + x)⁻¹) * N := hbound
-      _ = c * N * (1 + x)⁻¹ := by ring
+    rw [abs_of_pos (lt_of_lt_of_le zero_lt_one hx1)]
+    exact hx1
+  · calc ENNReal.ofReal
+          ((((μ₀⁻¹) ^ 3 * (3 + Real.pi)) * ∫ L in Icc m (m + 1), ‖g L‖) ^ 2)
+          * ENNReal.ofReal (Y ^ (1 - 2 * (1 : ℝ)) / (2 * (1 : ℝ) - 1))
+        ≤ ENNReal.ofReal
+            ((((μ₀⁻¹) ^ 3 * (3 + Real.pi)) * ∫ L in Icc m (m + 1), ‖g L‖) ^ 2) * 1 :=
+          mul_le_mul' le_rfl (ofReal_powerTail_one_le hY)
+      _ = ENNReal.ofReal
+            ((((μ₀⁻¹) ^ 3 * (3 + Real.pi)) * ∫ L in Icc m (m + 1), ‖g L‖) ^ 2) := mul_one _
 
 /-- **The propagated datum is square integrable on any ray**, being so on the whole line. -/
 theorem lintegral_sq_ray_stripPropagator_apply_ne_top [Nontrivial X] {E : ℂ → ℂ}
@@ -273,6 +279,44 @@ theorem powerRatio_le_hardyDensity {p t : ℝ} (ht : 1 < t) :
       = t ^ (p - 1) * (t ^ (1 - p) * ((1 + t)⁻¹) ^ 2 * (1 + t) ^ p) := hpow.symm
     _ ≤ t ^ (p - 1) * wallTailDensity p t :=
         mul_le_mul_of_nonneg_left h (Real.rpow_nonneg ht0.le _)
+
+omit [Nontrivial X] in
+/-- **The surviving amplitude of the tail, in the modulus of the frequency.**  One power of the
+inverse propagator's growth against two powers of the resolvent's decay, rescaled to the Hardy
+normalization. -/
+theorem norm_wallPhaseAmplitude_le {σ μ₀ K₂ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1) (hμ : 0 < μ₀)
+    (hb₂ : ∀ y : ℝ, ‖stripPropagatorInv E T ((y : ℂ) + (σ : ℂ) * Complex.I)‖
+      ≤ K₂ * (1 + |y|) ^ (1 / 2 + σ)) (hK₂ : 0 < K₂)
+    {t L : ℝ} (ht1 : 1 < |t|) (hfloor : μ₀ ≤ wallFloor T σ t + L) :
+    ‖wallPhaseMap E T σ L t
+      * invFamilyProductDeriv (wallGeneratorShift T σ L) (wallGeneratorD1 X σ)
+          (wallGeneratorD2 X σ) t‖
+      ≤ |t| ^ (1 / 2 + σ - 1)
+        * (K₂ * wallAmplitudeConst μ₀ * wallTailDensity (1 / 2 + σ) |t|) := by
+  set p : ℝ := 1 / 2 + σ with hpdef
+  set Camp : ℝ := wallAmplitudeConst μ₀ with hCampdef
+  have hCampnn : 0 ≤ Camp := by
+    have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
+    rw [hCampdef, wallAmplitudeConst]
+    positivity
+  have hW : ‖wallPhaseMap E T σ L t‖ ≤ K₂ * (1 + |t|) ^ p := by
+    rw [wallPhaseMap, norm_smul, norm_expPhase, one_mul]
+    exact hb₂ t
+  have hA : ‖invFamilyProductDeriv (wallGeneratorShift T σ L) (wallGeneratorD1 X σ)
+      (wallGeneratorD2 X σ) t‖ ≤ Camp * ((1 + |t|)⁻¹) ^ 2 :=
+    norm_invFamilyProductDeriv_wallGeneratorShift_le' hσ0 hσ1 hμ ht1.le hfloor
+  calc ‖wallPhaseMap E T σ L t
+        * invFamilyProductDeriv (wallGeneratorShift T σ L) (wallGeneratorD1 X σ)
+            (wallGeneratorD2 X σ) t‖
+      ≤ ‖wallPhaseMap E T σ L t‖
+        * ‖invFamilyProductDeriv (wallGeneratorShift T σ L) (wallGeneratorD1 X σ)
+            (wallGeneratorD2 X σ) t‖ := norm_mul_le _ _
+    _ ≤ (K₂ * (1 + |t|) ^ p) * (Camp * ((1 + |t|)⁻¹) ^ 2) :=
+        mul_le_mul hW hA (norm_nonneg _) (by positivity)
+    _ = (K₂ * Camp) * ((1 + |t|) ^ p * ((1 + |t|)⁻¹) ^ 2) := by ring
+    _ ≤ (K₂ * Camp) * (|t| ^ (p - 1) * wallTailDensity p |t|) :=
+        mul_le_mul_of_nonneg_left (powerRatio_le_hardyDensity ht1) (by positivity)
+    _ = |t| ^ (p - 1) * (K₂ * Camp * wallTailDensity p |t|) := by ring
 
 /-- **The propagated remainder is square integrable on the terminal ray.**  Its amplitude decays
 quadratically, so after transport it is a Hardy average whose density is `wallTailDensity`; the block
@@ -322,25 +366,9 @@ theorem exists_bound_lintegral_sq_tailRemainder {σ μ₀ : ℝ}
     have ht1 : (1 : ℝ) < t := lt_of_le_of_lt hY ht
     have ht0 : (0 : ℝ) < t := lt_trans zero_lt_one ht1
     have habs : |t| = t := abs_of_pos ht0
-    have hW : ‖wallPhaseMap E T σ L t‖ ≤ K₂ * (1 + t) ^ p := by
-      rw [wallPhaseMap, norm_smul, norm_expPhase, one_mul]
-      have hb := hb₂ t
-      rwa [habs] at hb
-    have hA : ‖invFamilyProductDeriv (wallGeneratorShift T σ L) (wallGeneratorD1 X σ)
-        (wallGeneratorD2 X σ) t‖ ≤ Camp * ((1 + t)⁻¹) ^ 2 :=
-      norm_invFamilyProductDeriv_wallGeneratorShift_le hσ0 hσ1 hμ ht1.le (hfloor t ht L hL)
-    calc ‖wallPhaseMap E T σ L t
-          * invFamilyProductDeriv (wallGeneratorShift T σ L) (wallGeneratorD1 X σ)
-              (wallGeneratorD2 X σ) t‖
-        ≤ ‖wallPhaseMap E T σ L t‖
-          * ‖invFamilyProductDeriv (wallGeneratorShift T σ L) (wallGeneratorD1 X σ)
-              (wallGeneratorD2 X σ) t‖ := norm_mul_le _ _
-      _ ≤ (K₂ * (1 + t) ^ p) * (Camp * ((1 + t)⁻¹) ^ 2) :=
-          mul_le_mul hW hA (norm_nonneg _) (by positivity)
-      _ = (K₂ * Camp) * ((1 + t) ^ p * ((1 + t)⁻¹) ^ 2) := by ring
-      _ ≤ (K₂ * Camp) * (t ^ (p - 1) * wallTailDensity p t) :=
-          mul_le_mul_of_nonneg_left (powerRatio_le_hardyDensity ht1) (by positivity)
-      _ = t ^ (p - 1) * (K₂ * Camp * wallTailDensity p t) := by ring
+    have h := norm_wallPhaseAmplitude_le (E := E) hσ0 hσ1 hμ hb₂ hK₂ (by rw [habs]; exact ht1)
+      (hfloor t ht L hL)
+    rwa [habs, ← hpdef, ← hCampdef] at h
   -- the pointwise Hardy bound
   have hpt : ∀ x ∈ Ioi Y, ‖tailRemainder E T g m σ Y x‖ₑ
       ≤ ENNReal.ofReal (K₁ * x ^ (-p))

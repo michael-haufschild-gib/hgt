@@ -1,9 +1,12 @@
-# Hedenmalm theta Route P: physical Pluecker spectral operator (P-G91--P-G98)
+# Hedenmalm theta Route P: physical Pluecker spectral operator (P-G91--P-G104)
 
 Status: local pole movement, cofinal trace-class assembly, physical overlap sewing, global
-faithfulness, actual-Xi Hilbert admission, and source-native stable entire determinant fully proved
-in Lean; source annihilation and determinant/transfer completed-moment identification are open;
-zero boundary spectrum is classified
+faithfulness, actual-Xi Hilbert admission, source-native stable entire determinant, fixed-node
+first-trace no-go, boundary-capacity law, and complete canonical-resolvent amplification no-go
+fully proved in Lean; direct physical determinant identification and scalar positive boundary
+resolvent repair are retired; unique one-negative-index shorting target and its canonical Julia
+defect coefficient are classified; oriented Gamma/polar realization and source annihilation are
+open; zero boundary spectrum is classified
 
 ## Conjecture P-G91
 
@@ -161,6 +164,27 @@ put a nonzero physical vector in global kernel. Lean proves:
 This is source-faithful SP-E limit missing from artificial depth-square construction. It closes
 stability and cofinal determinant assembly, not arithmetic identification with Xi.
 
+P-G99 closes direct arithmetic identification negatively and extracts its strongest survivor.
+Regularized `det2` has zero first derivative, so its direct Xi identification is impossible.
+Multiplying by the canonical trace exponential restores the ordinary Fredholm determinant and
+makes its first derivative the literal nuclear source mass.  Lean then identifies every covariance
+diagonal as Bernoulli variance and proves
+
+```text
+sourceTrace
+  = sum_z blockWeight_z
+      sum_i node_z,i * m_z,i * (1-m_z,i).
+```
+
+Critical Stokes bounds give every packet node sum `<2/25`; the global real inequality
+`m(1-m)<=1/4` makes every local trace `<1/50`, even for arbitrary real coordinate means.  Since
+block weights are positive and sum to one, `sourceTrace<=1/50`.  Independent completed-source
+arithmetic gives `thetaCuspNormalizedEvenMoment 1 / 2>1/50`.  Hence canonical ordinary determinant
+also has wrong first jet.  Reweighting six-minor probabilities cannot repair it.  Physical
+operator survives as stable reference geometry; final arithmetic carrier must leave fixed-positive-
+node Bernoulli class through source-derived node change/amplification, signed/indefinite channel, or
+non-Bernoulli singular boundary transfer compatible with P-G97.
+
 Formal file:
 
 - `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalPluckerCovariance.lean`
@@ -169,6 +193,13 @@ Formal file:
 - `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalOverlapPluckerSpectralOperator.lean`
 - `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalOverlapPluckerFaithfulness.lean`
 - `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalPluckerEntireDeterminant.lean`
+- `formal/GaloisForLFunctions/RHTower/NuclearRankOneTrace.lean`
+- `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalPluckerOrdinaryDeterminant.lean`
+- `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalPluckerFirstTraceNoGo.lean`
+- `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalPluckerBoundaryTraceCapacity.lean`
+- `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalPluckerBoundaryAmplificationNoGo.lean`
+- `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalPluckerBoundarySpectralShellNoGo.lean`
+- `formal/GaloisForLFunctions/RHTower/RouteEPCubicSourceNormalizationKreinShorting.lean`
 - `formal/GaloisForLFunctions/RHTower/FrankensteinPluckerXiHilbertAdmission.lean`
 - `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesPhysicalOverlapPluckerBoundarySpectrum.lean`
 
@@ -212,6 +243,20 @@ Headline declarations:
 - `gammaSewnCriticalPhysicalPluckerStableFiniteDet2_zero_re_im`;
 - `gammaSewnCriticalPhysicalPluckerStableEntireDet2_zero_re_im`;
 - `tendstoUniformlyOn_gammaSewnCriticalPhysicalPluckerStableFiniteDet2`.
+- `fourRatePluckerCovariance_coordinateDelta_self_eq_bernoulliVariance`;
+- `gammaSewnCriticalPhysicalPluckerNuclearTraceMass_eq_tsum_bernoulliTrace`;
+- `gammaSewnCriticalPhysicalPlucker_arbitraryBernoulliTrace_lt_one_div_fifty`;
+- `gammaSewnCriticalPhysicalPluckerNuclearTraceMass_le_one_div_fifty`;
+- `gammaSewnCriticalPhysicalPluckerOrdinary_firstJet_ne_theta`.
+- `tendsto_gammaSewnCriticalPhysicalPluckerWeightedBoundaryPacketTrace`;
+- `gammaSewnCriticalPhysicalPluckerWeightedBoundaryPacketTrace_add_smul_inverse_eq_four`;
+- `gammaSewnCriticalPhysicalPlucker_canonicalBoundarySplit_cannot_rebalance_fourthDepth`;
+- `positiveBoundaryInverse_eq_real_smul_imp_operator_eq_smul`;
+- `norm_gammaSewnCriticalPhysicalPluckerSpectralOperator_le_one_div_fifty`;
+- `gammaSewnCriticalPhysicalPlucker_canonicalBoundaryResolvent_cannot_rebalance_near_zero`.
+- `routeEPCubicPolarPivotShortedFourthDepthEnergy_eq_parent_iff`;
+- `routePPrimitiveFourthDepth_sourceFaithful_pairTrace_eq_fullPolarShort`;
+- `routePPrimitiveFourthDepth_sourceNormalizationKreinShorting_classification`.
 
 ## P-G93 higher principle
 
@@ -270,6 +315,87 @@ operator fact into finite and cofinal strict real-rootedness. Remaining wall is 
 completed Xi content of an already-stable source determinant or its P-G97-compatible boundary
 transfer.
 
+## P-G99 higher principle
+
+Stable incidence descent and completed arithmetic charge are distinct layers.  P-G94--P-G98 fix
+overlap, gauge sewing, positivity, faithfulness, and zero geometry, but their fixed reciprocal-gap
+nodes impose a universal first-trace capacity.  Bernoulli coordinate reweighting cannot create the
+missing archimedean charge because its curvature has global apex `1/4`.  The recurring uniform-
+metric gap, fourth-depth `1/64` debt, zero `det2` jet, and deficient ordinary trace are shadows of
+one principle: **completion charge must enter before or at singular boundary transfer, not by
+reweighting a positive incidence covariance after spectralization**.
+
+## P-G100--P-G102 boundary classification
+
+P-G100 proves canonical zero-boundary transfer changes global capacity: every fixed physical
+coordinate tends to one, source-weighted packet trace tends to four, and its exact polar
+countercurrent tends to `-4`.  The identity
+
+```text
+W(eps) + eps R(eps) = 4
+```
+
+shows missing capacity is a literal inverse-density trace.  But P-G101 separates cofinal rank
+recovery from local source amplification.  Both bounded halves of resolvent partition are
+contractions and cannot realize SP-E's unique nonnegative amplitude eight.
+
+P-G102 closes apparent unnormalized-inverse survivor for existing positive physical operator.
+Resolvent gain `c` forces original spectral shell `1/c-eps`.  At `c=8`, shell is
+`1/8-eps`.  Positivity and literal nuclear expansion give
+
+```text
+||T|| <= nuclearTraceMass <= 1/50.
+```
+
+Therefore amplitude eight is impossible on every nonzero vector whenever
+`0<eps<21/200 = 1/8-1/50`.  In particular it cannot persist toward continuous zero boundary.
+Canonical positive scalar resolvent is fully retired as source-normalization repair.  Positive
+survivor is sharper: any successful correction must change operator before inversion or create an
+oriented off-diagonal source/co-source shorting; it cannot be a scalar function of current `T`.
+
+## P-G102 higher principle
+
+Trace shortage, zero-boundary rank escape, and amplitude debt are three inequivalent spectral
+notions.  Boundary transfer repairs rank capacity, but exact Radon--Nikodym gain selects a positive
+spectral shell.  Because source trace already bounds entire positive spectrum, a missing
+coefficient cannot be created by scalar functional calculus after positive spectralization.
+Recurring failure is shadow of one ordering law: **completion must alter oriented incidence before
+forming positive operator; post-spectral scalar resolvents preserve spectral budget and cannot
+manufacture source normalization**.
+
+## P-G103 Krein shorting classification
+
+Positive Schur complements cannot solve additive normalization debt: shorting through positive
+parent pivot `w` changes depleted leg to `w/64-r^2/w<=w/64`. Oriented polar pivot `-w` changes sign
+and restores parent exactly iff
+
+```text
+r^2 = (63/64)w^2.
+```
+
+Unique nonnegative cross is `(sqrt 63 / 8)w`; determinant of exact two-channel block is `-w^2`.
+Full cross `r=w` gives `65w/64`, exactly source-faithful pair trace. This `65/64` duality shows
+equal source/polar residues do not create correction; they reproduce original debt. Missing object
+is now coefficient-rigid: literal Gamma/co-Poisson/Stokes cross pairing at attenuated value, with
+one negative pivot, before positive compression.
+
+## P-G104 fourth-depth Julia defect
+
+P-G103's coefficient is not an independent overlap parameter. Two coefficient-faithful Route-P
+depth-square steps have exact squared-energy factor `1/64`, hence normalized Hilbert amplitude
+`c=1/8`. Canonical positive Julia completion has defect
+
+```text
+d = sqrt(1-c^2) = sqrt(63)/8.
+```
+
+For parent amplitude `a=sqrt w`, source-axis transport is `(a,0)->(ca,da)`. Literal child energy
+`(ca)^2=w/64` and defect energy `(da)^2=63w/64` sum to `w`; parent--defect pairing is
+`a(da)=dw`, exactly unique P-G103 polar cross. P-G179's physical half-dyadic dilation gives same
+law after two iterations. The coefficient problem is closed. Remaining problem is orientation and
+provenance: identify this canonical defect coordinate with actual Gamma/co-Poisson/Stokes co-source
+and actual polar pivot before compression.
+
 ## Numerical pre-certification of next operator
 
 For the literal prime `2/3`, depth `0/1` hostile packet, external high-precision evaluation gives
@@ -309,11 +435,15 @@ by fitting: it is forced by cardinality-two Pluecker incidence law.
 
 ## Completion gate
 
-First audit direct arithmetic content of P-G98 determinant: compute its first source trace and
-regularized logarithmic coefficients and compare them with `normalizedPrimeArchMoment`. If direct
-determinant identity fails, construct a source-selected renormalized boundary transfer compatible
-with P-G97's continuous zero spectrum and P-G96's admitted Xi carrier. Prove completed Gamma/polar
-source geometry annihilates its faithful detector energy, equivalently identify transfer and every
-moment with `normalizedPrimeArchMoment`; then invoke Julia saturation. Zero may occur only as a
-non-normalizable gauge boundary mode or literal zero Xi carrier, not as an added Hilbert-space
-kernel vector. No additional inter-block coefficient is permitted: physical overlap is sewing.
+Direct P-G98 determinant identity is retired at first trace by P-G99; scalar functional calculus
+of current positive operator is retired as normalization repair by P-G101--P-G102.  Do not compare
+more direct Fredholm coefficients, tune six-minor probabilities, or reuse transfer/inverse as a
+scalar channel. P-G104 already derives required cross magnitude from canonical fourth-depth Julia
+defect. Identify that defect coordinate with literal oriented Gamma/co-Poisson/Stokes co-source and
+short it against actual polar pivot `-w`, before inversion. It must be
+compatible with P-G97 continuous zero spectrum and P-G96 admitted Xi carrier, and its first
+coefficient must derive missing completed charge before all higher moments/divisor are identified
+with `normalizedPrimeArchMoment`.  Then prove completed Gamma/polar source geometry annihilates
+faithful detector energy and invoke Julia saturation. Zero may occur only as non-normalizable gauge
+boundary mode or literal zero Xi carrier, not as added Hilbert-space kernel vector. No fitted
+inter-block coefficient is permitted: physical overlap already supplies sewing.
