@@ -905,3 +905,32 @@ a unit and so does not affect vanishing; `Fin.succAbove_zero` matches `Fin.succ`
 That closes bridge item 2 on the `U` side.  What remains of the bridge is item 2's `V` side (the
 degree-zero part of (6)) and item 3 (`IsCoprime U V` from corank one), plus the identification of
 the kernel vector with the coefficient vector of `U`.
+
+## Bridge item 3 is now a theorem: coprimality follows from generic corank one
+
+`HTGeometry/PolynomialPairCoprimality.lean` (wired, axiom-clean).
+
+```
+isUnit_of_dvd_pair_of_finrank_one
+    S a K-subspace of K[X] x K[X] with finrank K S = 1,
+    (U,W) in S,  (U',W') in S,  U = g U',  U != 0     =>   IsUnit g
+
+isCoprime_of_finrank_one
+    the same S,  (U,W) in S,  U != 0,
+    and: dividing both entries by any common factor stays in S
+                                                      =>   IsCoprime U W
+```
+
+This is exactly the card's argument, stripped of everything particular to the Schur fold.  A line
+has no room for two independent points, so the quotient pair `(U/g, W/g)` — which the hypothesis
+puts back into the solution space — must be a scalar multiple `c` of `(U, W)`.  Comparing first
+components gives `U = g · C c · U`, and `K[X]` is a domain with `U != 0`, so `g · C c = 1`.  Note
+that only the *first* component is used: the second divisibility is not needed for the unit
+conclusion, so the statement is recorded in that stronger form.
+
+The passage from "every common divisor is a unit" to `IsCoprime` is `EuclideanDomain.gcd_isUnit_iff`
+applied to `gcd U W`, whose two divisibilities feed the hypothesis directly.
+
+With bridge item 2's `U` side (`CriticalSchurKernelLeadingCoefficient`) and item 3 now formal, what
+remains of the bridge is item 2's `V` side — the degree-zero part of `(6)` — and the identification
+of the corank-one kernel vector with the coefficient vector of `U`.

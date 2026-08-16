@@ -1859,3 +1859,69 @@ case `alpha = 0` is the earlier `tendsto_dirichlet_partialSum_of_bounded`.
 
 The first lemma generalises the unit-difference bound from exponent `s+1` to any exponent with
 positive real part, which is what the boundary-term analysis needs.
+
+## Lean progress — the Riesz-mean method: kernel size, Mellin pair, and the discrete average
+
+Three modules, all wired into `GaloisForLFunctions.RHTower` and axiom-clean
+(`[propext, Classical.choice, Quot.sound]`).
+
+```
+RHTower/RieszMeanKernelBound.lean
+  rieszKernel lam c t          e^{lam w} / w^2  at  w = c + i t
+  norm_rieszKernel             ‖e^{lam w}/w^2‖ = e^{lam c} / (c^2 + t^2)
+  integrable_norm_rieszKernel
+  integral_norm_rieszKernel    (2 pi)^{-1} ∫ ‖...‖ dt = e^{lam c} / (2 c)
+  rieszKernel_bound_at_optimum at c = 1/lam the value is  e lam / 2
+  rieszKernel_bound_min        e lam / 2 <= e^{lam c}/(2c)  for every c > 0
+  integral_norm_rieszKernel_optimum
+
+RHTower/RieszMellinPair.lean
+  log_le_rpow_div              log x <= (2/a) x^{a/2}      (x >= 1, a > 0)
+  tendsto_log_mul_rpow_neg     log x . x^{-a} -> 0
+  rieszMellinAntideriv         -(log y) y^{-w}/w - y^{-w}/w^2
+  hasDerivAt_rieszMellinAntideriv
+  tendsto_rieszMellinAntideriv
+  integrableOn_log_cpow_neg_succ
+  integral_Ioi_log_cpow_neg_succ    ∫_1^∞ (log x) x^{-w-1} dx = 1/w^2   (Re w > 0)
+
+RHTower/RieszLogPartialSum.lean
+  sum_log_increment            ∑_{m<N} (log(m+1) - log m) = log N
+  log_increment_nonneg
+  rieszLogSum_eq_sum_partialSum
+        ∑_{n<N} a_n (log N - log(n+1)) = ∑_{m<N} (log(m+1) - log m) . ∑_{n<m} a_n
+  norm_rieszLogSum_le          partial sums bounded by B  =>  Riesz mean bounded by B log N
+```
+
+### Why these three
+
+The Riesz-mean method replaces the truncated Perron kernel `x^w/w` — whose vertical-line integral
+diverges, forcing a truncation and an error analysis — by `x^w/w^2`, which is absolutely integrable
+on every vertical line in the right half-plane.  `integral_norm_rieszKernel` computes that integral
+*exactly*, as a Poisson normalisation, and `rieszKernel_bound_min` shows the optimal abscissa is
+`c = 1/lam`, where the bound is `e lam / 2` — linear in `lam`, which is the source of the
+logarithmic bound on partial sums.  A corpus search supplied `HTGeometry.integral_inv_sq_add_sq`,
+so the Poisson normalisation itself was not rebuilt.
+
+`integral_Ioi_log_cpow_neg_succ` is the transform identity that makes `1/w^2` the right kernel: it
+is the Mellin transform of the truncated logarithm, so the vertical-line representation of a Riesz
+mean is a Dirichlet series with the weights `log(N/n)`.  Nothing of this exists in mathlib; the
+antiderivative, its vanishing at infinity, and the domination `log x <= (2/a) x^{a/2}` are all built
+here.
+
+`rieszLogSum_eq_sum_partialSum` is the discrete half, and needs no analysis at all: telescoping the
+weight `log N - log n` and exchanging two finite sums expresses the Riesz mean as a *nonnegatively*
+weighted average of the partial sums, with total weight `log N`.
+
+### What remains on the Bohr route
+
+The direction still missing is the Tauberian one: from a bound on the Riesz means recover a bound on
+the partial sums.  The classical step compares `R` at `lam` and at `lam + h`,
+
+```
+R_{lam+h} - R_lam = h . A(N) + (tail over N < n <= N e^h) ,
+```
+
+and the tail is controlled by the coefficient bound `norm_coeff_le`, which is already formal in this
+tree.  After that, `tendsto_dirichlet_partialSum_of_poly_bounded` converts the resulting
+`O(log N)` partial-sum bound into convergence, and the uniformity in `s` is what upgrades
+`sigma_c <= sigma_b` to `sigma_u <= sigma_b`.

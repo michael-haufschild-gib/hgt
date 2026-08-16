@@ -5,7 +5,7 @@
 - **Date:** 2026-06-19
 - **Reason:** `archimedean-prime-cross-term.md` moved `0-backlog → 2-fully-proven` (grade BRIDGE,
   FOUNDATIONAL). The FE-conspiracy cocycle — the candidate archimedean×prime C5 carrier — is computed and
-  graded. Card: `docs/drafts/pipeline/2-fully-proven/archimedean-prime-cross-term.md`.
+  graded. Card: `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/archimedean-prime-cross-term.md`.
   Numerics: `computations/2026-06-19-fe-conspiracy-cocycle.py(.out)` (4 claims, ≥30 digits).
 
 ## Update needed

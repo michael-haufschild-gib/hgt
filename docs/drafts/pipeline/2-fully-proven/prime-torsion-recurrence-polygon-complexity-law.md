@@ -545,3 +545,42 @@ Three unconditional modules now certify the new combinatorial and finite-Fourier
 This is stronger structurally than tying grid modulus to `2n+1`: replica order controls the cap
 estimate while prime order independently controls polygon length.  It is still a discrete phase
 dictionary theorem; no claim about first physical occurrence time follows.
+
+## Lean progress -- Lemma A, the coordinate split of `(10)`
+
+`formal/GaloisForLFunctions/HTGeometry/ComplexCoordinateSplit.lean` (new, umbrella-wired,
+axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| **`(10)`**: a modulus at least `c` forces a coordinate at least `c/√2` | `abs_re_or_abs_im_ge` |
+| the union bound over the two coordinates | `measure_modulus_le_add` |
+
+Together these are the reduction of `(9)` to two real-coordinate deviation events: if
+`\|D⁻¹Σ X_a\| ≥ c_δ` then one of the two coordinate averages exceeds `c_δ/√2`, and the modulus event
+has measure at most the sum of the two coordinate events.
+
+### `(11)`, Hoeffding's inequality
+
+`formal/GaloisForLFunctions/HTGeometry/BoundedSumConcentration.lean` (new, umbrella-wired,
+axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| a centred variable in `[-1,1]` is subgaussian with proxy one | `hasSubgaussianMGF_of_centred_bounded` |
+| **`(11)`, one-sided**: `μ{Σ Xᵢ ≥ ε} ≤ exp(-ε²/2D)` for `D` independent centred variables in `[-1,1]` | `measure_sum_ge_le` |
+| **`(11)`, two-sided**: `μ{\|Σ Xᵢ\| ≥ ε} ≤ 2exp(-ε²/2D)`, by a union bound against the negated family | `measure_abs_sum_ge_le` |
+
+**Correction to an earlier note on this card**: Hoeffding's lemma is *not* missing from mathlib.  It
+is `ProbabilityTheory.hasSubgaussianMGF_of_mem_Icc` -- a centred variable in `[a,b]` is subgaussian
+with proxy `((b-a)/2)²` -- and the rest of the route is
+`HasSubgaussianMGF.sum_of_iIndepFun` (proxies add over independent summands) and
+`HasSubgaussianMGF.measure_ge_le` (the Gaussian tail).  No convexity or Taylor argument had to be
+built.
+
+### What remains
+
+`(7)`'s assembly from `(10)` and `(11)`: the two coordinate events of `measure_modulus_le_add` each
+receive `measure_abs_sum_ge_le`, giving the `4e^{-γ_δ D}` fraction, which is then multiplied by the
+representative count `k^{D-1}` and the `N` targets.  That assembly is bookkeeping over the counting
+model, which the card sets up in section 1.  Then Theorem A's hard cyclic orbit and Theorem B.

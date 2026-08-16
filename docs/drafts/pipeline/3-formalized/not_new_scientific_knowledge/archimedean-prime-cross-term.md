@@ -1,7 +1,7 @@
 # The archimedean×prime cross-term — the FE-conspiracy cocycle is purely archimedean (BRIDGE); C5 relocates to G5-positivity
 
 - **ID:** archimedean-prime-cross-term
-- **Stage:** 0-backlog-lean
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper), **BRIDGE** (Door-2) — an object built, computed, and graded; the native-C5 hope for *this* object is settled negative
 - **Priority:** FOUNDATIONAL (was FIELDS MEDAL as a C5 hope; the deliverable is the object + its grade)
 - **Source:** the Hölder-recentering — C5 keystone = the weld (charter §5; `door-C5` "Second carrier dimension");
@@ -124,9 +124,8 @@ keystone-dual object, half-resolved.
   cocycle defined; links to `ω`/`H_W`/§3/§64.3 stated; Door passport.
 - [x] 1 → 2  fully-proven: cross-block/cocycle computed (`[χ]`, purely archimedean, prime lane null); Door-2
   grade decided (**BRIDGE**); Weil-form shadow checked; `F_q` degeneration confirmed; numerics archived.
-- [ ] 2 → 3  formalized (optional, low priority — BRIDGE): Lean fragment — `ρ_∞·ρ_ζ=1` as FE-restatement and
-  `χ` purely-archimedean; reuse the §3 `exteriorPower_map_neg_id` / `FunctionalEquationParity` anchors for the
-  prime-side inversion. Likely not worth a Lean push given the BRIDGE grade.
+- [x] 2 → 3  formalized: `formal/GaloisForLFunctions/RHTower/ArchimedeanPrimeCrossTerm.lean`; see the
+  certificate below.
 - [ ] 3 → 4  publication-ready: folds into "the archimedean–prime weld" exposition as the *negative* that
   relocates C5 to G5-positivity.
 
@@ -165,3 +164,31 @@ paper-proof defect. This is a **paper-proven BRIDGE theorem** whose proof legiti
 those imports are to be carried as hypotheses/axioms (or formalized separately) at the Lean stage — not a reason to
 reject the paper proof. The card's stated theorem is proved at its 1→2 gate; any co-located open conjecture
 (C5★ / ω=0 / Schanuel / apex) is explicitly a SEPARATE open core, not part of this theorem. Re-banked for Lean re-attempt.
+
+
+## Lean certificate — 2026-08-16 (2→3 gate closed)
+
+`formal/GaloisForLFunctions/RHTower/ArchimedeanPrimeCrossTerm.lean`, wired into the `RHTower`
+umbrella; every declaration audits to `[propext, Classical.choice, Quot.sound]`.
+
+A corpus search first found that most of the analytic content was already owned: `zetaChi` (`= ρ_∞`)
+and the validator `zeta_eq_zetaChi_mul` are in `RHTower/ZetaCarrier.lean`, and the prime-side parity
+anchor is `exteriorPower_map_neg_id` in `RHTower/ExteriorParity.lean`.  The new module supplies the
+packaging the card names, plus the non-horizontality proof.
+
+| Paper step | Lean |
+|---|---|
+| the prime-lane defect `ρ_ζ(s) = ζ(1−s)/ζ(s)` | `zetaRho` |
+| the archimedean defect `ρ_∞ = χ = Γ_ℝ(1−s)/Γ_ℝ(s)` | `zetaChi` (pre-existing) |
+| **the cocycle relation `ρ_∞ · ρ_ζ = 1`** — i.e. the completed functional equation | `zetaChi_mul_zetaRho` (from `zeta_eq_zetaChi_mul`) |
+| **`χ` is purely archimedean**: `χ(s) = π^{s−1/2}·Γ((1−s)/2)/Γ(s/2)` — built from `π` and `Γ` alone, no integer prime | `zetaChi_eq_pi_cpow_mul_gamma_ratio` |
+| `χ(1/2) = 1` | `zetaChi_half` |
+| `Γ_ℝ(−1) = −2π`, `Γ_ℝ(2) = π^{-1}`, hence `χ(2) = −2π²` | `Gammaℝ_neg_one`, `Gammaℝ_two`, `zetaChi_two` |
+| **`ι_∞` does not exist**: `χ` is not a `∂_s`-horizontal gauge, because it is nonconstant | `zetaChi_not_constant` |
+| the prime lane carries `ι` by inversion, with the sign an exterior-power parity | `exteriorPower_map_neg_id` (pre-existing) |
+
+Note on method: the card certifies `∂_s log χ ≠ 0` numerically at test points.  The Lean proof does
+**not** use numerics — a horizontal gauge is a *constant*, and nonconstancy is established
+symbolically from the two exact values `χ(1/2) = 1` and `χ(2) = −2π²`, the latter from mathlib's
+`Gammaℝ_add_two` recurrence and `Gammaℝ_one`.  The conclusion is the same and the proof is
+unconditional.

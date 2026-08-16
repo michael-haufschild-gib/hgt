@@ -117,7 +117,7 @@ apex**, not part of the theorem. So the card is one proven structural theorem + 
 
 **Enrichment (downstream of the strengthened prime-side orthogonality).** §2/§3's "the positivity is
 **archimedean**, separate from realization" (#137/#148) is now **realization-independent**: by the
-strengthened `../2-fully-proven/universal-prime-side-orthogonality.md` (§5, after the per-place falsification),
+strengthened `../3-formalized/not_new_scientific_knowledge/universal-prime-side-orthogonality.md` (§5, after the per-place falsification),
 **no** prime-side route carries RH-positivity — neither complex `σ_p` nor p-adic Morita `Γ_p` (both CC/abelian,
 RH-blind). So "RH = the faithful positivity" is carried **solely** by the archimedean polarization, at the
 single archimedean place (the three-lane convergence, chat id=412). This tightens §3's separation of the

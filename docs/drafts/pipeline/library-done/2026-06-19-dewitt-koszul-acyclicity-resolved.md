@@ -5,7 +5,7 @@
 - **Date:** 2026-06-19
 
 ## Change
-`koszul-acyclicity` (G15) moved 0-backlog → **2-fully-proven** (`../2-fully-proven/koszul-acyclicity.md`),
+`koszul-acyclicity` (G15) moved 0-backlog → **2-fully-proven** (`../3-formalized/not_new_scientific_knowledge/koszul-acyclicity.md`),
 **THEOREM (paper, structural verdict), BRIDGE (substrate)**. Resolves the card's open limit-question for the
 multiplicative complex and consolidates G15 into #27.
 

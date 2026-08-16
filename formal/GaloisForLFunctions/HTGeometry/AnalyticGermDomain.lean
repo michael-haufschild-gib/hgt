@@ -103,6 +103,8 @@ instance instNoZeroDivisorsAnalyticGerm (p : E) : NoZeroDivisors (AnalyticGerm p
     rw [← hgb, ZeroMemClass.coe_zero]
     exact Germ.coe_eq.mpr (eventuallyEq_zero_of_mul_eventuallyEq_zero hf hg hfne hmul)
 
+instance instIsDomainAnalyticGerm (p : E) : IsDomain (AnalyticGerm p) where
+
 /-! ## Regularity in a direction -/
 
 /-- The affine line through `p` in the direction `v`. -/

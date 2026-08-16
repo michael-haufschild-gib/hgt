@@ -405,3 +405,36 @@ theorem, and local separator.  New formal content is limited to:
 4. the codimension-nine and codimension-\(10n-8\) conjunctions.
 
 No Lean source or process was touched during the active corpus refactor.
+
+## Lean progress -- Theorem B, `(17)` implies `(18)`
+
+`formal/GaloisForLFunctions/HTGeometry/PowerTailMomentDivergence.lean` (new, umbrella-wired,
+axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| **the moment floor**: a tail `μ{τ > L} ≥ A L^{-q}` gives `∫ τ^p ≥ A L^{p-q}`, at every `L` | `moment_floor` |
+| **an unbounded family of lower bounds forces an infinite integral** | `lintegral_eq_top_of_unbounded_real` |
+
+Composing them is `(17) ⟹ (18)` for every `p > 9`: the tail `A L^{-9}` of `(17)` gives
+`∫ τ^p ≥ A L^{p-9}` for every `L ≥ L_n`, that family is unbounded when `p > 9`, and a single
+quantity dominating an unbounded family is infinite.  The estimate is pointwise in `L`, so no limit
+theorem enters beyond the divergence of `L ↦ L^{p-9}`.
+
+### The boundary exponent is closed too
+
+| Card item | Declaration |
+|---|---|
+| the reciprocal is not integrable at infinity | `lintegral_Ioi_rpow_neg_one_eq_top` |
+| **`(18)` at the boundary `p = 9`** | `lintegral_rpow_eq_top_of_boundary_tail` |
+
+Chebyshev alone gives only `∫ τ^9 ≥ A` uniformly in `L`, which is not divergence.  The boundary is
+reached through the layer-cake formula `lintegral_rpow_eq_lintegral_meas_lt_mul`: the integrand
+becomes `μ{τ > t}·t^8 ≥ A t^{-9}·t^8 = A t^{-1}`, whose integral over `(L_n, ∞)` is infinite.  So
+`(18)` now holds for the card's full range `p ≥ 9` -- strictly above by `moment_floor`, at the
+boundary by `lintegral_rpow_eq_top_of_boundary_tail`.
+
+### What remains
+
+Theorem A, the fixed-seed codimension tail `(17)` itself, and Theorem C.  The implication
+`(17) ⟹ (18)` is complete for every `p ≥ 9`.

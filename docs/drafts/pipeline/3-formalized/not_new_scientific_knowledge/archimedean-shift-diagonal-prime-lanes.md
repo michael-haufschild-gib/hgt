@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Priority:** FOUNDATIONAL
-- **Source:** split from `../2-fully-proven/archimedean-prime-cross-term.md` and `../2-fully-proven/archimedean-generator-axis-mode.md`
+- **Source:** split from `archimedean-prime-cross-term.md` and `../2-fully-proven/archimedean-generator-axis-mode.md`
 - **Statement:** In the Bohr coordinate `x_p=p^{-s}`, the additive shift `s |-> s+1` acts as the prime-lane dilation `x_p |-> p^{-1} x_p`, simultaneously for every prime.
 
 ## Goal

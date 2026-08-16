@@ -91,6 +91,9 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-16 | `semilocal-prolate-unitary-transport-trilemma` | `RHTower/SemilocalProlateUnitaryTransport.lean` |
 | 2026-08-16 | `euler-support-transverse-divisor-rigidity` | `RHTower/RelativeStripDivisorReflection.lean` |
 | 2026-08-16 | `euler-divisor-ultrametric-stability` | `RHTower/EulerDivisorUltrametricStability.lean` |
+| 2026-08-16 | `universal-prime-side-orthogonality` | `Core.lean` (`cpow_inversion_scale`), `HTGeometry/OrbitBalance.lean` (pre-existing) + new `HTGeometry/PrimeSideOrthogonality.lean` |
+| 2026-08-16 | `seam-firewall` | `HTGeometry/OrbitBalance.lean` (pre-existing) + new `HTGeometry/SeamFirewall.lean` |
+| 2026-08-16 | `archimedean-prime-cross-term` | `RHTower/ZetaCarrier.lean`, `RHTower/ExteriorParity.lean` (pre-existing) + new `RHTower/ArchimedeanPrimeCrossTerm.lean` |
 | 2026-08-16 | `shifted-reciprocal-moments-determine-divisor` | new `HTGeometry/AtomicMomentDeterminacy.lean` |
 | 2026-08-16 | `tail-e-zero-support-nonselector` | `HTGeometry/AtomicMomentDeterminacy.lean` |
 | 2026-08-16 | `reciprocal-seam-canonical-gauge-extraction` | new `HTGeometry/ReciprocalSeamGaugeExtraction.lean` |
@@ -104,6 +107,8 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-16 | `projective-horizon-pure-tail-fermionic-fiber` | pre-existing chain (`ProjectiveHorizonPureTailFiber`, `OccupationFactorInjective`, `PureFibreOccupationBijection`, `PureFibreCardinality`, `ShiftInvariantSubspace`, `QuotientIdealDivisor`, `QuotientIdealDimension`, `InvariantSubspaceRootSubset`, `RootSubsetInvariantSubspace`, `InvariantSubspaceIff`) + new `HTGeometry/PureFibreExteriorOccupation.lean` |
 | 2026-08-16 | `projective-horizon-irreducible-simple-ramification` | pre-existing chain, verified + audited: `HTGeometry/SquaredJetCoefficientIndependence.lean`, `HTGeometry/DualRectangularSection.lean`, `HTGeometry/SchurCofactorLocus.lean`, `HTGeometry/CriticalSchurPrimeDivisor.lean`, `HTGeometry/CriticalSchurGenericCorank.lean`, `HTGeometry/CriticalSchurUniformizer.lean` |
 | 2026-08-16 | `leading-laurent-coefficient-differential-algebraicity` | `HTGeometry/CoefficientwisePowerSeriesDerivation.lean`, `HTGeometry/FormalParameterRelationNormalization.lean`, `HTGeometry/LaurentCoefficientwiseDerivation.lean`, `HTGeometry/LeadingLaurentCoefficientDescent.lean` |
+| 2026-08-16 | `koszul-acyclicity` | `RHTower/EHKoszulDuality.lean` (pre-existing, finite) + new `RHTower/EHKoszulLimit.lean` (the limit statement, arbitrary infinite index type) |
+| 2026-08-16 | `euler-source-finite-jet-local-openness` | `RHTower/EulerSourceJetJacobian.lean` (pre-existing, algebraic) + new `RHTower/EulerSourceJetOpenness.lean` (holomorphic IFT + Dirichlet expansion + identity theorem) |
 
 ## Already carrying a stage-3 certificate (verify, then move the paper card)
 
@@ -142,11 +147,11 @@ directly.  None of these is blocked by open mathematics.
   polynomial of `ε_w (z-w)/A(z)`; reuse `deningerLocalJetPolynomial_iterateDerivative_eval`), and
   (ii) a **quasi-period** classification `F(z+h) = C F(z) ⇒ h = 0` generalizing the existing
   `coshQuartetEnvelope_mul_polynomial_periodic_iff` (which only covers `C = 1`).
-- `euler-source-finite-jet-local-openness` — the algebraic core is
-  `RHTower/EulerSourceJetJacobian.lean`.  Remaining: (i) the several-complex-variables inverse
-  function theorem applied to the map (mathlib's `HasStrictFDerivAt.to_localInverse` over `ℂ`
-  suffices — the inverse's derivative is the `ℂ`-linear inverse, so it is holomorphic), and (ii) the
-  identity-theorem step from equality of all derivatives to equality of the half-plane `L`-series.
+- ~~`euler-source-finite-jet-local-openness`~~ — **closed 2026-08-16**, stage 3
+  (`RHTower/EulerSourceJetOpenness.lean`).  Both remaining halves are done: the holomorphic
+  inverse-function corollary via `HasStrictFDerivAt.map_nhds_eq_of_equiv` /
+  `HasStrictFDerivAt.to_localInverse`, and the jets-to-half-plane-L-series step via a new
+  jets-determine-the-germ lemma plus `AnalyticOnNhd.eqOn_of_preconnected_of_eventuallyEq`.
 - `lean-claim-review-row-010-pk-li-secular-change-of-basis` — §B is formalized
   (`li_secular_pointwise`, `secular_li_pointwise_inv`).  Remaining: §A, the Voros closed form
   `P_k = 1 − (−1)^k ζ(k)/2^k − a_{k−1}`, which needs the `ξ'/ξ` decomposition (the corpus owns
@@ -210,6 +215,27 @@ directly.  None of these is blocked by open mathematics.
    `FullyProvenNewTargets.lean` are otherwise complete.
 
 ## New reusable infrastructure added by this sweep
+
+- `RHTower/EulerSourceJetOpenness.lean` — **closed-form `s`-jets of a nonlinear degree-one Euler
+  flux, the holomorphic inverse-function corollary, and full-jet faithfulness.** `eulerJetPoly` is
+  the Eulerian-type polynomial family for `(w ∂_w)^j (w/(1-w))`; `hasDerivAt_localFluxJet` /
+  `iteratedDeriv_localFluxJet` / `iteratedDeriv_eulerFlux` give every `s`-derivative of the flux in
+  closed form off the polar set; `hasStrictFDerivAt_eulerJetMap` identifies the differential at the
+  trivial product with the weighted Vandermonde; `eulerJetMap_map_nhds_zero` and
+  `hasStrictFDerivAt_eulerJetLocalInverse` are the openness / local-biholomorphism statements.
+  Two independently reusable pieces: **`eventuallyEq_of_iteratedDeriv_eq`** (equal full jets
+  determine an analytic germ in one complex variable — mathlib has the identity theorem from
+  eventual equality but not from jets) and **`lSeries_degreeOneEulerPrimeFluxCoeff_eq`** (an
+  all-prime Euler logarithmic flux is the Dirichlet series of its prime-power coefficient stream,
+  with the von-Mangoldt domination `norm_degreeOneEulerPrimeFluxCoeff_le_vonMangoldt`).
+
+- `RHTower/EHKoszulLimit.lean` — **infinite-variable symmetric functions and `e–h` reciprocity in the
+  limit ring** (mathlib has neither). `esymLimit`/`hsymLimit` realize `e_k`, `h_k` inside
+  `MvPowerSeries ι R` for an *arbitrary* index type; `eh_koszul_duality_limit` proves
+  `Σ_{i+j=k} (−1)^i e_i h_j = 0` there for all `k ≥ 1`, and `esymGen_mul_hsymGen` gives `E(t)H(t) = 1`.
+  Also: the squarefree-exponent calculus `sqfreeExp`, `support_sqfreeExp`, `degree_sqfreeExp`,
+  `sqfreeExp_support_eq_self`, `card_support_eq_degree_iff` (squarefree ⟺ `card supp = degree`), and
+  `sum_antidiagonal_sqfree_sign` (the alternating subset sum over an antidiagonal).
 
 - `HTGeometry/FiniteOrderHadamard.lean` — the `FiniteOrderEnvelope` growth predicate with full
   closure API (`const`, `add`, `sub`, `neg`, `mul`, `compAffine`, `of_sq`, polynomials,
@@ -280,6 +306,19 @@ directly.  None of these is blocked by open mathematics.
   the variables is, up to one fixed power `E^c`, evaluation of the rescaled relation at `v` — with
   `k(d) = c + m·deg(d)` realizable in `ℕ` for either sign of `m`.  Gives
   `differentialAlgebraicOver_leadingCoeff_of_laurentRelation` and its contrapositive.
+- `HTGeometry/PrimeSideOrthogonality.lean` — the torus/compact-form uniqueness wrapper: the
+  tensor-duality involution on the weight lattice is negation, the Cartan involution on the unit
+  torus is inversion, and a scaled inversion `g ↦ c·g⁻¹` is a homomorphism only for `c = 1` — hence
+  the FE involution is not a torus automorphism and differs from the prime-side polarization.
+  Includes the `p`-adic Morita coboundary-class step.
+- `HTGeometry/SeamFirewall.lean` — the CC class as an actual invariant (`orbitDegreeHom`), the
+  finite-place block inside its kernel, the archimedean class of degree one outside it, and hence the
+  **generator-level firewall** `archimedeanDivisor ∉ primeBlock`; plus the Door-5 calibration that the
+  distinction collapses when every place is a coboundary.  Uses no `ω`.
+- `RHTower/ArchimedeanPrimeCrossTerm.lean` — the FE-conspiracy cocycle `ρ_∞·ρ_ζ = 1`, the exact
+  purely-archimedean form `χ(s) = π^{s−1/2}Γ((1−s)/2)/Γ(s/2)`, the values `Γ_ℝ(−1) = −2π`,
+  `Γ_ℝ(2) = π^{-1}`, `χ(1/2) = 1`, `χ(2) = −2π²`, and the **symbolic** non-horizontality
+  (`zetaChi_not_constant`) replacing the card's numerical `∂_s log χ ≠ 0` certificate.
 - `HTGeometry/AtomicMomentDeterminacy.lean` — **Mergelyan-free moment determinacy**: a summable
   atomic family whose atoms are nonzero and accumulate only at the origin is determined by its
   moments of order `≥ 1`.  The proof normalizes by a maximal-modulus atom and applies Tannery's

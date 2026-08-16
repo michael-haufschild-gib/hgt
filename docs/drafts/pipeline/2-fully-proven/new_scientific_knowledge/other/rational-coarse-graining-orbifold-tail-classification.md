@@ -1081,3 +1081,39 @@ between `w` and the original `u`: branches two and three hand back a coefficient
 itself.  Closing the fixed branch therefore needs a descent that keeps track of `u`, or the
 separate observation that a nonconstant `u` fixed by `Phi_R` would make the whole differential
 field `C<u>` pointwise fixed, which is the statement to attack next.
+
+## Pass 5 — the fixed branch is open only at jet order at least two
+
+`quadOne_fixed_of_order_one` and `quadTwo_fixed_of_order_one`
+(`HTGeometry/QuadraticOrbifoldTail.lean`) sharpen the residual obligation: for both quadratic maps a
+`Phi_R`-fixed element of jet order at most one is *constant*.  This is immediate from
+`quadOne_no_order_one_eigen` with eigenvalue one, and it removes the impression that the fixed
+branch is open in general.  At order at most one the substitution scales the top coordinate exactly
+(`substitutionShift_one`), so a fixed `u = P(y_1)/Q(y_1)` has per-coefficient relations
+`Phi(p_j)·rho^j = c·p_j`; two nonzero coefficients of different index give an invariant differential
+of nonzero weight and eigenvalue one, which the non-existence theorem forbids; hence `P` and `Q` are
+monomials, the leading ratio gives weight `deg P − deg Q = 0`, and `u` drops to order zero, where
+`Q∘R = Q` forces a constant by degree.
+
+### The exact remaining equation
+
+At order `M ≥ 2` the affine remainder is nonzero and the descent goes through the normalizing shift.
+For `M = 2` the shift equation is explicit.  With `Phi(y_2) = R'·y_2 + R''·y_1^2`, a normalizing
+shift of the shape `t = a·y_1^2` with `a` rational in `y_0` exists exactly when
+
+```text
+a(R(z)) · R'(z)^2 = R'(z) · a(z) − R''(z),
+```
+
+the *rational affine connection* equation for `R`.  For `R(z) = z^2 + 1` it reads
+
+```text
+4 z^2 · a(z^2 + 1) = 2 z · a(z) − 2.
+```
+
+If `a` is regular at `0` and at `1` the left side vanishes at `z = 0` while the right side equals
+`−2`, so any solution must have a pole at `0` or at `1`; the signed-order calculus of
+`HTGeometry/RationalOrder.lean` together with the transport law
+`ord_0(a∘R) = 2·ord_1(a)` is exactly the tool for the remaining pole bookkeeping.  Proving that no
+rational solution exists closes the fixed branch at order two, and the same normalized descent then
+runs at every higher order.

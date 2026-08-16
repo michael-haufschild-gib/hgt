@@ -97,6 +97,29 @@ theorem quadTwo_eigen_eq_one {u : JetField ℂ Unit} (hu0 : u ≠ 0) {M : ℕ}
     exact absurd (quadTwo_no_invariant_differential _ hQ0 hμ hrel).1 hk
   · exact h
 
+/-- **A fixed element of jet order at most one is constant**, for `z ↦ z² + 1`. -/
+theorem quadOne_fixed_of_order_one {u : JetField ℂ Unit}
+    (hu : ∀ j : ℕ, 1 < j → JetField.pd ((), j) u = 0)
+    (hfix : jetSubstitution (algebraMap (Polynomial ℂ) (RatFunc ℂ) quadOne)
+        quadOne_substitutionDeriv_ne_zero u = u) :
+    ∃ e : ℂ, u = algebraMap ℂ (JetField ℂ Unit) e := by
+  by_contra hc
+  refine quadOne_no_order_one_eigen hu (fun e he => hc ⟨e, he⟩) one_ne_zero ?_
+  rw [map_one, one_mul]
+  exact hfix
+
+/-- **A fixed element of jet order at most one is constant**, for `z ↦ (z − 1)²`. -/
+theorem quadTwo_fixed_of_order_one {u : JetField ℂ Unit}
+    (hu : ∀ j : ℕ, 1 < j → JetField.pd ((), j) u = 0)
+    (hfix : jetSubstitution (algebraMap (Polynomial ℂ) (RatFunc ℂ) quadTwo)
+        quadTwo_substitutionDeriv_ne_zero u = u) :
+    ∃ e : ℂ, u = algebraMap ℂ (JetField ℂ Unit) e := by
+  by_contra hc
+  refine quadTwo_no_order_one_eigen hu (fun e he => hc ⟨e, he⟩) one_ne_zero ?_
+  rw [map_one, one_mul]
+  exact hfix
+
+
 end
 
 end GaloisForLFunctions.HTGeometry

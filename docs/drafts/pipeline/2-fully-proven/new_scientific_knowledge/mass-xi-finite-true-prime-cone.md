@@ -5964,7 +5964,7 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   critical relative error `delta=X^(-1/2+epsilon)` from harmonic small-value theorem requires
   log-window width `>40 X^(1/2-epsilon)`, exponential in mass log-time.  Any `O(h)` mass window
   yields only `delta=Omega(1/h)` and retains type `1/2` `[(24.58)--(24.60) LEAN-PROVED]`.
-- 2026-08-08 — `[PROVED HERE; (24.61)--(24.65) LEAN-PROVED; (24.66)--(24.67) LEAN DEFERRED]` exact harmonic-primitive/mass-adjoint reduction:
+- 2026-08-08 — `[PROVED HERE; (24.61)--(24.67) LEAN-PROVED UNCONDITIONALLY]` exact harmonic-primitive/mass-adjoint reduction:
   finite Abel summation replaces `R(n)` by vanishing `E_n=J_n+2γ`, but adjoint cell quotient
   restores precisely displaced-zero exponent `beta-1/2`.  Separate norm or BV estimates remain
   type-sharp; only signed `E_n`--mass-increment correlation survives.
@@ -5977,7 +5977,7 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   has symbol `1/2-i*xi`.  Their product is `-1` frequency-by-frequency; cell quotient is exact
   weighted average of same outgoing inverse.  Only noncommuting phase/prime-adaptive transforms can
   change proof burden.
-- 2026-08-08 — `[PROVED HERE; (24.79)--(24.83) LEAN-PROVED; (24.84) LEAN DEFERRED]` smooth Bessel-phase gauge no-go: exact covariant Abel
+- 2026-08-08 — `[PROVED HERE; (24.79)--(24.84) LEAN-PROVED]` smooth Bessel-phase gauge no-go: exact covariant Abel
   identity moves receiver phase into harmonic source tail, but on each timelike ray gauge is only a
   bounded local Mellin twist.  Every displaced-zero mode keeps scale `n^(beta-1/2)`; useful
   connection must be genuinely arithmetic and scale-growing.
@@ -5998,7 +5998,7 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   `a(u)=u^theta`, `1/3<theta<1/2`, exact chirp normal form and integral mean square prove finite
   conjugation-stable mass trace is `C_0` exactly when packet is critical.  Open bridge is uniform
   positive separation for growing full Xi packet plus prime-side control.
-- 2026-08-08 — `[PROVED HERE; (24.106)--(24.108) LEAN-PROVED; (24.109) LEAN DEFERRED]` parabolic mass blow-up: after removing rest mass,
+- 2026-08-08 — `[PROVED HERE; (24.106)--(24.109) LEAN-PROVED]` parabolic mass blow-up: after removing rest mass,
   `exp(2a^2t) exp(-2at sqrt(a^2+w))` converges to `exp(-tw)` over complete Xi divisor, with a
   uniform exponential majorant.  Exact positive subordination kernel makes this the Gaussian heat
   approximate identity and eliminates growing-packet cancellation.
@@ -7383,8 +7383,41 @@ families, so they apply verbatim to any Dirichlet frequency set, not only prime 
 gauge-covariance chain is stated over an arbitrary field and needs no hypothesis on the source at
 all: it is a coordinate identity, which is exactly the content of the no-go.
 
-Still deferred on these items: the displaced-mode tail comparison (24.84), which needs the
-oscillatory tail asymptotics of `∑_{m>n} m^{β-1+iτ}`.
+    HTGeometry/CpowHarmonicTailAsymptotic.lean
+      norm_ofReal_cpow_sub_le                  the unit-window increment bound for a complex power
+                                                with nonpositive real exponent
+      norm_cpow_increment_sub_term_le          the second-order comparison of the telescoping
+                                                increment with the term:
+                                                `‖((m+1)^{s-1} − m^{s-1})/(s−1) − m^{s-2}‖
+                                                 ≤ ‖s−2‖ m^{Re s−3}`
+      cpowShiftTail, cpowHarmonicTail,
+        summable_cpowShift, summable_cpowHarmonic
+                                               the two tails and their summability
+      norm_cpowShiftTail_sub_le                the telescoped tail is `(N+1)^{s-1}/(1−s)` up to
+                                                `O(N^{Re s−2})`
+      norm_cpowHarmonicTail_sub_shift_le       the harmonic weight and the second-difference weight
+                                                differ by `O(N^{Re s−2})`
+      tendsto_cpowHarmonicTail                 **the oscillatory tail asymptotic**
+                                                `N^{1−s}∑_{m>N} m^s w_m → 1/(1−s)` for `Re s < 1`
+
+    RHTower/TwistedTailAdjointScale.lean
+      mellinTwistGauge_mul_cpow                the Mellin twist turns a real power into the complex
+                                                power `e^{ic}·x^{β+iτ}`
+      twistedDisplacedTail, twistedDisplacedTail_eq,
+        mellinTwistGauge_natCast               the covariant source tail of a displaced mode and its
+                                                identification with the complex harmonic tail
+      tendsto_twistedDisplacedTail             **(24.84)** `n^{1−β}(H(gR))_n/g(n) → amp/(1−β−iτ)`
+      tendsto_norm_twistedDisplacedTail_mul_adjointCellQuotient
+                                               **(24.84)** the product with the adjoint cell
+                                                quotient carries the exponent `β − 1/2` exactly,
+                                                with limiting constant `‖amp‖/‖1−β−iτ‖`
+
+So (24.84) is closed.  Real monotonicity is unavailable at a complex exponent, so the tail is
+pinned by a derivative bound on each unit window instead: the primitive `t^{s-1}/(s−1)` has
+derivative `t^{s-2}`, and the second-derivative bound `‖s−2‖t^{Re s−3}` turns the telescoping
+increment into the term with a total error `O(N^{Re s−2})`, which the normalisation `N^{1−s}`
+annihilates.  The twist therefore rotates the constant and leaves the real decay exponent
+unchanged — which is exactly the content of the no-go.
 
 ### Lean progress: §24 C43-H, C43-R, C43-S
 
@@ -7443,11 +7476,21 @@ The subordination law is the corpus's own square-root Laplace identity
 (`RHTower/BurnolGlasserIntegral.lean`, `burnolPoissonSubordination`) at `y = 2at`, `λ = a²+w`,
 followed by completing the square `−a²t²/s − a²s + 2a²t = −a²(s−t)²/s`.
 
+    RHTower/ParabolicDivisorDominated.lean
+      norm_parabolic_factor_le                 the parabolic gap makes the massive half-wave factor
+                                                uniformly at most `e^{-(35t/54)R}` for every
+                                                `a ≥ 1`
+      tendsto_parabolic_divisor_sum           **(24.109)** with a summable majorant the termwise
+                                                parabolic heat limit passes to the whole divisor
+                                                sum
+
+The majorant is the one already proved here, `parabolic_gap_uniform_lower`; its summability over
+the Xi divisor is the corpus's own zero-count reciprocal-square bound
+(`RHTower/XiRelativeResolventTrace.lean`, `summable_xiZeroCopyReciprocalSquare`).
+
 Still deferred on these items: the lower half of (24.54) and the exponential-type limit (24.49),
-which need the wave-packet localization at the sub-linear frequency scale; the analytic
-continuation of (24.110) to the nonreal part of the Xi divisor; and the divisor-level dominated
-convergence (24.109), which needs the corpus zero-count summability wired to the majorant proved
-here.
+which need the wave-packet localization at the sub-linear frequency scale; and the analytic
+continuation of (24.110) to the nonreal part of the Xi divisor.
 
 ### Lean progress: §24 C43-V and C43-Y
 
@@ -7538,9 +7581,163 @@ Both Abel identities hold for an arbitrary source and an arbitrary receiver, wit
 convergence hypothesis: they are exact finite algebra, which is precisely the point of the audit —
 the reduction succeeds, and what fails is the norm closure afterwards.
 
-Still deferred on this item: the limit `J_N → −2γ` of (24.64), which needs Mertens and the prime
-number theorem wired to the closed form, and the stationary-phase evaluation (24.66)--(24.67) of the
-adjoint quotient.
+    RHTower/HarmonicPrimitiveMertensReduction.lean
+      tendsto_harmonicPrimitive_of_mertens,
+        tendsto_mertens_of_harmonicPrimitive     **(24.64)** given the Abel boundary term vanishes,
+                                                 `J_N → −2γ` is *equivalent* to Mertens' second
+                                                 theorem `∑_{n≤N}Λ(n)/n − log N → −γ`, because
+                                                 `H_N − log N → γ`
+
+    RHTower/ZetaResidueFactorDerivative.lean
+      zetaResidueFactor, tendsto_zetaResidueFactor,
+        slope_zetaResidueFactor                  the residue factor `(s−1)ζ(s)`, extended by `1` at
+                                                 the pole, and the fact that its difference
+                                                 quotient at `1` is exactly `ζ(s) − 1/(s−1)`
+      hasDerivAt_zetaResidueFactor              **its derivative at the pole is `γ`**
+      hasDerivAt_zetaResidueFactor_of_ne,
+        logDeriv_riemannZeta_sub_pole            away from the pole
+                                                 `−ζ'/ζ − 1/(s−1) = −F'/F`
+      differentiable_zetaResidueFactor           the residue factor is entire — differentiable at
+                                                 the pole by the slope limit and elsewhere by the
+                                                 product rule, so no removable-singularity theorem
+                                                 is needed
+      eventually_riemannZeta_ne_zero             zeta does not vanish near its pole
+      tendsto_logDeriv_riemannZeta_sub_pole     **the constant of Mertens' second theorem is `−γ`**:
+                                                 `−ζ'/ζ(s) − 1/(s−1) → −γ` as `s → 1`, because the
+                                                 logarithmic derivative of the entire residue
+                                                 factor is continuous and equals `γ/1` at the pole
+      tendsto_LSeries_vonMangoldt_sub_pole      the same limit for the von Mangoldt Dirichlet
+                                                 series, `∑Λ(n)n^{-s} − 1/(s−1) → −γ` as `s → 1⁺`
+                                                 along the reals
+
+The route to Mertens is now purely discrete.  Summation by parts for both `Λ` and the constant
+sequence (`RHTower/DirichletAbel.lean`, `sum_eq_abelPartial`) writes
+`∑_{n≤N}Λ(n)/n − log N` and `∑Λ(n)n^{-s} − 1/(s−1)` against the *same* tail
+`T = ∑_k (ψ(k+1) − (k+1))/((k+1)(k+2))`: the first tends to `γ + T` and the second, by the limit
+above, equals `−γ`.  Hence `T = −2γ` and Mertens follows.
+
+    HTGeometry/SubexponentialSqrtSummable.lean
+      summable_exp_neg_mul_sqrt                 `e^{-a√n}` is summable, because `log` is little-o
+                                                 of every positive power
+      summable_exp_neg_sqrt_log_div             **the prime-number-theorem weight
+                                                 `e^{-c√(log m)}/m` is summable**, by Cauchy
+                                                 condensation, which turns it into
+                                                 `e^{-(c√(log 2))√k}`
+
+This is the convergence input the tail `T` needs: the corpus's error term
+`ψ(x) − x = O(x e^{-c√(log x)})` makes the summand of `T` bounded by a constant times
+`e^{-c√(log m)}/m`.
+
+    RHTower/MertensAbelAssembly.lean
+      sum_div_succ_eq_abel                      summation by parts for the harmonic weight:
+                                                `∑_{i<n+1}c_i/(i+1) = P(n+1)/(n+1)
+                                                 + ∑_{k<n}P(k+1)(1/(k+1) − 1/(k+2))`
+      sum_linear_increment                      the linear part of the summatory function
+                                                contributes exactly `H_{n+1} − 1`
+      tendsto_abelPartialSum_sub_log           **the partial-sum limit**: if `P(n)/n → 1` and the
+                                                error tail converges to `T`, then
+                                                `∑_{i≤n}c_i/i − log n → γ + T`
+
+    RHTower/DirichletIncrementDominated.lean
+      tendsto_cpow_neg_ofReal                   `x^{-s} → 1/x` as `s → 1⁺`
+      norm_cpow_increment_le                    the uniform increment bound
+                                                `|x^{-s} − (x+1)^{-s}| ≤ 2/x²` on `1 ≤ s ≤ 2`,
+                                                from the corpus's own shift estimate
+                                                (`RHTower/HurwitzZetaSmallShift.lean`)
+      tendsto_tsum_cpow_increment              **the Dirichlet-side limit**: against a summable
+                                                weight the limit `s → 1⁺` passes inside the sum and
+                                                each increment becomes `1/x − 1/(x+1)`
+
+    RHTower/DirichletAbelTail.lean
+      tsum_eq_abelTail                          letting the truncation tend to infinity in
+                                                summation by parts identifies a Dirichlet series
+                                                with its Abel tail, given a vanishing boundary term
+
+    RHTower/MertensTailConstant.lean
+      mertensTail_eq                           **the common Abel tail is `−2γ`**: subtracting zeta
+                                                from the von Mangoldt series cancels the pole twice,
+                                                the first difference tending to `−γ` and the second
+                                                to `γ`
+
+Applied to `c_i = Λ(i+1) − 1`, whose partial sums are exactly `E(n) = ψ(n) − n`, these give
+`T = −2γ`, and the partial-sum Abel law then reads `∑_{n≤N}Λ(n)/n − log N → γ + T = −γ`, which is
+Mertens' second theorem and hence `J_N → −2γ`.
+
+    RHTower/ChebyshevPsiErrorInputs.lean
+      exists_psi_error_eventually               the explicit eventual form of the corpus's
+                                                `ψ(x) − x = O(x e^{-c√(log x)})`
+      tendsto_psi_div_self                     **`ψ(x)/x → 1`**, the mean-one hypothesis of the
+                                                partial-sum Abel law
+      summable_psi_error_weight                **`|ψ(m) − m|·2/m²` is summable**, the majorant
+                                                hypothesis of the Dirichlet-side dominated
+                                                convergence
+
+    RHTower/MertensSecondTheorem.lean
+      psiError, mertensAbelTail                the Chebyshev error `ψ(k+1) − (k+1)` and the Abel
+                                                tail constant it generates
+      summable_psiError_increment              the tail converges, by comparison of the harmonic
+                                                increment with the inverse square
+      tendsto_vonMangoldt_harmonicWeighted     the harmonic side:
+                                                `∑_{n≤N}Λ(n)/n − log N → γ + T`
+      mertensCoeff, coeffPartial_mertensCoeff  the source `Λ − 1`, whose partial sums are exactly
+                                                the Chebyshev error
+      tsum_mertensDirichlet                    the Dirichlet side: `∑ (Λ(n)−1)n^{−s} = L(Λ,s) − ζ(s)`
+                                                on `re s > 1`
+      mertensDirichlet_eq_tail                 that difference is the Abel tail of the *same* error
+                                                sequence
+      tendsto_mertensDirichletTail             the tail passes to the limit `s → 1⁺` under the
+                                                dominating weight `|ψ(m) − m|·2/m²`
+      mertensAbelTail_eq                       **`T = −2γ`**: both poles cancel in `L(Λ,s) − ζ(s)`
+      tendsto_sum_vonMangoldt_div_sub_log      **Mertens' second theorem**
+                                                `∑_{n≤N}Λ(n)/n − log N → −γ`, unconditional
+      tendsto_harmonicPrimitive_vonMangoldt    **(24.64)** `J_N → −2γ` for the harmonic primitive of
+                                                the Chebyshev error, unconditional and axiom-clean
+
+So (24.64) is closed.  The route is entirely discrete: the same error sequence `E(n) = ψ(n) − n`
+carries both the harmonic-weighted partial sums and the Dirichlet series, and the shared Abel tail
+is evaluated once, at the pole, where the two poles cancel.  No Mellin transform and no integral
+Abel summation appear anywhere in the chain.
+
+    HTGeometry/RpowHarmonicTailAsymptotic.lean
+      rpow_unit_step_bounds                    the one-step mean value comparison
+                                                `-q(x+1)^{q-1} ≤ x^q − (x+1)^q ≤ -q x^{q-1}`
+      summable_shift_rpow                      the shifted power tail is summable below the
+                                                threshold
+      tsum_shift_rpow_le, tsum_shift_rpow_ge   the tail is pinned between `(N+1)^q/(-q)` and
+                                                `N^q/(-q)`, by telescoping either side
+      tendsto_tsum_shift_rpow                  **the sharp tail asymptotic**
+                                                `N^{-q}∑_{n>N} n^{q-1} → 1/(-q)`
+
+    RHTower/AdjointCellQuotientScale.lean
+      logGapRatio, harmonicGap_eq_inv_mul,
+        log_succ_sub_log_bounds,
+        logGapRatio_bounds                     the window/increment ratio `ρ_n`, pinned between `n`
+                                                and `n+1`
+      tendsto_logGapRatio_div                  `ρ_n/n → 1`
+      adjointCellQuotient_logProfile_mvt       **(24.66)** the exact mean value form
+                                                `A_n = -P'(ξ)·ρ_n`, `ξ ∈ (log n, log(n+1))`
+      hasDerivAt_halfDensityGauge              the half-density gauge derivative
+                                                `-(e^{-h/2}F)' = e^{-h/2}(F/2 − F')`
+      exp_neg_half_log, exp_window_bounds      the exponential factor is pinned between
+                                                `√(n/(n+1))` and `1`
+      tendsto_adjointCellQuotient_div_sqrt     **(24.66)** for a uniformly continuous outgoing
+                                                symbol `S = F/2 − F'` that stays above a positive
+                                                floor along the sample,
+                                                `A_n/(√n·S(log n)) → 1`
+      rpowHarmonicTail, rpowHarmonicTail_term_eq,
+        rpowHarmonicTail_term_bounds,
+        summable_rpowHarmonicTail              the primitive tail of the power source `n^β`
+      tendsto_rpowHarmonicTail                 **(24.67)** `N^{1-β}∑_{n>N} n^β w_n → 1/(1−β)`
+      tendsto_rpowHarmonicTail_mul_adjointCellQuotient
+                                               **(24.67)** the product carries the exponent
+                                                `β − 1/2` exactly: the primitive lowers the source
+                                                exponent by one and the adjoint quotient raises it
+                                                by one half
+
+So (24.66)--(24.67) are closed, and with them the whole of C43-J.  The mean value form is exact
+finite calculus; the two `(1+o(1))` factors are pinned by explicit two-sided windows, and the only
+structural input is that the outgoing symbol is uniformly continuous and does not degenerate along
+the sample — which is what "stationary phase has nonzero outgoing symbol there" asserts.
 
 ### Lean progress: §24 C43-AH — the countable conic compression lemma
 
@@ -7641,8 +7838,30 @@ orthogonality of the corpus's `HermiteOrthogonality` and `SchwartzOscillatorAlge
 special-function asymptotics.  In the self-dual normalization the level-`2d` ratio is
 `(4d+1)²/(3(8d²+4d+1))`, which is the card's `(T(2d+½))²/((3T²/4)(8d²+4d+1))`.
 
-Still deferred on this item: identifying the tilted von-Mangoldt weight of (24.167) with the
-Gaussian saddle moments (24.170).
+    RHTower/TiltedHeatSaddleGaussian.lean
+      tiltedHeatProfile_eq                     **(24.167)** the half-density tilt completes the
+                                                square: `e^{L/2}√(π/t)e^{-L²/(4t)}
+                                                = e^{t/4}√(π/t)e^{-(L-t)²/(4t)}`, so the continuous
+                                                prime saddle is exactly the Gaussian law centred at
+                                                `t` with variance `2t`
+      gaussJetPoly_one .. gaussJetPoly_four,
+        gaussJetPoly_*_eval_zero                the first four jet polynomials and their values at
+                                                the origin
+      gaussMoment_zero_freq,
+        gaussMoment_one_zero, gaussMoment_three_zero,
+        gaussMoment_two_eq, gaussMoment_four_eq the Gaussian moments at zero frequency, read off
+                                                from the jet polynomials at the origin
+      gaussianSaddle_second_moment,
+        gaussianSaddle_fourth_moment           **(24.170)** the saddle law's centred moments are
+                                                `2t` and `3(2t)²`
+      tiltedHeatSaddle_moments                 **(24.170)** hence `𝔼Y = t²+2t` and
+                                                `Var Y = 8t³+8t²` for `Y = L²`, which is exactly
+                                                the input that makes the bracket of (24.169)
+                                                vanish
+
+The identification is exact, not asymptotic: the tilt is an algebraic completion of the square, and
+the two moments come from the Gaussian moment formula already formal in
+`RHTower/GaussianMomentFourier.lean`, specialized to zero frequency.
 
 ### Lean progress: §24 C43-Z — the heat Turán defect as a two-replica sum
 

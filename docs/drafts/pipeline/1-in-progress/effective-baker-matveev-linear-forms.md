@@ -105,6 +105,8 @@ Layers, each a self-contained unconditional module:
 - [x] D.1 extrapolation with error, analytic core
       — `HTGeometry/ApproximateMultipointSchwarz.lean`
 - [ ] D.2 Fel'dman-polynomial auxiliary construction (replaces the plain-multiplicity matrix)
+      basis and height gain closed — `RHTower/Matveev/FeldmanBinomial.lean`;
+      the matrix and shift law over the new basis remain
 - [ ] E. terminal contradiction, the effective theorem
 - [ ] F. card interface `τ₀(ν) ≤ C log(2+|ν|₁)`
 - [ ] 1 → 2  complete paper proof recorded
@@ -302,3 +304,163 @@ Layers, each a self-contained unconditional module:
     `RHTower/Matveev/AuxiliaryMatrix.lean` over the basis `∏ᵢ Δ(δᵢ(m); κᵢ)` instead of
     `∏ᵢ δᵢ(m)^{νᵢ}`, re-derive the multinomial shift law of `PerturbedComponents.lean` in that
     basis, and re-run the constraint system with the improved entry height.
+- 2026-08-16 — Layer D.2 started: the Fel'dman basis.
+
+  ```text
+  RHTower/Matveev/FeldmanBinomial.lean
+    consecutiveProd                          ∏_{j<k} (z + j + 1)
+    consecutiveProd_natCast                  on ℕ it is an ascending factorial
+    prod_range_sub_eq_descFactorial          the descending product is a descending factorial
+    factorial_dvd_consecutiveProd            **k! divides k consecutive integers, over all of ℤ**
+    feldmanBinom, feldmanBinom_mul_factorial Δ(z;k) = (z+1)⋯(z+k)/k!, integral at every integer
+    abs_consecutiveProd_le                   |∏| ≤ (|z| + k)^k
+    abs_feldmanBinom_mul_factorial_le        **|Δ(z;k)| ≤ (|z| + k)^k / k!**
+  ```
+
+  Integrality over the *whole* of `ℤ` is what the construction needs, since the direction
+  coefficients `δᵢ(m) = b_pivot mᵢ − m_pivot bᵢ` take both signs.  The proof splits three ways: for
+  `z ≥ 0` the product is an ascending factorial; for `−k ≤ z < 0` one factor is zero; for `z < −k`
+  it is a signed descending factorial.  Mathlib supplies `factorial_dvd_ascFactorial` and
+  `factorial_dvd_descFactorial` for the two nonzero branches.
+
+  **This is the height gain that constraint (ii) of the 2026-08-16 analysis demands.**  In the plain
+  basis an entry of multiplicity `k` costs `|δ|^k ≈ (2LB)^k`, so `log max|A| ≥ T log B` and hence
+  `θT ≲ C`; in the Fel'dman basis it costs `(|δ| + k)^k / k!`, cheaper by `k! ≈ exp(k log k − k)`.
+  The next step is to redo `AuxiliaryMatrix.lean` over the basis `∏ᵢ Δ(δᵢ(m); κᵢ)` and re-derive
+  the multinomial shift law of `PerturbedComponents.lean` in it — the Fel'dman polynomials are a
+  basis of the integer-valued polynomials, so the shift law becomes a change-of-basis rather than a
+  new expansion.
+- 2026-08-16 — Layer D.2: the change of basis is proved.
+
+  ```text
+  RHTower/Matveev/FeldmanBasis.lean
+    consecutivePoly                   the integer polynomial (X+1)⋯(X+k)
+    consecutivePoly_monic/_natDegree/_eval
+    exists_intCombination             **triangularity**: every integer polynomial of degree ≤ n is an
+                                      integer combination of consecutivePoly 0 … consecutivePoly n
+    exists_pow_intCombination         X^k in the consecutive-product basis
+    exists_pow_intCombination_eval    the value form: z^k = ∑_{j≤k} c_j · consecutiveProd j z
+  ```
+
+  **The two bases carry the same conditions.**  A family containing one monic polynomial of each
+  degree is a `ℤ`-basis of the integer polynomials — subtracting the right multiple of the top
+  member drops the degree — so the passage from the power basis to the Fel'dman basis loses no
+  information: a vector killing every Fel'dman box of degree ≤ k kills every power box of degree
+  ≤ k and conversely.  What changes is only the size of the matrix entries, which fall by `k!`.
+
+  This is the step the constraint analysis needed.  With the conditions equivalent, the Siegel input
+  may be taken in whichever basis has the smaller height, and `log max|A|` drops from `T log(2LB)` to
+  `T log(2LB + T) − log T!`.
+
+  What Layer D.2 still owes: rewriting `AuxiliaryMatrix.lean` over `∏ᵢ Δ(δᵢ(m); κᵢ)` and re-running
+  the constraint system of the 2026-08-16 entry with the improved height, to confirm the six
+  conditions become simultaneously satisfiable.
+- 2026-08-16 — **Correction to the previous two entries: where the Fel'dman factor belongs.**
+
+  Re-running the constraint system with the improved entry height shows the previous entries
+  misplaced the device.  Applying `Δ` to the *direction coefficients* replaces `|δ|^κ` by
+  `(|δ| + κ)^κ / κ!`.  In logs,
+
+  ```text
+  κ log(|δ| + κ) − log κ!  =  κ log(2LB + κ) − κ log κ + κ + O(log κ),
+  ```
+
+  so the saving over `κ log(2LB)` is `κ log κ − κ`, **independent of `B`**.  The binding term of
+  constraint (ii) was `θ · T · log B`, and it survives unchanged.  So Fel'dman applied to the
+  direction coefficients does not relieve the obstruction, and the sentence "this is the height gain
+  that constraint (ii) demands" in the 2026-08-16 D.2 entry is wrong.
+
+  The device's actual role in Baker's sharpening is on the **sample variable**.  The auxiliary
+  function carries `Δ(z; λ₀)` in place of `z^{λ₀}`, so an entry at an integer sample `s ≤ S` is a
+  binomial coefficient
+
+  ```text
+  Δ(s; λ₀) = C(s + λ₀, λ₀) ≤ 2^{s + λ₀},
+  ```
+
+  and `L₀ log S` in the height becomes `(S + L₀) log 2`.  That *is* one of the binding constraints of
+  the polynomial-factor analysis recorded on 2026-08-16 — there the conditions `L₀ log S ≲ C log B`
+  and `L₀ log R ≲ (Schwarz gain)` were what forced `L₀` down.
+
+  The two modules built remain exactly the right objects — `feldmanBinom` is the binomial value and
+  `FeldmanBasis` is the change of basis — but they are to be applied to the sample variable, not the
+  direction coefficients.  D.2's remaining work is therefore:
+
+  1. rebuild the auxiliary function with the polynomial factor `Δ(z; λ₀)` and derive its derivative
+     structure (the analogue of `(λ₀)_j z^{λ₀−j}` for the binomial basis);
+  2. re-run the six constraints with `L₀ log S` replaced by `(S + L₀) log 2` and check whether they
+     become simultaneously satisfiable.
+
+  Step 2 is the decisive check and has **not** been performed; until it is, the polynomial bound
+  remains open, not merely unformalised.
+- 2026-08-16 — the D.2 constraint check, performed: **it does not close as set up**, and the
+  obstruction is sharp.
+
+  With the Fel'dman factor on the sample variable the auxiliary function is
+
+  ```text
+  Φ(z) = Σ_{λ₀ ≤ L₀} Σ_{m ∈ [0,L]^d} η(λ₀, m) Δ(z; λ₀) e^{ω_m z},
+  ```
+
+  and the conditions at integer samples involve the derivatives `Δ^{(j)}(s; λ₀)`.  Two facts collide.
+
+  1. **The gain is real at the level of values.**  `Δ(s; λ₀) = C(s + λ₀, λ₀) ≤ 2^{s + λ₀}`
+     (`feldmanBinom_natCast`, `feldmanBinom_natCast_le`), so `L₀ log S` in the height becomes
+     `(S + L₀) log 2`.  Writing `Δ(z; k) = P_k(z)/k!` with `P_k ∈ ℤ[z]` monic of degree `k`, the
+     Hasse derivative `P_k^{[j]}` is again an integer polynomial, and
+     `|Δ^{(j)}(s; λ₀)/j!| ≤ 2^{λ₀}(S + λ₀)^{λ₀ − j}/λ₀!` — still a saving of `λ₀!`.
+
+  2. **Integrality is lost under differentiation.**  `Δ(z; k)` is integer-valued but
+     `Δ^{(j)}(z; k)` is not: the denominator `k!` survives, and it depends on the *column* index
+     `λ₀`, not the row.  Row scaling cannot clear it.  Clearing it by the uniform factor `L₀!`
+     restores integrality but reintroduces `log L₀!  ≈ L₀ log L₀` into the entry height — exactly
+     the term the device was introduced to remove.
+
+  So the naive substitution "powers of the sample variable → Fel'dman polynomials of the sample
+  variable" does not by itself close the constraint system.  The resolution direction, and the next
+  thing to settle, is that the conditions must be imposed through an operator that preserves
+  integer-valuedness — finite differences rather than derivatives, or a divided-derivative scheme in
+  which the compensating factorial is absorbed by the *column* normalisation of `η` rather than by
+  the matrix.  Until that is settled the polynomial bound `|Λ| ≥ c B^{−C}` remains open at the level
+  of the construction, not merely unformalised.
+
+  Recording this as the current frontier of the card: the two Fel'dman modules stand, the placement
+  is now correct, and the open point is the differentiation scheme.
+- 2026-08-16 — **Retraction: the "obstruction" of the earlier entries is not established.**
+
+  The elimination recorded on 2026-08-16 concluded that no parameter choice satisfies the six
+  constraints, and hence that the plain-power construction cannot reach `|Λ| ≥ cB^{−C}`.  That
+  derivation implicitly held the extrapolation data `K` (per-step range multiplier) and `J` (number
+  of steps) at `O(1)`.  They are not.
+
+  **The condition-count multiplier of the iteration is superpolynomial.**  Over `J` steps the
+  samples multiply by `K^J` and the multiplicity halves each time, so the count multiplies by
+  `(K/2^{d−1})^J`, subject only to per-step Schwarz feasibility `T₀/2^{J+1} > eLWK`, i.e.
+  `2^{J+1}K < A` with `A := T₀/(eLW)`.  Optimising `J`,
+
+  ```text
+  count multiplier  ≤  2^{(log₂ A − d)² / 4},
+  ```
+
+  attained near `J = (log₂A − d)/2`.  This is superpolynomial in `A`, so the Siegel exponent
+  `θ ≈ (initial count)/(unknowns)` can be made *superpolynomially small* whenever `T₀ ≫ eLW` — and
+  `θ` is exactly the factor multiplying the harmful `T₀ log B` in `log‖η‖`.  The earlier conclusion
+  `θT₀ ≲ C ⟹ T₀ = O(C)` therefore does not follow.
+
+  What survives from the earlier analysis, and is worth keeping, is the identification of the exact
+  quantity that must be controlled:
+
+  ```text
+  θ · T₀ · log B  ≲  C log B,        θ ≈ (S₀ ρ(T₀)) / L^d,
+  ```
+
+  together with the competing pressures: per-step feasibility ties `T₀` to `L` from below
+  (`T₀ ≳ eLWK`), the entry height in the divided-power basis is `T₀ log(2eLB/T₀) + dLS₀ log P`, and
+  the terminal count must reach the number of unknowns after the multiplier is applied.  Whether
+  these close simultaneously is a genuine optimisation that I have **not** settled; it is the open
+  point of the card.
+
+  External check (July 2026 literature): Fel'dman's device is confirmed to be *binomial polynomials*
+  in the auxiliary function, with the mechanism described as "avoiding certain factorials" — which is
+  the divided-power reading `δ^μ/μ!` used above, and matches the two modules already built.  So the
+  objects are right; what is missing is the parameter balance, not the basis.

@@ -1,7 +1,7 @@
 # Degree-one Euler sources are finite-jet open but full-jet faithful
 
 - **ID:** `euler-source-finite-jet-local-openness`
-- **Stage:** 2-fully-proven / not-new
+- **Stage:** 3-formalized / not-new
 - **Type:** `[BRIDGE]` theorem (paper), with Lean-certified algebraic core
 - **Scientific status:** `[NOT NEW SCIENTIFIC KNOWLEDGE]`.  After erasing the source vocabulary,
   finite-jet openness is the holomorphic inverse-function theorem applied to a weighted Vandermonde
@@ -30,8 +30,10 @@ arithmetic parameters themselves.
 - [x] 0 -> 1: source-pure statement and explicit Jacobian identified
 - [x] 1 -> 2: complete holomorphic inverse-function and full-jet recovery proofs; no open
   mathematical dependency
-- [ ] 2 -> 3: the weighted Vandermonde Jacobian is formalized in
-  `EulerSourceJetJacobian.lean`; formalization of the analytic local-biholomorphism corollary remains
+- [x] 2 -> 3: **DONE (2026-08-16).**  The weighted Vandermonde Jacobian was already formalized in
+  `EulerSourceJetJacobian.lean`; the two remaining analytic halves — the holomorphic
+  local-biholomorphism corollary and the derivative-jet-to-half-plane-L-series step — are now
+  Lean theorems in `RHTower/EulerSourceJetOpenness.lean`, unconditional and axiom-clean
 - [x] novelty audit: downgraded by the parent-theory and anti-theatre gates
 
 ## The map
@@ -252,9 +254,10 @@ The exact source check and exact target build pass.  The audited theorem declara
 axiom footprint `[propext, Classical.choice, Quot.sound]`.  Lean certifies both the nonsingular
 Jacobian, prime-power support, the geometric prime-ray law, the zeta/von-Mangoldt specialization,
 recovery of every prime parameter from equality of the convergent Euler-flux L-series, and the exact
-unique-parameter characterization of the complete compatible coefficient locus.  It does not yet
-package the several-complex-variable inverse-function theorem or the analytic step from equality of
-all derivatives to equality of the half-plane L-series.
+unique-parameter characterization of the complete compatible coefficient locus.
+
+Second module (2026-08-16), supplying the two analytic halves:
+`formal/GaloisForLFunctions/RHTower/EulerSourceJetOpenness.lean`
 
 ## Parent-literature audit so far
 
@@ -278,3 +281,54 @@ locate the missing RH content outside source recovery itself.  Recovering the gl
 field does not relate a recovered source germ to the location of one of its poles.  The remaining
 object must therefore be a pointed source--divisor incidence constraint, not another source-image
 membership test.
+
+## Lean formalization of the analytic halves — 2026-08-16
+
+**Module:** `formal/GaloisForLFunctions/RHTower/EulerSourceJetOpenness.lean` (wired into
+`RHTower.lean`).  **Axioms:** `[propext, Classical.choice, Quot.sound]` on every headline theorem —
+no `sorry`, no added axiom, no added hypothesis.  Built with
+`lake build GaloisForLFunctions.RHTower.EulerSourceJetOpenness`.
+
+### How the `s`-derivatives were made computable
+
+The card's map is `Φ_j(a) = (d/ds)^j F_a(s)|_{s₀}` for the *nonlinear* flux
+`F_a(s) = Σ_i (log p_i) a_i p_i^{-s}/(1 - a_i p_i^{-s})`.  Writing `w = x p^{-s}`, the operator
+`∂_s` acts on one local term as `-(log p)·w ∂_w`, so the `j`-th derivative is
+`(log p)(-log p)^j A_j(w)/(1-w)^{j+1}` where `A_j` are the Eulerian-type polynomials
+`A_0 = X`, `A_{j+1} = X((1-X)A_j' + (j+1)A_j)` (`eulerJetPoly`).  Because `A_j(0) = 0` and
+`A_j'(0) = 1`, the parameter derivative at `a = 0` is exactly `(log p_i) p_i^{-s₀}(-log p_i)^j`,
+the ledgered weighted Vandermonde entry.  This is what makes the whole finite-jet map a *closed
+form* rather than an unevaluated iterated derivative, and it is proved on the whole polar-free open
+set, not just at one point.
+
+| Paper step (§) | Lean name | Statement |
+|-|-|-|
+| §"The map": `L_a`, `F_a = -L_a'/L_a` | `eulerProductL`, `eulerFlux`, `eulerFlux_eq_neg_logDeriv` | the flux is the negative logarithmic derivative of the finite Euler product |
+| §"The map": the jet coordinates | `eulerJetMap` | `Φ_{s₀,k}(a)_j = (d/ds)^j F_a(s)|_{s₀}`, `0 ≤ j < k` |
+| jet closed form (new) | `eulerJetPoly`, `eval_eulerJetPoly_zero`, `eval_derivative_eulerJetPoly_zero`, `localFluxJet`, `hasDerivAt_localFluxJet`, `iteratedDeriv_localFluxJet`, `iteratedDeriv_eulerFlux` | every `s`-derivative of the nonlinear flux in closed form off the polar set |
+| §"Theorem and proof": `∂Φ_j/∂a_i(0) = (log p_i)p_i^{-s₀}(-log p_i)^j` | `hasStrictDerivAt_localFluxJet_param`, `hasStrictFDerivAt_eulerJetForm`, `hasStrictFDerivAt_eulerJetMap` | the differential at the trivial product is the weighted Vandermonde |
+| §"Theorem and proof": the Jacobian is nonsingular | `eulerJetJacobianCLM`, `eulerJetJacobianCLM_apply`, `eulerJetJacobianCLM_bijective`, `eulerJetJacobianEquiv` | the differential is a continuous linear **equivalence** (uses the ledgered `eulerSourceJetJacobian_bijective`) |
+| **§"Theorem and proof": local biholomorphism** | **`eulerJetMap_map_nhds_zero`**, `eulerJetMap_image_mem_nhds`, `eventually_exists_eulerJetMap` | the finite-jet map is open at the trivial product: every small `k`-jet is a genuine Euler-product jet |
+| §"Theorem and proof": the local inverse | `eulerJetLocalInverse`, `hasStrictFDerivAt_eulerJetLocalInverse`, `eulerJetMap_eventually_left_inverse`, `eulerJetMap_eventually_right_inverse` | the local inverse exists and is differentiable with derivative `J^{-1}` |
+| §"Theorem and proof": the finite-equation consequence | `eventuallyEq_zero_of_vanishing_on_eulerJetMap` | anything vanishing on all Euler-source jets vanishes near the zero jet |
+| §"All-prime full-jet faithfulness": convergence | `norm_degreeOneEulerPrimeFluxCoeff_le_vonMangoldt`, `lSeriesSummable_degreeOneEulerPrimeFluxCoeff`, `abscissaOfAbsConv_degreeOneEulerPrimeFluxCoeff_le` | on `‖a_p‖ ≤ 1` the flux coefficients are dominated by von Mangoldt, so the abscissa of absolute convergence is `≤ 1` |
+| §"All-prime full-jet faithfulness": Dirichlet expansion | `primeEulerFlux`, `norm_prime_param_cpow_lt_one`, **`lSeries_degreeOneEulerPrimeFluxCoeff_eq`** | `F_a(s) = Σ_n c_a(n) n^{-s}` on `Re s > 1`, by geometric expansion along each prime ray plus prime-power reindexing |
+| §"All-prime full-jet faithfulness": Taylor/identity theorem | **`eventuallyEq_of_iteratedDeriv_eq`**, `primeEulerFlux_eventuallyEq_lSeries`, `analyticOnNhd_lSeries_degreeOneEulerPrimeFluxCoeff`, `analyticAt_primeEulerFlux` | equal full jets determine the germ; the germ propagates across the convex half-plane |
+| **§"All-prime full-jet faithfulness": conclusion** | **`degreeOneEulerParameter_eq_of_iteratedDeriv_eq`** | equality of all `s`-derivatives at one point of `Re s > 1` forces `a = b` on the whole bounded all-prime class |
+
+### New reusable infrastructure (mathlib has none of it)
+
+* `eulerJetPoly` — the Eulerian-type polynomials of the operator `w ∂_w` applied to `w/(1-w)`, with
+  `A_j(0) = 0`, `A_j'(0) = 1`;
+* `localFluxJet` / `hasDerivAt_localFluxJet` / `iteratedDeriv_localFluxJet` — every `s`-derivative
+  of a degree-one local Euler flux term in closed form;
+* `eventuallyEq_of_iteratedDeriv_eq` — *equal full jets determine an analytic germ* in one complex
+  variable (mathlib has the identity theorem from eventual equality, but not from jets);
+* `lSeries_degreeOneEulerPrimeFluxCoeff_eq` — an all-prime Euler logarithmic flux is the Dirichlet
+  series of its prime-power coefficient stream.
+
+### Scope note
+
+The formalized statements match the card's scope boundary: parameters vary in complex
+neighbourhoods of `0` (not on the unitary locus), local openness is at the trivial product, and
+full-jet faithfulness is proved on the closed prime polydisc `‖a_p‖ ≤ 1` in the Euler half-plane.

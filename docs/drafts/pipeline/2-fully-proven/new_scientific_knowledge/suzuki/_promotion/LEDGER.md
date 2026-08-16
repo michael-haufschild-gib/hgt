@@ -11532,3 +11532,241 @@ Theorem A     instantiation of A_a as a bounded self-adjoint operator with an ei
 ```
 
 Everything else in the card — §§2–7 and `(59)`–`(62)` of §9 — is closed and axiom-audited.
+
+## ADR.3. Corollary F.1 — the matching branch, over `ℝ`
+
+The corpus's implicit-function engine is holomorphic (`ParametricSpectralBranch.parametric_holo_implicit`,
+`U0.HolomorphicIFT.holo_implicit`).  F.1's matching problem is posed in a **real** parameter — the
+squared anchor `t = c²` — so the same statement was needed over `ℝ`.  The proof transfers verbatim:
+analytic smoothness is `ContDiffAt ℝ ω`, and a scalar continuous linear map is invertible as soon as
+its value at one is nonzero.
+
+```text
+HTGeometry/RealAnalyticImplicit.lean
+  clm_invertible_of_apply_one_ne_real     scalar invertibility over ℝ
+  real_analytic_implicit                  the real-analytic scalar IFT
+  exists_matching_branch_of_transverse    **(54d)**: two real-analytic families agreeing at a base
+                                          point, the first transverse in its second variable, are
+                                          matched along a unique real-analytic branch
+```
+
+This is exactly `(54a)`–`(54d)`: with `Φ_a(t, λ)` the finite restricted-Weil resolvent family and
+`Ψ(t)` the theta/prime–Gamma source family, a pre-divisor tangent match `q_a(λ_*) = τ_src` with
+`q_a'(λ_*) ≠ 0` lifts to a real-analytic branch `λ_a(t)` matching the two for all small `t`.  What
+F.1 still owes is the *instantiation*: that Suzuki's `Φ_a` and `Ψ` are real-analytic across `t = 0`
+with the values `(54b)`, which is the even-power-series extension of `cosh`, `sinh` and the theta
+logarithmic derivative — model-specific analysis, not branch theory.
+
+All new declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADS. Theorem C completed, Theorem F.2's limit laws, Corollary G.2, and Theorem H's first-order limit
+
+Four modules, all auditing to `[propext, Classical.choice, Quot.sound]`.
+
+```text
+RHTower/SuzukiCoalescingLowerHalfPlaneNormality.lean
+  suzukiCoalescingResolvent_conj_reflect      R(z) = -conj R(conj z) on the lower half-plane
+  norm_suzukiCoalescingResolvent_conj         equal modulus at conjugate points
+  norm_suzukiCoalescingResolvent_le_of_conj   the upper-half-plane defect bound, transported
+  suzukiCoalescingResolvent_eqOn_lower        the function identity on the lower half-plane
+  differentiableOn_suzukiCoalescingResolvent_lower
+  tendstoUniformlyOn_conj_reflect             conjugation carries a locally uniform limit
+  exists_suzukiCoalescingResolvent_montel_subseq_lower
+```
+
+This is the last missing piece of **Theorem C**.  `(32)` and the `z²` factor were already owned by
+`SuzukiCoalescingReflection`; what was absent was the transport itself.  Conjugation is an
+isometric involution exchanging the half-planes and `conj ∘ f ∘ conj` is holomorphic exactly where
+`f` is (`differentiableAt_conj_conj_iff`), so the bound, holomorphy, and the Montel extraction all
+move down without a new estimate.  **Theorem C is closed.**
+
+```text
+RHTower/SuzukiCoalescingBoundaryLayerSchedule.lean
+  tendsto_suzukiDefectAngle_boundaryLayer_odd    (54g)
+  tendsto_suzukiDefectAngle_boundaryLayer_even   (54k)
+  oddBoundaryCoefficient, strictMono_…, …_eq_iff, …_root_pos_iff       (54h)
+  evenBoundaryCoefficient, …_zero, tendsto_…_atTop, …_root,
+  strictMonoOn_evenBoundaryCoefficient                                  (54k')
+```
+
+The two limits are the whole analytic content of F.2's boundary layers once the expansions are
+given.  Writing `κ = (E-O)/(E+O)`, the two oriented defects are `1+κ = 2E/(E+O)` and
+`1-κ = 2O/(E+O)`; dividing by `2t` and using `tE → 0`, `tO → Ocoef` (odd-leading) or `E → Ecoef`,
+`O/t → Ocoef` (even-leading) gives `Ecoef/Ocoef` and `Ocoef/Ecoef`.  Substituting the card's
+coefficients reproduces `(ρC + 1_{d=1}A_r)/B_s` and `(Dρ + 1_{d=1}B_s)/(Cρ + A_r)` exactly.
+
+The `ρ`-dependence is then elementary and is proved in closed form rather than through an implicit
+function theorem: the odd coefficient is affine and strictly increasing, with the unique root
+`ρ_* = (B_s τ - A_r)/C`, positive exactly when `A_r < B_s τ`; the even coefficient is
+fractional-linear with endpoints `B/A` at `ρ = 0` and `D/C` at `ρ = ∞`, strictly monotone when
+`BC ≠ DA`, and with the explicit root `ρ_* = (τA - B)/(D - τC)`, positive exactly when `τ` lies
+strictly between the endpoints.  What F.2 still needs is `(54m)`–`(54n)`: the literal Suzuki
+expansions of `E` and `O` from `(5)` and the reduced-resolvent splitting.
+
+```text
+RHTower/SuzukiGroundFrameAngularTorque.lean
+  suzukiSourceCoherence_smul_right, _self, continuousAt_…    coherence is projective
+  tendsto_suzukiSourceCoherence_one                          (69)–(70)
+  lineProj, lineProj_add, lineProj_self, inner_lineProj_sub_eq_zero, norm_sub_lineProj_le
+  norm_lineProj_sub_sq                ‖lineProj u w - w‖² = ‖w‖²(1 - coherence)
+  one_sub_sq_le_suzukiSourceCoherence, …_of_norm_sub
+  norm_lineProj_sub_le_norm_sub       the deficit is bounded by the displacement
+  fubiniStudySpeed, projectiveAngle                          (71)
+  sin_sq_le_suzukiSourceCoherence                            (73)'s conclusion
+  card_mul_le_one_of_lineProj_budget                         the Clark-count consequence
+```
+
+**Corollary G.2's first half is closed.**  Coherence is invariant under a nonzero rescaling of the
+mode and equals one on the diagonal, and it is continuous away from zero; hence any family whose
+rescalings converge to a fixed nonzero ground direction has coherence tending to one.  That is
+exactly `(70)`, and it needs no expansion beyond the vector Taylor statement the corpus already
+owns.
+
+The residual loss is measured exactly: the squared distance from the mode to the anchor line is
+`‖w‖²(1 - coherence)`.  So a transport bound *is* a coherence floor, and the two are the same
+statement.  Two such bounds are proved — from a displacement budget and from an angular budget —
+and the second reproduces `(73)`'s `sin(ε)²` floor.  What remains in G.2 is the moving-frame
+inequality `(72)` itself, the classical bound of the projective distance by the Fubini–Study
+length of the path; the fixed-frame form is proved here.
+
+```text
+RHTower/SuzukiCoalescingFullQuotientLimit.lean
+  parityFourier, parityFourier_neg                           (92)
+  tendsto_suzukiCoalescingCayley_one
+  tendsto_suzukiCoalescingCayley_rate_two_port
+  tendsto_twoPort_of_ratio_rate                              (94)
+  tendsto_twoPort_universal                                  (98)
+  re_one_sub_div_one_add_pos, re_suzukiCoalescingResolvent_pos
+  re_nonneg_of_tendsto
+```
+
+**Theorem H's limit is closed at the first-order-chart level.**  The parity statement `(92)` is the
+substitution `x ↦ -x` in the transform.  For the limit, write `β_c = (z-ic)/(z+ic)`; then
+`(β_c - 1)/c = -2i/(z+ic) → -2i/z`, and if the reflected ratio `q` has rate `(q_c-1)/c → 2H/G`,
+then
+
+```text
+(β_c q_c - 1)/c = β_c (q_c-1)/c + (β_c-1)/c → 2H/G - 2i/z,
+1 + β_c q_c → 2,
+```
+
+so the singularly normalized quotient `-( (β_c q_c - 1)/c )/(1 + β_c q_c)` converges to
+`i/z - H/G`, which is `(94)`; with `H = 0` it is the universal `i/z` of `(98)`.  Positivity of the
+finite family is exact: `Re((1-w)/(1+w)) = (1-‖w‖²)/‖1+w‖² > 0` for a Schur value, and the
+singularly normalized resolvent is `c⁻¹` times that.  What Theorem H still needs is the passage
+from the reduced-resolvent expansion `(93)` to the hypothesis of `tendsto_twoPort_of_ratio_rate`,
+and the harmonic minimum principle behind strict positivity of the limit.
+
+## ADT. `critical-radical-anchor-finite-head-reduction` — the five-twelfths dependence is removable
+
+The card's quantitative annular payment `(SR-64.22)` uses exactly **two** critical-line witnesses,
+and that is what forces the tight annulus `[√3 T, (12√3/5)T]` and hence the input
+`liminf N₀(T)/N(T) > 5/12`.  Nothing in the derivation requires the number of witnesses to be two.
+
+Redo the accounting with a set `S` of on-line copies whose squared ordinates satisfy `k_r ≥ 3h`.
+Each contributes `a_r(τ_q - τ_r)² > (16/25)²/(1+h)² · a_r` by `(SR-64.18)`–`(SR-64.20)`, with
+`a_r = 1/(1+k_r)`.  Against the atomwise charge bound `(SR-64.17)`, the payment condition is
+
+```text
+Σ_{r ∈ S} 1/(1+k_r) > 29/(256(1+h)).
+```
+
+Two witnesses in the card's band give `50/(432(1+h)) = 0.11574…/(1+h)` against
+`29/256 = 0.11328…`, which is the card's margin `(SR-64.3)` — so the sharpened condition
+specialises correctly.
+
+But the left side is now a **tail sum**, and it may be collected from an annulus of *any* fixed
+ratio `K`.  With `n` conjugate witness pairs of ordinate in `[Γ, KΓ]`, `Γ = √(3h)`, the left side
+is at least `2n/(1+K²Γ²)`, so the condition holds as soon as
+
+```text
+n ≳ (29/512) K².
+```
+
+`K` is fixed and the required `n` is a constant, while the number of critical-line zeros in
+`[Γ, KΓ]` tends to infinity for **any** positive proportion: choosing `K > 1/κ` for a
+`κ` below `liminf N₀(T)/N(T)` makes `N₀(KΓ) - N₀(Γ) ≥ κN(KΓ) - N(Γ) → ∞`.  Hence the annular
+payment theorem holds with Selberg's 1942 positive proportion in place of Pratt–Robles–
+Zaharescu–Zeindler's `5/12`; and it holds with Hardy–Littlewood's 1921 gap theorem alone, since
+`N₀(2Γ) - N₀(Γ) ≫ Γ` already supplies unboundedly many witnesses in a fixed annulus.
+
+Two consequences for the promotion of that card.
+
+1. The Pratt–Robles–Zaharescu–Zeindler provider is **not** needed.  The `5/12` constant is an
+   artefact of insisting on two witnesses.
+2. Riemann–von Mangoldt is needed only to convert a proportion into an annular count; with the
+   Hardy–Littlewood gap theorem it is not needed at all.  The `riemann-von-mangoldt-zero-counting`
+   card is therefore no longer on the critical path for this gate.
+
+What the card still needs from outside is a single unconditional statement of the form
+
+```text
+∃ K > 1, ∃ C, ∀ Γ ≥ Γ₀: #{on-line ordinates in [Γ, KΓ]} ≥ C,
+```
+
+which is strictly weaker than every positive-proportion theorem in the literature, together with
+Hardy's theorem for the qualitative anchor of `(SR-64.1)`.
+
+## ADU. The tail-sum annular payment, in Lean
+
+```text
+RHTower/SuzukiAnnularTailSumPayment.lean
+  slope_gap_sq_gt            the slope gap needs only `k ≥ 3h` and the off-line height gap
+  tailSum_annular_payment    (SR-64.28): the payment condition is one scalar inequality
+  annulus_mass_floor         (SR-64.29): a constant witness count clears the floor
+  annulus_annular_payment    the fixed-annulus payment
+```
+
+The existing `SuzukiAnnularCriticalPayment` proves the two-witness theorem with the tight band.
+Separating the two exact height estimates shows that the upper end of the band is used *only* in
+the witness mass `a_r = 1/(1+k_r)`; the slope gap `(τ_q-τ_r)² > 256/(625(1+h)²)` needs the lower
+end alone.  The payment condition is therefore
+
+```text
+∑_{r ∈ S} 1/(1+k_r) ≥ 29/(256(1+h))
+```
+
+over an arbitrary finite set of critical-line copies above `3h`.  The card's two witnesses give
+`50/(432(1+h))` against `29/(256(1+h))`, which is the recorded margin, so the two-witness theorem
+is the two-element case; and a fixed annulus of ratio `K` clears the floor with `(87/256)K²`
+witnesses, a constant.
+
+All four declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADV. Vitali's convergence theorem and the minimum principle for a nonnegative real part
+
+Two mathlib gaps, both needed by Theorem I and by the removability half of Theorem H.
+
+```text
+HTGeometry/VitaliConvergence.lean
+  tendstoUniformlyOn_closedBall_of_forall_subseq
+  vitali_tendstoLocallyUniformlyOn                    the disc form
+  vitali_tendstoLocallyUniformlyOn_of_isPreconnected  an arbitrary connected domain
+HTGeometry/PositiveRealPartRigidity.lean
+  norm_exp_neg
+  re_pos_of_re_nonneg_of_exists_pos                   the minimum principle
+  re_nonneg_of_tendstoLocallyUniformlyOn
+  re_pos_of_tendstoLocallyUniformlyOn
+```
+
+**Vitali.**  Neither mathlib nor the corpus had it; the corpus had Montel only.  The proof avoids
+both diagonal extraction and `ε`-`N` bookkeeping: a sequence converges once every subsequence has a
+further subsequence with the *same* limit (`tendsto_of_subseq_tendsto`), Montel supplies the
+subsequential limits, the pointwise hypothesis pins them down on the uniqueness set, and the
+identity theorem propagates the agreement to the whole disc.  The transfer between uniform
+convergence on a compact ball and convergence in `K →ᵇ ℂ` is the only plumbing.
+
+The passage from a disc to an arbitrary connected domain is an open/closed argument on the set of
+points having a neighbourhood of pointwise convergence: open by construction, nonempty by the disc
+form at the accumulation point, and relatively closed because the disc form applies again at every
+boundary point.  Neither openness of the domain nor `Y ⊆ U` is needed — local boundedness already
+supplies the balls.
+
+**The minimum principle.**  `exp(-f)` has modulus `exp(-Re f)`, so a zero of a nonnegative real
+part is a maximum of that modulus and the maximum modulus principle makes `exp(-f)` constant.
+Hence a nonnegative real part positive at one point is positive everywhere.  Paired with
+`re_nonneg_of_tendstoLocallyUniformlyOn`, this is exactly the step "every `R_c` has positive real
+part, so the limit has nonnegative real part, and one positive value upgrades it" used in both
+Theorem H and Theorem I.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.

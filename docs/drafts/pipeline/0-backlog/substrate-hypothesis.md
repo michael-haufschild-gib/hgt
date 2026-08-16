@@ -148,7 +148,7 @@ Working out D4 **reduces the substrate question and leans deflationary:**
 - `../../00-charter-wall-and-door.md` §6 — the D-axis this card grounds.
 - `../2-fully-proven/orthogonality-meta-theorem.md` — the proof that the RH-content is substrate-displaced
   (D2 evidence).
-- `../2-fully-proven/archimedean-prime-cross-term.md` (#134) — **D4, now banked BRIDGE** (Professor,
+- `../3-formalized/not_new_scientific_knowledge/archimedean-prime-cross-term.md` (#134) — **D4, now banked BRIDGE** (Professor,
   independent 30-digit cert): the FE-conspiracy cocycle = the classical γ-factor; C5 ⟺ G5-positivity. Converges
   with §6 here.
 - `compute-omega-h2-gl.md` (#27) — **the sharpened D4 decider**: is `ω=[R_∞]∈H²(G_L⁺)` native, or = the

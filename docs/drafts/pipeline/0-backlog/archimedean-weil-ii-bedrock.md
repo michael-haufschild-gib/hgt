@@ -13,7 +13,7 @@
 - **Source:** the worked substrate hypothesis (`../0-backlog/substrate-hypothesis.md` §6–§7: structural ω is
   BRIDGE, bedrock = `ω=0`/positivity); the **orthogonality meta-theorem** (`../2-fully-proven/orthogonality-meta-theorem.md`:
   RH-positivity = the archimedean polarization); **ω purely archimedean** (`../0-backlog/fields-medal-after-future-tickets/compute-omega-h2-gl.md`
-  #27 §R, Professor; `../2-fully-proven/archimedean-prime-cross-term.md` #134); **#88 the F_1 Rosetta** (over
+  #27 §R, Professor; `../3-formalized/not_new_scientific_knowledge/archimedean-prime-cross-term.md` #134); **#88 the F_1 Rosetta** (over
   `F_q` all gatekeepers are theorems; the missing brick = an archimedean-Frobenius cohomology); imports:
   Deligne Weil II (1980), Deninger / Connes–Consani (F_1)
 - **Statement (the bedrock).** Two facts now pin the entire branchhood question to one target:
@@ -116,7 +116,7 @@ archimedean polarization (the Weil form `Q_W`), now demanded with a **geometric 
   properness = the **product formula** (given); the open core = the F₁ Hodge–Riemann relations.
 - `../0-backlog/substrate-hypothesis.md` — this is its D4/D5 bedrock, worked.
 - `../2-fully-proven/orthogonality-meta-theorem.md` — the polarization = the load-bearing datum.
-- `../0-backlog/fields-medal-after-future-tickets/compute-omega-h2-gl.md` (#27), `../2-fully-proven/archimedean-prime-cross-term.md` (#134) — ω/cocycle purely archimedean (the structural layers are BRIDGE).
+- `../0-backlog/fields-medal-after-future-tickets/compute-omega-h2-gl.md` (#27), `../3-formalized/not_new_scientific_knowledge/archimedean-prime-cross-term.md` (#134) — ω/cocycle purely archimedean (the structural layers are BRIDGE).
 - `../../door/bucket-the-seam-archimedean-obstruction.md`, **#88** — the F_1 Rosetta / missing Frobenius;
   Deninger / Connes–Consani (imports).
 

@@ -1,7 +1,7 @@
 # The seam firewall — finite-place ⊥ archimedean positivity (G6 / SEED-A)
 
 - **ID:** seam-firewall
-- **Stage:** 0-backlog-lean
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper, synthesis/structural) — Door grade **BRIDGE** (generator-level firewall holds;
   positivity residual = G5 apex; see Resolution §1–§5)
 - **Priority:** FOUNDATIONAL
@@ -36,7 +36,9 @@ archimedean place; a surviving constraint would be a positivity route across the
   assembled **unconditionally** (`ω`-independent) from #131/#132/#133/#118/#54; `ω` (#27, conditional/open)
   enters only the positivity residual, not the firewall. The surviving-constraint/route-to-RH branch is the
   **G5/moment apex** (no sub-apex route). BRIDGE synthesis.
-- [ ] 2 → 3  formalized — low priority (BRIDGE); the CC-class hook reuses the #131 Lean anchors.
+- [x] 2 → 3  formalized: `formal/GaloisForLFunctions/HTGeometry/SeamFirewall.lean` realizes the
+  CC-class hook as the orbit-degree character and proves the generator-level firewall
+  unconditionally; see the certificate below.
 - [ ] 3 → 4  publication-ready — folds into the seam/"why ℚ-RH harder than `F_q`" exposition.
 
 ## Approach
@@ -162,3 +164,27 @@ paper-proof defect. This is a **paper-proven BRIDGE theorem** whose proof legiti
 those imports are to be carried as hypotheses/axioms (or formalized separately) at the Lean stage — not a reason to
 reject the paper proof. The card's stated theorem is proved at its 1→2 gate; any co-located open conjecture
 (C5★ / ω=0 / Schanuel / apex) is explicitly a SEPARATE open core, not part of this theorem. Re-banked for Lean re-attempt.
+
+
+## Lean certificate — 2026-08-16 (2→3 gate closed)
+
+`formal/GaloisForLFunctions/HTGeometry/SeamFirewall.lean`, wired into the `HTGeometry` umbrella;
+every declaration audits to `[propext, Classical.choice, Quot.sound]`.
+
+A corpus search first located the CC-class machinery already in the tree:
+`HTGeometry/OrbitBalance.lean` owns `intShiftCoboundary` and `orbitDegree_intShiftCoboundary`
+(coboundaries have orbit degree zero) together with `orbitDegree_single`.  The new module turns that
+into the firewall statement the card asks for.
+
+| Paper step (§1–§4) | Lean |
+|---|---|
+| the σ-coboundary (CC) class as an actual invariant, not a phrase — the orbit degree as an additive character of divisors | `orbitDegreeHom` |
+| **§1 prime block = all-CC**: every Euler-factor multiplier is a shift coboundary, so the whole finite-place block lies in the kernel | `primeBlock`, `primeBlock_le_ker`, `orbitDegree_eq_zero_of_mem_primeBlock` |
+| **§1 archimedean = the unique non-CC place**: the `Γ`-multiplier carries a single point mass, orbit degree `1` | `archimedeanDivisor`, `orbitDegree_archimedeanDivisor` |
+| **§2 the firewall**: no `ℤ`-combination of finite-place generator data reaches the archimedean class | `archimedeanDivisor_notMem_primeBlock`, `ne_archimedeanDivisor_of_mem_primeBlock` |
+| the blocks are separated *by an invariant* — zero on one block, nonzero on the other | `firewall_invariant` |
+| **§4 Door-5**: over a function field every place is CC, so every class has degree zero and the distinction collapses — the firewall is what `ℚ` adds | `firewall_vacuous_of_all_coboundary`, `mem_primeBlock_of_coboundary` |
+
+**Unconditionality.**  The formalized firewall uses only the coboundary/degree bookkeeping.  The open
+class `ω` (#27) appears nowhere in it — exactly as §2 requires after Wheeler's repair — and the
+positivity residual (§3, the G5 apex) is not claimed here, in Lean or on paper.

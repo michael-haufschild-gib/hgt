@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Priority:** FOUNDATIONAL
-- **Source:** split from `../2-fully-proven/universal-prime-side-orthogonality.md` section 3
+- **Source:** split from `universal-prime-side-orthogonality.md` section 3
 - **Statement:** In the Bohr coordinate `x_p = p^{-s}`, the functional-equation involution `s |-> 1-s`
   sends `x_p` to `p^{-1} * x_p^{-1}`.
 

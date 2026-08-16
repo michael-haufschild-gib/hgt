@@ -13,7 +13,7 @@
 - **Source:** companion to `../2-fully-proven/multi-q-abp-criterion.md` §4 (Wheeler, the primary escape
   verdict); built on `../2-fully-proven/seam-two-lattices-archimedean-residue.md` (the digamma residue,
   DeWitt), `../2-fully-proven/two-sources-of-hypertranscendence.md` (#130, CC = HS coboundary criterion),
-  `../2-fully-proven/multiplier-dichotomy-theorem.md` (#134), `../2-fully-proven/seam-firewall.md` (#106),
+  `../2-fully-proven/multiplier-dichotomy-theorem.md` (#134), `../3-formalized/not_new_scientific_knowledge/seam-firewall.md` (#106),
   `../2-fully-proven/archimedean-generator-axis-mode.md` (#136); IMPORT: Hardouin–Singer (Math. Ann. 2008,
   parametrized PV / differential-algebraic Galois group; the modern proof of differential transcendence of
   Γ-type functions, WebSearch-verified), Hölder 1887, ABP/Papanikolas 2008.
@@ -98,7 +98,7 @@ downstream symptom but the lift's measure. Not a disagreement — a calibration 
 - `../2-fully-proven/multi-q-abp-criterion.md` §4 (Wheeler) — **the primary escape verdict**; this card is
   its carrier companion. Coordinate; do not edit his card.
 - `../2-fully-proven/seam-two-lattices-archimedean-residue.md` (DeWitt) — the digamma residue (the carrier).
-- `../2-fully-proven/seam-firewall.md` (#106), `archimedean-generator-axis-mode.md` (#136),
+- `../3-formalized/not_new_scientific_knowledge/seam-firewall.md` (#106), `archimedean-generator-axis-mode.md` (#136),
   `two-sources-of-hypertranscendence.md` (#130), `multiplier-dichotomy-theorem.md` (#134).
 - `compute-omega-h2-gl.md` (#27/#128, Professor) — the values-lift = the object `ω` measures. Coordinate.
 

@@ -3658,3 +3658,49 @@ Reusable pieces banked for other cards:
 - **`norm_listProd_sub_le`** -- unitary telescoping in any normed ring with `‖·‖ ≤ 1` letters.
 - **`normSq_expI_sub`, `circDist_le_two_arcsin`** -- the exact chord `2 - 2cos(φ-ψ)` and the
   chord-to-arc conversion.
+
+## Promotion, 2026-08-16 -- `spectral-phase-folding-locality-addressability-law`
+
+Third stage-2 top-level card promoted.  Every numbered result -- Theorem A `(9)`/`(10)`,
+Theorem A.1, section 3 `(15)`--`(17)`, Theorem B `(18)`/`(19)`, Theorem C `(21)`--`(23)`,
+Theorem C.1, Theorem D `(28)`--`(32)`, Proposition E `(33)`--`(37)`, Theorem F `(38)`/`(39)`,
+Theorem G `(40)`--`(46)` -- is Lean-proved, unconditional, axiom-clean.  23 declarations audited.
+
+Nine new modules, all reachable from `GaloisForLFunctions.HTGeometry`:
+
+| Module | Content |
+|---|---|
+| `LocalLogarithmRigidity` | commensurable-gap rigidity, winding equations, orbit resolution, Theorems A and A.1 |
+| `FoldedPhaseGenerator` | the half-open wrap with explicit branch integer, the folded generator, Theorem B |
+| `DiagonalCommutatorWidth` | entrywise commutator width bound, tangent homogenization, distance to a subspace |
+| `SubwindingChordComparison` | chord/arc via the concave-sine secant bound, entrywise commutator comparison |
+| `CommutatorOperatorBound` | HS commutator bound from an operator bound, commutator identities, the assembled C.1 and D estimates |
+| `VerticalCurvature` | matrix-unit products, the horizontal witnesses, `-i[X,Y] = 2(P_p-P_q)`, the anchored spanning identity |
+| `AddressCapacityBound` | finite-sup dimension bound, the address capacity `(39)`, span-cardinality bound |
+| `LeftNormedBracketLayer` | bracket spans, left-normed layers, the Jacobi reduction |
+| `EuclideanPackingBound` | the volumetric packing bound, deficient-subspace nullity |
+
+### Reusable pieces banked
+
+- **`bracketSpan` / `leftNormed` / `bracketSpan_bracketLayer_le`** -- a free-Lie-free replacement for
+  the graded free Lie algebra: every bracket shape reduces to left-normed words, giving `m^k`
+  dimension bounds by cardinality alone.  Any card needing Lie-word capacity can use this.
+- **`card_le_of_separated`** -- the volumetric packing bound in `EuclideanSpace ℝ (Fin k)`.
+- **`gap_mul_norm_le`** -- unit-sphere gap to everywhere gap, for any homogeneous map.
+- **`infDist_add_mem` / `infDist_smul_submodule` / `infDist_folded`** -- distance to a subspace is
+  translation invariant and absolutely homogeneous.
+- **`hsSqRe_conjTranspose` / `hsSqRe_mul_left_le` / `hsSqRe_mul_right_le` /
+  `hsSqRe_commutator_le_of_opBound`** -- the Hilbert--Schmidt ideal estimates in the corpus's
+  `hsSqRe` language.
+
+### Duplication warning
+
+Three modules written during this promotion duplicated existing corpus work and were deleted:
+a symmetric character average (`symmetricPhaseAverage`, `SymmetricTimeAverageCharacterLaw`), a
+portmanteau-for-flows wrapper and an addressability-density wrapper (both subsumed by
+`rationallyIndependent_closedTarget_limsup_le_volume`, `FiniteSpectralRecurrenceFrequencyLaw`).
+**The corpus equidistribution stack is complete** -- Deninger--Weyl (`DeningerWeylCriterion`),
+infinite-torus unique ergodicity (`InfiniteTorusEquidistribution`, `InfiniteTorusForwardDensity`),
+completed-observer-time equidistribution (`CompletedObserverTimeTorus`), the measure-preserving torus
+projection and closed-target density (`CompletedTimeCaptureDensity`,
+`FiniteSpectralRecurrenceFrequencyLaw`).  Search it before building anything in this area.

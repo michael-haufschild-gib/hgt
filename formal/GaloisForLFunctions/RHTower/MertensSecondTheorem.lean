@@ -1,345 +1,346 @@
-import GaloisForLFunctions.RHTower.MertensPrimeWindowWeakConvergence
+import GaloisForLFunctions.RHTower.ChebyshevPsiErrorInputs
+import GaloisForLFunctions.RHTower.MertensAbelAssembly
+import GaloisForLFunctions.RHTower.MertensTailConstant
+import GaloisForLFunctions.RHTower.DirichletAbelTail
+import GaloisForLFunctions.RHTower.DirichletIncrementDominated
+import GaloisForLFunctions.RHTower.HarmonicPrimitiveMertensReduction
+import GaloisForLFunctions.RHTower.HarmonicPrimitiveMassAdjoint
 
 /-!
-# Mertens' second theorem with its constant
+# Mertens' second theorem and the limit of the harmonic primitive
 
-Abel summation of the prime log-density against `1 / log t` turns Mertens' first theorem into
+The source `a(n) = Λ(n) − 1` has summatory function `ψ(N) − N`, so a single error sequence
+governs both sides of the comparison between the harmonic weight and the Dirichlet weight.
 
-```text
-∑_{p ≤ N} 1/p = log log N + M + o(1),
-```
+On the harmonic side, summation by parts gives
 
-with the explicit constant
+`∑_{n ≤ N} Λ(n)/n − log N → γ + T`,   `T = ∑_k (ψ(k+1) − (k+1))(1/(k+1) − 1/(k+2))`.
 
-```text
-M = 1 - log log 2 + ∫_2^∞ (∑_{p ≤ t} (log p)/p - log t) / (t log² t) dt.
-```
+On the Dirichlet side, the same summation by parts represents `L(Λ, s) − ζ(s)` by the Abel tail of
+the *same* error sequence, and letting `s → 1⁺` under the dominating weight `|ψ(m) − m|/m²`
+evaluates that tail at `T`.  Since both poles cancel, `L(Λ, s) − ζ(s) → −2γ`, so `T = −2γ` and
 
-The error integral converges because the Mertens error is bounded and `∫_2^∞ dt/(t log² t)` is
-finite.
+`∑_{n ≤ N} Λ(n)/n − log N → −γ`.
+
+Feeding this into the harmonic-primitive reduction gives the limit of the primitive itself,
+`J_N → −2γ`.
 -/
 
-open Filter Topology MeasureTheory Set
-open scoped BigOperators
+open Filter Topology ArithmeticFunction
 
 namespace RHTower
 
 noncomputable section
 
-/-! ## The prime reciprocal sum -/
+/-! ## The error sequence -/
 
-/-- The prime reciprocal weight `1/p` at primes, zero elsewhere. -/
-def primeRecipWeight (n : ℕ) : ℝ := if n.Prime then ((n : ℝ))⁻¹ else 0
+/-- The Chebyshev error at `k + 1`. -/
+def psiError (k : ℕ) : ℝ := Chebyshev.psi ((k : ℝ) + 1) - ((k : ℝ) + 1)
 
-/-- The prime reciprocal sum `∑_{p ≤ N} 1/p`. -/
-def primeRecipSum (N : ℕ) : ℝ := ∑ n ∈ Finset.Icc 0 N, primeRecipWeight n
+/-- A sum over `Icc 1 N` is the shifted sum over `range N`. -/
+theorem sum_Icc_eq_sum_range_shift {M : Type*} [AddCommMonoid M] (f : ℕ → M) (N : ℕ) :
+    ∑ n ∈ Finset.Icc 1 N, f n = ∑ i ∈ Finset.range N, f (i + 1) := by
+  induction N with
+  | zero => simp
+  | succ N ih => rw [Finset.sum_Icc_succ_top (by omega), ih, Finset.sum_range_succ]
 
-private def invLog (t : ℝ) : ℝ := (Real.log t)⁻¹
+/-- Chebyshev's `ψ` at a natural point is the shifted von Mangoldt partial sum. -/
+theorem psi_natCast_eq_sum_range (n : ℕ) :
+    Chebyshev.psi (n : ℝ) = ∑ i ∈ Finset.range n, (vonMangoldt (i + 1) : ℝ) := by
+  rw [Chebyshev.psi_eq_sum_Icc, Nat.floor_natCast, ← Nat.range_succ_eq_Icc_zero,
+    Finset.sum_range_succ']
+  simp
 
-private def invLogDeriv (t : ℝ) : ℝ := -(t * Real.log t ^ 2)⁻¹
+theorem psiError_eq (k : ℕ) :
+    psiError k = (∑ i ∈ Finset.range (k + 1), (vonMangoldt (i + 1) : ℝ)) - ((k : ℝ) + 1) := by
+  rw [psiError]
+  congr 1
+  rw [show ((k : ℝ) + 1) = ((k + 1 : ℕ) : ℝ) by push_cast; ring, psi_natCast_eq_sum_range]
 
-private theorem hasDerivAt_invLog {t : ℝ} (ht : 1 < t) :
-    HasDerivAt invLog (invLogDeriv t) t := by
-  have ht0 : t ≠ 0 := by linarith
-  have hlog : Real.log t ≠ 0 := (Real.log_pos ht).ne'
-  have h := (Real.hasDerivAt_log ht0).inv hlog
-  have heq : -t⁻¹ / Real.log t ^ 2 = invLogDeriv t := by
-    rw [invLogDeriv]
+theorem summable_absPsiError_weight :
+    Summable fun k : ℕ => |psiError k| * (2 / ((k : ℝ) + 1) ^ 2) := by
+  simpa only [psiError] using summable_psi_error_weight
+
+/-- The harmonic increment is at most twice the inverse square. -/
+theorem abs_harmonicIncrement_le (k : ℕ) :
+    |1 / ((k : ℝ) + 1) - 1 / ((k : ℝ) + 2)| ≤ 2 / ((k : ℝ) + 1) ^ 2 := by
+  have h1 : (0 : ℝ) < (k : ℝ) + 1 := by positivity
+  have h2 : (0 : ℝ) < (k : ℝ) + 2 := by positivity
+  have hval : 1 / ((k : ℝ) + 1) - 1 / ((k : ℝ) + 2)
+      = 1 / (((k : ℝ) + 1) * ((k : ℝ) + 2)) := by
     field_simp
-  rw [← heq]
-  exact h
+    ring
+  have hnn : (0 : ℝ) ≤ 1 / ((k : ℝ) + 1) - 1 / ((k : ℝ) + 2) := by
+    rw [hval]
+    positivity
+  rw [abs_of_nonneg hnn, hval, div_le_div_iff₀ (by positivity) (by positivity)]
+  have hk : (0 : ℝ) ≤ (k : ℝ) := Nat.cast_nonneg k
+  nlinarith [sq_nonneg ((k : ℝ) + 1)]
 
-private theorem continuousAt_invLogDeriv {t : ℝ} (ht : 1 < t) :
-    ContinuousAt invLogDeriv t := by
-  have ht0 : t ≠ 0 := by linarith
-  have hlog : Real.log t ≠ 0 := (Real.log_pos ht).ne'
-  have hden : ContinuousAt (fun x : ℝ => x * Real.log x ^ 2) t :=
-    continuousAt_id.mul ((Real.continuousAt_log ht0).pow 2)
-  exact (hden.inv₀ (by positivity)).neg
+theorem summable_psiError_increment :
+    Summable fun k : ℕ => psiError k * (1 / ((k : ℝ) + 1) - 1 / ((k : ℝ) + 2)) := by
+  refine Summable.of_norm (Summable.of_nonneg_of_le (fun k => norm_nonneg _) (fun k => ?_)
+    summable_absPsiError_weight)
+  rw [Real.norm_eq_abs, abs_mul]
+  exact mul_le_mul_of_nonneg_left (abs_harmonicIncrement_le k) (abs_nonneg _)
 
-private theorem primeRecipWeight_eq (n : ℕ) :
-    primeRecipWeight n = invLog n * mertensPrimeWeight n := by
-  rw [primeRecipWeight, mertensPrimeWeight]
-  by_cases hp : n.Prime
-  · have hn1 : (1 : ℝ) < (n : ℝ) := by exact_mod_cast hp.one_lt
-    have hlog : Real.log (n : ℝ) ≠ 0 := (Real.log_pos hn1).ne'
-    rw [if_pos hp, if_pos hp, invLog]
-    field_simp
-  · rw [if_neg hp, if_neg hp, mul_zero]
+/-- The Abel tail constant of the Chebyshev error. -/
+def mertensAbelTail : ℝ :=
+  ∑' k : ℕ, psiError k * (1 / ((k : ℝ) + 1) - 1 / ((k : ℝ) + 2))
 
-/-! ## Abel summation -/
+/-! ## The harmonic side -/
 
-private theorem primeRecipSum_abel {N : ℕ} (hN : 2 ≤ N) :
-    primeRecipSum N =
-      mertensPrimeWeightSum N / Real.log N -
-        ∫ t in Ioc (2 : ℝ) N, invLogDeriv t * mertensPrimeWeightSum ⌊t⌋₊ := by
-  have hNr : (2 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
-  have hlogN : 0 < Real.log (N : ℝ) := Real.log_pos (by linarith)
-  have hdiff : ∀ t ∈ Icc ((2 : ℕ) : ℝ) ((N : ℕ) : ℝ), DifferentiableAt ℝ invLog t := by
-    intro t ht
-    have ht2 : (2 : ℝ) ≤ t := by exact_mod_cast ht.1
-    exact (hasDerivAt_invLog (by linarith)).differentiableAt
-  have hcontDeriv : ContinuousOn (deriv invLog) (Icc ((2 : ℕ) : ℝ) ((N : ℕ) : ℝ)) := by
-    have hcont : ContinuousOn invLogDeriv (Icc ((2 : ℕ) : ℝ) ((N : ℕ) : ℝ)) := by
-      intro t ht
-      have ht2 : (2 : ℝ) ≤ t := by exact_mod_cast ht.1
-      exact (continuousAt_invLogDeriv (by linarith)).continuousWithinAt
-    refine hcont.congr fun t ht => ?_
-    have ht2 : (2 : ℝ) ≤ t := by exact_mod_cast ht.1
-    exact (hasDerivAt_invLog (by linarith)).deriv
-  have hint : IntegrableOn (deriv invLog) (Icc ((2 : ℕ) : ℝ) ((N : ℕ) : ℝ)) :=
-    hcontDeriv.integrableOn_Icc
-  have hab := sum_mul_eq_sub_sub_integral_mul' mertensPrimeWeight (n := 2) (m := N) hN hdiff hint
-  have hsplit : primeRecipSum N =
-      invLog 2 * mertensPrimeWeight 2 +
-        ∑ k ∈ Finset.Ioc 2 N, invLog k * mertensPrimeWeight k := by
-    rw [primeRecipSum, show Finset.Icc 0 N = Finset.Icc 0 2 ∪ Finset.Ioc 2 N by
-        ext n
-        simp only [Finset.mem_Icc, Finset.mem_union, Finset.mem_Ioc]
-        omega,
-      Finset.sum_union (by
-        rw [Finset.disjoint_left]
-        intro a ha hb
-        simp only [Finset.mem_Icc] at ha
-        simp only [Finset.mem_Ioc] at hb
-        omega)]
-    congr 1
-    · rw [show Finset.Icc 0 2 = ({0, 1, 2} : Finset ℕ) by decide]
-      have hl2 : Real.log 2 ≠ 0 := (Real.log_pos (by norm_num)).ne'
-      norm_num [primeRecipWeight, mertensPrimeWeight, invLog]
-      field_simp
-    · exact Finset.sum_congr rfl fun n _ => primeRecipWeight_eq n
-  have hlowsum : ∑ k ∈ Finset.Icc 0 2, mertensPrimeWeight k = Real.log 2 / 2 := by
-    rw [show Finset.Icc 0 2 = ({0, 1, 2} : Finset ℕ) by decide]
-    norm_num [mertensPrimeWeight]
-  have hlowweight : mertensPrimeWeight 2 = Real.log 2 / 2 := by
-    norm_num [mertensPrimeWeight]
-  have hcong : (∫ t in Ioc ((2 : ℕ) : ℝ) ((N : ℕ) : ℝ),
-      deriv invLog t * ∑ k ∈ Finset.Icc 0 ⌊t⌋₊, mertensPrimeWeight k) =
-      ∫ t in Ioc (2 : ℝ) (N : ℝ), invLogDeriv t * mertensPrimeWeightSum ⌊t⌋₊ := by
-    push_cast
-    refine setIntegral_congr_fun measurableSet_Ioc fun t ht => ?_
-    have ht2 : (2 : ℝ) < t := ht.1
-    rw [(hasDerivAt_invLog (by linarith)).deriv, mertensPrimeWeightSum]
-  have hinvN : invLog (N : ℝ) = (Real.log (N : ℝ))⁻¹ := rfl
-  push_cast at hab hcong
-  rw [hsplit, hab, hcong, hlowsum, hlowweight, hinvN, mertensPrimeWeightSum]
-  field_simp
+theorem tendsto_psi_natCast_div :
+    Tendsto (fun n : ℕ => Chebyshev.psi (n : ℝ) / (n : ℝ)) atTop (𝓝 1) :=
+  tendsto_psi_div_self.comp tendsto_natCast_atTop_atTop
+
+/-- **Summation by parts against the harmonic weight.** -/
+theorem tendsto_vonMangoldt_harmonicWeighted :
+    Tendsto (fun n : ℕ => (∑ i ∈ Finset.range (n + 1), (vonMangoldt (i + 1) : ℝ) / ((i : ℝ) + 1))
+        - Real.log ((n : ℝ) + 1)) atTop
+      (𝓝 (Real.eulerMascheroniConstant + mertensAbelTail)) := by
+  refine tendsto_abelPartialSum_sub_log (c := fun i => (vonMangoldt (i + 1) : ℝ)) ?_ ?_
+  · exact tendsto_psi_natCast_div.congr fun n => by rw [psi_natCast_eq_sum_range]
+  · refine summable_psiError_increment.hasSum.tendsto_sum_nat.congr fun n => ?_
+    exact Finset.sum_congr rfl fun k _ => by rw [psiError_eq]
+
+/-! ## The Dirichlet side -/
+
+/-- The coefficient sequence whose partial sums are the Chebyshev error. -/
+def mertensCoeff (i : ℕ) : ℂ := (vonMangoldt (i + 1) : ℂ) - 1
+
+theorem coeffPartial_mertensCoeff (n : ℕ) :
+    coeffPartial mertensCoeff n = ((Chebyshev.psi (n : ℝ) : ℝ) : ℂ) - (n : ℂ) := by
+  rw [coeffPartial, psi_natCast_eq_sum_range]
+  simp only [mertensCoeff]
+  rw [Finset.sum_sub_distrib, Finset.sum_const, Finset.card_range, nsmul_eq_mul, mul_one]
+  push_cast
   ring
 
-end
+theorem coeffPartial_mertensCoeff_succ (k : ℕ) :
+    coeffPartial mertensCoeff (k + 1) = ((psiError k : ℝ) : ℂ) := by
+  rw [coeffPartial_mertensCoeff, psiError]
+  push_cast
+  ring
 
-end RHTower
+/-- The shifted Dirichlet weight is the `L`-series term. -/
+theorem cpow_neg_mul_eq_term (f : ℕ → ℂ) (s : ℂ) (i : ℕ) :
+    ((((i : ℝ) + 1 : ℝ)) : ℂ) ^ (-s) * f (i + 1) = LSeries.term f s (i + 1) := by
+  rw [LSeries.term_def, if_neg (Nat.succ_ne_zero i), Complex.cpow_neg, div_eq_mul_inv]
+  push_cast
+  ring
 
-namespace RHTower
+theorem summable_vonMangoldtShift {s : ℝ} (hs : 1 < s) :
+    Summable fun i : ℕ =>
+      ((((i : ℝ) + 1 : ℝ)) : ℂ) ^ (-(s : ℂ)) * (vonMangoldt (i + 1) : ℂ) := by
+  have hre : 1 < ((s : ℂ)).re := by simpa using hs
+  have h := (summable_nat_add_iff (f := LSeries.term (fun n => (vonMangoldt n : ℂ)) (s : ℂ)) 1).2
+    (ArithmeticFunction.LSeriesSummable_vonMangoldt hre)
+  exact h.congr fun i => (cpow_neg_mul_eq_term (fun n => (vonMangoldt n : ℂ)) (s : ℂ) i).symm
 
-noncomputable section
+theorem summable_oneShift {s : ℝ} (hs : 1 < s) :
+    Summable fun i : ℕ => ((((i : ℝ) + 1 : ℝ)) : ℂ) ^ (-(s : ℂ)) * (1 : ℂ) := by
+  have hre : 1 < ((s : ℂ)).re := by simpa using hs
+  have h := (summable_nat_add_iff (f := fun n : ℕ => 1 / (n : ℂ) ^ (s : ℂ)) 1).2
+    (Complex.summable_one_div_nat_cpow.2 hre)
+  refine h.congr fun i => ?_
+  rw [mul_one, Complex.cpow_neg, one_div]
+  push_cast
+  ring
 
-open Filter Topology MeasureTheory Set
-open scoped BigOperators
+theorem summable_mertensDirichlet {s : ℝ} (hs : 1 < s) :
+    Summable fun i : ℕ => ((((i : ℝ) + 1 : ℝ)) : ℂ) ^ (-(s : ℂ)) * mertensCoeff i := by
+  have hsplit : ∀ i : ℕ, ((((i : ℝ) + 1 : ℝ)) : ℂ) ^ (-(s : ℂ)) * mertensCoeff i
+      = ((((i : ℝ) + 1 : ℝ)) : ℂ) ^ (-(s : ℂ)) * (vonMangoldt (i + 1) : ℂ)
+        - ((((i : ℝ) + 1 : ℝ)) : ℂ) ^ (-(s : ℂ)) * (1 : ℂ) := by
+    intro i
+    rw [mertensCoeff]
+    ring
+  exact ((summable_vonMangoldtShift hs).sub (summable_oneShift hs)).congr fun i => (hsplit i).symm
 
-/-! ## Splitting off the Mertens error -/
+/-- **The Dirichlet series of `Λ − 1` is `L(Λ, s) − ζ(s)`.** -/
+theorem tsum_mertensDirichlet {s : ℝ} (hs : 1 < s) :
+    (∑' i : ℕ, ((((i : ℝ) + 1 : ℝ)) : ℂ) ^ (-(s : ℂ)) * mertensCoeff i)
+      = LSeries (fun n => (vonMangoldt n : ℂ)) (s : ℂ) - riemannZeta (s : ℂ) := by
+  have hre : 1 < ((s : ℂ)).re := by simpa using hs
+  have hsplit : ∀ i : ℕ, ((((i : ℝ) + 1 : ℝ)) : ℂ) ^ (-(s : ℂ)) * mertensCoeff i
+      = ((((i : ℝ) + 1 : ℝ)) : ℂ) ^ (-(s : ℂ)) * (vonMangoldt (i + 1) : ℂ)
+        - ((((i : ℝ) + 1 : ℝ)) : ℂ) ^ (-(s : ℂ)) * (1 : ℂ) := by
+    intro i
+    rw [mertensCoeff]
+    ring
+  rw [tsum_congr hsplit, (summable_vonMangoldtShift hs).tsum_sub (summable_oneShift hs)]
+  congr 1
+  · simp only [LSeries]
+    rw [(ArithmeticFunction.LSeriesSummable_vonMangoldt hre).tsum_eq_zero_add, LSeries.term_zero,
+      zero_add]
+    exact tsum_congr fun i => cpow_neg_mul_eq_term (fun n => (vonMangoldt n : ℂ)) (s : ℂ) i
+  · rw [zeta_eq_tsum_one_div_nat_add_one_cpow hre]
+    refine tsum_congr fun i => ?_
+    rw [mul_one, Complex.cpow_neg, one_div]
+    push_cast
+    ring
 
-/-- The Mertens floor error `∑_{p ≤ ⌊t⌋} (log p)/p - log t`. -/
-def mertensFloorError (t : ℝ) : ℝ := mertensPrimeWeightSum ⌊t⌋₊ - Real.log t
+/-- The Chebyshev error is eventually at most the argument. -/
+theorem eventually_abs_psi_sub_le : ∀ᶠ x : ℝ in atTop, |Chebyshev.psi x - x| ≤ x := by
+  filter_upwards [tendsto_psi_div_self.eventually_lt_const (by norm_num : (1 : ℝ) < 2),
+    eventually_gt_atTop (0 : ℝ)] with x hx hx0
+  have hpsi : 0 ≤ Chebyshev.psi x := Chebyshev.psi_nonneg x
+  rw [div_lt_iff₀ hx0] at hx
+  rw [abs_le]
+  constructor <;> linarith
 
-theorem abs_mertensFloorError_le {t : ℝ} (ht : 2 ≤ t) :
-    |mertensFloorError t| ≤ mertensPrimeWindowBound + 1 :=
-  abs_mertensPrimeWeightSum_floor_sub_log_le ht
+theorem tendsto_boundary_mertens {s : ℝ} (hs : 1 < s) :
+    Tendsto (fun n : ℕ => ((n : ℝ) : ℂ) ^ (-(s : ℂ)) * coeffPartial mertensCoeff n) atTop
+      (𝓝 0) := by
+  have hlim : Tendsto (fun n : ℕ => ((n : ℝ)) ^ (-(s - 1))) atTop (𝓝 0) :=
+    (tendsto_rpow_neg_atTop (by linarith : (0 : ℝ) < s - 1)).comp tendsto_natCast_atTop_atTop
+  refine squeeze_zero_norm' ?_ hlim
+  obtain ⟨X, hX⟩ := eventually_atTop.1 ((tendsto_natCast_atTop_atTop (R := ℝ)).eventually
+    eventually_abs_psi_sub_le)
+  filter_upwards [eventually_atTop.2 ⟨X, hX⟩, eventually_ge_atTop 1] with n hn hn1
+  have hnpos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn1
+  rw [norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hnpos, coeffPartial_mertensCoeff]
+  have hnorm : ‖((Chebyshev.psi (n : ℝ) : ℝ) : ℂ) - (n : ℂ)‖ = |Chebyshev.psi (n : ℝ) - (n : ℝ)| := by
+    rw [show ((Chebyshev.psi (n : ℝ) : ℝ) : ℂ) - (n : ℂ)
+        = (((Chebyshev.psi (n : ℝ) - (n : ℝ)) : ℝ) : ℂ) by push_cast; ring]
+    rw [Complex.norm_real, Real.norm_eq_abs]
+  rw [hnorm]
+  have hre : ((-(s : ℂ))).re = -s := by simp
+  rw [hre]
+  have hstep : (n : ℝ) ^ (-s) * |Chebyshev.psi (n : ℝ) - (n : ℝ)| ≤ (n : ℝ) ^ (-s) * (n : ℝ) :=
+    mul_le_mul_of_nonneg_left hn (Real.rpow_nonneg hnpos.le _)
+  refine hstep.trans (le_of_eq ?_)
+  rw [show -(s - 1) = -s + 1 by ring, Real.rpow_add hnpos, Real.rpow_one]
 
-private theorem measurable_mertensFloorError : Measurable mertensFloorError := by
-  have h1 : Measurable (fun t : ℝ => mertensPrimeWeightSum ⌊t⌋₊) :=
-    (measurable_from_top (f := mertensPrimeWeightSum)).comp Nat.measurable_floor
-  exact h1.sub Real.measurable_log
+/-- The Abel tail of the Dirichlet difference. -/
+def mertensDirichletTail (s : ℝ) : ℂ :=
+  ∑' k : ℕ, ((psiError k : ℝ) : ℂ)
+    * (((((k : ℝ) + 1 : ℝ)) : ℂ) ^ (-(s : ℂ)) - ((((k : ℝ) + 2 : ℝ)) : ℂ) ^ (-(s : ℂ)))
 
-/-- The weight `1/(t log² t)` against which the Mertens error is integrated. -/
-def mertensErrorWeight (t : ℝ) : ℝ := (t * Real.log t ^ 2)⁻¹
+theorem mertensDirichletTail_eq (s : ℝ) :
+    mertensDirichletTail s = ∑' k : ℕ, ((psiError k : ℝ) : ℂ)
+      * (((((k : ℝ) + 1 : ℝ)) : ℂ) ^ (-(s : ℂ)) - ((((k : ℝ) + 2 : ℝ)) : ℂ) ^ (-(s : ℂ))) := rfl
 
-private theorem hasDerivAt_negInvLog {t : ℝ} (ht : 1 < t) :
-    HasDerivAt (fun x : ℝ => -invLog x) (mertensErrorWeight t) t := by
-  have h := (hasDerivAt_invLog ht).neg
-  rw [invLogDeriv, neg_neg] at h
-  rw [mertensErrorWeight]
-  exact h
+theorem summable_mertensAbelTerm {s : ℝ} (hs1 : 1 ≤ s) (hs2 : s ≤ 2) :
+    Summable fun k : ℕ => coeffPartial mertensCoeff (k + 1)
+      * (((((k : ℝ) + 1 : ℝ)) : ℂ) ^ (-(s : ℂ)) - ((((k : ℝ) + 2 : ℝ)) : ℂ) ^ (-(s : ℂ))) := by
+  refine Summable.of_norm (Summable.of_nonneg_of_le (fun k => norm_nonneg _) (fun k => ?_)
+    summable_absPsiError_weight)
+  rw [coeffPartial_mertensCoeff_succ, norm_mul, Complex.norm_real, Real.norm_eq_abs]
+  exact mul_le_mul_of_nonneg_left (norm_cpow_increment_le k hs1 hs2) (abs_nonneg _)
 
-theorem mertensErrorWeight_nonneg {t : ℝ} (ht : 1 < t) : 0 ≤ mertensErrorWeight t := by
-  have hlog : 0 < Real.log t := Real.log_pos ht
-  rw [mertensErrorWeight]
-  positivity
+/-- **The Dirichlet difference is the Abel tail of the Chebyshev error.** -/
+theorem mertensDirichlet_eq_tail {s : ℝ} (hs1 : 1 < s) (hs2 : s < 2) :
+    LSeries (fun n => (vonMangoldt n : ℂ)) (s : ℂ) - riemannZeta (s : ℂ)
+      = mertensDirichletTail s := by
+  rw [← tsum_mertensDirichlet hs1,
+    tsum_eq_abelTail (summable_mertensDirichlet hs1) (summable_mertensAbelTerm hs1.le hs2.le)
+      (tendsto_boundary_mertens hs1), mertensDirichletTail_eq]
+  exact tsum_congr fun k => by rw [coeffPartial_mertensCoeff_succ]
 
-theorem integrableOn_mertensErrorWeight : IntegrableOn mertensErrorWeight (Ioi (2 : ℝ)) := by
-  have hcont : ContinuousWithinAt (fun x : ℝ => -invLog x) (Ici (2 : ℝ)) 2 := by
-    have hlog2 : Real.log 2 ≠ 0 := (Real.log_pos (by norm_num)).ne'
-    have : ContinuousAt (fun x : ℝ => -invLog x) 2 := by
-      unfold invLog
-      exact ((Real.continuousAt_log (by norm_num)).inv₀ hlog2).neg
-    exact this.continuousWithinAt
-  have hderiv : ∀ x ∈ Ioi (2 : ℝ), HasDerivAt (fun y : ℝ => -invLog y) (mertensErrorWeight x) x :=
-    fun x hx => hasDerivAt_negInvLog (by linarith [hx.out])
-  have hnn : ∀ x ∈ Ioi (2 : ℝ), 0 ≤ mertensErrorWeight x :=
-    fun x hx => mertensErrorWeight_nonneg (by linarith [hx.out])
-  have hlim : Tendsto (fun x : ℝ => -invLog x) atTop (nhds 0) := by
-    have hlog : Tendsto Real.log atTop atTop := Real.tendsto_log_atTop
-    have : Tendsto (fun x : ℝ => (Real.log x)⁻¹) atTop (nhds 0) :=
-      hlog.inv_tendsto_atTop
-    simpa [invLog] using this.neg
-  exact integrableOn_Ioi_deriv_of_nonneg hcont hderiv hnn hlim
+theorem tendsto_mertensDirichletTail :
+    Tendsto mertensDirichletTail (𝓝[>] 1) (𝓝 ((mertensAbelTail : ℝ) : ℂ)) := by
+  have h := tendsto_tsum_cpow_increment (E := fun k : ℕ => ((psiError k : ℝ) : ℂ))
+    summable_absPsiError_weight
+    (fun k => le_of_eq (by rw [Complex.norm_real, Real.norm_eq_abs]))
+  have hval : (∑' k : ℕ, ((psiError k : ℝ) : ℂ)
+      * (((((k : ℝ) + 1 : ℝ)) : ℂ)⁻¹ - ((((k : ℝ) + 2 : ℝ)) : ℂ)⁻¹))
+      = ((mertensAbelTail : ℝ) : ℂ) := by
+    rw [mertensAbelTail, Complex.ofReal_tsum]
+    exact tsum_congr fun k => by push_cast; ring
+  rw [hval] at h
+  exact h.congr fun s => (mertensDirichletTail_eq s).symm
 
-theorem integrableOn_mertensFloorError_mul_mertensErrorWeight :
-    IntegrableOn (fun t : ℝ => mertensFloorError t * mertensErrorWeight t) (Ioi (2 : ℝ)) := by
-  have hmajor : IntegrableOn
-      (fun t : ℝ => (mertensPrimeWindowBound + 1) * mertensErrorWeight t) (Ioi (2 : ℝ)) :=
-    integrableOn_mertensErrorWeight.const_mul _
-  have hmeas : AEStronglyMeasurable (fun t : ℝ => mertensFloorError t * mertensErrorWeight t)
-      (volume.restrict (Ioi (2 : ℝ))) := by
-    have hinv : Measurable mertensErrorWeight := by
-      unfold mertensErrorWeight
-      fun_prop
-    exact (measurable_mertensFloorError.mul hinv).aestronglyMeasurable
-  refine Integrable.mono hmajor hmeas ?_
-  filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
-  have ht2 : (2 : ℝ) < t := ht
-  have hnn := mertensErrorWeight_nonneg (by linarith : (1 : ℝ) < t)
-  have hD : 0 ≤ mertensPrimeWindowBound + 1 := by linarith [mertensPrimeWindowBound_nonneg]
-  rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg hnn, Real.norm_eq_abs,
-    abs_of_nonneg (mul_nonneg hD hnn)]
-  exact mul_le_mul_of_nonneg_right (abs_mertensFloorError_le ht2.le) hnn
-
-/-! ## The main logarithmic integral -/
-
-private theorem integral_invLogMul {N : ℕ} (hN : 2 ≤ N) :
-    (∫ t in Ioc (2 : ℝ) (N : ℝ), (t * Real.log t)⁻¹) =
-      Real.log (Real.log N) - Real.log (Real.log 2) := by
-  have hNr : (2 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
-  have hderiv : ∀ t ∈ uIcc (2 : ℝ) (N : ℝ),
-      HasDerivAt (fun x : ℝ => Real.log (Real.log x)) (t * Real.log t)⁻¹ t := by
-    intro t ht
-    rw [uIcc_of_le hNr] at ht
-    have ht2 : (2 : ℝ) ≤ t := ht.1
-    have ht0 : t ≠ 0 := by linarith
-    have hlog : Real.log t ≠ 0 := (Real.log_pos (by linarith)).ne'
-    have h := (Real.hasDerivAt_log ht0).log hlog
-    rw [show t⁻¹ / Real.log t = (t * Real.log t)⁻¹ by rw [mul_inv, div_eq_mul_inv]] at h
-    exact h
-  have hcont : ContinuousOn (fun t : ℝ => (t * Real.log t)⁻¹) (uIcc (2 : ℝ) (N : ℝ)) := by
-    rw [uIcc_of_le hNr]
-    intro t ht
-    have ht2 : (2 : ℝ) ≤ t := ht.1
-    have ht0 : t ≠ 0 := by linarith
-    have hlog : Real.log t ≠ 0 := (Real.log_pos (by linarith)).ne'
-    exact ((continuousAt_id.mul (Real.continuousAt_log ht0)).inv₀
-      (mul_ne_zero ht0 hlog)).continuousWithinAt
-  rw [← intervalIntegral.integral_of_le hNr,
-    intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv (hcont.intervalIntegrable)]
-
-end
-
-end RHTower
-
-namespace RHTower
-
-noncomputable section
-
-open Filter Topology MeasureTheory Set
-open scoped BigOperators
+/-- **The Abel tail constant of the Chebyshev error is `−2γ`.** -/
+theorem mertensAbelTail_eq : mertensAbelTail = -2 * Real.eulerMascheroniConstant := by
+  have hid : ∀ᶠ s : ℝ in 𝓝[>] 1,
+      LSeries (fun n => (vonMangoldt n : ℂ)) (s : ℂ) - riemannZeta (s : ℂ)
+        = mertensDirichletTail s := by
+    filter_upwards [self_mem_nhdsWithin,
+      nhdsWithin_le_nhds (gt_mem_nhds (by norm_num : (1 : ℝ) < 2))] with s hs hs2
+    exact mertensDirichlet_eq_tail hs hs2
+  have h := mertensTail_eq hid tendsto_mertensDirichletTail
+  have hcast : ((mertensAbelTail : ℝ) : ℂ) = ((-2 * Real.eulerMascheroniConstant : ℝ) : ℂ) := by
+    rw [h]
+    push_cast
+    ring
+  exact_mod_cast hcast
 
 /-! ## Mertens' second theorem -/
 
-/-- The Mertens constant of the prime reciprocal sum. -/
-def mertensSecondConstant : ℝ :=
-  1 - Real.log (Real.log 2) + ∫ t in Ioi (2 : ℝ), mertensFloorError t * mertensErrorWeight t
+/-- **Mertens' second theorem.**  `∑_{n ≤ N} Λ(n)/n − log N → −γ`. -/
+theorem tendsto_sum_vonMangoldt_div_sub_log :
+    Tendsto (fun N : ℕ => (∑ n ∈ Finset.Icc 1 N, (vonMangoldt n : ℝ) / (n : ℝ))
+        - Real.log (N : ℝ)) atTop (𝓝 (-Real.eulerMascheroniConstant)) := by
+  have hbase : Tendsto (fun n : ℕ =>
+      (∑ i ∈ Finset.range (n + 1), (vonMangoldt (i + 1) : ℝ) / ((i : ℝ) + 1))
+        - Real.log ((n : ℝ) + 1)) atTop (𝓝 (-Real.eulerMascheroniConstant)) := by
+    have h := tendsto_vonMangoldt_harmonicWeighted
+    rw [mertensAbelTail_eq,
+      show Real.eulerMascheroniConstant + -2 * Real.eulerMascheroniConstant
+        = -Real.eulerMascheroniConstant by ring] at h
+    exact h
+  refine (hbase.comp (tendsto_sub_atTop_nat 1)).congr' ?_
+  filter_upwards [eventually_ge_atTop 1] with N hN
+  have hstep : N - 1 + 1 = N := by omega
+  have hcast : ((N - 1 : ℕ) : ℝ) + 1 = (N : ℝ) := by
+    rw [show ((N - 1 : ℕ) : ℝ) + 1 = (((N - 1 : ℕ) + 1 : ℕ) : ℝ) by push_cast; ring, hstep]
+  simp only [Function.comp_apply]
+  rw [hstep, hcast]
+  congr 1
+  rw [sum_Icc_eq_sum_range_shift (fun n => (vonMangoldt n : ℝ) / (n : ℝ)) N]
+  exact Finset.sum_congr rfl fun i _ => by push_cast; ring
 
-private theorem primeRecipSum_split {N : ℕ} (hN : 2 ≤ N) :
-    primeRecipSum N =
-      mertensPrimeWeightSum N / Real.log N +
-        (Real.log (Real.log N) - Real.log (Real.log 2)) +
-        ∫ t in Ioc (2 : ℝ) N, mertensFloorError t * mertensErrorWeight t := by
-  have hNr : (2 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
-  have hcontMain : ContinuousOn (fun t : ℝ => (t * Real.log t)⁻¹) (Icc (2 : ℝ) (N : ℝ)) := by
-    intro t ht
-    have ht2 : (2 : ℝ) ≤ t := ht.1
-    have ht0 : t ≠ 0 := by linarith
-    have hlog : Real.log t ≠ 0 := (Real.log_pos (by linarith)).ne'
-    exact ((continuousAt_id.mul (Real.continuousAt_log ht0)).inv₀
-      (mul_ne_zero ht0 hlog)).continuousWithinAt
-  have hintMain : IntegrableOn (fun t : ℝ => (t * Real.log t)⁻¹) (Ioc (2 : ℝ) (N : ℝ)) :=
-    (hcontMain.integrableOn_Icc).mono_set Ioc_subset_Icc_self
-  have hintErr : IntegrableOn
-      (fun t : ℝ => mertensFloorError t * mertensErrorWeight t) (Ioc (2 : ℝ) (N : ℝ)) :=
-    integrableOn_mertensFloorError_mul_mertensErrorWeight.mono_set Ioc_subset_Ioi_self
-  have hptwise : ∀ t ∈ Ioc (2 : ℝ) (N : ℝ),
-      -(invLogDeriv t * mertensPrimeWeightSum ⌊t⌋₊) =
-        (t * Real.log t)⁻¹ + mertensFloorError t * mertensErrorWeight t := by
-    intro t ht
-    have ht2 : (2 : ℝ) < t := ht.1
-    have ht0 : t ≠ 0 := by linarith
-    have hlog : Real.log t ≠ 0 := (Real.log_pos (by linarith)).ne'
-    rw [invLogDeriv, mertensErrorWeight, mertensFloorError]
-    field_simp
-    ring
-  have hsplit : (∫ t in Ioc (2 : ℝ) (N : ℝ), invLogDeriv t * mertensPrimeWeightSum ⌊t⌋₊) =
-      -((∫ t in Ioc (2 : ℝ) (N : ℝ), (t * Real.log t)⁻¹) +
-        ∫ t in Ioc (2 : ℝ) (N : ℝ), mertensFloorError t * mertensErrorWeight t) := by
-    rw [← MeasureTheory.integral_add hintMain hintErr, ← MeasureTheory.integral_neg]
-    refine setIntegral_congr_fun measurableSet_Ioc fun t ht => ?_
-    rw [← hptwise t ht, neg_neg]
-  rw [primeRecipSum_abel hN, hsplit, integral_invLogMul hN]
-  ring
+/-! ## The limit of the harmonic primitive -/
 
-private theorem tendsto_mertensPrimeWeightSum_div_log :
-    Tendsto (fun N : ℕ => mertensPrimeWeightSum N / Real.log N) atTop (nhds 1) := by
-  rw [tendsto_iff_norm_sub_tendsto_zero]
-  have hlogtop : Tendsto (fun N : ℕ => Real.log N) atTop atTop :=
-    Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
-  have hb : ∀ᶠ N : ℕ in atTop,
-      ‖mertensPrimeWeightSum N / Real.log N - 1‖ ≤ mertensPrimeWindowBound / Real.log N := by
-    filter_upwards [Filter.eventually_ge_atTop 2] with N hN
-    have hNr : (2 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
-    have hlogN : 0 < Real.log (N : ℝ) := Real.log_pos (by linarith)
-    have h := abs_mertensPrimeWeightSum_sub_log_le N (by omega)
-    rw [Real.norm_eq_abs, show mertensPrimeWeightSum N / Real.log N - 1 =
-        (mertensPrimeWeightSum N - Real.log N) / Real.log N by field_simp,
-      abs_div, abs_of_pos hlogN]
-    gcongr
-  refine squeeze_zero' (Filter.Eventually.of_forall fun N => norm_nonneg _) hb ?_
-  exact Tendsto.div_atTop tendsto_const_nhds hlogtop
+theorem harmonic_eq_sum_Icc (N : ℕ) : (harmonic N : ℝ) = ∑ n ∈ Finset.Icc 1 N, 1 / (n : ℝ) := by
+  rw [sum_Icc_eq_sum_range_shift (fun n => 1 / (n : ℝ)) N, harmonic]
+  push_cast
+  exact Finset.sum_congr rfl fun i _ => by rw [one_div]
 
-private theorem tendsto_errorIntegral :
+theorem sourcePartialSum_vonMangoldt_sub_one (N : ℕ) :
+    sourcePartialSum (fun n => (vonMangoldt n : ℝ) - 1) N = Chebyshev.psi (N : ℝ) - (N : ℝ) := by
+  rw [sourcePartialSum, Finset.sum_sub_distrib, Finset.sum_const, Nat.card_Icc, nsmul_eq_mul,
+    mul_one, sum_Icc_eq_sum_range_shift (fun n => (vonMangoldt n : ℝ)) N,
+    psi_natCast_eq_sum_range, Nat.add_sub_cancel]
+
+theorem tendsto_psiError_div :
+    Tendsto (fun N : ℕ => (Chebyshev.psi (N : ℝ) - (N : ℝ)) / ((N : ℝ) + 1)) atTop (𝓝 0) := by
+  have hz : Tendsto (fun N : ℕ => |Chebyshev.psi (N : ℝ) / (N : ℝ) - 1|) atTop (𝓝 0) := by
+    have h := tendsto_psi_natCast_div.sub_const 1
+    rw [sub_self] at h
+    simpa [Real.norm_eq_abs] using tendsto_zero_iff_norm_tendsto_zero.1 h
+  refine squeeze_zero_norm' ?_ hz
+  filter_upwards [eventually_ge_atTop 1] with N hN
+  have hNpos : (0 : ℝ) < (N : ℝ) := by exact_mod_cast hN
+  have hq : |Chebyshev.psi (N : ℝ) / (N : ℝ) - 1|
+      = |Chebyshev.psi (N : ℝ) - (N : ℝ)| / (N : ℝ) := by
+    rw [show Chebyshev.psi (N : ℝ) / (N : ℝ) - 1
+        = (Chebyshev.psi (N : ℝ) - (N : ℝ)) / (N : ℝ) by field_simp]
+    rw [abs_div, abs_of_pos hNpos]
+  rw [hq, Real.norm_eq_abs, abs_div, abs_of_pos (by linarith : (0 : ℝ) < (N : ℝ) + 1)]
+  gcongr
+  linarith
+
+/-- **(24.64) The harmonic primitive of the Chebyshev error tends to `−2γ`.** -/
+theorem tendsto_harmonicPrimitive_vonMangoldt :
     Tendsto (fun N : ℕ =>
-      ∫ t in Ioc (2 : ℝ) (N : ℝ), mertensFloorError t * mertensErrorWeight t) atTop
-      (nhds (∫ t in Ioi (2 : ℝ), mertensFloorError t * mertensErrorWeight t)) := by
-  have hmono : Monotone (fun N : ℕ => Ioc (2 : ℝ) (N : ℝ)) := by
-    intro a b hab
-    exact Ioc_subset_Ioc_right (by exact_mod_cast hab)
-  have hunion : (⋃ N : ℕ, Ioc (2 : ℝ) (N : ℝ)) = Ioi (2 : ℝ) := by
-    ext t
-    simp only [mem_iUnion, mem_Ioc, mem_Ioi]
-    constructor
-    · rintro ⟨N, hN, -⟩
-      exact hN
-    · intro ht
-      obtain ⟨N, hN⟩ := exists_nat_ge t
-      exact ⟨N, ht, hN⟩
-  have hfi : IntegrableOn (fun t : ℝ => mertensFloorError t * mertensErrorWeight t)
-      (⋃ N : ℕ, Ioc (2 : ℝ) (N : ℝ)) := by
-    rw [hunion]
-    exact integrableOn_mertensFloorError_mul_mertensErrorWeight
-  have h := MeasureTheory.tendsto_setIntegral_of_monotone
-    (fun N : ℕ => measurableSet_Ioc) hmono hfi
-  rwa [hunion] at h
-
-/-- **Mertens' second theorem with its constant.** -/
-theorem tendsto_primeRecipSum_sub_logLog :
-    Tendsto (fun N : ℕ => primeRecipSum N - Real.log (Real.log N)) atTop
-      (nhds mertensSecondConstant) := by
-  have hmain := tendsto_mertensPrimeWeightSum_div_log
-  have herr := tendsto_errorIntegral
-  have hsum := (hmain.sub_const (Real.log (Real.log 2))).add herr
-  rw [mertensSecondConstant]
-  refine hsum.congr' ?_
-  filter_upwards [Filter.eventually_ge_atTop 2] with N hN
-  rw [primeRecipSum_split hN]
-  ring
+        harmonicPrimitive (sourcePartialSum (fun n => (vonMangoldt n : ℝ) - 1)) N)
+      atTop (𝓝 (-2 * Real.eulerMascheroniConstant)) := by
+  have hmain := tendsto_harmonicPrimitive_of_mertens
+    (S := fun N : ℕ => ∑ n ∈ Finset.Icc 1 N, (vonMangoldt n : ℝ) / (n : ℝ))
+    (R := fun N : ℕ => Chebyshev.psi (N : ℝ) - (N : ℝ))
+    tendsto_psiError_div tendsto_sum_vonMangoldt_div_sub_log
+  refine hmain.congr fun N => ?_
+  rw [harmonicPrimitive_sourcePartialSum, sourcePartialSum_vonMangoldt_sub_one,
+    harmonic_eq_sum_Icc]
+  have hsplit : ∑ n ∈ Finset.Icc 1 N, ((vonMangoldt n : ℝ) - 1) / (n : ℝ)
+      = (∑ n ∈ Finset.Icc 1 N, (vonMangoldt n : ℝ) / (n : ℝ))
+        - ∑ n ∈ Finset.Icc 1 N, 1 / (n : ℝ) := by
+    rw [← Finset.sum_sub_distrib]
+    exact Finset.sum_congr rfl fun n _ => by ring
+  rw [hsplit]
 
 end
 

@@ -1,7 +1,7 @@
 # Universal orthogonality — no prime-side positivity is equivalent to RH
 
 - **ID:** universal-prime-side-orthogonality
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper, no-go) — the prime-side no-go for the ζ-relevant category in **both** prime
   realizations (complex `σ_p` AND p-adic Morita `Γ_p`), §1–§3 + §5. The universal-Satake quantifier (§4)
   is the **OPEN D4 residual**, explicitly **not** part of the banked theorem. Grade **BRIDGE (substrate)**.
@@ -124,11 +124,11 @@ carries no wild/Source-A data; the wild data sits at `K_∞` = the archimedean p
 - [x] 0 → 1: quantifier stated; `𝓜_B = Rep(T_B)` fixed; witness shape (the polarization involution) fixed.
 - [x] 1 → 2 (abelian/ζ case): §1–§3 prove every Source-B polarization of ζ is the RH-blind modulus inversion,
   and the FE involution is the archimedean-twisted version, not Source-B. BRIDGE (substrate).
-- [ ] 2 → 3: Lean anchor **DONE** for the abelian FE coordinate identity
-  `x_p=p^{-s} ↦ p^{-(1-s)} = p^{-1}x_p^{-1}`:
-  `cpow_inversion_scale` in `formal/GaloisForLFunctions/Core.lean`. Remaining Lean targets: the full
-  torus-representation/compact-form uniqueness wrapper for the abelian case, and the general Satake
-  quantifier (§4 residual, D4).
+- [x] 2 → 3: the abelian FE coordinate identity is `cpow_inversion_scale`
+  (`formal/GaloisForLFunctions/Core.lean`), and the torus/compact-form uniqueness wrapper is now
+  `formal/GaloisForLFunctions/HTGeometry/PrimeSideOrthogonality.lean`; see the certificate below.
+  The general Satake quantifier (§4) is the **open D4 residual** and is explicitly *not* part of the
+  banked theorem, so it is not a formalization obligation of this card.
 - [ ] 3 → 4: folds into the seam exposition: "the prime wing cannot carry RH; the FE polarization is the
   archimedean twist."
 
@@ -136,7 +136,7 @@ carries no wild/Source-A data; the wild data sits at `K_∞` = the archimedean p
 - `../2-fully-proven/orthogonality-meta-theorem.md` (#137) — the located theorem this universalizes (abelian case).
 - `../2-fully-proven/archimedean-generator-axis-mode.md` (#136) — `σ_p` Fourier-diagonal ⟹ `T_B` abelian (§1).
 - `compute-omega-h2-gl.md` (#27 §R) — ∞-prime Koszul acyclicity (§4 input).
-- `../2-fully-proven/archimedean-prime-cross-term.md` (#135) — the archimedean twist / FE-conspiracy cocycle.
+- `../3-formalized/not_new_scientific_knowledge/archimedean-prime-cross-term.md` (#135) — the archimedean twist / FE-conspiracy cocycle.
 - `corank-seam-invariant.md` (#125) — the `corank=∞` / no-single-Frobenius gate (Door-5).
 - `../0-backlog-lean/faces-orthogonality.md` (#54) — Face A ⊥ Face B (the disjoint-wings input).
 
@@ -209,3 +209,27 @@ place its negative direction in the (archimedean-content-free) multiplicative wi
 target for D4 — narrower than "all Satake polarizations."
 
 (Grade unchanged; this sharpens §4's open residual, it does not close it.)
+
+
+## Lean certificate — 2026-08-16 (2→3 gate closed)
+
+`formal/GaloisForLFunctions/HTGeometry/PrimeSideOrthogonality.lean`, wired into the `HTGeometry`
+umbrella; every declaration audits to `[propext, Classical.choice, Quot.sound]`.
+
+A corpus search first confirmed that the FE coordinate identity was already owned
+(`cpow_inversion_scale`) and that no torus-polarization uniqueness wrapper existed.
+
+| Paper step | Lean |
+|---|---|
+| **§2** the tensor-duality involution on the weight lattice pairs `m` with `τ m` where `m + τ m = 0`, and that pins `τ = −id` | `dualityInvolution_eq_neg` |
+| **§2** on the unit torus the Cartan involution *is* inversion — the compact form's conjugation | `conj_eq_inv_of_norm_one` |
+| **§3 the crux**: `g ↦ c·g⁻¹` is a group homomorphism only when `c = 1` | `not_monoidHom_scaled_inv` |
+| **§3** hence the FE involution, inversion twisted by a nontrivial global scaling, is **not** a torus automorphism | `feInvolution_not_torusAutomorphism` |
+| **§3** and it differs from the prime-side polarization (which is plain inversion) | `feInvolution_ne_inversion` |
+| the twist constant is nontrivial at every prime base `p > 1` | `feScale_ne_one` |
+| **§3** the Bohr-coordinate identity `p^{-(1−s)} = p^{-1}·(p^{-s})^{-1}` | `cpow_inversion_scale` (pre-existing) |
+| **§5** the `p`-adic Morita realization is unit-valued, so its divisor is empty, its orbit degree vanishes, and it is a coboundary class — §2 applies verbatim | `orbitDegree_eq_zero_of_unitValued` |
+
+**Scope.**  What is formalized is exactly the banked theorem: the abelian/ζ case, §1–§3 plus the §5
+realization-independence.  §4 (the universal Satake quantifier) is the card's own declared open D4
+residual — visible in every parent, computable by none — and is not claimed here.

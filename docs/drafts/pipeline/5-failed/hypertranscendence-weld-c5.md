@@ -27,7 +27,7 @@
 ## The re-aim (per the user steer): C5 is hypertranscendence, not RH
 
 The team had pinned **C5 ⟺ G5-positivity** (RH) via the two cross-term cocycles (both BRIDGE:
-`../5-failed/c5-near-resonance-large-values.md`, `../2-fully-proven/archimedean-prime-cross-term.md`). The
+`../5-failed/c5-near-resonance-large-values.md`, `../3-formalized/not_new_scientific_knowledge/archimedean-prime-cross-term.md`). The
 2026-06-19 user steer **redirects**: the field's reason to exist is **hypertranscendence** (Hölder), not
 localization. So the keystone is re-aimed at the **joint difference-differential hypertranscendence** of the
 completed `Λ` — the native strengthening of "Λ evades every algebraic *differential* equation" (classical
@@ -148,7 +148,7 @@ difference field. ∎
 - `completed-connection-category.md`, `archimedean-corank-collapse.md` (Professor) — the **operator/connection**
   view of the same `∂_s`-on-infinite-base coupling (FE=flatness, corank collapse). **Coordinate:** that cluster
   owns the connection/positivity face; this card owns the **transcendence/hypertranscendence** face of `∂_s`.
-- `../2-fully-proven/archimedean-prime-cross-term.md` — the FE-cocycle BRIDGE; this card is the *other* C5
+- `../3-formalized/not_new_scientific_knowledge/archimedean-prime-cross-term.md` — the FE-cocycle BRIDGE; this card is the *other* C5
   reading (hypertranscendence, per user steer) that does NOT route through the FE/positivity.
 
 ## Log

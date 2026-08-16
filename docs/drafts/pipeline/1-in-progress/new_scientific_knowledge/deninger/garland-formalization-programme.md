@@ -1187,3 +1187,329 @@ HTGeometry/MilnorKResidueSteinberg.lean  the Steinberg relation as an operator
 So `K_2^M(F) = MilnorKDeg F 2` exists with all its relations.  What is missing is only the
 comparison map, and building it still requires `{u, 1-u} = 1` in `K₂` — i.e. Milnor's Dennis-Stein
 computation — which remains the single blocker for this layer.
+
+## Layer B — the Bruhat cell parameters are unique, PROVED
+
+`HTGeometry/BruhatCellUniqueness.lean` (wired, axiom-clean).  Searched first: no Dennis-Stein or
+Bruhat-uniqueness material exists elsewhere in the corpus.
+
+```
+bruhatMatrix_eq        T_ji(beta) D(w) T_ij(alpha)
+                         = 1 + E_ii(w-1) + E_jj(w^{-1}-1+alpha beta w) + E_ij(alpha w) + E_ji(beta w)
+bruhat_params_unique   equal Bruhat products have equal (w, alpha w, beta w)
+```
+
+In the two-index block the product is
+
+```
+[1 0][w 0   ][1 alpha]   [w        alpha w      ]
+[b 1][0 w^{-1}][0   1 ] = [beta w   w^{-1}+ab w ]
+```
+
+so the three parameters are read straight off the matrix: `w` from the `(i,i)` entry, then `alpha`
+and `beta` from the two off-diagonal ones.
+
+**Why this is the tool that was missing.**  The Bruhat decomposition in `St(R)` writes
+
+```
+x_ij(a) x_ji(b) = x_ji(b w^{-1}) <a,b> h(w) x_ij(w^{-1} a)
+```
+
+with the Dennis-Stein symbol as the central correction.  Uniqueness of the parameters means that
+whenever one element of `St(R)` admits two Bruhat expressions, the parameters must coincide, and the
+central corrections can then be cancelled against each other.  That is the mechanism by which word
+identities in the Steinberg group become identities *between symbols* — which is exactly what the
+Dennis-Stein relations, and hence `{u, 1-u} = 1`, require.
+
+Trap recorded: `match_scalars` again produced a spurious sixth atom (`alpha (w^{-1}-1) = 0`, which is
+false) until `Matrix.zero_mul`/`mul_zero`/`add_zero` were added to the preceding `simp only`, exactly
+as in `QuadrupleDiagonalSum`.  An unreduced `0 * single _ _ 1` is treated as its own atom and
+generates an unprovable goal; the underlying identity is fine.
+
+## Layer B — Bruhat uniqueness in the group; the derivation route for the Dennis-Stein relations
+
+`HTGeometry/BruhatGroupUniqueness.lean` (wired, axiom-clean).
+
+```
+steinbergToGL_bruhat         the matrix image of  x_ji(beta) Z h(w) x_ij(alpha)  with Z in K₂
+bruhat_group_params_unique   two such words equal  =>  (w, alpha w, beta w) agree
+bruhat_center_unique         same parameters  =>  the central parts are equal
+```
+
+The central factor maps to the identity, so the matrix image is exactly the Bruhat matrix, whose
+parameters are unique by the previous section.  Once the parameters agree, the outer factors cancel
+and the central corrections must be equal.
+
+### The derivation this unlocks, written out
+
+Take four ring elements and compute `P = x_ij(a1) x_ji(b1) x_ij(a2) x_ji(b2)` in two ways, assuming
+the relevant `1 + ab` are units.
+
+Bruhat the FIRST pair, then the resulting middle pair, moving `h(w1)` past the `x_ji` by
+`steinbergTorus_conj_transpose` and merging the two torus factors by `steinbergTorus_mul`:
+
+```
+P = x_ji(b1 c1 + c1^2 b2 C) . [ D(a1,b1) D(A,b2) {W,w1}^{-1} ] . h(w1 W) . x_ij(C A)
+      A = c1 a1 + a2 ,  W = 1 + A b2 ,  C = W^{-1}
+```
+
+Bruhat the LAST pair first, moving `x_ij` past `h(w2)` by `steinbergTorus_conj_self`:
+
+```
+P = x_ji(B C') . [ D(a1,B) D(a2,b2) {w2,V}^{-1} ] . h(V w2) . x_ij(c2^2 C' a1 + c2 a2)
+      B = b1 + b2 c2 ,  V = 1 + a1 B ,  C' = V^{-1}
+```
+
+Both are Bruhat words with central corrections, so `bruhat_group_params_unique` forces the
+parameters to agree and `bruhat_center_unique` then gives
+
+```
+D(a1,b1) D(A,b2) {W,w1}^{-1}  =  D(a1,B) D(a2,b2) {w2,V}^{-1} .
+```
+
+That is a Dennis-Stein relation with the Steinberg symbols appearing explicitly, and every
+ingredient of the derivation is already a theorem in this tree: the Bruhat decomposition, the six
+torus conjugations, `steinbergTorus_mul`, centrality of both symbol families, and now the two
+uniqueness statements.  Specialising `a2 = 0` or `b1 = 0` collapses it to the classical
+Dennis-Stein identities, and from those `{u, 1-u} = 1` follows by Milnor's choice of parameters.
+
+What remains is the Lean bookkeeping of that two-way computation — long, but with no missing
+mathematics.
+
+## Layer B, continued — the Dennis-Stein relations, and the confirmed route to `{u, 1-u} = 1`
+
+Four new modules, all wired and axiom-clean.
+
+```
+HTGeometry/DennisSteinAddRight.lean
+  dennisStein_add_right   <a,b1> . <w1^{-1} a, b2> . {W,w1}^{-1} = <a, b1+b2>
+                          w1 = 1 + a b1 ,  W = 1 + w1^{-1} a b2
+
+HTGeometry/DennisSteinInverse.lean
+  steinbergSymbol_inv_left   {w^{-1}, w} = (h(w) h(w^{-1}))^{-1}
+  dennisStein_neg_right      <a,b> . <w^{-1}a, -b> = {w^{-1}, w}
+  dennisStein_neg_right_torus  h(w) h(w^{-1}) <a,b> <w^{-1}a,-b> = 1
+
+HTGeometry/DennisSteinAddLeft.lean
+  dennisStein_add_left    <a1, b w2^{-1}> . <a2, b> . {w2,U}^{-1} = <a1+a2, b>
+                          w2 = 1 + a2 b ,  U = 1 + a1 b w2^{-1}
+
+HTGeometry/DennisSteinWeylTransport.lean
+  dennisStein_weyl_transport
+        <a,b>_ij . w_ij(1) h_ij(w) w_ij(1)^{-1}  =  <-a,-b>_ji . h_ji(w)
+```
+
+The first three are two-way Bruhat computations closed with `bruhat_group_params_unique` /
+`bruhat_center_unique`; in each case the two Bruhat words turn out to have *identical* outer
+parameters, not merely proportional ones, so the central parts cancel outright.  The arithmetic
+heart of the right-hand relation is `W b1 + w1^{-1} b2 = b1 + b2`; of the left-hand one,
+`w2^{-1} a1 + a2 U = a1 + a2`.
+
+The transport relation is different in kind: conjugation by `w_ij(1)` sends the Bruhat word of
+`x_ij(a) x_ji(b)` to that of `x_ji(-a) x_ij(-b)`, the unit `1 + ab = 1 + (-a)(-b)` is unchanged, and
+the outer parameters again match on the nose.  The symbol is central, so conjugation fixes it and
+the entire discrepancy sits in the torus factors.
+
+### The route to the Steinberg relation, now concrete
+
+In the standard normalisation the Dennis-Stein symbols satisfy
+
+```
+(D1)  <a,b> = -<-b,-a>
+(D2)  <a,b> + <a,c> = <a, b + c + abc>
+(D3)  <a,bc> = <ab,c> + <ac,b>
+```
+
+and every Steinberg symbol of units is a Dennis-Stein symbol,
+
+```
+{a,b} = <(a-1) b^{-1}, b>     (note 1 + (a-1) b^{-1} b = a, so the unit of the symbol is a).
+```
+
+Given those, the Steinberg relation is three lines:
+
+```
+D3 with c = 1  =>  <ab,1> = 0             (the two sides differ by <a,b> exactly)
+D1             =>  <-1,b> = -<-b,1> = 0
+link           =>  {u, 1-u} = <(u-1)(1-u)^{-1}, 1-u> = <-1, 1-u> = 0 .
+```
+
+So the remaining obligations for `{u,1-u} = 1` are exactly:
+
+1. `(D1)` in this tree's normalisation — `dennisStein_weyl_transport` is the geometric half; what is
+   left is to identify `w_ij(1) h_ij(w) w_ij(1)^{-1}`.  Conjugating the definition termwise gives
+   `w_ij(1) w_ij(t) w_ij(1)^{-1} = w_ji(-t)`, hence the conjugate is `w_ji(-w) w_ji(1)`, which is
+   `h_ji(-w)` corrected by `w_ji(-1)^{-2}`; the square is already handled by `SteinbergWeylSquare`.
+2. `(D3)` — the only genuinely three-index relation, coming from
+   `x_ij(bc) = [x_ik(b), x_kj(c)]`.  This is why `K₂` needs `n >= 3`.
+3. the comparison `{a,b} = <(a-1)b^{-1}, b>`, a two-index identity of the same shape as the ones
+   already closed.
+
+`(D2)` is `dennisStein_add_right` (the composite second argument `b + c + abc = b + c w` is exactly
+the `w`-rescaling that appears there), and the degenerate cases `<a,0> = <0,b> = 1` are already
+proved.  Nothing on this list is open mathematics; all three are word computations in `St(R)` of the
+kind now mechanised twice over.
+
+### Obligation (1) closed — `(D1)` in this tree's normalisation
+
+`HTGeometry/WeylTorusConjugation.lean` (wired, axiom-clean).
+
+```
+steinbergWeyl_one_conj_weyl   w_ij(1) w_ij(t) w_ij(1)^{-1} = w_ji(-t)
+steinbergTorus_one_conj       w_ij(1) h_ij(w) w_ij(1)^{-1} = h_ji(-w) . h_ji(-1)^{-1}
+dennisStein_index_reversal    <a,b>_ij . h_ji(-w) . h_ji(-1)^{-1} = <-a,-b>_ji . h_ji(w)
+```
+
+The Weyl conjugation is termwise on the defining word `w_ij(t) = x_ij(t) x_ji(-t^{-1}) x_ij(t)`,
+using `-(-t)^{-1} = t^{-1}`; the torus statement then follows from `h_ji(1) = 1`, which says exactly
+`w_ji(1) = w_ji(-1)^{-1}`, together with `h_ji(-1) = w_ji(-1)^2`.
+
+So the sign-and-order relation is now unconditional, with the torus discrepancy identified
+explicitly.  Remaining for `{u,1-u} = 1`: the three-index relation `(D3)` and the comparison
+`{a,b} = <(a-1)b^{-1}, b>`.
+
+### Obligation (2) — `(D3)`, the three-index relation: the exact plan
+
+All three symbols in `(D3)` carry the *same* unit, `w = 1 + abc = 1 + (ab)c = 1 + (ac)b`, which is
+what makes the relation a statement about central corrections alone.
+
+The input is already in the tree: `steinbergX_chain hij hjk hik a b` is
+`[x_ij(a), x_jk(b)] = x_ik(a b)`.  Writing
+
+```
+x_ji(bc) = [ x_jk(b), x_ki(c) ]
+```
+
+and expanding `x_ij(a) x_ji(bc)` gives a five-letter word in `x_ij, x_jk, x_ki`; pushing `x_ij(a)`
+rightwards produces `x_ik(ab)` and `x_kj(ca)` by the chain relation, and the remaining moves are
+free because generators sharing a row or a column commute (`steinbergX_commute_row`,
+`steinbergX_commute_col`).  The two surviving rank-one pairs `x_ij / x_ji`, `x_ik / x_ki` are exactly
+the ones whose Bruhat decomposition produces `<ab, c>` and `<ac, b>`.
+
+This is the only step of the programme that genuinely needs `n >= 3`, and it is the reason `K₂` of a
+ring is not visible in the rank-one Steinberg group: in `St₂(R)` the symbol `<x,1>` does not vanish.
+
+### Obligation (3) — the comparison `{a,b} = <(a-1)b^{-1}, b>`
+
+Two-index, same shape as the relations already closed: `steinbergX_mul_opposite hij ((a-1)b^{-1}) b a`
+has unit exactly `a`, so the Bruhat word of `x_ij((a-1)b^{-1}) x_ji(b)` carries `h_ij(a)`.  Running
+the same word with `a`, with `ab` and with `1` (where the symbol degenerates, `<0,b> = 1`) and
+multiplying gives `h(ab) h(a)^{-1} h(b)^{-1}` on the torus side and three Dennis-Stein symbols on the
+other.
+
+## Layer B, third pass — scaling, the coboundary formula, and the Steinberg relation in torus form
+
+Four more modules, all wired and axiom-clean.
+
+```
+HTGeometry/SteinbergTransportMoves.lean
+  steinbergX_move_right       x_ij(a) x_jk(b)   = x_ik(ab)   x_jk(b)    x_ij(a)
+  steinbergX_move_right_inv   x_ij(a) x_jk(b)^-1 = x_jk(b)^-1 x_ik(ab)^-1 x_ij(a)
+  steinbergX_move_left        x_ij(a) x_ki(c)   = x_kj(ca)^-1 x_ki(c)   x_ij(a)
+  steinbergX_move_left_inv    x_ij(a) x_ki(c)^-1 = x_ki(c)^-1 x_kj(ca)  x_ij(a)
+
+HTGeometry/DennisSteinScaling.lean
+  dennisStein_scale           <a,b> = <t a, b t^{-1}> . [ h_ij(w), h_ik(t) ]
+  dennisStein_normalize_right <a,b> = <b a, 1>        . [ h_ij(w), h_ik(b) ]   (b a unit)
+
+HTGeometry/SteinbergSymbolCoboundary.lean
+  dennisSteinUnit hij v  :=  <1, v-1>            (unit v; note 1 + 1.(v-1) = v)
+  torusCommutator        :=  [ h_ij(w), h_ik(t) ]
+  steinbergSymbol_eq_dennisSteinUnit_coboundary
+        f(w) . ( f(W) . [h_ij(W), h_ik(w)] ) . {W,w}^{-1} = f(w W)
+
+HTGeometry/SteinbergRelationTorusForm.lean
+  torusCommutator_relation_of_add_one
+        [h_ij(U), h_ik(u^{-1})] . [h_ij(w), h_ik(v^{-1})] = [h_ij(w), h_ik(U)]
+        whenever  u + v = 1 ,  w = 1 + v b ,  U = 1 + u b w^{-1} .
+```
+
+### What these say
+
+The scaling relation is a conjugation argument, not a Bruhat computation: conjugating the defining
+word of `<a,b>` by the torus element `h_ik(t)` of a *different* index pair sends
+`x_ij(s) |-> x_ij(t s)` and `x_ji(s) |-> x_ji(s t^{-1})`, leaves the unit `1 + ab` unchanged, and
+fixes the symbol because the symbol is central.  So the entire dependence of `<a,b>` on how the
+product `ab` is split between the two arguments is one torus commutator.
+
+Consequently every symbol with a unit argument normalises to first argument `1`, and the
+one-variable function
+
+```
+f(v) = <1, v-1>
+```
+
+carries everything.  Feeding `a = 1`, `b1 = w-1`, `b2 = (W-1) w` into the addition relation and
+normalising the second symbol at `t = w` turns the addition relation into the coboundary formula
+above: **the Steinberg symbol is the coboundary of `f`, corrected by the torus commutator.**  Since
+a coboundary is symmetric in its two arguments while `{.,.}` is not, the antisymmetric part of the
+symbol is exactly the antisymmetric part of the commutator pairing.
+
+Running the *first-argument* addition relation at a splitting `u + v = 1` gives a second expression
+for the same coboundary.  Comparing the two cancels every Dennis-Stein symbol and the Steinberg
+symbol itself, leaving the last displayed identity: the additivity `u + v = 1` — the only point in
+the whole theory where a unit is split into two units, and the hypothesis of `{u, 1-u} = 1` — now
+lives purely in commutators of diagonal elements.
+
+### The single remaining input
+
+Everything above is unconditional.  What is still missing for `{u, 1-u} = 1` is the three-index
+vanishing
+
+```
+f(v) = <1, v-1> = 1 ,
+```
+
+equivalently `<x, 1> = 1` through the index reversal.  This is the `(D3)` obligation and the only
+step that needs `n >= 3`: in `St_2(R)` the symbol `<x,1>` genuinely does not vanish.  Granted it,
+`f == 1`, the coboundary formula collapses to `{W, w} = [h_ij(W), h_ik(w)]` — the classical
+"symbol as a commutator of torus elements" — and the torus-form relation above becomes exactly
+`{u, 1-u} = 1`.
+
+The transport moves needed for that computation are now in place as
+`SteinbergTransportMoves.lean`.
+
+### Correction to the previous section
+
+The claim that the single remaining input is `f(v) = <1, v-1> = 1` is wrong, and the reason is worth
+recording because it is a trap.
+
+What `(D3)` actually yields is the vanishing of the symbol with **second** argument `1`,
+
+```
+g(v) := <v-1, 1>  =  1 ,
+```
+
+since `(D3)` at `c = 1` reads `<a,b> = <ab,1> + <a,b>`.  It says nothing directly about `<1, b>`.
+Indeed, `dennisStein_normalize_right` gives, for `b` a unit,
+
+```
+<a, b>  =  g(w) . [ h_ij(w), h_ik(b) ] ,        w = 1 + a b ,
+```
+
+so `f(v) = <1, v-1> = g(v) . [h_ij(v), h_ik(v-1)]`, and granted `g == 1` this is
+`f(v) = [h_ij(v), h_ik(v-1)]` — which is the Steinberg relation itself, not a step towards it.
+Assuming `f == 1` would have been circular.
+
+The correct statement of what remains is therefore:
+
+1. `(D3)`, giving `g == 1`.  With it, `<a,b> = [h_ij(w), h_ik(b)]` for every unit `b`.
+2. the comparison `{a,b} = <(a-1)b^{-1}, b>`.  With `g == 1` this immediately upgrades to the
+   classical commutator formula
+   ```
+   {a, b} = [ h_ij(a), h_ik(b) ]
+   ```
+   because the unit of `<(a-1)b^{-1}, b>` is exactly `a`.
+3. the vanishing `[h_ij(u), h_ik(1-u)] = 1`.  `torusCommutator_relation_of_add_one` is a genuine
+   family of relations on this pairing — for `u + v = 1`, `w = 1 + vb`, `U = 1 + u b w^{-1}`,
+   ```
+   [h_ij(U), h_ik(u^{-1})] . [h_ij(w), h_ik(v^{-1})] = [h_ij(w), h_ik(U)] ,
+   ```
+   and the scaling relation applied twice gives multiplicativity of the pairing in its second
+   argument.  Whether that family already forces the vanishing, or whether the `(D3)` word
+   computation has to supply it, is the open point.
+
+Everything proved so far is unaffected: `dennisStein_add_right`, `dennisStein_add_left`,
+`dennisStein_neg_right`, `dennisStein_index_reversal`, `dennisStein_scale`,
+`steinbergSymbol_eq_dennisSteinUnit_coboundary` and `torusCommutator_relation_of_add_one` are all
+unconditional and hold as stated.

@@ -4,7 +4,7 @@
 - **Stage:** library-backlog
 - **Type:** LEDGER UPDATE
 - **Priority:** FOUNDATIONAL
-- **Source:** Leaner formalization pass on `../2-fully-proven/universal-prime-side-orthogonality.md`
+- **Source:** Leaner formalization pass on `../3-formalized/not_new_scientific_knowledge/universal-prime-side-orthogonality.md`
 - **Statement:** Please update the shared status/index ledgers for the new `3-formalized` card
   `../3-formalized/fe-inversion-scale-bohr-coordinate.md`.
 

@@ -2002,3 +2002,440 @@ Closing it also closes `floquet-orbifold-tail-emergence` and
   Finally `germSlice_germEval_distPoly_ne_zero`: a distinguished polynomial has slice `z^d`, hence
   is always regular.
   Closure count unchanged: 31 cards remain in the folder.
+
+- 2026-08-16 (thirteenth pass) — `noncompact-period-quotient-facet-escape-law`: the factorization
+  transfer.  New unconditional axiom-clean umbrella-wired module
+  `HTGeometry/GermDistinguishedFactorization.lean`; `natDegree_distPoly` was added to
+  `GermPolynomialDivisibility.lean` and `analyticGermValue_germTail` to `GermSliceRegular.lean`.
+  Contents: `monic_eq_distPoly` (a monic polynomial is its own distinguished normal form),
+  `map_distPoly_eq_X_pow` and `coeff_eq_zero_of_map_eq_X_pow` (distinguishedness is exactly
+  `map (value) P = X^(natDegree P)`), `coeff_mul_eq_zero_of_distinguished` (in that form
+  distinguishedness is visibly multiplicative),
+  `analyticGermValue_germEval_distPoly` and `not_isUnit_germEval_distPoly` (a distinguished
+  polynomial of positive degree has a non-unit germ), and the capstone
+
+  ```text
+  exists_distPoly_factorization :
+    germEval W = g · h  ==>  g = germEval W_g · u,  h = germEval W_h · v,  W = W_g · W_h
+  ```
+
+  with `W_g, W_h` distinguished and `u, v` units.  The proof uses that regularity is multiplicative
+  to prepare both factors, then `distPoly_eq_of_unit_mul` to identify the product of their
+  distinguished polynomials with `W`.  Degenerate degrees are handled through
+  `not_isUnit_germEval_distPoly`.
+  With this, a germ-ring factorization of a distinguished polynomial *is* a polynomial
+  factorization, so irreducibility can be tested in `C{z'}[X]`.  Remaining: the induction on the
+  dimension (with Gauss for `C{z'}[X]` and the simultaneous-regularization trick from
+  `germSlice_mul_ne_zero`), then local reduced fractions and the counting assembly.
+  Closure count unchanged: 31 cards remain in the folder.
+
+- 2026-08-16 (fourteenth pass) — `noncompact-period-quotient-facet-escape-law`: the irreducibility
+  transfer.  New unconditional axiom-clean umbrella-wired module
+  `HTGeometry/GermIrreducibleTransfer.lean`:
+  `eq_X_pow_of_monic_of_mul_eq_X_pow` — a monic factor of `X^D` in `C[X]` is a power of `X`, since
+  each of its roots is a root of `X^D` hence zero, and a monic complex polynomial is the product of
+  its linear factors;
+  `coeff_eq_zero_of_monic_mul_eq_distPoly` — consequently a monic factor of a distinguished
+  polynomial is distinguished (apply the coefficientwise value map);
+  `exists_monic_factorization` — any factorization of a monic polynomial can be normalized so that
+  both factors are monic, by moving the leading coefficients (units, since their product is one)
+  across, with the associatedness recorded;
+  `irreducible_germEval_of_irreducible` — if a distinguished polynomial of positive degree is
+  irreducible in `C{z'}[X]` then its germ is irreducible in `C{z}`.  The proof feeds a germ-ring
+  factorization through `exists_distPoly_factorization` and reads off that one of the two
+  distinguished factors is a monic unit, hence `1`.
+  Remaining: the converse direction (which now follows from the above plus the factorization of the
+  polynomial in the UFD `C{z'}[X]`), the induction on the dimension, then local reduced fractions
+  and the counting assembly.  Closure count unchanged: 31 cards remain in the folder.
+
+- 2026-08-16 (fifteenth pass) — **Siegel step 7 is CLOSED: the ring of convergent power series in
+  `n` complex variables is a unique factorization domain, unconditionally and axiom-clean.**
+  Two new umbrella-wired modules complete the argument.
+
+  `HTGeometry/GermDivisionRemainder.lean`.  The key structural observation:
+  *every* germ, regular or not, can be divided by the distinguished polynomial of a regular germ —
+  the regularity hypothesis of the Weierstrass division applies to the divisor, not the dividend.
+  `exists_germ_division` establishes this (identifying the polynomial produced by
+  `germ_division_algebraic` with the given one through `distPoly_eq_of_unit_mul`);
+  `dvd_iff_remainder_eq_zero` says divisibility is the vanishing of the remainder; and
+  `prime_germEval_of_prime` concludes that a distinguished polynomial prime in `C{z'}[X]` has a
+  prime germ.  This is what removes the last obstruction: primality quantifies over arbitrary
+  factors `g`, `h`, which a coordinate change adapted to the divisor cannot be assumed to
+  regularize, and reduction modulo the divisor sidesteps the issue entirely.
+
+  `HTGeometry/GermFactorial.lean`.  `exists_prime_factors_of_distPoly` — strong induction on the
+  degree: a distinguished polynomial of positive degree is either irreducible in `C{z'}[X]`, hence
+  prime there and prime as a germ, or splits into two monic factors, which
+  `coeff_eq_zero_of_monic_mul_eq_distPoly` shows are again distinguished and whose degrees are
+  strictly smaller.  `exists_prime_factors_germ` — an arbitrary nonzero germ is carried by a linear
+  change of coordinates to a regular one (`exists_germLinearEquiv_regular`), prepared, factored, and
+  pulled back, primality being preserved by the induced ring isomorphism.  Finally the instance
+
+  ```text
+  instUniqueFactorizationMonoidAnalyticGerm : ∀ n, UniqueFactorizationMonoid (AnalyticGerm (0 : Fin n → C))
+  ```
+
+  by induction on the dimension, the base case being that germs on a one-point space form a field.
+  Mathlib has no convergent-power-series ring, let alone its factoriality.
+
+  Remaining for `noncompact-period-quotient-facet-escape-law`: step 8, local reduced fractions for
+  meromorphic germs (now pure UFD algebra plus the comparison of a global entire quotient with a
+  local reduced one), and step 9, the Siegel counting assembly, whose geometric half
+  (`exists_finite_centres_forcing_vanishing`) is already Lean-owned.
+  Closure count unchanged: 31 cards remain in the folder.
+
+- 2026-08-16 (sixteenth pass) — `noncompact-period-quotient-facet-escape-law`: the algebra of Siegel
+  step 8.  New unconditional axiom-clean umbrella-wired module
+  `HTGeometry/GermReducedFraction.lean`; `AnalyticGermDomain.lean` gained the `IsDomain` instance.
+  `exists_reduced_fraction` — in any GCD domain, dividing numerator and denominator by their
+  greatest common divisor leaves a relatively prime pair with the same cross product.  The
+  relative primality is proved without invoking primes: a common divisor `z` of the reduced pair
+  makes `gcd·z` divide both `a` and `b`, hence divide `gcd`, and cancelling `gcd` exhibits `z` as a
+  unit.
+  `associated_den_of_reduced` and `associated_num_of_reduced` — two reduced presentations of the
+  same fraction have associated denominators and associated numerators; the cross-multiplied
+  identity plus relative primality makes each denominator divide the other.
+  Specialized to the germ ring through `instUniqueFactorizationMonoidAnalyticGerm` and
+  `UniqueFactorizationMonoid.toGCDMonoid`: `exists_reduced_germ_fraction`,
+  `associated_den_of_reduced_germ`, `associated_num_of_reduced_germ`.
+  This is exactly the comparison the Siegel count needs on the overlaps of a cover: the ratio of two
+  *reduced* local denominators of the same meromorphic function is a unit, hence bounded on
+  compacta, whereas the ratio of two arbitrary presentations is unbounded — the obstruction the card
+  diagnosed for the global entire presentation.
+  Remaining for the card: step 9, the counting assembly (Schwarz gain, jet dimension count, and the
+  periodicity step), whose geometric half `exists_finite_centres_forcing_vanishing` is Lean-owned.
+  Closure count unchanged: 31 cards remain in the folder.
+
+- 2026-08-16 (seventeenth pass) — `noncompact-period-quotient-facet-escape-law`: the analytic form
+  of step 8, and an inventory of what step 9 already owns.  New unconditional axiom-clean
+  umbrella-wired module `HTGeometry/GermRatioBound.lean`:
+  `exists_norm_bound_of_analyticAt` (an analytic function is bounded on a small ball),
+  `exists_norm_lower_bound_of_ne_zero` and `exists_lower_bound_of_isUnit` (a unit germ has a
+  representative bounded away from zero — by continuity, no compactness needed), and
+  `exists_ratio_bound_of_associated`: two associated germs have representatives with
+  `‖B₂ w‖ ≤ C·‖B₁ w‖` on a ball.  Composed with `associated_den_of_reduced_germ` this is the
+  comparison constant the counting step needs on the overlaps of a cover, and it is exactly what the
+  global entire presentation cannot supply.
+
+  Inventory for step 9 — the corpus already owns, from the earlier passes on this card:
+  `HTGeometry/KernelOfDimensionDrop.lean` (`exists_ne_zero_apply_eq_zero_of_finrank_lt`,
+  `exists_ne_zero_forall_apply_eq_zero_of_finrank_lt`) for the dimension count;
+  `HTGeometry/MultiIndexCounts.lean` (`card_le_pow_of_sum_lt`, `pow_le_card_of_box_subset`) for the
+  multi-index comparison; `HTGeometry/SelfImprovingBound.lean` (`eqOn_zero_of_le_mul_bound`) for the
+  periodicity step; `HTGeometry/SiegelVanishingCriterion.lean`
+  (`exists_finite_centres_forcing_vanishing`) for the geometric assembly, on
+  `LatticeFundamentalCover.lean`, `PeriodicCoverVanishing.lean`, `FamilyCoverVanishing.lean` and
+  `CompactQuotientSpan.lean`; and `HTGeometry/DifferentialAlgebraicFromRelation.lean`
+  (`differentialAlgebraicOver_of_aeval_eq_zero`) for the interface to the corpus's
+  differential-algebraicity predicate.  What remains is the assembly itself: cover a fundamental
+  domain by finitely many polydiscs carrying reduced local presentations, use the ratio bound on
+  overlaps to make the constants uniform, and feed the count into the vanishing criterion.
+  Closure count unchanged: 31 cards remain in the folder.
+
+- 2026-08-16 (eighteenth pass) — `noncompact-period-quotient-facet-escape-law`: the arithmetic of
+  the Siegel count.  New unconditional axiom-clean umbrella-wired module
+  `HTGeometry/SiegelDegreeCount.lean` with `siegel_count_lt`, `exists_siegel_degree` and
+  `eventually_siegel_count`:
+
+  ```text
+  K · A ^ n < m   ==>   K · (A·m) ^ n < (m + 1) ^ (n + 1).
+  ```
+
+  This is the inequality that makes the count close, in the exact shape the assembly needs.
+  Clearing denominators from a polynomial of degree at most `(n+1)·m` in the values of `n+1`
+  meromorphic functions raises the comparison constant to the power `(n+1)·m`, so the Schwarz gain
+  forces the jet order to grow only linearly in `m`, `N = A·m`; the number of conditions is then at
+  most `K·(A·m)^n` — `K` centres, each imposing the vanishing of the complex Taylor jets of order
+  below `N` in `n` variables — while `MultiIndexCounts.pow_le_card_of_box_subset` gives at least
+  `(m+1)^(n+1)` free coefficients.  Since `n < n+1` the coefficients win for every large `m`.  This
+  is the single place where the dimension of the torus enters, and it is why the bound is
+  `trdeg ≤ dim` rather than anything weaker.
+
+  Step 9 therefore has all of its ingredients Lean-owned: the Schwarz gain
+  (`OrderNSchwarz.norm_le_of_iteratedFDeriv_vanish`,
+  `PolydiscCoeffVanishing.norm_le_of_polydiscCoeff_vanish`), the chartwise vanishing criterion with
+  a comparison constant (`FamilyCoverVanishing.eqOn_zero_of_family_cover`), the compact fundamental
+  set and its finite cover (`LatticeFundamentalCover`), the self-improving bound
+  (`SelfImprovingBound`), the dimension-drop kernel vector (`KernelOfDimensionDrop`), the
+  multi-index counts (`MultiIndexCounts`), the comparison constant on overlaps (this session's
+  `GermReducedFraction` + `GermRatioBound`), the degree arithmetic (this module), and the interface
+  to differential algebraicity (`DifferentialAlgebraicFromRelation`).  What remains is to wire them
+  together on a concrete cover.  Closure count unchanged: 31 cards remain in the folder.
+
+- 2026-08-16 (nineteenth pass) — `noncompact-period-quotient-facet-escape-law`: the counting step of
+  Siegel step 9.  New unconditional axiom-clean umbrella-wired module
+  `HTGeometry/SiegelCountingStep.lean`:
+  `finrank_coeffSpace` — the coefficient space of polynomials whose exponents in `n+1` variables are
+  all at most `m` has dimension exactly `(m+1)^(n+1)`;
+  `finrank_conditionSpace` — the Taylor-condition space of `K` centres and a finite set `S` of
+  multi-indices has dimension `K·|S|`;
+  `exists_ne_zero_of_siegel_count` — any linear map between them has a nonzero kernel vector once
+  `K · N^n < (m+1)^(n+1)`, the bound `|S| ≤ N^n` coming from
+  `MultiIndexCounts.card_le_pow_of_sum_lt` and the kernel from
+  `KernelOfDimensionDrop.exists_ne_zero_apply_eq_zero_of_finrank_lt`;
+  `exists_ne_zero_of_siegel_count_of_large` — the same with the inequality discharged by
+  `siegel_count_lt`, i.e. for every degree beyond `K·A^n` when the jet order grows linearly,
+  `N ≤ A·m`.
+
+  Design note worth keeping: the Taylor-coefficient formulation is forced.  Counting with
+  `iteratedFDeriv` jets instead would make the target the space of *non-symmetric* `j`-multilinear
+  maps, of dimension `n^j`, whose sum over `j < N` is exponential in `N` rather than `N^n` — and the
+  count would never close.  The corpus's Schwarz estimate is available in coefficient form
+  (`PolydiscCoeffVanishing.norm_le_of_polydiscCoeff_vanish`), which is the matching half.
+  Closure count unchanged: 31 cards remain in the folder.
+
+- 2026-08-16 (twentieth pass) — `noncompact-period-quotient-facet-escape-law`: the bridge from a
+  coefficient vector to a genuine polynomial relation.  New unconditional axiom-clean
+  umbrella-wired module `HTGeometry/SiegelPolynomial.lean`:
+  `siegelExp` with `siegelExp_injective` — the exponent multi-index of a point of the box, injective
+  because distinct boxes give distinct monomials;
+  `siegelPoly` and `coeff_siegelPoly` — the polynomial attached to a coefficient vector, whose
+  coefficient at the corresponding monomial is exactly the given entry, hence
+  `siegelPoly_ne_zero`: a nonzero vector gives a nonzero polynomial, which is what makes the
+  relation produced by the count nontrivial;
+  `eval_siegelPoly` and `siegelCombination` with `eval_siegelPoly_eq_siegelCombination` — the
+  evaluation of the polynomial at a family of functions is the coefficient combination;
+  `siegelCombination_add`, `siegelCombination_smul` — linearity in the coefficient vector, so the
+  Taylor-condition map of the counting step is a genuine `LinearMap`;
+  `contDiff_siegelCombination` — smoothness, so the Schwarz estimate applies.
+  Together with `SiegelCountingStep` and `DifferentialAlgebraicFromRelation` the chain
+  *count → nonzero coefficient vector → nonzero polynomial → algebraic relation → differential
+  algebraicity* is now complete except for the analytic middle: producing the Taylor-condition map
+  from a cover and running the Schwarz gain against the overlap constant.
+  Closure count unchanged: 31 cards remain in the folder.
+
+- 2026-08-16 (twenty-first pass) — `noncompact-period-quotient-facet-escape-law`: the
+  Taylor-condition map, the analytic middle of Siegel step 9.  New unconditional axiom-clean
+  umbrella-wired module `HTGeometry/SiegelCoeffMap.lean`; `SiegelPolynomial.lean` gained
+  `continuous_siegelCombination`.
+  `polydiscCoeff_add` and `polydiscCoeff_const_smul` — the Cauchy coefficient of a polydisc is
+  additive and homogeneous in the integrand, the integrability supplied by
+  `polydiscCoeff_integrable` from continuity;
+  `siegelCoeffMap` — the resulting **linear** map from the coefficient space of the exponent box to
+  the space of Taylor conditions indexed by centres and multi-indices, with `siegelCoeffMap_apply`;
+  `exists_ne_zero_poly_polydiscCoeff_eq_zero` — the counting step applied to it: once
+  `K·N^n < (m+1)^(n+1)` there is a nonzero coefficient vector all of whose prescribed Cauchy
+  coefficients vanish at every centre.
+
+  Note the shape this forces, and why it is the right one: the number of functions is `n+1` and the
+  ambient dimension is `n`, so the counting lemma's two indices coincide.  That coincidence *is* the
+  statement `trdeg ≤ dim`; if the functions were fewer the count would be vacuous and if more it
+  would fail.
+  What remains of step 9: run `PolydiscCoeffVanishing.norm_le_of_polydiscCoeff_vanish` against the
+  overlap constant of `GermRatioBound` on a cover from `LatticeFundamentalCover`, and close with
+  `SelfImprovingBound` / `FamilyCoverVanishing`.
+  Closure count unchanged: 31 cards remain in the folder.
+
+- 2026-08-16 (twenty-second pass) — `noncompact-period-quotient-facet-escape-law`: **the Siegel
+  gain.**  New unconditional axiom-clean umbrella-wired module `HTGeometry/SiegelGain.lean`;
+  `SiegelPolynomial.lean` gained `differentiable_siegelCombination`.
+  `lowDegreeIndices` with `mem_lowDegreeIndices` — the multi-indices of total degree below `N`, as a
+  `Finset`, the box bound coming from `Finset.single_le_sum`;
+  `exists_ne_zero_siegel_gain` — the counting step and the multi-index Schwarz estimate combined:
+
+  ```text
+  card ι · N^n < (m+1)^(n+1)  ==>  ∃ a ≠ 0, ∀ M bounding the combination on the large tori,
+      ‖G (c i + y)‖ ≤ M · (N+1)^n · (r/R)^N · ∑' (j+1)^n (r/R)^j   for ‖y‖ ≤ r.
+  ```
+
+  The bound `M` on the large polydiscs is deliberately left universally quantified *after* the
+  coefficient vector is fixed, so the statement can be applied once the comparison constant of a
+  cover is known — which is exactly how a periodicity argument converts the gain into vanishing,
+  and why the quantifier order matters.
+  Step 9 now needs only the geometric closing: choose the cover
+  (`LatticeFundamentalCover.exists_finite_centres_of_compactSpace_quotient`), take the comparison
+  constant from `GermRatioBound` on the reduced presentations, pick `N` linear in `m` so the
+  Schwarz factor beats it, and apply `SelfImprovingBound` / `FamilyCoverVanishing`; then
+  `siegelPoly_ne_zero` and `differentialAlgebraicOver_of_aeval_eq_zero` give the conclusion.
+  Closure count unchanged: 31 cards remain in the folder.
+
+- 2026-08-16 (twenty-third pass) — `noncompact-period-quotient-facet-escape-law`: the closing
+  mechanism of Siegel step 9.  New unconditional axiom-clean umbrella-wired module
+  `HTGeometry/SiegelGainVanishing.lean` with `eqOn_zero_of_siegel_gain`:
+
+  ```text
+  a Schwarz gain θ on the small polydiscs, a chart comparison C from the small polydiscs to the
+  large tori, and C·θ < 1   ==>   the function vanishes on every small polydisc.
+  ```
+
+  The maximum over the compact small polydiscs exists, the comparison carries it to the tori, the
+  gain carries it back improved by `C·θ`, and a maximum that improves itself is zero.  It is stated
+  for a single function with the two hypotheses in exactly the quantifier shape
+  `exists_ne_zero_siegel_gain` produces, so the two compose directly.
+  The comparison constant `C` is what periodicity supplies — for a periodic function the large tori
+  are congruent to points of the fundamental domain — and the reduced local presentations of
+  `GermReducedFraction`/`GermRatioBound` are what make it finite and uniform.
+  Closure count unchanged: 31 cards remain in the folder.
+
+- 2026-08-16 (twenty-fourth pass) — `noncompact-period-quotient-facet-escape-law`: the chartwise
+  objects of Siegel step 9.  `HTGeometry/SiegelGainVanishing.lean` gained
+  `eqOn_zero_of_family_siegel_gain`, the chartwise form of the closing mechanism — on each chart the
+  function is only a local representative and what relates the charts is the comparison constant,
+  which is the form the Siegel argument actually needs.
+  New unconditional axiom-clean umbrella-wired module
+  `HTGeometry/SiegelClearedCombination.lean`: `siegelHomCombination`, the denominator-cleared
+  combination `∑_β a_β ∏_k A_k^(β_k) B_k^(m−β_k)`, with `siegelHomCombination_eq`
+
+  ```text
+  siegelHomCombination A B m a w = siegelCombination (A/B) a w · ∏_k (B_k w)^m   (B_k w ≠ 0),
+  ```
+
+  its additivity, homogeneity, continuity, smoothness and differentiability, and
+  `siegelCombination_eq_zero_of_hom_eq_zero`.  The exponents `m − β_k` stay nonnegative precisely
+  because the coefficient box bounds every `β_k` by `m` — that is what the box normalization was for.
+  This is the object a Siegel count estimates chartwise: it is holomorphic where the quotients are
+  not, and the comparison constant between two charts is the `m`-th power of the ratio of their
+  denominators, bounded by `GermRatioBound` exactly because reduced local presentations have
+  associated denominators.
+  Closure count unchanged: 31 cards remain in the folder.
+
+- 2026-08-16 (twenty-fifth pass) — `noncompact-period-quotient-facet-escape-law`: **the chartwise
+  Siegel assembly.**  New unconditional axiom-clean umbrella-wired module
+  `HTGeometry/SiegelChartAssembly.lean`:
+  `siegelHomCoeffMap` — the chartwise Taylor-condition map.  The point is that the estimated object
+  on each chart is the cleared combination of a *single* coefficient vector, so the conditions across
+  all charts still assemble into one linear map on the coefficient space and the counting step still
+  applies;
+  `exists_ne_zero_chart_siegel_gain` — a single nonzero coefficient vector whose cleared combination
+  gains the Schwarz factor on every chart simultaneously;
+  `exists_ne_zero_chart_vanishing` — feeding that gain and a chart comparison constant into
+  `eqOn_zero_of_family_siegel_gain`:
+
+  ```text
+  card ι · N^n < (m+1)^(n+1)   and   C · ((N+1)^n (r/R)^N ∑' (j+1)^n (r/R)^j) < 1
+    ==>  ∃ a ≠ 0, every cleared combination vanishes on its small polydisc.
+  ```
+
+  This is the general assembly of step 9: everything except the *geometric input* `hcomp`, the chart
+  comparison, which is where periodicity of the meromorphic functions and the reduced local
+  presentations enter, and the final passage from the vanishing of the cleared combinations to the
+  polynomial relation (`siegelCombination_eq_zero_of_hom_eq_zero`) and thence to
+  `differentialAlgebraicOver_of_aeval_eq_zero`.
+  Closure count unchanged: 31 cards remain in the folder.
+
+- 2026-08-16 (twenty-sixth pass) — `noncompact-period-quotient-facet-escape-law`: **the algebraic
+  relation, closing the general Siegel machine.**  New unconditional axiom-clean umbrella-wired
+  module `HTGeometry/SiegelAlgebraicRelation.lean`: `siegelCombination_congr` (the combination
+  depends on the functions only through their values at the point) and
+
+  ```text
+  exists_ne_zero_poly_eval_eq_zero :
+    card ι · N^n < (m+1)^(n+1),  C · Schwarz factor < 1,  chart quotient presentations
+      ==>  ∃ P ≠ 0 in C[X_0,…,X_n],  eval (f_0,…,f_n) P = 0  on every small polydisc.
+  ```
+
+  This is the whole Siegel machine in general form: counting, Schwarz gain, self-improvement,
+  denominator clearing and the passage back to the quotients, all unconditional.  Its two inputs are
+  the chart comparison `hcomp` — supplied by periodicity together with the reduced local
+  presentations of `GermReducedFraction`/`GermRatioBound` — and the chart presentations themselves.
+  For the card these are the finite cover of a fundamental parallelotope from
+  `LatticeFundamentalCover` and the reduced fractions at its centres; the remaining work is that
+  geometric instantiation, no longer any of the analysis.
+  Closure count unchanged: 31 cards remain in the folder.
+
+- 2026-08-16 (twenty-seventh pass) — `noncompact-period-quotient-facet-escape-law`: the geometric
+  input reduced to a transition structure.  `HTGeometry/SiegelChartAssembly.lean` gained
+  `hcomp_of_transition` and `exists_ne_zero_chart_vanishing_of_transition`:
+
+  ```text
+  if every point of a large torus is, up to a factor of modulus at most C, the value of some chart
+  at a point of its small polydisc, then the chart comparison constant is C.
+  ```
+
+  This isolates exactly what the geometry has to provide, and in the form periodicity provides it:
+  the translate of a torus point by a period lands in the fundamental set, hence in some chart's
+  small polydisc; the values of the *quotients* agree there because the functions are periodic; and
+  the transition factor is the ratio of the two chart denominators raised to the degree, bounded
+  because reduced local presentations have associated denominators
+  (`associated_den_of_reduced_germ` + `exists_ratio_bound_of_associated`).
+  With `exists_ne_zero_poly_eval_eq_zero` the whole analytic machine of step 9 is therefore closed;
+  the outstanding work is the construction of the transition data itself from the lattice and the
+  cover, i.e. bookkeeping over `LatticeFundamentalCover`, not analysis.
+  Closure count unchanged: 31 cards remain in the folder.
+
+- 2026-08-16 (twenty-eighth pass) — `noncompact-period-quotient-facet-escape-law`: the two halves of
+  the transition data.  New unconditional axiom-clean umbrella-wired module
+  `HTGeometry/SiegelLatticeTransition.lean`:
+  `exists_period_centre_of_compactSpace_quotient` — for a subgroup with compact quotient and any
+  prescribed radius there is a *finite* set of centres such that **every** point of the space is
+  congruent, modulo the subgroup, to a point within that radius of one of them.  This restates the
+  finite cover of a fundamental set as a statement about arbitrary points, which is the form the
+  transition needs (the torus points are arbitrary, not confined to the fundamental set);
+  `siegelCombination_periodic` and `siegelHomCombination_periodic` — a combination, and a cleared
+  combination, of periodic data is periodic, because the combination depends on the functions only
+  through their values at the point.
+  Together these say the value of the combination of the quotients at any torus point equals its
+  value at a point of some small polydisc, which is exactly what makes the chart comparison constant
+  of `hcomp_of_transition` finite: the residual transition factor is then only the ratio of the two
+  chart denominators, bounded by `GermRatioBound`.
+  Closure count unchanged: 31 cards remain in the folder.
+
+- 2026-08-16 (twenty-ninth pass) — `noncompact-period-quotient-facet-escape-law`: **the full
+  chain composes.**  New unconditional axiom-clean umbrella-wired module
+  `HTGeometry/SiegelPeriodicTransition.lean`:
+  `htrans_of_periodic_transfer` — a torus point is congruent to a point of a small polydisc, so the
+  transition comes with a translation by a period; periodicity of the chart data discharges it, and
+  what is left is exactly the transition structure `hcomp_of_transition` consumes;
+  `exists_ne_zero_chart_vanishing_of_periodic` — the chartwise assembly with the period discharged;
+  `exists_ne_zero_poly_eval_eq_zero_of_periodic` — **the full chain**, from the periodic transition
+  structure to a nonzero polynomial annihilating the chart quotients on the small polydiscs.
+
+  The Siegel machine of step 9 is therefore complete and composed end to end: lattice cover
+  (`exists_period_centre_of_compactSpace_quotient`) → periodic transition
+  (`siegelHomCombination_periodic`) → chart comparison (`hcomp_of_transition`) → counting
+  (`exists_ne_zero_of_siegel_count`, `siegel_count_lt`) → Schwarz gain
+  (`exists_ne_zero_chart_siegel_gain`) → self-improvement (`eqOn_zero_of_family_siegel_gain`) →
+  denominator clearing (`siegelCombination_eq_zero_of_hom_eq_zero`) → nonzero polynomial
+  (`siegelPoly_ne_zero`).  Its remaining inputs are the *data* of the specific torus: the reduced
+  local presentations at the cover centres and the resulting bound on the denominator ratios, both
+  of which `GermReducedFraction` and `GermRatioBound` supply.
+  Closure count unchanged: 31 cards remain in the folder.
+
+- 2026-08-16 (thirtieth pass) — `noncompact-period-quotient-facet-escape-law`: factoriality at every
+  point.  New unconditional axiom-clean umbrella-wired module
+  `HTGeometry/GermTranslationFactorial.lean`: `analyticAt_sub_const`, `analyticAt_add_const`,
+  `germTranslate` — translation is an analytic change of coordinates, so
+  `AnalyticGerm 0 ≃+* AnalyticGerm p` — and `uniqueFactorizationMonoid_analyticGerm`:
+
+  ```text
+  for every p in C^n, the ring of analytic germs at p is a unique factorization domain.
+  ```
+
+  The instance proved in the twenty-first pass lives at the origin only, whereas a chartwise Siegel
+  argument has its centres at the points of a cover of a fundamental parallelotope, none of which
+  can be assumed to be the origin.  Transporting the prime factorization along the translation
+  isomorphism removes that restriction, and with it the reduced-fraction theory of
+  `GermReducedFraction` — `exists_reduced_fraction`, `associated_den_of_reduced`,
+  `associated_num_of_reduced` are all stated for an arbitrary GCD domain, so they now apply at every
+  centre, and `GermRatioBound.exists_ratio_bound_of_associated` is likewise stated at an arbitrary
+  point.
+  Closure count unchanged: 31 cards remain in the folder.
+
+- 2026-08-16 (thirty-first pass) — orbifold family: the fixed branch is open only at jet order at
+  least two.  `HTGeometry/QuadraticOrbifoldTail.lean` gained `quadOne_fixed_of_order_one` and
+  `quadTwo_fixed_of_order_one`: a `Phi_R`-fixed element of jet order at most one is constant, for
+  both quadratic maps.  Pass 5 of
+  `rational-coarse-graining-orbifold-tail-classification.md` records the sharpening and, more
+  usefully, the *exact* remaining equation: at order two the normalizing shift `t = a·y_1^2` exists
+  exactly when `a(R)·(R')^2 = R'·a − R''` has a rational solution, which for `z^2+1` reads
+  `4 z^2 a(z^2+1) = 2 z a(z) − 2`.  A solution regular at `0` and `1` is immediately impossible
+  (the left side vanishes at `0`, the right side is `−2`), so what remains is pole bookkeeping —
+  for which `RationalOrder.lean` and the transport law `ord_0(a∘R) = 2·ord_1(a)` are the tools
+  already in the tree.  Closure count unchanged: 31 cards remain in the folder.
+
+- 2026-08-16 (thirty-second pass) — orbifold family: the signed order is a valuation.  New
+  unconditional axiom-clean umbrella-wired module `HTGeometry/RationalOrderValuation.lean`:
+  `min_le_rootMultiplicity_add` (a power of `X − c` dividing two polynomials divides their sum, so
+  the multiplicity of a sum is at least the minimum), `eq_num_div_denom`,
+  `algebraMap_ne_zero_of_ne_zero`, and `min_le_ratOrder_add`:
+
+  ```text
+  min (ord_c f) (ord_c g) ≤ ord_c (f + g).
+  ```
+
+  Multiplicativity of `ratOrder` sufficed for the transport of an invariance relation, which is
+  purely multiplicative; the affine-connection equation `a(R)·(R')² = R'·a − R''` has an *additive*
+  term, so the valuation inequality is exactly what its pole bookkeeping needs.  The proof passes to
+  the common denominator `f.denom · g.denom`, where the numerator of the sum is
+  `f.num·g.denom + g.num·f.denom` and the polynomial statement applies.
+  Closure count unchanged: 31 cards remain in the folder.

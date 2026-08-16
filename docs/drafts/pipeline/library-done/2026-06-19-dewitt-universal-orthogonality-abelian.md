@@ -5,7 +5,7 @@
 - **Date:** 2026-06-19
 
 ## What to add
-New proven card `../2-fully-proven/universal-prime-side-orthogonality.md` — **THEOREM (paper, no-go),
+New proven card `../3-formalized/not_new_scientific_knowledge/universal-prime-side-orthogonality.md` — **THEOREM (paper, no-go),
 BRIDGE (substrate)** for the abelian/ζ case; the general Satake quantifier is the marked open D4 residual.
 Upgrades #137 (located) toward universal. Split from `orthogonality-meta-theorem` §6.
 

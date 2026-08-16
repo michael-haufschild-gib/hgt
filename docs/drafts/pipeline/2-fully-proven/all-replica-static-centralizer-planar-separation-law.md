@@ -536,3 +536,122 @@ Riemann--Lebesgue makes the corresponding integral tend to zero", proved once fo
 
 Everything else the card states -- Theorems A, B, D, equations `(6)`, `(8)`, `(9)`, `(11)`--`(17)`,
 `(21)`--`(23)`, and the abstract mechanisms of `(19)` and `(26)` -- is proved unconditionally.
+
+## Lean progress -- Theorem A, the quenched centralizer decomposition
+
+`formal/GaloisForLFunctions/HTGeometry/QuenchedCentralizerDecomposition.lean` (new,
+umbrella-wired, axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| the Hilbert--Schmidt energy of a diagonal matrix | `hsSqRe_diagonal` |
+| a real phase has modulus one | `norm_exp_neg_ofReal_mul_I` |
+| the zero spectral projection and the generated flow | `zeroSpectralProj`, `liouvilleFlow` |
+| the flow fixes the zero spectral projection | `liouvilleFlow_mul_zeroSpectralProj` |
+| **`(8)`, the quenched decomposition** `e^{-itL} = P + e^{-itL}(I-P)` | `liouvilleFlow_decomposition` |
+| the difference is supported on the nonzero spectrum | `liouvilleFlow_sub_zeroSpectralProj` |
+| **`(9)`, Hilbert--Schmidt half**: `‖e^{-itL} - P‖²_HS` is the number of nonzero modes, at every time | `hsSqRe_liouvilleFlow_sub_zeroSpectralProj` |
+| **`(9)`, operator half**: a nonzero mode gives a unit vector moved without shrinking | `exists_unit_vector_liouvilleFlow_sub` |
+
+Proved in the spectral (diagonal) model of the Liouvillian, where `P` is the indicator of the zero
+spectrum: the flow acts as `1` there and as a unit-modulus phase elsewhere, so the difference is
+literally the indicator of the nonzero spectrum times a phase.  That makes `(9)`'s time-independence
+immediate rather than an estimate -- the energy is exactly `D^{2r} - dim C_{H,r}` for every `t`, so
+there is no quenched norm contraction at any time.
+
+### What remains
+
+Theorems B (all-replica moving-kernel multiplicity), C (annealed propagation converges to the
+moving-kernel average), D (the plateau survives every global-commutant quotient) and E (planar decay
+and its nontransfer).
+
+## Lean status -- Theorems B and C are already in the corpus
+
+Searching before building found that both are formalized, with the card's own equation numbering.
+
+### Theorem B
+
+`HTGeometry/HistogramCentralizerDimension.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the commutant of a diagonal matrix, and its dimension as the equal-energy pair count | `commutantSubmodule`, `mem_commutantSubmodule_diagonal`, `commutantSubmodule_diagonal_eq_span`, `finrank_commutantSubmodule_diagonal` |
+| collective replica energy of an ordered tuple | `collectiveReplicaEnergy`, `collectiveReplicaEnergy_eq_sum_multiplicity` |
+| **maximal projective rank ⟺ equal collective energy iff equal histogram** | `collectiveReplicaEnergy_eq_iff_multiplicity_eq` |
+| **`(11)`**: `κ_{D,r} = Σ_k m_k²` | `replicaHistogramCollision`, `replicaHistogramCollision_eq_sum_sq` |
+| **`(12)`**: `dim C_{H,r} = κ_{D,r}` | `finrank_commutantSubmodule_collectiveReplicaEnergy` |
+| **`(14)`**: `κ_{D,1} = D` | `replicaHistogramCollision_one` |
+| **`(15)`**: the total ordered-pair count `D^{2r}` | `card_orderedReplicaPair` |
+| **`(16)`, `(17)`**: the two universal estimates | `replicaHistogramCollision_bounds`, `descFactorial_mul_factorial_le_replicaHistogramCollision` |
+
+### Theorem C
+
+`HTGeometry/AnnealedSpectralDephasing.lean`:
+
+| Card item | Declaration |
+|---|---|
+| **`(19)`, abstract form** -- a finite matrix family whose entries are finite sums of bounded oscillatory averages against phases with absolutely continuous pushforward converges to zero in operator norm | `tendsto_annealed_matrix_l2_opNorm_zero` |
+
+Its docstring states the intended application verbatim: "Applied to the difference between the
+annealed propagator and the averaged invariant projector, this is the annealed convergence of the
+replica propagator."  The card's proof supplies exactly the hypotheses it takes -- the tensor
+eigenoperator expansion `(20)`, the identification of equal-histogram terms with `P_{H(θ),r}`, and
+absolute continuity of the phase pushforward from the fixed-shell nowhere-flat theorem.
+
+## Lean progress -- the norm floor of Theorem D and the separation of Theorem E
+
+`formal/GaloisForLFunctions/HTGeometry/TraceDimensionEigenvalueFloor.lean` (new, umbrella-wired,
+axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| some member of a finite family is at least its average | `exists_le_of_sum_le_card_mul` |
+| **`(22)`/`(23)`**: a Hermitian matrix has an eigenvalue at least its trace divided by the dimension, so a rank-`κ-d` projection inside dimension `D^{2r}-d` has norm floor `(κ-d)/(D^{2r}-d)` | `exists_eigenvalue_trace_floor` |
+| **`(26)`**: the reverse triangle bound turning `(19)`, `(22)` and `(25)` into a positive separation | `norm_sub_ge_of_floor` |
+
+`exists_eigenvalue_trace_floor` is the card's "a positive operator on an `N`-dimensional space has
+largest eigenvalue at least its trace divided by `N`", and for a positive operator the largest
+eigenvalue is the operator norm.  `norm_sub_ge_of_floor` is the final step of Theorem E: with
+`y = QP̄Q` of norm at least `c`, `x = QU_r(t)Q` within `a → 0` of it by `(19)`, and `z = U^free(t)`
+of norm at most `b → 0` by `(25)`, the separation is at least `c - a - b → c > 0`.
+
+### `(13)` and `(21)`
+
+| Card item | Declaration |
+|---|---|
+| **`(13)`**: with the global commutant nested inside the centralizer, the quotient part has dimension `κ_{D,r} - d_{D,r}` | `finrank_inf_orthogonal_eq_sub` (`TraceDimensionEigenvalueFloor`) |
+| **`(21)`**: `Q P Q` is the orthogonal projection onto that part, being the difference of the two projections | `starProjection_inf_orthogonal_apply` (corpus, `HTGeometry/NestedProjectionConvergence.lean`) |
+
+The dimension count rests on mathlib's `finrank_add_inf_finrank_orthogonal`, and the projection
+identity -- "if `M ≤ K`, the projection onto the part of `K` orthogonal to `M` is the difference of
+the two projections" -- was already in the corpus.  `(21)` is then the trace of an orthogonal
+projection, which is its rank.
+
+### `(25)` is formal at one replica, with the general machinery in place
+
+| Card item | Existing declaration |
+|---|---|
+| **`(25)` at one replica** -- the vacuum-compressed propagator decays in operator norm | `oneReplicaWeightedVacuumCompressedPropagator_operatorNorm_tendsto_zero` (`HTGeometry/OneReplicaTracelessPauliSpectralDecay.lean`) |
+| its absolutely continuous scalar and coordinate spectral laws | `oneReplicaWeightedScalarSpectralLaw_absolutelyContinuous`, `oneReplicaWeighted_coordinateSpectralLaw_absolutelyContinuous` (same module) |
+| the free-Fock matrix-semicircle law and its Fourier decay | `freeFockCoordinateSpectralLaw_absolutelyContinuous` (`FreeFockMatrixSemicircleCoordinateLaw.lean`), `freeFockDiagonalVacuumPropagator_operatorNorm_tendsto_zero` (`FreeFockMatrixSemicircleFourierDecay.lean`) |
+| a nonzero balanced integer relation stays nonconstant under permutation | `permutedSpectralCoefficient_not_constant` (`AnalyticSpectralRelationEscape.lean`) |
+
+The card says `(25)` holds "exactly as in the formalized one-replica proof", and that proof is
+`oneReplicaWeightedVacuumCompressedPropagator_operatorNorm_tendsto_zero`.  The Kargin input the card
+cites -- absolute continuity of the full-matrix-semicircle scalar law -- is
+`freeFockCoordinateSpectralLaw_absolutelyContinuous`, and the Riemann--Lebesgue decay it feeds is
+`freeFockDiagonalVacuumPropagator_operatorNorm_tendsto_zero`.
+
+### What remains
+
+Two generalizations, both from one replica to all finite `r`:
+
+1. `(25)` for `r > 1` -- the free-Fock decay machinery is complete, so this is the replicated
+   instantiation rather than new analysis.
+2. the chart/partition-of-unity reduction feeding `(20)` into
+   `tendsto_annealed_matrix_l2_opNorm_zero`, whose absolute-continuity hypothesis comes from the
+   nowhere-flat theorem; `permutedSpectralCoefficient_not_constant` is the nonconstancy half of that
+   input.
+
+Theorem A, all of Theorem B, `(13)`, `(21)`, the abstract form of Theorem C, and the quantitative
+cores of D and E are formal.

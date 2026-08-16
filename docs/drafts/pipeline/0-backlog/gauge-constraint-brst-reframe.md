@@ -78,7 +78,7 @@ organizing layer and the inflow recipe, and it **surfaces the crux** carded sepa
 - `substrate-hypothesis.md` — the D-axis verdict this card supplies a mechanism for (BRST: obstruction, not quotient).
 - `omega-rh-coupling-vs-orthogonality.md` — **the crux this lens surfaces** (coupled vs orthogonal).
 - `../2-fully-proven/constraint-not-flow-theorem.md` (#138) — the FE-as-constraint = the Gauss-law row.
-- `../2-fully-proven/archimedean-prime-cross-term.md` (#135/#134) — FE-cocycle purely archimedean = "not first-class on the prime side."
+- `../3-formalized/not_new_scientific_knowledge/archimedean-prime-cross-term.md` (#135/#134) — FE-cocycle purely archimedean = "not first-class on the prime side."
 - `g5-over-fq-deligne-unitarity.md`, `../1-in-progress/archimedean-weil-ii-bedrock.md` — the `F_q` bulk for the inflow subtraction.
 
 ## Log

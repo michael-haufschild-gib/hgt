@@ -14,7 +14,7 @@
   `../2-fully-proven/multiplier-dichotomy-theorem.md` (#134, non-CC ∉ CC, DeWitt),
   `../2-fully-proven/archimedean-generator-axis-mode.md` (#136, `∂_s` Fourier-diagonal, ζ-side axis-mode +
   lone digamma residue, Professor),
-  `../2-fully-proven/archimedean-prime-cross-term.md` (#135, `M_Λ=M_∞⊗M_ζ`, `χ` purely archimedean, Professor),
+  `../3-formalized/not_new_scientific_knowledge/archimedean-prime-cross-term.md` (#135, `M_Λ=M_∞⊗M_ζ`, `χ` purely archimedean, Professor),
   00-status row #1 (`{log p}` ℚ-LI); the seam home `../../door/bucket-the-seam-archimedean-obstruction.md`;
   charter §6 (the D-axis / substrate).
 - **Provenance (standing-order corpus check):** #130 already states *"seam / corank-`∞−1` / missing Frobenius
@@ -169,7 +169,7 @@ monoculture; it is **substrate-load-bearing**: `BRIDGE (substrate)`.
   supplying (L2); this card is its **eigenvalue-lattice twin** (the lift defect L1→L2).
 - `../2-fully-proven/archimedean-generator-axis-mode.md` (#136) — the `∂_s` decomposition supplying both
   summands; this card reads its ζ-side/digamma split as the two horns of #128.
-- `../2-fully-proven/multiplier-dichotomy-theorem.md` (#134), `../2-fully-proven/archimedean-prime-cross-term.md`
+- `../2-fully-proven/multiplier-dichotomy-theorem.md` (#134), `../3-formalized/not_new_scientific_knowledge/archimedean-prime-cross-term.md`
   (#135) — non-CC ∉ CC, and `M_Λ=M_∞⊗M_ζ` with `χ` purely archimedean.
 - `corank-seam-invariant.md` (#125, Wheeler) — the **linear↔algebraic** graded-corank reading of `∞−1`
   (Schanuel ladder); this card is the **complementary** eigenvalue↔CC-class reading. Distinct gaps, same

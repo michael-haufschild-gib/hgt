@@ -84,6 +84,23 @@ theorem tail_zero : (Fin.tail (0 : Fin (n + 1) → ℂ) : Fin n → ℂ) = 0 := 
   funext i
   simp [Fin.tail]
 
+/-- The value of a pulled-back germ at the origin is the value of the original. -/
+theorem analyticGermValue_germTail (a : AnalyticGerm (0 : Fin n → ℂ)) :
+    analyticGermValue (0 : Fin (n + 1) → ℂ) (germTail n a) = analyticGermValue (0 : Fin n → ℂ) a := by
+  obtain ⟨c, hcA, hceq⟩ := a.2
+  have haeq : a = analyticGermOf hcA := Subtype.ext hceq.symm
+  have hcomp : AnalyticAt ℂ (c ∘ fun w : Fin (n + 1) → ℂ => (Fin.tail w : Fin n → ℂ))
+      (0 : Fin (n + 1) → ℂ) := by
+    have hc' : AnalyticAt ℂ c (Fin.tail (0 : Fin (n + 1) → ℂ)) := by
+      rw [tail_zero]
+      exact hcA
+    exact hc'.comp analyticAt_tail
+  have hgt : germTail n a = analyticGermOf hcomp := by
+    rw [haeq]
+    exact Subtype.ext (germTail_analyticGermOf hcA)
+  rw [hgt, analyticGermValue_of hcomp, haeq, analyticGermValue_of hcA]
+  simp only [Function.comp_apply, tail_zero]
+
 /-- **A distinguished polynomial of positive degree has a regular germ.** -/
 theorem germSlice_germEval_distPoly_ne_zero {d : ℕ}
     {α : ℕ → AnalyticGerm (0 : Fin n → ℂ)}

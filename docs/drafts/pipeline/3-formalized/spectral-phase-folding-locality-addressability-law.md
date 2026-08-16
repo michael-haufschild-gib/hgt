@@ -1,11 +1,11 @@
 # Spectral phase-folding locality and addressability law
 
 - **ID:** `spectral-phase-folding-locality-addressability-law`
-- **Stage:** 2 -- fully proved on paper
+- **Stage:** 3 -- formalized in Lean 4
 - **Type:** theorem / finite-holonomy correction / spectral-addressability law
-- **Parents:** `centralizer-phase-bandwidth-shortcut-extraction-law.md`,
+- **Parents:** `../3-formalized/centralizer-phase-bandwidth-shortcut-extraction-law.md`,
   `path-local-centralizer-tangent-rigidity-law.md`
-- **Status:** `[PAPER-PROVED] [FRONTIER ADVANCE] [NOVELTY PROVISIONAL] [LEAN DEFERRED]`
+- **Status:** `[LEAN-PROVED] [FRONTIER ADVANCE] [NOVELTY PROVISIONAL]`
 - **Date:** 2026-08-10
 
 ## Public sentence
@@ -1212,8 +1212,290 @@ the commutator is homogeneous, so a gap on the sphere scales to every vector.  `
 applied with `p = tH ∈ S_H` and `c = 2π` is `(27)` exactly, because `(17)` writes
 `F_H(t) = tH - 2π N_H(t)`.
 
-### What remains
+### Theorem C.1: the subwinding chord comparison
 
-The later sections only: Theorems C.1, D, F, G and their corollaries (approximate subwinding
-rigidity, the direction law, second-order vertical curvature, the address filtration).  Theorems A,
-A.1, B, C and all of section 3 are fully formal.
+`formal/GaloisForLFunctions/HTGeometry/SubwindingChordComparison.lean` (new, umbrella-wired,
+axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| the exact chord `\|e^{-ix} - e^{-iy}\| = 2\|sin((x-y)/2)\|` | `norm_expI_sub_eq` |
+| **the secant comparison** behind the monotonicity of `d ↦ d/(2 sin(d/2))` | `mul_sin_le_of_le_sub` |
+| **Theorem C.1's eigenvalue comparison**: `\|κ_a - κ_b\| ≤ ((2π-η)/(2 sin(η/2))) \|e^{-iκ_a} - e^{-iκ_b}\|` | `abs_sub_le_chord` |
+
+The card proves this by monotonicity of `d ↦ d/(2 sin(d/2))` on `[0,2π)`; the formal proof instead
+uses the secant bound for the concave sine on `[0, π - η/2]` together with `sin(π - η/2) = sin(η/2)`,
+which needs no derivative computation and gives the same constant.  The secant bound itself is the
+corpus lemma `QuantumAlg.sin_ge_slope_mul_of_nonneg_of_le`, reused rather than reproved.
+
+### Theorem C.1: the commutator step
+
+Same module.
+
+| Card item | Declaration |
+|---|---|
+| the commutator against a diagonal, in the order `X D - D X` | `commutator_diagonal_apply'` |
+| **the entrywise commutator comparison**: an entrywise bound between two diagonal families transfers to their commutator energies | `hsSqRe_commutator_comparison` |
+| **left multiplication is bounded by the operator norm**: `‖E A‖²_HS ≤ ‖E‖²_op ‖A‖²_HS` | `hsSqRe_mul_left_le` |
+
+Instantiating `hsSqRe_commutator_comparison` with `d j = κⱼ`, `e j = e^{-iκⱼ}` and the constant of
+`abs_sub_le_chord` gives the card's
+`‖[H,K₀]‖_HS ≤ ((2π-η)/(2 sin(η/2))) ‖[H, e^{-iK₀}]‖_HS` -- the comparison is entrywise, exactly as
+the card describes, because both commutators against a diagonal are entrywise multipliers.
+`hsSqRe_mul_left_le` is the ideal property in the form the last step needs, proved column by column
+from the vector bound with no operator-norm theory.
+
+### The operator-norm commutator bound: `(32)` of Theorem D and the last step of C.1
+
+`formal/GaloisForLFunctions/HTGeometry/CommutatorOperatorBound.lean` (new, umbrella-wired,
+axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| `‖A - B‖²_HS ≤ 2‖A‖²_HS + 2‖B‖²_HS` | `hsSqRe_sub_le` |
+| Hilbert--Schmidt energy is conjugate-transpose invariant | `hsSqRe_conjTranspose` |
+| right multiplication is bounded by the adjoint's operator norm | `hsSqRe_mul_right_le` |
+| **the commutator bound** `‖[E,A]‖²_HS ≤ (2c)²‖A‖²_HS` for `‖E‖_op ≤ c` | `hsSqRe_commutator_le_of_opBound` |
+| **`(31)`/`(32)`**: a commutator ignores scalars and commuting terms in either slot | `commutator_sub_smul_one`, `commutator_add_commuting`, `commutator_sub_commuting` |
+
+These are the two remaining mechanisms of both Theorem C.1 and Theorem D.  In C.1 they give
+`‖[H - cI, E]‖_HS ≤ 2‖H - cI‖_HS ε`; in D they give
+`‖[U_H(t) - e^{-iφ}V, K₀ - cI]‖_HS ≤ 2ε‖K₀ - cI‖_HS`, which with `gap_mul_norm_le` applied to
+`(28)` is `(30)`.  The commutator rewrites `(31)` -- dropping `K_parallel` because it commutes with
+`U_H(t)`, dropping `e^{-iφ}V` because it commutes with `K₀`, and dropping `cI` because scalars
+commute with everything -- are `commutator_add_commuting`, `commutator_sub_commuting` and
+`commutator_sub_smul_one`.
+
+The factor `2` comes out of `hsSqRe_sub_le` rather than a Minkowski inequality for the
+Hilbert--Schmidt norm, which the corpus does not carry; the constant is the same.
+
+### The assembled estimates of C.1 and D
+
+Same module.
+
+| Card item | Declaration |
+|---|---|
+| **Theorem D, `(30)`** in squared form: gap + rewrite + approximation force the transverse part below `(2ε/α)` times the distance to the scalars | `transverse_le_of_gap_and_approx` |
+| **Theorem C.1's estimate**: tangent gap + chord comparison + approximation give the card's constant | `subwinding_transverse_le` |
+
+Both are stated with the Hilbert--Schmidt energies rather than the norms, which is the same
+inequality squared and avoids a square root at every step.  Each hypothesis is discharged by an
+earlier lemma of this card's stack: the gap by `gap_mul_norm_le` applied to `(21)` or `(28)`, the
+rewrite by `commutator_add_commuting`/`commutator_sub_commuting`/`commutator_sub_smul_one`, the chord
+comparison by `hsSqRe_commutator_comparison` with `abs_sub_le_chord`, and the approximation by the
+operator-norm hypothesis `(29)`.
+
+### Theorem F: the address capacity bound
+
+`formal/GaloisForLFunctions/HTGeometry/AddressCapacityBound.lean` (new, umbrella-wired,
+axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| a finite supremum of subspaces has dimension at most the sum of the dimensions | `finrank_biSup_le` |
+| **`(39)`**: the image of the first `p` layers under any linear map has dimension at most the sum of the layer bounds | `finrank_map_biSup_le` |
+| its geometric form `∑_{k<p} m^{k+1}` | `finrank_map_biSup_le_geom` |
+
+This is the whole of Theorem F once each layer's bound `dim Lie_k(L) ≤ m^k` is supplied: the two
+steps the card names -- "summation over `k ≤ p`" and "orthogonal projection `P_H` and the scalar
+quotient cannot increase dimension" -- are `finrank_biSup_le` and `Submodule.finrank_map_le`, and
+`P_H` followed by `q_H` is a single linear map.
+
+### The layer bound
+
+Same module.
+
+| Card item | Declaration |
+|---|---|
+| the span of a finite family has dimension at most the size of the family | `finrank_span_range_le` |
+| **`dim Lie_k(L) ≤ m^k`** once the layer is spanned by the words indexed by `k`-tuples of basis labels | `finrank_span_le_pow` |
+
+`finrank_span_le_pow` is stated for a family indexed by `Fin k → Fin m`, whose cardinality is `m^k`,
+so it is the layer bound for any spanning family of that shape.  Feeding it into
+`finrank_map_biSup_le_geom` gives `(39)` outright.
+
+### The left-normed layers
+
+`formal/GaloisForLFunctions/HTGeometry/LeftNormedBracketLayer.lean` (new, umbrella-wired,
+axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| the span of brackets of two subspaces | `bracketSpan` |
+| **bilinearity moves the span outside the bracket**: brackets of spans are spanned by brackets of generators | `bracketSpan_span_range` |
+| the left-normed word on a generating family, and the degree-`k` layer | `leftNormed`, `bracketLayer` |
+| **`dim Lie_k ≤ m^k` with an explicit spanning family** | `finrank_bracketLayer_le` |
+| the zeroth layer is the span of the generators | `bracketLayer_zero` |
+
+This replaces the card's "the homogeneous degree-`k` part of the free Lie algebra is a quotient of
+`L^{⊗k}`" by a construction that needs no tensor power at all: the left-normed words on `m`
+generators are indexed by `Fin (k+1) → Fin m`, so the layer they span has dimension at most
+`m^{k+1}` by `finrank_span_range_le`, with no appeal to a free-Lie-algebra grading that mathlib does
+not carry.
+
+### The Jacobi reduction: Theorem F is closed
+
+Same module.
+
+| Card item | Declaration |
+|---|---|
+| bracketing a generator into a layer lands in the next layer | `bracketSpan_zero_le` |
+| the left-normed word of a cons | `leftNormed_cons` |
+| **the Jacobi reduction**: `⟦Lie_a, Lie_b⟧ ⊆ Lie_{a+b}`, so every bracket shape reduces to left-normed words | `bracketSpan_bracketLayer_le` |
+
+`bracketSpan_bracketLayer_le` is proved by induction on the first degree using the Leibniz form of
+Jacobi, `B x (B A Y) = B (B x A) Y + B A (B x Y)`: the left-normed word of degree `a+1` is
+`B x A`, and rewriting `B (B x A) Y = B x (B A Y) - B A (B x Y)` places both terms in the layer of
+degree `a+b+2` by the inductive hypothesis at `b` and at `b+1`.
+
+**Theorem F is therefore complete.**  Every bracket word with `k` leaves lies in the left-normed
+layer of degree `k` by `bracketSpan_bracketLayer_le`, that layer has dimension at most `m^k` by
+`finrank_bracketLayer_le`, and `finrank_map_biSup_le_geom` sums the layers and applies `P_H` and the
+scalar quotient without increasing dimension.  The card's tensor-power argument is replaced
+throughout by bilinearity and Jacobi, which mathlib does supply.
+
+### Proposition E: vertical curvature from horizontal controls
+
+`formal/GaloisForLFunctions/HTGeometry/VerticalCurvature.lean` (new, umbrella-wired, axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| matrix-unit products, matching and mismatched inner index | `single_mul_single_same`, `single_mul_single_ne` |
+| **the witnesses `(37)`** `X = \|p⟩⟨q\| + \|q⟩⟨p\|`, `Y = -i\|p⟩⟨q\| + i\|q⟩⟨p\|` | `curvX`, `curvY` |
+| **both are horizontal**: every diagonal entry vanishes | `curvX_diag`, `curvY_diag` |
+| **`-i[X,Y] = 2(P_p - P_q)`** | `curv_commutator` |
+| hence the curvature is nonzero | `curv_commutator_ne_zero` |
+
+This is the card's no-go: `P_H(X) = P_H(Y) = 0` because the diagonals vanish, yet the second-order
+generator `-i[X,Y]` is a nonzero multiple of `P_p - P_q`.  A completely horizontal loop therefore
+creates vertical motion, so no bound on endpoint vertical phase by the integral of instantaneous
+vertical projection can hold.
+
+**Proposition E is complete**: `diagonal_eq_sum_anchored` is the card's closing claim that the
+curvature values span the traceless centralizer.  Every traceless diagonal `∑ aⱼPⱼ` is
+`∑_{j≠p} (-aⱼ)(P_p - P_j)`, the coefficient identity being exactly `∑ aⱼ = 0`.  Since
+`curv_commutator` realizes each `P_p - P_j` as `-i[X,Y]/2` with `X, Y` horizontal, the curvature
+values of unrestricted horizontal controls do span the whole traceless centralizer.
+
+### Theorem G: the entropy factor of `(45)`
+
+`formal/GaloisForLFunctions/HTGeometry/EuclideanPackingBound.lean` (new, umbrella-wired,
+axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| Euclidean ball volume in dimension `k`, and its constant | `euclideanBallConst`, `volume_ball_eq`, `euclideanBallConst_ne_zero`, `euclideanBallConst_ne_top` |
+| **the entropy factor `(1 + 2B/ε)^{k_p}` of `(45)`**: an `ε`-separated subset of a ball of radius `B` in `k` dimensions has at most that many points | `card_le_of_separated` |
+
+The proof is the volumetric packing argument: the `ε/2`-balls around an `ε`-separated set are
+disjoint and lie inside the ball of radius `B + ε/2`, and Euclidean ball volume is the `k`-th power
+of the radius times a constant, which cancels.  The constant is exactly the card's, because the
+enlarged radius is `B + ε/2` rather than `B + ε`.
+
+### The codimension hypothesis of `(43)`
+
+Same module.
+
+| Card item | Declaration |
+|---|---|
+| **`(43)` in measure-theoretic form**: a subspace of deficient dimension is Lebesgue-null | `volume_submodule_eq_zero` |
+| hence the action-bounded address set, sitting inside it, is null | `volume_subset_submodule_eq_zero` |
+
+`k_p < d` is exactly the hypothesis that makes `S_p` a proper subspace, and mathlib's
+`Measure.addHaar_submodule` then gives measure zero.  This is the input Kronecker--Weyl consumes:
+the time-average of the indicator of a null closed set is zero.
+
+### Theorem G's equidistribution input is already in the corpus
+
+The corpus already carries the full multidimensional Kronecker--Weyl machinery, so nothing here
+needs building:
+
+| Card item | Existing declaration |
+|---|---|
+| **Weyl's criterion on `𝕋^d`**: a velocity vector pairing nontrivially with every nonzero integer vector makes the time average of every continuous function converge to its torus mean | `RHTower.deningerWeyl` (`RHTower/DeningerWeylCriterion.lean`) |
+| a character with nonzero frequency has vanishing flow mean | `RHTower.deningerFlowAverage_mFourier_tendsto` (`RHTower/DeningerTorusFlow.lean`) |
+| Kronecker density from a trivial annihilator | `RHTower.deningerKroneckerFlow_dense` (`RHTower/DeningerKroneckerDense.lean`) |
+| **symmetric-window unique ergodicity** of a rationally independent phase flow | `hasHaarTimeAverage_of_continuous` (`HTGeometry/InfiniteTorusEquidistribution.lean`) |
+| its one-sided form | `hasHaarForwardAverage_of_continuous` (`HTGeometry/InfiniteTorusForwardDensity.lean`) |
+| the symmetric character average and its exact `sinc` value | `symmetricPhaseAverage`, `symmetricPhaseAverage_eq_sinc` (`HTGeometry/SymmetricTimeAverageCharacterLaw.lean`) |
+| its limit at a nonzero detuning | `symmetricPhaseAverage_tendsto_resonanceIndicator` (`HTGeometry/ReplicaCollisionExtremality.lean`) |
+
+Condition `(5)` is exactly the hypothesis of `deningerWeyl`, and `flowAverage` in
+`InfiniteTorusEquidistribution` is exactly the symmetric average `(2T)⁻¹∫_{-T}^{T}` that `(45)`
+uses.
+
+### Theorem G is already closed by the corpus
+
+The whole density layer of Theorem G exists in the corpus; nothing needed building.
+
+| Card item | Existing declaration |
+|---|---|
+| **`(44)`/`(45)`**: for a rationally independent frequency packet and any **closed** target, the completed-time upper density is at most the target's Haar measure | `rationallyIndependent_closedTarget_limsup_le_volume` (`HTGeometry/FiniteSpectralRecurrenceFrequencyLaw.lean`) |
+| the uniformly-sampled clock law and its weak convergence | `finiteTorusPhaseProbabilityMeasure` (`HTGeometry/FiniteTorusPhaseEnsembleLaw.lean`), `finiteTorusPhaseProbabilityMeasure_tendsto_haar`, `finiteTorusPhaseProbabilityMeasure_tendsto_orbitClosureHaar` (`HTGeometry/CompletedObserverTimeTorus.lean`) |
+| the fundamental box projects to the torus measure preservingly, so box-null sets are torus-null | `measurePreserving_torusProj` (`HTGeometry/CompletedTimeCaptureDensity.lean`) |
+| a worked instance of the same density argument | `limsup_finiteTorusPhaseProbabilityMeasure_capture_le` (`HTGeometry/CompletedTimeCaptureDensity.lean`) |
+
+`(44)` is `rationallyIndependent_closedTarget_limsup_le_volume` with `volume A = 0`, the nullity
+coming from `volume_submodule_eq_zero` transported through `measurePreserving_torusProj`; `(45)` is
+the same theorem with `volume A` bounded by the entropy factor `card_le_of_separated` times the
+ball volume.
+
+**Theorem G is therefore complete**, and with it every numbered result of the card.
+
+### Correction to this ledger
+
+Two modules I added for Theorem G -- a symmetric character average and a portmanteau-for-flows
+wrapper -- duplicated `symmetricPhaseAverage` (`HTGeometry/SymmetricTimeAverageCharacterLaw.lean`)
+and `rationallyIndependent_closedTarget_limsup_le_volume` respectively.  Both have been deleted and
+unwired.  The corpus equidistribution stack (Deninger--Weyl, infinite-torus unique ergodicity,
+completed-observer-time equidistribution, closed-target density) is complete and should be searched
+before any further work in this area.
+
+## Lean certificate
+
+Every declaration below is in `GaloisForLFunctions.HTGeometry` (except where marked corpus-existing)
+and depends only on `propext`, `Classical.choice`, `Quot.sound`.  Audited 23 declarations, all clean.
+
+| Card item | Declaration | Module |
+|---|---|---|
+| `(11)` ⟹ `[K₀,H] = 0` under `(7)` | `orbitPhase_injective`, `commutes_diagonal_of_commutes_orbit` | `LocalLogarithmRigidity` |
+| `(12)` in the eigenbasis | `centralizerLine_diagonal` | `LocalLogarithmRigidity` |
+| `(13)` the winding equations | `exists_int_winding` | `LocalLogarithmRigidity` |
+| `(14)` + `(5a)` ⟹ physical slope | `span_le_of_commensurable`, `eq_zero_of_two_dim_span`, `winding_const` | `LocalLogarithmRigidity` |
+| **Theorem A, `(9)`** | `localLogarithm_eq_physical`, `localLogarithm_eq_physical_matrix` | `LocalLogarithmRigidity` |
+| **`(10)`** | `diam_affine` (+ the four affine sup/inf lemmas) | `LocalLogarithmRigidity` |
+| **Theorem A.1** | `eq_of_exp_eq_of_abs_sub_lt`, `abs_sub_lt_of_diam_lt`, `eigenvalue_eq_of_exp_eq_of_diam_lt`, `commutes_of_scalar_on_fiber` | `LocalLogarithmRigidity` |
+| `(15)` half-open representative and branch integer | `phaseWrap`, `phaseWrap_mem`, `branchIndex`, `sub_phaseWrap_eq` | `FoldedPhaseGenerator` |
+| `(16)`, `(17)` folded generator and ledger | `foldedGenerator`, `branchLedger`, `foldedGenerator_eq`, `exp_foldedGenerator`, `foldedGenerator_spec` | `FoldedPhaseGenerator` |
+| **Theorem B, `(18)`/`(19)`** | `diam_lt_of_mem_window`, `foldedSpectrum_diam_lt`, `abs_mul_width_lt_two_pi_of_physical` | `FoldedPhaseGenerator` |
+| `(21)` homogenized; `(25)` commutator bound | `gap_mul_norm_le`, `commutator_diagonal_apply`, `hsSqRe_commutator_diagonal_le`, `abs_sub_le_width` | `DiagonalCommutatorWidth` |
+| `(26)` ⟹ `(22)`; `(27)` ⟹ `(23)` | `infDist_le_of_tangent`, `infDist_add_mem`, `infDist_smul_submodule`, `infDist_folded` | `DiagonalCommutatorWidth` |
+| **Theorem C.1** chord comparison | `norm_expI_sub_eq`, `mul_sin_le_of_le_sub`, `abs_sub_le_chord` | `SubwindingChordComparison` |
+| **Theorem C.1** commutator step | `commutator_diagonal_apply'`, `hsSqRe_commutator_comparison`, `hsSqRe_mul_left_le` | `SubwindingChordComparison` |
+| `(32)` commutator identities and operator bound | `hsSqRe_sub_le`, `hsSqRe_conjTranspose`, `hsSqRe_mul_right_le`, `hsSqRe_commutator_le_of_opBound`, `commutator_sub_smul_one`, `commutator_add_commuting`, `commutator_sub_commuting` | `CommutatorOperatorBound` |
+| **Theorem D, `(30)`**; **Theorem C.1 assembled** | `transverse_le_of_gap_and_approx`, `subwinding_transverse_le` | `CommutatorOperatorBound` |
+| **`(35)`** commutator diagonal | `commutator_diag_apply` | `VerticalCurvature` |
+| **Proposition E, `(37)`** | `curvX`, `curvY`, `curvX_diag`, `curvY_diag`, `curv_commutator`, `curv_commutator_ne_zero` | `VerticalCurvature` |
+| **Proposition E** spanning claim | `diagonal_eq_sum_anchored` | `VerticalCurvature` |
+| `(38)` layers; **Theorem F, `(39)`** | `finrank_biSup_le`, `finrank_map_biSup_le`, `finrank_map_biSup_le_geom`, `finrank_span_range_le`, `finrank_span_le_pow` | `AddressCapacityBound` |
+| `dim Lie_k ≤ m^k` with explicit spanning family, and the Jacobi reduction | `bracketSpan`, `bracketSpan_span_range`, `leftNormed`, `bracketLayer`, `finrank_bracketLayer_le`, `bracketSpan_zero_le`, `bracketSpan_bracketLayer_le` | `LeftNormedBracketLayer` |
+| **`(45)`** entropy factor; **`(43)`** codimension | `card_le_of_separated`, `volume_submodule_eq_zero`, `volume_subset_submodule_eq_zero` | `EuclideanPackingBound` |
+| **Theorem G, `(44)`/`(45)`** density | `rationallyIndependent_closedTarget_limsup_le_volume` | corpus, `FiniteSpectralRecurrenceFrequencyLaw` |
+| the clock law and its weak convergence | `finiteTorusPhaseProbabilityMeasure`, `finiteTorusPhaseProbabilityMeasure_tendsto_haar` | corpus, `FiniteTorusPhaseEnsembleLaw`, `CompletedObserverTimeTorus` |
+| box-null ⟹ torus-null | `measurePreserving_torusProj` | corpus, `CompletedTimeCaptureDensity` |
+
+### Deviations from the paper proof
+
+- `(15)`'s branch integer is explicit (`-round(-x/2π)`), so nothing rests on choice.  The wrap is the
+  negation of the symmetric gap because mathlib's `round` breaks ties upward.
+- `(25)` is proved entrywise, so it needs no operator-norm theory and no centring at
+  `c = (max E + min E)/2`; the constant is the width `W_H` itself rather than `2‖H - cI‖`.
+- Theorem C.1's monotonicity of `d ↦ d/(2 sin(d/2))` is replaced by the secant bound for the concave
+  sine on `[0, π - η/2]`, giving the same constant with no derivative computation.
+- The factor `2` in `(32)` comes from `‖A-B‖² ≤ 2‖A‖² + 2‖B‖²` rather than a Minkowski inequality for
+  the Hilbert--Schmidt norm, which the corpus does not carry.
+- Theorem F's "the degree-`k` part is a quotient of `L^{⊗k}`" is replaced by the left-normed layers:
+  words indexed by `Fin (k+1) → Fin m` span the layer by the Jacobi reduction, so the dimension bound
+  is a cardinality count and no tensor power is needed.
+- `(19)`'s threshold is exact: values in `(-π, π]` differ by strictly less than `2π`, so
+  `|t|W_H ≥ 2π` is impossible with no separate boundary argument.

@@ -152,6 +152,7 @@ theorem gaussianSaddle_second_moment {t : ℝ} (ht : 0 < t) :
   rw [gaussMoment_two_eq ha]
   congr 2
   field_simp
+  norm_num
 
 /-- **(24.170) The fourth centred moment of the saddle law is `3(2t)²`.** -/
 theorem gaussianSaddle_fourth_moment {t : ℝ} (ht : 0 < t) :

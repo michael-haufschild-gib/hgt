@@ -24,4 +24,4 @@ Type/grade: **CANDIDATE → THEOREM (paper, synthesis), Door grade BRIDGE**.
   (the positivity residual ω=0 is handed to G5).
 - Reinforces the "C5 localized to 2 loci" picture (#133): firewall confirms the generator level is cleared;
   C5 = finite-free Hankel positivity (#113/#104) or G5 holonomy (#38).
-- Card: `docs/drafts/pipeline/2-fully-proven/seam-firewall.md` (Resolution §1–§5).
+- Card: `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/seam-firewall.md` (Resolution §1–§5).

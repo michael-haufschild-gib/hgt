@@ -536,6 +536,45 @@ theorem suzukiUnitRieszReporterWeightedNegativeLightMass_zero_eq_prime_half
   rw [← suzukiUnitRieszReporterWeightedPositiveLightMass_zero_eq_negative]
   exact suzukiUnitRieszReporterWeightedPositiveLightMass_zero_eq_prime_half hN
 
+/-- Each positive wall-light channel is exactly the positive sine split of its von-Mangoldt
+mass.  This pointwise law exposes the phase leakage hidden by the total-light identity. -/
+theorem normSq_suzukiCriticalWallPositiveLightAmplitude_eq_sine
+    (t : ℝ) (p : Nat.Primes) (e : ℕ) :
+    normSq (suzukiCriticalWallPositiveLightAmplitude t p e) =
+      (ArithmeticFunction.vonMangoldt (xiGammaEulerValuationNat (p, e)) /
+          Real.sqrt (xiGammaEulerValuationNat (p, e) : ℝ)) *
+        (1 + Real.sin (t * Real.log (xiGammaEulerValuationNat (p, e) : ℝ))) / 2 := by
+  have hsum := normSq_suzukiCriticalWallLightAmplitudes_eq_vonMangoldt_div_sqrt
+    t p e
+  have hdiff := normSq_suzukiCriticalWallPositiveLightAmplitude_sub_negative
+    t p e
+  have hsquare := congrArg Complex.im
+    (sq_suzukiCriticalWallField_eq_farHingeNumerator t p e)
+  have him :
+      ((suzukiCriticalWallField t p e) ^ 2).im =
+        (ArithmeticFunction.vonMangoldt (xiGammaEulerValuationNat (p, e)) /
+          Real.sqrt (xiGammaEulerValuationNat (p, e) : ℝ)) *
+            Real.sin (t * Real.log (xiGammaEulerValuationNat (p, e) : ℝ)) := by
+    rw [hsquare]
+    have hkernel :
+        (suzukiOscillatoryKernel (t : ℂ)
+          (Real.log (xiGammaEulerValuationNat (p, e) : ℝ))).im =
+            Real.sin (t * Real.log (xiGammaEulerValuationNat (p, e) : ℝ)) := by
+      simp only [suzukiOscillatoryKernel]
+      rw [show
+          (Real.log (xiGammaEulerValuationNat (p, e) : ℝ) : ℂ) * (I * (t : ℂ)) =
+            ((t * Real.log (xiGammaEulerValuationNat (p, e) : ℝ) : ℝ) : ℂ) * I by
+        push_cast
+        ring]
+      rw [Complex.exp_mul_I]
+      simp only [Complex.add_im, Complex.cos_ofReal_im, Complex.mul_im,
+        Complex.sin_ofReal_re, Complex.I_im, Complex.sin_ofReal_im,
+        Complex.I_re, mul_one, mul_zero, add_zero, zero_add]
+    rw [Complex.mul_im, hkernel]
+    norm_num
+  rw [him] at hdiff
+  linarith
+
 /-- The continuum debt left after exact negative-light payment. -/
 def suzukiUnitRieszLightCompletedRegularResidual
     (N : ℕ) (t : ℝ) : ℝ :=

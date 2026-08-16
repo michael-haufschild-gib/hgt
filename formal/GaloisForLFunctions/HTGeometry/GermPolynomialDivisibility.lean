@@ -48,6 +48,10 @@ theorem degree_distPoly (d : ℕ) (α : ℕ → AnalyticGerm (0 : Fin n → ℂ)
     exact degree_lowDegreePoly_lt α d
   rw [distPoly, degree_add_eq_left_of_degree_lt h, degree_X_pow]
 
+theorem natDegree_distPoly (d : ℕ) (α : ℕ → AnalyticGerm (0 : Fin n → ℂ)) :
+    (distPoly d α).natDegree = d :=
+  natDegree_eq_of_degree_eq_some (degree_distPoly d α)
+
 /-- The evaluation of a polynomial of low degree is the corresponding germ combination. -/
 theorem germEval_eq_of_degree_lt {d : ℕ} {P : Polynomial (AnalyticGerm (0 : Fin n → ℂ))}
     (hdeg : P.degree < (d : ℕ)) :
@@ -58,14 +62,17 @@ theorem germEval_eq_of_degree_lt {d : ℕ} {P : Polynomial (AnalyticGerm (0 : Fi
   show Polynomial.eval₂ (germTail n) (germCoord n) P = _
   exact Polynomial.eval₂_eq_sum_range' (germTail n) hnat (germCoord n)
 
-theorem germEval_distPoly (d : ℕ) (α : ℕ → AnalyticGerm (0 : Fin n → ℂ)) :
-    germEval n (distPoly d α)
-      = germCoord n ^ d + ∑ j ∈ Finset.range d, germTail n (α j) * germCoord n ^ j := by
-  rw [distPoly, map_add, map_pow, germEval_X]
-  congr 1
+theorem germEval_lowDegreePoly (d : ℕ) (α : ℕ → AnalyticGerm (0 : Fin n → ℂ)) :
+    germEval n (lowDegreePoly α d)
+      = ∑ j ∈ Finset.range d, germTail n (α j) * germCoord n ^ j := by
   rw [germEval_eq_of_degree_lt (degree_lowDegreePoly_lt α d)]
   refine Finset.sum_congr rfl fun j hj => ?_
   rw [lowDegreePoly_coeff, if_pos (Finset.mem_range.mp hj)]
+
+theorem germEval_distPoly (d : ℕ) (α : ℕ → AnalyticGerm (0 : Fin n → ℂ)) :
+    germEval n (distPoly d α)
+      = germCoord n ^ d + ∑ j ∈ Finset.range d, germTail n (α j) * germCoord n ^ j := by
+  rw [distPoly, map_add, map_pow, germEval_X, germEval_lowDegreePoly]
 
 /-- The independence property of a distinguished polynomial, as a predicate. -/
 def GermIndependent (d : ℕ) (α : ℕ → AnalyticGerm (0 : Fin n → ℂ)) : Prop :=

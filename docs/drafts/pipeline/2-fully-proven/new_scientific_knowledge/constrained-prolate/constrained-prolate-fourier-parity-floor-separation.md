@@ -1724,3 +1724,38 @@ uniform tails           normalizedProlate_tail_lt           (this session)
 so the coordinate half of `(3)`, `ell_j(lambda) -> a_j`, has every ingredient in Lean.  What is left
 is to instantiate the transfer at the prolate family with those three, which is substitution rather
 than mathematics.
+
+## The normalization step of `(3)` is now a theorem, not bookkeeping
+
+Two modules, both wired and axiom-clean.
+
+```
+HTGeometry/ShapeRatioDilation.lean
+  intervalIntegral_dilate      int_{-aR}^{aR} b f(x/a)      = a b   int_{-R}^{R} f
+  intervalIntegral_dilate_sq   int_{-aR}^{aR} (b f(x/a))^2  = a b^2 int_{-R}^{R} f^2
+  shapeRatio_dilate            ( int_{-aR}^{aR} b f(x/a) )^2 / int_{-aR}^{aR} (b f(x/a))^2
+                                   =  a . ( int_{-R}^{R} f )^2 / int_{-R}^{R} f^2
+  shapeRatio_amplitude_invariant
+
+RHTower/ProlateCoordinateNormalization.lean
+  tendsto_sqrt_mul_prolateGround_coordSq
+      sqrt c . ( int_{-1}^{1} Phi_c )^2 / int_{-1}^{1} Phi_c^2   ->   2 sqrt(pi)
+```
+
+The shape ratio is quadratic over quadratic, so the amplitude cancels exactly, and the dilation
+survives once because the numerator is squared *after* integrating.  That is the whole content of
+the "rescaling ambiguity" the card flagged: the normalised profile is
+`Psi_c(xi) = Phi_c(xi/sqrt c) / Phi_c(0)`, which is `beta f(x/alpha)` with `alpha = sqrt c` and
+`beta = 1/Phi_c(0)`, and the matching window `[-sqrt c, sqrt c]` corresponds to `R = 1` — the
+eigenfunction's own interval.  So the corpus limit `2 sqrt(pi)` for the normalised profile transfers
+verbatim, with the single factor `sqrt c`.
+
+One point that was not bookkeeping: the transfer needs `Phi_c(0) != 0`, and no positivity of the
+ground state is available in the corpus family data.  It is not needed.  If `Phi_c(0)` vanished the
+normalised profile would be identically zero (Lean's `div_zero`), so its shape ratio would be `0`;
+since the ratio tends to `2 sqrt(pi) != 0`, it is eventually nonzero, hence `Phi_c(0) != 0` for all
+large `c` — which is all a limit statement needs.  The proof extracts the amplitude bound from the
+limit itself.
+
+So `(3)` at `j = 0` is now unconditional *in the card's own normalization*, with the constant
+`2 sqrt(pi)` explicit.  What remains on this card is the Fuchs asymptotic with its constant `A_n`.

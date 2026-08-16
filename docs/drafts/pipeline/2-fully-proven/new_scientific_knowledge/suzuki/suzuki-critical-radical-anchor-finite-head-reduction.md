@@ -436,3 +436,86 @@ introduced in their place.
 - 2026-08-08 — Proved exact two-witness constants, derived the five-twelfths annulus, then found the
   stronger radical-anchor principle showing that only a finite response head can obstruct the safe
   wall.
+
+## Sharpening — the five-twelfths constant is an artefact of using two witnesses
+
+`(SR-64.22)` fixes the number of critical-line witnesses at two, and that choice alone is what
+forces the tight band `(SR-64.2)` and hence the input `(SR-64.23)`.  Nothing in sections 4–5 uses
+the count.
+
+### SR-64.28 Tail-sum form of the annular payment `[PROVED]`
+
+Let `q` be off the critical line with `h=Im(q)^2>141/2`, and let `S` be any finite set of
+critical-line copies with squared ordinates `k_r>=3h`. Sections 4 and 5 give, for each `r in S`,
+
+```text
+a_r(tau_q-tau_r)^2 > (16/25)^2 a_r/(1+h)^2,   a_r = 1/(1+k_r),
+A chi_q/a_q < 29/[625(1+h)^3].
+```
+
+Therefore the whole payment condition is the single scalar inequality
+
+```text
+sum_(r in S) 1/(1+k_r) > 29/[256(1+h)].                  (SR-64.28)
+```
+
+Specialisation check: two witnesses in the card's band `[3h,(432/25)h]` give
+`50/[432(1+h)] = 0.115740.../(1+h)` against `29/256 = 0.113281...`, which is exactly the margin
+`(SR-64.3)`. So `(SR-64.22)` is the two-element case of `(SR-64.28)`.
+
+### SR-64.29 Any fixed annulus suffices if it carries enough witnesses `[PROVED]`
+
+Put `Gamma=sqrt(3h)` and let `S` consist of `n` conjugate witness pairs with ordinates in
+`[Gamma,K Gamma]` for a fixed `K>1`. Then `1+k_r <= 1+K^2 Gamma^2` for each, so the left side of
+`(SR-64.28)` is at least `2n/(1+K^2Gamma^2)`, and `(SR-64.28)` holds as soon as
+
+```text
+n >= (87/512)K^2.                                        (SR-64.29)
+```
+
+`K` is fixed, so the required witness count is a **constant**. The band ratio is no longer capped.
+
+### SR-64.30 The required zero-counting input drops below every published proportion `[PROVED]`
+
+Consequently the annular payment theorem needs only
+
+```text
+exists K>1, exists C, exists Gamma_0, for all Gamma>=Gamma_0:
+  #{critical-line ordinates in [Gamma,K Gamma]} >= C.    (SR-64.30)
+```
+
+Three ways to obtain `(SR-64.30)`, in decreasing strength:
+
+1. Any positive proportion `liminf N_0(T)/N(T)>=kappa>0`, with `K>1/kappa`: then
+   `N_0(K Gamma)-N_0(Gamma) >= kappa N(K Gamma)-N(Gamma) -> infinity`. Selberg (1942) suffices;
+   Pratt--Robles--Zaharescu--Zeindler is not needed.
+2. Hardy--Littlewood's 1921 gap theorem, `N_0(T+H)-N_0(T) >> H` for `H=T^(3/4+eps)`: on `[Gamma,2Gamma]`
+   this already gives `>> Gamma` witnesses, so `K=2` works and no proportion theorem is used.
+3. Any lower bound `N_0(T) >> T^delta`, `delta>0`, combined with the same partial-summation step
+   applied to the full tail rather than to one annulus.
+
+Riemann--von Mangoldt enters only in route 1, to convert a proportion into an annular count. Under
+route 2 it is not used at all. The `riemann-von-mangoldt-zero-counting` card is therefore no longer
+on the critical path for gate five.
+
+The exact scale match `5/12 <-> [sqrt(3),12 sqrt(3)/5]` recorded in the novelty boundary is real,
+but it is the *two-witness* optimum, not a feature of the mechanism. The optimum two-witness band
+ratio is `(255/83)*(1250/29)*(83/85-83/255)^2 = 5.945...` in the squared ordinate, i.e. `2.438...`
+in the ordinate, which corresponds to the threshold `kappa>0.4102...`; the card's `[sqrt(3),12sqrt(3)/5]`
+attains `2.4` and threshold `5/12`. Both are superseded by `(SR-64.30)`.
+
+## Gates (revised)
+
+- [x] tail-sum form of the annular payment
+- [x] fixed-annulus witness-count criterion
+- [x] reduction of the zero-counting input below every published proportion theorem
+- [ ] Lean: the tail-sum payment inequality
+- [ ] provider: one unconditional instance of `(SR-64.30)`
+- [ ] provider: Hardy's theorem for the qualitative anchor of `(SR-64.1)`
+
+## Log (continued)
+
+- 2026-08-16 — Removed the five-twelfths dependence: the payment condition is a tail sum, the
+  witness count is free, and the annulus ratio is therefore unconstrained. Recorded the
+  two-witness optimum `2.438...` and its threshold `0.4102...` for the record, and retired the
+  Riemann--von Mangoldt provider from the critical path.
