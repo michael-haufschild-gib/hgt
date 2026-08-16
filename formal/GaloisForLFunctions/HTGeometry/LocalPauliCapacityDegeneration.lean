@@ -51,12 +51,21 @@ theorem posSemidef_arrow3 {a b c : ℝ} (ha : 0 < a) (hd : 0 ≤ c * a - 2 * b ^
     ext i j
     fin_cases i <;> fin_cases j <;>
       simp [outerSelf_apply, hv₁, hv₂, hv₃, Complex.conj_ofReal] <;>
-      (field_simp; ring)
+      (try field_simp) <;> (try ring)
   rw [hdecomp]
   refine Matrix.PosSemidef.add (Matrix.PosSemidef.add ?_ ?_) ?_
   · exact posSemidef_real_smul (outerSelf_posSemidef v₁) (by positivity)
   · exact posSemidef_real_smul (outerSelf_posSemidef v₂) (by positivity)
   · exact posSemidef_real_smul (outerSelf_posSemidef v₃) (by positivity)
+
+/-- The determinant of a symmetric arrow matrix. -/
+theorem det_arrow3 (a b c : ℝ) :
+    (!![(a : ℂ), 0, (b : ℂ); 0, (a : ℂ), (b : ℂ); (b : ℂ), (b : ℂ), (c : ℂ)]).det
+      = ((a * (a * c - 2 * b ^ 2) : ℝ) : ℂ) := by
+  rw [Matrix.det_fin_three]
+  norm_num
+  push_cast
+  ring
 
 /-! ## The seed pair -/
 
@@ -191,12 +200,12 @@ theorem hallSeedState_posDef {t : ℝ} (ht : 0 < t) : (hallSeedState t).PosDef :
 
 theorem hallSeedState_det {t : ℝ} (ht : 0 < t) : (hallSeedState t).det = 1 := by
   have htne : (t : ℝ) ≠ 0 := ne_of_gt ht
+  have htc : ((t : ℝ) : ℂ) ≠ 0 := by simpa using htne
   rw [hallSeedState, Matrix.det_fin_three]
-  simp only [Matrix.cons_val', Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
-    Matrix.empty_val', Matrix.cons_val_fin_one, Matrix.head_fin_const, Matrix.cons_val_two,
-    Matrix.tail_cons, Matrix.head_val']
+  norm_num
   push_cast
   field_simp
+  norm_num
 
 /-- **The Kraus determinant along the family is exactly `2(ε² + t⁻³)`.** -/
 theorem hallSeedKraus_det {ε t : ℝ} (ht : 0 < t) :
@@ -212,11 +221,8 @@ theorem hallSeedKraus_det {ε t : ℝ} (ht : 0 < t) :
     ext i j
     fin_cases i <;> fin_cases j <;>
       simp [hallSeedA₁, hallSeedA₂, hallSeedState] <;> push_cast <;> ring
-  rw [hmat, Matrix.det_fin_three]
-  simp only [Matrix.cons_val', Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
-    Matrix.empty_val', Matrix.cons_val_fin_one, Matrix.head_fin_const, Matrix.cons_val_two,
-    Matrix.tail_cons, Matrix.head_val']
-  push_cast
+  rw [hmat, det_arrow3]
+  congr 1
   field_simp
   ring
 
@@ -235,16 +241,15 @@ theorem hallSeedCapacity_upper (ε : ℝ) {δ : ℝ} (hδ : 0 < δ) :
   have hinv1 : t⁻¹ ≤ 1 := by
     rw [inv_le_one_iff₀]
     exact Or.inr ht1
-  have hinvδ : t⁻¹ ≤ δ / 3 := by
-    have hd3 : (0 : ℝ) < 3 / δ := by positivity
-    have h := one_div_le_one_div_of_le hd3 htδ
-    rw [one_div, one_div] at h
-    calc t⁻¹ ≤ (3 / δ)⁻¹ := h
-      _ = δ / 3 := by field_simp
+  have hti : t * t⁻¹ = 1 := mul_inv_cancel₀ (ne_of_gt ht)
+  have h3 : (3 : ℝ) ≤ t * δ := (div_le_iff₀ hδ).mp htδ
+  have hinvδ : 3 * t⁻¹ ≤ δ := by
+    have hprod : 0 ≤ (t * δ - 3) * t⁻¹ := mul_nonneg (by linarith) (le_of_lt hinv0)
+    nlinarith [hprod, hti]
   refine ⟨hallSeedState t, hallSeedState_posDef ht, hallSeedState_det ht,
     2 * t⁻¹ ^ 3, by positivity, ?_, ?_⟩
   · have hcube : t⁻¹ ^ 3 ≤ t⁻¹ := by nlinarith [hinv0, hinv1]
-    nlinarith [hcube, hinvδ, hδ]
+    linarith [hcube, hinvδ, hδ]
   · rw [hallSeedKraus_det ht]
     push_cast
     ring

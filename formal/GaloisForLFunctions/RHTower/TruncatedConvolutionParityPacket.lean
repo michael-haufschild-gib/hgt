@@ -95,6 +95,77 @@ theorem truncConvParityPacket_compactFourier_zero_im_eq_zero {k k' : ℝ → ℝ
     (truncConvParitySource_odd k N) (truncConvParityDiagonal_even heven N)
     hpsd hc hground hline hzero
 
+/-! ## The compressed quadratic form -/
+
+/-- The trigonometric polynomial attached to a centered parity coefficient vector. -/
+def truncConvModePoly {N : ℕ} (v : CCMCenteredParityIndex N → ℂ) : ℝ → ℂ :=
+  indexTrigPoly (ccmParityCenteredMode N) v
+
+theorem truncConvParityPacket_apply {k k' : ℝ → ℝ} (hk : ∀ u, HasDerivAt k (k' u) u)
+    (hk'c : Continuous k') (heven : ∀ u, k (-u) = k u) (N : ℕ) (mu : ℝ)
+    (i j : CCMCenteredParityIndex N) :
+    truncConvParityPacket k N mu i j
+      = convMatrix k (ccmParityCenteredMode N i) (ccmParityCenteredMode N j)
+        - (mu : ℂ) * (if i = j then 1 else 0) := by
+  rw [truncConvParityPacket, ccmCenteredParityPacket, ccmScalarShift]
+  simp only [Matrix.map_apply, Matrix.sub_apply, Matrix.smul_apply, Matrix.one_apply,
+    smul_eq_mul]
+  rw [ccmDividedDifferenceMatrix_truncConv hk hk'c heven]
+  by_cases hij : i = j
+  · subst hij
+    simp only [if_pos rfl]
+    rw [map_sub, ← convMatrix_ofReal_re heven]
+    push_cast
+    ring
+  · simp only [if_neg hij]
+    rw [map_sub, ← convMatrix_ofReal_re heven]
+    push_cast
+    ring
+
+/-- **The compressed form is the truncated-convolution form.** -/
+theorem truncConvParityPacket_form {k k' : ℝ → ℝ} (hk : ∀ u, HasDerivAt k (k' u) u)
+    (hk'c : Continuous k') (heven : ∀ u, k (-u) = k u) {N : ℕ} (mu : ℝ)
+    (v : CCMCenteredParityIndex N → ℂ) :
+    star v ⬝ᵥ (truncConvParityPacket k N mu *ᵥ v)
+      = (∫ x in (0 : ℝ)..1, (starRingEnd ℂ) (truncConvModePoly v x)
+            * truncConv k (truncConvModePoly v) x)
+        - (mu : ℂ) * ∫ x in (0 : ℝ)..1,
+            (starRingEnd ℂ) (truncConvModePoly v x) * truncConvModePoly v x := by
+  have hkc : Continuous k := continuous_iff_continuousAt.2 fun u => (hk u).continuousAt
+  have hexpand : star v ⬝ᵥ (truncConvParityPacket k N mu *ᵥ v)
+      = ∑ i, ∑ j, (starRingEnd ℂ) (v i) * truncConvParityPacket k N mu i j * v j := by
+    rw [Matrix.dotProduct]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [Matrix.mulVec, Matrix.dotProduct, Finset.mul_sum]
+    exact Finset.sum_congr rfl fun j _ => by
+      simp only [Pi.star_apply, RCLike.star_def]
+      ring
+  rw [hexpand]
+  have hterm : ∀ i j : CCMCenteredParityIndex N,
+      (starRingEnd ℂ) (v i) * truncConvParityPacket k N mu i j * v j
+        = (starRingEnd ℂ) (v i)
+            * convMatrix k (ccmParityCenteredMode N i) (ccmParityCenteredMode N j) * v j
+          - (mu : ℂ) * ((if i = j then 1 else 0) * ((starRingEnd ℂ) (v i) * v j)) := by
+    intro i j
+    rw [truncConvParityPacket_apply hk hk'c heven]
+    ring
+  rw [Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => hterm i j]
+  simp only [Finset.sum_sub_distrib]
+  rw [integral_indexTrigPoly_truncConv hkc (ccmParityCenteredMode N) v]
+  rw [integral_indexTrigPoly_normSq
+    (ccmParityCenteredMode_injective N) v]
+  congr 1
+  · rfl
+  · rw [← Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [Finset.sum_eq_single i]
+    · simp
+    · intro j _ hji
+      simp [Ne.symm hji]
+    · intro h
+      exact absurd (Finset.mem_univ i) h
+
 end
 
 end RHTower
