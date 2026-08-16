@@ -90,6 +90,7 @@ omit [DecidableEq ι] [FiniteDimensional ℝ V] in
 theorem finsetEval_apply (v : ι → V) (F₀ : Finset ι) (k : { x // x ∈ F₀ } → ℝ) :
     finsetEval v F₀ k = ∑ i ∈ F₀.attach, k i • v (i : ι) := rfl
 
+omit [FiniteDimensional ℝ V] in
 theorem range_finsetEval (v : ι → V) (F₀ : Finset ι) :
     LinearMap.range (finsetEval v F₀) = Submodule.span ℝ (v '' (F₀ : Set ι)) := by
   classical
@@ -109,6 +110,7 @@ theorem range_finsetEval (v : ι → V) (F₀ : Finset ι) :
     · intro hcon
       exact absurd (Finset.mem_attach F₀ _) hcon
 
+omit [FiniteDimensional ℝ V] in
 /-- **A bounded coefficient representation on a finite spanning subfamily.** -/
 theorem exists_bounded_coeffs (v : ι → V) (F₀ : Finset ι) :
     ∃ M : ℝ, 0 ≤ M ∧ ∀ w ∈ Submodule.span ℝ (v '' (F₀ : Set ι)),
@@ -125,9 +127,7 @@ theorem exists_bounded_coeffs (v : ι → V) (F₀ : Finset ι) :
     rw [hL, range_finsetEval]
     exact hw
   set y : ↥(LinearMap.range L) := ⟨w, hwW⟩ with hy
-  have hval : L.rangeRestrict (g y) = y := by
-    have hcomp := congrArg (fun f => f y) hg
-    simpa using hcomp
+  have hval : L.rangeRestrict (g y) = y := DFunLike.congr_fun hg y
   have hLg : L (g y) = w := by
     have hc := congrArg (fun z : ↥(LinearMap.range L) => (z : V)) hval
     simpa [LinearMap.rangeRestrict, hy] using hc
@@ -206,47 +206,46 @@ theorem exists_finite_pos_combination_of_summable (v : ι → V) (a : ι → ℝ
     rw [ht]
     exact Submodule.sub_mem _ htail hpart
   obtain ⟨k, hkbound, hkval⟩ := hMbound t htmem
-  set k' : ι → ℝ := fun i => if h : i ∈ F₀ then k ⟨i, h⟩ else 0 with hk'
+  obtain ⟨k', hk'mem, hk'not⟩ :
+      ∃ k' : ι → ℝ, (∀ i, ∀ h : i ∈ F₀, k' i = k ⟨i, h⟩) ∧ (∀ i, i ∉ F₀ → k' i = 0) := by
+    refine ⟨fun i => if h : i ∈ F₀ then k ⟨i, h⟩ else 0, fun i h => dif_pos h,
+      fun i h => dif_neg h⟩
   have hk'sum : ∑ i ∈ F₀, k' i • v i = t := by
     rw [hkval, ← Finset.sum_attach F₀ fun i => k' i • v i]
     refine Finset.sum_congr rfl fun i _ => ?_
-    dsimp only
-    rw [dif_pos i.2]
-  set b : ι → ℝ := fun i => a i + k' i with hb
+    rw [hk'mem (i : ι) i.2]
+  obtain ⟨b, hbdef⟩ : ∃ b : ι → ℝ, ∀ i, b i = a i + k' i := ⟨fun i => a i + k' i, fun _ => rfl⟩
+  have hhalf : M * eps ≤ amin / 2 := by
+    rw [heps, mul_div_assoc', div_le_div_iff₀ (by positivity) (by norm_num)]
+    nlinarith [hamin_pos, hM0]
   have hbpos : ∀ i ∈ F, 0 < b i := by
     intro i hi
     by_cases hiF₀ : i ∈ F₀
     · have hk : |k' i| ≤ M * ‖t‖ := by
-        rw [hk', dif_pos hiF₀]
+        rw [hk'mem i hiF₀]
         exact hkbound _
-      have hMt : M * ‖t‖ ≤ M * eps := by
-        exact mul_le_mul_of_nonneg_left htsmall.le hM0
-      have hhalf : M * eps ≤ amin / 2 := by
-        rw [heps]
-        rw [div_le_div_iff₀ (by linarith) (by norm_num)] at *
-        nlinarith [hamin_pos, hM0]
+      have hMt : M * ‖t‖ ≤ M * eps := mul_le_mul_of_nonneg_left htsmall.le hM0
       have hlow : -(amin / 2) ≤ k' i := by
-        have := abs_le.1 hk
-        linarith [this.1]
+        have habs := abs_le.1 hk
+        linarith [habs.1]
       have hamin_i : amin ≤ a i := hamin_le i hiF₀
-      rw [hb]
+      rw [hbdef]
       linarith
-    · have hzero : k' i = 0 := by rw [hk', dif_neg hiF₀]
-      rw [hb, hzero, add_zero]
+    · rw [hbdef, hk'not i hiF₀, add_zero]
       exact ha i
   have hbsum : ∑ i ∈ F, b i • v i = ∑' i, a i • v i := by
     have hF₀F : F₀ ⊆ F := by rw [hF]; exact Finset.subset_union_left
     have hsplit : ∑ i ∈ F, b i • v i
         = (∑ i ∈ F, a i • v i) + ∑ i ∈ F, k' i • v i := by
       rw [← Finset.sum_add_distrib]
-      exact Finset.sum_congr rfl fun i _ => by rw [hb, add_smul]
+      exact Finset.sum_congr rfl fun i _ => by rw [hbdef, add_smul]
     have hrestrict : ∑ i ∈ F, k' i • v i = ∑ i ∈ F₀, k' i • v i := by
       refine (Finset.sum_subset hF₀F fun i _ hnot => ?_).symm
-      rw [hk', dif_neg hnot, zero_smul]
+      rw [hk'not i hnot, zero_smul]
     rw [hsplit, hrestrict, hk'sum, ht]
-    ring
-  obtain ⟨G, c, _, hcpos, hli, hcard, hcsum⟩ :=
+    abel
+  obtain ⟨G, c, hGF, hcpos, hli, hcard, hcsum⟩ :=
     exists_pos_combination_card_le_finrank v F b hbpos
-  exact ⟨G, c, hcpos, hli, hcard, by rw [← hbsum, hcsum]⟩
+  exact ⟨G, c, hcpos, hli, hcard, hbsum.symm.trans hcsum⟩
 
 end GaloisForLFunctions.HTGeometry

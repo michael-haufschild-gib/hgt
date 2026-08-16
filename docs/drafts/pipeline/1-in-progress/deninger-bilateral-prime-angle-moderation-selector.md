@@ -9,7 +9,7 @@
   - `deninger-poisson-mertens-boundary-jet-fracture.md`;
   - `deninger-mertens-adiabatic-exponential-corner.md`;
   - `adelic-high-shell-prime-dilation-purity-or-escape.md`;
-  - `../2-fully-proven/not_new_scientific_knowledge/prime-translation-koszul-off-unitary-contractibility.md`;
+  - `../3-formalized/not_new_scientific_knowledge/prime-translation-koszul-off-unitary-contractibility.md`;
   - `high-shell-critical-hardy-conormal-uniformization.md`;
   - `zeta-source-effectivity-arithmetic-equivalence-principle.md`.
 - **RH used:** no

@@ -10922,3 +10922,101 @@ Two ways to close it, in increasing order of reuse:
 
 Either way the analytic content is already done; what remains is the identification of the two
 concrete `L²` models.  Recorded here so the next pass does not rediscover it.
+
+## ADN. The model gap is closed — the aperture is a bounded coordinate
+
+ADM recorded that the coalescing analysis lived on `Lp 𝕜 2 (volume.restrict (Ioo (-a) a))` while
+Suzuki's operator lives on `Lp ℂ 2 (volume : Measure ↥(Icc (-a) a))`.  The gap is now closed, not by
+a bridge between the two models, but by removing the model from the statements.
+
+```text
+HTGeometry/BoundedCoordinateL2Expansion.lean
+  BoundedCoordinate Ω μ         a finite measure space with a bounded measurable real coordinate
+  monomial, coshVec, sinhVec    the real L² objects, with their MemLp and norm bounds
+  hasSum_coshVec, hasSum_sinhVec   the L² Taylor expansions, via hasSum_toLp_of_ae_dominated
+  evenMoment, oddMoment, summable_norm_*, hasSum_*Moment
+  tendsto_evenEnergy_rate, tendsto_oddEnergy_rate     (5)
+  tendsto_coshVec, tendsto_inv_smul_sinhVec           (47)
+  ofRealLp, monomialC, coshVecC, sinhVecC             the complex model, by ℝ-linear inclusion
+  hasSum_coshVecC, hasSum_sinhVecC, tendsto_coshVecC, tendsto_inv_smul_sinhVecC
+  evenMomentC, oddMomentC, tendsto_evenEnergyC_rate, tendsto_oddEnergyC_rate
+
+RHTower/SuzukiApertureBoundedCoordinate.lean
+  volume_suzukiApertureInterval_univ, instIsFiniteMeasureSuzukiAperture
+  suzukiApertureCoordinate      **Suzuki's interval is a bounded coordinate**
+
+RHTower/SuzukiCoalescingTangentGeneral.lean
+  coalescingEvenEnergy, coalescingOddEnergy, positionResolventTangent   (44), (45)
+  tendsto_one_sub_coalescingDefect_rate        **Theorem E (46), model-free**
+  tendsto_one_sub_suzukiIntervalDefect_rate    Theorem E on `SuzukiApertureIntervalL2`
+```
+
+**An aperture is a finite measure space with a bounded real coordinate — nothing else.**  Every
+statement of §§2–8 that was proved for the restricted-measure model is now proved once, for any such
+structure, and the Suzuki interval is an instance.  The complex model costs nothing extra: the
+real-to-complex inclusion `Complex.ofRealCLM.compLpL` is a continuous ℝ-linear map, so the complex
+expansions and rates are images of the real ones under it, not new proofs.
+
+**One instance detail worth recording.**  `Measure.Subtype.measureSpace` is a *local* instance in the
+corpus (`SuzukiScrewTraceClass`), so any module that mentions `volume` on the interval subtype must
+re-declare it with `attribute [local instance]`.  The finiteness of that measure is
+`comap_subtype_coe_apply` plus `Subtype.coe_image_univ`, and is now an instance.
+
+All new declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+### ADN.1 `(69)`–`(70)` are model-free too
+
+```text
+HTGeometry/GroundOverlap.lean          groundOverlap and its two invariances, extracted so both
+                                       the aperture and the bounded-coordinate development use one
+                                       copy
+HTGeometry/BoundedCoordinateL2Expansion.lean (Fourier section)
+  coeFn_monomialC, memLp_fourier, fourierVec, hasSum_fourierVec
+  fourierGroundVec, norm_monomialC_le, summable_norm_fourierGroundVec
+  tendsto_smul_inv_pow_fourierVec        **(69)** for any bounded coordinate
+  tendsto_groundOverlap_fourierVec       **(70)** for any bounded coordinate
+```
+
+So §§2–8's analytic content — `(5)`, `(46)`, `(47)`, `(69)`, `(70)` — is now stated once, for a
+finite measure space with a bounded real coordinate, and applies to Suzuki's `A_a` space through
+`suzukiApertureCoordinate`.  What §§2–8 still needs from the operator side is `(2)`: the
+identification of `r`, `s` as the minimal *visible* degrees of the actual ground projections, which
+requires totality of the monomials in the two parity sectors.
+
+## ADO. `(2)` is closed — the first visible degree exists
+
+```text
+HTGeometry/CoordinateMonomialTotality.lean
+  coordMonomialCM, toComplexCM, reCM, imCM, toComplexCM_re_add_im
+  realPairing, realPairing_{add,smul,zero,sum}, norm_realPairing_le, continuous_realPairing
+  realPairing_eq_zero_of_powers            Stone–Weierstrass along the coordinate
+  eq_zero_of_inner_coordMonomial_eq_zero   the monomials are a total family
+  dense_span_coordMonomial                 their span is dense
+  eq_zero_of_apply_coordMonomial           a bounded observable killing them all vanishes
+  exists_visible_degree                    **(2)**
+  exists_visible_{even,odd}Degree          **(2)** in the two parities
+
+RHTower/SuzukiApertureBoundedCoordinate.lean  (extended)
+  suzukiApertureCM, suzukiApertureCM_injective, toLp_coordMonomialCM_eq
+  exists_visible_degree_suzuki
+  exists_visible_{even,odd}Degree_suzuki   **(2)** on `SuzukiApertureIntervalL2`
+```
+
+**The hypothesis that makes totality true is injectivity of the coordinate, not anything about the
+interval.**  On a compact Hausdorff space the subalgebra `Algebra.adjoin ℝ {X}` separates points
+exactly when `X` is injective, so Stone–Weierstrass makes polynomials in `X` uniformly dense; the
+measure being finite and weakly regular turns that into `L²` density, and the pairing against a
+fixed vector is continuous for the sup norm.  Hence the only vector orthogonal to every monomial is
+zero.
+
+**The parity refinement is free.**  A spectral projection in the even sector annihilates every odd
+monomial, because odd functions are orthogonal to the even sector; so `exists_visible_evenDegree`
+turns "`P_e ≠ 0`" directly into "some even monomial survives", which is exactly the card's
+`r = min {2k : P_e(x^{2k}) ≠ 0}`.  Same for `s`.
+
+With `(2)` and `(5)` both closed on Suzuki's own space, the §§2–5 chain is complete except for the
+identification of `P_e`, `P_o` with the spectral projections of `A_a` at the common floor `(1)`, and
+the continuity and two endpoint limits of `λ ↦ κ_{a,c}(λ)` that Theorem A's intermediate-value step
+consumes.
+
+All new declarations audit to `[propext, Classical.choice, Quot.sound]`.

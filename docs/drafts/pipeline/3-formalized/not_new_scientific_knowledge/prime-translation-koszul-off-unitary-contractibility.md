@@ -1,7 +1,7 @@
 # Prime-translation Koszul complexes are quantitatively contractible off the unitary axis
 
 - **ID:** `prime-translation-koszul-off-unitary-contractibility`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper); Route-A selector
 - **Scientific status:** `[BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** unitary logarithmic dilations and the critical normalization
@@ -111,12 +111,39 @@ It does not construct the zeta defect.  In particular:
 Thus the selector half of the pro-geometric Route A is closed.  The source-first determinant and
 contraction-compatible theta boundary remain the substantive problem.
 
-## Lean surface
+## Lean formalization
 
-`positiveScaleUnitary` and the Mellin/logarithmic unitary transports already provide the concrete
-prime unitaries.  The abstract unitary resolvent and one-invertible-coordinate Koszul contraction
-are standard.  No Lean file is added until the paper route identifies the exact complex consuming
-them.
+`formal/GaloisForLFunctions/RHTower/PrimeTranslationKoszulOffLine.lean`
+
+| Card claim | Lean declaration |
+|---|---|
+| `\|\|λ\|-1\| · ‖y‖ ≤ ‖(U-λ)y‖`, hence `‖(U-λ)^{-1}‖ ≤ 1/\|\|λ\|-1\|` | `norm_sub_smul_lower_bound`, `norm_le_of_unitaryOp_sub_smul` |
+| `U - λ` is invertible for `\|λ\| ≠ 1` (Neumann series (1) and (3)) | `isUnit_unitaryOp_sub_smul` |
+| one invertible coordinate contracts the Koszul complex of a commuting tuple | `koszul_contraction`, `koszul_tuple_contraction`, `primeKoszulContraction` |
+| the Koszul complex is exact in every degree under that hypothesis | `physicalKoszulDifferential_exact`, `physicalKoszulDifferential_surjective_zero` |
+| `\|δ_s(p)\| = p^{1/2-Re s}`, `= 1` exactly on the critical line | `norm_deltaS`, `norm_deltaS_eq_one_iff` |
+| the uniform bound `1/\|2^{1/2-Re s}-1\|` dominates every prime | `contractionBound_le` |
+| off the line every prime coordinate `U_p - δ_s(p)` is invertible | `isUnit_primeKoszulCoord` |
+| the prime logarithmic translations commute | `additiveTranslationUnitary_comm`, `commute_additiveTranslationUnitary` |
+| every finite prime Koszul complex containing one prime is contractible off the line | `exists_commuting_adjoin_of_offLine`, `primeTranslationKoszul_offLine` |
+
+New reusable infrastructure built for this card:
+
+* `HTGeometry/KoszulCartanContraction.lean` — left exterior multiplication `wedgeLeft` between
+  exterior powers, the **Cartan identity** `ι_φ(e ∧ ω) + e ∧ ι_φ ω = φ(e)·ω` in every degree
+  (`koszul_cartan_succ`, `koszul_cartan_zero_map`), the chain homotopy attached to an invertible
+  coordinate (`koszul_contraction`), and exactness of the Koszul complex
+  (`physicalKoszulDifferential_exact`).
+* `RHTower/UnitaryResolventOffCircle.lean` — the unitary resolvent off the unit circle with its
+  quantitative lower bound.
+* In the card module: `commute_of_mem_adjoin` and `adjoinCommRing` — a commuting set generates a
+  commutative algebra, which is what turns "commuting tuple of operators" into a Koszul complex
+  over a commutative ring.
+
+The concrete prime unitaries are the corpus's `additiveTranslationUnitary a` on `L²(ℝ)`
+(`RHTower/L2MellinUnitary.lean`), taken at `a = log p`.
+
+All declarations audited with `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`.
 
 ## Gates
 
@@ -124,4 +151,4 @@ them.
 - [x] Koszul contraction from one invertible coordinate proved
 - [x] critical normalization specialized to prime translations
 - [x] compact-off-line uniformity proved
-- [ ] optional Lean formalization after the source complex is fixed
+- [x] Lean formalization, unconditional

@@ -92,35 +92,18 @@ theorem abs_sum_eigenvalues_pow_le_rank_energy {n : ℕ} (hn : 0 < n)
 
 /-! ## The trace power of a Hermitian matrix -/
 
-/-- A Hermitian power is the conjugate of the diagonal power. -/
-theorem isHermitian_pow_eq_conj_diagonal {d : Type*} [Fintype d] [DecidableEq d]
-    {H : Matrix d d ℂ} (hH : H.IsHermitian) (k : ℕ) :
-    H ^ k = (hH.eigenvectorUnitary : Matrix d d ℂ) *
-        Matrix.diagonal (fun i => (hH.eigenvalues i : ℂ)) ^ k *
-        star (hH.eigenvectorUnitary : Matrix d d ℂ) := by
-  have hmem := hH.eigenvectorUnitary.2
-  have hVs : star (hH.eigenvectorUnitary : Matrix d d ℂ) *
-      (hH.eigenvectorUnitary : Matrix d d ℂ) = 1 := (Unitary.mem_iff.mp hmem).1
-  have hsV : (hH.eigenvectorUnitary : Matrix d d ℂ) *
-      star (hH.eigenvectorUnitary : Matrix d d ℂ) = 1 := (Unitary.mem_iff.mp hmem).2
+/-- A conjugated matrix has conjugated powers. -/
+theorem pow_conj_diagonal {d : Type*} [Fintype d] [DecidableEq d] {H V D : Matrix d d ℂ}
+    (hVs : star V * V = 1) (hsV : V * star V = 1) (hHD : H = V * D * star V) (k : ℕ) :
+    H ^ k = V * D ^ k * star V := by
   induction k with
   | zero => simpa using hsV.symm
   | succ k ih =>
-      rw [pow_succ, ih, isHermitian_eq_conj_diagonal hH]
-      rw [show ((hH.eigenvectorUnitary : Matrix d d ℂ) *
-            Matrix.diagonal (fun i => (hH.eigenvalues i : ℂ)) ^ k *
-            star (hH.eigenvectorUnitary : Matrix d d ℂ)) *
-          ((hH.eigenvectorUnitary : Matrix d d ℂ) *
-            Matrix.diagonal (fun i => (hH.eigenvalues i : ℂ)) *
-            star (hH.eigenvectorUnitary : Matrix d d ℂ))
-          = (hH.eigenvectorUnitary : Matrix d d ℂ) *
-            Matrix.diagonal (fun i => (hH.eigenvalues i : ℂ)) ^ k *
-            (star (hH.eigenvectorUnitary : Matrix d d ℂ) *
-              (hH.eigenvectorUnitary : Matrix d d ℂ)) *
-            Matrix.diagonal (fun i => (hH.eigenvalues i : ℂ)) *
-            star (hH.eigenvectorUnitary : Matrix d d ℂ) from by
-        simp [Matrix.mul_assoc]]
-      rw [hVs, Matrix.mul_one, pow_succ]
+      rw [pow_succ, ih, hHD]
+      rw [show (V * D ^ k * star V) * (V * D * star V)
+          = V * D ^ k * (star V * V) * D * star V from by simp [Matrix.mul_assoc], hVs,
+        Matrix.mul_one, pow_succ]
+      simp [Matrix.mul_assoc]
 
 /-- **The trace power of a Hermitian matrix is the eigenvalue power sum.** -/
 theorem trace_pow_eq_sum_eigenvalues_pow {d : Type*} [Fintype d] [DecidableEq d]
@@ -129,8 +112,11 @@ theorem trace_pow_eq_sum_eigenvalues_pow {d : Type*} [Fintype d] [DecidableEq d]
   have hmem := hH.eigenvectorUnitary.2
   have hVs : star (hH.eigenvectorUnitary : Matrix d d ℂ) *
       (hH.eigenvectorUnitary : Matrix d d ℂ) = 1 := (Unitary.mem_iff.mp hmem).1
-  rw [isHermitian_pow_eq_conj_diagonal hH k, Matrix.trace_mul_cycle, ← Matrix.mul_assoc, hVs,
+  have hsV : (hH.eigenvectorUnitary : Matrix d d ℂ) *
+      star (hH.eigenvectorUnitary : Matrix d d ℂ) = 1 := (Unitary.mem_iff.mp hmem).2
+  rw [pow_conj_diagonal hVs hsV (isHermitian_eq_conj_diagonal hH) k, Matrix.trace_mul_cycle, hVs,
     Matrix.one_mul, Matrix.diagonal_pow, Matrix.trace_diagonal]
+  exact Finset.sum_congr rfl fun i _ => rfl
 
 /-- **(RE), the sharp rank--energy law for a Hermitian matrix.** -/
 theorem norm_trace_pow_le_rank_energy {n : ℕ} (hn : 0 < n)

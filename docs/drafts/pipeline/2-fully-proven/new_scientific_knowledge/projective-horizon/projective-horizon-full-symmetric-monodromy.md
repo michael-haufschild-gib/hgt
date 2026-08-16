@@ -830,3 +830,78 @@ exactly what step 3 consumes when it says the two states can be scaled to the sa
 With steps 2 and 3 both theorems, the remaining content of `(3)` is the *identification*: exhibiting
 the corpus's two geometric sheets over a generic Schur branch value as a pair `(P, Q)`, `(P', Q')`
 with a common vertical tangent, a nonvanishing marked jet tail, and `U(0), V(0) != 0`.
+
+## Step 2 upgraded: the conormal line pins the tangent pair, PROVED
+
+`HTGeometry/ConormalTangentDetermination.lean` (wired, axiom-clean).
+
+`eq_zero_of_conormal_vanishing` said only that the zero functional forces `(U,V) = (0,0)`.  By
+linearity that upgrades to determination, which is the form step 3 consumes:
+
+```
+exists_conormal_ne_zero
+    a nonzero low pair is seen by some jet (the contrapositive of nondegeneracy)
+
+conormal_determines_tangent
+    two low pairs inducing the SAME functional coincide
+
+conormal_determines_tangent_smul
+    a low pair whose functional is c times another's is C c times that pair
+```
+
+The scalar form is the one the geometry actually supplies.  What the conormal geometry gives is a
+*line*, not a vector, so the tangent pair is pinned only up to scale; the third theorem says that
+this is the only remaining freedom.  Consequently the two states over a common generic branch value
+can be rescaled to literally the same `(U, V)` — exactly the shared-tangent hypothesis of
+`criticalState_eq_of_shared_tangent`.
+
+A note on hypotheses: none of the three needs `IsDomain`.  The pairing argument is pure coefficient
+extraction, so it holds over any commutative ring; only the trailing-degree half of step 3 needs a
+domain.  This matters because it means the conormal half of the bridge survives base change to the
+non-reduced jet rings the horizon lives over.
+
+What still separates this from the corpus's `criticalGeometricSheet` objects is unchanged and is
+recorded above: items 2 and 3 of the bridge (`U(0) != 0`, `V(0) != 0`, and coprimality from generic
+corank one), which rest on `irreducible_criticalSchurJacobianDetElement` and
+`finrank_ker_criticalSchurGenericMatrix_eq_one`.  Those are Schur-fold statements, not conormal
+ones, and are the next brick.
+
+## Bridge item 2 is now a theorem: the generic Schur kernel has a nonvanishing leading coordinate
+
+`HTGeometry/CorankOneKernelSupport.lean` (general) and
+`HTGeometry/CriticalSchurKernelLeadingCoefficient.lean` (at the Schur fold), both wired and
+axiom-clean.
+
+The general statement is the linear algebra the card was implicitly using:
+
+```
+mulVec_adjugate_col                     det M = 0  =>  every column of adj M is a kernel vector
+ker_proportional_of_finrank_one         a corank-one kernel is spanned by any nonzero element
+ker_coord_ne_zero_of_adjugate_ne_zero   corank one + adj M i j != 0
+                                            =>  EVERY nonzero kernel vector has v i != 0
+ker_coord_ne_zero_iff                   the SUPPORT of a corank-one kernel is independent of
+                                            the vector
+```
+
+The mechanism: `M · adj M = (det M)·1 = 0` puts every adjugate column in the kernel, and one
+dimension leaves no room for anything else, so a single surviving cofactor certifies a coordinate
+for *all* kernel vectors at once — not merely for some distinguished one.  That "for all" is what
+the card needs, because the tangent pair produced by the geometry is only known up to scale.
+
+At the Schur fold this instantiates against the two facts already formal:
+
+```
+criticalSchurGeneric_ker_coord_zero_ne_zero
+    every nonzero kernel vector of criticalSchurGenericMatrix has v 0 != 0
+```
+
+from `finrank_ker_criticalSchurGenericMatrix_eq_one` and
+`criticalSchurGenericMatrix_cornerCofactor_ne_zero`.  The link between the corpus's cofactor —
+stated as the determinant of the submatrix deleting the last row and first column — and the adjugate
+entry at `(0, last)` is mathlib's `adjugate_fin_succ_eq_det_submatrix`, whose sign `(-1)^(last+0)` is
+a unit and so does not affect vanishing; `Fin.succAbove_zero` matches `Fin.succ` to
+`(0 : Fin (m'+1)).succAbove`.
+
+That closes bridge item 2 on the `U` side.  What remains of the bridge is item 2's `V` side (the
+degree-zero part of (6)) and item 3 (`IsCoprime U V` from corank one), plus the identification of
+the kernel vector with the coefficient vector of `U`.

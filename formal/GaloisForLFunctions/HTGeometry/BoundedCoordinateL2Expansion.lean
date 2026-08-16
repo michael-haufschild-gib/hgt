@@ -1,5 +1,7 @@
 import GaloisForLFunctions.HTGeometry.VectorPowerSeriesLeadingOrder
 import GaloisForLFunctions.HTGeometry.DominatedSeriesToLp
+import GaloisForLFunctions.HTGeometry.GroundOverlap
+import Mathlib.Analysis.InnerProductSpace.Continuous
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
 import Mathlib.Analysis.SpecialFunctions.Exponential
 
@@ -488,6 +490,206 @@ theorem tendsto_oddEnergyC_rate (P : Lp ℂ 2 μ →L[ℂ] E) {j : ℕ}
   have h := B.tendsto_oddEnergy_rate ((P.restrictScalars ℝ).comp (ofRealLp μ)) hzero'
   rw [← B.oddMomentC_eq P j] at h
   exact h
+
+/-! ## The Fourier character along the coordinate -/
+
+theorem coeFn_monomialC (n : ℕ) :
+    (B.monomialC n : Ω → ℂ) =ᵐ[μ] fun ω => ((B.coord ω : ℝ) : ℂ) ^ n := by
+  filter_upwards [ContinuousLinearMap.coeFn_compLpL Complex.ofRealCLM (B.monomial n),
+    B.coeFn_monomial n] with ω h1 h2
+  rw [monomialC, ofRealLp, h1, h2]
+  simp
+
+theorem memLp_fourier (x : ℝ) :
+    MemLp (fun ω => Complex.exp (-(x : ℂ) * Complex.I * ((B.coord ω : ℝ) : ℂ))) 2 μ := by
+  refine MemLp.of_bound
+    ((Complex.continuous_exp.comp
+      (continuous_const.mul Complex.continuous_ofReal)).comp_aestronglyMeasurable
+        B.measurable_coord.aestronglyMeasurable) 1 ?_
+  refine Filter.Eventually.of_forall fun ω => ?_
+  rw [Complex.norm_exp]
+  have hre : (-(x : ℂ) * Complex.I * ((B.coord ω : ℝ) : ℂ)).re = 0 := by
+    simp [Complex.mul_re, Complex.mul_im]
+  rw [hre, Real.exp_zero]
+
+/-- The Fourier character `e^{-ixX}` as an `L²` class. -/
+def fourierVec (x : ℝ) : Lp ℂ 2 μ := (B.memLp_fourier x).toLp _
+
+set_option maxHeartbeats 1000000 in
+/-- **The Fourier character is the `L²` sum of its monomial series.** -/
+theorem hasSum_fourierVec (x : ℝ) :
+    HasSum (fun n : ℕ => ((-(x : ℂ) * Complex.I) ^ n / (Nat.factorial n : ℂ))
+        • B.monomialC n) (B.fourierVec x) := by
+  have hmemC : ∀ n : ℕ, MemLp
+      (fun ω => ((-(x : ℂ) * Complex.I) ^ n / (Nat.factorial n : ℂ))
+        * ((B.coord ω : ℝ) : ℂ) ^ n) 2 μ := by
+    intro n
+    have hb : MemLp (fun ω => ((B.coord ω : ℝ) : ℂ) ^ n) 2 μ := by
+      refine MemLp.of_bound
+        (((Complex.continuous_ofReal.pow n)).comp_aestronglyMeasurable
+          B.measurable_coord.aestronglyMeasurable) (B.bound ^ n) ?_
+      filter_upwards [B.abs_coord_le] with ω hω
+      rw [norm_pow, Complex.norm_real, Real.norm_eq_abs]
+      exact pow_le_pow_left₀ (abs_nonneg _) hω n
+    exact hb.const_mul _
+  have hnormcoef : ∀ n : ℕ,
+      ‖((-(x : ℂ) * Complex.I) ^ n / (Nat.factorial n : ℂ))‖
+        = |x| ^ n / (Nat.factorial n : ℝ) := by
+    intro n
+    rw [norm_div, norm_pow, norm_mul, norm_neg, Complex.norm_real, Complex.norm_I, mul_one,
+      Real.norm_eq_abs, Complex.norm_natCast]
+  have hgsum : Summable fun n : ℕ => (|x| * B.bound) ^ n / (Nat.factorial n : ℝ) :=
+    (NormedSpace.expSeries_div_hasSum_exp (𝔸 := ℝ) (|x| * B.bound)).summable
+  have hbase := hasSum_toLp_of_ae_dominated (𝕜 := ℂ) (μ := μ)
+    (f := fun n ω => ((-(x : ℂ) * Complex.I) ^ n / (Nat.factorial n : ℂ))
+      * ((B.coord ω : ℝ) : ℂ) ^ n)
+    (F := fun ω => Complex.exp (-(x : ℂ) * Complex.I * ((B.coord ω : ℝ) : ℂ)))
+    (g := fun n => (|x| * B.bound) ^ n / (Nat.factorial n : ℝ))
+    hgsum
+    (fun n => by
+      have hnn : (0 : ℝ) ≤ |x| * B.bound := mul_nonneg (abs_nonneg x) B.bound_nonneg
+      positivity)
+    (fun n => by
+      filter_upwards [B.abs_coord_le] with ω hω
+      rw [norm_mul, hnormcoef n, norm_pow, Complex.norm_real, Real.norm_eq_abs, mul_pow,
+        div_mul_eq_mul_div]
+      refine div_le_div_of_nonneg_right ?_ (by positivity)
+      exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (abs_nonneg _) hω n) (by positivity))
+    (Filter.Eventually.of_forall fun ω => by
+      have h := NormedSpace.expSeries_div_hasSum_exp (𝔸 := ℂ)
+        (-(x : ℂ) * Complex.I * ((B.coord ω : ℝ) : ℂ))
+      rw [← Complex.exp_eq_exp_ℂ] at h
+      refine h.congr_fun fun n => ?_
+      rw [mul_pow]
+      ring)
+    hmemC (B.memLp_fourier x)
+  refine hbase.congr_fun fun n => ?_
+  refine Lp.ext ?_
+  filter_upwards [Lp.coeFn_smul ((-(x : ℂ) * Complex.I) ^ n / (Nat.factorial n : ℂ))
+    (B.monomialC n), B.coeFn_monomialC n, (hmemC n).coeFn_toLp] with ω h1 h2 h3
+  rw [h3, h1, Pi.smul_apply, h2, smul_eq_mul]
+
+/-! ## The leading ground direction of the observed character -/
+
+section GroundDirection
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
+
+/-- The observable's leading ground coefficient at degree `n`. -/
+def fourierGroundVec (P : Lp ℂ 2 μ →L[ℂ] E) (n : ℕ) : E :=
+  ((-Complex.I) ^ n / (Nat.factorial n : ℂ)) • P (B.monomialC n)
+
+theorem norm_monomialC_le (n : ℕ) : ‖B.monomialC n‖ ≤ l2Window μ * B.bound ^ n := by
+  have hbd : ∀ᵐ ω ∂μ, ‖(B.monomialC n : Ω → ℂ) ω‖ ≤ B.bound ^ n := by
+    filter_upwards [B.coeFn_monomialC n, B.abs_coord_le] with ω hω hb
+    rw [hω, norm_pow, Complex.norm_real, Real.norm_eq_abs]
+    exact pow_le_pow_left₀ (abs_nonneg _) hb n
+  exact Lp.norm_le_of_ae_bound (p := 2) (pow_nonneg B.bound_nonneg n) hbd
+
+set_option maxHeartbeats 1000000 in
+theorem summable_norm_fourierGroundVec (P : Lp ℂ 2 μ →L[ℂ] E) {R : ℝ} (hR : 0 ≤ R) :
+    Summable fun n : ℕ => ‖B.fourierGroundVec P n‖ * R ^ n := by
+  have hmaj : Summable fun n : ℕ =>
+      (‖P‖ * l2Window μ) * ((B.bound * R) ^ n / (Nat.factorial n : ℝ)) :=
+    (NormedSpace.expSeries_div_hasSum_exp (𝔸 := ℝ) (B.bound * R)).summable.mul_left _
+  refine Summable.of_nonneg_of_le (fun n => by positivity) (fun n => ?_) hmaj
+  have hcoef : ‖((-Complex.I) ^ n / (Nat.factorial n : ℂ))‖ = (Nat.factorial n : ℝ)⁻¹ := by
+    rw [norm_div, norm_pow, norm_neg, Complex.norm_I, one_pow, Complex.norm_natCast, one_div]
+  have hnorm : ‖B.fourierGroundVec P n‖
+      = (Nat.factorial n : ℝ)⁻¹ * ‖P (B.monomialC n)‖ := by
+    rw [fourierGroundVec, norm_smul, hcoef]
+  have hchain : ‖P (B.monomialC n)‖ ≤ ‖P‖ * (l2Window μ * B.bound ^ n) :=
+    (P.le_opNorm _).trans
+      (mul_le_mul_of_nonneg_left (B.norm_monomialC_le n) (norm_nonneg _))
+  rw [hnorm]
+  have hstep : (Nat.factorial n : ℝ)⁻¹ * ‖P (B.monomialC n)‖ * R ^ n
+      ≤ (Nat.factorial n : ℝ)⁻¹ * (‖P‖ * (l2Window μ * B.bound ^ n)) * R ^ n := by
+    have h1 := mul_le_mul_of_nonneg_left hchain
+      (le_of_lt (inv_pos.mpr (show (0:ℝ) < (Nat.factorial n : ℝ) by positivity)))
+    exact mul_le_mul_of_nonneg_right h1 (by positivity)
+  refine hstep.trans (le_of_eq ?_)
+  rw [mul_pow]
+  field_simp
+
+set_option maxHeartbeats 1000000 in
+/-- **`(69)`: the observed character has an exact leading direction.** -/
+theorem tendsto_smul_inv_pow_fourierVec (P : Lp ℂ 2 μ →L[ℂ] E) {k : ℕ}
+    (hzero : ∀ n, n < k → P (B.monomialC n) = 0) :
+    Tendsto (fun x : ℝ => (x ^ k)⁻¹ • P (B.fourierVec x)) (𝓝[≠] (0 : ℝ))
+      (𝓝 (B.fourierGroundVec P k)) := by
+  refine tendsto_smul_inv_pow_of_hasSum_punctured (E := E)
+    (u := B.fourierGroundVec P) (R := 1) (by norm_num)
+    (B.summable_norm_fourierGroundVec P (by norm_num))
+    (fun n hn => by rw [fourierGroundVec, hzero n hn, smul_zero]) ?_
+  intro x _ _
+  have hbase := (B.hasSum_fourierVec x).mapL P
+  refine hbase.congr_fun fun n => ?_
+  rw [ContinuousLinearMap.map_smul, fourierGroundVec, ← Complex.coe_smul, smul_smul]
+  congr 1
+  push_cast
+  rw [mul_pow]
+  ring
+
+end GroundDirection
+
+section GroundOverlapSection
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
+
+set_option maxHeartbeats 1000000 in
+/-- **`(70)`: the normalized ground overlap tends to one.** -/
+theorem tendsto_groundOverlap_fourierVec (P : Lp ℂ 2 μ →L[ℂ] E) {k : ℕ}
+    (hzero : ∀ n, n < k → P (B.monomialC n) = 0) (hk : P (B.monomialC k) ≠ 0) :
+    Tendsto (fun x : ℝ =>
+        groundOverlap (((Nat.factorial k : ℂ))⁻¹ • P (B.monomialC k)) (P (B.fourierVec x)))
+      (𝓝[≠] (0 : ℝ)) (𝓝 1) := by
+  set u : E := ((Nat.factorial k : ℂ))⁻¹ • P (B.monomialC k) with hudef
+  have hfacne : ((Nat.factorial k : ℕ) : ℂ) ≠ 0 := by
+    exact_mod_cast Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero k)
+  have hu : u ≠ 0 := by
+    rw [hudef]
+    exact smul_ne_zero (inv_ne_zero hfacne) hk
+  have hcnorm : ‖((-Complex.I) ^ k)‖ = 1 := by
+    rw [norm_pow, norm_neg, Complex.norm_I, one_pow]
+  have hL : B.fourierGroundVec P k = ((-Complex.I) ^ k) • u := by
+    rw [fourierGroundVec, hudef, smul_smul, div_eq_mul_inv]
+  have hcne : ((-Complex.I) ^ k) ≠ 0 := by
+    intro h
+    rw [h, norm_zero] at hcnorm
+    norm_num at hcnorm
+  have hLne : B.fourierGroundVec P k ≠ 0 := by
+    rw [hL]
+    exact smul_ne_zero hcne hu
+  have hW := B.tendsto_smul_inv_pow_fourierVec P hzero
+  have hconst : Tendsto (fun _ : ℝ => u) (𝓝[≠] (0 : ℝ)) (𝓝 u) := tendsto_const_nhds
+  have hconstn : Tendsto (fun _ : ℝ => ‖u‖ ^ 2) (𝓝[≠] (0 : ℝ)) (𝓝 (‖u‖ ^ 2)) :=
+    tendsto_const_nhds
+  have hnum : Tendsto (fun x : ℝ =>
+        ‖(inner ℂ u ((x ^ k)⁻¹ • P (B.fourierVec x)) : ℂ)‖ ^ 2)
+      (𝓝[≠] (0 : ℝ)) (𝓝 (‖(inner ℂ u (B.fourierGroundVec P k) : ℂ)‖ ^ 2)) :=
+    ((Filter.Tendsto.inner hconst hW).norm).pow 2
+  have hden : Tendsto (fun x : ℝ => ‖u‖ ^ 2 * ‖(x ^ k)⁻¹ • P (B.fourierVec x)‖ ^ 2)
+      (𝓝[≠] (0 : ℝ)) (𝓝 (‖u‖ ^ 2 * ‖B.fourierGroundVec P k‖ ^ 2)) :=
+    hconstn.mul (hW.norm.pow 2)
+  have hdenne : ‖u‖ ^ 2 * ‖B.fourierGroundVec P k‖ ^ 2 ≠ 0 := by
+    have h1 : ‖u‖ ≠ 0 := norm_ne_zero_iff.mpr hu
+    have h2 : ‖B.fourierGroundVec P k‖ ≠ 0 := norm_ne_zero_iff.mpr hLne
+    positivity
+  have hlim := hnum.div hden hdenne
+  have hvalue : ‖(inner ℂ u (B.fourierGroundVec P k) : ℂ)‖ ^ 2 /
+      (‖u‖ ^ 2 * ‖B.fourierGroundVec P k‖ ^ 2) = 1 := by
+    have h := groundOverlap_unimodular_smul (c := ((-Complex.I) ^ k)) hcnorm hu
+    rw [← hL] at h
+    exact h
+  rw [hvalue] at hlim
+  refine hlim.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with x hx
+  have hxne : x ≠ 0 := hx
+  have hpowne : (x ^ k)⁻¹ ≠ 0 := inv_ne_zero (pow_ne_zero k hxne)
+  simp only [Pi.div_apply]
+  rw [← groundOverlap_real_smul hpowne u (P (B.fourierVec x)), groundOverlap]
+
+end GroundOverlapSection
 
 end Complexification
 

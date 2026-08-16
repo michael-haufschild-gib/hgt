@@ -1,7 +1,7 @@
 # Reciprocal Seam Admissible Domain Equals Q1
 
 - **ID:** reciprocal-seam-admissible-domain-q1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** `docs/consolidated/gpt/proof-route.md`, sections 2, 7, 8
 - **Statement:** The canonical finite polynomial domain of the raw unshifted reciprocal-seam quadratic form is the ideal `y R[y]`; under `p(y)=y q(y)`, that restricted unshifted form is exactly the shifted route form `Q_1[q]`.
@@ -14,7 +14,8 @@ Turn the "restricted quadratic-form domain" option in the `T_0` obstruction into
 
 - [x] 0 -> 1 in-progress: well-posed, source-pure, attack idea
 - [x] 1 -> 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 -> 3 formalized: Lean theorem `<name>`, `lake build` green, `check_axioms.sh` PASS
+- [x] 2 -> 3 formalized: `reciprocalSeam_admissibleDomain_eq_Q1` in
+  `formal/GaloisForLFunctions/RHTower/ReciprocalSeamAdmissibleDomain.lean`, axiom-clean
 - [ ] 3 -> 4 publication-ready: standalone note if needed
 
 ## Proof
@@ -83,6 +84,26 @@ Q_1[q] = sum_rho m_rho y_rho^2 q(y_rho)^2
 is the raw unshifted form on its canonical finite polynomial domain `y R[y]`.
 
 Therefore the route should not look for a canonical unshifted `T_0` tower. The canonical domain repair is already one of the two required shifted square-test forms.
+
+## Lean formalization
+
+`formal/GaloisForLFunctions/RHTower/ReciprocalSeamAdmissibleDomain.lean`
+
+| Card claim | Lean declaration |
+|---|---|
+| `y_ρ → 0` along the divisor | `tendsto_reciprocalSeamAtom_cofinite` |
+| `p(0) ≠ 0` ⟹ the terms do not tend to zero, so `U[p]` diverges | `eval_zero_eq_zero_of_summable_square` |
+| the ordinary finite domain is the ideal `y·R[y]` | `admissibleDomain_eq_X_dvd` |
+| for `p = y q` the raw form is `∑_ρ y_ρ² q(y_ρ)²` | `unshiftedForm_eq_shiftedForm` |
+| that form converges | `summable_shiftedForm` |
+| its expansion is `∑_{i,j} c_i c_j T_{i+j+2}`, all indices ≥ 2 | `shiftedForm_eq_moment_sum`, `reciprocalSeamMoment` |
+| **the domain theorem** | `reciprocalSeam_admissibleDomain_eq_Q1` |
+| `T_0 = ∑_ρ 1 = ∞`, so extending to constants needs a finite part | `not_summable_reciprocalSeamZerothMoment` (`RHTower/ReciprocalSeamZerothMoment.lean`) |
+| `T_k` converges exactly from `k ≥ 1` | `reciprocalSeamMoment_dichotomy` (same module) |
+
+The seam coordinate is the corpus's `reciprocalSeamAtom q = -((ρ - 1/2)²)⁻¹`.
+
+All declarations audited with `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`.
 
 ## Log
 

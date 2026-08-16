@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.BoundedCoordinateL2Expansion
+import GaloisForLFunctions.HTGeometry.CoordinateMonomialTotality
 import GaloisForLFunctions.RHTower.SuzukiWeilFriedrichsOperator
 
 /-!
@@ -50,5 +51,54 @@ theorem suzukiApertureCoordinate_coord {a : ℝ} (ha : 0 ≤ a) :
 @[simp]
 theorem suzukiApertureCoordinate_bound {a : ℝ} (ha : 0 ≤ a) :
     (suzukiApertureCoordinate ha).bound = a := rfl
+
+/-! ## Visible degrees on the Suzuki interval -/
+
+/-- The Suzuki aperture coordinate as a continuous map. -/
+def suzukiApertureCM (a : ℝ) : C(SuzukiApertureInterval a, ℝ) :=
+  ⟨Subtype.val, continuous_subtype_val⟩
+
+theorem suzukiApertureCM_injective (a : ℝ) :
+    Function.Injective (suzukiApertureCM a) := Subtype.val_injective
+
+theorem toLp_coordMonomialCM_eq {a : ℝ} (ha : 0 ≤ a) (n : ℕ) :
+    ContinuousMap.toLp (E := ℂ) 2 (volume : Measure (SuzukiApertureInterval a)) ℂ
+        (coordMonomialCM (suzukiApertureCM a) n)
+      = (suzukiApertureCoordinate ha).monomialC n := by
+  refine Lp.ext ?_
+  filter_upwards [ContinuousMap.coeFn_toLp (E := ℂ) (𝕜 := ℂ) (p := 2)
+      (volume : Measure (SuzukiApertureInterval a)) (coordMonomialCM (suzukiApertureCM a) n),
+    (suzukiApertureCoordinate ha).coeFn_monomialC n] with ω h1 h2
+  rw [h1, h2, coordMonomialCM_apply]
+  rfl
+
+/-- **`(2)` on Suzuki's literal interval.**  A nonzero bounded observable has a visible degree. -/
+theorem exists_visible_degree_suzuki {a : ℝ} (ha : 0 ≤ a) {E : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℂ E]
+    (P : SuzukiApertureIntervalL2 a →L[ℂ] E) (hP : P ≠ 0) :
+    ∃ n : ℕ, P ((suzukiApertureCoordinate ha).monomialC n) ≠ 0 := by
+  obtain ⟨n, hn⟩ := exists_visible_degree (suzukiApertureCM_injective a) P hP
+  exact ⟨n, by rwa [toLp_coordMonomialCM_eq ha n] at hn⟩
+
+/-- **`(2)`, even parity.**  An observable that kills every odd monomial and is nonzero has a
+visible even degree — the integer `r` of the card. -/
+theorem exists_visible_evenDegree_suzuki {a : ℝ} (ha : 0 ≤ a) {E : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℂ E]
+    (P : SuzukiApertureIntervalL2 a →L[ℂ] E) (hP : P ≠ 0)
+    (hodd : ∀ k : ℕ, P ((suzukiApertureCoordinate ha).monomialC (2 * k + 1)) = 0) :
+    ∃ k : ℕ, P ((suzukiApertureCoordinate ha).monomialC (2 * k)) ≠ 0 := by
+  obtain ⟨k, hk⟩ := exists_visible_evenDegree (suzukiApertureCM_injective a) P hP
+    (fun k => by rw [toLp_coordMonomialCM_eq ha (2 * k + 1)]; exact hodd k)
+  exact ⟨k, by rwa [toLp_coordMonomialCM_eq ha (2 * k)] at hk⟩
+
+/-- **`(2)`, odd parity.**  The integer `s` of the card. -/
+theorem exists_visible_oddDegree_suzuki {a : ℝ} (ha : 0 ≤ a) {E : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℂ E]
+    (P : SuzukiApertureIntervalL2 a →L[ℂ] E) (hP : P ≠ 0)
+    (heven : ∀ k : ℕ, P ((suzukiApertureCoordinate ha).monomialC (2 * k)) = 0) :
+    ∃ k : ℕ, P ((suzukiApertureCoordinate ha).monomialC (2 * k + 1)) ≠ 0 := by
+  obtain ⟨k, hk⟩ := exists_visible_oddDegree (suzukiApertureCM_injective a) P hP
+    (fun k => by rw [toLp_coordMonomialCM_eq ha (2 * k)]; exact heven k)
+  exact ⟨k, by rwa [toLp_coordMonomialCM_eq ha (2 * k + 1)] at hk⟩
 
 end RHTower

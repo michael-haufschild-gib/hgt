@@ -204,6 +204,129 @@ theorem norm_tprod_one_add_sub_tprod_one_add_le {ι : Type*} (a b : ι → ℂ)
     Finset.prod_nonneg fun i _ => by positivity
   exact mul_le_mul hsum hprod hnn2 (le_trans hnn1 hsum)
 
+/-! ## First-order control and the derivative at the origin -/
+
+/-- A finite product of factors near one, to first order. -/
+theorem norm_prod_one_add_sub_one_sub_sum_le {ι : Type*} (s : Finset ι) (u : ι → ℂ) :
+    ‖(∏ i ∈ s, (1 + u i)) - 1 - ∑ i ∈ s, u i‖
+      ≤ (∏ i ∈ s, (1 + ‖u i‖)) - 1 - ∑ i ∈ s, ‖u i‖ := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp
+  | insert a s ha ih =>
+      have hnn : (0 : ℝ) ≤ ∏ i ∈ s, (1 + ‖u i‖) := Finset.prod_nonneg fun i _ => by positivity
+      have hone : (1 : ℝ) ≤ ∏ i ∈ s, (1 + ‖u i‖) := by
+        have h := Finset.prod_le_prod (s := s) (f := fun _ : ι => (1 : ℝ))
+          (g := fun i => 1 + ‖u i‖) (fun i _ => zero_le_one)
+          (fun i _ => by linarith [norm_nonneg (u i)])
+        simpa using h
+      have hpm : ‖(∏ i ∈ s, (1 + u i)) - 1‖ ≤ (∏ i ∈ s, (1 + ‖u i‖)) - 1 :=
+        norm_prod_one_add_sub_one_le s u
+      rw [Finset.prod_insert ha, Finset.prod_insert ha, Finset.sum_insert ha,
+        Finset.sum_insert ha]
+      have hsplit : (1 + u a) * (∏ i ∈ s, (1 + u i)) - 1 - (u a + ∑ i ∈ s, u i)
+          = u a * ((∏ i ∈ s, (1 + u i)) - 1)
+            + ((∏ i ∈ s, (1 + u i)) - 1 - ∑ i ∈ s, u i) := by ring
+      rw [hsplit]
+      refine le_trans (norm_add_le _ _) ?_
+      have h1 : ‖u a * ((∏ i ∈ s, (1 + u i)) - 1)‖
+          ≤ ‖u a‖ * ((∏ i ∈ s, (1 + ‖u i‖)) - 1) := by
+        rw [norm_mul]
+        exact mul_le_mul_of_nonneg_left hpm (norm_nonneg _)
+      nlinarith [h1, ih]
+
+/-- **First-order control of an infinite product of factors near one.** -/
+theorem norm_tprod_one_add_sub_one_sub_tsum_le {ι : Type*} {u : ι → ℂ}
+    (hu : Summable fun i => ‖u i‖) :
+    ‖(∏' i, (1 + u i)) - 1 - ∑' i, u i‖
+      ≤ (∑' i, ‖u i‖) ^ 2 * Real.exp (∑' i, ‖u i‖) := by
+  set S : ℝ := ∑' i, ‖u i‖ with hS
+  have hSnn : 0 ≤ S := tsum_nonneg fun i => norm_nonneg _
+  have husum : Summable u := hu.of_norm
+  have hA : Tendsto (fun s : Finset ι => ∏ i ∈ s, (1 + u i)) atTop (𝓝 (∏' i, (1 + u i))) :=
+    (multipliable_one_add_of_summable hu).hasProd
+  have hB : Tendsto (fun s : Finset ι => ∑ i ∈ s, u i) atTop (𝓝 (∑' i, u i)) := husum.hasSum
+  have hleft : Tendsto (fun s : Finset ι =>
+      ‖(∏ i ∈ s, (1 + u i)) - 1 - ∑ i ∈ s, u i‖) atTop
+      (𝓝 ‖(∏' i, (1 + u i)) - 1 - ∑' i, u i‖) :=
+    ((hA.sub tendsto_const_nhds).sub hB).norm
+  refine le_of_tendsto hleft (Eventually.of_forall fun s => ?_)
+  refine (norm_prod_one_add_sub_one_sub_sum_le s u).trans ?_
+  have hps : (∏ i ∈ s, (1 + ‖u i‖)) ≤ Real.exp (∑ i ∈ s, ‖u i‖) :=
+    prod_one_add_le_exp_sum s (fun i => ‖u i‖) fun i _ => norm_nonneg _
+  have hss : (∑ i ∈ s, ‖u i‖) ≤ S := hu.sum_le_tsum s fun i _ => norm_nonneg _
+  have hssnn : (0 : ℝ) ≤ ∑ i ∈ s, ‖u i‖ := Finset.sum_nonneg fun i _ => norm_nonneg _
+  set t : ℝ := ∑ i ∈ s, ‖u i‖ with ht
+  have hexp : Real.exp t - 1 - t ≤ t ^ 2 * Real.exp t := by
+    rcases lt_or_ge t 1 with hlt | hge
+    · have h1 : (0 : ℝ) < 1 - t := by linarith
+      have h2 : (1 : ℝ) - t ≤ Real.exp (-t) := by
+        have := Real.add_one_le_exp (-t)
+        linarith
+      have h3 : Real.exp (-t) * Real.exp t = 1 := by
+        rw [← Real.exp_add]
+        simp
+      nlinarith [Real.exp_pos t, h2, h3, hssnn]
+    · have hsq : (0 : ℝ) ≤ t ^ 2 - 1 := by nlinarith
+      nlinarith [Real.exp_pos t, mul_nonneg hsq (Real.exp_pos t).le]
+  have hmono : t ^ 2 * Real.exp t ≤ S ^ 2 * Real.exp S := by
+    have h1 : t ^ 2 ≤ S ^ 2 := by nlinarith
+    have h2 : Real.exp t ≤ Real.exp S := Real.exp_le_exp.mpr hss
+    nlinarith [Real.exp_pos t, sq_nonneg t]
+  linarith [hps, hexp, hmono]
+
+/-- **The derivative at the origin of a linear-family product.**  For a summable family of
+coefficients the product `∏(1 + x q_i)` has derivative `∑ q_i` at the origin. -/
+theorem hasDerivAt_tprod_one_add_mul {ι : Type*} {q : ι → ℂ} (hq : Summable fun i => ‖q i‖) :
+    HasDerivAt (fun x : ℂ => ∏' i, (1 + x * q i)) (∑' i, q i) 0 := by
+  set Q : ℝ := ∑' i, ‖q i‖ with hQdef
+  have hQnn : 0 ≤ Q := tsum_nonneg fun i => norm_nonneg _
+  have hqs : Summable q := hq.of_norm
+  have hnorm : ∀ x : ℂ, Summable (fun i => ‖x * q i‖) := by
+    intro x
+    refine (hq.mul_left ‖x‖).congr fun i => ?_
+    rw [norm_mul]
+  have hmass : ∀ x : ℂ, (∑' i, ‖x * q i‖) = ‖x‖ * Q := by
+    intro x
+    rw [hQdef, ← tsum_mul_left]
+    exact tsum_congr fun i => by rw [norm_mul]
+  have hsum : ∀ x : ℂ, (∑' i, x * q i) = x * ∑' i, q i := fun x => tsum_mul_left
+  have hbound : ∀ x : ℂ, ‖(∏' i, (1 + x * q i)) - 1 - x * ∑' i, q i‖
+      ≤ (‖x‖ * Q) ^ 2 * Real.exp (‖x‖ * Q) := by
+    intro x
+    have h := norm_tprod_one_add_sub_one_sub_tsum_le (u := fun i => x * q i) (hnorm x)
+    rw [hsum x, hmass x] at h
+    exact h
+  have hzero : (∏' i, (1 + (0 : ℂ) * q i)) = 1 := by
+    simp
+  rw [hasDerivAt_iff_tendsto_slope]
+  refine tendsto_iff_norm_sub_tendsto_zero.mpr ?_
+  have hg : Tendsto (fun y : ℂ => ‖y‖ * Q ^ 2 * Real.exp (‖y‖ * Q)) (𝓝[≠] (0 : ℂ)) (𝓝 0) := by
+    have hc : Continuous fun y : ℂ => ‖y‖ * Q ^ 2 * Real.exp (‖y‖ * Q) := by fun_prop
+    have h0 : Tendsto (fun y : ℂ => ‖y‖ * Q ^ 2 * Real.exp (‖y‖ * Q)) (𝓝[≠] (0 : ℂ))
+        (𝓝 (‖(0 : ℂ)‖ * Q ^ 2 * Real.exp (‖(0 : ℂ)‖ * Q))) :=
+      (hc.tendsto (0 : ℂ)).mono_left (nhdsWithin_le_nhds (s := {(0 : ℂ)}ᶜ))
+    simpa using h0
+  refine squeeze_zero' (Eventually.of_forall fun y => norm_nonneg _) ?_ hg
+  filter_upwards [self_mem_nhdsWithin] with y hy
+  have hy0 : y ≠ 0 := hy
+  have hyn : (0 : ℝ) < ‖y‖ := norm_pos_iff.mpr hy0
+  have hslope : slope (fun x : ℂ => ∏' i, (1 + x * q i)) 0 y
+      = ((∏' i, (1 + y * q i)) - 1) / y := by
+    rw [slope_def_field, hzero]
+    field_simp
+    ring
+  rw [hslope]
+  have hkey : ‖((∏' i, (1 + y * q i)) - 1) / y - ∑' i, q i‖
+      = ‖(∏' i, (1 + y * q i)) - 1 - y * ∑' i, q i‖ / ‖y‖ := by
+    rw [← norm_div]
+    congr 1
+    field_simp
+  rw [hkey, div_le_iff₀ hyn]
+  refine (hbound y).trans ?_
+  have hexp : Real.exp (‖y‖ * Q) ≤ Real.exp (‖y‖ * Q) := le_rfl
+  nlinarith [Real.exp_pos (‖y‖ * Q), sq_nonneg (‖y‖ * Q), hQnn, hyn]
+
 end
 
 end GaloisForLFunctions.HTGeometry

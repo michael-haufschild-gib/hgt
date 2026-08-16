@@ -6021,10 +6021,10 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
 - 2026-08-08 — `[PROVED HERE; (24.137)--(24.138) ELEMENTARY CORE LEAN-PROVED; (24.135) LEAN DEFERRED]` Hermite phase-space separation upgrades this to
   universal wedge `t(deg P+1)<=eta` and global prime information cone
   `log n=O(t+sqrt(t deg P))`, coefficient-uniform and using no PNT.
-- 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` RH is equivalent to nonnegative polynomial-filtered
+- 2026-08-08 — `[PROVED HERE; (24.140)--(24.142) LEAN-PROVED; (24.143) LEAN DEFERRED]` RH is equivalent to nonnegative polynomial-filtered
   Turan curvature `H_Q H_Q''-(H_Q')^2`; finite shell interpolation, phase recurrence, and shell gap
   remove simple-bottom restriction in newest heat-Turan corpus.
-- 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` eventual filtered log-convexity already forces RH;
+- 2026-08-08 — `[PROVED HERE; (24.151)--(24.152) LEAN-PROVED; (24.153) LEAN DEFERRED]` eventual filtered log-convexity already forces RH;
   exact bottom-shell Cesaro mean is strictly negative off line.  Rationalization yields countable
   fixed-degree integer endpoint with coefficient height `exp(O(t))`, matching prime information
   radius.  Finite-degree criterion lies between criticality of first `d+1` and first `d+2` shells.
@@ -6037,10 +6037,10 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
 - 2026-08-08 — `[FAILED WITH POSITIVE SURVIVOR]` moving polar-null jets cannot beat the universal
   half-density strip envelope.  Maximum principle leaves signed cross-prime cancellation as the
   only route below boundary scale.
-- 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` every complete three-moment prime packet compresses
+- 2026-08-08 — `[PROVED HERE; (24.164) LEAN-PROVED]` every complete three-moment prime packet compresses
   exactly to at most three actual prime-power frequencies with positive aggregate weights before
   the Lorentz determinant.  Infinite independent-channel Schur cost is not intrinsic.
-- 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` for `Q=1`, coherent prime--prime curvature is the
+- 2026-08-08 — `[PROVED HERE; (24.168)--(24.170) LEAN-PROVED]` for `Q=1`, coherent prime--prime curvature is the
   exact mean--variance/Stein defect of the tilted prime log-square law; the continuous Gaussian
   saddle saturates the identity exactly.
 - 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` Gaussian averaging transmutes the uniformly bounded
@@ -6061,7 +6061,7 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   coefficient.  Universal projective descent proves abstract invariant factorization is
   RH-equivalent.  Only a pre-landing arithmetic equality of reflected prime--Gamma logarithmic
   jets can remove the surviving class.
-- 2026-08-08 — `[FAILED WITH POSITIVE SURVIVOR]` oscillator momentum moments prove a quantitative
+- 2026-08-08 — `[FAILED WITH POSITIVE SURVIVOR; (24.186)--(24.188) CORE LEAN-PROVED]` oscillator momentum moments prove a quantitative
   no-bootstrap theorem: stable transport of a degree-`d`, time-`T` Gaussian polynomial into the
   time-`t`, degree-`N` wedge requires `tN` comparable to `Td`.  Degree--time action is invariant;
   ultraviolet positivity cannot be squeezed to one all-degree positive time.
@@ -7506,3 +7506,132 @@ the reduction succeeds, and what fails is the norm closure afterwards.
 Still deferred on this item: the limit `J_N → −2γ` of (24.64), which needs Mertens and the prime
 number theorem wired to the closed form, and the stationary-phase evaluation (24.66)--(24.67) of the
 adjoint quotient.
+
+### Lean progress: §24 C43-AH — the countable conic compression lemma
+
+    HTGeometry/ConicCaratheodory.lean
+      exists_linearIndependent_pos_combination  **conic Carathéodory**: every positive combination
+                                               of a finite family is a positive combination of a
+                                               linearly independent subfamily, by the standard
+                                               elimination along a linear dependence
+      exists_pos_combination_card_le_finrank    the dimension bound: at most `finrank` generators
+                                               survive, one fewer than the affine bound
+
+    HTGeometry/ConicCaratheodoryCountable.lean
+      exists_finset_span_eq_span_range          in a finite-dimensional space every family has a
+                                               finite subfamily with the same span
+      finsetEval, range_finsetEval,
+        exists_bounded_coeffs                   a bounded linear right inverse of the evaluation
+                                               map of a finite spanning subfamily
+      exists_finite_pos_combination_of_summable **(24.164)** the countable conic compression lemma:
+                                               `∑ a_i v_i` with `a_i > 0` and `∑ a_i‖v_i‖ < ∞` is
+                                               `∑_{j≤m} b_j v_{i_j}` with `b_j > 0`, the `v_{i_j}`
+                                               linearly independent and `m ≤ finrank`
+
+No closed-cone hypothesis is used, and none is available: the cone generated by infinitely many
+vectors need not be closed.  What carries the proof is that the whole combination has a strictly
+positive weight on a finite spanning subfamily, so a small enough tail can be absorbed into those
+coefficients without destroying positivity.  Applied to the three-moment packet in `ℝ³` this is
+exactly (24.165): at most three actual prime powers with positive aggregate weights.
+
+### Lean progress: §24 C43-AI and C43-AN
+
+    RHTower/PrimeSquareMeanVarianceDefect.lean
+      heatProfile, heatLogProfile,
+        heatJetFactor1, heatJetFactor2,
+        heatProfile_eq_exp                      the heat profile and its two explicit jet factors
+      hasDerivAt_heatProfile, hasDerivAt_heatJet1
+                                                **(24.168)** the two jets are the successive
+                                                negative time derivatives of the profile, by direct
+                                                differentiation of its logarithm
+      heatDeterminant_eq                        **(24.169)** against any probability weight the
+                                                Lorentz determinant `P₀P₂ − P₁²` is exactly
+                                                `(M²/(16t⁴))(Var Y + 8t² − 8t E Y)`
+      shifted_square_moments,
+        primeSaddle_square_moments,
+        primeSaddle_bracket_eq_zero,
+        heatDeterminant_saddle_eq_zero          **(24.170)** for `L ~ N(t,2t)` the moments are
+                                                `E Y = t²+2t`, `Var Y = 8t³+8t²`, the bracket
+                                                vanishes identically and the whole determinant is
+                                                zero: the saddle sits exactly on the boundary of
+                                                the Lorentz cone
+
+    RHTower/OscillatorActionWedge.lean
+      hermiteMomentumRatio_ge, paleyZygmund_half_mass
+                                                **(24.186)** the momentum-moment ratio of the even
+                                                Hermite eigenstate is at least `1/3` uniformly in
+                                                the level and the frequency, so a universal `1/12`
+                                                of its mass lies beyond half its mean energy
+      markov_mass_le                            **(24.187)** the Markov side: a cone state of
+                                                momentum energy `C` has at most `2C/A` of its mass
+                                                there
+      separation_of_projection                  **(24.188)** the Hilbert-space separation: a
+                                                projection capturing `√p` of one unit vector and at
+                                                most `√p/2` of another separates them by `√p/2`
+      coneMomentum_le, transportedMass_le,
+        sqrt_mass_le                            the wedge budget: `t(N+1) ≤ cT(d+1)` with
+                                                `c = 1/768` forces the transported mass below a
+                                                quarter of the probe mass, so the two estimates are
+                                                incompatible by a fixed margin
+
+The determinant identity holds for an arbitrary probability weight and an arbitrary observable, so
+the saddle cancellation is exact rather than asymptotic; and the separation argument is stated for
+an arbitrary contraction in an arbitrary real inner product space, so it does not depend on the
+oscillator realization at all.
+
+Still deferred on these items: identifying the tilted von-Mangoldt weight of (24.167) with the
+Gaussian saddle moments (24.170), and the creation--annihilation derivation of (24.186)--(24.187)
+for the actual Hermite states.
+
+### Lean progress: §24 C43-Z — the heat Turán defect as a two-replica sum
+
+    RHTower/HeatTuranTwoReplica.lean
+      heatMoment, heatTuranDefect            **(24.140)** the three filtered heat moments and their
+                                             adjacent determinant
+      hasDerivAt_heatMoment                  **(24.140)** each moment is the negative time
+                                             derivative of the previous one
+      two_mul_heatTuranDefect                the exact two-replica identity
+                                             `2(H₀H₂ − H₁²) = ∑_{q,r}(w_q − w_r)² u_q u_r`
+      heatTuranDefect_real_nonneg            **(24.141) forward**: a real family with nonnegative
+                                             weights has a nonnegative defect — Cauchy--Schwarz,
+                                             i.e. the variance determinant of a positive measure
+      two_mul_heatTuranDefect_shell          **(24.142)** on one off-line shell `w = A + iB` the
+                                             identity becomes
+                                             `2e^{2tA}(H₀H₂ − H₁²) = -∑_{q,r}(B_q − B_r)²
+                                             e^{-it(B_q+B_r)}`
+      sum_sq_diff_eq,
+        sum_sq_diff_pos_of_balanced          **(24.142)** the recurrence value: for a balanced shell
+                                             the squared-difference sum is `2·card·∑B_q²`, strictly
+                                             positive as soon as one transverse part is nonzero, so
+                                             the defect is strictly negative there
+
+The two-replica identity is exact algebra for an arbitrary finite family of weights and complex
+points, so the two halves of (24.141) are two specializations of one identity: real points make
+every squared difference nonnegative, off-line points make every squared difference negative.
+
+Still deferred on this item: the finite Schwarz-real interpolation supplying the shell-isolating
+polynomial `Q`, the simultaneous phase recurrence, and the tail estimate (24.143).
+
+### Lean progress: §24 C43-AC — the Bohr--Cesàro mean of the shell defect
+
+    RHTower/BohrCesaroMean.lean
+      hasDerivAt_charPrimitive, norm_char,
+        norm_integral_char_le                 the primitive of `e^{-iθt}` has modulus `1/|θ|`, so
+                                              the whole integral over `[1,T]` is bounded by `2/|θ|`
+      tendsto_cesaroChar                      the Cesàro mean of a nonzero character vanishes
+      tendsto_cesaroChar_zero                 the Cesàro mean of the trivial character is one
+      tendsto_cesaro_expSum                   **(24.152)** the Bohr--Cesàro mean of a finite
+                                              exponential sum retains exactly the coefficients at
+                                              the zero frequencies
+      cesaro_shell_pairs_pos                  **(24.152)** for a conjugation-symmetric shell with no
+                                              zero transverse part the surviving pair sum is
+                                              strictly positive, so the mean of the defect is
+                                              strictly negative
+
+Together with `two_mul_heatTuranDefect_shell` this is the whole signed-mean mechanism of (24.151)
+and (24.152): the two-replica form is exact, and the Cesàro mean keeps exactly the pairs
+`B_j + B_k = 0`, whose contribution is `-(1/2)∑(B_j − B_k)² < 0`.  No arithmetic relation among the
+bottom frequencies is used.
+
+Still deferred on this item: the shell-gap tail contribution and the passage to the eventual
+criterion (24.153).

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.ApertureHyperbolicL2Expansion
+import GaloisForLFunctions.HTGeometry.GroundOverlap
 import Mathlib.Analysis.SpecialFunctions.Exponential
 
 /-!
@@ -165,31 +166,6 @@ theorem tendsto_smul_inv_pow_apertureFourier {a : ℝ} (ha : 0 ≤ a)
 section Inner
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
-
-theorem norm_inner_real_smul_right (r : ℝ) (u v : E) :
-    ‖(inner ℂ u (r • v) : ℂ)‖ = |r| * ‖(inner ℂ u v : ℂ)‖ := by
-  rw [← Complex.coe_smul, inner_smul_right, norm_mul, Complex.norm_real, Real.norm_eq_abs]
-
-theorem norm_inner_self_eq (u : E) : ‖(inner ℂ u u : ℂ)‖ = ‖u‖ ^ 2 := by
-  rw [inner_self_eq_norm_sq_to_K, norm_pow]
-  simp
-
-/-- The normalized squared overlap of a vector with a fixed direction. -/
-def groundOverlap (u v : E) : ℝ := ‖(inner ℂ u v : ℂ)‖ ^ 2 / (‖u‖ ^ 2 * ‖v‖ ^ 2)
-
-theorem groundOverlap_real_smul {r : ℝ} (hr : r ≠ 0) (u v : E) :
-    groundOverlap u (r • v) = groundOverlap u v := by
-  have hr' : |r| ≠ 0 := abs_ne_zero.mpr hr
-  rw [groundOverlap, groundOverlap, norm_inner_real_smul_right, norm_smul, Real.norm_eq_abs,
-    mul_pow, mul_pow]
-  field_simp
-
-theorem groundOverlap_unimodular_smul {c : ℂ} (hc : ‖c‖ = 1) {u : E} (hu : u ≠ 0) :
-    groundOverlap u (c • u) = 1 := by
-  have hnu : ‖u‖ ≠ 0 := norm_ne_zero_iff.mpr hu
-  rw [groundOverlap, inner_smul_right, norm_mul, hc, one_mul, norm_smul, hc, one_mul,
-    norm_inner_self_eq]
-  field_simp
 
 set_option maxHeartbeats 1000000 in
 /-- **`(70)`: the normalized ground overlap tends to one.**  Vanishing of the character's image at

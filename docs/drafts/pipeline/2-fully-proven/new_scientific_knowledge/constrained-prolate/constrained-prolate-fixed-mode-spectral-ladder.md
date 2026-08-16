@@ -4774,3 +4774,91 @@ uniform tails           normalizedProlate_tail_lt           (this session)
 so the coordinate half of `(3)`, `ell_j(lambda) -> a_j`, has every ingredient in Lean.  What is left
 is to instantiate the transfer at the prolate family with those three, which is substitution rather
 than mathematics.
+
+## The growing-window transfer is now instantiated at the prolate family, PROVED
+
+The transfer machinery built earlier was general; it is now applied to the ground family itself.
+
+```
+RHTower/ProlateProfileIntegralLimit.lean
+  gaussianProfile_eq, integrable_gaussianProfile, continuous_gaussianProfile
+  integral_gaussianProfile                    ∫_R e^{-x²/2} = √(2π)
+  tendsto_intervalIntegral_gaussianProfile    the symmetric windows exhaust that mass
+  abs_intervalIntegral_sub_le_of_window_dist  window closeness => integral closeness
+  tendsto_intervalIntegral_of_window_dist     the same, along a filter, eventually
+  intervalIntegral_neg_of_even                even integrand: left tail = right tail
+  tendsto_intervalIntegral_growing_window'    the transfer with EVENTUAL integrability
+
+RHTower/ProlateWindowProfileDistance.lean
+  prolateWindowDistEnvelope, tendsto_prolateWindowDistEnvelope
+  prolateGround_windowDist_bound   |Ψ_c(x) − e^{−x²/2}| ≤ envelope on the whole window
+
+RHTower/ProlateGroundProfileIntegral.lean
+  tendsto_prolateGround_profileIntegral
+      ∫_{−√c}^{√c} Ψ_c(ξ) dξ  →  √(2π)
+```
+
+Three points that were not mere substitution:
+
+1. The corpus window comparison is stated for the *square* of the profile, because that is what the
+   mass computation needs.  The first-moment transfer needs the unsquared statement, which is the
+   first half of the same Grönwall argument; `prolateGround_windowDist_bound` extracts it.
+2. The growing-window transfer as originally stated demands interval integrability for *every*
+   index.  A family indexed by the bandwidth and defined only for `c > 0` does not satisfy that, and
+   no reformulation of the family fixes it.  `tendsto_intervalIntegral_growing_window'` weakens the
+   hypothesis to `∀ᶠ`, which is what the family does satisfy.
+3. The uniform second moment comes from the aperture virial `∫ξ²Ψ² ≤ μ_c ∫Ψ²` combined with the
+   already-proved convergence of `∫Ψ²` to `√π`: eventually `μ_c ≤ 2` and `∫Ψ² ≤ √π + 1`, so
+   `N₀ = 2(√π+1)` bounds the second moment for all large `c`, and the second-moment tail bound turns
+   that into `|∫_K^{√c} Ψ_c| ≤ √(N₀/K)` — below any target once `K > N₀/δ²`.
+
+The left tail needs no separate estimate: the ground profile is even, so the reflection
+`intervalIntegral_neg_of_even` copies the right bound across.
+
+This is the first-moment counterpart of `tendsto_prolateGround_centreMass`, which runs the same
+squeeze on the square.  Both limits are now unconditional and axiom-clean.
+
+## The normalization-free form of `(3)` at `j = 0`
+
+`tendsto_prolateGround_profileIntegral` now returns BOTH limits for the same family:
+
+```
+int_{-sqrt c}^{sqrt c} Psi_c        -> sqrt(2 pi)
+int_{-sqrt c}^{sqrt c} Psi_c^2      -> sqrt(pi)
+```
+
+and their combination is `tendsto_prolateGround_shapeRatio`:
+
+```
+( int Psi_c )^2 / int Psi_c^2  ->  2 sqrt(pi) .
+```
+
+This ratio is the right object to carry to `(3)`, because it is **invariant under rescaling the
+eigenfunction** — the one ambiguity that separates the corpus's normalization from the card's
+Fourier normalization.  Concretely, writing `Psi(xi) = Phi(xi/sqrt c)/Phi(0)` and substituting,
+
+```
+int_R Phi   = (Phi(0)/sqrt c) I_1 ,     int_R Phi^2 = (Phi(0)^2/sqrt c) I_2 ,
+```
+
+so for `e_0 = Phi / ||Phi||_2`,
+
+```
+ell_0^2 = (int Phi)^2 / int Phi^2 = I_1^2 / (sqrt c * I_2) ,
+```
+
+that is
+
+```
+sqrt c * ell_0(c)^2  ->  2 sqrt(pi) .
+```
+
+The `sqrt c` is exactly the Fourier-normalization factor the card absorbs into its convention.  So
+what is proved is `(3)` at `j = 0` up to the card's normalization constant, and the remaining step
+is bookkeeping in that convention, not analysis: identify the card's `a_0^2 = sqrt 2` against
+`2 sqrt(pi)` under the CCM Fourier normalization, which fixes the constant once for all `j`.
+
+Recorded so the next pass does not re-derive it: the naive attempt to read `ell_0` off the corpus
+normalization directly gives `ell_0 = c^{-1/4} I_1 / sqrt(I_2) -> 0`, which is NOT a contradiction
+with `(3)` — it is the same statement in a different normalization.  Only the rescaling-invariant
+ratio should be compared across the two conventions.

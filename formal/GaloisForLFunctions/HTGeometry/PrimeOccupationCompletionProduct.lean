@@ -400,6 +400,31 @@ theorem tendsto_smoothOccupationProduct {r : ℕ} (hr : 2 ≤ r) (x : ℂ) :
         exact mul_lt_mul_of_pos_right h3 hEpos
     _ = ε := by field_simp
 
+/-! ## Unique factorization of the occupation monoid -/
+
+/-- **Occupation vectors are exactly the prime-supported exponent functions.** -/
+def occupationEquivPrimeSupported :
+    (Nat.Primes →₀ ℕ) ≃ {f : ℕ →₀ ℕ // ∀ p ∈ f.support, Nat.Prime p} where
+  toFun ν := ⟨Finsupp.extendDomain ν, by
+    intro p hp
+    exact Finsupp.support_extendDomain_subset (P := fun n => Nat.Prime n) ν hp⟩
+  invFun f := Finsupp.subtypeDomain (fun n => Nat.Prime n) (f : ℕ →₀ ℕ)
+  left_inv ν := Finsupp.subtypeDomain_extendDomain ν
+  right_inv f := Subtype.ext (Finsupp.extendDomain_subtypeDomain (f : ℕ →₀ ℕ) f.2)
+
+/-- **Unique factorization.**  The occupation monoid of the primes is the positive integers. -/
+def occupationEquivPNat : (Nat.Primes →₀ ℕ) ≃ ℕ+ :=
+  occupationEquivPrimeSupported.trans Nat.factorizationEquiv.symm
+
+theorem occupationEquivPNat_coe (ν : Nat.Primes →₀ ℕ) :
+    ((occupationEquivPNat ν : ℕ+) : ℕ)
+      = (Finsupp.extendDomain (P := fun n => Nat.Prime n) ν).prod fun n k => n ^ k := by
+  rw [occupationEquivPNat, Equiv.trans_apply]
+  exact Nat.factorizationEquiv_symm_apply_coe (occupationEquivPrimeSupported ν)
+
+theorem occupationEquivPNat_ne_zero (ν : Nat.Primes →₀ ℕ) :
+    ((occupationEquivPNat ν : ℕ+) : ℕ) ≠ 0 := (occupationEquivPNat ν).ne_zero
+
 end
 
 end HTGeometry

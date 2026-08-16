@@ -82,6 +82,9 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-16 | `involutive-reflection-quadratic-rigidity` | `HTGeometry/InvolutiveReflectionQuadraticRigidity.lean` (+ `HTGeometry/FiniteOrderHadamard.lean`) |
 | 2026-08-16 | `polynomial-drift-rational-outer-factor-rigidity` | `HTGeometry/PolynomialDriftRationalOuterFactorRigidity.lean` (+ `RHTower/FiniteZeroHadamardProduct.lean`, `HTGeometry/PolynomialDriftExpansion.lean`, `HTGeometry/FiniteOrderPolynomialDescent.lean`, `HTGeometry/AlgebraicOverStateFieldOrder.lean`) |
 | 2026-08-16 | `ht-infinite-additive-torsor-staircase` | `HTGeometry/DerivativeShadowStaircase.lean` (+ `HTGeometry/OneSidedJetIndependence.lean`) |
+| 2026-08-16 | `prime-translation-koszul-off-unitary-contractibility` | `RHTower/PrimeTranslationKoszulOffLine.lean` (+ `HTGeometry/KoszulCartanContraction.lean`, `RHTower/UnitaryResolventOffCircle.lean`) |
+| 2026-08-16 | `prime-loop-connectivity-mixed-word-obstruction` | `RHTower/PrimeLoopMixedWordObstruction.lean` |
+| 2026-08-16 | `reciprocal-seam-admissible-domain-q1` | `RHTower/ReciprocalSeamAdmissibleDomain.lean` |
 
 ## Already carrying a stage-3 certificate (verify, then move the paper card)
 
@@ -154,6 +157,11 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 - `HTGeometry/DerivativeShadowStaircase.lean` — the jet-tail tower as a staircase: each step is a
   simple primitive extension of transcendence degree at most one, and hypertranscendence is exactly
   the all-ones staircase.
+- `HTGeometry/KoszulCartanContraction.lean` — left exterior multiplication between exterior powers,
+  the **Cartan identity** `ι_φ(e ∧ ω) + e ∧ ι_φ ω = φ(e)·ω`, the chain homotopy from an invertible
+  coordinate, and exactness of the Koszul complex of a linear functional.
+- `RHTower/UnitaryResolventOffCircle.lean` — a unitary minus a scalar off the unit circle is
+  invertible, with the reverse-triangle lower bound `| |λ|-1 | ‖y‖ ≤ ‖(U-λ)y‖`.
 - `HTGeometry/InvolutionIdempotentHost.lean` — self-inverse elements ↔ idempotents over a
   commutative ring with `2` invertible.
 - `HTGeometry/ScalarMonodromyAlgebraicIndependence.lean` — unbounded scalar monodromy forces

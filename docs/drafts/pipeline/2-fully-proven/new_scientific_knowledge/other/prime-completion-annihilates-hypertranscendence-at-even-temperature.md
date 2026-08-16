@@ -416,3 +416,48 @@ input `HTGeometry.hypertranscendentalOver_multipleEllipticGammaMero_twoLogPrime`
 primes give a rank-three period minor, hence a hypertranscendental multiple elliptic Gamma carrier);
 what remains is the bridge identifying `Φ_{S,r}(e^{2πiz})` with the backward factor of that carrier,
 together with the affine-reflection and Stirling-transform transfers of the card's step 2.
+
+### Item `(2)` is formalized too: every finite packet is hypertranscendental at every temperature
+
+`formal/GaloisForLFunctions/HTGeometry/PrimePowerOccupationHypertranscendence.lean`, unconditional
+and axiom-clean, wired into the `HTGeometry` umbrella.
+
+The corpus already owned the linear-temperature case.  The step to temperature `r` is exactly the
+card's `(9)`: the periods `τ_p = i r log p / (2π)` are the integer multiple `r · (i log p / 2π)` of
+the reciprocal-prime periods, and scaling an integrally independent family by a nonzero integer
+keeps it integrally independent.
+
+```text
+primePowerNomePeriod r q i      := r · primeNomePeriod q i
+primePowerNomePeriod_im_pos
+ellipticNome_primePowerNomePeriod :   nome = (1/q i)^r
+periodsIntegrallyIndependent_natCast_mul
+periodsIntegrallyIndependent_primePowerNomePeriod
+
+primePowerNome r p              := (1/p)^r
+primeOccupationFacePow r S      := ∏'_{ν : S →₀ ℕ} (1 - t · ∏_p (1/p)^(r ν_p))     -- this is Φ_{S,r}
+multipleEllipticGammaBackwardProduct_primePowerNomePeriod :
+    the backward multiple elliptic Gamma product at those periods IS Φ_{S,r}(e^{2πiz})
+hypertranscendental_primeOccupationFacePow :
+    r ≥ 1, |S| ≥ 2  ⇒  Φ_{S,r} is hypertranscendental
+hypertranscendental_primeOccupationFacePow_neg :    the reflected face too
+```
+
+The descent from the additive variable `z` to the multiplicative variable `x` is the corpus's
+`hypertranscendental_of_comp_exp`, which is exactly the card's Stirling-transform argument in
+step 2.
+
+**Unique factorization `(11)` is formalized** as an equivalence, in
+`PrimeOccupationCompletionProduct.lean`:
+
+```text
+occupationEquivPrimeSupported : (Nat.Primes →₀ ℕ) ≃ {f : ℕ →₀ ℕ // support prime}
+occupationEquivPNat           : (Nat.Primes →₀ ℕ) ≃ ℕ+
+occupationEquivPNat_coe       : the value is the monomial ∏ p^{ν_p}
+```
+
+**What is left.**  One bookkeeping identification: transporting `primeOccupationFacePow r S`
+(indexed by occupation vectors `ν : S →₀ ℕ`) to `smoothOccupationProduct N r` (indexed by the
+`S`-smooth positive integers) along the restriction of `occupationEquivPNat` to a packet.  With
+that one reindexing, items `(2)`, `(3)`, `(5)`, `(6)`, `(7)` and `(8)` all refer to the same
+object and the card is complete.

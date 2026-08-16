@@ -144,3 +144,33 @@ Formal proof must construct, not assume:
 4. dyadic lower bound for every `m`.
 
 Status: `[PAPER-PROVED]`; Lean proof absent.
+
+## Lean progress -- item 3, the arithmetic input at every order
+
+`formal/GaloisForLFunctions/RHTower/DyadicVonMangoldtLogWeighted.lean` (new, umbrella-wired,
+axiom-clean) proves the PNT partial summation with logarithmic polynomial weights that section 3
+uses, for every order `m`.
+
+| Card item | Declaration |
+|---|---|
+| the dyadic prime mass weighted by `n^{-1/2}` and `(log n)^{2m}` | `dyadicSqrtVonMangoldtLogMass` |
+| on a dyadic shell the logarithm lies between `log X` and `log X + log 2` | `log_mem_dyadic` |
+| hence the weighted mass is squeezed between the two shell endpoints times the unweighted mass | `dyadicSqrtVonMangoldtLogMass_bounds` |
+| the shell distortion factor `((log X + log 2)/log X)^{2m}` tends to one | `tendsto_logShellRatio` |
+| **`∑_{X<n<=2X} Λ(n) n^{-1/2} (log n)^{2m} ~ 2(√2 − 1) √X (log X)^{2m}`** | `tendsto_dyadicSqrtVonMangoldtLogMass` |
+
+The `m = 0` case is the sibling card's `tendsto_dyadicSqrtVonMangoldtMass_div_sqrt`
+(`dyadicSqrtVonMangoldtLogMass_zero` records the identification), so no partial summation is
+redone: on a dyadic shell the logarithm is *constant to within `log 2`*, and a two-sided squeeze
+transports the whole asymptotic to every logarithmic weight at once.  This is exactly the
+statement that after subtracting `m` Poincaré terms the surviving prime mass still grows like
+`√X (log X)^{2m}`, so no finite jet can absorb it.
+
+### What remains
+
+Items 1 and 2: the all-orders sectorial Poincaré expansion of `K_1` with a fixed-order remainder,
+and the coefficient polynomials `Q_{j,a}` with `deg Q_{j,a} = j` and
+`[s^j]Q_{j,a} = (-a/2)^j/j!`.  The corpus already owns the order-zero sectorial bound
+`RHTower.norm_besselK1C_sub_leading_le_norm` (error in `|w|`, not `Re w`) and the integration-by-
+parts engine `HTGeometry.BesselOrderAbsoluteAsymptotic` that produced it; the all-orders statement
+is the same integration by parts iterated, with the coefficient bookkeeping of section 2.

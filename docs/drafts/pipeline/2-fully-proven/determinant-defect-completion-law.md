@@ -293,3 +293,49 @@ associated new layer at threshold p is Sym^p(V*).
   route-owned Lean process remains. Repository-global umbrella/lint attempt is separately red
   from unrelated concurrent sieve declaration collision and unrelated unreachable modules; this
   card's targeted stack is clean.
+
+## Lean progress -- the sharp rank--energy law `(RE)`
+
+`formal/GaloisForLFunctions/HTGeometry/RankEnergyPowerSum.lean` (new, umbrella-wired,
+axiom-clean) proves the card's sharp rank--energy law and the spectral identity it needs.
+
+| Card item | Declaration |
+|---|---|
+| **the power-sum bound** `∑ a_i^k <= R^{1-k/p} (∑ a_i^p)^{k/p}` for a nonnegative packet on `R` levels and `0 < k <= p`, real exponents throughout | `sum_rpow_le_card_rpow_mul_sum_rpow` |
+| a conjugated matrix has conjugated powers | `pow_conj_diagonal` |
+| **the trace power of a Hermitian matrix is the eigenvalue power sum** | `trace_pow_eq_sum_eigenvalues_pow` |
+| the eigenvalue form of the bound | `abs_sum_eigenvalues_pow_le_rank_energy` |
+| **`(RE)`**: `‖Tr(B^k)‖ <= n^{1-k/p} · (∑ |lambda_i|^p)^{k/p}` for Hermitian `B` | `norm_trace_pow_le_rank_energy` |
+
+The proof of the power-sum bound is Jensen for `x |-> x^{p/k}` against uniform weights, so the
+constant `R^{1-k/p}` is exactly the one attained by a flat packet: the bound is sharp, and the
+`k = p` degeneration in which the exponent disappears is visible in the statement itself.  This is
+the quantitative reason the cutoff sits at `p-1` rather than being a regularization convention.
+
+Scope note.  `(RE)` is certified here for Hermitian `B`, where the singular values are the moduli
+of the eigenvalues and `(∑ |lambda_i|^p)^{1/p}` is literally the Schatten norm.  For a general
+finite-rank `B` the same statement additionally needs Weyl's majorant inequality
+`∑ |lambda_i|^k <= ∑ s_i^k`, which mathlib does not carry; the Hermitian case is what the card's
+statistics/geometry trichotomy and the self-adjoint branch actually use.
+
+## Lean progress -- the statistics/geometry trichotomy at zero
+
+`formal/GaloisForLFunctions/HTGeometry/MicroSpectrumMomentCollapse.lean` (new, umbrella-wired,
+axiom-clean) proves the sign-regime part of the trichotomy and the graded realisation identity.
+
+| Card item | Declaration |
+|---|---|
+| **item 2**: a positive packet with bounded first moment loses every moment of degree at least two, since `∑ a_i^k <= (max a_i)^{k-1} ∑ a_i` | `sum_pow_le_max_pow_mul_sum` |
+| **item 3**: a self-adjoint packet with bounded second moment loses every moment of degree at least three, since `\|∑ a_i^k\| <= (max \|a_i\|)^{k-2} ∑ a_i^2` | `abs_sum_pow_le_max_pow_mul_sum_sq` |
+| the squeeze that turns either bound into "the moment tends to zero" | `tendsto_zero_of_abs_le_mul` |
+| **item 4**: forward-difference multiplicities `(-1)^{j-r} C(j,r)` cancel every degree below `j` | `alternating_binomial_sum_pow_eq_zero` |
+| **item 4**: and retain exactly `j!` in degree `j` | `alternating_binomial_sum_pow_eq_factorial` |
+
+Both moment-collapse bounds are elementary and sharp in the exponent: the surviving degree is
+exactly the one whose moment is assumed bounded.  So positivity really cannot carry a higher
+anomaly, and the card's conclusion -- that group completion is mathematically necessary rather
+than an artificial sharpness device -- is a consequence of these two displayed inequalities.
+
+The forward-difference identities are derived from mathlib's `fwdDiff_iter_pow_eq_zero_of_lt` and
+`fwdDiff_iter_eq_factorial` by evaluating `fwdDiff_iter_eq_sum_shift` at the origin, so the
+explicit alternating-binomial form the card uses is now available directly.

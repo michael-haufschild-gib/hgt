@@ -1743,3 +1743,23 @@ Closing it also closes `floquet-orbifold-tail-emergence` and
   because `S̃`, `S̃*` are Fourier multipliers degrading a uniform bound at the moving frequency
   `-n`; the card's pass-44 correction records the class and the `theta > 3/4` constraint.
   Closure count unchanged.
+
+- 2026-08-16 (later still) — `prime-completion-annihilates-hypertranscendence-at-even-temperature`
+  advanced from "no Lean" to "one reindexing short".  Two new modules, both unconditional and
+  axiom-clean and umbrella-wired:
+  `HTGeometry/PrimeOccupationCompletionProduct.lean` — the completed product
+  `occupationProduct r x = ∏_{n≥1}(1 - x/n^r)`, its analyticity, the packet product over the
+  smooth numbers and its cofinal convergence to the completion
+  (`tendsto_smoothOccupationProduct`, using the new two-product comparison
+  `norm_tprod_one_add_sub_tprod_one_add_le` added to `HTGeometry/InfiniteProductNearOne.lean`), the
+  Euler boundary jet (`prod_primesBelow_eq_smoothZetaSum`, `tendsto_smoothZetaSum`,
+  `tendsto_prod_primesBelow_riemannZeta`), the even-temperature collapse
+  (`differentiallyAlgebraic_occupationProduct_of_even`), the explicit sine collapse
+  (`pi_mul_occupationProduct_two`) and the card's equation (8)
+  (`ode_of_sin_square_law`, `occupationProduct_two_ode` : `4xΦ'' + 6Φ' + π²Φ = 0`), plus unique
+  factorization as an equivalence (`occupationEquivPNat`);
+  `HTGeometry/PrimePowerOccupationHypertranscendence.lean` — hypertranscendence of every finite
+  prime packet at every positive integer temperature
+  (`hypertranscendental_primeOccupationFacePow`), by scaling the reciprocal-prime periods.
+  Remaining: transport the occupation-vector indexing to the smooth-number indexing so that all
+  items of the card refer to one object.  Closure count unchanged.

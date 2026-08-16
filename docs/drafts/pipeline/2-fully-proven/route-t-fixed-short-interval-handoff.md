@@ -171,3 +171,30 @@ the live analytic debt is the quantitative density estimate plus edge/height sum
   `propext`, `Classical.choice`, and `Quot.sound`; full prime-supply theorem remains Stage 2.
 - 2026-08-14 — exact smooth Chebyshev zero-crossing dependency `[LEAN-PROVED]`; finite contours no
   longer require a zero-free interior or an assumed zero-free boundary.
+
+## Lean progress -- the unconditional scalar composition
+
+`formal/GaloisForLFunctions/RHTower/Sieve/RouteTShortIntervalHandoff.lean` (new, umbrella-wired,
+axiom-clean) proves the card's whole reduction, with no zero-density and no route-specific input.
+
+| Card item | Declaration |
+|---|---|
+| `7/10 < theta_* = 3/4 - d/2`, from the corpus bound `d < 1/100` | `sevenTenths_lt_routeTPhysicalSliceHandoffTheta` |
+| hence `7/10 < 1 - 1/mu` for every `mu >= mu_*`, using the corpus handoff `routeTPhysicalSliceHandoffTheta_le_widthExponent` | `sevenTenths_lt_widthExponent` |
+| the fixed window `(x, x + x^{7/10}]` sits inside every Route-T upper physical window, for `x >= 1` | `routeT_window_contains_sevenTenths_window` |
+| **the handoff transfer**: a prime in the fixed window already lies in every Route-T upper physical window | `routeT_prime_in_upperWindow` |
+
+This is exactly the content of C61: the continuum of route-specific seam widths collapses to *one*
+classical prime-supply exponent, and the collapse itself is unconditional.
+
+### What remains
+
+Only the `[LITERATURE]` input the card already names: an unconditional short-interval prime-supply
+theorem at the single fixed exponent `7/10`, i.e. `for all large x there is a prime in
+(x, x + x^{7/10}]`.  Classical prime number theory with the Vinogradov--Korobov error term does
+*not* reach this: its error `x exp(-c sqrt(log x))` dominates `x^{7/10}`.  The genuine input is a
+zero-density estimate -- Ingham's `A(sigma) <= 3/(2-sigma)`, or already the weaker uniform envelope
+`A(sigma) <= 3`, combined with the standard density-to-short-ranges transfer
+`theta_PNT <= 1 - 1/||A||_infinity`.  Neither is in mathlib nor in the vendored `PNTPlus`, so this
+is a self-contained analytic-number-theory formalisation project, and it is the *only* thing
+between this card and stage 3.

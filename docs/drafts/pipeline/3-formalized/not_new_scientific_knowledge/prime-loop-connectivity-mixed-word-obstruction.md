@@ -1,7 +1,7 @@
 # Prime-loop connectivity versus mixed-word obstruction
 
 - **ID:** `prime-loop-connectivity-mixed-word-obstruction`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** `[NO-GO]`, `[POSITIVE SUCCESSOR]`, not new scientific knowledge
 - **Source:** `../../0-backlog/moonshot-arithmetic-bulk-hyperbolic.md`
 - **Lean bricks:** `FiniteEulerInert.lean`, `IharaBlockSelector.lean`
@@ -86,3 +86,28 @@ large detour, but its two substantive source theorems are not present in the cor
 
 The mixed-word observation is elementary symbolic dynamics and the geometric-series identity is
 classical. The result is useful route geometry, not new scientific knowledge.
+
+## Lean formalization
+
+`formal/GaloisForLFunctions/RHTower/PrimeLoopMixedWordObstruction.lean`
+
+| Card claim | Lean declaration |
+|---|---|
+| `∑_{m≥1} exp(-m s log p)/m = -log(1 - p^{-s})` | `hasSum_primeLoopOrbit` |
+| exponentiating gives the local Euler factor `(1-p^{-s})^{-1}` | `exp_primeLoopOrbit` |
+| the disjoint union reproduces every finite Euler product | `exp_sum_primeLoopOrbit` |
+| the mixed word has length `log p + log q = log(pq)` | `mixedWordLength` |
+| its amplitude `a_p a_q` is nonzero, so positive orbit sums cannot cancel it | `mixedWordWeight_ne_zero` |
+| `pq` is not a prime power, so the Euler product has no such primitive factor | `not_isPrimePow_mul_of_ne` |
+| requiring every mixed amplitude to vanish leaves at most one active sector | `eq_of_mixedWordWeight_eq_zero` |
+| **the dichotomy** | `primeLoop_connectivity_dichotomy` |
+
+The local factor is the corpus's `eulerInvFactor` (`RHTower/FiniteEulerInert.lean`), and
+`eulerInvFactor_eq_one_sub` identifies it with the single-traversal multiplier
+`primeLoopMultiplier p s = exp(-s log p)`.
+
+The `[OPEN CORE]` items (a connected graded scattering category with exact all-word cancellation,
+and the identification of its superdeterminant with the completed Xi source) are explicitly open
+research, not part of the proved theorem.
+
+All declarations audited with `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`.

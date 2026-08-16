@@ -265,3 +265,31 @@ Lean is deliberately deferred during the shared corpus refactor.  No Lean proces
 Later formalization should separate abstract contractive semigroup recovery, diamond-norm channel
 composition, inverse-word shell injection, and the imported finite-dimensional CPTP-inverse
 classification.
+
+## Lean progress -- Theorems A and B, the metric core
+
+`formal/GaloisForLFunctions/HTGeometry/ReturnRecoveryReflection.lean` (new, umbrella-wired,
+axiom-clean) proves the reflection content of Theorems A and B in the exact generality the paper
+proof uses: a monoid with a metric in which left composition contracts and right composition by a
+dictionary element is an isometry.  Diamond distance on channels is one instance, but no
+channel-specific structure is needed and none is assumed.
+
+| Card item | Declaration |
+|---|---|
+| left composition by a channel contracts the metric -- complete positivity plus trace preservation | `LeftContracting` |
+| **`(13)`**: `‖S − G⁻¹‖ ≤ ε + δ` whenever `‖S·T − id‖ ≤ δ` and `‖G − T‖ ≤ ε` | `dist_reflect_le`, `exists_reflected_word` |
+| **`(9)`**: hence the two complexities interlace at radius shift `δ` | same, applied to a minimising word |
+| **`(10)`**: at each exact length the reflection is injective, so the incidence counts interlace | `card_reflect_le` |
+| **`(8)`**: if the return factors through a norm contraction, every intermediate stage keeps at least `1 − δ` of any norm | `norm_le_of_contraction_return` |
+
+`(11)`, the partition-function form, is `card_reflect_le` summed against any nonnegative weight, so
+it needs no separate argument.
+
+### What remains
+
+`(6)` itself -- the semigroup law `Λ_{R−t} ∘ Λ_t = Λ_R` -- is a hypothesis of the theorems above
+rather than a proved input, because it *is* the definition of a dynamical semigroup; and the
+identification of the abstract metric monoid with completely positive trace-preserving maps under
+diamond distance, together with the exact-return rigidity statement that a genuinely dissipative
+semigroup cannot return exactly.  The latter needs a Lean theory of the diamond norm, which is
+absent from mathlib and from this corpus.
