@@ -103,7 +103,7 @@ This is a Schur-complement/Sylvester-inertia theorem. Consequence for the landsc
 
 Status: proof-route guardrail added, not an RH proof.
 
-Created `../2-fully-proven/finite-seam-jet-rh-nonselection.md`. For every finite Taylor prefix of
+Created `../3-formalized/not_new_scientific_knowledge/finite-seam-jet-rh-nonselection.md`. For every finite Taylor prefix of
 
 `Xi(t)=xi(1/2+it)`
 
@@ -115,7 +115,7 @@ Consequence: finite seam-local data, parity, and order-one entire type cannot se
 
 Status: proof-route guardrail added, not an RH proof.
 
-Created `../2-fully-proven/finite-linear-probe-rh-nonselection.md`. It strengthens the seam-jet fake: given any finite family of real-linear probes on the even-polynomial perturbation sector, and any finite seam jet to preserve, there is still a real even polynomial perturbation `R(t^2)` that preserves all those finite probes while forcing a non-real zero quartet.
+Created `../3-formalized/not_new_scientific_knowledge/finite-linear-probe-rh-nonselection.md`. It strengthens the seam-jet fake: given any finite family of real-linear probes on the even-polynomial perturbation sector, and any finite seam jet to preserve, there is still a real even polynomial perturbation `R(t^2)` that preserves all those finite probes while forcing a non-real zero quartet.
 
 Consequence: finite computation, finite Taylor/passport data, finite value/moment probes, and finite symbolic audits cannot be the source selector. A valid landscape proof must use an infinite/global source constraint before the finite rank-one or finite-probe chart is evaluated.
 
@@ -123,7 +123,7 @@ Consequence: finite computation, finite Taylor/passport data, finite value/momen
 
 Status: landscape-proof guardrail added, not an RH proof.
 
-Created `../2-fully-proven/finite-codimension-landscape-rh-nonselection.md`. It translates the finite-probe obstruction into the actual landscape language: if a proposed constraint class around `Xi(t)=xi(1/2+it)` is finite-codimensional in the even-polynomial perturbation directions, then it contains off-line-zero fakes. The proof chooses a polynomial perturbation inside the finite-codimension slice that preserves any prescribed finite seam jet and forces a non-real zero quartet.
+Created `../3-formalized/not_new_scientific_knowledge/finite-codimension-landscape-rh-nonselection.md`. It translates the finite-probe obstruction into the actual landscape language: if a proposed constraint class around `Xi(t)=xi(1/2+it)` is finite-codimensional in the even-polynomial perturbation directions, then it contains off-line-zero fakes. The proof chooses a polynomial perturbation inside the finite-codimension slice that preserves any prescribed finite seam jet and forces a non-real zero quartet.
 
 Consequence: a viable RH landscape must be genuinely all-order/infinite-codimensional. Finite local constraints, finite symbolic audits, and finite extra axioms on the rank-one Weyl chart cannot make the completed object self-select. The Euler product / completed explicit formula / geometric polarization must enter before the finite chart, not as a label after it.
 
@@ -217,7 +217,7 @@ Consequence: the source theorem is not merely a scalar `s_d>0` theorem. It has a
 
 Status: route-normalization theorem added, not an RH proof.
 
-Created `../2-fully-proven/uvarov-kernel-pregate-rh-equivalence.md`. For any real `b` outside the reciprocal divisor support, all-order positivity on the ideal `(y-b)`,
+Created `../3-formalized/not_new_scientific_knowledge/uvarov-kernel-pregate-rh-equivalence.md`. For any real `b` outside the reciprocal divisor support, all-order positivity on the ideal `(y-b)`,
 
 `Q_0[(y-b)q] >= 0 for every real polynomial q`,
 
@@ -229,7 +229,7 @@ Consequence: the first-trivial-zero kernel pre-gate is not a softer substitute f
 
 Status: route-normalization theorem added, not an RH proof.
 
-Created `../2-fully-proven/finite-boundary-ideal-q0-rh-equivalence.md`. If `h in R[y]` has no zero on the reciprocal nontrivial-zero support, then all-order positivity of
+Created `../3-formalized/not_new_scientific_knowledge/finite-boundary-ideal-q0-rh-equivalence.md`. If `h in R[y]` has no zero on the reciprocal nontrivial-zero support, then all-order positivity of
 
 `Q_0[h q] >= 0 for every real polynomial q`
 
@@ -241,7 +241,7 @@ Consequence: finitely many exterior boundary vanishing conditions, finite Uvarov
 
 Status: route-normalization theorem added, not an RH proof.
 
-Created `../2-fully-proven/support-vanishing-q0-filter-visible-rh.md`. For any real polynomial filter `h`, filtered all-order positivity
+Created `../3-formalized/not_new_scientific_knowledge/support-vanishing-q0-filter-visible-rh.md`. For any real polynomial filter `h`, filtered all-order positivity
 
 `Q_0[hq] >= 0 for every real polynomial q`
 
@@ -253,7 +253,7 @@ Consequence: the nonvanishing hypothesis in the finite-boundary ideal theorem is
 
 Status: route-normalization theorem added, not an RH proof.
 
-Created `../2-fully-proven/continuous-preconditioner-q0-visible-rh.md`. For any bounded continuous conjugation-symmetric preconditioner `g` on the reciprocal support, the all-order square test
+Created `../3-formalized/not_new_scientific_knowledge/continuous-preconditioner-q0-visible-rh.md`. For any bounded continuous conjugation-symmetric preconditioner `g` on the reciprocal support, the all-order square test
 
 `Q_g[q] = sum_y M_y y g(y)^2 q(y)^2 >= 0 for every real polynomial q`
 
@@ -265,7 +265,7 @@ Consequence: non-polynomial source normalizations, analytic gauges, Christoffel 
 
 Status: route-normalization extension added, not an RH proof.
 
-Appended a summable hard-edge extension to `../2-fully-proven/continuous-preconditioner-q0-visible-rh.md`. Continuity of the preconditioner is unnecessary. If a conjugation-symmetric weight `g:Y -> C` satisfies
+Appended a summable hard-edge extension to `../3-formalized/not_new_scientific_knowledge/continuous-preconditioner-q0-visible-rh.md`. Continuity of the preconditioner is unnecessary. If a conjugation-symmetric weight `g:Y -> C` satisfies
 
 `sum_y M_y |y| |g(y)|^2 < infinity`,
 
@@ -285,7 +285,7 @@ Consequence: replacing `p` by `A p` for a differential, difference, Christoffel,
 
 Status: route-normalization theorem added, not an RH proof.
 
-Created `../2-fully-proven/finite-hard-edge-counterterm-q0-rh-strength.md`. If `C` is any quadratic counterterm depending only on finitely many hard-edge jets at `0`, so `C[p]=0` on `y^m R[y]` for some `m`, then positivity of
+Created `../3-formalized/not_new_scientific_knowledge/finite-hard-edge-counterterm-q0-rh-strength.md`. If `C` is any quadratic counterterm depending only on finitely many hard-edge jets at `0`, so `C[p]=0` on `y^m R[y]` for some `m`, then positivity of
 
 `Q_0[p] + C[p] >= 0 for every real polynomial p`
 
@@ -337,7 +337,7 @@ Consequence: the corrected semilocal route cannot certify the faithful index by 
 
 Status: route-normalization theorem added, not an RH proof.
 
-Created `../2-fully-proven/finite-prolate-channel-boundary-rh-strength.md`. If a finite boundary repair uses evaluations at finitely many exterior real channels, then on the ideal vanishing at those channels the boundary term disappears. All-order positivity on that ideal is already equivalent to RH by the finite-boundary ideal theorem.
+Created `../3-formalized/not_new_scientific_knowledge/finite-prolate-channel-boundary-rh-strength.md`. If a finite boundary repair uses evaluations at finitely many exterior real channels, then on the ideal vanishing at those channels the boundary term disappears. All-order positivity on that ideal is already equivalent to RH by the finite-boundary ideal theorem.
 
 Consequence: a fixed finite prolate-channel matrix is not a softer source target. The corrected semilocal route must be all-channel or must include a source-uniform theorem controlling the channel/degree limit.
 
@@ -345,7 +345,7 @@ Consequence: a fixed finite prolate-channel matrix is not a softer source target
 
 Status: route-normalization theorem added, not an RH proof.
 
-Created `../2-fully-proven/summable-exterior-boundary-measure-rh-strength.md`. The fixed finite-channel theorem does not by itself cover the full trivial-zero/prolate tail, because the tail is infinite and accumulates at `0`. The new theorem covers the summable-measure case: any finite-total-variation exterior boundary measure supported away from the reciprocal nontrivial-zero atoms still leaves atom-isolators visible, so positivity of `Q_0` plus that boundary measure implies RH.
+Created `../3-formalized/not_new_scientific_knowledge/summable-exterior-boundary-measure-rh-strength.md`. The fixed finite-channel theorem does not by itself cover the full trivial-zero/prolate tail, because the tail is infinite and accumulates at `0`. The new theorem covers the summable-measure case: any finite-total-variation exterior boundary measure supported away from the reciprocal nontrivial-zero atoms still leaves atom-isolators visible, so positivity of `Q_0` plus that boundary measure implies RH.
 
 Consequence: the full summable Gamma/prolate exterior measure is not a softer all-order positivity target. A viable semilocal route must use more than a summable exterior measure, or supply a source theorem for a genuinely nonlocal/non-finite-variation boundary object.
 
@@ -471,7 +471,7 @@ Consequence: the identified tail `E=mu_E` is useful source anatomy, but it canno
 
 Status: source-functor guardrail added, not an RH proof.
 
-Created `../2-fully-proven/finite-type-source-functor-rh-nonselection.md`. If a proposed source functor's local repair decision factors through finitely many real-linear observables on the even polynomial-tail sector, then a polynomial-tail perturbation can preserve the functor output and finite seam jet while adding a non-real zero quartet.
+Created `../3-formalized/not_new_scientific_knowledge/finite-type-source-functor-rh-nonselection.md`. If a proposed source functor's local repair decision factors through finitely many real-linear observables on the even polynomial-tail sector, then a polynomial-tail perturbation can preserve the functor output and finite seam jet while adding a non-real zero quartet.
 
 Consequence: a landscape proof cannot use a finite-dimensional linear source feature vector as the selector. The source functor must consume the full Euler product, completed explicit formula, completed polarization, or an equivalent all-order object before the repair side is decided.
 

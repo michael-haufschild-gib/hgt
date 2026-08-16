@@ -161,7 +161,7 @@ Thus `E=mu_E` is a source finite-part identification and a zero-side coordinate 
 
 ## 2026-06-24 source functors must be non-finite-type
 
-`../2-fully-proven/finite-type-source-functor-rh-nonselection.md` adds a functor-level version of the finite-probe obstruction. If the source functor deciding rows A6--A7 factors through finitely many local observables, it gives the same output to a polynomial-tail fake with a non-real zero quartet.
+`../3-formalized/not_new_scientific_knowledge/finite-type-source-functor-rh-nonselection.md` adds a functor-level version of the finite-probe obstruction. If the source functor deciding rows A6--A7 factors through finitely many local observables, it gives the same output to a polynomial-tail fake with a non-real zero quartet.
 
 Thus the repair rows require an all-order source object before the threshold side is evaluated. A finite linear source feature vector, finite boundary matrix family at checked degrees with entries factoring through finite probes, or finite symbolic audit of that kind is a passport, not the source selector.
 
@@ -209,7 +209,7 @@ Thus rows A6--A7 require the actual Euler/Gamma/FE carrier. Archimedean atom boo
 
 ## 2026-06-24 `nu'` positivity is RH-loaded
 
-`docs/consolidated/revision01/big-picture.md` has been corrected so `nu'=sum_rho 2 y_rho delta_{y_rho}` is not called a positive reciprocal zero measure before the repair theorem is proved. In the reciprocal chart, positivity of this shifted divisor measure on `R_+` is exactly the all-order RH content recorded in `../2-fully-proven/seam-log-markov-pick-rh-equivalence.md` and `../2-fully-proven/source-aware-q0-alone-reciprocal-positivity.md`.
+`docs/consolidated/revision01/big-picture.md` has been corrected so `nu'=sum_rho 2 y_rho delta_{y_rho}` is not called a positive reciprocal zero measure before the repair theorem is proved. In the reciprocal chart, positivity of this shifted divisor measure on `R_+` is exactly the all-order RH content recorded in `../2-fully-proven/seam-log-markov-pick-rh-equivalence.md` and `../3-formalized/not_new_scientific_knowledge/source-aware-q0-alone-reciprocal-positivity.md`.
 
 Thus rows A6--A7 cannot use a positive `nu'` as a feeder object. A valid source theorem must construct the shifted tower or the equivalent Markov/Pick transform from Euler/Gamma/FE data and then prove positivity. If `nu'` is introduced as already positive, the route has moved the target statement into the input vocabulary.
 

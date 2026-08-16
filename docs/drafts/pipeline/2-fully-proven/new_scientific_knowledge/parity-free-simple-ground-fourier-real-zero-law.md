@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven / needs independent specialist audit
 - **Route:** U, full restricted-Weil ground selection
 - **Type:** THEOREM + FAILED CLOSURE AUDIT (paper)
-- **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [FINITE ODD CORE LEAN-PROVED] [CONTINUOUS STEP OPEN]`
+- **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [FINITE ODD THEOREM LEAN-PROVED] [ANALYTIC LIMIT LEAN-PROVED] [COMPRESSION WIRING OPEN]`
 - **External parent:** Connes--van Suijlekom,
   [Quadratic Forms, Real Zeros and Echoes of the Spectral Action](https://arxiv.org/abs/2511.23257)
 - **Statement:** For the reflection-invariant truncated-convolution operators of
@@ -339,6 +339,10 @@ No parity hypothesis is needed.
   unconditional finite ground shift, and simple-full-odd-ground adapter formalized in
   `CCMPublishedRestrictedWeilParityBlocks.lean`; no source visibility or normalization premise
   remains in the odd branch.
+- 2026-08-16 — Shannon factorization of the band-limited transform, the literal identification of
+  the packet cross-frequency block with the centered modes, (PF.14), the finite odd theorem, and
+  the analytic limit step formalized in `CCMShannonFourierFactorization.lean` and
+  `CCMPublishedOddGroundRealZeros.lean`.
 
 ### The variational engine of section 4 is now formal
 
@@ -376,3 +380,50 @@ its reflection and the even/odd splitting of the source quadratic form.  What re
 wiring: choose the symmetric Fourier compressions `E_N`, identify the compressed matrices with the
 published parity packet, and feed the two convergence lemmas into
 `compactFourier_limit_zero_im_eq_zero_of_meanSquare`.
+
+### The Shannon bridge and the finite odd theorem are now formal
+
+Two new axiom-clean modules close the gap between the finite resolvent numerator and the actual
+Fourier transform, and identify the abstract packet data with the literal centered modes.
+
+    RHTower/CCMShannonFourierFactorization.lean
+      ccmModeWindow, ccmTrigPoly, continuous_ccmTrigPoly
+      ccmModeWindow_succ, sum_ccmModeWindow_eq      the symmetric window splits into the zero mode
+                                                    and the `±(k+1)` pairs
+      ccmPeriodFactor, ccmPeriodFactor_ne_zero      `(e^{2πiz} − 1)/i` vanishes only on `ℝ`
+      compactFourier_ccmTrigPoly                    **Shannon factorization**: the transform of a
+                                                    trigonometric polynomial over one period is the
+                                                    period factor times `∑_j ξ_j/(z + j)`
+      sum_ccmModeWindow_odd_neg                     for an odd vector, `∑ ξ_j/(z+j) = -∑ ξ_j/(z-j)`
+      sum_eq_zero_of_compactFourier_ccmTrigPoly_eq_zero,
+        compactFourier_ccmTrigPoly_zero_im_eq_zero  off the real axis the zeros of the transform are
+                                                    exactly the zeros of the first-order resolvent
+
+    RHTower/CCMPublishedOddGroundRealZeros.lean
+      ccmPublishedParityCrossFrequency_none/_some   the cross-frequency block is inclusion times mode
+      ccmPublishedParity_squaredFrequency('),
+        ccmPublishedParityEta_none/_some,
+        ccmPublishedParity_delta(')                 `B^H B = diag((k+1)^2)`, `η = (1, √2, …)`,
+                                                    `δ_k = √2 (k+1)`
+      ccmOddGroundCoeff, _odd, _pos_aux, _neg_aux   the centered coefficient vector of an odd ground
+      ccmMode_sq_sub_ne_zero, ccmModeShift_det_ne_zero,
+        ccmModeShift_inv                            the shifted mode matrix is invertible off `ℝ`
+      sum_ccmOddGroundCoeff_eq                      **(PF.14)** the first-order Fourier resolvent
+                                                    equals the diagonal squared-frequency resolvent
+      ccmPublishedParity_squaredResolventNumerator_eq
+      ccmPublishedParityOddGround_compactFourier_zero_im_eq_zero,
+        ccmParityFreeOddGroundData_compactFourier_zero_im_eq_zero,
+        exists_ccmPublishedParityGroundShift_oddGroundRealFourierZeros
+                                                    **the finite odd theorem**: the band-limited
+                                                    Fourier transform of a simple odd ground of the
+                                                    published packet has only real zeros
+      ccmOddGroundLimit_compactFourier_zero_im_eq_zero
+                                                    **(PF.15) analytic half**: a mean-square limit of
+                                                    such grounds with nonvanishing transform again has
+                                                    only real Fourier zeros
+
+What remains for the card is exactly one object, unchanged in kind: the symmetric Fourier
+compressions `E_N` of `ccmRestrictedWeilOperator`, together with the identification of the
+compressed matrices with `ccmPublishedParityShift`, so that `GroundGapCompression` /
+`SymmetricCompressionGround` supply the mean-square hypothesis of
+`ccmOddGroundLimit_compactFourier_zero_im_eq_zero`.

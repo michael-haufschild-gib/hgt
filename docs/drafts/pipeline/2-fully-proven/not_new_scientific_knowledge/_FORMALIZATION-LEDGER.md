@@ -57,6 +57,18 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-16 | `continuous-counterterm-atom-locality` | `RHTower/ReciprocalAtomCounterterm.lean` |
 | 2026-08-16 | `continuous-counterterm-local-domination-threshold` | `RHTower/ReciprocalAtomCounterterm.lean` |
 | 2026-08-16 | `non-atomic-finite-rank-counterterms-rh-strength` | `RHTower/ReciprocalAtomCounterterm.lean` |
+| 2026-08-16 | `source-aware-q0-alone-reciprocal-positivity` | `RHTower/ReciprocalAtomPolynomialApproximation.lean` |
+| 2026-08-16 | `finite-hard-edge-counterterm-q0-rh-strength` | `RHTower/ReciprocalAtomPolynomialApproximation.lean` |
+| 2026-08-16 | `support-vanishing-q0-filter-visible-rh` | `RHTower/ReciprocalAtomPolynomialApproximation.lean` |
+| 2026-08-16 | `finite-boundary-ideal-q0-rh-equivalence` | `RHTower/ReciprocalAtomPolynomialApproximation.lean` |
+| 2026-08-16 | `continuous-preconditioner-q0-visible-rh` | `RHTower/ReciprocalAtomPolynomialApproximation.lean` |
+| 2026-08-16 | `uvarov-kernel-pregate-rh-equivalence` | `RHTower/ReciprocalAtomPolynomialApproximation.lean` |
+| 2026-08-16 | `finite-prolate-channel-boundary-rh-strength` | `RHTower/ReciprocalAtomPolynomialApproximation.lean` |
+| 2026-08-16 | `summable-exterior-boundary-measure-rh-strength` | `RHTower/ReciprocalAtomPolynomialApproximation.lean` |
+| 2026-08-16 | `finite-linear-probe-rh-nonselection` | `RHTower/FiniteProbeRHNonselection.lean` |
+| 2026-08-16 | `finite-codimension-landscape-rh-nonselection` | `RHTower/FiniteProbeRHNonselection.lean` |
+| 2026-08-16 | `finite-seam-jet-rh-nonselection` | `RHTower/FiniteProbeRHNonselection.lean` |
+| 2026-08-16 | `finite-type-source-functor-rh-nonselection` | `RHTower/FiniteProbeRHNonselection.lean` |
 
 ## Already carrying a stage-3 certificate (verify, then move the paper card)
 
@@ -160,6 +172,24 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
   finite fibers, conjugate equality), the exact isolator readings `M_a a ζ²` and `2 M_a Re(a ζ²)`,
   and the counterterm layer: finite-rank kernel visibility, atom locality, the local domination
   thresholds, the zero-fed rank-one countermodel, and the vanishing-point-mass criterion.
+- `RHTower/ReciprocalAtomPolynomialApproximation.lean` — **an elementary replacement for Mergelyan
+  on the reciprocal test set.**  `exists_realPolynomial_atomIsolator_approx` builds, for any atom
+  and any prescribed vanishing order at the hard edge, a real polynomial approximating the
+  conjugation-symmetric isolator uniformly on `Y`: Lagrange basis over the finitely many test
+  points of norm `≥ ‖a‖/2`, times `(z/a)^N`, coefficientwise symmetrized.  On top of it:
+  `riemannHypothesis_iff_forall_polynomial_xiQZero_nonneg`, the hard-edge counterterm theorem,
+  the preconditioner/filter visibility dichotomy, the finite-boundary-ideal equivalence, and
+  the unconditional first-trivial-zero pre-gate (`-4/25` is not an atom).
+  `xiQZero_polynomialTest_eq_hankel` identifies `Q₀[p]` with the shifted-moment Hankel form.
+- `RHTower/FiniteProbeRHNonselection.lean` — **the even-polynomial perturbation sector of `ΞC`.**
+  `xiPerturbed R t = ΞC t + R(t²)` with parity, Schwarz reality, entirety, the inherited order-one
+  envelope, and the seam-jet divisibility clause.  Two reusable algebraic engines:
+  `exists_indep_pair_of_finiteCodim` (a finite-codimension subspace of `ℝ[X]` still meets
+  `Xᴺ⁺¹ℝ[X]` in a 2-dimensional slice) and `exists_nonreal_spanning` (**an algebraic replacement
+  for the open mapping theorem**: two `ℝ`-independent real polynomials span `ℂ` over `ℝ` at some
+  non-real point, proved by the shifted Wronskian vanishing identically).  Consequences: finite
+  linear probes, finite-codimension landscape slices, prescribed seam jets, and finite-type source
+  functors all fail to select RH.
 
 ## Triage of the remaining folder (2026-08-16 scan)
 
@@ -175,9 +205,9 @@ declaration list before promoting.
 
 Known heavy prerequisites still outstanding, with the cards they gate:
 
-- entire-function **order** (`EntireFiniteOrder` exists in `RHTower/SelbergClass/`;
-  `xi_growth_order_le_one` is proved) — needed by the `finite-*-rh-nonselection` family
-  (`finite-seam-jet-rh-nonselection`, `finite-linear-probe-rh-nonselection`, …).
+- ~~entire-function **order** — needed by the `finite-*-rh-nonselection` family.~~  **Resolved
+  2026-08-16 without an order lower bound**: the perturbation differs from `ξ` by a polynomial, so
+  it carries exactly the corpus envelope `XiC_order`; the whole family is now stage 3.
 - Newton's inequalities for elementary symmetric functions — `pa9-turan-newton-floor`.
 - Hölder + a reflection-stable meromorphic carrier — `gamma-reflection-clock-observable-split`
   (the corpus has `hypertranscendentalOver_ratFunc_gammaUpperMero` and

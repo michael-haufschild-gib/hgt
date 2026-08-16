@@ -15,10 +15,10 @@ that name and its relative links deepened by one level.  Inbound links are repai
 restricted-Weil trace", "specialist novelty review", "3 → 4 publication-ready") do not block
 promotion; gates that name missing Lean do.
 
-## A. Promoted (101 of 105; 4 cards remain in stage 2)
+## A. Promoted (102 of 105; 3 cards remain in stage 2)
 
 *This list records the promotions carried out through this ledger.  The stage-2 directory
-itself is the authority on what remains; the four cards still there are named in section B.*
+itself is the authority on what remains; the three cards still there are named in section B.*
 - `suzuki-affine-resolvent-krein-defect`
 - `suzuki-affine-sewn-weil-robin-far-tail-factorization`
 - `suzuki-aperture-rees-superpolynomial-conditioning`
@@ -89,6 +89,7 @@ itself is the authority on what remains; the four cards still there are named in
 - `suzuki-shift-spectral-monotone-likelihood-transfer`
 - `suzuki-shifted-xi-target-flat-pencil`
 - `suzuki-support-pruned-evaluation-rigging-fracture`
+- `suzuki-one-prime-rough-primitive-hardy-closure`
 - `suzuki-support-pruned-selfadjoint-seam-carrier`
 - `suzuki-two-jet-shifted-hankel-gate`
 - `suzuki-volterra-cartesian-phase-defect`
@@ -98,11 +99,10 @@ itself is the authority on what remains; the four cards still there are named in
 - `suzuki-xireal-fe-bipolarization-completion`
 - `suzuki-zero-trace-cofinal-convex-recurrence`
 
-## B. Not yet promoted (4)
+## B. Not yet promoted (3)
 - `suzuki-coalescing-anchor-parity-locking-reduction`
 - `suzuki-critical-radical-anchor-finite-head-reduction`
 - `suzuki-log-recurrence-polynomial-carrier-trichotomy`
-- `suzuki-one-prime-rough-primitive-hardy-closure`
 
 Every one is listed in section C with the exact Lean object it still needs.
 
@@ -10312,3 +10312,249 @@ most `3/2`.
 `xi_eq_riemannXi` bridge between the two corpus spellings of the completed Xi.
 
 All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADG. `suzuki-one-prime-rough-primitive-hardy-closure` — the operator-valued one-block estimate
+
+Promoted.  Companion: `../../3-formalized/new_scientific_knowledge/suzuki/suzuki-one-prime-rough-primitive-hardy-closure-formalized.md`.
+
+**The gate was one object, and it is now built.**  The card's `2 → 3` gate named "formalize
+operator-valued polynomial-group one-block estimate", and its own Lean-certificate section said the
+next target was that estimate "rather than a theorem restating the desired conclusion".
+`lintegral_sq_polynomialTransportProfile_ne_top` is it, for an arbitrary transport family
+`Φ : ℝ → ℝ → (X →L[ℂ] X)`.
+
+**What the estimate actually consumes.**  Four inputs, each of them the card's own:
+
+- `(14)` the transport bound `‖Φ x t‖ ≤ K (t/x)^p (1+x−t)^κ`, from the Gamma dimension theorem
+  (slow exponent `p = 1/2 + σ`) and the polynomial group (degree `κ`);
+- the cubic decay of the amplitude left by three integrations by parts — supplied by the corpus's
+  own tower, `norm_invFamilyProduct2Deriv_le` read at the ray scale `w = 1/t`, which is
+  `norm_invFamilyProduct2Deriv_le_rpow_neg_three`;
+- the Plancherel boundary term at `t = x`, where the transport cancels because `H(x)H(x)⁻¹ = I`;
+- the shape of the three-fold expansion, which is `phase_ibp_thrice_of_continuousOn`.
+
+**Where each power comes from.**  `norm_transport_lowerEndpoint_le` is `(15)`: `(X₀/x)^p ≤ X₀^p x^{-p}`
+and `(1+x−X₀)^κ ≤ 2^κ x^κ`, so the propagated endpoint is `O(x^{κ-p})`.
+`integral_polynomialTransportIntegrand_le` is `(16)`–`(18)`: on `[X₀, x/2]` the polynomial factor is
+frozen at `(2x)^κ` and what survives is `∫ t^{p-3} ≤ ∫ t^{-3/2} ≤ 2` — this is the only place
+`p < 3/2`, i.e. `σ < 1`, is used; on `[x/2, x]` the transport factor is at most one, `t^{-3} ≤ 8x^{-3}`
+and the interval has length `x/2`, giving `4x^{κ-2}`.  So the whole profile has the two-power
+majorant `A x^{κ-p} + A' x^{κ-2}`, square integrable iff `κ < σ` and `κ < 3/2` — which are exactly
+`(19)` and `(20)` at `N = 3`, already owned as
+`integrableAtTop_suzukiPolynomialIBP{Far,Near}TailNormSq_iff`.
+
+**Sections 5 and 6.**  `(23)` is `primitiveFlux_cutoffComplement_sum` (owned); `(24)` is one line
+on top of it and `norm_le_of_coercive`, recorded as `norm_le_of_complementaryFlux_coercive` — the
+point being that the two rough primitives cancel *before* coercivity, so no derivative of a rough
+primitive is ever estimated.  Section 6 is `lintegral_ne_top_of_finset_cover`, a `Finset` induction
+on `lintegral_union_le`, applied to the charts of `exists_finset_dyadicWindow_cover`.
+
+**`(10)` deliberately not formalized.**  The card derives the continuous weighted Hardy bound and
+immediately replaces it by the sharper block statement `(11)`, which is what `(12)` uses and which
+was already formalized (`tsum_suzukiBackwardGeometricBlockEnvelope_le`).  `(10)` is an unused
+ingredient, not an obligation.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADH. `suzuki-log-recurrence-polynomial-carrier-trichotomy` — progress and the exact remaining chain
+
+**Not yet promoted.**  The card's §10 fixes the promotion criterion itself: "Faithful formalization
+requires lattice shell summability for `(8)`; bounded polynomial-weight shift ratios `(14)`;
+iterated position commutator identity `(15)`; polynomial group estimate `(17)`; Fourier-symbol
+ellipse and nonreal point `(21)`–`(24)`; Borel–Cantelli aperture theorem `(28)`.  Keep this card in
+Stage 2 until the full chain is unconditional in Lean."
+
+**Done (2026-08-16).**
+
+- `(8)`, `(12)`, `(13)` — `SuzukiPolynomialEventSummability.lean`.  No shell counting is needed:
+  every coordinate factor `1+|νᵢ|` is at most `1+|ν|₁`, so `∏ᵢ(1+|νᵢ|) ≤ (1+|ν|₁)^d` and the
+  antitone map `x ↦ x^{-β/d}` turns that into the pointwise domination
+  `(1+|ν|₁)^{-β} ≤ ∏ᵢ(1+|νᵢ|)^{-β/d}`.  The `d`-fold product mass is then
+  `tsum_prod_coord_fin`, the general-coordinate-weight form of the corpus's rank product formula.
+  Key declarations: `summable_orbitLength_rpow_neg`,
+  `summable_fractionalPolynomialOrbitWeight_sq`, `HasFiniteLogType`,
+  `summable_fractionalWeight_sq_mul_exp`, `summable_polynomialEventCarrier`.
+- `(14)` — already owned: `abs_fractionalPolynomialOrbitShiftRatio_le`
+  (`SuzukiOnePrimeFractionalCarrier.lean`), in general rank.
+- `(19)`–`(22)`, `(25)` — already owned: `SuzukiHatanoNelsonWall.lean`
+  (`hatanoNelsonSymbol`, `hatanoNelsonSymbol_re/_im`, `hatanoNelsonSymbol_im_ne_zero`,
+  `norm_exp_neg_mul_symbol`, `exists_no_polynomial_bound`).  *Checked before building — the
+  rank-one wall was already there.*
+- `(23)`, `(24)` — `SuzukiLatticeLimitSymbol.lean`.  The rank-`d` limit symbol is a positive
+  combination of rank-one Hatano–Nelson symbols, so its imaginary part is
+  `2 Σ_q c_q sinh(κ|q|₁) sin⟨q,θ⟩`; on steps with nonnegative coordinates that is strictly positive
+  at `θ = (t,…,t)` with `t = π/(2 max|q|₁)`, because then every `⟨q,θ⟩ = t|q|₁ ∈ (0, π/2]`.  So no
+  cancellation between distinct valuation characters is possible:
+  `exists_im_latticeLimitSymbol_ne_zero`.
+- `(26)`–`(28)`, opposite-end half — `SuzukiAperturePolynomialType.lean`.  The predecessor card's
+  `SuzukiApertureAlmostEvery.lean` does the *exponential* depth `e^{-cN}`; this is the polynomial
+  depth `(2+N)^{-q}`.  `ae_finite_apertureApproxPoly` needs `q > d + 1` rather than the card's
+  `q > d`, because the corpus's shell bound is the crude box count `(2N+1)^d` instead of the sharp
+  `O(N^{d-1})`.  That is harmless: `(28)` asserts only *finiteness* of `T_log`, and a larger `q`
+  gives the same conclusion.  `eventually_apertureEventClock_le` converts "approximated only
+  finitely often" into the cofinite clock bound `τ_a(ν) ≤ q log(2+|ν|₁)`, using that
+  `{ν : |ν|₁ < N₀}` is finite.
+
+**Remaining.**
+
+1. `(15)`–`(17)`, the polynomial group estimate.  The route that avoids Fourier analysis on `𝕋^d`
+   entirely: since every iterated commutator of the finite Laurent polynomial `A` with a coordinate
+   is again a *commuting* finite Laurent polynomial, `x ↦ e^{ixA}X_j e^{-ixA}` has constant
+   derivative and therefore equals `X_j + i x A_j` **exactly**.  Hence
+   `‖X^α e^{-ixA}δ₀‖ = ‖(X + ixA_·)^α δ₀‖ ≤ C_α(1+|x|)^{|α|}` by unitarity, because each monomial
+   applied to `δ₀` lands in a ball of radius proportional to `|α|`.  Cauchy–Schwarz against
+   `Σ_r ⟨r⟩^{-2s}` (`summable_orbitLength_rpow_neg`, already built) turns that into
+   `Σ_r ⟨r⟩^m|k_x(r)| ≤ C(1+|x|)^m`, and Schur's test with the owned ratio bound `(14)` gives
+   `(17)`.  Nothing in this chain needs a Fourier transform.
+2. `(5)`, the Matveev lower bound — the zero-event half of `(28)`.  Tracked separately by
+   `docs/drafts/pipeline/1-in-progress/effective-baker-matveev-linear-forms.md` (Layers A and B
+   done; Layer C next).
+3. §6's second half, density of the logarithmic-Liouville apertures (nested valuation centres).
+
+### ADH.1 The `ℓ²` framework for `(15)`--`(17)`, and the exact shape of the remaining argument
+
+`formal/GaloisForLFunctions/HTGeometry/LatticeL2Shift.lean` is the first layer: `Memℓp` is stable
+under reindexing along a bijection (`memℓp_comp_equiv`), so `lpDomCongr` is a linear isometric
+equivalence of `ℓᵖ`, and every lattice translation `latticeShift q` is one of `ℓ²`, with
+`latticeShift_zero` and `latticeShift_add` giving the group law.
+
+The remaining argument, written out so it can be picked up directly.  Let `A = Σ_q c_q S^q` be the
+finite-range adjacency (bounded, self-adjoint when `Q` and `c` are symmetric) and
+`u(x) = e^{-ixA}δ₀`, so `k_x(r) = u(x)(r)` and `‖u(x)‖ = 1` by unitarity.
+
+*The position operator never has to be constructed.*  What `(15)` is used for is the single bound
+`‖M_α u(x)‖ ≤ C_α(1+|x|)^{|α|}`, where `M_α` is the *field* multiplication `ψ ↦ (ν ↦ ν^α ψ(ν))`.
+The naive power series gives only `e^{‖A‖|x|}` — the oscillatory cancellation is essential — so the
+argument must be the Duhamel one:
+
+- the commutator of `M_j` with `A` is again a finite-range *bounded* operator,
+  `[M_j, A] = A_j := Σ_q c_q q_j S^q`, because `r_j k(r+q) = (r+q)_j k(r+q) − q_j k(r+q)`;
+- hence `M_j u` solves `(M_j u)' = −iA(M_j u) + iA_j u` with `M_j u(0) = M_j δ₀ = 0`, and Duhamel
+  plus unitarity give `‖M_j u(x)‖ ≤ |x| ‖A_j‖` — this is `(16)`, and it is *exact*, not asymptotic,
+  because every iterated commutator of `A` with a coordinate is again a commuting Laurent
+  polynomial;
+- induction on `|α|` gives `‖M_α u(x)‖ ≤ C_α(1+|x|)^{|α|}`, which is `(15)`.
+
+Then `(17)` needs no Fourier transform:
+
+- Cauchy–Schwarz against `Σ_r ⟨r⟩^{-2s}` with `2s > d` (owned: `summable_orbitLength_rpow_neg`)
+  turns the `M_α` bounds into `Σ_r ⟨r⟩^m |k_x(r)| ≤ C(1+|x|)^m`;
+- Schur's test with the owned ratio bound `(14)`
+  (`abs_fractionalPolynomialOrbitShiftRatio_le`: `w(ν)/w(ν+r) ≤ ⟨r⟩^m`) converts that into
+  `‖D_w e^{-ixA} D_w^{-1}‖ ≤ Σ_r ⟨r⟩^m|k_x(r)|`, which is `(17)`, hence `(9)`.
+
+The only genuinely new Lean infrastructure needed is the `ℓ²`-valued Duhamel step; everything else
+is already in the corpus.
+
+### ADH.2 `(15)`--`(16)` are algebraic, and the Duhamel step is not needed
+
+`formal/GaloisForLFunctions/RHTower/SuzukiLatticePositionCommutator.lean` proves `(16)` as an
+identity of *fields*, with no `ℓ²` structure at all:
+
+```text
+posMulField j (adjacencyField Q c ψ)
+  = adjacencyField Q c (posMulField j ψ) − adjacencyField Q (stepWeighted j c) ψ,
+stepWeighted j c q = c q · q_j.
+```
+
+because `ν_j ψ(ν+q) = (ν+q)_j ψ(ν+q) − q_j ψ(ν+q)`.  `stepWeighted_iterate` and
+`posMulField_two_adjacencyField` are the two-fold case of `(15)`: iterating produces only
+finite-range adjacencies whose step coefficients carry the monomial `q_j q_k`.
+
+**This removes the `ℓ²`-valued Duhamel step from ADH.1.**  From the field identity alone,
+`M_j A^n v = A^n M_j v − n A^{n−1} A_j v` (all the Laurent polynomials commute), so summing the
+exponential series gives the *exact* conjugation
+
+```text
+M_j e^{−ixA} v = e^{−ixA} (M_j v + i x A_j v),
+```
+
+and in particular `M_j e^{−ixA} δ₀ = i x e^{−ixA} A_j δ₀`, whose norm is `|x| ‖A_j δ₀‖` by
+unitarity.  Induction on `|α|` then gives `‖M_α e^{−ixA} δ₀‖ ≤ C_α (1+|x|)^{|α|}` with no
+differential equation anywhere: every `A`-word applied to `δ₀` is finitely supported, so every
+`M`-factor is bounded on it.
+
+What is still to build: `A` as a bounded self-adjoint operator on `lp (fun _ : G => ℂ) 2` (the
+translations are already isometries, `LatticeL2Shift.lean`), unitarity of its exponential,
+closedness of the multiplication operator `M_j` (so the series may be summed termwise), then the
+Cauchy–Schwarz and Schur steps of ADH.1.
+
+### ADH.3 The `ℓ²` layer of `(15)`--`(17)` is built; what is left is the two summation steps
+
+New modules (all axiom-clean, wired, `lake env lean` silent):
+
+- `HTGeometry/LatticeL2Shift.lean` — `Memℓp` under reindexing, `lpDomCongr`, `latticeShift` with its
+  group law.
+- `RHTower/SuzukiLatticeAdjacencyOperator.lean` — `latticeShiftCLM`, `latticeAdjacency`, its action
+  on the underlying field (`latticeAdjacency_apply`), and `‖A‖ ≤ Σ|c_q|`.
+- `RHTower/SuzukiLatticeEvolutionUnitary.lean` — `latticeShift_symm`, `adjoint_latticeShiftCLM`
+  (the adjoint of a translation is the opposite translation, via
+  `LinearIsometryEquiv.adjoint_eq_symm`), `isSelfAdjoint_latticeAdjacency` for a symmetric step set
+  with `conj (c q) = c (−q)`, and then `exp_latticeAdjacency_mem_unitary` /
+  `norm_exp_latticeAdjacency_apply` — the evolution is an isometry.
+- `RHTower/SuzukiLatticeMomentAlgebra.lean` — `deltaField`, and the exact moment
+  `posMulField p (A^[n+1] δ₀) = −(n+1) · A^[n] (A_p δ₀)`, with the commutation
+  `adjacencyField_comm` / `adjacencyField_iterate_comm` that makes it collapse.
+- `RHTower/SuzukiLatticeEvolutionMoment.lean` — evaluation at a lattice point as a continuous
+  functional (`evalL2`), termwise evaluation of the exponential series
+  (`eval_exp_smul_latticeAdjacency`, `summable_eval_expTerms`), and the payoff
+
+  ```text
+  eval_posMul_exp_deltaL2 :
+    r_p · (e^{zA} δ₀)(r) = −z · (e^{zA} A_p δ₀)(r).
+  ```
+
+  With `z = −ix` and unitarity this is `Σ_r |r_p k_x(r)|² = |x|² ‖A_p δ₀‖²` — the first moment
+  bound of `(15)`, with no differential equation and no Fourier transform.
+
+Two steps remain for `(17)`:
+
+1. the higher moments — generalise `posMulField_adjacencyField_iterate` from `δ₀` to an arbitrary
+   field (the same induction) and iterate `eval_posMul_exp_deltaL2`, giving
+   `Σ_r |r_p^n k_x(r)|² ≤ C_n (1+|x|)^{2n}`; then `(1+|r|₁)^{2n} ≤ C(1 + Σ_p r_p^{2n})` upgrades
+   that to the `⟨r⟩`-weighted form;
+2. Cauchy–Schwarz against `Σ_r ⟨r⟩^{-2s}` (`summable_orbitLength_rpow_neg`) and Schur's test with
+   the owned ratio bound `(14)`.
+
+### ADH.4 The general moment identity and its `ℓ²` bound
+
+- `RHTower/SuzukiLatticeHigherMoment.lean` — `posMulField_adjacencyField_iterate_gen`:
+  `M_p (A^[n+1] ψ) = A^[n+1](M_p ψ) − (n+1) A^[n](A_p ψ)`, for an arbitrary field.  Note the
+  commutator term carries `A^[n]`, one power *less* than the word: that is exactly what makes the
+  exponential series reassemble with a single factor of the time, since
+  `(n+1)/(n+1)! = 1/n!`.  Then `eval_posMul_exp`:
+
+  ```text
+  r_p (e^{zA} ψ)(r) = (e^{zA} M_p ψ)(r) − z (e^{zA} A_p ψ)(r).
+  ```
+
+- `RHTower/SuzukiLatticeMomentBound.lean` — `coe_posMul_exp` exhibits the moment of the evolution as
+  the honest `ℓ²` field `e^{zA}φ − z e^{zA}(A_p ψ)` (so no unbounded operator is ever constructed),
+  and `norm_posMul_exp_le` bounds its norm by `‖φ‖ + |x| ‖A_p ψ‖` using unitarity.  Iterating this
+  with `φ` the previous moment is the induction that gives `(15)`.
+
+All new declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+### ADH.5 `(15)` is closed
+
+`RHTower/SuzukiLatticePolynomialGroup.lean`:
+
+- `memℓp_of_finite_support`, `support_posMulField_subset`, `support_adjacencyField_finite`,
+  `support_latticeAdjacency_finite` — the moment tower of a finitely supported vector never leaves
+  `ℓ²`, so no unbounded operator or domain question ever arises;
+- `exists_norm_posPow_exp_le` — **`(15)`**: for every coordinate `p`, every order `n` and every
+  finitely supported `ψ`, there is a constant `C` with
+
+  ```text
+  ∀ x, ∃ v ∈ ℓ², v(r) = r_p^n · (e^{-ixA} ψ)(r)   and   ‖v‖ ≤ C (1+|x|)^n.
+  ```
+
+The induction is the clean one: `r_p^{n+1} = r_p^n · r_p`, and the first-order identity
+`eval_posMul_exp` rewrites `r_p (e^{zA}ψ)` as `e^{zA}(M_pψ) − z e^{zA}(A_pψ)`, both of whose
+arguments are again finitely supported.  Applying the inductive hypothesis to each gives
+`C₁(1+|x|)^n + |x| C₂(1+|x|)^n ≤ (C₁+C₂)(1+|x|)^{n+1}`.  No multi-index bookkeeping, no Duhamel, no
+Fourier transform.
+
+Left for `(17)`: `(1+|r|₁)^{2n} ≤ C(1 + Σ_p r_p^{2n})` to pass from coordinate moments to the
+`⟨r⟩`-weighted `ℓ²` bound, then Cauchy–Schwarz against `Σ_r ⟨r⟩^{-2s}`
+(`summable_orbitLength_rpow_neg`) and Schur's test with the owned ratio bound `(14)`.

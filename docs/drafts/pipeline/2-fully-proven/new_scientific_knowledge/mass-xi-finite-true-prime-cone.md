@@ -37,10 +37,10 @@ these reductions claims the remaining type-zero discrepancy estimate.
 - Sharp Bessel entropy--action cone and endpoint tail: `[PROVED HERE]`
 - Subthreshold raw prime-annulus divergence: `[PROVED HERE]`
 - `PNTPlus` subcaustic discrepancy-layer reduction: `[PROVED HERE]`
-- Asymptotically caustic type-zero criterion: `[PROVED HERE; LEAN PENDING]`
+- Asymptotically caustic type-zero criterion: `[PROVED HERE; LEAN-PROVED]`
 - Caustic-null polynomial jet hierarchy and timelike identity wall: `[PROVED HERE; LEAN PENDING]`
 - Jordan-floor spectral-resolution no-go: `[PROVED HERE; LEAN PENDING]`
-- Harmonic-floor transform and critically stable `mu(n)/n` inverse: `[PROVED HERE; LEAN PENDING]`
+- Harmonic-floor transform and critically stable `mu(n)/n` inverse: `[PROVED HERE; LEAN-PROVED]`
 - Graded Bessel cone/type phase diagram: `[PROVED HERE]`
 - External novelty: `[NOVELTY-CANDIDATE]`; no matching theorem was found in the searches recorded
   below, but this is not a priority claim.
@@ -6995,3 +6995,109 @@ Remaining in §21: the raw lower bound (21.4) (a moving-slope form of Theorem 17
                                                `O(e^{λu})`: the coefficient-sharp logarithmic
                                                refinement of the whole cone/type duality, with
                                                (21.3) as its `λ = 0` member
+
+### Lean progress: §23 — type-zero collapse of every sublinear caustic layer (C42-V)
+
+Newly formalized, axiom-clean, wired, built:
+
+    RHTower/XiMassPrefixQuadratureDefect.lean  (additions)
+      norm_conePrimeIndexSum_le,
+        conePrimeIndexSumBound_mono              the prime part of a cutoff cone is bounded by a
+                                                 function of the cutoff alone, uniformly in `u`
+      le_log_floor_exp_add_one,
+        log_floor_exp_add_one_le                 `H ≤ log(⌊e^H⌋+1) ≤ H+1`
+
+    RHTower/XiMassTypeZeroCore.lean
+      XiMassTypeZero, XiMassTypeZero.add/.sub/.congr
+                                                 **(23.1)** vertical type zero and its stability
+      xiMassMovingPrimeCone,
+        xiMassCriticalTruePrimeCone_eq_movingCone
+      sum_norm_exteriorBlock_height_le,
+        norm_conePrimeIndexSum_sub_le            two cutoff cones above a common exterior height
+                                                 differ by at most the exterior tail
+      xiMassAction_at_slope                      `g_u(κu) = −η_κ u`
+      xiMassCriticalBesselConeLineGrowth_of_eventually
+                                                 line growth is an eventual condition
+      continuous_xiMassBesselConeExponent,
+        xiMassBesselConeExponent_sharpSlope_eq_zero,
+        xiMassGradedConeSlope_lt_sharpSlope
+      riemannHypothesis_iff_typeZero_movingPrimeCone
+                                                 **(23.5)** RH ⟺ the true-prime cone truncated at
+                                                 any moving height with `H(u)/u → κ_B` has type
+                                                 zero
+
+    RHTower/XiMassTypeZeroDefect.lean
+      xiMassBesselExteriorConstant_antitone,
+        xiMassBesselContinuumTailConstant_antitone,
+        norm_integral_growingFourierProfile_movingSlope_le
+                                                 the continuum tail at a moving slope
+      tendsto_coneEdge_ratio                     the integer cone edge has the same slope limit
+      xiMassTypeZero_continuumPrefix             the continuum prefix has type zero
+      riemannHypothesis_iff_typeZero_movingQuadratureDefect
+                                                 **(23.6)** RH ⟺ the moving quadrature defect has
+                                                 type zero
+      xiMassAggressiveHeight,
+        tendsto_xiMassAggressiveHeight_ratio,
+        riemannHypothesis_iff_typeZero_aggressiveQuadratureDefect
+                                                 **(23.9)--(23.10)** the revised exact open core at
+                                                 the retreat `κ_B u − u/log(u+e)`
+
+C42-W asserts no new theorem beyond (23.5)--(23.6): it observes that the bounded-quotient
+optimizations of §§21--22 are unnecessary for the type quotient, which is exactly the content of
+the two criteria above.
+
+### Lean progress: §18 and §22 (C42-S positive survivor, C42-U identity wall)
+
+§18 asserts no theorem beyond Corollary 17.4 at the balance slope: (18.1) is exactly
+`riemannHypothesis_iff_xiMassCriticalBesselQuadratureDefectLineBound` with `κ = κ_B`, already
+formal in `RHTower/XiMassBesselConeQuadratureDefect.lean`.
+
+Newly formalized, axiom-clean, wired, built:
+
+    RHTower/XiMassTimelikeIdentityWall.lean
+      xiMassTimelikeSaddleDispersion,
+        xiMassTimelikeSaddleDispersion_gt,
+        xiMassTimelikeSaddleDispersion_surjOn    **(22.12)** as the ray parameter sweeps `(0,1)`
+                                                 the timelike saddle dispersion sweeps `(a,∞)`
+      eq_zero_of_vanishes_on_timelikeSaddles     **(C42-U) the timelike identity wall**: a fixed
+                                                 entire multiplier annihilating the leading saddle
+                                                 on every timelike ray vanishes identically, hence
+                                                 also annihilates the spectral receiver
+      xiMassSpacelikeSaddleDispersion,
+        xiMassSpacelikeSaddleDispersion_pos,
+        xiMassSpacelikeSaddleDispersion_sharpSlope
+                                                 **(22.1)** the caustic saddle dispersion is the
+                                                 finite nonzero number `2a²/κ_B` — the exact reason
+                                                 (C42-S) inverse-dispersion damping cannot improve
+                                                 the transport power
+
+Remaining in §22: C42-T, the caustic-null jet hierarchy (22.7)--(22.11), which needs a uniform
+stationary-phase expansion of the Schläfli carrier to arbitrary order.
+
+### Lean progress: §24 — the harmonic floor transform and its critically stable inverse (C43-B)
+
+Newly formalized, axiom-clean, wired, built:
+
+    RHTower/FloorTransformHarmonicInverse.lean
+      floorTransform, dirichletConv
+      floorTransform_comp                        **(24.10)** floor associativity and hyperbola
+                                                 regrouping give `T_a T_b = T_{a*b}`
+      sum_divisors_moebius                       `∑_{d ∣ n} μ(d) = [n = 1]`
+      harmonicWeight, moebiusHarmonicWeight, unitWeight,
+        dirichletConv_harmonic_moebius           **(24.11)** `(1/d) * (μ(d)/d) = 1_{n=1}`
+      floorTransform_unitWeight,
+        floorTransform_moebiusHarmonic_harmonic  **(24.12)--(24.13)** the harmonic floor average
+                                                 `Q(N)=∑_{d≤N}R(⌊N/d⌋)/d` has the exact inverse
+                                                 `R(N)=∑_{d≤N}μ(d)Q(⌊N/d⌋)/d`
+      abs_harmonicWeight_le, abs_moebiusHarmonicWeight_le,
+        abs_floorTransform_le_of_weight,
+        summable_criticalMajorant,
+        abs_floorTransform_le_tsum_majorant,
+        abs_floorTransform_harmonic_le,
+        abs_floorTransform_moebiusHarmonic_le    **(24.14)** both directions of the inversion carry
+                                                 the same square-root exponent, with the
+                                                 absolutely convergent majorant `∑ d^{-3/2-ε}`
+
+The remaining C43-B content — the Jordan symbol law (24.5) and the source theorem (24.6) — is a
+statement about Mellin transforms of floor transforms, not about the mass receiver, and (24.6) is
+explicitly not available in the corpus.

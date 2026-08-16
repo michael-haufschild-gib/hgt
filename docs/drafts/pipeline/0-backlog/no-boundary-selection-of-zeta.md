@@ -323,7 +323,7 @@ Therefore `A_src(t)` cannot be a finite-chart predicate that says, in source voc
 
 Status: source-selector stress test.
 
-`../2-fully-proven/finite-seam-jet-rh-nonselection.md` gives an explicit false-nearby family: for any finite seam Taylor prefix of `Xi(t)=xi(1/2+it)`, add an even real polynomial `Q(t^2)` that vanishes to the required order at `0` and forces a chosen non-real zero quartet. The resulting order-one even real entire function preserves the finite seam passport and FE parity but violates RH.
+`../3-formalized/not_new_scientific_knowledge/finite-seam-jet-rh-nonselection.md` gives an explicit false-nearby family: for any finite seam Taylor prefix of `Xi(t)=xi(1/2+it)`, add an even real polynomial `Q(t^2)` that vanishes to the required order at `0` and forces a chosen non-real zero quartet. The resulting order-one even real entire function preserves the finite seam passport and FE parity but violates RH.
 
 This fake fails the full source constraints only because it has no Euler product / completed explicit-formula source. Therefore any proposed `L_src` axiom list that uses only finite seam data, finite-order growth, and FE parity is too weak. The axiom list must include an all-order source object before it can plausibly select the RH side.
 
@@ -331,7 +331,7 @@ This fake fails the full source constraints only because it has no Euler product
 
 Status: source-selector stress test strengthened.
 
-`../2-fully-proven/finite-linear-probe-rh-nonselection.md` shows that the finite seam-passport fake survives any finite list of real-linear probes on the polynomial perturbation sector. The proof is finite-codimension linear algebra: inside the kernel of the probes and the finite seam-vanishing condition, choose two real polynomials whose values span `C` at a non-real point, then force a zero there.
+`../3-formalized/not_new_scientific_knowledge/finite-linear-probe-rh-nonselection.md` shows that the finite seam-passport fake survives any finite list of real-linear probes on the polynomial perturbation sector. The proof is finite-codimension linear algebra: inside the kernel of the probes and the finite seam-vanishing condition, choose two real polynomials whose values span `C` at a non-real point, then force a zero there.
 
 This tightens the `L_src` gate. If an axiom list can be audited by finitely many linear probes, it is too weak. The needed selector must be genuinely all-order: Euler product/local orientation, completed explicit formula, geometric polarization, or another global source-built rigidity theorem.
 
@@ -339,7 +339,7 @@ This tightens the `L_src` gate. If an axiom list can be audited by finitely many
 
 Status: no-boundary selector gate sharpened.
 
-`../2-fully-proven/finite-codimension-landscape-rh-nonselection.md` proves that any finite-codimension local landscape around `Xi` in the even-polynomial tail directions is too thick: it contains functions preserving the chosen finite constraints while carrying an off-line zero quartet.
+`../3-formalized/not_new_scientific_knowledge/finite-codimension-landscape-rh-nonselection.md` proves that any finite-codimension local landscape around `Xi` in the even-polynomial tail directions is too thick: it contains functions preserving the chosen finite constraints while carrying an off-line zero quartet.
 
 Thus a no-boundary/source-selection principle cannot be a finite list of local admissibility equations. It must be an all-order source condition, or it cannot distinguish `Xi` from polynomial-tail fakes that agree on the finite audit.
 
@@ -413,7 +413,7 @@ Thus the noncircular source target is two-part: prove source-built positivity on
 
 ## 2026-06-24 Uvarov kernel pre-gate is not softer than RH
 
-`../2-fully-proven/uvarov-kernel-pregate-rh-equivalence.md` proves that the all-order condition
+`../3-formalized/not_new_scientific_knowledge/uvarov-kernel-pregate-rh-equivalence.md` proves that the all-order condition
 
 `Q_0[(y+4/25)q] >= 0 for every real polynomial q`
 
@@ -423,7 +423,7 @@ Thus the `L_src` target cannot replace `Q_0>=0` by positivity on `ker e_{-4/25}`
 
 ## 2026-06-24 finite boundary ideals are still RH-strength
 
-`../2-fully-proven/finite-boundary-ideal-q0-rh-equivalence.md` generalizes the Uvarov pre-gate result. For any real polynomial `h` whose zeros avoid the reciprocal nontrivial-zero support, the all-order condition
+`../3-formalized/not_new_scientific_knowledge/finite-boundary-ideal-q0-rh-equivalence.md` generalizes the Uvarov pre-gate result. For any real polynomial `h` whose zeros avoid the reciprocal nontrivial-zero support, the all-order condition
 
 `Q_0[hq] >= 0 for every real polynomial q`
 
@@ -433,7 +433,7 @@ is equivalent to RH. Thus adding finitely many boundary vanishing requirements d
 
 ## 2026-06-24 support-vanishing filters are deletion, not selection
 
-`../2-fully-proven/support-vanishing-q0-filter-visible-rh.md` completes the finite-boundary audit. For a real polynomial filter `h`, positivity of
+`../3-formalized/not_new_scientific_knowledge/support-vanishing-q0-filter-visible-rh.md` completes the finite-boundary audit. For a real polynomial filter `h`, positivity of
 
 `Q_0[hq] >= 0 for every real polynomial q`
 
@@ -443,13 +443,13 @@ Thus a no-boundary/source-selector proof cannot choose a filter after reading th
 
 ## 2026-06-24 preconditioners do not bypass visibility
 
-`../2-fully-proven/continuous-preconditioner-q0-visible-rh.md` extends the filter audit from polynomials to bounded continuous conjugation-symmetric preconditioners on the reciprocal support. Positivity of the preconditioned square test sees exactly the atoms where the preconditioner is nonzero.
+`../3-formalized/not_new_scientific_knowledge/continuous-preconditioner-q0-visible-rh.md` extends the filter audit from polynomials to bounded continuous conjugation-symmetric preconditioners on the reciprocal support. Positivity of the preconditioned square test sees exactly the atoms where the preconditioner is nonzero.
 
 Thus `L_src` cannot escape the `Q_0` wall by replacing polynomial ideals with source-normalized weights, bounded analytic gauges, Christoffel weights, or preconditioned Markov/Stieltjes transforms. Nonzero weights leave the target RH-strength; zero weights hide atoms and require a separate source theorem for the hidden support.
 
 ## 2026-06-24 hard-edge singular weights still need the visibility gate
 
-The summable extension in `../2-fully-proven/continuous-preconditioner-q0-visible-rh.md` removes a possible escape hatch: a preconditioner need not be continuous. If its weighted square test is finite on constants, i.e.
+The summable extension in `../3-formalized/not_new_scientific_knowledge/continuous-preconditioner-q0-visible-rh.md` removes a possible escape hatch: a preconditioner need not be continuous. If its weighted square test is finite on constants, i.e.
 
 `sum_y M_y |y| |g(y)|^2 < infinity`,
 
@@ -465,7 +465,7 @@ Thus `L_src` cannot evade the `Q_0` wall by replacing polynomial tests with `A p
 
 ## 2026-06-24 finite hard-edge counterterms do not select RH
 
-`../2-fully-proven/finite-hard-edge-counterterm-q0-rh-strength.md` closes the finite-jet renormalization variant. Any counterterm depending only on finitely many jets at the reciprocal hard edge `0` vanishes on `y^m R[y]` for some `m`. But bad atoms away from `0` can still be isolated by polynomials in that ideal.
+`../3-formalized/not_new_scientific_knowledge/finite-hard-edge-counterterm-q0-rh-strength.md` closes the finite-jet renormalization variant. Any counterterm depending only on finitely many jets at the reciprocal hard edge `0` vanishes on `y^m R[y]` for some `m`. But bad atoms away from `0` can still be isolated by polynomials in that ideal.
 
 Thus `L_src` cannot replace the all-order `Q_0` wall with a finite hard-edge counterterm and call the result weaker. If the renormalized form is positive on all polynomials, RH follows. If the renormalization is infinite-order or nonlocal, its closed test space and hidden atoms must be stated explicitly.
 
@@ -489,13 +489,13 @@ Thus `L_src` must source-build the channel map `V`, the boundary form `C`, and a
 
 ## 2026-06-24 fixed finite prolate channels do not select zeta
 
-`../2-fully-proven/finite-prolate-channel-boundary-rh-strength.md` applies the finite-boundary ideal theorem to the pole/trivial-zero `4N+1` channel proposal. A finite collection of exterior evaluation channels leaves a boundary kernel ideal, and all-order positivity on that ideal is still RH-equivalent.
+`../3-formalized/not_new_scientific_knowledge/finite-prolate-channel-boundary-rh-strength.md` applies the finite-boundary ideal theorem to the pole/trivial-zero `4N+1` channel proposal. A finite collection of exterior evaluation channels leaves a boundary kernel ideal, and all-order positivity on that ideal is still RH-equivalent.
 
 Thus `L_src` cannot select zeta by a fixed finite prolate-channel Schur gate. It must either construct the full semilocal/all-channel object or prove a source-uniform theorem that no negative index escapes the finite channel truncation.
 
 ## 2026-06-24 summable full prolate tail does not select zeta
 
-`../2-fully-proven/summable-exterior-boundary-measure-rh-strength.md` closes the obvious infinite-channel escape from the fixed finite-channel theorem. The full trivial-zero/prolate tail is infinite, but its Gamma weights are summable and its support is exterior to the nontrivial reciprocal atoms; as a boundary measure it still cannot hide off-line atoms.
+`../3-formalized/not_new_scientific_knowledge/summable-exterior-boundary-measure-rh-strength.md` closes the obvious infinite-channel escape from the fixed finite-channel theorem. The full trivial-zero/prolate tail is infinite, but its Gamma weights are summable and its support is exterior to the nontrivial reciprocal atoms; as a boundary measure it still cannot hide off-line atoms.
 
 Thus `L_src` cannot select zeta by adding the full summable exterior Gamma/prolate measure and proving all-order positivity. That positivity remains RH-strength unless the source object includes a genuinely nonlocal or non-finite-variation component with its own independent construction.
 
@@ -561,7 +561,7 @@ Therefore finite conductor, pole, Gamma-boundary, Euler-coefficient, or finite-p
 
 ## 2026-06-24 finite-type source functor kill
 
-`../2-fully-proven/finite-type-source-functor-rh-nonselection.md` closes the weak `source functor` wording. A functor whose local repair decision factors through finitely many real-linear observables on the even polynomial-tail sector cannot select RH: the finite-linear-probe fake preserves those observables and the chosen seam jet while adding a non-real zero quartet.
+`../3-formalized/not_new_scientific_knowledge/finite-type-source-functor-rh-nonselection.md` closes the weak `source functor` wording. A functor whose local repair decision factors through finitely many real-linear observables on the even polynomial-tail sector cannot select RH: the finite-linear-probe fake preserves those observables and the chosen seam jet while adding a non-real zero quartet.
 
 Therefore `L_src` must explicitly state its non-finite-type input: full Euler/local-factor source, completed explicit formula as a distribution, completed polarization, or another all-order object. If it only emits a finite linear-probe feature vector before deciding the repair side, it is a finite passport and fails the landscape gate.
 

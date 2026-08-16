@@ -3412,3 +3412,71 @@ Added `RHTower/DyadicVonMangoldtSqrtMass` -- the card's prime input:
 `eventually_dyadicSqrtVonMangoldtMass_ge` gives `∑_{X<n≤2X} Λ(n)n^{-1/2} ≥ √X/3` eventually, from
 `tendsto_chebyshevPsiReal_dyadic_sub` (`(ψ(2X)−ψ(X))/X → 1`).  The exact constant `2(√2−1)` needs a
 Riemann-sum refinement of the dyadic block; the divergence corollary needs only the crude bound.
+
+Continued: the card's boxed *consequence* is now a Lean theorem.  Two further modules:
+
+- `HTGeometry/MassBesselShellEstimate` -- `norm_massBesselCarrier_sub_leading_le_shell`, the card's
+  uniform shell estimate `2atK₁(az)/z = √(2πa)t^{-1/2}e^{-at}(1 + O(L^{-2}))` in explicit
+  inequality form.
+- `RHTower/MassBesselDyadicAperture` -- the aperture `D_X(u)`, the non-cancellation bound
+  `norm_massBesselDyadicAperture_ge`, the explicit lower bound
+  `exists_massBesselDyadicAperture_lower` (`‖D_X(u_X)‖ ≥ c√X/(log X)²`), and
+  **`tendsto_norm_massBesselDyadicAperture_atTop`**: the finite mass-Bessel prime apertures are not
+  uniformly bounded, i.e. the card's `limsup_X ‖D_X‖_∞ = +∞`.
+
+All axiom-clean.  Only the exact constant `2(√2−1)` of the displayed asymptotic is still missing;
+mathlib's `sum_mul_eq_sub_sub_integral_mul` (Abel summation) is the tool, applied to
+`f t = t^{-1/2}` and `c n = Λ(n)` on `[X, 2X]`.
+
+## 2026-08-16 -- promotion: mass-bessel-cofinal-radiation-divergence
+
+Moved `docs/drafts/pipeline/2-fully-proven/mass-bessel-cofinal-radiation-divergence.md` to
+`docs/drafts/pipeline/3-formalized/`.  Every statement of the card's section 1 -- the displayed
+asymptotic, the explicit lower bound, and the cofinal divergence -- is now proved unconditionally.
+Five modules, all umbrella-wired and axiom-clean:
+
+- `HTGeometry/BesselOrderAbsoluteAsymptotic`  -- the sectorial `K₁` asymptotic with an error in
+  `|w|` rather than `Re w`  (`norm_besselK1C_sub_leading_le_norm`)
+- `HTGeometry/MassBesselDeepTimeCarrier`      -- the carrier, its deep-time profile, the exact
+  split, and the shell geometry
+- `HTGeometry/MassBesselShellEstimate`        -- the card's uniform shell estimate
+- `RHTower/DyadicVonMangoldtSqrtMass`         -- the crude prime-mass lower bound
+- `RHTower/DyadicVonMangoldtSqrtAsymptotic`   -- Abel summation and the exact constant `2(√2−1)`
+- `RHTower/MassBesselDyadicAperture`          -- the aperture, its non-cancellation bound, the
+  explicit lower bound, the divergence, and the card's displayed asymptotic
+
+Capstones: `RHTower.tendsto_massBesselDyadicAperture_asymptotic`,
+`RHTower.exists_massBesselDyadicAperture_lower`,
+`RHTower.tendsto_norm_massBesselDyadicAperture_atTop`.
+
+Reusable assets this created:
+- a *sectorial* Bessel-`K₁` asymptotic, valid along every ray of the open right half plane -- the
+  existing corpus bound degrades near the imaginary axis and is unusable at deep spectral time;
+- the principal-square-root Lipschitz bound `‖√t − √z‖ ≤ ‖t − z‖ / Re √t`;
+- `Real.sqrt X / (log X)² → ∞` and Abel summation of `ψ` against `t^{-1/2}`.
+
+The same first three modules are the analytic core of the sibling card
+`mass-bessel-infinite-radiation-jet-obstruction.md`, whose order-`m` Poincare remainders are
+iterated versions of the same integration by parts.
+
+## 2026-08-16 -- progress: mass-shifted-hard-jacobi-leakage-gramian-law
+
+`HTGeometry/SkewConjugatedRiccatiGramian` (new, umbrella-wired, axiom-clean) proves the
+finite-matrix layer of the card's items 3--4:
+
+- entrywise matrix differentiation with the product/transpose rules, deliberately avoiding any
+  normed structure on the matrix space (the L2-operator instance collides with the pi instance and
+  produces `HasDerivAt` type mismatches);
+- the flow of a skew generator is orthogonal;
+- **`matrixHasDerivAt_centeredInverse`** -- `(HJLG.4)`: the centered inverse of a Riccati flow with
+  a rank-one boundary source obeys the same commutator with the source transported through the
+  inverse and sign-reversed;
+- **`matrixHasDerivAt_conjugated`** and **`conjugated_increment_eq_integral`** -- `(HJLG.5)`: skew
+  conjugation removes the commutator, so the conjugated centered inverse moves by the exact
+  integral of the transported source;
+- **`dotProduct_integral_nonneg`** -- the integral of a pointwise positive semidefinite matrix
+  curve is positive semidefinite.
+
+Still open: item 3 itself, the derivation of `(HJLG.2)` from the already-formalized connection law
+`(HJLG.1)` inside `RHTower/XiShiftedHalfDensityAdjacentConnection`.  The card records the exact
+finite computation.

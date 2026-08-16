@@ -280,3 +280,37 @@ No abstract theorem with (HJLG.2) supplied as a hypothesis counts as route forma
   current orthogonal admission gives a stronger positive three-channel completed source law.
 - 2026-08-11 — item 2 formalized in its division-free monic equivalent:
   `V_n=M_n+(n-1/2)beta_n P_(n-1)`. Items 3--4 remain Lean-open.
+
+## Lean progress -- items 3 and 4, matrix layer
+
+`formal/GaloisForLFunctions/HTGeometry/SkewConjugatedRiccatiGramian.lean` (new, umbrella-wired,
+axiom-clean) proves the finite-matrix content of `(HJLG.3)`--`(HJLG.5)` unconditionally.
+Differentiation is entrywise, so no normed structure on the matrix space is used and no instance
+diamond appears.
+
+| Card item | Declaration |
+|---|---|
+| entrywise differentiation of matrix curves, with product, sum, difference and transpose rules | `MatrixHasDerivAt`, `MatrixHasDerivAt.mul`, `.add`, `.sub`, `.transpose`, `matrixHasDerivAt_smul_one` |
+| a matrix curve with vanishing derivative is constant | `matrix_eq_of_matrixHasDerivAt_zero` |
+| **`O' = -A O`, `A` skew, `O(y₀)=I` ⟹ `O` is orthogonal** | `transpose_mul_self_eq_one_of_skew_flow` |
+| **`(HJLG.4)`**: `J' = [J,A] − J² − c·ee^T` ⟹ `U = J^{-1} − y` obeys `U' = [U,A] + c(J^{-1}e)(J^{-1}e)^T` | `matrixHasDerivAt_centeredInverse` |
+| **skew conjugation removes the commutator**: `(O^T U O)' = O^T S O` when `U' = [U,A] + S` | `matrixHasDerivAt_conjugated` |
+| **`(HJLG.5)`**: the conjugated increment is the exact integral of the transported source | `conjugated_increment_eq_integral` |
+| the integral of a pointwise positive semidefinite matrix curve is positive semidefinite | `intervalIntegrable_sum_fun`, `dotProduct_integral_nonneg` |
+
+`matrixHasDerivAt_centeredInverse` takes the Riccati law `(HJLG.2)` as an equation satisfied by the
+supplied derivative matrix, together with the symmetry of `J^{-1}` (automatic for a Jacobi
+compression); it does *not* assume any part of `(HJLG.4)`--`(HJLG.5)`.
+
+### What remains
+
+Item 3 itself -- the derivation of `(HJLG.2)` from the already-formalized connection law
+`(HJLG.1)` -- is still Lean-open.  The paper derivation is a finite computation:
+differentiating `(J_n)_{jk} = ⟨φ_j, Xφ_k⟩` with the moment-derivative law gives
+`d/dy⟨f,g⟩ = -⟨Kf,g⟩ - ⟨f,Kg⟩`, hence
+`J' = ⟨∇φ_j, Xφ_k⟩ + ⟨φ_j, X∇φ_k⟩ - ⟨φ_j, X²φ_k⟩` from `XK - KX = -X²`; the connection matrix
+contributes `[J_n,A_n]`, the last term contributes `J_n² + a_n²ee^T`, and the two truncated
+connection terms contribute `(n-1/2)a_n²ee^T` each, for the exact total `-2n a_n² ee^T`.
+Once that is formalized in the shifted-Xi setting, the four declarations above close
+`(HJLG.3)`--`(HJLG.5)`, and `(HJLG.6)`--`(HJLG.7)` follow from the corpus's simple-eigenvalue
+perturbation layer plus the Christoffel identity.

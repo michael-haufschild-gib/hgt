@@ -2256,6 +2256,29 @@ mixing before divisor specialization, preserving prime/depth/divisor/multiplicit
 reflections. Rank-one, holomorphic, compact, or fitted contractible repairs only re-present or erase
 obstruction.
 
+The Faddeev--Popov/shared-ghost reinterpretation is now classified exactly.  An inverse-oriented
+positive ghost can repair one prime-local Gamma rotation at every centered rate, but positivity
+forces the fitted value `c_p=p^(-t)`.  Hence local ghost existence contains no arithmetic
+information.  One source-selected Gamma ghost independent of retained prime label repairs both
+prime two and prime three iff `t=0`; on an Xi divisor this is equivalent to the existing Big-Witt
+prime-clock selected Ward descent and therefore to critical-line placement.  A viable producer
+must consequently derive **prime-independent shared-ghost existence** from genuine source/Gamma
+naturality.  Primewise countercharacters, common same-orientation determinant corrections, and
+contractible ghost pairs cannot supply it.  Evidence:
+`RHTower/SourceSelectedGammaWardSharedGhostDescent.lean`.
+
+The missing naturality has now been reduced to two literal source squares rather than a global
+descent demand.  In the all-prime Calderón--Witt top source, each normalized prime orientation and
+the independent archimedean orientation have trace one; their difference is the boundary of an
+explicit canonical Green primitive.  For an arbitrary coefficient-faithful reporter, define `c`
+as its positive real archimedean readout; the prime-`p` boundary is then read as exactly
+`p^(-t)-c`.  Naturality on only the selected `2–∞` and `3–∞` boundaries therefore forces, rather
+than presupposes, `c=2^(-t)=3^(-t)` and hence the existing shared Ward ghost.  Conversely that
+ghost gives a canonical reporter making both squares natural.  This preserves
+both nonzero orientation presentations and avoids global/equivariant boundary blindness.  Exact
+remaining producer: prove these two source/Gamma Green-boundary reporter values vanish at every
+Xi divisor.  Evidence: `RHTower/SourceGammaNaturalitySharedGhostProducer.lean`.
+
 ### Common completed source does not make reporters equivalent
 
 CCM-FU, CCM-UR, and CCM-RF are three source-isogenous views of the literal completed

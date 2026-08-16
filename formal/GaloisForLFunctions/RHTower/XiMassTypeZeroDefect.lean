@@ -260,6 +260,44 @@ theorem riemannHypothesis_iff_typeZero_movingQuadratureDefect {a c sigma : ℝ}
     rw [hdef u]
     ring
 
+/-! ## The explicit aggressive retreat -/
+
+/-- The aggressive sublinear retreat `κ_B u − u/log(u+e)`. -/
+def xiMassAggressiveHeight (a u : ℝ) : ℝ :=
+  xiMassSpacelikeSharpSlope a * u - u / Real.log (u + Real.exp 1)
+
+theorem tendsto_xiMassAggressiveHeight_ratio (a : ℝ) :
+    Tendsto (fun u : ℝ => xiMassAggressiveHeight a u / u) atTop
+      (nhds (xiMassSpacelikeSharpSlope a)) := by
+  have hlog : Tendsto (fun u : ℝ => Real.log (u + Real.exp 1)) atTop atTop :=
+    Real.tendsto_log_atTop.comp (tendsto_atTop_add_const_right _ _ tendsto_id)
+  have hinv : Tendsto (fun u : ℝ => (Real.log (u + Real.exp 1))⁻¹) atTop (nhds 0) :=
+    hlog.inv_tendsto_atTop
+  have hstep : Tendsto (fun u : ℝ =>
+      xiMassSpacelikeSharpSlope a - (Real.log (u + Real.exp 1))⁻¹) atTop
+      (nhds (xiMassSpacelikeSharpSlope a - 0)) := tendsto_const_nhds.sub hinv
+  rw [sub_zero] at hstep
+  refine hstep.congr' ?_
+  filter_upwards [eventually_gt_atTop (1 : ℝ)] with u hu
+  have hupos : (0 : ℝ) < u := lt_trans zero_lt_one hu
+  have hlogpos : (0 : ℝ) < Real.log (u + Real.exp 1) := by
+    refine Real.log_pos ?_
+    have he : (1 : ℝ) < Real.exp 1 := Real.one_lt_exp_iff.mpr zero_lt_one
+    linarith
+  rw [xiMassAggressiveHeight]
+  field_simp
+
+/-- **(23.10) The revised exact open core.**  RH is equivalent to vertical type zero of the
+quadrature defect below `κ_B u − u/log(u+e)`, a retreat deleting more than every fixed power
+`u^α`, `α < 1`. -/
+theorem riemannHypothesis_iff_typeZero_aggressiveQuadratureDefect {a c sigma : ℝ}
+    (hhalf : 1 / 2 < c) (hca : c < a) (hsigma : 0 < sigma) :
+    RiemannHypothesis ↔ XiMassTypeZero
+      (fun u => xiMassPrefixQuadratureDefect a sigma u
+        ⌊Real.exp (xiMassAggressiveHeight a u)⌋₊) :=
+  riemannHypothesis_iff_typeZero_movingQuadratureDefect hhalf hca hsigma
+    (tendsto_xiMassAggressiveHeight_ratio a)
+
 end
 
 end RHTower

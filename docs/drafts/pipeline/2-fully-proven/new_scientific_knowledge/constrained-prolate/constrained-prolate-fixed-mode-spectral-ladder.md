@@ -4168,3 +4168,323 @@ interior mass from above     still `integral_sq_le_turning_amplitude_envelope`, 
 
 One input remains, and it is the turning-layer amplitude — the same Airy-scale question the upper
 half sidestepped by anchoring at `2√s`.
+
+## The barrier ratio from above: a vacuity repair and the sharp transport
+
+`ProlateWKBSharpAction.lean` carried two theorems intended to supply the sharp *upper* bound on the
+mode at the turning point,
+
+```
+exp_neg_angleAction_le_endpoint :  Phi(sqrt s) · exp(-c·A(s))  <=  Phi b
+exp_neg_sharp_le_endpoint      :  Phi(sqrt s) · exp(-(c + (cs/4)·log s))  <=  Phi b
+```
+
+Both are **vacuous**.  Their hypothesis
+
+```
+hQ : forall y in Icc (sqrt s) b,  0 < -(s c^2) + c^2 y^2
+```
+
+is unsatisfiable for `c != 0`: at `y = sqrt s` the quantity is exactly `0`.  The Riccati potential
+`prolateWKB c (-s c^2) y = sqrt((c^2 y^2 - c^2 s)/(1 - y^2))` vanishes at the turning point, so a
+window whose *left endpoint is the turning point* can never satisfy the positivity the subsolution
+comparison needs.  (Verified in a scratch file: `hQ` yields `False` from `Real.sq_sqrt`.)
+
+`RHTower/ProlateAnchorActionUpperBound.lean` repairs this and, in the same stroke, removes a second
+loss.  The anchor is separated from the turning point:
+
+```
+intervalIntegrable_prolateWKB
+integral_prolateWKB_le_angleAction_anchor :  int_a^b W  <=  c·A(s)        (sqrt s <= a <= b < 1)
+exp_neg_angleAction_le_endpoint_anchor    :  Phi a · exp(-c·A(s))  <=  Phi b
+```
+
+and the target is pushed to the band endpoint rather than left at an interior `b`.  The Riccati
+potential *blows up* at `y = 1` while the logarithmic derivative of a smooth solution positive at
+`1` stays bounded, so the initial inequality holds automatically near the endpoint:
+
+```
+tendsto_prolateWKB_atTop                  :  W -> infinity   along  nhdsWithin 1 (Iio 1)
+eventually_prolateLogDeriv_le_prolateWKB  :  -Phi'/Phi <= W   eventually along the same filter
+```
+
+Taking `b -> 1^-` in the transported inequality gives the barrier ratio from above with **no loss at
+all**:
+
+```
+prolate_anchor_le_exp_angleAction  :  Phi a <= Phi 1 · exp(c·A(s))
+prolate_anchor_le_exp_sharp        :  Phi a <= Phi 1 · exp(c + (cs/4)·log s)
+prolate_anchor_le_exp_sharp_of_one :  Phi a <= exp(c + (cs/4)·log s)          (Phi 1 = 1)
+```
+
+This is the exact companion of `prolateBand_barrier_ratio_lower`, and it is what the interior mass
+estimate consumes.
+
+### Why the anchor cannot be moved to the turning point
+
+`exp_neg_angleAction_le_endpoint_anchor` needs `houter : c^2(1 - 2y^2) <= -s c^2`, that is
+`y^2 >= (1+s)/2`.  The WKB profile is a Riccati subsolution only where the potential varies slowly;
+near the turning point it does not.  The corpus's substitute valid on the whole band,
+
+```
+prolateRadialBarrier c s y = c·sqrt(1-s)·y / sqrt(1-y^2) ,
+```
+
+overshoots the exact profile `c·P(y) = c·sqrt((y^2-s)/(1-y^2))` by
+
+```
+barrier - cP  =  c s sqrt(1-y^2) / (sqrt(1-s) y + sqrt(y^2-s)) ,
+```
+
+whose integral from `sqrt s` to `1` is about `(cs/2)·log(1/s)`.  With `cs = 2n+1` and `s ~ 1/c` that
+is about `((2n+1)/2)·log c`, i.e. **exactly the factor `c^{n+1/2}` the whole problem is about**.  The
+crude barrier is therefore usable only across windows of length `O(s)`, never across the band.
+
+## The interior mass from above: the variable-scale amplitude envelope
+
+`HTGeometry/SturmAmplitudeEnvelope.lean` (new) is the tool.  For `(p R')' + Q R = 0` and a scale `K`,
+
+```
+G = R^2 + (p R')^2/K ,    G' = 2 R (p R')(1/p - Q/K) - (p R')^2 K'/K^2 ,
+2|R||p R'| <= sqrt K · G ,   (p R')^2/K <= G ,
+```
+
+so `|G'/G| <= sqrt K·|1/p - Q/K| + |K'|/K`, and the logarithmic-derivative envelope traps `G` in both
+directions.  Constant scale (`sturmAmplitude_le_mul_exp`, `sturmAmplitude_le_mul_exp'`) is a local
+tool.  The variable scale is the global one: choosing
+
+```
+K = -Q p        (positive throughout the forbidden band)
+```
+
+makes `1/p - Q/K = 2/p`, hence `sqrt K·|1/p - Q/K| = 2 sqrt(-Q/p) = 2 c P(y)` -- *exactly twice the
+WKB rate* -- and the whole extra cost is the logarithmic variation of the scale:
+
+```
+G(y)  <=  G(alpha) · exp(2c(Xi_s(y) - Xi_s(alpha))) · (K(alpha)/K(y)) .
+```
+
+For the angular equation `p = 1 - y^2`, `Q = c^2(s - y^2)`, so `K = c^2(y^2 - s)(1 - y^2)` and
+
+```
+K(alpha)/K(2 sqrt s)  is about  alpha^2(1 - alpha^2)/(3s)  =  O(1/s)  =  O(c) ,
+```
+
+a loss of `sqrt c` in `Phi` -- `sigma = 1/2`, not the `c^{n+1/2}` the crude barrier costs.
+
+### The assembled chain for `(beta)`'s lower half
+
+```
+1.  Phi(alpha)          <= 3·I0(c Xi(alpha)) <= 3 e^{c Xi(alpha)}   prolateBand_le_and_le            [done]
+2.  |Phi'(alpha)/Phi(alpha)| = O(c) , hence G(alpha) = O(1)·Phi(alpha)^2
+                                                        radial barrier + prolate_endpoint_le_log
+3.  Phi(2 sqrt s)^2     <= G(2 sqrt s) <= G(alpha)·e^{2c Xi(2 sqrt s)}·O(c)
+                                                        sturmAmplitudeVar_envelope       [tool done]
+4.  Phi(sqrt s)         <= Phi(2 sqrt s)·e^{O(cs)}      prolateRadialBarrier on [sqrt s, 2 sqrt s]
+5.  int_{-1}^1 Phi^2    <= 4e(c/sqrt s)·Phi(sqrt s)^2   integral_sq_le_turning_amplitude_envelope [done]
+6.  int_{Ioi 2} R^2     >= kappa/c - 2T/c^2             integral_Ioi_radialProlate_sq_ge  [done]
+7.  leakage = outside·value^2/inside
+```
+
+Budget: step 3 costs `sigma = 1/2`, step 5 costs `c/sqrt s ~ c^{3/2}`, step 6 is sharp
+(`sigma = 0`), and the upper half is `sigma_+ = 1`.  Total `sigma_+ + sigma_- = 1 + 1/2 + 3/2 = 3`,
+inside the budget `7/2`.
+
+Only steps 2-4 remain to be instantiated; steps 1, 5, 6 and the tool of step 3 are Lean-proved.
+
+## `(beta)`'s lower half: the chain is closed, at a boundary budget
+
+All of steps 1-7 are now Lean-proved and axiom-clean.  New modules:
+
+```
+HTGeometry/SturmAmplitudeEnvelope.lean
+    sturmAmplitude, hasDerivAt_sturmAmplitude,
+    abs_two_mul_le_sqrt_mul_sturmAmplitude,
+    sturmAmplitude_le_mul_exp, sturmAmplitude_le_mul_exp'      (constant scale)
+    sturmAmplitudeVar, hasDerivAt_sturmAmplitudeVar,
+    abs_deriv_sturmAmplitudeVar_le, sturmAmplitudeVar_envelope (variable scale)
+
+RHTower/ProlateAnchorActionUpperBound.lean
+    intervalIntegrable_prolateWKB, integral_prolateWKB_le_angleAction_anchor,
+    exp_neg_angleAction_le_endpoint_anchor,
+    tendsto_prolateWKB_atTop, eventually_prolateLogDeriv_le_prolateWKB,
+    prolate_anchor_le_exp_angleAction, prolate_anchor_le_exp_sharp,
+    prolate_anchor_le_exp_sharp_of_one
+
+RHTower/ProlateBandAmplitudeTransport.lean
+    prolateBandScale, prolateBandScaleDeriv, prolateBandAmplitude, prolateBandMajorant,
+    prolateBand_drift_eq, sqrt_prolateBandScale_mul, abs_prolateBandScaleDeriv_div_le,
+    prolateBand_majorant_bound, integral_prolateBandMajorant, prolateBand_amplitude_le
+
+RHTower/ProlateBandAmplitudeAnchor.lean
+    abs_prolateLogDeriv_le_band, prolateBandAmplitude_anchor_le,
+    prolate_le_mul_exp_radialBarrier, prolate_anchor_le_exp_bandPhase,
+    prolate_turningPoint_sq_le_exp, integral_sq_le_exp_sharp_action,
+    leakage_lower_of_mass_bounds
+
+RHTower/ProlateLeakageLowerSharp.lean
+    integral_Ioi_radialProlate_sq_ge_half, prolate_leakage_ge_exp_sharp_action
+```
+
+The headline is
+
+```
+prolate_leakage_ge_exp_sharp_action :
+
+  besselEnergyFloor/(864 c)
+    / (2 · 4e (c/sqrt s) · C · exp(2 c Xi_s(y0) + log-scale-ratio + 2 D))
+      <=  leakage
+```
+
+with `C = 1 + (1-alpha^2)(barrier(alpha) + 6/(1-alpha))^2 / (c^2(alpha^2-s))`, the scale ratio
+`(alpha^2-s)(1-y0^2) / ((y0^2-s)(1-alpha^2))`, and `D = c sqrt(1-s)(sqrt(1-s) - sqrt(1-y0^2))` the
+`O(cs)` cost of the last window.  `prolate_anchor_le_exp_bandPhase` is the loss-free endpoint
+transport `Phi(alpha) <= Phi(1) exp(c Xi_s(alpha))`, obtained as the `b -> 1` limit of the Riccati
+subsolution comparison.
+
+### The accounting, with `y0 = 2 sqrt s`, `alpha` a fixed collar edge, `cs = 2n+1`, `s ~ 1/c`
+
+```
+exterior mass             besselEnergyFloor/(864 c)     sharp                    sigma 0
+scale ratio               O(1/s) = O(c)                 amplitude transport      sigma 1
+aperture envelope         c/sqrt s ~ c^{3/2}            corpus turning envelope  sigma 3/2
+last window               exp(O(cs))                    constant                 sigma 0
+                                                                          sigma_- = 5/2
+upper half                                                                sigma_+ = 1
+                                                                          total   = 7/2
+```
+
+That is exactly the budget, not inside it.  The slack is in the aperture envelope: the truth is
+`int Phi^2 ~ (sqrt s + 1/c) Phi(sqrt s)^2 ~ c^{-1/2} Phi(sqrt s)^2`, so
+`integral_sq_le_turning_amplitude_envelope`'s prefactor `c/sqrt s` is lossy by `c^2`, not by
+`c^{3/2}`.  Bounding the aperture mass *directly* by the band amplitude — constant scale `K = c^2 s`
+on `[0, 2 sqrt s]` (cost `exp(O(cs))`, a constant) and band scale on `[2 sqrt s, alpha]` (cost the
+same scale ratio already paid) — removes the `c/sqrt s` factor entirely and replaces it by the
+scale ratio already counted.  That brings `sigma_-` to `3/2` and the total to `5/2`, inside the
+budget.  This is the next step; the envelope tool it needs is already proved
+(`sturmAmplitude_le_mul_exp` for the allowed region, `prolateBand_amplitude_le` for the band).
+
+## The turning-layer prefactor is gone: `(beta)`'s lower half is inside budget
+
+`RHTower/ProlateApertureMassSharp.lean` replaces the corpus's aperture envelope.  The point is that
+the amplitude envelope crosses the turning layer *for free* once the scale is matched to the
+potential.  On the allowed interval `[0, y0]` with `y0^2 <= 4s` take the **constant** scale
+`K = c^2 s`:
+
+```
+1/p - Q/K = 1/(1-y^2) - 1 + y^2/s  in  [0, 5] ,     sqrt K = c sqrt s ,
+```
+
+so the envelope costs `exp(5 c sqrt s · y0) = exp(O(cs))`, a constant for a fixed mode.  At `y0` the
+constant and band scales differ by `(y0^2-s)(1-y0^2)/s <= 3`, so the allowed amplitude passes into
+the band amplitude; past `y0` the band transport applies; past `alpha` the loss-free endpoint bound
+`prolate_anchor_le_exp_bandPhase` applies.  Three regions, one pointwise envelope:
+
+```
+prolate_allowed_sq_le
+sturmAmplitude_const_le_three_mul_band
+prolateBandAmplitude_le_uniform
+prolate_sq_le_aperture_envelope
+integral_sq_le_aperture_envelope
+integral_sq_le_exp_sharp_action_amplitude
+```
+
+the last being
+
+```
+int_{-1}^1 Phi^2  <=  2(3C+1) · exp(2 c Xi_s(y0) + Lambda + 5 c sqrt s · y0)
+```
+
+with `C = 1 + (1-alpha^2)(barrier(alpha)+6/(1-alpha))^2/(c^2(alpha^2-s))` and
+`Lambda = prolateScaleLog s y0 alpha` the log of the scale ratio.  **No `c / sqrt s`.**
+
+`prolate_leakage_ge_exp_sharp_amplitude` (in `ProlateLeakageLowerSharp.lean`) is the corresponding
+leakage bound.
+
+### Budget, final
+
+```
+exterior mass        besselEnergyFloor/(864c)      sharp                        sigma 0
+aperture bound       O(c) · Phi(sqrt s)^2          truth is c^{-1/2}·Phi^2      sigma 3/2
+allowed interval     exp(O(cs))                    constant                     sigma 0
+anchor constant C    O(1)                          constant                     sigma 0
+                                                                        sigma_- = 3/2
+upper half                                                              sigma_+ = 1
+                                                                        total   = 5/2  <  7/2
+```
+
+Both halves of `(beta)` are now Lean-proved, axiom-clean, and inside the precision budget.  What
+remains is bookkeeping: instantiate `y0 = 2 sqrt s` and a fixed collar `alpha`, evaluate
+`Lambda = log((alpha^2-s)(1-y0^2)/((y0^2-s)(1-alpha^2)))` as `log(O(1/s))`, and convert
+`Xi_s(y0)` to `A(s) = 1 + (s/4)log s + O(s)` with `cs = 2n+1`.
+
+## The card's stated bottleneck is closed: the barrier ratio, two-sided
+
+The bottleneck recorded above was
+
+> the barrier ratio `Phi(y0)/Phi(1)`, to relative precision `c^(±3/2)`.
+
+`RHTower/ProlateBarrierRatioTwoSided.lean` (wired, axiom-clean) delivers both directions with the
+*same* sharp exponential:
+
+```
+prolateBand_sq_le_exp_bandPhase
+    Phi(y0)^2  <=  C · exp(2 c Xi_s(y0) + Lambda)
+
+prolateBand_barrier_ratio_two_sided
+    exp(c Xi_s(y0) + 6 log((1-alpha)/(1-y0))) / (6 pi sqrt(c Xi_s(alpha)))  <=  Phi(y0)
+      and the square bound above
+```
+
+with `C = 1 + (1-alpha^2)(barrier(alpha) + 6/(1-alpha))^2 / (c^2(alpha^2-s))` and
+`Lambda = prolateScaleLog s y0 alpha = log((alpha^2-s)(1-y0^2)/((y0^2-s)(1-alpha^2)))`.
+
+Since both bounds carry `exp(c Xi_s(y0))`, the relative precision is the product of the two
+prefactors: `sqrt(C exp Lambda)` and `6 pi sqrt(c Xi_s(alpha))`.  With `y0 = 2 sqrt s`, `alpha` a
+fixed collar edge, `cs = 2n+1` and `s ~ 1/c`,
+
+```
+exp Lambda = O(1/s) = O(c) ,     C = O(1) ,     c Xi_s(alpha) = O(c) ,
+```
+
+so the relative precision is `O(sqrt c) · O(sqrt c) = O(c)` — inside the required `c^(3/2)`.
+
+The route that achieves this is *not* the parabolic-cylinder / Liouville-Green package the earlier
+entry proposed.  It is the **Sturm amplitude envelope at a matched scale**
+(`HTGeometry/SturmAmplitudeEnvelope.lean`): for `(pR')' + QR = 0` and any scale `K`,
+
+```
+G = R^2 + (pR')^2/K ,     |G'/G|  <=  sqrt K · |1/p - Q/K|  +  |K'|/K .
+```
+
+Taking `K = -Qp` in the band makes `1/p - Q/K = 2/p`, hence `sqrt K (2/p) = 2 c P(y)` — *exactly
+twice the WKB rate* — and the entire extra cost is the logarithmic variation of the scale, two
+elementary logarithms.  Taking `K = c^2 s` on the allowed interval `[0, 2 sqrt s]` gives
+`|1/p - Q/K| = 1/(1-y^2) - 1 + y^2/s in [0,5]` and `sqrt K = c sqrt s`, so the turning layer is
+crossed at cost `exp(10 c s)`, a constant for a fixed mode.  No turning-point model function is
+needed at all: neither Airy, nor parabolic cylinder, nor a Liouville-Green error-control function.
+
+Consequences already landed:
+
+```
+RHTower/ProlateApertureMassSharp.lean
+    prolate_allowed_sq_le, sturmAmplitude_const_le_three_mul_band,
+    prolateBandAmplitude_le_uniform, prolate_sq_le_aperture_envelope,
+    integral_sq_le_aperture_envelope, integral_sq_le_exp_sharp_action_amplitude
+RHTower/ProlateLeakageLowerSharp.lean
+    integral_Ioi_radialProlate_sq_ge_half,
+    prolate_leakage_ge_exp_sharp_amplitude, prolate_leakage_ge_explicit
+```
+
+`prolate_leakage_ge_explicit` is the leakage lower bound at the standard matching point
+`y0 = 2 sqrt s`, entirely elementary in its constants:
+
+```
+besselEnergyFloor/(864 c)
+  / (2 (2 (3C+1) exp(2c(1 + (s/4) log s) + log((alpha^2-s)/(3s)) + log((1-4s)/(1-alpha^2))
+                      + 10 c s)))
+    <=  leakage .
+```
+
+Both halves of `(beta)` are now Lean-proved, axiom-clean, and inside the precision budget
+(`sigma_+ + sigma_- = 5/2 < 7/2`).

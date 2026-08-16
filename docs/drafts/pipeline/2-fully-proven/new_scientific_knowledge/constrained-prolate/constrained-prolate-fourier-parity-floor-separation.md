@@ -1510,3 +1510,74 @@ ProlateDunsterEndpointWronskian               endpoint Wronskian values         
 ProlateDunsterEndpointVolterra                endpoint-anchored transport               —
 ProlateDunsterEndpointCoefficientBounds       |F_regular|, |F_log − π/4| = O(1/c)       —
 ```
+
+## The card's stated bottleneck is closed: the barrier ratio, two-sided
+
+The bottleneck recorded above was
+
+> the barrier ratio `Phi(y0)/Phi(1)`, to relative precision `c^(±3/2)`.
+
+`RHTower/ProlateBarrierRatioTwoSided.lean` (wired, axiom-clean) delivers both directions with the
+*same* sharp exponential:
+
+```
+prolateBand_sq_le_exp_bandPhase
+    Phi(y0)^2  <=  C · exp(2 c Xi_s(y0) + Lambda)
+
+prolateBand_barrier_ratio_two_sided
+    exp(c Xi_s(y0) + 6 log((1-alpha)/(1-y0))) / (6 pi sqrt(c Xi_s(alpha)))  <=  Phi(y0)
+      and the square bound above
+```
+
+with `C = 1 + (1-alpha^2)(barrier(alpha) + 6/(1-alpha))^2 / (c^2(alpha^2-s))` and
+`Lambda = prolateScaleLog s y0 alpha = log((alpha^2-s)(1-y0^2)/((y0^2-s)(1-alpha^2)))`.
+
+Since both bounds carry `exp(c Xi_s(y0))`, the relative precision is the product of the two
+prefactors: `sqrt(C exp Lambda)` and `6 pi sqrt(c Xi_s(alpha))`.  With `y0 = 2 sqrt s`, `alpha` a
+fixed collar edge, `cs = 2n+1` and `s ~ 1/c`,
+
+```
+exp Lambda = O(1/s) = O(c) ,     C = O(1) ,     c Xi_s(alpha) = O(c) ,
+```
+
+so the relative precision is `O(sqrt c) · O(sqrt c) = O(c)` — inside the required `c^(3/2)`.
+
+The route that achieves this is *not* the parabolic-cylinder / Liouville-Green package the earlier
+entry proposed.  It is the **Sturm amplitude envelope at a matched scale**
+(`HTGeometry/SturmAmplitudeEnvelope.lean`): for `(pR')' + QR = 0` and any scale `K`,
+
+```
+G = R^2 + (pR')^2/K ,     |G'/G|  <=  sqrt K · |1/p - Q/K|  +  |K'|/K .
+```
+
+Taking `K = -Qp` in the band makes `1/p - Q/K = 2/p`, hence `sqrt K (2/p) = 2 c P(y)` — *exactly
+twice the WKB rate* — and the entire extra cost is the logarithmic variation of the scale, two
+elementary logarithms.  Taking `K = c^2 s` on the allowed interval `[0, 2 sqrt s]` gives
+`|1/p - Q/K| = 1/(1-y^2) - 1 + y^2/s in [0,5]` and `sqrt K = c sqrt s`, so the turning layer is
+crossed at cost `exp(10 c s)`, a constant for a fixed mode.  No turning-point model function is
+needed at all: neither Airy, nor parabolic cylinder, nor a Liouville-Green error-control function.
+
+Consequences already landed:
+
+```
+RHTower/ProlateApertureMassSharp.lean
+    prolate_allowed_sq_le, sturmAmplitude_const_le_three_mul_band,
+    prolateBandAmplitude_le_uniform, prolate_sq_le_aperture_envelope,
+    integral_sq_le_aperture_envelope, integral_sq_le_exp_sharp_action_amplitude
+RHTower/ProlateLeakageLowerSharp.lean
+    integral_Ioi_radialProlate_sq_ge_half,
+    prolate_leakage_ge_exp_sharp_amplitude, prolate_leakage_ge_explicit
+```
+
+`prolate_leakage_ge_explicit` is the leakage lower bound at the standard matching point
+`y0 = 2 sqrt s`, entirely elementary in its constants:
+
+```
+besselEnergyFloor/(864 c)
+  / (2 (2 (3C+1) exp(2c(1 + (s/4) log s) + log((alpha^2-s)/(3s)) + log((1-4s)/(1-alpha^2))
+                      + 10 c s)))
+    <=  leakage .
+```
+
+Both halves of `(beta)` are now Lean-proved, axiom-clean, and inside the precision budget
+(`sigma_+ + sigma_- = 5/2 < 7/2`).
