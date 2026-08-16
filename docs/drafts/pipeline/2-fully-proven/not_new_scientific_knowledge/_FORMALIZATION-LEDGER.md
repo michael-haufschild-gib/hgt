@@ -211,6 +211,11 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
   extended coefficientwise to formal power series (`coeffwiseAdd`), its Leibniz rule, the formal
   parameter as a differential constant, and the commutation of constant-term extraction with every
   jet.  This is gate item (a) of `leading-laurent-coefficient-differential-algebraicity`.
+- `HTGeometry/FormalParameterRelationNormalization.lean` — removal of the common parameter power
+  from a formal-parameter differential relation (`exists_normalized_relation`,
+  `eval₂_of_eq_C_X_pow_mul`) and the assembled power-series descent
+  (`differentialAlgebraicOver_constantCoeff_of_formalRelation`).  Gate item (b) and the
+  power-series half of (c) of the same card; only the Laurent carrier extension remains.
 - `HTGeometry/InvolutionIdempotentHost.lean` — self-inverse elements ↔ idempotents over a
   commutative ring with `2` invertible.
 - `HTGeometry/ScalarMonodromyAlgebraicIndependence.lean` — unbounded scalar monodromy forces

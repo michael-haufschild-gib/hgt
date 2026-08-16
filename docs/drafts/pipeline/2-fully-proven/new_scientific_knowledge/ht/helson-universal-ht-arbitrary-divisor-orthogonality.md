@@ -963,3 +963,49 @@ The remaining task is therefore correctly stated as: prove the a.s. natural boun
 formal chain here supplies the abscissa-of-convergence half.  The zero-one law
 (`measure_infinitePi_eq_zero_or_one_of_invariant`) still reduces it to breaking the dichotomy at a
 single point, which remains the most promising entry.
+
+## Lean progress — divergence for arbitrary prime-supported coefficients
+
+`RHTower/SteinhausPrimeGeneralDivergence.lean` (wired, axiom-clean).
+
+```
+steinhausPrimeGenPoly a N ω  =  sum_{p < N prime} a_p X_p(ω)     -- arbitrary real a
+integral_normSq_genPoly       E ||S_N||^2 = sum_p a_p^2
+integral_normSq_sq_genPoly    E ||S_N||^4 = 2 (sum_p a_p^2)^2 - sum_p a_p^4
+measure_genPoly_unbounded     sum_p a_p^2 -> infinity  ==>  P(sup ||S_N|| = infinity) >= 1/8
+genTerm, coordPartialSum_genTerm, not_unbounded_of_converges_gen
+
+measure_coordSeriesConverges_genTerm_eq_zero
+    sum_{p<N} a_p^2 -> infinity  ==>  Haar { ω : sum_p a_p X_p(ω) converges } = 0
+```
+
+The whole chain uses nothing about `p^{-sigma}`: the two diagonals of `p r = q t` over primes do not
+see the coefficients at all, so the fourth-moment identity holds for every real sequence.  The
+`sigma`-version is the special case `a_p = p^{-sigma}`.
+
+## The route from divergence to the natural boundary: Bohr
+
+Recording the identified reduction, since the previous correction left the remaining step
+unspecified.
+
+What is formal: `sigma_c >= 1/2` almost surely.  What the card needs: `Haar(M) != 1`, `M` the
+continuation stratum.  The gap is bridged by **Bohr's theorem** for Dirichlet series,
+
+```
+sigma_u = sigma_b ,
+```
+
+the abscissa of uniform convergence equals the abscissa of *bounded* holomorphy.  Given it, suppose
+`Z_chi` extended boundedly to `Re s > 1/2 - delta` for a positive-measure set of `chi`.  Then
+`sigma_b <= 1/2 - delta`, hence `sigma_u <= 1/2 - delta`, hence `sigma_c <= sigma_u <= 1/2 - delta`
+— contradicting the a.s. divergence proved here.  The zero-one law then upgrades positive measure to
+full measure and closes `Haar(M) = 0`.
+
+So the remaining analytic input is precisely Bohr's `sigma_u = sigma_b` (the easy inequality
+`sigma_c <= sigma_u` is immediate).  It is not in mathlib.  It is a self-contained classical theorem
+about ordinary Dirichlet series with no probabilistic content, which makes it a much better-defined
+target than "the Saksman--Webb natural boundary" as previously recorded.
+
+Caveat to check when that lands: the argument above controls *bounded* continuation.  If the card's
+`M` is meromorphic continuation without a boundedness requirement, the reduction needs the standard
+extra step of passing from meromorphic to locally bounded off the polar set.

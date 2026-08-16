@@ -451,3 +451,34 @@ The positive square root is the corpus continuous-functional-calculus root
 
 What `(7)` still needs on top of this is determinant monotonicity on the positive cone,
 `0 ⪯ A ⪯ C ⟹ det A ≤ det C`, and the definition of `cap` as an infimum over the state.
+
+### Addendum -- `(7)` is now closed
+
+`(7)` needed determinant monotonicity on the positive cone, which mathlib does not carry.  Two new
+umbrella-wired, axiom-clean modules supply it and then finish the certificate.
+
+`formal/GaloisForLFunctions/HTGeometry/PositiveConeDeterminantMonotone.lean`:
+
+| Step | Declaration |
+|---|---|
+| a nonzero vector has positive squared length | `dotProduct_star_self_pos` |
+| **below the identity every eigenvalue is at most one** | `eigenvalues_le_one_of_one_sub_posSemidef` |
+| hence a matrix squeezed between `0` and `1` has determinant at most `1` | `det_le_one_of_le_one` |
+| the kernel of the larger matrix sits inside the kernel of the smaller | `mulVec_eq_zero_of_loewner` |
+| **`0 ⪯ A ⪯ C ⟹ det A ≤ det C`** | `det_le_det_of_loewner` |
+
+The singular and invertible cases are both handled: if `det C = 0` the shared kernel forces
+`det A = 0`, and otherwise `C = S S` for the positive square root `S`, `T = S⁻¹AS⁻¹` satisfies
+`0 ⪯ T ⪯ 1`, and `det A = det C · det T ≤ det C`.
+
+`formal/GaloisForLFunctions/HTGeometry/PencilCapacityCertificate.lean`:
+
+| Step | Declaration |
+|---|---|
+| nonnegative real multiples preserve positive semidefiniteness | `posSemidef_real_smul` |
+| a Kraus sum of a positive state is positive | `posSemidef_krausSum` |
+| **`(7)`**: at every `X > 0` with `det X = 1`, `det(∑ᵢBᵢXBᵢᴴ) ≥ \|det B\|²/‖c‖₂^{2d}` | `pencil_capacity_bound` |
+
+Since Gurvits' square capacity `(2)` is the infimum of `det η(X)` over exactly that competitor set,
+`pencil_capacity_bound` is the assertion `cap ≥ |det B|²/‖c‖₂^{2d}` of `(7)`, with no hypothesis
+beyond `X > 0`, `det X = 1` and `c ≠ 0`.

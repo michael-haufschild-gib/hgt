@@ -1102,3 +1102,52 @@ the symbol is what a Bruhat normal form costs over a ring rather than a field.
 The degenerate cell `ab = 0` gives a statement of independent interest: opposite elementary
 generators whose entries multiply to zero commute modulo K₂, and their commutator is central.  Over
 a domain this is vacuous, but over a ring with zero divisors it produces genuine central elements.
+
+## Layer B — the square of the Weyl element, modulo K₂, PROVED
+
+`HTGeometry/SteinbergWeylSquare.lean` (wired, axiom-clean).
+
+```
+weylMatrix_sq                             weylMatrix i j u * weylMatrix i j u = diagMatrix i j (-1)
+steinbergToGL_weyl_sq                     hence w(u)^2 maps to the diagonal unit at -1
+steinbergWeyl_sq_mul_torus_inv_mem_KTwo   w(u)^2 h(-1)^{-1} lies in K₂
+steinbergWeyl_sq_mul_torus_inv_mem_center ... and is central
+steinbergWeyl_sq_mul_sq_inv_mem_KTwo      w(u)^2 and w(v)^2 agree modulo K₂ for ALL u, v
+```
+
+In the two-index block `w(u)` is `[[0,u],[-u^{-1},0]]`, whose square is `-1` — the unit cancels
+between the two off-diagonal entries, so the answer does not involve `u` at all.
+
+This is the K₂-level form of the classical relation `w(u)^2 = h(-1)`.  What the matrix map alone can
+deliver is that the two sides agree up to a central element of K₂; the exact equality is a
+consequence of the presentation and is not needed wherever the argument runs modulo the centre.
+The last theorem records the sharper consequence: the map `u |-> w(u)^2` is constant modulo K₂.
+
+Scope note for the next pass: the general derivation of `w(u)^2 = h(-1)` on the nose cannot come
+from the conjugation calculus either — conjugation only shows `w(u)^2 h(-1)^{-1}` centralises every
+generator, which is exactly the centrality proved here, and centrality is strictly weaker than
+triviality in a group with nontrivial centre.  That is the same obstruction as for `{u, 1-u} = 1`,
+and it has the same resolution: the Dennis-Stein relations.
+
+## Layer B — the two orientations of a root, modulo K₂, PROVED
+
+`HTGeometry/SteinbergIndexOrientation.lean` (wired, axiom-clean).
+
+```
+weylMatrix_swap                  weylMatrix j i (-u^{-1}) = weylMatrix i j u
+diagMatrix_swap                  diagMatrix j i u^{-1}    = diagMatrix i j u
+steinbergWeyl_swap_mem_KTwo      w_ji(-u^{-1}) w_ij(u)^{-1} in K₂
+steinbergTorus_swap_mem_KTwo     h_ji(u^{-1}) h_ij(u)^{-1} in K₂
+steinbergWeyl_swap_mem_center    ... and central
+steinbergTorus_swap_mem_center   ... and central
+```
+
+Both matrix identities are exact and need no computation at all — reversing the index pair permutes
+the four single-entry terms of the definition, and the unit bookkeeping is `(-u^{-1})^{-1} = -u` in
+the Weyl case and `(u^{-1})^{-1} = u` in the torus case.  The two matrix lemmas audit to
+`[propext, Quot.sound]`: no choice is used.
+
+Consequence for the programme: the root system's two orientations are identified modulo the centre,
+so any Layer-B statement proved for `(i,j)` transfers to `(j,i)` at no cost, with `u |-> -u^{-1}` on
+Weyl parameters and `u |-> u^{-1}` on torus parameters.  This removes the orientation bookkeeping
+from the Matsumoto presentation, where the relations are stated for an unordered root pair.

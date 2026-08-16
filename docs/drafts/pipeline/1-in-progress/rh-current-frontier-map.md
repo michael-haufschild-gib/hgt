@@ -7,7 +7,7 @@ It records current proof architectures, theorem chains, first open source statem
 mechanisms, and structural conclusions shared across routes. It is not a chronology or build log.
 
 **Corpus cutoff:** 16 August 2026, committed snapshot
-`92fa4b6fe1f31e6f2ee73ae3a13b3c465bf15ec8`, together with declaration-level review of current
+`0037fbed96cb4b300ba03b52ffe7205343efff59`, together with declaration-level review of current
 working tree. Statements below distinguish unconditional source theorems from RH-equivalent
 receivers and interfaces whose analytic hypotheses are merely supplied.
 
@@ -24,6 +24,8 @@ RH and its negation remain unproved. Current live architecture count is:
   quadratic concentration), **HA-SW** (height-adaptive cancelled-source socle--Weyl descent), and
   **HJ-GR** (hard-Jacobi reserve versus boundary controllability Gramian), plus **PH-TC**
   (parabolic heat--Turan curvature), source-isogenous to Route T;
+- one reopened, still unlettered disproof opening: moving-degree reverse-Bessel completed-source
+  pulse capital;
 - no instantiated Route V;
 - Route R terminalized as an independent producer.
 
@@ -42,9 +44,9 @@ route under corpus source-isogenies.
 | D2 | safe-line Euler deficit → analytically continued prime–Gamma trace → finite high-frequency ceiling → RH | Continue literal positive deficit through Euler wall and prove any finite uniform ceiling above frequency four. |
 | E | squarefree central Wold shell → explicit parity-coalesced/whole-anchor opposite-sign relation → physical Carleson and co-moving flux → Mertens cancellation → RH | Upgrade proved fixed-relation near-Hall and polylog/subpower incoming bounds to unit interval Carleson load and normalized moving-seam flux. Current structured short-interval token supply is quantitatively too thin. |
 | G | Suzuki/CCM source → restricted-Weil Morse/coalescing floor or root-retained two-ray meromorphic exterior → Hermite–Biehler orientation → RH | Floor: identify full aperture Morse index with right-half Xi charge and exclude the boundary-rough least-contact mode; equivalently close the source-aligned low-only/source-cyclic Schur alternatives. Exterior: instantiate infinite-boundary reconstruction and prove oriented residual-map injectivity. |
-| L | completed Xi Green/BV source → logarithmic Gamma-six Wold coface → prime-harmonic singular graph comparison → fixed Burnol/Deninger reader → `K_n(rho)=0` → RH | Prove a distinguished non-universal arithmetic Stokes identity annihilating the specific completed-Green-weighted cofinal chain while retaining divisor/prime provenance. Singular source production and fixed physical comparison exist; universal continuous boundary annihilation is formally impossible. |
-| O | restricted-Weil operator → explicit constrained prolate source → prolate/oscillator spectral pin and two-scale classification → whole-ground control → nonnegative cofinal floor → RH | Two-sided endpoint/leakage laws, fixed-rung counting, and selected ground-profile integral are closed. Prove actual-family cross-spectral ordering and exhaust every restricted-Weil near-ground sequence. |
-| P | primitive Euler/Burnol budget → Julia--Krein completion → Stokes wall determinant → genus-one Xi landing → RH | Physical coefficient transport, order-uniform locally uniform wall convergence, and real-zero closure are closed. Ordinary trace-class Xi landing is impossible because reciprocal Xi zeros are not summable. Rebuild the landing in a non-trace-class Hilbert--Schmidt genus-one channel with `det₂`, or find a non-spectral trace contraction. |
+| L | completed Xi Green/BV source → logarithmic Gamma-six Wold coface → singular graph or half-density `L2` comparison → fixed physical reader/source image → critical line → RH | Either prove selected arithmetic Stokes annihilation for the completed-Green chain, or prove that source/Gamma naturality preserves the strong Meyer image under one inverse prime Koszul coordinate. Ambient off-line invertibility is closed; strong-source preservation is the RH-bearing step. |
+| O | restricted-Weil operator → explicit constrained prolate source → prolate/oscillator spectral pin and two-scale classification → whole-ground control → nonnegative cofinal floor → RH | Two-sided endpoint/leakage, fixed-rung counting, actual ground-profile integral and shape ratio, and abstract secular-root landing are closed. Prove actual-family cross-spectral ordering and exhaust every restricted-Weil near-ground sequence. |
+| P | primitive Euler/Burnol budget → Julia--Krein completion → source-native genus-one carrier → coefficient-faithful Xi-divisor landing → RH | Trace-class Xi landing is impossible, but the literal prime-log source now gives a self-adjoint Hilbert--Schmidt non-trace-class carrier whose `det₂` has explicit real reciprocal source zeros. Identify that divisor multiplicity-faithfully with completed Xi without fitting Xi data, or produce a non-spectral conormal contraction. |
 | Q | theta–Cassini source → separated finite prime–Gamma packet sign → transverse charge zero → RH | Produce nonnegative energy cofinally toward orientation vector. Null boundaries have hidden mixed incidence `-E/2`; diagonal budgets and adaptive complex phases cannot repair fusion. Alternative UQ-QC asks for finite pre-divisor quadratic-concentration budget. |
 | T | centered prime--Gamma source → detector/Mellin packet, Wold residual ODE, or true-prime Bessel cone → RH | Prime supply and arbitrary-order physical-slice localization are closed; an inverse-log adjacent defect would force the large-value alternative. Produce that signed defect, prove half-height residual variation, and obtain a sub-`3/2` gap moment; alternatively prove type-zero cancellation of the moving Bessel defect. |
 | U | shifted-Xi Hankel first crossing → boundary-rough completed null ground → restricted-Weil positivity → RH | Lean proves `RH ∨ CCMFirstContactBoundaryRoughness`: off RH the least zero aperture has a genuine null ground absent from every strict smooth interior source. Exclude this completed-boundary state by a trace/quotient or whole-ground theorem. |
@@ -488,10 +490,12 @@ the exact Ward-capacity inequality against lower-Hardy evaluation, while a cross
 at least twice the other is strictly negative. Lean now classifies the intervening band exactly:
 for every shallow lag `p>0` there is one transition depth in `(3p/2,2p)`, with positive Gram before
 it and negative Gram after it. Positive coefficients therefore create a source-localized signed
-interscale channel. The raw literal natural-packet Cauchy energy now has a linear lower bound along
-apertures `8n` and diverges; uniform unrenormalized cofinal energy is impossible. Any viable wall
-assembly must compensate anchor-visible prime mass before the limit, then still orient Morse charge
-(`SuzukiNaturalApertureCauchyEnergyEscape.lean`).
+interscale channel. The raw literal natural-packet Cauchy energy has a linear lower bound along
+apertures `8n`, whereas rectangular Xi curvature has an unconditional `O(sqrt n)` envelope. Their
+exact natural Ward defect therefore tends to `-infinity` along `8n`, whether RH is true or false.
+Anchor-visible linear mass must be removed before Gram/cofinal passage, and the renormalized
+remainder must still orient Morse charge (`SuzukiNaturalApertureCauchyEnergyEscape.lean`,
+`SuzukiNaturalApertureWardScalingNoGo.lean`).
 
 The first-crossing target is also sharper. Exact scaling to full CCM form plus small-aperture
 positivity, continuity, antitonicity, and attainment prove that false RH has a least zero aperture
@@ -513,6 +517,11 @@ generic Schur leverage, Clark escape, finite moments, or target matching cannot 
 The literal Suzuki interval is now instantiated as a bounded coordinate, and the model-free
 coalescing theorem gives exact first visible even/odd energy rates there. The former
 subtype/restricted-measure mismatch is closed (`SuzukiCoalescingTangentGeneral.lean`).
+For every even `C1` truncated-convolution kernel, Fourier compression is exactly a centered
+divided-difference packet with odd boundary source, reflection-even diagonal, and displacement
+rank at most two. A PSD packet with simple odd ground therefore has a real-rooted compact Fourier
+receiver. This is a G/O adapter, not a route: no theorem identifies the literal restricted-Weil
+kernel with such a packet or selects its simple odd ground.
 
 **Open core.** Prove paper-level aperture-Morse exhaustion for literal completed Suzuki source:
 identify analytic screw kernel with full restricted-Weil form, prove global Krein--Langer index
@@ -765,6 +774,14 @@ off the critical line every coordinate `U_p-p^(1/2-s)` is invertible, with unifo
 identify its boundaries with the fixed Burnol/Deninger physical landing
 (`PrimeTranslationKoszulOffLine.lean`).
 
+The Meyer strong logarithmic target now has a canonical injective half-density map into ordinary
+`L2(C,2,volume)`. Centered Meyer flow becomes literal unitary translation, and each Xi-selected
+prime Koszul coordinate intertwines coefficient-faithfully with normalized `L2` translation. Off
+the critical line that ambient coordinate is a unit, but its inverse cannot preserve the full
+strong-source image. Conversely, preservation of the strong image at one prime forces
+`Re(rho)=1/2`; preservation for every Xi divisor implies RH. This closes generic source-to-Hilbert
+comparison and exposes a second producer statement, not its proof.
+
 Division-free Frobenius two defined from `f(T)f(-T)` is now a canonical natural RingHom over every
 commutative ring, including rings with additive torsion and nilpotents. It satisfies the full ghost
 law `ghost_k(F_2 w)=ghost_(2k)(w)` for every positive `k`, squares Teichmüller representatives, and
@@ -956,20 +973,21 @@ every continuous graph reader annihilating *all* arithmetic boundaries is zero. 
 continuous Stokes descent on this completion is impossible and cannot be advertised as the final
 step.
 
-**Open core.** Prove a distinguished, non-universal arithmetic Stokes identity for the specific
-Green-weighted cofinal chain.  It must retain resolved divisor/prime provenance and use additional
-Meyer/Rost--Schmid or co-Poisson common-test structure to annihilate this selected boundary without
-annihilating the dense boundary range universally.  Its fixed actual-Gamma image vanishes exactly
-when `Re(q)=1/2`, so this selected source annihilation is now the sole RH-bearing operation.
-Generic mapping cones, `1/Xi`, bounded/closed extensions on ambient `ell^2`, target quotient
-definitions, universal continuous boundary readers, scalar singular traces, or trace-class repair
-remain circular or formally ruled out.
+**Open core.** Two exact formulations remain. Either prove a distinguished non-universal arithmetic
+Stokes identity annihilating the specific Green-weighted cofinal chain, while retaining divisor and
+prime provenance; or prove before divisor specialization that genuine source/Gamma naturality
+forces one inverse `L2` prime-Koszul coordinate to preserve the strong Meyer source image. The
+first kills the fixed actual-Gamma readout; the second makes off-line ambient contraction
+incompatible with source regularity. Neither is supplied by the corpus. Generic mapping cones,
+`1/Xi`, ambient `L2` invertibility, target quotient definitions, universal continuous readers,
+scalar singular traces, or trace-class repair remain circular or formally ruled out.
 
 **Principal Lean evidence.** `DeningerMeyerReflectedGaussianCompletedSourceGreen.lean`,
 `DeningerCalderonWittCompletedXiGreenIncidenceComparison.lean`,
 `DeningerBurnolConormalRadialTopBoundaryComparison.lean`,
 `DeningerOrdinaryIntegerBVGreenStokesRadialComparison.lean`,
 `CCMRationalAdelicPrimeIsotropyRelativeXiChainMap.lean`, and
+`FrankensteinMeyerHalfDensityL2KoszulDescent.lean`,
 `DeningerBigWittEulerFactorLaw.lean`, and
 `DeningerBigWittFrobeniusPrimeSeamTransgression.lean`, and
 `DeningerBigWittFrobeniusRingEndomorphism.lean`, and
@@ -1185,8 +1203,11 @@ the actual normalized prolate profiles, and the growing-window transfer theorem 
 profile convergence with both tails. `ProlateWindowProfileDistance.lean` supplies the unsquared
 full-window bound and `ProlateProfileIntegralLimit.lean` the Gaussian target/reflection transfer.
 `ProlateGroundProfileIntegral.lean` performs the actual-family substitution and proves convergence
-of the natural-window profile integral to `sqrt(2*pi)`. Selected ground-profile coordinate transfer
-is closed. This still does not order the indexed family.
+of the natural-window profile integral to `sqrt(2*pi)`; the normalization-free ground shape ratio
+therefore tends to `2 sqrt(pi)`. The abstract secular-root theorem converts convergent selected
+coordinate, tail, and gap data into exact limiting ratio `A/(A+B)`. Ground-coordinate and secular
+landing are closed. Higher coordinates still need uniform source-indexed control, and none of these
+theorems orders the actual indexed family.
 
 Abstract higher-mode variational mechanism is now exact: arbitrary smooth even trials extract a
 high joint mode, relative Rayleigh bounds hold inside each finite even band eigenspace, distinct

@@ -99,9 +99,19 @@ Its role is to make the flat-space-to-cosmology transfer logically exact.
   (`coeffwiseAdd`, `coeffwiseAdd_mul` (Leibniz), `coeffwiseAdd_X` (the parameter is a differential
   constant), `constantCoeff_coeffwiseAdd`, `coeffwiseJet`, `constantCoeff_coeffwiseJet`),
   axiom-clean.  The Laurent case reduces to this by `LaurentSeries.powerSeriesPart`.
-- [ ] Formalize denominator clearing, principal-part removal, and removal of the common
-  `E`-valuation.
-- [ ] Assemble the unrestricted Laurent theorem and contrapositive without new axioms.
+- [x] Formalize removal of the common `E`-valuation:
+  `formal/GaloisForLFunctions/HTGeometry/FormalParameterRelationNormalization.lean`
+  (`exists_normalized_relation`: every nonzero `Q ∈ MvPolynomial ι (Polynomial F)` factors as
+  `C (X^d) * P` with `formalParameterSpecialization P ≠ 0`, using the minimum trailing degree over
+  the support; `eval₂_of_eq_C_X_pow_mul`: the removed power factors out of the evaluation).
+- [x] Assemble the power-series theorem:
+  `differentialAlgebraicOver_constantCoeff_of_formalRelation` — a nonzero formal-parameter relation
+  on the coefficientwise jets of `G ∈ K[[E]]` forces `G(0)` to be differentially algebraic over the
+  coefficient base.  `X` is a nonzerodivisor in `K[[E]]`, which is what cancels the removed power.
+- [ ] Extend the carrier from `K[[E]]` to `LaurentSeries K` (the coefficientwise derivation on
+  `HahnSeries ℤ K`, using `HahnSeries.mul_coeff_left'`/`mul_coeff_right'` so that both Leibniz terms
+  use one antidiagonal), and state the contrapositive.  Everything else is in place: the
+  principal-part removal is mathlib's `LaurentSeries.powerSeriesPart`.
 
 The completed normalized receiver is recorded in
 `../../3-formalized/not_new_scientific_knowledge/formal-leading-coefficient-specialization.md`.

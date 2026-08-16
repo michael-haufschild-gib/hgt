@@ -4895,3 +4895,38 @@ of limiting coordinate masses.
 The second theorem checks the consistency the card asserts: the limit `A/(A+B)` is precisely the
 root of the degenerate equation, so the sandwich lands where the formal limiting problem says it
 should rather than merely somewhere in the gap.
+
+## Lean progress — `(β)` into `(8)`: the gap slack vanishes
+
+`RHTower/PowerLawRatioVanishing.lean` (wired, axiom-clean).
+
+```
+tendsto_div_of_rpow_asymptotic
+    f(c) / (A c^a E(c)) -> 1,   g(c) / (B c^b E(c)) -> 1,   a < b,   A,B != 0
+      ==>   f(c) / g(c) -> 0
+```
+
+The shared factor `E` cancels identically and never has to be examined; only the difference of the
+polynomial exponents survives.  In the application `E(c) = e^{-2c}` is the exponentially small factor
+common to all leakage rates, so the theorem says exactly:
+
+```
+1 - lambda_n(c) ~ A_n c^{n+1/2} e^{-2c}    ==>    d_k / d_{k+1} = O(1/c) -> 0 ,
+```
+
+consecutive rates differing by one power of `c`.  That is the `eps -> 0` hypothesis of
+`tendsto_secular_ratio_of_limits`, i.e. the `(β)` input to `(8)`.
+
+Together with the previous section this completes the analytic glue for the threading:
+
+```
+(3)  coordinate limits  ell_j -> a_j        =>  S -> A,  L -> B
+(β)  Fuchs rate ratio                       =>  eps -> 0        [this section]
+     uniform infinite-tail estimate         =>  T/(M-1) -> 0
+     ------------------------------------------------------------
+(8)  tendsto_secular_ratio_of_limits        =>  mu_k / d_{k+1} -> A/(A+B)
+```
+
+Every implication in that table is now a Lean theorem; what the card still owes is the *inputs* on
+the left in the corpus's own prolate objects — the coordinate limits at the card's normalization
+(see the `sqrt c * ell_0^2 -> 2 sqrt(pi)` section) and the Fuchs asymptotic with its constant `A_n`.

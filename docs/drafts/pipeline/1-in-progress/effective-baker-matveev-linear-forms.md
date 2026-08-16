@@ -102,7 +102,9 @@ Layers, each a self-contained unconditional module:
       — `RHTower/Matveev/SmallForm.lean`
 - [x] C. auxiliary function and matrix with error term
       — `RHTower/Matveev/{PerturbedFrequency,PerturbedPower,PerturbedKernel,PerturbedComponents,AuxiliaryMatrix}.lean`
-- [ ] D. extrapolation with error
+- [x] D.1 extrapolation with error, analytic core
+      — `HTGeometry/ApproximateMultipointSchwarz.lean`
+- [ ] D.2 Fel'dman-polynomial auxiliary construction (replaces the plain-multiplicity matrix)
 - [ ] E. terminal contradiction, the effective theorem
 - [ ] F. card interface `τ₀(ν) ≤ C log(2+|ν|₁)`
 - [ ] 1 → 2  complete paper proof recorded
@@ -229,3 +231,74 @@ Layers, each a self-contained unconditional module:
   choose the parameter budget `L, S, T` as a function of the height `B`.
 
   All new declarations audit to `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-16 — Layer D, analytic half closed; Layer D, parameter half re-scoped.
+
+  ```text
+  HTGeometry/ApproximateMultipointSchwarz.lean
+    norm_le_of_forall_norm_iteratedDeriv_le      small derivatives ⟹ small on a whole disc
+    nodePoly, norm_nodePoly, pow_le_norm_nodePoly, nodePoly_ne_zero
+    approximate_multipoint_schwarz               the punctured-disc maximum principle
+    norm_le_of_forall_norm_iteratedDeriv_le_multipoint   the assembled extrapolation bound
+  ```
+
+  This is Baker's extrapolation lemma **without the exact-vanishing hypothesis**.  The corpus's
+  `multipoint_schwarz_bound` divides by the node polynomial globally, which needs the analytic order
+  at each node to be at least `q`; in the effective construction the derivatives at the nodes are
+  only small, so no such factorisation exists.  Two maximum-principle steps replace it:
+
+  ```text
+  Cauchy at a node   |f| ≤ ε e^ρ + M (ρ/r)^q / (1 − ρ/r)     on the disc of radius ρ
+  punctured disc     |f(z)| ρ^{q·#nodes} ≤ max(ε_loc, M ρ^{q·#nodes}/D) · |Ω(z)|
+  ```
+
+  the second by applying the maximum modulus principle to `f · ρ^{q·#nodes} / Ω` on
+  `B(0,R) ∖ ⋃ B(c,ρ)`, where `Ω` is zero-free.  No Hermite interpolant is constructed and no
+  separation hypothesis on the nodes is needed: every limit point of the punctured domain is
+  automatically `ρ`-far from every node.  Setting `ε = 0` recovers the classical statement.
+  All four declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+  **The parameter half needs different mathematics than the corpus's qualitative family.**  Write
+  `L` for the exponent box width, `S₀` the initial sample count, `T₀` the multiindex cutoff, `K` the
+  per-step range multiplier, `J` the number of extrapolation steps, `θ = rows/(cols − rows)` the
+  Siegel exponent, `W = Σ log pᵢ`.  The effective construction must satisfy
+
+  ```text
+  (i)   S₀ · log(T₀/(2eLWK)) ≳ θ log B        Schwarz gain beats the coefficient height
+  (ii)  θ T₀ ≲ C                              ‖η‖ ≤ B^C, forced by the integrality step
+  (iii) T₀ ≳ 2^{J+1} e L W K                  per-step Schwarz feasibility
+  (iv)  S₀ T₀^{d−1} ≍ θ L^d                   Siegel at ratio θ
+  (v)   (K/2^{d−1})^J ≳ 1/θ                   terminal (sample × shift) count exceeds the columns
+  (vi)  T₀ S₀ (K/2)^J log(2 S₀ K^{J+1}) ≲ C log B    amplification of the residue
+  ```
+
+  Eliminating `L`, `S₀`, `θ`, `K`, `J` between (i), (iv), (v) and (vi) gives
+  `C·log T₀ > C·log(T₀/(2eLWK)) ≳ T₀ log 2`, so `T₀` is bounded in terms of `C` alone; (iii) then
+  bounds `L`, `K`, `J`, (v) bounds `θ` from below, (iv) bounds `S₀`, and (i) collapses to
+  `O_C(1) ≳ θ log B`.  **No parameter choice satisfies all six.**
+
+  The binding constraint is (ii).  The auxiliary matrix entries carry `∏|δᵢ|^{νᵢ}` with
+  `|δᵢ| ≤ 2LB` and `|ν| ≤ T₀`, so `log max|A| ≥ T₀ log B`; the residue estimate is proportional to
+  `‖η‖`, so the terminal "nonzero rational integer has absolute value ≥ 1" step cannot tolerate
+  `‖η‖ > B^C`.  Checking the corpus family against (ii): with Baker's own exponents
+  (`L ≈ h^{2−1/(4n)}`, `S₀ ≈ h`, `T₀ ≈ h²`, columns `≈ h^{2n−1/4}`, rows `≈ h^{2n−1}`) one gets
+  `θ ≈ h^{−3/4}` and `θT₀ ≈ h^{5/4} → ∞`, so it violates (ii) too.
+
+  This is consistent with the historical record and is not a defect of the present formalisation:
+  Baker's 1966–68 quantitative theorem gives only `|Λ| > exp(−(log B)^κ)` with `κ > 1`, and the
+  polynomial form `|Λ| > B^{−C}` first appears in *A sharpening of the bounds for linear forms in
+  logarithms* I–III (1972–75), whose new ingredient is **Fel'dman's polynomials**
+  `Δ(z;k) = (z+1)(z+2)⋯(z+k)/k!` in place of plain multiplicities.  They take integer values at
+  integers, so they add vanishing conditions without multiplying the entry heights by `B^{T₀}` —
+  exactly the blow-up that constraint (ii) forbids.
+
+  `exp(−(log B)^κ)` is **not** enough for the consumer card: `τ₀(ν) ≤ C log(2+|ν|₁)` requires the
+  polynomial form, and `(log(2+|ν|₁))^κ` with `κ > 1` leaves `T_log(a) = ∞`.  So the sharpening is
+  mandatory, not an optimisation.
+
+  Layer D therefore splits:
+
+  - **D.1 analytic extrapolation with error** — closed, above.
+  - **D.2 Fel'dman-polynomial auxiliary construction** — open.  Rebuild
+    `RHTower/Matveev/AuxiliaryMatrix.lean` over the basis `∏ᵢ Δ(δᵢ(m); κᵢ)` instead of
+    `∏ᵢ δᵢ(m)^{νᵢ}`, re-derive the multinomial shift law of `PerturbedComponents.lean` in that
+    basis, and re-run the constraint system with the improved entry height.

@@ -11020,3 +11020,46 @@ the continuity and two endpoint limits of `λ ↦ κ_{a,c}(λ)` that Theorem A's
 consumes.
 
 All new declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADP. `coalescing-anchor` — the Theorem D crossing count, and the anchor phase rate `(40)`
+
+Theorem D's `(38)` — each of the two real Clark levels `Θ_{c,N}(x) = ±1` has `N − O(1)` solutions in
+`J`, and the two level sets strictly interlace — splits cleanly into an analytic half (the phase
+gain `(42)`) and a monotone-counting half.  The counting half is now closed, and so is the anchor
+phase rate `(40)` that feeds the gain.
+
+```text
+HTGeometry/MonotonePhaseLevelCount.lean
+  exists_mem_Icc_eq, lt_of_phase_lt
+  exists_strictMono_levelPoints        a gain of p·N gives N+1 ordered solutions of φ = y + p·k
+  exists_interlacing_levelPoints       the half-shifted class separates consecutive solutions
+  injOn_levelPoints                    the N+1 solutions are pairwise distinct
+
+HTGeometry/UnimodularLevelInterlacing.lean
+  exp_phase_eq_one, exp_phase_eq_neg_one
+  exists_interlacing_unimodular_levels **(38)** given the gain: `exp(iΦ) = 1` at `N+1` points,
+                                       `= −1` at `N` points, strictly alternating
+
+RHTower/SuzukiCoalescingRealAxisPhase.lean
+  suzukiCayleyPhase                    −2 arctan(c/x), the continuous real-axis phase
+  sqrt_one_add_div_sq, cos_arctan_div, sin_arctan_div
+  suzukiCoalescingCayley_eq_exp_phase  b_c(x) = exp(i·phase) on the positive axis
+  hasDerivAt_suzukiCayleyPhase         **(40)** d/dx arg b_c(x) = 2c/(x² + c²)
+  strictMonoOn_suzukiCayleyPhase, continuousOn_suzukiCayleyPhase
+```
+
+**The counting is not an argument-principle computation.**  Once the boundary phase is continuous
+and strictly increasing, every level in its range is attained exactly once, so the number of
+solutions of `Φ ≡ y (mod p)` is fixed by the gain alone, and the class shifted by the half period is
+met exactly once between consecutive solutions of the base class.  Interlacing is therefore a
+consequence of strict monotonicity, not an extra input.  The unimodular wrapper turns the levels
+`2πk` and `π + 2πk` into the two Clark values, which is exactly the card's `(38)`.
+
+What `(38)` still owes is the gain `(42)`, `Φ(β) − Φ(α) ≥ 2πN − O(1)`.  Its two ingredients are the
+now-proved anchor rate `(40)` — which shows the arc `b_c(J)` has half-width comparable to `c` — and
+the Poisson mass estimate: for a Blaschke section of radius `r` the mass outside an arc of
+half-width `δ` about its centre is `O((1 − r)/δ²)`, and the radial budget `(41)`
+(`suzukiBlaschkeFragment_radialBudget`, already in the corpus) gives `1 − r = O(c²/N)`, so the loss
+over all `N` sections is `O(c)`.  That estimate is the single remaining analytic step of Theorem D.
+
+All new declarations audit to `[propext, Classical.choice, Quot.sound]`.

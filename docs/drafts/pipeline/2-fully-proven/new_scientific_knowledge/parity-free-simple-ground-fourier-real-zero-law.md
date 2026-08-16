@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven / needs independent specialist audit
 - **Route:** U, full restricted-Weil ground selection
 - **Type:** THEOREM + FAILED CLOSURE AUDIT (paper)
-- **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [SECTIONS 1--3 LEAN-PROVED FOR EVERY PACKET] [SECTION 4 ANALYTIC LIMIT LEAN-PROVED] [COMPRESSION MATRIX IDENTIFICATION OPEN]`
+- **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [SECTIONS 1--3 LEAN-PROVED FOR EVERY PACKET] [SECTION 4 ANALYTIC LIMIT LEAN-PROVED] [COMPRESSION MATRIX IDENTIFICATION LEAN-PROVED] [VARIATIONAL ASSEMBLY OPEN]`
 - **External parent:** Connes--van Suijlekom,
   [Quadratic Forms, Real Zeros and Echoes of the Spectral Action](https://arxiv.org/abs/2511.23257)
 - **Statement:** For the reflection-invariant truncated-convolution operators of
@@ -329,6 +329,10 @@ No parity hypothesis is needed.
 
 ## Log
 
+- 2026-08-16 — the compressed truncated convolution is identified with a centered
+  divided-difference packet: exact commutator law `(i-j)Q_{ij} = b_j - b_i` with odd source, proved
+  by two integrations by parts, in `HTGeometry/TruncatedConvolutionCommutator.lean` and
+  `RHTower/TruncatedConvolutionParityPacket.lean`.
 - 2026-08-11 — odd (D^2) correction derived; common-zero closure falsified; paper proof closed.
 - 2026-08-14 — finite odd squared-frequency correction and non-pole Fourier-resolvent reality
   formalized in `CCMParityFreeOddGroundFourier.lean`.
@@ -483,5 +487,61 @@ produce the symmetric Fourier compressions, show their matrices are centered div
 matrices with odd source and reflection-even diagonal, and show their odd grounds converge in mean
 square to the ground.  The variational half of that construction (`compress`,
 `exists_compressed_ground`, `finrank_le_one_of_compressed_rayleigh_lt` in
-`HTGeometry/SymmetricCompressionGround.lean`) is already formal; the missing step is the matrix
-identification of the compressed form.
+`HTGeometry/SymmetricCompressionGround.lean`) is already formal.
+
+### The matrix identification of the compressed form is now formal
+
+Normalize the interval to `[0,1]` (a translation and a dilation, both of which conjugate the
+truncated convolution into a truncated convolution and carry the exponential basis to the
+exponential basis).  For an even `C¹` kernel `k` write
+
+    (A f)(x) = ∫_0^1 k(x-y) f(y) dy,   e_j(x) = e^{2πijx},   Q_{ij} = ⟨e_i, A e_j⟩.
+
+Two integrations by parts — one in the outer variable against `e_{-i}`, one in the inner variable
+against `e_j` — produce the *same* interior double integral, so it cancels in the difference and
+only the two endpoint terms survive:
+
+    (i - j) Q_{ij} = b_j - b_i,   b_j = -(2πi)^{-1} ∫_0^1 (k(1-y) - k(y)) e_j(y) dy.
+
+The substitution `y ↦ 1-y` sends `b_{-j}` to `-b_j`, and reflecting both the interval and the
+frequency leaves `Q` invariant, so the diagonal is reflection even.  No Fubini and no
+differentiation under the outer integral are used.
+
+    HTGeometry/TruncatedConvolutionCommutator.lean
+      fourierChar, hasDerivAt_fourierChar,
+        fourierChar_neg_one_sub                 the exponential basis and the reflection
+                                                `e_{-j}(1-u) = e_j(u)`
+      truncConv, continuous_truncConv,
+        hasDerivAt_truncConv                    the truncated convolution and the fact that
+                                                differentiation falls on the kernel, by dominated
+                                                differentiation under the integral
+      truncConv_char_freq                       the inner integration by parts: multiplying the
+                                                exponential by its frequency is differentiating
+                                                the kernel, up to the two endpoint values
+      convMatrix, convSource,
+        convMatrix_commutator                   **the exact divided-difference law**
+                                                `(i-j)Q_{ij} = b_j - b_i`
+      convSource_neg, convSource_re_neg          the source is odd
+      truncConv_reflect, convMatrix_reflect      the matrix is reflection invariant
+      convMatrix_re_commutator                   the real form of the law
+
+    RHTower/TruncatedConvolutionParityPacket.lean
+      truncConvParitySource,
+        truncConvParityDiagonal                  the centered source and diagonal of the packet
+      truncConvParitySource_odd,
+        truncConvParityDiagonal_even             the two structural parities
+      ccmDividedDifferenceMatrix_truncConv       **the matrix identification**: every entry of the
+                                                 compressed truncated convolution is the
+                                                 corresponding entry of the centered
+                                                 divided-difference matrix built from its own
+                                                 boundary source and diagonal
+      truncConvParityPacket,
+        truncConvParityPacket_compactFourier_zero_im_eq_zero
+                                                 a simple odd kernel vector of the shifted
+                                                 compressed packet has a real-rooted band-limited
+                                                 Fourier transform
+
+What remains is the variational assembly against these matrices: the positive semidefiniteness of
+the spectral-floor shift, the simplicity of the compressed ground below the gap, and the
+mean-square convergence of the compressed grounds — each already available generically, but not yet
+instantiated at the truncated-convolution quadratic form.
