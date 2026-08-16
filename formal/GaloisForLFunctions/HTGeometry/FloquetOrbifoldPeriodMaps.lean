@@ -31,12 +31,12 @@ def quadPowShift : Polynomial ℂ := (X - Polynomial.C 1) ^ 4 + Polynomial.C 1
 
 /-- **The phase-zero period map is the fourth power map.** -/
 theorem quadTwo_comp_quadOne : quadTwo.comp quadOne = quadPow := by
-  rw [quadTwo, quadPow, sub_comp, pow_comp, X_comp, C_comp, quadOne]
+  simp only [quadTwo, quadPow, quadOne, pow_comp, sub_comp, X_comp, C_comp]
   ring
 
 /-- **The phase-one period map is the translated fourth power map.** -/
 theorem quadOne_comp_quadTwo : quadOne.comp quadTwo = quadPowShift := by
-  rw [quadOne, quadPowShift, add_comp, pow_comp, X_comp, C_comp, quadTwo]
+  simp only [quadOne, quadPowShift, quadTwo, pow_comp, add_comp, X_comp, C_comp]
   ring
 
 @[simp]
@@ -75,14 +75,13 @@ theorem quadOne_pullback_current
         (algebraMap (Polynomial ℂ) (RatFunc ℂ) (X - Polynomial.C 1))⁻¹
       * (algebraMap (Polynomial ℂ) (RatFunc ℂ) (Polynomial.derivative quadOne))
       = RatFunc.C 2 * (algebraMap (Polynomial ℂ) (RatFunc ℂ) X)⁻¹ := by
-  have hcomp : (X - Polynomial.C 1).comp quadOne = X ^ 2 := by
-    rw [sub_comp, X_comp, C_comp, quadOne]
+  have hcomp : ((X : Polynomial ℂ) - Polynomial.C 1).comp quadOne = X ^ 2 := by
+    simp only [sub_comp, X_comp, C_comp, quadOne]
     ring
   rw [ratFuncSubstitution_algebraMap_inv hR, hcomp, derivative_quadOne]
-  simp only [map_mul, map_pow, map_sub, map_one, RatFunc.algebraMap_C, RatFunc.algebraMap_X]
+  simp only [map_mul, map_pow, RatFunc.algebraMap_C, RatFunc.algebraMap_X]
   have hx : (RatFunc.X : RatFunc ℂ) ≠ 0 := RatFunc.X_ne_zero
   field_simp
-  ring
 
 /-- **The second step transports the current at zero to twice the current at one.** -/
 theorem quadTwo_pullback_current
@@ -99,7 +98,6 @@ theorem quadTwo_pullback_current
     have h := algebraMap_ratFunc_ne_zero (Polynomial.X_sub_C_ne_zero (1 : ℂ))
     simpa only [map_sub, RatFunc.algebraMap_X, RatFunc.algebraMap_C, map_one] using h
   field_simp
-  ring
 
 /-! ## The invariant differential of the period maps -/
 
@@ -113,10 +111,9 @@ theorem quadPow_invariant_relation
   have hcomp : (X : Polynomial ℂ).comp quadPow = X ^ 4 := by
     rw [X_comp, quadPow]
   rw [ratFuncSubstitution_algebraMap_inv hR, hcomp, derivative_quadPow]
-  simp only [map_mul, map_pow, map_sub, map_one, RatFunc.algebraMap_C, RatFunc.algebraMap_X]
+  simp only [map_mul, map_pow, RatFunc.algebraMap_C, RatFunc.algebraMap_X]
   have hx : (RatFunc.X : RatFunc ℂ) ≠ 0 := RatFunc.X_ne_zero
   field_simp
-  ring
 
 /-- **The translated fourth power map has an invariant differential of weight one.** -/
 theorem quadPowShift_invariant_relation
@@ -125,8 +122,9 @@ theorem quadPowShift_invariant_relation
         (algebraMap (Polynomial ℂ) (RatFunc ℂ) (X - Polynomial.C 1))⁻¹
       * (algebraMap (Polynomial ℂ) (RatFunc ℂ) (Polynomial.derivative quadPowShift))
       = RatFunc.C 4 * (algebraMap (Polynomial ℂ) (RatFunc ℂ) (X - Polynomial.C 1))⁻¹ := by
-  have hcomp : (X - Polynomial.C 1).comp quadPowShift = (X - Polynomial.C 1) ^ 4 := by
-    rw [sub_comp, X_comp, C_comp, quadPowShift]
+  have hcomp : ((X : Polynomial ℂ) - Polynomial.C 1).comp quadPowShift
+      = (X - Polynomial.C 1) ^ 4 := by
+    simp only [sub_comp, X_comp, C_comp, quadPowShift]
     ring
   rw [ratFuncSubstitution_algebraMap_inv hR, hcomp, derivative_quadPowShift]
   simp only [map_mul, map_pow, map_sub, map_one, RatFunc.algebraMap_C, RatFunc.algebraMap_X]
@@ -134,7 +132,81 @@ theorem quadPowShift_invariant_relation
     have h := algebraMap_ratFunc_ne_zero (Polynomial.X_sub_C_ne_zero (1 : ℂ))
     simpa only [map_sub, RatFunc.algebraMap_X, RatFunc.algebraMap_C, map_one] using h
   field_simp
-  ring
+
+/-! ## The tail of the period maps -/
+
+theorem quadPow_substitutionDeriv_ne_zero :
+    substitutionDeriv (algebraMap (Polynomial ℂ) (RatFunc ℂ) quadPow) ≠ 0 := by
+  refine substitutionDeriv_algebraMap_ne_zero ?_
+  rw [derivative_quadPow]
+  exact mul_ne_zero (by simp) (pow_ne_zero 3 Polynomial.X_ne_zero)
+
+theorem quadPowShift_substitutionDeriv_ne_zero :
+    substitutionDeriv (algebraMap (Polynomial ℂ) (RatFunc ℂ) quadPowShift) ≠ 0 := by
+  refine substitutionDeriv_algebraMap_ne_zero ?_
+  rw [derivative_quadPowShift]
+  exact mul_ne_zero (by simp) (pow_ne_zero 3 (Polynomial.X_sub_C_ne_zero (1 : ℂ)))
+
+theorem ratFuncEval_algebraMap_X_inv :
+    ratFuncEval (JetField.jet ((), 0) : JetField ℂ Unit) transcendental_freeGen
+        ((algebraMap (Polynomial ℂ) (RatFunc ℂ) X)⁻¹)
+      = (JetField.jet ((), 0) : JetField ℂ Unit)⁻¹ := by
+  rw [map_inv₀, RatFunc.algebraMap_X, ratFuncEval_X]
+
+theorem ratFuncEval_algebraMap_X_sub_one_inv :
+    ratFuncEval (JetField.jet ((), 0) : JetField ℂ Unit) transcendental_freeGen
+        ((algebraMap (Polynomial ℂ) (RatFunc ℂ) (X - Polynomial.C 1))⁻¹)
+      = ((JetField.jet ((), 0) : JetField ℂ Unit) - 1)⁻¹ := by
+  rw [map_inv₀, map_sub, RatFunc.algebraMap_X, RatFunc.algebraMap_C, map_one, map_sub,
+    ratFuncEval_X, map_one]
+
+/-- **The phase-zero period map has the logarithmic current as an invariant differential.** -/
+theorem quadPow_isInvariantDifferential :
+    IsInvariantDifferential (algebraMap (Polynomial ℂ) (RatFunc ℂ) quadPow)
+      quadPow_substitutionDeriv_ne_zero 1
+      ((JetField.jet ((), 0) : JetField ℂ Unit)⁻¹) 4 := by
+  have h := isInvariantDifferential_of_ratFunc_relation
+    (algebraMap (Polynomial ℂ) (RatFunc ℂ) quadPow) quadPow_substitutionDeriv_ne_zero
+    (k := 1) (lam := 4) (Q := (algebraMap (Polynomial ℂ) (RatFunc ℂ) X)⁻¹)
+    (inv_ne_zero (algebraMap_ratFunc_ne_zero Polynomial.X_ne_zero))
+    (by rw [zpow_one, ratFuncDeriv_algebraMap]; exact quadPow_invariant_relation _)
+  rwa [ratFuncEval_algebraMap_X_inv] at h
+
+/-- **The phase-one period map has the shifted logarithmic current as an invariant
+differential.** -/
+theorem quadPowShift_isInvariantDifferential :
+    IsInvariantDifferential (algebraMap (Polynomial ℂ) (RatFunc ℂ) quadPowShift)
+      quadPowShift_substitutionDeriv_ne_zero 1
+      (((JetField.jet ((), 0) : JetField ℂ Unit) - 1)⁻¹) 4 := by
+  have h := isInvariantDifferential_of_ratFunc_relation
+    (algebraMap (Polynomial ℂ) (RatFunc ℂ) quadPowShift) quadPowShift_substitutionDeriv_ne_zero
+    (k := 1) (lam := 4)
+    (Q := (algebraMap (Polynomial ℂ) (RatFunc ℂ) (X - Polynomial.C 1))⁻¹)
+    (inv_ne_zero (algebraMap_ratFunc_ne_zero (Polynomial.X_sub_C_ne_zero (1 : ℂ))))
+    (by rw [zpow_one, ratFuncDeriv_algebraMap]; exact quadPowShift_invariant_relation _)
+  rwa [ratFuncEval_algebraMap_X_sub_one_inv] at h
+
+/-- **The logarithmic current lies in the stable observable field of the phase-zero period
+map.** -/
+theorem differentialAdjoin_le_orbifoldTail_quadPow :
+    differentialAdjoin ℂ
+        ({invariantCurrent 1 ((JetField.jet ((), 0) : JetField ℂ Unit)⁻¹)}
+          : Set (JetField ℂ Unit))
+      ≤ orbifoldTail (algebraMap (Polynomial ℂ) (RatFunc ℂ) quadPow)
+          quadPow_substitutionDeriv_ne_zero :=
+  differentialAdjoin_le_orbifoldTail_of_isInvariantDifferential _ _ (by norm_num)
+    quadPow_isInvariantDifferential
+
+/-- **The shifted logarithmic current lies in the stable observable field of the phase-one period
+map.** -/
+theorem differentialAdjoin_le_orbifoldTail_quadPowShift :
+    differentialAdjoin ℂ
+        ({invariantCurrent 1 (((JetField.jet ((), 0) : JetField ℂ Unit) - 1)⁻¹)}
+          : Set (JetField ℂ Unit))
+      ≤ orbifoldTail (algebraMap (Polynomial ℂ) (RatFunc ℂ) quadPowShift)
+          quadPowShift_substitutionDeriv_ne_zero :=
+  differentialAdjoin_le_orbifoldTail_of_isInvariantDifferential _ _ (by norm_num)
+    quadPowShift_isInvariantDifferential
 
 end
 

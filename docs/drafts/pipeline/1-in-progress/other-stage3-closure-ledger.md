@@ -1801,3 +1801,42 @@ Closing it also closes `floquet-orbifold-tail-emergence` and
   connection.  Next substrate: the signed order on `RatFunc` (the corpus has `poleOrder` in
   `HTGeometry/RationalPoleOrder.lean`) with additivity and the composition law
   `ord_a(Q∘R) = ord_a(R − R(a))·ord_{R(a)}(Q)`.  Closure count unchanged.
+
+- 2026-08-16 (fourth pass) — orbifold family advanced, no promotion.  Six new unconditional
+  axiom-clean umbrella-wired modules build the divisor calculus the descent was waiting for and
+  deliver the first complete non-existence results:
+  `HTGeometry/RationalOrder.lean` (signed order `ord_a` on `RatFunc`, additivity, values on
+  `algebraMap`/`C`/inverses/powers, vanishing criterion, finite support),
+  `HTGeometry/RationalOrderComposition.lean` (`rootMultiplicity_comp` and the transport law
+  `ord_a(Q∘R) = ord_{R(a)}(Q)·mult_a(R − R(a))`),
+  `HTGeometry/RationalInvariantOrbit.lean` (`ratOrder_relation_transport`
+  `ord_{R(a)}(Q)·e_a + k·m_a = ord_a(Q)`, its critical-free form, and the forward-orbit vanishing),
+  `HTGeometry/RationalBackwardOrbit.lean` (existence of an injective critical-free backward orbit
+  from any aperiodic non-postcritical point over an algebraically closed field, the resulting
+  `ratOrder_eq_zero_of_aperiodic`, and `eq_C_of_weight_zero_relation`: a weight-zero relation
+  forces a constant `Q` because substitution multiplies the degree),
+  `HTGeometry/QuadraticNoInvariantDifferential.lean` (for `z²+1` and `(z−1)²` every relation
+  `Q∘R·(R')^k = μQ` with `Q ≠ 0`, `μ ≠ 0` has `k = 0` and constant `Q`),
+  `HTGeometry/QuadraticOrbifoldTail.lean` (the same statements on the jet field: no nonconstant
+  eigenvector of order at most one, and eigenvalue one for any finite-order eigenvector),
+  `HTGeometry/FloquetOrbifoldPeriodMaps.lean` (`R₂∘R₁ = z⁴`, `R₁∘R₂ = (z−1)⁴+1`, the two current
+  transport identities with multiplier two, the weight-one invariant differentials of both period
+  maps with eigenvalue four, and the tail inclusions `C⟨δy/y⟩ ≤ Tail(z⁴)`,
+  `C⟨δy/(y−1)⟩ ≤ Tail((z−1)⁴+1)`).
+  `HTGeometry/RationalInvariantDifferential.lean` gained `ratFuncDeriv_algebraMap`.
+  The single residual obligation of all three orbifold cards is now the *fixed* branch
+  `Φ_R(u) = u` with `u` nonconstant of finite order.  The normalized trichotomy descends it only to
+  a configuration that is genuinely realizable (`w = e·y₁^(−κ)` at jet order one), because branches
+  two and three hand back a coefficient ratio rather than `u`; the pass-4 section of
+  `rational-coarse-graining-orbifold-tail-classification.md` records the exact obstruction.
+  Closure count unchanged: 31 cards remain in the folder.
+
+- 2026-08-16 (fifth pass) — `noncompact-period-quotient-facet-escape-law`: Siegel-programme step 4
+  closed.  New module `HTGeometry/WeierstrassDivisionUniqueness.lean` (unconditional, axiom-clean,
+  umbrella-wired) with `eqOn_of_continuousOn_of_finite_diff`,
+  `eq_zero_of_degree_lt_of_continuous_multiple` and `weierstrass_division_unique`.  Steps 1–4 of the
+  programme are now Lean-owned (step 3 was already done in `SliceWeierstrassDivision.lean`; the
+  earlier note that it was open is superseded).  Remaining for the card: factoriality of the
+  analytic germ ring, local reduced fractions, and the Siegel counting assembly — whose geometric
+  half is `exists_finite_centres_forcing_vanishing` in `HTGeometry/SiegelVanishingCriterion.lean`.
+  Closure count unchanged: 31 cards remain in the folder.

@@ -1,7 +1,7 @@
 # The Stieltjes–log weld: continuation data cannot be isolated from the multiplier logs
 
 - **ID:** stieltjes-log-weld
-- **Stage:** 2-fully-proven (repaired 2026-06-20, Wheeler — two-tier split; see Repair note at end)
+- **Stage:** 3-formalized (repaired 2026-06-20, Wheeler — two-tier split; see Repair note at end)
 - **Type:** THEOREM (paper) — Door grade **BRIDGE**
 - **Source:** split from `../1-in-progress/baker-for-stieltjes.md` (§B); builds on
   `../2-fully-proven/corank-transcendence-continuation-bridge.md`; feeds
@@ -98,10 +98,17 @@ The honest transcendence target for the Stieltjes block is therefore the **joint
 - [x] 0 → 1  in-progress: statement, setup, pairing formula.
 - [x] 1 → 2  fully-proven: (★) proved (§2); the no-isolation theorem proved (§3, via triviality lemma +
   weight grading); consequences (§4) drawn. BRIDGE, content beyond imports (§5).
-- [ ] 2 → 3  formalized — Lean anchor **DONE** for the Cauchy-product identity (★), in
-  `formal/GaloisForLFunctions/RHTower/StieltjesWeld.lean` as `stieltjes_pairing_cauchy_j` (the `j`-indexed form,
-  equivalent by `n=N-j-1`). Remaining Lean targets: linear independence of `\{n^{−s}\}` and a formal
-  graded log-polynomial model for the no-isolation theorem; reuse `linearIndependent_log_primes`.
+- [x] 2 → 3  formalized.  The Cauchy-product identity (★) is `stieltjes_pairing_cauchy_j` in
+  `formal/GaloisForLFunctions/RHTower/StieltjesWeld.lean`; the Tier-1 theorem and its mechanism are in
+  `formal/GaloisForLFunctions/RHTower/StieltjesLogWeldTierOne.lean`
+  (`friableC1_eq_sum_beta_log`, `logPrime_rat_affine_relation_eq_zero`, `friableC1_rat_iff_zero`,
+  `friableC1_irrational_of_ne_zero`, `tier1_no_isolation`); and the **triviality lemma** — linear
+  independence of `\{n^{−s}\}` — is now
+  `formal/GaloisForLFunctions/RHTower/DirichletMonomialIndependence.lean`
+  (`coeff_eq_zero_of_dirichletSum_eq_zero`, `linearIndependent_dirichletMonomial`), proved by the
+  smallest-modulus limit argument and using only real exponents.  All axiom-clean.
+  Tier 2 (the all-weight statement) is **open mathematics** — Schanuel-level algebraic independence of
+  prime-log monomials — explicitly not a formalization obligation of this card.
 - [ ] 3 → 4  publication-ready — pairs with corank-transcendence card and the seam bucket.
 
 ## Notes / risk
@@ -183,5 +190,23 @@ in `formal/GaloisForLFunctions/RHTower/StieltjesLogWeldTierOne.lean`:
 - `tier1_no_isolation` — the Tier-1 theorem itself on the pairing: for `N ≥ 2`, if `[H]_N` is a
   rational affine form in the Stieltjes coordinates (uniformly), the weight-one datum vanishes.
   Built directly on the existing `stieltjes_pairing_cauchy_j`.
-Remaining unformalized: linear independence of `{n^{-s}}` (triviality lemma) and the Tier-2
-(Schanuel-conditional) all-weight statement — the latter is open mathematics, not Lean debt.
+Remaining unformalized: the Tier-2 (Schanuel-conditional) all-weight statement — open mathematics,
+not Lean debt.
+
+## Lean anchor update — 2026-08-16 (triviality lemma closed)
+
+`formal/GaloisForLFunctions/RHTower/DirichletMonomialIndependence.lean`, wired into the `RHTower`
+umbrella, axioms `[propext, Classical.choice, Quot.sound]`:
+
+```text
+coeff_eq_zero_of_dirichletSum_eq_zero :
+  a finite Dirichlet polynomial vanishing at every real exponent has all coefficients zero
+linearIndependent_dirichletMonomial :
+  the family n ↦ (s ↦ n^{-s}), n a positive integer, is linearly independent over ℂ
+```
+
+The proof is the smallest-modulus argument: restrict to the support, rescale by `n₀^t`, and let the
+real exponent tend to infinity; every larger modulus contributes `(n₀/n)^t → 0` and the surviving
+constant is the coefficient at `n₀`.  Only real exponents are used, so the hypothesis is the weakest
+form of "vanishes identically".  This was the last Lean target of the 2→3 gate; the card moves to
+`3-formalized`.

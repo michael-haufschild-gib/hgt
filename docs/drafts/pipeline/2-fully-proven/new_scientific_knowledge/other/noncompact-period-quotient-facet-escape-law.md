@@ -529,3 +529,30 @@ well, and the same parametric theorem gives holomorphy of `a_k`.
 Remaining on the Siegel gate: uniqueness of the division, factoriality of the germ ring by induction
 on the dimension through division and Gauss' lemma, local reduced fractions, and the Siegel counting
 assembly.
+
+## Siegel programme — step 4 (uniqueness of the Weierstrass division) is closed
+
+`HTGeometry/WeierstrassDivisionUniqueness.lean` (unconditional, axiom-clean, umbrella-wired):
+
+- `eqOn_of_continuousOn_of_finite_diff` — two continuous functions on an open subset of `C` that
+  agree off a finite set agree everywhere.  This is the only topological input the uniqueness needs,
+  and it is what encodes root multiplicities without any order arithmetic.
+- `eq_zero_of_degree_lt_of_continuous_multiple` — if `P` is a polynomial of degree below
+  `card(rhos)`, all the `rhos` lie in the disc of radius `t`, `q` is continuous on that disc and
+  `P(z) = q(z)·prod_{rho}(z - rho)` there, then `P = 0`.  The proof peels one root at a time: `P`
+  vanishes at `rho`, so `X - rho` divides it; cancelling the factor is legitimate off `rho` and
+  extends to `rho` by the lemma above; the degree drops by one and the induction runs on the
+  multiset.
+- `weierstrass_division_unique` — the quotient and the low-degree remainder of a division by a monic
+  polynomial with prescribed roots inside a disc are determined: `P_1 = P_2` on the nose, and
+  `q_1 = q_2` on the whole disc (the roots are handled by the same finite-set continuity lemma).
+
+Programme state: steps 1 (preparation), 2 (division), 3 (joint holomorphy of the quotient and of the
+remainder coefficients — `differentiableOn_sliceDivQuotient`,
+`differentiableAt_sliceDivRemainderCoeff` in `SliceWeierstrassDivision.lean`) and now 4 are closed.
+Remaining: 5 factoriality of the analytic germ ring by induction on dimension (preparation reduces
+divisibility to `C{z'}[z_n]`, then Gauss), 6 local reduced fractions for meromorphic germs, 7 the
+Siegel counting assembly.  The geometric half of 7 is already Lean-owned:
+`HTGeometry/SiegelVanishingCriterion.lean` proves `exists_finite_centres_forcing_vanishing` — for a
+subgroup with compact quotient and a Schwarz gain below one, jets of order below `N` vanishing at
+finitely many prescribed centres force a periodic function to vanish identically.

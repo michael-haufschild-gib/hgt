@@ -111,16 +111,11 @@ theorem truncConvParityPacket_apply {k k' : ℝ → ℝ} (hk : ∀ u, HasDerivAt
   simp only [Matrix.map_apply, Matrix.sub_apply, Matrix.smul_apply, Matrix.one_apply,
     smul_eq_mul]
   rw [ccmDividedDifferenceMatrix_truncConv hk hk'c heven]
+  simp only [Complex.coe_algebraMap, Complex.ofReal_sub, Complex.ofReal_mul,
+    convMatrix_ofReal_re heven]
   by_cases hij : i = j
-  · subst hij
-    simp only [if_pos rfl]
-    rw [map_sub, ← convMatrix_ofReal_re heven]
-    push_cast
-    ring
-  · simp only [if_neg hij]
-    rw [map_sub, ← convMatrix_ofReal_re heven]
-    push_cast
-    ring
+  · simp [hij]
+  · simp [hij]
 
 /-- **The compressed form is the truncated-convolution form.** -/
 theorem truncConvParityPacket_form {k k' : ℝ → ℝ} (hk : ∀ u, HasDerivAt k (k' u) u)
@@ -134,12 +129,8 @@ theorem truncConvParityPacket_form {k k' : ℝ → ℝ} (hk : ∀ u, HasDerivAt 
   have hkc : Continuous k := continuous_iff_continuousAt.2 fun u => (hk u).continuousAt
   have hexpand : star v ⬝ᵥ (truncConvParityPacket k N mu *ᵥ v)
       = ∑ i, ∑ j, (starRingEnd ℂ) (v i) * truncConvParityPacket k N mu i j * v j := by
-    rw [Matrix.dotProduct]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [Matrix.mulVec, Matrix.dotProduct, Finset.mul_sum]
-    exact Finset.sum_congr rfl fun j _ => by
-      simp only [Pi.star_apply, RCLike.star_def]
-      ring
+    simp only [dotProduct, Matrix.mulVec, Pi.star_apply, RCLike.star_def, Finset.mul_sum]
+    exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
   rw [hexpand]
   have hterm : ∀ i j : CCMCenteredParityIndex N,
       (starRingEnd ℂ) (v i) * truncConvParityPacket k N mu i j * v j
@@ -150,21 +141,70 @@ theorem truncConvParityPacket_form {k k' : ℝ → ℝ} (hk : ∀ u, HasDerivAt 
     rw [truncConvParityPacket_apply hk hk'c heven]
     ring
   rw [Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => hterm i j]
-  simp only [Finset.sum_sub_distrib]
-  rw [integral_indexTrigPoly_truncConv hkc (ccmParityCenteredMode N) v]
-  rw [integral_indexTrigPoly_normSq
-    (ccmParityCenteredMode_injective N) v]
-  congr 1
-  · rfl
-  · rw [← Finset.mul_sum]
-    congr 1
-    refine Finset.sum_congr rfl fun i _ => ?_
+  simp only [Finset.sum_sub_distrib, truncConvModePoly]
+  have hminj : Function.Injective (ccmParityCenteredMode N) := by
+    intro a b hab
+    refine ccmParityCenteredClock_injective N ?_
+    rw [ccmParityCenteredClock, ccmParityCenteredClock, hab]
+  have hdiag : ∀ i : CCMCenteredParityIndex N,
+      (∑ j, (mu : ℂ) * ((if i = j then 1 else 0) * ((starRingEnd ℂ) (v i) * v j)))
+        = (mu : ℂ) * ((starRingEnd ℂ) (v i) * v i) := by
+    intro i
     rw [Finset.sum_eq_single i]
     · simp
     · intro j _ hji
       simp [Ne.symm hji]
     · intro h
       exact absurd (Finset.mem_univ i) h
+  rw [integral_indexTrigPoly_truncConv hkc (ccmParityCenteredMode N) v,
+    integral_indexTrigPoly_normSq hminj v,
+    Finset.sum_congr rfl fun i (_ : i ∈ Finset.univ) => hdiag i, ← Finset.mul_sum]
+
+/-! ## Positive semidefiniteness from the quadratic form -/
+
+theorem truncConvParityPacket_isHermitian {k k' : ℝ → ℝ} (hk : ∀ u, HasDerivAt k (k' u) u)
+    (hk'c : Continuous k') (heven : ∀ u, k (-u) = k u) (N : ℕ) (mu : ℝ) :
+    (truncConvParityPacket k N mu).IsHermitian := by
+  refine Matrix.ext fun i j => ?_
+  rw [Matrix.conjTranspose_apply, truncConvParityPacket_apply hk hk'c heven,
+    truncConvParityPacket_apply hk hk'c heven]
+  have hc : (starRingEnd ℂ) (convMatrix k (ccmParityCenteredMode N j) (ccmParityCenteredMode N i))
+      = convMatrix k (ccmParityCenteredMode N i) (ccmParityCenteredMode N j) := by
+    rw [convMatrix_conj, convMatrix_reflect heven,
+      convMatrix_symm hk hk'c heven (ccmParityCenteredMode N j)]
+  have hite : (starRingEnd ℂ) (if j = i then (1 : ℂ) else 0) = if i = j then (1 : ℂ) else 0 := by
+    by_cases hij : i = j
+    · simp [hij]
+    · simp [hij, Ne.symm hij]
+  rw [star_sub, star_mul', RCLike.star_def, hc, hite, Complex.conj_ofReal]
+
+/-- **The compressed packet is positive semidefinite whenever the truncated-convolution form
+dominates `mu` times the `L²` norm on the compression.** -/
+theorem truncConvParityPacket_posSemidef {k k' : ℝ → ℝ} (hk : ∀ u, HasDerivAt k (k' u) u)
+    (hk'c : Continuous k') (heven : ∀ u, k (-u) = k u) {N : ℕ} {mu : ℝ}
+    (hform : ∀ v : CCMCenteredParityIndex N → ℂ,
+      (mu : ℂ) * (∫ x in (0 : ℝ)..1,
+          (starRingEnd ℂ) (truncConvModePoly v x) * truncConvModePoly v x)
+        ≤ ∫ x in (0 : ℝ)..1,
+            (starRingEnd ℂ) (truncConvModePoly v x) * truncConv k (truncConvModePoly v) x) :
+    (truncConvParityPacket k N mu).PosSemidef := by
+  refine Matrix.PosSemidef.of_dotProduct_mulVec_nonneg
+    (truncConvParityPacket_isHermitian hk hk'c heven N mu) fun v => ?_
+  rw [truncConvParityPacket_form hk hk'c heven mu v]
+  exact sub_nonneg.2 (hform v)
+/-- **The kernel of the compressed packet is exactly the set of minimizers of the
+truncated-convolution form.** -/
+theorem truncConvParityPacket_mulVec_eq_zero_iff {k k' : ℝ → ℝ}
+    (hk : ∀ u, HasDerivAt k (k' u) u) (hk'c : Continuous k') (heven : ∀ u, k (-u) = k u)
+    {N : ℕ} {mu : ℝ} (hpsd : (truncConvParityPacket k N mu).PosSemidef)
+    (v : CCMCenteredParityIndex N → ℂ) :
+    truncConvParityPacket k N mu *ᵥ v = 0
+      ↔ (∫ x in (0 : ℝ)..1,
+            (starRingEnd ℂ) (truncConvModePoly v x) * truncConv k (truncConvModePoly v) x)
+          = (mu : ℂ) * ∫ x in (0 : ℝ)..1,
+              (starRingEnd ℂ) (truncConvModePoly v x) * truncConvModePoly v x := by
+  rw [← hpsd.dotProduct_mulVec_zero_iff v, truncConvParityPacket_form hk hk'c heven mu v,
+    sub_eq_zero]
 
 end
 

@@ -1,5 +1,4 @@
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.ArctanDeriv
-import Mathlib.Analysis.Calculus.Deriv.MeanValue
+import GaloisForLFunctions.HTGeometry.HalfPlanePolePhase
 import GaloisForLFunctions.RHTower.SuzukiCoalescingHalfPlaneNormality
 
 /-!
@@ -27,25 +26,6 @@ open Complex Real Set
 /-- The continuous real-axis phase of the movable Cayley anchor. -/
 def suzukiCayleyPhase (c x : ℝ) : ℝ := -2 * Real.arctan (c / x)
 
-/-- The normalising radius of the anchor at a positive real point. -/
-theorem sqrt_one_add_div_sq {c x : ℝ} (hx : 0 < x) :
-    Real.sqrt (1 + (c / x) ^ 2) = Real.sqrt (x ^ 2 + c ^ 2) / x := by
-  have hrhs : 0 ≤ Real.sqrt (x ^ 2 + c ^ 2) / x := by positivity
-  have hsq : (Real.sqrt (x ^ 2 + c ^ 2) / x) ^ 2 = 1 + (c / x) ^ 2 := by
-    rw [div_pow, Real.sq_sqrt (by positivity)]
-    field_simp
-  rw [← hsq, Real.sqrt_sq hrhs]
-
-theorem cos_arctan_div {c x : ℝ} (hx : 0 < x) :
-    Real.cos (Real.arctan (c / x)) = x / Real.sqrt (x ^ 2 + c ^ 2) := by
-  rw [Real.cos_arctan, sqrt_one_add_div_sq hx, one_div_div]
-
-theorem sin_arctan_div {c x : ℝ} (hx : 0 < x) :
-    Real.sin (Real.arctan (c / x)) = c / Real.sqrt (x ^ 2 + c ^ 2) := by
-  have hr : 0 < Real.sqrt (x ^ 2 + c ^ 2) := Real.sqrt_pos.mpr (by positivity)
-  rw [Real.sin_arctan, sqrt_one_add_div_sq hx]
-  field_simp
-
 /-- The anchor is unimodular with the stated phase on the positive real axis. -/
 theorem suzukiCoalescingCayley_eq_exp_phase {c x : ℝ} (hx : 0 < x) :
     suzukiCoalescingCayley c (x : ℂ) =
@@ -64,12 +44,12 @@ theorem suzukiCoalescingCayley_eq_exp_phase {c x : ℝ} (hx : 0 < x) :
     exact_mod_cast ne_of_gt hr
   have h1 : Complex.exp ((Real.arctan (c / x) : ℂ) * I)
       = ((x : ℂ) + (c : ℂ) * I) / ((Real.sqrt (x ^ 2 + c ^ 2) : ℝ) : ℂ) := by
-    rw [hexp, cos_arctan_div hx, sin_arctan_div hx]
+    rw [hexp, GaloisForLFunctions.HTGeometry.cos_arctan_div hx, GaloisForLFunctions.HTGeometry.sin_arctan_div hx]
     push_cast
     field_simp
   have h2 : Complex.exp (((-Real.arctan (c / x) : ℝ) : ℂ) * I)
       = ((x : ℂ) - (c : ℂ) * I) / ((Real.sqrt (x ^ 2 + c ^ 2) : ℝ) : ℂ) := by
-    rw [hexp, Real.cos_neg, Real.sin_neg, cos_arctan_div hx, sin_arctan_div hx]
+    rw [hexp, Real.cos_neg, Real.sin_neg, GaloisForLFunctions.HTGeometry.cos_arctan_div hx, GaloisForLFunctions.HTGeometry.sin_arctan_div hx]
     push_cast
     field_simp
     ring
@@ -126,5 +106,16 @@ theorem continuousOn_suzukiCayleyPhase (c : ℝ) :
     ContinuousOn (suzukiCayleyPhase c) (Ioi 0) := fun _x hx =>
   ContinuousAt.continuousWithinAt
     ((hasDerivAt_suzukiCayleyPhase c (ne_of_gt hx)).differentiableAt.continuousAt)
+
+/-- The anchor chart is the half-plane factor with pole `ic`, so its globally continuous phase is
+`polePhase 0 c`, valid on the whole real axis rather than only on the positive half. -/
+theorem suzukiCoalescingCayley_eq_exp_polePhase {c : ℝ} (hc : 0 < c) (x : ℝ) :
+    suzukiCoalescingCayley c (x : ℂ) =
+      Complex.exp ((GaloisForLFunctions.HTGeometry.polePhase 0 c x : ℂ) * I) := by
+  have h := GaloisForLFunctions.HTGeometry.polePhase_eq_exp (u := 0) (v := c) (x := x) hc
+  rw [suzukiCoalescingCayley]
+  rw [← h]
+  push_cast
+  ring_nf
 
 end RHTower

@@ -50,8 +50,9 @@ theorem posSemidef_arrow3 {a b c : ℝ} (ha : 0 < a) (hd : 0 ≤ c * a - 2 * b ^
         + (((c * a - 2 * b ^ 2) / a : ℝ) : ℂ) • outerSelf v₃ := by
     ext i j
     fin_cases i <;> fin_cases j <;>
-      simp [outerSelf_apply, hv₁, hv₂, hv₃, Complex.conj_ofReal] <;>
-      (try field_simp) <;> (try ring)
+      simp [outerSelf_apply, hv₁, hv₂, hv₃, Complex.conj_ofReal]
+    all_goals (try field_simp)
+    all_goals (try ring)
   rw [hdecomp]
   refine Matrix.PosSemidef.add (Matrix.PosSemidef.add ?_ ?_) ?_
   · exact posSemidef_real_smul (outerSelf_posSemidef v₁) (by positivity)
@@ -118,7 +119,7 @@ theorem hallSeedFrame_lower {ε : ℝ} (hε0 : 0 < ε) (hε1 : ε ≤ 1) :
            ((ε : ℝ) : ℂ), ((ε : ℝ) : ℂ), ((3 / 2 : ℝ) : ℂ)] := by
     rw [hallSeedFrame_eq]
     ext i j
-    fin_cases i <;> fin_cases j <;> simp <;> push_cast <;> ring
+    fin_cases i <;> fin_cases j <;> simp <;> ring
   rw [hshift]
   refine posSemidef_arrow3 (by positivity) ?_
   nlinarith [hε0, hε1, sq_nonneg ε, sq_nonneg (ε - 1)]
@@ -132,7 +133,7 @@ theorem hallSeedFrame_upper {ε : ℝ} (hε0 : 0 < ε) (hε1 : ε ≤ 1) :
            ((-ε : ℝ) : ℂ), ((-ε : ℝ) : ℂ), ((2 : ℝ) : ℂ)] := by
     rw [hallSeedFrame_eq]
     ext i j
-    fin_cases i <;> fin_cases j <;> simp <;> push_cast <;> ring
+    fin_cases i <;> fin_cases j <;> simp <;> ring
   rw [hshift]
   refine posSemidef_arrow3 (by nlinarith [hε0, hε1]) ?_
   nlinarith [hε0, hε1, sq_nonneg ε]
@@ -188,14 +189,12 @@ noncomputable def hallSeedState (t : ℝ) : Matrix (Fin 3) (Fin 3) ℂ :=
 theorem hallSeedState_eq_diagonal (t : ℝ) :
     hallSeedState t = Matrix.diagonal ![((t : ℝ) : ℂ), ((t : ℝ) : ℂ), ((t⁻¹ ^ 2 : ℝ) : ℂ)] := by
   ext i j
-  fin_cases i <;> fin_cases j <;> simp [hallSeedState, Matrix.diagonal_apply]
+  fin_cases i <;> fin_cases j <;> simp [hallSeedState]
 
 theorem hallSeedState_posDef {t : ℝ} (ht : 0 < t) : (hallSeedState t).PosDef := by
   rw [hallSeedState_eq_diagonal]
   refine Matrix.PosDef.diagonal fun i => ?_
   fin_cases i <;> (rw [show (0 : ℂ) = ((0 : ℝ) : ℂ) from by norm_num]) <;>
-    simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two,
-      Matrix.tail_cons] <;>
     exact Complex.real_lt_real.mpr (by positivity)
 
 theorem hallSeedState_det {t : ℝ} (ht : 0 < t) : (hallSeedState t).det = 1 := by
@@ -220,7 +219,7 @@ theorem hallSeedKraus_det {ε t : ℝ} (ht : 0 < t) :
            ((ε * t : ℝ) : ℂ), ((ε * t : ℝ) : ℂ), ((2 * t : ℝ) : ℂ)] := by
     ext i j
     fin_cases i <;> fin_cases j <;>
-      simp [hallSeedA₁, hallSeedA₂, hallSeedState] <;> push_cast <;> ring
+      simp [hallSeedA₁, hallSeedA₂, hallSeedState] <;> ring
   rw [hmat, det_arrow3]
   congr 1
   field_simp
@@ -248,7 +247,9 @@ theorem hallSeedCapacity_upper (ε : ℝ) {δ : ℝ} (hδ : 0 < δ) :
     nlinarith [hprod, hti]
   refine ⟨hallSeedState t, hallSeedState_posDef ht, hallSeedState_det ht,
     2 * t⁻¹ ^ 3, by positivity, ?_, ?_⟩
-  · have hcube : t⁻¹ ^ 3 ≤ t⁻¹ := by nlinarith [hinv0, hinv1]
+  · have hsq : t⁻¹ ^ 2 ≤ 1 := by nlinarith [hinv0, hinv1]
+    have hcube : t⁻¹ ^ 3 ≤ t⁻¹ := by
+      nlinarith [mul_nonneg (le_of_lt hinv0) (sub_nonneg.mpr hsq)]
     linarith [hcube, hinvδ, hδ]
   · rw [hallSeedKraus_det ht]
     push_cast

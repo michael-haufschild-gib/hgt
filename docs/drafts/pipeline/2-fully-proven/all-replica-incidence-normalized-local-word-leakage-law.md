@@ -482,3 +482,77 @@ The singular and invertible cases are both handled: if `det C = 0` the shared ke
 Since Gurvits' square capacity `(2)` is the infimum of `det η(X)` over exactly that competitor set,
 `pencil_capacity_bound` is the assertion `cap ≥ |det B|²/‖c‖₂^{2d}` of `(7)`, with no hypothesis
 beyond `X > 0`, `det X = 1` and `c ≠ 0`.
+
+### Addendum -- Theorem A is closed
+
+`formal/GaloisForLFunctions/HTGeometry/LocalPauliCapacityDegeneration.lean` (new, umbrella-wired,
+axiom-clean) proves every clause of Theorem A for the explicit seed pair `(1)`.
+
+| Card item | Declaration |
+|---|---|
+| the seeds `A₁`, `A₂` of `(1)` and their self-adjointness | `hallSeedA₁`, `hallSeedA₂`, `hallSeedA₁_conjTranspose`, `hallSeedA₂_conjTranspose` |
+| **clause 1**: `det(A₁+A₂) = -2ε`, so the sum is invertible and the tuple is rank nondecreasing | `hallSeedSum_det` |
+| the frame operator `K_ε` in the closed form `(5)` | `hallSeedFrame`, `hallSeedFrame_eq` |
+| **clause 2, `(3)`**: `½I ⪯ K_ε` and `K_ε ⪯ 4I` for `0 < ε ≤ 1` | `hallSeedFrame_lower`, `hallSeedFrame_upper` |
+| **clause 3, lower half of `(4)`**: `ε²/2 ≤ det η_ε(X)` at every `X > 0` with `det X = 1` | `hallSeedCapacity_lower` |
+| the competitor family `Xₜ = diag(t,t,t⁻²)`, positive of unit determinant | `hallSeedState`, `hallSeedState_posDef`, `hallSeedState_det` |
+| **`(8)`**: `det η_ε(Xₜ) = 2(ε² + t⁻³)` exactly | `hallSeedKraus_det` |
+| **clause 3, upper half of `(4)`**: competitor values reach into every `(2ε², 2ε²+δ)` | `hallSeedCapacity_upper` |
+
+Two pieces of reusable infrastructure came out of it:
+
+- `posSemidef_arrow3` -- a symmetric arrow matrix `!![a,0,b; 0,a,b; b,b,c]` is positive semidefinite
+  as soon as `a > 0` and `ac ≥ 2b²`.  The certificate is the rank-one decomposition by the two arrow
+  rows plus the corner remainder, so it needs no square root and no eigenvalue computation.
+- `det_arrow3` -- the determinant of that shape is `a(ac - 2b²)`.
+
+The lower bound is `pencil_capacity_bound` at `c = (1,1)`, `d = 3`: the pencil is `A₁+A₂` with
+`‖det‖² = 4ε²` and `‖c‖₂^{2d} = 8`, giving exactly `ε²/2`.  The Casimir window uses `posSemidef_arrow3`
+twice, with `ac - 2b² = ¾ - ½ε²` for the lower bound and `2(3-ε²) - 2ε²` for the upper.
+
+Card status: Theorem A, Theorem B, `(6)` and `(7)` are all formal.  Lemma C (the replica-uniform
+full-Pauli Casimir window), Lemma D (unit-mass local synthesis) and Theorem E (incidence-normalized
+local-word leakage) remain.
+
+### Addendum -- Lemma D's engine, `(24)`, `(23)`, and the upper half of `(16)`
+
+Two further umbrella-wired, axiom-clean modules.
+
+`formal/GaloisForLFunctions/HTGeometry/UnitMassWordLeakage.lean`:
+
+| Card item | Declaration |
+|---|---|
+| unit-mass Jensen in any complex normed space: `‖∑cᵢxᵢ‖² ≤ ∑‖cᵢ‖‖xᵢ‖²` when `∑‖cᵢ‖ = 1` | `norm_sum_sq_le_weighted` |
+| the same for Hilbert--Schmidt energy | `hsSqRe_sum_le_weighted` |
+| **`(24)`**: `‖(I-P_V)(∑c_w W_w)P_U‖²_HS ≤ ∑_w \|c_w\| ‖(I-P_V)W_wP_U‖²_HS` | `leak_sum_le_weighted` |
+| **`(23)`**: the label-summed lower bound transfers to the normalized word-level sum | `incidenceNormalized_leakage_ge` |
+| the notion of a unit-mass synthesis over a word set, `(20)` | `HasUnitMassSynthesis`, `hasUnitMassSynthesis_of_mem` |
+| **the inductive step of Lemma D**: unit mass survives `ζ⁻¹(ab-ba)` when `‖ζ‖ = 2` and the word set is product-closed | `hasUnitMassSynthesis_bracket` |
+
+`hasUnitMassSynthesis_bracket` is exactly the card's argument for `(22)`: the bracket makes two
+copies of the product family and `‖ζ⁻¹‖ = ½` halves each, so the total mass `½·1·1 + ½·1·1` is again
+one.  Strong induction on Pauli weight is then a finite recursion over this step, and the base cases
+are `hasUnitMassSynthesis_of_mem` for weight-one and weight-two labels.
+
+`formal/GaloisForLFunctions/HTGeometry/OperatorSquareNormBound.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the quadratic form of the identity | `quadForm_one` |
+| a self-adjoint operator of norm `≤ M` has `A² ⪯ M²` | `posSemidef_sq_le_of_bound` |
+| **the upper half of `(16)`**: a family of `card` such operators has `∑A_q² ⪯ card·M²` | `posSemidef_sum_sq_le_of_bound` |
+
+With `M = 2\|R\|` and `card = D²-1` this is `K ⪯ 4\|R\|²(D²-1)`, the upper Casimir bound of `(16)`.
+
+### What remains on this card
+
+Only the **lower** half of `(16)`, `2D²I_Q ⪯ K|_Q`.  The card derives it from the least nonzero
+quadratic Casimir of `SU(D)` on the root lattice, which is Lie-theoretic input mathlib does not
+carry.  Everything downstream of it -- `(18)` via Theorem B, `(19)`, and `(23)` via `(24)` -- is
+already formal, as is the whole of section 1 (Theorem A) and section 2 (Theorem B).
+
+For the one-replica case the lower bound is elementary rather than Lie-theoretic: the Pauli
+depolarizing identity gives `K = 2D²·id - 2D·tr(·)I` exactly, so `K` is exactly `2D²` on the
+traceless space.  The corpus already carries the Pauli basis, orthogonality, involution and
+tracelessness facts (`FiniteQubitPauliBasisLaw`) and the collective-Casimir centrality
+(`AllReplicaCollectivePauliCasimir`), so that specialization is the natural next step.

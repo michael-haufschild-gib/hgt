@@ -447,6 +447,25 @@ theorem convMatrix_ofReal_re {k : ℝ → ℝ} (heven : ∀ u, k (-u) = k u) (i 
   · simp
   · simp [convMatrix_im_eq_zero heven]
 
+/-- **The matrix is symmetric.**  Off the diagonal this is forced by the divided-difference law
+alone. -/
+theorem convMatrix_symm {k k' : ℝ → ℝ} (hk : ∀ u, HasDerivAt k (k' u) u)
+    (hk'c : Continuous k') (heven : ∀ u, k (-u) = k u) (i j : ℤ) :
+    convMatrix k i j = convMatrix k j i := by
+  by_cases hij : i = j
+  · rw [hij]
+  · have h1 := convMatrix_commutator hk hk'c heven i j
+    have h2 := convMatrix_commutator hk hk'c heven j i
+    have hne : ((i : ℂ) - (j : ℂ)) ≠ 0 := by
+      intro h
+      exact hij (by exact_mod_cast sub_eq_zero.1 h)
+    refine mul_left_cancel₀ hne ?_
+    rw [h1]
+    have h3 : ((i : ℂ) - (j : ℂ)) * convMatrix k j i
+        = -(((j : ℂ) - (i : ℂ)) * convMatrix k j i) := by ring
+    rw [h3, h2]
+    ring
+
 /-! ## The quadratic form of the truncated convolution on trigonometric polynomials -/
 
 variable {ι : Type*} [Fintype ι]

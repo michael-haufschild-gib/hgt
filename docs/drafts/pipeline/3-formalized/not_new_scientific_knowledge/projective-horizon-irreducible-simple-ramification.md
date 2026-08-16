@@ -1,7 +1,7 @@
 # Projective-horizon ramification has one generically simple component
 
 - **ID:** `projective-horizon-irreducible-simple-ramification`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / RAMIFICATION GEOMETRY
 - **Scientific status:** `[PROVED ON PAPER] [BRIDGE]`
 - **Parents:** `projective-horizon-rectangular-schur-caustic`,
@@ -91,9 +91,25 @@ or signed cycle inside this otherwise generic irreducible divisor.
 
 ## Formal status
 
-The exact determinant and its Q-system engine are formalized in the adjacent Lean modules.  The
-general Schur irreducibility theorem is not present in this mathlib snapshot and is used at paper
-level.  No new Lean claim is attached to this bridge card.
+**Fully formalized, unconditionally.**  The 2026-08-01 log entries below closed the last gap: the
+Dvornicich--Zannier appeal was replaced by a corpus proof of rectangular-Schur irreducibility at
+*every* pair of parameters (the dual/complementary-block route), so nothing in this card rests on an
+unformalized citation.  Every declaration audits to `[propext, Classical.choice, Quot.sound]`.
+
+| Paper step | Lean |
+|---|---|
+| `(2)`: `h_k = 2 z_k + poly(z_1,…,z_{k-1})` is a triangular automorphism, so the `h_k` are free coordinates | `HTGeometry/SquaredJetCoefficientIndependence.lean` |
+| `(1)`: the Jacobian determinant is `tau_(m,n) = s_((n^m))[h] = det(h_(n-i+j))` up to the unit `(-1)^m y_0^(2m)` | `HTGeometry/ProjectiveHorizonSchurCaustic.lean`, `HTGeometry/CriticalSchurJacobianDivisor.lean` |
+| the rectangular Schur section is irreducible, at every `(m,n)` | `irreducible_det_rectangularSchurToeplitz` (`HTGeometry/DualRectangularSection.lean`) |
+| Schur coordinates on the actual critical source field | `HTGeometry/CriticalSchurSourceCoordinates.lean` |
+| the ramification divisor is irreducible (height-one prime) | `criticalSchurRamificationIdeal_isPrime` (`HTGeometry/CriticalSchurPrimeDivisor.lean`) |
+| characteristic zero ⇒ the divisor is reduced (square-free) | `squarefree_det_rectangularSchurToeplitz` (`HTGeometry/SchurCofactorLocus.lean`) |
+| the corner cofactor does not vanish identically along the divisor | `not_dvd_det_submatrix_rectangularSchur` (`HTGeometry/SchurCofactorLocus.lean`) |
+| **generic corank exactly one** | `finrank_ker_criticalSchurGenericMatrix_eq_one` (`HTGeometry/CriticalSchurGenericCorank.lean`) |
+| **the Jacobian determinant vanishes to order one** along the divisor (generic simple ramification) | `addVal_criticalSchurJacobianDetElement_eq_one`, `irreducible_criticalSchurJacobianDetElement` (`HTGeometry/CriticalSchurUniformizer.lean`) |
+
+The degree of `Ram(Phi_(m,n)) -> Branch(Phi_(m,n))` in `(3)` is explicitly **not** claimed by this
+card and is therefore not part of the formalization obligation.
 
 
 ## Log

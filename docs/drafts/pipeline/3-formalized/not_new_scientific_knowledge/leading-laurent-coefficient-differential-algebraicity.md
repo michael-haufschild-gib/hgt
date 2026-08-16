@@ -1,7 +1,7 @@
 # Differential algebraicity descends to the leading Laurent coefficient
 
 - **ID:** `leading-laurent-coefficient-differential-algebraicity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / SPECIALIZATION BRIDGE / NOT NEW SCIENTIFIC KNOWLEDGE
 - **Statement:** For a coefficientwise differential Laurent series in a differential-constant
   parameter, differential algebraicity over the rational parameter field forces its leading
@@ -108,10 +108,35 @@ Its role is to make the flat-space-to-cosmology transfer logically exact.
   `differentialAlgebraicOver_constantCoeff_of_formalRelation` — a nonzero formal-parameter relation
   on the coefficientwise jets of `G ∈ K[[E]]` forces `G(0)` to be differentially algebraic over the
   coefficient base.  `X` is a nonzerodivisor in `K[[E]]`, which is what cancels the removed power.
-- [ ] Extend the carrier from `K[[E]]` to `LaurentSeries K` (the coefficientwise derivation on
-  `HahnSeries ℤ K`, using `HahnSeries.mul_coeff_left'`/`mul_coeff_right'` so that both Leibniz terms
-  use one antidiagonal), and state the contrapositive.  Everything else is in place: the
-  principal-part removal is mathlib's `LaurentSeries.powerSeriesPart`.
+- [x] Extend the carrier from `K[[E]]` to `LaurentSeries K`:
+  `formal/GaloisForLFunctions/HTGeometry/LaurentCoefficientwiseDerivation.lean`
+  (`laurentCoeffwise`, `laurentCoeffwise_mul` (Leibniz, both terms over one Hahn antidiagonal via
+  `HahnSeries.coeff_mul_left'`/`coeff_mul_right'`), `laurentCoeffwise_single_one` (every monomial
+  `E^m` is a differential constant), `laurentCoeffwise_coe`, `laurentCoeffwiseJet`,
+  `laurentCoeffwiseJet_eq_single_mul`, `constantCoeff_powerSeriesPart`).
+- [x] Assemble the Laurent theorem and its contrapositive:
+  `formal/GaloisForLFunctions/HTGeometry/LeadingLaurentCoefficientDescent.lean`
+  (`laurentParameterMap`, `parameterRescale`, `coeff_parameterRescale`,
+  `parameterRescale_ne_zero`, `ofPowerSeries_eval₂_parameterRescale`,
+  `differentialAlgebraicOver_leadingCoeff_of_laurentRelation`,
+  `no_laurentRelation_of_not_differentialAlgebraicOver_leadingCoeff`).
+
+## Lean formalization
+
+| Paper step | Lean |
+|---|---|
+| `D` extended coefficientwise to `K[[E]]`, Leibniz, `D(E)=0` | `PowerSeriesDeriv.coeffwiseAdd`, `coeffwiseAdd_mul`, `coeffwiseAdd_X` |
+| constant-term extraction commutes with every `D^j` | `constantCoeff_coeffwiseJet` |
+| `D` extended coefficientwise to `K((E))`, Leibniz, `D(E^m)=0` | `LaurentDeriv.laurentCoeffwise`, `laurentCoeffwise_mul`, `laurentCoeffwise_single_one` |
+| `F = E^m G`, `G = powerSeriesPart F`, jets shift | `laurentCoeffwiseJet_eq_single_mul` |
+| `a = ` leading coefficient `= G(0)` | `constantCoeff_powerSeriesPart` |
+| `G = E^{-m}F` differentially algebraic over `k(E)` | `parameterRescale`, `ofPowerSeries_eval₂_parameterRescale` (the degreewise rescaling `k(d) = c + m·deg(d)`, valid for either sign of `m`) |
+| clear denominators and divide by the common `E`-power | `exists_normalized_relation`, `eval₂_of_eq_C_X_pow_mul`, `parameterRescale_ne_zero` |
+| specialize at `E = 0`; `Q_0(a, Da, …) = 0` | `differentialAlgebraicOver_of_normalized_formalParameterRelation`, `differentialAlgebraicOver_constantCoeff_of_formalRelation` |
+| the theorem (1) | `differentialAlgebraicOver_leadingCoeff_of_laurentRelation` |
+| the contraposition (2) | `no_laurentRelation_of_not_differentialAlgebraicOver_leadingCoeff` |
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
 
 The completed normalized receiver is recorded in
 `../../3-formalized/not_new_scientific_knowledge/formal-leading-coefficient-specialization.md`.

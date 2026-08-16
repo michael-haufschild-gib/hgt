@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Priority:** FOUNDATIONAL
-- **Source:** split from `../2-fully-proven/stieltjes-log-weld.md` §2
+- **Source:** split from `stieltjes-log-weld.md` §2
 - **Statement:** For formal series `F(u)=sum_j c_j/j! u^j` and `G(u)=1+sum_n a_n u^(n+1)`, the coefficient of `F(u)G(u)` at degree `N` is the isolated top term `c_N/N!` plus the lower Cauchy-product sum.
 
 ## Goal

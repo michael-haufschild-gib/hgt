@@ -71,7 +71,6 @@ theorem norm_cpow_neg_sub_le {s : ℂ} (hs : 0 < s.re) {a b : ℝ} (ha : 0 < a) 
     intro x hx
     rw [norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos (hpos x hx)]
     congr 2
-    simp
   rw [intervalIntegral.integral_congr hnorm, intervalIntegral.integral_const_mul]
   have hzero : (0 : ℝ) ∉ Set.uIcc a b := by
     intro h
@@ -81,6 +80,7 @@ theorem norm_cpow_neg_sub_le {s : ℂ} (hs : 0 < s.re) {a b : ℝ} (ha : 0 < a) 
   rw [hexp]
   have hsre : s.re ≠ 0 := ne_of_gt hs
   field_simp
+  linarith
 
 end GaloisForLFunctions.RHTower
 

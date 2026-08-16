@@ -76,7 +76,7 @@ theorem poissonKernel_radial_le_depth {ζ z : ℂ} (hζ : ‖ζ‖ = 1) (hz : �
     poissonKernel 0 ((r : ℂ) * ζ) z ≤ 2 * (1 - r) / (r * d ^ 2) := by
   refine (poissonKernel_radial_le hζ hz hr0 hr1 hd hzd).trans ?_
   have hden : 0 < r * d ^ 2 := by positivity
-  refine div_le_div_of_nonneg_right ?_ hden
+  refine div_le_div_of_nonneg_right ?_ hden.le
   nlinarith
 
 end GaloisForLFunctions.HTGeometry

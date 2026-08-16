@@ -179,3 +179,36 @@ orbifold current although neither static step does — is now formal on the side
 retention.  What still rests on the paper-level autonomous classification is the complementary
 assertion `(1)`, that each static tail is exactly `C`, and the exactness (rather than containment)
 of `(3)`.
+
+## Lean status — the protocol identities and the scaling branch are formalized
+
+`HTGeometry/FloquetOrbifoldPeriodMaps.lean` (unconditional, axiom-clean, umbrella-wired) owns
+equations (2), (4) and the easy half of (3):
+
+- `quadTwo_comp_quadOne : quadTwo.comp quadOne = quadPow` — the phase-zero period map is `z^4`.
+- `quadOne_comp_quadTwo : quadOne.comp quadTwo = quadPowShift` — the phase-one period map is
+  `(z-1)^4 + 1`.
+- `quadOne_pullback_current` and `quadTwo_pullback_current` — equation (4) as identities in
+  `RatFunc C`:
+
+  ```text
+  R_1^*( (z-1)^(-1) )·R_1' = 2·z^(-1),      R_2^*( z^(-1) )·R_2' = 2·(z-1)^(-1).
+  ```
+
+- `quadPow_invariant_relation`, `quadPowShift_invariant_relation` — each period map fixes its
+  current up to the multiplier `4`, and `quadPow_isInvariantDifferential`,
+  `quadPowShift_isInvariantDifferential` read these as invariant differentials of weight one on the
+  free jet field, with currents `delta y / y` and `delta y / (y-1)`.
+- `differentialAdjoin_le_orbifoldTail_quadPow`,
+  `differentialAdjoin_le_orbifoldTail_quadPowShift` — equation (3), inclusion `<=`:
+  `C<delta y / y>` lies in `Tail(P_0)` and `C<delta y/(y-1)>` lies in `Tail(P_1)`.
+
+Equation (1) is reduced to one residual case.  `HTGeometry/QuadraticNoInvariantDifferential.lean`
+proves that for both individual steps every relation `Q∘R·(R')^k = mu Q` with `Q != 0`, `mu != 0`
+has `k = 0` and constant `Q`; `HTGeometry/QuadraticOrbifoldTail.lean` turns this into
+`quadOne_no_order_one_eigen` / `quadTwo_no_order_one_eigen` (no nonconstant eigenvector of jet
+order at most one) and `quadOne_eigen_eq_one` / `quadTwo_eigen_eq_one` (a finite-order eigenvector
+can only have eigenvalue one).  So `Tail(R_i) = C` is now equivalent to excluding a nonconstant
+finite-order element *fixed* by `Phi_(R_i)`.  See the pass-4 section of
+`rational-coarse-graining-orbifold-tail-classification.md` for why the current descent does not
+close that branch and what it needs.

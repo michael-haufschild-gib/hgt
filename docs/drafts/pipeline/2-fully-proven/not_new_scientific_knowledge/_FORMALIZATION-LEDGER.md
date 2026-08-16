@@ -91,6 +91,10 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-16 | `semilocal-prolate-unitary-transport-trilemma` | `RHTower/SemilocalProlateUnitaryTransport.lean` |
 | 2026-08-16 | `euler-support-transverse-divisor-rigidity` | `RHTower/RelativeStripDivisorReflection.lean` |
 | 2026-08-16 | `euler-divisor-ultrametric-stability` | `RHTower/EulerDivisorUltrametricStability.lean` |
+| 2026-08-16 | `stieltjes-log-weld` | `RHTower/StieltjesWeld.lean`, `RHTower/StieltjesLogWeldTierOne.lean` (pre-existing) + new `RHTower/DirichletMonomialIndependence.lean` |
+| 2026-08-16 | `projective-horizon-pure-tail-fermionic-fiber` | pre-existing chain (`ProjectiveHorizonPureTailFiber`, `OccupationFactorInjective`, `PureFibreOccupationBijection`, `PureFibreCardinality`, `ShiftInvariantSubspace`, `QuotientIdealDivisor`, `QuotientIdealDimension`, `InvariantSubspaceRootSubset`, `RootSubsetInvariantSubspace`, `InvariantSubspaceIff`) + new `HTGeometry/PureFibreExteriorOccupation.lean` |
+| 2026-08-16 | `projective-horizon-irreducible-simple-ramification` | pre-existing chain, verified + audited: `HTGeometry/SquaredJetCoefficientIndependence.lean`, `HTGeometry/DualRectangularSection.lean`, `HTGeometry/SchurCofactorLocus.lean`, `HTGeometry/CriticalSchurPrimeDivisor.lean`, `HTGeometry/CriticalSchurGenericCorank.lean`, `HTGeometry/CriticalSchurUniformizer.lean` |
+| 2026-08-16 | `leading-laurent-coefficient-differential-algebraicity` | `HTGeometry/CoefficientwisePowerSeriesDerivation.lean`, `HTGeometry/FormalParameterRelationNormalization.lean`, `HTGeometry/LaurentCoefficientwiseDerivation.lean`, `HTGeometry/LeadingLaurentCoefficientDescent.lean` |
 
 ## Already carrying a stage-3 certificate (verify, then move the paper card)
 
@@ -215,7 +219,28 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
   from a formal-parameter differential relation (`exists_normalized_relation`,
   `eval₂_of_eq_C_X_pow_mul`) and the assembled power-series descent
   (`differentialAlgebraicOver_constantCoeff_of_formalRelation`).  Gate item (b) and the
-  power-series half of (c) of the same card; only the Laurent carrier extension remains.
+  power-series half of the assembly.
+- `HTGeometry/LaurentCoefficientwiseDerivation.lean` — the coefficientwise derivation on
+  `LaurentSeries K = HahnSeries ℤ K`: `laurentCoeffwise`, the Leibniz rule proved by summing both
+  product terms over **one** Hahn antidiagonal (`HahnSeries.coeff_mul_left'`/`coeff_mul_right'`
+  applied with the original supports, since a coefficientwise derivative has smaller support),
+  every monomial `E^m` a differential constant, restriction to the power-series derivation, and the
+  jet shift `D^j F = E^{ord F} · D^j (powerSeriesPart F)`.
+- `HTGeometry/LeadingLaurentCoefficientDescent.lean` — the degreewise **parameter rescaling** of a
+  differential relation (`parameterRescale`, `coeff_parameterRescale`, `parameterRescale_ne_zero`)
+  and the identity `ofPowerSeries_eval₂_parameterRescale` showing that substituting `E^m · v i` for
+  the variables is, up to one fixed power `E^c`, evaluation of the rescaled relation at `v` — with
+  `k(d) = c + m·deg(d)` realizable in `ℕ` for either sign of `m`.  Gives
+  `differentialAlgebraicOver_leadingCoeff_of_laurentRelation` and its contrapositive.
+- `RHTower/DirichletMonomialIndependence.lean` — the **triviality lemma for Dirichlet polynomials**:
+  a finite combination of `n^{-t}` vanishing at every real exponent has all coefficients zero
+  (`coeff_eq_zero_of_dirichletSum_eq_zero`), hence the family `n ↦ (s ↦ n^{-s})` over the positive
+  integers is linearly independent over `ℂ` (`linearIndependent_dirichletMonomial`).  Smallest-modulus
+  rescaling argument; only real exponents are needed.
+- `HTGeometry/PureFibreExteriorOccupation.lean` — the exterior occupation dictionary: occupation
+  states are the standard index set `Set.powersetCard` of the exterior-power basis, horizon exchange
+  is particle–hole complementation (an involution), the pure critical fibre itself indexes a basis of
+  `⋀^m K^L`, and the rank of that exterior power is the critical binomial multiplicity.
 - `HTGeometry/InvolutionIdempotentHost.lean` — self-inverse elements ↔ idempotents over a
   commutative ring with `2` invertible.
 - `HTGeometry/ScalarMonodromyAlgebraicIndependence.lean` — unbounded scalar monodromy forces

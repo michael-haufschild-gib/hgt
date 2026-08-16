@@ -993,32 +993,9 @@ incompatible with source regularity. Neither is supplied by the corpus. Generic 
 `1/Xi`, ambient `L2` invertibility, target quotient definitions, universal continuous readers,
 scalar singular traces, or trace-class repair remain circular or formally ruled out.
 
-**Principal Lean evidence.** `DeningerMeyerReflectedGaussianCompletedSourceGreen.lean`,
-`DeningerCalderonWittCompletedXiGreenIncidenceComparison.lean`,
-`DeningerBurnolConormalRadialTopBoundaryComparison.lean`,
-`DeningerOrdinaryIntegerBVGreenStokesRadialComparison.lean`,
-`CCMRationalAdelicPrimeIsotropyRelativeXiChainMap.lean`, and
-`FrankensteinMeyerHalfDensityL2KoszulDescent.lean`,
-`DeningerBigWittEulerFactorLaw.lean`, and
-`DeningerBigWittFrobeniusPrimeSeamTransgression.lean`, and
-`DeningerBigWittFrobeniusRingEndomorphism.lean`, and
-`DeningerBigWittFrobeniusStrictGreenBoundaryDescent.lean`, and
-`DeningerBigWittFrobeniusPairwiseCyclicCorrectionNoGo.lean`, and
-`DeningerBigWittFrobeniusCalkinEnergyBridge.lean`, and
-`DeningerBigWittFrobeniusCrossPairCoherentCompensator.lean`, and
-`DeningerBigWittFrobeniusCrossPairStrictGammaBVDescent.lean`, and
-`DeningerBigWittFrobeniusCrossPairSingularOneLegTrace.lean`, and
-`DeningerBigWittFrobeniusCrossPairSingularOneLegGraphCompletion.lean`, and
-`DeningerBigWittCrossPrimeHarmonicSingularGraphSource.lean`, and
-`DeningerBigWittFrobeniusMultiplicativeSubmassNoGo.lean`, and
-`DeningerGammaSixFullSourcePrincipalClass.lean`,
-`DeningerGammaSixSingularGreenStokesCoface.lean`,
-`DeningerGammaSixTraceIdealSoninStrictLiftObstruction.lean`, and
-`DeningerGammaSixLogarithmicWoldJordanTransgression.lean`, and
-`DeningerGammaSixActualGammaBoundaryLogTransgression.lean`, and
-`DeningerGammaSixCofinalFullGradeSoninTransport.lean`, and
-`DeningerGammaSixCofinalSingularGraphSoninTransport.lean`, and
-`DeningerGammaSixCofinalMeyerTateXiGreenBoundary.lean`.
+**Principal Lean evidence.** Completed-Green/Calderón--Witt/Burnol comparison modules;
+Big-Witt Frobenius/Calkin/singular-graph descent modules; Gamma-six Wold--Jordan/Meyer--Tate
+transport modules; and `FrankensteinMeyerHalfDensityL2KoszulDescent.lean`.
 
 ### Route O — Connes restricted-Weil/prolate ground space
 
@@ -1301,55 +1278,9 @@ control true floor.
 `ProlateOscillatorLadderPin.lean`, `ProlateDefectTransfer.lean`, and
 `ProlateHermiteRungWindowLimit.lean`.
 
-**Principal Lean evidence.** restricted-Weil/Friedrichs modules,
-`ProlateGaussianTrialPositive.lean`, `ProlateBandOperatorInjective.lean`,
-`ProlateLowSeparationMode.lean`, `ProlateUnconditionalChannelBound.lean`,
-`ProlateMeanZeroSource.lean`, `ProlateChannelPrimitiveBound.lean`,
-`ProlateSourcePolarPrimitive.lean`, `ProlateSourceVariation.lean`, and
-`ProlateSourcePolarCharge.lean`, together with `HermiteOriginValues.lean`,
-`HermiteOriginConstraintTargets.lean`, `HTGeometry/NonstationaryPhaseLowerBound.lean`, and
-`RadialDilatedPhaseSeparation.lean`, `RadialNormalFormPotentialDecay.lean`,
-`RadialPSWFAmplitudeVariation.lean`, `RadialTwoIndexOscillatoryBound.lean`,
-`RadialSymbolTwoBranchBound.lean`, and `ProlateTwoModeRadialLeakage.lean`.
-Principal closure/profile modules are `RadialSymbolTwoBranchInstance.lean`,
-`CCMLimitingRadialWeber.lean`,
-`CCMHighRadialFirstRowBV.lean`, `CCMRadialGlobalDefectMass.lean`,
-`CCMRadialTwoScaleCarrier.lean`, `RadialPrimeChargeAssembly.lean`,
-`ProlateProfileDecay.lean`, `ProlateOscillatorLadderPin.lean`,
-`ProlateDefectTransfer.lean`, `ProlateCentreValuePairing.lean`,
-`ProlateSecondMoment.lean`, `ProlateRescaledCoefficients.lean`,
-`ProlateProfileWindowLimit.lean`, `ProlateGaussianWindowLimit.lean`,
-`ProlateHermiteRungWindowLimit.lean`,
-`ProlateNormalizedProfile.lean`, `ProlateWindowMass.lean`,
-`ProlateGroundTotalMass.lean`, `HTGeometry/WindowTotalSqueeze.lean`,
-`ProlateGaussianSharpRayleigh.lean`,
-`ProlateGeneralTrialMode.lean`, `ProlateEvenEigenspaceRelativeBound.lean`,
-`ProlateRelativeTrialBound.lean`, `ProlateRayleighForm.lean`, `ProlateActionLinear.lean`,
-`ProlateHermiteTrialFamily.lean`, `ProlateHermiteTrialEstimate.lean`,
-`ProlateHermiteTrialSpace.lean`, `ProlateTrialSpaceTransport.lean`,
-`ProlateModeOrthogonality.lean`, `ProlateOscProfileLimit.lean`,
-`ProlateWindowMassLimit.lean`, `ProlateWKBSharpAction.lean`,
-`ProlateBandFluxEnergy.lean`, `ProlateEndpointUpperBound.lean`,
-`ProlateExteriorMassBound.lean`, `ProlateLeakageUpperScalar.lean`,
-`BandEndpointPhase.lean`, `BandEndpointPhaseSharp.lean`, `BandPhaseLogDefect.lean`,
-`BandComparisonDefect.lean`, `BandDefectMass.lean`, `BandBesselModel.lean`,
-`BandLiouvilleWeight.lean`, `BandComparisonVolterra.lean`, `BandSolutionComparison.lean`,
-`BandAmplitudeRatio.lean`, `BesselIZeroLowerBound.lean`, `BandBarrierRatio.lean`, and
-`ProlateLeakageBarrierAssembly.lean`, and
-`HTGeometry/VolterraContraction.lean`, `HTGeometry/PerturbedOscillator.lean`,
-`HTGeometry/SturmLiouvilleVirial.lean`, and `BesselOscillatorInstance.lean`,
-`HermiteFunctionOrthogonality.lean`, `HermiteGaussianEnvelope.lean`,
-`HTGeometry/GramFormPositivity.lean`,
-`CCMGrowingApertureMellin.lean`,
-`ProlateSharpSeparationMode.lean`, `ProlateSeparationLowerBound.lean`,
-`ProlateSeparationLimit.lean`, `ProlateApertureVirial.lean`,
-`ProlateGroundGaussianLimit.lean`,
-`HTGeometry/OscillatorEnergyMonotone.lean`, `HTGeometry/OscillatorProductMonotone.lean`,
-`HTGeometry/OscillatorRecessiveLimits.lean`, `HTGeometry/OscillatorLadderIdentity.lean`,
-`HTGeometry/OscillatorBoundaryVanishing.lean`, `HTGeometry/OscillatorSpectralRigidity.lean`,
-`HTGeometry/OscillatorMassNoEscape.lean`, `HermiteCoefficientPin.lean`,
-`SecondMomentIntegralTail.lean`, `CCMProlateEndpointJet.lean`,
-`BesselEndpointVariation.lean`, and `XiAmplitudeEndpointSymbol.lean`.
+**Principal Lean evidence.** Restricted-Weil/Friedrichs modules; radial PSWF/Weber assembly;
+prolate endpoint/leakage and oscillator-ladder modules; actual ground-profile/secular modules;
+and `ConstrainedProlateApertureXiMetric.lean`.
 
 ### Route P — primitive cubic Euler/Burnol trace
 
@@ -3823,8 +3754,8 @@ Highest-value research topics are those capable of supplying one of these consti
   varying-prolate spectral ladder and mode-index identification;
 - source-derived untruncated Jacobi Lax law and cofinal reserve-minus-controllability estimates at
   degree `n asymp sqrt(y)`, retaining the shifted-Xi boundary port (HJ-GR);
-- literal Suzuki screw-kernel/Krein--Langer Morse exhaustion and source-defined residual Evans-map
-  injectivity after infinite-boundary reconstruction;
+- literal Suzuki screw-kernel/Krein--Langer Morse exhaustion, plus FE-reflected wall Ward assembly:
+  actual Robin/Gamma/holonomy light channel must pay finite negative-block Schur debt cofinally;
 - cofinal ground-separating margins coupled to prime-log crowding, generator-energy growth,
   reduced-resolvent gaps, and Mellin evaluation norms;
 - source-selected non-covariant Euler--Gamma-to-relative-trace transport proving sharp order at
@@ -3865,8 +3796,10 @@ Highest-value research topics are those capable of supplying one of these consti
 - source-relative intersection/compressed-trace identities controlling Hermitian deviation sector;
 - noncommutative or singular mixing mechanisms that preserve reflection-odd horizontal class until
   annihilation, rather than radical-preserving normalization;
-- cofinal prime--Gamma curvature matrices with Cauchy--Binet/Xi coefficient comparison and
-  trace-class locally uniform determinant limit;
+- coefficient-faithful prime--Gamma transport identifying explicit genus-one reciprocal source
+  spectrum with Xi divisor; determinant construction and real-rootedness are already closed;
+- completed moving-degree reverse-Bessel prime--Gamma window assembly converting half-log reserve
+  and recovered Euler damping into cofinal pulse capital;
 - source-native theta--Cayley half-step transport neutralizing reflection weight before divisor
   scalarization.
 

@@ -147,3 +147,16 @@ can move to stage 3.
 - [x] 1 -> 2: complete paper proof
 - [ ] 2 -> 3: first-jet Möbius rigidity is formalized; assemble with the complete tail interface
 - [ ] 3 -> 4: independent novelty audit and standalone publication
+
+## Lean status — the order calculus and the scaling branch
+
+The classification this card consumes advanced in the pass-4 section of
+`rational-coarse-graining-orbifold-tail-classification.md`: the signed order on `RatFunc`, its
+composition law, the transport of the invariance relation along the map, forward and backward
+orbits, and the degree obstruction for weight-zero relations are all unconditional Lean theorems
+(`HTGeometry/RationalOrder.lean`, `RationalOrderComposition.lean`, `RationalInvariantOrbit.lean`,
+`RationalBackwardOrbit.lean`).  For `z^2+1` and `(z-1)^2` they already give the complete
+non-existence of invariant rational differentials
+(`HTGeometry/QuadraticNoInvariantDifferential.lean`), hence no nonconstant scaling eigenvector of
+the substitution (`HTGeometry/QuadraticOrbifoldTail.lean`).  The remaining input for this card is
+unchanged: the fixed branch `Phi_R(u) = u` of the tail classification.

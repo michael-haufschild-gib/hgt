@@ -1009,3 +1009,148 @@ target than "the Saksman--Webb natural boundary" as previously recorded.
 Caveat to check when that lands: the argument above controls *bounded* continuation.  If the card's
 `M` is meromorphic continuation without a boundedness requirement, the reduction needs the standard
 extra step of passing from meromorphic to locally bounded off the polar set.
+
+## Lean progress — the Dirichlet kernel increment estimate (first layer toward Bohr)
+
+`RHTower/DirichletKernelEstimate.lean` (wired, axiom-clean).
+
+```
+norm_cpow_neg_sub_le
+    Re s > 0,  0 < a <= b   ==>   || a^{-s} - b^{-s} ||  <=  (||s|| / Re s) (a^{-Re s} - b^{-Re s})
+```
+
+The fundamental theorem of calculus on `[a,b]` for `x |-> x^{-s}`, whose derivative has norm
+`||s|| x^{-Re s - 1}`; integrating that bound reproduces the real increment divided by `Re s`.
+
+This is the analytic core of every convergence theorem for ordinary Dirichlet series: it is what
+makes Abel summation work, converting a bound on the partial sums of the coefficients into
+convergence throughout the open half-plane to the right, and it is the only place where the complex
+exponent interacts with the real one.
+
+### Why this layer, and what mathlib does not have
+
+An audit of `Mathlib/NumberTheory/LSeries/` finds the development is entirely about **absolute**
+convergence: `abscissaOfAbsConv` and its lemmas, plus `LSeriesSummable_of_sum_norm_bigO`.  There is
+no abscissa of conditional convergence, no abscissa of uniform convergence, no abscissa of bounded
+holomorphy, and no Bohr theorem.  So the route recorded above has to be built from this estimate up:
+
+```
+1. kernel increment estimate                              [this session]
+2. bounded partial sums  =>  convergence for Re s > 0     (Abel summation + 1)
+3. convergence at s0     =>  locally uniform convergence for Re s > Re s0
+4. sigma_c <= sigma_u                                     (immediate from the definitions)
+5. Bohr:  sigma_u = sigma_b                               (the substantial step)
+```
+
+Items 2-4 are routine given 1; item 5 is the real theorem.  Nothing in this chain is probabilistic,
+so it is independent of everything else on this card and can be developed on its own.
+
+## Lean progress — Abel summation ingredients two and three
+
+`RHTower/DirichletIncrementSummable.lean` (wired, axiom-clean).
+
+```
+summable_rpow_neg_increment    the REAL increments (n+1)^{-σ} - (n+2)^{-σ} are summable
+                                   (telescoping: partial sums are 1 - (N+1)^{-σ} <= 1)
+summable_norm_cpow_increment   hence the COMPLEX kernel increments are absolutely summable
+                                   for Re s > 0, by the increment estimate
+tsum_norm_cpow_increment_le    with total mass at most ||s|| / Re s
+tendsto_rpow_neg_nat_atTop     the boundary term N^{-Re s} -> 0
+```
+
+The three Abel-summation ingredients are now all theorems: the increment estimate (previous
+section), absolute summability of the increments with an explicit total mass, and the vanishing of
+the boundary term.  The total-mass bound `||s|| / Re s` is the one that makes the resulting
+convergence *locally uniform* on `Re s >= Re s0 + δ`, which is what step 3 of the route needs.
+
+Route status:
+
+```
+1. kernel increment estimate                              DONE
+2. increments absolutely summable, mass <= ||s||/Re s     DONE
+3. boundary term N^{-Re s} -> 0                           DONE
+4. Abel identity + 1-3: bounded partial sums => convergence for Re s > 0
+5. convergence at s0 => locally uniform for Re s > Re s0
+6. sigma_c <= sigma_u
+7. Bohr: sigma_u = sigma_b
+```
+
+Item 4 is the summation-by-parts assembly (`Finset.sum_range_by_parts` plus the three lemmas above);
+5 and 6 follow from it; 7 is the substantial classical theorem.
+
+## Lean progress — Abel summation assembled: item 4 of the Bohr route
+
+`RHTower/DirichletAbelConvergence.lean` (wired, axiom-clean).
+
+```
+tendsto_dirichlet_partialSum_of_bounded
+    || sum_{n<N} a_n ||  <=  C  for all N,   Re s > 0
+      ==>  the partial sums  sum_{n<N} a_n (n+1)^{-s}  converge
+```
+
+The summation-by-parts identity is `Finset.sum_range_by_parts` with the kernel as the scalar factor:
+
+```
+sum_{n<N} a_n b_n  =  b_{N-1} A_N  -  sum_{i<N-1} (b_{i+1} - b_i) A_{i+1} ,   A_k = sum_{n<k} a_n .
+```
+
+The boundary term vanishes because `|| b_{N-1} || = N^{-Re s} -> 0` while `A_N` stays bounded, and
+the sum converges absolutely by the increment summability of the previous section.
+
+One point of care that is easy to get wrong: the conclusion is convergence of the **partial sums**,
+not `Summable`.  A Dirichlet series outside its half-plane of absolute convergence is only
+conditionally convergent, so `Summable` is false in general and the ordered limit is the only
+correct statement.  (Everything in mathlib's `LSeries` is `Summable`-based, which is exactly why
+none of this could be reused.)
+
+Route status:
+
+```
+1. kernel increment estimate                              DONE
+2. increments absolutely summable, mass <= ||s||/Re s     DONE
+3. boundary term N^{-Re s} -> 0                           DONE
+4. bounded partial sums => convergence for Re s > 0       DONE
+5. convergence at s0 => locally uniform for Re s > Re s0
+6. sigma_c <= sigma_u
+7. Bohr: sigma_u = sigma_b
+```
+
+Item 5 is item 4 applied to the shifted coefficients `a_n (n+1)^{-s0}`, whose partial sums are
+bounded precisely because the series converges at `s0`; the uniformity comes from the explicit mass
+bound in item 2.
+
+## Lean progress — the half-plane property: item 5 of the Bohr route
+
+`RHTower/DirichletHalfPlane.lean` (wired, axiom-clean).
+
+```
+tendsto_dirichlet_partialSum_of_re_lt
+    the series converges at s0,   Re s > Re s0
+      ==>  the series converges at s
+```
+
+Abel summation applied to the shifted coefficients `a_n (n+1)^{-s0}`: their partial sums are bounded
+exactly because the series converges at `s0` (a convergent sequence has bounded range), and the
+remaining exponent `s - s0` has positive real part, which is the hypothesis of item 4.  The two
+kernels recombine by `Complex.cpow_add` on the positive real base.
+
+This is the property that makes an abscissa of convergence well defined, and it is precisely where
+conditional convergence departs from the absolute convergence mathlib develops: the half-plane of
+absolute convergence can be strictly smaller than this one, which is the whole reason `sigma_c` and
+`abscissaOfAbsConv` are different invariants.
+
+Route status:
+
+```
+1. kernel increment estimate                              DONE
+2. increments absolutely summable, mass <= ||s||/Re s     DONE
+3. boundary term N^{-Re s} -> 0                           DONE
+4. bounded partial sums => convergence for Re s > 0       DONE
+5. convergence at s0 => convergence for Re s > Re s0      DONE
+6. sigma_c <= sigma_u
+7. Bohr: sigma_u = sigma_b
+```
+
+Item 6 is immediate once the two abscissas are defined (uniform convergence implies convergence);
+item 7 is the substantial classical theorem and the only remaining mathematical content on this
+route.

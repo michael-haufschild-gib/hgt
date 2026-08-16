@@ -332,7 +332,9 @@ No parity hypothesis is needed.
 - 2026-08-16 — the compressed truncated convolution is identified with a centered
   divided-difference packet: exact commutator law `(i-j)Q_{ij} = b_j - b_i` with odd source, proved
   by two integrations by parts, in `HTGeometry/TruncatedConvolutionCommutator.lean` and
-  `RHTower/TruncatedConvolutionParityPacket.lean`.
+  `RHTower/TruncatedConvolutionParityPacket.lean`; the compressed quadratic form, its positive
+  semidefiniteness criterion, and its kernel are identified with the truncated-convolution form on
+  trigonometric polynomials.
 - 2026-08-11 — odd (D^2) correction derived; common-zero closure falsified; paper proof closed.
 - 2026-08-14 — finite odd squared-frequency correction and non-pole Fourier-resolvent reality
   formalized in `CCMParityFreeOddGroundFourier.lean`.
@@ -541,7 +543,38 @@ differentiation under the outer integral are used.
                                                  compressed packet has a real-rooted band-limited
                                                  Fourier transform
 
-What remains is the variational assembly against these matrices: the positive semidefiniteness of
-the spectral-floor shift, the simplicity of the compressed ground below the gap, and the
-mean-square convergence of the compressed grounds — each already available generically, but not yet
-instantiated at the truncated-convolution quadratic form.
+The compressed quadratic form has also been identified, so the two spectral hypotheses of section 4
+are now literal statements about the truncated-convolution form on trigonometric polynomials.
+
+    HTGeometry/TruncatedConvolutionCommutator.lean (continued)
+      fourierChar_conj, fourierChar_add,
+        integral_fourierChar,
+        integral_fourierChar_orthonormal        the exponentials are orthonormal on `[0,1]`
+      intervalIntegral_conj, truncConv_conj,
+        convMatrix_conj, convMatrix_im_eq_zero,
+        convMatrix_ofReal_re                    the matrix is real
+      convMatrix_symm                           the matrix is symmetric — off the diagonal this is
+                                                forced by the divided-difference law alone, so no
+                                                Fubini is needed
+      indexTrigPoly, truncConv_indexTrigPoly,
+        integral_indexTrigPoly_normSq            the `L²` norm of a trigonometric polynomial is the
+                                                `ℓ²` norm of its coefficients
+      integral_indexTrigPoly_truncConv          **the quadratic form is the matrix form**
+
+    RHTower/TruncatedConvolutionParityPacket.lean (continued)
+      truncConvModePoly,
+        truncConvParityPacket_apply             the packet entries in terms of the matrix
+      truncConvParityPacket_form                the compressed sesquilinear form is the
+                                                truncated-convolution pairing minus `mu` times the
+                                                `L²` pairing
+      truncConvParityPacket_isHermitian,
+        truncConvParityPacket_posSemidef        the packet is positive semidefinite exactly when the
+                                                form dominates `mu` times the `L²` norm on the
+                                                compression
+      truncConvParityPacket_mulVec_eq_zero_iff  the kernel of the packet is exactly the set of
+                                                minimizers of the form
+
+What remains is the variational assembly: producing, for a simple isolated odd ground, a sequence of
+compressions whose minimizing coefficient vectors are odd, span the kernel, and converge in mean
+square to the ground.  Both spectral inputs are now stated purely in terms of the
+truncated-convolution form, and the finite and analytic halves of the law consume them directly.

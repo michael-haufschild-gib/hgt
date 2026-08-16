@@ -130,7 +130,7 @@ exactly the Face-A axis this theorem isolates.
   off-line Beurling system is a future sharpening (`../0-backlog/realization-problem.md`).
 
 ## Cross-references
-- `a1-a2-unification-brick.md` (dual: the weld) · `compute-omega-h2-gl.md` §R · `../2-fully-proven/stieltjes-log-weld.md`
+- `a1-a2-unification-brick.md` (dual: the weld) · `compute-omega-h2-gl.md` §R · `../3-formalized/not_new_scientific_knowledge/stieltjes-log-weld.md`
 - `finite-free-convolution-flow.md` (the C5★ carrier; this theorem's §5 corollary tells it where to look)
 - `../../door/bucket-realization-and-fake-family.md` (#81/#82/#88 witnesses).
 

@@ -11063,3 +11063,51 @@ half-width `δ` about its centre is `O((1 − r)/δ²)`, and the radial budget `
 over all `N` sections is `O(c)`.  That estimate is the single remaining analytic step of Theorem D.
 
 All new declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADP.1. The arc concentration is algebraic — `(41)` is the conserved quantity, proved
+
+The remaining analytic step of Theorem D turned out not to need a Poisson-mass integral at all.
+Subtracting one from the centred section leaves the radial defect as an explicit factor:
+
+```text
+B(w) − 1 = (r − 1)(1 + ζ̄w) / (1 − r ζ̄ w),      1 − r ζ̄ w = ζ̄ (ζ − r w),
+‖ζ − r w‖² = (1 − r)² + r‖ζ − w‖²                (the radial split)
+```
+
+so on the unit circle, at boundary separation `‖w − ζ‖ ≥ d`,
+
+```text
+‖B(w) − 1‖ ≤ 2(1 − r) / (√r · d).
+```
+
+Because `‖B(w)‖ = 1` the cascade costs only a factor `N`, and the radial budget `(41)` absorbs it:
+
+```text
+‖B(w)^N − 1‖ ≤ N · 2(1 − r)/(√r d) ≤ 2(−log κ)/(√r d),
+```
+
+**uniformly in `N`.**  This is exactly the card's "absolute loss independent of `N`" and it makes
+`(41)`'s status precise: the conserved quantity is the radial budget `−log κ_c = O(c²)`, and the
+number of factors is free.
+
+```text
+HTGeometry/BlaschkePoissonArcTail.lean
+  norm_sub_radial_sq              ‖z − rζ‖² = (1−r)² + r‖z − ζ‖² for unit z, ζ
+  poissonKernel_radial_eq         the split form of the boundary Poisson kernel
+  poissonKernel_radial_le         (1 − r²)/(r d²) away from the centre
+  poissonKernel_radial_le_depth   the same in radial-depth form
+
+RHTower/SuzukiCoalescingArcConcentration.lean
+  suzukiCenteredBlaschkeSection_center            B(ζ) = −1
+  norm_suzukiCenteredBlaschkeSection_sub_one_le   the arc concentration estimate
+  norm_pow_sub_one_le                             ‖x^N − 1‖ ≤ N‖x − 1‖ for unimodular x
+  norm_suzukiCenteredBlaschkeSection_pow_sub_one_le
+  norm_suzukiBlaschkeFragment_pow_sub_one_le      the `N`-free bound by the radial budget
+```
+
+With `(40)` (`SuzukiCoalescingRealAxisPhase.lean`) giving the anchor arc half-width `≍ c` and this
+bound giving the loss outside it, the gain `(42)` reduces to the bookkeeping identity "total phase
+of an `N`-fold cascade is `2πN`", i.e. that the section is a degree-one circle automorphism.  That
+single remaining step, plus the level count of ADP, closes `(38)`.
+
+All new declarations audit to `[propext, Classical.choice, Quot.sound]`.

@@ -1001,3 +1001,83 @@ The corpus's `HTGeometry/RationalPoleOrder.lean` (`poleOrder`, `RegularAt`) is t
 substrate for the orbit/pole argument that kills both halves for a non-exceptional map: what it
 still needs is the signed order `ord_a = zeroOrder − poleOrder`, its additivity, and the
 composition law `ord_a(Q ∘ R) = ord_a(R − R(a)) · ord_{R(a)}(Q)`.
+
+## Pass 4 — the order calculus on `RatFunc` and the first unconditional non-existence results
+
+The divisor bookkeeping the descent needed is now Lean-owned, and with it the first maps for which
+*every* invariant rational differential is shown to be trivial.
+
+### New modules (all unconditional, axiom-clean, `HTGeometry`-wired)
+
+- `HTGeometry/RationalOrder.lean` — the signed order `ord_a(Q) = mult_a(num Q) − mult_a(denom Q)`
+  on `RatFunc K`: additivity (`ratOrder_mul`), the values on `algebraMap`, `1`, `C a`, inverses,
+  natural and integer powers, the vanishing criterion `ratOrder_eq_zero_iff`, and finiteness of the
+  support (`finite_support_ratOrder`).
+- `HTGeometry/RationalOrderComposition.lean` — multiplicity under substitution.
+  `rootMultiplicity_comp`: `mult_a(P∘R) = mult_{R(a)}(P)·mult_a(R − R(a))`, from the local
+  factorization `P = (X−b)^m·N`; `ratFuncSubstitution_algebraMap`; and the transport law
+  `ratOrder_ratFuncSubstitution`: `ord_a(Q∘R) = ord_{R(a)}(Q)·mult_a(R − R(a))`.
+- `HTGeometry/RationalInvariantOrbit.lean` — the transport of the invariance relation itself.
+  `rootMultiplicity_eq_one`; `ratOrder_relation_transport`:
+
+  ```text
+  ord_{R(a)}(Q)·e_a + k·m_a = ord_a(Q),   e_a = mult_a(R − R(a)),  m_a = mult_a(R'),
+  ```
+
+  its critical-free form `ratOrder_eval_eq_of_deriv_ne_zero` (`ord_{R(a)}(Q) = ord_a(Q)`), and
+  `ratOrder_eq_zero_of_orbit`: an injective critical-free *forward* orbit forces the order to
+  vanish at its start, because the support is finite.
+- `HTGeometry/RationalBackwardOrbit.lean` — the backward direction.  Over an algebraically closed
+  field a nonconstant polynomial attains every value (`exists_eval_eq`), so `backwardOrbit` exists;
+  `exists_backward_orbit` shows it is injective and critical-free as soon as the starting point is
+  neither periodic nor in the forward orbit of a critical point — a coincidence `b m = b n` pushes
+  forward to a period of the start, and a critical `b (n+1)` pushes forward to the start itself.
+  Capstones `ratOrder_eq_zero_of_backward_orbit` and `ratOrder_eq_zero_of_aperiodic`.
+  The module also proves `adjoin_C_mul`, `ratFuncDegree_C_mul` and
+  `eq_C_of_weight_zero_relation`: for `deg R ≥ 2` a *weight-zero* relation `Q∘R = μQ` forces `Q`
+  constant, because substitution multiplies the degree of a rational self-map by `deg R`.
+- `HTGeometry/RationalInvariantDifferential.lean` gained `ratFuncDeriv_algebraMap`: the derivation
+  built on `RatFunc C` restricts to the classical polynomial derivative.
+
+### Consequence: two maps with no invariant differential at all
+
+`HTGeometry/QuadraticNoInvariantDifferential.lean` proves, for `R₁(z) = z² + 1` and
+`R₂(z) = (z − 1)²`, that every relation
+
+```text
+Q ∘ R · (R')^k = μ Q,   Q ≠ 0,  μ ≠ 0
+```
+
+has `k = 0` **and** constant `Q` (`quadOne_no_invariant_differential`,
+`quadTwo_no_invariant_differential`).  The proof is an order chase.  For `R₁` the critical point is
+`0` and its forward orbit is `0, 1, 2, 5, 26, …` — all real and nonnegative, so it misses `i` and
+`−1`; both of those points are therefore aperiodic and non-postcritical, and the backward orbit
+theorem gives `ord_i(Q) = ord_{−1}(Q) = 0`.  Three critical-free transports carry this to
+`ord_0(Q) = ord_1(Q) = ord_2(Q) = 0`, and the single ramified transport at the critical point,
+where `e_0 = 2` and `m_0 = 1`, reads `2·ord_1(Q) + k = ord_0(Q)`, i.e. `k = 0`.  For `R₂` the
+critical point is `1` and its forward orbit is the two-cycle `1, 0`, which misses `2`; the same
+chase runs through `2 ↦ 1 ↦ 0` and the ramified transport at `1`.
+
+`HTGeometry/QuadraticOrbifoldTail.lean` transports this back to the jet field:
+`substitutionDeriv_algebraMap_ne_zero`, then `quadOne_no_order_one_eigen` /
+`quadTwo_no_order_one_eigen` (neither map has a nonconstant eigenvector of jet order at most one)
+and `quadOne_eigen_eq_one` / `quadTwo_eigen_eq_one` (a finite-order eigenvector of either map can
+only have eigenvalue one).
+
+### What remains, precisely
+
+The scaling branch is closed for these maps.  The residual case is the **fixed** branch
+`Phi_R(u) = u` with `u` nonconstant of finite order.  The normalized trichotomy descends it, but
+not to a contradiction: applying it repeatedly produces an eigen-relation
+
+```text
+Phi_R(w)·(R')^kappa = w,   kappa != 0,
+```
+
+at some jet order at least one, and that configuration is *realizable* — at order one the
+substitution scales the top coordinate exactly (`substitutionShift_one`), so `w = e·y_1^(-kappa)`
+with `e in C^*` satisfies it for every `kappa`.  What the trichotomy loses on the way is the link
+between `w` and the original `u`: branches two and three hand back a coefficient ratio, not `u`
+itself.  Closing the fixed branch therefore needs a descent that keeps track of `u`, or the
+separate observation that a nonconstant `u` fixed by `Phi_R` would make the whole differential
+field `C<u>` pointwise fixed, which is the statement to attack next.

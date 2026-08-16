@@ -1,7 +1,7 @@
 # Pure critical horizon fiber is a cyclic fermionic occupation scheme
 
 - **ID:** `projective-horizon-pure-tail-fermionic-fiber`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / EXACT SPECIAL-FIBER IDENTIFICATION
 - **Scientific status:** `[PROVED ON PAPER] [BRIDGE] [FORMAL CORE COMPLETE]`
 - **Parents:** `projective-horizon-critical-binomial-multiplicity`
@@ -109,13 +109,30 @@ symmetry of the occupation states; no such refinement is proved here.
 - [x] invariant-Grassmannian identification proved
 - [x] exterior occupation and complement dictionary stated without dynamical overclaim
 - [x] Lean core complete and targeted verification passed
+- [x] `(3)`, `(4)`, and the exterior occupation dictionary formalized end to end; card promoted to
+  `3-formalized`
 
 ## Lean verification
 
-`ProjectiveHorizonPureTailFiber.lean` proves the exact factorization equivalence, separability of
-`1+X^L` in characteristic zero, and the cardinality of the occupation-label type.  The root-subset
-and invariant-Grassmannian equivalences remain at paper level rather than importing a new finite
-spectral-geometry library.  The targeted leaf build passes; no full build was run.
+**Fully formalized, unconditionally.**  Every clause of the theorem — `(2)`, separability, `(3)` as a
+bijection in both directions, the count, `(4)` as a single equivalence, and the exterior occupation
+dictionary with its particle--hole involution — is a Lean theorem.  All declarations audit to
+`[propext, Classical.choice, Quot.sound]`.
+
+| Paper step | Lean |
+|---|---|
+| `(2)` the pure-tail compatibility is exactly `(A+t^m)(B+t^n) = 1+t^L` | `pureCritical_factorization_iff` (`HTGeometry/ProjectiveHorizonPureTailFiber.lean`) |
+| `1+t^L` is separable in characteristic zero | `pureCriticalCyclicPolynomial_separable` (same module) |
+| occupation labels and their count `C(L,m)` | `criticalHorizonOccupationStates`, `card_criticalHorizonOccupationStates` (same module) |
+| `(3)` injectivity: distinct occupation states give distinct factors | `criticalHorizonLeftFactorFromRoots_injective` (`HTGeometry/OccupationFactorInjective.lean`) |
+| `(3)` surjectivity: every monic degree-`m` factor comes from an occupation state | `exists_occupationState_of_pureFactorisation` (`HTGeometry/PureFibreOccupationBijection.lean`) |
+| `(3)` as a statement about the fibre itself, and its cardinality | `pureCriticalFibre`, `occupationToFibre_bijective`, `card_pureCriticalFibre` (`HTGeometry/PureFibreCardinality.lean`) |
+| `(4)` invariant subspace `->` ideal | `mul_mem_of_generator_mul_mem`, `invariantIdeal` (`HTGeometry/ShiftInvariantSubspace.lean`) |
+| `(4)` ideal `->` monic divisor | `exists_monic_dvd_of_ideal` (`HTGeometry/QuotientIdealDivisor.lean`) |
+| `(4)` dimension bookkeeping | `finrank_polynomialQuotient`, `finrank_ideal_add_natDegree_of_dvd` (`HTGeometry/QuotientIdealDimension.lean`) |
+| `(4)` forward and converse | `exists_rootSubset_of_invariantSubspace` (`HTGeometry/InvariantSubspaceRootSubset.lean`), `finrank_ideal_rootSubset` (`HTGeometry/RootSubsetInvariantSubspace.lean`) |
+| `(4)` as one equivalence | `invariantSubspace_iff_rootSubset` (`HTGeometry/InvariantSubspaceIff.lean`) |
+| exterior occupation basis and particle--hole complementation | `occupationStateEquivPowersetCard`, `occupationComplement`, `occupationComplement_involutive`, `pureFibreExteriorBasis`, `finrank_exteriorPower_eq_choose` (`HTGeometry/PureFibreExteriorOccupation.lean`) |
 
 ## Log
 

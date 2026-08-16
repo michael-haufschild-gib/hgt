@@ -87,7 +87,7 @@ Koszul-acyclic and inert; its archimedean half carries all of `ω`.
   Euler/Satake structure — a *proof* that the multiplicative wing cannot reach the realization obstruction.
 - Places `ω` squarely in the **seam** (#71/#90): `ω` = the archimedean obstruction, the same single F₁ as
   the corank-∞ / Stieltjes face. The seam now has a **G4-cohomological face** alongside G1, G2, and the
-  Stieltjes weld (`../2-fully-proven/stieltjes-log-weld.md`).
+  Stieltjes weld (`../3-formalized/not_new_scientific_knowledge/stieltjes-log-weld.md`).
 - Reduces compute-`ω` to a **purely archimedean** computation: `ω` = the Koszul-homology defect of the
   Γ-factor / `s=1` regularization, no longer entangled with the prime lattice. (Core stays open:
   `ω=0 ⟺ RH`.)
