@@ -1,7 +1,7 @@
 # Shifted Towers Do Not Fix The T0 Tail Class
 
 - **ID:** shifted-towers-do-not-fix-t0-tail-class
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** docs/consolidated/gpt/proof-route.md, `T_0` infinite / shifted finite towers
 - **Statement:** Finiteness of every positive shifted moment is compatible with many incompatible divergence rates for the unshifted mass `T_0`. Therefore the shifted proof route does not supply a canonical `T_0` regularization rate.
@@ -14,7 +14,7 @@ Block a Tauberian false repair of the invalid unshifted `T_0` tower. Once the ro
 
 - [x] 0 -> 1 in-progress: well-posed, source-pure, attack idea
 - [x] 1 -> 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 -> 3 formalized: Lean theorem `<name>`, `lake build` green, `check_axioms.sh` PASS
+- [x] 2 -> 3 formalized: `RHTower/ShiftedTowerTailClasses.lean`, targeted build green, axiom audit clean
 - [ ] 3 -> 4 publication-ready: standalone note if needed
 
 ## Proof
@@ -79,3 +79,29 @@ Numerical and visual check:
 ## Log
 
 - 2026-06-21 -- created in 2-fully-proven from the Tauberian/heavy-tail NODE, method 5 make visual.
+
+## Lean formalization
+
+Module: `formal/GaloisForLFunctions/RHTower/ShiftedTowerTailClasses.lean`
+(namespace `RHTower`), wired into the `GaloisForLFunctions.RHTower` umbrella.
+
+| Paper statement | Lean declaration |
+|---|---|
+| shifted moment term `a_n exp(-k(n+1))` | `shiftedTowerTerm` |
+| exponential-scale geometric summability | `summable_exp_linear` |
+| weights of exponential order below the shift have finite shifted moment | `summable_shiftedTowerTerm_of_exp_bound` |
+| `sqrt x <= x/4 + 1` | `sqrt_le_quarter_add_one` |
+| `a_n = 1/n`: every shifted moment finite | `summable_shiftedTowerTerm_harmonic` |
+| `a_n = 1`: every shifted moment finite | `summable_shiftedTowerTerm_constant` |
+| `a_n = exp(sqrt n)`: every shifted moment finite | `summable_shiftedTowerTerm_stretched` |
+| `T_0 = infinity` in each of the three cases | `not_summable_harmonicWeight`, `not_summable_constantWeight`, `not_summable_stretchedWeight` |
+| control case `a_n = exp(n)` fails at `k = 1` | `not_summable_shiftedTowerTerm_exponential` |
+| `log`-scale partial sums are `o` of linear ones | `tendsto_harmonic_div_constant_partialSum` |
+| linear partial sums are `o` of stretched-exponential ones | `tendsto_constant_div_stretched_partialSum` |
+
+The last two theorems are the exact content of "many incompatible `T_0` divergence rates": all
+three weights satisfy the shifted-finite condition, yet their unshifted partial sums are pairwise
+separated by a vanishing ratio, so the shifted tower cannot select one divergence class.
+
+Audit: direct `lake env lean` check clean, targeted module build clean, umbrella import wired,
+`#print axioms` returns only `propext`, `Classical.choice`, `Quot.sound`.

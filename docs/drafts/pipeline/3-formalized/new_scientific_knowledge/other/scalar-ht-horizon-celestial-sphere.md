@@ -1,9 +1,9 @@
 # The scalar HT horizon family is a hyperbolic celestial sphere
 
 - **ID:** `scalar-ht-horizon-celestial-sphere`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** RANK-ONE HYPERBOLIC BOUNDARY / DIFFERENTIAL-FIELD COMPLEMENTARITY
-- **Scientific status:** `[PROVED CONSEQUENCE] [NOVEL IDENTIFICATION CANDIDATE]`
+- **Scientific status:** `[PROVED CONSEQUENCE] [LEAN FORMALIZED] [NOVEL IDENTIFICATION CANDIDATE]`
 - **Parents:** `projective-horizon-building-schwarzian-complementarity`,
   `projective-ht-horizon-symmetric-space-boundary`
 - **Statement:** Over complex constants, the projective derivative horizons of one HT scalar form
@@ -119,10 +119,50 @@ hyperbolic bulk is the symmetric space of projective observer metrics.
 
 ## Lean status
 
-The field-theoretic half of `(5)` is formalized in
-`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonComplementarity.lean`: Lean verifies
-two-chart reconstruction and common Schwarzian membership. Exact equality of the meet and the
-hyperbolic boundary geometry remain paper-level; no placeholder encodes them.
+`[UNCONDITIONAL, AXIOM-CLEAN]`  Three modules carry the whole theorem.
+
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonCelestialSphere.lean`
+
+```text
+jetTailField_mobiusObservable_one_eq_rowHorizon   -- (1) choice independence
+rowHorizon_eq_iff                                 -- exact classification of horizon equality
+rowHorizon_ne                                     -- (2) H_p != H_q for p != q
+rowHorizon_sup_inf                                -- (2),(5) exact join and exact meet
+rowHorizon_mobiusObservable                       -- (4) fractional-linear equivariance
+celestialHorizon_injective                        -- (4) injective realization of P^1(C)
+celestialHorizon_sup_inf                          -- (5) at every ordered pair of P^1(C)
+celestialHorizon_infinity_fixed_iff               -- parabolic stabilizer of one horizon
+celestialHorizon_pair_fixed_iff                   -- diagonal Cartan stabilizer of a pair
+existsUnique_orientedGeodesic                     -- unique oriented geodesic through a pair
+hypertranscendentalOver_celestialSphere_realization
+hypertranscendentalOver_celestialSphere_realization_prime  -- prime-field instance, no constants
+                                                            hypothesis
+```
+
+`formal/GaloisForLFunctions/HTGeometry/HyperbolicThreeSpaceBoundary.lean` builds `H^3` itself as
+the unimodular positive-definite Hermitian complex `2x2` matrices and proves `(3)`:
+
+```text
+HyperbolicThreeSpace.symmetricSpace_model   -- H^3 = SL_2(C)/SU(2): transitivity by an explicit
+                                            -- Cholesky factor, and isotropy = unitary part
+exists_eq_lightMatrix                       -- every future light ray is a rank-one form v v^H
+lightMatrix_smul_iff                        -- light rays modulo positive scale = P^1(C)
+lightMatrix_mulVec                          -- the symmetry action on rays is the Moebius action
+```
+
+`formal/GaloisForLFunctions/HTGeometry/ScalarHorizonCelestialBoundary.lean` welds the two:
+
+```text
+lightRayHorizon_eq_iff       -- two light rays give one horizon iff they are the same boundary point
+lightRayHorizon_sup_inf      -- distinct rays: exact join and exact meet
+scalarHorizon_celestialSphere_realization
+```
+
+`#print axioms` on every capstone returns only `propext`, `Classical.choice`, `Quot.sound`.
+
+The base of constants enters as the standing hypothesis `hconst : forall t, t' = 0`, which is the
+definition of "over complex constants"; `hypertranscendentalOver_celestialSphere_realization_prime`
+discharges it outright over the prime field of constants.
 
 ## RH impact audit
 
@@ -134,7 +174,9 @@ organization of its derivative charts. Neither premise currently advances zero l
 
 - [x] 0 -> 1: rank-one visual boundary separated from the higher-rank Tits topology
 - [x] 1 -> 2: equivariant sphere and geodesic recovery identification proved
-- [ ] 2 -> 3: differential reconstruction core formalized; exact meet and `H^3` geometry remain
+- [x] 2 -> 3: full unconditional Lean formalization — choice independence, exact meet, exact join,
+  equivariant injective `P^1(C)` realization, the `SL_2(C)/SU(2)` model of `H^3`, its light-ray
+  boundary, and the unique oriented geodesic through each ordered pair of distinct horizons
 - [ ] 3 -> 4: external audit in differential algebra and Kleinian/hyperbolic geometry
 
 ## References
@@ -147,3 +189,7 @@ organization of its derivative charts. Neither premise currently advances zero l
 
 - 2026-07-15 — identified the scalar projective horizon sphere with `boundary_visual H^3` and
   complementary horizon pairs with hyperbolic geodesic endpoints.
+- 2026-08-16 — formalized unconditionally in Lean: the celestial-sphere realization, the exact
+  meet and join at every boundary pair, fractional-linear equivariance, the parabolic and Cartan
+  stabilizers, the hyperbolic three-space model `SL_2(C)/SU(2)` with its light-ray visual
+  boundary, and the unique-oriented-geodesic law. Card promoted to stage 3.

@@ -315,7 +315,7 @@ compressions after those deliverables exist.
 
 ## 2026-06-24 one-sided compression bounds do not construct the operator
 
-`../2-fully-proven/one-sided-compression-bound-not-bounded-operator.md` adds
+`../3-formalized/not_new_scientific_knowledge/one-sided-compression-bound-not-bounded-operator.md` adds
 the domain caveat to the operator route. A dense-domain inequality
 `k[v]<=||v||^2` on every finite compression can hold for an unbounded-below
 diagonal form, so it does not produce a bounded self-adjoint contraction.

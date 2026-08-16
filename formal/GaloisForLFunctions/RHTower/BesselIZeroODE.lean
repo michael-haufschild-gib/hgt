@@ -298,4 +298,10 @@ theorem besselI0_logDeriv_le_one {u : ℝ} (hu : 0 ≤ u) :
   rw [div_le_one hpos]
   exact besselI0Deriv_le_besselI0 hu
 
+/-- `I₀` is continuous, being differentiable everywhere. -/
+theorem continuous_besselI0 : Continuous besselI0 :=
+  continuous_iff_continuousAt.2 fun u => (hasDerivAt_besselI0 u).continuousAt
+
 end GaloisForLFunctions.RHTower
+
+end

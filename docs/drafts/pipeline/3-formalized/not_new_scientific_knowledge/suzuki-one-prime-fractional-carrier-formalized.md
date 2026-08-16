@@ -3,7 +3,7 @@
 - **ID:** `suzuki-one-prime-fractional-carrier-formalized`
 - **Stage:** 3 — formalized in Lean 4
 - **Paper proof:**
-  `../../2-fully-proven/not_new_scientific_knowledge/suzuki-one-prime-fractional-carrier.md`
+  `./suzuki-one-prime-fractional-carrier.md`
 - **Lean module:**
   `formal/GaloisForLFunctions/RHTower/SuzukiOnePrimeFractionalCarrier.lean`
 - **Status:** `[FORMALIZED] [AXIOM-CLEAN] [MATHEMATICALLY STANDARD] [NOT RH]`

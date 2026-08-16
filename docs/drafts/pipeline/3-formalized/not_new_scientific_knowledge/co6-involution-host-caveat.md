@@ -1,6 +1,7 @@
 # CO6 involution host caveat
 
-- **Status:** fully proven on paper
+- **Stage:** 3-formalized
+- **Status:** fully proven on paper; formalized in Lean 4
 - **Type:** formula-graph guardrail
 - **Formula node:** `CO6`, `g_p=g_p^{-1} => g_p=+-1`
 - **Random-node source:** ligand/cofactor-stabilized symmetry in protein folding
@@ -98,3 +99,27 @@ R=C^4: 16 self-inverse units, 14 non-global signs.
 This is the exact coefficient-host analogue of cofactor-stabilized symmetry: the
 added host component can create symmetry that the original scalar host does not
 maintain.
+
+## Lean formalization
+
+Module: `formal/GaloisForLFunctions/HTGeometry/InvolutionIdempotentHost.lean`
+(namespace `GaloisForLFunctions.HTGeometry`).
+
+| Paper statement | Lean declaration |
+|---|---|
+| `e^2=e  =>  (2e-1)^2=1` | `hostInvolutionOfIdempotent_mul_self` |
+| `g^2=1, 2 invertible  =>  (g+1)/2` idempotent | `hostIdempotentOfInvolution_isIdempotentElem` |
+| the two constructions are mutually inverse | `hostIdempotentOfInvolution_hostInvolutionOfIdempotent`, `hostInvolutionOfIdempotent_hostIdempotentOfInvolution` |
+| `{g : g^2=1} <-> {e : e^2=e}` | `involutionEquivIdempotent` |
+| `2e-1 = 1 <=> e = 1`, `2e-1 = -1 <=> e = 0` | `hostInvolutionOfIdempotent_eq_one_iff`, `hostInvolutionOfIdempotent_eq_neg_one_iff` |
+| connected host: only `0,1` idempotent `=> g = +-1` | `eq_one_or_neg_one_of_mul_self_eq_one` |
+| field / no zero divisors case | `isIdempotentElem_eq_zero_or_one`, `eq_one_or_neg_one_of_mul_self_eq_one_of_noZeroDivisors` |
+| nontrivial idempotent manufactures a non-global sign | `exists_mul_self_eq_one_ne_one_ne_neg_one_of_idempotent` |
+| `C x C` witness `g=(1,-1)` | `prod_sign_mul_self`, `prod_sign_ne_one`, `prod_sign_ne_neg_one`, `isIdempotentElem_prod_left`, `hostInvolutionOfIdempotent_prod_left` |
+
+The matrix/projector host of the card is the special case of
+`exists_mul_self_eq_one_ne_one_ne_neg_one_of_idempotent` at a proper projector `P`, whose attached
+self-inverse element is `2P - I`.
+
+Audit: direct `lake env lean` check clean, targeted module build clean, umbrella import wired,
+`#print axioms` on every declaration above returns only `propext`, `Classical.choice`, `Quot.sound`.

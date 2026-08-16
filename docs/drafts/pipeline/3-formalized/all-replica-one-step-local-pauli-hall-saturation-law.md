@@ -1,10 +1,10 @@
 # All-replica one-step local-Pauli Hall saturation law
 
 - **ID:** `all-replica-one-step-local-pauli-hall-saturation-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 -- formalized in Lean 4
 - **Type:** THEOREM (paper)
 - **Source:** `../1-in-progress/static-local-complexity-law.md`, growing-replica planar-cavity core
-- **Status:** `[PROVED HERE] [UNCONDITIONAL] [NEW MECHANISM; PRIORITY UNVERIFIED] [LEAN DEFERRED DURING REFACTOR]`
+- **Status:** `[LEAN-CERTIFIED] [UNCONDITIONAL] [NEW MECHANISM; PRIORITY UNVERIFIED]`
 - **Statement:** On every finite connected qubit graph and at every finite replica order, the
   complete one-site and graph-edge two-site replicated Pauli commutator family is one-step rank
   nondecreasing modulo exactly the global collective commutant.
@@ -465,17 +465,103 @@ rank-nondecreasing premise which those external quantitative operator-scaling th
 new proof of near balance and CP-map spectral expansion is still required before their capacity
 bounds can be imported.
 
-## Formalization status
+## Lean certificate
 
-Lean work is intentionally deferred while the corpus is being refactored.  Existing formal modules
-already contain the abstract greatest-maximizer criterion, continuous span-covariance invariance,
-visible-kernel recovery inequality, all-replica off-singlet Casimir Hall law, replicated two-local
-Lie generation, and stable-range collective-commutant classification.
+Every statement of this card is proved unconditionally in Lean 4 inside
+`formal/GaloisForLFunctions/HTGeometry/`.  All declarations audit to
+`[propext, Classical.choice, Quot.sound]`.
 
-Missing formal bridges are genuinely all-replica but finite-dimensional: product-local `SU(2)` span
-covariance in the graph family, reducing Haar/projector split of the canonical obstruction,
-all-replica paired-Pauli character detector on singlet input, and invariance plus kernel
-classification of the full edge Casimir.  No Lean theorem is claimed by this card.
+Sites are a finite type `I`, replicas a finite type `R`, the graph is any `SimpleGraph I`; the
+qubit register is indexed by `I x R` and operators are vectorised over
+`FiniteAllReplicaOperatorIndex I R`.  The generator index is
+`GraphLocalIndex I G = (I x Fin 3) + {p // IsEdgeWord G p}`: the weight-one layer is indexed by a
+site and a letter, the weight-two layer by the edge word itself, so the index map is injective --
+which is what the character separation argument needs.
+
+| Equation | Declaration | Module |
+|---|---|---|
+| `(1)`, `(2)` | `collectivePauliString`, `matrixCommutatorRepresentation`, `collectiveCommutatorOperator` | `CollectivePauliString`, `AllReplicaCollectivePauliCasimir`, `MatrixSandwichEquiv` |
+| `(3)` | `GraphLocalIndex`, `graphLocalLabel`, `graphLocalGenerator` | `GraphLocalPauliFamily` |
+| `(4)` | `finiteAllReplicaCollectiveSingletSubspace`, `singletSubspace_eq_familyCommonKernel` | `CentralCasimirCommonKernelCorrection`, `GraphLocalHallAssembly` |
+| `(5)` | `graphLocalCommonKernel`, `graphLocalCommonKernel_eq_collectiveCommutant` | `GraphLocalCompletedFamily`, `GraphLocalHallSaturation` |
+| `(6)` | `familyCommonKernel_orthogonal_eq`, `graphLocalReducedObstruction` | `SelfAdjointFamilyCommonKernel`, `GraphLocalHallAssembly` |
+| `(7)`, `(14)` | `graphLocalReducedObstruction_le_split`, `invariantSubspace_le_commonKernel_sup_orthogonal` | `GraphLocalHallAssembly`, `HermitianFamilyCasimirSplit` |
+| `(8)` | **`graphLocal_finrank_le_shadow_add_commonKernel`** | `GraphLocalHallSaturation` |
+| `(9)` | **`graphLocal_finrank_le_shadow_of_le_orthogonal`**, `graphLocalCompleted_hall` | `GraphLocalHallSaturation` |
+| `(10)`, `(11)` | `linearFamilyShadow`, `linearFamilyDefect`, `linearFamilyHall_iff_greatestMaximizer_defect_eq_zero` | `LinearFamilyDefectSupermodularity`, `LinearFamilyGreatestMaximizer` |
+| `(12)` | `replicaGate_conj_collectivePauliString`, `replicaGate_conj_mem_graphLocalStringSpan` | `ReplicaRationalGate`, `GraphLocalPauliCovariance` |
+| `(13)` | `replicaGate_sandwich_mem_obstruction`, `siteConjEquiv_mem_obstruction` | `GraphLocalPauliCovariance`, `GraphLocalPauliConjugation` |
+| `(15)`, `(16)` | **`graphLocalNonsinglet_le_shadow`** | `GraphLocalHallAssembly` |
+| `(18)` | `siteConjString_conj_collectivePauliString`, `siteConjEquiv_commutator_singlet` | `AllReplicaSiteString`, `GraphLocalPauliDetector` |
+| `(19)` | `inner_collectiveCommutator_eq_zero_of_sign_ne`, `exists_boolPauliConjugationSign_mul_eq_neg_one` | `PauliConjugationGrading`, `GraphLocalPauliDetector` |
+| `(20)` | `graphLocalEdgeSum`, `graphLocalEdgeGenerator_mem_singlet_orthogonal` | `GraphLocalHallAssembly` |
+| `(21)`, `(22)` | `graphLocalVisible`, `graphLocalDetector` | `GraphLocalHallAssembly` |
+| `(23)` | `graphLocalDetector_visible_finrank`, `visibleQuotientDetector_finrank` | `GraphLocalHallAssembly`, `VisibleKernelRecoveryHallExpansion` |
+| `(24)` | **`edgeImage_mem_of_sum_mem`**, `graphLocalDetector_ker_edge_mem` | `GraphLocalPauliDetector`, `GraphLocalHallAssembly` |
+| `(25)`, `(27)` | `graphLocalRecovery`, `graphLocalRecovery_range_le` | `GraphLocalHallAssembly` |
+| `(26)` | `graphLocalRecovery_injective`, `hermitianFamilyCasimir_eq_zero_iff` | `GraphLocalHallAssembly`, `HermitianFamilyCasimirSplit` |
+| `(28)` | `inner_hermitianFamilyCasimir_self` | `HermitianFamilyCasimirSplit` |
+| `(29)` | **`graphLocalReducedObstruction_finrank_le`**, `visibleKernelRecovery_finrank_of_disjoint` | `GraphLocalHallAssembly` |
+| `(30)` | **`graphLocal_finrank_le_shadow_add_factorial`** | `GraphLocalHallSaturation` |
+
+Supporting infrastructure added for this card:
+
+- `VandermondeCoefficientMembership` -- `mem_of_forall_polynomial_value_mem` and its graded form:
+  a module-valued polynomial whose values at enough distinct scalars lie in a submodule has all its
+  coefficients there.  The Vandermonde matrix of the sample points is inverted explicitly.
+- `ReplicaRationalGate` -- the replicated rational rotation
+  `G_s = prod_l (1 + s i sigma_c^{(v,l)})`, its opposite-scale inverse `G_s G_{-s} = (1+s^2)^r`,
+  the one-replica-at-a-time conjugation formula, the closed form of
+  `G_s Q_p G_{-s}` inside the family span, and the expansion of `G_s X G_{-s}` as a polynomial in
+  the scale whose linear coefficient is exactly `i [Q_{v,c}, X]`.
+- `MatrixSandwichEquiv` -- two-sided multiplication by a scalar-inverse pair as a linear
+  automorphism of the vectorised operator space, and its exact covariance with commutator actions.
+- `SelfAdjointFamilyCommonKernel` -- for a self-adjoint family, the orthogonal complement of the
+  simultaneous kernel is the span of the ranges; both are preserved by every span-covariant
+  automorphism, so the kernel projector commutes with it.
+- `CommutingInvolutionCharacterExtraction` -- sign-graded extraction: if distinct components carry
+  distinct sign characters under operators preserving a subspace, membership of their sum forces
+  membership of each.  One separating operator is averaged at a time; only invertibility of `2` is
+  used.
+- `HermitianFamilyCasimirSplit` -- the quadratic Casimir of a Hermitian family is self-adjoint with
+  kernel the simultaneous kernel and range inside its complement, so any Casimir-invariant subspace
+  splits along it.
+
+## What the formal proof does differently
+
+Five steps of the paper argument are replaced by strictly finite substitutes.
+
+**Product-local `SU(2)` is replaced by rational rotations at finitely many scales.**  Equation
+`(12)` is not obtained from a continuous group action.  The formal symmetry is the replicated
+rational gate `G_s = prod_l (1 + s i sigma_c)`, invertible for every real `s` with
+`G_s G_{-s} = (1+s^2)^r`.  Conjugation acts one replica at a time, so a collective string is sent
+to an explicit combination of itself and the string with the letter multiplied in, which stays in
+the family span because multiplying a letter into a local word leaves its support unchanged.  The
+infinitesimal statement `A_p U_* subset U_*` is then recovered without any limit: the sandwich
+`G_s X G_{-s}` is a polynomial in `s` of degree at most `2r` whose linear coefficient is
+`i [Q_{v,c}, X]`, and Vandermonde inversion at `2r+2` integer scales extracts that coefficient.
+
+**Haar averaging is replaced by kernel-range splitting.**  Equation `(14)` follows from invariance
+of the obstruction under the weight-one Casimir alone: the Casimir is self-adjoint, its kernel is
+the singlet sector, its range lies in the orthogonal complement, and an endomorphism whose kernel
+meets its range trivially has kernel and range spanning.  No spectral projector is constructed.
+
+**The all-replica local-Casimir Hall law is not used.**  Internal reproduction `(15)` is obtained
+directly: the weight-one Casimir is injective on the nonsinglet layer, hence surjective onto it,
+and every Casimir image is a two-step weight-one image, so the layer reproduces itself.
+
+**The edge-Casimir singlet invariance of Lemma 6 is not needed.**  The assembly uses a form of the
+visible-kernel recovery inequality in which the output independence is a hypothesis, and that
+independence is proved directly from the Casimir quadratic form: an element of the visible output
+that is also an edge-Casimir image of a singlet pairs to zero with its own preimage, so every edge
+image of the preimage vanishes and the element is zero.
+
+**The commutant correction is realised by completing the family.**  The exact commutant `N_r` is
+taken to be the literal simultaneous kernel of the generators, as in `(5)`.  Adjoining its
+orthogonal projector produces a family with trivial simultaneous kernel whose ordinary Hall
+condition is equivalent to `(9)`, and the greatest obstruction of that completed family is the one
+the assembly bounds.  For a connected graph the simultaneous kernel is identified with the
+commutant of every collective string, which is what turns `(8)` into the stable-range form `(30)`.
 
 ## Exact surviving frontier
 

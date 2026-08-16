@@ -189,7 +189,7 @@ finite compression family can be counted as an operator theorem.
 
 ## 2026-06-24 One-Sided Bounds Need Operator Construction
 
-`one-sided-compression-bound-not-bounded-operator.md` complements the completion
+`../../3-formalized/not_new_scientific_knowledge/one-sided-compression-bound-not-bounded-operator.md` complements the completion
 requirement. The inequality `K<=I` on a dense polynomial domain is only an upper
 form bound. It does not imply that `K` is a bounded operator or a contraction in
 operator norm.

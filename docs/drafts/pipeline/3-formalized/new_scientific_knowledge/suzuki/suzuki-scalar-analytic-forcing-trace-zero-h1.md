@@ -1,7 +1,7 @@
 # Trace zero forces \(H^1\) for the literal scalar Gamma normal operator with analytic forcing
 
 - **ID:** `suzuki-scalar-analytic-forcing-trace-zero-h1`
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** EXACT SOURCE-NORMAL BENCHMARK / SCALE-GAP THEOREM
 - **Scientific status:** `[PROVED HERE] [NEW SCIENTIFIC KNOWLEDGE]`
   `[NOVELTY UNVERIFIED] [NOT RH]`

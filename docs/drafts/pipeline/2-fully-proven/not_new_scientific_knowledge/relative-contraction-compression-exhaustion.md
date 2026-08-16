@@ -95,7 +95,7 @@ they are just the finite shifted-Hankel/RH gate in normalized coordinates.
 
 ## 2026-06-24 One-Sided Form Bound Caveat
 
-`one-sided-compression-bound-not-bounded-operator.md` records the lower-bound
+`../../3-formalized/not_new_scientific_knowledge/one-sided-compression-bound-not-bounded-operator.md` records the lower-bound
 completion issue. A dense-domain inequality `k[v]<=||v||^2`, even on every
 finite compression, does not by itself construct a bounded self-adjoint
 operator. A diagonal form with entries `-n` passes the one-sided upper bound but

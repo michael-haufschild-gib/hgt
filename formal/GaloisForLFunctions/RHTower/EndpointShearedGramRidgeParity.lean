@@ -271,4 +271,55 @@ theorem sum_endpointSwapOdd_mul_endpointShearedDoubleTransform_eq_zero
   intro b
   exact (endpointShearedDoubleTransform_endpointSwap χ residue x hrealGram a b).symm
 
+/-! ### Sharpness of the real-Gram hypothesis
+
+Character unitarity and Hermitian symmetry of the Gram kernel do not by themselves identify the
+two endpoint ridges.  A two-point complex source over `ZMod 2` separates them. -/
+
+/-- The nontrivial additive character of `ZMod 2`. -/
+def signAddChar : AddChar (ZMod 2) ℂ where
+  toFun a := if a = 0 then 1 else -1
+  map_zero_eq_one' := if_pos rfl
+  map_add_eq_mul' := by
+    have hcases : ∀ c : ZMod 2, c = 0 ∨ c = 1 := by decide
+    intro a b
+    rcases hcases a with rfl | rfl <;> rcases hcases b with rfl | rfl <;>
+      simp only [show ((0 : ZMod 2) + 0) = 0 from by decide,
+        show ((0 : ZMod 2) + 1) = 1 from by decide,
+        show ((1 : ZMod 2) + 0) = 1 from by decide,
+        show ((1 : ZMod 2) + 1) = 0 from by decide] <;>
+      norm_num [show ¬((1 : ZMod 2) = 0) from by decide]
+
+@[simp]
+theorem signAddChar_apply (a : ZMod 2) : signAddChar a = if a = 0 then 1 else -1 := rfl
+
+/-- Residues of the two-point separating source. -/
+def twoPointResidue : Fin 2 → ZMod 2 := ![0, 1]
+
+/-- A two-point complex source whose Gram kernel is not real. -/
+def twoPointSource : Fin 2 → ℂ := ![1, Complex.I]
+
+theorem twoPoint_left_ridge :
+    endpointShearedDoubleTransform signAddChar twoPointResidue twoPointSource 1 0 =
+      2 * Complex.I := by
+  simp only [endpointShearedDoubleTransform, Fin.sum_univ_two, twoPointResidue, twoPointSource,
+    Matrix.cons_val_zero, Matrix.cons_val_one, signAddChar_apply,
+    RCLike.inner_apply]
+  norm_num [Complex.ext_iff]
+
+theorem twoPoint_right_ridge :
+    endpointShearedDoubleTransform signAddChar twoPointResidue twoPointSource 1 1 =
+      -(2 * Complex.I) := by
+  simp only [endpointShearedDoubleTransform, Fin.sum_univ_two, twoPointResidue, twoPointSource,
+    Matrix.cons_val_zero, Matrix.cons_val_one, signAddChar_apply,
+    RCLike.inner_apply]
+  norm_num [Complex.ext_iff]
+
+/-- **Sharpness.**  Without the real-Gram hypothesis the two endpoint ridges differ. -/
+theorem twoPoint_left_ridge_ne_right_ridge :
+    endpointShearedDoubleTransform signAddChar twoPointResidue twoPointSource 1 0 ≠
+      endpointShearedDoubleTransform signAddChar twoPointResidue twoPointSource 1 1 := by
+  rw [twoPoint_left_ridge, twoPoint_right_ridge]
+  norm_num [Complex.ext_iff]
+
 end RHTower

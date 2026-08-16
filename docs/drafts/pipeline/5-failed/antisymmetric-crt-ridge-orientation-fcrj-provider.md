@@ -101,7 +101,7 @@ the actual endpoint source at the signed `M^-1` scale.
 ## Paper and Lean status
 
 - The paper proofs are dependency-closed in
-  `2-fully-proven/not_new_scientific_knowledge/endpoint-sheared-gram-ridge-parity.md`,
+  `3-formalized/not_new_scientific_knowledge/endpoint-sheared-gram-ridge-parity.md`,
   `universal-quadratic-root-ridge-density.md`, and
   `common-profile-boolean-anchor-curvature.md`.
 - Lean sources are

@@ -6752,3 +6752,21 @@ which is already available as `sum_norm_xiMassCenteredPrimeAtom_exterior_le` (it
       shellRemainder_relative_le                        the Schlaefli remainder factor is `<= C/u`
       exists_shellProfile_relative_error                **(17.20)** the uniform shell asymptotic
                                                         `‖K_u(kappa u+s) - Lambda‖ <= (C/u)|Lambda|`
+
+### Lean progress: (17.21) and the shifted exterior tail
+
+    RHTower/XiMassShellPrimeMass.lean
+      chebyshevTheta_eventually_relative                the plain relative PNT `|theta(x)-x|<=eps x`
+                                                        from the corpus square-root-log error form
+      chebyshevTheta_sub_eq_shellSum                    `theta(y)-theta(x)` is the shell prime sum
+      exists_shell_theta_lower                          **(17.21)** `sum_{shell} log p >=
+                                                        (1/2)(e^L-1) e^{kappa u}` for large `u`
+
+    RHTower/XiMassShellExteriorTail.lean
+      norm_xiMassCenteredPrimeAtom_exteriorSqrt_le,
+        xiMassBesselExteriorSqrtTailConstant,
+        sum_norm_xiMassCenteredPrimeAtom_exteriorSqrt_le
+                                                        **(17.23)** the exterior tail past
+                                                        `e^{kappa u + L}` with both the
+                                                        stationary-phase factor `u^{-1/2}` and the
+                                                        geometric gain `e^{-(a-1/2)L}`

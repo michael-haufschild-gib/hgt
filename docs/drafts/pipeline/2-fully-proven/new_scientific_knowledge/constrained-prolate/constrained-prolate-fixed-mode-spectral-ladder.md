@@ -3478,3 +3478,231 @@ ProlateDunsterEndpointWronskian               endpoint Wronskian values         
 ProlateDunsterEndpointVolterra                endpoint-anchored transport               —
 ProlateDunsterEndpointCoefficientBounds       |F_regular|, |F_log − π/4| = O(1/c)       —
 ```
+
+## The band comparison defect is a simple pole, and its Liouville mass is finite
+
+The band-side mirror of the radial Dunster layer is now built through its analytic core.  Writing the
+band equation and its modified-Bessel model both in *drift* form — first-order coefficient kept, the
+difference pushed entirely into the potential — the aperture cancels identically and the defect is
+
+```text
+a = 1/(1−y²)² + B²/4 + B'/2 ,      B = Ξ'/Ξ − Ξ''/Ξ' ,
+```
+
+with **no `c` in it at all**.  This is the exact analogue of `lgNormalFormDefect` on the radial side,
+and it is the quantity whose pole order decides everything: a simple pole has finite mass against the
+band's Liouville measure `dy/|Ξ'|`, which vanishes like `√(1−y)` at the endpoint; a double pole would
+not.
+
+### The cancellation, made algebraic
+
+`lgDrift_normalForm` already reduced `B²/4 + B'/2` to `−(Ξ')²/(4Ξ²) + D²/4 − D'/2` with `D = Ξ''/Ξ'`
+rational.  The remaining step is to remove the *explicit* singular part of `Ξ'/Ξ`.  Setting
+
+```text
+L_s(y) = Ξ'/Ξ + y/(1−y²)      (bandPhaseLogDefect)
+```
+
+and substituting `Ξ'/Ξ = −y/(1−y²) + L` gives, as an identity between explicit functions
+(`bandComparisonDefect_eq`, `field_simp; ring` after the substitution — `Ξ` and `P` never need to be
+evaluated, they cancel as atoms):
+
+```text
+a = (y⁴ + (3−8s)y² + 2s² + 2s) / (4(1−y²)(y²−s)²)  +  yL/(2(1−y²))  −  L²/4 .
+```
+
+The rational part is `bandDefectAlg`.  Its numerator is what the double-pole cancellation produces:
+the naive numerator `−y⁶ + (8s−2)y⁴ + (3−10s−2s²)y² + 2s(s+1)` **vanishes at `y² = 1`**, and dividing
+by `1 − y²` leaves `y⁴ + (3−8s)y² + 2s² + 2s`.  That single divisibility is the whole content of the
+`(1−y)^(−2)` cancellation, now a polynomial identity rather than an asymptotic assertion.
+
+### The logarithmic defect is bounded
+
+`|L_s(y)| ≤ 2` for `0 ≤ s ≤ 1/2`, `0 < y < 1`, `s < y²` (`abs_bandPhaseLogDefect_le`) — uniformly, and
+up to the endpoint.  Both directions come from a sharp two-sided squeeze of the phase itself:
+
+```text
+√(y²−s)·√(2(1−y))   ≤   Ξ_s(y)   ≤   √(1−s)·2√(1−y)/√(1+y)
+```
+
+(`sharp_le_bandEndpointPhase`, `bandEndpointPhase_le_sharp`).  Both sides agree to relative order
+`1−y`, which is exactly the accuracy at which `Ξ'/Ξ` separates from `−y/(1−y²)`.  The intermediate
+step is the same squeeze for `arccos`,
+
+```text
+√(2(1−y))  ≤  arccos y  ≤  2√(1−y)/√(1+y) ,
+```
+
+proved by comparing derivatives on the *open* interval — both derivatives blow up at `y = 1`, so the
+comparison is carried to the endpoint by continuity alone (`le_of_continuousOn_of_deriv_nonneg`, a new
+reusable form of the monotonicity criterion).  The upper half of `|L| ≤ 2` then needs only
+`√(1−z) ≥ 1−z`; the lower half needs only `1 + y ≤ 2`.
+
+### The bound and the mass
+
+```text
+|a| ≤ 100/(1−y²)          on 1/2 ≤ y < 1,  0 ≤ s ≤ 1/8      abs_bandComparisonDefect_le
+∫_A^B |a|/P ≤ 500         for every 1/2 < A ≤ B < 1          integral_bandDefectMass_le
+```
+
+The mass bound is uniform in the aperture and in the separation parameter, and — as on the radial
+side — it is stated on compact subintervals with a bound uniform as `B → 1`, so no improper integral
+is ever formed.  The majorant is `200√2/√(1−y²)`, whose exact primitive is `arcsin`.
+
+New modules: `RHTower.BandEndpointPhaseSharp`, `RHTower.BandPhaseLogDefect`,
+`RHTower.BandComparisonDefect`, `RHTower.BandDefectMass`, plus the reusable
+`HTGeometry.AbstractComparisonTransport` (drift-form Wronskian transport, amplitude `√|m|`, and the
+normal-form-to-drift-form passage, all for an arbitrary integrating factor, so that the same
+statements serve an oscillatory comparison and a barrier one).
+
+### The assembly this unlocks — and why the `σ₊ ≈ 24` problem disappears
+
+The precision audit recorded above found item 1's loss `6·log((1−√s)/(1−b))` fatal *because the plan
+pushed the matching point `b` to within `c^(−2)` of the endpoint*.  With a modified-Bessel model
+covering the endpoint collar, `b` never moves: the collar is `[1−δ, 1]` for an **absolute** `δ`, and
+item 1's loss is `6·log((1−√s)/δ)`, a constant.  `σ₊` collapses from `24` to `0`.
+
+Nor is a sharp `O(1/c)` comparison needed on the collar.  The consumer allows `c^(±3/2)`; a two-sided
+bound with absolute constants is `σ = 0` and is inside the budget with room to spare.  Concretely, on
+`[1−δ, 1]`, with `V = I₀(cΞ)` the model and `R = Φ/V`:
+
+```text
+R(y) = 1 − ∫_y^1 K(y,t) a(t) R(t) dt ,     K(y,t) = m̃(t)V(t)² ∫_y^t dτ/(m̃V²) ,   m̃ = Ξ/P ,
+```
+
+and since `V` is antitone in `y` the crude bound `V(τ) ≥ V(t)` for `τ ≤ t` already gives
+
+```text
+K(y,t) ≤ m̃(t)·∫_y^t dτ/m̃(τ) ≤ 6(1−t)·log((1−y)/(1−t)) ,
+|a(t)|K(y,t) ≤ 600·log((1−y)/(1−t)) ,      ∫_y^1 |a|K ≤ 600(1−y) ,
+```
+
+using `(1−y)√2√(1+y) ≤ m̃ ≤ 6(1−y)` from the phase squeeze.  Choosing `δ = 1/4000` makes the total
+kernel mass at most `1/4`, and the elementary contraction
+
+> `M = max_{[1−δ,1]}|R|`, `M ≤ 1 + M/4`, hence `M ≤ 4/3` and `|R − 1| ≤ 1/3`
+
+replaces Grönwall entirely — no continuity of the kernel at the endpoint is needed, which matters
+because `|a|·K` really does diverge logarithmically at `t = 1` while remaining integrable.  The
+conclusion is `Φ(1−δ)/Φ(1) ∈ [2/3, 4/3]·I₀(cΞ(1−δ))`, i.e. the endpoint layer costs `σ = 0` beyond the
+`c^(−1/2)` that `I₀`'s own envelope already carries.
+
+Should the sharp constant `A_n` ever be wanted rather than the two-sided ladder, the same kernel obeys
+the far better bound `K(y,t) ≤ 1/(2cP(t))` — from `I₀(z₂)/I₀(z₁) ≤ e^(z₂−z₁)`, which is
+`besselI0Deriv_le_besselI0` integrated — making the total mass `≤ 250/c` and the relative error
+`O(1/c)`.  That is the band twin of `ProlateDunsterEndpointCoefficientBounds`.
+
+### The band-side layer
+
+```text
+besselJ0/besselJ0_ode            → besselI0/besselI0_ode                      ✔
+lgBesselModel_ode                → besselIModel_ode                           ✔
+xiEndpointPhase/xiSpeed/Deriv    → bandEndpointPhase + both derivatives       ✔
+sharp endpoint squeeze of ξ      → bandEndpointPhase_le_sharp + lower         ✔
+phaseLogDefect bounds            → abs_bandPhaseLogDefect_le                  ✔
+lgNormalFormDefect (algebra)     → bandComparisonDefect_eq                    ✔
+|lgNormalFormDefect| ≤ 40/(x²−1) → abs_bandComparisonDefect_le                ✔
+its Liouville mass               → integral_bandDefectMass_le                 ✔
+weighted Wronskian transport     → HTGeometry.hasDerivAt_driftWronskian       ✔
+the model V = I₀(cΞ) on the band → —
+endpoint Wronskian value (zero)  → —
+the kernel bound and contraction → —
+```
+
+## The band endpoint layer is closed: the solution is trapped by the modified-Bessel model
+
+The comparison is now a theorem, with absolute constants and no asymptotics:
+
+```text
+bandModel_le_and_le_bandModel :
+  0 ≤ s ≤ 1/8,  0 < c,  1/2 < α < 1,  600(1−α) ≤ 1/4,
+  U solves  U'' = −B U' − (−c²P² + a) U  on (α,1),   U continuous on [α,1],  U(1) = 1
+  ⟹  (2/3)·I₀(cΞ(y))  ≤  U(y)  ≤  (4/3)·I₀(cΞ(y))     for all y ∈ [α,1] .
+```
+
+`B = Ξ'/Ξ − Ξ''/Ξ'` is the band's own first-order coefficient, `a = bandComparisonDefect` its own
+defect, and the aperture term `−c²P²` is shared with the model exactly — nothing about `c` enters the
+constants.
+
+### What made it work, in order
+
+**The Liouville weight vanishes linearly.**  `m̃ = Ξ/P` satisfies `m̃' = m̃ B`
+(`hasDerivAt_bandLiouvilleWeight`) and, from the phase squeeze,
+
+```text
+(1−y) ≤ m̃(y) ≤ 6(1−y)      on 1/2 ≤ y ≤ 1,  s ≤ 1/8 .
+```
+
+Multiplied against the simple pole this gives an outright bound on the transported density,
+`m̃|a| ≤ 600` — the pole and the weight cancelling exactly.
+
+**The Wronskian is continuous to the endpoint, and vanishes there.**  The obstacle was that the
+model's derivative `V' = −c P I₀'(cΞ)` blows up at `y = 1`.  But the Wronskian only ever sees the
+product
+
+```text
+m̃ V' = −c Ξ I₀'(cΞ) ,
+```
+
+because `m̃ P = Ξ`.  Rewritten that way (`bandWronskian_eqOn`) the Wronskian is manifestly continuous
+on the closed collar, and `m̃(1) = 0` gives `W(1) = 0` outright.  So the endpoint-anchored transport
+
+```text
+W(τ) = −∫_τ^1 m̃ a U V
+```
+
+is an ordinary fundamental-theorem statement on a closed interval — **no improper integral, no
+limiting argument, and no second (logarithmic) branch of the model**.  On the radial side the same
+step costs the 307-line `ProlateDunsterEndpointWronskian` plus a `K₀`-analogue; here it costs one
+algebraic identity.
+
+**The double integral is bounded without Fubini.**  From `V` antitone and `|R| ≤ M`,
+
+```text
+|W(τ)| ≤ 600 M V(τ)² (1−τ) ,        |R'| = |W|/(m̃V²) ≤ 600 M ,
+```
+
+the second step using `m̃ ≥ 1−y` to cancel the `(1−τ)`.  Integrating once more,
+`|R(y) − 1| ≤ M·600(1−α)`.  The nested estimate never needs the order of integration swapped, and
+never needs the exponential decay of `1/V²`.
+
+**The contraction closes it.**  `abs_sub_one_le_of_self_bound`: a self-referential bound with mass
+`κ < 1` forces `max|R| ≤ 1/(1−κ)` and `|R−1| ≤ κ/(1−κ)`.  With `κ = 600(1−α) ≤ 1/4` the ratio is
+inside `[2/3, 4/3]`.  Grönwall is not used and could not be: the kernel density genuinely diverges
+logarithmically at `t = 1`.
+
+### The band-side layer
+
+```text
+besselJ0/besselJ0_ode            → besselI0/besselI0_ode                      ✔
+lgBesselModel_ode                → besselIModel_ode, bandModel_ode            ✔
+xiEndpointPhase/xiSpeed/Deriv    → bandEndpointPhase + both derivatives       ✔
+sharp endpoint squeeze of ξ      → bandEndpointPhase_le_sharp + lower         ✔
+phaseLogDefect bounds            → abs_bandPhaseLogDefect_le                  ✔
+lgNormalFormDefect (algebra)     → bandComparisonDefect_eq                    ✔
+|lgNormalFormDefect| ≤ 40/(x²−1) → abs_bandComparisonDefect_le                ✔
+its Liouville mass               → integral_bandDefectMass_le                 ✔
+lgWeight, its integrating law    → bandLiouvilleWeight + its derivative law   ✔
+weighted Wronskian transport     → hasDerivAt_bandWronskian                   ✔
+endpoint Wronskian value         → bandWronskian_one (identically zero)       ✔
+endpoint-anchored Volterra       → bandWronskian_eq_neg_integral              ✔
+coefficient bounds O(1/c)        → abs_bandRatio_sub_one_le (σ = 0 version)   ✔
+```
+
+New modules: `RHTower.BandBesselModel`, `RHTower.BandLiouvilleWeight`,
+`RHTower.BandComparisonVolterra`, `HTGeometry.VolterraContraction`.
+
+### What remains for `(β)`
+
+Two mechanical steps and one assembly:
+
+1. **The passage from the prolate angular equation to `U`.**  `u = Φ·√(1−y²)` removes the first-order
+   term (`Q = −c²P² + (1−y²)^(−2)`), and `U = u/√m̃` moves it into drift form with coefficient `B`.
+   Both are instances of `HTGeometry.hasDerivAt_comparisonQuotientDeriv_driftAmplitude`; the only
+   missing ingredient is that `bandFirstOrderCoeffDeriv` really is the derivative of
+   `bandFirstOrderCoeff`, which is the same quotient-rule computation as
+   `hasDerivAt_bandLiouvilleWeight`.
+2. **The amplitude ratio.**  `Φ = U·A` with `A² = m̃/(1−y²) ∈ [√2/√(1+y), 6/(1+y)] ⊂ [0.8, 4]` on the
+   collar, and `A(1) = 1`.  Pure phase-squeeze arithmetic.
+3. **The assembly.**  `Φ(α)/Φ(1) ≍ I₀(cΞ(α))` with absolute constants; `Φ(√s)/Φ(α)` from the sharp
+   action with the now-constant loss `6·log((1−√s)/(1−α))`; then items 2 and 3 as before.

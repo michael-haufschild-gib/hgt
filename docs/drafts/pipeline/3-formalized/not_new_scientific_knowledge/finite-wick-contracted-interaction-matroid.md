@@ -1,7 +1,7 @@
 # Finite Wick-Contracted Interaction Matroid
 
 - **ID:** WCDMF-FINITE
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / INFRASTRUCTURE / NOT NEW SCIENTIFIC KNOWLEDGE
 - **Source:** `../../1-in-progress/wick-contracted-differential-matroid-field.md`
 - **Statement:** Labeled higher connected reporters carry a canonical algebraic matroid contracted by the face-complete Gaussian base; its rank is relative transcendence degree, Wick-algebraic reporters are loops, algebraic counterterm refinements preserve the entire signal matroid, injective reporter embeddings preserve it, and an infinite vertical jet restriction is free exactly for a hypertranscendental reporter.
@@ -165,9 +165,42 @@ The missing full structure is now implemented in
 - [x] 0 → 1: labeled comap/contraction object and exact claims stated
 - [x] 1 → 2: complete finite proof given above
 - [x] novelty gate: infrastructure / not new scientific knowledge
-- [ ] 2 → 3: full-matroid Lean equality formalized and exact checks pass; shared-tree global lint remains red on unrelated concurrent modules
+- [x] 2 → 3: full labeled-matroid Lean formalization complete and axiom-audited
 - [ ] 3 → 4: not a standalone publication result
 
 ## Log
 
 - 2026-07-17 — created directly in 2-fully-proven after proof. The exact counterterm result is equality of the restricted contracted matroids, strengthening the existing rank-only formal theorem.
+
+## Lean formalization
+
+Modules (namespace `GaloisForLFunctions.HTGeometry`), both wired into the
+`GaloisForLFunctions.HTGeometry` umbrella:
+
+- `formal/GaloisForLFunctions/HTGeometry/WickContractedInteractionMatroid.lean`
+- `formal/GaloisForLFunctions/HTGeometry/WickInteractionMatroidLabels.lean`
+
+| Paper statement | Lean declaration |
+|---|---|
+| `(1)` labeled comap matroid `M_ev` | `wickLabelMatroid`, `wickLabelMatroid_indep_iff`, `wickLabelMatroid_ground` |
+| `(2)` interaction matroid `I_K(ev;G,S)` | `wickContractedInteractionMatroid`, `wickInteractionMatroid` |
+| `(6)` relative rank of a contraction | `contract_eRk_add_eRk_eq` (with `eRk_delete_eq_of_disjoint`) |
+| comap rank is the rank of the evaluated packet | `wickLabelMatroid_eRk` |
+| `(3)` relative-rank law | `wickInteractionMatroid_eRk_add_eRk_eq`, subtractive form `wickInteractionMatroid_eRk_toNat_eq_sub` |
+| Theorem 2, Wick collapse (`(7)`) | `wickContractedInteractionMatroid_eq_loopyOn_of_signal_subset_closure`, labeled form `wickInteractionMatroid_eq_loopyOn` |
+| Theorem 3, full counterterm neutrality `(4)` | `wickContractedInteractionMatroid_eq_of_counterterms_subset_closure`, labeled form `wickInteractionMatroid_counterterm_neutral` |
+| Theorem 4, embedding covariance | `wickLabelMatroid_algHom` |
+| Theorem 4, jet-order preservation under a derivation-commuting map | `differentialJet_algHom` |
+| Theorem 5, vertical hypertranscendence law `(5)` | `wickLabelMatroid_eq_freeOn_iff`, `wickLabelMatroid_differentialJet_eq_freeOn_iff` |
+
+Equation `(3)` is formalized in its additive matroid-rank form
+`r_I(T) + r(ev(G)) = r(ev(T ∪ G))`, together with the subtractive `ℕ`-form for finite label
+packets; the card itself records that the transcendence-degree difference and the rank difference
+of the evaluated value sets are the same quantity, and the ambient matroid is mathlib's algebraic
+matroid `AlgebraicIndependent.matroid`, whose rank is transcendence degree.
+
+`contract_eRk_add_eRk_eq` closes a mathlib gap: mathlib has no relative-rank law for matroid
+contraction.
+
+Audit: direct `lake env lean` check clean, targeted module builds clean, umbrella imports wired,
+`#print axioms` on every declaration above returns only `propext`, `Classical.choice`, `Quot.sound`.

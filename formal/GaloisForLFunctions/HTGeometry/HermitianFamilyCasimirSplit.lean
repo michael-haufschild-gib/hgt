@@ -104,14 +104,14 @@ theorem inner_hermitianFamilyCasimir_self (M : J → Matrix D D ℂ) (hM : ∀ j
     adjoint_toEuclideanLin_of_hermitian (hM j)]
   exact inner_self_eq_norm_sq_to_K (𝕜 := ℂ) _
 
-theorem hermitianFamilyCasimir_eq_zero_iff (M : J → Matrix D D ℂ) (hM : ∀ j, (M j)ᴴ = M j)
-    (x : EuclideanSpace ℂ D) :
-    hermitianFamilyCasimirOperator M x = 0 ↔ x ∈ hermitianMatrixFamilyCommonKernel M := by
+/-- Vanishing of the Casimir quadratic form already forces membership in the simultaneous
+kernel. -/
+theorem mem_commonKernel_of_inner_hermitianFamilyCasimir_eq_zero (M : J → Matrix D D ℂ)
+    (hM : ∀ j, (M j)ᴴ = M j) (x : EuclideanSpace ℂ D)
+    (hinner0 : @inner ℂ _ _ x (hermitianFamilyCasimirOperator M x) = 0) :
+    x ∈ hermitianMatrixFamilyCommonKernel M := by
   classical
-  constructor
-  · intro hzero
-    have hinner : @inner ℂ _ _ x (hermitianFamilyCasimirOperator M x) = 0 := by
-      rw [hzero, inner_zero_right]
+  · have hinner := hinner0
     rw [inner_hermitianFamilyCasimir_self M hM] at hinner
     have hreal : (∑ j, ‖(M j).toEuclideanLin x‖ ^ 2) = 0 := by
       have hcast : ((∑ j, ‖(M j).toEuclideanLin x‖ ^ 2 : ℝ) : ℂ) = 0 := by
@@ -124,6 +124,15 @@ theorem hermitianFamilyCasimir_eq_zero_iff (M : J → Matrix D D ℂ) (hM : ∀ 
       (fun j' _ => sq_nonneg _)).mp hreal j (Finset.mem_univ j)
     exact LinearMap.mem_ker.mpr (norm_eq_zero.mp (pow_eq_zero_iff (n := 2) (by norm_num) |>.mp
       hterm))
+
+theorem hermitianFamilyCasimir_eq_zero_iff (M : J → Matrix D D ℂ) (hM : ∀ j, (M j)ᴴ = M j)
+    (x : EuclideanSpace ℂ D) :
+    hermitianFamilyCasimirOperator M x = 0 ↔ x ∈ hermitianMatrixFamilyCommonKernel M := by
+  classical
+  constructor
+  · intro hzero
+    refine mem_commonKernel_of_inner_hermitianFamilyCasimir_eq_zero M hM x ?_
+    rw [hzero, inner_zero_right]
   · intro hx
     rw [hermitianMatrixFamilyCommonKernel, Submodule.mem_iInf] at hx
     rw [hermitianFamilyCasimirOperator_apply]

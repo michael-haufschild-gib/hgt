@@ -111,7 +111,7 @@ and hence path-connected.
 For `2^n > deg_Y P`, analytic continuation around the iterates of `gamma` gives
 more roots in the `Y`-variable than the degree of `P`. The
 one-coordinate monodromy obstruction
-`unbounded-one-coordinate-monodromy-obstruction.md` then forces algebraic
+`../../3-formalized/not_new_scientific_knowledge/unbounded-one-coordinate-monodromy-obstruction.md` then forces algebraic
 independence, using the transcendence of the fixed coordinate `phi_c2`.
 
 Thus no relation exists in the disconnected/disconnected case.
@@ -139,7 +139,7 @@ same loop fixes `phi_a`. The zero-dimensional non-cutting gate gives a path from
 the infinity germ to the loop basepoint in `Omega_a cap Omega_b`.
 
 Taking `2^n` larger than the polynomial degree and applying
-`not-new-but-required/unbounded-one-coordinate-monodromy-obstruction.md` gives algebraic
+`../../3-formalized/not_new_scientific_knowledge/unbounded-one-coordinate-monodromy-obstruction.md` gives algebraic
 independence.
 
 This closes the mixed case.

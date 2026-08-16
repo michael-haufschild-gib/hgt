@@ -634,7 +634,7 @@ contraction there. Accumulating finite compression checks is not the proof.
 
 ## 2026-06-24 one-sided form control is not operator construction
 
-`../2-fully-proven/one-sided-compression-bound-not-bounded-operator.md` closes a
+`../3-formalized/not_new_scientific_knowledge/one-sided-compression-bound-not-bounded-operator.md` closes a
 loophole in the boundary-Weyl route. A form inequality on the polynomial core,
 even if every finite compression satisfies it, need not define a bounded
 self-adjoint contraction. The diagonal form `k[e_n]=-n` is the model failure:

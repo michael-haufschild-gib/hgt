@@ -1,7 +1,7 @@
 # One-Sided Compression Bound Does Not Give A Bounded Operator
 
 - **ID:** one-sided-compression-bound-not-bounded-operator
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / operator-route guardrail
 - **Source:** `relative-contraction-compression-exhaustion.md`;
   `loewner-contraction-congruence-normalization.md`
@@ -79,10 +79,26 @@ an operator theorem.
 
 - [x] 0 -> 1 in-progress: one-sided completion loophole isolated.
 - [x] 1 -> 2 fully-proven: diagonal counterexample written.
-- [ ] 2 -> 3 formalized: bounded-operator contradiction on `ell^2`.
+- [x] 2 -> 3 formalized: bounded-operator contradiction on `ell^2`.
 
 ## Log
 
 - 2026-06-24 -- Codex: created after the compression-exhaustion card. It
   separates finite one-sided form positivity from construction of a bounded
   completed contraction.
+
+## Lean formalization
+
+Module: `formal/GaloisForLFunctions/RHTower/OneSidedCompressionUnbounded.lean`
+(namespace `RHTower`), wired into the `GaloisForLFunctions.RHTower` umbrella.
+
+| Paper statement | Lean declaration |
+|---|---|
+| `k[v] <= ||v||^2` on finitely supported vectors | `negDiagonalForm_le_normForm` |
+| `K_d <= I` for every finite compression | `negDiagonalCompression_le_normForm` |
+| `|<K e, e>| <= ||K||` for a unit vector | `norm_inner_apply_le_opNorm` |
+| no bounded operator has diagonal entries `-n` | `not_exists_bounded_diagonal_neg_natCast` |
+| the same on `ell^2(N)` with its standard basis | `EllTwo`, `ellTwoBasis`, `norm_ellTwoBasis`, `not_exists_bounded_ellTwo_diagonal_neg_natCast` |
+
+Audit: direct `lake env lean` check clean, targeted module build clean, umbrella import wired,
+`#print axioms` returns only `propext`, `Classical.choice`, `Quot.sound`.

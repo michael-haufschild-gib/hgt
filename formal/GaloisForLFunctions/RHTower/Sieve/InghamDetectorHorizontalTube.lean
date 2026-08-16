@@ -125,7 +125,7 @@ private theorem sum_multiplicity_le_finsum
     exact hTunion
   exact_mod_cast hInt
 
-private theorem exists_tube_factor_data
+theorem exists_tube_factor_data
     {f : ℂ → ℂ} {c : ℂ} {Mf m0 L : ℝ}
     (hf : AnalyticOnNhd ℂ f Set.univ)
     (hnz : ∀ a : ℂ, ¬ ∀ᶠ z in nhds a, f z = 0)
@@ -237,7 +237,7 @@ private theorem exists_tube_factor_data
   exact ⟨T, m, g, hg, hgfree, hTmem, hmpos,
     fun z => hfac z (Set.mem_univ z), hNL, hgball, hgcenter⟩
 
-private theorem norm_logDeriv_le_of_factor_data
+theorem norm_logDeriv_le_of_factor_data
     {f g : ℂ → ℂ} {c z : ℂ} {T : Finset ℂ} {m : ℂ → ℕ}
     {Mf m0 d : ℝ}
     (hg : AnalyticOnNhd ℂ g Set.univ)
@@ -302,7 +302,7 @@ private theorem norm_logDeriv_le_of_factor_data
   rw [hsplit]
   exact (norm_add_le _ _).trans (add_le_add hrational hcofactor)
 
-private theorem ne_zero_of_factor_data
+theorem ne_zero_of_factor_data
     {f g : ℂ → ℂ} {z : ℂ} {T : Finset ℂ} {m : ℂ → ℕ} {d : ℝ}
     (hfac : f z = (∏ a ∈ T, (z - a) ^ (m a)) * g z)
     (hg : g z ≠ 0) (hd : 0 < d)
@@ -319,7 +319,7 @@ private theorem ne_zero_of_factor_data
       linarith
   · exact hg
 
-private theorem exists_Ioo_add_one_separated_from_finset
+theorem exists_Ioo_add_one_separated_from_finset
     (F : Finset ℝ) (A delta : ℝ) (hdelta : 0 ≤ delta)
     (hsmall : 2 * F.card * delta < 1) :
     ∃ T ∈ Ioo A (A + 1), ∀ x ∈ F, delta ≤ |T - x| := by

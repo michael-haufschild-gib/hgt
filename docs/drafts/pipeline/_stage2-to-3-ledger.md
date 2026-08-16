@@ -3158,3 +3158,29 @@ one-parameter groups `exp(t A_p)` and the resulting splitting `(14)`–`(15)`, a
 
 Combined with the synchronized-kernel theorem from the promoted fixed-edge card, this gives `(26)`:
 `K₂` is injective on the singlet sector modulo the global collective commutant.
+
+### Promoted: one-step Pauli Hall saturation (2026-08-16)
+
+`all-replica-one-step-local-pauli-hall-saturation-law.md` is now stage 3.  Equations `(8)`, `(9)`
+and `(30)` are Lean-certified as
+`graphLocal_finrank_le_shadow_add_commonKernel`,
+`graphLocal_finrank_le_shadow_of_le_orthogonal` and
+`graphLocal_finrank_le_shadow_add_factorial`; all audit to
+`[propext, Classical.choice, Quot.sound]`.  The full equation-to-declaration table is on the card.
+
+New modules, all wired into `GaloisForLFunctions.HTGeometry` and built:
+`VandermondeCoefficientMembership`, `ReplicaRationalGate`, `MatrixSandwichEquiv`,
+`GraphLocalPauliFamily`, `SelfAdjointFamilyCommonKernel`, `GraphLocalCompletedFamily`,
+`GraphLocalPauliCovariance`, `GraphLocalPauliConjugation`,
+`CommutingInvolutionCharacterExtraction`, `GraphLocalPauliDetector`,
+`HermitianFamilyCasimirSplit`, `GraphLocalHallAssembly`, `GraphLocalHallSaturation`.
+
+The five substitutions for the paper argument (rational rotation gates plus Vandermonde extraction
+instead of `SU(2)` and Haar; kernel-range splitting instead of a Haar projector; Casimir
+surjectivity instead of the local-Casimir Hall law; a disjointness-hypothesis form of the
+visible-kernel recovery instead of Lemma 6's singlet invariance; kernel-projector completion
+instead of working on a quotient) are documented on the card under "What the formal proof does
+differently".
+
+`HTGeometry/DeficiencySupermodular.lean` was deleted: it duplicated the corpus's
+`LinearFamilyDefectSupermodularity` and `LinearFamilyGreatestMaximizer`.

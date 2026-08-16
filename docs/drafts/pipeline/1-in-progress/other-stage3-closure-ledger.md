@@ -71,7 +71,7 @@
 - [ ] `projective-prime-weyl-leakage-fock-normal-cone`
 - [ ] `rational-coarse-graining-orbifold-tail-classification`
 - [x] `scalar-differential-inversive-core-projective-law`
-- [ ] `scalar-ht-horizon-celestial-sphere`
+- [x] `scalar-ht-horizon-celestial-sphere` — 2026-08-16, `scalarHorizon_celestialSphere_realization`
 - [ ] `symmetry-caged-fixed-divisor-full-orbit-freeness`
 - [ ] `toric-log-calabi-yau-tail`
 - [ ] `torusless-quasi-abelian-fixed-factor-all-order-jet-ampleness`
@@ -1567,3 +1567,15 @@ new files and `ccm-four-unit-cesaro-curvature-wall` is modified in the working t
   `noncompact-period-quotient-facet-escape-law`) need divisor/pluricanonical or toric geometry.
 - `bessel-order-intensity-hypertranscendence` needs a special case of Dreyfus's
   DA-to-periodic-exponential theorem.
+- 2026-08-16 — `scalar-ht-horizon-celestial-sphere` closed. New modules:
+  `HTGeometry/ProjectiveHorizonCelestialSphere.lean` (choice independence of the derivative horizon
+  of a Moebius coordinate, exact classification of horizon equality by the projective class of the
+  denominator covector, injective `P^1(C)` realization, fractional-linear equivariance, exact join
+  and exact meet at every ordered pair of distinct boundary points, parabolic and Cartan
+  stabilizers, unique oriented geodesic through a pair, and a prime-field instance with no
+  constants hypothesis); `HTGeometry/HyperbolicThreeSpaceBoundary.lean` (`H^3` as the unimodular
+  positive-definite Hermitian `2x2` matrices, transitivity of `SL_2(C)` by explicit Cholesky
+  factorization, isotropy `SU(2)`, and the visual boundary as light rays modulo positive scale
+  identified with `P^1(C)`); `HTGeometry/ScalarHorizonCelestialBoundary.lean` (the weld). All three
+  wired into the `HTGeometry` umbrella; capstones use only `propext`, `Classical.choice`,
+  `Quot.sound`.

@@ -1,7 +1,7 @@
 # Unbounded one-coordinate monodromy obstructs algebraic dependence
 
 - **ID:** unbounded-one-coordinate-monodromy-obstruction
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / BRIDGE method lemma
 - **Source:** abstracted from the Nguyen Q6.2 inverse-Böttcher route
 
@@ -80,3 +80,29 @@ monodromy in one coordinate while the other coordinate remains fixed.
 In the project vocabulary, it isolates a basic form of "constraint, not flow":
 the obstruction is not a generative differential equation but an infinite
 continuation action that no finite algebraic relation can absorb.
+
+## Lean formalization
+
+Module: `formal/GaloisForLFunctions/HTGeometry/ScalarMonodromyAlgebraicIndependence.lean`
+(namespace `GaloisForLFunctions.HTGeometry`).
+
+Continuation along a loop is an `L`-algebra automorphism of the germ algebra, where `L = K(z)` is
+the coefficient field it fixes pointwise; the germ algebra is an integral domain. The Lean layer
+quantifies over exactly that data, so the analytic input is the card's own hypothesis and nothing
+else.
+
+| Paper statement | Lean declaration |
+|---|---|
+| iterating the loop multiplies by `xi^k` | `algEquiv_pow_apply_of_scalar` |
+| iterating the loop fixes the untouched coordinate | `algEquiv_pow_apply_of_fixed` |
+| unbounded scalar monodromy forces transcendence over the fixed subalgebra | `transcendental_of_unbounded_scalar_monodromy` |
+| `{F,G}` algebraically independent over `K(z)` | `algebraicIndependent_pair_of_unbounded_scalar_monodromy` |
+
+The proof is the card's degree argument in its sharp form: a relation of degree `d` in the moved
+coordinate is inherited by the `m > d` pairwise distinct translates `xi^k F`, and a polynomial of
+degree `d` over a domain vanishing at `m > d` distinct points is zero; injectivity of the
+coefficient inclusion then kills every coefficient. The symmetric variant of the card is the same
+theorem with the roles of the two germs exchanged.
+
+Audit: direct `lake env lean` check clean, targeted module build clean, umbrella import wired,
+`#print axioms` returns only `propext`, `Classical.choice`, `Quot.sound`.

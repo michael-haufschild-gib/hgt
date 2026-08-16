@@ -8,6 +8,12 @@
 
 ## Goal
 
+**Promotion note (2026-08-16).** Cubic theorem is fully subsumed by all-depth source theorem and
+relative-reference inheritance law in
+`3-formalized/new_scientific_knowledge/ccm/ccm-gauss-all-depth-critical-reference-inheritance.md`.
+Do not reopen depth-by-depth positive-power calculations; live frontier is construction of literal
+source-selected non-trace-class reference whose relative difference is Schatten-1.
+
 Close the first genuinely open propagated depth, `m = 3`, without a triple-defect chain.  The
 source operator is already a positive Gram operator.  Positivity converts its relatively controlled
 first diagonal into a cubic lower bound by moment log-convexity.  This is source-pure and does not

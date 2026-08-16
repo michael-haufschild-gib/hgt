@@ -15,10 +15,10 @@ that name and its relative links deepened by one level.  Inbound links are repai
 restricted-Weil trace", "specialist novelty review", "3 → 4 publication-ready") do not block
 promotion; gates that name missing Lean do.
 
-## A. Promoted (99 of 105; 6 cards remain in stage 2)
+## A. Promoted (100 of 105; 5 cards remain in stage 2)
 
 *This list records the promotions carried out through this ledger.  The stage-2 directory
-itself is the authority on what remains; the six cards still there are named in section B.*
+itself is the authority on what remains; the five cards still there are named in section B.*
 - `suzuki-affine-resolvent-krein-defect`
 - `suzuki-affine-sewn-weil-robin-far-tail-factorization`
 - `suzuki-aperture-rees-superpolynomial-conditioning`
@@ -83,6 +83,7 @@ itself is the authority on what remains; the six cards still there are named in 
 - `suzuki-rectangular-ward-defect-semiboundedness`
 - `suzuki-resolvent-jet-homogeneous-plucker-tomography`
 - `suzuki-root-retained-exterior-dilation`
+- `suzuki-scalar-analytic-forcing-trace-zero-h1`
 - `suzuki-screw-cesaro-curvature-recurrence`
 - `suzuki-screw-compact-hull-parity-law`
 - `suzuki-shift-spectral-monotone-likelihood-transfer`
@@ -96,12 +97,11 @@ itself is the authority on what remains; the six cards still there are named in 
 - `suzuki-xireal-fe-bipolarization-completion`
 - `suzuki-zero-trace-cofinal-convex-recurrence`
 
-## B. Not yet promoted (6)
+## B. Not yet promoted (5)
 - `suzuki-coalescing-anchor-parity-locking-reduction`
 - `suzuki-critical-radical-anchor-finite-head-reduction`
 - `suzuki-log-recurrence-polynomial-carrier-trichotomy`
 - `suzuki-one-prime-rough-primitive-hardy-closure`
-- `suzuki-scalar-analytic-forcing-trace-zero-h1`
 - `suzuki-weil-position-torque-recurrence`
 
 Every one is listed in section C with the exact Lean object it still needs.
@@ -10113,5 +10113,34 @@ solution.  That is the Plancherel bridge — the block estimate lives on the fre
 (`forcedProfile`, `blockSource`) and `W` lives on the log side, so `(25)`
 (`eLpNorm_vectorAngularTransform_eq`) and the strip-datum package have to be pointed at this
 concrete solution.  Everything else the card displays is now Lean.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADC. `suzuki-scalar-analytic-forcing-trace-zero-h1` is promoted
+
+```text
+RHTower/GammaWallBlockTransfer.lean    (16), the block Hardy transfer for a physical source
+RHTower/ScalarAnalyticForcingH1.lean   (7) and (8)
+```
+
+**`(16)` was a conversion, not a new estimate.**  The Gamma-wall block Hardy theorem `(24)` consumes
+its hypothesis as a *real-valued* summability statement about `√(∫‖g_k‖²)`; the card's block source
+space `N_σ` is an `ℝ≥0∞`-valued sum of `L²` norms of the weighted blocks.  They are the same data:
+each term of `N_σ` is finite because the whole sum is, so each weighted block is `MemLp 2`, and
+`eLpNorm` on the restricted measure is the `eLpNorm` of the indicator, which for a square-integrable
+profile is `ofReal(√(∫‖·‖²))`.  `ENNReal.summable_toReal` then does the rest, and
+`summable_blockSolutions_of_gammaWallBlockNorm` is `(16)`.
+
+**`(7)` and `(8)` come out of one object.**  The coercive weighted-tail theorem produces
+`u = V′ − σV ∈ L²` with `V = e^{σL}W`, i.e. `e^{σL}W′ ∈ L²` — that is `(18)`, and with `V ∈ L²` it
+is `(7)`.  Feeding the same `u` to the extended chart identity gives `(8)`: the chart's own weight is
+`e^{L}`, and `e^{L} ≤ e^{2σL}` on the terminal ray exactly when `2σ ≥ 1`, which is the card's
+`1/2 < σ < min(1,δ)`.  The profile's own `L²` part is the finite length of `(0,ε)` against its
+boundedness.
+
+**Every displayed statement is now Lean.**  `(1)`, `(3)`, `(5)`, `(9)`–`(20)` each have an
+unconditional declaration; the companion
+`suzuki-scalar-analytic-forcing-trace-zero-h1-formalized.md` tabulates them.  `(21)` is marked in the
+card itself as an `[OPEN SOURCE CONNECTOR]`, and the last four gates are route statements.
 
 All declarations audit to `[propext, Classical.choice, Quot.sound]`.

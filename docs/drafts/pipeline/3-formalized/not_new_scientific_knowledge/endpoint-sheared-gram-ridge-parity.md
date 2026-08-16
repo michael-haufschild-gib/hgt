@@ -1,7 +1,7 @@
 # Endpoint-sheared Gram ridge parity
 
 - **ID:** `endpoint-sheared-gram-ridge-parity`
-- **Stage:** 2-fully-proven / not-new
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper), `[PAPER-PROVED] [BRIDGE]`
 - **Scientific status:** `[NOT NEW SCIENTIFIC KNOWLEDGE] [POSITIVE NO-GO SURVIVOR] [NOT AN RH PROOF]`
 - **Source:** the global response-correlation target `(AC25)` in
@@ -206,11 +206,35 @@ scientific knowledge.  No scientific-priority claim is made.
 - [x] strongest positive replacement upgraded from two ridges to full endpoint-swap parity
 - [x] Lean source drafted in
   `formal/GaloisForLFunctions/RHTower/EndpointShearedGramRidgeParity.lean`
-- [ ] targeted Lean validation
-- [ ] axiom audit
-- [ ] Stage 3 promotion and umbrella/index wiring
+- [x] targeted Lean validation
+- [x] axiom audit
+- [x] Stage 3 promotion and umbrella/index wiring
 
 ## Log
 
 - 2026-07-18 — paper proof closed; classified as a standard but non-trivial positive survivor of
   the unrestricted endpoint-ridge no-go.
+
+## Lean formalization
+
+Module: `formal/GaloisForLFunctions/RHTower/EndpointShearedGramRidgeParity.lean`
+(namespace `RHTower`), wired into the `GaloisForLFunctions.RHTower` umbrella.
+
+| Paper statement | Lean declaration |
+|---|---|
+| `(2)` frequency packet | `endpointFrequencyPacket` |
+| `(3)` sheared double transform | `endpointShearedDoubleTransform` |
+| `(14)` separated phase | `endpointShearedDoubleTransform_eq_separated` |
+| `(4)` sheared Gram identity | `endpointShearedDoubleTransform_eq_inner_frequencyPacket` |
+| `(6)` diagonal norm law | `endpointShearedDoubleTransform_zero_eq_norm_sq` |
+| `(8)` Cauchy--Schwarz | `norm_endpointShearedDoubleTransform_le` |
+| `(5)`, `(6)` unsheared Gram matrix and positivity | `endpointShearedGramMatrix`, `endpointShearedGramMatrix_apply`, `endpointShearedGramMatrix_eq_gram`, `endpointShearedGramMatrix_posSemidef` |
+| `(7)` quadratic form identity | `endpointShearedGramMatrix_quadratic_eq_inner`, `endpointShearedGramMatrix_quadratic_eq_norm_sq` |
+| `sigma_a(b)=a-b` involution | `endpointSwapEquiv` |
+| `(10)` full real-Gram endpoint-swap parity | `endpointShearedDoubleTransform_endpointSwap` |
+| `(11)` endpoint ridge equality | `endpointShearedDoubleTransform_left_ridge_eq_right_ridge` |
+| `(12)`--`(13)` swap-odd annihilation | `sum_endpointSwapOdd_mul_even_eq_zero`, `sum_endpointSwapOdd_mul_endpointShearedDoubleTransform_eq_zero` |
+| sharpness counterexample over `Z/2Z` | `signAddChar`, `twoPointResidue`, `twoPointSource`, `twoPoint_left_ridge`, `twoPoint_right_ridge`, `twoPoint_left_ridge_ne_right_ridge` |
+
+Audit: direct `lake env lean` check clean, targeted module build clean, umbrella import already
+wired, `#print axioms` on every capstone returns only `propext`, `Classical.choice`, `Quot.sound`.

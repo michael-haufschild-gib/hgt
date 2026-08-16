@@ -100,8 +100,8 @@ operator-valued provenance. Sharpening scalar receiver constants cannot be inter
 - [x] scratch proof with `lake env lean`
 - [x] dedicated module checks with `lake env lean`
 - [x] wired into `GaloisForLFunctions/RHTower.lean`
-- [ ] exact leaf `lake build` final audit
-- [ ] `#print axioms` final theorem audit
+- [x] exact leaf `lake build` final audit
+- [x] `#print axioms` final theorem audit: only `propext`, `Classical.choice`, `Quot.sound`
 - [ ] independent mathematical audit
 - [ ] external priority audit
 

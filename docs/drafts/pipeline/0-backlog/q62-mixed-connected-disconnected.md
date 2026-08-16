@@ -239,6 +239,6 @@ This backlog card is retained as a development log. Its early branch-point/small
 The maintained mixed-case proof is now part of
 `../2-fully-proven/q62-bottcher-independence-n2-all-parameters.md`, using the exact Cantor-cylinder period
 monodromy theorem `../2-fully-proven/bottcher-exact-pruefer-monodromy.md` and the one-coordinate monodromy
-obstruction `../2-fully-proven/unbounded-one-coordinate-monodromy-obstruction.md`.
+obstruction `../3-formalized/not_new_scientific_knowledge/unbounded-one-coordinate-monodromy-obstruction.md`.
 
 Current status of the mixed case: **proved as a subcase of the aggregate theorem**.

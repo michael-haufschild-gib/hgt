@@ -1,7 +1,7 @@
 # One-prime fractional polynomial carrier
 
 - **ID:** `suzuki-one-prime-fractional-carrier`
-- **Stage:** 2 — fully proved on paper
+- **Stage:** 3-formalized (paper proof; Lean certificate `../../3-formalized/not_new_scientific_knowledge/suzuki-one-prime-fractional-carrier-formalized.md`)
 - **Type:** operator infrastructure / weighted valuation representation
 - **Scientific status:** `[MATHEMATICALLY STANDARD] [CORPUS-GAP CLOSED] [NOT RH]`
 - **Route:** O, completed Suzuki/Evans branch
@@ -96,3 +96,15 @@ vector-valued Fourier/Bochner assembly.
 - [ ] Gamma-resolvent one-block estimate
 - [ ] full vector-valued completed-source assembly
 
+
+## Stage-3 note
+
+Every checked gate above is formalized unconditionally in
+`formal/GaloisForLFunctions/RHTower/SuzukiOnePrimeFractionalCarrier.lean`
+(`fractionalPolynomialOrbitWeight`, `…_pos`, `fractionalPolynomialOrbitShiftRatio`,
+`…_cocycle`, `fractionalPolynomialOrbitShift`, `…_add`,
+`abs_fractionalPolynomialOrbitShiftRatio_le`,
+`summable_fractionalPolynomialOrbitWeight_twoThirds_sq`,
+`tsum_sq_fractionalPolynomialOrbitWeightedShift_le`), axiom audit clean.
+The two unchecked boxes are forward route targets of the Gamma-resolvent lane, not debt of a
+proven theorem on this card.

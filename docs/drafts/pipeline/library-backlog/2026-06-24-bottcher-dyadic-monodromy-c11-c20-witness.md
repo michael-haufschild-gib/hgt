@@ -8,7 +8,7 @@ Add the new disconnected quadratic Böttcher monodromy witnesses to the Door hyp
 
 - `../2-fully-proven/bottcher-dyadic-monodromy-finite-type-absence.md`
 - `../2-fully-proven/bottcher-pruefer-monodromy-no-finite-cover.md`
-- Supporting algebraic lemma: `../2-fully-proven/unbounded-one-coordinate-monodromy-obstruction.md`
+- Supporting algebraic lemma: `../3-formalized/not_new_scientific_knowledge/unbounded-one-coordinate-monodromy-obstruction.md`
 
 ## Door mapping
 

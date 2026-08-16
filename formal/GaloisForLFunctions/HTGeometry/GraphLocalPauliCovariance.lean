@@ -1,15 +1,16 @@
-import GaloisForLFunctions.HTGeometry.GraphLocalPauliFamily
+import GaloisForLFunctions.HTGeometry.GraphLocalCompletedFamily
 import GaloisForLFunctions.HTGeometry.VandermondeCoefficientMembership
 
 /-!
 # Rational rotation covariance of the graph-local Pauli family
 
 The replicated rational rotation at one physical site conjugates every collective graph-local
-string back into the family span, so it preserves the canonical greatest Hall obstruction.  Its
-conjugation action on any fixed operator is a polynomial in the rotation scale whose linear
-coefficient is the collective commutator of the rotation generator.  Evaluating at enough scales
-therefore forces the obstruction to be invariant under every one-site collective commutator, with
-no limit and no averaging.
+string back into the family span, so it preserves the simultaneous kernel, the orthogonal
+complement of that kernel, and hence the kernel projector.  It therefore preserves the canonical
+greatest Hall obstruction of the completed family.  Its conjugation action on any fixed operator is
+a polynomial in the rotation scale whose linear coefficient is the collective commutator of the
+rotation generator, so evaluating at enough scales forces the obstruction to absorb every one-site
+collective commutator, with no limit and no averaging.
 -/
 
 open Finset Matrix
@@ -55,25 +56,135 @@ theorem replicaGate_conj_mem_graphLocalStringSpan (G : SimpleGraph I) (v : I) (c
     rw [← hj']
     exact Submodule.smul_mem _ _ (collectivePauliString_mem_graphLocalStringSpan G j')
 
-section Invariance
+/-! ## The gate as a symmetry -/
 
 variable (I R)
 
-/-- The canonical greatest Hall obstruction of the complete graph-local Pauli family. -/
-def graphLocalObstruction (G : SimpleGraph I) :
-    Submodule ℂ (EuclideanSpace ℂ (FiniteAllReplicaOperatorIndex I R)) :=
-  linearFamilyGreatestMaximizer (graphLocalGenerator I R G)
+/-- The rational rotation gate acting on the vectorized operator space. -/
+def replicaGateEquiv (v : I) (c : Fin 3) (s : ℂ) (hs : replicaGateScalar R s ≠ 0) :
+    EuclideanSpace ℂ (FiniteAllReplicaOperatorIndex I R) ≃ₗ[ℂ]
+      EuclideanSpace ℂ (FiniteAllReplicaOperatorIndex I R) :=
+  euclideanSandwichEquiv (replicaGate I R v c Finset.univ s)
+    (replicaGate I R v c Finset.univ (-s)) (replicaGateScalar R s) hs
+    (replicaGate_mul_neg_univ v c s) (replicaGate_neg_mul_univ v c s)
 
 variable {I R}
 
+theorem replicaGateEquiv_apply_vec (v : I) (c : Fin 3) (s : ℂ) (hs : replicaGateScalar R s ≠ 0)
+    (X : Matrix (FiniteQubitConfiguration (I × R)) (FiniteQubitConfiguration (I × R)) ℂ) :
+    replicaGateEquiv I R v c s hs (vecLinearEquiv _ X) =
+      vecLinearEquiv _ (replicaGate I R v c Finset.univ s * X *
+        replicaGate I R v c Finset.univ (-s)) := rfl
+
+theorem replicaGateEquiv_forward (G : SimpleGraph I) (v : I) (c : Fin 3) (s : ℂ)
+    (hs : replicaGateScalar R s ≠ 0) (j : GraphLocalIndex I G) :
+    (((replicaGateEquiv I R v c s hs :
+          EuclideanSpace ℂ (FiniteAllReplicaOperatorIndex I R) →ₗ[ℂ] _).comp
+        (graphLocalGenerator I R G j)).comp
+      ((replicaGateEquiv I R v c s hs).symm :
+        EuclideanSpace ℂ (FiniteAllReplicaOperatorIndex I R) →ₗ[ℂ] _)) ∈
+      linearFamilyOperatorSpan (graphLocalGenerator I R G) := by
+  rw [graphLocalGenerator, replicaGateEquiv, euclideanSandwichEquiv_conj_commutatorOperator]
+  exact commutatorOperator_mem_operatorSpan G (Submodule.smul_mem _ _
+    (replicaGate_conj_mem_graphLocalStringSpan G v c s j))
+
+theorem replicaGateEquiv_backward (G : SimpleGraph I) (v : I) (c : Fin 3) (s : ℂ)
+    (hs : replicaGateScalar R s ≠ 0) (j : GraphLocalIndex I G) :
+    ((((replicaGateEquiv I R v c s hs).symm :
+          EuclideanSpace ℂ (FiniteAllReplicaOperatorIndex I R) →ₗ[ℂ] _).comp
+        (graphLocalGenerator I R G j)).comp
+      ((replicaGateEquiv I R v c s hs) :
+        EuclideanSpace ℂ (FiniteAllReplicaOperatorIndex I R) →ₗ[ℂ] _)) ∈
+      linearFamilyOperatorSpan (graphLocalGenerator I R G) := by
+  rw [graphLocalGenerator, replicaGateEquiv, euclideanSandwichEquiv_symm_conj_commutatorOperator]
+  have hmem := replicaGate_conj_mem_graphLocalStringSpan (I := I) (R := R) G v c (-s) j
+  rw [neg_neg] at hmem
+  exact commutatorOperator_mem_operatorSpan G (Submodule.smul_mem _ _ hmem)
+
+theorem replicaGateEquiv_starProjection_comm (G : SimpleGraph I) (v : I) (c : Fin 3) (s : ℂ)
+    (hs : replicaGateScalar R s ≠ 0)
+    (x : EuclideanSpace ℂ (FiniteAllReplicaOperatorIndex I R)) :
+    (graphLocalCommonKernel I R G).starProjection (replicaGateEquiv I R v c s hs x) =
+      replicaGateEquiv I R v c s hs ((graphLocalCommonKernel I R G).starProjection x) :=
+  starProjection_map_comm _ _
+    (map_familyCommonKernel_le (graphLocalGenerator I R G) _
+      (replicaGateEquiv_backward G v c s hs))
+    (map_familyCommonKernel_orthogonal_le (graphLocalGenerator I R G)
+      (adjoint_graphLocalGenerator G) _ (replicaGateEquiv_forward G v c s hs)) x
+
+theorem replicaGateEquiv_forward_completed (G : SimpleGraph I) (v : I) (c : Fin 3) (s : ℂ)
+    (hs : replicaGateScalar R s ≠ 0) (j : Option (GraphLocalIndex I G)) :
+    (((replicaGateEquiv I R v c s hs :
+          EuclideanSpace ℂ (FiniteAllReplicaOperatorIndex I R) →ₗ[ℂ] _).comp
+        (graphLocalCompleted I R G j)).comp
+      ((replicaGateEquiv I R v c s hs).symm :
+        EuclideanSpace ℂ (FiniteAllReplicaOperatorIndex I R) →ₗ[ℂ] _)) ∈
+      linearFamilyOperatorSpan (graphLocalCompleted I R G) := by
+  cases j with
+  | some j =>
+      exact linearFamilyOperatorSpan_le_completed G (replicaGateEquiv_forward G v c s hs j)
+  | none =>
+      have hfix : (((replicaGateEquiv I R v c s hs :
+            EuclideanSpace ℂ (FiniteAllReplicaOperatorIndex I R) →ₗ[ℂ] _).comp
+          (graphLocalCompleted I R G none)).comp
+        ((replicaGateEquiv I R v c s hs).symm :
+          EuclideanSpace ℂ (FiniteAllReplicaOperatorIndex I R) →ₗ[ℂ] _)) =
+          graphLocalCompleted I R G none := by
+        refine LinearMap.ext fun x => ?_
+        show replicaGateEquiv I R v c s hs
+          ((graphLocalCommonKernel I R G).starProjection
+            ((replicaGateEquiv I R v c s hs).symm x)) = _
+        rw [← replicaGateEquiv_starProjection_comm G v c s hs
+          ((replicaGateEquiv I R v c s hs).symm x), LinearEquiv.apply_symm_apply]
+        rfl
+      rw [hfix]
+      exact Submodule.subset_span ⟨none, rfl⟩
+
+theorem replicaGateEquiv_backward_completed (G : SimpleGraph I) (v : I) (c : Fin 3) (s : ℂ)
+    (hs : replicaGateScalar R s ≠ 0) (j : Option (GraphLocalIndex I G)) :
+    ((((replicaGateEquiv I R v c s hs).symm :
+          EuclideanSpace ℂ (FiniteAllReplicaOperatorIndex I R) →ₗ[ℂ] _).comp
+        (graphLocalCompleted I R G j)).comp
+      ((replicaGateEquiv I R v c s hs) :
+        EuclideanSpace ℂ (FiniteAllReplicaOperatorIndex I R) →ₗ[ℂ] _)) ∈
+      linearFamilyOperatorSpan (graphLocalCompleted I R G) := by
+  cases j with
+  | some j =>
+      exact linearFamilyOperatorSpan_le_completed G (replicaGateEquiv_backward G v c s hs j)
+  | none =>
+      have hfix : ((((replicaGateEquiv I R v c s hs).symm :
+            EuclideanSpace ℂ (FiniteAllReplicaOperatorIndex I R) →ₗ[ℂ] _).comp
+          (graphLocalCompleted I R G none)).comp
+        ((replicaGateEquiv I R v c s hs) :
+          EuclideanSpace ℂ (FiniteAllReplicaOperatorIndex I R) →ₗ[ℂ] _)) =
+          graphLocalCompleted I R G none := by
+        refine LinearMap.ext fun x => ?_
+        show (replicaGateEquiv I R v c s hs).symm
+          ((graphLocalCommonKernel I R G).starProjection
+            (replicaGateEquiv I R v c s hs x)) = _
+        rw [replicaGateEquiv_starProjection_comm G v c s hs x, LinearEquiv.symm_apply_apply]
+        rfl
+      rw [hfix]
+      exact Submodule.subset_span ⟨none, rfl⟩
+
+/-! ## The canonical greatest obstruction -/
+
+variable (I R)
+
+/-- The canonical greatest Hall obstruction of the completed graph-local Pauli family. -/
+def graphLocalObstruction (G : SimpleGraph I) :
+    Submodule ℂ (EuclideanSpace ℂ (FiniteAllReplicaOperatorIndex I R)) :=
+  linearFamilyGreatestMaximizer (graphLocalCompleted I R G)
+
 /-- The greatest obstruction pulled back to the matrix algebra. -/
-def graphLocalObstructionMatrix (I R : Type*) [Fintype I] [DecidableEq I] [Fintype R]
-    [DecidableEq R] (G : SimpleGraph I) :
+def graphLocalObstructionMatrix (G : SimpleGraph I) :
     Submodule ℂ (Matrix (FiniteQubitConfiguration (I × R)) (FiniteQubitConfiguration (I × R)) ℂ) :=
   (graphLocalObstruction I R G).comap
     ((vecLinearEquiv (FiniteQubitConfiguration (I × R)) : _ ≃ₗ[ℂ] _) :
       Matrix (FiniteQubitConfiguration (I × R)) (FiniteQubitConfiguration (I × R)) ℂ →ₗ[ℂ]
         EuclideanSpace ℂ (FiniteAllReplicaOperatorIndex I R))
+
+variable {I R}
 
 theorem mem_graphLocalObstructionMatrix (G : SimpleGraph I)
     {X : Matrix (FiniteQubitConfiguration (I × R)) (FiniteQubitConfiguration (I × R)) ℂ} :
@@ -88,41 +199,14 @@ theorem replicaGate_sandwich_mem_obstruction (G : SimpleGraph I) (v : I) (c : Fi
     (hX : X ∈ graphLocalObstructionMatrix I R G) :
     replicaGate I R v c Finset.univ s * X * replicaGate I R v c Finset.univ (-s) ∈
       graphLocalObstructionMatrix I R G := by
-  classical
-  set Gm := replicaGate I R v c Finset.univ s with hGm
-  set Hm := replicaGate I R v c Finset.univ (-s) with hHm
-  set κ := replicaGateScalar R s with hκdef
-  have h1 : Gm * Hm = κ • 1 := replicaGate_mul_neg_univ v c s
-  have h2 : Hm * Gm = κ • 1 := replicaGate_neg_mul_univ v c s
-  set e := euclideanSandwichEquiv Gm Hm κ hs h1 h2 with he
-  have hforward : ∀ j : GraphLocalIndex I G,
-      (((e : EuclideanSpace ℂ (FiniteAllReplicaOperatorIndex I R) →ₗ[ℂ] _).comp
-          (graphLocalGenerator I R G j)).comp
-        (e.symm : EuclideanSpace ℂ (FiniteAllReplicaOperatorIndex I R) →ₗ[ℂ] _)) ∈
-        linearFamilyOperatorSpan (graphLocalGenerator I R G) := by
-    intro j
-    rw [graphLocalGenerator, he, euclideanSandwichEquiv_conj_commutatorOperator]
-    exact commutatorOperator_mem_operatorSpan G (Submodule.smul_mem _ _
-      (replicaGate_conj_mem_graphLocalStringSpan G v c s j))
-  have hbackward : ∀ j : GraphLocalIndex I G,
-      (((e.symm : EuclideanSpace ℂ (FiniteAllReplicaOperatorIndex I R) →ₗ[ℂ] _).comp
-          (graphLocalGenerator I R G j)).comp
-        (e : EuclideanSpace ℂ (FiniteAllReplicaOperatorIndex I R) →ₗ[ℂ] _)) ∈
-        linearFamilyOperatorSpan (graphLocalGenerator I R G) := by
-    intro j
-    rw [graphLocalGenerator, he, euclideanSandwichEquiv_symm_conj_commutatorOperator]
-    have hmem := replicaGate_conj_mem_graphLocalStringSpan (I := I) (R := R) G v c (-s) j
-    rw [neg_neg] at hmem
-    exact commutatorOperator_mem_operatorSpan G (Submodule.smul_mem _ _ hmem)
   have hfix := linearFamilyGreatestMaximizer_map_eq_of_spanCovariant
-    (graphLocalGenerator I R G) e e hforward hbackward
-  have hmem : e (vecLinearEquiv (FiniteQubitConfiguration (I × R)) X) ∈
-      graphLocalObstruction I R G := by
+    (graphLocalCompleted I R G) (replicaGateEquiv I R v c s hs) (replicaGateEquiv I R v c s hs)
+    (replicaGateEquiv_forward_completed G v c s hs) (replicaGateEquiv_backward_completed G v c s hs)
+  have hmem : replicaGateEquiv I R v c s hs
+      (vecLinearEquiv (FiniteQubitConfiguration (I × R)) X) ∈ graphLocalObstruction I R G := by
     rw [graphLocalObstruction, ← hfix]
     exact Submodule.mem_map_of_mem hX
-  rwa [he, euclideanSandwichEquiv_apply_vec] at hmem
-
-end Invariance
+  rwa [replicaGateEquiv_apply_vec] at hmem
 
 /-- **The canonical greatest obstruction absorbs every one-site collective commutator.** -/
 theorem ringCommutator_siteLabel_mem_obstruction (G : SimpleGraph I) (v : I) (c : Fin 3)
@@ -161,8 +245,7 @@ theorem ringCommutator_siteLabel_mem_obstruction (G : SimpleGraph I) (v : I) (c 
       graphLocalObstructionMatrix I R G := by
     intro i
     have hsum := replicaGate_sandwich_eq_gradedSum (I := I) (R := R) v c (pts i) X
-    rw [hd, hw]
-    rw [← hsum]
+    rw [hd, hw, ← hsum]
     exact replicaGate_sandwich_mem_obstruction G v c (pts i) (hscalar i) hX
   have hone : (1 : ℕ) < n := by omega
   have hextract := mem_of_forall_gradedSum_mem (graphLocalObstructionMatrix I R G) d w pts
@@ -176,8 +259,7 @@ theorem ringCommutator_siteLabel_mem_obstruction (G : SimpleGraph I) (v : I) (c 
   rw [hfilter, hw] at hextract
   have hval := replicaGate_gradedSum_degree_one (I := I) (R := R) v c X
   rw [hval] at hextract
-  have hIne : (Complex.I : ℂ) ≠ 0 := Complex.I_ne_zero
-  have := Submodule.smul_mem (graphLocalObstructionMatrix I R G) Complex.I⁻¹ hextract
-  rwa [smul_smul, inv_mul_cancel₀ hIne, one_smul] at this
+  have hsmul := Submodule.smul_mem (graphLocalObstructionMatrix I R G) Complex.I⁻¹ hextract
+  rwa [smul_smul, inv_mul_cancel₀ Complex.I_ne_zero, one_smul] at hsmul
 
 end GaloisForLFunctions.HTGeometry

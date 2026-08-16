@@ -24,11 +24,11 @@ theorem MemSchattenClass.one_summable_approxNumber {T : H →L[ℂ] H}
     Summable (fun n => approxNumber T n) :=
   hT.congr fun _ => Real.rpow_one _
 
-/-- Every Schatten-1 operator has an absolutely summable diagonal in any Hilbert basis. -/
-theorem MemSchattenClass.one_summable_inner_diag_basis
+/-- Every Schatten-1 operator has a norm-summable diagonal in any Hilbert basis. -/
+theorem MemSchattenClass.one_summable_norm_inner_diag_basis
     {ι : Type*} {T : H →L[ℂ] H}
     (hT : MemSchattenClass 1 T) (b : HilbertBasis ι ℂ H) :
-    Summable (fun i => inner ℂ (b i) (T (b i))) := by
+    Summable (fun i => ‖inner ℂ (b i) (T (b i))‖) := by
   have hcpt : IsCompactOperator T := hT.isCompactOperator one_pos
   have hbNorm : ∀ i, b i = 0 ∨ ‖b i‖ = 1 := by
     intro i
@@ -36,10 +36,17 @@ theorem MemSchattenClass.one_summable_inner_diag_basis
   have hbOrth : ∀ i j, i ≠ j → inner ℂ (b i) (b j) = 0 := by
     intro i j hij
     exact b.orthonormal.2 hij
-  apply Summable.of_norm
   exact summable_of_sum_le (fun i => norm_nonneg _)
     (sum_norm_inner_le_traceNorm hcpt hT.one_summable_approxNumber
       hbNorm hbOrth hbNorm hbOrth)
+
+/-- Every Schatten-1 operator has an absolutely summable diagonal in any Hilbert basis. -/
+theorem MemSchattenClass.one_summable_inner_diag_basis
+    {ι : Type*} {T : H →L[ℂ] H}
+    (hT : MemSchattenClass 1 T) (b : HilbertBasis ι ℂ H) :
+    Summable (fun i => inner ℂ (b i) (T (b i))) := by
+  apply Summable.of_norm
+  exact hT.one_summable_norm_inner_diag_basis b
 
 /-- Every Schatten-1 operator has an absolutely summable canonical diagonal. -/
 theorem MemSchattenClass.one_summable_inner_diag {T : H →L[ℂ] H}
