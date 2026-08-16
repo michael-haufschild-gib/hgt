@@ -545,7 +545,7 @@ width it is already an RH-equivalent statement.
 The countable finite-degree criterion does not shorten this seam.  For any prescribed degree,
 sufficiently high off-line reciprocal pairs perturb the finite Hankel block by an arbitrarily small
 amount while preserving its positivity.  This is the theorem in
-`finite-degree-reciprocal-tests-height-limited.md`.  Therefore no fixed-degree estimate can force a
+`../3-formalized/not_new_scientific_knowledge/finite-degree-reciprocal-tests-height-limited.md`.  Therefore no fixed-degree estimate can force a
 smaller exponential domain.  The route must construct one source operator/form whose all-degree
 compressions exhaust the target, or prove estimates with genuine degree-to-height control.
 

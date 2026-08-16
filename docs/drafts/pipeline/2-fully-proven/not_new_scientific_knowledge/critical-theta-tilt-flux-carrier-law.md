@@ -332,7 +332,7 @@ operator promised by `(16)` must have the following shape:
 > from an arithmetic domain, closure, or boundary defect.  It cannot be an internal bounded prime
 > reflection or the quotient of the full reciprocity graph alone.
 
-Third, `relative-contraction-compression-exhaustion.md` proves that cofinal finite compressions do
+Third, `../../3-formalized/not_new_scientific_knowledge/relative-contraction-compression-exhaustion.md` proves that cofinal finite compressions do
 determine a completed contraction after the bounded self-adjoint operator, or the correct closed
 semibounded form, has been source-constructed.  The companion one-sided-bound theorem shows that
 upper compression inequalities alone do not construct that completion.  Consequently a viable

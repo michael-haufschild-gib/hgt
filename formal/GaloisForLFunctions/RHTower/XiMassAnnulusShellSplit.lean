@@ -69,7 +69,7 @@ theorem conePrimeIndex_sdiff_split {M₀ M₁ M₂ : ℕ} (h01 : M₀ ≤ M₁) 
   linarith [this]
 
 /-- The innermost shell index set maps onto the primes of a half-open interval. -/
-theorem sum_conePrimeIndex_sdiff_eq {M₀ M₁ : ℕ} {g : ℕ → ℝ} :
+theorem sum_conePrimeIndex_sdiff_eq {A : Type*} [AddCommMonoid A] {M₀ M₁ : ℕ} {g : ℕ → A} :
     ∑ k ∈ conePrimeIndex M₁ \ conePrimeIndex M₀, g (k + 2)
       = ∑ p ∈ (Finset.Ioc M₀ M₁).filter (fun p => Nat.Prime p), g p := by
   classical

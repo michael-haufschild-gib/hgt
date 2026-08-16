@@ -152,7 +152,7 @@ back to the completed semilocal integer index.
 
 ## 2026-06-24 scalar thresholds are not ordered by boundary location
 
-`boundary-weyl-thresholds-have-no-formal-monotonicity.md` records another scalar-shadow failure. Even when two rank-one scalar thresholds are well-defined, their relative size is not determined by the boundary points alone. The positive bulk form controls the dual energies.
+`../../3-formalized/not_new_scientific_knowledge/boundary-weyl-thresholds-have-no-formal-monotonicity.md` records another scalar-shadow failure. Even when two rank-one scalar thresholds are well-defined, their relative size is not determined by the boundary points alone. The positive bulk form controls the dual energies.
 
 Thus a scalar sign at one exterior channel cannot certify a scalar sign at another exterior channel unless a source theorem proves the comparison for the actual bulk form.
 

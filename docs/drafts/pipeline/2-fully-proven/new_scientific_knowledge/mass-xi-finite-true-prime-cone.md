@@ -6770,3 +6770,145 @@ which is already available as `sum_norm_xiMassCenteredPrimeAtom_exterior_le` (it
                                                         `e^{kappa u + L}` with both the
                                                         stationary-phase factor `u^{-1/2}` and the
                                                         geometric gain `e^{-(a-1/2)L}`
+
+### Lean progress: Theorem 17.5, its sharpness corollary, and §19.1--19.3
+
+Newly formalized, axiom-clean (`[propext, Classical.choice, Quot.sound]`), wired, built:
+
+    RHTower/XiMassSubthresholdDivergence.lean
+      re_conj_phase_atom_ge                          the phase-projected atom is bounded below by
+                                                     `(log p)(1-C/u)` times the shell modulus
+      re_conj_phase_atom_window                      the same bound uniformly on a window
+                                                     `κu < log p ≤ κu+t ≤ κu+L`
+      sum_norm_exteriorBlock_le                      the exterior block of an annulus obeys the
+                                                     shifted square-root tail
+      exists_subthreshold_annulus_lower_bound        **(17.17)** Theorem 17.5: for `1 < κ < λ`
+                                                     there are `c>0`, `u₀` with
+                                                     `‖A_{κ,λ}(u)‖ ≥ c u^{-1/2} e^{-η_κ u}`
+
+    RHTower/XiMassSubthresholdConeSharpness.lean
+      xiMassBesselConeExponent_neg                   below the balance slope the cone exponent is
+                                                     strictly negative
+      tendsto_subthreshold_annulus_atTop             for `1 < κ < κ_B` the annulus diverges
+      not_bounded_subthreshold_annulus               hence no uniform bound exists: the balance
+                                                     slope of Theorem 17.3 is sharp
+
+    RHTower/XiMassThetaLogDiscrepancy.lean
+      xiMassThetaLogDiscrepancy,
+        exists_norm_xiMassThetaLogDiscrepancy_le     **(19.1)** `|Θ(h) − e^h| ≤ C e^h e^{-c h^{1/10}}`
+                                                     in logarithmic height, from the corpus
+                                                     `MediumPNT`-based `θ` power-log theorem
+
+    HTGeometry/BesselOrderDerivativeEnvelope.lean
+      integral_exp_neg_mul_sq_shift, besselK1CDeriv,
+        norm_besselK1CDeriv_integrand,
+        cosh_sq_mul_exp_neg_mul_cosh_le_shift,
+        norm_besselK1CDeriv_le                       `‖K₁'(z)‖ ≤ e^{-Re z} e^{2/Re z} √(2π/Re z)`:
+                                                     the derivative has the same exterior envelope
+                                                     with the same square-root gain
+
+    RHTower/XiMassBesselHeightDerivative.lean
+      xiMassBesselHeightSide, xiMassBesselHeightDeriv,
+        hasDerivAt_xiMassBesselHeightSide            the closed height derivative
+                                                     `2aτw(aK₁'(az)z − K₁(az))/z³`
+      norm_besselHeightDerivCore_le                  its generic norm bound in terms of
+                                                     `‖τ‖/‖z‖`, `|h|/‖z‖`, `1/Re z`
+
+    RHTower/XiMassBesselDerivativeEnvelope.lean
+      hasDerivAt_stripFourier_xiMass_bessel,
+        xiMassFourierDerivative_eq_besselHeightDeriv the corpus Fourier derivative equals the
+                                                     Bessel-side derivative outside the light cone
+      norm_xiMassBesselHeightDeriv_le,
+        norm_xiMassFourierDerivative_le,
+        norm_xiMassCriticalOutgoingDerivative_le     **(19.2)** the differentiated exterior
+                                                     envelope, with the same `u^{-1/2}` gain
+
+    RHTower/XiMassPrimeWindowAbel.lean
+      primeLogWindow, sum_primeLogWindow_indicator,
+        intervalIntegrable_thetaWindowStep_mul
+      sum_primeLogWindow_mul_eq                      finite-atom Abel summation against `Θ`
+      integral_mul_exp_byParts                       the continuum pairing by parts
+      primeLogWindow_quadrature_eq                   the window quadrature defect in discrepancy
+                                                     form `E(T)G(T) − E(H)G(H) − ∫ E G'`
+
+    RHTower/XiMassWindowDiscrepancyTail.lean
+      xiMassExteriorAction_le                        `g_u` decreases with slope at least `a − 1/2`
+      norm_xiMassCriticalDampedFourierProfile_exterior_le,
+        norm_xiMassDampedProfileDeriv_exterior_le
+      xiMassWindowDefectConstant
+      norm_primeLogWindow_quadratureDefect_le        **(19.3)** the exterior discrepancy on a
+                                                     window is at most
+                                                     `(2+(T−H)) C_E C u^{-1/2} e^{g_u(H)-c H^{1/10}}`
+
+Remaining in §19: the Taylor estimates (19.9)--(19.10) at the caustic and the resulting
+penetration statement (19.6)--(19.7).
+
+### Lean progress: §19.6, the caustic retreat law
+
+Newly formalized, axiom-clean (`[propext, Classical.choice, Quot.sound]`), wired, built:
+
+    RHTower/XiMassCausticPenetration.lean
+      sharpSlope_pos, sharpSlope_mul_sqrt,
+        sharpSlope_sq_sub_one,
+        sharpSlope_eq_two_mul_sqrt              **(19.8)** the caustic ratio `κ_B = 2a√(κ_B²−1)`
+      sharpAction_min                           the completed-square minimum principle
+                                                `aH − ½√(H²−u²) ≥ u√(a²−¼)`, i.e. `g_u(κ_B u)=0`
+                                                is the exact minimum of the action
+      xiMassAction_le_slope                     the retreat cost `g_u(H) ≤ (κ_B u − H)·(−g_u'(H))`
+      height_ratio_le, xiMassAction_penetration_le
+                                                **(19.9)** `g_u(κ_B u − r) ≤ m_B r + 4a² r x`,
+                                                `x = 2κ_B r/(u(κ_B²−1))`, `m_B = 2a²−1/2`
+      rpow_sub_le                               **(19.10)** `A^p − A^{p−1}B ≤ (A−B)^p` for `p ≤ 1`
+
+    RHTower/XiMassSubcausticVanishing.lean
+      xiMassSubcausticHeight                    `H_*(u) = κ_B u − L u^{1/10}`
+      tendsto_windowPrefactor_zero              `(2 + L u^{1/10})/√u → 0`
+      exists_tendsto_subcausticWindowDefect_zero
+                                                **(19.6)** there is a positive coefficient chamber
+                                                bound `L_c` such that for every `0 < L ≤ L_c` the
+                                                prime-discrepancy annulus between `H_*(u)` and the
+                                                caustic tends to zero
+
+The chamber bound produced by the Lean proof is exactly `L_c = c κ_B^{1/10}/m_B` of (19.4), for
+the constant `c` supplied by the corpus power-log `θ` theorem.
+
+Remaining in §19: the criterion transfer (19.7), which needs the edge corrections between the
+raw heights `H_*(u)`, `κ_B u` and the integer cone edges `W_*(u)`, `W_B(u)`, plus a crude uniform
+bound on a compact height range.
+
+### Lean progress: §19.7, the subcaustic RH criterion — section 19 closed
+
+Newly formalized, axiom-clean (`[propext, Classical.choice, Quot.sound]`), wired, built:
+
+    RHTower/XiMassPrefixQuadratureDefect.lean
+      xiMassVerticalBound, norm_stripFourier_le_verticalBound,
+        norm_xiMassCenteredPrimeAtom_le_verticalBound,
+        norm_xiMassCriticalGrowingFourierProfile_le_verticalBound,
+        continuous_xiMassCriticalGrowingFourierProfile
+      xiMassPrefixQuadratureDefect, xiMassPrefixDefectBound,
+        xiMassPrefixDefectBound_nonneg, _mono,
+        norm_xiMassPrefixQuadratureDefect_le    the defect at a fixed integer cutoff is bounded by
+                                                a function of the cutoff alone, uniformly in the
+                                                vertical time
+      xiMassCriticalPrimeQuadratureDefect_eq_prefix
+                                                the corpus cone defect is the prefix defect at
+                                                `⌊e^{κu}⌋`
+      xiMassPrefixQuadratureDefect_sub          two prefix defects differ by the prime annulus
+                                                minus the continuum integral between the edges
+      norm_integral_growing_edge_le             the integer edge correction is at most
+                                                `√e·∫e^{-σ|x|}dx`: the continuum weight `e^{h/2}`
+                                                grows half as fast as the edge gap `e^{-h}` shrinks
+
+    RHTower/XiMassSubcausticCriterion.lean
+      prefixDefect_sub_eq_window                the exact three-term decomposition
+      exists_norm_prefixDefect_caustic_sub_le   the caustic and subcaustic defects differ by a
+                                                globally bounded amount
+      XiMassSubcausticQuadratureDefectLineBound,
+        exists_riemannHypothesis_iff_xiMassSubcausticQuadratureDefectLineBound
+                                                **(19.7)** RH is equivalent to uniform boundedness
+                                                of the quadrature defect at the retreated cutoff
+                                                `⌊e^{κ_B u − L u^{1/10}}⌋` for every `L` in the
+                                                closed coefficient chamber
+
+With this, sections 17 and 19 are fully formalized; §19.4 records the failure boundary and
+asserts no new theorem.  Sections 20--24 remain.

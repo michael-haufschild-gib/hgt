@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.XiMassThetaLogDiscrepancy
+import GaloisForLFunctions.RHTower.XiMassShellPrimeMass
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts
 
 /-!
@@ -62,8 +63,8 @@ theorem sum_primeLogWindow_indicator {H T h : ℝ} (hHh : H ≤ h) (hhT : h ≤ 
     Nat.floor_mono (Real.exp_le_exp.2 hHh)
   have hfl' : ⌊Real.exp h⌋₊ ≤ ⌊Real.exp T⌋₊ :=
     Nat.floor_mono (Real.exp_le_exp.2 hhT)
-  have hfilter : (primeLogWindow H T).filter (fun p => Real.log p ≤ h)
-      = (Finset.Ioc ⌊Real.exp H⌋₊ ⌊Real.exp h⌋₊).filter (fun p => Nat.Prime p) := by
+  have hfilter : (primeLogWindow H T).filter (fun p : ℕ => Real.log (p : ℝ) ≤ h)
+      = (Finset.Ioc ⌊Real.exp H⌋₊ ⌊Real.exp h⌋₊).filter (fun p : ℕ => Nat.Prime p) := by
     ext p
     simp only [Finset.mem_filter, mem_primeLogWindow, Finset.mem_Ioc]
     constructor
@@ -187,7 +188,7 @@ theorem sum_primeLogWindow_mul_eq {G G' : ℝ → ℂ} {H T : ℝ} (hHT : H ≤ 
     refine Finset.sum_congr rfl fun p hp => ?_
     rw [if_pos (primeLogWindow_log_le hp)]
   rw [intervalIntegral.integral_of_le hHT, hsumint, Finset.sum_congr rfl hpiece, ← hmass,
-    Finset.mul_sum, ← Finset.sum_sub_distrib]
+    Finset.sum_mul, ← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl fun p _ => ?_
   ring
 

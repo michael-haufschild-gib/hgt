@@ -677,3 +677,43 @@ What is **not** yet a theorem, and is exactly what `(4)` still consumes:
 With 1 and 2, `criticalMonodromy_eq_top_of_rootAction_of_isSwap` gives `(4)` for `m ≠ n`
 unconditionally; the balanced case `m = n` still needs the geometric no-hidden-block argument, since
 complement pairs are a genuine block system for the abstract `m`-subset action.
+
+## Lean progress — the Schur input is now a *degree* statement, not a description
+
+The transposition criterion consumed
+`(collisionSupport (criticalGeometricSheetToSchurReducedFibre K hm hn)).ncard ≤ 2`, a statement
+about *which* sheets meet.  That is now a consequence of a pure count.
+
+```text
+HTGeometry/CollisionSupportCounting.lean            (wired, axiom-clean)
+    collisionSupport_ncard_le_two_of_card_le_card_image
+        card α ≤ card (image r) + 1  ⟹  (collisionSupport r).ncard ≤ 2
+    collisionSupport_ncard_le_two_of_natCard_le_ncard_range
+        the same with cardinals, so no decidability data is needed at the use site
+
+HTGeometry/CriticalSchurCollisionDegree.lean        (wired, axiom-clean)
+    exists_criticalGeometricMonodromy_isSwap_of_reducedFibre_degree
+        Nat.card (sheets) ≤ (range of the Schur reduction).ncard + 1
+          + nontrivial actual Schur inertia
+        ⟹  a literal transposition in criticalGeometricMonodromy
+```
+
+The counting is exact and needs nothing about the map: writing the source as the disjoint union of
+the fibres, `Σ_{b ∈ image}(|fibre b| − 1) = card α − card(image r) ≤ 1`, and every colliding fibre
+contributes at least `1` to that sum, so at most one fibre collides and it has exactly two elements.
+
+What this changes for the card: step 3's conclusion no longer has to be delivered as "the two
+merging sheets are exactly such-and-such".  It suffices to deliver
+
+```text
+the Schur reduction of the D sheets loses at most one point,
+```
+
+which is the divisor-theoretic content of "the Jacobian determinant is a uniformizer"
+(`irreducible_criticalSchurJacobianDetElement`) — namely `Σ_w (e_w − 1) = v(𝔡) = 1` at the Schur
+place, with `f_w = 1` because the residue fields are algebraically closed.  The corpus already has
+irreducibility, reducedness (`orderAt_criticalSchurPrimeDivisor_ramificationPolynomial`) and generic
+corank one (`finrank_ker_criticalSchurGenericMatrix_eq_one`); the missing link is the
+different/Jacobian-ideal identification and the tame formula `v(𝔡) = Σ(e_w − 1)`.
+
+Nothing here touches step 4 (the no-hidden-block argument), whose Kummer input remains as recorded.

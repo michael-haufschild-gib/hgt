@@ -44,7 +44,7 @@
 - [ ] `differential-variational-building-balance-law`
 - [x] `double-sine-defect-coset-differential-matroid`
 - [x] `double-sine-translation-annihilator`
-- [ ] `eigenplurivolume-log-crepant-orbifold`
+- [x] `eigenplurivolume-log-crepant-orbifold` — 2026-08-16, `schemeEigenPluriVolume_logCrepant`
 - [ ] `embedded-manin-horizon-isogeny-reconstruction`
 - [ ] `finite-archimedean-gamma-product-boundary-law`
 - [ ] `fixed-divisor-full-complex-translation-freeness`
@@ -54,7 +54,7 @@
 - [ ] `isogeny-tail-maurer-cartan-holography`
 - [ ] `jet-horizon-translation-gauge-classification`
 - [ ] `noncompact-period-quotient-facet-escape-law`
-- [ ] `nonlinear-rational-observation-curve-horizon-reconstruction`
+- [x] `nonlinear-rational-observation-curve-horizon-reconstruction` — 2026-08-16, `exists_differentialAdjoin_jetFamily_eq`
 - [x] `nonreal-factorial-slope-formal-hypertranscendence`
 - [ ] `orbifold-tail-holographic-reconstruction`
 - [ ] `periodic-pencil-intrinsic-ht-dimension-two`
@@ -73,7 +73,7 @@
 - [x] `scalar-differential-inversive-core-projective-law`
 - [x] `scalar-ht-horizon-celestial-sphere` — 2026-08-16, `scalarHorizon_celestialSphere_realization`
 - [ ] `symmetry-caged-fixed-divisor-full-orbit-freeness`
-- [ ] `toric-log-calabi-yau-tail`
+- [x] `toric-log-calabi-yau-tail` — 2026-08-16, `toricPowerIsogenyTail`
 - [ ] `torusless-quasi-abelian-fixed-factor-all-order-jet-ampleness`
 - [ ] `universal-first-order-entire-cascade-unit-cost`
 - [ ] `weighted-euler-tangent-global-graph-decoupling`
@@ -1579,3 +1579,22 @@ new files and `ccm-four-unit-cesaro-curvature-wall` is modified in the working t
   identified with `P^1(C)`); `HTGeometry/ScalarHorizonCelestialBoundary.lean` (the weld). All three
   wired into the `HTGeometry` umbrella; capstones use only `propext`, `Classical.choice`,
   `Quot.sound`.
+- 2026-08-16 — `nonlinear-rational-observation-curve-horizon-reconstruction` closed. New modules:
+  `HTGeometry/JetPrincipalSymbolExtraction.lean` (the general Lüroth principal-symbol theorem
+  `exists_mem_pd_ratio`, principal-symbol invariance under differentiation, and the identity-view
+  affine/nonaffine dichotomy `differentialAdjoin_jets_eq_top_iff`);
+  `HTGeometry/DerivationAlgebraicDescent.lean` (`mem_of_isAlgebraic_of_derivation_mem`, descent by
+  differentiating the minimal polynomial, with a chain rule for polynomials with varying
+  coefficients); `HTGeometry/RationalObservationCurveNormalization.lean` (the Main theorem
+  `exists_differentialAdjoin_jetFamily_eq` and the normalized dichotomy
+  `differentialAdjoin_jetFamily_eq_top_iff`). All umbrella-wired; capstones use only `propext`,
+  `Classical.choice`, `Quot.sound`.
+- 2026-08-16 — `toric-log-calabi-yau-tail` closed by `HTGeometry/ToricIsogenyTailLaw.lean`: the
+  autonomous torus isogeny tail (`torusEndo_stableRangeCore_eq_torusInvariantMonomialField`), the
+  pure-multiplication position/velocity law (`toricPowerIsogenyTail`), the character-matrix
+  transport law, and the birational invariance of a stable tail. Umbrella-wired, axiom-clean.
+- 2026-08-16 — `eigenplurivolume-log-crepant-orbifold` closed by
+  `HTGeometry/EigenPluriVolumeLogCrepant.lean`: the weighted pluricanonical order law on an
+  integral locally Noetherian scheme, the boundary pullback identity, the log-crepant invariance,
+  the principal-divisor form, and the periodic coefficient-one fixed point. Umbrella-wired,
+  axiom-clean.

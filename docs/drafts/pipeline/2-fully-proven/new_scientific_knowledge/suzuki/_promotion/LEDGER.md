@@ -10144,3 +10144,106 @@ unconditional declaration; the companion
 card itself as an `[OPEN SOURCE CONNECTOR]`, and the last four gates are route statements.
 
 All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADD. `weil-position-torque-recurrence`: `(14)`, `(16)`, `(17)` and the layer's continuity
+
+```text
+RHTower/SuzukiTorqueTentSeries.lean       the visible layer as an infinite tent series
+RHTower/SuzukiTorqueTentLaplace.lean      one tent's Laplace transform
+RHTower/SuzukiTorquePrimeSeries.lean      the tent weight is half the filtered Mangoldt term
+RHTower/SuzukiTorquePrimeLaplace.lean     the prime layer's transform, by absolute Fubini
+RHTower/SuzukiTorqueArchLaplace.lean      the archimedean layer's transform
+RHTower/SuzukiTorquePrimeOrder.lean       (17): continuity and exponential order
+RHTower/SuzukiTorqueTotalTransform.lean   (14)
+RHTower/SuzukiTorqueEulerTransform.lean   (16)
+```
+
+**The rewriting that makes the Fubini absolute.**  Suzuki's visible layer is a *finite* sum whose
+range `Icc 2 ⌊e^L⌋` grows with the aperture.  Written with the positive part `(L − log n)⁺` it is an
+infinite series whose terms vanish before their birth point — `tsum_eq_sum` in both directions, since
+`n ≤ ⌊e^L⌋ ⟺ log n ≤ L`.  Every term is then nonnegative with an explicit transform, so
+`integral_tsum_of_summable_integral_norm` applies and no Abel summation is needed.
+
+**Why the shift is exactly `σ − 1/2`.**  Two `n`-powers combine: the kernel's `n^{-1/2}` and the
+tent's height `sinh(log n) = (n − n^{-1})/2`.  Their product is
+
+```text
+n^{-1/2}(n − n^{-1}) = n^{1/2}(1 − n^{-2}),
+```
+
+so the `n`-th tent weight against `e^{-σ log n}` is exactly half the `n`-th term of the `L`-series of
+`log·Λ(n)(1 − n^{-2})` at `σ − 1/2` — the corpus's `filteredVonMangoldtCoeff`, whose abscissa is
+already known to be at most one.  Hence the tent series converges precisely to the right of `3/2`
+and sums to half that `L`-series.
+
+**The archimedean layer costs nothing new.**  Its closed form is four `(aL+b)e^{cL}` pieces with
+`c ∈ {3/2, −1/2, −3/2, 0}`; each transforms to `a/(σ−c)² + b/(σ−c)`, and the four combine — after
+the apparent simple poles cancel — into the compact rational expression the card displays.  The
+cancellation is a `field_simp` once the half-integer denominators are cleared as `(2σ±k)/2`.
+
+**`(17)` and continuity.**  On any bounded interval only finitely many tents have been born, so the
+layer agrees there with a fixed finite sum of continuous functions; that is its continuity, which the
+card lists as unformalized.  Its size needs only the crudest estimates — `Λ(n) ≤ log n ≤ L`,
+`√n ≤ e^{L/2}`, `sinh(log n) ≤ n/2`, at most `e^{L}` terms — giving `P(L) ≤ ½L³e^{3L/2}`, and that
+bound is what makes the layer Laplace integrable past `3/2`.
+
+**`(16)`.**  Casting `(14)` into `ℂ` gives `suzukiPositionTorqueEulerSource (σ:ℂ)`, and the corpus's
+`suzukiPositionTorqueLaplaceContinuation_eq_eulerSource` turns that into the completed Xi curvature
+difference.  So the real Laplace transform of the torque *is* the meromorphic continuation the
+Landau argument needs.
+
+**What remains on this card:** `(18)`, the same exponential-order bound for the archimedean layer —
+immediate from its closed form — and `(19)`, the cofinal sign theorem, whose four inputs (Landau's
+theorem, a nontrivial `ξ` zero, real-ray nonvanishing, and the double pole of `(logDeriv ξ)′`) are all
+already owned by ledger sections AAX, AAY and ACW.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADE. `(18)`, and Landau's theorem in the shape `(19)` consumes
+
+```text
+RHTower/SuzukiTorqueArchOrder.lean          (18)
+RHTower/LaplaceAbscissaExists.lean          the abscissa exists
+RHTower/ComplexLaplaceHolomorphy.lean       the complex transform is holomorphic right of it
+RHTower/RealJetsOfHolomorphic.lean          real jets of a function holomorphic on a disc
+RHTower/LandauSingularAtAbscissa.lean       the abscissa is a genuine singularity
+```
+
+**`(18)`.**  Only the `e^{3L/2}` piece of the archimedean closed form can grow and its polynomial
+factor is linear, so `|A(L)| ≤ 22L³e^{3L/2}` for `L ≥ 1` follows from `e^{-x} ≤ 1`, `e^{3L/2} ≥ 1`
+and `L ≤ L³` alone.  The card says the constants are inessential — the bound is used only to place
+the convergence abscissa at most `3/2` — so the explicit `22` is faithful to its content.
+
+**The abscissa exists.**  `laplaceMass` is antitone, so `{σ | mass σ ≠ ⊤}` is an up-set; its
+infimum is the abscissa as soon as the set is nonempty and bounded below, and a point of divergence
+is a lower bound.
+
+**Landau, in the shape the card's proof uses.**  `false_of_analyticAt_abscissa`: if the transform of
+a nonnegative measure agrees, right of its abscissa `c`, with a function analytic on a whole disc
+`B(c,δ)`, that is a contradiction.  The proof takes `a = c + δ/4` and radius `δ/2`, so the Taylor
+radius at `a` is at least `δ/2 > δ/4 = a − c`, and `not_summable_moment_beyond_abscissa` forbids it.
+
+**The bridge is the jet transfer.**  Landau's hypothesis is about the *real* jets of the transform;
+the power series is about the *complex* jets of the extension.  `iteratedDeriv_ofReal_comp` closes
+the gap for a function holomorphic on a disc centred at a real point: the induction is local, so at
+each stage the previous identity holds on a whole real neighbourhood and the derivative may be taken
+through it.  Composing with the corpus's moment tower
+(`iteratedDeriv_laplaceReal`, `hasDerivAt_laplaceMomentReal`) turns each complex jet into
+`(−1)^n` times a moment, and `FormalMultilinearSeries.ofScalars_norm` turns the series bound into
+exactly the moment series Landau rejects.
+
+**What `(19)` still needs.**  Three steps, all ordinary:
+
+1. the tail measure `ν_H` of `T` past a height `H`, its Laplace identity
+   `laplaceReal ν_H σ = e^{σH}(F(σ) − ∫_0^H T e^{-σL})`, and the abscissa bound `c ≤ 3/2` from
+   `(17)`–`(18)`;
+2. `ξ` has no real zeros *anywhere* — the corpus owns the positive ray
+   (`riemannXi_ne_zero_of_ofReal_pos`), and the functional equation carries it to the rest — so the
+   continuation `(16)` is analytic at every real point except `0`, and Landau then forces the
+   abscissa to be `0`;
+3. ruling out `c = 0`: the transform is holomorphic on `Re s > c` (now owned), equals the
+   continuation on `Re s > 3/2`, and by the identity theorem on the half-plane minus the (countable)
+   singular set would extend `(16)` holomorphically across the double pole at `p = ρ + 1/2` — which
+   `LogDerivZeroPole` forbids.  This is the only step needing the identity theorem.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.

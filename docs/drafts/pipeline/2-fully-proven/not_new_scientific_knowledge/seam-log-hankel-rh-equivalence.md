@@ -136,7 +136,7 @@ Thus the missing source theorem is not coefficient positivity, complete monotoni
 
 ## 2026-06-24 fixed-rank shifted Hankel control is insufficient
 
-`fixed-rank-hankel-tests-do-not-imply-stieltjes.md` adds the bounded-size form of the all-order warning. For each fixed `r`, every shifted block `H_{N,k}` with `k<=r` may be positive definite while `H_{0,r+1}` fails positivity.
+`../../3-formalized/not_new_scientific_knowledge/fixed-rank-hankel-tests-do-not-imply-stieltjes.md` adds the bounded-size form of the all-order warning. For each fixed `r`, every shifted block `H_{N,k}` with `k<=r` may be positive definite while `H_{0,r+1}` fails positivity.
 
 Thus the missing source theorem for the canonical seam-log tower cannot stop at a fixed block size, even uniformly over all shifts. It must reach the full Hankel cone or prove a source upgrade that makes bounded-rank control decisive.
 

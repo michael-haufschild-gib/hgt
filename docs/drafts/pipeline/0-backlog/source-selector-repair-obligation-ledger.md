@@ -135,7 +135,7 @@ Therefore any proposed source theorem phrased in carrier language must prove the
 
 ## 2026-06-24 contraction language is not a second selector
 
-`../2-fully-proven/loewner-contraction-congruence-normalization.md` normalizes rows A6--A7 on the operator face. For any positive finite budget `M`,
+`../3-formalized/not_new_scientific_knowledge/loewner-contraction-congruence-normalization.md` normalizes rows A6--A7 on the operator face. For any positive finite budget `M`,
 
 `M+R>=0 <=> M^(-1/2)(-R)M^(-1/2)<=I`.
 
@@ -179,13 +179,13 @@ Thus rows A6--A7 cannot be discharged by coefficient signs, complete monotonicit
 
 ## 2026-06-24 fixed-rank Hankel control does not discharge A6--A7
 
-`../2-fully-proven/fixed-rank-hankel-tests-do-not-imply-stieltjes.md` blocks another weak positivity transfer. For every fixed `r`, the shifted Hankel tests up to size `r` can all pass at every shift while a size `r+1` square test fails.
+`../3-formalized/not_new_scientific_knowledge/fixed-rank-hankel-tests-do-not-imply-stieltjes.md` blocks another weak positivity transfer. For every fixed `r`, the shifted Hankel tests up to size `r` can all pass at every shift while a size `r+1` square test fails.
 
 Thus rows A6--A7 cannot be discharged by proving a bounded-rank family of Hankel inequalities. The repair theorem must control arbitrary-degree square tests or include a source upgrade that makes bounded-rank data equivalent to the full Schur/Hankel cone.
 
 ## 2026-06-24 boundary monotonicity does not discharge A6--A7
 
-`../2-fully-proven/boundary-weyl-thresholds-have-no-formal-monotonicity.md` blocks a monotone pole-to-Uvarov shortcut. For two independent boundary functionals, the positive bulk form can make either Schur threshold larger, so exterior boundary location alone does not order the repair costs.
+`../3-formalized/not_new_scientific_knowledge/boundary-weyl-thresholds-have-no-formal-monotonicity.md` blocks a monotone pole-to-Uvarov shortcut. For two independent boundary functionals, the positive bulk form can make either Schur threshold larger, so exterior boundary location alone does not order the repair costs.
 
 Thus rows A6--A7 cannot be discharged by saying that the first-trivial-zero channel inherits the pole-channel budget monotonically. The source theorem must prove the comparison for the actual Euler/Gamma/FE carrier, or work directly with the first-trivial-zero channel.
 
@@ -233,7 +233,7 @@ Thus rows A6--A7 cannot cite termwise discriminant positivity without a summed s
 
 ## 2026-06-24 discriminant scale separation made exact
 
-`../2-fully-proven/discriminant-cross-positive-interval.md` supplies the exact
+`../3-formalized/not_new_scientific_knowledge/discriminant-cross-positive-interval.md` supplies the exact
 positive range for the cross term `Re(y(y-x)^2)`. For `y=u+iv`, `a=|v|`, and
 `r=|y|`, the upper bad endpoint is `x_+(y)=(u^2-a^2+ar)/u`, and `x>=1.18|y|`
 is a sufficient condition for positivity.
@@ -275,7 +275,7 @@ bounds through `2d+1`, and the resulting matrix inequality.
 
 ## 2026-06-24 monomial absolute-tail gate cannot give `d~H`
 
-`../2-fully-proven/monomial-tail-gate-height-linear-no-go.md` audits the
+`../3-formalized/not_new_scientific_knowledge/monomial-tail-gate-height-linear-no-go.md` audits the
 finite-degree matrix gate. In the monomial basis,
 
 `lambda_min(B_d) <= L_{2d+1} <= L_1 R^(2d)`,
@@ -290,7 +290,7 @@ entrywise tail estimate is a sufficient finite check only at very low degree.
 
 ## 2026-06-24 finite reciprocal Hankel tests are height-limited
 
-`../2-fully-proven/finite-degree-reciprocal-tests-height-limited.md` records the
+`../3-formalized/not_new_scientific_knowledge/finite-degree-reciprocal-tests-height-limited.md` records the
 native reciprocal version of finite-prefix blindness. For any fixed degree `d`,
 positive shifted blocks remain positive after adding a sufficiently small
 non-real reciprocal conjugate pair. In seam variables this is a sufficiently
@@ -302,7 +302,7 @@ degree-to-height theorem or an all-order source-built sign transfer.
 
 ## 2026-06-24 relative contraction requires completion, not only compressions
 
-`../2-fully-proven/relative-contraction-compression-exhaustion.md` records the
+`../3-formalized/not_new_scientific_knowledge/relative-contraction-compression-exhaustion.md` records the
 operator-route target. If a bounded self-adjoint source operator `K` is already
 constructed on the `M_triv` completion, then `K<=I` is equivalent to all finite
 compression inequalities on the dense polynomial subspaces. But finite
@@ -333,7 +333,7 @@ A proposed selector in such coordinates must identify the source theorem that fo
 
 ## 2026-06-24 single even frequency fails the Stieltjes cone
 
-`../2-fully-proven/single-even-frequency-not-stieltjes.md` sharpens row A3 against rows A6--A7. A positive FE-even frequency `B(cosh(lambda w)-1)` contributes shifted seam moments
+`../3-formalized/not_new_scientific_knowledge/single-even-frequency-not-stieltjes.md` sharpens row A3 against rows A6--A7. A positive FE-even frequency `B(cosh(lambda w)-1)` contributes shifted seam moments
 
 `T_k=B(-1)^(k+1)lambda^(2k)/(2k-1)!`,
 
@@ -343,7 +343,7 @@ Thus Euler positivity cannot be transferred termwise through positive even frequ
 
 ## 2026-06-24 positive FE-even frequency cone is anti-Markov
 
-`../2-fully-proven/positive-even-frequency-cone-not-markov.md` upgrades the one-frequency obstruction to the full positive cone generated by FE-even frequencies. For a positive measure `mu` on frequencies, the shifted seam moments satisfy
+`../3-formalized/not_new_scientific_knowledge/positive-even-frequency-cone-not-markov.md` upgrades the one-frequency obstruction to the full positive cone generated by FE-even frequencies. For a positive measure `mu` on frequencies, the shifted seam moments satisfy
 
 `T_k=(-1)^(k+1) int lambda^(2k)dmu(lambda)/(2k-1)!`,
 
@@ -353,7 +353,7 @@ Thus row A3 cannot feed A6--A7 by positive frequency summation, even after FE-ev
 
 ## 2026-06-24 finite signed FE-even atoms are still anti-Markov
 
-`../2-fully-proven/finite-signed-even-frequency-atoms-not-markov.md` extends the positive frequency-cone obstruction. A nonzero finite signed sum of real FE-even frequency atoms has shifted moments
+`../3-formalized/not_new_scientific_knowledge/finite-signed-even-frequency-atoms-not-markov.md` extends the positive frequency-cone obstruction. A nonzero finite signed sum of real FE-even frequency atoms has shifted moments
 
 `T_k=(-1)^(k+1) S_k/(2k-1)!`, with `S_k=sum_j c_j lambda_j^(2k)`.
 
@@ -361,7 +361,7 @@ After equal frequencies are combined, the largest remaining real frequency domin
 
 ## 2026-06-24 finite-order local frequency operators are still anti-Markov
 
-`../2-fully-proven/finite-order-local-frequency-operators-not-markov.md` closes the coefficient-local variant of the positive frequency route. If a finite-order local operator acts on the `z^k` coefficient by a nonzero real polynomial `q(k)`, then a nonzero positive FE-even frequency mixture gives
+`../3-formalized/not_new_scientific_knowledge/finite-order-local-frequency-operators-not-markov.md` closes the coefficient-local variant of the positive frequency route. If a finite-order local operator acts on the `z^k` coefficient by a nonzero real polynomial `q(k)`, then a nonzero positive FE-even frequency mixture gives
 
 `T_k^{q,mu}=(-1)^(k+1) q(k) M_k/(2k-1)!`, with `M_k>0`.
 
@@ -375,7 +375,7 @@ Thus rows A3--A7 cannot hide the parity repair inside finite local `D`-operator 
 
 ## 2026-06-24 half-turn parity repair is still not Markov positivity
 
-`../2-fully-proven/half-turn-repaired-frequency-not-markov.md` closes the next loophole after the nonlocal half-turn was identified. For a single positive FE-even frequency, the repaired moments are
+`../3-formalized/not_new_scientific_knowledge/half-turn-repaired-frequency-not-markov.md` closes the next loophole after the nonlocal half-turn was identified. For a single positive FE-even frequency, the repaired moments are
 
 `U_1=B lambda^2`, `U_2=B lambda^4/6`, `U_3=B lambda^6/120`,
 
@@ -387,7 +387,7 @@ Thus rows A3--A7 cannot be discharged by decomposing into positive FE-even frequ
 
 ## 2026-06-24 bounded half-turn packets still fail the first Hankel gate
 
-`../2-fully-proven/bounded-half-turn-frequency-packets-fail-hankel.md` quantifies the post-half-turn obstruction. For a finite positive repaired packet with squared frequencies `x_i`, the first determinant is controlled by
+`../3-formalized/not_new_scientific_knowledge/bounded-half-turn-frequency-packets-fail-hankel.md` quantifies the post-half-turn obstruction. For a finite positive repaired packet with squared frequencies `x_i`, the first determinant is controlled by
 
 `U_1 U_3-U_2^2=(3 M_1 M_3-10 M_2^2)/360`.
 

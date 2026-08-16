@@ -57,4 +57,61 @@ theorem besselEnergy_le_exp_of_abstract {a u : ℝ} (ha : 0 < a) (hau : a ≤ u)
   rw [oscEnergy_bessel, oscEnergy_bessel] at h
   exact h
 
+/-- The abstract lower Grönwall bound, read back on the Bessel energy.  The normal form's energy
+cannot decay past a fixed multiple of its value at the base point, so `√u J₀(u)` retains a definite
+amplitude on every exterior ray. -/
+theorem exp_mul_besselEnergy_le_of_abstract {a u : ℝ} (ha : 0 < a) (hau : a ≤ u) :
+    besselEnergy a * Real.exp (-(1 / 4 / a - 1 / 4 / u)) ≤ besselEnergy u := by
+  obtain ⟨hw, hDw, hode, hq⟩ := bessel_isPerturbedOscillator
+  have h := exp_mul_oscEnergy_le (w := besselNormalForm) (Dw := besselNormalFormDeriv)
+    (DDw := besselNormalFormSecond) (q := fun v => 1 / (4 * v ^ 2)) (κ := 1 / 4)
+    ha hau (by norm_num) hw hDw hode hq
+  rw [oscEnergy_bessel, oscEnergy_bessel] at h
+  exact h
+
+/-- **The Bessel normal form carries mass.**  On an interval long compared with the energy ratio,
+`∫ u J₀(u)² du` is bounded below by the energy at the left endpoint.  This is what a pointwise
+envelope cannot give. -/
+theorem besselMass_lower {α β : ℝ} (hα : 0 < α) (hαβ : α ≤ β) :
+    ((β - α) * (besselEnergy α * Real.exp (1 / 4 / β - 1 / 4 / α))
+        - besselEnergy α * Real.exp (1 / 4 / α)) / (2 + (1 / 4 : ℝ) / α ^ 2)
+      ≤ ∫ u in α..β, besselNormalForm u ^ 2 := by
+  obtain ⟨hw, hDw, hode, hq⟩ := bessel_isPerturbedOscillator
+  have hE0 : 0 ≤ besselEnergy α := by
+    rw [← oscEnergy_bessel]
+    exact oscEnergy_nonneg _ _ _
+  have hmem : ∀ v ∈ Set.Icc α β, 0 < v := fun v hv => lt_of_lt_of_le hα hv.1
+  have hqc : ContinuousOn (fun v : ℝ => 1 / (4 * v ^ 2)) (Set.Icc α β) := by
+    refine ContinuousOn.div continuousOn_const (by fun_prop) fun v hv => ?_
+    have := hmem v hv
+    positivity
+  have hElow : ∀ v ∈ Set.Icc α β,
+      besselEnergy α * Real.exp (1 / 4 / β - 1 / 4 / α)
+        ≤ oscEnergy besselNormalForm besselNormalFormDeriv v := by
+    intro v hv
+    have hv0 : 0 < v := hmem v hv
+    have hmain := exp_mul_besselEnergy_le_of_abstract hα hv.1
+    have hstep : Real.exp (1 / 4 / β - 1 / 4 / α) ≤ Real.exp (-(1 / 4 / α - 1 / 4 / v)) := by
+      rw [Real.exp_le_exp]
+      have : (1 : ℝ) / 4 / β ≤ 1 / 4 / v := by
+        refine div_le_div_of_nonneg_left (by norm_num) hv0 hv.2
+      linarith
+    rw [oscEnergy_bessel]
+    nlinarith [hmain, hstep, hE0]
+  have hEhigh : ∀ v ∈ Set.Icc α β,
+      oscEnergy besselNormalForm besselNormalFormDeriv v
+        ≤ besselEnergy α * Real.exp (1 / 4 / α) := by
+    intro v hv
+    have hv0 : 0 < v := hmem v hv
+    have hmain := besselEnergy_le_exp_of_abstract hα hv.1
+    have hstep : Real.exp (1 / 4 / α - 1 / 4 / v) ≤ Real.exp (1 / 4 / α) := by
+      rw [Real.exp_le_exp]
+      have : (0 : ℝ) < 1 / 4 / v := by positivity
+      linarith
+    rw [oscEnergy_bessel]
+    nlinarith [hmain, hstep, hE0]
+  exact mass_lower_of_oscEnergy (w := besselNormalForm) (Dw := besselNormalFormDeriv)
+    (DDw := besselNormalFormSecond) (q := fun v => 1 / (4 * v ^ 2)) (κ := 1 / 4)
+    hαβ hα (by norm_num) hw hDw hode hqc hq hElow hEhigh
+
 end GaloisForLFunctions.RHTower

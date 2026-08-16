@@ -338,3 +338,89 @@ Together these prove `Tail(R) ⊇ C⟨Q_R⟩` whenever an invariant `k`-differen
 "if" half of item 1 and the containment half of item 3.  The remaining content of the card is the
 converse: that a nonconstant tail *forces* an invariant tensor, which is the Casale/Malgrange
 classification step.
+
+## 2026-08-16 — a Casale-free route to the hard direction, and the exact gap in it
+
+The only paper-level input left in this card is step 2, where Casale's classification is quoted.
+The following is a completely elementary chain that reaches the *tensor* half of item `(1)` — i.e.
+`Tail(R) != C` implies `R` preserves a nonzero rational `k`-differential up to a scalar — using only
+machinery the corpus already owns, together with one named gap.  Recording it so the next pass does
+not have to rediscover it.
+
+**Steps that are already corpus-formalized.**
+
+1. `Tail(R) != C` gives `Tail(R) = C<u>` by `differentialLuroth`, and `u` is hypertranscendental
+   (`differentialRational_noDAShadow`).
+2. `Phi_R` restricts to a *bijection* of `Tail(R)`, because the intersection defining the tail is
+   decreasing: `Phi_R(Tail) = intersection_(n>=1) Phi_R^n F = Tail`.  So `Phi_R|_Tail` is a
+   differential automorphism of a free differential field on one generator, and
+   `MutualGeneratorMobius`/`algEquiv_generator_mobius_of_mem` give `M in PGL_2(C)` with
+   `Phi_R(u) = M(u)`.
+3. Conjugating `u` by a Moebius map replaces `M` by a conjugate, so over `C` one may assume
+   `M(u) = alpha u` or `M(u) = u + 1`.
+4. `ord_y(u) = 0` is impossible: it would give `u . R = M . u` in `C(y)`, and comparing degrees
+   `deg u * deg R = deg u` forces `deg R = 1`.  So `m := ord_y(u) >= 1`.
+
+**The new step.**  Apply the top coordinate derivation `pd_m = ∂/∂y_m`, using the principal-symbol
+identity now available as `HTGeometry.pd_differentialJet_top`
+(`JetPrincipalSymbolExtraction.lean`): since `Phi_R(y_l) = delta^l R(y)` has `pd_m`-derivative `0`
+for `l < m` and `R'(y)` for `l = m`, the chain rule gives
+
+```text
+pd_m(Phi_R v) = Phi_R(pd_m v) * R'(y)     for every v of order <= m.
+```
+
+With `w := pd_m u != 0` and `lambda := alpha` (resp. `1`) this reads
+
+```text
+Phi_R(w) * R'(y) = lambda * w.                                      (T1)
+```
+
+**The descent.**  If `ord_y(w) = nu >= 1`, write `w = P/Q` in lowest terms as a rational function of
+`y_nu` over `C(y_0,...,y_(nu-1))`, with `y_nu`-degrees `a` and `b` and leading coefficients `p_a`,
+`q_b`.  Because `Phi_R(y_nu) = R'(y) y_nu + (terms in y_0..y_(nu-1))`, the substitution preserves
+the `y_nu`-degree and multiplies the leading coefficient of a degree-`c` polynomial by `R'^c`.
+Comparing leading coefficients in `(T1)` gives
+
+```text
+Phi_R(s) * R'(y)^(e') = lambda * s,     s := p_a/q_b,  e' = e + a - b,
+```
+
+with `ord_y(s) <= nu - 1`.  Iterating down to order zero produces `s_0 in C(y)^x`, `e_0 in Z` and
+`lambda_0 in C^x` with
+
+```text
+s_0(R(y)) * R'(y)^(e_0) = lambda_0 * s_0(y).                        (T2)
+```
+
+If `e_0 != 0` then `s_0 (dz)^(e_0)` is an `R`-invariant tensor (invert it if `e_0 < 0`), which is
+exactly item `(1)`.
+
+**The gap.**  `(T2)` with `e_0 = 0` says `s_0 . R = lambda_0 s_0`, and comparing degrees forces
+`s_0` constant and `lambda_0 = 1` — no information.  So the descent as stated can terminate
+vacuously.  Two ways out are visible and neither has been checked:
+
+* keep the whole `y_nu`-divisor rather than only the leading coefficient — the substitution moves
+  the roots by `rho |-> (Phi_R(rho) - L)/R'`, and the multiset identity
+  `sigma(roots P) + roots Q = roots P + sigma(roots Q)` is extra information the leading-coefficient
+  comparison throws away;
+* for `R` a *polynomial* of degree `d` with leading coefficient `c`, the substitution is graded:
+  it multiplies total jet degree by exactly `d`, with top form `y_0 |-> c y_0^d`,
+  `y_j |-> c d y_0^(d-1) y_j` for `j >= 1`, and the top-form comparison in `(T1)` reduces to the
+  identity `d * P(dy) Q(y) = lambda P(y) Q(dy)` between polynomials in `y_1, y_2, ...` alone.  That
+  identity is very rigid and may already force the classification for polynomials.
+
+**Why this matters for the two dependent cards.**  `floquet-orbifold-tail-emergence` needs only
+`Tail(z^2+1) = C` and `Tail((z-1)^2) = C`.  Given the tensor half above, those follow from an
+elementary orbit argument that needs no classification: the functional equation
+`q(R(z)) R'(z)^k = lambda q(z)` gives, at every point `a`,
+
+```text
+e_a * ord_(R(a))(q) + k * [a is a critical point, with its multiplicity] = ord_a(q).
+```
+
+For `R = z^2+1` the only finite critical point is `0`, so `ord_a(q) = ord_(R(a))(q)` for `a != 0`
+and `ord_0(q) = 2 ord_1(q) + k`.  The forward orbit `0 -> 1 -> 2 -> 5 -> 26 -> ...` is infinite and
+`ord` is constant along it, so `ord_1(q) = 0` and `ord_0(q) = k != 0`; then `ord` is constant along
+the *backward* orbit of `0`, which is infinite, so `q` has infinitely many zeros or poles — absurd.
+The same argument kills `(z-1)^2` after translating its critical point to the origin.

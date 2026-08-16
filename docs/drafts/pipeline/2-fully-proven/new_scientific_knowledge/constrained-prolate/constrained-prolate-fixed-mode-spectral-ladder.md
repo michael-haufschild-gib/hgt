@@ -3783,3 +3783,190 @@ Only the assembly remains: chain `Phi(2√s)/Phi(1) = [Phi(2√s)/Phi(α)]·[Phi
 factor `≍ I₀(cΞ(α))` and the first from the sharp action with the now-constant loss
 `6·log((1−2√s)/(1−α))`, then feed the ratio into the interior/exterior mass quotient.  Every factor is
 `σ = 0` or `σ = 1/2` against the budget `7/2`.
+
+## `I₀` from below, and the shape of the assembled bound
+
+```text
+exp_div_le_besselI0 :   e^z / (2 pi sqrt z)  ≤  I₀(z)      for z ≥ 1 .
+```
+
+Proved from the integral representation on the window `|θ − π/2| ≤ 1/√z`, where
+`sin θ = cos(θ − π/2) ≥ 1 − 1/(2z)` by `Real.one_sub_sq_div_two_le_cos`, so the integrand is at least
+`e^(z−1/2)/2` across a window of length `2/√z`.  The window is chosen, not found: no saddle-point
+analysis and no asymptotic expansion enters.
+
+With this the chain closes numerically.  Fix the collar at `α = 1 − 1/2400` and write
+
+```text
+Phi(1)/Phi(2√s) = [Phi(1)/Phi(α)] · [Phi(α)/Phi(2√s)] .
+```
+
+* `Phi(1) = 1` and `Phi(α) ≥ (1/3)·I₀(cΞ(α)) ≥ (1/3)·e^(cΞ(α))/(2π√(cΞ(α)))`, so the first factor is
+  at most `6π √(cΞ(α))·e^(−cΞ(α))`.
+* The second factor is `prolate_endpoint_le_log` on `[2√s, α]`, with loss `6·log((1−2√s)/(1−α))
+  ≤ 6·log 2400`, an absolute constant now that `α` is fixed.
+* `Ξ(α) = ∫_α^1 P` joins the two exponents exactly: `c∫_{2√s}^α P + cΞ(α) = c∫_{2√s}^1 P`, and the
+  truncation `∫_{√s}^{2√s} P = O(1/c)` makes that `c·A(s) + O(1)`.
+
+Hence `Phi(1)/Phi(2√s) ≤ C·√c·e^(−cA(s))` and, through `leakage_upper_of_mass_bounds`,
+
+```text
+leakage ≤ (C/κ)·(Phi(1)/Phi(2√s))² ≤ C'·c·e^(−2cA(s)) = C'·c^(n+3/2)·e^(−2c) ,
+```
+
+using `cA(s) = c − ((2n+1)/4)·log c + O(1)` from the sharp action.  The overhead is `σ = 1`, well
+inside the `7/2` budget and — being independent of `n` — invisible in the ladder ratio.
+
+## The barrier ratio is now a theorem
+
+```text
+prolateBand_barrier_ratio_lower :
+  0 ≤ s ≤ 1/8,  0 < c,  1/2 < α < 1,  600(1−α) ≤ 1/4,
+  Phi smooth,  prolateSLAction c Phi = −s c² · Phi on [−1,1],  Phi(1) = 1,
+  0 ≤ y₀ ≤ α,  s < y₀²,  Phi > 0 on [y₀,1],  1 ≤ c·Ξ_s(α)
+  ⟹  exp( c·Ξ_s(y₀) + 6·log((1−α)/(1−y₀)) ) / (6π·sqrt(c·Ξ_s(α)))  ≤  Phi(y₀) .
+```
+
+This is `(β)`'s barrier ratio, from below, at the sharp exponential rate, with overhead `sqrt c` and
+absolute constants — and **no `n`-dependence in the overhead**, so it cancels in the ladder ratio.
+
+Three ingredients, each now proved:
+
+* **The collar.**  `prolateBand_le_and_le` traps the mode by `I₀(cΞ)`, and
+  `exp_div_le_besselI0` bounds `I₀` below by `e^z/(2π√z)`.  Together
+  (`exp_div_le_prolateBand_collar`) `Phi(α) ≥ e^(cΞ(α))/(6π√(cΞ(α)))`.
+* **Below the collar.**  `prolate_endpoint_le_log` transports at the WKB rate with loss
+  `6·log((1−y₀)/(1−α))`, an absolute constant because `α` is fixed.
+* **The join.**  `bandEndpointPhase_sub_eq_integral` — the phase is additive,
+  `Ξ_s(a) − Ξ_s(b) = ∫_a^b P` — so `c·Ξ_s(α)` from the collar and
+  `c·(Ξ_s(y₀) − Ξ_s(α))` from the transport concatenate to `c·Ξ_s(y₀)` exactly.  No matching
+  constant is lost at the seam.
+
+And the seam to the sharp action is definitional:
+
+```text
+bandEndpointPhase_sqrt_eq_prolateAngleAction :  Ξ_s(√s) = prolateAngleAction s      (rfl)
+```
+
+both being `∫_{arcsin √s}^{π/2} sqrt(sin²θ − s) dθ`.  So with `y₀ ↓ √s` the exponent is `c·A(s)`,
+and `prolateAngleAction_sub_bounds` turns that into `c − ((2n+1)/4)·log c + O(1)`.
+
+New module: `RHTower.BandBarrierRatio`.
+
+### `(β)`'s upper half: what is left
+
+```text
+sharp action                      prolateAngleAction_sub_bounds      ✔
+barrier ratio from below          prolateBand_barrier_ratio_lower    ✔  σ = 1/2
+interior mass from below          mass_lower_of_fluxBound            ✔  σ = 1/2
+exterior mass from above          integral_Ioi_one_radialProlate_sq_le ✔ σ = 0
+scalar leakage balance            leakage_upper_of_mass_bounds       ✔
+```
+
+Only the substitution of the ratio into the mass balance remains, plus the arithmetic that turns
+`c·A(s)` into `c − ((2n+1)/4) log c + O(1)` under `c·s = 2n+1`.
+
+## `(β)`'s upper half, assembled
+
+```text
+prolate_leakage_le_exp_action :
+  0 ≤ s ≤ 1/8,  5 ≤ c,  1/2 < α < 1,  600(1−α) ≤ 1/4,
+  Phi smooth with prolateSLAction c Phi = −s c² Phi on [−1,1],  Phi(1) = 1,  Phi > 0 on [y₀,1],
+  0 ≤ y₀ ≤ α,  s < y₀²,  1 ≤ c·Xi_s(α),
+  R the radial mode with R(1) = 1 and its equation,
+  0 < w,   w·(Phi(y₀) e^(−E))² ≤ inside,   value² ≤ 1,  value ≠ 0,  0 ≤ leakage,
+  ∫_{x>1} R² = inside·leakage/value²
+  ⟹
+  leakage ≤ (C_ext/c) · ( (6π sqrt(c Xi_s(α)))² e^(2E) / w ) · exp(−2( c Xi_s(y₀)
+              + 6 log((1−α)/(1−y₀)) ))
+```
+
+with `C_ext = radialProlateExteriorMassConstant`.  Every factor is explicit and every hypothesis is
+either an equation the mode satisfies or a quantity the corpus's own lemmas produce:
+
+* `w·(Phi(y₀)e^(−E))² ≤ inside` is exactly what `mass_lower_of_fluxBound` returns, with `w = b−y₀`
+  and `E = ∫_{y₀}^b sqrt K/(1−t²)`;
+* `∫_{x>1} R² = inside·leakage/value²` is the mass balance defining the leakage;
+* the barrier ratio is discharged internally by `prolateBand_barrier_ratio_lower`.
+
+Reading off the orders: `w ≍ 1/c` and `E = O(1)` on a `1/c`-window anchored at `y₀ = 2√s`;
+`c·Xi_s(α)` is `≍ c`; and `Xi_s(y₀) = A(s) − O(1/c)` with `Xi_s(√s) = prolateAngleAction s` exactly.
+So
+
+```text
+leakage ≤ C · c · exp(−2 c A(s)) = C · c^(n+3/2) · e^(−2c) ,
+```
+
+the Fuchs upper bound with an `n`-independent overhead `c`, which cancels in the ladder ratio.
+
+New module: `RHTower.ProlateLeakageBarrierAssembly`
+(`leakage_le_of_anchor_lower`, `prolate_leakage_le_of_barrier`, `prolate_leakage_le_exp_action`).
+
+### What is left on this card
+
+```text
+(α) toolkit                        complete
+(β) upper half                     prolate_leakage_le_exp_action        ✔
+(β) lower half                     needs: exterior mass from below at the sharp order,
+                                          interior mass from above
+orthogonal-mode extraction         open
+```
+
+## `(β)`'s lower half — first brick: the oscillator energy cannot decay
+
+The exterior mass from below needs, at bottom, that the Bessel normal form keeps a definite
+amplitude on the exterior ray.  The corpus had only the upper Grönwall bound on the perturbed
+oscillator energy; the lower one is now proved by the mirror argument (`E·e^(−κ/v)` is *monotone*
+rather than `E·e^(κ/v)` antitone):
+
+```text
+HTGeometry.exp_mul_oscEnergy_le
+    oscEnergy a · exp(−(κ/a − κ/u))  ≤  oscEnergy u
+RHTower.exp_mul_besselEnergy_le_of_abstract
+    besselEnergy a · exp(−(1/4/a − 1/4/u))  ≤  besselEnergy u
+```
+
+both axiom-clean and wired.  An envelope bound cannot give this, and it is exactly the input the
+mass-retention estimates (`quarter_integral_le_integral_weight_mul_cos_sq_radialPhase`) need in order
+to convert "the oscillating square keeps a quarter of the plain mass" into an actual lower bound on
+`∫_{x>1} R²`: the plain mass is the energy, and the energy is now bounded below.
+
+Remaining for the lower half: assemble energy-from-below with the mass-retention quarter bound and
+the density transfer (`integral_Ioi_abs_radialProlateDensity_sub_besselDensity_le`, already two-sided
+in `L¹`), then the interior mass from above, which still needs the turning-layer amplitude at the
+sharp order rather than `integral_sq_le_turning_amplitude_envelope`'s `c/√s`.
+
+## Mass from energy — the oscillation is bypassed entirely
+
+The `L²` mass lower bound does **not** need stationary phase.  The exact virial identity
+
+```text
+(w w')' = w'² − (1+q) w²
+```
+
+integrated over `[α,β]` turns the total energy into twice the mass plus boundary terms:
+
+```text
+∫_α^β E  =  2∫ w²  +  ∫ q w²  +  [w w']_α^β ,       E = w² + w'² ,
+```
+
+so an interval long compared with the energy ratio must carry mass.  With `|q| ≤ κ/v²` and the two
+Grönwall bounds on `E`:
+
+```text
+HTGeometry.mass_lower_of_oscEnergy
+    ((β−α)·Elow − Ehigh) / (2 + κ/α²)  ≤  ∫_α^β w²
+RHTower.besselMass_lower
+    ((β−α)·E(α)e^(1/4/β − 1/4/α) − E(α)e^(1/4/α)) / (2 + (1/4)/α²)  ≤  ∫_α^β u J₀(u)² du
+```
+
+both axiom-clean and wired.  Note what this replaces: the corpus's van der Corput route
+(`OscillatoryMassRetention`, `RadialPSWFMassRetention`) needs a phase, a speed floor and a
+monotonicity hypothesis, and returns a *quarter* of the plain mass; the virial identity needs none of
+them and returns the mass directly from the energy.  The two are complementary — the virial bound is
+what applies when the oscillating factor is the Bessel model itself rather than a bare `cos`.
+
+This closes the first half of `(β)`'s exterior-mass-from-below: the Bessel density carries mass, at
+the sharp order in the endpoint energy.  What remains is the transfer of that lower bound through
+`integral_Ioi_abs_radialProlateDensity_sub_besselDensity_le` — already two-sided in `L¹` — and the
+endpoint-energy normalisation `E(α) ≍ c` at the Dunster matching point.

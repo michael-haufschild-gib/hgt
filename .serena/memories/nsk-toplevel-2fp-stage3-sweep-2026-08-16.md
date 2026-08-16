@@ -6,64 +6,79 @@ missing, then move each card to `docs/drafts/pipeline/3-formalized/not_new_scien
 
 **Persistent ledger lives in the folder itself:**
 `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/_FORMALIZATION-LEDGER.md`
-Read it first; it carries promoted cards, blocking infrastructure, and new reusable modules.
+Read it first — it carries the promoted list, the triage, the blocking infrastructure, and the new
+reusable modules.
 
 ## Scale
 
-496 top-level cards at start (no subfolders — the `ccm/` subfolder was drained earlier).
-**7 promoted 2026-08-16**; 489 remain.
+496 top-level cards at start. **26 promoted 2026-08-16; 470 remain.**
 
 ## User rules for this sweep
 
 - No added hypotheses standing for analytic inputs, no axioms, no `sorry`.
 - **Never full builds, never umbrella builds.** `lake env lean <file>` to check; `lake build <module>`
-  only for the oleans needed by an `#print axioms` scratch; wire new modules into the area umbrella
-  import list but do not build the umbrella.
+  only for the oleans an `#print axioms` scratch needs; wire new modules into the area umbrella
+  import list (alphabetically) but do not build the umbrella.
 - One Lean process at a time; clean up stale processes.
 - Search the corpus first — 29 700+ Lean files already exist.
 
-## Environment notes
+## Per-card procedure that works
 
-- The machine is shared with other agents (load ~15). A `lake env lean` on a `Mathlib`-heavy file
-  takes 1–5 min. Narrow imports pay off.
+1. Read the card fully; list its numbered statements.
+2. `scripts/formal_tools.py research "<query>"` + `rg` for existing assets.
+3. Write the module (narrow imports), `lake env lean` until clean **including warnings** (the lint
+   gate fails on warnings: unused simp args, deprecated names, unused section variables).
+4. Insert the import alphabetically into `GaloisForLFunctions/RHTower.lean` or `HTGeometry.lean`.
+5. `lake build <module>`, then `#print axioms` on every capstone in a scratch file.
+6. Append a "## Lean formalization" table to the card, flip the Stage line, `git mv` to stage 3,
+   then fix inbound links (`grep -rln <id> docs | grep -v 3-formalized`).
+7. Update `_FORMALIZATION-LEDGER.md`.
+
+## Hard-won environment notes
+
+- The machine is shared with other agents (load ~15). `lake env lean` on a `Mathlib`-heavy file
+  takes 1–5 min. Narrow imports pay off a lot.
 - macOS case-insensitive FS trap: mathlib's module is `Mathlib.Analysis.InnerProductSpace.l2Space`
-  (lowercase `l`). Importing `L2Space` compiles but produces a missing-olean error later.
-- Bash cwd persists between calls — always know whether you are in the repo root or in `formal/`.
-
-## Promoted so far (7)
-
-co6-involution-host-caveat; unbounded-one-coordinate-monodromy-obstruction;
-suzuki-one-prime-fractional-carrier; endpoint-sheared-gram-ridge-parity;
-finite-wick-contracted-interaction-matroid; one-sided-compression-bound-not-bounded-operator;
-shifted-towers-do-not-fix-t0-tail-class.
-
-## Reusable modules created (all axiom-clean, all wired)
-
-- `HTGeometry/InvolutionIdempotentHost.lean`
-- `HTGeometry/ScalarMonodromyAlgebraicIndependence.lean`
-- `HTGeometry/WickInteractionMatroidLabels.lean` — contains **`contract_eRk_add_eRk_eq`**, the
-  relative-rank law for matroid contraction, which mathlib lacks; also `eRk_delete_eq_of_disjoint`.
-- `RHTower/OneSidedCompressionUnbounded.lean`
-- `RHTower/ShiftedTowerTailClasses.lean`
-- extended `RHTower/EndpointShearedGramRidgeParity.lean` with the `ZMod 2` sharpness witness.
+  (lowercase `l`). `L2Space` compiles but yields a missing-olean error later.
+- Some mathlib modules are **not built** in this checkout (`Mathlib.MeasureTheory.Integral.SetIntegral`,
+  `Mathlib.Analysis.InnerProductSpace.Projection`, `Mathlib.Analysis.SpecialFunctions.Pow.NNRpow`).
+  Use `Mathlib.MeasureTheory.Integral.Bochner.Set`,
+  `Mathlib.Analysis.InnerProductSpace.Projection.Submodule`, etc.
+- `Matrix.PosSemidef`/`PosDef` here are stated with `Finsupp` sums; use
+  `PosSemidef.dotProduct_mulVec_nonneg`, `PosDef.dotProduct_mulVec_pos`,
+  `PosSemidef.of_dotProduct_mulVec_nonneg`, `PosDef.of_dotProduct_mulVec_pos`, and
+  `open scoped ComplexOrder`.
+- `push_neg` is deprecated → `push Not`. `tendsto_finset_sum` → `tendsto_finsetSum`.
+  `le_or_lt` gone → `le_or_gt`. `Nat.mul_factorial_pred` wants `n ≠ 0`.
+- Bash cwd persists between calls — always know whether you are in the repo root or `formal/`.
 
 ## Corpus facts worth remembering
 
-- mathlib already has the algebraic matroid: `AlgebraicIndependent.matroid R A`, with
-  `matroid_closure_eq`, `matroid_cRank_eq = trdeg`, `Matroid.eRk_comap`, `Matroid.comap_closure_eq`.
-- The corpus already has the **differential** matroid: `GaloisForLFunctions.differentialMatroid`
-  (`HTGeometry/DifferentialMatroid.lean`), `DiffIndepOn`, `DifferentialIndependent`,
-  `differentialJet`, and ℕ-valued `finiteTranscendenceRank` / `finiteAlgebraicMatroidRank`
-  (`HTGeometry/WickKolchinProfile.lean`, `HTGeometry/AlgebraicMatroidRank.lean`).
-- ℓ² convention in the corpus: `lp (fun _ : ι => ℂ) 2`, basis `lp.single 2 n 1`,
-  `lp.norm_single`.
+- mathlib has the algebraic matroid `AlgebraicIndependent.matroid R A` with `matroid_closure_eq`,
+  `matroid_cRank_eq = trdeg`, `Matroid.eRk_comap`, `Matroid.comap_closure_eq`.
+- The corpus has the **differential** matroid (`HTGeometry/DifferentialMatroid.lean`), `DiffIndepOn`,
+  `DifferentialIndependent`, `differentialJet`, and ℕ-valued `finiteTranscendenceRank`.
+- **Xi assets** (all unconditional): `RHTower.xi`, `xi_one_sub`, `xi_conj` (`RHTower/Reflection.lean`),
+  `xi_differentiable`, `xi_two` (`RHTower/RiemannTower.lean`), `xi_growth_order_le_one`
+  (`RHTower/CompletedZetaGrowth.lean`), `XiC` + `riemannHypothesis_iff_xiC_zero_im_eq_zero`
+  (`RHTower/SlabMassSquareCertificate.lean`), the full Hadamard layer
+  (`RHTower/XiHadamardFactorization.lean`, `XiCanonicalProduct.lean`) with
+  `xiSpectralPoint_inv_sq_summable`, and `xiDivisorSupport_infinite` (`RHTower/XiZerosInfinite.lean`).
+- Hölder: `hypertranscendentalOver_ratFunc_gammaUpperMero`, `hypertranscendentalOver_ratFunc_digammaMero`.
+- ℓ² convention: `lp (fun _ : ι => ℂ) 2`; corpus abbrev `RHTower.EllTwo` and `RHTower.ellTwoBasis`
+  now live in `RHTower/OneSidedCompressionUnbounded.lean`.
 
-## Blocking infrastructure identified (shared across several cards)
+## Blocking infrastructure still outstanding
 
-1. von Koch–Schoenfeld: `RH → |ψ(x) − x| ≪ √x log²x` (any `O_ε(x^{1/2+ε})` form suffices).
-2. Riemann–von Mangoldt `N(T) = O(T log T)`.
-3. Hadamard factorization: zero-free finite-order entire ⇒ `exp(polynomial)`.
-4. von Neumann algebra generated by a set of operators (`W*(S)`); mathlib has `VonNeumannAlgebra`
-   but no generation API.
-5. Derived inverse limits (`R lim` of a zero diagram).
-6. Complex-dynamics layer (Böttcher coordinate, equilibrium measure of a Cantor Julia set).
+1. von Koch–Schoenfeld: `RH → |ψ(x) − x| ≪ √x log²x` (blocks the reverse half of
+   `square-aperture-von-mangoldt-correlation-energy`).
+2. Newton's inequalities for elementary symmetric functions (`pa9-turan-newton-floor`).
+3. Entire-function **order exactly one** for `ξ` (only `order ≤ 1` is proved) — the
+   `finite-*-rh-nonselection` family needs the non-drop clause.
+4. von Neumann algebra generated by a set (`additive-heat-diagonal-generates-full-operator-algebra`).
+5. Derived inverse limits (`acyclic-finite-fibers-derived-limit-zero`).
+6. Complex-dynamics layer: Böttcher coordinate, equilibrium measure of a Cantor Julia set
+   (three `bottcher-*` cards).
+7. A reflection-stable meromorphic carrier for `gamma-reflection-clock-observable-split`
+   (`upperEndMeroField` is a germ field at the upper end, not stable under `z ↦ 1 − z`; the
+   log-derivative route `R'/R = 2ψ + π cot` avoids the algebraic-extension step).

@@ -128,7 +128,7 @@ Delta psi_z=x^(-z),
 psi_z(0)=0 iff zeta(z)=0.                                   (14)
 ```
 
-The companion card `bbm-pullback-metric-no-point-spectrum.md` proves directly that `x^(-z)` is not
+The companion card `../../3-formalized/not_new_scientific_knowledge/bbm-pullback-metric-no-point-spectrum.md` proves directly that `x^(-z)` is not
 in `L2(R_+)` for any `z`, with the exact incompatible end conditions
 
 ```text

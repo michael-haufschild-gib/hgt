@@ -51,7 +51,7 @@ theorem derivation_aeval_eq (D : Derivation C L L) (x : L) (p : L[X]) :
         · simp [h]
       rw [hmap, aeval_monomial, aeval_monomial, derivative_monomial, aeval_monomial,
         Derivation.leibniz, Derivation.leibniz_pow, smul_eq_mul, smul_eq_mul, nsmul_eq_mul]
-      simp only [show ∀ b : L, algebraMap L L b = b from fun _ => rfl, map_mul, map_natCast]
+      simp only [show ∀ b : L, algebraMap L L b = b from fun _ => rfl]
       ring
 
 theorem derivation_natCast_eq_zero (D : Derivation C L L) (n : ℕ) : D (n : L) = 0 := by
@@ -124,13 +124,16 @@ theorem mem_of_isAlgebraic_of_derivation_mem [CharZero L]
       intro hzero
       exact hne (by rw [← hQ₀, hzero, Polynomial.map_zero])
     have hQ₀eval : aeval T Q₀ = 0 := by
-      rw [← aeval_map_algebraMap (A := K) L T Q₀, hQ₀]
-      exact hQeval
+      have heq := hQeval
+      rw [← hQ₀] at heq
+      rwa [aeval_map_algebraMap] at heq
     have hle := minpoly.degree_le_of_ne_zero K T hQ₀ne hQ₀eval
     have hQ₀deg : Q₀.natDegree = Q.natDegree := by
       rw [← hQ₀]
       exact (natDegree_map_eq_of_injective (algebraMap K L).injective Q₀).symm
-    have := Polynomial.natDegree_le_natDegree hle
+    have hnd : p.natDegree ≤ Q₀.natDegree := by
+      have h := Polynomial.natDegree_le_natDegree hle
+      rwa [← hp] at h
     omega
   have hcoeff := congrArg (fun R : L[X] => R.coeff (P.natDegree - 1)) hQ0
   have hdercoeff : (derivative P).coeff (P.natDegree - 1) = (P.natDegree : L) := by
@@ -150,7 +153,7 @@ theorem mem_of_isAlgebraic_of_derivation_mem [CharZero L]
       rw [Derivation.leibniz_inv, derivation_natCast_eq_zero, smul_zero]
     rw [hinv, mul_zero, add_zero]
     field_simp
-    linear_combination -hcoeff
+    linear_combination hcoeff
   have hzY : z ∈ Y := add_mem hTY (mul_mem (hKY (IntermediateField.inv_mem _
     (IntermediateField.natCast_mem _ _))) (hKY haK))
   have hzK : z ∈ K := hconst z hzY hDz

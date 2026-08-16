@@ -145,7 +145,6 @@ theorem norm_besselHeightDerivCore_le {a t E : ℝ} {τ z : ℂ} (ha : 0 < a) (h
   have hgoal : 2 * a * (‖τ‖ / ‖z‖) * (|t| / ‖z‖) * (a + 1 / z.re) * E * ‖z‖ ^ 3
       = 2 * a * ‖τ‖ * |t| * (((a + 1 / z.re) * ‖z‖) * E) := by
     field_simp
-    ring
   rw [hgoal]
   exact mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hkey hE) hcoef
 

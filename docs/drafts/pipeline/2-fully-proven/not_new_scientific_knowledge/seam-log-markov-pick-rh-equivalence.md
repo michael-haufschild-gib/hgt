@@ -174,31 +174,31 @@ Therefore the Markov/Pick target here cannot be weakened to all adjacent `2 x 2`
 
 ## 2026-06-24 fixed-rank Hankel shadows are too weak
 
-`fixed-rank-hankel-tests-do-not-imply-stieltjes.md` records the bounded-rank version of the Markov/Pick warning. For any fixed `r`, all shifted Hankel blocks up to size `r` can be positive definite while the next block is indefinite.
+`../../3-formalized/not_new_scientific_knowledge/fixed-rank-hankel-tests-do-not-imply-stieltjes.md` records the bounded-rank version of the Markov/Pick warning. For any fixed `r`, all shifted Hankel blocks up to size `r` can be positive definite while the next block is indefinite.
 
 Therefore the Markov/Pick target here cannot be replaced by any fixed-size Hankel hierarchy. The source theorem must control arbitrary-degree polynomial square tests, or supply a genuine upgrade from bounded rank to the full Stieltjes cone.
 
 ## 2026-06-24 single-frequency Markov failure
 
-`single-even-frequency-not-stieltjes.md` shows that the Markov/Pick target here cannot be proved frequency-by-frequency on FE-even Euler source atoms. A single positive germ `B(cosh(lambda w)-1)` gives an indefinite shifted Hankel block after the seam-square transform.
+`../../3-formalized/not_new_scientific_knowledge/single-even-frequency-not-stieltjes.md` shows that the Markov/Pick target here cannot be proved frequency-by-frequency on FE-even Euler source atoms. A single positive germ `B(cosh(lambda w)-1)` gives an indefinite shifted Hankel block after the seam-square transform.
 
 Thus the source theorem must prove positivity for the completed seam-log object, not for isolated positive frequencies.
 
 ## 2026-06-24 positive frequency cone is outside the Markov target
 
-`positive-even-frequency-cone-not-markov.md` shows that a positive measure over FE-even frequency germs `cosh(lambda w)-1` gives alternating shifted seam moments. Nonzero positive mixtures have `T_2<0`, hence cannot be Markov/Stieltjes moment sequences on `R_+`.
+`../../3-formalized/not_new_scientific_knowledge/positive-even-frequency-cone-not-markov.md` shows that a positive measure over FE-even frequency germs `cosh(lambda w)-1` gives alternating shifted seam moments. Nonzero positive mixtures have `T_2<0`, hence cannot be Markov/Stieltjes moment sequences on `R_+`.
 
 So the Markov/Pick target here must be proved for the completed seam-log object, not by positive summation over FE-even source frequencies.
 
 ## 2026-06-24 finite signed frequency atoms are outside the Markov target
 
-`finite-signed-even-frequency-atoms-not-markov.md` adds the signed finite-atom test to the Markov/Pick route. A finite signed sum of real FE-even frequency germs gives `T_k=(-1)^(k+1)S_k/(2k-1)!`, and the dominant real frequency fixes the tail sign of `S_k`. Hence one parity of `T_k` is eventually negative.
+`../../3-formalized/not_new_scientific_knowledge/finite-signed-even-frequency-atoms-not-markov.md` adds the signed finite-atom test to the Markov/Pick route. A finite signed sum of real FE-even frequency germs gives `T_k=(-1)^(k+1)S_k/(2k-1)!`, and the dominant real frequency fixes the tail sign of `S_k`. Hence one parity of `T_k` is eventually negative.
 
 Therefore the Markov/Pick source proof cannot be a finite signed real-frequency expansion. The completed source object must leave that finite atom class before Markov positivity can even be possible.
 
 ## 2026-06-24 finite-order local frequency operators are outside the Markov target
 
-`finite-order-local-frequency-operators-not-markov.md` blocks a local-operator shortcut to Markov/Pick positivity. If the proposed source correction acts coefficientwise by a nonzero real polynomial `q(k)`, then applied to a positive FE-even frequency mixture it leaves the FE parity visible on the tail. One parity of shifted moments is eventually negative.
+`../../3-formalized/not_new_scientific_knowledge/finite-order-local-frequency-operators-not-markov.md` blocks a local-operator shortcut to Markov/Pick positivity. If the proposed source correction acts coefficientwise by a nonzero real polynomial `q(k)`, then applied to a positive FE-even frequency mixture it leaves the FE parity visible on the tail. One parity of shifted moments is eventually negative.
 
 Therefore Markov/Pick positivity cannot be obtained by a finite-order local correction of the positive frequency source. The source proof must use an all-order/nonlocal or boundary-index mechanism before the Markov cone can be reached.
 
@@ -210,7 +210,7 @@ Therefore a Markov/Pick proof that starts from FE-even positive frequency data m
 
 ## 2026-06-24 half-turn repaired frequencies still fail Markov positivity
 
-`half-turn-repaired-frequency-not-markov.md` closes the parity-only escape. For a single positive FE-even frequency, applying the half-turn changes the shifted moments to positive signs, but the first shifted Hankel determinant remains negative:
+`../../3-formalized/not_new_scientific_knowledge/half-turn-repaired-frequency-not-markov.md` closes the parity-only escape. For a single positive FE-even frequency, applying the half-turn changes the shifted moments to positive signs, but the first shifted Hankel determinant remains negative:
 
 `(B lambda^2)(B lambda^6/120)-(B lambda^4/6)^2=-7B^2lambda^8/360`.
 
@@ -218,7 +218,7 @@ Therefore a Markov/Pick source proof cannot be: positive frequency expansion plu
 
 ## 2026-06-24 bounded repaired packets still miss the Markov cone
 
-`bounded-half-turn-frequency-packets-fail-hankel.md` shows that after the half-turn, finite positive repaired packets with squared-frequency ratio strictly below `(17+2 sqrt(70))/3` still have a negative first shifted Hankel determinant. The Markov/Pick source theorem therefore cannot be assembled from local positive repaired frequency packets; it must supply broad cross-scale interaction or a different all-order positivity object.
+`../../3-formalized/not_new_scientific_knowledge/bounded-half-turn-frequency-packets-fail-hankel.md` shows that after the half-turn, finite positive repaired packets with squared-frequency ratio strictly below `(17+2 sqrt(70))/3` still have a negative first shifted Hankel determinant. The Markov/Pick source theorem therefore cannot be assembled from local positive repaired frequency packets; it must supply broad cross-scale interaction or a different all-order positivity object.
 
 ## 2026-06-24 first repaired gate is sharp but insufficient
 

@@ -79,6 +79,7 @@ theorem sum_sq_pos_of_ne_zero {x : n → ℝ} (hx : x ≠ 0) : 0 < ∑ i, x i ^ 
   rw [← sq_abs]
   exact pow_pos (abs_pos.mpr hi) 2
 
+omit [DecidableEq n] in
 /-- **Coercive perturbation stability.**  A symmetric block with coercivity constant `m` stays
 positive definite under any symmetric perturbation with entries bounded by `ε`, provided
 `card * ε < m`. -/

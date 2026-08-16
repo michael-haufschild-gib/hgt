@@ -201,7 +201,7 @@ Consequence: pole-direction cancellation (`u_i=(-4)^i`, `p(-4)=0`) cannot be tre
 
 Status: proof-route guardrail added, not an RH proof.
 
-Created `../2-fully-proven/pole-budget-does-not-imply-uvarov-repair.md`. It strengthens the two-boundary warning from distinct functionals to a countermodel. For nonproportional boundary functionals `alpha` and `beta`, and any fixed `t>0`, there exists a Hermitian form `A=R-c alpha^*alpha` with `R>0`, one negative square, and `A|ker(alpha)>0`, but `A+t beta^*beta` is still indefinite. In the pole/Uvarov case, take `alpha=e_{-4}`, `beta=e_{-4/25}`, and `q(y)=(y+4/25)/((-4)+4/25)`: the negative vector is invisible to the first-trivial-zero repair while visible to the pole channel.
+Created `../3-formalized/not_new_scientific_knowledge/pole-budget-does-not-imply-uvarov-repair.md`. It strengthens the two-boundary warning from distinct functionals to a countermodel. For nonproportional boundary functionals `alpha` and `beta`, and any fixed `t>0`, there exists a Hermitian form `A=R-c alpha^*alpha` with `R>0`, one negative square, and `A|ker(alpha)>0`, but `A+t beta^*beta` is still indefinite. In the pole/Uvarov case, take `alpha=e_{-4}`, `beta=e_{-4/25}`, and `q(y)=(y+4/25)/((-4)+4/25)`: the negative vector is invisible to the first-trivial-zero repair while visible to the pole channel.
 
 Consequence: the formal structure "positive bulk minus one pole evaluation square" cannot by itself prove the first-trivial-zero Uvarov Schur sign. A source proof must add a real zeta-specific theorem that rules out this invisible-negative-direction scenario, not merely cite the archimedean pole decomposition.
 
@@ -431,7 +431,7 @@ Consequence: the seam-log Markov target, the divided completed log-derivative, a
 
 Status: operator-route normalization added, not an RH proof.
 
-Created `../2-fully-proven/loewner-contraction-congruence-normalization.md`. For a positive budget `M` and residual `R`, the relative operator
+Created `../3-formalized/not_new_scientific_knowledge/loewner-contraction-congruence-normalization.md`. For a positive budget `M` and residual `R`, the relative operator
 
 `K=M^(-1/2)(-R)M^(-1/2)`
 
@@ -495,7 +495,7 @@ Consequence: a landscape proof cannot replace full shifted Stieltjes positivity 
 
 Status: positivity-transfer guardrail added, not an RH proof.
 
-Created `../2-fully-proven/fixed-rank-hankel-tests-do-not-imply-stieltjes.md`. For every fixed `r`, a signed atomic construction gives a strictly positive sequence whose shifted Hankel blocks of sizes `1,...,r` are positive definite at every shift, while a size `r+1` block is indefinite.
+Created `../3-formalized/not_new_scientific_knowledge/fixed-rank-hankel-tests-do-not-imply-stieltjes.md`. For every fixed `r`, a signed atomic construction gives a strictly positive sequence whose shifted Hankel blocks of sizes `1,...,r` are positive definite at every shift, while a size `r+1` block is indefinite.
 
 Consequence: a landscape proof cannot report bounded-rank Hankel positivity, even at all shifts, as the source-built Stieltjes theorem. The proof must control unbounded polynomial square tests or prove an independent source upgrade from fixed-rank data to the full cone.
 
@@ -503,7 +503,7 @@ Consequence: a landscape proof cannot report bounded-rank Hankel positivity, eve
 
 Status: proof-route guardrail added, not an RH proof.
 
-Created `../2-fully-proven/boundary-weyl-thresholds-have-no-formal-monotonicity.md`. For two independent rank-one boundary functionals, a positive bulk form can prescribe their dual energies, hence their Schur/Weyl thresholds, independently.
+Created `../3-formalized/not_new_scientific_knowledge/boundary-weyl-thresholds-have-no-formal-monotonicity.md`. For two independent rank-one boundary functionals, a positive bulk form can prescribe their dual energies, hence their Schur/Weyl thresholds, independently.
 
 Consequence: a landscape proof cannot move from pole-channel control at `y=-4` to first-trivial-zero repair at `y=-4/25` by appealing to a monotone exterior boundary order. Any such ordering must be a source theorem for the actual completed carrier.
 
@@ -565,7 +565,7 @@ Consequence: finite discriminant positivity must be proved by a full summed domi
 
 ## 2026-06-24 discriminant finite-range claim downgraded
 
-Created `../2-fully-proven/discriminant-cross-positive-interval.md` and patched
+Created `../3-formalized/not_new_scientific_knowledge/discriminant-cross-positive-interval.md` and patched
 `docs/consolidated/revision01/bridge-theorem.md` again. The exact cross-positive
 interval is now proved, with the sufficient bound `x>=1.18|y|`, but this is not
 a proof that `det H_d>0` throughout a `d~H` range.
@@ -599,7 +599,7 @@ it defines the finite verification burden that the old `d~H` phrase skipped.
 
 ## 2026-06-24 coefficient-norm finite gate is not the bridge
 
-Created `../2-fully-proven/monomial-tail-gate-height-linear-no-go.md`. The
+Created `../3-formalized/not_new_scientific_knowledge/monomial-tail-gate-height-linear-no-go.md`. The
 finite-degree tail-stability lemma is valid, but the monomial coefficient-norm
 version cannot prove the advertised height-linear range: the verified bulk
 margin is bounded above by `L_1 R^(2d)`, while the first tail moment is only
@@ -612,7 +612,7 @@ the bridge mechanism.
 
 ## 2026-06-24 finite reciprocal tests are high-defect blind
 
-Created `../2-fully-proven/finite-degree-reciprocal-tests-height-limited.md`.
+Created `../3-formalized/not_new_scientific_knowledge/finite-degree-reciprocal-tests-height-limited.md`.
 For any fixed `d`, adding a non-real reciprocal pair with `|y|` small enough
 keeps both shifted degree-`d` Hankel blocks positive. The perturbed divisor is
 still off-RH, so detection must occur only at higher degree.
@@ -622,7 +622,7 @@ needs a uniform degree/height mechanism or the all-order source-Weyl sign.
 
 ## 2026-06-24 operator route needs completion theorem
 
-Created `../2-fully-proven/relative-contraction-compression-exhaustion.md`.
+Created `../3-formalized/not_new_scientific_knowledge/relative-contraction-compression-exhaustion.md`.
 For a bounded self-adjoint source operator `K`, the finite polynomial
 compressions `P_dKP_d<=P_d` for all `d` are equivalent to `K<=I` by density.
 For any fixed finite depth, a rank-one operator off the checked subspace can
@@ -673,25 +673,25 @@ Thus continued-fraction, Jacobi/orthogonal-polynomial, cumulant, Hankel-ratio, o
 
 ## 2026-06-24 single frequency termwise transfer fails
 
-`../2-fully-proven/single-even-frequency-not-stieltjes.md` records the one-tooth extreme case. A positive FE-even source frequency `B(cosh(lambda w)-1)` gives alternating shifted seam moments and a negative first shifted Hankel determinant.
+`../3-formalized/not_new_scientific_knowledge/single-even-frequency-not-stieltjes.md` records the one-tooth extreme case. A positive FE-even source frequency `B(cosh(lambda w)-1)` gives alternating shifted seam moments and a negative first shifted Hankel determinant.
 
 Thus a landscape proof cannot push `Lambda(n)>=0` through the seam-square Markov coordinate one frequency at a time. The source theorem must use a completed interaction: FE cancellation, archimedean budget, multiplicative structure, or a completed boundary/index object.
 
 ## 2026-06-24 positive FE-even frequency cone does not reach Markov positivity
 
-`../2-fully-proven/positive-even-frequency-cone-not-markov.md` shows that the entire positive cone of FE-even frequency germs has alternating shifted seam moments. A nonzero positive mixture has `T_2<0`, so it cannot be a positive Markov/Stieltjes measure on `R_+`.
+`../3-formalized/not_new_scientific_knowledge/positive-even-frequency-cone-not-markov.md` shows that the entire positive cone of FE-even frequency germs has alternating shifted seam moments. A nonzero positive mixture has `T_2<0`, so it cannot be a positive Markov/Stieltjes measure on `R_+`.
 
 Therefore the landscape proof cannot be positive Euler-frequency summation in the seam-square coordinate. It must use completed interaction: FE cancellation, archimedean coupling, multiplicative correlations, signed counterterms, or a closed boundary/index object.
 
 ## 2026-06-24 finite signed real-frequency corrections do not select the landscape
 
-Created `../2-fully-proven/finite-signed-even-frequency-atoms-not-markov.md`. If a proposed completed correction is a finite signed sum of real FE-even frequency atoms, the top nonzero frequency dominates the coefficient tail. The transformed shifted moments are then negative on one tail parity, so the sequence cannot be Markov/Stieltjes positive.
+Created `../3-formalized/not_new_scientific_knowledge/finite-signed-even-frequency-atoms-not-markov.md`. If a proposed completed correction is a finite signed sum of real FE-even frequency atoms, the top nonzero frequency dominates the coefficient tail. The transformed shifted moments are then negative on one tail parity, so the sequence cannot be Markov/Stieltjes positive.
 
 Consequence: the landscape proof cannot be a finite signed real-frequency patch of the positive Euler-frequency cone. The remaining source mechanism must be an all-order completed interaction, not a finite atom list with adjusted signs.
 
 ## 2026-06-24 finite-order local corrections do not select the landscape
 
-Created `../2-fully-proven/finite-order-local-frequency-operators-not-markov.md`. A finite-order local operator with coefficient action `a_k -> q(k)a_k`, for nonzero real polynomial `q`, cannot move a nonzero positive FE-even frequency mixture into the Markov/Stieltjes target. The polynomial has an eventual sign, so FE parity leaves negative shifted moments on one tail parity.
+Created `../3-formalized/not_new_scientific_knowledge/finite-order-local-frequency-operators-not-markov.md`. A finite-order local operator with coefficient action `a_k -> q(k)a_k`, for nonzero real polynomial `q`, cannot move a nonzero positive FE-even frequency mixture into the Markov/Stieltjes target. The polynomial has an eventual sign, so FE parity leaves negative shifted moments on one tail parity.
 
 Consequence: a landscape proof cannot be a local finite-order correction of the positive Euler-frequency source. It must use an all-order/nonlocal completed interaction or a source-built boundary/index object.
 
@@ -703,7 +703,7 @@ Consequence: if a landscape proof tries to repair the positive FE-even frequency
 
 ## 2026-06-24 the half-turn is necessary but not sufficient
 
-Created `../2-fully-proven/half-turn-repaired-frequency-not-markov.md`. The nonlocal half-turn fixes the coefficient parity of a positive FE-even frequency, but the repaired one-frequency shifted moments still have determinant
+Created `../3-formalized/not_new_scientific_knowledge/half-turn-repaired-frequency-not-markov.md`. The nonlocal half-turn fixes the coefficient parity of a positive FE-even frequency, but the repaired one-frequency shifted moments still have determinant
 
 `(B lambda^2)(B lambda^6/120)-(B lambda^4/6)^2=-7B^2lambda^8/360<0`.
 
@@ -711,7 +711,7 @@ Consequence: a landscape proof cannot stop at constructing the half-turn. It mus
 
 ## 2026-06-24 bounded half-turn repaired packets fail the first gate
 
-`../2-fully-proven/bounded-half-turn-frequency-packets-fail-hankel.md` strengthens the half-turn obstruction from one atom to finite positive packets with bounded squared-frequency spread. If the repaired packet lies in a multiplicative squared-frequency interval of ratio strictly below `(17+2 sqrt(70))/3`, then `U_1 U_3-U_2^2<0`.
+`../3-formalized/not_new_scientific_knowledge/bounded-half-turn-frequency-packets-fail-hankel.md` strengthens the half-turn obstruction from one atom to finite positive packets with bounded squared-frequency spread. If the repaired packet lies in a multiplicative squared-frequency interval of ratio strictly below `(17+2 sqrt(70))/3`, then `U_1 U_3-U_2^2<0`.
 
 Consequence: constructing the half-turn is not enough, and local packets around nearby FE-even frequencies are not enough. The proof must source-build broad cross-scale interaction, multiplicative correlation, signed completed counterterms, or a boundary/index positivity object.
 

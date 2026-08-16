@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper) / proof-route guardrail
 - **Source:** `finite-rank-one-selector-no-free-lunch.md`,
-  `pole-budget-does-not-imply-uvarov-repair.md`, and
+  `../../3-formalized/not_new_scientific_knowledge/pole-budget-does-not-imply-uvarov-repair.md`, and
   `no-boundary-selection-of-zeta.md`
 - **Statement:** A positive rank-one repair at a boundary functional can only
   repair directions visible to that functional. Therefore first-trivial-zero
@@ -96,7 +96,7 @@ This isolates a sharper source theorem than "prove the scalar sign":
 
 The first clause is already a large codimension-one positivity statement. It
 cannot be supplied by the pole budget alone, by
-`pole-budget-does-not-imply-uvarov-repair.md`.
+`../../3-formalized/not_new_scientific_knowledge/pole-budget-does-not-imply-uvarov-repair.md`.
 
 ## Source Boundary
 

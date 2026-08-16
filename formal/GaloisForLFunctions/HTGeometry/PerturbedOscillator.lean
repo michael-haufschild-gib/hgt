@@ -272,4 +272,159 @@ theorem abs_deriv_oscCoeff_le_base {a u κ : ℝ} (ha : 0 < a) (hau : a ≤ u) (
   rw [abs_neg]
   exact hmain _ (Real.abs_cos_le_one u)
 
+/-- **Grönwall for the energy, lower direction.**  The same integrable perturbation traps the energy
+from below: it cannot decay past a fixed multiple of its value at the base point.  This is what an
+envelope bound cannot give, and what an `L²` mass lower bound needs. -/
+theorem exp_mul_oscEnergy_le {a u κ : ℝ} (ha : 0 < a) (hau : a ≤ u) (hκ : 0 ≤ κ)
+    (hw : ∀ v : ℝ, 0 < v → HasDerivAt w (Dw v) v)
+    (hDw : ∀ v : ℝ, 0 < v → HasDerivAt Dw (DDw v) v)
+    (hode : ∀ v : ℝ, 0 < v → DDw v + (1 + q v) * w v = 0)
+    (hq : ∀ v : ℝ, 0 < v → |q v| ≤ κ / v ^ 2) :
+    oscEnergy w Dw a * Real.exp (-(κ / a - κ / u)) ≤ oscEnergy w Dw u := by
+  have hu : 0 < u := lt_of_lt_of_le ha hau
+  set G : ℝ → ℝ := fun v : ℝ => oscEnergy w Dw v * Real.exp (-(κ / v)) with hGdef
+  have hGd : ∀ v : ℝ, 0 < v → HasDerivAt G
+      (-(2 * q v * (w v * Dw v)) * Real.exp (-(κ / v))
+        + oscEnergy w Dw v * (Real.exp (-(κ / v)) * (κ / v ^ 2))) v := by
+    intro v hv
+    have hinner : HasDerivAt (fun t : ℝ => -(κ / t)) (κ / v ^ 2) v := by
+      refine (hasDerivAt_const_div (κ := κ) (ne_of_gt hv)).neg.congr_deriv ?_
+      ring
+    exact (hasDerivAt_oscEnergy (hw v hv) (hDw v hv) (hode v hv)).mul hinner.exp
+  have hnonneg : ∀ v ∈ Set.Ioo a u, 0 ≤ deriv G v := by
+    intro v hv
+    have hv0 : 0 < v := lt_trans ha hv.1
+    have hE0 : 0 ≤ oscEnergy w Dw v := oscEnergy_nonneg w Dw v
+    have hκv : (0 : ℝ) ≤ κ / v ^ 2 := by positivity
+    have hbound := abs_deriv_oscEnergy_le (w := w) (Dw := Dw) hv0 hκ (hq v hv0)
+    have hge : -(κ / v ^ 2 * oscEnergy w Dw v) ≤ -(2 * q v * (w v * Dw v)) :=
+      neg_le_of_abs_le hbound
+    have hexppos : 0 < Real.exp (-(κ / v)) := Real.exp_pos _
+    rw [(hGd v hv0).deriv]
+    nlinarith [hge, hexppos, hE0, hκv]
+  have hcont : ContinuousOn G (Set.Icc a u) :=
+    fun v hv => ((hGd v (lt_of_lt_of_le ha hv.1)).continuousAt).continuousWithinAt
+  have hdiff : DifferentiableOn ℝ G (interior (Set.Icc a u)) := by
+    rw [interior_Icc]
+    exact fun v hv => ((hGd v (lt_trans ha hv.1)).differentiableAt).differentiableWithinAt
+  have hmono : MonotoneOn G (Set.Icc a u) := by
+    apply monotoneOn_of_deriv_nonneg (convex_Icc a u) hcont hdiff
+    rw [interior_Icc]
+    exact hnonneg
+  have hle := hmono (Set.left_mem_Icc.mpr hau) (Set.right_mem_Icc.mpr hau) hau
+  rw [hGdef] at hle
+  simp only at hle
+  have hsplit : Real.exp (-(κ / a)) = Real.exp (-(κ / a - κ / u)) * Real.exp (-(κ / u)) := by
+    rw [← Real.exp_add]
+    ring_nf
+  rw [hsplit] at hle
+  have hexpu : (0 : ℝ) < Real.exp (-(κ / u)) := Real.exp_pos _
+  nlinarith [hle, hexpu]
+
+/-! ## Mass from energy
+
+An envelope bound says nothing about `L²` mass, because the oscillation vanishes at its zeros.  What
+does convert energy into mass is the exact virial identity `(w w')' = w'² - (1+q)w²`: integrating it
+turns the total energy over an interval into twice the mass plus boundary terms, so an interval
+several energy-units long must carry mass.  No stationary-phase estimate is involved. -/
+
+/-- **Mass from energy.**  On an interval long compared with the energy ratio, the squared mass is
+bounded below by the energy. -/
+theorem mass_lower_of_oscEnergy {α β κ Elow Ehigh : ℝ} (hαβ : α ≤ β) (hα : 0 < α) (hκ : 0 ≤ κ)
+    (hw : ∀ v : ℝ, 0 < v → HasDerivAt w (Dw v) v)
+    (hDw : ∀ v : ℝ, 0 < v → HasDerivAt Dw (DDw v) v)
+    (hode : ∀ v : ℝ, 0 < v → DDw v + (1 + q v) * w v = 0)
+    (hqc : ContinuousOn q (Set.Icc α β))
+    (hq : ∀ v : ℝ, 0 < v → |q v| ≤ κ / v ^ 2)
+    (hElow : ∀ v ∈ Set.Icc α β, Elow ≤ oscEnergy w Dw v)
+    (hEhigh : ∀ v ∈ Set.Icc α β, oscEnergy w Dw v ≤ Ehigh) :
+    ((β - α) * Elow - Ehigh) / (2 + κ / α ^ 2) ≤ ∫ u in α..β, w u ^ 2 := by
+  have hmem : ∀ v ∈ Set.Icc α β, 0 < v := fun v hv => lt_of_lt_of_le hα hv.1
+  have huIcc : Set.uIcc α β = Set.Icc α β := Set.uIcc_of_le hαβ
+  have hwc : ContinuousOn w (Set.Icc α β) := fun v hv =>
+    ((hw v (hmem v hv)).continuousAt).continuousWithinAt
+  have hDwc : ContinuousOn Dw (Set.Icc α β) := fun v hv =>
+    ((hDw v (hmem v hv)).continuousAt).continuousWithinAt
+  have hw2int : IntervalIntegrable (fun u : ℝ => w u ^ 2) MeasureTheory.volume α β := by
+    rw [intervalIntegrable_iff_integrableOn_Icc_of_le hαβ]
+    exact ((hwc.pow 2).integrableOn_compact isCompact_Icc)
+  have hDw2int : IntervalIntegrable (fun u : ℝ => Dw u ^ 2) MeasureTheory.volume α β := by
+    rw [intervalIntegrable_iff_integrableOn_Icc_of_le hαβ]
+    exact ((hDwc.pow 2).integrableOn_compact isCompact_Icc)
+  have hqw2int : IntervalIntegrable (fun u : ℝ => q u * w u ^ 2) MeasureTheory.volume α β := by
+    rw [intervalIntegrable_iff_integrableOn_Icc_of_le hαβ]
+    exact ((hqc.mul (hwc.pow 2)).integrableOn_compact isCompact_Icc)
+  -- the virial identity
+  have hprod : ∀ v ∈ Set.uIcc α β,
+      HasDerivAt (fun t : ℝ => w t * Dw t) (Dw v ^ 2 - (1 + q v) * w v ^ 2) v := by
+    intro v hv
+    rw [huIcc] at hv
+    have hv0 : 0 < v := hmem v hv
+    have h := (hw v hv0).mul (hDw v hv0)
+    refine h.congr_deriv ?_
+    have hsec : DDw v = -((1 + q v) * w v) := by linarith [hode v hv0]
+    rw [hsec]
+    ring
+  have hvirint : IntervalIntegrable (fun v : ℝ => Dw v ^ 2 - (1 + q v) * w v ^ 2)
+      MeasureTheory.volume α β := by
+    have h1 : IntervalIntegrable (fun v : ℝ => w v ^ 2 + q v * w v ^ 2)
+        MeasureTheory.volume α β := hw2int.add hqw2int
+    refine hDw2int.sub (h1.congr ?_)
+    intro v _
+    ring
+  have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt hprod hvirint
+  have hsplit : (∫ v in α..β, (Dw v ^ 2 - (1 + q v) * w v ^ 2))
+      = (∫ v in α..β, Dw v ^ 2) - ((∫ v in α..β, w v ^ 2) + ∫ v in α..β, q v * w v ^ 2) := by
+    have hcongr : (∫ v in α..β, (Dw v ^ 2 - (1 + q v) * w v ^ 2))
+        = ∫ v in α..β, (Dw v ^ 2 - (w v ^ 2 + q v * w v ^ 2)) := by
+      refine intervalIntegral.integral_congr fun v _ => ?_
+      ring
+    rw [hcongr, intervalIntegral.integral_sub hDw2int (hw2int.add hqw2int),
+      intervalIntegral.integral_add hw2int hqw2int]
+  -- the energy from below
+  have hElowint : (β - α) * Elow ≤ (∫ v in α..β, w v ^ 2) + ∫ v in α..β, Dw v ^ 2 := by
+    have hmono : (∫ _v in α..β, Elow) ≤ ∫ v in α..β, (w v ^ 2 + Dw v ^ 2) := by
+      refine intervalIntegral.integral_mono_on hαβ
+        ((continuous_const : Continuous fun _ : ℝ => Elow).intervalIntegrable _ _)
+        (hw2int.add hDw2int) fun v hv => ?_
+      exact hElow v hv
+    have hconst : (∫ _v in α..β, Elow) = (β - α) * Elow := by
+      rw [intervalIntegral.integral_const, smul_eq_mul]
+    rw [hconst, intervalIntegral.integral_add hw2int hDw2int] at hmono
+    exact hmono
+  -- the boundary term
+  have hbd : w β * Dw β - w α * Dw α ≤ Ehigh := by
+    have hβ : w β * Dw β ≤ Ehigh / 2 := by
+      have hE := hEhigh β (Set.right_mem_Icc.2 hαβ)
+      rw [oscEnergy] at hE
+      nlinarith [sq_nonneg (w β - Dw β)]
+    have hα' : -(Ehigh / 2) ≤ w α * Dw α := by
+      have hE := hEhigh α (Set.left_mem_Icc.2 hαβ)
+      rw [oscEnergy] at hE
+      nlinarith [sq_nonneg (w α + Dw α)]
+    linarith
+  -- the perturbation term
+  have hqw : (∫ v in α..β, q v * w v ^ 2) ≤ (κ / α ^ 2) * ∫ v in α..β, w v ^ 2 := by
+    have hmono : (∫ v in α..β, q v * w v ^ 2)
+        ≤ ∫ v in α..β, (κ / α ^ 2) * w v ^ 2 := by
+      have hconstint : IntervalIntegrable (fun v : ℝ => (κ / α ^ 2) * w v ^ 2)
+          MeasureTheory.volume α β := by
+        rw [intervalIntegrable_iff_integrableOn_Icc_of_le hαβ]
+        exact ((continuousOn_const.mul (hwc.pow 2)).integrableOn_compact isCompact_Icc)
+      refine intervalIntegral.integral_mono_on hαβ hqw2int hconstint fun v hv => ?_
+      have hv0 : 0 < v := hmem v hv
+      have hqv : |q v| ≤ κ / v ^ 2 := hq v hv0
+      have hle : κ / v ^ 2 ≤ κ / α ^ 2 := by
+        refine div_le_div_of_nonneg_left hκ (by positivity) ?_
+        nlinarith [hv.1, hα]
+      have h1 : q v ≤ κ / α ^ 2 := le_trans (le_trans (le_abs_self _) hqv) hle
+      nlinarith [sq_nonneg (w v), h1]
+    rwa [intervalIntegral.integral_const_mul] at hmono
+  -- assemble
+  have hmasspos : (0 : ℝ) ≤ ∫ v in α..β, w v ^ 2 := by
+    refine intervalIntegral.integral_nonneg hαβ fun v _ => sq_nonneg _
+  have hden : (0 : ℝ) < 2 + κ / α ^ 2 := by positivity
+  rw [div_le_iff₀ hden]
+  nlinarith [hFTC, hsplit, hElowint, hbd, hqw, hmasspos]
+
 end GaloisForLFunctions.HTGeometry

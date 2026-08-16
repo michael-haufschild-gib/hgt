@@ -3,8 +3,8 @@
 - **ID:** stieltjes-bulk-exterior-christoffel-monotonicity
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper) / conditional source-route lemma
-- **Source:** `boundary-weyl-thresholds-have-no-formal-monotonicity.md`;
-  `pole-budget-does-not-imply-uvarov-repair.md`;
+- **Source:** `../../3-formalized/not_new_scientific_knowledge/boundary-weyl-thresholds-have-no-formal-monotonicity.md`;
+  `../../3-formalized/not_new_scientific_knowledge/pole-budget-does-not-imply-uvarov-repair.md`;
   `source-selector-repair-obligation-ledger.md`;
   entropy move `monotone`
 - **Statement:** For a positive moment bulk supported to the right of an exterior
@@ -106,7 +106,7 @@ same positive bulk has support to the right of `-4/25`.
 ## Consequence For The RH Route
 
 This card refines, rather than contradicts,
-`boundary-weyl-thresholds-have-no-formal-monotonicity.md`.
+`../../3-formalized/not_new_scientific_knowledge/boundary-weyl-thresholds-have-no-formal-monotonicity.md`.
 
 There is no monotonicity for arbitrary positive definite bulk forms. There is a
 monotonicity theorem for Stieltjes moment bulks with support on one side of the

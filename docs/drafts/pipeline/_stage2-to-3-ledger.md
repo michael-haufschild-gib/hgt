@@ -3219,3 +3219,137 @@ convolution) with close corpus analogues in one dimension.  Work on it has start
 `HTGeometry/EuclideanPackingPigeonhole.lean`, wired, built, axiom-clean: the Haar volume packing
 bound `card_mul_pow_le_of_separated`, its backwards reading `exists_pair_norm_sub_mul_le`, and the
 card's Theorem A `exists_pair_replicaObservedAction_mul_le`.
+
+### Progress: observer-dimension crowding — Theorems B and C, and the algebraic half of D (2026-08-16)
+
+Three further modules, all wired into `GaloisForLFunctions.HTGeometry`, built and axiom-clean:
+
+- `HTGeometry/VectorLawCentralCellCrowding.lean` — the vector-valued central-cell crowding floor
+  `vectorLaw_crowding_floor` and its off-diagonal and arbitrary-key forms.  The `δ/2`-net comes from
+  `exists_finset_net`, added to `EuclideanPackingPigeonhole`: a maximal separated subset of a ball
+  exists because the packing bound caps its cardinality, and maximality makes it a net.
+- `HTGeometry/ReplicaObserverActionCrowding.lean` — `replicaAction_second_moment` (the observer
+  second moment is exactly `r` times the single-level observer variance, obtained coordinatewise
+  from the corpus's scalar replica variance additivity) and the card's Theorem B
+  `replicaAction_crowding_floor`.
+- `HTGeometry/OrderedReplicaPushforward.lean` — Theorem C
+  (`sum_orderedReplica_eq_replicaAmplitudeMoment`, its pair form, and its arbitrary-commutative-
+  semiring form), the by-product `card_fiber_orderedReplicaMultiplicity`, and the algebraic half of
+  Theorem D: the observer character `(29)`, the return sector `(30)` and the off-return mass `(31)`.
+
+Still open on that card: the measure-algebra form of Theorem D (`(25)`–`(28)`, `(32)`) and the
+corollaries `A1`, `C1`, `C2`, which need the parent fixed-shell card's spectral-gradient framework.
+
+### Progress: observer-dimension crowding — the measure-algebra half of Theorem D (2026-08-16)
+
+`HTGeometry/SignedReplicaConvolutionLift.lean`, wired, built, axiom-clean.  The signed lift lives in
+`AddMonoidAlgebra ℂ G`, whose multiplication is convolution; conjugate reflection is exhibited as a
+ring endomorphism (`conjReflect`), which makes `(25)` (`replicaPairLift_eq_pow`) and `(28)`
+(`offReturnPart_replicaPairLift`) immediate.  The return sector is closed under convolution
+(`offReturnPart_mul_returnPart`, from the support-sumset bound), and the exact stepwise-excision
+defect `(32)` is `offReturnPart_mul_defect`.
+
+Still open on that card: the explicit atom description `(26)`–`(27)`, and the corollaries `A1`,
+`C1`, `C2`, which need the parent fixed-shell card's spectral-gradient framework.
+
+Theorem D of that card is now complete: `pow_sum_single` supplies the atom description `(26)`–`(27)`
+from the multinomial theorem transported into the group algebra, so `(25)`–`(32)` are all
+Lean-certified.  Only the corollaries `A1`, `C1`, `C2` remain, and they need the parent fixed-shell
+card's spectral-gradient framework.
+
+### Correction to the 2026-08-16 triage
+
+The triage above was checked against the corpus again and is **wrong in several places**.  The
+corpus is much richer than the first pass assumed; the following "missing external theorems" are in
+fact present, unconditionally:
+
+- **Baker.**  `RHTower.bakerLinearIndependence_holds` (`RHTower/BakerProof/BakerIteration.lean`)
+  proves algebraic-coefficient linear independence of logarithms of distinct rational primes, on top
+  of a twelve-module Baker machinery (auxiliary function and matrix, multipoint Schwarz,
+  extrapolation, zero estimate, parameter iteration, coefficient field, minimal relation).
+  `RHTower.gelfondSchneider_holds` proves full complex Gelfond–Schneider.  The Baker card's open
+  core is therefore *not* "Baker" but the specific generalization it names: a non-homogeneous
+  auxiliary polynomial and a terminal zero estimate for exponential polynomials with distinct
+  frequencies, replacing the prime-specific Vandermonde step.
+- **Analytic eigenbranch perturbation.**  `HTGeometry/SimpleEigenvalueBranch.lean` proves
+  `exists_normalized_branch_deriv_eq_expectation` — existence *and* Hellmann–Feynman for a simple
+  eigenvalue of a differentiable self-adjoint family, via the implicit function theorem applied to
+  the eigen-residual; `HTGeometry/HellmannFeynman.lean`, `ParametricSpectralBranch.lean`,
+  `SimpleSpectrumAnalyticBranch.lean` and `AffineEigenbranch*.lean` supply the analytic branch and
+  its first and second derivatives.  So the static-local complexity cluster is **not** blocked on
+  perturbation theory.
+- **Bessel `K`.**  `HTGeometry/BesselOrderExteriorEnvelope.lean`,
+  `HTGeometry/BesselOrderMeromorphic.lean` and `BesselOrderPhysicalScan.lean` already carry
+  Schlaefli-integral envelopes and meromorphic order continuation.
+- **Ingham / zero density.**  `RHTower/Sieve/InghamUniformDetectorZeroDensityPolylog.lean` and
+  `ZetaResidueUnitRectanglePeeling.lean` carry part of the density layer.
+- **Selberg class / Kaczorowski–Perelli.**  There is a whole `SelbergClass` area, including
+  `MultipleStandardTwistTensor` and `AsymmetricFunctionalEquation`.
+- **Generic symmetric Galois action.**  `HTGeometry/SymmetricRationalFunctions.lean` and
+  `PermutationAction.lean` own the universal symmetric Galois group; only the passage to a rational
+  specialisation (Hilbert irreducibility) is missing.
+
+The lesson recorded for future sessions: search the corpus with
+`scripts/formal_tools.py research` for *each* named external theorem before declaring a card
+blocked.  The remaining open cores are narrower and more specific than the first triage claimed.
+
+### Progress: observer-dimension crowding — Corollary A1 equations (4)–(5) (2026-08-16)
+
+`HTGeometry/SpectralResponseVectorBound.lean`, wired, built, axiom-clean.  The Hellmann–Feynman
+gradient of a simple eigenvalue in coefficient space is the response vector `a ↦ ⟪e, P_a e⟫`
+(`inner_spectralResponseVector`); `m` generators of operator norm at most one bound it by `√m`
+(`norm_spectralResponseVector_le`), and the bound survives projection to the sphere's tangent space.
+Composing with Theorem A gives `(5)` as `exists_pair_replicaObservedAction_response_bound`.
+
+The perturbation theorem itself was **not** rebuilt: the corpus already proves it in
+`HTGeometry/SimpleEigenvalueBranch.lean` and `HTGeometry/AffineEigenbranch*.lean`.
+
+### Progress: observer-dimension crowding — Corollaries A1, C1, C2 (2026-08-16)
+
+Three further modules, wired, built, axiom-clean:
+
+- `HTGeometry/BalancedCharacterTransversalityTail.lean` — `(5)` in character form
+  (`exists_balancedCharacter_norm_le`), the packing scale `(6)`, the tail inequality `(7)`
+  (`measure_nondegenerate_le_smallCharacter`, for every measure on parameter space), its sharp
+  probability form `one_le_replicaTransversalityTail`, and Corollary C2's `(22)`
+  (`onsetTransversalityTime_ge`).
+- `HTGeometry/SoftLightFilterCollisionBound.lean` — the soft-light filter, `(16)`
+  (`softLightFilter_mass_ge`), and `(18)` (`replicaCollisionMass_le`, from the corpus's
+  `multinomial_le_factorial` and `replicaAmplitude_total_mass`).
+- `HTGeometry/ReplicaCrowdingCollisionAssembly.lean` — `(19)`
+  (`replicaAction_crowding_floor_of_flat`).
+
+What is left on that card is only the asymptotic *reading* of the explicit bounds in the parameter
+regime `m = 12n−9`, `D = 2ⁿ`, `r = ⌊cD⌋` — equations `(8)` and `(20)` — which is where the parent
+fixed-shell card's objects enter.
+
+## 2026-08-15 -- promotion: observer-dimension-replica-action-crowding-law
+
+Moved `docs/drafts/pipeline/2-fully-proven/observer-dimension-replica-action-crowding-law.md` to
+`docs/drafts/pipeline/3-formalized/`.  All numbered statements (1)-(33) of the card, Theorems A-D and
+Corollaries A1, C1, C2, are now proved unconditionally in Lean 4.  Modules added for this card, all
+wired into `GaloisForLFunctions.HTGeometry` and all axiom-clean
+(`[propext, Classical.choice, Quot.sound]`):
+
+- `EuclideanPackingPigeonhole`      -- Haar volume packing, maximal separated net, Theorem A
+- `SpectralResponseVectorBound`     -- coefficient-space gradient of a simple eigenvalue, eq (4)-(5)
+- `BalancedCharacterTransversalityTail` -- balanced characters, packing scale, eq (6)-(7), (21)-(22)
+- `VectorLawCentralCellCrowding`    -- vector-valued Chebyshev + central-cell floor, eq (12)-(13)
+- `ReplicaObserverActionCrowding`   -- replica second moment, Theorem B (eq 10)-(11)
+- `OrderedReplicaPushforward`       -- Theorem C (eq 14), multinomial fibre count, eq (29)-(31)
+- `SignedReplicaConvolutionLift`    -- group-algebra lift, Theorem D (eq 23)-(28), (32)
+- `SoftLightFilterCollisionBound`   -- soft-light filter, eq (15)-(18)
+- `ReplicaCrowdingCollisionAssembly`-- eq (9), (19)
+- `PackingScaleBinomialBound`       -- eq (1), (8), (20), and the card's `m = 12n-9`, `D = 2^n`
+
+Design notes worth reusing:
+- Every statement is universally quantified over an arbitrary finite-dimensional real normed observer
+  space with an additive Haar measure, an arbitrary finite level set, and an arbitrary measure space
+  of parameters, rather than tied to the card's concrete Pauli setting.
+- No eigenvalue perturbation theory was rebuilt: Hellmann-Feynman for a simple eigenvalue is already
+  corpus-owned (`SimpleEigenvalueBranch`, `AffineEigenbranchGeneralSecondOrderLaw`); this card adds
+  only the *size* of the resulting gradient.
+- Theorem C is proved by matching the `Fin.cons` decomposition against the corpus's amplitude
+  recursion `replicaAmplitudeMoment_succ`, so the multinomial fibre count is a consequence rather
+  than an input.
+- Theorem D is an identity in `AddMonoidAlgebra C G` with `conjReflect` a ring endomorphism.
