@@ -302,15 +302,36 @@ diamond appears.
 supplied derivative matrix, together with the symmetry of `J^{-1}` (automatic for a Jacobi
 compression); it does *not* assume any part of `(HJLG.4)`--`(HJLG.5)`.
 
+### Item 3, combinatorial layer
+
+`formal/GaloisForLFunctions/HTGeometry/JacobiRiccatiTruncation.lean` (new, umbrella-wired,
+axiom-clean) proves the exact source of the boundary term `-2n a_n² ee^T`.
+
+| Card item | Declaration |
+|---|---|
+| the symmetric tridiagonal Jacobi entries and the skew tridiagonal connection entries `(A_n)_{k,k+1} = (k+1/2)a_{k+1}` | `jacobiEntry`, `connectionEntry`, `jacobiCompression`, `connectionCompression` |
+| the connection matrix is skew | `connectionEntry_skew`, `connectionCompression_skew` |
+| the last row and column of each band matrix | `jacobiEntry_last_col`, `jacobiEntry_last_row`, `connectionEntry_last_col`, `connectionEntry_last_row` |
+| **the truncation identity: dropping one level from `[J,A] − J²` costs exactly `2n a_n²` at the last diagonal entry** | `jacobiCompression_riccati_truncation`, `jacobiCompression_riccati_matrix` |
+
+The three lost terms are `J_{n-1,n}A_{n,n-1} = -(n-1/2)a_n²`, `-A_{n-1,n}J_{n,n-1} = -(n-1/2)a_n²`
+and `-J_{n-1,n}J_{n,n-1} = -a_n²`, whose sum is exactly `-2n a_n²`.  This is the entire content of
+the card's assertion that the last term of `(HJLG.2)` is *the sole finite-admission boundary
+source*: the bulk is band-local and truncates exactly, and only the corner leaks.
+
 ### What remains
 
-Item 3 itself -- the derivation of `(HJLG.2)` from the already-formalized connection law
-`(HJLG.1)` -- is still Lean-open.  The paper derivation is a finite computation:
-differentiating `(J_n)_{jk} = ⟨φ_j, Xφ_k⟩` with the moment-derivative law gives
-`d/dy⟨f,g⟩ = -⟨Kf,g⟩ - ⟨f,Kg⟩`, hence
-`J' = ⟨∇φ_j, Xφ_k⟩ + ⟨φ_j, X∇φ_k⟩ - ⟨φ_j, X²φ_k⟩` from `XK - KX = -X²`; the connection matrix
-contributes `[J_n,A_n]`, the last term contributes `J_n² + a_n²ee^T`, and the two truncated
-connection terms contribute `(n-1/2)a_n²ee^T` each, for the exact total `-2n a_n² ee^T`.
-Once that is formalized in the shifted-Xi setting, the four declarations above close
-`(HJLG.3)`--`(HJLG.5)`, and `(HJLG.6)`--`(HJLG.7)` follow from the corpus's simple-eigenvalue
-perturbation layer plus the Christoffel identity.
+For `(HJLG.2)` itself only the *untruncated* identity is left, namely
+`J' = [J,A] − J²` for the full Jacobi matrix.  In the orthonormal frame this is the three-line
+computation
+
+```text
+d/dy⟨f,g⟩ = -⟨Kf,g⟩ - ⟨f,Kg⟩            (from the moment-derivative law and K(fg)+½Xfg = (Kf)g+f(Kg))
+XK - KX  = -X²
+J'_{jk}  = ⟨∇φ_j, Xφ_k⟩ + ⟨φ_j, X∇φ_k⟩ - ⟨φ_j, X²φ_k⟩ = (AᵀJ)_{jk} + (JA)_{jk} - (J²)_{jk},
+```
+
+and `Aᵀ = -A` is `connectionCompression_skew`.  Composing that with
+`jacobiCompression_riccati_matrix` gives `(HJLG.2)`, and the four declarations of
+`SkewConjugatedRiccatiGramian` then close `(HJLG.3)`--`(HJLG.5)`.  `(HJLG.6)`--`(HJLG.7)` follow
+from the corpus's simple-eigenvalue perturbation layer plus the Christoffel identity.

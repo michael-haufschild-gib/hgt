@@ -3480,3 +3480,12 @@ finite-matrix layer of the card's items 3--4:
 Still open: item 3 itself, the derivation of `(HJLG.2)` from the already-formalized connection law
 `(HJLG.1)` inside `RHTower/XiShiftedHalfDensityAdjacentConnection`.  The card records the exact
 finite computation.
+
+Continued: `HTGeometry/JacobiRiccatiTruncation` (new, umbrella-wired, axiom-clean) proves the
+combinatorial half of item 3 -- `jacobiCompression_riccati_truncation` and its matrix form:
+compressing the tridiagonal commutator and Jacobi square by one level loses exactly
+`(n-1/2)a_n² + (n-1/2)a_n² + a_n² = 2n a_n²` at the last diagonal entry.  This is the card's claim
+that the last term of `(HJLG.2)` is the sole finite-admission boundary source: the bulk is
+band-local and truncates exactly.  What is left of item 3 is only the untruncated frame identity
+`J' = [J,A] - J²`, which is the moment-derivative law plus `XK - KX = -X²` read in the orthonormal
+frame.

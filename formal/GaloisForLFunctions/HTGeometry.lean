@@ -7920,3 +7920,4 @@ import GaloisForLFunctions.HTGeometry.ThirdAmplitudeRayDecay
 import GaloisForLFunctions.HTGeometry.MassBesselShellEstimate
 import GaloisForLFunctions.HTGeometry.LatticeL2Shift
 import GaloisForLFunctions.HTGeometry.SkewConjugatedRiccatiGramian
+import GaloisForLFunctions.HTGeometry.JacobiRiccatiTruncation

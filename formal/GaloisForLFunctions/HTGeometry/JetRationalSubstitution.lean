@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.JetPrincipalSymbolExtraction
 import GaloisForLFunctions.HTGeometry.JacobianDomainCriterion
 import GaloisForLFunctions.HTGeometry.ScalarDifferentialRationalOrder
 import GaloisForLFunctions.HTGeometry.EigenLogDerivNormalization
+import GaloisForLFunctions.HTGeometry.FreeCoordinateChainRule
 
 /-!
 # The rational substitution endomorphism of the free jet field
@@ -395,6 +396,95 @@ theorem eigen_logDeriv_pd_of_jetSubstitution_eigen [CharZero C] (R : RatFunc C)
     (jetSubstitution R hR).toRingHom hchain hρ hR
     (Derivation.map_algebraMap _ lam) hlam0 hw0
     (pd_eigen_of_jetSubstitution_eigen R hR hu heig)
+
+/-! ## The first jet is scaled exactly -/
+
+theorem pd_substitutionDeriv_eq_zero (R : RatFunc C) {k : ℕ} (hk : k ≠ 0) :
+    JetField.pd ((), k) (substitutionDeriv R) = 0 := by
+  rw [substitutionDeriv, pd_comm, pd_substitutionValue_eq_zero R hk, map_zero]
+
+/-- The substitution scales the first jet coordinate by the derivative factor. -/
+theorem substitutionJet_one (R : RatFunc C) :
+    substitutionJet R 1 = JetField.jet ((), 1) * substitutionDeriv R := by
+  classical
+  have hmem : substitutionValue R ∈
+      freeCoordinateField C (Unit × ℕ) (↑({((), 0)} : Finset (Unit × ℕ)) : Set (Unit × ℕ)) := by
+    have h := substitutionValue_mem_adjoin R
+    have hset : (freeCoordinate C (Unit × ℕ) '' (↑({((), 0)} : Finset (Unit × ℕ)) :
+        Set (Unit × ℕ))) = ({JetField.jet ((), 0)} : Set (JetField C Unit)) := by
+      ext z
+      constructor
+      · rintro ⟨q, hq, rfl⟩
+        have hq0 : q = ((), 0) := by simpa using hq
+        rw [hq0]
+        rfl
+      · rintro rfl
+        exact ⟨((), 0), by simp, rfl⟩
+    rw [freeCoordinateField, hset]
+    exact h
+  have h := freeCoordinate_chainRule ({((), 0)} : Finset (Unit × ℕ))
+    (JetField.jetDerivation (C := C) (ι := Unit)) hmem
+  rw [Finset.sum_singleton] at h
+  calc substitutionJet R 1 = JetField.jetDerivation (substitutionValue R) := by
+        rw [substitutionJet, differentialJet_succ, differentialJet_zero, JetField.deriv_eq]
+    _ = JetField.jetDerivation (freeCoordinate C (Unit × ℕ) ((), 0)) *
+          freeCoordinateDerivation C (Unit × ℕ) ((), 0) (substitutionValue R) := h
+    _ = JetField.jet ((), 1) * substitutionDeriv R := by
+        rw [show (freeCoordinate C (Unit × ℕ) ((), 0) : JetField C Unit)
+            = JetField.jet ((), 0) from rfl, JetField.jetDerivation_jet]
+        rfl
+
+theorem jetSubstitution_jet_one [CharZero C] (R : RatFunc C) (hR : substitutionDeriv R ≠ 0) :
+    jetSubstitution R hR (JetField.jet ((), 1))
+      = JetField.jet ((), 1) * substitutionDeriv R := by
+  rw [jetSubstitution_jet, substitutionJet_one]
+
+/-! ## The Euler quotient of a first-order eigenvector is invariant -/
+
+theorem mem_orbifoldTail_of_fixed [CharZero C] (R : RatFunc C) (hR : substitutionDeriv R ≠ 0)
+    {g : JetField C Unit} (hg : jetSubstitution R hR g = g) : g ∈ orbifoldTail R hR := by
+  rw [orbifoldTail, mem_stableRangeCore_iff]
+  intro n
+  refine ⟨g, ?_⟩
+  induction n with
+  | zero => simp
+  | succ n ih =>
+      simp only [AlgHom.coe_pow, Function.iterate_succ_apply'] at ih ⊢
+      rw [ih, hg]
+
+/-- **The Euler quotient is an invariant.**  For a first-order eigenvector of the substitution
+with the derivative factor as eigenvalue, the logarithmic Euler derivative in the first jet
+coordinate is fixed by the substitution, hence lies in the tail. -/
+theorem jetSubstitution_eulerQuotient [CharZero C] (R : RatFunc C) (hR : substitutionDeriv R ≠ 0)
+    {v : JetField C Unit} (hv0 : v ≠ 0)
+    (hv : ∀ j : ℕ, 1 < j → JetField.pd ((), j) v = 0)
+    (heig : jetSubstitution R hR v * substitutionDeriv R = v) :
+    jetSubstitution R hR (JetField.jet ((), 1) * JetField.pd ((), 1) v / v)
+      = JetField.jet ((), 1) * JetField.pd ((), 1) v / v := by
+  have hΦv : jetSubstitution R hR v = v / substitutionDeriv R := by
+    field_simp
+    linear_combination heig
+  have hΦv0 : jetSubstitution R hR v ≠ 0 := by
+    intro h
+    exact hv0 (jetSubstitution_injective R hR (by rw [h, map_zero]))
+  have hρ1 : JetField.pd ((), 1) (substitutionDeriv R) = 0 :=
+    pd_substitutionDeriv_eq_zero R one_ne_zero
+  have hchain : JetField.pd ((), 1) (jetSubstitution R hR v)
+      = jetSubstitution R hR (JetField.pd ((), 1) v) * substitutionDeriv R :=
+    pd_jetSubstitution_top R hR hv
+  have hpd : JetField.pd ((), 1) (jetSubstitution R hR v)
+      = JetField.pd ((), 1) v / substitutionDeriv R := by
+    rw [hΦv, div_eq_mul_inv, Derivation.leibniz, Derivation.leibniz_inv, hρ1, smul_zero,
+      smul_zero, zero_add, smul_eq_mul]
+    field_simp
+  have hΦpd : jetSubstitution R hR (JetField.pd ((), 1) v)
+      = JetField.pd ((), 1) v / (substitutionDeriv R * substitutionDeriv R) := by
+    rw [hpd] at hchain
+    field_simp at hchain
+    rw [eq_div_iff (mul_ne_zero hR hR)]
+    linear_combination -hchain
+  rw [map_div₀, map_mul, jetSubstitution_jet_one, hΦpd, hΦv]
+  field_simp
 
 end
 
