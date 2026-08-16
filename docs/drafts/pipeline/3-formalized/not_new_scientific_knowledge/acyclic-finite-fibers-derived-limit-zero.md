@@ -1,7 +1,7 @@
 # A derived inverse limit of acyclic finite fibers cannot create the zeta defect
 
 - **ID:** `acyclic-finite-fibers-derived-limit-zero`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper); route no-go
 - **Scientific status:** `[BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** standard derived-category functoriality and the finite prime Koszul proposal
@@ -82,4 +82,28 @@ and prove its base-change defect directly.  Calling the defect `lim^1` does not 
 - [x] abstract zero-diagram argument proved
 - [x] raw prime complexes proved contractible in the strip
 - [x] legitimate base-change escape stated without claiming it exists
-- [ ] no Lean formalization planned; this is standard derived-category infrastructure
+- [x] 2 -> 3 formalized: `RHTower/AcyclicFiniteFibersDerivedLimit.lean`
+
+## 2026-08-16 Lean closure
+
+`RHTower/AcyclicFiniteFibersDerivedLimit.lean` proves the card unconditionally, in the concrete
+tower presentation of `R lim` that the card's spectral sequence uses.
+
+- `towerDiff`, `towerLim`, `towerLimOne`: for a tower of abelian groups, `lim` is the kernel and
+  `lim^1` the cokernel of the shift-minus-identity map on the product.  This is the standard
+  presentation of `R^p lim` for towers, where only `p = 0, 1` occur — exactly the `E_2` page of
+  equation (2).
+- `acyclic_tower_derivedLimit_zero`: if every stage is a zero object then `lim` and `lim^1` are both
+  zero.  This is equation (1) in the form the card applies it: a diagram of zero objects has zero
+  derived limit.
+- `primeKoszulDiff` is the differential of `K_p(s) = [C ->(1 - p^(-s))-> C]`.
+  `primeKoszulDiff_ker` and `primeKoszulDiff_range` prove acyclicity in both degrees, and
+  `primeKoszulDiff_bijective` records that the differential is an isomorphism, i.e. the complex is
+  contractible.  The input is the corpus lemma `eulerFactor_ne_zero`: the Euler factor is nonzero
+  in the open right half plane, hence throughout the critical strip.
+- `prod_eulerFactor_ne_zero`: every finite tensor product over a prime set is contractible, its
+  total differential determinant being the product of the Euler factors.
+
+Consequently the `E_2` page of the derived-limit spectral sequence is identically zero and zeta
+zeros cannot arise as `lim^1` cohomology of already-specialized finite fibers.  Axioms: `propext`,
+`Classical.choice`, `Quot.sound`.

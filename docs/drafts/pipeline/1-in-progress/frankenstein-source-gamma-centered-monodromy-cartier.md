@@ -119,3 +119,22 @@ orientation-quotient descent, not integrality infrastructure.
   flux; local-L1 repair failed against exact strict-frontier pole theorem.
 - 2026-08-16 — isolated live producer as coefficient-faithful FE/Schwarz orientation-quotient
   Gamma/Witt descent and proved bridge lemmas in scratch Lean.
+- 2026-08-16 — **Conjecture 4 failed by exact countermodel:** Gauss cover composition supplies
+  `(mn)^(-t)=m^(-t)n^(-t)` for every real `t`.  At `t=1/2`, the `(2,3)` composition is coherent
+  while the fitted prime-two and prime-three ghosts are provably unequal.  Ordinary Gamma
+  multiplication naturality therefore cannot create a prime-independent reporter.
+- 2026-08-16 — **Pivot 5 proved:** replaced cover coherence by source-selected two-orientation
+  unital scale-zero descent.  If forward and reflected coefficient-faithful characters extend
+  continuously to one collapsed source scale and both retain its unit, the forward extension
+  gives `t<=0` and the reflected extension gives `-t<=0`; hence `t=0`.  Formalized in
+  `FrankensteinGammaCompositionScaleZeroDescent.lean`, including unconditional constructors from
+  this descent to rational Cartier landing and the genuine source-natural Gamma reporter.
+
+## Current open core after Pivot 5
+
+Construct the two scale-zero extensions from the literal multiplicity jet of the shifted theta
+source, before divisor scalarization.  This is strictly stronger than Gauss cover composition and
+strictly more local than global/equivariant Gamma descent.  Required analytic statement must show
+that the normalized first nonzero Xi jet retains the common unit at collapsed scale in both
+FE/Schwarz orientations.  Raw shifted source values do not suffice: their zeroth Xi coefficient
+vanishes, so the construction must divide at exact support multiplicity before taking scale zero.

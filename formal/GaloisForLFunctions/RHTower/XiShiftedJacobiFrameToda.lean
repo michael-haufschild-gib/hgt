@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.XiShiftedHalfDensityMobiusSourceConnection
 import GaloisForLFunctions.HTGeometry.JacobiTodaRiccatiLaw
-import Mathlib.Tactic.Module
+import GaloisForLFunctions.HTGeometry.MatrixInverseCurveDerivative
 
 /-!
 # The moving orthonormal frame of the shifted half-density connection
@@ -202,8 +202,7 @@ theorem eq_zero_of_smul_three (m : ℕ) (y : ℝ) (c₀ c₁ c₂ : ℝ)
 
 /-! ## The two coefficient laws -/
 
-/-- The level-zero relations: the diagonal law at index `0` and the off-diagonal law at index
-`1`. -/
+/-- The level-zero relations of the covariant recurrence. -/
 theorem level_zero_relations (y : ℝ) :
     F.diagDeriv 0 y = -2 * F.a 1 y ^ 2 - F.b 0 y ^ 2 ∧
       F.offDeriv 1 y = F.a 1 y * (-(1 / 2 : ℝ) * F.b 0 y - (3 / 2 : ℝ) * F.b 1 y) := by
@@ -213,7 +212,8 @@ theorem level_zero_relations (y : ℝ) :
   have hc0 : F.cov 0 y = (-(1 / 2 : ℝ) * F.a 1 y) • F.φ 1 y := by
     rw [F.cov_eq 0 y, ha0]
     norm_num
-  have hc1 : F.cov 1 y = (-(3 / 2 : ℝ) * F.a 2 y) • F.φ 2 y + ((1 / 2 : ℝ) * F.a 1 y) • F.φ 0 y := by
+  have hc1 : F.cov 1 y
+      = (-(3 / 2 : ℝ) * F.a 2 y) • F.φ 2 y + ((1 / 2 : ℝ) * F.a 1 y) • F.φ 0 y := by
     rw [F.cov_eq 1 y]
     norm_num
   have hx0 : Polynomial.X * F.φ 0 y = F.a 1 y • F.φ 1 y + F.b 0 y • F.φ 0 y := by
@@ -221,21 +221,194 @@ theorem level_zero_relations (y : ℝ) :
     simp
   have hx1 : Polynomial.X * F.φ 1 y
       = F.a 2 y • F.φ 2 y + F.b 1 y • F.φ 1 y + F.a 1 y • F.φ 0 y := by
-    simpa using F.three_term 1 y
+    have h := F.three_term 1 y
+    norm_num at h
+    exact h
   have hsq : Polynomial.X ^ 2 * F.φ 0 y
       = F.a 1 y • (F.a 2 y • F.φ 2 y + F.b 1 y • F.φ 1 y + F.a 1 y • F.φ 0 y)
         + F.b 0 y • (F.a 1 y • F.φ 1 y + F.b 0 y • F.φ 0 y) := by
-    have : Polynomial.X ^ 2 * F.φ 0 y = Polynomial.X * (Polynomial.X * F.φ 0 y) := by ring
-    rw [this, hx0, mul_add, mul_smul_comm, mul_smul_comm, hx0, hx1]
-  rw [hc0, hc1, ha0, ha0', hsq, mul_smul_comm, hx1] at hrec
-  have hcomb : (-(1 / 2 : ℝ) * F.a 1 y * F.a 1 y - ((1 / 2 : ℝ) * F.a 1 y * F.a 1 y
-        + F.diagDeriv 0 y + F.a 1 y * F.a 1 y + F.b 0 y * F.b 0 y)) • F.φ 0 y
-      + (-(1 / 2 : ℝ) * F.a 1 y * F.b 1 y - (F.offDeriv 1 y
-        + -(1 / 2 : ℝ) * F.a 1 y * F.b 0 y + F.a 1 y * F.b 1 y
-        + F.b 0 y * F.a 1 y)) • F.φ 1 y
+    have h2 : Polynomial.X ^ 2 * F.φ 0 y = Polynomial.X * (Polynomial.X * F.φ 0 y) := by ring
+    rw [h2, hx0, mul_add, mul_smul_comm, mul_smul_comm, hx0, hx1]
+  rw [hc0, hc1, ha0, ha0', hsq, mul_smul_comm, hx1, zero_add, Nat.zero_sub] at hrec
+  have hcomb : (-2 * F.a 1 y ^ 2 - F.diagDeriv 0 y - F.b 0 y ^ 2) • F.φ 0 y
+      + (-F.offDeriv 1 y - (1 / 2 : ℝ) * F.a 1 y * F.b 0 y
+          - (3 / 2 : ℝ) * F.a 1 y * F.b 1 y) • F.φ 1 y
       + (0 : ℝ) • F.φ 2 y = 0 := by
-    rw [sub_eq_zero.mpr hrec.symm] -- placeholder, replaced below
-  exact absurd hcomb hcomb.elim
+    linear_combination (norm := module) hrec
+  obtain ⟨h0, h1, -⟩ := F.eq_zero_of_smul_three 0 y _ _ _ hcomb
+  exact ⟨by linear_combination -h0, by linear_combination -h1⟩
+
+/-- The level-`m+1` relations of the covariant recurrence: the off-diagonal law at indices
+`m+1` and `m+2` and the diagonal law at index `m+1`. -/
+theorem level_succ_relations (m : ℕ) (y : ℝ) :
+    F.offDeriv (m + 1) y
+        = F.a (m + 1) y * (((m : ℝ) - 1 / 2) * F.b m y - ((m : ℝ) + 3 / 2) * F.b (m + 1) y) ∧
+      F.diagDeriv (m + 1) y
+        = 2 * (m : ℝ) * F.a (m + 1) y ^ 2 - 2 * ((m : ℝ) + 2) * F.a (m + 2) y ^ 2
+          - F.b (m + 1) y ^ 2 ∧
+      F.offDeriv (m + 2) y
+        = F.a (m + 2) y
+            * (((m : ℝ) + 1 / 2) * F.b (m + 1) y - ((m : ℝ) + 5 / 2) * F.b (m + 2) y) := by
+  have i1 : m + 1 - 1 = m := rfl
+  have i2 : m + 2 - 1 = m + 1 := rfl
+  have i3 : m + 1 + 1 = m + 2 := rfl
+  have i4 : m + 2 + 1 = m + 3 := rfl
+  have hrec := F.covariantRecurrence (m + 1) y
+  rw [i1, i3] at hrec
+  have hcm : F.cov m y = (-(((m : ℝ) + 1 / 2) * F.a (m + 1) y)) • F.φ (m + 1) y
+      + (((m : ℝ) - 1 / 2) * F.a m y) • F.φ (m - 1) y := F.cov_eq m y
+  have hcm1 : F.cov (m + 1) y = (-(((m : ℝ) + 3 / 2) * F.a (m + 2) y)) • F.φ (m + 2) y
+      + (((m : ℝ) + 1 / 2) * F.a (m + 1) y) • F.φ m y := by
+    have h := F.cov_eq (m + 1) y
+    rw [i1, i3] at h
+    rw [h]
+    push_cast
+    module
+  have hcm2 : F.cov (m + 2) y = (-(((m : ℝ) + 5 / 2) * F.a (m + 3) y)) • F.φ (m + 3) y
+      + (((m : ℝ) + 3 / 2) * F.a (m + 2) y) • F.φ (m + 1) y := by
+    have h := F.cov_eq (m + 2) y
+    rw [i2, i4] at h
+    rw [h]
+    push_cast
+    module
+  have hxm : Polynomial.X * F.φ m y
+      = F.a (m + 1) y • F.φ (m + 1) y + F.b m y • F.φ m y + F.a m y • F.φ (m - 1) y :=
+    F.three_term m y
+  have hxm1 : Polynomial.X * F.φ (m + 1) y
+      = F.a (m + 2) y • F.φ (m + 2) y + F.b (m + 1) y • F.φ (m + 1) y
+        + F.a (m + 1) y • F.φ m y := by
+    have h := F.three_term (m + 1) y
+    rw [i1, i3] at h
+    exact h
+  have hxm2 : Polynomial.X * F.φ (m + 2) y
+      = F.a (m + 3) y • F.φ (m + 3) y + F.b (m + 2) y • F.φ (m + 2) y
+        + F.a (m + 2) y • F.φ (m + 1) y := by
+    have h := F.three_term (m + 2) y
+    rw [i2, i4] at h
+    exact h
+  have hsq : Polynomial.X ^ 2 * F.φ (m + 1) y
+      = F.a (m + 2) y • (F.a (m + 3) y • F.φ (m + 3) y + F.b (m + 2) y • F.φ (m + 2) y
+          + F.a (m + 2) y • F.φ (m + 1) y)
+        + F.b (m + 1) y • (F.a (m + 2) y • F.φ (m + 2) y + F.b (m + 1) y • F.φ (m + 1) y
+          + F.a (m + 1) y • F.φ m y)
+        + F.a (m + 1) y • (F.a (m + 1) y • F.φ (m + 1) y + F.b m y • F.φ m y
+          + F.a m y • F.φ (m - 1) y) := by
+    have h2 : Polynomial.X ^ 2 * F.φ (m + 1) y
+        = Polynomial.X * (Polynomial.X * F.φ (m + 1) y) := by ring
+    rw [h2, hxm1, mul_add, mul_add, mul_smul_comm, mul_smul_comm, mul_smul_comm,
+      hxm, hxm1, hxm2]
+  rw [hcm, hcm1, hcm2, hsq, mul_add, mul_smul_comm, mul_smul_comm, hxm, hxm2] at hrec
+  have hcomb : (((m : ℝ) - 1 / 2) * F.a (m + 1) y * F.b m y
+        - ((m : ℝ) + 3 / 2) * F.a (m + 1) y * F.b (m + 1) y - F.offDeriv (m + 1) y) • F.φ m y
+      + (2 * (m : ℝ) * F.a (m + 1) y ^ 2 - 2 * ((m : ℝ) + 2) * F.a (m + 2) y ^ 2
+          - F.diagDeriv (m + 1) y - F.b (m + 1) y ^ 2) • F.φ (m + 1) y
+      + (((m : ℝ) + 1 / 2) * F.a (m + 2) y * F.b (m + 1) y
+          - ((m : ℝ) + 5 / 2) * F.a (m + 2) y * F.b (m + 2) y
+          - F.offDeriv (m + 2) y) • F.φ (m + 2) y = 0 := by
+    linear_combination (norm := module) hrec
+  obtain ⟨h0, h1, h2⟩ := F.eq_zero_of_smul_three m y _ _ _ hcomb
+  refine ⟨by linear_combination -h0, by linear_combination -h1, by linear_combination -h2⟩
+
+/-- **The nonisospectral Toda system.**  The coefficient curves of a shifted half-density frame
+satisfy the closed first-order system of the tridiagonal Riccati flow. -/
+theorem jacobiTodaDeriv (y : ℝ) :
+    GaloisForLFunctions.HTGeometry.JacobiTodaDeriv (fun k => F.a k y) (fun k => F.b k y)
+      (fun k => F.offDeriv k y) (fun k => F.diagDeriv k y) := by
+  refine ⟨F.a_zero y, ?_, fun n => (F.level_succ_relations n y).1⟩
+  intro n
+  cases n with
+  | zero =>
+      have h := (F.level_zero_relations y).1
+      simp only [F.a_zero y, Nat.cast_zero, zero_add]
+      linarith [h]
+  | succ m =>
+      have h := (F.level_succ_relations m y).2.1
+      have hidx : m + 1 + 1 = m + 2 := rfl
+      simp only [hidx]
+      push_cast
+      linarith [h]
+
+section Compression
+
+open GaloisForLFunctions.HTGeometry
+open scoped _root_.Matrix
+
+/-- The `m+1`-level Jacobi compression of the frame at parameter `y`. -/
+def jacobiLevel (m : ℕ) (y : ℝ) : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ :=
+  jacobiCompression (fun k => F.a k y) (fun k => F.b k y) (m + 1)
+
+/-- The `m+1`-level connection compression of the frame at parameter `y`. -/
+def connectionLevel (m : ℕ) (y : ℝ) : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ :=
+  connectionCompression (fun k => F.a k y) (m + 1)
+
+/-- The parameter velocity of the `m+1`-level Jacobi compression. -/
+def jacobiVelocityLevel (m : ℕ) (y : ℝ) : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ :=
+  jacobiCompression (fun k => F.offDeriv k y) (fun k => F.diagDeriv k y) (m + 1)
+
+/-- The boundary port of the `m+1`-level compression: the last basis vector. -/
+def boundaryUnit (m : ℕ) : Fin (m + 1) → ℝ := fun i => if (i : ℕ) = m then 1 else 0
+
+theorem jacobiLevel_transpose (m : ℕ) (y : ℝ) : (F.jacobiLevel m y)ᵀ = F.jacobiLevel m y :=
+  jacobiCompression_symm _ _ _
+
+theorem connectionLevel_transpose (m : ℕ) (y : ℝ) :
+    (F.connectionLevel m y)ᵀ = -F.connectionLevel m y :=
+  connectionCompression_skew _ _
+
+/-- The Jacobi compression of a frame is an entrywise differentiable matrix curve, with the
+compression of the coefficient velocities as its derivative. -/
+theorem matrixHasDerivAt_jacobiLevel (m : ℕ) (y : ℝ) :
+    MatrixHasDerivAt (fun v => F.jacobiLevel m v) (F.jacobiVelocityLevel m y) y := by
+  intro i j
+  simp only [jacobiLevel, jacobiVelocityLevel, jacobiCompression, Matrix.of_apply, jacobiEntry]
+  by_cases h1 : (i : ℕ) = (j : ℕ)
+  · simp only [if_pos h1]
+    exact F.hasDeriv_b _ y
+  · simp only [if_neg h1]
+    by_cases h2 : (i : ℕ) + 1 = (j : ℕ)
+    · simp only [if_pos h2]
+      exact F.hasDeriv_a _ y
+    · simp only [if_neg h2]
+      by_cases h3 : (j : ℕ) + 1 = (i : ℕ)
+      · simp only [if_pos h3]
+        exact F.hasDeriv_a _ y
+      · simp only [if_neg h3]
+        exact hasDerivAt_const y 0
+
+/-- **(HJLG.2).**  The finite Jacobi compression of a shifted half-density frame moves by the
+nonisospectral Riccati law with exactly one negative rank-one boundary source, of size
+`2n a_n²` at the last diagonal entry. -/
+theorem jacobiVelocityLevel_eq (m : ℕ) (y : ℝ) :
+    F.jacobiVelocityLevel m y
+      = F.jacobiLevel m y * F.connectionLevel m y - F.connectionLevel m y * F.jacobiLevel m y
+        - F.jacobiLevel m y * F.jacobiLevel m y
+        - (2 * ((m : ℝ) + 1) * F.a (m + 1) y ^ 2) •
+            Matrix.vecMulVec (boundaryUnit m) (boundaryUnit m) :=
+  jacobiCompression_deriv_eq_riccati _ _ _ _ (F.jacobiTodaDeriv y) m
+
+/-- **(HJLG.3)--(HJLG.4).**  Where the Jacobi compression is invertible, the centered inverse
+`J⁻¹ - y` moves by the same skew commutator plus a *positive* rank-one boundary square: the lost
+boundary channel reappears as a controllability source in reciprocal hard coordinates. -/
+theorem matrixHasDerivAt_centeredInverseLevel (m : ℕ) (y : ℝ)
+    (hdet : (F.jacobiLevel m y).det ≠ 0) :
+    MatrixHasDerivAt
+      (fun v => (F.jacobiLevel m v)⁻¹ - v • (1 : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ))
+      (((F.jacobiLevel m y)⁻¹ - y • (1 : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ))
+            * F.connectionLevel m y
+          - F.connectionLevel m y
+            * ((F.jacobiLevel m y)⁻¹ - y • (1 : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ))
+          + (2 * ((m : ℝ) + 1) * F.a (m + 1) y ^ 2) •
+              Matrix.vecMulVec ((F.jacobiLevel m y)⁻¹ *ᵥ boundaryUnit m)
+                ((F.jacobiLevel m y)⁻¹ *ᵥ boundaryUnit m)) y := by
+  have hunit : IsUnit (F.jacobiLevel m y).det := isUnit_iff_ne_zero.mpr hdet
+  refine matrixHasDerivAt_centeredInverse
+    (J := fun v => F.jacobiLevel m v) (A := fun v => F.connectionLevel m v)
+    (matrixHasDerivAt_inv (F.matrixHasDerivAt_jacobiLevel m y) hdet)
+    (Matrix.nonsing_inv_mul _ hunit) (Matrix.mul_nonsing_inv _ hunit) ?_ ?_
+  · rw [Matrix.transpose_nonsing_inv, F.jacobiLevel_transpose]
+  · exact F.jacobiVelocityLevel_eq m y
+
+end Compression
 
 end ShiftedJacobiFrame
 

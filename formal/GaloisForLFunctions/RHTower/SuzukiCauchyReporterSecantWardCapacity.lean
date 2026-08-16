@@ -332,10 +332,10 @@ theorem SuzukiNaturalApertureHyperbolaPair.reporterSecantCauchyGram_nonpos
 def suzukiNaturalApertureLag (N k : ℕ) : ℝ≥0 :=
   Real.toNNReal (Real.log N - Real.log k)
 
-/-- Literal nonnegative prime coefficient in the finite completed Suzuki wall. -/
-def suzukiNaturalAperturePrimeWeight (N k : ℕ) : ℝ≥0 :=
-  ⟨ArithmeticFunction.vonMangoldt k / Real.sqrt N,
-    div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _)⟩
+/-- Literal critical-Mellin coefficient of a prime reporter secant in Suzuki's Green source. -/
+def suzukiNaturalAperturePrimeWeight (_N k : ℕ) : ℝ≥0 :=
+  ⟨_root_.RHTower.criticalMellinAtomWeight k,
+    _root_.RHTower.criticalMellinAtomWeight_nonneg k⟩
 
 def suzukiNaturalAperturePairSet (N : ℕ) : Finset (ℕ × ℕ) :=
   Finset.Icc 2 N ×ˢ Finset.Icc 2 N

@@ -5941,7 +5941,7 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   prime correlation `sum_(m<=M)(Lambda(m)-1){N/m}` and isolates coupled two-clock statistic that
   must be controlled.  Endpoint anchoring then identifies it exactly with centered triangular
   hyperbola transport (24.33); existing norm-first transport theorems lose signs and critical scale.
-- 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` critical floor Wiener lemma: every Dirichlet-floor
+- 2026-08-08 — `[PROVED HERE; LEAN-PROVED]` critical floor Wiener lemma: every Dirichlet-floor
   filter whose critical weighted truncation norm and inverse norm are `N^o(1)` preserves type zero
   exactly.  This closes all subpower-conditioned scalar preconditioners, not only power weights;
   any useful escape must pay positive type, prove RH-strength signed inverse cancellation, or use
@@ -7213,3 +7213,59 @@ genuinely noncommuting, prime-adaptive or mass-phase-adapted primitive could.
 
 The two sign criteria are the whole phase diagram in unconditional form: no limit hypothesis is
 used, only the explicit comparison of `σ a²` with `u R|J|`.
+
+### Lean progress: §24 C43-E — the critical floor Wiener class
+
+    RHTower/SquarefreeLowerDensity.lean
+      sum_inv_sq_Icc_le                        telescoping majorant `∑_{2≤k≤N} k^{-2} ≤ 3/4 − 1/N`
+      card_filter_dvd                          `#{d ≤ N : m ∣ d} = ⌊N/m⌋`
+      nonSquarefree_subset_biUnion             every non-squarefree `d ≤ N` is a multiple of some
+                                               `k²` with `2 ≤ k ≤ N`
+      card_nonSquarefree_le,
+        quarter_le_card_squarefree             at least `N/4` of the integers up to `N` are
+                                               squarefree
+
+    RHTower/FloorTransformWienerClass.lean
+      criticalNorm                             **(24.34)** `‖a‖_{1/2;N} = ∑_{d≤N} |a d| d^{-1/2}`
+      CriticallySubpower, CriticalTypeZero      the two `N^{o(1)}` / `O_ε(N^{1/2+ε})` classes
+      abs_floorTransform_le_criticalNorm       **(24.35)** `|T_a f(N)| ≤ C N^{1/2+δ} ‖a‖_{1/2;N}`
+      criticalTypeZero_floorTransform          **(24.35)** a critically subpower weight preserves
+                                               critical type zero, by splitting `ε` in half
+      floorTransform_comp_of_unit              a Dirichlet-inverse weight pair gives exactly
+                                               inverse floor transforms
+      criticalTypeZero_floorTransform_iff      **(24.36)** the critical floor Wiener lemma
+      criticalNorm_powerWeight,
+        criticalNorm_powerWeight_le_tsum,
+        criticallySubpower_powerWeight         above the threshold `‖d^{-θ}‖_{1/2;N}` is bounded
+      harmonicSum_le_one_add_log,
+        criticalNorm_powerWeight_half,
+        criticallySubpower_of_le_one_add_log,
+        criticallySubpower_powerWeight_half    at the threshold the critical norm is exactly `H_N`,
+                                               and `H_N ≤ 1 + log N` is already subpower
+      criticallySubpower_moebiusPowerWeight    the Möbius weight inherits the same conditioning
+      criticalTypeZero_floorTransform_powerWeight_iff
+                                               **(24.27)** as a special case: for every `θ ≥ 1/2`
+                                               the weighted floor transform preserves critical type
+                                               zero exactly, in both directions
+      rpow_le_criticalNorm_powerWeight,
+        not_criticallySubpower_of_powerLower,
+        not_criticallySubpower_powerWeight     below the threshold `‖d^{-θ}‖_{1/2;N} ≥ N^{1/2-θ}`,
+                                               so the weight leaves the class
+      powerWeight_zero, moebiusPowerWeight_zero,
+        sqrt_le_criticalNorm_powerWeight_zero,
+        not_criticallySubpower_powerWeight_zero
+                                               the Tatuzawa--Iseki weight `a = 1` has
+                                               `‖a‖_{1/2;N} ≥ √N` and is not in the class
+      abs_moebius_eq_one_of_squarefree,
+        criticalNorm_moebiusPowerWeight_zero_lower,
+        not_criticallySubpower_moebiusPowerWeight_zero
+                                               its Möbius inverse has the same absolute
+                                               conditioning, `‖μ‖_{1/2;N} ≥ √N/4`, by the positive
+                                               lower density of squarefree integers
+
+The equivalence is stated for an arbitrary Dirichlet-inverse pair, so it covers every finite or
+cofinal Dirichlet filter whose weight *and* inverse weight have subpower critical conditioning, not
+only the power family.  The two negative statements are the exact reason the ordinary
+Tatuzawa--Iseki average escapes the class: both it and its Möbius inverse have critical condition
+number of order `√N`, and the signed replacement `∑_{d≤N} μ(d)/√d = N^{o(1)}` is itself
+RH-strength.

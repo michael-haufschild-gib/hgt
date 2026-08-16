@@ -1,7 +1,7 @@
 # Translation-invariant defect forms are hyperbolic on every off-real orbit
 
 - **ID:** `translation-invariant-defect-form-orbit-classification`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper); Route-A form classification
 - **Scientific status:** `[BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** the semisimple theta-convolution defect and elementary unitary character theory
@@ -97,4 +97,25 @@ multiplicity data outside the positive semisimple Hilbert form.
 - [x] off-real block and inertia computed
 - [x] faithful positive support implication proved
 - [x] Xi quartet and multiplicity consequences delimited
-- [ ] no Lean formalization planned before a source form consumes the classification
+- [x] 2 -> 3 formalized: `RHTower/TranslationInvariantDefectForm.lean`
+
+## 2026-08-16 Lean closure
+
+`RHTower/TranslationInvariantDefectForm.lean` proves the card unconditionally.
+
+`divisorTranslationChar rho a i = exp(-i a rho_i)` is the translation character (1), and invariance
+(2) is written entrywise on the Gram matrix `H`.
+
+- `eq_conj_of_invariant_ne_zero` is the coefficient selection rule: `H i j != 0` forces
+  `rho i = conj (rho j)`.  The proof extracts the character identity
+  `exp(i a (conj rho_j - rho_i)) = 1` for every real `a` and kills the exponent by differentiating
+  at `a = 0` (`eq_zero_of_exp_eq_one`), so no discreteness or lattice argument is needed.
+- `diag_eq_zero_of_not_conj_self`: at a nonreal frequency the diagonal entry vanishes, so every
+  off-real orbit is isotropic.
+- `hyperbolicValue_pos_neg`: on an isotropic pair with off-diagonal entry `c != 0` the restricted
+  form `2 Re(x conj(y) c)` takes both a strictly positive and a strictly negative value, i.e. the
+  conjugate pair is a hyperbolic plane of inertia `(1,1)`.
+- `rho_eq_conj_of_posDef`: a form that is nonzero on the diagonal at every frequency has real
+  support only — a positive invariant form can be faithful only there.
+
+Axioms: `propext`, `Classical.choice`, `Quot.sound`.

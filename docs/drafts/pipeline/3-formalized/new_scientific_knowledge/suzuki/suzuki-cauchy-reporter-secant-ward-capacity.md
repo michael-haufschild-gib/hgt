@@ -55,7 +55,7 @@ two-atom observation.
 For the literal natural Suzuki source, set
 
 ```text
-p_k = log(N/k),                 c_k = Λ(k)/sqrt(N),        2 <= k <= N.
+p_k = log(N/k),                 c_k = Λ(k)/sqrt(k),        2 <= k <= N.
 ```
 
 The lag inequality `p_j >= 2 p_k` is exactly the multiplicative hyperbola
@@ -64,7 +64,7 @@ The lag inequality `p_j >= 2 p_k` is exactly the multiplicative hyperbola
 N*j <= k^2                         (j <= k).
 ```
 
-The formal source-energy theorem partitions the full ordered Mangoldt double sum across this
+The formal source-energy theorem partitions the full ordered critical-Mellin double sum across this
 hyperbola. Every term in the symmetric far region
 
 ```text

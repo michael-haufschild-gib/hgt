@@ -20,7 +20,7 @@ the one-level truncation identity, the finite compression therefore acquires exa
 boundary source at the last diagonal entry.
 -/
 
-open Finset
+open Finset Matrix
 
 noncomputable section
 
@@ -77,6 +77,25 @@ theorem connectionEntry_of_gt {i j : ℕ} (h : j + 1 < i) : connectionEntry a i 
   simp [connectionEntry, h1, h2]
 
 end Entries
+
+theorem jacobiEntry_symm (a b : ℕ → ℝ) (i j : ℕ) :
+    jacobiEntry a b j i = jacobiEntry a b i j := by
+  unfold jacobiEntry
+  by_cases h : i = j
+  · subst h; rfl
+  · have h' : ¬ (j = i) := fun hh => h hh.symm
+    by_cases h1 : i + 1 = j
+    · have h2 : ¬ (j + 1 = i) := by omega
+      simp [h, h', h1, h2]
+    · by_cases h2 : j + 1 = i
+      · simp [h, h', h1, h2]
+      · simp [h, h', h1, h2]
+
+theorem jacobiCompression_symm (a b : ℕ → ℝ) (n : ℕ) :
+    (jacobiCompression a b n)ᵀ = jacobiCompression a b n := by
+  ext i j
+  simp only [Matrix.transpose_apply, jacobiCompression, Matrix.of_apply]
+  exact jacobiEntry_symm a b i j
 
 /-! ## The Lax right side, entry by entry -/
 

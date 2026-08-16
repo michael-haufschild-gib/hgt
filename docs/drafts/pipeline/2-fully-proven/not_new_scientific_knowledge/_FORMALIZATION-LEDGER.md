@@ -74,6 +74,9 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-16 | `seam-log-derivative-weld-identity` | `RHTower/SeamWeldIdentity.lean` |
 | 2026-08-16 | `triangular-seam-coordinates-function-complete` | `RHTower/SeamJetFunctionComplete.lean` |
 | 2026-08-16 | `xf1-square-tests-outside-weil-class` | `RHTower/SeamSquareTestNotAdmissible.lean` |
+| 2026-08-16 | `d2-countable-window-basis` | `RHTower/CountableWindowBasis.lean` |
+| 2026-08-16 | `determinant-line-trivialization-zero-divisor-blindness` | `RHTower/DeterminantLineDivisorBlindness.lean` |
+| 2026-08-16 | `acyclic-finite-fibers-derived-limit-zero` | `RHTower/AcyclicFiniteFibersDerivedLimit.lean` |
 
 ## Already carrying a stage-3 certificate (verify, then move the paper card)
 
@@ -208,6 +211,14 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 - `RHTower/SeamSquareTestNotAdmissible.lean` — the coefficient reversal `seamRevPoly`, the exact
   hard-edge exponent of the reciprocal-seam square test, its non-interval-integrability across the
   seam, and its exactly polynomial decay at infinity.
+- `RHTower/CountableWindowBasis.lean` — rational windows isolate the points of any discrete set, so
+  a countable window family detects all off-seam divisor mass.
+- `RHTower/DeterminantLineDivisorBlindness.lean` — polynomial sections of the trivial line realize
+  any prescribed finite divisor; nowhere-zero homotopies already contain the nonvanishing claim;
+  signed crossing counts cancel.
+- `RHTower/AcyclicFiniteFibersDerivedLimit.lean` — `lim` and `lim¹` of a tower as kernel/cokernel of
+  shift-minus-identity, their vanishing on towers of zero objects, and contractibility of the
+  specialized finite prime complexes in the strip.
 
 ## Triage of the remaining folder (2026-08-16 scan)
 

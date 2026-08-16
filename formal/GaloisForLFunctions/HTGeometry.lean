@@ -7925,3 +7925,4 @@ import GaloisForLFunctions.HTGeometry.LatticeL2Shift
 import GaloisForLFunctions.HTGeometry.SkewConjugatedRiccatiGramian
 import GaloisForLFunctions.HTGeometry.JacobiRiccatiTruncation
 import GaloisForLFunctions.HTGeometry.JacobiTodaRiccatiLaw
+import GaloisForLFunctions.HTGeometry.MatrixInverseCurveDerivative

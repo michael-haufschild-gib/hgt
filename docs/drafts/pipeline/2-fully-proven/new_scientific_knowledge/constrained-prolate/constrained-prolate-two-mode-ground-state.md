@@ -1974,3 +1974,66 @@ At `y0 = 2 sqrt s` the barrier constant `c b + 12` is `O(sqrt c)` for a fixed mo
 width `1/(c b + 12)` costs a bounded exponential and contributes `Phi(y0)^2/(c b + 12)` — the true
 order.  No turning-point model function (Airy, parabolic cylinder, Liouville-Green error control)
 is used anywhere in either direction.
+
+## Lean progress — `(11)` and the Gram-Schmidt property `(10a)` are theorems
+
+`RHTower/HermiteContrastLadder.lean` (wired, axiom-clean).  Both are pure algebra in the centre
+values, with no hypothesis beyond `a (k+1) != 0`, so they are unconditional:
+
+```
+contrastPartialSum a k = sum_{j<=k} (a j)^2                       S_k
+contrastLadder a k     = (-a_0, ..., -a_k, S_k/a_(k+1), 0, ...)   w_k
+rawContrast a m        = a_0 e_m - a_m e_0                        r_m
+
+contrastLadder_inner_centre        <w_k, a> = 0
+contrastLadder_inner_of_lt         <w_k, w_m> = 0   (k < m)
+contrastLadder_inner_eq_zero       <w_k, w_m> = 0   (k != m)
+contrastLadder_succ_ne_zero        w_k is not the zero vector
+contrastLadder_inner_rawContrast        <w_k, r_m> = 0     for 1 <= m <= k
+contrastLadder_inner_rawContrast_succ   <w_k, r_(k+1)> = a_0 S_(k+1) / a_(k+1)
+```
+
+Each identity is the same two-term cancellation: the head of `w_k` contributes `-S_k` and its single
+tail entry contributes `+S_k`.  The last two are the Gram-Schmidt property in the sharp form: `w_k`
+annihilates every earlier raw contrast and pairs nontrivially with the next one, which is exactly
+what characterizes the `(k+1)`-st Gram-Schmidt vector of the ordered family `r_1, r_2, ...`.
+
+The explicit combination realizing `w_k` inside `span{r_1, ..., r_(k+1)}` is
+
+```
+w_k = sum_{m=1}^{k} (-a_m/a_0) r_m  +  (S_k/(a_0 a_(k+1))) r_(k+1) ,
+```
+
+whose zero-coordinate is `-[-(S_k - a_0^2)/a_0 + S_k/a_0] = -a_0` as required.
+
+Both pairings are stated as finite sums over any `range N` containing the supports, so no `l^2`
+machinery is needed; the vectors have finite support by construction.
+
+## Lean progress — `(4)` is a theorem for every `j`
+
+`RHTower/HermiteCentreValueClosedForm.lean` (wired, axiom-clean) closes the card's `(4)`:
+
+```
+hermiteOriginValue_sq_two_mul
+    hermiteOriginValue (2m)^2  =  sqrt 2 * centralBinom m / 4^m
+
+hermiteOriginValue_sq_four_mul
+    hermiteOriginValue (4j)^2  =  hermiteOriginValue 0 ^ 2 * binom(4j, 2j) / 16^j
+```
+
+i.e. `a_j^2 = a_0^2 q_j` with `q_j = binom(4j,2j)/16^j`, and `a_0^2 = sqrt 2` is the corpus's
+`hermiteOriginValue_sq_zero`.  Only the corpus's own two-step origin recursion
+`eval_zero_hermitePoly_add_two` and mathlib's central binomial recursion
+`Nat.succ_mul_centralBinom_succ` are used; the induction works because the two ratios agree exactly:
+
+```
+a_{2m+2}^2 / a_{2m}^2                              = (2m+1)/(2m+2)
+[centralBinom (m+1)/4^(m+1)] / [centralBinom m/4^m] = 2(2m+1)/(4(m+1)) = (2m+1)/(2m+2)
+```
+
+Every power of `pi` cancels between the squared origin value and the `L^2` normalisation, which is
+why the closed form is rational times `sqrt 2`.
+
+With this and `HermiteContrastLadder.lean`, the whole algebraic layer of the ladder card —
+`(4)`, `(5)`, `(10)`, `(10a)`, `(11)` — is unconditional Lean.  What is left is analytic: the
+prolate-to-Hermite convergence `(3)` and the compression spectrum statement `(8)`.
