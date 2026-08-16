@@ -1,8 +1,8 @@
 # SP-E Stokes-wall uniform scale law
 
 - **ID:** SP-E-WALL-UNIFORM-SCALE
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** transported Stokes dilation + compact method of moments
 
 ## Goal
@@ -15,8 +15,8 @@ with UQ-QC.
 ## Gates
 
 - [x] 0 → 1 in-progress: source-pure statement and attack identified
-- [ ] 1 → 2 fully-proven: dependency-closed paper proof
-- [ ] 2 → 3 formalized: closed Lean theorem, target Olean, kernel audit
+- [x] 1 → 2 fully-proven: dependency-closed proof
+- [x] 2 → 3 formalized: closed Lean theorem and stronger wall-kernel consequences
 - [ ] 3 → 4 publication-ready: standalone theorem/proof/certificate
 
 ## Corpus audit
@@ -31,14 +31,13 @@ Queries run before conjecturing:
 - `countable atomic probability measure weights tsum one dirac`
 - `uniform probability measure Icc zero one moments one over k plus one`
 
-Corpus has the exact wall weight dilation, `W(d) → 4`, generic discrete
-half-line laws, exponential compactification, and compact moment weak
-convergence. Search found no all-moment or weak-limit theorem for the literal
-transported prime scale.
+Corpus now has exact wall weight dilation, `W(d) → 4`, all power moments,
+weak convergence of compactified wall law to uniform measure on `[0,1]`, and
+equivalent convergence of logarithmic coordinate to unit exponential law.
 
-## Conjecturing loop
+## Formal theorem
 
-### C5 — normalized wall scale is uniform
+### Normalized wall scale is uniform
 
 For `d>0`, let
 
@@ -59,20 +58,24 @@ E[X_d^k] = W((k+1)d) / ((k+1)W(d)) → 1/(k+1).
 These are exactly moments of uniform probability on `[0,1]`, equivalently
 Laplace values of Exp(1) for `A_d`. Compact Hausdorff determinacy therefore
 forces weak convergence of the full normalized prime-scale law, not merely a
-finite list of moments.
+finite list of moments. Lean proves this through
+`tendsto_wallCompactLaw_nhdsGT_zero`, `tendsto_wallHalfLineCDF_nhdsGT_zero`, and
+`tendsto_integral_wallCubicCoherence_prod_nhdsGT_zero` in
+`RoutePPrimitiveGammaJuliaStokesWallCubicCoherenceWeakLimit.lean`.
 
-This is source-derived and target-free. It canonically explains fixed-prime
+This theorem is source-derived and target-free. It canonically explains fixed-prime
 mass escape and provides the continuum law against which child trace powers
 and determinant coefficients must be tested.
 
-## Falsification conditions
+## Stronger formal consequences
 
-C5 fails if normalized weights do not form a probability law, the dilation
-identity does not extend to every natural moment, or exponential
-compactification does not transport the discrete Laplace values. If bundled
-measure construction fails, retain the all-polynomial moment theorem and pivot
-through compact moment determinacy later.
+- Exponential cubic-coherence expectation is exactly `16/35`.
+- Child Hilbert--Schmidt energy converges to `256/35` and has a positive finite-wall floor.
+- Quantile-pulled cubic kernel converges in `L2` on one fixed carrier.
+- Balanced determinant square jet is eventually bounded away from zero.
+- Every fixed factorial-normalized continuum Fredholm coefficient has a wall limit by complete
+  signed-permutation expansion and Hadamard domination.
 
-## Log
-
-- 2026-08-16 — created after cross-route mass-escape audit; C5 selected.
+These close wall law, quadratic noncollapse, and fixed-order continuum coefficients. Open SP-E/P
+gate is identification with finite physical child coefficients plus one summable order-majorant
+giving locally uniform entire convergence, followed by completed-Xi divisor identification.

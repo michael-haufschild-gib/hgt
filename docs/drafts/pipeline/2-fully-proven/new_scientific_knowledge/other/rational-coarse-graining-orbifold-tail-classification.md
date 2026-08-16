@@ -693,3 +693,41 @@ cancel against `Phi_R(y_1) = R'·y_1` in the quotient.
 
 Only the partial-fraction step of the second bullet is not yet formalized; the first bullet is the
 statement `mem_orbifoldTail_of_fixed` applied to `jetSubstitution_eulerQuotient`, both proved.
+
+### Invariant differentials and the easy half of item (1), concretely
+
+The card's item `(1)` has two halves.  The "if" half — an invariant tensor forces a nonconstant
+tail — was proved in the 2026-08-14 pass, but only against abstract stand-ins for the substitution.
+It is now proved for `Phi_R` itself, together with the predicate it is about.
+
+```text
+IsInvariantDifferential R hR k q lam :
+    q != 0,  ord q = 0,  Phi_R(q)·R'(y_0)^k = lam·q            (k : ℤ)
+
+invariantCurrent k q = q · y_1^k                                (the current q·(dy)^k)
+
+jetSubstitution_invariantCurrent :
+    Phi_R (q·y_1^k) = lam · (q·y_1^k)
+adjoin_le_orbifoldTail_of_isInvariantDifferential
+differentialAdjoin_le_orbifoldTail_of_isInvariantDifferential :
+    lam != 0  ⇒  C⟨q·y_1^k⟩ ≤ Tail(R)
+```
+
+The current, not the differential itself, is the eigenvector: `Phi_R(y_1) = y_1·R'(y_0)` supplies
+exactly the `k`-th power of the derivative factor that the invariance relation carries.  That is
+why the tail sees `q·(dy)^k` and not `q`.
+
+The **order-zero exit** of the descent is proved too:
+
+```text
+isInvariantDifferential_pd_of_order_zero_eigen :
+    ord s = 0,  pd_0 s != 0,  Phi_R s = lam·s
+      ⇒  IsInvariantDifferential R hR 1 (pd_0 s) lam
+```
+
+This is `(T1)` at `M = 0`: differentiating an order-zero eigen-relation produces an invariant
+`1`-differential, with the *same* eigenvalue.  In particular the degenerate branch of the descent —
+`Phi_R(s) = s` with `s` of order zero — does **not** need the degree argument `deg(s∘R) = deg s·deg R`
+that the card's step 4 quotes: if `s` is nonconstant then `pd_0 s != 0` and the invariant
+`1`-differential is `pd_0 s` itself.  That removes the last place where a composition-degree theory
+for rational functions would have been required.

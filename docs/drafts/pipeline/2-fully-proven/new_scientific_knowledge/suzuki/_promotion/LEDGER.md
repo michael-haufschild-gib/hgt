@@ -10585,3 +10585,35 @@ moments of the initial vector*, not against `δ₀`.
 Applying this with `f = ⟨X⟩^{-m}ψ`, for which every moment of order `≤ m` is bounded by `‖ψ‖`,
 gives `(17)` with the sharp exponent `m`.  That last assembly, plus `⟨r⟩^m ≤ C(1 + Σ_p |r_p|^m)`
 and the density extension from finitely supported vectors, is what remains.
+
+### ADH.7 `(17)` is closed — the polynomial group estimate, with the sharp exponent
+
+- `RHTower/SuzukiLatticeWeightComparison.lean` — `norm_le_of_pointwise_le` (the `ℓ²` norm is
+  monotone under pointwise domination) and `orbitLength_pow_le`:
+  `⟨r⟩^{m+1} ≤ (d+1)^m (1 + Σ_p |r_p|^{m+1})`, which is Jensen's inequality for sums of powers
+  (`pow_sum_le_card_mul_sum_pow`) applied to the `d+1` numbers `1, |r_1|, …, |r_d|`.
+- `RHTower/SuzukiLatticeShellWeight.lean` — `shellWeight`, `absL2` (the pointwise modulus as an `ℓ²`
+  field, needed because the majorant must not be allowed to cancel), `shellWeightField`, and
+  `norm_posPow_le_shellWeighted`: every coordinate moment of order `≤ m` of a field is bounded by
+  its shell-weighted norm.
+- `RHTower/SuzukiLatticePolynomialGroupEstimate.lean` — **`exists_norm_shellWeighted_exp_le`**,
+  which is `(17)`:
+
+  ```text
+  ∃ C, ∀ x, ∀ g finitely supported,
+    ‖ ⟨·⟩^m · (e^{-ixA} g) ‖ ≤ C (1+|x|)^m ‖ ⟨·⟩^m g ‖.
+  ```
+
+  The proof: dominate `⟨r⟩^m` by `1 + Σ_p |r_p|^m`, control each coordinate moment of `e^{-ixA}g`
+  by `exists_sharp_moment_bound` against the moments of `g`, and control each of those by
+  `‖⟨·⟩^m g‖`.  Unitarity handles the `m = 0` term.  Nothing is lost: the exponent is exactly `m`,
+  as the trichotomy's `κ < σ < 1` requires.
+
+So `(15)` and `(17)` — the two operator-theoretic items of the card's §10 list — are now
+unconditional in Lean, together with `(8)`, `(14)`, `(19)`–`(25)` and the aperture half of `(28)`.
+What remains for promotion: the Matveev bound `(5)` (the zero-event half of `(28)`; tracked by
+`docs/drafts/pipeline/1-in-progress/effective-baker-matveev-linear-forms.md`), the density of the
+logarithmic-Liouville apertures, and the routine extension of `(17)` from finitely supported vectors
+to all of `ℓ²`.
+
+All new declarations audit to `[propext, Classical.choice, Quot.sound]`.

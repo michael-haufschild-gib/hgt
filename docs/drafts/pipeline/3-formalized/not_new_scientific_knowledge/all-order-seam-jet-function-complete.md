@@ -1,7 +1,7 @@
 # All-Order Seam Jet Is Function-Complete
 
 - **ID:** all-order-seam-jet-function-complete
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / landscape-proof guardrail
 - **Source:** `seam-log-hankel-rh-equivalence.md`;
   `shifted-reciprocal-moments-determine-divisor.md`;
@@ -107,8 +107,7 @@ For any proof that starts from the all-order seam-log jet:
 - [x] 0 -> 1 in-progress: all-order seam-log coordinate risk isolated.
 - [x] 1 -> 2 fully-proven: formal power series and identity-theorem proof
   written.
-- [ ] 2 -> 3 formalized: optional theorem for even entire functions or formal
-  power series.
+- [x] 2 -> 3 formalized: `RHTower/SeamJetFunctionComplete.lean`.
 
 ## Log
 
@@ -116,3 +115,27 @@ For any proof that starts from the all-order seam-log jet:
   minimal-counterexample move. The card blocks the route that treats an
   all-order seam-log jet as a source landscape merely because it is centered at
   the seam.
+
+## 2026-08-16 Lean closure
+
+`RHTower/SeamJetFunctionComplete.lean` proves the card unconditionally, in the analytic form rather
+than through formal power series.
+
+A seam-log germ for an entire `Phi` with `Phi 0 != 0` is rendered exactly as the card defines it:
+a function `L` with `exp (L z) = Phi z / Phi 0` near the origin.
+
+- `eventuallyEq_of_iteratedDeriv_eq`: two holomorphic germs at the origin with the same Taylor
+  coefficients agree near the origin.  This is the card's "the coefficients `(ell_k)` determine the
+  formal Taylor series of `L`", obtained from `Complex.taylorSeries_eq_on_ball'` instead of a formal
+  power-series development.
+- `seamJet_function_complete`: equal seam-log germs give `Phi_1 / Phi_1(0) = Phi_2 / Phi_2(0)` — the
+  card's exponentiation step is the pointwise identity `exp L_1 = exp L_2` near `0`, and the
+  extension to the whole plane is the identity theorem
+  (`AnalyticOnNhd.eqOn_of_preconnected_of_eventuallyEq`, packaged as `entire_eq_of_eventuallyEq`).
+- `seamJet_proportional`: `Phi_1 = (Phi_1(0)/Phi_2(0)) Phi_2`, the "up to a nonzero constant" clause.
+- `seamJet_zero_set_eq`: the zero set — hence the zero divisor — is determined.
+- `seamJet_even_function_complete`: with the central scalar prescribed, the even function
+  `F w = Phi (w^2)` itself is determined.
+
+`entire_eq_of_iteratedDeriv_eq` records the same completeness for entire functions directly from
+their Taylor coefficients at the origin.  Axioms: `propext`, `Classical.choice`, `Quot.sound`.

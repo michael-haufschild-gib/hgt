@@ -611,3 +611,28 @@ already unconditional.
 The formal statement above is stated for an arbitrary countable product of probability spaces, so it
 applies verbatim to `Ω = ∏_p S¹` with Haar product measure once `M` is defined there; what it needs
 from the analytic side is only measurability of `M` and the finite-modification invariance.
+
+## Lean progress — the Saksman--Webb input, first quantitative layer
+
+`RHTower/SteinhausAbscissaSecondMoment.lean` (wired, axiom-clean) supplies the quantitative core of
+"the abscissa is at least `1/2` almost surely", which is the half of Saksman--Webb/Seip that
+`Haar(M) != 1` needs:
+
+```
+steinhausDirichletPoly sigma N omega      the truncated random series  sum_{n<=N} n^{-sigma} X_n
+integral_normSq_steinhausDirichletPoly    E || sum_{n<=N} n^{-sigma} X_n ||^2 = sum_{n<=N} n^{-2 sigma}
+one_div_le_rpow_neg_two_mul               sigma <= 1/2  ==>  1/n <= n^{-2 sigma}
+tendsto_sum_rpow_neg_two_mul_atTop        hence the coefficient sum diverges
+tendsto_integral_normSq_steinhausDirichletPoly_atTop
+    the L^2 norms of the partial sums are unbounded for every sigma <= 1/2
+```
+
+The identity is the corpus's own model second-moment law `integral_normSq_dpoly` (orthonormality of
+the Steinhaus characters) instantiated at `a_n = n^{-sigma}`; the divergence is the harmonic
+comparison.  The consequence is that the partial sums cannot converge in `L^2` anywhere strictly
+left of the half line — the first of the two steps that turn the zero-one law
+(`measure_infinitePi_eq_zero_or_one_of_invariant`, already formal) into `Haar(M) = 0`.
+
+What remains of this input is the passage from `L^2` divergence to almost-sure non-continuability:
+the a.s. abscissa of convergence, and then the natural boundary.  Nothing else on the card depends
+on it.

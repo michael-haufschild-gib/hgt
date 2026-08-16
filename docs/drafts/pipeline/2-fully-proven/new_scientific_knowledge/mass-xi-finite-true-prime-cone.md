@@ -5934,7 +5934,7 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   `R=T_(mu/n)Q`; critical normalization makes the inverse coefficients summable as
   `mu(n)/n^(3/2)`, reducing the mass current to one positive-weight floor average rather than an
   unstable `1/zeta` inversion.
-- 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` full weighted-floor audit: `theta=1/2` is sharp
+- 2026-08-08 — `[PROVED HERE; LEAN-PROVED (threshold); LEAN DEFERRED (sawtooth gate)]` full weighted-floor audit: `theta=1/2` is sharp
   type-zero invertibility threshold for `T_(n^(-theta))`; hence every stable floor coordinate is a
   preconditioner, while square-root Selberg endpoint necessarily lies below threshold.  Exact
   floor-fibre Abel summation improves crude error from `O(M^2)` to explicit reciprocal-sawtooth
@@ -5968,11 +5968,11 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   finite Abel summation replaces `R(n)` by vanishing `E_n=J_n+2γ`, but adjoint cell quotient
   restores precisely displaced-zero exponent `beta-1/2`.  Separate norm or BV estimates remain
   type-sharp; only signed `E_n`--mass-increment correlation survives.
-- 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` finite harmonic-primitive ladder rigidity: exact
+- 2026-08-08 — `[PROVED HERE; LEAN-PROVED (recursion); LEAN DEFERRED (scale audit)]` finite harmonic-primitive ladder rigidity: exact
   conjugate recursion `C(f,A)=boundary+C(Hf,DA)` shows each primitive lowers source power by one
   while mass adjoint raises receiver power by one.  Every finite depth preserves scale
   `n^(beta-1/2)`; repeated Abel integration cannot reduce RH proof burden.
-- 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` exact resolvent identification: in critical log
+- 2026-08-08 — `[PROVED HERE; LEAN-PROVED]` exact resolvent identification: in critical log
   normalization harmonic remainder tail has symbol `-(1/2-i*xi)^(-1)`, while mass outgoing current
   has symbol `1/2-i*xi`.  Their product is `-1` frequency-by-frequency; cell quotient is exact
   weighted average of same outgoing inverse.  Only noncommuting phase/prime-adaptive transforms can
@@ -5989,7 +5989,7 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   anchored two-prime commutator is uniformly equivalent to raw seam difference and has positive
   off-line floor; exact prime-power phase nodes occupy at most one prime ray and vanish in global
   prime-clock quotient.  Only relation-valued approximate cross-prime cancellation survives.
-- 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` square-root mass information horizon: exact identity
+- 2026-08-08 — `[PROVED HERE; LEAN-PROVED]` square-root mass information horizon: exact identity
   `|Im beta_a| Re beta_a=R|J|` shows every fixed off-line orbit is erased when `a(u)^2/u->infinity`
   and its line-conjugate pair diverges when `a(u)^2/u->0`.  Existing critical/subcritical `C_0`
   schedules are linear and quotient-null; sub-square-root moving mass is a new faithful carrier,
@@ -7130,3 +7130,86 @@ explicitly not available in the corpus.
 
 All statements are for an arbitrary real source `a`, so they apply verbatim to `a_m = Λ(m) − 1`
 and to the centered source `c` of `(24.43)`.
+
+### Lean progress: §24 C43-D — the weighted-floor family and its critical threshold
+
+    RHTower/FloorTransformPowerThreshold.lean
+      powerWeight, moebiusPowerWeight
+      dirichletConv_moebiusPower_power         **(24.25)** `d^{-θ}` and `μ(d)d^{-θ}` are Dirichlet
+                                               inverse for every exponent
+      floorTransform_moebiusPower_power        **(24.25)** hence `T_{n^{-θ}}` is exactly invertible
+                                               for every `θ`
+      abs_powerWeight_le, abs_moebiusPowerWeight_le,
+        abs_floorTransform_le_of_powerBound,
+        summable_powerMajorant,
+        abs_floorTransform_le_tsum_powerMajorant,
+        abs_floorTransform_power_le,
+        abs_floorTransform_moebiusPower_le     **(24.26)--(24.27)** above the threshold both
+                                               directions carry the square-root exponent, with the
+                                               convergent majorant `∑ d^{-θ-1/2-ε}`
+      sqrtProfile, model_lower_eq,
+        model_lower_le_floorTransform_sqrtProfile,
+        not_bounded_normalized_floorTransform_sqrtProfile
+                                               **(24.28)** below the threshold the model profile
+                                               `√N` is already unbounded after critical
+                                               normalization: `T_{n^{-θ}}√ ≥ (√N/√2)(N/2)^{1/2-θ}`
+      floorTransform_sqrtProfile_le,
+        sqrt_le_floorTransform_sqrtProfile     **(24.28)** above the threshold the same profile is
+                                               pinned between `√N` and a constant times `√N`
+
+So `θ = 1/2` is exactly the invertibility threshold: every `θ > 1/2` is a stable coordinate at
+critical type and therefore cannot by itself lower the RH proof burden, and every `θ < 1/2`
+already fails on the model profile.
+
+### Lean progress: §24 C43-K and C43-L — the primitive ladder and the exact resolvent
+
+    RHTower/HarmonicPrimitiveLadder.lean
+      abelPairing, discreteDeriv, sum_telescope_abel
+      abelPairing_recursion                    **(24.69)** the exact Abel recursion, stated against
+                                               an arbitrary primitive of `w f`, so no tail
+                                               convergence hypothesis is needed
+      abelPairing_ladder                       **(24.70)** the exact ladder identity: after `k`
+                                               steps the pairing is `k` endpoint terms plus the
+                                               pairing of the `k`-th primitive against the `k`-th
+                                               difference quotient
+
+    RHTower/HarmonicTailResolvent.lean
+      harmonicTailKernel, harmonicTail,
+        integrableOn_harmonicTailIntegrand,
+        harmonicTailKernel_eq_sub,
+        hasDerivAt_harmonicTailKernel
+      hasDerivAt_harmonicTail,
+        harmonicTail_resolvent                 **(24.76)** `(1/2 − ∂_h) 𝒯 = −I` for every bounded
+                                               continuous critical remainder
+      outgoingSymbol_ne_zero,
+        harmonicTailSymbol_mul_outgoingSymbol  **(24.78)** the harmonic-tail symbol
+                                               `−(1/2 − iξ)^{-1}` and the outgoing symbol
+                                               `1/2 − iξ` multiply to `−1` at every frequency
+
+The ladder identity is unconditional sequence algebra and the resolvent identity holds at every
+frequency, so together they show that no finite number of Abel integrations and no scalar
+translation-invariant transform with stable inverse can change the critical exponent — only a
+genuinely noncommuting, prime-adaptive or mass-phase-adapted primitive could.
+
+### Lean progress: §24 C43-P — the square-root mass information horizon
+
+    RHTower/MassInformationHorizon.lean
+      massOrbit_bounds                         **(24.93)** from `β² = α² + a²` alone: `|K| M = R|J|`
+                                               and `a ≤ M ≤ a + R`, by the exact quartic relation
+                                               `M²(M² − R² + J² − a²) = R²J²`
+      massOrbitExponent,
+        massOrbitExponent_le, le_massOrbitExponent
+                                               **(24.94)--(24.97)** the exponent is sandwiched
+                                               between the `a`- and `(a+R)`-profiles
+      massOrbitExponent_neg                    **(24.99)** `σ a² > u R|J|` extinguishes the orbit
+      massOrbitExponent_pos                    **(24.99)** `u R|J| > σ (a+R)²` keeps it visible
+      massOrbit_transition                     **(24.98)** the leading coefficient vanishes exactly
+                                               at `σ c² = R|J|`
+      abs_norm_add_div_sub_one_le,
+        norm_massConjugate_exp,
+        norm_massConjugate_exp_reverse         **(24.95)** the dominant member has logarithmic
+                                               magnitude `u|K| − σM`, the reverse member exactly
+                                               `e^{-2u|K|}` smaller, so the pair cannot cancel
+
+The two sign criteria are the whole phase diagram in unconditional form: no limit hypothesis is
+used, only the explicit comparison of `σ a²` with `u R|J|`.

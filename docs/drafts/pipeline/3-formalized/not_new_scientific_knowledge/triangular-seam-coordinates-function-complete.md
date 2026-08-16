@@ -1,7 +1,7 @@
 # Triangular Seam Coordinates Are Function-Complete
 
 - **ID:** triangular-seam-coordinates-function-complete
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / coordinate guardrail
 - **Source:** `all-order-seam-jet-function-complete.md`;
   `seam-log-hankel-rh-equivalence.md`;
@@ -120,8 +120,7 @@ For any proof using an all-order transformed coordinate:
 - [x] 0 -> 1 in-progress: triangular all-order coordinate risk isolated.
 - [x] 1 -> 2 fully-proven: recursive inversion and function-completeness proof
   written.
-- [ ] 2 -> 3 formalized: optional sequence-recursion lemma plus reference to
-  formal power series exponentiation.
+- [x] 2 -> 3 formalized: `RHTower/SeamJetFunctionComplete.lean`.
 
 ## Log
 
@@ -130,3 +129,25 @@ For any proof using an all-order transformed coordinate:
   `error-correcting-codes`. The split is finite-prefix weakness versus
   all-order function-completeness; the coordinate string is a lens, not an
   independent correcting code.
+
+## 2026-08-16 Lean closure
+
+`RHTower/SeamJetFunctionComplete.lean` proves the card unconditionally.
+
+`seamLogCoeff L n = (n!)^(-1) * iteratedDeriv n L 0` is the coefficient `ell_n` of the seam-log
+germ.
+
+- `triangular_determines` is the card's recursion lemma in full generality: if
+  `c_n = a_n ell_n + P_n(ell_1, ..., ell_(n-1))` with `a_n != 0` and `P_n` an arbitrary function of
+  the strictly earlier coefficients, then the sequence `(c_n)` determines `(ell_n)`.  The proof is
+  strong induction: the `P_n` terms agree by the induction hypothesis, and `a_n != 0` cancels.
+  `P_n` is an arbitrary function `(Fin n -> C) -> C`, which covers the card's polynomial, rational
+  and locally analytic cases at once, with no nondegeneracy caveat needed.
+- `triangularSeam_function_complete`: consequently the sequence `(c_n)` determines the function up
+  to its central scalar, `Phi_1 = (Phi_1(0)/Phi_2(0)) Phi_2`, and
+  `triangularSeam_zero_set_eq` gives the zero divisor.
+
+The reference to formal power series exponentiation is replaced by the analytic route already used
+for the all-order seam jet: equal coefficients give equal germs
+(`eventuallyEq_of_iteratedDeriv_eq`), and `exp L_1 = exp L_2` near the origin plus the identity
+theorem give the proportionality.  Axioms: `propext`, `Classical.choice`, `Quot.sound`.

@@ -1,7 +1,7 @@
 # XF1 Square Tests Sit Outside The Standard Weil Test Class
 
 - **ID:** xf1-square-tests-outside-weil-class
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper), explicit-formula bridge obstruction
 - **Source:** random formula-graph node 95/100, `XF1` in `docs/consolidated/revision01/formulas-graph.md`
 - **Statement:** The shifted reciprocal-seam square tests required by the proof route are not admissible test functions for the standard Weil/Guinand explicit formula by direct substitution. They have a nonintegrable hard-edge pole at `t=0` and only polynomial decay at infinity.
@@ -14,7 +14,7 @@ Close a false shortcut in the proof-route task "derive `Q_0/Q_1` from the fused 
 
 - [x] 0 -> 1 in-progress: random formula selected and checked against existing square-test cards
 - [x] 1 -> 2 fully-proven: endpoint exponent proof complete
-- [ ] 2 -> 3 formalized: Lean theorem `<name>`, `lake build` green, `check_axioms.sh` PASS
+- [x] 2 -> 3 formalized: `RHTower/SeamSquareTestNotAdmissible.lean`, axiom audit PASS.
 - [ ] 3 -> 4 publication-ready: integrate into the explicit-formula bridge section
 
 ## Proof
@@ -111,3 +111,27 @@ The exponent audit is archived at:
 `even-seam-finite-part-canonicality.md` supplies the next admissibility layer after this obstruction. The square tests still cannot be plugged directly into the standard Weil class, but an even seam cutoff has a regulator-independent Hadamard finite part under the completed source/tail hypotheses, and the resulting boundary form is necessarily Hankel.
 
 This does not prove RH or the scalar Weyl sign. It says the regularized Weil-pullback route has a well-defined source-domain object, so any remaining sign must come from a source theorem rather than from choosing a convenient regulator.
+
+## 2026-08-16 Lean closure
+
+`RHTower/SeamSquareTestNotAdmissible.lean` proves the card unconditionally.
+
+`seamSquareTest r p t = (t^(2r))^(-1) * p((t^2)^(-1))^2` is the zero-side test `h_(r,p)`.
+
+- `seamRevPoly` is the coefficient reversal of `p`, with `seamRevPoly_eval_zero` giving
+  `(revPoly p)(0) = leadingCoeff p` and `seamRevPoly_eval_of_ne_zero` the identity
+  `(revPoly p)(u) = u^d * p(u^(-1))` for `u != 0`.
+- `seamSquareTest_eq` is the card's exact hard-edge exponent:
+  `h_(r,p)(t) = (revPoly p)(t^2)^2 / t^(2r + 4d)`.  Since `(revPoly p)(0) = leadingCoeff p != 0`,
+  the pole order is exactly `2r + 4d`, which is at least `2` for `r >= 1`.
+- `not_intervalIntegrable_seamSquareTest` is the decisive obstruction: for `r >= 1` and `p != 0`,
+  the test is not interval integrable on any interval containing the seam.  The proof bounds
+  `|h|` below by `(leadingCoeff p)^2 / 2 * |t|^(-1)` near the seam and applies
+  `not_intervalIntegrable_of_sub_inv_isBigO_punctured`.  Not being locally integrable, the test is
+  in particular neither continuous nor Schwartz and cannot be substituted into an explicit formula
+  whose archimedean term is an ordinary integral.
+- `seamSquareTest_decay_exact` and `seamSquareTest_decay_limit` are the infinity clause:
+  `t^(2r) h_(r,p)(t) = p((t^2)^(-1))^2 -> p(0)^2`, so the decay is exactly polynomial of order
+  `2r` and never rapid.
+
+Axioms: `propext`, `Classical.choice`, `Quot.sound`.

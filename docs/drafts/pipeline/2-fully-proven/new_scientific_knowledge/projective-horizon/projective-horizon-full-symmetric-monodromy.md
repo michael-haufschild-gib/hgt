@@ -717,3 +717,116 @@ corank one (`finrank_ker_criticalSchurGenericMatrix_eq_one`); the missing link i
 different/Jacobian-ideal identification and the tame formula `v(𝔡) = Σ(e_w − 1)`.
 
 Nothing here touches step 4 (the no-hidden-block argument), whose Kummer input remains as recorded.
+
+## Lean progress — step 3's algebraic core, extracted
+
+Step 3's contradiction (equations (9)-(13)) is pure polynomial algebra over a domain, and it is now
+a theorem.  `HTGeometry/TrailingDegreeSyzygy.lean` (wired, axiom-clean):
+
+```
+not_X_pow_dvd_mul_of_trailing
+    f != 0,  deg f < m,  g.coeff n != 0   ==>   not (X^(m+n) | f * g)
+
+eq_zero_of_X_pow_dvd_mul
+    the contrapositive: X^(m+n) | f g  and  g.coeff n != 0  and  deg f < m   ==>   f = 0
+
+eq_of_low_difference
+    the same phrased on a difference of two states
+
+exists_cofactor_of_syzygy
+    IsCoprime U V,  U != 0,  D V + E U = 0   ==>   exists C,  D = C U  and  E = -(C V)
+
+eq_zero_of_tangent_syzygy
+    U != 0,  D V + E U = 0,  deg D < m,  T.coeff n != 0,  X^(m+n) | D T
+      ==>   D = 0  and  E = 0
+```
+
+`eq_zero_of_tangent_syzygy` is exactly the card's (9)-(13): the tangent syzygy `D0 V + E0 U = 0`,
+the low degrees `deg D0 < m` and `deg E0 < n`, the marked-tail nonvanishing `[t^n](Y+Y') = 2 q_n != 0`,
+and the compatibility `C U (Y+Y') = 0 mod t^L` together force `D0 = E0 = 0`.  The mechanism is the
+multiplicativity of trailing degree: the trailing degree of `D0` is at most its degree, hence below
+`m`, and the trailing degree of the marked tail is at most `n`, so the product has a nonzero
+coefficient strictly below `m + n = L`.  Note that Euclid's lemma is *not* needed for the
+conclusion — `D0` is already the low object — but it is recorded because the card's narrative uses
+it to identify the cofactor.
+
+What this leaves for step 3 in the corpus's own language is the *bridge*: producing the syzygy and
+the marked-tail nonvanishing from `criticalFibre` data at the generic Schur fold, so that
+`eq_zero_of_tangent_syzygy` can be applied to two geometric sheets over the same branch value.  With
+that bridge, `collisionSupport_ncard_le_two_of_natCard_le_ncard_range` and
+`exists_criticalGeometricMonodromy_isSwap_of_reducedFibre_degree` convert the conclusion into the
+literal transposition step (4) consumes.
+
+Caution recorded for the next session: the naive route "the reduced target `1 + U V` has one double
+root, so the residue fibre loses one point" is **wrong**.  A degree-`L` target with one double root
+loses `binom(L-2, m-1)` fibre points, not one, so the generic discriminant point of the *ambient*
+family has inertia a product of that many disjoint transpositions.  The single transposition is
+special to the Schur fold and must come from the card's syzygy argument, not from a root count.
+
+## Step 3 is now a theorem
+
+`criticalState_eq_of_shared_tangent` in `HTGeometry/TrailingDegreeSyzygy.lean` (wired, axiom-clean)
+is the card's step 3 in full:
+
+```
+criticalState_eq_of_shared_tangent
+    U != 0,  V != 0,  IsCoprime U V,
+    deg U < m,  deg V < n,  deg (P'-P) < m,  deg (Q'-Q) < n,
+    X^(m+n) | (P Q - 1),        X^(m+n) | (P' Q' - 1),          -- the two states
+    X^(m+n) | (U Q + P V),      X^(m+n) | (U Q' + P' V),        -- the shared vertical tangent
+    (P + P').coeff m != 0                                        -- the marked jet tail
+  ==>  P' = P  and  Q' = Q
+```
+
+The proof is the card's (9)-(13) verbatim:
+
+```
+syzygy_of_shared_tangent   subtracting the two tangent equations leaves a polynomial of degree
+                           below the horizon that the horizon divides, hence  (P'-P) V + (Q'-Q) U = 0
+exists_cofactor_of_syzygy  Euclid:  P'-P = C U ,  Q'-Q = -(C V)
+                           then  (Q'-Q)(P+P') = [(P'Q'-1) - (PQ-1)] - C (U Q + P V)  identically,
+                           so the horizon divides the left side
+eq_zero_of_X_pow_dvd_mul   trailing degree:  deg (Q'-Q) < n  and  (P+P').coeff m != 0
+                           force  Q' = Q ;  the syzygy and  V != 0  then force  P' = P
+```
+
+Note the identity used in the middle step is *not* a ring identity in the free variables — it holds
+only after substituting `P' = C U + P` and `Q' = -(C V) + Q`, which is what makes the cofactor
+extraction essential rather than cosmetic.
+
+### What step 3 still needs, in the corpus's own language
+
+The theorem is stated for bare polynomials; the bridge to `criticalGeometricSheet` must supply, at
+the generic Schur fold:
+
+1. the shared vertical tangent `(U, V)` — this is the card's part 2 (the conormal pairing (8) is
+   perfect, so the projective conormal line determines the projective tangent pair);
+2. `U(0) != 0` and `V(0) != 0` — the card's cofactor argument (the relevant `(m-1) x (m-1)` Toeplitz
+   cofactor is a nonzero Schur polynomial and cannot be divisible by the larger irreducible
+   determinant), and then the degree-zero part of (6) for `V`;
+3. `IsCoprime U V` — from 2 plus generic corank one;
+4. the marked tail `(P + P').coeff m != 0` — the common marked tail of the two states.
+
+Items 2 and 3 rest on `irreducible_criticalSchurJacobianDetElement` and
+`finrank_ker_criticalSchurGenericMatrix_eq_one`, both already formal.
+
+## Step 2 is now a theorem too
+
+The perfectness of the conormal pairing (8) is `eq_zero_of_conormal_vanishing`, in the same module:
+
+```
+eq_zero_of_conormal_vanishing
+    deg U < m,  deg V < n,
+    for every dP with X^m | dP and every dQ with X^n | dQ,
+        (U dQ - dP V).coeff (m + n - 1) = 0
+  ==>  U = 0  and  V = 0
+```
+
+The proof is the card's own reason: taking `dQ = t^(n + (m-1-k))` and `dP = 0` extracts
+`U.coeff k`, and taking `dP = t^(m + (n-1-k))` and `dQ = 0` extracts `V.coeff k`.  The pairing is
+therefore nondegenerate on low pairs, so the conormal functional determines `(U, V)` — which is
+exactly what step 3 consumes when it says the two states can be scaled to the same tangent pair.
+
+With steps 2 and 3 both theorems, the remaining content of `(3)` is the *identification*: exhibiting
+the corpus's two geometric sheets over a generic Schur branch value as a pair `(P, Q)`, `(P', Q')`
+with a common vertical tangent, a nonvanishing marked jet tail, and `U(0), V(0) != 0`.

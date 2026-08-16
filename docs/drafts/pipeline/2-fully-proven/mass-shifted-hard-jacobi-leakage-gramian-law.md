@@ -268,9 +268,15 @@ Formalize, in this order:
    **MONIC EQUIVALENT FORMALIZED** in
    `RHTower.XiShiftedHalfDensityAdjacentConnection`;
 3. finite Jacobi Riccati boundary term `2n a_n^2 ee^T`;
-4. inverse hard-operator square and finite Gramian identity.
+   **FORMALIZED at the tridiagonal truncation layer** in
+   `HTGeometry.JacobiRiccatiTruncation`;
+4. inverse hard-operator square and finite Gramian identity;
+   **FORMALIZED as unconditional finite-matrix calculus** in
+   `HTGeometry.SkewConjugatedRiccatiGramian`.
 
-No abstract theorem with (HJLG.2) supplied as a hypothesis counts as route formalization.
+Remaining source step is the literal shifted-Xi untruncated Lax identity and its composition with
+these finite-matrix theorems. An abstract Riccati premise alone does not count as route
+formalization.
 
 ## Log
 
@@ -279,7 +285,7 @@ No abstract theorem with (HJLG.2) supplied as a hypothesis counts as route forma
 - 2026-08-11 — item 1 formalized. Fixed coefficient truncation was rejected as final producer;
   current orthogonal admission gives a stronger positive three-channel completed source law.
 - 2026-08-11 — item 2 formalized in its division-free monic equivalent:
-  `V_n=M_n+(n-1/2)beta_n P_(n-1)`. Items 3--4 remain Lean-open.
+  `V_n=M_n+(n-1/2)beta_n P_(n-1)`.
 
 ## Lean progress -- items 3 and 4, matrix layer
 

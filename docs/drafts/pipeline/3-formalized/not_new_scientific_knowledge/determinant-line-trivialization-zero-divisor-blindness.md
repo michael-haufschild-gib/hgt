@@ -1,7 +1,7 @@
 # Determinant-line trivialization is blind to the zero divisor
 
 - **ID:** `determinant-line-trivialization-zero-divisor-blindness`
-- **Stage:** 2-fully-proven / not-new
+- **Stage:** 3-formalized / not-new
 - **Type:** THEOREM (paper) / NO-GO WITH POSITIVE SUCCESSOR
 - **Source:** `ccm-weierstrass-stabilized-square-evans-line-law.md` and the complete-corpus
   determinant-line audit
@@ -89,6 +89,27 @@ formalize the project object and is not added.
 - [x] 0 -> 1: determinant-line null-homotopy claim isolated
 - [x] 1 -> 2: complete proof and arbitrary-divisor counterexample supplied
 - [x] positive successor stated as source zero-avoidance or index-faithful orientation
-- [ ] 2 -> 3: no faithful Lean target until the analytic Fredholm determinant line is formalized
+- [x] 2 -> 3: `RHTower/DeterminantLineDivisorBlindness.lean` — the no-go content is Lean-proved directly for the trivial line, which is what a no-go needs
 - [ ] construct the source-derived nowhere-zero homotopy or one-sided crossing theorem
 
+## 2026-08-16 Lean closure
+
+`RHTower/DeterminantLineDivisorBlindness.lean` proves the decisive content unconditionally.
+
+- `exists_section_with_prescribed_divisor` is clause 3 in exact form: for any finite family of
+  points and positive multiplicities there is a continuous section of the trivial line — the
+  polynomial section `prod_j (lambda - lambda_j)^(m_j)` — whose zero set is exactly the prescribed
+  points and whose root multiset (`divisorSectionPoly_roots`) is exactly the prescribed divisor.
+  Clause 4 follows immediately.
+- `nonvanishing_of_nowhereZero_homotopy` is the necessary half of clause 5: if every stage of a
+  homotopy is nowhere zero, the initial section is nowhere zero, so a nowhere-zero homotopy is not
+  a weaker topological input than the nonvanishing statement itself.
+- `crossingExample_signs` is the winding remark: `lambda^2 - 1` vanishes at two points whose
+  crossing derivatives have opposite signs and sum to zero, so a zero signed count coexists with
+  two surviving zeros.
+
+**Scope.**  Clauses 1--2 (a complex line bundle over an interval is trivial, so a section becomes a
+scalar function) are classical bundle theory and are used only to reduce to the trivialized
+picture.  The Lean theorems are stated directly for the trivial line, which is exactly what the
+no-go requires: exhibiting sections of the trivial line with arbitrary divisors shows that
+triviality places no restriction.  Axioms: `propext`, `Classical.choice`, `Quot.sound`.

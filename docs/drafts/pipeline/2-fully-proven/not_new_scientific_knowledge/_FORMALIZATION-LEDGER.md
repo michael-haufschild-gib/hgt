@@ -69,6 +69,11 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-16 | `finite-codimension-landscape-rh-nonselection` | `RHTower/FiniteProbeRHNonselection.lean` |
 | 2026-08-16 | `finite-seam-jet-rh-nonselection` | `RHTower/FiniteProbeRHNonselection.lean` |
 | 2026-08-16 | `finite-type-source-functor-rh-nonselection` | `RHTower/FiniteProbeRHNonselection.lean` |
+| 2026-08-16 | `shifted-stieltjes-hankel-strictness-infinite-support` | `HTGeometry/ShiftedHankelStrictPositivity.lean` |
+| 2026-08-16 | `all-order-seam-jet-function-complete` | `RHTower/SeamJetFunctionComplete.lean` |
+| 2026-08-16 | `seam-log-derivative-weld-identity` | `RHTower/SeamWeldIdentity.lean` |
+| 2026-08-16 | `triangular-seam-coordinates-function-complete` | `RHTower/SeamJetFunctionComplete.lean` |
+| 2026-08-16 | `xf1-square-tests-outside-weil-class` | `RHTower/SeamSquareTestNotAdmissible.lean` |
 
 ## Already carrying a stage-3 certificate (verify, then move the paper card)
 
@@ -190,6 +195,19 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
   non-real point, proved by the shifted Wronskian vanishing identically).  Consequences: finite
   linear probes, finite-codimension landscape slices, prescribed seam jets, and finite-type source
   functors all fail to select RH.
+- `HTGeometry/ShiftedHankelStrictPositivity.lean` — the shifted Hankel quadratic form of a measure
+  as a weighted square integral, and strict positive definiteness of every finite block from
+  `d+1` charged positive points (with the singular-block contrapositive).
+- `RHTower/SeamJetFunctionComplete.lean` — holomorphic germs with equal Taylor coefficients agree
+  (`eventuallyEq_of_iteratedDeriv_eq`), entire functions agreeing near a point are equal
+  (`entire_eq_of_eventuallyEq`), and the all-order seam-log jet determines an even entire function
+  up to its central scalar, hence determines its zero divisor.  Also `triangular_determines`:
+  a triangular coordinate change over the seam-log coefficients is invertible.
+- `RHTower/SeamWeldIdentity.lean` — `Ξ' w / (w Ξ w) = 2 logDeriv Φ (w²)` for `Ξ w = Φ (w²)`, its
+  holomorphic extension across the seam, and the odd-to-even tower division.
+- `RHTower/SeamSquareTestNotAdmissible.lean` — the coefficient reversal `seamRevPoly`, the exact
+  hard-edge exponent of the reciprocal-seam square test, its non-interval-integrability across the
+  seam, and its exactly polynomial decay at infinity.
 
 ## Triage of the remaining folder (2026-08-16 scan)
 

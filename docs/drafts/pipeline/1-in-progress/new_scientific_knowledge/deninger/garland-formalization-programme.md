@@ -636,3 +636,37 @@ Card `deninger-selective-positive-cell-h0-preservation` was closed and moved to 
 Card `deninger-algebraic-cyclotomic-milnor-amplitude` remains at stage 2, blocked on exactly one
 statement — the tame kernel of a number field is torsion — which is no longer a citation but a
 construction under way in Layers B, C and D of this programme.
+
+## Layer B — the column normal form and injectivity, PROVED
+
+`HTGeometry/SteinbergColumnInjectivity.lean` (wired, axiom-clean).  This is the brick the previous
+entry named as next: "transport the injectivity across".  It is transported by giving the column
+subgroup an explicit normal form.
+
+- `columnGen j k a` — the column generator, trivial at the column index itself, so it is defined for
+  every pair of indices; `columnGen_self`, `columnGen_of_ne`, `columnGen_zero`, `columnGen_mul`,
+  `columnGen_commute`.
+- `noncommProd_eq_one` — a noncommutative product of trivial factors is trivial.
+- **`columnElt j b = noncommProd_k x_kj(b k)`** — the column element of a coefficient vector.
+- **`columnElt_mul`** — `columnElt j (b + c) = columnElt j b · columnElt j c`, from
+  `Finset.noncommProd_mul_distrib`; with `columnElt_zero` and `columnElt_neg` this makes the column
+  elements a subgroup.
+- `steinbergToGL_columnGen`, **`steinbergToGL_noncommProd`**, **`steinbergToGL_columnElt`** — the
+  image of a column element is `1 + Σ_k b_k E_kj`.  The induction is the same cross-term vanishing
+  as everywhere in this layer: `E_aj · E_kj = 0` unless `k = j`, where the coefficient is zero by
+  construction.
+- **`columnElt_eq_one_of_image`** — a column element with trivial image is trivial, by
+  `sum_single_col_eq_zero_iff`.
+- `columnRange`, `steinbergX_mem_columnRange`, `noncommProd_mem_subgroup`,
+  `columnGen_mem_columnSubgroup`, **`columnSubgroup_eq_columnRange`** — the column subgroup *is* the
+  set of column elements.
+- **`steinbergToGL_injOn_columnSubgroup`** — **the map to the matrices is injective on the column
+  subgroup.**
+
+Both facts Milnor's centrality argument turns on are now theorems: the column subgroups are abelian
+(`columnSubgroup_isMulCommutative`) and `St(R) → E(R)` is injective on them.  What remains for
+centrality is the index-avoidance argument: an element of `K_2` is a word in finitely many
+generators, so some index `h` is unused; conjugation by the generators occurring in the word carries
+the column subgroup `C_h` into itself, so `y x_kh(a) y⁻¹ ∈ C_h` has the same image as `x_kh(a)` and
+is therefore equal to it; the chained relation `x_ij(a) = [x_ih(a), x_hj(1)]` then propagates
+commutation to every generator.

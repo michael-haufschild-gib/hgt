@@ -1,7 +1,7 @@
 # Seam-Log Derivative Weld Identity
 
 - **ID:** seam-log-derivative-weld-identity
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / analytic coordinate weld
 - **Source:** `seam-log-markov-pick-rh-equivalence.md`;
   `reciprocal-seam-canonical-gauge-extraction.md`;
@@ -139,7 +139,7 @@ mistaking an identity for the missing source-derived Markov/Stieltjes theorem.
 
 - [x] 0 -> 1 in-progress: seam-log derivative and carrier coordinate compared.
 - [x] 1 -> 2 fully-proven: chain-rule identity and coefficient dictionary proved.
-- [ ] 2 -> 3 formalized: optional power-series and removable-singularity wrapper.
+- [x] 2 -> 3 formalized: `RHTower/SeamWeldIdentity.lean`.
 
 ## Log
 
@@ -152,3 +152,27 @@ mistaking an identity for the missing source-derived Markov/Stieltjes theorem.
 `seam-division-source-split-cancellation.md` records the local source-split residue calculation behind the warning in this card. If `Xi'/Xi=A+P`, with `A` the archimedean/pole log-derivative and `P=zeta'/zeta`, then `(A+P)/w` is holomorphic at `w=0`, but `A/w` and `P/w` have opposite nonzero simple poles.
 
 Thus the seam-log Markov candidate is completed at the level of the divided object. Piecewise Markov/Pick positivity of the divided source summands is not a valid substitute for positivity of the completed sum.
+
+## 2026-08-16 Lean closure
+
+`RHTower/SeamWeldIdentity.lean` proves the card unconditionally, and without choosing a square-root
+branch anywhere.
+
+- `seam_weld_identity`: for an entire `Phi` and `Xi w = Phi (w^2)`, at every `w != 0` with
+  `Phi (w^2) != 0`,
+
+  `deriv Xi w / (w * Xi w) = 2 * logDeriv Phi (w^2)`.
+
+  The proof is the chain rule `deriv Xi w = 2 w * deriv Phi (w^2)` followed by cancellation.  Since
+  the right-hand side is expressed through `Phi` at `w^2` and never through `sqrt`, the identity is
+  branch independent by construction — the card's branch-independence clause needs no separate
+  argument.
+- `seam_weld_differentiableAt`: `w |-> 2 * logDeriv Phi (w^2)` is differentiable wherever
+  `Phi (w^2) != 0`, so it is the holomorphic extension of the weld quotient across the seam
+  `w = 0`.  This is the card's removable-singularity clause; `deriv Phi` is differentiable because
+  an entire function is analytic and the derivative of an analytic function is analytic.
+- `seam_weld_series`: if `deriv Xi w / Xi w = sum_n (-1)^n T_(n+1) w^(2n+1)` then
+  `2 * logDeriv Phi (w^2) = sum_n (-1)^n T_(n+1) w^(2n)` — the card's coefficient tower, obtained
+  by dividing the sum termwise by the seam coordinate.
+
+Axioms: `propext`, `Classical.choice`, `Quot.sound`.
