@@ -427,4 +427,31 @@ theorem mass_lower_of_oscEnergy {α β κ Elow Ehigh : ℝ} (hαβ : α ≤ β) 
   rw [div_le_iff₀ hden]
   nlinarith [hFTC, hsplit, hElowint, hbd, hqw, hmasspos]
 
+/-! ## Two solutions: a nonzero Wronskian is an energy floor
+
+Lagrange's identity `(a²+b²)(c²+d²) = (ac+bd)² + (ad−bc)²` says the squared Wronskian of two
+solutions is at most the product of their energies.  So a solution whose companion has bounded
+energy cannot itself have small energy — the Wronskian, being constant, is a floor.  This is the
+only route to an energy lower bound that does not evaluate the solution anywhere. -/
+
+/-- **Cauchy–Schwarz for the Wronskian.** -/
+theorem sq_wronskian_le_oscEnergy_mul (w₁ Dw₁ w₂ Dw₂ : ℝ → ℝ) (u : ℝ) :
+    (w₁ u * Dw₂ u - Dw₁ u * w₂ u) ^ 2
+      ≤ oscEnergy w₁ Dw₁ u * oscEnergy w₂ Dw₂ u := by
+  rw [oscEnergy, oscEnergy]
+  nlinarith [sq_nonneg (w₁ u * w₂ u + Dw₁ u * Dw₂ u)]
+
+/-- **A nonzero Wronskian floors the energy.**  If the companion solution's energy is at most `C`,
+the solution's own energy is at least `W²/C`. -/
+theorem oscEnergy_lower_of_wronskian {w₁ Dw₁ w₂ Dw₂ : ℝ → ℝ} {u W C : ℝ}
+    (hWval : w₁ u * Dw₂ u - Dw₁ u * w₂ u = W)
+    (hE₂ : oscEnergy w₂ Dw₂ u ≤ C) (hC : 0 < C) :
+    W ^ 2 / C ≤ oscEnergy w₁ Dw₁ u := by
+  have hCS := sq_wronskian_le_oscEnergy_mul w₁ Dw₁ w₂ Dw₂ u
+  rw [hWval] at hCS
+  have hE1 : 0 ≤ oscEnergy w₁ Dw₁ u := oscEnergy_nonneg _ _ _
+  have hE2 : 0 ≤ oscEnergy w₂ Dw₂ u := oscEnergy_nonneg _ _ _
+  rw [div_le_iff₀ hC]
+  nlinarith [hCS, hE1, hE2, hE₂]
+
 end GaloisForLFunctions.HTGeometry

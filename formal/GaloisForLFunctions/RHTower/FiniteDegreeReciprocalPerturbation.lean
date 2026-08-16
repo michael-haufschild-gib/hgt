@@ -70,7 +70,7 @@ theorem abs_dotProduct_mulVec_le (P : Matrix n n ℝ) {ε : ℝ} (hε : 0 ≤ ε
 
 omit [DecidableEq n] in
 /-- A vector with a nonzero coordinate has positive squared euclidean length. -/
-theorem sum_sq_pos_of_ne_zero {x : n → ℝ} (hx : x ≠ 0) : 0 < ∑ i, x i ^ 2 := by
+private theorem sum_sq_pos_of_ne_zero {x : n → ℝ} (hx : x ≠ 0) : 0 < ∑ i, x i ^ 2 := by
   obtain ⟨i, hi⟩ : ∃ i, x i ≠ 0 := by
     by_contra h
     push Not at h

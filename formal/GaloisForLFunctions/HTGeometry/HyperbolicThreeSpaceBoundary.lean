@@ -245,7 +245,7 @@ theorem lightMatrix_det (v : Fin 2 → ℂ) : (lightMatrix v).det = 0 := by
   simp only [lightMatrix_apply]
   ring
 
-theorem exists_ne_zero_of_ne_zero {v : Fin 2 → ℂ} (hv : v ≠ 0) : ∃ i, v i ≠ 0 := by
+private theorem exists_ne_zero_of_ne_zero {v : Fin 2 → ℂ} (hv : v ≠ 0) : ∃ i, v i ≠ 0 := by
   by_contra h
   exact hv (funext fun i => not_not.mp fun hi => h ⟨i, hi⟩)
 

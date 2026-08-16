@@ -69,10 +69,10 @@ theorem not_exists_bounded_diagonal_neg_natCast (e : ℕ → H) (he : ∀ n, ‖
 end Abstract
 
 /-- The sequence Hilbert space `ℓ²(ℕ, ℂ)`. -/
-abbrev EllTwo : Type := lp (fun _ : ℕ => ℂ) 2
+abbrev OneSidedEllTwo : Type := lp (fun _ : ℕ => ℂ) 2
 
 /-- The `n`-th standard basis vector of `ℓ²(ℕ, ℂ)`. -/
-def ellTwoBasis (n : ℕ) : EllTwo := lp.single 2 n (1 : ℂ)
+def ellTwoBasis (n : ℕ) : OneSidedEllTwo := lp.single 2 n (1 : ℂ)
 
 theorem norm_ellTwoBasis (n : ℕ) : ‖ellTwoBasis n‖ = 1 := by
   rw [ellTwoBasis, lp.norm_single (by norm_num), norm_one]
@@ -80,7 +80,7 @@ theorem norm_ellTwoBasis (n : ℕ) : ‖ellTwoBasis n‖ = 1 := by
 /-- **Concrete form.**  On `ℓ²(ℕ)` no bounded operator has the negative diagonal form of the card
 as its quadratic form. -/
 theorem not_exists_bounded_ellTwo_diagonal_neg_natCast :
-    ¬ ∃ K : EllTwo →L[ℂ] EllTwo,
+    ¬ ∃ K : OneSidedEllTwo →L[ℂ] OneSidedEllTwo,
       ∀ n : ℕ, (inner ℂ (K (ellTwoBasis n)) (ellTwoBasis n) : ℂ) = -(n : ℂ) :=
   not_exists_bounded_diagonal_neg_natCast ellTwoBasis norm_ellTwoBasis
 

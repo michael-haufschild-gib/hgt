@@ -63,7 +63,7 @@ theorem hasStrictDerivAt_csqrt {z : ℂ} (hz : 0 < z.re) :
 theorem differentiableAt_csqrt {z : ℂ} (hz : 0 < z.re) : DifferentiableAt ℂ csqrt z :=
   (hasStrictDerivAt_csqrt hz).hasDerivAt.differentiableAt
 
-theorem isOpen_rightHalfPlane : IsOpen {w : ℂ | 0 < w.re} :=
+private theorem isOpen_rightHalfPlane : IsOpen {w : ℂ | 0 < w.re} :=
   isOpen_lt continuous_const Complex.continuous_re
 
 theorem differentiableOn_csqrt : DifferentiableOn ℂ csqrt {w : ℂ | 0 < w.re} := by

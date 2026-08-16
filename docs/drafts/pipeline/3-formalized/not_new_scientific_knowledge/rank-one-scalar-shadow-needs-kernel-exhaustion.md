@@ -1,9 +1,9 @@
 # Rank-One Scalar Shadow Needs Kernel Exhaustion
 
 - **ID:** rank-one-scalar-shadow-needs-kernel-exhaustion
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / proof-route guardrail
-- **Source:** `uvarov-repair-requires-boundary-kernel-positivity.md`,
+- **Source:** `../../3-formalized/not_new_scientific_knowledge/uvarov-repair-requires-boundary-kernel-positivity.md`,
   `finite-rank-boundary-schur-index.md`
 - **Statement:** A positive rank-one Weyl scalar certifies the full repaired
   positivity only after all directions invisible to the rank-one boundary
@@ -143,7 +143,7 @@ back to the completed semilocal integer index.
   bridge requirement.
 - [x] 1 -> 2 fully-proven: finite-dimensional Schur proof and countermodel
   written.
-- [ ] 2 -> 3 formalized: optional Hermitian Schur-complement lemma.
+- [x] 2 -> 3 formalized: `HTGeometry/BoundaryKernelSchurSplit.lean`.
 
 ## Log
 
@@ -197,3 +197,26 @@ This is unconditional Lean coverage of the supplied-coordinate theorem. The
 card remains Stage 2: it still needs a reusable construction transporting an
 arbitrary nonzero complex-linear `beta` to `ker beta ⊕ Cq`, then identifying
 the original form with this block form.
+
+## 2026-08-16 Lean closure for an arbitrary boundary functional
+
+`HTGeometry/BoundaryKernelSchurSplit.lean` supplies the missing transport and closes the card for an
+arbitrary nonzero complex-linear `beta` on a complex inner product space, with no coordinates given
+in advance.
+
+- `exists_kernelRiesz` constructs, from kernel positive definiteness alone, the vector `w in ker beta`
+  with `<k, T w> = <k, T q>` for every `k in ker beta`.  It is the coordinate-free `B^{-1} l`:
+  `hermitianForm_kernelRiesz_eq` proves `A w = Re <w, T q>`, the card's `l* B^{-1} l`.
+- `repairedForm_split` is the congruence transport itself, an identity valid for every `v`:
+  `H[v] = A[v - (beta v) . (q - w)] + ||beta v||^2 * s_beta(t)` with `s_beta(t) = a + t - A w`, and the
+  first argument ranges exactly over `ker beta`.
+- `repairedForm_pos_iff` and `repairedForm_nonneg_iff` are the card's equivalence
+  `A|_K > 0 and s_beta(t) > 0 <=> H > 0` in both the definite and the semidefinite form.
+- `hermitianForm_nonneg_on_ker` and `hermitianForm_pos_on_ker` are the necessity gate `H >= 0 => A|_K >= 0`
+  in the complex-Hermitian setting.
+- `shadow_scalar_not_faithful` is the card's countermodel, formalized on `C^2` with `T = -1`,
+  `beta (x, y) = x` and `t = 2`: the Schur scalar is `1 > 0` while the repaired form takes the value
+  `-1` on the invisible direction `e_1`.  The kernel Riesz vector there is `0` (`shadowProj`), so the
+  split identity applies verbatim and the failure is exactly the missing kernel positivity.
+
+Axioms: `propext`, `Classical.choice`, `Quot.sound`.

@@ -407,7 +407,7 @@ Thus `L_src` cannot get the first-trivial-zero repair theorem from the pole-chan
 
 ## 2026-06-24 Uvarov repair requires `p(y_*)=0` positivity first
 
-`../2-fully-proven/uvarov-repair-requires-boundary-kernel-positivity.md` sharpens the `L_src` theorem shape. If `H^-_d+a_*e_{y_*}^*e_{y_*}>=0`, then necessarily `H^-_d[p]>=0` for every `p` with `p(y_*)=0`, `y_*=-4/25`.
+`../3-formalized/not_new_scientific_knowledge/uvarov-repair-requires-boundary-kernel-positivity.md` sharpens the `L_src` theorem shape. If `H^-_d+a_*e_{y_*}^*e_{y_*}>=0`, then necessarily `H^-_d[p]>=0` for every `p` with `p(y_*)=0`, `y_*=-4/25`.
 
 Thus the noncircular source target is two-part: prove source-built positivity on the first-trivial-zero kernel `ker e_{-4/25}`, then prove the scalar Schur side. This is stronger and more precise than asking for the scalar Weyl gap alone. It also explains why pole-kernel positivity cannot suffice.
 
@@ -513,7 +513,7 @@ Thus the corrected source route must either derive those atom-local restrictions
 
 ## 2026-06-24 scalar positivity is not source selection
 
-`../2-fully-proven/rank-one-scalar-shadow-needs-kernel-exhaustion.md` makes the scalar-shadow failure explicit. A positive rank-one Weyl scalar repairs only the direction seen by its boundary functional. It proves the full index only after the source theorem has established nonnegativity on the kernel and on all omitted semilocal channels.
+`../3-formalized/not_new_scientific_knowledge/rank-one-scalar-shadow-needs-kernel-exhaustion.md` makes the scalar-shadow failure explicit. A positive rank-one Weyl scalar repairs only the direction seen by its boundary functional. It proves the full index only after the source theorem has established nonnegativity on the kernel and on all omitted semilocal channels.
 
 Thus `L_src` must not certify zeta by `s_d>0` alone. The source selection theorem has to prove kernel exhaustion or the full Schur-matrix/integer-index statement.
 

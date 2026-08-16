@@ -22,7 +22,7 @@ abbrev MonLe (ι : Type*) [DecidableEq ι] (m : ℕ) := {S : Finset ι // S.card
 
 /-- The evaluation matrix of the degree-at-most-`m` multilinear monomials at a family of Boolean
 points. -/
-def evalMatrix (R : Type*) [CommRing R] (m : ℕ) {k : ℕ} (x : Fin k → (ι → Bool)) :
+def reedMullerEvalMatrix (R : Type*) [CommRing R] (m : ℕ) {k : ℕ} (x : Fin k → (ι → Bool)) :
     Matrix (Fin k) (MonLe ι m) R :=
   fun j S => if ∀ i ∈ S.1, x j i = true then 1 else 0
 
@@ -32,17 +32,17 @@ theorem zmodTwo_eq_zero_or_one : ∀ a : ZMod 2, a = 0 ∨ a = 1 := by decide
 conjunction fibre it selects. -/
 theorem vecMul_evalMatrix_apply {k : ℕ} (m : ℕ) (x : Fin k → (ι → Bool))
     (lam : Fin k → ZMod 2) (S : MonLe ι m) :
-    (lam ᵥ* evalMatrix (ZMod 2) m x) S =
+    (lam ᵥ* reedMullerEvalMatrix (ZMod 2) m x) S =
       ((Finset.univ.filter fun j => lam j = 1 ∧ ∀ i ∈ S.1, x j i = true).card : ZMod 2) := by
   classical
-  show (∑ j, lam j * evalMatrix (ZMod 2) m x j S) = _
+  show (∑ j, lam j * reedMullerEvalMatrix (ZMod 2) m x j S) = _
   rw [← Finset.sum_boole]
   refine Finset.sum_congr rfl fun j _ => ?_
   rcases zmodTwo_eq_zero_or_one (lam j) with h0 | h1
   · rw [h0, zero_mul, if_neg]
     rintro ⟨hc, -⟩
     exact absurd hc (by decide)
-  · rw [h1, one_mul, evalMatrix]
+  · rw [h1, one_mul, reedMullerEvalMatrix]
     by_cases hS : ∀ i ∈ S.1, x j i = true
     · rw [if_pos hS, if_pos ⟨rfl, hS⟩]
     · rw [if_neg hS, if_neg]
@@ -53,7 +53,7 @@ theorem vecMul_evalMatrix_apply {k : ℕ} (m : ℕ) (x : Fin k → (ι → Bool)
 nonzero dual relation among their degree-at-most-`m` monomial evaluations. -/
 theorem vecMul_evalMatrix_eq_zero_imp {k m : ℕ} (hk : k < 2 ^ (m + 1))
     (x : Fin k → (ι → Bool)) (hx : Function.Injective x)
-    (lam : Fin k → ZMod 2) (hlam : lam ᵥ* evalMatrix (ZMod 2) m x = 0) : lam = 0 := by
+    (lam : Fin k → ZMod 2) (hlam : lam ᵥ* reedMullerEvalMatrix (ZMod 2) m x = 0) : lam = 0 := by
   classical
   by_contra hne
   obtain ⟨j₀, hj₀⟩ : ∃ j, lam j ≠ 0 := by
@@ -84,7 +84,7 @@ theorem vecMul_evalMatrix_eq_zero_imp {k m : ℕ} (hk : k < 2 ^ (m + 1))
       (Finset.univ.filter fun j => lam j = 1 ∧ ∀ i ∈ S, x j i = true).card := by
     rw [hfiber]
     exact Finset.card_image_of_injective _ hx
-  have hzero : (lam ᵥ* evalMatrix (ZMod 2) m x) ⟨S, hScard⟩ = 0 := by
+  have hzero : (lam ᵥ* reedMullerEvalMatrix (ZMod 2) m x) ⟨S, hScard⟩ = 0 := by
     rw [hlam]
     rfl
   rw [vecMul_evalMatrix_apply, ZMod.natCast_eq_zero_iff_even] at hzero
@@ -93,10 +93,10 @@ theorem vecMul_evalMatrix_eq_zero_imp {k m : ℕ} (hk : k < 2 ^ (m + 1))
 /-- **Surjectivity of low-degree multilinear evaluation over `ZMod 2`.** -/
 theorem surjective_mulVec_evalMatrix {k m : ℕ} (hk : k < 2 ^ (m + 1))
     (x : Fin k → (ι → Bool)) (hx : Function.Injective x) :
-    Function.Surjective fun c : MonLe ι m → ZMod 2 => (evalMatrix (ZMod 2) m x) *ᵥ c := by
+    Function.Surjective fun c : MonLe ι m → ZMod 2 => (reedMullerEvalMatrix (ZMod 2) m x) *ᵥ c := by
   classical
   haveI : Fact (Nat.Prime 2) := ⟨Nat.prime_two⟩
-  set A : Matrix (Fin k) (MonLe ι m) (ZMod 2) := evalMatrix (ZMod 2) m x with hA
+  set A : Matrix (Fin k) (MonLe ι m) (ZMod 2) := reedMullerEvalMatrix (ZMod 2) m x with hA
   have hinj : Function.Injective (Aᵀ.mulVecLin) := by
     rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
     intro lam hlam

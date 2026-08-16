@@ -3,7 +3,7 @@
 - **ID:** uvarov-kernel-pregate-rh-equivalence
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper) / route normalization
-- **Source:** `uvarov-repair-requires-boundary-kernel-positivity.md`,
+- **Source:** `../../3-formalized/not_new_scientific_knowledge/uvarov-repair-requires-boundary-kernel-positivity.md`,
   `source-aware-q0-alone-reciprocal-positivity.md`, and
   `seam-log-hankel-rh-equivalence.md`
 - **Statement:** For the actual reciprocal divisor, all-order positivity on the
@@ -96,7 +96,7 @@ first trivial-zero boundary point used by the Uvarov chart. The theorem applies.
 
 ## Consequence for the RH Route
 
-`uvarov-repair-requires-boundary-kernel-positivity.md` showed that a rank-one repair
+`../../3-formalized/not_new_scientific_knowledge/uvarov-repair-requires-boundary-kernel-positivity.md` showed that a rank-one repair
 at `y_*` first requires positivity on `ker e_{y_*}`. This card shows that the
 all-order version of that pre-gate already has RH strength for the actual divisor.
 

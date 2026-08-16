@@ -18,7 +18,7 @@ set_option linter.unusedSectionVars false
 
 variable {n : ℕ}
 
-theorem sum_zmodTwo (f : ZMod 2 → ℂ) : (∑ z : ZMod 2, f z) = f 0 + f 1 := by
+private theorem sum_zmodTwo (f : ZMod 2 → ℂ) : (∑ z : ZMod 2, f z) = f 0 + f 1 := by
   have huniv : (Finset.univ : Finset (ZMod 2)) = {0, 1} := by decide
   rw [huniv, Finset.sum_insert (by decide), Finset.sum_singleton]
 

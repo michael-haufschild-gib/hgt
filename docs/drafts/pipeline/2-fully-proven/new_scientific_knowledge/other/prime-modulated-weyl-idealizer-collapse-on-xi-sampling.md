@@ -391,3 +391,75 @@ Fields-Medal-level score because it does not construct that carrier or prove RH.
 - [x] preliminary primary-literature and parent-theory audit completed
 - [x] Lean formalization of the algebraic coefficient-collapse core
 - [ ] independent expert proof and novelty review
+
+## 11. Lean formalization: the analytic Theorem A is closed
+
+Theorem A of section 2 is now formalized *analytically and unconditionally* — not on abstract
+freely prescribable jets, but on genuine Schwartz functions of a real variable.
+
+`formal/GaloisForLFunctions/RHTower/SuperlinearSamplingAperiodicity.lean`
+
+```text
+samplingCount S T = #(S ∩ [-T,T]),
+LocallyFiniteSamples, SuperlinearSamples, shiftFailure S h = E_h,
+backwardFailure_subset_neg_shiftFailure                   (9)
+exists_window_congruence      -- every sample ≡ a window sample mod h Z
+exists_linear_samplingCount_bound  -- finitely many progressions have N(T)=O(T)   (10)
+infinite_shiftFailure_of_superlinear                      -- Lemma 1
+```
+
+`formal/GaloisForLFunctions/RHTower/PrimeWeylSamplingIdealizerAnalytic.lean`
+
+```text
+jetAtom y eps j            -- (x-y)^j/j! cut off outside |x-y| = 2 eps
+iteratedDeriv_jetAtom_self -- Kronecker delta at the centre                       (11)
+iteratedDeriv_jetAtom_far  -- all derivatives vanish outside the cutoff ball
+jetAtomSchwartz            -- the same, as an element of Schwartz(R)
+shiftWeylEval, PreservesSamplingIdeal                                             (3),(5)
+exists_separating_radius   -- punctured ball missing S and the other shifted points
+shiftWeylEval_jetAtom      -- the operator reads off one coefficient
+shiftCoeff_eq_zero_of_infinite_failure                    -- Lemma 2, (12),(13)
+derivCoeff_eq_zero_of_infinite_samples                    -- Lemma 3, (15)
+samplingIdealizer_collapse                                -- Theorem A, (7)
+shiftWeylEval_eq_polynomial_multiplier
+preservesSamplingIdeal_polynomialMultiplier               -- the converse inclusion
+polynomial_conj_eq_of_infinite_real                       -- (17),(18),(19)
+ccr_scalar_eq_zero                                        -- (20)
+```
+
+`formal/GaloisForLFunctions/RHTower/XiRealDivisorSampling.lean`
+
+```text
+xiRealDivisor = {t in R : XiC t = 0}
+xiC_zeros_closedBall_finite
+locallyFiniteSamples_xiRealDivisor      -- local finiteness of Z_Xi^R
+symmetric_xiRealDivisor                 -- symmetry of Z_Xi^R, from XiC_even
+```
+
+`formal/GaloisForLFunctions/RHTower/TwoDilationDivisorMetric.lean`
+
+```text
+irrational_log_div_log                  -- multiplicative independence => log r / log s irrational
+dense_closure_pair_of_irrational        -- (26)
+periodAddSubgroup, eq_of_continuous_of_dense_periods
+eq_of_two_dilation_invariance           -- (25) => full translation invariance
+measure_setOf_ne_zero_eq_zero           -- (29) => (30)
+measure_compl_xiRealDivisor_eq_zero     -- the metric is carried by Z_Xi^R
+```
+
+All capstones use only `propext`, `Classical.choice`, `Quot.sound`.
+
+### What is still a cited paper input
+
+Two steps of the *applications* rest on named literature theorems that are neither in mathlib nor
+in this tree; neither is a claim of this card.
+
+1. **Selberg's positive-proportion theorem** (equivalently Conrey's `2/5`), needed for `(22)`:
+   `N_0(T) >= c T log T`. This is exactly `SuperlinearSamples xiRealDivisor`. Everything else in
+   section 4 is now Lean-proved; the collapse `(23)` is `samplingIdealizer_collapse` applied to
+   `locallyFiniteSamples_xiRealDivisor`, `symmetric_xiRealDivisor` and that single density input.
+   Hardy--Littlewood (`N_0(T) >= cT`) is *not* enough: the mechanism needs superlinearity, and the
+   lattice counterexample of section 7.2 shows this is sharp.
+2. **The Bochner--Schwartz theorem** for positive-definite tempered distributions, needed for the
+   integral representation `(27)`. The two-dilation forcing that feeds it, and the null-constraint
+   consequence that follows it, are both formalized above.

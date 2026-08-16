@@ -26,7 +26,7 @@ namespace RHTower
 open Complex
 
 /-- The degree-one discriminant cross term. -/
-def discriminantCross (y : ℂ) (x : ℝ) : ℝ := (y * (y - (x : ℂ)) ^ 2).re
+private def discriminantCross (y : ℂ) (x : ℝ) : ℝ := (y * (y - (x : ℂ)) ^ 2).re
 
 /-- Lower root of the cross term. -/
 def crossRootLow (y : ℂ) : ℝ := (y.re ^ 2 - y.im ^ 2 - |y.im| * ‖y‖) / y.re
@@ -39,7 +39,7 @@ theorem norm_sq_eq (y : ℂ) : ‖y‖ ^ 2 = y.re ^ 2 + y.im ^ 2 := by
   ring
 
 /-- Expanded real quadratic form of the cross term. -/
-theorem discriminantCross_eq (y : ℂ) (x : ℝ) :
+private theorem discriminantCross_eq (y : ℂ) (x : ℝ) :
     discriminantCross y x =
       y.re * x ^ 2 + 2 * (y.im ^ 2 - y.re ^ 2) * x + y.re * (y.re ^ 2 - 3 * y.im ^ 2) := by
   simp only [discriminantCross, pow_two, Complex.mul_re, Complex.mul_im, Complex.sub_re,

@@ -1598,3 +1598,36 @@ new files and `ccm-four-unit-cesaro-curvature-wall` is modified in the working t
   integral locally Noetherian scheme, the boundary pullback identity, the log-crepant invariance,
   the principal-divisor form, and the periodic coefficient-one fixed point. Umbrella-wired,
   axiom-clean.
+
+### `prime-modulated-weyl-idealizer-collapse-on-xi-sampling` — Theorem A is closed analytically
+
+Four new unconditional modules, all axiom-clean and wired into the `RHTower` umbrella:
+
+- `RHTower/SuperlinearSamplingAperiodicity.lean` — the aperiodicity lemma. A locally finite
+  symmetric set of reals with superlinear counting misses infinitely many translates of every
+  nonzero shift (`infinite_shiftFailure_of_superlinear`), through the window-congruence step
+  (`exists_window_congruence`) and the linear counting bound for a union of finitely many
+  progressions (`exists_linear_samplingCount_bound`).
+- `RHTower/PrimeWeylSamplingIdealizerAnalytic.lean` — the analytic idealizer theorem on genuine
+  Schwartz functions. Translated jet atoms (`jetAtom`, `jetAtomSchwartz`) realize the Kronecker
+  delta at their centre and kill every derivative outside a cutoff ball; the separation radius
+  comes from local finiteness (`exists_separating_radius`). Capstone
+  `samplingIdealizer_collapse`, with `shiftWeylEval_eq_polynomial_multiplier`,
+  `preservesSamplingIdeal_polynomialMultiplier`, `polynomial_conj_eq_of_infinite_real` and
+  `ccr_scalar_eq_zero`. This supersedes the abstract-jet core of
+  `RHTower/PrimeWeylSamplingIdealizer.lean`, which is kept as the purely algebraic statement.
+- `RHTower/XiRealDivisorSampling.lean` — the real Xi divisor is locally finite and symmetric.
+- `RHTower/TwoDilationDivisorMetric.lean` — multiplicative independence gives an irrational
+  logarithmic ratio, the two-generator group is dense, a continuous function with a dense period
+  group is constant, and a measure annihilating `|Xi|^2` is carried by the real divisor.
+
+The card is **not** promoted. Its two remaining inputs are cited literature theorems, not new
+content of the card, and both are large named sub-projects:
+
+7. **Selberg's positive-proportion theorem** `N_0(T) >= c T log T` for critical-line zeros
+   (equivalently Conrey's 2/5). In Lean terms this is exactly
+   `SuperlinearSamples xiRealDivisor`; with it, section 4's `(23)` is one application of
+   `samplingIdealizer_collapse`. Hardy--Littlewood's `N_0(T) >= cT` does not suffice — the lattice
+   counterexample of the card's section 7.2 shows superlinearity is the sharp hypothesis.
+8. **Bochner--Schwartz** for positive-definite tempered distributions (the integral representation
+   of a translation-invariant positive form). Missing from mathlib.

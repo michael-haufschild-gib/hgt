@@ -19,7 +19,7 @@ noncomputable section
 namespace RHTower
 
 /-- The distinct complex zero set of the centered completed zeta function. -/
-def xiZeroSet : Set ℂ := {z : ℂ | XiC z = 0}
+private def xiZeroSet : Set ℂ := {z : ℂ | XiC z = 0}
 
 instance : DecidablePred (fun ρ : xiZeroSet => (ρ : ℂ).im = 0) :=
   fun _ => Classical.dec _

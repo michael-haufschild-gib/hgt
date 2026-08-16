@@ -1,7 +1,7 @@
 # Stieltjes Bulk Exterior Christoffel Monotonicity
 
 - **ID:** stieltjes-bulk-exterior-christoffel-monotonicity
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / conditional source-route lemma
 - **Source:** `../../3-formalized/not_new_scientific_knowledge/boundary-weyl-thresholds-have-no-formal-monotonicity.md`;
   `../../3-formalized/not_new_scientific_knowledge/pole-budget-does-not-imply-uvarov-repair.md`;
@@ -149,8 +149,7 @@ Christoffel monotonicity input from the missing source-built positivity theorem.
 - [x] 0 -> 1 in-progress: moment-bulk monotonicity route isolated.
 - [x] 1 -> 2 fully-proven: exterior Christoffel monotonicity proved from
   orthogonal-polynomial zero placement.
-- [ ] 2 -> 3 formalized: optional theorem on real-rooted orthogonal
-  polynomials and kernel monotonicity.
+- [x] 2 -> 3 formalized: `HTGeometry/StieltjesExteriorChristoffelMonotone.lean`.
 
 ## Log
 
@@ -170,3 +169,28 @@ Thus this card's positivity hypothesis is load-bearing. Exterior Christoffel mon
 `../../3-formalized/not_new_scientific_knowledge/positive-stieltjes-pole-plus-first-atom-insufficient.md` separates monotone threshold order from mass adequacy. A positive Stieltjes bulk can have the correct exterior order, yet the zeta pole mass `4` and first-trivial-zero mass `4/25` need not produce a positive repaired form.
 
 Therefore this monotonicity lemma is not a repair theorem. It can compare thresholds once a source-built positive bulk and the correct mass inequality are known; it does not prove that the first-trivial-zero atom pays the pole deficit.
+
+## 2026-08-16 Lean closure
+
+`HTGeometry/StieltjesExteriorChristoffelMonotone.lean` proves the card unconditionally, on top of the
+corpus moment layer (`momentFunctional`, `momentInner`, `PositiveMomentForm`, `monicOrtho`,
+`gaussNodes`, `cdKernel`, `christoffel`).
+
+- `ShiftedPositiveAt s a` is the Stieltjes hypothesis in moment form: `0 <= L((X - a) p^2)` for every
+  polynomial `p`.  `shiftedPositiveAt_of_measure` derives it from a representing measure with
+  `a <= x` almost everywhere, which is the card's `supp(mu) subset [a, infinity)`.
+- `monicOrtho_root_ge` is the zero-location input the card's proof uses: every root `r` of `P_(n+1)`
+  satisfies `a <= r`.  Writing `P_(n+1) = (X - r) g` and pairing with the lower-degree cofactor gives
+  `0 = L((X - a) g^2) + (a - r) L(g^2)`, a nonnegative plus a strictly positive multiple of `a - r`.
+- `monicOrtho_eval_sq_lt` replaces the card's logarithmic-derivative computation by the exact node
+  product `P_(n+1)(x) = prod_(t in nodes) (x - t)`: for `x < y < a <= t` each factor satisfies
+  `(y - t)^2 < (x - t)^2`, so the whole product of squares strictly decreases.  No calculus is used.
+- `cdKernel_eval_self_le` and `cdKernel_eval_self_lt` transport this termwise through
+  `K_d(x,x) = sum_(k <= d) P_k(x)^2 / h_k`, giving `cdKernel_diag_antitoneOn` on `(-infinity, a)` and
+  `cdKernel_diag_strictAntiOn` for `d >= 1`.
+- `christoffel_monotoneOn` and `christoffel_strictMonoOn` are the threshold statements
+  `lambda_d = 1 / K_d(x,x)` nondecreasing, respectively strictly increasing, on `(-infinity, a)`.
+- `exterior_boundary_comparison` is the card's boundary-channel corollary for `x_1 < x_2 < a`.
+
+The card's `d >= 1` nondegeneracy side condition is automatic here: `monicOrtho s (d+1)` is monic of
+degree `d+1`, hence nonconstant.  Axioms: `propext`, `Classical.choice`, `Quot.sound`.

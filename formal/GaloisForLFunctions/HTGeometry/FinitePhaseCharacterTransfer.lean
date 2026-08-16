@@ -30,7 +30,7 @@ def boolEval {R : Type*} [CommRing R] {m : ℕ} (c : MonLe ι m → R) (a : ι �
 
 theorem mulVec_evalMatrix_eq_boolEval {R : Type*} [CommRing R] {k m : ℕ}
     (x : Fin k → (ι → Bool)) (c : MonLe ι m → R) (j : Fin k) :
-    (evalMatrix R m x *ᵥ c) j = boolEval c (x j) := rfl
+    (reedMullerEvalMatrix R m x *ᵥ c) j = boolEval c (x j) := rfl
 
 end Evaluation
 
@@ -75,7 +75,7 @@ theorem sum_charFinite {m : ℕ} (n : (ι → Bool) → ℤ)
     have hred : ∀ c : MonLe ι m → ZMod 8,
         (∑ a, ((n a : ℤ) : ZMod 8) * boolEval c a) =
           ∑ i : Fin k, ((n (x i) : ℤ) : ZMod 8) *
-            (evalMatrix (ZMod 8) m x *ᵥ c) i := by
+            (reedMullerEvalMatrix (ZMod 8) m x *ᵥ c) i := by
       intro c
       have h1 : (∑ i : Fin k, ((n (x i) : ℤ) : ZMod 8) * boolEval c (x i)) =
           ∑ b : {a // a ∈ s}, ((n (b : ι → Bool) : ℤ) : ZMod 8) * boolEval c (b : ι → Bool) :=
@@ -98,7 +98,7 @@ theorem sum_charFinite {m : ℕ} (n : (ι → Bool) → ℤ)
     set F : (Fin k → ZMod 8) → ℂ :=
       fun w => ZMod.stdAddChar (∑ i : Fin k, ((n (x i) : ℤ) : ZMod 8) * w i) with hF
     have hchar : ∀ c : MonLe ι m → ZMod 8,
-        charFinite n c = F (evalMatrix (ZMod 8) m x *ᵥ c) := by
+        charFinite n c = F (reedMullerEvalMatrix (ZMod 8) m x *ᵥ c) := by
       intro c
       rw [charFinite, hF, hred c]
     have hk : k < 2 ^ (m + 1) := hsupp
@@ -140,7 +140,7 @@ theorem sum_charFinite {m : ℕ} (n : (ι → Bool) → ℤ)
       refine Finset.sum_congr rfl fun b _ => ?_
       rw [mul_comm]
     calc (∑ c : MonLe ι m → ZMod 8, charFinite n c)
-        = ∑ c : MonLe ι m → ZMod 8, F (evalMatrix (ZMod 8) m x *ᵥ c) :=
+        = ∑ c : MonLe ι m → ZMod 8, F (reedMullerEvalMatrix (ZMod 8) m x *ᵥ c) :=
           Finset.sum_congr rfl fun c _ => hchar c
       _ = _ • ∑ w : Fin k → ZMod 8, F w := hsum
       _ = 0 := by rw [hzero, smul_zero]

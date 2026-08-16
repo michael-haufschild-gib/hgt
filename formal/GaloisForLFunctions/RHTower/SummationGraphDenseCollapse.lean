@@ -21,7 +21,7 @@ namespace RHTower
 open scoped InnerProductSpace ENNReal
 
 /-- Ambient graph space `ℓ²(ℕ) ⊕ ℂ`. -/
-abbrev SummationGraphSpace : Type := WithLp 2 (EllTwo × ℂ)
+abbrev SummationGraphSpace : Type := WithLp 2 (OneSidedEllTwo × ℂ)
 
 /-- The graph of the finite summation rule: the span of the pairs `(e n, 1)`. -/
 def summationGraph : Submodule ℂ SummationGraphSpace :=
@@ -54,7 +54,7 @@ theorem mem_summationGraph_orthogonal_iff (p : SummationGraphSpace) :
       rw [inner_smul_left, ha, mul_zero]
 
 /-- The only constant sequence in `ℓ²` is zero. -/
-theorem ellTwo_const_eq_zero {f : EllTwo} {a : ℂ} (hf : ∀ n : ℕ, (f : ℕ → ℂ) n = a) : a = 0 := by
+theorem ellTwo_const_eq_zero {f : OneSidedEllTwo} {a : ℂ} (hf : ∀ n : ℕ, (f : ℕ → ℂ) n = a) : a = 0 := by
   by_contra hne
   have hsummable : Summable fun n : ℕ => ‖(f : ℕ → ℂ) n‖ ^ (2 : ℝ) := by
     have hmem : Memℓp (f : ∀ _ : ℕ, ℂ) 2 := lp.memℓp f
@@ -103,14 +103,14 @@ theorem summationGraph_topologicalClosure_eq_top :
 
 /-- **Maximal multivaluedness.**  Every coefficient vector is paired with every scalar in the
 closed relation; in particular the summation rule is not closable. -/
-theorem summationGraph_closure_multivalued (y : EllTwo) (c : ℂ) :
+theorem summationGraph_closure_multivalued (y : OneSidedEllTwo) (c : ℂ) :
     WithLp.toLp 2 (y, c) ∈ summationGraph.topologicalClosure := by
   rw [summationGraph_topologicalClosure_eq_top]
   exact Submodule.mem_top
 
 theorem summationGraph_not_closable :
-    WithLp.toLp 2 ((0 : EllTwo), (0 : ℂ)) ∈ summationGraph.topologicalClosure ∧
-      WithLp.toLp 2 ((0 : EllTwo), (1 : ℂ)) ∈ summationGraph.topologicalClosure :=
+    WithLp.toLp 2 ((0 : OneSidedEllTwo), (0 : ℂ)) ∈ summationGraph.topologicalClosure ∧
+      WithLp.toLp 2 ((0 : OneSidedEllTwo), (1 : ℂ)) ∈ summationGraph.topologicalClosure :=
   ⟨summationGraph_closure_multivalued 0 0, summationGraph_closure_multivalued 0 1⟩
 
 end RHTower

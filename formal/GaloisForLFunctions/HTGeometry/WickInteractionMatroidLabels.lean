@@ -240,7 +240,7 @@ section VerticalJets
 variable {K L : Type*} [Field K] [Field L] [Algebra K L] [Differential L]
 
 /-- An algebra map commuting with the derivations preserves every jet order. -/
-theorem differentialJet_algHom {E : Type*} [Field E] [Algebra K E] [Differential E]
+private theorem differentialJet_algHom {E : Type*} [Field E] [Algebra K E] [Differential E]
     (φ : L →ₐ[K] E) (hφ : ∀ y : L, φ (Differential.deriv y) = Differential.deriv (φ y))
     (n : ℕ) (y : L) : φ (differentialJet n y) = differentialJet n (φ y) := by
   induction n with

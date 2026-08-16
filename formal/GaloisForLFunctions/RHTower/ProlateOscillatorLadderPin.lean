@@ -56,11 +56,11 @@ theorem differentiable_deriv_probHermiteFun (n : ℕ) :
     ((differentiableAt_id).div_const 2).mul (differentiable_probHermiteFun n x)
   exact h1.sub h2
 
-theorem deriv_hermiteFun_eq (n : ℕ) :
+private theorem deriv_hermiteFun_eq (n : ℕ) :
     deriv (hermiteFun n) = fun x => Real.sqrt 2 * deriv (probHermiteFun n) (Real.sqrt 2 * x) :=
   funext fun x => deriv_sqrtScale 2 (probHermiteFun n) x
 
-theorem hasDerivAt_hermiteFun (n : ℕ) (x : ℝ) :
+theorem hasDerivAt_ladderHermiteFun (n : ℕ) (x : ℝ) :
     HasDerivAt (hermiteFun n) (deriv (hermiteFun n) x) x := by
   have hlin : HasDerivAt (fun y : ℝ => Real.sqrt 2 * y) (Real.sqrt 2) x := by
     simpa using (hasDerivAt_id x).const_mul (Real.sqrt 2)
@@ -71,7 +71,7 @@ theorem hasDerivAt_hermiteFun (n : ℕ) (x : ℝ) :
       (deriv (probHermiteFun n) (Real.sqrt 2 * x) * Real.sqrt 2) x := h
   exact h2.deriv ▸ h2
 
-theorem hasDerivAt_deriv_hermiteFun (n : ℕ) (x : ℝ) :
+theorem hasDerivAt_deriv_ladderHermiteFun (n : ℕ) (x : ℝ) :
     HasDerivAt (deriv (hermiteFun n)) (deriv (deriv (hermiteFun n)) x) x := by
   have hd : Differentiable ℝ (deriv (hermiteFun n)) := by
     rw [deriv_hermiteFun_eq]
@@ -107,8 +107,8 @@ theorem hermitePairing_pin {u u' u'' D : ℝ → ℝ} {μ : ℝ} (n : ℕ)
   have hdu' : deriv u' = u'' := funext fun x => (hu' x).deriv
   have hdd : deriv (deriv u) = u'' := by rw [hdu, hdu']
   have hsym : ∫ x, u'' x * hermiteFun n x = ∫ x, u x * deriv (deriv (hermiteFun n)) x :=
-    integral_secondDeriv_mul_comm hu (fun x => hasDerivAt_hermiteFun n x) hu'
-      (fun x => hasDerivAt_deriv_hermiteFun n x) hintL hintR hplus hminus
+    integral_secondDeriv_mul_comm hu (fun x => hasDerivAt_ladderHermiteFun n x) hu'
+      (fun x => hasDerivAt_deriv_ladderHermiteFun n x) hintL hintR hplus hminus
   have hR : ∫ x, u x * deriv (deriv (hermiteFun n)) x
       = (∫ x, x ^ 2 * (u x * hermiteFun n x)) - (2 * n + 1) * ∫ x, u x * hermiteFun n x := by
     have hpt : ∀ x, u x * deriv (deriv (hermiteFun n)) x

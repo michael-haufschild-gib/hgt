@@ -3353,3 +3353,32 @@ Design notes worth reusing:
   recursion `replicaAmplitudeMoment_succ`, so the multinomial fibre count is a consequence rather
   than an input.
 - Theorem D is an identity in `AddMonoidAlgebra C G` with `conjReflect` a ring endomorphism.
+
+## 2026-08-16 -- progress: all-replica-static-centralizer-planar-separation-law
+
+Theorems A, B and D of the card, plus equations `(6)`, `(8)`, `(9)`, `(11)`--`(17)`, `(21)`--`(23)`,
+and the abstract mechanisms of `(19)` and `(26)`, are now proved unconditionally.  Five new modules,
+all umbrella-wired and axiom-clean:
+
+- `QuenchedCentralizerPropagatorSplit`   -- Theorem A, eqs (8)-(9)
+- `HistogramCentralizerDimension`        -- Theorem B, eqs (6), (11)-(17)
+- `AveragedCentralizerProjectionFloor`   -- Theorem D, eqs (21)-(23)
+- `AnnealedSpectralDephasing`            -- Theorem C's mechanism, eq (19) abstract
+- `PlanarStaticSeparation`               -- eq (13), eq (26) abstract
+
+Two inputs remain, both recorded in the card:
+- the concrete instance of `(19)` needs the fixed-shell nowhere-flat spectral-action theorem, i.e.
+  the still-stage-2 parent `fixed-shell-angular-dephasing-static-local-plateau-law.md`;
+- equation `(25)` needs the non-diagonal matrix Dyson equation (Kargin), because a collective
+  replica generator breaks the `MatrixFamilyHasSubsingletonColumns` reduction that carries the
+  formalized one-replica pipeline.
+
+Reuse notes:
+- `MaximallyProjectiveEnergy` and `ReplicaRigidAt` were already corpus-owned in
+  `HTGeometry/ReplicaCollisionExtremality.lean`; the first draft of this work duplicated the
+  predicate and was rewritten to consume the corpus one.  The corresponding a.e. statement for the
+  fixed-shell chain is `exists_uniformQubitChainMaximalRank_dense_residual_fullMeasure` from the
+  already-formalized `nearest-neighbor-chain-projective-spectral-maximality`.
+- `norm_exp_neg_I_mul_real` already existed in `HTGeometry/ObserverInvisibleRayPreservation.lean`;
+  the new one was renamed and made private.  Grep every new declaration name against the corpus
+  before building the umbrella -- two modules in one namespace cannot share a name.

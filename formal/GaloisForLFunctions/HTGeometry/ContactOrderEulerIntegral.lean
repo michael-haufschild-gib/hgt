@@ -20,7 +20,7 @@ noncomputable section
 namespace GaloisForLFunctions.HTGeometry
 
 /-- **The real Mellin kernel of `1/(1+y)`.** -/
-theorem integral_Ioi_rpow_div_one_add {a : ℝ} (ha : 0 < a) (ha1 : a < 1) :
+private theorem integral_Ioi_rpow_div_one_add {a : ℝ} (ha : 0 < a) (ha1 : a < 1) :
     (∫ y in Ioi (0 : ℝ), y ^ (a - 1) / (1 + y)) = Real.pi / Real.sin (Real.pi * a) := by
   have hw : (0 : ℝ) < ((a : ℂ)).re := by simpa using ha
   have hc : ((a : ℂ)).re < ((1 : ℂ)).re := by simpa using ha1

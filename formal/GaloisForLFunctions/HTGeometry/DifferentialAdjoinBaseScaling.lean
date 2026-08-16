@@ -13,7 +13,7 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 /-- A derivation-closed intermediate field contains every jet of each of its elements. -/
-theorem differentialJet_mem_of_derivationClosed {F K : Type*} [Field F] [Field K] [Algebra F K]
+private theorem differentialJet_mem_of_derivationClosed {F K : Type*} [Field F] [Field K] [Algebra F K]
     [Differential K] {L : IntermediateField F K} (hL : DerivationClosed L) {x : K} (hx : x ∈ L)
     (n : ℕ) : differentialJet n x ∈ L := by
   induction n with

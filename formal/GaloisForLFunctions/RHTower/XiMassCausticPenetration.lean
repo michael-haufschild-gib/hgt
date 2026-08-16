@@ -118,7 +118,7 @@ theorem xiMassAction_le_slope {a u H : ℝ} (ha : 1 / 2 < a) (hu : 0 < u) (huH :
 /-! ## The quantitative retreat estimate -/
 
 /-- The height ratio at a retreat, in terms of the relative retreat `x`. -/
-private theorem height_ratio_le {kappa q u r x H : ℝ} (hkappa : 1 < kappa) (hq : 0 < q)
+theorem height_ratio_le {kappa q u r x H : ℝ} (hkappa : 1 < kappa) (hq : 0 < q)
     (hq2 : q ^ 2 = kappa ^ 2 - 1) (hu : 0 < u) (hr : 0 < r)
     (hxdef : x * (u * q ^ 2) = 2 * kappa * r) (hx0 : 0 ≤ x) (hxhalf : x ≤ 1 / 2)
     (hH : H = kappa * u - r) :
@@ -264,6 +264,57 @@ theorem rpow_sub_le {A B p : ℝ} (hA : 0 < A) (hB : 0 ≤ B) (hBA : B ≤ A)
     field_simp
   rw [hAp]
   ring
+
+/-! ## The two-point convexity estimate -/
+
+/-- **The exterior action is convex.**  Its value at a retreated height is at most the value at
+the outer height plus the linear extrapolation from the inner slope. -/
+theorem xiMassAction_le_slope_general {a u H K : ℝ} (ha : 0 < a) (hu : 0 < u) (huH : u < H)
+    (hHK : H ≤ K) :
+    H / 2 - a * Real.sqrt (H ^ 2 - u ^ 2)
+      ≤ (K / 2 - a * Real.sqrt (K ^ 2 - u ^ 2))
+        + (K - H) * (a * H / Real.sqrt (H ^ 2 - u ^ 2) - 1 / 2) := by
+  have hgapH : (0 : ℝ) < H ^ 2 - u ^ 2 := by nlinarith
+  have hgapK : (0 : ℝ) ≤ K ^ 2 - u ^ 2 := by nlinarith
+  have hQH : 0 < Real.sqrt (H ^ 2 - u ^ 2) := Real.sqrt_pos.2 hgapH
+  have hQHsq : Real.sqrt (H ^ 2 - u ^ 2) ^ 2 = H ^ 2 - u ^ 2 := Real.sq_sqrt hgapH.le
+  have hQKsq : Real.sqrt (K ^ 2 - u ^ 2) ^ 2 = K ^ 2 - u ^ 2 := Real.sq_sqrt hgapK
+  have hQKnn : 0 ≤ Real.sqrt (K ^ 2 - u ^ 2) := Real.sqrt_nonneg _
+  have hnn : (0 : ℝ) ≤ K * H - u ^ 2 := by nlinarith
+  have hprod : Real.sqrt (H ^ 2 - u ^ 2) * Real.sqrt (K ^ 2 - u ^ 2) ≤ K * H - u ^ 2 := by
+    have hsq : (Real.sqrt (H ^ 2 - u ^ 2) * Real.sqrt (K ^ 2 - u ^ 2)) ^ 2
+        ≤ (K * H - u ^ 2) ^ 2 := by
+      rw [mul_pow, hQHsq, hQKsq]
+      nlinarith [sq_nonneg (u * (H - K))]
+    have hstep := Real.sqrt_le_sqrt hsq
+    rwa [Real.sqrt_sq (mul_nonneg hQH.le hQKnn), Real.sqrt_sq hnn] at hstep
+  have hdiv : a * H / Real.sqrt (H ^ 2 - u ^ 2) * Real.sqrt (H ^ 2 - u ^ 2) = a * H :=
+    div_mul_cancel₀ (a * H) (ne_of_gt hQH)
+  have hid : ((K / 2 - a * Real.sqrt (K ^ 2 - u ^ 2))
+        + (K - H) * (a * H / Real.sqrt (H ^ 2 - u ^ 2) - 1 / 2)
+        - (H / 2 - a * Real.sqrt (H ^ 2 - u ^ 2))) * Real.sqrt (H ^ 2 - u ^ 2)
+      = a * (K * H - u ^ 2
+        - Real.sqrt (H ^ 2 - u ^ 2) * Real.sqrt (K ^ 2 - u ^ 2)) := by
+    calc ((K / 2 - a * Real.sqrt (K ^ 2 - u ^ 2))
+          + (K - H) * (a * H / Real.sqrt (H ^ 2 - u ^ 2) - 1 / 2)
+          - (H / 2 - a * Real.sqrt (H ^ 2 - u ^ 2))) * Real.sqrt (H ^ 2 - u ^ 2)
+        = (K / 2 - a * Real.sqrt (K ^ 2 - u ^ 2)) * Real.sqrt (H ^ 2 - u ^ 2)
+          + (K - H) * (a * H / Real.sqrt (H ^ 2 - u ^ 2) * Real.sqrt (H ^ 2 - u ^ 2))
+          - (K - H) * (1 / 2) * Real.sqrt (H ^ 2 - u ^ 2)
+          - (H / 2 - a * Real.sqrt (H ^ 2 - u ^ 2)) * Real.sqrt (H ^ 2 - u ^ 2) := by ring
+      _ = (K / 2 - a * Real.sqrt (K ^ 2 - u ^ 2)) * Real.sqrt (H ^ 2 - u ^ 2)
+          + (K - H) * (a * H)
+          - (K - H) * (1 / 2) * Real.sqrt (H ^ 2 - u ^ 2)
+          - (H / 2 - a * Real.sqrt (H ^ 2 - u ^ 2)) * Real.sqrt (H ^ 2 - u ^ 2) := by
+            rw [hdiv]
+      _ = a * (K * H - u ^ 2
+          - Real.sqrt (H ^ 2 - u ^ 2) * Real.sqrt (K ^ 2 - u ^ 2)) := by
+            linear_combination a * hQHsq
+  have hpos : 0 ≤ a * (K * H - u ^ 2
+      - Real.sqrt (H ^ 2 - u ^ 2) * Real.sqrt (K ^ 2 - u ^ 2)) :=
+    mul_nonneg ha.le (by linarith)
+  rw [← hid] at hpos
+  nlinarith [hpos, hQH]
 
 end
 

@@ -1,12 +1,12 @@
 # Suzuki Weil Position-Torque Recurrence
 
 - **ID:** suzuki-weil-position-torque-recurrence
-- **Stage:** 2-fully-proven
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM (paper)
 - **Source:** Suzuki 2026 restricted Weil operator, distribution kernel (2.10)--(2.11)
 - **Statement:** The free even--odd position commutator of Suzuki's complete restricted Weil
   source changes strict sign in both directions at arbitrarily large apertures.
-- **Scientific status:** `[PAPER-PROVED] [LEAN-PARTIAL] [UNCONDITIONAL] [NOVELTY-BOUNDARY-AUDITED]`
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [UNCONDITIONAL] [NOVELTY-BOUNDARY-AUDITED]`
   `[SOURCE-DOMAIN PROMOTION PROVED]`
 
 ## Goal
@@ -41,8 +41,9 @@ neither assumes nor proves convergence of Suzuki's two-angle Livsic quotient.
 
 - [x] 0 -> 1 in-progress: literal source observable, exact kernel calculation, hostile alternatives
 - [x] 1 -> 2 fully-proven: dependency-closed transform and Landau proof
-- [ ] 2 -> 3 formalized: exact finite source, archimedean cancellation, tent transform, and
-      Xi-curvature continuation are Lean-proved; actual cofinal sign theorem remains to formalize
+- [x] 2 -> 3 formalized: exact finite source, archimedean cancellation, tent transform,
+      Xi-curvature continuation, exponential order, the Landau lemma, and the actual cofinal sign
+      theorem (19)--(20) are all Lean-proved unconditionally
 - [ ] 3 -> 4 publication-ready: standalone operator theorem, source-domain promotion, specialist
       novelty review
 
@@ -534,13 +535,30 @@ Formalized unconditionally:
 - `SuzukiResolventPositionTorquePromotion.lean`: first-order strong resolvent expansion on the
   operator domain and exact promotion of the real deficiency commutator to position torque.
 
-Not yet formalized:
+Also formalized (2026-08-16), closing the 2 -> 3 gate:
 
-- continuity and exponential-order bounds for the full moving-cutoff torque;
-- absolute Fubini for the complete prime tent sum;
-- the actual cofinal sign theorem (19);
-- construction of Suzuki's concrete restricted-Weil operator and its `cosh/sinh` domain instance;
-- the joint transition-scale classification.
+- `SuzukiTorqueTentSeries.lean`, `SuzukiTorqueTentLaplace.lean`, `SuzukiTorquePrimeSeries.lean`,
+  `SuzukiTorquePrimeLaplace.lean`, `SuzukiTorqueArchLaplace.lean`, `SuzukiTorqueTotalTransform.lean`,
+  `SuzukiTorqueEulerTransform.lean`: the tent transform, absolute convergence of the prime tent
+  series, and the complete transform (14)--(16);
+- `SuzukiTorquePrimeOrder.lean`, `SuzukiTorqueArchOrder.lean`: continuity and the exponential-order
+  bounds (17)--(18) for the full moving-cutoff torque;
+- `LaplaceAbscissaExists.lean`, `ComplexLaplaceHolomorphy.lean`, `RealJetsOfHolomorphic.lean`,
+  `LandauSingularAtAbscissa.lean`: the Landau lemma in its exact Taylor--Tonelli form;
+- `RiemannXiRealAxisNonvanishing.lean`, `SuzukiTorqueContinuationAnalytic.lean`,
+  `SuzukiTorqueContinuationPole.lean`: real-axis regularity of the continuation, and its exact
+  order `-2` above every strip zero of `xi`;
+- `HeadLaplaceEntire.lean`, `TailMeasureLaplace.lean`, `SuzukiTorqueTailCarrier.lean`,
+  `SuzukiTailTransform.lean`, `ConvexDiffCountableConnected.lean`, `OneSignTailImpossible.lean`,
+  `SuzukiTorqueCofinalSign.lean`: the one-sign-tail obstruction and the actual cofinal sign
+  theorem (19), together with its baseline form (20).
+
+Deferred to the 3 -> 4 gate, as listed there:
+
+- construction of Suzuki's concrete restricted-Weil operator and its `cosh/sinh` domain instance
+  (the promotion theorems (P1)--(P4) are Lean-stated in the bounded-resolvent coordinate `B`, so no
+  unbounded operator is postulated);
+- the joint transition-scale classification, which is the card's live open problem, not a claim.
 
 No formal theorem assumes RH.
 
@@ -552,6 +570,8 @@ No formal theorem assumes RH.
   source identification and consequence.
 - 2026-08-01 — exact source-domain resolvent promotion and cofinal two-sign deficiency-anomaly
   consequence proved; transition-scale classification isolated as live core.
+- 2026-08-16 — cofinal sign theorem (19)--(20) formalized unconditionally in Lean 4; card promoted
+  to stage 3.  See `suzuki-weil-position-torque-recurrence-formalized.md`.
 
 ## Two-jet closure audit
 

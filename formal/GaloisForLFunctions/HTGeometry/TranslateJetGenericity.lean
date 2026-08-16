@@ -45,7 +45,7 @@ theorem movingCanonicalLogDerivative_im_pos (θ : BoundedRealSequence) {z : ℂ}
   have hsumim : Summable
       (fun n : ℕ => ((((movingCanonicalZero θ n : ℂ) - z)⁻¹
         - ((movingCanonicalZero θ n : ℂ))⁻¹).im)) := hsum.mapL Complex.imCLM
-  rw [movingCanonicalLogDerivative, Complex.im_tsum hsum]
+  rw [movingCanonicalLogDerivative, realLogDerivative, Complex.im_tsum hsum]
   refine lt_of_lt_of_le (hpos 0) ?_
   exact hsumim.le_tsum 0 fun j _ => (hpos j).le
 

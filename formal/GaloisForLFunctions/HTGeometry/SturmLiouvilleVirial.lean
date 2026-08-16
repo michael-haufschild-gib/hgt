@@ -135,6 +135,143 @@ theorem integral_slEnergy_div_eq
   rw [hEeq]
   linarith [hvir, hsplit]
 
-end GaloisForLFunctions.HTGeometry
+/-- **`L²` mass from a Sturm energy floor.**  An interval on which `∫ dx/p` exceeds the boundary
+budget must carry mass proportional to the energy floor.  Nothing about the oscillation enters. -/
+theorem mass_lower_of_slEnergy {F₀ Ip B Qβ : ℝ} (hαβ : α ≤ β)
+    (hR : ∀ x ∈ uIcc α β, HasDerivAt R (DR x) x)
+    (hpR : ∀ x ∈ uIcc α β, HasDerivAt (fun t => p t * DR t) (-(Q x * R x)) x)
+    (hint : IntervalIntegrable (fun x => p x * DR x ^ 2 - Q x * R x ^ 2)
+      MeasureTheory.volume α β)
+    (hQR : IntervalIntegrable (fun x => Q x * R x ^ 2) MeasureTheory.volume α β)
+    (hEint : IntervalIntegrable (fun x => slEnergy p Q R DR x / p x) MeasureTheory.volume α β)
+    (hpinv : IntervalIntegrable (fun x => 1 / p x) MeasureTheory.volume α β)
+    (hR2 : IntervalIntegrable (fun x => R x ^ 2) MeasureTheory.volume α β)
+    (hppos : ∀ x ∈ Icc α β, 0 < p x)
+    (hF₀ : ∀ x ∈ Icc α β, F₀ ≤ slEnergy p Q R DR x) (hF₀0 : 0 ≤ F₀)
+    (hIp : Ip ≤ ∫ x in α..β, 1 / p x)
+    (hbd : R β * (p β * DR β) - R α * (p α * DR α) ≤ B)
+    (hQ : ∀ x ∈ Icc α β, Q x ≤ Qβ) (hQβ : 0 < Qβ) :
+    (F₀ * Ip - B) / (2 * Qβ) ≤ ∫ x in α..β, R x ^ 2 := by
+  have huIcc : uIcc α β = Icc α β := uIcc_of_le hαβ
+  have hp0 : ∀ x ∈ uIcc α β, p x ≠ 0 := by
+    rw [huIcc]
+    exact fun x hx => (hppos x hx).ne'
+  have hid := integral_slEnergy_div_eq hR hpR hp0 hint hQR
+  -- the energy floor
+  have hfloor : F₀ * Ip ≤ ∫ x in α..β, slEnergy p Q R DR x / p x := by
+    have hmono : (∫ x in α..β, F₀ * (1 / p x)) ≤ ∫ x in α..β, slEnergy p Q R DR x / p x := by
+      refine intervalIntegral.integral_mono_on hαβ (hpinv.const_mul F₀) hEint fun x hx => ?_
+      have hpx : 0 < p x := hppos x hx
+      have hFx : F₀ ≤ slEnergy p Q R DR x := hF₀ x hx
+      rw [mul_one_div, div_le_div_iff₀ hpx hpx]
+      nlinarith [hFx, hpx]
+    have hconst : (∫ x in α..β, F₀ * (1 / p x)) = F₀ * ∫ x in α..β, 1 / p x :=
+      intervalIntegral.integral_const_mul _ _
+    have hIp' : F₀ * Ip ≤ F₀ * ∫ x in α..β, 1 / p x :=
+      mul_le_mul_of_nonneg_left hIp hF₀0
+    rw [hconst] at hmono
+    linarith [hmono, hIp']
+  -- the potential mass from above
+  have hpot : (∫ x in α..β, Q x * R x ^ 2) ≤ Qβ * ∫ x in α..β, R x ^ 2 := by
+    have hmono : (∫ x in α..β, Q x * R x ^ 2) ≤ ∫ x in α..β, Qβ * R x ^ 2 := by
+      refine intervalIntegral.integral_mono_on hαβ hQR (hR2.const_mul Qβ) fun x hx => ?_
+      nlinarith [hQ x hx, sq_nonneg (R x)]
+    rwa [intervalIntegral.integral_const_mul] at hmono
+  rw [div_le_iff₀ (by positivity)]
+  linarith [hid, hfloor, hpot, hbd]
 
-end
+/-! ## A nonzero Wronskian floors the Sturm energy
+
+For two solutions of `(p R')' + Q R = 0` the combination `R₁·(p R₂') − (p R₁')·R₂` is constant.
+Weighted Cauchy–Schwarz against the Sturm energies gives
+
+```text
+p Q · W²  ≤  slEnergy₁ · slEnergy₂ ,
+```
+
+the weight `p Q` appearing because the energy weights `(p R')²` and `p Q R²` differently.  The
+identity behind it is exact:
+
+```text
+(A² + μB²)(C² + μD²) − μ(BC − AD)²  =  (AC + μBD)² .
+```
+
+This is where a factor of the aperture comes from in the radial application: `p Q = c²(x²−1)(x²−s)`
+carries `c²`, so a companion solution with energy `O(c)` forces the solution's own energy to be
+`Ω(c)`.  No evaluation of either solution is involved. -/
+
+/-- **The weighted Lagrange identity.** -/
+theorem sq_wronskian_mul_le_slEnergy_mul (p Q R₁ DR₁ R₂ DR₂ : ℝ → ℝ) (x : ℝ) :
+    p x * Q x * (R₁ x * (p x * DR₂ x) - (p x * DR₁ x) * R₂ x) ^ 2
+      ≤ slEnergy p Q R₁ DR₁ x * slEnergy p Q R₂ DR₂ x := by
+  rw [slEnergy, slEnergy]
+  nlinarith [sq_nonneg ((p x * DR₁ x) * (p x * DR₂ x) + (p x * Q x) * (R₁ x * R₂ x))]
+
+/-- **A nonzero Wronskian floors the Sturm energy.** -/
+theorem slEnergy_lower_of_wronskian {p Q R₁ DR₁ R₂ DR₂ : ℝ → ℝ} {x W C : ℝ}
+    (hWval : R₁ x * (p x * DR₂ x) - (p x * DR₁ x) * R₂ x = W)
+    (hpQ : 0 ≤ p x * Q x)
+    (hE₂ : slEnergy p Q R₂ DR₂ x ≤ C) (hC : 0 < C) :
+    p x * Q x * W ^ 2 / C ≤ slEnergy p Q R₁ DR₁ x := by
+  have hCS := sq_wronskian_mul_le_slEnergy_mul p Q R₁ DR₁ R₂ DR₂ x
+  rw [hWval] at hCS
+  have hE1 : 0 ≤ slEnergy p Q R₁ DR₁ x := by
+    rw [slEnergy]
+    nlinarith [sq_nonneg (p x * DR₁ x), sq_nonneg (R₁ x), hpQ]
+  rw [div_le_iff₀ hC]
+  nlinarith [hCS, hE1, hE₂, sq_nonneg W, hpQ]
+
+/-! ## The Wronskian is constant -/
+
+/-- The self-adjoint Wronskian of two solutions. -/
+def slWronskian (p R₁ DR₁ R₂ DR₂ : ℝ → ℝ) (x : ℝ) : ℝ :=
+  R₁ x * (p x * DR₂ x) - (p x * DR₁ x) * R₂ x
+
+/-- **Abel's identity in self-adjoint form.**  The Wronskian of two solutions has zero
+derivative. -/
+theorem hasDerivAt_slWronskian {R₁ DR₁ R₂ DR₂ : ℝ → ℝ} {x : ℝ}
+    (hR₁ : HasDerivAt R₁ (DR₁ x) x)
+    (hpR₁ : HasDerivAt (fun t => p t * DR₁ t) (-(Q x * R₁ x)) x)
+    (hR₂ : HasDerivAt R₂ (DR₂ x) x)
+    (hpR₂ : HasDerivAt (fun t => p t * DR₂ t) (-(Q x * R₂ x)) x) :
+    HasDerivAt (slWronskian p R₁ DR₁ R₂ DR₂) 0 x := by
+  have h := (hR₁.mul hpR₂).sub (hpR₁.mul hR₂)
+  have hfun : slWronskian p R₁ DR₁ R₂ DR₂
+      = fun t => R₁ t * (p t * DR₂ t) - (p t * DR₁ t) * R₂ t := by
+    funext t
+    rw [slWronskian]
+  rw [hfun]
+  refine h.congr_deriv ?_
+  ring
+
+/-- **The Wronskian is constant on an interval of solutions.** -/
+theorem slWronskian_eq {R₁ DR₁ R₂ DR₂ : ℝ → ℝ}
+    (hR₁ : ∀ x ∈ Icc α β, HasDerivAt R₁ (DR₁ x) x)
+    (hpR₁ : ∀ x ∈ Icc α β, HasDerivAt (fun t => p t * DR₁ t) (-(Q x * R₁ x)) x)
+    (hR₂ : ∀ x ∈ Icc α β, HasDerivAt R₂ (DR₂ x) x)
+    (hpR₂ : ∀ x ∈ Icc α β, HasDerivAt (fun t => p t * DR₂ t) (-(Q x * R₂ x)) x)
+    {x : ℝ} (hx : x ∈ Icc α β) :
+    slWronskian p R₁ DR₁ R₂ DR₂ x = slWronskian p R₁ DR₁ R₂ DR₂ α := by
+  have hd : ∀ y ∈ Icc α β, HasDerivAt (slWronskian p R₁ DR₁ R₂ DR₂) 0 y := fun y hy =>
+    hasDerivAt_slWronskian (Q := Q) (hR₁ y hy) (hpR₁ y hy) (hR₂ y hy) (hpR₂ y hy)
+  have hsub : Icc α x ⊆ Icc α β := Icc_subset_Icc le_rfl hx.2
+  have hcont : ContinuousOn (slWronskian p R₁ DR₁ R₂ DR₂) (Icc α x) := fun y hy =>
+    ((hd y (hsub hy)).continuousAt).continuousWithinAt
+  have hdiff : DifferentiableOn ℝ (slWronskian p R₁ DR₁ R₂ DR₂) (interior (Icc α x)) := by
+    rw [interior_Icc]
+    exact fun y hy => ((hd y (hsub ⟨hy.1.le, hy.2.le⟩)).differentiableAt).differentiableWithinAt
+  have hmono : MonotoneOn (slWronskian p R₁ DR₁ R₂ DR₂) (Icc α x) := by
+    refine monotoneOn_of_deriv_nonneg (convex_Icc α x) hcont hdiff ?_
+    rw [interior_Icc]
+    intro y hy
+    rw [(hd y (hsub ⟨hy.1.le, hy.2.le⟩)).deriv]
+  have hanti : AntitoneOn (slWronskian p R₁ DR₁ R₂ DR₂) (Icc α x) := by
+    refine antitoneOn_of_deriv_nonpos (convex_Icc α x) hcont hdiff ?_
+    rw [interior_Icc]
+    intro y hy
+    rw [(hd y (hsub ⟨hy.1.le, hy.2.le⟩)).deriv]
+  have h1 := hmono (left_mem_Icc.2 hx.1) (right_mem_Icc.2 hx.1) hx.1
+  have h2 := hanti (left_mem_Icc.2 hx.1) (right_mem_Icc.2 hx.1) hx.1
+  linarith
+
+end GaloisForLFunctions.HTGeometry

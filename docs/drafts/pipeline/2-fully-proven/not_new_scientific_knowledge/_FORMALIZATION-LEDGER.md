@@ -49,6 +49,9 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-16 | `fixed-rank-hankel-tests-do-not-imply-stieltjes` | `RHTower/FixedRankHankelNonStieltjes.lean` |
 | 2026-08-16 | `boundary-weyl-thresholds-have-no-formal-monotonicity` | `RHTower/BoundaryWeylThresholdNonMonotone.lean` |
 | 2026-08-16 | `pole-budget-does-not-imply-uvarov-repair` | `RHTower/PoleBudgetUvarovNoGo.lean` |
+| 2026-08-16 | `uvarov-repair-requires-boundary-kernel-positivity` | `HTGeometry/BoundaryKernelSchurSplit.lean` |
+| 2026-08-16 | `rank-one-scalar-shadow-needs-kernel-exhaustion` | `HTGeometry/BoundaryKernelSchurSplit.lean` |
+| 2026-08-16 | `stieltjes-bulk-exterior-christoffel-monotonicity` | `HTGeometry/StieltjesExteriorChristoffelMonotone.lean` |
 
 ## Already carrying a stage-3 certificate (verify, then move the paper card)
 
@@ -130,6 +133,18 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
   functionals, the realizing positive definite bulk form, and the variational Schur threshold.
 - `RHTower/PoleBudgetUvarovNoGo.lean` — the one-negative-square pole-budget form, its positive
   completion, the invisible negative direction, and the degree-one evaluation-functional layer.
+- `HTGeometry/BoundaryKernelSchurSplit.lean` — **the coordinate-free rank-one Schur split.**
+  `exists_kernelRiesz` builds the `ker β`-representative of any vector from kernel positive
+  definiteness alone (orthogonal projection ∘ operator, injective hence surjective in finite
+  dimension); `repairedForm_split` is the exact congruence transport
+  `H[v] = A[v - (βv)(q - w)] + ‖βv‖²(A q + t - A w)`; `repairedForm_pos_iff` /
+  `repairedForm_nonneg_iff` are the scalar Schur criteria; `shadow_scalar_not_faithful` is the
+  positive-scalar/negative-kernel countermodel on `ℂ²`.
+- `HTGeometry/StieltjesExteriorChristoffelMonotone.lean` — **zero location for Stieltjes moment
+  bulks** (`ShiftedPositiveAt`, `shiftedPositiveAt_of_measure`, `monicOrtho_root_ge`) and the
+  resulting exterior monotonicity of the Christoffel–Darboux diagonal and of the Christoffel
+  function (`cdKernel_diag_strictAntiOn`, `christoffel_strictMonoOn`).  The monotonicity proof is
+  purely algebraic — the node product, not the logarithmic derivative.
 
 ## Triage of the remaining folder (2026-08-16 scan)
 

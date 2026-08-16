@@ -1,33 +1,30 @@
-import GaloisForLFunctions.RHTower.RiemannXiRealRayNonvanishing
-import GaloisForLFunctions.RHTower.RiemannTower
+import GaloisForLFunctions.RHTower.RiemannXiZerosInfinite
+import GaloisForLFunctions.RHTower.XiRealAxisNonvanishing
 
 /-!
-# The completed Xi function has no real zeros
+# The two corpus spellings of the completed Xi agree, and neither vanishes on the real axis
 
-The corpus owns the positive ray; the functional equation `ξ(1−s) = ξ(s)` carries it to the rest of
-the line, because `σ ≤ 0` gives `1 − σ ≥ 1 > 0`.  This is the regularity the torque card's `(19)`
-needs of the two Xi arguments of `(16)`.
+`RiemannTower.xi` and `RiemannXiZerosInfinite.riemannXi` are the same entire function written with
+the division placed differently; the real-axis nonvanishing proved for the first therefore transfers
+to the second, which is the form the zero-existence theorems use.
 -/
+
+open Complex
 
 noncomputable section
 
 namespace RHTower
 
-/-- The two spellings of the completed Xi function agree. -/
 theorem xi_eq_riemannXi (s : ℂ) : xi s = riemannXi s := by
   rw [xi, riemannXi]
   ring
 
-/-- **`ξ` has no zero on the real axis.** -/
-theorem xi_ne_zero_of_ofReal (σ : ℝ) : xi ((σ : ℂ)) ≠ 0 := by
-  rcases lt_or_ge 0 σ with h | h
-  · rw [xi_eq_riemannXi]
-    exact GaloisForLFunctions.RHTower.riemannXi_ne_zero_of_ofReal_pos h
-  · have hpos : (0 : ℝ) < 1 - σ := by linarith
-    have hfe : xi ((((1 - σ : ℝ)) : ℂ)) = xi ((σ : ℂ)) := by
-      have hcast : ((((1 - σ : ℝ)) : ℂ)) = 1 - ((σ : ℂ)) := by push_cast; ring
-      rw [hcast, xi_one_sub]
-    rw [← hfe, xi_eq_riemannXi]
-    exact GaloisForLFunctions.RHTower.riemannXi_ne_zero_of_ofReal_pos hpos
+/-- **`ξ` has no zero on the real axis.**  (Corpus form, in the real-argument spelling.) -/
+theorem xi_ne_zero_of_ofReal (σ : ℝ) : xi ((σ : ℂ)) ≠ 0 := xi_ne_zero_of_real σ
+
+/-- The second spelling inherits the real-axis nonvanishing. -/
+theorem riemannXi_ne_zero_of_ofReal (σ : ℝ) : riemannXi ((σ : ℂ)) ≠ 0 := by
+  rw [← xi_eq_riemannXi]
+  exact xi_ne_zero_of_ofReal σ
 
 end RHTower

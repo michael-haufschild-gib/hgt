@@ -19,10 +19,10 @@ noncomputable section
 
 namespace RHTower
 
-theorem differentiable_probHermiteFun (n : ℕ) : Differentiable ℝ (probHermiteFun n) :=
+private theorem differentiable_probHermiteFun (n : ℕ) : Differentiable ℝ (probHermiteFun n) :=
   fun x => (hasDerivAt_probHermiteFun n x).differentiableAt
 
-theorem differentiable_deriv_probHermiteFun (n : ℕ) :
+private theorem differentiable_deriv_probHermiteFun (n : ℕ) :
     Differentiable ℝ (deriv (probHermiteFun n)) := by
   rw [deriv_probHermiteFun]
   intro x

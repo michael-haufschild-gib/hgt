@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.XiMassPrimeWindowAbel
 import GaloisForLFunctions.RHTower.XiMassBesselDerivativeEnvelope
 import GaloisForLFunctions.RHTower.XiMassAnnulusPhaseProjection
+import GaloisForLFunctions.RHTower.XiMassBesselConeQuadratureDefect
 
 /-!
 # The exterior discrepancy on a window
@@ -104,7 +105,29 @@ theorem xiMassWindowDefectConstant_nonneg {a sigma kappa : ℝ}
 
 /-! ## The window discrepancy estimate -/
 
-/-- The uniform pointwise bound for a discrepancy-weighted exterior factor. -/
+theorem intervalIntegrable_discrepancy_mul {G' : ℝ → ℂ} {H T : ℝ} (hHT : H ≤ T)
+    (hG' : IntervalIntegrable G' volume H T) :
+    IntervalIntegrable (fun h : ℝ => ((xiMassThetaLogDiscrepancy h : ℝ) : ℂ) * G' h)
+      volume H T := by
+  have hintA := intervalIntegrable_thetaWindowStep_mul hHT hG'
+  have hexpcont : ContinuousOn
+      (fun h : ℝ => (((Real.exp h - Chebyshev.theta (Real.exp H)) : ℝ) : ℂ))
+      (Set.uIcc H T) := by fun_prop
+  have hintB : IntervalIntegrable
+      (fun h : ℝ => (((Real.exp h - Chebyshev.theta (Real.exp H)) : ℝ) : ℂ) * G' h)
+      volume H T := hG'.continuousOn_mul hexpcont
+  have hsplit : ∀ h : ℝ, ((xiMassThetaLogDiscrepancy h : ℝ) : ℂ) * G' h
+      = ((Chebyshev.theta (Real.exp h) - Chebyshev.theta (Real.exp H) : ℝ) : ℂ) * G' h
+        - (((Real.exp h - Chebyshev.theta (Real.exp H)) : ℝ) : ℂ) * G' h := by
+    intro h
+    rw [xiMassThetaLogDiscrepancy]
+    push_cast
+    ring
+  simp only [hsplit]
+  exact hintA.sub hintB
+
+/-- The uniform pointwise bound for a discrepancy-weighted exterior factor, with the exterior
+decay retained. -/
 private theorem window_pointwise_bound {a sigma kappa u H CE cE h : ℝ} {X : ℂ}
     (ha : 1 / 2 < a) (hsigma : 0 < sigma) (hkappa : 1 < kappa) (hu : 0 < u)
     (hcone : kappa * u ≤ H) (hCE : 0 ≤ CE) (hcE : 0 ≤ cE) (hHh : H ≤ h)
@@ -115,7 +138,8 @@ private theorem window_pointwise_bound {a sigma kappa u H CE cE h : ℝ} {X : �
     ‖((xiMassThetaLogDiscrepancy h : ℝ) : ℂ) * X‖
       ≤ CE * (xiMassWindowDefectConstant a sigma kappa / Real.sqrt u)
         * Real.exp (H / 2 - a * Real.sqrt (H ^ 2 - u ^ 2))
-        * Real.exp (-(cE * H ^ ((1 : ℝ) / 10))) := by
+        * Real.exp (-(cE * H ^ ((1 : ℝ) / 10)))
+        * Real.exp (-((a - 1 / 2) * (h - H))) := by
   have ha0 : (0 : ℝ) < a := lt_trans (by norm_num) ha
   have hkappa0 : (0 : ℝ) < kappa := lt_trans zero_lt_one hkappa
   have hHu : u < H := lt_of_lt_of_le (by nlinarith) hcone
@@ -147,10 +171,12 @@ private theorem window_pointwise_bound {a sigma kappa u H CE cE h : ℝ} {X : �
     ring
   rw [hval]
   have haction : Real.exp (h / 2 - a * Real.sqrt (h ^ 2 - u ^ 2))
-      ≤ Real.exp (H / 2 - a * Real.sqrt (H ^ 2 - u ^ 2)) := by
+      ≤ Real.exp (H / 2 - a * Real.sqrt (H ^ 2 - u ^ 2))
+        * Real.exp (-((a - 1 / 2) * (h - H))) := by
+    rw [← Real.exp_add]
     refine Real.exp_le_exp.2 ?_
     have hstep2 := xiMassExteriorAction_le ha hu hHu hHh
-    nlinarith [hstep2, sub_nonneg.2 hHh]
+    linarith
   have hpow : Real.exp (-(cE * h ^ ((1 : ℝ) / 10)))
       ≤ Real.exp (-(cE * H ^ ((1 : ℝ) / 10))) := by
     refine Real.exp_le_exp.2 ?_
@@ -160,11 +186,15 @@ private theorem window_pointwise_bound {a sigma kappa u H CE cE h : ℝ} {X : �
   have hfirst : CE * (xiMassWindowDefectConstant a sigma kappa / Real.sqrt u)
       * Real.exp (h / 2 - a * Real.sqrt (h ^ 2 - u ^ 2))
       ≤ CE * (xiMassWindowDefectConstant a sigma kappa / Real.sqrt u)
-        * Real.exp (H / 2 - a * Real.sqrt (H ^ 2 - u ^ 2)) :=
+        * (Real.exp (H / 2 - a * Real.sqrt (H ^ 2 - u ^ 2))
+          * Real.exp (-((a - 1 / 2) * (h - H)))) :=
     mul_le_mul_of_nonneg_left haction hcoef
-  exact mul_le_mul hfirst hpow (Real.exp_nonneg _) (by positivity)
+  have hprod := mul_le_mul hfirst hpow (Real.exp_nonneg _) (by positivity)
+  refine hprod.trans (le_of_eq ?_)
+  ring
 
-/-- **(19.3) The exterior discrepancy on a logarithmic window.** -/
+/-- **(19.3) The exterior discrepancy on a logarithmic window.**  The exterior decay of the action
+makes the bound independent of the window width. -/
 theorem norm_primeLogWindow_quadratureDefect_le {a sigma kappa u H T CE cE : ℝ}
     (ha : 1 / 2 < a) (hsigma : 0 < sigma) (hkappa : 1 < kappa) (hu : 0 < u)
     (hcone : kappa * u ≤ H) (hHT : H ≤ T) (hCE : 0 ≤ CE) (hcE : 0 ≤ cE)
@@ -172,11 +202,12 @@ theorem norm_primeLogWindow_quadratureDefect_le {a sigma kappa u H T CE cE : ℝ
       |xiMassThetaLogDiscrepancy h| ≤ CE * Real.exp h * Real.exp (-(cE * h ^ ((1 : ℝ) / 10)))) :
     ‖(∑ p ∈ primeLogWindow H T, xiMassCenteredPrimeAtom a ((sigma : ℂ) + (u : ℂ) * I) p)
         - ∫ h in H..T, xiMassCriticalGrowingFourierProfile a sigma u h‖
-      ≤ (2 + (T - H)) * (CE * (xiMassWindowDefectConstant a sigma kappa / Real.sqrt u)
+      ≤ (2 + 1 / (a - 1 / 2)) * (CE * (xiMassWindowDefectConstant a sigma kappa / Real.sqrt u)
         * Real.exp (H / 2 - a * Real.sqrt (H ^ 2 - u ^ 2))
         * Real.exp (-(cE * H ^ ((1 : ℝ) / 10)))) := by
   classical
   have ha0 : (0 : ℝ) < a := lt_trans (by norm_num) ha
+  have hδ : (0 : ℝ) < a - 1 / 2 := by linarith
   have hkappa0 : (0 : ℝ) < kappa := lt_trans zero_lt_one hkappa
   have hDnn : 0 ≤ xiMassWindowDefectConstant a sigma kappa :=
     xiMassWindowDefectConstant_nonneg ha0 hsigma hkappa
@@ -189,7 +220,6 @@ theorem norm_primeLogWindow_quadratureDefect_le {a sigma kappa u H T CE cE : ℝ
     rw [xiMassWindowDefectConstant]
     linarith [xiMassBesselExteriorSqrtConstant_nonneg (a := a) (sigma := sigma) ha0 hkappa]
   have hrootpos : (0 : ℝ) < Real.sqrt u := Real.sqrt_pos.2 hu
-  -- rewrite both sides of the defect
   have hsum : (∑ p ∈ primeLogWindow H T, xiMassCenteredPrimeAtom a ((sigma : ℂ) + (u : ℂ) * I) p)
       = ∑ p ∈ primeLogWindow H T, ((Real.log p : ℝ) : ℂ)
           * xiMassCriticalDampedFourierProfile a sigma u (Real.log p) :=
@@ -217,7 +247,6 @@ theorem norm_primeLogWindow_quadratureDefect_le {a sigma kappa u H T CE cE : ℝ
       -(((Real.exp (-x / 2) : ℝ) : ℂ) * xiMassCriticalOutgoingDerivative a sigma u x))
       volume H T := hG'c.continuousOn.intervalIntegrable
   rw [hsum, hint, primeLogWindow_quadrature_eq hHT hG hG']
-  -- the three terms
   obtain ⟨B, hB⟩ : ∃ B : ℝ, CE * (xiMassWindowDefectConstant a sigma kappa / Real.sqrt u)
       * Real.exp (H / 2 - a * Real.sqrt (H ^ 2 - u ^ 2))
       * Real.exp (-(cE * H ^ ((1 : ℝ) / 10))) = B := ⟨_, rfl⟩
@@ -228,7 +257,8 @@ theorem norm_primeLogWindow_quadratureDefect_le {a sigma kappa u H T CE cE : ℝ
     positivity
   have hterm : ∀ h : ℝ, H ≤ h → h ≤ T →
       ‖((xiMassThetaLogDiscrepancy h : ℝ) : ℂ)
-        * xiMassCriticalDampedFourierProfile a sigma u h‖ ≤ B := by
+        * xiMassCriticalDampedFourierProfile a sigma u h‖
+        ≤ B * Real.exp (-((a - 1 / 2) * (h - H))) := by
     intro h hHh hhT
     rw [← hB]
     refine window_pointwise_bound ha hsigma hkappa hu hcone hCE hcE hHh (hE h hHh hhT) ?_
@@ -244,7 +274,8 @@ theorem norm_primeLogWindow_quadratureDefect_le {a sigma kappa u H T CE cE : ℝ
   have htermD : ∀ h : ℝ, H ≤ h → h ≤ T →
       ‖((xiMassThetaLogDiscrepancy h : ℝ) : ℂ)
         * -(((Real.exp (-h / 2) : ℝ) : ℂ)
-          * xiMassCriticalOutgoingDerivative a sigma u h)‖ ≤ B := by
+          * xiMassCriticalOutgoingDerivative a sigma u h)‖
+        ≤ B * Real.exp (-((a - 1 / 2) * (h - H))) := by
     intro h hHh hhT
     rw [← hB]
     refine window_pointwise_bound ha hsigma hkappa hu hcone hCE hcE hHh (hE h hHh hhT) ?_
@@ -257,17 +288,48 @@ theorem norm_primeLogWindow_quadratureDefect_le {a sigma kappa u H T CE cE : ℝ
       div_le_div_of_nonneg_right hout hrootpos.le
     nlinarith [hstep, hnn, Real.exp_pos (-h / 2),
       Real.exp_pos (-(a * Real.sqrt (h ^ 2 - u ^ 2)))]
+  -- the integral term, using the exterior decay
+  have hintegrable : IntervalIntegrable (fun h : ℝ => ((xiMassThetaLogDiscrepancy h : ℝ) : ℂ)
+      * -(((Real.exp (-h / 2) : ℝ) : ℂ)
+        * xiMassCriticalOutgoingDerivative a sigma u h)) volume H T :=
+    intervalIntegrable_discrepancy_mul hHT hG'
   have hintbound : ‖∫ h in H..T, ((xiMassThetaLogDiscrepancy h : ℝ) : ℂ)
       * -(((Real.exp (-h / 2) : ℝ) : ℂ)
-        * xiMassCriticalOutgoingDerivative a sigma u h)‖ ≤ B * |T - H| := by
-    refine intervalIntegral.norm_integral_le_of_norm_le_const ?_
-    intro x hx
-    rw [Set.uIoc_of_le hHT] at hx
-    exact htermD x hx.1.le hx.2
-  have habs : |T - H| = T - H := abs_of_nonneg (by linarith)
-  rw [habs] at hintbound
-  have h1 := hterm T hHT le_rfl
-  have h2 := hterm H le_rfl hHT
+        * xiMassCriticalOutgoingDerivative a sigma u h)‖ ≤ B / (a - 1 / 2) := by
+    refine (intervalIntegral.norm_integral_le_integral_norm hHT).trans ?_
+    have hmono : (∫ h in H..T, ‖((xiMassThetaLogDiscrepancy h : ℝ) : ℂ)
+        * -(((Real.exp (-h / 2) : ℝ) : ℂ)
+          * xiMassCriticalOutgoingDerivative a sigma u h)‖)
+        ≤ ∫ h in H..T, B * Real.exp (-((a - 1 / 2) * (h - H))) := by
+      refine intervalIntegral.integral_mono_on hHT hintegrable.norm
+        ((by fun_prop : Continuous fun h : ℝ =>
+          B * Real.exp (-((a - 1 / 2) * (h - H)))).intervalIntegrable H T) ?_
+      intro x hx
+      exact htermD x hx.1 hx.2
+    refine hmono.trans ?_
+    rw [intervalIntegral.integral_const_mul]
+    have hexpint := integral_exp_neg_shift_le (δ := a - 1 / 2) (b := H) (c := H) (e := T) hδ
+    have hzero : Real.exp (-((a - 1 / 2) * (H - H))) / (a - 1 / 2) = 1 / (a - 1 / 2) := by
+      norm_num
+    rw [hzero] at hexpint
+    have hfin := mul_le_mul_of_nonneg_left hexpint hBnn
+    rw [mul_one_div] at hfin
+    exact hfin
+  have h1 : ‖((xiMassThetaLogDiscrepancy T : ℝ) : ℂ)
+      * xiMassCriticalDampedFourierProfile a sigma u T‖ ≤ B := by
+    refine (hterm T hHT le_rfl).trans ?_
+    have hle : Real.exp (-((a - 1 / 2) * (T - H))) ≤ 1 := by
+      refine Real.exp_le_one_iff.2 ?_
+      have : (0 : ℝ) ≤ (a - 1 / 2) * (T - H) := by
+        apply mul_nonneg hδ.le
+        linarith
+      linarith
+    nlinarith [hle, hBnn]
+  have h2 : ‖((xiMassThetaLogDiscrepancy H : ℝ) : ℂ)
+      * xiMassCriticalDampedFourierProfile a sigma u H‖ ≤ B := by
+    refine (hterm H le_rfl hHT).trans ?_
+    have hzero : Real.exp (-((a - 1 / 2) * (H - H))) = 1 := by norm_num
+    rw [hzero, mul_one]
   have hsplit : ‖((xiMassThetaLogDiscrepancy T : ℝ) : ℂ)
         * xiMassCriticalDampedFourierProfile a sigma u T
       - ((xiMassThetaLogDiscrepancy H : ℝ) : ℂ)
@@ -275,15 +337,16 @@ theorem norm_primeLogWindow_quadratureDefect_le {a sigma kappa u H T CE cE : ℝ
       - ∫ h in H..T, ((xiMassThetaLogDiscrepancy h : ℝ) : ℂ)
         * -(((Real.exp (-h / 2) : ℝ) : ℂ)
           * xiMassCriticalOutgoingDerivative a sigma u h)‖
-      ≤ B + B + B * (T - H) := by
+      ≤ B + B + B / (a - 1 / 2) := by
     refine (norm_sub_le _ _).trans ?_
-    have := (norm_sub_le (((xiMassThetaLogDiscrepancy T : ℝ) : ℂ)
+    have hpair := norm_sub_le (((xiMassThetaLogDiscrepancy T : ℝ) : ℂ)
       * xiMassCriticalDampedFourierProfile a sigma u T)
       (((xiMassThetaLogDiscrepancy H : ℝ) : ℂ)
-        * xiMassCriticalDampedFourierProfile a sigma u H))
-    linarith [this, h1, h2, hintbound]
+        * xiMassCriticalDampedFourierProfile a sigma u H)
+    linarith [hpair, h1, h2, hintbound]
   refine hsplit.trans (le_of_eq ?_)
   rw [← hB]
+  field_simp
   ring
 
 end

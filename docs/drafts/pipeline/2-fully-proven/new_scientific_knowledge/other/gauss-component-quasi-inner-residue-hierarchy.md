@@ -2012,3 +2012,77 @@ Step 2 needs no convolution theorem: `w'` is the finite truncation
 Iterating (T) through the `m` stages additionally requires the same estimate with `B^(-2)`
 replaced by an arbitrary member of the piecewise-exponential algebra (the accumulated amplitude),
 which the proof plan above already covers since it only uses `|ĉ(k)| ≤ C/(1+|k|)`.
+
+### Lean status — pass 43 (the band-split machinery for the open core (T))
+
+Four new unconditional modules, all axiom-clean, three of them wired into the `RHTower` umbrella
+and one into `HTGeometry`.  They are the quantitative layer the proof plan for **(T)** calls for.
+The plan is unchanged; what follows is what is now available in Lean, and what is still missing.
+
+`HTGeometry/LatticeTailSums.lean` — the three elementary weights on `ℤ`.
+
+```text
+tsum_nat_tail_inv_one_add_sq_le      Σ_(k>J) 1/(1+k)²    ≤ 2/(1+J)
+tsum_int_tail_inv_one_add_sq_le      Σ_(|j|>J) 1/(1+|j|)² ≤ 4/(1+J)
+sum_Icc_int_inv_one_add_natAbs_le    Σ_(|j|≤J) 1/(1+|j|)  ≤ 2(1 + log(J+2))
+tsum_int_punctured_band_rpow_le      Σ_(0<|r|<N) |r|^(-t) ≤ 2N^(1-t)/(1-t)   (0<t<1)
+tsum_int_band_one_le                 Σ_(|r|<N) 1          ≤ 2N
+tsum_int_punctured_band_inv_le       Σ_(0<|r|<N) 1/|r|    ≤ 2(1 + log N)
+```
+
+The quadratic tail is mathlib's `sum_Ioo_inv_sq_le`; the sub-unit power sum is the corpus's own
+`HTGeometry.sum_rpow_sub_one_le`; the harmonic band is `sum_range_one_div_le_one_add_log`.
+
+`RHTower/GaussShiftRatioWeight.lean` — the shifted diagonal as a weighted Parseval sum.
+
+```text
+gaussShiftRatio k p n l = ‖d_(n+l)‖/‖d_n‖
+norm_fourierCoeff_gaussShiftedBlockDiag   ‖(S̃v)^(l)‖ = ρ_l·‖v̂(l)‖
+norm_sq_gaussShiftedBlockDiag_eq_tsum     ‖S̃v‖² = Σ_l ρ_l²‖v̂(l)‖²      (as an `ℝ≥0∞` identity)
+gaussShiftRatio_sq_le_of_not_spike        2|n+l| ≥ n  ⇒  ρ_l² ≤ 1 + 2K
+gaussShiftRatio_sq_le_sqrt                m ≥ 2  ⇒  ρ_l² ≤ 1 + (K n/|n+l|)^(1/2)
+```
+
+The exponent `1/2` — not `1/m` — is the right one to carry: for `m ≥ 2` one has `ρ⁴ ≤ ρ^(2m)`, so
+the fourth power already gives the square-root bound, and every downstream estimate closes at
+`t = 1/2` uniformly in `m`.  This removes the `m`-dependent bookkeeping the plan anticipated.
+
+`RHTower/GaussSpikeBandSum.lean` — the spike has linear mass.
+
+```text
+gaussShiftRatio_sq_le_global        ρ_l² ≤ 1 + (K n)^(1/2)             (all l; ρ = 0 at n+l = 0)
+tsum_spike_gaussShiftRatio_sq_le    Σ_(2|n+l|<n) ρ_l² ≤ (2 + 4K^(1/2))·n
+```
+
+The second is the plan's "spike sum `≲ n`": reindex by `r = n + l`, split off the counting term
+`Σ_(2|r|<n) 1 ≤ 2n`, and apply the punctured power band at `t = 1/2`, which contributes
+`(Kn)^(1/2)·4n^(1/2) = 4K^(1/2)·n`.
+
+`RHTower/GaussDefectHighModeTail.lean` — the high-mode defect tail.
+
+```text
+tsum_defect_highMode_le :
+  Σ_(|j|>J) (A/(1+|j|))²·‖defect_j‖²
+    ≤ 16A²(1+K)/(1+J) + 16KA²(1 + log n)/n
+```
+
+This is the plan's `‖w''‖² ≲ 1/n` step, sharpened to the exact shape needed.  Its proof is the
+three-band domination: the quadratic tail `4A²/(1+|j|)²`; the same tail again where the harmonic
+factor is bounded (`2|n+j| ≥ n`); and, on the spike `2|n+j| < n`, the observation that
+`n < 2(1+|j|)` there, so the amplitude weight is already `O(1/n²)` and the harmonic factor sums to
+`(8KA²/n)·Σ_(0<|r|<n) 1/|r| ≤ 16KA²(1+log n)/n`.
+
+**What (T) still needs.**  With `J = ⌊n/4⌋` the two remaining ingredients of the plan are
+
+1. the low-mode kernel bound: for `l` in the spike and `w'` the truncation of `w` to `|j| ≤ J`,
+   every kernel entry obeys `|ĉ(l-j)| ≤ C/(1+|l-j|) ≤ 4C/n`, so
+   `|v̂'(l)| ≤ (4C/n)·‖ŵ'‖_(ℓ¹) ≤ C'·(1 + log n)/n`, using
+   `sum_Icc_int_inv_one_add_natAbs_le` and the fact that on `|j| ≤ n/4` the defect is bounded by
+   the constant `(4 + 3K)^(1/2)`;
+2. the assembly: `‖S̃v‖² = Σ_(¬spike) + Σ_(spike)`, the first `≤ (1+2K)‖v‖²` by
+   `gaussShiftRatio_sq_le_of_not_spike` and the existing `L²` defect estimate, the second split as
+   `≤ 2Σ_spike ρ²|v̂'|² + 2Σ_spike ρ²|v̂''|²`, bounded by
+   `2·(C'(1+log n)/n)²·(2+4K^(1/2))n` and `2·(1+(Kn)^(1/2))·‖w''‖²` respectively — both `→ 0`,
+   the second because `‖w''‖² ≲ (1+log n)/n` and `n^(1/2)·(1+log n)/n → 0`.
+
+Both are now purely mechanical against the modules above.

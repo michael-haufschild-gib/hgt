@@ -54,7 +54,7 @@ def torusAmpOrbit (c : I → ℂ) (t : UnitAddTorus I) : I → ℂ :=
   fun j => c j * UnitAddTorus.mFourier (Pi.single j 1) t
 
 /-- The argument vector of a family of complex eigencoefficients, read on the phase torus. -/
-def ampPhase (c : I → ℂ) : UnitAddTorus I :=
+private def ampPhase (c : I → ℂ) : UnitAddTorus I :=
   fun j => ((Complex.arg (c j) / (2 * Real.pi) : ℝ) : UnitAddCircle)
 
 theorem fourier_one_ampPhase (c : I → ℂ) (j : I) :

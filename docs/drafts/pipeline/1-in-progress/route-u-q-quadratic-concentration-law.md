@@ -88,6 +88,14 @@ The following claims are dependency-closed.
 
 3. Consequently this quadratic energy tends to `+infinity` as `y -> b` from below.
 
+4. The divergence has a universal renormalized residue:
+
+   ```text
+   (b-y) * integral_R P_{b,y}(t)^2 dt -> pi/2
+   ```
+
+   as `y -> b-`.  The residue is independent of the zero height and transverse displacement.
+
 ### Paper proof
 
 For positive `c`, the Poisson identities are
@@ -114,6 +122,13 @@ pi/(2*alpha) + pi/(2*beta) - 2*pi/(alpha+beta)
 
 Substitution `alpha=b-y`, `beta=b+y` yields the displayed formula.  Since its numerator tends to
 `pi*b^2>0` and denominator tends to zero from above as `y -> b-`, the energy diverges.
+Factoring `b^2-y^2=(b-y)(b+y)` gives the stronger identity
+
+```text
+(b-y) * integral_R P_{b,y}(t)^2 dt = pi*y^2/(b*(b+y)),
+```
+
+whose boundary value is the universal charge `pi/2`.
 
 ### Meaning
 
@@ -142,16 +157,19 @@ upper budget must therefore retain quadratic concentration or stronger informati
    compensate.
 3. **Pivot Q3:** quadratic frequency energy diverges.
    **Proved on paper:** exact formula above.
-4. **Next hard attack:** construct the source-pure arithmetic quadratic energy and prove a finite
+4. **Pivot Q4:** the divergence coefficient may depend on the hidden off-line zero and therefore
+   fail to define one common source quantum.
+   **Failed:** width renormalization has exact universal residue `pi/2`, independent of `b`.
+5. **Next hard attack:** construct the source-pure arithmetic quadratic energy and prove a finite
    cofinal ceiling before continuation; then identify its Q shadow without diagonalizing away mixed
    reflection incidence.
-5. **Parallel U attack:** identify the same energy under the frontier mass/frequency coordinate and
+6. **Parallel U attack:** identify the same energy under the frontier mass/frequency coordinate and
    prove it dominates the Christoffel wall's local quadratic energy with nondegenerate constant.
 
 ## Gates
 
 - [x] 0 → 1 in-progress: well-posed, source-pure target, hostile failures recorded, corpus novelty audited
-- [ ] Q1 paper bridge formalized in Lean and wired into `GaloisForLFunctions.RHTower`
+- [x] Q1 paper bridge and universal residue formalized in Lean and wired into `GaloisForLFunctions.RHTower`
 - [ ] Source-pure arithmetic quadratic energy constructed
 - [ ] Route Q domination proved with nondegenerate constant
 - [ ] Route U domination proved with nondegenerate constant
@@ -163,3 +181,9 @@ upper budget must therefore retain quadratic concentration or stronger informati
 - 2026-08-16 — Frozen after corpus search eliminated existing pointwise, Bernstein-mass,
   full-density-current, affine-pencil, and finite Laplace Cauchy-energy formulations.  Q1 paper
   bridge proved; Lean formalization started.
+- 2026-08-16 — `RHTower/PrimeArchConjugatePairQuadraticConcentration.lean` proves signed-mass
+  blindness, exact quadratic energy, wall blow-up, exact resolvent-pair identification, and the
+  universal width-renormalized residue `pi/2`.  Corpus search found no prior transverse-frequency
+  residue law.  Search also killed a naive U collar argument: the Weil Friedrichs domain is
+  genuinely larger than Suzuki's `H₀¹` domain, so the common UQ-QC invariant must charge the
+  completion boundary rather than assume it absent.

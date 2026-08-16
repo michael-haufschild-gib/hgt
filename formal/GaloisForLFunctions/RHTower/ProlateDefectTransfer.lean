@@ -59,7 +59,7 @@ theorem hasDerivAt_hermiteSqWeight (n : ℕ) (x : ℝ) :
     have h := hasDerivAt_pow 2 x
     refine h.congr_deriv ?_
     norm_num
-  have h := hpow.mul (hasDerivAt_hermiteFun n x)
+  have h := hpow.mul (hasDerivAt_ladderHermiteFun n x)
   refine h.congr_deriv ?_
   rw [hermiteSqWeightDeriv]
 
@@ -71,8 +71,8 @@ theorem hasDerivAt_hermiteSqWeightDeriv (n : ℕ) (x : ℝ) :
     have h := hasDerivAt_pow 2 x
     refine h.congr_deriv ?_
     norm_num
-  have h1 := hlin.mul (hasDerivAt_hermiteFun n x)
-  have h2 := hpow.mul (hasDerivAt_deriv_hermiteFun n x)
+  have h1 := hlin.mul (hasDerivAt_ladderHermiteFun n x)
+  have h2 := hpow.mul (hasDerivAt_deriv_ladderHermiteFun n x)
   have h := h1.add h2
   refine h.congr_deriv ?_
   rw [hermiteSqWeightSecondDeriv]
@@ -82,7 +82,7 @@ theorem hasDerivAt_hermiteLinWeight (n : ℕ) (x : ℝ) :
     HasDerivAt (hermiteLinWeight n) (hermiteLinWeightDeriv n x) x := by
   have hlin : HasDerivAt (fun y : ℝ => 2 * y) 2 x := by
     simpa using (hasDerivAt_id x).const_mul (2 : ℝ)
-  have h := hlin.mul (hasDerivAt_hermiteFun n x)
+  have h := hlin.mul (hasDerivAt_ladderHermiteFun n x)
   refine h.congr_deriv ?_
   rw [hermiteLinWeightDeriv]
 

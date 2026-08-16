@@ -15,10 +15,10 @@ that name and its relative links deepened by one level.  Inbound links are repai
 restricted-Weil trace", "specialist novelty review", "3 → 4 publication-ready") do not block
 promotion; gates that name missing Lean do.
 
-## A. Promoted (100 of 105; 5 cards remain in stage 2)
+## A. Promoted (101 of 105; 4 cards remain in stage 2)
 
 *This list records the promotions carried out through this ledger.  The stage-2 directory
-itself is the authority on what remains; the five cards still there are named in section B.*
+itself is the authority on what remains; the four cards still there are named in section B.*
 - `suzuki-affine-resolvent-krein-defect`
 - `suzuki-affine-sewn-weil-robin-far-tail-factorization`
 - `suzuki-aperture-rees-superpolynomial-conditioning`
@@ -93,16 +93,16 @@ itself is the authority on what remains; the five cards still there are named in
 - `suzuki-two-jet-shifted-hankel-gate`
 - `suzuki-volterra-cartesian-phase-defect`
 - `suzuki-wall-field-projective-density-separation-law`
+- `suzuki-weil-position-torque-recurrence`
 - `suzuki-xi-first-defect-jet-gap`
 - `suzuki-xireal-fe-bipolarization-completion`
 - `suzuki-zero-trace-cofinal-convex-recurrence`
 
-## B. Not yet promoted (5)
+## B. Not yet promoted (4)
 - `suzuki-coalescing-anchor-parity-locking-reduction`
 - `suzuki-critical-radical-anchor-finite-head-reduction`
 - `suzuki-log-recurrence-polynomial-carrier-trichotomy`
 - `suzuki-one-prime-rough-primitive-hardy-closure`
-- `suzuki-weil-position-torque-recurrence`
 
 Every one is listed in section C with the exact Lean object it still needs.
 
@@ -10245,5 +10245,70 @@ exactly the moment series Landau rejects.
    continuation on `Re s > 3/2`, and by the identity theorem on the half-plane minus the (countable)
    singular set would extend `(16)` holomorphically across the double pole at `p = ρ + 1/2` — which
    `LogDerivZeroPole` forbids.  This is the only step needing the identity theorem.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADF. `suzuki-weil-position-torque-recurrence` — `(19)`, `(20)`, and the card closed
+
+Promoted.  Companion: `../../3-formalized/new_scientific_knowledge/suzuki/suzuki-weil-position-torque-recurrence-formalized.md`.
+
+**Two gaps between the paper proof and an unconditional Lean proof.**  The card cuts the torque past
+its last sign change and applies Landau to the nonnegative tail.  Neither step is literally
+available.
+
+*Gap 1: a nonnegative tail need not have an abscissa.*  If `T ≥ 0` past `H` and the tail transform
+happens to converge for every real exponent, there is no abscissa and Landau is vacuous.  So the
+tail is **thickened** by a reference density: `tailCarrier g H u = g (H + u) + e^{u/4}`.  The sum
+still converges right of `3/2` — by `(17)`, `(18)` and `integrableOn_tailCarrier_mul_exp` — and it
+certainly diverges left of `1/4`, because the reference term alone already exceeds `1` there.  So
+`exists_isAbscissa_tail` produces an abscissa `c ∈ [1/4, 3/2]` unconditionally.  The price is one
+extra pole `1/(s − 1/4)` in the transform, and that is exactly why `1/4` is the single real point
+the argument cannot exclude — as it must be, since the reference measure is itself a nonnegative
+carrier with abscissa `1/4`.
+
+*Gap 2: `(16)` holds only right of `3/2`, but Landau needs the identity down to `c`.*  Both sides
+are real-analytic on the connected interval `(c, ∞)`: the transform because `complexLaplace` is
+holomorphic right of the abscissa (`hasDerivAt_complexLaplace`), and the continuation because `ξ`
+has no real zero at all (`xi_ne_zero_of_real`), so `(16)`'s only real obstruction is `s = 0 < 1/4`.
+`AnalyticOnNhd.eqOn_of_preconnected_of_eventuallyEq` on `Ioi c` then extends the agreement from
+`(3/2, ∞)` to all of `(c, ∞)`, and `false_of_analyticAt_abscissa` kills every `c > 1/4`.
+
+**Ruling out `c = 1/4` is the only genuinely complex step.**  With `c = 1/4` the tail transform is
+holomorphic on the whole of `Re s > 1/4`, so
+`Ψ(s) = e^{-sH}(complexLaplace ν s − 1/(s−1/4)) + headLaplace g H s` is analytic there, and it
+agrees with the continuation on the real ray.  Transporting that agreement to the double pole
+`p = ρ + 1/2` needs the identity theorem on `W = {Re s > 1/4} ∖ {ξ(s−1/2) = 0}`, which is **not** a
+half-plane: mathlib only offers "the complement of a countable set *in the whole space* is path
+connected".  `ConvexDiffCountableConnected.lean` supplies the domain-relative form — the two-segment
+argument survives verbatim inside a convex open set, because the broken line through `c + t·y` stays
+in the set for every `t` in an open interval around `0`, and only countably many `t` meet the
+removed set.  With `xi_zeroSet_countable` (via the centred `XiC_zeroSet_countable`) this gives
+`IsPreconnected W`, and `AnalyticOnNhd.eqOn_of_preconnected_of_frequently_eq` transports the
+identity from the real ray at `2` to a punctured neighbourhood of `p`.
+
+**The pole itself.**  `meromorphicOrderAt_continuation_eq_neg_two`: at `p = ρ + 1/2` with `ρ` a
+strip zero of `ξ`, the near curvature has order `−2` — `meromorphicOrderAt_logDeriv_xi_eq_neg_one`
+(corpus) plus mathlib's `meromorphicOrderAt_deriv_eq_sub_one`, translated by
+`meromorphicOrderAt_comp_of_deriv_ne_zero` — the far curvature is evaluated at `ρ + 2` where
+`xi_ne_zero_of_one_lt_re` applies, and `2s²` does not vanish.  `meromorphicOrderAt_add_of_ne` then
+fixes the difference's order at `−2`, and `meromorphicOrderAt_div` carries it through.
+
+**Both signs.**  `no_oneSign_tail` is stated for an arbitrary profile `g` with an arbitrary
+continuation `Gc`, so the negative direction costs one extra instantiation with
+`g = −T`, `Gc = −G` (`meromorphicOrderAt_fun_neg` keeps the order at `−2`).  That is `(19)`; `(20)`
+is `(7)` rearranged.
+
+**Correction to ADE's plan.**  ADE proposed forcing the abscissa to `0` and ruling `0` out.  That is
+not available: with no reference density the abscissa may fail to exist at all.  The reference
+density fixes both problems at once, at the cost of moving the unexcludable real point from `0` to
+`1/4` — which is harmless, since the double pole sits at `Re p = Re ρ + 1/2 > 1/2`.
+
+**Constants.**  `(18)` is Lean-proved with the constant `22` rather than the card's `1`; the card
+states the constants of `(17)`–`(18)` are inessential and uses them only to place the abscissa at
+most `3/2`.
+
+**Duplication caught.**  `xi_ne_zero_of_real` already existed in `XiRealAxisNonvanishing.lean`;
+`RiemannXiRealAxisNonvanishing.lean` was rewritten to alias it and keep only the genuinely new
+`xi_eq_riemannXi` bridge between the two corpus spellings of the completed Xi.
 
 All declarations audit to `[propext, Classical.choice, Quot.sound]`.

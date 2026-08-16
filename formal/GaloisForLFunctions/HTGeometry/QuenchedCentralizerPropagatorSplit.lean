@@ -125,7 +125,7 @@ theorem unitaryEvolution_sub_spectralKernelProjector_eq (hL : L.IsHermitian) (t 
     · simp [h]
   rw [unitaryEvolution_spectral hL, spectralKernelProjector, conj_diagonal_sub, hfun]
 
-theorem norm_exp_neg_I_mul_real (x : ℝ) : ‖Complex.exp (-(Complex.I * (x : ℂ)))‖ = 1 := by
+private theorem norm_exp_neg_I_mul_ofReal (x : ℝ) : ‖Complex.exp (-(Complex.I * (x : ℂ)))‖ = 1 := by
   rw [Complex.norm_exp]
   have hre : (-(Complex.I * (x : ℂ))).re = 0 := by simp [Complex.mul_re]
   rw [hre, Real.exp_zero]
@@ -145,7 +145,7 @@ theorem l2_opNorm_unitaryEvolution_sub_spectralKernelProjector (hL : L.IsHermiti
         else Complex.exp (-(Complex.I * ((t : ℂ) * (hL.eigenvalues i : ℂ)))))‖ = 1 := by
     intro i hi
     rw [if_neg hi]
-    have := norm_exp_neg_I_mul_real (t * hL.eigenvalues i)
+    have := norm_exp_neg_I_mul_ofReal (t * hL.eigenvalues i)
     push_cast at this
     exact this
   refine le_antisymm ?_ ?_
@@ -209,7 +209,7 @@ theorem hsNorm_sq_unitaryEvolution_sub_spectralKernelProjector [Nonempty d] (hL 
   by_cases h : hL.eigenvalues i = 0
   · simp [h]
   · rw [if_neg h, if_pos h]
-    have := norm_exp_neg_I_mul_real (t * hL.eigenvalues i)
+    have := norm_exp_neg_I_mul_ofReal (t * hL.eigenvalues i)
     push_cast at this ⊢
     rw [this]
     norm_num

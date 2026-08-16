@@ -188,7 +188,7 @@ theorem hasScalarDifferentialOrder_ratFuncEval_zero {r : RatFunc C}
 
 omit [CharZero C] [IsAlgClosed C] in
 /-- Every differential jet of a member of a derivation-closed field stays in that field. -/
-theorem differentialJet_mem_of_derivationClosed
+private theorem differentialJet_mem_of_derivationClosed
     {K : IntermediateField C (JetField C Unit)} (hK : DerivationClosed K)
     {z : JetField C Unit} (hz : z ∈ K) (k : ℕ) : differentialJet k z ∈ K := by
   induction k with

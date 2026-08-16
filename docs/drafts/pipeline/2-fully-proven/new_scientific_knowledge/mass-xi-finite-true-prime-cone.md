@@ -6912,3 +6912,86 @@ Newly formalized, axiom-clean (`[propext, Classical.choice, Quot.sound]`), wired
 
 With this, sections 17 and 19 are fully formalized; §19.4 records the failure boundary and
 asserts no new theorem.  Sections 20--24 remain.
+
+### Lean progress: §20.4 — section 20 closed
+
+    RHTower/XiMassGradedConeSharpness.lean
+      xiMassBesselConeExponent_strictMono       `Γ_a(κ) = κ/2 − a√(κ²−1)` is strictly decreasing
+      not_bigO_subgradedAnnulus                 **(20.4)** for `1 < κ < κ_{a,λ}` and every `μ > κ`
+                                                the moving annulus is not `O(e^{λu})`
+
+With (20.1)--(20.3) already formal in `RHTower/XiMassGradedBesselConePhase.lean`, the graded
+cone/type phase diagram of section 20 is complete.
+
+### Lean progress: §21 the logarithmic boundary layer (C42-P, positive half)
+
+    RHTower/XiMassLogRetreatTail.lean
+      xiMassBesselConeExponent_movingSlope      `η_{H/u}·u = a√(H²−u²) − H/2`
+      xiMassBesselExteriorSqrtConstant_antitone,
+        xiMassBesselExteriorSqrtTailConstant_antitone
+                                                the exterior tail constant is antitone in the slope
+      sum_norm_exteriorTail_movingSlope_le      hence the slope may move with the height:
+                                                the tail past `e^H` is at most
+                                                `C(κ₀) u^{-1/2} e^{g_u(H)}` whenever `H ≥ κ₀u`
+      log_le_four_mul_rpow                      `log u ≤ 4 u^{1/4}`
+      exists_norm_logRetreatTail_le             **(21.1)--(21.2)** the raw exterior tail past
+                                                `κ_B u − q log u` is `O(u^{m_B q − 1/2})`
+      exists_norm_logRetreatTail_bounded        **(21.3)** at `q_raw = 1/(2m_B)` the raw exterior
+                                                tail is uniformly bounded
+
+Remaining in §21: the matching lower bound (21.4) (a moving-slope version of Theorem 17.5),
+and the sharper criterion (21.10) of C42-Q, which needs the §19 vanishing argument re-run with the
+extra `q log u` retreat.
+
+### Lean progress: §21.10 — the logarithmically corrected RH criterion (C42-Q)
+
+The window estimate (19.3) was first sharpened: the exterior action decays with slope at least
+`a − 1/2`, so the window bound no longer carries the window width and reads
+
+`‖∫_{(H,T]} G dE‖ ≤ (2 + 1/(a−1/2))·C_E·C·u^{-1/2}·e^{g_u(H) − c H^{1/10}}`.
+
+Newly formalized, axiom-clean, wired, built:
+
+    RHTower/XiMassLogSubcausticWindow.lean
+      xiMassLogSubcausticHeight,
+        xiMassLogSubcausticHeight_le             `H(u) = κ_B u − L u^{1/10} − q log(max u 1)`,
+                                                 the harmless initial-interval normalization
+      exists_eventually_norm_logSubcausticWindowDefect_le
+                                                 **(21.7)--(21.8)** for every `L` in the closed
+                                                 chamber and every `q` with `m_B q ≤ 1/2`, the
+                                                 annulus between `H(u)` and the caustic stays
+                                                 uniformly bounded
+
+    RHTower/XiMassMovingQuadratureCriterion.lean
+      XiMassMovingQuadratureDefectLineBound
+      exists_norm_prefixDefect_moving_sub_le      any moving height below the caustic with an
+                                                 eventually bounded annulus has a globally
+                                                 bounded defect difference
+      riemannHypothesis_iff_movingQuadratureDefectLineBound
+                                                 the general moving RH criterion
+      exists_riemannHypothesis_iff_logSubcausticQuadratureDefectLineBound
+                                                 **(21.10)** RH is equivalent to uniform
+                                                 boundedness of the quadrature defect at
+                                                 `⌊e^{κ_B u − L u^{1/10} − q log u}⌋`
+
+Remaining in §21: the raw lower bound (21.4) (a moving-slope form of Theorem 17.5).  §21.1 and
+§21.2 are the universal-principle statement and the hostile audit; §21.3 is the graded refinement.
+
+### Lean progress: §21.3 — the logarithmic layer of every grade
+
+    RHTower/XiMassCausticPenetration.lean  (addition)
+      xiMassAction_le_slope_general            two-point convexity of the exterior action:
+                                               `g_u(H) ≤ g_u(K) + (K−H)(−g_u'(H))`, which reduces
+                                               to `Q_H Q_K ≤ KH − u²`, i.e. `0 ≤ u²(H−K)²`
+
+    RHTower/XiMassGradedLogRetreat.lean
+      xiMassGradedPenetrationRate,
+        xiMassGradedPenetrationRate_pos        **(21.15)** `m_{a,λ} = aκ/√(κ²−1) − 1/2 > 0`
+      xiMassAction_penetration_general_le      **(21.11)** the quantitative retreat cost at any
+                                               slope: `g_u(κu − r) ≤ g_u(κu) + m r + 2a(κ/q) r x`
+      exists_norm_gradedLogRetreatTail_le      **(21.16)--(21.17)** for every grade `0 ≤ λ < 1/2`
+                                               and every `q` with `m_{a,λ} q ≤ 1/2`, the exterior
+                                               true-prime tail past `κ_{a,λ}u − q log u` is
+                                               `O(e^{λu})`: the coefficient-sharp logarithmic
+                                               refinement of the whole cone/type duality, with
+                                               (21.3) as its `λ = 0` member

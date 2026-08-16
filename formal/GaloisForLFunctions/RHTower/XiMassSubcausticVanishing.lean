@@ -23,28 +23,14 @@ noncomputable section
 def xiMassSubcausticHeight (a L u : ℝ) : ℝ :=
   xiMassSpacelikeSharpSlope a * u - L * u ^ ((1 : ℝ) / 10)
 
-/-- The window prefactor vanishes: the stationary-phase gain beats the window width. -/
-theorem tendsto_windowPrefactor_zero (L : ℝ) :
-    Tendsto (fun u : ℝ => (2 + L * u ^ ((1 : ℝ) / 10)) / Real.sqrt u) atTop (nhds 0) := by
-  have h1 : Tendsto (fun u : ℝ => (2 : ℝ) * u ^ (-((1 : ℝ) / 2))) atTop (nhds 0) := by
-    have hbase := tendsto_rpow_neg_atTop (y := (1 : ℝ) / 2) (by norm_num)
-    simpa using hbase.const_mul (2 : ℝ)
-  have h2 : Tendsto (fun u : ℝ => L * u ^ (-((2 : ℝ) / 5))) atTop (nhds 0) := by
-    have hbase := tendsto_rpow_neg_atTop (y := (2 : ℝ) / 5) (by norm_num)
-    simpa using hbase.const_mul L
-  have h3 := h1.add h2
-  rw [add_zero] at h3
-  refine h3.congr' ?_
+/-- The stationary-phase prefactor vanishes. -/
+theorem tendsto_one_div_sqrt_zero :
+    Tendsto (fun u : ℝ => 1 / Real.sqrt u) atTop (nhds 0) := by
+  have hbase := tendsto_rpow_neg_atTop (y := (1 : ℝ) / 2) (by norm_num)
+  refine hbase.congr' ?_
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with u hu
-  have hne : (u : ℝ) ^ ((1 : ℝ) / 2) ≠ 0 := ne_of_gt (Real.rpow_pos_of_pos hu _)
-  have e1 : u ^ (-((1 : ℝ) / 2)) * u ^ ((1 : ℝ) / 2) = 1 := by
-    rw [← Real.rpow_add hu]
-    norm_num
-  have e2 : u ^ (-((2 : ℝ) / 5)) * u ^ ((1 : ℝ) / 2) = u ^ ((1 : ℝ) / 10) := by
-    rw [← Real.rpow_add hu]
-    norm_num
-  rw [Real.sqrt_eq_rpow, eq_div_iff hne, add_mul, mul_assoc, mul_assoc, e1, e2]
-  ring
+  rw [Real.sqrt_eq_rpow, Real.rpow_neg hu.le]
+  exact (one_div _).symm
 
 /-- **(19.6) The subcaustic discrepancy annulus vanishes.** -/
 theorem exists_tendsto_subcausticWindowDefect_zero {a sigma : ℝ} (ha : 1 / 2 < a)
@@ -87,7 +73,7 @@ theorem exists_tendsto_subcausticWindowDefect_zero {a sigma : ℝ} (ha : 1 / 2 <
         + cE * L * xiMassSpacelikeSharpSlope a ^ (-((9 : ℝ) / 10)) = K := ⟨_, rfl⟩
   refine squeeze_zero'
     (g := fun u : ℝ => CE * xiMassWindowDefectConstant a sigma k0 * Real.exp K
-      * ((2 + L * u ^ ((1 : ℝ) / 10)) / Real.sqrt u))
+      * (2 + 1 / (a - 1 / 2)) * (1 / Real.sqrt u))
     (Eventually.of_forall fun u => norm_nonneg _) ?_ ?_
   · -- the eventual majorant
     have hgrow : Tendsto (fun u : ℝ => u ^ ((9 : ℝ) / 10)) atTop atTop :=
@@ -107,7 +93,6 @@ theorem exists_tendsto_subcausticWindowDefect_zero {a sigma : ℝ} (ha : 1 / 2 <
       rw [← Real.rpow_add hupos]
       norm_num
     have hrpos : (0 : ℝ) < L * u ^ ((1 : ℝ) / 10) := by positivity
-    -- the cone hypothesis
     have hcone : k0 * u ≤ xiMassSubcausticHeight a L u := by
       rw [xiMassSubcausticHeight]
       have h1 : L ≤ (xiMassSpacelikeSharpSlope a - k0) * u ^ ((9 : ℝ) / 10) := by
@@ -125,7 +110,6 @@ theorem exists_tendsto_subcausticWindowDefect_zero {a sigma : ℝ} (ha : 1 / 2 <
       rw [xiMassSubcausticHeight]
       linarith
     have hH0 : h₀ ≤ xiMassSubcausticHeight a L u := le_trans hu2 hcone
-    -- the relative retreat is small
     have hx : 2 * xiMassSpacelikeSharpSlope a * (L * u ^ ((1 : ℝ) / 10))
         ≤ (1 / 2) * (u * (xiMassSpacelikeSharpSlope a ^ 2 - 1)) := by
       have h1 : 4 * xiMassSpacelikeSharpSlope a * L
@@ -140,16 +124,13 @@ theorem exists_tendsto_subcausticWindowDefect_zero {a sigma : ℝ} (ha : 1 / 2 <
         rw [mul_assoc, mul_comm (u ^ ((9 : ℝ) / 10)), hpowsplit]
       rw [h3] at h2
       linarith
-    -- the window estimate
     have hwin := norm_primeLogWindow_quadratureDefect_le (a := a) (sigma := sigma) (kappa := k0)
       (u := u) (H := xiMassSubcausticHeight a L u) (T := xiMassSpacelikeSharpSlope a * u)
       (CE := CE) (cE := cE) ha hsigma hk0one hupos hcone hHT hCE hcE.le
       (fun h hHh _ => hEbd h (le_trans hH0 hHh))
     refine hwin.trans ?_
-    -- the action bound
     have haction := xiMassAction_penetration_le (a := a) (u := u) (r := L * u ^ ((1 : ℝ) / 10))
       ha hupos hrpos hx
-    -- the discrepancy exponent bound
     have hAB : L * u ^ ((1 : ℝ) / 10) ≤ xiMassSpacelikeSharpSlope a * u := by
       have hc := hcone
       rw [xiMassSubcausticHeight] at hc
@@ -186,7 +167,6 @@ theorem exists_tendsto_subcausticWindowDefect_zero {a sigma : ℝ} (ha : 1 / 2 <
       have hfin := mul_le_mul_of_nonneg_left hule hnn
       rw [mul_one] at hfin
       linarith
-    -- combine the two exponents
     have hcombine : xiMassSubcausticHeight a L u / 2
           - a * Real.sqrt (xiMassSubcausticHeight a L u ^ 2 - u ^ 2)
         + -(cE * xiMassSubcausticHeight a L u ^ ((1 : ℝ) / 10)) ≤ K := by
@@ -229,38 +209,37 @@ theorem exists_tendsto_subcausticWindowDefect_zero {a sigma : ℝ} (ha : 1 / 2 <
         linarith
       rw [← hK]
       linarith
-    -- the majorant
     have hexpbound : Real.exp (xiMassSubcausticHeight a L u / 2
           - a * Real.sqrt (xiMassSubcausticHeight a L u ^ 2 - u ^ 2))
         * Real.exp (-(cE * xiMassSubcausticHeight a L u ^ ((1 : ℝ) / 10)))
         ≤ Real.exp K := by
       rw [← Real.exp_add]
       exact Real.exp_le_exp.2 hcombine
-    have hwidth : xiMassSpacelikeSharpSlope a * u - xiMassSubcausticHeight a L u
-        = L * u ^ ((1 : ℝ) / 10) := by
-      rw [xiMassSubcausticHeight]
-      ring
-    rw [hwidth]
-    have hcoef : (0 : ℝ) ≤ (2 + L * u ^ ((1 : ℝ) / 10))
-        * (CE * (xiMassWindowDefectConstant a sigma k0 / Real.sqrt u)) := by positivity
-    have hstep := mul_le_mul_of_nonneg_left hexpbound hcoef
-    calc (2 + L * u ^ ((1 : ℝ) / 10))
+    have hrootpos : (0 : ℝ) < Real.sqrt u := Real.sqrt_pos.2 hupos
+    have hinv : (0 : ℝ) < 1 / (a - 1 / 2) := by
+      rw [one_div]
+      exact inv_pos.2 (by linarith)
+    have hcoef : (0 : ℝ) ≤ (2 + 1 / (a - 1 / 2))
+        * (CE * (xiMassWindowDefectConstant a sigma k0 / Real.sqrt u)) := by
+      refine mul_nonneg (by linarith) (mul_nonneg hCE ?_)
+      exact div_nonneg hDnn hrootpos.le
+    calc (2 + 1 / (a - 1 / 2))
           * (CE * (xiMassWindowDefectConstant a sigma k0 / Real.sqrt u)
             * Real.exp (xiMassSubcausticHeight a L u / 2
               - a * Real.sqrt (xiMassSubcausticHeight a L u ^ 2 - u ^ 2))
             * Real.exp (-(cE * xiMassSubcausticHeight a L u ^ ((1 : ℝ) / 10))))
-        = (2 + L * u ^ ((1 : ℝ) / 10))
+        = (2 + 1 / (a - 1 / 2))
             * (CE * (xiMassWindowDefectConstant a sigma k0 / Real.sqrt u))
           * (Real.exp (xiMassSubcausticHeight a L u / 2
               - a * Real.sqrt (xiMassSubcausticHeight a L u ^ 2 - u ^ 2))
             * Real.exp (-(cE * xiMassSubcausticHeight a L u ^ ((1 : ℝ) / 10)))) := by ring
-      _ ≤ (2 + L * u ^ ((1 : ℝ) / 10))
+      _ ≤ (2 + 1 / (a - 1 / 2))
             * (CE * (xiMassWindowDefectConstant a sigma k0 / Real.sqrt u)) * Real.exp K :=
           mul_le_mul_of_nonneg_left hexpbound hcoef
-      _ = CE * xiMassWindowDefectConstant a sigma k0 * Real.exp K
-            * ((2 + L * u ^ ((1 : ℝ) / 10)) / Real.sqrt u) := by ring
-  · have := (tendsto_windowPrefactor_zero L).const_mul
-      (CE * xiMassWindowDefectConstant a sigma k0 * Real.exp K)
+      _ = CE * xiMassWindowDefectConstant a sigma k0 * Real.exp K * (2 + 1 / (a - 1 / 2))
+            * (1 / Real.sqrt u) := by ring
+  · have := tendsto_one_div_sqrt_zero.const_mul
+      (CE * xiMassWindowDefectConstant a sigma k0 * Real.exp K * (2 + 1 / (a - 1 / 2)))
     simpa using this
 
 end

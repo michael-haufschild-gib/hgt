@@ -209,7 +209,7 @@ Consequence: the formal structure "positive bulk minus one pole evaluation squar
 
 Status: proof-route guardrail added, not an RH proof.
 
-Created `../2-fully-proven/uvarov-repair-requires-boundary-kernel-positivity.md`. A positive rank-one repair `A+t beta^*beta` can only repair directions visible to `beta`; therefore it implies `A>=0` on `ker(beta)`. Applied to `beta=e_{-4/25}`, any first-trivial-zero Uvarov proof must first prove the unrepaired form is nonnegative for every polynomial with `p(-4/25)=0`.
+Created `../3-formalized/not_new_scientific_knowledge/uvarov-repair-requires-boundary-kernel-positivity.md`. A positive rank-one repair `A+t beta^*beta` can only repair directions visible to `beta`; therefore it implies `A>=0` on `ker(beta)`. Applied to `beta=e_{-4/25}`, any first-trivial-zero Uvarov proof must first prove the unrepaired form is nonnegative for every polynomial with `p(-4/25)=0`.
 
 Consequence: the source theorem is not merely a scalar `s_d>0` theorem. It has a codimension-one positivity pre-gate on the first-trivial-zero kernel, followed by the Schur scalar threshold. Pole-kernel positivity on `p(-4)=0` is a different condition and cannot replace it.
 
@@ -365,7 +365,7 @@ Consequence: a semilocal repair cannot be justified by scale or nonlocal vocabul
 
 ## 2026-06-24 scalar shadows are not faithful indexes
 
-Created `../2-fully-proven/rank-one-scalar-shadow-needs-kernel-exhaustion.md`. The rank-one scalar sign is a valid certificate only when the boundary kernel is already nonnegative. Otherwise the scalar channel may be repaired while an invisible direction still carries negative index.
+Created `../3-formalized/not_new_scientific_knowledge/rank-one-scalar-shadow-needs-kernel-exhaustion.md`. The rank-one scalar sign is a valid certificate only when the boundary kernel is already nonnegative. Otherwise the scalar channel may be repaired while an invisible direction still carries negative index.
 
 Consequence: the proof target cannot regress from the completed semilocal integer index to a single scalar `s_d>0` unless a source theorem proves kernel and omitted-channel exhaustion first.
 
@@ -511,7 +511,7 @@ Consequence: a landscape proof cannot move from pole-channel control at `y=-4` t
 
 Status: conditional source-route lemma added, not an RH proof.
 
-Created `../2-fully-proven/stieltjes-bulk-exterior-christoffel-monotonicity.md`. For a positive moment bulk supported to the right of an exterior boundary interval, the Christoffel kernel diagonal decreases as the boundary point moves toward the support, so the rank-one Schur threshold increases.
+Created `../3-formalized/not_new_scientific_knowledge/stieltjes-bulk-exterior-christoffel-monotonicity.md`. For a positive moment bulk supported to the right of an exterior boundary interval, the Christoffel kernel diagonal decreases as the boundary point moves toward the support, so the rank-one Schur threshold increases.
 
 Consequence: pole-to-first-trivial-zero monotonicity is a valid lemma only after the relevant positive Stieltjes bulk has been source-built. If that bulk is the reciprocal zero Stieltjes form, the positivity input is RH-strength; if it is a semilocal Euler/Gamma carrier, its positivity is the live repair theorem.
 

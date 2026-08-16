@@ -3970,3 +3970,154 @@ This closes the first half of `(β)`'s exterior-mass-from-below: the Bessel dens
 the sharp order in the endpoint energy.  What remains is the transfer of that lower bound through
 `integral_Ioi_abs_radialProlateDensity_sub_besselDensity_le` — already two-sided in `L¹` — and the
 endpoint-energy normalisation `E(α) ≍ c` at the Dunster matching point.
+
+## The Sturm energy of the radial equation is monotone — no Grönwall needed
+
+The self-adjoint form `(p R')' + Q R = 0` carries two exact identities, each one product rule:
+
+```text
+(p R R')' = p R'² − Q R² ,                        the virial identity
+((p R')² + p Q R²)' = (p Q)' R² ,                 the Sturm energy
+```
+
+`HTGeometry/SturmLiouvilleVirial.lean` (wired, axiom-clean):
+
+```text
+hasDerivAt_virial,  hasDerivAt_slEnergy
+slEnergy_le_of_monotone     (p Q)' ≥ 0  ⟹  slEnergy is nondecreasing
+integral_slEnergy_div_eq    ∫ slEnergy/p = 2 ∫ Q R² + [R · p R']
+mass_lower_of_slEnergy      (F₀ · ∫dx/p − B) / (2 Q_max)  ≤  ∫ R²
+```
+
+For the radial prolate equation this is decisive: `p = x²−1` and `Q = c²(x²−s)`, so
+`p Q = c²(x²−1)(x²−s)` is **increasing on `x > 1`** for `s ≤ 1`.  Hence the Sturm energy is
+nondecreasing there outright — the energy floor needed for the exterior mass from below is
+`slEnergy` at the Dunster crossing point, and no Grönwall, no perturbation bound and no oscillation
+estimate is involved.
+
+That floor is available: `radialProlate_value_ge_thirteen_fortieth_to_crossing` gives `R ≥ 13/40` up
+to the crossing, and `radialProlate_deriv_lower_bound_endpoint_collar` the companion derivative
+bound.  What remains for `∫_{x>1} R² ≥ κ/c` is arithmetic: evaluate `∫ dx/(x²−1)` on the transport
+window, bound the boundary term `[R·pR']` by the energy through `2|R|·|pR'| ≤ slEnergy/√(pQ)`, and
+choose the window so that `Q_max ≍ c²` and `∫dx/p ≍ 1/c`.
+
+Note this supersedes the plan recorded above: the Bessel-model detour (density transfer plus
+`besselMass_lower`) is no longer needed for the lower half — the energy monotonicity applies to the
+actual mode directly.  The Bessel results stand on their own as the model-side statements.
+
+## The energy floor without evaluating anything
+
+The `1/c` exterior lower bound needs an energy *floor*, and the Sturm monotonicity above supplies
+only `F ≥ F(α)` with `F(α) = O(1)` — enough for `1/c²`, not for `1/c`.  The extra factor `c` lives in
+the amplitude, i.e. in the endpoint matching, and the only way to reach it without evaluating a
+Bessel function anywhere is the Wronskian.
+
+```text
+HTGeometry.sq_wronskian_le_oscEnergy_mul
+    (w₁ w₂' − w₁' w₂)²  ≤  oscEnergy w₁ · oscEnergy w₂
+HTGeometry.oscEnergy_lower_of_wronskian
+    Wronskian = W,  oscEnergy w₂ ≤ C  ⟹  W²/C ≤ oscEnergy w₁
+```
+
+both axiom-clean and wired.  The proof is Lagrange's identity
+`(a²+b²)(c²+d²) = (ac+bd)² + (ad−bc)²`, nothing more.
+
+Why this is the right brick.  The two Bessel branches have `u(J₀K′ − J₀′K) = π/4` exactly
+(`besselWronskian_eq_pi_div_four`), which in normal-form variables `w₁ = √u J₀`, `w₂ = √u K` is
+literally `w₁w₂′ − w₁′w₂ = π/4` — a *constant*, available with no evaluation.  The companion energy
+is bounded above by the corpus's own common envelope (`exists_lgBesselModel_common_envelope`) together
+with `oscEnergy_le_exp`.  So
+
+```text
+oscEnergy(√u J₀)  ≥  (π/4)² / C
+```
+
+with `C` absolute — no numeric bound on `J₀` or `Y₀` at any point, which matters because the Lean
+rules forbid computation.
+
+Chain for the exterior mass from below, now complete in structure:
+
+```text
+π/4 Wronskian          →  energy floor for the model            oscEnergy_lower_of_wronskian   ✔
+energy floor           →  L² mass of the model                  besselMass_lower               ✔
+model mass             →  exact mass                            density transfer (two-sided)   ✔ (corpus)
+                                                                 ProlateDunsterEndpointCoefficientBounds ✔ (corpus)
+```
+
+What remains is the arithmetic of the substitution `u = c·ξ_s(x)`, under which
+`c·A²·J₀(cξ)² dx = (1/c)·(besselNormalForm u)²/ξ′² du`, plus the elementary bound `1 ≤ ξ′ ≤ 2` on a
+window bounded away from the endpoint.
+
+## Where the factor `c` in the energy floor comes from
+
+The Wronskian floor, done in the self-adjoint variables rather than the normal-form ones, explains
+the missing power of the aperture outright.  For two solutions of `(p R')' + Q R = 0` the weighted
+Lagrange identity
+
+```text
+(A² + μB²)(C² + μD²) − μ(BC − AD)²  =  (AC + μBD)² ,      μ = p Q ,
+```
+
+gives, with no positivity hypothesis at all,
+
+```text
+HTGeometry.sq_wronskian_mul_le_slEnergy_mul
+    p Q · (R₁·(p R₂′) − (p R₁′)·R₂)²  ≤  slEnergy₁ · slEnergy₂
+HTGeometry.slEnergy_lower_of_wronskian
+    Wronskian = W,  slEnergy₂ ≤ C  ⟹  p Q W² / C ≤ slEnergy₁
+```
+
+both axiom-clean and wired.  The weight `p Q` appears because the Sturm energy weights `(p R′)²` and
+`p Q R²` differently, and for the radial prolate equation
+
+```text
+p Q = c²(x²−1)(x²−s) ≍ c²   on a window bounded away from the endpoint,
+```
+
+so a companion solution with energy `O(c)` forces `slEnergy₁ = Ω(c)` — exactly the factor the
+`1/c²` bound was missing.  Combined with `mass_lower_of_slEnergy`, whose denominator is `2 Q_max ≍ c²`,
+this returns `∫ R² ≳ c/c² = 1/c`, the sharp order.
+
+So the lower half's structure is settled, and the two candidate routes are now both available in
+final form: through the model (Wronskian on `√u J₀`, `oscEnergy_lower_of_wronskian`, then
+`besselMass_lower` and the density transfer), or directly on the exact solution (Wronskian on the
+radial pair, `slEnergy_lower_of_wronskian`, then `mass_lower_of_slEnergy`).  The second is shorter
+and needs no substitution; what it consumes is a second radial solution with a controlled Sturm
+energy, which is what `ProlateDunsterEndpointVolterra`'s reconstruction supplies.
+
+## The last structural gap in the energy floor: an envelope now controls the energy
+
+`oscEnergy_lower_of_wronskian` needs an *upper* bound on the companion solution's energy
+`E₂ = w₂² + w₂′²`.  The corpus supplies the envelope `|besselK u| ≤ C/√u`
+(`exists_besselK_envelope`, hence `exists_lgBesselModel2_envelope`), which bounds `w₂ = √u·besselK u`
+but says nothing about `w₂′`.  The gap is closed by a Landau inequality, not by an asymptotic:
+
+```text
+HTGeometry.abs_deriv_le_of_bounded
+    |w| ≤ C  and  |w''| ≤ M  on [u, u+1]   ⟹   |w'(u)| ≤ 2C + M/2
+```
+
+(wired, axiom-clean).  The proof is one integration by parts in disguise: `g(t) = w(t) + (u+1−t)w′(t)`
+has derivative `(u+1−t)w″(t)`, so `w(u+1) − w(u) − w′(u) = ∫_u^{u+1}(u+1−t)w″(t)dt` and the kernel
+integrates to `1/2`.
+
+For the oscillator this is self-improving: `w″ = −(1+q)w`, so the envelope bound on `w` *is* a bound
+on `w″`, and therefore on `w′`.  Concretely, with `|w₂| ≤ C` and `|q| ≤ 1/(4u²) ≤ 1/4` for `u ≥ 1`,
+
+```text
+|w₂″| ≤ (5/4)C ,     |w₂′| ≤ 2C + 5C/8 ,     E₂ ≤ C² + (2C + 5C/8)² ,
+```
+
+all absolute.  Feeding that into `oscEnergy_lower_of_wronskian` with the exact constant
+`w₁w₂′ − w₁′w₂ = π/4` gives an absolute energy floor for `√u J₀(u)` — with **no evaluation of any
+Bessel function at any point**, which is what the no-computation rule requires.
+
+The exterior-mass-from-below chain is therefore complete except for arithmetic:
+
+```text
+besselK envelope        →  |w₂| ≤ C                          corpus            ✔
+Landau                  →  |w₂′| ≤ 2C + M/2  ⟹  E₂ ≤ C'      abs_deriv_le_of_bounded  ✔
+π/4 Wronskian + E₂ ≤ C' →  E₁ ≥ (π/4)²/C'                    oscEnergy_lower_of_wronskian ✔
+E₁ floor                →  ∫ u J₀² ≥ κ                       besselMass_lower  ✔
+model mass              →  ∫_{x>1} R² ≥ κ/c                  density transfer (corpus) ✔
+```

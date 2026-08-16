@@ -1,7 +1,7 @@
 # Uvarov Repair Requires Boundary-Kernel Positivity
 
 - **ID:** uvarov-repair-requires-boundary-kernel-positivity
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / proof-route guardrail
 - **Source:** `finite-rank-one-selector-no-free-lunch.md`,
   `../../3-formalized/not_new_scientific_knowledge/pole-budget-does-not-imply-uvarov-repair.md`, and
@@ -108,7 +108,7 @@ separates that condition from the pole-channel archimedean split.
 
 - [x] 0 -> 1 in-progress: hidden kernel pre-gate isolated.
 - [x] 1 -> 2 fully-proven: finite proof written.
-- [ ] 2 -> 3 formalized: optional Schur-complement / principal-subspace lemma.
+- [x] 2 -> 3 formalized: `HTGeometry/BoundaryKernelSchurSplit.lean`.
 
 ## Log
 
@@ -157,3 +157,35 @@ The card remains Stage 2 because the theorem is stated for an arbitrary
 complex-linear boundary functional. The Lean library still needs its
 coordinate-free `ker beta ⊕ Cq` decomposition and congruence transport before
 this exact card statement is closed.
+
+## 2026-08-16 Lean coordinate-free closure
+
+`HTGeometry/BoundaryKernelSchurSplit.lean` closes the exact card statement for an arbitrary
+complex-linear boundary functional on a complex inner product space, with no coordinates supplied.
+
+`hermitianForm T v = Re <v, T v>` is the Hermitian form of a symmetric operator `T` and
+`repairedForm T beta t v = hermitianForm T v + t * ||beta v||^2` is the rank-one repair.
+
+- `repairedForm_eq_of_mem_ker`: the repair equals the base form on `ker beta`.
+- `hermitianForm_nonneg_on_ker`, `hermitianForm_pos_on_ker`: the two displayed necessary
+  implications of the card, in the complex-Hermitian setting.
+- `exists_kernelRiesz`: for a finite-dimensional `V` and a form positive definite on `ker beta`,
+  every `q` has a kernel vector `w in ker beta` with `<k, T w> = <k, T q>` for all `k in ker beta`.
+  This is the coordinate-free replacement for `B^{-1} l`; it is built from the orthogonal
+  projection onto `ker beta` composed with `T`, which is injective by kernel positive definiteness
+  and therefore surjective in finite dimension.
+- `repairedForm_split`: the exact congruence transport in the splitting `V = ker beta + C q`,
+
+  `repairedForm T beta t v = hermitianForm T (v - (beta v) . (q - w)) + ||beta v||^2 * (A q + t - A w)`,
+
+  whose first summand ranges over `ker beta` as `v` ranges over `V`.
+- `repairedForm_pos_iff`, `repairedForm_nonneg_iff`: with the kernel form (positive) definite, the
+  repair is positive (semi)definite exactly when the single Schur scalar `A q + t - A w` is
+  (nonnegative) positive.
+- `hermitianForm_kernelRiesz_eq`: `A w = Re <w, T q>`, identifying the subtracted term with the
+  boundary energy `l* B^{-1} l` of the card.
+- `uvarov_repair_requires_boundary_kernel_positivity`: the three clauses of the card assembled.
+
+The inertia hypothesis `(n,1)` of the second displayed implication is not needed: strict positivity
+of the repair already forces strict positivity on the whole kernel.  Axioms: `propext`,
+`Classical.choice`, `Quot.sound`.

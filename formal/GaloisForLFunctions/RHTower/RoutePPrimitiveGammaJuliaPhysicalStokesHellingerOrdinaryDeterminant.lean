@@ -341,7 +341,7 @@ theorem routePPrimitiveGammaJuliaPhysicalStokesHellingerCofinalOperator_memSchat
   exact memSchattenClass_one_add
     (hP.isCompactOperator one_pos) (hCn.isCompactOperator one_pos) hP hCn
 
-theorem opTrace_eq_tsum_basis_of_memSchattenClass_one
+private theorem opTrace_eq_tsum_basis_of_memSchattenClass_one
     {H ι : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
     (b : HilbertBasis ι ℂ H) {T : H →L[ℂ] H} (hT : MemSchattenClass 1 T) :
     ContinuousLinearMap.opTrace T = ∑' i, inner ℂ (b i) (T (b i)) := by

@@ -191,7 +191,7 @@ Thus rows A6--A7 cannot be discharged by saying that the first-trivial-zero chan
 
 ## 2026-06-24 Christoffel monotonicity does not replace A6--A7
 
-`../2-fully-proven/stieltjes-bulk-exterior-christoffel-monotonicity.md` gives the valid exterior-threshold comparison for positive moment bulks. The comparison requires the Gram form to be a positive Stieltjes bulk with support on one side of the boundary interval.
+`../3-formalized/not_new_scientific_knowledge/stieltjes-bulk-exterior-christoffel-monotonicity.md` gives the valid exterior-threshold comparison for positive moment bulks. The comparison requires the Gram form to be a positive Stieltjes bulk with support on one side of the boundary interval.
 
 Thus rows A6--A7 cannot cite Christoffel monotonicity until the positive bulk has been built from Euler/Gamma/FE source data. The monotonicity lemma can propagate a source positivity theorem; it cannot supply that theorem.
 

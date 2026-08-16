@@ -437,3 +437,102 @@ Hamiltonian ensemble.  This is separation evidence, not a priority proof.
 6. package the planar/static separation `(26)` and audit axioms.
 
 No Lean file or process was touched while the corpus refactor was active.
+
+## Lean progress
+
+Five new modules under `formal/GaloisForLFunctions/HTGeometry/`, all wired into the
+`GaloisForLFunctions.HTGeometry` umbrella and all axiom-clean
+(`[propext, Classical.choice, Quot.sound]`).  Everything below is stated for an arbitrary finite
+index type, an arbitrary Hermitian generator and an arbitrary probability space of parameters, so
+none of it is tied to the card's concrete Pauli shell.
+
+### Theorem A -- `QuenchedCentralizerPropagatorSplit`
+
+| Card item | Declaration |
+|---|---|
+| the orthogonal projection onto `ker L`, in the generator's own eigenbasis | `spectralKernelProjector`, `spectralKernelProjector_idem` |
+| the propagator fixes the kernel projector | `unitaryEvolution_mul_spectralKernelProjector` |
+| **`(8)`** `e^{-itL} = P + e^{-itL}(I-P)` | `unitaryEvolution_eq_spectralKernelProjector_add` |
+| the centered propagator, in closed diagonal form | `unitaryEvolution_sub_spectralKernelProjector_eq` |
+| **`(9)`, operator norm** `‖e^{-itL}-P‖ = 1` at every `t` | `l2_opNorm_unitaryEvolution_sub_spectralKernelProjector` |
+| **`(9)`, Hilbert--Schmidt** `‖e^{-itL}-P‖²_HS = #{nonzero eigenvalues}` | `hsNorm_sq_unitaryEvolution_sub_spectralKernelProjector` |
+| the same, read as the codimension of the centralizer | `card_filter_eigenvalues_ne_zero`, `hsNorm_sq_unitaryEvolution_sub_spectralKernelProjector_eq_codim` |
+| unitary conjugation is an isometry for the Hilbert--Schmidt norm | `hsNorm_conj_le`, `hsNorm_unitary_conj` |
+
+### Theorem B -- `HistogramCentralizerDimension`
+
+| Card item | Declaration |
+|---|---|
+| the commutant of a matrix, as a submodule | `commutantSubmodule`, `mem_commutantSubmodule` |
+| the commutant of a diagonal matrix is the equal-energy support | `mem_commutantSubmodule_diagonal`, `commutantSubmodule_diagonal_eq_span` |
+| **its dimension is the number of equal-energy level pairs** | `finrank_commutantSubmodule_diagonal` |
+| **`(6)`** the collective energy is the histogram pairing | `collectiveReplicaEnergy`, `collectiveReplicaEnergy_eq_sum_multiplicity` |
+| maximal projective spectral rank (corpus predicate, reused) | `MaximallyProjectiveEnergy` |
+| **equal collective energy ⟺ equal histogram** | `collectiveReplicaEnergy_eq_iff_multiplicity_eq` |
+| **`(11)`** `κ_{D,r} = ∑_{\|k\|=r} m_k²` | `replicaHistogramCollision`, `replicaHistogramCollision_eq_sum_sq` |
+| **`(12)`** `dim C_{H,r} = κ_{D,r}` | `finrank_commutantSubmodule_collectiveReplicaEnergy` |
+| **`(14)`** `κ_{D,1} = D` | `replicaHistogramCollision_one` |
+| **`(15)`** the total pair count is `D^{2r}` | `card_orderedReplicaPair` |
+| **`(16)`** `D^r ≤ κ_{D,r} ≤ r! D^r` | `replicaHistogramCollision_eq_sum_fiber`, `replicaHistogramCollision_bounds` |
+| **`(17)`** `κ_{D,r} ≥ (D)_r r!` | `orderedReplicaMultiplicity_le_one_of_injective`, `multinomial_orderedReplicaMultiplicity_of_injective`, `descFactorial_mul_factorial_le_replicaHistogramCollision` |
+
+`(15)` is the identity `κ_{D,r} = #{(α,β) : hist α = hist β}` together with `#pairs = D^{2r}`, which is
+exactly the statement that `κ/D^{2r}` is the histogram collision probability of two independent
+uniform tuples.
+
+### Theorem D -- `AveragedCentralizerProjectionFloor`, `PlanarStaticSeparation`
+
+| Card item | Declaration |
+|---|---|
+| **`(13)`** `dim(C ⊓ Nᗮ) = dim C - dim N` | `finrank_inf_orthogonal_eq_sub` |
+| a Hermitian matrix has trace at most rank times operator norm | `abs_eigenvalue_le_l2_opNorm`, `trace_re_le_rank_mul_l2_opNorm` |
+| the trace of a Hermitian idempotent is its rank | `trace_eq_rank_of_isHermitian_idem` |
+| **`(21)`** compressing by the complement removes exactly the subprojector's trace | `trace_compression` |
+| the average of Hermitian matrices is Hermitian; trace and products commute with the average | `isHermitian_integral`, `trace_integral`, `mul_integral`, `integral_mul` |
+| **`(21)`--`(22)`** `‖Q P̄ Q‖ ≥ (κ-d)/(D^{2r}-d)` | `l2_opNorm_averaged_compression_ge` |
+| **`(23)`** at one replica the ratio is `1/(D+1)` | `oneReplica_floor_ratio` |
+
+### Theorem C -- `AnnealedSpectralDephasing`
+
+| Card item | Declaration |
+|---|---|
+| Riemann--Lebesgue for a finite absolutely continuous measure on the line | `tendsto_integral_exp_measure_zero` |
+| a phase with absolutely continuous pushforward dephases the parameter average | `tendsto_integral_exp_phase_zero` |
+| the same against a bounded nonnegative weight | `tendsto_integral_exp_phase_nnreal_weight` |
+| **the same against a bounded complex weight** | `tendsto_integral_exp_phase_weight` |
+| **`(19)`, abstract form** entrywise oscillatory decay upgrades to operator-norm decay | `tendsto_annealed_matrix_l2_opNorm_zero` |
+
+The absolute-continuity hypothesis is imposed once, on the pushforward of the *parameter* measure;
+every bounded weight is then covered automatically, because `ν ≪ μ` implies
+`φ_*ν ≪ φ_*μ`.  This is the card's "its continuously weighted pushforward is absolutely continuous;
+Riemann--Lebesgue makes the corresponding integral tend to zero", proved once for all weights.
+
+### Theorem E -- `PlanarStaticSeparation`
+
+| Card item | Declaration |
+|---|---|
+| **`(26)`, abstract form** a family with a persistent floor is never approximated by a decaying reference | `eventually_le_norm_sub_of_tendsto` |
+
+### What is not yet formalized
+
+1. **The concrete instance of `(19)`.**  The abstract dephasing theorem consumes an entrywise
+   expansion of the centered replica propagator into oscillatory averages whose phases push the
+   spherical measure forward absolutely continuously.  That expansion is the card's `(20)`, and the
+   absolute continuity is the fixed-shell nowhere-flat spectral-action theorem of the parent card
+   `fixed-shell-angular-dephasing-static-local-plateau-law.md`, which is itself still at stage 2.
+   Formalizing that parent card is the prerequisite.
+
+2. **Equation `(25)`, all-replica planar decay.**  The corpus owns the complete one-replica
+   pipeline (`FreeFockMatrixSemicircleFourierDecay`, `FiniteDysonHallAtomlessness`,
+   `OneReplicaTracelessPauliSpectralDecay`), but it runs through
+   `MatrixFamilyHasSubsingletonColumns`, which makes the matrix Dyson equation diagonal.  A
+   *collective* replica generator is a sum over replicas, so in the replicated Pauli basis its
+   adjoint matrix has up to `r` nonzero entries per column and the diagonal reduction fails.  The
+   all-replica case therefore needs the genuinely non-diagonal matrix Dyson equation, i.e. Kargin's
+   full matrix-semicircle theorem, exactly as the card's hostile audit records.  The all-replica
+   Hall input it consumes is already available: `graphLocalCompleted_hall` and
+   `graphLocal_finrank_le_shadow_add_factorial` from
+   `../3-formalized/all-replica-one-step-local-pauli-hall-saturation-law.md`.
+
+Everything else the card states -- Theorems A, B, D, equations `(6)`, `(8)`, `(9)`, `(11)`--`(17)`,
+`(21)`--`(23)`, and the abstract mechanisms of `(19)` and `(26)` -- is proved unconditionally.
