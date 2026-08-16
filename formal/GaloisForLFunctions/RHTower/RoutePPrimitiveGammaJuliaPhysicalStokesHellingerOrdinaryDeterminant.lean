@@ -69,8 +69,14 @@ theorem routePPrimitiveGammaJuliaPhysicalStokesHellingerChannel_positiveShift_su
     · simp
       nlinarith [hsqrt]
     · simp
-  · apply Complex.ext <;> (simp; ring)
-  · apply Complex.ext <;> (simp; ring)
+  · apply Complex.ext
+    · simp
+      ring
+    · simp
+  · apply Complex.ext
+    · simp
+      ring
+    · simp
   · apply Complex.ext
     · simp
       nlinarith [hdefect]
@@ -474,14 +480,14 @@ theorem eventually_routePPrimitiveGammaJuliaPhysicalStokesHellingerCofinalOperat
 /-- **P-G105N capstone.** Full physical cofinal operator is nuclear, its ordinary trace is the
 source-forced Stokes current, and its reflected ordinary determinant is the cofinal limit of the
 literal finite physical determinants. -/
-theorem routePPrimitive_GammaJulia_physicalStokesHellingerOrdinaryDeterminant :
-    ∀ (d : ℝ), 0 < d → ∀ (r : ℝ), 0 ≤ r →
+theorem routePPrimitive_GammaJulia_physicalStokesHellingerOrdinaryDeterminant
+    (d : ℝ) (hd : 0 < d) (r : ℝ) (hr : 0 ≤ r) :
       MemSchattenClass 1 (HilbertSchmidt.toOperator
         (routePPrimitiveGammaJuliaPhysicalStokesHellingerCofinalKernel_isHS
-          (d := d) (r := r) ‹0 < d›)) ∧
+          (d := d) (r := r) hd)) ∧
       ContinuousLinearMap.opTrace (HilbertSchmidt.toOperator
         (routePPrimitiveGammaJuliaPhysicalStokesHellingerCofinalKernel_isHS
-          (d := d) (r := r) ‹0 < d›)) =
+          (d := d) (r := r) hd)) =
         ((1 - r : ℝ) : ℂ) *
           (gammaSewnMobiusApertureStokesOrientedFirstTraceCurrent d : ℂ) ∧
       Differentiable ℂ
@@ -498,7 +504,6 @@ theorem routePPrimitive_GammaJulia_physicalStokesHellingerOrdinaryDeterminant :
           routePPrimitiveGammaJuliaPhysicalStokesHellingerOrdinaryFiniteDet d r s z)
           atTop
           (nhds (routePPrimitiveGammaJuliaPhysicalStokesHellingerOrdinaryEntireDet d r z))) := by
-  intro d hd r hr
   refine ⟨routePPrimitiveGammaJuliaPhysicalStokesHellingerCofinalOperator_memSchattenClass_one
       hd hr,
     opTrace_routePPrimitiveGammaJuliaPhysicalStokesHellingerCofinalOperator hd hr,

@@ -277,9 +277,6 @@ positive-operator moment log-convexity propagates coefficient-faithful first Fou
 every power, and two-orientation critical diagonal partial sums diverge for every component depth
 `m>=1`. Raising positive Gauss operator to higher power cannot create finite critical trace or
 annihilate deviation sector; required C1 mechanism must be relative/signed before diagonal sum.
-Moreover, every Schatten-1-relative reference inherits divergent critical two-orientation trace,
-so admissible C1 subtraction must pair two non-trace-class channels matching modulo `l^1` rather
-than use trace-class background.
 
 **Open core.** Either:
 

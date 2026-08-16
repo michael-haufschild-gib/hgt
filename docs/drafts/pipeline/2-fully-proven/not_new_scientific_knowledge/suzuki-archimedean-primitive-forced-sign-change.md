@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven/not_new_scientific_knowledge
 - **Type:** THEOREM (paper), `[PROVED HERE; SEARCH/BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** Suzuki's explicit shifted-Xi Mellin kernel;
-  `shifted-euler-prime-orbit-pf2-failure.md`
+  `../../3-formalized/not_new_scientific_knowledge/shifted-euler-prime-orbit-pf2-failure.md`
 - **Statement:** In the RH-relevant range `0<omega<1/2`, the integrated archimedean kernel entering
   Suzuki's one-sign criterion is negative near zero and positive near one.  Thus neither the
   archimedean factor alone nor positivity of the Euler dilation coefficients can give the required

@@ -12,7 +12,7 @@
   `shifted-euler-quotient-finite-tangent-prime-support-filtration.md`;
   `shifted-euler-quotient-twisted-cocycle-flatness.md`;
   `self-dual-quartet-defeats-generic-shift-curvature-bound.md`;
-  `shifted-euler-prime-orbit-pf2-failure.md`;
+  `../../3-formalized/not_new_scientific_knowledge/shifted-euler-prime-orbit-pf2-failure.md`;
   `suzuki-archimedean-primitive-forced-sign-change.md`;
   `suzuki-euler-pole-archimedean-moment-annihilation.md`;
   `suzuki-tail-is-exact-summatory-error-transform.md`;

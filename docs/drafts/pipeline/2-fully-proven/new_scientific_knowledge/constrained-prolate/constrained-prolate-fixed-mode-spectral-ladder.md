@@ -3706,3 +3706,80 @@ Two mechanical steps and one assembly:
    collar, and `A(1) = 1`.  Pure phase-squeeze arithmetic.
 3. **The assembly.**  `Φ(α)/Φ(1) ≍ I₀(cΞ(α))` with absolute constants; `Φ(√s)/Φ(α)` from the sharp
    action with the now-constant loss `6·log((1−√s)/(1−α))`; then items 2 and 3 as before.
+
+## The endpoint layer, closed for the actual prolate mode
+
+```text
+prolateBand_le_and_le :
+  0 ≤ s ≤ 1/8,  0 < c,  1/2 < α < 1,  600(1−α) ≤ 1/4,
+  Phi solves  (1−y²)Phi'' − 2y Phi' + (sc² − c²y²) Phi = 0  on (α,1),
+  Phi, Phi' continuous on [α,1],   Phi(1) = 1
+  ⟹  (1/3)·I₀(cΞ_s(y))  ≤  Phi(y)  ≤  3·I₀(cΞ_s(y))     for all y ∈ [α,1] .
+```
+
+This is the last named input `(β)` was waiting for.  It is unconditional, uniform in the aperture,
+and uniform in the separation parameter through `s ≤ 1/8` alone.
+
+### The two passages, and the two places the endpoint could have bitten
+
+`u = √(1−y²)·Phi` removes the first-order term — the contributions `2w'Phi'` and `w·(2y/(1−y²))Phi'`
+cancel identically — leaving `u'' + Qu = 0` with `Q = (1−y²)^(−2) − c²P²`.  Dividing by the amplitude
+`g = √m̃` puts it in drift form with the model's own coefficient `B`, and
+
+```text
+Q + B²/4 + B'/2 = −c²P² + bandComparisonDefect ,
+```
+
+so the aperture term is shared exactly and only the `c`-free defect separates the two equations.  Both
+steps are instances of the abstract `HTGeometry.AbstractComparisonTransport`.
+
+Two quantities are genuinely singular at `y = 1` and had to be handled without ever evaluating their
+factors separately.
+
+**The amplitude ratio** `A = g/w`, i.e. `A² = m̃/(1−y²)`.  The sharp phase squeeze gives
+
+```text
+√2/√(1+y)  ≤  A²  ≤  2√(1−s)/(√(y²−s)(1+y)) ,
+```
+
+two explicit continuous functions that both equal `1` at `y = 1`.  Hence `A → 1`
+(`tendsto_bandAmplitudeRatio`), and with the value `1` built into the definition `A` is continuous on
+the closed collar, with `1/2 ≤ A ≤ 2` there.  This is what lets the comparison unknown
+`U = Phi/A` be normalised *at* the endpoint.
+
+**The transported derivative** `m̃·U'`.  Neither factor extends: `m̃ → 0` while `U' → ∞`.  But
+`m̃ = g²` and `Dg = gB/2`, so
+
+```text
+m̃ U' = g(u' − uB/2) = A·( −y·Phi + (1−y²)Phi' − ((1−y²)B/2)·Phi ) ,
+```
+
+using `w w' = −y` and `w² = 1−y²`.  The only singular ingredient left is `(1−y²)B`, and
+
+```text
+(1−y²)B = (1−y²)L − y − y(1−s)/(y²−s)   →   0 − 1 − 1 = −2 ,
+```
+
+because `L = bandPhaseLogDefect` is bounded by `2` (so `(1−y²)L → 0` by squeeze) and the rest is
+rational.  `bandScaledCoeff`, defined with the value `−2` at the endpoint, is therefore continuous on
+the closed collar — which is exactly the hypothesis the Wronskian's continuity needs.  (The Volterra
+module's hypothesis was correspondingly weakened from `ContinuousOn DU` to
+`ContinuousOn (m̃ · DU)`, which is all it ever used.)
+
+New modules: `RHTower.BandNormalFormPassage`, `RHTower.BandAmplitudeRatio`,
+`RHTower.BandSolutionComparison`.
+
+### `(β)`: what is left
+
+```text
+sharp action                      prolateAngleAction_sub_bounds          ✔ σ = 0
+interior mass from below          mass_lower_of_fluxBound                ✔ σ = 1/2
+exterior mass from above          integral_Ioi_one_radialProlate_sq_le   ✔ σ = 0
+endpoint collar, two-sided        prolateBand_le_and_le                  ✔ σ = 0
+WKB transport α → 2√s             prolate_endpoint_le_log / sharp lower  ✔ σ = 0 (α fixed)
+```
+
+Only the assembly remains: chain `Phi(2√s)/Phi(1) = [Phi(2√s)/Phi(α)]·[Phi(α)/Phi(1)]` with the second
+factor `≍ I₀(cΞ(α))` and the first from the sharp action with the now-constant loss
+`6·log((1−2√s)/(1−α))`, then feed the ratio into the interior/exterior mass quotient.  Every factor is
+`σ = 0` or `σ = 1/2` against the budget `7/2`.

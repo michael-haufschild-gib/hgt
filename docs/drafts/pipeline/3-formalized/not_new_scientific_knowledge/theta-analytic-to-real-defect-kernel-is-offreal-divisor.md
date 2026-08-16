@@ -1,7 +1,7 @@
 # The analytic-to-real theta-defect comparison has exactly the off-real divisor as kernel
 
 - **ID:** `theta-analytic-to-real-defect-kernel-is-offreal-divisor`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper); terminal Route-A reduction
 - **Scientific status:** `[BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** the theta analytic cokernel and the Xi logarithmic-derivative real-boundary measure
@@ -87,4 +87,28 @@ geometry that proves injectivity.  Rephrasing (3) as a faithful functor or purit
 - [x] analytic and real semisimple cores identified
 - [x] canonical comparison and kernel computed
 - [x] faithfulness proved equivalent to RH
-- [ ] no Lean formalization planned for a tautological divisor projection
+- [x] formalized in `RHTower/ThetaAnalyticRealDefectKernel.lean`, including the exact RH equivalence
+
+## Lean formalization
+
+Module: `formal/GaloisForLFunctions/RHTower/ThetaAnalyticRealDefectKernel.lean`
+(namespace `RHTower`), wired into the `GaloisForLFunctions.RHTower` umbrella.
+
+| Paper statement | Lean declaration |
+|---|---|
+| `Z_Xi`, the distinct zero set of `XiC` | `xiZeroSet` |
+| `(1)` analytic semisimple core `⊕_ρ C e_ρ` | `analyticDefectCore` |
+| `(3)` the comparison `r` | `realBoundaryComparison`, `realBoundaryComparison_apply` |
+| `r(e_ρ) = e_ρ` on real fibers | `realBoundaryComparison_single_real` |
+| `r(e_ρ) = 0` on nonreal fibers | `realBoundaryComparison_single_nonreal` |
+| `(4)` `ker r` is the sum of the nonreal fibers | `mem_ker_realBoundaryComparison_iff` |
+| `(5)` `range r` is the real-boundary core `(2)` | `mem_range_realBoundaryComparison_iff` |
+| faithfulness is reality of the whole divisor | `injective_realBoundaryComparison_iff` |
+| `(6)` faithful `⟺` `RiemannHypothesis` | `injective_realBoundaryComparison_iff_riemannHypothesis` |
+
+The RH bridge uses the corpus coordinate theorem
+`RHTower.SlabMassSquareCertificate.riemannHypothesis_iff_xiC_zero_im_eq_zero`, so the equivalence
+is with mathlib's `RiemannHypothesis` itself, not with a restated surrogate.
+
+Audit: direct `lake env lean` check clean, targeted module build clean, umbrella import wired,
+`#print axioms` returns only `propext`, `Classical.choice`, `Quot.sound`.

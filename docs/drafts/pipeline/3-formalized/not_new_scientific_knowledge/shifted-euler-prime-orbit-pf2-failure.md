@@ -1,7 +1,7 @@
 # Shifted Euler prime-orbit coefficients fail PF2
 
 - **ID:** `shifted-euler-prime-orbit-pf2-failure`
-- **Stage:** 2-fully-proven/not_new_scientific_knowledge
+- **Stage:** 3-formalized
 - **Type:** COUNTEREXAMPLE THEOREM (paper),
   `[PROVED HERE; BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** `shifted-euler-quotient-twisted-cocycle-flatness.md`; Suzuki's explicit causal kernel
@@ -105,6 +105,24 @@ number theory.
 
 - [x] 0 -> 1: coefficient-positivity-to-sign proposal and its local PF2 falsifier isolated.
 - [x] 1 -> 2: exact local coefficients and negative minor proved on paper.
-- [ ] 2 -> 3: no Lean formalization selected; the actual prime--archimedean boundary estimate is
-  not this elementary minor.
+- [x] 2 -> 3: formalized in `RHTower/ShiftedEulerPrimeOrbitPF2.lean`; the actual
+  prime--archimedean boundary estimate remains a separate open target.
 - [ ] 3 -> 4: no scientific-novelty claim.
+
+## Lean formalization
+
+Module: `formal/GaloisForLFunctions/RHTower/ShiftedEulerPrimeOrbitPF2.lean`
+(namespace `RHTower`), wired into the `GaloisForLFunctions.RHTower` umbrella.
+
+| Paper statement | Lean declaration |
+|---|---|
+| `(1)` orbit coefficients `a_0 = 1`, `a_k = x^k - x^(k-2)` | `shiftedEulerOrbitCoeff`, `shiftedEulerOrbitCoeff_zero`, `shiftedEulerOrbitCoeff_succ`, `shiftedEulerOrbitCoeff_one`, `shiftedEulerOrbitCoeff_two` |
+| the orbit is the expansion of `(1 - x^{-1}z)/(1 - xz)` | `shiftedEulerOrbitCoeff_mul_pow`, `tsum_shiftedEulerOrbitCoeff` |
+| every `a_k` positive | `shiftedEulerOrbitCoeff_pos` |
+| the adjacent Toeplitz matrix | `shiftedEulerOrbitToeplitzTwo` |
+| `(2)` `det = x^{-2} - 1` | `det_shiftedEulerOrbitToeplitzTwo` |
+| `(2)` the minor is strictly negative for `x > 1` | `det_shiftedEulerOrbitToeplitzTwo_neg` |
+| positivity coexists with PF2 failure | `exists_positive_orbit_failing_pf2` |
+
+Audit: direct `lake env lean` check clean, targeted module build clean, umbrella import wired,
+`#print axioms` returns only `propext`, `Classical.choice`, `Quot.sound`.

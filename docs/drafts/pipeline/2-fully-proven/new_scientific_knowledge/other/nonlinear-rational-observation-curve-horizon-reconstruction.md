@@ -359,3 +359,68 @@ which forces `c = 0` in characteristic zero.
 curve realized on its normalization forces every `Rᵢ` to be affine, i.e. the curve is a line — and
 in the non-affine branch the translation vector is zero, which is exactly what the card's `(6)`
 needs to conclude `Rᵢ(Z) = Rᵢ(T)` and hence `Z = T`.
+
+## 2026-08-16 — Lemma 1 in full generality, and the identity-view dichotomy
+
+`formal/GaloisForLFunctions/HTGeometry/JetPrincipalSymbolExtraction.lean`, unconditional and
+axiom-clean, wired into the `HTGeometry` umbrella.
+
+**`HTGeometry.exists_mem_pd_ratio`** is the general Lüroth principal-symbol theorem the card asked
+for.  Let `K` be a derivation-closed intermediate field of the free scalar differential rational
+field, strictly above the constants, and let `v, w ∈ K` have the same exact scalar differential
+order `n` with `∂_{x_n} v ≠ 0`.  Then `∂_{x_n} w / ∂_{x_n} v ∈ K`.
+
+The mechanism is exactly the card's `(2)–(3)`, but organized so that no formal partial derivative
+with respect to a Lüroth generator has to be constructed.  Differential Lüroth writes `K = C⟨u⟩`;
+if `u` has exact order `r`, order additivity forces `v` and `w` to have order `s = n − r` over `u`,
+so both lie in `C(u, …, u^{(s)})`.  Every jet `u^{(i)}` with `i < s` has `x`-order below `n` and is
+therefore killed by `∂_{x_n}`.  A single adjoin induction then shows that `∂_{x_n}` maps that whole
+subfield into `C(u, …, u^{(s)}) · t` for the one element `t = ∂_{x_n} u^{(s)}`, and the two
+multipliers divide.
+
+Supporting theorems in the same module:
+
+```text
+pd_differentialJet_top          -- principal symbols are unchanged by differentiation
+exists_mem_mul_of_mem_adjoin    -- one free direction propagates through an adjoined field
+pd_eq_zero_of_mem_jetObservableField
+```
+
+**The identity-view corollary `(7)` is closed.**
+
+```text
+differentialAdjoin_jets_eq_top_of_pd_notMem_bot
+exists_affine_of_pd_zero_ratFuncEval_mem_bot
+differentialAdjoin_jets_ne_top_of_affine
+differentialAdjoin_jets_eq_top_iff
+```
+
+`differentialAdjoin_jets_eq_top_iff` is the exact dichotomy: for a rational view `r` of the free
+generator and every `n ≥ 1`,
+
+```text
+C⟨x^{(n)}, (r(x))^{(n)}⟩ = C⟨x⟩   iff   r is not affine.
+```
+
+The forward half combines the extraction theorem with the already-formalized Lemma 2
+(`rational_positiveJet_observation_eq_top`): extraction puts `r'(x)` in the field, and Lemma 2 then
+puts `x` in it.  Nonaffineness enters through the constant-kernel theorem: if `∂_{x_0}(r(x))` were
+constant then `r(x) − a x` would have every partial derivative zero, hence be constant, so `r`
+would be affine.  The affine half is the jet-flag strictness.
+
+`#print axioms` on every capstone returns only `propext`, `Classical.choice`, `Quot.sound`.
+
+### What remains
+
+The general `m`-view Main theorem — the normalization of the observation curve — is not yet
+formalized.  Its route is now short, because the extraction theorem applies to each pair
+`(δ^n R_1(y), δ^n R_i(y))` and produces the slope ratios `q_i = R_i'(y)/R_1'(y)` inside `L_n`, and
+because differential order additivity forces the Lüroth generator of `L_n` to have order zero as
+soon as one nonconstant order-zero observable lies in `L_n`.  Writing `L_n = C⟨u⟩` with `u ∈ C(y)`,
+extraction gives `R_i'(y)/u'(y) ∈ C(u)`.  Then every `C(u)`-embedding `σ` of `C(y)` commutes with
+the unique extension of the derivation and fixes `R_i'(y)/u'(y)`, so `σ(R_i(y)) − R_i(y)` is an
+algebraic differential constant, hence a base constant `c_i`; iterating `σ` to its order forces
+`c_i = 0` in characteristic zero.  Every embedding therefore fixes each `R_i(y)`, so
+`C(y) = C(R_1(y), …, R_m(y)) ⊆ C(u)` and `L_n = C⟨y⟩`.  The translation-stabilizer modules
+`TranslationShiftAffineRigidity.lean` and `ScalingShiftRigidity.lean` are no longer needed for this
+route; the finite-order argument replaces them.

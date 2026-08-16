@@ -3184,3 +3184,38 @@ differently".
 
 `HTGeometry/DeficiencySupermodular.lean` was deleted: it duplicated the corpus's
 `LinearFamilyDefectSupermodularity` and `LinearFamilyGreatestMaximizer`.
+
+### Triage of the remaining top-level stage-2 cards (2026-08-16)
+
+After promoting `all-replica-one-step-local-pauli-hall-saturation-law`, 36 cards remain in
+`2-fully-proven` (top level).  Each was checked against mathlib and against the corpus.  All but one
+are gated on a major theorem that exists in neither:
+
+- Baker on linear forms in logarithms — `baker-general-logarithms-inhomogeneous-extension` and, on
+  top of it, the four `schanuel-*` cards (which additionally need Rosenlicht subgroup closure and
+  the classification of connected subgroups of `G_a^n × G_m^n`);
+- Hilbert irreducibility over `ℚ` and o-minimality of `R_an` — `algebraic-two-local-instant-exact-complexity`
+  (its §2, §3 and equation (6) are already corpus-owned; these two are the only gaps);
+- the minimal nonzero quadratic Casimir of the conjugation representation of `SU(D)` (equivalently
+  highest-weight theory for `A_{D-1}`) — `all-replica-incidence-normalized-local-word-leakage-law`
+  Lemma C, whose sharp constant `2D²` is what makes its boxed `(23)` exceed `2`;
+- Ingham's quantitative zero-density estimate — `route-t-fixed-short-interval-handoff`;
+- Matomäki–Teräväinen's all-interval `E_3` theorem — the two `route-e-*` cards;
+- Kaczorowski–Perelli continuation of the standard twist plus a Selberg-class structure —
+  `cusp-spectrum-radius-law` (every other layer of that card is already `[LEAN-PROVED]`);
+- Kleinbock–Margulis extremality — `local-chain-metric-recurrence-exponents`;
+- uniform sectorial large-argument asymptotics for `K_1` — the two `mass-bessel-*` cards;
+- finite-dimensional CPTP-inverse classification — `markovian-return-recovery-complexity-reflection-law`;
+- orthogonal-polynomial deformation theory for the actual shifted-Xi curves —
+  `mass-shifted-hard-jacobi-leakage-gramian-law` items 3–4.
+
+The exception is `observer-dimension-replica-action-crowding-law`: its Theorems A–D are elementary
+finite-dimensional statements (volume packing, Chebyshev, covering numbers, multinomial
+convolution) with close corpus analogues in one dimension.  Work on it has started; see that card's
+"Lean progress" section.
+
+### Progress: observer-dimension crowding — Theorem A (2026-08-16)
+
+`HTGeometry/EuclideanPackingPigeonhole.lean`, wired, built, axiom-clean: the Haar volume packing
+bound `card_mul_pow_le_of_separated`, its backwards reading `exists_pair_norm_sub_mul_le`, and the
+card's Theorem A `exists_pair_replicaObservedAction_mul_le`.

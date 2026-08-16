@@ -571,7 +571,7 @@ a_1^2-a_0a_2=x^(-2)-1<0.
 ```
 
 Thus even one local orbit is not PF2, hence not PF-infinity.  The proof is in
-`../2-fully-proven/not_new_scientific_knowledge/shifted-euler-prime-orbit-pf2-failure.md`.
+`../3-formalized/not_new_scientific_knowledge/shifted-euler-prime-orbit-pf2-failure.md`.
 
 `[ROUTE CONSEQUENCE]` Positive shifted-Euler coefficients do not automatically make Suzuki's
 prime-dilation mixture variation-diminishing and cannot by themselves force an eventual one-sign

@@ -88,8 +88,14 @@ theorem bandAmplitudeLower_le_sq (hy0 : 0 < y) (hy1 : y < 1) (hys : s < y ^ 2) :
   have hq : (0 : ℝ) < Real.sqrt (1 + y) := Real.sqrt_pos.2 (by linarith)
   have hq2 : Real.sqrt (1 + y) ^ 2 = 1 + y := Real.sq_sqrt (by linarith)
   have hsharp := sharp_le_bandLiouvilleWeight (s := s) hy0.le hy1.le hys
+  have hq2' : Real.sqrt (1 + y) * Real.sqrt (1 + y) = 1 + y :=
+    Real.mul_self_sqrt (by linarith)
   rw [bandAmplitudeRatio_sq hy0 hy1 hys, bandAmplitudeLower, div_le_div_iff₀ hq hy]
-  nlinarith [mul_le_mul_of_nonneg_right hsharp hq.le, hq2]
+  have hcalc : Real.sqrt 2 * (1 - y ^ 2)
+      = Real.sqrt 2 * (1 - y) * Real.sqrt (1 + y) * Real.sqrt (1 + y) := by
+    linear_combination (-(Real.sqrt 2 * (1 - y))) * hq2'
+  rw [hcalc]
+  exact mul_le_mul_of_nonneg_right hsharp hq.le
 
 theorem sq_le_bandAmplitudeUpper (hy0 : 0 < y) (hy1 : y < 1) (hys : s < y ^ 2) :
     bandAmplitudeRatio s y ^ 2 ≤ bandAmplitudeUpper s y := by
@@ -99,11 +105,11 @@ theorem sq_le_bandAmplitudeUpper (hy0 : 0 < y) (hy1 : y < 1) (hys : s < y ^ 2) :
   rw [bandAmplitudeRatio_sq hy0 hy1 hys, bandAmplitudeUpper,
     div_le_div_iff₀ hy (by positivity)]
   have hkey : bandLiouvilleWeight s y * Real.sqrt (y ^ 2 - s)
-      ≤ 2 * Real.sqrt (1 - s) * (1 - y) := (div_le_iff₀ hw).mp hsharp
+      ≤ 2 * Real.sqrt (1 - s) * (1 - y) := (le_div_iff₀ hw).mp hsharp
   nlinarith [hkey, hw, (by linarith : (0:ℝ) < 1 + y), (by linarith : (0:ℝ) < 1 - y)]
 
 /-- **The amplitude ratio tends to one at the endpoint.** -/
-theorem tendsto_bandAmplitudeRatio (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 8) {α : ℝ} (hα : 1 / 2 < α)
+theorem tendsto_bandAmplitudeRatio (hs1 : s ≤ 1 / 8) {α : ℝ} (hα : 1 / 2 < α)
     (hα1 : α < 1) :
     Filter.Tendsto (bandAmplitudeRatio s) (nhdsWithin 1 (Icc α 1)) (nhds 1) := by
   have hsqTendsto : Filter.Tendsto (fun y => bandAmplitudeRatio s y ^ 2)

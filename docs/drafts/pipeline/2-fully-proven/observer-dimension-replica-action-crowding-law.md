@@ -543,3 +543,31 @@ Prove or falsify the scale-matched signed packet conjecture.  A successful estim
 Any return to minimum gaps, worst gradients, positive near-action mass, raw Jacobians, fixed-order
 spectral form factors, or fresh time-dependent noise is already ruled out by the corpus and this
 card.
+
+## Lean progress
+
+`formal/GaloisForLFunctions/HTGeometry/EuclideanPackingPigeonhole.lean` (new, unconditional,
+axiom-clean, wired into the `HTGeometry` umbrella) formalizes **Theorem A** and its mechanism, for
+an arbitrary finite-dimensional real normed space `E` carrying an additive Haar measure:
+
+- `card_mul_pow_le_of_separated` — the volume packing bound: a `δ`-separated finite subset of the
+  ball of radius `ρ` obeys `N (δ/2)^d ≤ (ρ + δ/2)^d`, where `d = finrank ℝ E`.  Disjointness of the
+  open balls of radius `δ/2` and their containment in the ball of radius `ρ + δ/2` is checked by the
+  triangle inequality, and the Haar ball volume `μ(ball x t) = t^d μ(ball 0 1)` is cancelled by
+  positivity and finiteness of `μ(ball 0 1)`;
+- `exists_pair_norm_sub_mul_le` — reading it backwards: any finite set of more than one point of the
+  ball of radius `ρ` has two distinct points with `(N^{1/d} - 1)‖x - y‖ ≤ 2ρ`, the division-free
+  form of the card's `(2)`.  The separation is the actual minimum over the finite set of distinct
+  pairs, so no contradiction argument is needed;
+- `replicaObservedAction v p = ∑_j p_j v_j` and `norm_replicaObservedAction_le` — the observed
+  action of a multiplicity vector of replica order `r` lies in the ball of radius `rL`;
+- **`exists_pair_replicaObservedAction_mul_le`** — the card's Theorem A: among the multiplicity
+  vectors of `Finset.univ.piAntidiag r` there are two distinct ones whose observed actions satisfy
+  `(N^{1/d} - 1)‖G_p - G_q‖ ≤ 2rL`.  Non-injectivity of `p ↦ G_p` is handled first and gives the
+  bound with distance zero, so no genericity is assumed.
+
+Remaining Lean layers for this card: Theorem B (the `d`-dimensional amplitude-weighted crowding
+floor, whose one-dimensional analogue is the corpus's `FiniteLawCentralBinCrowding` and
+`ReplicaCrowdingCentralLimitFloor`), Theorem C (the ordered-tuple/multiplicity identity), Theorem D
+(the signed convolution lift and its Fourier character), and the corollaries `A1`, `C1`, `C2`, which
+additionally need the parent fixed-shell card's spectral-gradient objects.

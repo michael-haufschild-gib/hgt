@@ -59,7 +59,7 @@ D_real= positive logarithmic-derivative boundary defect.
 ```
 
 The canonical comparison is restriction to the real spectral axis.  The theorem
-`theta-analytic-to-real-defect-kernel-is-offreal-divisor.md` proves
+`../3-formalized/not_new_scientific_knowledge/theta-analytic-to-real-defect-kernel-is-offreal-divisor.md` proves
 
 ```text
 ker(D_an -> D_real)
