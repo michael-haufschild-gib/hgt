@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.XiEntireReal
+import GaloisForLFunctions.RHTower.XiHadamardFactorization
 
 /-!
 # No continuous scalar comparison at a critical-line zero
@@ -187,5 +187,62 @@ theorem no_continuous_scalar_comparison {ρ : ℂ} (hρ : ρ.re = 1 / 2)
       · norm_num at h3
       · exact hpi h3
     · exact Complex.I_ne_zero h2
+
+/-! ### The completed-density specialization -/
+
+/-- The completed-density analytic defect germ `4 z_s² ΞC(z_s)` with `z_s = (s - ½)(-i)`. -/
+def xiHurwitzGerm (s : ℂ) : ℂ :=
+  4 * ((s - 1 / 2) * (-I)) ^ 2 * XiC ((s - 1 / 2) * (-I))
+
+theorem xiHurwitzGerm_differentiable : Differentiable ℂ xiHurwitzGerm := by
+  have haff : Differentiable ℂ fun s : ℂ => (s - 1 / 2) * (-I) := by fun_prop
+  exact (((differentiable_const 4).mul (haff.pow 2)).mul (XiC_differentiable.comp haff))
+
+theorem xiHurwitzGerm_not_eventually_zero (ρ : ℂ) :
+    ¬ (∀ᶠ z in 𝓝 ρ, xiHurwitzGerm z = 0) := by
+  intro hev
+  -- a small nonzero point where `ΞC` does not vanish
+  have hcont : ContinuousAt XiC 0 := XiC_differentiable.continuous.continuousAt
+  have hne : ∀ᶠ z in 𝓝 (0 : ℂ), XiC z ≠ 0 := hcont.eventually_ne XiC_zero_ne
+  obtain ⟨z₀, hz₀ne, hz₀⟩ : ∃ z₀ : ℂ, XiC z₀ ≠ 0 ∧ z₀ ≠ 0 := by
+    have hpunct : ∀ᶠ z in 𝓝[≠] (0 : ℂ), XiC z ≠ 0 ∧ z ≠ 0 := by
+      filter_upwards [nhdsWithin_le_nhds hne, self_mem_nhdsWithin] with z h1 h2
+      exact ⟨h1, h2⟩
+    obtain ⟨z₀, hz₀, hz₀'⟩ := hpunct.exists
+    exact ⟨z₀, hz₀, hz₀'⟩
+  -- the identity theorem propagates the vanishing to the whole plane
+  have hana : AnalyticOnNhd ℂ xiHurwitzGerm Set.univ :=
+    Complex.analyticOnNhd_univ_iff_differentiable.mpr xiHurwitzGerm_differentiable
+  have hzero : AnalyticOnNhd ℂ (fun _ : ℂ => (0 : ℂ)) Set.univ :=
+    Complex.analyticOnNhd_univ_iff_differentiable.mpr (differentiable_const 0)
+  have hall : ∀ z : ℂ, xiHurwitzGerm z = 0 := fun z =>
+    hana.eqOn_of_preconnected_of_eventuallyEq hzero isPreconnected_univ (Set.mem_univ ρ)
+      hev (Set.mem_univ z)
+  have hs₀ : xiHurwitzGerm (1 / 2 + z₀ * I) = 4 * z₀ ^ 2 * XiC z₀ := by
+    have harg : ((1 / 2 + z₀ * I) - 1 / 2) * (-I) = z₀ := by
+      have hI : I * -I = 1 := by
+        rw [mul_neg, Complex.I_mul_I]
+        ring
+      calc ((1 / 2 + z₀ * I) - 1 / 2) * (-I) = z₀ * (I * -I) := by ring
+        _ = z₀ := by rw [hI, mul_one]
+    rw [xiHurwitzGerm, harg]
+  have := hall (1 / 2 + z₀ * I)
+  rw [hs₀] at this
+  rcases mul_eq_zero.mp this with h1 | h1
+  · rcases mul_eq_zero.mp h1 with h2 | h2
+    · norm_num at h2
+    · exact hz₀ (pow_eq_zero_iff two_ne_zero |>.mp h2)
+  · exact hz₀ne h1
+
+/-- **No continuous scalar comparison for the completed density.**  At a critical-line zero of the
+completed function, the analytic defect is not a continuous scalar multiple of the completed-density
+germ. -/
+theorem no_continuous_scalar_comparison_xi {ρ : ℂ} (hρ : ρ.re = 1 / 2)
+    (hzero : XiC ((ρ - 1 / 2) * (-I)) = 0)
+    {h : ℂ → ℂ} (hh : ContinuousAt h ρ)
+    (hfac : ∀ᶠ s in 𝓝 ρ, hurwitzM s = h s * xiHurwitzGerm s) : False := by
+  refine no_continuous_scalar_comparison hρ
+    (xiHurwitzGerm_differentiable.analyticAt ρ) ?_ (xiHurwitzGerm_not_eventually_zero ρ) hh hfac
+  rw [xiHurwitzGerm, hzero, mul_zero]
 
 end RHTower

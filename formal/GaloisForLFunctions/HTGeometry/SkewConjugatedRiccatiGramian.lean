@@ -234,4 +234,19 @@ theorem dotProduct_integral_nonneg {F : ℝ → Matrix (Fin n) (Fin n) ℝ} {y�
   rw [hval]
   exact intervalIntegral.integral_nonneg hle fun v _ => hpos v
 
+/-- Conjugation moves the test vector. -/
+theorem dotProduct_conj_eq (O M : Matrix (Fin n) (Fin n) ℝ) (x : Fin n → ℝ) :
+    x ⬝ᵥ ((Oᵀ * M * O) *ᵥ x) = (O *ᵥ x) ⬝ᵥ (M *ᵥ (O *ᵥ x)) := by
+  rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec,
+    Matrix.vecMul_transpose, Matrix.mulVec_mulVec]
+
+/-- A nonnegative multiple of a rank-one square is positive semidefinite. -/
+theorem dotProduct_smul_vecMulVec_nonneg {c : ℝ} (hc : 0 ≤ c) (w x : Fin n → ℝ) :
+    0 ≤ x ⬝ᵥ ((c • Matrix.vecMulVec w w) *ᵥ x) := by
+  have h : x ⬝ᵥ ((c • Matrix.vecMulVec w w) *ᵥ x) = c * (x ⬝ᵥ w) ^ 2 := by
+    simp [Matrix.mulVec, Matrix.vecMulVec_apply, dotProduct, Finset.mul_sum,
+      mul_comm, mul_left_comm, sq]
+  rw [h]
+  positivity
+
 end GaloisForLFunctions.HTGeometry

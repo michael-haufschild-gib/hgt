@@ -408,6 +408,43 @@ theorem matrixHasDerivAt_centeredInverseLevel (m : ℕ) (y : ℝ)
   · rw [Matrix.transpose_nonsing_inv, F.jacobiLevel_transpose]
   · exact F.jacobiVelocityLevel_eq m y
 
+/-- The transported boundary square of the `m+1`-level compression. -/
+def boundaryGramianSource (m : ℕ) (O : ℝ → Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ) (v : ℝ) :
+    Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ :=
+  (O v)ᵀ * ((2 * ((m : ℝ) + 1) * F.a (m + 1) v ^ 2) •
+    Matrix.vecMulVec ((F.jacobiLevel m v)⁻¹ *ᵥ boundaryUnit m)
+      ((F.jacobiLevel m v)⁻¹ *ᵥ boundaryUnit m)) * O v
+
+/-- **(HJLG.5).**  Conjugating the centered inverse by the orthogonal flow of the skew connection
+removes the commutator, so the conjugated centered inverse increases by the exact integral of the
+transported boundary square. -/
+theorem conjugatedCenteredInverse_increment (m : ℕ) (y₀ Y : ℝ)
+    (O : ℝ → Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ)
+    (hO : ∀ v, MatrixHasDerivAt O (-(F.connectionLevel m v * O v)) v)
+    (hdet : ∀ v ∈ Set.uIcc y₀ Y, (F.jacobiLevel m v).det ≠ 0)
+    (hint : ∀ i j, IntervalIntegrable (fun v => F.boundaryGramianSource m O v i j)
+      MeasureTheory.volume y₀ Y) :
+    (O Y)ᵀ * ((F.jacobiLevel m Y)⁻¹ - Y • (1 : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ)) * O Y
+        - (O y₀)ᵀ
+          * ((F.jacobiLevel m y₀)⁻¹ - y₀ • (1 : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ)) * O y₀
+      = Matrix.of fun i j => ∫ v in y₀..Y, F.boundaryGramianSource m O v i j := by
+  refine conjugated_increment_eq_integral
+    (U := fun v => (F.jacobiLevel m v)⁻¹ - v • (1 : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ))
+    (S := fun v => F.boundaryGramianSource m O v) (fun v hv => ?_) hint
+  exact matrixHasDerivAt_conjugated (F.matrixHasDerivAt_centeredInverseLevel m v (hdet v hv))
+    (hO v) (F.connectionLevel_transpose m v) rfl
+
+/-- **(HJLG.5), positivity.**  The boundary Gramian increment is positive semidefinite: the
+channel lost by finite admission reappears as a nonnegative controllability budget. -/
+theorem boundaryGramian_nonneg (m : ℕ) (y₀ Y : ℝ) (hle : y₀ ≤ Y)
+    (O : ℝ → Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ)
+    (hint : ∀ i j, IntervalIntegrable (fun v => F.boundaryGramianSource m O v i j)
+      MeasureTheory.volume y₀ Y) (x : Fin (m + 1) → ℝ) :
+    0 ≤ x ⬝ᵥ ((Matrix.of fun i j => ∫ v in y₀..Y, F.boundaryGramianSource m O v i j) *ᵥ x) := by
+  refine dotProduct_integral_nonneg hle hint x fun v => ?_
+  rw [boundaryGramianSource, dotProduct_conj_eq]
+  exact dotProduct_smul_vecMulVec_nonneg (by positivity) _ _
+
 end Compression
 
 end ShiftedJacobiFrame

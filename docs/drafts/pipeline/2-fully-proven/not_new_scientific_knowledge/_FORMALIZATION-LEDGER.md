@@ -77,6 +77,8 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-16 | `d2-countable-window-basis` | `RHTower/CountableWindowBasis.lean` |
 | 2026-08-16 | `determinant-line-trivialization-zero-divisor-blindness` | `RHTower/DeterminantLineDivisorBlindness.lean` |
 | 2026-08-16 | `acyclic-finite-fibers-derived-limit-zero` | `RHTower/AcyclicFiniteFibersDerivedLimit.lean` |
+| 2026-08-16 | `translation-invariant-defect-form-orbit-classification` | `RHTower/TranslationInvariantDefectForm.lean` |
+| 2026-08-16 | `xi-hurwitz-scalar-comparison-codimension-no-go` | `RHTower/HurwitzScalarComparisonNoGo.lean` |
 
 ## Already carrying a stage-3 certificate (verify, then move the paper card)
 
@@ -219,6 +221,11 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 - `RHTower/AcyclicFiniteFibersDerivedLimit.lean` — `lim` and `lim¹` of a tower as kernel/cokernel of
   shift-minus-identity, their vanishing on towers of zero objects, and contractibility of the
   specialized finite prime complexes in the strip.
+- `RHTower/TranslationInvariantDefectForm.lean` — a translation-invariant Hermitian form pairs only
+  conjugate frequencies, off-real orbits are isotropic, and each such orbit is a hyperbolic plane.
+- `RHTower/HurwitzScalarComparisonNoGo.lean` — the exponential seam defect `q(1-s) - q(conj s)`
+  vanishes along the critical line and has nonzero transverse slope, so it is not a continuous
+  scalar multiple of any holomorphic germ vanishing there.
 
 ## Triage of the remaining folder (2026-08-16 scan)
 

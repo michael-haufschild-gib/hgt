@@ -30,27 +30,23 @@ local notation "H" => lp (fun _ : (P → ℤ) => ℂ) 2
 
 /-! ## Square-summability by finite partial sums -/
 
+theorem rpow_two_toReal (z : ℝ) : z ^ ((2 : ℝ≥0∞).toReal) = z ^ 2 := by norm_num
+
 omit [Fintype P] [DecidableEq P] in
 /-- A finite partial sum of squared coordinates never exceeds the squared norm. -/
 theorem sum_sq_le_norm_sq (f : H) (T : Finset (P → ℤ)) :
     ∑ r ∈ T, ‖((f : H) : (P → ℤ) → ℂ) r‖ ^ 2 ≤ ‖f‖ ^ 2 := by
   have h := lp.sum_rpow_le_norm_rpow (E := fun _ : (P → ℤ) => ℂ) (p := 2)
     (by norm_num) f T
-  have hcast : ((2 : ℝ≥0∞).toReal) = (2 : ℝ) := by norm_num
-  rw [hcast] at h
-  simpa using h
+  simpa only [rpow_two_toReal] using h
 
 omit [Fintype P] [DecidableEq P] in
 /-- A field with uniformly bounded finite partial sums of squares lies in `ℓ²`. -/
 theorem memℓp_of_forall_finset_sum_sq_le {g : (P → ℤ) → ℂ} {K : ℝ}
     (h : ∀ T : Finset (P → ℤ), ∑ r ∈ T, ‖g r‖ ^ 2 ≤ K) : Memℓp g 2 := by
   refine memℓp_gen ?_
-  have hcast : ((2 : ℝ≥0∞).toReal) = (2 : ℝ) := by norm_num
-  rw [hcast]
-  refine summable_of_sum_le (fun r => by positivity) fun T => ?_
-  refine le_trans (le_of_eq ?_) (h T)
-  refine Finset.sum_congr rfl fun r _ => ?_
-  simp
+  simp only [rpow_two_toReal]
+  exact summable_of_sum_le (c := K) (fun r => by positivity) h
 
 omit [Fintype P] [DecidableEq P] in
 /-- The `ℓ²` norm is determined by the finite partial sums of squares. -/
@@ -59,11 +55,7 @@ theorem norm_le_of_forall_finset_sum_sq_le {f : H} {K : ℝ} (hK : 0 ≤ K)
     ‖f‖ ≤ K := by
   refine lp.norm_le_of_forall_sum_le (E := fun _ : (P → ℤ) => ℂ) (p := 2) (by norm_num) hK ?_
   intro T
-  have hcast : ((2 : ℝ≥0∞).toReal) = (2 : ℝ) := by norm_num
-  rw [hcast]
-  refine le_trans (le_of_eq ?_) (le_trans (h T) (le_of_eq ?_))
-  · exact Finset.sum_congr rfl fun r _ => by simp
-  · simp
+  simpa only [rpow_two_toReal] using h T
 
 /-! ## Truncation to finitely many labels -/
 
@@ -95,8 +87,8 @@ theorem tendsto_truncL2 (v : H) :
   refine Filter.Tendsto.congr (fun S => ?_) h
   refine lp.ext ?_
   funext r
-  rw [coe_truncL2, truncField, lp.coeFn_sum, Finset.sum_apply]
-  simp [lp.single_apply, Pi.single_apply, Finset.sum_ite_eq]
+  rw [coe_truncL2, lp.coeFn_sum, Finset.sum_apply]
+  simp only [truncField, lp.single_apply, Pi.single_apply, Finset.sum_ite_eq]
 
 /-! ## The reciprocal shell weight -/
 
@@ -104,16 +96,16 @@ theorem tendsto_truncL2 (v : H) :
 def invShellField (m : ℕ) (ψ : (P → ℤ) → ℂ) : (P → ℤ) → ℂ :=
   fun r => ((shellWeight m r : ℝ) : ℂ)⁻¹ * ψ r
 
-omit [DecidableEq P] in
+omit [Fintype P] [DecidableEq P] in
 theorem ofReal_shellWeight_ne_zero (m : ℕ) (r : P → ℤ) :
     ((shellWeight m r : ℝ) : ℂ) ≠ 0 := by
   simpa using (shellWeight_pos m r).ne'
 
-omit [DecidableEq P] in
+omit [Fintype P] [DecidableEq P] in
 /-- The reciprocal shell weight is a contraction. -/
 theorem norm_invShellField_le (m : ℕ) (ψ : (P → ℤ) → ℂ) (r : P → ℤ) :
     ‖invShellField m ψ r‖ ≤ ‖ψ r‖ := by
-  rw [invShellField, norm_mul, norm_inv, Complex.norm_real,
+  simp only [invShellField, norm_mul, norm_inv, Complex.norm_real,
     Real.norm_of_nonneg (shellWeight_pos m r).le]
   have hs : 0 < shellWeight m r := shellWeight_pos m r
   have hone : (shellWeight m r)⁻¹ ≤ 1 := by
@@ -121,49 +113,50 @@ theorem norm_invShellField_le (m : ℕ) (ψ : (P → ℤ) → ℂ) (r : P → �
     exact one_le_shellWeight m r
   nlinarith [norm_nonneg (ψ r)]
 
-omit [DecidableEq P] in
+omit [Fintype P] [DecidableEq P] in
 /-- The shell weight undoes the reciprocal shell weight. -/
 theorem shellWeightField_invShellField (m : ℕ) (ψ : (P → ℤ) → ℂ) :
     shellWeightField m (invShellField m ψ) = ψ := by
   funext r
-  rw [shellWeightField, invShellField, ← mul_assoc,
-    mul_inv_cancel₀ (ofReal_shellWeight_ne_zero m r), one_mul]
+  simp only [shellWeightField, invShellField, ← mul_assoc,
+    mul_inv_cancel₀ (ofReal_shellWeight_ne_zero (P := P) m r), one_mul]
 
-omit [DecidableEq P] in
+omit [Fintype P] [DecidableEq P] in
 /-- The reciprocal shell weight undoes the shell weight. -/
 theorem invShellField_shellWeightField (m : ℕ) (ψ : (P → ℤ) → ℂ) :
     invShellField m (shellWeightField m ψ) = ψ := by
   funext r
-  rw [shellWeightField, invShellField, ← mul_assoc,
-    inv_mul_cancel₀ (ofReal_shellWeight_ne_zero m r), one_mul]
+  simp only [shellWeightField, invShellField, ← mul_assoc,
+    inv_mul_cancel₀ (ofReal_shellWeight_ne_zero (P := P) m r), one_mul]
 
-omit [DecidableEq P] in
-/-- **The reciprocal shell weight as a bounded diagonal operator.** -/
-def invShellLM (m : ℕ) : H →ₗ[ℂ] H where
-  toFun ψ := ⟨invShellField m ((ψ : H) : (P → ℤ) → ℂ),
+omit [Fintype P] [DecidableEq P] in
+/-- The reciprocal shell weight of an `ℓ²` field. -/
+def invShellL2 (m : ℕ) (ψ : H) : H :=
+  ⟨invShellField m ((ψ : H) : (P → ℤ) → ℂ),
     memℓp_of_norm_le (u := ψ) fun r => norm_invShellField_le m _ r⟩
+
+omit [Fintype P] [DecidableEq P] in
+@[simp]
+theorem coe_invShellL2 (m : ℕ) (ψ : H) :
+    ((invShellL2 m ψ : H) : (P → ℤ) → ℂ) = invShellField m ((ψ : H) : (P → ℤ) → ℂ) := rfl
+
+omit [Fintype P] [DecidableEq P] in
+/-- **The reciprocal shell weight as a diagonal operator.** -/
+def invShellLM (m : ℕ) : H →ₗ[ℂ] H where
+  toFun := invShellL2 m
   map_add' a b := by
     refine lp.ext ?_
     funext r
-    show invShellField m ((((a + b : H)) : (P → ℤ) → ℂ)) r = _
-    rw [lp.coeFn_add]
-    show ((shellWeight m r : ℝ) : ℂ)⁻¹ * (((a : H) : (P → ℤ) → ℂ) r
-        + ((b : H) : (P → ℤ) → ℂ) r) = _
-    rw [lp.coeFn_add, Pi.add_apply]
-    show _ = ((shellWeight m r : ℝ) : ℂ)⁻¹ * ((a : H) : (P → ℤ) → ℂ) r
-        + ((shellWeight m r : ℝ) : ℂ)⁻¹ * ((b : H) : (P → ℤ) → ℂ) r
+    simp only [coe_invShellL2, invShellField, lp.coeFn_add, Pi.add_apply]
     ring
   map_smul' a b := by
     refine lp.ext ?_
     funext r
-    show invShellField m ((((a • b : H)) : (P → ℤ) → ℂ)) r = _
-    rw [lp.coeFn_smul]
-    show ((shellWeight m r : ℝ) : ℂ)⁻¹ * (a * ((b : H) : (P → ℤ) → ℂ) r) = _
-    rw [lp.coeFn_smul, Pi.smul_apply, smul_eq_mul]
-    show _ = a * (((shellWeight m r : ℝ) : ℂ)⁻¹ * ((b : H) : (P → ℤ) → ℂ) r)
+    simp only [coe_invShellL2, invShellField, lp.coeFn_smul, Pi.smul_apply, smul_eq_mul,
+      RingHom.id_apply]
     ring
 
-omit [DecidableEq P] in
+omit [Fintype P] [DecidableEq P] in
 @[simp]
 theorem coe_invShellLM (m : ℕ) (ψ : H) :
     ((invShellLM m ψ : H) : (P → ℤ) → ℂ) = invShellField m ((ψ : H) : (P → ℤ) → ℂ) := rfl
@@ -172,7 +165,7 @@ omit [DecidableEq P] in
 /-- **The reciprocal shell weight has dense range.**  Its range contains every finitely supported
 field, and those are dense. -/
 theorem denseRange_invShellLM (m : ℕ) :
-    DenseRange (fun ψ : H => (invShellLM m ψ : H)) := by
+    DenseRange (invShellLM (P := P) m : H → H) := by
   intro v
   refine mem_closure_of_tendsto (tendsto_truncL2 v) (Filter.Eventually.of_forall fun S => ?_)
   refine ⟨l2OfFinSupp (shellWeightField m (truncField S ((v : H) : (P → ℤ) → ℂ)))
@@ -233,7 +226,10 @@ theorem exists_shellWeighted_exp {Q : Finset (P → ℤ)} {c : (P → ℤ) → �
       refine lp.norm_mono (by norm_num) fun r => ?_
       rw [coe_l2OfFinSupp, hu]
       simp only [shellWeightField, truncField]
-      by_cases hr : r ∈ S <;> simp [hr]
+      by_cases hr : r ∈ S
+      · simp [hr]
+      · simp only [hr, if_false, mul_zero, norm_zero]
+        positivity
     have hwSK : ‖wS‖ ≤ K := by
       refine le_trans hwSn ?_
       rw [hKdef]
@@ -254,8 +250,7 @@ omit [Fintype P] [DecidableEq P] in
 def expIsometry {Q : Finset (P → ℤ)} {c : (P → ℤ) → ℂ}
     (hsa : IsSelfAdjoint (latticeAdjacency Q c)) (x : ℝ) : H →ₗᵢ[ℂ] H where
   toLinearMap :=
-    ((NormedSpace.exp ((-(x : ℂ) * Complex.I) • latticeAdjacency Q c) : H →L[ℂ] H) :
-      H →ₗ[ℂ] H)
+    (NormedSpace.exp ((-(x : ℂ) * Complex.I) • latticeAdjacency Q c) : H →L[ℂ] H).toLinearMap
   norm_map' := norm_exp_latticeAdjacency_apply hsa x
 
 omit [Fintype P] [DecidableEq P] in
@@ -301,27 +296,34 @@ theorem exists_norm_invShell_exp_le {Q : Finset (P → ℤ)} {c : (P → ℤ) �
         ≤ C * (1 + |x|) ^ m * ‖invShellLM m η‖ := by
   obtain ⟨C, hC, hb⟩ := exists_shellWeighted_exp hsa m
   refine ⟨C, hC, fun x η => ?_⟩
-  set U : H →L[ℂ] H := NormedSpace.exp ((-(x : ℂ) * Complex.I) • latticeAdjacency Q c) with hUdef
-  set w : H := invShellLM m (U η) with hwdef
-  set ζ : H := invShellLM m w with hζdef
+  obtain ⟨w, hwdef⟩ : ∃ w : H,
+      w = invShellLM m (NormedSpace.exp ((-(x : ℂ) * Complex.I) • latticeAdjacency Q c) η) :=
+    ⟨_, rfl⟩
+  obtain ⟨ζ, hζdef⟩ : ∃ z : H, z = invShellLM m w := ⟨_, rfl⟩
+  rw [← hwdef]
   have hζw : ((w : H) : (P → ℤ) → ℂ) = shellWeightField m ((ζ : H) : (P → ℤ) → ℂ) := by
     rw [hζdef, coe_invShellLM, shellWeightField_invShellField]
   obtain ⟨w', hw'coe, hw'n⟩ := hb (-x) ζ w hζw
   rw [abs_neg] at hw'n
-  -- the three inner-product identities
-  have hinner1 : (inner ℂ ζ (U η) : ℂ) = inner ℂ w w := by
+  have hinner1 : (inner ℂ ζ
+      (NormedSpace.exp ((-(x : ℂ) * Complex.I) • latticeAdjacency Q c) η) : ℂ)
+      = inner ℂ w w := by
     rw [lp.inner_eq_tsum, lp.inner_eq_tsum]
     refine tsum_congr fun r => ?_
-    rw [RCLike.inner_apply, RCLike.inner_apply, hζdef, coe_invShellLM, hwdef, coe_invShellLM]
-    simp only [invShellField, map_mul, map_inv₀, Complex.conj_ofReal]
+    simp only [hζdef, hwdef, coe_invShellLM, RCLike.inner_apply, invShellField, map_mul,
+      map_inv₀, Complex.conj_ofReal]
     ring
-  have hinner2 : (inner ℂ ζ (U η) : ℂ)
+  have hinner2 : (inner ℂ ζ
+      (NormedSpace.exp ((-(x : ℂ) * Complex.I) • latticeAdjacency Q c) η) : ℂ)
       = inner ℂ (NormedSpace.exp ((-((-x : ℝ) : ℂ) * Complex.I) • latticeAdjacency Q c) ζ) η := by
-    have hUU : U (NormedSpace.exp ((-((-x : ℝ) : ℂ) * Complex.I) • latticeAdjacency Q c) ζ)
+    have hUU : NormedSpace.exp ((-(x : ℂ) * Complex.I) • latticeAdjacency Q c)
+        (NormedSpace.exp ((-((-x : ℝ) : ℂ) * Complex.I) • latticeAdjacency Q c) ζ)
         = ζ := exp_latticeAdjacency_neg_apply Q c x ζ
-    calc (inner ℂ ζ (U η) : ℂ)
-        = inner ℂ (U (NormedSpace.exp ((-((-x : ℝ) : ℂ) * Complex.I)
-            • latticeAdjacency Q c) ζ)) (U η) := by rw [hUU]
+    calc (inner ℂ ζ
+          (NormedSpace.exp ((-(x : ℂ) * Complex.I) • latticeAdjacency Q c) η) : ℂ)
+        = inner ℂ (NormedSpace.exp ((-(x : ℂ) * Complex.I) • latticeAdjacency Q c)
+            (NormedSpace.exp ((-((-x : ℝ) : ℂ) * Complex.I) • latticeAdjacency Q c) ζ))
+            (NormedSpace.exp ((-(x : ℂ) * Complex.I) • latticeAdjacency Q c) η) := by rw [hUU]
       _ = inner ℂ (NormedSpace.exp ((-((-x : ℝ) : ℂ) * Complex.I)
             • latticeAdjacency Q c) ζ) η := inner_exp_latticeAdjacency hsa x _ _
   have hinner3 :
@@ -329,19 +331,20 @@ theorem exists_norm_invShell_exp_le {Q : Finset (P → ℤ)} {c : (P → ℤ) �
         = inner ℂ w' (invShellLM m η) := by
     rw [lp.inner_eq_tsum, lp.inner_eq_tsum]
     refine tsum_congr fun r => ?_
-    rw [RCLike.inner_apply, RCLike.inner_apply, coe_invShellLM, congrFun hw'coe r]
-    simp only [invShellField, shellWeightField, map_mul, map_inv₀, Complex.conj_ofReal]
+    have hne := ofReal_shellWeight_ne_zero (P := P) m r
+    simp only [RCLike.inner_apply, coe_invShellLM, congrFun hw'coe r, invShellField,
+      shellWeightField, map_mul, map_inv₀, Complex.conj_ofReal]
     field_simp
-  -- the duality bound
-  have hDη : (0 : ℝ) ≤ ‖invShellLM m η‖ := norm_nonneg _
+  have hDη : (0 : ℝ) ≤ ‖invShellLM (P := P) m η‖ := norm_nonneg _
   have hcoef : (0 : ℝ) ≤ C * (1 + |x|) ^ m := mul_nonneg hC (by positivity)
   have hnormsq : ‖w‖ ^ 2 = ‖(inner ℂ w w : ℂ)‖ := by
     rw [inner_self_eq_norm_sq_to_K, norm_pow, Complex.norm_real,
       Real.norm_of_nonneg (norm_nonneg w)]
-  have hfinal : ‖w‖ ^ 2 ≤ (C * (1 + |x|) ^ m * ‖invShellLM m η‖) * ‖w‖ := by
+  have hfinal : ‖w‖ ^ 2 ≤ (C * (1 + |x|) ^ m * ‖invShellLM (P := P) m η‖) * ‖w‖ := by
     rw [hnormsq, ← hinner1, hinner2, hinner3]
     refine le_trans (norm_inner_le_norm _ _) ?_
-    have h1 : ‖w'‖ * ‖invShellLM m η‖ ≤ (C * (1 + |x|) ^ m * ‖w‖) * ‖invShellLM m η‖ :=
+    have h1 : ‖w'‖ * ‖invShellLM (P := P) m η‖
+        ≤ (C * (1 + |x|) ^ m * ‖w‖) * ‖invShellLM (P := P) m η‖ :=
       mul_le_mul_of_nonneg_right hw'n hDη
     refine le_trans h1 (le_of_eq ?_)
     ring
@@ -355,8 +358,7 @@ theorem exists_norm_invShell_exp_le {Q : Finset (P → ℤ)} {c : (P → ℤ) �
 def weightedEvolution (Q : Finset (P → ℤ)) (c : (P → ℤ) → ℂ) (m : ℕ) (x : ℝ) : H →L[ℂ] H :=
   LinearMap.extendOfNorm
     ((invShellLM m).comp
-      (((NormedSpace.exp ((-(x : ℂ) * Complex.I) • latticeAdjacency Q c) : H →L[ℂ] H)) :
-        H →ₗ[ℂ] H))
+      (NormedSpace.exp ((-(x : ℂ) * Complex.I) • latticeAdjacency Q c) : H →L[ℂ] H).toLinearMap)
     (invShellLM m)
 
 omit [DecidableEq P] in
@@ -390,18 +392,15 @@ theorem exists_norm_weightedEvolution_add_le {Q : Finset (P → ℤ)} {c : (P �
   refine ⟨2 * C, by linarith, fun x => ?_⟩
   have hhalf : ∀ y : ℝ, |y / 2| ≤ |x| → (1 + |y / 2|) ^ m ≤ (1 + |x|) ^ m := by
     intro y hy
-    refine pow_le_pow_left₀ (by positivity) (by linarith) m
+    exact pow_le_pow_left₀ (by positivity) (by linarith) m
+  have habs2 : |(2 : ℝ)| = 2 := by norm_num
   have h1 : ‖weightedEvolution Q c m (x / 2)‖ ≤ C * (1 + |x|) ^ m := by
     refine le_trans (hb (x / 2)) (mul_le_mul_of_nonneg_left (hhalf x ?_) hC)
-    rw [abs_div]
-    have : |(2 : ℝ)| = 2 := by norm_num
-    rw [this]
+    rw [abs_div, habs2]
     linarith [abs_nonneg x]
   have h2 : ‖weightedEvolution Q c m (-x / 2)‖ ≤ C * (1 + |x|) ^ m := by
     refine le_trans (hb (-x / 2)) (mul_le_mul_of_nonneg_left (hhalf (-x) ?_) hC)
-    rw [abs_div, abs_neg]
-    have : |(2 : ℝ)| = 2 := by norm_num
-    rw [this]
+    rw [abs_div, abs_neg, habs2]
     linarith [abs_nonneg x]
   linarith
 

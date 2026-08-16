@@ -1,7 +1,7 @@
 # Xi--Hurwitz scalar comparison codimension no-go
 
 - **ID:** `xi-hurwitz-scalar-comparison-codimension-no-go`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / POSITIVE LOCAL NO-GO
 - **Scientific status:** `[PROVED ON PAPER] [PARENT LOCAL ANALYTIC GEOMETRY]`
   `[NOT NEW SCIENTIFIC KNOWLEDGE] [SIGNIFICANT ROUTE CLASSIFICATION]`
@@ -102,4 +102,30 @@ being pursued through a quotient `M/A` disguised as a chain map.
 - [x] all analytic zero multiplicities treated
 - [x] Xi completed-density specialization
 - [x] positive replacement category identified
-- [ ] optional Lean formalization after the conormal successor selects the reusable interface
+- [x] 2 -> 3 formalized: `RHTower/HurwitzScalarComparisonNoGo.lean`
+
+## 2026-08-16 Lean closure
+
+`RHTower/HurwitzScalarComparisonNoGo.lean` proves the card unconditionally.
+
+`hurwitzQ s = exp(-2 pi i s)` and `hurwitzM s = q(1-s) - q(conj s)` are the card's `q` and `M`.
+
+- `one_sub_eq_conj` and `hurwitzM_shift`: on the critical line `1 - rho = conj rho`, so
+  `M(rho + w) = q(conj rho) (exp(2 pi i w) - exp(-2 pi i conj w))`.  This is the exact seam formula
+  (2) in the form the proof uses, with no separate real/imaginary decomposition.
+- `hurwitzM_vertical`: `M` vanishes identically along the critical line.
+- `hurwitzM_horizontal` and `hasDerivAt_hurwitzM_horizontal`: along the real direction `M` is
+  `q(conj rho)(exp(2 pi i t) - exp(-2 pi i t))` with slope `4 pi i q(conj rho) != 0` at the origin —
+  the transverse derivative (3).
+- `no_continuous_scalar_comparison`: for any nonzero holomorphic germ `A` with `A(rho) = 0` and any
+  germ `h` continuous at `rho`, the factorization `M = h A` near `rho` is impossible.  The vertical
+  direction forces `h(rho) = 0` (the isolated zeros of `A` come from
+  `AnalyticAt.eventually_eq_zero_or_eventually_ne_zero`), and then the horizontal slope of `h A` is
+  `0 * A'(rho) = 0`, contradicting the nonzero transverse slope.  Treating all zero orders at once
+  through the slope removes the card's case split on the multiplicity `m`.
+- `xiHurwitzGerm` is the completed-density germ `4 z_s^2 XiC(z_s)`, and
+  `no_continuous_scalar_comparison_xi` is the Xi specialization at a critical-line zero.
+  `xiHurwitzGerm_not_eventually_zero` supplies the nondegeneracy from `XiC_zero_ne` and the
+  identity theorem.
+
+Axioms: `propext`, `Classical.choice`, `Quot.sound`.

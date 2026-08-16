@@ -2037,3 +2037,45 @@ why the closed form is rational times `sqrt 2`.
 With this and `HermiteContrastLadder.lean`, the whole algebraic layer of the ladder card —
 `(4)`, `(5)`, `(10)`, `(10a)`, `(11)` — is unconditional Lean.  What is left is analytic: the
 prolate-to-Hermite convergence `(3)` and the compression spectrum statement `(8)`.
+
+## Lean progress — the interlacing mechanism of `(8)`
+
+`RHTower/SecularEquationInterlacing.lean` (wired, axiom-clean) proves the mechanism the card's `(8)`
+runs on.  Compressing `diag(d_0, d_1, ...)` to the hyperplane orthogonal to `ell` gives the secular
+equation `F(mu) = sum_j (ell_j)^2/(d_j - mu) = 0`, and:
+
+```
+secular d ell N mu            the secular function
+secular_denom_ne              inside a gap every denominator is nonzero
+secular_strictMonoOn          F is strictly increasing on (d_k, d_(k+1))
+continuousOn_secular          and continuous there
+tendsto_secular_atBot         F -> -infinity  at the left end of the gap
+tendsto_secular_atTop         F -> +infinity  at the right end
+exists_unique_secular_root    hence EXACTLY ONE root in each gap
+```
+
+This is the card's "there is exactly one constrained eigenvalue `mu_k(lambda)` in
+`(d_k(lambda), d_(k+1)(lambda))`" — the interlacing half of `(8)` — for the scalar model, with no
+hypothesis beyond `d` strictly increasing and the two adjacent `ell` entries nonzero.  The monotone
+step is the identity
+
+```
+(ell_j)^2/(d_j - y) - (ell_j)^2/(d_j - x) = (ell_j)^2 (y - x) / ((d_j - x)(d_j - y)) ,
+```
+
+whose denominator is positive because inside a gap the two factors have the same sign, whichever
+side of the gap the index falls on.
+
+For the location of the root:
+
+```
+secular_smul            the equation is scale covariant, so the root may be studied in the
+                        normalized variable theta = mu / d_(k+1)
+limit_secular_root_iff  in the limit the equation degenerates to  -S/theta + T/(1-theta) = 0,
+                        whose root is exactly  theta = S/(S+T)
+```
+
+With `S = S_k = sum_{j<=k} ell_j^2` and `T = ell_(k+1)^2`, the root is `S_k/S_(k+1)`, and the
+coordinate limits `ell_j^2 -> A q_j` turn that into `Q_k/Q_(k+1) = theta_k` — the card's `(8)`.  What
+remains between these and `(8)` is the uniformity: the passage from the exact equation at finite
+`lambda` to the degenerate one, which is where the Fuchs separation `d_j/d_(j+1) -> 0` enters.
