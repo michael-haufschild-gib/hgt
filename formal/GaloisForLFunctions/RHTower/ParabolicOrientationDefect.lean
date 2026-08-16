@@ -27,8 +27,14 @@ noncomputable section
 /-! ## The elementary orientation identity -/
 
 theorem normSq_sub_re_sq (u : ℂ) : ‖u‖ ^ 2 - (u ^ 2).re = 2 * u.im ^ 2 := by
-  rw [Complex.sq_abs.symm.trans rfl]
-  simp only [Complex.sq_abs, Complex.normSq_apply, pow_two, Complex.mul_re]
+  have hnorm : ‖u‖ ^ 2 = u.re ^ 2 + u.im ^ 2 := by
+    rw [← Complex.normSq_eq_norm_sq]
+    simp [Complex.normSq_apply]
+    ring
+  have hsq : (u ^ 2).re = u.re ^ 2 - u.im ^ 2 := by
+    rw [pow_two, Complex.mul_re]
+    ring
+  rw [hnorm, hsq]
   ring
 
 theorem norm_mul_exp_neg_mul_I (z : ℂ) (theta : ℝ) :
@@ -68,7 +74,7 @@ theorem parabolicHermitianMass_sub_orientedJet (s : Finset ι) (weight : ι → 
     ← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl fun q _ => ?_
   have h := orientation_identity (P q) (theta q)
-  nlinarith [h]
+  linear_combination (weight q) * h
 
 /-- The defect is a sum of squares. -/
 theorem parabolicOrientationDefect_nonneg {s : Finset ι} {weight : ι → ℝ} (P : ι → ℂ)
@@ -108,9 +114,9 @@ theorem parabolicHeatDefect_eq_orientationDefect (s : Finset ι) (A B : ι → �
     rw [hform, Complex.exp_ofReal_mul_I_im, Real.sin_neg]
   rw [hexp]
   have hcos : Real.cos (t * B q) = 1 - 2 * Real.sin (t * B q / 2) ^ 2 := by
-    have h := Real.cos_sq_half (t * B q)
-    have h2 := Real.sin_sq_half_eq (t * B q)
-    linarith [h2]
+    have h := Real.cos_two_mul_eq_one_sub (t * B q / 2)
+    rw [show 2 * (t * B q / 2) = t * B q by ring] at h
+    exact h
   rw [hcos]
   ring
 

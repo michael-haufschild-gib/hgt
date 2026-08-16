@@ -999,3 +999,106 @@ map to matrices is not injective and so says nothing.
 This is the form in which the torus enters Milnor's proof of the Steinberg relation: `{u, 1-u} = 1`
 is extracted by conjugating a carefully chosen generator by `h(u) h(1-u) h(u(1-u))^{-1}` and using
 that the three scalings compose to the identity exactly when `u + (1-u) = 1`.
+
+## Layer B — all six torus weights and the inverse Weyl action, PROVED
+
+`HTGeometry/SteinbergTorusAction.lean` now carries the complete weight decomposition:
+
+```
+h(u) x_ij(a) h(u)^{-1} = x_ij(u a u)        h(u) x_ji(b) h(u)^{-1} = x_ji(u^{-1} b u^{-1})
+h(u) x_ik(a) h(u)^{-1} = x_ik(u a)          h(u) x_jk(c) h(u)^{-1} = x_jk(u^{-1} c)
+h(u) x_ki(d) h(u)^{-1} = x_ki(d u^{-1})     h(u) x_kj(b) h(u)^{-1} = x_kj(b u)
+```
+
+Reading the exponents off the six lines gives the weights `(+2, -2, +1, -1, +1, -1)` of the
+coroot — `h(u)` is the diagonal `diag(u, u^{-1}, 1, ...)` acting by conjugation, established in the
+group rather than read off the (non-injective) matrix map.
+
+`HTGeometry/SteinbergWeylInverseConjugation.lean` adds the six mirror formulas for `w(u)^{-1}`,
+obtained by feeding `-u` into the forward ones through `w(-u) = w(u)^{-1}`.  The two formulas with a
+unit on each side are unchanged — the signs cancel — and the four one-sided ones flip sign.  These
+are what move a Weyl element leftwards through a word.
+
+### Where the Steinberg relation `{u, 1-u} = 1` actually sits
+
+With the weights above, the group-side inputs are exhausted: conjugation formulas alone cannot
+produce the relation, because they never see the *additive* structure of `R` beyond the chain
+relation, and `{u, 1-u} = 1` is precisely an additive statement about `u + (1-u) = 1`.
+
+The remaining route is the Dennis-Stein element: for `a, b ∈ R` with `1 + ab ∈ R*`,
+
+```
+<a,b> = x_ji(-b(1+ab)^{-1}) x_ij(a) x_ji(b) x_ij(-(1+ab)^{-1} a) h_ij(1+ab)^{-1} ,
+```
+
+which lies in `K₂` and satisfies `<a,b><b,a> = 1`, `<a,b><a,c> = <a, b+c+abc>` and
+`{u,v} = <u-1, ...>`-type identities from which `{u,1-u} = 1` drops out.  Formalizing this needs the
+additive relations among the four generator factors above, i.e. `steinbergX_mul` interleaved with
+the chain relation — not the conjugation calculus.  That is the next brick; it is a genuine
+computation in the group, not a corollary of what is proved here.
+
+## Layer B — the Dennis-Stein symbol lands in K₂, PROVED
+
+`HTGeometry/DennisSteinSymbol.lean` (wired, axiom-clean).
+
+```
+dennisStein hij a b w
+  = x_ji(-b w^{-1}) x_ij(a) x_ji(b) x_ij(-w^{-1} a) h_ij(w)^{-1} ,      w = 1 + ab a unit
+
+transvection_dennisStein   the four elementary factors multiply to diagMatrix i j w
+dennisStein_mem_KTwo       hence the symbol maps to 1 and lies in K₂
+dennisStein_mem_indexClosure / dennisStein_mem_center
+dennisStein_right_zero / dennisStein_left_zero    <a,0> = <0,b> = 1
+```
+
+The matrix identity is the two-index block computation
+
+```
+[1    0][1 a][1 0][1 -a/w]   [w  0 ]
+[-b/w 1][0 1][b 1][0   1 ]  =[0 1/w]
+```
+
+proved over an arbitrary commutative ring: the four transvections are expanded in the single-entry
+basis `E_ij, E_ji, E_ii, E_jj`, `match_scalars` reduces the matrix equation to five scalar goals, and
+each closes by `linear_combination` against the one relation `w^{-1}(1+ab) = 1`.  The coefficients of
+`E_ij` and `E_ji` cancel outright, `E_ii` picks up `ab = w-1`, and `E_jj` picks up
+`-ab w^{-1} = w^{-1} - 1`.
+
+This is the first object in the programme whose defining data is a *ring element*, not a unit — and
+that is exactly why it can reach `{u, 1-u} = 1`, which the conjugation calculus cannot.  Next: the
+three Dennis-Stein relations
+
+```
+<a,b> <b,a> = 1 ,   <a,b> <a,c> = <a, b + c + abc> ,   <a, bc> = <ab, c> <ac, b>  (as available)
+```
+
+from which `{u,v} = <u-1, ...>` identifies the Steinberg symbol and the relation follows.
+
+## Layer B — Bruhat decomposition and its obstruction, PROVED
+
+`HTGeometry/DennisSteinBruhat.lean` (wired, axiom-clean).
+
+```
+dennisStein_mul_torus          <a,b> h(w) = x_ji(-bw^{-1}) x_ij(a) x_ji(b) x_ij(-w^{-1}a)
+steinbergX_mul_opposite        x_ij(a) x_ji(b) = x_ji(bw^{-1}) (<a,b> h(w)) x_ij(w^{-1}a)
+steinbergX_mul_opposite_center  the same with the symbol pushed to the far right
+dennisStein_one                <a,b>_{w=1} = x_ji(b)^{-1} x_ij(a) x_ji(b) x_ij(a)^{-1}
+commutator_opposite_mem_KTwo    ab = 0  =>  that commutator lies in K₂
+commutator_opposite_mem_center  ... and is central
+```
+
+The first is the Bruhat decomposition of the big cell,
+
+```
+[1 a][1 0]   [1     0][w 0   ][1 a/w]
+[0 1][b 1] = [b/w   1][0 1/w ][0  1 ] ,     w = 1 + ab ,
+```
+
+transported into the Steinberg group, where it *fails*: the Dennis-Stein symbol is exactly the
+discrepancy.  Because the symbol is in K₂ the identity is exact in `E(R)` and only lifts to `St(R)`
+with a central correction.  This is the shape in which the symbol enters Matsumoto's presentation —
+the symbol is what a Bruhat normal form costs over a ring rather than a field.
+
+The degenerate cell `ab = 0` gives a statement of independent interest: opposite elementary
+generators whose entries multiply to zero commute modulo K₂, and their commutator is central.  Over
+a domain this is vacuous, but over a ring with zero divisors it produces genuine central elements.

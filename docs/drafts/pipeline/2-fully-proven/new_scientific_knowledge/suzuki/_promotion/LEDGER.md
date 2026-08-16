@@ -10857,3 +10857,68 @@ itself, which is one.  This is the card's point that vanishing at `x = 0` is for
 defect.
 
 All new declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADL. `coalescing-anchor` §6 and the two missing pieces of Theorem C
+
+```text
+RHTower/SuzukiCoalescingXiCayleyTarget.lean
+  suzukiXiMovableDonoghue, suzukiXiMovableCayley      (10)
+  xiRealLogDeriv_pos                                 L(c) > 0 for c > 0
+  suzukiXiMovableCayley_quotient                     **(20)**: (1−Θ)/(1+Θ) = L(c)/𝓛(−iz)
+  tendsto_suzukiXiMovableCayley_blowup               **(21)**: (z²/c)(1−Θ)/(1+Θ) → M₀(0)z²/𝓛(−iz)
+  tendsto_suzukiXiMovableCayley_blowup_ratio         (21) in the card's display,
+                                                     M₀(0)·z²ξ(1/2−iz)/ξ'(1/2−iz)
+
+RHTower/SuzukiCoalescingReflection.lean
+  suzukiCoalescingResolvent_reflection               **(32)**: conj R_c(z̄) = −R_c(z)
+  norm_sq_mul_suzukiCoalescingResolvent_le           the z² factor is harmless on a compact set
+```
+
+**`(20)` is pure Cayley algebra, and its side conditions are the honest ones.**  With
+`m = i𝓛(−iz)/L(c)`, `1 − Θ = 2i/(m+i)` and `1 + Θ = 2m/(m+i)`, so the quotient is `i/m = L(c)/𝓛`.
+The identity needs exactly `𝓛(−iz) ≠ 0` (else `Θ = 1` and the quotient is undefined) and
+`𝓛(−iz) + L(c) ≠ 0` (else `m = −i` and `Θ` itself is undefined).  Both are properties of the point,
+not hypotheses on the theory.
+
+**`(21)` needs no new analysis: `L(c)/c` *is* the zeroth moment.**  The corpus already proves
+`(9)`, `L(c) = c·M₀(c²)` (`xiRealLogDeriv_eq_mul_re_xiShiftedReciprocalMoment`), and the endpoint
+regularity `M₀(c²) → M₀(0)` (`tendsto_xiShiftedReciprocalMoment_nhdsGE_zero`).  So the deterministic
+factor `z²/c` cancels the anchor exactly, and the anchor condition `𝓛 + L(c) ≠ 0` holds for all
+small `c` because `L(c) → 0`.
+
+**`(32)` is the meromorphic-inner reflection law and nothing else.**  From `Θ(z̄)·conj Θ(z) = 1` one
+gets `conj Θ(z̄) = 1/Θ(z)`, and `(1 − 1/w)/(1 + 1/w) = −(1 − w)/(1 + w)`.  Together with
+`norm_sq_mul_suzukiCoalescingResolvent_le` this completes Theorem C: the upper-half-plane bound
+transports to the lower half-plane, and the quadratic factor changes only the constant.
+
+All new declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADM. The dominated-series theorem, and the model gap to Suzuki's `A_a`
+
+`HTGeometry/DominatedSeriesToLp.lean` — `hasSum_toLp_of_ae_dominated`: on **any** finite measure
+space, a pointwise series dominated term by term by a summable numerical sequence sums in `L²`.
+The aperture version is now a four-line corollary, and the same theorem applies verbatim to any
+other model of the aperture `L²`.
+
+**The model gap.**  The corpus's Suzuki operator is
+`RHTower/SuzukiWeilFriedrichsOperator.lean`, `suzukiWeilFriedrichsOperator (a) : A_a` — self-adjoint,
+with an explicit compact-resolvent point and a genuine ground eigenstate.  It lives on
+
+```text
+SuzukiApertureIntervalL2 a = Lp ℂ 2 (volume : Measure (ClosedInterval (-a) a))
+```
+
+— the **subtype** model — whereas the new aperture machinery lives on
+`Lp 𝕜 2 (volume.restrict (Ioo (-a) a))`, the **restricted-measure** model.  The two are unitarily
+equivalent, but they are different types, so Theorem E and `(69)`–`(70)` do not yet apply to the
+literal `A_a` without a bridge.
+
+Two ways to close it, in increasing order of reuse:
+
+1. build the isometry `Lp 𝕜 p (μ.restrict s) ≃ₗᵢ Lp 𝕜 p (Measure.comap Subtype.val μ)` for a
+   measurable `s` — mathlib has no such statement, and it is the honest missing piece;
+2. transport the monomials, the hyperbolic profiles and the Fourier character to the subtype model
+   directly, using `hasSum_toLp_of_ae_dominated` there, which is now model-agnostic.
+
+Either way the analytic content is already done; what remains is the identification of the two
+concrete `L²` models.  Recorded here so the next pass does not rediscover it.

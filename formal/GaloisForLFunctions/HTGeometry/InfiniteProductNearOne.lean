@@ -1,5 +1,6 @@
 import Mathlib.Analysis.SpecificLimits.Normed
 import Mathlib.Analysis.SpecialFunctions.Exp
+import Mathlib.Analysis.SpecialFunctions.Log.Summable
 
 /-!
 # Infinite products near one
@@ -122,6 +123,86 @@ theorem norm_hasProd_sub_single_le {ι : Type*} [DecidableEq ι] {u : ι → ℂ
       (nhds ‖P - (1 + u b)‖) := (htend.sub tendsto_const_nhds).norm
   refine le_of_tendsto hlim (eventually_atTop.mpr ⟨{b}, fun s hs => ?_⟩)
   exact hev s (hs (Finset.mem_singleton_self b))
+
+/-! ## Comparing two products of factors near one -/
+
+/-- A finite comparison of two products of factors near one. -/
+theorem norm_prod_one_add_sub_prod_one_add_le {ι : Type*} (s : Finset ι) (a b : ι → ℂ) :
+    ‖(∏ i ∈ s, (1 + a i)) - ∏ i ∈ s, (1 + b i)‖
+      ≤ (∑ i ∈ s, ‖a i - b i‖) * ∏ i ∈ s, (1 + ‖a i‖ + ‖b i‖) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp
+  | insert x s hx ih =>
+      have hmassnn : (0 : ℝ) ≤ ∏ i ∈ s, (1 + ‖a i‖ + ‖b i‖) :=
+        Finset.prod_nonneg fun i _ => by positivity
+      have hprodA : ‖∏ i ∈ s, (1 + a i)‖ ≤ ∏ i ∈ s, (1 + ‖a i‖ + ‖b i‖) := by
+        rw [norm_prod]
+        refine Finset.prod_le_prod (fun i _ => norm_nonneg _) fun i _ => ?_
+        calc ‖1 + a i‖ ≤ ‖(1 : ℂ)‖ + ‖a i‖ := norm_add_le _ _
+          _ = 1 + ‖a i‖ := by rw [norm_one]
+          _ ≤ 1 + ‖a i‖ + ‖b i‖ := by linarith [norm_nonneg (b i)]
+      have hdiffnn : (0 : ℝ) ≤ ∑ i ∈ s, ‖a i - b i‖ :=
+        Finset.sum_nonneg fun i _ => norm_nonneg _
+      rw [Finset.prod_insert hx, Finset.prod_insert hx, Finset.sum_insert hx,
+        Finset.prod_insert hx]
+      have hsplit : (1 + a x) * ∏ i ∈ s, (1 + a i) - (1 + b x) * ∏ i ∈ s, (1 + b i)
+          = (a x - b x) * ∏ i ∈ s, (1 + a i)
+            + (1 + b x) * ((∏ i ∈ s, (1 + a i)) - ∏ i ∈ s, (1 + b i)) := by ring
+      rw [hsplit]
+      refine le_trans (norm_add_le _ _) ?_
+      have h1 : ‖(a x - b x) * ∏ i ∈ s, (1 + a i)‖
+          ≤ ‖a x - b x‖ * ∏ i ∈ s, (1 + ‖a i‖ + ‖b i‖) := by
+        rw [norm_mul]
+        exact mul_le_mul_of_nonneg_left hprodA (norm_nonneg _)
+      have h2 : ‖(1 + b x) * ((∏ i ∈ s, (1 + a i)) - ∏ i ∈ s, (1 + b i))‖
+          ≤ (1 + ‖b x‖) * ((∑ i ∈ s, ‖a i - b i‖) * ∏ i ∈ s, (1 + ‖a i‖ + ‖b i‖)) := by
+        rw [norm_mul]
+        refine mul_le_mul ?_ ih (norm_nonneg _) (by positivity)
+        calc ‖1 + b x‖ ≤ ‖(1 : ℂ)‖ + ‖b x‖ := norm_add_le _ _
+          _ = 1 + ‖b x‖ := by rw [norm_one]
+      calc ‖(a x - b x) * ∏ i ∈ s, (1 + a i)‖
+            + ‖(1 + b x) * ((∏ i ∈ s, (1 + a i)) - ∏ i ∈ s, (1 + b i))‖
+          ≤ ‖a x - b x‖ * ∏ i ∈ s, (1 + ‖a i‖ + ‖b i‖)
+            + (1 + ‖b x‖) * ((∑ i ∈ s, ‖a i - b i‖) * ∏ i ∈ s, (1 + ‖a i‖ + ‖b i‖)) :=
+            add_le_add h1 h2
+        _ ≤ (‖a x - b x‖ + ∑ i ∈ s, ‖a i - b i‖)
+              * ((1 + ‖a x‖ + ‖b x‖) * ∏ i ∈ s, (1 + ‖a i‖ + ‖b i‖)) := by
+            nlinarith [hmassnn, hdiffnn, norm_nonneg (a x), norm_nonneg (b x),
+              norm_nonneg (a x - b x),
+              mul_nonneg hmassnn (mul_nonneg (norm_nonneg (a x - b x)) (norm_nonneg (a x))),
+              mul_nonneg hmassnn (mul_nonneg (norm_nonneg (a x - b x)) (norm_nonneg (b x))),
+              mul_nonneg hmassnn (mul_nonneg hdiffnn (norm_nonneg (a x)))]
+
+/-- **Comparing two infinite products of factors near one.**  The deviation is the total distance
+between the factors, amplified by the exponential of the combined mass. -/
+theorem norm_tprod_one_add_sub_tprod_one_add_le {ι : Type*} (a b : ι → ℂ)
+    (ha : Summable fun i => ‖a i‖) (hb : Summable fun i => ‖b i‖) :
+    ‖(∏' i, (1 + a i)) - ∏' i, (1 + b i)‖
+      ≤ (∑' i, ‖a i - b i‖) * Real.exp (∑' i, (‖a i‖ + ‖b i‖)) := by
+  have hdiff : Summable fun i => ‖a i - b i‖ :=
+    (ha.add hb).of_nonneg_of_le (fun _ => norm_nonneg _) fun i => norm_sub_le _ _
+  have hmass : Summable fun i => ‖a i‖ + ‖b i‖ := ha.add hb
+  have hA : Filter.Tendsto (fun s : Finset ι => ∏ i ∈ s, (1 + a i)) Filter.atTop
+      (nhds (∏' i, (1 + a i))) := (multipliable_one_add_of_summable ha).hasProd
+  have hB : Filter.Tendsto (fun s : Finset ι => ∏ i ∈ s, (1 + b i)) Filter.atTop
+      (nhds (∏' i, (1 + b i))) := (multipliable_one_add_of_summable hb).hasProd
+  have hleft : Filter.Tendsto (fun s : Finset ι =>
+      ‖(∏ i ∈ s, (1 + a i)) - ∏ i ∈ s, (1 + b i)‖) Filter.atTop
+      (nhds ‖(∏' i, (1 + a i)) - ∏' i, (1 + b i)‖) := (hA.sub hB).norm
+  refine le_of_tendsto hleft (Filter.Eventually.of_forall fun s => ?_)
+  refine (norm_prod_one_add_sub_prod_one_add_le s a b).trans ?_
+  have hsum : (∑ i ∈ s, ‖a i - b i‖) ≤ ∑' i, ‖a i - b i‖ :=
+    hdiff.sum_le_tsum s fun i _ => norm_nonneg _
+  have hprod : (∏ i ∈ s, (1 + ‖a i‖ + ‖b i‖)) ≤ Real.exp (∑' i, (‖a i‖ + ‖b i‖)) := by
+    refine le_trans ?_ (Real.exp_le_exp.mpr (hmass.sum_le_tsum s fun i _ => by positivity))
+    have h := prod_one_add_le_exp_sum s (fun i => ‖a i‖ + ‖b i‖) fun i _ => by positivity
+    refine le_trans (le_of_eq ?_) h
+    exact Finset.prod_congr rfl fun i _ => by ring
+  have hnn1 : (0 : ℝ) ≤ ∑ i ∈ s, ‖a i - b i‖ := Finset.sum_nonneg fun i _ => norm_nonneg _
+  have hnn2 : (0 : ℝ) ≤ ∏ i ∈ s, (1 + ‖a i‖ + ‖b i‖) :=
+    Finset.prod_nonneg fun i _ => by positivity
+  exact mul_le_mul hsum hprod hnn2 (le_trans hnn1 hsum)
 
 end
 

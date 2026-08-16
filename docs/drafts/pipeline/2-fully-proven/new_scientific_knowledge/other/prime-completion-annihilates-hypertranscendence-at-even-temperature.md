@@ -350,3 +350,69 @@ open core.
   source-pure theorem above.
 - 2026-07-27 — even-temperature all-prime completion identified with a finite Gamma-reflection
   product, proving actual HT-to-DA phase annihilation while all zeta normal jets survive.
+
+## Lean status — 2026-08-16: the completion, the Euler jet, and the even-temperature collapse
+
+`formal/GaloisForLFunctions/HTGeometry/PrimeOccupationCompletionProduct.lean`, unconditional and
+axiom-clean, wired into the `HTGeometry` umbrella (with the two-product comparison added to
+`HTGeometry/InfiniteProductNearOne.lean`).
+
+**The completed product `(3)`.**  The all-prime limit is the canonical product with zeros `n^r`:
+
+```text
+occupationProduct r x := powerCanonicalProduct r (-x)
+hasProd_occupationProduct :   HasProd (fun n => 1 - x/(n+1)^r) (occupationProduct r x)   (r ≥ 2)
+analyticOnNhd_occupationProduct
+```
+
+**The packet product and its cofinal completion, `(3)` and `(11)`.**  Unique factorization is
+already built into the index: the occupation modes supported in a prime packet are exactly the
+smooth numbers of that packet, so the packet product is
+
+```text
+occSmooth N r x m         := if m ∈ Nat.smoothNumbers N then -(x/m^r) else 0
+smoothOccupationProduct N r x := ∏'_m (1 + occSmooth N r x m)
+tendsto_smoothOccupationProduct :
+    smoothOccupationProduct N r x  →  occupationProduct r x     as N → ∞,
+```
+
+proved by the two-product estimate `‖∏(1+a) − ∏(1+b)‖ ≤ (Σ‖a−b‖)·exp(Σ(‖a‖+‖b‖))`
+(`norm_tprod_one_add_sub_tprod_one_add_le`, new in `InfiniteProductNearOne.lean`) together with the
+smooth-number tail estimate.  This is exactly `(3)`, with the directed set of finite prime packets
+realized cofinally by the packets of primes below `N`.
+
+**The Euler boundary jet `(4)`–`(6)`.**  The `m`-th logarithmic coefficient of the packet product is
+`−1/m` times its occupation divisor sum, and that sum is the finite Euler product:
+
+```text
+natPowInvHom k                       the multiplicative weight n ↦ n^(-k)
+smoothZetaSum N k                    := ∑'_{n ∈ smoothNumbers N} n^(-k)
+prod_primesBelow_eq_smoothZetaSum :  ∏_{p < N}(1 - p^(-k))^(-1) = smoothZetaSum N k
+tendsto_smoothZetaSum :              smoothZetaSum N k → ζ(k)
+tendsto_prod_primesBelow_riemannZeta : ∏_{p<N}(1 - p^(-k))^(-1) → ζ(k)
+```
+
+At `k = r·m` this is `(5)`; at `k = r` it is `(6)`.
+
+**Even-temperature collapse `(7)`–`(8)`.**  The corpus already owned the sine factorization of an
+even-exponent canonical product, so the completed product is differentially algebraic:
+
+```text
+differentiallyAlgebraic_occupationProduct_of_even :  r ≥ 2 even ⇒ DA over ℂ(x)
+occupationProduct_two_sq :        Φ₂(c²) = sincProduct c
+pi_mul_occupationProduct_two :    π c · Φ₂(c²) = sin(π c)
+ode_of_sin_square_law :           an entire function with that square law solves
+                                    4 x y'' + 6 y' + π² y = 0
+occupationProduct_two_ode :       4 x Φ₂'' + 6 Φ₂' + π² Φ₂ = 0
+```
+
+The last two are `(8)` verbatim.  The general even case `(7)` is
+`differentiallyAlgebraic_occupationProduct_of_even`, which runs through the corpus's
+`powerCanonicalProduct_even_eq_prod_sinc` — the `2m`-th roots of unity pairing off into `m` Euler
+sine products — so the reflection collapse is machine-checked, not quoted.
+
+**What is left.**  Item `(2)`: hypertranscendence of a finite packet.  The corpus owns the exact
+input `HTGeometry.hypertranscendentalOver_multipleEllipticGammaMero_twoLogPrime` (two distinct
+primes give a rank-three period minor, hence a hypertranscendental multiple elliptic Gamma carrier);
+what remains is the bridge identifying `Φ_{S,r}(e^{2πiz})` with the backward factor of that carrier,
+together with the affine-reflection and Stirling-transform transfers of the card's step 2.

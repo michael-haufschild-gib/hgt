@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.VectorPowerSeriesLeadingOrder
+import GaloisForLFunctions.HTGeometry.DominatedSeriesToLp
 import GaloisForLFunctions.HTGeometry.ApertureFourierPairing
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
 import Mathlib.MeasureTheory.Function.LpSpace.Basic
@@ -125,10 +126,8 @@ theorem norm_apertureMonomialL2_le {a : ℝ} (ha : 0 ≤ a) (n : ℕ) :
 
 /-! ## Series of `L²` classes on the aperture -/
 
-set_option maxHeartbeats 1000000 in
-/-- **A uniformly dominated pointwise series of aperture functions sums in `L²`.**  A finite measure
-turns a uniform tail bound into an `L²` tail bound, so the `Finset` net of partial sums converges. -/
-theorem hasSum_apertureToLp {a : ℝ} (ha : 0 ≤ a) {𝕜 : Type*} [RCLike 𝕜]
+/-- **The aperture instance of the dominated-series theorem.** -/
+theorem hasSum_apertureToLp {a : ℝ} {𝕜 : Type*} [RCLike 𝕜]
     {f : ℕ → ℝ → 𝕜} {F : ℝ → 𝕜} {g : ℕ → ℝ}
     (hgsum : Summable g) (hgnn : ∀ n, 0 ≤ g n)
     (hbd : ∀ (n : ℕ) (x : ℝ), x ∈ Set.Ioo (-a) a → ‖f n x‖ ≤ g n)
@@ -136,46 +135,11 @@ theorem hasSum_apertureToLp {a : ℝ} (ha : 0 ≤ a) {𝕜 : Type*} [RCLike 𝕜
     (hmem : ∀ n, MemLp (f n) 2 (apertureMeasure a))
     (hMem : MemLp F 2 (apertureMeasure a)) :
     HasSum (fun n => (hmem n).toLp (f n)) (hMem.toLp F) := by
-  have hpoint : ∀ (s : Finset ℕ) (x : ℝ), x ∈ Set.Ioo (-a) a →
-      ‖(∑ n ∈ s, f n x) - F x‖ ≤ ∑' n : ↥((s : Set ℕ)ᶜ), g n := by
-    intro s x hx
-    have hsplit := (hpt x hx).summable.sum_add_tsum_compl (s := s)
-    rw [(hpt x hx).tsum_eq] at hsplit
-    have heq : (∑ n ∈ s, f n x) - F x = -(∑' n : ↥((s : Set ℕ)ᶜ), f n x) := by
-      rw [← hsplit]
-      ring
-    rw [heq, norm_neg]
-    have hdom : ∀ n : ↥((s : Set ℕ)ᶜ), ‖f n x‖ ≤ g n := fun n => hbd n x hx
-    have hFsub : Summable fun n : ↥((s : Set ℕ)ᶜ) => ‖f n x‖ :=
-      Summable.of_nonneg_of_le (fun n => norm_nonneg _) hdom (hgsum.subtype _)
-    exact le_trans (norm_tsum_le_tsum_norm hFsub)
-      (Summable.tsum_le_tsum hdom hFsub (hgsum.subtype _))
-  have hbound : ∀ s : Finset ℕ,
-      ‖(∑ n ∈ s, (hmem n).toLp (f n)) - hMem.toLp F‖
-        ≤ Real.sqrt (2 * a) * (∑' n : ↥((s : Set ℕ)ᶜ), g n) := by
-    intro s
-    have hae : ∀ᵐ x ∂(apertureMeasure a),
-        ‖((((∑ n ∈ s, (hmem n).toLp (f n)) - hMem.toLp F) : Lp 𝕜 2 (apertureMeasure a))
-            : ℝ → 𝕜) x‖ ≤ ∑' n : ↥((s : Set ℕ)ᶜ), g n := by
-      filter_upwards [Lp.coeFn_sub (∑ n ∈ s, (hmem n).toLp (f n)) (hMem.toLp F),
-        Lp.coeFn_finsetSum s (fun n => (hmem n).toLp (f n)), hMem.coeFn_toLp,
-        (Filter.eventually_all_finset s).mpr (fun n _ => (hmem n).coeFn_toLp),
-        apertureMeasure_ae_mem a] with x hsub hfs hF hterms hx
-      rw [hsub, Pi.sub_apply, hfs, hF, Finset.sum_apply,
-        Finset.sum_congr rfl (fun n hn => hterms n hn)]
-      exact hpoint s x hx
-    have hnn : (0 : ℝ) ≤ ∑' n : ↥((s : Set ℕ)ᶜ), g n := tsum_nonneg fun n => hgnn _
-    have h := Lp.norm_le_of_ae_bound (p := 2) hnn hae
-    refine h.trans (le_of_eq ?_)
-    rw [rpow_measureUnivNNReal_apertureMeasure ha]
-  rw [HasSum, SummationFilter.unconditional_filter, tendsto_iff_norm_sub_tendsto_zero]
-  have htail : Tendsto (fun s : Finset ℕ => Real.sqrt (2 * a) * ∑' n : ↥((s : Set ℕ)ᶜ), g n)
-      atTop (𝓝 0) := by
-    have h := tendsto_tsum_compl_atTop_zero g
-    have h2 := h.const_mul (Real.sqrt (2 * a))
-    rw [mul_zero] at h2
-    exact h2
-  exact squeeze_zero (fun s => norm_nonneg _) hbound htail
+  refine hasSum_toLp_of_ae_dominated hgsum hgnn (fun n => ?_) ?_ hmem hMem
+  · filter_upwards [apertureMeasure_ae_mem a] with x hx
+    exact hbd n x hx
+  · filter_upwards [apertureMeasure_ae_mem a] with x hx
+    exact hpt x hx
 
 /-! ## The `L²` Taylor expansion of the hyperbolic profiles -/
 
@@ -187,7 +151,7 @@ theorem hasSum_apertureCoshL2 {a : ℝ} (ha : 0 ≤ a) (c : ℝ) :
   have hmem : ∀ k : ℕ, MemLp
       (fun x : ℝ => (c ^ (2 * k) / (Nat.factorial (2 * k)) : ℝ) * x ^ (2 * k)) 2
       (apertureMeasure a) := fun k => (memLp_aperturePow a (2 * k)).const_mul _
-  have hbase := hasSum_apertureToLp (𝕜 := ℝ) ha
+  have hbase := hasSum_apertureToLp (𝕜 := ℝ)
     (f := fun k x => (c ^ (2 * k) / (Nat.factorial (2 * k)) : ℝ) * x ^ (2 * k))
     (F := fun x => Real.cosh (c * x))
     (g := fun k => (|c| * a) ^ (2 * k) / (Nat.factorial (2 * k)))
@@ -221,7 +185,7 @@ theorem hasSum_apertureSinhL2 {a : ℝ} (ha : 0 ≤ a) (c : ℝ) :
   have hmem : ∀ k : ℕ, MemLp
       (fun x : ℝ => (c ^ (2 * k + 1) / (Nat.factorial (2 * k + 1)) : ℝ) * x ^ (2 * k + 1)) 2
       (apertureMeasure a) := fun k => (memLp_aperturePow a (2 * k + 1)).const_mul _
-  have hbase := hasSum_apertureToLp (𝕜 := ℝ) ha
+  have hbase := hasSum_apertureToLp (𝕜 := ℝ)
     (f := fun k x => (c ^ (2 * k + 1) / (Nat.factorial (2 * k + 1)) : ℝ) * x ^ (2 * k + 1))
     (F := fun x => Real.sinh (c * x))
     (g := fun k => (|c| * a) ^ (2 * k + 1) / (Nat.factorial (2 * k + 1)))

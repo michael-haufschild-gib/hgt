@@ -100,7 +100,9 @@ Layers, each a self-contained unconditional module:
       — `RHTower/Matveev/LinearFormBasic.lean`
 - [x] B. small-linear-form relation object and perturbed normalization
       — `RHTower/Matveev/SmallForm.lean`
-- [ ] C. auxiliary function and matrix with error term
+- [~] C. auxiliary function and matrix with error term
+      — perturbed frequency identity, S-unit sample values and box bound done
+        (`RHTower/Matveev/PerturbedFrequency.lean`); the auxiliary function and its matrix remain
 - [ ] D. extrapolation with error
 - [ ] E. terminal contradiction, the effective theorem
 - [ ] F. card interface `τ₀(ν) ≤ C log(2+|ν|₁)`
@@ -132,3 +134,31 @@ Layers, each a self-contained unconditional module:
   ```
 
   the exact analogue of the corpus `Relation.pivot_log_eq` with the error term carried.
+- 2026-08-16 — Layer C started: `RHTower/Matveev/PerturbedFrequency.lean`.
+
+  The corpus's qualitative proof normalizes through `Relation.pivot_log_eq`, which divides by the
+  pivot coefficient and therefore lands in the coefficient number field.  For the effective theorem
+  that division is unnecessary and the perturbation is *exact*:
+
+  ```text
+  b_pivot · ℓ(m) = Σ_{i ≠ pivot} (b_pivot m_i − m_pivot b_i) log p_i  +  m_pivot · Λ,
+  ```
+
+  `pivot_mul_primeLogForm`.  The direction coefficients `perturbedDirection` are **integers**, so no
+  denominator, no coefficient field, and no house/height bookkeeping enters at this step — the whole
+  error is the single explicit term `m_pivot Λ`.  This is a genuine simplification over the
+  qualitative skeleton and should be carried through the auxiliary construction.
+
+  Two further Layer-C facts, both specific to *rational* primes and both what makes the terminal
+  step elementary here:
+
+  ```text
+  exp_nsmul_primeLogForm     exp(s·ℓ(m)) = ∏ pᵢ^{s mᵢ}, a positive rational integer
+  abs_primeLogForm_le_of_box |ℓ(m)| ≤ L·Σ log pᵢ on an exponent box of width L
+  ```
+
+  At a nonnegative integer sample the auxiliary exponential polynomial therefore takes values that
+  are integer combinations of `S`-units; the classical "a nonzero algebraic integer has house ≥ 1"
+  step becomes "a nonzero rational integer has absolute value ≥ 1".
+
+  All three audit to `[propext, Classical.choice, Quot.sound]`.

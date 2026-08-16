@@ -5964,7 +5964,7 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   critical relative error `delta=X^(-1/2+epsilon)` from harmonic small-value theorem requires
   log-window width `>40 X^(1/2-epsilon)`, exponential in mass log-time.  Any `O(h)` mass window
   yields only `delta=Omega(1/h)` and retains type `1/2` `[(24.58)--(24.60) LEAN-PROVED]`.
-- 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` exact harmonic-primitive/mass-adjoint reduction:
+- 2026-08-08 — `[PROVED HERE; (24.61)--(24.65) LEAN-PROVED; (24.66)--(24.67) LEAN DEFERRED]` exact harmonic-primitive/mass-adjoint reduction:
   finite Abel summation replaces `R(n)` by vanishing `E_n=J_n+2γ`, but adjoint cell quotient
   restores precisely displaced-zero exponent `beta-1/2`.  Separate norm or BV estimates remain
   type-sharp; only signed `E_n`--mass-increment correlation survives.
@@ -6011,14 +6011,14 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   absolutely convergent Euler line.  New exact core is global prime--Gamma positivity (24.120).
   Large-mass pair positivity and termwise von-Mangoldt positivity both fail; `P(X)=X` already has
   sign-changing Hermite prime weights.
-- 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` parabolic orientation decomposition: every filtered
+- 2026-08-08 — `[PROVED HERE; (24.123)--(24.127) LEAN-PROVED]` parabolic orientation decomposition: every filtered
   analytic mass jet equals positive Hermitian mass minus an explicit sum-of-squares phase defect;
   in heat limit `D_1(t)=sum exp(-tA_q)(1-cos(tB_q))`, whose all-time vanishing is exactly RH.
   Existing KMS/Gram positivity controls ambient mass but not required sharp orientation budget.
 - 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` completed source normalization repaired: rational
   polar terms produce positive residue; fixed-degree complete prime jet is superexponentially
   invisible, giving strict ultraviolet heat-Hankel positivity.
-- 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` Hermite phase-space separation upgrades this to
+- 2026-08-08 — `[PROVED HERE; (24.137)--(24.138) ELEMENTARY CORE LEAN-PROVED; (24.135) LEAN DEFERRED]` Hermite phase-space separation upgrades this to
   universal wedge `t(deg P+1)<=eta` and global prime information cone
   `log n=O(t+sqrt(t deg P))`, coefficient-uniform and using no PNT.
 - 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` RH is equivalent to nonnegative polynomial-filtered
@@ -7434,3 +7434,75 @@ Still deferred on these items: the lower half of (24.54) and the exponential-typ
 which need the wave-packet localization at the sub-linear frequency scale; the subordination kernel
 identity (24.110)--(24.111); and the divisor-level dominated convergence (24.109), which needs the
 corpus zero-count summability wired to the majorant proved here.
+
+### Lean progress: §24 C43-V and C43-Y
+
+    RHTower/ParabolicOrientationDefect.lean
+      normSq_sub_re_sq, orientation_identity   the elementary identity
+                                               `|z|² − Re(z²e^{-2iθ}) = 2[Im(z e^{-iθ})]²`
+      parabolicHermitianMass, parabolicOrientedJet,
+        parabolicOrientationDefect,
+        parabolicHermitianMass_sub_orientedJet **(24.123)/(24.125)** the exact defect identity for a
+                                               finite family: the Hermitian mass minus the oriented
+                                               jet is an explicit sum of squares
+      parabolicOrientationDefect_nonneg,
+        parabolicOrientedJet_le_hermitianMass  **(24.127)** the orientation cap `D ≤ G`
+      parabolicHeatDefect,
+        parabolicHeatDefect_eq_orientationDefect,
+        parabolicHeatDefect_nonneg             **(24.126)** `D₁(t) = ∑ e^{-tA}(1 − cos(tB))`, each
+                                               summand nonnegative
+      parabolicHeatDefect_eq_zero_iff          **(24.126)** the rigidity: the defect vanishes at
+                                               every positive time exactly when every transverse
+                                               part vanishes; a nonzero `B` is detected at
+                                               `t = π/|B|`
+      tendsto_parabolic_longitudinal,
+        tendsto_parabolic_transverse           **(24.124)** `2a(M_a − a) → A` and `aK_a → B/2` in
+                                               the parabolic limit
+
+    RHTower/ParabolicDegreeTimeWedge.lean
+      parabolicWedgeThreshold                  the universal wedge constant `(log 2/16)²`
+      parabolicWedge_exponent_le               **(24.137)** inside `t(d+1) ≤ (log 2/16)²` the
+                                               translated oscillator exponent is at most half the
+                                               free Gaussian exponent at every frequency
+                                               `ξ ≥ log 2`
+      gaussianSplit_le                         **(24.138)** the Gaussian splits into the uniform
+                                               factor `e^{-(log 2)²/(16t)}` and a frequency factor
+      log_le_four_rpow, exp_gaussian_le_inv_sq,
+        summable_vonMangoldt_gaussianTail      **(24.138)** the prime modulation series
+                                               `∑ Λ(n) n^{-1/2} e^{-(log n)²/(16t)}` converges
+                                               absolutely at every positive time
+
+The defect rigidity is stated for an arbitrary finite index family and arbitrary real `A`, `B`, so
+it applies verbatim to any truncation of the divisor; and the wedge threshold is coefficient-free,
+depending on the degree and the time only through the product `t(d+1)`.
+
+Still deferred on these items: the reproducing-kernel bound (24.135) and the Gaussian contour shift
+behind (24.137), which need Mehler's diagonal identity and the Hermite operator norm of
+differentiation.
+
+### Lean progress: §24 C43-J — the harmonic primitive against the mass adjoint
+
+    RHTower/HarmonicPrimitiveMassAdjoint.lean
+      harmonicPrimitive, adjointCellQuotient,
+        massCellCurrent                        **(24.61)--(24.62)** the three objects of the
+                                               reduction
+      harmonicGap_pos, harmonicGap_ne_zero,
+        harmonicPrimitive_diff                 the increment law `J_n − J_{n−1} = w_n R(n)`
+      massCellCurrent_abel                     **(24.63)** the exact Abel identity: the current is
+                                               the primitive against the adjoint quotient, with one
+                                               endpoint term
+      sum_adjointCellQuotient_telescope,
+        massCellCurrent_centered               **(24.65)** the constant part telescopes exactly, so
+                                               centring the primitive costs only the fixed boundary
+                                               term `−2γ A_1`
+      harmonicPrimitive_sourcePartialSum       **(24.64)** the exact closed form
+                                               `J_N = ∑_{n≤N} a(n)/n − R(N)/(N+1)`, which for
+                                               `a = Λ − 1` is `∑ Λ(n)/n − H_N − R(N)/(N+1)`
+
+Both Abel identities hold for an arbitrary source and an arbitrary receiver, with no boundedness or
+convergence hypothesis: they are exact finite algebra, which is precisely the point of the audit —
+the reduction succeeds, and what fails is the norm closure afterwards.
+
+Still deferred on this item: the limit `J_N → −2γ` of (24.64), which needs Mertens and the prime
+number theorem wired to the closed form, and the stationary-phase evaluation (24.66)--(24.67) of the
+adjoint quotient.

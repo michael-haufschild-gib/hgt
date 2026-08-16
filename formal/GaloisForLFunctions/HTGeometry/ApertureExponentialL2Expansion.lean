@@ -80,7 +80,7 @@ theorem hasSum_apertureFourierL2 {a : ℝ} (ha : 0 ≤ a) (x : ℝ) :
   have hgsum : Summable fun n : ℕ => (|x| * a) ^ n / (Nat.factorial n : ℝ) := by
     have h := NormedSpace.expSeries_div_hasSum_exp (𝔸 := ℝ) (|x| * a)
     exact h.summable
-  have hbase := hasSum_apertureToLp (𝕜 := ℂ) ha
+  have hbase := hasSum_apertureToLp (𝕜 := ℂ)
     (f := fun n t => ((-(x : ℂ) * Complex.I) ^ n / (Nat.factorial n : ℂ)) * ((t : ℂ)) ^ n)
     (F := fun t => Complex.exp (-(x : ℂ) * Complex.I * (t : ℂ)))
     (g := fun n => (|x| * a) ^ n / (Nat.factorial n : ℝ))

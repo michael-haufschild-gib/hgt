@@ -625,25 +625,59 @@ criterion Lemma A1 is about: for a probe supported on the endpoint factor,
 So endpoint completeness is now a single, concrete nonvanishing condition on the eigenbasis, and
 Hermitian probes are shown to be no weaker than arbitrary ones.
 
+`formal/GaloisForLFunctions/HTGeometry/CompleteProbeCombination.lean` turns a covering probe
+*family* into one probe: each matrix element of a combination is a nonzero linear form in the
+combination coefficients, the product of those forms over all ordered pairs is a nonzero
+polynomial, and a nonzero polynomial over the complex numbers has a nonvanishing point
+(`probeCombinationForm`, `probeCombinationForm_ne_zero`, `exists_probeCombination_ne_zero`).
+This is what lets a *single* edge coupling carry the completeness that the family supplies pair by
+pair.  Composed with the blindness criterion it gives the *return* leg of the recursion:
+`exists_covering_endpoint_probe` turns endpoint completeness of a system into one endpoint
+operator that pairs every ordered pair of its eigenvectors nontrivially -- which is exactly the
+`hM` hypothesis the next attachment consumes (`endpointPairing_sum_probe` supplies the linearity).
+
+`formal/GaloisForLFunctions/HTGeometry/LayerExtensionEndpointCompleteness.lean` and
+`.../LayerGermEndpointCompleteness.lean` prove the **induction step of Lemma A1**.
+
+| Card item | Declaration |
+|---|---|
+| the reduced transition over the *old* factor, whose surviving factor is the attached qubit, and its identification with the general criterion | `layerReducedTransition`, `layerReducedTransition_eq_reducedTransition` |
+| a curve with vanishing value and nonvanishing derivative is nonzero near, but not at, the base point | `eventually_ne_zero_of_hasDerivAt_zero`, `eventually_ne_zero_of_continuousAt_zero`, `continuousAt_finsetSum` |
+| **at zero coupling the attached qubit already sees the two halves of one old level**, hence for all small coupling | `eventually_layerReducedTransition_ne_zero_sameLevel` |
+| **first-order creation across two old levels**: the *flipped* entry has vanishing value and derivative `Pi' · conj(Dpsi(beta_0,!r_0))` | `eventually_layerReducedTransition_ne_zero` |
+| the canonical adjugate-column germ of the split family, its value at zero coupling and its real derivative | `layerGerm`, `layerGapProduct`, `layerGapProduct_ne_zero`, `layerGerm_zero`, `hasDerivAt_layerGerm` |
+| **the off-label first derivative is the coupling element over the gap**, hence nonzero exactly when the coupling sees the old pair | `layerGerm_deriv_ne_zero` |
+| **the induction step**: if the edge coupling sees an old pair, the attached qubit sees the corresponding split pair for all small nonzero coupling | `eventually_layerGerm_endpoint_ne_zero` |
+| the same-level version, at zeroth order and with no condition on the coupling | `eventually_layerGerm_endpoint_ne_zero_sameLevel` |
+| **endpoint completeness of the split system**: one edge coupling seeing every ordered old pair makes the attached qubit see *every* ordered pair of split labels, for all small nonzero coupling | `eventually_forall_layerGerm_endpoint_ne_zero` |
+| **endpoint completeness is an open condition** in any continuously varying eigenvector family | `eventually_forall_layerReducedTransition_ne_zero` |
+
+The formalisation forced one clarification of the paper argument.  The reduced-transition entry at
+the *unflipped* new index has vanishing first-order term, because the edge perturbation is purely
+cross-layer; only the flipped entry moves at first order.  So the index flip is not a convenience
+but the unique first-order channel, and the hypothesis `alpha_0 != beta_0` turns out to be
+unnecessary: the same computation covers the same-level pairs too.
+
 ### What remains for Theorem A
 
-Only **Lemma A1's witness**.  Everything downstream of it is formal: `quadraticRateDefect_smul`
-gives `(13)`; `realMvPolynomial_eq_zero_of_eqOn_zero_isOpen` and
-`exists_eqOn_zero_of_finsetProd_eqOn_zero` glue `(14)`; `localExtension_quadraticRate_eq_zero` is
-Lemma A2 in full; and `reducedTransition_eq_zero_iff` turns endpoint completeness into the single
-condition `reducedTransition psi_alpha psi_beta != 0` for every pair.
+The recursion of Lemma A1 is now a closed cycle of formal theorems:
 
-What Lemma A1 still has to produce, for every path length, is one parameter point of the
-path-local family at which
+```text
+endpoint completeness at stage n
+    --[ exists_covering_endpoint_probe ]-->        one covering endpoint operator M
+    --[ eventually_forall_layerGerm_endpoint_ne_zero ]-->  endpoint completeness at stage n+1
+    --[ eventually_forall_layerReducedTransition_ne_zero ]--> and it is open, hence survives
+                                                              intersection with the dense
+                                                              maximal-rank set of the parent card
+```
 
-* the spectrum is simple with all nonzero ordered gaps distinct -- already delivered on a dense
-  residual full-measure set by the parent card's
-  `exists_uniformQubitChainMaximalRank_dense_residual_fullMeasure` together with
-  `maximallyProjectiveEnergy_orientedGap_injective`; and
-* every pair of eigenvectors has nonvanishing endpoint-reduced transition.
+with the base case `n = 2` (four levels) and the `D >= 3` quadratic-rate base already formal.
+What is left is the *physical realisation*: identifying `layerSplitEnergy E z` with a one-site
+field on the attached qubit and `layerCrossPerturbation M` with a physical edge term of the path
+family, i.e. the tensor-product bookkeeping that places the abstract split system inside
+`tracelessLocalHamiltonianSubmodule`.  No further analysis is needed -- every analytic and
+algebraic step of Lemma A1 and Lemma A2 is proved.
 
-The second is genuinely perturbative: product eigenvectors fail it (two states differing only in
-the complementary factor have vanishing reduced transition), so a witness must be entangled, which
-is exactly the card's attach-a-qubit induction.  The corpus's
-`HermitianAllVertexGoodLeafExtension` / `LocalExtensionChartProbeSupportOpenness` family runs the
-analogous induction for observer-support graphs and is the intended base to build on.
+After that, Theorem A follows by the already-formal chain: `quadraticRateDefect_smul` for `(13)`,
+`realMvPolynomial_eq_zero_of_eqOn_zero_isOpen` and `exists_eqOn_zero_of_finsetProd_eqOn_zero` for
+`(14)`, and `localExtension_quadraticRate_eq_zero` for Lemma A2.
