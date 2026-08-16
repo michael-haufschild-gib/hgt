@@ -4862,3 +4862,36 @@ Recorded so the next pass does not re-derive it: the naive attempt to read `ell_
 normalization directly gives `ell_0 = c^{-1/4} I_1 / sqrt(I_2) -> 0`, which is NOT a contradiction
 with `(3)` — it is the same statement in a different normalization.  Only the rescaling-invariant
 ratio should be compared across the two conventions.
+
+## Lean progress — `(3)` threaded into `(8)`: the secular root converges to the coordinate ratio
+
+`RHTower/SecularRootLimit.lean` (wired, axiom-clean).
+
+The two location bounds already formal — `le_secular_root` and `secular_root_le` — sandwich the
+normalized root:
+
+```
+S / (S + L + T/(M-1))   <=   mu / d_{k+1}   <=   S / (S + L) + eps
+```
+
+with `S = sum_{j<=k} ell_j^2`, `L = ell_{k+1}^2`, `T = sum_{j>k+1} ell_j^2`, and `eps`, `1/(M-1)`
+the two gap slacks.  The new theorem closes the sandwich along a family:
+
+```
+tendsto_secular_ratio_of_limits
+    S -> A,  L -> B,  T/(M-1) -> 0,  eps -> 0,  A + B != 0
+      ==>  mu / d_{k+1}  ->  A / (A + B)
+
+secular_limit_ratio_eq
+    A/(A+B) is the root of the degenerate secular equation  -S/theta + T/(1-theta) = 0
+```
+
+This is exactly the threading of `(3)` into `(8)`.  The coordinate limits `ell_j -> a_j` supply
+`S -> A` and `L -> B`; the leakage separation `d_k/d_{k+1} -> 0` supplies `eps -> 0`; and the
+uniform infinite-tail estimate supplies `T/(M-1) -> 0`.  Nothing about the prolate family enters —
+once those four limits are known, the root of the secular equation is pinned to the explicit ratio
+of limiting coordinate masses.
+
+The second theorem checks the consistency the card asserts: the limit `A/(A+B)` is precisely the
+root of the degenerate equation, so the sandwich lands where the formal limiting problem says it
+should rather than merely somewhere in the gap.

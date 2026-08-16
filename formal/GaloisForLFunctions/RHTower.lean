@@ -5320,6 +5320,7 @@ import GaloisForLFunctions.RHTower.SecondMomentTailBound
 import GaloisForLFunctions.RHTower.SecondMomentVacuity
 import GaloisForLFunctions.RHTower.SectorPrimeZeroUniqueness
 import GaloisForLFunctions.RHTower.SecularEquationInterlacing
+import GaloisForLFunctions.RHTower.SecularRootLimit
 import GaloisForLFunctions.RHTower.SecularHankel
 import GaloisForLFunctions.RHTower.SecularMoments
 import GaloisForLFunctions.RHTower.SecularNewton

@@ -94,8 +94,11 @@ Its role is to make the flat-space-to-cosmology transfer logically exact.
   evaluation.
 - [x] Prove that a nonzero specialized relation forces differential algebraicity of the leading
   coefficient.
-- [ ] Define the fully generic coefficientwise differential structure on the required Laurent
-  carrier.
+- [x] Define the coefficientwise differential structure on the formal-series carrier:
+  `formal/GaloisForLFunctions/HTGeometry/CoefficientwisePowerSeriesDerivation.lean`
+  (`coeffwiseAdd`, `coeffwiseAdd_mul` (Leibniz), `coeffwiseAdd_X` (the parameter is a differential
+  constant), `constantCoeff_coeffwiseAdd`, `coeffwiseJet`, `constantCoeff_coeffwiseJet`),
+  axiom-clean.  The Laurent case reduces to this by `LaurentSeries.powerSeriesPart`.
 - [ ] Formalize denominator clearing, principal-part removal, and removal of the common
   `E`-valuation.
 - [ ] Assemble the unrestricted Laurent theorem and contrapositive without new axioms.

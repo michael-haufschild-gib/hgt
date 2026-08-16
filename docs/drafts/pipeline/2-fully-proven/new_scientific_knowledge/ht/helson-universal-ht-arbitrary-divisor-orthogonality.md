@@ -939,3 +939,27 @@ theory — none of which exist in mathlib.
 The single remaining analytic step for `Haar(M) = 0` is the bridge from divergence of
 `sum_p p^{-sigma} X_p` to non-continuability of `Z_chi`.  Everything upstream of that bridge is now
 a theorem.
+
+### Correction: what a.s. divergence does and does not give
+
+The note above called the step from divergence to `Haar(M) = 0` "one bridge".  That understates it
+and should be read carefully.
+
+What is now formal is `sigma_c >= 1/2` almost surely: the prime series `sum_p p^{-sigma} X_p`
+diverges a.s. for every `sigma <= 1/2`.  Divergence of a Dirichlet series does **not** by itself
+preclude analytic or meromorphic continuation past its abscissa of convergence — `zeta` is the
+standard counterexample, convergent only for `Re s > 1` and entire apart from one pole.  So
+
+```
+a.s. divergence left of 1/2   =/=>   Haar(M) = 0 .
+```
+
+The genuine content of Saksman--Webb/Seip is the *natural boundary* statement: a.s. the line
+`Re s = 1/2` is a natural boundary for `Z_chi`, not merely the edge of convergence.  That is a
+strictly stronger theorem, and the divergence result formalized here is its first half, not a
+reduction of it.
+
+The remaining task is therefore correctly stated as: prove the a.s. natural boundary, of which the
+formal chain here supplies the abscissa-of-convergence half.  The zero-one law
+(`measure_infinitePi_eq_zero_or_one_of_invariant`) still reduces it to breaking the dichotomy at a
+single point, which remains the most promising entry.

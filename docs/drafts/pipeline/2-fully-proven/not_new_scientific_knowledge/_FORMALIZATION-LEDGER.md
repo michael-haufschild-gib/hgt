@@ -207,6 +207,10 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
   generalized Dirichlet series on its half-plane of absolute convergence, the sparse-support and
   accumulated-variation abscissa bounds, and the divisor reflection band `1 - A ≤ Re ρ ≤ A` with its
   two threshold classes.
+- `HTGeometry/CoefficientwisePowerSeriesDerivation.lean` — a derivation of the coefficient ring
+  extended coefficientwise to formal power series (`coeffwiseAdd`), its Leibniz rule, the formal
+  parameter as a differential constant, and the commutation of constant-term extraction with every
+  jet.  This is gate item (a) of `leading-laurent-coefficient-differential-algebraicity`.
 - `HTGeometry/InvolutionIdempotentHost.lean` — self-inverse elements ↔ idempotents over a
   commutative ring with `2` invertible.
 - `HTGeometry/ScalarMonodromyAlgebraicIndependence.lean` — unbounded scalar monodromy forces

@@ -7998,3 +7998,4 @@ import GaloisForLFunctions.HTGeometry.IncidenceLeakageDimensionLoss
 import GaloisForLFunctions.HTGeometry.RootBlockMomentSelection
 import GaloisForLFunctions.HTGeometry.FeatureKernelResolventBound
 import GaloisForLFunctions.HTGeometry.PencilCauchySchwarz
+import GaloisForLFunctions.HTGeometry.PositiveConeDeterminantMonotone
