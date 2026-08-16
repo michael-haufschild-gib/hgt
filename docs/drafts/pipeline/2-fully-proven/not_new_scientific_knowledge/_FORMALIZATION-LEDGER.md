@@ -91,6 +91,10 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-16 | `semilocal-prolate-unitary-transport-trilemma` | `RHTower/SemilocalProlateUnitaryTransport.lean` |
 | 2026-08-16 | `euler-support-transverse-divisor-rigidity` | `RHTower/RelativeStripDivisorReflection.lean` |
 | 2026-08-16 | `euler-divisor-ultrametric-stability` | `RHTower/EulerDivisorUltrametricStability.lean` |
+| 2026-08-16 | `source-odd-quintic-successor-modulus` | `HTGeometry/SourceOddQuinticSuccessorModulus.lean` (pre-existing) + new `HTGeometry/SourceOddLowAritySuccessorOrbits.lean` |
+| 2026-08-16 | `dss-lower-bound-orbit-nogo` | `HTGeometry/PrimeTorusKroneckerDensity.lean`, `RHTower/SuzukiApertureLiouvilleDense.lean`, `HTGeometry/ZeroEstimate.lean` (pre-existing) + new `HTGeometry/DSSOrbitEdgeOrthogonality.lean` |
+| 2026-08-16 | `f1-two-face-criterion` | `HTGeometry/OrbitBalance.lean`, `HTGeometry/ArchimedeanCorank.lean` (pre-existing) + new `HTGeometry/F1TwoFaceCriterion.lean` |
+| 2026-08-16 | `zero-estimate-uniformity` | `HTGeometry/ZeroEstimate.lean`, `RHTower/ZeroEstimateOrder.lean` (pre-existing) + new `RHTower/ZeroEstimateUniformity.lean` |
 | 2026-08-16 | `stieltjes-log-weld` | `RHTower/StieltjesWeld.lean`, `RHTower/StieltjesLogWeldTierOne.lean` (pre-existing) + new `RHTower/DirichletMonomialIndependence.lean` |
 | 2026-08-16 | `projective-horizon-pure-tail-fermionic-fiber` | pre-existing chain (`ProjectiveHorizonPureTailFiber`, `OccupationFactorInjective`, `PureFibreOccupationBijection`, `PureFibreCardinality`, `ShiftInvariantSubspace`, `QuotientIdealDivisor`, `QuotientIdealDimension`, `InvariantSubspaceRootSubset`, `RootSubsetInvariantSubspace`, `InvariantSubspaceIff`) + new `HTGeometry/PureFibreExteriorOccupation.lean` |
 | 2026-08-16 | `projective-horizon-irreducible-simple-ramification` | pre-existing chain, verified + audited: `HTGeometry/SquaredJetCoefficientIndependence.lean`, `HTGeometry/DualRectangularSection.lean`, `HTGeometry/SchurCofactorLocus.lean`, `HTGeometry/CriticalSchurPrimeDivisor.lean`, `HTGeometry/CriticalSchurGenericCorank.lean`, `HTGeometry/CriticalSchurUniformizer.lean` |
@@ -108,6 +112,55 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
   and trace-nonincreasing (i.e. construct a `TraceClassQuantumCorner` instance for
   `⊕^{ℓ²} H_i` with its inclusion isometries). The last card gate (monoidal-locality obstruction)
   is an open research target, not debt.
+
+## In-flight card analyses (2026-08-16)
+
+Cards whose remaining 2→3 obligation has been read and scoped, so the next session can start
+directly.  None of these is blocked by open mathematics.
+
+- **The in-tree PNT layer is usable**: `GaloisForLFunctions/PNTPlus/` carries `nth_prime_asymp`,
+  `log_nth_prime_asymp`, `pi_nth_prime_asymp`, all axiom-clean.  Reach for it whenever a card needs
+  `p_N ~ N log N` or `π(x) ~ x/log x`.
+- `friable-dirichlet-auxiliary` — pillar **B** and the **PNT conversion** are now discharged by
+  `RHTower/ZeroEstimateUniformity.lean` (order bound, `S`-free determinant size bound, monomial count
+  `C(|S|+d,d)`, `p_N ≲ N log N`).  The term-by-term derivative identity and the word-level
+  multinomial expansion are already in `RHTower/FriableAuxiliary.lean`.  **Remaining:** `𝒜_{S,d}` as a
+  structure, the collection of the multinomial expansion into the coefficients `C_a`, and the §5a
+  **realizable-coefficient surjectivity** lemma.  The mathematical core of §5a is: a polynomial of
+  total degree `≤ T` in the integer variables `(m_p)` vanishing on the simplex `{‖m‖₁ ≤ d}`, `d ≥ T`,
+  is zero.  mathlib has no simplex test-set lemma; the box form (vanishing on `{0,…,T}^S`) is the
+  tractable route and needs `d ≥ |S|·T`, which is harmless for §5b since the card quantifies over all
+  degree bounds.
+- `critical-line-abscissa-of-convergence` — the threshold `Σ_p p^{-2σ} < ∞ ⟺ σ > 1/2` is immediate
+  from mathlib's `Nat.Primes.summable_rpow`.  The card's a.s.-convergence dichotomy additionally needs
+  **Kolmogorov's three-series theorem**, which mathlib does *not* have (only the Kolmogorov continuity
+  condition for processes).  That is the missing library for this card.
+- `c5-jensen-perturbation-lemma` — §1″ (the corrected localized `C¹` perturbation lemma, strictly
+  interior window with `m_i = min |C''| > 0` by compactness) is self-contained real analysis and
+  formalizable as written.  §2's `β ≍ O(1)` barrier additionally needs uniform-in-`d` Hermite
+  critical-gap asymptotics, which the card itself credits as classical.
+- `arbitrary-finite-quartet-passport-realization` — all named parents are formalized
+  (`SimultaneousFiniteJetFlatness`, `FiniteHermiteCRT`, `FiniteFluxPassport`,
+  `ImaginaryAxisPositiveRepair`, `CoshQuartetEnvelope`, `CoshPolynomialPeriodClassification`,
+  `CoshPolynomialExactOrderOne`).  Remaining: the capstone assembly, which needs two new pieces —
+  (i) a jet-agreement calculus for analytic functions (target jets prescribed as the Taylor
+  polynomial of `ε_w (z-w)/A(z)`; reuse `deningerLocalJetPolynomial_iterateDerivative_eval`), and
+  (ii) a **quasi-period** classification `F(z+h) = C F(z) ⇒ h = 0` generalizing the existing
+  `coshQuartetEnvelope_mul_polynomial_periodic_iff` (which only covers `C = 1`).
+- `euler-source-finite-jet-local-openness` — the algebraic core is
+  `RHTower/EulerSourceJetJacobian.lean`.  Remaining: (i) the several-complex-variables inverse
+  function theorem applied to the map (mathlib's `HasStrictFDerivAt.to_localInverse` over `ℂ`
+  suffices — the inverse's derivative is the `ℂ`-linear inverse, so it is holomorphic), and (ii) the
+  identity-theorem step from equality of all derivatives to equality of the half-plane `L`-series.
+- `lean-claim-review-row-010-pk-li-secular-change-of-basis` — §B is formalized
+  (`li_secular_pointwise`, `secular_li_pointwise_inv`).  Remaining: §A, the Voros closed form
+  `P_k = 1 − (−1)^k ζ(k)/2^k − a_{k−1}`, which needs the `ξ'/ξ` decomposition (the corpus owns
+  `RHTower/XiHadamardFactorization.lean`, `XiCanonicalProduct.lean`) and the digamma Taylor
+  expansion with zeta values (`Hurwitz/PolygammaHurwitzValue.lean` has
+  `polygamma_one_eq_riemannZeta`).
+- `centered-ksgns-covariance-pythagoras` — blocked on a **Hilbert C\*-module / Paschke–KSGNS
+  layer**, which mathlib does not have at all.  This is the largest single missing library named so
+  far in this folder.
 
 ## Known blocking infrastructure (shared across several cards)
 
@@ -232,6 +285,25 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
   the variables is, up to one fixed power `E^c`, evaluation of the rescaled relation at `v` — with
   `k(d) = c + m·deg(d)` realizable in `ℕ` for either sign of `m`.  Gives
   `differentialAlgebraicOver_leadingCoeff_of_laurentRelation` and its contrapositive.
+- `HTGeometry/SourceOddLowAritySuccessorOrbits.lean` — the full orbit classification of fully
+  supported source-odd binary forms: arities two, three and four are single orbits, and the quintic
+  cross invariant is **complete** (`sourceProjectivelyEquivalentOddQuintic_iff_cross_invariant`),
+  giving infinitely many quintic orbits.
+- `HTGeometry/DSSOrbitEdgeOrthogonality.lean` — the `s = 1` edge form of a friable auxiliary, its
+  nonvanishing from unique factorization, the **failure of any uniform lower bound**
+  (`not_exists_uniform_edge_lower_bound`, from the rank-two prime-log density), the height blow-up
+  along a small-edge family, and unboundedness above.  This is the orbit ⊥ edge separation.
+- `HTGeometry/F1TwoFaceCriterion.lean` — the two-face `F₁` datum (`PlaceDatum`), its flow-imbalance
+  (orbit degree) and corank (rational rank of the value group) faces, the `SingleFrobenius`
+  necessity theorems, the `F_q` and `ℚ` calibrations, and the four-way orthogonality realization.
+- `RHTower/ZeroEstimateUniformity.lean` — the diagonal pullback of a Bohr polynomial
+  (`diagonalFrequency`, `injective_diagonalFrequency`, `cpow_neg_eq_exp_mul_diagonalFrequency`), the
+  uniform order bound with constant one, the `S`-free Vandermonde determinant product size estimate
+  (`prod_inv_primeLogHeight_le_abs_det_vandermonde`), the `P_S`-polynomial height and form bounds at
+  fixed degree (`primeLogHeight_le_pow`, `inv_pow_le_abs_primeLogForm`), the stars-and-bars monomial
+  count `C(|S|+d,d)` (`card_boundedDegreeMonomials_le`), and the PNT link
+  (`eventually_nth_prime_le_two_mul`, `eventually_nth_prime_le_sq`) built on the in-tree
+  `nth_prime_asymp`.
 - `RHTower/DirichletMonomialIndependence.lean` — the **triviality lemma for Dirichlet polynomials**:
   a finite combination of `n^{-t}` vanishing at every real exponent has all coefficients zero
   (`coeff_eq_zero_of_dirichletSum_eq_zero`), hence the family `n ↦ (s ↦ n^{-s})` over the positive

@@ -197,6 +197,41 @@ theorem summable_normSq_suzukiCriticalApertureBoundaryAtom_allPrime
     intro p
     ring
 
+/-- The complete dressed wall mass has one explicit ceiling independent of observer aperture and
+spectral height.  This is the uniform form needed when a fixed source scale is carried along a
+cofinal aperture family. -/
+theorem tsum_normSq_suzukiCriticalApertureBoundaryAtom_allPrime_le
+    {h a : ℝ} (hh : 0 < h) (ha : 0 < a) (t : ℝ) :
+    (∑' pe : Nat.Primes × ℕ,
+      Complex.normSq (suzukiCriticalApertureBoundaryAtom h a t pe.1 pe.2)) ≤
+      2 * ((h * Real.sqrt h)⁻¹) ^ 2 *
+        (∑' p : Nat.Primes,
+          Real.log (p : ℝ) * ((p : ℝ) ^ 2)⁻¹) := by
+  have hall :=
+    summable_normSq_suzukiCriticalApertureBoundaryAtom_allPrime hh ha t
+  have hnonneg : 0 ≤ fun pe : Nat.Primes × ℕ =>
+      Complex.normSq (suzukiCriticalApertureBoundaryAtom h a t pe.1 pe.2) :=
+    fun _ => Complex.normSq_nonneg _
+  have hsplit := (summable_prod_of_nonneg hnonneg).mp hall
+  rw [hall.tsum_prod]
+  calc
+    (∑' p : Nat.Primes, ∑' e : ℕ,
+        Complex.normSq (suzukiCriticalApertureBoundaryAtom h a t p e)) ≤
+        ∑' p : Nat.Primes,
+          2 * ((h * Real.sqrt h)⁻¹) ^ 2 *
+            Real.log (p : ℝ) * ((p : ℝ) ^ 2)⁻¹ := by
+      exact hsplit.2.tsum_le_tsum
+        (fun p => tsum_normSq_boundaryAtom_depth_le hh ha t p)
+        ((summable_prime_log_mul_invSq.mul_left
+          (2 * ((h * Real.sqrt h)⁻¹) ^ 2)).congr (fun p => by ring))
+    _ = 2 * ((h * Real.sqrt h)⁻¹) ^ 2 *
+        (∑' p : Nat.Primes,
+          Real.log (p : ℝ) * ((p : ℝ) ^ 2)⁻¹) := by
+      rw [← tsum_mul_left]
+      apply tsum_congr
+      intro p
+      ring
+
 /-! ## Exact source dressing and reflection -/
 
 /-- Observer dressing multiplies the wall field before any light projection. -/

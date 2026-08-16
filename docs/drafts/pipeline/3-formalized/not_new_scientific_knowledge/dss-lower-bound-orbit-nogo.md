@@ -1,7 +1,7 @@
 # The DSS lower bound is native-orbit-inaccessible — the G_L-orbit gives genericity (upper bound), not the arithmetic lower bound
 
 - **ID:** dss-lower-bound-orbit-nogo
-- **Stage:** 0-backlog-lean
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper, structural no-go) — obstruction-theory content (per the user 2026-06-19: the field
   is obstruction theory + value-relations; this is a "why no native shortcut" obstruction result).
 - **Priority:** FOUNDATIONAL
@@ -60,7 +60,8 @@ a value-relations obstruction, computed via the group, whose lower half is the a
 - [x] 0 → 1: stated; the orbit=upper / edge=lower split identified.
 - [x] 1 → 2: proved — orbit gives upper bound (#8); lower bound at the s=1 edge (friable §5); orbit (t-flow)
   orthogonal to the t=0 arithmetic value ⟹ native-orbit cannot supply it. Grade BRIDGE.
-- [ ] 2 → 3: (low priority — structural no-go) reuse `linearIndependent_log_primes`, the SS upper-bound anchor.
+- [x] 2 → 3: `formal/GaloisForLFunctions/HTGeometry/DSSOrbitEdgeOrthogonality.lean` — see the
+  certificate below.
 - [ ] 3 → 4: folds into the DSS exposition as the native-side no-go (companion to #74).
 
 ## Cross-references
@@ -114,3 +115,26 @@ paper-proof defect. This is a **paper-proven BRIDGE theorem** whose proof legiti
 those imports are to be carried as hypotheses/axioms (or formalized separately) at the Lean stage — not a reason to
 reject the paper proof. The card's stated theorem is proved at its 1→2 gate; any co-located open conjecture
 (C5★ / ω=0 / Schanuel / apex) is explicitly a SEPARATE open core, not part of this theorem. Re-banked for Lean re-attempt.
+
+
+## Lean certificate — 2026-08-16 (2→3 gate closed)
+
+`formal/GaloisForLFunctions/HTGeometry/DSSOrbitEdgeOrthogonality.lean`, wired into the `HTGeometry`
+umbrella; every declaration audits to `[propext, Classical.choice, Quot.sound]`.
+
+The card's content is the *separation* of the two faces, and that is exactly what is formalized.
+
+| Paper step | Lean |
+|---|---|
+| the orbit face: the Kronecker orbit `t ↦ (p^{-it})_p` is dense on the prime torus — a statement that **does not mention the auxiliary at all** | `primeTorus_kronecker_dense` (pre-existing, `HTGeometry/PrimeTorusKroneckerDensity.lean`), reused |
+| the edge face: `F^{(T)}(1)` is the prime-log linear form `⟨m, ℓ⟩` at the fixed point `t = 0, σ = 1` | `edgeForm` |
+| the edge form of a nonzero exponent vector is nonzero (unique factorization) | `edgeForm_ne_zero` |
+| **orbit ⊥ edge**: no positive constant bounds the edge magnitude below, so nothing auxiliary-free — in particular nothing extracted from the orbit — can supply the lower bound | `exists_edgeForm_pos_lt`, `not_exists_uniform_edge_lower_bound` (via the rank-two density `RHTower.dense_range_primeLogValuation`) |
+| the lower bound is *arithmetic*: the valid bound is the reciprocal height | `edge_lower_bound_is_arithmetic` (= `logPrime_height_bound`) |
+| and the height must blow up exactly along the small-edge family | `primeLogHeight_unbounded_of_edgeForm_small` |
+| the edge value is also unbounded above, so the orbit sees it in neither direction | `exists_edgeForm_gt` |
+
+Scope, as the card states: the *degree-one* edge is where unique factorization and the density
+argument apply.  The degree-`T ≥ 2` lower bound is Schanuel-for-prime-logs — explicitly the open
+apex this card **locates** rather than proves, and it is therefore not a formalization obligation
+here.

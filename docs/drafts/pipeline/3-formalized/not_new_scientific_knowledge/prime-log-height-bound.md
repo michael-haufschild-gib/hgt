@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean) - grade **BRIDGE**
 - **Priority:** FOUNDATIONAL
-- **Source:** split from `../2-fully-proven/zero-estimate-uniformity.md` part (b), and reused by
+- **Source:** split from `zero-estimate-uniformity.md` part (b), and reused by
   `../2-fully-proven/friable-dirichlet-auxiliary.md`.
 - **Statement:** For every nonzero finite integer prime-exponent vector `m`, the prime-log frequency obeys
   the S-free lower bound `H(m)^-1 <= |sum_p m_p log p|`, where `H(m)=prod_p p^|m_p|`.

@@ -2,7 +2,7 @@
 
 **For:** librarian. **Type:** stage flip + row edits (00-status rows #13, #14; 00-index G2 bucket row).
 
-**What changed (card moved `0-backlog/zero-estimate-uniformity.md` → `2-fully-proven/zero-estimate-uniformity.md`).**
+**What changed (card moved `0-backlog/zero-estimate-uniformity.md` → `3-formalized/not_new_scientific_knowledge/zero-estimate-uniformity.md`).**
 Conjecture 5′ (uniformity-in-`S` of the multi-q zero estimate, G2 obstruction B) is **PROVEN for the
 G2-relevant diagonal zero estimate → grade BRIDGE.**
 

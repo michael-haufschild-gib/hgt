@@ -104,3 +104,33 @@ conjugation, and function-field Ax theorems erase it.
 ## Log
 
 - 2026-08-14 -- dependency-closed normal form proved; trace/norm and generic-slope continuations killed.
+
+## Lean progress -- clauses 2 and 5
+
+`formal/GaloisForLFunctions/HTGeometry/DefectSlopeNormalForm.lean` (new, umbrella-wired,
+axiom-clean) proves the two clauses of the statement that are pure algebra.
+
+| Card item | Declaration |
+|---|---|
+| **clause 2**: on a one-dimensional module a nonzero `ε₁` determines a unique `ρ` with `ε₂ = ρ ε₁` | `existsUnique_defectSlope` |
+| normalization: the slope of a defect against itself is `1` | `defectSlope_self` |
+| **clause 5, `(R)`**: with `Y(p) = exp X(p)`, `(L(p)-L(q)) - (X(p)-X(q)) = X(q) - L(q) + 2πik` | `regulator_eq_base_add_branch` |
+| the branch integer is the only freedom in `(R)` | `regulator_branch_difference` |
+
+`existsUnique_defectSlope` is the exact content of "there is a unique `ρ ∈ K` with `ε₂ = ρ ε₁`":
+one-dimensionality makes `ε₁` a basis, and nonvanishing of `ε₁` -- the defect-lattice input -- makes
+the coefficient unique.  `regulator_eq_base_add_branch` is the card's cancellation computation with
+the branch recorded as an integer, exactly as `(R)` states it.
+
+### What remains
+
+Everything analytic or transcendence-theoretic:
+
+- clause 1, `trdeg K = 1`, which needs Hermite--Lindemann to exclude `trdeg K = 0`;
+- one-dimensionality of `Ω_{K/Q̄}` for a transcendence-degree-one extension, the geometric input
+  fed to `existsUnique_defectSlope`;
+- clause 3, transcendence of `ρ`, which needs the algebraic-coefficient defect theorem of
+  `schanuel-defects-algebraic-coefficient-independent`;
+- clause 4, Kirby's exponential-algebraicity theorem;
+- the identification of `(L(p)-L(q)) - (X(p)-X(q))` with the path integral `∫_q^p ε_i`, which needs
+  a contour-integration layer for `d log Y - dX` on the normalized projective curve.

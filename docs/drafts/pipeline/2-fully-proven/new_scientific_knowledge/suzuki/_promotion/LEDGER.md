@@ -11111,3 +11111,194 @@ of an `N`-fold cascade is `2πN`", i.e. that the section is a degree-one circle 
 single remaining step, plus the level count of ADP, closes `(38)`.
 
 All new declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADP.2. `(42)` and `(38)` closed at the phase level — the gain is a sum of arctangents
+
+The gain needed no winding number, no boundary integral, and no circle lift.  A half-plane factor
+with pole `u + iv` has the *globally continuous* real-axis phase
+
+```text
+polePhase u v x = 2 arctan((x − u)/v) + π,      d/dx = 2v/((x−u)² + v²),
+```
+
+an increasing bijection of `ℝ` onto `(0, 2π)`.  Its gain across `[α, β]` is exactly
+`2(arctan((β−u)/v) + arctan((u−α)/v))`, so `arctan T ≥ π/2 − 1/T` gives
+
+```text
+gain ≥ 2π − 2v(1/(β−u) + 1/(u−α))
+```
+
+whenever `α < u < β`: a full turn less a deficit proportional to the depth `v` alone.  Iterating the
+pole `N` times multiplies both, which is `(42)`.
+
+```text
+HTGeometry/HalfPlanePolePhase.lean
+  arctan_lt_self, pi_div_two_sub_inv_le_arctan
+  sqrt_one_add_div_sq, cos_arctan_div, sin_arctan_div   (now owned here; the RHTower copies
+                                                        in SuzukiCoalescingRealAxisPhase removed)
+  polePhase, polePhase_eq_exp                the factor is exp(i·polePhase) on the real axis
+  hasDerivAt_polePhase                       the half-plane Poisson kernel
+  continuous_polePhase, strictMono_polePhase
+  polePhase_gain, polePhase_gain_ge, polePhase_gain_lt, polePhase_nsmul_gain_ge
+  tendsto_polePhase_gain                     the gain tends to a full turn as the pole descends
+
+HTGeometry/UnimodularLevelInterlacing.lean  (extended)
+  exp_phase_add_turn, exp_phase_add_half_turn
+  exists_interlacing_levels_of_phase_gain    the count at an arbitrary base level
+
+RHTower/SuzukiCoalescingRealAxisPhase.lean  (extended)
+  suzukiCoalescingCayley_eq_exp_polePhase    the anchor is the pole factor at `ic`, valid on all
+                                             of ℝ rather than only the positive half
+
+RHTower/SuzukiCoalescingFragmentPhase.lean
+  suzukiFragmentPhase                        polePhase 0 c + N · polePhase u v
+  continuous_/strictMono_suzukiFragmentPhase
+  suzukiFragmentPhase_gain_ge                **(42)**
+  exists_interlacing_suzukiFragment_levels   **(38)**: both antipodal Clark levels attained
+                                             `M+1` and `M` times, strictly interlacing
+```
+
+**What Theorem D still owes.**  One Möbius identification and one normality step:
+
+1. `B ∘ b_c = λ · (z − z₀)/(z − z̄₀)` with `z₀ = ic(1 + rζ)/(1 − rζ)` and `|λ| = 1` — i.e. the
+   composite of the anchor chart with the centred section is the half-plane factor at the pulled-back
+   zero.  This is explicit algebra; it turns `suzukiFragmentPhase` into the literal phase of
+   `Θ_{c,N}` and converts the depth `v = Im z₀` into `1 − r`, so that `(41)` bounds `N v`.
+2. The final non-normality conclusion: interlacing zeros and poles converging to `x₀` obstruct
+   spherical convergence of `(26)` on any neighbourhood of `x₀`.
+
+All new declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADP.3. `(38)` closed for the literal carrier — the Möbius identification
+
+The bridge from the phase count to the card's own object is an explicit factorisation.  Composing
+the centred section with the anchor chart, both numerator and denominator are *linear in `x`*:
+
+```text
+r ζ (x + ic) − (x − ic) = (r ζ − 1)(x − z₀),
+(x + ic) − r ζ̄ (x − ic) = (1 − r ζ̄)(x − z̄₀),      z₀ = b_c⁻¹(r ζ) = i c (1 + r ζ)/(1 − r ζ),
+```
+
+so `B(b_c(x)) = λ (x − z₀)/(x − z̄₀)` with `λ = ζ̄ (r ζ − 1)/(1 − r ζ̄)`, and the whole identity
+reduces by `linear_combination` to the single relation `z₀(1 − r ζ) = i c (1 + r ζ)`.  Positivity of
+`Im z₀` is the corpus's `suzukiCoalescingCayleyInv_im_pos` — the chart preimage of a disc point is
+in the upper half plane — so no new geometry is needed.
+
+```text
+RHTower/SuzukiCoalescingFragmentPole.lean
+  suzukiFragmentPole, suzukiFragmentUnit
+  suzukiFragmentPole_im_pos                  the pole is in the open upper half plane
+  suzukiFragmentPole_mul, suzukiFragmentPole_conj_mul
+  comp_cayley_num, comp_cayley_den           the two linear factorisations
+  suzukiCenteredBlaschkeSection_comp_cayley  B ∘ b_c = λ (x − z₀)/(x − z̄₀)
+  suzukiCenteredBlaschkeSection_comp_cayley_eq_exp
+  suzukiFragmentedDiskCarrier_comp_cayley    Θ_{c,N}(x) = λ^N exp(i·suzukiFragmentPhase)
+  exists_interlacing_suzukiFragmentedDiskCarrier_levels    **(38)**, literal carrier
+```
+
+The capstone says: inside any real interval containing the foot `Re z₀`, the carrier returns to its
+left-endpoint value `M + 1` times and reaches the antipodal value `M` times, strictly interlacing,
+for every `M` the gain pays for.  With `(42)` the gain is `2πN` less a deficit `2 N (Im z₀)(…)`, and
+`(41)` bounds that deficit by the radial budget, so `M = N − O(1)`.
+
+**Theorem D now owes only the normality step**: interlacing zeros and poles converging to `x₀`
+obstruct spherical convergence of `(26)` on any neighbourhood of `x₀`.  Everything feeding it —
+`(34)`–`(37)`, `(38)`, `(40)`, `(41)`, `(42)` — is closed and axiom-audited.
+
+All new declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADQ. `critical-radical-anchor-finite-head-reduction` — gate five gets its counting layer
+
+The card's fifth gate needs two providers, Riemann–von Mangoldt and the published `>5/12` theorem,
+and its handoff forbids a hypothesis wrapper in their place.  What it does **not** need is the
+asymptotic in raw form: the gate consumes it only through the statement "for all large `T` there is
+a critical-line zero with ordinate in `[√3 T, (12√3/5) T]`".  That reduction is now Lean-exact.
+
+```text
+RHTower/XiZeroCountingFunction.lean
+  xi_divisor_apply_of_mem / _of_notMem     the ξ-divisor over an arbitrary region
+  xiRegionOrderSum                          its total mass
+  xiRegionOrderSum_nonneg                   (compact region)
+  xiRegionOrderSum_congr                    regions with the same zeros have the same mass
+  xiRegionOrderSum_mono                     mass grows with the region
+  xiCountingBox, xiCriticalCountingBox      [0,1]×[0,T] and {1/2}×[0,T]
+  isCompact_xiCountingBox, isCompact_xiCriticalCountingBox
+  xiZeroCount, xiCriticalZeroCount          **N(T)** and **N₀(T)**, with multiplicity
+  xiZeroCount_mono, xiCriticalZeroCount_mono
+  xiCriticalZeroCount_le_xiZeroCount        **N₀(T) ≤ N(T)**, used by (SR-64.24)
+  exists_xi_zero_im_mem_Ioc_of_lt           a strict increase produces a zero in the band
+  exists_xi_criticalLine_zero_im_mem_Ioc_of_lt   the same on the critical line
+  exists_conj_pair_of_xi_zero               Schwarz symmetry: the distinct conjugate copy
+  conj_pair_im_sq                           the pair has the same squared ordinate
+```
+
+**Two design points.**  Counting on the *closed* band `[0, T]` instead of `(0, T]` costs nothing —
+`ξ` has no real zeros in the strip — and buys compactness, which is what the divisor's local
+finiteness needs.  And the band statement is proved without any additivity: if no zero has ordinate
+in `(T₁, T₂]`, then for every zero the two box memberships are equivalent, so the two divisor
+*functions* are equal and the masses coincide.
+
+The consequence for the card is sharp.  Everything between the two providers and gate five is now
+closed, so the gate reduces to the single numeric inequality `N₀(βT) > N₀(αT)` for large `T`, with
+`α = √3` and `β = 12√3/5`.  The providers themselves are tracked by the new card
+`docs/drafts/pipeline/1-in-progress/riemann-von-mangoldt-zero-counting.md`, layers A and B closed.
+
+All new declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADP.4. Theorem D's normality step — the obstruction is closed
+
+The card's last step for Theorem D is that interlacing zeros and poles converging to `x₀` obstruct
+spherical convergence of `(26)`.  Stripped of the meromorphic packaging that is a two-line
+uniqueness argument, and it is now proved in the generality the card needs.
+
+```text
+HTGeometry/CoalescingLimitObstruction.lean
+  eq_of_frequently_of_continuousAt           a frequently-attained value is the value at the point
+  not_continuousAt_of_frequently_two_values  the static obstruction
+  eq_of_tendstoUniformlyOn_of_tendsto        the dynamic obstruction: constant values along two
+                                             sequences converging to one point must agree
+  not_continuousWithinAt_of_tendstoUniformlyOn
+  exists_tendsto_of_forall_exists_close      shrinking windows assemble into a sequence
+  not_continuousWithinAt_of_shrinking_levels **the assembled obstruction**
+```
+
+Two remarks.  The target is any Hausdorff uniform space, so `a = 0` and `b = ∞` on a compactified
+target are admissible — nothing forces the values to be finite, and no meromorphy is used.  And the
+hypothesis is exactly what `(38)` produces: two separated values attained on windows shrinking to
+`x₀`.
+
+**What Theorem D still owes is only the parameter schedule**: for each `n`, a choice of `(c, r, N)`
+whose interlacing window sits inside `(x₀ − 1/(n+1), x₀ + 1/(n+1))`.  The two ingredients are the
+convergence of the foot, `Re z₀ = Re b_c⁻¹(r ζ) → x₀` as `r → 1` with `ζ = b_c(x₀)`, and the gain
+staying above `2π`, which `(42)` gives since the deficit is `O(N v)` and `(41)` bounds it.  Both are
+now bookkeeping over closed results; no new mathematics is left in Theorem D.
+
+All new declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADP.5. The foot descends — Theorem D's schedule loses its analytic content
+
+The one ingredient the schedule needed beyond `(38)` and `(41)`–`(42)` is that the foot of the
+composite pole reaches the physical point.  It does, and the proof is the Möbius inverse:
+
+```text
+RHTower/SuzukiCoalescingFragmentPole.lean  (extended)
+  suzukiFragmentPole_eq                     z₀ = i c (1 + rζ)/(1 − rζ), closed form
+  suzukiCoalescingCayley_ne_one             b_c(x) ≠ 1 for real x and c > 0
+  suzukiCoalescingCayleyInv_cayley_real     b_c⁻¹(b_c(x)) = x on the real axis
+  tendsto_suzukiFragmentPole                z₀ → b_c⁻¹(ζ) as r → 1, for ζ ≠ 1
+  tendsto_suzukiFragmentPole_of_cayley      with ζ = b_c(x₀): z₀ → x₀
+```
+
+The corpus's `suzukiCoalescingCayleyInv_cayley` assumes `0 < Im z`, which the real axis fails, so
+the real-axis inverse is genuinely new rather than a duplicate; it is what lets `ζ = b_c(x₀)` be
+inverted.  With it, `Re z₀ → x₀` and `Im z₀ → 0` as `r → 1`, so the interlacing window of `(38)`
+shrinks onto `x₀` and the depth entering the deficit of `(42)` vanishes.
+
+**Theorem D is now reduced to bookkeeping.**  Every analytic ingredient is closed: `(34)`–`(37)` in
+the fragmentation module, `(38)` for the literal carrier, `(40)`, `(41)`, `(42)`, the foot descent
+above, and the normality obstruction of ADP.4.  What is left is to fix one explicit schedule
+`n ↦ (c, r, N)` making the window of `(38)` sit inside `(x₀ − 1/(n+1), x₀ + 1/(n+1))` while the gain
+stays above a full turn, and to feed the resulting level points to
+`not_continuousWithinAt_of_shrinking_levels`.
+
+All new declarations audit to `[propext, Classical.choice, Quot.sound]`.

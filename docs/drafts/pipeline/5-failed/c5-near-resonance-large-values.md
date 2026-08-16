@@ -129,7 +129,7 @@ it. The integer-gap lane has **no native sub-theorem** in the residual.
 ## Cross-references
 - `../2-fully-proven/c5-jensen-prime-kernel.md` — Professor's kernel (the object).
 - `finite-free-convolution-flow.md` — Wheeler's carrier + the `S_d` relative criterion (§5 question).
-- `../2-fully-proven/zero-estimate-uniformity.md` — the height bound `|a·ℓ| ≥ H(a)^{-1}` (the lane's tool).
+- `../3-formalized/not_new_scientific_knowledge/zero-estimate-uniformity.md` — the height bound `|a·ℓ| ≥ H(a)^{-1}` (the lane's tool).
 - `combination-mode-baker-reducibility.md` — the reducibility handle (RH-blind, #113), confirming §3.
 
 ## Log

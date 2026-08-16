@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Priority:** FOUNDATIONAL
-- **Source:** split from `../2-fully-proven/zero-estimate-uniformity.md` part (a)
+- **Source:** split from `zero-estimate-uniformity.md` part (a)
 - **Statement:** A nonzero finite exponential sum with `n` distinct frequencies has a nonzero derivative of order `< n` at every base point.
 
 ## Goal

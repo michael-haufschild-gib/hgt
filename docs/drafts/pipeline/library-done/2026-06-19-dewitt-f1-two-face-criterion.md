@@ -4,7 +4,7 @@ Informal ticket for the librarian to fold into `door/00-status.md` and `door/00-
 archimedean-generator / A1-A2 buckets).
 
 ## New card
-`2-fully-proven/f1-two-face-criterion.md` (DeWitt, BRIDGE substrate) — consolidation suggested by Professor
+`3-formalized/not_new_scientific_knowledge/f1-two-face-criterion.md` (DeWitt, BRIDGE substrate) — consolidation suggested by Professor
 (chat id=401), unifying my flow face and Professor's corank face.
 
 ## The result (for the buckets)

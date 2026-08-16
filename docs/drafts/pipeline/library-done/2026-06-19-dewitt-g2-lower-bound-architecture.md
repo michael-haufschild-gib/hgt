@@ -4,7 +4,7 @@
 
 **What changed (card `0-backlog/g2-dss-lower-bound.md` → `1-in-progress/...`).** The G2 lower-bound
 three-pillar architecture is **assembled**: A (Bombieri–Vaaler) discharged, B
-(`2-fully-proven/zero-estimate-uniformity.md`) discharged as PROVEN uniform, and **C reduced to one named
+(`3-formalized/not_new_scientific_knowledge/zero-estimate-uniformity.md`) discharged as PROVEN uniform, and **C reduced to one named
 bound** (`2-fully-proven/friable-dirichlet-auxiliary.md` §5): obstruction C = effective algebraic
 independence of `{log p}` = quantitative Schanuel for prime logs. The gate-1→2 "reduced to a posed Nesterenko
 bound" half is **met**; the bound itself stays the Fields-Medal open core (card remains 1-in-progress).

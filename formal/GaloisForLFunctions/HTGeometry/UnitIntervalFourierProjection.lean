@@ -62,6 +62,59 @@ theorem l2Pair_sum_right {ι : Type*} {f : ℝ → ℂ} (hf : Continuous f) (s :
     simp only [Finset.sum_insert ha]
     rw [hstep, ih]
 
+theorem l2Pair_add_left {f g h : ℝ → ℂ} (hf : Continuous f) (hg : Continuous g)
+    (hh : Continuous h) :
+    l2Pair (fun x => f x + g x) h = l2Pair f h + l2Pair g h := by
+  rw [l2Pair, l2Pair, l2Pair, ← intervalIntegral.integral_add]
+  · refine intervalIntegral.integral_congr fun x _ => ?_
+    rw [map_add]
+    ring
+  · exact (hf.star.mul hh).intervalIntegrable _ _
+  · exact (hg.star.mul hh).intervalIntegrable _ _
+
+theorem l2Pair_congr_left {f f' g : ℝ → ℂ} (h : ∀ x ∈ Set.Icc (0 : ℝ) 1, f x = f' x) :
+    l2Pair f g = l2Pair f' g := by
+  refine intervalIntegral.integral_congr fun x hx => ?_
+  rw [Set.uIcc_of_le (by norm_num : (0 : ℝ) ≤ 1)] at hx
+  rw [h x hx]
+
+theorem l2Pair_congr_right {f g g' : ℝ → ℂ} (h : ∀ x ∈ Set.Icc (0 : ℝ) 1, g x = g' x) :
+    l2Pair f g = l2Pair f g' := by
+  refine intervalIntegral.integral_congr fun x hx => ?_
+  rw [Set.uIcc_of_le (by norm_num : (0 : ℝ) ≤ 1)] at hx
+  rw [h x hx]
+
+theorem l2NormSq_const_mul (c : ℂ) (f : ℝ → ℂ) :
+    l2NormSq (fun x => c * f x) = ‖c‖ ^ 2 * l2NormSq f := by
+  rw [l2NormSq, l2NormSq, ← intervalIntegral.integral_const_mul]
+  refine intervalIntegral.integral_congr fun x _ => ?_
+  rw [norm_mul, mul_pow]
+
+theorem l2NormSq_add_le {f g : ℝ → ℂ} (hf : Continuous f) (hg : Continuous g) :
+    l2NormSq (fun x => f x + g x) ≤ 2 * l2NormSq f + 2 * l2NormSq g := by
+  have h01 : (0 : ℝ) ≤ 1 := by norm_num
+  have hpt : ∀ x ∈ Set.Icc (0 : ℝ) 1,
+      ‖f x + g x‖ ^ 2 ≤ 2 * ‖f x‖ ^ 2 + 2 * ‖g x‖ ^ 2 := by
+    intro x _
+    have htri : ‖f x + g x‖ ≤ ‖f x‖ + ‖g x‖ := norm_add_le _ _
+    nlinarith [norm_nonneg (f x), norm_nonneg (g x), sq_nonneg (‖f x‖ - ‖g x‖),
+      norm_nonneg (f x + g x)]
+  have hmono := intervalIntegral.integral_mono_on (μ := volume) h01
+    (((hf.add hg).norm.pow 2).intervalIntegrable _ _)
+    (((continuous_const.mul (hf.norm.pow 2)).add
+      (continuous_const.mul (hg.norm.pow 2))).intervalIntegrable _ _) hpt
+  rw [l2NormSq]
+  refine hmono.trans ?_
+  simp only [Pi.add_apply, Pi.mul_apply, Pi.pow_apply]
+  have hadd : (∫ u in (0 : ℝ)..1, (2 * ‖f u‖ ^ 2 + 2 * ‖g u‖ ^ 2))
+      = (∫ u in (0 : ℝ)..1, 2 * ‖f u‖ ^ 2) + ∫ u in (0 : ℝ)..1, 2 * ‖g u‖ ^ 2 :=
+    intervalIntegral.integral_add
+      ((continuous_const.mul (hf.norm.pow 2)).intervalIntegrable _ _)
+      ((continuous_const.mul (hg.norm.pow 2)).intervalIntegrable _ _)
+  rw [hadd, intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul]
+  simp only [l2NormSq]
+  exact le_refl _
+
 /-! ## The Fourier coefficients on the unit interval -/
 
 theorem fourierCoeffOn_eq_l2Pair (f : ℝ → ℂ) (n : ℤ) :

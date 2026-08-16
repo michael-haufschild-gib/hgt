@@ -334,7 +334,9 @@ No parity hypothesis is needed.
   by two integrations by parts, in `HTGeometry/TruncatedConvolutionCommutator.lean` and
   `RHTower/TruncatedConvolutionParityPacket.lean`; the compressed quadratic form, its positive
   semidefiniteness criterion, and its kernel are identified with the truncated-convolution form on
-  trigonometric polynomials.
+  trigonometric polynomials; the symmetry of the form, Parseval on the unit interval, the Lipschitz
+  bound of the form, the mode-window bridge to the parity index, and the existence of the compressed
+  ground with its spectral-floor and kernel properties are formalized.
 - 2026-08-11 — odd (D^2) correction derived; common-zero closure falsified; paper proof closed.
 - 2026-08-14 — finite odd squared-frequency correction and non-pole Fourier-resolvent reality
   formalized in `CCMParityFreeOddGroundFourier.lean`.
@@ -574,7 +576,63 @@ are now literal statements about the truncated-convolution form on trigonometric
       truncConvParityPacket_mulVec_eq_zero_iff  the kernel of the packet is exactly the set of
                                                 minimizers of the form
 
-What remains is the variational assembly: producing, for a simple isolated odd ground, a sequence of
-compressions whose minimizing coefficient vectors are odd, span the kernel, and converge in mean
-square to the ground.  Both spectral inputs are now stated purely in terms of the
-truncated-convolution form, and the finite and analytic halves of the law consume them directly.
+### The analytic scaffolding of the variational assembly is formal
+
+    HTGeometry/TruncatedConvolutionSelfAdjoint.lean
+      intervalIntegral_swap_unitSquare          iterated interval integrals of a continuous
+                                                function on the unit square commute
+      l2Pair, l2Pair_conj, l2Pair_add_right,
+        l2Pair_smul_left, l2Pair_smul_right     the `L²` pairing on the unit interval
+      truncConv_selfAdjoint                     **the truncated convolution is symmetric** — the
+                                                only place Fubini is used
+      l2Pair_truncConv_self_im                  its quadratic form is real
+
+    HTGeometry/UnitIntervalFourierProjection.lean
+      l2NormSq, l2Pair_self,
+        l2Pair_sub_left, l2Pair_sub_right,
+        l2Pair_sum_right                        the squared `L²` norm and the sesquilinear algebra
+      fourierCoeffOn_eq_l2Pair                  the interval Fourier coefficient is the pairing
+                                                against the exponential
+      fourierPartialSum,
+        l2NormSq_sub_fourierPartialSum          **the mean-square error is the Parseval tail**
+      tendsto_l2NormSq_sub_fourierPartialSum    **mean-square convergence of the Fourier partial
+                                                sums** — the density statement behind the
+                                                compressed approximation
+
+    HTGeometry/TruncatedConvolutionFormBound.lean
+      l1Norm, l1Norm_sq_le_l2NormSq,
+        l1Norm_le_sqrt_l2NormSq                 Cauchy--Schwarz against the constant one
+      norm_l2Pair_truncConv_le, truncConv_sub,
+        norm_form_sub_le                        **the form is Lipschitz on `L²` balls**, so an
+                                                `L²` approximation of a ground transports to an
+                                                approximation of its Rayleigh quotient
+
+    RHTower/TruncatedConvolutionModeBridge.lean
+      ccmParityCenteredMode_injective,
+        image_ccmParityCenteredMode,
+        sum_ccmParityCenteredMode               the centered parity index is the symmetric mode
+                                                window
+      ccmOddGroundCoeff_mode                    the odd frame is the odd coefficient sequence in
+                                                mode coordinates
+      indexTrigPoly_eq_ccmTrigPoly,
+        integral_ccmTrigPoly_sub_sq             rescaling `[0,1]` to `[0,2π]` identifies the two
+                                                trigonometric polynomials and multiplies the
+                                                mean-square error by `2π`
+
+    RHTower/TruncatedConvolutionCompressedGround.lean
+      truncConvSphere, truncConvRayleigh,
+        l2NormSq_truncConvModePoly              the compressed Rayleigh quotient and the fact that
+                                                the `L²` norm is the `ℓ²` norm of the coefficients
+      isCompact_truncConvSphere,
+        exists_truncConv_compressed_ground      **the compressed ground exists**
+      truncConvRayleigh_const_mul,
+        truncConvRayleigh_min_le                the compressed minimum is a spectral floor
+      truncConvParityPacket_posSemidef_of_min   the packet shifted by the compressed minimum is
+                                                positive semidefinite
+      truncConvParityPacket_ground_mulVec       the compressed ground lies in its kernel
+
+What remains is the selection step: below an isolated spectral gap the compressed kernel is a line,
+its generator is odd, the compressed minima converge to the bottom of the form, and the compressed
+grounds converge to the ground in mean square.  Every ingredient those four steps consume — the
+spectral floor, the kernel characterization, Parseval, and the Lipschitz form bound — is now
+formal.

@@ -105,4 +105,71 @@ theorem exists_interlacing_levels_of_phase_gain
   · rw [(hx' k hk).2]
     exact exp_phase_add_half_turn (Φ α) k
 
+/-! ## An arbitrary prescribed unimodular level
+
+The levels a phase actually has to meet are prescribed by the problem, not by where the phase
+happens to start.  One extra full turn of gain buys every unimodular target.
+-/
+
+/-- A phase representative of a unimodular number, normalised to the window above a given real. -/
+def phaseRepresentative (w : ℂ) (t : ℝ) : ℝ :=
+  Complex.arg w + 2 * π * ⌈(t - Complex.arg w) / (2 * π)⌉
+
+theorem le_phaseRepresentative (w : ℂ) (t : ℝ) : t ≤ phaseRepresentative w t := by
+  have hpi : (0 : ℝ) < 2 * π := by positivity
+  have hceil := Int.le_ceil ((t - Complex.arg w) / (2 * π))
+  rw [phaseRepresentative]
+  have := (div_le_iff₀ hpi).mp hceil
+  linarith
+
+theorem phaseRepresentative_lt (w : ℂ) (t : ℝ) : phaseRepresentative w t < t + 2 * π := by
+  have hpi : (0 : ℝ) < 2 * π := by positivity
+  have hceil := Int.ceil_lt_add_one ((t - Complex.arg w) / (2 * π))
+  have h2 := mul_lt_mul_of_pos_left hceil hpi
+  have hsimp : 2 * π * ((t - Complex.arg w) / (2 * π) + 1) = (t - Complex.arg w) + 2 * π := by
+    field_simp
+  rw [hsimp] at h2
+  rw [phaseRepresentative]
+  linarith
+
+theorem exp_phaseRepresentative {w : ℂ} (hw : ‖w‖ = 1) (t : ℝ) :
+    Complex.exp ((phaseRepresentative w t : ℂ) * I) = w := by
+  have hbase : Complex.exp ((Complex.arg w : ℂ) * I) = w := by
+    have h := Complex.norm_mul_exp_arg_mul_I w
+    rwa [hw, Complex.ofReal_one, one_mul] at h
+  have hsplit : ((phaseRepresentative w t : ℝ) : ℂ) * I
+      = (Complex.arg w : ℂ) * I
+        + (⌈(t - Complex.arg w) / (2 * π)⌉ : ℤ) * (2 * π * I) := by
+    rw [phaseRepresentative]
+    push_cast
+    ring
+  rw [hsplit, Complex.exp_add, Complex.exp_int_mul_two_pi_mul_I, mul_one, hbase]
+
+/-- **Interlacing at a prescribed unimodular level.**  A phase gaining `2π(N+1)` meets any
+prescribed unimodular value `N + 1` times and its antipode `N` times, strictly alternating. -/
+theorem exists_interlacing_levels_of_gain_two_turns
+    {Φ : ℝ → ℝ} {α β : ℝ} {N : ℕ} (hαβ : α ≤ β)
+    (hcont : ContinuousOn Φ (Icc α β)) (hmono : StrictMonoOn Φ (Icc α β))
+    (hgain : Φ α + 2 * π * ((N : ℝ) + 1) ≤ Φ β) {w : ℂ} (hw : ‖w‖ = 1) :
+    ∃ x x' : ℕ → ℝ,
+      (∀ k ≤ N, x k ∈ Icc α β ∧ Complex.exp ((Φ (x k) : ℂ) * I) = w) ∧
+      (∀ k, k < N → x' k ∈ Icc α β ∧ Complex.exp ((Φ (x' k) : ℂ) * I) = -w) ∧
+      (∀ k, k < N → x k < x' k ∧ x' k < x (k + 1)) := by
+  have hp : (0 : ℝ) < 2 * π := by positivity
+  set y := phaseRepresentative w (Φ α) with hy
+  have hlow : Φ α ≤ y := le_phaseRepresentative w (Φ α)
+  have hhigh : y + 2 * π * N ≤ Φ β := by
+    have hlt := phaseRepresentative_lt w (Φ α)
+    rw [← hy] at hlt
+    nlinarith
+  obtain ⟨x, x', hx, hx', hint⟩ :=
+    exists_interlacing_levelPoints hp hαβ hcont hmono hlow hhigh
+  refine ⟨x, x', fun k hk => ⟨(hx k hk).1, ?_⟩, fun k hk => ⟨(hx' k hk).1, ?_⟩, hint⟩
+  · rw [(hx k hk).2]
+    have := exp_phase_add_turn y k
+    rw [this, hy, exp_phaseRepresentative hw]
+  · rw [(hx' k hk).2]
+    have := exp_phase_add_half_turn y k
+    rw [this, hy, exp_phaseRepresentative hw]
+
 end GaloisForLFunctions.HTGeometry

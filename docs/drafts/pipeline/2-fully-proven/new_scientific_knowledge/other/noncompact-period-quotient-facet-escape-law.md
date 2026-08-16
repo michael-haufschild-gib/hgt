@@ -556,3 +556,45 @@ Siegel counting assembly.  The geometric half of 7 is already Lean-owned:
 `HTGeometry/SiegelVanishingCriterion.lean` proves `exists_finite_centres_forcing_vanishing` — for a
 subgroup with compact quotient and a Schwarz gain below one, jets of order below `N` vanishing at
 finitely many prescribed centres force a periodic function to vanish identically.
+
+## Siegel programme — the germ interface
+
+Four further modules, all unconditional, axiom-clean and umbrella-wired, lift the slice-level
+Weierstrass machinery to statements about germs, which is the form the factorization theory needs.
+
+- `HTGeometry/AnalyticGermDomain.lean` — `exists_ball_analyticOnNhd`,
+  `exists_ne_zero_of_not_eventuallyEq_zero`, `eventuallyEq_zero_of_mul_eventuallyEq_zero`, the
+  instances `Nontrivial (AnalyticGerm p)` and `NoZeroDivisors (AnalyticGerm p)`, and
+  `exists_regular_direction`: every nonzero germ has a direction `v` along which the one-variable
+  restriction `t ↦ f (p + t·v)` is not identically zero.  A representative is nonzero somewhere on
+  a ball, and the segment through that point is a disc on which the one-variable identity theorem
+  applies — no polarization of the Taylor coefficients is needed.
+- `HTGeometry/GermSliceAdmissible.lean` — `exists_sliceAdmissible_nhds`: a holomorphic function
+  whose slice in the distinguished variable is not identically zero near the origin admits, for a
+  small enough radius `t` and all parameters in a ball, the entire admissibility package that the
+  preparation and division theorems consume — the closed disc of radius `2t` inside the domain, the
+  slice nonvanishing on the circle of radius `t`, `SliceAdmissible` at every parameter, and the
+  isolation of the origin as the only zero of the central slice in the closed disc.  Two
+  applications of the tube lemma over the compact disc and the compact circle.
+- `HTGeometry/GermWeierstrassPreparation.lean` — `germ_weierstrass_preparation`: on a polydisc
+
+  ```text
+  f(z,y) = (z^d + sum_(j<d) a_j(y) z^j) · u(z,y),   u nowhere zero,
+  ```
+
+  with the `a_j` holomorphic on the parameter ball and `a_j(0) = 0` — the polynomial is
+  *distinguished*.  The vanishing at the origin comes from `sliceRoots_eq_zero_of_isolated` (every
+  root of the central slice is the origin) together with `esymm_eq_zero_of_forall_eq_zero`.
+- `HTGeometry/GermWeierstrassDivision.lean` — `germ_weierstrass_division`: for a second holomorphic
+  `g`,
+
+  ```text
+  g(z,y) = q(z,y) · (z^d + sum_(j<d) a_j(y) z^j) + sum_(j<d) b_j(y) z^j
+  ```
+
+  on the same polydisc, with `q` holomorphic in all variables and the `b_j` holomorphic in the
+  parameters.
+
+With `weierstrass_division_unique` these say that the local ring is a free module of rank `d` over
+the ring in the remaining variables, modulo the distinguished polynomial.  That is the interface
+step 5 (factoriality) consumes.

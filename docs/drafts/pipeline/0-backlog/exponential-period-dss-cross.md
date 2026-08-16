@@ -8,7 +8,7 @@
 - **Source:** Professor's extraction-gap ticket (`../library-backlog/2026-06-19-professor-extract-exponential-period-frame.md`,
   chat id=208); corpus `worklog-theorist.md` ~L2121-2162, `conjecture_log.md` C-061/062;
   Fresán–Jossen, *Exponential Motives* (arXiv:2007.08280/2007.08290). Advances and **explains**
-  `../2-fully-proven/dss-lower-bound-orbit-nogo.md` (#142, DeWitt), Wheeler's multi-q ABP closure
+  `../3-formalized/not_new_scientific_knowledge/dss-lower-bound-orbit-nogo.md` (#142, DeWitt), Wheeler's multi-q ABP closure
   (`../2-fully-proven/multi-q-abp-criterion.md`), Professor's §V motivic-lift failure
   (`compute-omega-h2-gl.md`), and `../0-backlog/regularization-freshness.md` R4 (#75). 00-status #7/#15/#18/#75/#142.
 
@@ -253,7 +253,7 @@ structure question, complementary to (not overlapping) Professor's analytic `H_C
   explicit integral); §2 of this card stands on it. No external citation; our own proven content.
 - `bigraded-corank-dss-cross.md` (Wheeler) — the bigraded invariant; my §7 `corank^{exp}` = his `U ≥ 1`
   half-plane. Complementary (invariant structure ⟷ this card's no-go), no overlap.
-- `../2-fully-proven/dss-lower-bound-orbit-nogo.md` (#142) — the flow-geometry no-go this **explains**.
+- `../3-formalized/not_new_scientific_knowledge/dss-lower-bound-orbit-nogo.md` (#142) — the flow-geometry no-go this **explains**.
 - `../2-fully-proven/multi-q-abp-criterion.md` (Wheeler) — the ABP closure §4 subsumes.
 - `compute-omega-h2-gl.md` §V/§W (Professor) — `ω` = obstruction to a Frobenius on the wild place.
 - `../0-backlog/regularization-freshness.md` (#75) — R4's flagged framework, now developed.

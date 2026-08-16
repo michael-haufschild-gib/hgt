@@ -99,6 +99,19 @@ theorem truncConv_selfAdjoint {k : ℝ → ℝ} (hkc : Continuous k) (heven : �
     ring
   rw [hleft, hright, hswap]
 
+/-- The truncated-convolution form of a function with itself is real. -/
+theorem l2Pair_truncConv_self_im {k : ℝ → ℝ} (hkc : Continuous k) (heven : ∀ u, k (-u) = k u)
+    {f : ℝ → ℂ} (hf : Continuous f) : (l2Pair f (truncConv k f)).im = 0 := by
+  have h1 : (starRingEnd ℂ) (l2Pair f (truncConv k f)) = l2Pair (truncConv k f) f :=
+    l2Pair_conj _ _
+  have h2 : l2Pair f (truncConv k f) = l2Pair (truncConv k f) f :=
+    truncConv_selfAdjoint hkc heven hf hf
+  have h3 : (starRingEnd ℂ) (l2Pair f (truncConv k f)) = l2Pair f (truncConv k f) := by
+    rw [h1, ← h2]
+  have h4 := congrArg Complex.im h3
+  simp only [Complex.conj_im] at h4
+  linarith
+
 end
 
 end GaloisForLFunctions.HTGeometry

@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean) - grade **BRIDGE**
 - **Priority:** FOUNDATIONAL
-- **Source:** split from `../2-fully-proven/zero-estimate-uniformity.md` part (a), and reused by
+- **Source:** split from `zero-estimate-uniformity.md` part (a), and reused by
   `exponential-sum-order-bound.md`.
 - **Statement:** At `n` distinct complex nodes, the first `n` power moments determine the coefficient vector;
   equivalently, a nonzero coefficient vector has a nonzero moment among the first `n` moments.

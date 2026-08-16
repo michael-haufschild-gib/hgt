@@ -104,7 +104,7 @@ separate "p-adic Source-A prime locus." The universal headline therefore strengt
 > **No prime-side route — complex `σ_p` OR p-adic Morita `Γ_p` — is RH-equivalent;** both prime realizations
 > are CC/abelian, hence carry only the RH-blind modulus polarization. Source-A (the genuine RH-relevant non-CC
 > wild data) is **unique to the archimedean place** (`../5-failed/per-place-source-a-gamma-carriers.md`;
-> `../2-fully-proven/f1-two-face-criterion.md`, the flow face), where the FE twist (§3) lives.
+> `../3-formalized/not_new_scientific_knowledge/f1-two-face-criterion.md`, the flow face), where the FE twist (§3) lives.
 
 This makes the prime-side no-go **realization-independent** (both prime realizations are orbit-balanced /
 CC), removing the previous caveat. The genuinely-open part is **only** the universal-Satake quantifier (§4, the

@@ -461,7 +461,7 @@ retains the complete diagonal-projective invariant
 \]
 
 The paper proof is recorded in
-[`source-odd-quintic-successor-modulus.md`](../2-fully-proven/not_new_scientific_knowledge/source-odd-quintic-successor-modulus.md).
+[`source-odd-quintic-successor-modulus.md`](../3-formalized/not_new_scientific_knowledge/source-odd-quintic-successor-modulus.md).
 Its division-free invariant and normalized nonselection core are unconditional in Lean in
 `GaloisForLFunctions.HTGeometry.SourceOddQuinticSuccessorModulus`.
 

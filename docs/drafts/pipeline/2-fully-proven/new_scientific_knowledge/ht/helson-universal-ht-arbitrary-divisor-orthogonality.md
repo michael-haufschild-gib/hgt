@@ -1154,3 +1154,405 @@ Route status:
 Item 6 is immediate once the two abscissas are defined (uniform convergence implies convergence);
 item 7 is the substantial classical theorem and the only remaining mathematical content on this
 route.
+
+## Lean progress — the two abscissas: item 6 of the Bohr route
+
+`RHTower/DirichletAbscissa.lean` (wired, axiom-clean).
+
+```
+dirichletPartialSum a N s             sum_{n<N} a_n (n+1)^{-s}
+DirichletConvergesAt a s              the partial sums converge at s
+DirichletUniformlyConvergesOn a x     they converge uniformly on the closed half-plane Re s >= x
+abscissaOfConv a                      sInf of the real points of convergence, in EReal
+abscissaOfUnifConv a                  sInf of the real points of uniform convergence
+
+DirichletConvergesAt.abscissaOfConv_le
+convergesAt_of_abscissaOfConv_lt_re   abscissaOfConv a < Re s  ==>  converges at s
+DirichletUniformlyConvergesOn.convergesAt
+abscissaOfConv_le_abscissaOfUnifConv  sigma_c <= sigma_u
+```
+
+Both abscissas are defined exactly as mathlib defines `abscissaOfAbsConv` — an infimum over the
+*real* points where the mode of convergence holds — which is legitimate precisely because of the
+half-plane property proved in the previous section.  `convergesAt_of_abscissaOfConv_lt_re` is that
+property restated in terms of the invariant, and is the form every later argument uses.
+
+Route status:
+
+```
+1. kernel increment estimate                              DONE
+2. increments absolutely summable, mass <= ||s||/Re s     DONE
+3. boundary term N^{-Re s} -> 0                           DONE
+4. bounded partial sums => convergence for Re s > 0       DONE
+5. convergence at s0 => convergence for Re s > Re s0      DONE
+6. sigma_c <= sigma_u, with both abscissas defined        DONE
+7. Bohr: sigma_u = sigma_b
+```
+
+Only item 7 remains on this route.  It needs a third invariant — the abscissa of bounded holomorphy
+`sigma_b` — and the classical argument that a Dirichlet series bounded and holomorphic on a
+half-plane converges uniformly on every smaller one.  That is a self-contained theorem about
+ordinary Dirichlet series with no probabilistic content, and it is the last mathematical step
+between this card and `Haar(M) = 0`.
+
+## Lean progress — the easy half of Bohr's comparison
+
+`RHTower/DirichletBoundedSum.lean` (wired, axiom-clean).
+
+```
+norm_dirichletPartialSum_le                    each partial sum is bounded on Re s >= x, by
+                                                   sum_{n<N} ||a_n|| (n+1)^{-x}
+DirichletBoundedSumOn a x                      the series converges on Re s >= x to a bounded function
+DirichletUniformlyConvergesOn.boundedSumOn     uniform convergence gives a bounded sum
+abscissaOfBddSum a
+abscissaOfBddSum_le_abscissaOfUnifConv         sigma_bdd <= sigma_u
+```
+
+The partial-sum bound is the only input: `(n+1)^{-Re s} <= (n+1)^{-x}` on the half-plane since
+`n+1 >= 1`, so each partial sum is bounded there, and a uniform limit of bounded functions is
+bounded.
+
+### An honest statement of what is left
+
+`DirichletBoundedSumOn` asks the series to **converge** on the half-plane to a bounded function.
+Bohr's `sigma_b` is weaker: it allows the bounded holomorphic function to be an analytic
+*continuation*, defined where the series need not converge at all.  So what is proved here is
+
+```
+sigma_bdd <= sigma_u ,        with sigma_bdd the convergent-sum abscissa,
+```
+
+and this is NOT half of Bohr's theorem in the usual sense — with the convergent notion the
+inequality `sigma_u <= sigma_bdd` would be the whole content, and it is false without further work,
+because uniform convergence is strictly stronger than pointwise convergence to a bounded limit.
+
+The real remaining task is therefore:
+
+```
+7a. define sigma_b via a bounded holomorphic continuation (not via convergence)
+7b. Bohr: sigma_u = sigma_b
+```
+
+`7a` needs `DifferentiableOn` on the open half-plane plus a boundedness hypothesis, and agreement
+with the sum on the region of convergence; `7b` is the classical theorem.  Recording this so the
+next pass does not mistake the inequality proved here for the corresponding half of Bohr.
+
+## Lean progress — item 7a done, and the easy half of Bohr with the CORRECT definition
+
+`RHTower/DirichletBddHolo.lean` (wired, axiom-clean).
+
+```
+differentiable_dirichletPartialSum       every partial sum is entire
+DirichletBddHoloOn a x                   a bounded holomorphic F on Re s > x agreeing with the sum
+                                             wherever the series converges
+abscissaOfBddHolo a                      sigma_b
+DirichletUniformlyConvergesOn.bddHoloOn  uniform convergence gives such an F
+abscissaOfBddHolo_le_abscissaOfUnifConv  sigma_b <= sigma_u
+```
+
+This is the easy half of Bohr's theorem stated with the right invariant — `sigma_b` defined through a
+bounded holomorphic *continuation*, not through convergence, which is what the previous section
+warned was missing.  The proof: the partial sums are entire (each term is a nonzero constant to the
+power `-s`), uniform convergence on the closed half-plane restricts to locally uniform convergence
+on the open one, and `TendstoLocallyUniformlyOn.differentiableOn` gives holomorphy of the limit;
+boundedness is the previous section's partial-sum bound plus one uniform-convergence step.
+
+Route status:
+
+```
+1-6.  DONE
+7a.   sigma_b defined via bounded holomorphic continuation      DONE
+7b.   Bohr: sigma_u <= sigma_b                                  the classical theorem
+```
+
+Item 7b is now the single remaining statement on this route.  With it, `sigma_u = sigma_b` follows
+from the inequality proved here, and the reduction recorded earlier closes `Haar(M) = 0`:
+
+```
+Z_chi bounded holomorphic on Re s > 1/2 - delta  =>  sigma_b <= 1/2 - delta
+   =>  sigma_u <= 1/2 - delta   [7b]   =>  sigma_c <= sigma_u <= 1/2 - delta   [item 6]
+   =>  contradicts the a.s. divergence   =>  Haar(M) != 1   =>  Haar(M) = 0   [zero-one law]
+```
+
+Every arrow in that chain except `[7b]` is now a Lean theorem.
+
+## Lean progress — Bohr's first coefficient estimate
+
+`RHTower/DirichletCoeffLimit.lean` (wired, axiom-clean).
+
+```
+tendsto_rpow_neg_of_one_lt                b > 1  ==>  b^{-sigma} -> 0
+tendsto_dirichletPartialSum_ofReal_atTop  every partial sum -> a_0 along the real axis
+tendsto_dirichletSum_ofReal_atTop         F(sigma) -> a_0 as sigma -> +infinity
+norm_coeff_zero_le                        ||F|| <= C on the half-plane  ==>  ||a_0|| <= C
+```
+
+Only finitely many terms matter: past a cut the uniform error is small, and the remaining terms with
+index `n >= 1` decay like `(n+1)^{-sigma}` while the `n = 0` term is the constant `a_0`, because
+`1^{-s} = 1`.
+
+`norm_coeff_zero_le` is the first of Bohr's coefficient estimates and the base case of the induction
+that gives `||a_n|| <= C` for every `n`: the shifted series `n^s (F(s) - sum_{m<n} a_m m^{-s})` has
+first coefficient `a_n`, and the inductive step needs a bound on that shifted function, which is
+where the vertical-mean (almost-periodic) argument enters.
+
+This is also the uniqueness engine for Dirichlet coefficients: two series with the same sum on a
+half-plane have the same `a_0`, hence by shifting the same coefficients throughout.
+
+Route status:
+
+```
+1-6.  DONE
+7a.   sigma_b via bounded holomorphic continuation      DONE
+7b.   Bohr: sigma_u <= sigma_b                          in progress
+        - first coefficient estimate                    DONE
+        - all coefficient estimates (vertical means)
+        - Perron / Riesz-mean summation
+        - the theorem
+```
+
+## Lean progress — vertical means of characters
+
+`RHTower/VerticalMeanCharacter.lean` (wired, axiom-clean).
+
+```
+integral_cexp_const_mul       int_a^b e^{c t} dt = (e^{cb} - e^{ca}) / c      (c != 0)
+norm_integral_cexp_I_le       || int_{-T}^{T} e^{i theta t} dt ||  <=  2 / |theta|
+                                  -- UNIFORM in T, which is the whole point
+tendsto_vertical_mean_cexp    hence (1/2T) || int_{-T}^{T} e^{i theta t} dt ||  ->  0
+integral_cexp_zero_mul        the trivial character integrates to 2T
+```
+
+No trigonometry is needed: the antiderivative of `e^{ct}` is `e^{ct}/c`, and both endpoint values
+are unimodular, so the integral is at most `2/|theta|` however long the segment.  Dividing by the
+length kills it.
+
+This is the orthogonality relation behind Bohr's coefficient estimates.  Applied with
+`theta = log((m+1)/(n+1))` it separates the `m`-th term of a Dirichlet series from the `n`-th, which
+is what upgrades `norm_coeff_zero_le` from the first coefficient to all of them:
+
+```
+a_n  =  lim_{T -> infinity} (1/2T) int_{-T}^{T} F(sigma + it) (n+1)^{sigma + it} dt ,
+```
+
+the `m != n` terms being killed by the mean above and the `m = n` term contributing `a_n`.
+
+Route status:
+
+```
+1-6.  DONE
+7a.   sigma_b via bounded holomorphic continuation      DONE
+7b.   Bohr: sigma_u <= sigma_b                          in progress
+        - first coefficient estimate                    DONE
+        - vertical mean orthogonality                   DONE
+        - the coefficient formula and ||a_n|| <= C
+        - Perron / Riesz-mean summation
+        - the theorem
+```
+
+## Lean progress — the off-diagonal terms die
+
+`RHTower/DirichletTermMean.lean` (wired, axiom-clean).
+
+```
+cpow_neg_mul_cpow_eq       b^{-s} c^{s} = e^{sigma(log c - log b)} * e^{i(log c - log b)t},  s = sigma + it
+log_sub_log_ne_zero        m != n  ==>  log(n+1) - log(m+1) != 0
+tendsto_vertical_mean_term m != n  ==>  the vertical mean of the m-th term against
+                                            (n+1)^{s} tends to zero
+```
+
+The first lemma is the whole point: the conjugate kernel `b^{-s} c^{s}` separates into a factor
+depending only on `sigma` and a pure character `e^{i theta t}` whose frequency is
+`theta = log c - log b`.  The frequency vanishes exactly when `b = c`, which for `b = m+1`,
+`c = n+1` means `m = n`.  So off the diagonal the previous section's uniform bound applies and the
+mean vanishes; on the diagonal `theta = 0` and the kernel is the constant `1`.
+
+That is the orthogonality needed for
+
+```
+a_n  =  lim_T (1/2T) int_{-T}^{T} F(sigma + it) (n+1)^{sigma+it} dt .
+```
+
+Route status:
+
+```
+1-6.  DONE
+7a.   sigma_b via bounded holomorphic continuation      DONE
+7b.   Bohr: sigma_u <= sigma_b                          in progress
+        - first coefficient estimate                    DONE
+        - vertical mean orthogonality (characters)      DONE
+        - off-diagonal Dirichlet terms vanish           DONE
+        - interchange of the sum and the mean, giving ||a_n|| <= C
+        - Perron / Riesz-mean summation
+        - the theorem
+```
+
+The remaining interchange is the one genuinely infinite step: uniform convergence on the half-plane
+lets the mean pass through the series, after which the diagonal term contributes `a_n` and every
+other term contributes zero by the theorem above.
+
+## Lean progress — the coefficient formula, exactly, for finite sums
+
+`RHTower/DirichletCoeffFormula.lean` (wired, axiom-clean).
+
+```
+cpow_neg_mul_cpow_self          b^{-s} b^{s} = 1
+continuous_kernel_term          each conjugate-kernel term is continuous in t
+tendsto_vertical_mean_diagonal  the diagonal term has vertical mean equal to its coefficient
+tendsto_vertical_mean_term_zero off-diagonal terms have vertical mean zero
+tendsto_vertical_mean_partialSum
+    lim_T (1/2T) int_{-T}^{T} S_N(sigma+it) (n+1)^{sigma+it} dt  =  a_n        (n < N)
+```
+
+For a **finite** sum there is no interchange to justify: the integral of a finite sum is the sum of
+the integrals, so the coefficient formula is exact with no analytic hypotheses at all — no
+convergence, no boundedness, nothing about `a`.  The diagonal term integrates to the constant `a_n`
+because `b^{-s} b^{s} = 1`, and every other term is a nontrivial character killed by the uniform
+bound of two sections ago.
+
+This reroutes the remaining step.  The plan recorded earlier was to pass the vertical mean through
+the infinite series; that is not needed.  Instead:
+
+```
+given eps, uniform convergence gives N with ||F - S_N|| <= eps on the half-plane,
+so ||S_N|| <= C + eps there;  the mean above extracts a_n from S_N exactly;
+and the trivial bound on the mean gives  ||a_n|| <= (C + eps) (n+1)^sigma ;
+let eps -> 0.
+```
+
+Only the finite coefficient formula and a trivial integral bound are involved, and the infinite
+interchange disappears entirely.
+
+Route status:
+
+```
+1-6.  DONE
+7a.   sigma_b via bounded holomorphic continuation      DONE
+7b.   Bohr: sigma_u <= sigma_b                          in progress
+        - first coefficient estimate                    DONE
+        - vertical mean orthogonality (characters)      DONE
+        - off-diagonal Dirichlet terms vanish           DONE
+        - coefficient formula for finite sums           DONE
+        - ||a_n|| <= C (n+1)^sigma  (eps-argument above)
+        - Perron / Riesz-mean summation
+        - the theorem
+```
+
+## Lean progress — Bohr's coefficient estimate, all coefficients
+
+`RHTower/DirichletCoeffBound.lean` (wired, axiom-clean).
+
+```
+norm_coeff_le
+    uniform convergence on Re s >= x,  ||F|| <= C there,  sigma >= x
+      ==>  ||a_n||  <=  C (n+1)^sigma       for every n
+```
+
+The epsilon-argument sketched in the previous section, carried out: uniform convergence gives a cut
+`N` past which `||S_N|| <= C + eps` on the half-plane; the exact coefficient formula for the finite
+sum extracts `a_n` as a vertical mean; the trivial bound on a mean gives
+`||a_n|| <= (C + eps)(n+1)^sigma`; and `eps -> 0` closes it.  No interchange of limits appears
+anywhere in the proof.
+
+This is Bohr's coefficient estimate in full, generalising `norm_coeff_zero_le` from the first
+coefficient (the case `n = 0`, `sigma` arbitrary, where `(n+1)^sigma = 1`) to all of them.
+
+Route status:
+
+```
+1-6.  DONE
+7a.   sigma_b via bounded holomorphic continuation      DONE
+7b.   Bohr: sigma_u <= sigma_b                          in progress
+        - first coefficient estimate                    DONE
+        - vertical mean orthogonality (characters)      DONE
+        - off-diagonal Dirichlet terms vanish           DONE
+        - coefficient formula for finite sums           DONE
+        - ||a_n|| <= C (n+1)^sigma                      DONE
+        - Perron / Riesz-mean summation
+        - the theorem
+```
+
+What remains is the summation half: given the coefficient bounds, recover uniform convergence.  The
+classical device is a Riesz (or Cesaro) mean of the Dirichlet series, whose uniform convergence
+follows from the coefficient bounds by an elementary Abel argument, plus a Tauberian step returning
+to ordinary convergence.  That is the last piece of Bohr's theorem, and the last mathematical step
+between this card and `Haar(M) = 0`.
+
+## Lean progress — the absolute-convergence comparisons
+
+`RHTower/DirichletAbsoluteAbscissa.lean` (wired, axiom-clean).
+
+```
+norm_dirichletTerm_le                each term is bounded by its majorant on Re s >= x
+uniformlyConvergesOn_of_summable     a summable majorant gives uniform convergence
+abscissaOfUnifConv_le_of_summable    sigma_u <= sigma_a
+exists_norm_coeff_le_of_convergesAt  convergence at s0  ==>  ||a_n|| <= C (n+1)^{Re s0}
+```
+
+The first three are the Weierstrass test for Dirichlet series, giving the upper comparison
+`sigma_c <= sigma_u <= sigma_a` (the lower half being `abscissaOfConv_le_abscissaOfUnifConv`).
+
+The last is the coefficient bound in the *other* direction from Bohr's estimate: it comes from
+nothing but the vanishing of the terms of a convergent series, read against the kernel, and it is
+the ingredient of Bohr's width-one inequality
+
+```
+sigma_a  <=  sigma_c + 1 ,
+```
+
+since `sum ||a_n|| (n+1)^{-x} <= C sum (n+1)^{Re s0 - x}` converges once `x > Re s0 + 1`.
+
+Note the pair of coefficient estimates now available runs in both directions:
+
+```
+convergence at s0        =>  ||a_n|| <= C (n+1)^{Re s0}        (this section)
+uniform convergence
+  + boundedness by C     =>  ||a_n|| <= C (n+1)^{sigma}        (Bohr, previous section)
+```
+
+The second is the sharp one — the constant is the sup norm itself, with no loss.
+
+## Lean progress — Bohr's width-one inequality; the abscissa chain is closed
+
+`RHTower/DirichletWidthOne.lean` (wired, axiom-clean).
+
+```
+DirichletAbsConvAt a x, abscissaOfAbsConvShift a
+summable_shift_rpow_neg                  a shifted p-series converges for p > 1
+absConvAt_of_convergesAt                 convergence at s0  ==>  absolute convergence for
+                                             x > Re s0 + 1
+abscissaOfAbsConvShift_le_of_convergesAt the same as an abscissa bound
+abscissaOfUnifConv_le_abscissaOfAbsConvShift    sigma_u <= sigma_a
+```
+
+With the earlier `abscissaOfConv_le_abscissaOfUnifConv` this closes the classical chain
+
+```
+sigma_c  <=  sigma_u  <=  sigma_a  <=  sigma_c + 1 ,
+```
+
+every inequality now a Lean theorem.  The width-one bound is elementary: convergence at `s0` bounds
+the coefficients by `C (n+1)^{Re s0}` (previous section), and the majorant
+`sum (n+1)^{Re s0 - x}` converges once `x > Re s0 + 1`.
+
+For the card this is the quantitative frame the Helson zeta lives in: `sigma_c = 1/2` almost surely
+(the divergence half is formal), `sigma_a = 1` always, and the whole question of the natural boundary
+is where `sigma_b` sits between them.  What Bohr's theorem supplies — and what remains — is that
+`sigma_b = sigma_u`, which by the chain above forces `sigma_b >= sigma_c = 1/2` and closes
+`Haar(M) = 0`.
+
+Route status:
+
+```
+1-6.  DONE
+7a.   sigma_b via bounded holomorphic continuation      DONE
+7b.   Bohr: sigma_u <= sigma_b                          in progress
+        - first coefficient estimate                    DONE
+        - vertical mean orthogonality (characters)      DONE
+        - off-diagonal Dirichlet terms vanish           DONE
+        - coefficient formula for finite sums           DONE
+        - ||a_n|| <= C (n+1)^sigma                      DONE
+        - abscissa chain sigma_c <= sigma_u <= sigma_a <= sigma_c + 1   DONE
+        - Perron / Riesz-mean summation
+        - the theorem
+```

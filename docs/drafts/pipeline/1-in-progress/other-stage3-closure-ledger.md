@@ -1840,3 +1840,58 @@ Closing it also closes `floquet-orbifold-tail-emergence` and
   analytic germ ring, local reduced fractions, and the Siegel counting assembly — whose geometric
   half is `exists_finite_centres_forcing_vanishing` in `HTGeometry/SiegelVanishingCriterion.lean`.
   Closure count unchanged: 31 cards remain in the folder.
+
+- 2026-08-16 (sixth pass) — `noncompact-period-quotient-facet-escape-law`: the germ interface of
+  the Siegel programme is Lean-owned.  Four new unconditional axiom-clean umbrella-wired modules:
+  `HTGeometry/AnalyticGermDomain.lean` (the germ ring is a nontrivial domain; every nonzero germ is
+  regular in some direction), `HTGeometry/GermSliceAdmissible.lean` (`exists_sliceAdmissible_nhds`,
+  the full admissibility package by two tube-lemma arguments),
+  `HTGeometry/GermWeierstrassPreparation.lean` (`germ_weierstrass_preparation`, with the
+  distinguished property `a_j(0) = 0`), `HTGeometry/GermWeierstrassDivision.lean`
+  (`germ_weierstrass_division`).  Together with the pass-5 uniqueness theorem these express the
+  local ring as a free module of rank `d` over the parameter ring modulo the distinguished
+  polynomial.  Remaining for the card: factoriality of the germ ring by induction on the dimension,
+  local reduced fractions, and the counting assembly.  Closure count unchanged: 31 cards remain.
+  Also added `HTGeometry/AnalyticGermUnit.lean`: `isUnit_analyticGerm_iff` (a germ is a unit exactly
+  when it does not vanish at the point), and the two structural germs of a split coordinate —
+  `germCoord` (the distinguished coordinate) and `germTail` (the ring homomorphism pulling germs in
+  the remaining variables back along the projection), with `germTail_analyticGermOf`.  These are the
+  algebraic vocabulary in which a distinguished polynomial is an element of the germ ring, i.e. the
+  form the factoriality induction consumes.
+
+- 2026-08-16 (seventh pass) — `noncompact-period-quotient-facet-escape-law`, Siegel step 6 begun.
+  Three further unconditional axiom-clean umbrella-wired modules:
+  `HTGeometry/GermCoordinateChange.lean` — `shearLinearEquiv` (the shear `w ↦ w + w₀·c` with
+  `c₀ = 0`, its inverse `w ↦ w − w₀·c`), `permLinearEquiv`, and
+  `exists_regular_coordinate_change`: every nonzero germ becomes regular in the distinguished
+  coordinate after a linear change of coordinates.  The automorphism is a transposition composed
+  with a shear — no basis extension is needed, because the direction is first rescaled to have
+  first coordinate one.
+  `HTGeometry/GermLinearEquiv.lean` — `germLinearEquiv`: a linear automorphism induces a ring
+  isomorphism of the germ rings at the origin (finite dimension makes the map and its inverse
+  analytic), with `germLinearEquiv_analyticGermOf` and the packaged
+  `exists_germLinearEquiv_regular`.
+  `HTGeometry/GermPreparationAlgebraic.lean` — `germ_preparation_algebraic`: the Weierstrass
+  preparation read as an identity in the local ring,
+
+  ```text
+  germ f = (germCoord^d + sum_(j<d) germTail(alpha_j) · germCoord^j) · u,   u a unit,
+  ```
+
+  with `alpha_j` vanishing at the origin.  Also `prepPolydisc` with its openness and the
+  membership of the origin.  This is the form the factoriality induction consumes: an identity
+  between elements of a ring, not between functions on a polydisc.
+  Closure count unchanged: 31 cards remain in the folder.
+  Added in the same pass: `HTGeometry/GermWeierstrassDivision.lean` strengthened to return the
+  preparation unit alongside the division, so both identities come from a single admissibility
+  package with the same radius, degree and coefficients; and
+  `HTGeometry/GermDivisionAlgebraic.lean` with `germ_division_algebraic`, the pair of germ-ring
+  identities
+
+  ```text
+  germ f = W · u,      germ g = q · W + sum_(j<d) germTail(beta_j) · germCoord^j,
+  W = germCoord^d + sum_(j<d) germTail(alpha_j) · germCoord^j,   u a unit, alpha_j(0) = 0.
+  ```
+
+  The coercion computations are factored into `coe_germPolyTail` and `coe_germDistinguished` in
+  `GermPreparationAlgebraic.lean`.

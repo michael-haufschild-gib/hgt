@@ -3,7 +3,7 @@
 - **ID:** `source-odd-quintic-cross-invariant`
 - **Stage:** 3-formalized
 - **Type:** THEOREM (paper + Lean) / BRIDGE / NOT NEW MATHEMATICS
-- **Parent:** `../../2-fully-proven/not_new_scientific_knowledge/source-odd-quintic-successor-modulus.md`
+- **Parent:** `source-odd-quintic-successor-modulus.md`
 - **Statement:** Diagonal projective reparametrization of a source-odd quintic preserves the
   division-free cross product \(b'^2ac=b^2a'c'\); normalized triples with different squared
   middle coefficients are inequivalent.

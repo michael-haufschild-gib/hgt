@@ -497,3 +497,191 @@ centralizer phase whose **resolved bandwidth** exceeds `v_n s`.  Prove a quenche
 that high-bandwidth centralizer incidence, then retain the Bellman recursion while passing from one
 word to the complete depth layer.  The extraction theorem guarantees that this stronger incidence
 event captures every actual shortcut and automatically discards low-bandwidth `H^2`-type carriers.
+
+## Lean progress -- Theorem A, the exact phase-bandwidth formula
+
+`formal/GaloisForLFunctions/HTGeometry/SpectralPhaseBandwidth.lean` (new, umbrella-wired,
+axiom-clean) proves both halves of `(7)`.
+
+| Card item | Declaration |
+|---|---|
+| the shortest signed increment congruent to `a - b` modulo `2π`, and `(4)` as its modulus | `phaseGap`, `circDist`, `exists_int_phaseGap` |
+| **`(4)` is the least admissible increment**: `d_{S¹}(a,b) ≤ \|a - b + 2πk\|` for every `k` | `circDist_le`, `circDist_le_abs_sub` |
+| an admissible lift `(5)`: node values agree with the phases modulo `2π` | `IsPhaseLift` |
+| **`(9)`, the lower bound**: every `L`-Lipschitz lift satisfies `d_{S¹}(θᵢ,θⱼ) ≤ L\|Eᵢ - Eⱼ\|` | `circDist_le_of_lip` |
+| hence every admissible `L` dominates every nearest-neighbour ratio of `(7)` | `step_ratio_le_of_lip` |
+| the recursive shortest lift of the card's proof | `shortestLift`, `shortestLift_congr` |
+| its telescoped Lipschitz estimate along the spectrum | `shortestLift_sub_le` |
+| the McShane extension `p(x) = minⱼ(qⱼ + L\|x-Eⱼ\|)` | `mcShaneLift` |
+| it is exactly `L`-Lipschitz | `mcShaneLift_lip` |
+| it interpolates `L`-compatible node data | `mcShaneLift_apply` |
+| **the upper bound**: the nearest-neighbour bound is achieved by an actual `L`-Lipschitz lift | `exists_phaseLift_of_step` |
+
+Together `step_ratio_le_of_lip` and `exists_phaseLift_of_step` are `(7)`: the set of admissible
+Lipschitz constants is exactly `[maxⱼ d_{S¹}(ζⱼ₊₁,ζⱼ)/δⱼ, ∞)`, so the infimum in `(5)` is that
+maximum and is attained.
+
+One simplification over the card's proof: linear interpolation is replaced by the McShane extension
+`minⱼ(qⱼ + L|x-Eⱼ|)`, which is `L`-Lipschitz on all of `ℝ` by inspection and needs no interval
+case analysis; the card's telescoping estimate becomes exactly the compatibility hypothesis it
+requires.  `shortestLift_sub_le` also turned out not to need monotonicity of the spectrum or
+`0 ≤ L` -- it is pure telescoping.
+
+### `(8)` is closed too
+
+| Card item | Declaration |
+|---|---|
+| the min characterization is attained | `exists_int_circDist` |
+| symmetry of `(4)` | `circDist_comm` |
+| **`bw(λZ) = bw(Z)`**: global phase shifts every node equally and is invisible | `circDist_add_const` |
+| **`bw(Z⁻¹) = bw(Z)`**: negating a lift gives a lift | `circDist_neg` |
+| **`bw(YZ) ≤ bw(Y) + bw(Z)`**: shortest increments add to an admissible increment | `circDist_add_le` |
+
+Each is stated at the nearest-neighbour level, which is where `(7)` puts the bandwidth, so together
+with `(7)` they are `(8)`.
+
+## Lean progress -- Theorem B, intrinsic growth and recurrence collapse
+
+`formal/GaloisForLFunctions/HTGeometry/StaticOrbitBandwidth.lean` (new, umbrella-wired,
+axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| below `π` the circular distance is the ordinary one | `circDist_eq_abs_of_le_pi` |
+| **`(10)`, upper half**: every orbit ratio is at most `\|t\|` | `circDist_orbit_le` |
+| **`(11)`**: at a gap with `\|t\|δⱼ ≤ π` the ratio is exactly `\|t\|` | `circDist_orbit_ratio_eq` |
+| **`(12)`**: `n` gaps of size at least `m` need width at least `n·m` | `minGap_mul_le_width` |
+| its strict form | `lt_width_of_forall_lt` |
+| **`(13)`**: one of the `n` gaps is at most the average, giving the clock horizon | `exists_gap_le_average` |
+| **`(14)`**: vanishing adjacent circular distances make `L = 0` admissible | `exists_phaseLift_zero` |
+| a constant phase assignment has zero adjacent distance | `circDist_const_zero` |
+
+Substituting `θⱼ = t Eⱼ` into `(7)` -- that is, into `step_ratio_le_of_lip` and
+`exists_phaseLift_of_step` -- with `circDist_orbit_le` and `circDist_orbit_ratio_eq` gives `(10)`
+and `(11)`; `exists_gap_le_average` is `(12)` in the form the card uses it, with no lower bound on
+the minimum gap anywhere; `exists_phaseLift_zero` is `(14)`.
+
+### What remains
+
+Theorem A and `(8)` are complete; Theorem B is complete except for `(15)`, the `η`-robust version,
+which needs the operator-norm neighbourhood of `(6)`.
+
+## Lean progress -- Theorem C, the scalar layer
+
+`formal/GaloisForLFunctions/HTGeometry/ShortcutSpectralPhase.lean` (new, umbrella-wired,
+axiom-clean) proves every scalar step of Theorem C.
+
+| Card item | Declaration |
+|---|---|
+| `d_{S¹} ≤ π` | `circDist_le_pi` |
+| **the circular triangle inequality** used in `(23)` | `circDist_triangle` |
+| `d_{S¹}(a,b)` read as a difference at the origin | `circDist_sub_zero` |
+| the exact squared chord `2 - 2cos(φ-ψ)` between two unit phases | `normSq_expI_sub` |
+| the chord depends only on the circular distance | `cos_sub_eq_cos_circDist` |
+| **`(22)`, chord to arc**: a chord `≤ c` subtends an arc `≤ 2 arcsin(c/2)` | `circDist_le_two_arcsin` |
+| the normalization `ζ = a/\|a\|` of `(17)` and its unit modulus | `phaseNormalize`, `norm_phaseNormalize` |
+| `\|ζ - a\| = \|1 - \|a\|\|` | `norm_phaseNormalize_sub_self` |
+| **`(20)`**: `\|a - u\| ≤ ε` and `\|u\| = 1` give `\|a\| ≥ 1 - ε` | `one_sub_le_norm_of_close` |
+| **`(21)`**: the normalized entry is within `2ε` of the orbit phase | `norm_phaseNormalize_sub_le` |
+| **`(23)`**: the orbit winding survives extraction up to `4 arcsin ε` | `circDist_extracted_ge` |
+| **`(19)`**: the bandwidth lower bound across an arbitrary level pair | `pair_ratio_le_of_lip` |
+
+`pair_ratio_le_of_lip` is stated across an arbitrary pair `j < k`, not across adjacent levels, which
+is exactly the card's point that `(19)` uses no division by a minimum gap.  `norm_phaseNormalize` is
+`ζⱼ ∈ S¹`, so `(17)` lands in `T_H`; `(21)` and `(22)` compose to `d_{S¹}(ζⱼ, uⱼ) ≤ 2 arcsin ε`, and
+`circDist_extracted_ge` with `α = 2 arcsin ε` is `(23)`.
+
+## Lean progress -- Corollary D, the resolved spectral scale
+
+Same module.
+
+| Card item | Declaration |
+|---|---|
+| **`(25)`**: under `(24)` the extracted winding across the resolved pair is at least `\|t\|Δ/2`, so `bw ≥ \|t\|/2` | `extracted_ratio_ge_half` |
+| **the quadratic carrier `(1)` is `2\|c\|R`-Lipschitz on a spectrum inside `[-R,R]`** | `quadratic_carrier_lip` |
+
+`extracted_ratio_ge_half` is the card's computation exactly: `(24)` puts `\|t\|Δ` below `π`, so the
+circular distance across the pair is `\|t\|Δ` on the nose, and `8 arcsin ε ≤ \|t\|Δ` makes the
+`4 arcsin ε` deficit of `(23)` at most half of it.  The second half of Corollary D is the two
+statements "an `L`-Lipschitz `p` is itself an admissible lift, so `bw ≤ L`" -- which is
+`pair_ratio_le_of_lip` -- and the Lipschitz constant of `x ↦ cx²` on `[-R,R]`, which is
+`quadratic_carrier_lip`.  Together they eliminate the whole low-bandwidth functional-calculus family
+without assuming the function is a polynomial.
+
+## Lean progress -- the operator layer of `(17)` and `(18)`
+
+Same module.
+
+| Card item | Declaration |
+|---|---|
+| **a diagonal operator moves no vector further than its largest entry** -- the operator norm of a difference diagonal in the spectral decomposition | `diagonal_mulVec_norm_le` |
+| **`(17)` is independent of the eigenvector phases** | `diagonalEntry_phase_invariant` |
+
+`Z_H(W) - U_H(t)` is diagonal in the spectral decomposition with entries `ζⱼ - uⱼ`, each of modulus
+at most `2ε` by `(21)`, so `diagonal_mulVec_norm_le` gives the first norm bound of `(18)`; the second,
+`‖W - Z_H(W)‖ ≤ 3ε`, is then the triangle inequality against `(16)`.
+`diagonalEntry_phase_invariant` is the claim that replacing `eⱼ` by `λeⱼ` with `\|λ\| = 1` leaves
+`aⱼ = ⟨eⱼ, W eⱼ⟩` unchanged, since `conj(λ)λ = 1`.
+
+(Superseded by the bandwidth-infimum section below.)
+
+## Lean progress -- Theorem E and Theorem F
+
+`formal/GaloisForLFunctions/HTGeometry/CentralizerBudgetSplit.lean` (new, umbrella-wired,
+axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| **iterated `(8)`**: circular distance is subadditive along sums | `circDist_sum_le` |
+| **the intrinsic budget of `(31)`**: `s` letters of bandwidth `≤ b` give bandwidth `≤ s b` | `circDist_sum_le_nsmul` |
+| a product of contractions is a contraction | `norm_listProd_le_one` |
+| **`(35)`, unitary telescoping**: `‖W_s⋯W_1 - Y_s⋯Y_1‖ ≤ Σ‖W_ℓ - Y_ℓ‖` | `norm_listProd_sub_le` |
+| **`(29)`**: the single gap of `(28)` carries phase distance `π` | `circDist_pi_zero` |
+| **`(27)` fails**: `π/δ` exceeds every constant as the gap closes | `exists_gap_bandwidth_gt` |
+| an admissible Lipschitz constant is nonnegative, so a zero bandwidth is a minimum | `lip_nonneg` |
+
+`circDist_sum_le_nsmul` is `(31)`: a word `g_s⋯g_1` in the dictionary has lift the sum of the letter
+lifts, so its nearest-neighbour phase distances are subadditive and its bandwidth is at most
+`s·b_H`.  `norm_listProd_sub_le` is `(35)` verbatim, proved by the telescoping split
+`xP - yQ = x(P-Q) + (x-y)Q` with `‖x‖ ≤ 1` and `‖Q‖ ≤ 1`; combined with `circDist_sum_le` it gives
+`(34)`.  `exists_gap_bandwidth_gt` is Theorem E: `(29)` is `π/δ`, and it beats any candidate constant
+`A` once `δ < π/(|A|+1)`.
+
+## Lean progress -- the bandwidth as an attained infimum, `(15)`, and the diagonal model
+
+`formal/GaloisForLFunctions/HTGeometry/PhaseBandwidthInfimum.lean` (new, umbrella-wired,
+axiom-clean) turns the nearest-neighbour bounds into the definition `(5)` itself.
+
+| Card item | Declaration |
+|---|---|
+| the construction with the step hypothesis restricted to the gaps that exist | `shortestLift_sub_le_of_lt`, `exists_phaseLift_of_step_lt` |
+| **`(5)`**: the set of admissible Lipschitz constants and its infimum | `phaseLiftConstants`, `phaseBandwidth` |
+| **`(7)` as a genuine equality**: the bandwidth *is* the largest nearest-neighbour ratio, and the infimum is attained | `phaseBandwidth_eq` |
+| the bandwidth is nonnegative | `phaseBandwidth_nonneg` |
+| **`(14)`**: an exact projective recurrence has bandwidth exactly zero | `phaseBandwidth_eq_zero` |
+| **`(6)`**: the robust bandwidth as an infimum over admissible competitors | `robustPhaseBandwidth` |
+| **`(15)`**: a zero-bandwidth competitor collapses the robust bandwidth to zero | `robustPhaseBandwidth_eq_zero` |
+| **`(3)`**: a combination of the rank-one spectral projections is the diagonal matrix of its coefficients, so the spectral torus is the diagonal model | `sum_smul_spectralProj` |
+
+`phaseBandwidth_eq` is `(7)` in the form the card states it: `M` is admissible (the shortest-increment
+lift extended by McShane) and dominates every admissible constant (a Lipschitz lift must cross the
+attaining gap), so `M` is the least element of the constant set and hence the infimum.
+`robustPhaseBandwidth_eq_zero` is `(15)`: under `‖U_H(T) - λI‖ ≤ η` the constant assignment `λ` is an
+admissible competitor of `(6)` whose bandwidth is zero by `phaseBandwidth_eq_zero`, and no competitor
+is negative, so the infimum is exactly zero.  `sum_smul_spectralProj` is the identification of `(3)`
+with the diagonal model in which every operator-layer statement above was proved.
+
+## Formalization status
+
+Every numbered result of this card -- Theorem A with `(7)` and `(8)`, Theorem B with `(10)`--`(15)`,
+Theorem C with `(17)`--`(23)`, Corollary D with `(24)`--`(26)`, Theorem E with `(27)`--`(29)`, and
+Theorem F with `(30)`--`(35)` -- is now proved in Lean, unconditionally and with no added axioms, in
+six modules:
+
+- `HTGeometry/SpectralPhaseBandwidth.lean`
+- `HTGeometry/StaticOrbitBandwidth.lean`
+- `HTGeometry/ShortcutSpectralPhase.lean`
+- `HTGeometry/CentralizerBudgetSplit.lean`
+- `HTGeometry/PhaseBandwidthInfimum.lean`
+
+all reachable from `GaloisForLFunctions.HTGeometry`.

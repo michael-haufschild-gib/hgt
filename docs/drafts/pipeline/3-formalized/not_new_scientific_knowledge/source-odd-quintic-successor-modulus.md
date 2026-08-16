@@ -1,7 +1,7 @@
 # First source-odd successor modulus occurs at arity five
 
 - **ID:** `source-odd-quintic-successor-modulus`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / BRIDGE / NOT NEW MATHEMATICS
 - **Source:** `../../1-in-progress/law-valued-actuality-universal-law.md`
 - **Statement:** For a labeled two-channel complex source, fully supported source-odd symmetric
@@ -22,7 +22,7 @@ law-valued actuality is true.
 
 - [x] 0 → 1 in-progress: exact source action and nonselection question
 - [x] 1 → 2 fully-proven: complete elementary orbit proof below
-- [ ] 2 → 3 formalized: exact unconditional Lean theorem and final audit
+- [x] 2 → 3 formalized: exact unconditional Lean theorem and final audit — see the certificate below
 - [x] division-free invariant and normalized nonselection core formalized
 - [ ] physical bridge: source completeness identifies full support and tensor arity
 - [ ] cross-law interference between distinct quintic orbits
@@ -250,9 +250,27 @@ Module:
 
 `GaloisForLFunctions.HTGeometry.SourceOddQuinticSuccessorModulus`.
 
-The direct source check, final module build, and axiom audit passed. The full complex
-fully-supported orbit classification remains Lean-open, so this parent card stays at Stage 2.
-The exact formalized core has its own Stage-3 card:
+The direct source check, final module build, and axiom audit passed.
+
+**The full orbit classification is now formalized too** (2026-08-16):
+`GaloisForLFunctions.HTGeometry.SourceOddLowAritySuccessorOrbits`, wired into the `HTGeometry`
+umbrella, every declaration audited to `[propext, Classical.choice, Quot.sound]`.
+
+| Paper claim | Lean |
+|---|---|
+| (1) arity two has one projective source orbit | `sourceOddQuadratic_single_orbit` |
+| (2) arity three has one projective source orbit | `sourceOddCubic_single_orbit` |
+| (3) arity four has one projective source orbit | `sourceOddQuartic_single_orbit` |
+| `(Q5.7)`–`(Q5.9)`: `κ = b²/(ac)` is invariant (division-free form) | `sourceOddQuinticReparam_cross_invariant`, `sourceProjectivelyEquivalentOddQuintic_cross_invariant` |
+| `κ` is **complete**: equal `κ` implies equivalence (the `r = (v/u)²` construction with `v = 1`, `λ = c'/c`) | `sourceProjectivelyEquivalentOddQuintic_of_cross_invariant` |
+| (5) the exact orbit criterion | `sourceProjectivelyEquivalentOddQuintic_iff_cross_invariant` |
+| (4) arity five has infinitely many projective source orbits | `pairwise_not_sourceProjectivelyEquivalent_normalized` (the normalized quintics `(1, n+1, 1)` over `ℂ`, pairwise inequivalent) |
+
+The only hypothesis carried is that every scalar is a square (`∀ z, ∃ w, w ^ 2 = z`) — which is what
+supplies the reparametrization `u`, and which holds in `ℂ`, the field the card works over.  It is a
+property of the ground field, not an added premise about the objects being classified.
+
+The exact division-free core also has its own Stage-3 card:
 `../../3-formalized/not_new_scientific_knowledge/source-odd-quintic-cross-invariant.md`.
 
 ## Log

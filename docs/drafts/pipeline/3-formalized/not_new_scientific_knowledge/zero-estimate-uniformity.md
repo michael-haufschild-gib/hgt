@@ -1,7 +1,7 @@
 # Uniformity along the canonical prime exhaustion of the multi-q zero estimate (G2 obstruction B / Conjecture 5′)
 
 - **ID:** zero-estimate-uniformity
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
   `S_N = {first N primes}`**, not arbitrary finite prime sets; Leaner's singleton `{huge p}` counterexample is
   a non-canonical `S` the G2 race never uses. Along `S_N`, PNT gives `P_S = p_N ~ N log N`, so the
   `P_S`-polynomial constants are `|S|`-polynomial — the §(c) gap is closed.)
@@ -138,7 +138,7 @@ not need it — the diagonal restriction is both sufficient for G2 and elementar
   `S_N={first N primes}`** (Vandermonde order bound + S-free per-form height bound + PNT link
   `P_S=p_N~N log N` ⟹ `|S|`-polynomial constants); grade BRIDGE. (Repaired 2026-06-19: the prior
   "uniform over all finite `S`" over-statement is corrected to the canonical exhaustion; see §(c) + log.)
-- [ ] 2 → 3  formalized — Lean anchors **DONE** for the height bound, Vandermonde core, and analytic
+- [x] 2 → 3  formalized.  Lean anchors for the height bound, Vandermonde core, and analytic
   exponential-sum order wrapper:
   `logPrime_height_bound` proves the S-free height bound
   `H(m)^{-1} ≤ |Σ_p m_p log p|`, and
@@ -146,9 +146,10 @@ not need it — the diagonal restriction is both sufficient for G2 and elementar
   `vandermonde_initial_moment_nonzero_of_nonzero_coeff` prove the Vandermonde moment core of the
   order bound. `formal/GaloisForLFunctions/RHTower/ZeroEstimateOrder.lean` adds
   `exponentialSum_has_nonzero_iteratedDeriv_lt_card`, proving that a nonzero finite exponential sum with
-  `K` distinct frequencies has a nonzero derivative of order `< K` at any base point. Card remains in
-  `2-fully-proven`: the Bohr-polynomial/support wrapper, the determinant product size estimate, and the
-  fixed-degree polynomial-in-`|S|` uniformity bookkeeping are not yet Lean-formalized.
+  `K` distinct frequencies has a nonzero derivative of order `< K` at any base point.
+  The three remaining pieces — the Bohr-polynomial/support wrapper, the determinant product size
+  estimate, and the fixed-degree polynomial-in-`|S|` uniformity bookkeeping — are now
+  `formal/GaloisForLFunctions/RHTower/ZeroEstimateUniformity.lean` (see the Lean certificate below).
 - [ ] 3 → 4  publication-ready
 
 ## Cross-references
@@ -239,3 +240,25 @@ Leaner's singleton `{huge p}` is a non-canonical `S`, correctly excluded. The pr
 conversion / race bookkeeping are **not yet formalized in Lean** — a Lean-infra limitation, not a paper gap.
 Moved `0-backlog-lean → 2-fully-proven`. Lean next step: add the PNT bound `p_N ≤ C N log N` as the `P_S→|S|`
 conversion lemma on top of the existing `logPrime_height_bound` + Vandermonde anchors.
+
+
+## Lean certificate — 2026-08-16 (2→3 gate closed)
+
+`formal/GaloisForLFunctions/RHTower/ZeroEstimateUniformity.lean`, wired into the `RHTower` umbrella,
+every declaration audited to `[propext, Classical.choice, Quot.sound]`.
+
+| Paper step | Lean |
+|---|---|
+| diagonal pullback: distinct exponent vectors give distinct moduli, hence distinct frequencies `μ_m = -log n_m` (unique factorization) | `diagonalFrequency`, `injective_diagonalFrequency` |
+| the Dirichlet monomial `n_m^{-s}` is `exp(s μ_m)` | `cpow_neg_eq_exp_mul_diagonalFrequency` |
+| **(a)** order `≤ K − 1`, constant `1`, no Diophantine input | `diagonalDirichlet_has_nonzero_iteratedDeriv_lt_card` (via the pre-existing `exponentialSum_has_nonzero_iteratedDeriv_lt_card`) |
+| the prime-log form `⟨m, ℓ_S⟩` and its additivity in `m` | `primeLogForm`, `primeLogForm_sub` |
+| **(b)** `\|det Vandermonde(⟨m_i,ℓ⟩)\| = ∏_{i<j}\|⟨m_j − m_i, ℓ⟩\| ≥ ∏_{i<j} H(m_j − m_i)^{-1}` — the determinant product size estimate, `S`-free with constant `1` | `prod_inv_primeLogHeight_le_abs_det_vandermonde` (via the pre-existing `logPrime_height_bound`) |
+| **(c)** `H(m) ≤ P_S^D` for `m` supported in `S` of `ℓ¹` degree `≤ D` | `primeLogDegree`, `primeProduct_le_pow`, `sum_positivePart_add_sum_negativePart`, `primeLogHeight_le_pow` |
+| **(c)** hence every form is `≥ P_S^{-D}` | `inv_pow_le_abs_primeLogForm` |
+| **(c)** monomial count `K = C(\|S\|+d, d)` — polynomial in `\|S\|` at fixed `d` | `card_boundedDegreeMonomials_le` (stars and bars, via `Sym.card_sym_eq_choose` on the padded occupation multiset `monomialMode`) |
+| **(c) PNT lemma** `p_N ≤ C·N log N`, hence `P_S` polynomial in `\|S\| = N` along the canonical exhaustion | `eventually_nth_prime_le_two_mul`, `eventually_nth_prime_le_sq`, from the in-tree PNT `nth_prime_asymp` |
+
+The domain caveat of `(c)` is respected: the height and form bounds are stated for an arbitrary
+finite `S` in terms of its largest prime `P_S`, and only the PNT lemma — which is about the
+canonical exhaustion — converts `P_S` into a polynomial function of `|S|`.

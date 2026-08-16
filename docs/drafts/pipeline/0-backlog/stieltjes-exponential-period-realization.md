@@ -162,7 +162,7 @@ disjoint in kind from the regular `{\log p}`/`ζ`-value (Source-B/period) side.
 - `../0-backlog/baker-for-stieltjes.md` (§B pairing `F·(s−1)ζ` — this supplies the `γ_n` side's home);
   `exponential-period-dss-cross.md` (DeWitt, the categorical mechanism this floors);
   `bigraded-corank-dss-cross.md` (Wheeler, the invariant this populates);
-  `../2-fully-proven/dss-lower-bound-orbit-nogo.md` (#142), `corank-seam-invariant.md` (#125),
+  `../3-formalized/not_new_scientific_knowledge/dss-lower-bound-orbit-nogo.md` (#142), `corank-seam-invariant.md` (#125),
   `../0-backlog/regularization-freshness.md` (#75); door `bucket-the-seam-archimedean-obstruction.md`.
 
 ## Log

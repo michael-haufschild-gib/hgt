@@ -1,7 +1,7 @@
 # The F₁ obstruction decomposes into two orthogonal invariants: flow-imbalance D ⊕ multiplier-corank
 
 - **ID:** f1-two-face-criterion
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper, consolidation) — grade **BRIDGE (substrate)**. Proven: the two-face decomposition,
   the F_q/ℚ values, and necessity. Sufficiency = open D5 frontier.
 - **Priority:** FOUNDATIONAL
@@ -62,8 +62,9 @@ only `F_q` has both trivial.
 - [x] 0 → 1  in-progress.
 - [x] 1 → 2  fully-proven: the orthogonal flow/corank decomposition, the `F_q`/ℚ values, necessity. Grade
   BRIDGE (substrate). Sufficiency = open D5 (flagged, out of scope).
-- [ ] 2 → 3  formalized: `D` and corank ride existing anchors (#130 orbit-degree; `linearIndependent_log_primes`
-  #1; #121 degree collapse); the two-face statement is a packaging over them.
+- [x] 2 → 3  formalized: `formal/GaloisForLFunctions/HTGeometry/F1TwoFaceCriterion.lean` packages the
+  two faces over the existing anchors (`HTGeometry/OrbitBalance.lean` for the orbit degree,
+  `HTGeometry/ArchimedeanCorank.lean` for the prime-log rank).  See the certificate below.
 - [ ] 3 → 4  publication-ready: folds into the seam / `F₁` exposition as the two-face decomposition.
 
 ## Cross-references
@@ -76,3 +77,31 @@ only `F_q` has both trivial.
 - 2026-06-19 (DeWitt) — banked the two-face consolidation per Professor's suggestion (id=401). **Proven:** the
   orthogonal flow/corank decomposition, the `F_q`/ℚ values, and necessity (`F₁ ⟹ both trivial`). **Open (D5):**
   sufficiency (the general `⟸`). Makes #191's RH/DSS decoupling precise. Grade BRIDGE (substrate).
+
+
+## Lean certificate — 2026-08-16 (2→3 gate closed)
+
+`formal/GaloisForLFunctions/HTGeometry/F1TwoFaceCriterion.lean`, wired into the `HTGeometry`
+umbrella; all eleven declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+The two faces are packaged as one datum `PlaceDatum` carrying the shift-multiplier divisor on an
+orbit and the rational span of the logarithmic multiplier value group, with
+`PlaceDatum.flowImbalance := orbitDegree` and `PlaceDatum.corank := Module.rank ℚ`.
+
+| Paper step | Lean |
+|---|---|
+| the two-face datum, `D` = orbit degree, corank = rational rank of the value group | `PlaceDatum`, `PlaceDatum.flowImbalance`, `PlaceDatum.corank` |
+| a single Frobenius is an automorphism (multiplier divisor telescopes) generating a rank-one value group | `SingleFrobenius` |
+| **necessity**, flow face: `F₁ ⟹ D = 0` | `SingleFrobenius.flowImbalance_eq_zero` (via `orbitDegree_intShiftCoboundary`) |
+| **necessity**, corank face: `F₁ ⟹ corank ≤ 1` | `SingleFrobenius.rank_le_one` |
+| the two independent obstructions | `not_singleFrobenius_of_flowImbalance_ne_zero`, `not_singleFrobenius_of_one_lt_rank` |
+| over `F_q`: `D = 0`, corank `= 1`, and `F₁` exists | `functionFieldDatum_flowImbalance`, `functionFieldDatum_corank`, `functionFieldDatum_singleFrobenius` |
+| over `ℚ`: the archimedean `Γ` multiplier is a single point mass, so `D = +1` | `rationalDatum_flowImbalance` |
+| over `ℚ`: corank `= #{primes}`, hence `> 1` | `rationalDatum_corank`, `one_lt_rationalDatum_corank` (via `primeLogFullSpan_rank`, i.e. `linearIndependent_log_primes`) |
+| every finite place has orbit degree `0` (constant multiplier) with corank still infinite | `flowZeroCorankInfinite` |
+| **no `F₁` over `ℚ`** — on either face independently | `not_singleFrobenius_rationalDatum_flow`, `not_singleFrobenius_rationalDatum_corank` |
+| **orthogonality**: the two faces are logically independent (all four combinations realized) | `flowImbalance_corank_independent` |
+
+Only the **necessity** direction is formalized, which is exactly the proven content of the card.
+Sufficiency (`D = 0 ∧ corank finite ⟹ F₁ exists`) is the open D5 frontier, flagged out of scope by
+the card itself, and is deliberately not stated in Lean.

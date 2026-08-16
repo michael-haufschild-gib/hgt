@@ -24,7 +24,7 @@ bound `|⟨m,ℓ⟩|≥H(m)^{-1}` + Vandermonde order bound) is unchanged.
 - Rows **#103 / #15** (friable auxiliary, G2 architecture "A,B discharged, C reduced"): the B-dependency is
   **restored**; these stand as previously ledgered. No status downgrade.
 - Card paths (both now in `2-fully-proven`):
-  `docs/drafts/pipeline/2-fully-proven/zero-estimate-uniformity.md`,
+  `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/zero-estimate-uniformity.md`,
   `docs/drafts/pipeline/2-fully-proven/friable-dirichlet-auxiliary.md`.
 
 ## Notes

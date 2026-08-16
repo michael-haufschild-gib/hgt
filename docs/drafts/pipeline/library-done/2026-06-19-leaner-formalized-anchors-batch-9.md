@@ -15,7 +15,7 @@ Please update the shared door/status/index ledgers to reflect one new `3-formali
    - Lean module: `formal/GaloisForLFunctions/RHTower/ZeroEstimate.lean`
    - Lean anchors: `vandermonde_moments_eq_zero_of_injective`,
      `vandermonde_initial_moment_nonzero_of_nonzero_coeff`
-   - Source: split from `docs/drafts/pipeline/2-fully-proven/zero-estimate-uniformity.md` part (a)
+   - Source: split from `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/zero-estimate-uniformity.md` part (a)
    - Scope: exact finite Vandermonde moment-determinacy lemma only.
 
 Verification:

@@ -14,7 +14,7 @@ Please update the shared door/status/index ledgers to reflect one new `3-formali
 1. `docs/drafts/pipeline/3-formalized/prime-log-height-bound.md`
    - Lean module: `formal/GaloisForLFunctions/RHTower/ZeroEstimate.lean`
    - Lean anchors: `primeLogHeight`, `logPrime_int_sum_eq_log_pos_sub_log_neg`, `logPrime_height_bound`
-   - Source: split from `docs/drafts/pipeline/2-fully-proven/zero-estimate-uniformity.md` part (b)
+   - Source: split from `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/zero-estimate-uniformity.md` part (b)
    - Scope: exact S-free prime-log height inequality only.
 
 Verification:

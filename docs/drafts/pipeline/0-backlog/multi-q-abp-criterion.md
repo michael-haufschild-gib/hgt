@@ -5,7 +5,7 @@
 - **Type:** THEOREM (paper, structural no-go + decomposition) — Door grade **BRIDGE**; began as a CONJECTURE
   reopening obstruction C, resolved to a sharp structural verdict (one residual flagged to Professor #128)
 - **Source:** challenges the "no-bypass / = effective Schanuel" closure of
-  `../0-backlog/g2-dss-lower-bound.md` and the orbit no-go `../2-fully-proven/dss-lower-bound-orbit-nogo.md`;
+  `../0-backlog/g2-dss-lower-bound.md` and the orbit no-go `../3-formalized/not_new_scientific_knowledge/dss-lower-bound-orbit-nogo.md`;
   builds on G4 (multi-q Picard–Vessiot / `G_L` Tannakian, #24/#28), Papanikolas 2008 + ABP
   (Anderson–Brownawell–Papanikolas) over `F_q`, the G2 upper bound #8.
 
@@ -95,7 +95,7 @@ lives, and replaces "it's effective Schanuel (an analytic accident of one route)
 - [ ] 3 → 4 publication-ready
 
 ## Cross-references
-- `../2-fully-proven/dss-lower-bound-orbit-nogo.md` (DeWitt) — closes the **orbit** route; this card argues
+- `../3-formalized/not_new_scientific_knowledge/dss-lower-bound-orbit-nogo.md` (DeWitt) — closes the **orbit** route; this card argues
   it does **not** close the **ABP/Tannakian** route. **Coordinate — not a contradiction; a different route.**
 - `../0-backlog/g2-dss-lower-bound.md` — the analytic-race route (lands on effective Schanuel); this is the
   complementary Tannakian route.

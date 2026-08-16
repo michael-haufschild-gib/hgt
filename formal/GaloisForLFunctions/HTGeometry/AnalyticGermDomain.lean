@@ -28,6 +28,7 @@ theorem exists_ball_analyticOnNhd {p : E} {f : E → ℂ} (hf : AnalyticAt ℂ f
   obtain ⟨r, hr, hball⟩ := Metric.eventually_nhds_iff.mp hf.eventually_analyticAt
   exact ⟨r, hr, fun y hy => hball (by simpa using hy)⟩
 
+omit [NormedSpace ℂ E] in
 /-- **A nonzero analytic germ has a nonzero value arbitrarily close to the point.** -/
 theorem exists_ne_zero_of_not_eventuallyEq_zero {p : E} {f : E → ℂ}
     (hne : ¬ f =ᶠ[𝓝 p] 0) {r : ℝ} (hr : 0 < r) :
@@ -79,27 +80,28 @@ instance instNontrivialAnalyticGerm (p : E) : Nontrivial (AnalyticGerm p) := by
 
 instance instNoZeroDivisorsAnalyticGerm (p : E) : NoZeroDivisors (AnalyticGerm p) where
   eq_zero_or_eq_zero_of_mul_eq_zero := by
-  intro a b hab
-  obtain ⟨f, hf, hfa⟩ := a.2
-  obtain ⟨g, hg, hgb⟩ := b.2
-  by_cases ha : a = 0
-  · exact Or.inl ha
-  refine Or.inr ?_
-  have hfne : ¬ f =ᶠ[𝓝 p] 0 := by
-    intro hc
-    refine ha (Subtype.ext ?_)
-    rw [← hfa]
-    exact Germ.coe_eq.mpr hc
-  have hmul : (fun x => f x * g x) =ᶠ[𝓝 p] 0 := by
-    have : ((fun x => f x * g x : E → ℂ) : Germ (𝓝 p) ℂ) = ((0 : E → ℂ) : Germ (𝓝 p) ℂ) := by
+    intro a b hab
+    obtain ⟨f, hf, hfa⟩ := a.2
+    obtain ⟨g, hg, hgb⟩ := b.2
+    by_cases ha : a = 0
+    · exact Or.inl ha
+    refine Or.inr ?_
+    have hfne : ¬ f =ᶠ[𝓝 p] 0 := by
+      intro hc
+      refine ha (Subtype.ext ?_)
+      rw [← hfa]
+      exact Germ.coe_eq.mpr hc
+    have hmul : (fun x => f x * g x) =ᶠ[𝓝 p] 0 := by
       have hval : (a : Germ (𝓝 p) ℂ) * (b : Germ (𝓝 p) ℂ) = 0 := by
         rw [← Subring.coe_mul, hab, ZeroMemClass.coe_zero]
-      rw [← hfa, ← hgb] at hval
-      simpa using hval
-    exact Germ.coe_eq.mp this
-  refine Subtype.ext ?_
-  rw [← hgb, ZeroMemClass.coe_zero]
-  exact Germ.coe_eq.mpr (eventuallyEq_zero_of_mul_eventuallyEq_zero hf hg hfne hmul)
+      rw [← hfa, ← hgb, ← Germ.coe_mul] at hval
+      have h0 : ((f * g : E → ℂ) : Germ (𝓝 p) ℂ) = ((0 : E → ℂ) : Germ (𝓝 p) ℂ) := by
+        rw [hval]
+        rfl
+      exact Germ.coe_eq.mp h0
+    refine Subtype.ext ?_
+    rw [← hgb, ZeroMemClass.coe_zero]
+    exact Germ.coe_eq.mpr (eventuallyEq_zero_of_mul_eventuallyEq_zero hf hg hfne hmul)
 
 /-! ## Regularity in a direction -/
 
@@ -110,7 +112,8 @@ theorem analyticAt_lineMap (p v : E) (t : ℂ) : AnalyticAt ℂ (lineMap p v) t 
   have hL : AnalyticAt ℂ (fun s : ℂ => s • v) t :=
     ((ContinuousLinearMap.smulRight (ContinuousLinearMap.id ℂ ℂ) v).analyticAt t)
   have h := (analyticAt_const (v := p)).add hL
-  simpa only [Pi.add_def, lineMap] using h
+  rw [Pi.add_def] at h
+  exact h
 
 /-- **Every nonzero analytic germ is regular in some direction.** -/
 theorem exists_regular_direction {p : E} {f : E → ℂ} (hf : AnalyticAt ℂ f p)
@@ -140,8 +143,9 @@ theorem exists_regular_direction {p : E} {f : E → ℂ} (hf : AnalyticAt ℂ f 
     have : ‖lineMap p v t - p‖ = ‖t‖ * ‖v‖ := by
       simp [lineMap, norm_smul]
     rw [this]
-    calc ‖t‖ * ‖v‖ < R * ‖v‖ := by exact mul_lt_mul_of_pos_right hnt hvnorm
-      _ = r := by field_simp [hR]
+    have hvne0 : ‖v‖ ≠ 0 := ne_of_gt hvnorm
+    calc ‖t‖ * ‖v‖ < R * ‖v‖ := mul_lt_mul_of_pos_right hnt hvnorm
+      _ = r := by rw [hR]; field_simp
   have hcomp : AnalyticOnNhd ℂ (fun t : ℂ => f (lineMap p v t)) (ball (0 : ℂ) R) := by
     intro t ht
     exact (hfr _ (hmaps t ht)).comp (analyticAt_lineMap p v t)
