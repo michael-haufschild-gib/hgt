@@ -285,6 +285,93 @@ theorem steinbergWeyl_conj_row {i j k : n} (hij : i ≠ j) (hik : i ≠ k) (hjk 
         * (steinbergX hik (U * c) * steinbergX hjk c) := by rw [hout1, hout2, hin]
     _ = steinbergX hik (U * c) := hcollect
 
+omit [DecidableEq n] in
+/-- **The Weyl element moves the second index of a column generator.**
+`w_ij(u) x_ki(d) w_ij(u)⁻¹ = x_kj(−d u)`. -/
+theorem steinbergWeyl_conj_col {i j k : n} (hij : i ≠ j) (hik : i ≠ k) (hjk : j ≠ k)
+    (u : Rˣ) (d : R) :
+    steinbergWeyl hij u * steinbergX (Ne.symm hik) d * (steinbergWeyl hij u)⁻¹
+      = steinbergX (Ne.symm hjk) (-(d * (((u : Rˣ)) : R))) := by
+  have hji : j ≠ i := Ne.symm hij
+  have hkj : k ≠ j := Ne.symm hjk
+  have hki : k ≠ i := Ne.symm hik
+  set U : R := ((u : Rˣ) : R) with hU
+  set V : R := (((u⁻¹ : Rˣ)) : R) with hV
+  have huv : U * V = 1 := by
+    rw [hU, hV, ← Units.val_mul, mul_inv_cancel, Units.val_one]
+  -- inner conjugation
+  have hin : steinbergX hij U * steinbergX hki d * (steinbergX hij U)⁻¹
+      = (steinbergX hkj (d * U))⁻¹ * steinbergX hki d :=
+    steinbergX_conj_chain' hki hij hkj d U
+  -- the middle generator sends the pair to a single factor
+  have hmid1 : steinbergX hji (-V) * steinbergX hkj (d * U) * (steinbergX hji (-V))⁻¹
+      = steinbergX hki d * steinbergX hkj (d * U) := by
+    have h := steinbergX_conj_chain' hkj hji hki (d * U) (-V)
+    have hval : d * U * -V = -d := by
+      calc d * U * -V = -(d * (U * V)) := by ring
+        _ = -d := by rw [huv, mul_one]
+    rw [hval] at h
+    have hinv : (steinbergX hki (-d))⁻¹ = steinbergX hki d := by
+      rw [steinbergX_neg hki d, inv_inv]
+    rwa [hinv] at h
+  have hmid2 : steinbergX hji (-V) * steinbergX hki d * (steinbergX hji (-V))⁻¹
+      = steinbergX hki d := by
+    have hcomm : steinbergX hji (-V) * steinbergX hki d = steinbergX hki d * steinbergX hji (-V) :=
+      steinbergX_commute hji hki hik hji _ _
+    rw [hcomm, mul_assoc, mul_inv_cancel, mul_one]
+  -- the outer generator commutes with `x_kj`
+  have hout : steinbergX hij U * steinbergX hkj (d * U) * (steinbergX hij U)⁻¹
+      = steinbergX hkj (d * U) := by
+    have hcomm : steinbergX hij U * steinbergX hkj (d * U)
+        = steinbergX hkj (d * U) * steinbergX hij U :=
+      steinbergX_commute hij hkj hjk hij _ _
+    rw [hcomm, mul_assoc, mul_inv_cancel, mul_one]
+  rw [steinbergWeyl]
+  calc steinbergX hij U * steinbergX hji (-V) * steinbergX hij U * steinbergX hki d
+        * (steinbergX hij U * steinbergX hji (-V) * steinbergX hij U)⁻¹
+      = steinbergX hij U * (steinbergX hji (-V)
+          * (steinbergX hij U * steinbergX hki d * (steinbergX hij U)⁻¹)
+          * (steinbergX hji (-V))⁻¹) * (steinbergX hij U)⁻¹ := by group
+    _ = steinbergX hij U * ((steinbergX hji (-V) * steinbergX hkj (d * U)
+          * (steinbergX hji (-V))⁻¹)⁻¹
+        * (steinbergX hji (-V) * steinbergX hki d * (steinbergX hji (-V))⁻¹))
+        * (steinbergX hij U)⁻¹ := by rw [hin]; group
+    _ = steinbergX hij U * ((steinbergX hki d * steinbergX hkj (d * U))⁻¹
+        * steinbergX hki d) * (steinbergX hij U)⁻¹ := by rw [hmid1, hmid2]
+    _ = steinbergX hij U * (steinbergX hkj (d * U))⁻¹ * (steinbergX hij U)⁻¹ := by group
+    _ = (steinbergX hij U * steinbergX hkj (d * U) * (steinbergX hij U)⁻¹)⁻¹ := by group
+    _ = (steinbergX hkj (d * U))⁻¹ := by rw [hout]
+    _ = steinbergX hkj (-(d * U)) := (steinbergX_neg hkj (d * U)).symm
+
+omit [DecidableEq n] in
+/-- **The Weyl element on the transposed generator.**  Composing the two row/column moves along
+`x_ji(b) = [x_jk(b), x_ki(1)]`. -/
+theorem steinbergWeyl_conj_transpose {i j k : n} (hij : i ≠ j) (hik : i ≠ k) (hjk : j ≠ k)
+    (u : Rˣ) (b : R) :
+    steinbergWeyl hij u * steinbergX (Ne.symm hij) b * (steinbergWeyl hij u)⁻¹
+      = steinbergX hij (-(((u : Rˣ) : R) * b * (((u : Rˣ)) : R))) := by
+  have hji : j ≠ i := Ne.symm hij
+  have hkj : k ≠ j := Ne.symm hjk
+  have hki : k ≠ i := Ne.symm hik
+  set U : R := ((u : Rˣ) : R) with hU
+  have hcomm := steinbergX_eq_commutator hjk hki hji b
+  have h1 := steinbergWeyl_conj_row hij hik hjk u b
+  have h2 := steinbergWeyl_conj_col hij hik hjk u (1 : R)
+  rw [one_mul] at h2
+  have hchain := steinbergX_chain hik hkj hij (U * b) (-U)
+  have hval : U * b * -U = -(U * b * U) := by ring
+  rw [hval] at hchain
+  rw [hcomm]
+  calc steinbergWeyl hij u * (steinbergX hjk b * steinbergX hki 1
+        * (steinbergX hjk b)⁻¹ * (steinbergX hki 1)⁻¹) * (steinbergWeyl hij u)⁻¹
+      = (steinbergWeyl hij u * steinbergX hjk b * (steinbergWeyl hij u)⁻¹)
+        * (steinbergWeyl hij u * steinbergX hki 1 * (steinbergWeyl hij u)⁻¹)
+        * (steinbergWeyl hij u * steinbergX hjk b * (steinbergWeyl hij u)⁻¹)⁻¹
+        * (steinbergWeyl hij u * steinbergX hki 1 * (steinbergWeyl hij u)⁻¹)⁻¹ := by group
+    _ = steinbergX hik (U * b) * steinbergX hkj (-U) * (steinbergX hik (U * b))⁻¹
+        * (steinbergX hkj (-U))⁻¹ := by rw [h1, h2]
+    _ = steinbergX hij (-(U * b * U)) := hchain
+
 end GaloisForLFunctions.HTGeometry
 
 end

@@ -946,3 +946,56 @@ entries `-c, c` cancel; the two families commute, which is what makes the collec
 The remaining move is `w_ij(u) x_ki(d) w_ij(u)^{-1} = x_kj(-d u)`; with it, `x_ji(b) = [x_jk(b),
 x_ki(1)]` gives `w_ij(u) x_ji(b) w_ij(u)^{-1} = x_ij(-u b u)`, and the Weyl action is completely
 determined.  That is the last input Milnor's proof of `{u, 1-u} = 1` needs from the group side.
+
+## Layer B — the Weyl action is completely determined, PROVED
+
+Same module.  The last two pieces:
+
+```
+steinbergWeyl_conj_col        w_ij(u) x_ki(d) w_ij(u)^{-1} = x_kj(-d u)
+steinbergWeyl_conj_transpose  w_ij(u) x_ji(b) w_ij(u)^{-1} = x_ij(-u b u)
+```
+
+The column move is the shortest of the four: the middle conjugation produces
+`x_ki(d) x_kj(dU)` for the first factor and leaves the second alone, and the two `x_ki` factors —
+one of them inverted — cancel outright, leaving a single `x_kj(dU)^{-1}`; the outer generator then
+commutes with it.
+
+So the Weyl element at `(i,j)` acts on every generator, and the action is the expected one:
+
+```
+x_ik(a) |-> x_jk(-u^{-1} a)          x_jk(c) |-> x_ik(u c)
+x_kj(b) |-> x_ki(b u^{-1})           x_ki(d) |-> x_kj(-d u)
+x_ij(a) |-> x_ji(-u^{-1} a u^{-1})   x_ji(b) |-> x_ij(-u b u)
+```
+
+All six from the three Steinberg relations alone.  Note the asymmetry between the two-index cases:
+conjugation inserts `u^{-1}` on both sides going one way and `u` on both sides going the other,
+which is exactly what makes `w_ij(u)^2 = h(-1)` and drives the torus computation.
+
+With the action determined, the group-side inputs to Milnor's proof of the Steinberg relation
+`{u, 1-u} = 1` are complete; what remains for that relation is the ring-side identity relating
+`h(u)`, `h(1-u)` and `h(u(1-u))` through the conjugation formulas above.
+
+## Layer B — the torus acts by the diagonal character, PROVED
+
+`HTGeometry/SteinbergTorusAction.lean` (wired, axiom-clean).
+
+```
+steinbergWeyl_neg_one_conj_self / _first / _col
+    at u = -1 the Weyl formulas degenerate: (-1)^{-1} = -1, so the signs cancel and w(-1)
+    acts by a bare transposition of the two indices
+
+steinbergTorus_conj_self   h(u) x_ij(a) h(u)^{-1} = x_ij(u a u)
+steinbergTorus_conj_first  h(u) x_ik(a) h(u)^{-1} = x_ik(u a)
+steinbergTorus_conj_col    h(u) x_ki(d) h(u)^{-1} = x_ki(d u^{-1})
+```
+
+Each is `w(-1)` then `w(u)`: the inner move transposes the indices with no unit, the outer one
+reinstates it.  These are exactly the conjugation formulas of the diagonal matrix `diag(u, u^{-1})`
+— which is what `steinbergToGL_torus` says on the matrix side — but proved in the *group*, where the
+map to matrices is not injective and so says nothing.
+
+This is the form in which the torus enters Milnor's proof of the Steinberg relation: `{u, 1-u} = 1`
+is extracted by conjugating a carefully chosen generator by `h(u) h(1-u) h(u(1-u))^{-1}` and using
+that the three scalings compose to the identity exactly when `u + (1-u) = 1`.

@@ -10810,3 +10810,50 @@ H, I, J   open
 T … AB    open
 AC, AM    open
 ```
+
+## ADK. `coalescing-anchor` — Theorem E, `(50)`, and the ground-frame overlap `(69)`–`(70)`
+
+```text
+HTGeometry/ApertureHyperbolicL2Expansion.lean   (refactored)
+  hasSum_apertureToLp            a uniformly dominated pointwise series of aperture functions
+                                 sums in L²; cosh, sinh and the Fourier character are instances
+  tendsto_apertureCoshL2         (47): cosh(cX) → 1 in L²
+  tendsto_inv_smul_apertureSinhL2 (47): c⁻¹ sinh(cX) → X in L²
+
+HTGeometry/VectorPowerSeriesLeadingOrder.lean   (extended)
+  norm_sub_leading_le            now two-sided: the tail past the leading index is O(|c|)
+  tendsto_smul_inv_pow_of_hasSum         the rescaled sum on 𝓝[>]0
+  tendsto_smul_inv_pow_of_hasSum_punctured  the same on 𝓝[≠]0
+
+RHTower/SuzukiCoalescingPositionTangent.lean
+  suzukiCoalescingEvenEnergy, suzukiCoalescingOddEnergy      (44)
+  suzukiPositionResolventTangent                             (45)
+  tendsto_one_sub_suzukiCoalescingDefect_rate   **Theorem E (46)**
+  inner_apertureMonomialL2_{zero,one}_self      ⟨1,1⟩ = 2a, ⟨X,X⟩ = 2a³/3
+  suzukiPositionResolventTangent_id             **(50)**: the free value is a²/3
+
+HTGeometry/ApertureExponentialL2Expansion.lean
+  apertureComplexMonomialL2, apertureFourierL2, hasSum_apertureFourierL2
+  fourierGroundVector, summable_norm_fourierGroundVector
+  tendsto_smul_inv_pow_apertureFourier      **(69)**: w_a(x) = (−ix)^k u_a + O(x^{k+1})
+  groundOverlap, groundOverlap_real_smul, groundOverlap_unimodular_smul
+  tendsto_groundOverlap_apertureFourier     **(70)**: the normalized overlap tends to one
+```
+
+**Theorem E needs no expansion bookkeeping.**  The card's `(47)`–`(48)` are two vector limits —
+`cosh(cX) → 1` and `c⁻¹sinh(cX) → X` in `L²` — after which the energies converge by continuity of
+`(x,y) ↦ ⟪x,Ry⟫` and `1 − κ = 2O/(E+O)` divides through.  The `O(c⁴)` remainder of `(46)` is not
+needed for the statement `(1−κ)/(2c²) → q_a`; that limit form is what Theorems A, B and F.1 consume.
+
+**`(50)` is exact, not asymptotic, at the identity resolvent.**  `⟨X,X⟩/⟨1,1⟩ = (2a³/3)/(2a) = a²/3`
+on the nose, which is the same constant as the free hyperbolic endpoint `(14)`.  The card's `(50)`
+is the strong-resolvent limit of `q_a`; the value it converges to is now Lean-exact.
+
+**`(69)`–`(70)` are the same leading-order theorem, one degree of generality up.**  The Fourier
+character expands in `L²` on the aperture exactly as `cosh` and `sinh` do, and an observable killing
+the monomials below degree `k` reads only the degree-`k` coefficient.  The normalized overlap is
+invariant under the real rescaling, so it converges to the overlap of the leading direction with
+itself, which is one.  This is the card's point that vanishing at `x = 0` is forced, not a coherence
+defect.
+
+All new declarations audit to `[propext, Classical.choice, Quot.sound]`.

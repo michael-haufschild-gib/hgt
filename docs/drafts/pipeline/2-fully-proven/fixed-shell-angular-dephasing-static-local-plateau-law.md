@@ -598,17 +598,52 @@ the second variation then gives `L_0(z)·d²_x L(z,0) = kappa Q(V_A)`; the respo
 packet at the ordered old gaps; residues vanish; a nonzero affine `L_0` has one root so at most one
 ordered pair escapes; the crown graph survives one deletion.  Every step is unconditional.
 
+`formal/GaloisForLFunctions/HTGeometry/AnalyticFiniteProductDomain.lean` supplies the two
+globalisation steps of `(14)`.
+
+| Card item | Declaration |
+|---|---|
+| a finite product of analytic functions is analytic | `analyticOnNhd_finsetProd` |
+| **a finite product vanishing on a connected open set has a vanishing factor** -- the identity theorem iterated, so "a finite product of analytic functions can vanish identically only if one factor does" is formal | `exists_eqOn_zero_of_finsetProd_eqOn_zero` |
+| **a real polynomial vanishing on a nonempty open parameter set is zero** -- the zero set of a nonzero real polynomial is Lebesgue-null while an open set is not | `realMvPolynomial_eq_zero_of_eqOn_zero_isOpen` |
+
+Homogeneity of the defect, which converts flatness on a sphere patch into the cone identity
+`(13)`, is `quadraticRateDefect_smul` in `QuadraticRateSpectralRigidity`.
+
+`formal/GaloisForLFunctions/HTGeometry/EndpointProbeTransitionCriterion.lean` formalises the exact
+criterion Lemma A1 is about: for a probe supported on the endpoint factor,
+`⟨psi, (X ⊗ 1) phi⟩ = Tr(X · R)` with `R_{ji} = ∑_k phi(j,k) conj(psi(i,k))`.
+
+| Card item | Declaration |
+|---|---|
+| the reduced transition operator `Tr_ū |psi_beta><psi_alpha|` | `reducedTransition` |
+| **endpoint probes pair only through it** | `endpointPairing_probe_eq_trace` |
+| explicit Hermitian endpoint probes on one pair of levels, and their traces | `unitProbe`, `symmetricProbe`, `skewProbe`, `trace_symmetricProbe_mul`, `trace_skewProbe_mul` |
+| **a nonzero reduced operator is already seen by an explicit Hermitian probe** | `exists_hermitian_endpointProbe_ne_zero` |
+| **the blindness criterion**: every Hermitian endpoint probe annihilates a pair exactly when the reduced operator vanishes | `reducedTransition_eq_zero_iff` |
+
+So endpoint completeness is now a single, concrete nonvanishing condition on the eigenbasis, and
+Hermitian probes are shown to be no weaker than arbitrary ones.
+
 ### What remains for Theorem A
 
-1. homogeneity of the eigenvalue branches, turning flatness of `phi_k` on a sphere patch into the
-   cone identity `(13)`;
-2. gluing: a polynomial vanishing on a nonempty open set of parameters vanishes identically
-   (`HTGeometry.AlgebraicIndependenceFromDifferentials.mvPolynomial_eq_zero_of_eqOn_zero_isOpen`),
-   and a finite product of analytic functions on a connected chart vanishes only if one factor
-   does (`HTGeometry.DirectionalMeromorphicField.analyticOnNhd_domain'`);
-3. Lemma A1's endpoint-complete witness -- the only remaining *input* to Lemma A2 -- on top of the
-   corpus's `HTGeometry.CompleteObserverSpectralSeed`, `HTGeometry.ChartProbeFamilyReduction` and
-   the already-formalized `exists_uniformQubitChainMaximalRank_dense_residual_fullMeasure` of the
-   parent card, which supplies simple spectrum, `MaximallyProjectiveEnergy` and
-   `maximallyProjectiveEnergy_orientedGap_injective` (distinctness of all nonzero ordered gaps --
-   exactly the `hgap` hypothesis of `localExtension_quadraticRate_collapse`).
+Only **Lemma A1's witness**.  Everything downstream of it is formal: `quadraticRateDefect_smul`
+gives `(13)`; `realMvPolynomial_eq_zero_of_eqOn_zero_isOpen` and
+`exists_eqOn_zero_of_finsetProd_eqOn_zero` glue `(14)`; `localExtension_quadraticRate_eq_zero` is
+Lemma A2 in full; and `reducedTransition_eq_zero_iff` turns endpoint completeness into the single
+condition `reducedTransition psi_alpha psi_beta != 0` for every pair.
+
+What Lemma A1 still has to produce, for every path length, is one parameter point of the
+path-local family at which
+
+* the spectrum is simple with all nonzero ordered gaps distinct -- already delivered on a dense
+  residual full-measure set by the parent card's
+  `exists_uniformQubitChainMaximalRank_dense_residual_fullMeasure` together with
+  `maximallyProjectiveEnergy_orientedGap_injective`; and
+* every pair of eigenvectors has nonvanishing endpoint-reduced transition.
+
+The second is genuinely perturbative: product eigenvectors fail it (two states differing only in
+the complementary factor have vanishing reduced transition), so a witness must be entangled, which
+is exactly the card's attach-a-qubit induction.  The corpus's
+`HermitianAllVertexGoodLeafExtension` / `LocalExtensionChartProbeSupportOpenness` family runs the
+analogous induction for observer-support graphs and is the intended base to build on.

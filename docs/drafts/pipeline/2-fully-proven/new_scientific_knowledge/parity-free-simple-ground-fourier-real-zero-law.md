@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven / needs independent specialist audit
 - **Route:** U, full restricted-Weil ground selection
 - **Type:** THEOREM + FAILED CLOSURE AUDIT (paper)
-- **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [FINITE ODD THEOREM LEAN-PROVED] [ANALYTIC LIMIT LEAN-PROVED] [COMPRESSION WIRING OPEN]`
+- **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [SECTIONS 1--3 LEAN-PROVED FOR EVERY PACKET] [SECTION 4 ANALYTIC LIMIT LEAN-PROVED] [COMPRESSION MATRIX IDENTIFICATION OPEN]`
 - **External parent:** Connes--van Suijlekom,
   [Quadratic Forms, Real Zeros and Echoes of the Spectral Action](https://arxiv.org/abs/2511.23257)
 - **Statement:** For the reflection-invariant truncated-convolution operators of
@@ -427,3 +427,61 @@ compressions `E_N` of `ccmRestrictedWeilOperator`, together with the identificat
 compressed matrices with `ccmPublishedParityShift`, so that `GroundGapCompression` /
 `SymmetricCompressionGround` supply the mean-square hypothesis of
 `ccmOddGroundLimit_compactFourier_zero_im_eq_zero`.
+
+### Sections 1--3 are now formal for an arbitrary packet, and so is the analytic limit
+
+The finite theorem was previously formal only for the published restricted-Weil packet.  The new
+module removes that restriction: it proves the parity-block construction from three structural facts
+alone, and then instantiates them for an arbitrary centered divided-difference matrix, which is
+exactly the matrix class of section 1.
+
+    RHTower/CCMGeneralParityOddGroundAdapter.lean
+      exists_ccmParityFreeOddGroundData_of_blocks
+                                                only positive semidefiniteness of the two parity
+                                                blocks, the rank-one cross commutator `(PF.1)`, and a
+                                                simple visible odd kernel are used; the normalization
+                                                `(PF.5)` is produced internally
+      ccmParityEvenBlockOf, ccmParityOddBlockOf,
+        ccmParityEvenBlockOf_posSemidef,
+        ccmParityOddBlockOf_posSemidef          the parity blocks of an arbitrary centered packet
+      ccmParity_mul_evenFrame_of_commutes,
+        ccmParity_mul_oddFrame_of_commutes      reflection commutation alone splits the packet along
+                                                the two parity frames
+      ccmParityCross_commutator_of_displacement **(PF.1)** the rank-two clock commutator
+                                                `|β⟩⟨η| − |η⟩⟨β|` compresses to the rank-one cross
+                                                commutator required by the parity-free data
+      exists_ccmParityFreeOddGroundData_of_simple_odd_ground
+                                                the full finite adapter for an arbitrary
+                                                reflection-symmetric displacement packet
+      ccmOddGroundCoeff_smul, ccmTrigPoly_smul,
+        compactFourier_ccmTrigPoly_smul          rescaling the kernel vector does not move the
+                                                Fourier zeros
+      ccmGeneralParityOddGround_compactFourier_zero_im_eq_zero
+                                                the finite odd theorem for any such packet
+      ccmCenteredParityPacket, ccmCenteredParitySourceFull,
+        ccmCenteredParityPacket_commutes_reflection,
+        ccmCenteredParitySourceFull_odd,
+        ccmCenteredParityPacket_displacement    an arbitrary centered divided-difference matrix with
+                                                odd source and reflection-even diagonal, after any
+                                                spectral-floor shift, satisfies the three structural
+                                                hypotheses
+      ccmCenteredDividedDifferenceOddGround_compactFourier_zero_im_eq_zero
+                                                **section 1 verbatim**: `Q ≥ 0` real symmetric with
+                                                `q_{ij} = (b_i − b_j)/(i − j)`, `b_{-j} = −b_j`,
+                                                arbitrary reflection-even diagonal, and
+                                                `ker Q = ℝξ` with `Γξ = −ξ`, forces every zero of
+                                                `ξ̂` to be real
+      ccmCenteredDividedDifferenceOddGroundLimit_compactFourier_zero_im_eq_zero
+                                                **section 4's analytic half verbatim**: a
+                                                mean-square limit of such odd kernel vectors with a
+                                                nonvanishing transform again has only real Fourier
+                                                zeros
+
+What remains is now a single analytic construction, unchanged in kind but now stated against the
+general packet: for a real truncated-convolution form on `L²` with a simple isolated odd ground,
+produce the symmetric Fourier compressions, show their matrices are centered divided-difference
+matrices with odd source and reflection-even diagonal, and show their odd grounds converge in mean
+square to the ground.  The variational half of that construction (`compress`,
+`exists_compressed_ground`, `finrank_le_one_of_compressed_rayleigh_lt` in
+`HTGeometry/SymmetricCompressionGround.lean`) is already formal; the missing step is the matrix
+identification of the compressed form.

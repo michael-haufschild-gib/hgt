@@ -95,6 +95,20 @@ theorem quadraticRateDefect_eq_zero_of_nhds (c : I → ℝ) (κ : ℝ) (p : I �
   exact quadraticRateDefect_eq_zero_of_symmetric_pair c κ p E hs
     (hzero p (mem_of_mem_nhds hS)) (hzero _ hp) (hzero _ hm)
 
+/-- **Homogeneity.**  The quadratic-rate defect is homogeneous of degree two, so vanishing on a
+sphere patch is the same as vanishing on the open cone over it. -/
+theorem quadraticRateDefect_smul (c : I → ℝ) (κ t : ℝ) (F : I → ℝ) :
+    quadraticRateDefect c κ (fun i => t * F i) = t ^ 2 * quadraticRateDefect c κ F := by
+  have h1 : (∑ i, c i * (t * F i)) = t * ∑ i, c i * F i := by
+    rw [Finset.mul_sum]
+    exact Finset.sum_congr rfl fun i _ => by ring
+  have h2 : (∑ i, (t * F i) ^ 2) = t ^ 2 * ∑ i, F i ^ 2 := by
+    rw [Finset.mul_sum]
+    exact Finset.sum_congr rfl fun i _ => by ring
+  simp only [quadraticRateDefect]
+  rw [h1, h2]
+  ring
+
 /-! ## The two-level test directions -/
 
 variable [DecidableEq I]

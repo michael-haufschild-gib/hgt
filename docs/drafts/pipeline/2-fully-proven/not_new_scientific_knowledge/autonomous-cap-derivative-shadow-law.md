@@ -45,7 +45,7 @@ The nonincreasing staircase
 
 is the **derivative-shadow signature** of `u`. Minimal ADE order is only its first entry.
 
-The general field-geometric background is separated as the proved bridge `2-fully-proven/not_new_scientific_knowledge/ht-infinite-additive-torsor-staircase.md`: HT is equivalent to an inexhaustible all-ones tower of primitive derivative-shadow extensions.
+The general field-geometric background is separated as the proved bridge `3-formalized/not_new_scientific_knowledge/ht-infinite-additive-torsor-staircase.md`: HT is equivalent to an inexhaustible all-ones tower of primitive derivative-shadow extensions.
 
 ## Finite-jet shadow theorem
 
