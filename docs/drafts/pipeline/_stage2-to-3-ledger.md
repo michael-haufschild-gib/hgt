@@ -3967,3 +3967,20 @@ Theorems B, C and D of that card remain.
 **Promoted.**  `prime-torsion-recurrence-polygon-complexity-law` moved to
 `docs/drafts/pipeline/3-formalized/`.  Sections 1--6 are Lean-closed and axiom-clean; section 7's
 conjecture loop and the open effective-onset question are not theorems of the card.
+
+### Theorem B of the arithmetic moving-window card
+
+- `HTGeometry/ArithmeticWindowHardCell.lean` -- `(24)` and `(25)`, both axiom-clean.  `(26)` is the
+  corpus's `measureReal_capture_le_return_add_replicaMoment` at the empty return set: its right-hand
+  side already *is* `dim span{z^{⊗r}} · r! · (16 C_H(Ω)/a₀²)^r`.  Since `volume_torusBox = 1`, the
+  card's `(22)` makes the capture event a proper subset, giving a hard phase centre.
+  The "descent to the relative torus" is done pointwise, not measure-theoretically: the centre is
+  chosen in the full torus and the explicit common shift `s = θ_{*,0} - (ψ_0 - tE_0)` moves the
+  trajectory phase into the full-torus cube, with `finitePureStateFidelity_radianOrbit_add_const`
+  showing the overlap score never sees `s`.  Coordinate `0` then contributes `turnDist 0 = 0` and
+  the rest contribute exactly `cubeVisit` membership.
+  Reusable: `abs_finitePureStateFidelity_sub_le` (the score is 2-Lipschitz in coordinates),
+  `norm_exp_ofReal_mul_I_sub_le_turnDist` and `turnDist_neg`, `norm_radianOrbit_sub_le`.
+  What remains on that card is only Theorem C's *existence* step (Castillo--Dietmann quantitative
+  Hilbert irreducibility, plus the `generic-two-local-spectral-monodromy` parent) and Theorem D,
+  which reuses it.

@@ -25,9 +25,9 @@ theorem LadderEnvelope.lower_ratio_tendsto_zero
     Tendsto (fun lam => D lam j / D lam (k + 1)) atTop (nhds 0) := by
   refine squeeze_zero' (Eventually.of_forall fun lam =>
     div_nonneg (h.nonneg lam j) (h.nonneg lam (k + 1))) ?_ (h.ratio_tendsto_zero k)
-  filter_upwards [h.lt_succ k] with lam hlt
+  filter_upwards [h.lt_succ k, h.mono] with lam hlt hmono
   have hden : 0 < D lam (k + 1) := lt_of_le_of_lt (h.nonneg lam k) hlt
-  exact (div_le_div_iff_of_pos_right hden).2 (h.mono lam hjk)
+  exact (div_le_div_iff_of_pos_right hden).2 (hmono j k hjk)
 
 /-- The depth-`k` raw defect collapses for every clock-enveloped CCM family, not only for the
 Gaussian Fuchs clock. -/

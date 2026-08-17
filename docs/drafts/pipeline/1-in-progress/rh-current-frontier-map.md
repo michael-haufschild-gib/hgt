@@ -6,9 +6,7 @@ This document is a state map of the `HTGeometry`, `HilbertMetric`, and `RHTower`
 It records current proof architectures, theorem chains, first open source statements, terminal
 mechanisms, and structural conclusions shared across routes. It is not a chronology or build log.
 
-**Corpus cutoff:** 17 August 2026, committed snapshot
-`7091e666dc210947c5559248dfbb08e74e955e74e`. Statements below distinguish unconditional source
-theorems from RH-equivalent receivers and interfaces whose analytic hypotheses are merely supplied.
+**Corpus cutoff:** 17 August 2026, commit `16927218e406267bdc0ea7c417cd67727f27312d`, plus declaration-level working-tree review. Unconditional theorems remain distinct from supplied interfaces.
 
 RH and its negation remain unproved. Current live architecture count is:
 
@@ -45,10 +43,10 @@ route under corpus source-isogenies.
 | E | squarefree central Wold shell → explicit parity-coalesced/whole-anchor opposite-sign relation → physical Carleson and co-moving flux → Mertens cancellation → RH | Upgrade fixed-relation near-Hall and polylog/subpower incoming bounds to unit interval Carleson load and normalized moving-seam flux. Exact log-window transfer is closed. The required upstream short-window rate is Menon's `(log log L)^2/(log L)^2`, not Matomäki--Radziwiłł's weaker logarithmic power; all-interval `E_3` is separately needed. Neither import proves unit capacity. |
 | G | Suzuki/CCM source → restricted-Weil Morse floor or one-sided Euler--Gamma/Carleman wall → aperture-dressed FE light completion → Hermite–Biehler orientation → RH | Floor: aperture-Morse exhaustion/boundary-rough exclusion. Coalescing high-assisted branch is now exactly source-cyclic: prove literal low-source cyclic singular mass above `1/113` is `o(r/log^2(1/r))`, or construct the opposite lower-bound family already forced by Lean. Low-only schedules retain their aperture ceiling. Wall: compare prime-minus-regular-screw Ward mass with dressed negative light and holonomy. |
 | L | arithmetic Poisson/Green complex → source Green closure and harmonic complement → faithful cup-isometric Meyer comparison → positive Hodge block → critical line → RH | Construct the source-derived arithmetic Calderón intermediate extension and its closed Lagrangian boundary relation at the critical `x^(1/2)` scale. The reciprocal-weight Gamma-six/Wold--Jordan two-port descent is now terminal: it factors through one free scalar and is false away from scalar zero, so same-fibre fixed-star or `1/p` Hessian descent is a receiver, not the producer. |
-| O | restricted-Weil operator → exact compact Birman--Schwinger/Gamma--Slepian decomposition → finite dangerous block → nonnegative cofinal floor → RH | Indexed prolate structure and Fourier-even coordinate limits are closed. Under one actual leakage `LadderEnvelope`, every fixed constrained depth has an eventual exact eigenpair and all earlier normalized raw defects vanish. Prove the envelope for literal leakages, then the source-relative finite-block lower bound; the latter remains RH-bearing whole-ground gate. |
+| O | restricted-Weil operator → exact compact Birman--Schwinger/Gamma--Slepian decomposition → finite dangerous block → nonnegative cofinal floor → RH | Indexed prolate structure and Fourier-even coordinates are closed. Lean now proves canonical upper leakage at every index, ground included. Finish the literal common-clock envelope, then prove source-relative finite-block lower bound; only the latter is RH-bearing. |
 | P | primitive Euler/Burnol budget → Julia--Krein completion → spectrum-moving prime--Gamma transport or non-spectral contraction → RH | Literal prime-log `det₂` carrier exists, but its forced zero at `1` while `XiC(1) != 0` rules out direct identification and every pointwise scalar correction. Construct a source-derived operator coupling that changes the source divisor coefficient- and multiplicity-faithfully, or prove the non-spectral conormal contraction. |
 | Q | theta–Cassini source → separated finite prime–Gamma packet sign → transverse charge zero → RH | Produce nonnegative energy cofinally toward orientation vector. Null boundaries have hidden mixed incidence `-E/2`; diagonal budgets and adaptive complex phases cannot repair fusion. Alternative UQ-QC asks for finite pre-divisor quadratic-concentration budget. |
-| T | centered prime--Gamma source → detector/Mellin packet, Wold residual ODE, true-prime Bessel cone, or sub-square-root massive chirp → RH | Unsigned `71/100` supply and sharp log-weighted twisted-prime contour bounds are closed. Prove half-height residual variation and signed gap-square exponent below `3/2`; or assemble the now-proved caustic-null jet gain through retreat/penetration into type-zero true-prime cancellation; or construct a full-growing-Xi chirp projector with literal prime-side control. |
+| T | centered prime--Gamma source → detector/Mellin packet, Wold residual ODE, true-prime Bessel cone, or sub-square-root massive chirp → RH | Unsigned `71/100` supply and sharp twisted-prime bounds are closed. Window/far-field jet envelopes and conditional exterior prime-tail summation are formal. Splice them at moving retreat to obtain `(22.8)`, then prove signed type-zero assembly; residual/sub-`3/2` and growing-Xi chirp branches remain. |
 | U | shifted-Xi Hankel first crossing → boundary-rough completed null ground → restricted-Weil positivity → RH | Lean proves `RH ∨ CCMFirstContactBoundaryRoughness`: off RH the least zero aperture has a genuine null ground absent from every strict smooth interior source. Exclude this completed-boundary state by a trace/quotient or whole-ground theorem. |
 
 ## Live architectures
@@ -1267,15 +1265,13 @@ dimension and transports it to joint prolate span. Fixed-rung min--max count is 
 theorem, not a pending estimate. Later indexed-spectrum modules propagate it to literal signed
 family and prove global order; no such propagation controls prime--polar Birman--Schwinger block.
 
-The constrained Fourier-even ladder is now exact up to one clearly named hypothesis. Lean proves
-every indexed rung's Hermite profile, total mass, integral coordinate, and constrained-coordinate
-limit. For any actual leakage `LadderEnvelope`, every fixed depth eventually has a genuine nonzero
-secular eigenpair, and every preceding normalized raw contrast tends to zero with strong `ell2`
-depth-vector convergence. The common exponential clock cancels; only step-eight polynomial
-separation matters. `ProlateIndexedLeakageTwoSided` and `ProlateLeakageRatioBounds` instantiate
-sharp two-sided action bounds for positive indexed modes, but the corpus does not yet supply the
-complete literal leakage envelope, including its ground rung. This is a local prolate formal gap,
-not Route O's RH-bearing whole-ground sign theorem.
+The constrained Fourier-even ladder is exact up to literal clock-envelope assembly. Every indexed
+rung has proved Hermite profile, mass, integral, and constrained-coordinate limits. Any leakage
+`LadderEnvelope` gives eventual nonzero secular eigenpairs, earlier raw-contrast collapse, and strong
+depth-vector convergence. Positive modes have sharp two-sided action bounds. The lifted Riccati
+barrier removes `4 <= c*s`; `ProlateGroundLeakageUpper` proves canonical eventual upper leakage at
+every index, ground included, within factor `e`. Remaining local work is one common-clock/polynomial
+envelope. This is backlog, not whole-ground sign theorem.
 
 The optional determinant landing now has a sharp rate gate. Mellin evaluation on
 `[lambda^(-1),lambda]` has squared norm `sinh(2a log lambda)/a` at strip height `a`, hence grows
@@ -1868,28 +1864,28 @@ survive only at isolated spacelike saddles. Moreover dyadic physical apertures a
 Cauchy in vertical sup norm. Finite-aperture uniform completion is therefore closed negatively;
 cancellation must be cofinal and observation-coupled.
 
-The local caustic analytic loss is now closed. Lean builds the Bessel height differential system,
-coefficient ring, and jet recursion, proves exact cancellation of the caustic symbol, and uses
-holomorphic conjugated carriers plus iterated Cauchy estimates to obtain on the full square-root
-balance window
+The local caustic analytic loss is closed. Lean builds the Bessel height system, coefficient ring,
+jet recursion, exact caustic-symbol cancellation, and holomorphic Cauchy transport. On the full
+square-root balance window it proves
 
 ```text
 ||(4a^4-partial_h^2)^n XiMass(u,h)||
   <= C u^(-(n+1)/2) exp(-a sqrt(h^2-u^2)).
 ```
 
-This is `(22.7)`: one half-power per caustic-null step, without stationary phase. Remaining Bessel
-work is `(22.8)`--`(22.11)`: feed the estimate through the already-formal retreat/penetration
-argument with `beta=N+1/2`, then prove signed arithmetic annular/type-zero assembly.
+This is `(22.7)`: one half-power per caustic-null step, without stationary phase. Far-field jets for
+every `h >= kappa_B u` have no polynomial height loss. `XiMassJetPrimeTail` now defines the literal
+jet atom and proves its exterior prime-tail sum from any cone envelope. Remaining analytic theorem
+is only the moving-retreat splice of window and far field producing the required `u^(-N-1/2)`
+envelope in `(22.8)`; `(22.10)`--`(22.11)` follow. Signed type-zero assembly remains source gate.
 
 **Open core.** Three non-equivalent producer options remain:
 
 1. use the now-constructed prime-free adjacent physical-slice defect, prove half-height residual
    variation (or a phase-sensitive substitute) from pre-divisor Wold source, and obtain a critical
    prime-gap square moment below exponent `3/2`; corpus detector consequence `1.71` is insufficient;
-2. assemble the proved caustic-null jet estimate through retreat/penetration and prove type-zero
-   control of literal moving true-prime quadrature defect with phase intact, equivalently a
-   source-specific cofinal cancellation law across timelike continuum;
+2. splice window/far-field envelopes at moving retreat to prove `(22.8)`, then type-zero control of
+   literal true-prime quadrature defect with phase intact;
 3. upgrade finite-packet mass-chirp separation to growing complete Xi divisor with a positive or
    projected mean-square bound stable under tail, and derive that observable from literal
    prime--Gamma source.
@@ -2512,6 +2508,11 @@ New scalar-monodromy theorem strengthens algebraic side: arbitrarily many distin
 multipliers force moved germ transcendental over fixed subalgebra and yield pairwise algebraic
 independence with a fixed germ. Without Xi-typed source coupling this remains admissibility, not
 zero-location mechanism. Evidence is `HTGeometry/ScalarMonodromyAlgebraicIndependence.lean`.
+
+Period escape proves noncompact period quotient for hypertranscendental meromorphic elements; Rolle gives multiplicity-exact zero descent; Voros identifies regularized `-xi'/xi` coefficients, not zero
+sums or positivity. Arithmetic hard cells give positive-density phase avoidance; all-order context
+fracture shows every maximal proper subcontext can be PSD while full kernel is not. These generic
+adapters supply no Euler--Gamma source sign, ground selection, or new RH route.
 
 ### Reciprocal-scale data has a sharp RH-sensitivity firewall
 
@@ -3810,9 +3811,9 @@ Highest-value research topics are those capable of supplying one of these consti
   half-power prime scale; reciprocal fixed-star/Wold--Jordan descent is closed negatively;
 - arithmetic Hall expansion for fixed factorization-generated graphs with simultaneous local load
   and moving-cutoff signed flux;
-- half-height Wold residual variation with prime-gap square moment below `3/2`; or assembly of the
-  proved caustic-null half-power jet gain through retreat/penetration into type-zero Bessel defect
-  control; or growing-packet uniform mean-square separation for sub-square-root massive chirp with
+- half-height Wold residual variation with prime-gap square moment below `3/2`; or the remaining
+  caustic jet-atom tail sum followed by type-zero Bessel defect control; or growing-packet uniform
+  mean-square separation for sub-square-root massive chirp with
   literal prime-side projector; unsigned supply and finite-packet separation are closed;
 - pretentious-distance continuation from Euler-convergent line into completed prime–Gamma strip;
 - Route-Q arithmetic incidence or multi-observable structure that is not measurable from scalar
@@ -3992,9 +3993,8 @@ degree reverse Bessel remains an unlettered disproof opening.
 Latest corpus narrows five frontiers. E needs Menon-strength Möbius rate, not bare MR rate, before
 its still-harder unit-capacity/flux theorem. G high assistance is forced into quantified
 source-cyclic mass above `1/113`. L's reciprocal Wold--Jordan/fixed-star producer is closed
-negatively; only critical-scale arithmetic Green/Hodge construction survives. O has exact
-Fourier-even coordinate/clock consequences under a literal leakage envelope, while whole-ground
-finite-block sign remains RH-bearing. T has sharp log-weighted twisted-prime control and the full
-caustic-null `(22.7)` jet gain; signed sub-`3/2`, retreat/type-zero assembly, and growing-Xi chirp
-remain open. Beurling sensitivity and functional-equation firewalls create no route. No route proves
-or disproves RH.
+negatively; only critical-scale arithmetic Green/Hodge construction survives. O now has canonical
+all-index upper leakage, ground included; common-clock assembly is backlog, whole-ground finite-block
+sign RH-bearing. T has window/far-field jets and conditional prime-tail summation; moving-retreat
+splice, signed sub-`3/2`, type-zero assembly, and growing-Xi chirp remain. New generic adapters and
+Beurling firewalls create no route. No route proves or disproves RH.

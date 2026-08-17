@@ -105,6 +105,67 @@ theorem primeLabelledEnergyReporter_woldFixedLeftRightEdgeNormalizedPacket
   change (M : ℂ)⁻¹ * (((c (nthPrimeSubtype a) : ℝ) : ℂ) * (M : ℂ)) = _
   field_simp
 
+/-! ## Complete classification of prime-labelled singular-graph descent -/
+
+/-- A prime-labelled finite reporter descends through the actual Big--Witt singular source graph
+when one continuous graph reporter agrees with it on every genuine normalized fixed-left row. -/
+def PrimeLabelledActualSourceDescends (c : Nat.Primes → ℝ) : Prop :=
+  ∃ reporter : DeningerBigWittCrossPairSingularOneLegGraph →L[ℂ] ℂ,
+    ∀ a n : ℕ,
+      reporter (deningerBigWittCrossPairFiniteOneLegGraphAdmission
+        (deningerBigWittWoldFixedLeftRightEdgeNormalizedPacket a n)) =
+      primeLabelledEnergyReporter c
+        (deningerBigWittWoldFixedLeftRightEdgeNormalizedPacket a n)
+
+/-- **Complete prime-labelled descent classification.** A continuous reporter on the existing
+singular graph can agree with a prime-labelled finite reporter on all genuine normalized fixed-left
+Big--Witt rows exactly when its coefficients are constant along the canonical prime enumeration.
+
+The forward implication uses that every fixed-left row converges to the same singular vector.  The
+converse is supplied by the already-constructed continuous graph trace, since every normalized row
+has trace one. -/
+theorem primeLabelledActualSourceDescends_iff (c : Nat.Primes → ℝ) :
+    PrimeLabelledActualSourceDescends c ↔
+      ∃ z : ℝ, ∀ a : ℕ, c (nthPrimeSubtype a) = z := by
+  constructor
+  · rintro ⟨reporter, hreporter⟩
+    have hlimit (a : ℕ) :
+        ((c (nthPrimeSubtype a) : ℝ) : ℂ) =
+          reporter deningerBigWittCrossPairOneLegGraphSingularVector := by
+      have hreported : Tendsto
+          (fun n => reporter (deningerBigWittCrossPairFiniteOneLegGraphAdmission
+            (deningerBigWittWoldFixedLeftRightEdgeNormalizedPacket a n)))
+          atTop (nhds (reporter deningerBigWittCrossPairOneLegGraphSingularVector)) :=
+        (reporter.continuous.tendsto
+          deningerBigWittCrossPairOneLegGraphSingularVector).comp
+            (tendsto_deningerBigWittCrossPairFiniteOneLegGraphAdmission_woldFixedLeftRightEdgeNormalizedPacket a)
+      have hreported' : Tendsto
+          (fun _n : ℕ => ((c (nthPrimeSubtype a) : ℝ) : ℂ))
+          atTop (nhds (reporter deningerBigWittCrossPairOneLegGraphSingularVector)) := by
+        refine hreported.congr ?_
+        intro n
+        rw [hreporter, primeLabelledEnergyReporter_woldFixedLeftRightEdgeNormalizedPacket]
+      exact tendsto_nhds_unique tendsto_const_nhds hreported'
+    refine ⟨c (nthPrimeSubtype 0), ?_⟩
+    intro a
+    have hcomplex :
+        ((c (nthPrimeSubtype a) : ℝ) : ℂ) =
+          ((c (nthPrimeSubtype 0) : ℝ) : ℂ) :=
+      (hlimit a).trans (hlimit 0).symm
+    exact_mod_cast hcomplex
+  · rintro ⟨z, hz⟩
+    refine ⟨(z : ℂ) • deningerBigWittCrossPairOneLegGraphTrace, ?_⟩
+    intro a n
+    rw [primeLabelledEnergyReporter_woldFixedLeftRightEdgeNormalizedPacket]
+    change (z : ℂ) * deningerBigWittCrossPairOneLegGraphTrace
+        (deningerBigWittCrossPairFiniteOneLegGraphAdmission
+          (deningerBigWittWoldFixedLeftRightEdgeNormalizedPacket a n)) =
+      ((c (nthPrimeSubtype a) : ℝ) : ℂ)
+    rw [deningerBigWittCrossPairOneLegGraphTrace_finiteAdmission,
+      deningerBigWittCrossPairAlgebraicOneLegTrace_woldFixedLeftRightEdgeNormalizedPacket,
+      hz a]
+    simp
+
 /-! ## The descent predicate for a free real parameter -/
 
 /-- The Wold--Jordan actual-source descent predicate with the Gamma-six harmonic weight replaced by

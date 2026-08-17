@@ -8874,3 +8874,38 @@ from the two envelopes above; then the existing prime-log tail
 (`XiMassShellExteriorTail.sum_prime_log_rpow_tail_le`, used by
 `sum_norm_xiMassCenteredPrimeAtom_exteriorSqrt_le`) sums it, giving `(22.8)`.  `(22.10)`--`(22.11)`
 are its arithmetic consequences.
+
+### C42-T: the jet-modified prime tail (2026-08-17)
+
+    RHTower/XiMassJetPrimeTail.lean
+      xiMassJetPrimeAtom                       `Λ(p)p^{-1/2}·F_{u,N}(log p)`
+      norm_xiMassJetPrimeAtom_le               the pointwise majorant from *any* envelope
+                                               `‖F(h)‖ ≤ B·e^{-a√(h²−u²)}` on the cone
+      sum_norm_xiMassJetPrimeAtom_le           the tail sum from a global envelope
+      sum_norm_xiMassJetPrimeAtom_subset_le    the same over a sub-range — the majorant is
+                                               nonnegative, so the summation range may be widened
+                                               to the full cone tail
+
+Stating the tail estimate through an envelope rather than through a fixed profile is what makes it
+reusable: the arithmetic (one von Mangoldt weight, one prime-log power series, `sum_prime_log_rpow_
+tail_le`) is identical to the unmodified case, and the entire content of the jet is the size of `B`.
+The sub-range form is needed because the two envelopes differ: inside the balance window `B` carries
+the gain `u^{-(n+1)/2}`, outside it `B` is an absolute constant.
+
+**A correction to `(22.8)`'s reading.**  Past the balance ray the symbol is `O(1)`, so the jet gives
+*no* gain there and the far tail is genuinely of order `u^{-1/2}`, not `u^{-N-1/2}`.  Consequently
+`(22.8)` cannot hold with a decaying right-hand side for every `q`; what does hold, and what
+`(22.10)`--`(22.11)` actually use, is the endpoint statement: at
+`q_N = (N+1/2)/m_B`, `m_B = 2a²−1/2`, the jet-modified exterior tail past `κ_B u − q_N log u` is
+**uniformly bounded** — the window part contributes `u^{-(2N+1)/2}·u^{m_B q_N} = u^0` and the far
+part `O(u^{-1/2})`.  That is exactly the card's own phrasing, "the modified exact core may be cut at
+`H_{N,q_N,0}` with only a uniformly bounded exterior".
+
+### Remaining for C42-T
+
+1. **The action inequality.**  `g_u(κ_B u − q log u) ≤ 1 + m_B q log u` for large `u`; the corpus
+   proves this inline inside `XiMassLogRetreatTail.exists_norm_logRetreatTail_le` but does not
+   expose it.  Extracting it is a replay of that argument.
+2. **The split and the endpoint.**  Cut the tail at `κ_B u`, apply
+   `sum_norm_xiMassJetPrimeAtom_subset_le` twice — window envelope at moving slope `H/u`, far
+   envelope at `κ_B` — and set `q = q_N`.  That is `(22.8)`/`(22.10)`/`(22.11)`.

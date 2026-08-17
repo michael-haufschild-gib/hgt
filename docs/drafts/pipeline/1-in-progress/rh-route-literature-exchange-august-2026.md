@@ -9,7 +9,7 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local committed cutoff is
-`7091e666dc210947c5559248dfbb08e74e955e74e` on 17 August. Historical `Active-tree Lean` wording records former provenance; current
+`16927218e406267bdc0ea7c417cd67727f27312d` on 17 August, plus declaration-level review of current working tree. Historical `Active-tree Lean` wording records former provenance; current
 scientific verdict follows declaration content and synopsis below rather than former cutoff labels.
 Scientific
 comparison follows declaration content rather than module placement.
@@ -29,10 +29,10 @@ comparison and theorem provenance, not chronological status.
 | E | Exact logarithmic-window transfer and a sharp log-weighted twisted-prime contour bound are formal. | Upstream cards require Menon's `(log log L)^2/(log L)^2` Möbius rate, obtained by carrying quantitative Halász distance through the MR ladder; MR's published `(log L)^(-c)`, `c<1`, is insufficient. Matomäki--Teräväinen `E_3` is separate. Neither supplies final unit Carleson/co-moving flux. |
 | G | High assistance is formally source-cyclic: every survivor has low-source singular mass `mu((1/113,1]) > r/(128 C_T) >> r/log^2(1/r)`; direct-tail amplification, generic ultranull packets, and single prime seams are excluded. | No located theorem proves the opposite source-specific upper bound or constructs an actual family meeting the lower bound. Aperture-Morse exhaustion and completed wall Schur comparison remain separate. |
 | L | Literal Wold--Jordan descent on genuine Big-Witt rows factors through one free scalar `A` and holds iff `A=0`; Beurling sensitivity proves reciprocal-scale continuity cannot be RH-bearing. | Same-fibre fixed-star and `1/p` Hessian descent are terminal receivers. Surviving route requires a critical-scale arithmetic Calderón Green intermediate extension and faithful cup-isometric Hodge comparison; no located theorem supplies it. |
-| O | Indexed prolate coordinate limits are formal. Every leakage `LadderEnvelope` gives eventual exact constrained eigenpairs and collapse of preceding raw defects. Literal restricted-Weil positivity still reduces to finite peripheral Birman--Schwinger block. | External PSWF theory may help instantiate the literal leakage envelope, including ground rung, but cannot supply source-relative finite-block sign stable under growing dimension/conditioning. |
+| O | Indexed prolate coordinates and conditional clock capstone are formal. Lifted Riccati barrier now yields explicit canonical upper leakage at every index, ground included, with at most one factor `e` loss. Restricted-Weil positivity still reduces to finite peripheral Birman--Schwinger block. | External PSWF theory may help assemble the remaining common-clock envelope, but no longer needs to supply ground upper leakage; it cannot prove source-relative finite-block sign under growing dimension/conditioning. |
 | P | Prime-log Hilbert--Schmidt `det₂` carrier exists, but its forced zero at `1` while `XiC(1) != 0` rules out direct Xi identification and every pointwise scalar correction. | No located theorem constructs the required spectrum-moving prime--Gamma operator coupling; non-spectral conormal contraction remains alternative. |
 | Q | Null-boundary diagonal energies vanish while mixed incidence tends `-E/2`; complex scalar phases cannot repair target-aligned fusion. Off-line conjugate pair has zero signed mass but divergent quadratic concentration at transverse wall. | Produce cofinal nonnegative source recurrence, or construct finite pre-divisor quadratic-energy budget dominating Q and U boundary profiles. Classical moment/phase/diagonal theory supplies neither. |
-| T | `71/100` supply, sharp log-weighted high-twist prime bound, and full-window caustic-null jet estimate `(22.7)` are formal. | Need signed half-height residual variation/sub-`3/2` gap energy; assemble `(22.7)` through retreat/penetration into Bessel type-zero cancellation; or prove growing-Xi chirp separation with literal prime-side projector. |
+| T | `71/100` supply, sharp twisted-prime bound, full-window `(22.7)`, lossless far-field jets, and exterior prime-tail summation from a supplied cone envelope are formal. | Need moving-retreat splice giving `(22.8)` and signed Bessel type-zero cancellation; alternatively signed residual/sub-`3/2` gap energy or growing-Xi chirp separation. |
 | U | Exact onto `2*pi` scaling identifies full CCM form; even and odd prime walls are invisible. Lean proves `RH ∨ CCMFirstContactBoundaryRoughness`: false-RH least null ground is outside every strict smooth interior source. | Exclude completed-boundary rough first contact through trace/quotient or whole-ground coercivity. Literature offers no such source-relative boundary theorem. |
 
 No newly audited module instantiates an eleventh lettered route. Six CCM openings are now
@@ -3139,10 +3139,11 @@ ratios, sharp aperture-mass upper and interior/exterior lower laws, positive Bes
 sharp leakage lower and upper bounds, oscillator-ladder derivative transfer, and fixed-rung Hermite
 window limits. New indexed modules prove every Fourier-even coordinate limit. Consequently every
 literal leakage `LadderEnvelope` yields eventual exact constrained eigenpairs at each fixed depth,
-strong depth-vector convergence, and collapse of all preceding normalized raw defects. The only
-local prolate input still abstract is the complete actual leakage envelope, including ground rung;
-two-sided positive-mode action bounds are already formal. External PSWF asymptotics may help
-instantiate that envelope, but cannot supply restricted-Weil ground selection. RH-bearing frontier
+strong depth-vector convergence, and collapse of all preceding normalized raw defects. The lifted
+Riccati barrier removes `c*s>=4`; `ProlateGroundLeakageUpper` instantiates it on canonical indexed
+modes, proving eventual explicit upper leakage at every index, ground included, within one factor
+`e` of positive-mode bound. Remaining local task is common-clock/action-envelope assembly. External
+PSWF asymptotics may help there, but cannot supply restricted-Weil ground selection. RH-bearing frontier
 remains source-relative nonnegativity of exact finite exceptional Birman--Schwinger form, with
 intact polar--prime cross terms and uniform control as block grows.
 
@@ -4031,13 +4032,15 @@ generic “density-to-prime” gap.
    sup norm, so finite-aperture uniform completion is also closed. Missing theorem is a
    source-specific cofinal type-zero cancellation law.
 
-   The caustic-null analytic step is now closed. The new Bessel height system, coefficient ring,
+   The caustic-null analytic step now covers both regimes. Bessel height system, coefficient ring,
    exact symbol cancellation, conjugated-carrier holomorphy, and iterated Cauchy estimate prove the
    card's `(22.7)` uniformly across the square-root balance window:
    `||(4a^4-partial_h^2)^n XiMass|| <= C u^(-(n+1)/2) exp(-a sqrt(h^2-u^2))`.
-   Remaining `(22.8)`--`(22.11)` are the assembly of this gain through existing
-   retreat/penetration machinery with `beta=N+1/2`, followed by the still-arithmetic signed annular
-   or type-zero cancellation. Literature on Bessel asymptotics no longer addresses first gap.
+   `XiMassCausticFarField` proves the complementary bound for all `h>=kappa_B u` with no polynomial
+   height loss. `XiMassJetPrimeTail` defines the literal jet atom and proves exterior summation from
+   any supplied cone envelope. Remaining analytic statement is the moving-retreat splice producing
+   `(22.8)`; `(22.10)`--`(22.11)` then follow. Signed annular/type-zero
+   cancellation remains arithmetic. Literature on Bessel asymptotics no longer addresses first gap.
 
 These lanes share a single obstruction: available absolute estimates control mass, but RH requires
 signed source coherence across prime mesh, Mellin boundary, or Bessel interior. Ingham/Hoheisel
@@ -6027,6 +6030,19 @@ and every finite-product zero lies on `Re(s)=1/2`. This positive rigidity still 
 boundary: infinite Euler source has no top/cofinite Dirichlet coefficient, so finite functional-
 equation complements cannot converge into missing all-prime selector.
 
+Three newest foundational clusters do not change route count. `VorosPowerSumClosedForm.lean`
+proves the closed Taylor-coefficient formula for regularized `-xi'/xi` and completes the integral
+Li/secular coordinate change, but does not identify those coefficients with analytic zero sums or
+prove positivity. `ZeroMultisetRolle.lean` and `IteratedRolleChain.lean` supply multiplicity-exact
+real zero-count descent. `GenPeriodEscapeLaw.lean` proves noncompact period quotient for every
+hypertranscendental several-variable meromorphic-field element. These are useful coefficient,
+counting, and complexity adapters; none couples Euler--Gamma source to divisor sign or ground selection.
+`ArithmeticWindowHardCell.lean` likewise proves robust hard-phase avoidance occupies a positive
+fraction of every sufficiently long algebraic window, but has no Xi-typed source or RH endpoint.
+`ContextOrderPSDHierarchy.lean` gives an all-order obstruction to local-to-global positivity:
+every maximal proper context is PSD while full occurrence-identified kernel has an exact negative
+constant-line direction. Thus finite-context positivity cannot replace whole-ground control.
+
 Prescribed-gap synthesis supplies a stronger nonselection theorem. Any stationary ergodic positive
 mean-one gap law is realized by real zeros of even exact-order-one Laguerre--Pólya function with
 maximal translation differential-algebraic independence. `HTGeometry/QuartetPolynomial.lean` now
@@ -6094,8 +6110,8 @@ External material should be imported only where it shortens a current first open
    consecutive-prime-gap square-prefix moment at exponent `11/8` in the exact `IsBigO` form already
    accepted by `XiHeatCassiniPrimeGapMomentBigOBridge.lean`. Detector, density-to-prime, every-base
    prime supply, and the weaker `1.71` gap moment are already formal and must not be repeated.
-   Independently assemble the proved caustic `(22.7)` estimate through `(22.8)`--`(22.11)`; do not
-   repeat Bessel derivative or stationary-phase infrastructure.
+   Independently prove only the moving-retreat splice `(22.8)` from formal window, far-field, and
+   conditional prime-tail theorems; do not repeat Bessel derivative or stationary-phase infrastructure.
 2. **Route U — odd-boundary admission/Julia charge.** Exact finite ancestry, radial flux, and
    parity-doubled root-jet rigidity, normal-family extraction, real-rooted limit, and root division
    are formal; dominated null/positivity passage is also formal. Exclude or orient admitted boundary
@@ -6116,7 +6132,7 @@ External material should be imported only where it shortens a current first open
    receiver.
 6. **Route O / CCM-BS — control finite dangerous block.** Indexed prolate simplicity, global
    ordering, coordinate limits, and constrained clock consequence are formal. First instantiate the
-   actual leakage `LadderEnvelope`, including ground rung; then prove source-relative prime--polar
+   actual leakage `LadderEnvelope` using canonical all-index upper leakage; then prove source-relative prime--polar
    nonnegativity on finite peripheral Birman--Schwinger sector,
    uniformly under cofinal dimension/conditioning growth.
 7. **CCM-FU and C1 — no more finite jets/determinants.** Whole CCM source matrix, cubic response,
@@ -6170,7 +6186,8 @@ Current Lean corpus changes route frontiers, but not route count or RH status.
   seams are closed substitutes. Exact frontier is the opposite source-specific upper bound or an
   actual realizing family, alongside independent Morse and wall branches.
 - O has indexed coordinate limits and exact constrained eigenpair/raw-defect consequences under an
-  actual leakage `LadderEnvelope`. Instantiating that envelope is local backlog. Whole positivity
+  actual leakage `LadderEnvelope`. Canonical upper leakage is closed at every index, ground included;
+  common-clock envelope assembly is local backlog. Whole positivity
   remains vanishing of finite above-one Birman--Schwinger sector by source-relative prime--polar
   sign.
 - P/SP-E now has literal prime-log Hilbert--Schmidt non-Schatten-one carrier and entire `det₂` with
@@ -6180,8 +6197,9 @@ Current Lean corpus changes route frontiers, but not route count or RH status.
   has exact 31/10 coefficient with 7/100 room. Actual critical fourth, mollifier, detector-error,
   and translated Gaussian budgets have polylogarithmic cost. One threshold supplies every upper
   physical window; prime existence and handoff are closed. Half-height variation and sub-`3/2` gap
-  moment remain. Sharp log-weighted high-twist prime control and full-window caustic-null `(22.7)`
-  are now formal; Abel unweighting and `(22.8)`--`(22.11)` retreat/type-zero assembly remain.
+  moment remain. Sharp log-weighted high-twist prime control, full-window caustic-null `(22.7)`, and
+  far-field no-loss jet control and conditional exterior prime-tail summation are formal; moving-
+  retreat splice `(22.8)`, Abel unweighting, and signed type-zero assembly remain.
   Reciprocal-sawtooth algebra and finite-packet chirp separation are closed.
 - U degree escape is strongly compactified in Lean: normalized nonpositive bounded-scaled-degree
   hard-edge family is totally bounded in `L2`, with nonzero norm-one subsequential limit; exact

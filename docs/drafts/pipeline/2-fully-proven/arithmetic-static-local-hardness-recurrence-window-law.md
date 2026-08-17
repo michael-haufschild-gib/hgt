@@ -479,9 +479,45 @@ squared orbit displacement is the weighted sum of `|e^{i alpha}-e^{i beta}|^2 = 
 each at most the squared angular gap.  The radian form removes the `2 pi` that the corpus's
 turn-parametrised `phaseOrbit` carries.
 
-What Theorem B still needs is `(26)`, the completed-phase incidence bound, which is the card's
-declared parent input, and the descent of that event to the relative torus.  Given `(26)`, `(24)`
-and `(25)` are `(27)`--`(29)` plus the now-complete Theorem A.
+### Lean progress -- Theorem B is closed
+
+`formal/GaloisForLFunctions/HTGeometry/ArithmeticWindowHardCell.lean` (new, umbrella-wired,
+axiom-clean) supplies `(26)`, the robust cell, and the assembly with Theorem A.
+
+| Card item | Declaration |
+|---|---|
+| the coordinate inner product is the Euclidean one, and the norm bound it carries | `finiteComplexInner_eq_inner`, `sq_norm_toLp`, `norm_toLp_le_one` |
+| **`(28)` in coordinates**: the overlap score is `2`-Lipschitz in the state | `abs_finitePureStateFidelity_sub_le` |
+| two unimodular phases differ by at most the *turn* distance of their arguments | `norm_exp_ofReal_mul_I_sub_le_turnDist`, `turnDist_neg` |
+| the spectral phase orbit in radian phases, and its identification with the torus orbit | `radianOrbit`, `torusReplicaPhaseOrbit_eq_radianOrbit`, `charPhase_single_index` |
+| **`(27)`**: the orbit moves by at most the angular sup-distance | `norm_radianOrbit_sub_le` |
+| **the relative-torus descent**: a common phase shift multiplies the orbit by a unimodular scalar, which the overlap score does not see | `radianOrbit_add_const`, `finitePureStateFidelity_radianOrbit_add_const` |
+| **`(26)`**: with no return set excised, the capture event has mass at most the replica design budget | `measureReal_capture_le_replicaMoment` |
+| **`(22)` produces a hard phase centre** | `exists_hard_phase_centre` |
+| **`(29)`**: the centre carries a whole hard cube, with loss `2 rho` | `finitePureStateFidelity_lt_of_turnDist_le` |
+| the trajectory phase, its relative centre, and the fact that a cube-visit time is a hard time | `flowPhase`, `relCentre`, `finitePureStateFidelity_flowPhase_lt` |
+| **`(24)`** | `half_mul_le_measureReal_hardWindow` |
+| **`(25)`** | `half_mul_le_measureReal_recurrenceWindow` |
+
+`(26)` is not new mathematics here: it is the corpus's return-excised phase-incidence law
+`measureReal_capture_le_return_add_replicaMoment` -- the card's declared parent input -- specialized
+to the empty return set.  Its right-hand side is literally
+`dim span{z^{otimes r}} * r! * (16 C_H(Omega)/a_0^2)^r`, with `h_r(Z) = finrank (replicaTargetSpan r z)`
+and `C_H(Omega) = occupationCollision p`.  Since the torus box has Haar mass one, `(22)` makes the
+capture event a proper subset, which is `exists_hard_phase_centre`.
+
+The descent to the relative torus is done pointwise rather than measure-theoretically.  There is no
+need to push `(26)` through the quotient: the hard centre is chosen in the full torus, and for a
+time `t` whose *relative* phases lie in the cube around it, the explicit common shift
+`s = theta_{*,0} - (psi_0 - t E_0)` moves the trajectory phase into the full-torus cube, and
+`finitePureStateFidelity_radianOrbit_add_const` says the overlap score never saw `s`.  That reduces
+the `j = 0` coordinate to `turnDist 0 = 0` and every other coordinate to
+`turnDist(t omega_i - relCentre psi theta i)`, which is exactly membership in `cubeVisit`.
+
+Both conclusions are stated for an algebraic spectrum, exactly as Theorem A is: real energies `E`
+that are the distinguished embedding of algebraic integers with all conjugates below `R`, and no
+integer relation among the anchored gaps.  The window length is the same `T` as in Theorem A, and
+the occupation fraction is the same `mu_rho/2`, uniformly in the window position `u`.
 
 ## Theorem C -- ordinary integer two-local Hamiltonians
 
@@ -981,8 +1017,15 @@ not yet sufficient for the master paper's Nature-level claim.
 
 ## Formal status
 
-No Lean file was written or built because the corpus is under refactor.  Existing Lean inputs were
-read only.  Future formalization should split into:
+Theorems A and B are Lean-closed and axiom-clean.  What remains is the *existence* half of Theorem C
+-- the selection of an integer two-local Pauli Hamiltonian with symmetric Galois group, cyclic
+initial state and small collision -- and Theorem D, which reuses it.  That step rests on
+Castillo--Dietmann's quantitative Hilbert irreducibility theorem `(41)` together with the parent card
+`generic-two-local-spectral-monodromy`; neither is in mathlib or in this corpus.  Everything in
+Theorem C downstream of that selection (`(42)`--`(44)` and the application of `(24)`--`(25)`) is
+elementary and consumes only what is already formal.
+
+The original plan for the split was:
 
 1. algebraic-integer field-norm spectral-action bound;
 2. product-Fejer moving-window lemma;

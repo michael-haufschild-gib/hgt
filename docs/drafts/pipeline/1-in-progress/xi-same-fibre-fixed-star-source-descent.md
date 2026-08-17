@@ -628,3 +628,46 @@ prime systems — it must control `ψ(x) − x` at the power scale `x^(1/2)`.
 Reciprocal-weight lanes (`1/p`, `Λ(n)/n`, Big-Witt `1/(pq)`, Mertens-window
 Grams, Wold–Jordan carriers) are on the wrong side of that line by
 construction; explicit-formula lanes with `Λ(n) n^(−1/2)` weights are not.
+
+## C33 — Complete classification of prime-labelled singular-graph descent
+
+`[PAPER-PROVED] [BRIDGE] [NOT RH]`
+
+For an arbitrary real coefficient function `c` on ordinary primes, define
+`PrimeLabelledActualSourceDescends c` to mean that one continuous linear
+reporter on the existing Big-Witt singular one-leg graph agrees with the
+finite prime-labelled reporter on every genuine normalized fixed-left row.
+Then
+
+```text
+PrimeLabelledActualSourceDescends c
+  <-> exists z : R, forall a : N, c(nthPrimeSubtype(a)) = z.       (C33.1)
+```
+
+**Proof.** Fix a reporter witnessing descent. For each left-prime index `a`,
+all genuine normalized rows `P_(a,N)` converge in the singular graph to the
+same vector `v_sing`. Their finite prime-labelled readings are constant in
+`N` and equal to `c(nthPrimeSubtype(a))`. Continuity of the reporter and
+uniqueness of limits therefore give
+
+```text
+c(nthPrimeSubtype(a)) = reporter(v_sing)
+```
+
+after the canonical real-to-complex embedding. Comparing with `a=0` proves
+that the coefficient is independent of `a`; take
+`z=c(nthPrimeSubtype(0))`. Conversely, if every enumerated-prime coefficient
+equals `z`, then the continuous graph reporter `z * oneLegGraphTrace` agrees
+with the finite reporter because every normalized row has algebraic trace
+one. This proves both directions with no additional hypotheses.
+
+**Hostile audit.** No positivity, summability, RH input, or surjectivity
+property of `nthPrimeSubtype` is used. The statement classifies exactly the
+enumerated genuine fixed-left rows appearing in the predicate. The converse
+uses the already-constructed continuous graph trace, not an assumed
+extension. Thus the only possible continuously descending prime-labelled
+profiles on this source family are constant profiles. In particular every
+nonconstant reciprocal, inverse-Gamma, prime-log, or other left-prime profile
+is excluded on this graph. This closes the scoped singular-graph retirement;
+it does not address critical-scale finite-core maps that change the carrier
+before completion.

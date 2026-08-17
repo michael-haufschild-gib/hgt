@@ -98,6 +98,8 @@ theorem addTranslationMeroEquivGen_dirDeriv (h w : E)
     isPreconnected_univ_gen Set.univ_nonempty
   letI := meroFieldGenDirDifferential w (isOpen_univ (X := E)) isPreconnected_univ_gen
     Set.univ_nonempty
+  letI : Algebra ℤ (analyticSubringGen (Set.univ : Set E)) := Ring.toIntAlgebra _
+  letI : Algebra ℤ (meroFieldGen (Set.univ : Set E)) := Ring.toIntAlgebra _
   obtain ⟨a, b, hb, hxab⟩ :=
     IsFractionRing.div_surjective (A := analyticSubringGen (Set.univ : Set E))
       (K := meroFieldGen (Set.univ : Set E)) x
@@ -113,20 +115,33 @@ theorem addTranslationMeroEquivGen_dirDeriv (h w : E)
     with hβdef
   have hA := addTranslationMeroEquivGen_dirDeriv_algebraMap h w a
   have hB := addTranslationMeroEquivGen_dirDeriv_algebraMap h w b
-  have hL : addTranslationMeroEquivGen h ((α / β)′)
-      = (addTranslationMeroEquivGen h β)⁻¹ ^ 2
-        * ((addTranslationMeroEquivGen h β) * (addTranslationMeroEquivGen h α)′
-          - (addTranslationMeroEquivGen h α) * (addTranslationMeroEquivGen h β)′) := by
-    rw [Derivation.leibniz_div]
-    simp only [smul_eq_mul]
-    rw [map_mul, map_sub, map_mul, map_mul, map_pow, map_inv₀, hA, hB]
-  have hR : (addTranslationMeroEquivGen h (α / β))′
-      = (addTranslationMeroEquivGen h β)⁻¹ ^ 2
-        * ((addTranslationMeroEquivGen h β) * (addTranslationMeroEquivGen h α)′
-          - (addTranslationMeroEquivGen h α) * (addTranslationMeroEquivGen h β)′) := by
-    rw [map_div₀, Derivation.leibniz_div]
-    simp only [smul_eq_mul]
-  rw [← hxab, hL, hR]
+  have hxb : x * β = α := by
+    rw [← hxab]
+    field_simp
+  have hleib : ∀ y z : meroFieldGen (Set.univ : Set E), (y * z)′ = y * z′ + z * y′ := by
+    intro y z
+    have hl := (Differential.deriv (R := meroFieldGen (Set.univ : Set E))).leibniz y z
+    simp only [smul_eq_mul] at hl
+    exact hl
+  have h1 : α′ = x * β′ + β * x′ := by
+    rw [← hxb, hleib]
+  have hTxb : addTranslationMeroEquivGen h x * addTranslationMeroEquivGen h β
+      = addTranslationMeroEquivGen h α := by
+    rw [← RingEquiv.map_mul (addTranslationMeroEquivGen h), hxb]
+  have h2 : (addTranslationMeroEquivGen h α)′
+      = addTranslationMeroEquivGen h x * (addTranslationMeroEquivGen h β)′
+        + addTranslationMeroEquivGen h β * (addTranslationMeroEquivGen h x)′ := by
+    rw [← hTxb, hleib]
+  have h3 : (addTranslationMeroEquivGen h α)′
+      = addTranslationMeroEquivGen h x * (addTranslationMeroEquivGen h β)′
+        + addTranslationMeroEquivGen h β * addTranslationMeroEquivGen h (x′) := by
+    rw [← hA, ← hB, ← RingEquiv.map_mul (addTranslationMeroEquivGen h),
+      ← RingEquiv.map_mul (addTranslationMeroEquivGen h), ← RingEquiv.map_add (addTranslationMeroEquivGen h), ← h1]
+  have hTβ : addTranslationMeroEquivGen h β ≠ 0 := by
+    intro hzero
+    exact hbne ((addTranslationMeroEquivGen h).injective (by rw [hzero, map_zero]))
+  refine mul_left_cancel₀ hTβ ?_
+  linear_combination h2 - h3
 
 theorem addTranslationMeroEquivGen_iterate_deriv (h w : E) (r : ℕ)
     (x : meroFieldGen (Set.univ : Set E)) :

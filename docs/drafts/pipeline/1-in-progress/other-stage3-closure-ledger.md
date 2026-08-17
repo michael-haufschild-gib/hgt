@@ -3638,3 +3638,27 @@ New modules on top of pass 57:
 The point where the argument used to fail is exactly where pass 57 applies: the chart comparison
 happens on the overlap, away from either centre, and reducedness is a condition at the centre.  The
 openness of coprimality closes that gap; everything else was already owned.
+
+## Pass 59 — the noncompact period-quotient law in every dimension
+
+Siegel's bound is transported into both meromorphic-field models of the tree and turned into the
+card's law `(5)`.
+
+* `SiegelMeroFieldDependence` — `exists_ne_zero_poly_aeval_of_compactSpace_quotient`: `n + 2`
+  elements of `meroFieldGen (Set.univ)` with a common group of periods of compact quotient satisfy a
+  nonzero polynomial relation over `C`.  Also `aeval_siegelPoly` (moved to `SiegelTorusTranscendence`),
+  the evaluation of the Siegel polynomial in an arbitrary commutative `C`-algebra.
+* `EntirePeriodSiegel` — the same in the entire fraction field `EntireField`, plus the
+  cross-multiplied invariance criterion `fieldTranslateEquiv_fix_iff` and the period-escape law
+  `not_compactSpace_quotient_of_hypertranscendental`.
+* `GenPeriodEscapeLaw` — translation commutes with the directional derivation of the analytic germ
+  ring and of the meromorphic field (`addTranslationAnalyticEquivGen_dirDeriv`,
+  `addTranslationMeroEquivGen_dirDeriv`; proved through Leibniz on a fraction presentation, because
+  `Derivation.leibniz_div` picks a different `Algebra Z` instance path than
+  `meroFieldGenDirDifferential` bakes in), hence
+  `not_compactSpace_quotient_of_hypertranscendental_gen` and
+  `isEscapeSubgroup_meroPeriodSubgroupGen_of_hypertranscendental`.
+
+All unconditional, axiom-clean, umbrella-wired.  Next on this card: the facet theorem `(13)`–`(18)`
+— turn an `HTRealizableDim` datum into a `PeriodEscapeSeparation` by the Stanley--Reisner
+facet-prime computation, giving `peDim <= htDim`.

@@ -799,3 +799,42 @@ field `meroFieldGen (Set.univ)` and its period group `meroPeriodSubgroupGen` mus
 theorem above, together with a constant directional derivation, to turn "the quotient is compact"
 into an algebraic differential equation for the carrier.  The analytic content is closed; the
 remaining step is the differential-field interface.
+
+## The noncompact period-quotient law `(5)` is now a theorem in every dimension
+
+```text
+GaloisForLFunctions.HTGeometry.not_compactSpace_quotient_of_hypertranscendental_gen :
+  w a constant direction,  P a group of periods of x in meroFieldGen (Set.univ : Set (C^(n+1))),
+  x hypertranscendental over C for the directional derivation
+    ==>  the quotient of C^(n+1) by P is noncompact.
+
+GaloisForLFunctions.HTGeometry.isEscapeSubgroup_meroPeriodSubgroupGen_of_hypertranscendental :
+  the period group of such an x is an escape subgroup.
+```
+
+Unconditional, axioms `[propext, Classical.choice, Quot.sound]`, umbrella-wired.  This is exactly
+`(4)`–`(5)` for `d >= 2`, i.e. the clause `isEscapeSubgroup_meroPeriodSubgroupGen` was missing.
+
+Route: a constant directional derivation commutes with every translation
+(`addTranslationAnalyticEquivGen_dirDeriv` on the germ ring,
+`addTranslationMeroEquivGen_dirDeriv` on the field, proved through the Leibniz rule on a fraction
+presentation rather than the quotient rule, to stay inside one `Algebra Z` instance path), so every
+jet of a `P`-invariant element is `P`-invariant.  If the quotient were compact, Siegel's bound would
+make the first `n + 2` jets algebraically dependent over `C`, i.e. would make `x` differentially
+algebraic.
+
+The same law is proved in the entire-fraction-field model in
+`HTGeometry/EntirePeriodSiegel.lean` (`not_compactSpace_quotient_of_hypertranscendental`), together
+with the cross-multiplied invariance criterion `fieldTranslateEquiv_fix_iff`; and Siegel's bound is
+transported to the corpus's meromorphic field in `HTGeometry/SiegelMeroFieldDependence.lean`
+(`exists_ne_zero_poly_aeval_of_compactSpace_quotient`).
+
+### Gate
+
+- [x] noncompact period-quotient law `(5)` formalized in every dimension
+
+What remains is the facet theorem `(13)`–`(18)`: the Stanley--Reisner facet-prime computation that
+turns an `HTRealizableDim` datum into a `PeriodEscapeSeparation`, giving `peDim <= htDim`.  Both
+end points are already defined in the tree (`PencilHTDimension.htDim`,
+`PeriodEscapeDimension.PeriodEscapeSeparation`), and the analytic input of that computation is the
+law above.

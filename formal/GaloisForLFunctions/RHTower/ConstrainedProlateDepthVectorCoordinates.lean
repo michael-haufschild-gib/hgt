@@ -83,10 +83,10 @@ theorem LadderEnvelope.ccm_depth_secularVector_lower_coordinate_ratio_tendsto
   have hℓ0 : ∀ᶠ lam in atTop, ℓ lam 0 ≠ 0 := hl0.eventually_ne ha0
   have hv0 : ∀ᶠ lam in atTop,
       secularVector (D lam) (ℓ lam) (depthSecularRoot (D lam) (ℓ lam) k) 0 ≠ 0 := by
-    filter_upwards [hroot, hℓ0] with lam hrootLam hℓ0Lam
+    filter_upwards [hroot, hℓ0, h.mono] with lam hrootLam hℓ0Lam hmono
     unfold secularVector
     exact div_ne_zero hℓ0Lam (sub_ne_zero.mpr
-      (ne_of_lt (lt_of_le_of_lt (h.mono lam (Nat.zero_le k)) hrootLam.1.1)))
+      (ne_of_lt (lt_of_le_of_lt (hmono 0 k (Nat.zero_le k)) hrootLam.1.1)))
   have hratio : Tendsto (fun lam =>
       secularVector (D lam) (ℓ lam) (depthSecularRoot (D lam) (ℓ lam) k) m /
         secularVector (D lam) (ℓ lam) (depthSecularRoot (D lam) (ℓ lam) k) 0)
@@ -158,11 +158,11 @@ theorem LadderEnvelope.ccm_depth_secularVector_top_coordinate_ratio_tendsto
       atTop (nhds ((constrainedProlateHermiteCoordinate (k + 1) /
           constrainedProlateHermiteCoordinate 0) * ((0 - θ) / (1 - θ)))) := by
     refine hprod.congr' ?_
-    filter_upwards [hroot, hℓ0, hℓtop] with lam hrootLam hℓ0Lam hℓtopLam
+    filter_upwards [hroot, hℓ0, hℓtop, h.mono] with lam hrootLam hℓ0Lam hℓtopLam hmono
     unfold secularVector
     have hden0 : D lam 0 - depthSecularRoot (D lam) (ℓ lam) k ≠ 0 :=
       sub_ne_zero.mpr (ne_of_lt
-        (lt_of_le_of_lt (h.mono lam (Nat.zero_le k)) hrootLam.1.1))
+        (lt_of_le_of_lt (hmono 0 k (Nat.zero_le k)) hrootLam.1.1))
     have hdenTop : D lam (k + 1) - depthSecularRoot (D lam) (ℓ lam) k ≠ 0 :=
       sub_ne_zero.mpr (ne_of_gt hrootLam.1.2)
     field_simp

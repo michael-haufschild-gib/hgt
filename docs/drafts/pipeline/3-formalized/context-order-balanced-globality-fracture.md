@@ -1,6 +1,10 @@
 # Balanced context-order globality fracture
 
-Status: `[LITERATURE] [PAPER-PROVED] [NOVELTY UNVERIFIED]`
+Stage: 3-formalized
+
+Status: `[LITERATURE] [PAPER-PROVED] [NOVELTY UNVERIFIED] [LEAN PROVED]`
+
+Lean status: unconditional and closed — all five clauses, no hypotheses, no added axioms
 
 Source: Maciej Nowicki and Artificial Hyperintelligence Eve, *Locally Quantum, Globally
 Non-Hilbertizable* (Zenodo 21982163, 2026), Theorem 5.2 and Corollary 5.3.  This card records an
@@ -86,3 +90,29 @@ all five clauses.
 Formalize the balanced family, exact projector decomposition, all codimension-one restrictions,
 local positivity, constant/transverse actions, and global non-positivity.  Reuse
 `SimplexEffectiveHarmonic`; introduce no axioms or conditional source assumptions.
+
+## Lean status -- the whole card is formal
+
+`formal/GaloisForLFunctions/HTGeometry/ContextOrderPSDHierarchy.lean` and
+`formal/GaloisForLFunctions/HTGeometry/ContextOrderTransverseAction.lean` (both umbrella-wired,
+axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| the equality-pattern kernel `C_m(t)` | `contextOrderKernel` |
+| **`(1)`**, the exact harmonic decomposition | `contextOrderKernel_decomposition` |
+| the balanced scale `t` and margin `delta` at order `r+3`, and their signs | `balancedContextScale`, `balancedContextMargin`, `balancedContextMargin_pos`, `balancedContextScale_nonneg` |
+| **clause 3**: the constant-line coefficients are exactly `+delta` locally and `-delta` globally | `balancedContext_local_coefficient`, `balancedContext_global_coefficient` |
+| the same statement as an eigenvector action on the constant section | `balancedContext_local_section_action`, `balancedContext_global_section_action` |
+| equality-pattern kernels are unchanged by injective reindexing | `contextOrderKernel_submatrix` |
+| **clause 1**: every maximal proper context is positive semidefinite, and so is every subface | `balancedContext_local_posSemidef`, `balancedContext_every_maximalProperContext_posSemidef`, `balancedContext_every_subface_posSemidef` |
+| **clauses 2 and 5**: the full kernel is not positive semidefinite, at every order | `balancedContext_global_not_posSemidef` |
+| the harmonic projection annihilates exactly the balanced sections | `simplexEffectiveHarmonicProjection_mulVec_eq_zero_iff` |
+| **clause 4**: the transverse eigenvalue is `1+t`, at every order and every scale | `contextOrderKernel_transverse_action`, `contextOrderKernel_transverse_action_of_sum_zero`, `balancedContext_local_transverse_action`, `balancedContext_global_transverse_action` |
+
+The Lean proof follows the card exactly: the decomposition `(1)` is proved entrywise against
+`SimplexEffectiveHarmonic`'s normalized constant projection, both coefficients are then read off, and
+positivity of a sum of nonnegative multiples of two orthogonal projections gives clause 1.  Clause 4
+is the statement that the harmonic complement is an eigenspace: a section with zero sum is
+annihilated by the projection, so only the `(1+t)(1-P)` term survives.  No diagonalization,
+eigenvalue ordering or numerical step occurs anywhere.

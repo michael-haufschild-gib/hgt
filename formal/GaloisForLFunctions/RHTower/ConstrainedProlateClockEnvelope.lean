@@ -220,8 +220,8 @@ fraction both vanish. -/
 structure LadderEnvelope (D : ℝ → ℕ → ℝ) : Prop where
   /-- Leakages are nonnegative. -/
   nonneg : ∀ lam j, 0 ≤ D lam j
-  /-- Leakages increase along the ladder. -/
-  mono : ∀ lam {i j : ℕ}, i ≤ j → D lam i ≤ D lam j
+  /-- Leakages eventually increase along the ladder. -/
+  mono : ∀ᶠ lam in atTop, ∀ i j : ℕ, i ≤ j → D lam i ≤ D lam j
   /-- Each ladder step is eventually strict. -/
   lt_succ : ∀ j, ∀ᶠ lam in atTop, D lam j < D lam (j + 1)
   /-- Each leakage is negligible against its successor. -/
@@ -233,7 +233,7 @@ structure LadderEnvelope (D : ℝ → ℕ → ℝ) : Prop where
 /-- A clock envelope is a ladder envelope. -/
 theorem ClockEnvelope.toLadderEnvelope (h : ClockEnvelope D e E) : LadderEnvelope D where
   nonneg := h.nonneg
-  mono := h.mono
+  mono := Eventually.of_forall fun lam _ _ hij => h.mono lam hij
   lt_succ := h.lt_succ
   ratio_tendsto_zero := h.ratio_tendsto_zero
   tail_tendsto_zero := h.tail_tendsto_zero
@@ -243,8 +243,8 @@ theorem LadderEnvelope.first_struct (h : LadderEnvelope D) :
     ∀ᶠ lam in atTop,
       (0 ≤ D lam 0 ∧ D lam 0 < D lam 1 ∧ D lam 1 < D lam 2) ∧
         ∀ j, D lam 2 ≤ D lam (j + 2) := by
-  filter_upwards [h.lt_succ 0, h.lt_succ 1] with lam h1 h2
-  exact ⟨⟨h.nonneg lam 0, h1, h2⟩, fun j => h.mono lam (by omega)⟩
+  filter_upwards [h.lt_succ 0, h.lt_succ 1, h.mono] with lam h1 h2 hmono
+  exact ⟨⟨h.nonneg lam 0, h1, h2⟩, fun j => hmono 2 (j + 2) (by omega)⟩
 
 /-- The depth-`k` structural hypothesis of the exact ladder theorems. -/
 theorem LadderEnvelope.depth_struct (h : LadderEnvelope D) (k : ℕ) :
@@ -252,9 +252,9 @@ theorem LadderEnvelope.depth_struct (h : LadderEnvelope D) (k : ℕ) :
       ((∀ j, j ≤ k → 0 ≤ D lam j ∧ D lam j ≤ D lam k) ∧
         D lam k < D lam (k + 1) ∧ D lam (k + 1) < D lam (k + 2)) ∧
         ∀ j, D lam (k + 2) ≤ D lam (j + (k + 2)) := by
-  filter_upwards [h.lt_succ k, h.lt_succ (k + 1)] with lam h1 h2
-  exact ⟨⟨fun j hj => ⟨h.nonneg lam j, h.mono lam hj⟩, h1, h2⟩,
-    fun j => h.mono lam (by omega)⟩
+  filter_upwards [h.lt_succ k, h.lt_succ (k + 1), h.mono] with lam h1 h2 hmono
+  exact ⟨⟨fun j hj => ⟨h.nonneg lam j, hmono j k hj⟩, h1, h2⟩,
+    fun j => hmono (k + 2) (j + (k + 2)) (by omega)⟩
 
 /-! ## Every constrained law, over an arbitrary clock -/
 

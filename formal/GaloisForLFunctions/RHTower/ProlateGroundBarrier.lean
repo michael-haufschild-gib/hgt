@@ -117,11 +117,11 @@ theorem prolateShiftedBarrier_subsolution {c s y : ℝ}
     have hBPval : B * P = 2 * c * κ * y ^ 2 / r ^ 3 := by
       rw [hB_def, hPval, hr3]
       field_simp
-      ring
     have hnum : c * κ ≤ 2 * c * κ * y ^ 2 := by nlinarith [mul_nonneg hc.le hκ0]
+    have h3 : (0 : ℝ) < r ^ 3 := pow_pos hr 3
     have hkey : c * κ / r ^ 3 ≤ B * P := by
-      rw [hBPval]
-      exact div_le_div_of_nonneg_right hnum (pow_pos hr 3)
+      rw [hBPval, ← sub_nonneg, ← sub_div]
+      exact div_nonneg (by linarith) h3.le
     linarith
   · -- the lift alone carries the derivative
     have hy2 : y ^ 2 < 1 / 2 := lt_of_not_ge hhalf

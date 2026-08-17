@@ -76,10 +76,10 @@ theorem LadderEnvelope.ccm_depth_rescaled_secularLp_tendsto_hermiteContrast
     hl0.eventually_ne (constrainedProlateHermiteCoordinate_ne_zero 0)
   have hv0 : ∀ᶠ lam in atTop,
       secularVector (D lam) (ℓ lam) (depthSecularRoot (D lam) (ℓ lam) k) 0 ≠ 0 := by
-    filter_upwards [hroot, hℓ0] with lam hrootLam hℓ0Lam
+    filter_upwards [hroot, hℓ0, h.mono] with lam hrootLam hℓ0Lam hmono
     unfold secularVector
     exact div_ne_zero hℓ0Lam (sub_ne_zero.mpr
-      (ne_of_lt (lt_of_le_of_lt (h.mono lam (Nat.zero_le k)) hrootLam.1.1)))
+      (ne_of_lt (lt_of_le_of_lt (hmono 0 k (Nat.zero_le k)) hrootLam.1.1)))
   have hfinite : Tendsto (fun lam =>
       ∑ j ∈ Finset.range (k + 2),
         (secularVector (D lam) (ℓ lam) (depthSecularRoot (D lam) (ℓ lam) k) j /
