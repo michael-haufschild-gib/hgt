@@ -6277,3 +6277,49 @@ d_m/d_n  =  O(c^(-1))  =  O(lambda^(-2))  →  0 ,
 
 which unconditionally gives the parity card's `(9)` (`mu_+ < mu_-` eventually and
 `mu_- − mu_+ ~ mu_-`), and with the sharp constant tracked, the `lambda^(-4)` rate itself.
+
+## The collar prefactor now cancels — the bandwidth-free barrier ratio
+
+The gap recorded above (one factor of `c` between the upper and lower amplitude bounds) is closed.
+Three new theorems, all unconditional and `[propext, Classical.choice, Quot.sound]`:
+
+- `GaloisForLFunctions.RHTower.besselI0_le_exp_div_sqrt`
+  (`RHTower/BesselIZeroUpperBound.lean`) — `I₀(z) ≤ e^z √(π/(2z))` for `z > 0`, the matching upper
+  Laplace bound to the corpus's `exp_div_le_besselI0`.  Proof: `cosh ≤ exp` on the positive axis,
+  Jordan's inequality (`Real.mul_le_sin`) gives `sin θ ≤ 1 − 2(θ−π/2)²/π²` on `[0,π]`, and the
+  Gaussian integral over the line dominates the integral over the interval.
+- `prolateBand_collar_le_exp_div` and `prolateBand_sq_le_exp_bandPhase_sharp`
+  (`RHTower/ProlateBarrierRatioSharp.lean`) — the previously unused *upper* half of
+  `prolateBand_le_and_le` composed with the new `I₀` bound replaces the loss-free endpoint transport
+  `Φ(α) ≤ exp(c Ξ_s(α))` by `Φ(α) ≤ 3 exp(c Ξ_s(α)) √(π/(2 c Ξ_s(α)))`, dividing the squared
+  amplitude bound by `c Ξ_s(α)`.  The sharp version needs *fewer* hypotheses than the old one: the
+  outer-region condition `houter` is no longer used.
+- `prolateBand_sq_ratio_le` — the payoff.  The sharp upper bound for aperture `s_n` and the corpus
+  lower bound for aperture `s_m` carry the **same** collar prefactor `c Ξ(α)`, which therefore
+  cancels:
+
+  ```text
+  Φ_n(y₀)² ≤ 324 √2 π³ · C · exp( 2c(Ξ_{s_n}(y₀) − Ξ_{s_m}(y₀)) + Λ_n
+                                  − 12(log(1−α) − log(1−y₀)) ) · Φ_m(y₀)² .
+  ```
+
+  The two apertures are reconciled by `bandEndpointPhase_le_two_sqrt_two_mul`
+  (`Ξ_{s_m}(α) ≤ 2√2 · Ξ_{s_n}(α)` for `1/2 < α < 1`, `0 ≤ s ≤ 1/8`), proved from the corpus's own
+  two-sided collar phase estimates.
+
+Consequence for the ladder.  Combined with `eventually_signedLeakage_sharp_two_sided`
+(`d_n ≍ c^{-1/2}/R_n(0)²` with absolute constants on both sides) and `tendsto_anchor_ratio`
+(`R(x₀/√c)/R(0) → φ_{2n}(x₀)/φ_{2n}(0) ≠ 0`), the leakage quotient is
+
+```text
+d_m/d_n  ≍  R_n(0)²/R_m(0)²  ≍  Φ_n(y₀)²/Φ_m(y₀)²  =  O(c^{1 − 2(n−m)}) ,
+```
+
+because `exp Λ_n ≍ c` and the phase difference contributes `c^{−2(n−m)}`.  The old bracket lost `c²`
+here and gave only `O(1)`; the new one loses `c` and gives `O(c^{−1}) → 0` already for **adjacent**
+corpus indices `n = m+1`, not just for the Fourier-even step `n = m+2` that
+`ProlateLeakageLadderRatio` currently exploits.
+
+Remaining to assemble: transport this quotient bound through the anchor comparison and the sharp
+mass ratio into a `LadderEnvelope` for the *full* (step-one) ladder, which is what the parity card's
+`(9)` and the sharpened `λ^{-4}` / `λ^{-7}` rates consume.

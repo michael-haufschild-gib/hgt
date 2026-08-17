@@ -18,7 +18,22 @@ noncomputable section
 /-- The retreated integer cutoff of the jet hierarchy at order `N`. -/
 def xiMassJetRetreatCutoff (a : ℝ) (N : ℕ) (u : ℝ) : ℕ :=
   ⌊Real.exp (xiMassSpacelikeSharpSlope a * u
-    - xiMassJetRetreatCoeff a (2 * N) * Real.log u)⌋₊
+    - xiMassJetRetreatCoeff a (2 * N) * Real.log (max u 1))⌋₊
+
+/-- Past the initial interval the normalization is invisible. -/
+theorem xiMassJetRetreatCutoff_eq (a : ℝ) (N : ℕ) {u : ℝ} (hu : 1 ≤ u) :
+    xiMassJetRetreatCutoff a N u
+      = ⌊Real.exp (xiMassSpacelikeSharpSlope a * u
+          - xiMassJetRetreatCoeff a (2 * N) * Real.log u)⌋₊ := by
+  rw [xiMassJetRetreatCutoff, max_eq_left hu]
+
+/-- The retreated cutoff never exceeds the caustic cutoff. -/
+theorem xiMassJetRetreatCutoff_le {a : ℝ} (ha : 1 / 2 < a) (N : ℕ) (u : ℝ) :
+    xiMassJetRetreatCutoff a N u ≤ ⌊Real.exp (xiMassSpacelikeSharpSlope a * u)⌋₊ := by
+  refine Nat.floor_mono (Real.exp_le_exp.2 ?_)
+  have hq : 0 ≤ xiMassJetRetreatCoeff a (2 * N) := (xiMassJetRetreatCoeff_pos ha (2 * N)).le
+  have hlog : 0 ≤ Real.log (max u 1) := Real.log_nonneg (le_max_right u 1)
+  nlinarith
 
 /-- **(22.11) The retreated cut costs only a uniformly bounded exterior.** -/
 theorem exists_bound_xiMassJetAtomSeries_retreat {a c σ : ℝ} (ha : 1 / 2 < a) (hσ : 0 < σ)
@@ -47,7 +62,7 @@ theorem exists_bound_xiMassJetAtomSeries_retreat {a c σ : ℝ} (ha : 1 / 2 < a)
     rw [hHdef]
     nlinarith [hcone]
   have hcut : xiMassJetRetreatCutoff a N u = ⌊Real.exp H⌋₊ := by
-    rw [xiMassJetRetreatCutoff, hHdef]
+    rw [xiMassJetRetreatCutoff_eq a N hu1, hHdef]
   have hMH : Real.exp H < ((⌊Real.exp H⌋₊ : ℕ) : ℝ) + 1 := Nat.lt_floor_add_one _
   have hatom : ∀ n : ℕ, Real.exp H < (n : ℝ) →
       xiMassPolyCenteredPrimeAtom (xiMassJetPoly a N) a
