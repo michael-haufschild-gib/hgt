@@ -3123,3 +3123,86 @@ What remains for `P3` is the two-sided bound on `rho` itself,
 
 from `prolateWKB_sub_le_prolateLogDeriv` (below) and `abs_prolateLogDeriv_le_shiftedBand` (above),
 and the resulting error mass `∫ e = O(1/K²)` on `[K/sqrt c, α]`.
+
+### The exact remaining brick: a WKB-anchored Riccati super-solution
+
+The error control `e` of `sturmAmplitudeVar_sharp_transport` needs `|1 - rho|` two-sided, with
+`rho = v/(cP)`, `v = prolateLogDeriv Φ`, `P = prolateWKBProfile s`.  In the rescaled variable
+`x = y sqrt c` (so `cP ≈ sqrt c · sqrt(x² - mu)` and `dy = dx/sqrt c`) the mass of the error is
+
+```text
+∫ 2 c P (1 - rho)² dy  =  2 ∫ sqrt(x² - mu) · (1 - rho)² dx ,
+```
+
+so `1 - rho` must decay like `x^(-3/2)` or better for the mass to be finite.  The *lower* side is
+already fine: `prolateWKB_sub_le_prolateLogDeriv` with a fixed window `δ = (1-α)/2` gives
+`v ≥ cP - M` with `M` absolute, whence `1 - rho ≤ M/(cP)` and mass `O(M²·c^{-1}·log c) → 0`.
+
+The *upper* side is the brick.  Neither existing barrier is sharp enough:
+
+```text
+prolateRadialBarrier c s y = c sqrt(1-s) y / sqrt(1-y²)     needs 4 ≤ c s  (fails at the ground
+                                                             index, where c s → 1)
+prolateShiftedBarrier = prolateRadialBarrier + 2 sqrt c      valid at every s, but the shift alone
+                                                             contributes 2/(sqrt c · P) ≈ 2/sqrt(x²-mu)
+                                                             to rho - 1, whose mass diverges
+                                                             logarithmically
+```
+
+What is needed instead is a super-solution **anchored on the WKB profile itself**:
+
+```text
+U(y) = c · prolateWKBProfile s y + a/y + b/(1-y) ,      a, b absolute,
+```
+
+for which the Riccati inequality `U' ≥ U² + B U - Q`, `B = 2y/(1-y²)`, `Q = c²P²`, reduces (the
+`c²P²` cancels identically, as always) to
+
+```text
+c y (1 + s - 2y²) / (P (1-y²)²)  +  w'  ≥  2 c P w + w² + B w ,      w = a/y + b/(1-y) .
+```
+
+Near the turning scale the left side is `≍ c x/sqrt(x²-mu)` and the `a/y` term contributes
+`≍ 2 a c sqrt(x²-mu)/x`, so any `a < 1/2` works for `x` large; near the endpoint the left side turns
+negative and the `b/(1-y)` term, whose derivative `b/(1-y)²` is positive and dominates, carries the
+inequality — which is exactly why the corpus's own endpoint bound carries `6/(1-α)`.
+
+With that super-solution, `rho - 1 ≤ a/(y c P) + b/((1-y) c P)`, whose error masses are
+`O(1/K²)` and `O(log c / c)` respectively: both vanish, uniformly in `c` for the first.  That closes
+`P3`, hence `P6`, hence the adjacent-index ladder.
+
+### The WKB-anchored barrier is proved — `P3`'s upper side is closed
+
+`formal/GaloisForLFunctions/RHTower/ProlateAnchoredBarrier.lean` (wired into the `RHTower` umbrella,
+built, axioms `[propext, Classical.choice, Quot.sound]`):
+
+```text
+prolateAnchoredBarrier c χ y = prolateWKB c χ y + 1/y + 1/(1-y)
+hasDerivAt_prolateAnchoredBarrier
+prolateAnchoredBarrier_subsolution   (0 < y < 1, 0 < χ + c²y², 0 ≤ χ(2-y²) + c²y²)
+continuousOn_prolateAnchoredBarrier
+prolateLogDeriv_le_anchoredBarrier   (backward Riccati comparison on [a,b])
+eventually_prolateLogDeriv_le_anchoredBarrier_at_one   (the terminal inequality, free)
+```
+
+The Riccati defect collapses in two elementary steps.  First, the added pair is self-dominating:
+`(1/y + 1/(1-y))' ≤ (1/y + 1/(1-y))²` identically on `(0,1)`, because the difference is
+`2/y² + 2/(y(1-y)) ≥ 0`.  Second, with `A = χ + c²y²` and `W = prolateWKB c χ y` (so `W² = A/(1-y²)`)
+the profile part needs only `W' ≤ (2/y + 2y/(1-y²))W`, and since `2/y + 2y/(1-y²) = 2/(y(1-y²))` this
+clears to
+
+```text
+(2c²y(1-y²) + 2yA)·y ≤ 4A     ⟺     0 ≤ 2(χ(2 - y²) + c²y²) ,
+```
+
+an identity after `ring`.  For `χ = -s c²` the condition is `y²(1+s) ≥ 2s`, i.e. `y ≥ sqrt(2s)` — so
+the barrier is valid **at every separation**, in particular at the ground index where `c s → 1` and
+the corpus's `prolateRadialBarrier` (which needs `4 ≤ c s`) does not apply.  And it exceeds the WKB
+profile by only `1/y + 1/(1-y)`, whose contribution to `rho - 1 = v/(cP) - 1` has finite error mass:
+
+```text
+∫ 2cP · (1/(y cP))²  dy = O(1/K²)  on  [K/sqrt c, α] ,     ∫ 2cP · (1/((1-y) cP))² dy = O(log c / c) .
+```
+
+Both vanish, so `sturmAmplitudeVar_sharp_transport` now has its upper error control.  What remains of
+`P3` is the (already available) lower side `v ≥ cP - M` and the two integral estimates.

@@ -3915,3 +3915,38 @@ digit layer itself was new.
 
 The card's remaining gates are the ones it lists as needing new mathematics: the squarefree
 source-to-exceptional-reporter comparison and Xi conormal/multiplicity-jet conservativity.
+
+## Pass 66 — the order-two shift-orbit mass obstruction
+
+`HTGeometry/ShiftOrbitMassObstruction.lean` closes §3 of
+`finite-archimedean-gamma-product-boundary-law` unconditionally.
+
+```text
+not_shiftDifference_negSumInvSq :
+  H ≠ 0, s nonempty, y meromorphic on ℂ with finitely many poles
+  ==>  ¬ ( z ↦ y(z+H) − y(z)  =ᶠ[cofinite]  z ↦ −∑_{i∈s} (z − p i)^(−2) )
+not_shiftDifference_deriv_logDeriv_prod_affine :
+  the same for the right-hand side  (P'/P)'  with  P(z) = ∏_{i∈s} (α i · z + β i),  α i ≠ 0
+```
+
+Mechanism: `laurentCoeff (fun z => y (z+H) − y z) a ℓ = laurentCoeff y (a+H) ℓ − laurentCoeff y a ℓ`
+(the tree's `laurentCoeff_shiftDiff`), so the order-`ℓ` coefficients along `a + Hℤ` telescope; the
+pole set of `y` is finite so the family has finite support and the telescoped sum is zero.  The
+order-two coefficient of `−∑ (z − p i)^(−2)` at `q` is `−#{i : p i = q}`, so the same sum equals
+`−#{i : p i ∈ a + Hℤ}`, forcing that count to vanish.
+
+Three strengthenings over the paper argument: no bound on the pole order of the solution is needed
+(the indices telescope independently); no coset hypothesis on the poles of the right-hand side is
+needed (choose the orbit through any one of them); and "rational" is weakened to "finitely many
+poles".
+
+**Deduplication.**  The tree already owned the single-pole unit-step case twice —
+`GaloisForLFunctions.no_rational_shift_inv_sq` (`RationalShiftNoSolution`, polynomial form) and
+`no_finitePole_solution_digammaShiftDerivative` (`GammaProjectiveBoundary`, meromorphic form).  Both
+argue by pole *position* on the orbit (largest and smallest real part), which is blind to
+multiplicity and therefore cannot handle the several-poles-per-orbit situation of `(12)`.  The new
+module argues by order-two *mass*, which can; it subsumes both.
+
+Card `finite-archimedean-gamma-product-boundary-law` still needs, for stage 3: sectorial Stirling,
+the formal Laurent shift field, the ADH dichotomy, the product-field valuation `(6)`, and the
+holomorphic Bohr recurrence of §7.

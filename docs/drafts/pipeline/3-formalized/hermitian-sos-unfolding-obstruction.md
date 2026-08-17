@@ -70,6 +70,30 @@ exactly when `λ ≥ 1` (`cex_unfold_nonneg_of_one_le`, `cex_unfold_neg_of_lt_on
 nonnegativity on the **diagonal** only needs `λ cosh(κπ/(2γ)) ≥ 1`. The gap between those two
 conditions is the gap between the Hermitian-square cone and the nonnegative cone, in one parameter.
 
+## Several pairs: the certificate class collapses to the per-pair relaxation
+
+For several conjugate pairs the unfolding uses a single phase variable, so a priori only the coupled
+phases are freed.  **Bohr recurrence removes the coupling**: a finite family of characters returns
+simultaneously to `1` at arbitrarily large times, whatever the frequencies — commensurable or not
+(`exists_large_simultaneous_almostPeriod`).  Hence
+
+> `R(t) − ∑_j 2 e^{β_j t} cos(γ_j t)` is a sum of Hermitian squares  ⟹  `R(t) ≥ ∑_j 2 e^{β_j t}`,
+
+`phaseBlind_of_unfold_nonneg`, `multiPair_phaseBlind_of_isHermitianSOS`.  With all pairs on the
+imaginary axis this reads `R(t) ≥ 2r` (`multiPair_const_bound`).
+
+That right-hand side is **exactly the per-pair cost**.  `several-conjugate-pairs-no-joint-profile.md`
+shows the per-pair relaxation is off by a factor `n−1`: the `n(n−1)` ordered pairs `(j,k)`, `j ≠ k`,
+from `{0,…,n−1}` with terms `−cos((j−k)θ)` are jointly dominated by `n`, while per-pair certification
+costs `n(n−1)`.  Therefore
+
+> **sums of Hermitian squares certify only the per-pair relaxation of Beurling realizability, and
+> are off by an unbounded factor.**
+
+Together with the one-pair result the picture is complete: for `r = 1` the SOS cone is exactly the
+phase-blind cone and the classification is sharp; for `r ≥ 2` the SOS cone is still only the
+phase-blind cone, which is now unboundedly smaller than the nonnegative cone.
+
 ## Consequence for the Beurling programme
 
 For one conjugate pair the previous card characterised `R(t) ≥ 2e^{βt} cos(γ t)` by an arc criterion.
@@ -127,10 +151,15 @@ formal/GaloisForLFunctions/HTGeometry/HermitianSOSCounterexample.lean
 formal/GaloisForLFunctions/HTGeometry/HermitianSOSExtremal.lean
 formal/GaloisForLFunctions/HTGeometry/UnivariateSumOfTwoSquares.lean
 formal/GaloisForLFunctions/HTGeometry/OnePairSumOfSquares.lean
+formal/GaloisForLFunctions/HTGeometry/MultiPairPhaseBlind.lean
 ```
 
 ## Open
 
+* Whether the full multi-torus obstruction (deforming the exponents by an arbitrary ℚ-linear map,
+  giving nonnegativity on `(ℝ_{>0})^a × 𝕋^b`) is strictly stronger than the phase-blind condition
+  proved here. The ℚ-linear extension is elementary finite-dimensional linear algebra but is not
+  formalized; the Bohr-recurrence route above reaches the phase-blind conclusion without it.
 * Sufficiency beyond `W`-degree one. The unfolding of `f` is a signomial on `ℝ_{>0} × 𝕋`; the
   question is whether every such nonnegative signomial is a sum of Hermitian squares. Degree one in
   `W` is settled affirmatively above (and the degree-one Gram argument `p₀ ± 2p₁ = ∑ squares` works

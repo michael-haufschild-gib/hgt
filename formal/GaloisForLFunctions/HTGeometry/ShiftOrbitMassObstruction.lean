@@ -373,4 +373,36 @@ theorem not_shiftDifference_deriv_logDeriv_prod_sub {H : ℂ} (hH : H ≠ 0) {ι
   rw [hzi]
   exact Finset.mem_coe.mpr (Finset.mem_image_of_mem ρ hi)
 
+
+/-- A product of affine factors has the logarithmic derivative of the monic product of the same
+roots: the leading constant cancels. -/
+theorem logDeriv_prod_affine_eq {ι : Type*} (s : Finset ι) (α β : ι → ℂ)
+    (hα : ∀ i ∈ s, α i ≠ 0) :
+    (logDeriv fun u => ∏ i ∈ s, (α i * u + β i))
+      = logDeriv fun u => ∏ i ∈ s, (u - -(β i) / α i) := by
+  have hfun : (fun u : ℂ => ∏ i ∈ s, (α i * u + β i))
+      = fun u : ℂ => (∏ i ∈ s, α i) * ∏ i ∈ s, (u - -(β i) / α i) := by
+    funext u
+    rw [← Finset.prod_mul_distrib]
+    refine Finset.prod_congr rfl fun i hi => ?_
+    have hne : α i ≠ 0 := hα i hi
+    field_simp
+    ring
+  funext w
+  rw [hfun, logDeriv_const_mul w _ (Finset.prod_ne_zero_iff.mpr hα)]
+
+/-- **The rational shift equation of a finite Gamma product has no finitely-poled solution.**
+Translating a product `exp (a z) ∏ Γ (λ i z + μ i)` with commensurable positive scales by the common
+period multiplies it by a constant times `∏ (λ i z + μ i + ℓ)`, so its second logarithmic derivative
+`τ` would satisfy `τ (z + H) - τ z = (P'/P)' (z)` for that product of affine factors.  No function
+with finitely many poles satisfies this. -/
+theorem not_shiftDifference_deriv_logDeriv_prod_affine {H : ℂ} (hH : H ≠ 0) {ι : Type*}
+    (s : Finset ι) (α β : ι → ℂ) (hα : ∀ i ∈ s, α i ≠ 0) (hs : s.Nonempty)
+    {y : ℂ → ℂ} (hy : MeromorphicOn y Set.univ)
+    (hpoles : {z : ℂ | ¬ AnalyticAt ℂ y z}.Finite) :
+    ¬ ((fun z => y (z + H) - y z)
+        =ᶠ[Filter.cofinite] fun z => deriv (logDeriv fun u => ∏ i ∈ s, (α i * u + β i)) z) := by
+  rw [logDeriv_prod_affine_eq s α β hα]
+  exact not_shiftDifference_deriv_logDeriv_prod_sub hH s (fun i => -(β i) / α i) hs hy hpoles
+
 end GaloisForLFunctions.HTGeometry

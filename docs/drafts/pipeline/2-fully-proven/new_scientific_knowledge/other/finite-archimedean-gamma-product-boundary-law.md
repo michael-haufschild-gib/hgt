@@ -501,3 +501,51 @@ is unconditional in Lean.
 - [ ] full-text comparison with Gamma-product, Gamma--Dirichlet, and automorphic-L literature
 - [ ] independent expert proof audit
 - [ ] complete unconditional Lean formalization
+
+## Lean progress — §3 closed unconditionally
+
+`GaloisForLFunctions.HTGeometry.ShiftOrbitMassObstruction` proves the shift-orbit mass obstruction
+of §3 in full generality, axiom-clean (`[propext, Classical.choice, Quot.sound]`).
+
+```text
+sum_Ico_laurentCoeff_shiftDiff_eq_zero
+    the order-ℓ Laurent coefficients of z ↦ y(z+H) − y(z) telescope along a + Hℤ
+laurentCoeff_negSumInvSq
+    laurentCoeff (−∑_{i∈s} (z − p i)^(−2)) q (−2) = −#{i ∈ s : p i = q}
+not_shiftDifference_negSumInvSq_orbit
+    a sum of inverse squares with a pole on the orbit a + Hℤ is not a shift difference of a
+    meromorphic function with finitely many poles
+not_shiftDifference_negSumInvSq
+    the same with no orbit hypothesis at all: a nonempty sum of inverse squares is never a shift
+    difference of a finitely-poled meromorphic function
+not_rational_shiftDifference_negSumInvSq
+    the rational form: no P/Q solves y(z+H) − y(z) = −∑ (z − p i)^(−2)
+deriv_logDeriv_prod_sub, logDeriv_prod_affine_eq, deriv_logDeriv_prod_affine
+    (P'/P)'(z) = −∑ (z − ρ i)^(−2) for P a product of affine factors
+not_shiftDifference_deriv_logDeriv_prod_affine
+    the exact statement (13): τ(z+H) − τ(z) = (P'/P)'(z) has no finitely-poled solution for
+    P(z) = ∏ (α i · z + β i), α i ≠ 0, the index set nonempty
+```
+
+Three points where the Lean proof is stronger than the card's §3 argument.
+
+1. The card first excludes poles of order above two in a putative solution and only then runs the
+   order-two coefficient computation.  This step is unnecessary: the Laurent coefficients telescope
+   independently at each index, so the order-two identity is available whatever the pole orders of
+   `y` are.
+2. The card groups the poles of `r` into `Hℤ`-cosets and works in one coset.  The Lean statement
+   needs no coset hypothesis: any pole of the right-hand side determines an orbit, and the poles
+   on it carry the whole order-two mass there.
+3. "Rational" is weakened to "meromorphic on `ℂ` with finitely many poles", which is what the
+   argument actually uses.
+
+The tree already owned the single-pole unit-step special case
+(`GaloisForLFunctions.no_rational_shift_inv_sq` in `RationalShiftNoSolution`, and
+`no_finitePole_solution_digammaShiftDerivative` in `GammaProjectiveBoundary`), both proved by a
+pole-position argument that cannot see multiplicity and therefore does not extend to several poles
+per orbit — which is exactly the situation of `(12)`, where the multiplicities `n_j = H λ_j` and
+the collisions among the `μ_j` put many poles on one orbit.  The Laurent-mass proof handles them.
+
+What the card still needs in Lean: the sectorial Stirling expansion and the formal Laurent shift
+field of §4--§5, the Adamczewski--Dreyfus--Hardouin dichotomy, the product-field valuation `(6)`,
+and the holomorphic Bohr recurrence of §7.

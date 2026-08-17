@@ -9263,3 +9263,36 @@ prime-number-theorem remainder rather than by the transport prefactor.  That is 
 analogue of `exists_eventually_norm_logSubcausticWindowDefect_le`, i.e. §19's `(19.3)` window
 estimate re-run with the polynomial weight; the exterior action bookkeeping for it is already
 available as `xiMassAction_penetration_le` plus `norm_xiMassPolySquare_weight_le`.
+
+### C42-T: infrastructure for the `L_c u^{1/10}` layer (2026-08-17)
+
+The remaining layer of `(22.9)` needs the filtered analogue of the `(19.3)` window estimate, whose
+Abel summation pairs the profile *and its height derivative* against the prime-number-theorem
+discrepancy.  The base theory gets the derivative envelope from the closed Bessel form; the jet has
+none, so it must come from a Cauchy estimate on a disc of bounded radius.  Three prerequisites for
+that are now proved.
+
+    HTGeometry/CauchyFirstOrderStep.lean
+      norm_deriv_le_of_forall_mem_sphere_norm_le  `‖f′(z)‖ ≤ M/R` from the boundary sup norm
+
+    HTGeometry/PrincipalRootPerturbation.lean
+      norm_csqrt_sub_le                           `‖√z − √w‖ ≤ ‖z−w‖/csqrtRe w`
+      csqrtRe_sub_le                              hence `csqrtRe z ≥ csqrtRe w − ‖z−w‖/csqrtRe w`:
+                                                  in the far field a bounded perturbation of the
+                                                  argument moves the root by a bounded amount, even
+                                                  though the argument itself moves by `O(h)`
+
+    RHTower/XiMassCausticComplexWindow.lean
+      exists_norm_xiCausticIterate_windowC_le     the window estimate at every **complex** point of
+                                                  the square-root window — the proof never used
+                                                  reality of the offset, only its norm
+
+### Remaining for C42-T
+
+The `L_c u^{1/10}` layer, in four steps: (1) the complex-window bound for the jet profile itself
+(the caustic bound above times the conjugated carrier, compared to the real point by
+`csqrtRe_sub_le`); (2) its height-derivative envelope by `norm_deriv_le_of_forall_mem_sphere_norm_le`
+at bounded radius; (3) the filtered `(19.3)` window-discrepancy estimate, by
+`primeLogWindow_quadrature_eq` — which is already generic in the profile — against
+`xiMassThetaLogDiscrepancy`; (4) the filtered subcaustic window and moving criterion, mirroring
+`XiMassLogSubcausticWindow` and `XiMassMovingQuadratureCriterion` with `m_B q ≤ N + 1/2`.
