@@ -197,6 +197,109 @@ multiple hard.  The $p$th multiple is identity.  A nonempty open
 neighbourhood of this polygon is visited syndetically by every maximally
 projective phase flow.
 
+\subsection{Nested static-local ramp and exact return}
+
+We prove Theorem \ref{thm:nestedramp}.  Write $p_j(x)$ for indicator that
+both qubits of pair $j$ equal one and $b_j(x)$ for indicator that right qubit
+of pair $j$ and left qubit of pair $j+1$ equal one.  For $n\ge2$,
+\begin{equation}
+ \frac1{n^2}\le\frac1{n-1}-\frac1n,
+ \qquad
+ \frac1{n^4}\le\frac1{(n-1)^3}-\frac1{n^3}.          \label{eq:nestedtelescopes}
+\end{equation}
+Telescoping gives inverse-square and inverse-fourth tails at most $L^{-1}$
+and $L^{-3}$.  Termwise domination proves convergence of
+\eqref{eq:nestedenergy}, its bound $2+1=3$, exact agreement of every finite
+restriction with \eqref{eq:nestedH}, uniform estimate
+\eqref{eq:nestedtail}, and convergence of finite energies.
+
+For lower bound, first fix integer $K\ge8$ with $8K\le L$ and
+\begin{equation}
+ 128\pi\varepsilon K\le t
+ <128\pi\varepsilon(K+1).                            \label{eq:nestedKwindow}
+\end{equation}
+Suppose circuit with fewer than $K$ counted two-qubit gates approximates
+$U_L(t)$ within $\varepsilon$.  Each counted gate touches at most two of
+pair blocks.  Among $4K$ pairs with one-based indices in $(4K,8K]$, more
+than $2K$ are untouched.  Their nonnegative matching phases are individually
+at most $2\pi\varepsilon$ and have total greater than
+$4\pi\varepsilon$.  Greedy subset selection therefore gives untouched set
+$S$ whose matching phase $\theta$ obeys
+\begin{equation}
+ 3\pi\varepsilon\le\theta\le5\pi\varepsilon.         \label{eq:nestedtheta}
+\end{equation}
+
+Cut between first and second endpoints of pairs in $S$.  Every circuit gate
+lies on one side, so diagonal amplitudes $W_{ab}$ on four Boolean corner
+configurations factor and satisfy $W_{00}W_{11}=W_{01}W_{10}$.  Hamiltonian
+energy vanishes on corners $00,01,10$.  At corner $11$, phase is
+$\phi=\theta+tB_S$, with $B_S\ge0$ bridge energy.  Every active bridge ends
+in $S$, hence its right-pair index exceeds $4K$.  From
+\eqref{eq:nestedtelescopes},
+\begin{equation}
+ B_S\le(4K)^{-3},\qquad
+ tB_S<2\pi\varepsilon\frac{K+1}{K^3}<\frac\varepsilon4.\label{eq:nestedbridge}
+\end{equation}
+Here last inequality uses $K\ge8$ and $\pi<4$.  Thus
+$3\pi\varepsilon\le\phi<5\pi\varepsilon+\varepsilon/4<\pi$.
+Chord bound on $[0,\pi]$ gives
+$|\ee^{-\ii\phi}-1|\ge2\phi/\pi\ge6\varepsilon$.
+But four entrywise approximation errors, factorization identity and unitary
+entry bounds give $|\ee^{-\ii\phi}-1|\le4\varepsilon$, contradiction.  Every
+approximating circuit therefore contains at least $K$ two-qubit gates.
+
+For upper bound put $K=\lceil2t/\varepsilon\rceil$.  Condition
+\eqref{eq:nestedwindow} implies $K\le L$.  Apply exact diagonal phase gate to
+each first $K$ matching pair and each of first $K-1$ bridges.  Circuit uses
+$2K-1$ counted gates.  Omitted energy is nonnegative and at most
+$K^{-1}+K^{-3}$.  Since $K\ge2t/\varepsilon$ and $K>1$,
+\begin{equation}
+ t(K^{-1}+K^{-3})<\varepsilon.
+\end{equation}
+Inequality $|\ee^{-\ii a}-\ee^{-\ii b}|\le|a-b|$ gives strict operator error
+below $\varepsilon$.  Taking
+$K=\lfloor t/(128\pi\varepsilon)\rfloor$ in lower argument, hypotheses
+\eqref{eq:nestedwindow} imply $K\ge8$ and $8K\le L$, proving
+\eqref{eq:nestedramp}.
+
+Finally, $Q_L=(L!)^4$ satisfies $Q_L/j^2\in\N$ and $Q_L/j^4\in\N$ for every
+$1\le j\le L$.  Every basis energy is therefore integer divided by $Q_L$,
+so $U_L(2\pi Q_L)=I$.  Autonomous composition gives
+$U_L(R_L-t)=U_L(t)^*$.  Taking adjoints of local gates and reversing circuit
+order preserves support, unitarity and counted two-qubit cost, while operator
+norm is adjoint-invariant.  This is cost-preserving bijection between
+admissible circuits at $t$ and $R_L-t$, proving
+\eqref{eq:nestedreflection} and reflected ramp bounds.
+
+The empty circuit implements both $U_L(0)$ and $U_L(R_L)=I$, so their
+counted complexities vanish.  At every time in \eqref{eq:nestedwindow},
+\[
+ \left\lfloor\frac{t}{128\pi\varepsilon}\right\rfloor\ge8,
+\]
+and lower ramp bound proves \eqref{eq:nestedexcursion}.  Also, a nonempty
+window forces $L>0$, while
+$t\le\varepsilon L/2\le L/200<2\pi(L!)^4=R_L$; here
+$L\le L!\le(L!)^4$ and $2\pi>1/200$.  Thus ramp point lies strictly inside
+return cycle.  A nondecreasing
+history on $[0,R_L]$ would be bounded above by its zero value at $R_L$ and
+would therefore vanish identically; a nonincreasing history would be bounded
+above by its zero value at $0$.  Both contradict
+\eqref{eq:nestedexcursion}.
+
+Finally let $s,t$ both satisfy \eqref{eq:nestedwindow} and suppose
+$1024\pi s\le t$.  Since $s/\varepsilon\ge1$, the two ramp bounds give
+\[
+ C^{\rm op}_{L,\varepsilon}(s)
+ \le2\left\lceil\frac{2s}{\varepsilon}\right\rceil
+ <\frac{4s}{\varepsilon}+2
+ \le\frac{8s}{\varepsilon}
+ \le\frac{t}{128\pi\varepsilon}.
+\]
+The leftmost integer is therefore at most
+$\lfloor t/(128\pi\varepsilon)\rfloor$, which is at most
+$C^{\rm op}_{L,\varepsilon}(t)$ by lower ramp bound.  This proves
+\eqref{eq:nestedcoarsemono}.
+
 \section{Countable completion and reflection}
 
 For a countable maximally projective spectrum, every finite restriction has

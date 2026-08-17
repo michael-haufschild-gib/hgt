@@ -119,12 +119,31 @@ The transfer `(5)` is exactly self-adjointness plus the eigenvalue equation, and
 probabilistic structure: it holds for any self-adjoint operator on a real inner-product space, with
 the discount factor of the mode as the only denominator.
 
+### The potential layer is built
+
+`formal/GaloisForLFunctions/HTGeometry/DiscountedHittingPotential.lean` (new, umbrella-wired,
+axiom-clean) constructs `h_A` and proves the four properties section 1 uses, for a finite chain.
+
+| Card item | Declaration |
+|---|---|
+| the discounted first-entrance operator `f ↦ 1_A + a P f 1_{A^c}` | `hittingMap` |
+| it is an `a`-contraction of the sup norm | `lipschitzWith_hittingMap`, `hittingContracting` |
+| **`h_A`**: its unique fixed point | `hittingPotential`, `hittingPotential_fixed` |
+| `h_A = 1` on `A` | `hittingPotential_eq_one` |
+| `0 <= h_A <= 1` | `hittingPotential_mem_unitInterval` |
+| **`q_A = L_a h_A` vanishes off `A`** | `charge_eq_zero_of_notMem` |
+| **`1-a <= q_A <= 1` on `A`** | `charge_bounds_of_mem` |
+
+The construction is by the Banach fixed point theorem for the sup norm, with the unit-interval
+bounds obtained from the closed invariant set of the iteration.  No path space, hitting time or
+strong Markov property is needed: `h_A` is characterized by the discounted harmonic equation, and
+that characterization is what `(1)`, `(1a)` and `(2)` consume.
+
 ### What remains
 
-The probabilistic layer that identifies `h_A` as the discounted first-entrance potential of a
-reversible chain (hitting times, the strong Markov property, and the equilibrium measure
-`rho_A`), and Theorems B, C and J, which quantify the observer-excised complete union over that
-layer.
+The identification of the fixed point with the path-space expectation
+`E_x[a^{tau_A}]` (a statement about a Markov measure, not used by the estimates), and Theorems B,
+C and J, which quantify the observer-excised complete union over this layer.
 
 ## 2. Exact charge--mode transfer
 

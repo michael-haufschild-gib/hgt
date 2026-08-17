@@ -481,6 +481,80 @@ generic bounded-weight Pauli Hamiltonians satisfying second inequality in
 benchmark at every time.
 \end{theorem}
 
+\subsection{One nested local path: ramp, return and thermodynamic completion}
+
+Number qubits consecutively along a path and write
+$P_{a,b}=|11\rangle\!\langle11|_{a,b}$.  For $L\ge1$, define
+\begin{equation}
+ H_L^{\rm nest}=
+ \sum_{j=1}^{L}\frac{P_{2j-1,2j}}{j^2}
+ +\sum_{j=1}^{L-1}\frac{P_{2j,2j+1}}{(j+1)^4},
+ \qquad U_L(t)=\ee^{-\ii tH_L^{\rm nest}}.             \label{eq:nestedH}
+\end{equation}
+Every nearest-neighbour bond has positive weight, and increasing $L$ leaves
+every old term unchanged.  Let $C^{\rm op}_{L,\varepsilon}(t)\in\N\cup\{\infty\}$
+be infimum of number of arbitrary two-qubit gates in support-certified
+one- and two-qubit circuits $W$ satisfying
+$\|W-U_L(t)\|_{2\to2}\le\varepsilon$; one-qubit gates are free.
+
+\begin{theorem}[Nested static-local ramp--return law]
+\label{thm:nestedramp}
+The family \eqref{eq:nestedH} has the following five properties.
+\begin{enumerate}[leftmargin=1.7em]
+\item For every infinite Boolean configuration $x$, infinite diagonal energy
+\begin{equation}
+ E_\infty(x)=\sum_{j\ge1}\frac{p_j(x)}{j^2}
+ +\sum_{j\ge1}\frac{b_j(x)}{(j+1)^4}                 \label{eq:nestedenergy}
+\end{equation}
+exists and lies in $[0,3]$.  Its $L$-pair truncation is exactly finite energy
+of $H_L^{\rm nest}$, and for $L\ge1$,
+\begin{equation}
+ 0\le E_\infty(x)-E_L(x)\le L^{-1}+L^{-3}             \label{eq:nestedtail}
+\end{equation}
+uniformly in $x$.  Hence finite energies converge uniformly to one bounded
+infinite-chain energy.
+\item With $R_L=2\pi(L!)^4$, one has $U_L(R_L)=I$.
+\item For every $t$ and $\varepsilon\ge0$,
+\begin{equation}
+ C^{\rm op}_{L,\varepsilon}(R_L-t)
+ =C^{\rm op}_{L,\varepsilon}(t).                     \label{eq:nestedreflection}
+\end{equation}
+\item If $0<\varepsilon\le1/100$ and
+\begin{equation}
+ 1024\pi\varepsilon\le t\le\frac{\varepsilon L}{2}, \label{eq:nestedwindow}
+\end{equation}
+then
+\begin{equation}
+ \left\lfloor\frac{t}{128\pi\varepsilon}\right\rfloor
+ \le C^{\rm op}_{L,\varepsilon}(t)
+ \le2\left\lceil\frac{2t}{\varepsilon}\right\rceil,\label{eq:nestedramp}
+\end{equation}
+and same bounds hold at $R_L-t$.
+\item For $0<\varepsilon\le1/100$, every $t$ obeying
+\eqref{eq:nestedwindow} is a literal positive complexity excursion:
+\begin{equation}
+ C^{\rm op}_{L,\varepsilon}(0)
+ =C^{\rm op}_{L,\varepsilon}(R_L)=0
+ <C^{\rm op}_{L,\varepsilon}(t).                  \label{eq:nestedexcursion}
+\end{equation}
+Consequently complexity is neither nondecreasing nor nonincreasing on the
+full return cycle.  Moreover, if $s$ and $t$ both obey
+\eqref{eq:nestedwindow} and $1024\pi s\le t$, then
+\begin{equation}
+ C^{\rm op}_{L,\varepsilon}(s)
+ \le C^{\rm op}_{L,\varepsilon}(t).                \label{eq:nestedcoarsemono}
+\end{equation}
+\end{enumerate}
+\end{theorem}
+
+This is finite-time circuit hardness for one explicit static bounded-degree
+Hamiltonian, not a generic or worst-case ensemble statement.  Ramp means
+matching linear envelopes over window \eqref{eq:nestedwindow}.  Equation
+\eqref{eq:nestedcoarsemono} excludes scale-separated backtracking but does
+not compare every pair $s\le t$.  Couplings decay with position, so theorem
+does not claim translation invariance, uniform transport or a complexity
+plateau.
+
 \subsection{Return forces reflection}
 
 \begin{theorem}[Robust complexity reflection]
@@ -569,6 +643,9 @@ statements:
       interaction ray outside a countable exceptional set;
 \item static bounded-weight Pauli recurrence--hardness alternation with a
       permanent operational separation from Haar randomness.
+\item one explicit nested static nearest-neighbour qubit path with bounded
+      infinite-chain energy, a robust finite-time linear circuit-complexity
+      envelope, exact return and exact reflected descent.
 \end{enumerate}
 
 Complexity result is complementary to saturation theorems for random circuits
@@ -580,6 +657,19 @@ random \cite{CuiEtAl2025}.  A static geometrically local SFF ramp has recently
 been proved by a clock embedding \cite{Ippoliti2026}; our completed-time rank
 and collision laws address a different regime and do not assert a finite-time
 random-matrix ramp.
+
+Hamiltonian-simulation lower bounds provide important comparison points.
+Worst-case one-dimensional piecewise local dynamics require nearly linear
+space--time gate count \cite{HaahEtAl2023}; generic commuting two-local
+Hamiltonians can require quadratic gate count at short time
+\cite{LowEtAl2023}; and recent coefficient-sensitive optimal lower bounds use
+local bounded-degree classical hard instances, with time-independent
+unit-time constructions and piecewise-constant extensions to later times
+\cite{ZlokapaEtAl2026}.  Theorem \ref{thm:nestedramp} is complementary: it
+follows one explicit nested static one-dimensional family through a linear
+laboratory window, a bounded thermodynamic completion, an exact return and
+the reflected complexity history.  It does not claim optimal constants or a
+general simulation lower bound.
 
 Completed target occupation is also distinct from Hamiltonian
 fast-forwarding and its connection to exponentially precise measurement
@@ -593,15 +683,20 @@ on a supplied finite graph.  They do not impose translation invariance.  All
 thermodynamic density statements take $T\to\infty$ at fixed volume before
 size limit.  All countable results concern pure-point diagonal spectra.
 Bounded-weight Pauli complexity theorem is $q$-local but all-to-all in
-support, whereas path recurrence theorem is geometrically nearest-neighbour
-but makes no circuit-hardness claim.
+support.  The nested path theorem is static, geometrically nearest-neighbour
+and circuit-hard over explicit finite-time windows, but its diagonal
+couplings decay with position; it is neither translation invariant nor a
+uniform-transport model.  Its thermodynamic statement concerns bounded
+static energy and uniform finite-volume truncation, not infinite-system
+circuit complexity.
 
-Principal open boundary is finite laboratory time: a first, fixed-error,
-monotone complexity-growth theorem for one ordinary time-independent
-bounded-degree local Hamiltonian is not obtained here.  Completed occupation
-does not determine first onset, and inverse completed density is not asserted
-to be a first-return time.  Infinite-volume quasi-local orbit recurrence is
-also outside present scope.
+Principal open boundary is stronger dynamical shape: all-pairs pointwise
+monotonicity inside the laboratory window, a parametrically longer growth
+regime, and a saturation plateau for one uniform-strength noncommuting
+bounded-degree Hamiltonian are not
+proved.  Completed occupation does not determine first onset, and inverse
+completed density is not asserted to be a first-return time.  Infinite-volume
+quasi-local orbit recurrence remains outside present scope.
 
 \section{Proof organization}
 
@@ -610,4 +705,6 @@ finite contraction selection and arbitrary spectral measures, develop
 projective detuning map and interaction conversion, prove static path and
 arbitrary-graph genericity, and then derive completed return densities,
 observer deadlines, circuit-target bounds, countable saturation and
-finite-record no-go theorem.
+finite-record no-go theorem.  A separate construction proves bounded
+thermodynamic completion, finite-time circuit ramp, exact return and
+reflection for nested static path \eqref{eq:nestedH}.

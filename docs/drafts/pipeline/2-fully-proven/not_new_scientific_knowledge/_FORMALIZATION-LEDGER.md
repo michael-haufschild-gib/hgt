@@ -128,6 +128,8 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-17 | `universal-quadratic-root-ridge-density` | `RHTower/UniversalQuadraticRootRidgeDensity.lean` (pre-existing; verified + audited) |
 | 2026-08-17 | `corank-trdeg-realization-locus` | new `HTGeometry/CorankTrdegRealizationLocus.lean` (uses pre-existing `HTGeometry/SymmetricBlockAlgebraicIndependence.lean`, `HTGeometry/PrimeRadialRelativeJetRank.lean`, `HTGeometry/StateFieldTrdeg.lean`) |
 | 2026-08-17 | `prime-source-cancellation-budget` | new `RHTower/PrimeSourceCancellationBudget.lean`, `HTGeometry/ComplexExponentialPolynomial.lean`, `HTGeometry/PrimeValuationLeadingEchelonInfinite.lean` (+ complex layer appended to `HTGeometry/ExponentialPolynomialZeroBound.lean`; uses pre-existing `HTGeometry/ExponentialTypeZeroDensity.lean`, `RHTower/PrimeLogExponentialTypeUniqueness.lean`, `RHTower/XiShiftPrimeHypertranscendence.lean`) |
+| 2026-08-17 | `completed-logderiv-full-translation-orbit-freeness` | new `RHTower/XiTranslationOrbitFreeness.lean` (uses the three modules added for `prime-source-cancellation-budget`, plus pre-existing `RHTower/XiUpperEndHypertranscendence.lean`, `HTGeometry/UpperEndRationalCoordinateDifferentialAdjoin.lean`, `HTGeometry/FiniteAbscissaDirichletUpperEnd.lean`) |
+| 2026-08-17 | `entire-multiplier-translation-defect-universality` | new `HTGeometry/EntireMultiplierDefectUniversality.lean` (uses pre-existing `HTGeometry/EntireBezout.lean`) |
 
 ## Already carrying a stage-3 certificate (verify, then move the paper card)
 
@@ -704,3 +706,72 @@ Known heavy prerequisites still outstanding, with the cards they gate:
   `eq_zero_of_exponentialType_of_cofinite_primeLog_zeros`, and the source-survival theorem
   `infinite_survivingPrimes`.  Any card about applying a finite differential-translation operator
   to a Dirichlet source can start from these.
+- `HTGeometry/CommonLayerPrimeJetIndependence.lean` — **algebraic independence from a common
+  valuation layer** (`commonLayerJetRectangle_algebraicIndependent`).  The leading-echelon law
+  separates sources by private valuation coordinates; translates and jets of a *single* source have
+  none.  What separates them is the first-layer feature family
+  `p ↦ g(p) · (rotated prime clock at p)^k`, and its tail independence is exactly the input the
+  prime-ray Jacobian criterion needs at a constant layer exponent.  Higher layers stay arbitrary.
+- `RHTower/PrimeShiftJetIndependence.lean` — the **prime-feature tail-span law** for arbitrary
+  distinct complex shifts (`primeShiftJet_tailCoefficientIndependent`), obtained from the
+  exponential-polynomial prime-log sampling stack; its consequences
+  `dirichletShiftFamily_differentialIndependent` (over `ℂ`, formal) and
+  `dirichletShiftFamily_upperEnd_differentialIndependent` (over the rational coordinate field, for
+  the actual meromorphic carriers), and the xi instance
+  `filteredVonMangoldt_translates_differentialIndependent`.
+- `HTGeometry/EntireMultiplierDefectUniversality.lean` — the entire-multiplier defect toolkit:
+  membership in a multiplier ideal as an analytic-order condition (`mem_multiplierIdeal_iff`), the
+  nowhere-zero translation multiplier and its descent to the defect
+  (`translation_mem_multiplierIdeal_iff`), the local character with its unipotent correction
+  (`translationMultiplier_sub_character`), and the classification of faithful positive
+  translation-invariant Hermitian forms on a finite character core
+  (`nonempty_positiveInvariantForm_iff`: such a form exists exactly when every point is real).
+
+## Open build: the Nevanlinna small-growth field `F_s`
+
+Eight stage-2 cards state their conclusion over Nagoshi's field `F_s` of meromorphic functions with
+`T(r, φ) = o(r)`: `prime-power-dirichlet-complex-jet-independence`,
+`atomic-increment-full-orbit-codimension-law`, `da-gauge-ht-divisor-blindness`,
+`entire-composition-hypertranscendence-or-law`, `exact-rational-rg-generation-dichotomy`,
+`exponential-tower-exact-differential-order`, `finite-order-symmetry-ht-rational-gauge-blindness`,
+`prime-poisson-superselection-screen`.
+
+State of the build:
+
+- mathlib supplies `ValueDistribution.characteristic`, the first main theorem, and the sum/product
+  characteristic bounds, so `F_s` as a **field** is reachable directly.
+- `F_s` as a **differential** field additionally needs the lemma on the logarithmic derivative,
+  `m(r, f'/f) = O(log r + log T(r,f))` off a finite-measure exceptional set.  Mathlib does not have
+  it; the corpus's `SecondMainTheoremChain` stops exactly there, and the corpus already owns Borel's
+  growth lemma (`HTGeometry.BorelGrowthLemma.borel_growth`) and the Jensen/Herglotz–Riesz kernel
+  machinery that a Poisson–Jensen derivation needs.
+- The Chiang–Feng coefficient-separation lemma (ordinary Dirichlet series are independent over
+  `F_s`) reduces to Borel's theorem for exponential sums with small-growth coefficients, which in
+  turn uses the logarithmic-derivative lemma.  So the logarithmic-derivative lemma is the single
+  keystone for the whole cluster.
+
+For `prime-power-dirichlet-complex-jet-independence` everything except the `F_s` upgrade is already
+formalized: the tail-span lemma, the constant-coefficient algebraic independence of every finite
+rectangle of complex translates and derivative jets, the analytic transfer to the actual carriers,
+and the xi instance.
+
+### Nevanlinna keystone: build log
+
+- `HTGeometry/PoissonInteriorLogKernel.lean` — the Poisson average of `log ‖· − ρ‖` for `ρ`
+  anywhere in the closed disc.  Mathlib only computes it for `ρ` on the boundary circle; the
+  interior case needs the Blaschke-corrected kernel
+  `innerLogKernel c ρ R z = (R² − conj(ρ−c)(z−c))/R`, whose modulus on the boundary is exactly
+  `‖z − ρ‖` and which is analytic and nowhere zero on a neighbourhood of the closed disc.  Hence
+  `circleAverage ((re ∘ herglotzRieszKernel c w) • log ‖· − ρ‖) c R = log ‖innerLogKernel c ρ R w‖`
+  for every `ρ` in the closed disc
+  (`circleAverage_re_herglotzRieszKernel_mul_log_of_mem_closedBall`).
+- `HTGeometry/PoissonJensenFormula.lean` — the **Poisson–Jensen formula** (`poissonJensen`):
+  for `f` meromorphic and not identically zero on a closed disc and `w` interior,
+  `circleAverage ((re ∘ herglotzRieszKernel c w) • log ‖f‖) c R
+     = ∑ᶠ u, divisor f u · log ‖innerLogKernel c u R w‖ + log ‖g w‖`,
+  together with the divisor decomposition `log ‖f‖ = ∑ᶠ u, divisor f u · log ‖· − u‖ + log ‖g‖`
+  that produced it.  Also `continuousOn_re_herglotzRieszKernel`.
+
+Remaining for the logarithmic-derivative lemma: the complex (Schwarz) form of Poisson–Jensen, its
+differentiation in `w`, the circle estimate for `log⁺(1/‖Re^{iθ} − a‖)`, and the exceptional-set
+removal through `HTGeometry.BorelGrowthLemma.borel_growth`.

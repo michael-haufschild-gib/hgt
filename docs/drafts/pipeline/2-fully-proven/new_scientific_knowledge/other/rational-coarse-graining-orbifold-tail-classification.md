@@ -1576,3 +1576,53 @@ pd_one_eq_zero_of_isWeightZero : torus-invariant of jet order ≤ 1 ⇒ jet orde
 so the descent bottoms out in `C(y₀)`, where the affine-connection and affine-transport obstructions
 already proved for both maps apply.  Levels two and three of that scheme reproduce exactly the
 affine-connection and Schwarzian obstructions, which is the consistency check.
+
+## Pass 11 — the descent is level-uniform, and the Schwarzian is forced at every level
+
+The whole level-by-level analysis collapses to one differential operator on the free jet field,
+
+`topDescent_K v := y₁^K · ∂_K v`,
+
+together with the top-coordinate chain rule `∂_K Φ_R = R'(y₀)·Φ_R ∂_K`, valid for elements of jet
+order at most `K`.  It maps a relation `R'^κ·Φ(v) = R'·v − D` with `v, D` of jet order ≤ K to the
+relation of the same shape with exponent `κ + 1 − K`, and iterating produces the tower
+
+`R'^{κ + k(1−K)}·Φ(∂_K^k v · y₁^{kK}) = R'·(∂_K^k v · y₁^{kK}) − (∂_K^k D · y₁^{kK})`.
+
+Since the `k`-th term vanishes exactly when `∂_K^k v = 0`, polynomiality in the top coordinate is a
+*conclusion* of eigen-rigidity rather than an input: outside the single resonance `κ = 2K − 1` the
+second term is a nonzero torus-invariant eigenvector of a nonzero exponent, which cannot exist.
+
+The shift tower satisfies the covariant recursion
+
+`s_{k+1} = ∇s_k + k·z₂·s_k + R''(y₀)·z_k`,  `∇ = y₁^{-1}δ`,  `∇z_j = z_{j+1} − j·z_j·z₂`,
+
+equivalently `σ_{M+1} = δσ_M + δ(R'(y₀))·y_M` before normalisation.  Its subtop partial is level
+independent, `∂_M σ_{M+1} = (M+1)·δ(R'(y₀))`, so `topDescent_M s_{M+1} = (M+1)·R''(y₀)` and the
+second descent vanishes.
+
+Two consequences hold at **every** level, with the level entering only as a binomial scalar.
+
+*The top coefficient.*  A torus-invariant normalizing shift `w` at level `N+1` (`N ≥ 3`) is affine in
+its top coordinate and
+
+`y₁^N·∂_N w = −(N+1)·z₂`.
+
+*The second coefficient.*  After stripping the pinned term, `u = w + (N+1)z₂z_N` has jet order ≤ N−1
+and, for every `N ≥ 4`,
+
+`y₁^{N−1}·∂_{N−1} u = ½N(N+1)·(½z₂² − 𝔖)`,   `𝔖 = z₃ − (3/2)z₂²`.
+
+So the Schwarzian is not a level-three accident: it is the universal second coefficient of a
+normalizing shift at any level, and the level enters only through `binom(N+1,2)`.  Combined with the
+exclusion of a rational projective structure for `z²+1` and `(z−1)²` (pass 10), this identifies the
+Schwarzian as the single obstruction that the descent keeps regenerating.
+
+The general stage is a single lemma: for `v` torus-invariant of jet order ≤ K with
+`R'^κΦ(v) = R'v − D` and affine in `z_K`, the stripped element `v − P·z_K`, `P = y₁^K∂_K v`, has jet
+order ≤ K−1 and satisfies the same relation with defect `D + P·s_K − E·z_K − E·s_K/R'`,
+`E = y₁^K∂_K D`, and the *same* exponent.  Running it from `K = N` with `κ = N+1`, the coefficient
+extracted at stage `t` has exponent `t+2` and leading coefficient
+`c_t = −y₁^{N+2}·∂_{t+2}∂_{N−t}w` (so `c_0 = N+1`, `c_1 = ½N(N+1)`, and `c_t = c_{N−2−t}` because
+partials commute).  The chain can continue only while `t + 2 ≤ N − t − 1`; the order crossing at
+`t ≈ N/2` is where a normalizing shift at a general level must fail.

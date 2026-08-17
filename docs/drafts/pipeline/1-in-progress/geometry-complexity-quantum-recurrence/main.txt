@@ -1,1099 +1,862 @@
-    The geometry and complexity of quantum recurrence
-     Four structural laws for persistence, interaction, computational capacity, and recovery
+       Persistent phase geometry of quantum recurrence
+ Four structural laws for loss, spectral constraints, observability, and finite-horizon inference
 
-                GPT 5.6 Sol               Opus 5            Fable 5            Michael Haufschild
-                                                  14 August 2026
+                GPT 5.6 Sol              Opus 5            Fable 5           Michael Haufschild
+                                                 17 August 2026
 
-                                                          Abstract
-         Quantum recurrence is usually studied through separate questions about survival under loss, spectral
-     arithmetic, recurrence time, many-body locality, spectral statistics, observability, circuit complexity and
-     prediction. We show that these questions are organized by one object: the persistent projective phase hull
-     of autonomous evolution, equipped with Haar measure and the target family used to recognize or prepare a
-     return. This yields a return-capacity principle and four structural laws.
-         First, loss selects the recurrent carrier. Peripheral spectral mass is the exact asymptotic return-amplitude
-     ceiling of every finite contraction, while arbitrary stationary spectra obey a point-spectrum and replica-
-     collision hierarchy. Second, interaction controls the dimension and factorization of time. For arbitrary finite
-     interaction graph G, local dimensions qv ≥ 2, and arbitrary onsite-plus-edge Hamiltonians, a dense residual
-     full-measure set satisfies                                 (           )
-                                                          ∑       ∏
-                                               τ (H) =                qv − 1 .
-                                                     C∈π0 (G)   v∈C
-
-     Subsystem temporal curvature reconstructs the supplied interaction graph. Joining components of Hilbert
-     dimensions A, B creates (A − 1)(B − 1) phase directions and removes exactly the corresponding factorization
-     collisions at every replica order. Connected networks have exact strict anchored chordal projective-return
-     density
-                                                   [2 arcsin(ε/2)/π]D−1 ,
-     independently of topology; for bounded local dimension this is doubly exponentially small in site number
-     after completed time is taken first. On one generic countable locally finite network, the maximal-rank law
-     holds simultaneously along every volume of a fixed connected exhaustion, so no finite-dimensional phase
-     carrier contains the thermodynamic sequence.
-         Third, recurrence and circuit complexity are target-capacity problems on the same hull. A target-
-     independent phase-tube bound implies that generic static connected local networks spend all but exp[−Ω(D)]
-     of completed time at Choi-state circuit complexity Ω(D/ log M ). For bounded-dependence local circuit al-
-     phabets, heap counting improves this to Ω(D). For a fixed product input on a Gaussian nearest-neighbour
-     spin chain, an unbounded sequence of common deterministic times has positive ensemble mass at exponential
-     state complexity; rational Hamiltonian–time witnesses can be selected by one terminating algorithm. Or-
-     dinary bounded-weight Pauli Hamiltonians also exhibit syndetically recurring prime-length polygons whose
-     nonidentity vertices avoid every target in an arbitrary finite circuit dictionary and whose last vertex returns
-     near the identity. The same Hamiltonian remains operationally distinguishable from Haar randomness at
-     every time.
-         Fourth, return imposes recovery and reflection. Near an autonomous return, every circuit-complexity
-     shell at t is reflected at R − t with only the return defect added to resolution. For a Markovian quantum
-     dynamical semigroup, the remaining segment is an explicit recovery channel for every intermediate time;
-     exact full-channel recurrence forces the entire cycle to be unitary. Nevertheless, finite-horizon observations
-     do not stably identify completed recurrence geometry: isospectral nearest-neighbour Hamiltonians can agree
-     arbitrarily well on every prescribed earlier window and on any finite set of moments while attaining every
-     later return probability. All claims are finite-volume or completed-time statements; no first-recurrence scale,
-     monotone complexity ramp, infinite-volume return, or Haar randomization is asserted.
-Public summary. A connected quantum system can be built from static local interactions, generate almost
-all of its possible independent phase clocks, spend almost all completed time in states no short circuit can
-reproduce, remain detectably nonrandom, and still return. This remains true for one consistent sequence of
-growing finite volumes, and fixed-input hard examples can be chosen algorithmically. The same phase geometry
-determines how rare the return is, which interaction links can be inferred, and what information a return must
-restore.
+                                                      Abstract
+         Quantum recurrence is controlled by exact spectral relations, whereas every finite-time experiment is
+     continuous under small changes of the Hamiltonian. We show that this mismatch produces a sharp singularity:
+     one arbitrarily weak diagonal operator-Schmidt-rank-one interaction can convert the completed recurrence
+     geometry of two finite systems from at most additive temporal dimension to the full product-space dimension,
+     create at least the product of their non-global spectral capacities in new independent phase directions, and
+     simultaneously drive every full-support replica moment to its minimum collision value. Nevertheless every
+     operator-normalized Heisenberg observable changes by at most the explicit dimension-free Duhamel bound
+     2|t|δ on a perturbation of norm at most δ.
+         This singular principle organizes four structural laws. Loss selects the persistent carrier and fixes the
+     exact asymptotic return ceiling. Spectral constraints determine completed temporal dimension: for any
+     finite interaction graph, generic onsite-plus-edge Hamiltonians have an exact component formula, subsys-
+     tem temporal curvature reconstructs the supplied graph, and homogeneous nearest-neighbour qudit paths
+     have strict return density doubly exponential in their length. Observability is governed by target capac-
+     ity: coherence-graph rank gives the visible exponent, while static connected networks and bounded-weight
+     Pauli Hamiltonians obey exact completed-time circuit-target bounds and recurrent hard-epoch laws without
+     becoming Haar random. An explicit nested family of static diagonal nearest-neighbour qubit paths has a
+     bounded infinite-chain completion, a two-sided linear operator-norm circuit-complexity envelope throughout
+     a finite laboratory-time window, an exact factorial-four return, and exact complexity reflection about that
+     return. Its actual complexity rises strictly above the zero-complexity endpoints at every ramp point and can-
+     not backtrack across suﬀiciently scale-separated laboratory times; exact return forbids global monotonicity.
+     Finite-horizon information remains incomplete: one common earlier record, common finite moments and one
+     common spectrum are compatible with every later return probability.
+         The finite theory extends to countable pure-point spectra. Arbitrarily small domain-preserving trace-
+     class perturbations can produce unbounded finite-window temporal rank, dense future projective orbits,
+     no nonzero exact global return, and recurrent traversal of the full range of every positive summable phase-
+     defect probe. Completed-time thermodynamic densities take the long-time limit at fixed finite volume before
+     system size; separately, the nested path has a uniformly convergent static-energy completion. We assert no
+     first-return scale, all-pairs pointwise monotonicity of complexity, infinite-volume orbit recurrence, or Haar
+     randomization.
+Public summary. A tiny interaction may be almost invisible for any fixed duration yet completely reorganize
+what a quantum system does over arbitrarily long time. The reason is arithmetic: long-time recurrence depends
+on exact relations among energy levels, and exact relations can disappear under an arbitrarily small perturbation.
+We turn that observation into quantitative laws for loss, local many-body systems, measurement, computational
+complexity and the limits of prediction. For one concrete one-dimensional chain, the same analysis proves that
+the number of two-qubit gates needed to reproduce its motion lies between explicit linear bounds for a controlled
+time window and obeys the reverse history before an exact return. This is a rigorous envelope, not a claim that
+complexity increases at every instant.
 
 
-1    One object behind recurrence
-The quantum recurrence theorem guarantees approximate returns for finite closed systems [1]. Quantitative
-work has since bounded recurrence times for prescribed states and for simultaneous return of all states [2, 3, 4],
-
-                                                            1
-isolated arithmetic mechanisms for exact Floquet periods [5], and observed or proposed recurrences in interacting
-many-body devices [6, 7]. A separate line of research studies circuit complexity along quantum evolution. The
-expected growth–plateau–recurrence pattern is central to the second law of quantum complexity [8]; saturation
-and recurrence have been proved for random circuits and stochastic local Hamiltonian evolution [9], while time-
-independent constant-local Hamiltonian ensembles remain eﬀiciently distinguishable from Haar randomness and
-fail to form unitary 2-designs [10].
-    These results leave a structural question. What is common to recurrence of a state, recurrence of a full chan-
-nel, observer-limited return, completed spectral statistics and circuit hardness of one fixed static Hamiltonian?
-Our answer is that each is a target problem on the same compact phase hull. The hull is fixed by persistent
-spectrum and exact rational relations; interaction fixes its factorization; an observer or preparation model fixes
-the target capacity; the group or semigroup law fixes reflection and recovery.
-
-1.1   Contributions and boundaries
-The paper proves four laws.
-1. Persistence. Loss removes transient phase coordinates before recurrence begins. The surviving carrier and
-   its stationary collision hierarchy are exact.
-2. Interaction and factorization. Generic projective temporal rank is computed for every finite interaction
-   graph. The rank atlas reconstructs the supplied graph, and its factorization law controls all completed
-   spectral-form-factor moments.
-3. Target capacity. The same Haar target volume governs strict recurrence, observer resolution and robust
-   circuit complexity. This produces static-local completed-time complexity plateaux, fixed-input computable
-   hard witnesses and complete hard recurrence polygons without Haar randomization.
-4. Recovery and information. Returns reflect circuit shells and recover Markovian information, but finite earlier
-   records do not identify the completed recurrence geometry.
-    The first conceptual identity below is a bridge from compact-group equidistribution, not a standalone novelty
-claim. The new mathematical content is in its exact local-network, collision, complexity and recovery instan-
-tiations. We do not prove a first-return time, a monotone complexity ramp from time zero, a mixing time,
-an infinite-volume recurrence, or a Haar-design statement. These exclusions are consequences of the theorem
-domains, not generic limitations language.
-
-                           persistent carrier            loss selects        projective phase hull
-                            surviving spec-                                      relations and
-                               tral mass                                         factorization
-
-
-                 finite data probes                                                      Haar occupation
+1    A singular law behind recurrence
+The quantum recurrence theorem guarantees arbitrarily accurate returns for finite closed systems [1]. Quanti-
+tative work includes recurrence-time estimates for generic nonintegrable models [2], bounds for general finite
+Hamiltonians [3, 4], concentration bounds and many-body recurrence estimates [21], and exact arithmetic cri-
+teria in Floquet models [5]. Many-body recurrences have been observed in an isolated quantum gas [6], while
+coupled-qubit experiments have been proposed [7]. A separate literature studies proposed complexity growth
+laws and static chaotic evolution [8, 11], as well as rigorous complexity saturation and recurrence in random
+circuits, stochastic Hamiltonian dynamics and unitarily invariant random generators [9, 23].
 
 
 
-                          return information                                   target capacity
-                           reflection, recov-                                    returns, ob-
-                             ery, inference         composition constrains     servers, circuits
+
+                                                          1
+   These theories involve different metrics and time questions. Their common long-time object is nevertheless
+elementary. For a finite energy list E = (E1 , . . . , ED ), remove global phase and define
+                                                                     
+                                                           XD        
+                                      PD = k ∈ Z D :            kj = 0 ,                                  (1)
+                                                                     
+                                                                  j=1
+
+                                                 X
+                                                 D
+                                      DE (k) =         k j Ej ,       LE = ker DE ,                                          (2)
+                                                 j=1
+
+                                       τ (E) = dimQ spanQ {Ej − E1 : 2 ≤ j ≤ D},                                             (3)
+                                       ρ(E) = dimQ spanQ LE .                                                                (4)
+
+The relation lattice fixes the projective orbit closure KE ; its Haar measure is the completed phase law. A return
+question is then a target set inside KE . Loss changes the carrier, interaction changes KE , an observer changes
+the target, and finite data see only a projection.
+Theorem 1 (Projective phase-capacity law). For every finite real energy list,
+
+                                                  τ (E) + ρ(E) = D − 1.                                                      (5)
+
+The temporal dimension of the completed projective phase law is exactly τ (E). A balanced integer character is
+constant on that law precisely when it belongs to LE . At replica order r, the resolved phase-grid detector sees
+precisely those constant characters whose positive mass is at most r.
+   The theorem is a rank–nullity law for one rational detuning map. It turns recurrence constraints and
+temporal directions into complementary quantities rather than separate diagnostics.
+Theorem 2 (Arbitrarily weak interaction singularity). Let two nonempty finite spectra have m + 1 and n + 1
+levels. For every δ > 0, their tensor-sum Hamiltonian admits a diagonal operator-Schmidt-rank-one interaction
+V = A ⊗ B with ∥V ∥ ≤ δ such that the perturbed spectrum is maximally projective and
+
+                                                            τ (EA ⊞ EB ) ≤ m + n,                                            (6)
+                                                       τ (EA ⊞ EB + V ) = mn + m + n,                                        (7)
+                                 τ (EA ⊞ EB + V ) − τ (EA ⊞ EB ) ≥ mn.                                                       (8)
+
+For every bounded observable O and every real t, the two Heisenberg evolutions satisfy
+
+                                            ∥OV (t) − O0 (t)∥ ≤ 2|t|δ ∥O∥.                                                   (9)
+
+For every positive full-support spectral weight and every replica order, the perturbed survival-fidelity collision
+mass equals the unavoidable permutation floor.
+
+    Thus finite-time dynamics is uniformly continuous at every fixed horizon, while completed recurrence geom-
+etry can jump by a product-sized amount.
+
+                                                          loss selects
+             persistent carrier                                                          projective phase hull
+          surviving spectral mass                                                     relations and factorization
 
 
-Figure 1: Return-capacity architecture. Labels occupy the gaps between nodes; none overlays a box. Inter-
-action changes the hull, observation and preparation change target capacity, and return composition constrains
-the full history.
+
+     finite data probe                                                                                completed occupation
 
 
-2     Persistent projective phase geometry
-Consider
-P        a finite pure-point packet with distinct occupied energies E = (Ej )j∈C , positive weights wj , and
-  j wj = 1. Global phase is invisible, so the character lattice is
-                                                                 
-                                                       X         
-                                     PC = k ∈ Z C :       kj = 0 ,                                        (1)
-                                                                 
-                                                        j
-                                            X
-                                 DE (k) =      k j Ej ,   LE = ker DE ,                                   (2)
-                                                j
-                                                
-                                       KE = z ∈ TC /T : z k = 1 for all k ∈ LE .                              (3)
 
 
-                                                             2
-The relation rank is ρ(E) = rankZ LE , and the temporal rank is
-
-                                       τ (E) = dimQ spanQ {Ej − Ej0 : j 6= j0 }.                               (4)
-
-The definition is independent of anchor j0 , and
-
-                                                τ (E) + ρ(E) = |C| − 1.                                        (5)
-
-The orbit closure of relative phases is exactly KE . The state induces the fidelity defect
-
-                                                              X
-                                               dw (z) = 1 −        w j zj ,                                    (6)
-                                                               j
-
-while a family of observables induces a positive weighted edge energy on the same hull.
-
-2.1    Return-capacity principle
-Let K be a compact metrizable group, mK normalized Haar measure, S and α : R → K a continuous homomor-
-phism with dense image. For a target family Y ⊂ K write Bε (Y ) = y∈Y Bε (y).
-Theorem 1 (Haar-on-the-hull and target capacity). For every Borel set A ⊂ K with mK (∂A) = 0,
-                                         1
-                                 lim         Leb{t ∈ [−T, T ] : α(t) ∈ A} = mK (A).                            (7)
-                                T →∞ 2T
-
-If Y is finite, then
-                                 dens{t : d(α(t), Y ) ≤ ε} ≤ |Y | sup mK (Bε (y)).                             (8)
-                                                                      y∈Y
-
-If the right-hand side is less than one and the target complement has nonempty interior, visits to that complement
-are syndetic.
-   The theorem is unique ergodicity of a dense one-parameter translation, followed by a union bound and
-compactness. Its force comes from computing K, its Haar balls and target capacity in concrete local systems.
-Taking Y = {1} gives recurrence density. Taking Y to be endpoints of short circuits gives low-complexity density.
-Taking a quotient metric from an observer gives visible recurrence. Finite-time conclusions require additional
-quantitative information and are not inferred from (7).
+         finite-horizon information                                                         target capacity
+            records and inference                                                     returns, observers, circuits
+                                            composition constrains recovery
 
 
-3     Law I: loss selects the persistent carrier
-Let T be a contraction on a finite-dimensional complex Hilbert space and x an initial vector. Peripheral
-eigenvalues are semisimple. Write xλ for corresponding spectral components and set
-                                                         X
-                                           Mper (T, x) =    kxλ k2 .                                 (9)
-                                                              |λ|=1
+Figure 1: Persistent phase geometry. Exact spectral relations determine the completed phase hull. Physical
+questions differ by carrier and target, while finite records need not determine the completed hull.
 
-Theorem 2 (Persistent-carrier selection law). For every finite contraction T and vector x,
-                                            X
-                               hx, T n xi =     λn kxλ k2 + rn ,    rn −→ 0.                                  (10)
+
+
+
+                                                                  2
+2     Law I: loss selects the persistent carrier
+Let T be a contraction on a finite-dimensional complex Hilbert space and x an initial vector. Its peripheral
+spectral projection is denoted Pper and its persistent mass by
+
+                                                      pper = ∥Pper x∥2 .                                        (10)
+
+Theorem 3 (Persistent-carrier selection). For every finite contraction,
+                                           X
+                              ⟨x, T n x⟩ =     λn ∥Pλ x∥2 + rn ,     rn −→ 0.                                   (11)
                                                 |λ|=1
 
-The scalar Mper (T, x) is the exact asymptotic return-amplitude ceiling: every target strictly below it is reached
-after every prescribed delay, whereas every target strictly above it is eventually impossible.
-   Thus dissipation acts before arithmetic. Transient coordinates disappear; the peripheral packet supplies the
-compact hull on which recurrence occurs. Unitary dynamics is the special case RMper = kxk2 .
-   For an arbitrary stationary spectral probability measure µ, define Aµ (t) = eitE dµ(E). If ν = µ ∗ µ  e is the
-spectral-difference measure, then the completed rth fidelity moment is the zero atom of ν ∗r . In particular,
-                                            Z T                 X
-                                          1
-                                     lim         |Aµ (t)|2 dt =   µ({E})2 .                                   (11)
-                                    T →∞ 2T −T
-                                                                      E∈R
+The number pper is the exact asymptotic ceiling of return amplitude: every suﬀiciently late amplitude is below
+pper + ε, and values at least pper − ε occur after every prescribed time. Hence return amplitude tends to zero
+exactly when pper = 0. If the peripheral carrier has at least two levels, every target below pper is reached after a
+finite burn-in and before the explicit weighted projective deadline of Theorem 13.
+   The statement covers nonnormal loss as well as unitary dynamics: transient modes disappear, while the
+semisimple peripheral packet retains all recurrence information.
+                                                           R
+   For a probability measure µ on energy, write Aµ (t) = e−itE dµ(E) and let ∆µ be the law of E − E ′ for
+independent samples from µ.
+Theorem 4 (Arbitrary-spectrum collision hierarchy). For every probability energy spectrum and every r ∈ N,
+                                              Z T
+                                         1                                  
+                                    lim               |Aµ (t)|2r dt = (∆µ)∗r ({0}).                             (12)
+                                   T →∞ 2T       −T
 
-Atomless spectra therefore have zero density in every fixed positive fidelity window. Conversely, every summable
-countable pure-point packet recurs below every positive phase-energy resolution. Exact unit-fidelity return
-occurs precisely when the additive group generated by occupied energy differences is cyclic. These statements
-separate survival, approximate recurrence and exact periodicity.
-
-                                                          3
-4     Law II: interaction converts factorization into time
-4.1   Arbitrary interaction graphs
-Let G = (V, E) be a finite undirected graph, assign a Hilbert space Hv ∼
-                                                                       = Cqv with qv ≥ 2 to each vertex, and
-let LG be the real vector space of Hermitian HamiltoniansQwith arbitrary one-site terms and arbitrary two-site
-terms on edges. For a connected component C put DC = v∈C qv .
-Theorem 3 (Generic temporal rank of a local quantum network). There is a dense, full-Lebesgue-measure Gδ
-subset of LG on which
-                                                 X
-                                       τ (H) =       (DC − 1).                                       (12)
-                                                   C∈π0 (G)
-
-The statement already holds on the real-symmetric local-Hamiltonian slice. The same generic coeﬀicient set may
-be chosen so every induced subsystem obeys the corresponding formula simultaneously.
-                                                    Q
-    For connected G, τ (H) = D − 1, where D = v qv . Hence every nontrivial balanced rational spectral
-relation is removed generically by static two-body locality. This substantially extends rationally independent
-free-fermion constructions [13]: the Hamiltonian may be interacting, heterogeneous and supported on any finite
-connected graph.
-Corollary 4 (Interaction multiplication). If one edge joins previously disconnected components of dimensions
-A and B, then
-                           τafter = τA + τB + τA τB ,     ∆τ = (A − 1)(B − 1).                          (13)
-The conclusion is generic in every neighborhood of zero connecting coupling. It is a completed-time statement
-and does not assert a finite-time discontinuity as coupling tends to zero.
-
-4.2   Temporal curvature and factorization lattice
-For S ⊆ V , let τ (S) be temporal rank of the induced Hamiltonian restriction on the simultaneous generic set.
-Define
-                                    κ(u, v) = τ ({u, v}) − τ ({u}) − τ ({v}).                            (14)
-Theorem 5 (Temporal-curvature reconstruction). For distinct u, v,
-                                        (
-                                          (qu − 1)(qv − 1), {u, v} ∈ E,
-                              κ(u, v) =                                                                   (15)
-                                          0,                {u, v} ∈
-                                                                   / E.
-
-Consequently the complete supplied two-body interaction graph, its components, graph metric and cycles are
-determined by the set function τ .
-   The subsystem decomposition and ability to form induced restrictions are inputs. Equation (15) reconstructs
-an interaction graph relative to those inputs; it does not derive physical space from time.
-   For a partition Π of S, define                            X
-                                           KΠ (S) = τ (S) −      τ (B).                                   (16)
-                                                              B∈Π
-
-Then KΠ (S) ≥ 0, with equality exactly when no connected component of G[S] is split across blocks of Π. Thus
-the complete zero lattice of partition curvature is an exact factorization classifier.
-
-4.3   Exact recurrence density and thermodynamic scaling
-For connected G and generic H, Kronecker–Weyl equidistribution gives KH ∼
-                                                                        = TD−1 . Fixing one spectral anchor
-j0 , define strict anchored chordal projective return by
-
-                                          max |e−it(Ej −Ej0 ) − 1| ≤ ε.                                   (17)
-                                          j̸=j0
-
-For 0 < ε < 2, this return set has completed-time density
-                                                                D−1
-                                                   2 arcsin(ε/2)
-                                        dG (ε) =                      .                                   (18)
-                                                         π
-This metric is invariant under global energy shifts but is not the optimally recentered quotient operator norm.
-If D ≥ 3, time zero is the only exact anchored projective return; the exceptional D = 2 flow is periodic.
-Approximate returns remain syndetic, although no quantitative gap between them follows from the rank theorem.
+Every continuous function of survival fidelity has a completed-time mean. Countable pure-point spectra recur
+at every positive summable phase-energy resolution. A positive exact unit-fidelity return exists exactly when the
+visible frequency group is cyclic. For atomless spectra, projective observer temporal dimension is the continuum
+and every fixed positive-fidelity window has density tending to zero.
+    Pure-point and atomless spectra are extreme cases; mixed spectra remain covered by collision identity (12).
 
 
-                                                       4
-Corollary 6 (Connected-network Q thermodynamic return law). Let (Gn ) be any sequence of finite connected
-interaction graphs, let Dn = v∈Vn qv → ∞, and choose a generic Hamiltonian at each volume. For fixed
-0 < ε < 2, put
-                                           2 arcsin(ε/2)
-                                    aε =                 , I(ε) = − log aε .                         (19)
-                                                 π
-Taking completed time first at each finite volume,
-                                                                         − log dn (ε)
-                                dn (ε) = exp[−(Dn − 1)I(ε)],                          −→ I(ε).                 (20)
-                                                                             Dn
-                       P
-If |Vn | = n and n−1       v∈Vn log qv → s > 0, then
-                                          1
-                                             log[− log dn (ε)] −→ s.                                       (21)
-                                          n
-For homogeneous qudits, s = log q. Thus strict completed-time return density is exponentially small in Hilbert-
-space dimension and doubly exponentially small in site number, independently of connected topology.
-    No infinite-volume flow is constructed in this corollary, and the order of limits is not interchanged.
-    The volume-wise choices can be made consistently on one infinite coeﬀicient assignment. Let G∞ be a
-countable locally finite connected graph, let V1 ⊊ V2 ⊊ · · · be connected finite induced volumes, and parameterize
-all real onsite and edge coeﬀicients by a countable product of Euclidean coordinate lines.
-Theorem 7 (One-network thermodynamic exhaustion). There is a residual dense set of coeﬀicient assignments
-for which every finite restriction HVn simultaneously satisfies
-                                                                Y
-                                   τ (HVn ) = Dn − 1,    Dn =     qv −→ ∞.                           (22)
-                                                                         v∈Vn
+3     Law II: spectral constraints determine temporal dimension
+3.1    Static local networks
+Let G = (V, E) be any finite simple graph, assign local dimension qv ≥ 2 to vertex v, and allow arbitrary
+Hermitian
+Q          onsite terms and arbitrary Hermitian two-site terms on edges. For a component C, put DC =
+  v∈C qv .
 
-The same event has probability one under every coeﬀicient law whose finite-volume marginals are absolutely
-continuous with respect to Lebesgue measure. On that one assignment, (18) and (20) hold at every volume. In
-particular no fixed finite-dimensional compact phase carrier contains all finite-volume completed dynamics.
-   This is an exhaustion theorem, not a construction of an infinite-volume trace, pure-point spectrum or global
-return. Its force is that the thermodynamic sequence does not retune the Hamiltonian independently at each
-volume.
+Theorem 5 (Generic temporal rank of a local quantum network). There is a dense residual full-Lebesgue-
+measure set of interaction coeﬀicients such that, simultaneously for every induced subsystem S,
+                                                                                !
+                                                          X         Y
+                                          τ (HS ) =                        qv − 1 .                             (13)
+                                                      C∈π0 (G[S])   v∈C
 
-4.4     Component collision law and spectral form factor
-               Pc           N Dr
-Suppose H =      r=1 Hr on     rC   , with maximally projective component spectra and mutually transverse
-component gap modules. These conditions are generic for the corresponding disconnected local interaction
-graph. For arbitrary spectral weights px and
-                                                                              2
-                                                          X
-                                                                     −itEx
-                                                F (t) =       px e                ,                            (23)
-                                                          x
+                                            Q
+In particular, if G is connected and D =        v∈V qv , then τ (H) = D − 1.
 
-draw independent m-samples X1 , . . . , Xm and Y1 , . . . , Ym from p. Let Nr (X) be empirical histogram of compo-
-nent r.
-Theorem 8 (All-order component collision law). For every m ≥ 1,
-                               Z T
-                             1
-                        lim          F (t)m dt = P{Nr (X) = Nr (Y ) for every r}.                              (24)
-                       T →∞ 2T −T
+    The statement includes static open nearest-neighbour qudit paths. It is stronger than nondegenerate gaps:
+it removes every nonconstant balanced rational relation at once. Earlier work proved generic nondegenerate
+gaps for geometrically local Hamiltonians [14]; higher no-resonance conditions are commonly assumed, while
+chaotic and random-matrix models can exhibit violations or near violations [22]. Theorem 5 supplies all orders
+for the stated onsite-plus-edge family.
 
-For the normalized spectral form factor XD (t) = D−1 | Tr e−itH |2 ,
-                                              Z T                 Y  c
+Corollary 6 (Interaction multiplication). If one edge joins components of dimensions A and B, generic temporal
+rank changes by
+                             (AB − 1) − [(A − 1) + (B − 1)] = (A − 1)(B − 1).                             (14)
+
+
+
+
+                                                              3
+3.2    Temporal curvature and graph reconstruction
+For distinct vertices u, v, define
+                                     κ(u, v) = τ ({u, v}) − τ ({u}) − τ ({v}).                            (15)
+
+Theorem 7 (Temporal-curvature reconstruction). On the simultaneous generic set of Theorem 5,
+                        (
+                          (qu − 1)(qv − 1), {u, v} ∈ E,
+              κ(u, v) =                                    {u, v} ∈ E ⇐⇒ κ(u, v) > 0.                     (16)
+                          0,                {u, v} ∈
+                                                   / E,
+
+More generally, for every partition Π of S,
+                                                         X
+                                               τ (S) −         τ (B) ≥ 0,                                 (17)
+                                                         B∈Π
+
+with equality exactly when no connected component of G[S] is split across blocks of Π.
+    Subsystem decomposition is supplied data. The theorem reconstructs interactions relative to that decompo-
+sition; it does not derive physical space from time alone.
+
+3.3    Exact return density and thermodynamic extinction
+For a Hamiltonian in the generic set of Theorem 5, with G connected, fix one spectral anchor and define strict
+chordal return by
+                                          max |e−it(Ej −Ej0 ) − 1| ≤ ε.                                   (18)
+                                           j̸=j0
+
+For 0 < ε < 2, its completed-time density is
+                                                                       D−1
+                                                        2 arcsin(ε/2)
+                                         dD (ε) =                              .                          (19)
+                                                              π
+
+If D ≥ 3, zero is the only exact anchored return time.
+Corollary 8 (Homogeneous-path thermodynamic law). For the generic n-site open path of q ≥ 2 levels per site,
+put
+                                          2 arcsin(ε/2)
+                                    aε =                , I(ε) = − log aε .                            (20)
+                                                π
+After taking completed time at each finite n,
+
+                                                          dn (ε) = aqε −1 ,
+                                                                        n
+                                                                                                          (21)
+                                                   − log dn (ε)
+                                                                −→ I(ε),                                  (22)
+                                                       qn
                                            1
-                                      lim         XD (t)m dt =         aDr ,m ,                                (25)
-                                     T →∞ 2T −T
-                                                                  r=1
+                                             log[− log dn (ε)] −→ log q.                                  (23)
+                                           n
+Thus strict completed-time return density is exponentially small in Hilbert dimension and doubly exponentially
+small in path length.
+
+   No infinite-volume evolution or exchange of limits is used in this result.
+
+Theorem 9 (One-network exhaustion). For a countable interaction network exhausted by strictly increasing
+finite connected volumes, there is one residual dense set of ambient coeﬀicient assignments for which every
+volume simultaneously has                          Y
+                                        τ (HVk ) =     qv − 1 −→ ∞.                                    (24)
+                                                        v∈Vk
+
+The same simultaneous event has probability one for every coeﬀicient law whose finite-volume restriction
+marginals are absolutely continuous with respect to Lebesgue measure.
+
+   This is a finite-volume exhaustion statement, not an infinite-volume rank.
+
+
+
+
+                                                           4
+3.4     All-replica extremality and component factorization
+Theorem 10 (Nearest-neighbour all-replica floor). For every open n-site q-level path with n, q ≥ 2, a dense
+residual full-measure set of onsite-plus-nearest-neighbour Hamiltonians has following property: for every positive
+spectral weight and every replica order, collision mass equals permutation floor, and corresponding long-time
+survival-fidelity moment converges to that floor.
+    This is the local interacting contribution. Exact abstract SFF moments for rationally independent spectra
+and related random-walk limits are known [15]; new content here is simultaneous all-order spectral premise for
+a static bounded-degree many-body family.  Pc
+    For a disconnected tensor sum H = r=1 Hr with mutually transverse, maximally projective component
+spectra, let Nr (X) be component-r histogram of an m-sample from spectral weights.
+
+Theorem 11 (Component collision law). For every m ≥ 1,
+                                       Z T
+                                 1
+                            lim              F (t)m dt = Pr{Nr (X) = Nr (Y ) for every r}.                    (25)
+                           T →∞ 2T      −T
+
+For uniform spectral weights and component dimensions Dr ,
+                                             Z T                                          Y
+                                      1                                      m          c
+                                 lim                      D−1 | Tr e−itH |2        dt =         aDr ,m ,      (26)
+                                T →∞ 2T          −T                                       r=1
 
 where
-                                                                  X m2
-                                               ad,m = d−m                             .                        (26)
-                                                                     d
-                                                                          k
-                                                               k∈N
-                                                              |k|=m
-
-For fixed c and Dr → ∞, the completed law of XD converges to the product of c independent unit-mean
-exponential variables, with moments (m!)c .
-    Joining two components replaces equality of marginal histograms by equality of the joint histogram at every
-replica order. The phase-dimension gain (A − 1)(B − 1) and the removal of factorization-forced excess collisions
-are therefore the same structural event. This is a completed-time collision law, not the finite-time random-matrix
-ramp recently obtained through a static clock embedding [21].
-
-
-                                                              5
-5     Law III: target capacity governs recurrence and complexity
-5.1    Observer-weighted target information
-Kernel rank counts directions but not synchronization accuracy. Let w = (w1 , . . . , wr ) be positive spectral
-probabilities. For pivot k, allocate 0 < Dj ≤ wj and define
-                                                                        
-                                                   1 X       wj X       
-                                   Hk (w, η) = min        log    : Dj ≤ η ,                                (27)
-                                                   2         Dj         
-                                                               j̸=k             j̸=k
-
-                                Hproj (w, η) = min Hk (w, η).                                                   (28)
-                                                     k
-
-The optimizer is reverse water filling, Dj∗ = min{wj , λ−1
-                                                        k }. This is the finite parallel-Gaussian rate–distortion
-program after change of variables [17, P18]; no communication code is claimed.
-   Let µw (η) be Haar volume of {z : | j wj zj | ≥ 1 − η}, let Iw (η) = − log µw (η), and let Tw (η) be least integer
-deadline by which every phase packet returns with fidelity at least (1 − η)2 .
-Theorem 9 (Metric-information law). For every r ≥ 2, positive probability vector w and 0 < η ≤ 1,
-                                                                           √
-                              π                                              2
-                      Hproj − (r − 1) − log r ≤ Iw ≤ Hproj − (r − 1) log       ,                                (29)
-                              4                                            π
-                            π                                                    √
-                    Hproj − (r − 1) − log(2r) < log Tw ≤ Hproj + (r − 1) log(2π 2).                             (30)
-                            4
-Every phase packet returns after each delay M at some M < n ≤ (M + 1)Tw . The same target and Haar
-volume occur exactly in a single-excitation block of a particle-number-preserving local spin Hamiltonian with
-independently tunable onsite phases.
-    For a finite observer family, join energy sectors when some weighted observer block contains their coherence.
-Theorem 10 (Observer-coherence law). Squared total observer displacement is exactly a nonnegative weighted
-edge phase energy. It vanishes precisely when phases agree on every connected component. If the coherence
-graph has r vertices and c components, its visible projective phase capacity is r − c. A deterministic recurrence
-deadline has exponent r − c, and this exponent is attained. Every normalized linear probe is controlled by total
-observer displacement; operator-norm normalization pays a sharp square-root dimension factor.
-   Thus interaction graph and coherence graph play different roles. The first controls which spectral directions
-generically exist; the second controls which of those directions a chosen experiment can resolve.
-
-5.2    Static Choi complexity from target capacity
-Let H act on CD with eigenbasis (ej ) and define normalized Choi phase states
-
-                                                         X
-                                                         D
-                                     Φ(z) = D−1/2              zj e j ⊗ e j ,     z ∈ TD .                      (31)
-                                                         j=1
-
-Let ∆ denote pure-state trace distance. For 0 < δ < 1/2, put
-                                        p                                          πη (D−1)/2
-                                                                                           δ
-                             ηδ = 1 −       1 − 4δ 2 ,     BD (δ) = DeD/2                         .             (32)
-                                                                                       2
-Theorem 11 (Eigenbasis-free Choi tube bound). For every normalized target ψ, independently of eigenbasis,
-
-                                        mTD {z : ∆(Φ(z), ψ) ≤ δ} ≤ BD (δ).                                      (33)
-
-If a gate model has at most M ≥ 2 labelled choices per circuit step and Cδ is robust Choi-state circuit complexity,
-then
-                                    mTD {z : Cδ (Φ(z)) ≤ s} ≤ M s+1 BD (δ).                                   (34)
-For maximally projective spectrum, the same expression bounds upper completed-time density. Whenever it is
-below one, hard endpoints occur syndetically, although the syndetic gap is not quantified.
-    For every fixed δ with
-                                            1 1       πη 
-                                                          δ
-                                      αδ = − − log          > 0,                                                (35)
-                                            2 2         2
-BD (δ) = exp[−αδ D + O(log D)]. Combining Theorems 3 and 11 gives the first paper-level capstone.
-
-
-                                                                 6
-Corollary 12 (Generic static-local completed-time complexity). Fix any connected finite interaction graph and
-arbitrary local dimensions. For a dense residual full-measure set of static onsite-plus-edge Hamiltonians, and
-any finite local gate dictionary with at most M ≥ 2 choices per step,
-
-                                       dens{t : Cδ (ΦH (t)) ≤ s} ≤ M s+1 BD (δ).                             (36)
-
-Consequently completed-time Choi complexity is Ω(D/ log M ) outside a set of density exp[−Ω(D)]. For homo-
-geneous q-level sites and polynomially many labelled local gates, this is Ω(q n / log n).
-    This is a statement about occupation after completing time for one fixed static Hamiltonian. It is neither
-finite-time mixing nor a monotone growth law.
-
-5.3    Local circuit heaps
-Raw words overcount local circuits because gates with disjoint support commute. Let Σ contain M gate labels
-and let its dependence graph have maximum degree ∆. Quotient words only by swaps of independent letters,
-and let Hs be number of resulting heaps of length at most s.
-Theorem 13 (Bounded-dependence circuit capacity). For every s ≥ 0,
-                                                          
-                                                 M + s − 1 ∆s
-                                  Hs ≤ (s + 1)               2 .                                             (37)
-                                                     s
-Therefore
-                               log Hs ≤ ∆s log 2 + M log(e(1 + s/M )) + log(s + 1).                          (38)
-For a one-dimensional bounded-range alphabet, M = O(n) and ∆ = O(1). Combining (37) with (33) yields a
-completed-time lower bound Cδ > cD for every c < αδ /(∆ log 2), up to the explicit lower-order term.
-   The trace-monoid counting statement is classical in mechanism; its role here is to identify intrinsic local
-preparation capacity rather than raw word capacity.
-
-5.4    Fixed-input hardness at common times
-The Choi bounds above concern the whole evolution channel. A separate quenched statement places exponential
-complexity on the orbit of one fixed product state. On the open n-qubit path, let
-                                                                 X
-                                                                 m n
-
-                                                     Hn (J) =          J a Pa                                (39)
-                                                                 a=1
-
-contain every one-site Pauli and every two-site Pauli orientation on each edge, with independent standard
-Gaussian coeﬀicients, and put Ω = |0i⊗n . Fix a finite computable gate dictionary with at most Mn ≥ 2 padded
-choices per word position. Write Cϵst for ancilla-free state-preparation complexity from Ω in pure-state trace
-distance.
-    Fix rational 0 < ϵ < 1/2, put
-                                                   2  n 
-                                                    a     3
-                              a = 1 − 4ϵ , rn =
-                                        2
-                                                                , ℓn = dlog2 Mn e,                        (40)
-                                                   128 2
-and, when rn ≥ 8, set                                  
-                                                    rn
-                                         sn =             − 1,         ηn = 2−3rn /4 .                       (41)
-                                                    4ℓn
-We restrict to sizes for which sn ≥ 0.
-Theorem 14 (Computable static-local state hardness). Let
-                                            lp            m
-                                      Bn =     2 log(8mn ) + 1.                                              (42)
-
-There is a measurable Gn ⊂ [−Bn , Bn ]mn of Gaussian probability at least 1/2 such that every J ∈ Gn obeys
-                                       1                    st −itHn (J)
-                             lim sup     Leb{t ∈ [0, T ] : C2ϵ (e        Ω) ≤ sn } ≤ ηn .                    (43)
-                               T →∞    T
-                                st −itHn (J)
-Consequently, if gn (t) = PJ {C2ϵ (e         Ω) > sn }, then
-                                   Z
-                                1 T              1                                           1
-                        lim inf       gn (t) dt ≥ (1 − ηn ),              lim sup gn (t) ≥     (1 − ηn ).    (44)
-                         T →∞ T 0                2                         t→∞               2
-
-                                                                 7
-At some rational common time ten > 0 there is a rational Jen ∈ [−Bn − 1, Bn + 1]mn with
-                                                       e          e
-                                              Cϵst (e−itn Hn (Jn ) Ω) > sn .                                         (45)
-
-One total terminating algorithm selects the pairs (Jen , e
-                                                         tn ) for all covered n.
-    For polynomial Mn , the proved fixed-state scale is Ω((3/2)n / log n). This is weaker than the Choi scale
-but answers a different question: one fixed product input, ordinary bounded-degree Hamiltonians, common
-deterministic times, and computable rational witnesses. Explicit high-complexity families are known by other
-mechanisms [20]; here the hard states lie on an autonomous local orbit. The search time, coeﬀicient bit length
-and first hard time are not bounded. At every fixed positive resolution there is nevertheless an easy initial
-interval for H 6= 0, since
-
-                    dtr (e−itH Ω, Ω) ≤ |t| kHkop    =⇒        Cϵst (e−itH Ω) = 0               for |t| ≤ ϵ/kHkop .   (46)
-
-Thus completed hardness and common hard times do not determine an onset ramp; physical statements must
-keep time and observer resolution together.
-
-5.5    Hard prime polygons and permanent non-Haar structure
-The plateau is a measure statement. A complementary theorem constructs complete recurrent cycles of circuit-
-hard endpoints. Let Y be an arbitrary finite dictionary of normalized rays in the full Choi Hilbert space of a
-d-dimensional system. Let p be prime, r ∈ N satisfy 2r < p, and 0 ≤ ϵ < 1/2.
-Theorem 15 (Autonomous prime-torsion hard polygon). Assume
-                                                                      p             2r
-                                        ((p − 1)|Y |) r! d−r <             1 − 4ϵ2         .                         (47)
-
-For every maximally projective spectrum and every return tolerance ϱ > 0, there exists L < ∞ such that after
-every starting time A one can find τ ∈ [A, A + L] with
-1. every nonidentity slice Uaτ , a = 1, . . . , p − 1, farther than ϵ from every ray in Y ;
-2. Upτ within ϱ of the identity ray.
-For generic bounded-weight Pauli Hamiltonians this cycle is realized by one ordinary time-independent local
-Hamiltonian. Under the explicit label condition Mq 3q < 2n + 1, where Mq is the number of nonidentity Pauli
-strings of weight at most q, the same Hamiltonian has at every real time a product-stabilizer two-query signal
-strictly above the exact Haar benchmark 1/(2n + 1).
-   The theorem proves coexistence of circuit avoidance, recurrence and permanent non-Haar structure. It
-does not instantiate Y with every circuit up to Brown-scale depth; that requires the sharper heap budget in a
-growing-replica regime. It also says nothing about first onset.
-
-
-6     Law IV: return imposes reflection and recovery
-6.1    Closed autonomous complexity reflection
-Let Ut = e−itH and use projective Choi distance
-                                                         q
-                                                                                      2
-                                         dCh (U, V ) =       1 − |tr(U ∗ V )/D| .                                    (48)
-
-Fix a finite inverse-closed gate dictionary and let Cϵ (U ) be minimum word length within distance ϵ. For a
-proposed return time R, set δR = dCh (UR , I).
-Theorem 16 (Autonomous return reflection). For every R, t and ϵ ≥ 0 with ϵ + δR < 1,
-
-                                Cϵ+δR (Ut ) ≤ Cϵ (UR−t ),             Cϵ+δR (UR−t ) ≤ Cϵ (Ut ).                      (49)
-
-At an exact projective return, Cϵ (UR−t ) = Cϵ (Ut ). Equality also holds separately for every exact word-length
-incidence shell and therefore for every nonnegative length partition function.
-   Thus an exact autonomous complexity history is palindromic around R/2. Any independently proved forward
-growth envelope reappears in reverse before return. Reflection does not prove forward growth or locate R.
-
-
-                                                              8
-6.2   Markovian recurrence recovery
-Let (Λt )t≥0 be a finite-dimensional CPTP semigroup and put
-
-                                                     δR = kΛR − id k⋄ .                                     (50)
-
-Theorem 17 (Markovian return recovery and rigidity). For every 0 ≤ t ≤ R,
-
-                                              ΛR−t ◦ Λt = Λt ◦ ΛR−t = ΛR .                                  (51)
-
-Hence ΛR−t is an explicit δR -recovery channel for Λt , and for every operator X with arbitrary ancilla,
-
-                                         k(Λt ⊗ id)(X)k1 ≥ (1 − δR )kXk1 .                                  (52)
-
-Robust diamond-norm circuit complexity and every exact-length unitary-word incidence shell obey the two re-
-flection inequalities with ϵ 7→ ϵ + δR . If δR = 0, every intermediate channel is a unitary conjugation and the
-semigroup is periodic. Thus no genuinely dissipative finite-dimensional Markovian semigroup has a nonzero
-exact recurrence of the full channel.
-   The classification of CPTP maps with CPTP inverse is classical [16]. The quantitative simultaneous-recovery
-and shellwise reflection package is the relevant recurrence consequence. Full-channel recurrence is essential;
-return of one state does not imply (52).
-
-
-7     Finite records do not determine the completed geometry
-The four laws determine recurrence once carrier, hull and target metric are known. They do not make these
-objects identifiable from finite data.
-Theorem 18 (Complete finite-record ambiguity). For every moment order m ∈ N, target time T > 0, strict
-horizon 0 ≤ H < T and δ > 0, there exist a normalized state ϕ, one record Q on [−H, H], and a nonnegative
-self-adjoint Hamiltonian Kp for every p ∈ [0, 1] such that:
-1. all Kp are unitarily equivalent with one common spectrum;
-
-2. hϕ, Kpk ϕi is independent of p for 0 ≤ k ≤ m;
-3. for the fixed projector |ϕihϕ|, sup|t|≤H |Pp (t) − Q(t)| < δ;
-4. Pp (T ) = p for every p ∈ [0, 1];
-5. each Kp can be tridiagonal in one fixed basis; for p < 1 a connected Jacobi representative exists, whereas at
-   p = 1 every such fixed-protocol tridiagonal representative has a zero path coupling;
-
-6. every second-quantized lift dΓ(Kp ) has the same complete subset-sum spectrum in each fermion sector.
-Equivalently, a fixed uniform onsite qubit field realizes every terminal probability by varying only a symmetric
-pure preparation.
-                                                                                 
-   The construction uses energies Ej = πj/T , fair binomial weights qj = 2−n nj and parity-conditioned weights
-                                         √         √
-rj = qj (1 + (−1)n−j ). With wp,j = (1 − p)qj + p rj ,
-                                                              n                iπt/T    n
-                                                  1 + eiπt/T            √        e      −1
-                                   Ap (t) =                         +       p                 .             (53)
-                                                      2                               2
-
-Thus Pp (T ) = p, while
-                                                                                       n
-                                                                                  πt
-                                              |Pp (t) − P0 (t)| ≤ 2 sin                                     (54)
-                                                                                  2T
-on the earlier window. Alternating finite differences make all moments below order n common. On r distinct
-common energy nodes, first r moments determine all weights by Vandermonde invertibility, so support threshold
-is sharp. Every real-valued forecaster based only on common record has worst-case terminal error at least 1/2.
-    There is a parallel complexity boundary: maximal temporal rank, completed return density and plateau
-occupation do not determine first complexity onset. Positive-measure local-Hamiltonian families may retain
-these completed invariants while delaying first hard time arbitrarily. The remaining onset problem is therefore
-not a recurrence-dimension problem.
-
-
-                                                                9
-8     Discussion
-8.1     What is universal
-The return-capacity principle is universal at the level at which its hypotheses are universal: persistent au-
-tonomous dynamics supplies a compact monothetic phase group; completed occupation is Haar occupation on
-that group; targets encode the operational question. Four exact transformations then organize the subject:
-
-      loss selects carrier −→ interaction fixes hull −→ capacity fixes rarity −→ return fixes recovery.       (55)
-
-This is a set of structural laws rather than one scalar law. No single number simultaneously records carrier,
-factorization, target geometry and semigroup composition.
-
-8.2     Complexity without randomness
-The static-local conclusions separate three notions often conflated in informal discussions. Full projective tempo-
-ral rank gives dense phase motion and exact completed occupation. Large target information makes short-circuit
-tubes rare. Neither property makes the unitary Haar-random. Indeed constant-local static Hamiltonian ensem-
-bles fail even the design criterion [10], while Theorem 15 preserves an explicit local separator at every time.
-Computational hardness and Haar randomization are therefore logically and operationally distinct.
-
-8.3     Thermodynamic meaning
-For every connected finite volume, global return density depends only on Hilbert dimension, although subsystem
-temporal curvature reconstructs the interaction topology. In thermodynamic sequences the return fraction
-vanishes doubly exponentially in site number. Theorem 7 realizes the entire sequence on one generic coeﬀicient
-assignment rather than retuning each volume. This is still a sequential finite-volume theorem:
-
-                                   first T → ∞ at fixed n,       then n → ∞.                                  (56)
-
-It does not establish recurrence of an infinite quasi-local algebra, nor does it say that experimentally accessi-
-ble waiting times follow inverse completed density. Quantitative first-hitting bounds require Diophantine or
-probabilistic input of the kind studied in [3, 4].
-
-8.4     Exact open boundary
-The paper closes the completed-time plateau, common-time fixed-input existence, arbitrarily late hard cycles,
-return-side decline and Markovian recovery. It leaves one central complexity question open: prove a first, fixed-
-error, laboratory-time complexity growth law for one ordinary time-independent local Hamiltonian. Known
-recurrence dimension, Haar-volume, minimum-gap and static-ensemble coverage arguments cannot supply it.
-Likewise, Theorem 15 does not yet instantiate all vertices against a Brown-scale growing circuit heap. These
-are distinct finite-time and growing-replica problems.
-
-
-9     Methods and proof organization
-Carrier selection uses the semisimple peripheral decomposition of a finite contraction. Arbitrary spectral types
-use Wiener averaging and convolution collision identities. Finite hulls use Pontryagin duality and Kronecker–
-Weyl equidistribution. Generic local spectral rank is proved by constructing an all-vertex-good real-symmetric
-tree witness, using second-order eigenvalue-response poles to eliminate balanced rational relations, then lifting
-through spanning trees and polynomial zero-set genericity. Component collision laws follow by replica expansion
-and histogram classification.
-    Target capacity combines exact phase-ball bounds with finite dictionaries. The Choi cap is eigenbasis-free
-because phase coeﬀicients are uniform in the energy basis. Circuit heaps use pair projections in a bounded-degree
-dependence graph. Fixed-input hardness uses a local-Clifford collision average, heavy-coordinate excision, torus
-moments, Fatou–Tonelli transfer and computable rational approximation. Prime polygons use finite cyclic phase
-grids, replica moments and a stable open-target shadowing argument. Reflection and recovery are consequences
-of the group and semigroup laws plus contractivity of Choi and diamond metrics. Finite-record ambiguity uses
-binomial parity filters, unitary transport, Krylov tridiagonalization and second quantization.
-    Detailed proofs of new laws appear first in the appendices. Full proofs of the earlier carrier, observer and
-inference results then follow, so the present PDF is logically self-contained.
-
-
-
-
-                                                        10
-A     Compact-hull and capacity proofs
-A.1    Proof of Theorem 1
-Translation by α(t) is a uniquely ergodic flow on K because the image of α is dense. Haar measure is invariant.
-If another probability measure were invariant under the flow, continuity would extend invariance from the dense
-subgroup α(R) to all translations, and Haar uniqueness would identify it with mK . Uniform convergence of
-time averages follows for continuous functions. Approximation from above and below by continuous functions
-proves (7) for boundary-null sets.
-    For finite Y ,                           X
-                             mK (Bε (Y )) ≤      mK (Bε (y)) ≤ |Y | sup mK (Bε (y)).
-                                                                       y∈Y
-                                            y∈Y
-
-Apply the upper Portmanteau inequality when closed balls have nonzero boundary, or (7) when their union is
-            S This gives (8). If an open set O lies in the complement, minimality of the dense translation
-boundary-null.
-implies K = 0≤t≤L α(−t)O for some finite L by compactness. Every interval of length L therefore contains a
-visit to O.
-
-
-B     Generic temporal rank on arbitrary interaction graphs
-This section proves Theorems 3 and 5. The proof is included because generic rational independence of the full
-many-body spectrum does not follow from parameter counting: one must first show that no balanced relation
-polynomial vanishes identically on the local Hamiltonian space.
-
-B.1    Transition graphs and all-vertex-good witnesses
-Let H be simple and real symmetric. For site u, define a graph Gu (H) on energy eigenvectors ψα . Join α 6= β
-if a real-symmetric one-site operator Au satisfies
-
-                                                  ψαT Au ψβ 6= 0.                                            (57)
-
-Call H all-vertex good if every Gu (H) is connected and non-bipartite. This property is open on the simple-
-spectrum locus: finitely many spanning-tree matrix elements and one odd-cycle edge at each site remain nonzero
-under small perturbations.
-Lemma 19 (Two-site seed). For every qu , qv ≥ 2, the full real-symmetric two-site Hamiltonian space contains
-a simple, maximally projective, all-vertex-good Hamiltonian.
-
-Proof. For fixed α 6= β and endpoint u, failure of every local real-symmetric probe is vanishing of the symmetric
-part of
-                                                   Trū |ψβ ihψα |.
-This is a proper real-algebraic condition on an orthogonal eigenbasis: send the two columns to |0, zi, |1, zi and
-use the symmetric exchange probe. A column-sign change supplies the witness in both determinant components
-of the orthogonal group. The union of failure sets over the finitely many pairs and both endpoints is null and
-nowhere dense. Choose an eigenbasis outside it and a simple eigenvalue list whose relative values are rationally
-independent. The resulting real-symmetric matrix has the required properties.
-
-B.2    Leaf attachment
-Suppose tree T has a simple, maximally projective, all-vertex-good HT . Attach leaf v to u and begin with
-                                                              v −1
-                                                             qX
-                                       H0 = HT ⊗ I + I ⊗             sa |aiha|,                              (58)
-                                                              a=0
-
-where shifts make product energies distinct. Fix an old observer site r. Choose labels α, γ, β and local probes
-Au , Br with
-                                         (Au )αγ 6= 0,   (Br )γβ 6= 0.                                      (59)
-Such labels exist by connectedness of the old transition graphs; the two neighbors may coincide.
-   For layers a 6= b, perturb with
-                                         Wab = Au ⊗ (|aihb| + |biha|).
-
-
-
-                                                        11
-First-order eigenvector perturbation makes the derivative of the physical Br ⊗ I matrix element between (α, a)
-and (β, b) equal, up to nonzero normalizations, to
-                                            X (Au )αδ (Br )δβ            X (Br )αδ (Au )δβ
-                              Rr,ab (z) =                          +                         ,                (60)
-                                                 z + Eα − Eδ                  −z + Eβ − Eδ
-                                             δ                            δ
-                                            z = sa − sb .                                                     (61)
-
-The selected δ = γ term has a nonzero residue at z = Eγ − Eα . Simplicity prevents another pole in the first
-sum. If a pole in the second sum coincided, then Eγ − Eα = Eβ − Eδ . Maximal projective rank makes nonzero
-oriented gaps injective; the only identical transition contradicts (59). Hence Rr,ab is not zero and has only
-finitely many real zeros.
-    Choose shifts outside all response-zero and product-collision sets. A small edge perturbation preserves each
-old layer graph and adds cross-layer edges from one layer to all others. Every old observer graph becomes
-connected and retains an odd cycle. At the new leaf, the local real-symmetric algebra provides complete within-
-block transitions when qv ≥ 3; for qv = 2, vertical exchanges together with one generated cross-block and
-one same-layer transition make a triangle. Nonvanishing requirements are finite real-analytic conditions, so
-one arbitrarily small perturbation satisfies all simultaneously. Thus leaf attachment preserves existence of an
-all-vertex-good witness.
-
-B.3    Eliminating universal rational relations
-Induct simultaneously over finite heterogeneous trees. The preceding construction gives the all-vertex-good
-witness. Suppose a balanced labelled rational eigenvalue relation were universal near (58). Vary a real-symmetric
-exchange coupling between two new layers. The exact second-order eigenvalue response is a simple-pole packet
-indexed by oriented edges of Gu (HT ). Maximal old rank makes nonzero ordered poles distinct. Vanishing
-residues force equality of relation coeﬀicients along
-
-                                                   Gu (HT ) × Kqv .                                           (62)
-
-This categorical product is connected: a connected non-bipartite graph has walks of both parities between any
-two vertices, and parity can be matched to a walk in Kqv . All coeﬀicients are therefore equal, leaving only the
-excluded trace relation.
-   For every nonconstant balanced rational coeﬀicient vector, multiply its labelled eigenvalue form over spectral
-permutations. The result is a symmetric polynomial in eigenvalues and hence a polynomial in characteristic
-coeﬀicients, therefore a polynomial in local Hamiltonian parameters. The residue argument shows it is not
-identically zero. Its zero set is closed, null and nowhere dense. Removing the discriminant and the countable
-union over rational coeﬀicient vectors proves dense, full-measure Gδ maximal projective rank on every tree.
-   Every connected graph contains a spanning tree. A relation polynomial nonzero on tree-local parameter
-space remains nonzero on the larger graph space, proving τ = D − 1 for connected G.
-
-B.4    Disconnected graphs and simultaneous restrictions
-For component Hamiltonians HC , every total relative energy is a sum of component relative energies, while
-every component gap occurs by changing one component coordinate. Hence rational gap modules satisfy
-                                      X                        X
-                             M (H) =     M (HC ),      τ (H) ≤    (DC − 1).                           (63)
-                                             C                                 C
-
-Choose maximally projective component witnesses KC and scale them by nonzero real tC . Recursively avoid
-the countable set of ratios that would make tC M (KC ) intersect the previously chosen module. The sum is then
-direct and attains the upper bound.
-    To pass from one witness to genericity, balance coeﬀicients within each component and symmetrize over inde-
-pendent permutations of component spectra. Transversality of the scaled witness makes the resulting separately
-symmetric relation polynomial nonzero. Countably many proper polynomial zero sets and the discriminant
-exhaust the exceptional set. This proves (12).
-    There are finitely many induced vertex subsets. Coeﬀicient restriction is a surjective linear map, so the
-inverse image of each good set is dense, conull and Gδ . Their finite intersection supplies one simultaneous atlas.
-On one and two vertices, direct evaluation gives (15); the partition-curvature statement follows from
-                                      Y
-                                      m                X
-                                                       m
-                                            dj − 1 ≥         (dj − 1),        dj ≥ 2,
-                                      j=1              j=1
-
-with equality exactly for m = 1. This completes Theorems 3 and 5.
-
-
-                                                              12
-B.5    Anchored recurrence density and thermodynamic limit
-For clarity, the strict return target used in (18) is the anchored chordal projective target
-
-                                             max |e−it(Ej −Ej0 ) − 1| ≤ ε.                                      (64)
-                                             j̸=j0
-
-It is invariant under common energy shifts but fixes one spectral anchor; it is not the optimally recentered
-quotient operator norm. Maximal projective rank makes the D − 1 anchored phases Haar-equidistributed. Each
-circle coordinate must lie in an arc of length 4 arcsin(ε/2), whose normalized measure is 2 arcsin(ε/2)/π. Product
-measure gives (18). When D − 1 ≥ 2, a nonzero exact return would make all gap ratios rational, contradicting
-their rational independence. For D = 2 the single anchored phase is periodic.
-    Equation (20) is immediate after taking logarithms. If n−1 log Dn → s, then
-                                1                 1             1
-                                  log[− log dn ] = log(Dn − 1) + log I(ε) → s,
-                                n                 n             n
-which proves (21).
-    For Theorem 7, let Un be the inverse image in the ambient coeﬀicient product of the finite-volume simulta-
-neous genericity set supplied by Theorem 3. Coeﬀicient restriction to Vn is Ta continuous open surjection onto
-a finite-dimensional Euclidean space. Hence every Un is dense Gδ , and U = n Un is residual and dense. If an
-ambient coeﬀicient law has absolutely continuous Vn -marginal, then P(Unc ) = 0; countable subadditivity gives
-P(U ) = 1. Equation (22) follows at every volume. Strict growth of the volumes and qv ≥ 2 give Dn ≥ 2|Vn | → ∞,
-after which the density and rate statements are the finite-volume formulas already proved.
-
-
-C Component tori and all-order collision proofs
-Choose a reference level in each component and let ωr,a = Er,a − Er,a0r . Mutual transversality and component
-maximality make the combined list rationally independent. The projective orbit is the image of the dense torus
-flow under
-                                               Yc
-                                      Φ(z)x =      zr,xr ,  zr,a0r = 1.                                   (65)
-                                                     r=1
-
-The map is injective: hold every coordinate
-                                      Q     but xr at its reference value and divide by the all-reference coordinate.
-Thus the orbit closure is canonically r TDr −1 and completed sampling is product Haar.
-   Expand F (t)m . A term survives time averaging exactly when
-
-                                                 X
-                                                 m               X
-                                                                 m
-                                                       EX s =          EY s .
-                                                 s=1             s=1
-
-Writing each energy as a sum of component energies gives
-                                   X                         
-                                       Nr (X)(a) − Nr (Y )(a) Er,a = 0.
-                                       r,a
-
-Each coeﬀicient vector is balanced. Transversality first separates components; maximality inside a component
-then forces every coeﬀicient to vanish. The surviving event is exactly equality of all marginal histograms, proving
-(24).
-    For uniform spectral weights, tensor-sum evolution gives
-                                                   Y
-                                          XD (t) =     Dr−1 | Tr e−itHr |2 .
-                                                        r
-
-The component
-                   phases are Haar-independent. Counting m-tuples with histogram k gives multinomial multi-
-plicity mk   , so the collision probability is (26); multiplication proves (25). For fixed m, tuples with m distinct
-labels give the leading contribution m!, while repeated-label tuples are O(d−1 ). Hence ad,m → m!. Finite
-product convergence and the method of moments identify the limit as a product of independent unit-mean
-exponentials.
-
-
-
-
-                                                            13
-D     Choi target volume and local circuit capacity
-D.1    Proof of Theorem 11
-If the target ball in (33) is empty there is nothing to prove. Otherwise select y ∈ TD whose Choi phase state
-lies in it. Every other captured z is within trace distance 2δ of Φ(y), so
-
+                                                                        X m2
+                                                  ad,m = d−m                         .                        (27)
+                                                                               k
+                                                                    |k|=m
+
+For fixed c and Dr → ∞, completed law converges to a product of c independent unit-mean exponential variables.
+   Joining components replaces equality of marginal histograms by equality of joint histogram. Product-sized
+temporal-rank gain and removal of factorization-forced replica collisions are two forms of same constraint con-
+version.
+
+3.5     Countable spectra
+Theorem 12 (Complete saturated recurrence). Let a countably infinite spectrum have no nonzero finitely
+supported balanced integer relation. Relative to every anchor, projective relation lattice is trivial; every future
+tail of phase orbit is dense in full countable projective product torus; zero is only exact global return time; and
+every strictly positive summable phase-defect probe has lower limit zero, upper limit its absolute maximum, and
+crosses every interior level within a uniformly bounded waiting window from every starting time.
+    Moreover, every countably infinite real pure-point spectrum admits an arbitrarily operator-norm-small,
+domain-preserving, self-adjoint trace-class diagonal perturbation with all these properties and with unbounded
+finite-window temporal rank. For a product of two countable spectra, one rank-one separable trace-class
+interaction direction can be chosen so that all but a countable set of coupling strengths have complete saturated
+law.
+   This countable result concerns pure-point diagonal Hamiltonians. It does not assert recurrence for continuous
+spectra or for infinite quasi-local many-body dynamics.
+
+
+4     Law III: target capacity governs observability and complexity
+4.1     Weighted recurrence information
+Let w = (w1 , . . . , wD ) be positive probabilities. For pivot k, define
+                                                                                       
+                                               1 X         wj                  X       
+                              Hk (w, η) = min           log    : 0 < D j ≤ wj ,   Dj ≤ η ,                    (28)
+                                               2           Dj                          
+                                                          j̸=k                                  j̸=k
+
+                        Hproj (w, η) = min Hk (w, η).                                                         (29)
+                                             k
+
+Let Tw (η) be least integer deadline valid for every compatible phase packet to return with fidelity at least
+(1 − η)2 .
+
+
+                                                                    5
+Theorem 13 (Metric-information law). For D ≥ 2, 0 < η ≤ 1,
+                                     π
+                           Hproj −     (D − 1) − log(2D) < log Tw (η)                                         (30)
+                                     4                                           √
+                                                         ≤ Hproj + (D − 1) log(2π 2).                         (31)
+
+Every compatible phase packet returns after each delay M at some integer n with M < n ≤ (M + 1)Tw (η).
+    Functional is same reverse-water convex program that appears in a parallel Gaussian rate–distortion calcu-
+lation [16, 17]. No coding theorem is asserted.
+
+4.2    Observer coherence
+For a finite family of matrix records, join two energy sectors whenever at least one weighted observer block
+contains their coherence.
+Theorem 14 (Observer-coherence law). Squared total observer displacement equals a nonnegative weighted edge
+phase energy. It vanishes exactly when phases agree on every connected component of coherence graph. If graph
+has D vertices and c components, visible projective phase capacity is
+
+                                                  τobs = D − c.                                               (32)
+
+For every integer resolution Q, a positive recurrence time exists no later than (Q + 1)D−c , with squared displace-
+ment bounded by
+                                                       2 X
+                                                    2π           obs
+                                               4                wij  .                                         (33)
+                                                   Q+1      i,j
+
+  Interaction rank and observer rank answer different questions: former counts phase directions generated by
+Hamiltonian, latter counts directions visible to chosen experiment.
+
+4.3    Static connected-network Choi occupation
+For a D-level Hamiltonian, let ρ(z) be normalized equal-weight Choi density of phase vector z. Define
+                                                              √            D−1
+                                          BD (δ) = DeD/2           πδ 2                .                      (34)
+
+Theorem 15 (Generic static-network circuit-target bound). Fix any connected finite interaction graph, local
+dimensions at least two, a finite gate alphabet of size M , a padded word depth s, arbitrary target density
+matrices, and δ > 0. On a dense residual full-measure set of onsite-plus-edge Hamiltonians, upper completed-
+time occupation of union of Hilbert–Schmidt δ-balls around all padded targets is at most its projective Haar
+volume, and
+                         dens{t : ρH (t) lies in a padded target ball} ≤ M s+1 BD (δ).                   (35)
+Bound is independent of Hamiltonian eigenbasis.
+   This is a completed-time occupation law, not a claim about monotone growth or finite-time mixing.
+
+4.4    Static bounded-weight Pauli alternation
+Let D = 2n , let q ≥ 2, and let Mq be number of Pauli labels of weight at most q used by fixed two-query
+protocol. For trace-distance tolerance ε > 0, define
+                                                      s                           D−1
+                                                                       √
+                                                                  2(       2 ε)2
+                                       BD (ε) = DeD/2        π                           .                  (36)
+                                                                       2
+
+Theorem 16 (Same-Hamiltonian recurrence–hardness alternation). Fix a generic real bounded-weight Pauli
+Hamiltonian, a finite gate alphabet of size M , padded depth s, normalized targets containing identity target, and
+suppose
+                                      M s+1 BD (ε) < 1,     Mq 3q < D + 1.                                     (37)
+Then one finite L works after every starting time: there is a Choi return within ε, followed within L by an epoch
+farther than ε from every supplied padded-circuit target, followed within another L by a second Choi return.
+At every real time, including every hard epoch, product-stabilizer two-query signal is strictly larger than Haar
+benchmark 1/(D + 1).
+
+
+                                                          6
+   Hamiltonian family contains all Pauli strings of weight at most q; it is q-local but not geometrically bounded
+degree. Geometric locality is proved above for temporal rank and all-replica recurrence, not for this circuit-
+hardness alternation.
+Theorem 17 (Prime hard polygons). Let p be prime, 2r < p, 0 ≤ ε < 1/2, and let Y be a finite dictionary of
+normalized Choi rays. If
+                                                       p         2r
+                                ((p − 1)|Y |) r! D−r <    1 − 4ε2     ,                               (38)
+
+then every maximally projective spectrum has syndetically recurring base times τ for which all nonzero vertices
+Uaτ , a = 1, . . . , p − 1, avoid every target in Y by more than ε, while Upτ returns arbitrarily close to identity. For
+generic bounded-weight Pauli Hamiltonians satisfying second inequality in (37), same evolution remains above
+exact local Haar benchmark at every time.
+
+4.5    One nested local path: ramp, return and thermodynamic completion
+Number qubits consecutively along a path and write Pa,b = |11⟩⟨11|a,b . For L ≥ 1, define
+
+                                       X
+                                       L
+                                           P2j−1,2j X P2j,2j+1
+                                                     L−1
+                                                                              UL (t) = e−itHL .
+                                                                                           nest
+                            HLnest =               +              ,                                                (39)
+                                       j=1
+                                              j2     j=1
+                                                         (j + 1)4
+
+Every nearest-neighbour bond has positive weight, and increasing L leaves every old term unchanged. Let
+  op
+CL,ε (t) ∈ N ∪ {∞} be infimum of number of arbitrary two-qubit gates in support-certified one- and two-qubit
+circuits W satisfying ∥W − UL (t)∥2→2 ≤ ε; one-qubit gates are free.
+
+Theorem 18 (Nested static-local ramp–return law). The family (39) has the following five properties.
+ 1. For every infinite Boolean configuration x, infinite diagonal energy
+                                                        X pj (x)       X bj (x)
+                                            E∞ (x) =               +                                               (40)
+                                                              j2        (j + 1)4
+                                                        j≥1            j≥1
+
+
+    exists and lies in [0, 3]. Its L-pair truncation is exactly finite energy of HLnest , and for L ≥ 1,
+
+                                             0 ≤ E∞ (x) − EL (x) ≤ L−1 + L−3                                       (41)
+
+    uniformly in x. Hence finite energies converge uniformly to one bounded infinite-chain energy.
+ 2. With RL = 2π(L!)4 , one has UL (RL ) = I.
+
+ 3. For every t and ε ≥ 0,
+                                                    op              op
+                                                   CL,ε (RL − t) = CL,ε (t).                                       (42)
+
+ 4. If 0 < ε ≤ 1/100 and
+                                                                       εL
+                                                      1024πε ≤ t ≤        ,                                        (43)
+                                                                        2
+    then                                                                
+                                                    t        op           2t
+                                                          ≤ CL,ε (t) ≤ 2     ,                                     (44)
+                                                  128πε                   ε
+    and same bounds hold at RL − t.
+
+ 5. For 0 < ε ≤ 1/100, every t obeying (43) is a literal positive complexity excursion:
+                                             op         op               op
+                                            CL,ε (0) = CL,ε (RL ) = 0 < CL,ε (t).                                  (45)
+
+    Consequently complexity is neither nondecreasing nor nonincreasing on the full return cycle. Moreover, if s
+    and t both obey (43) and 1024πs ≤ t, then
+                                                       op         op
+                                                      CL,ε (s) ≤ CL,ε (t).                                         (46)
+
+    This is finite-time circuit hardness for one explicit static bounded-degree Hamiltonian, not a generic or worst-
+case ensemble statement. Ramp means matching linear envelopes over window (43). Equation (46) excludes
+scale-separated backtracking but does not compare every pair s ≤ t. Couplings decay with position, so theorem
+does not claim translation invariance, uniform transport or a complexity plateau.
+
+
+                                                              7
+4.6    Return forces reflection
+Theorem 19 (Robust complexity reflection). For autonomous unitary evolution and an inverse-closed gate
+dictionary, let ∆R be projective Choi return defect at time R. Then
+
+                                             Cε+∆R (Ut ) ≤ Cε (UR−t ),                                        (47)
+                                           Cε+∆R (UR−t ) ≤ Cε (Ut ).                                          (48)
+
+At an exact projective return, robust complexity history is exactly palindromic: Cε (Ut ) = Cε (UR−t ).
+    This law constrains decline near recurrence but supplies no first hard time.
+
+
+5     Law IV: finite-horizon records do not determine completed geom-
+      etry
+Energy-constrained time series can already exhibit severe extrapolation limits [18]. The next theorem gives
+a distinct static nearest-neighbour ambiguity in which one common earlier record is compatible with every
+terminal return probability.
+Theorem 20 (Complete finite-record ambiguity). Fix moment order m, target time T > 0, strict earlier horizon
+0 ≤ H < T , and tolerance δ > 0. There exist one normalized initial state, one return projector, one common
+earlier record, and a positive nearest-neighbour one-particle Hamiltonian Kp for every p ∈ [0, 1] such that:
+1. all Kp have one common spectrum and are unitarily equivalent;
+2. their first m energy moments in fixed initial state agree;
+3. their return probabilities are uniformly δ-close to common record throughout [−H, H];
+4. fixed-protocol return probability at time T is exactly p;
+5. construction has a particle-number-preserving nearest-neighbour free-fermion lift with same complete spectrum
+   in every occupation sector.
+Every forecaster receiving only common record has terminal absolute error at least 1/2 for one compatible system.
+   Perfect-return endpoint forces one zero path coupling in fixed nearest-neighbour representation; strict subunit
+probabilities admit a connected Jacobi representative. This endpoint rigidity is part of classification, not an
+omitted genericity assumption.
+   There is a complementary all-depth boundary.
+Theorem 21 (Global completion and compact determinacy). No classifier based only on complete polynomial
+cyclic-local data decides persistent mean recurrence for all positive-energy spectra with all moments. Even on a
+fixed compact positive interval, neither complete perturbative jet of every bounded continuous spectral observable
+nor complete all-times perturbative spectral-form-factor jet universally decides nonperturbative recurrence phase.
+Conversely, if one representative of a complete moment sequence is supported on a nondegenerate compact
+interval, then every probability measure with those moments is identical to it.
+  Finite records, complete local moment data and complete perturbative data are distinct information regimes.
+Compact exact moments cross determinacy boundary; finite-horizon data do not.
+
+
+6     Position relative to current results
+Abstract implications of rational independence—torus averaging, all-order SFF moments and exponential limit-
+ing laws—are not claimed as new [13, 15]. Nor do completed-time density formulas replace current recurrence-
+time bounds [3, 4]. Principal new results are joined statements:
+1. exact product-sized discontinuity of completed temporal dimension under arbitrarily weak interaction, to-
+   gether with a dimension-free finite-time continuity bound and all-replica collision extremality;
+2. generic maximal projective rank for arbitrary static finite interaction graphs, simultaneous subsystem graph
+   reconstruction, and its nearest-neighbour thermodynamic consequences;
+3. complete countable-spectrum saturation under arbitrarily weak domain-preserving trace-class perturbations
+   and along a separable interaction ray outside a countable exceptional set;
+
+                                                         8
+4. static bounded-weight Pauli recurrence–hardness alternation with a permanent operational separation from
+   Haar randomness.
+5. one explicit nested static nearest-neighbour qubit path with bounded infinite-chain energy, a robust finite-
+   time linear circuit-complexity envelope, exact return and exact reflected descent.
+    Complexity result is complementary to saturation theorems for random circuits and stochastic Hamiltonian
+evolution [9] and to jump theorems for unitarily invariant random Hamiltonians [23]. It also respects obstruction
+that constant-local time-independent Hamiltonian ensembles need not become Haar random [10]. A static
+geometrically local SFF ramp has recently been proved by a clock embedding [20]; our completed-time rank and
+collision laws address a different regime and do not assert a finite-time random-matrix ramp.
+    Hamiltonian-simulation lower bounds provide important comparison points. Worst-case one-dimensional
+piecewise local dynamics require nearly linear space–time gate count [24]; generic commuting two-local Hamilto-
+nians can require quadratic gate count at short time [25]; and recent coeﬀicient-sensitive optimal lower bounds
+use local bounded-degree classical hard instances, with time-independent unit-time constructions and piecewise-
+constant extensions to later times [26]. Theorem 18 is complementary: it follows one explicit nested static
+one-dimensional family through a linear laboratory window, a bounded thermodynamic completion, an exact
+return and the reflected complexity history. It does not claim optimal constants or a general simulation lower
+bound.
+    Completed target occupation is also distinct from Hamiltonian fast-forwarding and its connection to ex-
+ponentially precise measurement [12], and from explicit transcendence-based examples of exponential circuit
+complexity [19].
+
+
+7     Scope and open boundary
+All local-network genericity statements allow arbitrary onsite and edge terms on a supplied finite graph. They
+do not impose translation invariance. All thermodynamic density statements take T → ∞ at fixed volume
+before size limit. All countable results concern pure-point diagonal spectra. Bounded-weight Pauli complexity
+theorem is q-local but all-to-all in support. The nested path theorem is static, geometrically nearest-neighbour
+and circuit-hard over explicit finite-time windows, but its diagonal couplings decay with position; it is neither
+translation invariant nor a uniform-transport model. Its thermodynamic statement concerns bounded static
+energy and uniform finite-volume truncation, not infinite-system circuit complexity.
+    Principal open boundary is stronger dynamical shape: all-pairs pointwise monotonicity inside the laboratory
+window, a parametrically longer growth regime, and a saturation plateau for one uniform-strength noncommut-
+ing bounded-degree Hamiltonian are not proved. Completed occupation does not determine first onset, and
+inverse completed density is not asserted to be a first-return time. Infinite-volume quasi-local orbit recurrence
+remains outside present scope.
+
+
+8     Proof organization
+Appendices give self-contained proofs in order used above. They begin with finite contraction selection and
+arbitrary spectral measures, develop projective detuning map and interaction conversion, prove static path and
+arbitrary-graph genericity, and then derive completed return densities, observer deadlines, circuit-target bounds,
+countable saturation and finite-record no-go theorem. A separate construction proves bounded thermodynamic
+completion, finite-time circuit ramp, exact return and reflection for nested static path (39).
+
+
+A     Projective detuning and weak-interaction singularity
+A.1     Proof of Theorem 1
+For D = d + 1, scalar-extend the balanced character lattice to the d-dimensional rational space
+                                                                   
+                                                        X          
+                                         Q
+                                       PD  = q ∈ QD :        qj = 0 .
+                                                                   
+                                                              j
+
+                           Q
+The detuning map DE : PD      → R is rational-linear. Its kernel is the rational span of the balanced integer relation
+lattice. Its range is the rational span of anchored gaps: each generator Ej − E1 is the image of the balanced
+character ej − e1 , while every balanced rational combination reduces to a combination of these anchored gaps.
+Rank–nullity therefore gives
+                                      dimQ range DE + dimQ ker DE = D − 1.
+
+
+                                                          9
+    Pontryagin duality identifies characters fixed by the completed phase law with integral characters in the
+detuning kernel. The operational temporal dimension is consequently the range rank. In a replica expansion,
+a balanced character of positive mass h first appears at order h; phase cycling annihilates every character of
+larger mass. This gives the final height-filtration statement.
+
+A.2     Proof of Theorem 2
+Write the product index as {0, . . . , m} × {0, . . . , n}. The uncoupled energy is Eab = Aa + Bb . Its gap space is
+generated by the m anchored gaps of A and the n anchored gaps of B, so its temporal rank is at most m + n.
+    Write a diagonal rank-one interaction as Vab = αa βb . For each nonzero balanced integer character k, its
+perturbed detuning is a real polynomial in (α, β). This polynomial is not identically zero: if its uncoupled value
+vanishes, choose one pair (a, b) with kab ̸= 0 and switch on only αa and βb . The resulting quadratic coeﬀicient
+is kab . The complement of its zero set is open and dense. Intersecting these complements over the countable
+family of nonzero balanced characters leaves a dense set in every ball about the origin. Choose (α, β) there with
+maxa,b |αa βb | ≤ δ. Then V = A ⊗ B is diagonal, ∥V ∥ ≤ δ, and the perturbed spectrum is maximally projective.
+Its temporal rank is (m + 1)(n + 1) − 1 = mn + m + n, proving the rank jump.
+                                                                ′
+    For self-adjoint H, H ′ and U (t) = e−itH , U ′ (t) = e−itH , Duhamel’s formula gives
+                                                      Z t
+                                                                       ′
+                                  ′
+                                U (t) − U (t) = −i          e−i(t−s)H (H ′ − H)e−isH ds
+                                                       0
+
+with reversed orientation for t < 0, and hence ∥U ′ (t)−U (t)∥ ≤ |t|∥H ′ −H∥. Splitting U ′ (t)∗ OU ′ (t)−U (t)∗ OU (t)
+into two terms and using unitary invariance gives 2|t|∥H ′ − H∥∥O∥, hence (9). Finally, expansion of the rth
+fidelity moment shows that its non-permutation excess is a sum over unequal multiplicity vectors of equal total
+energy. Maximal projective rank removes every such balanced equality, leaving exactly the permutation floor.
+
+
+B     Arbitrary interaction graphs
+B.1    Generic component rank
+For a connected two-site graph, the allowed edge term is the full Hermitian matrix space on the tensor product.
+Choose a simple eigenbasis for which every one-site transition graph is connected and non-bipartite, and choose
+a maximally projective eigenvalue list. The failures of these conditions are proper real-algebraic sets, so such
+choices form a nonempty open set inside the simple-spectrum locus.
+    Attach a leaf to a tree. Start from a product extension with layer shifts chosen to avoid energy collisions. A
+small edge perturbation joins the layer transition graphs. For every old observer site, the first-order response
+of a cross-layer matrix element is a rational function of a layer gap. One selected transition contributes a
+nonzero simple-pole residue; maximal projective rank prevents cancellation by another oriented gap. Avoiding
+the finitely many zeros of these response functions makes every old transition graph connected while preserving
+an odd cycle. The local matrix algebra at the new leaf supplies its connectivity and odd cycle.
+    Now suppose a nonconstant balanced rational eigenvalue relation vanished identically on the enlarged tree-
+local space. The second-order response to the leaf interaction has simple poles indexed by oriented edges of the
+old transition graph. Vanishing residues force relation coeﬀicients to agree along the categorical product of that
+graph with the leaf complete graph. Connectedness and non-bipartiteness make this product connected, so every
+coeﬀicient is equal, contradicting nonconstancy. Thus no balanced relation polynomial vanishes identically.
+    Symmetrizing over spectral labels turns each candidate relation into a polynomial in local Hamiltonian
+coeﬀicients. Removing its proper zero set, the discriminant, and the countable family of rational relations gives
+a dense residual full-measure maximal set on every tree. A spanning tree embeds into every connected graph,
+so the same conclusion holds for any connected graph.
+    For a disconnected graph, component gap modules add. Independently scaling component witnesses avoids
+the countable set of ratios at which two modules intersect. This proves the component formula (13). There are
+only finitely many induced subsystems; intersecting their pullbacks supplies one simultaneous generic set.
+
+B.2    Curvature, density and exhaustion
+On one vertex, temporal rank is qv −1. On two vertices it is qu qv −1 when the edge is present and (qu −1)+(qv −1)
+otherwise. Subtraction gives (16). For a partition, refine every connected component into its connected fragments
+of dimensions d1 , . . . , ds . Its curvature contribution is
+                                              Y
+                                              s                X
+                                                               s
+                                                    dj − 1 −         (dj − 1),
+                                              j=1              j=1
+
+
+
+                                                             10
+which is nonnegative for dj ≥ 2 and vanishes exactly when s = 1. Summing over components proves Theorem
+7.
+    For connected G, the anchored phase vector is Haar-equidistributed on TD−1 . A chordal coordinate lies
+within ε of one precisely on an arc of normalized length 2 arcsin(ε/2)/π. Product Haar measure proves (19).
+Substituting D = q n and taking logarithms gives (22) and (23).
+    For an infinite coeﬀicient product and a finite-volume exhaustion, pull back each finite-volume generic set
+along coeﬀicient restriction. These maps are continuous open surjections. The countable intersection of the
+residual pullbacks is residual and dense. Absolute continuity of every finite marginal makes each bad cylinder
+null; countable subadditivity gives the simultaneous probability-one statement. Since qv ≥ 2 and volumes grow
+strictly, the product dimension minus one tends to infinity.
+
+
+C Replica collisions and component laws
+For positive weights wi , expand the rth survival-fidelity moment into pairs of multiplicity vectors p, q with
+|p| = |q| = r. A term survives completed-time averaging exactly when
                                              X
-                                             D                p
-                                       D−1         zj y j ≥        1 − 4δ 2 = 1 − ηδ .                          (66)
-                                             j=1
+                                                 (pi − qi )Ei = 0.
+                                                i
 
-Rotate by one common phase so the sum is real and nonnegative. Writing zj yj = eiθj with θj ∈ [−π, π] gives
-                                         X
-                                            (1 − cos θj ) ≤ Dηδ .
-                                               j
-
-The elementary bound 1 − cos θ ≥ 2θ2 /π 2 yields a Euclidean ball constraint after quotienting one common
-phase. Bounding the (D − 1)-ball by the corresponding cube/volume estimate and using Γ((D + 1)/2) ≥
-((D − 1)/(2e))(D−1)/2 gives
-                                                           πη (D−1)/2
-                                                               δ
-                                   mTD {z : (66)} ≤ DeD/2               .
-                                                             2
-This proves (33). A union over at most M s+1 circuit endpoints proves (34). Unique ergodicity transfers the
-closed target bound to completed time. A nonempty open hard complement is visited syndetically by Theorem
-1.
-
-D.2    Proof of the heap bound
-Let two letters be independent when their gates have disjoint support, and dependent otherwise. A trace is
-a word modulo adjacent
-                          swaps of independent letters. Fix length ℓ and its multiplicity vector m = (mσ )σ∈Σ ;
-there are M +ℓ−1
-             ℓ      possible multiplicity vectors. For each occurrence of letter σ, record its relative order against
-occurrences of a fixed orientation of dependence neighbors. Cartier–Foata pair projections determine the trace.
-At most ∆ binary order decisions are charged per occurrence, so at most 2∆ℓ traces share one multiplicity vector.
-Therefore                                                     
-                                                      M + ℓ − 1 ∆ℓ
-                                              hℓ ≤               2 .                                             (67)
-                                                          ℓ
-The right-hand
-                side is increasing in ℓ, and summing 0 ≤ ℓ ≤ s proves (37). The standard binomial estimate
- M +s−1
-    s     ≤ [e(1 + s/M )]M gives (38). If M = O(n), s = cD and D = q n , the M -term is o(D); comparison with
-           −αδ D+o(D)
-BD (δ) = e             gives the stated threshold.
+Maximal projective rank forces p = q, which is precisely the permutation floor. Combining this equivalence with
+the path genericity theorem proves Theorem 10.
+    For a tensor-sum spectrum, every total energy is a sum of component energies. Mutual transversality
+separates a surviving equality component by component; maximality inside each component then forces equality
+         empirical histograms. This proves (25). For uniform weights, the number of −1
+of the two                                                                             m-tuples with histogram
+k is mk  , giving (27) and (26). At fixed m, distinct-label tuples contribute m! + O(d  ), while repeated-label
+tuples vanish in the limit. The factorial moments determine the unit-mean exponential law; independence of
+component Haar coordinates gives the product law.
 
 
-E     Fixed-input state-complexity proof
-                                                                         P
-For a simple H with eigenvectors ej , put pj = |hej , Ωi|2 and CH (Ω) = j p2j . We first record a target bound
-on the spectral phase orbit                    X√
-                                      ΦH (z) =        p j zj e j , z ∈ TD .
-                                                     j
+D     Choi targets and static complexity
+D.1    Projective Choi tube
+The full D-torus splits measure-preservingly into one common phase and a zero-anchored (D − 1)-torus. Equal-
+weight Choi densities are invariant under the common phase, so the projective target has exactly the measure
+of its full-torus lift.
+    If a Hilbert–Schmidt target ball is nonempty, choose one captured phase point. Every other captured point
+lies within twice the radius of it. Pure-state density geometry converts this into a lower bound on normalized
+phase overlap. After rotating the common phase, the inequality 1 − cos θ ≥ 2θ2 /π 2 puts the relative angles
+inside a Euclidean ball. The standard ball-volume and Gamma bounds give BD (δ). A union over at most
+M s+1 padded words proves the Haar bound. Maximal projective rank transfers it to upper completed-time
+occupation. Theorem 5 supplies that rank on one dense residual full-measure set for every connected interaction
+graph, proving Theorem 15.
 
-For a finite family Z in the unit ball and 0 < a ≤ 1, let Ea (Z) = {z : maxy∈Z |hΦH (z), yi|2 ≥ a}. For every
-integer r ≥ 1,                                                        r
-                                                              16CH (Ω)
-                                      mTD (Ea (Z)) ≤ |Z| r!               .                              (68)
-                                                                 a2
-Indeed, set τ = 4CH (Ω)/a and remove the common heavy coordinate set A = {j : pj > τ }. Its squared norm is
-at most CH (Ω)/τ = a/4. An a-capture therefore forces the light-part overlap to have squared modulus at least
-a/4. For one target y, torus character orthogonality gives
-                                      Z
-                                         |hΦL (z), yi|2r dm(z) ≤ r!τ r kyk2r .
-
-Markov’s inequality contributes (4/a)r , and a union over Z proves (68).
-   The Gaussian law (39) is invariant under every product of one-qubit Clifford conjugations. These conju-
-gations act transitively on the 6n product Pauli-stabilizer states. For a fixed unit vector e, the single-qubit
-stabilizer second-moment identity, tensored over sites, gives
-                                 1     X                   1 X
-                                  n
-                                               |he, ϕi|4 = n     Tr(ρ2S ) ≤ 3−n ,                          (69)
-                                6                         6
-                                    ϕ∈ProdStabn                       S⊆[n]
-
-
-                                                              14
-where ρS is the reduction of |eihe| to S. Summing over the D = 2n eigenvectors and averaging the conjugation
-orbit yields
-                                            EJ CHn (J) (Ω) ≤ (2/3)n .                                   (70)
-Thus Markov gives CH (Ω) ≤ 4(2/3)n with probability at least 3/4. The Gaussian union bound gives
-
-                                      P{max |Ja | > Bn } ≤ 2mn e−Bn /2 < 1/4.
-                                                                         2
-
-                                          a
-
-Simple spectrum, maximal projective rank and full spectral support at Ω hold outside a null set given
-by a countable algebraic union. Rank follows from Theorem         Pn−1 3.   For support, the Krylov determinant
-det[Ω, HΩ, . . . , H D−1 Ω] is not the zero polynomial: H =              j
-                                                                    j=0 3 Xj has distinct balanced-ternary energies
-and Ω overlaps every X-basis vector. Intersecting these events produces Gn with probability at least 1/2.
-   For J ∈ Gn , a circuit hit at trace error 2ϵ is an a-capture with a = 1 − 4ϵ2 . There are at most Mnsn +1 target
-words. By (40),                                                         r
-                                     16CH (Ω)     1              16CH (Ω) n
-                                  rn          ≤     ,    r n !               ≤ 2−rn .
-                                        a2        2                 a2
-Also Mnsn +1 ≤ 2rn /4 . Hence (68) is at most ηn . Maximal projective rank transfers this Haar estimate to
-one-sided completed time, proving (43).
-   Let fT (J) be the fraction of [0, T ] on which the endpoint is hard. Fatou and Tonelli give
-                                 Z                  Z
-                         lim inf fT (J) dγ(J) ≥         lim inf fT (J) dγ(J) ≥ 12 (1 − ηn ),
-                            T →∞                      Gn T →∞
-
-which proves both statements in (44); the same calculation with 1Gn fT supplies an unbounded sequence of
-common times with positive hard mass inside the coeﬀicient box.
-    Choose one such time and a positive-measure subset on which distance from the finite depth-sn word ball
-exceeds 2ϵ + 1/k for one k. On the box, kHn (J)k ≤ mn Bn , so Duhamel continuity preserves hardness at
-a suﬀiciently close positive rational time. Strict separation and continuity in J then give a nearby rational
-coeﬀicient vector satisfying (45). Finally enumerate rational pairs in the stated boxes, enumerate the finite word
-ball, and dovetail certified numerical lower bounds on all distances. Matrix exponentials of rational matrices
-and the fixed gate endpoints are uniformly computable; strict separation makes one certificate terminate. This
-proves Theorem 14.
-
-
-F     Prime-torsion polygons and permanent non-Haar separation
-                                                                                                            √
-Let q ∈ (Z/pZ)d and map it to the normalized diagonal Choi phase vector d−1/2 (e2πiqj /p )j . Put β =           1 − 4ϵ2 .
-Lemma 20 (Finite-grid avoidance). Under (47), some q has every nonzero multiple aq farther than ϵ from
-every target in Y .
-
-Proof. For fixed nonzero a and target ray y, an ϵ-hit is contained in a translated coherence cap with normalized
-overlap at least β. For uniform q, the 2rth replica moment of this overlap is at most r!d−r when 2r < p:
-congruence modulo p then coincides with equality of the two replica histograms. Markov gives bad probability
-at most r!d−r /β 2r . Union over (p − 1)|Y | pairs has probability less than one by (47); a good q exists.
-    For this q, strict avoidance of all finitely many targets and closeness of the pth power to identity define a
-nonempty open set in the finite-power phase torus. A maximally projective phase flow is minimal, hence hits
-that open set syndetically. At a hitting base time τ , multiplication by a = 1, . . . , p − 1 shadows the hard vertices
-and multiplication by p shadows the identity. This proves the first part of Theorem 15.
-    For completeness, the permanent separator follows the exact protocol of Cui et al. [10]. Let D = 2n , let Pq∗
-be nonidentity Pauli strings of weight at most q, and set Mq = |Pq∗ |. Sample P ∈ Pq∗ and a uniform product
-of single-qubit Pauli stabilizer states u, prepare two copies, apply U once to each, measure P , and multiply
-outcomes. Its mean is
-                                                   1 X
-                                        Sq (U ) =           Eu hu|U ∗ P U |ui2 .                                   (71)
-                                                  Mq      ∗
-                                                       P ∈Pq
-
-           ∗
-                   P
-Expand U P U =         Q CQP (U )Q. Product-stabilizer twirling gives
-                                                            X
-                                     Eu hu|U ∗ P U |ui2 =        3− wt(Q) CQP (U )2 .
-                                                            Q
+D.2    Pauli alternation and hard polygons
+For bounded-weight Pauli coeﬀicients outside the projective relation zero sets, the Choi energy list is maximally
+projective. The strict inequality in (37) leaves a nonempty open complement to all padded circuit targets.
+Minimality of the projective flow makes both the identity neighbourhood and this hard complement syndetic.
+Applying them successively gives return–hardness–return within one uniform window length.
+    The local separator uses the Pauli transfer matrix. The Hamiltonian coeﬀicient vector is fixed by autonomous
+evolution, so the corresponding local transfer block has Frobenius norm at least one. Product-stabilizer twirling
+weights every output Pauli by 3− wt . Hence the two-query signal is at least 3−q /Mq , which exceeds 1/(D + 1)
+under the second inequality of (37).
+    For Theorem 17, sample a phase vector on the p-torsion grid. When 2r < p, congruence of replica multiplic-
+ities modulo p is ordinary equality, so the 2rth target-overlap moment is at most r!D−r . Markov’s inequality
+and a union bound over (p − 1)|Y | target–vertex pairs leave one phase vector with every nonzero multiple hard.
+The pth multiple is identity. A nonempty open neighbourhood of this polygon is visited syndetically by every
+maximally projective phase flow.
 
 
 
 
-                                                            15
-       P
-If H = P ∈P ∗ hP P 6= 0 and Ut = e−itH , energy conservation says the local transfer block fixes h. Its Frobenius
-             q
-norm is therefore at least one, and
-                                                          3−q
-                                               Sq (Ut ) ≥     .                                              (72)
-                                                          Mq
-For Haar V , the same score has expectation 1/(D + 1). Thus Mq 3q < D + 1 gives strict separation at every
-time, including polygon vertices and return. This completes Theorem 15.
+                                                       11
+D.3    Nested static-local ramp and exact return
+We prove Theorem 18. Write pj (x) for indicator that both qubits of pair j equal one and bj (x) for indicator
+that right qubit of pair j and left qubit of pair j + 1 equal one. For n ≥ 2,
+                                   1      1  1           1        1        1
+                                       ≤    − ,              ≤           − 3.                                (49)
+                                   n 2   n−1 n           n 4   (n − 1) 3  n
+
+Telescoping gives inverse-square and inverse-fourth tails at most L−1 and L−3 . Termwise domination proves
+convergence of (40), its bound 2 + 1 = 3, exact agreement of every finite restriction with (39), uniform estimate
+(41), and convergence of finite energies.
+    For lower bound, first fix integer K ≥ 8 with 8K ≤ L and
+
+                                          128πεK ≤ t < 128πε(K + 1).                                         (50)
+
+Suppose circuit with fewer than K counted two-qubit gates approximates UL (t) within ε. Each counted gate
+touches at most two of pair blocks. Among 4K pairs with one-based indices in (4K, 8K], more than 2K are
+untouched. Their nonnegative matching phases are individually at most 2πε and have total greater than 4πε.
+Greedy subset selection therefore gives untouched set S whose matching phase θ obeys
+
+                                                 3πε ≤ θ ≤ 5πε.                                              (51)
+
+    Cut between first and second endpoints of pairs in S. Every circuit gate lies on one side, so diagonal
+amplitudes Wab on four Boolean corner configurations factor and satisfy W00 W11 = W01 W10 . Hamiltonian
+energy vanishes on corners 00, 01, 10. At corner 11, phase is ϕ = θ + tBS , with BS ≥ 0 bridge energy. Every
+active bridge ends in S, hence its right-pair index exceeds 4K. From (49),
+
+                                                                   K +1  ε
+                                   BS ≤ (4K)−3 ,       tBS < 2πε      3
+                                                                        < .                                  (52)
+                                                                    K    4
+Here last inequality uses K ≥ 8 and π < 4. Thus 3πε ≤ ϕ < 5πε + ε/4 < π. Chord bound on [0, π] gives
+|e−iϕ − 1| ≥ 2ϕ/π ≥ 6ε. But four entrywise approximation errors, factorization identity and unitary entry
+bounds give |e−iϕ − 1| ≤ 4ε, contradiction. Every approximating circuit therefore contains at least K two-qubit
+gates.
+    For upper bound put K = ⌈2t/ε⌉. Condition (43) implies K ≤ L. Apply exact diagonal phase gate to each
+first K matching pair and each of first K − 1 bridges. Circuit uses 2K − 1 counted gates. Omitted energy is
+nonnegative and at most K −1 + K −3 . Since K ≥ 2t/ε and K > 1,
+
+                                               t(K −1 + K −3 ) < ε.                                          (53)
+
+Inequality |e−ia − e−ib | ≤ |a − b| gives strict operator error below ε. Taking K = ⌊t/(128πε)⌋ in lower argument,
+hypotheses (43) imply K ≥ 8 and 8K ≤ L, proving (44).
+    Finally, QL = (L!)4 satisfies QL /j 2 ∈ N and QL /j 4 ∈ N for every 1 ≤ j ≤ L. Every basis energy is therefore
+integer divided by QL , so UL (2πQL ) = I. Autonomous composition gives UL (RL − t) = UL (t)∗ . Taking adjoints
+of local gates and reversing circuit order preserves support, unitarity and counted two-qubit cost, while operator
+norm is adjoint-invariant. This is cost-preserving bijection between admissible circuits at t and RL − t, proving
+(42) and reflected ramp bounds.
+    The empty circuit implements both UL (0) and UL (RL ) = I, so their counted complexities vanish. At every
+time in (43),                                                
+                                                          t
+                                                                ≥ 8,
+                                                       128πε
+and lower ramp bound proves (45). Also, a nonempty window forces L > 0, while t ≤ εL/2 ≤ L/200 <
+2π(L!)4 = RL ; here L ≤ L! ≤ (L!)4 and 2π > 1/200. Thus ramp point lies strictly inside return cycle. A
+nondecreasing history on [0, RL ] would be bounded above by its zero value at RL and would therefore vanish
+identically; a nonincreasing history would be bounded above by its zero value at 0. Both contradict (45).
+   Finally let s, t both satisfy (43) and suppose 1024πs ≤ t. Since s/ε ≥ 1, the two ramp bounds give
+                                                  
+                                      op          2s   4s        8s      t
+                                    CL,ε (s) ≤ 2     <    +2≤       ≤        .
+                                                   ε    ε         ε    128πε
+                                                                         op
+The leftmost integer is therefore at most ⌊t/(128πε)⌋, which is at most CL,ε (t) by lower ramp bound. This
+proves (46).
 
 
-G     Reflection and Markovian recovery proofs
-For a return endpoint,
-                                                   UR−t = UR Ut∗ .                                            (73)
-                                          ∗
-If word W is within ϵ of UR−t , then W has the same word length because dictionary is inverse closed, and
-projective Choi metric plus unitary invariance gives
 
-                              dCh (W ∗ , Ut ) ≤ dCh (W, UR−t ) + dCh (UR , I) ≤ ϵ + δR .
-
-Interchanging t and R − t proves (49). Word inversion is length-preserving bijection, so the same injection holds
-shell by shell; at δR = 0 both injections are inverse bijections. Nonnegative summation proves partition-function
-reflection.
-    For a CPTP semigroup, (51) is the semigroup law. Complete trace-norm contractivity of ΛR−t gives
-
-                               k(Λt ⊗ id)(X)k1 ≥ k(ΛR ⊗ id)(X)k1
-                                               ≥ kXk1 − k((ΛR − id) ⊗ id)(X)k1
-                                               ≥ (1 − δR )kXk1 ,
-
-which proves (52). If a unitary word channel W is within ϵ of Λt , channel composition is diamond-contracting
-and
-                                        kΛR−t ◦ W − id k⋄ ≤ ϵ + δR .
-Postcompose by W −1 to obtain a word of the same length within ϵ + δR of ΛR−t . This proves complexity and
-shell reflection. If δR = 0, every Λt has CPTP inverse ΛR−t ; finite-dimensional complete order automorphisms
-are unitary conjugations [16]. Periodicity follows from the semigroup law.
+                                                       12
+E     Countable completion and reflection
+For a countable maximally projective spectrum, every finite restriction has maximal projective rank. Its annihi-
+lator is therefore trivial, so the orbit closure is the full product torus. Removing any bounded initial time does
+not change this closure. Two independent coordinates rule out a nonzero exact global return. For a positive
+summable phase-defect probe, uniform tail control reduces approximation to finitely many coordinates. Com-
+pact minimality then gives a bounded hitting window. Connectedness of the image and continuity of the probe
+turn approximate level visits into exact visits for every interior level.
+    Absolutely summable diagonal perturbations can be chosen arbitrarily small and maximally projective on
+every finite restriction. They are trace class, preserve the maximal diagonal domain, and preserve self-adjointness.
+A separable perturbation ui vj has the same properties on a product carrier. Along its aﬀine coupling ray, each
+nonzero balanced character can vanish at at most one coupling unless it annihilates both bare spectrum and
+direction. The chosen direction has no such nonzero character, leaving only a countable exceptional set. This
+proves Theorem 12.
+    Finally, autonomous composition gives UR−t = UR Ut∗ . Inverting and reversing a word preserves its length
+in an inverse-closed dictionary. Choi-metric unitary invariance and the triangle inequality add only the return
+defect ∆R , proving both inequalities in (48). When ∆R = 0, the two bounds are inverse inequalities and give
+exact palindromic symmetry.
 
 
-H     Detailed proofs and guide to the results
+F     Detailed proofs and guide to the results
 These appendices give definitions, exact statements and analytic proofs for all results summarized in the main
 text. They also provide a reader’s guide to the specializations for finite contractions, finite and countable pure-
 point spectra, observer families, local spin systems and finite-record inference. All arguments are deterministic.
 No random-matrix premise, numerical experiment or unproved nonresonance assumption is used.
 
 
-I     Carrier selection and arbitrary spectral type
-I.1    Finite contractions
+G     Carrier selection and arbitrary spectral type
+G.1    Finite contractions
 Let T be a contraction on a finite-dimensional complex Hilbert space. Every eigenvalue satisfies |λ| ≤ 1. A
-Jordan block of size greater than one on |λ| = 1 would make kT n k grow polynomially, contrary to kT n k ≤ 1.
+Jordan block of size greater than one on |λ| = 1 would make ∥T n ∥ grow polynomially, contrary to ∥T n ∥ ≤ 1.
 Hence the peripheral part is semisimple. Let Pλ be its spectral projections and put
                                       X                            X
-                               xper =      Pλ x,    Mper (T, x) =       kPλ xk2 .
-                                        |λ|=1                          |λ|=1
+                               xper =      Pλ x,    Mper (T, x) =       ∥Pλ x∥2 .
+                                        |λ|=1                        |λ|=1
 
 
-Theorem 21 (Exact returnability transition). For every finite contraction and vector,
+Theorem 22 (Exact returnability transition). For every finite contraction and vector,
                                            X
-                              hx, T n xi =    λn kPλ xk2 + rn ,     rn → 0.
+                              ⟨x, T n x⟩ =    λn ∥Pλ x∥2 + rn ,     rn → 0.
                                                 |λ|=1
 
 
-For every a < Mper (T, x) and every burn-in B, some n > B satisfies a ≤ |hx, T n xi|. For every a > Mper (T, x),
-all suﬀiciently large n satisfy |hx, T n xi| < a.
-
-
-
-
-                                                         16
-Proof. The generalized eigenspaces with |λ| < 1 decay, giving rn → 0. The peripheral sum is a positive weighted
+For every a < Mper (T, x) and every burn-in B, some n > B satisfies a ≤ |⟨x, T n x⟩|. For every a > Mper (T, x),
+all suﬀiciently large n satisfy |⟨x, T n x⟩| < a.
+Proof. The generalized eigenspaces with |λ| < 1 decay, giving rn → 0. The peripheral sum is a positive weighted
 finite phase packet. Simultaneous Diophantine approximation returns all its phases arbitrarily close to one after
 every delay, so its modulus approaches the sum of its weights, Mper , arbitrarily late. The triangle inequality
 gives the upper ceiling; the vanishing transient turns it into an eventual strict bound above the ceiling.
+
    If at least two peripheral modes have positive mass, normalize their weights by Mper . Applying the water
-deadline of Appendix M and waiting until |rn | is below half the target slack gives an explicit post-burn-in return
+deadline of Appendix K and waiting until |rn | is below half the target slack gives an explicit post-burn-in return
 below every strict ceiling target. The same decomposition and threshold hold termwise for every finite convex
 mixture of contractions.
 
-I.2   Stationary spectral measures and collision hierarchy
+G.2    Stationary spectral measures and collision hierarchy
                                                   R
 For a probability measure µ on R, let µ    b(t) = eitE dµ(E) and let µ̌(A) = µ(−A). Its difference measure is
                 µ(t)|2 = νb(t). Write Gµ for the additive subgroup of R generated by {E − E ′ : E, E ′ ∈ supp µ};
 ν = µ ∗ µ̌, so |b
 this is the visible frequency-difference group.
-Theorem 22 (Stationary spectral return law). For every r ≥ 1,
-                                                    Z T
-                                                1
-                                            lim            µ(t)|2r dt = ν ∗r ({0}).
-                                                          |b
-                                           T →∞ T    0
-                                                                                                        P
-Every continuous statistic of |bµ(t)|2 ∈ [0, 1] has a long-time mean. At r = 1, the mean is                         2
-                                                                                                            E µ({E}) .   Thus
+
+
+
+
+                                                        13
+Theorem 23 (Stationary spectral return law). For every r ≥ 1,
+                                           Z
+                                         1 T
+                                    lim         µ(t)|2r dt = ν ∗r ({0}).
+                                               |b
+                                   T →∞ T 0
+                                                                                                 P
+Every continuous statistic of |bµ(t)|2 ∈ [0, 1] has a long-time mean. At r = 1, the mean is                  2
+                                                                                                     E µ({E}) .   Thus
 the stationary recurrent fidelity is exactly the point-spectrum collision mass.
 Proof. Expand the (2r)-fold product as the Fourier transform of ν ∗r . Cesàro averaging sends eitω to the indicator
 of ω = 0; bounded convergence gives the formula. Polynomial approximation on [0, 1] extends convergence from
 moments to every continuous statistic.
-Theorem 23 (Pure-point, cyclic and atomless trichotomy).
+Theorem 24 (Pure-point, cyclic and atomless trichotomy).
                                                         P
 1. Every nonnegative summable countable phase energy j aj |eitωj − 1|2 falls below every positive resolution at
    some positive integer time, quantitatively by synchronizing a finite head and bounding the summable tail.
@@ -1107,33 +870,26 @@ spectra with the vanishing Cesàro collision mass; the continuum dimension is th
 phase representation.
 
 
-J     Finite projective completion and exact conservation
+H     Finite projective completion and exact conservation
 Let I be a finite D-element carrier and
-                                     X                                 X
-                      PI = {k ∈ ZI :    ki = 0},            DE (k) =         k i Ei ,   LE = ker DE .
-                                       i                                 i
+                                     X                            X
+                      PI = {k ∈ ZI :    ki = 0},      DE (k) =        k i Ei ,   LE = ker DE .
+                                       i                          i
 
 Choose i0 ∈ I and write GE = spanQ {Ei − Ei0 }.
+Theorem 25 (Projective recurrence completion). The closure of the relative phase orbit is
 
-Theorem 24 (Projective recurrence completion). The closure of the relative phase orbit is
-
-                               K E = L⊥
-                                      E = {z ∈ T /T : z = 1 for every k ∈ LE }.
-                                                I      k
+                                K E = L⊥
+                                       E = {z ∈ T /T : z = 1 for every k ∈ LE }.
+                                                 I      k
 
 
 Haar measure on this hull is the completed phase law. A balanced character is almost surely one exactly when
 it belongs to LE .
-
 Proof. Every relation annihilates the orbit and hence its closure. Conversely, a character that annihilates the
 orbit has real detuning zero, so it lies in LE . Equality follows from annihilator duality for compact abelian
 groups.
-
-
-
-
-                                                              17
-    Tensoring the detuning map with Q gives an exact sequence
+    Tensoring the detuning map with Q gives an exact sequence
                                                               D
                                       0 → ker DE → PI ⊗ Q −−→
                                                             E
@@ -1141,11 +897,11 @@ groups.
 
 Since dimQ (PI ⊗ Q) = D − 1, rank–nullity proves
 
-                                             τ (E) + ρ(E) = D − 1.
+                                              τ (E) + ρ(E) = D − 1.
 
 The dimension of KE is τ (E).
 
-J.1    Replica height and phase-grid readout
+H.1    Replica height and phase-grid readout
 Write k = k + − k − with disjoint nonnegative parts. Balancedness gives |k + |1 = |k − |1 =: h(k). Expanding the
 rth fidelity replica shows that the character k has positive coeﬀicient exactly when h(k) ≤ r. Therefore its first
 possible replica order is h(k), and a replica detects it exactly when k ∈ LE and h(k) ≤ r.
@@ -1154,15 +910,15 @@ on a (2r + 1)-point grid in each cycled coordinate therefore recovers every coe�
 coordinate grid aliases two admissible frequencies, proving worst-case sharpness. This proves the replica-height
 law, exact finite-grid spectroscopy, and its Nyquist boundary.
 
-
-K     Coupling walls and conversion
+                                                        14
+I     Coupling walls and conversion
 For countable profiles E, W , define the aﬀine detuning
 
                                         DE+gW (k) = DE (k) + gDW (k).
 
-If DW (k) = 0, the character is either protected for every g or never crosses. If DW (k) 6= 0, it crosses at the
+If DW (k) = 0, the character is either protected for every g or never crosses. If DW (k) ̸= 0, it crosses at the
 single strength −DE (k)/DW (k). The character group is countable.
-Theorem 25 (Protected-relation intersection law). There is a countable C ⊂ R such that for every g ∈
+Theorem 26 (Protected-relation intersection law). There is a countable C ⊂ R such that for every g ∈
                                                                                                    / C,
 
                                               LE+gW = LE ∩ LW .
@@ -1175,7 +931,7 @@ temporal-rank stratum is dense and the rank map is nowhere continuous. Applying 
 malized observables gives all-rank finite-horizon indistinguishability. Intersecting over an allowed perturbation
 space proves that robust relations are precisely LE intersected with its annihilator.
 
-K.1    Complete finite conversion
+I.1   Complete finite conversion
 Let spectra have m + 1 and n + 1 levels. Their uncoupled product has at least mn rectangle relations. A
 separable diagonal interaction can be chosen, inside every positive operator-norm budget, so that the coupled
 (m + 1)(n + 1)-level spectrum is maximally projective. Consequently
@@ -1186,18 +942,14 @@ separable diagonal interaction can be chosen, inside every positive operator-nor
 Every positive full-support replica collision moment then equals its unavoidable permutation floor. The same
 interaction obeys the all-probe bound
 
-                             kUg (t)OUg (t)∗ − U0 (t)OU0 (t)∗ k ≤ 2|t| kHg − H0 k kOk.
+                             ∥Ug (t)OUg (t)∗ − U0 (t)OU0 (t)∗ ∥ ≤ 2|t| ∥Hg − H0 ∥ ∥O∥.
 
 The maximal set in the finite separable parameter space is dense, residual and full measure; its complement
 remains null in every positive-volume parameter region. Combining rational independence with torus equidistri-
 bution gives the deterministic strict/full Haar-frequency sandwich and the exact uniform-target half-dimensional
 volume exponent.
 
-
-
-
-                                                        18
-K.2    Countable relation hull and weak recurrence ray
+I.2   Countable relation hull and weak recurrence ray
 For a countable pure-point carrier, finite characters still form a countable group. Its relation lattice equals the
 annihilator of the compact orbit hull, and deleting any finite initial time interval leaves the same hull. Every
 positive summable probe is continuous on that hull, so its recurrent range is a compact interval; endpoints occur
@@ -1207,14 +959,18 @@ ble direction can be chosen maximally projective on every finite restriction. Ou
 the aﬀine sum preserves the original maximal domain and self-adjointness, has every finite temporal rank, has
 the full countable projective torus as every future-tail hull, and has no nonzero exact global return. Neverthe-
 less every positive summable probe retains complete syndetic recurrence. The finite-window all-probe difference
-remains bounded by 2|t||g|kW kkOk.
+remains bounded by 2|t||g|∥W ∥∥O∥.
 
 
-L Generic recurrence on a static qudit path
+J     Generic recurrence on a static qudit path
 Let Pn be the open path and let q ≥ 2. Its physical Hilbert space has dimension D = q n . Let L0Pn ,q be the
 trace-zero real subspace spanned by arbitrary Hermitian onsite terms and finite sums of Hermitian edge tensors.
 
-L.1    One local witness
+
+
+
+                                                        15
+J.1    One local witness
 The proof constructs one simple maximally projective Hamiltonian inductively. For two sites the edge algebra
 is the full Hermitian algebra. A generic eigenbasis makes the endpoint-observable transition graph complete.
 Suppose a chain has maximal projective energy and a connected non-bipartite endpoint transition graph. Attach
@@ -1224,30 +980,29 @@ and same-layer transitions create a triangle. Simplicity, connectivity and non-b
 set.                                      P
     For an analytic eigenbranch relation α,r cα,r λα,r ≡ 0, vary one edge matrix element and the shift difference
 z = ar − as . Second-order perturbation gives
-                                         X (cα,r − cβ,s )|hψα , Aψβ i|2
-                                                                                   = 0.
-                                                      z + Eα − Eβ
-                                         α,β
+                                        X (cα,r − cβ,s )|⟨ψα , Aψβ ⟩|2
+                                                                         = 0.
+                                                    z + Eα − Eβ
+                                        α,β
 
 Distinct old gaps make the poles distinct. Their residues force equality of coeﬀicients along the categorical
 product of the endpoint graph with Kq . Connectedness plus an odd cycle makes this product connected, so all
 coeﬀicients are equal. Only the trace relation survives. Subtracting the scalar trace part preserves projective
 maximality and lands in L0Pn ,q .
 
-L.2    Genericity and recurrence consequences
+J.2    Genericity and recurrence consequences
 For every nonconstant balanced rational coeﬀicient vector, multiply its eigenvalue linear form over all label
 permutations. The product is a symmetric polynomial, hence a polynomial in characteristic coeﬀicients and
 therefore in local Hamiltonian parameters. The witness proves it is not the zero polynomial. Its real zero set is
 null and nowhere dense. The discriminant is handled identically. Removing the countable union over rational
 relations yields a dense full-measure Gδ .
-Theorem 26 (Exact path recurrence law). For every n, q ≥ 2, the maximal set in L0Pn ,q is dense, residual
+Theorem 27 (Exact path recurrence law). For every n, q ≥ 2, the maximal set in L0Pn ,q is dense, residual
 and full Lebesgue measure. Every member has no nonzero balanced integer relation and anchored temporal rank
 q n − 1. For 0 < ε < 2,
-                                                                                                        qn −1
-                       1                            −it(Ej −Ej0 )                          2 arcsin(ε/2)
-                   lim         0 ≤ t ≤ T : max |e                   − 1| < ε       =                                .
-                  T →∞ T                  j̸=j0                                                  π
-
+                                                                                     qn −1
+                        1                      −it(Ej −Ej0 )              2 arcsin(ε/2)
+                   lim      0 ≤ t ≤ T : max |e               − 1| < ε =                        .
+                  T →∞ T                j̸=j0                                   π
 No nonzero exact anchored projective return exists.
 Proof. The preceding algebraic avoidance proves maximality. Its balanced-relation definition gives zero kernel;
 rational rank of the anchored gaps is therefore D − 1. Kronecker–Weyl equidistribution identifies time frequency
@@ -1255,48 +1010,44 @@ with Haar volume. Each coordinate target arc has normalized length 2 arcsin(ε/2
 plies the D − 1 factors. With at least three levels, two independent anchored frequencies cannot both have a
 common nonzero exact period.
 
-
-
-
-                                                             19
-L.3    Thermodynamic density rate
+J.3    Thermodynamic density rate
 Fix q ≥ 2 and 0 < ε < 2, and write
-                                              2 arcsin(ε/2)
-                                       aε =                 ,             I(ε) = − log aε .
-                                                    π
+                                            2 arcsin(ε/2)
+                                     aε =                 ,    I(ε) = − log aε .
+                                                  π
 Because 0 < ε < 2, one has 0 < aε < 1 and I(ε) > 0. For any sequence of generic path Hamiltonians, the
 completed-time return density at size n is
 
-                                        dn (ε) = aqε −1 = exp[−(q n − 1)I(ε)].
-                                                       n
+                                      dn (ε) = aqε −1 = exp[−(q n − 1)I(ε)].
+                                                   n
 
 
 
 
 Consequently
-                                        − log dn (ε)
-                                                     = (1 − q −n )I(ε) −→ I(ε),
-                                            qn
+                                     − log dn (ε)
+                                                  = (1 − q −n )I(ε) −→ I(ε),
+                                         qn
 so dn → 0 exponentially in Hilbert-space dimension q n . A second logarithm gives
-                                 log[− log dn (ε)]   log(q n − 1) + log I(ε)
-                                                   =                         −→ log q,
-                                        n                       n
+                               log[− log dn (ε)]   log(q n − 1) + log I(ε)
+                                                 =                         −→ log q,
+                                      n                       n
 which is the precise double-exponential decay law in site number. This is a sequential limit: T → ∞ defines dn
 for each finite n, followed by n → ∞. It asserts neither recurrence of a global infinite-volume orbit nor validity
 of the reversed order of limits.
 
 
-M      Reverse-water target information and deadlines
+                                                          16
+K     Reverse-water target information and deadlines
               P
 Let wj > 0,       j wj = 1, and 0 < η ≤ 1. For pivot k,
-                                                                                     
-                                          1 X            wj                  X       
-                               Hk = min               log    : 0 < D j ≤ wj ,   Dj ≤ η .
-                                          2              Dj                          
+                                                                                                      
+                                          1 X              wj                         X               
+                               Hk = min               log      : 0 < D j ≤ wj ,               Dj ≤ η       .
+                                          2                Dj                                         
                                                j̸=k                                    j̸=k
-
-                                                                                                P                  −1
-If η ≥ 1 − wk , its value is zero. Otherwise a unique water level λk > 0 satisfies                  j̸=k min{wj , λk } = η, and
+                                                                                                   P                  −1
+If η ≥ 1 − wk , its value is zero. Otherwise a unique water level λk > 0 satisfies                     j̸=k min{wj , λk } = η, and
 
                                                                              1X
                                   Dj∗ = min{wj , λ−1
@@ -1307,17 +1058,17 @@ If η ≥ 1 − wk , its value is zero. Otherwise a unique water level λk > 0 s
 Convexity and the Karush–Kuhn–Tucker conditions prove global optimality; compactness after closing zero-cost
 inactive coordinates gives attainment. Minimize over k to obtain Hproj .
 
-M.1     Weighted phase variance
+K.1    Weighted phase variance
 For phases zj ∈ T,
                                                             2
-                                              X                     1X
+                                            X                       1X
                                        1−          w j zj       =         wi wj |zi − zj |2 .
                                                j
                                                                     2 i,j
 
 This exact variance identity supplies both the product-box inclusion and the observer interpretation.
 
-M.2     Target-volume sandwich
+K.2    Target-volume sandwich
 Fix a pivot and require selected phase coordinates to lie in symmetric arcs with squared chordal errors propor-
 tional to Dj /wj . The variance identity shows this product box lies inside the fidelity target. Its Haar volume is
 bounded below by
@@ -1327,29 +1078,27 @@ bounded below by
                                                π
 Conversely, resolve the target by a pivot of maximal weighted alignment and bound it by a quadratic ellip-
 soid/product envelope. Summing over r pivots gives
-                                                    nπ                o
-                                     µw (η) ≤ r exp    (r − 1) − Hproj .
-                                                     4
+                                                    nπ                 o
+                                     µw (η) ≤ r exp     (r − 1) − Hproj .
+                                                      4
 Taking minus logarithms proves the two-sided target-information law and the absolute and relative remainder
 bounds. The constructive inner box also proves strict target-volume positivity.
 
-
-                                                                    20
-M.3     Universal and selected-support clocks
-                                                          p
-                    Q resolution to an integer Qj = dπ 2wj /Dj e. The anisotropic pigeonhole principle
+K.3    Universal and selected-support clocks
+                                                             p
+                    Q resolution to an integer Qj = ⌈π 2wj /Dj ⌉. The anisotropic pigeonhole principle
 Round each coordinate
 applied to the first Qj + 1 phase packets gives two in the same box; their time difference is a positive return.
 Minimizing and comparing the rounded product with the convex objective proves
-                                 π                                                    √
-                       Hproj −     (r − 1) − log(2r) < log Tw ≤ Hproj + (r − 1) log(2π 2).
-                                 4
+                               π                                                     √
+                       Hproj − (r − 1) − log(2r) < log Tw ≤ Hproj + (r − 1) log(2π 2).
+                               4
 Applying the same argument to the shifted block of times M + 1, . . . , (M + 1)Tw gives a return after every delay
 M.
    For a selected set S and discarded tail mass τS , the inequality
                                                       X
                                               2τS +       Dj ≤ η
-                                                       j∈S
+                                                                j∈S
 
 is suﬀicient. Only S enters the rounded product deadline; the tail pays twice its weight. This is an exact
 certificate for the selected set, not a claim of joint discrete optimality.
@@ -1358,20 +1107,21 @@ ticks and the pivot-resolved target envelope proves the finite-horizon Haar hit 
 gives an explicit 1 − α avoidance quantile whenever the budget is at most α. Correlations between power-map
 targets preclude an equality claim.
     Independent onsite phases Pin√a particle-number-preservingP    local XX spin Hamiltonian give a diagonal single-
-excitation block. The state j wj |ji has return amplitude j wj zj . Thus the projective target and its Haar
+excitation block. The state j wj |j⟩ has return amplitude j wj zj . Thus the projective target and its Haar
 volume transfer exactly to a local spin ensemble. A binary construction proves that equal hard effective support
 at one operational radius can have different water entropy and hence different deadline bands.
 
 
-N     Observer coherence, operational probes and countable extension
+                                                                    17
+L Observer coherence, operational probes and countable extension
 Let Ba be a finite family of observables, let ba (i, j) denote the matrix block from energy sector j to sector i,
 and write |ba (i, j)| for its Hilbert–Schmidt norm. For weights λa ≥ 0, put
                                         X                           X
                                   Wij =    λa |ba (i, j)|2 , E(z) =   Wij |zi − zj |2 .
-                                       a                           i,j
+                                       a                                      i,j
 
 The coherence graph has edge ij exactly when Wij > 0.
-Theorem 27 (Finite observer capstone). For Hamiltonian phases zi (t) = e−itEi , total squared observer dis-
+Theorem 28 (Finite observer capstone). For Hamiltonian phases zi (t) = e−itEi , total squared observer dis-
 placement equals E(z(t)). This quantity is zero if and only if phases agree on every edge, equivalently on every
 connected component. The range rank of the graph coboundary, and hence visible projective phase capacity, is
 r − c, where c is the number of components.
@@ -1388,7 +1138,7 @@ series is summable. Truncating to a finite head, synchronizing it and bounding t
 recurrence and the zero law. In the Hamiltonian specialization, zero means every positive nonzero observer
 block is phase locked.
 
-N.1    Equal local information, opposite global recurrence
+L.1    Equal local information, opposite global recurrence
 There exist two explicit full-rank qutrit states with a common spectrum and positive spectral weights such
 that their weighted variance, nonzero Hilbert–Schmidt speed and nonzero symmetric-logarithmic-derivative
 quantum Fisher information agree. For the same tick protocol, the first returns at every tick. The second uses
@@ -1396,80 +1146,72 @@ an irrational frequency, has an inverse-resolution lower bound before return and
 bound. Therefore these standard local information quantities do not determine global recurrence arithmetic.
 
 
-
-                                                        21
-O Complete finite-record ambiguity
+M      Complete finite-record ambiguity
 Fix m ∈ N, T > 0, 0 ≤ H < T , and δ > 0. Choose an odd n > m so large that
                                                     n
                                                   πH
                                            2 sin         < δ.
                                                   2T
-
 Let Ej = πj/T for j = 0, . . . , n, and define
                                
-                         −n n                                                                   √            √
-                  qj = 2            ,    rj = qj (1 + (−1)n−j ),                  wp,j = (1 −       p)qj +       p rj .
+                                 n                                                          √            √
+                  qj = 2−n          ,    rj = qj (1 + (−1)n−j ),              wp,j = (1 −       p)qj +       p rj .
                                  j
 
-O.1    Positive mass and generating functions
-                           P                                           P
+M.1     Positive mass and generating functions
+                             P                                                 P
 The binomial theorem gives j qj = 1. The alternating binomial sum gives j rj = 1, and all weights are
 nonnegative. Hence every wp is a probability measure. Its amplitude is
-                                                             n              iπt/T    n
-                                                 1 + eiπt/T            √      e      −1
-                                  Ap (t) =                         +       p               .
-                                                     2                             2
+                                                       n      iπt/T    n
+                                             1 + eiπt/T     √   e      −1
+                                 Ap (t) =                  + p               .
+                                                 2                   2
                           √
 At t = T , Ap (T ) = (−1)n p, so Pp (T ) = p. Moreover
-                                                                                       n
-                                                                      √           πt
-                                          |Ap (t) − A0 (t)| =             p sin            ,
-                                                                                  2T
-
+                                                                                    n
+                                                                  √           πt
+                                            |Ap (t) − A0 (t)| =       p sin             ,
+                                                                              2T
 and because both amplitudes have norm at most one,
-
-                                         |Pp (t) − P0 (t)| ≤ 2|Ap (t) − A0 (t)|.
-
+                                           |Pp (t) − P0 (t)| ≤ 2|Ap (t) − A0 (t)|.
 This proves uniform continuous-window agreement simultaneously for every p ∈ [0, 1].
 
-O.2    Shared Hamiltonian and uniform-field realization
+
+                                                             18
+M.2     Shared Hamiltonian and uniform-field realization
                                                     P √
-On Cn+1 , let K = diag(E0 , . . . , En ) and |ψp i = j wp,j |ji. One nonnegative self-adjoint Hamiltonian there-
+On Cn+1 , let K = diag(E0 , . . . , En ) and |ψp ⟩ = j wp,j |j⟩. One nonnegative self-adjoint Hamiltonian there-
 fore realizes all probabilities by varying normalized preparations.
     On n qubits, the permutation-invariant uniform field
 
-                                                            πX
-                                                                  n
-                                                    Hu =          |1ih1|a
-                                                            T a=1
+                                                         πX
+                                                               n
+                                                Hu =           |1⟩⟨1|a
+                                                         T a=1
 
 has symmetric Dicke eigenvectors of energies Ej . The symmetric pure state with Dicke-shell weights wp,j
 reproduces the same amplitude and moments. Thus one homogeneous noninteracting Hamiltonian gives the
 complete closed-interval ambiguity when preparation may vary.
 
-O.3    Fixed preparation, projector and spectrum
-Fix ϕ = |0i. Choose a unitary Up ϕ = ψp and put Kp = Up∗ KUp . All Kp are nonnegative, self-adjoint and
-unitarily equivalent. Preparation ϕ, return projector |ϕihϕ|, spectrum and multiplicities are fixed, while
+M.3     Fixed preparation, projector and spectrum
+Fix ϕ = |0⟩. Choose a unitary Up ϕ = ψp and put Kp = Up∗ KUp . All Kp are nonnegative, self-adjoint and
+unitarily equivalent. Preparation ϕ, return projector |ϕ⟩⟨ϕ|, spectrum and multiplicities are fixed, while
 
-                                                   hϕ, eitKp ϕi = Ap (t).
+                                                ⟨ϕ, eitKp ϕ⟩ = Ap (t).
 
    For k < n, the finite-difference identity
 
-                                                  X
-                                                  n                
-                                                                   n k
-                                                        (−1)n−j       j =0
-                                                  j=0
-                                                                   j
+                                               X
+                                               n                
+                                                                n k
+                                                     (−1)n−j       j =0
+                                               j=0
+                                                                j
 
 implies that all wp have the same energy moments. This proves the fixed protocol, arbitrary moment and
 every-future clauses.
 
-
-
-
-                                                              22
-O.4     Nearest-neighbour path and endpoint rigidity
+M.4     Nearest-neighbour path and endpoint rigidity
 For p < 1, all wp,j are positive. The Krylov vectors ψp , Kψp , . . . , K n ψp are linearly independent by the Vander-
 monde determinant. Gram–Schmidt yields a basis starting at ψp , and self-adjointness makes K tridiagonal in
 that basis. Strictly positive spectral weights make every forward Jacobi coupling nonzero.
@@ -1480,7 +1222,7 @@ a zero endpoint coordinate through the path. An unused eigenvector orthogonal to
 forces at least one zero coupling. This proves the exact connectedness dichotomy and the closed-interval nearest-
 neighbour realization.
 
-O.5     Occupation and all-sector fermionic lifts
+M.5     Occupation and all-sector fermionic lifts
 Every Hermitian tridiagonal one-particle matrix is the single-excitation block of a Hermitian particle-number-
 preserving nearest-neighbour occupation Hamiltonian, with diagonal onsite terms and adjacent hopping terms.
 For the canonical second quantization,
@@ -1488,13 +1230,13 @@ For the canonical second quantization,
                                                           X
                                                           k
                             dΓ(Kp )(uj1 ∧ · · · ∧ ujk ) =   Ejℓ (uj1 ∧ · · · ∧ ujk ).
-                                                              ℓ=1
+                                                                ℓ=1
 
 The Slater determinants form a basis. Thus every p has the same complete subset-sum spectrum in every
 fermion-number sector, including multiplicity, while the recurrence ambiguity remains in the one-excitation
 protocol.
 
-O.6     Sharp support and forecast error
+M.6     Sharp support and forecast error
 On r common distinct nodes, equality of moments of orders 0, . . . , r − 1 gives a square Vandermonde system for
 the weight difference; its determinant is nonzero. Hence distinct measures matching the first n moments require
 at least n + 1 nodes. The binomial/parity pair uses exactly n + 1, so the support threshold is sharp.
@@ -1502,7 +1244,10 @@ at least n + 1 nodes. The binomial/parity pair uses exactly n + 1, so the suppor
 max{|y|, |y − 1|} ≥ 1/2. Therefore every forecasting rule has error at least 1/2 on one compatible clock.
 
 
-P     Global data boundary
+
+
+                                                           19
+N      Global data boundary
 Finite moments are not the only incomplete local data. There is no universal classifier of persistent mean recur-
 rence from complete polynomial local data on positive-energy spectra with all moments. Likewise, no classifier
 based on the complete perturbative jet of every bounded continuous spectral observable, or of every perturbative
@@ -1514,71 +1259,64 @@ functions on that interval makes their integrals agree on every continuous funct
 equality of measures.
 
 
-Q Guide to the results
+O Guide to the results
 
     Result                                      Where established
-    Projective completion; relation hull;       Main Law II; Appendix Sections C and D
+    Projective completion; relation hull;       Main Theorem 1; Appendix Sections H and I
     τ +ρ=D−1
-    Singular wall, sinc profile, dense ranks,   Main Theorem 3; Appendix Section D
+    Singular wall, sinc profile, dense ranks,   Main Theorem 2; Appendix Section I
     bounded-horizon indistinguishability
-    Protected aﬀine relation and complete       Main Theorem 3; Appendix Sections D.1–D.2
+    Protected aﬀine relation and complete       Main Theorem 2; Appendix Sections I.1–I.2
     weak separable conversion
-    Countable relation hull and infinite        Main Law II; Appendix Section D.3
+    Countable relation hull and infinite        Main Theorem 12; Appendix Section I.2
     separable recurrence ray
-    Replica height, finite-grid readout and     Main Law II; Appendix Section C.1
+    Replica height, finite-grid readout and     Main Theorem 1; Appendix Section H.1
     Nyquist sharpness
+    Finite contraction threshold and            Main Law I; Appendix Section G.1
+    coupled post-burn-in deadline
+    Stationary point-spectrum scaling and       Main Law I; Appendix Section G.2
+    collision hierarchy
+    Countable pure-point recurrence, cyclic     Main Law I; Appendix Section G.2
+    exact return and atomless boundary
+    Generic static nearest-neighbour qudit      Main Theorem 5; Appendix Section J
+    maximality and exact return frequency
+    Exact finite-volume thermodynamic           Main Corollary 8; Appendix Section J.3
+    return-density extinction and rates
+    Weighted projective variance and            Main Law III; Appendix Sections K and K.1
+    reverse-water global optimizer
+    Product-box lower law, pivot upper law      Main Theorem 13; Appendix Section K.2
+    and two-sided target information
+    Universal deadline, post-delay return,      Main Theorem 13; Appendix Section K.3
+    selected support and Haar hit quantile
+    Exact onsite local-spin phase transfer      Main Law III; Appendix Section K.3
+    and binary hard-support separation
+    Finite observer phase energy, zero set      Main Theorem 14; Appendix Section L
+    and graph capacity
+    Sharp graph exponent, probe,                Main Theorem 14; Appendix Section L
+    calibration and device-window bounds
+    Countable observer recurrence and zero      Main Law III; Appendix Section L
+    law
+    Equal qutrit local information with         Main Law III; Appendix Section L.1
+    opposite global recurrence
+    Positive binomial/parity measures and       Main Law IV; Appendix Section M.1
+    amplitude identities
+    One Hamiltonian, uniform-field qubit        Main Theorem 20; Appendix Sections M.2–M.3
+    and fixed-protocol isospectral forms
+    Krylov path realization, perfect-return     Main Theorem 20; Appendix Section M.4
+    block and forced disconnection
+    Occupation embedding and complete           Main Theorem 20; Appendix Section M.5
+    all-sector fermionic spectra
 
 
-
-                                                         23
-   Result                                     Where established
-   Finite contraction threshold and           Main Law I; Appendix Section B.1
-   coupled post-burn-in deadline
-   Stationary point-spectrum scaling and      Main Law I; Appendix Section B.2
-   collision hierarchy
-   Countable pure-point recurrence, cyclic    Main Law I; Appendix Section B.2
-   exact return and atomless boundary
-   Generic static nearest-neighbour qudit     Main Theorem 3; Appendix Section E
-   maximality and exact return frequency
-   Exact finite-volume thermodynamic          Main Corollary 6; Appendix Section E.3
-   return-density extinction and rates
-   Weighted projective variance and           Main Law III; Appendix Sections F and F.1
-   reverse-water global optimizer
-   Product-box lower law, pivot upper law     Main Theorem 9; Appendix Section F.2
-   and two-sided target information
-   Universal deadline, post-delay return,     Main Theorem 9; Appendix Section F.3
-   selected support and Haar hit quantile
-   Exact onsite local-spin phase transfer     Main Law III; Appendix Section F.3
-   and binary hard-support separation
-   Finite observer phase energy, zero set     Main Theorem 10; Appendix Section G
-   and graph capacity
-   Sharp graph exponent, probe,               Main Theorem 10; Appendix Section G
-   calibration and device-window bounds
-   Countable observer recurrence and zero     Main Law III; Appendix Section G
-   law
-   Equal qutrit local information with        Main Law III; Appendix Section G.1
-   opposite global recurrence
-   Positive binomial/parity measures and      Main Law IV; Appendix Section H.1
-   amplitude identities
-   One Hamiltonian, uniform-field qubit       Main Theorem 18; Appendix Sections H.2–H.3
-   and fixed-protocol isospectral forms
-   Krylov path realization, perfect-return    Main Theorem 18; Appendix Section H.4
-   block and forced disconnection
-   Occupation embedding and complete          Main Theorem 18; Appendix Section H.5
-   all-sector fermionic spectra
-   Common moments, exponential hiding         Main Theorem 18; Appendix Sections H.1–H.3
+                                                        20
+   Result                                    Where established
+   Common moments, exponential hiding        Main Theorem 20; Appendix Sections M.1–M.3
    and every exact future
-   Vandermonde support threshold and          Main Law IV; Appendix Section H.6
+   Vandermonde support threshold and         Main Law IV; Appendix Section M.6
    one-half forecast lower bound
-   Complete local/perturbative                Main Law IV; Appendix Section I
+   Complete local/perturbative               Main Theorem 21; Appendix Section N
    nonidentifiability and compact moment
    determinacy
-
-
-Data, code and formal verification
-No empirical data were used. Machine-checked theorem counterparts are contained in the accompanying Lean 4
-corpus. The claim trace supplied with this manuscript identifies exact declarations, source modules and theorems
-that currently remain paper-proved rather than formalized.
 
 
 Author contributions
@@ -1588,27 +1326,20 @@ manuscript.
 
 References
  [1] P. Bocchieri and A. Loinger, Quantum recurrence theorem, Phys. Rev. 107, 337–338 (1957).
-
-
-
-                                                      24
- [2] L. Campos Venuti, The recurrence time in quantum mechanics, arXiv:1509.04352 (2015).
+ [2] L. Campos Venuti, The recurrence time in quantum mechanics, arXiv:1509.04352 (2015).
  [3] M. Kotowski and M. Oszmaniec, Tight bounds on recurrence time in closed quantum systems, arXiv
      preprint 2601.10409, version 3 (2026).
  [4] C. Gupta and A. J. Short, Recurrence time for finite quantum systems, Phys. Rev. A 114, 012208 (2026);
      arXiv:2604.14995.
  [5] A. Anand, D. Valluri, J. Davis and S. Ghose, Quantum recurrences and the arithmetic of Floquet dynamics,
      Quantum 10, 2074 (2026).
-
  [6] B. Rauer et al., Recurrences in an isolated quantum many-body system, Science 360, 307–310 (2018).
  [7] B. Karimi, X. Wu, A. N. Cleland and J. P. Pekola, Blueprint for experiments exploring the quantum
      recurrence theorem on a coupled multiqubit system, Phys. Rev. Research 8, L012062 (2026).
  [8] A. R. Brown and L. Susskind, The second law of quantum complexity, Phys. Rev. D 97, 086015 (2018);
      arXiv:1701.01107.
-
  [9] M. Oszmaniec, M. Kotowski, M. Horodecki and N. Hunter-Jones, Saturation and recurrence of quantum
      complexity in random local quantum dynamics, Phys. Rev. X 14, 041068 (2024); arXiv:2205.09734.
-
 [10] L. Cui, T. Schuster, L. Mao, H.-Y. Huang and F. Brandão, Random unitaries from Hamiltonian dynamics,
      arXiv:2510.08434 (2025).
 [11] V. Balasubramanian, M. DeCross, A. Kar and O. Parrikar, Quantum complexity of time evolution with
@@ -1618,24 +1349,34 @@ References
 [13] J. Riddell and B. Bertini, Rationally independent free fermions with local hopping, Phys. Rev. E 110,
      064101 (2024); arXiv:2404.12100.
 [14] Y. Huang, Extensive entropy from unitary evolution, arXiv:2104.02053 (2021).
-
-[15] L. Campos Venuti, M. Odavić and A. Hamma, Integrability and chaos via fractal analysis of spectral form
+[15] L. Campos Venuti, J. Odavić and A. Hamma, Integrability and chaos via fractal analysis of spectral form
      factors: Gaussian approximations and exact results, Phys. Rev. E 113, 044128 (2026); arXiv:2505.05199.
-[16] A. Nayak and P. Sen, Invertible quantum operations and perfect encryption of quantum states, Quantum
-     Inf. Comput. 7, 103–110 (2007); arXiv:quant-ph/0605041.
-[17] T. M. Cover and J. A. Thomas, Elements of Information Theory, 2nd ed. (Wiley, 2006).
-
-[18] R. M. Gray and D. L. Neuhoff, Quantization, IEEE Trans. Inf. Theory 44, 2325–2383 (1998).
-
-[19] T. Manos, M. Weilenmann and M. Navascués, Timed demolition measurements, arXiv:2507.06912 (2025).
-[20] Y. Jia and M. M. Wolf, Hay from the haystack: explicit examples of exponential quantum circuit complexity,
+[16] T. M. Cover and J. A. Thomas, Elements of Information Theory, 2nd ed. (Wiley, 2006).
+[17] R. M. Gray and D. L. Neuhoff, Quantization, IEEE Trans. Inf. Theory 44, 2325–2384 (1998).
+[18] K. Manos, M. Weilenmann and M. Navascués, Timed demolition measurements, arXiv:2507.06912 (2025).
+[19] Y. Jia and M. M. Wolf, Hay from the haystack: explicit examples of exponential quantum circuit complexity,
      Commun. Math. Phys. 402, 141–156 (2023).
 
-[21] M. Ippoliti, Provable random-matrix spectral ramp in a static, geometrically local Hamiltonian, arXiv
+                                                      21
+[20] M. Ippoliti, Provable random-matrix spectral ramp in a static, geometrically local Hamiltonian, arXiv
      preprint 2606.30635, version 1 (2026).
+[21] J. Riddell, N. Pagliaroli and A. M. Alhambra, Concentration of quantum equilibration and an estimate of
+     the recurrence time, SciPost Phys. 15, 165 (2023); arXiv:2206.07541.
+[22] J. Riddell and N. Pagliaroli, No-resonance conditions, random matrices, and quantum chaotic models, J.
+     Stat. Phys. 191, 141 (2024); arXiv:2307.05417.
+
+[23] M. Kotowski, M. Oszmaniec and M. Horodecki, Extremal jumps of circuit complexity of unitary evolutions
+     generated by random Hamiltonians, J. High Energy Phys. 01, 116 (2025); arXiv:2303.17538.
+[24] J. Haah, M. B. Hastings, R. Kothari and G. H. Low, Quantum algorithm for simulating real time evolution
+     of lattice Hamiltonians, SIAM J. Comput. 52, FOCS18-250–FOCS18-284 (2023); arXiv:1801.03922.
+[25] G. H. Low, Y. Su, Y. Tong and M. C. Tran, On the complexity of implementing Trotter steps, PRX
+     Quantum 4, 020323 (2023); arXiv:2211.09133.
+
+[26] A. Zlokapa, R. R. Allen and A. W. Harrow, Optimal lower bounds for Hamiltonian simulation,
+     arXiv:2607.19852 (2026).
 
 
 
 
-                                                      25
+                                                    22
 

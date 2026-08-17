@@ -578,9 +578,51 @@ with proxy `((b-a)/2)²` -- and the rest of the route is
 `HasSubgaussianMGF.measure_ge_le` (the Gaussian tail).  No convexity or Taylor argument had to be
 built.
 
+### `(7)` is assembled
+
+Two new modules, both umbrella-wired and axiom-clean.
+
+`formal/GaloisForLFunctions/HTGeometry/ComplexSumConcentration.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the coordinate union bound in real-valued form | `measureReal_modulus_le_add` |
+| **`(11)` for complex coordinates**: `μ{ε ≤ ‖Σ Xᵢ‖} ≤ 4 exp(-ε²/(4D))` | `measureReal_norm_sum_ge_le` |
+
+`formal/GaloisForLFunctions/HTGeometry/TorsionCapCount.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the uniform law on `k`-torsion phase vectors | `torsionMeasure`, `torsionMeasure_singleton` |
+| its measure is the cardinality ratio | `torsionMeasure_real_finset` |
+| the coordinates are independent, unimodular and centred (the `k`-th roots sum to zero) | inside `card_le_of_forall_norm_sum_ge` |
+| **the vector count**: at most `4 e^{-ε²/(4D)} k^D` phase vectors have an atypically large sum | `card_le_of_forall_norm_sum_ge` |
+| counting through the `k`-to-one projective quotient | `card_filter_mem_eq_mul` |
+| the union bound over the `N` targets | `card_le_of_subset_biUnion` |
+| **`(7)`**: `k\|E\| ≤ N · 4 e^{-γ_δ D} k^D`, i.e. `\|E\| ≤ 4N e^{-γ_δ D} k^{D-1}` | `card_classes_le_of_cover` |
+
+The concentration route is the card's own: modulus to coordinates by `abs_re_or_abs_im_ge`, each
+coordinate by the two-sided Hoeffding bound, then the union bound; the counting route is the
+`k`-to-one quotient `(3)` followed by the target union.  What the statement takes as input is the
+geometric step `(8)`--`(9)`: that a captured class has coordinate sum of modulus at least `c_δ D`.
+
+### The geometric input `(8)`--`(9)` is closed too
+
+`formal/GaloisForLFunctions/HTGeometry/PhaseTargetProximity.lean` (new, umbrella-wired,
+axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| **`(8)`**: two unit vectors with fidelity `>= 1-δ²` against one target have overlap `>= 1-2δ²` | `norm_inner_ge_of_common_target` |
+| **`(1)`**: the uniform phase ray of a unimodular coordinate vector, and its unit norm | `phaseRay`, `norm_phaseRay` |
+| the overlap of two phase rays is the normalized relative-phase sum | `inner_phaseRay` |
+| **`(9)`**: hence a captured pair has relative-phase sum of modulus at least `(1-2δ²)D` | `norm_sum_relative_phase_ge` |
+
+The Lean route to `(8)` avoids the trace-distance triangle inequality: splitting both states along
+the target and using Pythagoras and Cauchy--Schwarz gives `1-2δ²` directly, which is at least the
+card's `c_δ = sqrt(1-4δ²)`.  Composed with `card_classes_le_of_cover` this is the complete chain
+`(8) → (9) → (10) → (11) → (7)`.
+
 ### What remains
 
-`(7)`'s assembly from `(10)` and `(11)`: the two coordinate events of `measure_modulus_le_add` each
-receive `measure_abs_sum_ge_le`, giving the `4e^{-γ_δ D}` fraction, which is then multiplied by the
-representative count `k^{D-1}` and the `N` targets.  That assembly is bookkeeping over the counting
-model, which the card sets up in section 1.  Then Theorem A's hard cyclic orbit and Theorem B.
+Theorem A's hard cyclic orbit and Theorem B.

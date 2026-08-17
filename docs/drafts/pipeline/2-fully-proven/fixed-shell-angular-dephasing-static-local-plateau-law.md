@@ -672,11 +672,27 @@ endpoint completeness at stage n
 ```
 
 with the base case `n = 2` (four levels) and the `D >= 3` quadratic-rate base already formal.
-What is left is the *physical realisation*: identifying `layerSplitEnergy E z` with a one-site
-field on the attached qubit and `layerCrossPerturbation M` with a physical edge term of the path
-family, i.e. the tensor-product bookkeeping that places the abstract split system inside
-`tracelessLocalHamiltonianSubmodule`.  No further analysis is needed -- every analytic and
-algebraic step of Lemma A1 and Lemma A2 is proved.
+
+**The physical realisation is now formal too.**
+`formal/GaloisForLFunctions/HTGeometry/LayerSplitPhysicalRealization.lean` (new, umbrella-wired,
+axiom-clean) is exactly the tensor-product bookkeeping that was missing.
+
+| Card item | Declaration |
+|---|---|
+| the local field of the attached qubit, `±z/2` | `layerFieldShift` |
+| its exchange operator | `layerExchange`, `layerExchange_apply` |
+| **`layerCrossPerturbation M` is the edge term `M ⊗ X`** | `layerCrossPerturbation_eq_coupling` |
+| **`layerSplitEnergy E z` is `H_old ⊗ 1 + 1 ⊗ diag(field)`** | `diagonal_layerSplitEnergy_eq` |
+| **the split system is the leaf Hamiltonian**: old Hamiltonian, new one-site field, one parent--leaf edge | `layerSplit_eq_physicalLeafHamiltonian` |
+| it is Hermitian whenever the old spectrum, the field and the attachment are | `isHermitian_layerSplit` |
+| its trace is twice the old trace | `trace_layerSplit` |
+| **it is a local Hamiltonian of the leaf-extended architecture** | `isLocalHamiltonian_layerSplit` |
+| it lies in the architecture's Hermitian local-Hamiltonian space | `layerSplit_mem_hermitianLocalHamiltonianSubmodule` |
+| **and in its trace-zero part when the old spectrum is traceless** | `layerSplit_mem_traceless` |
+
+So the abstract split system of Lemma A1 is a physical onsite-plus-edge Hamiltonian of the
+architecture obtained by attaching one qubit at the parent site: no further analysis is needed --
+every analytic and algebraic step of Lemma A1 and Lemma A2 is proved.
 
 After that, Theorem A follows by the already-formal chain: `quadraticRateDefect_smul` for `(13)`,
 `realMvPolynomial_eq_zero_of_eqOn_zero_isOpen` and `exists_eqOn_zero_of_finsetProd_eqOn_zero` for

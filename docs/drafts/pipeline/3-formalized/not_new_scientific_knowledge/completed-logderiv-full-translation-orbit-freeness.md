@@ -202,11 +202,10 @@ routine-parent test.
 
 ## Formalization status
 
-The exact source-stripping identity is fully formalized in
-`formal/GaloisForLFunctions/RHTower/XiShiftPrimeExposure.lean`.  The full theorem here is not at
-stage 3: its proof requires an analytic Ostrowski/Reich theorem, exponential-polynomial zero
-counting, and prime-density input not formalized in the local tree.  Moving only the algebraic
-shell would violate the pipeline's full-claim rule.
+Fully formalized.  The three inputs that were missing from the local tree — an analytic
+class-`D` hypertranscendence criterion applicable after filtering, exponential-polynomial zero
+counting, and the prime-density comparison — are now Lean theorems; see the Lean formalization
+section below.
 
 ## Log
 
@@ -218,3 +217,68 @@ shell would violate the pipeline's full-claim rule.
 - 2026-07-11 -- Exact parent audit found Nagoshi's real-shift difference--differential theorem and
   Chiang--Feng's arbitrary-complex zeta difference theorem.  The remaining extension is routine;
   novelty fails and the complete paper theorem is filed as a stage-2 bridge.
+
+## Lean formalization — 2026-08-17
+
+`formal/GaloisForLFunctions/RHTower/XiTranslationOrbitFreeness.lean`, resting on
+`formal/GaloisForLFunctions/RHTower/PrimeSourceCancellationBudget.lean` and the three modules it
+introduced.  Every theorem below is unconditional
+(`#print axioms` = `[propext, Classical.choice, Quot.sound]`).
+
+| Paper step | Lean name |
+|---|---|
+| the filter `L = ∑ⱼ Pⱼ(D) T_{hⱼ}` acting on the carrier | `RHTower.upperEndOrbitCombination` |
+| `L` is additive and commutes with every translation | `upperEndOrbitCombination_add`, `upperEndOrbitCombination_sub`, `upperEndTranslationMeroEquiv_orbitCombination` |
+| `L` preserves differential algebraicity | `differentialAlgebraicOver_upperEndOrbitCombination` |
+| `L` acts on a Dirichlet carrier by coefficient scaling | `upperEndOrbitCombination_finiteAbscissaLSeries`, `orbitSource_eq_filteredSource` |
+| the filtered coefficient at `n` is `b_n E_L(log n)` | `PrimeCancellation.filterAction`, `PrimeCancellation.filterSymbol` |
+| prime-log sampling lemma (`O(X)` zeros on `[0,X]`) | `HTGeometry.CExpPoly.exists_zeroCount_linear`, `PrimeCancellation.exists_cancelledPrimes_count_le_log` |
+| distinct exponents make `E_L` nonzero | `HTGeometry.CExpPoly.exists_cexpFn_ne_zero` |
+| prime samples outgrow the zero count (Chebyshev) | `RHTower.exists_chebyshev_primeLog_count_gt_linear`, used through `PrimeCancellation.eq_zero_of_exponentialType_of_cofinite_primeLog_zeros` |
+| infinitely many prime samples survive | `PrimeCancellation.infinite_survivingPrimes` |
+| class-`D` step: the filtered source is HT | `PrimeCancellation.filteredSource_differentialIndependent`, `RHTower.xiFilteredUpperEndCarrier_hypertranscendentalOver` |
+| the source-stripping identity `(T−1)u = r + F` | `RHTower.xiLogDerivRotatedUpperEnd_translation_defect` (pre-existing) |
+| **Theorem** (all blocks nonzero) | `RHTower.xiLogDerivRotatedUpperEndCarrier_orbitCombination_hypertranscendentalOver` |
+| **Theorem** (blocks not all zero) | `RHTower.xiLogDerivRotatedUpperEndCarrier_orbitCombination_hypertranscendentalOver'` |
+| corollary 1, `xi'/xi` is HT | `RHTower.xiLogDerivRotatedUpperEndCarrier_hypertranscendentalOver` (pre-existing) |
+| corollary 2, trivial DA translation stabilizer | `RHTower.xiLogDerivRotatedUpperEndCarrier_translation_difference_hypertranscendentalOver` |
+| corollary 3, no finite differential-difference equation with DA forcing | `RHTower.xiLogDerivRotatedUpperEndCarrier_orbitCombination_not_differentialAlgebraic` |
+| corollary 4, freeness of the orbit modulo DA | the same theorem: no nonzero filter lands in the DA field |
+| corollary 5, `xi` is HT | `RHTower.xiRotatedUpperEndCarrier_hypertranscendentalOver` (pre-existing) |
+
+Four notes on the formal route.
+
+1. **Coordinates.**  The corpus realizes the carrier in the upper-end meromorphic field after the
+   rotation `s = -I z`.  There the Dirichlet shift `s ↦ s + a` is translation by `I·a`
+   (`finiteAbscissaLSeriesToUpperEndGerm_dirichletShift`) and `d/ds = I·δ`.  A polynomial in `d/ds`
+   is therefore exactly a polynomial in `δ` after the invertible coefficient rescaling
+   `c_k ↦ I^k c_k`, so quantifying over all nonzero polynomial blocks in `δ` is quantifying over
+   all nonzero polynomial blocks in `d/ds`.  The rescaling is carried explicitly by
+   `RHTower.dirichletTwist` when the filter is pushed onto the arithmetic source.
+2. **The class-`D` step is proved, not cited.**  The card cites Ostrowski/Reich.  The formal proof
+   instead runs the corpus's prime-valuation leading-echelon law, which had to be weakened from
+   "nonzero private coefficient at every prime" to "at infinitely many primes"
+   (`HTGeometry.primeValuationLeadingEchelonInfinite`), precisely because a filter can annihilate
+   prime coefficients.  That weakening is what makes the sampling lemma usable.
+3. **The sampling hypothesis is discharged.**  The card assumes, as a hypothesis of its general
+   law, that every nonzero exponential polynomial is nonzero at infinitely many prime logarithms.
+   In Lean this is a theorem (`PrimeCancellation.infinite_survivingPrimes`), obtained from finite
+   exponential type, the Jensen zero count, and the corpus Chebyshev comparison; the polynomial
+   trick of `eq_zero_of_exponentialType_of_cofinite_primeLog_zeros` removes the finitely many
+   exceptional primes.
+4. **Scope of the general law.**  The abstract statement quantifies over an arbitrary
+   translation-stable differential field `K` and an arbitrary meromorphic `u` with a stripping
+   operator.  Its arithmetic core is formalized in that generality
+   (`PrimeCancellation.filteredSource_differentialIndependent`: any positive-prime-power-supported
+   source with cofinitely many nonzero prime coefficients stays differentially independent after
+   any nonzero finite filter).  The transfer half is formalized at the concrete differential field
+   the corpus owns — the upper-end meromorphic field with its rational coordinate base — where the
+   translation stability, the commutation of the filter with the stripper, and the rationality of
+   the correction term are all theorems rather than hypotheses.
+
+## Log
+
+- 2026-08-17 Formalized in Lean 4 and promoted to stage 3.  The three previously missing analytic
+  inputs are now theorems in the tree; the full arbitrary-complex-shift, arbitrary-order orbit
+  freeness of `xi'/xi` modulo the differentially algebraic field is unconditional in Lean, together
+  with the trivial translation stabilizer and the no-differential-difference-equation corollaries.

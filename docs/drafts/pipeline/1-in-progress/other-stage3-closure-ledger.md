@@ -3235,3 +3235,128 @@ So the three classical structures — invariant differential (order 1), affine c
 projective structure (order 3) — are now all excluded for both quadratics, unconditionally and in
 Lean.  Together with the rigidity engine of pass 49 these are exactly the terminal objects the
 weight-zero descent produces.
+
+## Pass 51 — the level-uniform descent: one operator, one step, two pinned coefficients
+
+The polynomial-slicing route of passes 45–50 (transcendence, `IntermediateField.adjoin`,
+`twistComp` cocycles) is replaced by a single differential operator.
+
+**The descent operator.**  `topDescent K v := y₁^K·∂_K v`.  The top-coordinate chain rule
+`∂_K Φ = R'·Φ ∂_K` (valid for jet order at most `K`) turns any relation
+
+`R'^κ·Φ(v) = R'·v − D`   (`v`, `D` of jet order ≤ K)
+
+into the same relation one step down:
+
+`R'^{κ+1−K}·Φ(topDescent_K v) = R'·topDescent_K v − topDescent_K D`,
+
+and iterating gives `R'^{κ+k(1−K)}·Φ(topDescent_K^{[k]} v) = R'·topDescent_K^{[k]} v
+− topDescent_K^{[k]} D` (`jetSubstitution_topDescent`, `jetSubstitution_topDescent_iterate`).
+`topDescent_K` preserves both jet order ≤ K and torus invariance
+(`topDescent_order`, `isWeightZero_topDescent`).  Crucially, `topDescent_K^{[k]} v = 0` is exactly
+`∂_K^k v = 0`, so polynomiality in the top coordinate is *produced* by the tower instead of being
+imported from a slicing dichotomy.
+
+**The shift recursion.**  Differentiating the affine presentation once gives
+
+`σ_{M+1} = δ(σ_M) + δ(R'(y₀))·y_M`   (`substitutionShift_succ`),
+
+whose weight-zero form is the covariant recursion
+
+`s_{k+1} = ∇s_k + k·z₂·s_k + R''(y₀)·z_k`   (`substitutionShiftRatio_succ`),
+
+with `∇ = y₁^{-1}δ` and `∇z_j = z_{j+1} − j·z_j·z₂` (`jetNabla_jetRatio`).  Its first consequence is
+level-uniform: `∂_M σ_{M+1} = (M+1)·δ(R'(y₀))` for every `M ≥ 1`
+(`pd_subtop_substitutionShift`), hence
+
+`topDescent_M s_{M+1} = (M+1)·R''(y₀)`,   `topDescent_M^{[2]} s_{M+1} = 0`   (`M ≥ 2`).
+
+**Consequence 1 — the top coefficient, at every level.**  For `N ≥ 3`, a torus-invariant
+normalizing shift `w` at level `N+1` (jet order ≤ N, `R'^{N+1}Φ(w) = R'w − s_{N+1}`) satisfies
+
+`topDescent_N^{[2]} w = 0`   and   `topDescent_N w = −(N+1)·z₂`   (`topDescent_of_zshift`).
+
+Proof: at `k = 2` the tower is homogeneous with exponent `2 − N`, and eigen-rigidity forces `N = 2`;
+at `k = 1` the exponent is exactly `2` and the affine-coefficient rigidity of pass 49 pins the value.
+No level-dependent case analysis at all.
+
+**Consequence 2 — the second coefficient is the Schwarzian, at every level.**  Stripping the pinned
+term, `u := w + (N+1)·z₂·z_N` has jet order ≤ N−1 and satisfies the same relation with `s_{N+1}`
+replaced by an explicit defect (`zshift_strip`, `zshiftDefect`).  The subsubtop partial of the shift
+(`pd_second_substitutionShift_eq`) gives
+
+`topDescent_{N−1}(defect) = ½N(N+1)·(R''·z₂ + R''') − N(N+1)·(R''·z₂ + (R'')²/R')`,
+
+and that inhomogeneous term is solved by `−½N(N+1)·(z₃ − 2z₂²)`.  Eigen-rigidity at exponent two
+makes the solution unique, so for every `N ≥ 4`
+
+`topDescent_{N−1}(u) = −½N(N+1)·(z₃ − 2z₂²) = ½N(N+1)·(½z₂² − 𝔖)`   (`topDescent_strip_of_zshift`).
+
+**The Schwarzian is therefore forced into every level**: the second coefficient of a normalizing
+shift is a universal rational multiple of the Schwarzian, with the level entering only through the
+scalar `½N(N+1) = binom(N+1,2)`.
+
+**The uniform step.**  Both consequences are instances of one lemma (`strip_step`): if `v` is
+torus-invariant of jet order ≤ K, satisfies `R'^κΦ(v) = R'v − D`, and is affine in `z_K`, then
+`v − P·z_K` (`P := topDescent_K v`) has jet order ≤ K−1 and satisfies
+
+`R'^κ·Φ(v − P z_K) = R'·(v − P z_K) − (D + P·s_K − E·z_K − E·s_K/R')`,   `E := topDescent_K D`,
+
+with the *same* exponent.  Affineness itself is uniform (`topDescent_topDescent_eq_zero`): it holds
+whenever `κ ≠ 2K − 1` and `∂_K^2 D = 0`, by eigen-rigidity on the second descent.
+
+**Where the contradiction sits.**  Running `strip_step` from `K = N` downwards with `κ = N+1`, the
+coefficient `P_t` extracted at stage `t` has exponent `t + 2`, and
+
+`c_t := −y₁^{N+2}·∂_{t+2}∂_{N−t} w`
+
+is its `z_{t+2}`-coefficient, so `P_t` has jet order exactly `t+2` when `c_t ≠ 0`.  The two computed
+values are `c_0 = N+1` and `c_1 = ½N(N+1)`, i.e. `binom(N+1,t+1)` for `t = 0, 1`; the commutation of
+partials forces the symmetry `c_t = c_{N−2−t}`.  Stage `t` needs `P_t` to have jet order at most
+`K_t − 1 = N−t−1`, i.e. `t + 2 ≤ N − t − 1`.  For odd `N` the chain therefore breaks at
+`t = (N−1)/2`, where `topDescent_{K_t}` can only produce jet order ≤ `(N+1)/2` while `P_t` has jet
+order `(N+3)/2` — a contradiction.  For even `N` the resonance `κ = 2K_t − 1` occurs exactly at
+`t = (N−2)/2`, where the second descent is a fixed element, hence constant, and one quadratic strip
+step is needed before the same order crossing applies.
+
+**Remaining for the general level.**  (i) the recursion `P_t`, `D^{(t)}`, `c_t` as a Lean-level
+induction on `t`; (ii) `c_t ≠ 0` in the range `2t ≤ N−3`; (iii) the order-crossing contradiction;
+(iv) the single quadratic step for even `N`.  Everything else the chain needs — the operator, the
+tower, the shift recursion, the strip step, the affineness criterion, the two pinned coefficients —
+is now Lean-proved and level-independent.
+
+New modules: `JetTopDescentTower`, `JetUniformLevel`, `JetUniformStrip`, `JetUniformCoefficient`,
+`JetStripStep`; `JetSchwarzian` gained `jetNabla_jetRatio`.  All are axiom-clean on
+`[propext, Classical.choice, Quot.sound]` and lint-clean.
+
+## Pass 52 — the Euler derivation of the weight grading
+
+The generator of the weighted torus, `Eu(y_j) = j·y_j`, built as `MvPolynomial.mkDerivation`
+followed by the fraction-ring extension (`JetEulerDerivation.lean`).  It
+
+* kills every weight-zero coordinate: `Eu(z_j) = 0`;
+* commutes with the jet derivation up to `δ`: `⁅Eu, δ⁆ = δ`, hence commutes with `∇`;
+* annihilates the whole shift tower: `Eu(s_M) = 0` for `M ≥ 1`, by induction along the covariant
+  recursion of pass 51;
+* is a finite sum of partials on any element of bounded jet order:
+  `Eu(v) = ∑_{j ≤ K} j·y_j·∂_j v` (`jetEuler_sum`, via the free-coordinate chain rule).
+
+The last two together give the Euler relation `y₁·∂_1 v = −∑_{j ≥ 2} j·z_j·(y₁^j·∂_j v)`: the
+partial in the *first* coordinate of a weight-zero element is determined by its higher descents.
+
+This is the missing boundary datum for the subdiagonal law.  The shift recursion gives, for
+`j ≥ 3`,
+
+`Q(j,r) = ∇Q(j,r−1) + (r−1)·z₂·Q(j,r−1) + Q(j−1,r)`,   `Q(j,r) := topDescent_j(s_{j+r})`,
+
+and at `j = 2` the extra terms produce
+`Q(2,r) = ∇Q(2,r−1) + (r−1)z₂Q(2,r−1) + Q(1,r) + (r+1)s_{r+1}`, with `Q(1,r) = y₁·∂_1 s_{r+1}`
+supplied by the Euler relation.  Pascal's rule then gives the closed form
+
+`topDescent_{M+1−r}(s_{M+1}) = binom(M+1, r)·T_r`,   `T_1 = R''(y₀)`,  `T_r = ∇T_{r−1} + (r−1)z₂T_{r−1}`,
+
+checked by hand at `r = 1, 2, 3` against `topDescent_M s_{M+1} = (M+1)R''`,
+`topDescent_{M−1}s_{M+1} = binom(M+1,2)(R''z₂ + R''')` and `Q(1,r) = (r+1)(T_r − s_{r+1})`.  The
+binomial scalars are exactly the `c_t = binom(N+1,t+1)` of pass 51, and with the subdiagonal law the
+stage recursion `P_t`, `D^{(t)}` becomes explicit with all level dependence in the binomials — the
+remaining step to the order-crossing contradiction.

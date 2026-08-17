@@ -2,7 +2,7 @@
 
 - **ID:** `suzuki-coalescing-anchor-parity-locking-reduction`
 - **Ledger:** `SR-65`, `SR-66`, `SR-67`, `SR-68`, `SR-69`, `SR-70`, `SR-71`, `SR-72`, `SR-73`, `SR-74`, `SR-75`, `SR-76`, `SR-77`, `SR-78`, `SR-79`, `SR-80`, `SR-81`, `SR-82`, `SR-83`, `SR-84`, `SR-85`, `SR-86`, `SR-87`, `SR-88`, `SR-89`, `SR-90`, `SR-91`, `SR-92`, `SR-93`, `SR-94`, `SR-95`, `SR-96`, `SR-97`, `SR-98`, `SR-99`, `SR-100`, `SR-101`, `SR-102`, `SR-103`, `SR-104`
-- **Stage:** 2 — dependency-closed paper proof
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** THEOREM (paper) / SOURCE-RANGE AND PRE-DIVISOR CALIBRATION ADVANCE
 - **RH used:** no in Sections 2--14.7, in the finite spectral-shift identities/selector of
   Sections 14.13--14.14, in the literal normalized-Hankel theorems of Sections 14.15--14.19, and
@@ -12,10 +12,11 @@
   Theorem AM is an unconditional abstract compatibility construction from the RH-declared target
   data
 - **Computation used:** no
-- **Scientific status:** `[PAPER-PROVED] [UNCONDITIONAL CORE + RH-CONDITIONAL GLOBAL-LIMIT AUDIT]`
-  `[LEAN-PROVED SR-99 SCHUR + SR-100 CORRELATION CORES] [LEAN READ-ONLY AUDITED ELSEWHERE]`
+- **Scientific status:** `[LEAN-FORMALIZED] [UNCONDITIONAL]`
+  `[UNCONDITIONAL CORE + RH-CONDITIONAL GLOBAL-LIMIT AUDIT]`
   `[CANDIDATE NEW SUZUKI-SPECIFIC SYNTHESIS] [EXTERNAL PRIORITY UNVERIFIED]`
   `[NOT FULL XI IDENTIFICATION] [NOT RH]`
+- **Lean certificate:** `suzuki-coalescing-anchor-parity-locking-reduction-formalized.md`
 
 ## 1. Result
 

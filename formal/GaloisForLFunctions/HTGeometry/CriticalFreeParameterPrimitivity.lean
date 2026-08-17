@@ -154,7 +154,7 @@ theorem mem_sup_of_mem_adjoin {K L : Type*} [Field K] [Field L] [Algebra K L]
   rintro z (hz | hz)
   · exact le_sup_left (α := IntermediateField K L) hz
   · rw [Set.mem_singleton_iff] at hz
-    subst hz
+    rw [hz]
     exact le_sup_right (α := IntermediateField K L)
       (IntermediateField.mem_adjoin_simple_self K t)
 

@@ -141,4 +141,48 @@ singular category cannot supply that force.
 - [x] construction proved universal in the entire multiplier
 - [x] faithful positive invariant semisimplification classified
 - [x] remaining Xi assertion identified exactly with RH
-- [ ] no Lean formalization planned for this elementary analytic classification
+- [x] Lean formalization of the whole classification (see below)
+
+## Lean formalization — 2026-08-17
+
+`formal/GaloisForLFunctions/HTGeometry/EntireMultiplierDefectUniversality.lean`, unconditional
+(`#print axioms` = `[propext, Classical.choice, Quot.sound]` for every theorem below).
+
+| Paper step | Lean name |
+|---|---|
+| (2)–(3) the defect module sees exactly the complete divisor, with multiplicity | `mem_multiplierIdeal_iff` |
+| (4) the real-translation multiplier `exp(-i a z)` | `translationMultiplier`, `differentiable_translationMultiplier`, `translationMultiplier_ne_zero` |
+| the translation group law | `translationMultiplier_zero`, `translationMultiplier_add` |
+| (5) the action commutes with `m_F` and descends to the defect | `translation_mem_multiplierIdeal_iff` (via `analyticOrderAt_translationMultiplier_mul`) |
+| (6) the local fibre character | `defectCharacter`, `translationMultiplier_apply`, `translationMultiplier_sub_character` |
+| the character is unitary exactly at a real point | `norm_defectCharacter`, `norm_defectCharacter_eq_one_iff`, `norm_defectCharacter_eq_one_iff_of_ne_zero` |
+| (7)–(8) universality: the same structure with a nonreal divisor | `exists_realEntire_nonreal_zero`, `not_nonempty_positiveInvariantForm_conjPair` |
+| invariant pairing is supported on conjugate pairs | `characterInvariant_eq_zero_of_ne_conj` |
+| (9) the conjugate-pair block is never faithfully positive | `conjPairBlock_not_positive` |
+| **(10)** faithful positive invariant semisimplification ⟺ real divisor | `nonempty_positiveInvariantForm_iff` |
+
+Three notes on the formal route.
+
+1. **Divisor recovery is an order statement.**  `A / F·A` is presented by its defining ideal, and
+   the card's local-length computation is formalized as the exact membership criterion
+   `g ∈ F·A ↔ ∀ z, ord_z F ≤ ord_z g`.  The nontrivial direction is the corpus's analytic division
+   theorem `HTGeometry.exists_entire_quotient`; the easy direction is additivity of the analytic
+   order under multiplication.
+2. **The local character is proved, not posited.**  `translationMultiplier_sub_character` produces
+   an entire `u` with `exp(-i a z) - exp(-i a ρ) = u(z)(z - ρ)`, again through analytic division,
+   which is exactly the statement that the translation acts on the local fibre by the scalar
+   `exp(-i a ρ)` plus a nilpotent correction.
+3. **The classification needs only the diagonal.**  The card argues through the conjugate-pair
+   block; in Lean the shorter route is recorded alongside it: invariance forces
+   `H ρρ = 0` unless `conj ρ = ρ`, while faithful positivity forces `H ρρ ≠ 0` at every point, so a
+   nonreal point is already impossible.  The card's `(9)` is kept as an independent statement
+   (`conjPairBlock_not_positive`) because it is what identifies the failure mode.
+
+The remark that for `F = XiC` the right-hand side of `(10)` is the Riemann hypothesis is a
+restatement of the definition of RH, not a separate assertion, and is not formalized as such.
+
+## Log
+
+- 2026-08-17 Formalized in Lean 4 and promoted to stage 3.  The multiplier complex, its divisor
+  recovery, the real-translation action with its local characters, the universality witness and the
+  positive-invariant-form classification `(10)` are all unconditional Lean theorems.

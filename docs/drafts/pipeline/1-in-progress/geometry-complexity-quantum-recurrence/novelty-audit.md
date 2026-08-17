@@ -35,6 +35,14 @@ No absolute “first” claim is authorized.
 7. Ippoliti proves a static geometrically local spectral-form-factor ramp
    through clock embedding. Current work proves completed-time rank,
    collision and thermodynamic-density laws and asserts no finite-time ramp.
+8. Haah--Hastings--Kothari--Low prove near-linear simulation and matching
+   worst-case gate lower bounds for one-dimensional piecewise local dynamics.
+   Low--Su--Tong--Tran prove quadratic short-time lower bounds for generic
+   commuting two-local Hamiltonians. Zlokapa--Allen--Harrow prove
+   coefficient-sensitive optimal simulation lower bounds using bounded-degree
+   classical hard instances, with static unit-time and piecewise-constant
+   late-time constructions. These results are closer than random-complexity
+   work to candidate G below and substantially narrow its priority residue.
 
 ## Candidate novelty residues
 
@@ -103,6 +111,20 @@ Preliminary verdict: hard-epoch/return coexistence is candidate novelty.
 Permanent separator mechanism is literature-grounded and not independently
 claimed.
 
+### G. One nested static path from ramp to exact return
+
+Exact residue: one explicit diagonal nearest-neighbour qubit path, nested
+under increasing volume and with bounded infinite-chain energy, has an
+operator-norm two-qubit-gate lower and upper envelope linear in laboratory
+time, a factorial-four exact return and exact complexity reflection carrying
+same bounds onto return side.
+
+Preliminary verdict: survives exact-object search only as a joined
+ramp--thermodynamic-completion--return statement. Simulation lower bounds for
+local classical Hamiltonians now exist, so neither locality nor gate hardness
+alone is candidate novelty. No priority claim is authorized without
+specialist comparison to arXiv:2607.19852 and its ancestry.
+
 ## Novelty explicitly disclaimed
 
 - Compact-hull equidistribution and Kronecker--Weyl theory.
@@ -110,7 +132,8 @@ claimed.
 - Abstract all-order form-factor formulas under rational independence.
 - Elementary finite target union bound.
 - Permanent non-Haar behavior of constant-local static ensembles.
-- First-return estimates, monotone complexity growth and random-matrix ramps.
+- First-return estimates and all-pairs literal monotone complexity trajectories,
+  saturation plateaus and random-matrix ramps.
 - Infinite-volume recurrence.
 
 ## Priority controls used in paper
@@ -118,14 +141,15 @@ claimed.
 - “Principal new results” is limited to joined statements above.
 - Literature section distinguishes premises from their local-network
   realization.
-- Scope section separates bounded-degree recurrence from all-to-all
-  bounded-weight Pauli complexity.
+- Scope section separates nested bounded-degree path ramp from all-to-all
+  bounded-weight Pauli alternation and states path's decaying-coupling limits.
 - No “first,” “unprecedented,” “solves,” or “open problem” language appears.
 
 ## Required before submission
 
 1. Independent MathSciNet/zbMATH/INSPIRE/Google Scholar ancestry and citation
-   search for candidates A--F.
+   search for candidates A--G, especially exact comparison of G with
+   arXiv:2607.19852.
 2. Specialist review of interaction and arbitrary-graph proofs.
 3. Metadata check for 2026 preprints and later versions.
 4. Calibrate journal claim language after external priority result.

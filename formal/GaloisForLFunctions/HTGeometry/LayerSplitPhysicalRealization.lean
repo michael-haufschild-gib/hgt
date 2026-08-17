@@ -43,10 +43,11 @@ theorem layerExchange_apply (u v : Bool) :
 theorem layerCrossPerturbation_eq_coupling (M : Matrix A A ℂ) :
     layerCrossPerturbation M = layerMatrixCoupling M layerExchange := by
   ext x y
-  rw [layerMatrixCoupling, layerExchange_apply, layerCrossPerturbation]
+  show layerCrossPerturbation M x y = M x.1 y.1 * layerExchange x.2 y.2
+  rw [layerExchange_apply]
   by_cases h : x.2 = y.2
-  · simp [Matrix.of_apply, h]
-  · simp [Matrix.of_apply, h]
+  · rw [layerCrossPerturbation_apply_same h, if_pos h, mul_zero]
+  · rw [layerCrossPerturbation_apply_cross h, if_neg h, mul_one]
 
 /-- **The split spectrum is the old Hamiltonian plus the new one-site field.** -/
 theorem diagonal_layerSplitEnergy_eq (E : A → ℂ) (z : ℂ) :
@@ -54,8 +55,11 @@ theorem diagonal_layerSplitEnergy_eq (E : A → ℂ) (z : ℂ) :
       = layerMatrixCoupling (Matrix.diagonal E) (1 : Matrix Bool Bool ℂ)
         + layerMatrixCoupling (1 : Matrix A A ℂ) (Matrix.diagonal (layerFieldShift z)) := by
   ext x y
-  rw [Matrix.add_apply, layerMatrixCoupling, layerMatrixCoupling, Matrix.diagonal_apply,
-    Matrix.diagonal_apply, Matrix.diagonal_apply, Matrix.one_apply, Matrix.one_apply]
+  show Matrix.diagonal (layerSplitEnergy E z) x y
+      = (Matrix.diagonal E) x.1 y.1 * (1 : Matrix Bool Bool ℂ) x.2 y.2
+        + (1 : Matrix A A ℂ) x.1 y.1 * (Matrix.diagonal (layerFieldShift z)) x.2 y.2
+  rw [Matrix.diagonal_apply, Matrix.diagonal_apply, Matrix.diagonal_apply, Matrix.one_apply,
+    Matrix.one_apply]
   by_cases h1 : x.1 = y.1
   · by_cases h2 : x.2 = y.2
     · have hxy : x = y := Prod.ext h1 h2
@@ -77,30 +81,28 @@ theorem layerSplit_eq_physicalLeafHamiltonian (E : A → ℂ) (z : ℂ) (M : Mat
 
 /-- The split system is Hermitian whenever the old spectrum, the field and the attachment are. -/
 theorem isHermitian_layerSplit {E : A → ℂ} {z : ℂ} {M : Matrix A A ℂ}
-    (hE : ∀ a, (starRingEnd ℂ) (E a) = E a) (hz : (starRingEnd ℂ) z = z)
-    (hM : M.IsHermitian) :
+    (hE : ∀ a, star (E a) = E a) (hz : star z = z) (hM : M.IsHermitian) :
     (Matrix.diagonal (layerSplitEnergy E z) + layerCrossPerturbation M).IsHermitian := by
   rw [Matrix.IsHermitian]
   ext x y
   rw [Matrix.conjTranspose_apply, Matrix.add_apply, Matrix.add_apply, star_add,
     Matrix.diagonal_apply, Matrix.diagonal_apply]
-  have hcross : (starRingEnd ℂ) (layerCrossPerturbation M y x) = layerCrossPerturbation M x y := by
-    rw [layerCrossPerturbation, layerCrossPerturbation]
+  have hcross : star (layerCrossPerturbation M y x) = layerCrossPerturbation M x y := by
     by_cases h : x.2 = y.2
-    · simp [Matrix.of_apply, h, h.symm]
+    · rw [layerCrossPerturbation_apply_same h, layerCrossPerturbation_apply_same h.symm, star_zero]
     · have h' : ¬ y.2 = x.2 := fun hh => h hh.symm
-      simp only [Matrix.of_apply, if_neg h, if_neg h']
-      have := congrFun (congrFun hM x.1) y.1
-      rw [Matrix.conjTranspose_apply] at this
-      exact this
+      rw [layerCrossPerturbation_apply_cross h, layerCrossPerturbation_apply_cross h']
+      have hMx := congrFun (congrFun hM x.1) y.1
+      rw [Matrix.conjTranspose_apply] at hMx
+      exact hMx
   rw [hcross]
   congr 1
   by_cases hxy : y = x
-  · rw [if_pos hxy, if_pos hxy.symm, layerSplitEnergy, map_add, hE]
+  · rw [if_pos hxy, if_pos hxy.symm, layerSplitEnergy, layerSplitEnergy, star_add, hE, hxy]
     congr 1
-    cases y.2 <;> simp [hz, map_div₀]
+    cases x.2 <;> simp [hz]
   · have hxy' : ¬ x = y := fun h => hxy h.symm
-    rw [if_neg hxy, if_neg hxy', map_zero]
+    rw [if_neg hxy, if_neg hxy', star_zero]
 
 /-- The trace of the split system is twice the old trace: the field cancels between the layers and
 the edge term is off-diagonal. -/
@@ -122,7 +124,7 @@ theorem trace_layerSplit (E : A → ℂ) (z : ℂ) (M : Matrix A A ℂ) :
   rw [Finset.sum_congr rfl fun a _ => hinner a, ← Finset.mul_sum]
 
 /-- **The split system is a local Hamiltonian of the leaf-extended architecture.** -/
-theorem isLocalHamiltonian_layerSplit {Physical Observer : Type u}
+theorem isLocalHamiltonian_layerSplit {Physical Observer : Type}
     [Fintype Physical] [DecidableEq Physical] [Fintype Observer] [DecidableEq Observer]
     (old : RootedTensorTree Physical Observer) (parent : Observer)
     (E : Physical → ℂ) (z : ℂ) (M : Matrix Physical Physical ℂ)
@@ -134,13 +136,13 @@ theorem isLocalHamiltonian_layerSplit {Physical Observer : Type u}
     layerSplit_eq_physicalLeafHamiltonian E z M⟩
 
 /-- **The split system lies in the architecture's Hermitian local Hamiltonian space.** -/
-theorem layerSplit_mem_hermitianLocalHamiltonianSubmodule {Physical Observer : Type u}
+theorem layerSplit_mem_hermitianLocalHamiltonianSubmodule {Physical Observer : Type}
     [Fintype Physical] [DecidableEq Physical] [Fintype Observer] [DecidableEq Observer]
     (old : RootedTensorTree Physical Observer) (parent : Observer)
     {E : Physical → ℂ} {z : ℂ} {M : Matrix Physical Physical ℂ}
     (hlocal : old.IsLocalHamiltonian (Matrix.diagonal E))
     (hone : old.IsOneSite parent M)
-    (hE : ∀ a, (starRingEnd ℂ) (E a) = E a) (hz : (starRingEnd ℂ) z = z)
+    (hE : ∀ a, star (E a) = E a) (hz : star z = z)
     (hM : M.IsHermitian) :
     (Matrix.diagonal (layerSplitEnergy E z) + layerCrossPerturbation M)
       ∈ (RootedTensorTree.leaf old Bool parent).hermitianLocalHamiltonianSubmodule :=
@@ -150,20 +152,21 @@ theorem layerSplit_mem_hermitianLocalHamiltonianSubmodule {Physical Observer : T
 
 /-- **The traceless case.**  A traceless old spectrum makes the whole split system traceless, so it
 lies in the trace-zero part of the local Hamiltonian space. -/
-theorem layerSplit_mem_traceless {Physical Observer : Type u}
+theorem layerSplit_mem_traceless {Physical Observer : Type}
     [Fintype Physical] [DecidableEq Physical] [Fintype Observer] [DecidableEq Observer]
     (old : RootedTensorTree Physical Observer) (parent : Observer)
     {E : Physical → ℂ} {z : ℂ} {M : Matrix Physical Physical ℂ}
     (hlocal : old.IsLocalHamiltonian (Matrix.diagonal E))
     (hone : old.IsOneSite parent M)
-    (hE : ∀ a, (starRingEnd ℂ) (E a) = E a) (hz : (starRingEnd ℂ) z = z)
+    (hE : ∀ a, star (E a) = E a) (hz : star z = z)
     (hM : M.IsHermitian) (htrace : ∑ a, E a = 0) :
     (Matrix.diagonal (layerSplitEnergy E z) + layerCrossPerturbation M)
       ∈ (RootedTensorTree.leaf old Bool parent).hermitianLocalHamiltonianSubmodule ⊓
         LinearMap.ker ((Matrix.traceLinearMap (Physical × Bool) ℂ ℂ).restrictScalars ℝ) := by
   refine ⟨layerSplit_mem_hermitianLocalHamiltonianSubmodule old parent hlocal hone hE hz hM, ?_⟩
-  rw [LinearMap.mem_ker, LinearMap.restrictScalars_apply, Matrix.traceLinearMap_apply,
-    trace_layerSplit, htrace, mul_zero]
+  show (Matrix.traceLinearMap (Physical × Bool) ℂ ℂ)
+      (Matrix.diagonal (layerSplitEnergy E z) + layerCrossPerturbation M) = 0
+  rw [Matrix.traceLinearMap_apply, trace_layerSplit, htrace, mul_zero]
 
 end Realization
 

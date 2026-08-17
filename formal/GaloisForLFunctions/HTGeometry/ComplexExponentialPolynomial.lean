@@ -364,3 +364,37 @@ theorem exists_zeroCount_linear {m : ℕ} (c : Fin (m + 1) → ℂ) (P : Fin (m 
   exact le_trans hcast (hbound r hr)
 
 end GaloisForLFunctions.HTGeometry.CExpPoly
+
+namespace GaloisForLFunctions.HTGeometry.CExpPoly
+
+open Finset Polynomial
+
+/-- Rescaling of the polynomial variable. -/
+noncomputable def scaleComp (c : ℂ) (P : Polynomial ℂ) : Polynomial ℂ :=
+  P.comp (Polynomial.C c * Polynomial.X)
+
+@[simp]
+theorem eval_scaleComp (c : ℂ) (P : Polynomial ℂ) (z : ℂ) :
+    (scaleComp c P).eval z = P.eval (c * z) := by
+  simp [scaleComp, Polynomial.eval_comp]
+
+theorem scaleComp_scaleComp {c d : ℂ} (h : c * d = 1) (P : Polynomial ℂ) :
+    scaleComp d (scaleComp c P) = P := by
+  unfold scaleComp
+  rw [Polynomial.comp_assoc]
+  have hinner : (Polynomial.C c * Polynomial.X).comp (Polynomial.C d * Polynomial.X)
+      = Polynomial.X := by
+    rw [Polynomial.mul_comp, Polynomial.C_comp, Polynomial.X_comp, ← mul_assoc,
+      ← Polynomial.C_mul, h]
+    simp
+  rw [hinner, Polynomial.comp_X]
+
+theorem scaleComp_ne_zero {c : ℂ} (hc : c ≠ 0) {P : Polynomial ℂ} (hP : P ≠ 0) :
+    scaleComp c P ≠ 0 := by
+  intro hzero
+  apply hP
+  have hinv : c * c⁻¹ = 1 := mul_inv_cancel₀ hc
+  rw [← scaleComp_scaleComp hinv P, hzero]
+  simp [scaleComp]
+
+end GaloisForLFunctions.HTGeometry.CExpPoly

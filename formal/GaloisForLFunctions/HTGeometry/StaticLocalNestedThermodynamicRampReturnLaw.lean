@@ -1009,4 +1009,281 @@ theorem nestedStaticLocal_thermodynamic_ramp_return_reflection {L : ℕ} {t ε :
   · rw [href]
     exact hb.2
 
+/-! ## Bounded infinite-chain completion -/
+
+theorem sum_range_shift_succ_eq_Ioc (K N : ℕ) (f : ℕ → ℝ) :
+    ∑ n ∈ Finset.range N, f (n + K + 1) =
+      ∑ n ∈ Finset.Ioc K (K + N), f n := by
+  refine Finset.sum_bij (fun n _ => n + K + 1) ?_ ?_ ?_ ?_
+  · intro n hn
+    have hnN : n < N := Finset.mem_range.mp hn
+    simp only [Finset.mem_Ioc]
+    omega
+  · intro i hi j hj hij
+    omega
+  · intro n hn
+    have hnK : K < n := (Finset.mem_Ioc.mp hn).1
+    have hnTop : n ≤ K + N := (Finset.mem_Ioc.mp hn).2
+    refine ⟨n - K - 1, ?_, ?_⟩
+    · simp only [Finset.mem_range]
+      omega
+    · omega
+  · intro n hn
+    rfl
+
+theorem summable_shifted_inv_sq (K : ℕ) :
+    Summable (fun n : ℕ => (1 : ℝ) / ((n + K + 1 : ℕ) : ℝ) ^ 2) := by
+  have hbase : Summable (fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ 2) :=
+    Real.summable_one_div_nat_pow.mpr (by norm_num)
+  have hshift := (summable_nat_add_iff (K + 1)).2 hbase
+  simpa [Nat.add_assoc] using hshift
+
+theorem summable_shifted_inv_fourth (K : ℕ) :
+    Summable (fun n : ℕ => (1 : ℝ) / ((n + K + 1 : ℕ) : ℝ) ^ 4) := by
+  have hbase : Summable (fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ 4) :=
+    Real.summable_one_div_nat_pow.mpr (by norm_num)
+  have hshift := (summable_nat_add_iff (K + 1)).2 hbase
+  simpa [Nat.add_assoc] using hshift
+
+theorem tsum_shifted_inv_sq_le (K : ℕ) (hK : 1 ≤ K) :
+    ∑' n : ℕ, (1 : ℝ) / ((n + K + 1 : ℕ) : ℝ) ^ 2 ≤ 1 / (K : ℝ) := by
+  apply Real.tsum_le_of_sum_range_le
+  · intro n
+    positivity
+  · intro N
+    change (∑ i ∈ Finset.range N,
+      (fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ 2) (i + K + 1)) ≤ 1 / (K : ℝ)
+    have hEq := sum_range_shift_succ_eq_Ioc K N
+      (fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ 2)
+    rw [hEq]
+    have htail := sum_inv_sq_Ioc_le K hK (K + N) (by omega)
+    have hlast : 0 ≤ 1 / ((K + N : ℕ) : ℝ) := by positivity
+    linarith
+
+theorem tsum_shifted_inv_fourth_le (K : ℕ) (hK : 1 ≤ K) :
+    ∑' n : ℕ, (1 : ℝ) / ((n + K + 1 : ℕ) : ℝ) ^ 4 ≤
+      1 / (K : ℝ) ^ 3 := by
+  apply Real.tsum_le_of_sum_range_le
+  · intro n
+    positivity
+  · intro N
+    change (∑ i ∈ Finset.range N,
+      (fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ 4) (i + K + 1)) ≤ 1 / (K : ℝ) ^ 3
+    have hEq := sum_range_shift_succ_eq_Ioc K N
+      (fun n : ℕ => (1 : ℝ) / (n : ℝ) ^ 4)
+    rw [hEq]
+    have htail := sum_inv_fourth_Ioc_le K hK (K + N) (by omega)
+    have hlast : 0 ≤ 1 / ((K + N : ℕ) : ℝ) ^ 3 := by positivity
+    linarith
+
+abbrev InfinitePairConfig := ℕ × Bool → Bool
+
+noncomputable def nestedInfiniteMatchingTerm (x : InfinitePairConfig) (n : ℕ) : ℝ :=
+  if x (n, false) = true ∧ x (n, true) = true then
+    1 / (((n + 1 : ℕ) : ℝ) ^ 2) else 0
+
+noncomputable def nestedInfiniteBridgeTerm (x : InfinitePairConfig) (n : ℕ) : ℝ :=
+  if x (n, true) = true ∧ x (n + 1, false) = true then
+    1 / (((n + 2 : ℕ) : ℝ) ^ 4) else 0
+
+noncomputable def nestedInfiniteEnergy (x : InfinitePairConfig) : ℝ :=
+  (∑' n : ℕ, nestedInfiniteMatchingTerm x n) +
+    ∑' n : ℕ, nestedInfiniteBridgeTerm x n
+
+noncomputable def nestedTruncatedEnergy (L : ℕ) (x : InfinitePairConfig) : ℝ :=
+  (∑ n ∈ Finset.range L, nestedInfiniteMatchingTerm x n) +
+    ∑ n ∈ Finset.range (L - 1), nestedInfiniteBridgeTerm x n
+
+def restrictInfinitePairConfig (L : ℕ) (x : InfinitePairConfig) :
+    Config (PairQubit L) := fun q => x (q.1.val, q.2)
+
+theorem nestedFiniteEnergy_restriction (L : ℕ) (x : InfinitePairConfig) :
+    nestedInversePowerChainEnergy (restrictInfinitePairConfig L x) =
+      nestedTruncatedEnergy L x := by
+  unfold nestedInversePowerChainEnergy inverseSquareMatchingEnergy
+    nestedInverseFourthBridgeEnergy nestedTruncatedEnergy
+  apply congrArg₂ (· + ·)
+  · rw [← Fin.sum_univ_eq_sum_range]
+    apply Finset.sum_congr rfl
+    intro j hj
+    simp [restrictInfinitePairConfig, nestedInfiniteMatchingTerm]
+  · rw [← Fin.sum_univ_eq_sum_range]
+    apply Finset.sum_congr rfl
+    intro j hj
+    simp [restrictInfinitePairConfig, nestedInfiniteBridgeTerm]
+
+theorem nestedInfiniteMatchingTerm_nonneg (x : InfinitePairConfig) (n : ℕ) :
+    0 ≤ nestedInfiniteMatchingTerm x n := by
+  unfold nestedInfiniteMatchingTerm
+  split_ifs <;> positivity
+
+theorem nestedInfiniteBridgeTerm_nonneg (x : InfinitePairConfig) (n : ℕ) :
+    0 ≤ nestedInfiniteBridgeTerm x n := by
+  unfold nestedInfiniteBridgeTerm
+  split_ifs <;> positivity
+
+theorem nestedInfiniteMatchingTerm_le (x : InfinitePairConfig) (n : ℕ) :
+    nestedInfiniteMatchingTerm x n ≤ 1 / (((n + 1 : ℕ) : ℝ) ^ 2) := by
+  unfold nestedInfiniteMatchingTerm
+  split_ifs
+  · exact le_rfl
+  · positivity
+
+theorem nestedInfiniteBridgeTerm_le (x : InfinitePairConfig) (n : ℕ) :
+    nestedInfiniteBridgeTerm x n ≤ 1 / (((n + 2 : ℕ) : ℝ) ^ 4) := by
+  unfold nestedInfiniteBridgeTerm
+  split_ifs
+  · exact le_rfl
+  · positivity
+
+theorem summable_nestedInfiniteMatchingTerm (x : InfinitePairConfig) :
+    Summable (nestedInfiniteMatchingTerm x) := by
+  apply Summable.of_nonneg_of_le (nestedInfiniteMatchingTerm_nonneg x)
+    (nestedInfiniteMatchingTerm_le x)
+  simpa using summable_shifted_inv_sq 0
+
+theorem summable_nestedInfiniteBridgeTerm (x : InfinitePairConfig) :
+    Summable (nestedInfiniteBridgeTerm x) := by
+  apply Summable.of_nonneg_of_le (nestedInfiniteBridgeTerm_nonneg x)
+    (nestedInfiniteBridgeTerm_le x)
+  simpa [Nat.add_assoc] using summable_shifted_inv_fourth 1
+
+theorem nestedInfiniteEnergy_nonneg_le_three (x : InfinitePairConfig) :
+    0 ≤ nestedInfiniteEnergy x ∧ nestedInfiniteEnergy x ≤ 3 := by
+  have hmSum := summable_nestedInfiniteMatchingTerm x
+  have hbSum := summable_nestedInfiniteBridgeTerm x
+  have hmMajor : Summable (fun n : ℕ => (1 : ℝ) / (((n + 1 : ℕ) : ℝ) ^ 2)) := by
+    simpa using summable_shifted_inv_sq 0
+  have hbMajor : Summable (fun n : ℕ => (1 : ℝ) / (((n + 2 : ℕ) : ℝ) ^ 4)) := by
+    simpa [Nat.add_assoc] using summable_shifted_inv_fourth 1
+  have hmCompare : (∑' n, nestedInfiniteMatchingTerm x n) ≤
+      ∑' n : ℕ, (1 : ℝ) / (((n + 1 : ℕ) : ℝ) ^ 2) :=
+    Summable.tsum_le_tsum (nestedInfiniteMatchingTerm_le x) hmSum hmMajor
+  have hbCompare : (∑' n, nestedInfiniteBridgeTerm x n) ≤
+      ∑' n : ℕ, (1 : ℝ) / (((n + 2 : ℕ) : ℝ) ^ 4) :=
+    Summable.tsum_le_tsum (nestedInfiniteBridgeTerm_le x) hbSum hbMajor
+  have hmDecomp := hmMajor.sum_add_tsum_nat_add 1
+  have hmTail := tsum_shifted_inv_sq_le 1 (by norm_num)
+  have hmTail' : (∑' i : ℕ, (1 : ℝ) / ((i : ℝ) + 2) ^ 2) ≤ 1 := by
+    convert hmTail using 1 <;> norm_num [Nat.cast_add, add_assoc]
+  have hmBound : (∑' n : ℕ, (1 : ℝ) / (((n + 1 : ℕ) : ℝ) ^ 2)) ≤ 2 := by
+    norm_num [Nat.add_assoc] at hmDecomp
+    have hmBound' : (∑' n : ℕ, (((n : ℝ) + 1) ^ 2)⁻¹) ≤ 2 := by
+      rw [← hmDecomp]
+      simp only [one_div] at hmTail'
+      linarith [hmTail']
+    convert hmBound' using 1
+    norm_num [Nat.cast_add]
+  have hbBound : (∑' n : ℕ, (1 : ℝ) / (((n + 2 : ℕ) : ℝ) ^ 4)) ≤ 1 := by
+    simpa [Nat.add_assoc] using tsum_shifted_inv_fourth_le 1 (by norm_num)
+  have hm0 : 0 ≤ ∑' n, nestedInfiniteMatchingTerm x n :=
+    tsum_nonneg (nestedInfiniteMatchingTerm_nonneg x)
+  have hb0 : 0 ≤ ∑' n, nestedInfiniteBridgeTerm x n :=
+    tsum_nonneg (nestedInfiniteBridgeTerm_nonneg x)
+  unfold nestedInfiniteEnergy
+  constructor <;> linarith
+
+theorem nestedInfiniteEnergy_uniform_tail {L : ℕ} (hL : 1 ≤ L)
+    (x : InfinitePairConfig) :
+    0 ≤ nestedInfiniteEnergy x - nestedTruncatedEnergy L x ∧
+      nestedInfiniteEnergy x - nestedTruncatedEnergy L x ≤
+        1 / (L : ℝ) + 1 / (L : ℝ) ^ 3 := by
+  let fm := nestedInfiniteMatchingTerm x
+  let fb := nestedInfiniteBridgeTerm x
+  have hsm : Summable fm := summable_nestedInfiniteMatchingTerm x
+  have hsb : Summable fb := summable_nestedInfiniteBridgeTerm x
+  have hmDecomp := hsm.sum_add_tsum_nat_add L
+  have hbDecomp := hsb.sum_add_tsum_nat_add (L - 1)
+  have hEq : nestedInfiniteEnergy x - nestedTruncatedEnergy L x =
+      (∑' n : ℕ, fm (n + L)) + ∑' n : ℕ, fb (n + (L - 1)) := by
+    unfold nestedInfiniteEnergy nestedTruncatedEnergy
+    dsimp only [fm, fb] at hmDecomp hbDecomp ⊢
+    linarith
+  have hsmTail : Summable (fun n : ℕ => fm (n + L)) :=
+    (summable_nat_add_iff L).2 hsm
+  have hsbTail : Summable (fun n : ℕ => fb (n + (L - 1))) :=
+    (summable_nat_add_iff (L - 1)).2 hsb
+  have hmMajor := summable_shifted_inv_sq L
+  have hbMajor := summable_shifted_inv_fourth L
+  have hmPoint (n : ℕ) : fm (n + L) ≤
+      1 / (((n + L + 1 : ℕ) : ℝ) ^ 2) := by
+    exact nestedInfiniteMatchingTerm_le x (n + L)
+  have hbPoint (n : ℕ) : fb (n + (L - 1)) ≤
+      1 / (((n + L + 1 : ℕ) : ℝ) ^ 4) := by
+    have hindex : n + (L - 1) + 2 = n + L + 1 := by omega
+    simpa [fb, hindex] using nestedInfiniteBridgeTerm_le x (n + (L - 1))
+  have hmLe : (∑' n : ℕ, fm (n + L)) ≤
+      ∑' n : ℕ, (1 : ℝ) / (((n + L + 1 : ℕ) : ℝ) ^ 2) :=
+    Summable.tsum_le_tsum hmPoint hsmTail hmMajor
+  have hbLe : (∑' n : ℕ, fb (n + (L - 1))) ≤
+      ∑' n : ℕ, (1 : ℝ) / (((n + L + 1 : ℕ) : ℝ) ^ 4) :=
+    Summable.tsum_le_tsum hbPoint hsbTail hbMajor
+  have hmBound := tsum_shifted_inv_sq_le L hL
+  have hbBound := tsum_shifted_inv_fourth_le L hL
+  have hm0 : 0 ≤ ∑' n : ℕ, fm (n + L) := by
+    apply tsum_nonneg
+    intro n
+    exact nestedInfiniteMatchingTerm_nonneg x (n + L)
+  have hb0 : 0 ≤ ∑' n : ℕ, fb (n + (L - 1)) := by
+    apply tsum_nonneg
+    intro n
+    exact nestedInfiniteBridgeTerm_nonneg x (n + (L - 1))
+  rw [hEq]
+  constructor <;> linarith
+
+theorem nestedTruncatedEnergy_tendsto (x : InfinitePairConfig) :
+    Filter.Tendsto (fun L : ℕ => nestedTruncatedEnergy (L + 1) x)
+      Filter.atTop (nhds (nestedInfiniteEnergy x)) := by
+  have htail (L : ℕ) := nestedInfiniteEnergy_uniform_tail (L := L + 1) (by omega) x
+  have hbound : Filter.Tendsto
+      (fun L : ℕ => 1 / ((L + 1 : ℕ) : ℝ) + 1 / ((L + 1 : ℕ) : ℝ) ^ 3)
+      Filter.atTop (nhds 0) := by
+    have hInv : Filter.Tendsto (fun L : ℕ => (1 : ℝ) / (L + 1))
+        Filter.atTop (nhds 0) := tendsto_one_div_add_atTop_nhds_zero_nat
+    have hPow := hInv.pow 3
+    convert hInv.add hPow using 1 <;> norm_num [one_div, inv_pow]
+  have hdiff : Filter.Tendsto
+      (fun L : ℕ => nestedInfiniteEnergy x - nestedTruncatedEnergy (L + 1) x)
+      Filter.atTop (nhds 0) :=
+    squeeze_zero (fun L => (htail L).1) (fun L => (htail L).2) hbound
+  have hconst : Filter.Tendsto (fun _ : ℕ => nestedInfiniteEnergy x)
+      Filter.atTop (nhds (nestedInfiniteEnergy x)) := tendsto_const_nhds
+  have hrecover := hconst.sub hdiff
+  convert hrecover using 1
+  · funext L
+    ring_nf
+  · ring_nf
+
+/-- Complete capstone: bounded thermodynamic completion and the finite-volume ramp--return law
+hold simultaneously for the same nested static nearest-neighbour family. -/
+theorem nestedStaticLocal_complete_thermodynamic_ramp_return_reflection
+    {L : ℕ} {t ε : ℝ} (x : InfinitePairConfig) (hL : 1 ≤ L)
+    (hε : 0 < ε) (hεmax : ε ≤ 1 / 100)
+    (htMin : 1024 * Real.pi * ε ≤ t)
+    (htLab : t ≤ ε * L / 2) :
+    nestedInversePowerChainEnergy (restrictInfinitePairConfig L x) =
+        nestedTruncatedEnergy L x ∧
+      (0 ≤ nestedInfiniteEnergy x ∧ nestedInfiniteEnergy x ≤ 3) ∧
+      (0 ≤ nestedInfiniteEnergy x - nestedTruncatedEnergy L x ∧
+        nestedInfiniteEnergy x - nestedTruncatedEnergy L x ≤
+          1 / (L : ℝ) + 1 / (L : ℝ) ^ 3) ∧
+      Filter.Tendsto (fun N : ℕ => nestedTruncatedEnergy (N + 1) x)
+        Filter.atTop (nhds (nestedInfiniteEnergy x)) ∧
+      (nestedInversePowerChainEvolution L (nestedInversePowerReturnPeriod L) = 1 ∧
+        nestedOperatorTwoGateComplexity L ε (nestedInversePowerReturnPeriod L - t) =
+          nestedOperatorTwoGateComplexity L ε t ∧
+        ((⌊t / (128 * Real.pi * ε)⌋₊ : ℕ) : ℕ∞) ≤
+          nestedOperatorTwoGateComplexity L ε t ∧
+        nestedOperatorTwoGateComplexity L ε t ≤
+          ((2 * ⌈2 * t / ε⌉₊ : ℕ) : ℕ∞) ∧
+        ((⌊t / (128 * Real.pi * ε)⌋₊ : ℕ) : ℕ∞) ≤
+          nestedOperatorTwoGateComplexity L ε (nestedInversePowerReturnPeriod L - t) ∧
+        nestedOperatorTwoGateComplexity L ε (nestedInversePowerReturnPeriod L - t) ≤
+          ((2 * ⌈2 * t / ε⌉₊ : ℕ) : ℕ∞)) := by
+  exact ⟨nestedFiniteEnergy_restriction L x,
+    nestedInfiniteEnergy_nonneg_le_three x,
+    nestedInfiniteEnergy_uniform_tail hL x,
+    nestedTruncatedEnergy_tendsto x,
+    nestedStaticLocal_thermodynamic_ramp_return_reflection hε hεmax htMin htLab⟩
+
 end GaloisForLFunctions.HTGeometry.StaticLocalLaboratoryComplexityGrowthLaw

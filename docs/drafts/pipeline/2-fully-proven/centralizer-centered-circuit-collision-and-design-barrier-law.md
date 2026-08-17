@@ -429,9 +429,28 @@ on its nonzero eigenvalues gives `Tr(M²) ≥ 1/q`", stated at the level of the 
 the Cauchy--Schwarz actually happens.  `sum_sq_const_eq_inv_card` is the sharpness clause: uniform
 mass on `N` orthogonal replica vectors has purity exactly `1/N`.
 
+### The expansion and the rank bound are closed
+
+`formal/GaloisForLFunctions/HTGeometry/SymmetricProjectionPurityBarrier.lean` (new, umbrella-wired,
+axiom-clean) proves both halves of `(22)` in projection form, which is how the card's rank
+hypothesis actually enters, and the arithmetic of Corollary D.
+
+| Card item | Declaration |
+|---|---|
+| the squared Hilbert--Schmidt norm is `Tr(AᴴA)` | `hsNormSq_eq_trace` |
+| Cauchy--Schwarz for the Hilbert--Schmidt pairing | `abs_re_trace_le` |
+| **the purity bound**: a trace-one Hermitian moment carried by a rank-`q` projection has `Tr(M²) >= 1/q` | `inv_le_hsNormSq_of_support` |
+| **the expansion `(24)`--`(22)`**: `‖M - Ω‖²_HS = Tr(M²) - 1/h`, with both `Tr(M Ω)` and `Tr(Ω²)` equal to `1/h` | `hsNormSq_sub_normalized_projection` |
+| **`(22)`, `(23)`**: hence `‖M - Ω‖²_HS >= 1/q - 1/h` | `hsNormSq_sub_normalized_projection_ge` |
+| **`(28)`**: `D^r <= r! binom(D+r-1, r)` | `pow_le_factorial_mul_choose` |
+| **`(26)`**: a nontrivial raw target bound forces `N < h_{D,r}` | `lt_choose_of_capacity_bound` |
+
+The rank hypothesis is carried by a support projection `Q` with `Q M = M` and `Tr Q = q` -- the
+statement "positive, trace one, rank at most `q`" in the form the Cauchy--Schwarz argument uses, so
+no spectral decomposition is needed.
+
 ### What remains
 
-The identification of the eigenvalue vector with the spectrum of `M_ν` -- a positive trace-one
-matrix of rank at most `min{N, h_{D,r}}` supported on `Sym^r(ℂ^D)` -- and the expansion `(24)`
-that turns `‖(I-Π)M_ν‖²_HS` into `Tr(M_ν²) - 1/h_{D,r}`, which needs `Tr(M_ν Ω) = Tr(Ω²) = 1/h`.
-Theorems A and B, and Corollary D, are untouched.
+The construction of the concrete data: the symmetric projection `Π_sym` of `(19)` with
+`Tr Π_sym = h_{D,r}`, the moment `M_ν` of `(20)` with its support projection, and the twirl identity
+`(21)`.  Theorems A and B are untouched.

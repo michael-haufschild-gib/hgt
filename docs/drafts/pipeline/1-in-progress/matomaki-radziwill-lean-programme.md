@@ -240,3 +240,40 @@ producing the `pi(x)/(1+|t|)` main term, then partial summation to `sum_{p <= x}
 contour geometry is already available (`Sieve/RouteTMoebiusContour.routeT_contour_zero_free`,
 `routeTContourShift`, `routeTContourEdgeBound`), and the edge bound it needs is now the theorem
 above rather than the reciprocal bound `norm_inv_riemannZeta_le_routeT_contour`.
+
+### The twisted von Mangoldt layer — six modules (2026-08-17)
+
+Lemma 2.3's *prime* statement was the last structural gap at Milestone 0.  Its Perron side is now
+built, as the exact counterpart of the corpus's `moebiusTwist`/`invZeta` layer with `-zeta'/zeta` in
+place of `1/zeta`.
+
+| Module | Content |
+|---|---|
+| `Sieve/VonMangoldtTwistPerron.lean` | `vonMangoldtTwist`, its modulus and absolute summability, `∑ Λ(n)n^{-iτ}n^{-s} = -zeta'/zeta(s+iτ)`, and the smoothed Perron identity `2π ∑ Λ(n)n^{-iτ}w(n) = ∫ -zeta'/zeta(σ+i(y+τ))·W(σ+iy) dy` |
+| `Sieve/ZetaLogDerivRegTwistShift.lean` | holomorphy of `s ↦ zetaLogDerivReg(s+iτ)·W(s)` on a rectangle, and the four-edge shift — no residue, zero-free input at height `|τ|+T` |
+| `Sieve/ChebyshevTwistPerronIdentity.lean` | the pole term split at an arbitrary base point (`inv_sub_mul_eq_dslope_add`), the twist pole `1-iτ`, and the three-piece split of the twisted integrand |
+| `Sieve/ChebyshevTwistPoleShift.lean` | the rectangle is a neighbourhood of the twist pole, and the divided-difference term shifts with no residue |
+| `Sieve/ChebyshevTwistMainTerm.lean` | the pole kernel over an *arbitrary* interval — `arctan` difference plus a logarithm — and the twisted main term in closed form |
+| `Sieve/ChebyshevTwistTruncatedIdentity.lean` | **the truncated twisted Chebyshev identity**: tail beyond height `T`, divided difference, explicit main term with coefficient `W(1-iτ)`, and the regular part |
+
+All unconditional, umbrella-wired, oleans built, `#print axioms` clean on every capstone.
+
+Two things are genuinely new relative to the untwisted chain.  First, the pole of the twisted
+integrand sits at `1 - iτ` while the cutoff's transform is evaluated at `s`, so the pole term must
+be split at that base point rather than at `1`; the corpus's `mellin_div_sub_one_split` is replaced
+by the base-point-free `inv_sub_mul_eq_dslope_add`.  Second, truncating the Perron line
+symmetrically no longer truncates symmetrically *about the pole*, so the odd part of the pole kernel
+no longer cancels and the main term acquires a logarithm alongside the arctan; at `τ = 0` the two
+logarithms agree and the untwisted `2 arctan(T/(d-1))` is recovered.
+
+### What remains for Lemma 2.3
+
+1. **Edge estimates.**  Bound the four edges of the twisted rectangle using
+   `Sieve/ZetaLogDerivWidthBound.exists_logDeriv_zeta_bound_routeT` on the left edge (this replaces
+   `norm_inv_riemannZeta_le_routeT_contour`, which is the reciprocal bound the Möbius chain used)
+   and the cutoff's Mellin decay on the horizontals.
+2. **Power saving.**  Optimise the smoothing width against the shift, as
+   `Sieve/RouteTMoebiusPowerSaving` does for `1/zeta`.
+3. **Smooth to sharp.**  `Sieve/SmoothedPartialSumConnector` transports the smoothed bound to
+   `ψ(x,τ) = ∑_{n ≤ x} Λ(n) n^{iτ}` at the cost of the window width.
+4. **Partial summation.**  `ψ(x,τ) ⟹ ∑_{p ≤ x} p^{iτ}`, discarding the prime powers.

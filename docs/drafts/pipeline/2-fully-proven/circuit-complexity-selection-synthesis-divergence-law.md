@@ -202,13 +202,29 @@ chain rule.
 of cardinality `M^l` -- and summing the resulting geometric series in `ENNReal`, where the sigma
 rearrangement needs no summability hypothesis; the total is then transferred back to the reals.
 
+### `(4)` and `(6)` are closed
+
+`formal/GaloisForLFunctions/HTGeometry/DiscreteMutualInformation.lean` (new, umbrella-wired,
+axiom-clean) builds the joint layer for a finite request variable and a discrete word variable --
+which is the card's setting, the dictionary being finite and the words countable.
+
+| Card item | Declaration |
+|---|---|
+| the two marginals of a joint law | `marginalFst`, `marginalSnd` |
+| entropy of the word marginal | `entropySnd` |
+| conditional entropy of the word given the request | `condEntropySnd` |
+| **selection information** `I(X;W)` | `mutualInfo` |
+| **the chain rule** `H(W) = H(W\|X) + I(X;W)` | `entropySnd_eq_condEntropySnd_add_mutualInfo` |
+| **`(4)`, `(6)`**: the gate cost with the entropy split | `gateCost_eq_condEntropy_add_mutualInfo_add_relEntropy` |
+
+The chain rule is exact and unconditional: no positivity, no normalization, only summability of the
+two series being added.  Mathlib has `ProbabilityTheory.klDiv` but no entropy layer; this one is
+built from the same discrete definitions the card already uses for `(5)`.
+
 ### What remains
 
-`(4)` and `(6)` add the mutual-information chain rule `H(W) = H(W|X) + I(X;W)` to `(5)`, which
-needs a joint-distribution layer (conditional entropy and mutual information for a Markov kernel
-on a standard Borel space); mathlib has `ProbabilityTheory.klDiv` but not that layer.  Theorem B
-additionally needs the measurable selection of the first shortest qualifying word, and the
-rate--distortion functional of section 4 needs the same joint layer.  The purely
+Theorem B's measurable selection of the first shortest qualifying word, and the rate--distortion
+functional of section 4 (which needs the same joint layer over a continuum of requests).  The purely
 information-theoretic identity of Theorem A -- the card's actual mechanism -- is formal.
 
 ## 4. Exact gate-relative rate--distortion functional

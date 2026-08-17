@@ -68,6 +68,8 @@ proof-assistant or internal-corpus references.
 | Same bounded-weight Pauli Hamiltonian: syndetic return-hard-return and permanent two-query separation from Haar benchmark | `RHTower.pauliBounded_complexityAlternation_and_permanentHaarSeparation` | `StaticQLocalComplexityHaarSeparationLaw.lean` |
 | Prime hard polygon, terminal return and permanent separator | `RHTower.pauliBounded_completeCircuitPolygon_and_permanentHaarSeparation` | `PauliLocalPrimeTorsionCircuitPolygonLaw.lean` |
 | Robust two-sided complexity reflection and exact-return palindrome | `RHTower.choiComplexity_reflect`; `RHTower.choiComplexity_reflect'`; `RHTower.choiComplexity_eq_of_exact_return` | `AutonomousReturnReflection.lean` |
+| Nested inverse-power path: exact finite restriction, energy in `[0,3]`, uniform tail `L⁻¹+L⁻³`, thermodynamic convergence | `StaticLocalLaboratoryComplexityGrowthLaw.nestedFiniteEnergy_restriction`; `nestedInfiniteEnergy_nonneg_le_three`; `nestedInfiniteEnergy_uniform_tail`; `nestedTruncatedEnergy_tendsto` | `StaticLocalNestedThermodynamicRampReturnLaw.lean` |
+| Same explicit nested static nearest-neighbour path: finite-time linear operator-complexity envelope, factorial-four exact return and exact reflected bounds; one complete capstone conjoins these with thermodynamic clauses | `StaticLocalLaboratoryComplexityGrowthLaw.nestedInversePowerChain_floor_linear_growth`; `nestedInversePowerChain_exact_return`; `nestedOperatorTwoGateComplexity_exact_return_reflect`; `nestedStaticLocal_thermodynamic_ramp_return_reflection`; `nestedStaticLocal_complete_thermodynamic_ramp_return_reflection` | `StaticLocalNestedThermodynamicRampReturnLaw.lean` |
 
 ## Law IV: inference boundary
 
@@ -102,9 +104,8 @@ Repository formal lint forbids `sorry`, `admit`, project `axiom`,
 ## Explicit exclusions
 
 - No first-return time inferred from inverse completed density.
-- No monotone complexity ramp or finite-time random-matrix ramp.
+- No all-pairs pointwise monotonicity, saturation plateau or finite-time random-matrix ramp. Nested-path result gives a two-sided linear envelope, a literal rise-and-return drop, and actual-complexity ordering for laboratory times separated by a factor of at least `1024π`.
 - No Haar randomization by static bounded-local Hamiltonians.
-- No circuit-hardness claim for bounded-degree nearest-neighbour paths.
 - No bounded-degree geometry claim for bounded-weight all-to-all Pauli terms.
-- No infinite-volume orbit recurrence or interchange of size and time limits.
+- No infinite-volume orbit recurrence, infinite-system circuit complexity or interchange of size and time limits.
 - No physical-space reconstruction without supplied subsystem factorization.

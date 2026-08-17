@@ -465,6 +465,102 @@ classification. Direct `lake env lean` passes; module is wired into
 `RHTower.lean`; exact leaf `lake build` passes. Axiom audit reports only
 `propext`, `Classical.choice`, and `Quot.sound`. No umbrella build was run.
 
+### C31 — Literal Wold--Jordan square on genuine all-left Big-Witt rows
+
+`[HEAVY CONJECTURE → FAIL → PIVOT → NEW SOURCE THEOREM → EXACT PRODUCER CLASSIFICATION]`
+
+Four attempted ways to discharge C30 fail for structural reasons.
+
+1. Ordinary quotient descent fails: finite Wold classes are Kummer-regulator
+   null, but nonlinear character evaluation is not a chain map; its
+   Beck--Chevalley defect is the retained physical monodromy.
+2. Tensor/Künneth descent fails: every positive tensor power of the physical
+   Bockstein class remains nonzero off line.
+3. Alternating/exterior descent fails: an alternating self-wedge is zero,
+   while the literal Wold--Jordan energy is a symmetric Hermitian square.
+   Identifying the two is coefficient-faithful only after that energy is zero.
+4. Resolved Green cancellation fails: the two internal defects form an exact
+   antidiagonal `(d,-d)`. Hermitian squaring makes their energies equal rather
+   than opposite; the Krein difference vanishes tautologically and does not
+   imply `d=0`.
+
+The surviving pivot replaces earlier arbitrary fixed-left averaging packets
+by genuine Big-Witt source rows. For every left-prime index `a`, define the
+ordered row
+
+```text
+(p_a,p_(a+n+1)),               w_(a,n)=1/(p_a p_(a+n+1)).
+```
+
+These are literal coefficients of the existing all-cross-prime Big-Witt
+horizon. New unconditional source theorem proves, for every `a`:
+
+```text
+sum_n w_(a,n) = +infinity,
+sup_N ||rawRow_(a,N)||_2 <= ||rawHorizon||_2.
+```
+
+Dividing each finite raw row by its own positive algebraic trace therefore
+gives an actual source sequence `P_(a,N)` satisfying
+
+```text
+oneLegTrace(P_(a,N)) = 1,
+ambientAdmission(P_(a,N)) -> 0,
+graphAdmission(P_(a,N)) -> v_sing
+```
+
+for the same nonzero vertical graph vector `v_sing`, independently of `a`.
+Prime labels and raw `1/(pq)` coefficients are not replaced or fitted.
+
+Let the literal finite Wold--Jordan reporter weight an ordered edge `(p,r)`
+by `X_(q,p)^2`. Exact raw-coefficient summation gives
+
+```text
+W_q(P_(a,N)) = X_(q,p_a)^2 = A_q/p_a                 (C31.1)
+```
+
+for every cutoff `N`. Define *actual-source descent* as existence of one
+continuous reporter on the existing singular graph agreeing with `W_q` only
+on these genuine normalized rows. Continuity and the common limit force
+
+```text
+A_q/p_0 = reporter(v_sing) = A_q/p_1.
+```
+
+Since `p_0<p_1` and `A_q>=0`, this forces `A_q=0`, hence `t_q=0`. Conversely,
+at `t_q=0` the zero reporter supplies the descent. Thus unconditionally
+
+```text
+actualSourceWoldJordanDescent(q) <-> t_q=0
+forall q, actualSourceWoldJordanDescent(q) <-> RH.    (C31.2)
+```
+
+This is stronger and more arithmetic than previous reporter classifications:
+agreement is required only on genuine raw Big-Witt horizon rows, yet already
+has full RH strength. It also closes possible loophole that contradiction was
+artifact of arbitrary unit averaging.
+
+It does **not** prove unconditional existence of descent. Corpus-wide check of
+Banach--Steinhaus, lower-semicontinuous capacity, shared-reservoir, and
+semilocal trace routes found same missing datum: pointwise boundedness or a
+source landing on completed carrier. Asserting it would assert left side of
+`(C31.2)`, hence RH. No such bound was imported as a theorem.
+
+External primary-source audit: Paugam (`arXiv:0803.0199`) constructs
+unconditional symplectic reflection pairing, not this same-limit nonlinear
+descent. Connes--Consani (`arXiv:1910.14368`, `arXiv:2006.13771`) and
+Connes--Consani--Moscovici (`arXiv:2310.18423`) provide semilocal scaling,
+Sonin, and prolate frameworks, but explicitly leave finite-place Weil
+positivity/source control as program. No checked source contains all-left
+Big-Witt row theorem or `(C31.1)`--`(C31.2)`. This is bounded novelty audit,
+not claim of exhaustive priority. `[NOVELTY UNVERIFIED]`
+
+Lean:
+`formal/GaloisForLFunctions/RHTower/XiGammaSixWoldJordanSingularSourceDescent.lean`.
+Direct `lake env lean` and exact leaf `lake build` pass. Module is wired into
+`RHTower.lean`; no umbrella build was run. Axiom audit reports only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
 ## External hostile comparison
 
 Paugam's unconditional symplectic zero-space pairing pairs `rho` with
@@ -487,6 +583,8 @@ Construct one of the following without importing an equivalent condition:
 4. a source-natural continuation of the Gauss/Fisher-filtered second Mellin
    primitive whose neutral boundary value forces summability of the literal
    nonnegative Gamma-six curvature current.
+5. a continuous completed-source reporter agreeing with literal Wold--Jordan
+   square on genuine all-left normalized Big-Witt rows from C31.
 
 Each item immediately gives `star chi_p(rho)=chi_p(rho)^(-1)`.  Existing
 theorems prove each abstract existence statement equivalent to the desired

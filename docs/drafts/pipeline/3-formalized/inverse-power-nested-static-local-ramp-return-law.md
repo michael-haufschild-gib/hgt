@@ -1,9 +1,9 @@
 # Nested inverse-power static-local ramp--return law
 
 - **ID:** inverse-power-nested-static-local-ramp-return
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
-- **Status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4)
+- **Status:** `[FORMALIZED] [NOVELTY UNVERIFIED]`
 - **Source:** `inverse-square-static-local-exact-return-reflection-law.md`
 
 ## Exact claim
@@ -52,9 +52,13 @@ one-qubit gates are free.  Prove:
    \le 2\left\lceil\frac{2t}{ε}\right\rceil,
    \]
    and identical bounds hold at `R_L-t`.
+5. **Literal excursion and scale-separated ordering.**  Every laboratory-ramp time has complexity
+   strictly above the zero values at `0` and `R_L`, so full-cycle monotonicity and antitonicity are
+   both impossible. If `s,t` are both in the laboratory window and `t≥1024πs`, then the actual
+   infimal complexities satisfy `C^{op}_{L,ε}(s)≤C^{op}_{L,ε}(t)`.
 
-The upper constant is deliberately unoptimized.  No literal monotonicity, plateau, minimal return,
-translation invariance, or infinite-volume orbit recurrence is claimed.
+The upper constant is deliberately unoptimized. No all-pairs laboratory-window monotonicity,
+plateau, minimal return, translation invariance, or infinite-volume orbit recurrence is claimed.
 
 ## Internal frontier
 
@@ -62,9 +66,8 @@ translation invariance, or infinite-volume orbit recurrence is claimed.
   finite path whose bridge coefficient is the volume-dependent `L^{-3}`.
 - `[CORPUS]` `inverseSquareChain_growth_exactReturn_reflection` adds exact factorial-cube return and
   exact operator-complexity reflection for that same family.
-- `[OPEN CORE]` Replace the disappearing volume-dependent bridges by a fixed summable bond sequence
-  while preserving both lower and upper circuit bounds and proving a genuine bounded thermodynamic
-  completion.
+- `[CLOSED CORE]` Fixed inverse-fourth bridges preserve lower and upper circuit bounds, exact
+  return/reflection, and give a bounded thermodynamic completion with uniform truncation error.
 - No matching failed-route card was found.
 
 ## External frontier
@@ -245,7 +248,7 @@ and preserves global operator norm.  It is a cost-preserving bijection between c
 - Exact-return arithmetic and adjoint reflection are `[BRIDGE]`; priority of complete nested
   ramp--return composition remains `[NOVELTY UNVERIFIED]`.
 
-## Planned proof architecture
+## Formal proof architecture
 
 1. Dominate inverse-fourth bridge tails by inverse-square tails to obtain absolute summability,
    uniform bound `3`, and uniform truncation error `L^{-1}+L^{-3}`.
@@ -258,14 +261,38 @@ and preserves global operator norm.  It is a cost-preserving bijection between c
 4. `Q_L=(L!)^4` integerizes every inverse-square and inverse-fourth coefficient, giving exact return.
 5. Reuse adjoint circuit reversal for exact complexity reflection and transport both ramp bounds.
 
+## Lean closure
+
+- **Module:** `GaloisForLFunctions.HTGeometry.StaticLocalNestedThermodynamicRampReturnLaw`
+- **Thermodynamic restriction:** `nestedFiniteEnergy_restriction`
+- **Uniform bound:** `nestedInfiniteEnergy_nonneg_le_three`
+- **Uniform tail:** `nestedInfiniteEnergy_uniform_tail`
+- **Thermodynamic convergence:** `nestedTruncatedEnergy_tendsto`
+- **Laboratory ramp:** `nestedInversePowerChain_floor_linear_growth`
+- **Exact return:** `nestedInversePowerChain_exact_return`
+- **Exact reflection:** `nestedOperatorTwoGateComplexity_exact_return_reflect`
+- **Finite-volume capstone:** `nestedStaticLocal_thermodynamic_ramp_return_reflection`
+- **Complete thermodynamic capstone:**
+  `nestedStaticLocal_complete_thermodynamic_ramp_return_reflection`
+
+Targeted `lake env lean` and `lake build
+GaloisForLFunctions.HTGeometry.StaticLocalNestedThermodynamicRampReturnLaw` pass. Axiom audit of all
+nine declarations reports only `propext`, `Classical.choice`, and `Quot.sound`. Project lint finds
+no forbidden declaration in this module; its nonzero exit is caused by three unrelated pre-existing
+umbrella-reachability errors elsewhere in the corpus. No full umbrella build was run.
+
 ## Gates
 
 - [x] 0 → 1: exact claim frozen; internal and external frontier recorded.
 - [x] 1 → 2: complete dependency-closed proof and hostile audit; `[PAPER-PROVED]`.
-- [ ] 2 → 3: exact Lean theorem, targeted builds, formal lint and axiom audit.
-- [ ] 3 → 4: integrate into standalone recurrence manuscript after priority audit.
+- [x] 2 → 3: exact Lean theorem, targeted builds, formal lint and axiom audit.
+- [ ] 3 → 4: manuscript integration complete; independent priority audit still required.
 
 ## Log
 
 - 2026-08-17 — `[PAPER-PROVED] [NOVELTY UNVERIFIED]`; fixed inverse-fourth bridges survive lower,
   upper, exact-return and thermodynamic-limit attacks.  Ready for exact Lean formalization.
+- 2026-08-17 — `[FORMALIZED] [NOVELTY UNVERIFIED]`; open core closed in Lean with targeted module
+  build, standard-only axiom audit, and umbrella import. No full umbrella build run.
+- 2026-08-17 — Integrated theorem, proof, scope limits and verified literature comparison into
+  standalone recurrence manuscript; retained Stage 3 pending independent priority review.
