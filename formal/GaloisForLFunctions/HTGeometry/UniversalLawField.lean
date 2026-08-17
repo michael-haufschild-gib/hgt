@@ -253,6 +253,7 @@ import GaloisForLFunctions.HTGeometry.ConstitutiveEssentialFormationMechanics
 import GaloisForLFunctions.HTGeometry.PositiveFaceCompression
 import GaloisForLFunctions.HTGeometry.ConstitutiveCohomologicalPacketFormation
 import GaloisForLFunctions.HTGeometry.ConstitutiveCohomologicalDegreeLowering
+import GaloisForLFunctions.HTGeometry.ConstitutiveCanonicalCoinducedReporter
 
 /-!
 # Universal-law-field Lean umbrella

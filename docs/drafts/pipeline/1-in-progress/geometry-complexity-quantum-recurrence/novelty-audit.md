@@ -137,6 +137,41 @@ Hamiltonian. This is provisional absence evidence, not proof of priority; no
 absolute first claim is authorized without specialist comparison to
 arXiv:2303.17538, arXiv:2607.19852 and their ancestry.
 
+### H. Same-record Born escape and return
+
+Exact residue: for every finite Hermitian Hamiltonian, every finite family of
+density matrices and quantum effects, nonnegative weights, positive tolerance
+and positive guard, either weighted Born record never exits tolerance or same
+record has a witnessed exit followed strictly later by a return. Deadline is
+least member of explicitly proved graph--resolution certificate family built
+from visible energy-basis coefficients.
+
+Closest sources: Kotowski--Oszmaniec prove metric-packing post-exit recurrence
+for pure states and explicitly identify expectation values among further
+directions; Gimeno--Sotoca prove mixed-state recurrence bounds in state-space
+metrics; Gupta--Short prove simultaneous state recurrence. Those results imply
+coarse observable recurrence by continuity but do not appear to contain
+conjunction of prescribed Born records, same-record exit witness and
+observer-compressed least certificate.
+
+Preliminary verdict: strongest newly added candidate. Claim only conjunction,
+not existence of expectation-value recurrence. No absolute priority claim is
+authorized.
+
+### I. Thermodynamic l-bit Hilbert cascade
+
+Exact residue: one explicitly engineered absolutely summable diagonal l-bit
+field simultaneously has uniform finite-window thermodynamic convergence,
+bounded self-adjoint multiplication Hamiltonians and strongly continuous
+unitary `L²` dynamics, one exact phase reporter at every diameter birth order,
+maximal local-flip rational rank in every finite environment and a
+volume-independent exponential commutator bound.
+
+Preliminary verdict: bridge. Logarithmic light cones, exponentially branching
+local spectra and interaction-suppressed revivals are established. Exact
+rational-rank/cascade/Hilbert conjunction may be technically new but is not
+headline novelty and is not a microscopic random-field MBL theorem.
+
 ## Novelty explicitly disclaimed
 
 - Compact-hull equidistribution and Kronecker--Weyl theory.

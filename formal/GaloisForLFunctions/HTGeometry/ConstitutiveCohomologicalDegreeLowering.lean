@@ -25,6 +25,13 @@ def IsCohomologicalLeftNormalized (c : G → G → A) : Prop := ∀ g, c 0 g = 0
 def cohomologicalFormationTwoCoboundary (φ : G → A) (g h : G) : A :=
   φ h - φ (g + h) + φ g
 
+/-- On an abelian source, every formation two-coboundary is symmetric. -/
+theorem cohomologicalFormationTwoCoboundary_comm (φ : G → A) (g h : G) :
+    cohomologicalFormationTwoCoboundary φ g h =
+      cohomologicalFormationTwoCoboundary φ h g := by
+  simp only [cohomologicalFormationTwoCoboundary, add_comm]
+  abel
+
 /-- Right translation of a coinduced function. -/
 def coinducedFormationRightTranslate (g : G) (f : G → A) : G → A :=
   fun x => f (x + g)

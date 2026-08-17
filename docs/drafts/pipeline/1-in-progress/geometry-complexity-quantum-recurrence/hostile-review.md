@@ -32,6 +32,9 @@ source search nor internal proof audit can establish literature priority.
 5. Connected graph-local static Hamiltonians obey an exact completed-time
    Choi-target occupation cap. Separate bounded-weight Pauli Hamiltonians show
    recurrent hard epochs while remaining operationally non-Haar.
+6. Arbitrary finite Hermitian Born records satisfy a same-record
+   never-exits/post-exit-return law with least deadline inside exact
+   graph--resolution certificate family.
 
 ## Objections and dispositions
 
@@ -94,6 +97,14 @@ No uniform inference follows at a strict earlier horizon: one exact spectrum,
 one fixed protocol, common finite moments and uniformly close earlier records
 remain compatible with every terminal probability. Compact complete moments
 cross a different determinacy boundary.
+
+### “Infinite-volume dynamics means infinite-volume recurrence”
+
+No. Explicit l-bit field defines bounded self-adjoint multiplication
+Hamiltonian and strongly continuous unitary group on every selected
+$L^2(\Omega,\mu)$. Uniform finite-window energy convergence and exact
+diameter cascade are proved. No global infinite-volume return, microscopic
+MBL realization or quasi-local $C^*$ dynamics is inferred.
 
 ## Remaining risks
 

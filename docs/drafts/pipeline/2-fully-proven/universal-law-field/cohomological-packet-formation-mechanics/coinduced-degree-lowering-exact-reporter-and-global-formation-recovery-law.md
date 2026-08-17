@@ -3,7 +3,7 @@
 - **ID:** ULF-CPFM-2
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM / GLOBAL FORMATION LAW / SELECTION-BRIDGE ARCHITECTURE
-- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [LEAN PENDING] [NOT RH]
+- **Status:** [PAPER-PROVED] [DEPENDENCY-CLOSED] [LEAN FORMALIZED] [NOT RH]
 - **Date:** 2026-08-17
 
 ## 1. The mismatch this theorem resolves
@@ -171,6 +171,37 @@ This theorem supplies the global formation/recovery mechanism that the prior fie
 missing. The load-bearing datum is now explicit: a source-derived exact reporter, not a fitted
 scalar selector.
 
+### Theorem 4.2 — canonical algebraic exact reporter
+
+The exact reporter always exists algebraically. Let
+
+\[
+ \mathcal H_{\mathrm{alg}}=A^G/\operatorname{Const}(A),
+ \qquad D_{\mathrm{alg}}(f)=[f],
+ \qquad \rho_g[f]=[R_gf].
+ \tag{DL.12}
+\]
+
+Then right translation preserves the constant subgroup, each \(\rho_g\) is an additive
+automorphism with inverse \(\rho_{-g}\), and
+
+\[
+ \rho_0=1,\qquad \rho_{g+h}=\rho_g\rho_h.
+\]
+
+Moreover, \(D_{\mathrm{alg}}\) is surjective, kills exactly constants, and intertwines right
+translation. Hence it satisfies every axiom of an exact coinduced reporter.
+
+#### Proof
+
+The quotient map is surjective and has kernel exactly the subgroup being quotiented. Translation
+of a constant function is constant. Translation by \(g\) followed by translation by \(-g\) is the
+identity, and associativity of addition gives the action law. QED.
+
+Thus no algebraic reporter-construction problem remains. The unresolved global gate is whether the
+canonical quotient, or a faithful equivalent realization, admits a separated unitary Hilbert
+topology containing the required source transgressions.
+
 ## 5. Selection architecture
 
 Suppose in addition that \(H\) is Hilbert, \(\rho\) is unitary, and a source group has the fixed-point
@@ -180,7 +211,8 @@ the central packet class \(c\) to split.
 Therefore an RH architecture may legitimately have the following form:
 
 1. off the selected locus, a source formation produces a non-split central packet class \(c\);
-2. source normalization constructs one exact Hilbert reporter \(D\) before divisor specialization;
+2. source normalization equips the canonical exact quotient reporter with a faithful unitary
+   Hilbert realization before divisor specialization;
 3. higher-rank fixed-point rigidity makes \(\beta_c\) a coboundary;
 4. global recovery makes \(c\) split, contradicting step 1.
 
@@ -211,14 +243,19 @@ observer-kernel faithfulness, and the explicit global selection gate. Existing c
 theorems showing indiscrete coinduced quotients are not contradictions; they diagnose failure of
 condition 4 for those completions.
 
-## 8. Lean target
+## 8. Lean formalization
 
-Formalize the unconditional algebraic core:
+The unconditional algebraic core is formalized in:
+
+- formal/GaloisForLFunctions/HTGeometry/ConstitutiveCohomologicalDegreeLowering.lean;
+- formal/GaloisForLFunctions/HTGeometry/ConstitutiveCanonicalCoinducedReporter.lean.
 
 1. (DL.3) and (DL.5);
 2. normalized right-zero law and equivalence (DL.8);
 3. exact-reporter structure and genuine action law;
 4. lowered \(1\)-cocycle identity (DL.10);
 5. recovery theorem \((DL.11) \Rightarrow c=\delta\phi\).
+6. canonical quotient-by-constants reporter and descended translation action (DL.12).
 
 Do not axiomatize property-(T), Hilbert admission, or an arithmetic source realization.
+The module contains no project axioms, sorry, admit, opaque, or unsafe declarations.

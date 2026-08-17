@@ -5,6 +5,7 @@
 - **Type:** HIGHER-MECHANISM CORRECTION / FIELD PROGRAMME
 - **Source:** hostile audit of higher-rank Hilbert-cocycle packetization
 - **Status:** `[MECHANISM, NOT OBJECT] [H1/H2 DEGREE SEPARATION CLOSED FINITELY] [LEAN CALIBRATION CLOSED]`
+  `[GLOBAL ALGEBRAIC FORMATION/RECOVERY CLOSED] [EXACT HILBERT ADMISSION OPEN]`
   `[HIGHER-RANK SELECTION OPEN] [NOT RH]`
 
 ## 1. Pivot
@@ -87,6 +88,29 @@ Hence Hilbert packetization already contains the uniform bound needed by the pro
 contradiction.  It remains a valid proof target, but it is not a formal consequence of the central
 extension or the \(A_2\) rank jump.
 
+## 3.1 Global formation/recovery law
+
+The Stage-2 coinduced degree-lowering theorem now closes the algebraic degree mismatch. Every
+normalized central \(2\)-cocycle \(c\) has a canonical coinduced transgression
+\(b_c(g)(x)=c(x,g)\), which is a \(1\)-cocycle modulo constants and reconstructs \(c\) exactly
+from its cocycle defect. If an equivariant additive reporter kills exactly constants and lifts every
+reported fixed point, then its lowered \(1\)-cocycle being a coboundary forces \(c\) itself to be a
+\(2\)-coboundary.
+
+The algebraic reporter is canonical: quotient all coinduced functions by constants and descend
+right translation. Thus the open gate is no longer an unspecified degree-lowering representation
+or an algebraic quotient construction. It is a source-derived faithful Hilbertization of that
+canonical reporter with:
+
+1. translation equivariance;
+2. kernel exactly the constant histories;
+3. a lifted fixed point;
+4. unitary or fixed-point-rigid action;
+5. admission of every source transgression value.
+
+Corpus indiscrete-quotient and dense-radical theorems identify completions where this gate fails;
+they are now typed obstructions to exact Hilbert reporting rather than generic topology no-gos.
+
 ## 4. Candidate higher laws
 
 ### CPFM-A — formation transgression
@@ -150,3 +174,10 @@ packetization gate.
 - 2026-08-17 — finite formation group, central packet, integer-power scaling, Gram conservation,
   reconstruction, reflection neutrality, and additive-reporter erasure formalized in
   `ConstitutiveCohomologicalPacketFormation.lean`; higher-rank selection gates remain open.
+- 2026-08-17 — canonical coinduced H2-to-H1 transgression, information-neutral reconstruction,
+  exact reporter, and global coboundary recovery formalized in
+  `ConstitutiveCohomologicalDegreeLowering.lean`; open core sharpened to source-derived exact
+  Hilbert admission/properness.
+- 2026-08-17 — canonical quotient-by-constants reporter and descended translation action
+  formalized in `ConstitutiveCanonicalCoinducedReporter.lean`; algebraic reporter existence closed,
+  leaving faithful separated unitary Hilbertization as precise global gate.

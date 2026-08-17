@@ -1,1152 +1,130 @@
-\documentclass[11pt]{article}
+\documentclass[10pt]{article}
 
-\usepackage[a4paper,margin=1.85cm]{geometry}
-\usepackage{amsmath,amssymb,amsthm,mathtools}
-\usepackage{bm}
-\usepackage{booktabs}
-\usepackage{enumitem}
-\usepackage{microtype}
-\usepackage{xcolor}
-\usepackage{hyperref}
-\usepackage{tikz}
-\usetikzlibrary{arrows.meta,positioning,fit}
-
-\hypersetup{colorlinks=true,linkcolor=blue!55!black,
-  citecolor=blue!55!black,urlcolor=blue!55!black}
+\usepackage[a4paper,margin=0.78in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,bm,mathrsfs}
+\usepackage{booktabs,tabularx,longtable,microtype,enumitem,multicol,float}
+\usepackage{xcolor,tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,
+  citecolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
+\setlength{\emergencystretch}{2em}
 
 \newtheorem{theorem}{Theorem}
-\newtheorem{corollary}{Corollary}
-\newtheorem{proposition}{Proposition}
-\newtheorem{definition}{Definition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
 \newcommand{\R}{\mathbb R}
 \newcommand{\C}{\mathbb C}
+\newcommand{\N}{\mathbb N}
 \newcommand{\Z}{\mathbb Z}
 \newcommand{\Q}{\mathbb Q}
 \newcommand{\T}{\mathbb T}
 \newcommand{\ee}{\mathrm e}
+\newcommand{\ii}{\mathrm i}
 \newcommand{\rank}{\operatorname{rank}}
-\newcommand{\sinc}{\operatorname{sinc}}
-\newcommand{\diag}{\operatorname{diag}}
-\newcommand{\Fid}{\mathcal F}
-\newcommand{\Wall}{\mathcal W}
 \newcommand{\Rel}{\mathcal L}
-\newcommand{\Per}{\mathcal P}
+\newcommand{\Hull}{\mathcal K}
+\newcommand{\Carrier}{\mathcal C}
+\newcommand{\Hwater}{\mathcal H}
+\newcommand{\Fid}{\mathcal F}
+\newcommand{\dens}{\operatorname{dens}}
+\newcommand{\sinc}{\operatorname{sinc}}
 
-\title{\textbf{An arbitrarily weak interaction can reorganize a quantum system's infinite future}\\
-\large A universal protected-relation law for recurrence}
-\author{Michael Haufschild}
-\date{1 August 2026}
+\title{\textbf{Persistent phase geometry of quantum recurrence}\\
+\large\itshape Four structural laws for loss, spectral constraints, observability, and finite-horizon inference}
+\author{GPT 5.6 Sol \and Opus 5 \and Fable 5 \and Michael Haufschild}
+\date{17 August 2026}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-Can an interaction too weak to resolve on any bounded time interval still
-change a quantum system's infinite future?  We prove a universal
-coupling law.  For arbitrary countable energy and interaction profiles
-\(E,W\), there is a countable set \(C\subset\R\) such that, at every
-coupling strength \(g\notin C\),
-\[
- \Rel(E+gW)=\Rel(E)\cap\Rel(W).
-\]
-Thus every exact recurrence relation is either protected for the entire
-coupling ray or occurs at only one accidental resonance strength.  The
-compact future is the annihilator of this shared relation lattice.  On a
-finite \(D\)-level carrier this gives
-\(\tau+\rho=D-1\): every lost recurrence constraint becomes one independent
-direction of completed phase motion.
+Quantum recurrence is controlled by exact spectral relations, whereas every
+finite-time experiment is continuous under small changes of the Hamiltonian.
+We show that this mismatch produces a sharp singularity: one arbitrarily weak
+diagonal operator-Schmidt-rank-one interaction can convert the completed
+recurrence geometry of two finite systems from at most additive temporal
+dimension to the full product-space dimension, create at least the product of
+their non-global spectral capacities in new independent phase directions,
+and simultaneously drive every full-support replica moment to its minimum
+collision value.  Nevertheless every
+operator-normalized Heisenberg observable changes by at most the explicit
+dimension-free Duhamel bound $2|t|\delta$ on a perturbation of norm at most
+$\delta$.
 
-For arbitrary factor spectra, an interaction direction can be chosen
-separable.  In finite dimension almost every such interaction converts the
-additive uncoupled bound \(\tau\le m+n\) into the full product value
-\(\tau=(m+1)(n+1)-1\), creating at least \(mn\) temporal directions.  For
-any two countable pure-point spectra, including unbounded ones, one
-arbitrarily weak self-adjoint trace-class separable direction makes the
-shared relation lattice trivial.  Every coupling strength outside one
-countable set then preserves the Hamiltonian domain, realizes every finite
-temporal dimension, makes every future phase tail dense in the full
-countable projective torus, and leaves time zero as the only exact global
-return.  Nevertheless every positive summable recurrence probe sweeps its
-entire allowed interval forever, with each interior value reached inside a
-uniformly bounded waiting window from every starting time.
+This singular principle organizes four structural laws.  Loss selects the
+persistent carrier and fixes the exact asymptotic return ceiling.  Spectral
+constraints determine completed temporal dimension: for any finite
+interaction graph, generic onsite-plus-edge Hamiltonians have an exact
+component formula, subsystem temporal curvature reconstructs the supplied
+graph, and homogeneous nearest-neighbour qudit paths have strict return
+density doubly exponential in their length.  Observability is governed by
+target capacity: coherence-graph rank gives the visible exponent, every
+finite family of Born histories either never exits a prescribed tolerance
+or returns after a same-record exit within a least graph--resolution
+certificate, while
+static connected networks and bounded-weight Pauli Hamiltonians obey exact
+completed-time circuit-target bounds and recurrent hard-epoch laws without
+becoming Haar random.  An explicit nested family of static diagonal
+nearest-neighbour qubit paths has a bounded infinite-chain completion, a
+two-sided linear operator-norm circuit-complexity envelope throughout a
+finite laboratory-time window, an exact factorial-four return, and exact
+complexity reflection about that return.  Its actual complexity rises
+strictly above the zero-complexity endpoints at every ramp point and cannot
+backtrack across sufficiently scale-separated laboratory times.  Yet an
+explicit pair of increasing times inside the same window has exact
+complexities at least $1514$ and at most $1513$, respectively.  Thus a
+linear ramp envelope does not imply literal pointwise monotonicity, even for
+one fixed static nearest-neighbour Hamiltonian.  Finite-horizon information remains
+incomplete: one common earlier record, common finite moments and one common
+spectrum are compatible with every later return probability.
 
-The same coupling changes every normalized Heisenberg observable by at most
-\(2|g|T\|W\|\) through time \(T\).  Hence the coupled dynamics converge
-uniformly to the uncoupled dynamics on every bounded horizon as \(g\to0\),
-while their completed future hull stays maximal along arbitrarily small
-nonexceptional couplings.  Infinite-time completion and zero-coupling limits
-therefore do not commute.  No simplicity or rational-independence assumption
-is used.
+The finite theory extends to countable pure-point spectra.  Arbitrarily small
+domain-preserving trace-class perturbations can produce unbounded
+finite-window temporal rank, dense future projective orbits, no nonzero exact
+global return, and recurrent traversal of the full range of every positive
+summable phase-defect probe.  Separately, one absolutely summable diagonal
+l-bit field has uniform finite-volume completion, bounded self-adjoint
+$L^2$ Hamiltonians, strongly continuous unitary dynamics, and a
+nonterminating diameter-resolved phase cascade.  Completed-time
+thermodynamic densities take long-time limit at fixed finite volume before
+system size; nested path has a uniformly convergent static-energy
+completion.  We assert no first-return scale, pointwise monotonicity of complexity,
+infinite-volume orbit recurrence, or Haar randomization.
 \end{abstract}
 
-\noindent\textbf{One-sentence summary.}
-For any pair of countable pure-point quantum spectra, one separable
-interaction direction makes all but countably many coupling strengths share
-a maximally rich infinite future, although every bounded-time observation
-converges to the uncoupled system as the coupling vanishes.
-
-\section{The infinite future is not a continuous observable}
-
-Quantum recurrence is commonly phrased as an existence statement: an
-isolated finite system eventually returns close to its initial state
-\cite{BocchieriLoinger1957}. Recent work has made return times quantitative
-\cite{CamposVenuti2015,KotowskiOszmaniec2026,GuptaShort2026}, classified exact
-Floquet periods arithmetically \cite{AnandEtAl2026}, and demonstrated or
-proposed recurrences in controllable many-body devices
-\cite{RauerEtAl2018,KarimiEtAl2026}. These advances leave a prior question
-unanswered:
-\begin{equation}
- \boxed{\begin{gathered}
- \text{Can bounded observation certify whether a weak interaction changed}\\
- \text{the geometry of the infinite future?}
- \end{gathered}}
- \label{eq:question}
-\end{equation}
-
-The distinction matters because ordinary perturbation theory controls a
-fixed time before the perturbation is removed, while recurrence completes
-time first. Exact energy relations can therefore be invisible on every
-prescribed horizon yet decisive after completion. This is not exponential
-sensitivity of trajectories. It is a noncommutation of weak perturbation and
-infinite-time limits.
-
-We identify both the invariant and the conversion mechanism behind that
-noncommutation.  After global phase is removed, every pure-point spectral
-packet defines a map from finite integer characters to real detunings.  For
-an affine coupling ray \(E+gW\), each character detunes affinely in \(g\).
-It is therefore either annihilated by both \(E\) and \(W\), and survives for
-all strengths, or vanishes at only one strength.  Countability of the
-characters converts this elementary dichotomy into a global law: outside a
-countable resonance set, the complete coupled relation lattice is the
-intersection of the bare and interaction lattices.  Its annihilator is the
-completed future hull.
-
-On a finite carrier, rank--nullity becomes a conservation law: constraint
-rank plus temporal dimension equals total projective capacity.  Interaction
-moves characters out of the kernel and therefore converts constraints
-one-for-one into dimensions of completed phase motion.  At finite time the
-same kernel is seen through a sinc regularization; infinite-time completion
-turns that continuous profile into a Boolean relation indicator.
-
-The ingredients have classical parents. Kronecker--Weyl theory connects
-integer relations with torus orbit closures; rationally independent vectors
-are generic; rank--nullity splits kernel and image; peripheral spectral theory
-selects persistent open-system modes \cite{AmatoEtAl2023}; and phase cycling
-selects Fourier pathways \cite{Bain1984}.  The result here is their coupling
-completion: an exact generic protected lattice for every countable affine
-spectral ray, together with one arbitrarily weak separable trace-class
-direction that makes this lattice trivial for arbitrary input spectra and
-for all but countably many coupling strengths.  The same direction remains
-uniformly indistinguishable from zero by every normalized probe on any fixed
-bounded horizon as the strength vanishes.  Finite-time stability and
-completed-time geometry are therefore separated by a singular limit.
-
-\section{One map determines completed recurrence}
-
-Let \(I\) be a nonempty finite set of visible persistent energy sectors,
-with energies \(E_i\in\R\). Global phase is unobservable in survival
-probabilities. The projective character lattice is therefore
-\begin{equation}
- \mathsf K_I=\left\{k\in\Z^I:\sum_{i\in I}k_i=0\right\}.
-\end{equation}
-Define the projective detuning map
-\begin{equation}
- D_E:\mathsf K_I\longrightarrow\R,
- \qquad D_E(k)=\sum_{i\in I}k_iE_i .
- \label{eq:detuning}
-\end{equation}
-Its kernel
-\begin{equation}
- \Rel(E)=\ker D_E
- \label{eq:lattice}
-\end{equation}
-is the complete balanced integer relation lattice of the spectrum.
-
-Uniformly sample time on \([-T,T]\), \(T>0\), and push it to the phase torus
-\(t\mapsto(\ee^{itE_i})_{i\in I}\). Denote the resulting phase law by
-\(\nu_{E,T}\). Its character transform is exact:
-\begin{equation}
- \widehat\nu_{E,T}(k)
- =\frac1{2T}\int_{-T}^{T}\ee^{itD_E(k)}\,dt
- =\sinc\!\left(TD_E(k)\right),
- \qquad \sinc u=\begin{cases}\sin u/u,&u\ne0,\\1,&u=0.\end{cases}
- \label{eq:one-law}
-\end{equation}
-Consequently
-\begin{equation}
- \widehat\nu_{E,T}(k)\longrightarrow
- \mathbf 1_{\Rel(E)}(k).
- \label{eq:indicator}
-\end{equation}
-The limiting Fourier data determine a unique probability law
-\(\nu_{E,\infty}\) on the phase torus. Thus the completed phase ensemble and
-the relation lattice are equivalent invariants: either determines the other.
-
-The almost-sure projective character constraints of
-\(\nu_{E,\infty}\) are exactly \(\Rel(E)\). Define the completed temporal
-dimension \(\tau(E)\) as the rational dimension of the projective character
-space left after these measurable constraints are imposed. If \(|I|=d+1\),
-then
-\begin{equation}
- \boxed{\tau(E)+\rho(E)=d,}
- \qquad
- \rho(E)=\dim_{\Q}\operatorname{span}_{\Q}\Rel(E).
- \label{eq:conservation}
-\end{equation}
-Equivalently, \(\tau(E)\) is the rational rank of the gaps
-\(E_i-E_{i_0}\) relative to any reference level \(i_0\). The term
-``temporal dimension'' here means dimension of completed observable phase
-motion. It does not mean a further coordinate of spacetime.
-
-Equation~\eqref{eq:conservation} is the finite-rank shadow of the coupling
-law.  A
-perturbation cannot change the total projective capacity \(d\).  It can only
-transfer rank between exact constraints and independent phase motion.  If a
-perturbation raises temporal dimension from \(\tau_0\) to \(\tau_1\), then
-
-\begin{equation}
- \boxed{\tau_1-\tau_0=\rho_0-\rho_1.}
- \label{eq:conversion}
-\end{equation}
-
-The interaction theorems below show that this algebraic transfer can be
-complete, generic and arbitrarily weak.
-
-\begin{theorem}[Projective recurrence completion]
-\label{thm:completion}
-For every nonempty finite real spectrum, equations
-\eqref{eq:one-law}--\eqref{eq:conservation} hold. A projective character is an
-almost-sure constraint of the completed phase law exactly when it is an exact
-balanced integer energy relation. At replica order \(n\), the resolved
-survival-fidelity hierarchy contains exactly those constraints whose positive
-character mass
-\begin{equation}
- h(k)=\sum_i\max(k_i,0)
- \label{eq:height}
-\end{equation}
-is at most \(n\). Every character first appears at the exact order \(h(k)\).
-\end{theorem}
-
-The theorem changes the interpretation of recurrence. A return time is one
-sample from an orbit. The invariant object is instead the kernel of the map
-that generates all projective phases. Approximate returns, exact periods,
-long-time phase laws and resolved nonlinear correlations are different probes
-of that kernel and its quotient.
-
-\section{Recurrence walls are singular time completions}
-
-Let \(X\) be any real normed control space. Allow each energy to respond by a
-continuous linear functional \(R_i:X\to\R\), so
-\begin{equation}
- E_i(x)=E_i+R_i(x).
-\end{equation}
-For a character \(k\), define the control detuning
-\begin{equation}
- D_R(k)(x)=\sum_i k_iR_i(x).
-\end{equation}
-Then
-\begin{equation}
- D_{E(x)}(k)=D_E(k)+D_R(k)(x).
- \label{eq:affine}
-\end{equation}
-The recurrence wall of \(k\) is
-\begin{equation}
- \Wall_k=\{x\in X:D_{E(x)}(k)=0\}.
-\end{equation}
-
-Equation \eqref{eq:affine} gives an exhaustive trichotomy. If \(D_R(k)=0\)
-and \(D_E(k)=0\), then \(\Wall_k=X\): the relation is protected. If
-\(D_R(k)=0\) and \(D_E(k)\ne0\), then \(\Wall_k=\varnothing\). Otherwise
-\(\Wall_k\) is a closed nowhere-dense affine hyperplane. No differentiability,
-probability distribution, finite-dimensional control space or generic
-Hamiltonian is assumed.
-
-Define the finite-time reporter and completed order parameter
-\begin{align}
- \mathcal R_{k,T}(x)&=\sinc\!\left(TD_{E(x)}(k)\right),
- \label{eq:reporter}\\
- \mathcal R_{k,\infty}(x)&=\mathbf 1_{\Wall_k}(x).
- \label{eq:completed-reporter}
-\end{align}
-
-\begin{theorem}[Singular recurrence-wall law]
-\label{thm:wall}
-For every nonzero finite \(T\), \(x\mapsto\mathcal R_{k,T}(x)\) is continuous.
-For every \(x\), it converges as \(T\to\infty\) to
-\(\mathcal R_{k,\infty}(x)\). At every transverse wall point
-\(x_0\in\Wall_k\), where \(D_R(k)\ne0\), the completed reporter is
-discontinuous. Along every direction \(v\in X\), its complete normal boundary
-layer is
-\begin{equation}
- \boxed{
- \mathcal R_{k,T}\!\left(x_0+\frac{\xi}{T}v\right)
- =\sinc\!\left(\xi D_R(k)(v)\right).}
- \label{eq:scaling}
-\end{equation}
-Thus every transverse wall has inverse-time width and the same scale-free
-line shape after centring and rescaling.
-\end{theorem}
-
-The pointwise limit of continuous reporters is therefore singular on every
-unprotected recurrence wall. Figure~\ref{fig:limits} summarizes the order of
-limits. Taking weak detuning first preserves the wall value; completing time
-first removes it at every nonzero detuning.
-
-\begin{figure}[t]
-\centering
-\begin{tikzpicture}[
-  node distance=11mm and 17mm,
-  box/.style={draw,rounded corners,align=center,inner sep=5pt,font=\small},
-  arr/.style={-{Latex[length=2mm]},thick},
-  lab/.style={font=\footnotesize,fill=white,inner sep=1pt}]
-\node[box] (finite) {\(\sinc(T\delta)\)\\finite \(T\), nonzero \(\delta\)};
-\node[box,right=of finite] (topmid) {first \(\delta\to0\)\\value \(1\)};
-\node[box,right=of topmid] (topend) {then \(T\to\infty\)\\completed value \(1\)};
-\node[box,below=of topmid] (botmid) {first \(T\to\infty\)\\value \(0\) for \(\delta\ne0\)};
-\node[box,right=of botmid] (botend) {then \(\delta\to0\)\\completed value \(0\)};
-\draw[arr] (finite)--(topmid);
-\draw[arr] (topmid)--(topend);
-\draw[arr] (finite)|-(botmid);
-\draw[arr] (botmid)--(botend);
-\draw[red!65!black,dashed,thick] (topend.south)--(botend.north);
-\node[right=2mm of topend.south east,align=left,font=\footnotesize,
-  text=red!65!black] {different\\completed limits};
-\end{tikzpicture}
-\caption{Recurrence is regular at every finite time and singular only after
-time completion. Equation \eqref{eq:scaling} resolves the entire boundary
-layer rather than only its two limiting values.}
-\label{fig:limits}
-\end{figure}
-
-For a countable spectrum, if the control family moves every nonzero finitely
-supported projective character, the complement of all walls is comeager and
-dense in every Baire control space. Along a transverse one-parameter ray,
-each character appears at at most one coupling strength and the complete
-exceptional set is countable.
-
-Protection is equally exact. Let \(V\) be any declared family of allowed
-spectral perturbations containing zero. A character remains a relation after
-every perturbation in \(V\) if and only if
-\begin{equation}
- k\in\Rel(E)
- \quad\text{and}\quad
- D_v(k)=0\ \text{for every }v\in V.
- \label{eq:protection}
-\end{equation}
-Unrestricted independent energy shifts protect only the zero character. If
-perturbations must be constant inside declared sectors, protected characters
-are exactly those whose integer charge vanishes separately in every sector.
-Equation \eqref{eq:protection} is the positive boundary of the instability:
-robust exact recurrence requires a restriction or symmetry of the allowed
-controls.
-
-\section{Every positive time dimension is arbitrarily near}
-
-The wall picture is not confined to isolated exceptional examples. For a
-\((d+1)\)-level spectrum, let \(\tau(E)\in\{0,\ldots,d\}\) be the completed
-temporal dimension of Theorem~\ref{thm:completion}.
-
-\begin{theorem}[Dense recurrence stratification]
-\label{thm:dense}
-For every \(1\le k\le d\),
-\begin{equation}
- \{E\in\R^{d+1}:\tau(E)=k\}
- \quad\text{is dense in }\R^{d+1}.
- \label{eq:dense-ranks}
-\end{equation}
-If \(d\ge2\), the map \(E\mapsto\tau(E)\) is continuous at no spectrum.
-The relation-free stratum \(\rho(E)=0\) and a constrained stratum
-\(\rho(E)=d-1\) are both dense.
-\end{theorem}
-
-The rank-zero temporal stratum consists of spectra with all visible gaps
-zero and is not dense; this is why \eqref{eq:dense-ranks} is stated for
-positive dimensions. Every positive dimension, including the maximal one,
-is nevertheless arbitrarily near every spectrum.
-
-The result is constructive at theorem level. Choose \(k\) nearby real gaps
-that are linearly independent over \(\Q\); approximate every remaining gap
-by a rational multiple of one chosen basis gap. The new packet has exact
-rational rank \(k\) and can be made coordinatewise arbitrarily close to the
-original packet. Equation \eqref{eq:conservation} transfers this density to
-the dual relation ranks.
-
-Dense arithmetic stratification alone does not establish an operational
-no-go. The following result does.
-
-Let \(H_E=\diag(E_0,\ldots,E_d)\) and
-\begin{equation}
- \alpha_E^t(O)=\ee^{-itH_E}O\ee^{itH_E}.
-\end{equation}
-
-\begin{theorem}[All-rank finite-horizon indistinguishability]
-\label{thm:horizon}
-Fix any finite spectrum \(E\), horizon \(H\ge0\), tolerance \(\eta>0\), and
-target \(1\le k\le d\). There is a spectrum \(E'\) such that
-\begin{align}
- \tau(E')&=k,\label{eq:target-rank}\\
- |E'_i-E_i|&<\frac{\eta}{2(H+1)}\quad\text{for every }i,\label{eq:close-energy}\\
- \|\alpha_{E'}^t(O)-\alpha_E^t(O)\|&<\eta
- \label{eq:all-probes}
-\end{align}
-for every operator \(O\) with \(\|O\|\le1\) and every \(|t|\le H\).
-Consequently, when \(d\ge2\), a nearby Hamiltonian with a different completed
-temporal dimension always satisfies \eqref{eq:all-probes}.
-\end{theorem}
-
-The bound is independent of Hilbert-space dimension and of the selected
-probe. It follows from the Duhamel estimate
-\begin{equation}
- \|\alpha_{E'}^t(O)-\alpha_E^t(O)\|
- \le2|t|\,\|H_{E'}-H_E\|\,\|O\|.
- \label{eq:duhamel}
-\end{equation}
-Theorem~\ref{thm:horizon} answers \eqref{eq:question}: no positive tolerance
-and no bounded horizon can robustly certify exact completed temporal dimension, even
-if every normalized operator is available as a probe. This is stronger than
-insufficient sampling or a poor choice of observable.
-
-\section{Interaction converts constraints into time}
-
-The global coupling law is simplest before imposing a form on the
-interaction.  Let \(I\) be countable, let
-\(\mathsf K_I^{\rm fin}\) be the finitely supported integer characters of
-total charge zero, and for any profile \(E:I\to\R\) put
-\[
- D_E(k)=\sum_i k_iE_i,
- \qquad \Rel(E)=\{k\in\mathsf K_I^{\rm fin}:D_E(k)=0\}.
-\]
-
-\begin{theorem}[Generic protected-relation law]
-\label{thm:protected-ray}
-For every pair of real profiles \(E,W:I\to\R\), there is a countable set
-\(C(E,W)\subset\R\) such that every nondegenerate interval contains a
-coupling strength outside \(C(E,W)\), and
-\begin{equation}
- \boxed{\Rel(E+gW)=\Rel(E)\cap\Rel(W)}
- \qquad(g\notin C(E,W)).
- \label{eq:protected-ray}
-\end{equation}
-More precisely, if \(D_W(k)\ne0\), then character \(k\) is a relation at
-the unique possible strength
-\begin{equation}
- g_k=-\frac{D_E(k)}{D_W(k)}.
- \label{eq:wall-crossing}
-\end{equation}
-If \(D_E(k)=D_W(k)=0\), it is protected at every strength.  At every finite
-observation time its wall reporter is exactly
-\begin{equation}
- \sinc\!\left(T[D_E(k)+gD_W(k)]\right).
- \label{eq:coupling-sinc}
-\end{equation}
-\end{theorem}
-
-The theorem has no genericity premise: it classifies every affine coupling
-ray.  Genericity is the conclusion.  All accidental relations are confined
-to the countable set of crossings \eqref{eq:wall-crossing}; every other
-strength retains only relations common to bare Hamiltonian and interaction.
-The next two results construct separable directions for which that protected
-intersection is zero.
-
-The conservation law becomes physically nontrivial for a composite system.
-Let \(L_0,\ldots,L_m\) and \(R_0,\ldots,R_n\) be arbitrary real spectra.  The
-uncoupled product Hamiltonian has energies
-
-\begin{equation}
- E^{(0)}_{ij}=L_i+R_j,
- \qquad 0\le i\le m,\quad 0\le j\le n .
- \label{eq:product-energy}
-\end{equation}
-
-Its \(D=(m+1)(n+1)\) levels have temporal dimension at most \(m+n\), because
-all gaps are generated by gaps of the two factors.  It therefore carries at
-least \(mn\) independent projective recurrence constraints.  Couple the
-systems by one separable diagonal interaction,
-
-\begin{equation}
- E^{(x,y)}_{ij}=L_i+R_j+x_i y_j .
- \label{eq:separable-energy}
-\end{equation}
-
-Here ``separable'' means operator-Schmidt rank one across the two spectral
-factors; it does not mean a rank-one operator on the product Hilbert space or
-geometric locality within either factor.
-
-\begin{theorem}[Complete interaction conversion]
-\label{thm:interaction}
-For every pair of finite spectra in \eqref{eq:product-energy}:
-\begin{enumerate}[label=\textup{(\alph*)}]
-\item factor choices \((x,y)\) for which
-\[
- \tau(E^{(x,y)})=D-1=mn+m+n,\qquad \rho(E^{(x,y)})=0
- \tag{5.1}\label{eq:full-conversion}
-\]
-form a dense residual set whose complement has Lebesgue measure zero; the
-null-complement statement remains true inside every parameter region;
-\item for every \(\delta>0\), one such interaction can be chosen with
-\(\|H_{x,y}-H_0\|\le\delta\), and it obeys
-\[
- \|\alpha_{x,y}^t(O)-\alpha_0^t(O)\|
- \le 2|t|\delta\|O\|
- \tag{5.2}\label{eq:interaction-duhamel}
-\]
-for every bounded observable and every real \(t\);
-\item the interaction converts the complete initial relation rank into
-temporal dimension and creates at least \(mn\) new directions:
-\[
- \tau(E^{(x,y)})-\tau(E^{(0)})=\rho(E^{(0)})\ge mn;
- \tag{5.3}\label{eq:interaction-gain}
-\]
-\item for every positive full-support spectral weight, every long-time
-survival-fidelity replica moment attains the universal permutation collision
-floor, at every replica order;
-\item relative to every spectral anchor, every weighted recurrence probe has
-completed-time frequency between the Haar volumes of its strict
-half-tolerance and weak full-tolerance targets.
-\end{enumerate}
-No simplicity, nondegeneracy or arithmetic premise is imposed on either
-input spectrum; genericity concerns only the interaction factors.
-\end{theorem}
-
-Generic nondegenerate gaps in geometrically local Hamiltonian families are
-known to have strong entanglement consequences \cite{Huang2021}, and explicit
-finite one-dimensional free-fermion models with rationally independent
-single-particle energies are known for every system size
-\cite{RiddellBertini2024}.  Those results are important comparators, not
-instances silently claimed as new.  Nondegenerate gaps exclude selected
-order-two coincidences; maximal projectivity excludes every balanced integer
-relation.  Theorem~\ref{thm:interaction} starts from arbitrary spectra and
-proves complete conversion under one separable coupling.  It does not assert
-geometric locality within the spectral factors.
-
-The theorem changes the scaling of the completed joint future.  Without
-interaction, temporal capacity grows at most additively with the two factor
-capacities.  An arbitrarily weak coupling can make it grow as the dimension
-of the product carrier.  Equation~\eqref{eq:interaction-duhamel} simultaneously
-shows why no bounded-time experiment has a uniform positive resolution of
-this conversion: resolving a coupling of size \(\delta\) requires observation
-time of order at least \(1/\delta\).
-
-For equal spectral weights, put
-
-\[
- \mathcal A_\eta=
- \left\{z\in\T^r:\left|\frac1r\sum_{i=1}^r z_i\right|
- \ge1-\eta\right\}.
-\]
-
-This high-fidelity Haar target has an exact half-dimensional
-small-tolerance exponent.  If \(r\ge2\), \(0<\eta\le(r-1)/r\), and
-\(X=(r-1)/(r\eta)\), then
-
-\begin{equation}
- \left(\frac{\sqrt{2/X}}{\pi}\right)^{r-1}
- \le \operatorname{Vol}(\mathcal A_\eta)
- \le r\exp\!\left(\frac\pi4(r-1)\right)X^{-(r-1)/2}.
- \label{eq:sharp-uniform-volume}
-\end{equation}
-
-Thus both sides scale as
-\(\eta^{(r-1)/2}\): the return-volume exponent is exactly one half of
-projective temporal dimension.  No dimension-linear remainder contaminates
-this exponent.  General unequal weights retain the reverse-water allocation
-described below.
-
-\section{Countably infinite futures}
-
-The finite conservation law has a relation-hull form that does not require
-rational independence. Let \(I\) be countable, let
-\(\omega:I\to\R\) be arbitrary, and let
-\[
- \Rel_\omega=
- \left\{k\in\Z^{(I)}:\sum_i k_i\omega_i=0\right\}
-\]
-be its lattice of finitely supported integer relations. Its annihilator in
-the countable torus is
-\[
- \mathcal H_\omega=
- \left\{z\in\T^I:z^k=1\text{ for every }k\in\Rel_\omega\right\}.
-\]
-For strictly positive summable weights \(a_i\), define the phase-defect probe
-\begin{equation}
- S_{a,\omega}(t)=\sum_i a_i(1-\cos(\omega_i t)).
- \label{eq:screw-series}
-\end{equation}
-
-\begin{theorem}[Countable relation-hull law]
-\label{thm:relation-hull}
-For every countable frequency family and every strictly positive summable
-probe, the closure of every future phase tail is exactly
-\(\mathcal H_\omega\). There is a number
-\(M=M(a,\Rel_\omega)\) such that, after every starting time,
-\begin{equation}
- \overline{\{S_{a,\omega}(t):t\ge T\}}=[0,M].
- \label{eq:future-interval}
-\end{equation}
-The lower and upper limits are \(0\) and \(M\). Every value in \([0,M]\)
-is approximated to arbitrary accuracy inside a uniformly bounded waiting
-window from every starting time, and every value in \((0,M)\) is attained
-exactly with the same bounded-gap property. Finally,
-\begin{equation}
- M=2\sum_i a_i
- \quad\Longleftrightarrow\quad
- \sum_i k_i\ \text{is even for every }k\in\Rel_\omega .
- \label{eq:parity-endpoint}
-\end{equation}
-No simplicity or rational-independence premise is used.
-\end{theorem}
-
-This theorem is the infinite universal law. Relations do not merely obstruct
-recurrence; they define the compact space of all attainable futures. The
-weights choose a continuous observable on that space, and compact minimal
-motion forces the complete recurrent interval. Rational independence is the
-extreme case \(\Rel_\omega=\{0\}\), for which the hull is the full countable
-torus and the absolute endpoint in \eqref{eq:parity-endpoint} is attained.
-Infinite-torus minimality and orbit-closure classification have independent
-mathematical theory \cite{Baroni2026}; the relation-hull theorem adds the
-complete summable-probe value and bounded-waiting laws used here.
-
-Finite interaction conversion now becomes simultaneous saturation at
-countable infinity. Let \(A,B\) be countable spectral labels, let
-\(L:A\to\R\) and \(R:B\to\R\) be arbitrary, possibly degenerate and
-unbounded, and define the uncoupled Hamiltonian on its maximal
-square-summability domain.
-
-\begin{theorem}[Infinite separable recurrence-ray completion]
-\label{thm:countable}
-For every \(\delta>0\), there are absolutely summable real factors
-\(u:A\to\R\), \(v:B\to\R\) such that the separable diagonal interaction
-\[
- W_{ij}=u_i v_j
-\]
-is self-adjoint, trace class and satisfies \(\|W\|<\delta\).  There is one
-countable set \(C\subset\R\), whose complement meets every nondegenerate
-interval, such that for every \(g\notin C\), addition of \(gW\) preserves the
-maximal domain and self-adjointness of the arbitrary unbounded diagonal
-Hamiltonian with energies \(L_i+R_j\), and the coupled spectrum has no
-nonzero finitely supported projective relation.  More precisely, its
-relation lattice is the intersection in \eqref{eq:protected-ray}; the chosen
-\(W\) has no nonzero relation, so this intersection is trivial.
-
-If \(A\times B\) is infinite, every one of those nonexceptional strengths
-has all of the following consequences simultaneously: every finite temporal
-dimension occurs on an embedded finite window; relative to every anchor,
-every future phase tail is dense in the full countable projective torus;
-zero is the only exact global projective return; and every strictly positive
-summable probe obeys Theorem~\ref{thm:relation-hull} with
-\(M=2\sum_i a_i\).  Every interior recurrence level is therefore reached
-exactly inside a uniformly bounded waiting window from every starting time.
-For every finite spectral window and bounded observable,
-\begin{equation}
- \|\alpha_g^t(O)-\alpha_0^t(O)\|
- \le 2|t|\,|g|\delta\,\|O\|.
- \label{eq:infinite-ray-duhamel}
-\end{equation}
-\end{theorem}
-
-The construction assigns rapidly decaying bivariate coded monomials to the
-countable labels. Every nonzero finite relation becomes a nonzero polynomial
-in two small parameters. Countable Baire avoidance selects one parameter pair
-outside all zero sets simultaneously. Absolute summability makes the
-interaction direction trace class and operator-norm small.  The affine
-crossing law then removes only a countable set of strengths along the entire
-ray.  Bounded diagonal perturbation preserves the maximal domain at every
-remaining strength. Local finiteness belongs to the relation character, not
-to the spectrum, which is why one interaction direction controls all finite
-windows and all nonexceptional couplings simultaneously.
-
-The two infinite conclusions are complementary. Theorem
-\ref{thm:relation-hull} classifies every countable relation pattern.
-Theorem~\ref{thm:countable} proves that one arbitrarily weak separable
-spectral direction moves any pair of countable pure-point spectra to the
-full-hull extreme at every coupling strength outside one countable set.
-Exact global periodicity then disappears, but approximate and observable
-recurrence become maximally rich rather than disappearing with it.
-
-\section{Persistent selection: closed, infinite and open dynamics}
-
-The detuning law acts on the part of a spectrum that survives completion. We
-now identify that front end without assuming a finite closed system.
-
-\subsection{Every probability energy spectrum}
-
-Let \(\mu\) be any probability measure on \(\R\), with survival amplitude and
-fidelity
-\begin{equation}
- A_\mu(t)=\int_\R\ee^{itE}\,d\mu(E),
- \qquad F_\mu(t)=|A_\mu(t)|^2.
-\end{equation}
-Uniform centred-time sampling of \(F_\mu\) has a unique limiting probability
-law on \([0,1]\). Let \(p_{\rm pp}\) be the total point-spectrum mass and let
-\(\mu_{\rm pp}^{\rm norm}\) be its normalized point law when
-\(p_{\rm pp}>0\). Then
-\begin{equation}
- \boxed{
- \mathcal L_\infty(F_\mu)
- =\left(x\mapsto p_{\rm pp}^{2}x\right)_*
-   \mathcal L_\infty(F_{\mu_{\rm pp}^{\rm norm}}).}
- \label{eq:point-scale}
-\end{equation}
-At \(p_{\rm pp}=0\), the right-hand side is the point mass at zero. Equation
-\eqref{eq:point-scale} holds for finite, countable, absolutely continuous,
-singular-continuous and mixed spectra. Continuous sectors disappear from
-every stationary fidelity statistic, not merely from the first mean.
-
-If \(\Delta\mu\) denotes the law of \(E-E'\) for independent
-\(E,E'\sim\mu\), every stationary moment is the zero-sum gap-collision mass
-\begin{equation}
- \lim_{T\to\infty}\frac1{2T}\int_{-T}^{T}F_\mu(t)^n\,dt
- =((\Delta\mu)^{*n})(\{0\}).
- \label{eq:collision}
-\end{equation}
-All continuous stationary fidelity statistics follow from these moments.
-This is the arbitrary-spectrum completion in which the finite persistent
-relation law is embedded.
-
-\subsection{Every finite contraction}
-
-Let \(T\) be any contraction on a finite-dimensional complex Hilbert space,
-\(\|T\|\le1\), and \(x\) a normalized vector. Let \(\Per_T\) be the span of
-eigenvectors with unit-modulus eigenvalue and \(P_\Per\) its orthogonal
-projection. Define persistent mass
-\begin{equation}
- p_T(x)=\|P_\Per x\|^2.
-\end{equation}
-The raw return amplitude has the exact decomposition
-\begin{equation}
- \langle x,T^nx\rangle
- =\sum_{\lambda\in\sigma(T),\ |\lambda|=1}
-   \|P_\lambda x\|^2\lambda^n+r_n,
- \qquad r_n\longrightarrow0.
- \label{eq:peripheral}
-\end{equation}
-Modulo histories that vanish as \(n\to\infty\), the full raw history is
-therefore exactly its peripheral carrier. Its quotient class is zero if and
-only if \(p_T(x)=0\). If \(p_T(x)>0\), the carrier is \(p_T(x)\) times the
-characteristic function of the normalized peripheral observer spectrum.
-
-Persistent mass also gives the exact asymptotic return ceiling:
-\begin{align}
- a<p_T(x)&\Longrightarrow
-   \forall M\ \exists n>M:\quad
-   a\le|\langle x,T^nx\rangle|,\label{eq:below-ceiling}\\
- p_T(x)<a&\Longrightarrow
-   \exists B\ \forall n\ge B:\quad
-   |\langle x,T^nx\rangle|<a.\label{eq:above-ceiling}
-\end{align}
-Thus finite loss changes how much can return; it does not create a new
-asymptotic arithmetic mechanism. The projective detuning law applies to the
-surviving peripheral phases.
-
-We do not infer arbitrary infinite open-system dynamics from
-\eqref{eq:peripheral}. The proved open scope is every finite contraction. A
-general infinite open extension requires additional operator-asymptotic
-structure.
-
-\section{Exact recovery and finite resources}
-
-The protected-relation law is not restricted to an unobservable Boolean invariant.
-For positive finite spectral weights \(w_i\), the \(n\)-replica survival
-fidelity is a finite phase polynomial. The coefficient of a balanced
-character \(k\) is nonnegative. It is zero for \(n<h(k)\) and strictly
-positive at \(n=h(k)\). Multiplying this coefficient by
-\(\mathcal R_{k,T}(x)\) gives the resolved wall signal, including the exact
-sinc profile \eqref{eq:scaling}.
-
-The coefficient can be isolated from scalar survival-fidelity data by phase
-cycling. At order \(n\), independently sample each phase on the grid of
-\(M=2n+1\) roots of unity and demodulate by \(-k\). The discrete Fourier sum
-returns the selected coefficient exactly: no ideal Haar integral is needed.
-The setting count is
-\begin{equation}
- N_{\rm settings}=(2n+1)^{|I|}.
- \label{eq:settings}
-\end{equation}
-Every nonzero one-coordinate grid \(M\le2n\) aliases two distinct frequencies
-inside the worst-case replica band \([-n,n]\). Hence \(2n+1\) is the sharp
-per-coordinate worst-case threshold. Equation \eqref{eq:settings} is a
-mathematical resource law, not a hardware feasibility claim. Noise, pulse
-errors and available phase controls must be assessed for a chosen platform.
-
-The coupling law nevertheless has a direct finite-time falsifier.  Consider
-two qudits with a tunable diagonal cross-Kerr interaction \(gX\otimes Y\);
-such couplings have been tuned in superconducting transmons and used for
-two-qutrit conditional-phase gates
-\cite{KounalakisEtAl2018,LuoEtAl2023}.  Prepare positive spectral weight on
-every selected level, choose a nonzero projective character \(k\),
-use replica order \(n=h(k)\), and phase-cycle on the
-\((2n+1)\)-point grid.  The demodulated coupling-scan signal is exactly
-\begin{equation}
- \mathcal S_{k,T}(g)=c_k\,
- \sinc\!\left(T[D_E(k)+gD_W(k)]\right),
- \qquad c_k>0,
- \label{eq:device-sinc}
-\end{equation}
-whereas every lower replica order gives zero.  For \(D_W(k)\ne0\), scans at
-different observation times collapse onto one parameter-free sinc curve
-against \(T D_W(k)(g-g_k)\), centred at the predicted crossing
-\(g_k=-D_E(k)/D_W(k)\).  The complete profile therefore has coupling scale
-\(1/(T|D_W(k)|)\).  This tests the finite-time law without waiting for a
-recurrence.  It is a protocol-level prediction, not a claim that current
-coherence times resolve the completed future.
-
-The protocol separates three quantities that ordinary survival fidelity
-aggregates:
-\begin{equation}
- \underbrace{p}_{\text{persistent mass}}
- \quad\longrightarrow\quad
- \underbrace{k\in\Rel(E)}_{\text{recurrence character}}
- \quad\longrightarrow\quad
- \underbrace{h(k)}_{\text{minimum replica depth}}.
-\end{equation}
-The control scan then measures the universal finite-time regularization of
-that character wall.
-
-\section{Approximate return clocks are a secondary shadow}
-
-The protected-relation law classifies exact completed structure. It also
-contains the earlier quantitative recurrence results once a finite persistent
-packet has been selected, but those bounds are not the source of the present
-singularity.
-
-For normalized positive weights \(w=(w_1,\ldots,w_r)\), define the least
-spectrum-uniform deadline \(T_w(\eta)\) for a return fidelity at least
-\((1-\eta)^2\). For a pivot \(j\), let
-\begin{equation}
- \mathcal H_j(w,\eta)=
- \min\left\{\frac12\sum_{i\ne j}\log\frac{w_i}{D_i}:
-   0<D_i\le w_i,\ \sum_{i\ne j}D_i\le\eta\right\},
- \qquad
- \mathcal H_{\rm proj}=\min_j\mathcal H_j .
- \label{eq:water}
-\end{equation}
-For \(r\ge2\) and \(0<\eta\le1\),
-\begin{equation}
- \mathcal H_{\rm proj}-\frac\pi4(r-1)-\log(2r)
- <\log T_w(\eta)
- \le\mathcal H_{\rm proj}+(r-1)\log(2\pi\sqrt2).
- \label{eq:clock}
-\end{equation}
-The same convex program gives, within explicit constants, the negative log of
-the exact Haar volume of the return target. Its optimizer has reverse-water
-form \(D_i^*=\min\{w_i,\lambda^{-1}\}\), algebraically identical to the
-parallel-Gaussian rate--distortion allocation \cite{CoverThomas2006}. No
-communication source or channel is inferred.
-
-For a finite contraction, after transient burn-in the normalized peripheral
-packet obeys \eqref{eq:clock} below the ceiling \(p_T(x)\). For a restricted
-observer family, only visible coherence edges contribute: if its coherence
-graph on \(d\) sectors has \(c\) connected components, its projective phase
-capacity is \(d-c\), and the corresponding elementary recurrence certificate
-has exponent \(d-c\). These are metric and observer shadows of the same
-persistent projective carrier.
-
-\section{Implication for late-time spectral inference}
-
-Late-time spectral form factors are used to diagnose discreteness, level
-correlations and quantum chaos, including in holographic models
-\cite{BarbonRabinovici2003,CotlerEtAl2017,ChoiKimSong2022}. Their plateaux are
-nonperturbative in descriptions that smooth or ensemble-average a spectrum.
-Recent analysis also finds that a semiclassical AdS black-hole saddle can
-lose dominance or disconnect from the relevant contour long before the
-asymptotic spectral-form-factor regime \cite{BarbonVelascoAja2026}.
-
-Theorems~\ref{thm:dense} and \ref{thm:horizon} give a model-independent
-inference boundary. Agreement of all normalized observables throughout any
-bounded time interval does not determine the exact arithmetic recurrence
-phase or completed temporal dimension of the spectrum. The countable theorem
-shows that this remains true under arbitrarily weak trace-class changes that
-preserve the domain of an unbounded Hamiltonian. A perturbative or
-semiclassical description can therefore be completely accurate on its stated
-time window without selecting the exact recurrence structure of its global
-spectral completion.
-
-This conclusion does not solve the black-hole information problem and does
-not decide whether a gravitational spectrum is discrete. It specifies what
-finite-time agreement cannot prove. Any positive claim about a black-hole
-plateau must supply global spectral or nonperturbative input not contained in
-bounded-time validation alone.
-
-\section{Discussion}
-
-The universal law is the generic protected-relation identity and its compact
-dual:
-\begin{equation*}
- \Rel(E+gW)=\Rel(E)\cap\Rel(W),\qquad
- \mathcal H_g=\operatorname{Ann}
-   \bigl(\Rel(E)\cap\Rel(W)\bigr)
- \quad(g\notin C),\qquad |C|\le\aleph_0.
-\end{equation*}
-Here \(\mathcal H_g\) is the completed projective phase hull.
-Its finite-rank and finite-time shadows are
-\begin{equation*}
- \tau+\rho=D-1,\qquad \Delta\tau=-\Delta\rho,\qquad
- \sinc(TD_E(k))\longrightarrow\mathbf 1_{\ker D_E}(k).
-\end{equation*}
-The shared kernel is protected recurrence arithmetic; its annihilator is the
-completed future hull.  Interaction transfers finite rank from constraints
-to temporal dimension; finite observation resolves every accidental crossing
-with a universal \(1/T\) profile; replica height fixes the first nonlinear
-order; and phase grids recover its coefficient.  Genericity is not assumed:
-every affine ray is classified, and only a countable set of strengths can
-deviate from its protected lattice.
-
-Three distinctions follow.
-
-First, exact return and approximate recurrence are not opposites.  A
-relation-free countable spectrum has no nonzero exact global return, yet every
-positive summable recurrence level is revisited with bounded gaps.  Relations
-specify the attainable hull; they do not decide whether recurrence exists.
-
-Second, bounded-time stability is compatible with completed-time
-singularity. Theorems~\ref{thm:horizon}, \ref{thm:interaction} and
-\ref{thm:countable} quantify this with every normalized operator probe,
-rather than with one chosen fidelity.  Along nonexceptional strengths
-\(g\to0\), every bounded-time dynamics converges to the uncoupled dynamics,
-while any bare relation not shared by \(W\) is absent from the completed
-future at every step of the sequence.
-
-Third, loss and arithmetic play different roles. Persistent point or
-peripheral spectrum determines what survives time completion. The detuning
-kernel then determines how that surviving information recurs. Continuous
-escape or contractive loss removes the carrier; weak coherent perturbations
-can instead change its completed dimension without appreciable bounded-time
-effect.
-
-These statements answer the robust finite-precision form of the question
-posed in \eqref{eq:question}. The exact infinite future is not a continuous
-observable of a Hamiltonian in the topology controlled by finite-time
-experiments.  Nevertheless it is not arbitrary: common relations select the
-generic coupled hull, interaction converts the remaining constraints into
-phase dimensions, and the finite-time sinc law resolves every exceptional
-crossing.
-
-\section{Methods and proof architecture}
-
-Equation \eqref{eq:one-law} follows by integrating one torus character over a
-symmetric time window. Fourier convergence on the compact finite torus gives
-the unique completed phase law. Its Fourier transform is the relation-lattice
-indicator, which yields equivalence of the ensemble and lattice. Rational
-rank--nullity for the projective detuning map gives
-\eqref{eq:conservation}; a positive/negative decomposition of each balanced
-integer character gives the exact replica height.
-
-The wall trichotomy is the classification of an affine level set of a
-continuous linear functional. A nonzero functional has a closed
-nowhere-dense level set. Continuity at finite \(T\) follows from the sinc
-formula. To prove discontinuity after completion, approach a wall point along
-\(x_0+(n+1)^{-1}v\) with \(D_R(k)(v)\ne0\): every point of the sequence is
-off-wall, while its limit is on-wall. Equation \eqref{eq:scaling} is exact
-algebra after the \(1/T\) substitution.
-
-For dense rank \(k\), select \(k\) nearby real gaps independent over
-\(\Q\), then approximate every remaining gap by a rational multiple of one
-selected nonzero gap. This gives exact rank \(k\) inside every coordinate
-neighbourhood. Since natural-valued rank has discrete fibres and two distinct
-positive rank strata are dense when \(d\ge2\), it is nowhere continuous.
-Combining the construction with \eqref{eq:duhamel} proves
-Theorem~\ref{thm:horizon}.
-
-For Theorem~\ref{thm:protected-ray}, every finitely supported character has
-the affine detuning
-\(D_{E+gW}(k)=D_E(k)+gD_W(k)\).  If \(D_W(k)\ne0\), it vanishes only at
-\(-D_E(k)/D_W(k)\); if \(D_W(k)=0\), it vanishes exactly when
-\(D_E(k)=0\), in which case it is protected for the whole ray.  A countable
-carrier has only countably many finitely supported integer characters, so
-the union of all accidental crossings is countable.  Outside it, the two
-implications give \eqref{eq:protected-ray} character by character.  The sinc
-identity gives \eqref{eq:coupling-sinc} exactly.
-
-For Theorem~\ref{thm:interaction}, each nonzero balanced character evaluates
-on \eqref{eq:separable-energy} as a nonzero polynomial in the factor
-parameters.  Its zero set is closed, nowhere dense and Lebesgue null.
-Countability of the integer character lattice makes the simultaneous
-complement dense, residual and full measure.  Maximal projectivity gives
-\eqref{eq:full-conversion}; rank--nullity gives
-\eqref{eq:interaction-gain}; Duhamel gives
-\eqref{eq:interaction-duhamel}; and character orthogonality gives every
-replica collision floor.  Weak convergence of the anchored phase flow gives
-the deterministic Haar-frequency sandwich.  The equal-weight target bounds
-in \eqref{eq:sharp-uniform-volume} follow from matching projective water-box
-and exponential-moment estimates.
-
-For Theorem~\ref{thm:relation-hull}, Pontryagin characters identify the orbit
-closure with the annihilator of \(\Rel_\omega\).  Every forward tail has the
-same closure because a closed subsemigroup of a compact group contains
-inverses.  The continuous screw functional maps the connected compact hull
-onto one interval.  Compact minimality gives bounded waiting windows;
-continuity in time gives exact crossings of every interior level.  The
-antipodal phase lies in the hull exactly under the parity condition
-\eqref{eq:parity-endpoint}.
-
-For Theorem~\ref{thm:countable}, inject the two label sets into the natural
-numbers and assign summable bivariate geometric monomial codes. Every nonzero
-finitely supported character produces a nonzero polynomial. Countably many
-such zero sets are avoided simultaneously in an arbitrarily small parameter
-box, now applied to the interaction profile itself; the resulting separable
-direction has no nonzero finite projective relation.  Theorem
-\ref{thm:protected-ray} then confines every accidental relation of the full
-affine ray to one countable set of coupling strengths.  Absolute summability
-of both factors gives a trace-class interaction and operator-norm control;
-bounded diagonal perturbation preserves the maximal domain for every scalar
-multiple. Infinite-torus Kronecker theory identifies each nonexceptional full
-future hull, and Theorem~\ref{thm:relation-hull} supplies the complete
-observable recurrence law.  The Duhamel estimate gives
-\eqref{eq:infinite-ray-duhamel} on every finite window.
-
-For arbitrary spectra, the \(n\)th fidelity moment is the mass at zero of the
-\(n\)-fold convolution of the energy-difference law. Singleton convolution
-masses depend only on singleton masses of their factors. All moments therefore
-depend only on point spectrum, and compact moment determinacy on \([0,1]\)
-gives \eqref{eq:point-scale}. For finite contractions, finite-dimensional
-spectral decomposition separates semisimple peripheral modes from a transient
-whose powers vanish, yielding \eqref{eq:peripheral} and the exact quotient and
-ceiling laws.
-
-Finite-grid recovery is discrete Fourier orthogonality. At replica order
-\(n\), every coordinate frequency lies in \([-n,n]\), so reduction modulo
-\(2n+1\) is injective on the band. If \(M\le2n\), two distinct band
-frequencies differ by \(M\) and alias, proving worst-case sharpness.
-
-\section*{Data availability}
-
-No datasets were generated or analysed in this theoretical study.
-
-\section*{Competing interests}
-
-The author declares no competing interests.
-
-\section*{Use of generative artificial intelligence}
-
-Generative language models assisted literature triage, proof exploration and
-draft preparation. The human author takes responsibility for the manuscript,
-mathematical arguments, citations and conclusions.
-
-\begin{thebibliography}{99}
-\small
-\raggedright
-\setlength{\itemsep}{0.08em}
-
-\bibitem{BocchieriLoinger1957}
-P.~Bocchieri and A.~Loinger,
-Quantum recurrence theorem,
-\emph{Phys. Rev.} \textbf{107}, 337--338 (1957).
-\href{https://doi.org/10.1103/PhysRev.107.337}
-{doi:10.1103/PhysRev.107.337}.
-
-\bibitem{CamposVenuti2015}
-L.~Campos Venuti,
-The recurrence time in quantum mechanics (2015).
-\href{https://arxiv.org/abs/1509.04352}{arXiv:1509.04352}.
-
-\bibitem{KotowskiOszmaniec2026}
-M.~Kotowski and M.~Oszmaniec,
-Tight bounds on recurrence time in closed quantum systems,
-\emph{Phys. Rev. Lett.}, accepted (2026).
-\href{https://arxiv.org/abs/2601.10409}{arXiv:2601.10409}.
-
-\bibitem{GuptaShort2026}
-C.~Gupta and A.~J.~Short,
-Recurrence time for finite quantum systems,
-\emph{Phys. Rev. A} \textbf{114}, 012208 (2026).
-\href{https://arxiv.org/abs/2604.14995}{arXiv:2604.14995}.
-
-\bibitem{AnandEtAl2026}
-A.~Anand, D.~Valluri, J.~Davis and S.~Ghose,
-Quantum recurrences and the arithmetic of Floquet dynamics,
-\emph{Quantum} \textbf{10}, 2074 (2026).
-\href{https://doi.org/10.22331/q-2026-04-20-2074}
-{doi:10.22331/q-2026-04-20-2074}.
-
-\bibitem{RauerEtAl2018}
-B.~Rauer, S.~Erne, T.~Schweigler, F.~Cataldini, M.~Tajik and
-J.~Schmiedmayer,
-Recurrences in an isolated quantum many-body system,
-\emph{Science} \textbf{360}, 307--310 (2018).
-\href{https://doi.org/10.1126/science.aan7938}
-{doi:10.1126/science.aan7938}.
-
-\bibitem{KarimiEtAl2026}
-B.~Karimi, X.~Wu, A.~N.~Cleland and J.~P.~Pekola,
-Blueprint for experiments exploring the quantum recurrence theorem on a
-coupled multiqubit system,
-\emph{Phys. Rev. Research} \textbf{8}, L012062 (2026).
-\href{https://doi.org/10.1103/wv9h-x14y}{doi:10.1103/wv9h-x14y}.
-
-\bibitem{KounalakisEtAl2018}
-M.~Kounalakis, C.~Dickel, A.~Bruno, N.~K.~Langford and G.~A.~Steele,
-Tuneable hopping and nonlinear cross-Kerr interactions in a high-coherence
-superconducting circuit,
-\emph{npj Quantum Inf.} \textbf{4}, 38 (2018).
-\href{https://doi.org/10.1038/s41534-018-0088-9}
-{doi:10.1038/s41534-018-0088-9}.
-
-\bibitem{LuoEtAl2023}
-K.~Luo \emph{et al.},
-Experimental realization of two qutrits gate with tunable coupling in
-superconducting circuits,
-\emph{Phys. Rev. Lett.} \textbf{130}, 030603 (2023).
-\href{https://doi.org/10.1103/PhysRevLett.130.030603}
-{doi:10.1103/PhysRevLett.130.030603}.
-
-\bibitem{Baroni2026}
-L.~Baroni,
-Kronecker flow on the infinite torus (2026).
-\href{https://arxiv.org/abs/2604.02213}{arXiv:2604.02213}.
-
-\bibitem{Huang2021}
-Y.~Huang,
-Extensive entropy from unitary evolution (2021).
-\href{https://arxiv.org/abs/2104.02053}{arXiv:2104.02053}.
-
-\bibitem{RiddellBertini2024}
-J.~Riddell and B.~Bertini,
-Rationally independent free fermions with local hopping,
-\emph{Phys. Rev. E} \textbf{110}, 064101 (2024).
-\href{https://doi.org/10.1103/PhysRevE.110.064101}
-{doi:10.1103/PhysRevE.110.064101}.
-
-\bibitem{AmatoEtAl2023}
-D.~Amato, P.~Facchi and A.~Konderak,
-Asymptotics of quantum channels,
-\emph{J. Phys. A: Math. Theor.} \textbf{56}, 265304 (2023).
-\href{https://doi.org/10.1088/1751-8121/acd828}
-{doi:10.1088/1751-8121/acd828}.
-
-\bibitem{Bain1984}
-A.~D.~Bain,
-Coherence levels and coherence pathways in NMR: a simple way to design phase
-cycling procedures,
-\emph{J. Magn. Reson.} \textbf{56}, 418--427 (1984).
-\href{https://doi.org/10.1016/0022-2364(84)90305-6}
-{doi:10.1016/0022-2364(84)90305-6}.
-
-\bibitem{CoverThomas2006}
-T.~M.~Cover and J.~A.~Thomas,
-\emph{Elements of Information Theory}, 2nd ed. (Wiley, 2006).
-
-\bibitem{BarbonRabinovici2003}
-J.~L.~F.~Barbon and E.~Rabinovici,
-Very long time scales and black hole thermal equilibrium,
-\emph{JHEP} \textbf{11}, 047 (2003).
-\href{https://arxiv.org/abs/hep-th/0308063}{hep-th/0308063}.
-
-\bibitem{CotlerEtAl2017}
-J.~S.~Cotler \emph{et al.},
-Black holes and random matrices,
-\emph{JHEP} \textbf{05}, 118 (2017).
-\href{https://arxiv.org/abs/1611.04650}{arXiv:1611.04650}.
-
-\bibitem{ChoiKimSong2022}
-S.~Choi, S.~Kim and J.~Song,
-Supersymmetric spectral form factor and Euclidean black holes (2022).
-\href{https://arxiv.org/abs/2206.15357}{arXiv:2206.15357}.
-
-\bibitem{BarbonVelascoAja2026}
-J.~L.~F.~Barb\'on and E.~Velasco-Aja,
-AdS black holes are short-lived inside the spectral form factor (2026).
-\href{https://arxiv.org/abs/2607.21704}{arXiv:2607.21704}.
-
-\end{thebibliography}
+\noindent\textbf{Public summary.}
+A tiny interaction may be almost invisible for any fixed duration yet
+completely reorganize what a quantum system does over arbitrarily long time.
+The reason is arithmetic: long-time recurrence depends on exact relations
+among energy levels, and exact relations can disappear under an arbitrarily
+small perturbation.  We turn that observation into quantitative laws for
+loss, local many-body systems, measurement, computational complexity and
+limits of prediction.  If a chosen finite collection of quantum measurement
+probabilities ever leaves a tolerance band, same record is guaranteed to
+re-enter it.
+For one concrete one-dimensional chain, the same analysis proves that the
+number of two-qubit gates needed to reproduce its motion lies between
+explicit linear bounds for a controlled time window, but can nevertheless
+drop between two nearby increasing times when one local phase completes a
+full turn.  This separates large-scale complexity growth from literal
+increase at every instant.
+
+\input{body}
+
+\appendix
+\input{new-appendices}
+\input{prior-results-appendices}
+
+\section*{Author contributions}
+All authors contributed to the conception, mathematical development,
+analysis, verification and writing of the manuscript.
+
+\input{references}
 
 \end{document}
+

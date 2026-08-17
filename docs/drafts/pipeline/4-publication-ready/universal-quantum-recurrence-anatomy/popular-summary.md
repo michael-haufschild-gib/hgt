@@ -1,38 +1,69 @@
-# Popular summary
+# What this paper says in plain language
 
-## The tiniest interaction can change a quantum system’s eternity
+Quantum systems do not simply “forget” their beginnings. In a finite isolated
+system, motion can eventually return close to an earlier state. What controls
+those returns is not only energy scale or system size, but exact arithmetic
+relations among energy levels.
 
-Imagine two quantum systems connected by a knob. At zero, each system’s
-energy rhythms impose exact restrictions on how the pair can return. Turn the
-knob by an amount too small for any fixed-duration experiment to resolve.
-Their short-term behaviour barely changes. Their infinite future can change
-completely.
+Paper identifies one common structure behind several apparently different
+questions:
 
-The new law says every exact repeating rhythm has only two possibilities:
+- Loss decides which part of a system survives long enough to recur.
+- Exact spectral relations decide how many independent phases govern its
+  long-time motion.
+- Measurement decides which of those phases are visible.
+- Finite observations cannot, in general, determine complete long-time
+  recurrence geometry.
 
-- it is shared by both the original system and the interaction, so it survives
-  at every knob setting; or
-- it is an accidental resonance, so it can occur at only one precisely tuned
-  setting.
+This explains a counterintuitive effect. An interaction can be so weak that no
+bounded-duration experiment can distinguish it from zero, yet it can remove
+exact energy relations and completely reorganize system's infinite-time
+behavior.
 
-There are only countably many accidental settings, even for countably
-infinite spectra. For any two such spectra, one arbitrarily weak separable
-interaction direction can be chosen so that every other setting has the
-largest possible phase future. Good settings occur arbitrarily close to zero.
+## Main new results
 
-The result sounds paradoxical but is exact. As coupling tends to zero, every
-bounded-time observable converges to the uncoupled answer. Yet after time is
-allowed to run without bound, exact global returns disappear except at time
-zero and the system explores its full allowed phase space. Approximate
-returns do not disappear: every allowed recurrence level comes back forever,
-with a bounded maximum wait for each requested accuracy or interior level.
+For generic static one-dimensional nearest-neighbour qudit chains, paper proves
+all projective phase directions allowed by Hilbert space are present. Their
+global return density is then known exactly and vanishes doubly exponentially
+with chain length when long-time averaging is completed at each finite size
+before size is increased.
 
-The worldview shift is simple: **weakness is a finite-time idea. An
-interaction can be negligible throughout every bounded experiment and still
-decide the geometry of eternity.**
+For any finite Hermitian Hamiltonian and any chosen finite collection of
+physical measurement probabilities, paper proves a direct observed-record
+law. Either record never leaves chosen tolerance band, or same record later
+returns after a witnessed exit. Deadline is compressed according to
+coherences measurements can actually see.
 
-For black-hole and holographic calculations, this gives a strict warning, not
-a solution of the information paradox. Agreement with a semiclassical model
-for every tested finite time cannot by itself determine the exact recurrence
-structure of the completed quantum spectrum. Global spectral input is still
-required.
+Paper also gives one explicit static nearest-neighbour qubit chain whose
+two-qubit-gate complexity lies between linear bounds over a controlled time
+window, returns exactly to identity, and has a reflected complexity history.
+It disproves literal point-by-point monotonicity: complexity can drop between
+two nearby increasing times even inside linear-envelope window.
+
+Finally, one explicit infinite diagonal l-bit field has a well-defined
+self-adjoint Hilbert-space Hamiltonian, strongly continuous unitary dynamics,
+uniform finite-volume completion, and phase structures appearing at every
+spatial scale.
+
+## Scientific contribution
+
+Known recurrence theorems establish that returns occur and recent work bounds
+state recurrence times. This paper adds structural laws connecting recurrence
+to loss, interaction topology, chosen observers, circuit targets,
+thermodynamic scaling and limits of prediction. Its most defensible new
+contributions are joined theorems:
+
+1. full projective recurrence rank inside ordinary static bounded-degree local
+   many-body Hamiltonian families;
+2. same-observer Born-record escape and return with an observer-specific
+   certified deadline;
+3. exact finite-size-to-thermodynamic return-density law;
+4. explicit static local complexity ramp, return, reflection and certified
+   nonmonotonicity.
+
+## What paper does not claim
+
+It does not give first-return time from inverse return density. It does not
+claim Haar randomness, universal monotone complexity, microscopic
+many-body localization, or global recurrence of an infinite system.
+Thermodynamic density result takes long-time limit first at each finite size.

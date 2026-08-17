@@ -23,9 +23,9 @@ noncomputable section
 set_option maxHeartbeats 1600000 in
 /-- **(22.9) The logarithmically corrected subcaustic annulus of the jet receiver stays
 bounded.**  At jet order `k` the admissible logarithmic chamber is `m_B q ≤ (k+1)/2`. -/
-theorem exists_eventually_norm_jetLogSubcausticWindowDefect_le {a sigma : ℝ} (ha : 1 / 2 < a)
-    (hsigma : 0 < sigma) (k : ℕ) :
-    ∃ Lc : ℝ, 0 < Lc ∧ ∀ L q : ℝ, 0 < L → L ≤ Lc → 0 ≤ q →
+theorem exists_eventually_norm_jetLogSubcausticWindowDefect_le {a : ℝ} (ha : 1 / 2 < a)
+    (k : ℕ) :
+    ∃ Lc : ℝ, 0 < Lc ∧ ∀ sigma : ℝ, 0 < sigma → ∀ L q : ℝ, 0 < L → L ≤ Lc → 0 ≤ q →
       (2 * a ^ 2 - 1 / 2) * q ≤ ((k : ℝ) + 1) / 2 →
       ∃ C : ℝ, ∀ᶠ u : ℝ in atTop,
         0 ≤ xiMassLogSubcausticHeight a L q u ∧
@@ -36,7 +36,6 @@ theorem exists_eventually_norm_jetLogSubcausticWindowDefect_le {a sigma : ℝ} (
               ((Real.exp (h / 2) : ℝ) : ℂ) *
                 xiMassJetIterate a ((sigma : ℂ) + (u : ℂ) * I) k ((h : ℝ) : ℂ)‖ ≤ C := by
   obtain ⟨cE, CE, h₀, hcE, hCE, hh₀, hEbd⟩ := exists_norm_xiMassThetaLogDiscrepancy_le
-  obtain ⟨D, u₀, hD, hu₀, hjet⟩ := exists_norm_primeLogWindow_jetQuadratureDefect_le ha hsigma k
   have ha0 : (0 : ℝ) < a := lt_trans (by norm_num) ha
   have hδ : (0 : ℝ) < a - 1 / 2 := by linarith
   have hkap : 0 < xiMassSpacelikeSharpSlope a := sharpSlope_pos ha
@@ -48,7 +47,8 @@ theorem exists_eventually_norm_jetLogSubcausticWindowDefect_le {a sigma : ℝ} (
   have hkn : (0 : ℝ) < xiMassSpacelikeSharpSlope a ^ (-((9 : ℝ) / 10)) :=
     Real.rpow_pos_of_pos hkap _
   refine ⟨cE * xiMassSpacelikeSharpSlope a ^ ((1 : ℝ) / 10) / (2 * a ^ 2 - 1 / 2),
-    by positivity, fun L q hL hLc hq hqcap => ?_⟩
+    by positivity, fun sigma hsigma L q hL hLc hq hqcap => ?_⟩
+  obtain ⟨D, u₀, hD, hu₀, hjet⟩ := exists_norm_primeLogWindow_jetQuadratureDefect_le ha hsigma k
   have hcap : (2 * a ^ 2 - 1 / 2) * L
       ≤ cE * xiMassSpacelikeSharpSlope a ^ ((1 : ℝ) / 10) := by
     rw [le_div_iff₀ hmB] at hLc
