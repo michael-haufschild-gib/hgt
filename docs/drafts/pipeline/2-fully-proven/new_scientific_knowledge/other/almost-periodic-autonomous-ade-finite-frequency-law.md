@@ -406,3 +406,62 @@ With `k = 2n` this is exactly `(19)`, and combined with the hull-character/frequ
 construction of the atlas: the minimal annihilating differential polynomial and its separant on the
 hull, minimality of the hull flow, and the analytic implicit function theorem on the regular jet
 locus.
+
+## Lean progress — §2 `(8)`–`(9)`: the hull has no singular stratum
+
+`GaloisForLFunctions.HTGeometry.MinimalFlowJetVanishing` proves the minimality step
+unconditionally and axiom-clean (`[propext, Classical.choice, Quot.sound]`):
+
+```text
+isClosed_setOf_forall_eq_zero
+    the common vanishing set of a family of continuous functionals is closed
+smul_mem_setOf_forall_eq_zero
+    an equivariant family has invariant common vanishing set
+eq_empty_of_isClosed_of_invariant
+    every orbit dense, Z closed and invariant, one point outside Z  ==>  Z = ∅
+exists_ne_zero_of_exists_ne_zero
+    every orbit dense, Φ an equivariant continuous family, one point where some Φ i is nonzero
+      ==>  at every point some Φ i is nonzero
+```
+
+Instantiated with `Φ_t (g) = Sep_P (g(t), …, g^(n)(t))` and the real translation flow — which
+permutes the family by shifting `t`, so the equivariance hypothesis is literal — the last theorem is
+exactly `(8)`--`(9)`: `Z = ∅`, every hull member is regular at some real time.  No common regular
+time and no globally unique initial-value formulation enter, which is the point of the argument.
+
+The two inputs it consumes are already owned by the tree: continuity of a fixed point jet in the
+compact-open topology (`HolomorphicJetReturn.iteratedDeriv_tendsto_of_locallyUniform`,
+`StripRelationPropagation.tendstoLocallyUniformlyOn_iteratedDeriv`,
+`DeningerArithmeticContinuousJets.continuous_deningerCompactOpenJet`), and minimality of the hull
+flow, which for the Bohr hull is density of the real translation orbit.
+
+Together with the frequency-rank law of the previous pass, the remaining analytic obligations are:
+the passage from a strip-holomorphic uniformly almost-periodic `f` to the `ℝ →ᵇ ℂ` Bohr carrier, the
+minimal annihilating differential polynomial and its separant, and the analytic implicit function
+theorem producing the injective jet chart on each regular piece.
+
+### §3 `(10)`–`(12)`: the finite regular-chart cover
+
+The same module proves the compactness step, also unconditionally and axiom-clean:
+
+```text
+exists_finite_closed_cover_subordinate
+    compact regular space, any open cover  ==>  a finite closed refinement, each piece inside one
+    member of the cover
+exists_finite_closed_regular_cover
+    Φ continuous with, at every point, some Φ i nonzero
+      ==>  a finite closed cover F_1, …, F_M and indices t_1, …, t_M with Φ (t_j) nonvanishing on
+           F_j
+```
+
+Chaining `exists_ne_zero_of_exists_ne_zero` into `exists_finite_closed_regular_cover` is exactly
+§2 followed by §3: minimality removes the singular stratum, compactness turns the resulting open
+cover `U_t` into a finite closed cover `F_j` on each of which the separant at the single time `t_j`
+never vanishes.  The output is precisely the datum `F : Fin N → Set (BohrHull f)` closed and
+covering that `GaloisForLFunctions.card_le_of_hull_charts` consumes.
+
+What is left between §3 and `(19)` is the analytic implicit function theorem turning the
+nonvanishing separant on `F_j` into the injective jet chart `E j : BohrHull f → ℝ^(2n)` — the tree
+owns `RealAnalyticImplicit`, `U0.HolomorphicIFT` and
+`StripJetSeparation.eqOn_of_line_jet_eq_implicit_local` for that — together with the passage from
+the strip-holomorphic carrier to `ℝ →ᵇ ℂ`.

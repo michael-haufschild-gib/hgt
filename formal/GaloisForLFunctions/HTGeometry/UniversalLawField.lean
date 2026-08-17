@@ -254,6 +254,9 @@ import GaloisForLFunctions.HTGeometry.PositiveFaceCompression
 import GaloisForLFunctions.HTGeometry.ConstitutiveCohomologicalPacketFormation
 import GaloisForLFunctions.HTGeometry.ConstitutiveCohomologicalDegreeLowering
 import GaloisForLFunctions.HTGeometry.ConstitutiveCanonicalCoinducedReporter
+import GaloisForLFunctions.HTGeometry.ConstitutivePacketDegreeLoweringFusion
+import GaloisForLFunctions.HTGeometry.ConstitutiveUnitaryJordanFormationFracture
+import GaloisForLFunctions.HTGeometry.ConstitutiveUnitaryFormationRadical
 
 /-!
 # Universal-law-field Lean umbrella

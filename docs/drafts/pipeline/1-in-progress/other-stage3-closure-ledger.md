@@ -4060,3 +4060,197 @@ is exactly the Laurent-ring situation `x_i = u_i − 1`.
 
 The whole algebraic layer of the card's realization proof is now Lean-proved; what remains is
 analytic (elliptic principal parts) and the imported depth-two completeness theorem.
+
+## Pass 71 — damped jets decay (item 4 of the torusless growth lemma)
+
+`HTGeometry/DampedJetDecay.lean` closes item 4 of the growth stability lemma of
+`torusless-quasi-abelian-fixed-factor-all-order-jet-ampleness`, hence equation `(6)` of that card:
+
+```text
+norm_iteratedDeriv_cexp_mul_mul_le :
+  ‖d^m (e^(a·) g)(z)‖ ≤ (1 + ‖a‖)^m · e^(Re (a z)) · sup_i ‖d^i g(z)‖
+tendsto_norm_iteratedDeriv_damped_zero :
+  ‖a_n‖ ≤ L B_n, Re (a_n z) ≤ −c B_n (c > 0), B_n → ∞, uniform jet bound
+  ⟹ every fixed jet of the damped family tends to zero
+```
+
+The polynomial in the damping parameter is the exact Leibniz binomial sum `∑_i C(m,i) ‖a‖^i`, and a
+fixed jet order fixes its degree, so exponential decay wins.  The estimate is uniform in the
+undamped factor, which is what lets a whole complement-lattice family be discarded at once.
+
+## Pass 72 — cylinder splitting and the horizon gauge
+
+`HTGeometry/JetHorizonTranslationGauge.lean` closes `(5)`, `(9)` and the converse half of `(4)` of
+`jet-horizon-translation-gauge-classification`, none of which needs the DCF layer the card names as
+its boundary.
+
+```text
+transStab Y                     the translation stabilizer, as an AddSubgroup
+mem_iff_exists_add_slice        Y splits as (transStab Y) + (Y ∩ B) for any complement B
+add_slice_unique                the splitting is unique
+transStab_slice_eq_bot          the transverse slice has trivial stabilizer
+pow_apply_sub_eq_zero           σ fixing δ^n y ⟹ δ^n (σ y − y) = 0
+pow_apply_add_of_apply_eq_zero  δ c = 0, n ≥ 1 ⟹ δ^n (y + c) = δ^n y
+```
+
+Both halves are stated for an arbitrary abelian group and an arbitrary additive endomorphism
+playing the role of `δ`, so they apply verbatim to the differential setting once it exists.
+
+## Pass 73 — the sharp covering dimension of a compact set in `R^k`
+
+`HTGeometry/EuclideanSharpCoveringDimension.lean`:
+
+```text
+hasCoverDimLE_zero_of_subsingleton    a subsingleton space has covering dimension 0
+hasCoverDimLE_of_isCompact_euclidean  K ⊆ R^k compact  ⟹  HasCoverDimLE ↥K k
+```
+
+This replaces the bound `5^k − 1` of `EuclideanCompactCoveringDimension.hasCoverDimLE_of_isCompact`
+by the exact value, the sharpening noted in the pass-63 addendum.  Mechanism: take a Lebesgue number
+`δ₀` of the given cover, run the brick cover of `BrickCoverCompact` at mesh `√k·δ < δ₀` so that each
+brick lies inside one member of the cover, and group the bricks by a chosen such member; the order of
+the shrinking is then the order `k + 1` of the brick cover.
+
+The matching lower bound is `HTGeometry.not_injOn_unitCube` (pass 63): `[0,1]^k` does not embed in
+`R^{k−1}`.  Together they give the Lebesgue covering dimension of a compact set with nonempty
+interior in `R^k` exactly, which is what the three dimension-blocked cards
+(`almost-periodic-autonomous-ade-finite-frequency-law`,
+`almost-periodic-implicit-ade-relative-frequency-law`,
+`archimedean-relative-prime-cocycle-curvature`) consume.
+
+## Pass 74 — the multiplication-tail fixed-field identity, and two more stale gaps
+
+`HTGeometry/MultiplicationTailFixedField.lean` assembles the field-theoretic form of `(6)` of
+`abelian-multiplication-tail-manin-horizon`:
+
+```text
+iInf_differentialTranslationFixedField_eq_kolchinClosure :
+  ⋂_n L^(S n) = L^(kolchinClosureOver K (⋃_n S n))
+```
+
+given the card's own input that every element's translation stabilizer is Kolchin closed.  The
+density half is the tree's `DifferentialKolchinClosure.differentialTranslationFixedField_eq_of_kolchinClosureOver_eq`;
+the new part is the tower step (fixed field of a union = intersection of fixed fields) and the
+assembly.
+
+**Two more stale card gaps found.**
+
+- `abelian-multiplication-tail-manin-horizon` states "Mathlib and this project do not currently
+  contain Kolchin-closed groups".  The tree owns the whole Kolchin layer:
+  `differentialZeroLocusOver`, `kolchinClosureOver`, `IsKolchinClosedOver`, the topology, and the
+  fixed-field density theorem.
+- `all-depth-compatible-pair-face-differential-matroid` lists "an integer orbit-height law (which
+  supplies free translates)" among its remaining inputs.  `HTGeometry/OrbitHeightFreeTranslates.lean`
+  proves it — `hasFreeTranslates_of_intHeight`, `hasFreeTranslates_orbitUnion`,
+  `hasFreeTranslates_orbit_of_aperiodic`, and the concrete meromorphic-translation instance
+  `hasFreeTranslates_meroOrbit_of_aperiodic` — all axiom-clean and wired.
+
+## Pass 75 — the minimality step of the almost-periodic cards
+
+`HTGeometry/MinimalFlowJetVanishing.lean` closes §2 `(8)`–`(9)` of both
+`almost-periodic-autonomous-ade-finite-frequency-law` and
+`almost-periodic-implicit-ade-relative-frequency-law`:
+
+```text
+exists_ne_zero_of_exists_ne_zero :
+  Φ : ι → X → Y an equivariant family of continuous functionals on a flow with every orbit dense,
+  and one point where some Φ i is nonzero
+  ⟹ at every point some Φ i is nonzero
+```
+
+With `Φ_t (g) = Sep_P (g(t), …, g^(n)(t))` and the real translation flow — which shifts the index
+`t`, so equivariance is literal — this is `Z = ∅`: no hull member is everywhere singular.  The jet
+continuity it consumes is the tree's `HolomorphicJetReturn` / `StripRelationPropagation` /
+`DeningerArithmeticContinuousJets` layer.
+
+### Pass 75 addendum — §3 of the almost-periodic cards
+
+The same module adds the compactness step:
+
+```text
+exists_finite_closed_cover_subordinate :
+  compact regular space, open cover  ⟹  finite closed refinement subordinate to it
+exists_finite_closed_regular_cover :
+  Φ equivariant continuous, nowhere all-vanishing  ⟹  finite closed cover with one nonvanishing
+  functional per piece
+```
+
+Chained after `exists_ne_zero_of_exists_ne_zero` this is §2 → §3, and its output is exactly the
+closed covering family that `card_le_of_hull_charts` consumes.  Mathlib has no shrinking lemma in
+this toolchain, so the refinement is proved directly: regularity gives a closed neighbourhood inside
+the chart at each point, compactness selects finitely many of their interiors.
+
+## Pass 76 — the tail stabilizer is Kolchin closed
+
+`HTGeometry/MultiplicationTailFixedField.lean` gains the stabilizer layer for
+`embedded-manin-horizon-isogeny-reconstruction`:
+
+```text
+isKolchinClosedOver_translationStabilizerSet :
+  the stabilizer of any set of field elements is Kolchin closed
+kolchinClosureOver_iUnion_subset_translationStabilizerSet_tail :
+  the Kolchin closure of all tower labels stabilizes the tail
+translationStabilizerSet_tail_eq_kolchinClosureOver :
+  with the reverse inclusion, the tail stabilizer is exactly that closure
+```
+
+The first makes the tail stabilizer a Kolchin-closed set — a differential algebraic subgroup rather
+than merely a subgroup — which is what the identification with the Manin kernel needs; it follows
+from `isKolchinClosedOver_sInter` because a stabilizer is an intersection of element stabilizers.
+The remaining half is the Kolchin Galois correspondence (nothing outside the closure stabilizes the
+tail) plus the identification of the closure with `A^♯`.
+
+## Pass 77 — finite palettes cannot carry an infinite free orbit
+
+`HTGeometry/FiniteShadowCapacity.lean` gains the capacity statement that discharges the `hcompact`
+hypothesis of `activeQuotient_injective_of_fullOrbitFree_of_kernelCyclic_not`, for
+`active-quasi-abelian-palette-exact-ht-dimension-classification`:
+
+```text
+not_differentialIndependent_of_finitePalette :
+  n differentially independent sources, constant coefficients, n+1 distinct members
+  ⟹ not differentially independent
+not_differentialIndependent_cyclicOrbit_of_finitePalette :
+  a complete cyclic ℤ-orbit inside a finite palette is never differentially free
+```
+
+This is the compact-kernel finite-capacity theorem in the exact shape the active-quotient theorem
+consumes.  The analytic input that remains is the production of the finite constant-coefficient
+source presentation on the compact fibre, not the capacity argument itself.
+
+## Pass 78 — the two-piece amplitude class and the spike transfer
+
+`RHTower/GaussSpikeMass.lean` gains the invariant class of
+`gauss-component-quasi-inner-residue-hierarchy` and the estimate its step 1 named as the only new
+one needed:
+
+```text
+spikeProfile, TwoPieceAmplitude          the class: uniform harmonic part + moving spike
+sum_kernel_mul_spikeProfile_pos_side_le
+sum_kernel_mul_spikeProfile_neg_side_le
+kernel_mul_spikeProfile_peak_le
+    a harmonic kernel reads the whole spike with weight K/(1 + n/4) against mass ≍ B n,
+    so the transfer into the bulk is O(B), independent of n
+```
+
+Remaining: closure of the class under `B`, `B^(−2)`, `S̃`, `S̃*` with `n`-independent constants, and
+the one-step estimate; step 3's telescope is already built.
+
+## Pass 79 — Corollary D of the isogeny-tail card
+
+`HTGeometry/FiniteHolonomyTail.lean` proves the field-theoretic content of `(8)` of
+`isogeny-tail-maurer-cartan-holography` unconditionally:
+
+```text
+fixedSubset_iInter        fixed parts commute with intersections
+image_fixedSubset         σ injective, commuting with F  ⟹  σ '' (E^F) = (σ '' E)^F
+iInter_image_fixedSubset  ⋂_n σ_n '' (E^F) = (⋂_n σ_n '' E)^F
+```
+
+so `Tail(R) = (Tail α)^F` follows formally from Theorem A.  Injectivity of the pullback is used in
+exactly one direction: an `F`-fixed element of the image is the image of an `F`-fixed element.
+
+`(2)`–`(3)` of the same card is the already-proved
+`MultiplicationTailFixedField.iInf_differentialTranslationFixedField_eq_kolchinClosure`.  What is
+left is Theorem A's finite étale Galois description `(1)` and the logarithmic-derivative quotient
+`(4)` — both scheme-level.

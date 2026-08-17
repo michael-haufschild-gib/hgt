@@ -5,7 +5,8 @@
 - **Type:** HIGHER-MECHANISM CORRECTION / FIELD PROGRAMME
 - **Source:** hostile audit of higher-rank Hilbert-cocycle packetization
 - **Status:** `[MECHANISM, NOT OBJECT] [H1/H2 DEGREE SEPARATION CLOSED FINITELY] [LEAN CALIBRATION CLOSED]`
-  `[GLOBAL ALGEBRAIC FORMATION/RECOVERY CLOSED] [EXACT HILBERT ADMISSION OPEN]`
+  `[GLOBAL ALGEBRAIC FORMATION/RECOVERY CLOSED] [EXACT REPORTER FIXED-POINT OBSTRUCTION CLOSED]`
+  `[UNITARY HILBERT ADMISSION/PROPERNESS OPEN]`
   `[HIGHER-RANK SELECTION OPEN] [NOT RH]`
 
 ## 1. Pivot
@@ -111,6 +112,14 @@ canonical reporter with:
 Corpus indiscrete-quotient and dense-radical theorems identify completions where this gate fails;
 they are now typed obstructions to exact Hilbert reporting rather than generic topology no-gos.
 
+For the outer-product packet carry, this boundary is now sharp. If one source vector has two
+different coordinates, the carry is not a (2)-coboundary. Consequently its lowered cocycle is
+not a fixed-point coboundary in **any** exact reporter. The selection mechanism cannot be “choose a
+better exact reporter and erase the packet.” It must make one load-bearing condition fail or force
+the packet itself onto the constant/degenerate locus. The remaining analytic problem is therefore
+to classify when an exact reporter admits a closed, faithful unitary Hilbert realization and when
+its fixed point lifts through the reporter range.
+
 ## 4. Candidate higher laws
 
 ### CPFM-A — formation transgression
@@ -181,3 +190,25 @@ packetization gate.
 - 2026-08-17 — canonical quotient-by-constants reporter and descended translation action
   formalized in `ConstitutiveCanonicalCoinducedReporter.lean`; algebraic reporter existence closed,
   leaving faithful separated unitary Hilbertization as precise global gate.
+- 2026-08-18 — packet carry, pair-packet antisymmetry, nontriviality in degree two, and the theorem
+  that no exact reporter can give a nonconstant packet a fixed point formalized in
+  `ConstitutivePacketDegreeLoweringFusion.lean`; remaining gate narrowed to closed unitary
+  Hilbert admission and fixed-point liftability.
+- 2026-08-18 — closed that Hilbert-admission gate negatively. Translation on coinduced histories
+  modulo constants contains the exact nonzero Jordan chain `[x^2] -> 2[x] -> 0`, while an invariant
+  positive Hilbert pairing collapses every finite Jordan chain. Therefore no injective additive
+  equivariant unitary realization of the canonical exact reporter exists, even without continuity.
+  Positive survivor: unitary formation radical and a two-level algebraic/distributional recovery
+  history -> nonfaithful Hilbert semisimplification doctrine. Paper theorem:
+  `unitary-jordan-collapse-and-canonical-coinduced-hilbertization-fracture-law.md`.
+- 2026-08-18 — derived the positive survivor universally rather than postulating it.  Finite
+  generalized fixed histories generate the canonical unitary formation radical
+  `R_T=(T-I)(union ker(T-I)^n)`; every equivariant positive-unitary reporter kills it and factors
+  uniquely through `V/R_T`.  Cofinal finite-depth primitives extinguish every boundary they
+  generate, and spanning boundaries force the reporter to vanish.  Coupling this extinction law
+  to the already source-generated depth graph gives the exact migrating-horizon ledger
+  `Phi(h_N)=1+2N`: every finite horizon is either exactified at the next formation stage or escapes
+  every bounded-action compact set.  This is the first CPFM global formation/properness selector
+  architecture.  Paper/Lean theorem:
+  `universal-unitary-formation-radical-cofinal-horizon-extinction-and-properness-law.md` /
+  `ConstitutiveUnitaryFormationRadical.lean`.

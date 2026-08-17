@@ -1,4 +1,4 @@
-# The RH Route–Literature Exchange Frontier: Literature through 9 August, Lean through 17 August 2026
+# The RH Route–Literature Exchange Frontier: Literature through 9 August, Lean through 18 August 2026
 
 ## Abstract
 
@@ -9,7 +9,7 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local committed cutoff is
-`21ddd1ee115036997179b715d1b1bc77dc23b808` on 17 August, plus declaration-level review of current working tree. Historical `Active-tree Lean` wording records former provenance; current
+`00c0d23b537351bf00e0de744f76f857d268152a` on 18 August, plus declaration-level review of current working tree. Historical `Active-tree Lean` wording records former provenance; current
 scientific verdict follows declaration content and synopsis below rather than former cutoff labels.
 Scientific
 comparison follows declaration content rather than module placement.
@@ -29,10 +29,10 @@ comparison and theorem provenance, not chronological status.
 | E | Exact logarithmic-window transfer and a sharp log-weighted twisted-prime contour bound are formal. | Upstream cards require Menon's `(log log L)^2/(log L)^2` Möbius rate, obtained by carrying quantitative Halász distance through the MR ladder; MR's published `(log L)^(-c)`, `c<1`, is insufficient. Matomäki--Teräväinen `E_3` is separate. Neither supplies final unit Carleson/co-moving flux. |
 | G | High assistance is formally source-cyclic: every survivor has low-source singular mass `mu((1/113,1]) > r/(128 C_T) >> r/log^2(1/r)`; direct-tail amplification, generic ultranull packets, and single prime seams are excluded. | No located theorem proves the opposite source-specific upper bound or constructs an actual family meeting the lower bound. Aperture-Morse exhaustion and completed wall Schur comparison remain separate. |
 | L | Scalar descent on completed one-leg graph is exactly constant-profile descent; fixed-coordinate Hilbert--Schmidt encoding is impossible. Tate descent now proves rational real Milnor amplitude has only degrees 0 and 1. | Surviving route must retain integral/adelic/extension data and prove critical-scale arithmetic discontinuity, carrier change, Calderón Green extension, and cup-isometric Hodge comparison. |
-| O | Exact constrained prolate grounds converge in both parity sectors to their two-mode seeds. Separately, canonical finite Gamma--Slepian heads converge in form norm to exact restricted-Weil ground, with squared-cutoff physical-mass gain. | External PSWF asymptotics no longer address first open theorem. Need arithmetic sign on canonical cofinal heads: exclude finite von-Mangoldt overcompensation against identity, scalar Gamma, and polar terms. |
-| P | Prime-log `det₂` cannot be Xi and compression-monotone Ward budget fails. Completed Gamma/polar residues now carry exact precompression Julia coupling, coefficients, and analytic multiplicity to every Xi support copy; landed same-support blocks are positive rank one with zero short. | Transport is no longer open. Need independent completed-source budget/order law for positive split corner, or non-spectral conormal contraction; abstract Schur theory cannot supply it. |
+| O | Canonical ground heads have exact nonnegative tail defect, converge with rates, and at each aperture satisfy eventual reverse-prime control iff true restricted-Weil floor is nonnegative. Adjacent prolate leakage ratio is now `O(c^-1/2)` for every pair of indices. | External PSWF asymptotics no longer address first open theorem. Need signed completed-error Stieltjes order on canonical-head autocorrelations; fixed positive coercivity is too strong. |
+| P | Full FE--Schwarz--Krein orientation orbit has positive short `4||c||²`; Wold cubic cancels inverse-cubic conormal scale and yields universal orbit quantum `16/3||c||²`. Two-fibre holomorphic Gamma/CCM polarization produces real horizontal cube exactly. | Need pre-divisor completed-source order/conservation transport. Universal copywise order law is already Lean-proved equivalent to RH; classical Schur or residue theory cannot supply producer. |
 | Q | Null-boundary diagonal energies vanish while mixed incidence tends `-E/2`; complex scalar phases cannot repair target-aligned fusion. Off-line conjugate pair has zero signed mass but divergent quadratic concentration at transverse wall. | Produce cofinal nonnegative source recurrence, or construct finite pre-divisor quadratic-energy budget dominating Q and U boundary profiles. Classical moment/phase/diagonal theory supplies neither. |
-| T | All-order Fourier/jet identity and prime-power atom-series criterion are formal. RH is equivalent to uniform boundedness on positive half-line of explicit finite atom sum at exact logarithmic retreat. | Prove that signed finite-window bound from source, optionally by true-prime-cone/type-zero identification; alternatives remain residual/sub-`3/2` or growing-Xi chirp separation. |
+| T | For every prescribed logarithmic retreat coefficient, a sufficiently high finite jet gives exact RH criterion through finite atom/true-prime quadrature; annular transfer is bounded. Every fixed finite radiation subtraction has exact divergent scale `sqrt(X)/(log X)^(2m+2)`. | Prove signed bound for remaining interior finite core; alternatives remain residual/sub-`3/2`, growing-Xi chirp, or genuinely moving-degree reverse-Bessel assembly. |
 | U | Exact onto `2*pi` scaling identifies full CCM form; even and odd prime walls are invisible. Lean proves `RH ∨ CCMFirstContactBoundaryRoughness`: false-RH least null ground is outside every strict smooth interior source. | Exclude completed-boundary rough first contact through trace/quotient or whole-ground coercivity. Literature offers no such source-relative boundary theorem. |
 
 No newly audited module instantiates an eleventh lettered route. Six CCM openings are now
@@ -107,9 +107,10 @@ separation without zero-gap assumptions: off-line top growth survives by Bohr--C
 whereas critical packet decays. Missing are uniformity for growing complete Xi packet and literal
 prime--Gamma cofinal projector. It is Route-T-isogenous, not an independent route.
 The unlettered moving-degree reverse-Bessel opening is also live again. Fixed-frequency blindness
-remains, but Lean proves Gamma cost `<=3+(1/2)log N` and recovered Euler damping at
-`x=6N log(m+2)`, plus shell-uniform carrier expansion, exact extremal coefficient polynomials, and
-genuine order-by-order truncation bounds.
+remains, and Lean now proves all local coefficient/remainder/carrier connectors. It also proves
+every fixed order has exact nonzero divergent radiation scale `sqrt(X)/(log X)^(2m+2)`. Thus only
+genuinely moving degree survives, alongside Gamma cost `<=3+(1/2)log N` and recovered Euler damping
+at `x=6N log(m+2)`.
 Literature offers large-order Bessel asymptotics, not the missing completed prime--Gamma
 moving-window pulse-capital theorem.
 Periodic-pencil boundary wedges have
@@ -2874,7 +2875,7 @@ An `O(1/λ)` excess-to-gap comparison collapses directly to the same positivity 
 determinant adds no independent implication. No exact external collision was located for this
 quantitative no-evacuation package.
 
-**Authoritative 17 August formal frontier.** Prolate indexing is closed. Every positive-aperture
+**Authoritative 18 August formal frontier.** Prolate indexing is closed. Every positive-aperture
 even signed rung is live and simple; squared band values are globally strictly decreasing;
 separation constants are globally strictly ordered; all rungs have exact small-aperture power laws
 and moment flags; every fixed rung converges to exact even oscillator level; bounded moving
@@ -2889,7 +2890,12 @@ exterior, bounds the whole form below by head compression minus `delta||h||^2`, 
 nonzero nonpositive direction has nonzero head projection forcing
 `(1-delta)||h||^2+scalarGamma(h)+polar(h)<=finitePrime(h)`. Source alignment, conditioning escape,
 and fixed approximation loss are closed. First open theorem is the cofinal reverse arithmetic
-inequality excluding this finite-head overcompensation.
+inequality excluding this finite-head overcompensation. The receiver is now exact: canonical-head
+shifted defect equals omitted-tail defect and is nonnegative; unshifted head energy converges with
+explicit rate; and at each aperture eventual literal reverse-prime control on canonical heads is
+equivalent to nonnegativity of true restricted-Weil floor. Fixed positive cofinal margin is
+equivalent to strict positivity and fails at zero-energy first contact. Exact producer is therefore
+signed completed-error Stieltjes order on canonical-head autocorrelations with vanishing head error.
 
 A provisional Stage-2 paper theorem now closes seed choice inside the **full constrained prolate
 leakage problem**. The lowest zero-integral positive-even prolate leakage eigenvector converges to
@@ -3171,9 +3177,10 @@ Common-clock/action-envelope assembly is closed. External PSWF asymptotics there
 touch first open theorem. `ProlateGroundDistance.lean` strengthens clocks to vector control: exact
 constrained grounds in both parity sectors converge in `ell2`, up to sign, to normalized two-mode
 seeds. Sharp leakage-mass identity, interior/exterior ratio, nonzero Hermite anchor, and same-action
-barrier ratio close sharp seed-level mass and endpoint asymptotics. Full step-one parity-ladder
-assembly retains one interior Liouville--Green transport brick; this is formal/local backlog, not
-the RH-bearing restricted-Weil sign theorem.
+barrier ratio close sharp seed-level mass and endpoint asymptotics. Pair anchors, anchored Riccati
+barrier, centre transfer, and two-sided leakage now prove `d_m<=C_(m,n)c^(-1/2)d_n` for every
+`m<n`; former step-one Liouville--Green gap is closed. Any remaining envelope packaging is formal
+bookkeeping, not RH-bearing restricted-Weil sign theorem.
 
 `CCMRestrictedWeilCanonicalGroundHeadConvergence.lean` closes whole-ground selection for finite
 reduction. Exact restricted-Weil ground satisfies literal adjoint-forcing equation; canonical
@@ -3609,14 +3616,15 @@ be imported as source positivity. Classical GGC/Thorin theory supplies the gener
 import advances route. Raw finite nonnegativity is already RH-equivalent and must not be treated as
 an intermediate lemma. Physical wall convergence and genus-one reconstruction are closed; direct
 Xi/scalar welding and compression-monotone completed Ward budgets are dead. Precompression Julia
-coupling, nonmonotone shorting, and completed Gamma/polar Xi transport are now closed. Separate
-reflected and forward pole gauges retain exact source coefficient and analytic multiplicity;
-legwise splitting produces one coordinate per Xi support copy, and same-support landed blocks are
-positive rank one. Their Schur short is nevertheless zero, with a formal hostile boundary example
-showing a nonzero Xi coordinate can coexist with zero short. Present work is therefore an
-independent completed-source budget/order law controlling the positive split corner, or a
-non-spectral conormal contraction. Repeating completed transport or abstract Schur algebra cannot
-close route. Earlier
+coupling, nonmonotone shorting, and completed Gamma/polar Xi transport are closed. The former
+zero-short obstruction is also closed: four FE--Schwarz--Krein orientations over one pivot have
+diagonal block `diag(4||c||^2,4)` and positive short. Wold cubic normalization cancels inverse-cubic
+conormal scale and yields orbit quantum `16/3||c||^2`, above normalized primitive source budget.
+Two independent holomorphic Gamma/CCM residue variables at Schwarz mates produce exact real
+horizontal cube, so nonholomorphic scalarization is not missing. Present work is global pre-divisor
+completed-source order/conservation transport, or non-spectral conormal contraction. Universal
+copywise order law is Lean-proved equivalent to RH; repeating residue/Schur algebra cannot close
+route. Earlier
 W-H208/P-G205 correction language records provenance of
 the forced Julia--Krein block, not the current frontier. Scalar contractivity, same-leg collapse,
 universal matrix-complete restriction, and post-divisor passivity are formally insufficient or
@@ -4080,8 +4088,8 @@ generic “density-to-prime” gap.
    modulus law are also formal. Annulus is exact cone-set difference and fixed-phase projection
    gives pointwise positive lower bound on every first-shell prime. More sharply, for a positive
    coefficient chamber and small `L`, RH is equivalent to bounded literal prefix discrepancy at
-   cutoff `exp(kappa_B u-Lu^(1/10))`; retreat from caustic costs `o(1)`. Missing theorem is this
-   fixed subcaustic arithmetic bound, equivalently phase-preserving annular assembly. Raw annulus
+   cutoff `exp(kappa_B u-Lu^(1/10))`; retreat from caustic costs `o(1)`. Missing theorem is signed
+   boundedness of remaining interior finite core; phase-preserving annular transfer is closed. Raw annulus
    below Bessel balance diverges sharply, so shrinking cone is closed negatively.
    The raw exterior tail at logarithmic retreat
    `kappa_B u-q log u` is `O(u^(m_B q-1/2))`, vanishing below and bounded at the exact threshold
@@ -4109,10 +4117,17 @@ generic “density-to-prime” gap.
    exterior is uniformly bounded in height and truncation, so criterion reduces to finite moving
    atom prefix modulo bounded error. `XiMassJetRetreatCriterion.lean` closes logical passage: RH is
    equivalent to uniform boundedness of explicit truncated sum on positive vertical half-line;
-   conjugation supplies other half. Missing arithmetic theorem is source proof of that signed
-   bound. True-prime-cone moving quadrature and interior/type-zero cancellation are one physical
-   mechanism, not missing receiver formalism. Literature on Bessel asymptotics no longer addresses
-   first gap.
+   conjugation supplies other half. Damped-jet window comparison now makes true-prime quadrature
+   exact up to uniformly bounded annular defect. For every prescribed `q>=0`, a finite order `N`
+   satisfying `(2a^2-1/2)q<=N+1/2` gives the RH criterion at
+   `kappa_B u-Lu^(1/10)-q log u`. Missing arithmetic theorem is signed boundedness of remaining
+   interior finite core, not quadrature transfer or retreat range. Literature on Bessel asymptotics
+   no longer addresses first gap.
+
+   The local radiation alternative is sharply retired at fixed order. Lean identifies ray and
+   Poincare coefficients, proves sectorial remainder and full shell-carrier partial sums, then
+   proves every fixed order `m` has nonzero exact dyadic remainder scale
+   `sqrt(X)/(log X)^(2m+2)`, hence divergence. Only genuinely moving order can remain.
 
 These lanes share a single obstruction: available absolute estimates control mass, but RH requires
 signed source coherence across prime mesh, Mellin boundary, or Bessel interior. Ingham/Hoheisel
@@ -6295,16 +6310,14 @@ Current Lean corpus changes route frontiers, but not route count or RH status.
   `mu((1/113,1]) >> r/log^2(1/r)`; direct-tail amplification, generic ultranull packets, and single
   seams are closed substitutes. Exact frontier is the opposite source-specific upper bound or an
   actual realizing family, alongside independent Morse and wall branches.
-- O has unconditional signed `LadderEnvelope`s and exact constrained-ground convergence to
-  two-mode seeds in both parity sectors. Canonical finite Gamma--Slepian heads converge in form norm
-  to exact restricted-Weil ground. Excluding literal prime overcompensation on that canonical
-  sequence is now whole positivity; arbitrary near-ground profile classification is no longer open.
+- O has exact canonical-head defect/rates and equivalence between eventual reverse-prime control
+  and true-floor nonnegativity. Adjacent leakage separation is closed. Open producer is completed-
+  error Stieltjes order on canonical-head autocorrelations with vanishing head error.
 - P/SP-E has literal prime-log Hilbert--Schmidt non-Schatten-one carrier and entire `det₂` with
   explicit real reciprocal source zeros. Direct Xi/scalar welding and compression-monotone eight-
-  unit Ward budgets are impossible. Canonical Gamma--Julia transport now constructs precompression
-  nonlocal shorting, proves compression nonmonotonicity, and carries exact coefficients and
-  multiplicities through completed Gamma/polar Xi residues. Landed nonzero coordinate still has
-  zero short; survivor is independent source budget/order law or non-spectral conormal contraction.
+  unit Ward budgets are impossible. Full orientation orbit now defeats environment erasure and
+  Wold cubic regularization gives universal `16/3||c||^2` quantum with holomorphic two-fibre source
+  polarization. Survivor is pre-divisor source order/conservation or non-spectral contraction.
 - T analytic detector chain ends in fixed-gap zero-density below 7/10, and moving Gabriel geometry
   has exact 31/10 coefficient with 7/100 room. Actual critical fourth, mollifier, detector-error,
   and translated Gaussian budgets have polylogarithmic cost. One threshold supplies every upper
@@ -6312,9 +6325,10 @@ Current Lean corpus changes route frontiers, but not route count or RH status.
   moment remain. Sharp log-weighted high-twist prime control, full-window caustic-null `(22.7)`, and
   far-field no-loss jet control, endpoint retreat `(22.8)`, weighted rigidity, all-order
   Fourier/jet identity, atom-series RH criterion, uniformly bounded exterior retreat, and exact
-  finite-retreated-sum RH criterion are formal. Source proof of signed finite-window bound remains;
-  finite-core/true-prime quadrature identification and interior/type-zero assembly are one route.
-  Reciprocal-sawtooth algebra and finite-packet chirp separation are closed.
+  finite-retreated-sum RH criterion are formal. Every prescribed logarithmic retreat has a
+  sufficiently high jet and bounded true-prime annular transfer. Only signed interior finite core
+  remains. Every fixed radiation subtraction diverges at exact known scale; moving degree remains
+  open. Reciprocal-sawtooth algebra and finite-packet chirp separation are closed.
 - U degree escape is strongly compactified in Lean: normalized nonpositive bounded-scaled-degree
   hard-edge family is totally bounded in `L2`, with nonzero norm-one subsequential limit; exact
   Cayley angular momentum, all-order descendant bounds, and finite-exponential-type identification

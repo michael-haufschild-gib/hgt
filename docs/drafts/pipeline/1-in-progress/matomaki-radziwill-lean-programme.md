@@ -453,3 +453,123 @@ split of `ChebyshevTwistNoPoleShift` already separates.  The small-`|τ|` regime
 Chebyshev estimate with the Route-T zero-free region, which the corpus owns.  Assembling the two
 into one statement uniform in `τ` closes Lemma 2.3, and `norm_sum_primeTwist_le_of_monotone_bound`
 then gives its prime form at once.
+
+### Milestone 0 is closed: Lemma 2.3 in both forms (2026-08-18)
+
+The height regime is joined and the prime transfer is carried out.  Lemma 2.3 is now an
+unconditional Lean theorem, uniform in the frequency, in both the Chebyshev and the prime form.
+
+    RHTower/Sieve/VonMangoldtTwistUniformHeight.lean
+      routeTTwistHeightFactor                   `1/(1+|τ|) + log(3|τ|/2+3)/W(3|τ|/2+1)`, the
+                                                logarithmic cost of the Route-T width at height `τ`
+      twistCollapse_contour, twistCollapse_trivial
+                                                the two arithmetic collapses, stated abstractly
+      exists_norm_partialSum_vonMangoldtTwist_routeT_uniform
+                                                **Lemma 2.3, Chebyshev form**: for *every* real `τ`
+                                                and every `K ≥ e^9`,
+                                                `‖∑_{n≤K}Λ(n)n^{-iτ}‖ ≤ C·K·[(3K)^{-w(τ)/3}(E(τ)+log 2K)
+                                                 + (1 + (3K)^{2w(τ)/3}(log²K + E(τ)))/(1+|τ|)]`.
+                                                Above a fixed height this is the balanced contour
+                                                estimate; below it, `ψ(K) ≤ 7K` already has the
+                                                shape of the height term, since `1/(1+|τ|)` is
+                                                bounded below there
+
+    RHTower/Sieve/PrimePowerDefectBound.lean
+      primePowerDefect_eq                       the proper prime-power mass is Chebyshev's `ψ − θ`
+      primePowerDefect_le                       hence at most `2√K log K`
+
+    RHTower/Sieve/VonMangoldtTwistPrimeEnvelope.lean
+      routeTTwistEnvelope                       the monotone envelope: contour term at exponent
+                                                `1 − w/3`, height term at exponent `1 + 2w/3`,
+                                                plus the prime-power mass
+      twistEnvelope_mono, routeTTwistEnvelope_mono, routeTTwistEnvelope_nonneg
+                                                monotonicity above one — each factor is a
+                                                nonnegative increasing function of the cutoff
+      norm_vonMangoldtPrimeTwist_le,
+        norm_partialSum_vonMangoldtPrimeTwist_le_crude
+      exists_norm_sum_primeTwist_routeT_le      **Lemma 2.3, prime form**:
+                                                `‖∑_{p≤N}p^{-iτ}‖ ≤ (Env(max(N,1)) + 7e^9)·
+                                                 (1/log 2 + 1/log(N+1))`, by summation by parts
+                                                against `1/log`
+
+Why the two-term shape is the right one.  The exposé uses Lemma 2.3 as
+`π(P)/(1+|t|) + P·exp(−log P/(log(P+|t|))^{κ+δ})`; the contour term above is the second summand
+with `κ = 9/10`, and the height term is the first, with an extra `(3K)^{2w/3} log²K ≤ K^{1/240}log²K`
+which is harmless in every application, since Lemma 2.3 is invoked with `|t|` far larger than any
+fixed power of `P` (the exposé's `P ≈ exp((log X)^{0.95})` against `|t| ≤ X`).
+
+All declarations are unconditional, umbrella-wired, oleans built, axiom-clean
+(`[propext, Classical.choice, Quot.sound]`).
+
+### Remaining
+
+Milestone A onwards: the Matomäki--Radziwiłł ladder itself (Lemmas 2.4--2.6, 7.1, the
+Turán--Kubilius/rough-integer factorisation, and the assembly), carried **quantitatively** so that
+the final rate is Menon's `(log L)^{-2+o(1)}` rather than `o(1)`.  Lemma 2.4 is already corpus
+(`Sieve/DirichletIntegralBound`); Lemmas 2.5, 2.6 and 7.1 are the next bricks.
+
+### Lemma 2.5: the free-exponent large-values estimate (2026-08-18)
+
+The corpus's sixth-moment device was fixed at the cube.  It is now available at every power, which
+is what Lemma 2.5 needs — the exponent is chosen against `log T / log P`, not fixed in advance.
+
+    RHTower/Sieve/DirichletPowerConvolution.lean
+      powIdx, powIdx_lt, powIdx_val_add_one       the index of a `k`-tuple in `Fin (N^k)`
+      powFibre, convPow                           the `k`-fold Dirichlet convolution
+      exp_phase_powIdx                            the phase of a tuple is the phase of its product
+      dirPoly_convPow                             **`F(t)^k` is a Dirichlet polynomial of length
+                                                  `N^k` with coefficients `convPow k N a`**
+      sum_normSq_convPow_le                       `∑_j|b_j|² ≤ D·(∑_n|a_n|²)^k` from a fibre bound
+      powMoment_dirPoly, card_largeValues_pow_le  the `2k`-th moment and its counting form
+
+    RHTower/Sieve/DirichletPowerPrimeSupport.lean
+      powFibreOn                                  the part of a fibre supported in a set
+      sum_normSq_convPow_le_of_support
+      powFibreOn_primeSupport_card_le             **a prime-supported `k`-fold fibre has at most
+                                                  `k^k` points**: every entry is a prime factor of
+                                                  the anchored product, and that product has at
+                                                  most `k` prime factors.  No power of the length
+                                                  enters
+      sum_normSq_convPow_le_of_prime_support
+      powMoment_dirPoly_prime_support
+
+    RHTower/Sieve/DirichletPowerMeasure.lean
+      largeValues_pow_setOf                       raising to the `k`-th power does not move the
+                                                  level set
+      volume_largeValues_pow_le_of_prime_support,
+        volume_largeValues_pow_symm_le_of_prime_support
+                                                  **Lemma 2.5**:
+                                                  `V^{2k}·|{|F| ≥ V} ∩ [−T,T]|
+                                                    ≤ 2(T + 4N^k(1+log N^k))·k^k·(∑|a_n|²)^k`.
+                                                  At `k ≍ log T/log N` the mean-value factor is
+                                                  `≍ T log T`, which is the exposé's shape
+
+The classical bound uses `k!` rather than `k^k` for the fibre; the difference is a factor `e^k`,
+i.e. `e^{1/2}` after taking the `2k`-th root, so it never reaches the application.
+
+All declarations are unconditional, umbrella-wired, oleans built, axiom-clean.
+
+### Remaining
+
+Lemma 2.6 and Lemma 7.1 (Halász--Montgomery).  The duality half is already corpus —
+`Sieve/AlmostOrthogonality.sum_norm_inner_sq_le_of_schur` gives
+`∑_r|⟪φ_r,a⟫|² ≤ (max_r ∑_t|⟪φ_r,φ_t⟫|)‖a‖²` — so what is missing is exactly the Gram row for
+`φ_r(n) = n^{-it_r}`, i.e. the estimate
+
+```text
+|∑_{n ≤ N} n^{iu}|  ≪  N/|u| + |u|^{1/2} log|u| .
+```
+
+Two routes, both requiring new analytic infrastructure:
+
+1. **Functional equation.**  `∑_{n≤N}n^{-w} = ζ(w) + N^{1-w}/(w−1) − (1/2)N^{-w} + O(|w|N^{-σ−1})`
+   for `σ > −1` (a *second-order* Euler--Maclaurin; the corpus's
+   `Sieve/ZetaTruncated.riemannZeta_eq_sum_add_tail` is the first-order form and needs `σ > 0`),
+   then `ζ(iu) = χ(iu)ζ(1−iu)` with `|χ(iu)| ≍ |u|^{1/2}` and `ζ(1+iu) ≪ log|u|`.
+2. **Van der Corput.**  Kusmin--Landau plus the second-derivative test, applied to
+   `f(x) = (u/2π)log x` on dyadic blocks.
+
+Route 1 reuses the corpus's `zetaChi` and Route-T zeta machinery and is the recommended one.  Note
+that the first-order Euler--Maclaurin alone gives only `N/|u| + u²`, which is useless for the Gram
+row: the crossover with the trivial bound `N` sits at `N^{2/3}`, and the off-diagonal then costs
+`R·N`.  The square-root saving is genuinely needed.

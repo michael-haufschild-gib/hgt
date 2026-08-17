@@ -59,7 +59,7 @@ theorem prolateRatioScale_eq_exp {a : ℝ} (hc : 0 < signedModeRadialBandwidth a
     rw [sqrt_eq_exp_half_log h1, Real.log_sqrt hc.le]
     congr 1
     ring
-  rw [prolateRatioScale, e1, e2, ← Real.exp_add]
+  rw [prolateRatioScale, e2, e1, ← Real.exp_add]
   congr 1
   ring
 
@@ -70,7 +70,7 @@ theorem exp_neg_three_quarter_log_eq {a : ℝ} (hc : 0 < signedModeRadialBandwid
 /-- The constant of the vanishing ratio. -/
 def ratioLimitConst (m n : ℕ) : ℝ :=
   324 * Real.sqrt 2 * Real.pi ^ 3 * (1 + leakageBarrierConst)
-    * Real.exp (3 * Real.log (prolatePairAnchor m n)
+    * Real.exp (7 / 2 * Real.log (prolatePairAnchor m n)
         - Real.log (prolatePairAnchor m n ^ 2 / 2)
         - Real.log (1 - prolateLeakageCollar ^ 2)
         - 12 * Real.log (1 - prolateLeakageCollar))
@@ -270,7 +270,7 @@ theorem eventually_prolateBand_sq_ratio_le_div_sqrt (m n : ℕ) (hmn : m < n) :
     calc _ ≤ 324 * Real.sqrt 2 * Real.pi ^ 3 * (1 + leakageBarrierConst)
         * (Real.exp Kexp / prolateRatioScale a) := h2
       _ = ratioLimitConst m n / prolateRatioScale a := by
-          rw [ratioLimitConst, hKexp]
+          rw [ratioLimitConst, ← hx₀def, hKexp]
           ring
   exact mul_le_mul_of_nonneg_right hstep hRm
 

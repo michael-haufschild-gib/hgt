@@ -217,3 +217,47 @@ This narrows the viable RH route but proves no RH claim.
   universal vectorial extensions/algebraic `D`-groups and prove the Manin-kernel density and
   Manin-map quotient-coordinate theorems.  Card intentionally remains here until those cores are
   discharged and the exact equalities (2)--(9) pass the formal audit.
+
+## Lean progress — the Kolchin layer exists, and the tail identity is assembled
+
+The "Lean status" section above is out of date on its first clause.  The tree owns the Kolchin
+topology and the density step that Theorem A's proof `(4)`--`(6)` uses:
+
+`GaloisForLFunctions.HTGeometry.DifferentialKolchinClosure` (axiom-clean, wired)
+
+```text
+differentialZeroLocusOver, differentialVanishingIdealOver
+kolchinClosureOver, IsKolchinClosedOver          the Galois connection and its closure operator
+isKolchinClosedOver_sInter, IsKolchinClosedOver.union, kolchinTopologicalSpace
+closure_kolchinTopologicalSpace_eq_kolchinClosureOver
+differentialTranslationFixedField                the field fixed by a labelled translation family
+differentialTranslationFixedField_eq_of_kolchinClosureOver_eq
+    a family and its Kolchin closure have the same fixed field, given that every element's
+    stabilizer is Kolchin closed
+```
+
+`GaloisForLFunctions.HTGeometry.MultiplicationTailFixedField` adds the tower step and assembles the
+field-theoretic form of `(6)`, unconditionally and axiom-clean:
+
+```text
+mem_differentialTranslationFixedField_iUnion_iff
+    the fixed field of a union of labels is the intersection of the fixed fields
+differentialTranslationFixedField_antitone
+mem_iInter_differentialTranslationFixedField_iff_kolchinClosure
+iInf_differentialTranslationFixedField_eq_kolchinClosure
+    ⋂_n L^(S n)  =  L^(Kolchin closure of ⋃_n S n)
+```
+
+Instantiated at `S n = A[m^n]` this is exactly `(4)`--`(6)`: the intersection of the tower is the
+field fixed by the Kolchin closure of all `m`-primary torsion.
+
+What remains for `(2)` is the pair of geometric identifications the card names, and only those:
+
+1. `[m]^{n*}L = L^{A[m^n]}` — the finite étale Galois description of each level, which needs
+   multiplication by `m` to be finite étale surjective of degree `|m|^{2g}` with its torsion
+   translations the full function-field deck group;
+2. Kolchin closure of `⋃_n A[m^n]` `=` `A^♯` — the Manin kernel, which needs universal vectorial
+   extensions and algebraic `D`-groups.
+
+The hypothesis "every element's stabilizer is Kolchin closed" of the density step is the card's own
+"invariance under `(4)` is a Kolchin-closed condition on the translation parameter".

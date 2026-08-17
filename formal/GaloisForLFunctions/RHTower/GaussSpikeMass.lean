@@ -176,4 +176,155 @@ theorem sum_kernel_mul_spike_band_le {c : ℝ} (hc0 : 0 < c) (hc1 : c < 1)
   refine mul_le_mul_of_nonneg_left ?_ (by positivity)
   exact mul_le_mul_of_nonneg_left (spike_mass_le hc0 hc1 (by omega)) hB
 
+
+/-! ### The two-piece amplitude class -/
+
+/-- The spike carried at the moving frequency `-n`: height `B (n / (1 + |n + l|))^c` inside the band
+`2|n + l| < n`, and nothing outside it. -/
+noncomputable def spikeProfile (B c : ℝ) (n : ℕ) (l : ℤ) : ℝ :=
+  if 2 * ((((n : ℤ) + l).natAbs : ℝ)) < (n : ℝ)
+    then B * ((n : ℝ) / (1 + (((n : ℤ) + l).natAbs : ℝ))) ^ c else 0
+
+theorem spikeProfile_nonneg {B c : ℝ} (hB : 0 ≤ B) (n : ℕ) (l : ℤ) :
+    0 ≤ spikeProfile B c n l := by
+  rw [spikeProfile]
+  split_ifs with h
+  · positivity
+  · exact le_rfl
+
+/-- **The two-piece amplitude class.**  A uniform harmonic part plus a spike at the moving
+frequency.  A uniform bound alone is not preserved by the Fourier multiplier `‖d_(n+j)‖/‖d_n‖`,
+because the damage is localised at a moving frequency rather than spread over the tail. -/
+def TwoPieceAmplitude (A θ B c : ℝ) (n : ℕ) (g : ℤ → ℂ) : Prop :=
+  ∀ j : ℤ, ‖g j‖ ≤ A / (1 + (j.natAbs : ℝ)) ^ θ + spikeProfile B c n j
+
+theorem TwoPieceAmplitude.uniform {A θ B c : ℝ} {n : ℕ} {g : ℤ → ℂ}
+    (h : ∀ j : ℤ, ‖g j‖ ≤ A / (1 + (j.natAbs : ℝ)) ^ θ) (hB : 0 ≤ B) :
+    TwoPieceAmplitude A θ B c n g := by
+  intro j
+  have := spikeProfile_nonneg (B := B) (c := c) hB n j
+  linarith [h j]
+
+/-! ### The spike profile on the two sides of the band -/
+
+theorem spikeProfile_pos_side {B c : ℝ} (hB : 0 ≤ B) (hc0 : 0 < c) (n r : ℕ) (hr : 1 ≤ r) :
+    spikeProfile B c n (-(n : ℤ) + (r : ℤ)) ≤ B * ((n : ℝ) / (r : ℝ)) ^ c := by
+  have hnat : (((n : ℤ) + (-(n : ℤ) + (r : ℤ))).natAbs : ℝ) = (r : ℝ) := by
+    have h : ((n : ℤ) + (-(n : ℤ) + (r : ℤ))) = (r : ℤ) := by ring
+    rw [h]
+    simp
+  rw [spikeProfile, hnat]
+  split_ifs with h
+  · refine mul_le_mul_of_nonneg_left ?_ hB
+    have hr0 : (0 : ℝ) < (r : ℝ) := by exact_mod_cast hr
+    refine Real.rpow_le_rpow (by positivity) ?_ hc0.le
+    refine div_le_div_of_nonneg_left (by positivity) hr0 ?_
+    linarith
+  · positivity
+
+theorem spikeProfile_neg_side {B c : ℝ} (hB : 0 ≤ B) (hc0 : 0 < c) (n r : ℕ) (hr : 1 ≤ r) :
+    spikeProfile B c n (-(n : ℤ) - (r : ℤ)) ≤ B * ((n : ℝ) / (r : ℝ)) ^ c := by
+  have hnat : (((n : ℤ) + (-(n : ℤ) - (r : ℤ))).natAbs : ℝ) = (r : ℝ) := by
+    have h : ((n : ℤ) + (-(n : ℤ) - (r : ℤ))) = -(r : ℤ) := by ring
+    rw [h]
+    simp
+  rw [spikeProfile, hnat]
+  split_ifs with h
+  · refine mul_le_mul_of_nonneg_left ?_ hB
+    have hr0 : (0 : ℝ) < (r : ℝ) := by exact_mod_cast hr
+    refine Real.rpow_le_rpow (by positivity) ?_ hc0.le
+    refine div_le_div_of_nonneg_left (by positivity) hr0 ?_
+    linarith
+  · positivity
+
+/-- The peak of the spike. -/
+theorem spikeProfile_peak_le {B c : ℝ} (hB : 0 ≤ B) (hc0 : 0 < c) (n : ℕ) :
+    spikeProfile B c n (-(n : ℤ)) ≤ B * (n : ℝ) ^ c := by
+  have hnat : (((n : ℤ) + (-(n : ℤ))).natAbs : ℝ) = 0 := by simp
+  rw [spikeProfile, hnat]
+  split_ifs with h
+  · refine mul_le_mul_of_nonneg_left ?_ hB
+    refine Real.rpow_le_rpow (by positivity) ?_ hc0.le
+    simp
+  · positivity
+
+/-! ### The harmonic kernel transfers the whole spike with a bounded constant -/
+
+/-- **One side of the spike passes into the bulk with a bounded constant.**  Frequencies
+`-n + r`, `1 ≤ r ≤ N ≤ n/2`, sit at distance at least `n/2` from the origin, so a harmonic kernel
+reads them with weight at most `K/(1 + n/4)`, while their total spike mass is at most
+`B (n^c + n/(1-c))`. -/
+theorem sum_kernel_mul_spikeProfile_pos_side_le {c : ℝ} (hc0 : 0 < c) (hc1 : c < 1)
+    {K B : ℝ} (hK : 0 ≤ K) (hB : 0 ≤ B) {n N : ℕ} (hN : 2 * N ≤ n)
+    {κ : ℤ → ℂ} (hκ : ∀ l : ℤ, ‖κ l‖ ≤ K / (1 + (l.natAbs : ℝ)))
+    {j : ℤ} (hj : 4 * (j.natAbs : ℝ) ≤ (n : ℝ)) :
+    ∑ r ∈ Finset.Icc 1 N, ‖κ (j - (-(n : ℤ) + (r : ℤ)))‖ * spikeProfile B c n (-(n : ℤ) + (r : ℤ))
+      ≤ K / (1 + (n : ℝ) / 4) * (B * ((n : ℝ) ^ c + (n : ℝ) / (1 - c))) := by
+  refine le_trans (Finset.sum_le_sum fun r hr => ?_)
+    (sum_kernel_mul_spike_band_le hc0 hc1 hK hB hN hκ hj (fun r => -(n : ℤ) + (r : ℤ)) ?_)
+  · rw [Finset.mem_Icc] at hr
+    exact mul_le_mul_of_nonneg_left (spikeProfile_pos_side hB hc0 n r hr.1) (norm_nonneg _)
+  · intro r hr
+    rw [Finset.mem_Icc] at hr
+    have hrn : (r : ℝ) ≤ (n : ℝ) / 2 := by
+      have : (2 * r : ℕ) ≤ n := le_trans (by omega) hN
+      have hcast : (2 : ℝ) * (r : ℝ) ≤ (n : ℝ) := by exact_mod_cast this
+      linarith
+    have hnat : ((-(n : ℤ) + (r : ℤ)).natAbs : ℝ) = (n : ℝ) - (r : ℝ) := by
+      have hle : (r : ℤ) ≤ (n : ℤ) := by
+        have : r ≤ n := by omega
+        exact_mod_cast this
+      have h : (-(n : ℤ) + (r : ℤ)).natAbs = n - r := by omega
+      rw [h]
+      have : r ≤ n := by omega
+      push_cast [Nat.cast_sub this]
+      ring
+    rw [hnat]
+    linarith
+
+/-- The mirror side. -/
+theorem sum_kernel_mul_spikeProfile_neg_side_le {c : ℝ} (hc0 : 0 < c) (hc1 : c < 1)
+    {K B : ℝ} (hK : 0 ≤ K) (hB : 0 ≤ B) {n N : ℕ} (hN : 2 * N ≤ n)
+    {κ : ℤ → ℂ} (hκ : ∀ l : ℤ, ‖κ l‖ ≤ K / (1 + (l.natAbs : ℝ)))
+    {j : ℤ} (hj : 4 * (j.natAbs : ℝ) ≤ (n : ℝ)) :
+    ∑ r ∈ Finset.Icc 1 N, ‖κ (j - (-(n : ℤ) - (r : ℤ)))‖ * spikeProfile B c n (-(n : ℤ) - (r : ℤ))
+      ≤ K / (1 + (n : ℝ) / 4) * (B * ((n : ℝ) ^ c + (n : ℝ) / (1 - c))) := by
+  refine le_trans (Finset.sum_le_sum fun r hr => ?_)
+    (sum_kernel_mul_spike_band_le hc0 hc1 hK hB hN hκ hj (fun r => -(n : ℤ) - (r : ℤ)) ?_)
+  · rw [Finset.mem_Icc] at hr
+    exact mul_le_mul_of_nonneg_left (spikeProfile_neg_side hB hc0 n r hr.1) (norm_nonneg _)
+  · intro r hr
+    rw [Finset.mem_Icc] at hr
+    have hnat : ((-(n : ℤ) - (r : ℤ)).natAbs : ℝ) = (n : ℝ) + (r : ℝ) := by
+      have h : (-(n : ℤ) - (r : ℤ)).natAbs = n + r := by omega
+      rw [h]
+      push_cast
+      ring
+    rw [hnat]
+    have hr0 : (0 : ℝ) ≤ (r : ℝ) := by positivity
+    linarith
+
+/-- **The peak term passes with the same constant.** -/
+theorem kernel_mul_spikeProfile_peak_le {c : ℝ} (hc0 : 0 < c) {K B : ℝ} (hK : 0 ≤ K) (hB : 0 ≤ B)
+    {n : ℕ} {κ : ℤ → ℂ} (hκ : ∀ l : ℤ, ‖κ l‖ ≤ K / (1 + (l.natAbs : ℝ)))
+    {j : ℤ} (hj : 4 * (j.natAbs : ℝ) ≤ (n : ℝ)) :
+    ‖κ (j - -(n : ℤ))‖ * spikeProfile B c n (-(n : ℤ)) ≤ K / (1 + (n : ℝ) / 4) * (B * (n : ℝ) ^ c)
+      := by
+  have hden : (0 : ℝ) < 1 + (n : ℝ) / 4 := by positivity
+  have hnat : (n : ℝ) - (j.natAbs : ℝ) ≤ ((j - -(n : ℤ)).natAbs : ℝ) := by
+    have h : (n : ℤ).natAbs ≤ j.natAbs + (j - -(n : ℤ)).natAbs := by
+      have := Int.natAbs_sub_le (-(j : ℤ)) (-(j : ℤ) - (n : ℤ))
+      omega
+    have hcast : ((n : ℤ).natAbs : ℝ) ≤ (j.natAbs : ℝ) + ((j - -(n : ℤ)).natAbs : ℝ) := by
+      exact_mod_cast h
+    rw [Int.natAbs_natCast] at hcast
+    linarith
+  have hker : ‖κ (j - -(n : ℤ))‖ ≤ K / (1 + (n : ℝ) / 4) := by
+    refine le_trans (hκ _) ?_
+    refine div_le_div_of_nonneg_left hK hden ?_
+    have hjn : (j.natAbs : ℝ) ≤ (n : ℝ) / 4 := by linarith
+    linarith
+  refine le_trans (mul_le_mul hker (spikeProfile_peak_le hB hc0 n)
+    (spikeProfile_nonneg hB n _) (by positivity)) (le_of_eq rfl)
+
 end RHTower

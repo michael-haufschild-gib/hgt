@@ -135,3 +135,34 @@ positivity.  The result sharpens architecture without proving an RH statement.
 - 2026-07-15 -- [PROVED HERE] Tail stabilizer identified with the Manin kernel; simple
   nonconstant embedded horizons shown to reconstruct bulk isogeny class through
   nonorthogonality.
+
+## Lean progress — the tail stabilizer is Kolchin closed, and contains the closure
+
+`GaloisForLFunctions.HTGeometry.MultiplicationTailFixedField` proves the structural half of
+"the translation stabilizer of an embedded multiplication tail is exactly the Manin kernel",
+unconditionally and axiom-clean (`[propext, Classical.choice, Quot.sound]`):
+
+```text
+translationStabilizerSet translation E     the labels whose translation fixes E pointwise
+isKolchinClosedOver_translationStabilizerSet
+    the stabilizer of any set of field elements is Kolchin closed
+kolchinClosureOver_subset_translationStabilizerSet
+    the Kolchin closure of a label set stabilizes its own fixed field
+kolchinClosureOver_iUnion_subset_translationStabilizerSet_tail
+    the Kolchin closure of all the tower labels stabilizes the tail
+translationStabilizerSet_tail_eq_kolchinClosureOver
+    with the reverse inclusion, the tail stabilizer is exactly that closure
+```
+
+The first is the load-bearing one and is not formal bookkeeping: the stabilizer is an intersection
+of individual element stabilizers, and Kolchin-closed sets are closed under arbitrary intersections
+(`DifferentialKolchinClosure.isKolchinClosedOver_sInter`).  It is what makes the tail stabilizer a
+differential algebraic subgroup rather than merely a subgroup, which is the whole point of the
+identification with `A^♯`.
+
+Combined with the tail identity `⋂_n L^(S_n) = L^(closure ⋃_n S_n)` of the same module, the only
+missing half is the reverse inclusion — that nothing outside the closure stabilizes the tail — which
+is the differential Galois correspondence for the multiplication tower.  The card's own Lean status
+notes that `DeckClosureReconstruction.lean` formalizes the ordinary-Galois analogue; the Kolchin
+analogue is the remaining input, together with the identification of the closure with the Manin
+kernel.

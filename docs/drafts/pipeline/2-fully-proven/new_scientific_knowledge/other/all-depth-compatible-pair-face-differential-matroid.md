@@ -436,3 +436,25 @@ complex translation. The parent and preliminary literature attacks did not reduc
 theorem. Scientific novelty remains provisional pending independent specialist scrutiny, and the
 result is not final under the project standard until the actual special functions and the complete
 proof are formalized unconditionally in Lean.
+
+## Lean progress — the orbit-height law is closed
+
+Of the four inputs the gluing section lists as remaining, the second is already proved.
+`GaloisForLFunctions.HTGeometry.OrbitHeightFreeTranslates` (axiom-clean, wired) supplies the
+integer orbit-height law and therefore the free translates:
+
+```text
+Rank.hasFreeTranslates_of_intHeight        a ℤ-valued height increasing by n under σ^n gives
+                                           free translates
+hasFreeTranslates_orbitUnion               injectively exponentiated orbit unions have them
+hasFreeTranslates_orbit_of_aperiodic       single-orbit criterion: no nonzero power fixes the base
+Meromorphic.hasFreeTranslates_meroOrbit_of_aperiodic
+                                           the concrete instance for translation of meromorphic
+                                           germs by a complex shift with aperiodic orbit
+```
+
+The last is exactly the shape the structural translates of the special function satisfy, with
+aperiodicity being nonresonance of the shift.
+
+The remaining inputs are therefore star differential independence, off-star packetwise DA (which
+supplies `CrossNeutral`), and the concrete compatible-pair hierarchy-to-row identification.

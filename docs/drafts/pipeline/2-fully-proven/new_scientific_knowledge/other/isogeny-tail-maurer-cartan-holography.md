@@ -389,3 +389,32 @@ critical line, or positivity is made.
   finite-type presentations via the Nullstellensatz.  Remaining gap is the actual general
   algebraic-group quotient/DCF function-field instantiation, not these point, torsor, closedness,
   separation, or split-dominance foundations.
+
+## Lean progress — Corollary D `(8)` is unconditional
+
+`GaloisForLFunctions.HTGeometry.FiniteHolonomyTail` proves the whole field-theoretic content of
+Corollary D, unconditionally and axiom-clean (`[propext, Classical.choice, Quot.sound]`):
+
+```text
+fixedSubset F E                the part of E fixed by every member of a family of maps
+fixedSubset_iInter             fixed parts commute with intersections
+image_fixedSubset              σ injective and commuting with F  ==>  σ '' (E^F) = (σ '' E)^F
+iInter_image_fixedSubset       ⋂_n σ_n '' (E^F)  =  (⋂_n σ_n '' E)^F
+iInter_image_fixedSubset_eq_fixedSubset_tail    the same with the ambient tail named
+```
+
+The card's proof of `(8)` is exactly these two steps — "commutation gives
+`alpha^(n*)(K^F) = (alpha^(n*)K)^F`; fixed fields commute with intersections" — and both are now
+theorems.  `image_fixedSubset` is where injectivity of the pullback is used, and it is used in
+only one direction: an `F`-fixed element of the image is the image of an `F`-fixed element because
+`alpha^(n*)` is injective.
+
+So `Tail(R) = (Tail(alpha))^F` follows formally from Theorem A, and `(9)` follows from it together
+with Corollary C.  What remains for the card is Theorem A itself and the two scheme-level items its
+Lean status names: the finite étale Galois description `(1)` of each level, and the
+logarithmic-derivative quotient `(4)`.
+
+The tail identity itself — `⋂_n alpha^(n*) K = K^(closure of ⋃_n Gamma_n)`, i.e. `(2)`--`(3)` — is
+`HTGeometry.MultiplicationTailFixedField.iInf_differentialTranslationFixedField_eq_kolchinClosure`,
+proved for an arbitrary tower of translation labels, with the Zariski/Kolchin density step supplied
+by `DifferentialKolchinClosure.differentialTranslationFixedField_eq_of_kolchinClosureOver_eq`.

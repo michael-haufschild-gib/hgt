@@ -3497,3 +3497,81 @@ corpus indices `n = m+1`, not just for the Fourier-even step `n = m+2` that
 Remaining to assemble: transport this quotient bound through the anchor comparison and the sharp
 mass ratio into a `LadderEnvelope` for the *full* (step-one) ladder, which is what the parity card's
 `(9)` and the sharpened `λ^{-4}` / `λ^{-7}` rates consume.
+
+## THE STEP-ONE LADDER ENVELOPE IS PROVED
+
+`formal/GaloisForLFunctions/RHTower/ProlateFullLadderEnvelope.lean` (wired into the `RHTower`
+umbrella, built, axioms `[propext, Classical.choice, Quot.sound]`):
+
+```text
+sqrt_signedModeRadialBandwidth :  sqrt(2π a²) = sqrt(2π) · a
+tendsto_sqrt_sqrt_bandwidth_atTop , tendsto_prolateRatioScale_atTop
+tendsto_inv_prolateRatioScale     :  K / c^{3/4} → 0
+tendsto_mul_inv_prolateRatioScale :  a · (K / c^{3/4}) → 0
+
+ladderEnvelope_evenProlateSignedLeakage_full :
+    LadderEnvelope (fun a j => evenProlateSignedLeakage a j)
+```
+
+**The full signed leakage sequence — every corpus index, not only the Fourier-even sublattice — is a
+ladder envelope.**  Its five fields:
+
+```text
+nonneg              evenProlateSignedLeakage_nonneg
+mono                evenProlateSignedLeakage_monotone (for a > 0)
+lt_succ             d_j ≤ (K/c^{3/4}) d_{j+1} < d_{j+1} once K/c^{3/4} < 1
+ratio_tendsto_zero  0 ≤ d_j/d_{j+1} ≤ K/c^{3/4} → 0
+tail_tendsto_zero   a d_{j+1}/(d_{j+2} - d_{j+1}) ≤ 2a·K/c^{3/4} → 0, since c = 2π a²
+```
+
+The last field is why the exponent had to be `3/4` and not `1/2`: with `c = 2π a²` the aperture
+weight `a` is `≍ c^{1/2}`, so a ratio of size `c^{-1/2}` would leave the tail bounded rather than
+vanishing.  The phase-gap constant `7/2` (against its limit `4(n-m) ≥ 4`) buys the extra quarter
+power.
+
+Every consequence the corpus draws from a `LadderEnvelope` — the exact eigenpair law, the raw defect
+universality, the depth and adjacent ratio limits, the normalized eigenvector limit, the ground
+distance, the spectral gap — is therefore now available at **step one** of the ladder, where before
+only the step-two (Fourier-even) instance existed.
+
+## Card status after the step-one ladder
+
+Everything on this card that does **not** invoke the Fuchs asymptotic is now formal and
+unconditional.  Concretely, across the three constrained-prolate cards:
+
+```text
+FORMAL, UNCONDITIONAL
+  exactly one constrained eigenvalue in (d_k, d_{k+1})   constrainedProlateEven_exactEigenpair_…
+  (8)  mu_k/d_{k+1} → theta_k                            …_depth_ratio_tendsto (even ladder)
+                                                          constrainedProlateFull_depth_ratio_tendsto
+                                                            (step one, interleaved contrast)
+  (9)  the contrast quotient of two adjacent depths      …_adjacent_ratio_tendsto (both ladders)
+  (10)(11) eigenvector limit and its orthogonality       …_normalized_eigenvector_tendsto
+  (5)  mu_0/d_1 → 8/11                                   constrainedProlatePositive_ground_ratio…
+  (6)  liminf gap ≥ 3/11                                 constrainedProlatePositive_gap_ratio…
+  (7)  the quantified gap                                constrainedProlatePositive_spectralGap_eventually
+  (4)  the ground eigenvector converges to its seed      constrainedProlateEven_ground_distance_…
+                                                          constrainedProlateFull_ground_distance_…
+  parity (9): mu_+ < mu_- and (mu_- - mu_+)/mu_- → 1     constrainedProlateParity_separation
+
+DEPENDS ON THE FUCHS ASYMPTOTIC (7) OF THE PARITY CARD
+  the RATES only: O(lambda^{-7}) in (4), C_k lambda^8 in (9), [13A_4/(11A_6)]lambda^{-4} in (8)
+```
+
+The rates are the only remaining items, and they all reduce to the same one statement: the two-sided
+leakage asymptotic with its polynomial factor, `d_n ~ A_n lambda^{2n+1} e^{-4 pi lambda²}`.  The
+session's chain proves `d_n ≍ c^{-1/2}/R_n(0)²` two-sided with absolute constants
+(`eventually_signedLeakage_sharp_two_sided`) and the adjacent quotient `d_j/d_{j+1} = O(c^{-3/4})`;
+what upgrades `O(c^{-3/4})` to the sharp `c^{-2}` per step — and so pins the polynomial factor — is
+`P3`, the sharp amplitude transport.  Its two ingredients are already theorems
+(`sturmAmplitudeVar_sharp_transport` and `abs_one_sub_sturmRiccatiRatio_prolate_le`); what remains is
+the error-mass estimate
+
+```text
+∫_{K/sqrt c}^{alpha} [ 2cP·δ² + |K'/K|·δ(2+δ)/2 ] dy ,      δ = (1/y + 9/(1-y))/(cP) ,
+```
+
+whose four pieces have elementary antiderivatives:
+`∫ dy/(y² sqrt(y²-s)) = sqrt(y²-s)/(s y)` (telescopes to `O(1/K²)`),
+`∫ dy/(y²-s)^{3/2} = y/(s sqrt(y²-s))` (gives `O(1/K)`), and the two `1/(1-y)` pieces, which are
+`O(1/c)` because `cP` is bounded below by a multiple of `c` away from the turning scale.

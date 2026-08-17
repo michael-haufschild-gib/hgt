@@ -241,3 +241,32 @@ constraint-dimension classification.
 - [ ] independent specialist check of the all-order induction
 - [ ] exact-formulation primary-literature audit
 - [ ] direct Lean formalization of the analytic Poincare estimates before Stage 3
+
+## Lean progress — item 4 of the growth stability lemma
+
+`GaloisForLFunctions.HTGeometry.DampedJetDecay` proves item 4 of the growth stability lemma
+unconditionally and axiom-clean (`[propext, Classical.choice, Quot.sound]`), in the one-variable
+damping direction that the extension step uses:
+
+```text
+iteratedDeriv_cexp_mul        every derivative of the character:  d^m/dz^m e^(a z) = a^m e^(a z)
+iteratedDeriv_cexp_mul_mul    the Leibniz expansion of the m-th derivative of  e^(a ·) · g
+norm_iteratedDeriv_cexp_mul_mul_le
+    ‖d^m/dz^m (e^(a ·) g)(z)‖ ≤ (1 + ‖a‖)^m · e^(Re (a z)) · sup_i ‖d^i g (z)‖
+tendsto_norm_iteratedDeriv_damped_zero
+    ‖a_n‖ ≤ L B_n,  Re (a_n z) ≤ −c B_n  with c > 0,  B_n → ∞,  uniform jet bound on g_n
+      ==>  ‖d^m/dz^m (e^(a_n ·) g_n)(z)‖ → 0   for every fixed m
+```
+
+This is exactly `(6)`: "if a summand contains a damping factor `exp(B chi)` with
+`Re(B chi) <= -c|B|`, then every derivative of order at most `R` is bounded by a polynomial in `|B|`
+and the lattice index times the same exponential.  It therefore tends uniformly to zero on compact
+packet neighborhoods."  The polynomial in `|B|` is `(1 + ‖a‖)^m` — the exact binomial coefficient
+sum `∑_i C(m,i) ‖a‖^i` produced by Leibniz — and the exponential decay beats it because a fixed
+finite jet order gives a fixed polynomial degree.
+
+The bound is uniform in the undamped factor: only a bound on the jets of `g_n` at the point enters,
+so a whole complement-lattice family is discarded at once.
+
+Remaining for this card: items 1--3 of the growth stability lemma (the admissible seed class and
+termwise differentiation of the Poincaré series), and the subgroup-rank induction itself.

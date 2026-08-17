@@ -4118,3 +4118,16 @@ All umbrella-wired, `lake build`-clean, axioms exactly `[propext, Classical.choi
 The all-orders `K_1` asymptotic now has a remainder decaying in the modulus, written in the corpus's
 own Poincaré coefficients.  Remaining on the card: the carrier-level statement and the dyadic
 assembly.
+
+## mass-bessel-infinite-radiation-jet-obstruction -- PROMOTED to stage 3
+
+Item 4 closed by `HTGeometry.MassCarrierPartialSum` (the carrier against its order-`m` partial sum),
+`RHTower.MassBesselDyadicRadiation` (`massBesselDyadicRadiationRemainder`, its centred identity and
+its shell-uniform bound), `RHTower.MassBesselPoincareMass` (`tendsto_dyadicPoincareMass`),
+`RHTower.MassBesselRadiationDivergence`
+(`tendsto_norm_massBesselDyadicRadiationRemainder_atTop`) and `RHTower.MassBesselRadiationScale`
+(`tendsto_norm_massBesselDyadicRadiationRemainder_scale`, `radiationScaleConst_pos`).
+
+All four Lean targets of the card are constructed and proved unconditionally; every declaration has
+axioms exactly `[propext, Classical.choice, Quot.sound]`.  Card moved to
+`docs/drafts/pipeline/3-formalized`.

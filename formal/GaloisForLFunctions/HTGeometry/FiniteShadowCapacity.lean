@@ -229,6 +229,49 @@ theorem activeQuasiAbelianDimension_eq_hypertranscendenceDimension
   · exact hhtLeast aqaDim (realize aqaDim hactive)
   · exact haqaLeast htDim (extract htDim hfull)
 
+
+/-! ### Finite palettes cannot support an infinite free orbit -/
+
+/-- **Finite-palette capacity.**  A family every member of which is a constant-coefficient linear
+combination of a fixed palette of `n` differentially independent sources is not differentially
+independent as soon as it has `n + 1` distinct members. -/
+theorem not_differentialIndependent_of_finitePalette
+    {C K ι : Type*} [Field C] [CommRing K] [Algebra C K] [Differential K] {n : ℕ}
+    (x : Fin n → K) (hx : DifferentialIndependent C x)
+    (y : ι → K) (coeff : ι → Fin n → C)
+    (hconst : ∀ (i : ι) (j : Fin n), (algebraMap C K (coeff i j))′ = 0)
+    (hy : ∀ i, y i = ∑ j, algebraMap C K (coeff i j) * x j)
+    (e : Fin (n + 1) → ι) (he : Function.Injective e) :
+    ¬ DifferentialIndependent C y := by
+  intro hind
+  have hsub : DifferentialIndependent C (y ∘ e) := hind.comp e he
+  set M : Matrix (Fin (n + 1)) (Fin n) C := Matrix.of fun i j => coeff (e i) j with hM
+  have hforms : matrixLinearForms M x = y ∘ e := by
+    funext i
+    rw [Function.comp_apply, hy (e i), matrixLinearForms]
+    rfl
+  have hMconst : ∀ i j, (algebraMap C K (M i j))′ = 0 := fun i j => hconst (e i) j
+  refine finiteShadow_moreObservablesThanSources_not_differentialIndependent n M hMconst x hx ?_
+  rw [hforms]
+  exact hsub
+
+/-- **Compact-kernel finite capacity.**  A complete cyclic translation orbit trapped inside a finite
+palette of differentially independent sources is never differentially free.  This is the hypothesis
+`hcompact` of the active-quotient faithfulness theorem, discharged from the finite-palette
+presentation. -/
+theorem not_differentialIndependent_cyclicOrbit_of_finitePalette
+    {C K : Type*} [Field C] [CommRing K] [Algebra C K] [Differential K] {n : ℕ}
+    (x : Fin n → K) (hx : DifferentialIndependent C x)
+    (y : ℤ → K) (coeff : ℤ → Fin n → C)
+    (hconst : ∀ (m : ℤ) (j : Fin n), (algebraMap C K (coeff m j))′ = 0)
+    (hy : ∀ m, y m = ∑ j, algebraMap C K (coeff m j) * x j) :
+    ¬ DifferentialIndependent C y := by
+  refine not_differentialIndependent_of_finitePalette x hx y coeff hconst hy
+    (fun i => (i : ℕ)) ?_
+  intro a b hab
+  have : ((a : ℕ) : ℤ) = ((b : ℕ) : ℤ) := hab
+  exact Fin.ext (by exact_mod_cast this)
+
 end
 
 end GaloisForLFunctions.HTGeometry

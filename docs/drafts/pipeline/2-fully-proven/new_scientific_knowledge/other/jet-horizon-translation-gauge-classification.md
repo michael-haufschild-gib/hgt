@@ -287,3 +287,41 @@ field has been identified, so the result presently yields no zero-location claim
 - 2026-07-15 — affine-line falsification at depth `n>1` forced the embedding-groupoid correction.
 - 2026-07-15 — proved embedding rigidity, the all-depth reconstruction criterion, exact cylinder
   splitting, and the successive additive-torsor law.
+
+## Lean progress — the cylinder splitting `(5)` and the horizon gauge `(3)`, `(9)`
+
+`GaloisForLFunctions.HTGeometry.JetHorizonTranslationGauge` formalizes the two structural halves of
+the theorem, unconditionally and axiom-clean (`[propext, Classical.choice, Quot.sound]`).  Neither
+needs the differentially closed field, so neither is blocked on the missing DCF layer.
+
+**The canonical cylinder decomposition `(5)`.**  For an arbitrary subset `Y` of an abelian group,
+the translation stabilizer is a subgroup and splits `Y` against any complement of it:
+
+```text
+transStab Y = {a | ∀ y, y + a ∈ Y ↔ y ∈ Y}          an AddSubgroup
+mem_iff_exists_add_slice   IsCompl (transStab Y) B  ==>
+    y ∈ Y  ↔  ∃ a ∈ transStab Y, ∃ z ∈ Y ∩ B, y = a + z
+add_slice_unique           the decomposition is unique
+transStab_slice_eq_bot     transStab (Y ∩ B) = ⊥   whenever the slice is nonempty
+```
+
+so `Y = A × Z` with `Stab_trans(Z) = 0`, which is `(5)` at the level of points and groups.  The
+proof of the rigidity of the slice is the card's: a translation preserving `Z` lies in `B` because
+`Z ⊆ B` is nonempty, and it preserves `Y` because `Y` is `A + Z`; hence it lies in `A ⊓ B = 0`.
+
+**The horizon gauge `(3)`, `(9)`.**  For a derivation `δ` and a map `σ` commuting with it:
+
+```text
+pow_comp_apply                 σ commutes with every iterate of δ
+pow_apply_sub_eq_zero          σ (δ^n y) = δ^n y  ==>  δ^n (σ y − y) = 0
+mem_ker_pow_of_fix             the displacement lies in ker (δ^n)
+pow_apply_add_of_apply_eq_zero δ c = 0  and  n ≥ 1  ==>  δ^n (y + c) = δ^n y
+```
+
+The first pair is `(9)` — the displacement of a depth-`n` horizon embedding is annihilated by `δ^n`
+— and the last is the converse half used in `(4)`: a nonzero constant in the stabilizer translates
+the generic point without moving its depth-`n` jet, so `H_n(Y)` is proper whenever `A ≠ 0`.
+
+What remains, and is exactly the card's stated boundary: the DCF inputs — differential genericity,
+`dtrdeg` invariance under adjoining a differentially algebraic tuple, and quantifier elimination
+giving `(12)` — together with the Picard--Vessiot identification of the layers `(7)`.

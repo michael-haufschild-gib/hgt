@@ -2329,3 +2329,39 @@ The uniform half of the invariance is already owned:
 `(1+|j|)^(-gamma)` for every `gamma < beta` — the exponent ladder — and the multiplier half is
 `RHTower/GaussShiftRatioWeight.gaussShiftRatio_sq_le_of_not_spike` off the spike together with
 `gaussShiftRatio_sq_le_sqrt` on it.
+
+## Pass 48 — the two-piece class is defined, and the whole spike transfers with a bounded constant
+
+Step 1 of the three-step plan is now closed in class form, in `RHTower/GaussSpikeMass.lean`
+(unconditional, axiom-clean `[propext, Classical.choice, Quot.sound]`):
+
+```text
+spikeProfile B c n l
+    = B (n / (1 + |n + l|))^c   inside the band 2|n + l| < n,  and 0 outside it
+TwoPieceAmplitude A θ B c n g
+    ∀ j, ‖ĝ(j)‖ ≤ A/(1 + |j|)^θ + spikeProfile B c n j
+TwoPieceAmplitude.uniform            a spike-free bound sits in the class
+spikeProfile_pos_side, spikeProfile_neg_side, spikeProfile_peak_le
+    the profile at the band frequencies -n ± r is at most B (n/r)^c, and B n^c at the peak
+sum_kernel_mul_spikeProfile_pos_side_le
+sum_kernel_mul_spikeProfile_neg_side_le
+    ∑_(r=1)^N ‖κ(j − (−n ± r))‖ · spikeProfile B c n (−n ± r)
+      ≤ K/(1 + n/4) · B (n^c + n/(1−c))          for 2N ≤ n and 4|j| ≤ n
+kernel_mul_spikeProfile_peak_le
+    the peak term obeys the same bound with mass B n^c
+```
+
+This is the estimate the plan named as the only new one needed for step 1: *a harmonic convolution
+maps the spike part into the uniform part*.  Both band frequencies `−n ± r` sit at distance at
+least `n/2` from the origin, so a harmonic kernel reads them with weight at most `K/(1 + n/4)`;
+their total spike mass is `B(n^c + n/(1−c)) ≍ B n`; and the product is `O(B)`, independent of `n`.
+That bounded constant is exactly the gain the pass-33 fold uses at `m = 1`.
+
+Note where the two sides differ: on the far side the band frequency is `−n − r` and the distance to
+the origin only grows, while on the near side it is `−n + r` with `r ≤ n/2`, so the distance is
+`n − r ≥ n/2` — which is why the band condition is `2N ≤ n` and not merely `N ≤ n`.
+
+**Remaining on this card:** the rest of step 2 — closure of `TwoPieceAmplitude` under `B`, `B^(−2)`,
+`S̃`, `S̃*` with constants independent of `n`, and then the one-step estimate
+`‖(R̃_n − a_(δ_n)) u‖ → 0` for `u` in the class — and step 3, which is already built
+(`HTGeometry/OperatorPowerTelescope.tendsto_norm_operator_pow_sub_zero`).

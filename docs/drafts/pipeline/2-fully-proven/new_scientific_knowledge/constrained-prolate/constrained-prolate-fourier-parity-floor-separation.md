@@ -3401,3 +3401,267 @@ d_k ≍ c^{-1/2}/R_k(0)²                     eventually_signedLeakage_sharp_two
 ⇒ d_m/d_n → 0                              for adjacent corpus indices
 ⇒ LadderEnvelope for the step-one ladder
 ```
+
+### THE ADJACENT-INDEX LEAKAGE RATIO VANISHES
+
+Three more modules, all wired, built, axioms `[propext, Classical.choice, Quot.sound]`:
+
+```text
+RHTower/ProlateIndexedRatioLimit.lean
+  sqrt_eq_exp_half_log , prolateRatioScale a = sqrt c · sqrt (sqrt c)  (= c^{3/4}, elementarily)
+  prolateRatioScale_pos / _eq_exp , exp_neg_three_quarter_log_eq
+  ratioLimitConst m n , ratioLimitConst_nonneg
+  eventually_prolateBand_sq_ratio_le_div_sqrt :
+      R_n(y₀)² ≤ ratioLimitConst m n / c^{3/4} · R_m(y₀)²
+
+RHTower/ProlateCentreRatioTransfer.lean
+  pairAnchorHermiteQuotient m n k = φ_{2k}(x₀)/φ_{2k}(0) , _ne_zero
+  tendsto_pairAnchor_quotient , eventually_pairAnchor_quotient_bounds
+  centreRatioConst m n , _nonneg
+  eventually_centre_sq_ratio_le_div_sqrt :
+      R_n(0)² ≤ centreRatioConst m n / c^{3/4} · R_m(0)²
+
+RHTower/ProlateLeakageRatioVanishing.lean
+  leakageRatioConst m n , _nonneg
+  eventually_signedLeakage_le_div_sqrt (m n : ℕ) (hmn : m < n) :
+      ∀ᶠ a in atTop,  d_m(a)  ≤  leakageRatioConst m n / c^{3/4} · d_n(a)
+```
+
+for **every** pair `m < n`, in particular adjacent corpus indices.
+
+The exponent `3/4` rather than `1/2` matters: `LadderEnvelope.tail_tendsto_zero` needs
+`a · d_{j+1}/d_{j+2} → 0`, and with `c = 2π a²` a bound `d_j/d_{j+1} = O(c^{-1/2}) = O(a^{-1})` is
+exactly borderline.  Taking the phase gap constant to be `7/2` (its limit is `4(n-m) ≥ 4`) instead of
+`3` moves the exponent from `1 - 7/4 = -3/4`, so `a · c^{-3/4} = O(a^{-1/2}) → 0` with room.
+
+The three factors combine as follows: the sharp two-sided leakage has **absolute** constants, so
+`d_m/d_n` is the quotient of the squared centre amplitudes up to index-dependent constants; the pair
+anchor comparison converts centre amplitudes into anchor amplitudes with converging constants; and
+the barrier ratio at the common anchor supplies the `c^{-3/4}`.  The `sqrt c` of the mass ratio
+cancels between the upper bound at `m` and the lower bound at `n`, exactly as the collar prefactor
+`c Ξ(α)` cancels inside `prolateBand_sq_ratio_le`.
+
+Remaining: package this as a `LadderEnvelope` for the step-one ladder `D a j = d_j(a)`.  Its five
+fields are now
+`nonneg` (leakage nonnegativity), `mono` (`evenProlateSignedLeakage_monotone`), `lt_succ` and
+`ratio_tendsto_zero` (from the display above, since `leakageRatioConst/c^{3/4} → 0` and `d_{j+1} > 0`),
+and `tail_tendsto_zero` (same display, with `a · c^{-3/4} → 0`).
+
+## THE STEP-ONE LADDER ENVELOPE IS PROVED
+
+`formal/GaloisForLFunctions/RHTower/ProlateFullLadderEnvelope.lean` (wired into the `RHTower`
+umbrella, built, axioms `[propext, Classical.choice, Quot.sound]`):
+
+```text
+sqrt_signedModeRadialBandwidth :  sqrt(2π a²) = sqrt(2π) · a
+tendsto_sqrt_sqrt_bandwidth_atTop , tendsto_prolateRatioScale_atTop
+tendsto_inv_prolateRatioScale     :  K / c^{3/4} → 0
+tendsto_mul_inv_prolateRatioScale :  a · (K / c^{3/4}) → 0
+
+ladderEnvelope_evenProlateSignedLeakage_full :
+    LadderEnvelope (fun a j => evenProlateSignedLeakage a j)
+```
+
+**The full signed leakage sequence — every corpus index, not only the Fourier-even sublattice — is a
+ladder envelope.**  Its five fields:
+
+```text
+nonneg              evenProlateSignedLeakage_nonneg
+mono                evenProlateSignedLeakage_monotone (for a > 0)
+lt_succ             d_j ≤ (K/c^{3/4}) d_{j+1} < d_{j+1} once K/c^{3/4} < 1
+ratio_tendsto_zero  0 ≤ d_j/d_{j+1} ≤ K/c^{3/4} → 0
+tail_tendsto_zero   a d_{j+1}/(d_{j+2} - d_{j+1}) ≤ 2a·K/c^{3/4} → 0, since c = 2π a²
+```
+
+The last field is why the exponent had to be `3/4` and not `1/2`: with `c = 2π a²` the aperture
+weight `a` is `≍ c^{1/2}`, so a ratio of size `c^{-1/2}` would leave the tail bounded rather than
+vanishing.  The phase-gap constant `7/2` (against its limit `4(n-m) ≥ 4`) buys the extra quarter
+power.
+
+Every consequence the corpus draws from a `LadderEnvelope` — the exact eigenpair law, the raw defect
+universality, the depth and adjacent ratio limits, the normalized eigenvector limit, the ground
+distance, the spectral gap — is therefore now available at **step one** of the ladder, where before
+only the step-two (Fourier-even) instance existed.
+
+### The step-one ladder, instantiated
+
+`formal/GaloisForLFunctions/RHTower/ProlateFullLadderConsequences.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+fullProlateLadder_sum / _bessel                    the untruncated Bessel data
+tendsto_norm_evenProlateConstraintCoord_zero       ℓ_0 → constrainedProlateHermiteCoordinate 0
+tendsto_norm_evenProlateConstraintCoord_one        ℓ_1 → constrainedProlateNegativeCoordinate 0
+
+constrainedProlateFull_ground_distance_tendsto_zero
+      ** the step-one analogue of (4): the exact constrained ground eigenvector of the FULL signed
+         leakage ladder converges in ℓ², up to sign, to its two-mode seed **
+eventually_signedLeakage_lt_succ (j) :   ∀ᶠ a,  d_j(a) < d_{j+1}(a)
+tendsto_signedLeakage_succ_ratio (j) :   d_j/d_{j+1} → 0
+eventually_signedLeakage_parity_separation :  both of the above at j = 0
+tendsto_signedLeakage_weighted_tail (j) :  a·d_{j+1}/(d_{j+2} - d_{j+1}) → 0
+```
+
+The parity separation of the card is the `j = 0` instance: index `0` is the Fourier-even ground mode
+and index `1` the first negative-sector mode, so `d_0 < d_1` eventually and `d_0/d_1 → 0` is exactly
+"the even ground leakage is strictly below, and negligible against, the odd one".  Note the companion
+coordinate limits interleave the two sectors — even indices to
+`constrainedProlateHermiteCoordinate`, odd indices to `constrainedProlateNegativeCoordinate` — which
+is why the ground-distance theorem (whose two seed limits are arbitrary nonzero reals) instantiates
+directly, while the depth-ratio family, hard-wired to `constrainedProlateHermiteTheta`, needs a
+version parameterized by a general limit sequence before it can be read at step one.
+
+### `(8)` and `(9)` at step one
+
+The generalization anticipated above was not needed: `depthSecularRoot_ratio_tendsto`
+(`ConstrainedProlateDepthSecular:349`) is already stated for an **arbitrary** limit sequence
+`a : ℕ → ℝ`; only the wrapper `ccm_depthSecularRoot_ratio_tendsto` is specialized to the Hermite
+coordinates.  Feeding it the interleaved sequence closes both statements at step one.
+
+Added to `RHTower/ProlateFullLadderConsequences.lean` (built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+fullLadderCoordinate j = if j even then hermiteCoordinate (j/2) else negativeCoordinate (j/2)
+fullLadderCoordinate_ne_zero , tendsto_norm_evenProlateConstraintCoord_full
+fullLadderCoordinate_squareSum_pos
+fullLadderTheta k = S_k / (S_k + A_{k+1}²) ,  fullLadderTheta_pos
+
+constrainedProlateFull_depth_ratio_tendsto (k) :          ** (8) at step one **
+    depthSecularRoot (d lam) (ℓ lam) k / d_{k+1}(lam)  →  fullLadderTheta k
+constrainedProlateFull_adjacent_ratio_tendsto (k) :       ** (9) at step one **
+    (root_{k+1}/d_{k+2}) / (root_k/d_{k+1})  →  fullLadderTheta (k+1) / fullLadderTheta k
+```
+
+with `d lam j = evenProlateSignedLeakage lam j` and `ℓ lam j = ‖evenProlateConstraintCoord lam j‖`,
+the untruncated families.  The contrast is now the interleaved one — the even-index coordinates
+carry the Fourier-even Hermite values and the odd-index ones the negative-sector values — which is
+precisely the parity mixing the card's `(9)` describes.
+
+## `(9)` IS UNCONDITIONAL
+
+`formal/GaloisForLFunctions/RHTower/ProlateParitySeparation.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+eventually_negativeSector_root_pos :   ∀ᶠ lam,  0 < mu_-(lam)
+tendsto_constrainedProlateParity_ratio_zero :   mu_+(lam) / mu_-(lam)  →  0
+constrainedProlateParity_separation :
+      (∀ᶠ lam,  mu_+(lam) < mu_-(lam))  ∧  (mu_- - mu_+)/mu_-  →  1
+```
+
+with `mu_+ = infiniteSecularRoot (Dp lam) (ℓp lam)` on the Fourier-even sublattice and
+`mu_- = infiniteSecularRoot (Dn lam) (ℓn lam)` on the odd one — the card's own two sector grounds.
+
+The card states `(9)` as a consequence of `(8)`, which in turn is conditional on the Fuchs
+asymptotic `(7)` `d_n ~ A_n lambda^{2n+1} e^{-4 pi lambda²}`.  **`(9)` does not need `(7)`.**  It
+needs only that the quotient of the two *normalizing* leakages vanishes, and those two leakages —
+`Dp 1 = d_2` and `Dn 1 = d_3` — are **adjacent corpus indices**.  The step-one ladder gives
+`d_2/d_3 → 0` directly, so
+
+```text
+mu_+/mu_-  =  [ (mu_+/d_2) / (mu_-/d_3) ] · (d_2/d_3)  →  (13/11) · 0  =  0 ,
+```
+
+the bracket being the corpus's `constrainedProlateParity_normalized_ratio_tendsto`.  The Fuchs
+constants `A_n` never enter: they would only be needed for the *rate* `lambda^{-4}` in `(8)`, not for
+the separation itself.
+
+This is what the whole chain of this session was for.  The Fourier-even ladder could only compare
+indices two apart, so it could never place `d_2` against `d_3`; the step-one ladder can.
+
+### `P3`'s two elementary masses are proved
+
+`formal/GaloisForLFunctions/RHTower/ProlateBandErrorMass.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+hasDerivAt_sqrt_sub_div :   d/dy [ sqrt(y²-s)/(s y) ]      =  1/(y² sqrt(y²-s))
+hasDerivAt_neg_div_sqrt :   d/dy [ -y/(s sqrt(y²-s)) ]     =  1/(sqrt(y²-s))³
+
+integral_inv_sq_mul_sqrt_le (0 < s, 0 < a, s < a², a ≤ b) :
+      ∫_a^b dy/(y² sqrt(y²-s))  ≤  1/a²
+integral_inv_pow_sqrt_le (same) :
+      ∫_a^b dy/(sqrt(y²-s))³    ≤  a/(s sqrt(a²-s))
+```
+
+The first bound is the one that matters and it is **free of `s`**: the telescoped value is
+`sqrt(b²-s)/(sb) - sqrt(a²-s)/(sa) ≤ (a - sqrt(a²-s))/(sa)`, and `a - sqrt(a²-s) ≤ s/a` because
+`(a - sqrt(a²-s))·a ≤ a² - (a²-s) = s` once `sqrt(a²-s) ≤ a`.  The pole at the turning point cancels
+against the numerator, leaving `1/a²`.
+
+At the matching point `a = K/sqrt c` with `s ≍ mu/c` these read `c/K²` and
+`c K/(mu sqrt(K²-mu))`, so against the `1/c` prefactors of the error control they are `O(1/K²)` and
+`O(1/K)` — both vanishing as the matching point is pushed out, **uniformly in the bandwidth**, which
+is exactly what `sturmAmplitudeVar_sharp_transport` needs.
+
+### `P3`'s error control is instantiated for the band
+
+`formal/GaloisForLFunctions/RHTower/ProlateSharpTransport.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+prolateRiccatiDefect c s y = (1/y + 9/(1-y)) / (c · prolateWKBProfile s y)
+prolateRiccatiDefect_nonneg
+prolateBandErrorControl c s y = 2 c P δ² + |K'/K| · δ(2+δ)/2
+prolateBand_Q_mul_p        :  c²(s - y²)(1 - y²) = -(prolateBandScale c s y)
+sqrt_prolateBandScale_div  :  sqrt(K)/(1 - y²) = c · prolateWKBProfile s y
+prolateBand_error_bound    :  the abstract error term of sturmAmplitudeVar_sharp_transport
+                                is dominated by prolateBandErrorControl
+```
+
+The last is the verification the transport needs: with `|1 - rho| ≤ δ` from
+`abs_one_sub_sturmRiccatiRatio_prolate_le`, the quadratic term is `≤ δ²` and the cross term uses
+`|1 + rho| = |2 - (1 - rho)| ≤ 2 + δ`, so `|1 - rho²| ≤ δ(2 + δ)`.
+
+`P3` now has every ingredient proved separately:
+
+```text
+the abstract sharp transport      sturmAmplitudeVar_sharp_transport      (HTGeometry)
+the structural identities         prolateBand_Q_mul_p, sqrt_prolateBandScale_div
+the two-sided Riccati defect      abs_one_sub_sturmRiccatiRatio_prolate_le
+the error domination              prolateBand_error_bound
+the two elementary masses         integral_inv_sq_mul_sqrt_le, integral_inv_pow_sqrt_le
+```
+
+What is left is the bookkeeping composition: feed these to the transport with `a = K/sqrt c`,
+`b = alpha`, and integrate `prolateBandErrorControl` term by term against the two masses.
+
+### The third mass, and the exact term-by-term decomposition of `∫ e`
+
+`integral_inv_sqrt_le` (added to `RHTower/ProlateBandErrorMass.lean`, built, axiom-clean):
+
+```text
+∫_a^b dy / sqrt(y² - s)  ≤  (b - a) / sqrt(a² - s)
+```
+
+— the integrand is decreasing, so the crude bound suffices.
+
+With the three masses in hand the composition is fixed.  Write `M = 9/(1-α)` and use
+`c P δ = 1/y + 9/(1-y)` (which is the *definition* of `δ`), so that
+
+```text
+e  =  2 c P δ²  +  |K'/K| δ(2+δ)/2
+   ≤  [ 2(1/y + 9/(1-y))  +  (3/2)|K'/K| ] · δ            (once δ ≤ 1)
+   ≤  (1/c) · [ 2/(y² sqrt(y²-s))  +  C₁/(y²-s)^{3/2}  +  C₂/sqrt(y²-s) ]
+```
+
+with, using `1/(cP) ≤ 1/(c sqrt(y²-s))`, `1/y ≤ 1/a`, `1/(1-y) ≤ 1/(1-α)`, `y ≤ 1`:
+
+```text
+C₁ = 3 + 3M            from  (3/2)·2y/(y²-s) · (1/y + M)
+C₂ = 2M/a + 2M² + 3/(1-α²) + 3M/(1-α²)
+```
+
+The `1/y²` coefficient must be kept exact — bounding it by `1/a²` and using the third mass instead
+of the first would give `O(sqrt c)`, not `O(1/K²)`.  Integrating term by term against the three
+masses gives
+
+```text
+∫_a^α e  ≤  (1/c) [ 2/a²  +  C₁ a/(s sqrt(a²-s))  +  C₂ (α-a)/sqrt(a²-s) ] ,
+```
+
+and at `a = K/sqrt c`, `s ≍ mu/c` the three summands are `2/K²·(1/1)`, `C₁ K/(mu sqrt(K²-mu))` and
+`C₂ α/(sqrt c · sqrt(K²-mu))` — the first two `O(1/K²)` and `O(1/K)` uniformly in `c`, the third
+`O(1/sqrt c)`.  All three vanish, which is exactly the hypothesis
+`sturmAmplitudeVar_sharp_transport` needs.

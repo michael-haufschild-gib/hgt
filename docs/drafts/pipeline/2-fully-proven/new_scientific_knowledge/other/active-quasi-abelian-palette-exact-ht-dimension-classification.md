@@ -260,3 +260,34 @@ Open:
 - [ ] separate or collapse `qaDim`, `aqaDim`, and `ppDim`
 - [ ] complete primary-literature novelty audit
 - [ ] full Lean formalization of every promoted theorem surface
+
+## Lean progress — the compact-kernel finite-capacity hypothesis is discharged
+
+`GaloisForLFunctions.HTGeometry.FiniteShadowCapacity` already carried the exact finite-shadow matrix
+rank core and the two capstones
+`activeQuotient_injective_of_fullOrbitFree_of_kernelCyclic_not` (necessity, `(10)`) and
+`activeQuasiAbelianDimension_eq_hypertranscendenceDimension` (the assembly of `(8)`), the latter
+with the two analytic directions as explicit hypotheses.
+
+The module now also proves, unconditionally and axiom-clean
+(`[propext, Classical.choice, Quot.sound]`), the statement that discharges the `hcompact` hypothesis
+of the first capstone from a finite-palette presentation:
+
+```text
+not_differentialIndependent_of_finitePalette
+    every member a constant-coefficient combination of n differentially independent sources,
+    and n + 1 distinct members
+      ==>  the family is not differentially independent
+not_differentialIndependent_cyclicOrbit_of_finitePalette
+    a complete cyclic ℤ-orbit trapped in a finite palette is never differentially free
+```
+
+The second is the compact-kernel finite-capacity theorem in exactly the shape
+`activeQuotient_injective_of_fullOrbitFree_of_kernelCyclic_not` consumes: on the compact fibre,
+relative rationality gives each observable a finite constant-coefficient source presentation, and no
+one finite palette supports an infinite free orbit.  What remains analytic is only the production of
+that presentation — "on the generic fibre every meromorphic `g` belongs to a finitely generated
+relative function field over `Mer(X/B)` and uses only finitely many base coefficient functions" —
+not the capacity argument built on it.
+
+The other open gate, separating or collapsing `qaDim`, `aqaDim` and `ppDim`, is untouched.

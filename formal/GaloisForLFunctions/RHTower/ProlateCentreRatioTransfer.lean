@@ -86,7 +86,7 @@ theorem centreRatioConst_nonneg (m n : ℕ) : 0 ≤ centreRatioConst m n := by
 theorem eventually_centre_sq_ratio_le_div_sqrt (m n : ℕ) (hmn : m < n) :
     ∀ᶠ a : ℝ in atTop,
       (signedModeRadialData a n).R 0 ^ 2
-        ≤ centreRatioConst m n / Real.sqrt (signedModeRadialBandwidth a)
+        ≤ centreRatioConst m n / prolateRatioScale a
           * (signedModeRadialData a m).R 0 ^ 2 := by
   have hqn : pairAnchorHermiteQuotient m n n ≠ 0 :=
     pairAnchorHermiteQuotient_ne_zero m n n (Or.inr rfl)
@@ -100,7 +100,7 @@ theorem eventually_centre_sq_ratio_le_div_sqrt (m n : ℕ) (hmn : m < n) :
     with a hratio hbn hbm hc1
   set c : ℝ := signedModeRadialBandwidth a with hcdef
   have hc0 : (0 : ℝ) < c := by linarith
-  have hsq : 0 < Real.sqrt c := Real.sqrt_pos.2 hc0
+  have hsq : 0 < prolateRatioScale a := prolateRatioScale_pos (by rw [← hcdef]; exact hc0)
   set y₀ : ℝ := pairAnchorPoint m n a with hy₀def
   -- the centre values are nonzero
   have hRn0 : (signedModeRadialData a n).R 0 ≠ 0 := by
@@ -166,14 +166,14 @@ theorem eventually_centre_sq_ratio_le_div_sqrt (m n : ℕ) (hmn : m < n) :
   -- assemble
   have hKnn : 0 ≤ ratioLimitConst m n := ratioLimitConst_nonneg m n
   have hchain : pairAnchorHermiteQuotient m n n ^ 2 / 4 * (signedModeRadialData a n).R 0 ^ 2
-      ≤ ratioLimitConst m n / Real.sqrt c
+      ≤ ratioLimitConst m n / prolateRatioScale a
         * (4 * pairAnchorHermiteQuotient m n m ^ 2 * (signedModeRadialData a m).R 0 ^ 2) := by
     refine le_trans hnsq (le_trans hratio ?_)
     refine mul_le_mul_of_nonneg_left hmsq ?_
     positivity
   have h4 : (0 : ℝ) < pairAnchorHermiteQuotient m n n ^ 2 / 4 := by positivity
   have hX : (signedModeRadialData a n).R 0 ^ 2
-      ≤ (ratioLimitConst m n / Real.sqrt c
+      ≤ (ratioLimitConst m n / prolateRatioScale a
           * (4 * pairAnchorHermiteQuotient m n m ^ 2 * (signedModeRadialData a m).R 0 ^ 2))
         / (pairAnchorHermiteQuotient m n n ^ 2 / 4) := by
     rw [le_div_iff₀ h4]

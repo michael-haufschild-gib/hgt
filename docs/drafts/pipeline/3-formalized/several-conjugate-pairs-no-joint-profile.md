@@ -122,16 +122,53 @@ formal/GaloisForLFunctions/HTGeometry/MultiPairLocalization.lean
 formal/GaloisForLFunctions/HTGeometry/TopLayerNonneg.lean
 formal/GaloisForLFunctions/HTGeometry/PerPairGapUnbounded.lean
 formal/GaloisForLFunctions/HTGeometry/IntervalSeparation.lean
+formal/GaloisForLFunctions/HTGeometry/SturmComparisonArch.lean
+formal/GaloisForLFunctions/HTGeometry/ArchCount.lean
 ```
 
 ## Open
 
-* An effective bound on the number of log-concavity intervals needed to cover `{C > 0}` inside the
-  localization interval. The intervals are delimited by the zeros of `C` and of `C''C − (C')²`, both
-  exponential polynomials; the count is therefore a Pólya-type zero-density bound
-  `(#terms − 1) + (length)·(imaginary width)/2π`, whose proof is complex-analytic (argument principle)
-  or Sturm-theoretic (disconjugacy of `y'' + γ²y = 0` on intervals shorter than `π/γ`). Neither is
-  formalized here. With that bound the criterion becomes an effective decision procedure.
+* Splitting at the sign changes of the Sturm expression, and iterating over the conjugate pairs.
+  The count below holds where `C'' + γ²C` keeps one sign; that expression is again an exponential
+  polynomial, so the splitting is finite, but bounding the number of pieces needs the same argument
+  applied one level down. The recursion terminates because each application of
+  `D² − 2β_jD + (β_j²+γ_j²)` removes one conjugate pair; the accounting across levels is not done.
+
+## The Sturm engine
+
+**Sturm comparison on a short arch.** If `g(p) = g(q) = 0`, `g > 0` on `(p,q)`, and `q − p < π/γ`,
+then `g'' + γ² g` takes a strictly negative value on `(p,q)`. `exists_sturm_neg`; mirrored form
+`exists_sturm_pos`.
+
+The proof is the inhomogeneous Wronskian against `w(t) = sin(γ(t−p))`: `φ = g'w − gw'` has derivative
+`(g'' + γ²g)w`, so if the Sturm expression never went negative then `φ` would be nondecreasing from
+`φ(p) = 0`, while `φ(q) = g'(q)w(q) ≤ 0` because the arch descends at its right endpoint. That forces
+`φ ≡ 0`, hence `g'' + γ²g ≡ 0` on the arch and `g'(q) = 0`; the energy `g'² + γ²g²` is then constant
+and vanishes at `q`, so `g ≡ 0` — contradicting positivity. No ODE uniqueness theorem is used, only
+the energy identity.
+
+**Sign change between adjacent arches.** Two consecutive arches of opposite sign, each shorter than
+`π/γ`, force `g'' + γ²g` to vanish between them. `exists_sturm_zero`.
+
+Neither statement is in mathlib.
+
+## The effective arch count
+
+**Arch length.** Where `g'' + γ²g > 0` on `[a,b]`, every positive arch of `g` there has length at
+least `π/γ`. `arch_length_ge`; mirrored `arch_length_ge_neg`.
+
+**Arch number.** Hence at most `(b−a)γ/π` pairwise disjoint positive arches fit in `[a,b]`:
+
+```
+  card_arches_le :  (n : ℝ) ≤ (b - a) * γ / π
+```
+
+for any ordered disjoint family of `n` arches, via `nsmul_le_of_disjoint_intervals` — `n` ordered
+disjoint subintervals each at least `d` long force `n·d ≤ b − a`.
+
+Humps of a comparison function are exactly its positive arches, so this is the count that determines
+how many separating exponentials `le_iff_forall_separating_interval` demands. It is effective and
+explicit wherever the Sturm expression keeps one sign.
 * Whether a nonnegative exponential polynomial with mixed real and imaginary exponents is always a
   sum of Hermitian squares `∑ G_l G_l^*` with exponents in the half-set. The one-pair extremal
   `2e^{βt}(1−cos γt) = 4|sinh((β+iγ)t/2)|²` and `cosh(at) − cos(bt) = 2|sinh(t(a+ib)/2)|²` both are;

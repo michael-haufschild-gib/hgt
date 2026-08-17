@@ -202,6 +202,45 @@ Thus no algebraic reporter-construction problem remains. The unresolved global g
 canonical quotient, or a faithful equivalent realization, admits a separated unitary Hilbert
 topology containing the required source transgressions.
 
+### Theorem 4.3 — packet specialization and universal fixed-point obstruction
+
+For (G=\mathbb R^I) and (A=\mathbb R^{I\times I}), define the formation carry
+
+\[
+ c(x,y)_{ij}=x_i y_j.
+ \tag{DL.13}
+\]
+
+It is a normalized (2)-cocycle. Against the marked unit vector,
+
+\[
+ c(a,\mathbf 1)_{ij}-c(\mathbf 1,a)_{ij}=a_i-a_j.
+ \tag{DL.14}
+\]
+
+Every (2)-coboundary on an abelian source is symmetric. Hence if (a_i\ne a_j) for some pair,
+(c) is not a (2)-coboundary. Theorem 4.1 then gives the stronger reporter-independent statement:
+
+\[
+ \boxed{
+ \text{for every exact reporter }D,
+ \quad \beta_c(g)\ne \rho_g\xi-\xi\text{ for at least one }g
+ \text{ and every }\xi.}
+ \tag{DL.15}
+\]
+
+#### Proof
+
+The cocycle identity is distributivity. Equation (DL.14) is direct. If (c=\delta\phi), symmetry of
+addition makes (\delta\phi(x,y)=\delta\phi(y,x)), contradicting (DL.14) for a nonconstant (a).
+If an exact reporter made (\beta_c) a coboundary, Theorem 4.1 would make (c) a coboundary, the
+same contradiction. QED.
+
+This is the global formation/properness selection obstruction. Fixed-point rigidity and exact
+reporting cannot coexist with a nonconstant packet. Any successful selection theorem must prove
+that the source supplies exact unitary reporting and fixed-point rigidity, so the only admitted
+formation lies on the constant/degenerate packet locus.
+
 ## 5. Selection architecture
 
 Suppose in addition that \(H\) is Hilbert, \(\rho\) is unitary, and a source group has the fixed-point
@@ -248,14 +287,17 @@ condition 4 for those completions.
 The unconditional algebraic core is formalized in:
 
 - formal/GaloisForLFunctions/HTGeometry/ConstitutiveCohomologicalDegreeLowering.lean;
-- formal/GaloisForLFunctions/HTGeometry/ConstitutiveCanonicalCoinducedReporter.lean.
+- formal/GaloisForLFunctions/HTGeometry/ConstitutiveCanonicalCoinducedReporter.lean;
+- formal/GaloisForLFunctions/HTGeometry/ConstitutivePacketDegreeLoweringFusion.lean.
 
 1. (DL.3) and (DL.5);
 2. normalized right-zero law and equivalence (DL.8);
 3. exact-reporter structure and genuine action law;
 4. lowered \(1\)-cocycle identity (DL.10);
 5. recovery theorem \((DL.11) \Rightarrow c=\delta\phi\).
-6. canonical quotient-by-constants reporter and descended translation action (DL.12).
+6. canonical quotient-by-constants reporter and descended translation action (DL.12);
+7. packet-carry cocycle, antisymmetric pair-packet recovery, nontriviality, and universal exact-
+   reporter fixed-point obstruction (DL.13)--(DL.15).
 
 Do not axiomatize property-(T), Hilbert admission, or an arithmetic source realization.
 The module contains no project axioms, sorry, admit, opaque, or unsafe declarations.

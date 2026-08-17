@@ -1,8 +1,8 @@
 # Mass-Bessel infinite radiation-jet obstruction
 
-**Stage:** 2 — fully proven on paper  
+**Stage:** 3 — formalised in Lean 4  
 **Date frozen:** 2026-08-04  
-**Label:** `[LOCAL-RESEARCH] [PAPER-PROVED] [NOVELTY UNVERIFIED]`
+**Label:** `[LOCAL-RESEARCH] [LEAN-PROVED] [NOVELTY UNVERIFIED]`
 
 ## 1. Exact theorem
 
@@ -143,7 +143,7 @@ Formal proof must construct, not assume:
 3. PNT partial summation for logarithmic polynomial weights;
 4. dyadic lower bound for every `m`.
 
-Status: `[PAPER-PROVED]`; Lean proof absent.
+Status: `[LEAN-PROVED]`; all four targets constructed and closed unconditionally.
 
 ## Lean progress -- item 3, the arithmetic input at every order
 
@@ -675,3 +675,63 @@ modulus.  The blocker recorded two sections above is closed.
 1. the carrier-level statement: combining `massBesselCarrier_eq_distortion`,
    `norm_shellCarrierProfile_sub_trunc_le` and `norm_besselK1C_sub_poincare_le_norm`;
 2. the dyadic assembly at general order, mirroring `RHTower.MassBesselDyadicAperture`.
+
+## Lean progress -- item 4, and the card is closed
+
+Five more modules (all umbrella-wired, `lake build`-clean, axiom-clean) assemble the dyadic
+divergence.
+
+`formal/GaloisForLFunctions/HTGeometry/MassCarrierPartialSum.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the Schläfli remainder at the shell root, in the modulus | `norm_shellPoincareRemainder_le` |
+| **the carrier against its order-`m` deep-time partial sum**, uniformly over the shell | `norm_massBesselCarrier_sub_partialSum_le` |
+
+`formal/GaloisForLFunctions/RHTower/MassBesselDyadicRadiation.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the dyadic prime mass weighted by a Poincaré coefficient polynomial | `dyadicPoincareMass` |
+| the order-`m` radiation remainder `R_{m,X}` | `dyadicPoincareSum`, `massBesselDyadicRadiationRemainder` |
+| removing one more radiation term | `massBesselDyadicRadiationRemainder_succ` |
+| **the remainder is the aperture of the order-`m` carrier defect** | `massBesselDyadicRadiationRemainder_eq` |
+| **the shell-uniform bound** | `radiationShellBound`, `norm_massBesselDyadicRadiationRemainder_le` |
+| every hypothesis of that bound holds eventually along the deep-time ray | `eventually_shellHypotheses` |
+
+`formal/GaloisForLFunctions/RHTower/MassBesselPoincareMass.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the coefficient polynomial's prime mass as a combination of logarithmic masses | `dyadicPoincareMass_eq` |
+| lower orders are negligible against the top order | `tendsto_logMass_div_top` |
+| **`∑ Λ(n)n^{-1/2} Q_m((log n)²) ~ [s^m]Q_m · 2(√2−1) √X (log X)^{2m}`** | `tendsto_dyadicPoincareMass` |
+
+`formal/GaloisForLFunctions/RHTower/MassBesselRadiationDivergence.lean` and
+`MassBesselRadiationScale.lean`:
+
+| Card item | Declaration |
+|---|---|
+| `√X/(log X)^p` diverges at every order | `tendsto_sqrt_div_log_pow_atTop` |
+| the shell bound decays two logarithmic powers faster than the leading term | `exists_shellBound_le` |
+| the extremal prime mass is eventually at least half its limit | `eventually_norm_dyadicPoincareMass_ge` |
+| **item 4: `lim_{X→∞} |R_{m,X}(t_X)| = +∞` for every finite `m`** | `tendsto_norm_massBesselDyadicRadiationRemainder_atTop` |
+| the modulus of the deep-time point is asymptotically `(log X)^4` | `tendsto_norm_spectralPoint_div` |
+| **the boxed asymptotic: `|R_{m,X}(t_X)| (log X)^{2m+2}/√X` converges** | `tendsto_norm_massBesselDyadicRadiationRemainder_scale` |
+| **and its limit is strictly positive** | `radiationScaleConst_pos` |
+
+The limit is `√(2πa) e^{-aσ} · ‖[s^m]Q_{m,a}‖ · 2(√2−1)`, and it is nonzero precisely because item 2
+computed `[s^m]Q_{m,a} = (-a/2)^m/m!`.  The error is smaller by a further factor `(log X)^{-2}`: the
+distortion tail contributes `(log X)^{-2m-4}` and the Schläfli remainder `(log X)^{-4m-6}`, both
+beaten by the leading `(log X)^{-2m-2}` once the Poincaré order of `K_1` is taken to be `m+1`.
+
+**Status: all four Lean targets are constructed and proved unconditionally.**
+
+- item 1: `exists_poly_approx_carrierDistortion`, `norm_shellCarrierProfile_sub_trunc_le`,
+  `norm_besselK1C_sub_poincare_le_norm`;
+- item 2: `natDegree_poincareCoeffPoly`, `coeff_poincareCoeffPoly_self`;
+- item 3: `RHTower.tendsto_dyadicSqrtVonMangoldtLogMass`;
+- item 4: `RHTower.tendsto_norm_massBesselDyadicRadiationRemainder_atTop`,
+  `RHTower.tendsto_norm_massBesselDyadicRadiationRemainder_scale`, `RHTower.radiationScaleConst_pos`.
+
+Every declaration has axioms exactly `[propext, Classical.choice, Quot.sound]`.

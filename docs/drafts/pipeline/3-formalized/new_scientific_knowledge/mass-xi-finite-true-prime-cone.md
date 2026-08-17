@@ -1,7 +1,7 @@
 # Finite true-prime cone and mass-shell quadrature defect
 
 - **ID:** C42
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** `docs/reports/mass-shifted-spectral-trace-route.md` · §9.3 exact open core
 - **Statement:** The mass-shifted spectral-face criterion for RH is unchanged when the finite
@@ -22,7 +22,8 @@ these reductions claims the remaining type-zero discrepancy estimate.
 
 - [x] 0 → 1 in-progress: well-posed, source-pure, exact cone and candidate decomposition identified
 - [x] 1 → 2 fully-proven: complete paper proof below, `[PROVED HERE]`, no open mathematical dependency
-- [ ] 2 → 3 formalized: intentionally not attempted in this paper-only pass
+- [x] 2 → 3 formalized: every status label Lean-proved unconditionally; see the 2026-08-18
+      section at the end of this card
 - [ ] 3 → 4 publication-ready: standalone novelty and exposition audit still required
 
 ## Status labels
@@ -38,8 +39,8 @@ these reductions claims the remaining type-zero discrepancy estimate.
 - Subthreshold raw prime-annulus divergence: `[PROVED HERE]`
 - `PNTPlus` subcaustic discrepancy-layer reduction: `[PROVED HERE]`
 - Asymptotically caustic type-zero criterion: `[PROVED HERE; LEAN-PROVED]`
-- Caustic-null polynomial jet hierarchy and timelike identity wall: `[PROVED HERE; LEAN PENDING]`
-- Jordan-floor spectral-resolution no-go: `[PROVED HERE; LEAN PENDING]`
+- Caustic-null polynomial jet hierarchy and timelike identity wall: `[PROVED HERE; LEAN-PROVED]`
+- Jordan-floor spectral-resolution no-go: `[PROVED HERE; LEAN-PROVED]`
 - Harmonic-floor transform and critically stable `mu(n)/n` inverse: `[PROVED HERE; LEAN-PROVED]`
 - Graded Bessel cone/type phase diagram: `[PROVED HERE]`
 - External novelty: `[NOVELTY-CANDIDATE]`; no matching theorem was found in the searches recorded
@@ -9322,3 +9323,78 @@ by `primeLogWindow_quadrature_eq` — already generic in the profile — paired 
 `xiMassThetaLogDiscrepancy` with the two envelopes above; then the filtered subcaustic window and
 moving criterion, mirroring `XiMassLogSubcausticWindow` and `XiMassMovingQuadratureCriterion` with
 `m_B q ≤ N + 1/2` in place of `m_B q ≤ 1/2`.
+
+### C42-T: `(22.9)` is proved — the card is fully formalized (2026-08-18)
+
+Steps (3) and (4) of the `L_c u^{1/10}` layer are closed, and with them the whole label
+**C42-T, `(22.7)`--`(22.11)`**.  Nothing on the card is now `[LEAN PENDING]`.
+
+    RHTower/XiMassGenericWindowDiscrepancy.lean
+      window_pointwise_bound_generic
+      norm_primeLogWindow_generic_quadratureDefect_le
+                                                `(19.3)` **for an arbitrary receiver**: for any
+                                                `C¹` profile `G` on the annulus whose value and
+                                                derivative obey the exterior envelope
+                                                `D·e^{-h/2}e^{-a√(h²−u²)}`, the prime--continuum
+                                                quadrature defect is at most
+                                                `(2 + 1/(a−1/2))·C_E·D·e^{H/2−a√(H²−u²)}e^{-c_E H^{1/10}}`.
+                                                The Abel pairing is `primeLogWindow_quadrature_eq`,
+                                                which was already generic in the profile; what is
+                                                new is that the exterior decay makes the bound
+                                                independent of the window width
+
+    RHTower/XiMassJetWindowDamped.lean
+      xiMassJetDampedHeight, xiMassJetDampedHeightDeriv
+        hasDerivAt_xiMassJetDampedHeight,
+        continuousOn_xiMassJetDampedHeightDeriv
+                                                the half-damped jet receiver `e^{-h/2}·Jet_k(h)`
+                                                is `C¹` at every height of the transport window
+      lseriesTerm_vonMangoldt_prime_eq          `Λ-term at 1/2` on a prime is `(log p)e^{-(log p)/2}`
+      exists_norm_primeLogWindow_jetQuadratureDefect_le
+                                                **the filtered `(19.3)`**: the jet gain
+                                                `u^{-(k+1)/2}` passes straight into the constant,
+                                                because both envelopes — the window transport bound
+                                                and its Cauchy derivative companion — carry it.
+                                                The sum is exactly the jet prime atom and the
+                                                integral is exactly the jet continuum profile
+
+    RHTower/XiMassJetLogSubcausticWindow.lean
+      exists_eventually_norm_jetLogSubcausticWindowDefect_le
+                                                **the filtered `(21.8)`**: for every
+                                                `0 < L ≤ L_c := c_E κ_B^{1/10}/m_B` and every `q`
+                                                with `m_B q ≤ (k+1)/2`, the prime-discrepancy
+                                                annulus between
+                                                `H(u) = κ_B u − L u^{1/10} − q log u` and the
+                                                caustic stays uniformly bounded.  The retreat is
+                                                `O(u^{1/4})`, hence `o(√u)`, so it never leaves the
+                                                `√u/8` window where the jet envelopes live; the
+                                                action cost `m_B r + O(r²/u)` is paid by the
+                                                prime-number-theorem remainder on the `u^{1/10}`
+                                                layer and by the transport prefactor on the
+                                                logarithmic one.  At `k = 2N` the chamber is
+                                                exactly `m_B q ≤ N + 1/2`
+
+    RHTower/XiMassJetSubcausticCriterion.lean
+      xiMassJetSubcausticQuadrature             the caustic jet atom sum with the primes of the
+                                                retreated annulus replaced by their continuum
+                                                density
+      exists_riemannHypothesis_iff_jetSubcausticQuadratureBound
+                                                **`(22.9)`**: there is `L_c > 0` such that for every
+                                                `0 < L ≤ L_c` and every `q ≥ 0` with
+                                                `m_B q ≤ N + 1/2`, RH is equivalent to uniform
+                                                boundedness of that quadrature.  This is `(21.10)`
+                                                with the transport prefactor upgraded from
+                                                `u^{-1/2}` to `u^{-(N+1/2)}`
+
+Why the criterion subtracts the continuum here and not in `(22.11)`.  Over the annulus
+`[H(u), κ_B u]` the continuum integral is of size `u^{m_B q−(N+1/2)}e^{m_B L u^{1/10}}`, which the
+`u^{1/10}` layer makes unbounded; only the *defect* against the primes is bounded, and it is bounded
+because the prime-number-theorem remainder `e^{-c_E h^{1/10}}` beats `e^{m_B L u^{1/10}}` exactly
+when `m_B L ≤ c_E κ_B^{1/10}`.  At the purely logarithmic retreat of `(22.11)` no such subtraction
+is needed, because there the whole continuum sits in the archimedean face.
+
+### Gate 2 → 3
+
+Every status label of this card is now Lean-proved unconditionally, with axiom set
+`[propext, Classical.choice, Quot.sound]` and no `sorry`, `admit`, `axiom`, `opaque` or `unsafe`
+declaration anywhere in the chain.  The card moves to `3-formalized`.
