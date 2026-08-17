@@ -7,7 +7,7 @@ import Mathlib.Tactic
 open scoped BigOperators Matrix Matrix.Norms.L2Operator
 open Matrix Kronecker
 
-namespace GaloisForLFunctions.HTGeometry.StaticLocalScratch
+namespace GaloisForLFunctions.HTGeometry.StaticLocalLaboratoryComplexityGrowthLaw
 
 abbrev Config (Q : Type*) := Q → Bool
 abbrev On {Q : Type*} (A : Finset Q) := A → Bool
@@ -739,4 +739,4 @@ theorem inverseSquareChain_twoGateCount_ge {L K : ℕ}
     nlinarith
   nlinarith
 
-end GaloisForLFunctions.HTGeometry.StaticLocalScratch
+end GaloisForLFunctions.HTGeometry.StaticLocalLaboratoryComplexityGrowthLaw

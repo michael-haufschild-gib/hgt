@@ -3705,3 +3705,38 @@ infinite-torus unique ergodicity (`InfiniteTorusEquidistribution`, `InfiniteToru
 completed-observer-time equidistribution (`CompletedObserverTimeTorus`), the measure-preserving torus
 projection and closed-target density (`CompletedTimeCaptureDensity`,
 `FiniteSpectralRecurrenceFrequencyLaw`).  Search it before building anything in this area.
+
+## Promotion, 2026-08-17 -- `schanuel-defect-grassmannian-kummer-core`
+
+The last open item of the card ("only the instantiation") is closed.
+`formal/GaloisForLFunctions/RHTower/SchanuelDefectGrassmannianDescent.lean` (new, umbrella-wired,
+axiom-clean) supplies:
+
+- `defectMap` / `mem_ker_defectMap_iff` -- the defect map `(1)` of a family of differentials;
+- `extendDifferential`, `extendDifferential_smul`, `extendDifferential_sub`, `extendDifferential_D`,
+  `extendDifferential_sum_smul`, `extendDifferential_kaehlerPairDefect` -- the extension of a
+  small-field differential, and of a logarithmic defect pair, to the big field;
+- `mapBaseChange_lTensor_defectMap` -- the base-changed defect map computes the extended
+  combination, so injectivity of the canonical Kähler map applies to it;
+- `mem_span_image_ker_of_extended` -- **kernel descent**: a big-field relation among extended
+  small-field differentials is a big-field combination of small-field relations.  The proof is
+  injectivity of `mapBaseChange` in characteristic zero plus flatness of a field extension
+  (`ker_lTensor_eq_range_subtype`), transported through `Algebra.TensorProduct.piScalarRight`;
+- `sum_smul_extend_eq_mulVec`, `sum_smul_transform_eq_zero`, `mem_span_transform_of_mem_ker`,
+  `ker_defectMap_eq_span_transform` -- equation `(7)` in both inclusions;
+- `kaehlerPairDefect_intTransform`, `extendDifferential_pairDefect_transform` -- the concrete
+  instantiation of `(5)`: the defect pair of `(Mx, y^M)` is the integral combination of the defect
+  pairs of `(x, y)`, via the corpus's `derivation_log_finprod_zpow`;
+- `ker_pairDefect_eq_span_transform` -- Theorem 2 for an exponential configuration whose integral
+  transform is defined over an intermediate field;
+- `pluecker_ratio_transform_mem_range` -- the Plücker step: a spanning matrix that is a transposed
+  integral transform of small-field data has all normalized ratios in the small field.
+
+### Reusable pieces banked
+
+- **`mem_span_image_ker_of_extended`** -- the descent template for *any* card that needs "a
+  big-field linear relation among extended small-field vectors is a big-field combination of
+  small-field relations".  It only needs `CharZero F` and `Algebra.IsAlgebraic F K`.
+- **`kaehlerPairDefect_intTransform`** -- the field-level form of the all-dimensional integral
+  transformation law, usable wherever logarithmic defect pairs are transformed by an integer matrix.
+- **`defectMap`** -- the linear-combination map with its kernel API, for any module.

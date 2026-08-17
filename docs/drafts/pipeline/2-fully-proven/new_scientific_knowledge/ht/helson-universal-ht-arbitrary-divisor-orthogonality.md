@@ -2267,3 +2267,48 @@ step is the same independence over the finite-prime coefficient field — the co
 for prime columns (`algebraicIndependent_fractionPrimeColumns_over_finitePrimeCoefficientField`)
 and the argument should transfer, since a coefficient in `E_fin` involves only finitely many primes
 and the criterion may use any cofinite set of primes `q`.
+
+## Lean progress — PONG'S INPUT IS CLOSED: conclusion over `E_fin(s)`, in analytic form
+
+`HTGeometry/PrimeValueJacobianCoefficientField.lean` and the new section of
+`HTGeometry/HelsonZetaJetIndependence.lean` (wired, axiom-clean).
+
+```
+eq_zero_of_sum_mul_primeDeriv_eq_zero
+      the criterion's induction, with a FINITE set of primes excluded
+algebraicIndependent_over_primeCommonKernelField_compl
+      independence over the common kernel field of all primes outside a finite set
+algebraicIndependent_over_finitePrimeCoefficientField_of_tailIndependent
+      ** tail-independent prime values  ==>  algebraically independent over E_fin **
+
+algebraicIndependent_helsonZetaShiftedJets_over_finitePrimeCoefficientField
+algebraicIndependent_helsonZetaShiftedJets_over_finitePrimeRationalCoefficientField
+      ** the shifted derivative rectangle of Z_chi is independent over E_fin and over E_fin(s) **
+boundedFiniteAbscissa / boundedShiftedRotatedJet / boundedShiftedRotatedJet_coe
+algebraicIndependent_helsonZetaShiftedUpperEndGerms
+      ** and as a family of actual analytic upper-end germs **
+```
+
+### Why the upgrade works
+
+The prime-value criterion uses the prime derivations at *every* prime, and a coefficient in
+`E_fin` is not killed by all of them.  But a polynomial relation over `E_fin` exposes only finitely
+many prime directions (`polynomialPrimeActivity_finite`), so every derivation outside that finite
+set annihilates all its coefficients — and the criterion's induction only ever needs the relation at
+primes outside a finite set, because tail independence tolerates exactly that.  Concretely: lift the
+relation to the common kernel field of the primes outside the activity, clear denominators once with
+a single non-zero-divisor, run the divisor-pair induction in the ring, and conclude that every
+partial derivative annihilates the family.
+
+### What this closes on the card
+
+The `2 -> 3` gate names three classical inputs.  **Pong's is now formal in both halves**: the
+hypothesis (`primeSupport_not_finitelyGenerated`, earlier) and the conclusion — for the actual
+`Z_chi` coefficient stream, over the card's own `E_fin(s)`, and realized as analytic germs.  Nothing
+about Pong's theorem remains as an assumption in this tree.
+
+Remaining on the card: **Andersson's** arbitrary-divisor continuation theorem, and
+**Saksman--Webb's** almost-sure meromorphic abscissa (equivalently, by the zero-one law already
+proved here, that the noncontinuable phases have positive measure).  Both are analytic existence
+statements about the continuation of `Z_chi` past `Re s = 1`, and neither is reachable from the
+algebraic and descriptive-set-theoretic layers now in place.

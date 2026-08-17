@@ -12637,3 +12637,59 @@ four-factor split is now `logDeriv_xi_fourFactor` / `logDeriv_xi_fourFactor_offR
 `lake env lean` does not see such clashes; only a build that pulls both modules in does.
 
 All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AEU. `coalescing-anchor-parity-locking-reduction` — Theorem AB's recurrence core
+
+```text
+HTGeometry/BohrFiniteRecurrence.lean
+  bohrCharVector                          the vector of characters of a finite frequency family
+  continuous_bohrCharVector, bohrCharVector_zero
+  isBohrAlmostPeriodic_bohrCharVector     the vector is Bohr almost periodic
+  exists_large_simultaneous_almostPeriod  arbitrarily large ξ with |e^{iξu_j} − 1| ≤ ε for all j
+  exists_large_atomicSymbol_revival       the atomic symbol returns to its total mass
+```
+
+Theorem AB's proof invokes "simultaneous Dirichlet approximation supplies `ξ_k → ∞` with
+`exp(i ξ_k u_j) → 1`".  No Diophantine input is needed: the corpus already owns Bohr almost
+periodicity and, crucially, `exists_common_almostPeriods` — two almost-periodic functions have a
+*relatively dense* set of common almost periods.  Iterating that over coordinates makes the
+character vector almost periodic, and relative density gives almost periods beyond any threshold.
+Evaluating at the origin is the recurrence statement.
+
+The consequence recorded here is the mechanism of `(277)`–`(279)` in finite form: at arbitrarily
+large times the symbol `∑ m_j e^{iξu_j}` returns to `∑ m_j` up to `(∑|m_j|)·ε`.  That is exactly why
+an atomic convolution cannot converge in operator norm to an absolutely continuous limit, however
+strong the fixed-profile cancellation is.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AEV. Theorem AC — the source-blindness core, and a sharpening of its proof
+
+```text
+HTGeometry/CoerciveFamilySolutionLimit.lean
+  norm_le_of_coercive                          coercivity moves norms up: ‖x‖ ≤ δ⁻¹‖B x‖
+  tendsto_solution_of_coercive_family          x_j → c⁻¹ s, strongly
+  tendsto_inner_solution_of_coercive_family    ⟪s_j, x_j⟫ → ‖s‖²/c
+```
+
+The card proves `(284)` by taking a weakly convergent subsequence of `x_{σ,j}`, identifying every
+weak cluster point with `c⁻¹ s`, and removing the subsequence by uniqueness.  That detour is
+avoidable.  The identity
+
+```text
+B_j (x_j − c⁻¹ s) = s_j − c⁻¹ B_j s
+```
+
+plus coercivity gives `‖x_j − c⁻¹ s‖ ≤ δ⁻¹ ‖s_j − c⁻¹ B_j s‖` directly, and the right side tends to
+zero as soon as `B_j → c·I` strongly at the single vector `s` — which the corpus's
+`tendsto_of_dense_of_uniform_bound` supplies from convergence on a dense set together with the
+uniform operator bound.  So the conclusion is **strong** convergence of the solutions, not merely
+weak, and no compactness argument appears.
+
+The extra hypothesis relative to the card is the uniform operator bound `‖B_j‖ ≤ M`, which the
+card's own setting satisfies (Theorem AB shows the norms do not *converge*, not that they are
+unbounded).  The pairing limit `‖s‖²/c` is then immediate from continuity of the inner product, and
+since it depends only on `δ`, `M`, `c` and the strong limit, two families sharing them share their
+response — which is exactly the source blindness of `(284)`.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.

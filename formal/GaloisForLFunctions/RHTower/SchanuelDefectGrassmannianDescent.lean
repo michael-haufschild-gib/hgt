@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.SeparableKaehlerBaseChange
 import GaloisForLFunctions.HTGeometry.PlueckerFieldOfDefinition
+import GaloisForLFunctions.RHTower.SchanuelPeriodBranchDefect
 
 /-!
 # The defect kernel is defined over the small field
@@ -142,6 +143,83 @@ def intMatrixVec (M : Matrix (Fin n) (Fin n) ℤ) (K : Type*) [Field K] :
     Matrix (Fin n) (Fin n) K :=
   M.map (fun m => (m : K))
 
+/-- **`(5)`.**  The extended defect combination of a coordinate vector is the defect combination of
+its transposed integral transform. -/
+theorem sum_smul_extend_eq_mulVec (ε : Fin n → Ω[K⁄A]) (ε' : Fin n → Ω[F⁄A])
+    (M : Matrix (Fin n) (Fin n) ℤ)
+    (hrel : ∀ j, extendDifferential (A := A) (K := K) (ε' j)
+      = ∑ i, (intMatrixVec M K) j i • ε i)
+    (c : Fin n → K) :
+    ∑ j, c j • extendDifferential (A := A) (K := K) (ε' j)
+      = ∑ i, ((intMatrixVec M K)ᵀ *ᵥ c) i • ε i := by
+  classical
+  set N : Matrix (Fin n) (Fin n) K := intMatrixVec M K with hN
+  calc ∑ j, c j • extendDifferential (A := A) (K := K) (ε' j)
+      = ∑ j, c j • ∑ i, N j i • ε i :=
+        Finset.sum_congr rfl fun j _ => by rw [hrel j]
+    _ = ∑ j, ∑ i, (c j * N j i) • ε i := by
+        refine Finset.sum_congr rfl fun j _ => ?_
+        rw [Finset.smul_sum]
+        exact Finset.sum_congr rfl fun i _ => by rw [smul_smul]
+    _ = ∑ i, ∑ j, (c j * N j i) • ε i := Finset.sum_comm
+    _ = ∑ i, (Nᵀ *ᵥ c) i • ε i := by
+        refine Finset.sum_congr rfl fun i _ => ?_
+        rw [← Finset.sum_smul]
+        congr 1
+        rw [Matrix.mulVec, dotProduct]
+        exact Finset.sum_congr rfl fun j _ => by rw [Matrix.transpose_apply, mul_comm]
+
+/-- The extension of a scalar multiple is the multiple of the extension. -/
+theorem extendDifferential_smul (c : F) (ω : Ω[F⁄A]) :
+    extendDifferential (A := A) (K := K) (c • ω)
+      = algebraMap F K c • extendDifferential (A := A) (K := K) ω := by
+  have h : (1 : K) ⊗ₜ[F] (c • ω) = algebraMap F K c • ((1 : K) ⊗ₜ[F] ω) := by
+    rw [← TensorProduct.smul_tmul, TensorProduct.smul_tmul', Algebra.smul_def, smul_eq_mul,
+      mul_one]
+  rw [extendDifferential, h, map_smul, extendDifferential]
+
+/-- The extension of a difference is the difference of the extensions. -/
+theorem extendDifferential_sub (ω τ : Ω[F⁄A]) :
+    extendDifferential (A := A) (K := K) (ω - τ)
+      = extendDifferential (A := A) (K := K) ω - extendDifferential (A := A) (K := K) τ := by
+  rw [extendDifferential, extendDifferential, extendDifferential, TensorProduct.tmul_sub, map_sub]
+
+/-- The extension of a small-field differential is the big-field differential of the image. -/
+theorem extendDifferential_D (s : F) :
+    extendDifferential (A := A) (K := K) (KaehlerDifferential.D A F s)
+      = KaehlerDifferential.D A K (algebraMap F K s) := by
+  rw [extendDifferential, KaehlerDifferential.mapBaseChange_tmul, KaehlerDifferential.map_D,
+    one_smul]
+
+/-- The extension of a small-field combination is the big-field combination of the extensions. -/
+theorem extendDifferential_sum_smul (r : Fin n → F) (ε' : Fin n → Ω[F⁄A]) :
+    extendDifferential (A := A) (K := K) (∑ j, r j • ε' j)
+      = ∑ j, algebraMap F K (r j) • extendDifferential (A := A) (K := K) (ε' j) := by
+  rw [extendDifferential, TensorProduct.tmul_sum, map_sum]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  have h : (1 : K) ⊗ₜ[F] (r j • ε' j) = algebraMap F K (r j) • ((1 : K) ⊗ₜ[F] ε' j) := by
+    rw [← TensorProduct.smul_tmul, TensorProduct.smul_tmul', Algebra.smul_def, smul_eq_mul,
+      mul_one]
+  rw [h, map_smul, extendDifferential]
+
+/-- **The extension of a logarithmic defect pair.**  A defect pair of the small field extends to the
+defect pair of the images. -/
+theorem extendDifferential_kaehlerPairDefect (a b : F) :
+    extendDifferential (A := A) (K := K) (kaehlerPairDefect A F a b)
+      = kaehlerPairDefect A K (algebraMap F K a) (algebraMap F K b) := by
+  rw [kaehlerPairDefect, extendDifferential_sub, extendDifferential_smul, extendDifferential_D,
+    extendDifferential_D, map_inv₀, kaehlerPairDefect]
+
+/-- **The transformed small-field kernel lies in the big-field kernel.** -/
+theorem sum_smul_transform_eq_zero (ε : Fin n → Ω[K⁄A]) (ε' : Fin n → Ω[F⁄A])
+    (M : Matrix (Fin n) (Fin n) ℤ)
+    (hrel : ∀ j, extendDifferential (A := A) (K := K) (ε' j)
+      = ∑ i, (intMatrixVec M K) j i • ε i)
+    {r : Fin n → F} (hr : ∑ j, r j • ε' j = 0) :
+    ∑ i, ((intMatrixVec M K)ᵀ *ᵥ (fun j => algebraMap F K (r j))) i • ε i = 0 := by
+  rw [← sum_smul_extend_eq_mulVec ε ε' M hrel, ← extendDifferential_sum_smul (A := A) (K := K),
+    hr, extendDifferential, TensorProduct.tmul_zero, map_zero]
+
 /-- **`(5)` transported to kernels.**  If the extended small-field differentials are the integral
 transform of the big-field family, then a big-field kernel vector is the transposed transform of a
 big-field combination of small-field kernel vectors. -/
@@ -162,23 +240,7 @@ theorem mem_span_transform_of_mem_ker (ε : Fin n → Ω[K⁄A]) (ε' : Fin n �
   have hNc : Nᵀ *ᵥ c = v := by
     rw [hc, Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ hNT, Matrix.one_mulVec]
   have hkey : ∑ j, c j • extendDifferential (A := A) (K := K) (ε' j) = 0 := by
-    have hexpand : ∑ j, c j • extendDifferential (A := A) (K := K) (ε' j)
-        = ∑ i, (Nᵀ *ᵥ c) i • ε i := by
-      calc ∑ j, c j • extendDifferential (A := A) (K := K) (ε' j)
-          = ∑ j, c j • ∑ i, N j i • ε i := by
-            exact Finset.sum_congr rfl fun j _ => by rw [hrel j]
-        _ = ∑ j, ∑ i, (c j * N j i) • ε i := by
-            refine Finset.sum_congr rfl fun j _ => ?_
-            rw [Finset.smul_sum]
-            exact Finset.sum_congr rfl fun i _ => by rw [smul_smul]
-        _ = ∑ i, ∑ j, (c j * N j i) • ε i := Finset.sum_comm
-        _ = ∑ i, (Nᵀ *ᵥ c) i • ε i := by
-            refine Finset.sum_congr rfl fun i _ => ?_
-            rw [← Finset.sum_smul]
-            congr 1
-            rw [Matrix.mulVec, dotProduct]
-            exact Finset.sum_congr rfl fun j _ => by rw [Matrix.transpose_apply, mul_comm]
-    rw [hexpand, hNc, hv]
+    rw [sum_smul_extend_eq_mulVec ε ε' M hrel, hNc, hv]
   have hcspan := mem_span_image_ker_of_extended (A := A) (K := K) ε' c hkey
   have himg := Submodule.apply_mem_span_image_of_mem_span
     (f := (Matrix.mulVecLin (Nᵀ) : (Fin n → K) →ₗ[K] (Fin n → K))) hcspan
@@ -186,6 +248,22 @@ theorem mem_span_transform_of_mem_ker (ε : Fin n → Ω[K⁄A]) (ε' : Fin n �
   refine Submodule.span_mono ?_ himg
   rintro y ⟨z, ⟨r, hr, rfl⟩, rfl⟩
   exact ⟨r, hr, rfl⟩
+
+/-- **`(7)`.**  The defect kernel over the big field is exactly the span of the transposed integral
+transforms of the small-field kernel: the kernel is defined over the small field. -/
+theorem ker_defectMap_eq_span_transform (ε : Fin n → Ω[K⁄A]) (ε' : Fin n → Ω[F⁄A])
+    (M : Matrix (Fin n) (Fin n) ℤ)
+    (hrel : ∀ j, extendDifferential (A := A) (K := K) (ε' j)
+      = ∑ i, (intMatrixVec M K) j i • ε i)
+    (hM : IsUnit (intMatrixVec M K).det) :
+    LinearMap.ker (defectMap ε) =
+      Submodule.span K
+        ((fun r : Fin n → F => (intMatrixVec M K)ᵀ *ᵥ (fun j => algebraMap F K (r j))) ''
+          {r : Fin n → F | ∑ j, r j • ε' j = 0}) := by
+  refine le_antisymm (fun v hv => ?_) (Submodule.span_le.mpr ?_)
+  · exact mem_span_transform_of_mem_ker ε ε' M hrel v ((mem_ker_defectMap_iff ε v).mp hv) hM
+  · rintro y ⟨r, hr, rfl⟩
+    exact (mem_ker_defectMap_iff ε _).mpr (sum_smul_transform_eq_zero ε ε' M hrel hr)
 
 /-- **Theorem 2, the Plücker step.**  A spanning matrix of the defect kernel whose rows are
 transposed integral transforms of small-field vectors has all its normalized Plücker ratios in the
@@ -197,11 +275,57 @@ theorem pluecker_ratio_transform_mem_range {k : ℕ} (M : Matrix (Fin n) (Fin n)
     pluecker B J / pluecker B I ∈ Set.range (algebraMap F K : F →+* K) := by
   refine pluecker_ratio_mem_range (algebraMap F K : F →+* K) (B := B) ?_ I J hI
   intro i j
-  refine ⟨∑ l, B' i l * ((M l j : ℤ) : F), ?_⟩
+  refine ⟨∑ l, B' i l * ((M j l : ℤ) : F), ?_⟩
   rw [hB, Matrix.mul_apply, map_sum]
   refine Finset.sum_congr rfl fun l _ => ?_
   rw [map_mul, Matrix.map_apply, Matrix.transpose_apply, intMatrixVec, Matrix.map_apply,
     map_intCast]
+
+
+/-- **`(5)` in the big field.**  The defect pair of an integral transform of the coordinates is the
+integral combination of the coordinate defect pairs. -/
+theorem kaehlerPairDefect_intTransform (x y : Fin n → K) (hy : ∀ i, y i ≠ 0) (m : Fin n → ℤ) :
+    kaehlerPairDefect A K (∑ i, (m i : K) * x i) (∏ i, y i ^ m i)
+      = ∑ i, (m i : K) • kaehlerPairDefect A K (x i) (y i) := by
+  classical
+  have hlog := derivation_log_finprod_zpow (KaehlerDifferential.D A K) Finset.univ y m
+    (fun i _ => hy i)
+  have hlin : KaehlerDifferential.D A K (∑ i, (m i : K) * x i)
+      = ∑ i, (m i : K) • KaehlerDifferential.D A K (x i) := by
+    rw [map_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [← zsmul_eq_mul, map_zsmul, ← Int.cast_smul_eq_zsmul K]
+  rw [kaehlerPairDefect, hlog, hlin, ← Finset.sum_sub_distrib]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [kaehlerPairDefect, smul_sub]
+
+/-- **The concrete instantiation of `(5)`.**  If the integral transform of an exponential
+configuration is defined over the small field, then the small-field defect pairs extend to exactly
+the integral transform of the big-field defect pairs. -/
+theorem extendDifferential_pairDefect_transform (x y : Fin n → K) (hy : ∀ i, y i ≠ 0)
+    (M : Matrix (Fin n) (Fin n) ℤ) (a b : Fin n → F)
+    (ha : ∀ j, algebraMap F K (a j) = ∑ i, (M j i : K) * x i)
+    (hb : ∀ j, algebraMap F K (b j) = ∏ i, y i ^ (M j i)) (j : Fin n) :
+    extendDifferential (A := A) (K := K) (kaehlerPairDefect A F (a j) (b j))
+      = ∑ i, (intMatrixVec M K) j i • kaehlerPairDefect A K (x i) (y i) := by
+  rw [extendDifferential_kaehlerPairDefect, ha, hb, kaehlerPairDefect_intTransform x y hy]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [intMatrixVec, Matrix.map_apply]
+
+/-- **Theorem 2.**  For an exponential configuration whose integral transform is defined over an
+intermediate field, the defect kernel is spanned by vectors with coordinates in that field, and
+every normalized Plücker ratio of a spanning matrix built from them lies in it. -/
+theorem ker_pairDefect_eq_span_transform (x y : Fin n → K) (hy : ∀ i, y i ≠ 0)
+    (M : Matrix (Fin n) (Fin n) ℤ) (a b : Fin n → F)
+    (ha : ∀ j, algebraMap F K (a j) = ∑ i, (M j i : K) * x i)
+    (hb : ∀ j, algebraMap F K (b j) = ∏ i, y i ^ (M j i))
+    (hM : IsUnit (intMatrixVec M K).det) :
+    LinearMap.ker (defectMap fun i => kaehlerPairDefect A K (x i) (y i)) =
+      Submodule.span K
+        ((fun r : Fin n → F => (intMatrixVec M K)ᵀ *ᵥ (fun j => algebraMap F K (r j))) ''
+          {r : Fin n → F | ∑ j, r j • kaehlerPairDefect A F (a j) (b j) = 0}) :=
+  ker_defectMap_eq_span_transform _ _ M
+    (fun j => extendDifferential_pairDefect_transform x y hy M a b ha hb j) hM
 
 end Transform
 

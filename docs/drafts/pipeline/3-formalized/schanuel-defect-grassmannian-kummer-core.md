@@ -1,11 +1,47 @@
 # Defect Grassmannian descends to the Kummer isogeny core
 
 - **ID:** schanuel-defect-grassmannian-kummer-core
-- **Stage:** 2-fully-proven
+- **Stage:** 3 -- formalized in Lean 4
 - **Type:** THEOREM (paper)
 - **Source:** integral defect independence + separable Kähler base change + integral isogenies
 - **Statement:** Every normalized Plücker coordinate of a Schanuel defect-kernel subspace lies in
   the scalar Kummer core, and the full integral-isogeny core equals that scalar core.
+
+## Lean certificate
+
+Every numbered statement of this card is proved unconditionally in Lean; the axiom audit of each
+declaration is exactly `propext`, `Classical.choice`, `Quot.sound`.
+
+| Card item | Declaration | Module |
+|---|---|---|
+| `(3)` full integral-isogeny core equals the scalar power core | `fullIntegralIsogenyCore_eq_scalarPowerIsogenyCore` | `RHTower/SchanuelIntegralIsogenyCoreIntersection` |
+| `(4)` the scalar field of the determinant sits inside `K_M` | `schanuelDefect_slope_mem_of_integral_isogeny` | `RHTower/SchanuelDefectIsogeny` |
+| the `n=2` affine chart and its `trdeg = 1` rank transfer | `schanuelDefect_slope_mem_integral_isogeny_valueField` | `RHTower/SchanuelIntegralIsogenyValueField` |
+| `(1)` the defect map of a family of differentials, and its kernel | `defectMap`, `mem_ker_defectMap_iff` | `RHTower/SchanuelDefectGrassmannianDescent` |
+| `(5)` numerical all-dimensional integral transformation law | `schanuelDefect_integer_linearCombination` | `RHTower/SchanuelDefectIsogeny` |
+| `(5)` field form: the defect pair of an integral transform is the integral combination of the defect pairs | `kaehlerPairDefect_intTransform` | `RHTower/SchanuelDefectGrassmannianDescent` |
+| `(5)` concrete instantiation: the small-field defect pairs extend to the integral transform | `extendDifferential_pairDefect_transform` | same |
+| `(6)` separable Kähler base change `K (x)_{K_M} Omega[K_M/A] = Omega[K/A]` | `kaehlerBaseChangeOfSeparable`, `kaehlerBaseChangeOfIsAlgebraic` | `HTGeometry/SeparableKaehlerBaseChange` |
+| `(6)` injectivity and surjectivity of the canonical map | `mapBaseChange_injective_of_separable`, `mapBaseChange_surjective_of_separable` | same |
+| `(7)` flat base change of kernels | `ker_lTensor_eq_range_subtype`, `exists_of_mem_ker_lTensor` | same |
+| `(7)` kernel descent: a big-field relation is a big-field combination of small-field relations | `mem_span_image_ker_of_extended` | `RHTower/SchanuelDefectGrassmannianDescent` |
+| `(7)` `W = M^T (K (x) W'_M)`, both inclusions | `mem_span_transform_of_mem_ker`, `sum_smul_transform_eq_zero`, `ker_defectMap_eq_span_transform` | same |
+| **Theorem 2** for an exponential configuration with an intermediate-field transform | `ker_pairDefect_eq_span_transform` | same |
+| Plücker coordinates as maximal minors, and basis independence of their ratios | `pluecker`, `pluecker_mul`, `pluecker_ratio_mul` | `HTGeometry/PlueckerFieldOfDefinition` |
+| Plücker field of definition: a subspace spanned over a subfield has its ratios there | `pluecker_mem_range`, `pluecker_ratio_mem_range` | same |
+| **Theorem 2's conclusion**: the normalized Plücker ratios of the defect kernel lie in `K_M` | `pluecker_ratio_transform_mem_range` | `RHTower/SchanuelDefectGrassmannianDescent` |
+
+### Deviations, recorded
+
+1. The Lean kernel-descent layer is stated for an arbitrary pair `F ⊆ K` of characteristic-zero
+   fields with `K/F` algebraic, together with the transformation law `(5)` as an explicit
+   hypothesis; the card's `K_M` is the instance `F = K_M`, whose `(5)` is supplied by
+   `extendDifferential_pairDefect_transform` from the defining equations of `K_M`.
+2. `(7)` is proved as an equality of the kernel with the span of the transposed integral transforms
+   of the small-field kernel, which is the form the Plücker step consumes; the matrix identity
+   `K (x) W'_M = (M^T)^{-1} W` is its restatement.
+3. Finiteness of `K/K_M` enters only through `Algebra.IsAlgebraic F K`, which is what base change
+   and separability need; the adjugate argument that establishes it is Theorem 1's, already formal.
 
 ## Goal
 
@@ -17,8 +53,8 @@ silently import part of Schanuel.
 
 - [x] 0 -> 1  in-progress: projective-kernel conjecture stated and dimension trap removed
 - [x] 1 -> 2  fully-proven: base-change, isogeny action, and core equality proved below
-- [ ] 2 -> 3  formalized: full/scalar core equality is Lean-proved; general Kähler base-change and
-  Plücker field-of-definition layer remain
+- [x] 2 -> 3  formalized: core equality, Kähler base change, kernel descent, the concrete
+  transformation law and Plücker field of definition are all Lean-proved and axiom-clean
 - [ ] 3 -> 4  publication-ready: independent proof and external novelty audits pending
 
 ## Setup
@@ -167,10 +203,11 @@ coefficient wall.
   changed map is exactly the extension of the small-field kernel -- flatness of a field extension,
   via mathlib's `Module.Flat.ker_lTensor_eq`.
 
-  **What remains:** only the instantiation -- naming the concrete defect map `Delta_K` of `(1)` as
-  the base change of `Delta_{K_M}` through `(5)`, and reading its kernel basis as a matrix over
-  `K_M` so that `pluecker_ratio_mem_range` applies.  Every mathematical input of Theorem 2 --
-  base change `(6)`, kernel descent `(7)`, Plücker field of definition -- is now formal.
+  **Closed.**  The instantiation is now formal as well: `extendDifferential_pairDefect_transform`
+  names the concrete defect map of `(1)` as the base change of the `K_M` defect map through `(5)`,
+  `ker_defectMap_eq_span_transform` reads its kernel as the transposed integral transform of the
+  `K_M` kernel, and `pluecker_ratio_transform_mem_range` reads that spanning data as a matrix over
+  `K_M`, so every normalized Plücker ratio lies in `K_M`.
 
 ## Big-picture consequence
 

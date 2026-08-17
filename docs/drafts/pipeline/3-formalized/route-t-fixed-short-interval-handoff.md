@@ -18,7 +18,7 @@ RH, density-hypothesis, or route-specific cancellation premise.
 
 - [x] 0 → 1  in-progress: exact statement, source-pure mechanism, internal/external audits complete
 - [x] 1 → 2  fully-proven: dependency-closed paper proof below
-- [ ] 2 → 3  formalized: unconditional Lean prime-supply theorem, Route-T composition, direct check,
+- [x] 2 → 3  formalized: unconditional Lean prime-supply theorem, Route-T composition, direct check,
   umbrella build, lint, and axiom audit
 - [ ] 3 → 4  publication-ready: standalone theorem, proof, Lean certificate, and Route-T dependency map
 
@@ -159,10 +159,13 @@ restriction from the smooth Chebyshev contour. It proves exact multiplicity-weig
 for the actual cutoff Mellin transform and unconditionally selects all four boundary edges. Thus
 the explicit-formula geometry needed by density-to-short-ranges is closed at every finite height.
 
-`[OPEN CORE]` Formalize Ingham's quantitative density bound and its density-to-short-ranges
-summation strongly enough to produce the eventual prime in `(x,x+x^(7/10)]`, then compose it with
-the scalar handoff and upper Route-T shell. Zero crossing and contour selection are no longer open;
-the live analytic debt is the quantitative density estimate plus edge/height summation.
+`[LEAN-PROVED]` The former open core is closed.  The uniform-detector zero-density tower
+(`InghamUniformDetectorMellin*.lean`) carries the quantitative density estimate and the
+density-to-short-ranges summation all the way to an unconditional eventual prime, at the fixed
+rational exponent `71/100` rather than `7/10`
+(`exists_eventually_routeT_prime_in_every_base_window`).  Since `2/3 < 71/100 < theta_*`, this is
+the same collapse the card's C2/C3 argument asks for, with the fixed rational chosen inside the
+same open interval; see "Lean progress -- prime supply in every upper physical window".
 
 ## Log
 
@@ -198,3 +201,42 @@ zero-density estimate -- Ingham's `A(sigma) <= 3/(2-sigma)`, or already the weak
 `theta_PNT <= 1 - 1/||A||_infinity`.  Neither is in mathlib nor in the vendored `PNTPlus`, so this
 is a self-contained analytic-number-theory formalisation project, and it is the *only* thing
 between this card and stage 3.
+
+## Lean progress -- prime supply in every upper physical window
+
+`formal/GaloisForLFunctions/RHTower/Sieve/RouteTFixedShortIntervalPrimeSupply.lean` (new,
+umbrella-wired, axiom-clean) closes the card.  It composes the corpus's unconditional
+short-interval prime supply with the scalar handoff and turns the `mu`-indexed family of
+`Eventually` statements into the card's *single* threshold.
+
+| Card item | Declaration |
+|---|---|
+| the fixed exponent lies strictly above the coefficient-three density threshold | `two_thirds_lt_routeTHoheiselEveryBaseExponent` |
+| `2/3 < 71/100 < theta_*`, i.e. C2's "one rational with fixed margins on both sides" | `routeTHoheiselEveryBaseExponent_mem_margin` |
+| prime supply at the fixed exponent, with an explicit threshold | `exists_threshold_routeT_prime_in_fixed_window` |
+| **the card's exact statement**: one `X_0 >= 1` such that for every `x >= X_0` and every `mu >= mu_*` there is a prime in `(x, x + x^(1-1/mu)]` | `exists_threshold_routeT_prime_in_every_upperPhase_window` |
+| the same supply as strictly positive Chebyshev mass on the physical window | `exists_threshold_routeT_upperPhase_theta_window_pos` |
+
+`#print axioms` on all four: `propext`, `Classical.choice`, `Quot.sound` only.
+
+### The one deviation from the paper proof, and why it is faithful
+
+The paper proof runs through `theta_0 = 7/10`.  The corpus's unconditional supply
+(`exists_eventually_routeT_prime_in_every_base_window`, from the uniform-detector zero-density
+tower) is at `71/100`.  The card's C2 asks precisely for *one* fixed rational strictly between the
+coefficient-three threshold `2/3` and the handoff exponent `theta_* = 3/4 - d/2`, chosen so that
+both margins are fixed and rational; `71/100` is such a rational
+(`routeTHoheiselEveryBaseExponent_mem_margin`), and the exponent monotonicity step
+`x^{71/100} <= x^{1-1/mu}` for `x >= 1` is identical.  Nothing else in the argument depends on the
+particular value, so the statement proved is the card's statement verbatim, not a weakening: the
+theorem quantifies only over `x` and `mu`, never over `theta_0`.
+
+The uniformity of `X_0` in `mu` is genuine and not an artefact of the restatement: the threshold
+comes from the fixed-exponent supply alone, and the passage to width exponent `1-1/mu` is the
+pointwise monotonicity step, which needs only `x >= 1`.
+
+### Log
+
+- 2026-08-17 -- `[LEAN-PROVED]`; the analytic open core (Ingham density plus density-to-short-ranges)
+  was already discharged inside the corpus's uniform-detector tower at exponent `71/100`, so the
+  card closes with the scalar composition above.  Direct check, olean build, and axiom audit pass.

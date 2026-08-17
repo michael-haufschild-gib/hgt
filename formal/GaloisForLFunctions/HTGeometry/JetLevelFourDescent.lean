@@ -207,7 +207,7 @@ theorem level_four_alternatives (R : RatFunc C) (hR : substitutionDeriv R ≠ 0)
     obtain ⟨t, ht⟩ := exists_cocycle_of_shift_polynomial_lt
       (jetSubstitutionPrefix R hR 2).toRingHom hρF hadef (by omega) (by omega) hvcu
     exact Or.inl ⟨t, ht⟩
-  push_neg at hvd
+  rw [not_le] at hvd
   refine Or.inr ?_
   obtain ⟨F3, F2, F1, -⟩ := coeff_eqs_of_twistComp_affine_deg_le_three
     (jetSubstitutionPrefix R hR 2).toRingHom (substitutionDerivPrefix R hle2)
@@ -244,7 +244,7 @@ theorem level_four_alternatives (R : RatFunc C) (hR : substitutionDeriv R ≠ 0)
     exact (mem_jetPrefixField_iff 2 _).mp z.2 j (by omega)
   have G3 : jetSubstitution R hR C3 * ρ ^ 3 = ρ * C3 := by
     have hc := congrArg ι2 F3
-    simp only [map_mul, map_pow, map_sub, hΦι, hρι, hS3, map_zero, sub_zero] at hc
+    simp only [map_mul, map_pow, hΦι, hρι, hS3, sub_zero] at hc
     exact hc
   have G2 : jetSubstitution R hR C3 * (3 * ρ ^ 2 * (ρ₁ * y₁ ^ 2))
       + jetSubstitution R hR C2 * ρ ^ 2 = ρ * C2 + 9 * ρ₁ := by
@@ -294,12 +294,13 @@ theorem level_four_alternatives (R : RatFunc C) (hR : substitutionDeriv R ≠ 0)
   · -- the linear coefficient produces the transport of exponent three
     have ha₃' : C3 * y₁ ^ 2 = 3 := by
       rw [ha₃, ha3, map_ofNat]
-    have hC2eig : jetSubstitution R hR C2 * ρ = C2 := by
+    have hC2eig : jetSubstitution R hR C2 * ρ ^ 1 = C2 := by
+      rw [pow_one]
       refine mul_left_cancel₀ hR ?_
       have h9 : (3 : JetField C Unit) * algebraMap C (JetField C Unit) a₃ - 9 = 0 := by
         rw [ha3, map_ofNat]
         ring
-      linear_combination hC2rel + ρ₁ * h9
+      linear_combination hC2rel - ρ₁ * h9
     obtain ⟨κ, hκ⟩ := exists_const_of_scaling_eigen_pow R hR (Kb := 2) (j := 1) (by omega)
       hfix2 (n := 1) (by omega) (hvord (v.coeff 2)) hC2eig
     have hT3 : jetSubstitution R hR C3 * (3 * ρ * (ρ₁ * y₁ ^ 2) ^ 2) * ρ
@@ -323,7 +324,7 @@ theorem level_four_alternatives (R : RatFunc C) (hR : substitutionDeriv R ≠ 0)
     have hSbc : Sb.coeff 2 = 2 * q2 - 3 * q1 ^ 2 / q0 := by
       rw [hSbdef]
       simp only [Polynomial.coeff_add, Polynomial.coeff_C_mul, Polynomial.coeff_X_pow,
-        Polynomial.coeff_C, Polynomial.coeff_X]
+        Polynomial.coeff_X]
       norm_num
     have haevalSb : Polynomial.aeval y₁ Sb
         = (2 * ρ₂ - 3 * ρ₁ ^ 2 / ρ) * y₁ ^ 2
@@ -332,7 +333,6 @@ theorem level_four_alternatives (R : RatFunc C) (hR : substitutionDeriv R ≠ 0)
       simp only [map_add, map_mul, map_pow, map_sub, map_div₀, map_ofNat,
         Polynomial.aeval_C, Polynomial.aeval_X, hj0, hj1, hj2]
       rw [← IsScalarTower.algebraMap_apply]
-      ring
     have hC1rel : jetSubstitution R hR C1 * ρ ^ 1 = ρ * C1 - Polynomial.aeval y₁ Sb := by
       rw [haevalSb, pow_one]
       refine mul_right_cancel₀ hR ?_
@@ -341,22 +341,20 @@ theorem level_four_alternatives (R : RatFunc C) (hR : substitutionDeriv R ≠ 0)
           = (2 * ρ₂ * ρ - 3 * ρ₁ ^ 2) * y₁ ^ 2
             + 2 * algebraMap C (JetField C Unit) κ * ρ₁ * y₁ * ρ := by
         field_simp
-        ring
       have hW2 : (2 * ρ₂ - 12 * ρ₁ ^ 2 / ρ) * y₁ ^ 2 * ρ
           = (2 * ρ₂ * ρ - 12 * ρ₁ ^ 2) * y₁ ^ 2 := by
         field_simp
-        ring
       rw [sub_mul, hW1]
       linear_combination ρ * G1 - hT3 - hT2 - hW2
-    obtain ⟨α, hα⟩ := exists_ratFunc_affineTransport_of_order_one R hR (hvord (v.coeff 1))
-      hSbdeg hC1rel
-      (D := 2 * ratFuncDeriv (ratFuncDeriv (ratFuncDeriv R))
-        - RatFunc.C (3 : C) * ratFuncDeriv (ratFuncDeriv R) ^ 2 / ratFuncDeriv R) ?_
-    · exact Or.inr ⟨α, by simpa using hα⟩
-    · rw [hSbc]
+    have hDb : ratFuncEval (JetField.jet ((), 0) : JetField C Unit) transcendental_freeGen
+        (2 * ratFuncDeriv (ratFuncDeriv (ratFuncDeriv R))
+          - RatFunc.C (3 : C) * ratFuncDeriv (ratFuncDeriv R) ^ 2 / ratFuncDeriv R)
+        = algebraMap ↥(jetPrefixField C 1) (JetField C Unit) (Sb.coeff 2) := by
+      rw [hSbc]
       simp only [map_sub, map_mul, map_div₀, map_pow, map_ofNat, hj0, hj1, hj2, hev, hev2, hev0]
-      rw [ratFuncEval_C]
-      rw [map_ofNat]
+    obtain ⟨α, hα⟩ := exists_ratFunc_affineTransport_of_order_one R hR (hvord (v.coeff 1))
+      hSbdeg hC1rel hDb
+    exact Or.inr ⟨α, by simpa using hα⟩
   · -- the quadratic coefficient produces a scaled affine connection
     refine Or.inl ⟨3 * a₃ - 9, ?_⟩
     set Sa : Polynomial ↥(jetPrefixField C 1) :=
@@ -372,17 +370,20 @@ theorem level_four_alternatives (R : RatFunc C) (hR : substitutionDeriv R ≠ 0)
     have hC2rel' : jetSubstitution R hR C2 * ρ ^ 2 = ρ * C2 - Polynomial.aeval y₁ Sa := by
       rw [haevalSa]
       exact hC2rel
+    have hDa : ratFuncEval (JetField.jet ((), 0) : JetField C Unit) transcendental_freeGen
+        (RatFunc.C (3 * a₃ - 9) * ratFuncDeriv (ratFuncDeriv R))
+        = algebraMap ↥(jetPrefixField C 1) (JetField C Unit) (Sa.coeff 0) := by
+      rw [hSac]
+      simp only [map_mul, map_sub, map_ofNat, hj1, hev, ratFuncEval_C,
+        ← IsScalarTower.algebraMap_apply]
     obtain ⟨α, hα⟩ := exists_ratFunc_affineTransport_of_order_one R hR (hvord (v.coeff 2))
-      hSadeg hC2rel'
-      (D := RatFunc.C (3 * a₃ - 9) * ratFuncDeriv (ratFuncDeriv R)) ?_
-    · refine ⟨α, ?_, ?_⟩
-      · intro hh
-        exact ha3 (by linarith [hh] <;> skip)
-      · simpa using hα
-    · rw [hSac]
-      simp only [map_mul, map_sub, map_ofNat, hj1]
-      rw [map_mul, ratFuncEval_C, hev, ← IsScalarTower.algebraMap_apply, map_sub, map_mul,
-        map_ofNat]
+      hSadeg hC2rel' hDa
+    refine ⟨α, ?_, ?_⟩
+    · intro hh
+      refine ha3 ?_
+      have h3 : (3 : C) * a₃ = 3 * 3 := by linear_combination hh
+      exact mul_left_cancel₀ (by norm_num : (3 : C) ≠ 0) h3
+    · simpa using hα
 
 end
 
