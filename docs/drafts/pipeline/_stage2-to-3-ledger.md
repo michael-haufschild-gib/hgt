@@ -3931,3 +3931,39 @@ Theorems B, C and D of that card remain.
   `norm_exp_ofReal_mul_I_sub_le`, `norm_pow_sub_pow_le_of_unit`, `exists_margin_of_lt`.
   What remains on the card: the circuit substitution `(23)`--`(25)` and the asymptotics of
   Corollary B.1.
+
+### The prime-torsion card is fully formalized: Lemma A, section 5, Corollary B.1, section 6
+
+- `HTGeometry/TorsionCapAnchoredCount.lean` -- Lemma A `(7)` in the anchored `ZMod k` encoding, and
+  `(13)` itself.  The earlier `card_classes_le_of_cover` could not be applied to the captured sets:
+  its hypothesis asks every element of `S y` to have a large *absolute* character sum, while a
+  captured set only has large *relative* sums.  `card_le_of_forall_norm_relative_toCircle_sum_ge`
+  performs the card's own translation step -- translate the captured set by one of its members,
+  injectively, into the large-sum set -- and `card_fibre_anchorPhaseHom` supplies the `k`-to-one
+  quotient.  Composed: `card_easyAnchored_le`, then `card_easyAnchored_lt_of_cap`, then
+  `exists_late_recurrence_hard_polygon_of_cap` -- Theorem B with no counting hypothesis left, only
+  the card's `(13)`.  The exponent proved is `(1-2δ²)²/4 ≥ γ_δ`, because the corpus route to `(8)`
+  gives overlap `1-2δ²` rather than `√(1-4δ²)`.
+- `HTGeometry/TorsionPolygonCircuitDepth.lean` -- section 5.  `robustCircuitComplexity` is an `ℕ∞`
+  infimum over depths, and `lt_robustCircuitComplexity_of_depthHard` shows depth-`s` hardness is
+  exactly `C_δ > s` for a monotone dictionary family.  `(23)` is the corpus theorem
+  `RHTower.cumulativeTraceCount_le_maxDegree`; `exists_late_recurrence_depthHard` consumes it.
+- `HTGeometry/TorsionPolygonCircuitAsymptotics.lean` -- Corollary B.1.  `choose_le_pow_alphabet`
+  replaces the card's `O(M log(1+s/M))` by `M log(M+s)` via `choose (M+s-1) s = choose (M+s-1) (M-1)`
+  and `choose n r ≤ n^r`; with `M = O(n)`, `s ≤ c2^n` that is `O(n²) = o(D)`, the same `(28)`.
+  `eventually_heapCapacity_cap` is the master estimate and covers both the fixed-`k` case (`η = 0`)
+  and the growing-prime case; `eventually_exists_prime_cap` adds Bertrand at `⌈e^{ηD}⌉`, whose cost
+  is the constant factor `16` that the strict inequality `(29)` absorbs.
+- `HTGeometry/UniformPhaseRayTransport.lean` -- "arbitrary rays" and section 6.  The uniform phase
+  ray of an arbitrary orthonormal family in an arbitrary complex inner product space has the same
+  overlaps as the coordinate ray against the *pullback* of the target, and the pullback is a
+  contraction (Bessel).  Hardness therefore transports: `sq_lt_one_sub_norm_inner_sq`, hence
+  `exists_late_recurrence_hard_polygon_orthonormal` with the same `(13)` because
+  `card_pullbackDict_le`.  `(32)` is `orthonormal_choiVec` (the Choi family of any orthonormal
+  eigenbasis is orthonormal, via `⟪|e_a⟩|ē_a⟩, |e_b⟩|ē_b⟩⟫ = |⟪e_a,e_b⟫|²`) plus `choiTrajectory_eq`.
+  The genericity input is the corpus's `projectiveGapPacket_linearIndependent`, which is why the
+  card's gap family is *defined* as the corpus `projectiveGapPacket` rather than a new definition.
+
+**Promoted.**  `prime-torsion-recurrence-polygon-complexity-law` moved to
+`docs/drafts/pipeline/3-formalized/`.  Sections 1--6 are Lean-closed and axiom-clean; section 7's
+conjecture loop and the open effective-onset question are not theorems of the card.

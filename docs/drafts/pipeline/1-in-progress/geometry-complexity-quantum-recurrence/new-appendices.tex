@@ -300,6 +300,139 @@ $\lfloor t/(128\pi\varepsilon)\rfloor$, which is at most
 $C^{\rm op}_{L,\varepsilon}(t)$ by lower ramp bound.  This proves
 \eqref{eq:nestedcoarsemono}.
 
+\section{Tree phase tails and a literal complexity drop}
+
+\subsection{A cut certificate against arbitrary two-qubit circuits}
+
+We prove Theorem \ref{thm:phasetail}.  Let $W$ be a circuit with at most
+$G$ counted gates.  Form graph $F$ whose distinct edges are supports of its
+two-qubit gates, and choose a spanning forest $F_0$ of $F$.  Thus
+$|E(F_0)|\le G$ and $F_0$ has same connected components as $F$.  Since target
+tree $P$ connects all vertices, $F_0$ can be extended to a spanning tree $T$
+using only edges of $P$.
+
+Label every edge of $F_0$ ``equal'' and every added target edge ``opposite.''
+Because $T$ is a tree, one can assign signs $\sigma_v\in\{+1,-1\}$ satisfying
+all labels.  Every circuit support is contained in one sign class, whereas
+all but at most $G$ target-tree edges cross resulting cut $A=\{v:\sigma_v=1\}$.
+Let $N$ be noncrossing target edges; then $N\subseteq E(P)$ and $|N|\le G$.
+Every gate, hence full circuit matrix, factorizes across $A$.
+
+Choose signs $d_v\in\{+1,-1\}$ recursively along target tree so that
+$d_ud_v\beta_e=|\beta_e|$ on every edge.  On each side of cut choose two bit
+strings whose coordinatewise differences are these signs.  Their four
+combinations $x_{00},x_{01},x_{10},x_{11}$ have target mixed phase
+\[
+ \Phi=\sum_{e\in E(P)\setminus N}|\beta_e|.
+\]
+Cut factorization gives exact circuit identity
+$W_{00}W_{11}=W_{01}W_{10}$.  Operator-norm error at most $\varepsilon$
+bounds each corresponding diagonal-entry error by $\varepsilon$, and
+unitarity bounds every diagonal entry by one.  Two applications of triangle
+inequality therefore give
+\[
+ \left|\ee^{-\ii\Phi}-1\right|\le4\varepsilon,
+\]
+contradicting \eqref{eq:phasetail}.  This proof uses no diagonality or
+geometric locality of approximating gates.
+
+\subsection{Exact counterexample inside the nested ramp window}
+
+We prove \eqref{eq:nestedcounter}.  Put
+\[
+ \delta=10^{-6},\quad K=1477,\quad B=38,\quad
+ G=(K-1)+(B-1)=1513,
+\]
+and
+\begin{equation}
+ W=\sum_{j=1478}^{16384}\frac1{j^2}
+   +\sum_{k=39}^{16384}\frac1{k^4}.                 \label{eq:counterW}
+\end{equation}
+At late time $t=2\pi$, first matching phase is zero modulo $2\pi$.  Keep
+matching bonds $j=2,\ldots,1477$ and bridge bonds $k=2,\ldots,38$, exactly
+$1513$ bonds.  Every omitted nonzero folded phase has total mass $2\pi W$.
+
+For an omitted edge, identity
+\[
+ |11\rangle\!\langle11|_{uv}
+ =\frac{I-Z_u-Z_v+Z_uZ_v}{4}
+\]
+splits its generator into scalar term, free one-qubit $Z$ terms, and residual
+$Z_uZ_v/4$.  All terms commute.  Thus kept controlled phases plus all free
+center terms use $1513$ counted gates, and operator-norm error is at most
+$2\pi W/4$.  Elementary telescoping inequalities
+\[
+ \frac1{n^2}\le\frac2{2n-1}-\frac2{2n+1},\qquad
+ \frac1{n^4}\le\frac83\left(\frac1{(2n-1)^3}-
+   \frac1{(2n+1)^3}\right)
+\]
+give
+\begin{equation}
+ W\le W_+:=\frac2{2955}-\frac2{32769}
+ +\frac83\left(\frac1{77^3}-\frac1{32769^3}\right). \label{eq:counterWplus}
+\end{equation}
+Using $\pi<3141593/10^6$, exact rational comparison gives
+$2\pi W_+<1/256=4\varepsilon$.  Hence constructed circuit has strict error
+below $\varepsilon$ and
+$C^{\rm op}_{L,\varepsilon}(t)\le1513$.
+
+At early time $s=2\pi-\delta$, first matching bond has folded phase $\delta$;
+all others have phases $s/j^2$ and $s/k^4$.  The $1513$ kept bonds above are
+strictly largest because
+\[
+ \delta<\frac{s}{1477^2},\qquad
+ \frac1{1478^2}<\frac1{1477^2}<\frac1{38^4},\qquad
+ \frac1{39^4}<\frac1{1477^2}.
+\]
+Consequently least folded mass left after deleting at most $1513$ edges is
+\begin{equation}
+ \tau=\delta+sW.                                      \label{eq:countertau}
+\end{equation}
+Reverse telescoping inequalities
+\[
+ \frac1{n^2}\ge\left(\frac1n-\frac1{n+1}\right)
+ +\frac12\left(\frac1{n^2}-\frac1{(n+1)^2}\right),
+\]
+\[
+ \frac1{n^4}\ge\frac13\left(\frac1{n^3}-\frac1{(n+1)^3}\right)
+ +\frac12\left(\frac1{n^4}-\frac1{(n+1)^4}\right)
+\]
+give
+\begin{align}
+ W\ge W_-={}&\frac1{1478}-\frac1{16385}
+ +\frac12\left(\frac1{1478^2}-\frac1{16385^2}\right)\notag\\
+ &+\frac13\left(\frac1{39^3}-\frac1{16385^3}\right)
+ +\frac12\left(\frac1{39^4}-\frac1{16385^4}\right). \label{eq:counterWminus}
+\end{align}
+With $3141592/10^6<\pi$, exact rational arithmetic yields, for
+$q=\delta+(2\cdot3141592/10^6-\delta)W_-$,
+\begin{equation}
+ q-\frac{q^3}{24}>\frac1{256}.                       \label{eq:countercubic}
+\end{equation}
+The same finite-sum and telescoping estimates give total folded mass
+$M(s)<3\pi/2$ and $\tau<1$.
+
+For every $\phi\in[\tau,M(s)]$, chord exceeds $4\varepsilon$.  If
+$\phi\le1$, cubic sine bound gives
+\[
+ |\ee^{-\ii\phi}-1|=2\sin(\phi/2)
+ \ge\phi-\phi^3/24\ge\tau-\tau^3/24>4\varepsilon.
+\]
+If $1\le\phi\le\pi$, Jordan inequality gives
+$2\sin(\phi/2)\ge2\phi/\pi>4\varepsilon$.  If
+$\pi\le\phi<3\pi/2$, apply same inequality to $2\pi-\phi\in(\pi/2,\pi]$ to
+obtain chord at least one.  Every deletion of at most $1513$ edges leaves a
+phase in this interval, so Theorem \ref{thm:phasetail} gives
+$C^{\rm op}_{L,\varepsilon}(s)>1513$, hence at least $1514$.
+
+Finally
+\[
+ \pi=1024\pi\varepsilon<s<2\pi<8
+ =\frac{\varepsilon L}{2},
+\]
+which places both increasing times strictly inside laboratory window and
+completes proof.
+
 \section{Countable completion and reflection}
 
 For a countable maximally projective spectrum, every finite restriction has

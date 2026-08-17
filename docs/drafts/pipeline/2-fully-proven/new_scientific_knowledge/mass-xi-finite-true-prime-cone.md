@@ -8822,3 +8822,55 @@ gauges is one induction.
 `(22.8)`--`(22.11)`: re-run §21 with `β = N + 1/2`.  The §21 machinery
 (`XiMassLogRetreatTail`, `XiMassCausticPenetration`) is already formal for `β = 1/2`; what changes
 is only the exponent fed to it, now supplied by `exists_norm_xiMassJetIterate_window_le`.
+
+`(22.7)` is now proved **through the whole square-root window**, which is how the card states it:
+
+    RHTower/XiMassCausticIterateWindow.lean
+      exists_norm_xiCausticIterate_window_le'   the iterate bound at every centre `κ_B u + t`,
+                                                `|t| ≤ √u/2`, on discs of radius `√u/(2(n+1))`
+    RHTower/XiMassJetTransport.lean
+      exists_norm_xiMassJetIterate_window_le'   **(22.7)**: for every `|t| ≤ √u/2`,
+                                                `‖(4a⁴−∂²)ⁿF(κ_B u + t)‖
+                                                   ≤ C·u^{-(n+1)/2}·e^{-a√(h²−u²)}`
+
+### Remaining for C42-T
+
+`(22.8)`--`(22.11)`.  Two pieces:
+
+1. **The far field.**  Outside the window the jet needs no gain, only no loss: for `h` past the
+   window the conjugated carrier is `O(u/h^{3/2})` and the coefficients are `O(1)`, so the Cauchy
+   iteration on unit discs gives `|Φ_n(h)| ≤ C_n·sup|G|` — a constant factor, no power of `u`.  The
+   exterior action decay then absorbs it, which is exactly the card's "beyond it, exponential action
+   decay absorbs every fixed polynomial loss from `P_N`".
+2. **The tail sum.**  Feed the two regimes into the §21 machinery
+   (`XiMassLogRetreatTail.exists_norm_logRetreatTail_le`, which is the `β = 1/2` case) with
+   `β = N + 1/2`; that is `(22.8)`, and `(22.10)`--`(22.11)` are its arithmetic consequences.
+
+### C42-T: the far field costs nothing (2026-08-17)
+
+    RHTower/XiMassCausticFarField.lean
+      xiMassFarGap, xiMassFarRate, xiMassFarThreshold
+      re_propagation_ge_far                  on `h ≥ κ_B u`, `Re(τ² + w²) ≥ (1−κ_B^{-2})h²/2` for
+                                             every `w` within one unit of `h`
+      xiMassFarRate_mul_le_csqrtRe           the propagation rate is `≍ h` there
+      far_mem_xiMassHeightRegion
+      exists_norm_xiMassJetIterate_far_le    **`‖(4a⁴−∂²)ⁿF(h)‖ ≤ C_n·e^{-a√(h²−u²)}`** for every
+                                             `h ≥ κ_B u`
+
+Past the balance ray the spacelike gap is already proportional to the height itself, so on unit-scale
+discs the caustic coefficients and the conjugated carrier are all bounded by absolute constants, and
+the Cauchy iteration on discs of radius `1/(n+1)` gives a bound with **no power of the height at
+all** — better than the card's "exponential action decay absorbs every fixed polynomial loss",
+because there is no loss to absorb.
+
+Together with `exists_norm_xiMassJetIterate_window_le'` this covers the whole tail range of `(22.8)`:
+the retreat `κ_B u − L_c u^{1/10} − q log u − B` is inside the `√u/2` window for large `u`, and
+everything past `κ_B u` is far field.
+
+### Remaining for C42-T
+
+**The tail sum.**  Define the jet atom `Λ(p)p^{-1/2}·F_{u,N}(log p)` and prove its pointwise bound
+from the two envelopes above; then the existing prime-log tail
+(`XiMassShellExteriorTail.sum_prime_log_rpow_tail_le`, used by
+`sum_norm_xiMassCenteredPrimeAtom_exteriorSqrt_le`) sums it, giving `(22.8)`.  `(22.10)`--`(22.11)`
+are its arithmetic consequences.

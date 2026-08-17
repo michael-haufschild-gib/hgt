@@ -73,6 +73,16 @@ No. Same Pauli evolution remains above an exact local two-query Haar benchmark
 at all times. Hardness is finite-dictionary target avoidance. No first hard
 time, monotone growth, design formation or random-matrix ramp is claimed.
 
+### “Linear upper and lower bounds prove a literal second law of complexity”
+
+False.  Envelopes compare complexity with linear functions; they do not order
+every pair of times.  Explicit nested path now proves decisive counterexample
+inside same window: at $s=2\pi-10^{-6}$ exact complexity is at least `1514`,
+while at later $t=2\pi$ it is at most `1513`.  Lower bound permits arbitrary
+nonlocal and non-diagonal two-qubit gates.  Upper bound is explicit and uses
+free scalar/one-qubit centering.  Paper states coarse scale-separated order,
+nearby backtracking and exact return reflection as three distinct facts.
+
 ### “Graph reconstruction derives physical space from time”
 
 No. Tensor-factor decomposition and subsystem restrictions are supplied.

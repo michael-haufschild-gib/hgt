@@ -52,10 +52,10 @@ which used the proven #11 generating set instead, stands unchanged.
   change of basis stated precisely.
 - [x] 1 → 2 (paper review): **closed form VERIFIED** (§A derivation + numeric); **Li↔secular = Newton's
   identities, triangular ℤ** (§B). VALID.
-- [ ] 2 → 3 formalized: **Leaner** — verify `li_secular_pointwise` / `secular_li_pointwise_inv` in
-  `formal/GaloisForLFunctions/RHTower/SecularMoments.lean` encode §A (closed form) and §B (triangular ℤ iff), the
-  indexing/ring conventions, and `lake build` + `check_axioms.sh`. Confirm whether the Lean states the
-  analytic `P_k=Σρ^{-k}` identity or only the formal/finite change-of-basis (scope).
+- [x] 2 → 3 formalized (2026-08-17): the review was carried out and the gap it found was closed —
+  `SecularMoments.lean` encodes §B only; §A is now proved in
+  `formal/GaloisForLFunctions/RHTower/VorosPowerSumClosedForm.lean`.  See the Lean formalization
+  section at the end of this card.
 - [ ] 3 → 4: standalone note + Lean certificate.
 
 ## Approach (done)
@@ -106,3 +106,67 @@ a_j = [s^j](ζ'/ζ)(0) via mpmath Taylor (a_0 = log 2π ✓) and P_k = Σ_n 2 Re
 - k=2: diff −0.0032 = the expected slow −Σ_{n>300}2/γ_n² tail (matches DeWitt/Professor).
 The closed form is confirmed at k=2–6. Ledger integrity: the card correctly distinguishes Lean-proven §B
 (li_secular_pointwise, clean axioms) from paper-proven §A (this closed form) — no over-claim. §A solid.
+
+## Lean formalization and review outcome — 2026-08-17
+
+**Review of the existing Lean (the gate's first task).**  `formal/GaloisForLFunctions/RHTower/SecularMoments.lean`
+contains exactly two identities:
+
+- `GaloisForLFunctions.li_secular_pointwise (R) [CommRing R] (x : R) (n : ℕ) :`
+  `1 − (1−x)^n = ∑_{j<n} C(n, j+1)(−1)^j x^{j+1}`
+- `GaloisForLFunctions.secular_li_pointwise_inv (R) [CommRing R] (x : R) (k : ℕ) (0 < k) :`
+  `x^k = ∑_{m<k} (−1)^m C(k, m+1)(1 − (1−x)^{m+1})`
+
+**Scope finding (the gate's explicit question).**  These are **§B only**, and they are *pointwise*
+(per zero, `x = 1/ρ`) identities in an arbitrary commutative ring — pure binomial algebra.  They do
+**not** state the analytic identity `P_k = Σ_ρ ρ^{−k}`, and they did **not** state §A (the closed
+form).  The ledger tag `THEOREM (Lean)` was therefore accurate for §B and premature for §A.
+
+**§A is now formalized.**  New module
+`formal/GaloisForLFunctions/RHTower/VorosPowerSumClosedForm.lean` (wired into the
+`GaloisForLFunctions.RHTower` umbrella):
+
+| Card step | Lean name |
+|---|---|
+| `ξ(s) = ½ s(s−1) Γ_ℝ(s) ζ(s)` | `VorosClosedForm.elemFactor`, `VorosClosedForm.xiFun` |
+| `ξ'/ξ(s) = 1/s + 1/(s−1) − ½logπ + ½ψ(s/2) + ζ'/ζ(s)`, with the `1/s` poles cancelling | `VorosClosedForm.logDeriv_xiFun`, `VorosClosedForm.xiLogDerivReg` |
+| `logDeriv Γ_ℝ(s) = −½logπ + ½ψ(s/2)` | `BohrGeneratorAxis.logDeriv_GammaR` (built earlier today) |
+| `d^m/ds^m 1/(s−1)` and its value at `0` | `VorosClosedForm.iteratedDeriv_inv_sub_one`, `iteratedDeriv_invSubOne_zero` |
+| `d^m/ds^m ψ(1+s/2) = 2^{−m} ψ^{(m)}(1+s/2)` | `VorosClosedForm.iteratedDeriv_digamma_halfShift` |
+| `ψ^{(m+1)}(1) = (−1)^{m+2}(m+1)! ζ(m+2)` | `polygamma_one_eq_riemannZeta` (pre-existing) |
+| smoothness of every summand at the origin | `contDiffAt_logDeriv_riemannZeta_zero`, `contDiffAt_invSubOne_zero`, `contDiffAt_digammaHalfShift_zero` |
+| the jet of `−ξ'/ξ` at the origin | `VorosClosedForm.iteratedDeriv_xiLogDerivReg` |
+| **§A: `P_k = 1 − (−1)^k ζ(k)/2^k − a_{k−1}`** | `VorosClosedForm.vorosPowerSum_closed_form` |
+
+with `vorosPowerSum k = −[s^{k−1}](ξ'/ξ)` and `zetaLogCoeff j = [s^j](ζ'/ζ)`, both defined as
+normalized iterated derivatives at `0`.
+
+**Route notes.**
+
+1. The card's own derivation is followed exactly, including the pole cancellation: the formal
+   statement is that the *regularized* function
+   `xiLogDerivReg s = 1/(s−1) − ½logπ + ½ψ(1+s/2) + ζ'/ζ(s)` — which is manifestly regular at `0` —
+   equals `logDeriv ξ` away from `s ∈ {0,1}` and the Gamma poles (`logDeriv_xiFun`), and the Voros
+   power sums are its Taylor coefficients.  The cancellation of `1/s` against `−1/s` is carried by
+   `Complex.digamma_apply_add_one`, exactly as in the card's `ψ(z) ~ −1/z − γ` remark.
+2. The closed form is stated for `k ≥ 2`, which is where it holds: at `k = 1` the `ζ(k)` term is the
+   pole of `ζ` and the correct value is `P_1 = 1 + ½logπ + γ/2 − a_0`, as the card's own numeric
+   check for `a_0 = log 2π` records.  The card does not claim `k = 1`.
+
+**Not formalized, and not an obligation of this card.**  The identification of the generating-function
+coefficients with the analytic sums `Σ_ρ ρ^{−k}` over the nontrivial zeros: that is Hadamard
+factorization for `ξ` plus convergence of `Σ|ρ|^{-2}`, which the card takes as the *definition* of the
+generating function ("with the generating function `−ξ'/ξ(s) = Σ_{k≥1} P_k s^{k−1}`") rather than
+proving.  The formalization adopts the same convention and says so.  The Corollary at L250
+(`ℚ({P_k}) ⊇ {ζ(3), ζ(5), …}`) is a ℚ-independence statement about odd zeta values — open
+transcendence theory, explicitly flagged in the card as a feed into G2/DSS rather than a proved claim.
+
+Verification: `lake build GaloisForLFunctions.RHTower.VorosPowerSumClosedForm` — PASS; `#print axioms`
+on all nine new results and on the two pre-existing `SecularMoments` identities reports only
+`[propext, Classical.choice, Quot.sound]`.
+
+## Log
+
+- 2026-08-17 — Review executed and the gap closed.  §B was already Lean-proved (pointwise, arbitrary
+  commutative ring); §A is now Lean-proved as the Taylor-coefficient identity for `−ξ'/ξ` at the
+  origin.  Card promoted to stage 3.

@@ -160,6 +160,90 @@ theorem exists_norm_xiMassJetIterate_window_le {a sigma : ℝ} (ha : 1 / 2 < a)
         mul_le_mul hexple hΦ hΦ0 (Real.exp_pos _).le
     _ = C / Real.sqrt u ^ (n + 1) * Real.exp (-(a * Real.sqrt (h ^ 2 - u ^ 2))) := by ring
 
+/-- **(22.7) across the whole balance window.**  The bound of the previous theorem holds uniformly
+for every height in the square-root window about the balance ray. -/
+theorem exists_norm_xiMassJetIterate_window_le' {a sigma : ℝ} (ha : 1 / 2 < a)
+    (hsigma : 0 < sigma) (n : ℕ) :
+    ∃ C u₀ : ℝ, 0 < C ∧ xiMassWindowThreshold a ≤ u₀ ∧ ∀ u : ℝ, u₀ ≤ u → ∀ t : ℝ,
+      |t| ≤ Real.sqrt u / 2 →
+      ‖xiMassJetIterate a ((sigma : ℂ) + (u : ℂ) * Complex.I) n
+          (((xiMassSpacelikeSharpSlope a * u + t : ℝ)) : ℂ)‖
+        ≤ C / Real.sqrt u ^ (n + 1)
+          * Real.exp (-(a * Real.sqrt ((xiMassSpacelikeSharpSlope a * u + t) ^ 2 - u ^ 2))) := by
+  obtain ⟨C, u₀, hC, hu₀, hbound⟩ := exists_norm_xiCausticIterate_window_le' ha hsigma n
+  have ha0 : (0 : ℝ) < a := lt_trans (by norm_num) ha
+  have hκ1 : 1 < xiMassSpacelikeSharpSlope a := one_lt_xiMassSpacelikeSharpSlope ha
+  have hκgap : (0 : ℝ) < xiMassSpacelikeSharpSlope a - 1 := by linarith
+  refine ⟨C, max u₀ ((1 / (2 * (xiMassSpacelikeSharpSlope a - 1))) ^ 2),
+    hC, le_trans hu₀ (le_max_left _ _), ?_⟩
+  intro u hu t ht
+  have hu0' : u₀ ≤ u := le_trans (le_max_left _ _) hu
+  have hugap : ((1 / (2 * (xiMassSpacelikeSharpSlope a - 1))) ^ 2 : ℝ) ≤ u :=
+    le_trans (le_max_right _ _) hu
+  have huw : xiMassWindowThreshold a ≤ u := le_trans hu₀ hu0'
+  have hu1 : (1 : ℝ) ≤ u := le_trans (one_le_xiMassWindowThreshold a) huw
+  have hu0 : (0 : ℝ) < u := by linarith
+  have hr0 : (0 : ℝ) < Real.sqrt u := Real.sqrt_pos.2 hu0
+  have hrsq : Real.sqrt u ^ 2 = u := Real.sq_sqrt hu0.le
+  set τ : ℂ := (sigma : ℂ) + (u : ℂ) * Complex.I with hτdef
+  set h : ℝ := xiMassSpacelikeSharpSlope a * u + t with hhdef
+  have hrgap : 1 / (2 * (xiMassSpacelikeSharpSlope a - 1)) ≤ Real.sqrt u := by
+    have hnn : (0 : ℝ) ≤ 1 / (2 * (xiMassSpacelikeSharpSlope a - 1)) := by positivity
+    nlinarith [hugap, hrsq, hr0]
+  have huh : u ≤ h := by
+    have habs := (abs_le.mp ht).1
+    have hmul : 1 ≤ Real.sqrt u * (2 * (xiMassSpacelikeSharpSlope a - 1)) := by
+      rwa [div_le_iff₀ (by positivity : (0 : ℝ) < 2 * (xiMassSpacelikeSharpSlope a - 1))] at hrgap
+    have hstep := mul_le_mul_of_nonneg_right hmul hr0.le
+    have hkey : Real.sqrt u / 2 ≤ (xiMassSpacelikeSharpSlope a - 1) * u := by
+      nlinarith [hstep, hrsq]
+    rw [hhdef]
+    linarith
+  have hcast : (((xiMassSpacelikeSharpSlope a * u + t : ℝ)) : ℂ)
+      = (((xiMassSpacelikeSharpSlope a * u : ℝ)) : ℂ) + (t : ℂ) := by push_cast; ring
+  have hmem : ((h : ℝ) : ℂ) ∈ xiMassHeightRegion τ := by
+    rw [hτdef, hhdef, hcast]
+    refine window_subset_xiMassHeightRegion (sigma := sigma) ha huw ?_
+    have hid : (((xiMassSpacelikeSharpSlope a * u : ℝ)) : ℂ) + (t : ℂ)
+        - (((xiMassSpacelikeSharpSlope a * u : ℝ)) : ℂ) = (t : ℂ) := by ring
+    rw [hid, Complex.norm_real, Real.norm_eq_abs]
+    linarith [ht, hr0]
+  have hgauge := xiMassJetIterate_eqOn ha0 τ n hmem
+  rw [show (((xiMassSpacelikeSharpSlope a * u + t : ℝ)) : ℂ) = ((h : ℝ) : ℂ) by rw [hhdef],
+    hgauge]
+  have hpropeq : τ ^ 2 + ((h : ℝ) : ℂ) ^ 2 = xiMassSpacelikePropagationArgument sigma u h := by
+    rw [xiMassSpacelikePropagationArgument_eq, hτdef]
+  have hexpnorm : ‖Complex.exp (-(a : ℂ) * xiMassHeightRadius τ ((h : ℝ) : ℂ))‖
+      = Real.exp (-(a * HTGeometry.csqrtRe (τ ^ 2 + ((h : ℝ) : ℂ) ^ 2))) := by
+    rw [Complex.norm_exp]
+    congr 1
+    have hre := re_mul_xiMassHeightRadius a τ ((h : ℝ) : ℂ)
+    have hneg : (-(a : ℂ) * xiMassHeightRadius τ ((h : ℝ) : ℂ))
+        = -((a : ℂ) * xiMassHeightRadius τ ((h : ℝ) : ℂ)) := by ring
+    rw [hneg, Complex.neg_re, hre]
+  have hgap : Real.sqrt (h ^ 2 - u ^ 2)
+      ≤ HTGeometry.csqrtRe (τ ^ 2 + ((h : ℝ) : ℂ) ^ 2) := by
+    rw [hpropeq]
+    have hmono : Real.sqrt (h ^ 2 - u ^ 2) ≤ Real.sqrt (h ^ 2 - u ^ 2 + sigma ^ 2) :=
+      Real.sqrt_le_sqrt (by nlinarith [sq_nonneg sigma])
+    exact le_trans hmono (sqrt_fullGap_le_csqrtRe_propagationArgument hsigma hu0.le huh)
+  have hexple : Real.exp (-(a * HTGeometry.csqrtRe (τ ^ 2 + ((h : ℝ) : ℂ) ^ 2)))
+      ≤ Real.exp (-(a * Real.sqrt (h ^ 2 - u ^ 2))) := by
+    refine Real.exp_le_exp.2 ?_
+    nlinarith [hgap, ha0]
+  have hΦ := hbound u hu0' t ht
+  rw [← hτdef] at hΦ
+  rw [show (((xiMassSpacelikeSharpSlope a * u : ℝ)) : ℂ) + (t : ℂ) = ((h : ℝ) : ℂ) by
+    rw [hhdef]; push_cast; ring] at hΦ
+  have hΦ0 : (0 : ℝ) ≤ ‖xiCausticIterate a τ n ((h : ℝ) : ℂ)‖ := norm_nonneg _
+  calc ‖Complex.exp (-(a : ℂ) * xiMassHeightRadius τ ((h : ℝ) : ℂ))
+          * xiCausticIterate a τ n ((h : ℝ) : ℂ)‖
+      = Real.exp (-(a * HTGeometry.csqrtRe (τ ^ 2 + ((h : ℝ) : ℂ) ^ 2)))
+        * ‖xiCausticIterate a τ n ((h : ℝ) : ℂ)‖ := by rw [norm_mul, hexpnorm]
+    _ ≤ Real.exp (-(a * Real.sqrt (h ^ 2 - u ^ 2))) * (C / Real.sqrt u ^ (n + 1)) :=
+        mul_le_mul hexple hΦ hΦ0 (Real.exp_pos _).le
+    _ = C / Real.sqrt u ^ (n + 1) * Real.exp (-(a * Real.sqrt (h ^ 2 - u ^ 2))) := by ring
+
 end
 
 end RHTower

@@ -102,3 +102,73 @@ ad hoc examples throughout that literature, but the checked sources do not state
 criterion as an inequality on exponential sums, do not identify the power-sum conditions as its
 Taylor data, and do not record that majorization is strictly stronger than realizability.  Karamata's
 inequality is classical and is used here only as the comparison point that the example defeats.
+
+---
+
+# Continuation: the decision criterion, and where it stops
+
+Notation: merge the poles and zeros into distinct exponents `a_1 > … > a_m` with integer coefficients
+`c_k` = (multiplicity as a pole) − (multiplicity as a zero), so `F(t) = ∑_k c_k e^{a_k t}` and
+`∑_k c_k = 0`.  Let `V` = number of sign changes of `(c_1,…,c_m)`, and let `μ ≥ 1` be the order of
+vanishing of `F` at `0`, i.e. `μ = min{k ≥ 1 : σ_k ≠ 0}`.
+
+## 6. The criterion
+
+**Theorem.**  If `V ≤ μ + 1` then
+
+```
+   F > 0 on (0,∞)   ⟺   c_1 > 0  and  σ_μ > 0.
+```
+
+*Proof.*  Substitute `x = e^t`, so `G(x) = ∑ c_k x^{a_k}` and the claim is `G > 0` on `(1,∞)`.
+Laguerre's rule for exponential sums bounds the number of real zeros of `F`, with multiplicity, by
+`V`.  The origin already carries multiplicity `μ`, so at most `V − μ ≤ 1` further real zeros exist,
+i.e. at most one further root of `G` in `(0,1) ∪ (1,∞)`, and it is simple.
+
+If `c_1 > 0` and `σ_μ > 0`, then `G > 0` just to the right of `1` (sign `σ_μ`) and `G > 0` near `+∞`
+(sign `c_1`).  A single simple root in `(1,∞)` would force a sign change between those two regimes,
+contradicting the agreement of the two signs; hence no root lies in `(1,∞)` and `G > 0` there.
+Conversely `σ_μ ≤ 0` fails positivity near `1⁺` and `c_1 ≤ 0` fails it near `+∞`. ∎
+
+So in the regime `V ≤ μ + 1` realizability is decided by **two sign checks** — the leading
+coefficient and the first nonvanishing power sum — with no root-finding.  The two examples of §1–2
+are the extremes: `{3,0,0}` against `{2,2,−1}` has `V = μ = 3`, and `{3,3,1,1,1,1}` against
+`{2,2,2,2,2,0}` has `V = 3 = μ + 1` with
+
+```
+   2e^{3t} − 5e^{2t} + 4e^{t} − 1 = (e^t − 1)^2 (2e^t − 1) ≥ 0     (t ≥ 0),
+```
+
+whose extra simple root sits at `x = 1/2`, i.e. at `t = −log 2 < 0`, exactly where it does no harm.
+
+## 7. Where the criterion stops, and why
+
+For `V ≥ μ + 2` two or more further roots are permitted and they may sit in `(1,∞)` in a pair, so
+the sign data at the two ends no longer determines the answer: `G` can dip and return.  Beyond that
+regime realizability is genuinely a root-location question.  Two structural remarks bound what is
+possible.
+
+* **Commensurable exponents.**  If all `a_k` lie in `λℚ` then, after `x = e^{λt/q}`, `G` is an
+  honest polynomial and `G ≥ 0` on `[1,∞)` is equivalent to a sums-of-squares certificate
+  `G(1+v) = σ_0(v) + v σ_1(v)`.  Realizability is then a semidefinite condition, hence decidable.
+
+* **Complex exponents.**  The arithmetically interesting case — an off-line zero pair `β ± iγ` —
+  contributes `−2 e^{βt} cos(γ t)`, and Laguerre's rule does not apply: the coefficient sequence is
+  no longer finite-sign-change data.  The condition becomes `R(t) ≥ 2 e^{βt} cos(γt)` for the real
+  part `R`, which is *sufficient* in the `γ`-free form `R(t) ≥ 2e^{βt}` and *necessary* only on the
+  peak set `(2π/γ)ℤ`.  This is why every RH-violating system built in this programme used the
+  `γ`-free sufficient form: the sharp complex criterion is not a sign-change count.
+
+## 8. Lean
+
+`exists_iteratedDeriv_eq_zero_of_order` (`HTGeometry/IteratedRolleChain`): if `f` is smooth,
+vanishes to order `μ` at the origin and again at some `s > 0`, then `f^{(μ)}` has a zero in `(0,s)`.
+This is the multiplicity-carrying half of Rolle and the step by which an order-`μ` zero plus one
+further zero becomes a genuine zero of a high derivative — the input Laguerre's bound is applied to.
+Built, wired, axioms `[propext, Classical.choice, Quot.sound]`.
+
+**Not formalized, and cited as classical:** Laguerre's rule for exponential sums (the number of real
+zeros with multiplicity is at most the number of sign changes of the coefficient sequence; Laguerre
+1883, Pólya–Szegő Part V, Ch. 1).  mathlib has no zero-counting-with-multiplicity for real analytic
+functions, so formalizing it means building that notion first; the iterated-Rolle chain above is the
+first component.  This is the identified next construction, not a gap in the mathematics.

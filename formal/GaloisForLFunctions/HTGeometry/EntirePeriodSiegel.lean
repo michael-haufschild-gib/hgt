@@ -115,8 +115,8 @@ theorem exists_ne_zero_poly_aeval_entire_of_compactSpace_quotient
         constEntireRing W (a β) * ∏ k, (u k) ^ (β k : ℕ) * (v k) ^ (m - (β k : ℕ))
           : entireSubring W) : W → ℂ) z
         = siegelHomCombination A B m a z := by
-      simp only [AddSubmonoidClass.coe_finset_sum, MulMemClass.coe_mul,
-        SubmonoidClass.coe_finset_prod, SubmonoidClass.coe_pow, Finset.sum_apply,
+      simp only [AddSubmonoidClass.coe_finsetSum, MulMemClass.coe_mul,
+        SubmonoidClass.coe_finsetProd, SubmonoidClass.coe_pow, Finset.sum_apply,
         Finset.prod_apply, Pi.mul_apply, Pi.pow_apply, siegelHomCombination, hAdef, hBdef]
       rfl
     rw [hval, hzero z]
@@ -159,5 +159,59 @@ theorem exists_ne_zero_poly_aeval_entire_of_compactSpace_quotient
   have hprodne : (∏ k, (algebraMap (entireSubring W) (EntireField W) (v k)) ^ m) ≠ 0 :=
     Finset.prod_ne_zero_iff.mpr fun k _ => pow_ne_zero _ (hden k)
   exact (mul_eq_zero.mp hkey).resolve_right hprodne
+
+/-! ## Periods pass to the jets, and the period-escape law -/
+
+theorem fieldTranslateEquiv_iterate_dirDerivation (t w : V) (r : ℕ) (x : EntireField V) :
+    fieldTranslateEquiv t ((⇑(fieldDirDerivation w))^[r] x)
+      = (⇑(fieldDirDerivation w))^[r] (fieldTranslateEquiv t x) := by
+  induction r generalizing x with
+  | zero => simp
+  | succ r ih =>
+      rw [Function.iterate_succ_apply, Function.iterate_succ_apply, ih,
+        fieldTranslateEquiv_dirDerivation]
+
+/-- **The jets of a `P`-invariant element satisfy a nonzero polynomial relation when the quotient
+by `P` is compact.** -/
+theorem exists_ne_zero_poly_aeval_jets_of_compactSpace_quotient (w : Fin (n + 1) → ℂ)
+    {P : AddSubgroup (Fin (n + 1) → ℂ)} (hP : CompactSpace ((Fin (n + 1) → ℂ) ⧸ P))
+    {x : EntireField (Fin (n + 1) → ℂ)} (hfix : ∀ p ∈ P, fieldTranslateEquiv p x = x) :
+    ∃ Q : MvPolynomial (Fin (n + 2)) ℂ, Q ≠ 0 ∧
+      MvPolynomial.aeval
+        (fun k : Fin (n + 2) => (⇑(fieldDirDerivation w))^[(k : ℕ)] x) Q = 0 := by
+  refine exists_ne_zero_poly_aeval_entire_of_compactSpace_quotient hP _ ?_
+  intro k p hp
+  rw [fieldTranslateEquiv_iterate_dirDerivation, hfix p hp]
+
+/-- **The noncompact period-quotient law, in every dimension.**  A hypertranscendental element of
+the entire fraction field of `ℂ^{n+1}` has a noncompact quotient by any group of its periods. -/
+theorem not_compactSpace_quotient_of_hypertranscendental (w : Fin (n + 1) → ℂ)
+    {P : AddSubgroup (Fin (n + 1) → ℂ)} {x : EntireField (Fin (n + 1) → ℂ)}
+    (hfix : ∀ p ∈ P, fieldTranslateEquiv p x = x)
+    (hx : @HypertranscendentalOver ℂ (EntireField (Fin (n + 1) → ℂ)) _ _ _
+      ⟨fieldDirDerivation w⟩ x) :
+    ¬ CompactSpace ((Fin (n + 1) → ℂ) ⧸ P) := by
+  intro hP
+  letI : Differential (EntireField (Fin (n + 1) → ℂ)) := ⟨fieldDirDerivation w⟩
+  obtain ⟨Q, hQ0, hQ⟩ := exists_ne_zero_poly_aeval_jets_of_compactSpace_quotient w hP hfix
+  have hindep : DifferentialIndependent ℂ (fun _ : Unit => x) := not_not.mp hx
+  have hinj : Function.Injective (fun k : Fin (n + 2) => (((), (k : ℕ)) : Unit × ℕ)) := by
+    intro a b hab
+    exact Fin.val_injective (congrArg Prod.snd hab)
+  have hfull : AlgebraicIndependent ℂ
+      (fun p : Unit × ℕ => differentialJet p.2 x) := hindep
+  have hsub := AlgebraicIndependent.comp hfull (fun k : Fin (n + 2) => ((), (k : ℕ))) hinj
+  have hinj2 : Function.Injective (MvPolynomial.aeval (R := ℂ)
+      ((fun p : Unit × ℕ => differentialJet p.2 x)
+        ∘ fun k : Fin (n + 2) => ((), (k : ℕ)))) := hsub
+  have hQeq : MvPolynomial.aeval
+      ((fun p : Unit × ℕ => differentialJet p.2 x)
+        ∘ fun k : Fin (n + 2) => ((), (k : ℕ))) Q
+      = MvPolynomial.aeval
+        ((fun p : Unit × ℕ => differentialJet p.2 x)
+          ∘ fun k : Fin (n + 2) => ((), (k : ℕ))) (0 : MvPolynomial (Fin (n + 2)) ℂ) := by
+    rw [map_zero]
+    exact hQ
+  exact hQ0 (hinj2 hQeq)
 
 end GaloisForLFunctions.HTGeometry

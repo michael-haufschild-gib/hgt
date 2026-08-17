@@ -70,6 +70,9 @@ proof-assistant or internal-corpus references.
 | Robust two-sided complexity reflection and exact-return palindrome | `RHTower.choiComplexity_reflect`; `RHTower.choiComplexity_reflect'`; `RHTower.choiComplexity_eq_of_exact_return` | `AutonomousReturnReflection.lean` |
 | Nested inverse-power path: exact finite restriction, energy in `[0,3]`, uniform tail `L⁻¹+L⁻³`, thermodynamic convergence | `StaticLocalLaboratoryComplexityGrowthLaw.nestedFiniteEnergy_restriction`; `nestedInfiniteEnergy_nonneg_le_three`; `nestedInfiniteEnergy_uniform_tail`; `nestedTruncatedEnergy_tendsto` | `StaticLocalNestedThermodynamicRampReturnLaw.lean` |
 | Same explicit nested static nearest-neighbour path: finite-time linear operator-complexity envelope, factorial-four exact return and exact reflected bounds; one complete capstone conjoins these with thermodynamic clauses | `StaticLocalLaboratoryComplexityGrowthLaw.nestedInversePowerChain_floor_linear_growth`; `nestedInversePowerChain_exact_return`; `nestedOperatorTwoGateComplexity_exact_return_reflect`; `nestedStaticLocal_thermodynamic_ramp_return_reflection`; `nestedStaticLocal_complete_thermodynamic_ramp_return_reflection` | `StaticLocalNestedThermodynamicRampReturnLaw.lean` |
+| Arbitrary tree phase-tail obstruction against arbitrary nonlocal and non-diagonal support-certified one/two-qubit circuits | `StaticLocalLaboratoryComplexityGrowthLaw.treePhase_twoGateCount_gt`; cut core `exists_tree_cut_separating_circuit` | `TreePhaseTailCapacityLower.lean`; `CircuitTreeCutCertificate.lean` |
+| Free scalar/one-qubit centering of omitted controlled phases and exact residual identity | `StaticLocalLaboratoryComplexityGrowthLaw.centeredPairCircuit_matrix`; `centeredPairCircuit_twoGateCount`; `p11_centered_residual` | `CenteredControlledPhaseGate.lean` |
+| Concrete nearby-time failure of all-pairs monotonicity inside nested laboratory window: early complexity at least `1514`, late complexity at most `1513`, strict reversal and `not MonotoneOn` | `monotonicityCounterEarly_complexity_lower`; `monotonicityCounterLate_complexity_upper`; `counterLateCircuit_approximates`; `monotonicityCounter_strict_complexity_reversal`; `nestedOperatorTwoGateComplexity_not_monotoneOn_laboratoryWindow` | `NestedMonotonicityLower.lean`; `NestedMonotonicityUpper.lean`; `NestedMonotonicityCounterexample.lean` |
 
 ## Law IV: inference boundary
 
@@ -95,8 +98,9 @@ retained in present main text.
 
 ## Axiom and source audit
 
-`/tmp/QuantumRecurrencePaperAudit.lean` imports every load-bearing module and
-runs `#print axioms` on headline declarations. Audit passed: every reported
+`/tmp/QuantumRecurrencePaperAudit.lean` and
+`/tmp/AuditNestedMonotonicity.lean` import load-bearing modules and run
+`#print axioms` on headline declarations. Audit passed: every reported
 kernel dependency is among `[propext, Classical.choice, Quot.sound]`.
 Repository formal lint forbids `sorry`, `admit`, project `axiom`,
 `opaque` and `unsafe` declarations.
@@ -104,7 +108,7 @@ Repository formal lint forbids `sorry`, `admit`, project `axiom`,
 ## Explicit exclusions
 
 - No first-return time inferred from inverse completed density.
-- No all-pairs pointwise monotonicity, saturation plateau or finite-time random-matrix ramp. Nested-path result gives a two-sided linear envelope, a literal rise-and-return drop, and actual-complexity ordering for laboratory times separated by a factor of at least `1024π`.
+- No pointwise monotonicity, saturation plateau or finite-time random-matrix ramp. Pointwise monotonicity is explicitly false: nested path gives a two-sided linear envelope and scale-separated ordering, but also a strict nearby-time drop inside same laboratory window.
 - No Haar randomization by static bounded-local Hamiltonians.
 - No bounded-degree geometry claim for bounded-weight all-to-all Pauli terms.
 - No infinite-volume orbit recurrence, infinite-system circuit complexity or interchange of size and time limits.

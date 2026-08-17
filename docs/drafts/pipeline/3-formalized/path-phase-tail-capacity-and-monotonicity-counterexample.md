@@ -1,10 +1,10 @@
 # Path phase-tail capacity and literal-monotonicity counterexample
 
 - **ID:** `path-phase-tail-capacity-and-monotonicity-counterexample`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** theorem / sharp circuit obstruction / counterexample / positive no-go survivor
 - **Source:** failure analysis of all-pairs monotonicity for the nested inverse-power path
-- **Labels:** `[PAPER-PROVED] [NOVELTY UNVERIFIED]`
+- **Labels:** `[FORMALIZED] [NOVELTY AUDITED--NO CLOSE PRECEDENT FOUND]`
 
 ## Exact statement
 
@@ -375,7 +375,22 @@ claim remains Stage 1 and is not used above.
 ## Formalization status
 
 - Complete paper proof: `[PAPER-PROVED]`.
-- Exact Lean theorem: not yet formalized.
-- First formal obligation: sharp path-cut certificate for arbitrary support lists.
-- No Lean infrastructure is authorized before the paper-proof gate above; that gate is now closed.
-
+- General arbitrary-circuit lower law: `treePhase_twoGateCount_gt` in
+  `formal/GaloisForLFunctions/HTGeometry/TreePhaseTailCapacityLower.lean`.
+- Sharp tree-cut certificate: `exists_tree_cut_separating_circuit` in
+  `formal/GaloisForLFunctions/HTGeometry/CircuitTreeCutCertificate.lean`.
+- Free-centering circuit and residual identity: `centeredPairCircuit_matrix`,
+  `centeredPairCircuit_twoGateCount`, `p11_centered_residual` in
+  `formal/GaloisForLFunctions/HTGeometry/CenteredControlledPhaseGate.lean`.
+- Concrete early lower and late upper: `monotonicityCounterEarly_complexity_lower` and
+  `monotonicityCounterLate_complexity_upper`.
+- Capstone strict reversal and all-pairs refutation:
+  `monotonicityCounter_strict_complexity_reversal` and
+  `nestedOperatorTwoGateComplexity_not_monotoneOn_laboratoryWindow` in
+  `formal/GaloisForLFunctions/HTGeometry/NestedMonotonicityCounterexample.lean`.
+- Targeted module checks passed.  Axiom audit reports only `propext`, `Classical.choice`, and
+  `Quot.sound`.  No full umbrella build was run.
+- Literature status: targeted primary-source search found random/stochastic complexity recurrence
+  and jumps, typical second-law arguments, and simulation lower bounds, but no exact deterministic
+  nearby-time backtracking theorem for one explicit static nearest-neighbour Hamiltonian.  This is
+  provisional absence evidence, not an absolute priority claim.

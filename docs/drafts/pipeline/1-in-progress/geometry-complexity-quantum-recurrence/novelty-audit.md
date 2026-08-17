@@ -25,9 +25,12 @@ No absolute “first” claim is authorized.
 5. Oszmaniec et al. prove complexity saturation and recurrence for random
    circuits and stochastic local Hamiltonian evolution. Kotowski--Oszmaniec--
    Horodecki prove complexity jumps for unitarily invariant random
-   Hamiltonians. Current Choi law concerns deterministic static
+   Hamiltonians. Brown--Susskind's second law is an argued typical growth
+   picture, not deterministic pointwise theorem. Current Choi law concerns deterministic static
    onsite-plus-edge Hamiltonians after generic spectral discharge and gives
-   completed-time occupation, not stochastic mixing time.
+   completed-time occupation, not stochastic mixing time. Nested path result
+   additionally gives explicit deterministic backtracking between two nearby
+   increasing times inside a certified linear-envelope window.
 6. Cui--Schuster--Mao--Huang--Brandao show constant-local static Hamiltonian
    ensembles need not approach Haar randomness. Permanent non-Haar separation
    is not claimed new; candidate contribution is its exact coexistence with
@@ -117,13 +120,22 @@ Exact residue: one explicit diagonal nearest-neighbour qubit path, nested
 under increasing volume and with bounded infinite-chain energy, has an
 operator-norm two-qubit-gate lower and upper envelope linear in laboratory
 time, a factorial-four exact return and exact complexity reflection carrying
-same bounds onto return side.
+same bounds onto return side.  A general tree-cut phase-tail obstruction
+handles arbitrary nonlocal and non-diagonal approximating gates.  At
+$L=16384$, $\varepsilon=2^{-10}$, $s=2\pi-10^{-6}<t=2\pi$, exact integer
+bounds give $C(s)\ge1514>C(t)$ with $C(t)\le1513$, disproving all-pairs
+monotonicity inside same laboratory window.
 
 Preliminary verdict: survives exact-object search only as a joined
 ramp--thermodynamic-completion--return statement. Simulation lower bounds for
 local classical Hamiltonians now exist, so neither locality nor gate hardness
-alone is candidate novelty. No priority claim is authorized without
-specialist comparison to arXiv:2607.19852 and its ancestry.
+alone is candidate novelty. Targeted primary-source search found random and
+stochastic complexity recurrence/jump results, typical second-law arguments,
+and worst-case simulation lower bounds, but no matching deterministic
+nearby-time backtracking theorem for one explicit static nearest-neighbour
+Hamiltonian. This is provisional absence evidence, not proof of priority; no
+absolute first claim is authorized without specialist comparison to
+arXiv:2303.17538, arXiv:2607.19852 and their ancestry.
 
 ## Novelty explicitly disclaimed
 
@@ -132,7 +144,7 @@ specialist comparison to arXiv:2607.19852 and its ancestry.
 - Abstract all-order form-factor formulas under rational independence.
 - Elementary finite target union bound.
 - Permanent non-Haar behavior of constant-local static ensembles.
-- First-return estimates and all-pairs literal monotone complexity trajectories,
+- First-return estimates, any literal monotone complexity trajectory,
   saturation plateaus and random-matrix ramps.
 - Infinite-volume recurrence.
 

@@ -1,13 +1,14 @@
 # Prime-torsion recurrence-polygon complexity law
 
 - **ID:** `prime-torsion-recurrence-polygon-complexity-law`
-- **Stage:** 2 -- fully proved on paper
+- **Stage:** 3-formalized
 - **Type:** theorem / quantum-recurrence anatomy / static-complexity advance
 - **Parents:** `universal-static-choi-complexity-plateau.md`,
   `local-circuit-heap-capacity-law.md`,
   `arithmetic-static-local-hardness-recurrence-window-law.md`,
   `autonomous-return-complexity-reflection-law.md`
-- **Status:** `[PAPER-PROVED] [PROVED HERE] [NOVELTY UNVERIFIED] [LEAN CORE PROVED]`
+- **Status:** `[PAPER-PROVED] [PROVED HERE] [NOVELTY UNVERIFIED] [LEAN PROVED]`
+- **Lean status:** unconditional and closed — sections 1--6 formalized, no hypotheses, no added axioms
 - **Date:** 2026-08-13
 
 ## Public sentence
@@ -513,7 +514,7 @@ two-query separator can remain nonzero at every slice and every time.
 - [x] hostile and preliminary external audit
 - [x] exact finite-grid moment, translated-cap, and prime all-power avoidance Lean core
 - [x] Lean composition through arbitrary rays and recurrence shadowing
-- [ ] Lean circuit-capacity substitution and asymptotics
+- [x] Lean circuit-capacity substitution and asymptotics
 - [ ] effective first polygon time / Brown onset
 
 ## 10. Lean core advance -- 2026-08-14
@@ -706,7 +707,102 @@ the start, since `q_*^k = 1`.  The strict inequalities of `(14)` survive because
 the exponent range are finite: `exists_margin_of_lt` converts them into a uniform margin `sigma > 0`,
 and it then suffices to take `eps = min(sigma, rho)/(2k)`.
 
+### Lemma A in anchored coordinates, and `(13)` itself
+
+`formal/GaloisForLFunctions/HTGeometry/TorsionCapAnchoredCount.lean`.
+
+| Card item | Declaration |
+|---|---|
+| the standard additive character of `ZMod k` as a power of the primitive root | `coe_toCircle_eq_pow` |
+| the concentration cap in `ZMod` coordinates | `card_le_of_forall_norm_toCircle_sum_ge` |
+| **the translation step of the proof of `(7)`**: a set with large relative sums is itself small | `card_le_of_forall_norm_relative_toCircle_sum_ge` |
+| the phase vectors one target captures | `capturedPhases`, `mem_capturedPhases` |
+| a trace-distance bound is a fidelity bound | `one_sub_sq_le_norm_inner_sq` |
+| **`(8)`--`(11)` composed**: one target captures at most `4e^{-(1-2δ²)²D/4}k^D` phase vectors | `card_capturedPhases_le` |
+| anchoring is a `k`-to-one fibration | `eq_cons_anchor_add_diag`, `anchorPhaseHom_cons_add_diag`, `card_fibre_anchorPhaseHom` |
+| **`(7)`**: `k\|E\| <= 4N e^{-(1-2δ²)²D/4} k^D` | `card_easyAnchored_le` |
+| **`(13)`** closes the counting hypothesis of Theorem A | `card_easyAnchored_lt_of_cap` |
+| **Theorem B under `(13)`**, with no counting hypothesis left | `exists_late_recurrence_hard_polygon_of_cap` |
+
+This is the composition the earlier `(7)` entry left implicit.  `card_classes_le_of_cover` cannot be
+applied to the captured sets directly, because its `S y` must consist of vectors whose *absolute*
+character sum is large, whereas a captured set only has large *relative* sums; the card's own proof
+fixes a reference `q_0` inside the captured set and translates.  `card_le_of_forall_norm_relative_
+toCircle_sum_ge` performs exactly that translation -- the translate of a captured set by one of its
+members is injective and lands in the large-sum set -- and the rest is the `k`-to-one fibration.
+
+The exponent obtained is `(1-2δ²)²/4`, which is at least the card's `γ_δ = (1-4δ²)/4`, because the
+Lean route to `(8)` (`norm_inner_ge_of_common_target`) gives the overlap bound `1-2δ²` rather than
+`c_δ = sqrt(1-4δ²)`.  `card_easyAnchored_lt_of_cap` therefore consumes the card's `(13)` verbatim.
+
+### The circuit specialization of section 5
+
+`formal/GaloisForLFunctions/HTGeometry/TorsionPolygonCircuitDepth.lean`.
+
+| Card item | Declaration |
+|---|---|
+| depth-`s` hardness against the endpoint dictionary | `DepthHard` |
+| the robust circuit complexity `C_δ`, valued in `ℕ∞` | `robustCircuitComplexity` |
+| depth-`s` hardness is exactly `C_δ > s` | `lt_robustCircuitComplexity_of_depthHard` |
+| **`(24)` implies `(25)`** | `exists_late_recurrence_depthHard` |
+
+`(23)` itself is already a corpus theorem: `RHTower.cumulativeTraceCount_le_maxDegree` gives
+`H_s <= (s+1) * choose (M+s-1) s * 2^{Δs}`, which is the bound `exists_late_recurrence_depthHard`
+consumes as its dictionary-size hypothesis.
+
+### Corollary B.1
+
+`formal/GaloisForLFunctions/HTGeometry/TorsionPolygonCircuitAsymptotics.lean`.
+
+| Card item | Declaration |
+|---|---|
+| a quadratic is eventually dominated by any positive multiple of `2^n` | `eventually_quadratic_lt_two_pow` |
+| **`(23)`** as a function of `M`, `s`, `Δ` | `heapCapacity` |
+| **`(31)`**: the multiset factor is polynomial of degree the alphabet size | `choose_le_pow_alphabet` |
+| the heap capacity in exponential form | `heapCapacity_le_exp` |
+| **`(28)`, `(29)` and `(24)`**: the cap condition holds for every large `n` | `eventually_heapCapacity_cap` |
+| `(24)` for each fixed prime `k`, under `(27)` | `eventually_cap_fixed_prime` |
+| **`(30)`**: primes of size at least `e^{ηD}` for which `(24)` still holds | `eventually_exists_prime_cap` |
+| **Corollary B.1** with the complexity conclusion `(25)` attached | `eventually_exists_prime_late_recurrence_hard_slices` |
+
+The Lean bound replaces `log C(M+s-1,s) = O(M log(1+s/M))` by
+`log C(M+s-1,s) <= M log(M+s)`, obtained from `choose (M+s-1) s = choose (M+s-1) (M-1)` and
+`choose n r <= n^r`.  With `M = O(n)` and `s <= c2^n` this is `O(n^2)`, which is exactly the `o(D)`
+the card needs, so `(28)` holds with the same leading term `cΔD log 2`.  `(30)` uses Bertrand's
+postulate (`Nat.exists_prime_lt_and_le_two_mul`) at `⌈e^{ηD}⌉`, and the resulting prime costs only
+the constant factor `16` in the cap condition, which the strict inequality `(29)` absorbs.
+
+### Arbitrary rays, and the static Choi trajectory of section 6
+
+`formal/GaloisForLFunctions/HTGeometry/UniformPhaseRayTransport.lean`.
+
+| Card item | Declaration |
+|---|---|
+| **`(1)`** on an arbitrary orthonormal family in an arbitrary complex inner product space | `uniformPhaseRayOf`, `norm_uniformPhaseRayOf` |
+| the pullback of an ambient target to coordinates, and Bessel contraction | `pullbackVector`, `norm_pullbackVector_le` |
+| the overlap with an ambient target is the coordinate overlap with the pullback | `inner_uniformPhaseRayOf`, `pullbackVector_uniformPhaseRayOf` |
+| **`(17)`** on an orthonormal family | `flowRayOf`, `norm_flowRayOf`, `inner_flowRayOf` |
+| the normalized pullback dictionary, no larger than the original | `pullbackDict`, `card_pullbackDict_le` |
+| **hardness transports**: an ambient target is at least as far as its normalized pullback | `sq_lt_one_sub_norm_inner_sq` |
+| **Theorem B on an arbitrary orthonormal family** | `exists_late_recurrence_hard_polygon_orthonormal` |
+| **`(32)`**: the Choi family `\|e_a>\|ē_a>` is orthonormal, whatever the eigenbasis | `choiVec`, `inner_choiVec`, `orthonormal_choiVec` |
+| **`(32)`**: the static Choi trajectory is the uniform phase ray of that family | `choiTrajectory_eq` |
+| the recurrence polygon on the static Choi trajectory | `exists_late_recurrence_hard_polygon_choi` |
+| the genericity input: maximal projective spectrum gives rationally independent anchored gaps | `exists_late_recurrence_hard_polygon_choi_of_maximallyProjective` |
+
+The transport is exact, not a loss: the isometry induced by an orthonormal family need not be onto,
+so an ambient target has only its pullback visible, and the pullback is a contraction.  Hardness
+against the normalized pullback dictionary -- which has no more elements, so the cap condition `(13)`
+is unchanged -- therefore implies hardness against the ambient dictionary.
+
+The card's `gapVec` is the corpus's `projectiveGapPacket`, so
+`projectiveGapPacket_linearIndependent` turns `MaximallyProjectiveEnergy` into the rational
+independence hypothesis, and the corpus genericity laws
+(`exists_uniformQubitChainMaximalRank_dense_residual_fullMeasure` and its relatives) supply that on
+a dense residual full-measure set of trace-zero onsite-plus-edge Hamiltonians.
+
 ### What remains
 
-The circuit specialization of section 5 and Corollary B.1: the substitution of the heap-capacity
-bound `(23)` into `(13)` to obtain `(24)`--`(25)`, and the asymptotics `(26)`--`(31)`.
+Nothing in sections 1--6 of this card.  Section 7's conjecture--failure--survivor loop and the open
+question of an effective first polygon time (Brown onset) are, by the card's own statement, not
+theorems of this card: it is explicitly existential in recurrence time.

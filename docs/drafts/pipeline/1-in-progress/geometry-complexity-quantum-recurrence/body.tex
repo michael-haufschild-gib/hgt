@@ -497,14 +497,14 @@ be infimum of number of arbitrary two-qubit gates in support-certified
 one- and two-qubit circuits $W$ satisfying
 $\|W-U_L(t)\|_{2\to2}\le\varepsilon$; one-qubit gates are free.
 
-Lower-bound mechanism is not special to inverse powers.  Let $P$ be any
-finite qubit path, assign real phase $\beta_e$ to each edge, and put
+Lower-bound mechanism is not special to inverse powers or paths.  Let $P$ be
+any finite qubit tree, assign real phase $\beta_e$ to each edge, and put
 \[
  V_\beta=\exp\!\left(-\ii\sum_{e=\{u,v\}\in E(P)}
    \beta_e |11\rangle\!\langle11|_{uv}\right).
 \]
 
-\begin{theorem}[Path phase-tail obstruction]
+\begin{theorem}[Tree phase-tail obstruction]
 \label{thm:phasetail}
 Fix $G\in\N$ and $\varepsilon\ge0$.  Suppose that for every deleted set
 $N\subseteq E(P)$ with $|N|\le G$,
@@ -516,7 +516,7 @@ $N\subseteq E(P)$ with $|N|\le G$,
 Then every support-certified circuit approximating $V_\beta$ within
 operator-norm error $\varepsilon$ uses more than $G$ two-qubit gates.  The
 approximating gates may be non-diagonal and may couple arbitrary qubit pairs;
-path restriction applies only to target Hamiltonian.
+tree restriction applies only to target Hamiltonian.
 \end{theorem}
 
 \begin{theorem}[Nested static-local ramp--return law]
@@ -685,7 +685,7 @@ statements:
 \item one explicit nested static nearest-neighbour qubit path with bounded
       infinite-chain energy, a robust finite-time linear circuit-complexity
       envelope, exact return and exact reflected descent, together with a
-      path phase-tail obstruction and a certified failure of all-pairs
+      tree phase-tail obstruction and a certified failure of all-pairs
       monotonicity inside the ramp window.
 \end{enumerate}
 

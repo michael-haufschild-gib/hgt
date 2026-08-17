@@ -1,8 +1,8 @@
 # Nested static-local literal complexity monotonicity
 
 - **ID:** nested-static-local-literal-complexity-monotonicity
-- **Stage:** 1-in-progress
-- **Type:** FALSIFIED / POSITIVE SURVIVOR PAPER-PROVED
+- **Stage:** 5-failed
+- **Type:** FALSIFIED / POSITIVE SURVIVOR FORMALIZED
 - **Source:** user-directed strengthening of the nested static-local ramp--return law
 - **Statement:** At fixed operator-norm resolution, actual two-qubit-gate complexity of the nested inverse-power chain is nondecreasing throughout its claimed laboratory growth window.
 
@@ -17,7 +17,7 @@ and operator-norm approximation.
 - [x] 0 → 1 in-progress: statement frozen; exact-return and phase-folding attacks identified
 - [x] 1 → 2 fully-proven: explicit counterexample and positive survivor have a complete paper proof
 - [x] obstruction/bridge formalized: targeted Lean theorem, targeted build green, axiom audit clean
-- [ ] 3 → 4 publication-ready: standalone theorem and proof with calibrated priority
+- [x] 3 → 4 manuscript integration: standalone theorem and proof with calibrated priority
 
 ## Approach
 
@@ -36,18 +36,19 @@ and operator-norm approximation.
   endpoint complexities zero, while every claimed laboratory-ramp point has complexity at least
   eight. A nondecreasing history on the full return cycle would be bounded above by its zero right
   endpoint and hence vanish identically; the dual left-endpoint argument kills global antitonicity.
-- **Strongest positive survivor:** actual complexity has a literal strict rise from zero and a
-  literal strict return drop. Within the laboratory window it is also genuinely ordered at large
-  scale separation: `t ≥ 1024πs` implies `C(s) ≤ C(t)`.
-- **New insight:** recurrence converts any valid deterministic monotonicity law into a necessarily
-  one-sided or pre-return statement. Linear envelopes already exclude large scale-separated
-  backtracking, but do not compare arbitrarily close times.
+- **Strongest positive survivor:** folded phase-tail mass, not elapsed time, controls finite-
+  resolution path complexity.  General tree-cut obstruction survives arbitrary nonlocal and
+  non-diagonal approximating gates.  Concrete nested path has scale-separated ordering but also
+  strict nearby reversal `C(2π)≤1513<1514≤C(2π-10^-6)` inside same ramp window.
+- **New insight:** linear complexity envelopes coexist with literal local backtracking.  A single
+  bond crossing its `2π` cut locus can make a cheaper centered approximation available even while
+  elapsed time increases.
 - **Status:** `[FALSIFIED]`.  The paper proof in
-  `docs/drafts/pipeline/2-fully-proven/path-phase-tail-capacity-and-monotonicity-counterexample.md`
+  `docs/drafts/pipeline/3-formalized/path-phase-tail-capacity-and-monotonicity-counterexample.md`
   gives `L=16384`, `epsilon=1/1024`, `s=2pi-10^-6`, and `t=2pi`, all in the laboratory window, with
   `C(s)≥1514>C(t)` and `C(t)≤1513`.  The positive survivor is the path phase-tail capacity law,
-  which uses the same folded phase-tail statistic for a constructive upper bound and an arbitrary-
-  circuit lower obstruction.  Lean formalization is the remaining gate.
+  which combines a general arbitrary-circuit lower obstruction with a constructive centered upper
+  circuit.  Exact lower, upper, strict reversal and laboratory-window nonmonotonicity are formalized.
 
 ## Log
 
@@ -57,3 +58,6 @@ and operator-norm approximation.
 - 2026-08-17 — all-pairs laboratory-window conjecture paper-falsified by an explicit one-gate
   downward spike at the first bond return.  Dependency-closed positive survivor and exact rational
   certificates recorded in Stage 2; Lean gate not yet started.
+- 2026-08-17 — formal closure complete.  Exact early lower bound `1514`, constructive late upper
+  bound `1513`, strict reversal and `not MonotoneOn` capstone pass targeted checks and axiom audit.
+  Result integrated into unified manuscript; failed conjecture retired to Stage 5.
