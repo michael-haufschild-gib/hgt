@@ -598,3 +598,46 @@ Weierstrass machinery to statements about germs, which is the form the factoriza
 With `weierstrass_division_unique` these say that the local ring is a free module of rank `d` over
 the ring in the remaining variables, modulo the distinguished polynomial.  That is the interface
 step 5 (factoriality) consumes.
+
+## Siegel programme — the assembly for locally holomorphic charts
+
+The chartwise assembly built earlier assumed entire chart data.  That is the wrong hypothesis: a
+local presentation of a meromorphic function is holomorphic on a polydisc around its centre and
+nowhere else.  Three modules put the machine on the correct hypothesis, all unconditional,
+axiom-clean and umbrella-wired.
+
+- `HTGeometry/PolydiscCoeffVanishing.lean` — `norm_le_of_polydiscCoeff_vanish_of_hasSum`: the
+  multi-index Schwarz estimate with the polydisc expansion taken as a hypothesis rather than derived
+  from global holomorphy.  The previous statement is now a corollary.
+- `HTGeometry/PolydiscLocalSchwarz.lean` — `polydiscSeries_hasSum_of_differentiableOn` and
+  `norm_le_of_polydiscCoeff_vanish_of_differentiableOn`: the expansion and the estimate for a
+  function holomorphic on `polydiscSet c (fun _ => R₁)` with `R < R₁`.  The expansion is the
+  corpus's own local Cauchy formula `polydiscCauchyFormula_of_differentiableOn` fed into the
+  expansion criterion `polydiscSeries_hasSum_of_cauchy`, whose hypotheses were already local.
+- `HTGeometry/SiegelLocalCharts.lean` — the chartwise Taylor-condition map, the gain, the vanishing
+  and the algebraic relation, all for chart data holomorphic only on polydiscs:
+
+  ```text
+  exists_ne_zero_poly_eval_eq_zero_local :
+    A i k, B i k holomorphic on the polydisc of radius R₁ around c i,
+    card ι · N^n < (m+1)^(n+1),   C · Schwarz factor < 1,   transition structure
+      ==>  ∃ P ≠ 0 in C[X_0,…,X_n],  P(A i 0 / B i 0, …) = 0
+           at every point of every small polydisc where that chart's denominators do not vanish.
+  ```
+
+  `SiegelGainVanishing.eqOn_zero_of_family_siegel_gain` was generalized in passing: it needs
+  continuity only of the local representatives on the small closed polydiscs.
+
+### What the instantiation still needs
+
+The corpus's meromorphic field `Bottcher.meroFieldGen (Set.univ)` is the fraction field of the ring
+of *entire* functions, so a global presentation `f = A/B` comes for free and the Poincaré problem
+does not arise.  What a global presentation does not give is the transition bound: for a torus point
+`w` and a period `p` the transition factor is `∏_k (B_k w / B_k (w − p))^m`, and `B_k` is not
+periodic, so the ratio is unbounded along the zero divisor.  The bound requires *reduced* local
+presentations at the centres — `GermReducedFraction` and `GermRatioBound`, both owned and now
+available at every point through `GermTranslationFactorial` — compared at a point of the overlap
+rather than at the centre.  The missing ingredient is therefore the propagation of coprimality of
+analytic germs to nearby points, i.e. that the common zero set of two coprime germs has codimension
+at least two.  Above that one statement the whole analytic machine is unconditional and correctly
+hypothesized.

@@ -1513,3 +1513,529 @@ Everything proved so far is unaffected: `dennisStein_add_right`, `dennisStein_ad
 `dennisStein_neg_right`, `dennisStein_index_reversal`, `dennisStein_scale`,
 `steinbergSymbol_eq_dennisSteinUnit_coboundary` and `torusCommutator_relation_of_add_one` are all
 unconditional and hold as stated.
+
+## Layer B, fourth pass — the triangle: chain conjugation and index transport
+
+Two modules, wired and axiom-clean.
+
+```
+HTGeometry/SteinbergChainConjugation.lean
+  steinbergX_mul_opposite_chain
+      x_ij(a) x_ji(bc)
+        = [ x_ik(ab) x_jk(b) ,  x_kj(ca)^{-1} x_ki(c) ] . x_ij(a)
+
+HTGeometry/DennisSteinIndexTransport.lean
+  steinbergWeyl_jk_conj_col    w_jk(1) x_ij(s) w_jk(1)^{-1} = x_ik(-s)
+  steinbergWeyl_jk_conj_row    w_jk(1) x_ji(s) w_jk(1)^{-1} = x_ki(-s)
+  steinbergWeyl_jk_conj_weyl   w_jk(1) w_ij(t) w_jk(1)^{-1} = w_ik(-t)
+  steinbergTorus_jk_conj       w_jk(1) h_ij(v) w_jk(1)^{-1} = h_ik(-v) . h_ik(-1)^{-1}
+  dennisStein_index_transport
+      <a,b>_ij . h_ik(-v) . h_ik(-1)^{-1}  =  <-a,-b>_ik . h_ik(v)
+```
+
+### What the chain conjugation gives
+
+`x_ji(bc)` is the commutator `[x_jk(b), x_ki(c)]`, and conjugation carries a commutator to the
+commutator of the conjugates, so transporting `x_ij(a)` across each factor by the chain relation
+rewrites the whole Bruhat pair on the triangle `i, j, k`.  The two rank-one pairs hidden inside the
+result — `(i,k)` with parameters `(ab, c)` and `(k,j)` with parameters `(ca, b)` — carry the *same*
+unit `1 + abc` as the original `(i,j)` pair with `(a, bc)`.  That coincidence is the reason the
+three Dennis-Stein symbols of `(D3)` compare at all, and it is why `b = c = 1` is the case that
+matters: all three pairs then read `(x, 1)` with unit `1 + x`.
+
+### What the index transport gives
+
+The Weyl element `w_jk(1)` exchanges the second index `j` for `k`.  Conjugating the defining word of
+`<a,b>_ij` produces the defining word of `<-a,-b>_ik` — the four elementary factors match on the
+nose, and the unit is unchanged because `1 + ab = 1 + (-a)(-b)` — while the symbol, being central,
+is fixed by the conjugation.  The whole discrepancy is a pair of torus elements of the *new* pair.
+
+This is the ingredient the `(D3)` argument was missing.  In additive notation the classical
+derivation of `<x, 1> = 0` reads
+
+```
+<x, 1>_ij  =  <x, 1>_ik  +  <x, 1>_kj  +  (corrections) ,
+```
+
+which forces the symbol to equal the corrections; without a way to *compare symbols across index
+pairs* that identity cannot even be stated.  `dennisStein_index_transport` supplies exactly that
+comparison, and `steinbergX_mul_opposite_chain` supplies the word identity it is applied to.  What
+remains is the expansion of the triangle commutator into its four pairwise pieces and the collection
+of the torus corrections.
+
+## Layer B, fifth pass — the triangle normal form: `(D3)`'s first three reductions
+
+`HTGeometry/SteinbergTriangleNormalForm.lean` (wired, axiom-clean).
+
+```
+commutator_shuffle_of_commuting          pure group lemma; needs only propext
+    P B = B P ,  Q C = C Q
+      =>  [P B, Q^{-1} C] = B . (P C) . (Q^{-1} P^{-1}) . (B^{-1} Q) . C^{-1}
+
+steinbergX_mul_opposite_triangle         the (i,k) rank-one pair isolated
+steinbergX_mul_opposite_triangle_reordered
+    the mixed pair Q^{-1} P^{-1} exchanged, at the cost of one x_ij((ab)(ca))
+steinbergX_mul_opposite_triangle_bruhat
+    x_ij(a) x_ji(bc)
+      = <ab, c>_ik . ( x_jk(b) . x_ki(c v^{-1}) . h_ik(v)
+                       . x_ik(v^{-1}(ab) - ab)
+                       . x_kj(ca)^{-1} . x_ij((ab)(ca))^{-1}
+                       . ( x_jk(b)^{-1} x_kj(ca) ) . x_ki(c)^{-1} . x_ij(a) )
+      for any unit v with v = 1 + abc .
+```
+
+### Where this stands in the `(D3)` computation
+
+Three of the reductions are now verified.  The first uses only the two commutations available inside
+the triangle — `x_ik` with `x_jk` share a column, `x_kj` with `x_ki` share a row — and they alone
+suffice to slide the `(i,k)` pair `x_ik(ab) x_ki(c)` out as a single block.  The second uses the
+chain relation to exchange the one genuinely mixed pair, paying exactly one `(i,j)`-generator.  The
+third replaces the isolated `(i,k)` block by its Bruhat decomposition; the Dennis-Stein symbol
+`<ab, c>` that appears is central (the third index is `j`), so it comes out in front, and the two
+`(i,k)` generators that then meet merge into one.
+
+So the first of the three symbols of `(D3)` has been *extracted*, unconditionally.  What is left is
+the same treatment of the `(k,j)` block `x_jk(b)^{-1} x_kj(ca)` — which needs the generators of that
+pair brought together first — followed by the collection of the surviving torus and unipotent
+factors against the `(i,j)` Bruhat form of the left-hand side.  At `b = c = 1` all three symbols read
+`<x, 1>` with the same unit `1 + x`, and `dennisStein_index_transport` is what compares them.
+
+## `(D3)` IS NOW A THEOREM, in closed form
+
+`HTGeometry/SteinbergTriangleNormalForm.lean`, extended (wired, axiom-clean).
+
+```
+steinbergX_mul_opposite_triangle_two_symbols
+    x_ij(a) x_ji(bc)
+      = <ab, c>_ik . <-ca, -b>_kj . triangleRemainder
+
+triangleRemainder hij hjk hik a b c v
+      = x_jk(b) . x_ki(c v^{-1}) . h_ik(v) . x_ik(v^{-1}(ab) - ab)
+        . x_ij(-(ab)(ca)) . x_jk(-b v^{-1}) . h_kj(v)
+        . x_kj(v^{-1}(-(ca)) + ca) . x_ki(-c) . x_ij(a)
+
+dennisStein_triangle_relation
+    <a, bc>_ij
+      = <ab, c>_ik . <-ca, -b>_kj
+        . ( x_ji((bc) v^{-1})^{-1} . triangleRemainder . x_ij(v^{-1} a)^{-1} . h_ij(v)^{-1} )
+```
+
+for every unit `v` with `v = 1 + abc`.  This is the three-index Dennis-Stein relation of this tree's
+normalisation, unconditional and with the correction written out rather than asserted.
+
+### How the second symbol appeared
+
+The `(k,j)` pair in the word is `x_kj(-ca) x_jk(-b)`, *not* `x_kj(ca) x_jk(b)`: the chain relation
+delivers `Q^{-1}` and `B^{-1}` adjacent, and their unit is `1 + (-ca)(-b) = 1 + abc` — the same `v`
+as the other two pairs.  Reading the pair with the signs the computation actually produces is what
+makes the three units agree; the naive pairing `x_jk(b) x_kj(ca)` has unit `1 - abc` and does not
+compare.  Recorded because it cost a false start.
+
+The extraction needs only: the commutation `x_kj` with `x_ij` (shared column `j`) to bring `Q^{-1}`
+and `B^{-1}` together, the Bruhat decomposition of that pair, centrality of its symbol (third index
+`i`), and one merge of the two `x_kj` factors that meet.
+
+### What is left
+
+The relation is closed; what is open is the *evaluation* of the correction.  It is a specific word
+in the six root subgroups of the triangle and two tori, and it lies in `K₂` because everything else
+in the identity does.  At `b = c = 1` all three symbols read `<x, 1>` up to sign, with the same unit
+`1 + x`, and `dennisStein_index_transport` compares them across the pairs; the classical conclusion
+`<x, 1> = 1` is then the statement that the correction is trivial there.
+
+## The collection engine for the triangle: all torus weights of the other two pairs
+
+`HTGeometry/TriangleTorusWeights.lean` (wired, axiom-clean).  Twelve weights, six for each of the
+two tori that the triangle normal form produces:
+
+```
+torus_ik_conj_ik   h_ik(v) x_ik(a) h_ik(v)^{-1} = x_ik(v a v)
+torus_ik_conj_ij                                = x_ij(v a)
+torus_ik_conj_ji                                = x_ji(a v^{-1})
+torus_ik_conj_kj                                = x_kj(v^{-1} a)
+torus_ik_conj_jk                                = x_jk(a v)
+torus_ik_conj_ki                                = x_ki(v^{-1} a v^{-1})
+
+torus_kj_conj_kj   h_kj(v) x_kj(a) h_kj(v)^{-1} = x_kj(v a v)
+torus_kj_conj_ki                                = x_ki(v a)
+torus_kj_conj_ik                                = x_ik(a v^{-1})
+torus_kj_conj_ji                                = x_ji(v^{-1} a)
+torus_kj_conj_ij                                = x_ij(a v)
+torus_kj_conj_jk                                = x_jk(v^{-1} a v^{-1})
+```
+
+Each is a relabelling of one of the six weights already proved for `h_ij`, and each obeys the single
+rule `x_pq(s) |-> x_pq(d_p s d_q^{-1})` for the diagonal the torus represents:
+`h_ik(v)` has `d = (v, 1, v^{-1})` and `h_kj(v)` has `d = (1, v^{-1}, v)` in the order `i, j, k`.
+
+These are the moves that push a torus factor rightwards through a word in the triangle.  Together
+with the four transport moves of `SteinbergTransportMoves` and the row/column commutations, they are
+a complete collection system for the rank-two Steinberg group: every word in the six root subgroups
+and the tori can be driven to the normal form
+
+```
+(lower unipotents) . (central) . (torus) . (upper unipotents) .
+```
+
+That is what evaluating the correction in `dennisStein_triangle_relation` requires, and the engine
+for it is now in place.
+
+## The triangle remainder is now a unipotent word times the two tori
+
+`HTGeometry/TriangleTorusWeights.lean`, extended (wired, axiom-clean).
+
+```
+triangleRemainder_push_ik           the (i,k) torus pushed past the three generators after it
+triangleRemainder_unipotent_torus   BOTH tori pushed all the way right:
+
+  triangleRemainder = x_jk(b) . x_ki(c v^{-1})
+                      . x_ik( v (v^{-1}(ab) - ab) v )
+                      . x_ij( v . (-(ab)(ca)) )
+                      . x_jk( -b v^{-1} v )
+                      . x_kj( v^{-1} ( v (v^{-1}(-(ca)) + ca) v ) )
+                      . x_ki( v^{-1} (v (-c)) v^{-1} )
+                      . x_ij( v (a v) )
+                      . h_ik(v) . h_kj(v)
+```
+
+Six pushes, each one weight lemma plus a reassociation.  The two tori pass each other untouched
+because neither is moved past the other — they simply accumulate at the right end in the order the
+word produced them.
+
+The combined weight is the composite diagonal: `h_ik(v)` is `(v, 1, v^{-1})` and `h_kj(v)` is
+`(1, v^{-1}, v)` in the order `i, j, k`, so their product is `(v, v^{-1}, 1)` — the diagonal of
+`h_ij(v)`.  That is the structural reason `h_ik(v) h_kj(v) h_ij(v)^{-1}` lands in `K₂`, and it is
+the shape the correction of `dennisStein_triangle_relation` collapses to.
+
+So the correction is now
+
+```
+x_ji((bc) v^{-1})^{-1} . (unipotent word) . h_ik(v) . h_kj(v) . x_ij(v^{-1} a)^{-1} . h_ij(v)^{-1} ,
+```
+
+with the unipotent word explicit.  What remains is to move the trailing `x_ij(v^{-1}a)^{-1}` left
+through the two tori — one more weight application — and then to collect the resulting pure
+unipotent word, at which point the correction is a product of one unipotent word and the torus
+defect `h_ik(v) h_kj(v) h_ij(v)^{-1}`.
+
+## The correction is now a unipotent word times a `K₂` torus defect
+
+`HTGeometry/TriangleTorusDefect.lean` (wired, axiom-clean).
+
+```
+diagMatrix_mul_triangle         diag(v,1,v^{-1}) . diag(1,v^{-1},v) = diag(v,v^{-1},1)
+                                    i.e.  d_ik(v) . d_kj(v) = d_ij(v):  the middle index cancels
+torusTriangleDefect hij hjk hik v  :=  h_ik(v) . h_kj(v) . h_ij(v)^{-1}
+torusTriangleDefect_mem_KTwo    the defect lies in K₂
+
+dennisStein_triangle_relation_normal
+    <a, bc>_ij = <ab, c>_ik . <-ca, -b>_kj
+                 . ( x_ji((bc) v^{-1})^{-1} . (unipotent word) . x_ij(v (-(v^{-1}a) v))
+                     . torusTriangleDefect )
+```
+
+The matrix identity is the reason the defect is central: the two tori of the triangle multiply, on
+the matrix side, to exactly the torus of the third pair, because the middle index carries `v^{-1}`
+from one and `v` from the other.  So the failure of `h_ik(v) h_kj(v) = h_ij(v)` in the Steinberg
+group is entirely a `K₂` phenomenon, and it is the *only* torus content of the correction.
+
+With this, the `(D3)` correction has no torus left in it beyond one `K₂` element: it is
+
+```
+(a word in the six root subgroups)  .  (torus defect) .
+```
+
+### What is left
+
+Evaluating the unipotent word.  It is a product of eight generators drawn from five of the six root
+subgroups, and its image in the elementary group is forced — the whole correction lies in `K₂` — so
+what has to be shown is that the word itself, and not merely its image, reduces.  At `b = c = 1` its
+coefficients collapse (`-b v^{-1} v = -b`, `v (a v) = a v^2`, and so on), which is the case the
+classical `<x,1> = 1` needs.
+
+## The correction, fully simplified: every coefficient is a monomial
+
+`HTGeometry/TriangleTorusDefect.lean`, extended (wired, axiom-clean).
+
+```
+dennisStein_triangle_relation_merged      the two x_ij factors merge, parameter a^2 b c v
+dennisStein_triangle_relation_simplified
+
+  <a, bc>_ij = <ab, c>_ik . <-ca, -b>_kj
+    . (  x_ji((bc) v^{-1})^{-1}
+       . x_jk(b)
+       . x_ki(c v^{-1})
+       . x_ik(-a^2 b^2 c v)
+       . x_ij(-a^2 b c v)
+       . x_jk(-b)
+       . x_kj(a^2 b c^2)
+       . x_ki(-c v^{-1})
+       . x_ij(a^2 b c v)
+       . torusTriangleDefect )
+```
+
+The unit enters the coefficients only through `v - 1 = abc`; every simplification is one application
+of `v^{-1} v = 1` together with that.  The merge is the sharpest instance: the last generator of the
+remainder and the one produced by moving the outer Bruhat factor through the tori are both `x_ij`,
+with parameters `a v^2` and `-a v`, and `a v (v - 1) = a^2 b c v`.
+
+### The shape of what remains
+
+The correction now visibly contains **three cancelling pairs**:
+
+```
+x_jk(b)      ...  x_jk(-b)
+x_ki(c v^{-1}) ... x_ki(-c v^{-1})
+x_ij(-a^2 b c v) ... x_ij(a^2 b c v)
+```
+
+separated only by `x_ik(-a^2 b^2 c v)` and `x_kj(a^2 b c^2)`.  So the whole correction is a product
+of three commutators of the form `[g, h] = g h g^{-1} h^{-1}` interleaved with two generators, times
+the torus defect — and each commutator is between generators of *different* root pairs, hence
+computable by the chain relation and the row/column commutations already in the tree.
+
+That is the last step: expand those three commutators.  At `b = c = 1` the two separating generators
+become `x_ik(-a^2)` and `x_kj(a^2)`, and the three pairs are `x_jk(±1)`, `x_ki(±v^{-1})`,
+`x_ij(∓a^2 v)`.
+
+## `(D3)` IS CLOSED: the correction is exactly the torus defect
+
+`HTGeometry/TriangleTorusDefect.lean`, extended (wired, axiom-clean).
+
+```
+triangleCorrection_eq_one   the nine-generator unipotent correction is TRIVIAL
+
+dennisStein_triangle
+    <a, bc>_ij = <ab, c>_ik . <-ca, -b>_kj . ( h_ik(v) h_kj(v) h_ij(v)^{-1} )
+    for every unit v with v = 1 + abc.
+```
+
+Three pairs of generators cancel, and each cancellation is one ring identity:
+
+```
+the two x_ik   because   (a^2 b c v) . b = a^2 b^2 c v
+the two x_ji   because   (bc) v^{-1} = b (c v^{-1})
+the two x_kj   because   (c v^{-1}) (a^2 b c v) = a^2 b c^2      [uses v^{-1} v = 1]
+```
+
+The remaining six generators pair off directly.  Getting them adjacent needs, in order: one chain
+move `x_ij(s) x_jk(t) = x_ik(st) x_jk(t) x_ij(s)`, one chain move
+`x_ki(g) x_jk(t) = x_ji(tg)^{-1} x_jk(t) x_ki(g)`, the row commutation of `x_jk` with `x_ji`, then
+one more chain move `x_ij(s) x_ki(g) = x_kj(gs)^{-1} x_ki(g) x_ij(s)` together with the row
+commutation of `x_kj` with `x_ki` and the column commutation of `x_ij` with `x_kj`.  Nothing else.
+
+So the three-index Dennis-Stein relation of this tree is exact, with the correction identified: it is
+the torus defect `h_ik(v) h_kj(v) h_ij(v)^{-1}`, which lies in `K₂` because the two diagonals
+multiply to the third.
+
+### The remaining step to `<x, 1> = 1`
+
+Specialising `c = 1` gives
+
+```
+<a, b>_ij = <ab, 1>_ik . <-a, -b>_kj . delta ,
+```
+
+so `<ab, 1>` is expressed by the *same* symbol `<a,b>` read in two other index pairs.  Chaining
+`dennisStein_index_transport` (second index `j -> k`) with `dennisStein_index_reversal` converts
+`<-a,-b>_kj` back into `<a,b>_ij` times torus factors; cancelling `<a,b>_ij` then leaves
+
+```
+<ab, 1>_ik  =  (an explicit product of torus elements)^{-1} ,
+```
+
+which is the classical `<x,1> = 0` with the torus side written out.  Every transport it needs is
+already a theorem here.
+
+## `<x, 1>` IS NOW PURE TORUS: three Steinberg symbols and the triangle defect
+
+`HTGeometry/TriangleTorusDefect.lean`, extended (wired, axiom-clean).
+
+```
+transportCorrection hij v  :=  h_ij(-v) . h_ij(-1)^{-1} . h_ij(v)^{-1}
+
+transportCorrection_eq_steinbergSymbol
+        transportCorrection hij v = {-1, v}_ij
+
+dennisStein_right_one_eq_torus
+dennisStein_right_one_eq_symbols
+        <ab, 1>_ik = ( {-1,v}_ji . {-1,v}_jk . {-1,v}_kj . h_ik(v) h_kj(v) h_ij(v)^{-1} )^{-1}
+        for every unit v with v = 1 + ab .
+```
+
+### How it closed
+
+Specialising `dennisStein_triangle` at `c = 1` gives
+
+```
+<a,b>_ij = <ab,1>_ik . <-a,-b>_kj . delta ,
+```
+
+and the chain
+
+```
+<a,b>_ij  --reversal-->  <-a,-b>_ji  --transport (second index i -> k)-->  <a,b>_jk
+          --reversal-->  <-a,-b>_kj
+```
+
+returns the *same* symbol to the pair `(k,j)`, each step paying one `transportCorrection`.
+Substituting and cancelling `<a,b>_ij` — legitimate because the symbol is central — leaves no
+Dennis-Stein symbol on the right at all.
+
+The last identification is the pretty one: writing `h(-v) = {-1,v} h(v) h(-1)` by the definition of
+the Steinberg symbol, the two torus factors of `transportCorrection` cancel and only `{-1, v}`
+survives.  So the classical `<x,1> = 0` is, in this normalisation, exactly the statement that
+
+```
+{-1,v}_ji . {-1,v}_jk . {-1,v}_kj . h_ik(v) h_kj(v) h_ij(v)^{-1}  =  1 .
+```
+
+A consistency check that the formula is right: at `v = 1` every factor is `1`, and indeed
+`<0,1> = 1` by `dennisStein_left_zero`.
+
+### What remains
+
+That single torus identity.  Every term in it is built from `h` and `{.,.}` alone — no Dennis-Stein
+symbols, no unipotents — so it is a statement purely about the torus of the rank-two Steinberg group.
+
+## The one-variable symbol `f(v) = <1, v-1>` is pure torus too
+
+`HTGeometry/DennisSteinUnitTorus.lean` (wired, axiom-clean).
+
+```
+dennisSteinUnit_eq_torus
+    for units v and t with t = v - 1,
+
+    <1, v-1>_ij = ( {-1,v}_ki . {-1,v}_kj . {-1,v}_jk . h_ik(v) h_kj(v) h_ij(v)^{-1} )^{-1}
+                  . [ h_ij(v), h_ik(t) ]
+```
+
+Two steps: `dennisStein_normalize_right` moves the unit `t` from the second argument to the first,
+paying one torus commutator, and `dennisStein_right_one_eq_symbols` then evaluates the resulting
+`<t, 1>` in the torus.
+
+### Why this matters for the programme
+
+`f` is the function through which `steinbergSymbol_eq_dennisSteinUnit_coboundary` carries the whole
+Steinberg symbol:
+
+```
+f(w) . ( f(W) . [h_ij(W), h_ik(w)] ) . {W,w}^{-1} = f(w W) .
+```
+
+With `f` now expressed by tori alone, that identity contains no Dennis-Stein symbol anywhere: it is a
+relation among torus elements, Steinberg symbols `{-1, .}`, torus commutators, and triangle defects.
+That is the shape of Matsumoto's presentation — the Dennis-Stein layer has been eliminated, and what
+remains of the Deninger programme's first obligation is a computation entirely inside the torus.
+
+The one caveat, recorded so it is not lost: this form needs `v - 1` to be a unit.  For the Steinberg
+relation itself that is exactly the hypothesis `u` and `1 - u` both units, so it is not a restriction
+where it matters, but the unrestricted form of `f` still goes through `dennisStein_right_one_eq_torus`
+without the normalisation step.
+
+## The torus commutator pairing is bimultiplicative in its second slot
+
+`HTGeometry/SteinbergTorusPairing.lean` (wired, axiom-clean).
+
+```
+torusCommutator_mul_right   [h_ij(w), h_ik(t1 t2)] = [h_ij(w), h_ik(t2)] . [h_ij(w), h_ik(t1)]
+torusCommutator_one_right   [h_ij(w), h_ik(1)] = 1
+torusCommutator_inv_right   [h_ij(w), h_ik(t^{-1})] = [h_ij(w), h_ik(t)]^{-1}
+```
+
+The proof uses no property of the tori at all.  Rescaling a Dennis-Stein symbol by `t1` and then by
+`t2` reaches the same symbol as rescaling once by `t1 t2`, because `t2(t1 a) = (t1 t2) a` and
+`(b t1^{-1}) t2^{-1} = b (t1 t2)^{-1}`; cancelling that symbol leaves the pairing identity.  The
+symbol is only a vehicle — any `a, b` with `1 + ab = w` will do, and `a = w - 1`, `b = 1` exists for
+every unit `w`.
+
+This is the first structural property of the pairing that the remaining torus computation needs: the
+correction terms of the Matsumoto-shaped identity are all built from this pairing, from the symbols
+`{-1, .}` and from the triangle defect, and multiplicativity is what lets them be collected.
+
+## The pairing: `K₂`-valued, and its behaviour in the first slot
+
+`HTGeometry/SteinbergTorusPairing.lean`, extended (wired, axiom-clean).
+
+```
+diagMatrix_commute          diag_ij(w) . diag_ik(t) = diag_ik(t) . diag_ij(w)
+                                both are 1 + E_ii(wt-1) + E_jj(w^{-1}-1) + E_kk(t^{-1}-1)
+torusCommutator_mem_KTwo    [h_ij(w), h_ik(t)] lies in K₂
+
+torusCommutator_mul_left
+    [h_ij(w1 w2), h_ik(t)]
+      = h_ij(w2) . [h_ij(w1), h_ik(t)] . h_ij(w2)^{-1} . [h_ij(w2), h_ik(t)]
+```
+
+The first-slot relation is the exact analogue of the second-slot one, except that the splitting
+`h_ij(w1 w2) = {w1,w2} h_ij(w2) h_ij(w1)` introduces a Steinberg symbol.  That symbol is central —
+it lies in `K₂` and in the two-index closure of `{i,j}` — so it conjugates away entirely, and what
+survives is one *conjugated* pairing and one plain one.
+
+So the pairing is a `K₂`-valued map, multiplicative on the nose in its second argument and
+multiplicative up to conjugation in its first.  Those are the two rules the remaining torus identity
+is collected with.
+
+## Transport costs exactly `{-1, v}`, and two of the three copies cancel
+
+`HTGeometry/DennisSteinTransportSymbol.lean` (wired, axiom-clean).
+
+```
+dennisStein_transport_symbol      <a,b>_ij . {-1,v}_ik = <-a,-b>_ik
+dennisStein_reversal_symbol       <a,b>_ij . {-1,v}_ji = <-a,-b>_ji
+steinbergSymbol_neg_one_transport {-1,v}_ik . {-1,v}_ij = 1
+steinbergSymbol_neg_one_pair_cancel   {-1,v}_ji . {-1,v}_jk = 1
+
+dennisStein_right_one_eq_symbol_defect
+    <ab, 1>_ik  =  ( {-1,v}_kj . h_ik(v) h_kj(v) h_ij(v)^{-1} )^{-1}
+```
+
+The first two are the transport and reversal relations with the torus factors collapsed: writing
+`h(-v) h(-1)^{-1} = {-1,v} h(v)` and cancelling `h(v)` leaves a single symbol as the entire cost of
+moving a Dennis-Stein symbol to another index pair.  In that form the relations are usable.
+
+The third is the first genuine relation *between symbols of different index pairs*: transporting the
+second index twice returns the original Dennis-Stein symbol, so the two symbols paid must cancel —
+changing the second index inverts `{-1, v}`.  Applied to the pairs `(j,i)` and `(j,k)`, which share
+their first index, that kills two of the three transport symbols in the expression for `<x,1>`
+(they commute because each is central, lying in `K₂` and in a two-index closure missing the third
+index).
+
+So the classical `<x,1> = 0` is now down to a single identity between one symbol and one defect:
+
+```
+h_ik(v) . h_kj(v) . h_ij(v)^{-1}  =  ( {-1, v}_kj )^{-1} .
+```
+
+Both sides are `K₂`-valued and built only from `h` and `{.,.}`.  That is the whole of what remains of
+this obligation.
+
+## The two triangle defects are related, with no Dennis-Stein symbol left
+
+`HTGeometry/DennisSteinRightOneTransport.lean` (wired, axiom-clean).
+
+```
+dennisStein_right_one_transport
+    <x,1>_ik . {-1,v}_ij = <x,1>_ij . [ h_ij(v), h_ik(-1) ] ,      v = 1 + x
+
+torusTriangleDefect_relation
+    ( {-1,v}_kj . delta_ijk )^{-1} . {-1,v}_ij
+      = ( {-1,v}_jk . delta_ikj )^{-1} . [ h_ij(v), h_ik(-1) ]
+```
+
+Moving `<x,1>` from the pair `(i,k)` to `(i,j)` costs one symbol `{-1,v}` and turns the arguments
+into `(-x,-1)`; normalising the second argument back to `1` — legitimate because `-1` is a unit —
+costs one commutator of tori.  Substituting the torus evaluation of `<x,1>` on both sides then
+removes every Dennis-Stein symbol, leaving a relation between the two triangle defects
+`delta_ijk = h_ik(v) h_kj(v) h_ij(v)^{-1}` and `delta_ikj = h_ij(v) h_jk(v) h_ik(v)^{-1}`, the
+transport symbols, and the commutator pairing.
+
+That is a second equation on the same unknowns as the one recorded above,
+
+```
+h_ik(v) h_kj(v) h_ij(v)^{-1}  =  ( {-1, v}_kj )^{-1} ,
+```
+
+and both are now stated in a form where every term is either a torus element, a Steinberg symbol, or
+the commutator pairing — with the structure of the pairing (bimultiplicative in the second slot,
+multiplicative up to conjugation in the first, `K₂`-valued) already proved.

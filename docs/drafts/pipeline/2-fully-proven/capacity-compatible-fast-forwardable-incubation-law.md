@@ -370,6 +370,45 @@ Primary sources:
    established mechanisms.
 7. No final-paper claim is authorized before exact Lean formalization and axiom audit.
 
+## Lean status -- Theorem A is formal; the instantiation needs its parent cards
+
+New modules (umbrella-wired, axiom-clean, no `sorry`):
+`formal/GaloisForLFunctions/HTGeometry/IncubationTubeTransport.lean`,
+`SphericalPatchTube.lean`, `CapacityIncubationLaw.lean`.
+
+| Card item | Declaration | Module |
+|---|---|---|
+| `(11)` Duhamel transport across the whole window `[0,L]` | `approxComplexity_orbitState_le_of_window` | `IncubationTubeTransport` |
+| the same, from membership in the spherical tube | `approxComplexity_le_of_mem_patchThickening` | `CapacityIncubationLaw` |
+| finite Fubini seed selection (averaging step) | `sum_measureReal_ge_of_pointwise`, `exists_measureReal_ge`, `exists_measureReal_ge_of_pointwise` | `IncubationTubeTransport` |
+| the same, restricted to the tube | `exists_seed_measureReal_ge` | `CapacityIncubationLaw` |
+| "removing `X \ G` changes no measure" | `measureReal_inter_conull` | `CapacityIncubationLaw` |
+| normalization is two-Lipschitz off the origin | `norm_normalize_sub_normalize_le` | `SphericalPatchTube` |
+| the carrier tube lies in the cone over the thickening | `patchTube_subset_cone` | `SphericalPatchTube` |
+| the tube volume is the carrier factor times `rho^d` | `volume_patchTube` | `SphericalPatchTube` |
+| **`(9)`**: the thickening has surface measure at least `a_P r^d` | `toSphere_patchThickening_ge` | `SphericalPatchTube` |
+| **`(10)`**: the codimension tail `L^{-d}` | `incubation_tail_lower` | `CapacityIncubationLaw` |
+| `(22)` the shell is `sqrt(m)`-Lipschitz | `norm_sum_smul_le_sum_abs`, `sq_sum_abs_le_card_mul_sum_sq` | `IncubationTubeTransport` |
+| `(21)` half the edge coupling survives the tube | `norm_ge_half_of_perturbation` | `IncubationTubeTransport` |
+| Duhamel operator bound `‖e^{-itH}-e^{-itK}‖ <= |t| ‖H-K‖` | `dist_orbitState_le` | `FastForwardableStratumCodimension` |
+| the certificate survives a move of size `delta` | `exists_witness_of_dist_le`, `approxComplexity_le_of_witness` | `FastForwardableStratumCodimension` |
+
+Equation `(9)` is proved by the cone comparison rather than by the beta density of `(12)`: the
+carrier annulus times a transverse ball of radius `r/8` embeds in the cone over the `r`-thickening,
+because normalization is two-Lipschitz, and the product volume of that tube is the carrier factor
+times `(r/8)^d` times the unit transverse ball.  This is the same `d = m - f` exponent with an
+explicit constant, and it avoids the `Beta(d/2,f/2)` density entirely.
+
+### What remains
+
+The conjunction `(8)` and Theorem B quote three inputs that are theorems of *other* cards, not of
+this one: the generic-completion package (item 3), the completed-phase capacity depth `(6)`
+(item 4), and the cubic-phase collision bound `(19)`, whose own card
+(`cubic-phase-seeded-static-local-full-scale-plateau-law`) is still at stage 2.  With those in hand
+`(8)` is `measureReal_inter_conull` applied to `exists_seed_measureReal_ge`, and `(20)` is
+`incubation_tail_lower` with `d = 10n-8`.  The compiler cost `(18)` is a gate-synthesis count for
+the commuting diagonal family, which needs the Solovay--Kitaev compilation layer.
+
 ## 6. Lean realization after corpus refactor
 
 Reuse rather than rebuild:

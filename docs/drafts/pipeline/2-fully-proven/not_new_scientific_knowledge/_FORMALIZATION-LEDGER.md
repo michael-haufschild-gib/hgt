@@ -109,6 +109,11 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-16 | `leading-laurent-coefficient-differential-algebraicity` | `HTGeometry/CoefficientwisePowerSeriesDerivation.lean`, `HTGeometry/FormalParameterRelationNormalization.lean`, `HTGeometry/LaurentCoefficientwiseDerivation.lean`, `HTGeometry/LeadingLaurentCoefficientDescent.lean` |
 | 2026-08-16 | `koszul-acyclicity` | `RHTower/EHKoszulDuality.lean` (pre-existing, finite) + new `RHTower/EHKoszulLimit.lean` (the limit statement, arbitrary infinite index type) |
 | 2026-08-16 | `euler-source-finite-jet-local-openness` | `RHTower/EulerSourceJetJacobian.lean` (pre-existing, algebraic) + new `RHTower/EulerSourceJetOpenness.lean` (holomorphic IFT + Dirichlet expansion + identity theorem) |
+| 2026-08-16 | `c5-jensen-perturbation-lemma` | new `HTGeometry/HyperbolicCriticalAlternation.lean`, `HTGeometry/LocalizedPerturbationHyperbolicity.lean`, `RHTower/CriticalScaledHermite.lean` (uses pre-existing `HTGeometry/SignAlternationHyperbolicity.lean`, `RHTower/SpurHermite.lean`) |
+| 2026-08-16 | `fid-shifted-hankel-strict-total-positivity` | new `HTGeometry/SparsePolynomialPositiveRoots.lean`, `HTGeometry/GeneralizedVandermondePositive.lean`, `HTGeometry/CauchyBinet.lean`, `RHTower/FIDHankelTotalPositivity.lean` |
+| 2026-08-16 | `pa9-turan-newton-floor` | new `HTGeometry/NewtonInequalities.lean`, `RHTower/TuranNewtonFloor.lean` |
+| 2026-08-16 | `li-reciprocal-chebyshev-kernel` | new `RHTower/LiReciprocalChebyshevKernel.lean` |
+| 2026-08-16 | `hd3-li-gauge-shift` | new `RHTower/HD3LiGaugeShift.lean` |
 
 ## Already carrying a stage-3 certificate (verify, then move the paper card)
 
@@ -135,10 +140,13 @@ directly.  None of these is blocked by open mathematics.
   from mathlib's `Nat.Primes.summable_rpow`.  The card's a.s.-convergence dichotomy additionally needs
   **Kolmogorov's three-series theorem**, which mathlib does *not* have (only the Kolmogorov continuity
   condition for processes).  That is the missing library for this card.
-- `c5-jensen-perturbation-lemma` — §1″ (the corrected localized `C¹` perturbation lemma, strictly
-  interior window with `m_i = min |C''| > 0` by compactness) is self-contained real analysis and
-  formalizable as written.  §2's `β ≍ O(1)` barrier additionally needs uniform-in-`d` Hermite
-  critical-gap asymptotics, which the card itself credits as classical.
+- ~~`c5-jensen-perturbation-lemma`~~ — **closed 2026-08-16**, stage 3.  Both 2→3 targets are Lean
+  theorems (`hyperbolic_of_localized_perturbation`, `abs_second_derivative_criticalScaledHermite`).
+  All four earlier Leaner return notes are answered structurally: the curvature bound is a window
+  hypothesis, `m_i > 0` is derived by continuity (no `ρ_i`), the statement is uniform in `N`, and
+  the perturbed critical point is located by a closed condition.  §2's `O(1)` barrier constant still
+  rests on classical Hermite gap asymptotics, which the card credits as classical, and §3 remains
+  the open C5 crux.
 - `arbitrary-finite-quartet-passport-realization` — all named parents are formalized
   (`SimultaneousFiniteJetFlatness`, `FiniteHermiteCRT`, `FiniteFluxPassport`,
   `ImaginaryAxisPositiveRepair`, `CoshQuartetEnvelope`, `CoshPolynomialPeriodClassification`,
@@ -215,6 +223,54 @@ directly.  None of these is blocked by open mathematics.
    `FullyProvenNewTargets.lean` are otherwise complete.
 
 ## New reusable infrastructure added by this sweep
+
+- `RHTower/LiReciprocalChebyshevKernel.lean` — the FE-folded Li kernel `2 - 2T_n((4-y)/(4+y))` in the
+  reciprocal seam coordinate, with `two_mul_chebyshevT_eval_half_add_inv`
+  (`2T_n((z+z⁻¹)/2) = z^n + z^{-n}`, via mathlib's Dickson bridge), the explicit `L_1 = 4y/(4+y)`
+  expansion on `‖y‖ < 4`, analyticity away from `y = -4`, and the absolutely convergent
+  reciprocal-moment transform `tsum_liChebyshevKernel_one`.
+
+- `HTGeometry/NewtonInequalities.lean` — **Newton's inequalities** (mathlib gap): for a real-rooted
+  real polynomial of degree `d`, the normalised coefficients `A_k = c_{d-k}/C(d,k)` are log-concave.
+  Built from the two operations that preserve real-rootedness — `hyperbolic_derivative` (from
+  mathlib's `Polynomial.card_roots_le_derivative`) and `hyperbolic_reverse` (the reverse of a split
+  polynomial with nonzero constant term splits, with reciprocal roots) — together with the
+  coefficient transports `newtonCoeff_derivative` (`A_k ↦ d·A_k`) and `newtonCoeff_reverse`
+  (`A_k ↦ A_{d-k}`).
+- `RHTower/TuranNewtonFloor.lean` — the elementary-symmetric specialisation `newton_esymm`, the
+  hypothesis-free floor `newton_floor_finite` (`(n+1)e_{n-1}e_{n+1} ≤ n e_n²` for *any* real
+  family), the ratio form `turan_ratio_newton_floor` (`g_n ≥ (n+1)/n`), and the infinite-atom limit
+  `newton_floor_limit`.
+
+- `HTGeometry/CauchyBinet.lean` — **Cauchy–Binet for a rectangular product** (mathlib gap), in the
+  permutation-symmetrised form `m!·det(A·B) = Σ_{f : Fin m → Fin N} det(A∘f)·det(f∘B)` over an
+  arbitrary commutative ring: no increasing-enumeration bookkeeping, and the non-injective index
+  functions drop out on their own.  Also `det_mul_eq_sum_fun` and `det_eq_sum_perm_row`.
+- `HTGeometry/GeneralizedVandermondePositive.lean` — **generalized Vandermonde positivity**
+  (mathlib gap): `det[x_l^{r_a}] > 0` for `0 < x_0 < … < x_{m-1}` and strictly increasing natural
+  exponents.  Proved by the Descartes induction on the varying-node polynomial
+  (`genVandermondePoly`), whose sparsity is read off the Laplace expansion.
+- `HTGeometry/SparsePolynomialPositiveRoots.lean` — **the Descartes-type sparse root bound**
+  (mathlib gap): a nonzero real polynomial with `k` nonzero coefficients has at most `k−1` strictly
+  positive roots (`card_posRoots_succ_le`), by the Rolle interleaving induction.
+- `RHTower/FIDHankelTotalPositivity.lean` — the `ζ(2(i+j)+3)` moment matrix, its identification with
+  the odd zeta values (`fidHankel_eq_riemannZeta`) and its strict Hankel total positivity.
+
+- `HTGeometry/HyperbolicCriticalAlternation.lean` — **interlacing for hyperbolic real polynomials**:
+  strict monotonicity off the critical set, the gap-index counter `critBelow` and its injectivity,
+  exactly one root in each of the `N` critical gaps, hence the sign alternation of the critical
+  values plus the two outer sign changes; and `hyperbolic_of_sign_changes`, the consecutive
+  sign-change form of the hyperbolicity certificate (either starting sign).
+- `HTGeometry/LocalizedPerturbationHyperbolicity.lean` — **the localized `C¹` perturbation lemma**
+  `hyperbolic_of_localized_perturbation`, with its three reusable steps: the second-order Taylor
+  bound at a critical point (`abs_eval_sub_le_of_abs_second_derivative_bound`, proved by
+  monotonicity of the comparison function), the curvature window (`exists_curvature_window`,
+  `exists_perturbation_windows` — the positivity of the window-minimum curvature is *derived* by
+  continuity, with no inflection-distance bookkeeping and no degree special cases), and the shifted
+  critical point (`exists_perturbed_critical_point`, covering the zero-slope degenerate branch).
+  Also `eventually_pos_atBot_of_leadingCoeff_pos_of_even`, the even-degree sign at `−∞`.
+- `RHTower/CriticalScaledHermite.lean` — the Theorem-M critical rescaling `p ↦ a·p(·/√m)` and its
+  ODE `C_d'' = (w/m)C_d' − C_d`, giving `κ = |C_d''(c)| = |C_d(c)|` at every critical point.
 
 - `RHTower/EulerSourceJetOpenness.lean` — **closed-form `s`-jets of a nonlinear degree-one Euler
   flux, the holomorphic inverse-function corollary, and full-jet faithfulness.** `eulerJetPoly` is
@@ -503,7 +559,8 @@ Known heavy prerequisites still outstanding, with the cards they gate:
 - ~~entire-function **order** — needed by the `finite-*-rh-nonselection` family.~~  **Resolved
   2026-08-16 without an order lower bound**: the perturbation differs from `ξ` by a polynomial, so
   it carries exactly the corpus envelope `XiC_order`; the whole family is now stage 3.
-- Newton's inequalities for elementary symmetric functions — `pa9-turan-newton-floor`.
+- ~~Newton's inequalities for elementary symmetric functions~~ — **built 2026-08-16**
+  (`HTGeometry/NewtonInequalities.lean`); `pa9-turan-newton-floor` is closed at stage 3.
 - Hölder + a reflection-stable meromorphic carrier — `gamma-reflection-clock-observable-split`
   (the corpus has `hypertranscendentalOver_ratFunc_gammaUpperMero` and
   `hypertranscendentalOver_ratFunc_digammaMero`, but `upperEndMeroField` is a germ field at the

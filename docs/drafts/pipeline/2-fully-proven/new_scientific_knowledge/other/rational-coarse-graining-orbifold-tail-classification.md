@@ -1117,3 +1117,237 @@ If `a` is regular at `0` and at `1` the left side vanishes at `z = 0` while the 
 `ord_0(a∘R) = 2·ord_1(a)` is exactly the tool for the remaining pole bookkeeping.  Proving that no
 rational solution exists closes the fixed branch at order two, and the same normalized descent then
 runs at every higher order.
+
+## Pass 6 — the rational affine connection is proved impossible for both quadratic maps
+
+The equation isolated at the end of pass 5 is now settled, unconditionally and in general form.
+
+### New module: the general theory
+
+`HTGeometry/RationalAffineConnection.lean` (unconditional, axiom-clean, `HTGeometry`-wired) works
+over any field of characteristic zero and any polynomial `R` with `natDegree R ≠ 0`.
+
+```text
+IsAffineConnection R hR a        a(R)·(R')² = R'·a − R''                    in RatFunc K
+affineSide R a                   the right-hand side, written as a sum
+ratOrder_affineSide              ord_c(side) = ord_{R(c)}(a)·e_c + 2·m_c,
+                                   e_c = mult_c(R − R(c)),  m_c = mult_c(R')
+```
+
+Two mechanisms follow, both pure order computations.
+
+*Away from the critical set* (`m_c = 0`, `e_c = 1`) the two sides say `ord_c(side) = ord_{R(c)}(a)`,
+while the additive term `−R''` has nonnegative order.  The valuation inequality
+`min_le_ratOrder_add` then transports a pole in both directions:
+
+```text
+affine_pole_forward     R'(c) ≠ 0 →  ord_c(a) < 0  →  ord_{R(c)}(a) < 0
+affine_pole_backward    R'(c) ≠ 0 →  ord_{R(c)}(a) < 0  →  ord_c(a) < 0
+```
+
+*At a critical point* the ramification is one order more than the curvature term vanishes.  Writing
+`m = mult_c(R') ≥ 1`, the corpus lemma `Polynomial.derivative_rootMultiplicity_of_root` gives both
+`mult_c(R − R(c)) = m + 1` (applied to `R − C (R.eval c)`, whose derivative is `R'`) and
+`mult_c(R'') = m − 1` (applied to `R'`).  If `a` were regular at `c` and at `R(c)` the left side
+would have order at least `2m`, the term `R'·a` order at least `m`, and the curvature term order
+exactly `m − 1`; but `−R'' = side − R'·a` forces `m − 1 ≥ min(2m, m) = m`.  Hence
+
+```text
+no_affine_connection_regular_at_critical :
+    R'(c) = 0  →  ¬ (0 ≤ ord_c(a)  ∧  0 ≤ ord_{R(c)}(a))
+```
+
+Finally, finiteness of the support of the order kills a pole that sits on an infinite critical-free
+orbit, in either direction (`no_pole_of_forward_orbit`, `no_pole_of_backward_orbit`), and
+`derivative_derivative_eq_zero_of_isAffineConnection_zero` disposes of `a = 0` whenever `R'' ≠ 0`.
+
+`HTGeometry/RationalOrderValuation.lean` supplies the missing valuation inequality itself:
+`min_le_rootMultiplicity_add` on polynomials and `min_le_ratOrder_add` on `RatFunc K`, the latter by
+passing to the common denominator `denom f · denom g`.
+
+### The two quadratic maps
+
+```text
+quadOne_no_affine_connection :  ∀ a, ¬ IsAffineConnection (z² + 1) _ a
+quadTwo_no_affine_connection :  ∀ a, ¬ IsAffineConnection ((z − 1)²) _ a
+```
+
+(`HTGeometry/QuadOneNoAffineConnection.lean`, `HTGeometry/QuadTwoNoAffineConnection.lean`.)
+
+For `z² + 1` the critical point is `0` and the critical value `1`, so the critical obstruction puts a
+pole at one of them.  A pole at `1` runs forward along `1, 2, 5, 26, …` — strictly increasing, hence
+injective, and never `0`, hence critical-free.  A pole at `0` pulls back to a pole at `i`, which is
+neither periodic nor postcritical, so `exists_backward_orbit` supplies an injective critical-free
+backward orbit through it.  Either way the pole set is infinite, contradicting
+`finite_support_ratOrder`.
+
+For `(z − 1)²` the critical point is `1` and the critical value `0`.  This map is postcritically
+finite — the critical orbit is the two-cycle `1 ↦ 0 ↦ 1` — so the forward orbit is useless and the
+whole argument runs backward: a pole at `0` travels forward to a pole at `1` (the critical value is
+not the critical point), and `2` is a preimage of `1` which is aperiodic and non-postcritical, so
+the backward orbit through it again produces infinitely many poles.
+
+### What this closes, and what it does not
+
+The equation the card named at the end of pass 5 — `4z²·a(z²+1) = 2z·a(z) − 2` and its companion for
+`(z − 1)²` — has no rational solution.  Equivalently: **neither quadratic map admits a normalizing
+shift of the shape `t = a·y₁²` at jet level two.**
+
+What is still needed to close the fixed branch at jet order two is the shape reduction: a normalizing
+shift at level two is an arbitrary element `t` of `jetPrefixField C 2 = C(y₀, y₁)`, not a priori of
+the form `a(y₀)·y₁²`.  The reduction is a slicing argument in `y₁` over `C(y₀)`, and every ingredient
+is already Lean-owned:
+
+- `jetPrefixField_succ` presents `jetPrefixField C 2` as `C(y₀)` adjoined the transcendental `y₁`;
+- `substitutionShift_one` makes the substitution act on `y₁` by the pure scaling `y₁ ↦ ρ·y₁`, so
+  `twistComp Φ T` preserves `y₁`-degree and coprimality;
+- writing `t = P(y₁)/Q(y₁)` in lowest terms, `Φ(Q) | Q` and equal degrees force `Φ(q_j) = ρ^{n−j} q_j`
+  for every coefficient, i.e. an invariant differential of weight `j − n` and eigenvalue one, which
+  `quadOne_no_invariant_differential` kills unless `j = n` and `q_j` is constant — so `Q = y₁ⁿ`;
+- the numerator then satisfies `Φ(P) = ρ^{n+1}P − ρⁿ·R''·y₁^{n+2}`, whose coefficient at `y₁^i` is
+  again an invariant-differential relation for `i ≠ n+2` and is *exactly* the affine-connection
+  equation for `a = p_{n+2}` at `i = n+2`.
+
+So the shape reduction consumes precisely the two non-existence theorems now in hand, and the level-two
+fixed branch closes once it is written.  At jet order `M ≥ 3` the same slicing runs in `y_{M−1}`, but
+the substitution is then genuinely affine on the top coordinate rather than a scaling, and the
+homogeneous equation `Φ(h) = ρ·h` re-introduces the level-`(M−1)` shift problem; the weighted torus
+action `y_j ↦ c^j y_j` (`j ≥ 1`), which commutes with the substitution because every Faà di Bruno term
+of `δ^j(R(y₀))` is isobaric of weight `j`, is the tool that organizes that induction.
+
+The card's *general* statement remains gated on the general form of the obstruction — *a rational map
+of degree at least two admitting no nonzero-weight invariant differential admits no rational affine
+connection either* — which for an arbitrary map needs the finiteness of completely invariant sets,
+i.e. the exceptional-set theorem, not just an orbit chase at one point.  The general critical
+obstruction and the general pole transport of `RationalAffineConnection.lean` are the unconditional
+half of it.
+
+## Pass 7 — the shape reduction at jet level two, and the fixed branch there
+
+The reduction named at the end of pass 6 is done: a normalizing shift at jet level two is *any*
+element of `C(y₀, y₁)`, and it is now proved that any such element produces a rational affine
+connection.  Combined with pass 6, neither quadratic map admits an invariant affine structure at jet
+level two.
+
+### New module
+
+`HTGeometry/JetAffineConnectionLevelTwo.lean` (unconditional, axiom-clean, `HTGeometry`-wired).
+
+```text
+jetDerivation_of_order_zero    δ v = y₁ · ∂₀v   for v of order zero
+substitutionShift_two          σ₂ = (∂₀ R'(y₀)) · y₁²
+substitutionDeriv_ratFuncDeriv the second derivative of R, read on the jet field
+exists_ratFuncDeriv_affine_connection_of_hasNormalizingShift_two
+exists_isAffineConnection_of_hasNormalizingShift_two    -- for a polynomial map
+```
+
+`substitutionShift_two` is the chain rule twice: `δ(R(y₀)) = R'(y₀)·y₁` is already Lean-owned
+(`substitutionJet_one`), and differentiating it once more with the Leibniz rule and the order-zero
+chain rule gives `δ²(R(y₀)) = R''(y₀)·y₁² + R'(y₀)·y₂`, whose remainder over the affine action is the
+claim.  The order-zero chain rule itself is `freeCoordinate_chainRule` on the single coordinate
+`y₀`.
+
+The main theorem is the slicing.  Write the shift as `t = P(y₁)/Q(y₁)` in lowest terms over
+`jetPrefixField C 1`, the rational functions of `y₀`.  Because `substitutionShift_one` makes the
+substitution act on `y₁` by the *pure scaling* `y₁ ↦ R'·y₁`, the twisted composition
+`twistComp Φ (C ρ · X)` preserves degrees (`natDegree_twistComp`) and coprimality (transport of a
+Bézout identity), so cross-multiplying the shift equation and cancelling gives
+
+```text
+Φ̃(P)·Q = Φ̃(Q)·(C ρ·P − C R''·X²·Q),      Φ̃(Q) ∣ Q,      Φ̃(Q) = C e · Q
+```
+
+with `e ≠ 0` by `eq_C_mul_of_dvd_of_natDegree_eq`, and then `Φ̃(P) = C e·(C ρ·P − C R''·X²·Q)`.
+Only *one* coefficient comparison is needed.  At index `n + 2`, where `n = deg Q`, the identity
+`(Q·X²).coeff (n+2) = Q.coeff n` turns the two relations
+
+```text
+Φ(q)·ρⁿ = e·q,        Φ(p)·ρ^{n+2} = e·(ρ·p − R''·q),        p = P.coeff (n+2), q = Q.coeff n
+```
+
+into `Φ(p/q)·ρ² = ρ·(p/q) − R''` after eliminating `e` and cancelling `ρⁿ`.  Transporting through
+`exists_ratFunc_of_order_zero` and `ratFuncEval_ratFuncSubstitution` puts it in `RatFunc C`, and
+`ratFuncDeriv_algebraMap` identifies it with `IsAffineConnection` for a polynomial map.
+
+### Consequence
+
+`HTGeometry/QuadraticNoNormalizingShift.lean`:
+
+```text
+quadOne_not_hasNormalizingShift_two,  quadTwo_not_hasNormalizingShift_two
+quadOne_lowerOrder_of_substitutionEigen_two,  quadTwo_lowerOrder_of_substitutionEigen_two
+```
+
+The last two feed `lowerOrder_or_hasNormalizingShift` and say: for either quadratic map an
+eigen-relation of jet order two already has jet order at most one.  Together with pass 5's
+`quadOne_fixed_of_order_one` / `quadTwo_fixed_of_order_one`, the fixed branch is closed for every
+eigen-relation of jet order at most two.
+
+### The remaining descent
+
+What is left for these two maps is the *same* statement at jet order `M ≥ 3`, and the difficulty is
+structural rather than arithmetic: at level `M` the substitution acts on the top coordinate
+`y_{M−1}` by the genuinely affine `y_{M−1} ↦ ρ·y_{M−1} + σ_{M−1}` rather than by a scaling, so the
+twisted composition no longer acts diagonally on coefficients.  The slicing still gives
+`Φ̃(Q) = C e · Q`, and there the argument splits:
+
+- if `deg Q ≥ 1`, `exists_normalizing_shift` applied at level `M − 1` produces a normalizing shift
+  one level down, and the descent runs;
+- if `deg Q = 0` the shift is a *polynomial* `u` in `y_{M−1}` with `Φ̃(u) = C ρ·u − (C A·X + C B)`,
+  where `σ_M = A·y_{M−1} + B` with `A = ∂_{M−2}σ_{M−1} + (∂₀ρ)·y₁` and `A, B` of order below
+  `M − 1`.  Comparing the two top coefficients then reproduces the affine cocycle
+  `twistComp_affine_cocycle` and again descends — provided `deg u ≥ 3`.  The degrees `0, 1, 2` are
+  the genuinely open cases.
+
+The two inputs that the descent still needs in Lean are the affine presentation
+`σ_M = A·y_{M−1} + B` (a derivation-expansion computation of the same kind as
+`substitutionShift_two`, one coordinate higher) and the three low-degree cases.  Nothing in either
+depends on the map, so both are general infrastructure.
+
+### The level-`M` descent, analysed
+
+Writing out the slicing at level `M ≥ 3` reduces the descent to two cases, and shows precisely where
+it is still open.  The top coordinate is `y_{M−1}` and the substitution acts on it by the affine
+`y_{M−1} ↦ ρ·y_{M−1} + σ_{M−1}`.
+
+*The shift term is affine in the top coordinate.*  From `δ(ρ) = R''(y₀)·y₁` and the commutator
+`[∂_j, δ] = ∂_{j−1}` one gets the recursion `σ_M = R''·y₁·y_{M−1} + δ(σ_{M−1})` and hence
+
+```text
+σ_M = A·y_{M−1} + B,    A = ∂_{M−1}σ_M = M · R''(y₀) · y₁,    A, B of order below M − 1,
+```
+
+by induction from `σ₂ = R''·y₁²` (`∂₁σ₂ = 2R''y₁`).  In particular `A ≠ 0` whenever `R'' ≠ 0`.
+
+*The slicing.*  Slicing `t = P/Q` in `y_{M−1}` over `jetPrefixField C (M−1)`, the same divisibility
+argument gives `Φ̃(Q) = C e·Q`, and then:
+
+- `deg Q ≥ 1` — `exists_normalizing_shift` applied at level `M − 1` produces a normalizing shift one
+  level down, and the descent runs;
+- `deg Q = 0` — the shift is a polynomial `u` of degree `m` in `y_{M−1}` over
+  `jetPrefixField C (M−1)`, with `Φ̃(u) = C ρ·u − (C A·X + C B)`, and comparing coefficients:
+  - `m = 0` forces `A = 0`, impossible since `A = M·R''·y₁ ≠ 0`;
+  - `m ≥ 3` reproduces the affine cocycle at the two top coefficients — `Φ(u_m)·ρ^{m−1} = u_m` and
+    `m·u_m·L + Φ(u_{m−1})·ρ^{m−1} = ρ·u_{m−1}` — so `s = u_{m−1}/(m·u_m)` satisfies
+    `Φ(s) = ρ·s − σ_{M−1}` and the descent runs;
+  - `m = 1` and `m = 2` are open.  At `m = 1` the top coefficient satisfies
+    `Φ(u₁)·ρ = ρ·u₁ − A`, and the *weight-one part* of that equation is exactly the affine-connection
+    equation: the weighted torus action `y_j ↦ c^j·y_j` (`j ≥ 1`) commutes with the substitution,
+    because every Faà di Bruno term of `δ^j(R(y₀))` is isobaric of weight `j`, and `A` is isobaric of
+    weight one.  What is missing is that a *rational* solution of an isobaric equation is itself
+    isobaric of the same weight, and that a weight-one isobaric rational function of `y₀, …, y_{M−2}`
+    has the form `a(y₀)·y₁` — the second is false as stated (`y₂/y₁` is also isobaric of weight one),
+    so the weight argument needs the additional information carried by the equation, not the grading
+    alone.
+
+*A positive check on the shape of the obstruction.*  In the converse direction the two levels are
+linked exactly by the affine connection: if `τ` is a shift at level `M − 1`, so that
+`v = y_{M−1} + τ` satisfies `Φ(v) = ρ·v`, then applying `δ` gives
+
+```text
+Φ(δτ) = ρ·δτ − σ_M + R''·y₁·v,
+```
+
+and correcting by `w = a(y₀)·y₁·v` turns `δτ − w` into a shift at level `M` precisely when
+`a(R)·(R')² = R'·a − R''`.  So the affine connection is the exact obstruction to propagating a shift
+*upward*; the open half is the propagation downward at `m ∈ {1, 2}`.

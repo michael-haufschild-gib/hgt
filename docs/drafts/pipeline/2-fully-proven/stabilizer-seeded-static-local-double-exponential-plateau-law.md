@@ -533,3 +533,24 @@ Future dependency order:
 
 Until those capstones are formalized and axiom-audited, manuscript language must label this result
 as paper-proved research, not Lean-certified final evidence.
+
+## Lean status -- Theorem A is already in the corpus
+
+Searched before building; Theorem A is formalized in full, including the Markov step.
+
+| Card item | Existing declaration |
+|---|---|
+| **`(5)`, the exact stabilizer two-design collision law**: against any family of unit states the collision of a stabilizer state averages to `2/(D+1)` | `exists_stabilizer_states_collision_eq` (`HTGeometry/StabilizerPureState.lean`) |
+| Markov's inequality on a finite index set | `finite_markov` (`HTGeometry/StabilizerCollisionMarkov.lean`) |
+| **`(6)`**: at most a fraction `1/L` of stabilizer states exceed `2L/(D+1)` | `card_filter_collision_gt_mul_le` (same module) |
+| the capture bound at the two-design collision scale | `measureReal_capture_le_return_add_two_rpow_of_design` (same module) |
+
+`exists_stabilizer_states_collision_eq` is stated against an arbitrary family of unit states, which
+is exactly the card's "no property of the eigenbasis, spectrum or Hamiltonian ensemble is used in
+this step", and it therefore covers `(4)`--`(5)` for every Hermitian `H` at once.  `(7)`--`(8)`, the
+two-design identity and its contraction, are internal to that proof.
+
+### What remains
+
+Theorem B (all-late common-time near-maximal state complexity) and Theorem C (one fixed pair stays
+hard continuously for doubly-exponential time).

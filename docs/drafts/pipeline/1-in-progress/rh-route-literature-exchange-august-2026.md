@@ -9,7 +9,7 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local committed cutoff is
-`0f8ce82de6791b8edc1cb5a495f1fb85451fc468`, plus declaration-level review of current working tree
+`201f31d5ae97f3de42818794e34d44acaf7fd9c1`, plus declaration-level review of current working tree
 on 16 August. Historical `Active-tree Lean` wording records former provenance; current
 scientific verdict follows declaration content and synopsis below rather than former cutoff labels.
 Scientific
@@ -28,12 +28,12 @@ comparison and theorem provenance, not chronological status.
 | C1 | Fixed theta inverse realizes Xi divisor with multiplicity. Raw critical-feature lattice budget is impossible by factor `324`; corrected budget gives a sharp 75% receiver but is between one half and one times off-line energy and vanishes iff RH. | Existing Fredholm/de Branges/Weil theory neither makes this inverse real-spectral nor constructs the needed pre-divisor critical-line projector or centered arithmetic covariance. |
 | D2 | On every fixed polynomial frequency horizon, safe-line zeta bound is O_B(log x/log log x) and deficit is at least log log log x minus O_B(1); quarter deficit transfers to every real unit-disc twist. | Pretentious and zero-free-region literature supplies safe-line inputs, not continuation of positive source through Euler wall to finite completed high-frequency ceiling. |
 | E | Explicit grade-recurrent parity-coalesced and whole-anchor relations are formal. Exact parity/Wold drift, strict-half cost, seam-compatible opposite-sign near-Hall, reciprocal row law, and polylog/subpower incoming bounds are closed. | No located result upgrades these fixed physical relations to unit interval Carleson load with normalized co-moving seam flux. Current structured short-interval `E3` supply is quantitatively too thin. |
-| G | Cubic aperture dressing completes positive/negative light kernels and bounds marked halfgap debt. Completed unit-Riesz prime--polar--Gamma Ward wall is now exactly positive finite prime charge minus positive regular-screw mass. | Literature supplies neither aperture-Morse exhaustion nor source-side dominance/Schur comparison of that explicit imbalance with completed negative-light and remaining Robin/Neumann-holonomy channel. |
-| L | Strict Green/BV singular transport and Meyer half-density comparison are formal. Full-Laurent Gamma producer is unconditional; additive Cartier descent, Big-Witt lifts, Hurwitz monodromy, bilateral admission, and Gamma-six-current summability are exactly equivalent at RH strength. | No located theorem makes quadratic-ghost erasure source-lawful, preserves strong image under inverse prime coordinate, or gives selected Stokes annihilation. |
-| O | Theta-cusp/Xi seed and shape law are formal. Every nonzero full Slepian band eigenspace has rank at most one, every joint mode has fixed parity, and local Kato/Fredholm branch exists unconditionally at every positive aperture. | Prove cross-spectral ordering/cofinal mode-index retention and whole-ground exhaustion. More seed/source evaluation or fixed-aperture nondegeneracy does not help. |
+| G | Coalescing quotient, two-sided normality, and a Herglotz-limit-to-RH theorem are exact. Boundary schedules sweep the target interval, while fixed two-light phase alignment leaves positive-light mass diverging. Completed Ward wall is positive prime charge minus positive regular-screw mass. | Literature supplies neither source admission/compensation producing the required locally bounded Herglotz family, aperture-Morse exhaustion, nor dominance/Schur comparison with negative light and holonomy. |
+| L | Full-Laurent Gamma producer and reflection-folded Green--Stokes Ward double are unconditional. Adjoint/relative killing erases the pinned coefficient; physical derivative-range admission and selected cyclic Stokes-flatness occur exactly on critical line. | No located theorem makes selected coefficient-faithful admission source-lawful, preserves strong Meyer image under inverse prime coordinate, or gives selected Stokes annihilation. |
+| O | Zero-aperture rank-one tangent, actual small-aperture top concentration line, full nonzero Slepian simplicity, local branches, and eigenfunction-normalized ground coordinate law are formal. | Prove global cross-spectral ordering/cofinal mode-index retention and whole-ground exhaustion. More seed evaluation or local nondegeneracy does not help. |
 | P | Prime-log Hilbert--Schmidt `det₂` carrier exists, but its forced zero at `1` while `XiC(1) != 0` rules out direct Xi identification and every pointwise scalar correction. | No located theorem constructs the required spectrum-moving prime--Gamma operator coupling; non-spectral conormal contraction remains alternative. |
 | Q | Null-boundary diagonal energies vanish while mixed incidence tends `-E/2`; complex scalar phases cannot repair target-aligned fusion. Off-line conjugate pair has zero signed mass but divergent quadratic concentration at transverse wall. | Produce cofinal nonnegative source recurrence, or construct finite pre-divisor quadratic-energy budget dominating Q and U boundary profiles. Classical moment/phase/diagonal theory supplies neither. |
-| T | Polynomial-width prime-free targets now force a literal inverse-log adjacent physical-slice defect. Prime supply and arbitrary-order localization are also closed; gap-square exponent `1.71` still misses `3/2`. | Most direct import remains a gap-square moment below `3/2`; corpus still needs half-height residual variation or source-specific Bessel type-zero cancellation. |
+| T | Polynomial-width prime-free targets force a literal inverse-log adjacent physical-slice defect. Mertens' second theorem and exact `-2gamma` harmonic primitive are now formal, but adjoint scaling restores exponent `beta-1/2`; gap-square exponent `1.71` still misses `3/2`. | Most direct import remains a gap-square moment below `3/2`; corpus still needs half-height residual variation or source-specific Bessel type-zero cancellation. |
 | U | Exact onto `2*pi` scaling identifies full CCM form; even and odd prime walls are invisible. Lean proves `RH ∨ CCMFirstContactBoundaryRoughness`: false-RH least null ground is outside every strict smooth interior source. | Exclude completed-boundary rough first contact through trace/quotient or whole-ground coercivity. Literature offers no such source-relative boundary theorem. |
 
 No newly audited module instantiates an eleventh lettered route. Five CCM openings are now
@@ -92,10 +92,13 @@ Paper proves polynomial-filtered heat curvature is RH-complete and Gamma-average
 shift-one reciprocal-Hankel cone. Lean now proves exact Gaussian/heat-jet algebra, fixed-degree
 first-prime horizon, two-replica identity, bottom-shell negative Cesàro detection, countable conic
 compression, finite-packet conjugate-shell isolation, and an explicit positive probability kernel
-subordinating massive half-wave to Gaussian heat. Exact score law retains coherent covariance as variance and isolates completed sign
-to local-curvature/prime--Gamma mismatch. Uniform higher-shell control, filtered source
-instantiation, and that Fisher--Stein sign remain open, so PH-TC is a new mechanism but not an
-independent live route.
+subordinating massive half-wave to Gaussian heat. For any supplied isolated bottom shell with a
+summable majorant, higher-shell determinant defect now decays exponentially and full divisor-level
+dominated passage is exact. Tilted continuous prime saddle has exact Gaussian moments and lies on
+the mean--variance boundary. Exact score law retains coherent covariance as variance and isolates
+completed sign to local-curvature/prime--Gamma mismatch. Missing are a source-declared full-divisor
+filter/isolation law, filtered source instantiation, and Fisher--Stein sign. PH-TC remains a new
+Route-T-isogenous mechanism, not an independent route.
 The unlettered moving-degree reverse-Bessel opening is also live again. Fixed-frequency blindness
 remains, but Lean proves Gamma cost `<=3+(1/2)log N` and recovered Euler damping at
 `x=6N log(m+2)`. Literature offers large-order Bessel asymptotics, not the missing completed
@@ -1586,6 +1589,17 @@ resolvent bounds to the lower half-plane, and multiplication by `z^2` is compact
 two-sided normality is not an open gate. Literal source admission and the real-axis
 meromorphic/Schur control remain the science.
 
+Latest Lean closes exact limiting receiver. The singular quotient converges to `i/z-H/G`, with
+universal `i/z` in nonadjacent case, and finite Schur quotients have positive real part. In chart
+`s=1/2-iz`, a locally bounded nonnegative-real-part source family converging on one accumulating
+frequency set to a nonzero multiple of `Xi/Xi'` forces RH by Vitali uniqueness and Herglotz
+rigidity. This is conditional only on displayed source-family hypotheses; corpus has not produced
+that family. Boundary-layer schedules can realize the full literal-to-reduced-resolvent coefficient
+range, so target matching is nonselective. Fixed two-light alignment is excluded quantitatively:
+at apertures `8n`, alignment with negative outer light leaves positive-light mass tending to
+infinity. Any viable coalescing/Ward producer must compensate before light projection and retain
+first-order lag energy.
+
 `SuzukiApertureBoundedCoordinate.lean` and `SuzukiCoalescingTangentGeneral.lean` remove the former
 analytic model mismatch literally: Suzuki's interval-subtype `L²` is a bounded coordinate, and the
 coalescing defect rate there is the position-to-constant resolvent quotient. This does not control
@@ -2173,6 +2187,15 @@ landing, genuine source/Gamma naturality, bilateral formation admission, and sum
 literal Gamma-six determinant current. Global descent is RH. Missing science is therefore not
 Gamma production but a source-derived singular/physical reason that additive ghost erasure is
 lawful. No located external theorem supplies it.
+
+The ghost is now located exactly inside Green--Stokes geometry. Reflection-folded odd/even theta
+modes differ by one pinned harmonic ghost; literal Deninger cyclic anomaly is its positive paired-
+curvature partner, and Lean proves their Ward sum is zero. Both are killed by the adjoint and by an
+artificial pinned relative boundary, but this killing is coefficient-blind. Each belongs to the
+physical derivative range, or vanishes, iff `Re rho=1/2`; global selected Stokes-flatness is exactly
+RH. This closes complex packaging and ordinary homological erasure negatively. Remaining external
+question is a genuinely selected, source-derived physical admission theorem; no classical Hodge,
+BRST, mapping-cone, or cyclic-homology result located supplies it.
 
 The Milnor carrier is now formal in every degree. Residues kill unit symbols, have finite place
 support over Dedekind domains, define the tame kernel and Gersten row, and place every nonzero
@@ -2916,7 +2939,11 @@ proves natural-window integral tends to `sqrt(2*pi)` and shape ratio to `2 sqrt(
 `ConstrainedProlateApertureXiMetric.lean` identifies normalized `h_0-h_4` ground seed exactly with
 theta-cusp Schwartz source, proves its Fourier transform is forced scalar times `XiC`, and builds
 first two source-specific Xi metric channels. Seed/source dictionary and selected secular landing
-are closed. `ProlateBandEigenvalueSimplicity.lean` now proves full Slepian simplicity: every nonzero
+are closed. `ProlateSmallApertureRankOne.lean` identifies zero-aperture derivative as exact constant
+rank-one operator and proves that for `0<c<1/8` the unique line above quadratic remainder is the
+actual top concentration eigenspace, captures more than half the constant mass, and carries a
+smooth even joint separation anchor. `ProlateCoordinateNormalization.lean` transfers shape law to
+the eigenfunction's own normalization with limit `2 sqrt(pi)`. `ProlateBandEigenvalueSimplicity.lean` proves full Slepian simplicity: every nonzero
 real band eigenspace has rank at most one. Every smooth joint mode has fixed parity, one separation
 line is simple, ordered separation values are injective, and local Kato/Fredholm branch exists
 unconditionally at every positive aperture. Fixed-aperture degeneracy is closed; cross-spectral
@@ -3905,11 +3932,12 @@ Two new audits delimit rather than close that obstruction. Inside
 `t(d+1)<=(log 2/16)^2`, Lean puts every arithmetic frequency outside the translated polynomial
 oscillator disk and proves absolute summability of the von Mangoldt Gaussian tail; paper assembly
 then gives unconditional completed-source positivity. Small-time fixed-degree filtering therefore
-cannot see the critical wall. Separately, exact harmonic-primitive Abel summation replaces the raw
-remainder by its centred logarithmic primitive and moves the constant part to one boundary term.
-The paper scale audit shows the mass-adjoint quotient restores the same displaced-zero exponent,
-so separate norm/BV closure and every finite Abel ladder are terminal. Only signed correlation of
-the actual centred primitive with complex adjoint increments remains a possible producer.
+cannot see the critical wall. Separately, Lean now proves Mertens' second theorem and the actual
+Chebyshev-error harmonic primitive limit `-2gamma`, so no classical arithmetic constant remains in
+that reduction. Exact adjoint-scale theorems show the quotient grows as `sqrt N`; real and Mellin-
+twisted power tails both recover exponent `beta-1/2`. Separate norm/BV closure and every finite
+Abel ladder are therefore terminal. Only signed correlation of actual centred primitive with
+complex adjoint increments remains a possible producer.
 
 The parabolic chart produces a distinct candidate, **PH-TC**. Removing the mass rest energy sends
 the complete centred Xi divisor to Gaussian heat. Paper proves RH equivalent to nonnegative
@@ -6032,6 +6060,11 @@ this is bookkeeping, not arithmetic selection.
 `HTGeometry/MovingDivisorEntireFreeness.lean` upgrades carrier freeness off real axis to translated
 symmetric canonical products and every positive power. Even actual entire-product freeness remains
 compatible with arbitrary prescribed divisor/gap data and cannot select RH.
+`EulerSourceJetOpenness.lean` makes finite-jet blindness source-exact: first `k` logarithmic-flux
+jets of a genuine nonlinear `k`-prime Euler product form a locally open set. Hence no finite
+holomorphic jet equation selects zeta even after prime-power rays are imposed. Conversely the full
+all-prime jet is faithful on bounded Euler parameters. Research target is therefore an inverse-limit
+prime-ray compatibility plus fixed arithmetic parameter law, not another finite jet identity.
 
 These shifts strengthen central corpus diagnosis: missing mathematics is constitutive, not
 representational. Source already carries labels, depth, reflection, multiplicity, and exact
@@ -6046,6 +6079,10 @@ CCM-RF has an exact Lean RH endpoint and CCM-UR an exact Lean source weld, but n
 signed source producer; both share CCM-FU's completed current and therefore do not increase
 independent route count. Causal-Pick quotient and diagonal-Fock constructions are exact receivers,
 not routes.
+The Helson/Bohr opening has nevertheless advanced: sharp integrability of the Riesz `1/w^2` kernel,
+its truncated-log Mellin pair, and positive-average formula for logarithmic Riesz sums are formal.
+The missing uniform short-window Tauberian inversion and completed coefficient-faithful Xi
+intertwiner prevent promotion to an independent route.
 Sonin three-grade algebra now strengthens CCM-HG without changing that classification: compressed
 commutator is internal defect plus polarized leakage, exact resolvent correction factors through
 one edge commutator, and scalar observability deficit is paid by relative negative index. Closed

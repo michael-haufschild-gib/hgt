@@ -196,13 +196,15 @@ theorem coeff_affine_pow (ρ L : K) (hρ : ρ ≠ 0) (m k : ℕ) :
   · rw [Nat.choose_eq_zero_of_lt hk]
     simp
 
-/-- **The affine cocycle.**  In a split relation for an affine twisted substitution the ratio of
-the two top coefficients solves the inhomogeneous linear equation whose solution translates the
-substitution into a pure scaling. -/
-theorem twistComp_affine_cocycle (Φ : K →+* K) {ρ L c : K} (hρ : ρ ≠ 0)
+/-- **The affine cocycle, from the two top coefficients.**  Only the two top coefficients of the
+relation are used, so the statement applies to a relation that is a scalar multiple of the
+polynomial *up to lower-degree terms*. -/
+theorem twistComp_affine_cocycle_of_coeff (Φ : K →+* K) {ρ L c : K} (hρ : ρ ≠ 0)
     {P : Polynomial K} {a : ℕ} (hdeg : P.natDegree = a + 1)
-    (hcP : twistComp Φ (Polynomial.C ρ * Polynomial.X + Polynomial.C L) P
-      = Polynomial.C c * P) :
+    (hcoeff_a : (twistComp Φ (Polynomial.C ρ * Polynomial.X + Polynomial.C L) P).coeff a
+      = c * P.coeff a)
+    (hcoeff_a1 : (twistComp Φ (Polynomial.C ρ * Polynomial.X + Polynomial.C L) P).coeff (a + 1)
+      = c * P.coeff (a + 1)) :
     Φ (P.coeff a / P.coeff (a + 1))
       = ρ * (P.coeff a / P.coeff (a + 1)) - ((a : K) + 1) * L := by
   classical
@@ -263,9 +265,9 @@ theorem twistComp_affine_cocycle (Φ : K →+* K) {ρ L c : K} (hρ : ρ ≠ 0)
         + Polynomial.C (Φ (P.coeff a)) * T ^ a + twistComp Φ T P₂ := by
     conv_lhs => rw [hsplit]
     rw [twistComp_add, twistComp_add, twistComp_C_mul_X_pow, twistComp_C_mul_X_pow]
-  rw [hexp] at hcP
-  have hca := congrArg (fun p : Polynomial K => p.coeff a) hcP
-  have hca1 := congrArg (fun p : Polynomial K => p.coeff (a + 1)) hcP
+  rw [hexp] at hcoeff_a hcoeff_a1
+  have hca := hcoeff_a
+  have hca1 := hcoeff_a1
   simp only [Polynomial.coeff_add, Polynomial.coeff_C_mul, hTpow, hzero, hzero',
     add_zero] at hca hca1
   simp only [Nat.sub_self, Nat.choose_self, Nat.choose_succ_self_right,
@@ -285,5 +287,17 @@ theorem twistComp_affine_cocycle (Φ : K →+* K) {ρ L c : K} (hρ : ρ ≠ 0)
   rw [map_div₀]
   field_simp
   linear_combination hclear
+
+/-- **The affine cocycle.**  In a split relation for an affine twisted substitution the ratio of
+the two top coefficients solves the inhomogeneous linear equation whose solution translates the
+substitution into a pure scaling. -/
+theorem twistComp_affine_cocycle (Φ : K →+* K) {ρ L c : K} (hρ : ρ ≠ 0)
+    {P : Polynomial K} {a : ℕ} (hdeg : P.natDegree = a + 1)
+    (hcP : twistComp Φ (Polynomial.C ρ * Polynomial.X + Polynomial.C L) P
+      = Polynomial.C c * P) :
+    Φ (P.coeff a / P.coeff (a + 1))
+      = ρ * (P.coeff a / P.coeff (a + 1)) - ((a : K) + 1) * L :=
+  twistComp_affine_cocycle_of_coeff Φ hρ hdeg
+    (by rw [hcP, Polynomial.coeff_C_mul]) (by rw [hcP, Polynomial.coeff_C_mul])
 
 end GaloisForLFunctions.HTGeometry

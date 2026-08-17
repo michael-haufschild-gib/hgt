@@ -105,6 +105,54 @@ input to a surjective homomorphism of finite modules has uniform output.  This p
 `n<4`, degree at most three contains every square-free monomial and the full Boolean evaluation
 matrix is invertible; the same conclusion holds.
 
+## Lean status -- Theorem A is formal
+
+`formal/GaloisForLFunctions/HTGeometry/CubicPhaseEvaluationUniformity.lean` (new, umbrella-wired,
+axiom-clean) together with the corpus module `ReedMullerEvaluationRank`.
+
+| Card item | Declaration | Module |
+|---|---|---|
+| `(6)`-based rank statement: no dual relation on fewer than `2^(m+1)` points | `vecMul_evalMatrix_eq_zero_imp` | `ReedMullerEvaluationRank` |
+| surjectivity of degree-`<=m` evaluation over `ZMod 2` | `surjective_mulVec_evalMatrix` | `ReedMullerEvaluationRank` |
+| an even residue modulo eight is halvable | `exists_two_mul_of_red_eq_zero` | `CubicPhaseEvaluationUniformity` |
+| lifting surjectivity from `ZMod 2` to `ZMod 8` (three halvings) | `surjective_mulVec_of_surjective_map` | `CubicPhaseEvaluationUniformity` |
+| the mod-two reduction of the evaluation matrix | `map_reedMullerEvalMatrix` | `CubicPhaseEvaluationUniformity` |
+| surjective evaluation over `ZMod 8` at `k < 2^(m+1)` points | `surjective_mulVec_evalMatrix_zmod_eight` | `CubicPhaseEvaluationUniformity` |
+| equal fibres of a surjective homomorphism | `card_fiber_eq_card_kernel`, `card_fiber_mul_card_eq_card` | `CubicPhaseEvaluationUniformity` |
+| **Theorem A**: the evaluation vector is uniform on `(ZMod 8)^k` for `k < 2^(m+1)` | `card_fiber_evalMatrix_mul_card_eq` | `CubicPhaseEvaluationUniformity` |
+
+At `m = 3` the hypothesis `k < 2^4` is exactly `k <= 15`, so Theorem A holds in the stated
+fifteen-wise form.  The minimum-distance argument of the card is replaced by the corpus form of the
+same fact -- a nonzero dual relation supported on fewer than `2^(m+1)` points is impossible -- and
+the `Z/8Z` step is the nilpotence of `2` rather than an odd-determinant minor: both prove exactly
+`(5)`.
+
+## Lean status -- Theorem B, the pieces already owned
+
+| Card item | Declaration | Module |
+|---|---|---|
+| `(11)` fourth Steinhaus moment `<= 2` | `integral_box_fidelity_uniformPhaseSeed_sq_le`, `integral_box_phase_fourth_le` | `PhaseSeedCollisionMoments`, `SteinhausFourthMoment` |
+| `(14)` sixth Steinhaus moment `<= 6` | `integral_box_fidelity_uniformPhaseSeed_cube_le` | `PhaseSeedCollisionMoments` |
+| `E C <= 2/D` | `integral_box_phaseCollision_le` | `PhaseSeedCollisionMoments` |
+| `(12)` torus Poincare inequality | `variance_trigLift_le_sum_integral_normSq_pderiv` | `TorusTrigPoincare` |
+| variance from an a.e. gradient bound | `variance_le_of_ae_fderiv_bound` | `TorusTranslateDifference` |
+| `(9)` Chebyshev against the *upper* mean bound | `measureReal_gt_le_of_mean_le` | `UpperMeanChebyshev` (new) |
+| the `(9)` scale arithmetic `96/D^3 / (kappa/D)^2 = 96/(kappa^2 D)` | `collision_tail_scale`, `collision_threshold_split` | `UpperMeanChebyshev` (new) |
+
+### What remains
+
+1. `(13)`: the gradient identity `sum_a |d f/d theta_a|^2 <= 16 sum_j |y_j|^6`, i.e. differentiating
+   the quartic collision functional in the phase coordinates and using unitarity.  The Poincare
+   input `(12)` and the sixth-moment input `(14)` are both already owned, so `(13)` is the single
+   analytic step between them and `Var f <= 96 D`.
+2. The moment transfer from continuous Steinhaus phases to uniform eighth roots: `f` and `f^2` have
+   at most eight coordinate occurrences with net phase power in `[-4,4]`, so Theorem A -- now
+   formal -- makes their first two moments agree with the continuous model.  This is a finite
+   combinatorial identification, not a new inequality.
+3. Theorem C and the Corollary are assemblies over the two parent cards
+   (`stabilizer-seeded-static-local-double-exponential-plateau-law`,
+   `fixed-shell-angular-dephasing-static-local-plateau-law`), which are themselves still at stage 2.
+
 ## Theorem B -- basis-uniform collision concentration
 
 Let `e_1,...,e_D` be **any** orthonormal basis of `C^D`, and put

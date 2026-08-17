@@ -1114,3 +1114,28 @@ bookkeeping: `O_{m,n;N} ⊇ O_{m,n;L-1}(x_L, y_L) = J_L` and `x_{L+1}, …, x_N 
 So this card's only genuinely open input is **full monodromy**, i.e. the two hypotheses recorded on
 `projective-horizon-full-symmetric-monodromy`: that the root-permutation action lies inside the
 geometric monodromy, and that the Schur inertia is nontrivial and simple.  Both cards close together.
+
+## Lean progress — the primitivity step of `(4)`, isolated
+
+`HTGeometry/CriticalSourcePrimitiveGenerator.lean` (wired, axiom-clean).
+
+```
+criticalSourceNormalClosureFieldRange_eq_adjoin_of_full_monodromy
+    full monodromy,  alpha in the source field range,  alpha not in the observation field
+      ==>  O(alpha) = the source field range
+```
+
+This is the step the audit called "field primitivity leaves no field strictly between `O(x_L)` and
+`J(x_L)`", stated once and for all and separated from the particular element it will be applied to.
+The proof is the only thing it can be: `O(alpha)` is an intermediate field contained in the source,
+so `eq_bot_or_eq_criticalSourceNormalClosureFieldRange_of_full_monodromy` makes it `bot` or
+everything, and it is not `bot` because it contains `alpha`.
+
+Two practical notes for the next pass.  The module needs
+`set_option synthInstance.maxHeartbeats 400000` and `set_option maxHeartbeats 4000000`, exactly as
+`CriticalGeometricFieldPrimitivity` does — without them instance search times out on
+`Algebra (criticalObservationField) (criticalNormalClosure)`.  And the remaining work of the
+assembly is *transport*, not field theory: `postcriticalReciprocalFieldElement` lives in
+`genericJetField K (m+n)`, while this theorem lives in `criticalNormalClosure K m n`, so the escape
+`y_L notin O ⊔ K(x_L)` and the membership `y_L in J` have to be carried across the embedding before
+this theorem can be applied to `alpha = y_L`.

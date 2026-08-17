@@ -332,3 +332,49 @@ spectral genericity, or asymptotic time average occurs.
 
 `[PAPER-PROVED] [NOVELTY UNVERIFIED]`. The dependency-closed proof above closes the former open core. Move the
 exact theorem to Stage 2 before Lean formalization; no stronger physical interpretation is authorized.
+
+## Lean progress -- Lemmas 1 and 3
+
+`formal/GaloisForLFunctions/HTGeometry/InverseSquareTailWitness.lean` (new, umbrella-wired,
+axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| **Lemma 1, `(8)`**: `Σ_{j=K+1}^{L} 1/j² ≤ 1/K - 1/L` | `sum_inv_sq_Ioc_le` |
+| **Lemma 3, `(14)`**: the four-amplitude phase witness `\|e^{-iφ} - 1\| ≤ 4ε` | `norm_sub_one_le_four_mul` |
+
+`sum_inv_sq_Ioc_le` is the telescoping bound proved by induction on the upper limit, with the step
+`1/(L+1)² ≤ 1/(L(L+1)) = 1/L - 1/(L+1)`.  Taking `K = 1` and adding the first term gives `(5)`.
+
+`norm_sub_one_le_four_mul` is `(14)`: under the factorization identity `(13)`, inserting and
+subtracting the two products costs `2ε` on each side -- once for the amplitude substitution and once
+for the factor, each factor having modulus at most one -- so the phase deficit is at most `4ε`.  The
+modulus hypotheses are exactly the card's "every diagonal entry of either unitary has modulus at
+most one".
+
+### Lemma 2's ramp bound
+
+Same module.
+
+| Card item | Declaration |
+|---|---|
+| a phase differs from one by at most its argument | `norm_expI_sub_one_le` |
+| **`(10)`**: a diagonal self-adjoint `R` of norm at most `c` has `‖e^{-itR} - I‖ ≤ \|t\|c` | `ramp_bound` |
+
+Proved in the spectral model, where `e^{-itR} - I` is the diagonal of `e^{-itr_j} - 1` and each entry
+is bounded by `\|t r_j\|`; the chord identity `‖e^{-ix} - 1‖ = 2\|sin(x/2)\|` together with
+`\|sin u\| ≤ \|u\|` gives the entrywise bound, and `diagonal_mulVec_norm_le` lifts it to the operator.
+No operator-exponential theory is needed.
+
+| **`(11)`**: with `K₊ ≥ 2t/ε` and `t ≤ εL/2`, the omitted Hamiltonian costs `t‖R‖ < ε` | `ramp_total_lt` |
+
+`ramp_total_lt` is the card's chain `t‖R‖ ≤ ε/2 + t/L² ≤ ε/2 + ε/(2L) < ε`, with the two
+contributions bounded separately: `t/K₊ ≤ ε/2` from the choice of `K₊`, and `t(L-1)/L³ ≤ t/L² ≤
+ε/(2L)` from `t ≤ εL/2`.  Strictness comes from `L > 1`.
+
+### What remains
+
+`(9)` itself -- `‖R‖ ≤ 1/K₊ + (L-1)/L³` -- which is `sum_inv_sq_Ioc_le` applied to the omitted
+matching edges plus the bridge terms, and needs the card's explicit edge Hamiltonian; then the
+two-sided complexity statement `(7)`, whose lower half is the four-amplitude witness
+`norm_sub_one_le_four_mul` applied to the circuit dictionary.

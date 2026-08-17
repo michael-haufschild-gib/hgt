@@ -2,7 +2,7 @@
 
 - **ID:** c5-jensen-perturbation-ivt-sign-transfer
 - **Stage:** 3-formalized
-- **Type:** THEOREM PACKAGE (Lean), split from `../2-fully-proven/c5-jensen-perturbation-lemma.md`
+- **Type:** THEOREM PACKAGE (Lean), split from `c5-jensen-perturbation-lemma.md`
 - **Priority:** FOUNDATIONAL
 - **Source:** corrected total-witness branch and IVT/sign-transfer steps of `c5-jensen-perturbation-lemma.md`
 - **Statement:** The elementary real-analysis pieces used by the localized Jensen perturbation proof are formally certified: the zero-slope closed-interval witness branch, the closed symmetric interval distance bound, the two IVT sign-orientation lemmas, endpoint-dominance-to-zero lemmas, strict sign transfer under absolute closeness, and the resulting opposite-sign transfer.

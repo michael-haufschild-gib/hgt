@@ -255,3 +255,28 @@ No Lean source is authorized during the active refactor. Afterwards, reuse:
 5. conull-set intersection and finite-seed Fubini selection.
 
 No Lean source, build, or process was touched in this research cycle.
+
+## Lean status -- corpus coverage of the recurrence-dimension clause
+
+Searched before building.  Clause 2 (maximal projective spectrum) and clause 5 (the recurrence
+dimension) already have their governing laws in the corpus, so this card's Lean route is
+instantiation rather than new analysis.
+
+| Card item | Existing declaration |
+|---|---|
+| **the recurrence temporal dimension is exactly the arithmetic rank of the anchored energy gaps** | `relationPhaseEnsemble_temporalDimension_eq_projectiveRank` (`HTGeometry/UniversalProjectiveRecurrenceCapstoneLaw.lean`) |
+| maximal temporal rank ⟺ maximal projective energy arithmetic | `lbitTemporalRank_eq_maximal_iff_maximallyProjectiveEnergy` (`HTGeometry/LBitUniformStateRecurrenceLaw.lean`) |
+| projective temporal dimension as the rational rank of the visible gap spectrum | `projectiveObserverTemporalDimension` (`RHTower/ObserverTemporalUniversalityLaw.lean`) |
+| the completed recurrence dimension is nowhere continuous from three levels on | `completedRecurrenceTemporalDimension_nowhereContinuous` (`HTGeometry/ProjectiveRecurrenceDenseStratificationLaw.lean`) |
+| a Floquet return after every prescribed discrete delay, with no arithmetic condition on the spectrum | `exists_weightedFloquetFidelity_recurrence_after` (`RHTower/ProjectiveWeightedFloquetRecurrence.lean`) |
+
+Clause 2 asserts projective rational rank `D-1`, which is the maximal case of
+`relationPhaseEnsemble_temporalDimension_eq_projectiveRank`; clause 5's exponent `(D-2)/2` is the
+continuous-fidelity reading of the same rank.
+
+### What remains
+
+The card's own construction: the `O(n^3)`-preparable cubic-phase seed `χ_{n,L}`, the shell set
+`J_{n,L}` and its measure bound `(3)`, and clauses 1, 3, 4, 6, 7, 8.  These are the complexity-side
+statements, not the recurrence-side ones, and they need the incubation and plateau apparatus rather
+than the spectral laws above.

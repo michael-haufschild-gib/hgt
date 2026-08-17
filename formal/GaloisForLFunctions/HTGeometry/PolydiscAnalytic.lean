@@ -253,6 +253,7 @@ theorem exists_bound_on_torus {f : (Fin n → ℂ) → E} {c : Fin n → ℂ} {R
     (continuous_norm.comp_continuousOn hf)
   exact ⟨‖f p₀‖, fun θ => hp₀ (hmemT θ)⟩
 
+omit [CompleteSpace E] in
 /-- **A continuous affine-line-entire function has its Cauchy power series on every polydisc.**
 This is the finite-dimensional Banach-valued Gâteaux-to-Fréchet bridge. -/
 theorem polydiscSeries_hasSum_of_cauchy
@@ -416,6 +417,7 @@ theorem polydiscSeries_hasSum {f : (Fin n → ℂ) → E} (hf : Differentiable �
   polydiscSeries_hasSum_of_affineLineEntire hf.continuous
     (affineLineEntire_of_differentiable hf) c hR hM hy
 
+omit [CompleteSpace E] in
 /-- **A continuous affine-line-entire function has a convergent power series** on every polydisc,
 hence on a ball around every point. -/
 theorem polydiscHasFPowerSeriesOnBall_of_cauchy

@@ -1339,7 +1339,7 @@ The carrier has accreted many steps (and self-corrections); this fixes the live 
    in the archimedean metric). Equivalently `RH ⟺ H_d(t)⪰0 ∀d,t` (Jensen-section hyperbolicity at every base
    point), via **Pólya–LP translation invariance + Pólya–Schur + Hermite + Sylvester congruence**. Depth `n`
    redundant.
-2. **Perturbation lemma** (`../2-fully-proven/c5-jensen-perturbation-lemma.md`): general-`t` (even-free)
+2. **Perturbation lemma** (`../3-formalized/not_new_scientific_knowledge/c5-jensen-perturbation-lemma.md`): general-`t` (even-free)
    hyperbolicity from value+slope bounds; `He_{2d}` barrier `β≍O(1)`.
 3. **Kernel** (`../2-fully-proven/c5-jensen-prime-kernel.md`, Professor): `D_d(c_m;t)` explicit, `c_p=p^{-1/2}`;
    **proved `σ=½` divergence** (control is phase-cancellation, not triangle/`L²`).

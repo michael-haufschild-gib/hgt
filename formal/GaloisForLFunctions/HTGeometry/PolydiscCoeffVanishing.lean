@@ -31,14 +31,18 @@ theorem polydiscSeries_eq_zero_of_coeff_vanish {f : (Fin n → ℂ) → E} (c : 
   ext v
   simp
 
-/-- **The multi-index Schwarz estimate.**  Vanishing of every Cauchy coefficient of total degree
-below `N` makes the function smaller than its torus bound by the factor `(N+1)^n·(r/R)^N` on the
-smaller polydisc. -/
-theorem norm_le_of_polydiscCoeff_vanish [CompleteSpace E] {N : ℕ} {f : (Fin n → ℂ) → E}
-    (hf : Differentiable ℂ f) (c : Fin n → ℂ) {R r M : ℝ} (hR : 0 < R) (hr : 0 ≤ r) (hrR : r < R)
+/-- **The multi-index Schwarz estimate, from the polydisc expansion.**  Vanishing of every Cauchy
+coefficient of total degree below `N` makes the function smaller than its torus bound by the factor
+`(N+1)^n·(r/R)^N` on the smaller polydisc.  The expansion of the function into its polydisc series
+is taken as a hypothesis, so the estimate applies to a function holomorphic only near the polydisc
+as well as to a globally holomorphic one. -/
+theorem norm_le_of_polydiscCoeff_vanish_of_hasSum [CompleteSpace E] {N : ℕ}
+    {f : (Fin n → ℂ) → E}
+    (c : Fin n → ℂ) {R r M : ℝ} (hR : 0 < R) (hr : 0 ≤ r) (hrR : r < R)
     (hM : ∀ θ : Fin n → ℝ, ‖f (torusMap c (fun _ => R) θ)‖ ≤ M)
     (hvan : ∀ m : Fin n → ℕ, ∑ i, m i < N → polydiscCoeff f c R m = 0)
-    {y : Fin n → ℂ} (hy : ‖y‖ ≤ r) :
+    {y : Fin n → ℂ} (hy : ‖y‖ ≤ r)
+    (hsum : HasSum (fun k => polydiscSeries f c R k fun _ => y) (f (c + y))) :
     ‖f (c + y)‖ ≤ M * (((N + 1) ^ n : ℕ) : ℝ) * (r / R) ^ N *
       ∑' j : ℕ, (((j + 1) ^ n : ℕ) : ℝ) * (r / R) ^ j := by
   classical
@@ -46,8 +50,6 @@ theorem norm_le_of_polydiscCoeff_vanish [CompleteSpace E] {N : ℕ} {f : (Fin n 
   have hq0 : 0 ≤ q := by positivity
   have hq1 : q < 1 := by rw [hqdef, div_lt_one hR]; exact hrR
   have hM0 : 0 ≤ M := le_trans (norm_nonneg _) (hM fun _ => 0)
-  have hyR : ‖y‖ < R := lt_of_le_of_lt hy hrR
-  have hsum := polydiscSeries_hasSum hf c hR hM hyR
   have hbound : ∀ k : ℕ, ‖polydiscSeries f c R k fun _ => y‖
       ≤ (((k + 1) ^ n : ℕ) : ℝ) * M * q ^ k := by
     intro k
@@ -112,6 +114,17 @@ theorem norm_le_of_polydiscCoeff_vanish [CompleteSpace E] {N : ℕ} {f : (Fin n 
     _ = M * (((N + 1) ^ n : ℕ) : ℝ) * q ^ N *
           ∑' j : ℕ, (((j + 1) ^ n : ℕ) : ℝ) * q ^ j := by
         rw [tsum_mul_left]
+
+/-- **The multi-index Schwarz estimate** for a globally holomorphic function. -/
+theorem norm_le_of_polydiscCoeff_vanish [CompleteSpace E] {N : ℕ} {f : (Fin n → ℂ) → E}
+    (hf : Differentiable ℂ f) (c : Fin n → ℂ) {R r M : ℝ} (hR : 0 < R) (hr : 0 ≤ r) (hrR : r < R)
+    (hM : ∀ θ : Fin n → ℝ, ‖f (torusMap c (fun _ => R) θ)‖ ≤ M)
+    (hvan : ∀ m : Fin n → ℕ, ∑ i, m i < N → polydiscCoeff f c R m = 0)
+    {y : Fin n → ℂ} (hy : ‖y‖ ≤ r) :
+    ‖f (c + y)‖ ≤ M * (((N + 1) ^ n : ℕ) : ℝ) * (r / R) ^ N *
+      ∑' j : ℕ, (((j + 1) ^ n : ℕ) : ℝ) * (r / R) ^ j :=
+  norm_le_of_polydiscCoeff_vanish_of_hasSum c hR hr hrR hM hvan hy
+    (polydiscSeries_hasSum hf c hR hM (lt_of_le_of_lt hy hrR))
 
 /-- **The Cauchy coefficient is linear in the function.**  A finite linear combination of functions
 has the corresponding combination of coefficients, so a coefficient of a prescribed multi-index is a

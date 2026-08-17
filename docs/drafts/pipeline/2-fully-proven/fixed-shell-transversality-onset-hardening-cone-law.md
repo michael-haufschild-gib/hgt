@@ -710,3 +710,89 @@ now explicitly rejects a Brown-scale extrapolation of that finite-size onset bou
    obstruction showing why a pre-cone delay is unavoidable.
 4. After corpus refactoring, reuse the existing formal autonomous cone and formalize only the
    finite-size claims `(9)`, `(24)`, and `(31)`; do not encode the retired Brown-scale inference.
+
+## Lean status -- Theorem A is already in the corpus
+
+Searched before building.  Both halves of Theorem A are formalized.
+
+| Card item | Existing declaration |
+|---|---|
+| **`(7)`, the ordered multinomial expansion** of the replica fidelity | `complexFidelityReplicaMultiplicityExpansion` (`HTGeometry/FidelityReplicaCharacterCoefficientLaw.lean`) |
+| the total variation of all signed paired replica coefficients | `complexReplicaPairTotalVariation` (`HTGeometry/TracelessReplicaDyadicActionShellLaw.lean`) |
+| **`(9)`, the equality half**: the total variation of one multinomial replica layer is exactly the `r`-th power of the one-copy coefficient variation | `sum_norm_complexReplicaMultiplicityAmplitude_eq_pow` (same module) |
+| the underlying product-of-sums identity | `Fintype.sum_pow` (mathlib) |
+
+`sum_norm_complexReplicaMultiplicityAmplitude_eq_pow` is exactly `(9)`'s
+`Σ_{α,β}|A_{α,β}| = (Σ_j|c_j|)^{2r}`; the remaining `≤ 1` is the Cauchy--Schwarz step
+`Σ_j |⟨z, Π_j χ⟩| ≤ 1` for unit vectors and orthogonal spectral projections.
+
+### The `≤ 1` clause is closed
+
+`formal/GaloisForLFunctions/HTGeometry/UnitCoefficientVariation.lean` (new, umbrella-wired,
+axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| **the Cauchy--Schwarz step**: the spectral overlaps of two unit vectors sum in modulus to at most one | `sum_norm_mul_le_one` |
+| any power of a quantity in `[0,1]` stays there | `pow_le_one_of_variation` |
+| **`(9)` complete**: the paired replica coefficients have total variation at most one, at every replica order | `replica_variation_le_one` |
+
+**Theorem A is therefore complete**: `complexFidelityReplicaMultiplicityExpansion` gives `(7)`,
+`sum_norm_complexReplicaMultiplicityAmplitude_eq_pow` gives the equality of `(9)`, and
+`replica_variation_le_one` gives its `≤ 1`.  The bound is uniform in the Hamiltonian, its spectrum
+and the replica order, exactly as the card asserts.
+
+### Theorems B, C and E -- the formal layer
+
+`formal/GaloisForLFunctions/HTGeometry/NonstationaryPhaseVectorField.lean`,
+`SoftLightCaptureFloor.lean`, `StateOrbitHardeningCone.lean` (all new, umbrella-wired,
+axiom-clean), together with the corpus modules named below.
+
+| Card item | Declaration | Module |
+|---|---|---|
+| `(17a)`, `X(e^{-it phi}) = -it e^{-it phi}` | `inner_phaseField_eq_one` | `NonstationaryPhaseVectorField` |
+| `(17c)` first half, `\|X\| <= g^{-1}` | `norm_phaseField_le` | `NonstationaryPhaseVectorField` |
+| `(17c)` second half, `\|div X\| <= (d+2)Kg^{-2}` | `abs_trace_le_of_phaseFieldDeriv` | `NonstationaryPhaseVectorField` |
+| `(26)`, the soft filter loses at most `a/4` | `sum_removed_softWeight_le` | `SoftLightCaptureFloor` |
+| the removed vector carries exactly the removed weight | `sum_norm_sub_softFilter_sq` | `SoftLightCaptureFloor` |
+| `(27)`, the capture floor `(a/4)^r` survives the filter | `capture_floor_le_inner_pow` | `SoftLightCaptureFloor` |
+| capture at `epsilon_+` gives overlap `>= sqrt(1-epsilon_+^2)` | `norm_inner_ge_sqrt_one_sub_sq_of_traceDistance_le` | `RHTower/DirectAdaptiveStaticChoiShortcutActionLaw` |
+| `(27a)`, filtered coefficient mass `<= 8C/a` | `norm_sq_coordOverlap`, `sum_le_threshold_of_product_bound` | `SoftLightCaptureFloor` |
+| `(27b)`, `sum (multinomial)^2 prod \|c\|^{2l} <= r!(sum\|c\|^2)^r` | `fidelityReplicaPermutationFloor_le_factorial_mul_sum_sq_pow` | `RHTower/DirectAdaptiveStaticChoiShortcutActionLaw` |
+| `(28)` first step, `r!x^r <= 2^{-r}` at `x <= 1/(2r)` | `factorial_mul_pow_le_half_pow` | `SoftLightCaptureFloor` |
+| `(28)` second step, `(20)` gives `N_s <= 2^{r/2}` | `pow_le_two_rpow_of_log_le` | `SoftLightCaptureFloor` |
+| `(28)` conclusion, `N_s 2^{-r} <= 2^{-r/2}` | `count_mul_half_pow_le` | `SoftLightCaptureFloor` |
+| `(33)`, composition of preparation and simulation | `approxComplexity_evolved_le_add` | `StateOrbitHardeningCone` |
+| `(31)`, state-orbit backward cone | `lt_add_uniformSimComplexity_of_lt_approxComplexity`, `sub_uniformSimComplexity_lt_approxComplexity` | `StateOrbitHardeningCone` |
+| `(34)`--`(32)`, easy seed forces expensive simulation | `lt_add_uniformSimComplexity_of_easy_seed`, `sub_lt_uniformSimComplexity_of_easy_seed` | `StateOrbitHardeningCone` |
+| `(31)` operator-norm form | `unitaryCircuitWordSeparated_autonomous_backward_cone` | `HTGeometry/AutonomousWordComplexityConeLaw` |
+| `Pr(G_L^c) <= 1/L` | `card_filter_collision_gt_mul_le` | `HTGeometry/StabilizerCollisionMarkov` |
+
+**Theorem E is therefore complete in both forms.**  The state-orbit form is no longer a paper
+proof: `(31)` and `(32)` hold for every isometric flow on a metric state space with any gate
+alphabet, with the finite-complexity witnesses as their only hypotheses.  The cone is stated in
+signed form, `(s : Z) - S < C`, because truncated natural subtraction would weaken it at `s <= S`.
+
+### What remains -- two missing infrastructures, both named
+
+1. **The divergence theorem on a compact boundaryless Riemannian manifold.**  Estimate `(17b)`
+   integrates `div(aXe^{-it phi})` over `S^{m-1}` and uses that the total divergence vanishes.
+   Mathlib has the Gauss--Green theorem only on boxes, and a corpus search for a manifold form
+   returns nothing.  Everything else in Theorem B is now formal: `(17a)`, both halves of `(17c)`,
+   and the coefficient-mass input `(9)` that makes the discarded part cost `Q_r` rather than
+   `|K_r|Q_r`.  This is the single analytic construction the theorem still needs.
+2. **The semialgebraic Lojasiewicz inequality with a tube-volume bound.**  Corollary `(18a)`--`(18c)`
+   needs: a nonzero polynomial on a compact Nash manifold satisfies
+   `Disc >= c dist(., Z)^N`, and a proper semialgebraic set of codimension at least one has
+   `u`-tube volume at most a constant times a positive power of `u`.  Neither is in mathlib; the
+   corpus has stratification and tube-volume modules (`RegularLevelSetStratification`,
+   `ObserverKernelTubeVolume`) but not the semialgebraic Lojasiewicz step.
+
+With those two in place, `(17)`, `(18c)`, `(22)`--`(25)` and Corollary D are assembly over the
+already-formal pieces above.
+
+### What remains
+
+Theorem B (quantitative transversality dephasing) and its algebraic
+corollary; Theorem C (the explicit plateau-onset bound); Corollary D; Theorem E (the robust
+hardening cone).

@@ -187,6 +187,46 @@ Suppose all low trace moments converge while `B_n -> 0` in `S_p`.
 Consequently superdeterminants are not an artificial sharpness device: group completion is
 mathematically necessary to recover the full higher anomaly hierarchy from positive operators.
 
+## Lean status (2026-08-17)
+
+Already in the corpus, from the micro-spectrum layer:
+
+| Card item | Declaration | Module |
+|---|---|---|
+| root-of-unity block moments vanish below `k` | `rootMicroSpectrumMoment_eq_zero_of_lt` | `RHTower/DeterminantDefectMicroSpectrum` |
+| ...and are exactly `c ell^k` at `k` | `rootMicroSpectrumMoment_self` | same |
+| realization of a prescribed degree-`k` defect | `exists_rootMicroSpectrum_realizing`, `exists_rootMicroSpectrumPencil_realizing` | same |
+| the `p -> q` completion transition and its cocycle | `determinantCompletionTransition`, `determinantCompletionTransition_cocycle` | same |
+| the transition preserves the completed character | `determinantCompletionTransition_preserves_character` | same |
+| trichotomy 2: positive packets keep only the first moment | `sum_pow_le_max_pow_mul_sum` | `HTGeometry/MicroSpectrumMomentCollapse` |
+| trichotomy 3: self-adjoint packets keep only the first two | `abs_sum_pow_le_max_pow_mul_sum_sq` | same |
+| trichotomy 4: forward differences cancel below `j`, retain `j!` | `alternating_binomial_sum_pow_eq_zero`, `alternating_binomial_sum_pow_eq_factorial` | same |
+
+New in `HTGeometry/RankEnergyLaw.lean` (umbrella-wired, axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| **`(RE)`**: `sum a_i^k <= R^{1-k/p} (sum a_i^p)^{k/p}` | `sum_rpow_le_card_rpow_mul` |
+| equality for a flat packet (the root-of-unity block) | `sum_rpow_const` |
+| **the forced rank scale** at moment `c` and energy `eps` | `card_rpow_ge_of_moment` |
+| **the cutoff is forced**: at `k = p` the rank factor is one | `card_rpow_eq_one_of_eq` |
+| the Schatten cost `(kN)^{1-p/k}|c|^{p/k}` of a degree-`k` block | `block_cost` |
+
+`(RE)` is proved by Jensen against the counting measure (`Real.rpow_arith_mean_le_arith_mean_rpow`),
+which is exactly the Hölder step of the paper proof; `block_cost` is the exact cost identity the
+sufficiency construction needs, and `card_rpow_eq_one_of_eq` is the quantitative statement that the
+cutoff at `p-1` is forced rather than conventional.
+
+### What remains
+
+The topological statement `(DC)` itself -- that the closure of the finite-rank determinant graph is
+the displayed parametrized set, and that the parametrization is a homeomorphism.  Its two halves
+need: continuity of `det_p` on Schatten-`p` (Gohberg--Krein/Simon, not in mathlib), and the
+normalized-logarithm convergence argument for the polynomial factor.  Mathlib has no Schatten
+`det_p`; the corpus carries a regularized determinant only in the diagonal Fock model
+(`BosonicFockDiagonalModel.regularizedFredholmDet_eq_exp_neg_traceSeries`).  Building `det_p` on
+Schatten classes is the missing infrastructure for this card.
+
 ## What must be proved rather than named
 
 1. Define category of determinant extensions so the claimed initial object is neither tautological

@@ -1,7 +1,7 @@
 # The general-`t` hyperbolicity perturbation lemma (value + slope) — Jensen-section positivity assembly
 
 - **ID:** c5-jensen-perturbation-lemma
-- **Stage:** 0-backlog-lean
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper, supporting lemma) — Door grade **BRIDGE**
 - **Priority:** FOUNDATIONAL
 - **Source:** the single-orbit-positivity assembly of `../1-in-progress/finite-free-convolution-flow.md`
@@ -83,14 +83,18 @@ Professor/DeWitt): is that large-values control a **parent** method (Halász/Mon
 ## Gates
 - [x] 0 → 1 in-progress: assembly posed in the carrier.
 - [x] 1 → 2 fully-proven: §1 lemma (global + localized) and §2 barrier proved; hand-off (§3) recorded. BRIDGE.
-- [ ] 2 → 3 formalized — candidate Lean target: the finite-dimensional perturbation lemma §1 (Rolle/IVT +
-  sign count) over `Polynomial ℝ`; the `He_{2d}` `κ_i=|C_d(c_i)|` identity from the Kummer/Hermite ODE.
+- [x] 2 → 3 formalized — **DONE (2026-08-16).**  Both named targets are unconditional Lean theorems:
+  the finite-dimensional perturbation lemma §1⁗ (Rolle/IVT + sign count) over `Polynomial ℝ` is
+  `GaloisForLFunctions.SignAlternation.hyperbolic_of_localized_perturbation`
+  (`HTGeometry/LocalizedPerturbationHyperbolicity.lean`), and the `He_{2d}` `κ_i=|C_d(c_i)|` identity
+  from the Hermite ODE is `RHTower.abs_second_derivative_criticalScaledHermite`
+  (`RHTower/CriticalScaledHermite.lean`).
 - [ ] 3 → 4 publication-ready.
 
 ## Cross-references
-- `../1-in-progress/finite-free-convolution-flow.md` — the carrier (this lemma is its general-`t` positivity engine).
-- `c5-jensen-prime-kernel.md` — Professor's kernel (supplies `D_d`, `D_d'` at the `c_m`).
-- `../1-in-progress/combination-mode-baker-reducibility.md` — the support-`≤2d` near-resonance lane (DeWitt).
+- `../../1-in-progress/finite-free-convolution-flow.md` — the carrier (this lemma is its general-`t` positivity engine).
+- `../../2-fully-proven/not_new_scientific_knowledge/c5-jensen-prime-kernel.md` — Professor's kernel (supplies `D_d`, `D_d'` at the `c_m`).
+- `c5-jensen-perturbation-ivt-sign-transfer.md` — the earlier split certificate for the IVT/sign-transfer infrastructure.
 
 ## Notes / risk
 - The lemma is a **fixed-section** (fixed `t,d`) statement, unconditional. RH needs `(a),(b)` **uniformly in
@@ -325,3 +329,66 @@ by `rcases lt_or_eq` on `ε_i` (`0 < ε_i`: IVT/`intermediate_value_Icc`; `ε_i 
   `|D(x_i)|<|C(x_i)|` at `ε_i=0`). Step (ii) re-derived witness-free; (iii) verbatim. Statement total for all
   legal hypotheses; `He_{2d}`/barrier/hand-off/grade (BRIDGE) intact. Lean: one theorem, `rcases` on `ε_i=0`.
   Moving card 0-backlog-lean → 2-fully-proven for Leaner's fifth review.
+
+## Lean formalization — 2026-08-16 (closes the fifth review)
+
+Two new modules, both wired into their umbrellas, both built, all headline theorems with axiom
+footprint `[propext, Classical.choice, Quot.sound]` — no `sorry`, no added axiom, no added
+hypothesis beyond the lemma's own `(b_i′)`/`(a_i″)`.
+
+* `formal/GaloisForLFunctions/HTGeometry/HyperbolicCriticalAlternation.lean`
+* `formal/GaloisForLFunctions/HTGeometry/LocalizedPerturbationHyperbolicity.lean`
+* `formal/GaloisForLFunctions/RHTower/CriticalScaledHermite.lean`
+
+### How the four Leaner return notes are answered *in the Lean statement itself*
+
+| Return note | Objection | How the Lean statement settles it |
+|-|-|-|
+| first | `\|C'(x_i±ε_i)\| ≥ κ_i ε_i` needs a **window** curvature bound, not the pointwise `κ_i` | the hypothesis is `hcurv : ∀ s ∈ Icc (x i - w i) (x i + w i), m i ≤ \|C''(s)\|` — a genuine window bound — and the estimate is obtained by the mean value theorem on the window, not by a pointwise expansion |
+| second | `w_i := min(ρ_i, δ_i/2)` can hit a zero of `C''`, making `m_i = 0` | `m_i > 0` is **derived, not assumed**: `exists_curvature_window` produces, by continuity alone, a window on which `\|C''\| ≥ \|C''(x_i)\|/2 > 0` and `C''` keeps its sign.  No inflection-distance `ρ_i` is needed at all |
+| third | `δ_i`, `ρ_i` undefined at the endpoint critical points and in the no-inflection case `N = 2` | the Lean statement never mentions `δ_i` or `ρ_i`.  The window radii are existentially produced for **every** simple critical point, uniformly in `N`; `exists_perturbation_windows` additionally makes them pairwise disjoint.  There is no endpoint case and no `N = 2` case |
+| fourth | `ε_i = 0` makes the open interval `(x_i-ε_i, x_i+ε_i)` empty, so the witness `x_i'` is undefined | `exists_perturbed_critical_point` concludes `∃ c', \|c' - c\| ≤ e/m ∧ F'(c') = 0` — a **closed** condition — and the `ε_i = 0` branch is discharged inside the proof (the intermediate-value argument is applied to the degenerate interval `[c, c]`, where the two endpoint inequalities force `F'(c) = 0` directly).  The value condition is the witness-free sup form `(a_i″)` |
+
+### Paper step → Lean certificate
+
+| Paper step (§) | Lean name | Statement |
+|-|-|-|
+| §1 hyperbolicity | `SignAlternation.Hyperbolic` | `p.roots.card = p.natDegree` (pre-existing) |
+| §1 (iii) sign count | `hyperbolic_of_sign_changes` | `d+1` increasing points with a sign change at every step certify hyperbolicity, from either starting sign |
+| §1 (iii) the critical values alternate | `eval_mul_eval_succ_neg`, `exists_lt_first_sign_change`, `exists_gt_last_sign_change` | a hyperbolic `C` with simple critical points and nonvanishing critical values alternates in sign at them, with the two outer sign changes |
+| §1 the interlacing behind that | `exists_root_Ioo`, `exists_root_lt_first`, `exists_root_gt_last`, `critBelow`, `eq_of_critBelow_eq` | exactly one root of `C` in each of the `N` critical gaps |
+| §1‴ (D3) the window data | **`exists_curvature_window`**, **`exists_perturbation_windows`** | positive curvature lower bound, constant curvature sign, finite upper bound, pairwise disjoint — total, derived by continuity + compactness |
+| §1⁗ (W1) the shifted critical point | **`exists_perturbed_critical_point`** | `∃ c', \|c' - c\| ≤ e/m ∧ (C+D)'(c') = 0`, including the degenerate `e = 0` branch |
+| §1 (ii) sign preservation | `abs_eval_sub_le_of_abs_second_derivative_bound` | the second-order Taylor bound `\|C(t) − C(c)\| ≤ M(t−c)²/2` at a critical point |
+| **§1⁗ the lemma** | **`hyperbolic_of_localized_perturbation`** | `(b_i′)` + `(a_i″)` + preserved leading sign ⟹ `C + D` is hyperbolic |
+| §2 the Theorem-M ODE | **`criticalScaledHermite_ode`** | `C_d'' = (w/m)·C_d' − C_d` for `C_d(w) = a·He_m(w/√m)` |
+| **§2 curvature = value** | **`abs_second_derivative_criticalScaledHermite`** | `κ = \|C_d''(c)\| = \|C_d(c)\|` at every critical point |
+| §2 energy floor is nonzero | `eval_criticalScaledHermite_ne_zero` | `F_i = \|C_d(c_i)\| > 0` |
+
+### New reusable infrastructure (mathlib has none of it)
+
+* **`HyperbolicCriticalAlternation.lean`** — the interlacing/alternation theorem for hyperbolic real
+  polynomials: `strictMonoOn_or_strictAntiOn_of_derivative_ne_zero`, the gap-index counter
+  `critBelow` with its injectivity `eq_of_critBelow_eq`, one root per gap, and the resulting sign
+  alternation of the critical values; plus `hyperbolic_of_sign_changes`, the sign-change form of the
+  hyperbolicity certificate.
+* **`LocalizedPerturbationHyperbolicity.lean`** — the quantitative perturbation chain: the
+  second-order Taylor bound at a critical point (proved by monotonicity, not by an integral
+  remainder), the curvature-window existence, the shifted critical point, and the perturbation
+  lemma; plus `eventually_pos_atBot_of_leadingCoeff_pos_of_even`, the even-degree sign at `−∞`.
+* **`CriticalScaledHermite.lean`** — the critical rescaling `p ↦ a·p(·/√m)` and the Theorem-M ODE.
+
+### Explicitly NOT formalized (and not an obligation)
+
+§2's `O(1)` barrier constant `β_min ≍ min_i κ_i δ_i` uses classical Hermite gap asymptotics
+(unit-density critical points, `d^{-1/6}` edge gaps), which the card itself credits as classical;
+and §3's uniform-in-`d` value/slope bounds `(a)`, `(b)` are the **open** C5 crux, explicitly marked
+in the card as not closed by this lemma.  The lemma itself carries no RH assumption and closes no
+RH statement — Door grade **BRIDGE**, unchanged.
+
+## Log (cont.)
+- 2026-08-16 (Leaner) — **→ 3-formalized.**  Fifth review passed: both 2→3 targets are Lean
+  theorems.  All four earlier return notes are answered structurally rather than by convention —
+  the window curvature bound is a hypothesis on the window, `m_i > 0` is derived by continuity (no
+  `ρ_i` at all), the statement is uniform in `N` with no endpoint or `N = 2` case, and the perturbed
+  critical point is located by a closed condition that covers the zero-slope branch.

@@ -89,8 +89,9 @@ theorem exists_ne_zero_chart_vanishing [Nonempty ι] {N : ℕ}
     exists_ne_zero_chart_siegel_gain (N := N) A B hA hB c hR hr hrR hcount
   refine ⟨a, ha, ?_⟩
   refine eqOn_zero_of_family_siegel_gain c (fun i => siegelHomCombination (A i) (B i) m a)
-    (fun i => continuous_siegelHomCombination (fun k => (hA i k).continuous)
-      (fun k => (hB i k).continuous) a) hr ?_ (hcomp a) hlt
+    (fun i => ((continuous_siegelHomCombination (fun k => (hA i k).continuous)
+      (fun k => (hB i k).continuous) a).comp
+        (continuous_const.add continuous_id)).continuousOn) hr ?_ (hcomp a) hlt
   intro M hM i y hy
   have := hgain M hM i y hy
   calc ‖siegelHomCombination (A i) (B i) m a (c i + y)‖

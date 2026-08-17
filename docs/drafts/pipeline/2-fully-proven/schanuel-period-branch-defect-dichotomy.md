@@ -102,9 +102,28 @@ automorphism.  Thus neither branch-rank pattern contradicts algebraic Galois sym
   identity and determinant criterion. `RHTower/SchanuelPureTranscendentalPeriod.lean` proves that
   a nonzero old Kähler direction and `d tau` are independent after adjoining a transcendental
   period. `RHTower/SchanuelPeriodBranchRank.lean` combines this with transcendence of `rho` to
-  prove rank two for every nonzero integral branch shift.  All declarations were checked first in
-  `/tmp` and use only `propext`, `Classical.choice`, and `Quot.sound`.  The transcendental-period
-  branch of `(2)`--`(3)` is formalized; the algebraic-period infinite-family classification is not.
+  prove rank two for every nonzero integral branch shift.  `RHTower/SchanuelAlgebraicPeriodBranch.lean` (new) closes the algebraic-period case: a period
+  differential inside the span of the old defect makes every shifted pair collinear, hence of rank
+  at most one (`not_linearIndependent_smul_pair`,
+  `not_linearIndependent_period_shift_of_mem_span`); the shifted additive pair stays rationally
+  independent exactly when the rank-one determinant `1 + q_1k_1 + q_2k_2` is nonzero
+  (`linearIndependent_period_shift_of_det_ne_zero`), only one rational line of integral shifts is
+  excluded (`infinite_setOf_det_ne_zero`), and in the transcendental-period case every shift keeps
+  independence (`linearIndependent_period_shift_of_linearIndependent_triple`).
+  All declarations were checked first in
+  `/tmp` and use only `propext`, `Classical.choice`, and `Quot.sound`.
+
+  The two transcendence-degree bookkeeping claims are now formal as well, in
+  `HTGeometry/TranscendenceDegreeOneVariable.lean` (new, umbrella-wired, axiom-clean):
+  `trdeg_eq_one_of_transcendental` (a one-variable extension has degree one),
+  `trdeg_eq_add_one_of_transcendental` (adjoining a transcendental period raises the degree by
+  one), `trdeg_eq_of_isAlgebraic` (an algebraic period does not),
+  `trdeg_eq_two_of_transcendental` (**Case I**: degree two over a degree-one base), and
+  `trdeg_eq_one_of_isAlgebraic` (**Case II**: degree one).  The mathlib input is the tower
+  additivity `trdeg_add_eq` together with `Algebra.IsAlgebraic.trdeg_le_cardinalMk`.
+
+  **What is still not formal:** only the instantiation bookkeeping -- identifying the abstract
+  tower `A -> K -> K(tau)` with the concrete fields of the card inside `C`.
 - **Novelty:** no external priority claim; this is a new internal synthesis of standard Kähler
   and branch identities.
 

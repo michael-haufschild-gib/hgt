@@ -2260,3 +2260,32 @@ limit itself.
 
 So `(3)` at `j = 0` is now unconditional *in the card's own normalization*, with the constant
 `2 sqrt(pi)` explicit.  What remains on this card is the Fuchs asymptotic with its constant `A_n`.
+
+## The third input of the `(8)` threading is now a theorem too
+
+`RHTower/SecularTailVanishing.lean` (wired, axiom-clean).
+
+```
+sum_subset_le_of_sum_le    a bound on a nonnegative sum bounds every subsum
+tendsto_tail_div_slack     0 <= T(c) <= C ,  M(c) -> infinity   ==>   T(c)/(M(c)-1) -> 0
+```
+
+Only two facts about the family are used: the infinite tail of the coordinate masses is bounded, and
+the gap slack grows.  The first is a Bessel inequality — the masses of a normalised vector against an
+orthonormal family sum to at most one, so *every* subfamily sum obeys the same bound uniformly in
+`c`, which is what `sum_subset_le_of_sum_le` records.
+
+With this the threading table is complete as Lean theorems:
+
+```
+(3)  coordinate limits  ell_j -> a_j    =>  S -> A,  L -> B     tendsto_prolateGround_shapeRatio
+                                                                 + ProlateCoordinateNormalization
+(beta) two-sided leakage ladder         =>  eps -> 0            tendsto_consecutive_leakage_ratio
+     bounded tail + growing slack       =>  T/(M-1) -> 0        tendsto_tail_div_slack
+     -----------------------------------------------------------------------------
+(8)  tendsto_secular_ratio_of_limits    =>  mu_k / d_{k+1} -> A/(A+B)
+```
+
+Every implication *and* every input shape is now formal.  What the card still owes is the
+instantiation of the two-sided leakage estimates at consecutive modes, and the coordinate limits at
+indices `j > 0`; the ground index `j = 0` is closed.

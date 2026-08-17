@@ -5920,10 +5920,10 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   spectral shell while raising the caustic prefactor from `u^(-1/2)` to `u^(-N-1/2)`, permitting
   every fixed additional logarithmic retreat.  Fixed holomorphic multipliers cannot remove the
   timelike core because its stationary dispersions fill `(a,infinity)`.
-- 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` graded rigidity collapses all `o(u)` caustic
+- 2026-08-08 — `[PROVED HERE; (23.5)--(23.6) LEAN-PROVED]` graded rigidity collapses all `o(u)` caustic
   retreats in the type-zero quotient.  For every moving boundary `H(u)/u->kappa_B`, RH is
   equivalent to subexponential growth of its finite true-prime prefix or quadrature defect.
-- 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` hostile type-zero audit: actual integral Lipschitz
+- 2026-08-08 — `[PROVED HERE; (24.22)--(24.23), (24.4)--(24.5) LEAN-PROVED]` hostile type-zero audit: actual integral Lipschitz
   transport leaves the scalar Chebyshev-error quotient and absolute `PNTPlus` control retains type
   `1/2`; ordinary Selberg floor averaging is square-root bounded precisely because its `zeta`
   symbol annihilates zero modes; generalized Dirichlet mean square requires exponential prime-log
@@ -5934,7 +5934,7 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   `R=T_(mu/n)Q`; critical normalization makes the inverse coefficients summable as
   `mu(n)/n^(3/2)`, reducing the mass current to one positive-weight floor average rather than an
   unstable `1/zeta` inversion.
-- 2026-08-08 — `[PROVED HERE; LEAN-PROVED (threshold); LEAN DEFERRED (sawtooth gate)]` full weighted-floor audit: `theta=1/2` is sharp
+- 2026-08-08 — `[PROVED HERE; (24.24)--(24.28) LEAN-PROVED (threshold); (24.29)--(24.33) LEAN-PROVED (sawtooth gate)]` full weighted-floor audit: `theta=1/2` is sharp
   type-zero invertibility threshold for `T_(n^(-theta))`; hence every stable floor coordinate is a
   preconditioner, while square-root Selberg endpoint necessarily lies below threshold.  Exact
   floor-fibre Abel summation improves crude error from `O(M^2)` to explicit reciprocal-sawtooth
@@ -5960,15 +5960,16 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   Hardy multiplier retains exact damped mass type `lambda` after superluminal compression.
   Lowering type requires moving exponential notch on every surviving negative-corona packet;
   inverse conditioning then pays same critical type.  This is microlocal twin of floor Wiener law.
-- 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` Selberg anchor/mass-horizon mismatch: acquiring
+- 2026-08-08 — `[PROVED HERE; (24.57)--(24.60) LEAN-PROVED]` Selberg anchor/mass-horizon mismatch: acquiring
   critical relative error `delta=X^(-1/2+epsilon)` from harmonic small-value theorem requires
   log-window width `>40 X^(1/2-epsilon)`, exponential in mass log-time.  Any `O(h)` mass window
-  yields only `delta=Omega(1/h)` and retains type `1/2` `[(24.58)--(24.60) LEAN-PROVED]`.
+  yields only `delta=Omega(1/h)` and retains type `1/2` `[(24.58)--(24.60) LEAN-PROVED]`; the
+  window input (24.57) is `RHTower.exists_small_psiRemainder_in_window`.
 - 2026-08-08 — `[PROVED HERE; (24.61)--(24.67) LEAN-PROVED UNCONDITIONALLY]` exact harmonic-primitive/mass-adjoint reduction:
   finite Abel summation replaces `R(n)` by vanishing `E_n=J_n+2γ`, but adjoint cell quotient
   restores precisely displaced-zero exponent `beta-1/2`.  Separate norm or BV estimates remain
   type-sharp; only signed `E_n`--mass-increment correlation survives.
-- 2026-08-08 — `[PROVED HERE; LEAN-PROVED (recursion); LEAN DEFERRED (scale audit)]` finite harmonic-primitive ladder rigidity: exact
+- 2026-08-08 — `[PROVED HERE; (24.68)--(24.73) LEAN-PROVED]` finite harmonic-primitive ladder rigidity: exact
   conjugate recursion `C(f,A)=boundary+C(Hf,DA)` shows each primitive lowers source power by one
   while mass adjoint raises receiver power by one.  Every finite depth preserves scale
   `n^(beta-1/2)`; repeated Abel integration cannot reduce RH proof burden.
@@ -5994,7 +5995,7 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   and its line-conjugate pair diverges when `a(u)^2/u->0`.  Existing critical/subcritical `C_0`
   schedules are linear and quotient-null; sub-square-root moving mass is a new faithful carrier,
   pending cross-orbit positive separation.
-- 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` finite-packet sub-square-root receiver: for
+- 2026-08-08 — `[PROVED HERE; (24.100)--(24.105) LEAN-PROVED]` finite-packet sub-square-root receiver: for
   `a(u)=u^theta`, `1/3<theta<1/2`, exact chirp normal form and integral mean square prove finite
   conjugation-stable mass trace is `C_0` exactly when packet is critical.  Open bridge is uniform
   positive separation for growing full Xi packet plus prime-side control.
@@ -7098,9 +7099,50 @@ Newly formalized, axiom-clean, wired, built:
                                                  the same square-root exponent, with the
                                                  absolutely convergent majorant `∑ d^{-3/2-ε}`
 
-The remaining C43-B content — the Jordan symbol law (24.5) and the source theorem (24.6) — is a
-statement about Mellin transforms of floor transforms, not about the mass receiver, and (24.6) is
-explicitly not available in the corpus.
+### Lean progress: §24 C43-B — the Jordan symbol law
+
+    RHTower/AbelTailLSeries.lean
+      abelTailSeries                           the Abel tail `∑_{n≥1} R(n)(n^{-s} − (n+1)^{-s})`
+      coeffPartial_ofReal,
+        sum_range_succ_eq_sum_Icc              the corpus coefficient partial sums are the
+                                               summatory profile
+      norm_abelTail_term_le,
+        summable_abelTail_majorant,
+        summable_abelTail,
+        tendsto_abelTail_boundary              the unit increment of `x^{-s}` is `O(x^{-Re s−1})`,
+                                               so a profile bound `O(N^θ)` with `θ < Re s` makes
+                                               the tail absolutely convergent and kills the
+                                               boundary term
+      abelTailSeries_sourcePartialSum          summation by parts: the Abel tail of a summatory
+                                               profile is the `L`-series of its source
+
+    RHTower/JordanFloorSymbolLaw.lean
+      jetWeight, jetWeightC                    **(24.4)** the lift weight `(log d)^k`
+      jetWeightC_eq_iterate,
+        abscissaOfAbsConv_jetWeightC,
+        lseriesSummable_jetWeightC             the jet weight is the `k`-fold `logMul` iterate of
+                                               the unit, so its abscissa of absolute convergence
+                                               is still `1`
+      LSeries_jetWeightC                       **(24.5)** `∑ (log d)^k d^{-s} = (−1)^k ζ^{(k)}(s)`
+                                               on `Re s > 1`, from the corpus zeta-jet readout
+      unitStep, sourcePartialSum_eq_floorTransform,
+        floorTransform_sourcePartialSum        floor associativity `T_w(∑_{m≤·} a) =
+                                               ∑_{m≤·}(w ⋆ a)`, from the corpus **(24.10)**
+      ofReal_dirichletConv                     the corpus real convolution is the `L`-series one
+      exists_const_log_pow_le_rpow,
+        abs_floorTransform_jetWeight_le,
+        exists_bound_floorTransform_jetWeight  the lift of an `O(N^θ)` profile, `θ ≥ 1`, is
+                                               `O(N^{θ+ε})`: one harmonic factor and one power of
+                                               `log`, both absorbed by an arbitrarily small power
+      abelTailSeries_floorTransform_jetWeight  **(24.5)** the symbol law
+                                               `Abel(T_k R)(s) = (−1)^k ζ^{(k)}(s) Abel(R)(s)`
+      jetSymbol_vanishing_of_analyticOrder     at a zeta zero of multiplicity `m` the symbol
+                                               vanishes exactly for `k < m`
+
+So the Jordan hierarchy is exact and unconditional in the half-plane of absolute convergence: the
+mode annihilated by the plain floor transform is exposed by its first nonzero lift.  The remaining
+C43-B content is the source theorem (24.6), which the card itself records as absent from the
+corpus — only `k = 0` has the square-root budget.
 
 ### Lean progress: §24 C43-F — the harmonic triangular projection
 
@@ -7161,6 +7203,89 @@ So `θ = 1/2` is exactly the invertibility threshold: every `θ > 1/2` is a stab
 critical type and therefore cannot by itself lower the RH proof burden, and every `θ < 1/2`
 already fails on the model profile.
 
+### Lean progress: §24 C43-D — the exact reciprocal-sawtooth gate
+
+    RHTower/ReciprocalSawtoothGate.lean
+      floorPathSum, floorPathGate              the maximal floor path `A_N(D)` and its centred
+                                               form `B_N(D) = A_N(D) + 2γD`
+      reciprocalSawtooth, fibreDeficit         **(24.29)** `α_m = {N/m}` and `η = D − ⌊N/(M+1)⌋`
+      natDiv_eq_sub_sawtooth,
+        reciprocalSawtooth_one,
+        sum_sawtooth_eq_sum_Icc_two            `⌊N/m⌋ = N/m − α_m`, and `α_1 = 0` drops the first
+                                               term of the correlation
+      floorPathGate_eq                         **(24.33)** the centred path is its full-range value
+                                               minus the triangular transport and `2γ(N − D)`,
+                                               using the already-proved tail identity **(24.32)**
+                                               `tail_sourcePartialSum_eq_triangularTransport`
+      triangularTransport_sawtooth             **(24.30)** the transport in reciprocal-sawtooth
+                                               coordinates: `N·S_M + R(M)(α_{M+1} − η) −
+                                               ∑_{2 ≤ m ≤ M} a_m α_m`, with `S_M` the corpus
+                                               harmonic primitive of the source partial sums
+      floorPathGate_sawtooth                   **(24.31)** the same statement for the centred path
+      primeSawtoothSource,
+        sum_abs_primeSawtoothSource_le,
+        abs_sourcePartialSum_primeSawtoothSource_le,
+        sawtoothGate_variation_le,
+        abs_sum_primeSawtooth_correlation_le   the prime source `Λ(m) − 1` has total variation
+                                               `|R(M)| + ∑_{m ≤ M}|Λ(m) − 1| ≤ 16M`, and its
+                                               sawtooth correlation is `≤ 8M`, so the exact form
+                                               replaces `M` independent floor errors by one
+                                               correlation of size `O(M)`, not `O(M²)`
+
+All five identities are unconditional finite algebra: the tail identity is finite Fubini over the
+hyperbola `md ≤ N`, and the sawtooth form is the corpus harmonic-primitive summation by parts
+applied to it.  The gate is therefore exact, and the surviving obligation is signed cancellation of
+the coupled `(N, D, m)` average, not any further identity.
+
+### Lean progress: §24 C43-Q — finite-packet sub-square-root chirp separation
+
+    HTGeometry/MassDispersionUnitExpansion.lean
+      sqrt_re_nonneg, sq_sqrt,
+        norm_sqrt_sq_add_sub_le                  the principal root obeys
+                                                 `‖√(a²+α²) − a − α²/(2a)‖ ≤ ‖α‖⁴/(3a³)` whenever
+                                                 `‖α‖² ≤ a²/2`, by the exact difference of squares
+                                                 `(S−A)(S+A) = −α⁴/(4a²)` and `Re S ≥ 0`
+
+    RHTower/ExponentialSumMeanSquareLower.lean
+      expSum, norm_expSum_le, normSq_expSum_eq   the pair-frequency expansion of `|P|²`
+      tendsto_cesaro_normSq_expSum               **(24.104)** the Bohr--Cesàro mean square of a
+                                                 finite exponential sum with distinct frequencies
+                                                 is `∑ ‖c_j‖²`, from the corpus Bohr--Cesàro mean
+      frequently_lt_norm_expSum                  hence a nonzero finite exponential sum exceeds any
+                                                 threshold below its mean square along a cofinal
+                                                 set of times
+
+    RHTower/FinitePacketChirpSeparation.lean
+      chirpGauge, chirpTime, packetMassTrace     **(24.100)** the schedule `a = u^θ`, `t = u^{1−θ}`
+                                                 and the finite-packet mass trace
+      sqrt_gauge_of_im_eq_zero,
+        tendsto_packetMassTrace_of_critical      a critical packet decays like `e^{−σa}`
+      chirpGrowth, chirpFreq,
+        sq_eq_freq_add_growth                    **(24.102)** `−iα²/2 = RJ − i(R²−J²)/2`
+      chirpRemainder, chirpDefect,
+        norm_chirpRemainder_le,
+        tendsto_chirpDefect                      **(24.101)** the multiplicative defect tends to
+                                                 one, because `u/a³ = u^{1−3θ} → 0` for `θ > 1/3`
+      chirp_exponent_identity,
+        chirp_term_identity                      **(24.101)** the exact chirp normal form of one
+                                                 packet term
+      shiftedPacketTrace, topLayer,
+        tendsto_shiftedPacketTrace_sub           **(24.103)** after removing the gauge factor and
+                                                 the top growth rate the trace converges to the
+                                                 top-layer exponential sum
+      topCoeff, topLayer_sum_eq,
+        topCoeff_norm_pos                        equal frequencies combine with positive
+                                                 multiplicities, so every grouped coefficient is a
+                                                 positive real
+      tendsto_exp_chirpGap,
+        not_tendsto_packetMassTrace_of_offline   the gain `e^{ct−σa} = e^{cu^{1−θ}−σu^θ}` diverges
+                                                 for `θ < 1/2`, so an off-line packet cannot decay
+      tendsto_packetMassTrace_iff_critical       **(24.105)** the exact finite-packet receiver
+
+The whole chain is unconditional: no zero gap, no pointwise phase limit, and no diagonal
+approximation.  What remains open is exactly what the card records — uniformity as the effective
+packet grows with `u`.
+
 ### Lean progress: §24 C43-K and C43-L — the primitive ladder and the exact resolvent
 
     RHTower/HarmonicPrimitiveLadder.lean
@@ -7186,10 +7311,41 @@ already fails on the model profile.
                                                `−(1/2 − iξ)^{-1}` and the outgoing symbol
                                                `1/2 − iξ` multiply to `−1` at every frequency
 
-The ladder identity is unconditional sequence algebra and the resolvent identity holds at every
-frequency, so together they show that no finite number of Abel integrations and no scalar
-translation-invariant transform with stable inverse can change the critical exponent — only a
-genuinely noncommuting, prime-adaptive or mass-phase-adapted primitive could.
+    HTGeometry/RpowUnitStepQuotient.lean
+      exists_rpow_unit_step_quotient,
+        tendsto_rpow_unit_step_quotient          the normalised unit backward difference of `x^r`
+                                                 is `-r(1+o(1))x^{r-1}`, by the mean value theorem
+                                                 and a two-sided base comparison
+
+    HTGeometry/WeightedRpowTailCesaro.lean
+      tendsto_weightedTail_rpow                  a convergent weight passes through the sharp power
+                                                 tail: `g_n → c` gives
+                                                 `n^{1-p}∑_{m>n} g_m m^{p-2} → c/(1-p)`
+
+    RHTower/HarmonicPrimitiveScaleAudit.lean
+      harmonicTailPrimitive                      **(24.68)** `(𝓗f)_n = −∑_{m>n} f_m w_m`
+      tendsto_rpow_two_mul_harmonicGap           `m² w_m = m/(m+1) → 1`
+      tendsto_harmonicTailPrimitive              **the source move**: `f_n/n^p → c` with `p < 1`
+                                                 gives `(𝓗f)_n/n^{p-1} → −c/(1−p)`
+      sourceLadder, ladderConst,
+        ladderConst_ne_zero, tendsto_sourceLadder
+                                                 **(24.71)** every iterate has its exponent lowered
+                                                 by its depth, with the exact constants
+                                                 `c_j = (−1)^j c/∏_{ℓ≤j}(ℓ−β)`, all nonzero
+      tendsto_discreteDeriv_rpow                 **(24.72)** **the receiver move**: one cell
+                                                 difference quotient raises the exponent by exactly
+                                                 one, `𝒟(n^r)/n^{r+1} → −r`
+      tendsto_ladderEndpoint_scale               **(24.73)** the two moves cancel: against the
+                                                 square-root receiver profile of depth `j` the
+                                                 `(j+1)`-st source iterate has the fixed critical
+                                                 scale `n^{β−1/2}` with a nonzero constant, at
+                                                 every depth
+
+The ladder identity is unconditional sequence algebra, the resolvent identity holds at every
+frequency, and the scale audit shows the exponent bookkeeping is exactly neutral, so together they
+show that no finite number of Abel integrations and no scalar translation-invariant transform with
+stable inverse can change the critical exponent — only a genuinely noncommuting, prime-adaptive or
+mass-phase-adapted primitive could.
 
 ### Lean progress: §24 C43-P — the square-root mass information horizon
 

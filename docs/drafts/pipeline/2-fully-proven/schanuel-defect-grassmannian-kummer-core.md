@@ -143,8 +143,34 @@ coefficient wall.
   `schanuelDefect_slope_mem_integral_isogeny_valueField`.  The all-dimensional transformation law
   `(5)` is Lean-proved by `schanuelDefect_integer_linearCombination`.  Core equality `(3)` is
   Lean-proved by `fullIntegralIsogenyCore_eq_scalarPowerIsogenyCore` in
-  `RHTower/SchanuelIntegralIsogenyCoreIntersection.lean`.  General Kähler-kernel base change and
-  Plücker descent remain to formalize.
+  `RHTower/SchanuelIntegralIsogenyCoreIntersection.lean`.  The **Plücker field-of-definition layer is now Lean-proved** in
+  `HTGeometry/PlueckerFieldOfDefinition.lean` (new, umbrella-wired, axiom-clean):
+  `pluecker` defines the Grassmannian coordinates as the maximal minors of a spanning matrix,
+  `pluecker_mul` shows a basis change scales every coordinate by one determinant,
+  `pluecker_ratio_mul` shows the normalized ratios are basis-independent, and
+  `pluecker_mem_range` / `pluecker_ratio_mem_range` prove the descent: a subspace spanned over a
+  subfield has every minor and every normalized Plücker ratio in that subfield.  That is exactly
+  the last step of Theorem 2 -- once `(7)` exhibits `W` as spanned over `K_M`, its ratios lie in
+  `K_M`.
+
+  Equation `(6)` -- the **separable Kähler base change** -- is now Lean-proved as well, in
+  `HTGeometry/SeparableKaehlerBaseChange.lean` (new, umbrella-wired, axiom-clean):
+  `kaehlerBaseChangeOfSeparable` is the isomorphism `K (x)_F Omega[F/A] = Omega[K/A]` for a
+  separable `K/F`, `kaehlerBaseChangeOfIsAlgebraic` is its characteristic-zero form for any
+  algebraic extension, and `mapBaseChange_injective_of_separable` /
+  `mapBaseChange_surjective_of_separable` record the two halves.  The mathlib inputs are
+  `Algebra.FormallyEtale.of_isSeparable` and
+  `KaehlerDifferential.tensorKaehlerEquivOfFormallyEtale`.
+
+  The kernel bookkeeping `(7)` is Lean-proved in the same module:
+  `ker_lTensor_eq_range_subtype` and `exists_of_mem_ker_lTensor` show that the kernel of a base-
+  changed map is exactly the extension of the small-field kernel -- flatness of a field extension,
+  via mathlib's `Module.Flat.ker_lTensor_eq`.
+
+  **What remains:** only the instantiation -- naming the concrete defect map `Delta_K` of `(1)` as
+  the base change of `Delta_{K_M}` through `(5)`, and reading its kernel basis as a matrix over
+  `K_M` so that `pluecker_ratio_mem_range` applies.  Every mathematical input of Theorem 2 --
+  base change `(6)`, kernel descent `(7)`, Plücker field of definition -- is now formal.
 
 ## Big-picture consequence
 

@@ -11770,3 +11770,438 @@ part, so the limit has nonnegative real part, and one positive value upgrades it
 Theorem H and Theorem I.
 
 All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADW. **Theorem I is closed.**  One imaginary interval closes the half-plane endpoint
+
+```text
+HTGeometry/ReciprocalLogDerivZero.lean
+  exists_factorization_of_zero        the local factorization, and the induced one for `f'`
+  eventually_deriv_ne_zero_of_zero    `f'` is nonzero on a punctured neighbourhood of a zero
+  tendsto_div_deriv_nhdsWithin_zero   `f/f' → 0` at a zero of any order
+  eq_zero_of_eventuallyEq_div_deriv   a continuous function agreeing with `c·f/f'` vanishes there
+  not_re_pos_of_eventuallyEq_div_deriv
+
+RHTower/SuzukiCoalescingHalfPlaneUniqueness.lean
+  halfPlaneChart, halfPlaneChartInv, re_/im_, halfPlaneChart_mem_rightHalf
+  xiChart, differentiable_xiChart, analyticAt_xiChart, deriv_xiChart
+  xiChart_not_eventually_zero
+  riemannHypothesis_of_upperHalfPlane_source_limit         **Theorem I**
+```
+
+The card's proof runs Vitali, the identity theorem "for meromorphic functions", positivity of the
+real part, and the zero-sharing claim.  Three points where the Lean proof had to be sharper than
+the prose.
+
+*The identity theorem is applied to an entire combination, not to the quotient.*  The target
+`κ·(ξ/ξ')∘σ` is not holomorphic across a zero of `ξ'`, so "the identity theorem for meromorphic
+functions" would need a divisor-aware statement.  Instead the argument uses
+
+```text
+Φ = G·(ξ∘σ)' - (-iκ)(ξ∘σ),
+```
+
+which is holomorphic on the whole half-plane because both factors are.  It vanishes on the
+uniqueness set, hence identically — and that single identity carries all the information past every
+zero of the denominator, with no removability discussion.
+
+*The zero-sharing claim needs no multiplicity bookkeeping.*  At a zero `w` of `ξ∘σ`, the derivative
+is nonzero on a punctured neighbourhood (`eventually_deriv_ne_zero_of_zero`), so `Φ ≡ 0` gives
+`G = c·(ξ∘σ)/(ξ∘σ)'` there, and the quotient tends to `0` whatever the order is.  Continuity of `G`
+forces `G(w) = 0`.
+
+*Strict positivity comes from the minimum principle, not from an evaluation.*  Each member has
+nonnegative real part, so the limit does weakly; a single positive value at a point of the
+uniqueness set upgrades it everywhere.  The card's `R(iy) = 1/y + O(y)` computation is therefore
+replaced by the hypothesis that the target is positive at one frequency of the uniqueness set — a
+strictly weaker input.
+
+The conclusion is the literal `RiemannHypothesis`, obtained through `rh_iff_xi_ne_zero_right`.
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADX. **Theorem W** — the `sech` wall, the hyperbolic budget, and the form-contraction step
+
+```text
+HTGeometry/FormInverseAntitone.lean
+  psd_variational          the square completion: `2 b(w,x) - b(x,x) ≤ b(w,w)`
+  energy_le_of_form_le     `c·b_S ≤ b_T  ⟹  b_T(w_T,w_T) ≤ b_S(w_S,w_S)/c`
+  le_energy_of_form_le     the opposite one-sided bound
+
+RHTower/SuzukiToeplitzSechWall.lean
+  sq_le_of_psd_bilinear              real Cauchy–Schwarz for a psd symmetric form
+  energy_of_reflected                `A = e^{2a} B`
+  abs_cross_le_exp_mul               `|D| ≤ e^a B`
+  cayleyScalar_eq_sech_mul_fidelity  `(235)`
+  abs_cayleyScalar_le_sech           `(229)`
+  energyRatio_le_of_form_bounds      `(236)`–`(237)`
+  cayley_le_mobius                   `(230)`
+  artanh_mobius                      `(231)`
+  edge_lower_bound                   `(232)`
+  edge_bound_antitone                the `sech` wall is the binding case
+  tendsto_edge_bound_atTop           `(233)`
+```
+
+**The functional calculus is not needed.**  The card derives `(236)` from "quadratic-form
+functional calculus applied to `(225)`".  What the step actually is: two symmetric forms
+representing the *same* linear functional have their represented energies ordered opposite to the
+forms, and that follows from completing the square alone —
+
+```text
+2 b(w,x) - b(x,x) ≤ b(w,w),
+```
+
+so `b(w,w)` is the supremum of the affine functional it represents; substituting `x = c·w_T` in the
+`S`-variational bound and using `c b_S(w_T,w_T) ≤ b_T(w_T,w_T)` gives `c·b_T(w_T,w_T) ≤
+b_S(w_S,w_S)`.  No spectral theorem, no completeness, no square root.  The same lemma delivers both
+`E ≤ E₀/(1+m)` and `O ≥ O₀/(1-m)`, so the whole of `(236)`–`(237)` is elementary.
+
+**The wall itself.**  Midpoint reflection is an isometry of the common Toeplitz form and carries
+one exponential source to the other up to `e^a`, so `A = e^{2a}B` exactly; Cauchy–Schwarz for the
+same form gives `|D| ≤ e^a B`; and the Cayley scalar factors as `sech(a)` times the reflection
+fidelity `D/(e^a B) ∈ [-1,1]`.  Hence `|κ₀| ≤ sech a`, uniformly in the shift.
+
+**The budget.**  In the Cayley coordinate the contraction `(1+r)/(1-r)` is Möbius addition, and
+`artanh_mobius` identifies it with hyperbolic addition.  Reaching a target defect forces
+`r ≥ (κ_Ξ - κ₀)/(1 - κ_Ξ κ₀)`, the bound is antitone in `κ₀`, so the `sech` wall is binding, and it
+tends to `κ_Ξ` as the aperture grows.  With the corpus's `xiHedenmalmLivsicFirstDefectJet_mem_Ioo`
+(`κ_Ξ ∈ (77/85, 1)`) this is `(233)`.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADY. **Theorem X** — the source-alignment slack law
+
+```text
+RHTower/SuzukiSourceAlignmentSlack.lean
+  alignmentGain, rStar_eq, one_lt_alignmentGain    (242)
+  slack_le                                          (246), first form
+  slack_eq, slack_eq_zero_iff                       (246), second form
+  edge_le_even_weight, edge_le_odd_weight           (248)
+  even_weight_ge, odd_weight_ge                     the off-edge lower bounds
+  measure_le_of_deficit                             (247)
+```
+
+Three observations the Lean pass makes precise.
+
+*The slack law is a rearrangement, not an estimate.*  `A_e = 1/(1-r) - Δ_e` and
+`A_o = 1/(1+r) + Δ_o` turn `q ≤ A_e/A_o` directly into `Δ_e + q Δ_o ≤ 1/(1-r) - q/(1+r)`; no
+property of the spectral measures is used.  The second form `(1+q)(r - r_*)/(1-r²)` with
+`r_* = (q-1)/(q+1)` is the same identity in factored shape, and `slack_eq_zero_iff` isolates the
+saturation case.
+
+*`r_*` is the Möbius difference.*  `rStar_eq` proves `(q-1)/(q+1) = (κ_Ξ - κ₀)/(1 - κ_Ξ κ₀)` for
+the gain `q = ((1+κ_Ξ)(1-κ₀))/((1-κ_Ξ)(1+κ₀))`, so the sharp threshold of `(242)` and the coarse
+`sech` wall of `(232)` are the same expression evaluated at the true fidelity and at its bound.
+
+*The Markov step is a general weight lemma.*  Both deficits are integrals of nonnegative weights,
+and away from the edge those weights are bounded below by `δ/(2(1-r))` and `δ/(1+r)²` — proved as
+`even_weight_ge`/`odd_weight_ge` from `1 + t ≤ 2` and `1 - t ≤ 1 + r` on the spectral interval.
+`measure_le_of_deficit` then converts any such lower bound into a mass bound, which is `(247)`.
+`(248)` is the pair of pointwise inequalities `edge_le_even_weight`/`edge_le_odd_weight`.
+
+What Theorem X still needs is the spectral-measure instantiation: `(244)`–`(245)` for the literal
+`K`, and the saturation conclusion `(251)` that a vanishing slack forces both source directions to
+be bottom-edge eigenvectors.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## ADZ. **Theorems Y and Z** — the parity-floor edge and the narrow-seam collapse
+
+```text
+RHTower/SuzukiRelativeEdgeParityFloor.lean
+  relativeRatio_le, le_relativeRatio      (255): the relative ratio is Möbius in the quotient
+  edge_ge_of_ratio                        the Cayley map is increasing
+  edge_ge_of_ground_test                  (256)
+  ground_test_ratio, edge_pos_of_ground_defect
+
+RHTower/SuzukiPrimeSeamHankelStrength.lean
+  seam_product_ge            the midpoint minimum, by arithmetic–geometric mean
+  seam_bracket_ge            (262)
+  tendsto_seam_energy_atTop  the seam Cauchy energy diverges
+  tendsto_seam_ratio_zero    (264)
+```
+
+**Theorem Y.**  The relative Rayleigh ratio is `(c-h)/(c+h)`, a decreasing Möbius function of the
+normalized quotient `h/c`, so `(255)` is two one-line cross-multiplications: an upper bound from
+`m·c ≤ h`, and a matching lower bound from any near-minimizing test vector.  The consequence
+`(256)` is the Cayley inverse: `X ≤ (1+r)/(1-r)` gives `r ≥ (X-1)/(X+1)`, and at `X = 1 + η/d` that
+is exactly `r ≥ η/(2d + η)`.  A positive ground defect therefore forces a strictly positive edge —
+which is why a uniform edge ceiling is only a sufficient no-go: a source-invisible even ground mode
+drives the abstract edge without admitting the exponential source.
+
+**Theorem Z.**  The midpoint minimum of the seam bracket is exact and elementary.  Writing
+`u = s(η-s)`,
+
+```text
+(1 + d/s)(1 + d/(η-s)) = 1 + d(η+d)/u,
+```
+
+and `u ≤ η²/4` by the arithmetic–geometric mean, so the product is at least
+`1 + 4d(η+d)/η² = (1 + 2d/η)²` — the square, so the bracket is at least `2 log(1 + 2d/η)`.  No
+calculus, no stationary-point analysis.  The relative strength `(w + 2mMη)/(log(1+2d/η) - B)` then
+tends to zero because the logarithm diverges while the numerator converges.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AEA. **Theorem AA** — the prime-reflection Dirichlet budget
+
+```text
+RHTower/SuzukiPrimeReflectionDirichletBudget.lean
+  reflectionDirichlet, reflectionForm
+  reflectionDirichlet_eq        (269)
+  norm_sub_comp_sq_le           (271)
+  sum_comp_defect_le            (272)
+  weight_of_large_defect_le     the Chebyshev proportion bound
+```
+
+`(269)` is a term-by-term expansion: `‖f - R f‖² = 2‖f‖² - 2⟪f, R f⟫` whenever `R` is an isometry,
+so summing against the weights gives `D = 2W‖f‖² - 2P`.  `(271)` is the telescoping
+`f - R_m R_n f = (f - R_m f) + R_m(f - R_n f)` plus the triangle inequality and
+`(x+y)² ≤ 2x² + 2y²`; no group structure beyond additivity of `R_m` is used.  `(272)` is the
+weighted double sum of `(271)`, which splits into two copies of `W·D`.  The proportion statement
+is then Chebyshev over an arbitrary finite pair set.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AEB. **Theorem AM** — the marginal compatibility model, and the state of the §14 abstract cores
+
+```text
+RHTower/SuzukiMarginalCompatibilityModel.lean
+  atomicStieltjes                              the Stieltjes value of a low atom plus a high block
+  even_low_value, odd_low_value                the two exact low-atom contributions
+  ultraviolet_tail_le, ultraviolet_tail_nonneg the high-block remainder
+  even_stieltjes_bounds, odd_stieltjes_bounds  (365)
+  stieltjes_ratio_eq                           (362)
+  odd_low_atom_gt                              the odd atom sits strictly above the scale
+```
+
+The realization is arithmetic once the atoms are placed: `r/(r + ηr) = 1/(1+η)` and
+`r/(r + [R(1+η)-1]r) = 1/(R(1+η))`, so the ratio of the two low-scale Stieltjes values is exactly
+`R(1-p_e)/(1-p_o)`, and the ultraviolet block contributes between `0` and `(∑p)·r/U`.  The model's
+logical force — that the extracted marginal laws cannot be contradictory — is therefore a finite
+computation plus two-sided remainder control, with no measure theory beyond finite sums.
+
+### State of the §14 unconditional targets
+
+The abstract cores of **W, X, Y, Z, AA, AM** are now Lean-proved and audit clean.  Each of them
+still needs the *literal instantiation*: the identification of the abstract forms `b_C`, `b_E`,
+`b_O`, of the reflections `R_i`, and of the spectral measures `μ_e`, `μ_o` with the restricted-Weil
+objects.  That instantiation is a single shared layer, not six separate problems — it is the
+operator-side dictionary between the card's `C_{a,λ}`, `H_a`, `K_{a,λ}` and the corpus's
+`SuzukiCanonicalHankelOperator` family.  Building that dictionary is the next concrete step for
+§§14.15–14.19.
+
+Still open with no core yet: **J** (Clark–screw spectral rigidity: needs weak convergence of
+probability measures on a compactification plus a Stone–Weierstrass determination), **T**, **U**,
+**V** (needs the bounded-variation oscillatory averaging lemma), **AB** (needs the almost-periodic
+revival construction), and **AC** (needs `AB` plus PNT boundary convergence).
+
+## AEC. **Theorem H is closed**, `(54m)`–`(54n)` are proved, and Theorem V's engine is built
+
+```text
+RHTower/SuzukiCoalescingTwoPortRemovability.lean
+  analyticOrderAt_le_of_eq_mul   zero sharing from a factorization
+  twoPort_product_identity       the entire combination `H = G·(i/z - R)`
+  twoPort_order_le               Theorem H's zero-sharing claim
+
+RHTower/SuzukiCoalescingBoundaryLayerExpansion.lean
+  tendsto_mul_sq_poleEnergy      (54m), odd half: the simple pole `B_s/(ρt)`
+  tendsto_adjacentEnergy         (54m), even adjacent: limit `A_r/ρ + C`
+  tendsto_nonadjacentEnergy      (54m), even nonadjacent: limit `C`
+
+HTGeometry/PeriodicMeanZeroAveraging.lean
+  abs_sub_le_integral_abs_deriv
+  abs_integral_mul_meanZero_le             one cell
+  abs_integral_mul_meanZero_partition_le   additivity over a mean-zero partition
+HTGeometry/ParitySquareWave.lean
+  parityWave, parityWave_periodic, abs_parityWave_le
+  intervalIntegrable_parityWave
+  parityWave_eq_half, parityWave_eq_neg_half
+  parityWave_mean_zero
+```
+
+**Theorem H.**  The removability claim is not about the quotient.  The combination
+`Φ = H - G·(i/z - R)` is holomorphic wherever `R` and `G` are, vanishes off the discrete zero set of
+`G`, hence vanishes identically — and the resulting product identity `H = G·(i/z - R)` gives the
+zero-sharing directly through `analyticOrderAt_mul`.  No removable-singularity argument, no
+multiplicity bookkeeping.  Together with the limit `(94)`/`(98)` and the positivity already
+recorded, **Theorem H is closed at the abstract level**.
+
+**`(54m)`–`(54n)`.**  On a ground-pole branch the resolvent splits exactly into `groundMass/δ` plus
+a bounded reduced term, and the first visible degree fixes the rate of the ground mass.  The whole
+expansion is then exponent arithmetic: `2s - (2s+2) = -2` gives the odd simple pole; `2r - (2s+2)`
+is `0` for an adjacent floor and positive for a nonadjacent one, giving `C + A_r/ρ` and `C`.  These
+feed `SuzukiCoalescingBoundaryLayerSchedule` directly.
+
+**Theorem V's averaging engine.**  The card's proof integrates by parts against a bounded periodic
+primitive of the square wave.  That primitive is only Lipschitz, so the integration by parts is not
+available as stated.  It is not needed: subtracting the left endpoint value of the weight costs
+nothing because the oscillation has zero mean, and the remainder is bounded by the cell length
+times the bound times the total variation of the weight on the cell.  Summing over cells keeps the
+same constant because the variation is additive.  The concrete `1_{sin y > 0} - 1/2` is then proved
+`2π`-periodic, bounded by `1/2`, interval integrable, and mean-zero over a period.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AED. **Theorem J's determination half** — the Stieltjes transform determines the source
+
+```text
+HTGeometry/BoundedPowerSeriesUnique.lean
+  summable_of_bounded_coeff
+  abs_tsum_shift_tail_le
+  coeff_eq_zero_of_tsum_eq_zero        bounded coefficients, vanishing near zero ⟹ all zero
+
+HTGeometry/StieltjesMomentDetermination.lean
+  stieltjesKernel, hasSum_stieltjesKernel
+  abs_hausdorffMoment_le
+  integral_stieltjesKernel_eq_tsum     the transform is the moment generating series
+  hausdorffSource_eq_of_stieltjes_eq   the determination
+
+RHTower/SuzukiClarkScrewRigidity.lean
+  clarkSquaredKernel, stieltjesSquaredKernel
+  abs_clarkSquaredKernel_sub_le        (116)
+  stieltjesSquaredKernel_compactified  the coordinate change
+  clarkSource_eq_of_interval_law       Theorem J's determination half
+  stieltjes_eq_of_fixedKernel_eq       the card's normalisation
+```
+
+**The card's route is not the only one, and not the cheapest.**  The proof in `(122)`–`(123)`
+extracts a weakly convergent subsequence from the compact space of probability measures, identifies
+its transform, and then runs Stone–Weierstrass on the separating family `r_s = s/(u+s)`.  That
+family's linear span is *not* an algebra — `r_s²` is only a uniform limit of products `r_s r_t` —
+so the Stone–Weierstrass step needs the closure of the span, and the weak-compactness step needs
+the space of probability measures on the compactification.
+
+Neither is necessary.  In the compactified coordinate `x = 1/(1+u)` the kernel is `x/(1+tx)`, and
+for `|t| < 1` that is the geometric series `∑ (-t)^n x^{n+1}` uniformly on `[0,1]`.  Term-by-term
+integration turns the transform into a power series in `t` whose coefficients are the moments; two
+bounded power series agreeing near zero have equal coefficients; and the corpus's Hausdorff
+uniqueness (`hausdorffSource_eq_of_moments_eq`) finishes.  No weak compactness, no
+Stone–Weierstrass, no subsequence extraction — and the conclusion is the same measure equality
+`(119)`.
+
+The uniform estimate `(116)` is the elementary identity
+`(u+c²)/(u+s) - u/(u+s) = c²/(u+s) ≤ c²/s`, so the movable-anchor Clark transforms and the fixed
+Stieltjes transforms of the same sources have the same limits — the interval law is a statement
+about Stieltjes transforms alone.
+
+What Theorem J still needs is the identification `(117)`–`(118)` of the canonical source `μ_Ξ` with
+the normalized inverse-square Xi divisor, and the portmanteau consequences `(120)`–`(121)`.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AEE. **Theorems T and U** — the compactified spectral-shift uniqueness and the trace hierarchy
+
+```text
+HTGeometry/MomentWeakConvergence.lean
+  integrable_of_continuousOn
+  integral_polynomial_eq_sum_moments      a polynomial integral is a finite moment combination
+  abs_integral_sub_le_of_sup_le           a uniform mass bound turns sup control into integral control
+  tendsto_integral_of_tendsto_moments     moment convergence **is** weak convergence
+
+RHTower/SuzukiClarkScrewRigidity.lean  (extended)
+  reciprocalKernel_eq                     `1/(1+tx) = 1 - t·(x/(1+tx))`
+  clarkSource_eq_of_reciprocal_transform_eq   Theorem T's uniqueness of `σ_Ξ`
+  tendsto_traceHierarchy_iff              Theorem U's `(210)`–`(212)` bookkeeping
+```
+
+**Theorem T.**  The measure characterised by `(207)` is unique.  The reciprocal kernel is
+`1/(1+tx) = 1 - t·(x/(1+tx))`, so on a punctured neighbourhood of the base point the reciprocal
+transform determines the Stieltjes transform, and the moment determination of `AED` finishes.  The
+card's route — weak compactness of `{σ_n ≤ dx}`, then holomorphic continuation in `s`, then
+Stieltjes uniqueness — is replaced by one power-series extraction.  Note also that the
+determination now needs the transform only at **nonzero** parameters, matching `(207)`'s
+`s ≠ 1` exactly; the `t = 0` value is never used in the coefficient peeling.
+
+**Theorem U.**  `(212)` is equivalent to convergence of the occupancy moments — the affine
+bookkeeping `2(j+1)c_j - 1` is a bijection — and moment convergence on `[0,1]` *is* weak
+convergence, by Weierstrass plus the uniform mass bound.  No tightness argument is needed: the
+interval is already compact.  So the equivalence `(199) ⟺ (208) ⟺ (212)` is closed at the level of
+the occupancy measures; what remains is the trace identity `(210)` itself, which is the only place
+where trace-class machinery enters.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AEF. Portmanteau bounds and the logarithmic port tail
+
+```text
+HTGeometry/PortmanteauBump.lean
+  ramp, continuous_ramp, ramp_nonneg, ramp_le_one
+  ramp_eq_zero_of_le, ramp_eq_one_of_le
+  trapezoid, continuous_trapezoid, trapezoid_nonneg, trapezoid_le_one, trapezoid_eq_one
+  measureReal_le_integral       mass ≤ integral of a dominating nonnegative test function
+  limsup_measureReal_le         the portmanteau upper bound along a convergent test integral
+
+RHTower/SuzukiPortLogTailExpansion.lean
+  inv_sub_expansion             `1/(t-y) = 1/t + y/(t(t-y))`
+  tail_model                    (88)
+  abs_remainder_le              `|remainder| ≤ 2a/t²` beyond twice the aperture
+  abs_mul_remainder_le          `|t·remainder| ≤ 2a/t`
+  sq_abs_mul_remainder_le       the squared bound
+  integrableOn_inv_sq_Ioi       square integrability on a ray away from the origin
+```
+
+**`(120)`–`(121)`.**  The card's portmanteau step needs no abstract theory: clamped ramps
+`max 0 (min 1 ((x-a)/(b-a)))` are continuous, land in `[0,1]`, vanish below `a` and equal one above
+`b`, and the trapezoid `min (ramp a b) (1 - ramp c d)` does the same for a window.  A dominating
+test function bounds the mass, and convergence of its integral bounds the eventual mass — that is
+the whole of `(120)` and `(121)` once the weak limit is known.
+
+**`(87)`.**  The elementary expansion separates the logarithmic port into a pure `1/t` head and a
+remainder that is `O(a/t²)` beyond twice the aperture, so the scaled remainder is `O(a/t)` and
+square integrable on the tail.  This is the quantitative content of the `H¹` conclusion `(89)`;
+what remains there is the Plancherel transfer from `t r(t) ∈ L²` to a weak derivative in `L²`.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AEG. `suzuki-log-recurrence-polynomial-carrier-trichotomy` — the Lean target is six items, and two are done
+
+The card's §10 names its formalization target exactly:
+
+```text
+1. lattice shell summability for (8)
+2. bounded polynomial-weight shift ratios (14)
+3. iterated position commutator identity (15)
+4. polynomial group estimate (17)
+5. Fourier-symbol ellipse and nonreal point (21)–(24)
+6. Borel–Cantelli aperture theorem (28)
+```
+
+Matveev's bound is **not** on that list — the card places it under *Literature*, and it enters only
+through `(5)`, the aperture-independent statement that the zero-event family has logarithmic type.
+So the effective-Baker programme is a provider for one half of `(28)`, not for the card's own
+theorem chain; the main trichotomy of §2 is conditional on `T_log(a) < ∞` and needs no Baker input
+at all.  This reframes the card: items 1–5 are self-contained, and item 6 splits into an
+unconditional Borel–Cantelli half (the aperture-dependent family `τ_a`) and the cited half (`τ_0`).
+
+Items 2 and 5 are now Lean-proved.
+
+```text
+RHTower/SuzukiLatticeCarrierWeight.lean
+  latticeL1, latticeL1_add_le
+  one_add_latticeL1_add_le          `1 + |ν+s|₁ ≤ (1+|ν|₁)(1+|s|₁)`
+  polyWeight, polyWeight_pos
+  polyWeight_ratio_le               **(14)**
+  polyWeight_ratio_le'              the reciprocal ratio, so both oriented shifts are bounded
+  polyWeight_sq_mul_event_le        **(12)**: the weighted event factor is one lattice power
+
+RHTower/SuzukiHatanoNelsonEllipse.lean
+  hatanoNelsonSymbol
+  hatanoNelsonSymbol_eq             **(21)**: `2 cosh κ cos θ + 2i sinh κ sin θ`
+  hatanoNelsonSymbol_im
+  hatanoNelsonSymbol_quarter        **(22)**: `2i sinh κ` at the quarter turn
+  hatanoNelsonSymbol_im_ne_zero     the symbol leaves the real axis for every `κ > 0`
+  primeStepSymbol, primeStepSymbol_im   **(23)–(24)**
+```
+
+`(14)` is the submultiplicativity `1 + |ν+s|₁ ≤ (1+|ν|₁)(1+|s|₁)`, which holds because the cross
+term is nonnegative; raising to `κ` gives a ratio bound depending only on the step.  `(12)` is the
+observation that at a logarithmic event clock the event factor `exp(2στ)` is bounded by a single
+lattice power `(2+|ν|₁)^{2σQ}`, so the whole summand is one power of the lattice size.
+
+`(21)`–`(24)` are the exact symbol computation: `e^{κ+iθ} + e^{-κ-iθ}` expands through
+`exp_mul_I` into the ellipse, its imaginary part is `2 sinh κ sin θ`, and at `θ = π/2` that is
+`2 sinh κ ≠ 0` for `κ > 0`.  The finite prime-power symbol has imaginary part
+`∑ c_q · 2 sinh(κ|q|₁) sin⟨q,θ⟩` by the same computation applied term by term.
+
+Remaining for this card: items 1, 3, 4, and the Borel–Cantelli half of 6.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.

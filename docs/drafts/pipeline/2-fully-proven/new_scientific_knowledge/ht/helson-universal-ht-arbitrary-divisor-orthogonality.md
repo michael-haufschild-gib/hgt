@@ -1925,3 +1925,72 @@ and the tail is controlled by the coefficient bound `norm_coeff_le`, which is al
 tree.  After that, `tendsto_dirichlet_partialSum_of_poly_bounded` converts the resulting
 `O(log N)` partial-sum bound into convergence, and the uniformity in `s` is what upgrades
 `sigma_c <= sigma_b` to `sigma_u <= sigma_b`.
+
+## Lean progress — the Tauberian step for Riesz means
+
+`RHTower/RieszTauberian.lean` (wired, axiom-clean).
+
+```
+sum_log_increment_Ico       ∑_{N<=m<M} (log(m+1) - log m) = log M - log N
+rieszLogSum_sub             R(M) - R(N) = ∑_{N<=m<M} (log(m+1) - log m) . A(m)
+norm_partialSum_le_of_rieszLogSum_bound
+        ‖R(M)‖ <= B ,  ‖R(N)‖ <= B ,  ‖A(m) - A(N)‖ <= eps  on  [N, M)
+          ==>   ‖A(N)‖ <= 2 B / (log M - log N) + eps
+```
+
+The block form is exact and costs nothing: two Riesz means differ by precisely the tail of the
+logarithmic average, because `R(K) = ∑_{m<K} w_m A(m)` and the ranges are nested.  Splitting
+`A(m) = A(N) + (A(m) - A(N))` and using that the block weights sum to `log M - log N` isolates
+`A(N)`, and the two Riesz bounds plus the increment bound give the displayed estimate.
+
+This is the Tauberian direction the previous section identified.  Note what it does and does not
+say: bounded Riesz means alone say nothing about an individual partial sum — the statement needs the
+increment control `eps` over a block, and the bound trades `2B/h` against `eps` as the block length
+`h` grows.
+
+### What the assembly still has to choose
+
+Instantiating this at a Dirichlet series bounded by `M` on a half-plane needs the block and the
+increment bound chosen together.  The naive choice — block `[N, N(1+delta)]`, increments bounded
+coefficientwise by `norm_coeff_le` — gives `‖A(N)‖ = O(sqrt(N^{1-sigma} log N))`, which is *not*
+the classical `O(log N)`; recorded so the next pass does not spend the effort rediscovering that the
+coefficientwise tail bound is too lossy.  The classical argument uses the analyticity of the sum on
+the half-plane rather than a termwise bound on the block, and that is the remaining choice.
+
+## Lean progress — the continuation stratum is a TAIL EVENT
+
+`HTGeometry/ContinuableStratumInvariant.lean` (wired, axiom-clean).
+
+```
+eulerRatio a b b'            (1 - b a^{-s}) / (1 - b' a^{-s})
+meromorphicAt_eulerRatio     meromorphic at every point, for a != 0
+meromorphicOn_mul_eulerRatio a meromorphic function times a finite product of ratios stays
+                                 meromorphic on the plane
+continuableStratum_invariant
+    {p | chi p != psi p} finite  and  chi in continuableStratum
+      ==>  psi in continuableStratum
+```
+
+The corpus already had `continuableStratum` and the fact that every *finite modification of the
+trivial phase* lies in it.  This is the strictly stronger statement: continuability is preserved by
+finite modification starting from **any** continuable phase, not only from `1`.  That is exactly the
+tail-event property `M` needs — the stratum cannot be distinguished by any finitely many prime
+phases.
+
+The proof multiplies the Euler product by the finite correction `∏_{p in S} (1 - chi_p p^{-s}) /
+(1 - psi_p p^{-s})`: each ratio is a quotient of entire functions, hence meromorphic on the plane,
+and on `Re s > 1` the corrected product is the modified Euler product because the unmodified factors
+never vanish there.
+
+### What the zero-one law still needs
+
+`FiniteModificationZeroOne.measure_eq_zero_or_one_of_invariant` consumes exactly two inputs: the
+invariance just proved, and `MeasurableSet continuableStratum`.  The measurability is the open point,
+and it is not cosmetic: the stratum is defined by an existential over meromorphic functions on `ℂ`,
+so it is not measurable by inspection — it needs a countable reduction (for instance, exhausting `ℂ`
+by discs and the continuation by rational-coefficient approximations).  Recorded so the next pass
+does not assume it.
+
+Note also the index type: the corpus law is stated for products indexed by `ℕ`, while the phase
+torus is indexed by `Nat.Primes`; the transfer along a countable equivalence is routine but not yet
+written.

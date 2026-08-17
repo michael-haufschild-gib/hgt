@@ -68,7 +68,9 @@ theorem eqOn_zero_of_siegel_gain (c : ι → (Fin n → ℂ)) (G : (Fin n → �
 /-- **The gain closes, chartwise.**  The form the Siegel argument actually needs: on each chart the
 function is only a local representative, and what relates the charts is the comparison constant. -/
 theorem eqOn_zero_of_family_siegel_gain (c : ι → (Fin n → ℂ)) (F : ι → (Fin n → ℂ) → ℂ)
-    (hF : ∀ i, Continuous (F i)) {r R C θ : ℝ} (hr : 0 ≤ r)
+    {r R C θ : ℝ}
+    (hF : ∀ i, ContinuousOn (fun y => F i (c i + y)) (closedBall (0 : Fin n → ℂ) r))
+    (hr : 0 ≤ r)
     (hgain : ∀ M : ℝ, (∀ i : ι, ∀ t : Fin n → ℝ,
         ‖F i (torusMap (c i) (fun _ => R) t)‖ ≤ M) →
       ∀ (i : ι) (y : Fin n → ℂ), ‖y‖ ≤ r → ‖F i (c i + y)‖ ≤ M * θ)
@@ -83,7 +85,7 @@ theorem eqOn_zero_of_family_siegel_gain (c : ι → (Fin n → ℂ)) (F : ι →
       IsMaxOn (fun y => ‖F i (c i + y)‖) (closedBall (0 : Fin n → ℂ) r) y := by
     intro i
     refine hball.exists_isMaxOn hbne ?_
-    exact (((hF i).comp (continuous_const.add continuous_id)).norm).continuousOn
+    exact (hF i).norm
   choose y₀ hy₀mem hy₀max using hmax
   obtain ⟨i₁, -, hi₁⟩ :=
     Finset.exists_max_image (Finset.univ : Finset ι) (fun i => ‖F i (c i + y₀ i)‖)

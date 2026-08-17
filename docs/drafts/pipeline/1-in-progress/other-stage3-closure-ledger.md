@@ -2439,3 +2439,141 @@ Closing it also closes `floquet-orbifold-tail-emergence` and
   the common denominator `f.denom · g.denom`, where the numerator of the sum is
   `f.num·g.denom + g.num·f.denom` and the polynomial statement applies.
   Closure count unchanged: 31 cards remain in the folder.
+
+## Pass 33 — the rational affine connection, and the level-two normalizing shift
+
+Seven new `HTGeometry` modules, all unconditional, axiom-clean on
+`[propext, Classical.choice, Quot.sound]`, all wired into the umbrella, all lint-clean.
+
+| Module | Content |
+|---|---|
+| `RationalOrderValuation.lean` | `min_le_rootMultiplicity_add`, `min_le_ratOrder_add` — the order of a sum is at least the minimum of the orders |
+| `RationalAffineConnection.lean` | `IsAffineConnection R hR a` (`a(R)·(R')² = R'·a − R''`) over any characteristic-zero field; `ratOrder_affineSide`; `affine_pole_forward` / `affine_pole_backward`; `no_affine_connection_regular_at_critical`; `no_pole_of_forward_orbit` / `no_pole_of_backward_orbit`; `derivative_derivative_eq_zero_of_isAffineConnection_zero` |
+| `QuadOneNoAffineConnection.lean` | `quadOne_no_affine_connection : ∀ a, ¬ IsAffineConnection (z²+1) _ a` |
+| `QuadTwoNoAffineConnection.lean` | `quadTwo_no_affine_connection : ∀ a, ¬ IsAffineConnection ((z−1)²) _ a` |
+| `JetAffineConnectionLevelTwo.lean` | `jetDerivation_of_order_zero`, `substitutionShift_two`, `substitutionDeriv_ratFuncDeriv`, `exists_ratFuncDeriv_affine_connection_of_hasNormalizingShift_two`, `exists_isAffineConnection_of_hasNormalizingShift_two` |
+| `QuadraticNoNormalizingShift.lean` | `quadOne/quadTwo_not_hasNormalizingShift_two`; `quadOne/quadTwo_lowerOrder_of_substitutionEigen_two` |
+
+The mathematics is on the card
+`2-fully-proven/new_scientific_knowledge/other/rational-coarse-graining-orbifold-tail-classification.md`,
+passes 6 and 7.  In one line: the critical obstruction (ramification `m + 1` against curvature
+vanishing `m − 1`) puts a pole of any affine connection at a critical point or its image; the pole
+then travels along critical-free orbits in both directions, and both quadratic maps have an infinite
+such orbit through one of the two points; so no affine connection exists, and by the level-two
+slicing no normalizing shift exists at jet level two either.
+
+**Card state.**  `rational-coarse-graining-orbifold-tail-classification` stays at stage 2.  Its
+general statement is gated on the general exceptionality criterion (no invariant differential ⟹ no
+affine connection for an arbitrary map), which needs the finiteness of completely invariant sets;
+the two quadratic instances are now closed through jet order two.  The remaining descent for those
+two maps (jet order ≥ 3) and its two general inputs are recorded at the end of pass 7 of the card.
+
+## Pass 34 — the Siegel assembly for locally holomorphic charts
+
+The chartwise Siegel machine of passes 23–29 assumed its chart numerators and denominators were
+*entire*.  That is the wrong hypothesis for the card it was built for: a local presentation of a
+meromorphic function is holomorphic on a polydisc around its centre and nowhere else.  The machine
+now runs under the correct hypothesis.
+
+Three new modules and three generalizations, all unconditional, axiom-clean on
+`[propext, Classical.choice, Quot.sound]`, all wired.
+
+| Module | Content |
+|---|---|
+| `PolydiscCoeffVanishing.lean` (generalized) | `norm_le_of_polydiscCoeff_vanish_of_hasSum` — the multi-index Schwarz estimate with the polydisc expansion taken as a hypothesis; the old global form is now a three-line corollary |
+| `PolydiscLocalSchwarz.lean` (new) | `polydiscSeries_hasSum_of_differentiableOn`, `norm_le_of_polydiscCoeff_vanish_of_differentiableOn` — the expansion and the estimate for a function holomorphic on a polydisc strictly larger than the contour |
+| `SiegelGainVanishing.lean` (generalized) | `eqOn_zero_of_family_siegel_gain` now needs continuity only of the local representatives on the small closed polydiscs |
+| `SiegelLocalCharts.lean` (new) | `polydiscCoeff_add_of_torusContinuous`, `differentiableOn_finsetSum/Prod`, `differentiableOn_siegelHomCombination`, `siegelHomCoeffMapLocal`, `exists_ne_zero_chart_siegel_gain_local`, `exists_ne_zero_chart_vanishing_local`, `exists_ne_zero_chart_vanishing_of_transition_local`, `exists_ne_zero_poly_eval_eq_zero_local` |
+| `PolydiscAnalytic.lean` | two stale `omit [CompleteSpace E]` warnings cleared |
+
+The local expansion is the corpus's own local Cauchy formula
+(`polydiscCauchyFormula_of_differentiableOn`, on `polydiscSet`) fed into the expansion criterion
+`polydiscSeries_hasSum_of_cauchy`, which was already stated with local hypotheses.  Everything
+below the estimate — the closing mechanism and the chart comparison — was already local or purely
+metric.
+
+The capstone now reads: for chart data holomorphic on polydiscs of radius `R₁ > R` around finitely
+many centres, a counting inequality `card ι · N^n < (m+1)^(n+1)` and a transition constant beating
+the Schwarz factor produce a nonzero `P ∈ ℂ[X₀,…,X_n]` annihilating the chart quotients at every
+point of every small polydisc where the denominators of that chart do not vanish.
+
+**What the torus instantiation still needs.**  The corpus's meromorphic field
+`Bottcher.meroFieldGen (Set.univ)` is the fraction field of the ring of *entire* functions, so a
+global presentation `f = A/B` is available for free — the Poincaré problem does not arise.  What a
+single global presentation does *not* give is the transition bound: for a torus point `w` and a
+period `p` the factor is `∏_k (B_k w / B_k (w − p))^m`, and `B_k` is not periodic, so the ratio
+blows up along the zero divisor.  The bound needs *reduced* local presentations at the centres,
+where `GermReducedFraction`/`GermRatioBound` apply — and, to compare them at a point of the
+overlap rather than at the centre, the propagation of coprimality of germs to nearby points.  That
+propagation (the common zero set of two coprime germs has codimension at least two) is the one
+piece of local analytic geometry the instantiation is missing; the whole analytic machine above it
+is now unconditional and correctly hypothesized.
+
+## Pass 35 — one transport theory, and the first level of the jet descent
+
+Five new modules and one de-duplication, all unconditional, axiom-clean, umbrella-wired, lint-clean.
+
+| Module | Content |
+|---|---|
+| `RationalAffineTransport.lean` | `IsAffineTransport R hR k b c a` (`a(R)·(R')^k = b·a + c`), `ratOrder_affineTransport_lhs`, `affineTransport_pole_forward/backward`, `no_pole_of_forward/backward_orbit_affineTransport`, `ratOrder_le_of_critical`; and the affine connection as the case `k = 2, b = R', c = −R''` |
+| `QuadOneAffineTransport.lean` | `quadOne_affineTransport_regular_at_critical_pair`, `quadOne_no_affineTransport_of_polar_at_critical` |
+| `QuadTwoAffineTransport.lean` | the same two for `(z − 1)²` |
+| `JetShiftAffinePresentation.lean` | `pd_jetDerivation_apply` (the commutator `[∂_{m+1}, δ] = ∂_m` applied), `pd_top_substitutionShift`, `exists_affine_substitutionShift`: `σ_{N+3} = A·y_{N+2} + B` with `A, B` of order below `N + 2` |
+| `JetNormalizingShiftDescent.lean` | `hasNormalizingShift_pred_or_polynomial`: a normalizing shift at jet level `N + 3` either descends to level `N + 2` or is a *polynomial* in `y_{N+2}` solving `Φ̃(u) = R'·u − (A·X + B)` |
+
+**Why one transport theory.**  Every equation the orbifold descent produces has the shape
+`a(R)·(R')^k = b·a + c`: an invariant `k`-differential is `c = 0` with `b` constant, the rational
+affine connection is `k = 2, b = R', c = −R''`, and each coefficient equation of a normalizing shift
+is `b = 1` with an explicit rational `c`.  Away from the critical set, at points where `b` is a unit
+and `c` is regular, the equation says the order of `a` at `p` and at `R(p)` have the same sign, so a
+pole travels both ways; at a critical point it bounds the order of the left side by that of `c`.  The
+four transport lemmas previously living in `RationalAffineConnection.lean` were deleted and are now
+corollaries of the general ones, so there is exactly one copy.
+
+**The two quadratic packagings** say: for an affine transport of `z² + 1` (resp. `(z − 1)²`) whose
+coefficient is a unit and whose inhomogeneous term is regular away from the critical point, the
+solution is regular at the critical point and at the critical value — the pole would run along the
+infinite forward orbit `1, 2, 5, 26, …` (resp. along the backward orbit through `2`, the critical
+orbit being the two-cycle `1 ↦ 0 ↦ 1`).  If moreover `c` is polar at the critical point and `k ≥ 0`,
+no nonzero solution exists, because the substitution ramifies to order two there.
+
+**The descent.**  The shift term is affine in the coordinate below the top — proved from the
+commutator of a coordinate partial with the ambient derivation, not from a Faà di Bruno expansion —
+so slicing the shift as a coprime fraction in `y_{N+2}` gives a polynomial identity over the prefix
+field.  The denominator divides its twisted image and has the same degree, hence is a scalar
+eigenvector; positive degree gives the affine cocycle of its two top coefficients, i.e. a shift one
+level down.
+
+**What is left of the descent**: the coefficient analysis of the polynomial branch
+`Φ̃(u) = R'·u − (A·X + B)`, where `deg u = 0` forces `A = 0` (impossible, `A = M·R''·y₁`),
+`deg u ≥ 3` reproduces the affine cocycle at the two top coefficients and descends, and
+`deg u ∈ {1, 2}` need the quadratic packagings above applied to the resulting rational equations.
+
+## Pass 36 — two more branches of the jet descent
+
+`TwistedScalingDescent.lean` (generalized) and `JetShiftPolynomialBranch.lean` (new), both
+unconditional, axiom-clean, umbrella-wired.
+
+- `twistComp_affine_cocycle_of_coeff` — the affine cocycle needs only the *two top coefficients* of
+  the relation, so it applies to a relation that is a scalar multiple of the polynomial up to
+  lower-degree terms.  The previous `twistComp_affine_cocycle` is now its two-line corollary.
+- `exists_cocycle_of_shift_polynomial` — for `Φ̃(u) = ρ·u − S` with `deg S ≤ 1` and `deg u ≥ 3`, the
+  ratio of the two top coefficients of `u`, divided by the degree, solves `Φ(s) = ρ·s − L`.
+- `coeff_one_eq_zero_of_shift_polynomial_deg_zero` — in degree zero the same relation forces the
+  linear part of `S` to vanish.
+- `hasNormalizingShift_of_polynomial_branch` — hence a polynomial branch of degree at least three at
+  jet level `N + 3` produces a normalizing shift at level `N + 2`.
+- `top_eq_zero_of_polynomial_branch_deg_zero` — and a polynomial branch of degree zero forces
+  `∂_{N+2}σ_{N+3} = 0`.
+
+**State of the level-`M` descent for the two quadratic maps.**  A normalizing shift at jet level
+`N + 3` splits into: denominator of positive degree (descends, pass 35); denominator constant with
+numerator of degree `0` (forces `A = ∂_{N+2}σ_{N+3} = 0`), degree `≥ 3` (descends), or degree `1` or
+`2` (open).  Closing the two open degrees, together with `A ≠ 0`, would give
+`¬ HasNormalizingShift` at every level `≥ 2` for `z² + 1` and `(z − 1)²`, hence `Tail(R) = C`, hence
+the promotion of `floquet-orbifold-tail-emergence` and `orbifold-tail-holographic-reconstruction`.
+The two open degrees reduce, by the coefficient analysis, to rational equations of the form
+`a(R)·(R')^k = a + c` with `c` polar at the critical point — exactly the shape
+`quadOne_no_affineTransport_of_polar_at_critical` and its `quadTwo` companion kill.  What is missing
+between them is the identification `A = M·R''·y₁`, an induction on `M` from `∂₁σ₂ = 2R''y₁` using the
+same commutator `[∂_{m+1}, δ] = ∂_m`.

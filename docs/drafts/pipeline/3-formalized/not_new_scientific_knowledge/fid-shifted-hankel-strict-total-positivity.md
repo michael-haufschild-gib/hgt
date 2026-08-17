@@ -1,7 +1,7 @@
 # FID Shifted Hankel Strict Total Positivity
 
 - **ID:** fid-shifted-hankel-strict-total-positivity
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper), negative-control theorem for the proof route
 - **Source:** random formula-graph node 53/100, `PS12` in `docs/consolidated/revision01/formulas-graph.md`
 - **Statement:** The shifted FID Hankel matrix
@@ -20,7 +20,9 @@ Close a stronger false bridge than the already-retired "FID Hankel PSD implies R
 
 - [x] 0 -> 1 in-progress: random formula selected and checked against prior FID work
 - [x] 1 -> 2 fully-proven: Cauchy-Binet/Vandermonde proof complete
-- [ ] 2 -> 3 formalized: Lean theorem `<name>`, `lake build` green, `check_axioms.sh` PASS
+- [x] 2 -> 3 formalized: **DONE (2026-08-16)** — `GaloisForLFunctions.det_fidHankel_pos` in
+  `formal/GaloisForLFunctions/RHTower/FIDHankelTotalPositivity.lean`; `lake build` green; axiom
+  footprint `[propext, Classical.choice, Quot.sound]`
 - [ ] 3 -> 4 publication-ready: fold into the FID negative-control section if needed
 
 ## Proof
@@ -122,3 +124,51 @@ The script checks representative minors and records the `PS12` finite-part thres
 ## Log
 
 - 2026-06-21 -- Conway: created from random formula-graph node 53/100 (`PS12`). Basic FID PSD and generic finite-`T_0` divergence were already prior work; the new node is the stronger all-minor negative control.
+
+## Lean formalization — 2026-08-16
+
+**Modules** (all new, all wired into their umbrellas, all built, all headline theorems with axiom
+footprint `[propext, Classical.choice, Quot.sound]` — no `sorry`, no added axiom, no hypothesis):
+
+* `formal/GaloisForLFunctions/HTGeometry/SparsePolynomialPositiveRoots.lean`
+* `formal/GaloisForLFunctions/HTGeometry/GeneralizedVandermondePositive.lean`
+* `formal/GaloisForLFunctions/HTGeometry/CauchyBinet.lean`
+* `formal/GaloisForLFunctions/RHTower/FIDHankelTotalPositivity.lean`
+
+Three of the four are pure mathlib gaps: mathlib has neither Cauchy–Binet for a rectangular product,
+nor generalized Vandermonde positivity, nor a Descartes-type sparse root bound.
+
+| Paper step (§) | Lean name | Statement |
+|-|-|-|
+| `PS12`: `ζ(2k+3) = Σ_n n^{-3}(n^{-2})^k` | `fidNode`, `fidWeight`, `fidHankel`, `fidWeight_mul_fidNode_pow`, `summable_fidMoment` | the entries are the moments of the integer divisor `Σ_{n≥1} n^{-3} δ_{n^{-2}}` |
+| the entries really are zeta values | **`fidHankel_eq_riemannZeta`** | `ζ(2(i+j)+3) = fidHankel i j` |
+| Cauchy–Binet on the truncation | **`factorial_mul_det_mul`** (+ `det_mul_eq_sum_fun`) | `m!·det(A·B) = Σ_{f : Fin m → Fin N} det(A∘f)·det(f∘B)`, over any commutative ring — the permutation-symmetrised form, so no increasing-enumeration bookkeeping is needed and the non-injective `f` drop out automatically |
+| the generalized Vandermonde factors | `det_fidA_submatrix`, `det_fidB_submatrix` | each Cauchy–Binet term is `(∏ w) · det[x^{r_a}] · det[x^{c_b}]` on the selected support points |
+| "same orientation sign ⟹ product positive" | **`det_genVandermonde_mul_pos`** | for *unordered* selected points, sorting them (`Tuple.sort`) multiplies both determinants by the same sign, so the product is positive |
+| generalized Vandermonde positivity | **`det_genVandermonde_pos`** | `det[x_l^{r_a}] > 0` for `0 < x_0 < … < x_{m-1}` and `r_0 < … < r_{m-1}` |
+| the Descartes input for it | **`card_posRoots_succ_le`** | a nonzero real polynomial with `k` nonzero coefficients has at most `k−1` positive roots |
+| every truncated minor is positive | `det_fidTrunc_pos` | for `N ≥ m`, at least one injective index function contributes a strictly positive Cauchy–Binet term and all others are `≥ 0` |
+| "letting `N → ∞` is legitimate" | `det_fidTrunc_ge`, `tendsto_fidTrunc` | the truncated minors are nondecreasing (a larger truncation only adds nonnegative Cauchy–Binet terms) and converge, since each entry is a convergent series and the determinant is continuous |
+| **the theorem** | **`det_fidHankel_pos`** | every minor of `[ζ(2(r_a+c_b)+3)]` with strictly increasing `r`, `c` is strictly positive |
+
+### Faithfulness note on the limit step
+
+The card's own proof says "letting `N → ∞` is legitimate because each matrix entry converges and the
+determinant is a polynomial in the entries", and then concludes strict positivity from the fact that
+the limiting minor is "a positive convergent sum".  The Lean proof makes that last step precise
+without an infinite Cauchy–Binet expansion: the truncated minors are **nondecreasing** in `N`
+(`det_fidTrunc_ge`, because enlarging the support set only adds nonnegative Cauchy–Binet terms), so
+the limit is at least the `N = m` truncation, which is already strictly positive.
+
+### Not formalized (and not an obligation)
+
+The "Schur-Threshold Side Note" records `a_d = 2 log d + o(1)` explicitly as a **CONJECTURE**
+(numerically stable to `d = 40`) and states that "this rate observation is not used in the theorem
+above".  It is therefore outside the card's theorem and outside the 2→3 gate.
+
+## Log (cont.)
+
+- 2026-08-16 (Leaner) — **→ 3-formalized.**  `det_fidHankel_pos` closes the all-minor negative
+  control unconditionally.  Three reusable mathlib-gap modules were built for it: a Descartes-type
+  sparse positive-root bound, generalized Vandermonde positivity, and Cauchy–Binet for rectangular
+  products.

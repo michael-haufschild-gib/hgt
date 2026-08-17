@@ -934,3 +934,33 @@ applied to `gcd U W`, whose two divisibilities feed the hypothesis directly.
 With bridge item 2's `U` side (`CriticalSchurKernelLeadingCoefficient`) and item 3 now formal, what
 remains of the bridge is item 2's `V` side — the degree-zero part of `(6)` — and the identification
 of the corank-one kernel vector with the coefficient vector of `U`.
+
+## Bridge item 2's `V` side is now a theorem
+
+`HTGeometry/SyzygyConstantTerm.lean` (wired, axiom-clean).
+
+```
+syzygy_coeff_zero
+    t^L | (U Y + X V) ,  L >= 1     =>   U(0) Y(0) + X(0) V(0) = 0
+
+syzygy_coeff_zero_ne_zero
+    the same, over a domain, with  U(0) != 0  and  Y(0) != 0   =>   V(0) != 0
+```
+
+This is the card's "the degree-zero part of `(6)` then also makes `V(0)` nonzero", with no
+hypothesis on `X` at all: if `V(0)` vanished, the second product would drop out of the degree-zero
+identity and the first would have to vanish too, which a domain forbids once `U(0)` and `Y(0)` are
+nonzero.  The divisibility hypothesis is used only through `Polynomial.X_pow_dvd_iff` at index `0`.
+
+Bridge status after this and the previous two sections:
+
+```
+item 2, U side   CriticalSchurKernelLeadingCoefficient        DONE
+item 2, V side   SyzygyConstantTerm                            DONE  (this section)
+item 3           PolynomialPairCoprimality                     DONE
+```
+
+What remains of the bridge is the identification of the corank-one kernel vector with the
+coefficient vector of `U` — a statement about the corpus's own Schur matrix, not a new piece of
+algebra — and, separately from the bridge, the two `(4)` inputs recorded above: the inclusion of the
+root action in the geometric monodromy, and nontrivial simple inertia at the Schur collision.

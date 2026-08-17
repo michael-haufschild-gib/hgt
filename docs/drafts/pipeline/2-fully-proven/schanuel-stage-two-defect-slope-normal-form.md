@@ -122,11 +122,31 @@ one-dimensionality makes `ε₁` a basis, and nonvanishing of `ε₁` -- the def
 the coefficient unique.  `regulator_eq_base_add_branch` is the card's cancellation computation with
 the branch recorded as an integer, exactly as `(R)` states it.
 
+## Lean progress -- clause 1
+
+`formal/GaloisForLFunctions/HTGeometry/TranscendenceDegreeOneVariable.lean` and
+`formal/GaloisForLFunctions/RHTower/SchanuelStageTwoDegree.lean` (both new, umbrella-wired,
+axiom-clean) close clause 1.
+
+| Card item | Declaration | Module |
+|---|---|---|
+| `x_i != 0` from rational linear independence | `ne_zero_of_linearIndependent` | `SchanuelStageTwoDegree` |
+| Hermite--Lindemann: one of `z`, `exp z` is transcendental | `transcendental_or_transcendental_exp` | `SchanuelStageTwoDegree` (over the corpus `schanuelExtractionAt_one`) |
+| transcendence over `Q` is transcendence over an algebraic base | `transcendental_base_of_transcendental_rat` | `SchanuelStageTwoDegree` |
+| a one-variable extension has degree one | `trdeg_eq_one_of_transcendental` | `TranscendenceDegreeOneVariable` |
+| **clause 1**: a transcendental element and degree below two force degree exactly one | `trdeg_eq_one_of_transcendental_of_lt_two` | `SchanuelStageTwoDegree` |
+| adjoining a transcendental raises the degree by one | `trdeg_eq_add_one_of_transcendental` | `TranscendenceDegreeOneVariable` |
+| an algebraic extension preserves the degree | `trdeg_eq_of_isAlgebraic` | `TranscendenceDegreeOneVariable` |
+
+So `trdeg K = 1` is no longer an open Lean item: Hermite--Lindemann is in the corpus, and the
+cardinal squeeze `1 <= trdeg < 2` is proved against `Algebra.trdeg`.
+
 ### What remains
 
-Everything analytic or transcendence-theoretic:
+Everything analytic or transcendence-theoretic beyond clause 1:
 
-- clause 1, `trdeg K = 1`, which needs Hermite--Lindemann to exclude `trdeg K = 0`;
+- the instantiation bookkeeping that identifies the abstract base/value-field pair with
+  `Qbar` and `Qbar(x_1,x_2,y_1,y_2)` inside `C`;
 - one-dimensionality of `Ω_{K/Q̄}` for a transcendence-degree-one extension, the geometric input
   fed to `existsUnique_defectSlope`;
 - clause 3, transcendence of `ρ`, which needs the algebraic-coefficient defect theorem of

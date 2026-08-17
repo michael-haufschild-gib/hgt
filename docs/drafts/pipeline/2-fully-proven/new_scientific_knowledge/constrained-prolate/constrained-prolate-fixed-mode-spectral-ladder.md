@@ -4965,3 +4965,57 @@ limit itself.
 
 So `(3)` at `j = 0` is now unconditional *in the card's own normalization*, with the constant
 `2 sqrt(pi)` explicit.  What remains on this card is the Fuchs asymptotic with its constant `A_n`.
+
+## The sharp constant `A_n` is NOT needed for `(β)`: a two-sided ladder suffices
+
+`RHTower/TwoSidedRatioVanishing.lean` (wired, axiom-clean).
+
+```
+tendsto_div_of_rpow_twoSided
+    0 <= f(c) <= A c^a E(c) ,   B c^b E(c) <= g(c) ,   a < b ,   A, B > 0
+      ==>   f(c) / g(c) -> 0
+
+tendsto_consecutive_leakage_ratio
+    the same with E(c) = e^{-2c} and exponents k+1/2 , k+3/2
+```
+
+`tendsto_div_of_rpow_asymptotic` asked for asymptotic *equality* with constants, i.e. exactly the
+Fuchs asymptotic `d_n(c) ~ A_n c^{n+1/2} e^{-2c}` including its constant.  That is more than the
+threading uses.  Only the ratio `d_k / d_{k+1}` enters `(8)`, and a ratio needs no constants: an
+upper bound on the numerator and a lower bound on the denominator suffice, and the shared
+exponential cancels identically without ever being examined.
+
+So the `(β)` input to `(8)` is discharged by the *two-sided ladder* — which is the form this tree's
+prolate leakage estimates already take (`prolate_leakage_two_sided`,
+`prolateBand_barrier_ratio_two_sided`) — rather than by the sharp Fuchs constant.  What the card
+owes for `(β)` is therefore the instantiation of the existing two-sided leakage estimates at
+consecutive modes, not a new asymptotic analysis.
+
+## The third input of the `(8)` threading is now a theorem too
+
+`RHTower/SecularTailVanishing.lean` (wired, axiom-clean).
+
+```
+sum_subset_le_of_sum_le    a bound on a nonnegative sum bounds every subsum
+tendsto_tail_div_slack     0 <= T(c) <= C ,  M(c) -> infinity   ==>   T(c)/(M(c)-1) -> 0
+```
+
+Only two facts about the family are used: the infinite tail of the coordinate masses is bounded, and
+the gap slack grows.  The first is a Bessel inequality — the masses of a normalised vector against an
+orthonormal family sum to at most one, so *every* subfamily sum obeys the same bound uniformly in
+`c`, which is what `sum_subset_le_of_sum_le` records.
+
+With this the threading table is complete as Lean theorems:
+
+```
+(3)  coordinate limits  ell_j -> a_j    =>  S -> A,  L -> B     tendsto_prolateGround_shapeRatio
+                                                                 + ProlateCoordinateNormalization
+(beta) two-sided leakage ladder         =>  eps -> 0            tendsto_consecutive_leakage_ratio
+     bounded tail + growing slack       =>  T/(M-1) -> 0        tendsto_tail_div_slack
+     -----------------------------------------------------------------------------
+(8)  tendsto_secular_ratio_of_limits    =>  mu_k / d_{k+1} -> A/(A+B)
+```
+
+Every implication *and* every input shape is now formal.  What the card still owes is the
+instantiation of the two-sided leakage estimates at consecutive modes, and the coordinate limits at
+indices `j > 0`; the ground index `j = 0` is closed.

@@ -413,3 +413,25 @@ published robust-complexity results.
 4. projective moment rank--purity barrier `(19)`--`(23)`;
 5. finite incompatibility `(25)`--`(27)`;
 6. targeted `lake env lean` check and `#print axioms` audit, then one final module build.
+
+## Lean progress -- Theorem C, the purity half of the square-root barrier
+
+`formal/GaloisForLFunctions/HTGeometry/PurityRankBarrier.lean` (new, umbrella-wired, axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| **the purity bound**: a probability vector on `q` entries has squared mass at least `1/q` | `inv_card_le_sum_sq` |
+| the uniform distribution attains it, so the constant of `(23)` is sharp | `sum_sq_const_eq_inv_card` |
+| **the deficit of `(22)`**: a purity above `1/q` sits at least `1/q - 1/h` above the reference `1/h` | `deficit_ge` |
+
+`inv_card_le_sum_sq` is the card's "for every positive trace-one matrix of rank `q`, Cauchy--Schwarz
+on its nonzero eigenvalues gives `Tr(M²) ≥ 1/q`", stated at the level of the eigenvalue vector where
+the Cauchy--Schwarz actually happens.  `sum_sq_const_eq_inv_card` is the sharpness clause: uniform
+mass on `N` orthogonal replica vectors has purity exactly `1/N`.
+
+### What remains
+
+The identification of the eigenvalue vector with the spectrum of `M_ν` -- a positive trace-one
+matrix of rank at most `min{N, h_{D,r}}` supported on `Sym^r(ℂ^D)` -- and the expansion `(24)`
+that turns `‖(I-Π)M_ν‖²_HS` into `Tr(M_ν²) - 1/h_{D,r}`, which needs `Tr(M_ν Ω) = Tr(Ω²) = 1/h`.
+Theorems A and B, and Corollary D, are untouched.

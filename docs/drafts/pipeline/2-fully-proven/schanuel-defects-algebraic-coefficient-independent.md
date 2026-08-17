@@ -167,3 +167,31 @@ logarithms remain open Lean dependencies.
   ideal above its two factor contractions.
 - 2026-08-14 -- classified primitives in symmetric, group-graded, and tensor-product Hopf
   coordinates; proved every primitive regular function on `G_a^n x G_m^n` is additive-linear.
+
+## Lean status -- the integral floor is already in the corpus
+
+Searched before building.  The integral case of this card's statement -- independence over `ℤ`
+rather than over `Q̄` -- is formalized, together with the slope machinery the algebraic upgrade
+needs.
+
+| Card item | Existing declaration |
+|---|---|
+| the numerical logarithmic Kähler defect of one exponential pair, relative to `Q̄` | `schanuelDefect` (`RHTower/SchanuelDefectLattice.lean`) |
+| **the integral floor**: for a rationally independent tuple the defects are integrally independent | `schanuelDefect_integer_relation` (same module) |
+| a slope between two defects descends to any rank-one intermediate value field | `schanuelDefect_slope_mem_intermediateField_of_finrank_one` (`RHTower/SchanuelDefectValueField.lean`) |
+| the same under an integral isogeny of value fields | `schanuelDefect_slope_mem_of_integral_isogeny_field` (`RHTower/SchanuelIntegralIsogenyValueField.lean`) |
+
+The card's own gate note -- "formalized: exact theorem requires algebraic-group/Kähler-differential
+layer" -- is therefore accurate about the *upgrade* from `ℤ` to `Q̄`, not about the floor itself,
+which is done.
+
+Related and already formal: the abstract slope-uniqueness step this card feeds into
+`schanuel-stage-two-defect-slope-normal-form` is `existsUnique_defectSlope`
+(`HTGeometry/DefectSlopeNormalForm.lean`).
+
+### What remains
+
+The upgrade from integral to algebraic coefficients, which is where Baker enters.  The corpus Baker
+layer is the distinct-prime specialization (`RHTower.bakerLinearIndependence_holds`) plus full
+Gelfond--Schneider (`RHTower.gelfondSchneider_holds`); the general-logarithm form needed here is
+exactly the open target of `baker-general-logarithms-inhomogeneous-extension`.
