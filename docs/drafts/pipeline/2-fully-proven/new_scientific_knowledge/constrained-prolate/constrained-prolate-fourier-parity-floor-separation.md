@@ -2998,3 +2998,128 @@ corpus indices `n = m+1`, not just for the Fourier-even step `n = m+2` that
 Remaining to assemble: transport this quotient bound through the anchor comparison and the sharp
 mass ratio into a `LadderEnvelope` for the *full* (step-one) ladder, which is what the parity card's
 `(9)` and the sharpened `λ^{-4}` / `λ^{-7}` rates consume.
+
+### What this does to the P1–P6 programme
+
+`P4` is now **sharp with matching powers**, which it was not before.  The two collar bounds are
+
+```text
+exp(c Ξ_s(α)) / (6π √(c Ξ_s(α)))   ≤  Φ(α)  ≤  3 exp(c Ξ_s(α)) √(π/(2 c Ξ_s(α)))
+```
+
+— the *same* shape `exp(c Ξ_s(α))/√(c Ξ_s(α))`, so their quotient is the absolute constant
+`18π√(π/2)`.  Before `besselI0_le_exp_div_sqrt` the upper half was the loss-free `Φ(α) ≤ 1`, which
+misses the `1/√(c Ξ_s(α))` and therefore lost a half power of `c`.
+
+Status of the programme is therefore:
+
+```text
+P1  interior mass, two-sided                        DONE  tendsto_indexedRung_totalMass
+P2  exterior mass, two-sided ≍ 1/c                   DONE  eventually_signedLeakage_sharp_two_sided
+P3  transport on [K/√c, α], multiplicative 1+O(1/c)  OPEN  — the one remaining brick
+P4  the endpoint layer [α, 1], two-sided             DONE  (sharp as of this entry)
+P5  matching at the turning scale                    DONE  tendsto_anchor_ratio
+P6  assemble                                         waits on P3
+```
+
+`P3` is exactly the application the card already named: Liouville-transform the band equation and
+feed the corpus's `abs_le_exp_of_exponentialLG` (`HTGeometry/LiouvilleGreenExponentialErrorBound`)
+with the LG defect of the prolate barrier.  Away from the turning point the defect mass is `O(1/K)`
+uniformly in `c`, so the transport factor is `1 + O(1/K)` — matching powers, and the constant can be
+made as close to one as wanted by pushing the matching point `K` out.  The turning window itself is
+`P5`, which is why no Airy theory is needed.
+
+### `P3`, stated exactly: the amplitude transport from below
+
+The Liouville–Green route is not the cheapest way in, because
+`IsExponentialLGSolution` is a *hypothesis* (a Volterra representation) and deriving it for the
+prolate band needs variation of parameters plus an identification of the recessive branch.  The
+corpus's own amplitude transport gives the same precision with the machinery already present.
+
+Write `p = 1 − y²`, `q = c²(y² − s)`, `K = pq = prolateBandScale c s y`, and
+`G = prolateBandAmplitude c s Φ DΦ = Φ² + (pΦ')²/K`.  Then `(pΦ')² / K = Φ'²/(c²P²)` with
+`P = prolateWKBProfile s`, so with `v = prolateLogDeriv Φ = −Φ'/Φ` and `r = v/(cP)`,
+
+```text
+G = Φ² (1 + r²) ,        −G'/G = 2cP · 2r/(1+r²)  +  K'/K .
+```
+
+`2r/(1+r²) ≤ 1` is the AM–GM that gives the corpus's `prolateBandAmplitude_le_uniform`
+(`−G'/G ≤ prolateBandMajorant = 2cP + 2y/(y²−s) + 2y/(1−y²)`, whose integral is exactly
+`2c(Ξ(y₀) − Ξ(α)) + prolateScaleLog s y₀ α`).  The **missing lower transport** is the same identity
+read the other way:
+
+```text
+−G'/G ≥ prolateBandMajorant − 2cP·(1−r)²/(1+r²) − 2·(2y/(1−y²)) ,
+```
+
+so it suffices to bound the *deficit mass*
+
+```text
+D = ∫_{y₁}^{α} 2 c P(y) (1 − r(y))² dy .
+```
+
+Both sides of `r` are already theorems, and in the rescaled variable `x = y√c` (where
+`cP ≈ √c·√(x² − μ)`, `dy = dx/√c`) they give exactly the two decay rates the integral needs:
+
+```text
+v ≥ cP − M                       prolateWKB_sub_le_prolateLogDeriv (window δ = (1−α)/2 fixed,
+                                   so the loss 2y₁/(1−y₁²) + 2/δ is an absolute constant M)
+   ⇒ 1 − r ≤ M/(cP) = O(c^{-1/2})
+v ≤ prolateRadialBarrier c s y + 2√c   abs_prolateLogDeriv_le_shiftedBand
+   ⇒ r − 1 ≤ (√(1−s)·y/√(y²−s)) − 1 + O(c^{-1/2}) = μ/(2x²) + O(c^{-1/2})
+```
+
+Hence `2cP(1−r)² ≈ 2√c·√(x²−μ)·μ²/(4x⁴)` and `D = O(1/K²) + O(M²·c^{-1}·log c)`, uniformly in `c`:
+the transport from below matches the one from above up to `e^{-D}`, an absolute constant that tends
+to one as the matching point `K` is pushed out.
+
+That single estimate closes `P3`, and with it `P6`: `Φ(y₀)²` is then two-sided with matching powers,
+`prolateBand_sq_ratio_le`'s residual `exp(Λ) ≍ c` disappears, and `d_m/d_n = O(c^{-2(n−m)})` for
+adjacent corpus indices — which is the parity card's `(9)`, the `λ^{-4}` rate, and the `O(λ^{-7})`
+eigenvector rate.
+
+### `P3` step one: the sharp amplitude majorant is proved
+
+`formal/GaloisForLFunctions/HTGeometry/SturmAmplitudeSharpMajorant.lean` (wired into the `HTGeometry`
+umbrella, built, axioms `[propext, Classical.choice, Quot.sound]`):
+
+```text
+sturmRiccatiRatio p R DR K y = -(p y · DR y) / (sqrt (K y) · R y)
+sturmRiccatiRatio_spec
+sturmAmplitudeVar_eq_mul_one_add_sq :  G = R²(1 + rho²)
+sturmSharpMajorant p K DK y = 2 sqrt(K y)/p y + (K' y / K y)/2
+
+abs_logDeriv_sturmAmplitudeVar_sub_sharp :
+    |G'/G + sturmSharpMajorant|  ≤  2(sqrt K/p)(1 - rho)² + |K'/K|·|1 - rho²|/2
+
+sturmAmplitudeVar_sharp_transport :
+    G b · exp(∫_a^b (sharpMajorant - e))  ≤  G a  ≤  G b · exp(∫_a^b (sharpMajorant + e))
+```
+
+for any error control `e` dominating the quadratic Riccati defect.  The point is the factor `1/2` on
+the scale term: the corpus's `abs_deriv_sturmAmplitudeVar_le` keeps the whole `|K'|/K`, which is
+right for a generic solution but lossy by `sqrt(K(α)/K(y₀)) ≍ sqrt c` for the *recessive* branch,
+whose amplitude is `K^{-1/2}`.  Both error terms are **quadratic** in `rho - 1`, which is exactly
+what makes their mass finite while `|K'|/K` has mass `log c`.
+
+For the prolate band the instantiation data is already in the tree: `Q y = c²(s - y²)`,
+`p y = 1 - y²`, `K = prolateBandScale c s`, and
+
+```text
+Q y · p y = -(K y)                                    (definition unfolding)
+sqrt (K y) / p y = c · prolateWKBProfile s y          sqrt_prolateBandScale_mul (halved)
+K'/K = 2y/(y² - s) - 2y/(1 - y²)                      prolateBandScaleDeriv / prolateBandScale
+```
+
+so `∫_{y₀}^{α} sturmSharpMajorant = 2c(Ξ_s(y₀) - Ξ_s(α)) + (1/2) log(K(α)/K(y₀))`, which differs
+from the crude `prolateScaleLog s y₀ α` by exactly the missing half power.
+
+What remains for `P3` is the two-sided bound on `rho` itself,
+
+```text
+|1 - rho(y)| ≤ min( M/(c P(y)) , mu/(2x²) + O(c^{-1/2}) ) ,    x = y sqrt c ,
+```
+
+from `prolateWKB_sub_le_prolateLogDeriv` (below) and `abs_prolateLogDeriv_le_shiftedBand` (above),
+and the resulting error mass `∫ e = O(1/K²)` on `[K/sqrt c, α]`.

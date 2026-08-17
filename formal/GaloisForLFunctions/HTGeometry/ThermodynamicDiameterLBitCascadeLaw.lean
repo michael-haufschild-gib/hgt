@@ -84,6 +84,40 @@ def diameterScaledQuasiLocalInfiniteLBitEnergy
   ∑' S : Finset ℕ,
     diameterScaledQuasiLocalInfiniteLBitEnergyTerm g S σ
 
+/-- The original total interaction mass uniformly bounds every scaled infinite energy. -/
+theorem abs_diameterScaledQuasiLocalInfiniteLBitEnergy_le_mass
+    {g : ℝ} (hg0 : 0 ≤ g) (hg1 : g ≤ 1)
+    (σ : InfiniteLBitConfiguration) :
+    |diameterScaledQuasiLocalInfiniteLBitEnergy g σ| ≤
+      quasiLocalInfiniteLBitMass := by
+  calc
+    |diameterScaledQuasiLocalInfiniteLBitEnergy g σ|
+        ≤ ∑' S : Finset ℕ,
+            |diameterScaledQuasiLocalInfiniteLBitEnergyTerm g S σ| := by
+          simpa [diameterScaledQuasiLocalInfiniteLBitEnergy,
+            Real.norm_eq_abs] using
+            norm_tsum_le_tsum_norm
+              (show Summable
+                (fun S : Finset ℕ =>
+                  ‖diameterScaledQuasiLocalInfiniteLBitEnergyTerm g S σ‖) by
+                simpa [Real.norm_eq_abs] using
+                  summable_abs_diameterScaledQuasiLocalInfiniteLBitCoefficient
+                    hg0 hg1)
+    _ = ∑' S : Finset ℕ,
+          |diameterScaledQuasiLocalInfiniteLBitCoefficient g S| := by
+            apply tsum_congr
+            intro S
+            simp
+    _ ≤ ∑' S : Finset ℕ,
+          |quasiLocalInfiniteLBitCoefficient S| := by
+            exact Summable.tsum_le_tsum
+              (fun S => abs_diameterScaledQuasiLocalInfiniteLBitCoefficient_le
+                hg0 hg1 S)
+              (summable_abs_diameterScaledQuasiLocalInfiniteLBitCoefficient
+                hg0 hg1)
+              summable_abs_quasiLocalInfiniteLBitCoefficient
+    _ = quasiLocalInfiniteLBitMass := rfl
+
 /-- First-`n`-site restriction of the scaled infinite energy. -/
 def diameterScaledQuasiLocalInfiniteLBitWindowEnergy
     (g : ℝ) (n : ℕ) (σ : InfiniteLBitConfiguration) : ℝ :=

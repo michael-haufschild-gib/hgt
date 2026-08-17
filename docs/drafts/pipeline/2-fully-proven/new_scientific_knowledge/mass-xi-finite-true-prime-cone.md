@@ -9193,3 +9193,73 @@ estimates apply verbatim to the atoms of the criterion.
 Cutting the atom series at the retreated height and subtracting the continuum: the truncation
 `∑'_n → ∑_{n ≤ M}` with the tail controlled by `exists_bound_xiMassJetPrimeTail_endpoint` (prime
 part) and the prime-power defect, then the filtered continuum face and the moving-cutoff criterion.
+
+### C42-T: `(22.8)`, `(22.10)`, `(22.11)` — the retreated window criterion (2026-08-17)
+
+The hierarchy now closes on the logarithmic layer: the jet atom series may be cut at the retreated
+cutoff with only a uniformly bounded exterior, and the truncated sum is an exact RH criterion.
+
+    RHTower/VonMangoldtRpowTail.lean
+      vonMangoldtRpowTailConstant,
+        sum_vonMangoldt_rpow_dyadic_block_le,
+        sum_vonMangoldt_rpow_dyadic_tail_le,
+        sum_vonMangoldt_rpow_tail_le          the Chebyshev tail over **all** integers:
+                                              `∑_{n>X}Λ(n)n^{-1-δ} ≤ 2^δ C_δ X^{-δ}`, from
+                                              `ψ(x) ≤ 7x` — no logarithmic loss
+    RHTower/LogRpowTail.sum_log_rpow_tail_le  its `log n` companion
+
+    RHTower/XiMassJetAtomTail.lean
+      norm_lseriesTerm_vonMangoldt_nat
+      norm_xiMassJetAtom_le,
+        sum_norm_xiMassJetAtom_subset_le      the exterior atom majorant over all integers
+      exists_bound_xiMassJetAtomTail_endpoint **(22.8)/(22.10)** at `q_{2N} = (N+1/2)/m_B`, over the
+                                              full von Mangoldt index
+
+    RHTower/XiMassJetAtomTruncation.lean
+      sum_norm_xiMassJetAtom_finset_le,
+        summable_norm_xiMassPolyCenteredPrimeAtom,
+        norm_tsum_sub_sum_xiMassPolyCenteredPrimeAtom_le
+                                              cutting at an exterior cutoff costs a bounded amount
+
+    RHTower/XiMassJetRetreatExterior.lean
+      xiMassJetRetreatCutoff, _eq, _le
+      exists_bound_xiMassJetAtomSeries_retreat **the retreated cut has a uniformly bounded exterior**
+
+    RHTower/XiMassJetAtomSymmetry.lean
+      conj_xiMassJetAnalyticTest_ofReal, xiMassJetAnalyticTest_neg,
+        conj_stripFourier_xiMassJetAnalyticTest,
+        conj_xiMassPolyCenteredPrimeAtom_jet,
+        norm_tsum_xiMassPolyCenteredPrimeAtom_jet_neg
+                                              one vertical half-line suffices
+
+    RHTower/XiMassJetRetreatCriterion.lean
+      xiMassJetRetreatSum, norm_xiMassPolyCenteredPrimeAtom_jet_le,
+        norm_xiMassJetRetreatSum_le_crude
+      riemannHypothesis_iff_exists_xiMassJetRetreatSum_bound
+                                              RH ⟺ the truncated jet atom sum at the endpoint
+                                              retreat is bounded on the positive half-line
+
+    RHTower/XiMassJetWindowCriterion.lean
+      xiMassJetWindowCutoff, xiMassJetWindowSum
+      exists_bound_xiMassJetWindowSum_exterior
+      riemannHypothesis_iff_exists_xiMassJetWindowSum_bound
+                                              **(22.11)**: for every prescribed `0 ≤ Q ≤ q_{2N}`,
+                                              i.e. every `Q` with `N + 1/2 ≥ m_B Q`, RH is
+                                              equivalent to uniform boundedness of the jet atom sum
+                                              truncated at `⌊e^{κ_B u − Q log u}⌋`
+
+Note on the shape of the criterion.  The card states `(22.11)` for the prime *quadrature defect*,
+which subtracts the continuum density because the raw prime sum is unbounded.  The Lean criterion
+subtracts nothing: the exact source identity puts the whole continuum contribution into the
+archimedean face, which `norm_integral_xiMassPolyBottomArchIntegrand_le_uniform` shows is uniformly
+bounded on every vertical line.  This is the corpus's own `xiMassBottomPrimeLineBound` pattern, and
+it is a strictly cleaner statement of the same mechanism.
+
+### Remaining for C42-T
+
+Only the `L_c u^{1/10}` layer of `(22.9)`: the retreat proved here is `Q log u`, while the card's
+`H_{N,q,B}` also carries the `PNTPlus`-critical `L_c u^{1/10}`, which is paid for by the
+prime-number-theorem remainder rather than by the transport prefactor.  That is the filtered
+analogue of `exists_eventually_norm_logSubcausticWindowDefect_le`, i.e. §19's `(19.3)` window
+estimate re-run with the polynomial weight; the exterior action bookkeeping for it is already
+available as `xiMassAction_penetration_le` plus `norm_xiMassPolySquare_weight_le`.

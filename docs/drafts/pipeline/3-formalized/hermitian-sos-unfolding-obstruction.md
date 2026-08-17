@@ -83,6 +83,41 @@ Sums of squares are therefore the wrong certificate class for realizability with
 cannot see the peak lattice at all. The correct certificates remain the per-hump exponential profiles
 of `LogConcaveSeparation`.
 
+## The converse holds for one conjugate pair
+
+The obstruction is not merely necessary. For a comparison with a **single** pair it is the whole
+story:
+
+> `R(t) − 2e^{βt}cos(γ t)` is a sum of Hermitian squares  ⟸  `R(t) ≥ 2e^{βt}` for all `t`,
+
+the hypothesis being exactly nonnegativity of the unfolding. `onePair_isSumHermitianSquares`.
+
+Proof: split `R(t) − 2e^{βt}cos(γ t) = [R(t) − 2e^{βt}] + 2e^{βt}(1 − cos γ t)`. The second bracket
+is the explicit Hermitian square above. The first is a nonnegative signomial with commensurable
+exponents, `S(t) = e^{−mt} p(e^{ρ t})` with `p ≥ 0` on `(0,∞)`, and
+
+**Theorem.** A nonnegative signomial with commensurable exponents is a sum of two squares of
+signomials. `isSumHermitianSquares_signomial`.
+
+which follows from the substitution `y ↦ y²` — turning nonnegativity on the half-line into
+nonnegativity on the line — together with
+
+**Theorem (mathlib gap, built here).** A real polynomial in one variable that is nonnegative on ℝ is
+a sum of two squares of polynomials. `exists_sq_add_sq_of_nonneg`; half-line form
+`exists_sq_add_sq_comp_sq`.
+
+proved by induction on the degree: a nonconstant nonnegative polynomial has an irreducible factor of
+degree one or two (`Irreducible.natDegree_le_two`); a linear factor forces a double root, because a
+zero of a nonnegative function is a minimum and the derivative vanishes there; an irreducible
+quadratic is `(X + b/2)² + (c − b²/4)` with positive constant term because it has no real root; and
+`(u²+v²)(a²+b²) = (ua+vb)² + (ub−va)²` closes the induction. Neither mathlib nor the corpus had this.
+
+Closure of the Hermitian-square cone under sums is `IsSumHermitianSquares.add`.
+
+So for one conjugate pair the classification is complete: **sum of Hermitian squares ⟺ phase-blind
+domination `R ≥ 2e^{βt}`**, strictly stronger than the arc criterion, with the gap measured by the
+threshold family above.
+
 ## Modules
 
 ```
@@ -90,13 +125,19 @@ formal/GaloisForLFunctions/HTGeometry/ComplexExpUnfolding.lean
 formal/GaloisForLFunctions/HTGeometry/HermitianSOSUnfolding.lean
 formal/GaloisForLFunctions/HTGeometry/HermitianSOSCounterexample.lean
 formal/GaloisForLFunctions/HTGeometry/HermitianSOSExtremal.lean
+formal/GaloisForLFunctions/HTGeometry/UnivariateSumOfTwoSquares.lean
+formal/GaloisForLFunctions/HTGeometry/OnePairSumOfSquares.lean
 ```
 
 ## Open
 
-* Is nonnegativity of the unfolding also **sufficient**? The unfolding of `f` is a signomial in one
-  real and one angular variable, nonnegative on `ℝ_{>0} × 𝕋`; a Fejér–Riesz theorem there would give
-  a converse. Two variables is exactly where psd = sos can fail, so this is not routine.
+* Sufficiency beyond `W`-degree one. The unfolding of `f` is a signomial on `ℝ_{>0} × 𝕋`; the
+  question is whether every such nonnegative signomial is a sum of Hermitian squares. Degree one in
+  `W` is settled affirmatively above (and the degree-one Gram argument `p₀ ± 2p₁ = ∑ squares` works
+  verbatim). Higher `W`-degree is a genuine two-variable psd-versus-sos question; note that the usual
+  Newton-polytope obstruction is unavailable, because the `W` direction carries no Newton constraint
+  and the only forced-diagonal `Z`-exponents are the two extremes, where the coefficient is a
+  nonnegative trigonometric polynomial and Fejér–Riesz applies.
 * The purely real-exponent analogue: for exponents spanning a ℚ-space of dimension `d ≥ 2` the same
   argument applies with ℚ-linear deformations of the exponents in place of the phase shift, which
   needs a Hamel basis and is not formalized here.

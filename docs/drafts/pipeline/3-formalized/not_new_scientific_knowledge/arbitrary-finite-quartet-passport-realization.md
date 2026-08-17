@@ -247,6 +247,62 @@ the equivariant CRT and positive repair.
   Schwarz, zero-free-axis, exact-order-one, and aperiodicity guards.
 - The statement remains `[NOVELTY UNVERIFIED]`; absence from the local corpus is not a literature gate.
 
+
+## Lean formalization — 2026-08-17
+
+Five new modules complete the capstone the card asked for.  Everything is axiom-clean and wired
+into the `GaloisForLFunctions.RHTower` umbrella.
+
+| New module | Content |
+|---|---|
+| `RHTower/CoshPolynomialQuasiPeriod.lean` | the **quasi-period** classification: `A(z+h)P(z+h) = C·A(z)P(z)` with `C ≠ 0` forces `h = 0`.  The tree only had the additive case `C = 1`.  A quasi-period still maps zeros to zeros, so the existing zero-orbit machinery forces `h ∈ πiℤ`; cancelling the envelope leaves `P(z+h) = C P(z)`, and comparing **leading coefficients** of `P ∘ (X+h) = C·P` gives `C = 1` |
+| `RHTower/EnvelopeJetAgreement.lean` | the jet-agreement calculus: `iteratedDeriv_mul_congr` (Leibniz), `iteratedDeriv_envelopeProduct_eq_linear` (matching the jets of `ε(z-w)/A` makes `A·B` match those of the linear germ `ε(z-w)`), `simpleZero_of_envelopeProduct_jets` |
+| `RHTower/QuartetSymmetryJets.lean` | jets under the two quartet symmetries, analytic (`iteratedDeriv_comp_neg`, `iteratedDeriv_of_even`) and polynomial (`iterate_derivative_comp_neg_eval`, `iterate_derivative_map_conj_eval`) |
+| `RHTower/QuartetPassportRealizer.lean` | all global guards of `F = A·B`, plus the affine transfer `X(s) = F(-i(s-1/2))` giving `X(1-s) = X(s)`, Schwarz reality, and the zero-free **real** axis |
+| `RHTower/QuartetPassportCapstone.lean` | the assembly |
+
+| Card step | Lean name |
+|---|---|
+| the four points `α, -α, conj α, -conj α` and the two slot involutions | `quartetPoint`, `neg4`, `conj4`, `sign4`, `quartetPoint_neg4`, `quartetPoint_conj4` |
+| symmetry-compatible Hermite interpolation, equation (1) | `quartetTarget`, `quartetBasePoly`, `quartetBasePoly_jets` |
+| the CRT compatibility conditions | `quartetTarget_jet_neg`, `quartetTarget_jet_conj` |
+| degree bound `deg B_0 < D = 4 Σ_j (N_j+2)`, equation (2) | `natDegree_finiteHermiteModulus`, `sum_quartet_index` |
+| the repair `B_L = B_0 + L R` preserves every prescribed jet, equation (3) | `X_sub_C_dvd_quartetFlatPolynomial`, `X_sub_C_pow_dvd_simultaneousFlatPolynomial`, `iterate_derivative_eval_eq_zero_of_pow_dvd` |
+| positivity `B_L(iy) > 0`, equation (4) | `exists_quartet_passport_polynomial` (via `exists_scalar_add_mul_pos_real_on_imaginaryAxis`) |
+| **the realized entire function**, equations (5)–(6) | `exists_quartet_passport_realizer` |
+| item 1, FE and Schwarz symmetry | `quartetRealizerStrip_one_sub`, `quartetRealizerStrip_conj` |
+| item 2, exact order one and aperiodicity | `quartetRealizer_exact_order_one_bounds`, `quartetRealizer_periodic_iff` |
+| item 3, zero-free real axis | `quartetRealizerStrip_ne_zero_on_realAxis` |
+| item 4, simple zeros | `simpleZero_of_envelopeProduct_jets`, and the `n ≤ N_j+1` jet clause of the capstone |
+| item 5, full-germ separation | `quartetRealizer_quasiPeriodic_eq_zero` |
+
+Three points worth recording.
+
+* **The equivariance conditions are made structural.**  Rather than computing the jets of
+  `ε_w x / A(w+x)` at all four points of a quartet and checking the sign/conjugation rules, the four
+  targets are *generated* from the base one by `P`, `P ∘ (-X)`, `P̄`, `P̄ ∘ (-X)`.  The CRT's two
+  hypotheses then reduce to polynomial identities.
+* **Only the head jet is analytic.**  The prescribed germ is verified at `α_j` alone; evenness and
+  Schwarz reality of `F` propagate it to the other three points of the quartet, which is exactly the
+  card's sign rule `ε_{-w} = -ε_w`, `ε_{conj w} = ε_w`.
+* **A defect found in the existing repair interface.**  The packaged
+  `exists_scalar_add_simultaneousFlatPolynomial_pos_real_on_imaginaryAxis`
+  (`RHTower/ImaginaryAxisPositiveRepair.lean`) is vacuous: its hypothesis
+  `∀ i y, (y : ℂ)^2 + (α i)^2 ≠ 0` binds `y` at type `ℂ` — the ascription is a no-op — and no `α i`
+  satisfies it, since `y = ± i·α i` is a root.  The intended reading quantifies `y` over `ℝ`.  The
+  capstone therefore calls the primitive `exists_scalar_add_mul_pos_real_on_imaginaryAxis` and
+  supplies packet positivity from `simultaneousFlatPolynomial_mul_I_pos_real`, whose `y : ℝ` is a
+  genuine parameter.  The packaged lemma should be restated.
+
+**Not formalized (and not obligations of this card).**  The two remaining card gates are audits, not
+formalization: the independent proof audit of the CRT averaging and quasi-period argument, and the
+literature/parent-theory audit required before any scientific-novelty promotion.  The card is
+`[NOVELTY UNVERIFIED]` and stays so.
+
+Verification: `lake build GaloisForLFunctions.RHTower.QuartetPassportCapstone` — PASS;
+`#print axioms` on all named results across the five modules reports only
+`[propext, Classical.choice, Quot.sound]`.
+
 ## Gates
 
 - [x] 0 -> 1: arbitrary-location formulation, symmetry-compatible interpolation, and global repair were
@@ -254,7 +310,8 @@ the equivariant CRT and positive repair.
 - [x] 1 -> 2: CRT realization, positivity repair, flux-prefix equality, full-germ separation, exact order,
   and aperiodicity have complete proofs above.
 - [ ] independent audit of the invariant CRT averaging and quasi-period argument.
-- [ ] 2 -> 3: the degree-bounded equivariant CRT, packet positivity, global scalar repair, and
+- [x] 2 -> 3: the degree-bounded equivariant CRT, packet positivity, global scalar repair, and
   cosh-envelope realizability, product period classification, and exact entire order one are
-  formalized; assemble the arbitrary finite-packet capstone.
+  formalized; the arbitrary finite-packet capstone is assembled
+  (`RHTower/QuartetPassportCapstone.lean`, `exists_quartet_passport_realizer`).
 - [ ] complete literature and parent-theory audit before any scientific-novelty promotion.

@@ -146,6 +146,7 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-17 | `leaf-reflection-bohr-projection-catastrophe` | new `RHTower/LeafReflectionBohrProjection.lean` (all four items of the card's Lean target, incl. the full nonnormality statement via the in-tree Vitali theorem, and the coefficient criterion proved rather than cited) |
 | 2026-08-17 | `semilocal-sonin-two-place-positive-association` | new `RHTower/SoninSemilocalTwoPlaceCovariance.lean` (Poisson expansion + Tonelli + covariance assembly on top of the corpus Gamma-measure characteristic function) |
 | 2026-08-17 | `entire-heat-holonomic-finite-spectrum` | new `HTGeometry/EntireHeatHolonomicFiniteSpectrum.lean` (includes an unconditional proof of D-finite ⟹ P-recursive for formal power series, previously absent from mathlib and the corpus) |
+| 2026-08-17 | `arbitrary-finite-quartet-passport-realization` | five new `RHTower` modules: `CoshPolynomialQuasiPeriod`, `EnvelopeJetAgreement`, `QuartetSymmetryJets`, `QuartetPassportRealizer`, `QuartetPassportCapstone`; also records that `exists_scalar_add_simultaneousFlatPolynomial_pos_real_on_imaginaryAxis` is vacuous as stated |
 
 ## Already carrying a stage-3 certificate (verify, then move the paper card)
 

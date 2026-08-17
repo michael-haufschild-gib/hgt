@@ -560,3 +560,118 @@ The route that avoids both an iterated integration by parts and a contour rotati
    sharper base;
 3. `ζ = u/(2z)` has nonnegative real part exactly when `Re z ≥ 0`, and `|ζ|^m = u^m/(2|z|)^m`, so the
    remainder integrates against `e^{-u}u^{1/2+m}` and the modulus of `z` appears to the power `-m`.
+
+## Lean progress -- the sectorial remainder is closed
+
+Four more modules (umbrella-wired, axiom-clean) prove the modulus-remainder form of the all-orders
+`K_1` asymptotic that item 4 needs.
+
+`formal/GaloisForLFunctions/HTGeometry/ComplexBinomialHalfPlane.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the falling-factorial majorant with no radius factor | `cbinomHalfCoeff`, `cbinomHalfCoeff_succ` |
+| the closed right half plane lies in the slit plane, with modulus at least one | `one_add_mem_slitPlane_of_re_nonneg`, `one_le_norm_one_add_of_re_nonneg` |
+| the inductive step, isolated | `norm_cbinomRem_succ_le_of_pred_halfPlane` |
+| **the binomial remainder on the closed right half plane**, at every nonpositive exponent | `norm_cbinomRem_le_of_re_nonneg` |
+| **the same at every positive order for every exponent at most one** | `norm_cbinomRem_succ_le_of_re_nonneg` |
+
+The disc of radius one half gave `‖1+u‖ ≥ 1/2`; the closed right half plane gives `‖1+u‖ ≥ 1`, which
+is sharper *and* carries no restriction on `‖u‖`.  That is the whole gain: the same induction now
+covers arguments of any size.
+
+`formal/GaloisForLFunctions/HTGeometry/BesselK1RayRepresentation.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the substituted Gaussian profile and the ray profile | `gaussProfileSub`, `rayProfileReal`, `gaussProfileSub_sq`, `gaussProfileSub_div_eq` |
+| **the ray substitution for a real spectral parameter** | `integral_gaussProfile_eq_ray` |
+| the ray integrand and its integral | `rayShellPow`, `besselK1RayIntegrand`, `besselK1Ray` |
+| **the ray representation at a real spectral parameter** | `besselK1C_ofReal_eq_ray` |
+
+Substituting `u = b v²` in the Gaussian form is two standard half-line substitutions
+(`integral_comp_rpow_Ioi` and a dilation), and `(1+v²)/√(2+v²)` becomes
+`2(1+u/2b)^{1/2} − (1+u/2b)^{-1/2}` because `1 + u/b = 2(1 + u/2b) − 1`.
+
+`formal/GaloisForLFunctions/HTGeometry/BesselK1RayHolomorphy.lean`:
+
+| Card item | Declaration |
+|---|---|
+| on the right half plane the ray base has real part at least one | `re_ray_frac_nonneg`, `one_le_re_ray_base`, `ray_base_mem_slitPlane` |
+| bounds for the shell powers and the integrand | `norm_rayShellPow_le_one`, `norm_rayShellPow_half_le`, `norm_besselK1RayIntegrand_le` |
+| integrability against the Gamma integrands | `integrableOn_rayBound`, `integrableOn_besselK1RayIntegrand` |
+| the derivative in the parameter, and its bound | `rayShellPowDeriv`, `hasDerivAt_rayShellPow`, `norm_rayShellPowDeriv_le`, `norm_besselK1RayIntegrandDeriv_le` |
+| **differentiating under the integral sign** | `hasDerivAt_besselK1Ray` |
+| **the ray representation on the whole right half plane** | `besselK1RayModel`, `besselK1Ray_eq_model`, `besselK1C_eq_ray` |
+
+This is what replaces a contour rotation.  The identity is proved where the substitution is an
+ordinary real change of variables -- on the positive real axis -- and both sides are holomorphic on
+the right half plane, which is connected; the identity theorem does the rest.
+
+`formal/GaloisForLFunctions/HTGeometry/BesselK1SectorialRemainder.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the ray moments, and their Gamma values | `rayMomentIntegrand`, `integrableOn_rayMomentIntegrand`, `integral_rayMomentIntegrand` |
+| the ray coefficients and the remainder integrand | `rayCoeff`, `rayRemIntegrand`, `besselK1RayIntegrand_split` |
+| **the ray expansion with its remainder** | `besselK1Ray_eq_sum_add_rem` |
+| the remainder bound, pointwise and integrated | `rayRemConst`, `norm_rayRemIntegrand_le`, `norm_integral_rayRem_le` |
+| **the all-orders asymptotic with a modulus remainder** | `norm_besselK1C_sub_raySum_le` |
+
+The remainder is `C_m e^{-Re z}(2‖z‖)^{-1/2}(2‖z‖)^{-m}`: the real part appears only in the
+unavoidable `e^{-Re z}`, and every power of decay is a power of the **modulus**.  This is exactly the
+"fixed closed subsector containing the positive imaginary direction" clause, and it is what the
+earlier Watson-based bound could not give.
+
+### What remains
+
+1. identifying the ray coefficients with the corpus's Poincaré coefficients:
+   `rayCoeff k = √2 · 2^k · √π · besselK1Coeff k`, which reduces to
+   `Γ(k+1/2) = √π · gaussianMomentFactor k` and
+   `2·cbinomCoeff(1/2,k) − cbinomCoeff(-1/2,k) = √2 · 2^k · schlafliCoeff k` -- the latter being the
+   Pascal identity `cbinomCoeff(1/2,k) = cbinomCoeff(-1/2,k) + cbinomCoeff(-1/2,k-1)`, i.e.
+   `(1+x)^{1/2} = (1+x)(1+x)^{-1/2}`;
+2. the carrier-level statement: combining `massBesselCarrier_eq_distortion`,
+   `norm_shellCarrierProfile_sub_trunc_le` and the sectorial remainder;
+3. the dyadic assembly, mirroring `RHTower.MassBesselDyadicAperture` at general order.
+
+## Lean progress -- the sectorial remainder, in the corpus's normalization
+
+Two more modules (umbrella-wired, axiom-clean) put the sectorial bound into the exact form the
+carrier identity consumes.
+
+`formal/GaloisForLFunctions/HTGeometry/BesselK1RayCoefficients.lean`:
+
+| Card item | Declaration |
+|---|---|
+| **the half-integer Gamma values are the Gaussian moment factors** | `gaussianMomentFactor_succ`, `gamma_add_half` |
+| the shifted binomial coefficient against the plain one | `binomCoeff_eq_cbinomCoeff` |
+| **the Pascal relation** `C(1/2,k+1) = C(-1/2,k+1) + C(-1/2,k)` | `cbinomCoeff_half_succ` |
+| **the ray numerators are the Schläfli coefficients** | `two_cbinom_sub_eq_schlafli` |
+| **`rayCoeff k = √2 · 2^k · √π · besselK1Coeff k`** | `rayCoeff_eq` |
+
+The Pascal relation is `(1+x)^{1/2} = (1+x)(1+x)^{-1/2}` read off coefficient by coefficient, and it
+is what makes the *pair* of ray powers collapse to the single Schläfli coefficient.
+
+`formal/GaloisForLFunctions/HTGeometry/BesselK1SectorialPoincare.lean`:
+
+| Card item | Declaration |
+|---|---|
+| a positive real factor splits out of a principal power | `ofReal_mul_cpow`, `arg_ne_pi_of_re_pos` |
+| the two normalizing powers | `two_mul_cpow_half`, `pi_div_cpow_half` |
+| **the two normalizations agree** | `raySum_eq_poincare` |
+| **the all-orders asymptotic with a modulus remainder, in Poincaré form** | `norm_besselK1C_sub_poincare_le_norm` |
+
+This is the statement item 4 needs, in the corpus's own coefficients:
+
+  ‖K_1(w) − e^{-w}(π/w)^{1/2} Σ_{k<m+1} q_k w^{-k}‖
+      ≤ e^{-Re w} (2‖w‖)^{-1/2} · rayRemConst(m+1) / (2‖w‖)^{m+1}.
+
+The real part appears only in the unavoidable `e^{-Re w}`; every power of decay is a power of the
+modulus.  The blocker recorded two sections above is closed.
+
+### What remains
+
+1. the carrier-level statement: combining `massBesselCarrier_eq_distortion`,
+   `norm_shellCarrierProfile_sub_trunc_le` and `norm_besselK1C_sub_poincare_le_norm`;
+2. the dyadic assembly at general order, mirroring `RHTower.MassBesselDyadicAperture`.

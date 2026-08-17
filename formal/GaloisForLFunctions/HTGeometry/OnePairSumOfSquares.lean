@@ -51,30 +51,38 @@ theorem IsSumHermitianSquares.add {f g : ℝ → ℝ} (hf : IsSumHermitianSquare
   rw [hv₁ t, hv₂ t, Fin.sum_univ_add]
   congr 1
   · refine Finset.sum_congr rfl (fun i _ => ?_)
-    rw [Fin.addCases_left, hrow₁ i]
+    simp only [Fin.addCases_left]
+    rw [hrow₁ i]
   · refine Finset.sum_congr rfl (fun i _ => ?_)
-    rw [Fin.addCases_right, hrow₂ i]
+    simp only [Fin.addCases_right]
+    rw [hrow₂ i]
 
-/-- The square of a signomial `e^{τ t} A(e^{σ t})` is a Hermitian square. -/
-theorem isSumHermitianSquares_sq_polyExp (A : ℝ[X]) (σ τ : ℝ) :
-    IsSumHermitianSquares (fun t => (Real.exp (τ * t) * A.eval (Real.exp (σ * t))) ^ 2) := by
-  refine ⟨1, A.natDegree + 1, ![fun j => ((A.coeff (j : ℕ) : ℝ) : ℂ)],
-    fun j => (((j : ℕ) * σ + τ : ℝ) : ℂ), fun t => ?_⟩
-  have hrow : (∑ j : Fin (A.natDegree + 1),
-        ((A.coeff (j : ℕ) : ℝ) : ℂ) * Complex.exp ((((j : ℕ) * σ + τ : ℝ) : ℂ) * t))
-      = ((Real.exp (τ * t) * A.eval (Real.exp (σ * t)) : ℝ) : ℂ) := by
-    rw [eval_eq_sum_range]
-    push_cast
-    rw [Finset.mul_sum, ← Fin.sum_univ_eq_sum_range
-      (fun j => ((Real.exp (τ * t) : ℂ) * ((A.coeff j : ℝ) : ℂ)
-        * ((Real.exp (σ * t) : ℂ) ^ j)))]
+/-- The square of a real exponential sum is a Hermitian square. -/
+theorem isSumHermitianSquares_sq {m : ℕ} (d a : Fin m → ℝ) :
+    IsSumHermitianSquares (fun t => (∑ j, d j * Real.exp (a j * t)) ^ 2) := by
+  refine ⟨1, m, ![fun j => ((d j : ℝ) : ℂ)], fun j => ((a j : ℝ) : ℂ), fun t => ?_⟩
+  show (∑ j, d j * Real.exp (a j * t)) ^ 2 = _
+  rw [Fin.sum_univ_one, Matrix.cons_val_zero]
+  have hz : (∑ j, ((d j : ℝ) : ℂ) * Complex.exp (((a j : ℝ) : ℂ) * t))
+      = (((∑ j, d j * Real.exp (a j * t) : ℝ)) : ℂ) := by
+    rw [Complex.ofReal_sum]
     refine Finset.sum_congr rfl (fun j _ => ?_)
-    rw [show ((((j : ℕ) : ℝ) * σ + τ : ℝ) : ℂ) * (t : ℂ)
-        = (((σ * t : ℝ) : ℂ)) * (j : ℕ) + ((τ * t : ℝ) : ℂ) from by push_cast; ring,
-      Complex.exp_add, Complex.exp_nat_mul]
-    push_cast
-    ring
-  rw [Fin.sum_univ_one, Matrix.cons_val_zero, hrow, Complex.normSq_ofReal]
+    rw [Complex.ofReal_mul,
+      show ((a j : ℝ) : ℂ) * (t : ℂ) = ((a j * t : ℝ) : ℂ) from by push_cast; ring,
+      ← Complex.ofReal_exp]
+  rw [hz, Complex.normSq_ofReal]
+  ring
+
+/-- A polynomial in `e^{σ t}` scaled by `e^{τ t}` is a real exponential sum. -/
+theorem polyExp_eq_expSumReal (A : ℝ[X]) (σ τ t : ℝ) :
+    Real.exp (τ * t) * A.eval (Real.exp (σ * t))
+      = ∑ j : Fin (A.natDegree + 1), A.coeff (j : ℕ) * Real.exp ((((j : ℕ) : ℝ) * σ + τ) * t) := by
+  rw [Fin.sum_univ_eq_sum_range
+      (fun j => A.coeff j * Real.exp (((j : ℝ) * σ + τ) * t)) (A.natDegree + 1),
+    eval_eq_sum_range, Finset.mul_sum]
+  refine Finset.sum_congr rfl (fun j _ => ?_)
+  rw [show ((j : ℝ) * σ + τ) * t = (j : ℝ) * (σ * t) + τ * t from by ring, Real.exp_add,
+    ← Real.exp_nat_mul]
   ring
 
 /-- **A nonnegative signomial with commensurable exponents is a sum of two squares.** -/
@@ -84,8 +92,7 @@ theorem isSumHermitianSquares_signomial (p : ℝ[X]) (ρ m : ℝ)
   have hp0 : ∀ y : ℝ, 0 ≤ y → 0 ≤ p.eval y := by
     intro y hy
     rcases eq_or_lt_of_le hy with heq | hlt
-    · -- continuity at the endpoint
-      by_contra hcon
+    · by_contra hcon
       push Not at hcon
       have hcont : ContinuousAt (fun z => p.eval z) y := (Polynomial.continuous p).continuousAt
       have hev : ∀ᶠ z in nhds y, p.eval z < 0 := hcont.eventually (eventually_lt_nhds hcon)
@@ -95,7 +102,7 @@ theorem isSumHermitianSquares_signomial (p : ℝ[X]) (ρ m : ℝ)
         rw [Real.dist_eq, add_sub_cancel_left, abs_of_pos (by linarith)]
         linarith
       exact absurd (hp (y + ε / 2) (by rw [← heq]; linarith)) (not_le.mpr hy2)
-    · exact (hp y hlt).le.trans_eq' rfl |>.trans (le_refl _)
+    · exact hp y hlt
   obtain ⟨A, B, hAB⟩ := exists_sq_add_sq_comp_sq p hp0
   have hrewrite : ∀ t : ℝ, Real.exp (-(m * t)) * p.eval (Real.exp (ρ * t))
       = (Real.exp (-(m / 2) * t) * A.eval (Real.exp ((ρ / 2) * t))) ^ 2
@@ -110,17 +117,34 @@ theorem isSumHermitianSquares_signomial (p : ℝ[X]) (ρ m : ℝ)
       congr 1
       ring
     calc Real.exp (-(m * t)) * p.eval (Real.exp (ρ * t))
-        = Real.exp (-(m / 2) * t) ^ 2 * p.eval (Real.exp ((ρ / 2) * t) ^ 2) := by
-          rw [hy, hex]
+        = Real.exp (-(m / 2) * t) ^ 2 * p.eval (Real.exp ((ρ / 2) * t) ^ 2) := by rw [hy, hex]
       _ = Real.exp (-(m / 2) * t) ^ 2
             * ((A.eval (Real.exp ((ρ / 2) * t))) ^ 2 + (B.eval (Real.exp ((ρ / 2) * t))) ^ 2) := by
           rw [hAB]
       _ = _ := by ring
-  have h1 := isSumHermitianSquares_sq_polyExp A (ρ / 2) (-(m / 2))
-  have h2 := isSumHermitianSquares_sq_polyExp B (ρ / 2) (-(m / 2))
-  have := h1.add h2
-  obtain ⟨L, m', v, μ, hv⟩ := this
-  exact ⟨L, m', v, μ, fun t => by rw [hrewrite t, ← hv t]⟩
+  have hsqA : IsSumHermitianSquares
+      (fun t => (Real.exp (-(m / 2) * t) * A.eval (Real.exp ((ρ / 2) * t))) ^ 2) := by
+    obtain ⟨L, m', v, μ, hv⟩ := isSumHermitianSquares_sq
+      (fun j : Fin (A.natDegree + 1) => A.coeff (j : ℕ))
+      (fun j : Fin (A.natDegree + 1) => ((j : ℕ) : ℝ) * (ρ / 2) + -(m / 2))
+    refine ⟨L, m', v, μ, fun t => ?_⟩
+    show (Real.exp (-(m / 2) * t) * A.eval (Real.exp ((ρ / 2) * t))) ^ 2 = _
+    rw [polyExp_eq_expSumReal A (ρ / 2) (-(m / 2)) t]
+    exact hv t
+  have hsqB : IsSumHermitianSquares
+      (fun t => (Real.exp (-(m / 2) * t) * B.eval (Real.exp ((ρ / 2) * t))) ^ 2) := by
+    obtain ⟨L, m', v, μ, hv⟩ := isSumHermitianSquares_sq
+      (fun j : Fin (B.natDegree + 1) => B.coeff (j : ℕ))
+      (fun j : Fin (B.natDegree + 1) => ((j : ℕ) : ℝ) * (ρ / 2) + -(m / 2))
+    refine ⟨L, m', v, μ, fun t => ?_⟩
+    show (Real.exp (-(m / 2) * t) * B.eval (Real.exp ((ρ / 2) * t))) ^ 2 = _
+    rw [polyExp_eq_expSumReal B (ρ / 2) (-(m / 2)) t]
+    exact hv t
+  obtain ⟨L, m', v, μ, hv⟩ := hsqA.add hsqB
+  refine ⟨L, m', v, μ, fun t => ?_⟩
+  show Real.exp (-(m * t)) * p.eval (Real.exp (ρ * t)) = _
+  rw [hrewrite t]
+  exact hv t
 
 /-- The one-pair contribution is a single Hermitian square. -/
 theorem isSumHermitianSquares_pair (β γ : ℝ) :

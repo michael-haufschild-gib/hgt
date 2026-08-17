@@ -4094,3 +4094,27 @@ Item 4's open piece is now isolated and is *not* the distortion: it is the secto
 remainder for `K_1` with the modulus rather than the real part in the decaying factor.  The card
 records the three-step route (ray representation for real argument plus the identity theorem, the
 binomial remainder on the closed right half plane, and the resulting `|z|^{-m}`).
+
+## mass-bessel-infinite-radiation-jet-obstruction -- the sectorial K_1 remainder
+
+`HTGeometry.ComplexBinomialHalfPlane` (binomial remainder on the closed right half plane, no radius
+restriction), `HTGeometry.BesselK1RayRepresentation` (the ray substitution at a real parameter),
+`HTGeometry.BesselK1RayHolomorphy` (differentiation under the integral sign, and the ray
+representation on the whole right half plane by the identity theorem),
+`HTGeometry.BesselK1SectorialRemainder` (`norm_besselK1C_sub_raySum_le`: the all-orders asymptotic
+whose remainder decays in the *modulus* of the argument).
+
+All umbrella-wired, `lake build`-clean, axioms exactly `[propext, Classical.choice, Quot.sound]`.
+This closes the blocker recorded in the previous entry.  Remaining on the card: identifying the ray
+coefficients with `besselK1Coeff`, the carrier-level statement, and the dyadic assembly.
+
+## mass-bessel-infinite-radiation-jet-obstruction -- sectorial remainder in Poincaré form
+
+`HTGeometry.BesselK1RayCoefficients` (`gamma_add_half`, `cbinomCoeff_half_succ`,
+`two_cbinom_sub_eq_schlafli`, `rayCoeff_eq`) and `HTGeometry.BesselK1SectorialPoincare`
+(`raySum_eq_poincare`, `norm_besselK1C_sub_poincare_le_norm`).
+
+All umbrella-wired, `lake build`-clean, axioms exactly `[propext, Classical.choice, Quot.sound]`.
+The all-orders `K_1` asymptotic now has a remainder decaying in the modulus, written in the corpus's
+own Poincaré coefficients.  Remaining on the card: the carrier-level statement and the dyadic
+assembly.
