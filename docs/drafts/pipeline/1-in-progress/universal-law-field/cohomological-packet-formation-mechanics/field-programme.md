@@ -1,0 +1,152 @@
+# Cohomological Packet Formation Mechanics — field programme
+
+- **ID:** ULF-CPFM-PROGRAMME
+- **Stage:** 1-in-progress
+- **Type:** HIGHER-MECHANISM CORRECTION / FIELD PROGRAMME
+- **Source:** hostile audit of higher-rank Hilbert-cocycle packetization
+- **Status:** `[MECHANISM, NOT OBJECT] [H1/H2 DEGREE SEPARATION CLOSED FINITELY] [LEAN CALIBRATION CLOSED]`
+  `[HIGHER-RANK SELECTION OPEN] [NOT RH]`
+
+## 1. Pivot
+
+Many terminal corpus quantities are not point defects.  They are alternating pair packets,
+determinants, crossing areas, or central carries assembled from lower-order source responses.  The
+formation operation raises cohomological degree:
+
+\[
+ \text{source charge}\quad\longmapsto\quad
+ \text{pair packet}\quad\longmapsto\quad
+ \text{central commutator/extension class}.
+\]
+
+The new field question is therefore not only whether route defects are cocycles.  It is:
+
+> which source formations transgress degree-
+> \(r\) response data into degree-\(r+1\) history, and which global rigidity laws survive that
+> degree change?
+
+This is a mechanism question.  Ordinary property-(T) controls affine Hilbert \(1\)-cocycles.  A
+Plücker area is naturally central \(2\)-cocycle data.  Moving from the latter to the former requires
+an additional coefficient representation/transgression; it cannot be obtained by renaming the
+central packet.
+
+## 2. First exact law
+
+The Stage-2 theorem
+`plucker-packet-central-commutator-reconstruction-and-h1-degree-wall-law.md` constructs, for every
+finite response vector \(a\), a canonical two-step formation group whose single commutator has
+central coordinate
+
+\[
+ C_a(i,j)=a_i-a_j.
+\]
+
+With source weights \(\mu_i\), the central quadratic work is exactly
+
+\[
+ \sum_{i,j}\mu_i\mu_j C_a(i,j)^2
+ =2\left(\sum_i\mu_i\right)\left(\sum_i\mu_i a_i^2\right)
+  -2\left(\sum_i\mu_i a_i\right)^2.
+\]
+
+Thus one formula fuses four structurally different organs:
+
+1. pair-relation incidence \(a_i-a_j\);
+2. positive Gram/Plücker determinant;
+3. noncommuting central history;
+4. power-history scaling \([g^m,h^n]=[g,h]^{mn}\).
+
+The marked weighted mean plus the central packet reconstructs every \(a_i\).  Reflection
+\(a\mapsto c\mathbf 1-a\) reverses the oriented central packet and preserves its positive work.
+This is the exact algebraic form of “positivity is an orientation quotient” for this formation.
+
+## 3. Correction to the higher-rank rigidity programme
+
+The finite theorem separates three claims that had been conflated:
+
+1. **central packetization:** construct one group commutator whose central coordinate is the full
+   pair packet — now closed;
+2. **Hilbert packetization:** construct a unitary representation \(\pi\), a Hilbert \(1\)-cocycle
+   \(b\), and packet elements \(g_F\) with
+   \(\|b(g_F)\|^2=E_F\) — open;
+3. **higher-rank rigidity:** place that same \((\pi,b)\) on one fixed property-(T) source group —
+   open.
+
+Claim 1 does not imply Claim 2.  Every homomorphism from the two-step group to an abelian reporter
+kills the commutator.  More generally, the central coordinate is a \(1\)-cochain whose additive
+defect is the defining \(2\)-cocycle.  Delorme--Guichardet applies only after a genuine unitary
+\(1\)-cocycle has been constructed.
+
+If Claim 2 and property-(T) do hold, then \(b(g)=\pi(g)\xi-\xi\) for one \(\xi\), so
+
+\[
+ E_F=\|b(g_F)\|^2\le 4\|\xi\|^2.
+\]
+
+Hence Hilbert packetization already contains the uniform bound needed by the proposed RH
+contradiction.  It remains a valid proof target, but it is not a formal consequence of the central
+extension or the \(A_2\) rank jump.
+
+## 4. Candidate higher laws
+
+### CPFM-A — formation transgression
+
+An arity-\(r\) source response has a canonical alternating formation in degree \(r+1\), compatible
+with source composition and observer restriction.  The two-step packet theorem is the \(r=1\)
+calibration.
+
+### CPFM-B — cohomological conservation
+
+Observer reduction may move a defect between degrees but cannot erase total transgressed charge.
+A valid statement must be an exact triangle/long-exact-sequence identity, not equality of unrelated
+scalar norms.
+
+### CPFM-C — degree-matched rigidity
+
+Selection requires rigidity in the degree where formation places the charge: Hilbert fixed-point
+rigidity after an explicit degree-lowering representation, or bounded/central-extension rigidity
+directly in degree two.  Property-(T) alone is not a degree-two theorem.
+
+### CPFM-D — cofinal properness
+
+For a source-generated packet tower, bounded observer history plus bounded transgressed work should
+make the lifted packet tower compact.  Failure must produce a canonical boundary state or a
+nontrivial higher cohomology class, not an unnamed “escape”.
+
+## 5. Acceptance gate
+
+CPFM advances the universal field only after one of these is proved:
+
+1. a source-derived degree-lowering representation sends the central packet to one Hilbert
+   \(1\)-cocycle value without using a divisor location;
+2. a source-derived bounded \(H^2\) or relative-central rigidity theorem directly controls the
+   packet extension;
+3. the same transgression law is executed on three nonisomorphic literal source organs and predicts
+   a fourth response.
+
+Until then the finite theorem is a field correction and a strong bridge, not an RH proof.
+
+## 6. Parent boundary
+
+- Free two-step nilpotent Lie algebras \(V\oplus\Lambda^2V\) and generalized Heisenberg groups are
+  classical; see Cagliero--Gutiérrez--Szechtman,
+  <https://arxiv.org/abs/1703.06214>.
+- Property-(T)/property-(FH) and vanishing of unitary first cohomology are the
+  Delorme--Guichardet theorem; see Bekka--de la Harpe--Valette,
+  <https://ncatlab.org/nlab/files/BekkaHarpeValetteOnKashdanPropertyT.pdf>.
+- Central extensions are degree-two cohomology; a categorical reference is
+  <https://arxiv.org/abs/math/0511357>.
+- Current-algebra residue extensions are established parent mathematics; see
+  <https://arxiv.org/abs/0812.2625>.
+
+The corpus-specific advance is the exact identification of a full weighted obstruction packet with
+one central commutator, its reconstruction law, and the resulting correction of the property-(T)
+packetization gate.
+
+## Log
+
+- 2026-08-17 — opened after higher-rank fusion audit found that the existing packet is naturally
+  degree-two central data while the proposed rigidity theorem acts in degree one.
+- 2026-08-17 — finite formation group, central packet, integer-power scaling, Gram conservation,
+  reconstruction, reflection neutrality, and additive-reporter erasure formalized in
+  `ConstitutiveCohomologicalPacketFormation.lean`; higher-rank selection gates remain open.

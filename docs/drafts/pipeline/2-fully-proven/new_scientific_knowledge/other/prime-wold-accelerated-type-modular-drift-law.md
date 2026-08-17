@@ -674,3 +674,90 @@ Primary parent:
 - [ ] prove conservative multiplicity-faithful Xi Cartier base change
 - [ ] dependency-closed RH proof
 - [ ] unconditional Lean formalization
+
+## Lean progress — §2, §3, §4 closed unconditionally
+
+`GaloisForLFunctions.RHTower.AcceleratedWoldType` formalizes the accelerated scale, the exact
+accelerated type of the reflected Hellinger sewing cost, and the universal no-sewing theorem.  All
+statements are unconditional and axiom-clean (`[propext, Classical.choice, Quot.sound]`).
+
+```text
+ell2 y = Real.log (1 + Real.log (1 + y))                                   -- (2)
+ell2_mono, ell2_nonneg
+tendsto_mul_ell2_zero_of_log_le                                            -- (4)
+    a → 0⁺  and  log (1 + R_N) ≤ C · (a_N)⁻¹ ^ K   ⟹   a_N · ℓ₂ (R_N) → 0
+mertensPrimeProductBelow_pos, tendsto_mertensPrimeProductBelow_zero
+tendsto_logReflectedSewingBelow_atTop
+tendsto_mertensProduct_mul_ell2_reflectedSewing                            -- (6)
+    a_N · ℓ₂ (H_N(-c) / H_N(c))  →  2 e^(-γ) c        for every 0 < c < 1/2
+le_opNorm_of_map_eq                                                        -- (12)
+    R v = w,  v ≠ 0   ⟹   ‖w‖ / ‖v‖ ≤ ‖R‖
+eventually_lt_mertensProduct_mul_ell2_of_ge                                -- (11), scalar form
+le_of_tendsto_mul_ell2_of_ge                                               -- (11), limit form
+eventually_lt_mertensProduct_mul_ell2_opNorm                               -- (10)–(11)
+    R_N : E_N →L[ℝ] F_N,  R_N v_N = w_N,  ‖v_N‖ = H_N(c),  ‖w_N‖ = H_N(-c)
+    ⟹  ∀ ε > 0, eventually  2 e^(-γ) c − ε  <  a_N · ℓ₂ ‖R_N‖
+```
+
+The spaces `E_N`, `F_N` are arbitrary normed spaces and may vary with the cutoff, which is the
+"no dimension restriction" of §4.
+
+The two analytic inputs were already owned by the tree: Mertens' third theorem
+(`RHTower.MertensThirdTheorem.tendsto_mertensPrimeProduct_mul_log`) and the logarithmic growth rate
+of the sewing cost (`RHTower.tendsto_log_logReflectedSewing_div_log`, giving
+`tendsto_mertensProduct_mul_log_logReflectedSewing : a_N · log log (H_N(-c)/H_N(c)) → 2 e^(-γ) c`).
+What was missing is the passage from `log ∘ log` to the scale `ℓ₂` that the card's definition `(3)`
+uses — the two differ by a bounded amount once the cost exceeds `e`, and `a_N → 0` erases it — and
+the two obstruction theorems built on it.
+
+The corpus works with the squared Hellinger affinity throughout, which is the convention in which
+the constant is exactly `2 e^(-γ) c`.
+
+Remaining for stage 3: §5's three source scales, §6's four-chart modular charge dictionary, and
+§7's finite-divisor noncreation theorem (its abstract half — invariance of accelerated type zero
+under a fixed scalar multiple, finite sums and Cauchy majorants — is elementary; the operator-valued
+Cauchy estimate is the analytic input).
+
+### §7's abstract half
+
+The stability statements the finite-divisor noncreation argument uses are also proved in the same
+module:
+
+```text
+ell2_le_add                              ℓ₂ (x + y) ≤ ℓ₂ x + ℓ₂ y
+tendsto_mul_ell2_zero_of_le_const_mul    R_N ≤ C · S_N and S has type zero ⟹ R has type zero
+tendsto_mul_ell2_zero_of_le_add          R_N ≤ S_N + T_N, both type zero ⟹ R has type zero
+```
+
+`(24)` is exactly the first of these with `C = j! r^(-j)` and `S_N = sup_K ‖T_x‖`, and "fixed finite
+linear combinations" is the second.
+
+`(22)` ⇒ `(23)` is then closed outright:
+
+```text
+tendsto_mul_ell2_iteratedDeriv_zero
+    T_N holomorphic on ball ρ r, continuous on its closure, ‖T_N z‖ ≤ M_N on the boundary circle,
+    a_N · ℓ₂ (M_N) → 0    ⟹    a_N · ℓ₂ ‖iteratedDeriv j (T_N) ρ‖ → 0   for every fixed j
+```
+
+for operator families valued in an arbitrary complex Banach space — Cauchy's estimate
+(`Complex.norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le`) followed by the fixed-multiple
+stability.  Sections 2, 3, 4 and 7 of the card are therefore unconditional in Lean.
+
+### §5's saturation law, in abstract form
+
+```text
+tendsto_mertensProduct_mul_ell2_of_tendsto
+    log S_N → ∞  ⟹  ℓ₂ and log∘log have the same accelerated type
+tendsto_mertensProduct_mul_ell2_of_log_linear
+    log S_N / N → κ > 0   ⟹   a_N · ℓ₂ (S_N) → e^(-γ),  for every κ
+```
+
+The second is `(18)` and `(18k)` stripped to their mechanism: a family whose logarithm grows
+linearly in the cutoff has the maximal boundary type `e^(-γ)` whatever the growth constant — which is
+exactly the magnitude erasure the card attributes to scalarization.  Instantiating it needs only
+`log B_x(c) = (|c| + o(1)) ϑ(x)` together with `ϑ(x) ∼ x`; the abstract law is unconditional.
+
+Note the contrast with `tendsto_mul_ell2_zero_of_log_le`: logarithm growing like `a_N^(-K)` gives
+type zero, logarithm growing like `N` gives type `e^(-γ)`.  Mertens' third theorem is what puts
+these two on opposite sides — `a_N^(-1) ∼ e^(γ) log N` is exponentially smaller than `N`.

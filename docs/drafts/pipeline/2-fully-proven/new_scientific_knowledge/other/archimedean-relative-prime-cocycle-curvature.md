@@ -423,3 +423,46 @@ What remains for full formalization of this card is therefore only the *analytic
 hull with its compact group structure and its identification of characters with frequencies, the
 minimal annihilating differential polynomial and its separant, and the analytic implicit function
 theorem on the regular jet locus.
+
+## Lean progress — the prime-log Gamma fixed-field law `(12)`
+
+`GaloisForLFunctions.HTGeometry.IndexTranslationRigidity` formalizes the algebraic core of the
+fixed-field law, unconditionally and axiom-clean (`[propext, Classical.choice, Quot.sound]`).
+
+The Gamma-coordinate description turns `K^alg_(Gamma,Lambda)` into the rational function field on
+variables indexed by `Lambda`, and `tau_mu` into the index translation `X_lambda |-> X_(lambda+mu)`.
+The module proves the rigidity that makes `(12)` work:
+
+```text
+nsmul_injective_of_infiniteOrder    n |-> n • mu is injective when mu has infinite order
+eq_empty_of_image_add_eq            a finite subset of a group invariant under an infinite-order
+                                    translation is empty
+indexTranslation mu                 the induced algebra automorphism of MvPolynomial Lambda K
+vars_indexTranslation               vars (indexTranslation mu P) = image (· + mu) (vars P)
+isRelPrime_indexTranslation         the automorphism preserves "no common nonunit factor"
+vars_eq_empty_of_dvd_indexTranslation
+    P divides its own translate and conversely  ==>  P is a constant
+vars_eq_empty_of_indexTranslation_invariant, eq_C_of_indexTranslation_invariant
+    P, Q nonzero with no common nonunit factor and
+    (indexTranslation mu P) * Q = P * (indexTranslation mu Q)
+      ==>  P and Q are constants
+```
+
+The last statement is exactly `(12)` at the level of the underlying rational function field: a
+ratio in lowest terms invariant under a nonzero prime-log translation has constant numerator and
+denominator.  The step "essential support is intrinsic" is discharged by the tree's
+`mvPolynomial_vars_subset_of_dvd` (divisibility in a multivariable polynomial domain cannot remove
+a variable), so numerator and translate divide each other and therefore have the same variables;
+the combinatorial half is `eq_empty_of_image_add_eq`.
+
+Note that `IsRelPrime` (no common nonunit factor), not mathlib's Bezout-style `IsCoprime`, is the
+correct hypothesis in a multivariable polynomial ring; the two differ there.
+
+What remains for `(12)` in full: the differential coordinates — the same argument run on the
+differential rational function field on the jets `X_lambda^(j)` rather than on the plain variables.
+The combinatorial and support-rigidity halves are shared; the added content is the intrinsic
+essential support of a differential rational function, for which the tree already owns
+`FreeJetTranslationFixedField` and `DifferentialLurothVariableSupport`.
+
+The other two named inputs remain imported paper steps: Wang--Yao's algebraic independence of
+incongruent Gamma translates and Hardouin--Singer's multiplicative dependence criterion.

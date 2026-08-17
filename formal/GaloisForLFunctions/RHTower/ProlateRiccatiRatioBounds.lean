@@ -76,7 +76,6 @@ theorem sturmRiccatiRatio_prolate {c s y : ℝ} {Φ DΦ : ℝ → ℝ} (hc : 0 <
     exact Real.sqrt_pos.2 (by positivity)
   rw [sturmRiccatiRatio, sqrt_prolateBandScale_eq hc hsy hy, prolateLogDeriv, hDΦ]
   field_simp
-  ring
 
 /-- **The logarithmic derivative from below, with the midpoint window.**  Both losses of the
 endpoint bound are at most `4/(1-y)`. -/
@@ -103,19 +102,18 @@ theorem prolateWKB_sub_eight_le_prolateLogDeriv {c χ y : ℝ} {Φ : ℝ → ℝ
   have h2 : 2 / (y₁ - y) = 4 / (1 - y) := by
     rw [hgap]
     field_simp
-  linarith [hbase, h1, h2.le, h2.ge]
+    norm_num
+  have h84 : 8 / (1 - y) = 4 / (1 - y) + 4 / (1 - y) := by ring
+  linarith [hbase, h1, h2.le, h2.ge, h84.le, h84.ge]
 
 /-- **The Riccati ratio is one to an elementary defect.** -/
 theorem abs_one_sub_sturmRiccatiRatio_prolate_le {c s y : ℝ} {Φ DΦ : ℝ → ℝ}
-    (hc : 0 < c) (hs0 : 0 ≤ s) (hsy : s < y ^ 2) (hy0 : 0 < y) (hy1 : y < 1)
+    (hc : 0 < c) (hsy : s < y ^ 2) (hy0 : 0 < y) (hy1 : y < 1)
     (hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ)
     (heig : ∀ t ∈ Icc (-1 : ℝ) 1, prolateSLAction c Φ t = -(s * c ^ 2) * Φ t)
-    (hΦ1 : Φ 1 = 1)
-    (hcond : 0 ≤ -(s * c ^ 2) * (2 - y ^ 2) + c ^ 2 * y ^ 2)
     (hpos : ∀ t ∈ Icc y 1, 0 < Φ t)
-    (hbarrier : ∀ t ∈ Icc y 1, prolateLogDeriv Φ t
-      ≤ prolateAnchoredBarrier c (-(s * c ^ 2)) t)
-    (hs1 : s < 1) :
+    (hbarrier : prolateLogDeriv Φ y ≤ prolateAnchoredBarrier c (-(s * c ^ 2)) y)
+    (hDΦ : DΦ y = deriv Φ y) (hs1 : s < 1) :
     |1 - sturmRiccatiRatio (fun t => 1 - t ^ 2) Φ DΦ (prolateBandScale c s) y|
       ≤ (1 / y + 9 / (1 - y)) / (c * prolateWKBProfile s y) := by
   have hy2 : y ^ 2 < 1 := by nlinarith
@@ -128,7 +126,35 @@ theorem abs_one_sub_sturmRiccatiRatio_prolate_le {c s y : ℝ} {Φ DΦ : ℝ →
   have hcP : 0 < c * prolateWKBProfile s y := by positivity
   have hW : prolateWKB c (-(s * c ^ 2)) y = c * prolateWKBProfile s y :=
     prolateWKB_eq_mul_profile hc.le
-  sorry
+  have hc2 : (0 : ℝ) < c ^ 2 := by positivity
+  have hWlow := prolateWKB_sub_eight_le_prolateLogDeriv (c := c) (χ := -(s * c ^ 2)) (Φ := Φ)
+    hsm heig (by nlinarith) hy0.le hy1 hpos
+    (fun t ht => by
+      have hty : y ≤ t := ht.1
+      have ht0 : 0 < t := lt_of_lt_of_le hy0 hty
+      have hsq : y ^ 2 ≤ t ^ 2 := by nlinarith
+      nlinarith [hsq, hsy, hc2]) (by nlinarith)
+  rw [hW] at hWlow
+  have hup := hbarrier
+  rw [prolateAnchoredBarrier, hW] at hup
+  have hratio : sturmRiccatiRatio (fun t => 1 - t ^ 2) Φ DΦ (prolateBandScale c s) y
+      = prolateLogDeriv Φ y / (c * prolateWKBProfile s y) :=
+    sturmRiccatiRatio_prolate hc hsy hy2 hΦy hDΦ
+  have hpy : (0 : ℝ) < 1 / y := by positivity
+  have hp1y : (0 : ℝ) < 1 / (1 - y) := by positivity
+  have habs : |c * prolateWKBProfile s y - prolateLogDeriv Φ y| ≤ 1 / y + 9 / (1 - y) := by
+    rw [abs_le]
+    have h8 : 8 / (1 - y) = 8 * (1 / (1 - y)) := by ring
+    have h9' : 9 / (1 - y) = 9 * (1 / (1 - y)) := by ring
+    constructor
+    · linarith [hup, hpy, hp1y, h9'.le, h9'.ge]
+    · linarith [hWlow, hpy, h8.le, h8.ge, h9'.le, h9'.ge]
+  rw [hratio]
+  have hval : 1 - prolateLogDeriv Φ y / (c * prolateWKBProfile s y)
+      = (c * prolateWKBProfile s y - prolateLogDeriv Φ y) / (c * prolateWKBProfile s y) := by
+    field_simp
+  rw [hval, abs_div, abs_of_pos hcP]
+  exact div_le_div_of_nonneg_right habs hcP.le
 
 end GaloisForLFunctions.RHTower
 

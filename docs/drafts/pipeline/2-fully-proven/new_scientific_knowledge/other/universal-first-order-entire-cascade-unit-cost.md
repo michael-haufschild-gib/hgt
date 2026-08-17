@@ -9935,3 +9935,20 @@ is a finite torsion-free `topInt m`-module, and the extended maximal ideal is no
 
 **The frontier is now item 3 alone**: the restatement of the peel over the extended datum, and
 Reduction I's analytic selection of the place.
+
+## Update: the head determinant is proved
+
+`HTGeometry/ExpPolyAllHeights.lean` (axiom-clean, wired into `GaloisForLFunctions.HTGeometry`)
+discharges the hypothesis `det (headJetJacobian (polyQ A d) (polyV d) m) ≠ 0` at every height:
+
+```text
+polyV_linear                        the terminal factors of the product law are linear
+headJetJacobian_det_ne_zero_all     the head determinant is nonzero for every m
+exactDifferentialOrder_expPolyCascade_all
+    for polynomials A_k of degree at least one and nonzero c_k, the length-(m+1) cascade of
+    d_k + c_k · exp (A_k w) has differential order exactly m+1
+```
+
+so the consolidated status above is superseded on that line: the polynomial-coefficient family is
+unconditional at **every** length, not modulo a determinant.  The card's remaining gap is the
+general first-order cascade — Reduction III and its Wiman initial law.

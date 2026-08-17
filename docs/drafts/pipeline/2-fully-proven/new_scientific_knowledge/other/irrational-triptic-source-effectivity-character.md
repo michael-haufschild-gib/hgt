@@ -264,7 +264,7 @@ five-face homotopy limit.  No such result is inserted as an axiom.
 - [x] five deletion tests recorded
 - [x] differential-cohomology and limit-theory parent collision explicit
 - [ ] global analytic-subring packaging of the source boundary in Lean
-- [ ] whole-product `sigma` and `tau` source equations packaged in Lean
+- [x] whole-product `sigma` and `tau` source equations packaged in Lean
 - [ ] FHRZ/differential-character comparison formalized in Lean
 - [ ] independent specialist proof and novelty audit
 
@@ -284,3 +284,30 @@ Thus this card remains a positive fibrewise effectivity model.  The new open pro
 prove that such models assemble functorially over changes and degenerations of source frame, rather
 than assuming the standard frame as part of the input.  See
 `../../1-in-progress/hypertranscendental-stabilizer-enriched-realization-stack.md`.
+
+## Lean progress — the whole-product source equations are closed
+
+The gate "whole-product `sigma` and `tau` source equations packaged in Lean" is met.
+`GaloisForLFunctions.HTGeometry.EllipticGammaProductSourceEquation` proves both, unconditionally
+and axiom-clean (`[propext, Classical.choice, Quot.sound]`), for the genuine convergent double
+product and not for a formal surrogate:
+
+```text
+ellipticGammaProduct_add_sigma :
+  0 < im sigma, 0 < im tau, and the backward product nonzero at z
+    ==>  Gamma(z + sigma) = Theta_tau(z) * Gamma(z)
+ellipticGammaProduct_add_tau :
+  same hypotheses
+    ==>  Gamma(z + tau) = Theta_sigma(z) * Gamma(z)
+ellipticGammaForwardProduct_add_one, ellipticGammaBackwardProduct_add_one :
+  exact period one
+```
+
+The nonvanishing hypothesis is the regular locus: the identity is an identity of meromorphic
+functions and the two sides are compared where the backward product does not vanish.  The
+supporting reindexings `ellipticGammaForwardProduct_add_sigma`,
+`ellipticGammaBackwardProduct_eq_boundary_mul_add_sigma` and their `tau` counterparts are proved in
+the same module.
+
+The remaining Lean gates of this card are the global analytic-subring packaging of the source
+boundary and the FHRZ/differential-character comparison.

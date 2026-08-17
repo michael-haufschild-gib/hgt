@@ -2,8 +2,7 @@
 
 Audit date: 2026-08-17
 
-Scope: every one of the 24 entries present in `references.tex` before audit,
-plus every
+Scope: every one of the 30 entries now present in `references.tex`, plus every
 claim directly attached to a citation in `body.tex`. Sources below are
 publisher records, author-hosted records, or arXiv records maintained from the
 authors' submissions. Search-result aggregators were not used as authority.
@@ -56,11 +55,18 @@ authors' submissions. Search-result aggregators were not used as authority.
 | `RiddellPagliaroliAlhambra2023` | Corrected second-author initials; title, *SciPost Physics* 15, 165 (2023), arXiv identifier verified. | [arXiv:2206.07541](https://arxiv.org/abs/2206.07541) |
 | `RiddellPagliaroli2023` | Updated publication metadata; authors, title, *Journal of Statistical Physics* 191, article 141 (2024), arXiv identifier verified. | [Springer](https://link.springer.com/article/10.1007/s10955-024-03354-0) |
 | `KotowskiOszmaniecHorodecki2025` | Verified: three authors, title, JHEP 01, article 116 (2025), arXiv identifier. | [Springer](https://link.springer.com/article/10.1007/JHEP01%282025%29116) |
+| `HaahEtAl2023` | Verified: four authors, title, *SIAM Journal on Computing* 52 publication record and arXiv identifier; source also states matching worst-case one-dimensional piecewise-local lower bound used in prose. | [arXiv:1801.03922](https://arxiv.org/abs/1801.03922) |
+| `LowEtAl2023` | Verified: four authors, title, *PRX Quantum* 4, 020323 (2023), arXiv identifier; abstract supports generic commuting two-local lower-bound comparison. | [arXiv:2211.09133](https://arxiv.org/abs/2211.09133) |
+| `ZlokapaEtAl2026` | Verified: three authors, title, arXiv identifier and 2026 preprint status; abstract supports local bounded-degree classical hard-instance comparison. | [arXiv:2607.19852](https://arxiv.org/abs/2607.19852) |
+| `GimenoSotoca2017` | Verified: authors, title, *J. Phys. A* 50, 185302 (2017), DOI and arXiv identifier; source treats mixed states with finite or countably discrete energy spectra. | [Journal manuscript](https://repositori.uji.es/bitstreams/2fafa81d-b0d1-411e-b833-6980abf036a3/download) |
+| `KimChandranAbanin2014` | Verified: three authors, title, arXiv identifier and year; abstract supports logarithmic-light-cone attribution. | [arXiv:1412.3073](https://arxiv.org/abs/1412.3073) |
+| `NandkishoreGopalakrishnanHuse2014` | Verified: three authors, published title, *Phys. Rev. B* 90, 064203 (2014), DOI and arXiv identifier; source supports local spectral-tree attribution. | [arXiv:1402.5971](https://arxiv.org/abs/1402.5971) |
+| `VasseurParameswaranMoore2015` | Verified: three authors, title, *Phys. Rev. B* 91, 140202(R) (2015), DOI and arXiv identifier; source supports interaction-suppressed revival attribution. | [APS accepted manuscript](https://link.aps.org/accepted/10.1103/PhysRevB.91.140202) |
 
 ## Citation-context findings
 
 All statements directly carrying citations were checked against cited
 abstracts or publisher descriptions. After corrections listed above, no
 cited sentence attributes result absent from its cited source. Every one of
-the 23 references retained in manuscript is cited in body; no uncited
+30 references retained in manuscript is cited in body; no uncited
 bibliography padding remains.

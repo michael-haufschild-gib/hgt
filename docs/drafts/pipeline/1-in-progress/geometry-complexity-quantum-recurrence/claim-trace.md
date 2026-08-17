@@ -56,6 +56,9 @@ proof-assistant or internal-corpus references.
 | Trivial relation lattice, full countable hull, dense every future tail, zero-only exact return, exact liminf/limsup, syndetic near-level and exact interior crossings | `HTGeometry.completeSaturatedProjectiveRecurrenceLaw` | `CountableProjectiveFutureUniversalityLaw.lean` |
 | Arbitrarily small domain-preserving self-adjoint Schatten-1 diagonal perturbation, unbounded finite-window rank and all complete recurrence conclusions | `HTGeometry.exists_arbitrarilyWeak_completeProjectiveRecurrenceLaw` | same |
 | One separable trace-class interaction direction; countable exceptional couplings; complete recurrence outside it | `HTGeometry.exists_arbitrarilyWeak_separable_completeProjectiveRecurrenceRayLaw` | `SeparableInteractionRecurrenceRayLaw.lean` |
+| Diameter-scaled countable l-bit field: absolute summability, uniform finite-window thermodynamic convergence, exact jet dimension and one reporter at every birth order | `HTGeometry.thermodynamicDiameterLBitCascadeLaw` | `ThermodynamicDiameterLBitCascadeLaw.lean` |
+| Same diameter-scaled field gives bounded self-adjoint multiplication Hamiltonian and strongly continuous unitary `L²` dynamics for every Borel measure | `HTGeometry.thermodynamicDiameterLBitHilbertDynamicsLaw` | `ThermodynamicDiameterLBitHilbertDynamicsLaw.lean` |
+| Same unscaled infinite field: maximal local-flip rank in every finite environment and volume-independent exponential commutator bound | `HTGeometry.quasiLocalInfiniteLBit_fullRank_and_commutatorBound` | `InfiniteLBitRecurrenceLocalitySeparationLaw.lean` |
 
 ## Law III: target capacity and complexity
 
@@ -64,6 +67,8 @@ proof-assistant or internal-corpus references.
 | Reverse-water objective, two-sided logarithmic deadline and post-delay syndetic return | `RHTower.universalWeightedFloquetFidelityRecurrenceTime_rateDistortionSandwich` | `ProjectiveGaussianRateDistortion.lean` |
 | Observer edge-phase energy, graph zero set and capacity `D-c` | `RHTower.finite_quantum_observer_coherence_law` | `FiniteQuantumObserverCoherenceLaw.lean` |
 | Observer recurrence deadline and displacement bound | `RHTower.exists_finiteQuantumObserver_graphRank_distance_recurrence` | `FiniteQuantumObserverGraphRecurrenceBound.lean` |
+| Arbitrary finite Hermitian Hamiltonian and physical density/effect family: same Born record either never exits or returns strictly after a witnessed exit, before least graph--resolution certified deadline | `RHTower.finiteHermitianBorn_positiveTarget_optimal_neverExits_or_postExit` | `FiniteHermitianBornPostExitRecurrenceLaw.lean` |
+| Unitary evolution preserves density matrices and trace-expectation displacement equals absolute Born-probability displacement | `RHTower.finiteHermitianEvolvedDensityMatrix`; `RHTower.finiteHermitian_traceExpectationNorm_eq_bornAbs`; `RHTower.finiteHermitianBornTotalDeviation_eq_expectation` | `FiniteHermitianBornPostExitRecurrenceLaw.lean` |
 | Generic connected graph-local upper completed-time Choi-target occupation and explicit padded-word union bound | `RHTower.connectedNetwork_completedTime_paddedCircuitTargets_generic` | `ConnectedNetworkStaticChoiComplexityPlateauLaw.lean` |
 | Same bounded-weight Pauli Hamiltonian: syndetic return-hard-return and permanent two-query separation from Haar benchmark | `RHTower.pauliBounded_complexityAlternation_and_permanentHaarSeparation` | `StaticQLocalComplexityHaarSeparationLaw.lean` |
 | Prime hard polygon, terminal return and permanent separator | `RHTower.pauliBounded_completeCircuitPolygon_and_permanentHaarSeparation` | `PauliLocalPrimeTorsionCircuitPolygonLaw.lean` |
@@ -102,6 +107,11 @@ retained in present main text.
 `/tmp/AuditNestedMonotonicity.lean` import load-bearing modules and run
 `#print axioms` on headline declarations. Audit passed: every reported
 kernel dependency is among `[propext, Classical.choice, Quot.sound]`.
+Targeted 17 August audits of
+`FiniteHermitianBornPostExitRecurrenceLaw`,
+`ThermodynamicDiameterLBitCascadeLaw` and
+`ThermodynamicDiameterLBitHilbertDynamicsLaw` report same standard
+dependencies.
 Repository formal lint forbids `sorry`, `admit`, project `axiom`,
 `opaque` and `unsafe` declarations.
 

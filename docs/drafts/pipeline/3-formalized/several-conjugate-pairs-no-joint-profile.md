@@ -62,6 +62,23 @@ is log-tangent-dominated on `W`, then `C ≤ R` on `W` ⟺ a single exponential 
 **Piecewise criterion.** If the positivity set of `C` is covered by finitely many such humps, then
 `C ≤ R` on ℝ ⟺ one separating exponential per hump. `le_iff_forall_separating`.
 
+**The endpoint hypothesis is removable.** Requiring `C ≤ 0` at the endpoints was an artefact: it was
+used only to place the maximiser of `C/R` in the interior. The first-order optimality condition on a
+convex set replaces it — at a maximiser `t*` over `[u,v]`, interior or endpoint,
+`(C'/C − R'/R)(t*)·(t − t*) ≤ 0` for every `t ∈ [u,v]`, which is exactly what the tangency argument
+consumes (`deriv_mul_sub_nonpos_of_isMaxOn`). Hence separation holds on **any** interval of
+log-tangent-domination: `exists_separating_of_le_on_interval`, with piecewise form
+`le_iff_forall_separating_interval` requiring only
+
+* a finite family of intervals `[u_k, v_k]`,
+* log-tangent-domination of `C` on each,
+* a cover of `{C > 0}`.
+
+No endpoint conditions, no "positive somewhere inside". This is what makes the criterion usable: a
+hump may now be **subdivided** at the inflection points of `log C`, so the criterion applies whenever
+the positivity set is covered by intervals of log-concavity — which is always achievable, the only
+remaining question being how many are needed.
+
 **The cap is an instance.** `2 e^{βt} cos(γ(t−p))` is log-tangent-dominated on its arc
 (`logTangentDominated_cap`, via `capFn_min`), so the one-pair criterion of the previous card is the
 case of a single hump. The number of humps is what grows with the number of pairs; for pairs sharing
@@ -104,13 +121,17 @@ formal/GaloisForLFunctions/HTGeometry/LogConcaveSeparation.lean
 formal/GaloisForLFunctions/HTGeometry/MultiPairLocalization.lean
 formal/GaloisForLFunctions/HTGeometry/TopLayerNonneg.lean
 formal/GaloisForLFunctions/HTGeometry/PerPairGapUnbounded.lean
+formal/GaloisForLFunctions/HTGeometry/IntervalSeparation.lean
 ```
 
 ## Open
 
-* An effective bound on the number of humps of `C` in the localization interval when the `β_k`
-  differ. For equal real parts the count is a trigonometric-polynomial zero count; in the layered
-  case no bound is proved here.
+* An effective bound on the number of log-concavity intervals needed to cover `{C > 0}` inside the
+  localization interval. The intervals are delimited by the zeros of `C` and of `C''C − (C')²`, both
+  exponential polynomials; the count is therefore a Pólya-type zero-density bound
+  `(#terms − 1) + (length)·(imaginary width)/2π`, whose proof is complex-analytic (argument principle)
+  or Sturm-theoretic (disconjugacy of `y'' + γ²y = 0` on intervals shorter than `π/γ`). Neither is
+  formalized here. With that bound the criterion becomes an effective decision procedure.
 * Whether a nonnegative exponential polynomial with mixed real and imaginary exponents is always a
   sum of Hermitian squares `∑ G_l G_l^*` with exponents in the half-set. The one-pair extremal
   `2e^{βt}(1−cos γt) = 4|sinh((β+iγ)t/2)|²` and `cosh(at) − cos(bt) = 2|sinh(t(a+ib)/2)|²` both are;

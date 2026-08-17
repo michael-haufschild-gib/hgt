@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.EulerHellingerAcceleratedBoundary
+import Mathlib.Analysis.Complex.Liouville
 
 /-!
 # Accelerated Wold type
@@ -54,7 +55,7 @@ theorem tendsto_mul_log_inv_zero {a : ℕ → ℝ} (hpos : ∀ᶠ N in atTop, 0 
   refine (hdiv.comp hinv).congr' ?_
   filter_upwards [hpos] with N hN
   simp only [Function.comp_apply]
-  rw [div_inv_eq, mul_comm]
+  rw [div_eq_mul_inv, inv_inv, mul_comm]
 
 /-- **Ordinary essential singularities have accelerated type zero.**  If the logarithm of the family
 is bounded by a fixed power of `a_N⁻¹`, the accelerated type vanishes. -/
@@ -64,7 +65,7 @@ theorem tendsto_mul_ell2_zero_of_log_le {a : ℕ → ℝ} (hpos : ∀ᶠ N in at
     Tendsto (fun N => a N * ell2 (R N)) atTop (nhds 0) := by
   have hle1 : ∀ᶠ N in atTop, a N ≤ 1 := by
     have := ha.eventually (eventually_le_nhds (show (0 : ℝ) < 1 by norm_num))
-    filter_upwards [this] with N hN using hN.le
+    filter_upwards [this] with N hN using hN
   have hmaj : Tendsto (fun N => a N * Real.log (1 + C)
       + (K : ℝ) * (a N * Real.log ((a N)⁻¹))) atTop (nhds 0) := by
     have h1 : Tendsto (fun N => a N * Real.log (1 + C)) atTop (nhds 0) := by
@@ -75,7 +76,7 @@ theorem tendsto_mul_ell2_zero_of_log_le {a : ℕ → ℝ} (hpos : ∀ᶠ N in at
   · filter_upwards [hpos] with N hN
     exact mul_nonneg hN.le (ell2_nonneg (hR N))
   · filter_upwards [hpos, hle1, hbd] with N hN hN1 hNb
-    have hinv1 : (1 : ℝ) ≤ (a N)⁻¹ := one_le_inv_of_le_one hN hN1
+    have hinv1 : (1 : ℝ) ≤ (a N)⁻¹ := (one_le_inv₀ hN).mpr hN1
     have hpow : (1 : ℝ) ≤ ((a N)⁻¹) ^ K := one_le_pow₀ hinv1
     have hstep1 : ell2 (R N) ≤ Real.log (1 + C * ((a N)⁻¹) ^ K) := by
       refine Real.log_le_log (by linarith [one_le_one_add_log_one_add (hR N)]) ?_
@@ -138,7 +139,7 @@ theorem tendsto_logReflectedSewingBelow_atTop {c : ℝ} (hc0 : 0 < c) (hc : c < 
       tendsto_mertensPrimeProductBelow_zero
       (Eventually.of_forall fun N => mertensPrimeProductBelow_pos N)
   have hlog : Tendsto (fun N : ℕ => Real.log (logReflectedSewingBelow c N)) atTop atTop := by
-    refine (hmul.mul_atTop hL hinv).congr ?_
+    refine ((hmul.pos_mul_atTop hL hinv)).congr ?_
     intro N
     have hne : mertensPrimeProductBelow N ≠ 0 := ne_of_gt (mertensPrimeProductBelow_pos N)
     field_simp
@@ -285,6 +286,215 @@ theorem le_of_tendsto_mul_ell2_of_ge {c : ℝ} (hc0 : 0 < c) (hc : c < 1 / 2)
   exact le_of_lt (div_pos (primeValuationSquaredHellingerBelow_pos_of_abs_lt
       (by rw [abs_of_neg (by linarith : -c < 0)]; linarith) N)
     (primeValuationSquaredHellingerBelow_pos_of_abs_lt (by rw [abs_of_pos hc0]; exact hc) N))
+
+
+/-- **The no-sewing theorem for operator families.**  If a bounded operator carries the drift-`c`
+prime-valuation vector to its reflection, with the two Hellinger norms, then its accelerated Wold
+type is at least `2 e^(-γ) c`.  The spaces are arbitrary normed spaces, of any dimension, and may
+vary with the cutoff. -/
+theorem eventually_lt_mertensProduct_mul_ell2_opNorm {c : ℝ} (hc0 : 0 < c) (hc : c < 1 / 2)
+    {E F : ℕ → Type*} [∀ N, NormedAddCommGroup (E N)] [∀ N, NormedSpace ℝ (E N)]
+    [∀ N, NormedAddCommGroup (F N)] [∀ N, NormedSpace ℝ (F N)]
+    (R : ∀ N, E N →L[ℝ] F N) (v : ∀ N, E N) (w : ∀ N, F N)
+    (hRv : ∀ N, R N (v N) = w N)
+    (hv : ∀ N, ‖v N‖ = primeValuationSquaredHellingerBelow c N)
+    (hw : ∀ N, ‖w N‖ = primeValuationSquaredHellingerBelow (-c) N)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ N in atTop, 2 * Real.exp (-Real.eulerMascheroniConstant) * c - ε
+      < mertensPrimeProductBelow N * ell2 ‖R N‖ := by
+  refine eventually_lt_mertensProduct_mul_ell2_of_ge hc0 hc (Eventually.of_forall fun N => ?_) hε
+  have hcpos : 0 < primeValuationSquaredHellingerBelow c N :=
+    primeValuationSquaredHellingerBelow_pos_of_abs_lt (by rw [abs_of_pos hc0]; exact hc) N
+  have hvne : v N ≠ 0 := by
+    intro hzero
+    have := hv N
+    rw [hzero, norm_zero] at this
+    exact absurd this.symm (ne_of_gt hcpos)
+  have hratio := le_opNorm_of_map_eq (R N) (hRv N) hvne
+  rwa [hv N, hw N, ← reflectedSewingMultiplierBelow] at hratio
+
+
+/-! ## Stability of accelerated type zero -/
+
+theorem log_one_add_add_le {x y : ℝ} (hx : 0 ≤ x) (hy : 0 ≤ y) :
+    Real.log (1 + x + y) ≤ Real.log (1 + x) + Real.log (1 + y) := by
+  have hle : (1 : ℝ) + x + y ≤ (1 + x) * (1 + y) := by nlinarith
+  have := Real.log_le_log (by linarith) hle
+  rwa [Real.log_mul (by linarith) (by linarith)] at this
+
+theorem ell2_le_add {x y : ℝ} (hx : 0 ≤ x) (hy : 0 ≤ y) : ell2 (x + y) ≤ ell2 x + ell2 y := by
+  have hlx : 0 ≤ Real.log (1 + x) := Real.log_nonneg (by linarith)
+  have hly : 0 ≤ Real.log (1 + y) := Real.log_nonneg (by linarith)
+  have hstep : Real.log (1 + (x + y)) ≤ Real.log (1 + x) + Real.log (1 + y) := by
+    rw [show (1 : ℝ) + (x + y) = 1 + x + y by ring]
+    exact log_one_add_add_le hx hy
+  have hmono : ell2 (x + y) ≤ Real.log (1 + (Real.log (1 + x) + Real.log (1 + y))) :=
+    Real.log_le_log (by linarith [one_le_one_add_log_one_add (show (0:ℝ) ≤ x + y by linarith)])
+      (by linarith)
+  refine le_trans hmono ?_
+  rw [ell2, ell2, show (1 : ℝ) + (Real.log (1 + x) + Real.log (1 + y))
+    = 1 + Real.log (1 + x) + Real.log (1 + y) by ring]
+  exact log_one_add_add_le hlx hly
+
+/-- **Accelerated type zero is stable under a fixed scalar multiple.**  This is the Cauchy-estimate
+step: a fixed multiple `j! r^(-j)` of a compact-uniform type-zero family is still type zero. -/
+theorem tendsto_mul_ell2_zero_of_le_const_mul {a : ℕ → ℝ} (hpos : ∀ᶠ N in atTop, 0 < a N)
+    (ha : Tendsto a atTop (nhds 0)) {R S : ℕ → ℝ} (hR : ∀ N, 0 ≤ R N) (hS : ∀ N, 0 ≤ S N)
+    {C : ℝ} (hC : 0 ≤ C) (hle : ∀ᶠ N in atTop, R N ≤ C * S N)
+    (h0 : Tendsto (fun N => a N * ell2 (S N)) atTop (nhds 0)) :
+    Tendsto (fun N => a N * ell2 (R N)) atTop (nhds 0) := by
+  have hmaj : Tendsto (fun N => a N * ell2 C + a N * ell2 (S N)) atTop (nhds 0) := by
+    have h1 : Tendsto (fun N => a N * ell2 C) atTop (nhds 0) := by
+      simpa using ha.mul_const (ell2 C)
+    simpa using h1.add h0
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hmaj ?_ ?_
+  · filter_upwards [hpos] with N hN using mul_nonneg hN.le (ell2_nonneg (hR N))
+  · filter_upwards [hpos, hle] with N hN hNle
+    have hkey : ell2 (R N) ≤ ell2 C + ell2 (S N) := by
+      refine le_trans (ell2_mono (hR N) hNle) ?_
+      have hlx : 0 ≤ Real.log (1 + C) := Real.log_nonneg (by linarith)
+      have hly : 0 ≤ Real.log (1 + S N) := Real.log_nonneg (by linarith [hS N])
+      have hprod : Real.log (1 + C * S N) ≤ Real.log (1 + C) + Real.log (1 + S N) := by
+        have hle2 : (1 : ℝ) + C * S N ≤ (1 + C) * (1 + S N) := by nlinarith [hS N]
+        have := Real.log_le_log (by nlinarith [hS N]) hle2
+        rwa [Real.log_mul (by linarith) (by linarith [hS N])] at this
+      have hmono : ell2 (C * S N) ≤ Real.log (1 + (Real.log (1 + C) + Real.log (1 + S N))) :=
+        Real.log_le_log
+          (by linarith [one_le_one_add_log_one_add (mul_nonneg hC (hS N))]) (by linarith)
+      refine le_trans hmono ?_
+      rw [ell2, ell2, show (1 : ℝ) + (Real.log (1 + C) + Real.log (1 + S N))
+        = 1 + Real.log (1 + C) + Real.log (1 + S N) by ring]
+      exact log_one_add_add_le hlx hly
+    calc a N * ell2 (R N) ≤ a N * (ell2 C + ell2 (S N)) :=
+          mul_le_mul_of_nonneg_left hkey hN.le
+      _ = a N * ell2 C + a N * ell2 (S N) := by ring
+
+/-- **Accelerated type zero is stable under finite sums.** -/
+theorem tendsto_mul_ell2_zero_of_le_add {a : ℕ → ℝ} (hpos : ∀ᶠ N in atTop, 0 < a N)
+    {R S T : ℕ → ℝ} (hR : ∀ N, 0 ≤ R N) (hS : ∀ N, 0 ≤ S N) (hT : ∀ N, 0 ≤ T N)
+    (hle : ∀ᶠ N in atTop, R N ≤ S N + T N)
+    (hS0 : Tendsto (fun N => a N * ell2 (S N)) atTop (nhds 0))
+    (hT0 : Tendsto (fun N => a N * ell2 (T N)) atTop (nhds 0)) :
+    Tendsto (fun N => a N * ell2 (R N)) atTop (nhds 0) := by
+  have hmaj : Tendsto (fun N => a N * ell2 (S N) + a N * ell2 (T N)) atTop (nhds 0) := by
+    simpa using hS0.add hT0
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hmaj ?_ ?_
+  · filter_upwards [hpos] with N hN using mul_nonneg hN.le (ell2_nonneg (hR N))
+  · filter_upwards [hpos, hle] with N hN hNle
+    have hkey : ell2 (R N) ≤ ell2 (S N) + ell2 (T N) :=
+      le_trans (ell2_mono (hR N) hNle) (ell2_le_add (hS N) (hT N))
+    calc a N * ell2 (R N) ≤ a N * (ell2 (S N) + ell2 (T N)) :=
+          mul_le_mul_of_nonneg_left hkey hN.le
+      _ = a N * ell2 (S N) + a N * ell2 (T N) := by ring
+
+
+/-- **Finite divisor activation cannot create accelerated type.**  If a holomorphic operator-valued
+family has accelerated type zero uniformly on the boundary circle of a fixed disc, then every fixed
+jet of it at the centre has accelerated type zero.  Cauchy's estimate turns the uniform bound into a
+fixed multiple of it, and a fixed multiple does not change zero accelerated type. -/
+theorem tendsto_mul_ell2_iteratedDeriv_zero {F : Type*} [NormedAddCommGroup F]
+    [NormedSpace ℂ F] [CompleteSpace F] {a : ℕ → ℝ} (hpos : ∀ᶠ N in atTop, 0 < a N)
+    (ha : Tendsto a atTop (nhds 0)) {T : ℕ → ℂ → F} {ρ : ℂ} {r : ℝ} (hr : 0 < r)
+    (hdiff : ∀ N, DiffContOnCl ℂ (T N) (Metric.ball ρ r)) {M : ℕ → ℝ} (hM : ∀ N, 0 ≤ M N)
+    (hbd : ∀ N, ∀ z ∈ Metric.sphere ρ r, ‖T N z‖ ≤ M N)
+    (h0 : Tendsto (fun N => a N * ell2 (M N)) atTop (nhds 0)) (j : ℕ) :
+    Tendsto (fun N => a N * ell2 ‖iteratedDeriv j (T N) ρ‖) atTop (nhds 0) := by
+  refine tendsto_mul_ell2_zero_of_le_const_mul hpos ha (fun N => norm_nonneg _) hM
+    (C := (j.factorial : ℝ) / r ^ j) (by positivity) (Eventually.of_forall fun N => ?_) h0
+  have hcauchy := Complex.norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le
+    (f := T N) (c := ρ) (R := r) (C := M N) j hr (hdiff N) (hbd N)
+  calc ‖iteratedDeriv j (T N) ρ‖ ≤ (j.factorial : ℝ) * M N / r ^ j := hcauchy
+    _ = (j.factorial : ℝ) / r ^ j * M N := by ring
+
+
+/-! ## Accelerated type from the double logarithm -/
+
+/-- **The accelerated type is read off the double logarithm.**  For a family whose logarithm tends
+to infinity, the accelerated scale `ℓ₂` and the double logarithm have the same accelerated type. -/
+theorem tendsto_mertensProduct_mul_ell2_of_tendsto {S : ℕ → ℝ} {V : ℝ}
+    (hSpos : ∀ᶠ N in atTop, 0 < S N)
+    (hbig : Tendsto (fun N : ℕ => Real.log (S N)) atTop atTop)
+    (hV : Tendsto (fun N : ℕ =>
+      mertensPrimeProductBelow N * Real.log (Real.log (S N))) atTop (nhds V)) :
+    Tendsto (fun N : ℕ => mertensPrimeProductBelow N * ell2 (S N)) atTop (nhds V) := by
+  have hup : Tendsto (fun N : ℕ => mertensPrimeProductBelow N * Real.log (2 + Real.log 2)
+      + mertensPrimeProductBelow N * Real.log (Real.log (S N))) atTop (nhds V) := by
+    have h1 : Tendsto (fun N : ℕ =>
+        mertensPrimeProductBelow N * Real.log (2 + Real.log 2)) atTop (nhds 0) := by
+      simpa using tendsto_mertensPrimeProductBelow_zero.mul_const (Real.log (2 + Real.log 2))
+    simpa using h1.add hV
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' hV hup ?_ ?_
+  · filter_upwards [hSpos, hbig.eventually_ge_atTop 1] with N hS hu
+    refine mul_le_mul_of_nonneg_left ?_ (mertensPrimeProductBelow_pos N).le
+    have hSge : (1 : ℝ) ≤ S N := by
+      have hle : Real.exp (Real.log (S N)) ≤ S N := by rw [Real.exp_log hS]
+      have : (1 : ℝ) ≤ Real.exp (Real.log (S N)) := Real.one_le_exp (by linarith)
+      linarith
+    have hstep : Real.log (S N) ≤ Real.log (1 + S N) := Real.log_le_log hS (by linarith)
+    exact Real.log_le_log (by linarith) (by linarith)
+  · filter_upwards [hSpos, hbig.eventually_ge_atTop 1] with N hS hu
+    have hSge : (1 : ℝ) ≤ S N := by
+      have hle : Real.exp (Real.log (S N)) ≤ S N := by rw [Real.exp_log hS]
+      have : (1 : ℝ) ≤ Real.exp (Real.log (S N)) := Real.one_le_exp (by linarith)
+      linarith
+    have hupper : Real.log (1 + S N) ≤ Real.log 2 + Real.log (S N) := by
+      have hle : (1 : ℝ) + S N ≤ 2 * S N := by linarith
+      have := Real.log_le_log (by linarith) hle
+      rwa [Real.log_mul (by norm_num) (ne_of_gt hS)] at this
+    have hlog2 : (0 : ℝ) ≤ Real.log 2 := Real.log_nonneg (by norm_num)
+    have hchain : (1 : ℝ) + Real.log (1 + S N) ≤ (2 + Real.log 2) * Real.log (S N) := by
+      nlinarith
+    have hfin : ell2 (S N) ≤ Real.log (2 + Real.log 2) + Real.log (Real.log (S N)) := by
+      have hpos2 : (0 : ℝ) < 2 + Real.log 2 := by linarith
+      have := Real.log_le_log
+        (show (0 : ℝ) < 1 + Real.log (1 + S N) by
+          have : (0 : ℝ) ≤ Real.log (1 + S N) := Real.log_nonneg (by linarith)
+          linarith) hchain
+      rwa [Real.log_mul (ne_of_gt hpos2) (by linarith)] at this
+    calc mertensPrimeProductBelow N * ell2 (S N)
+        ≤ mertensPrimeProductBelow N * (Real.log (2 + Real.log 2) + Real.log (Real.log (S N))) :=
+          mul_le_mul_of_nonneg_left hfin (mertensPrimeProductBelow_pos N).le
+      _ = mertensPrimeProductBelow N * Real.log (2 + Real.log 2)
+            + mertensPrimeProductBelow N * Real.log (Real.log (S N)) := by ring
+
+/-- **Saturation of the accelerated type.**  Every family whose logarithm grows linearly in the
+cutoff has accelerated Wold type exactly `e^(-γ)`, whatever the growth constant.  Scalarizing a
+reflected displacement therefore erases its magnitude and returns the maximal boundary type. -/
+theorem tendsto_mertensProduct_mul_ell2_of_log_linear {S : ℕ → ℝ} {κ : ℝ} (hκ : 0 < κ)
+    (hSpos : ∀ᶠ N in atTop, 0 < S N)
+    (hratio : Tendsto (fun N : ℕ => Real.log (S N) / (N : ℝ)) atTop (nhds κ)) :
+    Tendsto (fun N : ℕ => mertensPrimeProductBelow N * ell2 (S N)) atTop
+      (nhds (Real.exp (-Real.eulerMascheroniConstant))) := by
+  have hNat : Tendsto (fun N : ℕ => (N : ℝ)) atTop atTop := tendsto_natCast_atTop_atTop
+  have hbig : Tendsto (fun N : ℕ => Real.log (S N)) atTop atTop := by
+    refine (hratio.pos_mul_atTop hκ hNat).congr' ?_
+    filter_upwards [eventually_gt_atTop 0] with N hN
+    have hNne : ((N : ℝ)) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
+    field_simp
+  have hlogratio : Tendsto (fun N : ℕ => Real.log (Real.log (S N) / (N : ℝ))) atTop
+      (nhds (Real.log κ)) := (Real.continuousAt_log (ne_of_gt hκ)).tendsto.comp hratio
+  have hzero : Tendsto (fun N : ℕ =>
+      mertensPrimeProductBelow N * Real.log (Real.log (S N) / (N : ℝ))) atTop (nhds 0) := by
+    simpa using tendsto_mertensPrimeProductBelow_zero.mul hlogratio
+  have hsplit : Tendsto (fun N : ℕ =>
+      mertensPrimeProductBelow N * Real.log (Real.log (S N))) atTop
+      (nhds (Real.exp (-Real.eulerMascheroniConstant))) := by
+    have hsum := hzero.add tendsto_mertensPrimeProductBelow_mul_log
+    rw [zero_add] at hsum
+    refine hsum.congr' ?_
+    have hpos : ∀ᶠ N : ℕ in atTop, 0 < Real.log (S N) / (N : ℝ) := by
+      filter_upwards [hratio.eventually (eventually_gt_nhds hκ)] with N hN using hN
+    filter_upwards [hpos, eventually_gt_atTop 1] with N hN hN1
+    have hNr : (1 : ℝ) < (N : ℝ) := by exact_mod_cast hN1
+    have hNne : ((N : ℝ)) ≠ 0 := by linarith
+    have hlogsplit : Real.log (Real.log (S N))
+        = Real.log (Real.log (S N) / (N : ℝ)) + Real.log ((N : ℝ)) := by
+      rw [← Real.log_mul (ne_of_gt hN) hNne]
+      congr 1
+      field_simp
+    rw [hlogsplit]
+    ring
+  exact tendsto_mertensProduct_mul_ell2_of_tendsto hSpos hbig hsplit
 
 end
 

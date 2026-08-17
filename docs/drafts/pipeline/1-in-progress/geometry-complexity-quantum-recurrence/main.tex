@@ -63,7 +63,10 @@ interaction graph, generic onsite-plus-edge Hamiltonians have an exact
 component formula, subsystem temporal curvature reconstructs the supplied
 graph, and homogeneous nearest-neighbour qudit paths have strict return
 density doubly exponential in their length.  Observability is governed by
-target capacity: coherence-graph rank gives the visible exponent, while
+target capacity: coherence-graph rank gives the visible exponent, every
+finite family of Born histories either never exits a prescribed tolerance
+or returns after a same-record exit within a least graph--resolution
+certificate, while
 static connected networks and bounded-weight Pauli Hamiltonians obey exact
 completed-time circuit-target bounds and recurrent hard-epoch laws without
 becoming Haar random.  An explicit nested family of static diagonal
@@ -84,10 +87,13 @@ The finite theory extends to countable pure-point spectra.  Arbitrarily small
 domain-preserving trace-class perturbations can produce unbounded
 finite-window temporal rank, dense future projective orbits, no nonzero exact
 global return, and recurrent traversal of the full range of every positive
-summable phase-defect probe.  Completed-time thermodynamic densities take the
-long-time limit at fixed finite volume before system size; separately, the
-nested path has a uniformly convergent static-energy completion.  We assert
-no first-return scale, pointwise monotonicity of complexity,
+summable phase-defect probe.  Separately, one absolutely summable diagonal
+l-bit field has uniform finite-volume completion, bounded self-adjoint
+$L^2$ Hamiltonians, strongly continuous unitary dynamics, and a
+nonterminating diameter-resolved phase cascade.  Completed-time
+thermodynamic densities take long-time limit at fixed finite volume before
+system size; nested path has a uniformly convergent static-energy
+completion.  We assert no first-return scale, pointwise monotonicity of complexity,
 infinite-volume orbit recurrence, or Haar randomization.
 \end{abstract}
 
@@ -97,8 +103,10 @@ completely reorganize what a quantum system does over arbitrarily long time.
 The reason is arithmetic: long-time recurrence depends on exact relations
 among energy levels, and exact relations can disappear under an arbitrarily
 small perturbation.  We turn that observation into quantitative laws for
-loss, local many-body systems, measurement, computational complexity and the
-limits of prediction.
+loss, local many-body systems, measurement, computational complexity and
+limits of prediction.  If a chosen finite collection of quantum measurement
+probabilities ever leaves a tolerance band, same record is guaranteed to
+re-enter it.
 For one concrete one-dimensional chain, the same analysis proves that the
 number of two-qubit gates needed to reproduce its motion lies between
 explicit linear bounds for a controlled time window, but can nevertheless

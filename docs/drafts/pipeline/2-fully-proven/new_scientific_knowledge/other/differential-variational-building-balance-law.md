@@ -381,3 +381,39 @@ proves that realization or RH.
 
 - 2026-07-15 -- proved the variational-building action, determinant balance, bounded/linear phase
   gap, canonical boundary pair, and exact free-field order identity.
+
+## Lean progress — the balance law `(12)`, and the state of the lattice model
+
+§9 above is out of date.  The tree now owns the whole lattice model that replaces the affine
+building in the proofs of `(11)`--`(15)`:
+
+| Module | Contents |
+|---|---|
+| `DifferentialOperatorOreField` | the Ore condition for `K[∂;δ]`, the `OreSet` instance, and the skew field `PseudoDiffOp K` of rational pseudodifferential operators as a `DivisionRing` |
+| `OperatorLattice` | the integral lattice `R^ι ⊆ Q^ι`, the row lattice of a matrix, its saturation, commensurability of the two, and finite generation of the saturation |
+| `OperatorConductorLength` | `satLattice_eq_integralLattice` for square matrices with left independent rows, and `exists_degree_sum_eq_quotDim_conductor`: the conductor length is the sum of the degrees of the elementary divisors |
+| `OperatorCartanComparison` | the intrinsic/ambient Cartan prefix comparison and `tendsto_normalized_ambient_cartan`: the normalized Cartan vector converges |
+| `DifferentialIndependentObservableNet` | the Fekete/conjugacy kernel `SubadditiveClockGauge` of `(20)`, `(23)` |
+
+`GaloisForLFunctions.HTGeometry.OperatorBalanceLaw` adds `(12)` itself, unconditionally and
+axiom-clean:
+
+```text
+rowIndep_of_vecMul_inverse                     a two-sided row inverse gives left independent rows
+rowSpace_eq_top_of_vecMul_inverse
+rowLattice_eq_integralLattice_of_vecMul_inverse
+    an operator matrix invertible over K[∂;δ] carries the integral lattice onto itself
+quotDim_conductor_eq_zero_of_vecMul_inverse    its conductor is trivial
+exists_degree_sum_eq_zero_of_vecMul_inverse
+    every elementary divisor has degree zero, so ∑_i μ_i = 0
+```
+
+This is `(12)` obtained from the lattice description rather than from Dieudonné determinant theory:
+invertibility over the operator ring, not merely over the skew field, is exactly what makes the two
+lattices equal, and the conductor length is the total elementary-divisor degree.
+
+What `(12)`, `(14)` and `(15)` still need to reach the card's statement: the differential-automorphism
+input — the semilinear action `(7)`–`(10)` on `M_K = Ω/Tor`, i.e. that `T_σ` is given by a matrix in
+`GL_r(R_K)` — and the identification of `μ_n` with the Cartan prefix invariants of the corpus's
+`OperatorCartanComparison`.  With those two links the existing `tendsto_normalized_ambient_cartan`
+supplies `(14)` and the balance law supplies `(15)`.

@@ -3950,3 +3950,113 @@ module argues by order-two *mass*, which can; it subsumes both.
 Card `finite-archimedean-gamma-product-boundary-law` still needs, for stage 3: sectorial Stirling,
 the formal Laurent shift field, the ADH dichotomy, the product-field valuation `(6)`, and the
 holomorphic Bohr recurrence of §7.
+
+## Pass 67 — the accelerated Wold scale and the no-sewing theorem
+
+`RHTower/AcceleratedWoldType.lean` closes §2, §3 and §4 of
+`prime-wold-accelerated-type-modular-drift-law`.
+
+```text
+tendsto_mertensProduct_mul_ell2_reflectedSewing :
+  0 < c < 1/2  ⟹  a_N · ℓ₂ (H_N(-c) / H_N(c)) → 2 e^(-γ) c,   ℓ₂ y = log (1 + log (1 + y))
+tendsto_mul_ell2_zero_of_log_le :
+  log (1 + R_N) ≤ C · a_N^(-K)  ⟹  a_N · ℓ₂ (R_N) → 0     (ordinary essential singularities are
+                                                            invisible to the accelerated scale)
+eventually_lt_mertensProduct_mul_ell2_opNorm :
+  R_N : E_N →L[ℝ] F_N with R_N v_N = w_N, ‖v_N‖ = H_N(c), ‖w_N‖ = H_N(-c)
+  ⟹  the accelerated type of ‖R_N‖ is at least 2 e^(-γ) c — for normed spaces of any dimension
+```
+
+The analytic content was already owned (`MertensThirdTheorem`,
+`EulerHellingerSewingLogRatio.tendsto_log_logReflectedSewing_div_log`,
+`EulerHellingerAcceleratedBoundary.tendsto_mertensProduct_mul_log_logReflectedSewing`).  The new
+work is the scale `ℓ₂` of the card's definition `(3)` — the corpus theorem is stated with
+`log ∘ log`, and the two agree after multiplication by `a_N → 0` once the sewing cost exceeds `e`,
+which needs `logReflectedSewingBelow → ∞` — plus the two obstruction theorems.
+
+## Pass 67 addendum — the cascade card's determinant gap is already closed
+
+`universal-first-order-entire-cascade-unit-cost` records "modulo one explicit finite determinant".
+That determinant is proved: `HTGeometry/ExpPolyAllHeights.lean` has
+`headJetJacobian_det_ne_zero_all` and hence `exactDifferentialOrder_expPolyCascade_all`
+(axiom-clean, wired).  The card's consolidated-status section predates that module.  Its remaining
+gap is the *general* first-order cascade — Reduction III's Wiman initial law.
+
+### Pass 67 addendum 2 — §7 of the Wold card closed
+
+`tendsto_mul_ell2_iteratedDeriv_zero` closes the finite-divisor noncreation theorem `(22)`–`(23)`:
+for a holomorphic Banach-space-valued family with accelerated type zero on the boundary circle,
+every fixed jet at the centre has accelerated type zero.  Mathlib's
+`Complex.norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le` supplies `(24)`, and
+`tendsto_mul_ell2_zero_of_le_const_mul` / `..._of_le_add` supply the stability under a fixed scalar
+and under finite sums.  Sections 2, 3, 4 and 7 of `prime-wold-accelerated-type-modular-drift-law`
+are now unconditional in Lean; §5 (three source scales) and §6 (four-chart modular charge) remain.
+
+### Pass 67 addendum 3 — the saturation law
+
+`tendsto_mertensProduct_mul_ell2_of_log_linear`: any family whose logarithm grows linearly in the
+cutoff has accelerated Wold type exactly `e^(-γ)`, independently of the growth constant.  This is
+the abstract mechanism of `(18)` and `(18k)` of the Wold card; instantiating it for the concrete
+prime-square and Weyl families needs only `log B_x(c) = (|c| + o(1)) ϑ(x)` and the prime number
+theorem.  Factored through `tendsto_mertensProduct_mul_ell2_of_tendsto`, which says the scale `ℓ₂`
+and the double logarithm carry the same accelerated type once the family's logarithm diverges.
+
+## Pass 68 — index-translation rigidity (the prime-log Gamma fixed-field law)
+
+`HTGeometry/IndexTranslationRigidity.lean` closes the algebraic core of `(12)` of
+`archimedean-relative-prime-cocycle-curvature`.
+
+```text
+eq_C_of_indexTranslation_invariant :
+  Λ abelian, μ of infinite order, K a field, P Q ≠ 0 in MvPolynomial Λ K with IsRelPrime P Q,
+  (indexTranslation μ P) * Q = P * (indexTranslation μ Q)   ⟹   P and Q are constants
+```
+
+i.e. the fixed field of the index translation `X_λ ↦ X_{λ+μ}` on the rational function field with
+variables indexed by `Λ` is the constant field.  Mechanism: the translate of a polynomial has the
+translated variable set; coprimality makes numerator and translate divide each other, so their
+variable sets agree (the tree's `mvPolynomial_vars_subset_of_dvd`); and a finite subset of a group
+invariant under an infinite-order translation is empty.
+
+`IsRelPrime`, not `IsCoprime`, is the right notion here — in a multivariable polynomial ring the
+Bezout condition is far stronger than having no common nonunit factor.
+
+Remaining for the card: the differential-coordinate version of the same statement, and the two
+imported analytic/Galois inputs (Wang–Yao, Hardouin–Singer).
+
+## Pass 69 — the operator balance law
+
+`HTGeometry/OperatorBalanceLaw.lean` closes `(12)` of `differential-variational-building-balance-law`:
+an operator matrix invertible over `K[∂;δ]` (not merely over the skew field) has row lattice equal
+to the integral lattice, hence trivial conductor, hence all elementary divisors of degree zero —
+`∑_i μ_i = 0`.
+
+The card's §9 is stale.  The tree already owns the entire lattice model that the card describes via
+affine buildings: `DifferentialOperatorOreField` (Ore condition, `PseudoDiffOp` as a `DivisionRing`),
+`OperatorLattice` (integral/row/saturated lattices and their commensurability),
+`OperatorConductorLength` (conductor length = sum of elementary-divisor degrees),
+`OperatorCartanComparison` (`tendsto_normalized_ambient_cartan`, the normalized Cartan limit),
+`DifferentialIndependentObservableNet` (the Fekete gauge).  The remaining links to the card's
+statement are the semilinear differential-automorphism action `(7)`–`(10)` and the identification of
+the relative-position vector `μ_n` with the Cartan prefix invariants.
+
+## Pass 70 — the simultaneous finite-divisor lifting lemma
+
+`HTGeometry/SimultaneousDivisorLifting.lean` closes the second algebraic lemma of
+`all-depth-pair-face-signature-completeness` (the first, the multi-telescoping ideal identity, was
+already `TelescopeIdeal`).
+
+```text
+exists_forall_sub_mem_span_singleton :
+  D i − D j ∈ (x i, x j) for all i, j ∈ s, and transverse coprimality
+  ⟹ ∃ b, ∀ i ∈ s, b − D i ∈ (x i)
+transverseCoprime_of_isRelPrime_quotient :
+  transverse coprimality holds when the x i are pairwise relatively prime modulo each x j
+```
+
+i.e. exactness of `R → ⨁_i R/(x_i)` at the equalizer of the pairwise reductions.  The second
+theorem hands the hypothesis to `TelescopeIdeal.iInf_span_singleton_eq_span_prod_of_primes`, which
+is exactly the Laurent-ring situation `x_i = u_i − 1`.
+
+The whole algebraic layer of the card's realization proof is now Lean-proved; what remains is
+analytic (elliptic principal parts) and the imported depth-two completeness theorem.

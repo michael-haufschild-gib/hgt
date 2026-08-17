@@ -154,6 +154,84 @@ independence of component Haar coordinates gives the product law.
 
 \section{Choi targets and static complexity}
 
+\subsection{Proof of Theorem \ref{thm:bornreturn}}
+
+Diagonalize $H=V\operatorname{diag}(E)V^*$ by finite-dimensional spectral
+theorem.  Functional calculus gives
+\[
+ e^{-itH}=V\operatorname{diag}(e^{-itE_i})V^*.
+\]
+Unitary conjugation preserves positivity and trace one, so every evolved
+$U(t)\rho_aU(t)^*$ remains density matrix.  Positivity of $\rho_a$ and
+$A_a$ also makes $\operatorname{tr}(A_a\rho_a)$ real.  In energy basis,
+cyclicity of trace gives exact displacement identity
+\begin{equation}
+ \operatorname{tr}(A_aU(t)\rho_aU(t)^*)-
+ \operatorname{tr}(A_a\rho_a)
+ =\sum_{i,j}c^a_{ij}
+   \left(e^{-it(E_i-E_j)}-1\right).                 \label{eq:bornsectorproof}
+\end{equation}
+
+Fix graph $G$ and resolution $Q$.  Simultaneous Dirichlet approximation on
+one vertex per connected component produces an integer
+$1\le n\le(Q+1)^{D-c(G)}$ for which selected edge phases lie within
+$2\pi/(Q+1)$ modulo $2\pi$.  Triangle inequality in
+\eqref{eq:bornsectorproof} charges every omitted directed coefficient by
+maximum chord length $2$ and every selected coefficient by
+$2(2\pi/(Q+1))$.  Hence returned record displacement is at most
+$\mathfrak B(G,Q)$.
+
+For $\varepsilon>0$, complete graph and sufficiently large $Q$ make
+$\mathfrak B(G,Q)\le\varepsilon$.  Finite minimization over graphs and
+well-ordering over integer $Q$ attain $T_*(\varepsilon)$.  If record never
+exits, first branch follows.  Otherwise choose witnessed
+$t_{\rm exit}\ge0$ with $B(t_{\rm exit})>\varepsilon$ and apply preceding
+simultaneous approximation to rescaled energies
+$(t_{\rm exit}+g_0)E_i$.  This yields $1\le n\le T_*$ and return at
+$n(t_{\rm exit}+g_0)$.  Since $g_0>0$ and $n\ge1$, this time is strictly
+later than exit; remaining inequalities in \eqref{eq:bornreturn} follow
+immediately.  This proves theorem.
+
+\subsection{Thermodynamic l-bit construction}
+
+Inject nonempty finite supports $S\Subset\N$ into distinct primes $p_S$.
+Choose an injective natural-number code $e(S)$ and put
+\[
+ J_S=\frac{\log p_S}
+ {p_S,2^{e(S)+|S|+\max S+\operatorname{diam}S}},\qquad J_\varnothing=0.
+\]
+Distinct prime logarithms are linearly independent over $\Q$, and
+multiplication by nonzero rational factors preserves linear independence.
+The injective code supplies a geometric summable majorant, while displayed
+physical exponents give
+$\sum_S2^{\operatorname{diam}S}|J_S|<\infty$.  For $0\le g\le1$,
+$|g^{\operatorname{diam}S}J_S|\le|J_S|$; Weierstrass comparison therefore
+gives absolute and uniform convergence of \eqref{eq:lbitenergy-new}, and
+finite-window tails converge uniformly to zero.
+
+Walsh characters on finite Boolean cube are an invertible basis.  Thus
+temporal gap space of first $n$ sites is rational span of nonconstant
+coefficients.  Rational independence makes its dimension exactly number of
+retained nonempty supports, proving \eqref{eq:lbitjetdim}.  Endpoint pair
+$S_b=\{0,b\}$ has exact diameter $b$.  Full-cube integer character extracts
+its coefficient with factor $2^{b+1}$; substituting
+$T=\tau/g^b$ into centered-time Fourier reporter gives
+\eqref{eq:lbitbirth}.
+
+Energy $E_g$ is bounded, continuous and real.  Multiplication by it on
+$L^2(\Omega,\mu)$ is therefore bounded and self-adjoint.  Phase
+multipliers $e^{-itE_g}$ satisfy group law and preserve norm.  Pointwise
+continuity in $t$, domination by one and dominated convergence give strong
+continuity for every $L^2$ vector.
+
+For $g=1$, double flip at $x,y$ cancels every interaction not containing
+both sites.  Weighted summability gives double energy difference at most
+$4K2^{-|x-y|}$.  Chord inequality
+$|e^{ia}-e^{ib}|\le|a-b|$, together with algebraic ceiling two, yields
+\eqref{eq:lbitcone}.  Restricting coefficients incident on $x$ to finite
+environment $F$ preserves rational independence; Walsh inversion then gives
+exact local-flip temporal rank $2^{|F|}$.
+
 \subsection{Projective Choi tube}
 
 The full $D$-torus splits measure-preservingly into one common phase and a

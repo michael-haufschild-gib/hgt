@@ -3206,3 +3206,198 @@ profile by only `1/y + 1/(1-y)`, whose contribution to `rho - 1 = v/(cP) - 1` ha
 
 Both vanish, so `sturmAmplitudeVar_sharp_transport` now has its upper error control.  What remains of
 `P3` is the (already available) lower side `v ≥ cP - M` and the two integral estimates.
+
+### The Riccati ratio is two-sided — `P3`'s pointwise input is complete
+
+`formal/GaloisForLFunctions/RHTower/ProlateRiccatiRatioBounds.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+sqrt_prolateBandScale_eq :   sqrt(K) = c · prolateWKBProfile s y · (1 - y²)
+sturmRiccatiRatio_prolate :  rho = prolateLogDeriv Φ / (c · prolateWKBProfile s)
+prolateWKB_sub_eight_le_prolateLogDeriv :   v ≥ c P - 8/(1-y)
+abs_one_sub_sturmRiccatiRatio_prolate_le :
+      |1 - rho(y)|  ≤  (1/y + 9/(1-y)) / (c · prolateWKBProfile s y)
+```
+
+The lower half is the corpus's endpoint bound taken with the **midpoint** window `y₁ = (y+1)/2`: both
+of its losses `2y₁/(1-y₁²)` and `2/(y₁-y)` are then at most `4/(1-y)`, so the free window parameter
+disappears and the loss becomes the single elementary `8/(1-y)`.  The upper half is the new anchored
+barrier.  The two combine into one two-sided statement with the *same* shape on both sides, which is
+what the sharp transport's error control consumes.
+
+Remaining for `P3`: the mass estimate.  With `δ(y) = (1/y + 9/(1-y))/(cP)` the error control of
+`sturmAmplitudeVar_sharp_transport` is
+
+```text
+e(y) = 2 c P δ(y)² + |K'/K| · δ(y)(2 + δ(y))/2 ,
+```
+
+and on `[K/sqrt c, α]` its integral is bounded by elementary antiderivatives — the `1/y` part by
+`sqrt(y²-s)/(s y)` (the antiderivative of `1/(y² sqrt(y²-s))`), which telescopes to `O(1/K²)`, and
+the `1/(1-y)` parts by `O(1/c)` since `cP` is bounded below by a multiple of `c` away from the
+turning scale.
+
+### The exponential separation of two rungs is proved
+
+`formal/GaloisForLFunctions/RHTower/ProlatePhaseSeparation.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+bandEndpointPhase_sub_ge :
+    (s_n - s_m)/2 · log(1/y)  ≤  Ξ_{s_m}(y) - Ξ_{s_n}(y)
+exp_two_mul_bandPhase_sub_le :
+    exp( 2c (Ξ_{s_n}(y) - Ξ_{s_m}(y)) )  ≤  exp( -c (s_n - s_m) log(1/y) )
+```
+
+for `0 ≤ s_m ≤ s_n < y²`, `0 < y < 1`.  Only the *trivial* side of the radical comparison is used:
+writing the difference of integrands as `(s_n - s_m)/(sqrt(sin²θ-s_m) + sqrt(sin²θ-s_n))` and bounding
+the denominator by `2 sin θ ≤ 2θ` turns the phase difference into `∫ dθ/θ`, whose value
+`log((π/2)/arcsin y)` is at least `log(1/y)` by the corpus's own `arcsin_le_pi_div_two_mul`.
+
+At the rescaled anchor `y = x₀/sqrt c` this is `log(1/y) = (log c)/2 - log x₀`, and since
+`c(s_n - s_m) → 4(n-m)` the separation is
+
+```text
+exp( 2c (Ξ_{s_n} - Ξ_{s_m}) )  ≤  C · c^(-2(n-m)+ε) ,
+```
+
+which is exactly the `c^{-2}` per corpus index step the ladder needs — now available at a **common**
+anchor, which is what `prolateBand_sq_ratio_le` requires and what the old turning-point bookkeeping
+(each rung at its own `2 sqrt(s_j)`) could not supply.
+
+With this, the three factors of the adjacent-index ratio are all in hand:
+
+```text
+d_m/d_n ≍ R_n(0)²/R_m(0)²            eventually_signedLeakage_sharp_two_sided   (absolute constants)
+R_j(0)  ≍ Φ_j(y₀)                    tendsto_anchor_ratio                        (converging constants)
+Φ_n(y₀)²/Φ_m(y₀)² ≤ C·exp(Λ_n)·exp(2c ΔΞ)   prolateBand_sq_ratio_le
+exp(Λ_n) = O(c) ,  exp(2c ΔΞ) = O(c^{-2(n-m)})
+⇒  d_m/d_n = O(c^{1-2(n-m)}) = O(c^{-1}) → 0   for adjacent indices.
+```
+
+Remaining: the indexed assembly — instantiating these four at the canonical family
+`signedModeRadialData a n` and packaging the result as a `LadderEnvelope` for the step-one ladder.
+
+### The common pair anchor is proved
+
+`formal/GaloisForLFunctions/RHTower/ProlatePairAnchor.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+exists_hermiteFun_pair_ne_zero_Ioo   both Hermite functions nonzero at a common point of any interval
+prolatePairAnchor m n                the point, taken beyond 2 sqrt(4m + 4n + 1)
+prolatePairAnchor_spec / _pos / _sq_gt        4(4k+1) < x₀²  for k = m and k = n
+tendsto_anchor_ratio_at              the anchor comparison at ANY positive rescaled point
+tendsto_pairAnchor_ratio             it, at the pair anchor, for either rung
+```
+
+`prolateBand_sq_ratio_le` compares two apertures at a *single* band point, so the anchor must avoid
+the zeros of both Hermite functions; the product of the two Hermite polynomials is monic, hence has
+finitely many roots, so such a point exists in every interval.  `tendsto_anchor_ratio`'s proof used
+only positivity of the anchor, so it generalizes verbatim.
+
+### The indexed instantiation: the template is already in the tree
+
+Every hypothesis of `prolateBand_sq_ratio_le` is discharged for `signedModeRadialData a k` by the
+pattern at `RHTower/ProlateIndexedLeakageTwoSided.lean:195-240`:
+
+```text
+hchi : (signedModeRadialData a n).chi = -(s c²)     from radialSeparationRatio = -chi/c², field_simp
+heig : ∀ y ∈ Icc (-1) 1, prolateSLAction c R y = -(s c²) R y
+hpos : ∀ y ∈ Icc (sqrt s) 1, 0 < R y                prolate_pos_on_right_of_radial_turning
+hfluxd : HasDerivAt (fun u => (1-u²) R' u) (-(c²(s - t²) R t)) t
+```
+
+and the eventual side conditions are
+
+```text
+0 < c, 0 < s_n, s_k ≤ 1/8            eventually_signedModeRadialData_s_pos / _s_le
+4 ≤ c s_n                            c s_n → 4n+1 ≥ 5  (needs n ≥ 1 — and only the LARGER index
+                                       ever needs it, since the lower barrier bound has no such
+                                       hypothesis, so the ground index m = 0 is fine)
+s_k < y₀² = x₀²/c                    prolatePairAnchor_sq_gt: x₀² > 4(4k+1) > c s_k eventually
+y₀ ≤ α, 0 < c Ξ_{s_n}(α), 1 ≤ c Ξ_{s_m}(α)
+```
+
+with `α = prolateLeakageCollar` (`600(1-α) = 1/4` exactly), which already satisfies
+`1/2 < α < 1` and the collar hypothesis.
+
+### THE INDEXED AMPLITUDE RATIO IS PROVED
+
+`formal/GaloisForLFunctions/RHTower/ProlateIndexedAmplitudeRatio.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+pairAnchorPoint m n a = prolatePairAnchor m n / sqrt (signedModeRadialBandwidth a)
+pairAnchorPoint_sq / _pos
+collarPhaseFloor = sqrt(α² - 1/8) · arccos α ,  collarPhaseFloor_pos, collarPhaseFloor_le
+
+eventually_prolateBand_sq_ratio_le (m n : ℕ) (hn : 1 ≤ n) :
+  ∀ᶠ a in atTop,
+    R_n(y₀)²  ≤  324 sqrt 2 π³ · C_n(a)
+                  · exp( 2c (Ξ_{s_n}(y₀) - Ξ_{s_m}(y₀)) + Λ_n(y₀) - 12(log(1-α) - log(1-y₀)) )
+                  · R_m(y₀)²
+```
+
+with `y₀ = pairAnchorPoint m n a` and `α = prolateLeakageCollar`.  Every hypothesis of
+`prolateBand_sq_ratio_le` is discharged at the canonical family:
+
+```text
+0 < c, 0 < s_n ≤ 1/8, 0 ≤ s_m ≤ 1/8            the eventual separation facts
+4 < c s_n                                       c s_n → 4n+1 ≥ 5   (n ≥ 1; the LOWER half of the
+                                                  comparison needs no such bound, so m = 0 is free)
+s_k < y₀² = x₀²/c                               c s_k → 4k+1 and prolatePairAnchor_sq_gt
+y₀ ≤ α                                          c → ∞
+chi_k = -(s_k c²)                               radialSeparationRatio, after normalizing the
+                                                  bandwidth name
+0 < R_k on [y₀,1]                               prolate_pos_on_right_of_radial_turning, since
+                                                  sqrt(s_k) ≤ y₀
+the flux derivative                             from the exactness bundle's ODE
+0 < c Ξ_{s_n}(α),  1 ≤ c Ξ_{s_m}(α)             collarPhaseFloor_le and c → ∞
+```
+
+The `collarPhaseFloor` is the uniform positive lower bound `sqrt(α² - 1/8)·arccos α` for the collar
+phase over all admissible separations, which is what makes the second of these eventual.
+
+What remains is the limit: showing the bracketed factor tends to zero.  Its three parts are
+`C_n(a) = O(1)` (the barrier is `c` times a bounded quantity, divided by `c²`),
+`exp(Λ_n(y₀)) = O(c)` and `exp(2c ΔΞ) = O(c^{-2(n-m)})` by `exp_two_mul_bandPhase_sub_le`, giving
+`O(c^{1-2(n-m)}) → 0` for `n = m+1`.
+
+### THE AMPLITUDE RATIO VANISHES — `O(c^{-1/2})` at the common anchor
+
+`formal/GaloisForLFunctions/RHTower/ProlateIndexedRatioLimit.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`):
+
+```text
+exp_neg_half_log_eq :  exp(-(log c)/2) = 1/sqrt c
+ratioLimitConst m n , ratioLimitConst_nonneg
+
+eventually_prolateBand_sq_ratio_le_div_sqrt (m n : ℕ) (hmn : m < n) :
+  ∀ᶠ a in atTop,
+    R_n(y₀)²  ≤  ratioLimitConst m n / sqrt c  ·  R_m(y₀)²
+```
+
+The exponent of `eventually_prolateBand_sq_ratio_le` is bounded by `K - (log c)/2` with `K` absolute:
+
+```text
+C_n(a)                          ≤ 1 + leakageBarrierConst          barrierFactor_le (corpus)
+Λ_n(y₀)                         ≤ log c - log(x₀²/2) - log(1-α²)   at y₀² = x₀²/c, using c s_n < x₀²/2
+2c(Ξ_{s_n}(y₀) - Ξ_{s_m}(y₀))   ≤ -3((log c)/2 - log x₀)           bandEndpointPhase_sub_ge, with
+                                                                     c(s_n - s_m) → 4(n-m) ≥ 4 > 3
+-12(log(1-α) - log(1-y₀))       ≤ -12 log(1-α)                     since log(1-y₀) ≤ 0
+```
+
+so the three `log c` contributions are `+1` from the scale log and `-3/2` from the phase, leaving
+`-1/2`.  (Taking `c(s_n - s_m) ≥ 3` rather than its limit `4(n-m)` is deliberately conservative; the
+sharp exponent is `1 - 2(n-m)`.)
+
+That is the `P6` estimate for the amplitude.  Remaining in the chain:
+
+```text
+R_k(0)/R_k(y₀) → φ_{2k}(0)/φ_{2k}(x₀)      tendsto_pairAnchor_ratio  (both rungs, common anchor)
+d_k ≍ c^{-1/2}/R_k(0)²                     eventually_signedLeakage_sharp_two_sided
+⇒ d_m/d_n → 0                              for adjacent corpus indices
+⇒ LadderEnvelope for the step-one ladder
+```

@@ -9296,3 +9296,29 @@ at bounded radius; (3) the filtered `(19.3)` window-discrepancy estimate, by
 `primeLogWindow_quadrature_eq` — which is already generic in the profile — against
 `xiMassThetaLogDiscrepancy`; (4) the filtered subcaustic window and moving criterion, mirroring
 `XiMassLogSubcausticWindow` and `XiMassMovingQuadratureCriterion` with `m_B q ≤ N + 1/2`.
+
+### C42-T: the jet profile and its height derivative on the window (2026-08-17)
+
+Steps (1) and (2) of the `L_c u^{1/10}` layer are proved.
+
+    RHTower/XiMassJetComplexWindow.lean
+      exists_norm_xiMassJetIterate_windowC_le    the jet profile on a **complex** disc of radius one
+                                                about every real window point, with the same
+                                                exterior exponent `e^{-a√(h²−u²)}` up to a constant:
+                                                the perturbation of the propagation argument is
+                                                `O(h)`, but `csqrtRe_sub_le` divides it by the root,
+                                                which is also `≍ h`
+      diffContOnCl_xiMassJetIterate
+      exists_norm_deriv_xiMassJetIterate_window_le
+                                                **the height derivative of the jet profile** in the
+                                                window, by Cauchy's estimate at radius `1/2` — the
+                                                envelope the filtered `(19.3)` needs and which the
+                                                base theory reads off the closed Bessel form
+
+### Remaining for C42-T
+
+Steps (3) and (4) of the `L_c u^{1/10}` layer: the filtered `(19.3)` window-discrepancy estimate,
+by `primeLogWindow_quadrature_eq` — already generic in the profile — paired against
+`xiMassThetaLogDiscrepancy` with the two envelopes above; then the filtered subcaustic window and
+moving criterion, mirroring `XiMassLogSubcausticWindow` and `XiMassMovingQuadratureCriterion` with
+`m_B q ≤ N + 1/2` in place of `m_B q ≤ 1/2`.

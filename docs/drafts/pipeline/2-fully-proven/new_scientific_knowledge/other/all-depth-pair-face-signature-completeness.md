@@ -472,3 +472,36 @@ The multi-telescoping ideal identity is easy to formalize but is not the scienti
 - 2026-07-10 — Proved the multi-telescoping intersection identity on every finite free-abelian orbit.
 - 2026-07-10 — Proved inductively that the pair-face `2`-skeleton is complete modulo DA for all `Q_d`.
 - 2026-07-10 — Removed the overbuilt full-face-complex conjecture; higher raw face levels are unnecessary for DA/HT classification.
+
+## Lean progress — the simultaneous finite-divisor lifting lemma
+
+`GaloisForLFunctions.HTGeometry.SimultaneousDivisorLifting` formalizes the lifting lemma of the
+realization proof, unconditionally and axiom-clean (`[propext, Classical.choice, Quot.sound]`).
+
+```text
+TransverseCoprime s x
+    for every j in s and every t ⊆ s.erase j,
+    ⋂_{i∈t} (x i, x j)  ≤  (∏_{i∈t} x i, x j)
+exists_forall_sub_mem_span_singleton
+    D i pairwise compatible, i.e.  D i − D j ∈ (x i, x j)  for all i, j in s
+      ==>  ∃ b, ∀ i ∈ s, b − D i ∈ (x i)
+transverseCoprime_of_quotient          the hypothesis is a statement in the quotients R/(x j)
+transverseCoprime_of_isRelPrime_quotient
+    it holds when, modulo each x j, the remaining x i are pairwise relatively prime
+```
+
+The last two reduce the hypothesis to the exact situation of the card's orbit ring: in
+`R = C[δ][u_1^{±1},…,u_{d−1}^{±1}]` with `x_i = u_i − 1`, the images of the `x_i` modulo `x_j` are
+pairwise non-associate primes, which is the hypothesis form of the already-formalized
+`TelescopeIdeal.iInf_span_singleton_eq_span_prod_of_primes`.
+
+This is the exactness of `R → ⨁_i R/(x_i)` at the equalizer of the pairwise reductions — the
+"simultaneous finite-divisor lifting lemma" of the realization proof.  The induction is the card's:
+lift the first `n−1` components, observe that the difference between the last prescribed residue
+and that lift lies in every earlier pair ideal, use transverse coprimality to write it as a
+multiple of the product of the earlier elements plus a multiple of the new one, and add the first
+summand.
+
+Together with the already-owned `TelescopeIdeal` this closes the whole algebraic layer of the
+realization proof.  The remaining inputs are analytic: meromorphic principal parts on elliptic
+curves and the unaudited depth-two triptic DA-completeness theorem.
