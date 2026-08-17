@@ -1139,3 +1139,81 @@ assembly is *transport*, not field theory: `postcriticalReciprocalFieldElement` 
 `genericJetField K (m+n)`, while this theorem lives in `criticalNormalClosure K m n`, so the escape
 `y_L notin O ⊔ K(x_L)` and the membership `y_L in J` have to be carried across the embedding before
 this theorem can be applied to `alpha = y_L`.
+
+## Lean progress — the escape transports into the normal closure
+
+`HTGeometry/CriticalSourceEscapeTransport.lean` (wired, axiom-clean).
+
+```
+embedding_notMem_bot_of_notMem_bot
+    y in the source,  y not in the observation field
+      ==>  its image under the canonical sheet is not in the bottom of the normal closure
+
+criticalSource_eq_adjoin_of_notMem_bot
+    full monodromy,  y in the source,  y not in the observation field
+      ==>  O( sheet y ) = the source field range
+```
+
+This is the transport the previous section identified as the remaining work.  It is short and forced:
+the canonical sheet is an algebra map *over* the observation field, so it sends the observed elements
+of the source to the observed elements of the normal closure, and it is injective because its source
+is a field.  If the image lay in the bottom, it would be the image of an observed element, and
+injectivity would put `y` back in the bottom of the source.
+
+The second statement is the composite with the primitivity step, and is `(4)` in the only form that
+still refers to the geometry: it consumes full monodromy and one element of the source that escapes
+the observation field.
+
+What is left of this card is therefore the *identification* of `y_L` with such an element:
+`postcriticalReciprocalFieldElement` lives in `genericJetField K (m+n)` and has to be exhibited as a
+member of `criticalSourceField K m n` — that is `genericRecip_mem_genericRawAlgebra` in the
+coordinates of this construction — and the corpus escape
+`postcriticalReciprocalFieldElement_notMem_criticalObservation_sup_raw` has to be read as
+non-membership in the *bottom intermediate field* rather than in the observation field as a subfield
+of the jet field.  Both are coordinate bookkeeping, with no field theory left in them.
+
+## Lean progress — `y_L ∈ J(x_L)`: the membership half of `(4)`
+
+`HTGeometry/CriticalRecipMemSourceSup.lean` (wired, axiom-clean).
+
+```
+genericRawAlgebraUpTo K N k          adjoin of the raw coefficients of index <= k, and 1/x_0
+genericRawAlgebraUpTo_mono
+genericRecip_mem_genericRawAlgebraUpTo
+      ** the k-th reciprocal coefficient needs only the raw coefficients of index at most k **
+criticalSourceFieldSup K m n         J(x_L) = criticalSourceField  ⊔  K(postcritical raw)
+criticalAmbientRaw_mem_criticalSourceFieldSup
+postcriticalReciprocalFieldElement_mem_criticalSourceFieldSup
+      ** y_L ∈ J(x_L) **
+```
+
+The corpus already had `genericRecip_mem_genericRawAlgebra`, but it adjoins **all** raw coefficients,
+and that is exactly what the critical tower cannot use: `criticalSourceField K m n` deliberately omits
+the last raw coordinate, so the coarse statement places `y_L` in no field the card names.  The
+inverse recursion
+
+```text
+y_0 = 1/x_0 ,      y_{k+1} = -(1/x_0) . sum_{i<=k} x_{i+1} . y_{k-i}
+```
+
+only ever calls raw indices `<= k+1`, so the degree-bounded form is the same induction with the
+index carried; it places `y_L` in the algebra of `x_0, ..., x_L` and `1/x_0`, and a *field* contains
+`1/x_0` as soon as it contains `x_0`.  Hence `y_L ∈ J(x_L)`, which is the first of the three inputs
+of `(4)`.
+
+### Status of `(4)` after this
+
+```text
+y_L ∈ J(x_L)          FORMAL  (this section)
+y_L ∉ O(x_L)          FORMAL  (postcriticalReciprocalFieldElement_notMem_criticalObservation_sup_raw)
+no field strictly between O(x_L) and J(x_L)      OPEN
+```
+
+The third input is the base-changed primitivity.  The un-base-changed statement is already formal
+(`eq_bot_or_eq_criticalSourceNormalClosureFieldRange_of_full_monodromy`, given full monodromy), and
+what is missing is the transfer along the free parameter.  The obstruction is precise: for an
+intermediate field `O(x_L) ⊆ M ⊆ J(x_L)`, the trace `M ∩ J` is an intermediate field of `J/O`, hence
+`O` or `J`; the case `M ∩ J = J` gives `M = J(x_L)` immediately, and the case `M ∩ J = O` needs
+`M = O(x_L)`, which is linear disjointness of `J/O` from the purely transcendental extension
+`O(x_L)/O`.  That is the content of `FreeParameterBaseChange` in its Galois-group form, and the field
+form of it is what the assembly still owes.

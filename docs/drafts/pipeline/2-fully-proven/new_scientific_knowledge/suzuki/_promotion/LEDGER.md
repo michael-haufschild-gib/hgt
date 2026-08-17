@@ -15,10 +15,10 @@ that name and its relative links deepened by one level.  Inbound links are repai
 restricted-Weil trace", "specialist novelty review", "3 → 4 publication-ready") do not block
 promotion; gates that name missing Lean do.
 
-## A. Promoted (102 of 105; 3 cards remain in stage 2)
+## A. Promoted (104 of 105; 1 card remains in stage 2)
 
 *This list records the promotions carried out through this ledger.  The stage-2 directory
-itself is the authority on what remains; the three cards still there are named in section B.*
+itself is the authority on what remains; the one card still there is named in section B.*
 - `suzuki-affine-resolvent-krein-defect`
 - `suzuki-affine-sewn-weil-robin-far-tail-factorization`
 - `suzuki-aperture-rees-superpolynomial-conditioning`
@@ -34,6 +34,7 @@ itself is the authority on what remains; the three cards still there are named i
 - `suzuki-compactified-inverse-phase-lattice-holography`
 - `suzuki-completed-eigenmode-atomic-jump-boundedness`
 - `suzuki-critical-affine-cauchy-residual-divergence`
+- `suzuki-critical-radical-anchor-finite-head-reduction`
 - `suzuki-critical-aperture-quarter-shift-current`
 - `suzuki-critical-apex-vacuum-capacity-no-go`
 - `suzuki-critical-entry-wall-quarter-shift-green-law`
@@ -58,6 +59,7 @@ itself is the authority on what remains; the three cards still there are named i
 - `suzuki-high-clock-prime-tangent-tomography`
 - `suzuki-homogeneous-projective-resolvent-plucker-lift`
 - `suzuki-interior-excursion-shift-selection`
+- `suzuki-log-recurrence-polynomial-carrier-trichotomy`
 - `suzuki-jump-kernel-loewner-growth-gap`
 - `suzuki-literal-paired-source-assembly`
 - `suzuki-localized-orbit-lift-selfadjointness-trilemma`
@@ -99,12 +101,10 @@ itself is the authority on what remains; the three cards still there are named i
 - `suzuki-xireal-fe-bipolarization-completion`
 - `suzuki-zero-trace-cofinal-convex-recurrence`
 
-## B. Not yet promoted (3)
+## B. Not yet promoted (1)
 - `suzuki-coalescing-anchor-parity-locking-reduction`
-- `suzuki-critical-radical-anchor-finite-head-reduction`
-- `suzuki-log-recurrence-polynomial-carrier-trichotomy`
 
-Every one is listed in section C with the exact Lean object it still needs.
+It is listed in section C with the exact Lean object it still needs.
 
 ## C. Open Lean debt — the remaining work
 
@@ -145,7 +145,6 @@ Each entry names the exact missing Lean object as the card itself states it.
 | `suzuki-gamma-prime-normal-corona-equivalence` | forced-domain theorem `(21)` |
 | `suzuki-gamma-wall-block-hardy-and-derivative-scattering` | Hilbert-valued weighted Hardy inequality `(39)`, cutoff identity `(47)`, equivalence `(45)` |
 | `suzuki-interior-seam-indicial-dipole-exclusion` | slowly varying Fourier Abelian asymptotics, principal symbol of the logarithmic jump |
-| `suzuki-log-recurrence-polynomial-carrier-trichotomy` | six-item chain `(8)`, `(14)`, `(15)`, `(17)`, `(21)–(24)`, `(28)` |
 | `suzuki-neumann-dominated-shift-cone-obstruction` | `(4)`: strong-resolvent convergence of the actual restricted operator |
 | `suzuki-paired-seam-carleman-logistic-normal-form` | singular integral cancellation, improper beta integration, weighted `L²` convolution, physical logarithmic chart |
 | `suzuki-physical-log-grade-nuclear-summability` | the exact physical word-profile object `(16)` |
@@ -12203,5 +12202,438 @@ lattice power `(2+|ν|₁)^{2σQ}`, so the whole summand is one power of the lat
 `∑ c_q · 2 sinh(κ|q|₁) sin⟨q,θ⟩` by the same computation applied term by term.
 
 Remaining for this card: items 1, 3, 4, and the Borel–Cantelli half of 6.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AEH. `suzuki-log-recurrence-polynomial-carrier-trichotomy` — promoted
+
+The six-item chain of §10 is closed unconditionally and the card is at stage 3.  The certificate is
+`3-formalized/new_scientific_knowledge/suzuki/suzuki-log-recurrence-polynomial-carrier-trichotomy-formalized.md`.
+
+| item | Lean module | key declarations |
+|---|---|---|
+| `(8)` | `RHTower/SuzukiLatticeShellSummability.lean` | `summable_one_add_abs_int_rpow`, `summable_prod_one_add_abs`, `one_add_abs_coord_le`, `summable_polyDecay_fin`, `summable_polyWeight_sq_event` |
+| `(14)` | `RHTower/SuzukiLatticeCarrierWeight.lean` | `one_add_latticeL1_add_le`, `polyWeight_ratio_le`, `polyWeight_ratio_le'`, `polyWeight_sq_mul_event_le` |
+| `(15)` | `RHTower/SuzukiPositionCommutatorGroup.lean` | `hasDerivAt_conj_position`, `conj_position_eq`, `position_mul_exp`, `listProd_mul_exp`, `exists_time_polynomial` |
+| `(17)` | `RHTower/SuzukiPolynomialGroupEstimate.lean` | `wordProd`, `posNorm`, `DiffOp`, `DiffOp.pos_mul`, `DiffOp.symbol_mul`, `DiffOp.exists_bound`, `exists_diffOp_expansion`, `exists_polynomial_word_bound`, `wordProd_comp_evolution`, `exists_polynomial_group_bound` |
+| `(21)`–`(24)` | `RHTower/SuzukiHatanoNelsonEllipse.lean` | `hatanoNelsonSymbol_eq`, `hatanoNelsonSymbol_im`, `hatanoNelsonSymbol_quarter`, `hatanoNelsonSymbol_im_ne_zero`, `primeStepSymbol_im` |
+| `(28)` | `RHTower/SuzukiApertureBorelCantelli.lean` | `badAperture_subset`, `measure_badAperture_le`, `summable_badAperture_length`, `tsum_measure_badAperture_ne_top`, `ae_finite_badAperture`, `log_defect_le_of_not_mem`, `ae_finite_logType` |
+
+Three of the six were sharpened rather than transcribed.
+
+**No lattice-sphere count is needed for `(8)`.**  The card routed the event sum through the shell
+count `O_d(N^{d-1})`.  Coordinatewise domination `1 + |ν_i| ≤ 1 + |ν|₁` gives
+`∏_i (1 + |ν_i|) ≤ (1 + |ν|₁)^d`, hence `(1 + |ν|₁)^{-p} ≤ ∏_i (1 + |ν_i|)^{-p/d}`; the right side
+is a product of one-dimensional `p/d`-series and a `d`-fold induction over coordinates settles
+convergence for `p > d`.  The threshold is unchanged, and the lattice-sphere estimate disappears.
+
+**`(16)` has no integral remainder.**  For a finite-range lattice generator the commutator
+`C = AX − XA` is again a Laurent polynomial in the same commuting shifts, so `AC = CA`.  Then
+`u ↦ e^{uA} X e^{-uA}` has *constant* derivative `C`, so the Heisenberg flow is exactly affine and
+`(15)` becomes the closed statement that a coordinate word passes through the evolution and becomes
+the same word in the shifted coordinates.  The `P_{α,β}` of `(15)` are then read off as the
+coefficients of a time polynomial of degree at most the word length, all independent of the time.
+
+**`(17)` needs no complex interpolation.**  The exact identity replaces interpolation by a symbol
+calculus: expand the shifted word, and the coefficient of `t^k` is a finite sum `∑ B · X^w` with
+`B` a bounded symbol and `|w| ≤ m − k`, because the symbol class is closed under commutation with
+the coordinates.  Each such coefficient is bounded by the order-`(m−k)` position graph norm, so the
+word is bounded by `C (1 + |x|)^m` times the order-`m` graph norm, with `C` uniform in the time;
+the evolution being isometric converts this into the weighted group estimate.  The Lean class
+`DiffOp` carries exactly this filtration.
+
+**Effective Baker–Matveev is off the critical path.**  §10 does not list `(5)`.  Matveev is
+Literature on the card and supplies only the aperture-independent statement that the zero-event
+family has finite logarithmic type; the formalized chain does not consume it.  The open card
+`1-in-progress/effective-baker-matveev-linear-forms.md` is therefore no longer blocking any stage-2
+suzuki promotion.
+
+## AEI. `critical-radical-anchor-finite-head-reduction` — the critical line leaves the payment, and the Jensen upper bound
+
+Two independent advances, one mathematical and one formal.
+
+**The witnesses need not be on the critical line.**  `(SR-64.28)` used criticality only to make the
+witness coordinates explicit.  The strip bound `u = (Re r − ½)² < ¼` already pins them: with
+`X = 1 + k − u` and `Y² = 4uk`,
+
+```text
+tau_r = (X² − Y²)/(X(X² + Y²)) ≤ X/(X² + Y²) ≤ 1/X ≤ 1/(k + 3/4),
+a_r   = X/(X² + Y²)            ≥ 1/(k + 3),
+```
+
+the second because `X(k + 3) − X² = X(2 + u) ≥ 2k + 3/2 > 4uk = Y²`.  Feeding the first into the
+sector gap `(SR-64.18)` leaves `tau_q − tau_r > 83/[85(1+h)] − 143/[425(1+h)] = 16/[25(1+h)]`
+whenever `k_r ≥ 3(1 + h)` — the band floor moves from `3h` to `3(1+h)`, nothing else changes.
+
+```text
+RHTower/SuzukiGeneralWitnessAnnularPayment.lean
+  xiSquaredNode_coords          the two node coordinates in (k, u)
+  responseSlope_le_inv_height   tau_r ≤ 1/(k + 3/4)      for every copy
+  responseMass_ge_inv_height    a_r   ≥ 1/(k + 3)        for every copy
+  slope_gap_sq_gt_general       the sector gap without criticality
+  tailSum_general_payment       (SR-64.33)
+  annulus_general_mass_floor    the fixed-annulus floor, count (87/256)K² + 1
+  annulus_general_payment       the general fixed-annulus payment
+```
+
+Consequence: the required zero-counting input is `(SR-64.35)` — a **constant** number of ξ-zeros,
+on or off the line, in one fixed annulus at every large height.  Selberg, Hardy–Littlewood and
+Pratt–Robles–Zaharescu–Zeindler all leave the critical path, and so does the five-twelfths layer
+`G` of `riemann-von-mangoldt-zero-counting`.  Hardy's theorem also leaves: `(SR-64.1)`'s Lean
+statement `RHTower.exists_finset_anchor_payment` is proved for an **arbitrary** anchor copy,
+because the anchor's own charge sits inside the finite head.
+
+**The Jensen upper bound is closed.**
+
+```text
+RHTower/XiZeroCountJensenBound.lean
+  xi_eq_riemannXi                 the two corpus definitions of ξ agree
+  orderOneEnvelope_xi             the envelope transported to `xi`
+  xiRegionOrderSum_closedBall_le  n(r) ≤ [C(1 + 2r)log(2 + 2r) + log 2]/log 2
+  xiCountingBox_subset_closedBall the counting box sits in the disc of radius 1 + T
+  exists_xiZeroCount_upper_bound  ∃ c > 0, ∀ T ≥ 2, N(T) ≤ c T log T
+```
+
+from mathlib's `AnalyticOnNhd.sum_divisor_le` (Jensen's inequality) plus `ξ(0) = 1/2`.
+
+**The lower bound cannot be softened** — four shortcuts checked and refuted (partial fractions,
+zero-free-annulus rigidity, Nevanlinna first main theorem, ray growth with three circles); each
+collapses to needing a lower bound for the signed circle average of `log|ξ|`, which is the zero
+count itself.  The classical argument-principle route survives because there the main term is
+`T log T` against an `O(log T)` error, so the constant in `S(T) = O(log T)` is irrelevant.  The
+gating item is now Stirling for `log Γ` on vertical lines.  Details in
+`1-in-progress/riemann-von-mangoldt-zero-counting.md`.
+
+## AEJ. `coalescing-anchor-parity-locking-reduction` — Corollary G.1 and Theorem J's `(117)`–`(118)`
+
+```text
+RHTower/SuzukiGroundFourierBottleneck.lean
+  coherenceQuotient               num²/(anc · vec)
+  coherenceQuotient_odd_factor    the exact odd-branch cancellation identity
+  coherenceQuotient_even_factor   the exact even-branch cancellation identity
+  tendsto_coherenceQuotient_odd   (65):  C → |G|²/(B H)
+  tendsto_coherenceQuotient_even  (66):  C → |G|²/(ρ A H)
+  eventually_coherenceQuotient_pos  the positive coherence floor
+
+RHTower/SuzukiClarkCanonicalProbability.lean
+  squaredOrdinateResolventSum     M₀(s) = ∑ (ω_q + s)⁻¹
+  xiCanonicalWeight               p_q = ω_q⁻¹ / M₀(0)
+  summable_shifted_inv            shifting keeps the reciprocals summable
+  hasSum_xiCanonicalWeight        (117): the weights are a probability distribution
+  tsum_xiCanonicalWeight_stieltjes (118): ∑ p_q ω_q/(ω_q + s) = M₀(s)/M₀(0)
+  squaredOrdinateResolventSum_le  monotonicity in the shift
+```
+
+**G.1.**  The card derives `(65)`–`(66)` from three separate schedules and then argues that all
+powers of the layer parameter and the branch coefficient cancel.  That cancellation is an exact
+algebraic identity at each fixed `c`:
+
+```text
+num²/(anc·vec) = (δ·num/c^s)² · (ρ c^{2s+2}/δ) / ((ρ c² anc)(δ vec)),
+```
+
+with the even-branch analogue `(δ·num/c^r)²·(c^{2r}/δ)/(anc·(δ vec))`.  Each factor is exactly one
+of the three schedules, so the limit is a product of limits and needs no uniformity beyond them.
+Writing the identity first also removes the card's implicit assumption that the remainders are
+uniform on compact sets: the identity holds pointwise.
+
+**`(117)`–`(118)`.**  Once the reciprocals are summable the two statements are one line each: the
+normalized weights sum to one, and the weight cancels the kernel numerator so the Stieltjes
+transform is the resolvent ratio.  Both are proved for an arbitrary positive summable family — no
+Xi-specific input, and no positivity of `s` beyond `s ≥ 0`.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AEK. The Riemann–von Mangoldt provider — D closed without Stirling, E's analytic half closed
+
+`critical-radical-anchor-finite-head-reduction`'s single remaining input is the annular zero count
+`(SR-64.35)`.  Two of the four gates of `riemann-von-mangoldt-zero-counting` are now closed.
+
+```text
+RHTower/GammaVerticalPhaseAsymptotic.lean
+  analyticOnNhd_Gamma_rightHalf     Γ is analytic on the open right half-plane
+  continuousAt_digamma              ψ = (deriv Γ)/Γ is continuous there
+  continuous_digammaVerticalRe      t ↦ Re ψ(σ + it) is continuous
+  gammaVerticalPhase                ∫₀^T Re ψ(σ + it) dt
+  tendsto_integral_div_atTop        a vanishing function has sublinear primitive
+  tendsto_gammaVerticalPhase_ratio  gammaVerticalPhase σ T / (T log T) → 1
+
+RHTower/ZetaStripPolynomialBound.lean
+  norm_riemannZeta_le_of_re_pos     ‖ζ(σ+it)‖ ≤ 2 + 2|t|/σ,  0 < σ ≤ 2, |t| ≥ 2
+  norm_riemannZeta_le_of_two_le_re  ‖ζ(s)‖ ≤ π²/6 for Re s ≥ 2
+  norm_riemannZeta_le_quarter       ‖ζ(s)‖ ≤ 2 + 8|Im s| for Re s ≥ 1/4, |Im s| ≥ 2
+
+RHTower/ZetaRealTraceDiscCount.lean
+  zetaRealTrace, zetaRealTrace_ofReal
+  norm_riemannZeta_sub_one_le, two_sub_pi_sq_div_six_le_re, pi_sq_div_six_lt_two
+  analyticOnNhd_riemannZeta_ne_one, analyticAt_zetaRealTrace, analyticOnNhd_zetaRealTrace
+  zetaRealTrace_divisor_le, norm_zetaRealTrace_two_ge, exists_zetaRealTrace_count_bound
+```
+
+**Stirling is not needed for the Γ-phase.**  The phase along a vertical line is the integral of
+`Re ψ`, and the corpus already owns `Re ψ(σ + it) = log t + o(1)`
+(`re_digamma_vertical_sub_log_tendsto_zero`).  Integrating gives `T log T − T + O(1) + o(T)` with an
+elementary Cesàro step; no Binet integral and no asymptotic expansion appear.
+
+**Backlund's count is Jensen plus a `N = 1` Euler–Maclaurin bound.**  `F_T(z) = (ζ(z+iT)+ζ(z−iT))/2`
+is analytic on the disc of radius `7/4` about `2`, equals `Re ζ(σ+iT)` on the real axis by Schwarz
+reflection, is bounded below at the centre by `2 − π²/6 > 0` from the Dirichlet series, and is
+bounded above on the sphere by `2 + 8(T + 7/4)`.  Jensen's inequality then caps the zero count in
+the disc of radius `3/2` by `O(log T)`.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AEL. `S(T) = O(log T)` — the sign-change-to-argument step
+
+```text
+HTGeometry/ArgumentVariationSignChanges.lean
+  exists_cos_eq_zero_of_pi_lt         an interval of length > π meets a zero of cos
+  abs_im_sub_le_pi_of_re_ne_zero      constant sign of Re confines the argument to a π-strip
+  abs_im_sub_le_pi_of_re_ne_zero_Ioo  the same across a cell whose interior is sign-free
+  abs_im_sub_le_of_finite_re_zeros    |Δ arg| ≤ (#sign changes + 1)·π
+```
+
+`Re γ = exp(Re L)·cos(Im L)`, so where `Re γ` has constant sign the continuous image `Im L '' J` is
+an interval avoiding every zero of the cosine and therefore has length at most `π`.  The endpoint
+values are recovered from the open cell by density, and telescoping over the cells — a strong
+induction on the number of interior sign changes — gives the general bound.  With Backlund's disc
+count this is `S(T) = O(log T)`, closing gate E of `riemann-von-mangoldt-zero-counting`.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AEM. Gate C — the rectangle argument principle for `ξ`
+
+```text
+RHTower/XiRectangleZeroCount.lean
+  meromorphicOrderAt_logDeriv_xi_nonneg_of_ne_zero
+  hasSimplePolesOn_logDeriv_xi
+  logDeriv_xi_pole_iff
+  residue_logDeriv_xi
+  xi_zeros_rectangle_finite
+  rectangleIntegral_logDeriv_xi
+  rectangleIntegral_logDeriv_xi_eq_regionOrderSum
+```
+
+No contour was built from scratch.  `logDeriv xi` has a simple pole of residue equal to the
+vanishing order at each `ξ`-zero (corpus: `meromorphicOrderAt_logDeriv_xi_eq_neg_one`,
+`HTGeometry.logDeriv_residue_of_meromorphicOrder`) and is analytic elsewhere, so PNTPlus's
+`RectangleIntegral'_eq_sumResiduesIn` applies directly and gives
+
+```text
+(1/2πi) ∮_{∂R} ξ'/ξ = Σ_{ρ ∈ R} ord_ρ ξ = xiRegionOrderSum R,
+```
+
+under the single hypothesis that the boundary avoids the divisor.  Gates C, D and E of
+`riemann-von-mangoldt-zero-counting` are now closed; F (the assembly) is the last one, and its
+decomposition is recorded on that card.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AEN. Gate F, first half — the four-factor splitting and the vertical phase on the abscissa 2
+
+```text
+RHTower/XiLogDerivFactorization.lean
+  logDeriv_quadratic     logDeriv (z(z−1)/2) = 1/s + 1/(s−1)
+  logDeriv_piPow         logDeriv (π^{−z/2}) = −(log π)/2
+  logDeriv_gammaHalf     logDeriv (Γ(z/2)) = ψ(s/2)/2
+  xi_eq_four_factors     ξ(z) = (z(z−1)/2)·π^{−z/2}·Γ(z/2)·ζ(z) for Re z > 1
+  logDeriv_xi_eq         ξ'/ξ = 1/s + 1/(s−1) − ½log π + ½ψ(s/2) + ζ'/ζ
+
+RHTower/XiVerticalPhaseTwo.lean
+  re_logDeriv_xi_two_add        the pointwise real part at s = 2 + iy
+  continuous_re_logDeriv_xi_two, continuous_re_logDeriv_zeta_two
+  integral_re_logDeriv_xi_two   ∫₀^T Re(ξ'/ξ)(2+iy) dy
+                                  = ∫₀^T [2/(4+y²)+1/(1+y²)] − (T/2)log π
+                                    + gammaVerticalPhase 1 (T/2) + ∫₀^T Re(ζ'/ζ)(2+iy)
+```
+
+The germ identity is transported to the logarithmic derivative through
+`Filter.EventuallyEq.deriv_eq` on the open half-plane `Re z > 1`, and `logDeriv_mul` splits the
+four factors.  The digamma term becomes the Gamma phase after the substitution `y = 2t`
+(`intervalIntegral.integral_comp_div`).
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AEO. Gate F — the two bounded vertical terms
+
+```text
+RHTower/XiVerticalPhaseTwo.lean  (extended)
+  integral_rational_head                ∫₀^T [2/(4+y²) + 1/(1+y²)] = arctan(T/2) + arctan T
+  abs_integral_rational_head_le         … ≤ π
+  hasDerivAt_log_zeta_two               d/dy log ζ(2+iy) exists (principal branch)
+  abs_integral_re_logDeriv_zeta_two_le  |∫₀^T Re(ζ'/ζ)(2+iy) dy| ≤ π
+```
+
+No continuous-branch construction was needed for the ζ phase: `Re ζ(2+iy) ≥ 2 − π²/6 > 0` puts the
+value in the slit plane, so `Complex.log ∘ ζ` is already differentiable along the line and the
+fundamental theorem of calculus applies directly, with `|Im log| = |arg| < π/2`.
+
+Hence the whole vertical contribution is `gammaVerticalPhase 1 (T/2) − (T/2) log π + O(1)` with both
+`O(1)` terms bounded by `π` explicitly.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AEP. Gate F — the symmetry fold and the quarter-path counting formula
+
+```text
+RHTower/XiLogDerivSymmetry.lean
+  deriv_xi_conj, deriv_xi_one_sub
+  logDeriv_xi_conj                ξ'/ξ(s̄) = conj (ξ'/ξ(s))
+  logDeriv_xi_one_sub             ξ'/ξ(1−s) = −ξ'/ξ(s)
+  re_logDeriv_xi_conj_line, im_logDeriv_xi_conj_line
+  re_logDeriv_xi_reflect_line, im_logDeriv_xi_reflect_segment
+
+RHTower/XiRectangleFold.lean
+  continuousOn_logDeriv_xi, continuous_logDeriv_xi_line,
+  continuous_logDeriv_xi_horizontal
+  xi_vertical_ne_zero_of_one_lt, xi_vertical_ne_zero_of_reflect
+  im_vIntegral, im_hIntegral            Im of the two side integrals
+  integral_re_vertical_symm             ∫_{−T}^{T} = 2∫₀^T on the right side
+  integral_re_vertical_reflect          the left side is minus the right side
+  integral_im_horizontal_fold           ∫_{1−a}^{a} = 2∫_{1/2}^{a}
+  im_rectangleIntegral_logDeriv_xi      Im ∮ = 4∫₀^T Re − 4∫_{1/2}^a Im
+  xi_ne_zero_on_rectangleBorder         the border avoids the divisor
+  two_pi_mul_regionOrderSum_eq          2π·(divisor mass) = 4∫₀^T Re − 4∫_{1/2}^a Im
+```
+
+Both symmetries of `ξ` transfer to the logarithmic derivative — the functional equation with a sign,
+Schwarz reflection with a conjugation — and taking imaginary parts of the four side integrals folds
+the symmetric rectangle `[1−a, a] × [−T, T]` onto the classical quarter path.  The border-avoidance
+hypothesis of the argument principle reduces to a single condition on the horizontal height, since
+the two vertical sides lie outside the critical strip.
+
+Note the horizontal integral now runs over `[1/2, a]` — exactly the range covered by the Backlund
+disc count of gate E.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AEQ. Gate F — the horizontal branch and the sign-change transfer
+
+```text
+RHTower/XiLogDerivFactorization.lean  (extended)
+  xi_eq_four_factors_offReal    the four-factor identity wherever Im s ≠ 0
+  logDeriv_xi_eq_offReal        the splitting of ξ'/ξ there
+
+RHTower/ZetaHorizontalArgument.lean
+  zeta_horizontal_ne_zero            ξ ≠ 0 on a horizontal line ⟹ ζ ≠ 0 there
+  continuous_logDeriv_zeta_horizontal
+  zetaHorizontalLog                  Λ(x) = log ζ(x₀+iT) + ∫_{x₀}^x (ζ'/ζ)(u+iT) du
+  hasDerivAt_zetaHorizontalLog       Λ' = ζ'/ζ
+  exp_zetaHorizontalLog              e^Λ = ζ  (constancy of ζ·e^{−Λ})
+  integral_im_logDeriv_zeta_horizontal   ∫ Im(ζ'/ζ) = Im Λ(x₁) − Im Λ(x₀)
+  continuous_zetaHorizontalLog
+  abs_integral_im_logDeriv_zeta_le   the argument increment ≤ (#sign changes + 1)·π
+
+HTGeometry/DistinctZerosLeDivisor.lean
+  divisor_eq_toNat                   the divisor is the finite vanishing order
+  one_le_divisor_of_zero             each zero contributes at least one
+  card_le_divisor_sum                #distinct zeros ≤ divisor mass
+```
+
+The continuous logarithm is *constructed* rather than extracted: `Λ` is defined by the integral of
+`ζ'/ζ`, and `ζ·e^{−Λ}` has vanishing derivative and value `1` at the anchor, so `e^Λ = ζ`.  That
+makes the argument increment literally the integral being bounded, and
+`abs_im_sub_le_of_finite_re_zeros` then converts a sign-change count into the bound.
+`card_le_divisor_sum` is the last link: it turns the Jensen divisor bound of gate E into a bound on
+the number of *distinct* sign changes.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AER. Gate F — the horizontal side is `O(log T)`
+
+```text
+RHTower/ZetaRealTraceSignChanges.lean
+  zetaRealTrace_order_ne_top          finite order on the counting disc
+  zetaRealTrace_real_zeros_finite     the real zeros there form a finite set
+  exists_horizontal_zeta_bound        |∫_{1/2}^{2} Im(ζ'/ζ)(x+iT) dx| ≤ c log T
+
+RHTower/XiHorizontalBound.lean
+  im_digamma_vertical_nonneg_le       0 ≤ Im ψ(σ+it) ≤ π + 1/t, uniformly in σ ≥ 0
+  im_logDeriv_xi_horizontal           the pointwise Im splitting at x + iT
+  abs_im_logDeriv_xi_horizontal_le    the three Archimedean terms are ≤ 1 + π/2
+  exists_horizontal_xi_bound          |∫_{1/2}^{2} Im(ξ'/ξ)(x+iT) dx| ≤ c log T
+```
+
+The corpus's `im_digamma_vertical_sandwich` is **uniform in the abscissa** — its bounds are
+`π/2 − arctan(σ/t)` and `1/t + π/2 − arctan(σ/t)` — so the digamma term needs no sector asymptotic:
+`0 ≤ Im ψ ≤ π + 1/t` everywhere on the segment.  The two Cauchy kernels are `≤ 1/T` pointwise.  Only
+the ζ term carries the `log T`, and it is exactly the argument increment bounded in `AEQ`.
+
+Gate F now has: the vertical asymptotic (`AEN`, `AEO`), the symmetry fold (`AEP`), and the
+horizontal bound (this entry).  What remains is the limit assembly
+`mass(T)/(T log T) → 1/π` and the choice of heights off the ordinate set.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AES. Gate F closed — the two-sided `T log T` bound and the annular count
+
+```text
+RHTower/XiVerticalRatioLimit.lean
+  tendsto_bounded_div_TlogT        a bounded numerator over `T log T` vanishes
+  tendsto_vertical_ratio           ∫₀^T Re(ξ'/ξ)(2+iy) dy / (T log T) → 1/2
+
+RHTower/XiSymmetricMassBounds.lean
+  xiSymmetricMass                  the divisor mass of [−1,2] × [−T,T]
+  two_pi_mul_xiSymmetricMass       the quarter-path formula at a = 2
+  exists_xiSymmetricMass_two_sided (1/2π) T log T ≤ mass T ≤ (2/π) T log T
+
+RHTower/XiAdmissibleHeights.lean
+  exists_admissible_height         heights carrying no ξ-zero are dense
+  exists_annular_mass_lower        ∀ C, ∃ Γ₀, ∀ Γ ≥ Γ₀ there are admissible
+                                   Γ < T₁ < T₂ < 10Γ with mass T₂ − mass T₁ ≥ C
+```
+
+All four gates of `riemann-von-mangoldt-zero-counting` are now closed in Lean.  The sharp asymptotic
+was never needed: the two-sided constants differ by a factor `4`, so the annulus ratio `10` is
+comfortable, and with `T₁ < 2Γ`, `T₂ > 9Γ` the mass difference is at least
+`(1/2π) Γ log Γ − (4 log 2/π) Γ → ∞`.
+
+Admissibility costs nothing: every ξ-zero lies in the open strip, so the zeros with ordinate in a
+bounded interval sit in a compact box and are finite, hence any nonempty interval of heights
+contains one that the whole horizontal line misses (`exists_admissible_height`).
+
+`exists_annular_mass_lower` **is** `(SR-64.35)` in divisor-mass form.  What remains for
+`suzuki-critical-radical-anchor-finite-head-reduction` is the interface converting a divisor-mass
+difference into a `Finset XiZeroCopy` in the annulus, which then feeds
+`RHTower.annulus_general_payment`.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AET. `critical-radical-anchor-finite-head-reduction` — promoted
+
+The zero-counting provider `(SR-64.35)` is closed unconditionally, so every `[PROVED]` statement of
+the card now has an unconditional Lean declaration.  The certificate is
+`3-formalized/new_scientific_knowledge/suzuki/suzuki-critical-radical-anchor-finite-head-reduction-formalized.md`.
+
+```text
+RHTower/XiOrdinateBandCopies.lean
+  xiZerosUpTo_finite, xiSupportsUpTo_finite
+  xiSupportsBand, xiCopiesBand, mem_xiCopiesBand, card_xiCopiesBand
+  xiSupportMultiplicity_eq_order, mem_symmetricRectangle_of_zero
+  xiSymmetricMass_eq_support_sum      the mass is the total multiplicity below a height
+  xiSymmetricMass_diff_eq_card        a mass difference is a band copy count
+
+RHTower/XiAnnularCopyCount.lean
+  exists_annular_copies               (SR-64.35), unconditional
+  exists_annular_payment_of_large_height
+```
+
+The final statement carries no aperture hypothesis:
+
+```text
+∃ h₀, ∀ q : XiZeroCopy, h₀ ≤ Im(q)²,
+  ∃ S : Finset XiZeroCopy, A · χ_q < a_q · Σ_{r ∈ S} a_r (τ_q − τ_r)².
+```
+
+Two design decisions made this reachable.  `(SR-64.33)` took the critical line out of the payment,
+turning the counting input from a proportion theorem into plain Riemann–von Mangoldt; and the
+Riemann–von Mangoldt chain was built to a *two-sided* `T log T` bound rather than the sharp
+asymptotic — the constants `1/2π` and `2/π` differ by four, so an annulus of ratio `10` supplies the
+required `(87/256)·10² + 1 = 35` copies with room to spare.
+
+**Name collision found and fixed on the way.**  `RHTower.logDeriv_xi_eq` already existed in
+`RHTower/XiWardInteriorTraceSplit.lean` (the coarse split `s⁻¹ + (s−1)⁻¹ + logDeriv Λ`).  The new
+four-factor split is now `logDeriv_xi_fourFactor` / `logDeriv_xi_fourFactor_offReal`.  Per-module
+`lake env lean` does not see such clashes; only a build that pulls both modules in does.
 
 All declarations audit to `[propext, Classical.choice, Quot.sound]`.

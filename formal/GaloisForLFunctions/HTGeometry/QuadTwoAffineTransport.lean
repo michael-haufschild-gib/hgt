@@ -53,13 +53,13 @@ theorem quadTwo_affineTransport_regular_at_critical_pair {k : ℤ} {b c a : RatF
   rw [quadTwo_eval_zero] at hforward
   exact absurd hforward (not_lt.mpr hone)
 
-/-- **A polar inhomogeneous term at the critical point kills the equation.** -/
-theorem quadTwo_no_affineTransport_of_polar_at_critical {k : ℤ} {b c a : RatFunc ℂ}
+/-- **The critical-point obstruction.** -/
+theorem quadTwo_no_affineTransport_of_critical_order {k : ℤ} {b c a : RatFunc ℂ}
     (ha : a ≠ 0) (hb : b ≠ 0) (hc0 : c ≠ 0)
     (heq : IsAffineTransport quadTwo quadTwo_not_isConst k b c a)
     (hbunit : ∀ p : ℂ, p ≠ 1 → ratOrder b p = 0)
     (hcreg : ∀ p : ℂ, p ≠ 1 → 0 ≤ ratOrder c p)
-    (hb1 : ratOrder b 1 = 0) (hcpole : ratOrder c 1 < 0) (hk : 0 ≤ k) : False := by
+    (hcb : ratOrder c 1 < ratOrder b 1) (hck : ratOrder c 1 < k) : False := by
   obtain ⟨hone, hzero⟩ :=
     quadTwo_affineTransport_regular_at_critical_pair ha hb heq hbunit hcreg
   have hkey := ratOrder_le_of_critical quadTwo_natDegree_ne_zero ha hb hc0 heq
@@ -67,5 +67,42 @@ theorem quadTwo_no_affineTransport_of_polar_at_critical {k : ℤ} {b c a : RatFu
   rw [rootMultiplicity_quadTwo_crit, rootMultiplicity_derivative_quadTwo, quadTwo_eval_one] at hkey
   norm_num at hkey
   omega
+
+/-- **A polar inhomogeneous term at the critical point kills the equation.** -/
+theorem quadTwo_no_affineTransport_of_polar_at_critical {k : ℤ} {b c a : RatFunc ℂ}
+    (ha : a ≠ 0) (hb : b ≠ 0) (hc0 : c ≠ 0)
+    (heq : IsAffineTransport quadTwo quadTwo_not_isConst k b c a)
+    (hbunit : ∀ p : ℂ, p ≠ 1 → ratOrder b p = 0)
+    (hcreg : ∀ p : ℂ, p ≠ 1 → 0 ≤ ratOrder c p)
+    (hb1 : 0 ≤ ratOrder b 1) (hcpole : ratOrder c 1 < 0) (hk : 0 ≤ k) : False :=
+  quadTwo_no_affineTransport_of_critical_order ha hb hc0 heq hbunit hcreg (by omega) (by omega)
+
+
+/-- **A nonzero constant inhomogeneous term, with the derivative as coefficient, kills the
+equation.** -/
+theorem quadTwo_no_affineTransport_of_const {k : ℤ} {γ : ℂ} {a : RatFunc ℂ}
+    (hγ : γ ≠ 0) (ha : a ≠ 0) (hk : 1 ≤ k)
+    (heq : IsAffineTransport quadTwo quadTwo_not_isConst k
+      (algebraMap (Polynomial ℂ) (RatFunc ℂ) (Polynomial.derivative quadTwo))
+      (RatFunc.C γ) a) : False := by
+  have hb : algebraMap (Polynomial ℂ) (RatFunc ℂ) (Polynomial.derivative quadTwo) ≠ 0 :=
+    algebraMap_ne_zero_of_ne_zero
+      (derivative_ne_zero_of_natDegree_ne_zero quadTwo_natDegree_ne_zero)
+  have hc0 : (RatFunc.C γ : RatFunc ℂ) ≠ 0 := by
+    intro hh
+    exact hγ ((RatFunc.C_injective (K := ℂ)) (by rw [hh, map_zero]))
+  have hb1 : ratOrder (algebraMap (Polynomial ℂ) (RatFunc ℂ)
+      (Polynomial.derivative quadTwo)) 1 = 1 := by
+    rw [ratOrder_algebraMap, rootMultiplicity_derivative_quadTwo, Nat.cast_one]
+  refine quadTwo_no_affineTransport_of_critical_order ha hb hc0 heq (fun p hp => ?_)
+    (fun p _ => ?_) ?_ ?_
+  · rw [ratOrder_algebraMap, rootMultiplicity_eq_zero ?_, Nat.cast_zero]
+    rw [Polynomial.IsRoot.def, derivative_quadTwo_eval]
+    exact mul_ne_zero (by norm_num) (sub_ne_zero.mpr hp)
+  · rw [ratOrder_C]
+  · rw [ratOrder_C, hb1]
+    norm_num
+  · rw [ratOrder_C]
+    omega
 
 end GaloisForLFunctions.HTGeometry

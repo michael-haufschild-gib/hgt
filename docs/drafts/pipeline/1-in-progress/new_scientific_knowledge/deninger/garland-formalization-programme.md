@@ -2039,3 +2039,120 @@ h_ik(v) h_kj(v) h_ij(v)^{-1}  =  ( {-1, v}_kj )^{-1} ,
 and both are now stated in a form where every term is either a torus element, a Steinberg symbol, or
 the commutator pairing — with the structure of the pairing (bimultiplicative in the second slot,
 multiplicative up to conjugation in the first, `K₂`-valued) already proved.
+
+## The reversal side of the calculus
+
+`HTGeometry/DennisSteinRightOneTransport.lean`, extended (wired, axiom-clean).
+
+```
+steinbergSymbol_neg_one_reversal   {-1,v}_ji . {-1,v}_ij = 1
+dennisStein_right_one_reversal     <x,1>_ij . {-1,v}_ji = <x,1>_ji . [ h_ji(v), h_jk(-1) ]
+torusCommutator_reversal           [ h_ij(v), h_ik(-1) ] = [ h_ji(v), h_jk(-1) ]^{-1}
+```
+
+The first mirrors the transport identity: reversing the pair twice returns the Dennis-Stein symbol,
+so the two symbols paid cancel.  Together with `steinbergSymbol_neg_one_transport` this determines
+all six symbols `{-1,v}_pq` of a triple from any one of them: changing *either* index inverts the
+symbol.  Writing `s = {-1,v}_ij`,
+
+```
+{-1,v}_ij = s       {-1,v}_ji = s^{-1}
+{-1,v}_ik = s^{-1}  {-1,v}_ki = s
+{-1,v}_jk = s       {-1,v}_kj = s^{-1}
+```
+
+The third is proved by carrying `<1-v, -1>` to the reversed pair in the two possible orders —
+normalise then reverse, or reverse then normalise.  Everything cancels except the two pairings, and
+the central symbol `{-1,v}_ji` is what lets them be compared.
+
+So the torus calculus of the triple is now: six symbols determined by one, two pairings inverse to
+each other, a pairing that is bimultiplicative in its second slot and multiplicative up to
+conjugation in its first, and two triangle defects tied together by `torusTriangleDefect_relation`.
+What is not yet pinned is the value of a single one of these — every relation so far is homogeneous.
+
+## BREAKTHROUGH: the symbol is independent of the second index
+
+`HTGeometry/DennisSteinIndexIndependent.lean` and `HTGeometry/SteinbergSymbolNegOneSquare.lean`
+(both wired, axiom-clean).
+
+```
+steinbergWeyl_jk_neg_conj_col    w_jk(-1) x_ij(s) w_jk(-1)^{-1} = x_ik(s)
+steinbergWeyl_jk_neg_conj_row    w_jk(-1) x_ji(s) w_jk(-1)^{-1} = x_ki(s)
+steinbergWeyl_jk_neg_conj_weyl   w_jk(-1) w_ij(t) w_jk(-1)^{-1} = w_ik(t)
+steinbergTorus_jk_neg_conj       w_jk(-1) h_ij(v) w_jk(-1)^{-1} = h_ik(v)
+
+dennisStein_index_independent    <a,b>_ij = <a,b>_ik
+
+steinbergSymbol_neg_one_sq       ( {-1,v}_ik )^2 = 1
+steinbergSymbol_neg_one_index_eq {-1,v}_ij = {-1,v}_ik
+```
+
+### The point that was missed
+
+All the earlier transport work conjugated by `w_jk(1)`, which costs a sign on both arguments *and* a
+torus factor.  Conjugating by `w_jk(-1)` instead costs **neither**: the generic weight is
+`x_ij(s) |-> x_ik(-su)` and `x_ji(s) |-> x_ki(-u^{-1}s)`, so `u = -1` is exactly the value at which
+both signs disappear.  The same substitution makes the Weyl elements go across on the nose,
+`w_jk(u) w_ij(t) w_jk(u)^{-1} = w_ik(-tu)`, hence `w_ik(t)` at `u = -1`, and therefore the torus goes
+across with **no correction at all** — which is what makes the whole defining word transport
+verbatim.
+
+The consequence is immediate and was the missing structural fact: the Dennis-Stein symbol simply
+does not depend on the second index.  Transporting twice by the `w_jk(1)` route then returns the
+same symbol while paying `{-1,v}` twice, so that symbol is an involution, and with
+`{-1,v}_ik . {-1,v}_ij = 1` all six transport symbols of a triple are the *same* element `s` with
+`s² = 1`.
+
+### Where the obligation now stands
+
+Writing `s` for the common transport symbol and `delta = h_ik(v) h_kj(v) h_ij(v)^{-1}`,
+
+```
+<x, 1>  =  ( s . delta )^{-1} ,        s² = 1 .
+```
+
+The remaining question is a single equation, `delta = s`, between two explicit `K₂`-valued
+expressions in the torus.
+
+## Index independence, both indices
+
+`HTGeometry/DennisSteinFirstIndexIndependent.lean` (wired, axiom-clean).
+
+```
+steinbergWeyl_ik_neg_conj_row    w_ik(-1) x_ij(s) w_ik(-1)^{-1} = x_kj(s)
+steinbergWeyl_ik_neg_conj_col    w_ik(-1) x_ji(s) w_ik(-1)^{-1} = x_jk(s)
+steinbergWeyl_ik_neg_conj_weyl   w_ik(-1) w_ij(t) w_ik(-1)^{-1} = w_kj(t)
+steinbergTorus_ik_neg_conj       w_ik(-1) h_ij(v) w_ik(-1)^{-1} = h_kj(v)
+
+dennisStein_first_index_independent   <a,b>_ij = <a,b>_kj
+```
+
+Exactly the mirror of the second-index statement, with `w_ik(-1)` in place of `w_jk(-1)`; again the
+value `-1` is the one at which both weights lose their signs, so the torus crosses with no
+correction and the defining word transports verbatim.  With the two statements together the
+Dennis-Stein symbol depends on neither index of its pair, and — via the reversal identity and
+`s² = 1` — neither does the transport symbol `s = {-1, v}`.
+
+### The obligation, in its final form
+
+```
+<x, 1>  =  ( s . delta )^{-1} ,     s = {-1, v} ,   s² = 1 ,
+delta   =  h_ik(v) h_kj(v) h_ij(v)^{-1} ,
+```
+
+with everything on the right independent of which pair is used.  What is left is the single equation
+`delta = s`.
+
+Recorded so the next pass does not repeat the search: this equation cannot be reached by degenerating
+the three-index relation.  Every specialisation that trivialises a Dennis-Stein symbol (`a = 0`,
+`b = 0` or `c = 0`) also forces `v = 1`, where both sides are `1` and no information is produced.
+Nor does it follow from the transport calculus, which is homogeneous.  Substituting the two free
+conjugations gives
+
+```
+delta = W1 H W1^{-1} . W2 H W2^{-1} . H^{-1} ,   W1 = w_jk(-1) ,  W2 = w_ik(-1) ,  H = h_ij(v) ,
+```
+
+so `delta` is a commutator-like expression in the Weyl elements; its value is the cocycle of the
+Weyl-group extension, which is the content of Matsumoto's theorem rather than a consequence of the
+relations proved so far.

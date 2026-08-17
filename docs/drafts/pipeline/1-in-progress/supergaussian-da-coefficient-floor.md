@@ -95,7 +95,7 @@ Consequently, the top-degree/minimal-weight face of every autonomous ADE for `f`
 
 For differential order `m`, sums of at most `ceil((m+1)/2)` monomial jets are already Zariski dense in the complete order-`m` jet space. Hence every nonzero ADE face has a finite secant detection rank bounded by `ceil((m+1)/2)`.
 
-The direct confluent-Vandermonde proof is recorded in `2-fully-proven/not_new_scientific_knowledge/finite-jet-secant-detection-rank.md`.
+The direct confluent-Vandermonde proof is recorded in `3-formalized/not_new_scientific_knowledge/finite-jet-secant-detection-rank.md`.
 
 ### Fixed-modulus Newton blindness `[PROVED] [BRIDGE]`
 
@@ -350,7 +350,7 @@ A cluster of `k` near-maximal Taylor monomials has a jet on the `k`-secant varie
 
 `k_m=ceil((m+1)/2)`
 
-arbitrary monomials already have Zariski-dense jets in `C^(m+1)`. Thus no nonzero order-`m` face can be invisible to all such clusters. The direct confluent-Vandermonde proof is recorded in `2-fully-proven/not_new_scientific_knowledge/finite-jet-secant-detection-rank.md`.
+arbitrary monomials already have Zariski-dense jets in `C^(m+1)`. Thus no nonzero order-`m` face can be invisible to all such clusters. The direct confluent-Vandermonde proof is recorded in `3-formalized/not_new_scientific_knowledge/finite-jet-secant-detection-rank.md`.
 
 The remaining split is now sharper, but it is not a density-versus-recurrence dichotomy:
 

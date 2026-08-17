@@ -923,7 +923,7 @@ intrinsic no-go for the equation. Remaining problem is propagation of weighted f
 the physical root derivative.
 
 The corrected positive class is proved in
-`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-log-recurrence-polynomial-carrier-trichotomy.md`.
+`../3-formalized/new_scientific_knowledge/suzuki/suzuki-log-recurrence-polynomial-carrier-trichotomy.md`.
 For
 
 ```text

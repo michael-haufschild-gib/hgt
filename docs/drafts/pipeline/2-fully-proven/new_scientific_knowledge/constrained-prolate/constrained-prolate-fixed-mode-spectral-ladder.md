@@ -5019,3 +5019,144 @@ With this the threading table is complete as Lean theorems:
 Every implication *and* every input shape is now formal.  What the card still owes is the
 instantiation of the two-sided leakage estimates at consecutive modes, and the coordinate limits at
 indices `j > 0`; the ground index `j = 0` is closed.
+
+## The normalization transfer, for an arbitrary mode
+
+`RHTower/ProlateShapeRatioTransfer.lean` (wired, axiom-clean).
+
+```
+tendsto_sqrt_mul_shapeRatio_of_normalized
+    for ANY family Phi and ANY nonzero L,
+
+    shape ratio of the normalised profile over [-sqrt c, sqrt c]  ->  L
+      ==>   sqrt c . ( int_{-1}^{1} Phi_c )^2 / int_{-1}^{1} Phi_c^2   ->   L
+```
+
+The passage from the rescaled, amplitude-normalised profile to the eigenfunction's own variable uses
+nothing about which mode is involved: the shape ratio is quadratic over quadratic, so the amplitude
+cancels and the dilation survives once.  The amplitude `Phi_c(0)` cannot vanish for large `c`,
+because a vanishing amplitude makes the normalised profile identically zero and its shape ratio `0`,
+contradicting `L != 0` — so no positivity input is needed for any mode either.
+
+The ground case proved earlier is the instance `L = 2 sqrt(pi)`.  For an index `j > 0` the *only*
+missing input is the profile limit of that mode; the normalization step is already discharged for
+all of them at once.
+
+## Lean progress — the rung-`n` trial Rayleigh bound, and why the defect is a square
+
+`RHTower/HermiteRungRayleighDefect.lean` (wired, axiom-clean).
+
+```
+hermiteRungDefect n xi        -xi^2 phi_n'' phi_n - 2 xi phi_n' phi_n
+integral_hermiteRungDefect    int_{-R}^{R} defect
+                                = int_{-R}^{R} xi^2 (phi_n')^2 - [ xi^2 phi_n phi_n' ]_{-R}^{R}
+tendsto_sq_mul_hermiteFun_atTop / _atBot      x^2 phi_n(x) -> 0
+tendsto_hermiteRungBoundary                   the boundary term vanishes
+exists_deriv_hermiteFun_ne_zero, exists_window_deriv_ne_zero, exists_pos_window_integral
+eventually_hermiteRungDefect_pos              the defect is eventually positive
+hermiteTrial c n x = phi_n(sqrt c . x)
+prolate_hermiteTrial_integrand
+eventually_prolate_hermiteTrial_rayleigh_gt
+      ** for large bandwidth,  -(2n+1) c . int trial^2  <  int (L_c trial) . trial **
+```
+
+### The point: no Hermite moments are needed
+
+The corpus already owned the pointwise quasi-eigenfunction identity
+(`prolateSLAction_hermiteFun`): the rescaled Hermite function returns the ladder value `-(2n+1)c`
+plus the two correction terms `-xi^2(xi^2-2n-1)phi_n` and `-2 xi phi_n'`.  Deciding the *sign* of
+their integral looks like it needs the oscillator moments `<xi^2>` and `<xi^4>` — with the ladder
+values it comes to `(n^2+n+3/2)/2` times the mass, positive but computed.
+
+It needs neither.  The two correction terms are exactly the two terms produced by differentiating
+`xi^2 phi_n`, so a *single* integration by parts against `phi_n'` collapses them to
+
+```text
+int xi^2 (phi_n')^2  -  [ xi^2 phi_n phi_n' ] ,
+```
+
+a square minus a boundary term.  The square is positive because `phi_n'` cannot vanish identically
+(otherwise `phi_n` is constant, hence `0` by decay, contradicting that a Hermite polynomial is
+monic), and the boundary term is a polynomial times a Gaussian, so it vanishes.  The sign is
+therefore structural, not numerical.
+
+### Where this sits in the excited-mode programme
+
+`tendsto_prolateProfile_hermiteRung` already gives the prolate-to-Hermite convergence at rung `n`
+**given** `mu_n(c) -> 2n+1`, and `tendsto_sqrt_mul_shapeRatio_of_normalized` already transports any
+profile limit to the card's normalization.  So the coordinate limits `(3)` at `j > 0` are blocked on
+exactly one input: a family of modes whose separation constants converge to the `n`-th rung.
+
+The ground case `n = 0` is settled by a two-sided sandwich (`exists_tendsto_bandwidthSeparation_one`):
+a Gaussian trial gives `mu < 1` at every bandwidth, and the uncertainty estimate gives every mode
+`mu >= 1 - o(1)`.  This section supplies the *upper-bound half* of the same sandwich at rung `n`:
+the rung-`n` trial beats the ladder value `-(2n+1)c`.  What is still missing is the selection step —
+the variational machine `exists_even_joint_prolate_eigen_gt_of_rayleigh_gt` produces *one* mode above
+a Rayleigh threshold, and the excited case needs the counting version: an `(n+1)`-dimensional trial
+space above the threshold produces `n+1` independent modes above it.  That is a min-max statement for
+the band operator, and mathlib has the spectral theorem only in finite dimensions, so it has to be
+built here.
+
+## Lean progress — the min–max counting principle for the band operator
+
+Three modules, all wired and axiom-clean.
+
+```
+HTGeometry/SymmetricFormEigenvalueThreshold.lean
+  inner_le_of_orthogonal_to_eigenvectors_above
+      a vector orthogonal to every eigenvector of a symmetric operator with eigenvalue above
+      theta has quadratic form at most theta.|x|^2   (finite dimension)
+
+RHTower/ProlateHighModeOrthogonalRayleigh.lean
+  exists_eigenRep_of_prolate_eigenvector
+      an eigenvector of the prolate operator on an even band eigenspace is realized by an even
+      joint band/prolate eigenfunction
+  rayleigh_le_of_orthogonal_to_high_modes
+      ** a trial function orthogonal to every even joint mode above -K has prolate Rayleigh
+         quotient at most -K **
+  exists_high_mode_not_orthogonal          contrapositive: a trial above -K meets a high mode
+  exists_high_mode_notMem_of_orthogonal_trial
+      the induction step: a trial orthogonal to a subspace W and above -K meets a high mode
+      whose band class is outside W
+
+RHTower/ProlateHighModeCounting.lean
+  IsHighModeClass c K w                     w is the band class of an even joint mode above -K
+  bandClass_finsetSum                       the band class of a finite linear combination
+  exists_linearIndependent_highModeClasses
+      ** an (n+1)-dimensional space of even trial functions whose Rayleigh quotients all exceed
+         -K produces n+1 LINEARLY INDEPENDENT modes above -K **
+```
+
+### What was missing and how it is supplied
+
+The corpus's variational machine (`exists_even_joint_prolate_eigen_gt_of_rayleigh_gt`) produces
+*one* mode above a Rayleigh threshold: it decomposes the trial vector over the eigenspaces of the
+compact band operator and, if *every* mode were below the threshold, bounds each eigenspace's
+quadratic form by the threshold.  An excited ladder needs the counting version, and the only step
+that changes is the per-eigenspace bound: the component is bounded not because all prolate
+eigenvalues there are below the threshold, but because it is orthogonal to the eigenvectors above
+it.  That is the finite-dimensional half of the min–max principle — mathlib's spectral theorem
+exists only in finite dimension, which is exactly where it is applied, on one eigenspace of a
+compact operator.
+
+The induction then costs nothing extra: with `k` modes already produced, the `n+1` trial
+coefficients satisfy only `k` orthogonality conditions, so rank–nullity gives a nonzero combination
+orthogonal to all of them; its Rayleigh quotient still exceeds the threshold, so it meets a mode
+above it, and that mode cannot lie in the span of the previous ones.
+
+### What remains for the rung-`n` separation constant
+
+Two inputs, both now sharply delimited.
+
+1. **The trial space estimate.**  `eventually_prolate_hermiteTrial_rayleigh_gt` (previous section)
+   gives the Rayleigh bound for a *single* rung-`n` Hermite trial.  The counting theorem consumes
+   the bound for every nonzero *combination* of the rungs `0..n`.  By Hermite orthogonality the
+   leading term of a combination is `-sum_i a_i^2 (2i+1) c |phi_i|^2 >= -(2n+1) c |.|^2`, so the
+   combination bound holds with the same `K = (2n+1)c + O(1)`; what it needs formally is the
+   truncated Hermite orthogonality (`integral_hermiteFun_mul_eq`, already in the tree) together
+   with a uniform bound on the cross defects.
+
+2. **The ordering.**  The counting theorem gives `n+1` independent modes above `-K`; turning that
+   into "`mu_n <= 2n+1 + o(1)`" requires enumerating the separation constants, and the matching
+   lower bound `mu_n >= 2n+1 - o(1)` requires the reverse count — for which the natural route is
+   the same machine applied to the oscillator comparison.

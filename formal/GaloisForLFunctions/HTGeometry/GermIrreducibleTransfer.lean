@@ -56,7 +56,7 @@ theorem coeff_eq_zero_of_monic_mul_eq_distPoly {P Q : Polynomial (AnalyticGerm (
   exact eq_X_pow_of_monic_of_mul_eq_X_pow hPmap hmapmul
 
 /-- **A factor of a monic polynomial can be normalized to be monic.** -/
-theorem exists_monic_factorization {P Q W : Polynomial (AnalyticGerm (0 : Fin n → ℂ))}
+theorem exists_monic_factorization_germ {P Q W : Polynomial (AnalyticGerm (0 : Fin n → ℂ))}
     (hW : W.Monic) (h : P * Q = W) :
     ∃ P' Q' : Polynomial (AnalyticGerm (0 : Fin n → ℂ)),
       P'.Monic ∧ Q'.Monic ∧ P' * Q' = W ∧ Associated P P' ∧ Associated Q Q' := by

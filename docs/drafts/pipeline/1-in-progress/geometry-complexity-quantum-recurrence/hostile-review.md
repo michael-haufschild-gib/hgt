@@ -1,80 +1,114 @@
 # Hostile review and scope audit
 
+Date: 17 August 2026.
+
 ## Verdict
 
-Manuscript has a stronger coherent center than prior four-law paper: persistent compact phase hull plus target capacity. It is not yet publication-ready because several headline compositions remain priority-unverified and two Law IV packages remain paper-proved only.
+Mathematical center is now sharp: completed recurrence geometry is singular
+under arbitrarily weak rank-one interaction even while every fixed-horizon
+observable is Lipschitz-continuous. Four laws organize carrier, constraints,
+targets and inference around this finite-time/completed-time divide.
 
-## Major objections already addressed
+Manuscript is internally proof-closed and publication-shaped. External
+priority and specialist review remain necessary before submission; neither
+source search nor internal proof audit can establish literature priority.
 
-### 1. “One universal principle” is classical repackaging
+## Strongest defensible claims
 
-Correct. Haar-on-the-hull is labeled `[BRIDGE]`. Manuscript novelty is not equidistribution or union bound; it is exact computation and exploitation of hull for arbitrary local interaction graphs, all-order collisions, static-local circuit capacity and hard recurrent cycles.
+1. One arbitrarily weak diagonal operator-Schmidt-rank-one interaction changes
+   temporal dimension from at most additive to full product-space rank,
+   creates at least `mn` directions, preserves a dimension-free finite-time
+   Duhamel bound and attains every positive-weight replica floor.
+2. Generic onsite-plus-edge Hamiltonians on any supplied finite graph obey an
+   exact component-rank formula simultaneously on every induced subsystem.
+   Pair curvature reconstructs adjacency and partition curvature reconstructs
+   component compatibility.
+3. Static nearest-neighbour qudit paths attain every replica floor and have an
+   exact completed-time thermodynamic extinction rate. This is bounded-degree
+   recurrence geometry, not bounded-degree circuit hardness.
+4. Countable pure-point spectra admit arbitrarily small domain-preserving
+   trace-class completion, and product spectra admit one separable interaction
+   ray with only countably many exceptional couplings.
+5. Connected graph-local static Hamiltonians obey an exact completed-time
+   Choi-target occupation cap. Separate bounded-weight Pauli Hamiltonians show
+   recurrent hard epochs while remaining operationally non-Haar.
 
-### 2. Projective return metric was oversold
+## Objections and dispositions
 
-Corrected. Exact product density is for anchored chordal projective target
-`max_j |exp(-it(E_j-E_j0))-1| <= epsilon`. It is invariant under global energy shifts but is not optimally recentered projective operator norm. Abstract and main text must retain “anchored chordal” wording.
+### “This is only Kronecker--Weyl repackaging”
 
-### 3. Genericity is being mistaken for one physical ensemble
+Equidistribution is not claimed as new. New candidates are exact structural
+discharges: weak rank-one interaction conversion, arbitrary-graph genericity,
+subsystem curvature, local all-replica floors, countable trace-class
+completion and their joined continuity/singularity statement.
 
-The graph theorem states dense, residual and full Lebesgue measure in each finite-dimensional onsite-plus-edge coefficient space. It does not assert a quantitative probability for arbitrary singular/discrete ensembles, translation-invariant subfamilies or thermodynamic random fields.
+### “Arbitrarily weak interaction cannot change observable physics”
 
-### 4. Arbitrarily weak connecting edge creates discontinuity
+No fixed-time discontinuity is claimed. For perturbation norm at most
+`delta`, every bounded Heisenberg observable differs by at most
+`2|t|delta||O||`. Discontinuity concerns completed orbit closure, temporal
+rank and infinite-time collision statistics.
 
-Only completed orbit closure and completed-time statistics jump generically. No bounded-time discontinuity is claimed. Finite-horizon evolution remains continuous in coupling.
+### “Genericity is being sold as a concrete physical ensemble”
 
-### 5. Complexity plateau is not Brown--Susskind growth
+No. Statement is dense, residual and full Lebesgue measure in finite
+onsite-plus-edge coefficient space. It excludes translation-invariant
+subfamilies and arbitrary singular coefficient laws unless separately stated.
 
-Correct. Plateau is completed-time occupation. It proves neither first hard time nor monotone growth. Hard polygon theorem is late/syndetic and finite-dictionary. Reflection proves return-side decline only after forward behavior and return endpoint are independently known.
+### “Thermodynamic recurrence is an infinite-volume return”
 
-### 6. “Hard” is being confused with Haar-random
+No. Time limit is taken at each fixed finite volume before size limit.
+Exhaustion theorem supplies one ambient coefficient assignment whose every
+finite restriction is generic; it does not construct an infinite-volume orbit.
 
-Manuscript explicitly proves/quotes opposite: same static local Hamiltonian remains distinguishable from Haar at every time. Permanent separator is attributed to Cui et al.; coexistence with hard polygons is internal composition.
+### “Circuit-hard local Hamiltonian means bounded-degree geometry”
 
-### 7. Thermodynamic limit is not infinite-volume recurrence
+No. Path theorem is nearest-neighbour and proves rank/collision/return laws.
+Pauli complexity theorem is bounded weight but all-to-all in support. Paper
+states this separation explicitly.
 
-Correct. Every formula takes `T -> infinity` at fixed finite volume, then system size to infinity. No quasi-local infinite-system orbit, return event or limit interchange is claimed.
+### “Hard epochs imply Haar randomization or a monotone ramp”
 
-The exhaustion theorem does strengthen consistency: one residual/full-probability ambient coefficient assignment makes every finite volume generic simultaneously. It still asserts only finite-volume ranks and completed densities.
+No. Same Pauli evolution remains above an exact local two-query Haar benchmark
+at all times. Hardness is finite-dictionary target avoidance. No first hard
+time, monotone growth, design formation or random-matrix ramp is claimed.
 
-### 8. Graph reconstruction derives space from time
+### “Graph reconstruction derives physical space from time”
 
-False interpretation explicitly excluded. Vertex tensor factors and induced subsystem restrictions are inputs. Temporal curvature reconstructs supplied interaction adjacency relative to them.
+No. Tensor-factor decomposition and subsystem restrictions are supplied.
+Curvature reconstructs interaction adjacency relative to that input.
 
-### 9. Markovian recovery follows from return of a state
+### “Finite records determine long-time behavior with enough precision”
 
-Not claimed. The theorem assumes diamond-norm recurrence of entire channel. One-state recurrence may coexist with dissipation elsewhere.
+No uniform inference follows at a strict earlier horizon: one exact spectrum,
+one fixed protocol, common finite moments and uniformly close earlier records
+remain compatible with every terminal probability. Compact complete moments
+cross a different determinacy boundary.
 
-### 10. All prior results have been dropped to improve narrative
+## Remaining risks
 
-No. Prior detailed appendices are included in same PDF. Main text retains carrier selection, arbitrary spectral type, relation hull, reverse-water functional, observer coherence and finite-record ambiguity. Path theorem is subsumed by arbitrary-graph theorem.
+1. Independent specialist check of separable-interaction analytic
+   countable-avoidance argument.
+2. Independent specialist check of arbitrary-graph leaf-extension and
+   simultaneous-subsystem genericity.
+3. External priority search in inverse spectral graph theory, quantum
+   controllability, recurrence arithmetic and static-Hamiltonian complexity.
+4. Journal positioning: paper combines several exact regimes; abstract and
+   introduction must keep singularity theorem as clear center.
+5. Terminology: “completed-time occupation” must not drift into “first-return
+   time,” “mixing,” “ramp” or “randomization.”
 
-### 11. Fixed-input theorem proves a complexity ramp
+## Verified editorial gates
 
-No. It proves a quenched completed-time plateau, an unbounded common-time subsequence with positive ensemble mass, and computable rational witnesses. It gives no first hard time, useful bit-length bound, efficient search, monotone growth, or uniform late-time ensemble tail. The explicit easy interval at every positive resolution is retained.
+- Single PDF contains present results and prior detailed recurrence results.
+- Public source and rendered PDF contain no project, proof-system or unrelated
+  research context.
+- Figure 1 follows a complete paragraph and arrow labels clear every box.
+- TeX log has no undefined reference, citation, overfull box or warning.
+- Headline proof-surface audit reports only standard logical foundations.
 
-## Remaining mathematical risks
+## Submission gate still external
 
-1. Specialist audit of leaf-attachment pole argument and separately symmetric relation polynomial.
-2. Check exact heap pair-projection injection and exponent `2^(Delta s)` against trace-monoid conventions used by circuit alphabet.
-3. Check prime-grid replica moment for arbitrary full Choi rays and strict trace-distance radius conversion.
-4. Formalize autonomous and Markovian reflection packages or demote them from theorem numbering before publication.
-5. Verify heterogeneous thermodynamic corollary in Lean if retained as headline.
-6. Formalize fixed-input phase-incidence, Fatou--Tonelli transfer and computable-witness composition.
-
-## Remaining editorial risks
-
-1. Main paper plus imported prior appendices may be long; use theorem atlas and proof dependency map rather than delete results.
-2. Imported appendices refer to earlier theorem names; compile must have zero undefined references.
-3. Figure labels must remain outside boxes at final journal column width.
-4. “Universal” should modify structure/principle, not claim every infinite/open/nonautonomous system.
-5. Black holes are literature context only if necessary for complexity history. Current manuscript omits project-specific and black-hole interpretation.
-
-## Submission gate
-
-- LaTeX compiles twice with zero undefined references/citations.
-- Rendered PDF visually inspected, including architecture figure, long equations and appendix transitions.
-- Exact claim trace matches final theorem wording.
-- External priority audit closes for candidates A--F.
-- Formal lint and axiom audit rerun for every cited Lean capstone.
-- Paper-only headline theorems formalized or explicitly demoted.
+- Independent mathematical referee pass.
+- Independent literature-priority pass.
+- Bibliographic metadata recheck at submission date.

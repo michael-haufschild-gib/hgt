@@ -137,6 +137,33 @@ and hence
  \]
 Letting \(\eta\downarrow0\) gives the liminf bound \(m\). ∎
 
+## Lean progress -- Lemma 1
+
+`formal/GaloisForLFunctions/HTGeometry/SimultaneousDirichlet.lean` (new, umbrella-wired,
+axiom-clean) proves Lemma 1's two halves, together with the classical input the upper half needs.
+
+| Card item | Declaration |
+|---|---|
+| being within `r` of the integer lattice, and its monotonicity | `latticeClose`, `latticeClose_mono` |
+| the box subdivision of the unit interval into `Q` parts | `boxIndex`, `boxIndex_lt` |
+| two numbers in one box have fractional parts within `1/Q` | `abs_fract_sub_lt_of_boxIndex_eq` |
+| **simultaneous Dirichlet approximation**: some `q <= Q^m` is within `1/Q` of the lattice in every coordinate | `exists_simultaneous_dirichlet` |
+| the first hitting time `N_beta(r)` | `firstHit` |
+| **`(9)` upper half**: `N_beta(r) <= ceil(1/r)^m` | `firstHit_le` |
+| **`(9)` lower half**: a multiple that misses the Diophantine radius but hits at `r` forces `q^{-c} < r` | `rpow_lt_of_hit` |
+| the exponent form `r^{-1/c} < q` | `rpow_lt_cast_of_hit` |
+
+Simultaneous Dirichlet approximation is *not* in mathlib -- only the one-dimensional statement is --
+so it is proved here from the pigeonhole principle on the `Q^m` boxes of side `1/Q`, applied to the
+first `Q^m + 1` multiples.
+
+### What remains
+
+Lemma 2 (nondegeneracy of the spectral manifold, via the corpus qudit endpoint-extension theorem
+plus a discriminant-symmetrised minor), Lemma 3 (the **imported** Kleinbock--Margulis extremality
+theorem, which is not in mathlib and is the card's declared external input), Lemma 4 (winding
+number versus continuous return), and the reporter-deficit rescaling `(7)`.
+
 ## Lemma 2 — the local spectral manifold is nondegenerate
 
 On a simple-spectrum chart, regard the centered ordered spectrum as an

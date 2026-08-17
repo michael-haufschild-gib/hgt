@@ -108,7 +108,7 @@ Thus `c_2` has an odd-multiplicity real zero in `(1/2,10)` and another in `(10,i
 The reflection law supplies two further crossings on the left.  In particular the proposed
 right-even factorization already fails for `P=X`; the failure is not confined to a high-degree
 determinant or a central zero.  The positive replacement is the four-crossing theorem recorded in
-`docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/completed-prime-gamma-second-moment-four-crossing-law.md`.
+`docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/completed-prime-gamma-second-moment-four-crossing-law.md`.
 
 ## Why this is sharper than the determinant continuation route
 

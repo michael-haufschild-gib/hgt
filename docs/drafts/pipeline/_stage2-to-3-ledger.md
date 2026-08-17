@@ -27,6 +27,7 @@ Promotion recipe:
 | `route-g2-relative-volterra-source-germ-weld` | none (verified only) | `RHTower/SuzukiVolterraSourceGermWeldRigidity` |
 | `intrinsic-replica-observer-spectral-action-law` | none (verified only) | `HTGeometry/IntrinsicReplicaObserverSpectralActionLaw`, `HTGeometry/LocalHamiltonianObserverSpectralActionLaw` |
 | `route-r-degree-six-gamma-corona-local-global-fracture` | warning fix | `RHTower/RouteRDegreeSixGammaCoronaLocalGlobalFracture` |
+| `schanuel-period-branch-defect-dichotomy` | Case II (collinear rank bound, shift determinant criterion, infinitude of surviving shifts), both transcendence-degree claims, and the concrete value-field instantiation | `RHTower/SchanuelAlgebraicPeriodBranch`, `RHTower/SchanuelStageTwoDegree`, `RHTower/SchanuelValueFieldInstance`, `HTGeometry/TranscendenceDegreeOneVariable` (all new) |
 | `fixed-observer-channel-codimension-law` | quantum block consequence `(4)` | `HTGeometry/FixedObserverBlockChannelCodimension` (new) |
 | `mass-shifted-three-point-orbit-polarity-no-go` | actual-Xi chamber + confluent polarity | `RHTower/MassShiftedThreePointOrbitPolarity` (new) |
 | `mass-shifted-stochastic-order-null-flag-collapse` | none (already complete) | `HTGeometry/MonotoneLikelihoodRatio`, `RHTower/XiShiftedHankelBoundaryStochasticOrderNoGo` |

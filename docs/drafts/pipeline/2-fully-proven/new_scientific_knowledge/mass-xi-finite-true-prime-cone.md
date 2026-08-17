@@ -5950,7 +5950,7 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   finite Fubini gives `sum_D w_D C_N(D)=B_N(N)-Q(N)-2γ H_N`.  Thus signed harmonic transport is
   precisely original stable core in new coordinates.  Exact positive path kernel (24.42)--(24.43)
   shows why diagonal energy loses order `N^2`, and its first path value already contains `R(N)`.
-- 2026-08-08 — `[PROVED HERE; (24.45)--(24.47) LEAN-PROVED; (24.49) LEAN DEFERRED]` superluminal causal-compression rigidity: for every
+- 2026-08-08 — `[PROVED HERE; (24.45)--(24.51) LEAN-PROVED]` superluminal causal-compression rigidity: for every
   `H>u>=0`, the critically gauged massive half-wave compressed to `(0,H)` retains exact operator
   norm `exp(lambda u)`.  Negative-corona modulation packets prove sharpness.  Fixed analytic
   damping and actual outgoing differential retain exact type `lambda` on every cone `H=kappa u`,
@@ -6007,7 +6007,7 @@ nonlinear/prime-adaptive Jordan-cofinal synthesis.  Another scalar synthesis wit
   `L_a=partial_tau^2-a^2` has exact eigenvalue `w=alpha^2`, so polynomial mass jets recover every
   polynomial-square Gaussian RH test.  An integral Lipschitz bound reduces target to integer
   polynomials and positive rational times.
-- 2026-08-08 — `[PROVED HERE; LEAN DEFERRED]` literal parabolic Euler transfer: differentiated
+- 2026-08-08 — `[PROVED HERE; (24.118)--(24.119) LEAN-PROVED]` literal parabolic Euler transfer: differentiated
   mass source identity and dominated convergence put every Gaussian-Hermite Hankel test on one
   absolutely convergent Euler line.  New exact core is global prime--Gamma positivity (24.120).
   Large-mass pair positivity and termwise von-Mangoldt positivity both fail; `P(X)=X` already has
@@ -7470,9 +7470,194 @@ fixed uniform bound, and both the packet and its translate are supported inside 
 statement `le_norm_windowCompression` needs no sign condition on `u` at all; only the two support
 inclusions.
 
-Still deferred on this item: the analytically damped propagator `S_{σ,u}` of (24.48) and its
-exponential-type limit (24.49), which needs the uniform wave-packet expansion (24.50)--(24.51) at
-the sub-linear frequency scale `r = u^q`.
+The uniform wave-packet expansion (24.50)--(24.51) at the sub-linear frequency scale `r = u^q` is
+now formal:
+
+    HTGeometry/MassDispersionUnitExpansion.lean
+      norm_sqrt_sq_add_sq_sub_le               `‖√(z²+a²) − z − a²/(2z)‖ ≤ a⁴/(4 Re z ‖z‖²)` on
+                                               every right half plane, from the exact difference of
+                                               squares and `Re √ ≥ 0`
+
+    HTGeometry/MassGaugeDispersionExpansion.lean
+      outgoingBase, massGaugeRadicand_eq_outgoingBase,
+        norm_massGaugeDispersion_sub_le        **(24.50)** `ω_{a,λ}(ξ) = (−ξ+iλ) + a²/(2(−ξ+iλ))
+                                               + O(|ξ|^{-3})` with an explicit constant
+      norm_massGaugeDispersion_increment_le    **(24.50)** across a band at `-r` the increment of
+                                               the dispersion is the increment of the plane wave up
+                                               to `a²η/(2(r−η)r) + a⁴/(4(r−η)³) + a⁴/(4r³)`
+      massGaugeDispersion_re_le,
+        le_massGaugeDispersion_re              **(24.51)** at the band centre `r ≤ Re ω ≤ r +
+                                               a²/(2r) + a⁴/(4r³)`, so a fixed real-time damping
+                                               costs exactly `e^{-σr(1+o(1))}`
+
+    HTGeometry/MassGaugeDampedBandRatio.lean
+      tendsto_add_div_rpow_atTop
+      tendsto_dampedBandExponent               **(24.51)** at `r = u^q` the band exponent
+                                               `(σ+iu)(ω(η−r) − ω(−r) + η)` vanishes, because the
+                                               two error terms cost `O(u^{1−2q})` and `O(u^{1−3q})`
+                                               — this is exactly why `q > 1/2` is needed
+      tendsto_dampedBandRatio                  **(24.51)** hence on the band the damped symbol is
+                                               its value at the band centre times the plane wave
+                                               `e^{(σ+iu)η}`, up to a factor tending to one
+
+Still deferred on this item: assembling (24.49) itself from the band ratio.  The remaining step is
+the `L²` packet, and the packet shape is forced by an exponent accounting the paper does not spell
+out.  The main term has modulus `e^{λu − σu^q(1+o(1))}` while the full operator norm is `e^{λu}`,
+so every window or band defect must be smaller than `e^{-σu^q}`.  A packet with a compactly
+supported frequency profile has only polynomial physical decay, and a physically compactly
+supported packet leaves an `O(1/ρ)` frequency tail; both defects swamp the damped main term.  The
+packet that does work is the **fixed-width self-dual Gaussian** `e^{-πx²}`, modulated to frequency
+`-u^q` and translated to `cu` with `1 < c < κ`:
+
+* the physical defect is `e^{-π(cu)²/2}`, far below `e^{-σu^q}`;
+* the band is taken of radius `ρ_u ≍ u^{q/2}`, so the off-band frequency mass `e^{-πρ_u²}` is again
+  below `e^{-σu^q}`;
+* on the band the ratio error of `tendsto_dampedBandRatio` is `(σ+u)(a²ρ_u/r² + 3a⁴/r³) ≍
+  u^{1-3q/2}`, which vanishes exactly when `q > 2/3`;
+* the unbounded band weight `e^{ση}` is harmless in `L²` because the Gaussian weight makes
+  `e^{ση}e^{-πη²}` bounded, and the model symbol `N_u e^{(σ+iu)η}` applied to the Gaussian is again
+  a Gaussian (shifted by `σ`), so the model output stays physically localized.
+
+That packet and its two defects are now formal:
+
+    HTGeometry/GaussianL2Tail.lean
+      gaussLp, coeFn_gaussLp, norm_gaussLp_sq
+                                               the self-dual Gaussian as an `L²` class, of mass
+                                               `2^{-1/2}`
+      gaussLp_tail_le                          `∫_{|x| ≥ T} ‖g‖² ≤ e^{-πT²}`; since `𝓕g = g` this
+                                               is simultaneously the frequency tail
+
+    RHTower/GaussianCausalPacket.lean
+      norm_sub_windowCutoff_sq                 the window defect of any `L²` datum is the mass of
+                                               its representative on the complement
+      gaussPacket, norm_gaussPacket,
+        norm_gaussLp_pos, coeFn_gaussPacket_norm
+                                               the modulated, translated Gaussian; both operations
+                                               are unitary, so the modulus is the translated
+                                               Gaussian
+      gaussPacket_window_defect_le             **the window defect**: with the centre a distance
+                                               `m` from both endpoints, `‖f − P f‖² ≤ e^{-πm²}`
+      fourierGaussPacket, fourierGaussPacket_eq,
+        coeFn_fourierGaussPacket_norm,
+        fourierGaussPacket_band_defect_le      **the band defect**: outside a frequency band of
+                                               radius `ρ` about `-R`, `∫ ‖𝓕f‖² ≤ e^{-πρ²}`
+
+    HTGeometry/MassGaugeDampedBandRatio.lean  (additions)
+      norm_dampedBandExponent_le               the quantitative band exponent bound
+                                               `(σ+u)(a²|η|/r² + 3a⁴/r³)` on `|η| ≤ r/2`
+      norm_dampedBand_sub_model_le             the quantitative band ratio: on the band the damped
+                                               symbol differs from `N e^{(σ+iu)η}` by at most
+                                               `|N| e^{ση}` times twice the band exponent
+
+    RHTower/GaussianCausalPacket.lean  (additions)
+      exp_weight_gauss,
+        coeFn_expWeight_fourierGaussPacket     the Gaussian absorbs the band weight `e^{2πση}` as a
+                                               frequency shift by `σ`, so the model output is again
+                                               a Gaussian packet — this is what keeps the output
+                                               physically localized
+      fourierPhase_eq_exp, fourierPhase_add
+      dampedModelSymbol, dampedModelConst,
+        norm_dampedModelConst,
+        coeFn_dampedModel_mul_packet           **the model identity**: the band model applied to the
+                                               packet at frequency `-r`, centre `T`, is the scalar
+                                               `N e^{iru} e^{πσ²}` times the packet at frequency
+                                               `-(r/2π − σ)`, centre `T − u`.  The exponential band
+                                               weight becomes the frequency shift and the plane-wave
+                                               phase becomes the translation by `u`
+
+    HTGeometry/MassGaugeDampedBandRatio.lean  (further addition)
+      tendsto_log_norm_dampedSymbol_center     **(24.51)** `log‖N_u‖/u → λ`: the damping costs only
+                                               `σ r = o(u)` while the radiation gain is the full `λ`
+
+    RHTower/DampedCausalCompression.lean
+      dampedHalfWave, dampedCompression,
+        norm_dampedHalfWave_le,
+        norm_dampedCompression_le,
+        log_norm_dampedCompression_div_le      **(24.49) upper half**: damping cannot raise the
+                                               causal type, `log‖P S P‖/u ≤ λ`
+
+    RHTower/DampedPacketComparison.lean
+      packetDefect, coeFn_packetDefect
+      norm_packetDefect_sq_le                  **the comparison defect**:
+                                               `‖D‖² ≤ ‖N‖²β² e^{2πσ²}/√2
+                                                 + 2e^{2λu} e^{-πρ²}
+                                                 + 2‖const‖² e^{-π(ρ−σ)²}`
+
+One point in that estimate is worth recording because the crude form fails.  The band sup of
+`|s − model|` carries the factor `e^{σρ_u}`, which beats the ratio error `β_u`, so a
+sup-times-mass split is useless.  The estimate has to stay weighted: on the band
+`|s − model| ≤ |N_u| e^{ση} 2β_u` against `|𝓕f| = e^{-πy²}`, and `∫ e^{4πσy − 2πy²} dy
+= e^{2πσ²}/√2` is finite, so the weighted band error is `|N_u| β_u O(1)` with no `e^{σρ_u}` loss.
+
+      band_comparison_of_bounds                the band hypothesis, instantiated from the two
+                                               quantitative band lemmas through the change of
+                                               variable `η = 2π(w + r/2π)`
+      norm_dampedHalfWave_sub_model,
+        le_norm_dampedCompression_mul          **(24.49) lower half, packet form**:
+                                               `‖P S P‖·‖g‖ ≥ |K|·‖g‖ − |K|·‖h − Ph‖ − ‖D‖
+                                                 − e^{λu}‖f − Pf‖`
+
+    HTGeometry/MassGaugeDampedBandRatio.lean  (further additions)
+      tendsto_mul_im_sub_lambda                `u(λ − Im ω(−u^q)) → 0` for `q > 1/2` — the rate at
+                                               which the radiation gain saturates, needed because
+                                               the off-band term is measured against `e^{λu}`
+      le_log_norm_dampedSymbol_center          the explicit lower bound
+                                               `log‖N_u‖ ≥ λu − u(λ − Im ω) − σ(r + a²/2r + a⁴/4r³)`
+
+    RHTower/DampedCausalTypeLimit.lean
+      tendsto_windowDefect_sq                  the window defect of the scheduled packet is a
+                                               Gaussian in `u`, hence invisible against every
+                                               `e^{-σu^q}`
+      tendsto_scheduleBeta                     the band error of the schedule is `≍ u^{1−3q/2}`,
+                                               which vanishes exactly when `q > 2/3`
+      eventually_bandRadius_le                 the band radius `≍ u^{q/2}` stays inside the half
+                                               band `u^q/2` of the frequency scale
+      tendsto_of_tendsto_sq                    a nonnegative function whose square vanishes vanishes
+      le_norm_dampedModelConst                 the explicit lower bound
+                                               `‖K_u‖ ≥ e^{λu − u(λ−Im ω) − σG_u + πσ²}`
+      tendsto_windowExponent_atBot             the quadratic Gaussian exponent beats every
+                                               sub-quadratic power together with any vanishing
+                                               term — this is the comparison that makes the window
+                                               defect invisible against `e^{λu}/‖K_u‖`
+      tendsto_bandExponent_atBot               the off-band gain `πC²u^q` beats the damping cost
+                                               `2σu^q` exactly when `2σ < πC²`, which is what fixes
+                                               the band-radius constant
+      tendsto_outputDefect                     the output window defect of the schedule vanishes
+      tendsto_inputDefect_ratio                the input window defect, amplified by the *full*
+                                               radiation envelope `e^{λu}`, still vanishes against
+                                               the model scalar — the Gaussian `u²` in the exponent
+                                               is what survives that amplification
+      tendsto_packetDefect_ratio               the comparison defect vanishes against the model
+                                               scalar; dividing the defect bound by `‖K_u‖²` makes
+                                               the two `e^{±2πσ²}` cancel and leaves exactly
+                                               `β_u²/√2 + 2e^{−πρ_u²+2A_u+2σG_u−2πσ²}
+                                                 + 2e^{−π(ρ_u−σ)²}`
+
+The propagator and its compression are now defined at every real time (the envelope is stated with
+`|u|`), so the type law is a statement about an honest function of `u`.
+
+      tendsto_dampedCompression_type           **(24.49) the exact type law**: for every damping
+                                               `σ > 0` and every superluminal slope `κ > 1`,
+                                               `log‖P_{κu} S_{σ,u} P_{κu}‖/u → λ`
+
+The remaining lower half of (24.54) is **not** an instantiation of this.  The (24.49) schedule
+pushes the band out to `-u^q` with `q > 2/3`; the filtered law instead needs a *fixed* frequency
+`ξ_R` with a shrinking band, because the filter `B` has to be non-negligible on the band and the
+only thing available there is that a nonzero bounded Hardy function cannot vanish on a set of
+positive boundary measure.  That is Hardy boundary uniqueness on a half plane, which mathlib does
+not have in this form, so it is a separate build; everything else in the filtered argument reuses
+the packet layer above.
+
+The assembly is the sandwich: the upper half is the radiation envelope; for the lower half the
+three defect ratios each fall below `‖g‖/6`, giving `‖P S P‖ ≥ ‖K_u‖/2` eventually, and
+`(log‖K_u‖ − log 2)/u → λ`.  The accounting below is what fixes the two free constants of the
+schedule.  Take
+`T = cu`, `H = κu`, `r = u^q`, and the band radius `ρ_u = C u^{q/2}`.  The off-band term of the
+defect is `e^{2λu}e^{-πρ_u²}`, to be compared with `‖K_u‖² ≍ e^{2λu − 2σu^q}`; the comparison is
+legitimate exactly because `e^{2λu}/‖N_u‖² = e^{2u(λ − Im ω) + 2σ Re ω}` and the first exponent
+vanishes by `tendsto_mul_im_sub_lambda`.  It then requires `πC² > 2σ`, so `C = √(2(σ+1)/π)` works.
+The band error is `≍ C u^{1−3q/2}`, which is where `q > 2/3` is needed, and both window defects are
+`e^{-πm²u²}`.  The same packet settles the lower half of (24.54).
 
 ### Lean progress: §24 C43-C, C43-I, C43-M
 
@@ -8224,3 +8409,125 @@ The bound is proved from the recursion `q_{k+1} = q_k' - (ξ/(2t))q_k` alone: di
 lowers the degree and multiplies a coefficient by at most `k`, multiplication by `ξ/(2t)` raises
 the inverse power of `t` by one, and `0 < t ≤ 1` lets the two be compared at the common power.
 This closes the input (24.129) that (24.130) consumed.
+
+## Lean progress — C43-T, the literal parabolic Euler transfer (24.118)--(24.119)
+
+The transfer is the exact source-side counterpart of the already-formalized divisor-side parabolic
+limit `tendsto_xiMassPolynomialParabolicTrace_atTop`.  The route taken is *not* differentiation of
+the unfiltered Euler identity under the integral sign; it is the residue theorem run again with the
+even entire weight `P(z^2)^2` inserted into the analytic mass test.  That weight is `evalRealPolynomial
+Q z` for the real polynomial `Q = (P ∘ X^2)^2`, so the whole vertical-edge apparatus generalizes with
+a polynomial factor whose derivative is again a polynomial evaluation.
+
+The one place where the polynomial factor cannot simply be pulled out is the right vertical edge: the
+existing bound there controls the norm of the edge *integral*, not the integral of the norm, because
+the near-pole estimate needs the oscillatory Cauchy-kernel cancellation.  Consequently the weight had
+to be threaded through the near/far split itself, which is what the first module below does.
+
+    RHTower/XiMassPolynomialVerticalResolvent.lean
+      evalRealPolynomialCoeffSum,
+        evalRealPolynomialNormBound_le_coeffSum_mul_pow
+                                                a real polynomial is dominated on a disk by its
+                                                coefficient sum times one shifted power
+      hasDerivAt_evalRealPolynomial,
+        analyticAt_evalRealPolynomial           complex derivative of a real polynomial is the
+                                                mapped formal derivative
+      xiMassPolyVerticalRawTerm,
+        xiMassPolyVerticalIntegratedNumerator   the weighted raw resolvent term and its gap-free
+                                                integrated numerator
+      norm_integral_xiMassPolyVerticalRawTerm_le
+                                                slowly varying near estimate under the weight: the
+                                                numerator gains `‖Q‖` and `‖Q'‖` coefficient sums
+      norm_xiMassPolyVerticalRawTerm_le_inv_sq,
+        norm_integral_xiMassPolyVerticalRawTerm_le_inv_sq
+                                                far reciprocal-square estimate under the weight
+      xiMassPolyVerticalIntegratedMajorant,
+        summable_integral_xiMassPolyVerticalRawTerm_and_norm_tsum_le
+                                                the complete weighted vertical spectral law
+      tendsto_exp_neg_mul_shift_pow,
+        tendsto_xiMassPolyVerticalIntegratedMajorant_atTop
+                                                exponential mass decay absorbs the polynomial weight
+      integral_tsum_xiMassPolyVerticalRawTerm_eq_tsum_integral,
+        tsum_xiMassPolyVerticalRawTerm_eq_mul_relativeResolventTrace
+                                                divisor sum and weighted edge integral commute
+      exists_large_integral_xiMassPoly_mul_logDeriv_XiC_norm_lt
+                                                cofinal vanishing of the weighted vertical edge
+
+    RHTower/XiMassPolynomialFiniteContour.lean
+      xiMassPolySquare,
+        evalRealPolynomial_xiMassPolySquare,
+        evalRealPolynomial_xiMassPolySquare_neg the even entire weight `P(z^2)^2` as a real
+                                                polynomial evaluation
+      xiMassPolyAnalyticTest,
+        xiMassPolyAnalyticTest_neg,
+        analyticOnNhd_xiMassPolyAnalyticTest    the polynomial-filtered mass test is even and
+                                                analytic on the mass branch strip
+      rectIntegral_xiMassPolyAnalyticTest_mul_logDeriv_eq_closedRectangleZeroSum,
+        rectIntegral_xiMassPolyAnalyticTest_mul_logDeriv_eq_xiZeroCopyClosedRectangleSum
+                                                exact finite Xi contour law for the filtered test
+      rectIntegral_xiMassPolyLogDeriv_symmetric,
+        xiMassPolyFiniteSpectralSum_eq_bottomPrimeArch_add_vertical
+                                                the symmetric rectangle folds to twice its bottom
+                                                Euler edge plus one right vertical edge
+
+    RHTower/XiMassPolynomialEulerContourSourceIdentity.lean
+      xiMassPolyBottomSourceIntegrand,
+        normalizedXiMassPolyBottomEulerContour  the filtered literal prime--archimedean source
+      xiMassPolyWeightConstant,
+        norm_xiMassPolyBottomWeight_le          the weight grows at most like `1 + |x|^deg` on the
+                                                bottom line
+      norm_xiMassBottomSourceIntegrand_le,
+        integrable_xiMassPolyBottomSourceIntegrand
+                                                exponential mass decay beats polynomial weight times
+                                                the linear archimedean growth
+      tendsto_symmetric_xiZeroCopy_xiMassPoly_sum_atTop,
+        xiMassPolyFiniteRectangleSum_eq_truncatedBottom_add_vertical,
+        tsum_xiMassPolyAnalyticTest_eq_normalizedBottomEulerContour
+                                                rectangle exhaustion for the filtered test
+      summable_norm_xiMassPolyAnalyticTest_parabolic
+                                                the Poisson majorant makes the filtered family
+                                                absolutely summable at `τ = 2at`
+      xiMassPolynomialParabolicTrace_eq_normalizedBottomEulerContour,
+        xiMassPolynomialParabolicTrace_eq_literalEulerLine
+                                                **(24.118)** `M_{a,P}(t)` is exactly the normalized
+                                                absolutely convergent filtered Euler bottom integral
+
+    RHTower/XiMassPolynomialGaussianEulerLine.lean
+      xiMassPointParabolicExponent,
+        xiMassPointParabolicExponent_eq_sq_sub_remainder,
+        norm_xiMassPointParabolicExponent_sub_sq_le
+                                                the `O(a^{-2})` remainder identity at an arbitrary
+                                                point, not only on the divisor
+      tendsto_exp_restEnergy_mul_xiMassAnalyticTest
+                                                pointwise `e^{2a²t}e^{-2at√(a²+z²)} → e^{-tz²}`
+      re_xiMassPointParabolicExponent_bottom_bounds,
+        re_xiMassPointParabolicExponent_bottom_ge
+                                                `Re(2a(β_a-a)) ≥ (a₀/2)|x| - C` uniformly for every
+                                                aperture `a ≥ a₀ > c` on the bottom line
+      exists_global_norm_bottomSourceFactor_bound
+                                                the bottom source factor is globally `O(1 + |x|)`
+      tendsto_integral_xiMassPolyParabolicBottomIntegrand
+                                                dominated convergence on the Euler line
+      xiPolynomialGaussianHeatTrace_eq_literalEulerLine
+                                                **(24.119)** the literal Euler-line Gaussian formula
+
+Accounting notes.
+
+1.  The uniform envelope is the only genuinely new estimate.  `Re β_a ≥ √(a²+x²-c²)` follows from the
+    exact real-square formula for the principal root; the upper bound `Re β_a ≤ a + |x| + c` follows
+    from `‖z²+a²‖ ≤ ‖z‖² + a²`.  Together they give
+    `2a(Re β_a - a) ≥ 2a(x²-c²)/(2a+|x|+c)`, and the right-hand side is increasing in `a`, so the
+    aperture may be frozen at `a₀`.  Beyond `|x| ≥ 2a₀+2c+2` this is at least `(a₀/2)|x|`, while for
+    small `|x|` the same identity gives the two-sided floor `-2c²`.  Hence one exponential majorant
+    `C₀ e^{-t a₀|x|/2}` dominates the whole aperture family.
+
+2.  The `a ≥ 1` hypothesis in (24.118) is not a restriction of the statement: it is exactly what the
+    corpus Poisson majorant `norm_xiMassPolynomialParabolicTerm_le_poissonMajorant` needs, and the
+    parabolic limit sends `a → ∞` anyway.  The contour identity itself is proved for every complex
+    time with positive real part, under an absolute-summability hypothesis on the filtered family,
+    which is then discharged unconditionally at `τ = 2at`.
+
+3.  What (24.118)--(24.119) do *not* give is (24.120).  The Euler-line form removes the continued
+    source rectangles and the moving cutoff; the surviving open core is still the sign of the real
+    part of one absolutely convergent integral, and the card's two recorded failures (large-mass pair
+    positivity, termwise von-Mangoldt positivity) remain the reason no shortcut is available.

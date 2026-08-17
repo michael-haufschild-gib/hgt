@@ -6,7 +6,7 @@
 - **Parents:** `cubic-phase-seeded-static-local-full-scale-plateau-law.md`,
   `../3-formalized/weak-interaction-recurrence-singularity-law.md`,
   `../3-formalized/fast-forwardable-stratum-codimension-obstruction.md`
-- **Status:** `[PAPER-PROVED] [FRONTIER ADVANCE] [NOVELTY UNVERIFIED] [LEAN DEFERRED]`
+- **Status:** `[PAPER-PROVED] [FRONTIER ADVANCE] [NOVELTY UNVERIFIED] [LEAN PARTIAL: Theorems A, B, D, E closed and axiom-clean; Theorem C's late-time clauses await the plateau/recurrence/locality parents]`
 - **Date:** 2026-08-09
 
 ## Public sentence
@@ -98,6 +98,60 @@ stability and the triangle inequality give total trace-distance error at most
 
 No spectral gap, perturbation expansion, or long-time approximation is used.  The estimate is
 uniform on the complete interval `(3)`.
+
+## Lean progress -- Theorem A
+
+`formal/GaloisForLFunctions/HTGeometry/WeakCutSynthesisCap.lean` (new, umbrella-wired,
+axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| `(7)` Duhamel: `‖e^{-itH} - e^{-itH_0}‖ <= |t| ‖V‖` | `dist_orbitState_le` (`FastForwardableStratumCodimension`) |
+| **`(4)`**: while `|t| ‖V‖` stays inside the error budget, the coupled orbit inherits the split synthesis cap | `approxComplexity_le_of_decoupled` |
+| the same with a larger error budget | `approxComplexity_le_of_decoupled_mono` |
+| **`(6)`**: exceeding the cap forces `t > (eps - eta_A - eta_B)/‖V‖` | `lt_time_of_exceeds_cap` |
+
+`(4)` is the transport lemma applied to the pair `(H, H_0)` over the window `[0,t]`, and `(6)` is
+its contrapositive; both are unconditional in the abstract gate model, with no spectral gap and no
+perturbation expansion.
+
+### `(8)` is closed too
+
+`formal/GaloisForLFunctions/HTGeometry/TensorConcatenation.lean` (new, umbrella-wired,
+axiom-clean) supplies the product-alphabet layer the concatenation needs.
+
+| Card item | Declaration |
+|---|---|
+| gates of the two halves acting on the pair, each on its own factor | `prodAct` |
+| a word of left gates moves only the left factor, and dually | `wordAct_prodAct_inl`, `wordAct_prodAct_inr` |
+| **the concatenated word moves both factors** | `wordAct_prodAct_append` |
+| **`(8)`**: a product state is prepared by the two factor circuits, lengths adding | `approxComplexity_prodAct_le` |
+| the product state vector and its norm `‖psi (x) phi‖ = ‖psi‖‖phi‖` | `tensorVec`, `norm_tensorVec` |
+| one-sided differences of product states | `tensorVec_sub_left`, `tensorVec_sub_right` |
+| **factor errors add**: `‖psi(x)phi - psi'(x)phi'‖ <= ‖psi-psi'‖ + ‖phi-phi'‖` for unit vectors | `norm_tensorVec_sub_le` |
+
+So Theorem A is complete: `(4)` and `(6)` from `WeakCutSynthesisCap`, `(8)` from
+`TensorConcatenation`, and `(7)` from the corpus Duhamel bound.  `(5)` is the arithmetic
+`2^{n/2} poly(n) = o(2^n/log n)`.
+
+### Theorem B is closed
+
+| Card item | Declaration |
+|---|---|
+| unnormalized product phase vector, one independent uniform phase per factor index | `phaseVec` (`BipartitePhaseSeedCollision`) |
+| the squared pairing is a character combination with pair frequencies | `sq_inner_phaseVec` |
+| at most four terms share a frequency | `card_filter_prodPairFreq_le` |
+| Parseval with bounded frequency multiplicity | `integral_box_normSq_trigLift_le_mul` |
+| **`(9)` for one unit vector**: fourth moment `<= 4/D^2` | `integral_box_inner_prodPhaseSeed_fourth_le` |
+| **`(9)`**: summed over an orthonormal family, `<= 4|iota|/D^2` | `integral_box_sum_inner_prodPhaseSeed_fourth_le` |
+| integrability of the collision on the phase box | `integrableOn_box_sum_inner_prodPhaseSeed_fourth` (`BipartiteSeedSelection`) |
+| **one seed at or below the mean** | `exists_prodPhaseSeed_collision_le` |
+| **"at least one product seed has collision at most `4/D`"** | `exists_prodPhaseSeed_collision_le_four_div` |
+
+The Lean route to `(9)` is the frequency-multiplicity Parseval bound rather than the card's
+`(11)`--`(12)` pairing chain; it gives the same constant four, and the same conclusion.  The
+"four-wise independence transfers every moment used" step is the cubic-phase parent's clause, not a
+new obligation here.
 
 ## Theorem B -- product cubic-phase seeds retain full spectral capacity
 
@@ -415,9 +469,48 @@ Disjointness of the two registers is *not* needed as a hypothesis: the concatena
 that composition be non-expanding on each side, which holds for unitary conjugation and for channel
 composition alike.  That is why the same lemma serves the Markovian reflection card.
 
+### Theorems D and E are closed
+
+`formal/GaloisForLFunctions/HTGeometry/SphereBlockTail.lean`,
+`PauliEdgeBlockNorms.lean`, `PathShellEdgeTail.lean`, `PathShellDelayFloor.lean`,
+`PathShellFixedSeed.lean` (all new, umbrella-wired, axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| the unit shell of a split Euclidean space, and its block-small event | `blockSmall`, `blockSmallOf` |
+| the cone over the block-small event sits inside a product of balls | `cone_blockSmall_subset` |
+| and contains a product of an inner ball with an off-centre complement ball | `prod_subset_cone_blockSmall` |
+| **the two-sided block tail**: shell mass between constant multiples of `x^{dim U}` | `toSphere_blockSmall_le`, `toSphere_blockSmall_ge` |
+| in normalized (probability) form | `shellProb_blockSmall_le`, `shellProb_blockSmall_ge` |
+| transport along any orthogonal splitting of any Euclidean space | `toSphere_blockSmallOf`, `exists_blockTail_bounds` |
+| **`(16)`**: the coefficient dimension `12n-9` | `finrank_pathShell` |
+| the nine-dimensional edge block of the path shell | `finrank_edgeBlock` |
+| **`(18)` in `Theta(x^9)` form** (the card's alternative Lean route: an explicit two-sided sphere-tube estimate in place of the incomplete-beta identity) | `exists_edgeSmall_tail_bounds` |
+| every Pauli string is a Hermitian involution of operator norm one | `l2_opNorm_finitePauliMatrix` |
+| **`(19)`**: `‖V_e‖_op <= 3 rho_e` (and the general `sqrt(N)` Cauchy--Schwarz form) | `l2_opNorm_edgeInteraction_le`, `l2_opNorm_pauliCombination_le`, `norm_edgePart_le` |
+| **`(21)` Hilbert--Schmidt half**: `‖V_e‖_HS^2 = 4 rho_e^2` | `hsNormSq_edgeInteraction` |
+| the dimension bound `‖A‖_HS^2 <= dim ‖A‖_op^2` | `hsNormSq_le_card_mul_sq` |
+| **`(21)` lower half**: `rho_e <= ‖V_e‖_op` | `le_l2_opNorm_edgeInteraction` |
+| **`(22)`**: the contiguous-cut conductance profile | `pathConductance` |
+| one weak edge forces weak conductance, and conversely | `edgeSmall_subset_conductanceSmall`, `conductanceSmall_subset_iUnion` |
+| **`(23)`**: the whole weak-cut sector obeys the same ninth-power law, with the edge union bound and no independence | `exists_pathConductance_tail_bounds` |
+| the path-local Hamiltonian `(1)` and its cut, both self-adjoint | `pathHamiltonian`, `pathHamiltonianCut`, `isSelfAdjoint_pathHamiltonian`, `isSelfAdjoint_pathHamiltonianCut` |
+| deleting the edge changes the Hamiltonian by exactly its interaction | `pathHamiltonian_sub_cut` |
+| **`(20)`**: the delay floor `Pr{T_full > L} >= c_n L^{-9}` | `exists_delay_floor` |
+| the delay sector has positive shell measure at every finite delay | `pathShellProb_delayEvent_pos` |
+| **Theorem C's selection step**: a finite seed family covering the delay sector has one member with a positive-measure part | `exists_pos_inter_of_cover`, `exists_fixed_seed_on_delay` |
+
+Deviation from the card, recorded: `(17)`--`(18)` are formalized as the two-sided estimate
+`c x^9 <= Pr{rho_e <= x} <= C x^9` with explicit positive constants, which is the second option in
+the card's own Lean plan ("beta projection law **or** a sufficient explicit sphere-tube lower
+bound").  The exact incomplete-beta identity behind `(17)` is not formalized; nothing in `(20)` or
+`(23)` uses it, since both consume only the ninth-power two-sided bound.
+
 ### What remains
 
-The tensor factorisation `(8)` `e^{-itH_0}χ = (e^{-itH_A}χ_A) ⊗ (e^{-itH_B}χ_B)` and the
-identification of `S_{n}(η)` with an explicit synthesis count, both of which need a Lean tensor
-formalism for the split register; and Theorems B and C, whose cores are the cubic-phase fourth-
-moment computations `(11)`--`(12)` and the onset construction.
+Only Theorem C's late-time clauses: the full plateau height, the `exp(c2^n)` duration, projective
+recurrence and the two-query locality separator in `(14)`.  These are the card's own Lean-plan item
+6 -- "compose only after the existing plateau, recurrence, and locality parents are formalized" --
+and they belong to the parent cards, not to new mathematics here.  The delayed-onset clause of
+`(14)`, the shell-measure selection of one fixed seed, and every displayed equation of Theorems A,
+B, D and E are Lean-proved and axiom-clean.

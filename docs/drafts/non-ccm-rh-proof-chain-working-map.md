@@ -273,7 +273,7 @@ Source card:
 `docs/drafts/pipeline/5-failed/completed-prime-gamma-polynomial-even-factorization-to-rh.md`.
 
 Positive survivor: four-crossing law for second completed moment, paper-proved and recorded in
-`docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/completed-prime-gamma-second-moment-four-crossing-law.md`.
+`docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/completed-prime-gamma-second-moment-four-crossing-law.md`.
 
 Do not reattempt: global even real-root factorization of moving polynomial tests.
 

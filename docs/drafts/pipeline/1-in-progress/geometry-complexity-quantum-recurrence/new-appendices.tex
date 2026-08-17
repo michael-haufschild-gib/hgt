@@ -1,505 +1,226 @@
-\section{Compact-hull and capacity proofs}
+\section{Projective detuning and weak-interaction singularity}
 
-\subsection{Proof of Theorem \ref{thm:returncapacity}}
+\subsection{Proof of Theorem \ref{thm:phasecapacity}}
 
-Translation by $\alpha(t)$ is a uniquely ergodic flow on $K$ because the
-image of $\alpha$ is dense.  Haar measure is invariant.  If another
-probability measure were invariant under the flow, continuity would extend
-invariance from the dense subgroup $\alpha(\R)$ to all translations, and
-Haar uniqueness would identify it with $m_K$.  Uniform convergence of time
-averages follows for continuous functions.  Approximation from above and
-below by continuous functions proves \eqref{eq:haarhull} for boundary-null
-sets.
-
-For finite $Y$,
+For $D=d+1$, scalar-extend the balanced character lattice to the
+$d$-dimensional rational space
 \[
- m_K(B_\varepsilon(Y))
- \le\sum_{y\in Y}m_K(B_\varepsilon(y))
- \le |Y|\sup_{y\in Y}m_K(B_\varepsilon(y)).
+ P_D^{\Q}=\left\{q\in\Q^D:\sum_jq_j=0\right\}.
 \]
-Apply the upper Portmanteau inequality when closed balls have nonzero
-boundary, or \eqref{eq:haarhull} when their union is boundary-null.  This
-gives \eqref{eq:capacityunion}.  If an open set $O$ lies in the complement,
-minimality of the dense translation implies
-$K=\bigcup_{0\le t\le L}\alpha(-t)O$ for some finite $L$ by compactness.
-Every interval of length $L$ therefore contains a visit to $O$.  \qed
-
-\section{Generic temporal rank on arbitrary interaction graphs}
-
-This section proves Theorems \ref{thm:path} and \ref{thm:curvature}.  The
-proof is included because generic rational independence of the full
-many-body spectrum does not follow from parameter counting: one must first
-show that no balanced relation polynomial vanishes identically on the local
-Hamiltonian space.
-
-\subsection{Transition graphs and all-vertex-good witnesses}
-
-Let $H$ be simple and real symmetric.  For site $u$, define a graph
-$\mathcal G_u(H)$ on energy eigenvectors $\psi_\alpha$.  Join
-$\alpha\ne\beta$ if a real-symmetric one-site operator $A_u$ satisfies
-\begin{equation}
- \psi_\alpha^T A_u\psi_\beta\ne0.                       \label{eq:transitionedge-app}
-\end{equation}
-Call $H$ \emph{all-vertex good} if every $\mathcal G_u(H)$ is connected and
-non-bipartite.  This property is open on the simple-spectrum locus: finitely
-many spanning-tree matrix elements and one odd-cycle edge at each site
-remain nonzero under small perturbations.
-
-\begin{lemma}[Two-site seed]
-For every $q_u,q_v\ge2$, the full real-symmetric two-site Hamiltonian space
-contains a simple, maximally projective, all-vertex-good Hamiltonian.
-\end{lemma}
-
-\begin{proof}
-For fixed $\alpha\ne\beta$ and endpoint $u$, failure of every local
-real-symmetric probe is vanishing of the symmetric part of
+The detuning map $\mathcal D_E:P_D^{\Q}\to\R$ is rational-linear.  Its
+kernel is the rational span of the balanced integer relation lattice.  Its
+range is the rational span of anchored gaps: each generator $E_j-E_1$ is the
+image of the balanced character $e_j-e_1$, while every balanced rational
+combination reduces to a combination of these anchored gaps.  Rank--nullity
+therefore gives
 \[
- \operatorname{Tr}_{\bar u}|\psi_\beta\rangle
- \langle\psi_\alpha|.
+ \dim_{\Q}\operatorname{range}\mathcal D_E+
+ \dim_{\Q}\ker\mathcal D_E=D-1.
 \]
-This is a proper real-algebraic condition on an orthogonal eigenbasis: send
-the two columns to $|0,z\rangle,|1,z\rangle$ and use the symmetric exchange
-probe.  A column-sign change supplies the witness in both determinant
-components of the orthogonal group.  The union of failure sets over the
-finitely many pairs and both endpoints is null and nowhere dense.  Choose
-an eigenbasis outside it and a simple eigenvalue list whose relative values
-are rationally independent.  The resulting real-symmetric matrix has the
-required properties.
-\end{proof}
 
-\subsection{Leaf attachment}
+Pontryagin duality identifies characters fixed by the completed phase law
+with integral characters in the detuning kernel.  The operational temporal
+dimension is consequently the range rank.  In a replica expansion, a
+balanced character of positive mass $h$ first appears at order $h$; phase
+cycling annihilates every character of larger mass.  This gives the final
+height-filtration statement.
 
-Suppose tree $T$ has a simple, maximally projective, all-vertex-good
-$H_T$.  Attach leaf $v$ to $u$ and begin with
-\begin{equation}
- H_0=H_T\otimes I+I\otimes\sum_{a=0}^{q_v-1}s_a
- |a\rangle\langle a|,                                  \label{eq:productextension-app}
-\end{equation}
-where shifts make product energies distinct.  Fix an old observer site
-$r$.  Choose labels $\alpha,\gamma,\beta$ and local probes $A_u,B_r$ with
-\begin{equation}
- (A_u)_{\alpha\gamma}\ne0,
- \qquad (B_r)_{\gamma\beta}\ne0.                       \label{eq:twoedges-app}
-\end{equation}
-Such labels exist by connectedness of the old transition graphs; the two
-neighbors may coincide.
+\subsection{Proof of Theorem \ref{thm:interaction}}
 
-For layers $a\ne b$, perturb with
+Write the product index as
+$\{0,\ldots,m\}\times\{0,\ldots,n\}$.  The uncoupled energy is
+$E_{ab}=A_a+B_b$.  Its gap space is generated by the $m$ anchored gaps of
+$A$ and the $n$ anchored gaps of $B$, so its temporal rank is at most $m+n$.
+
+Write a diagonal rank-one interaction as
+$V_{ab}=\alpha_a\beta_b$.  For each nonzero balanced integer character $k$,
+its perturbed detuning is a real polynomial in $(\alpha,\beta)$.  This
+polynomial is not identically zero: if its uncoupled value vanishes, choose
+one pair $(a,b)$ with $k_{ab}\ne0$ and switch on only $\alpha_a$ and
+$\beta_b$.  The resulting quadratic coefficient is $k_{ab}$.  The complement
+of its zero set is open and dense.  Intersecting these complements over the
+countable family of nonzero balanced characters leaves a dense set in every
+ball about the origin.  Choose $(\alpha,\beta)$ there with
+$\max_{a,b}|\alpha_a\beta_b|\le\delta$.  Then $V=A\otimes B$ is diagonal,
+$\|V\|\le\delta$, and the perturbed spectrum is maximally projective.  Its
+temporal rank is $(m+1)(n+1)-1=mn+m+n$, proving the rank jump.
+
+For self-adjoint $H,H'$ and $U(t)=e^{-itH}$,
+$U'(t)=e^{-itH'}$, Duhamel's formula gives
 \[
- W_{ab}=A_u\otimes(|a\rangle\langle b|+|b\rangle\langle a|).
+ U'(t)-U(t)=-i\int_0^t e^{-i(t-s)H'}(H'-H)e^{-isH}\,ds
 \]
-First-order eigenvector perturbation makes the derivative of the physical
-$B_r\otimes I$ matrix element between $(\alpha,a)$ and $(\beta,b)$ equal,
-up to nonzero normalizations, to
-\begin{align}
-R_{r,ab}(z)={}&
-\sum_\delta\frac{(A_u)_{\alpha\delta}(B_r)_{\delta\beta}}
- {z+E_\alpha-E_\delta}
- +\sum_\delta\frac{(B_r)_{\alpha\delta}(A_u)_{\delta\beta}}
- {-z+E_\beta-E_\delta},                               \label{eq:response-app}\\
-& z=s_a-s_b.
-\end{align}
-The selected $\delta=\gamma$ term has a nonzero residue at
-$z=E_\gamma-E_\alpha$.  Simplicity prevents another pole in the first sum.
-If a pole in the second sum coincided, then
-$E_\gamma-E_\alpha=E_\beta-E_\delta$.  Maximal projective rank makes
-nonzero oriented gaps injective; the only identical transition contradicts
-\eqref{eq:twoedges-app}.  Hence $R_{r,ab}$ is not zero and has only finitely
-many real zeros.
+with reversed orientation for $t<0$, and hence
+$\|U'(t)-U(t)\|\le |t|\|H'-H\|$.  Splitting
+$U'(t)^*OU'(t)-U(t)^*OU(t)$ into two terms and using unitary invariance gives
+$2|t|\|H'-H\|\|O\|$, hence \eqref{eq:duhamel-main}.  Finally, expansion of the $r$th fidelity moment
+shows that its non-permutation excess is a sum over unequal multiplicity
+vectors of equal total energy.  Maximal projective rank removes every such
+balanced equality, leaving exactly the permutation floor.
 
-Choose shifts outside all response-zero and product-collision sets.  A small
-edge perturbation preserves each old layer graph and adds cross-layer edges
-from one layer to all others.  Every old observer graph becomes connected
-and retains an odd cycle.  At the new leaf, the local real-symmetric algebra
-provides complete within-block transitions when $q_v\ge3$; for $q_v=2$,
-vertical exchanges together with one generated cross-block and one
-same-layer transition make a triangle.  Nonvanishing requirements are
-finite real-analytic conditions, so one arbitrarily small perturbation
-satisfies all simultaneously.  Thus leaf attachment preserves existence of
-an all-vertex-good witness.
+\section{Arbitrary interaction graphs}
 
-\subsection{Eliminating universal rational relations}
+\subsection{Generic component rank}
 
-Induct simultaneously over finite heterogeneous trees.  The preceding
-construction gives the all-vertex-good witness.  Suppose a balanced labelled
-rational eigenvalue relation were universal near
-\eqref{eq:productextension-app}.  Vary a real-symmetric exchange coupling
-between two new layers.  The exact second-order eigenvalue response is a
-simple-pole packet indexed by oriented edges of $\mathcal G_u(H_T)$.
-Maximal old rank makes nonzero ordered poles distinct.  Vanishing residues
-force equality of relation coefficients along
-\begin{equation}
- \mathcal G_u(H_T)\times K_{q_v}.                       \label{eq:categorical-app}
-\end{equation}
-This categorical product is connected: a connected non-bipartite graph has
-walks of both parities between any two vertices, and parity can be matched
-to a walk in $K_{q_v}$.  All coefficients are therefore equal, leaving only
-the excluded trace relation.
+For a connected two-site graph, the allowed edge term is the full Hermitian
+matrix space on the tensor product.  Choose a simple eigenbasis for which
+every one-site transition graph is connected and non-bipartite, and choose a
+maximally projective eigenvalue list.  The failures of these conditions are
+proper real-algebraic sets, so such choices form a nonempty open set inside
+the simple-spectrum locus.
 
-For every nonconstant balanced rational coefficient vector, multiply its
-labelled eigenvalue form over spectral permutations.  The result is a
-symmetric polynomial in eigenvalues and hence a polynomial in
-characteristic coefficients, therefore a polynomial in local Hamiltonian
-parameters.  The residue argument shows it is not identically zero.  Its
-zero set is closed, null and nowhere dense.  Removing the discriminant and
-the countable union over rational coefficient vectors proves dense,
-full-measure $G_\delta$ maximal projective rank on every tree.
+Attach a leaf to a tree.  Start from a product extension with layer shifts
+chosen to avoid energy collisions.  A small edge perturbation joins the
+layer transition graphs.  For every old observer site, the first-order
+response of a cross-layer matrix element is a rational function of a layer
+gap.  One selected transition contributes a nonzero simple-pole residue;
+maximal projective rank prevents cancellation by another oriented gap.
+Avoiding the finitely many zeros of these response functions makes every old
+transition graph connected while preserving an odd cycle.  The local
+matrix algebra at the new leaf supplies its connectivity and odd cycle.
 
-Every connected graph contains a spanning tree.  A relation polynomial
-nonzero on tree-local parameter space remains nonzero on the larger graph
-space, proving $\tau=D-1$ for connected $G$.
+Now suppose a nonconstant balanced rational eigenvalue relation vanished
+identically on the enlarged tree-local space.  The second-order response to
+the leaf interaction has simple poles indexed by oriented edges of the old
+transition graph.  Vanishing residues force relation coefficients to agree
+along the categorical product of that graph with the leaf complete graph.
+Connectedness and non-bipartiteness make this product connected, so every
+coefficient is equal, contradicting nonconstancy.  Thus no balanced relation
+polynomial vanishes identically.
 
-\subsection{Disconnected graphs and simultaneous restrictions}
+Symmetrizing over spectral labels turns each candidate relation into a
+polynomial in local Hamiltonian coefficients.  Removing its proper zero set,
+the discriminant, and the countable family of rational relations gives a
+dense residual full-measure maximal set on every tree.  A spanning tree
+embeds into every connected graph, so the same conclusion holds for any
+connected graph.
 
-For component Hamiltonians $H_C$, every total relative energy is a sum of
-component relative energies, while every component gap occurs by changing
-one component coordinate.  Hence rational gap modules satisfy
-\begin{equation}
- M(H)=\sum_C M(H_C),\qquad
- \tau(H)\le\sum_C(D_C-1).                              \label{eq:moduleupper-app}
-\end{equation}
-Choose maximally projective component witnesses $K_C$ and scale them by
-nonzero real $t_C$.  Recursively avoid the countable set of ratios that
-would make $t_CM(K_C)$ intersect the previously chosen module.  The sum is
-then direct and attains the upper bound.
+For a disconnected graph, component gap modules add.  Independently scaling
+component witnesses avoids the countable set of ratios at which two modules
+intersect.  This proves the component formula
+\eqref{eq:graphrank-main}.  There are only finitely many induced subsystems;
+intersecting their pullbacks supplies one simultaneous generic set.
 
-To pass from one witness to genericity, balance coefficients within each
-component and symmetrize over independent permutations of component
-spectra.  Transversality of the scaled witness makes the resulting
-separately symmetric relation polynomial nonzero.  Countably many proper
-polynomial zero sets and the discriminant exhaust the exceptional set.
-This proves \eqref{eq:graphrank-main}.
+\subsection{Curvature, density and exhaustion}
 
-There are finitely many induced vertex subsets.  Coefficient restriction is
-a surjective linear map, so the inverse image of each good set is dense,
-conull and $G_\delta$.  Their finite intersection supplies one simultaneous
-atlas.  On one and two vertices, direct evaluation gives
-\eqref{eq:curvatureedge}; the partition-curvature statement follows from
+On one vertex, temporal rank is $q_v-1$.  On two vertices it is
+$q_uq_v-1$ when the edge is present and
+$(q_u-1)+(q_v-1)$ otherwise.  Subtraction gives
+\eqref{eq:curvatureedge}.  For a partition, refine every connected component
+into its connected fragments of dimensions $d_1,\ldots,d_s$.  Its curvature
+contribution is
 \[
- \prod_{j=1}^m d_j-1\ge\sum_{j=1}^m(d_j-1),\qquad d_j\ge2,
+ \prod_{j=1}^s d_j-1-\sum_{j=1}^s(d_j-1),
 \]
-with equality exactly for $m=1$.  This completes Theorems
-\ref{thm:path} and \ref{thm:curvature}.  \qed
+which is nonnegative for $d_j\ge2$ and vanishes exactly when $s=1$.  Summing
+over components proves Theorem \ref{thm:curvature}.
 
-\subsection{Anchored recurrence density and thermodynamic limit}
+For connected $G$, the anchored phase vector is Haar-equidistributed on
+$\T^{D-1}$.  A chordal coordinate lies within $\varepsilon$ of one precisely
+on an arc of normalized length
+$2\arcsin(\varepsilon/2)/\pi$.  Product Haar measure proves
+\eqref{eq:exactdensity}.  Substituting $D=q^n$ and taking logarithms gives
+\eqref{eq:thermograph} and \eqref{eq:doubleloggraph}.
 
-For clarity, the strict return target used in
-\eqref{eq:exactdensity} is the anchored chordal projective target
-\begin{equation}
- \max_{j\ne j_0}
- |\ee^{-it(E_j-E_{j_0})}-1|\le\varepsilon.             \label{eq:anchoredtarget-app}
-\end{equation}
-It is invariant under common energy shifts but fixes one spectral anchor;
-it is not the optimally recentered quotient operator norm.  Maximal
-projective rank makes the $D-1$ anchored phases Haar-equidistributed.  Each
-circle coordinate must lie in an arc of length
-$4\arcsin(\varepsilon/2)$, whose normalized measure is
-$2\arcsin(\varepsilon/2)/\pi$.  Product measure gives
-\eqref{eq:exactdensity}.  When $D-1\ge2$, a nonzero exact return would make
-all gap ratios rational, contradicting their rational independence.  For
-$D=2$ the single anchored phase is periodic.
+For an infinite coefficient product and a finite-volume exhaustion, pull
+back each finite-volume generic set along coefficient restriction.  These
+maps are continuous open surjections.  The countable intersection of the
+residual pullbacks is residual and dense.  Absolute continuity of every
+finite marginal makes each bad cylinder null; countable subadditivity gives
+the simultaneous probability-one statement.  Since $q_v\ge2$ and volumes
+grow strictly, the product dimension minus one tends to infinity.
 
-Equation \eqref{eq:thermograph} is immediate after taking logarithms.  If
-$n^{-1}\log D_n\to s$, then
+\section{Replica collisions and component laws}
+
+For positive weights $w_i$, expand the $r$th survival-fidelity moment into
+pairs of multiplicity vectors $p,q$ with $|p|=|q|=r$.  A term survives
+completed-time averaging exactly when
 \[
- \frac1n\log[-\log d_n]
- =\frac1n\log(D_n-1)+\frac1n\log I(\varepsilon)\to s,
+ \sum_i(p_i-q_i)E_i=0.
 \]
-which proves \eqref{eq:doubleloggraph}.  \qed
+Maximal projective rank forces $p=q$, which is precisely the permutation
+floor.  Combining this equivalence with the path genericity theorem proves
+Theorem \ref{thm:pathcollision}.
 
-For Theorem \ref{thm:exhaustion}, let $\mathcal U_n$ be the inverse image in
-the ambient coefficient product of the finite-volume simultaneous genericity
-set supplied by Theorem \ref{thm:path}.  Coefficient restriction to $V_n$ is
-a continuous open surjection onto a finite-dimensional Euclidean space.
-Hence every $\mathcal U_n$ is dense $G_\delta$, and
-$\mathcal U=\bigcap_n\mathcal U_n$ is residual and dense.  If an ambient
-coefficient law has absolutely continuous $V_n$-marginal, then
-$\mathbb P(\mathcal U_n^c)=0$; countable subadditivity gives
-$\mathbb P(\mathcal U)=1$.  Equation \eqref{eq:exhaustionrank} follows at
-every volume.  Strict growth of the volumes and $q_v\ge2$ give
-$D_n\ge2^{|V_n|}\to\infty$, after which the density and rate statements are
-the finite-volume formulas already proved.  \qed
+For a tensor-sum spectrum, every total energy is a sum of component energies.
+Mutual transversality separates a surviving equality component by component;
+maximality inside each component then forces equality of the two empirical
+histograms.  This proves \eqref{eq:histcollision}.  For uniform weights, the
+number of $m$-tuples with histogram $k$ is $\binom{m}{k}$, giving
+\eqref{eq:adm} and \eqref{eq:sffproduct}.  At fixed $m$, distinct-label
+tuples contribute $m!+O(d^{-1})$, while repeated-label tuples vanish in the
+limit.  The factorial moments determine the unit-mean exponential law;
+independence of component Haar coordinates gives the product law.
 
-\section{Component tori and all-order collision proofs}
+\section{Choi targets and static complexity}
 
-Choose a reference level in each component and let
-$\omega_{r,a}=E_{r,a}-E_{r,a_r^0}$.  Mutual transversality and component
-maximality make the combined list rationally independent.  The projective
-orbit is the image of the dense torus flow under
-\begin{equation}
- \Phi(z)_x=\prod_{r=1}^cz_{r,x_r},\qquad z_{r,a_r^0}=1. \label{eq:phaseembed-app}
-\end{equation}
-The map is injective: hold every coordinate but $x_r$ at its reference
-value and divide by the all-reference coordinate.  Thus the orbit closure
-is canonically $\prod_r\T^{D_r-1}$ and completed sampling is product Haar.
+\subsection{Projective Choi tube}
 
-Expand $F(t)^m$.  A term survives time averaging exactly when
-\[
- \sum_{s=1}^mE_{X_s}=\sum_{s=1}^mE_{Y_s}.
-\]
-Writing each energy as a sum of component energies gives
-\[
- \sum_{r,a}\bigl(N_r(X)(a)-N_r(Y)(a)\bigr)E_{r,a}=0.
-\]
-Each coefficient vector is balanced.  Transversality first separates
-components; maximality inside a component then forces every coefficient to
-vanish.  The surviving event is exactly equality of all marginal
-histograms, proving \eqref{eq:histcollision}.
+The full $D$-torus splits measure-preservingly into one common phase and a
+zero-anchored $(D-1)$-torus.  Equal-weight Choi densities are invariant under
+the common phase, so the projective target has exactly the measure of its
+full-torus lift.
 
-For uniform spectral weights, tensor-sum evolution gives
-\[
- X_D(t)=\prod_rD_r^{-1}|\operatorname{Tr}\ee^{-itH_r}|^2.
-\]
-The component phases are Haar-independent.  Counting $m$-tuples with
-histogram $k$ gives multinomial multiplicity $\binom{m}{k}$, so the collision
-probability is \eqref{eq:adm}; multiplication proves
-\eqref{eq:sffproduct}.  For fixed $m$, tuples with $m$ distinct labels give
-the leading contribution $m!$, while repeated-label tuples are
-$O(d^{-1})$.  Hence $a_{d,m}\to m!$.  Finite product convergence and the
-method of moments identify the limit as a product of independent unit-mean
-exponentials.  \qed
+If a Hilbert--Schmidt target ball is nonempty, choose one captured phase
+point.  Every other captured point lies within twice the radius of it.
+Pure-state density geometry converts this into a lower bound on normalized
+phase overlap.  After rotating the common phase, the inequality
+$1-\cos\theta\ge2\theta^2/\pi^2$ puts the relative angles inside a Euclidean
+ball.  The standard ball-volume and Gamma bounds give $B_D(\delta)$.  A union
+over at most $M^{s+1}$ padded words proves the Haar bound.  Maximal projective
+rank transfers it to upper completed-time occupation.  Theorem
+\ref{thm:path} supplies that rank on one dense residual full-measure set for
+every connected interaction graph, proving Theorem \ref{thm:choicap}.
 
-\section{Choi target volume and local circuit capacity}
+\subsection{Pauli alternation and hard polygons}
 
-\subsection{Proof of Theorem \ref{thm:choicap}}
+For bounded-weight Pauli coefficients outside the projective relation zero
+sets, the Choi energy list is maximally projective.  The strict inequality
+in \eqref{eq:paulibudgets} leaves a nonempty open complement to all padded
+circuit targets.  Minimality of the projective flow makes both the identity
+neighbourhood and this hard complement syndetic.  Applying them successively
+gives return--hardness--return within one uniform window length.
 
-If the target ball in \eqref{eq:onetargetcap} is empty there is nothing to
-prove.  Otherwise select $y\in\T^D$ whose Choi phase state lies in it.
-Every other captured $z$ is within trace distance $2\delta$ of $\Phi(y)$,
-so
-\begin{equation}
- \left|D^{-1}\sum_{j=1}^Dz_j\overline{y_j}\right|
- \ge\sqrt{1-4\delta^2}=1-\eta_\delta.                  \label{eq:coherence-app}
-\end{equation}
-Rotate by one common phase so the sum is real and nonnegative.  Writing
-$z_j\overline{y_j}=e^{i\theta_j}$ with $\theta_j\in[-\pi,\pi]$ gives
-\[
- \sum_j(1-\cos\theta_j)\le D\eta_\delta.
-\]
-The elementary bound $1-\cos\theta\ge2\theta^2/\pi^2$ yields a Euclidean
-ball constraint after quotienting one common phase.  Bounding the
-$(D-1)$-ball by the corresponding cube/volume estimate and using
-$\Gamma((D+1)/2)\ge((D-1)/(2e))^{(D-1)/2}$ gives
-\[
- m_{\T^D}\{z:\eqref{eq:coherence-app}\}
- \le De^{D/2}
- \left(\frac{\pi\eta_\delta}{2}\right)^{(D-1)/2}.
-\]
-This proves \eqref{eq:onetargetcap}.  A union over at most $M^{s+1}$ circuit
-endpoints proves \eqref{eq:wordcap}.  Unique ergodicity transfers the closed
-target bound to completed time.  A nonempty open hard complement is visited
-syndetically by Theorem \ref{thm:returncapacity}.  \qed
+The local separator uses the Pauli transfer matrix.  The Hamiltonian
+coefficient vector is fixed by autonomous evolution, so the corresponding
+local transfer block has Frobenius norm at least one.  Product-stabilizer
+twirling weights every output Pauli by $3^{-\operatorname{wt}}$.  Hence the
+two-query signal is at least $3^{-q}/M_q$, which exceeds $1/(D+1)$ under the
+second inequality of \eqref{eq:paulibudgets}.
 
-\subsection{Proof of the heap bound}
+For Theorem \ref{thm:primepolygon}, sample a phase vector on the $p$-torsion
+grid.  When $2r<p$, congruence of replica multiplicities modulo $p$ is
+ordinary equality, so the $2r$th target-overlap moment is at most
+$r!D^{-r}$.  Markov's inequality and a union bound over
+$(p-1)|Y|$ target--vertex pairs leave one phase vector with every nonzero
+multiple hard.  The $p$th multiple is identity.  A nonempty open
+neighbourhood of this polygon is visited syndetically by every maximally
+projective phase flow.
 
-Let two letters be independent when their gates have disjoint support, and
-dependent otherwise.  A trace is a word modulo adjacent swaps of independent
-letters.  Fix length $\ell$ and its multiplicity vector
-$m=(m_\sigma)_{\sigma\in\Sigma}$; there are
-$\binom{M+\ell-1}{\ell}$ possible multiplicity vectors.  For each occurrence
-of letter $\sigma$, record its relative order against occurrences of a
-fixed orientation of dependence neighbors.  Cartier--Foata pair projections
-determine the trace.  At most $\Delta$ binary order decisions are charged per
-occurrence, so at most $2^{\Delta\ell}$ traces share one multiplicity vector.
-Therefore
-\begin{equation}
- h_\ell\le\binom{M+\ell-1}{\ell}2^{\Delta\ell}.
-\end{equation}
-The right-hand side is increasing in $\ell$, and summing
-$0\le\ell\le s$ proves \eqref{eq:heapbound}.  The standard binomial estimate
-$\binom{M+s-1}{s}\le[e(1+s/M)]^M$ gives
-\eqref{eq:heaplog}.  If $M=O(n)$, $s=cD$ and $D=q^n$, the $M$-term is
-$o(D)$; comparison with $B_D(\delta)=e^{-\alpha_\delta D+o(D)}$ gives the
-stated threshold.  \qed
+\section{Countable completion and reflection}
 
-\section{Fixed-input state-complexity proof}
+For a countable maximally projective spectrum, every finite restriction has
+maximal projective rank.  Its annihilator is therefore trivial, so the orbit
+closure is the full product torus.  Removing any bounded initial time does
+not change this closure.  Two independent coordinates rule out a nonzero
+exact global return.  For a positive summable phase-defect probe, uniform
+tail control reduces approximation to finitely many coordinates.  Compact
+minimality then gives a bounded hitting window.  Connectedness of the image
+and continuity of the probe turn approximate level visits into exact visits
+for every interior level.
 
-For a simple $H$ with eigenvectors $e_j$, put
-$p_j=|\langle e_j,\Omega\rangle|^2$ and
-$C_H(\Omega)=\sum_jp_j^2$.  We first record a target bound on the spectral
-phase orbit
-\[
- \Phi_H(z)=\sum_j\sqrt{p_j}\,z_je_j,\qquad z\in\T^D.
-\]
-For a finite family $Z$ in the unit ball and $0<a\le1$, let
-$E_a(Z)=\{z:\max_{y\in Z}|\langle\Phi_H(z),y\rangle|^2\ge a\}$.
-For every integer $r\ge1$,
-\begin{equation}
- m_{\T^D}(E_a(Z))
- \le |Z|\,r!\left(\frac{16C_H(\Omega)}{a^2}\right)^r. \label{eq:statecap-app}
-\end{equation}
-Indeed, set $\tau=4C_H(\Omega)/a$ and remove the common heavy coordinate set
-$A=\{j:p_j>\tau\}$.  Its squared norm is at most
-$C_H(\Omega)/\tau=a/4$.  An $a$-capture therefore forces the light-part
-overlap to have squared modulus at least $a/4$.  For one target $y$, torus
-character orthogonality gives
-\[
- \int|\langle\Phi_L(z),y\rangle|^{2r}\,dm(z)
- \le r!\tau^r\|y\|^{2r}.
-\]
-Markov's inequality contributes $(4/a)^r$, and a union over $Z$ proves
-\eqref{eq:statecap-app}.
+Absolutely summable diagonal perturbations can be chosen arbitrarily small
+and maximally projective on every finite restriction.  They are trace class,
+preserve the maximal diagonal domain, and preserve self-adjointness.  A
+separable perturbation $u_i v_j$ has the same properties on a product
+carrier.  Along its affine coupling ray, each nonzero balanced character can
+vanish at at most one coupling unless it annihilates both bare spectrum and
+direction.  The chosen direction has no such nonzero character, leaving only
+a countable exceptional set.  This proves Theorem \ref{thm:countable}.
 
-The Gaussian law \eqref{eq:gaussianpath} is invariant under every product of
-one-qubit Clifford conjugations.  These conjugations act transitively on the
-$6^n$ product Pauli-stabilizer states.  For a fixed unit vector $e$, the
-single-qubit stabilizer second-moment identity, tensored over sites, gives
-\begin{equation}
-\frac1{6^n}\sum_{\phi\in\mathrm{ProdStab}_n}
-|\langle e,\phi\rangle|^4
-=\frac1{6^n}\sum_{S\subseteq[n]}
- \operatorname{Tr}(\rho_S^2)\le3^{-n},              \label{eq:stabilizerfourth-app}
-\end{equation}
-where $\rho_S$ is the reduction of $|e\rangle\langle e|$ to $S$.
-Summing over the $D=2^n$ eigenvectors and averaging the conjugation orbit
-yields
-\begin{equation}
- \mathbb E_J C_{H_n(J)}(\Omega)\le(2/3)^n.           \label{eq:collisionmean-app}
-\end{equation}
-Thus Markov gives $C_H(\Omega)\le4(2/3)^n$ with probability at least
-$3/4$.  The Gaussian union bound gives
-\[
- \mathbb P\{\max_a|J_a|>B_n\}
- \le2m_ne^{-B_n^2/2}<1/4.
-\]
-Simple spectrum, maximal projective rank and full spectral support at
-$\Omega$ hold outside a null set given by a countable algebraic union.  Rank
-follows from Theorem
-\ref{thm:path}.  For support, the Krylov determinant
-$\det[\Omega,H\Omega,\ldots,H^{D-1}\Omega]$ is not the zero polynomial:
-$H=\sum_{j=0}^{n-1}3^jX_j$ has distinct balanced-ternary energies and
-$\Omega$ overlaps every $X$-basis vector.  Intersecting these events produces
-$\mathcal G_n$ with probability at least $1/2$.
-
-For $J\in\mathcal G_n$, a circuit hit at trace error $2\epsilon$ is an
-$a$-capture with $a=1-4\epsilon^2$.  There are at most $M_n^{s_n+1}$ target
-words.  By \eqref{eq:fixedstateparams},
-\[
- r_n\frac{16C_H(\Omega)}{a^2}\le\frac12,\qquad
- r_n!\left(\frac{16C_H(\Omega)}{a^2}\right)^{r_n}
- \le2^{-r_n}.
-\]
-Also $M_n^{s_n+1}\le2^{r_n/4}$.  Hence
-\eqref{eq:statecap-app} is at most $\eta_n$.  Maximal projective rank
-transfers this Haar estimate to one-sided completed time, proving
-\eqref{eq:quenchedstate}.
-
-Let $f_T(J)$ be the fraction of $[0,T]$ on which the endpoint is hard.
-Fatou and Tonelli give
-\[
- \liminf_{T\to\infty}\int f_T(J)\,d\gamma(J)
- \ge\int_{\mathcal G_n}\liminf_{T\to\infty}f_T(J)\,d\gamma(J)
- \ge\tfrac12(1-\eta_n),
-\]
-which proves both statements in \eqref{eq:commontime}; the same calculation
-with $\mathbf1_{\mathcal G_n}f_T$ supplies an unbounded sequence of common
-times with positive hard mass inside the coefficient box.
-
-Choose one such time and a positive-measure subset on which distance from
-the finite depth-$s_n$ word ball exceeds $2\epsilon+1/k$ for one $k$.
-On the box, $\|H_n(J)\|\le m_nB_n$, so Duhamel continuity preserves hardness
-at a sufficiently close positive rational time.  Strict separation and
-continuity in $J$ then give a nearby rational coefficient vector satisfying
-\eqref{eq:rationalwitness}.  Finally enumerate rational pairs in the stated
-boxes, enumerate the finite word ball, and dovetail certified numerical
-lower bounds on all distances.  Matrix exponentials of rational matrices and
-the fixed gate endpoints are uniformly computable; strict separation makes
-one certificate terminate.  This proves Theorem \ref{thm:computablestate}.
-\qed
-
-\section{Prime-torsion polygons and permanent non-Haar separation}
-
-Let $q\in(\Z/p\Z)^d$ and map it to the normalized diagonal Choi phase vector
-$d^{-1/2}(e^{2\pi iq_j/p})_j$.  Put
-$\beta=\sqrt{1-4\epsilon^2}$.
-
-\begin{lemma}[Finite-grid avoidance]
-Under \eqref{eq:polygonbudget}, some $q$ has every nonzero multiple $aq$
-farther than $\epsilon$ from every target in $Y$.
-\end{lemma}
-
-\begin{proof}
-For fixed nonzero $a$ and target ray $y$, an $\epsilon$-hit is contained in
-a translated coherence cap with normalized overlap at least $\beta$.
-For uniform $q$, the $2r$th replica moment of this overlap is at most
-$r!d^{-r}$ when $2r<p$: congruence modulo $p$ then coincides with equality
-of the two replica histograms.  Markov gives bad probability at most
-$r!d^{-r}/\beta^{2r}$.  Union over $(p-1)|Y|$ pairs has probability less
-than one by \eqref{eq:polygonbudget}; a good $q$ exists.
-\end{proof}
-
-For this $q$, strict avoidance of all finitely many targets and closeness of
-the $p$th power to identity define a nonempty open set in the finite-power
-phase torus.  A maximally projective phase flow is minimal, hence hits that
-open set syndetically.  At a hitting base time $\tau$, multiplication by
-$a=1,\ldots,p-1$ shadows the hard vertices and multiplication by $p$ shadows
-the identity.  This proves the first part of Theorem
-\ref{thm:primepolygon}.
-
-For completeness, the permanent separator follows the exact protocol of
-Cui \emph{et al.} \cite{CuiEtAl2025}.  Let
-$D=2^n$, let $\mathcal P_q^*$ be nonidentity Pauli strings of weight at most
-$q$, and set $M_q=|\mathcal P_q^*|$.  Sample
-$P\in\mathcal P_q^*$ and a uniform product of single-qubit Pauli stabilizer
-states $u$, prepare two copies, apply $U$ once to each, measure $P$, and
-multiply outcomes.  Its mean is
-\begin{equation}
- \mathscr S_q(U)=\frac1{M_q}\sum_{P\in\mathcal P_q^*}
- \mathbb E_u\langle u|U^*PU|u\rangle^2.                \label{eq:twoscore-app}
-\end{equation}
-Expand $U^*PU=\sum_QC_{QP}(U)Q$.  Product-stabilizer twirling gives
-\[
- \mathbb E_u\langle u|U^*PU|u\rangle^2
- =\sum_Q3^{-\operatorname{wt}(Q)}C_{QP}(U)^2.
-\]
-If $H=\sum_{P\in\mathcal P_q^*}h_PP\ne0$ and $U_t=e^{-itH}$, energy
-conservation says the local transfer block fixes $h$.  Its Frobenius norm is
-therefore at least one, and
-\begin{equation}
- \mathscr S_q(U_t)\ge\frac{3^{-q}}{M_q}.                \label{eq:localscore-app}
-\end{equation}
-For Haar $V$, the same score has expectation $1/(D+1)$.  Thus
-$M_q3^q<D+1$ gives strict separation at every time, including polygon
-vertices and return.  This completes Theorem \ref{thm:primepolygon}.  \qed
-
-\section{Reflection and Markovian recovery proofs}
-
-For a return endpoint,
-\begin{equation}
- U_{R-t}=U_RU_t^*.
-\end{equation}
-If word $W$ is within $\epsilon$ of $U_{R-t}$, then $W^*$ has the same word
-length because dictionary is inverse closed, and projective Choi metric plus
-unitary invariance gives
-\[
- d_{\rm Ch}(W^*,U_t)
- \le d_{\rm Ch}(W,U_{R-t})+d_{\rm Ch}(U_R,I)
- \le\epsilon+\delta_R.
-\]
-Interchanging $t$ and $R-t$ proves \eqref{eq:reflection}.  Word inversion
-is length-preserving bijection, so the same injection holds shell by shell;
-at $\delta_R=0$ both injections are inverse bijections.  Nonnegative
-summation proves partition-function reflection.  \qed
-
-For a CPTP semigroup, \eqref{eq:semigrouprecovery} is the semigroup law.
-Complete trace-norm contractivity of $\Lambda_{R-t}$ gives
-\begin{align*}
- \|(\Lambda_t\otimes\operatorname{id})(X)\|_1
- &\ge\|(\Lambda_R\otimes\operatorname{id})(X)\|_1\\
- &\ge\|X\|_1-
- \|((\Lambda_R-\operatorname{id})\otimes\operatorname{id})(X)\|_1\\
- &\ge(1-\delta_R)\|X\|_1,
-\end{align*}
-which proves \eqref{eq:distinguishrecovery}.  If a unitary word channel
-$\mathcal W$ is within $\epsilon$ of $\Lambda_t$, channel composition is
-diamond-contracting and
-\[
- \|\Lambda_{R-t}\circ\mathcal W-\operatorname{id}\|_\diamond
- \le\epsilon+\delta_R.
-\]
-Postcompose by $\mathcal W^{-1}$ to obtain a word of the same length within
-$\epsilon+\delta_R$ of $\Lambda_{R-t}$.  This proves complexity and shell
-reflection.  If $\delta_R=0$, every $\Lambda_t$ has CPTP inverse
-$\Lambda_{R-t}$; finite-dimensional complete order automorphisms are unitary
-conjugations \cite{NayakSen2007}.  Periodicity follows from the semigroup
-law.  \qed
+Finally, autonomous composition gives
+$U_{R-t}=U_RU_t^*$.  Inverting and reversing a word preserves its length in
+an inverse-closed dictionary.  Choi-metric unitary invariance and the
+triangle inequality add only the return defect $\Delta_R$, proving both
+inequalities in \eqref{eq:reflection}.  When $\Delta_R=0$, the two bounds are
+inverse inequalities and give exact palindromic symmetry.

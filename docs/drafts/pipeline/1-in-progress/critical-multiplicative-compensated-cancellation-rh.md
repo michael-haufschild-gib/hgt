@@ -1335,7 +1335,7 @@ The internal corpus already records both infinite-limit versions of this danger:
   limit of prime-shift Koszul fibres supplies no canonical completion defect;
 - `5-failed/prime-coshift-additive-trace-coercivity-conjecture.md` proves that the natural scalar
   Abel/heat boundary trace is not closable in the all-prime row graph norm;
-- `2-fully-proven/not_new_scientific_knowledge/additive-heat-diagonal-generates-full-operator-algebra.md`
+- `3-formalized/not_new_scientific_knowledge/additive-heat-diagonal-generates-full-operator-algebra.md`
   proves that adjoining an everywhere-nonzero additive heat aperture to the particle diagonal
   generates all bounded operators.
 

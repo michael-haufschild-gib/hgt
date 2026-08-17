@@ -95,16 +95,14 @@ open Finset
 /-- Each coordinate size is dominated by the lattice size. -/
 theorem one_add_abs_coord_le {ι : Type*} [Fintype ι] (ν : ι → ℤ) (i : ι) :
     (1 : ℝ) + |((ν i : ℤ) : ℝ)| ≤ 1 + (latticeL1 ν : ℝ) := by
-  have hcoord : ((ν i).natAbs : ℝ) ≤ (latticeL1 ν : ℝ) := by
-    have h : (ν i).natAbs ≤ latticeL1 ν := by
-      rw [latticeL1]
-      exact Finset.single_le_sum (f := fun j => (ν j).natAbs)
-        (fun j _ => Nat.zero_le _) (Finset.mem_univ i)
-    exact_mod_cast h
-  have habs : |((ν i : ℤ) : ℝ)| = ((ν i).natAbs : ℝ) := by
-    rw [← Int.cast_abs, ← Int.natCast_natAbs]
-    push_cast
-  rw [habs]
+  have hnat : (ν i).natAbs ≤ latticeL1 ν := by
+    rw [latticeL1]
+    exact Finset.single_le_sum (f := fun j => (ν j).natAbs)
+      (fun j _ => Nat.zero_le _) (Finset.mem_univ i)
+  have hz : |ν i| ≤ ((latticeL1 ν : ℕ) : ℤ) := by
+    rw [← Int.natCast_natAbs]
+    exact_mod_cast hnat
+  have hreal : |((ν i : ℤ) : ℝ)| ≤ ((latticeL1 ν : ℕ) : ℝ) := by exact_mod_cast hz
   linarith
 
 /-- **`(8)` on the unit lattice.**  The polynomial event weight is summable above the lattice
@@ -145,5 +143,42 @@ theorem summable_polyDecay_fin {d : ℕ} {p : ℝ} (hd : 0 < d) (hp : (d : ℝ) 
   refine Real.rpow_le_rpow_of_nonpos hposprod ?_ (by linarith)
   rw [← Real.rpow_natCast (1 + (latticeL1 ν : ℝ)) d] at hprodle
   exact hprodle
+
+end RHTower
+
+namespace RHTower
+
+/-! ## The event sum -/
+
+/-- **`(8)`: a polynomial carrier above the transport degree absorbs the whole event factor.**
+The pointwise event bound turns the event sum into a single lattice power series of exponent
+`2κ - 2σQ`, convergent exactly above the lattice dimension. -/
+theorem summable_polyWeight_sq_event {d : ℕ} {κ σ Q : ℝ} (hd : 0 < d) (hσ : 0 ≤ σ)
+    (hQ : 0 ≤ Q) (hκ : (d : ℝ) < 2 * κ - 2 * σ * Q) (τ : (Fin d → ℤ) → ℝ)
+    (hτ : ∀ ν, τ ν ≤ Q * Real.log (2 + (latticeL1 ν : ℝ))) :
+    Summable (fun ν : Fin d → ℤ => polyWeight κ ν ^ 2 * Real.exp (2 * σ * τ ν)) := by
+  have hexp : (0 : ℝ) ≤ 2 * σ * Q := by positivity
+  have hmain := (summable_polyDecay_fin (d := d) (p := 2 * κ - 2 * σ * Q) hd hκ).mul_left
+    ((2 : ℝ) ^ (2 * σ * Q))
+  refine Summable.of_nonneg_of_le (fun ν => by positivity) (fun ν => ?_) hmain
+  have h1 : (0 : ℝ) < 1 + (latticeL1 ν : ℝ) := by positivity
+  have hstep := polyWeight_sq_mul_event_le (κ := κ) (σ := σ) (Q := Q) hσ ν (hτ ν)
+  refine le_trans hstep ?_
+  have h2 : (2 + (latticeL1 ν : ℝ)) ^ (2 * σ * Q)
+      ≤ (2 : ℝ) ^ (2 * σ * Q) * (1 + (latticeL1 ν : ℝ)) ^ (2 * σ * Q) := by
+    rw [← Real.mul_rpow (by norm_num) h1.le]
+    refine Real.rpow_le_rpow (by positivity) (by nlinarith [Nat.cast_nonneg (α := ℝ) (latticeL1 ν)])
+      hexp
+  have h3 : (1 + (latticeL1 ν : ℝ)) ^ (-2 * κ) * ((1 + (latticeL1 ν : ℝ)) ^ (2 * σ * Q))
+      = (1 + (latticeL1 ν : ℝ)) ^ (-(2 * κ - 2 * σ * Q)) := by
+    rw [← Real.rpow_add h1]
+    congr 1
+    ring
+  calc (1 + (latticeL1 ν : ℝ)) ^ (-2 * κ) * (2 + (latticeL1 ν : ℝ)) ^ (2 * σ * Q)
+      ≤ (1 + (latticeL1 ν : ℝ)) ^ (-2 * κ)
+          * ((2 : ℝ) ^ (2 * σ * Q) * (1 + (latticeL1 ν : ℝ)) ^ (2 * σ * Q)) :=
+        mul_le_mul_of_nonneg_left h2 (Real.rpow_nonneg h1.le _)
+    _ = (2 : ℝ) ^ (2 * σ * Q) * (1 + (latticeL1 ν : ℝ)) ^ (-(2 * κ - 2 * σ * Q)) := by
+        rw [← h3]; ring
 
 end RHTower

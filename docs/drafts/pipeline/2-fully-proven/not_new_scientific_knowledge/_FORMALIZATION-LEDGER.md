@@ -7,6 +7,11 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 
 ## Working rules
 
+0. **Search the Lean tree for the card's own content first.**  `universal-quadratic-root-ridge-density`
+   was already fully formalized in `RHTower/UniversalQuadraticRootRidgeDensity.lean` while its Lean
+   gate was still unchecked.  Run `scripts/formal_tools.py research "<the card's theorem>"` before
+   writing anything.
+
 - No added hypotheses standing for analytic inputs; no axioms; no `sorry`.
 - Search the corpus first (`scripts/formal_tools.py research`, `rg`) before writing any new module —
   ~29 700 Lean files already exist.
@@ -114,6 +119,12 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-16 | `pa9-turan-newton-floor` | new `HTGeometry/NewtonInequalities.lean`, `RHTower/TuranNewtonFloor.lean` |
 | 2026-08-16 | `li-reciprocal-chebyshev-kernel` | new `RHTower/LiReciprocalChebyshevKernel.lean` |
 | 2026-08-16 | `hd3-li-gauge-shift` | new `RHTower/HD3LiGaugeShift.lean` |
+| 2026-08-17 | `additive-heat-diagonal-generates-full-operator-algebra` | new `HTGeometry/DiagonalCommutantGeneration.lean`, `HTGeometry/GaussianToeplitzGeneration.lean` |
+| 2026-08-17 | `finite-jet-secant-detection-rank` | new `HTGeometry/MonomialJetSecantRank.lean` (uses pre-existing `HTGeometry/AlgebraicIndependenceFromDifferentials.lean`) |
+| 2026-08-17 | `two-prime-real-euler-transition-selector` | new `RHTower/EulerTransitionSelector.lean` (uses pre-existing `RHTower/TwoDilationDivisorMetric.lean`) |
+| 2026-08-17 | `completed-prime-gamma-second-moment-four-crossing-law` | `RHTower/CompletedPrimeGammaSecondMomentCenterPositive.lean`, `RHTower/CompletedPrimeGammaMomentFarRightAsymptotic.lean` (pre-existing) + new `RHTower/CompletedPrimeGammaSecondMomentFourCrossing.lean` |
+| 2026-08-17 | `universal-quadratic-root-ridge-density` | `RHTower/UniversalQuadraticRootRidgeDensity.lean` (pre-existing; verified + audited) |
+| 2026-08-17 | `corank-trdeg-realization-locus` | new `HTGeometry/CorankTrdegRealizationLocus.lean` (uses pre-existing `HTGeometry/SymmetricBlockAlgebraicIndependence.lean`, `HTGeometry/PrimeRadialRelativeJetRank.lean`, `HTGeometry/StateFieldTrdeg.lean`) |
 
 ## Already carrying a stage-3 certificate (verify, then move the paper card)
 
@@ -127,6 +138,19 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
   and trace-nonincreasing (i.e. construct a `TraceClassQuantumCorner` instance for
   `⊕^{ℓ²} H_i` with its inclusion isometries). The last card gate (monoidal-locality obstruction)
   is an open research target, not debt.
+
+## In-flight card analyses (2026-08-17)
+
+- `equivariant-causal-hessian-kernel-fidelity-rigidity` — Part I is under construction.  Already
+  formalized: the diagonal/permutation conjugation calculus, the off-diagonal support law, the
+  diagonality of `L (E i i)`, permutation transport of coefficients, and the two-index block
+  unitary with `Vᴴ Z V = -I R` (see the infrastructure list).  Remaining for Part I: index
+  independence of the off-diagonal constant `a` and of the two diagonal constants `α, β`
+  (immediate from `perm_transport` + `exists_perm_map_pair`), the relation `α = a + β` (apply the
+  equivariance to `blockUnitary_conj_blockZ`), the assembly `L A = a A + b (tr A) I`, and then the
+  `U(r)`-reduction `Φ (X, Y) = L (Xᴴ Y)` (same diagonal-phase and permutation argument on the row
+  index).  Parts II and III (the positive cone `b ≥ 0`, `a + b ≥ 0` and kernel fidelity ⇔ `b = 0`,
+  `a > 0`) are then elementary rank-one computations.  No library is missing for this card.
 
 ## In-flight card analyses (2026-08-16)
 
@@ -190,9 +214,35 @@ directly.  None of these is blocked by open mathematics.
    `exists_polynomial_mul_expPolynomial_of_envelope` (finite order + finitely many zeros ⇒
    `p · exp q`) at every finite order, generalizing the corpus's subquadratic
    `RHTower.exists_finiteDivisorFactor_mul_exp_of_finite_zeroSet`.
-4. **von Neumann algebra generation** (`W*(S)` for a set of operators, and
-   `W*(D, H_x) = B(ℓ²)`): needed by `additive-heat-diagonal-generates-full-operator-algebra`.
-   mathlib has `VonNeumannAlgebra` but no generated-algebra API.
+4. ~~von Neumann algebra generation~~ — **built**: `HTGeometry/DiagonalCommutantGeneration.lean`
+   defines `vonNeumannGen S = Set.centralizer (Set.centralizer S)` and proves
+   `vonNeumannGen_eq_univ'` (a basis-diagonal algebra plus one operator with no zero matrix entry
+   generates `B(E)`), and `HTGeometry/GaussianToeplitzGeneration.lean` supplies the `ℓ²(ℕ)`
+   instance: the backward shift, diagonal `ℓ^∞` multipliers, the Gaussian Toeplitz operator with
+   entries `exp(-π x (m-n)²)` as a norm-convergent shift series, and
+   `vonNeumannGen_multiplierAlgebra_gaussToeplitz`.  Note the definition sidesteps the double
+   commutant theorem, which mathlib still lacks; a card that genuinely needs SOT-closure = double
+   commutant is *not* covered by this layer.
+4b. **Automatic continuity of C\*-seminorms (Sebestyén)**: every C\*-seminorm on a C\*-algebra is
+   dominated by the norm.  Needed by `cofinal-gamma-cstar-shilov-blindness` claim 4 (a locally
+   C\*-closed ideal containing `c_00` contains every `Δ_t`).  The other four claims of that card
+   are now within reach: claim 1 follows from the new `isCompactOperator_lpDiag`, claim 2 from
+   `MemSchattenClass.one_summable_inner_diag_basis` together with the corpus's
+   `summable_primeGammaCofinalBocksteinMagnitude_iff`, claim 3 from the norm-limit truncation, and
+   claim 5 is already formalized (`regulator_eq_zero_of_contracts_cocycle`).  Note the elementary
+   power trick gives the domination only on the finitely supported subalgebra; passing to all of
+   `c_0` is exactly the automatic-continuity theorem.
+4c. **Adamczewski--Dreyfus--Hardouin (ADH) rational-or-hypertranscendental theorem**: a
+   Laurent-series solution of a homogeneous linear shift or Mahler equation with rational
+   coefficients is rational or hypertranscendental over `C(s)`.  This is the single largest
+   blocking import in the folder — **18 cards cite it** (grep `Adamczewski`), including
+   `finite-commuting-shift-peeling-hypertranscendence-law`,
+   `ultrametric-thermal-mahler-hypertranscendence`, `multiplier-dichotomy-theorem`,
+   `q-geometric-generalized-free-field-hypertranscendence`, `schwarzian-projective-erosion-tower`.
+   Formalizing it means building parameterized difference Galois theory (Hardouin--Singer) on top
+   of a Picard--Vessiot layer for difference equations; nothing of that exists in mathlib or in the
+   corpus.  Cards whose only gap is this citation should be grouped and closed together once the
+   layer exists.
 5. **Derived inverse limits** (`R lim` of a diagram of zero objects): needed by
    `acyclic-finite-fibers-derived-limit-zero`.
 6. **Complex-dynamics layer** (Böttcher coordinate, equilibrium measure of a Cantor Julia set,
@@ -223,6 +273,56 @@ directly.  None of these is blocked by open mathematics.
    `FullyProvenNewTargets.lean` are otherwise complete.
 
 ## New reusable infrastructure added by this sweep
+
+- `HTGeometry/UnitaryConjugationMatrixUnits.lean` and `HTGeometry/TwoBlockUnitaryAlgebra.lean` —
+  the coordinate toolkit for **conjugation-equivariant linear maps on matrices**: conjugation of a
+  matrix unit by a diagonal unitary (`diagonal_conj_single`) or a permutation matrix
+  (`permMatrix_conj_single`, `perm_transport`), the phase equation and the resulting support law
+  `exists_offDiag_coeff` (an equivariant map sends `E i j` to a multiple of itself), diagonality of
+  the image of `E i i` (`diag_image_offDiag_eq_zero`), `exists_perm_map_pair`, and the two-index
+  block algebra `blockP/blockQ/blockZ/blockR` with the non-monomial unitary
+  `blockUnitary = 1 + ((1+I)/2 - 1) P + ((1-I)/2) Q`, proved unitary
+  (`blockUnitary_mem_unitaryGroup`) and satisfying `Vᴴ Z V = -I R`
+  (`blockUnitary_conj_blockZ`).  This is the machinery that forces a two-parameter classification;
+  it is the in-flight support for `equivariant-causal-hessian-kernel-fidelity-rigidity`.
+- `HTGeometry/BoundedDiagonalOperatorLp.lean` — **diagonal operators on `ℓ²(I)` for an arbitrary
+  index type** (the corpus's earlier diagonal modules are all `ℕ`-indexed or Hilbert–Schmidt-only):
+  `lpDiag` with `norm_lpDiag_le` and `lpDiag_single`, the coordinate injection `lpSingleCLM`,
+  compactness of finite truncations `isCompactOperator_lpDiagFinset`, and the capstone
+  `isCompactOperator_lpDiag` — a bounded diagonal whose family vanishes along the *cofinite* filter
+  is compact.  Needed whenever the index set is the primes or prime powers and the diagonal is not
+  Hilbert–Schmidt.
+- `HTGeometry/CorankTrdegRealizationLocus.lean` — the corank/transcendence-degree layer:
+  `AlgebraicIndependent.add_const` (algebraic independence survives a rational translation, via the
+  translation automorphism `shiftAlgEquiv` of `MvPolynomial`), `trdeg_adjoin_le_finrank_span`
+  (transcendence degree of a generated field is at most the `ℚ`-dimension of the span of the
+  generators), and the explicit free-plus-powers family `locusFamily` realizing every admissible
+  pair.  The linear-independence engine — distinct monomials in an algebraically independent family
+  are linearly independent — is `linearIndependent_locusFamily`.
+- `HTGeometry/MonomialJetSecantRank.lean` — the confluent Vandermonde / secant layer:
+  `span_jet_eq_top` (jets and jet derivatives at `k` distinct nodes span order-`m` jet space once
+  `m+1 ≤ 2k`, proved through the dual polynomial `dualPoly` and a double-root count),
+  `hasStrictFDerivAt_jetMap` with the explicit differential `jetMapDeriv`, the general submersion
+  transfer `mvPolynomial_eq_zero_of_hasStrictFDerivAt_surj` (a polynomial vanishing on the image of
+  a map with surjective strict differential is zero — the non-square companion of the corpus's
+  `mvPolynomial_eq_zero_of_hasStrictFDerivAt_injective`), and the catalecticant obstruction
+  `hankelPoly` with `hankelPoly_ne_zero` and `eval_hankelPoly_jetMap`.
+- `HTGeometry/DiagonalCommutantGeneration.lean` — **generated von Neumann algebras** (mathlib gap):
+  `vonNeumannGen S = Set.centralizer (Set.centralizer S)`, the rank-one basis projections
+  `basisProj`, the diagonal algebra `diagonalOps b` of a Hilbert basis, the commutant computation
+  `exists_diag_of_mem_centralizer` (commuting with all `basisProj` ⇒ diagonal), and the generation
+  theorem `vonNeumannGen_eq_univ'`: a set containing every `basisProj b i` and one operator `A`
+  with `⟪b m, A (b n)⟫ ≠ 0` for all `m, n` generates all of `B(E)`.  No double commutant theorem,
+  no SOT density, no adjoints — only commutation against the projections.
+- `HTGeometry/GaussianToeplitzGeneration.lean` — the `ℓ²(ℕ)` operator layer: `backShift` with
+  `backShift_pow_coe` and `‖backShift‖ ≤ 1`, its adjoint `fwdShift` with
+  `fwdShift_pow_eq : fwdShift ^ j = adjoint (backShift ^ j)`, the diagonal `ℓ^∞` multipliers
+  `diagMul` with the operator-norm bound `‖diagMul c v‖ ≤ M ‖v‖`, the Gaussian Toeplitz operator
+  `gaussToeplitz x` built as a norm-convergent two-sided shift series, its entry formula
+  `inner_stdBasis_gaussToeplitz : ⟪e m, H x (e n)⟫ = exp(-π x (m-n)²)`, and the generation
+  capstone `vonNeumannGen_multiplierAlgebra_gaussToeplitz`.  The evaluation helper
+  `tsum_inner_apply` (entries of an operator tsum are the tsum of the entries) is reusable for any
+  norm-convergent operator series.
 
 - `RHTower/LiReciprocalChebyshevKernel.lean` — the FE-folded Li kernel `2 - 2T_n((4-y)/(4+y))` in the
   reciprocal seam coordinate, with `two_mul_chebyshevT_eval_half_add_inv`

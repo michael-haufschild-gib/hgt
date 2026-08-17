@@ -124,6 +124,37 @@ except the identity gives
 uniformly for `0<||k||_infty<=N`.  This is the arithmetic input.  A minimum pairwise spectral gap
 would not imply `(9)`.
 
+#### Lean progress -- steps 1 and 3
+
+`formal/GaloisForLFunctions/HTGeometry/ArithmeticWindowPhase.lean` (new, umbrella-wired,
+axiom-clean) proves the two quantitative cores of Theorem A's proof.
+
+| Card item | Declaration |
+|---|---|
+| **`(9)`**, the Liouville separation: a product of modulus at least one with all but one factor below `B` forces the remaining factor above `B^{-(m-1)}` | `abs_ge_of_abs_prod_ge_one`, `inv_pow_le_abs` |
+| the antiderivative of a pure oscillation, `e^{it beta}/(i beta)` | `hasDerivAt_expWindow` |
+| **`(17)`**, the window oscillation bound `|int_u^{u+T} e^{it beta} dt| <= 2/|beta|`, uniformly in the window position | `norm_integral_exp_window_le` |
+
+`(9)` is stated as pure arithmetic -- the field-norm bookkeeping of step 1 supplies the hypothesis
+`1 <= |prod of conjugates|` and the conjugate bound `(8)`, and the lemma turns them into the
+separation.  `(17)` is exact: the antiderivative has modulus `1/|beta|` at every point, so the
+window integral is at most `2/|beta|` regardless of where the window sits.
+
+##### What remains in Theorem A
+
+Step 1's number-theoretic packaging (that the field norm of a nonzero algebraic integer is a
+nonzero rational integer, and that Galois conjugates of the eigenvalues stay bounded by the
+operator norm), and step 2's Fejér packet.  Mathlib has no Fejér kernel, but **the corpus already owns one**, in
+the Bohr almost-periodic setting that this card's moving-window mean lives in:
+`HTGeometry/BohrFejerKernel.lean` (`fejerKernel`, `fejerKernel_nonneg`, `fejerKernel_eq_sum`,
+`continuous_fejerKernel`, **`bohrMean_fejerKernel`** -- mean one),
+`HTGeometry/BohrFejerConvergence.lean` (**`norm_bohrMean_fejer_sub_le`** -- quantitative Fejér
+convergence with an explicit tail term `4‖f‖/((N+1)c)` governed by the frequency separation `c`),
+and `HTGeometry/BohrMultiFejerMean.lean` (`bohrMean_multiFejerKernel` -- the multi-dimensional
+kernel has mean one).  The separation `c` is exactly what `(9)` supplies, so step 2 should be a
+reuse of that stack -- with the tent function of `(10)` as the test function -- rather than a
+rebuild of the torus kernel.
+
 #### 2. A finite Fejer packet detects a phase cube
 
 On `T=R/2pi Z`, let

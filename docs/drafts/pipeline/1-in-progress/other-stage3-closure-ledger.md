@@ -2577,3 +2577,425 @@ The two open degrees reduce, by the coefficient analysis, to rational equations 
 `quadOne_no_affineTransport_of_polar_at_critical` and its `quadTwo` companion kill.  What is missing
 between them is the identification `A = M·R''·y₁`, an induction on `M` from `∂₁σ₂ = 2R''y₁` using the
 same commutator `[∂_{m+1}, δ] = ∂_m`.
+
+## Pass 37 — shifts are fixed elements, and the tail question becomes a single family
+
+Three new modules, all unconditional, axiom-clean, umbrella-wired, lint-clean.
+
+| Module | Content |
+|---|---|
+| `JetShiftTopCoefficient.lean` | `jet_ne_zero`; `pd_top_substitutionShift_eq` : `∂_{M−1}σ_M = M·R''(y₀)·y₁`, by induction from `∂₁σ₂ = 2R''y₁`; `pd_top_substitutionShift_ne_zero`; `coe_eq_pd_top_of_affine`; and `quadOne/quadTwo_pd_substitutionDeriv_ne_zero` |
+| `QuadraticShiftDescentBranches.lean` | `hasNormalizingShift_pred_or_low_degree` — for a map with `R'' ≠ 0`, a normalizing shift at jet level `N + 3` either descends to level `N + 2` or is a polynomial of degree **one or two** in `y_{N+2}`; and its two quadratic instances |
+| `JetFixedFieldShift.lean` | `hasNormalizingShift_iff_exists_fixed` — at level `M ≥ 2` a normalizing shift is *the same thing as* a substitution-fixed element of jet order exactly `M`; `forall_fixed_isConst_iff` |
+| `QuadraticTailShiftEquivalence.lean` | `quadOne/quadTwo_forall_fixed_isConst_iff`, and **`quadOne/quadTwo_fixed_of_order_two`** — no nonconstant fixed element of jet order at most two, for either map |
+
+**The structural point.**  A shift `t` at level `M` makes `y_M + t` scale by `R'`; so does `y₁`; so
+`(y_M + t)/y₁` is *fixed*, with `∂_M` equal to `1/y₁`, hence of order exactly `M`.  Conversely a
+fixed element of order exactly `M` is an eigen-relation of weight zero and eigenvalue one whose
+order does not drop, so the normalization dichotomy hands back a shift.  In the language of
+`Ψ(V) = R'·V − Φ(V)`: `Ψ(−y_M) = σ_M`, and `ker Ψ = y₁·Fix`, so a shift is a solution of
+`Ψ(t) = σ_M` of order below `M` — which exists exactly when `Fix` is nontrivial.
+
+**Consequence for the two cards.**  For `z² + 1` and `(z − 1)²` the whole orbifold tail is trivial
+*if and only if* no jet level of order at least two carries a normalizing shift; level two is
+proved, so `Tail(R) = ℂ` now holds through jet order two unconditionally
+(`quadOne/quadTwo_fixed_of_order_two`), and the descent of this pass reduces every higher level to
+the polynomial branches of degree one and two.
+
+**Why those two degrees are hard.**  Degree one produces `Ψ(u₁·y₁) = M·σ₂`, hence
+`u₁ + M·y₂/y₁ ∈ Fix`; at level three this is an order-two element, so `Fix ∩ {order ≤ 2} = ℂ`
+forces `u₁ = γ − 3y₂/y₁`, whose order exceeds the order the slice allows — a contradiction.  At
+level `M ≥ 4` the same element is admissible, and the degree-zero coefficient then produces an
+inhomogeneous term outside the span of the `σ_j`, so the class of equations grows with the level.
+Closing them uniformly needs the weighted torus action `y_j ↦ λ^j y_j` (which commutes with the
+substitution because every Faà di Bruno term of `δ^j(R(y₀))` is isobaric of weight `j`) to normalize
+the shift to be isobaric of weight `M` — the normalization itself follows from
+`ker Ψ = y₁·Fix` together with `Fix ∩ {order < M} = ℂ`, and is the next thing to build.
+
+## Pass 38 — the weighted torus action, and the isobaric normalization of a shift
+
+Two new modules, unconditional, axiom-clean, umbrella-wired, lint-clean.
+
+`HTGeometry/JetWeightAction.lean` builds the action that grades the free jet field.
+
+```text
+weightPolyDeriv, jetDerivation_algebraMap        the ambient derivation on the polynomial ring
+weightScaleAlgHom, weightScaleAlgEquiv           y_j ↦ λ^j·y_j on MvPolynomial (Unit × ℕ) C
+weightScale                                      its extension to the fraction field
+weightScale_jet                                  w_λ(y_p) = λ^{p.2}·y_p
+weightScale_jetDerivation                        w_λ(δ v) = λ · δ(w_λ v)
+algHom_ext_jet                                   algebra endomorphisms agreeing on the jets are equal
+weightScale_substitutionValue / _substitutionDeriv     R(y₀) and R'(y₀) are invariant
+weightScale_substitutionJet                      w_λ(δ^l(R(y₀))) = λ^l · δ^l(R(y₀))
+weightScale_substitutionShift                    w_λ(σ_M) = λ^M · σ_M
+weightScale_jetSubstitution                      w_λ ∘ Φ = Φ ∘ w_λ
+weightScale_mem_jetPrefixField                   the action preserves every prefix field
+```
+
+The derivation identity is proved on the polynomial ring by the Leibniz rule on a monomial and
+transported to the fraction field by the quotient rule; the commutation with the substitution then
+follows from `algHom_ext_jet` and the isobarity of the substituted jets.
+
+`HTGeometry/JetShiftWeightNormalization.lean` applies it to a normalizing shift.
+
+```text
+jetSubstitution_weightScale_shift   Φ(w_λ t) = R'·w_λ t − λ^M·σ_M
+jetSubstitution_weightScale_sub     Φ(H) = R'·H   for  H = w_λ t − λ^M·t
+exists_const_weightScale_shift_sub  fixed elements of order below M constant
+                                      ⇒  w_λ(t) = λ^M·t + γ(λ)·y₁
+```
+
+The point is that the shift equation is isobaric — the derivative factor has weight zero and `σ_M`
+has weight `M` — so `w_λ(t)` and `λ^M·t` solve the same equation and their difference solves the
+homogeneous one, i.e. `H/y₁` is fixed of order below `M`.
+
+**What this buys.**  In the slice of a shift at level `M = N + 3` in the top coordinate `y_{N+2}`,
+the normalization forces every coefficient to be isobaric of a prescribed weight — the coefficient
+of `y_{N+2}^d` has weight `M − d(M−1)`.  The degree-two branch then dies for every `M ≥ 3`: its
+leading coefficient must be `e/y₁` with `e` constant (from the fixed-element rigidity), of weight
+`−1`, while the normalization prescribes weight `2 − M`, and `−1 = 2 − M` only at `M = 3`, where the
+transport killer `quadOne_no_affineTransport_of_polar_at_critical` closes it separately.  The
+degree-one branch is *not* killed by weight: it prescribes weight one for `u₁`, and the forced value
+`u₁ = −M·y₂/y₁` has exactly that weight.  That branch remains the single open case.
+
+## Pass 39 — Bezout with a denominator, the algebraic core of germ-coprimality propagation
+
+`HTGeometry/PolynomialBezoutDenominator.lean` (new, unconditional, axiom-clean, umbrella-wired):
+
+```text
+exists_bezout_of_isCoprime_map :
+  P, Q ∈ D[X] coprime over Frac D  ⇒  ∃ U V ∈ D[X], r ∈ D, r ≠ 0,  U·P + V·Q = C r
+dvd_C_of_dvd_of_dvd :
+  every common divisor of P and Q divides that constant
+```
+
+Clearing the denominators of a Bezout identity over the fraction field, through
+`IsLocalization.integerNormalization_spec`.
+
+**Why this, and what it is a step towards.**  The torus card needs the transition bound
+`|B_i,k(w)| ≤ C·|B_j,k(w − p)|`, and that follows from `B_j,k(·−p) ∣ B_i,k` as germs at every point
+of the overlap, which in turn needs the numerator and denominator of a *reduced* local presentation
+to stay coprime at nearby points — the statement that the common zero set of two coprime germs has
+codimension at least two.  After Weierstrass preparation the two germs become distinguished
+polynomials over the germ ring in one variable fewer, which is a unique factorization domain
+(`GermFactorial`, `GermTranslationFactorial`, both owned), and the lemma above then produces the
+constant `r` whose non-vanishing locus is where coprimality demonstrably persists.  What is still
+missing between "off the hypersurface `r = 0`" and "everywhere" is the dimension count, i.e. local
+analytic geometry that mathlib does not have.
+
+### Reassessment of the orbifold degree-one branch
+
+The remaining branch of the jet descent was analysed once more with the weighted action in hand and
+does **not** close by these means.  Writing `t = u₁·y_{M−1} + u₀`:
+
+* the fixed-element rigidity forces `u₁ = γ − M·y₂/y₁`, and the isobaric normalization forces
+  `γ = 0`, so `u₁ = −M·y₂/y₁` exactly;
+* the remaining equation is `Ψ(u₀) = B + Φ(u₁)·σ_{M−1}` with `ord u₀ ≤ M − 2`, and *any* solution of
+  order `M − 1` reduces to one of order `M − 2` with a modified right-hand side, because the
+  `y_{M−1}`-coefficient of `Ψ(c·y_{M−1} + w)` is `R'(c − Φ(c))`, which vanishes only for `c` fixed,
+  hence constant.  So no order contradiction is available and the class of right-hand sides grows
+  with each step.
+
+The obstruction is not bookkeeping: the classical proof that `z² + 1` has trivial orbifold tail goes
+through the absence of an invariant line field on its Julia set (Thurston rigidity), which is what
+Casale's theorem packages.  An elementary jet-level proof would be new mathematics, and the passes
+33–38 machinery is the honest current frontier: everything through jet order two is closed
+unconditionally, every level reduces to the single degree-one branch, and the weighted action pins
+that branch to one explicit shape.
+
+## Pass 40 — the weight-zero normal form: the descent becomes triangular
+
+The `y`-coordinate descent does not terminate — recorded as a negative result in pass 39.  Changing
+to the invariants of the weighted torus action removes the obstruction entirely.
+
+`HTGeometry/JetWeightZeroCoordinates.lean` (new, unconditional, axiom-clean, umbrella-wired):
+
+```text
+jetRatio j              z_j = y_j / y₁^j                       (weight zero)
+substitutionShiftRatio  s_j = σ_j / y₁^j
+jetSubstitution_jetRatio        R'^j · Φ(z_j) = R' · z_j + s_j
+weightScale_jetRatio, weightScale_substitutionShiftRatio       both are weight-zero
+substitutionShiftRatio_two      s₂ = ∂₀R'                      (= R''(y₀))
+jetRatio_one, substitutionShiftRatio_one                       z₁ = 1, s₁ = 0
+```
+
+`QuadOne/QuadTwoAffineTransport.lean` were generalized: the critical-point killer now needs only
+`0 ≤ ord(b)` at the critical point rather than `ord(b) = 0`, because the coefficient that arises at
+the base of the descent is `b = R'`, which vanishes there.
+
+**The mathematics** is written up as pass 8 of
+`rational-coarse-graining-orbifold-tail-classification.md`.  In one line: `σ_j` is isobaric of
+weight `j` and polynomial in `y₁,…,y_{j−1}`, so `s_j = σ_j/y₁^j` is a polynomial in `z₂,…,z_{j−1}`
+over `C(y₀)`, the substitution acts on the tower `C(y₀) ⊂ C(y₀,z₂) ⊂ C(y₀,z₂,z₃) ⊂ ⋯` by a
+*triangular affine* map with **scalar** linear coefficient `R'^{1−j}`, and a normalizing shift at
+level `M`, being isobaric of weight `M`, becomes `R'^M·Φ(τ) = R'·τ − s_M` with
+`τ ∈ C(y₀,z₂,…,z_{M−1})`.  Slicing in the top ratio then reduces the number of ratios by one in
+every branch, so the descent terminates at `C(y₀) = RatFunc ℂ`, where the two non-existence theorems
+of passes 4 and 6 (no invariant `k`-differential; no rational affine connection) and the general
+affine-transport killer of pass 35 apply.
+
+At `M = 2` the equation *is* the affine connection.  At `M = 3` the five-way split closes
+completely: the degree-one branch dies because its forced leading coefficient `−3·z₂` does not lie
+in `C(y₀)`, and the degree-two branch ends at the `RatFunc` equation `8z³·v(z²+1) = 2z·v(z) + 3/z`,
+whose inhomogeneous term is polar at the critical point.  So `z² + 1` admits no normalizing shift at
+jet level three, and every fixed element of jet order at most three is constant.
+
+**Remaining**: the bookkeeping of the terminal inhomogeneous term along the degree-one chain,
+uniformly in `M`.  It is now a finite computation in explicit universal polynomials — the `s_j` are
+polynomials in `R''(y₀), R'''(y₀), …` and `z₂, z₃, …` — instead of the open-ended recursion the
+`y`-coordinates produced.
+
+## Pass 41 — the base-case killer of the weight-zero descent
+
+The descent of pass 40 terminates at `C(y₀)` with an affine transport equation whose coefficient is
+the *derivative* `R'` — which vanishes at the critical point — and whose inhomogeneous term need not
+be polar there.  The previous killer required a pole; the general obstruction only needs the order
+of the inhomogeneous term at the critical point to be below both the order of the coefficient and
+the exponent.
+
+`QuadOne/QuadTwoAffineTransport.lean` (generalized, unconditional, axiom-clean):
+
+```text
+quadOne_no_affineTransport_of_critical_order :
+  b a unit away from 0, c regular away from 0,
+  ord_0(c) < ord_0(b),  ord_0(c) < k        ⇒  no nonzero solution
+quadOne_no_affineTransport_of_polar_at_critical    -- now a corollary
+quadOne_no_affineTransport_of_const :
+  a(R)·(R')^k = R'·a + γ,  γ ≠ 0 constant,  k ≥ 1  ⇒  no nonzero solution
+```
+
+and the two `quadTwo` companions.  The mechanism is unchanged — the substitution ramifies to order
+two at the critical point and `R'` vanishes there to order one, so the left side has order at least
+`2·ord₁(a) + k ≥ k` while the right side has the order of `c` — but the bookkeeping is now stated at
+the sharpness the descent needs.
+
+**Why the constant case is the one that matters.**  Running the weight-zero descent at level
+`M ≥ 4`: the only surviving slice degree is one (degree zero forces `M·R'' = 0`; degree `m ≥ 2`
+forces `M − 1 = m(M − 2)`, which has no integer solution for `M ≥ 4`; degree `≥ 3` reproduces the
+level-`(M−1)` shift).  Its leading coefficient is the unique solution `v₁ = −M·z₂` of
+`R'^2·Φ(v₁) = R'·v₁ − M·R''`, and the constant coefficient then satisfies a datum whose own
+`z_{M−2}`-coefficient is
+
+```text
+c⁽¹⁾₁ = M(M−1)·[ −R''·z₂/2 + R'''/2 − R''²/R' ] ,
+```
+
+nonzero for `z² + 1`.  Slicing once more, its `z₂`-coefficient satisfies
+
+```text
+α(R)·(R')² = R'·α + M(M−1) ,
+```
+
+an affine transport with a **nonzero constant** inhomogeneous term and exponent two — exactly
+`quadOne_no_affineTransport_of_const`, hence impossible, for every `M`.  (If `α = 0` the equation
+reads `M(M−1) = 0`, also impossible.)
+
+**Remaining**: discharging, uniformly in `M`, the reduction of the intermediate slice coefficients
+to their `z₂`-affine parts, i.e. the finitely many branch cases between the level-`M` datum and this
+terminal equation.  Every branch is one of the five listed in pass 8 of the orbifold card, and every
+terminal equation is now killed.
+
+## Pass 42 — jet level three closed, and the branch above it
+
+**Level three is a theorem.**  `QuadraticLevelThree.lean`:
+
+```text
+quadOne_not_hasNormalizingShift_three : ¬ HasNormalizingShift (z² + 1) _ (1 ≤ 3)
+quadTwo_not_hasNormalizingShift_three : ¬ HasNormalizingShift ((z − 1)²) _ (1 ≤ 3)
+```
+
+both unconditional and axiom-clean.  So for either map every fixed element of the substitution
+endomorphism of the free jet field of jet order at most three is constant.
+
+The route, all new Lean:
+
+1. `JetOrderOneSlicing.lean` — **the slicing of an inhomogeneous relation of order one.**  An
+   element `v` with `pd_j v = 0` for `j ≥ 2` satisfying `Φ(v) = R'·v − S(y₁)` with `S` a polynomial
+   of degree at most `m` over the rational functions of the free generator produces a rational
+   affine transport `a(R)·(R')^m = R'·a − S_m`.  The level-two affine-connection extraction is the
+   case `S = R''·y₁²`, `m = 2`; the level-three descent needs `m = 3`.
+2. `JetLevelThreeDescent.lean` — `substitutionShift_three : σ₃ = 3·R''·y₁·y₂ + R'''·y₁³`; the three
+   coefficient relations of a twisted affine relation of degree at most two; and the two structural
+   lemmas of the slice:
+   * `eq_zero_of_linear_shift` — `Φ(w)·R' = R'·w − κ·R''·y₁` with `w` of order at most one forces
+     `κ = 0` and `w` constant, because `w + κ·y₂/y₁` is then a *fixed* element of order at most two;
+   * `exists_const_of_scaling_eigen` — `Φ(w)·R' = w` forces `w·y₁` constant.
+   Capstone: `hasNormalizingShift_two_or_affineTransport_three` — a level-three shift either descends
+   to level two or produces a rational affine transport of exponent three with inhomogeneous term
+   the Schwarzian-type combination `R''' − (3/2)·(R'')²/R'`.
+3. For both quadratics that combination is `−3/(z − crit)`, a simple pole at the critical point,
+   while the coefficient `R'` vanishes there to order one — exactly the hypotheses of
+   `quadOne/quadTwo_no_affineTransport_of_critical_order` from pass 41.
+
+**The branch above level three.**  `JetShiftLevelInduction.lean` and `JetLevelBranchAboveThree.lean`
+generalize the two structural lemmas and settle the quadratic branch at every level:
+
+```text
+jetOverOne j                       := y_j / y₁
+exists_const_of_double_shift       : Φ(w)·R'·y₁ = R'·w·y₁ − κ·σ₂ − μ·σ_m
+                                       ⇒ w = c − κ·(y₂/y₁) − μ·(y_m/y₁)
+mu_eq_zero_of_double_shift         : m ≥ 3 and m above the order of w  ⇒  μ = 0
+fixed_isConst_of_order_le          : no shift at levels 2 … K ⇒ every fixed element of order ≤ K
+                                       is constant
+branch_linear_above_three          : for N ≥ 1 the sliced shift at level N+3 has degree one, and its
+                                       coefficient is c₀ − (N+3)·y₂/y₁
+```
+
+So **the quadratic branch of the slicing occurs only at level three** (where it is the Schwarzian and
+is killed), and above level three only the linear branch survives, with a *completely determined*
+linear coefficient.
+
+**What remains.**  At level `M = N + 3 ≥ 4` the constant coefficient `u₀` — of order at most `M − 2`
+— satisfies
+
+```text
+R'·u₀ − Φ(u₀) = B + Φ(u₁)·σ_{M−1},     u₁ = c₀ − M·y₂/y₁ .
+```
+
+Two further reductions are on paper and not yet formal: the weighted torus action forces `c₀ = 0`
+(the shift is isobaric of weight `M` up to a multiple of `y₁`, and the coefficient of `y_{M−1}` is
+then homogeneous of weight one, which a constant is not); and for `M ≥ 5` the partial
+`v := ∂_{M−2}u₀` is homogeneous of weight two, so its own top order cannot exceed two, and it
+satisfies
+
+```text
+R'·v − Φ(v) = −(M(M−1)/2)·[ R''·y₂ + 2(R'')²·y₁²/R' − R'''·y₁² ] ,
+```
+
+an inhomogeneous relation of order two — i.e. exactly a level-three problem with a *different*
+inhomogeneous term.  Closing the induction therefore needs the level-three slicing of pass 42 run
+with a general order-two inhomogeneous term, plus the separate case `M = 4`.
+
+## Pass 43 — the inductive frame above level three
+
+Four new tools, all unconditional and axiom-clean.
+
+**1. The chain rule for the top partial** (`JetTopPartialSubstitution.lean`).  On an element of jet
+order at most `i` the substitution's chain rule collapses to a single term:
+
+```text
+pd_aeval_jet              : ∂_i(P(y_i)) = P'(y_i)                (coefficients of order < i)
+derivative_twistComp_affine : (Φ̃P ∘ (R'X + s))' = R'·(Φ̃P' ∘ (R'X + s))
+pd_top_jetSubstitution    : ∂_i(Φ v) = R'·Φ(∂_i v)               for v of order ≤ i
+```
+
+The proof slices `v` as a fraction in `y_i` over the lower field, differentiates the polynomial
+presentation, and clears the denominator; the polynomial chain rule supplies the factor `R'`.  This
+is the tool that turns every level-`M` relation into a relation one order down.
+
+**2. The weighted action on the coordinate partials** (`JetWeightPartial.lean`).
+
+```text
+weightScaleAlgEquiv_pderiv : ∂_j(w_λ a) = λ^j·w_λ(∂_j a)         on the polynomial ring
+weightScale_pd             : ∂_j(w_λ v) = λ^j·w_λ(∂_j v)         on the free jet field
+```
+
+so the weight of a partial derivative is the weight of the element minus the order of the
+coordinate.  This is what makes the isobarity of a normalizing shift readable coefficient by
+coefficient.
+
+**3. The linear coefficient above level three is pinned** (`JetLevelBranchIsobaric.lean`).  A
+normalizing shift is isobaric of weight its level up to a multiple of `y₁`; one partial derivative in
+the top coordinate makes its linear coefficient isobaric of weight *one*, and a constant has weight
+zero.  Hence for `N ≥ 1`
+
+```text
+branch_linear_coefficient_eq : (u.coeff 1) = −(N+3)·y₂/y₁
+```
+
+with **no additive constant** — combined with pass 42 this determines the whole sliced shift above
+level three except for its constant term.  Supporting: `hasNormalizingShift_of_branch` (the sliced
+polynomial evaluated at the top coordinate *is* a normalizing shift, so the isobarity theorem
+applies to it), `pd_aeval_jet_eq_zero`, `weightScale_jetOverOne`.
+
+**4. The shift term two coordinates below the top** (`JetShiftSecondCoefficient.lean`).
+
+```text
+pd_second_substitutionShift    : ∂_{N+1}σ_{N+3} = δ(∂_{N+1}σ_{N+2}) + ∂_N σ_{N+2}
+pd_second_substitutionShift_eq : 2·∂_{K+1}σ_{K+3} = (K+2)(K+3)·(R''·y₂ + R'''·y₁²)
+```
+
+the exact analogue of `pd_top_substitutionShift_eq`, by the same commutator recursion.
+
+**Where the descent now stands.**  With `u₁ = −M·y₂/y₁` and `∂_{M−2}σ_M = (M(M−1)/2)(R''y₂+R'''y₁²)`
+in hand, applying `∂_{M−2}` to the shift equation at level `M ≥ 5` gives, for `v := ∂_{M−2}u₀`,
+
+```text
+R'·(v − Φ v) = −K·R''·y₂ − 2K·(R'')²·y₁²/R' + K·R'''·y₁²,     K = M(M−1)/2,
+```
+
+and after the substitutions `x := v/K`, `y := x − (1/2)·y₂²/y₁²`, `η := y/y₁²` this is exactly
+
+```text
+R'^3·Φ(η) = R'·η − D,      D = R''' − (3/2)(R'')²/R' ,
+```
+
+the *same* equation the level-three descent produced — but now for `η` of jet order up to `M − 2`
+instead of order zero.
+
+**The obstruction that this exposes.**  That equation always has the solution `η = −S/y₁²` with `S`
+the Schwarzian `y₃/y₁ − (3/2)(y₂/y₁)²`, because `Φ(S) = S + S_R·y₁²` with
+`S_R = R'''/R' − (3/2)(R''/R')²` and `D = R'·S_R`.  So the level-`M` constraint does not contradict —
+it *determines*
+
+```text
+∂_{M−2}u₀ = K·(−y₃/y₁ + 2·y₂²/y₁² + k) ,   k a constant,
+```
+
+(the general solution being the Schwarzian plus a fixed multiple of `y₁^{-2}`).  The descent
+therefore reconstructs the candidate invariant rather than killing it, and the kill must come from
+the bottom of the reconstruction.
+
+**Consequence for the route.**  The remaining core is now precise: run the level-three slicing of
+pass 42 with a *general* inhomogeneous term of jet order at most two.  Concretely, for `u₀` of order
+at most two one needs the analogue of `hasNormalizingShift_pred_or_polynomial` for the equation
+`Φ(u₀) = R'·u₀ − W` with arbitrary `W` of order at most two, together with the coefficient analysis.
+That single generalization closes `M = 4` (where the terminal equation is
+`a(R)(R')³ = R'a − (2R''' − 3(R'')²/R')`, a simple pole at the critical point, hence impossible) and
+feeds the induction for `M ≥ 5`.
+
+## Pass 44 — the slicing of an arbitrary inhomogeneous relation
+
+The descent above level three needs the level-`M` machinery run with inhomogeneous terms that are no
+longer shift terms.  Two generalizations, both unconditional and axiom-clean, supply exactly that.
+
+**Slicing in the top coordinate** (`JetOrderRelationSlicing.lean`):
+
+```text
+hasNormalizingShift_or_polynomial_of_relation :
+  v of order ≤ N+2,  Φ(v) = R'·v − S(y_{N+2})   (S any polynomial over the prefix field)
+  ⇒ a normalizing shift at level N+2, or v = u(y_{N+2}) with
+      Φ̃(u) ∘ (R'X + σ_{N+2}) = R'·u − S
+```
+
+`hasNormalizingShift_pred_or_polynomial` is the case `S = A·X + B`; the new statement additionally
+returns the *link* `v = u(y_{N+2})`, which is what lets the isobarity theorem be applied to the
+sliced polynomial.  The proof is unchanged in structure: the denominator of the coprime slice divides
+its own twisted image and has the same degree, so it is a scalar eigenvector, and a positive degree
+gives the affine cocycle of its two top coefficients as a shift one level down.
+
+**Slicing in the first coordinate, with a scaling factor** (`JetOrderOneSlicing.lean`, generalized):
+
+```text
+exists_prefix_affineTransport_of_order_one :
+  v of order ≤ 1,  Φ(v)·R'^n = R'·v − S(y₁),  deg S ≤ m
+  ⇒ ∃ a of order 0,  Φ(a)·R'^{n+m} = R'·a − S_m
+exists_ratFunc_affineTransport_of_order_one : the same, in rational functions
+```
+
+The exponent `n` is what the coefficient equations of a *degree-three* slice produce (the leading
+coefficient satisfies `Φ(u₃)·R'³ = R'·u₃`, and the next one down carries `R'^2` on the left), so the
+old `n = 0` form was too narrow.
+
+With these two the remaining programme is a finite computation: at level `M = 4` the constant term of
+the sliced shift satisfies
+
+```text
+Φ(u₀) = R'·u₀ − [ −9R''·y₂² + (2R''' − 12(R'')²/R')·y₁²y₂ + (R'''' − 4R''R'''/R')·y₁⁴ ] ,
+```
+
+an order-two relation with an explicit inhomogeneous polynomial of degree two in `y₂`; slicing it
+either produces a normalizing shift at level two — impossible — or makes `u₀` a polynomial in `y₂`
+whose degree is at most three (degree ≥ 4 reproduces the cocycle), and the four remaining degrees are
+finite coefficient comparisons ending in rational affine transports with a pole at the critical
+point.

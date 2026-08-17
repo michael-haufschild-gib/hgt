@@ -58,8 +58,8 @@ theorem hasNormalizingShift_iff_exists_fixed (R : RatFunc C) (hR : substitutionD
             (algebraMap ↥(jetPrefixField C M) (JetField C Unit) t) = 0 :=
           (mem_jetPrefixField_iff M _).mp t.2 j (by omega)
         rw [h1, h2, add_zero]
-      rw [hvj, hjet, mul_zero, add_zero] at hleib
-      exact (mul_eq_zero.mp hleib.symm).resolve_right hy1
+      rw [hvj, hjet, mul_zero, zero_add] at hleib
+      exact (mul_eq_zero.mp hleib.symm).resolve_left hy1
     · have hleib := (JetField.pd ((), M) :
         Derivation C (JetField C Unit) (JetField C Unit)).leibniz
           (v / (JetField.jet ((), 1) : JetField C Unit))
@@ -78,15 +78,14 @@ theorem hasNormalizingShift_iff_exists_fixed (R : RatFunc C) (hR : substitutionD
             (algebraMap ↥(jetPrefixField C M) (JetField C Unit) t) = 0 :=
           (mem_jetPrefixField_iff M _).mp t.2 M (le_refl _)
         rw [h1, h2, add_zero]
-      rw [hvM, hjet, mul_zero, add_zero] at hleib
+      rw [hvM, hjet, mul_zero, zero_add] at hleib
       intro hzero
-      rw [hzero, zero_mul] at hleib
+      rw [hzero, mul_zero] at hleib
       exact one_ne_zero hleib
     · have hone := jetSubstitution_jet_one R hR
       rw [map_div₀, hv, hone]
       have hρ : substitutionDeriv R ≠ 0 := hR
       field_simp
-      ring
   · rintro ⟨g, hord, hpd, hfix⟩
     have hg0 : g ≠ 0 := by
       intro hh
@@ -105,34 +104,33 @@ shift**, for a map whose fixed elements of jet order at most one are already con
 theorem forall_fixed_isConst_iff (R : RatFunc C) (hR : substitutionDeriv R ≠ 0)
     (h1 : ∀ g : JetField C Unit, (∀ j : ℕ, 1 < j → JetField.pd ((), j) g = 0) →
       jetSubstitution R hR g = g → ∃ e : C, g = algebraMap C (JetField C Unit) e) :
-    (∀ g : JetField C Unit, jetSubstitution R hR g = g →
-        ∃ e : C, g = algebraMap C (JetField C Unit) e)
+    (∀ (M : ℕ) (g : JetField C Unit), (∀ j : ℕ, M < j → JetField.pd ((), j) g = 0) →
+        jetSubstitution R hR g = g → ∃ e : C, g = algebraMap C (JetField C Unit) e)
       ↔ ∀ M : ℕ, ∀ hM : 2 ≤ M, ¬ HasNormalizingShift R hR (le_trans one_le_two hM) := by
   constructor
   · intro hfix M hM hshift
     obtain ⟨g, hord, hpd, hgfix⟩ := (hasNormalizingShift_iff_exists_fixed R hR hM).mp hshift
-    obtain ⟨e, he⟩ := hfix g hgfix
+    obtain ⟨e, he⟩ := hfix M g hord hgfix
     refine hpd ?_
     rw [he]
     exact Derivation.map_algebraMap _ e
-  · intro hno g hgfix
-    -- every fixed element has some finite order; descend on it
-    obtain ⟨M, hM⟩ : ∃ M : ℕ, ∀ j : ℕ, M < j → JetField.pd ((), j) g = 0 := by
-      obtain ⟨s, hs⟩ := exists_finite_order g
-      exact ⟨s, hs⟩
+  · intro hno M
     induction M with
     | zero =>
-        refine h1 g (fun j hj => hM j (by omega)) hgfix
+        intro g hord hgfix
+        exact h1 g (fun j hj => hord j (by omega)) hgfix
     | succ M ih =>
-        rcases Nat.lt_or_ge M 1 with hlt | hge
-        · refine h1 g (fun j hj => hM j (by omega)) hgfix
+        intro g hord hgfix
+        rcases Nat.lt_or_ge (M + 1) 2 with hlt | hge
+        · exact h1 g (fun j hj => hord j (by omega)) hgfix
         · by_cases hpd : JetField.pd ((), M + 1) g = 0
-          · exact ih (fun j hj => by
-              rcases eq_or_lt_of_le (Nat.succ_le_of_lt hj) with heq | hgt
-              · rw [← heq]; exact hpd
-              · exact hM j (by omega))
-          · exact absurd ((hasNormalizingShift_iff_exists_fixed R hR (by omega)).mpr
-              ⟨g, hM, hpd, hgfix⟩) (hno (M + 1) (by omega))
+          · refine ih g (fun j hj => ?_) hgfix
+            rcases eq_or_lt_of_le (Nat.succ_le_of_lt hj) with heq | hgt
+            · rw [← heq]
+              exact hpd
+            · exact hord j (by omega)
+          · exact absurd ((hasNormalizingShift_iff_exists_fixed R hR hge).mpr
+              ⟨g, hord, hpd, hgfix⟩) (hno (M + 1) hge)
 
 end
 

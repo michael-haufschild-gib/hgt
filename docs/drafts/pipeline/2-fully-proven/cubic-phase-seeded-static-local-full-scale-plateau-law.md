@@ -139,16 +139,48 @@ the `Z/8Z` step is the nilpotence of `2` rather than an odd-determinant minor: b
 | `(9)` Chebyshev against the *upper* mean bound | `measureReal_gt_le_of_mean_le` | `UpperMeanChebyshev` (new) |
 | the `(9)` scale arithmetic `96/D^3 / (kappa/D)^2 = 96/(kappa^2 D)` | `collision_tail_scale`, `collision_threshold_split` | `UpperMeanChebyshev` (new) |
 
-### What remains
+### `(13)` is closed
 
-1. `(13)`: the gradient identity `sum_a |d f/d theta_a|^2 <= 16 sum_j |y_j|^6`, i.e. differentiating
-   the quartic collision functional in the phase coordinates and using unitarity.  The Poincare
-   input `(12)` and the sixth-moment input `(14)` are both already owned, so `(13)` is the single
-   analytic step between them and `Var f <= 96 D`.
-2. The moment transfer from continuous Steinhaus phases to uniform eighth roots: `f` and `f^2` have
-   at most eight coordinate occurrences with net phase power in `[-4,4]`, so Theorem A -- now
-   formal -- makes their first two moments agree with the continuous model.  This is a finite
-   combinatorial identification, not a new inequality.
+`formal/GaloisForLFunctions/HTGeometry/CollisionPhaseGradient.lean` (new, umbrella-wired,
+axiom-clean) proves the gradient identity in full, including the differentiation:
+
+| Card item | Declaration |
+|---|---|
+| the phase orbit `y_j(theta) = sum_a U_{ja} e^{i theta_a}` and the quartic functional `f` | `phaseOrbit`, `collisionFunctional` |
+| the cubic vector `v_j = \|y_j\|^2 y_j` and the closed-form derivative | `cubicVector`, `phaseDerivative` |
+| the squared modulus is differentiable along a path, with derivative `2 Re(conj(y) y')` | `hasDerivAt_normSq` |
+| the orbit depends on one phase coordinate through a single exponential | `hasDerivAt_phaseOrbit` |
+| **the closed form is the derivative**: `d f / d theta_a = phaseDerivative` | `hasDerivAt_collisionFunctional` |
+| each derivative is at most `4 \|(U^* v)_a\|` | `abs_phaseDerivative_le` |
+| unitarity preserves the energy of the cubic vector | `sum_normSq_vecMul_conj` |
+| the cubic vector has squared norm the sixth power sum | `sum_normSq_cubicVector` |
+| **`(13)`**: `sum_a \|d f / d theta_a\|^2 <= 16 sum_j \|y_j\|^6` | `sum_sq_phaseDerivative_le_sixth` |
+
+So the chain `(12) -> (13) -> (14)` has no analytic gap left: the Poincare inequality, the gradient
+identity, and the sixth moment are all formal.
+
+### The moment transfer is closed
+
+`formal/GaloisForLFunctions/HTGeometry/EighthRootMomentTransfer.lean` (new, umbrella-wired,
+axiom-clean):
+
+| Card item | Declaration |
+|---|---|
+| a primitive eighth root and its additive character | `zeta8`, `isPrimitiveRoot_zeta8`, `charEight` |
+| the character is trivial exactly at the zero residue | `charEight_eq_one_iff` |
+| **the character sum**: `sum_x omega^{dx} = 8` if `d = 0`, else `0` | `sum_charEight_mul` |
+| the monomial average factorizes over coordinates | `sum_prod_charEight` |
+| a nontrivial monomial averages to zero -- the continuous-phase answer | `sum_prod_charEight_eq_zero` |
+| equal fibres follow from the uniformity identity of Theorem A | `card_fiber_const_of_mul_eq` |
+| **averaging over a uniform ensemble is averaging over the cube** | `sum_comp_of_uniform` |
+| **the moment transfer**: a nontrivial monomial has vanishing ensemble average | `sum_comp_prod_charEight_eq_zero` |
+
+Since `f` and `f^2` involve at most eight coordinate occurrences with net phase power in `[-4,4]`,
+and `8` is not a divisor of any nonzero residue in that range, every monomial of `f` and `f^2` has
+the same average over the cubic-phase ensemble as under continuous phases.  Theorem A supplies the
+uniformity hypothesis, so the transfer is unconditional.
+
+### What remains
 3. Theorem C and the Corollary are assemblies over the two parent cards
    (`stabilizer-seeded-static-local-double-exponential-plateau-law`,
    `fixed-shell-angular-dephasing-static-local-plateau-law`), which are themselves still at stage 2.

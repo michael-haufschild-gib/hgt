@@ -58,7 +58,7 @@ theorem exists_prime_factors_of_distPoly
       rw [not_or] at hd2
       exact hc ⟨a, b, hab, hd2.1, hd2.2⟩
     obtain ⟨P', Q', hP'm, hQ'm, hP'Q', hPP', hQQ'⟩ :=
-      exists_monic_factorization (distPoly_monic d α) hPQ.symm
+      exists_monic_factorization_germ (distPoly_monic d α) hPQ.symm
     have hP'u : ¬ IsUnit P' := fun hU => hPu ((hPP'.isUnit_iff).mpr hU)
     have hQ'u : ¬ IsUnit Q' := fun hU => hQu ((hQQ'.isUnit_iff).mpr hU)
     have hP'deg : 1 ≤ P'.natDegree := by

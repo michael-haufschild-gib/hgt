@@ -434,7 +434,26 @@ becomes `μ{τ > t}·t^8 ≥ A t^{-9}·t^8 = A t^{-1}`, whose integral over `(L_
 `(18)` now holds for the card's full range `p ≥ 9` -- strictly above by `moment_floor`, at the
 boundary by `lintegral_rpow_eq_top_of_boundary_tail`.
 
+## Lean progress -- Theorem A's machine
+
+Theorem A is the same abstract machine as the sibling card
+`capacity-compatible-fast-forwardable-incubation-law`, and every step of it is now Lean-proved:
+
+| Card item | Declaration | Module |
+|---|---|---|
+| `(9)`, Duhamel transport of the carrier certificate across `[0,2L]` | `approxComplexity_orbitState_le_of_window` | `HTGeometry/IncubationTubeTransport` |
+| the same, from membership in the spherical tube around the patch | `approxComplexity_le_of_mem_patchThickening` | `HTGeometry/CapacityIncubationLaw` |
+| "removing `X \ G` costs zero measure" | `measureReal_inter_conull` | same |
+| **the shell tube law** `sigma(N_r(P)) >= a_P r^d` | `toSphere_patchThickening_ge` | `HTGeometry/SphericalPatchTube` |
+| the cone comparison behind it (normalization is two-Lipschitz; the carrier annulus times a transverse ball embeds in the cone) | `norm_normalize_sub_normalize_le`, `patchTube_subset_cone`, `volume_patchTube` | same |
+| **`(6)`**, the codimension tail `A_P L^{-d}` at radius `r_L = c/L` | `incubation_tail_lower` | `HTGeometry/CapacityIncubationLaw` |
+| finite Fubini seed selection, if the seed is chosen from a family | `exists_seed_measureReal_ge` | same |
+
+So `(6)` and hence `(17)` are formal as an abstract machine: what a concrete instance still needs is
+the *data* -- the carrier compiler certificate `(4)`, the patch `P_n^{cut}`, and the conull
+completion set `G_n` -- which are inputs from the parent cards rather than steps of this proof.
+
 ### What remains
 
-Theorem A, the fixed-seed codimension tail `(17)` itself, and Theorem C.  The implication
-`(17) ⟹ (18)` is complete for every `p ≥ 9`.
+The instance data for `(17)` (carrier certificate, patch, conull completion) and Theorem C.  The
+machine of Theorem A and the implication `(17) ⟹ (18)` are complete, the latter for every `p ≥ 9`.

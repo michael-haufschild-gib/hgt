@@ -533,7 +533,7 @@ W*(D,H_x)=B(l2(N)).
 
 Indeed `P_m H_x P_n` is a nonzero scalar multiple of every matrix unit `E_(mn)`.  The theorem is
 recorded in
-[additive-heat-diagonal-generates-full-operator-algebra.md](../2-fully-proven/not_new_scientific_knowledge/additive-heat-diagonal-generates-full-operator-algebra.md).
+[additive-heat-diagonal-generates-full-operator-algebra.md](../3-formalized/not_new_scientific_knowledge/additive-heat-diagonal-generates-full-operator-algebra.md).
 Thus the naive joint algebra has scalar center and destroys the particle superselection
 decomposition.
 

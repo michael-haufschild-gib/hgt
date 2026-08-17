@@ -773,15 +773,82 @@ proof: `(31)` and `(32)` hold for every isometric flow on a metric state space w
 alphabet, with the finite-complexity witnesses as their only hypotheses.  The cone is stated in
 signed form, `(s : Z) - S < C`, because truncated natural subtraction would weaken it at `s <= S`.
 
-### What remains -- two missing infrastructures, both named
+### What remains -- one missing infrastructure (the first is now built)
 
 1. **The divergence theorem on a compact boundaryless Riemannian manifold.**  Estimate `(17b)`
    integrates `div(aXe^{-it phi})` over `S^{m-1}` and uses that the total divergence vanishes.
    Mathlib has the Gauss--Green theorem only on boxes, and a corpus search for a manifold form
-   returns nothing.  Everything else in Theorem B is now formal: `(17a)`, both halves of `(17c)`,
+   returns nothing.
+
+   **First layer built.**  `HTGeometry/DivergenceCompactSupport.lean` (new, umbrella-wired,
+   axiom-clean) proves the flat model: `integral_divergence_eq_zero_of_hasCompactSupport` --
+   a continuously differentiable field on `R^m` vanishing outside a compact set has vanishing
+   total divergence, together with `divergence_eq_zero_of_notMem_tsupport`.  The proof puts the
+   support inside a box, kills all `2m` boundary fluxes, and uses mathlib's
+   `integral_divergence_of_hasFDerivAt_off_countable`.
+
+   **Second layer built.**  `HTGeometry/LebesguePolarIntegral.lean` (new, umbrella-wired,
+   axiom-clean) proves polar coordinates for Lebesgue measure: `integral_eq_polar` turns every
+   ambient integral into an integral over the sphere times the half line with the Jacobian carried
+   by `Measure.volumeIoiPow`, `integral_volumeIoiPow_eq` writes that Jacobian as `r^{m-1}`, and
+   `integral_polar_mul` separates a radial-times-angular integrand into the product of its radial
+   and angular integrals.  This is exactly the step that converts a compactly supported radial
+   cutoff into the angular integral.
+
+   **Third layer built.**  `divergence_smul_of_homogeneous` (same module) proves that a
+   degree-zero homogeneous field has divergence homogeneous of degree `-1`: scaling the point
+   scales the derivative, hence the divergence, by the reciprocal.  That is the identity which
+   turns the radial integral into the Jacobian factor.
+
+   **Fourth and fifth layers built.**  `HTGeometry/DivergenceEuclidean.lean` transfers the flat
+   theorem to Euclidean coordinates (`integral_euclideanDivergence_eq_zero`), through the
+   measure-preserving linear identification -- the sphere, the radial variable and the polar
+   decomposition all refer to the Euclidean norm, so this is the form the argument consumes.
+   `HTGeometry/SphereDivergence.lean` then proves the differential identities:
+   `hasFDerivAt_norm_of_ne_zero` (the gradient of the norm away from the origin),
+   `hasFDerivAt_radialCutoff` and `euclideanDivergence_radialCutoffDeriv` (**the product rule**:
+   `div(phi(|x|)X) = phi(|x|) div X` for a *tangential* field, the radial term dying by
+   tangentiality), and
+   `euclideanDivergence_smul_of_homogeneous` (degree `-1` homogeneity in Euclidean coordinates).
+
+   **The blocker is closed.**  `integral_toSphere_euclideanDivergence_eq_zero`
+   (`HTGeometry/SphereDivergence.lean`) is the divergence theorem on the unit sphere: for a
+   tangential, degree-zero homogeneous, continuously differentiable field, the total divergence
+   over the sphere vanishes.  The proof is exactly the paper argument -- multiply by a radial
+   cutoff supported in `(1/2, 2)`, note the cut-off field is `C^1` at the origin as well because it
+   vanishes near it, apply the flat theorem, separate the radial and angular factors by
+   `integral_polar_mul`, and divide by the nonzero radial integral.
+
+   **`(17b)` itself is now formal.**  `HTGeometry/NonstationaryPhaseSphere.lean` bundles the cutoff
+   data (`RadialCutoff`), restates the sphere theorem against it (`integral_toSphere_eq_zero`), and
+   proves the oscillatory divergence identities
+   `div(a sin(t phi) X) = sin(t phi) div(aX) + t a cos(t phi)` and its cosine companion
+   (`euclideanDivergence_sin_smul`, `euclideanDivergence_cos_smul`, with
+   `amplitudeDivergence` for `div(aX)` and `sum_apply_single_mul` recovering a functional from its
+   basis values).  `abs_oscillatory_le` is the final step: a vanishing total divergence turns each
+   identity into `|t| |int a cos(t phi)| <= int |div(aX)|`, which is exactly `(17b)`.
+
+   The chain is: `integral_divergence_eq_zero_of_hasCompactSupport` (flat Gauss--Green) ->
+   `integral_euclideanDivergence_eq_zero` (Euclidean coordinates) ->
+   `hasFDerivAt_radialCutoff` + `euclideanDivergence_radialCutoffDeriv` (product rule, radial term
+   killed by tangentiality) + `euclideanDivergence_smul_of_homogeneous` (degree `-1` homogeneity)
+   + `integral_polar_mul` (radial--angular separation) ->
+   `integral_toSphere_euclideanDivergence_eq_zero`.  Every step is unconditional and axiom-clean;
+   mathlib has none of them.  Everything else in Theorem B is now formal: `(17a)`, both halves of `(17c)`,
    and the coefficient-mass input `(9)` that makes the discarded part cost `Q_r` rather than
    `|K_r|Q_r`.  This is the single analytic construction the theorem still needs.
-2. **The semialgebraic Lojasiewicz inequality with a tube-volume bound.**  Corollary `(18a)`--`(18c)`
+2. **The semialgebraic Lojasiewicz inequality with a tube-volume bound.**
+
+   **First layer built.**  `HTGeometry/PolynomialSublevelMeasure.lean` (new, umbrella-wired,
+   axiom-clean) proves the elementary one-dimensional form of exactly this estimate:
+   `exists_norm_sub_le_of_prod_le` (a small product of `d` distances forces one small distance),
+   `sublevel_subset_iUnion` (hence the sublevel set is covered by `d` intervals of half-length
+   `delta`), and `volume_sublevel_le` (so its Lebesgue measure is at most `2 d delta`, with
+   `delta = (eps/a)^{1/d}` for a degree-`d` product with leading coefficient `a`).  This is the
+   root-factorisation route to a power-law sublevel bound: no stratification, no Lojasiewicz
+   exponent, just the roots.  What remains is the passage from one dimension to the sphere -- a
+   slicing argument along great circles, or the Carbery--Wright inequality -- and the identification
+   of the discriminant and the gradient functions as such products.  Corollary `(18a)`--`(18c)`
    needs: a nonzero polynomial on a compact Nash manifold satisfies
    `Disc >= c dist(., Z)^N`, and a proper semialgebraic set of codimension at least one has
    `u`-tube volume at most a constant times a positive power of `u`.  Neither is in mathlib; the

@@ -160,3 +160,21 @@ non-existence of invariant rational differentials
 (`HTGeometry/QuadraticNoInvariantDifferential.lean`), hence no nonconstant scaling eigenvector of
 the substitution (`HTGeometry/QuadraticOrbifoldTail.lean`).  The remaining input for this card is
 unchanged: the fixed branch `Phi_R(u) = u` of the tail classification.
+
+## Lean status — the tail interface is one condition, and holds through jet order two
+
+`HTGeometry/JetFixedFieldShift.lean` proves that at jet level `M >= 2` a normalizing shift *is* a
+`Phi_R`-fixed element of jet order exactly `M` (`hasNormalizingShift_iff_exists_fixed`), so the
+complete-tail interface this card assembles with is equivalent to a single family of statements:
+
+```text
+quadOne_forall_fixed_isConst_iff,  quadTwo_forall_fixed_isConst_iff
+  (HTGeometry/QuadraticTailShiftEquivalence.lean) :
+  Tail(R) = C   <=>   no jet level of order at least two carries a normalizing shift.
+```
+
+Level two is settled — neither quadratic map admits a rational affine connection, hence no shift at
+level two — so `quadOne_fixed_of_order_two` and `quadTwo_fixed_of_order_two` give unconditionally
+that a fixed element of jet order at most two is constant.  Higher levels are reduced by
+`HTGeometry/QuadraticShiftDescentBranches.lean` to the polynomial branches of degree one and two in
+the top coordinate; the degree-zero branch is closed by `∂_(N+2) sigma_(N+3) = (N+3)·R''·y_1 ≠ 0`.

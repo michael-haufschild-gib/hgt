@@ -8,7 +8,8 @@
 
 ## Goal
 
-`suzuki-log-recurrence-polynomial-carrier-trichotomy` needs exactly this as its `(5)`:
+`suzuki-log-recurrence-polynomial-carrier-trichotomy` cites this as its `(5)` (Literature; not part
+of its Lean target, which is closed without it):
 
 ```text
 τ₀(ν) = [−log|ℓ(ν)|]₊ ≤ C·log(2+|ν|₁),   ℓ(ν) = Σ νₚ log p.

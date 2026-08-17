@@ -179,6 +179,38 @@ Equation `(10)` is the promised ontological reversal.  Expected circuit complexi
 entropy of the state source.  It is a preparation cross-entropy, which splits into source-selection
 information and mismatch from local gate production.
 
+## Lean progress -- Theorem A and its corollary
+
+`formal/GaloisForLFunctions/HTGeometry/SelectionSynthesisDivergence.lean` (new, umbrella-wired,
+axiom-clean) proves the exact decomposition, in the form that does not use the mutual-information
+chain rule.
+
+| Card item | Declaration |
+|---|---|
+| `(1)` the geometrically killed local-word prior | `wordPrior`, `wordPrior_pos` |
+| the words of one length carry mass `(1-a)a^l` | `sum_wordPrior_length` |
+| **`(2)`**: the prior is a probability law on `Gamma^*` | `hasSum_wordPrior` |
+| **`(7)`**: `-log pi_a(w) = -log(1-a) + \|w\| log(M/a)` | `neg_log_wordPrior` |
+| entropy, relative entropy, cross entropy of a discrete law | `entropy`, `relEntropy`, `crossEntropy` |
+| **`(9)`** pointwise and summed: cross entropy is entropy plus relative entropy | `entropy_add_relEntropy_pointwise`, `entropy_add_relEntropy` |
+| **`(8)`**: the cross entropy against the prior is affine in the expected length | `crossEntropy_wordPrior` |
+| **`(5)`**: `log(M/a) E\|W\| = H(W) + D(q \|\| pi_a) - log(1-a)` | `gateCost_eq_entropy_add_relEntropy` |
+| Gibbs: the synthesis divergence is nonnegative | `relEntropy_nonneg` |
+| **Corollary A.1**: it vanishes at the prior | `relEntropy_self_eq_zero` |
+
+`(2)` is proved by reindexing the words by length -- the fibre of length `l` is `Vector Gamma l`,
+of cardinality `M^l` -- and summing the resulting geometric series in `ENNReal`, where the sigma
+rearrangement needs no summability hypothesis; the total is then transferred back to the reals.
+
+### What remains
+
+`(4)` and `(6)` add the mutual-information chain rule `H(W) = H(W|X) + I(X;W)` to `(5)`, which
+needs a joint-distribution layer (conditional entropy and mutual information for a Markov kernel
+on a standard Borel space); mathlib has `ProbabilityTheory.klDiv` but not that layer.  Theorem B
+additionally needs the measurable selection of the first shortest qualifying word, and the
+rate--distortion functional of section 4 needs the same joint layer.  The purely
+information-theoretic identity of Theorem A -- the card's actual mechanism -- is formal.
+
 ## 4. Exact gate-relative rate--distortion functional
 
 For a target `x`, let

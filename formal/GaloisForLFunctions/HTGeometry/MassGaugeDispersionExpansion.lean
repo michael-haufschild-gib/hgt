@@ -75,10 +75,13 @@ theorem norm_outgoingBase_ge (lambda xi : ℝ) :
 /-- **(24.50) The band increment.**  On a band at the outgoing frequency `-r` the increment of the
 dispersion is the increment of the plane wave up to `O(r^{-2})`. -/
 theorem norm_massGaugeDispersion_increment_le {a lambda r eta : ℝ} (hr : 0 < r)
-    (heta : 0 ≤ eta) (hetar : eta < r) :
+    (hetar : |eta| < r) :
     ‖massGaugeDispersion a lambda (eta - r) - massGaugeDispersion a lambda (-r) + (eta : ℂ)‖
-      ≤ a ^ 2 * eta / (2 * (r - eta) * r)
-        + a ^ 4 / (4 * (r - eta) ^ 3) + a ^ 4 / (4 * r ^ 3) := by
+      ≤ a ^ 2 * |eta| / (2 * (r - |eta|) * r)
+        + a ^ 4 / (4 * (r - |eta|) ^ 3) + a ^ 4 / (4 * r ^ 3) := by
+  have heta : eta ≤ |eta| := le_abs_self eta
+  have hetaneg : -|eta| ≤ eta := neg_abs_le eta
+  have habs0 : 0 ≤ |eta| := abs_nonneg eta
   have hlt1 : eta - r < 0 := by linarith
   have hlt0 : (-r : ℝ) < 0 := by linarith
   have h1 := norm_massGaugeDispersion_sub_le (a := a) (lambda := lambda) hlt1
@@ -91,10 +94,11 @@ theorem norm_massGaugeDispersion_increment_le {a lambda r eta : ℝ} (hr : 0 < r
   have hz0re : z0.re = r := by
     rw [hz0, outgoingBase_re]
     ring
-  have hz1pos : (0 : ℝ) < r - eta := by linarith
-  have hz1n : (r - eta : ℝ) ≤ ‖z1‖ := by
+  have hz1pos : (0 : ℝ) < r - |eta| := by linarith
+  have hz1n : (r - |eta| : ℝ) ≤ ‖z1‖ := by
     have h := Complex.re_le_norm z1
-    rwa [hz1re] at h
+    rw [hz1re] at h
+    linarith
   have hz0n : (r : ℝ) ≤ ‖z0‖ := by
     have h := Complex.re_le_norm z0
     rwa [hz0re] at h
@@ -122,31 +126,33 @@ theorem norm_massGaugeDispersion_increment_le {a lambda r eta : ℝ} (hr : 0 < r
       ring
     linear_combination this
   have hmid : ‖((a : ℝ) : ℂ) ^ 2 / (2 * z1) - ((a : ℝ) : ℂ) ^ 2 / (2 * z0)‖
-      ≤ a ^ 2 * eta / (2 * (r - eta) * r) := by
+      ≤ a ^ 2 * |eta| / (2 * (r - |eta|) * r) := by
     have hval : ((a : ℝ) : ℂ) ^ 2 / (2 * z1) - ((a : ℝ) : ℂ) ^ 2 / (2 * z0)
         = ((a : ℝ) : ℂ) ^ 2 * (eta : ℂ) / (2 * z1 * z0) := by
       field_simp
       linear_combination (-(((a : ℝ) : ℂ) ^ 2)) * hdiff
     rw [hval, norm_div]
-    have hnum : ‖((a : ℝ) : ℂ) ^ 2 * (eta : ℂ)‖ = a ^ 2 * eta := by
+    have hnum : ‖((a : ℝ) : ℂ) ^ 2 * (eta : ℂ)‖ = a ^ 2 * |eta| := by
       rw [norm_mul, norm_pow, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs,
-        Real.norm_eq_abs, abs_of_nonneg heta, ← abs_pow,
+        Real.norm_eq_abs, ← abs_pow,
         abs_of_nonneg (by positivity : (0 : ℝ) ≤ a ^ 2)]
     have hden : ‖(2 : ℂ) * z1 * z0‖ = 2 * (‖z1‖ * ‖z0‖) := by
       rw [norm_mul, norm_mul, show ‖(2 : ℂ)‖ = (2 : ℝ) by norm_num]
       ring
     rw [hnum, hden]
-    have hprod : (r - eta) * r ≤ ‖z1‖ * ‖z0‖ :=
+    have hprod : (r - |eta|) * r ≤ ‖z1‖ * ‖z0‖ :=
       mul_le_mul hz1n hz0n (by linarith) (norm_nonneg _)
-    have hX : (0 : ℝ) ≤ a ^ 2 * eta := by positivity
-    have hcpos : (0 : ℝ) < 2 * (r - eta) * r := by positivity
+    have hX : (0 : ℝ) ≤ a ^ 2 * |eta| := by positivity
+    have hcpos : (0 : ℝ) < 2 * (r - |eta|) * r := by positivity
     refine div_le_div_of_nonneg_left hX hcpos ?_
     nlinarith [hprod]
   have hE1 : ‖massGaugeDispersion a lambda (eta - r) - (z1 + ((a : ℝ) : ℂ) ^ 2 / (2 * z1))‖
-      ≤ a ^ 4 / (4 * (r - eta) ^ 3) := by
+      ≤ a ^ 4 / (4 * (r - |eta|) ^ 3) := by
     refine le_trans h1 ?_
     refine div_le_div_of_nonneg_left (by positivity) (by positivity) ?_
-    nlinarith [sq_nonneg lambda, hz1pos, mul_pos hz1pos hz1pos]
+    have hcube : (r - |eta|) ^ 3 ≤ (r - eta) ^ 3 :=
+      pow_le_pow_left₀ (le_of_lt hz1pos) (by linarith) 3
+    nlinarith [hcube, mul_nonneg (by linarith : (0 : ℝ) ≤ r - eta) (sq_nonneg lambda)]
   have hE0 : ‖massGaugeDispersion a lambda (-r) - (z0 + ((a : ℝ) : ℂ) ^ 2 / (2 * z0))‖
       ≤ a ^ 4 / (4 * r ^ 3) := by
     refine le_trans h0 ?_
@@ -156,7 +162,7 @@ theorem norm_massGaugeDispersion_increment_le {a lambda r eta : ℝ} (hr : 0 < r
   refine le_trans (norm_add_le _ _) ?_
   have hfirst : ‖massGaugeDispersion a lambda (eta - r) - (z1 + ((a : ℝ) : ℂ) ^ 2 / (2 * z1))
       - (massGaugeDispersion a lambda (-r) - (z0 + ((a : ℝ) : ℂ) ^ 2 / (2 * z0)))‖
-      ≤ a ^ 4 / (4 * (r - eta) ^ 3) + a ^ 4 / (4 * r ^ 3) :=
+      ≤ a ^ 4 / (4 * (r - |eta|) ^ 3) + a ^ 4 / (4 * r ^ 3) :=
     le_trans (norm_sub_le _ _) (add_le_add hE1 hE0)
   linarith [hfirst, hmid]
 

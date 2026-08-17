@@ -212,3 +212,41 @@ can only have eigenvalue one).  So `Tail(R_i) = C` is now equivalent to excludin
 finite-order element *fixed* by `Phi_(R_i)`.  See the pass-4 section of
 `rational-coarse-graining-orbifold-tail-classification.md` for why the current descent does not
 close that branch and what it needs.
+
+## Lean status — equation (1) holds through jet order two, and is now one condition
+
+Two advances, both unconditional and axiom-clean.
+
+**Normalizing shifts are fixed elements.**  `HTGeometry/JetFixedFieldShift.lean` proves
+`hasNormalizingShift_iff_exists_fixed`: at jet level `M ≥ 2` a normalizing shift is *the same thing
+as* a `Phi_R`-fixed element of jet order exactly `M`.  A shift `t` makes `y_M + t` scale by `R'`;
+so does `y_1`; so `(y_M + t)/y_1` is fixed and its `M`-th partial is `1/y_1`.  Conversely a fixed
+element of order exactly `M` is an eigen-relation of weight zero and eigenvalue one whose order does
+not drop, so `lowerOrder_or_hasNormalizingShift` returns a shift.
+
+Hence `forall_fixed_isConst_iff`, and for the two steps of this protocol
+(`HTGeometry/QuadraticTailShiftEquivalence.lean`):
+
+```text
+quadOne_forall_fixed_isConst_iff,  quadTwo_forall_fixed_isConst_iff :
+  Tail(R_i) = C   <=>   no jet level of order at least two carries a normalizing shift.
+```
+
+**Equation (1) through jet order two.**  Since neither map admits a normalizing shift at level two
+(`quadOne_not_hasNormalizingShift_two`, `quadTwo_not_hasNormalizingShift_two`, from the
+non-existence of a rational affine connection), the equivalence gives unconditionally
+
+```text
+quadOne_fixed_of_order_two,  quadTwo_fixed_of_order_two :
+  a Phi_(R_i)-fixed element of jet order at most two is constant.
+```
+
+This strictly extends the pass-5 statement at jet order one.
+
+**What is left.**  One family of statements, one per jet level `M >= 3`.  The descent
+(`HTGeometry/QuadraticShiftDescentBranches.lean`) reduces each of them: a shift at level `N + 3`
+either descends to level `N + 2` — through the affine cocycle of the two top coefficients of the
+slice, whose denominator is a scalar eigenvector of the same degree — or is a polynomial of degree
+one or two in `y_(N+2)`, the degree-zero case being impossible because
+`∂_(N+2) sigma_(N+3) = (N+3)·R''·y_1` is nonzero.  The two residual degrees are analysed at the end
+of `rational-coarse-graining-orbifold-tail-classification.md`.

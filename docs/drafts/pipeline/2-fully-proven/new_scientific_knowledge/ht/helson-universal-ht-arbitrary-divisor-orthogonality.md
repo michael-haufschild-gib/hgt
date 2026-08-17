@@ -1994,3 +1994,276 @@ does not assume it.
 Note also the index type: the corpus law is stated for products indexed by `ℕ`, while the phase
 torus is indexed by `Nat.Primes`; the transfer along a countable equivalence is routine but not yet
 written.
+
+## Lean progress — the zero-one law now applies to products indexed by the primes
+
+`HTGeometry/FiniteModificationZeroOneEquiv.lean` (wired, axiom-clean).
+
+```
+measure_infinitePi_eq_zero_or_one_of_invariant_equiv
+    an equivalence e : ℕ ≃ iota transports the finite-modification zero-one law to products
+    indexed by iota
+
+natEquivPrimes : ℕ ≃ Nat.Primes
+
+measure_infinitePi_primes_eq_zero_or_one_of_invariant
+    the law, stated directly for products indexed by the primes
+```
+
+This closes the index-type mismatch recorded earlier: the corpus law is proved for products over
+`ℕ`, the phase torus is a product over `Nat.Primes`, and the transport is now a theorem rather than
+a remark.
+
+The transport is exactly what one expects and nothing more.  `MeasurableEquiv.piCongrLeft` is a
+measurable equivalence between the two products, mathlib's `Measure.infinitePi_map_piCongrLeft`
+says it carries the product measure to the product measure, and finite-modification invariance
+crosses because a finite set of coordinates has finite image.  The one technical point worth
+recording: the invariance transfer must be phrased at indices of the form `e m`, never at a general
+`i` — writing `x (e.symm i)` produces a term of type `Y (e (e.symm i))` rather than `Y i`, and the
+resulting rewrite is not type-correct.
+
+With this and `continuableStratum_invariant`, the zero-one law for the continuation stratum needs
+exactly one input: `MeasurableSet continuableStratum`.
+
+## Lean progress — the Helson zeta is defined on ALL of the phase torus
+
+`HTGeometry/HelsonEulerMultipliable.lean` (wired, axiom-clean).
+
+```
+summable_prime_rpow_neg        ∑_p p^{-sigma} converges for sigma > 1
+norm_eulerFactor_sub_one_le    ‖ (1 - chi_p p^{-s})^{-1} - 1 ‖ <= 2 p^{-Re s}
+multipliable_helsonEuler       the Euler product is multipliable for EVERY unimodular phase,
+                                   on Re s > 1
+```
+
+The corpus previously had the Euler product only for phases equal to `1` off a finite set
+(`hasProd_helsonEuler`), which is enough for the dense half of the seam but not to *define* `Z_chi`
+on the whole torus.  This closes that: the Euler factors differ from `1` by
+`chi_p p^{-s} / (1 - chi_p p^{-s})`, whose norm is at most `2 p^{-Re s}` because
+`‖chi_p p^{-s}‖ <= p^{-Re s} <= 2^{-Re s} < 1/2`, and the prime sum of `p^{-Re s}` converges above the
+abscissa one.
+
+So `Z_chi(s) = ∏_p (1 - chi_p p^{-s})^{-1}` is a well-defined function of `chi` on the whole phase
+torus for `Re s > 1`, which is what any measurability argument for `continuableStratum` has to start
+from — the stratum is `{chi | the germ of Z_chi at Re s > 1 continues meromorphically}`, and until
+now the germ itself was only known to exist on a dense subset.
+
+## Lean progress — the continuation stratum is BOREL, and obeys a zero-one law
+
+`HTGeometry/HelsonStratumMeasurable.lean` and `HTGeometry/HelsonStratumZeroOne.lean` (wired,
+axiom-clean), on top of four new supporting modules.
+
+```
+measurableSet_continuableStratum          MeasurableSet continuableStratum
+measure_infinitePi_continuableStratum_eq_zero_or_one
+      for every product probability measure on the phase torus,
+      measure(M) = 0  or  measure(M) = 1
+continuableStratum_dense_codense_measurable_zeroOne
+      M is dense, has dense complement, is Borel, and has measure 0 or 1
+```
+
+This closes the open point recorded above: the zero-one law consumed exactly two inputs, the
+finite-modification invariance (already owned) and the measurability of the stratum, and the second
+was *not* cosmetic — membership is an existential over meromorphic functions on the plane.
+
+### The descriptive-set-theoretic content
+
+The stratum is not merely measurable, it is `F_sigma-delta`.  The reduction is:
+
+```text
+chi in M   <=>   for every level N there are  d, B  in N,
+                 root positions  u : Fin d -> {|u| <= rho_N + 1, Re u <= -1},
+                 coefficients   c : N -> C  with  ‖c n‖ rho_N^n <= B,
+                 such that      prod_i (s - 2 - u_i) . Z_chi(s) = sum_n c_n (s-2)^n
+                 for all s with |s - 2| < rho_N and Re s > 1,      rho_N = N + 3.
+```
+
+Both parameters range over *compact* sets — a closed polydisc of root positions and a product of
+closed balls of coefficients — and the identity is a closed condition.  A projection along a compact
+factor is a closed map, so each level-and-size stratum is closed; the stratum is the countable
+intersection over `N` of the countable union over `(B, d)`.
+
+Why the encoding is the right one:
+
+- **Meromorphic continuation to the plane is not a countable condition on one disc**, because a
+  meromorphic function on `C` can have infinitely many poles, so no single polynomial clears them.
+  Exhausting `C` by discs and clearing the poles of each disc separately is what makes the pole data
+  finite, hence compact.
+- **The pole positions may be confined to `Re s <= 1`**: on `Re s > 1` a continuation agrees with the
+  Euler product, which is holomorphic there.  This is what forces the constructed continuation to
+  agree with `Z_chi` on the *whole* half plane rather than off a discrete set — the polynomial
+  cannot vanish where the identity is asserted.
+- **Coefficient bounds replace Montel's theorem.**  The alternative encoding — the continuation
+  itself, as a holomorphic function bounded on the disc — has a compact parameter space only by
+  normal families.  Geometric bounds on Taylor coefficients give the same compactness by Tychonoff,
+  and the radius-of-convergence estimate `‖c_n‖ r^n` bounded is exactly what a holomorphic function
+  on a larger disc supplies.
+
+### The two directions
+
+`exists_levelData_of_mem_continuableStratum` (necessity) takes the divisor of the continuation on
+the disc, which has finite support because the disc is relatively compact, and clears the poles with
+the factorized rational function of the divisor's negative part.  The product is put into
+meromorphic normal form — necessary, because a meromorphic function may carry arbitrary junk values
+at its poles — and the normal form is analytic exactly because its divisor is non-negative.
+
+`mem_continuableStratum_of_continuationCriterion` (sufficiency) assembles the levels.  Two level
+models agree wherever both denominators are non-zero: the two products of one series with the
+other's polynomial are holomorphic on the smaller disc and agree near `s = 2`, so the identity
+theorem equates them.  Hence all models have a common germ at every point once the finitely many
+roots are removed, and the value of the meromorphic normal form at a point does not depend on the
+level.  That common value is the continuation.
+
+### Supporting modules
+
+```
+HTGeometry/PowerSeriesDiscBridge.lean
+  seriesSum                                sum_n c_n w^n
+  analyticOnNhd_seriesSum                  geometric coefficient bounds => holomorphic on the disc
+  exists_seriesSum_of_differentiableOn     holomorphic on a closed disc => bounded coefficients
+
+HTGeometry/HelsonZetaAnalytic.lean
+  instance : CompactSpace PhaseTorus
+  hasProdLocallyUniformlyOn_helsonEuler    the Euler product converges locally uniformly in s
+  differentiableOn_helsonZetaValue         Z(chi, .) is holomorphic on Re s > 1
+  continuous_helsonZetaValue               Z(., s) is continuous on the phase torus
+  helsonZetaValue_ne_zero                  Z(chi, s) != 0
+
+HTGeometry/HelsonContinuationData.lean    levelRadius, rootPoly, rootBox, LevelData,
+                                          ContinuationCriterion, exists_root_vector
+HTGeometry/HelsonCriterionNecessary.lean
+HTGeometry/HelsonCriterionSufficient.lean
+```
+
+`continuous_helsonZetaValue` and `differentiableOn_helsonZetaValue` both come from mathlib's
+`Summable.hasProdUniformlyOn_one_add` / `...LocallyUniformlyOn...`: the same bound
+`‖(1 - chi_p p^{-s})^{-1} - 1‖ <= 2 p^{-sigma}` is uniform in `s` on a closed half plane and uniform
+in `chi` on the whole torus, so one lemma gives holomorphy in `s` and continuity in `chi`.
+Non-vanishing is the observation that the Euler factors and their inverses are both multipliable and
+their termwise product is `1`.
+
+### Correction to an earlier entry
+
+The module `HTGeometry/ContinuableStratumInvariant.lean` recorded above **duplicated** corpus content:
+`mem_continuableStratum_of_finite_ne` in `HTGeometry/HelsonCubeRootNonContinuation.lean` already
+proved finite-modification invariance, and the duplicated names `eulerRatio` /
+`meromorphicAt_eulerRatio` made the two modules mutually un-importable.  The duplicate has been
+deleted and the zero-one law now uses the corpus theorem.  The invariance is *not* a contribution of
+this line of work.
+
+### What the zero-one law does and does not decide
+
+It gives `measure(M) in {0, 1}` for every product probability measure, in particular for Haar.  It
+does **not** give `measure(M) = 0`, and the gap cannot be closed by the tools here:
+
+- `M` is invariant under changing one coordinate, so every fibre of the projection that forgets one
+  prime phase is all-or-nothing.  No Fubini or one-coordinate argument can see the difference.
+- The complement is dense (the constant primitive cube root of unity and its finite modifications
+  are noncontinuable, already formal), but a dense complement is compatible with full measure.
+- The cube-root obstruction `Z_chi . Z_{omega chi} . Z_{omega^2 chi} = Z_{chi^3}(3s)` is homogeneous
+  in the three rotated phases; the contradiction at `chi = 1` uses the *pole* of `zeta` and does not
+  survive rotation to a generic phase.
+
+So `measure(M) = 0` remains exactly the Saksman--Webb input the card names: it is equivalent, given
+the above, to `measure(M) != 1`, i.e. to the noncontinuable phases having positive measure.
+
+## Lean progress — Pong's conclusion in ANALYTIC form for an arbitrary phase
+
+`HTGeometry/HelsonPhaseAnalyticJets.lean` (wired, axiom-clean).
+
+```
+phasePrimeArithmeticFunction / phasePrimeFiniteAbscissa / phasePrimeShiftedRotatedJet
+    the prime carrier of a unimodular phase, its finite-abscissa membership, and its
+    shifted rotated jets
+
+phasePrimeShiftedRotatedJet_eq_arithmeticOfPrimeColumn
+    a shifted jet is the corresponding prime column of the shift-jet palette
+
+phasePrimeShiftedRotatedJet_tailIndependent
+    the palette of a nowhere-vanishing phase has full coefficient-tail rank
+
+phasePrimeShiftedRotatedJets_algebraicIndependent
+phasePrimeShiftedUpperEndGerm_jets_algebraicIndependent
+    ** the rectangle is algebraically independent as actual analytic upper-end germs **
+phasePrimeShiftedRotatedJets_algebraicIndependent_over_finitePrimeCoefficientField
+phasePrimeShiftedRotatedJets_algebraicIndependent_over_finitePrimeRationalCoefficientField
+    ** and over the card's E_fin(s) **
+```
+
+The corpus already owned two halves that had never been joined: `PrimeDirichletAnalyticTransfer`
+carried the whole chain from tail independence of prime columns to algebraic independence of
+*analytic germs*, but only for signed (`+-1`) carriers, whose finite coefficient range the
+tail-rigidity theorem used; and `HelsonPhaseTailIndependence` proved tail independence for an
+arbitrary nowhere-vanishing phase, but stayed inside the arithmetic-function fraction field.  Every
+step of the transfer uses only *boundedness* of the coefficients, so the signed chain applies
+verbatim to a unimodular phase once the tail input is taken from the phase theorem.  The only new
+lemma needed was reindexing a coefficient family along an equivalence
+(`tailCoefficientIndependent_comp_equiv`), because the phase tail theorem is indexed by a singleton
+source type.
+
+### Scope, stated exactly
+
+This is Pong's conclusion **for the prime carrier** `sum_p chi(p) p^{-s}` of the phase — one source
+per valuation layer — not yet for the full multiplicative `Z_chi = sum_n chi(n) n^{-s}`.  The
+passage to `Z_chi` is a definite next step and the corpus already has its shape: with
+
+```text
+log Z_chi(s) = sum_{r >= 0} (1/(r+1)) sum_p chi(p)^{r+1} p^{-(r+1)s} ,
+```
+
+the layers are exactly the prime-power sigma tower for which
+`algebraicIndependent_primePowerSigmaTower_over_finitePrimeCoefficientField` and
+`primePowerCoefficientShiftedJets_algebraicIndependent_phase` are already proved, with the phase at
+layer `r` being `chi^{r+1}` — which is nowhere vanishing whenever `chi` is.  What that step needs is
+the analytic assembly of the tower into `Z_chi` itself, and the trade between the jets of `Z` and
+the jets of `Z'/Z` (the layer sum), which shifts the derivative order by one per shift.
+
+## Lean progress — Pong's conclusion for `Z_chi` ITSELF, from the prime values alone
+
+`HTGeometry/PrimeValueJacobianCriterion.lean` and `HTGeometry/HelsonZetaJetIndependence.lean`
+(wired, axiom-clean).
+
+```
+PrimeValueIndependent g          no nontrivial constant combination vanishes at every prime
+primeValueIndependent_of_tailIndependent
+algebraicIndependent_of_primeValueIndependent
+      ** a finite family of arithmetic functions whose PRIME VALUES are linearly independent is
+         algebraically independent over C — with no restriction on the support **
+
+arithmeticShiftedRotatedJet f a k          the coefficient stream of (d/ds)^k Z(s+a)
+algebraicIndependent_arithmeticShiftedRotatedJets
+      nowhere-vanishing prime coefficients + distinct shift real parts
+        ==> the whole shifted derivative rectangle is algebraically independent
+algebraicIndependent_helsonZetaShiftedJets
+      ** the same for a unimodular completely multiplicative coefficient stream **
+```
+
+### Why this is the step the card needed
+
+The corpus's independence criteria were all support-restricted: the Jacobian bridge
+(`algebraicIndependent_of_evaluation_packet`) needs *prime-supported* functions, because only then
+is `∂_q b = b(q) • 1` a scalar, and the prime-power packet machinery needs each function to live on
+one exponent layer.  `Z_chi = sum_n chi(n) n^{-s}` is supported on **all** integers, so neither
+applies, and that gap is why the card recorded Pong's conclusion as an outstanding input even though
+its hypothesis was already discharged.
+
+The gap closes by dropping the scalar requirement and paying one induction.  For *every* arithmetic
+function, `(∂_q b)(1) = b(q)`.  Applying the chain rule to a minimal-degree relation `P(g) = 0`
+gives `sum_j (∂_j P)(g) . ∂_q g_j = 0`, and evaluating that identity at `n` in the Dirichlet
+convolution kills every divisor pair except `(n, 1)`, by strong induction on `n` — because a proper
+divisor is strictly smaller.  What survives is `sum_j (∂_j P)(g)(n) . g_j(q) = 0` for every prime
+`q`, so linear independence of the prime values forces `(∂_j P)(g)(n) = 0` for every `n`, i.e. every
+partial derivative of `P` annihilates the family.  Minimality of the degree is contradicted.
+
+The criterion is strictly more general than the two it replaces and is stated for any finite family;
+the Helson application only has to check that the prime coefficients of a unimodular phase are
+nonzero, and that the shift–jet palette has full tail rank — which is
+`phasePrimeShiftedRotatedJet_tailIndependent` from the previous section.
+
+### What is still open in Pong's input
+
+The statement above is over `C`.  The card's `L_chi` is generated over `E_fin`, so the remaining
+step is the same independence over the finite-prime coefficient field — the corpus has that upgrade
+for prime columns (`algebraicIndependent_fractionPrimeColumns_over_finitePrimeCoefficientField`)
+and the argument should transfer, since a coefficient in `E_fin` involves only finitely many primes
+and the criterion may use any cofinite set of primes `q`.

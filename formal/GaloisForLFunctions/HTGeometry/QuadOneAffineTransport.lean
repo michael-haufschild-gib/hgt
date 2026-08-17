@@ -71,15 +71,20 @@ theorem quadOne_affineTransport_regular_at_critical_pair {k : ℤ} {b c a : RatF
   exact no_pole_of_backward_orbit_affineTransport quadOne_natDegree_ne_zero ha hb heq hstep hcrit
     (fun n => hbunit _ (hqne n)) (fun n => hcreg _ (hqne n)) hinj (by rw [hq0]; exact hIpole)
 
-/-- **A polar inhomogeneous term at the critical point kills the equation.**  For `z ↦ z² + 1`, an
-affine transport with nonnegative exponent, unit coefficient, and inhomogeneous term regular away
-from the origin but polar at it has no nonzero solution. -/
-theorem quadOne_no_affineTransport_of_polar_at_critical {k : ℤ} {b c a : RatFunc ℂ}
+/-- **The critical-point obstruction.**  For `z ↦ z² + 1`, an affine transport whose coefficient is a
+unit away from the origin and whose inhomogeneous term is regular away from the origin has no nonzero
+solution as soon as, at the origin, the order of the inhomogeneous term is below both the order of
+the coefficient and the exponent.
+
+The substitution ramifies to order two at the critical point and the derivative vanishes there to
+order one, so the left side has order at least `2·ord₁(a) + k ≥ k`; the right side has the order of
+the inhomogeneous term. -/
+theorem quadOne_no_affineTransport_of_critical_order {k : ℤ} {b c a : RatFunc ℂ}
     (ha : a ≠ 0) (hb : b ≠ 0) (hc0 : c ≠ 0)
     (heq : IsAffineTransport quadOne quadOne_not_isConst k b c a)
     (hbunit : ∀ p : ℂ, p ≠ 0 → ratOrder b p = 0)
     (hcreg : ∀ p : ℂ, p ≠ 0 → 0 ≤ ratOrder c p)
-    (hb0 : ratOrder b 0 = 0) (hcpole : ratOrder c 0 < 0) (hk : 0 ≤ k) : False := by
+    (hcb : ratOrder c 0 < ratOrder b 0) (hck : ratOrder c 0 < k) : False := by
   obtain ⟨hzero, hone⟩ :=
     quadOne_affineTransport_regular_at_critical_pair ha hb heq hbunit hcreg
   have hkey := ratOrder_le_of_critical quadOne_natDegree_ne_zero ha hb hc0 heq
@@ -88,5 +93,44 @@ theorem quadOne_no_affineTransport_of_polar_at_critical {k : ℤ} {b c a : RatFu
   rw [rootMultiplicity_quadOne_crit, rootMultiplicity_derivative_quadOne, hval] at hkey
   norm_num at hkey
   omega
+
+/-- **A polar inhomogeneous term at the critical point kills the equation.** -/
+theorem quadOne_no_affineTransport_of_polar_at_critical {k : ℤ} {b c a : RatFunc ℂ}
+    (ha : a ≠ 0) (hb : b ≠ 0) (hc0 : c ≠ 0)
+    (heq : IsAffineTransport quadOne quadOne_not_isConst k b c a)
+    (hbunit : ∀ p : ℂ, p ≠ 0 → ratOrder b p = 0)
+    (hcreg : ∀ p : ℂ, p ≠ 0 → 0 ≤ ratOrder c p)
+    (hb0 : 0 ≤ ratOrder b 0) (hcpole : ratOrder c 0 < 0) (hk : 0 ≤ k) : False :=
+  quadOne_no_affineTransport_of_critical_order ha hb hc0 heq hbunit hcreg (by omega) (by omega)
+
+
+/-- **A nonzero constant inhomogeneous term, with the derivative as coefficient, kills the
+equation.**  This is the shape the weight-zero descent produces at the base of the tower: the
+inhomogeneous term is a nonzero constant, which neither vanishes at the critical point nor reaches
+the exponent. -/
+theorem quadOne_no_affineTransport_of_const {k : ℤ} {γ : ℂ} {a : RatFunc ℂ}
+    (hγ : γ ≠ 0) (ha : a ≠ 0) (hk : 1 ≤ k)
+    (heq : IsAffineTransport quadOne quadOne_not_isConst k
+      (algebraMap (Polynomial ℂ) (RatFunc ℂ) (Polynomial.derivative quadOne))
+      (RatFunc.C γ) a) : False := by
+  have hb : algebraMap (Polynomial ℂ) (RatFunc ℂ) (Polynomial.derivative quadOne) ≠ 0 :=
+    algebraMap_ne_zero_of_ne_zero
+      (derivative_ne_zero_of_natDegree_ne_zero quadOne_natDegree_ne_zero)
+  have hc0 : (RatFunc.C γ : RatFunc ℂ) ≠ 0 := by
+    intro hh
+    exact hγ ((RatFunc.C_injective (K := ℂ)) (by rw [hh, map_zero]))
+  have hb0 : ratOrder (algebraMap (Polynomial ℂ) (RatFunc ℂ)
+      (Polynomial.derivative quadOne)) 0 = 1 := by
+    rw [ratOrder_algebraMap, rootMultiplicity_derivative_quadOne, Nat.cast_one]
+  refine quadOne_no_affineTransport_of_critical_order ha hb hc0 heq (fun p hp => ?_)
+    (fun p _ => ?_) ?_ ?_
+  · rw [ratOrder_algebraMap, rootMultiplicity_eq_zero ?_, Nat.cast_zero]
+    rw [Polynomial.IsRoot.def, derivative_quadOne_eval]
+    exact mul_ne_zero (by norm_num) hp
+  · rw [ratOrder_C]
+  · rw [ratOrder_C, hb0]
+    norm_num
+  · rw [ratOrder_C]
+    omega
 
 end GaloisForLFunctions.HTGeometry

@@ -1351,3 +1351,194 @@ linked exactly by the affine connection: if `τ` is a shift at level `M − 1`, 
 and correcting by `w = a(y₀)·y₁·v` turns `δτ − w` into a shift at level `M` precisely when
 `a(R)·(R')² = R'·a − R''`.  So the affine connection is the exact obstruction to propagating a shift
 *upward*; the open half is the propagation downward at `m ∈ {1, 2}`.
+
+## Pass 8 — the weight-zero normal form: the descent becomes triangular and terminates
+
+The jet descent in the coordinates `y_0, y_1, y_2, …` does not terminate: at each level the
+degree-one branch produces an inhomogeneous term outside the span of the previous ones, and the class
+of equations grows.  The reason is that the substitution acts on `y_j` by
+`y_j ↦ R'·y_j + σ_j` with `σ_j` involving **all** lower coordinates including `y_1`, so no variable
+is ever eliminated.
+
+Changing to the **weight-zero coordinates** removes this entirely.
+
+### The coordinates
+
+The weighted torus action `w_λ : y_j ↦ λ^j y_j` (`j ≥ 1`) commutes with the substitution `Φ_R`
+(Lean: `weightScale_jetSubstitution`).  Its invariant field is
+
+```text
+F_0 = C(y_0, z_2, z_3, …),        z_j := y_j / y_1^j        (weight 0),
+```
+
+and `Φ_R` preserves `F_0`.  On these coordinates the action is **triangular affine**:
+
+```text
+Φ(y_0) = R(y_0),        Φ(z_j) = ρ^(1−j)·z_j + ρ^(−j)·s_j ,        ρ := R'(y_0),
+s_j := σ_j / y_1^j ∈ C(y_0)[z_2, …, z_(j−1)] .
+```
+
+The membership `s_j ∈ C(y_0)[z_2,…,z_{j−1}]` is immediate: `σ_j` is isobaric of weight `j` and
+polynomial in `y_1,…,y_{j−1}` with coefficients `R^{(k)}(y_0)`, so dividing by `y_1^j` turns every
+Faà di Bruno monomial `y_{i_1}⋯y_{i_m}` (`Σ i_l = j`) into `z_{i_1}⋯z_{i_m}` with `z_1 = 1`.  The
+first few are
+
+```text
+s_2 = R'',      s_3 = R''' + 3R''·z_2,      s_4 = R'''' + 6R'''·z_2 + R''·(4z_3 + 3z_2²).
+```
+
+In particular `Φ` preserves the **polynomial** ring `C(y_0)[z_2, z_3, …]`, and acts on it by a
+triangular automorphism composed with the coefficient substitution `f ↦ f∘R`.
+
+### The shift equation in the new coordinates
+
+A normalizing shift at jet level `M` is isobaric of weight `M`
+(`exists_const_weightScale_shift_sub`), so `τ := t / y_1^M` lies in `F_0`, and the equation
+`R'·t − Φ(t) = σ_M` becomes
+
+```text
+ρ^M · Φ(τ) = ρ·τ − s_M ,        τ ∈ C(y_0, z_2, …, z_(M−1)).      (Z)
+```
+
+At `M = 2` this reads `ρ²·Φ(τ) = ρ·τ − R''`, i.e. **exactly the rational affine-connection
+equation** — the level-two obstruction is the base case of (Z), not a coincidence.
+
+### Why the descent now terminates
+
+Slice `τ` in the top variable `z_k` (`k = M−1`) over `C(y_0, z_2, …, z_{k−1})`.  Two structural
+facts hold at every level and did not hold in the `y`-coordinates:
+
+1. the linear coefficient of the action on `z_k` is the **scalar** `ρ^{1−k}`, so the leading
+   coefficient of a slice satisfies a pure eigen-relation `Φ(v_m)·ρ^κ = v_m` with
+   `κ = n + m(1−k) − 1`, whose exponent is pinned by `m` and `k`;
+2. every `s_j` is **affine** in each `z_i` (`i < j`), so an inhomogeneous term of a datum stays
+   affine in the slicing variable.
+
+Writing a *shift datum* as `(n, c, k)` — solve `ρ^n Φ(v) = ρ·v − c` for `v ∈ C(y_0,z_2,…,z_k)`, `c`
+affine in `z_k` — one step produces:
+
+```text
+deg Q ≥ 1                ⇒  the datum (k, s_k, k−1), i.e. a shift one jet level down;
+deg v ≥ 3                ⇒  the same, through the affine cocycle of the two top coefficients;
+deg v = 2                ⇒  v_2 constant and n = 2k − 1, then the datum (k, c_1 + 2v_2 s_k, k−1);
+deg v = 1                ⇒  the two data (n+1−k, c_1, k−1) and (n, c_0 + ρ^(n−k)Φ(v_1)s_k, k−1);
+deg v = 0                ⇒  c_1 = 0 and the datum (n, c, k−1).
+```
+
+Every branch **lowers `k` by one**, so the recursion terminates at `k = 1`, where
+`C(y_0, z_2, …, z_1) = C(y_0) = RatFunc ℂ` and the datum is
+
+```text
+a∘R · (R')^n = R'·a − c        in  RatFunc ℂ,
+```
+
+an affine transport equation of the shape `RationalAffineTransport.IsAffineTransport` already owns,
+killed by the pole calculus whenever `c` is polar at the critical point.  The eigen-relations
+`Φ(w)ρ^κ = w` descend the same way and land on `Q∘R·(R')^κ = Q`, killed by
+`quadOne_no_invariant_differential` unless `κ = 0` and `Q` is constant.
+
+**This is the structural fact the `y`-coordinate descent was missing**: in the weight-zero
+coordinates the tower `C(y_0) ⊂ C(y_0,z_2) ⊂ C(y_0,z_2,z_3) ⊂ ⋯` is exhausted from the top, one
+variable per step, and the base of the tower is exactly the field on which the two non-existence
+theorems of passes 4 and 6 live.
+
+### Jet level three, closed
+
+Run it at `M = 3`, `R = z² + 1` (`ρ = 2z`, `R'' = 2`, `R''' = 0`, `s_2 = 2`, `s_3 = 6z_2`):
+`ρ³Φ(τ) = ρτ − 6z_2` with `τ ∈ C(y_0, z_2)`.
+
+* a nonconstant denominator gives the affine connection — impossible;
+* `deg τ ≥ 3` gives the affine connection through the sub-leading cocycle — impossible;
+* `deg τ = 2`: the leading coefficient satisfies `Φ(v_2)ρ^{2−2} = v_2`, so `v_2 = e` is constant,
+  and the next coefficient gives `ρ²Φ(v_1) = ρv_1 − (3 + 2e)·R''` — the affine connection scaled by
+  `3 + 2e`, so `e = −3/2` and then `Φ(v_1)ρ = v_1` forces `v_1 = 0`; the constant coefficient then
+  gives, with `R''' = 0`,
+
+  ```text
+  8z³·v_0(z²+1) = 2z·v_0(z) + 3/z ,
+  ```
+
+  an affine transport with `k = 3`, `b = R' = 2z`, `c = 3/z`.  Its inhomogeneous term is polar at the
+  critical point `0`, and the critical inequality `ord_1(a)·2 + 3 ≤ ord_0(c) = −1` contradicts the
+  regularity of `a` at the critical pair — impossible;
+* `deg τ = 1`: the leading coefficient is forced to be `v_1 = −3·z_2` (the unique solution of
+  `ρ²Φ(v_1) = ρv_1 − 3R''` modulo the eigen-relation, which is trivial), but `v_1` must lie in
+  `C(y_0, z_2, …, z_{M−2}) = C(y_0)` at `M = 3`, and `z_2 ∉ C(y_0)` — impossible;
+* `deg τ = 0` forces the coefficient of `z_2` in `s_3` to vanish, i.e. `3R'' = 0` — impossible.
+
+So **`z² + 1` admits no normalizing shift at jet level three**, and with the level-two theorem and
+the shift/fixed-element equivalence, every `Φ`-fixed element of jet order at most three is constant.
+
+### What is left
+
+The same five-way case split runs at every `M`; what is not yet uniform is the bookkeeping of the
+terminal inhomogeneous term `c` down the degree-one chain, which must be shown nonzero (and polar at
+the critical point) for every `M`.  That is a finite computation with explicit polynomial data — the
+`s_j` are universal polynomials in `R''(y_0), R'''(y_0), …` and the `z_i` — rather than the
+open-ended recursion the `y`-coordinates produced.
+
+## Pass 9 — jet level three is a theorem, and the shape of every level above it
+
+**Level three, unconditionally.**  For both postcritically finite quadratics the orbifold tail is
+trivial through jet order three:
+
+```text
+quadOne_not_hasNormalizingShift_three  (z ↦ z² + 1)
+quadTwo_not_hasNormalizingShift_three  (z ↦ (z − 1)²)
+```
+
+so every fixed element of the substitution endomorphism of the free jet field of order at most three
+is constant.  The mechanism is the *projective* one: a level-three normalizing shift is, after
+slicing in `y₂`, either a level-two shift (excluded) or a polynomial of degree one or two whose
+coefficients satisfy
+
+```text
+Φ(u₂)·R' = u₂,      Φ(u₁)·R' = R'·u₁ − (3 + 2e)·R''·y₁,     Φ(u₀) = R'·u₀ − D·y₁³ − …
+```
+
+with `u₂·y₁ = e` a constant.  The middle relation makes `u₁ + (3 + 2e)·y₂/y₁` a **fixed element of
+order at most two**, hence a constant; its partial in `y₂` then reads off `3 + 2e = 0`.  Feeding
+`e = −3/2` into the constant coefficient leaves an order-one relation whose slicing in `y₁` produces
+the rational affine transport
+
+```text
+a(R)·(R')³ = R'·a − ( R''' − (3/2)·(R'')²/R' ) ,
+```
+
+whose inhomogeneous term is `−3/(z − crit)` for both maps — a simple pole exactly where the
+coefficient `R'` vanishes, which the critical-order obstruction forbids.
+
+**Every level above three is linear, and its coefficient is `−M·y₂/y₁`.**  At level `M = N + 3` with
+`N ≥ 1` the same two structural lemmas, now in the form
+
+```text
+Φ(w)·R'·y₁ = R'·w·y₁ − κ·σ₂ − μ·σ_{N+2}   ⇒   w = c − κ·y₂/y₁ − μ·y_{N+2}/y₁ ,
+```
+
+give `μ = 0` by the partial in the top coordinate — so the *quadratic* branch of the slicing occurs
+only at level three, where it is the Schwarzian — and the weighted torus action forces `c = 0`,
+because a normalizing shift is isobaric of weight its level up to a multiple of `y₁`, hence its top
+coefficient is isobaric of weight one and a constant is not.
+
+**What the level-`M` constraint actually says.**  With `u₁ = −M·y₂/y₁` and the explicit second
+coefficient `∂_{M−2}σ_M = (M(M−1)/2)·(R''·y₂ + R'''·y₁²)`, the partial `∂_{M−2}` of the shift
+equation reduces, after the substitutions `x = ∂_{M−2}u₀ / (M(M−1)/2)`, `y = x − y₂²/(2y₁²)`,
+`η = y/y₁²`, to
+
+```text
+R'^3·Φ(η) = R'·η − ( R''' − (3/2)(R'')²/R' ) ,
+```
+
+the *same* equation as at level three.  That equation always admits `η = −S/y₁²` with `S` the
+Schwarzian, since `Φ(S) = S + S_R·y₁²`; so the level-`M` constraint does not contradict but
+**determines**
+
+```text
+∂_{M−2}u₀ = (M(M−1)/2)·( −y₃/y₁ + 2·y₂²/y₁² + k ) .
+```
+
+The tail therefore reconstructs itself out of the Schwarzian, and the obstruction has to be read off
+at the *bottom* of the reconstruction, not at the top.  This is a structural finding, not a gap: it
+says the level-`M` problem is a level-three problem with a different inhomogeneous term, and the
+slicing of an arbitrary inhomogeneous relation (`hasNormalizingShift_or_polynomial_of_relation`,
+`exists_prefix_affineTransport_of_order_one` with a scaling exponent) is now available for it.

@@ -100,6 +100,32 @@ discounted reproducing kernel
  \tag{4}
 \]
 
+## Lean progress -- Theorem A's charge--mode transfer
+
+`formal/GaloisForLFunctions/HTGeometry/CapacitarySpectralProjection.lean` (new, umbrella-wired,
+axiom-clean) proves the algebraic core of Theorem A and the capacity bounds of section 1.
+
+| Card item | Declaration |
+|---|---|
+| the discounted charge `q = L_a h` and the capacity `⟨h, L_a h⟩` | `discountedCharge`, `capacity` |
+| **`(5)`**: `⟨q, phi⟩ = (1 - a lambda) ⟨h, phi⟩` for an eigenvector of the self-adjoint operator | `inner_discountedCharge_eigen` |
+| its coefficient form `⟨h, phi⟩ = ⟨q, phi⟩ / (1 - a lambda)` | `inner_eq_inner_discountedCharge_div` |
+| **`(6)`**: the projection expansion in discounted charge coefficients | `inner_projection_expansion` |
+| **`(7)`**: a kernel bound caps the observer's view | `abs_sum_le_of_kernel_bound` |
+| **`(1)`**: the capacity is the total charge when the potential is one on its support | `weightedPairing_eq_of_eq_one_on_support` |
+| **`(1a)`**: `(1-a) pi(A) <= cap_a(A) <= pi(A)` | `weightedPairing_bounds` |
+
+The transfer `(5)` is exactly self-adjointness plus the eigenvalue equation, and needs no
+probabilistic structure: it holds for any self-adjoint operator on a real inner-product space, with
+the discount factor of the mode as the only denominator.
+
+### What remains
+
+The probabilistic layer that identifies `h_A` as the discounted first-entrance potential of a
+reversible chain (hitting times, the strong Markov property, and the equilibrium measure
+`rho_A`), and Theorems B, C and J, which quantify the observer-excised complete union over that
+layer.
+
 ## 2. Exact charge--mode transfer
 
 ### Theorem A (capacitary spectral projection)

@@ -1,80 +1,131 @@
-# Preliminary novelty audit
+# Novelty audit
 
-Date: 14 August 2026. Status: external priority audit incomplete. No `first`, `unprecedented`, or `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]` claim is authorized yet.
+Date: 17 August 2026. Priority status: provisional pending independent search.
+No absolute “first” claim is authorized.
 
-## Closest literature
+## Closest current literature
 
-1. Bocchieri--Loinger proves finite-dimensional quantum recurrence existence, not local-network temporal rank, graph reconstruction or circuit capacity.
-2. Campos Venuti (2015), Kotowski--Oszmaniec (arXiv:2601.10409v3) and Gupta--Short (PRA 114, 012208; arXiv:2604.14995) study quantitative recurrence times. They do not supply the arbitrary-graph rank atlas, all-order factorization law, static Choi plateau or hard recurrence polygons.
-3. Riddell--Bertini (PRE 110, 064101; arXiv:2404.12100) constructs rationally independent local free fermions and studies form-factor moments. This is closest to spectral arithmetic, but remains a special free-fermion family and retains many-body additive relations. Current graph theorem covers generic interacting onsite-plus-edge Hamiltonians on arbitrary finite graphs and eliminates all nontrivial balanced relations in each connected component.
-4. Oszmaniec--Kotowski--Horodecki--Hunter-Jones (PRX 14, 041068; arXiv:2205.09734) proves complexity saturation and recurrence for random circuits and stochastic local Hamiltonian evolution. Current completed-time plateau concerns one deterministic time-independent local Hamiltonian after generic spectral maximality; it does not provide their finite stochastic mixing bounds.
-5. Brown--Susskind (PRD 97, 086015; arXiv:1701.01107) motivates growth--plateau--recurrence. Current paper proves completed-time plateau, hard late cycles and return reflection, not initial linear growth or first recurrence time.
-6. Cui--Schuster--Mao--Huang--Brandao (arXiv:2510.08434) proves constant-local time-independent Hamiltonian ensembles remain efficiently distinguishable from Haar and fail to form a 2-design. Permanent non-Haar separator in this manuscript is attributed to that work; novelty, if any, is coexistence with internally proved hard polygons and completed-time capacity, not the separator.
-7. Nayak--Sen (QIC 7, 103--110; quant-ph/0605041) supplies the classical CPTP-inverse classification used by exact Markovian rigidity.
-8. Jia--Wolf (CMP 402, 141--156; arXiv:2205.06977) constructs explicit constant-description families with exponential exact complexity and approximate hardness for most family parameters. It does not place the hard state at a common autonomous time on a bounded nearest-neighbour orbit from one fixed product input.
-9. Ippoliti (arXiv:2606.30635) proves a random-matrix spectral ramp for a static geometrically local clock embedding. Current component theorem is instead an exact completed-time collision/factorization law; no finite-time ramp is claimed.
+1. Bocchieri--Loinger establishes finite-dimensional quantum recurrence
+   existence, not interaction-induced rank singularity, local-network rank or
+   target-capacity laws.
+2. Kotowski--Oszmaniec and Gupta--Short study first-return bounds for finite
+   quantum systems. Current paper studies completed orbit geometry and
+   completed-time occupation and explicitly does not infer first-return times.
+3. Riddell--Pagliaroli--Alhambra study recurrence and concentration; Riddell--
+   Bertini study rationally independent free-fermion spectra and form-factor
+   moments. Campos Venuti--Odavic--Hamma derive all-order spectral-form-factor
+   moments and exponential limits under spectral arithmetic assumptions.
+   Present candidate novelty is discharging maximal projective independence
+   generically for interacting local-network families and joining it to exact
+   graph, interaction and countable-spectrum laws.
+4. Huang proves generic nondegenerate gaps for geometrically local
+   Hamiltonians. Current graph theorem removes every nonconstant balanced
+   rational spectral relation, simultaneously for all induced subsystems, and
+   reads supplied adjacency from temporal curvature.
+5. Oszmaniec et al. prove complexity saturation and recurrence for random
+   circuits and stochastic local Hamiltonian evolution. Kotowski--Oszmaniec--
+   Horodecki prove complexity jumps for unitarily invariant random
+   Hamiltonians. Current Choi law concerns deterministic static
+   onsite-plus-edge Hamiltonians after generic spectral discharge and gives
+   completed-time occupation, not stochastic mixing time.
+6. Cui--Schuster--Mao--Huang--Brandao show constant-local static Hamiltonian
+   ensembles need not approach Haar randomness. Permanent non-Haar separation
+   is not claimed new; candidate contribution is its exact coexistence with
+   recurrent finite-dictionary hard epochs for one static Pauli Hamiltonian.
+7. Ippoliti proves a static geometrically local spectral-form-factor ramp
+   through clock embedding. Current work proves completed-time rank,
+   collision and thermodynamic-density laws and asserts no finite-time ramp.
 
-## Candidate priority residues
+## Candidate novelty residues
 
-### A. Arbitrary-graph temporal curvature
+### A. Weak rank-one interaction singularity
 
-Exact residue: generic formula
-`tau(H)=sum_C(prod_{v in C} q_v - 1)` for arbitrary onsite-plus-edge local Hamiltonians, plus simultaneous subsystem atlas and reconstruction `edge iff kappa(u,v)>0`.
+Exact residue: for every pair of nonempty finite spectra and every positive
+norm budget, one diagonal operator-Schmidt-rank-one interaction produces full
+product-space projective rank, creates at least `mn` new temporal directions,
+obeys `2|t|delta||O||` for every bounded fixed-time Heisenberg probe, and
+attains every positive-weight replica collision floor.
 
-Preliminary verdict: `SURVIVES PRELIMINARY ATTACK`; `[LEAN-PROVED] [NOVELTY UNVERIFIED]`.
+Preliminary verdict: strongest central candidate. Search found no exact match
+combining all four clauses. This is not proof of priority.
 
-Remaining audit: inverse spectral graph reconstruction, generic nonresonance for interacting local Hamiltonians, algebraic spectral independence, quantum-control transition-graph criteria, and citation descendants of Riddell--Bertini.
+### B. Arbitrary-graph temporal curvature
 
-### B. Interaction/factorization collision equivalence
+Exact residue:
+`tau(H_S)=sum_C(prod_{v in C}q_v-1)` simultaneously for all induced
+subsystems of a generic onsite-plus-edge Hamiltonian, with
+`edge iff kappa(u,v)>0` and exact partition-curvature zero classification.
 
-Exact residue: joining components creates `(A-1)(B-1)` projective phase directions and, at every replica order, replaces equality of marginal histograms by equality of the joint histogram. Fixed-component form factor tends to product of exponentials.
+Preliminary verdict: survives current search. Stronger than generic
+nondegenerate-gap results; requires inverse-spectral and quantum-control
+specialist audit.
 
-Preliminary verdict: torus factorization is `[BRIDGE]`; exact all-order collision interpretation is `[LEAN-PROVED] [NOVELTY UNVERIFIED]`.
+### C. Static bounded-degree all-replica recurrence
 
-### C. Deterministic static-local completed-time Choi plateau
+Exact residue: generic open nearest-neighbour qudit paths attain the exact
+positive-weight permutation floor at every replica order, and strict anchored
+return density has exact Hilbert-dimension and site double-log extinction
+rates.
 
-Exact residue: generic connected arbitrary-graph local Hamiltonians, no Haar eigenbasis/design/mixing, upper completed density of short-circuit Choi endpoints bounded by target count times explicit phase-tube mass.
+Preliminary verdict: abstract rational-independence consequences are known;
+candidate novelty is generic realization in ordinary static bounded-degree
+interacting many-body family plus exact thermodynamic completed-density law.
 
-Preliminary verdict: `SURVIVES PRELIMINARY ATTACK`; exact arbitrary-graph composition currently `[PAPER-PROVED]`, ingredients `[LEAN-PROVED]`.
+### D. Countable complete recurrence under weak perturbation
 
-Distinction from PRX 2024: deterministic completed-time occupation rather than stochastic finite-time mixing. Distinction from Cui et al.: complexity lower bound coexists with permanent non-Haar structure.
+Exact residue: arbitrary countable pure-point spectra admit arbitrarily small
+domain-preserving self-adjoint trace-class perturbations with full future
+projective hull, zero-only exact return, unbounded finite-window rank and
+syndetic traversal of every positive summable probe. Product spectra admit one
+separable trace-class direction with countable exceptional coupling set.
 
-### D. Prime-torsion hard return polygons
+Preliminary verdict: survives current search; needs operator-theory priority
+audit focused on almost-periodic diagonal flows and trace-class perturbations.
 
-Exact residue: one fixed ordinary local Hamiltonian shadows all `p-1` circuit-avoiding vertices and returns near identity at the `p`th slice, with syndetic base times and arbitrary finite normalized-ray targets under explicit replica budget.
+### E. Static graph-local Choi occupation
 
-Preliminary verdict: `SURVIVES PRELIMINARY ATTACK`; `[LEAN-PROVED] [NOVELTY UNVERIFIED]`.
+Exact residue: generic connected finite onsite-plus-edge Hamiltonians have
+upper completed-time occupation of padded circuit-target balls bounded by
+projective Haar volume and an explicit `M^(s+1)B_D(delta)` cap, independent
+of eigenbasis.
 
-Remaining audit: fractional revival, perfect state transfer, cyclic/Floquet recurrences, complexity recurrence, finite-grid spherical codes and torsion-orbit avoidance.
+Preliminary verdict: survives current search as deterministic completed-time
+law. It is not a first-hard-time or mixing theorem.
 
-### E. Return reflection and Markovian recovery
+### F. Recurrent Pauli hardness without Haar behavior
 
-Exact residue: robust shell-by-shell circuit incidence reflection and simultaneous intermediate-time recovery with a common endpoint defect.
+Exact residue: one generic bounded-weight Pauli Hamiltonian alternates
+syndetically between Choi returns and finite-dictionary hard epochs while an
+exact local two-query signal remains above Haar benchmark at every time;
+prime-torsion version gives complete hard polygons and terminal return.
 
-Preliminary verdict: group/semigroup identities are `[BRIDGE]`; exact quantitative composition `[PAPER-PROVED] [NOVELTY UNVERIFIED]`. Do not headline until formalization and priority audit close.
+Preliminary verdict: hard-epoch/return coexistence is candidate novelty.
+Permanent separator mechanism is literature-grounded and not independently
+claimed.
 
-### F. Fixed-input common-time static complexity
+## Novelty explicitly disclaimed
 
-Exact residue: for an ordinary Gaussian nearest-neighbour two-local path and one fixed product input, a positive ensemble fraction is exponentially hard at an unbounded sequence of common deterministic times; strict margins yield rational Hamiltonian--time witnesses selected by one total algorithm.
+- Compact-hull equidistribution and Kronecker--Weyl theory.
+- Rank--nullity itself.
+- Abstract all-order form-factor formulas under rational independence.
+- Elementary finite target union bound.
+- Permanent non-Haar behavior of constant-local static ensembles.
+- First-return estimates, monotone complexity growth and random-matrix ramps.
+- Infinite-volume recurrence.
 
-Preliminary verdict: `SURVIVES PRELIMINARY ATTACK`; `[PAPER-PROVED] [NOVELTY UNVERIFIED]`. The result is an existence/common-time theorem, not a first-onset bound, efficient construction, typical late-time tail, or Brown ramp.
+## Priority controls used in paper
 
-Remaining audit: autonomous state-complexity lower bounds, explicit local Hamiltonian constructions, non-fast-forwarding, computable versus efficiently constructible circuit lower bounds, and citation descendants of Jia--Wolf and PRX 2024.
-
-## Novelty killed or downgraded
-
-- Compact-hull equidistribution: classical bridge.
-- Target union bound: elementary bridge.
-- Trace-monoid heap enumeration: classical mechanism; quantum-capacity application provisional.
-- Permanent constant-local Haar separation: literature result of Cui et al.
-- Exact CPTP recurrence implies unitarity: classical inverse-channel consequence.
-- Global static-ensemble Haar coverage no-go: strictly subsumed as headline by Cui et al.; retain only as supporting quantitative geometry.
+- “Principal new results” is limited to joined statements above.
+- Literature section distinguishes premises from their local-network
+  realization.
+- Scope section separates bounded-degree recurrence from all-to-all
+  bounded-weight Pauli complexity.
+- No “first,” “unprecedented,” “solves,” or “open problem” language appears.
 
 ## Required before submission
 
-1. Complete two-database search and citation ancestry/descendancy for candidates A--E.
-2. Normalize terminology against inverse spectral, controllability, fractional revival and complexity literature.
-3. Obtain independent specialist review of arbitrary-graph proof and prime-polygon budget.
-4. Formalize exact manuscript composition for static arbitrary-graph plateau and all paper-only Law IV theorems.
-5. Formalize the fixed-input incidence and computable-witness theorem.
-6. Recheck every bibliography item against final published metadata.
+1. Independent MathSciNet/zbMATH/INSPIRE/Google Scholar ancestry and citation
+   search for candidates A--F.
+2. Specialist review of interaction and arbitrary-graph proofs.
+3. Metadata check for 2026 preprints and later versions.
+4. Calibrate journal claim language after external priority result.

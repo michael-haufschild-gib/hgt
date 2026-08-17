@@ -1,80 +1,110 @@
-# Claim trace — The geometry and complexity of quantum recurrence
+# Internal claim ledger
 
-Status: Stage 1 manuscript assembly. This file distinguishes manuscript synthesis from mathematical proof status.
+Not part of submitted paper. Audit date: 17 August 2026.
 
-## Framework
+## Admission rule
 
-| Manuscript item | Status | Exact source |
+Every result-bearing sentence, displayed identity, theorem, corollary and
+proof dependency in `main.tex`, `body.tex`, `new-appendices.tex` and the
+included prior-results appendix must be an exact specialization or a direct
+logical composition of checked declarations below. No mathematical result is
+admitted on a paper-only proof. Definitions, literature summaries and scope
+exclusions are not theorem claims. Public manuscript contains no project,
+proof-assistant or internal-corpus references.
+
+## New synthesis and singularity
+
+| Paper block | Checked declaration(s) | Source |
 |---|---|---|
-| Haar-on-the-hull occupation | `[BRIDGE]` | Kronecker--Weyl / unique ergodicity; proved in manuscript Appendix A |
-| Finite target-capacity union bound | `[BRIDGE]` | Elementary Haar union bound; proved in manuscript Appendix A |
-| Four-law synthesis | `[NOVELTY UNVERIFIED]` | New manuscript organization; not standalone mathematical novelty |
+| Projective characters, detuning, relation lattice, temporal rank, hull dimension, character constancy, replica height, `tau+rho=D-1` | `HTGeometry.finiteProjectiveRecurrence_universalLaw` | `UniversalProjectiveRecurrenceCapstoneLaw.lean` |
+| Arbitrarily weak diagonal operator-Schmidt-rank-one interaction; uncoupled rank at most `m+n`; coupled rank `mn+m+n`; gain at least `mn`; norm budget; dimension-free Heisenberg bound; every positive full-support replica collision floor | `HTGeometry.exists_smallSeparableInteraction_temporalDimensionMultiplication` | `SeparableInteractionTemporalDimensionLaw.lean` |
+| General diagonal bipartite-interaction formulation used by proof narrative | `HTGeometry.exists_arbitrarilyWeak_bipartiteInteraction_fullRecurrenceCompletion` | `WeakInteractionRecurrenceSingularityLaw.lean` |
 
-## Law I — persistence
+## Law I: carrier and arbitrary spectra
 
-| Claim | Status | Source |
+| Paper block | Checked declaration(s) | Source |
 |---|---|---|
-| Finite contraction peripheral-carrier selection | `[LEAN-PROVED]` | Prior manuscript proof; formal recurrence carrier modules in `formal/GaloisForLFunctions/RHTower/` |
-| Arbitrary stationary spectral collision hierarchy | `[LEAN-PROVED]` | Prior manuscript and imported appendices |
-| Countable pure-point recurrence / atomless zero-density boundary | `[LEAN-PROVED]` | Prior manuscript and imported appendices |
+| Finite contraction peripheral decomposition and vanishing transient | `RHTower.finiteContraction_returnAmplitude_eq_persistent_sum_add_transient` | `DissipativeQuantumReturnInformationTransition.lean` |
+| Exact late-time ceiling and threshold dichotomy | `RHTower.finiteContraction_returnAmplitude_exactAsymptoticCeiling`; `RHTower.finiteContraction_returnThreshold_dichotomy` | same |
+| Post-burn-in target and reverse-water deadline | `RHTower.finiteContraction_exists_return_at_target_before_waterDeadline` | same |
+| Arbitrary-spectrum collision hierarchy and continuous fidelity-statistic means | `RHTower.spectralReturnMomentMeanReal_tendsto_collisionHierarchy`; `RHTower.exists_tendsto_spectralReturnStatisticMeanReal` | `ObserverRecurrenceDistributionLaw.lean` |
+| Countable pure-point recurrence | `RHTower.exists_summablePhaseEnergy_recurrence` | `SummablePurePointPhaseRecurrence.lean` |
+| Positive exact return iff visible group is cyclic | `RHTower.exists_positive_unitFidelity_iff_cyclic` | `ObserverTemporalUniversalityLaw.lean` |
+| Atomless continuum dimension and vanishing fixed return-window density | `RHTower.atomlessProjectiveObserverTemporalPhaseLaw`; packaged in `RHTower.universalQuantumRecurrenceAnatomyLaw` | `ObserverTemporalUniversalityLaw.lean`; `UniversalQuantumRecurrenceAnatomyLaw.lean` |
 
-## Law II — interaction and factorization
+## Law II: local networks, thermodynamics and replicas
 
-| Claim | Status | Exact source |
+| Paper block | Checked declaration(s) | Source |
 |---|---|---|
-| `tau(H)=sum_C(D_C-1)` for generic arbitrary finite graph-local Hamiltonians | `[LEAN-PROVED] [NOVELTY UNVERIFIED]` | `docs/drafts/pipeline/3-formalized/arbitrary-graph-quantum-temporal-curvature-law.md`; arbitrary-graph spectral factorization modules under `formal/GaloisForLFunctions/HTGeometry/` |
-| Interaction multiplication `Delta tau=(A-1)(B-1)` | `[LEAN-PROVED] [NOVELTY UNVERIFIED]` | Same card; `temporalRank_merge_components`, `temporalRank_merge_gain` |
-| Pair temporal curvature reconstructs supplied interaction graph | `[LEAN-PROVED] [NOVELTY UNVERIFIED]` | Same card; `adj_iff_pairTemporalCurvature_pos` |
-| Partition-curvature factorization lattice | `[LEAN-PROVED] [NOVELTY UNVERIFIED]` | Same card and formal component-partition layer |
-| Anchored chordal return density | `[LEAN-PROVED]` | `HTGeometry/ConnectedNetworkRecurrenceLaw.lean`; `anchoredProjectiveReturnFrequency_of_connected` |
-| Connected-network thermodynamic rate | `[LEAN-PROVED]` for homogeneous finite-volume theorem; heterogeneous graph corollary `[PAPER-PROVED]` | `HTGeometry/ThermodynamicProjectiveRecurrenceExtinctionLaw.lean`; algebraic extension proved in manuscript |
-| One-network thermodynamic exhaustion | `[LEAN-PROVED]` | `HTGeometry/InfiniteNetworkExhaustion.lean`; `networkExhaustionGoodSet_residual`, `measure_compl_networkExhaustionGoodSet_eq_zero`, `infiniteNetworkExhaustion_temporalRank_tendsto_atTop` |
-| Component recurrence torus | `[LEAN-PROVED] [BRIDGE]` | `docs/drafts/pipeline/3-formalized/component-recurrence-torus-and-replica-factorization-law.md`; `HTGeometry/ComponentRecurrenceTorus.lean` |
-| All-order component histogram collision law | `[LEAN-PROVED] [NOVELTY UNVERIFIED]` | Same card; `HTGeometry/ComponentSpectralFormFactorProduct.lean` |
-| Fixed-component product-exponential limit | `[LEAN-PROVED] [NOVELTY UNVERIFIED]` | Same card; `HTGeometry/ComponentFormFactorExponentialLimit.lean` |
+| One dense, residual, full-measure coefficient set works for every induced subsystem | `HTGeometry.allSubsystemGenericSet_dense_residual_fullMeasure` | `SubsystemComponentWitness.lean` |
+| Exact subsystem component formula and connected rank `D-1` | `HTGeometry.anchoredTemporalRank_subsystemHamiltonian_of_generic`; `HTGeometry.finiteGraphTemporalRank_add_one_of_connected` | `SubsystemComponentWitness.lean`; `FiniteGraphTemporalCurvatureLaw.lean` |
+| Component-merger product law and exact rank gain | `HTGeometry.temporalRank_merge_components`; `HTGeometry.temporalRank_merge_gain` | `FiniteGraphTemporalCurvatureLaw.lean` |
+| Pair curvature and adjacency reconstruction | `HTGeometry.finiteGraphPairTemporalCurvature_eq`; `HTGeometry.adj_iff_finiteGraphPairTemporalCurvature_pos` | same |
+| Partition curvature, nonnegativity and exact zero classification | `HTGeometry.finiteGraphPartitionTemporalCurvature_eq_rank_sub_blockRankSum`; `HTGeometry.finiteGraphPartitionTemporalCurvature_eq_zero_iff` | same |
+| Exact anchored chordal return density and no nonzero exact return | `HTGeometry.anchoredProjectiveReturnFrequency_of_connected`; `HTGeometry.no_nonzeroExactAnchoredReturn_of_connected` | `ConnectedNetworkRecurrenceLaw.lean` |
+| Homogeneous path density, extinction, Hilbert-dimension rate and site double-log rate | `HTGeometry.thermodynamicProjectiveRecurrenceExtinctionLaw` | `ThermodynamicProjectiveRecurrenceExtinctionLaw.lean` |
+| One countable-network exhaustion: residual/dense event, probability-one event and rank divergence | `HTGeometry.infiniteNetworkExhaustion_temporalRank_tendsto_atTop` with `networkExhaustionGoodSet_residual` and `measure_compl_networkExhaustionGoodSet_eq_zero` | `InfiniteNetworkExhaustion.lean` |
+| Static onsite-plus-nearest-neighbour qudit paths attain every positive-weight replica floor simultaneously | `HTGeometry.exists_quditPath_generic_survivalFidelityFloor` | `GenericLocalCollisionExtremality.lean` |
+| Component histogram collision identity | `HTGeometry.fidelityReplicaCollisionMass_factorizedOn_eq_componentCollisionMass` | `ComponentReplicaCollisionLaw.lean` |
+| Uniform component SFF product and moment limit | `HTGeometry.card_pow_mul_componentCollisionMass_eq_prod`; `HTGeometry.tendsto_componentFormFactorMoment` | `ComponentSpectralFormFactorProduct.lean` |
+| Fixed-component product of independent unit exponentials | `HTGeometry.tendsto_prod_replicaFormFactorCoeff`; `HTGeometry.tendsto_sffLaw_unitExpLaw` | `ComponentFormFactorExponentialLimit.lean`; `SpectralFormFactorExponentialLimit.lean` |
 
-## Law III — target capacity and complexity
+## Countable completion
 
-| Claim | Status | Exact source |
+| Paper block | Checked declaration(s) | Source |
 |---|---|---|
-| Reverse-water target information and recurrence deadline | `[LEAN-PROVED]` | Prior manuscript and imported appendices |
-| Observer coherence graph and visible capacity | `[LEAN-PROVED]` | Prior manuscript and imported appendices |
-| Eigenbasis-free Choi target tube bound | `[LEAN-PROVED] [NOVELTY UNVERIFIED]` | `docs/drafts/pipeline/3-formalized/universal-static-choi-complexity-plateau.md` |
-| Static connected graph-local completed-time Choi plateau | `[PAPER-PROVED] [NOVELTY UNVERIFIED]` composition | Arbitrary-graph theorem + Choi tube theorem + unique ergodicity. Exact composition proved in manuscript; not yet one Lean declaration |
-| Local circuit heap count | `[LEAN-PROVED] [BRIDGE]` | `docs/drafts/pipeline/3-formalized/local-circuit-trace-capacity-law.md`; `RHTower/LocalCircuitTraceCapacity.lean`; trace-monoid mechanism classical |
-| Linear-`D` completed-time heap plateau | `[PAPER-PROVED] [NOVELTY UNVERIFIED]` | Same card composed with Choi cap; not yet formalized |
-| Fixed-product-state quenched plateau on Gaussian nearest-neighbour chains | `[PAPER-PROVED] [NOVELTY UNVERIFIED]` | `docs/drafts/pipeline/2-fully-proven/local-clifford-return-excised-phase-incidence-law.md`; direct target-cap proof reproduced in manuscript |
-| Common deterministic hard-time subsequence | `[PAPER-PROVED] [NOVELTY UNVERIFIED]` | `docs/drafts/pipeline/2-fully-proven/computable-static-local-exponential-state-complexity-law.md`; Fatou--Tonelli composition reproduced in manuscript |
-| Rational uniformly computable static-local hard witnesses | `[PAPER-PROVED] [NOVELTY UNVERIFIED]` | Same card; continuity, rational-density and dovetailed certification proof reproduced in manuscript |
-| Prime-torsion arbitrary-ray avoidance | `[LEAN-PROVED] [NOVELTY UNVERIFIED]` | `docs/drafts/pipeline/3-formalized/prime-torsion-circuit-ray-polygon-law.md`; `RHTower/PrimeTorsionCircuitRayPolygon.lean` |
-| Syndetic autonomous hard polygon plus return | `[LEAN-PROVED] [NOVELTY UNVERIFIED]` | `docs/drafts/pipeline/3-formalized/prime-torsion-autonomous-circuit-polygon-law.md`; `RHTower/PrimeTorsionAutonomousCircuitPolygon.lean` |
-| Ordinary Pauli-local hard polygon | `[LEAN-PROVED] [NOVELTY UNVERIFIED]` | `docs/drafts/pipeline/3-formalized/pauli-local-prime-torsion-circuit-polygon-law.md`; `RHTower/PauliLocalPrimeTorsionCircuitPolygonLaw.lean` |
-| Permanent two-query Haar separator | `[LEAN-PROVED] [LITERATURE]` | Exact port of Cui--Schuster--Mao--Huang--Brandao; `docs/drafts/pipeline/3-formalized/traceless-local-two-query-haar-separation-law.md` |
+| Trivial relation lattice, full countable hull, dense every future tail, zero-only exact return, exact liminf/limsup, syndetic near-level and exact interior crossings | `HTGeometry.completeSaturatedProjectiveRecurrenceLaw` | `CountableProjectiveFutureUniversalityLaw.lean` |
+| Arbitrarily small domain-preserving self-adjoint Schatten-1 diagonal perturbation, unbounded finite-window rank and all complete recurrence conclusions | `HTGeometry.exists_arbitrarilyWeak_completeProjectiveRecurrenceLaw` | same |
+| One separable trace-class interaction direction; countable exceptional couplings; complete recurrence outside it | `HTGeometry.exists_arbitrarilyWeak_separable_completeProjectiveRecurrenceRayLaw` | `SeparableInteractionRecurrenceRayLaw.lean` |
 
-## Law IV — reflection and recovery
+## Law III: target capacity and complexity
 
-| Claim | Status | Exact source |
+| Paper block | Checked declaration(s) | Source |
 |---|---|---|
-| Autonomous robust complexity palindrome | `[PAPER-PROVED] [BRIDGE] [NOVELTY UNVERIFIED]` | `docs/drafts/pipeline/2-fully-proven/autonomous-return-complexity-reflection-law.md`; Lean deferred |
-| Exact-length shell / partition-function reflection | `[PAPER-PROVED] [NOVELTY UNVERIFIED]` | Same card; Lean deferred |
-| Markovian simultaneous recovery and distinguishability bound | `[PAPER-PROVED] [NOVELTY UNVERIFIED]` | `docs/drafts/pipeline/2-fully-proven/markovian-return-recovery-complexity-reflection-law.md`; Lean deferred |
-| Exact full-channel recurrence forces unitary semigroup | `[LITERATURE] [BRIDGE]` | CPTP inverse classification plus semigroup law; Nayak--Sen cited |
+| Reverse-water objective, two-sided logarithmic deadline and post-delay syndetic return | `RHTower.universalWeightedFloquetFidelityRecurrenceTime_rateDistortionSandwich` | `ProjectiveGaussianRateDistortion.lean` |
+| Observer edge-phase energy, graph zero set and capacity `D-c` | `RHTower.finite_quantum_observer_coherence_law` | `FiniteQuantumObserverCoherenceLaw.lean` |
+| Observer recurrence deadline and displacement bound | `RHTower.exists_finiteQuantumObserver_graphRank_distance_recurrence` | `FiniteQuantumObserverGraphRecurrenceBound.lean` |
+| Generic connected graph-local upper completed-time Choi-target occupation and explicit padded-word union bound | `RHTower.connectedNetwork_completedTime_paddedCircuitTargets_generic` | `ConnectedNetworkStaticChoiComplexityPlateauLaw.lean` |
+| Same bounded-weight Pauli Hamiltonian: syndetic return-hard-return and permanent two-query separation from Haar benchmark | `RHTower.pauliBounded_complexityAlternation_and_permanentHaarSeparation` | `StaticQLocalComplexityHaarSeparationLaw.lean` |
+| Prime hard polygon, terminal return and permanent separator | `RHTower.pauliBounded_completeCircuitPolygon_and_permanentHaarSeparation` | `PauliLocalPrimeTorsionCircuitPolygonLaw.lean` |
+| Robust two-sided complexity reflection and exact-return palindrome | `RHTower.choiComplexity_reflect`; `RHTower.choiComplexity_reflect'`; `RHTower.choiComplexity_eq_of_exact_return` | `AutonomousReturnReflection.lean` |
 
-## Information boundary
+## Law IV: inference boundary
 
-| Claim | Status | Source |
+| Paper block | Checked declaration(s) | Source |
 |---|---|---|
-| Complete finite-record ambiguity | `[LEAN-PROVED]` | Prior manuscript and imported appendices |
-| Sharp moment-support threshold and minimax `1/2` | `[LEAN-PROVED]` | Prior manuscript and imported appendices |
-| Onset--recurrence dimension independence | `[PAPER-PROVED] [NOVELTY UNVERIFIED]` | `docs/drafts/pipeline/2-fully-proven/onset-recurrence-dimension-independence-law.md` |
+| One fixed spectrum/protocol/earlier record with every future probability, Jacobi endpoint classification and free-fermion all-sector lift | `RHTower.ParityForecast.one_fixed_nearestNeighbor_freeFermion_every_future_probability` | `FermionicFockIsospectrality.lean` |
+| Minimax terminal absolute error `1/2` | `RHTower.ParityForecast.every_forecaster_has_half_error` | `ParityConditionedForecastingInstability.lean` |
+| Complete polynomial cyclic-local data do not universally decide persistent recurrence | `RHTower.universalQuantumRecurrenceAnatomyLaw`, field `localDataDoNotDecide` | `UniversalQuantumRecurrenceAnatomyLaw.lean` |
+| Complete perturbative bounded-observable and SFF jets do not decide nonperturbative completion | `RHTower.perturbativeBoundedSpectralObservableJet_everyCompletion_eq`; `RHTower.perturbativeSpectralFormFactorJet_compactFamilies_eq` and packaged capstone | `NonperturbativeQuantumRecurrenceSeparationLaw.lean`; `UniversalQuantumRecurrenceAnatomyLaw.lean` |
+| Compact exact moments determine spectrum and recurrence plateau | `RHTower.compactExactMoments_determine_spectrum`; `RHTower.compactExactMoments_determine_recurrencePlateau` | `QuantumRecurrenceGlobalCompletionLaw.lean` |
 
-## Forbidden manuscript claims
+## Included prior-results appendix
 
-- No optimally recentered projective operator-norm density formula; proved formula is anchored chordal.
-- No infinite-volume recurrence or interchange of limits.
-- No quantitative first-return time from completed density.
-- No first-onset, monotonicity, Brown ramp or Brown recurrence scale.
-- No Brown-scale circuit dictionary in prime-polygon theorem.
-- No Haar/design randomization by constant-local static dynamics.
-- No derivation of physical space without supplied subsystem decomposition.
-- No recovery conclusion from recurrence of one state; Markovian theorem requires full-channel return.
+Single compiled document includes
+`../persistent-phase-geometry-quantum-recurrence/appendices.tex`. Every result
+there is dependency-closed by that manuscript's
+`../persistent-phase-geometry-quantum-recurrence/claim-trace.md`, including
+finite contractions, arbitrary spectral types, projective completion,
+replica-grid readout, coupling walls, static path recurrence, reverse-water
+geometry, observer bounds and finite-record inference. This ledger supersedes
+old paper-only status labels: only rows backed by checked declarations are
+retained in present main text.
+
+## Axiom and source audit
+
+`/tmp/QuantumRecurrencePaperAudit.lean` imports every load-bearing module and
+runs `#print axioms` on headline declarations. Audit passed: every reported
+kernel dependency is among `[propext, Classical.choice, Quot.sound]`.
+Repository formal lint forbids `sorry`, `admit`, project `axiom`,
+`opaque` and `unsafe` declarations.
+
+## Explicit exclusions
+
+- No first-return time inferred from inverse completed density.
+- No monotone complexity ramp or finite-time random-matrix ramp.
+- No Haar randomization by static bounded-local Hamiltonians.
+- No circuit-hardness claim for bounded-degree nearest-neighbour paths.
+- No bounded-degree geometry claim for bounded-weight all-to-all Pauli terms.
+- No infinite-volume orbit recurrence or interchange of size and time limits.
+- No physical-space reconstruction without supplied subsystem factorization.
