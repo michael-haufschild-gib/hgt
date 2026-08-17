@@ -262,8 +262,7 @@ positive curvature/Gram diagonal removes the phase and restores the same
 harmonic boundary mass. Thus bare continuation, cross-fibre covariance, and
 phase oscillation cannot prove boundary control.
 
-`[PROVED ON PAPER; LEAN IN PROGRESS]` The unconditional theorem to formalize
-is
+`[LEAN-FORMALIZED]` The unconditional theorem is
 
 ```text
 Summable (B_(m,q,-)) <-> t_q = 0,
@@ -276,6 +275,16 @@ source--Green estimate making the literal boundary Hessian summable would
 immediately kill every off-line Xi fibre. Such an estimate is not supplied
 by meromorphic continuation; it must bound the positive diagonal before any
 phase is forgotten.
+
+Lean:
+`formal/GaloisForLFunctions/RHTower/XiGammaSixFilteredBoundaryControl.lean`.
+The module proves the exact positive factorization, an explicit uniform
+harmonic-prime lower bound, pointwise nonnegativity, the sharp summability
+classification, the requested implication from boundary control to raw
+curvature summability, and universal equivalence with RH. Direct `lake env
+lean` and exact leaf `lake build` pass; the module is wired into
+`RHTower.lean`. Axiom audit reports only `propext`, `Classical.choice`, and
+`Quot.sound`. No umbrella build was run.
 
 ## External hostile comparison
 

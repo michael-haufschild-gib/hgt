@@ -110,52 +110,225 @@ theorem linearIndependent_adjoin_transcendental
 theorem adjoin_le_span_of_span
     (E : IntermediateField F Ω) [FiniteDimensional F E] (t : Ω)
     {ι : Type*} [Fintype ι] (b : ι → Ω)
-    (hspanE : (E : Set Ω) ⊆ Submodule.span F (Set.range b)) :
+    (hspanE : (E : Set Ω) ⊆ (Submodule.span F (Set.range b) : Set Ω)) :
     ((IntermediateField.adjoin (↥F⟮t⟯) (E : Set Ω) : IntermediateField (↥F⟮t⟯) Ω) : Set Ω)
-      ⊆ Submodule.span (↥F⟮t⟯) (Set.range b) := by
+      ⊆ (Submodule.span (↥F⟮t⟯) (Set.range b) : Set Ω) := by
   classical
+  -- every element of `E` is algebraic over `F(t)`
   have halg : ∀ x ∈ (E : Set Ω), IsAlgebraic (↥F⟮t⟯) x := by
     intro x hx
-    have hx' : IsAlgebraic F x := by
-      have : IsIntegral F (⟨x, hx⟩ : ↥E) := IsIntegral.of_finite F _
-      have h2 : IsIntegral F x := by
-        simpa using this.map (IntermediateField.val E)
-      exact h2.isAlgebraic
-    exact hx'.tower_top (↥F⟮t⟯)
+    haveI : Algebra.IsAlgebraic F ↥E := Algebra.IsAlgebraic.of_finite F ↥E
+    have hxE : IsAlgebraic F (⟨x, hx⟩ : ↥E) := Algebra.IsAlgebraic.isAlgebraic _
+    have hxΩ : IsAlgebraic F x := by
+      simpa using hxE.algHom (E.val)
+    exact hxΩ.tower_top (↥F⟮t⟯)
   have hsub := IntermediateField.adjoin_toSubalgebra_of_isAlgebraic (F := ↥F⟮t⟯) (S := (E : Set Ω))
     halg
+  -- `E` is inside the `F(t)`-span of `b`
+  have hEsub : (E : Set Ω) ⊆ (Submodule.span (↥F⟮t⟯) (Set.range b) : Set Ω) := by
+    intro y hy
+    exact Submodule.span_le_restrictScalars F (↥F⟮t⟯) (Set.range b) (hspanE hy)
+  have hspanLE : Submodule.span (↥F⟮t⟯) (E : Set Ω)
+      ≤ Submodule.span (↥F⟮t⟯) (Set.range b) := Submodule.span_le.2 hEsub
+  -- the multiplicative closure of `E` is `E`
+  have hclosure : (Submonoid.closure (E : Set Ω) : Set Ω) ⊆ (E : Set Ω) := by
+    intro z hz
+    have hle : Submonoid.closure (E : Set Ω) ≤ E.toSubalgebra.toSubmonoid :=
+      Submonoid.closure_le.2 fun x hx => hx
+    exact hle hz
   intro x hx
   have hxalg : x ∈ Algebra.adjoin (↥F⟮t⟯) (E : Set Ω) := by
     rw [← hsub]
     exact hx
-  have hspan : (Algebra.adjoin (↥F⟮t⟯) (E : Set Ω) : Set Ω)
-      ⊆ Submodule.span (↥F⟮t⟯) (E : Set Ω) := by
-    intro y hy
-    have hy' : y ∈ Subalgebra.toSubmodule (Algebra.adjoin (↥F⟮t⟯) (E : Set Ω)) := hy
+  have hxspan : x ∈ Submodule.span (↥F⟮t⟯) (E : Set Ω) := by
+    have hy' : x ∈ Subalgebra.toSubmodule (Algebra.adjoin (↥F⟮t⟯) (E : Set Ω)) := hxalg
     rw [Algebra.adjoin_eq_span] at hy'
-    refine Submodule.span_le.2 ?_ hy'
+    refine (Submodule.span_le.2 ?_) hy'
     intro z hz
-    refine Submonoid.closure_induction ?_ ?_ ?_ hz
-    · intro w hw
-      exact Submodule.subset_span hw
-    · exact Submodule.subset_span (E.one_mem)
-    · intro u v _ _ hu hv
-      have : u * v ∈ (E : Set Ω) := by
-        have hu' : u ∈ E := by
-          have := Submodule.span_le.2 (le_refl ((E : Set Ω))) hu
-          exact this
-        have hv' : v ∈ E := by
-          have := Submodule.span_le.2 (le_refl ((E : Set Ω))) hv
-          exact this
-        exact E.mul_mem hu' hv'
-      exact Submodule.subset_span this
-  have hxspan : x ∈ Submodule.span (↥F⟮t⟯) (E : Set Ω) := hspan hxalg
-  refine Submodule.span_le.2 ?_ hxspan
-  intro y hy
-  have hy' : y ∈ Submodule.span F (Set.range b) := hspanE hy
-  refine Submodule.span_le.2 ?_ hy'
-  intro z hz
-  exact Submodule.subset_span hz
+    exact Submodule.subset_span (hclosure hz)
+  exact hspanLE hxspan
+
+/-- **Base change along a transcendental element preserves the degree.** -/
+theorem finrank_adjoin_eq_of_transcendental
+    (E : IntermediateField F Ω) [FiniteDimensional F E] (t : Ω) (ht : Transcendental E t) :
+    Module.finrank (↥F⟮t⟯) ↥(IntermediateField.adjoin (↥F⟮t⟯) (E : Set Ω))
+      = Module.finrank F ↥E := by
+  classical
+  set n : ℕ := Module.finrank F ↥E with hn
+  set bas : Module.Basis (Fin n) F ↥E := Module.finBasis F ↥E with hbas
+  set b : Fin n → Ω := fun i => ((bas i : ↥E) : Ω) with hb
+  have hbE : ∀ i, b i ∈ E := fun i => (bas i).2
+  have hindF : LinearIndependent F b := by
+    have h := bas.linearIndependent
+    have hmap := h.map' (E.val.toLinearMap) (by
+      rw [LinearMap.ker_eq_bot]
+      exact fun x y hxy => Subtype.ext hxy)
+    exact hmap
+  have hspanE : (E : Set Ω) ⊆ (Submodule.span F (Set.range b) : Set Ω) := by
+    intro x hx
+    have hxmem : (⟨x, hx⟩ : ↥E) ∈ Submodule.span F (Set.range bas) := by
+      rw [bas.span_eq]
+      exact Submodule.mem_top
+    have himg : ((⟨x, hx⟩ : ↥E) : Ω) ∈ Submodule.map E.val.toLinearMap
+        (Submodule.span F (Set.range bas)) := ⟨⟨x, hx⟩, hxmem, rfl⟩
+    rw [Submodule.map_span] at himg
+    have hrange : (E.val.toLinearMap '' (Set.range bas)) = Set.range b := by
+      ext y
+      constructor
+      · rintro ⟨z, ⟨i, rfl⟩, rfl⟩
+        exact ⟨i, rfl⟩
+      · rintro ⟨i, rfl⟩
+        exact ⟨bas i, ⟨i, rfl⟩, rfl⟩
+    rw [hrange] at himg
+    exact himg
+  have hindL : LinearIndependent (↥F⟮t⟯) b :=
+    linearIndependent_adjoin_transcendental E t ht b hbE hindF
+  set M : IntermediateField (↥F⟮t⟯) Ω := IntermediateField.adjoin (↥F⟮t⟯) (E : Set Ω) with hM
+  have hbM : ∀ i, b i ∈ M := fun i => IntermediateField.subset_adjoin _ _ (hbE i)
+  set b' : Fin n → ↥M := fun i => ⟨b i, hbM i⟩ with hb'
+  have hindM : LinearIndependent (↥F⟮t⟯) b' := by
+    have hinj : Function.Injective (M.val : ↥M →ₐ[↥F⟮t⟯] Ω) := fun x y hxy => Subtype.ext hxy
+    refine LinearIndependent.of_comp (M.val.toLinearMap) ?_
+    exact hindL
+  have hspanM : ⊤ ≤ Submodule.span (↥F⟮t⟯) (Set.range b') := by
+    intro x _
+    have hx : (x : Ω) ∈ (Submodule.span (↥F⟮t⟯) (Set.range b) : Set Ω) :=
+      adjoin_le_span_of_span E t b hspanE x.2
+    have hmap : Submodule.map M.val.toLinearMap (Submodule.span (↥F⟮t⟯) (Set.range b'))
+        = Submodule.span (↥F⟮t⟯) (Set.range b) := by
+      rw [Submodule.map_span]
+      congr 1
+      ext y
+      constructor
+      · rintro ⟨z, ⟨i, rfl⟩, rfl⟩
+        exact ⟨i, rfl⟩
+      · rintro ⟨i, rfl⟩
+        exact ⟨b' i, ⟨i, rfl⟩, rfl⟩
+    have hx' : (x : Ω) ∈ Submodule.map M.val.toLinearMap
+        (Submodule.span (↥F⟮t⟯) (Set.range b')) := by
+      rw [hmap]
+      exact hx
+    obtain ⟨y, hy, hyx⟩ := hx'
+    have : y = x := Subtype.ext hyx
+    rwa [this] at hy
+  have hbasis : Module.Basis (Fin n) (↥F⟮t⟯) ↥M := Module.Basis.mk hindM hspanM
+  rw [Module.finrank_eq_card_basis hbasis]
+  simp
+
+/-- **A simple transcendental extension is relatively algebraically closed.**  An element of
+`F(t)` algebraic over `F` already lies in `F`. -/
+theorem mem_bot_of_mem_adjoin_simple_of_isAlgebraic
+    (t : Ω) (ht : Transcendental F t) {x : Ω} (hx : x ∈ F⟮t⟯) (hax : IsAlgebraic F x) :
+    x ∈ (⊥ : IntermediateField F Ω) := by
+  classical
+  set E : IntermediateField F Ω := F⟮x⟯ with hE
+  haveI : FiniteDimensional F ↥E := by
+    rw [hE]
+    exact IntermediateField.adjoin.finiteDimensional hax.isIntegral
+  have htE : Transcendental (↥E) t := by
+    rw [Transcendental]
+    intro halg
+    haveI : Algebra.IsAlgebraic F ↥E := Algebra.IsAlgebraic.of_finite F ↥E
+    haveI : Algebra.IsAlgebraic (↥E) ↥(IntermediateField.adjoin (↥E) {t}) := by
+      refine IntermediateField.isAlgebraic_adjoin ?_
+      intro z hz
+      rw [Set.mem_singleton_iff] at hz
+      subst hz
+      exact halg.isIntegral
+    haveI : Algebra.IsAlgebraic F ↥(IntermediateField.adjoin (↥E) {t}) :=
+      Algebra.IsAlgebraic.trans F (↥E) _
+    have hmem : t ∈ IntermediateField.adjoin (↥E) {t} :=
+      IntermediateField.subset_adjoin _ _ (Set.mem_singleton t)
+    have hta : IsAlgebraic F (⟨t, hmem⟩ : ↥(IntermediateField.adjoin (↥E) {t})) :=
+      Algebra.IsAlgebraic.isAlgebraic _
+    obtain ⟨p, hp0, hp⟩ := hta
+    refine ht ⟨p, hp0, ?_⟩
+    have hcomp := Polynomial.aeval_algHom_apply
+      ((IntermediateField.adjoin (↥E) {t}).val.restrictScalars F)
+      (⟨t, hmem⟩ : ↥(IntermediateField.adjoin (↥E) {t})) p
+    rw [hp] at hcomp
+    simpa using hcomp
+  have hdeg := finrank_adjoin_eq_of_transcendental E t htE
+  have hEsub : (E : Set Ω) ⊆ (F⟮t⟯ : Set Ω) := by
+    rw [hE]
+    refine (IntermediateField.adjoin_le_iff.2 ?_)
+    intro z hz
+    rw [Set.mem_singleton_iff] at hz
+    subst hz
+    exact hx
+  have hbot : IntermediateField.adjoin (↥F⟮t⟯) (E : Set Ω) = ⊥ := by
+    refine IntermediateField.adjoin_eq_bot_iff.2 ?_
+    intro z hz
+    have hzL : z ∈ F⟮t⟯ := hEsub hz
+    exact ⟨⟨z, hzL⟩, rfl⟩
+  rw [hbot] at hdeg
+  have hone : Module.finrank F ↥E = 1 := by
+    rw [← hdeg]
+    simp
+  have hEbot : E = ⊥ := by
+    rwa [IntermediateField.finrank_eq_one_iff] at hone
+  have hxE : x ∈ E := by
+    rw [hE]
+    exact IntermediateField.mem_adjoin_simple_self F x
+  rwa [hEbot] at hxE
+
+/-- **An algebraic extension meets a transcendental adjunction in the base.**  This is the
+`E ⊓ M = ⊥` hypothesis of natural irrationalities. -/
+theorem inf_adjoin_simple_eq_bot_of_isAlgebraic
+    (N : IntermediateField F Ω) (halg : ∀ x ∈ N, IsAlgebraic F x)
+    (t : Ω) (ht : Transcendental F t) :
+    N ⊓ F⟮t⟯ = ⊥ := by
+  refine le_antisymm (fun x hx => ?_) bot_le
+  exact mem_bot_of_mem_adjoin_simple_of_isAlgebraic t ht hx.2 (halg x hx.1)
+
+/-- Every element of a finite extension is algebraic over the base. -/
+theorem isAlgebraic_of_mem_of_finiteDimensional
+    (N : IntermediateField F Ω) [FiniteDimensional F N] {x : Ω} (hx : x ∈ N) :
+    IsAlgebraic F x := by
+  haveI : Algebra.IsAlgebraic F ↥N := Algebra.IsAlgebraic.of_finite F ↥N
+  have hxN : IsAlgebraic F (⟨x, hx⟩ : ↥N) := Algebra.IsAlgebraic.isAlgebraic _
+  obtain ⟨p, hp0, hp⟩ := hxN
+  refine ⟨p, hp0, ?_⟩
+  have hcomp := Polynomial.aeval_algHom_apply (N.val) (⟨x, hx⟩ : ↥N) p
+  rw [hp] at hcomp
+  simpa using hcomp
+
+/-- **The base-changed extension stays finite.** -/
+theorem finiteDimensional_adjoin_of_transcendental
+    (N : IntermediateField F Ω) [FiniteDimensional F N] (t : Ω) (ht : Transcendental N t) :
+    FiniteDimensional (↥F⟮t⟯) ↥(IntermediateField.adjoin (↥F⟮t⟯) (N : Set Ω)) := by
+  have hpos : 0 < Module.finrank (↥F⟮t⟯) ↥(IntermediateField.adjoin (↥F⟮t⟯) (N : Set Ω)) := by
+    rw [finrank_adjoin_eq_of_transcendental N t ht]
+    exact Module.finrank_pos
+  exact Module.finite_of_finrank_pos hpos
+
+/-- The compositum of a field with a simple transcendental adjunction, as an adjunction over the
+adjunction. -/
+theorem adjoin_eq_top_of_sup_eq_top
+    (N : IntermediateField F Ω) (t : Ω) (htop : N ⊔ F⟮t⟯ = ⊤) :
+    IntermediateField.adjoin (↥F⟮t⟯) (N : Set Ω) = ⊤ := by
+  rw [← IntermediateField.restrictScalars_eq_top_iff (K := F),
+    IntermediateField.restrictScalars_adjoin]
+  refine le_antisymm le_top ?_
+  rw [← htop]
+  refine sup_le (fun x hx => ?_) (fun x hx => ?_)
+  · exact IntermediateField.subset_adjoin _ _ (Or.inr hx)
+  · exact IntermediateField.subset_adjoin _ _ (Or.inl hx)
+
+/-- **The base-changed extension is Galois**, by mathlib's compositum theorem. -/
+theorem isGalois_of_sup_eq_top
+    (N : IntermediateField F Ω) [FiniteDimensional F N] [IsGalois F N]
+    (t : Ω) (htop : N ⊔ F⟮t⟯ = ⊤) : IsGalois (↥F⟮t⟯) Ω :=
+  IsGalois.sup_right N F⟮t⟯ htop
+
+/-- **The base-changed extension is finite.** -/
+theorem finiteDimensional_of_sup_eq_top
+    (N : IntermediateField F Ω) [FiniteDimensional F N]
+    (t : Ω) (htN : Transcendental (↥N) t) (htop : N ⊔ F⟮t⟯ = ⊤) :
+    FiniteDimensional (↥F⟮t⟯) Ω := by
+  have hfin := finiteDimensional_adjoin_of_transcendental N t htN
+  rw [adjoin_eq_top_of_sup_eq_top N t htop] at hfin
+  exact Module.Finite.equiv (IntermediateField.topEquiv (F := ↥F⟮t⟯) (E := Ω)).toLinearEquiv
 
 end GaloisForLFunctions.HTGeometry
 

@@ -197,7 +197,7 @@ transverse quadratic possibility.
 ```
 
 The paper-proved equivariant causal-Hessian classification in
-`../2-fully-proven/not_new_scientific_knowledge/equivariant-causal-hessian-kernel-fidelity-rigidity.md`
+`../3-formalized/not_new_scientific_knowledge/equivariant-causal-hessian-kernel-fidelity-rigidity.md`
 adds a sharp parent boundary. Over a supplied complex matrix carrier, positivity, unitary
 equivariance, sesquilinear polarization, and exact kernel fidelity select
 \[

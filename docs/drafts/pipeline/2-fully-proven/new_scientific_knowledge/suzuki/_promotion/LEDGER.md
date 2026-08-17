@@ -12693,3 +12693,130 @@ since it depends only on `δ`, `M`, `c` and the strong limit, two families shari
 response — which is exactly the source blindness of `(284)`.
 
 All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AEW. Theorem U's trace identity `(210)` — it is a telescope, not trace-class theory
+
+```text
+HTGeometry/GapOccupancyTraceMoment.lean
+  spectralCompactify, spectralCompactify_pos, spectralCompactify_le_one, spectralCompactify_zero
+  smoothingWeight_eq            f_j(t) = (1+t²)^{-(j+1)} is exactly x(t)^{j+1}
+  intervalIntegral_pow_eq       (j+1)∫_a^b t^j = b^{j+1} − a^{j+1}
+  traceDifference_eq_gapMoment  (210)
+  integral_iUnion_gaps          the occupancy moment splits over disjoint gaps
+  integral_Ioc_eq_intervalIntegral
+```
+
+`(210)` needed no Krein spectral-shift or trace-class machinery.  The smoothing weight is *exactly*
+the compactified variable to the power `j+1`, `f_j(t) = x(t)^{j+1}` with `x(t) = 1/(1+t²)`, so the
+difference of the two spectral sums telescopes gap by gap, and the fundamental theorem of calculus
+converts each telescope into `(j+1)` times the `j`-th moment of `1_{E_n} dx` over that gap.  The
+`−1` is `x(0)^{j+1}` — the forced odd eigenvalue at the origin — and drops out as a constant.
+
+The identity holds at every finite aperture, for every `j`, and uses only disjointness of the
+interlacing gaps.  The card's remark that "strong convergence of moving rank-one resolvent
+differences does not by itself control their traces" concerns the *limit* `(212)`, not this exact
+identity, which is unconditional.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AEX. Corollary G.5 — the Plancherel transfer
+
+```text
+RHTower/VectorL2FourierMultiplicationDerivative.lean
+  l2_smulLeft_toTemperedDistribution   the distribution of `t ↦ t • f t` is the variable
+                                       multiplication of the distribution of `f`
+  l2_weakDerivative_fourier_of_mul     ∂(𝓕 f) = −(2πi)·𝓕 g whenever g =ᵃᵉ t • f
+```
+
+G.5's remaining step was "by scalar Plancherel, the Fourier transform of the remainder has weak
+derivative in `L²`".  Mathlib already carries the exact distributional identity
+`TemperedDistribution.lineDerivOp_fourier_eq`, the mirror of the multiplier lemma the corpus used
+for the opposite direction in `RHTower/VectorL2WeakDerivativeFourier.lean`.  The only work is the
+bridge: that the tempered distribution of `t ↦ t • f t` is `smulLeftCLM` applied to the distribution
+of `f`, which is a one-line integral congruence.
+
+So the hypothesis `t·r(t) ∈ L²` gives directly that `𝓕 r` has weak derivative `−(2πi)·𝓕(t r)`, an
+`L²` function — the `H¹` conclusion `(89)`, with no pointwise differentiability and no `L¹`
+hypothesis anywhere.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AEY. The literal-instantiation layer — first course: the midpoint reflection
+
+```text
+RHTower/SuzukiMidpointReflectionInstantiation.lean
+  midpointReflect                          x ↦ a − x on the half-interval
+  measurePreserving_reflBoth, measurableEmbedding_reflBoth, integral_comp_reflBoth
+  diffBilinForm_midpointReflect            the Toeplitz form is reflection invariant
+  expRise, expDecay
+  expRise_eq_exp_smul_midpointReflect      exp x = e^a · (exp ∘ (a − ·))⁻, exactly
+  diffBilinForm_expRise_eq                 b(u,u) = e^{2a} b(v,v), realized
+```
+
+The abstract `sech` wall (Theorem W) assumes a bilinear form with a reflection `J` satisfying
+`b(Jx, Jy) = b(x, y)`, and sources related by `u = e^a • J v`.  Both are literal facts about the
+corpus's difference form `diffBilinForm K φ ψ = ∫ K(x−y) φ(y) ψ(x)`:
+
+* the form sees the kernel only through `x − y`, and the substitution `(x,y) ↦ (a−x, a−y)` is
+  measure preserving and sends `x − y` to `−(x − y)`, so an even kernel gives exact invariance;
+* the two exponential sources satisfy `exp x = e^a · exp(−(a−x))` identically — no estimate.
+
+So `(229)`'s reflection input is now a theorem about the literal Toeplitz channel, not a hypothesis:
+`diffBilinForm K expRise expRise = e^{2a} · diffBilinForm K expDecay expDecay`.  Symmetry of the
+form is carried as an explicit hypothesis here, since it is a property of the chosen kernel class
+rather than of the reflection.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AEZ. The literal-instantiation layer — second course: symmetry and the reflected Hankel kernel
+
+```text
+RHTower/SuzukiMidpointReflectionInstantiation.lean  (extended)
+  integral_comp_swap                    the swap of the plane is measure preserving
+  diffBilinForm_symm                    the Toeplitz channel is symmetric for an even kernel
+  sumBilinForm_symm                     the Hankel channel is symmetric for any kernel
+  diffBilinForm_smul_left, sumBilinForm_smul_left
+  diffBilinForm_expRise_eq_of_even      (229)'s reflection input, symmetry discharged
+  sumBilinForm_midpointReflect          (280)'s reflected-kernel law
+```
+
+Two facts settle the remaining hypothesis of the previous course.  Symmetry of the Toeplitz channel
+is the swap `(x,y) ↦ (y,x)` composed with evenness of the kernel; symmetry of the Hankel channel is
+the swap alone, since `K(x+y)` is already symmetric.  So `diffBilinForm_expRise_eq_of_even` now
+carries no hypothesis beyond evenness of the kernel.
+
+The third fact is the asymmetry that matters: the Hankel channel is *not* reflection invariant.
+Midpoint reflection sends its kernel `K(x+y)` to `K(2a − (x+y))`, which is exactly the reflected
+kernel of `(280)`.  That is why the reflection argument bounds the common Toeplitz channel and
+leaves the arithmetic Hankel carrier untouched — the mechanism the `sech` wall exploits.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AFA. The literal-instantiation layer — third course: `(224)` and the coercivity dictionary
+
+```text
+RHTower/SuzukiParityFormCoercivity.lean
+  l2Pairing, l2Pairing_symm
+  commonForm      C_{a,λ} = T_a − λ⟨·,·⟩
+  evenParityForm  q_e = C + H
+  oddParityForm   q_o = C − H
+  commonForm_eq_avg              C = (q_e + q_o)/2
+  sumBilinForm_eq_half_diff      H = (q_e − q_o)/2
+  commonForm_nonneg_of_parity    the average inherits coercivity
+  commonForm_ge_of_parity        with an explicit coercivity constant
+  abs_sumBilinForm_le_commonForm (224): |H(f,f)| ≤ C(f,f)
+  commonForm_symm, evenParityForm_symm, oddParityForm_symm
+  l2Pairing_smul_left, commonForm_smul_left, evenParityForm_smul_left, oddParityForm_smul_left
+```
+
+`(224)`'s two consequences are now literal theorems about the corpus channels rather than prose.
+Both are consequences of one observation: `C` and `H` are the half-sum and half-difference of the
+two parity forms, so nonnegativity of both gives nonnegativity of `C` and traps `H` between `−C` and
+`C`.  No analysis enters — the domination is "a number between `−c` and `c` has modulus at most `c`".
+
+With the previous two courses this supplies the abstract cores of §§14.15–14.19 with exactly what
+they take as input: a symmetric, homogeneous, positive semidefinite common form, a dominated Hankel
+carrier, a reflection under which the common channel is invariant and the carrier is not, and the
+exponential source relation.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.

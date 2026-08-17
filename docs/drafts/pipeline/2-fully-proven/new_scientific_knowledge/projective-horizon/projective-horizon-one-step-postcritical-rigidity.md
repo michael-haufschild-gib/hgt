@@ -1217,3 +1217,117 @@ intermediate field `O(x_L) ⊆ M ⊆ J(x_L)`, the trace `M ∩ J` is an intermed
 `M = O(x_L)`, which is linear disjointness of `J/O` from the purely transcendental extension
 `O(x_L)/O`.  That is the content of `FreeParameterBaseChange` in its Galois-group form, and the field
 form of it is what the assembly still owes.
+
+## Lean progress — the linear-disjointness core of the base change
+
+`HTGeometry/TranscendentalBaseChange.lean` (wired, axiom-clean).
+
+```
+linearIndependent_adjoin_transcendental
+      a family independent over `F`, lying in a field `E` over which `t` is transcendental,
+      stays independent over `F(t)`
+adjoin_le_span_of_span
+      the `F(t)`-span of an `F`-spanning family of `E` exhausts `E(t)`
+finrank_adjoin_eq_of_transcendental
+      ** [E(t) : F(t)] = [E : F] **
+```
+
+Both halves are elementary and neither is in mathlib.  Independence: clear denominators in an
+`F(t)`-relation to get `sum_i P_i(t) b_i = 0` with `P_i` in `F[X]`; collecting powers of `t` exhibits
+it as a polynomial in `t` with coefficients in `E`, so transcendence kills every coefficient and
+independence over `F` kills every coefficient of every `P_i`.  Spanning: the elements of `E` are
+algebraic over `F(t)`, so the adjoined *field* is the adjoined *algebra*
+(`adjoin_toSubalgebra_of_isAlgebraic`), which is the span of the multiplicative closure of `E` —
+and `E` is already closed under multiplication.
+
+This is the input the `(4)` bridge was missing in its degree form.  What it still owes is the
+lattice form: with `N` the normal closure of `J/O`, base change gives
+`[N(t):O(t)] = [N:O]`, hence `|Gal(N(t)/O(t))| = |Gal(N/O)|`; the restriction map
+`Gal(N(t)/O(t)) -> Gal(N/O)` is injective because an automorphism is determined by its values on `N`
+and on `O(t)`, so equal cardinalities make it bijective, and the coatom property of `Gal(N/J)` —
+already formal in this tree from full monodromy — transfers through it.  The Galois correspondence
+for `N(t)/O(t)` then gives exactly "no field strictly between `O(x_L)` and `J(x_L)`", which is the
+third and last input of `(4)`.
+
+## Lean progress — the second base-change hypothesis: `O(x_L)` is relatively algebraically closed
+
+`HTGeometry/TranscendentalBaseChange.lean`, extended (wired, axiom-clean).
+
+```
+mem_bot_of_mem_adjoin_simple_of_isAlgebraic
+      ** an element of `F(t)` algebraic over `F` lies in `F` **      (t transcendental over F)
+```
+
+The proof is the degree theorem of the previous section, used backwards.  If `x ∈ F(t)` is algebraic
+over `F`, then `E := F(x)` is finite over `F` and `t` is still transcendental over `E` (otherwise `t`
+would be algebraic over `F` through the tower), so
+
+```text
+[ E(t) : F(t) ] = [ E : F ] .
+```
+
+But `E ⊆ F(t)`, so `E(t) = F(t)` and the left side is `1`; hence `[E : F] = 1` and `x ∈ F`.
+
+### Why this is the missing hypothesis, verbatim
+
+The tree already owns the abstract Galois transfer: `baseChangeRelativelyClosed` in
+`HTGeometry/BaseChangeRelativeClosure.lean` produces
+
+```text
+(L ≃ₐ[M] L) ≃* (rootField F p ≃ₐ[F] rootField F p)
+```
+
+from a separable `p` splitting in `L`, an intermediate field `M` with `[FiniteDimensional M L]` and
+`[IsGalois M L]`, the compositum condition `rootField F p ⊔ M = ⊤`, and exactly the hypothesis
+
+```text
+hM : ∀ x ∈ M, IsAlgebraic F x → x ∈ ⊥ ,
+```
+
+which is now a theorem for `M = F(t)`.  So the three inputs of the `(4)` bridge are:
+
+```text
+[N(x_L) : O(x_L)] = [N : O]        FORMAL   (finrank_adjoin_eq_of_transcendental)
+O(x_L) relatively algebraically closed over O    FORMAL   (this section)
+the Galois-group transfer itself                 ALREADY IN THE TREE  (baseChangeRelativelyClosed)
+```
+
+What remains is the *instantiation*: presenting the critical normal closure as `rootField O p` for
+the separable `p` whose roots generate it, checking `IsGalois (O(x_L)) (N(x_L))` and the compositum
+condition inside the jet field, and pushing the coatom property of `Gal(N/J)` — already formal from
+full monodromy — through the resulting isomorphism.  No further general field theory is needed.
+
+## Lean progress — two of the four natural-irrationalities hypotheses
+
+`HTGeometry/TranscendentalBaseChange.lean`, extended again (wired, axiom-clean).
+
+```
+isAlgebraic_of_mem_of_finiteDimensional     an element of a finite extension is algebraic
+inf_adjoin_simple_eq_bot_of_isAlgebraic     ** N ⊓ F(t) = ⊥ **        (the `hinf` hypothesis)
+finiteDimensional_adjoin_of_transcendental  ** [F(t) : ] N(t) is finite **   (the `FiniteDimensional`
+                                                                             instance)
+```
+
+The tree's natural-irrationalities theorem (`compositumRestrictEquiv`, in
+`HTGeometry/NaturalIrrationalities.lean`) reads
+
+```text
+[Normal F E] [FiniteDimensional F E] [IsGalois F E] [FiniteDimensional M L] [IsGalois M L]
+    (hEM : E ⊔ M = ⊤)  (hinf : E ⊓ M = ⊥)   ==>   (L ≃ₐ[M] L) ≃* (E ≃ₐ[F] E) ,
+```
+
+restriction being the isomorphism.  Taking `E = N` (the normal closure) and `M = F(x_L)` inside the
+compositum `L = N(x_L)`, the four inputs are now:
+
+```text
+[Normal F E] [FiniteDimensional F E] [IsGalois F E]   from the tower already in the tree
+hinf : E ⊓ M = ⊥                                      FORMAL   (this section)
+[FiniteDimensional M L]                               FORMAL   (this section)
+[IsGalois M L]                                        the last one
+hEM : E ⊔ M = ⊤                                       by construction of the ambient
+```
+
+`IsGalois M L` is the statement that `N(x_L)` is Galois over `O(x_L)`, which follows from `N` being
+the splitting field over `O` of a separable polynomial: the same polynomial splits in `N ⊆ L` and its
+roots generate `L` over `M`.  After that the assembly is: transport the coatom property of
+`Gal(N/J)` through the restriction isomorphism and read the Galois correspondence for `L/M`.

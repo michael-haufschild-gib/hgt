@@ -1,9 +1,9 @@
 # Kernel fidelity selects the Gram causalizer
 
 - **ID:** `equivariant-causal-hessian-kernel-fidelity-rigidity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
-- **Status:** `[PAPER-PROVED] [REDISCOVERED] [BRIDGE] [LEAN OPEN]`
+- **Status:** `[PAPER-PROVED] [REDISCOVERED] [BRIDGE] [LEAN CLOSED]`
 - **Parent:** `../../1-in-progress/self-noncontainment-minimal-repair-law.md`
 - **Statement:** Every sesquilinearly polarized \(U(r)\)-invariant and \(U(n)\)-covariant positive
   quadratic causalizer on \(M_{r,n}(\mathbb C)\), \(n\ge2\), is
@@ -334,7 +334,10 @@ No numerical computation, finite enumeration, `native_decide`, `sorry`, `admit`,
 - [x] 1 → 2: dependency-closed paper theorem and proof
 - [x] hostile novelty audit: classical invariant-theory bridge
 - [x] physical interpretation bounded
-- [ ] 2 → 3: full classification and rigidity formalized unconditionally in Lean
+- [x] 2 → 3: full classification and rigidity formalized unconditionally in Lean —
+      `HTGeometry/EquivariantCausalizerClassification.lean`,
+      `HTGeometry/EquivariantCausalizerPositivity.lean` (+ three supporting modules);
+      axioms `[propext, Classical.choice, Quot.sound]`
 - [ ] source-level physics derives kernel fidelity and calibration
 
 ## Log
@@ -346,3 +349,57 @@ No numerical computation, finite enumeration, `native_decide`, `sorry`, `admit`,
   remaining calibration ambiguity.
 - 2026-07-30 — classified result as standard unitary invariant theory and retained it only as a
   local bridge for source-complete causalization descent.
+
+## Lean formalization — 2026-08-17
+
+Five new modules, all unconditional
+(`#print axioms` = `[propext, Classical.choice, Quot.sound]` for every declaration cited here):
+
+- `formal/GaloisForLFunctions/HTGeometry/UnitaryConjugationMatrixUnits.lean`
+- `formal/GaloisForLFunctions/HTGeometry/TwoBlockUnitaryAlgebra.lean`
+- `formal/GaloisForLFunctions/HTGeometry/ConjugationEquivariantClassification.lean`
+- `formal/GaloisForLFunctions/HTGeometry/EquivariantCausalizerClassification.lean`
+- `formal/GaloisForLFunctions/HTGeometry/EquivariantCausalizerPositivity.lean`
+
+| Paper step | Lean name |
+|---|---|
+| (2) left invariance kills different rows | `phi_diff_row_eq_zero` |
+| (2) left invariance makes the same-row pairing row-independent | `phi_row_indep` |
+| Lemma 1, (10)-(11): `Φ(X,Y) = L(XᴴY)` | `inducedMap`, `phi_eq_inducedMap` |
+| (3)/(12): right covariance makes `L` conjugation equivariant | `inducedMap_equivariant` |
+| Lemma 2 support step: `L(E_ij)` is a multiple of `E_ij` for `i≠j` | `exists_offDiag_coeff` |
+| Lemma 2: `L(E_ii)` is diagonal | `diag_image_offDiag_eq_zero` |
+| Lemma 2: the constants are index-independent | `offDiag_coeff_eq`, `diag_offCoeff_eq`, `diag_sameCoeff_eq`, `exists_perm_map_pair` |
+| (13)-(15): the one non-monomial unitary tying the constants | `blockUnitary`, `blockUnitary_mem_unitaryGroup`, `blockUnitary_conj_blockZ`, `coeffA_eq_sub` |
+| (16)-(17): `L(A) = aA + b tr(A) I` | `classification` |
+| (5) Part I existence | `exists_causalizer_coeffs` |
+| Part I uniqueness of `a, b` | `causalizer_coeffs_unique` |
+| (18) Hermiticity forces `a, b` real | `coeffs_real_of_isHermitian` |
+| the family is `U(r)`-invariant and `U(n)`-covariant | `causalizerForm_left_invariant`, `causalizerForm_right_covariant` |
+| (6)-(7)/(19) Part II, the positive wedge | `posSemidef_causalizerForm_iff` |
+| (8)-(9)/(20)-(22) Part III, kernel fidelity | `kernel_fidelity_iff` |
+
+Two substitutions of proof mechanism, both avoiding imported machinery:
+
+1. **No Schur's lemma or `sl_n` irreducibility.**  The classification of conjugation-equivariant
+   linear maps is proved in coordinates: two diagonal phase unitaries (with entries `I` at one
+   index) confine `L(E_ij)` to `E_ij`, permutation matrices make the three constants
+   index-independent, and the single non-monomial unitary
+   `V = 1 + ((1+I)/2 - 1)(E_ii + E_jj) + ((1-I)/2)(E_ij + E_ji)` — for which
+   `Vᴴ (E_ii - E_jj) V = -I (E_ij - E_ji)` — supplies the relation `α = a + b`.
+2. **No spectral theorem in Part II.**  Instead of eigenvalues of `A = XᴴX`, the Lean proof uses
+   the explicit quadratic form `a ‖Xv‖² + b ‖X‖_F² ‖v‖²` together with the componentwise
+   Cauchy–Schwarz bound `‖Xv‖² ≤ ‖X‖_F² ‖v‖²` (`sum_norm_mulVec_sq_le`), which reproduces the
+   card's eigenvalue argument `0 ≤ λ ≤ s` without any spectral input.
+
+The planned Lean surface of this card (items 1–9) is complete, including item 8: the full
+equivariant classification is proved rather than assumed.
+
+Not formalized, and not an obligation of this card: the "sharp boundaries", "hostile novelty
+audit", and "positive consequence" sections, which interpret the theorem rather than assert new
+mathematics, and the second open gate (source-level physics deriving kernel fidelity), which the
+card marks as upstream research.
+
+## Log
+
+- 2026-08-17 Formalized Parts I, II and III unconditionally in Lean 4 and promoted to stage 3.

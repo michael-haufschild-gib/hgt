@@ -122,6 +122,8 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-17 | `additive-heat-diagonal-generates-full-operator-algebra` | new `HTGeometry/DiagonalCommutantGeneration.lean`, `HTGeometry/GaussianToeplitzGeneration.lean` |
 | 2026-08-17 | `finite-jet-secant-detection-rank` | new `HTGeometry/MonomialJetSecantRank.lean` (uses pre-existing `HTGeometry/AlgebraicIndependenceFromDifferentials.lean`) |
 | 2026-08-17 | `two-prime-real-euler-transition-selector` | new `RHTower/EulerTransitionSelector.lean` (uses pre-existing `RHTower/TwoDilationDivisorMetric.lean`) |
+| 2026-08-17 | `rational-rank-two-multiple-elliptic-gamma-da` | `HTGeometry/MultipleEllipticGammaPeriodRankDichotomy.lean`, `HTGeometry/MultipleEllipticGammaCommonStepNilpotence.lean` (pre-existing) + new `HTGeometry/MultipleEllipticGammaRankTwoDA.lean` |
+| 2026-08-17 | `equivariant-causal-hessian-kernel-fidelity-rigidity` | new `HTGeometry/UnitaryConjugationMatrixUnits.lean`, `HTGeometry/TwoBlockUnitaryAlgebra.lean`, `HTGeometry/ConjugationEquivariantClassification.lean`, `HTGeometry/EquivariantCausalizerClassification.lean`, `HTGeometry/EquivariantCausalizerPositivity.lean` |
 | 2026-08-17 | `completed-prime-gamma-second-moment-four-crossing-law` | `RHTower/CompletedPrimeGammaSecondMomentCenterPositive.lean`, `RHTower/CompletedPrimeGammaMomentFarRightAsymptotic.lean` (pre-existing) + new `RHTower/CompletedPrimeGammaSecondMomentFourCrossing.lean` |
 | 2026-08-17 | `universal-quadratic-root-ridge-density` | `RHTower/UniversalQuadraticRootRidgeDensity.lean` (pre-existing; verified + audited) |
 | 2026-08-17 | `corank-trdeg-realization-locus` | new `HTGeometry/CorankTrdegRealizationLocus.lean` (uses pre-existing `HTGeometry/SymmetricBlockAlgebraicIndependence.lean`, `HTGeometry/PrimeRadialRelativeJetRank.lean`, `HTGeometry/StateFieldTrdeg.lean`) |
@@ -140,17 +142,6 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
   is an open research target, not debt.
 
 ## In-flight card analyses (2026-08-17)
-
-- `equivariant-causal-hessian-kernel-fidelity-rigidity` — Part I is under construction.  Already
-  formalized: the diagonal/permutation conjugation calculus, the off-diagonal support law, the
-  diagonality of `L (E i i)`, permutation transport of coefficients, and the two-index block
-  unitary with `Vᴴ Z V = -I R` (see the infrastructure list).  Remaining for Part I: index
-  independence of the off-diagonal constant `a` and of the two diagonal constants `α, β`
-  (immediate from `perm_transport` + `exists_perm_map_pair`), the relation `α = a + β` (apply the
-  equivariance to `blockUnitary_conj_blockZ`), the assembly `L A = a A + b (tr A) I`, and then the
-  `U(r)`-reduction `Φ (X, Y) = L (Xᴴ Y)` (same diagonal-phase and permutation argument on the row
-  index).  Parts II and III (the positive cone `b ≥ 0`, `a + b ≥ 0` and kernel fidelity ⇔ `b = 0`,
-  `a > 0`) are then elementary rank-one computations.  No library is missing for this card.
 
 ## In-flight card analyses (2026-08-16)
 

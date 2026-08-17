@@ -1,10 +1,10 @@
 # Rational-rank-two multiple elliptic Gamma is differentially algebraic
 
 - **ID:** `rational-rank-two-multiple-elliptic-gamma-da`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / FINITE-TWIST CLOSURE BRIDGE
 - **Scientific status:** `[PAPER-PROVED] [BRIDGE] [REDISCOVERED/COROLLARY]`
-  `[UNCONDITIONAL LEAN PROOF OPEN] [NOT AN RH RESULT]`
+  `[UNCONDITIONAL LEAN PROOF CLOSED] [NOT AN RH RESULT]`
 - **Primary sources:** Masaki Kato, *Differential Algebraicity of the Multiple Elliptic Gamma
   Function for a Rational Period* (2021), Theorem 1.1 and Propositions 2.1--2.2; the standard
   multiple-elliptic-Gamma multiplication formula obtained by residue decomposition of the
@@ -151,7 +151,9 @@ Primary links:
 - `https://doi.org/10.1007/JHEP11(2024)023`
 - `https://arxiv.org/abs/math/0212155`
 
-## Unconditional Lean boundary
+## Unconditional Lean boundary (superseded 2026-08-17)
+
+Historical note; the chain below is now proved in the corpus — see the formalization section.
 
 No Lean theorem is claimed here yet. The corpus already contains the actual arbitrary-order
 multiple-Gamma product and hierarchy, plus binary commensurable-nome factorization. The missing
@@ -163,3 +165,32 @@ unconditional chain is:
    field, followed by its rational-ray corollary.
 
 These are proof obligations, not hypotheses to be added to the theorem interface.
+
+## Lean formalization — 2026-08-17
+
+The card's theorem is a corollary of the exact rank dichotomy already formalized in
+`formal/GaloisForLFunctions/HTGeometry/MultipleEllipticGammaPeriodRankDichotomy.lean`; the literal
+"rank at most two" form is recorded in the new module
+`formal/GaloisForLFunctions/HTGeometry/MultipleEllipticGammaRankTwoDA.lean`.  All declarations are
+unconditional (`#print axioms` = `[propext, Classical.choice, Quot.sound]`).
+
+| Paper step | Lean name |
+|---|---|
+| (1) the parity-dependent multiple elliptic Gamma | `multipleEllipticGammaMero` (`MeromorphicMultipleEllipticGamma.lean`) |
+| (2) the augmented rational period rank | `multipleEllipticGammaAugmentedPeriodRank` |
+| rank is always at least two on the upper half-plane | `two_le_augmentedPeriodRank` |
+| §1 common contracting nome power from rank two | `exists_commonStep_of_rationalAffineLine`, `exists_commonStep_of_not_rankThreeMinor` |
+| §2-§3 the equal-step algebraic differential equation | `multipleEllipticGammaLogDerivMero_commonStep_nilpotent`, `differentialAlgebraicOver_multipleEllipticGammaMero_of_commonStep` |
+| the card's statement: rank ≤ 2 ⇒ DA | `differentialAlgebraicOver_multipleEllipticGammaMero_of_augmentedPeriodRank_le_two` |
+| the logarithmic-derivative corollary | `differentialAlgebraicOver_multipleEllipticGammaLogDerivMero_of_augmentedPeriodRank_le_two` |
+| the sharp converse (rank ≥ 3 ⇒ HT), stronger than this card | `hypertranscendentalOver_multipleEllipticGammaMero_iff_three_le_augmentedPeriodRank` |
+
+The Lean route does not import Kato's theorem: the common-step nilpotence of the logarithmic
+derivative is proved inside the corpus (`MultipleEllipticGammaCommonStepNilpotence.lean`), which is
+exactly the "unconditional chain" items 1--3 listed in the Lean boundary below.  That boundary note
+is therefore superseded.
+
+## Log
+
+- 2026-08-17 Verified that the corpus proves the card's theorem unconditionally, recorded the
+  literal rank-at-most-two form, audited axioms, and promoted to stage 3.

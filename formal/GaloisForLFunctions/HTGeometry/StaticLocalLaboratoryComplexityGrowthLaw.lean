@@ -29,9 +29,11 @@ def splitConfig (A : Finset Q) : Config Q ≃ On A × Off A where
     · funext q
       simp [q.property]
 
+omit [Fintype Q] in
 @[simp] theorem splitConfig_fst_apply (A : Finset Q) (x : Config Q) (q : A) :
     (splitConfig A x).1 q = x q := rfl
 
+omit [Fintype Q] in
 @[simp] theorem splitConfig_snd_apply (A : Finset Q) (x : Config Q)
     (q : {q : Q // q ∉ A}) : (splitConfig A x).2 q = x q := rfl
 
@@ -40,6 +42,7 @@ def SeparatesAcross (A : Finset Q) (M : Matrix (Config Q) (Config Q) ℂ) : Prop
     ∀ x y, M x y = MA (splitConfig A x).1 (splitConfig A y).1 *
       MB (splitConfig A x).2 (splitConfig A y).2
 
+omit [Fintype Q] in
 theorem SeparatesAcross.exists_apply {A : Finset Q} {M : Matrix (Config Q) (Config Q) ℂ}
     (h : SeparatesAcross A M) :
     ∃ MA : Matrix (On A) (On A) ℂ, ∃ MB : Matrix (Off A) (Off A) ℂ,
@@ -58,11 +61,8 @@ theorem SeparatesAcross.one (A : Finset Q) :
         intro hsnd
         apply hxy
         exact (splitConfig A).injective (Prod.ext hfst hsnd)
-      simp [hfst, hsnd]
+      simp [hsnd]
     · simp [hfst]
-
-#check Fintype.sum_prod_type
-#check Finset.sum_mul_sum
 
 theorem SeparatesAcross.mul {A : Finset Q} {M N : Matrix (Config Q) (Config Q) ℂ}
     (hM : SeparatesAcross A M) (hN : SeparatesAcross A N) :
@@ -111,6 +111,7 @@ theorem circuitMatrix_unitary (c : List (LocalGate Q)) :
   | cons g c ih =>
       exact (Matrix.unitaryGroup (Config Q) ℂ).mul_mem g.unitary ih
 
+omit [Fintype Q] in
 theorem finset_subset_or_disjoint_of_card_le_one {S A : Finset Q} (hS : S.card ≤ 1) :
     S ⊆ A ∨ Disjoint S A := by
   by_cases h : ∃ q ∈ S, q ∈ A
@@ -273,7 +274,7 @@ theorem separatesAcross_diagonal_fst (A : Finset Q) (f : On A → ℂ) :
   · have hsplit : (splitConfig A x).1 ≠ (splitConfig A y).1 ∨
         (splitConfig A x).2 ≠ (splitConfig A y).2 := by
       by_contra h
-      push_neg at h
+      push Not at h
       exact hxy ((splitConfig A).injective (Prod.ext h.1 h.2))
     rcases hsplit with hfst | hsnd
     · simp [Matrix.diagonal, hxy, hfst]
@@ -288,7 +289,7 @@ theorem separatesAcross_diagonal_snd (A : Finset Q) (f : Off A → ℂ) :
   · have hsplit : (splitConfig A x).1 ≠ (splitConfig A y).1 ∨
         (splitConfig A x).2 ≠ (splitConfig A y).2 := by
       by_contra h
-      push_neg at h
+      push Not at h
       exact hxy ((splitConfig A).injective (Prod.ext h.1 h.2))
     rcases hsplit with hfst | hsnd
     · simp [Matrix.diagonal, hxy, hfst]
@@ -371,7 +372,6 @@ theorem inverseSquarePhaseWeight_le {L K : ℕ} {t ε : ℝ}
     nlinarith
   have htarget : t ≤ 2 * Real.pi * ε * (((j.val + 1 : ℕ) : ℝ)) ^ 2 := by
     have ht' : t < 128 * (Real.pi * ε) * ((K : ℝ) + 1) := by
-      norm_num at ht ⊢
       simpa [mul_assoc] using ht
     have hmono : 2 * (Real.pi * ε) * (4 * (K : ℝ)) ^ 2 ≤
         2 * (Real.pi * ε) * (((j.val + 1 : ℕ) : ℝ)) ^ 2 := by

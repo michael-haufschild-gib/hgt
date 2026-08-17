@@ -1372,7 +1372,7 @@ requirements.
 
 The local causalizer classification is now dependency-closed on paper:
 
-- `../2-fully-proven/not_new_scientific_knowledge/equivariant-causal-hessian-kernel-fidelity-rigidity.md`.
+- `../3-formalized/not_new_scientific_knowledge/equivariant-causal-hessian-kernel-fidelity-rigidity.md`.
 
 For \(r\ge1\) and \(n\ge2\), every sesquilinearly polarized causalizer
 \[

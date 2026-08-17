@@ -10,7 +10,7 @@
 - **Positive seed:**
   `../2-fully-proven/new_scientific_knowledge/order-two-multiple-gamma-period-deletion-phase-split.md`
 - **Closed boundary theorem:**
-  `../2-fully-proven/not_new_scientific_knowledge/rational-rank-two-multiple-elliptic-gamma-da.md`
+  `../3-formalized/not_new_scientific_knowledge/rational-rank-two-multiple-elliptic-gamma-da.md`
 - **Failed predecessor:**
   `../5-failed/hypertranscendental-gale-kolchin-duality.md`
 - **Statement:** In the translation group algebra modulo the unit period, the DA annihilator of a

@@ -1,12 +1,12 @@
 # Inverse-square static-local laboratory complexity growth law
 
 - **ID:** `inverse-square-static-local-laboratory-complexity-growth-law`
-- **Stage:** 2 -- fully proven on paper
+- **Stage:** 3 -- formalized in Lean 4
 - **Type:** theorem / deterministic fixed-error static-Hamiltonian ramp
-- **Status:** `[PAPER-PROVED] [LEAN IN PROGRESS] [NOVELTY UNVERIFIED]`
-- **Parent:** `../3-formalized/geometric-skeleton-brown-ramp-transfer-law.md`
+- **Status:** `[PAPER-PROVED] [LEAN-FORMALIZED] [NOVELTY UNVERIFIED]`
+- **Parent:** `geometric-skeleton-brown-ramp-transfer-law.md`
 - **External boundary:** Zlokapa--Allen--Harrow, arXiv:2607.19852
-- **Date:** 2026-08-14
+- **Date:** 2026-08-17
 
 ## Public sentence
 
@@ -330,10 +330,10 @@ spectral genericity, or asymptotic time average occurs.
 
 ## Proof status after hostile audit
 
-`[PAPER-PROVED] [NOVELTY UNVERIFIED]`. The dependency-closed proof above closes the former open core. Move the
-exact theorem to Stage 2 before Lean formalization; no stronger physical interpretation is authorized.
+`[PAPER-PROVED] [LEAN-FORMALIZED] [NOVELTY UNVERIFIED]`. The dependency-closed paper and Lean proofs close
+the former open core. No stronger physical interpretation is authorized.
 
-## Lean progress -- Lemmas 1 and 3
+## Lean formalization
 
 `formal/GaloisForLFunctions/HTGeometry/InverseSquareTailWitness.lean` (new, umbrella-wired,
 axiom-clean).
@@ -372,9 +372,47 @@ No operator-exponential theory is needed.
 contributions bounded separately: `t/K₊ ≤ ε/2` from the choice of `K₊`, and `t(L-1)/L³ ≤ t/L² ≤
 ε/(2L)` from `t ≤ εL/2`.  Strictness comes from `L > 1`.
 
-### What remains
+### Completed circuit-locality and lower-law module
 
-`(9)` itself -- `‖R‖ ≤ 1/K₊ + (L-1)/L³` -- which is `sum_inv_sq_Ioc_le` applied to the omitted
-matching edges plus the bridge terms, and needs the card's explicit edge Hamiltonian; then the
-two-sided complexity statement `(7)`, whose lower half is the four-amplitude witness
-`norm_sub_one_le_four_mul` applied to the circuit dictionary.
+`formal/GaloisForLFunctions/HTGeometry/StaticLocalLaboratoryComplexityGrowthLaw.lean` defines the
+support-certified arbitrary one/two-qubit gate model, the connected inverse-square chain Hamiltonian,
+its unitary evolution, untouched-pair factorization, moving-block subset selection, bridge control,
+and the lower theorem.
+
+| Card item | Declaration |
+|---|---|
+| arbitrary support-certified one/two-qubit gate | `LocalGate` |
+| exact circuit product and counted two-qubit cost | `circuitMatrix`, `twoGateCount` |
+| untouched-pair four-amplitude factorization | `circuitMatrix_separates_firstEndpoints` |
+| moving inverse-square block with `4K` pairs | `inverseSquareBlock_card` |
+| untouched non-wrapping phase subset | `circuit_exists_inverseSquare_phase_subset` |
+| connected Hamiltonian `(4)` and its evolution | `inverseSquareChainHamiltonian`, `inverseSquareChainEvolution` |
+| bridge remainder bound | `inverseCubeBridgeEnergy_le` |
+| arbitrary-circuit lower law | `inverseSquareChain_twoGateCount_ge` |
+
+### Completed constructive upper-law module
+
+`formal/GaloisForLFunctions/HTGeometry/StaticLocalLaboratoryComplexityUpper.lean` constructs physical
+nearest-neighbour matching-edge phase gates, proves their support separation and unitarity, computes their
+exact circuit product and gate count, and bounds matching and bridge tails.
+
+| Card item | Declaration |
+|---|---|
+| physical matching-edge phase gate | `pairPhaseGate` |
+| exact first-`K` phase circuit | `matchingPhaseCircuit` |
+| exact product and gate count | `matchingPhaseCircuit_matrix`, `matchingPhaseCircuit_twoGateCount` |
+| full omitted-energy bound `(9)` | `inverseSquareChainEnergy_sub_initial_le` |
+| constructive strict-error upper law | `inverseSquareChain_upper_approximation` |
+
+### Completed exact floor/ceiling law
+
+`formal/GaloisForLFunctions/HTGeometry/StaticLocalLaboratoryComplexityLaw.lean` packages the operational
+approximation predicate and derives every integer side condition from `(6)`. Its headline theorem is
+`inverseSquareChain_floor_ceil_growth`, whose conclusion is exactly `(7)`: every approximating circuit has
+at least `⌊t/(128πε)⌋₊` counted two-qubit gates, and an explicit circuit with exactly `⌈2t/ε⌉₊` gates has
+strict operator error below `ε`. `inverseSquareChain_no_shorter_approximation` gives the corresponding
+nonexistence statement for every smaller cost budget.
+
+All three modules are umbrella-wired. Targeted `lake env lean` checks and the exact capstone leaf build pass.
+`#print axioms` for both bounds and both capstones reports only Lean/mathlib foundations `propext`,
+`Classical.choice`, and `Quot.sound`; there are no custom axioms. No umbrella or full-project build was run.
