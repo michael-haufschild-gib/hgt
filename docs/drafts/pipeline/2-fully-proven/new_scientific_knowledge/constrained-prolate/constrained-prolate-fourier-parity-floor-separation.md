@@ -2862,3 +2862,93 @@ Because the two exponents in (1) and (2) are literally the same expression, the 
 first term is `−2 log c + O(1)` (since `c(s_n − s_m) → 4` and `log(1/s) = log c + O(1)`) and whose
 second is `log(s_m/s_n) + O(s) → log(mu_m/mu_n)`.  That is the `c^(-2)` per corpus step, hence
 `lambda^(-4)`, which is precisely what the two open rate claims consume.
+
+## Brick 3 is proved — the anchor comparison
+
+`RHTower/ProlateAnchorComparison.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`).
+
+```
+exists_hermiteFun_ne_zero_Ioo (m) (hAB : A < B)
+    every interval carries a point where phi_m does not vanish
+prolateAnchor n                      a point in (2 sqrt(4n+1), 2 sqrt(4n+1) + 1) with phi_(2n) ≠ 0
+hermiteFun_prolateAnchor_ne_zero
+tendsto_anchor_ratio (n)
+    ** phi_(2n)(0) · R(x_0/sqrt c)/R(0)  →  phi_(2n)(x_0) ≠ 0 **
+```
+
+The Hermite function is a nonzero (monic) integer polynomial composed with `sqrt 2 ·` and multiplied
+by a Gaussian, so its zero set is finite: if it vanished on an interval, the polynomial would have
+infinitely many roots.  Choosing the anchor *beyond* `2 sqrt(4n+1)` puts it strictly inside the
+forbidden region of the rescaled equation, where the barrier and WKB transports of the corpus
+operate, while keeping it at a FIXED height of the rescaled window, where the rung profile limit
+(`tendsto_indexedOscillatorProfile_hermiteRung`) applies verbatim.
+
+So the passage between the central amplitude and the forbidden-region amplitude costs no power of
+the bandwidth: only the nonzero constant `phi_(2n)(x_0)/phi_(2n)(0)`.
+
+### Remaining, after this
+
+With `y_0 := x_0/sqrt c` as the anchor, the amplitude ratio `R_n(0)²/R_m(0)²` equals
+`R_n(y_0^n)²/R_m(y_0^m)²` times a convergent factor, so the two open rate claims now consume exactly
+
+```text
+kappa · exp(2c Xi_s(y_0) + prolateScaleLog s y_0 alpha)  ≤  R(y_0)²
+                                                        ≤  K · exp(same) ,
+```
+
+whose upper half is `prolate_turningPoint_sq_le_exp` (already in the corpus, with `y_0` a free
+parameter) and whose lower half is its mirror through
+`HTGeometry/EnvelopeFromLogDerivative.mul_exp_integral_le_of_logDeriv_ge` fed with
+`prolateWKB_sub_six_div_le_prolateLogDeriv`.  Both are compositions of theorems the tree already
+owns; no new analysis is involved.
+
+## The gap is now exactly one factor of `c`, and the ingredient for it is in the tree
+
+With the sharp mass ratio and the anchor comparison proved, the chain for the one-step leakage ratio
+is complete except for one polynomial factor.  Writing `y_0 = x_0/sqrt c` for the anchor and
+`E = exp(2c·Xi_s(y_0))`, the corpus's `prolateBand_barrier_ratio_two_sided` gives
+
+```text
+lower :  Phi(y_0)²  ≥  E · ((1−alpha)/(1−y_0))^12 / (36 pi² · c · Xi_alpha)     ≍  E / c
+upper :  Phi(y_0)²  ≤  (1 + W) · E · exp(prolateScaleLog s y_0 alpha)           ≍  E · c
+```
+
+because at the anchor `y_0² − s = (x_0² − c s)/c ≍ 1/c`, so `exp(prolateScaleLog) ≍ c`, while
+`((1−alpha)/(1−y_0))^12 → (1−alpha)^12` and `Xi_alpha` are constants.  The gap is therefore exactly
+`c²`.  Per corpus index step the exponential supplies
+
+```text
+E_n/E_m = exp(2c(Xi_{s_n}(y_0) − Xi_{s_m}(y_0))) ≍ c^(-2)
+```
+
+(the same anchor for both modes; `∫ dtheta/sin theta` over `[arcsin y_0, pi/2]` is `(1/2)log c + O(1)`
+and `c(s_n − s_m) → 4`).  So the present bounds give `d_m/d_n = O(1)` — bounded, but not vanishing.
+The deficit is exactly one factor of `c`, and **any** of the following three closes it:
+
+1. the sharp WKB half-power in the upper (`sqrt((alpha²−s)/(y_0²−s))` instead of the full power),
+   worth `c^(1/2)`;
+2. **the collar factor in the upper** — the lower carries `1/(c Xi_alpha)` from
+   `exp_div_le_prolateBand_collar`, while the upper's route
+   (`prolateBand_sq_le_exp_bandPhase`) uses only `Phi(alpha) ≤ 1`.  Feeding it the matching collar
+   *upper* bound gives the upper the same `1/c`, worth a full `c`;
+3. the scale ratio in the lower, worth `c^(1/2)`.
+
+Route 2 is the cheapest and its ingredient is already a theorem:
+
+```text
+prolateBand_le_and_le      (BandSolutionComparison)
+    on the collar,  (1/3)·bandModel s c y ≤ Phi y ≤ 3·bandModel s c y
+```
+
+— the two-sided modified-Bessel trapping with absolute constants.  The lower half of it is what
+`exp_div_le_prolateBand_collar` already consumes; the upper half is unused.  Composing the upper
+half into `prolateBand_sq_le_exp_bandPhase` in place of `Phi(alpha) ≤ 1` reduces the gap from `c²`
+to `c`, whence
+
+```text
+d_m/d_n  =  O(c^(-1))  =  O(lambda^(-2))  →  0 ,
+```
+
+which unconditionally gives the parity card's `(9)` (`mu_+ < mu_-` eventually and
+`mu_- − mu_+ ~ mu_-`), and with the sharp constant tracked, the `lambda^(-4)` rate itself.

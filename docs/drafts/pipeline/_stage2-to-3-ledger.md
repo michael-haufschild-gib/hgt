@@ -4079,3 +4079,18 @@ calculus), `HTGeometry.ShellCarrierSeries` (the bivariate forms and `shellEval_c
 All umbrella-wired, `lake build`-clean, axioms exactly `[propext, Classical.choice, Quot.sound]`.
 Remaining on the card: item 4's dyadic assembly, which needs the order-`m` constant tracked
 explicitly in `x` rather than existentially.
+
+## mass-bessel-infinite-radiation-jet-obstruction -- the shell-uniform expansion
+
+`HTGeometry.UniformDiscExpansion` (`BddExpS`: expansions with one controlling scalar, and the
+exponential rule that separates the linear rate), `HTGeometry.ShellCarrierUniformExpansion`
+(`bddExpS_shellCarrierProfile`: the carrier profile with a shell-free constant times
+`1 + (a·rate x)^m`), `HTGeometry.ShellCarrierTruncationBound`
+(`norm_shellCarrierProfile_sub_trunc_le`: the same against the card's genuine order-`m` partial sum).
+
+All umbrella-wired, `lake build`-clean, axioms exactly `[propext, Classical.choice, Quot.sound]`.
+
+Item 4's open piece is now isolated and is *not* the distortion: it is the sectorial Poincaré
+remainder for `K_1` with the modulus rather than the real part in the decaying factor.  The card
+records the three-step route (ray representation for real argument plus the identity theorem, the
+binomial remainder on the closed right half plane, and the resulting `|z|^{-m}`).

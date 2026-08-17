@@ -163,7 +163,8 @@ theorem cex_unfold (lam0 gam kap : ℝ) (t u : ℝ) :
     rw [show (-(Complex.I * (gam : ℂ))) = Complex.I * (((-gam : ℝ)) : ℂ) from by push_cast; ring,
       unfoldChar_imagAxis]
   rw [unfoldSum, Fin.sum_univ_four, cexW, cexLam]
-  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons]
+  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
+    Matrix.cons_val_two, Matrix.cons_val_three, Matrix.tail_cons]
   rw [unfoldChar_ofReal, e1, unfoldChar_imagAxis, e3]
   have hA : (lam0 : ℂ) * Complex.exp (-((kap : ℂ) * ((π / gam : ℝ) : ℂ)))
       * Complex.exp (((kap * t : ℝ) : ℂ))

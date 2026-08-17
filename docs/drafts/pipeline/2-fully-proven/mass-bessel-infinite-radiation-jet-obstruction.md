@@ -484,3 +484,79 @@ needs the order-`m` remainder uniformly over the shell `X < n <= 2X`, that is wi
 tracked explicitly as a function of `x = log n` rather than left existential -- the shell constants
 grow like `|x|^{2m}` and the radius is `|t_X|^{-1} ~ (log X)^{-4}`, so the product is the card's
 `O_m(L^{2m+2}|t|^{-m-1})`.
+
+## Lean progress -- the shell-uniform expansion, and what item 4 still needs
+
+Three more modules (umbrella-wired, axiom-clean) make the order-`m` expansion uniform over a shell of
+frequencies, which is the form section 3 consumes.
+
+`formal/GaloisForLFunctions/HTGeometry/UniformDiscExpansion.lean`:
+
+| Card item | Declaration |
+|---|---|
+| an expansion whose error constant and disc bound are both at most one scalar | `BddExpS` |
+| raising the constant of an expansion | `HasPolyExpansion.weaken`, `BddExpS.weaken` |
+| sums, products, scalars, finite sums, order lowering | `BddExpS.add`, `.mul`, `.const_mul`, `.finsetSum`, `.mono` |
+| **the exponential, with the linear rate separated from the rest** | `bddExpS_cexp` |
+
+Bounding the error constant and the disc bound by the same scalar turns each closure rule into an
+explicit arithmetic operation -- a product costs a factor three -- so the constant of the whole
+assembly is an explicit expression in the constants of the factors.  The exponential is the only rule
+that keeps a second parameter, the linear rate `K`, and its constant is `2K^n` plus a term free of
+`K`.  That is exactly the separation the shell needs.
+
+`formal/GaloisForLFunctions/HTGeometry/ShellCarrierUniformExpansion.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the shell-power, monomial and root-defect factors with shell-free constants | `shellPowConst`, `bddExpS_shellPow`, `bddExpS_monomial`, `defectFactorConst`, `bddExpS_scaledDefect` |
+| the exponential factor: `2(a·rate x)^m` plus a shell-free constant | `defectExpConst`, `bddExpS_defectExp` |
+| the Poincaré factor | `poincareFactorConst`, `bddExpS_shellPoincare` |
+| **the carrier profile with a shell-free constant times `1 + (a·rate x)^m`** | `carrierShellConst`, `bddExpS_shellCarrierProfile` |
+
+Every constant is bounded independently of the frequency once `x²r` is bounded -- and `x²r` *is*
+bounded, because `a·rate(x)·r <= 1/2` is precisely a bound on `a·cbinomAbsCoeff(1/2,1)·x²·r`.  The
+one exception is the linear rate itself, whose `m`-th power is the card's `L^{2m}`.
+
+`formal/GaloisForLFunctions/HTGeometry/ShellCarrierTruncationBound.lean`:
+
+| Card item | Declaration |
+|---|---|
+| a polynomial of degree at most `j` against its coefficient mass | `norm_eval_le_of_natDegree_le` |
+| truncation below degree `n`, with the tail weighted by the radius | `norm_eval_sub_truncBelow_le_upTo` |
+| a shell-free degree bound and coefficient mass for the approximant | `carrierDegBound`, `poincareMassSum`, `natDegree_carrierProductPoly_lt` |
+| the coefficients of the approximant, weighted, against the shell | `norm_coeff_carrierProductPoly_le` |
+| **the profile against its genuine order-`m` partial sum, uniformly over the shell** | `carrierTruncConst`, `norm_shellCarrierProfile_sub_trunc_le` |
+
+Passing from the assembled approximant to the card's partial sum `\sum_{j<m}` discards a tail, and
+the tail is controlled by item 2: every discarded coefficient is a polynomial of degree at most its
+own order in the squared frequency, so the tail carries the same `max(1,x²)^m` growth as the
+expansion error, with a shell-free constant.
+
+### What item 4 still needs
+
+The distortion side is complete and uniform.  The open piece is the **sectorial** Poincaré remainder
+for `K_1`.  The corpus's all-orders remainder
+(`HTGeometry.norm_besselK1C_sub_poincare_le`) is bounded by the real Gaussian moment at `Re w`, so it
+is uniform along every ray but does *not* decay along the imaginary direction.  At the card's
+`t_X = σ + i(log X)^4` the shell root satisfies `Re(a z) ≈ aσ`, bounded, while `|a z| ≈ a(log X)^4`;
+so that bound is a constant, and a constant times the dyadic prime mass `√X` dominates the card's
+main term `√X (log X)^{-2m-2}`.  Item 4 therefore needs
+
+  ‖K_1(w) − e^{-w}(π/w)^{1/2} Σ_{k<m} q_k w^{-k}‖ ≤ C_m e^{-Re w} |w|^{-1/2-m},
+
+with the modulus, not the real part, in the decaying factor.  The corpus owns this at order zero
+(`HTGeometry.norm_besselK1C_sub_leading_le_norm`, one integration by parts).
+
+The route that avoids both an iterated integration by parts and a contour rotation:
+
+1. the ray representation `K_1(z) = √2 e^{-z} z^{-1/2} ∫_0^∞ e^{-u} u^{1/2}(1 + u/(2z))^{1/2} du`,
+   proved for *real* `z > 0` by the ordinary substitution `u = z v²` in the corpus's Gaussian form,
+   and extended to the right half plane by the identity theorem, both sides being holomorphic there;
+2. the binomial remainder for `(1+ζ)^{1/2}` on the *closed right half plane* rather than the disc of
+   radius one half: on the segment `[0,ζ]` one has `Re(1+sζ) ≥ 1`, hence `|1+sζ| ≥ 1` and
+   `|(1+sζ)^{1/2-m}| ≤ 1`, so the remainder is at most `|cbinomCoeff(1/2,m)|·|ζ|^m` with no radius
+   restriction -- the corpus's `norm_cbinomRem_succ_le_of_pred` is the same induction with the
+   sharper base;
+3. `ζ = u/(2z)` has nonnegative real part exactly when `Re z ≥ 0`, and `|ζ|^m = u^m/(2|z|)^m`, so the
+   remainder integrates against `e^{-u}u^{1/2+m}` and the modulus of `z` appears to the power `-m`.

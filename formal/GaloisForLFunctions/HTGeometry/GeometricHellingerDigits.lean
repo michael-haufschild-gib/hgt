@@ -63,9 +63,8 @@ theorem tendsto_prod_bitHellingerAffinity {a b : ℝ} (ha0 : 0 ≤ a) (ha1 : a <
     rw [Finset.prod_mul_distrib]
     have ha := one_sub_mul_prod_one_add_pow a J
     have hb := one_sub_mul_prod_one_add_pow b J
+    rw [← ha, ← hb]
     field_simp
-    linear_combination (∏ j ∈ Finset.range J, (1 + b ^ 2 ^ j)) * ha
-      + (1 - a ^ 2 ^ J) * hb
   have hpart : ∀ J : ℕ, ∏ j ∈ Finset.range J, bitHellingerAffinity a b j
       = ((1 - s ^ 2 ^ J) / (1 - s))
         / Real.sqrt (((1 - a ^ 2 ^ J) / (1 - a)) * ((1 - b ^ 2 ^ J) / (1 - b))) := by
@@ -100,12 +99,62 @@ theorem tendsto_prod_bitHellingerAffinity {a b : ℝ} (ha0 : 0 ≤ a) (ha1 : a <
   have hval : ((1 - 0) / (1 - s)) / Real.sqrt (((1 - 0) / (1 - a)) * ((1 - 0) / (1 - b)))
       = geometricHellingerAffinity a b := by
     have hrw : ((1 : ℝ) - 0) / (1 - a) * ((1 - 0) / (1 - b)) = ((1 - a) * (1 - b))⁻¹ := by
-      rw [sub_zero]
-      field_simp
+      rw [sub_zero, one_div, one_div, ← mul_inv]
     have hsq : Real.sqrt ((1 - a) * (1 - b)) ≠ 0 := by positivity
-    rw [hrw, Real.sqrt_inv, geometricHellingerAffinity, ← hs, div_inv_eq]
+    rw [hrw, Real.sqrt_inv, geometricHellingerAffinity, ← hs]
     field_simp
+    ring
   rw [← hval]
   exact hnumlim.div hsqrtlim hsqrtne
+
+/-- **The parity split of the affinity.**  The ratio of the first digit's affinity to the whole
+geometric affinity is the closed form whose square is the data-processing comparison. -/
+theorem bitHellingerAffinity_zero_div_geometric {a b : ℝ} (ha0 : 0 ≤ a) (ha1 : a < 1)
+    (hb0 : 0 ≤ b) (hb1 : b < 1) :
+    bitHellingerAffinity a b 0 / geometricHellingerAffinity a b
+      = (1 - a * b) / Real.sqrt ((1 - a ^ 2) * (1 - b ^ 2)) := by
+  have hab0 : 0 ≤ a * b := mul_nonneg ha0 hb0
+  have hs2 : Real.sqrt (a * b) ^ 2 = a * b := Real.sq_sqrt hab0
+  have hA : (0 : ℝ) < 1 - a := by linarith
+  have hB : (0 : ℝ) < 1 - b := by linarith
+  have hden1 : Real.sqrt ((1 + a) * (1 + b)) ≠ 0 := by positivity
+  have hden2 : Real.sqrt ((1 - a) * (1 - b)) ≠ 0 := by positivity
+  have hablt : a * b < 1 := by nlinarith
+  have hs1 : Real.sqrt (a * b) < 1 := by
+    rw [show (1 : ℝ) = Real.sqrt 1 by simp]
+    exact Real.sqrt_lt_sqrt hab0 hablt
+  have hden3 : (1 : ℝ) - Real.sqrt (a * b) ≠ 0 := by linarith
+  have h1 : Real.sqrt ((1 + a) * (1 + b)) * Real.sqrt ((1 - a) * (1 - b))
+      = Real.sqrt ((1 - a ^ 2) * (1 - b ^ 2)) := by
+    rw [← Real.sqrt_mul (by positivity)]
+    congr 1
+    ring
+  have hL : bitHellingerAffinity a b 0 / geometricHellingerAffinity a b
+      = ((1 + Real.sqrt (a * b)) * (1 - Real.sqrt (a * b)))
+        / (Real.sqrt ((1 + a) * (1 + b)) * Real.sqrt ((1 - a) * (1 - b))) := by
+    rw [bitHellingerAffinity, geometricHellingerAffinity]
+    norm_num
+    field_simp
+  rw [hL, h1]
+  congr 1
+  linear_combination -hs2
+
+/-- **The parity data-processing inequality.**  Forgetting the paired part of the valuation cannot
+decrease the Hellinger affinity; algebraically the square of the comparison is `(a - b)^2 ≥ 0`. -/
+theorem one_le_parity_affinity_ratio {a b : ℝ} (ha0 : 0 ≤ a) (ha1 : a < 1) (hb0 : 0 ≤ b)
+    (hb1 : b < 1) : 1 ≤ (1 - a * b) / Real.sqrt ((1 - a ^ 2) * (1 - b ^ 2)) := by
+  have hA : (0 : ℝ) < 1 - a := by linarith
+  have hB : (0 : ℝ) < 1 - b := by linarith
+  have h1 : (0 : ℝ) < 1 - a ^ 2 := by nlinarith [mul_pos hA (show (0 : ℝ) < 1 + a by linarith)]
+  have h2 : (0 : ℝ) < 1 - b ^ 2 := by nlinarith [mul_pos hB (show (0 : ℝ) < 1 + b by linarith)]
+  have hprod : (0 : ℝ) < (1 - a ^ 2) * (1 - b ^ 2) := mul_pos h1 h2
+  have hpos : 0 < Real.sqrt ((1 - a ^ 2) * (1 - b ^ 2)) := Real.sqrt_pos.mpr hprod
+  have hab : (0 : ℝ) < 1 - a * b := by nlinarith
+  have hkey : (1 - a ^ 2) * (1 - b ^ 2) ≤ (1 - a * b) ^ 2 := by nlinarith [sq_nonneg (a - b)]
+  rw [le_div_iff₀ hpos]
+  calc (1 : ℝ) * Real.sqrt ((1 - a ^ 2) * (1 - b ^ 2))
+      = Real.sqrt ((1 - a ^ 2) * (1 - b ^ 2)) := one_mul _
+    _ ≤ Real.sqrt ((1 - a * b) ^ 2) := Real.sqrt_le_sqrt hkey
+    _ = 1 - a * b := by rw [Real.sqrt_sq hab.le]
 
 end GaloisForLFunctions.HTGeometry

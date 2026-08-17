@@ -686,3 +686,23 @@ the theorem surface.
 - [ ] formalize dependency-closed algebraic core in Lean
 - [ ] construct squarefree source-to-exceptional-reporter comparison
 - [ ] prove Xi conormal and multiplicity-jet conservativity
+
+## Lean progress — the binary-digit layer `(2)`, `(3)`, `(7)`--`(9)`
+
+Unconditional, `[propext, Classical.choice, Quot.sound]`, wired into `GaloisForLFunctions.HTGeometry`.
+
+| Card step | Lean |
+|---|---|
+| `(2)` Euler binary product | `HTGeometry.one_sub_mul_prod_one_add_pow` (telescoping, any commutative ring), `HTGeometry.tendsto_prod_one_add_pow` (`|q| < 1`) |
+| `(3)` digit weights of a binary word | `HTGeometry.prod_digit_div`, `HTGeometry.prod_digit_div_field` |
+| `(7)` bit affinity | `HTGeometry.bitHellingerAffinity` |
+| `(8)` digit factorization of the affinity | `HTGeometry.tendsto_prod_bitHellingerAffinity` |
+| `(9)` parity ratio and its data-processing inequality | `HTGeometry.bitHellingerAffinity_zero_div_geometric`, `HTGeometry.one_le_parity_affinity_ratio` |
+
+`(6)` was already owned as `HTGeometry.geometricHellingerAffinity` with
+`HTGeometry.one_sub_geometricHellingerAffinity`, and the strict form of the parity comparison as
+`RHTower.geometricPrimeValuationGramSq_lt_squarefreePrimeParityGramSq`.
+
+The identity that makes `(8)` close is `1 - ab = (1 - sqrt(ab))(1 + sqrt(ab))`: the numerator product
+telescopes to `(1 - sqrt(ab))^(-1)` while the denominator product telescopes to
+`((1-a)(1-b))^(-1/2)`, and the two closed forms agree exactly.

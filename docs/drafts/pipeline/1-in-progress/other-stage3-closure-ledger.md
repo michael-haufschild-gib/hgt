@@ -3892,3 +3892,26 @@ minimal annihilating differential polynomial and its separant on the hull (the t
 minimality of the hull flow to get `Z = ∅`; and the analytic implicit function theorem producing the
 injective jet chart on each `F_j` (the tree has `RealAnalyticImplicit`, `U0.HolomorphicIFT`, and
 `StripJetSeparation.eqOn_of_line_jet_eq_implicit`).
+
+## Pass 65 — the dyadic digit layer of the prime-valuation card
+
+`HTGeometry/EulerBinaryProduct.lean` and `HTGeometry/GeometricHellingerDigits.lean` close steps
+`(2)`, `(3)`, `(7)`, `(8)`, `(9)` of `prime-valuation-dyadic-fermion-normal-cone-law`:
+
+```text
+one_sub_mul_prod_one_add_pow : (1 - q) * ∏_{j<J} (1 + q^(2^j)) = 1 - q^(2^J)     -- any comm ring
+tendsto_prod_one_add_pow     : |q| < 1 -> ∏_{j<J}(1 + q^(2^j)) -> (1-q)^(-1)
+prod_digit_div_field         : ∏_{j<J} q^(2^j e_j)/(1+q^(2^j)) = q^(Σ 2^j e_j)(1-q)/(1-q^(2^J))
+bitHellingerAffinity a b j   := (1 + sqrt(ab)^(2^j)) / sqrt((1+a^(2^j))(1+b^(2^j)))
+tendsto_prod_bitHellingerAffinity : ∏_{j<J} bit -> geometricHellingerAffinity a b
+bitHellingerAffinity_zero_div_geometric : bit_0 / geo = (1-ab)/sqrt((1-a^2)(1-b^2))
+one_le_parity_affinity_ratio            : that ratio is at least 1
+```
+
+Euler's binary product was absent from both mathlib and this tree; the search that found the
+already-owned `geometricHellingerAffinity` (`PrimeValuationKakutaniSector`) and the strict parity
+comparison (`RHTower.geometricPrimeValuationGramSq_lt_squarefreePrimeParityGramSq`) confirmed the
+digit layer itself was new.
+
+The card's remaining gates are the ones it lists as needing new mathematics: the squarefree
+source-to-exceptional-reporter comparison and Xi conormal/multiplicity-jet conservativity.
