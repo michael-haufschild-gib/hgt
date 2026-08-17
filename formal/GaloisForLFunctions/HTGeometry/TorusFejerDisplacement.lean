@@ -41,29 +41,55 @@ theorem torusFejer_nonneg (N : ℕ) (x : ℝ) : 0 ≤ torusFejer N x := by
   unfold torusFejer
   positivity
 
-/-- Expanding the square turns the kernel into a cosine polynomial. -/
+/-- The square of the Dirichlet sum expands into the `(N+1)²` modes of the kernel. -/
+theorem dirichletSum_mul_conj (N : ℕ) (x : ℝ) :
+    dirichletSum N x * (starRingEnd ℂ) (dirichletSum N x)
+      = ∑ p ∈ Finset.range (N + 1), ∑ q ∈ Finset.range (N + 1),
+          Complex.exp (((((p : ℝ) - (q : ℝ)) * x : ℝ)) * Complex.I) := by
+  classical
+  rw [dirichletSum, map_sum, Finset.sum_mul_sum]
+  refine Finset.sum_congr rfl fun p _ => Finset.sum_congr rfl fun q _ => ?_
+  rw [← Complex.exp_conj, ← Complex.exp_add]
+  congr 1
+  simp only [map_mul, Complex.conj_I, Complex.conj_ofReal]
+  push_cast
+  ring
+
+/-- The squared modulus of the Dirichlet sum is a real cosine polynomial. -/
 theorem norm_dirichletSum_sq (N : ℕ) (x : ℝ) :
     ‖dirichletSum N x‖ ^ 2
       = ∑ p ∈ Finset.range (N + 1), ∑ q ∈ Finset.range (N + 1),
           Real.cos (((p : ℝ) - (q : ℝ)) * x) := by
   classical
-  have hmul : dirichletSum N x * (starRingEnd ℂ) (dirichletSum N x)
-      = ∑ p ∈ Finset.range (N + 1), ∑ q ∈ Finset.range (N + 1),
-          Complex.exp (((((p : ℝ) - (q : ℝ)) * x : ℝ)) * Complex.I) := by
-    rw [dirichletSum, map_sum, Finset.sum_mul_sum]
-    refine Finset.sum_congr rfl fun p _ => Finset.sum_congr rfl fun q _ => ?_
-    rw [← Complex.exp_conj, ← Complex.exp_add]
-    congr 1
-    simp only [map_mul, Complex.conj_I, Complex.conj_ofReal]
-    push_cast
-    ring
   have hnormSq : (‖dirichletSum N x‖ ^ 2 : ℝ)
       = (dirichletSum N x * (starRingEnd ℂ) (dirichletSum N x)).re := by
     rw [Complex.mul_conj, Complex.normSq_eq_norm_sq, Complex.ofReal_re]
-  rw [hnormSq, hmul, Complex.re_sum]
+  rw [hnormSq, dirichletSum_mul_conj, Complex.re_sum]
   refine Finset.sum_congr rfl fun p _ => ?_
   rw [Complex.re_sum]
   exact Finset.sum_congr rfl fun q _ => Complex.exp_ofReal_mul_I_re _
+
+/-- **The complex form of the kernel.**  It is a trigonometric polynomial whose frequencies are the
+`(N+1)²` differences `p - q`. -/
+theorem torusFejer_complex (N : ℕ) (x : ℝ) :
+    ((torusFejer N x : ℝ) : ℂ)
+      = ∑ p ∈ Finset.range (N + 1), ∑ q ∈ Finset.range (N + 1),
+          ((N : ℂ) + 1)⁻¹ * Complex.exp (((((p : ℝ) - (q : ℝ)) * x : ℝ)) * Complex.I) := by
+  classical
+  have hNne : ((N : ℂ) + 1) ≠ 0 := by
+    have : ((N : ℝ) + 1) ≠ 0 := by positivity
+    intro h
+    apply this
+    exact_mod_cast h
+  have hsq : ((‖dirichletSum N x‖ ^ 2 : ℝ) : ℂ)
+      = dirichletSum N x * (starRingEnd ℂ) (dirichletSum N x) := by
+    rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
+  have hcast : (((N : ℝ) + 1 : ℝ) : ℂ) = (N : ℂ) + 1 := by push_cast; ring
+  rw [torusFejer, Complex.ofReal_div, hcast, hsq, dirichletSum_mul_conj, Finset.sum_div]
+  refine Finset.sum_congr rfl fun p _ => ?_
+  rw [Finset.sum_div]
+  refine Finset.sum_congr rfl fun q _ => ?_
+  rw [div_eq_inv_mul]
 
 /-- A single mode integrates to `2π` on the diagonal and to zero off it. -/
 theorem integral_cos_mode (p q : ℕ) :

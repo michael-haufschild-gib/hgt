@@ -305,3 +305,64 @@ with `logDeriv` because that is what the Route-T estimate delivers, is
    `Sieve/RouteTMoebiusPowerSaving` does for `1/zeta`.
 3. **Abel summation.**  `∑_{p ≤ K}(log p)p^{-iτ} ⟹ ∑_{p ≤ K}p^{-iτ}`, the last step to Lemma 2.3's
    prime statement.
+
+### Both twist regimes closed to a single explicit inequality — seven more modules (2026-08-17)
+
+The twisted contour splits into two genuinely different regimes, separated by whether the pole
+`1 - iτ` lies inside the truncated rectangle `[c,d] × [-T,T]`.  Both are now built.
+
+**Regime 1, `|τ| < T`: the residue is collected and the sum keeps a main term.**
+
+| Module | Content |
+|---|---|
+| `Sieve/ChebyshevTwistLeftEdge.lean` | `line_ne_twistPole_of_ne`, `integral_twist_pole_term_line_of_ne` (the closed form of the truncated pole integral on *any* line off the abscissa), `integral_dslope_mellin_twist_left_eq` (the left-edge divided difference with its pole term extracted), and `norm_integral_left_vertical_twist_pole_free_le` |
+| `Sieve/ChebyshevTwistHorizontalDslope.lean` | `norm_inv_sub_twistPole_height_le`, `norm_dslope_mellin_twist_height_le`, `norm_integral_horizontal_twist_dslope_le` |
+| `Sieve/ChebyshevTwistFullMainTerm.lean` | `tsum_vonMangoldtTwist_full_main_identity` and `norm_tsum_vonMangoldtTwist_sub_full_main_le`: the sum against `W(1-iτ)·(twistMainFactor d T τ - twistMainFactor c T τ)`, with five explicit errors |
+| `Sieve/ChebyshevTwistMainFactorLimit.lean` | `abs_arctan_gap_sub_pi_le`, `abs_arctan_gap_add_pi_le`, `abs_log_gap_le`, and `norm_twistMainFactor_gap_sub_two_pi_le`: the two halves of the residue sum to `2π` up to `2(d-1)/(T-|τ|) + 2(1-c)/(T-|τ|) + 4T|τ|/(T-|τ|)²` |
+
+Two facts about the twisted geometry that the untwisted case hides.  The *effective* truncation
+height is `T - |τ|`, not `T`: the pole sits at height `-τ`, so the contour only surrounds it by that
+much.  And a truncation symmetric in `y` is *asymmetric about the pole*, so the imaginary parts of
+the two halves no longer cancel term by term; what survives is a logarithm controlled only by the
+relative asymmetry `4T|τ|` against the square of the effective height.  Both errors vanish exactly
+when `T/|τ| → ∞`, which is the condition under which a twisted Chebyshev sum keeps a main term.
+
+**Regime 2, `T < |τ|`: no residue, and the whole sum is an error.**  This is the regime
+Matomäki–Radziwiłł consumes.
+
+| Module | Content |
+|---|---|
+| `Sieve/ChebyshevTwistNoPoleShift.lean` | `abs_im_shift_rect_ge` (the single inequality `|τ| - T ≤ |Im(s+iτ-1)|` that replaces all residue bookkeeping), `differentiableOn_twistPoleInvW_rect`, the contour shift for the pole term, the two-piece line split `chebyshev_twist_integrand_split_two`, `tsum_vonMangoldtTwist_truncated_two_identity`, and the pole-term edge bounds |
+| `Sieve/ZetaLogDerivRegRouteTUniform.lean` | `exists_logDeriv_zeta_bound_routeT_of_region` (the region as an *input*, so the width in the bound and the width in the hypothesis are the same object) and **`exists_bound_zetaLogDerivReg_routeT_uniform`**: on `1 - w(K+1)/2 ≲ σ ≤ 9/8`, `|γ| ≤ K`, both `ζ ≠ 0` and `‖zetaLogDerivReg‖ ≤ C·log K / w(K+1)` |
+| `Sieve/ChebyshevTwistQuantitativeEdges.lean` | `continuous_neg_logDeriv_twist_line`, `norm_neg_logDeriv_twist_le_line` (the twist is a vertical translation, so the Dirichlet series at the abscissa bounds it unchanged), the twisted truncation error, and the left/horizontal edges of the twisted regular part |
+| `Sieve/ChebyshevTwistRouteTBound.lean` | `routeTTwistAbscissa` and **`exists_norm_tsum_vonMangoldtTwist_routeT_le`** |
+
+The capstone is one unconditional inequality with no hypotheses beyond the parameter geometry
+(`0 < N`, `0 < H`, `1 < d ≤ 9/8`, `1 ≤ T < |τ|`, `K₀ ≤ |τ| + T`) and the order-two Mellin decay
+constant of the cutoff:
+
+```text
+‖2π ∑ₙ Λ(n) n^{-iτ} w(n)‖ ≤ 2·Σ(d)·C/T
+                            + (|τ| - T)⁻¹ · (edge mass)
+                            + C'·log(|τ|+T)/w(|τ|+T+1) · (edge mass),
+   edge mass = 2(N+H)^σ/σ + 2C + 2C(d-σ)/T²,   σ = routeTTwistAbscissa A δ (|τ|+T).
+```
+
+The pole factor contributes `(|τ|-T)⁻¹`, which *improves* as the twist grows — the twisted sum is
+easier, not harder, at large `τ`.  The saving is `(N+H)^σ = (N+H)·(N+H)^{-w}` with `w` the Route-T
+width, i.e. `exp(-c·log N/((log K)^{9/10}(log log K)²))`, uniform in `|τ| ≤ K`.
+
+All eleven modules of this turn are unconditional, umbrella-wired, oleans built, axiom-clean
+(`[propext, Classical.choice, Quot.sound]`).
+
+### Remaining for Lemma 2.3
+
+1. **Parameter selection.**  Choose `N, H, d, T` against `x` and `τ` and collapse the capstone to a
+   single decaying rate, as the `Chebyshev{KappaOne,Littlewood,Ll}{Data,Height,Width,Rate,Shape,
+   Threshold}` chain does for the untwisted contour.  Nothing new is needed mathematically; it is
+   the same optimisation with `K = |τ| + T` in place of `T`.
+2. **Smooth to sharp.**  `Sieve/VonMangoldtTwistSharpSum.norm_partialSum_vonMangoldtTwist_le_of_
+   smoothed_bound` is already built; it needs the rate from item 1.
+3. **Abel summation.**  `∑_{p ≤ K}(log p)p^{-iτ} ⟹ ∑_{p ≤ K}p^{-iτ}`, the last step to Lemma 2.3's
+   prime statement.  `Sieve/VonMangoldtTwistPrimeSum` supplies the prime-power removal; only the
+   partial summation over `log p` remains.

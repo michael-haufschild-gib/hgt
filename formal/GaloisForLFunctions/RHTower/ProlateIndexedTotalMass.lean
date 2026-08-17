@@ -35,19 +35,18 @@ open _root_.RHTower
 theorem abs_sq_sub_sq_le {u v B : ℝ} (hu : |u| ≤ B) (hv : |v| ≤ B) :
     |u ^ 2 - v ^ 2| ≤ 2 * B * |u - v| := by
   have hfac : u ^ 2 - v ^ 2 = (u - v) * (u + v) := by ring
-  have hsum : |u + v| ≤ 2 * B := le_trans (abs_add u v) (by linarith)
+  have hsum : |u + v| ≤ 2 * B := by
+    refine le_trans (abs_add_le u v) ?_
+    linarith
   rw [hfac, abs_mul]
   have hnn : (0 : ℝ) ≤ |u - v| := abs_nonneg _
   nlinarith [hnn, abs_nonneg (u + v)]
 
 theorem continuous_indexedOscillatorProfile (n : ℕ) (a : ProlatePositiveAperture) :
-    Continuous (indexedOscillatorProfile n a) :=
-  fun_prop_continuous
-where
-  fun_prop_continuous : Continuous (indexedOscillatorProfile n a) := by
-    have hd : Differentiable ℝ (indexedOscillatorProfile n a) := fun x =>
-      (indexedOscillatorProfile_hasDerivAt n a x).differentiableAt
-    exact hd.continuous
+    Continuous (indexedOscillatorProfile n a) := by
+  have hd : Differentiable ℝ (indexedOscillatorProfile n a) := fun x =>
+    (indexedOscillatorProfile_hasDerivAt n a x).differentiableAt
+  exact hd.continuous
 
 /-- The amplitude scaling used to match the Hermite initial phase vector. -/
 def indexedRungAmplitude (n : ℕ) : ℝ := hermiteFun (2 * n) 0

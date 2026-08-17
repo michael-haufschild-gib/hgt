@@ -134,6 +134,7 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-17 | `prime-zero-susceptibility-transverse` | new `RHTower/PrimeZeroSusceptibility.lean` |
 | 2026-08-17 | `u0-phi-independence` | already formalized: `U0/U0AllNonexceptionalConnected.lean` |
 | 2026-08-17 | `u0-phi-independence-disconnected` | already formalized: `U0/U0AllNonexceptionalDisconnected.lean` |
+| 2026-08-17 | `fixed-taylor-modulus-ht-real-rootedness-nonselection` | new `HTGeometry/FixedModulusRealRootednessNonselection.lean` |
 
 ## Already carrying a stage-3 certificate (verify, then move the paper card)
 

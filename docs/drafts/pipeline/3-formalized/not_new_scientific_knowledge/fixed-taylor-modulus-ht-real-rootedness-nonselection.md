@@ -103,7 +103,7 @@ The proof combines Hölder's theorem, countability after Mahler normalization, t
 
 ## Lean status
 
-No Lean formalization is claimed. The complete theorem would require Mahler normalization, generic coefficient extraction and balanced survival, product Haar measure, Baire category, reciprocal-Gamma hypertranscendence, and analytic zero perturbation. None is presently assembled as a whole theorem in the repository.
+**Formalized unconditionally, 2026-08-17** — see the Lean formalization section below. The earlier assessment (that Mahler normalization, generic coefficient extraction, balanced survival, product Haar measure and Baire category would all be needed) was based on routing the construction through the tail-prevalence lemma; the formal proof does not need that route, for the reason recorded below.
 
 ## Gates
 
@@ -111,8 +111,91 @@ No Lean formalization is claimed. The complete theorem would require Mahler norm
 - [x] Same full-support moduli and HT status on both sides.
 - [x] All-real divisor versus nonreal zero.
 - [x] Exact noncategorical RH-route scope.
-- [ ] Whole theorem formalized unconditionally in Lean.
+- [x] Whole theorem formalized unconditionally in Lean — `fixedModulus_hypertranscendence_real_rootedness_nonselection`.
 
 ## Log
 
 - 2026-07-11 — Proved tail-Haar prevalence of HT phases and constructed one fixed-modulus HT fiber containing both an all-real-zero reciprocal-Gamma translate and an HT member with a nonreal zero.
+
+## Lean formalization — 2026-08-17
+
+Module: `formal/GaloisForLFunctions/HTGeometry/FixedModulusRealRootednessNonselection.lean`
+(wired into the `GaloisForLFunctions.HTGeometry` umbrella).
+
+The capstone is
+
+```
+fixedModulus_hypertranscendence_real_rootedness_nonselection :
+  ∃ f g : ℂ → ℂ,
+    ContDiff ℂ ⊤ f ∧ ContDiff ℂ ⊤ g ∧
+    Hypertranscendental f ∧ Hypertranscendental g ∧
+    (∀ n, ‖coeff n (taylorPS f)‖ = ‖coeff n (taylorPS g)‖) ∧
+    (∀ n, coeff n (taylorPS f) ≠ 0) ∧
+    (∀ z, f z = 0 → z.im = 0) ∧ {z | f z = 0}.Infinite ∧
+    (∃ z, g z = 0 ∧ z.im ≠ 0)
+```
+
+together with two restatements: `exists_common_modulus_profile_phases` puts the pair in the card's
+phase form `a_n = r_n e^{iθ_n}` with `r_n > 0` for every `n`, and `modulusProfile_selector_blind`
+states the Consequences section as a theorem — for **every** map `Φ` on modulus profiles, `Φ` agrees
+on the two functions, so no selector factoring through `(|a_n|)_n` can imply real-rootedness.
+
+| Card step | Lean name |
+|---|---|
+| `G = 1/Γ(· + x)` is entire | `analyticOnNhd_reciprocalGammaTranslate`, `contDiff_realCarrier` |
+| Hölder: every reciprocal-Gamma translate is HT | `hypertranscendental_reciprocalGammaTranslate` |
+| every derivative `E⁽ⁿ⁾` is a nonzero entire function | `exists_iteratedDeriv_ne_zero_of_hypertranscendental` |
+| choice of `x` outside the countable union of derivative zero sets | `exists_pos_base_all_iteratedDeriv_ne_zero`, `fmBase` |
+| zeros of `G` are exactly the simple real points `−x−j` | `realCarrier_eq_zero_iff`, `im_eq_zero_of_realCarrier_eq_zero`, `infinite_zeros_realCarrier` |
+| `r_n = \|a_n\|` is full support | `coeff_taylorPS_realCarrier_ne_zero` |
+| rotate the constant coefficient: `G_t = G + (e^{it}−1)a₀` | `phaseUnit`, `phaseCarrier` |
+| identical Taylor moduli | `norm_coeff_phaseCarrier` |
+| `G_t` is hypertranscendental | `hypertranscendental_phaseCarrier` |
+| implicit-function motion `ρ'(0) = −i a₀/G'(ρ)` off the real axis | `exists_perturbed_zero_off_axis` |
+| `G_t` has a nonreal zero for a suitable small `t` | `exists_phase_nonreal_zero` |
+
+### Two deliberate route changes
+
+1. **The tail-prevalence lemma is not needed and is not used.**  The card reaches the second member
+   of the fibre by showing that HT phases are dense in the modulus fibre and picking an HT phase in
+   the open set of phases whose function has a nonreal zero.  That detour is unnecessary: the phase
+   rotation the card itself performs changes only the *constant* Taylor coefficient, so
+   `G_t = G + c` differs from `G` by an additive constant, and adding a polynomial never changes
+   differential algebraicity (`hypertranscendental_add_polynomial_iff`).  Hence `G_t` is
+   hypertranscendental for **every** `t`, with no genericity input at all.  Consequently Mahler's
+   integer-normalization theorem, generic coefficient extraction, balanced survival, the
+   trigonometric-polynomial zero-set lemma, product Haar measure and Baire category — the whole
+   apparatus of §"Tail-prevalence lemma" — are absent from the formal proof.
+
+   The tail-prevalence lemma itself is therefore **not formalized, and is not an obligation of this
+   card's theorem**: it is a sufficient-but-unnecessary intermediate step for the stated result.  It
+   remains a correct standalone statement of independent interest; formalizing it would be a
+   separate project.  (The corpus does already own its two hardest ingredients:
+   `HTGeometry/FormalMahlerIntegerNormalization.lean` for the integer normalization and
+   `HTGeometry/PrescribedResidueBalancedAtom.lean` for balanced survival.)
+
+2. **The full-support base point is chosen from hypertranscendence, not from "E is not a
+   polynomial".**  The card argues that `E⁽ⁿ⁾ ≢ 0` because otherwise `E` would be a polynomial with
+   infinitely many zeros.  The formal proof observes instead that `E⁽ⁿ⁾ ≡ 0` is *already* an
+   algebraic differential equation — the jet variable `Yₙ` is a nonzero differential polynomial — so
+   it contradicts Hölder's theorem directly.  Each `E⁽ⁿ⁾` is then a nonzero entire function, its
+   real zero set is countable (`HTGeometry.countable_setOf_eq_zero_of_analyticOnNhd`), and the
+   countable union of these sets cannot cover `(0,∞)`.
+
+   Similarly, `Rouché` is not used: transversality of the moving zero is obtained from the analytic
+   inverse function theorem (`HasStrictDerivAt.localInverse`) plus the first-order slope of
+   `t ↦ Im ρ(t)` at `t = 0`, which is exactly the card's `ρ_j'(0) = −i a₀/G'(ρ_j)` computation.  The
+   realness inputs the card needs are `a₀ = 1/Γ(x) > 0` (real positive for real `x > 0`) and
+   `G'(−x) = E'(0) = 1` (`hasDerivAt_oneDivGamma_neg_nat 0`); the base zero `j = 0` already gives a
+   nonzero purely imaginary velocity, so no digamma value is required.
+
+Verification: `lake build GaloisForLFunctions.HTGeometry.FixedModulusRealRootednessNonselection` —
+PASS; `#print axioms` on all thirteen named results reports only
+`[propext, Classical.choice, Quot.sound]`.
+
+## Log
+
+- 2026-08-17 — Formalized unconditionally in Lean 4 and promoted to stage 3.  The real-rootedness
+  nonselection theorem, its phase-form restatement, and the modulus-profile selector-blindness
+  corollary are unconditional Lean theorems; the tail-prevalence lemma is documented above as a
+  bypassed intermediate route.

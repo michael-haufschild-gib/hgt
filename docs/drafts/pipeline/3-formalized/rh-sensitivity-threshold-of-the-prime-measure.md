@@ -252,22 +252,38 @@ divergent reciprocal sum and survives the enlargement.  A producer built from th
 prove RH for `ℬ(ν_{β,γ})`, which is false.  Combined with Theorem 1, the L/R/CCM/P Frankenstein
 descent cluster is closed: **retire, do not repackage.**
 
-## 6. What the threshold says positively
+## 6. What the threshold says positively — **and the retraction of the design rule**
 
-`ζ_{ℬ(ν)}` sees `ν` through `F_ν(s) = ∫ u^{-s} dν(u)`.  Moving a zero into `Re s > 1/2` costs
-abscissa `> 1/2`, hence (Landau) a real singularity at the same abscissa, hence a change of the
-generalized-integer counting function `N(x)` of size `x^{β−δ}`.  So:
+`ζ_{ℬ(ν)}` sees `ν` through `F_ν(s) = ∫ u^{-s} dν(u)`.  Within the class of *positive* adjunctions
+to the rational primes, moving a zero into `Re s > 1/2` costs abscissa `> 1/2`, hence (Landau) a
+real singularity at the same abscissa, hence a change of the generalized-integer counting function
+`N(x)` of size `x^{β−δ}`.  An earlier revision of this card drew from that the design rule
 
-> **The arithmetic input any RH proof must consume is control of `ψ(x) − x` (equivalently
-> `N(x) − ρx`) at the power scale `x^{1/2}`.  Reciprocal-weight data — `1/p`, `Λ(n)/n`, Mertens
-> constants, `ℓ²` prime energies, log-jet Grams — is exactly the data that cannot see it.**
+> ~~The arithmetic input any RH proof must consume is control of `N(x) − ρx` at the power scale
+> `x^{1/2}`.~~
 
-This is a positive design rule, not only a no-go: it says which of two topologies on prime systems
-a candidate criterion must be discontinuous in.  Every corpus lane whose prime weights are
-`1/p`-type (Wold–Jordan carriers, Big-Witt `1/(pq)` rows, harmonic singular graphs, Mertens-window
-Grams) is on the wrong side of the line by construction; lanes whose prime weights are
-`Λ(n) n^{-1/2}`-type (explicit formula, Weil quadratic form, restricted-aperture CCM) are on the
-right side and are not touched by this card.
+**That rule is false and is retracted.**  It is refuted, unconditionally and explicitly, by the
+companion card `regular-beurling-integers-do-not-constrain-the-zeros`: for every `β ∈ (1/2,1)`,
+every `γ ≠ 0` and every `θ > 0` there is a Beurling system whose zeta is the rational function
+`((s−β)² + γ²)s^{A−1}/((s−1)(s−δ)^A)` with `0 < δ < θ` — so its generalized integers satisfy
+`N(x) = ρx + O(x^{θ})` for *every* `θ > 0`, better regularity than RH claims for `ℤ` — while its
+zeta vanishes at `β ± iγ`.  The Landau obstruction of §3 applies only to *adjoining* primes to
+`ℤ` (where the comparison is with `ζ` itself); in the absolute Beurling category the compensating
+real singularity may be placed arbitrarily close to `s = 0`, at no cost to `N`.
+
+What survives, and is the corrected statement:
+
+> **Reciprocal-weight data — `1/p`, `Λ(n)/n`, Mertens constants, `ℓ²` prime energies, log-jet
+> Grams — cannot decide RH (this card).  Neither can any asymptotic regularity of the
+> generalized-integer counting function (companion card).  An RH proof must use *which* integers
+> occur, not how many: the input is the exact multiplicative structure `N(x) = ⌊x⌋`, not any
+> `N(x) = ρx + O(x^{θ})`.**
+
+Every corpus lane whose prime weights are `1/p`-type (Wold–Jordan carriers, Big-Witt `1/(pq)` rows,
+harmonic singular graphs, Mertens-window Grams) is dead by this card.  Lanes whose prime weights are
+`Λ(n) n^{-1/2}`-type (explicit formula, Weil quadratic form, restricted-aperture CCM) are not
+touched by either card — but note that they are also *not* protected by the retracted rule; their
+survival has to be argued on other grounds.
 
 ## 7. Lean
 

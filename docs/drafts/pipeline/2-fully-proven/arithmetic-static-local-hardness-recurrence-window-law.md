@@ -202,20 +202,61 @@ The `d`-dimensional packet is carried by the Fubini factorization: convolving th
 against `F_N^{otimes d}` is the product of the one-dimensional Fejér means (`productFejerTent`), so
 `(16)` in `d` dimensions is the telescoping bound applied to the one-dimensional displacement.
 
-One point of scope.  `fejerConv` convolves against the tent as a function on `R` -- the tent is
-supported in `[-rho,rho]` and is not extended periodically -- so the displacement estimates above
-are theorems about that object, not about the periodised `P` of `(12)`.  The estimate itself is
-insensitive to the difference (it only uses `|q(theta-x)-q(theta)| <= |x|/rho` for `|x| <= pi`,
-which the torus distance also satisfies), but the *Fourier* statements of `(12)`--`(13)` do need the
-periodised convolution, and that is exactly the gap named below.
+##### Step 2 on the circle: `(12)`--`(13)` are closed
+
+`formal/GaloisForLFunctions/HTGeometry/PeriodicTentPacket.lean` (new, umbrella-wired, axiom-clean)
+repeats the construction with a genuinely `2pi`-periodic tent, which is what the Fourier statements
+`(12)`--`(13)` require.
+
+| Card item | Declaration |
+|---|---|
+| the whole-turn lattice and the distance to it; `1`-Lipschitz and turn-invariant | `turnLattice`, `turnDist`, `abs_turnDist_sub_le`, `periodic_turnDist` |
+| on `\|x\| <= pi` the turn distance is `\|x\|` | `turnDist_eq_abs` |
+| **`(10)` on the circle**: the periodic tent, its positivity ball, its `1/rho`-Lipschitz constant | `perTent`, `perTent_pos_iff`, `abs_perTent_sub_le`, `periodic_perTent` |
+| **`(11)`**: its mass is `rho`, i.e. Haar mean `rho/2pi` | `integral_perTent` |
+| the Fourier coefficient of a periodic function, and periodicity of the integrand | `perFourierCoeff`, `periodic_fourierIntegrand` |
+| the shifted mode integral `int f(theta-x)e^{inx}dx = 2pi e^{in theta} hat f(n)` | `integral_shift_mode` |
+| **`(12)` in one dimension**: the Fejér mean is a trigonometric polynomial on the `(N+1)²` differences `p-q` | `fejerConv_eq_modeSum`, `fejerConv_eq_pairSum` |
+| **`(13)` in one dimension**: `\|hat f(m)\| <= ` the Haar mean; for the tent, `<= rho/2pi` | `norm_perFourierCoeff_le`, `norm_perFourierCoeff_perTent_le` |
+| the constant coefficient is the Haar mean | `perFourierCoeff_zero`, `perFourierCoeff_perTent_zero` |
+| **`(12)` in `d` dimensions**: the packet is a finite sum of modes indexed by tuples of pairs | `packetMode`, `periodicProductFejerTent_eq_modeSum` |
+| **`(13)` in `d` dimensions**: every mode weight is at most `((N+1)^{-1} rho/2pi)^d` | `norm_packetMode_le` |
+| the diagonal modes are the constant ones, and they sum to `mu_rho = (rho/2pi)^d` | `packetMode_diagonal`, `sum_diagonal_packetMode` |
+| **the packet splits as `mu_rho` plus its nonconstant modes** | `periodicProductFejerTent_eq_const_add` |
+| **`(16)` on the circle**, in one and in `d` dimensions | `abs_fejerConv_perTent_sub_le`, `abs_periodicProductFejerTent_sub_le` |
+
+The `d`-dimensional expansion is left ungrouped -- indexed by tuples of pairs rather than by
+frequency vectors -- which is not a loss: the `(N+1)^{2d}` terms each of weight
+`((N+1)^{-1} mu_rho^{1/d})^d` give the aggregate `(N+1)^d mu_rho`, which is *smaller* than the
+card's grouped `(2N+1)^d mu_rho`.  Grouping is therefore unnecessary for step 3.
+
+##### Step 3 is closed: `(17)`--`(19)` and `(5)`
+
+Same module.  Evaluating the packet along `theta = t omega` turns every mode into a pure
+oscillation, and the already formal `window_mean_ge` then delivers the moving-window floor.
+
+| Card item | Declaration |
+|---|---|
+| the frequency `k · omega` a mode carries, and its time-independent amplitude | `packetFreq`, `packetAmp`, `norm_packetAmp_le` |
+| **each mode is a pure oscillation in `t`** | `packetMode_linearPhase` |
+| **`(18)`**: the moving-window mean of the packet is at least `mu_rho` minus the aggregate oscillation error | `window_mean_periodicProductFejerTent_ge` |
+| the Fejér mean of a periodic function is continuous (it *is* the trigonometric polynomial) | `continuous_fejerConv` |
+| **`(19)`**: the tent itself inherits that floor, up to the uniform displacement `(16)` | `window_mean_periodicProductTent_ge` |
+| the cube-visit set and its measurability | `cubeVisit`, `measurableSet_cubeVisit` |
+| the tent is dominated by the indicator of the cube | `periodicProductTent_le_indicator` |
+| **`(5)`**: every moving window of length `T` spends at least the displayed fraction inside the cube | `measureReal_cubeVisit_ge` |
+
+`measureReal_cubeVisit_ge` is Theorem A's conclusion with all three error terms explicit and
+uniform in the window position `u`: the separation `βmin` enters only as the hypothesis `hsep`,
+which is exactly `(9)` applied to `k · omega`.
 
 ##### What remains in Theorem A
 
-The conjugate bound `(8)` for the spectral form, and the Fourier bookkeeping `(12)`--`(13)`: that
-`P` has Fourier support `||k||_infty <= N`, constant coefficient `mu_rho`, and
-`|hat P(k)| <= mu_rho`.  That last step is the only remaining analytic gap; it needs the periodic
-(torus) structure, which the modules above deliberately avoid.  Everything else in `(10)`--`(11)`
-and `(14)`--`(18)` is formal.
+Only the arithmetic input: the conjugate bound `(8)` for the spectral form -- that Galois conjugates
+of the eigenvalues stay below `2dNR` -- which discharges `hsep` through
+`inv_pow_le_norm_embedding`, together with the numerical choice of `N_rho` and `T(D,R,rho)` making
+the two error terms of `measureReal_cubeVisit_ge` at most `mu_rho/4` each.  Every analytic
+ingredient of `(10)`--`(19)` is formal.
 For the multi-dimensional kernel the corpus also owns a Bohr-side stack, in
 the Bohr almost-periodic setting that this card's moving-window mean lives in:
 `HTGeometry/BohrFejerKernel.lean` (`fejerKernel`, `fejerKernel_nonneg`, `fejerKernel_eq_sum`,

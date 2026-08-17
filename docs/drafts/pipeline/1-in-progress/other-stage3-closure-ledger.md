@@ -3518,3 +3518,48 @@ subdiagonal law evaluates its descent:
 `topDescent_K(Δ(u,k)) = (V_u + Ê_u/R')·binom(k,K)·T_{k−K}`   (`topDescent_chainDelta`).
 
 These are exactly the two inputs the chain induction needs at each step.
+
+## Pass 56 — CLOSED: the quadratic orbifold tails are trivial, and three cards move to stage 3
+
+```text
+GaloisForLFunctions.HTGeometry.quadOne_tail_trivial,  quadTwo_tail_trivial :
+  Phi_R(g) = g  ->  g constant,  for every g in the free jet field, every jet order,
+  no hypotheses, axioms [propext, Classical.choice, Quot.sound].
+```
+
+Promoted to `3-formalized/new_scientific_knowledge/other`:
+`rational-coarse-graining-orbifold-tail-classification`, `floquet-orbifold-tail-emergence`,
+`orbifold-tail-holographic-reconstruction`.
+
+**The chain** (`JetChainDescent.lean`).  With `chain t = w + ∑_{u<t} binom(N+1,u+1)·V_u·z_{N−u}` and
+`chainDefect t = s_{N+1} − ∑_{u<t} binom(N+1,u+1)·Δ(u, N−u)`:
+
+* `chain_relation` — the chain satisfies the shift relation with the same exponent and that defect;
+* `topDescent_chainDefect_gen` — the descent of the defect is
+  `binom(N+1,t+1)·Ê_t − ∑_{u<t} binom(N+1,u+1)·s_{N−u}·topDescent_{N−t}(V_u)`, by the subdiagonal law
+  of pass 53, the subset-of-a-subset identity `binom(N+1,u+1)binom(N−u,N−t) =
+  binom(N+1,t+1)binom(t+1,u+1)`, and the defect recursion of pass 54;
+* `topDescent_chain` — uniqueness (eigen-rigidity at exponent `t+1`) pins
+  `topDescent_{N−t}(chain t) = −binom(N+1,t+1)·V_t`;
+* `chain_order` — hence `chain (t+1)` has jet order at most `N − t − 1`, by induction;
+* `no_zshift_of_odd` — at `N = 2T+1` the chain reaches `t = T`, where `V_{T−1}` has jet order exactly
+  `N − T` and contributes an extra `s_{T+2}`, so
+  `topDescent_{T+1}(chain T) = −binom(N+1,T+1)V_T + binom(N+1,T)z_{T+2}`; its top descent is
+  `binom(N+1,T) − binom(N+1,T+1)`, nonzero because the two are consecutive binomials of `2T+2`
+  straddling the centre, contradicting the jet-order bound `T + 1`.
+
+**Odd levels** are reduced to even ones by `zshift_succ` (pass 55).  The rigidity in the chain is
+applied at the jet order of the elements involved, not at `N`, so the propagated chain runs with the
+fixed-point hypothesis only at order `M − 1`; its first stripping step comes from the pinned top
+coefficient `topDescent_{M−1}(w) = −M·z₂` at the original level.
+
+**Assembly** (`JetTailTrivial.lean`): `no_zshift` (no shift at any level `≥ 4` given the levels
+below), `not_hasNormalizingShift_all` (strong induction over the levels), and
+
+```text
+fixed_isConst :  no nonconstant fixed element of jet order one, no shift at level two,
+                 no shift at level three  ==>  Tail(R) = C.
+```
+
+For the two quadratics the three inputs are the absence of an invariant rational differential, of a
+rational affine connection and of a rational projective structure — all already Lean-proved.

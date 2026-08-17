@@ -3834,3 +3834,25 @@ Fejér packet remains), `computable-static-local` (the Gaussian box closed).
   `d`-dimensional product form via a telescoping bound on the unit ball
   (`abs_productFejerTent_sub_le`).  This closes `(10)`, `(11)`, `(14)`--`(16)` of the arithmetic
   moving-window card; `(12)`--`(13)` still need the periodised (torus) convolution.
+
+### Same sweep -- the circle packet
+
+- `HTGeometry/PeriodicTentPacket.lean` -- the tent made periodic and its Fejér packet, closing the
+  whole analytic half of Theorem A of the arithmetic moving-window card.  The turn distance is
+  `Metric.infDist` to the lattice of whole turns, hence automatically `1`-Lipschitz and
+  turn-invariant, and equal to `|x|` on `|x| <= π`; the periodic tent therefore has the same mass,
+  positivity set and Lipschitz constant as the tent built from `|x|`, but is a genuine function on
+  the circle.  On top of it: Fourier coefficients of a periodic function, the shifted mode integral
+  `∫ f(θ-x)e^{inx}dx = 2π e^{inθ} f̂(n)`, the Fejér mean as an explicit trigonometric polynomial
+  (`fejerConv_eq_modeSum`), the `d`-dimensional packet as a finite sum of modes
+  (`periodicProductFejerTent_eq_modeSum`) with weight bound `((N+1)^{-1}ρ/2π)^d`
+  (`norm_packetMode_le`) and constant part exactly `μ_ρ = (ρ/2π)^d`
+  (`periodicProductFejerTent_eq_const_add`), each mode a pure oscillation in time
+  (`packetMode_linearPhase`), the moving-window floor `(18)`
+  (`window_mean_periodicProductFejerTent_ge`), the same floor for the tent `(19)`
+  (`window_mean_periodicProductTent_ge`), and the cube-occupation conclusion `(5)`
+  (`measureReal_cubeVisit_ge`).
+  The `d`-dimensional expansion is deliberately ungrouped: `(N+1)^{2d}` tuple-indexed modes give the
+  aggregate `(N+1)^d μ_ρ`, better than the grouped `(2N+1)^d μ_ρ`.
+  What the card still needs from Theorem A is only the arithmetic input `(8)` and the numerical
+  choice of `N_ρ` and `T`.

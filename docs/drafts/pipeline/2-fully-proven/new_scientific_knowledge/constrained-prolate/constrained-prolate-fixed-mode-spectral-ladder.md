@@ -5254,3 +5254,188 @@ independent modes below `2·r ν + 1`; converting that into `μ_n(c) ≤ 2n+1 + 
 enumeration of the separation constants, and the matching lower bound `μ_n ≥ 2n+1 − o(1)` needs the
 reverse count.  The corpus's indexed-mode layer (`ProlateCanonicalOscillatorLower`,
 `ProlateIndexedSeparationOrder`) is where that enumeration lives.
+
+## Lean progress — the excited-rung profile limit, and the ordering item was already closed
+
+Two new modules, both wired into `RHTower.lean`, built, axiom-clean.
+
+### The ordering item is not open
+
+The previous section listed as remaining "**the ordering** — turning `n+1` independent modes above
+`−K` into `μ_n ≤ 2n+1 + o(1)`, and the matching lower bound".  That is already a theorem in this
+tree, and had simply not been recorded on this card:
+
+```
+ProlateCanonicalOscillatorLower.tendsto_indexedOscillatorSeparation_atTop (n)
+    μ_n(a) → 4n+1               the n-th CANONICAL even mode, by index
+ProlateCanonicalOscillatorLower.tendsto_signedModeRadialBandwidth_mul_s_atTop (n)
+    the same on the original aperture axis
+ProlateIndexedSeparationOrder.signedModeRadialData_s_strictMono
+    the canonical index order IS the separation order
+```
+
+The first is `(α)` of the corpus audit — *both* halves, exactly, with no `ε` and no hypothesis; the
+third is the index identification the audit had proposed to bypass by re-indexing.  So `(α)` needs
+nothing further, and the counting theorem of the previous two sections is a second, independent
+route to its upper half rather than a prerequisite.
+
+### The excited-rung profile limit
+
+With `(α)` in hand the card's own bottleneck for `(3)` at `j > 0` — "the *only* missing input is
+the profile limit of that mode" — is a substitution into the rung window limit, once the window
+hypotheses are weakened to `∀ᶠ`, which is all a family parametrized by the aperture can satisfy.
+
+```
+RHTower/ProlateIndexedProfileRungLimit.lean
+  tendsto_prolateProfile_hermiteRung_eventually
+      the rung window limit with EVENTUAL hypotheses — the Grönwall envelope dominates
+      the distance wherever the hypotheses hold, and a squeeze needs them only eventually
+  tendsto_indexedOscillatorProfile_hermiteRung
+      ** φ_{2n}(0) · Ψ_n(a, x)  →  φ_{2n}(x)  on every window [0,K] **
+```
+
+The initial phase vector matches exactly: the canonical profile has value `1` and derivative `0` at
+the origin, and an even Hermite function has vanishing derivative there
+(`deriv_hermiteFun_zero_of_even`), so scaling by `φ_{2n}(0)` is the whole normalization.  The rung
+is `2n` because `2·(2n)+1 = 4n+1` is the limit of the `n`-th *even* separation constant.
+
+### The excited-rung total mass
+
+```
+RHTower/ProlateIndexedTotalMass.lean
+  abs_sq_sub_sq_le                  |u² − v²| ≤ 2B|u − v| for |u|,|v| ≤ B
+  eventually_indexedRung_windowDist the window distance bound on the FULL window [−K,K],
+                                    the negative half by evenness of both functions
+  tendsto_indexedRung_windowMass    ∫_{−K}^{K}(φ_{2n}(0)Ψ_n)² → ∫_{−K}^{K}φ_{2n}²
+  tendsto_indexedRung_totalMass
+      ** φ_{2n}(0)² · ∫_{−√c}^{√c} Ψ_n²  →  ∫_ℝ φ_{2n}² **
+```
+
+The window–total squeeze is the corpus's `tendsto_total_of_window`; its two tail inputs are
+`window_le_total` and `window_tail_le_of_secondMoment` fed by the aperture virial in its indexed
+form `indexedOscillatorSecondMoment_le : SM ≤ μ_n · TM`, with `μ_n ≤ 4n+2` eventually.  The window
+convergence is *quantitative*, not dominated: a difference of squares is the Grönwall distance times
+twice a uniform amplitude, and `norm_integral_le_of_norm_le_const` turns that into the integral
+bound.  This avoids needing the aperture filter to be countably generated, which it is not known to
+be here.
+
+This is the excited-rung counterpart of `tendsto_prolateGround_centreMass` and
+`tendsto_prolateGround_profileIntegral`, which the card had only for `j = 0`.  Since
+`ProlateShapeRatioTransfer.tendsto_sqrt_mul_shapeRatio_of_normalized` already discharges the
+normalization step "for ANY family and ANY nonzero `L`", the remaining work on `(3)` at `j > 0` is
+the identification of the canonical indexed family with the card's `e_j`, i.e. the bookkeeping
+between `signedModeRadialData` and `evenProlateConstraintCoord` — not a new limit.
+
+## Lean progress — the shape ratio at every rung, and the nonvanishing it needs
+
+Two more modules, wired, built, axiom-clean.  With these the card's own criterion for `(3)` at
+`j > 0` — "the *only* missing input is the profile limit of that mode" — is met.
+
+```
+RHTower/ProlateIndexedProfileIntegral.lean
+  integrable_hermiteFun, integral_hermiteFun_sq_pos_line, tendsto_intervalIntegral_hermiteFun
+        (moved to RHTower/HermiteLineIntegral.lean)
+  indexedRungAmplitude_ne_zero      φ_{2n}(0) ≠ 0, forced by the total-mass limit itself
+  tendsto_indexedRung_windowIntegral
+  tendsto_indexedRung_profileIntegral
+        ** φ_{2n}(0) · ∫_{−√c}^{√c} Ψ_n  →  ∫_ℝ φ_{2n} **
+  tendsto_indexedRung_shapeRatio
+        ** (∫_{−√c}^{√c}Ψ_n)² / ∫_{−√c}^{√c}Ψ_n²  →  (∫_ℝφ_{2n})² / ∫_ℝφ_{2n}² **
+```
+
+The amplitude cancels in the shape ratio, so the limit is amplitude-free — which is what
+`ProlateShapeRatioTransfer.tendsto_sqrt_mul_shapeRatio_of_normalized` consumes.  The amplitude is
+nonzero for a reason that needs no Hermite evaluation: if `φ_{2n}(0)` vanished, the total-mass limit
+of the previous section would read `0 = ∫_ℝφ_{2n}²`, and the right side is positive.
+
+The growing-window transfer is the corpus's `tendsto_intervalIntegral_growing_window'`; its four
+inputs at the indexed family are interval integrability (continuity), window convergence (the
+Grönwall envelope again), exhaustion of the Hermite mass by symmetric windows, and uniform tails
+from the second-moment bound `SM ≤ μ_n · TM` with `TM` bounded by the total-mass limit.
+
+### The nonvanishing of the Hermite first moment
+
+`tendsto_sqrt_mul_shapeRatio_of_normalized` requires `L ≠ 0`, i.e. `∫_ℝ φ_{2n} ≠ 0`.  That is now a
+theorem, with no special-function evaluation:
+
+```
+RHTower/HermiteLineIntegral.lean            (wired, axiom-clean)
+  hermiteFun_add_two          φ_{n+2} = √2·x·φ_{n+1} − (n+1)·φ_n
+  deriv_hermiteFun_succ       φ_{n+1}′ = √2(n+1)·φ_n − x·φ_{n+1}
+  integrable_id_mul_hermiteFun, integrable_deriv_hermiteFun_succ
+  integral_deriv_hermiteFun_succ      ∫_ℝ φ_{n+1}′ = 0
+  integral_id_mul_hermiteFun_succ     ∫_ℝ x·φ_{n+1} = √2(n+1)·∫_ℝ φ_n
+  integral_hermiteFun_add_two   ** ∫_ℝ φ_{n+2} = (n+1)·∫_ℝ φ_n **
+  integral_hermiteFun_two_mul_pos / _ne_zero
+      ** every even Hermite first moment is positive **
+```
+
+The two pointwise identities are the polynomial three-term recursion (`Polynomial.hermite_succ`
+together with the corpus's Appell law `derivative_hermite_succ`) read through the Gaussian factor,
+which is common to all three terms.  The only analysis is that a Hermite function and its derivative
+are polynomials times a Gaussian, hence integrable, and that the derivative therefore integrates to
+zero — the boundary term `φ(R) − φ(−R)` vanishes.  Substituting the second identity into the first
+gives the two-step recursion, and `φ_0` is a Gaussian, so induction gives positivity at every even
+rung.  No value of any integral is computed.
+
+### What is left on `(3)`
+
+Only re-indexing.  `tendsto_sqrt_mul_shapeRatio_of_normalized` is stated along `atTop` in the
+*bandwidth*; the canonical indexed family is parametrized by the *aperture*, and
+`indexedOscillatorBandwidth a = 2πa²` is the change of variable between them.  Composing the two —
+or restating the transfer along an arbitrary filter — turns `tendsto_indexedRung_shapeRatio` into
+the card's normalized `(3)` at every even rung, with limit `(∫φ_{2n})²/∫φ_{2n}²`, now known to be
+nonzero.
+
+## `(3)` IS CLOSED AT EVERY EVEN RUNG
+
+`RHTower/ProlateIndexedCoordinateLimit.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`).
+
+```
+tendsto_sqrt_mul_shapeRatio_of_normalized'
+    the normalization transfer along an ARBITRARY filter and index type, the bandwidth given by
+    any eventually positive function of the index
+hermiteShapeRatio_ne_zero (n)
+    (∫_ℝ φ_{2n})² / ∫_ℝ φ_{2n}²  ≠  0
+tendsto_indexedRung_coordinateLimit (n)
+    ** √c · ( ∫_{−1}^{1} R_n )² / ∫_{−1}^{1} R_n²  →  (∫_ℝφ_{2n})² / ∫_ℝφ_{2n}²  **
+```
+
+`R_n` is the canonical endpoint-normalized radial datum of the `n`-th signed (greedy) even prolate
+mode, `c = 2πa²` its bandwidth, and the limit is nonzero.  This is the card's `(3)` in the card's own
+normalization, at **every** even rung — the ground case `n = 0` was
+`ProlateCoordinateNormalization.tendsto_sqrt_mul_prolateGround_coordSq`, and the excited cases were
+the card's stated remaining analytic input.
+
+The only generalization needed of the corpus's transfer was the filter: its proof is a pointwise
+dilation identity (`HTGeometry.shapeRatio_dilate`) followed by a filter congruence, and nothing in it
+refers to `atTop` on the bandwidth axis.  The canonical family is parametrized by the aperture, so
+the primed version applies verbatim with `c = indexedOscillatorBandwidth`.
+
+### Status of the three constrained-prolate cards after this
+
+```
+(α)  differential ordering  μ_n → 4n+1          tendsto_indexedOscillatorSeparation_atTop
+     index order = separation order             signedModeRadialData_s_strictMono
+(3)  coordinate limits at every even rung       tendsto_indexedRung_coordinateLimit
+(β)  two-sided leakage ladder                   tendsto_consecutive_leakage_ratio
+                                                 + prolate_leakage_two_sided
+(4),(5),(10),(10a),(11)                          HermiteCentreValueClosedForm,
+                                                 HermiteContrastLadder
+(8)  interlacing + location + threading          SecularEquationInterlacing,
+                                                 SecularTailVanishing,
+                                                 tendsto_secular_ratio_of_limits
+counting principle for excited modes            exists_linearIndependent_highModeClasses
+                                                 + eventually_hermiteTrial_combination_rayleigh_gt
+```
+
+What remains is the identification bookkeeping between the two indexings of the same modes: the
+analytic layer produces `signedModeRadialData a n`, the constrained tower consumes
+`evenProlateConstraintCoord a n = ∫_{−a}^{a} (evenProlateSignedMode a n)`, and both are built from
+the same greedy index `n`.  Converting `tendsto_indexedRung_coordinateLimit` into
+`hl : ‖evenProlateConstraintCoord lam j‖ → constrainedProlateHermiteCoordinate j` is the remaining
+step, together with the evaluation of the Hermite shape ratio
+`(∫φ_{2n})²/∫φ_{2n}²` against the card's `constrainedProlateHermiteCoordinate` — for which
+`integral_hermiteFun_add_two` supplies the recursion on the numerator and the corpus's
+`HermiteCentreValueClosedForm` the closed form on the other side.

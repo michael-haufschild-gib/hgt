@@ -1657,3 +1657,37 @@ where `P̂_t` solves `R'^{t+2}Φ(P̂_t) = R'P̂_t + Ê_t` and **is independent o
 at stage `t` therefore has jet order `t+2` while the extraction operator can only produce jet order
 at most `N−t`: the chain cannot survive past `t+2 > N−t`, which is the obstruction to a normalizing
 shift at a general level.
+
+## Closed — the orbifold tail of both quadratics is trivial, unconditionally in Lean
+
+```text
+GaloisForLFunctions.HTGeometry.quadOne_tail_trivial :
+  Phi_(z^2+1)(g) = g  ->  g is constant
+GaloisForLFunctions.HTGeometry.quadTwo_tail_trivial :
+  Phi_((z-1)^2)(g) = g  ->  g is constant
+```
+
+for every element `g` of the free jet field, at every jet order, with no hypotheses and no added
+axioms (`[propext, Classical.choice, Quot.sound]`).  `HTGeometry/QuadraticOrbifoldTailTrivial.lean`.
+
+The general engine is `HTGeometry/JetTailTrivial.lean`:
+
+```text
+fixed_isConst :  no fixed element of jet order one, no shift at level two, no shift at level three
+                 ==>  every Phi_R-fixed element of the free jet field is constant.
+```
+
+Its proof is the descent chain.  The level-free tower `V_t = −δ^{t+1}(1/y₁)/y₁^t`
+(`JetInverseTower.lean`) has jet order exactly `t + 2` with unit top descent, solves
+`R'^{t+2}Φ(V_t) = R'V_t + Ê_t`, and satisfies the binomial convolution `invTowerDefect_eq`.  The
+chain `chain t = w + ∑_{u<t} binom(N+1,u+1)·V_u·z_{N−u}` (`JetChainDescent.lean`) strips a
+normalizing shift one coordinate at a time: its defect descends to `binom(N+1,t+1)·Ê_t` by the
+subdiagonal law `topDescent_K(s_m) = binom(m,K)·T_{m−K}` (`JetShiftSubdiagonal.lean`) together with
+the subset-of-a-subset identity, so uniqueness pins `topDescent_{N−t}(chain t) = −binom(N+1,t+1)V_t`.
+Since `topDescent_{N−t}` cannot output jet order above `N − t` while `V_t` has jet order `t + 2`, the
+chain dies at the first `t` with `t + 2 > N − t`; for `N = 2T+1` odd that is `t = T`, where the
+extra term produced by `V_{T−1}` gives
+`topDescent_{T+1}(chain T) = −binom(N+1,T+1)V_T + binom(N+1,T)z_{T+2}` and the top descent
+`binom(N+1,T) − binom(N+1,T+1) ≠ 0` contradicts the order bound.  Odd levels are reduced to even
+ones by `zshift_succ` (`JetShiftPropagation.lean`), whose first stripping step is supplied by the
+pinned top coefficient at the original level.
