@@ -379,3 +379,30 @@ What remains for full formalization of this card is therefore only the *analytic
 hull with its compact group structure and its identification of characters with frequencies, the
 minimal annihilating differential polynomial and its separant, and the analytic implicit function
 theorem on the regular jet locus.
+
+### The local-atlas step `(15)`--`(19)` is now Lean-proved
+
+```text
+GaloisForLFunctions.rank_bohrHullFrequencies_le_of_charts :
+  UniformContinuous f, totally bounded orbit,
+  F : Fin N -> Set (BohrHull f) closed and covering,
+  E j : BohrHull f -> R^k continuous on F j and injective on F j
+    ==>  rank_Z (bohrHullFrequencies f) ≤ k
+```
+
+Unconditional, `[propext, Classical.choice, Quot.sound]`.  It is strictly stronger than the tree's
+earlier `rank_bohrHullFrequencies_le`, which required one *global* injective embedding of the hull:
+here a finite atlas of local charts suffices, which is precisely what a singular implicit equation
+provides after the minimal-separant argument and compactness.
+
+The chain is `HTGeometry.not_injOn_unitCube` (no continuous injection of the `m`-cube into `R^k` for
+`k < m`, from the tree's `le_finrank_of_cube_faces`) -> `HTGeometry.le_of_unitCube_charts` (Baire
+inside the cube plus the affine box `HTGeometry.cubeBox`) -> `card_le_of_hull_charts` (the parameter
+subgroup `exists_continuous_hullParameter`, injective on the cube by
+`HTGeometry.eq_of_exp_pi_mul_I_eq`).
+
+With `k = 2n` this is exactly `(19)`, and combined with the hull-character/frequency identification
+`BohrHullDual.exists_frequency_of_hull_character` it is `(4)`.  What is left is the *analytic*
+construction of the atlas: the minimal annihilating differential polynomial and its separant on the
+hull, minimality of the hull flow, and the analytic implicit function theorem on the regular jet
+locus.

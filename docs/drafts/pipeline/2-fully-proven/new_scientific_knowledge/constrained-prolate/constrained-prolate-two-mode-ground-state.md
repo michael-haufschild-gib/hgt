@@ -3300,3 +3300,64 @@ window statements now available.
 
 The cut-width improvement recorded above (`w = c^(-1/2)` instead of `c^(-1)`, giving `c^(+1/2)`
 instead of `c^(+1)` in the upper bound) is `P2`'s share and can be done independently.
+
+## THE SHARP TWO-SIDED LEAKAGE IS PROVED
+
+`RHTower/ProlateSharpMassRatio.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`).
+
+```
+sharpInteriorLimit n = (∫ H_(2n)²) / H_(2n)(0)²
+indexedOscillatorTotalMass_eq        the rescaled mass IS  √c · (∫_{-1}^1 R²)/R(0)²
+tendsto_indexedOscillatorTotalMass   → sharpInteriorLimit n
+tendsto_interiorMass_ratio_atTop     the same on the aperture axis
+
+** eventually_signedLeakage_sharp_two_sided (n) **
+    ∀ᶠ a,  R(0) ≠ 0  ∧
+      F/1728/SIL_n / (√c · R(0)²)  ≤  d_n(a)  ≤  4M/SIL_n / (√c · R(0)²)
+```
+
+Both bounds carry the SAME power of the bandwidth and the SAME object.  This is exactly the
+matching-prefactor two-sided estimate the folder was missing, and it is assembled entirely from
+theorems the corpus already had:
+
+```text
+d_n = 2 sigma_n² · ext / int                evenProlateSignedLeakage_eq_mass_quotient
+sigma_n² → 1                                evenProlateSignedValue_sq_tendsto_one
+F/864/c ≤ ext ≤ M/c                         integral_Ioi_radialProlate_sq_ge_half  (over Ioi 2)
+                                            integral_Ioi_one_radialProlate_sq_le
+√c · int / R(0)² → SIL_n > 0                tendsto_indexedRung_totalMass + integral_comp_div_sqrt
+```
+
+No barrier, no WKB action, no window and no collar appear: the entire exponential is carried by
+`R(0)`, and the `1/w` window loss of the old upper bound and the `3s` turning-layer loss of the old
+lower bound are both simply absent — they were artefacts of bounding the interior mass by a window
+instead of using the rung limit.
+
+### What this leaves
+
+Dividing the two bounds at one aperture, the `√c` cancels exactly:
+
+```text
+d_m/d_n  ≤  (4M·SIL_n)/(F/1728·SIL_m) · R_n(0)²/R_m(0)²  .
+```
+
+So the one-step ratio — and with it the parity `lambda^(-4)` form, `(9)`'s `~ C_k lambda^8`, and
+`(4)`'s `O(lambda^(-7))` — now reduces to the ratio of two central amplitudes at ONE aperture, with
+no power loss anywhere else.  Two bricks remain:
+
+1. **the upper half of the amplitude** — `prolate_turningPoint_sq_le_exp` already gives
+   `R(√s)² ≤ (1+W)·exp(2c·Xi_s(y_0) + prolateScaleLog s y_0 alpha + O(cs))`;
+2. **the lower half** — `R(√s)² ≥ kappa·exp(same)`, which is the mirror of (1).  Its engine is in
+   the corpus: `HTGeometry/EnvelopeFromLogDerivative.mul_exp_integral_le_of_logDeriv_ge` (the lower
+   envelope) fed with `prolateWKB_sub_six_div_le_prolateLogDeriv` (the WKB lower bound on the
+   logarithmic derivative), composed across the collar exactly as (1) composes the upper envelope;
+3. **the window comparison** `R(0)² ≍ R(√s)²` — in the rescaled variable the turning point sits at
+   `x = √(c s) → √(4n+1)`, a FIXED point of the window, and `H_(2n)` has no zero beyond `√(4n+1)`,
+   so this is a pointwise consequence of the rung profile limit on a fixed window.
+
+Because the two exponents in (1) and (2) are literally the same expression, the ratio
+`R_n(0)²/R_m(0)²` then comes out as `exp(2c(Xi_{s_n} − Xi_{s_m}) + scaleLog_n − scaleLog_m)`, whose
+first term is `−2 log c + O(1)` (since `c(s_n − s_m) → 4` and `log(1/s) = log c + O(1)`) and whose
+second is `log(s_m/s_n) + O(s) → log(mu_m/mu_n)`.  That is the `c^(-2)` per corpus step, hence
+`lambda^(-4)`, which is precisely what the two open rate claims consume.

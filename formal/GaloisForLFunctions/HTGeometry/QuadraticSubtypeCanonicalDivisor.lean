@@ -1,4 +1,5 @@
 import Mathlib
+import GaloisForLFunctions.HTGeometry.EntireLogarithm
 
 /-!
 # Quadratic-subtype growth and sublogarithmic canonical divisors
@@ -28,7 +29,8 @@ the limit.
 
 noncomputable section
 
-open Complex Filter Topology Set Asymptotics
+open Complex Filter Topology Set Asymptotics Metric
+open GaloisForLFunctions.HTGeometry (iteratedDeriv_eq_zero_of_growth)
 
 namespace GaloisForLFunctions.QuadraticSubtypeDivisor
 
@@ -477,6 +479,133 @@ theorem divisorCount_le_of_quadraticSubtypeZero {f : ℂ → ℂ}
       linarith
     nlinarith
   exact le_trans hjensen hfin
+
+
+/-! ## Zero-free rigidity: quadratic subtype zero forces constancy
+
+This is the "constraint reformulation" lemma of the card: a zero-free entire function in the
+growth class `(1)` is constant.  Borel–Carathéodory upgrades the one-sided real-part bound
+`Re g ≤ B (log (2+‖z‖))²` into a modulus bound, `log x ≤ 8 x^{1/8}` turns that into a genuine
+sub-linear polynomial envelope `‖g z‖ ≤ C (1+‖z‖)^{1/4}`, and the corpus Cauchy estimate
+`iteratedDeriv_eq_zero_of_growth` then kills the first derivative. -/
+
+
+theorem log_le_eight_rpow {x : ℝ} (hx : 0 < x) : Real.log x ≤ 8 * x ^ (1 / 8 : ℝ) := by
+  have hxp : (0 : ℝ) < x ^ (1 / 8 : ℝ) := Real.rpow_pos_of_pos hx _
+  have h1 : Real.log (x ^ (1 / 8 : ℝ)) ≤ x ^ (1 / 8 : ℝ) - 1 :=
+    Real.log_le_sub_one_of_pos hxp
+  have h2 : Real.log (x ^ (1 / 8 : ℝ)) = (1 / 8 : ℝ) * Real.log x := Real.log_rpow hx _
+  rw [h2] at h1
+  linarith
+
+/-- **A one-sided squared-logarithmic growth bound forces an entire function to be constant.**
+If the real part of an entire `g` is at most `B (log (2 + ‖z‖))²`, then `g` is constant. -/
+theorem entire_reBound_sq_imp_const (g : ℂ → ℂ) (hg : Differentiable ℂ g) (B : ℝ) (hB : 0 ≤ B)
+    (hbound : ∀ z : ℂ, (g z).re ≤ B * (Real.log (2 + ‖z‖)) ^ 2) :
+    ∀ z : ℂ, g z = g 0 := by
+  set B' : ℝ := B + 1 with hB'def
+  have hB'pos : (0 : ℝ) < B' := by rw [hB'def]; linarith
+  have hBB' : B ≤ B' := by rw [hB'def]; linarith
+  -- Step 1: Borel–Carathéodory envelope
+  have hmod : ∀ z : ℂ,
+      ‖g z‖ ≤ 2 * B' * (Real.log (4 + 2 * ‖z‖)) ^ 2 + 3 * ‖g 0‖ := by
+    intro z
+    have hz0 : (0 : ℝ) ≤ ‖z‖ := norm_nonneg z
+    set R : ℝ := 2 * (1 + ‖z‖) with hRdef
+    have hRpos : (0 : ℝ) < R := by rw [hRdef]; positivity
+    set M : ℝ := B' * (Real.log (2 + R)) ^ 2 with hMdef
+    have hlogRpos : (0 : ℝ) < Real.log (2 + R) := Real.log_pos (by rw [hRdef]; nlinarith)
+    have hMpos : (0 : ℝ) < M := by rw [hMdef]; positivity
+    have hzball : z ∈ ball (0 : ℂ) R := by rw [mem_ball_zero_iff, hRdef]; nlinarith
+    have hmaps : MapsTo g (ball (0 : ℂ) R) {w : ℂ | w.re ≤ M} := by
+      intro w hw
+      rw [mem_ball_zero_iff] at hw
+      have hwR : ‖w‖ ≤ R := le_of_lt hw
+      simp only [mem_setOf_eq]
+      have h1 := hbound w
+      have hlw : Real.log (2 + ‖w‖) ≤ Real.log (2 + R) :=
+        Real.log_le_log (by have := norm_nonneg w; linarith) (by linarith)
+      have hlwnn : (0 : ℝ) ≤ Real.log (2 + ‖w‖) :=
+        Real.log_nonneg (by have := norm_nonneg w; linarith)
+      have hsq : (Real.log (2 + ‖w‖)) ^ 2 ≤ (Real.log (2 + R)) ^ 2 := by nlinarith
+      have hsqnn : (0 : ℝ) ≤ (Real.log (2 + ‖w‖)) ^ 2 := sq_nonneg _
+      calc (g w).re ≤ B * (Real.log (2 + ‖w‖)) ^ 2 := h1
+        _ ≤ B' * (Real.log (2 + ‖w‖)) ^ 2 := mul_le_mul_of_nonneg_right hBB' hsqnn
+        _ ≤ B' * (Real.log (2 + R)) ^ 2 := mul_le_mul_of_nonneg_left hsq hB'pos.le
+        _ = M := by rw [hMdef]
+    have hbc := Complex.borelCaratheodory hMpos hg.differentiableOn hmaps hRpos hzball
+    have hRz : R - ‖z‖ = 2 + ‖z‖ := by rw [hRdef]; ring
+    have ht1 : 2 * M * ‖z‖ / (R - ‖z‖) ≤ 2 * M := by
+      rw [hRz, mul_div_assoc]
+      apply mul_le_of_le_one_right (by positivity)
+      rw [div_le_one (by positivity)]
+      linarith
+    have ht2 : ‖g 0‖ * (R + ‖z‖) / (R - ‖z‖) ≤ 3 * ‖g 0‖ := by
+      rw [hRz, hRdef, mul_div_assoc]
+      have hfrac : (2 * (1 + ‖z‖) + ‖z‖) / (2 + ‖z‖) ≤ 3 := by
+        rw [div_le_iff₀ (by linarith)]
+        nlinarith
+      calc ‖g 0‖ * ((2 * (1 + ‖z‖) + ‖z‖) / (2 + ‖z‖)) ≤ ‖g 0‖ * 3 :=
+            mul_le_mul_of_nonneg_left hfrac (norm_nonneg _)
+        _ = 3 * ‖g 0‖ := by ring
+    have hlogeq : Real.log (2 + R) = Real.log (4 + 2 * ‖z‖) := by rw [hRdef]; congr 1; ring
+    have h2M : 2 * M = 2 * B' * (Real.log (4 + 2 * ‖z‖)) ^ 2 := by
+      rw [hMdef, hlogeq]; ring
+    calc ‖g z‖ ≤ 2 * M * ‖z‖ / (R - ‖z‖) + ‖g 0‖ * (R + ‖z‖) / (R - ‖z‖) := hbc
+      _ ≤ 2 * M + 3 * ‖g 0‖ := by linarith
+      _ = 2 * B' * (Real.log (4 + 2 * ‖z‖)) ^ 2 + 3 * ‖g 0‖ := by rw [h2M]
+  -- Step 2: a genuine sub-linear polynomial envelope
+  set C : ℝ := 2 * B' * (64 * (4 : ℝ) ^ (1 / 4 : ℝ)) + 3 * ‖g 0‖ with hCdef
+  have hCnn : (0 : ℝ) ≤ C := by
+    have h4 : (0 : ℝ) < (4 : ℝ) ^ (1 / 4 : ℝ) := Real.rpow_pos_of_pos (by norm_num) _
+    rw [hCdef]
+    positivity
+  have hpoly : ∀ z : ℂ, ‖g z‖ ≤ C * (1 + ‖z‖) ^ (1 / 4 : ℝ) := by
+    intro z
+    have hz0 : (0 : ℝ) ≤ ‖z‖ := norm_nonneg z
+    have hbase : (0 : ℝ) < 4 + 2 * ‖z‖ := by linarith
+    have hlognn : (0 : ℝ) ≤ Real.log (4 + 2 * ‖z‖) :=
+      Real.log_nonneg (by linarith)
+    have hlog8 : Real.log (4 + 2 * ‖z‖) ≤ 8 * (4 + 2 * ‖z‖) ^ (1 / 8 : ℝ) :=
+      log_le_eight_rpow hbase
+    have hpow8 : (0 : ℝ) ≤ (4 + 2 * ‖z‖) ^ (1 / 8 : ℝ) := (Real.rpow_pos_of_pos hbase _).le
+    have hsq : (Real.log (4 + 2 * ‖z‖)) ^ 2 ≤ 64 * ((4 + 2 * ‖z‖) ^ (1 / 8 : ℝ)) ^ 2 := by
+      nlinarith
+    have hcollapse : ((4 + 2 * ‖z‖) ^ (1 / 8 : ℝ)) ^ 2 = (4 + 2 * ‖z‖) ^ (1 / 4 : ℝ) := by
+      rw [← Real.rpow_natCast ((4 + 2 * ‖z‖) ^ (1 / 8 : ℝ)) 2, ← Real.rpow_mul hbase.le]
+      norm_num
+    have hle4 : (4 : ℝ) + 2 * ‖z‖ ≤ 4 * (1 + ‖z‖) := by linarith
+    have hmono4 : (4 + 2 * ‖z‖) ^ (1 / 4 : ℝ) ≤ (4 * (1 + ‖z‖)) ^ (1 / 4 : ℝ) :=
+      Real.rpow_le_rpow hbase.le hle4 (by norm_num)
+    have hsplit : (4 * (1 + ‖z‖)) ^ (1 / 4 : ℝ)
+        = (4 : ℝ) ^ (1 / 4 : ℝ) * (1 + ‖z‖) ^ (1 / 4 : ℝ) :=
+      Real.mul_rpow (by norm_num) (by linarith)
+    have hone : (1 : ℝ) ≤ (1 + ‖z‖) ^ (1 / 4 : ℝ) :=
+      Real.one_le_rpow (by linarith) (by norm_num)
+    have hB'nn : (0 : ℝ) ≤ 2 * B' := by linarith
+    calc ‖g z‖ ≤ 2 * B' * (Real.log (4 + 2 * ‖z‖)) ^ 2 + 3 * ‖g 0‖ := hmod z
+      _ ≤ 2 * B' * (64 * ((4 + 2 * ‖z‖) ^ (1 / 8 : ℝ)) ^ 2) + 3 * ‖g 0‖ := by
+          have := mul_le_mul_of_nonneg_left hsq hB'nn
+          linarith
+      _ = 2 * B' * (64 * (4 + 2 * ‖z‖) ^ (1 / 4 : ℝ)) + 3 * ‖g 0‖ := by rw [hcollapse]
+      _ ≤ 2 * B' * (64 * ((4 : ℝ) ^ (1 / 4 : ℝ) * (1 + ‖z‖) ^ (1 / 4 : ℝ))) + 3 * ‖g 0‖ := by
+          have h1 : (4 + 2 * ‖z‖) ^ (1 / 4 : ℝ)
+              ≤ (4 : ℝ) ^ (1 / 4 : ℝ) * (1 + ‖z‖) ^ (1 / 4 : ℝ) := by
+            rw [← hsplit]; exact hmono4
+          nlinarith
+      _ = (2 * B' * (64 * (4 : ℝ) ^ (1 / 4 : ℝ))) * (1 + ‖z‖) ^ (1 / 4 : ℝ) + 3 * ‖g 0‖ := by
+          ring
+      _ ≤ (2 * B' * (64 * (4 : ℝ) ^ (1 / 4 : ℝ))) * (1 + ‖z‖) ^ (1 / 4 : ℝ)
+            + 3 * ‖g 0‖ * (1 + ‖z‖) ^ (1 / 4 : ℝ) := by nlinarith [norm_nonneg (g 0)]
+      _ = C * (1 + ‖z‖) ^ (1 / 4 : ℝ) := by rw [hCdef]; ring
+  -- Step 3: the first derivative vanishes, so `g` is constant
+  have hderiv : ∀ c : ℂ, deriv g c = 0 := by
+    intro c
+    have h := iteratedDeriv_eq_zero_of_growth hg (C := C) (a := 1 / 4) (n := 1)
+      (by norm_num) (by norm_num) hCnn hpoly c
+    rwa [iteratedDeriv_one] at h
+  intro z
+  exact is_const_of_deriv_eq_zero hg hderiv z 0
 
 
 end GaloisForLFunctions.QuadraticSubtypeDivisor

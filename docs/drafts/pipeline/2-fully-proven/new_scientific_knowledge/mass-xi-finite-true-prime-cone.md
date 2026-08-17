@@ -9145,3 +9145,51 @@ Steps 3 (second half) to 5: the filtered integer-face (`XiMassCriticalIntegerFac
 true-prime cone (`XiMassCriticalTruePrimeCone`), and the Bessel-cone / subcaustic / moving-criterion
 layer whose annulus input is the window half of `(22.7)` and whose tail input is
 `exists_bound_xiMassJetPrimeTail_endpoint`.
+
+### C42-T: the two halves are welded (2026-08-17)
+
+The missing link between the transport half of the hierarchy — which is stated for the iterated jet
+operator `xiMassJetIterate = (4a⁴ − ∂_h²)^n` — and the criterion half — which is stated for the
+strip Fourier transform of the modified receiver — is now a Lean theorem.  Both sides satisfy the
+same dispersion recursion and start at the mass profile, so they agree at every order.
+
+    RHTower/XiMassJetIntegrand.lean
+      xiMassJetIntegrand                        `(x²+4a⁴)^k · g_τ(x) · e^{-ihx}` on the real axis
+      norm_xiMassJetIntegrand_le
+      integrable_polyAbs_mul_exp_neg_abs,
+        polyPow_le_one_add_abs_pow,
+        integrable_polyPow_abs_mul_exp          every frequency-derivative majorant is a polynomial
+                                                times the strip exponential, hence integrable
+      integrable_absPow_mul_xiMassJetIntegrand
+
+    RHTower/XiMassJetFourierDerivative.lean
+      xiMassJetFourierDeriv                     the `j`-th frequency derivative, as an integral
+      hasDerivAt_xiMassJetFourierDeriv          **differentiation under the integral at every order**
+      xiMassJetIntegrand_succ,
+        xiMassJetFourierDeriv_succ              **the dispersion recursion**: raising the jet order
+                                                is applying `4a⁴ − ∂_h²`
+
+    RHTower/XiMassJetFourierIdentity.lean
+      ofReal_mem_xiMassHeightRegion
+      differentiableOn_xiMassJetIterate,
+        analyticOnNhd_xiMassJetIterate          the iterated jet is holomorphic on the region
+      xiMassJetFourierDeriv_eq_jetIterate       **the weld**: the Fourier side is the iterated jet
+      xiMassJetAnalyticTest_eq_pow
+      stripFourier_xiMassJetAnalyticTest_eq_jetIterate
+      xiMassPolyCenteredPrimeAtom_eq_jetPrimeAtom
+                                                the filtered centred prime atom **is** the jet prime
+                                                atom of `(22.8)`
+
+    RHTower/XiMassJetAtomSeriesCriterion.lean
+      riemannHypothesis_iff_exists_xiMassJetAtomSeries_line_bound
+                                                **RH ⟺ the jet-modified prime-log Fourier atom
+                                                series is bounded on one vertical line**
+
+With this, `(22.7)`/`(22.8)` and the criterion chain speak about the same objects: the transport
+estimates apply verbatim to the atoms of the criterion.
+
+### Remaining for C42-T
+
+Cutting the atom series at the retreated height and subtracting the continuum: the truncation
+`∑'_n → ∑_{n ≤ M}` with the tail controlled by `exists_bound_xiMassJetPrimeTail_endpoint` (prime
+part) and the prime-power defect, then the filtered continuum face and the moving-cutoff criterion.

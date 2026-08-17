@@ -3853,3 +3853,42 @@ which no earlier module provides.
 
 A sharper statement worth having later: the brick cover of `BrickCover` upgrades
 `hasCoverDimLE_of_isCompact` from `5^m - 1` to the exact `m`.
+
+## Pass 64 — the local-atlas frequency-rank law (the card's own mechanism, formalized)
+
+After deduplication the tree already owned the *global* form of the frequency-rank bound
+(`PhaseRankDimensionBound.rank_bohrHullFrequencies_le`: a continuous **injective** `Φ : BohrHull f → E`
+forces `rank_Z (bohrHullFrequencies f) ≤ finrank E`).  The almost-periodic ADE cards need the *local*
+form, because a singular implicit equation has no single regular chart — only a finite atlas of them.
+That form is now proved.
+
+```text
+HTGeometry.le_of_unitCube_charts :
+  the unit m-cube covered by finitely many closed sets, on each of which a continuous map to R^k is
+  injective                                   ==>  m ≤ k
+GaloisForLFunctions.card_le_of_hull_charts :
+  an independent frequency packet of size r, and a finite closed cover of the Bohr hull with a
+  continuous injective chart into R^k on each piece
+                                              ==>  r ≤ k
+GaloisForLFunctions.rank_bohrHullFrequencies_le_of_charts :
+  same hypotheses                             ==>  rank_Z (bohrHullFrequencies f) ≤ k
+```
+
+Mechanism: the independent packet turns the cube into the hull through
+`exists_continuous_hullParameter`, injectively because the characters separate its points
+(`HTGeometry.eq_of_exp_pi_mul_I_eq`); the atlas pulls back to a finite closed cover of the cube;
+Baire inside the cube gives one chart whose relative interior contains a full affine copy of the
+cube (`HTGeometry.cubeBox`); and `HTGeometry.not_injOn_unitCube` — itself a two-step corollary of
+the tree's `le_finrank_of_cube_faces` — closes it.
+
+This is exactly steps `(15)`–`(19)` of `almost-periodic-autonomous-ade-finite-frequency-law`, and it
+is the step the card claims as new over Cartwright and O'Brien: no common regular time, no global
+uniqueness, only compactness of the hull.
+
+**What the card still needs** (all analytic, none dimensional): the passage from a function
+holomorphic and uniformly almost periodic on a strip to the `ℝ →ᵇ ℂ` carrier of the Bohr lane; the
+minimal annihilating differential polynomial and its separant on the hull (the tree has
+`DifferentialKernelCharacteristic.IsMinimalScalarDifferentialPolynomialRank.separant_not_mem`);
+minimality of the hull flow to get `Z = ∅`; and the analytic implicit function theorem producing the
+injective jet chart on each `F_j` (the tree has `RealAnalyticImplicit`, `U0.HolomorphicIFT`, and
+`StripJetSeparation.eqOn_of_line_jet_eq_implicit`).

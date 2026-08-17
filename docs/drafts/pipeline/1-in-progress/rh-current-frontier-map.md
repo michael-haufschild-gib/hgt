@@ -1534,13 +1534,20 @@ The strongest survivor is now constructed rather than conjectured. Before finite
 canonical Gamma-sewn Julia transport supplies an all-prime-depth exterior coupling using both literal reciprocal-promotion amplitudes.
 On the `(2,3)` packet its resolved source/environment block is a positive rank-one Gram, its source corner is exactly finite-aperture Ward energy, and its Schur short through the Julia pivot is zero.
 As aperture tends to the lossless wall, compressed corner tends to strictly positive P-G205 energy, so short-then-compress is eventually strictly smaller than compression without environment.
-This closes coupling and order of operations; it does not transport the short to completed Xi divisor.
+P-G207 now transports this exact coupling through the literal completed Gamma/polar quadratic
+source current. Separate pole gauges keep the environment pivot equal to one; iterated residues
+retain the full coefficient and analytic-multiplicity product. Canonical legwise splitting is
+performed before the divisor limits, giving one exact Julia-weighted conormal coordinate on every
+actual Xi support-fibre copy. Same-support raw and split landings are Hermitian PSD rank-one blocks,
+their short is zero, codiagonals recover raw residues, and split corner energy is linear in
+multiplicity.
 
-**Open core.** Transport the now-explicit Julia environment short through completed Gamma/polar
-descent to a spectrum-moving Xi landing while preserving every prime/depth coefficient and Xi
-multiplicity. Required nonlocality and failure of compression monotonicity are no longer open;
-completed-source compatibility and divisor identification are. Alternative: prove the original
-non-spectral conormal contraction. Entire gauges, scalar counterterms, trace restoration, direct
+**Open core.** Completed-source compatibility and coefficient/multiplicity-faithful divisor
+identification are closed. The transport is kinematic, not annihilating: Lean proves a nonzero Xi
+coordinate can coexist with the landed zero short. Next producer must be an independent
+completed-source budget/order law comparing the positive split corner with a source quantity not
+erased by the environment pivot, or the original non-spectral conormal contraction. Repeating
+rank-one Schur transport is retired. Entire gauges, scalar counterterms, trace restoration, direct
 `det₂` welding, and compression-monotone completed Ward budgets are dead. Alternative curvature
 lane still needs a finite uniform high-tail ceiling.
 
@@ -1551,7 +1558,9 @@ capacity, or multiplicity normalization are closed work.
 `RoutePPrimitiveGammaJuliaLogPrimeHarmonicGenusOne.lean` constructs the genus-one carrier;
 `RoutePPrimitiveGammaJuliaLogPrimeHarmonicXiDivisorNoGo.lean` proves its direct Xi and scalar-weld
 no-go; `RoutePPrimitiveGammaJuliaWardPrecompressionShorting.lean` constructs the nonmonotone
-precompression survivor; completed conormal modules retain the non-spectral alternative.
+precompression survivor; `RoutePPrimitiveGammaJuliaCompletedXiDivisorShorting.lean` proves the
+two-sided residue-gauged raw and copywise divisor descent and its nonannihilation boundary;
+completed conormal modules retain the non-spectral alternative.
 
 ### Route Q — theta–Cassini boundary saturation
 
@@ -3915,9 +3924,10 @@ Highest-value research topics are those capable of supplying one of these consti
 - source-relative intersection/compressed-trace identities controlling Hermitian deviation sector;
 - noncommutative or singular mixing mechanisms that preserve reflection-odd horizontal class until
   annihilation, rather than radical-preserving normalization;
-- completed Gamma/polar transport of Route P's explicit precompression Julia short to a
-  coefficient- and multiplicity-faithful Xi divisor; coupling, nonlocal cancellation, and order of
-  operations are closed, while direct identification and every pointwise scalar weld are impossible;
+- an independent completed-source budget/order law for Route P's now-formal coefficient- and
+  multiplicity-faithful Xi copy block; Gamma/polar transport, coupling, nonlocal cancellation, and
+  order of operations are closed, but the landed short is kinematic and does not kill its nonzero
+  Xi coordinate;
 - completed moving-degree reverse-Bessel prime--Gamma window assembly converting half-log reserve
   and recovered Euler damping into cofinal pulse capital;
 - source-native theta--Cayley half-step transport neutralizing reflection weight before divisor

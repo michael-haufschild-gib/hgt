@@ -134,6 +134,60 @@ For a jointly entire one-sided periodic heat orbit, the multiplicative anchor ha
 
 This remains a no-go theorem only for implementations factoring through that entire-complex-time multiplicative anchor. It does not exclude the continuous de Bruijn-Newman deformation or RH methods using different data.
 
+
+## Lean formalization — IN PROGRESS (2026-08-17)
+
+Module: `formal/GaloisForLFunctions/HTGeometry/QuadraticSubtypeCanonicalDivisor.lean`
+(namespace `GaloisForLFunctions.QuadraticSubtypeDivisor`, wired into the
+`GaloisForLFunctions.HTGeometry` umbrella; builds green, every result below axiom-clean).
+
+**Proved.**
+
+| Card step | Lean name |
+|---|---|
+| the growth class `(1)` | `QuadraticSubtypeZero` |
+| `(1) ⟹ ordinary order zero` (step 1, first half) | `orderZero_of_quadraticSubtypeZero` |
+| **step 2**, Jensen ⟹ `n_f(r) = o(log r)` — i.e. `(3)` | `divisorCount_le_of_quadraticSubtypeZero` |
+| **step 3**, exponent of convergence zero: `∑ ‖a k‖^{-α} < ∞` ∀α>0 | `summable_rpow_neg`, `summable_inv_norm` |
+| the genus-zero product converges | `multipliable_genusZero`, `multipliable_genusZero_of_sublogDensity` |
+| **step 4**, the estimate (8)–(10) | `logSum_le` |
+| **the converse direction `(4) ⟹ (5)`** | `logNorm_genusZeroProduct_le_of_sublogDensity` |
+| the constraint-reformulation lemma (zero-free + `(1)` ⟹ constant) | `entire_reBound_sq_imp_const` |
+
+Supporting: `divisorSeqCount`, `SublogDensity`, `succ_le_divisorSeqCount`,
+`eventually_mul_le_log_norm` (the counting bound `n(r) = o(log r)` converted into the per-index
+bound `C·k ≤ log‖a k‖` for every `C`, which replaces the card's Stieltjes integrals by plain series
+manipulation), `genusZeroProduct`, `summable_logOnePlus`, `log_norm_genusZeroProduct_le`,
+`log_le_eight_rpow`.
+
+**Still open: the Hadamard factorization `(2)`.**  Two sub-tasks remain.
+
+1. *An enumeration of the zero divisor.*  The current estimates are stated for a divisor presented
+   as a sequence of nondecreasing modulus.  For the forward direction the divisor comes from `f`,
+   so it must be produced.  The clean route is to drop the ordering and index the product by the
+   countable type `Σ (w : {w // w ≠ 0 ∧ f w = 0}), Fin (analyticOrderAt f w).toNat` — a definition
+   with no recursion and no choice — and to redo `summable_rpow_neg` and `logSum_le` for a general
+   countable index by dyadic bucketing.  The replacement for `logSum_le` is a three-bucket split
+   `‖a i‖ ≤ √r`, `√r < ‖a i‖ ≤ r²`, `‖a i‖ > r²`: the first two buckets are counted by
+   `n(√r) ≤ (ε/2)log r` and `n(r²) ≤ 2ε log r`, and the third is bounded by the convergent
+   `∑ ‖a i‖^{-1/2}` because `log(1+r/t) ≤ r/t ≤ t^{-1/2}` there.  This needs neither monotonicity
+   nor Abel summation.
+2. *The quotient is constant.*  The textbook proof needs a minimum-modulus (Cartan/Boutroux)
+   estimate for the canonical product, which neither mathlib nor this tree has — the tree's own
+   ξ-Hadamard chain takes the corresponding real-part bound as a hypothesis
+   (`RHTower/XiHadamardFactorization.lean`, `xiHadamardQuotient_constant_of_log_reBound`).  The
+   route that avoids it is to bound the **Nevanlinna characteristic** of `h = f · P⁻¹` instead of
+   its modulus.  mathlib carries the toolkit in `Mathlib/Analysis/Complex/ValueDistribution/`:
+   `characteristic_mul_top_le` gives `T(r,h) ≤ T(r,f) + T(r,P⁻¹)`, the first main theorem
+   (`characteristic_sub_characteristic_inv_le`) gives `T(r,P⁻¹) = T(r,P) + O(1)`, and
+   `T ≤ log⁺M` (`HTGeometry/NevanlinnaEntireCharacteristic.lean`,
+   `characteristic_top_le_posLog_of_bound`) makes both `o((log r)²)` — the second one *because of*
+   `logNorm_genusZeroProduct_le_of_sublogDensity` above.  Then `log M_h(r) ≲ T(2r,h)`
+   (`HTGeometry/PoissonJensenUpperBound.lean`, `log_norm_le_proximity_and_count_of_entire`) feeds
+   `entire_reBound_sq_imp_const`, which is already proved.
+
+The card stays in stage 2 until `(2)` is closed.
+
 ## Log
 
 - 2026-07-11 — Proved the exact quadratic-subtype/sublogarithmic-divisor equivalence and isolated the logarithmic divisor-density floor as the intrinsic open law.

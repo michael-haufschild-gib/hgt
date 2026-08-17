@@ -23,6 +23,8 @@ is the form in which the ratio of two leakages at one aperture reduces to the ra
 amplitudes.
 -/
 
+set_option maxHeartbeats 1600000
+
 noncomputable section
 
 open MeasureTheory Set Filter Topology
@@ -184,7 +186,7 @@ theorem eventually_signedLeakage_sharp_two_sided (n : ℕ) :
     interval_integral_sq_pos_of_endpoint_one hsm.continuous hR1
   have hIlo : sharpInteriorLimit n / 2 * (R 0 ^ 2) / Real.sqrt c
       ≤ ∫ y in (-1 : ℝ)..1, R y ^ 2 := by
-    rw [div_le_iff₀ hM0pos] at hlo
+    rw [le_div_iff₀ hM0pos] at hlo
     rw [div_le_iff₀ hsqc]
     nlinarith [hlo, hM0pos, hsqc]
   have hIhi : (∫ y in (-1 : ℝ)..1, R y ^ 2)
@@ -198,59 +200,53 @@ theorem eventually_signedLeakage_sharp_two_sided (n : ℕ) :
     have := one_sub_evenProlateSignedValue_sq_nonneg a n
     linarith
   have hσ2 : (1 : ℝ) / 2 ≤ evenProlateSignedValue a n ^ 2 := hsig.le
+  set E : ℝ := ∫ x in Ioi (1 : ℝ), R x ^ 2 with hE
+  set I : ℝ := ∫ y in (-1 : ℝ)..1, R y ^ 2 with hI
+  set V : ℝ := evenProlateSignedValue a n ^ 2 with hV
+  set Z : ℝ := R 0 ^ 2 with hZ
+  set Q : ℝ := Real.sqrt c with hQ
+  have hQ2 : Q * Q = c := Real.mul_self_sqrt hc0.le
+  have hQpos : (0 : ℝ) < Q := hsqc
+  have hE0 : (0 : ℝ) ≤ E := by
+    rw [hE]
+    refine setIntegral_nonneg measurableSet_Ioi ?_
+    intro x _
+    exact sq_nonneg _
+  have hYpos : (0 : ℝ) < 2 * sharpInteriorLimit n * Z / Q := by positivity
+  have hXpos : (0 : ℝ) < sharpInteriorLimit n / 2 * Z / Q := by positivity
+  have hVE : (0 : ℝ) ≤ 2 * V * E := mul_nonneg (by linarith) hE0
   refine ⟨hRne, ?_, ?_⟩
-  · rw [hquot]
-    rw [div_le_div_iff₀ (by positivity) hintpos]
-    have hstep : besselEnergyFloor / 1728 / sharpInteriorLimit n
-        * (∫ y in (-1 : ℝ)..1, R y ^ 2)
-        ≤ besselEnergyFloor / 1728 / sharpInteriorLimit n
-          * (2 * sharpInteriorLimit n * (R 0 ^ 2) / Real.sqrt c) := by
-      have hcoef : (0 : ℝ) ≤ besselEnergyFloor / 1728 / sharpInteriorLimit n := by positivity
-      exact mul_le_mul_of_nonneg_left hIhi hcoef
-    have hval : besselEnergyFloor / 1728 / sharpInteriorLimit n
-        * (2 * sharpInteriorLimit n * (R 0 ^ 2) / Real.sqrt c)
-        = besselEnergyFloor / 864 * (R 0 ^ 2) / Real.sqrt c := by
+  · have hnum : besselEnergyFloor / 864 / c ≤ 2 * V * E := by
+      have h1 : (1 : ℝ) ≤ 2 * V := by linarith
+      calc besselEnergyFloor / 864 / c ≤ E := hextlow
+        _ = 1 * E := (one_mul E).symm
+        _ ≤ (2 * V) * E := mul_le_mul_of_nonneg_right h1 hE0
+        _ = 2 * V * E := by ring
+    have hstep : besselEnergyFloor / 864 / c / (2 * sharpInteriorLimit n * Z / Q)
+        ≤ 2 * V * E / I :=
+      div_le_div₀ hVE hnum hintpos hIhi
+    have hval : besselEnergyFloor / 864 / c / (2 * sharpInteriorLimit n * Z / Q)
+        = besselEnergyFloor / 1728 / sharpInteriorLimit n / (Q * Z) := by
+      rw [← hQ2]
       field_simp
       ring
-    rw [hval] at hstep
-    have hrhs : besselEnergyFloor / 864 * (R 0 ^ 2) / Real.sqrt c
-        ≤ 2 * evenProlateSignedValue a n ^ 2 * (∫ x in Ioi (1 : ℝ), R x ^ 2)
-          * (Real.sqrt c * R 0 ^ 2) := by
-      have h1 : besselEnergyFloor / 864 / c ≤ ∫ x in Ioi (1 : ℝ), R x ^ 2 := hextlow
-      have hcsq : Real.sqrt c * Real.sqrt c = c := Real.mul_self_sqrt hc0.le
-      nlinarith [h1, hM0pos, hsqc, hσ2, hcsq, hF]
-    linarith [hstep, hrhs]
-  · rw [hquot]
-    rw [div_le_div_iff₀ hintpos (by positivity)]
-    have hlhs : 2 * evenProlateSignedValue a n ^ 2 * (∫ x in Ioi (1 : ℝ), R x ^ 2)
-        * (Real.sqrt c * R 0 ^ 2)
-        ≤ 2 * (radialProlateExteriorMassConstant / c) * (Real.sqrt c * R 0 ^ 2) := by
-      have hnn : (0 : ℝ) ≤ Real.sqrt c * R 0 ^ 2 := by positivity
-      have hext0 : (0 : ℝ) ≤ ∫ x in Ioi (1 : ℝ), R x ^ 2 := by
-        refine setIntegral_nonneg measurableSet_Ioi ?_
-        intro x _
-        exact sq_nonneg _
-      nlinarith [hextup, hσ1, hnn, hext0]
-    have hrhs : 2 * (radialProlateExteriorMassConstant / c) * (Real.sqrt c * R 0 ^ 2)
-        ≤ 4 * radialProlateExteriorMassConstant / sharpInteriorLimit n
-          * (∫ y in (-1 : ℝ)..1, R y ^ 2) := by
-      have hcoef : (0 : ℝ) ≤ 4 * radialProlateExteriorMassConstant / sharpInteriorLimit n := by
-        positivity
-      have hstep := mul_le_mul_of_nonneg_left hIlo hcoef
-      have hval : 4 * radialProlateExteriorMassConstant / sharpInteriorLimit n
-          * (sharpInteriorLimit n / 2 * (R 0 ^ 2) / Real.sqrt c)
-          = 2 * radialProlateExteriorMassConstant * (R 0 ^ 2) / Real.sqrt c := by
-        field_simp
-        ring
-      rw [hval] at hstep
-      have hcsq : Real.sqrt c * Real.sqrt c = c := Real.mul_self_sqrt hc0.le
-      have hkey : 2 * (radialProlateExteriorMassConstant / c) * (Real.sqrt c * R 0 ^ 2)
-          = 2 * radialProlateExteriorMassConstant * (R 0 ^ 2) / Real.sqrt c := by
-        field_simp
-        nlinarith [hcsq]
-      rw [hkey]
-      linarith [hstep]
-    linarith [hlhs, hrhs]
+    rw [hquot, ← hval]
+    exact hstep
+  · have hnum : 2 * V * E ≤ 2 * (radialProlateExteriorMassConstant / c) := by
+      have h1 : 2 * V * E ≤ 2 * E := by nlinarith [hσ1, hE0]
+      have h2 : 2 * E ≤ 2 * (radialProlateExteriorMassConstant / c) := by linarith [hextup]
+      linarith
+    have hstep : 2 * V * E / I
+        ≤ 2 * (radialProlateExteriorMassConstant / c) / (sharpInteriorLimit n / 2 * Z / Q) :=
+      div_le_div₀ (by positivity) hnum hXpos hIlo
+    have hval : 2 * (radialProlateExteriorMassConstant / c)
+          / (sharpInteriorLimit n / 2 * Z / Q)
+        = 4 * radialProlateExteriorMassConstant / sharpInteriorLimit n / (Q * Z) := by
+      rw [← hQ2]
+      field_simp
+      ring
+    rw [hquot, ← hval]
+    exact hstep
 
 end RHTower
 

@@ -39,7 +39,7 @@ theorem injective_cubeBox {m : ℕ} (a : Fin m → ℝ) {s : ℝ} (hs : s ≠ 0)
   exact mul_left_cancel₀ hs h
 
 /-- **A cube covered by finitely many charts into `ℝ^k` has `m ≤ k`.** -/
-theorem le_of_unitCube_charts {m k N : ℕ} (hN : 0 < N)
+theorem le_of_unitCube_charts {m k N : ℕ}
     (F : Fin N → Set (EuclideanSpace ℝ (Fin m))) (hFclosed : ∀ j, IsClosed (F j))
     (hcover : ∀ x ∈ unitCube m, ∃ j, x ∈ F j)
     (E : Fin N → EuclideanSpace ℝ (Fin m) → EuclideanSpace ℝ (Fin k))
@@ -63,8 +63,10 @@ theorem le_of_unitCube_charts {m k N : ℕ} (hN : 0 < N)
   obtain ⟨j, hj⟩ := nonempty_interior_of_iUnion_of_closed hGclosed hGcover
   obtain ⟨x₀, hx₀⟩ := hj
   obtain ⟨ρ, hρ, hball⟩ := Metric.isOpen_iff.mp isOpen_interior x₀ hx₀
-  have hballF : ∀ y : ↥C, dist y x₀ < ρ → (y : EuclideanSpace ℝ (Fin m)) ∈ F j := fun y hy =>
-    interior_subset (hball hy)
+  have hballF : ∀ y : ↥C, dist y x₀ < ρ → (y : EuclideanSpace ℝ (Fin m)) ∈ F j := by
+    intro y hy
+    have hmem : y ∈ G j := interior_subset (hball hy)
+    exact hmem
   -- a small affine copy of the cube inside that ball
   obtain ⟨s, hs0, hs1, hsρ⟩ : ∃ s : ℝ, 0 < s ∧ s ≤ 1 ∧ Real.sqrt m * (2 * s) < ρ := by
     refine ⟨min 1 (ρ / (2 * (Real.sqrt m + 1))), lt_min one_pos (by positivity),
@@ -74,10 +76,12 @@ theorem le_of_unitCube_charts {m k N : ℕ} (hN : 0 < N)
     have hsq : (0 : ℝ) ≤ Real.sqrt m := Real.sqrt_nonneg _
     have hpos : (0 : ℝ) < 2 * (Real.sqrt m + 1) := by positivity
     have hkey : Real.sqrt m * (2 * (ρ / (2 * (Real.sqrt m + 1)))) < ρ := by
-      rw [mul_div_assoc']
-      rw [div_lt_iff₀ hpos]
+      have hid : Real.sqrt m * (2 * (ρ / (2 * (Real.sqrt m + 1))))
+          = (Real.sqrt m * ρ) / (Real.sqrt m + 1) := by
+        field_simp
+      rw [hid, div_lt_iff₀ (by positivity)]
       nlinarith
-    nlinarith [min_le_left (1 : ℝ) (ρ / (2 * (Real.sqrt m + 1))), hsq, hρ]
+    nlinarith [hsle, hsq, hρ, hkey]
   set a : Fin m → ℝ := fun i => min ((x₀ : EuclideanSpace ℝ (Fin m)) i) (1 - s) with ha
   have hx₀mem : ∀ i, 0 ≤ (x₀ : EuclideanSpace ℝ (Fin m)) i ∧
       (x₀ : EuclideanSpace ℝ (Fin m)) i ≤ 1 := fun i => x₀.2 i
@@ -112,7 +116,7 @@ theorem le_of_unitCube_charts {m k N : ℕ} (hN : 0 < N)
         have hsplit : a i + s * v i - (x₀ : EuclideanSpace ℝ (Fin m)) i
             = (a i - (x₀ : EuclideanSpace ℝ (Fin m)) i) + s * v i := by ring
         rw [hsplit]
-        refine le_trans (abs_add _ _) ?_
+        refine le_trans (abs_add_le _ _) ?_
         have : |s * v i| ≤ s := by
           rw [abs_mul, abs_of_pos hs0, abs_of_nonneg hv0]
           nlinarith
