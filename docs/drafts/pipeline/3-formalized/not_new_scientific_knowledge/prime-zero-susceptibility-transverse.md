@@ -123,8 +123,7 @@ a convex window of half-width `a` (§2's scale).
   generalization** (Leaner's returned gap) pre-certified — `computations/2026-06-19-prime-zero-susceptibility-multiplicity.py`:
   double-zero split distance matches `(n^{−2})^{1/2}|ε|^{1/2}` to ratio `1.00000`; mirror exponent `(1−2β)/m=0
   ⟺ β=½` for all finite `m`. No gap; no simplicity assumption.
-- [ ] 2→3: candidate Lean target — `dρ/dε=−n^{−ρ}/ζ'(ρ)` for a simple zero (implicit-function lemma) + the
-  `n^{1−2β}` mirror-ratio exponent. (Coordinate with @Leaner.)
+- [x] 2→3: formalized unconditionally in Lean — see the Lean status section.
 
 ## Cross-references
 - `../0-backlog/moonshot-zeros-as-critical-murmuration.md` (parent; χ = its central object),
@@ -204,8 +203,39 @@ Notes on the formal route.
    sequence of zeros of `f + ε·h` approaching `ρ`, `(s − ρ)^m/ε → −h(ρ)/G(ρ)`.  This is the content
    the card uses (the response scale `|ε|^{1/m}`); the accompanying existence claim that the zero
    actually splits into `m` simple zeros is a Rouché statement and is not formalized here.
-3. **§2 is formalized as the exponent characterization.**  The `n`-dependence of the mirror ratio is
-   exactly `n^{1−2β}`; `rpow_frequency_independent_iff` proves that this is independent of the probe
-   frequency exactly when `β = ½`.  The remaining factor `|χ_FE(ρ)|^{-1/m}` is manifestly
-   `n`-independent; the functional-equation identity `c_ρ = (−1)^m χ_FE(ρ)·c_{1−ρ}` behind it is not
-   yet formalized, and the card therefore stays at stage 2 pending that step.
+3. **§2 is formalized in full.**  `eventually_mirror_factorization` proves the functional-equation
+   mirror identity: if `ζ` factors as `(· − ρ)^m·G` near `ρ`, then near `1 − ρ` it factors with
+   leading factor `(−1)^m χ(1 − ·)·G(1 − ·)`, so the mirror zero has the same multiplicity and
+   `|c_{1−ρ}| = |χ(ρ)|·|c_ρ|` (`norm_mirror_leadingCoeff`).  That factor is `n`-independent, so the
+   probe frequency enters the mirror ratio only through `n^{1−2β}`, and
+   `mirrorRatio_frequency_independent_iff` characterizes frequency independence as `β = ½`.
+
+### Completion — 2026-08-17
+
+The two steps left open above are now proved in the same module:
+
+| Card step | Lean name |
+|---|---|
+| §1b the perturbed zero exists in every neighbourhood of `ρ` | `eventually_exists_perturbedZero` |
+| §2 the functional-equation multiplier `χ(s) = 2(2π)^{-s}Γ(s)cos(πs/2)` | `chiFE`, `riemannZeta_one_sub_chiFE` |
+| §2 mirror factorization and equal multiplicity | `eventually_mirror_factorization` |
+| §2 `\|c_{1−ρ}\| = \|χ(ρ)\|·\|c_ρ\|` | `norm_mirror_leadingCoeff` |
+| §2 mirror ratio frequency independent ⟺ `β = ½` | `mirrorRatio_frequency_independent_iff` |
+
+Existence of the perturbed zero is proved from the open mapping theorem applied to `f/h`, not from
+Rouché: `f/h` is analytic at `ρ`, vanishes there and is not locally constant, so its image of any
+neighbourhood is a neighbourhood of `0`, which produces a solution of `f + ε·h = 0` in that
+neighbourhood for all small `ε`.
+
+Not formalized, and not an obligation of this card: the count that an `m`-fold zero splits into
+exactly `m` *simple* zeros.  That count is an argument-principle statement; every quantity the card
+defines and uses — the response `dρ/dε`, the multiplicity-`m` response scale `|ε|^{1/m}`, the
+susceptibility `χ_n(ρ) = (n^{−Re ρ}/|c_ρ|)^{1/m}`, and the mirror ratio — depends only on the
+leading coefficient and the limit law, both of which are proved.
+
+## Log
+
+- 2026-08-17 Formalized in Lean 4 and promoted to stage 3.  §1 (implicit-function response), §1b
+  (existence plus the Puiseux limit law, with no simplicity hypothesis), §2 (functional-equation
+  mirror identity and the FE-balance characterization of the critical line) and §3 (all-orders
+  transversality of a single probe frequency) are unconditional Lean theorems.

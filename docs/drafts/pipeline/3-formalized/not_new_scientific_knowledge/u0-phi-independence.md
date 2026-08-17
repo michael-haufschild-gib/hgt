@@ -136,7 +136,7 @@ Three agents: correctness accepted; novelty+significance: 2/3 explicit yes votes
 
 - [x] 0 -> 1 in-progress: well-posed, source-pure, attack via natural boundary plus capacity
 - [x] 1 -> 2 fully-proven: connected case proof above, disconnected overclaim split out
-- [ ] 2 -> 3 formalized: Lean theorem `u0_phi_independence_connected`
+- [x] 2 -> 3 formalized: `U0AllNonexceptional.u0_phi_independence_connected_canonical`
 - [ ] 3 -> 4 publication-ready
 
 ## Log
@@ -151,3 +151,48 @@ The capacity argument in Step 2 is not the false general claim that equal capaci
 If connected full `K_b` contains the closed unit disk and also contains a point outside it, connectedness supplies a nondegenerate continuum in `K_b` reaching outside the disk. A finite-energy probability measure on the outside continuum, mixed with small mass into the unit-disk equilibrium measure, has negative logarithmic energy because the cross-potential of the unit circle is `log(1/|w|)<0` outside the disk. Hence `cap(K_b)>cap(closed disk)`. Since both capacities are `1`, no such outside point exists, hence `K_b` is the closed disk.
 
 Thus the connected `u0` proof avoids the polar-difference loophole flagged in the Q6.2 card.
+
+## Lean formalization — 2026-08-17
+
+Module: `formal/GaloisForLFunctions/U0/U0AllNonexceptionalConnected.lean`
+(imported by the `GaloisForLFunctions.U0` umbrella).
+
+The formal conclusion is `U0AllNonexceptional.CanonicalPhiU0IndependenceAt b` for every
+`b ∈ mandelbrot` with `b ≠ 0`, `b ≠ −2`: on an open, preconnected, nonempty, infinite escape carrier
+`U ⊆ escapeOpen b` the canonical Böttcher germ `Bottcher.phiMero b` (the germ of `bottcherCoord b`
+itself) and `u0AnSub` satisfy `NoRelation (RatFunc ℂ)`.  The base field is `ℂ(z)` at a fixed `b`,
+which contains `Q̄(b)(z)`, so the Lean statement is strictly stronger than the card's.
+
+| Card step | Lean name |
+|---|---|
+| §1 Böttcher extends single-valuedly through the whole basin for `b ∈ M` | `exists_global_branch_covering_bijective_of_mem_mandelbrot` |
+| §2 the basin crosses the unit circle for `b ≠ 0` (window form) | `exists_connected_far_circle_window` |
+| §3 degree-zero-in-`U` case: `φ_b` is not algebraic over `ℂ(z)` for `b ≠ 0, −2` | `phiMero_transcendental_of_mem_mandelbrot` |
+| §3 positive-degree case: algebraic branch continuation vs. the natural boundary | `u0_window_independence_of_transcendental_engine`, `u0_windowed_no_relation_nondegenerate` |
+| Ostrowski–Hadamard natural boundary of `u₀` on `{\|z\|=1}` | `U0NaturalBoundary` stack (`escapeOpen_subset_U0Ext`, `u0AnSub`) |
+| Card statement for `b ∈ M \ {0,−2}` | `u0_phi_independence_connected_canonical` |
+| Combined all-parameter theorem | `u0_phi_independence_all_nonexceptional_canonical` |
+
+**Route difference, deliberate.**  The card reaches the unit circle in §2 by a capacity/energy
+argument: `K_b ⊇ closedBall 0 1` plus `cap K_b = 1` forces `K_b = closedBall 0 1`, then complete
+invariance of the Julia set forces `b = 0`.  The Lean proof instead constructs the window directly
+from an *aligned escaping radial ray*: for `b ≠ 0` the far carrier is joined to a unit-circle window
+along a ray on which escape is monotone, so no logarithmic capacity, equilibrium measure or
+continuum-energy theory is needed.  Both arguments establish the same §2 conclusion (a crossing
+point of `{|z|=1}` inside the basin, with an analytic Böttcher branch on a preconnected
+neighbourhood reaching it); the Lean one was chosen because logarithmic capacity of a filled Julia
+set is not available in the library and the ray construction is unconditional.
+
+Not formalized, and not an obligation of this card: the standalone potential-theoretic statement
+`cap K_b = 1` and the continuum-energy strictness lemma, which the Lean route does not use.
+
+Verification: `lake build GaloisForLFunctions.U0.U0AllNonexceptionalDisconnected` (which imports the
+connected module) — PASS; `#print axioms u0_phi_independence_connected_canonical` reports only
+`[propext, Classical.choice, Quot.sound]`.
+
+## Log
+
+- 2026-08-17 Formalization confirmed complete and card promoted to stage 3.  The assembled
+  all-parameter statement is banked separately as
+  `3-formalized/new_scientific_knowledge/u0-phi-independence-all-parameters.md`; this card is its
+  connected half.

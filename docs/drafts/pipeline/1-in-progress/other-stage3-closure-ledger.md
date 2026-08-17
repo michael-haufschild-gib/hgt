@@ -3469,3 +3469,52 @@ the subdiagonal law of pass 53, the subset-of-a-subset identity, and `invTowerDe
 read off the contradiction at the first `t` with `t + 2 > N − t`, since `topDescent_{N−t}` cannot
 produce jet order above `N−t` while `V_t` has jet order exactly `t + 2`.  One extra quadratic step is
 needed when `N` is even, where the resonance `κ = 2K_t − 1` falls at `t = (N−2)/2`.
+
+## Pass 55 — normalizing shifts propagate upwards, so only the even levels matter
+
+A torus-invariant solution of the shift relation at level `m + 1` produces one at level `m + 2`:
+
+`w' = ∇w + m·z₂·w − z₂·z_{m+1}`   (`zshift_succ`, `JetShiftPropagation.lean`).
+
+Proof: apply `∇` to the relation, use `∇(Φ v) = R'·Φ(∇v)` and `∇(R'^{m+1}) = (m+1)R'^m·R''`, then feed
+in the coordinate laws for `z₂` and `z_{m+1}` and the covariant recursion
+`s_{k+1} = ∇s_k + k·z₂·s_k + R''·z_k`.  Every `R''·w`, `R''·s/R'` and `z₂·s` contribution cancels and
+what is left is exactly `s_{m+2}`.  Order and torus invariance are immediate (`∇` preserves both,
+raising the order by one).
+
+**Consequence for the closure.**  The set of levels carrying a normalizing shift is upward closed.
+The descent chain of pass 53–54 runs cleanly exactly when `N` is odd, where `N + 1` is the level: the
+range condition for the chain is `2t < N` and the order crossing needs `2t ≥ N − 2`, and those two
+have a common integer solution `t = (N−1)/2` precisely for odd `N`; for even `N` the resonance
+`κ = 2K_t − 1` falls inside the gap.  With propagation this no longer matters: a shift at an odd
+level propagates to the next even level, so killing the even levels `M ≥ 4` — i.e. the odd `N` — kills
+every level, and levels two and three are already dead.
+
+At the crossing the chain produces one extra term, because `V_{T−1}` has jet order exactly
+`T + 1 = N − T` there and so contributes `s_{T+2}` to the descended defect.  The uniqueness of
+solutions then gives
+
+`topDescent_{T+1}(chain T) = −binom(N+1,T+1)·V_T + binom(N+1,T)·z_{T+2}`,
+
+whose top descent is `binom(N+1,T) − binom(N+1,T+1) ≠ 0` (the two are consecutive binomials of
+`2T + 2` straddling the centre), contradicting `topDescent_order`, which forces jet order at most
+`T + 1`.
+
+**Remaining.**  The Lean chain induction itself: `chain t := w + ∑_{u<t} binom(N+1,u+1)·V_u·z_{N−u}`
+has jet order at most `N − t`, its defect is `s_{N+1} − ∑_{u<t} binom(N+1,u+1)·Δ_u` with
+`Δ_u = V_u s_{N−u} + Ê_u z_{N−u} + Ê_u s_{N−u}/R'`, and its top descent is
+`−binom(N+1,t+1)·V_t` — the step being `strip_step`, the subdiagonal law, `Nat.choose_mul` and
+`invTowerDefect_eq`, all of which are now Lean-proved.
+
+Also banked with pass 55 (`JetChainTerm.lean`): the two laws governing one correction term of the
+chain.  Multiplying `R'^{u+2}Φ(V_u) = R'V_u + Ê_u` by `R'^kΦ(z_k) = R'z_k + s_k` gives
+
+`R'^{u+1+k}·Φ(V_u·z_k) = R'·(V_u·z_k) + Δ(u,k)`,
+`Δ(u,k) = V_u·s_k + Ê_u·z_k + Ê_u·s_k/R'`   (`jetSubstitution_invTower_mul`),
+
+and in any coordinate `K ≥ 2` above the jet orders of `V_u` and `Ê_u` and different from `k` the
+subdiagonal law evaluates its descent:
+
+`topDescent_K(Δ(u,k)) = (V_u + Ê_u/R')·binom(k,K)·T_{k−K}`   (`topDescent_chainDelta`).
+
+These are exactly the two inputs the chain induction needs at each step.

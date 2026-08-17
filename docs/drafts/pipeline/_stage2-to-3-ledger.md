@@ -3815,3 +3815,22 @@ assemblies), `fixed-shell-angular-dephasing` (Lemma A1's physical realisation cl
 `capacitary-observer-sector-excision` (the potential layer closed; Theorems B,C,J remain),
 `arithmetic-static-local-hardness-window` (step 1's number theory and `(17)`--`(18)` closed; the
 Fejér packet remains), `computable-static-local` (the Gaussian box closed).
+
+### Continuation of the same sweep -- two further modules
+
+- `HTGeometry/QuenchedFixedTimeTransfer.lean` -- the **quenched-to-fixed-time transfer**: for a
+  jointly measurable event `S ⊆ Ω × ℝ`, Tonelli identifies the parameter average of the window time
+  fraction with the window average of the fixed-time probability
+  (`lintegral_quenchedTimeFraction_eq`), Fatou in `ℝ≥0∞` along `atTop` on `ℝ` turns a quenched lower
+  density on a set `G` into the floor `c·γ(G)` (`le_liminf_quenchedWindowAverage`), and a bounded
+  observable whose window averages have that floor exceeds every smaller level at unbounded
+  deterministic times (`le_limsup_quenchedFixedTimeProb`, `frequently_lt_quenchedFixedTimeProb`).
+  Complement form of the hypothesis included.  This closes `(8)`--`(9)` of
+  `computable-static-local-exponential-state-complexity-law`.
+- `HTGeometry/TorusFejerDisplacement.lean` -- the **circle Fejér kernel**: cosine expansion, Haar
+  mean one, the quadratic tail `F_N(x) <= π²/((N+1)x²)` (geometric sum plus Jordan's inequality),
+  and the mean displacement `(1/2π)∫|x|F_N <= 2π/√(N+1)`; then the Fejér mean of a Lipschitz
+  function (`abs_fejerConv_sub_le`), the tent function with its mass and Lipschitz constant, and the
+  `d`-dimensional product form via a telescoping bound on the unit ball
+  (`abs_productFejerTent_sub_le`).  This closes `(10)`, `(11)`, `(14)`--`(16)` of the arithmetic
+  moving-window card; `(12)`--`(13)` still need the periodised (torus) convolution.

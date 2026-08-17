@@ -157,12 +157,52 @@ Simultaneous Dirichlet approximation is *not* in mathlib -- only the one-dimensi
 so it is proved here from the pigeonhole principle on the `Q^m` boxes of side `1/Q`, applied to the
 first `Q^m + 1` multiples.
 
+## Lean progress -- Lemma 4
+
+`formal/GaloisForLFunctions/HTGeometry/WindingReturnEquivalence.lean` (new, umbrella-wired,
+axiom-clean) proves Lemma 4's equivalence in both directions.
+
+| Card item | Declaration |
+|---|---|
+| the anchored gap phase in turns, `t g_j/(2 pi)`, and the projective ratios `g_j/g_0` | `gapTurn`, `gapRatio` |
+| a continuous `r`-return, and a winding `r`-return at winding `q` | `ContinuousReturn`, `WindingReturn` |
+| the anchor phase scales the ratios to the other phases | `gapTurn_zero_mul_gapRatio` |
+| **the converse of Lemma 4, exactly**: at `t = 2 pi q/g_0` a winding `r`-return *is* a continuous `r`-return | `continuousReturn_of_windingReturn` |
+| **Lemma 4 forward**: a continuous `r`-return gives `\|\|q alpha\|\| < r(1+A)`, with `q` read off the anchor phase | `exists_windingReturn_of_continuousReturn` |
+| the winding number is controlled by the elapsed time, `\|q\| <= \|t\|\|g_0\|/(2 pi) + r` | `abs_winding_le_of_continuousReturn` |
+| the two-sided statement the exponent argument consumes | `continuousReturn_iff_exists_windingReturn` |
+
+The converse direction is exact -- no `O_H(r)` -- because the anchored phase at the time
+`2 pi q/g_0` *equals* `q` times the ratio.  The forward direction costs exactly the factor `1 + A`,
+where `A` bounds the ratios; since that is a fixed multiplicative constant on the radius and the
+time-to-winding distortion is linear, the logarithmic exponents of the two first-hit functions
+coincide.  This is the "time itself supplies one winding direction" step: `d+1` continuous phases
+become `d` winding ratios.
+
+## Lean progress -- the reporter-deficit rescaling `(7)`
+
+`formal/GaloisForLFunctions/HTGeometry/QuadraticDeficitRescaling.lean` (new, umbrella-wired,
+axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| a homogeneous deficit vanishes at the return point | `deficit_zero_of_homogeneous` |
+| **the two-sided Taylor comparison** `c dist(z,0)² <= Q_H(z) <= C dist(z,0)²`, by compactness of the unit sphere | `exists_deficit_two_sided_bounds` |
+| **`(7)`, one half**: `Q_H(z) <= eps` forces `dist(z,0) <= sqrt(eps/c)` | `norm_le_sqrt_of_deficit_le` |
+| **`(7)`, other half**: `dist(z,0) <= sqrt(eps/C)` forces `Q_H(z) <= eps` | `deficit_le_of_norm_le_sqrt` |
+
+The statement is proved for any continuous degree-two homogeneous function that is positive off the
+origin -- no Hessian, no smoothness and no explicit quadratic form is needed, only homogeneity and
+compactness -- so it covers the card's `Q_H` as soon as its leading Taylor term is isolated.  The
+two bounds sandwich the sublevel set `{Q_H <= eps}` between the balls of radii `sqrt(eps/C)` and
+`sqrt(eps/c)`, which is exactly "replacing `r` by `sqrt(eps)`": the exponent measured in the deficit
+is half the exponent measured in the distance.
+
 ### What remains
 
 Lemma 2 (nondegeneracy of the spectral manifold, via the corpus qudit endpoint-extension theorem
-plus a discriminant-symmetrised minor), Lemma 3 (the **imported** Kleinbock--Margulis extremality
-theorem, which is not in mathlib and is the card's declared external input), Lemma 4 (winding
-number versus continuous return), and the reporter-deficit rescaling `(7)`.
+plus a discriminant-symmetrised minor) and Lemma 3 (the **imported** Kleinbock--Margulis extremality
+theorem, which is not in mathlib and is the card's declared external input).
 
 ## Lemma 2 — the local spectral manifold is nondegenerate
 

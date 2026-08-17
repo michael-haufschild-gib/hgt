@@ -102,4 +102,53 @@ All four agents: YES. Promoted 2026-06-24.
 
 - [x] 0 → 1  in-progress
 - [x] 1 → 2  fully-proven (4/4 team vote, 2026-06-24)
-- [ ] 2 → 3  formalized (Lean 4, future)
+- [x] 2 → 3  formalized (Lean 4) — see the Lean formalization section
+
+## Lean formalization — 2026-08-17
+
+Module: `formal/GaloisForLFunctions/U0/U0AllNonexceptionalDisconnected.lean`
+(imported by the `GaloisForLFunctions.U0` umbrella).
+
+The formal conclusion is `U0AllNonexceptional.CanonicalPhiU0IndependenceAt c`: on an open,
+preconnected, nonempty, infinite escape carrier `U ⊆ escapeOpen c`, the *canonical* Böttcher germ
+`Bottcher.phiMero c` — literally the germ of `bottcherCoord c`, not an auxiliary Kummer root — and
+`u0AnSub` satisfy `NoRelation (RatFunc ℂ)`.  The base field is `ℂ(z)` at a fixed parameter, which
+contains `Q̄(b)(z)`; a relation over `Q̄(b)(z)` is a relation over `ℂ(z)`, so the Lean statement is
+strictly stronger than the card's.
+
+| Card step | Lean name |
+|---|---|
+| Green-crossing lemma, inward half: a point of the open unit disk at Green level above `G_c(0)` | `exists_unitDisk_green_gt_critical` |
+| first crossing of `{\|z\|=1}` by a path from the far germ, staying in `{G_c > G_c(0)}` | `exists_first_unit_crossing`, `exists_far_to_first_unit_crossing` |
+| Step 1 (crossing): a unit-circle window inside `Δ_c` carrying the analytic Böttcher branch | `exists_disconnected_canonical_circle_window` |
+| Step 2 (natural boundary of `u₀` on `{\|z\|=1}`) | `U0NaturalBoundary` stack, consumed by `u0_window_independence_of_transcendental_engine` |
+| Step 3 (algebraic IFT / branch continuation contradiction) | `u0_windowed_no_relation_nondegenerate` |
+| Card statement for `b ∉ M` | `u0_phi_independence_disconnected_canonical` |
+| Combined all-parameter theorem (`b ≠ 0, −2`) | `u0_phi_independence_all_nonexceptional_canonical` |
+
+**Route difference, deliberate.**  The card proves the Green-crossing lemma by Riesz–Jensen plus the
+strong maximum principle, splitting on whether `K_b` meets the open unit disk.  The Lean proof
+replaces that case split by the *holomorphic saddle model* at the escaping critical point: for
+`c ∉ M` the point `0` lies in the basin, `exists_holomorphic_completion_critical` supplies an
+analytic `F` with `Re F = G_c` near `0` and `F''(0) ≠ 0`, so `F` is nonconstant and open, and its
+image contains `F 0 + ε/2`; the preimage is a point of the open unit disk with `G_c(0) < G_c(z)`.
+This needs no equilibrium measure, no Riesz decomposition and no subharmonic maximum principle, and
+it yields the crossing point strictly *inside* the disk, which is what the window construction
+consumes.  The card's potential-theoretic argument and the Lean saddle argument prove the same
+lemma; the Lean one was chosen because it is unconditional in the available library.
+
+Not formalized, and not an obligation of this card: the numerical table in the "Numerical
+verification" section (confirmatory only, and the project forbids computations in the formal tree).
+
+Verification: `lake build GaloisForLFunctions.U0.U0AllNonexceptionalDisconnected` — PASS;
+`#print axioms` on `exists_unitDisk_green_gt_critical`, `exists_first_unit_crossing`,
+`exists_disconnected_canonical_circle_window`, `u0_phi_independence_disconnected_canonical` and
+`u0_phi_independence_all_nonexceptional_canonical` reports only
+`[propext, Classical.choice, Quot.sound]`.
+
+## Log
+
+- 2026-08-17 Formalization confirmed complete and card promoted to stage 3.  The assembled
+  all-parameter statement is banked separately as
+  `3-formalized/new_scientific_knowledge/u0-phi-independence-all-parameters.md`; this card is its
+  disconnected half.

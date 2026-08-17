@@ -202,6 +202,13 @@ The `d`-dimensional packet is carried by the Fubini factorization: convolving th
 against `F_N^{otimes d}` is the product of the one-dimensional Fejér means (`productFejerTent`), so
 `(16)` in `d` dimensions is the telescoping bound applied to the one-dimensional displacement.
 
+One point of scope.  `fejerConv` convolves against the tent as a function on `R` -- the tent is
+supported in `[-rho,rho]` and is not extended periodically -- so the displacement estimates above
+are theorems about that object, not about the periodised `P` of `(12)`.  The estimate itself is
+insensitive to the difference (it only uses `|q(theta-x)-q(theta)| <= |x|/rho` for `|x| <= pi`,
+which the torus distance also satisfies), but the *Fourier* statements of `(12)`--`(13)` do need the
+periodised convolution, and that is exactly the gap named below.
+
 ##### What remains in Theorem A
 
 The conjugate bound `(8)` for the spectral form, and the Fourier bookkeeping `(12)`--`(13)`: that

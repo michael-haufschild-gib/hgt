@@ -131,6 +131,9 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-17 | `completed-logderiv-full-translation-orbit-freeness` | new `RHTower/XiTranslationOrbitFreeness.lean` (uses the three modules added for `prime-source-cancellation-budget`, plus pre-existing `RHTower/XiUpperEndHypertranscendence.lean`, `HTGeometry/UpperEndRationalCoordinateDifferentialAdjoin.lean`, `HTGeometry/FiniteAbscissaDirichletUpperEnd.lean`) |
 | 2026-08-17 | `entire-multiplier-translation-defect-universality` | new `HTGeometry/EntireMultiplierDefectUniversality.lean` (uses pre-existing `HTGeometry/EntireBezout.lean`) |
 | 2026-08-17 | `gamma-reflection-clock-observable-split` | new `HTGeometry/GammaReflectionClockObservables.lean` (uses pre-existing `HTGeometry/MeromorphicGammaReflection.lean`, `HTGeometry/MeromorphicGammaOrbit.lean`, `HTGeometry/MeromorphicReflection.lean`) |
+| 2026-08-17 | `prime-zero-susceptibility-transverse` | new `RHTower/PrimeZeroSusceptibility.lean` |
+| 2026-08-17 | `u0-phi-independence` | already formalized: `U0/U0AllNonexceptionalConnected.lean` |
+| 2026-08-17 | `u0-phi-independence-disconnected` | already formalized: `U0/U0AllNonexceptionalDisconnected.lean` |
 
 ## Already carrying a stage-3 certificate (verify, then move the paper card)
 
@@ -825,13 +828,22 @@ and `da-gauge-ht-divisor-blindness` (the ξ specialization in the last).  In
 (Steinmetz reduction, Pólya growth-depth, product inequalities) rather than the small-growth
 field.
 
-### In-flight: `prime-zero-susceptibility-transverse`
+### `RHTower/PrimeZeroSusceptibility.lean` — reusable pieces
 
-`RHTower/PrimeZeroSusceptibility.lean` (installed, wired, axiom-clean) now carries §1 (the implicit
-function theorem branch and the response `dρ/dε = −n^{-ρ}/ζ'(ρ)`), §1b (the Puiseux limit law for a
-zero of multiplicity `m`), §2's exponent characterization (`n^{1−2β}` is frequency-independent iff
-`β = ½`) and §3 (the section factorization of the probe and nonvanishing of every section-Taylor
-order).  Outstanding for promotion: the functional-equation mirror identity
-`c_ρ = (−1)^m χ_FE(ρ)·c_{1−ρ}`, which mathlib supports through `riemannZeta_one_sub`, and the Rouché
-existence half of the `m`-fold splitting.
+Built for `prime-zero-susceptibility-transverse` (now stage 3):
+
+- `exists_zeroBranch_hasDerivAt` — mathlib's curried bivariate implicit function theorem applied to
+  `(ε, s) ↦ ζ(s) + ε·n^{-s}`, giving the analytic zero branch and `dρ/dε = −n^{-ρ}/ζ'(ρ)`.  The
+  supporting `continuousAt_deriv_riemannZeta` and `isInvertible_smulRight` are reusable.
+- `eventually_exists_perturbedZero` — existence of a perturbed zero in any prescribed neighbourhood,
+  from the **open mapping theorem** applied to `f/h` rather than from Rouché.  This is the cheap
+  substitute for Rouché whenever only existence (not the zero count) is needed.
+- `tendsto_multiplicitySplit` — the Puiseux limit law `(s − ρ)^m/ε → −h(ρ)/G(ρ)`, with no
+  simplicity hypothesis.
+- `chiFE`, `riemannZeta_one_sub_chiFE`, `eventually_mirror_factorization`,
+  `norm_mirror_leadingCoeff` — the functional-equation multiplier and the mirror factorization: a
+  zero and its functional-equation mirror have the same multiplicity, with leading coefficients
+  related by `(−1)^m χ(ρ)`.
+- `rpow_frequency_independent_iff`, `mirrorRatio_frequency_independent_iff` — a power `n^{1−2β}`
+  (times any nonzero frequency-independent factor) is independent of `n ≥ 2` exactly when `β = ½`.
 

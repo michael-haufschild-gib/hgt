@@ -41,7 +41,7 @@ theorem isWeightZero_jetNabla {v : JetField C Unit} (hv : IsWeightZero v) :
   field_simp
 
 /-- **Normalizing shifts propagate to the next level.** -/
-theorem zshift_succ (R : RatFunc C) (hR : substitutionDeriv R ≠ 0) (m : ℕ)
+theorem zshift_succ (R : RatFunc C) (hR : substitutionDeriv R ≠ 0) {m : ℕ} (hm : 1 ≤ m)
     {w : JetField C Unit} (hwz : IsWeightZero w)
     (hord : ∀ j : ℕ, m < j → JetField.pd ((), j) w = 0)
     (heq : substitutionDeriv R ^ (m + 1) * jetSubstitution R hR w
@@ -81,11 +81,13 @@ theorem zshift_succ (R : RatFunc C) (hR : substitutionDeriv R ≠ 0) (m : ℕ)
       rw [jetNabla_apply, div_eq_mul_inv, hl, hinv, mul_zero, zero_add,
         ← JetField.deriv_eq, JetField.pd_deriv_succ, JetField.deriv_eq,
         hord (i + 1) (by omega), hord i (by omega), map_zero, add_zero, mul_zero]
+    have hz2 : JetField.pd ((), i + 1) (jetRatio 2 : JetField C Unit) = 0 :=
+      pd_jetRatio_of_ne (by omega) (by omega)
+    have hzm : JetField.pd ((), i + 1) (jetRatio (m + 1) : JetField C Unit) = 0 :=
+      pd_jetRatio_of_ne (by omega) (by omega)
     rw [map_sub, map_add, hnab,
-      pd_mul_eq_zero (pd_mul_eq_zero (pd_natCast_eq_zero _ _)
-        (pd_jetRatio_of_ne (by omega) (by omega))) (hord (i + 1) (by omega)),
-      pd_mul_eq_zero (pd_jetRatio_of_ne (by omega) (by omega))
-        (pd_jetRatio_of_ne (by omega) (by omega)), add_zero, sub_zero]
+      pd_mul_eq_zero (pd_mul_eq_zero (pd_natCast_eq_zero _ _) hz2) (hord (i + 1) (by omega)),
+      pd_mul_eq_zero hz2 hzm, add_zero, sub_zero]
   · -- the substitution law
     have hρ1 : jetNabla (substitutionDeriv R) = JetField.pd ((), 0) (substitutionDeriv R) :=
       jetNabla_substitutionDeriv R
@@ -99,7 +101,6 @@ theorem zshift_succ (R : RatFunc C) (hR : substitutionDeriv R ≠ 0) (m : ℕ)
       ring
     -- differentiate the relation covariantly
     have hnabeq := congrArg (fun v => jetNabla v) heq
-    simp only at hnabeq
     have hL := (jetNabla (C := C)).leibniz (substitutionDeriv R ^ (m + 1))
       (jetSubstitution R hR w)
     have hR' := (jetNabla (C := C)).leibniz (substitutionDeriv R) w
@@ -109,23 +110,27 @@ theorem zshift_succ (R : RatFunc C) (hR : substitutionDeriv R ≠ 0) (m : ℕ)
     -- the coordinate laws
     have h2 := jetSubstitution_jetRatio R hR 2
     rw [substitutionShiftRatio_two] at h2
-    have hm := jetSubstitution_jetRatio R hR (m + 1)
+    have hmz := jetSubstitution_jetRatio R hR (m + 1)
     have hsucc := substitutionShiftRatio_succ R (m + 1)
-    have hnz := jetNabla_jetRatio (C := C) (m + 1)
+    have hsplit : jetSubstitution R hR ((jetRatio 2 : JetField C Unit)
+        * (jetRatio (m + 1) : JetField C Unit))
+        = jetSubstitution R hR (jetRatio 2 : JetField C Unit)
+          * jetSubstitution R hR (jetRatio (m + 1) : JetField C Unit) := map_mul _ _ _
     rw [map_sub, map_add, map_mul, map_mul, map_natCast]
-    field_simp
-    linear_combination
-      (substitutionDeriv R ^ (m + 1) * substitutionDeriv R) * hnabeq
-      - (substitutionDeriv R ^ (m + 1) * substitutionDeriv R
-          * ((m : ℕ) : JetField C Unit) * w
-        + substitutionDeriv R ^ (m + 1) * substitutionDeriv R
-          * (jetRatio (m + 1) : JetField C Unit)) * h2
-      - (substitutionDeriv R * substitutionDeriv R
-          * ((m : ℕ) : JetField C Unit) * jetSubstitution R hR (jetRatio 2 : JetField C Unit)
-        ) * heq
-      + (substitutionDeriv R ^ (m + 1) * substitutionDeriv R
-          * (jetRatio 2 : JetField C Unit)) * hm
-      - (substitutionDeriv R ^ (m + 1) * substitutionDeriv R ^ 2) * hsucc
+    refine mul_left_cancel₀ hρ0 ?_
+    push_cast at hnabeq hsucc ⊢
+    linear_combination substitutionDeriv R * hnabeq
+      + (((m : ℕ) : JetField C Unit) * substitutionDeriv R
+          * (jetRatio 2 : JetField C Unit)
+        - JetField.pd ((), 0) (substitutionDeriv R)) * heq
+      + (((m : ℕ) : JetField C Unit) * substitutionDeriv R ^ (m + 1)
+            * jetSubstitution R hR w
+          - substitutionDeriv R * (jetRatio (m + 1) : JetField C Unit)
+          - substitutionShiftRatio R (m + 1)) * h2
+      + (-(substitutionDeriv R ^ 2
+          * jetSubstitution R hR (jetRatio 2 : JetField C Unit))) * hmz
+      + substitutionDeriv R * hsucc
+      - (substitutionDeriv R ^ 3 * substitutionDeriv R ^ m) * hsplit
 
 end
 

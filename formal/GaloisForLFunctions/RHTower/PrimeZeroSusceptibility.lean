@@ -270,3 +270,110 @@ theorem cpow_section_factor {n : ℕ} (hn : n ≠ 0) (t z : ℂ) :
 end
 
 end RHTower.Susceptibility
+
+namespace RHTower.Susceptibility
+
+open Complex Filter Topology
+
+noncomputable section
+
+/-- **Existence of the perturbed zero.**  Near a zero of a non-identically-vanishing analytic `f`,
+the perturbation `f + ε·h` with `h(ρ) ≠ 0` has a zero in every prescribed neighbourhood of `ρ`,
+for all sufficiently small `ε`.  This is the open mapping theorem applied to `f/h`. -/
+theorem eventually_exists_perturbedZero {ρ : ℂ} {f h : ℂ → ℂ}
+    (hf : AnalyticAt ℂ f ρ) (hh : AnalyticAt ℂ h ρ) (hhρ : h ρ ≠ 0) (hfρ : f ρ = 0)
+    (hne : ¬ (∀ᶠ s in 𝓝 ρ, f s = 0)) {U : Set ℂ} (hU : U ∈ 𝓝 ρ) :
+    ∀ᶠ ε in 𝓝 (0 : ℂ), ∃ s ∈ U, f s + ε * h s = 0 := by
+  classical
+  set F : ℂ → ℂ := fun s => f s / h s with hFdef
+  have hFan : AnalyticAt ℂ F ρ := hf.div hh hhρ
+  have hFρ : F ρ = 0 := by simp [hFdef, hfρ]
+  have hhne : ∀ᶠ s in 𝓝 ρ, h s ≠ 0 := hh.continuousAt.eventually_ne hhρ
+  have hFne : ¬ (∀ᶠ s in 𝓝 ρ, F s = F ρ) := by
+    intro hcon
+    apply hne
+    filter_upwards [hcon, hhne] with s hs hhs
+    rw [hFρ] at hs
+    have hdiv : f s / h s = 0 := hs
+    rcases div_eq_zero_iff.mp hdiv with h1 | h2
+    · exact h1
+    · exact absurd h2 hhs
+  rcases hFan.eventually_constant_or_nhds_le_map_nhds with hc | hmap
+  · exact absurd hc hFne
+  · have hUh : U ∩ {s | h s ≠ 0} ∈ 𝓝 ρ := Filter.inter_mem hU hhne
+    have himg0 : F '' (U ∩ {s | h s ≠ 0}) ∈ 𝓝 (F ρ) := hmap (Filter.image_mem_map hUh)
+    have himg : F '' (U ∩ {s | h s ≠ 0}) ∈ 𝓝 (0 : ℂ) := by rwa [hFρ] at himg0
+    have hnegt : Filter.Tendsto (fun ε : ℂ => -ε) (𝓝 (0 : ℂ)) (𝓝 (0 : ℂ)) := by
+      simpa using (continuous_neg.tendsto (0 : ℂ))
+    filter_upwards [hnegt himg] with ε hε
+    obtain ⟨s, ⟨hsU, hsh⟩, hFs⟩ := hε
+    refine ⟨s, hsU, ?_⟩
+    have hval : f s / h s = -ε := hFs
+    rw [div_eq_iff hsh] at hval
+    rw [hval]
+    ring
+
+/-- The functional-equation multiplier `χ(s) = 2 (2π)^{-s} Γ(s) cos(πs/2)`. -/
+noncomputable def chiFE (s : ℂ) : ℂ :=
+  2 * (2 * (Real.pi : ℂ)) ^ (-s) * Complex.Gamma s * Complex.cos ((Real.pi : ℂ) * s / 2)
+
+theorem riemannZeta_one_sub_chiFE {s : ℂ} (hs : ∀ n : ℕ, s ≠ -(n : ℂ)) (hs' : s ≠ 1) :
+    riemannZeta (1 - s) = chiFE s * riemannZeta s := by
+  rw [riemannZeta_one_sub hs hs', chiFE]
+
+/-- **Mirror leading coefficient.**  If `ζ` factors as `(· − ρ)^m · G` near `ρ`, then near the
+functional-equation mirror `1 − ρ` it factors with leading factor `(−1)^m χ(1 − ·) G(1 − ·)`.  In
+particular the mirror zero has the same multiplicity and its leading coefficient is
+`(−1)^m χ(ρ) · G ρ`. -/
+theorem eventually_mirror_factorization {m : ℕ} {ρ : ℂ} {G : ℂ → ℂ}
+    (hfac : ∀ᶠ s in 𝓝 ρ, riemannZeta s = (s - ρ) ^ m * G s)
+    (hFE : ∀ᶠ s in 𝓝 ρ, (∀ n : ℕ, s ≠ -(n : ℂ)) ∧ s ≠ 1) :
+    ∀ᶠ w in 𝓝 (1 - ρ), riemannZeta w
+      = (w - (1 - ρ)) ^ m * ((-1) ^ m * chiFE (1 - w) * G (1 - w)) := by
+  have hmap : Filter.Tendsto (fun w : ℂ => 1 - w) (𝓝 (1 - ρ)) (𝓝 ρ) := by
+    have hval : (1 : ℂ) - (1 - ρ) = ρ := by ring
+    have hcont : Continuous (fun w : ℂ => 1 - w) := continuous_const.sub continuous_id
+    have htend := hcont.tendsto ((1 : ℂ) - ρ)
+    rwa [hval] at htend
+  filter_upwards [hmap.eventually hfac, hmap.eventually hFE] with w hw hw2
+  have hz : riemannZeta w = chiFE (1 - w) * riemannZeta (1 - w) := by
+    have hone := riemannZeta_one_sub_chiFE (s := 1 - w) hw2.1 hw2.2
+    simpa using hone
+  rw [hz, hw]
+  have hshift : (1 - w) - ρ = -(w - (1 - ρ)) := by ring
+  rw [hshift, neg_pow]
+  ring
+
+end
+
+end RHTower.Susceptibility
+
+namespace RHTower.Susceptibility
+
+open Complex Filter Topology
+
+noncomputable section
+
+/-- **FE-balance characterization.**  The mirror-pair susceptibility ratio is the probe-frequency
+power `n^{1−2β}` times a frequency-independent factor; it is frequency independent exactly when
+`β = 1/2`. -/
+theorem mirrorRatio_frequency_independent_iff {β A : ℝ} (hA : A ≠ 0) :
+    (∀ p q : ℕ, 2 ≤ p → 2 ≤ q →
+        (p : ℝ) ^ (1 - 2 * β) * A = (q : ℝ) ^ (1 - 2 * β) * A) ↔ β = 1 / 2 := by
+  constructor
+  · intro h
+    refine rpow_frequency_independent_iff.mp (fun p q hp hq => ?_)
+    have := h p q hp hq
+    exact mul_right_cancel₀ hA this
+  · intro h p q hp hq
+    rw [rpow_frequency_independent_iff.mpr h p q hp hq]
+
+/-- The mirror leading coefficient has modulus `|χ(ρ)|` times the original one. -/
+theorem norm_mirror_leadingCoeff {m : ℕ} {ρ : ℂ} {G : ℂ → ℂ} :
+    ‖(-1 : ℂ) ^ m * chiFE (1 - (1 - ρ)) * G (1 - (1 - ρ))‖ = ‖chiFE ρ‖ * ‖G ρ‖ := by
+  have h1 : (1 : ℂ) - (1 - ρ) = ρ := by ring
+  rw [h1, norm_mul, norm_mul, norm_pow, norm_neg, norm_one, one_pow, one_mul]
+
+end
+
+end RHTower.Susceptibility
