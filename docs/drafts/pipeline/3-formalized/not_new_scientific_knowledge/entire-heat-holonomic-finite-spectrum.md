@@ -17,7 +17,7 @@ Separate the genuinely nonlinear DA escape from the linear differential-equation
 - [x] Arbitrary complex Fourier coefficients allowed.
 - [x] Arbitrary homogeneous linear differential order allowed.
 - [x] Parent-theory gate: **FAILS scientific novelty.** The proof is an elementary use of the classical D-finite/P-recursive equivalence.
-- [ ] Formalization: not attempted. The card cannot enter `3-formalized` without a complete unconditional Lean proof of the whole analytic and recurrence theorem.
+- [x] Formalization: complete. The whole analytic and recurrence theorem is proved unconditionally in Lean; see the section below.
 
 ## Theorem `[PROVED HERE] [BRIDGE]`
 
@@ -109,6 +109,59 @@ This does not rule out the actual de Bruijn-Newman deformation, which uses a con
 
 The remaining class consists of genuinely nonlinear DA series of minimal differential order at least three with arbitrary complex coefficients. The conjectural arbitrary-order obstruction is recorded in `1-in-progress/supergaussian-da-coefficient-floor.md`.
 
+
+## Lean formalization — 2026-08-17
+
+Module: `formal/GaloisForLFunctions/HTGeometry/EntireHeatHolonomicFiniteSpectrum.lean`
+(namespace `GaloisForLFunctions.EntireHeatHolonomic`, wired into the
+`GaloisForLFunctions.HTGeometry` umbrella).  Nothing is imported as a classical black box: the
+D-finite ⟹ P-recursive step, which the card's proof cites as classical, is *proved* here.
+
+| Proof step | Lean name |
+|---|---|
+| **1.** entire backward time ⟹ `‖a_n‖ ≤ M_A e^{-A n²}` for every `A > 0` | `exists_superGaussian_bound` |
+| coefficients of an iterated formal derivative, `[w^n] h^{(i)} = (n+1)⋯(n+i)·a_{n+i}` | `coeff_iterate_derivativeFun` |
+| coefficient of a polynomial multiple, `[w^{M+K}](p·G) = Σ_{k≤K} p_k [w^{M+K−k}]G` | `coeff_polynomial_mul` |
+| **2.** D-finite ⟹ P-recursive: the induced recurrence `Σ_{j≤K+m} q_j(M) a_{M+j} = 0`, valid for **every** `M ≥ 0` | `recurCoeff`, `recurrence_of_dFinite` |
+| the `i`-th contribution to `q_j` is monic of degree exactly `i` | `shiftFactor`, `shiftFactor_monic`, `shiftFactor_natDegree`, `coeff_shiftFactor_self` |
+| hence distinct differential orders cannot cancel: some `q_j ≠ 0` | `recurCoeff_ne_zero`, `exists_recurCoeff_ne_zero` |
+| "after discarding finitely many indices and translating the least shift to zero, `q_0 ≠ 0`" | `exists_lowest_shift` |
+| polynomial bounds used by the propagation estimate `(3)` | `norm_polyEval_le`, `exists_lower_bound_polyEval` |
+| **2.–3.** a nonzero tail propagates along a finite-width path and contradicts super-Gaussian decay | `eventually_eq_zero_of_recurrence_of_superGaussian` |
+| **the theorem**: `a_n = 0` for all large `n` | `entireHeat_dFinite_finite_spectrum` |
+| "Thus `h` is a polynomial" | `exists_polynomial_of_eventually_zero`, `entireHeat_dFinite_isPolynomial` |
+
+Three points where the Lean statement is deliberately different from the card's wording, all in
+the direction of a **stronger** theorem or a **more elementary** proof.
+
+* **The heat hypothesis is weaker.**  The card assumes `u(t,z)` converges *locally uniformly* on
+  `ℂ²`; the Lean hypothesis is only that the defining series converges (`Summable`) at every point
+  of `ℂ²`, which locally uniform convergence implies.  Step 1 then needs no Cauchy estimate at all:
+  at `t = -A/(4π²)`, `z = 0` the terms are `a_n e^{An²}`, and a convergent series has bounded
+  terms.
+* **The recurrence holds from index `0`.**  The card's step 2 says "for every sufficiently large
+  integer `n`" after "discarding finitely many indices".  The explicit coefficient extraction used
+  here (`recurrence_of_dFinite`) is valid for **every** `M ≥ 0` once the shift `K` is taken to
+  dominate all `deg p_i`; the only discarding still needed is of the *vanishing lowest shifts*,
+  which is `exists_lowest_shift`.
+* **The propagation estimate is coarser but sufficient.**  Where the card uses
+  `|q_j(n)/q_0(n)| ≤ C n^d` and reaches the factorial-scale lower bound `exp(-D n log n)`, the Lean
+  proof uses the crude `‖q_j(n)/q_0(n)‖ ≤ E e^{Dn}` and reaches `exp(-D r k²)`.  This is legitimate
+  precisely because the decay hypothesis holds for *every* `A > 0`: `A := D·r + 2` is chosen after
+  `D` and the recurrence width `r`, and the contradiction becomes the purely quadratic comparison
+  `exp(k(log E + D n₀) − 2k²) → 0`.  No `n log n` scale, and no square roots, are needed.
+
+**Not formalized (and not an obligation of this card).**  The "Exact route consequence" and
+"Parent audit" sections are commentary on what the theorem rules out (de Bruijn–Newman, nonlinear
+DA anchors) and on its classification as `[BRIDGE]`; the Newton-polygon remark is explicitly
+flagged there as an alternative route not taken.  The `1-in-progress` successor
+`supergaussian-da-coefficient-floor.md` is the open conjecture, not a claim of this card.
+
+Verification: `lake build GaloisForLFunctions.HTGeometry.EntireHeatHolonomicFiniteSpectrum` — PASS;
+`#print axioms` on all 14 named results reports only `[propext, Classical.choice, Quot.sound]`.
+
 ## Log
 
 - 2026-07-11 — Proved the coefficient-free all-linear-order finite-spectrum theorem and classified it `[BRIDGE]`.
+- 2026-08-17 — formalized in Lean, including an unconditional proof of the classical
+  D-finite ⟹ P-recursive step; card moved to stage 3.

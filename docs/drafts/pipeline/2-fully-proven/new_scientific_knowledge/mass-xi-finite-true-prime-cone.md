@@ -9084,3 +9084,64 @@ Steps 2--5 of the source-side reduction, now with the contour identity in hand:
 4. `XiMassCriticalTruePrimeCone` for the filtered test.
 5. The Bessel-cone / subcaustic / moving-criterion layer, whose annulus input is the window half of
    `(22.7)` and whose tail input is `exists_bound_xiMassJetPrimeTail_endpoint`.
+
+### C42-T: the filtered archimedean channel and the jet prime-line criterion (2026-08-17)
+
+Step 2 of the source-side reduction is closed, and the first half of step 3 with it.  Everything is
+carried through the *polynomial-filtered* branch, so the jet inherits it by
+`xiMassJetAnalyticTest_eq_poly`.
+
+    RHTower/XiMassPolynomialArchVertical.lean
+      norm_xiMassPolySquare_weight_le           the even weight `P(z²)²` is bounded by
+                                                `xiMassPolyWeightConstant P c · (1+|r|^D)` on the
+                                                slab `‖z‖ ≤ |r| + c`
+      xiMassPolyArchVerticalIntegrand, xiMassPolyArchVerticalMajorant,
+        norm_integral_xiMassPolyArchVerticalIntegrand_le,
+        tendsto_xiMassPolyArchVerticalMajorant_atTop,
+        tendsto_integral_xiMassPolyArchVerticalIntegrand_right_atTop,
+        tendsto_integral_xiMassPolyArchVerticalIntegrand_left_atTop
+                                                both filtered vertical sides vanish
+
+    RHTower/XiMassPolynomialArchLines.lean
+      xiMassPolyBottomArchIntegrand, xiMassPolyCenteredArchIntegrand
+      integrable_xiMassPolyBottomArchIntegrand, integrable_xiMassPolyCenteredArchIntegrand
+      norm_xiMassPolyCenteredArchIntegrand_verticalTime_eq
+                                                on the centred line the filtered modulus does not
+                                                depend on the vertical time
+
+    RHTower/XiMassPolynomialArchShift.lean
+      rectIntegral_xiMassPoly_mul_logDeriv_centeredArchFactor,
+        rectIntegral_xiMassPoly_mul_archLogDeriv
+      integral_xiMassPolyBottomArch_eq_centered_add_residue
+                                                the exact infinite contour shift, filtered
+
+    RHTower/XiMassPolynomialArchUniform.lean
+      xiMassPolyBottomArchUniformBound
+      norm_integral_xiMassPolyBottomArchIntegrand_le_uniform
+                                                **the height-uniform filtered archimedean bound**
+      xiMassPolyBottomPrimeIntegrand, integrable_xiMassPolyBottomPrimeIntegrand,
+        integral_xiMassPolyBottomSourceIntegrand_split
+
+    RHTower/XiMassJetPrimeLineCriterion.lean
+      integral_xiMassJetBottomPrimeIntegrand_eq  the jet prime channel is the jet archimedean
+                                                 channel minus `π` times the weighted trace
+      riemannHypothesis_iff_exists_xiMassJetBottomPrime_line_bound
+                                                 **the jet prime-line RH criterion**: no auxiliary
+                                                 analytic term survives
+
+    RHTower/XiMassPolynomialPrimeAtomization.lean
+      polyShiftConst, one_add_pow_mul_exp_le     a polynomial factor is absorbed by half the rate
+      xiMassPolyBottomPrimeAtomIntegrand, xiMassPolyCenteredPrimeAtom
+      integral_xiMassPolyBottomPrimeAtom_eq_centered
+                                                 atomwise depth erasure for the filtered test
+      summable_xiMassPolyCenteredPrimeAtom
+      integral_xiMassPolyBottomPrimeIntegrand_eq_tsum_centeredAtom
+                                                 **complete atomization of the filtered prime
+                                                 Euler-line integral**
+
+### Remaining for C42-T
+
+Steps 3 (second half) to 5: the filtered integer-face (`XiMassCriticalIntegerFace`), the filtered
+true-prime cone (`XiMassCriticalTruePrimeCone`), and the Bessel-cone / subcaustic / moving-criterion
+layer whose annulus input is the window half of `(22.7)` and whose tail input is
+`exists_bound_xiMassJetPrimeTail_endpoint`.

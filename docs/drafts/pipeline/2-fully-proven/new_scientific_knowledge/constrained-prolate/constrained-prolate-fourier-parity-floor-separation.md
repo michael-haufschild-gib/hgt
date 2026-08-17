@@ -2652,3 +2652,67 @@ constrainedProlatePositive_spectralGap_eventually (hc : cst < 3/11)
 
 This is `(7)` of the two-mode card and `(10)` of the parity card's positive half, for the true
 prolate operator with no hypothesis.
+
+## `(4)` IS UNCONDITIONAL — the exact ground eigenvector converges to the two-mode seed
+
+`RHTower/ProlateGroundDistance.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`).
+
+```
+LadderEnvelope.memℓp_secular / summable_secular_sq / secularVector_zero_ne_zero
+LadderEnvelope.tendsto_min_norm_ground_distance
+constrainedProlateEven_ground_distance_tendsto_zero
+    ** min_sigma ‖ v̂_lambda − sigma · ĝ_lambda ‖²  →  0 **
+```
+
+Both vectors are constructed, not assumed: `v̂` is the normalized `secularLp` of the exact
+infinite-dimensional constrained root of the TRUE signed prolate leakage ladder, `ĝ` the normalized
+two-mode seed built from the family's own first two constraint coordinates.  Every structural,
+membership, summability, nonvanishing, head-alignment and tail hypothesis of
+`tendsto_min_norm_lp_normalize_sub_twoModeSeed` is discharged from `LadderEnvelope`, whose only
+inputs are the two-sided leakage estimate and the prolate-to-Hermite coordinate limits — both
+theorems.
+
+### The card's `(11)`, `(12)` and the Gram–Schmidt bridge were already formal
+
+```
+orthonormal_hermiteContrastUnit                              (11) mutual orthogonality
+inner_hermiteContrastLp_rawHermiteContrastLp_eq_zero         the Gram–Schmidt identification
+constrainedProlateHermiteWeight_zero / _one / _two           (12) q_0, q_1, q_2 = 1, 3/8, 35/128
+constrainedProlateHermiteWeightSum_zero / _one / _two         (12) Q_0, Q_1, Q_2 = 1, 11/8, 211/128
+constrainedProlateHermiteTheta_zero / _one                    theta_0 = 8/11, theta_1 = 176/211
+```
+
+### What is left, precisely
+
+Only two claims of the three cards are still not Lean theorems, and both are *rates*, not laws:
+
+1. the parity form `mu_+/mu_- ~ [13 A_4/(11 A_6)] lambda^(-4)` — the card states it conditionally
+   on the Fuchs constants `A_n`, and its unconditional half (`mu_+/mu_- → 0`, hence `(9)`) needs the
+   ONE-STEP leakage ratio `d_2/d_3 → 0`;
+2. the eigenvector rate `O(lambda^(-7))` of `(4)` — the card derives it from the Setup's Fuchs
+   asymptotic `(7)`; the machinery gives the rate as `lambda·d_1/(d_2 − d_1)`, which is a theorem,
+   but converting that to `lambda^(-7)` again needs the one-step ratio at its sharp rate.
+
+Both reduce to the same analytic gap: the two-sided leakage window has width `3` in the bandwidth
+exponent (`c^(+1)` above, `c^(-2)` below), while one corpus step moves the exponent by only `2`.
+The upper loss can be reduced to `c^(+1/2)` by taking the cut width `w = c^(-1/2)` instead of
+`c^(-1)` — the transport loss `exp(2(cb+12)w/(1−b²))` stays bounded because `c·b ≈ 2 sqrt(mu c)`,
+and `1/w` improves from `c` to `sqrt c`.  The lower loss is `c^(-1)` from the density prefactor and
+`c^(-1)` from the turning-layer factor `y_0² − s = 3s` at the matching point `y_0 = 2 sqrt s`; the
+latter is intrinsic to a matching point at the turning scale (moving `y_0` out to `c^(-1/4)` would
+cost `exp(c^(3/4))` in the action), so removing it requires a turning-point (Airy) normalization
+rather than the present crude flux comparison.  That is the one missing analytic engine, and it is
+what both remaining rates consume.
+
+### The negative sector too
+
+```
+constrainedProlateNegative_ground_distance_tendsto_zero
+    the same ell²-convergence to the two-mode seed for the odd sublattice (Hermite modes h_2, h_6)
+```
+
+So both Fourier sectors now have: the exact infinite-dimensional constrained root, its floor
+(`8/11` resp. `8/13`), its gap floor (`3/11` resp. `5/13`), the quantified gap, and the `ell²`
+convergence of the exact eigenvector to the two-mode seed — all for the TRUE prolate operator with
+no hypothesis.

@@ -62,6 +62,33 @@ theorem isBounded_unitCube (m : ℕ) : Bornology.IsBounded (unitCube m) := by
   calc ∑ i : Fin m, ‖x i‖ ^ 2 ≤ ∑ _i : Fin m, (1 : ℝ) := Finset.sum_le_sum fun i _ => hle i
     _ = (m : ℝ) := by simp
 
+theorem isClosed_unitCube (m : ℕ) : IsClosed (unitCube m) := by
+  have hrw : unitCube m = ⋂ i : Fin m,
+      (fun x : EuclideanSpace ℝ (Fin m) => x i) ⁻¹' Set.Icc (0 : ℝ) 1 := by
+    ext x
+    simp [unitCube, Set.mem_iInter]
+  rw [hrw]
+  exact isClosed_iInter fun i =>
+    isClosed_Icc.preimage (EuclideanSpace.proj (𝕜 := ℝ) i).continuous
+
+theorem isCompact_unitCube (m : ℕ) : IsCompact (unitCube m) :=
+  isCompact_of_isClosed_isBounded (isClosed_unitCube m) (isBounded_unitCube m)
+
+theorem zero_mem_unitCube (m : ℕ) : (0 : EuclideanSpace ℝ (Fin m)) ∈ unitCube m := by
+  intro i
+  simp
+
+/-- The vertex of the cube all of whose coordinates equal `1`. -/
+noncomputable def cubeOne (m : ℕ) : EuclideanSpace ℝ (Fin m) :=
+  (EuclideanSpace.equiv (Fin m) ℝ).symm fun _ => 1
+
+@[simp]
+theorem cubeOne_apply (m : ℕ) (i : Fin m) : cubeOne m i = 1 := rfl
+
+theorem cubeOne_mem_unitCube (m : ℕ) : cubeOne m ∈ unitCube m := by
+  intro i
+  simp
+
 /-- The three regimes of the clamp. -/
 private theorem clamp_trichotomy {t a : ℝ} (h : max 0 (min 1 t) = a) :
     (t ≤ 0 ∧ a = 0) ∨ (0 ≤ t ∧ t ≤ 1 ∧ a = t) ∨ (1 ≤ t ∧ a = 1) := by

@@ -344,13 +344,13 @@ theorem ladderEnvelope_evenProlateSignedLeakage_negative :
 
 /-! ## The negative-sector floors, unconditionally -/
 
-private theorem negativeSector_sum :
+theorem negativeSector_sum :
     ∀ᶠ lam : ℝ in atTop,
       Summable fun j : ℕ => ‖evenProlateConstraintCoord lam (2 * j + 1)‖ ^ 2 :=
   Eventually.of_forall fun lam =>
     (summable_evenProlateConstraintCoord_sq lam).comp_injective injective_two_mul_add_one
 
-private theorem negativeSector_bessel :
+theorem negativeSector_bessel :
     ∀ᶠ lam : ℝ in atTop,
       (∑' j : ℕ, ‖evenProlateConstraintCoord lam (2 * j + 1)‖ ^ 2) ≤ 2 * lam := by
   filter_upwards [Filter.eventually_ge_atTop (0 : ℝ)] with lam hlam
@@ -385,14 +385,6 @@ theorem constrainedProlateNegative_gap_ratio_tendsto :
 
 /-! ## The positive-sector floors, and the leakage-normalized parity collapse -/
 
-theorem constrainedProlateHermiteWeight_zero_eq : constrainedProlateHermiteWeight 0 = 1 := by
-  rw [constrainedProlateHermiteWeight]
-  norm_num
-
-theorem constrainedProlateHermiteWeight_one_eq : constrainedProlateHermiteWeight 1 = 3 / 8 := by
-  rw [constrainedProlateHermiteWeight]
-  norm_num [show Nat.choose 4 2 = 6 from rfl]
-
 theorem constrainedProlateHermiteCoordinate_zero_eq :
     constrainedProlateHermiteCoordinate 0 = (2 : ℝ) ^ ((1 : ℝ) / 4) := by
   have hpos : (0 : ℝ) < (2 : ℝ) ^ ((1 : ℝ) / 4) := Real.rpow_pos_of_pos (by norm_num) _
@@ -402,7 +394,7 @@ theorem constrainedProlateHermiteCoordinate_zero_eq :
     norm_num
   have hsq : ((2 : ℝ) ^ ((1 : ℝ) / 4)) ^ 2
       = Real.sqrt 2 * constrainedProlateHermiteWeight 0 := by
-    rw [hL, constrainedProlateHermiteWeight_zero_eq, Real.sqrt_eq_rpow]
+    rw [hL, constrainedProlateHermiteWeight_zero, Real.sqrt_eq_rpow]
     ring
   have hcoord : constrainedProlateHermiteCoordinate 0
       = Real.sqrt (Real.sqrt 2 * constrainedProlateHermiteWeight 0) := rfl
@@ -426,7 +418,7 @@ theorem constrainedProlateHermiteCoordinate_one_eq :
     norm_num [h52]
   have hsq : (Real.sqrt 3 / (2 : ℝ) ^ ((5 : ℝ) / 4)) ^ 2
       = Real.sqrt 2 * constrainedProlateHermiteWeight 1 := by
-    rw [hL, constrainedProlateHermiteWeight_one_eq]
+    rw [hL, constrainedProlateHermiteWeight_one]
     field_simp
     linarith [h2]
   have hcoord : constrainedProlateHermiteCoordinate 1

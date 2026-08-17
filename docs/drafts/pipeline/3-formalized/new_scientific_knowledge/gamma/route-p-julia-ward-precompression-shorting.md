@@ -1,9 +1,9 @@
 # Route P Julia--Ward precompression shorting
 
 - **ID:** `P-G206`
-- **Stage:** `1-in-progress`
+- **Stage:** `3-formalized`
 - **Type:** nonlocal source coupling / compression-order theorem
-- **Status:** `[CONJECTURE] [NOVELTY-UNVERIFIED]`
+- **Status:** `[CORPUS-NEW] [PAPER-PROVED] [LEAN EXACT-BUILT] [UMBRELLA-WIRED] [NOVELTY-UNVERIFIED] [NOT RH]`
 - **Lean target:**
   `formal/GaloisForLFunctions/RHTower/RoutePPrimitiveGammaJuliaWardPrecompressionShorting.lean`
 
@@ -20,8 +20,8 @@ depth-zero primes two and three.
 2. **Use covariant Pluecker inverse incidence alone. -- FAIL.** It restores global covariance, but
    existing theorem contains no Gamma--Julia coefficient identifying its current with literal
    two-prime Ward cross term.
-3. **Use normalized environment coordinate of canonical Gamma-sewn Julia lift. -- SURVIVES PAPER
-   AUDIT.** Existing source theorem produces prime-log coordinate before scalar recombination and
+3. **Use normalized environment coordinate of canonical Gamma-sewn Julia lift. -- PROVED.**
+   Existing source theorem produces prime-log coordinate before scalar recombination and
    converges coefficientwise to literal `log p`. Weight it by exact reciprocal-promotion
    amplitudes before selecting prime cells.
 
@@ -49,7 +49,7 @@ Put the resolved source and Julia environment in positive block
 B_x(u) = [[W_x(u), C_x(u)], [C_x(u), 1]].
 ```
 
-Target identities:
+Proved identities:
 
 ```text
 C_x(u)^2 = W_x(u),
@@ -64,7 +64,9 @@ energy and `C_x(u)` tends its coefficient-faithful cross square root. At boundar
 short before compression = 0 < literal compressed Ward energy.
 ```
 
-This is exact failure of compression monotonicity required to evade P-G205.
+This is exact failure of compression monotonicity required to evade P-G205. Lean additionally
+defines skew coupling on arbitrary prime-depth cell pairs before `(2,3)` selection, proves finite
+block positivity and determinant zero, and proves eventual strict inequality near lossless wall.
 
 ## Hostile boundary
 
@@ -78,4 +80,16 @@ abstract auxiliary copy is invalid.
 Anderson--Trapp shorting gives the positive block formula `A-BD^{-1}B*`; Julia operator theory
 supplies unitary defect channels. No checked source identifies this arithmetic reciprocal-promotion
 cross with a completed zeta/Xi divisor law. Classification is classical; arithmetic coefficient
-identity is corpus-derived. Novelty remains unverified until formal theorem survives.
+identity is corpus-derived. Novelty remains externally unverified.
+
+## Lean verification
+
+```text
+lake env lean GaloisForLFunctions/RHTower/RoutePPrimitiveGammaJuliaWardPrecompressionShorting.lean
+lake build GaloisForLFunctions.RHTower.RoutePPrimitiveGammaJuliaWardPrecompressionShorting
+```
+
+Both pass. Exact leaf built at `[12991/12991]`; umbrella import is wired and was not built. Formal
+lint is clean for this module; repository lint remains red only for unrelated concurrent
+HTGeometry modules not yet reachable from their umbrella. Capstones depend only on `propext`,
+`Classical.choice`, and `Quot.sound`.

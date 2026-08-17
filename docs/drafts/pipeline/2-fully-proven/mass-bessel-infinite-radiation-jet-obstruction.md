@@ -396,3 +396,91 @@ item 4.  The composition is where the remaining work sits: writing
 the segment `[0,u]`.  The corpus already owns the order-zero case of exactly this composition
 (`HTGeometry.massBesselCarrier`, `massBesselCarrier_eq`, `norm_massBesselCarrier_sub_leading_le`,
 `norm_massBesselRoot_sub_le`), so the all-orders version is that estimate repeated at every order.
+
+## Lean progress -- items 1 and 2 are closed
+
+Five more modules (all umbrella-wired, axiom-clean) close the all-orders expansion of the carrier and
+the classification of its coefficients.
+
+`formal/GaloisForLFunctions/HTGeometry/BoundedDiscExpansion.lean`:
+
+| Card item | Declaration |
+|---|---|
+| an expansion together with a bound for the function on the disc | `BddPolyExpansionAt` |
+| sums, products, scalar multiples, finite sums, and lowering the order | `BddPolyExpansionAt.add`, `.mul`, `.const_mul`, `.finsetSum`, `.mono` |
+| the truncating polynomial inherits the function's bound | `HasPolyExpansion.norm_poly_le` |
+| truncation, and what it does to coefficients | `BddPolyExpansionAt.trunc`, `coeff_truncBelow_of_le`, `coeff_truncBelow_of_lt`, `eval_truncBelow` |
+| exponentials, as a bounded expansion | `bddPolyExpansionAt_cexp` |
+
+Carrying the bound alongside the approximant is what makes the assembly mechanical: the product rule
+needs a bound for the second factor and for the first factor's polynomial, and the second follows
+from the first.  The approximant itself stays explicit, which is what the coefficient classification
+consumes.
+
+`formal/GaloisForLFunctions/HTGeometry/ShellExpansionBounds.lean` and `ShellCarrierExpansion.lean`:
+
+| Card item | Declaration |
+|---|---|
+| on the binomial disc the shell base stays above one half | `half_le_norm_one_add_shell` |
+| hence a shell power with a nonpositive exponent is bounded by `2^{-α}` | `norm_shellPow_le` |
+| the order-zero defect expansion has vanishing polynomial, so the defect is linear | `shellBinomPoly_one`, `shellDefectPoly_zero`, `shellDefectRate`, `norm_shellDefect_le` |
+| the carrier distortion as a function of the reciprocal parameter | `shellCarrierProfile`, `carrierDistortion_eq_shellCarrierProfile` |
+| each factor as a bounded expansion | `bddPolyExpansionAt_shellPow`, `bddPolyExpansionAt_monomial`, `bddPolyExpansionAt_defectExp` |
+| the assembled approximant | `defectExpPoly`, `shellPoincarePoly`, `carrierProductPoly` |
+| **item 1: the carrier distortion has an explicit approximant at every order** | `bddPolyExpansionAt_shellCarrierProfile`, `exists_poly_approx_carrierDistortion` |
+
+The only genuine smallness condition in the whole assembly is on the exponential factor: the defect
+must stay below one half so that its exponential series converges at the prescribed rate.  That is
+the single hypothesis `a · shellDefectRate x · r <= 1/2`, and it is exactly the card's "fixed closed
+subsector, `|t|` large" clause.
+
+`formal/GaloisForLFunctions/HTGeometry/BivariateDiagonalSymbol.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the `j`-th outer coefficient has inner degree at most `j/c` | `SubDiag` |
+| the extremal inner coefficient at each outer order | `diagSym` |
+| stability under sums, products, powers, and lowering the weight | `SubDiag.add`, `.mul`, `.pow`, `.sum`, `.mono` |
+| **on the weight-one class the extremal coefficients convolve** | `diagSym_mul` |
+| **a weight-two factor contributes only at order zero** | `diagSym_eq_zero_of_subDiag_two`, `diagSym_mul_subDiag_two` |
+| a factor concentrated in order one, raised to a power | `diagSym_pow_of_linear` |
+
+This is the exact mechanism of section 2, made into an algebraic statement.  Everything except the
+exponential loses at least one unit of shell degree per unit of inverse order -- weight two -- so it
+can only act on the extremal coefficients through its value at order zero; the root defect keeps pace
+exactly -- weight one -- and its first-order coefficient is `1/2`.
+
+`formal/GaloisForLFunctions/HTGeometry/ShellCarrierSeries.lean`:
+
+| Card item | Declaration |
+|---|---|
+| substituting `s = x²` into a bivariate polynomial | `shellEval`, `coeff_shellEval` |
+| dividing off the outer variable commutes with a coefficient map | `map_divX` |
+| the bivariate forms of every factor | `shellBinomSeries`, `shellDefectSeries`, `defectExpSeries`, `shellPoincareSeries`, `carrierProductSeries` |
+| **the assembled approximant is the value of the bivariate series at `s = x²`** | `shellEval_carrierProductSeries` |
+
+`formal/GaloisForLFunctions/HTGeometry/CarrierPoincareCoefficients.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the exact bicoefficient of the shell binomial series | `coeff_coeff_shellBinomSeries` |
+| the shell powers and the Poincaré factor have weight two | `subDiag_two_shellBinomSeries`, `subDiag_two_shellPoincareSeries` |
+| the root defect has weight one, and extremal symbol `1/2` in order one | `subDiag_one_shellDefectSeries`, `diagSym_shellDefectSeries` |
+| **the exponential factor's extremal symbol is `(-a/2)^j / j!`** | `diagSym_defectExpSeries` |
+| the leading Poincaré coefficient of `K_1` is `1/√2` | `besselK1Coeff_zero` |
+| **the extremal shell coefficient of the whole carrier series** | `diagSym_carrierProductSeries` |
+| the coefficient polynomials `Q_{j,a}` | `poincareCoeffPoly`, `coeff_carrierProductPoly` |
+| **item 2: `deg Q_{j,a} = j` and `[s^j] Q_{j,a} = (-a/2)^j / j!`** | `natDegree_poincareCoeffPoly_le`, `coeff_poincareCoeffPoly_self`, `natDegree_poincareCoeffPoly` |
+| **items 1 and 2 together** | `carrier_poincare_expansion` |
+
+The normalization comes out on the nose: `√2 · q_0 = √2 · (√2)^{-1} = 1`, so `Q_{0,a} = 1` and the
+extremal coefficient is exactly the card's `(-a/2)^j / j!`, nonzero for every `a ≠ 0`.
+
+### What remains
+
+Item 4's dyadic assembly.  Item 3 is already closed
+(`RHTower.tendsto_dyadicSqrtVonMangoldtLogMass`), and items 1 and 2 are closed above.  The assembly
+needs the order-`m` remainder uniformly over the shell `X < n <= 2X`, that is with the constant
+tracked explicitly as a function of `x = log n` rather than left existential -- the shell constants
+grow like `|x|^{2m}` and the radius is `|t_X|^{-1} ~ (log X)^{-4}`, so the product is the card's
+`O_m(L^{2m+2}|t|^{-m-1})`.

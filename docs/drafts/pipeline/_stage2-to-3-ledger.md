@@ -4064,3 +4064,18 @@ conjecture loop and the open effective-onset question are not theorems of the ca
   (`csqrt_csqrt_eq_cpow`): the shell argument has modulus below `π/2`, so a quarter of it is below
   `π/8` and `Complex.cpow_mul` applies.  Everything else is `cpow_add`/`cpow_neg`, needing only
   nonvanishing.
+
+## mass-bessel-infinite-radiation-jet-obstruction -- items 1 and 2 closed
+
+`HTGeometry.BoundedDiscExpansion` (bounded expansions with explicit approximants: sum, product,
+scalar, finite sum, order lowering, truncation, exponential), `HTGeometry.ShellExpansionBounds`
+(disc bounds for the shell power and the root defect), `HTGeometry.ShellCarrierExpansion`
+(`carrierProductPoly` and `exists_poly_approx_carrierDistortion` -- item 1),
+`HTGeometry.BivariateDiagonalSymbol` (the weighted subdiagonal class and its extremal-symbol
+calculus), `HTGeometry.ShellCarrierSeries` (the bivariate forms and `shellEval_carrierProductSeries`),
+`HTGeometry.CarrierPoincareCoefficients` (`poincareCoeffPoly`, `natDegree_poincareCoeffPoly`,
+`coeff_poincareCoeffPoly_self` -- item 2 -- and `carrier_poincare_expansion`).
+
+All umbrella-wired, `lake build`-clean, axioms exactly `[propext, Classical.choice, Quot.sound]`.
+Remaining on the card: item 4's dyadic assembly, which needs the order-`m` constant tracked
+explicitly in `x` rather than existentially.
