@@ -366,3 +366,44 @@ All eleven modules of this turn are unconditional, umbrella-wired, oleans built,
 3. **Abel summation.**  `∑_{p ≤ K}(log p)p^{-iτ} ⟹ ∑_{p ≤ K}p^{-iτ}`, the last step to Lemma 2.3's
    prime statement.  `Sieve/VonMangoldtTwistPrimeSum` supplies the prime-power removal; only the
    partial summation over `log p` remains.
+
+### The gate is Menon's rate, not Matomäki--Radziwiłł's — CORRECTION (2026-08-17)
+
+Re-reading what the three `route-e-*` cards actually consume changes the target of this programme.
+
+`route-e-reciprocal-marker-mobius-hall-law` §"Analytic inputs" cites Menon's Theorem 1.1,
+
+```text
+(1/Y) ∫_Y^{2Y} | (1/L) sum_{x < n <= x+L} mu(n) |^2 dx
+    <<  (log log L)^2/(log L)^2  +  (log log Y)^4/(log Y)^2 ,      10 <= L <= Y,
+```
+
+and uses it through its `(8)`: with `L = exp((log Y)^beta)`, `1/2 < beta < 1`, the right-hand side
+must be `o(1/log Y)`.  That is what makes the Markov step `(10)` produce an exceptional set of size
+`o(Y/log Y)`, which is the whole mechanism of the card.
+`route-e-growing-reciprocal-marker-low-breadth-transport` uses the same input through its `(16)`,
+`(17)`: `R_k · log X = o(1)`.
+
+**Matomäki--Radziwiłł 2016 is not enough for either.**  Their Theorem 1 gives a rate of the shape
+`(log L)^{-c}` with a small absolute `c < 1`.  Card 2's own `(2)` forces `w = o(log h) = o(log X)`,
+so `(log L_k)^c <= w^c = o((log X)^c)`, and `R_k · log X = o(1)` would require
+`(log X)^{1-c} = o(1)` — false for every `c < 1`.  Card 3 fails the same way: `2*beta > 1` is used
+against the exponent `2`, and any exponent at or below `1` breaks it for every admissible `beta`.
+
+**What the extra factor is.**  The exponent `2` is not an artefact.  For a general multiplicative
+`f` the Matomäki--Radziwiłł machinery gives only `o(1)`; for `mu` one may additionally run Halász
+with the pretentious distance
+`sum_{p <= x} (1 - Re mu(p) p^{-it})/p = sum_{p <= x} (1 + Re p^{-it})/p ~ 2 log log x`,
+because `mu(p) = -1` is maximally far from every `p^{it}`.  The Halász saving is then
+`exp(-2 log log L) = (log L)^{-2}`, which is exactly Menon's rate.  So the gate factorises:
+
+1. the Matomäki--Radziwiłł ladder (Milestones A--D of this card), and
+2. Halász's theorem with the explicit `mu`-distance, applied inside that ladder.
+
+Item 2 is not extra hardship on top of item 1 — it is the same Halász/Hal\'asz--Montgomery layer
+(Lemma 2.6, Lemma 7.1) already listed here, used quantitatively rather than qualitatively.  The
+programme is unchanged in structure; what changes is that **every large-values and Halász step must
+be carried with its constant, not merely as `o(1)`**, and the final assembly must produce
+`(log L)^{-2+o(1)}` rather than `o(1)`.
+
+This has been recorded on all three `route-e-*` cards.

@@ -3856,3 +3856,34 @@ Fejér packet remains), `computable-static-local` (the Gaussian box closed).
   aggregate `(N+1)^d μ_ρ`, better than the grouped `(2N+1)^d μ_ρ`.
   What the card still needs from Theorem A is only the arithmetic input `(8)` and the numerical
   choice of `N_ρ` and `T`.
+
+### Theorem A of the arithmetic moving-window card is complete
+
+Two further modules finish it, unconditionally:
+
+- `HTGeometry/SpectralFormConjugateBound.lean` -- the integer spectral form `β_k = ∑ k_j(E_{j+1}-E_1)`
+  in `𝓞 K`, the fact that every complex embedding of it is the same integer combination of the
+  embedded eigenvalues (`embedding_spectralForm`), the conjugate bound `(8)`
+  (`norm_embedding_spectralForm_le`: coefficients `≤ N` and eigenvalue embeddings `≤ R` give
+  `|σ(β_k)| ≤ 2dNR`), and `(9)` for the form (`inv_pow_le_norm_embedding_spectralForm`).
+- `HTGeometry/ArithmeticWindowCapstone.lean` -- the frequency a packet mode carries *is* the
+  distinguished embedding of a spectral form (`packetFreq_eq_embedding`), so Liouville separation
+  bounds every nonconstant mode away from zero uniformly (`inv_pow_le_abs_packetFreq`), which is
+  exactly the hypothesis the moving-window estimate consumes.  The capstone
+  `half_mul_le_measureReal_cubeVisit_of_algebraic` states Theorem A with no genericity, no first-hit
+  argument, and no assumed separation: an algebraic spectrum with conjugates below `R` and no
+  integer relation among the anchored gaps, plus the two explicit thresholds
+  `8(N+1)^d ≤ T(2dNR)^{-(n-1)}` and `8πd ≤ ρ(ρ/2π)^d√(N+1)`, forces every window of length `T`
+  to spend at least `(ρ/2π)^d/2` of its length inside the cube.
+
+Theorems B, C and D of that card remain.
+
+- `HTGeometry/PhaseOrbitCubeStability.lean` -- the deterministic half of Theorem B of the same card.
+  On top of the corpus's `phaseOrbit`: `norm_expPhase_sub_le` (two unimodular phases differ by at
+  most their argument difference), `(27)` `norm_phaseOrbit_sub_le` and its radian form (the orbit of
+  an orthogonal family of total weight at most one moves by at most the sup-distance -- Pythagorean,
+  since the component errors inherit the family's orthogonality), `(28)` `abs_score_sub_le` (the
+  overlap score with a unit target is 2-Lipschitz in the state) and `(29)`
+  `score_le_of_norm_sub_le` (a bound at a cube centre survives on the whole cube).  Theorem B's
+  remaining input is `(26)`, the completed-phase incidence bound, which the card declares as a
+  parent input.

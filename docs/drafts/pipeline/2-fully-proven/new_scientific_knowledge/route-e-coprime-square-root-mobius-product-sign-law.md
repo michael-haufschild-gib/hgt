@@ -9138,3 +9138,38 @@ The Möbius half of that twisted-sum bound is already proved at the Route-T absc
 (`Sieve/RouteTMoebiusPowerSaving.exists_norm_LSeries_truncatedMoebius_dyadic_le_routeTPower`);
 the remaining half is the prime sum `sum_{p<=x} p^{it}`, whose edge input --
 `zeta'/zeta` on that abscissa -- is now `Sieve/ZetaLogDerivWidthBound.lean`.
+
+## Lean gate, restated (2026-08-17)
+
+The analytic gate of this card is **not** Matomäki--Radziwiłł's qualitative short-interval theorem
+but Menon's quantitative rate
+
+```text
+(1/Y) ∫_Y^{2Y} | (1/L) sum_{x < n <= x+L} mu(n) |^2 dx
+    <<  (log log L)^2/(log L)^2  +  (log log Y)^4/(log Y)^2 .
+```
+
+The exponent `2` is used, not merely positivity: the card's Markov step needs the mean square to be
+`o(1/log X)`, and a rate `(log L)^{-c}` with `c < 1` cannot deliver that inside the card's own
+admissible window range.  The extra factor over Matomäki--Radziwiłł is Halász's theorem carried with
+its constant for `mu` specifically, where the pretentious distance
+`sum_{p <= x}(1 + Re p^{-it})/p ~ 2 log log x` is maximal and produces exactly `(log L)^{-2}`.
+
+Programme, progress and the current Lean inventory:
+`../../1-in-progress/matomaki-radziwill-lean-programme.md`.
+
+### Route-T twisted prime sums — landed (2026-08-17)
+
+The Vinogradov--Korobov input of that programme is built and unconditional.  The twisted Chebyshev
+contour is closed in both regimes (pole inside / outside the truncated rectangle) and collapsed to a
+single explicit inequality, `Sieve/VonMangoldtTwistRouteTSharp`:
+
+```text
+‖ sum_{p <= K} (log p) p^{-i tau} ‖
+   <=  C·K·(K/H)²·[ (log K)²/|tau| + (1/|tau| + log(3|tau|/2)/w(3|tau|/2+1))
+                     · ((3K)^{-W(3|tau|/2)} + |tau|^{-2}) ] / (2 pi)
+       + log(K+H)·H  +  (prime-power mass) ,
+```
+
+for every `K >= e^9`, every smoothing width `0 < H <= K`, and every `|tau| >= tau_0`, with `w` the
+Route-T zero-free width and `W` the contour width.  All of it is axiom-clean and umbrella-wired.

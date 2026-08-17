@@ -250,13 +250,36 @@ oscillation, and the already formal `window_mean_ge` then delivers the moving-wi
 uniform in the window position `u`: the separation `βmin` enters only as the hypothesis `hsep`,
 which is exactly `(9)` applied to `k · omega`.
 
-##### What remains in Theorem A
+##### `(8)` and the assembly: Theorem A is formal
 
-Only the arithmetic input: the conjugate bound `(8)` for the spectral form -- that Galois conjugates
-of the eigenvalues stay below `2dNR` -- which discharges `hsep` through
-`inv_pow_le_norm_embedding`, together with the numerical choice of `N_rho` and `T(D,R,rho)` making
-the two error terms of `measureReal_cubeVisit_ge` at most `mu_rho/4` each.  Every analytic
-ingredient of `(10)`--`(19)` is formal.
+`formal/GaloisForLFunctions/HTGeometry/SpectralFormConjugateBound.lean` and
+`formal/GaloisForLFunctions/HTGeometry/ArithmeticWindowCapstone.lean` (both new, umbrella-wired,
+axiom-clean) close the arithmetic half and glue the two halves together.
+
+| Card item | Declaration | Module |
+|---|---|---|
+| the integer spectral form `beta_k = sum k_j (E_{j+1} - E_1)` | `spectralForm` | `SpectralFormConjugateBound` |
+| every embedding of it is the same integer combination of the embedded eigenvalues | `embedding_spectralForm` | same |
+| **`(8)`**: coefficients `<= N` and eigenvalue embeddings `<= R` force every conjugate below `2dNR` | `norm_embedding_spectralForm_le` | same |
+| **`(9)`** for the spectral form: `\|beta_k\| >= (2dNR)^{-(n-1)}` | `inv_pow_le_norm_embedding_spectralForm` | same |
+| the mode frequency `k · omega` *is* the distinguished embedding of a spectral form | `packetFreq_eq_embedding` | `ArithmeticWindowCapstone` |
+| **the uniform separation of every nonconstant mode** | `inv_pow_le_abs_packetFreq` | same |
+| **the explicit thresholds**: `N` and `T` large enough make both error terms `<= mu_rho/4` | `half_mul_le_measureReal_cubeVisit` | `PeriodicTentPacket` |
+| **Theorem A, unconditional** | `half_mul_le_measureReal_cubeVisit_of_algebraic` | `ArithmeticWindowCapstone` |
+
+The final statement takes an algebraic spectrum `E : Fin (d+1) -> 𝓞 K` with all complex embeddings
+bounded by `R` and no integer relation among the anchored gaps, and concludes that for every window
+position `u`, every window of length `T` satisfying
+`8(N+1)^d <= T (2dNR)^{-(n-1)}` and `8 pi d <= rho (rho/2pi)^d sqrt(N+1)` obeys
+
+`(rho/2pi)^d/2 · T <= |{t in (u, u+T] : t omega lies in the cube of half-width rho around c}|`.
+
+No genericity, no first-hit argument, and no hypothesis beyond the two displayed thresholds: the
+separation `(9)` is supplied internally by the number theory rather than assumed.
+
+##### What remains
+
+Theorem A is complete.  Theorems B, C and D of the card are untouched.
 For the multi-dimensional kernel the corpus also owns a Bohr-side stack, in
 the Bohr almost-periodic setting that this card's moving-window mean lives in:
 `HTGeometry/BohrFejerKernel.lean` (`fejerKernel`, `fejerKernel_nonneg`, `fejerKernel_eq_sum`,
@@ -438,6 +461,27 @@ Theorem A proves `(24)`.
 For `(25)`, apply Theorem A to the cube of radius `delta` centred at the relative origin.  After
 factoring out `e^{-itE_1}`, the norm difference from the initial state is at most the angular
 sup-distance, proving the claim.  QED.
+
+### Lean progress -- the cube-stability half of Theorem B
+
+`formal/GaloisForLFunctions/HTGeometry/PhaseOrbitCubeStability.lean` (new, umbrella-wired,
+axiom-clean) proves the three deterministic steps `(27)`--`(29)` on top of the corpus's `phaseOrbit`.
+
+| Card item | Declaration |
+|---|---|
+| two unimodular phases differ by at most their argument difference | `norm_expPhase_sub_le` |
+| **`(27)`**: the orbit of an orthogonal family of total weight `<= 1` moves by at most the sup-distance | `norm_phaseOrbit_sub_le`, `norm_phaseOrbit_sub_le_radian` |
+| **`(28)`**: the overlap score with a unit target is `2`-Lipschitz in the state | `abs_score_sub_le` |
+| **`(29)`**: a bound at the cube centre survives on the whole cube, with loss `2 rho` | `score_le_of_norm_sub_le` |
+
+`(27)` is Pythagorean: the component errors are pairwise orthogonal because the family is, so the
+squared orbit displacement is the weighted sum of `|e^{i alpha}-e^{i beta}|^2 = 4 sin^2((alpha-beta)/2)`,
+each at most the squared angular gap.  The radian form removes the `2 pi` that the corpus's
+turn-parametrised `phaseOrbit` carries.
+
+What Theorem B still needs is `(26)`, the completed-phase incidence bound, which is the card's
+declared parent input, and the descent of that event to the relative torus.  Given `(26)`, `(24)`
+and `(25)` are `(27)`--`(29)` plus the now-complete Theorem A.
 
 ## Theorem C -- ordinary integer two-local Hamiltonians
 

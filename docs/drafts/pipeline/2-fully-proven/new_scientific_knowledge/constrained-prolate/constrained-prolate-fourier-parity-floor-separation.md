@@ -2114,3 +2114,166 @@ step, together with the evaluation of the Hermite shape ratio
 `(∫φ_{2n})²/∫φ_{2n}²` against the card's `constrainedProlateHermiteCoordinate` — for which
 `integral_hermiteFun_add_two` supplies the recursion on the numerator and the corpus's
 `HermiteCentreValueClosedForm` the closed form on the other side.
+
+## Lean progress — the Hermite moments in closed form, and the limit in the card's own constant
+
+Two more modules, wired, built, axiom-clean.
+
+```
+RHTower/HermiteMomentClosedForm.lean
+  hermiteFun_one_eq, deriv_hermiteFun_zero
+  hermiteFun_succ_uniform      φ_{m+1} = √2·x·φ_m − m·φ_{m−1}, bottom rung included
+  deriv_hermiteFun_add_id_mul  φ_m′ + x·φ_m = √2·m·φ_{m−1}, bottom rung included
+  integrable_hermiteFun_mul, integrable_id_mul_hermiteFun_mul
+  integral_hermiteFun_mul_eq_zero_of_ne   whole-line orthogonality
+  integral_deriv_hermiteFun_mul_succ      ∫_ℝ (φ_mφ_{m+1})′ = 0
+  integral_id_mul_hermiteFun_mul_succ     ∫_ℝ x φ_m φ_{m+1} = (√2/2)(m+1)∫φ_m²
+  integral_hermiteFun_sq_succ    ** ∫_ℝ φ_{m+1}² = (m+1)·∫_ℝ φ_m² **
+  integral_hermiteFun_zero_val   ∫_ℝ φ_0 = √(2π)
+  integral_hermiteFun_zero_sq    ∫_ℝ φ_0² = √π
+  hermiteShapeRatio n := (∫φ_n)²/∫φ_n²
+  hermiteShapeRatio_two_mul      ** = 2√π · binom(2k,k)/4^k  at rung 2k **
+  hermiteShapeRatio_four_mul     ** = 2√π · binom(4j,2j)/16^j  at rung 4j **
+  hermiteShapeRatio_four_mul_eq_coordinate_sq
+      ** = √(2π) · (constrainedProlateHermiteCoordinate j)²  **
+
+RHTower/ProlateIndexedConstrainedCoordinate.lean
+  tendsto_indexedRung_constrainedCoordinate
+      ** √c · ( ∫_{−1}^{1} R_{2j} )² / ∫_{−1}^{1} R_{2j}²  →  √(2π) · a_j²  **
+```
+
+The two uniform pointwise identities are what makes the bottom rung need no case split: writing the
+shifted term with the coefficient `m` (so it dies at `m = 0`) covers `φ_1 = √2xφ_0` and
+`φ_0′ = −xφ_0` with the same statement.  Pairing them against `φ_{m+1}` and using that the
+derivative of a product of Hermite functions integrates to zero evaluates the cross moment, and
+substituting into the three-term recursion gives the `L²` recursion; the same technique gave the
+first-moment recursion in the previous section.  The two Gaussian values then fix both sequences,
+and the ratio follows the central-binomial recursion `(k+1)C_{k+1} = 2(2k+1)C_k` — the *same*
+recursion the corpus's `hermiteOriginValue_sq_two_mul` runs, which is why the analytic limit and the
+card's combinatorial weight agree on the nose, with the single constant `√(2π)` between them.
+
+So the card's `(3)` now holds at every Fourier-even rung **in the card's own normalization**, with
+the card's own coefficient `a_j = constrainedProlateHermiteCoordinate j`.
+
+### The one remaining link, stated exactly
+
+`hl : ‖evenProlateConstraintCoord lam j‖ → constrainedProlateHermiteCoordinate j` needs the
+identification of the two descriptions of the same mode:
+
+```text
+evenProlateConstraintCoord a n  =  ∫_{−a}^{a} evenProlateSignedPointwiseSource a n
+                                                   (ae_eq_evenProlateSignedPointwiseSource)
+signedModeRadialData a n .Phi   =  an even band eigenfunction of bandTransform (2πa²)
+                                    with the SAME eigenvalue evenProlateSignedValue a n ^ 2
+```
+
+Both are even eigenfunctions of the same unit-scale band transform at the same eigenvalue, so
+`ProlateBandEigenvalueSimplicity` / `evenProlateSignedMode_proportional_of_sq_eq` makes them
+proportional, and the shape ratio is scale-invariant
+(`HTGeometry.shapeRatio_amplitude_invariant`).  With `‖u_n‖_{L²[−a,a]} = 1`
+(`integral_norm_sq_evenProlateSignedPointwiseSource_eq_one`) the constraint coordinate squared *is*
+the shape ratio of the aperture-scaled mode, and the aperture rescaling is
+`HTGeometry.shapeRatio_dilate` once more.  This link is missing at `j = 0` as well — the corpus's
+ground coordinate limit is stated for the variationally selected ground family, not for
+`evenProlateSignedMode` — so closing it closes every index at once.
+
+## `hl` IS CLOSED — the constrained coordinate converges to its Hermite value
+
+`RHTower/ProlateConstraintCoordinateLimit.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`).
+
+```
+exists_unitExtension_eq_const_mul_radialPhi
+    ONE complex constant relates the two descriptions of a signed prolate mode
+evenProlateSignedPointwiseSource_eq_const_mul_radialPhi
+    S(a·x) = z · Phi(x) on the open aperture
+integral_evenProlateSignedPointwiseSource_eq          ∫_{−a}^{a} S = z·a·∫_{−1}^{1}Phi
+integral_norm_sq_evenProlateSignedPointwiseSource_aperture
+                                                       |z|²·a·∫_{−1}^{1}Phi² = 1
+norm_sq_evenProlateConstraintCoord_eq
+    ** ‖ℓ_n(a)‖² = a · (∫_{−1}^{1}Phi)² / ∫_{−1}^{1}Phi² **
+shapeRatio_radialR_eq_radialPhi        endpoint normalization does not move the shape ratio
+tendsto_norm_sq_evenProlateConstraintCoord
+tendsto_norm_evenProlateConstraintCoord
+tendsto_norm_evenProlateConstraintCoord_atTop
+    ** ‖evenProlateConstraintCoord lam (2j)‖ → constrainedProlateHermiteCoordinate j **
+```
+
+This is the `hl` that
+`ConstrainedProlateBesselClockUniversalityLaw.ClockEnvelope.constrainedProlateBessel_exactEigenpair_and_allRawDefects`
+consumes, for the Fourier-even renumbering `j ↦ 2j`; the Bessel input already tolerates an arbitrary
+injective renumbering (`tsum_evenProlateConstraintCoord_comp_sq_le`), which is exactly what the
+corpus audit proposed in place of the total-positivity comparison of the two orderings.
+
+### How the two descriptions were matched
+
+The analytic layer carries a signed mode as its canonical radial datum `Phi` — an even smooth
+**real** band eigenfunction at the squared signed value — while the constrained tower carries it as
+its pointwise source `S`, a **complex** function whose aperture integral is the constraint
+coordinate.  Nothing in the corpus related them, and the two are not equal.
+
+What relates them is that *both channels* of the unit-band extension of `S` are real band
+eigenfunctions at that same eigenvalue
+(`bandTransform_evenProlateSignedUnitExtension_re_global` / `_im_global`), so
+`continuous_real_bandEigen_proportional` makes each a real multiple of `Phi`; recombining them
+through `Complex.re_add_im` gives a single complex constant `z` with `S(a·x) = z·Phi(x)` on the open
+aperture.  The `L²` normalization of the mode then fixes `|z|²`, the constant cancels in the
+quotient, and the constraint coordinate squared is exactly the aperture-scaled shape ratio of `Phi`
+— the quantity whose limit the previous sections compute.  No positivity, no simplicity of the
+eigenvalue, and no ordering comparison is used: only that a live band eigenvalue has a
+one-dimensional continuous real eigenline, which the corpus already proves.
+
+### Status
+
+The analytic gate of the constrained-prolate lane is closed:
+
+```text
+(α)  μ_n → 4n+1, index order = separation order        corpus
+(3)  coordinate limits, every even rung                 tendsto_indexedRung_coordinateLimit
+     in the card's normalization                        tendsto_indexedRung_constrainedCoordinate
+hl   ‖ℓ_{2j}(lam)‖ → a_j                                tendsto_norm_evenProlateConstraintCoord_atTop
+(4),(5),(10),(10a),(11)                                 corpus
+(8)  interlacing, location, threading                   corpus
+(β)  two-sided leakage ladder                           corpus
+Bessel Σℓ² ≤ 2a, any injective renumbering              corpus
+```
+
+## The clock law now has NO coordinate hypothesis
+
+`RHTower/ProlateConstrainedClockCapstone.lean` (wired, built, axiom-clean).
+
+```
+ClockEnvelope.constrainedProlateEven_exactEigenpair_and_allRawDefects
+    ** every clock envelope gives, for the Fourier-even constraint coordinates
+       ℓ lam j = ‖evenProlateConstraintCoord lam (2j)‖, an eventual exact eigenpair at each
+       depth and the collapse of all preceding normalized raw defects — with no hypothesis
+       about the coordinates at all **
+```
+
+The renumbering `j ↦ 2j` costs nothing: squared summability passes to a subfamily
+(`Summable.comp_injective`) and the aperture Bessel bound was already proved for an arbitrary
+injective renumbering (`tsum_evenProlateConstraintCoord_comp_sq_le`).  The previous section's `hl`
+supplies the coordinate limits.
+
+### What the ladder card still owes: one `FuchsEnvelope` instance
+
+The only hypothesis left in that capstone is `ClockEnvelope D e E`, which by
+`FuchsEnvelope.toClockEnvelope` is a `FuchsEnvelope D e` for the actual leakage family
+`D lam j = 1 − σ_{2j}(lam)²` with `e j = 4j` — i.e. `(β)` in envelope form:
+
+```text
+step   e (j+1) = e j + 4                                        immediate for e j = 4j
+nonneg, mono                                                    from the signed values
+lower  ∃ c > 0, eventually  c·lam^{8j+1}·e^{−4πλ²} ≤ D lam j
+upper  ∃ C > 0, eventually  D lam j ≤ C·lam^{8j+1}·e^{−4πλ²}
+```
+
+`prolate_leakage_two_sided` is exactly the two-sided estimate that produces `lower` and `upper`, but
+it is stated for a mode presented by explicit data and carries side conditions — `8 ≤ c`,
+`s ≤ 1/8`, `4 ≤ c·s`, a collar `α` with `600(1−α) ≤ 1/4`, positivity of `Φ` on `[2√s, 1]`, the flux
+ODE, and integrability of `R²` past the endpoint.  Instantiating it at the canonical indexed family
+means checking each of those for `signedModeRadialData lam (2j)` at all large `lam`, using
+`indexedOscillatorSeparation` for `s` (so `c·s → 8j+1`).  Note the side condition `4 ≤ c·s` is
+satisfied for every `j ≥ 1` but **not** for the ground index, where `c·s → 1`: the ground leakage
+needs the separate ground estimate.  That instantiation is the remaining item of `(β)`, and with it
+the ladder card's `(8)` becomes unconditional.

@@ -135,6 +135,7 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-17 | `u0-phi-independence` | already formalized: `U0/U0AllNonexceptionalConnected.lean` |
 | 2026-08-17 | `u0-phi-independence-disconnected` | already formalized: `U0/U0AllNonexceptionalDisconnected.lean` |
 | 2026-08-17 | `fixed-taylor-modulus-ht-real-rootedness-nonselection` | new `HTGeometry/FixedModulusRealRootednessNonselection.lean` |
+| 2026-08-17 | `archimedean-generator-axis-mode` | new `RHTower/BohrGeneratorAxisMode.lean` (uses pre-existing `HTGeometry/BohrGenerators.lean`, `RHTower/ArchimedeanAxisMode.lean`, `HTGeometry/GammaLogDeriv.lean`) |
 
 ## Already carrying a stage-3 certificate (verify, then move the paper card)
 

@@ -887,6 +887,100 @@ theorem measureReal_cubeVisit_ge (N : ℕ) {ρ : ℝ} (hρ : 0 < ρ) (hρπ : ρ
     _ = (MeasureTheory.volume (cubeVisit ρ c ω ∩ Set.Ioc u (u + T))).toReal := by
         field_simp
 
+/-- The number of modes is at most `(N+1)^{2d}`. -/
+theorem card_modeIndex_le (N : ℕ) :
+    ((((Fintype.piFinset fun _ : Fin d => Finset.range (N + 1) ×ˢ Finset.range (N + 1))
+      \ Fintype.piFinset (fun _ : Fin d => diagPairs N)).card : ℝ)) ≤ ((N : ℝ) + 1) ^ (2 * d) := by
+  classical
+  have hsub := Finset.card_le_card
+    (Finset.sdiff_subset (s := Fintype.piFinset fun _ : Fin d =>
+      Finset.range (N + 1) ×ˢ Finset.range (N + 1))
+      (t := Fintype.piFinset (fun _ : Fin d => diagPairs N)))
+  have hcard : (Fintype.piFinset fun _ : Fin d =>
+      Finset.range (N + 1) ×ˢ Finset.range (N + 1)).card = (N + 1) ^ (2 * d) := by
+    rw [Fintype.card_piFinset]
+    have hone : ∀ j : Fin d,
+        (Finset.range (N + 1) ×ˢ Finset.range (N + 1)).card = (N + 1) ^ 2 := by
+      intro j
+      rw [Finset.card_product, Finset.card_range]
+      ring
+    rw [Finset.prod_congr rfl fun j _ => hone j, Finset.prod_const, Finset.card_univ,
+      Fintype.card_fin, ← pow_mul, mul_comm 2 d]
+  rw [hcard] at hsub
+  calc ((((Fintype.piFinset fun _ : Fin d => Finset.range (N + 1) ×ˢ Finset.range (N + 1))
+        \ Fintype.piFinset (fun _ : Fin d => diagPairs N)).card : ℝ))
+      ≤ (((N + 1) ^ (2 * d) : ℕ) : ℝ) := by exact_mod_cast hsub
+    _ = ((N : ℝ) + 1) ^ (2 * d) := by push_cast; ring
+
+/-- **Theorem A.**  With the window long enough and the Fejér order high enough, every moving window
+of length `T` spends at least half the measure `mu_rho` of its length inside the cube. -/
+theorem half_mul_le_measureReal_cubeVisit (N : ℕ) {ρ : ℝ} (hρ : 0 < ρ) (hρπ : ρ ≤ π)
+    (c ω : Fin d → ℝ) {βmin T : ℝ} (hβmin : 0 < βmin) (hT : 0 < T) (u : ℝ)
+    (hsep : ∀ k ∈ (Fintype.piFinset fun _ : Fin d => Finset.range (N + 1) ×ˢ Finset.range (N + 1))
+        \ Fintype.piFinset (fun _ : Fin d => diagPairs N), βmin ≤ |packetFreq ω k|)
+    (hNbig : 8 * π * (d : ℝ) ≤ ρ * (ρ / (2 * π)) ^ d * Real.sqrt ((N : ℝ) + 1))
+    (hTbig : 8 * ((N : ℝ) + 1) ^ d ≤ T * βmin) :
+    ((ρ / (2 * π)) ^ d / 2) * T
+      ≤ (MeasureTheory.volume (cubeVisit ρ c ω ∩ Set.Ioc u (u + T))).toReal := by
+  classical
+  have hpi : (0 : ℝ) < π := Real.pi_pos
+  set μ : ℝ := (ρ / (2 * π)) ^ d with hμdef
+  have hμpos : 0 < μ := by
+    rw [hμdef]
+    positivity
+  set Np : ℝ := (N : ℝ) + 1 with hNp
+  have hNppos : 0 < Np := by
+    rw [hNp]
+    positivity
+  have hNpdpos : (0 : ℝ) < Np ^ d := by positivity
+  have hsqrtpos : (0 : ℝ) < Real.sqrt Np := Real.sqrt_pos.mpr hNppos
+  set C : ℝ := (((Fintype.piFinset fun _ : Fin d => Finset.range (N + 1) ×ˢ Finset.range (N + 1))
+      \ Fintype.piFinset (fun _ : Fin d => diagPairs N)).card : ℝ) with hC
+  have hCnn : 0 ≤ C := by
+    rw [hC]
+    positivity
+  have hCle : C ≤ Np ^ (2 * d) := card_modeIndex_le N
+  -- the oscillation error
+  have herr1 : C * ((Np⁻¹ * (ρ / (2 * π))) ^ d) * (2 / (T * βmin)) ≤ μ / 4 := by
+    have hsplit : (Np⁻¹ * (ρ / (2 * π))) ^ d = (Np ^ d)⁻¹ * μ := by
+      rw [mul_pow, inv_pow, hμdef]
+    have hTβ : (0 : ℝ) < T * βmin := by positivity
+    have hfrac : 2 / (T * βmin) ≤ 1 / (4 * Np ^ d) := by
+      rw [div_le_div_iff₀ hTβ (by positivity)]
+      nlinarith [hTbig]
+    have hstep : C * ((Np ^ d)⁻¹ * μ) ≤ Np ^ d * μ := by
+      have h2d : Np ^ (2 * d) = Np ^ d * Np ^ d := by
+        rw [two_mul, pow_add]
+      have : C * (Np ^ d)⁻¹ ≤ Np ^ d := by
+        have h1 : C * (Np ^ d)⁻¹ ≤ (Np ^ d * Np ^ d) * (Np ^ d)⁻¹ :=
+          mul_le_mul_of_nonneg_right (by rw [← h2d]; exact hCle) (by positivity)
+        rwa [mul_assoc, mul_inv_cancel₀ (ne_of_gt hNpdpos), mul_one] at h1
+      calc C * ((Np ^ d)⁻¹ * μ) = (C * (Np ^ d)⁻¹) * μ := by ring
+        _ ≤ Np ^ d * μ := mul_le_mul_of_nonneg_right this (le_of_lt hμpos)
+    rw [hsplit]
+    calc C * ((Np ^ d)⁻¹ * μ) * (2 / (T * βmin))
+        ≤ (Np ^ d * μ) * (2 / (T * βmin)) := by
+          refine mul_le_mul_of_nonneg_right hstep ?_
+          positivity
+      _ ≤ (Np ^ d * μ) * (1 / (4 * Np ^ d)) := by
+          refine mul_le_mul_of_nonneg_left hfrac ?_
+          positivity
+      _ = μ / 4 := by field_simp
+  -- the displacement error
+  have herr2 : (d : ℝ) * ((1 / ρ) * (2 * π / Real.sqrt Np)) ≤ μ / 4 := by
+    rw [← sub_nonneg]
+    have hexp : μ / 4 - (d : ℝ) * ((1 / ρ) * (2 * π / Real.sqrt Np))
+        = (ρ * μ * Real.sqrt Np - 8 * π * (d : ℝ)) / (4 * ρ * Real.sqrt Np) := by
+      field_simp
+      ring
+    rw [hexp]
+    exact div_nonneg (by linarith [hNbig]) (by positivity)
+  have hbase := measureReal_cubeVisit_ge N hρ hρπ c ω hβmin hT u hsep
+  refine le_trans ?_ hbase
+  have hcoef : μ / 2 ≤ μ - C * ((Np⁻¹ * (ρ / (2 * π))) ^ d) * (2 / (T * βmin))
+      - (d : ℝ) * ((1 / ρ) * (2 * π / Real.sqrt Np)) := by linarith
+  exact mul_le_mul_of_nonneg_right hcoef (le_of_lt hT)
+
 end ProductModes
 
 end PeriodicFourier
