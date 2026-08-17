@@ -92,6 +92,20 @@ is nonnegative and admits zero configurations of **every** length.
 `exists_zeroList_length_eq_of_complex_pair`.  Contrast Part A: a three-term sum with real exponents
 has at most two zeros with multiplicity.  No Descartes-type bound survives complex exponents.
 
+**B6 (localization — the criterion is finite).**  Write `S(t) = e^{−βt} R(t)`.  Then `S` is convex
+(`convexOn_expSum`) and the comparison is automatic wherever `S ≥ 2` (`cos_le_of_two_le_shift`).  If
+some exponent lies strictly below `β` and some strictly above, `{S < 2}` is bounded with the explicit
+bound
+```
+  T = max ( |log(2/c_i)/(a_i−β)| , |log(2/c_j)/(a_j−β)| ),   a_i < β < a_j ,
+```
+`sublevel_bounded`, and therefore
+```
+  (∀ t ∈ ℝ, 2 e^{βt} cos(γ t) ≤ R(t))  ⟺  (∀ t ∈ [−T, T], 2 e^{βt} cos(γ t) ≤ R(t)) .
+```
+`cos_dominated_iff_on_Icc`.  Combined with B3 this is a decision procedure: finitely many peaks lie
+in `[−T,T]`, and each contributes one convex-conjugate inequality.
+
 ## Consequence for rational Beurling zetas
 
 A conjugate pair of zeros at `β ± iγ` is admissible against a positive pole configuration `R` exactly
@@ -115,6 +129,7 @@ formal/GaloisForLFunctions/HTGeometry/PositiveExpSumLogConvex.lean
 formal/GaloisForLFunctions/HTGeometry/CosineCapProfile.lean
 formal/GaloisForLFunctions/HTGeometry/ComplexPairArcCriterion.lean
 formal/GaloisForLFunctions/HTGeometry/ComplexPairPeakRigidity.lean
+formal/GaloisForLFunctions/HTGeometry/ComplexPairLocalization.lean
 ```
 
 ## Open
@@ -122,6 +137,6 @@ formal/GaloisForLFunctions/HTGeometry/ComplexPairPeakRigidity.lean
 * Several conjugate pairs at once: the comparison function is a sum of caps and is no longer
   concave on any single arc, so the separation argument does not apply verbatim.  The finiteness
   reduction (only peaks inside `{log R − βt < log 2}` matter) does survive.
-* Turning the `Λ_R` inequality into an explicit decision procedure for a given rational Beurling
-  datum requires evaluating the concave conjugate of a positive exponential sum — a finite convex
-  program, but not yet formalized.
+* Evaluating the concave conjugate `Λ_R` for a concrete datum is a finite convex program; the
+  reduction to finitely many such programs is proved (B3 + B6), the programs themselves are not
+  formalized.

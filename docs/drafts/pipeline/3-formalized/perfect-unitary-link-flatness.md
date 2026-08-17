@@ -1,6 +1,13 @@
 # Perfect unitary links force flat holonomy
 
-Status: `[LITERATURE] [PAPER-PROVED] [NOVELTY UNVERIFIED]`
+Stage: 3-formalized
+
+Status: `[LITERATURE] [PAPER-PROVED] [NOVELTY UNVERIFIED] [LEAN PROVED]`
+
+Lean: `formal/GaloisForLFunctions/HTGeometry/PerfectUnitaryLinkFlatness.lean`, declarations
+`orthonormal_reconstruct_of_crossInnerMatrix_unitary`,
+`PerfectUnitaryLinkKernel.link_cocycle`, and
+`PerfectUnitaryLinkKernel.triangle_holonomy`. Closed without added axioms.
 
 Source: *Locally Quantum, Globally Non-Hilbertizable* (Zenodo 21982163), perfect-link
 globalization theorem. This card supplies a dependency-closed proof suitable for formalization and

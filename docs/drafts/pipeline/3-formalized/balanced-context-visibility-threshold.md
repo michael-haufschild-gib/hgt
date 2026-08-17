@@ -1,6 +1,12 @@
 # Exact visibility threshold for the balanced context anomaly
 
-Status: `[LITERATURE] [PAPER-PROVED] [NOVELTY UNVERIFIED]`
+Stage: 3-formalized
+
+Status: `[LITERATURE] [PAPER-PROVED] [NOVELTY UNVERIFIED] [LEAN PROVED]`
+
+Lean: `formal/GaloisForLFunctions/HTGeometry/ContextOrderVisibilityThreshold.lean`, headline
+`visibilityAttenuatedBalancedContext_posSemidef_iff`. Visibility is intrinsically restricted to
+`[0,1]`; theorem is closed without added axioms.
 
 Source: Appendix A of *Locally Quantum, Globally Non-Hilbertizable* (Zenodo 21982163).
 

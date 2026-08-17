@@ -123,10 +123,6 @@ theorem tendsto_entireDet2_of_hsNorm_sub_tendsto_zero
     simp_rw [hn, h₀]
     exact tendsto_const_nhds
   · set M : ℝ := hsNorm K₀ + 1 with hMdef
-    have hM0 : 0 < M := by
-      have := hsNorm_nonneg K₀
-      simp only [hMdef]
-      linarith
     have hbounded : ∀ᶠ n : ℕ in atTop, hsNorm (K n) ≤ M := by
       have hsmall := hlim.eventually (eventually_lt_nhds (show (0 : ℝ) < 1 by norm_num))
       filter_upwards [hsmall] with n hn
@@ -140,12 +136,6 @@ theorem tendsto_entireDet2_of_hsNorm_sub_tendsto_zero
             hsNorm_add_le (isHS_sub (hK n) hK₀) hK₀
       rw [hMdef]
       linarith
-    have hK₀M : hsNorm K₀ ≤ M := by simp [hMdef]
-    have hK₀sq : hsNormSq K₀ ≤ M ^ 2 := by
-      have heq : hsNormSq K₀ = hsNorm K₀ ^ 2 := by
-        rw [hsNorm, Real.sq_sqrt (hsNormSq_nonneg K₀)]
-      rw [heq]
-      exact pow_le_pow_left₀ (hsNorm_nonneg K₀) hK₀M 2
     have hz0 : 0 < ‖z‖ := norm_pos_iff.mpr hz
     set R : ℝ := 2 * ‖z‖ with hRdef
     have hR : 0 < R := by rw [hRdef]; positivity

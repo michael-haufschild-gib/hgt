@@ -9040,3 +9040,47 @@ modules to mirror, in order:
    `XiMassLogSubcausticWindow` + `XiMassMovingQuadratureCriterion`: the jet moving criterion, whose
    annulus bound is the window half of `(22.7)` and whose tail is
    `exists_bound_xiMassJetPrimeTail_endpoint`, giving `(22.11)` with `m_B q ≤ N + 1/2`.
+
+### C42-T: the jet is a polynomial filter — the contour half is already owned (2026-08-17)
+
+A corpus search that should have come first: `RHTower/XiMassPolynomialFiniteContour.lean` and
+`RHTower/XiMassPolynomialEulerContourSourceIdentity.lean` already carry the **whole contour half of
+the source-side reduction, generically in a real polynomial** `P`, for the filtered test
+
+```text
+xiMassPolyAnalyticTest P a τ z = P(z²)² · e^{-τ ω(z)}.
+```
+
+The caustic-null jet is exactly of that form: `P_N(ω(z)) = (ω(z)² + Ω_B²)^{2N} = (z² + 4a⁴)^{2N}`
+because `a² + Ω_B² = 4a⁴`, and `(z²+4a⁴)^{2N}` is the square of `(X + 4a⁴)^N` evaluated at `z²`.
+
+    RHTower/XiMassJetPolynomialBridge.lean
+      xiMassJetPoly                             `(X + 4a⁴)^N`
+      evalRealPolynomial_xiMassJetPoly
+      xiMassJetAnalyticTest_eq_poly             the jet-modified test **is** the polynomial-filtered
+                                                test of `(X + 4a⁴)^N`, everywhere on `ℂ`
+      traceWC_xiMassCausticJet_eq_normalizedBottomEulerContour
+                                                **the jet Euler-contour source identity**: the
+                                                jet-weighted mass trace is the normalized absolutely
+                                                convergent von-Mangoldt minus archimedean bottom
+                                                integral of the modified receiver
+
+The only hypothesis of `tsum_xiMassPolyAnalyticTest_eq_normalizedBottomEulerContour` is absolute
+summability of the filtered spectral family, and that is
+`summable_norm_xiMassJetAnalyticTest_spectralPoint`, which follows from the weighted-trace
+machinery of `(22.5)`.  So step 1 of the source-side reduction is closed, and the residue,
+symmetric-folding and vertical-resolvent work does not have to be redone.
+
+### Remaining for C42-T
+
+Steps 2--5 of the source-side reduction, now with the contour identity in hand:
+
+2. The jet prime-line criterion.  Needs the polynomial-filtered analogue of
+   `norm_integral_xiMassBottomArchIntegrand_le_uniform`: the archimedean face must be bounded
+   *uniformly in the height*, which the base proof gets by shifting the contour to the centred line
+   (`integral_xiMassBottomArch_eq_centered_add_residue`).  The same shift with a polynomial weight
+   is the one genuinely new estimate here.
+3. `XiMassBottomPrimeAtomization` + `XiMassCriticalIntegerFace` for the filtered test.
+4. `XiMassCriticalTruePrimeCone` for the filtered test.
+5. The Bessel-cone / subcaustic / moving-criterion layer, whose annulus input is the window half of
+   `(22.7)` and whose tail input is `exists_bound_xiMassJetPrimeTail_endpoint`.

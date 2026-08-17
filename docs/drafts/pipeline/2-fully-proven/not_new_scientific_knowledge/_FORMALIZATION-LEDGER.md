@@ -144,6 +144,7 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-17 | `seam-division-source-split-cancellation` | new `RHTower/SeamDivisionSourceSplit.lean` (uses new `RHTower/VorosPowerSumClosedForm.lean` + pre-existing `HTGeometry/GammaLogDeriv.lean`, `RHTower/ZetaRealStrip.lean`) |
 | 2026-08-17 | `seam-two-lattices-archimedean-residue` | new `RHTower/SeamTwoLatticesArchimedeanResidue.lean` (assembles the four modules built earlier the same day) |
 | 2026-08-17 | `leaf-reflection-bohr-projection-catastrophe` | new `RHTower/LeafReflectionBohrProjection.lean` (all four items of the card's Lean target, incl. the full nonnormality statement via the in-tree Vitali theorem, and the coefficient criterion proved rather than cited) |
+| 2026-08-17 | `semilocal-sonin-two-place-positive-association` | new `RHTower/SoninSemilocalTwoPlaceCovariance.lean` (Poisson expansion + Tonelli + covariance assembly on top of the corpus Gamma-measure characteristic function) |
 
 ## Already carrying a stage-3 certificate (verify, then move the paper card)
 

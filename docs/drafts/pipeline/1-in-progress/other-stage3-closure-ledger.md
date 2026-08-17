@@ -3762,3 +3762,16 @@ Unconditional, axiom-clean, umbrella-wired.  These are step 1 of the three-step 
 records for its single open core.  The point of the pair is that the moving spike has mass `≍ n`,
 not `≍ n^(1+c)`, so a harmonic kernel — which sees it only from distance `≍ n` — transfers it into
 the bulk with a bounded factor.
+
+## Pass 62 — the operator telescope, and the spike transfer in usable form
+
+`HTGeometry/OperatorPowerTelescope.lean` — `operator_pow_sub_eq_sum` and
+`tendsto_norm_operator_pow_sub_zero`: the one-vector telescope
+`X^r v - Y^r v = Σ_i Y^(r-1-i)((X-Y)(X^i v))`, whose weights are powers of `‖Y‖` only, so a
+contraction model makes them disappear.  This is step 3 of the Gauss card's plan and is reusable
+anywhere a growing operator is compared with a contraction model.
+
+`RHTower/GaussSpikeMass.sum_kernel_mul_spike_band_le` — the spike-to-bulk transfer with explicit
+constants, which is what the one-step estimate of step 2 consumes.
+
+Both unconditional, axiom-clean, umbrella-wired, no raised heartbeats.

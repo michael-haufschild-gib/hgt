@@ -15,7 +15,7 @@ open scoped BigOperators
 namespace HTGeometry
 
 /-- `t^m ≤ m!·e^t` on the nonnegative axis: the `m`-th term of the exponential series. -/
-theorem pow_le_factorial_mul_exp {t : ℝ} (ht : 0 ≤ t) (m : ℕ) :
+theorem pow_le_factorial_mul_exp_of_nonneg {t : ℝ} (ht : 0 ≤ t) (m : ℕ) :
     t ^ m ≤ (Nat.factorial m : ℝ) * Real.exp t := by
   have hser := Real.sum_le_exp_of_nonneg ht (m + 1)
   have hmem : t ^ m / (Nat.factorial m : ℝ)
@@ -28,11 +28,11 @@ theorem pow_le_factorial_mul_exp {t : ℝ} (ht : 0 ≤ t) (m : ℕ) :
   nlinarith [hmem, hser, hfac, Real.exp_pos t]
 
 /-- **A polynomial grows slower than every exponential.** -/
-theorem one_add_pow_le_exp {r : ℝ} (hr : 0 ≤ r) {ε : ℝ} (hε : 0 < ε) (m : ℕ) :
+theorem one_add_pow_le_const_mul_exp {r : ℝ} (hr : 0 ≤ r) {ε : ℝ} (hε : 0 < ε) (m : ℕ) :
     (1 + r) ^ m
       ≤ (Nat.factorial m : ℝ) / ε ^ m * Real.exp ε * Real.exp (ε * r) := by
   have ht : (0 : ℝ) ≤ ε * (1 + r) := by positivity
-  have hkey := pow_le_factorial_mul_exp ht m
+  have hkey := pow_le_factorial_mul_exp_of_nonneg ht m
   have hsplit : Real.exp (ε * (1 + r)) = Real.exp ε * Real.exp (ε * r) := by
     rw [← Real.exp_add]
     congr 1
@@ -63,7 +63,7 @@ noncomputable def SpectralWeight.ofPolyBound (f : ℂ → ℂ) (Cp : ℝ) (m : �
   le_const := by
     intro ε hε z hzim hzre
     have hpoly := hf z hzim hzre
-    have hgrow := one_add_pow_le_exp hzre hε m
+    have hgrow := one_add_pow_le_const_mul_exp hzre hε m
     have hCabs : Cp ≤ |Cp| := le_abs_self Cp
     have hone : (0 : ℝ) ≤ (1 + z.re) ^ m := by positivity
     have hstep : Cp * (1 + z.re) ^ m ≤ |Cp| * (1 + z.re) ^ m :=

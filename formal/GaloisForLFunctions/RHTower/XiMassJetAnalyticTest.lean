@@ -67,7 +67,7 @@ theorem xiMassJetMajorant_le {a : ℝ} (N : ℕ) {σ : ℝ} (hσ : 0 < σ) (x : 
     rw [mul_pow, ← pow_mul]
     congr 2
     ring
-  have hgrow := HTGeometry.one_add_pow_le_exp habs (half_pos hσ) (4 * N)
+  have hgrow := HTGeometry.one_add_pow_le_const_mul_exp habs (half_pos hσ) (4 * N)
   have hexp : Real.exp ((σ / 2) * |x|) * Real.exp (-(σ * |x|))
       = Real.exp (-((σ / 2) * |x|)) := by
     rw [← Real.exp_add]

@@ -133,7 +133,9 @@ theorem two_mul_remainderEnvelope_sq_mul_sourceHeadThreshold_lt_quarter
   have hden : 0 < 8 * (M + 1) ^ 2 := by positivity
   change 2 * M ^ 2 * (1 / (8 * (M + 1) ^ 2)) < (1 : ℝ) / 4
   rw [show 2 * M ^ 2 * (1 / (8 * (M + 1) ^ 2)) =
-      M ^ 2 / (4 * (M + 1) ^ 2) by ring,
+      M ^ 2 / (4 * (M + 1) ^ 2) by
+        field_simp
+        ring,
     div_lt_iff₀ (show 0 < 4 * (M + 1) ^ 2 by positivity)]
   nlinarith [sq_nonneg M]
 
@@ -408,6 +410,7 @@ theorem CCMRestrictedWeilSourceAlignedBlockCertificate.sourceHeadProjection_lowe
   change (1 / 2 : ℝ) * ‖u‖ ^ 2 < E * ‖f‖ ^ 2
   nlinarith
 
+set_option maxHeartbeats 1000000 in
 /-- **Source-relative finite-block lower bound.**  The full literal restricted-Weil form is bounded
 below by its value on the finite Gamma--Slepian source head, with a universal quarter-norm loss.
 All exterior and head--tail prime--polar couplings are included in the estimate. -/
@@ -463,6 +466,8 @@ theorem CCMRestrictedWeilSourceAlignedBlockCertificate.form_ge_sourceHead_sub_qu
     dsimp only [A, B]
     simp only [map_add, inner_add_left, inner_add_right, Complex.add_re]
     rw [hnormadd]
+    rw [show ‖(m : CCMArchimedeanFormDomain a)‖ = ‖m‖ from rfl,
+      show ‖(f : CCMArchimedeanFormDomain a)‖ = ‖f‖ from rfl]
     ring
   have hmassM : ‖A (m : CCMArchimedeanFormDomain a)‖ ^ 2 ≤
       eps * ‖m‖ ^ 2 := by
@@ -474,6 +479,7 @@ theorem CCMRestrictedWeilSourceAlignedBlockCertificate.form_ge_sourceHead_sub_qu
   have hmassF : ‖A (f : CCMArchimedeanFormDomain a)‖ ^ 2 ≤ ‖f‖ ^ 2 := by
     have h := norm_ccmArchimedeanFormToAperture_le a
       (f : CCMArchimedeanFormDomain a)
+    change ‖A (f : CCMArchimedeanFormDomain a)‖ ≤ ‖f‖ at h
     nlinarith [norm_nonneg (A (f : CCMArchimedeanFormDomain a)), norm_nonneg f]
   have hE0 : 0 ≤ E := ccmRestrictedWeilRemainderEnvelope_nonneg a
   have heps0 : 0 ≤ eps := (ccmRestrictedWeilSourceHeadThreshold_pos a).le
@@ -493,7 +499,12 @@ theorem CCMRestrictedWeilSourceAlignedBlockCertificate.form_ge_sourceHead_sub_qu
       (ccmRestrictedWeilForm a
         (m : CCMArchimedeanFormDomain a)
         (m : CCMArchimedeanFormDomain a)).re := by
-    dsimp only [A, E] at htailLower htailCost
+    change ‖m‖ ^ 2 - E * ‖A (m : CCMArchimedeanFormDomain a)‖ ^ 2 ≤
+      (ccmRestrictedWeilForm a
+        (m : CCMArchimedeanFormDomain a)
+        (m : CCMArchimedeanFormDomain a)).re at htailLower
+    change E * ‖A (m : CCMArchimedeanFormDomain a)‖ ^ 2 ≤
+      (1 / 8 : ℝ) * ‖m‖ ^ 2 at htailCost
     linarith
   have hBnorm : ‖B‖ ≤ E := norm_ccmRestrictedWeilBoundedRemainder_le_envelope a
   have hcrossLower (x y : suzukiApertureHilbert a) :
@@ -561,5 +572,103 @@ theorem CCMRestrictedWeilSourceAlignedBlockCertificate.form_ge_sourceHead_sub_qu
       (1 / 4 : ℝ) * ‖f‖ ^ 2 ≤ (ccmRestrictedWeilForm a u u).re
   rw [hsplit]
   nlinarith [sq_nonneg ‖m‖, sq_nonneg ‖f‖]
+
+/-- Exact form-domain presentation of the restricted-Weil quadratic as identity plus the
+compressed scalar--polar--prime source remainder. -/
+theorem ccmRestrictedWeilForm_self_re_eq_norm_add_formRemainder
+    (a : SuzukiPositiveAperture) (u : CCMArchimedeanFormDomain a) :
+    (ccmRestrictedWeilForm a u u).re =
+      ‖u‖ ^ 2 + (inner ℂ (ccmRestrictedWeilFormRemainder a u) u).re := by
+  have hid := congrArg Complex.re
+    (ccmRestrictedWeilForm_eq_inner_sub_zeroBirmanSchwingerInner a u u)
+  rw [ccmRestrictedWeilFormBirmanSchwinger_zero_eq_neg_remainder] at hid
+  have hself : (inner ℂ u u).re = ‖u‖ ^ 2 :=
+    (InnerProductSpace.norm_sq_eq_re_inner (𝕜 := ℂ) u).symm
+  simpa only [neg_apply, inner_neg_left, sub_neg_eq_add, Complex.add_re, hself] using hid
+
+/-- **Literal finite-source obstruction.**  Any nonzero nonpositive direction forces a nonzero
+vector in the finite peripheral Gamma--Slepian source head on which finite von Mangoldt compression
+overcompensates the scalar Gamma block and rank-two polar block by at least three quarters of the
+head norm.  Thus a negative direction cannot hide in an ill-conditioned source projection. -/
+theorem CCMRestrictedWeilSourceAlignedBlockCertificate.sourceHead_prime_overcompensation_of_nonpositive
+    {a : SuzukiPositiveAperture}
+    (C : CCMRestrictedWeilSourceAlignedBlockCertificate a)
+    (u : CCMArchimedeanFormDomain a) (hune : u ≠ 0)
+    (hQ : (ccmRestrictedWeilForm a u u).re ≤ 0) :
+    let h : CCMArchimedeanFormDomain a := C.sourceHeadProjection u
+    h ≠ 0 ∧
+      (ccmRestrictedWeilForm a h h).re ≤ (1 / 4 : ℝ) * ‖h‖ ^ 2 ∧
+      (3 / 4 : ℝ) * ‖h‖ ^ 2 +
+          (inner ℂ
+            ((ccmArchimedeanRemainderScalar •
+              ccmArchimedeanGammaSlepianGram a) h) h).re +
+          (inner ℂ (ccmRestrictedWeilFormPolarCompression a h) h).re ≤
+        (inner ℂ (ccmRestrictedWeilFormPrimeCompression a h) h).re := by
+  dsimp only
+  let h : CCMArchimedeanFormDomain a := C.sourceHeadProjection u
+  have hheadLower := C.form_ge_sourceHead_sub_quarter u
+  have hheadQ : (ccmRestrictedWeilForm a h h).re ≤
+      (1 / 4 : ℝ) * ‖h‖ ^ 2 := by
+    have hnorm : ‖h‖ = ‖C.sourceHeadProjection u‖ := rfl
+    dsimp only [h]
+    rw [hnorm]
+    linarith
+  have hhne : h ≠ 0 := by
+    intro hh
+    have hprojection := C.sourceHeadProjection_lower_of_nonpositive u hune hQ
+    have hpzero : C.sourceHeadProjection u = 0 := by
+      apply Subtype.ext
+      exact hh
+    rw [hpzero] at hprojection
+    have hunorm : 0 < ‖u‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hune)
+    have hfalse : (1 / 2 : ℝ) * ‖u‖ ^ 2 < 0 := by
+      simpa using hprojection
+    nlinarith
+  have hform := ccmRestrictedWeilForm_self_re_eq_norm_add_formRemainder a h
+  rw [ccmRestrictedWeilFormRemainder_eq_scalarGamma_add_polar_sub_prime] at hform
+  simp only [add_apply, sub_apply, inner_add_left, inner_sub_left,
+    Complex.add_re, Complex.sub_re] at hform
+  refine ⟨hhne, hheadQ, ?_⟩
+  linarith
+
+/-- Expanded arithmetic form of the finite-source obstruction.  The right side is the literal
+finite von Mangoldt-weighted sum of the two logarithmic translations; the left retains both polar
+boundary evaluations and the scalar Gamma--Slepian energy. -/
+theorem CCMRestrictedWeilSourceAlignedBlockCertificate.sourceHead_literal_vonMangoldt_overcompensation_of_nonpositive
+    {a : SuzukiPositiveAperture}
+    (C : CCMRestrictedWeilSourceAlignedBlockCertificate a)
+    (u : CCMArchimedeanFormDomain a) (hune : u ≠ 0)
+    (hQ : (ccmRestrictedWeilForm a u u).re ≤ 0) :
+    let h : CCMArchimedeanFormDomain a := C.sourceHeadProjection u
+    h ≠ 0 ∧
+      (3 / 4 : ℝ) * ‖h‖ ^ 2 +
+          (inner ℂ
+            ((ccmArchimedeanRemainderScalar •
+              ccmArchimedeanGammaSlepianGram a) h) h).re +
+          (star (inner ℂ (ccmPolarApertureVector a (-1 / 2))
+                (ccmArchimedeanFormToAperture a h)) *
+              inner ℂ (ccmPolarApertureVector a (1 / 2))
+                (ccmArchimedeanFormToAperture a h) +
+            star (inner ℂ (ccmPolarApertureVector a (1 / 2))
+                (ccmArchimedeanFormToAperture a h)) *
+              inner ℂ (ccmPolarApertureVector a (-1 / 2))
+                (ccmArchimedeanFormToAperture a h)).re ≤
+        (∑ n ∈ Finset.Icc 2 (Nat.floor (Real.exp (2 * a.1))),
+          ((ArithmeticFunction.vonMangoldt n : ℝ) : ℂ) *
+            (((1 / Real.sqrt n : ℝ) : ℂ) *
+              (inner ℂ (logTranslationCLM (Real.log n)
+                    (ccmArchimedeanFormToAperture a h).1)
+                  (ccmArchimedeanFormToAperture a h).1 +
+                inner ℂ (logTranslationCLM (-Real.log n)
+                    (ccmArchimedeanFormToAperture a h).1)
+                  (ccmArchimedeanFormToAperture a h).1))).re := by
+  dsimp only
+  have hw := C.sourceHead_prime_overcompensation_of_nonpositive u hune hQ
+  dsimp only at hw
+  refine ⟨hw.1, ?_⟩
+  have hineq := hw.2.2
+  rw [inner_ccmRestrictedWeilFormPolarCompression,
+    inner_ccmRestrictedWeilFormPrimeCompression] at hineq
+  exact hineq
 
 end RHTower

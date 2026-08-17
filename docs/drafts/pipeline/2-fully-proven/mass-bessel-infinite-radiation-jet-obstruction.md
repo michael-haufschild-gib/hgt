@@ -245,10 +245,74 @@ The remainder is `2e^{-Re w}·(3·2^{-1/2}/2^{m+1})·(the (m+1)-st real Gaussian
 it depends on the argument only through its real part and is uniform along every ray in the open
 right half plane -- which is the card's "fixed closed subsector" clause.
 
+## Lean progress -- the complex binomial layer of the composition
+
+`formal/GaloisForLFunctions/HTGeometry/ComplexBinomialRemainder.lean` (new, umbrella-wired,
+axiom-clean) repeats the half-line remainder bound for a *complex* argument, which is what the
+composition `z = t(1+x²/t²)^{1/2}` needs, since `x²/t²` is complex.
+
+| Card item | Declaration |
+|---|---|
+| the generalized binomial coefficient at a real exponent, and its absolute majorant | `cbinomCoeff`, `cbinomAbsCoeff`, `cbinomCoeff_succ`, `cbinomAbsCoeff_succ` |
+| the remainder, its vanishing at the origin, its derivative recursion, and its continuity | `cbinomRem`, `cbinomRem_zero_arg`, `hasDerivAt_cbinomRem`, `continuousAt_cbinomRem` |
+| the disc of radius one half lies in the slit plane | `one_add_mem_slitPlane_of_norm_le_half` |
+| the inductive step, isolated | `norm_cbinomRem_succ_le_of_pred` |
+| **the remainder bound on `\|u\| <= 1/2` for every nonpositive exponent** | `norm_cbinomRem_le` |
+| **the same at every positive order for every exponent at most one** -- which covers the square root `α = 1/2` | `norm_cbinomRem_succ_le` |
+
+The bound is `(∏_{j<m}\|α-j\|/m!)·2^{m-α}·\|u\|^m`.  The proof is the half-line proof with the segment
+`[0,u]` in place of `[0,s]`: the modulus of a complex power is the power of the modulus
+(`Complex.norm_cpow_real`), on `\|u\| ≤ 1/2` the base stays in the slit plane with modulus at least
+one half, and integrating the derivative along the segment lowers the exponent by one.  Isolating the
+inductive step is what makes the exponent `1/2` free: its predecessor `-1/2` is already covered, so
+one application of the step covers every positive order.
+
+## Lean progress -- the expansion calculus and the shell factors
+
+Four more modules (all umbrella-wired, axiom-clean) build the algebra the composition runs in.
+
+`formal/GaloisForLFunctions/HTGeometry/DiscExpansionCalculus.lean` and
+`DiscExpansionExponential.lean`:
+
+| Card item | Declaration |
+|---|---|
+| `f` agrees with a polynomial to order `n` on a disc | `HasPolyExpansion` |
+| sums and scalar multiples | `HasPolyExpansion.add`, `HasPolyExpansion.const_mul` |
+| **the product rule, with no truncation** | `HasPolyExpansion.mul` |
+| a function with an expansion is bounded on the disc | `HasPolyExpansion.norm_le` |
+| truncation below degree `n`, on a disc of radius at most one | `truncBelow`, `polyAbsSum`, `norm_eval_sub_truncBelow_le`, `HasPolyExpansion.trunc` |
+| **powers**, with a constant linear in the exponent | `HasPolyExpansion.pow` |
+| **exponentials of expansions that vanish to first order** | `HasPolyExpansion.cexp` |
+
+The product rule needs no truncation and no antidiagonal bookkeeping at all: the product of the two
+polynomials is again a polynomial, and the decomposition `fg - PQ = (f-P)g + P(g-Q)` multiplies each
+error by the other factor's bound.  Truncation is a separate step, taken once at the end, and costs
+one further term of the same order because the discarded coefficients all carry at least `n` powers
+of an argument of modulus at most one.
+
+`formal/GaloisForLFunctions/HTGeometry/ShellBinomialExpansion.lean` and
+`ShellRootDefectExpansion.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the truncated shell polynomial and its evaluation | `shellBinomPoly`, `eval_shellBinomPoly` |
+| **`(1+x²w²)^α` as an expansion of order `2m` in `w`**, at every nonpositive exponent | `hasPolyExpansion_shellBinom` |
+| the same at every positive order for exponents at most one -- in particular `α = 1/2` | `hasPolyExpansion_shellBinom_succ` |
+| the shell polynomial has only even coefficients | `coeff_odd_shellBinomPoly` |
+| **the root defect `(√(t²+x²) - t)` in the reciprocal parameter**, and its expansion | `shellDefect`, `shellDefectPoly`, `hasPolyExpansion_shellDefect` |
+
+`α = 1/2` is exactly the exponent of the mass shell, and it is reached because the isolated inductive
+step of the complex remainder only needs its *predecessor* `-1/2` to be nonpositive.  Dividing the
+root defect by `w` is exact on the polynomial side (`Polynomial.divX`, legitimate because the shell
+polynomial has no odd coefficients and constant term one), so the defect expansion has order one less
+and vanishes at the origin -- which is precisely the hypothesis `HasPolyExpansion.cexp` consumes.
+
 ### What remains
 
-Item 2's coefficient bookkeeping for `Q_{j,a}` and the composition with `w = a√(t²+x²)`, followed by
-the dyadic assembly of item 4.  The composition is where the remaining work sits: writing
+Item 2's coefficient bookkeeping for `Q_{j,a}` and the assembly of the four shell factors
+`(1+u)^{-1/2}`, `(1+u)^{-1/4}`, `e^{-a·shellDefect}` and `∑_k q_k(az)^{-k}` into the carrier ratio,
+including the principal-branch identity `csqrt(t²(1+u)) = t·(1+u)^{1/2}` on the first quadrant;
+followed by the dyadic assembly of item 4.  The composition is where the remaining work sits: writing
 `z = t(1+x²/t²)^{1/2}`, the carrier is `√(2πa)e^{-at}t^{-1/2}` times
 `(t/z)^{3/2} e^{-a(z-t)} ∑_k q_k (az)^{-k}`, and every factor is a function of the *complex* variable
 `u = x²/t²`, so the half-line binomial remainder above has to be repeated for complex argument along

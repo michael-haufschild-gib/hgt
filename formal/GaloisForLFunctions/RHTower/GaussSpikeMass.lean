@@ -139,4 +139,41 @@ theorem spike_mass_le {c : ℝ} (hc0 : 0 < c) (hc1 : c < 1) {n N : ℕ} (hNn : N
     nlinarith [hle, heq]
   linarith [hstep, hfinal]
 
+/-- **The spike-to-bulk transfer, in the form the iteration uses.**  A spike of height `B` at the
+moving frequency `-n`, indexed by its distance `r` from that frequency, is seen by a harmonic
+kernel from distance at least `n/4`, so its whole contribution to a bulk frequency is at most the
+kernel value there times the spike mass. -/
+theorem sum_kernel_mul_spike_band_le {c : ℝ} (hc0 : 0 < c) (hc1 : c < 1)
+    {K B : ℝ} (hK : 0 ≤ K) (hB : 0 ≤ B) {n N : ℕ} (hN : 2 * N ≤ n)
+    {κ : ℤ → ℂ} (hκ : ∀ l : ℤ, ‖κ l‖ ≤ K / (1 + (l.natAbs : ℝ)))
+    {j : ℤ} (hj : 4 * (j.natAbs : ℝ) ≤ (n : ℝ))
+    (ε : ℤ → ℤ) (hε : ∀ r ∈ Finset.Icc 1 N, (n : ℝ) / 2 ≤ ((ε r).natAbs : ℝ)) :
+    ∑ r ∈ Finset.Icc 1 N, ‖κ (j - ε r)‖ * (B * ((n : ℝ) / (r : ℝ)) ^ c)
+      ≤ K / (1 + (n : ℝ) / 4) * (B * ((n : ℝ) ^ c + (n : ℝ) / (1 - c))) := by
+  have hnnn : (0 : ℝ) ≤ (n : ℝ) := by positivity
+  have hden : (0 : ℝ) < 1 + (n : ℝ) / 4 := by linarith
+  have hjq : (j.natAbs : ℝ) ≤ (n : ℝ) / 4 := by linarith
+  have hstep : ∀ r ∈ Finset.Icc 1 N,
+      ‖κ (j - ε r)‖ * (B * ((n : ℝ) / (r : ℝ)) ^ c)
+        ≤ K / (1 + (n : ℝ) / 4) * (B * ((n : ℝ) / (r : ℝ)) ^ c) := by
+    intro r hr
+    have hnonneg : (0 : ℝ) ≤ B * ((n : ℝ) / (r : ℝ)) ^ c :=
+      mul_nonneg hB (Real.rpow_nonneg (by positivity) _)
+    refine mul_le_mul_of_nonneg_right ?_ hnonneg
+    refine le_trans (hκ (j - ε r)) ?_
+    have hnat : ((ε r).natAbs : ℝ) ≤ (j.natAbs : ℝ) + ((j - ε r).natAbs : ℝ) := by
+      have h : (ε r).natAbs ≤ j.natAbs + (j - ε r).natAbs := by
+        have := Int.natAbs_sub_le j (j - ε r)
+        simpa using this
+      exact_mod_cast h
+    have hfar : (n : ℝ) / 4 ≤ ((j - ε r).natAbs : ℝ) := by
+      have := hε r hr
+      linarith
+    refine div_le_div_of_nonneg_left hK hden ?_
+    linarith
+  refine le_trans (Finset.sum_le_sum hstep) ?_
+  rw [← Finset.mul_sum, ← Finset.mul_sum]
+  refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+  exact mul_le_mul_of_nonneg_left (spike_mass_le hc0 hc1 (by omega)) hB
+
 end RHTower

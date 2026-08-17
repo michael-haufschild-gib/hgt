@@ -120,7 +120,8 @@ theorem norm_gaussPrincipalStep_pow_sub_movingAmplitude_pow_le {m : ℕ} (hm : 1
               gaussMovingAmplitudeBlock hp
                 ((gaussSamplePhase m p n : ℝ) : AddCircle (1 : ℝ)))
             ((gaussPrincipalStepBlock hm k p hp n ^ i) f)‖ := by
-  refine (norm_pow_apply_sub_pow_apply_le (gaussPrincipalStepBlock hm k p hp n)
+  refine (GaloisForLFunctions.HTGeometry.norm_pow_apply_sub_pow_apply_le
+    (gaussPrincipalStepBlock hm k p hp n)
     (gaussMovingAmplitudeBlock hp ((gaussSamplePhase m p n : ℝ) : AddCircle (1 : ℝ))) f r).trans ?_
   refine Finset.sum_le_sum fun i _ => ?_
   refine mul_le_mul_of_nonneg_right ?_ (norm_nonneg _)

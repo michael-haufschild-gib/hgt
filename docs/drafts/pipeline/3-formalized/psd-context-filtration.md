@@ -1,6 +1,12 @@
 # Positive-semidefinite context filtration
 
-Status: `[LITERATURE] [PAPER-PROVED] [BRIDGE]`
+Stage: 3-formalized
+
+Status: `[LITERATURE] [PAPER-PROVED] [BRIDGE] [LEAN PROVED]`
+
+Lean: `formal/GaloisForLFunctions/HTGeometry/PSDContextFiltration.lean`, declarations
+`psdContextFiltration`, `psdContextFiltration_mono`, and
+`noiseShiftedBalancedContextKernel_posSemidef_iff`. Closed without added axioms.
 
 Source: Proposition 8.1 of *Locally Quantum, Globally Non-Hilbertizable* (Zenodo 21982163),
 reformulated without eigenvalue computations.

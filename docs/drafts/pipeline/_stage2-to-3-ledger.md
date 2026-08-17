@@ -4011,3 +4011,30 @@ conjecture loop and the open effective-onset question are not theorems of the ca
   Poincaré form `e^{-w}(π/w)^{1/2}∑_k q_k w^{-k}`.  The remainder sees the argument only through its
   real part, hence is uniform along every ray -- the card's "fixed closed subsector".
   The corpus's `norm_besselK1C_sub_leading_le_norm` is the `m = 0` case.
+
+### The complex binomial remainder (mass-Bessel card, the composition layer)
+
+- `HTGeometry/ComplexBinomialRemainder.lean` -- the half-line binomial Taylor remainder, repeated on
+  the complex disc `‖u‖ ≤ 1/2`, which is what `z = t(1+x²/t²)^{1/2}` needs.  `Complex.norm_cpow_real`
+  makes the modulus of the power the power of the modulus, `one_add_mem_slitPlane_of_norm_le_half`
+  keeps the base off the cut, and integrating along the segment `[0,u]` gives the same recursion.
+  Isolating the inductive step (`norm_cbinomRem_succ_le_of_pred`) is what makes the exponent `1/2`
+  free: its predecessor `-1/2` is already covered by the nonpositive case, so one application of the
+  step covers every positive order -- and `1/2` is exactly the exponent of the mass shell.
+
+### A truncated-expansion calculus, and the mass-shell factors
+
+- `HTGeometry/DiscExpansionCalculus.lean` + `DiscExpansionExponential.lean` -- `HasPolyExpansion r n C
+  f P` ("`f` agrees with the polynomial `P` to order `n` on the disc of radius `r`"), closed under
+  sums, scalar multiples, products, powers and exponentials, plus a truncation step.
+  The product rule needs **no truncation and no antidiagonal**: `fg - PQ = (f-P)g + P(g-Q)`, so each
+  error is multiplied by the other factor's bound and the product polynomial is just `P*Q`.
+  Truncation is a separate, once-only step; on a disc of radius at most one the discarded coefficients
+  all carry at least `n` powers of the argument, so the cost is `polyAbsSum P` of the same order.
+  `cexp` needs the function to vanish to first order, which is what makes the tail of the exponential
+  series already of the required order.
+- `HTGeometry/ShellBinomialExpansion.lean` + `ShellRootDefectExpansion.lean` -- `(1+x²w²)^α` as an
+  order-`2m` expansion in `w = 1/t`, and the mass-shell root defect `√(t²+x²) - t` as an expansion of
+  order `2m+1` vanishing at the origin.  Division by `w` is exact on the polynomial side via
+  `Polynomial.divX`, legitimate because the shell polynomial has only even coefficients and constant
+  term one (`coeff_odd_shellBinomPoly`).

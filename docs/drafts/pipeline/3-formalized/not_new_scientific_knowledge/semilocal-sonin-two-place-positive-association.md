@@ -122,3 +122,69 @@ The associated scale-invariant successor is the normalized all-even Jacobi resid
 
 Do not transport this scalar normalization through the Sonin cutoff. Use the normalized Jacobi
 coefficient and its explicit low-mode prolate naturality residue instead.
+
+## Lean formalization — 2026-08-17
+
+Module: `formal/GaloisForLFunctions/RHTower/SoninSemilocalTwoPlaceCovariance.lean`
+(namespace `RHTower.SemilocalTwoPlace`, wired into the `GaloisForLFunctions.RHTower` umbrella).
+The card's own "Lean core" line named only the strict convexity step; the whole theorem — the
+actual measure, the Poisson expansion, the Tonelli interchange, and the covariance — is now
+proved unconditionally.
+
+Reused from the corpus (not rebuilt):
+
+| Existing input | Where |
+|---|---|
+| the measure `dμ_∞ = (2π)^{-3/2}\|Γ(1/4+is/2)\|² ds` and `∫ e^{its} dμ_∞ = (cosh t)^{-1/2}` | `RHTower/SoninSemilocalGammaMeasureCharacteristic.lean` |
+| `IsProbabilityMeasure` for that measure | `RHTower/CCMMetaplecticGammaMomentDeterminacy.lean` |
+| the real cosine transform `∫ cos(ts) dμ_∞ = φ(t)` | `RHTower/GammaEvenBoundaryParityNoGo.lean` |
+| strict convexity of `x ↦ x^{-1/2}` and `φ(u)φ(v) < (φ(u+v)+φ(u−v))/2` | `RHTower/SoninSemilocalTwoPlaceAssociation.lean` |
+
+| Card step | Lean name |
+|---|---|
+| `G_p(s) = \|1 − r_p e^{i ℓ_p s}\|^{-2}` | `primeFactor`, `primeFactor_eq_normSq_inv`, `primeFactor_eq_norm_zpow` |
+| `∫ cos(us)cos(vs) dμ_∞ = (φ(u+v) + φ(u−v))/2` | `integral_cos_mul_cos_gamma` |
+| every pair of positive cosine frequencies has strictly positive covariance | `gammaCosCovariance`, `gammaCosCovariance_pos` |
+| a zero frequency contributes zero covariance | `gammaCosCovariance_zero_left/right`, `gammaCosCovariance_nonneg` |
+| the Poisson expansion `\|1−re^{iθ}\|^{-2} = (1−r²)^{-1}(1 + 2Σ_{n≥1} r^n cos nθ)` | `hasSum_poissonExpansion`, `hasSum_primeFactor`, `hasSum_pfMode` |
+| uniform absolute convergence ⟹ termwise integration | `integral_tsum_gamma` (from `MeasureTheory.integral_tsum`) |
+| `∫ G_p dμ_∞` termwise | `integral_primeFactor` |
+| `∫ G_p G_q dμ_∞` as a double series (Tonelli) | `hasSum_pfMode_prod`, `integral_primeFactor_mul` |
+| the product of the one-place masses as the same double series | `integral_mul_integral_primeFactor` |
+| `Cov(G_p,G_q) = 4 c_p c_q Σ_{m,n≥1} r_p^m r_q^n Cov(cos mℓ_p, cos nℓ_q)` | `covariance_eq_tsum` |
+| every summand strictly positive ⟹ strictly positive covariance | `covariance_pos` |
+| `Z_{p,q} Z_∅ > Z_p Z_q` | `semilocal_twoPlace_association` (with `integral_one_gamma : Z_∅ = 1`) |
+| `log Z_{p,q} − log Z_p − log Z_q + log Z_∅ > 0` | `semilocal_twoPlace_log_crossEffect` (with `integral_primeFactor_pos`) |
+| **the theorem for two primes** (`r_p = p^{-1/2}`, `ℓ_p = log p`) | `semilocal_prime_twoPlace_association` |
+
+Two remarks on the formal statement.
+
+* **Distinctness of `p, q` is not used.**  The proof needs only `0 < ℓ_p`, `0 < ℓ_q` and
+  `r_p, r_q ∈ (0,1)`, so the Lean theorems are stated for arbitrary positive frequencies and
+  radii; the primes enter only through `primeRadius_pos`, `primeRadius_lt_one`, `primeLog_pos`.
+  This matches the paper proof, where the strict inequality `φ(u)φ(v) < (φ(u+v)+φ(u−v))/2` holds
+  for all `u,v > 0` including `u = v`.
+* **The `m = 0` or `n = 0` rows are handled, not excluded.**  The Poisson expansion is carried as
+  a single sum over all `n ≥ 0` with weights `w_0 = 1`, `w_n = 2r^n` (`poissonWeight`), so the
+  constant rows appear in the double series; `gammaCosCovariance_zero_left/right` show they
+  contribute exactly `0`, which is what makes the term-by-term subtraction of the two double
+  series legitimate.
+
+**Not formalized (and not an obligation of this card).**  Both `[OPEN CORE]` items — survival of
+the mixed term through the Sonin projection / prolate naturality corner, and any positivity
+theorem for the full Weil functional — are stated on the card as open, not proved.  The
+`[REFUTED AS A ROUTE-B INVARIANT]` and `[REFUTED AS NEW SCIENTIFIC KNOWLEDGE]` verdicts are
+scientific-status judgements about normalization and significance, not mathematical propositions.
+
+Verification: `lake build GaloisForLFunctions.RHTower.SoninSemilocalTwoPlaceCovariance` — PASS;
+`#print axioms` on all 20 named results reports only `[propext, Classical.choice, Quot.sound]`.
+
+## Formalization gate
+
+- [x] 2 → 3 formalized: the full two-place association theorem is proved unconditionally in Lean,
+      narrow build green, axiom audit clean.
+
+## Log
+
+- 2026-08-17 — formalized in Lean; the paper proof's Poisson expansion, Tonelli interchange and
+  covariance assembly are all closed unconditionally; card moved to stage 3.

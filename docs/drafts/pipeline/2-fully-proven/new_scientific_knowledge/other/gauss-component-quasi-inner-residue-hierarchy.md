@@ -2294,3 +2294,38 @@ for `u` in the two-piece class, and the telescope
 `‖X^r v − Y^r v‖ ≤ Σ_i ‖Y‖^(r-1-i) ‖(X−Y)(X^i v)‖` with `X = R̃_n`, `Y = a_(δ_n)`, `‖Y‖ ≤ 1` —
 the direction that applies the growing operator only to `v`, so that no unbounded operator norm
 enters the telescope at all.
+
+## Pass 47 — the telescope of step 3 is built, in the direction that needs no operator norm
+
+`HTGeometry/OperatorPowerTelescope.lean`, unconditional and axiom-clean:
+
+```text
+operator_pow_sub_eq_sum :
+  X^r v - Y^r v = Σ_(i<r) Y^(r-1-i) ((X - Y) (X^i v))
+norm_pow_apply_le_of_norm_le_one :  ‖Y‖ ≤ 1  ->  ‖Y^k w‖ ≤ ‖w‖
+norm_operator_pow_sub_le_of_norm_le_one :
+  ‖Y‖ ≤ 1  ->  ‖X^r v - Y^r v‖ ≤ Σ_(i<r) ‖(X - Y)(X^i v)‖
+tendsto_norm_operator_pow_sub_zero :
+  ‖Y_n‖ ≤ 1,  and for every i < m the one-step error ‖(X_n - Y_n)(X_n^i v_n)‖ -> 0
+    ==>  ‖X_n^m v_n - Y_n^m v_n‖ -> 0
+```
+
+This is exactly the direction the card's step 3 asks for: the model `Y = a_(delta_n)` is a
+contraction, so **no power of the unbounded `‖R̃_n‖` enters the telescope at all**.  The whole
+remaining obligation on this card is therefore step 2 — the one-step estimate
+`‖(R̃_n - a_(delta_n)) u‖ -> 0` for `u` in a class invariant under `R̃_n`.
+
+`RHTower/GaussSpikeMass.lean` gains the form of the spike transfer that step 2 consumes:
+
+```text
+sum_kernel_mul_spike_band_le :
+  spike of height B at the moving frequency -n, indexed by distance r,
+  harmonic kernel with constant K,  4|j| ≤ n
+    ==>  Σ_(r=1)^N |kappa (j - eps r)| · B (n/r)^c  ≤  K/(1 + n/4) · B (n^c + n/(1-c)).
+```
+
+The uniform half of the invariance is already owned:
+`HTGeometry/HarmonicPowerConvolution.tsum_harmonicPowConv_le` transfers `(1+|l|)^(-beta)` to
+`(1+|j|)^(-gamma)` for every `gamma < beta` — the exponent ladder — and the multiplier half is
+`RHTower/GaussShiftRatioWeight.gaussShiftRatio_sq_le_of_not_spike` off the spike together with
+`gaussShiftRatio_sq_le_sqrt` on it.
