@@ -4053,3 +4053,14 @@ conjecture loop and the open effective-onset question are not theorems of the ca
 - `HTGeometry/MassCarrierRatioIdentity.lean` -- the all-orders replacement for the corpus's
   order-zero `massBesselCarrier_eq`: carrier = deep-time profile × `√2(t/z)(√t/√z)e^{-a(z-t)}` ×
   Poincaré polynomial + carrier weight of the Poincaré remainder, exactly, at every order.
+
+### The carrier distortion is now a product of expandable factors (mass-Bessel card)
+
+- `HTGeometry/MassCarrierDistortionFactors.lean` + `ShellPrincipalPowers.lean` +
+  `MassCarrierShellPowers.lean` -- the distortion of the carrier against its deep-time profile is
+  `√2 · Q^{-1/2} · Q^{-1/4} · e^{-a·shellDefect} · ∑_k q_k a^{-k} w^k Q^{-k/2}` with `Q = 1 + x²w²`
+  and `w = 1/t`.  Each factor has its own expansion lemma already proved.
+  The quarter power is the only branch condition in the whole chain and it is discharged once
+  (`csqrt_csqrt_eq_cpow`): the shell argument has modulus below `π/2`, so a quarter of it is below
+  `π/8` and `Complex.cpow_mul` applies.  Everything else is `cpow_add`/`cpow_neg`, needing only
+  nonvanishing.

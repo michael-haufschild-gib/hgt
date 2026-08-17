@@ -348,11 +348,48 @@ This is the all-orders replacement for the corpus's order-zero `massBesselCarrie
 its deep-time profile times `√2·(t/z)·(√t/√z)·e^{-a(z-t)}` times the Poincaré polynomial, plus the
 carrier weight of the Poincaré remainder.  The identity is exact; only the last term is an error.
 
+## Lean progress -- the distortion is now a product of expandable factors
+
+Three more modules (umbrella-wired, axiom-clean).
+
+`formal/GaloisForLFunctions/HTGeometry/MassCarrierDistortionFactors.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the shell quantity `1 + x²/t²`, its distance to one, and the positivity of its real part | `shellQuantity`, `norm_shellQuantity_sub_one`, `re_shellQuantity_pos` |
+| **the distortion in shell factors**: `√2 · (√Q)⁻¹ · (√√Q)⁻¹ · e^{-a t(√Q - 1)} · Poincaré` | `carrierDistortion_eq_shellFactors` |
+
+`formal/GaloisForLFunctions/HTGeometry/ShellPrincipalPowers.lean`:
+
+| Card item | Declaration |
+|---|---|
+| a principal power with real exponent in `(0,1]` keeps the right half plane | `cpow_ofReal_re_pos` |
+| the inverse root, the root of the root, and its inverse, as principal powers | `inv_csqrt_eq_cpow`, `csqrt_csqrt_eq_cpow`, `inv_csqrt_csqrt_eq_cpow` |
+| every power of the root, and of its inverse, as a principal power | `csqrt_pow_eq_cpow`, `inv_csqrt_pow_eq_cpow` |
+
+The quarter power is the only place a branch condition has to be checked, and it is checked once:
+the argument of the shell quantity is below `π/2` in modulus, so a quarter of it is below `π/8` and
+`Complex.cpow_mul` applies.  Every other identity is `Complex.cpow_add` or `Complex.cpow_neg`, which
+need only nonvanishing.
+
+`formal/GaloisForLFunctions/HTGeometry/MassCarrierShellPowers.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the shell quantity at the reciprocal parameter | `shellQuantity_eq_inv` |
+| **the distortion as `√2 · Q^{-1/2} · Q^{-1/4} · e^{-a·shellDefect} · ∑_k q_k a^{-k} w^k Q^{-k/2}`** | `carrierDistortion_eq_shellPowers` |
+
+with `Q = 1 + x²w²` and `w = 1/t`.  Every factor on the right now has its own expansion lemma:
+`hasPolyExpansion_shellBinom` at the exponents `-1/2`, `-1/4` and `-k/2`,
+`hasPolyExpansion_shellDefect` for the exponent of the exponential, and `HasPolyExpansion.cexp`,
+`.mul`, `.add` for the assembly.
+
 ### What remains
 
-Item 2's coefficient bookkeeping for `Q_{j,a}`, the expansion of `carrierDistortion` in `w = 1/t`
-(each of its four factors now has its own expansion lemma and the branch identities that rewrite them
-in `w` are in place), and the dyadic assembly of item 4.  The composition is where the remaining work sits: writing
+Running the expansion calculus on that product -- supplying the disc bounds for each of the factors
+-- to obtain a single `HasPolyExpansion` for `carrierDistortion`; item 2's coefficient bookkeeping
+for `Q_{j,a}` (degree `j` in `x²` with leading coefficient `(-a/2)^j/j!`); and the dyadic assembly of
+item 4.  The composition is where the remaining work sits: writing
 `z = t(1+x²/t²)^{1/2}`, the carrier is `√(2πa)e^{-at}t^{-1/2}` times
 `(t/z)^{3/2} e^{-a(z-t)} ∑_k q_k (az)^{-k}`, and every factor is a function of the *complex* variable
 `u = x²/t²`, so the half-line binomial remainder above has to be repeated for complex argument along

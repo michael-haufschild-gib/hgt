@@ -326,6 +326,20 @@ theorem ratTameHom_symbol (a b : ℚˣ) :
       = Additive.ofMul ((ratTameData p).tame a b) :=
   (ratTameData p).tameHom_symbol a b
 
+/-! ## Valuation arithmetic on units -/
+
+theorem padicValRat_mul_units (a b : ℚˣ) :
+    padicValRat p (((a * b : ℚˣ)) : ℚ)
+      = padicValRat p ((a : ℚˣ) : ℚ) + padicValRat p ((b : ℚˣ) : ℚ) := by
+  rw [Units.val_mul, padicValRat.mul a.ne_zero b.ne_zero]
+
+theorem padicValRat_zpow_units (a : ℚˣ) (n : ℤ) :
+    padicValRat p (((a ^ n : ℚˣ)) : ℚ) = n * padicValRat p ((a : ℚˣ) : ℚ) := by
+  simp
+
+theorem padicValRat_self_prime : padicValRat p ((p : ℚ)) = 1 :=
+  padicValRat.self (Fact.out (p := p.Prime)).one_lt
+
 end RationalTame
 
 end GaloisForLFunctions.HTGeometry

@@ -158,4 +158,31 @@ theorem closure_range_milnorSym2 :
       rw [hmk]
       exact (AddSubgroup.closure _).add_mem hu hv
 
+/-- The degree-two symbol in its left slot, as a homomorphism out of the additive form of the
+unit group. -/
+def milnorSym2LeftHom (b : Fˣ) : Additive Fˣ →+ MilnorKDeg F 2 where
+  toFun a := milnorSym2 F (Additive.toMul a) b
+  map_zero' := milnorSym2_one_left b
+  map_add' x y := milnorSym2_mul_left (Additive.toMul x) (Additive.toMul y) b
+
+theorem milnorSym2LeftHom_apply (a b : Fˣ) :
+    milnorSym2LeftHom (F := F) b (Additive.ofMul a) = milnorSym2 F a b := rfl
+
+/-- **The symbol is `ℤ`-linear in the left slot.** -/
+theorem milnorSym2_zpow_left (a b : Fˣ) (n : ℤ) :
+    milnorSym2 F (a ^ n) b = n • milnorSym2 F a b := by
+  have h : (milnorSym2LeftHom (F := F) b) (n • (Additive.ofMul a))
+      = n • (milnorSym2LeftHom (F := F) b) (Additive.ofMul a) := map_zsmul _ _ _
+  have hz : (n • (Additive.ofMul a) : Additive Fˣ) = Additive.ofMul (a ^ n) := rfl
+  rw [hz] at h
+  exact h
+
+/-- **The symbol is `ℤ`-linear in the right slot.** -/
+theorem milnorSym2_zpow_right (a b : Fˣ) (n : ℤ) :
+    milnorSym2 F a (b ^ n) = n • milnorSym2 F a b := by
+  have h1 : milnorSym2 F a (b ^ n) = -milnorSym2 F (b ^ n) a := milnorSym2_antisymm a (b ^ n)
+  have h2 : milnorSym2 F (b ^ n) a = n • milnorSym2 F b a := milnorSym2_zpow_left b a n
+  have h3 : milnorSym2 F b a = -milnorSym2 F a b := milnorSym2_antisymm b a
+  rw [h1, h2, h3, smul_neg, neg_neg]
+
 end GaloisForLFunctions.HTGeometry

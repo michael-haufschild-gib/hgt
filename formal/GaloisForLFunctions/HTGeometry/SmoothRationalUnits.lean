@@ -220,6 +220,104 @@ theorem closure_smoothGens_eq (N : ℕ) :
     Subgroup.closure (smoothGens N) = smoothUnits N :=
   le_antisymm (Subgroup.closure_le _ |>.2 (smoothGens_subset N)) (smoothUnits_le_closure N)
 
+/-! ## The two ends of the filtration -/
+
+theorem smoothGens_one : smoothGens 1 = {(-1 : ℚˣ)} := by
+  ext u
+  constructor
+  · rintro (h | ⟨q, hq, hq1, rfl⟩)
+    · exact h
+    · have := hq.two_le
+      omega
+  · intro h
+    exact Or.inl h
+
+/-- The squares-to-one subgroup of the rational units. -/
+def sqOneUnits : Subgroup ℚˣ where
+  carrier := {u : ℚˣ | u * u = 1}
+  mul_mem' := by
+    intro a b ha hb
+    show a * b * (a * b) = 1
+    have ha' : a * a = 1 := ha
+    have hb' : b * b = 1 := hb
+    calc a * b * (a * b) = (a * a) * (b * b) := mul_mul_mul_comm a b a b
+      _ = 1 := by rw [ha', hb', one_mul]
+  one_mem' := by
+    show (1 : ℚˣ) * 1 = 1
+    rw [one_mul]
+  inv_mem' := by
+    intro a ha
+    have ha' : a * a = 1 := ha
+    show a⁻¹ * a⁻¹ = 1
+    rw [← mul_inv, ha', inv_one]
+
+/-- **The `1`-smooth units square to one.** -/
+theorem mul_self_eq_one_of_mem_smoothUnits_one {u : ℚˣ} (hu : u ∈ smoothUnits 1) : u * u = 1 := by
+  have h := smoothUnits_le_closure 1 hu
+  rw [smoothGens_one] at h
+  have hle : Subgroup.closure ({(-1 : ℚˣ)} : Set ℚˣ) ≤ sqOneUnits := by
+    refine (Subgroup.closure_le _).2 ?_
+    intro v hv
+    rw [Set.mem_singleton_iff] at hv
+    subst hv
+    show (-1 : ℚˣ) * (-1) = 1
+    refine Units.ext ?_
+    norm_num
+  exact hle h
+
+/-- **Every rational unit is smooth for some bound.** -/
+theorem exists_mem_smoothUnits (u : ℚˣ) : ∃ N : ℕ, u ∈ smoothUnits N := by
+  set q : ℚ := ((u : ℚˣ) : ℚ) with hqdef
+  refine ⟨max q.num.natAbs q.den, ?_⟩
+  intro r hr hrN
+  haveI : Fact r.Prime := ⟨hr⟩
+  have hnat : q.num.natAbs ≠ 0 := Int.natAbs_ne_zero.2 (Rat.num_ne_zero.2 u.ne_zero)
+  have hden : q.den ≠ 0 := q.den_nz
+  have hle1 : q.num.natAbs ≤ max q.num.natAbs q.den := le_max_left _ _
+  have hle2 : q.den ≤ max q.num.natAbs q.den := le_max_right _ _
+  have h1 : ¬ r ∣ q.num.natAbs := by
+    intro hd
+    have := Nat.le_of_dvd (Nat.pos_of_ne_zero hnat) hd
+    omega
+  have h2 : ¬ r ∣ q.den := by
+    intro hd
+    have := Nat.le_of_dvd (Nat.pos_of_ne_zero hden) hd
+    omega
+  have hval : padicValRat r q
+      = (padicValNat r q.num.natAbs : ℤ) - (padicValNat r q.den : ℤ) := padicValRat_eq_sub q
+  rw [padicValNat.eq_zero_of_not_dvd h1, padicValNat.eq_zero_of_not_dvd h2] at hval
+  simpa using hval
+
+/-- A positive natural below `N + 1` is `N`-smooth. -/
+theorem natRatUnit_mem_smoothUnits_of_lt {N m : ℕ} (hm : m ≠ 0) (hmN : m ≤ N) :
+    natRatUnit hm ∈ smoothUnits N := by
+  intro r hr hrN
+  haveI : Fact r.Prime := ⟨hr⟩
+  rw [natRatUnit_val]
+  have hnr : ¬ r ∣ m := by
+    intro hdvd
+    have := Nat.le_of_dvd (Nat.pos_of_ne_zero hm) hdvd
+    omega
+  have hz : padicValRat r ((m : ℤ) : ℚ) = 0 := by
+    rw [padicValRat.of_int, padicValInt]
+    have hv : padicValNat r ((m : ℤ)).natAbs = 0 := by
+      refine padicValNat.eq_zero_of_not_dvd ?_
+      simpa using hnr
+    rw [hv]
+    rfl
+  simpa using hz
+
+/-- The smooth units do not change at a composite bound. -/
+theorem smoothUnits_succ_of_not_prime {N : ℕ} (hN : ¬ (N + 1).Prime) :
+    smoothUnits (N + 1) = smoothUnits N := by
+  refine le_antisymm ?_ (smoothUnits_mono (Nat.le_succ N))
+  intro u hu q hq hqN
+  have hq1 : N + 1 ≤ q := hqN
+  rcases eq_or_lt_of_le hq1 with h | h
+  · subst h
+    exact absurd hq hN
+  · exact hu q hq h
+
 end Smooth
 
 end GaloisForLFunctions.HTGeometry

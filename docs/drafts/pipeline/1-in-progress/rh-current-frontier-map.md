@@ -42,9 +42,9 @@ route under corpus source-isogenies.
 | D2 | safe-line Euler deficit → analytically continued prime–Gamma trace → finite high-frequency ceiling → RH | Continue literal positive deficit through Euler wall and prove any finite uniform ceiling above frequency four. |
 | E | squarefree central Wold shell → explicit parity-coalesced/whole-anchor opposite-sign relation → physical Carleson and co-moving flux → Mertens cancellation → RH | Upgrade fixed-relation near-Hall and polylog/subpower incoming bounds to unit interval Carleson load and normalized moving-seam flux. Exact log-window transfer is closed. The required upstream short-window rate is Menon's `(log log L)^2/(log L)^2`, not Matomäki--Radziwiłł's weaker logarithmic power; all-interval `E_3` is separately needed. Neither import proves unit capacity. |
 | G | Suzuki/CCM source → restricted-Weil Morse floor or one-sided Euler--Gamma/Carleman wall → aperture-dressed FE light completion → Hermite–Biehler orientation → RH | Floor: aperture-Morse exhaustion/boundary-rough exclusion. Coalescing high-assisted branch is now exactly source-cyclic: prove literal low-source cyclic singular mass above `1/113` is `o(r/log^2(1/r))`, or construct the opposite lower-bound family already forced by Lean. Low-only schedules retain their aperture ceiling. Wall: compare prime-minus-regular-screw Ward mass with dressed negative light and holonomy. |
-| L | arithmetic Poisson/Green complex → source Green closure and harmonic complement → faithful cup-isometric Meyer comparison → positive Hodge block → critical line → RH | Construct the source-derived arithmetic Calderón intermediate extension and its closed Lagrangian boundary relation at the critical `x^(1/2)` scale. Descent through the existing completed one-leg singular graph is completely classified: a prime-labelled scalar profile descends continuously iff it is constant on the canonical prime enumeration. Thus reciprocal-weight Gamma-six/Wold--Jordan, same-fibre fixed-star, `1/p` Hessian, and every other nonconstant scalar relabelling of that graph are terminal receivers. |
+| L | arithmetic Poisson/Green complex → source Green closure and harmonic complement → faithful cup-isometric Meyer comparison → positive Hodge block → critical line → RH | Construct the source-derived arithmetic Calderón intermediate extension and its closed Lagrangian boundary relation at the critical `x^(1/2)` scale. Scalar descent on the completed one-leg graph is exactly constant-profile descent. Operator-valued fixed-coordinate divisor encoding is also impossible when reciprocal-mass continuity lands in Hilbert--Schmidt topology. A survivor must retain a proved arithmetic-discontinuous critical-scale invariant, change the carrier before completion, or leave the Hilbert--Schmidt class. |
 | O | restricted-Weil operator → exact compact Birman--Schwinger/Gamma--Slepian decomposition → finite dangerous block → nonnegative cofinal floor → RH | Indexed prolate structure and Fourier-even coordinates are closed. Lean now proves canonical upper leakage at every index, ground included. Finish the literal common-clock envelope, then prove source-relative finite-block lower bound; only the latter is RH-bearing. |
-| P | primitive Euler/Burnol budget → Julia--Krein completion → spectrum-moving prime--Gamma transport or non-spectral contraction → RH | Literal prime-log `det₂` carrier exists, but its forced zero at `1` while `XiC(1) != 0` rules out direct identification and every pointwise scalar correction. Construct a source-derived operator coupling that changes the source divisor coefficient- and multiplicity-faithfully, or prove the non-spectral conormal contraction. |
+| P | primitive Euler/Burnol budget → Julia--Krein completion → spectrum-moving prime--Gamma transport or non-spectral contraction → RH | Literal prime-log `det₂` carrier exists, but its forced zero at `1` while `XiC(1) != 0` rules out direct identification and every pointwise scalar correction. Its literal two-prime source-state Ward energy already exceeds the completed eight-unit budget near `u=0`, so no coefficient-faithful compression-monotone comparison can close the budget. Construct a nonlocal source coupling/shorting before prime-cell compression that moves the divisor with coefficients and multiplicities intact, or prove the non-spectral conormal contraction. |
 | Q | theta–Cassini source → separated finite prime–Gamma packet sign → transverse charge zero → RH | Produce nonnegative energy cofinally toward orientation vector. Null boundaries have hidden mixed incidence `-E/2`; diagonal budgets and adaptive complex phases cannot repair fusion. Alternative UQ-QC asks for finite pre-divisor quadratic-concentration budget. |
 | T | centered prime--Gamma source → detector/Mellin packet, Wold residual ODE, true-prime Bessel cone, or sub-square-root massive chirp → RH | Unsigned `71/100` supply and sharp twisted-prime bounds are closed. Window/far-field jet envelopes and conditional exterior prime-tail summation are formal. Splice them at moving retreat to obtain `(22.8)`, then prove signed type-zero assembly; residual/sub-`3/2` and growing-Xi chirp branches remain. |
 | U | shifted-Xi Hankel first crossing → boundary-rough completed null ground → restricted-Weil positivity → RH | Lean proves `RH ∨ CCMFirstContactBoundaryRoughness`: off RH the least zero aperture has a genuine null ground absent from every strict smooth interior source. Exclude this completed-boundary state by a trace/quotient or whole-ground theorem. |
@@ -1042,6 +1042,16 @@ arbitrarily closely while creating an off-line zero once their abscissa exceeds 
 Route-L producer must be discontinuous in reciprocal-mass topology and retain `x^(1/2)`-scale
 prime discrepancy or an equivalent source boundary invariant.
 
+The operator-valued loophole is now closed at its natural Hilbert--Schmidt boundary. Lean proves
+fixed-evaluation continuity of the canonical entire Hilbert--Carleman determinant `entireDet2`
+under Hilbert--Schmidt convergence. Applying the explicit Beurling sequence shows that no
+reciprocal-mass-continuous Hilbert--Schmidt kernel assignment can encode every selected off-line
+zero at one normalized spectral coordinate while keeping the base determinant nonzero there.
+Thus “replace the scalar by an operator” does not evade retirement unless the construction proves
+an arithmetic discontinuity, changes target ideal, or abandons fixed-coordinate coefficient
+faithfulness. Evidence: `HTGeometry/EntireDet2HilbertSchmidtContinuity.lean` and
+`RHTower/BeurlingReciprocalOperatorFirewall.lean`.
+
 **Open core.** Construct the arithmetic Calderón Green intermediate extension before Hilbert
 completion: prove its total arithmetic Cauchy relation is closed Lagrangian, its harmonic
 complement realizes the nuclear quotient faithfully, and its Hodge comparison is cup-isometric
@@ -1506,11 +1516,23 @@ source multipliers. A source-native genus-one real-zero carrier therefore exists
 
 Direct divisor identification is now closed negatively. The source determinant has a forced zero
 at `z=1`, whereas `XiC(1)` is nonzero; it is neither Xi nor normalized Xi, and no pointwise scalar
-multiplier can repair it. **Open core.** Construct a source-derived, non-pointwise operator coupling
-that moves the reciprocal prime-depth spectrum to the completed Xi divisor with coefficients and
-multiplicities intact, or prove the original non-spectral conormal contraction. Entire gauges,
-scalar counterterms, trace restoration, and direct `det₂` welding are dead. Alternative curvature
-lane still needs a finite uniform high-tail ceiling.
+multiplier can repair it. The completed Ward budget also fails on the literal source before any
+divisor identification: normalize the reciprocal-promotion co-source on depth-zero primes two and
+three, couple it to the exact diagonal Gamma--Julia energy `c log p`, and take the rank-one Ward
+commutator. Lean proves its energy is
+`2 w_2(u) w_3(u) (E_2-E_3)^2`, strictly positive at `u=0`, while
+`8(1-exp(-u)) -> 0`. Hence the completed eight-unit budget is eventually smaller. This excludes
+every coefficient-faithful Ward comparison hereditary/nonexpansive under that two-cell source
+compression. Evidence: `RoutePPrimitiveGammaJuliaTwoPrimeWardBudgetNoGo.lean`.
+
+**Open core.** Construct a source-derived, non-pointwise operator coupling or nonlinear shorting
+*before finite prime-cell compression* that moves the reciprocal prime-depth spectrum to the
+completed Xi divisor with coefficients and multiplicities intact. It must exhibit the exact
+nonlocal cancellation making its Ward comparison non-monotone under literal source compression;
+otherwise the two-prime obstruction applies. Alternative: prove the original non-spectral conormal
+contraction. Entire gauges, scalar counterterms, trace restoration, direct `det₂` welding, and
+compression-monotone completed Ward budgets are dead. Alternative curvature lane still needs a
+finite uniform high-tail ceiling.
 
 More cluster estimates, seed/source-window construction, target support identification, scalar
 capacity, or multiplicity normalization are closed work.
