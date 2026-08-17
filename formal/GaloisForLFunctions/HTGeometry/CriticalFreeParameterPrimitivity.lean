@@ -76,6 +76,88 @@ theorem adjoin_eq_of_primitive_of_notMem_bot {F Ω : Type*} [Field F] [Field Ω]
     exact IntermediateField.mem_adjoin_simple_self F y
   · exact h
 
+/-- Membership in the bottom of a tower over an intermediate field is membership in that field. -/
+theorem mem_bot_iff_mem {F L : Type*} [Field F] [Field L] [Algebra F L]
+    (S : IntermediateField F L) (x : L) :
+    x ∈ (⊥ : IntermediateField ↥S L) ↔ x ∈ S := by
+  constructor
+  · rintro ⟨y, rfl⟩
+    exact y.2
+  · intro hx
+    exact ⟨⟨x, hx⟩, rfl⟩
+
+/-- **Base-changed one-step rigidity, abstractly.**  A primitive step stays primitive after
+adjoining a transcendental, and any escaping element of the extended step generates it. -/
+theorem adjoin_eq_map_of_primitive_of_notMem
+    {F A B Ω : Type*} [Field F] [Field A] [Field B] [Field Ω]
+    [Algebra F A] [Algebra F B] [Algebra A Ω] [Algebra F Ω] [IsScalarTower F A Ω]
+    [FiniteDimensional F B] [IsGalois F B]
+    (φ : A →ₐ[F] B)
+    (hprim : ∀ P : IntermediateField F B, P ≤ φ.fieldRange → P = ⊥ ∨ P = φ.fieldRange)
+    {t : Ω} (ht : Transcendental A t)
+    (y : ↥(IntermediateField.adjoin A {t}))
+    (hy : (y : Ω) ∉ IntermediateField.adjoin F {t}) :
+    IntermediateField.adjoin ↥(IntermediateField.adjoin F {fracX B}) {adjoinToFrac φ ht y}
+      = IntermediateField.adjoin ↥(IntermediateField.adjoin F {fracX B})
+        (((φ.fieldRange : IntermediateField F B).map
+          (IsScalarTower.toAlgHom F B (FractionRing (Polynomial B)))) :
+          Set (FractionRing (Polynomial B))) := by
+  have hJle : ((φ.fieldRange : IntermediateField F B).map
+      (IsScalarTower.toAlgHom F B (FractionRing (Polynomial B))))
+      ≤ fracCoeffField F B := by
+    rintro z ⟨w, -, rfl⟩
+    exact ⟨w, rfl⟩
+  have hprim' : ∀ P : IntermediateField F (FractionRing (Polynomial B)),
+      P ≤ (φ.fieldRange : IntermediateField F B).map
+        (IsScalarTower.toAlgHom F B (FractionRing (Polynomial B))) →
+      P = ⊥ ∨ P = (φ.fieldRange : IntermediateField F B).map
+        (IsScalarTower.toAlgHom F B (FractionRing (Polynomial B))) :=
+    primitive_map_of_primitive _ _ hprim
+  refine adjoin_eq_of_primitive_of_notMem_bot _
+    (eq_bot_or_eq_adjoin_fracX_of_primitive _ hJle hprim') _ ?_ ?_
+  · exact fracMap_mem_adjoin φ ((fracRealizeEquiv ht).symm y)
+  · intro hbot
+    refine adjoinToFrac_notMem_of_notMem φ ht y hy ?_
+    rw [fieldRange_fracMap_ofId]
+    exact (mem_bot_iff_mem (IntermediateField.adjoin F {fracX B}) _).1 hbot
+
+/-- The compositum with a simple adjunction, read over the bigger base. -/
+theorem mem_adjoin_of_mem_sup {K L : Type*} [Field K] [Field L] [Algebra K L]
+    (A : IntermediateField K L) (t : L) {x : L}
+    (hx : x ∈ A ⊔ IntermediateField.adjoin K {t}) :
+    x ∈ IntermediateField.adjoin ↥A {t} := by
+  have hres : (IntermediateField.adjoin ↥A {t}).restrictScalars K
+      = IntermediateField.adjoin K ((A : Set L) ∪ {t}) :=
+    IntermediateField.restrictScalars_adjoin K A {t}
+  have hsup : A ⊔ IntermediateField.adjoin K {t}
+      ≤ IntermediateField.adjoin K ((A : Set L) ∪ {t}) := by
+    refine sup_le (fun z hz => IntermediateField.subset_adjoin _ _ (Or.inl hz)) ?_
+    refine IntermediateField.adjoin_le_iff.2 fun z hz => ?_
+    exact IntermediateField.subset_adjoin _ _ (Or.inr hz)
+  have : x ∈ (IntermediateField.adjoin ↥A {t}).restrictScalars K := by
+    rw [hres]
+    exact hsup hx
+  exact this
+
+/-- The converse reading. -/
+theorem mem_sup_of_mem_adjoin {K L : Type*} [Field K] [Field L] [Algebra K L]
+    (A : IntermediateField K L) (t : L) {x : L}
+    (hx : x ∈ IntermediateField.adjoin ↥A {t}) :
+    x ∈ A ⊔ IntermediateField.adjoin K {t} := by
+  have hres : (IntermediateField.adjoin ↥A {t}).restrictScalars K
+      = IntermediateField.adjoin K ((A : Set L) ∪ {t}) :=
+    IntermediateField.restrictScalars_adjoin K A {t}
+  have hx' : x ∈ IntermediateField.adjoin K ((A : Set L) ∪ {t}) := by
+    rw [← hres]
+    exact hx
+  refine (IntermediateField.adjoin_le_iff.2 ?_) hx'
+  rintro z (hz | hz)
+  · exact le_sup_left (α := IntermediateField K L) hz
+  · rw [Set.mem_singleton_iff] at hz
+    subst hz
+    exact le_sup_right (α := IntermediateField K L)
+      (IntermediateField.mem_adjoin_simple_self K t)
+
 variable (K : Type*) [Field K] [CharZero K] [IsAlgClosed K]
 
 /-- The embedded critical source field, inside the rational functions over the normal closure. -/

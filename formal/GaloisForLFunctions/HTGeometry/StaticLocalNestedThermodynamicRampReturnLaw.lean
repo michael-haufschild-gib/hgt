@@ -693,4 +693,320 @@ theorem nestedInversePowerChain_upper_approximation {L K : ℕ} {t ε : ℝ}
   rw [habs] at hphase
   simpa [Pi.sub_apply, E₀, E] using lt_of_le_of_lt hphase htime
 
+def NestedOperatorApproximates {L : ℕ} (t ε : ℝ)
+    (c : List (LocalGate (PairQubit L))) : Prop :=
+  ‖circuitMatrix c - nestedInversePowerChainEvolution L t‖ ≤ ε
+
+set_option maxHeartbeats 1000000 in
+theorem nestedInversePowerChain_floor_linear_growth {L : ℕ} {t ε : ℝ}
+    (hε : 0 < ε) (hεmax : ε ≤ 1 / 100)
+    (htMin : 1024 * Real.pi * ε ≤ t)
+    (htLab : t ≤ ε * L / 2) :
+    (∀ c : List (LocalGate (PairQubit L)),
+        NestedOperatorApproximates t ε c →
+          ⌊t / (128 * Real.pi * ε)⌋₊ ≤ twoGateCount c) ∧
+      ∃ c : List (LocalGate (PairQubit L)),
+        twoGateCount c = 2 * ⌈2 * t / ε⌉₊ - 1 ∧
+          ‖circuitMatrix c - nestedInversePowerChainEvolution L t‖ < ε := by
+  let d : ℝ := 128 * Real.pi * ε
+  let Klo : ℕ := ⌊t / d⌋₊
+  let Khi : ℕ := ⌈2 * t / ε⌉₊
+  have hd : 0 < d := by
+    dsimp [d]
+    positivity
+  have htpos : 0 < t := lt_of_lt_of_le (by positivity) htMin
+  have hrho0 : 0 ≤ t / d := le_of_lt (div_pos htpos hd)
+  have hKloFloor : (Klo : ℝ) ≤ t / d := Nat.floor_le hrho0
+  have hKloRaw : (Klo : ℝ) * d ≤ t := (le_div_iff₀ hd).mp hKloFloor
+  have hKloTime : 128 * Real.pi * ε * Klo ≤ t := by
+    dsimp [d] at hKloRaw
+    simpa [mul_assoc, mul_left_comm, mul_comm] using hKloRaw
+  have hKloNext : t < 128 * Real.pi * ε * (Klo + 1) := by
+    have hnext : t / d < (Klo : ℝ) + 1 := Nat.lt_floor_add_one (t / d)
+    have hnext' : t < ((Klo : ℝ) + 1) * d := (div_lt_iff₀ hd).mp hnext
+    dsimp [d] at hnext'
+    nlinarith
+  have hKloEight : 8 ≤ Klo := by
+    rw [Nat.le_floor_iff' (by norm_num)]
+    change (8 : ℝ) ≤ t / d
+    rw [le_div_iff₀ hd]
+    dsimp [d]
+    nlinarith
+  have hKloL : 8 * Klo ≤ L := by
+    have hraw : ε * (128 * Real.pi * (Klo : ℝ)) ≤ ε * ((L : ℝ) / 2) := by
+      calc
+        ε * (128 * Real.pi * (Klo : ℝ)) = 128 * Real.pi * ε * Klo := by ring
+        _ ≤ t := hKloTime
+        _ ≤ ε * L / 2 := htLab
+        _ = ε * ((L : ℝ) / 2) := by ring
+    have hcancel : 128 * Real.pi * (Klo : ℝ) ≤ (L : ℝ) / 2 :=
+      le_of_mul_le_mul_left hraw hε
+    have hpi := Real.pi_gt_three
+    exact_mod_cast (show (8 : ℝ) * Klo ≤ L by
+      calc
+        (8 : ℝ) * Klo ≤ 128 * Real.pi * Klo := by
+          have hKlo0 : (0 : ℝ) ≤ Klo := by positivity
+          nlinarith
+        _ ≤ (L : ℝ) / 2 := hcancel
+        _ ≤ L := by
+          have hL0 : (0 : ℝ) ≤ L := by positivity
+          linarith)
+  have hKhiTwo : 2 ≤ Khi := by
+    have hratio : (2 : ℝ) ≤ 2 * t / ε := by
+      rw [le_div_iff₀ hε]
+      have hpi := Real.pi_gt_three
+      nlinarith
+    have hceil : 2 * t / ε ≤ (Khi : ℝ) := by
+      exact Nat.le_ceil (2 * t / ε)
+    exact_mod_cast le_trans hratio hceil
+  have hKhiScale : 2 * t / ε ≤ (Khi : ℝ) := Nat.le_ceil (2 * t / ε)
+  have hKhiL : Khi ≤ L := by
+    rw [Nat.ceil_le]
+    rw [div_le_iff₀ hε]
+    nlinarith
+  constructor
+  · intro c hc
+    exact nestedInversePowerChain_twoGateCount_ge c hKloEight hKloL hε hεmax
+      hKloTime hKloNext hc
+  · simpa [Khi] using nestedInversePowerChain_upper_approximation
+      hKhiTwo hKhiL hε (le_of_lt htpos) hKhiScale
+
+/-! ## Exact factorial-four return and complexity reflection -/
+
+theorem factorialFourth_mul_invSq_exists {L k : ℕ} (hk0 : 0 < k) (hkL : k ≤ L) :
+    ∃ N : ℕ, ((L.factorial : ℝ) ^ 4) * (1 / (k : ℝ) ^ 2) = N := by
+  rcases Nat.dvd_factorial hk0 hkL with ⟨a, ha⟩
+  refine ⟨k ^ 2 * a ^ 4, ?_⟩
+  rw [ha]
+  push_cast
+  have hkR : (k : ℝ) ≠ 0 := by positivity
+  field_simp
+
+theorem factorialFourth_mul_invFourth_exists {L k : ℕ}
+    (hk0 : 0 < k) (hkL : k ≤ L) :
+    ∃ N : ℕ, ((L.factorial : ℝ) ^ 4) * (1 / (k : ℝ) ^ 4) = N := by
+  rcases Nat.dvd_factorial hk0 hkL with ⟨a, ha⟩
+  refine ⟨a ^ 4, ?_⟩
+  rw [ha]
+  push_cast
+  have hkR : (k : ℝ) ≠ 0 := by positivity
+  field_simp
+
+theorem exists_factorialFourth_mul_matchingEnergy {L : ℕ}
+    (x : Config (PairQubit L)) :
+    ∃ N : ℕ, ((L.factorial : ℝ) ^ 4) * inverseSquareMatchingEnergy x = N := by
+  classical
+  have hterm : ∀ j : Fin L, ∃ N : ℕ,
+      ((L.factorial : ℝ) ^ 4) *
+        (if x (j, false) = true ∧ x (j, true) = true
+          then 1 / (((j.val + 1 : ℕ) : ℝ) ^ 2) else 0) = N := by
+    intro j
+    by_cases hx : x (j, false) = true ∧ x (j, true) = true
+    · rcases factorialFourth_mul_invSq_exists (L := L) (k := j.val + 1)
+          (by omega) (by omega) with ⟨N, hN⟩
+      exact ⟨N, by simpa [hx] using hN⟩
+    · exact ⟨0, by simp [hx]⟩
+  choose N hN using hterm
+  refine ⟨∑ j : Fin L, N j, ?_⟩
+  unfold inverseSquareMatchingEnergy
+  rw [Finset.mul_sum]
+  push_cast
+  apply Finset.sum_congr rfl
+  intro j hj
+  convert hN j using 1
+  norm_num
+
+theorem exists_factorialFourth_mul_nestedBridgeEnergy {L : ℕ}
+    (x : Config (PairQubit L)) :
+    ∃ N : ℕ, ((L.factorial : ℝ) ^ 4) * nestedInverseFourthBridgeEnergy x = N := by
+  classical
+  have hterm : ∀ j : Fin (L - 1), ∃ N : ℕ,
+      ((L.factorial : ℝ) ^ 4) *
+        (if x (nestedBridgeLeft j, true) = true ∧
+            x (nestedBridgeRight j, false) = true
+          then 1 / (((j.val + 2 : ℕ) : ℝ) ^ 4) else 0) = N := by
+    intro j
+    by_cases hx : x (nestedBridgeLeft j, true) = true ∧
+        x (nestedBridgeRight j, false) = true
+    · rcases factorialFourth_mul_invFourth_exists (L := L) (k := j.val + 2)
+          (by omega) (by omega) with ⟨N, hN⟩
+      exact ⟨N, by simpa [hx] using hN⟩
+    · exact ⟨0, by simp [hx]⟩
+  choose N hN using hterm
+  refine ⟨∑ j : Fin (L - 1), N j, ?_⟩
+  unfold nestedInverseFourthBridgeEnergy
+  rw [Finset.mul_sum]
+  push_cast
+  apply Finset.sum_congr rfl
+  intro j hj
+  simpa [nestedBridgeLeft, nestedBridgeRight, Nat.cast_add, Nat.cast_ofNat] using hN j
+
+theorem exists_factorialFourth_mul_nestedChainEnergy {L : ℕ}
+    (x : Config (PairQubit L)) :
+    ∃ N : ℕ, ((L.factorial : ℝ) ^ 4) * nestedInversePowerChainEnergy x = N := by
+  rcases exists_factorialFourth_mul_matchingEnergy x with ⟨a, ha⟩
+  rcases exists_factorialFourth_mul_nestedBridgeEnergy x with ⟨b, hb⟩
+  refine ⟨a + b, ?_⟩
+  rw [nestedInversePowerChainEnergy, mul_add, ha, hb]
+  push_cast
+  rfl
+
+noncomputable def nestedInversePowerReturnPeriod (L : ℕ) : ℝ :=
+  2 * Real.pi * (L.factorial : ℝ) ^ 4
+
+theorem nestedInversePowerChain_exact_return (L : ℕ) :
+    nestedInversePowerChainEvolution L (nestedInversePowerReturnPeriod L) = 1 := by
+  rw [nestedInversePowerChainEvolution_diagonal]
+  ext x y
+  by_cases hxy : x = y
+  · subst y
+    simp only [Matrix.diagonal_apply_eq, one_apply, ↓reduceIte]
+    rcases exists_factorialFourth_mul_nestedChainEnergy x with ⟨N, hN⟩
+    have hphase : nestedInversePowerReturnPeriod L * nestedInversePowerChainEnergy x =
+        2 * Real.pi * N := by
+      unfold nestedInversePowerReturnPeriod
+      rw [mul_assoc, hN]
+    have hphaseC : (nestedInversePowerReturnPeriod L : ℂ) *
+        (nestedInversePowerChainEnergy x : ℂ) = ((2 * Real.pi * N : ℝ) : ℂ) := by
+      exact_mod_cast hphase
+    rw [hphaseC]
+    convert Complex.exp_int_mul_two_pi_mul_I (-(N : ℤ)) using 1
+    norm_num
+    ring_nf
+  · simp [Matrix.diagonal, hxy]
+
+theorem nestedInversePowerChainEvolution_add (L : ℕ) (s t : ℝ) :
+    nestedInversePowerChainEvolution L (s + t) =
+      nestedInversePowerChainEvolution L s * nestedInversePowerChainEvolution L t := by
+  rw [nestedInversePowerChainEvolution_diagonal, nestedInversePowerChainEvolution_diagonal,
+    nestedInversePowerChainEvolution_diagonal, Matrix.diagonal_mul_diagonal]
+  congr 1
+  funext x
+  rw [← Complex.exp_add]
+  congr 1
+  push_cast
+  ring
+
+theorem nestedInversePowerChainEvolution_return_reflect (L : ℕ) (t : ℝ) :
+    nestedInversePowerChainEvolution L (nestedInversePowerReturnPeriod L - t) =
+      (nestedInversePowerChainEvolution L t)ᴴ := by
+  have hsplit := nestedInversePowerChainEvolution_add L
+    (nestedInversePowerReturnPeriod L - t) t
+  have hsum : nestedInversePowerReturnPeriod L - t + t =
+      nestedInversePowerReturnPeriod L := by ring
+  rw [hsum, nestedInversePowerChain_exact_return] at hsplit
+  have hunit := nestedInversePowerChainEvolution_unitary L t
+  have hright : nestedInversePowerChainEvolution L t *
+      (nestedInversePowerChainEvolution L t)ᴴ = 1 := by
+    rw [← Matrix.star_eq_conjTranspose]
+    exact Matrix.mem_unitaryGroup_iff.mp hunit
+  calc
+    nestedInversePowerChainEvolution L (nestedInversePowerReturnPeriod L - t) =
+        nestedInversePowerChainEvolution L (nestedInversePowerReturnPeriod L - t) * 1 := by simp
+    _ = nestedInversePowerChainEvolution L (nestedInversePowerReturnPeriod L - t) *
+        (nestedInversePowerChainEvolution L t *
+          (nestedInversePowerChainEvolution L t)ᴴ) := by rw [hright]
+    _ = (nestedInversePowerChainEvolution L (nestedInversePowerReturnPeriod L - t) *
+        nestedInversePowerChainEvolution L t) *
+          (nestedInversePowerChainEvolution L t)ᴴ := by rw [Matrix.mul_assoc]
+    _ = (nestedInversePowerChainEvolution L t)ᴴ := by rw [← hsplit]; simp
+
+/-- Operator-norm two-qubit-gate complexity of the nested finite-volume evolution. -/
+noncomputable def nestedOperatorTwoGateComplexity (L : ℕ) (ε t : ℝ) : ℕ∞ :=
+  ⨅ c ∈ {c : List (LocalGate (PairQubit L)) | NestedOperatorApproximates t ε c},
+    (twoGateCount c : ℕ∞)
+
+theorem nestedOperatorTwoGateComplexity_le_of_circuit {L : ℕ} {ε t : ℝ}
+    {c : List (LocalGate (PairQubit L))} (hc : NestedOperatorApproximates t ε c) :
+    nestedOperatorTwoGateComplexity L ε t ≤ (twoGateCount c : ℕ∞) := by
+  refine le_trans (iInf_le _ c) ?_
+  exact iInf_le
+    (fun _ : c ∈ {c : List (LocalGate (PairQubit L)) | NestedOperatorApproximates t ε c} =>
+      (twoGateCount c : ℕ∞)) hc
+
+theorem le_nestedOperatorTwoGateComplexity_iff {L : ℕ} (ε t : ℝ) (G : ℕ∞) :
+    G ≤ nestedOperatorTwoGateComplexity L ε t ↔
+      ∀ c : List (LocalGate (PairQubit L)),
+        NestedOperatorApproximates t ε c → G ≤ (twoGateCount c : ℕ∞) := by
+  rw [nestedOperatorTwoGateComplexity, le_iInf_iff]
+  constructor
+  · intro h c hc
+    exact le_iInf_iff.mp (h c) hc
+  · intro h c
+    exact le_iInf fun hc => h c hc
+
+theorem NestedOperatorApproximates.adjointCircuit_return_reflect {L : ℕ} {ε t : ℝ}
+    {c : List (LocalGate (PairQubit L))} (hc : NestedOperatorApproximates t ε c) :
+    NestedOperatorApproximates (nestedInversePowerReturnPeriod L - t) ε
+      (adjointCircuit c) := by
+  unfold NestedOperatorApproximates at hc ⊢
+  rw [circuitMatrix_adjointCircuit, nestedInversePowerChainEvolution_return_reflect]
+  calc
+    ‖(circuitMatrix c)ᴴ - (nestedInversePowerChainEvolution L t)ᴴ‖ =
+        ‖(circuitMatrix c - nestedInversePowerChainEvolution L t)ᴴ‖ := by
+          rw [Matrix.conjTranspose_sub]
+    _ = ‖circuitMatrix c - nestedInversePowerChainEvolution L t‖ :=
+      Matrix.l2_opNorm_conjTranspose _
+    _ ≤ ε := hc
+
+theorem nestedOperatorTwoGateComplexity_exact_return_reflect (L : ℕ) (ε t : ℝ) :
+    nestedOperatorTwoGateComplexity L ε (nestedInversePowerReturnPeriod L - t) =
+      nestedOperatorTwoGateComplexity L ε t := by
+  apply le_antisymm
+  · rw [le_nestedOperatorTwoGateComplexity_iff]
+    intro c hc
+    have hadj := hc.adjointCircuit_return_reflect
+    simpa using nestedOperatorTwoGateComplexity_le_of_circuit hadj
+  · rw [le_nestedOperatorTwoGateComplexity_iff]
+    intro c hc
+    have hadj := hc.adjointCircuit_return_reflect
+    have htime : nestedInversePowerReturnPeriod L -
+        (nestedInversePowerReturnPeriod L - t) = t := by ring
+    rw [htime] at hadj
+    simpa using nestedOperatorTwoGateComplexity_le_of_circuit hadj
+
+theorem nestedOperatorComplexity_floor_twoCeil {L : ℕ} {t ε : ℝ}
+    (hε : 0 < ε) (hεmax : ε ≤ 1 / 100)
+    (htMin : 1024 * Real.pi * ε ≤ t)
+    (htLab : t ≤ ε * L / 2) :
+    ((⌊t / (128 * Real.pi * ε)⌋₊ : ℕ) : ℕ∞) ≤
+        nestedOperatorTwoGateComplexity L ε t ∧
+      nestedOperatorTwoGateComplexity L ε t ≤
+        ((2 * ⌈2 * t / ε⌉₊ : ℕ) : ℕ∞) := by
+  have hramp := nestedInversePowerChain_floor_linear_growth hε hεmax htMin htLab
+  constructor
+  · rw [le_nestedOperatorTwoGateComplexity_iff]
+    intro c hc
+    exact_mod_cast hramp.1 c hc
+  · rcases hramp.2 with ⟨c, hcost, herr⟩
+    have hc : NestedOperatorApproximates t ε c := le_of_lt herr
+    have hle := nestedOperatorTwoGateComplexity_le_of_circuit hc
+    rw [hcost] at hle
+    exact le_trans hle (by exact_mod_cast (Nat.sub_le (2 * ⌈2 * t / ε⌉₊) 1))
+
+/-- Capstone: one nested static nearest-neighbour path has a robust linear laboratory-time
+complexity excursion, exact factorial-four return, and identical reflected bounds. -/
+theorem nestedStaticLocal_thermodynamic_ramp_return_reflection {L : ℕ} {t ε : ℝ}
+    (hε : 0 < ε) (hεmax : ε ≤ 1 / 100)
+    (htMin : 1024 * Real.pi * ε ≤ t)
+    (htLab : t ≤ ε * L / 2) :
+    nestedInversePowerChainEvolution L (nestedInversePowerReturnPeriod L) = 1 ∧
+      nestedOperatorTwoGateComplexity L ε (nestedInversePowerReturnPeriod L - t) =
+        nestedOperatorTwoGateComplexity L ε t ∧
+      ((⌊t / (128 * Real.pi * ε)⌋₊ : ℕ) : ℕ∞) ≤
+        nestedOperatorTwoGateComplexity L ε t ∧
+      nestedOperatorTwoGateComplexity L ε t ≤
+        ((2 * ⌈2 * t / ε⌉₊ : ℕ) : ℕ∞) ∧
+      ((⌊t / (128 * Real.pi * ε)⌋₊ : ℕ) : ℕ∞) ≤
+        nestedOperatorTwoGateComplexity L ε (nestedInversePowerReturnPeriod L - t) ∧
+      nestedOperatorTwoGateComplexity L ε (nestedInversePowerReturnPeriod L - t) ≤
+        ((2 * ⌈2 * t / ε⌉₊ : ℕ) : ℕ∞) := by
+  have href := nestedOperatorTwoGateComplexity_exact_return_reflect L ε t
+  have hb := nestedOperatorComplexity_floor_twoCeil hε hεmax htMin htLab
+  refine ⟨nestedInversePowerChain_exact_return L, href, hb.1, hb.2, ?_, ?_⟩
+  · rw [href]
+    exact hb.1
+  · rw [href]
+    exact hb.2
+
 end GaloisForLFunctions.HTGeometry.StaticLocalLaboratoryComplexityGrowthLaw

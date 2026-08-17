@@ -13427,3 +13427,80 @@ which forces `x³/log x ≥ x²`.  At `T = r^{-4}` the barrier quantity is of th
 tail-supported vector can meet the target certificate for small `r`.
 
 All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AFY. Theorems AT and AU — the coupled-gain floor and the coefficient scale
+
+```text
+RHTower/SuzukiCoupledCloudCore.lean
+  coefficient_norm_lt_of_objective  (416): the ridge pins ‖c‖ to the scale 1/√r
+  highSide_pairing_le               (417)
+  residual_sq_gt_of_gain            (410), middle
+  leak_norm_gt                      (410), last
+```
+
+Theorem AT's identities `(408)` and the `15/16` dichotomy are already owned by
+`HTGeometry/ComplementaryFeshbachImprovement.lean` — the complementary elimination, the inverse
+quadratic split, the nonnegative gain, the defect-drop identity, and
+`fifteenSixteenths_lt_low_or_high`.  What was missing is the second branch's quantitative chain:
+positivity of the complementary Schur block below the ridge mass gives `χ ≤ ‖e_H‖²/r`, so an
+order-one gain forces `‖e_H‖² > r/16`; and the reverse triangle inequality against a negligible
+analysis tail transfers that to the leakage of the low-only optimizer, `‖B*L⁻¹u_L‖ > √r/8`.
+
+Theorem AU's correlation core is owned by `HTGeometry/RidgeSourceCorrelationLocalization.lean`.
+What is added is the scale that makes `(417)` explicit: the ridge term is the *only* control on the
+coefficient norm, and it is sharp — `r‖c‖² < 1/16` gives exactly `‖c‖ < 1/(4√r)`.  Pairing that
+against the analysis tail `‖u_{>H}‖ ≤ √(C log(H+2)/H)` yields the high-side correlation
+`√(C log(H+2)/(16 r H))`, whose vanishing is precisely the card's condition
+`r H/log(H+2) → ∞`.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AFZ. Theorem AV — the cross-coherence envelope and its sharp threshold
+
+```text
+RHTower/SuzukiCrossCoherenceBarrier.lean
+  quadratic_envelope             the scalar maximum behind (420)
+  schur_coercive_of_coherence    (424)
+  envelope_limit                 (420) with vanishing high resolvent mass
+  sharp_crossCoherence_constant  (422)
+  crossCoherence_sq_ge           (421)
+```
+
+`(420)` is the same completion of squares as everywhere else in this section, now in the free
+scalar `b = ⟨Dy,y⟩^{1/2}`: the linear term is at most `2(√τ + ρ√ℓ)b` and the quadratic term at
+least `(1−ρ²)b²`, so the supremum is `(√τ + ρ√ℓ)²/(1−ρ²)`.  `(424)` is the coercivity that supplies
+the quadratic coefficient — the self-energy is at most `ρ²⟨Dy,y⟩` by the definition of the
+canonical correlation.
+
+`(422)` is exact arithmetic: `(1/15)(7/8)/(1 − 1/15) = 1/16`, so the threshold is sharp for the
+information used.  `(421)` is its contrapositive — a squared coherence below `1/15` would make the
+envelope strictly below `1/16`, contradicting the order-one gain of the high-assisted branch.
+
+The residual inverse-norm envelope and the `1/15` numerical barrier at the operator level are
+already owned by `HTGeometry/ComplementaryFeshbachImprovement.lean`.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AGA. Theorems AW and AX — the near-null alternative and the low-only ceiling
+
+```text
+RHTower/SuzukiNearNullPhaseDiagram.lean
+  min_le_sqrt_mul              (427): the geometric-mean step
+  exp_decay_of_log_sq_bound    (428)/(433): the exponential shift scale
+  rate_of_quartic_bound        (432): the fourth-root ceiling
+```
+
+`(427)`'s last line is the elementary fact that the minimum of two nonnegative numbers never
+exceeds their geometric mean, so the capacity bound on the *product* of the two block Rayleigh
+quotients bounds the smaller one.
+
+`(428)` is the rearrangement made precise.  If the aperture is at most `C log(1/r)²`, then
+`log(1/r) ≥ √(a/C) = √a/√C`, so `1/r ≥ exp(√a/√C)` and the shift is at most `exp(−√a/√C)` — the
+card's exponential branch, with the constant explicit.
+
+`(432)` is the fourth root: the support-confined certificate gives a quartic inequality for the
+shift, and `r⁴ ≤ X` gives `r ≤ X^{1/4}` by monotonicity of the real power.  The rate is legitimate
+here, and only here, because the certificate's support is confined below the cutoff — which is
+exactly the card's contrast with the retired growing-block argument.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
