@@ -684,3 +684,39 @@ the division algorithm is used, so the same argument extends only to the Euclide
 quadratic fields.  The card's statement for arbitrary algebraic `F/Q` still needs Garland or
 Quillen–Borel; recording this so that the ratio between "one classical input" and "one *cheap*
 classical input" is not misread.
+
+## Lean progress — the degree-two symbol calculus, the Tate route's first brick
+
+`HTGeometry/MilnorKDegTwoSymbol.lean` (wired into the `HTGeometry` umbrella, built, axioms
+`[propext, Classical.choice, Quot.sound]`).
+
+The Euclidean reduction of step 4 is a computation with symbols, and the tree had `K_2^M` only
+through the general graded API (`milnorClassDeg`, `milnorClassDeg_mul_of_eq`,
+`milnorClassDeg_steinberg_of_eq`).  The degree-two calculus is now a named layer:
+
+```
+milnorSym2 F a b                    the symbol {a, b}
+milnorSym2_mul_left / _mul_right    bilinearity in each slot
+milnorSym2_steinberg                {a, 1 − a} = 0
+milnorSym2_one_left / _one_right    {1, b} = {a, 1} = 0
+milnorSym2_inv_left / _inv_right    {a⁻¹, b} = {a, b⁻¹} = −{a, b}
+milnorSym2_neg_self                 ** {a, −a} = 0 **
+milnorSym2_antisymm                 ** {a, b} = −{b, a} **
+closure_range_milnorSym2            ** the symbols generate K_2^M(F) **
+```
+
+`{a, −a} = 0` is the classical computation `−a = (1 − a)/(1 − a⁻¹)`, done at the level of units: the
+first factor dies by Steinberg at `a`, the second by Steinberg at `a⁻¹` after moving the inverse out
+of the left slot.  Antisymmetry is `{ab, −ab} = 0` expanded in both slots.  `closure_range_milnorSym2`
+is the free-abelian-group induction, using that a symbol of degree two is literally a two-element
+list.
+
+These are exactly the identities the Euclidean step consumes — it rewrites `{a, p}` with
+`0 < a < p` by dividing `p` by `a` and applying Steinberg, and needs bilinearity, antisymmetry and
+`{a, −a} = 0` to move the pieces around.  The step itself, and the filtration `L_p` by the largest
+prime occurring, are the next bricks.
+
+Recorded scope, unchanged: this route settles `F = Q` (and the Euclidean imaginary quadratics), not
+an arbitrary number field.  The card's `(1)` in full generality still needs Garland's finiteness of
+`K_2(O_K)` or Quillen finite generation with Borel's rank computation, neither of which has any part
+of its machinery in mathlib.

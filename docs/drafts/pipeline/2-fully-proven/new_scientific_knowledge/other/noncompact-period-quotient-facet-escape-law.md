@@ -641,3 +641,103 @@ rather than at the centre.  The missing ingredient is therefore the propagation 
 analytic germs to nearby points, i.e. that the common zero set of two coprime germs has codimension
 at least two.  Above that one statement the whole analytic machine is unconditional and correctly
 hypothesized.
+
+## Siegel programme — step 5': coprimality of analytic germs is an open condition
+
+The ingredient the previous section named as the only missing one is now formalized,
+unconditionally and axiom-clean (`propext`, `Classical.choice`, `Quot.sound`), and wired into the
+`HTGeometry` umbrella.
+
+```text
+GaloisForLFunctions.HTGeometry.eventually_isRelPrime_germ :
+  f, g holomorphic near p in C^(n+1),  IsRelPrime (germ_p f) (germ_p g)
+    ==>  for all q in a neighbourhood of p,  IsRelPrime (germ_q f) (germ_q g).
+```
+
+Equivalently: the common zero set of two coprime germs contains no hypersurface through any nearby
+point, which is the codimension-two statement in the form the transition bound consumes.  No
+dimension theory of analytic sets is used; the proof replaces it by a Bézout constant.
+
+### The route
+
+`HTGeometry/MonicBezoutConstant.lean` — the algebraic half.  Over a unique factorization domain `A`,
+two monic polynomials with no common monic factor of positive degree satisfy
+
+```text
+alpha*F + beta*G = C c,   c in A,  c != 0.
+```
+
+The descent is Gauss' lemma in its integrally closed form: a monic greatest common divisor computed
+in `K[X]`, `K = Frac A`, is the image of a monic divisor in `A[X]`
+(`IsIntegrallyClosed.eq_map_mul_C_of_dvd` plus `Monic.dvd_of_fraction_map_dvd_fraction_map`), so a
+common factor over `K` would descend.  Coprimality over `K` then gives a Bézout identity whose
+denominators are cleared by `IsLocalization.integerNormalization`.  Declarations:
+`exists_preimage_monic_of_map_dvd`, `isCoprime_map_of_no_common_monic_factor`,
+`smul_eq_C_mul_of_fraction`, `exists_bezout_const`.
+
+`HTGeometry/GermZeroProjection.lean` — the projection statement.  A germ that vanishes at a point
+and is regular in the distinguished coordinate there has, over *every* nearby parameter value, a
+zero inside any prescribed neighbourhood:
+
+```text
+eventually_exists_slice_zero_zero,  eventually_exists_slice_zero :
+  h(w0) = 0,  slice of h regular at w0,  W in nhds w0
+    ==>  eventually in y near tail w0,  exists z,  cons z y in W  and  h (cons z y) = 0.
+```
+
+The proof is the corpus's own root count of a slice: `card_sliceRoots_const_of_isPreconnected` makes
+it locally constant in the parameters, `slice_eq_zero_iff_mem_sliceRoots` makes it at least one at
+the base parameter, and `sliceRoots_norm_lt` keeps the root inside the circle.  The arbitrary-point
+version is the origin version conjugated by a translation (`cons_add`).
+
+`HTGeometry/GermSliceNonvanishing.lean` — regularity spreads.  `exists_polydisc_slice_ne_zero`: on
+the preparation polydisc of a regular germ, the slice at *every* parameter is nonzero near *every*
+point of the disc, because the Weierstrass factor is a monic — hence nonzero — polynomial and the
+unit does not vanish.  This is what allows a divisor of `f` at a point of the polydisc to be
+prepared in the *same* coordinates that were chosen at the centre.
+
+`HTGeometry/GermCoprimeOpen.lean` — the assembly.
+
+* `IsRelPrime.ringEquiv`, `isRelPrime_analyticGermOf_pullback_iff` — relative primality of germs is
+  invariant under an analytic change of coordinates.
+* `eventually_isRelPrime_germ_of_regular` — the theorem in coordinates where both germs are regular.
+  Weierstrass preparation gives `germ f = germEval (distPoly d alpha) * unit`; a common monic factor
+  of positive degree of the two distinguished polynomials would be distinguished
+  (`coeff_eq_zero_of_monic_mul_eq_distPoly`) and so a non-unit common germ divisor
+  (`not_isUnit_germEval_distPoly`), which coprimality forbids.  The Bézout constant then reads, on a
+  polydisc, as an identity of holomorphic functions
+
+  ```text
+  p*f + q*g = c o tail,   c a nonzero germ of the parameters alone.
+  ```
+
+  A common non-unit divisor `h` of `f` and `g` at a point `w` of the polydisc is regular in the same
+  distinguished coordinate (it divides `f`, whose slices are nowhere identically zero), so its zero
+  set meets every nearby parameter fibre; every such zero is a common zero of `f` and `g`, so `c`
+  vanishes on a whole neighbourhood of the parameter of `w`, hence identically by the identity
+  theorem — contradicting `c != 0`.
+* `eventually_isRelPrime_germ_zero` — the regularity hypotheses removed by a linear change of
+  coordinates (`exists_regular_coordinate_change` applied to the product), with the two degenerate
+  cases (one germ identically zero, so the other is a unit) handled separately.
+* `eventually_isRelPrime_germ` — the statement at an arbitrary centre, by translation.
+
+### The transition bound, which is what the count consumes
+
+`HTGeometry/GermReducedTransition.lean`:
+
+```text
+associated_den_of_reduced_at            -- reduced presentations at a point have associated denominators
+exists_two_sided_ratio_bound_of_reduced_at
+eventually_ratio_bound_of_reduced_centres :
+  (A1,B1) reduced at c1,  (A2,B2) reduced at c2
+    ==>  eventually in w in nhds c1 inf nhds c2,  wherever A1*B2 = A2*B1 near w,
+         there are r, C > 0 with  |B2| <= C|B1|  and  |B1| <= C|B2|  on ball w r.
+```
+
+This is exactly the comparison the chartwise count needs on the overlaps, and the exact statement
+the previous section listed as unavailable: reducedness is a condition at the centre, the comparison
+happens away from it, and the two are joined by the openness of coprimality.
+
+Remaining on the Siegel gate: the counting assembly — feeding these local reduced presentations and
+their transition constants into `SiegelLocalCharts.exists_ne_zero_poly_eval_eq_zero_local` and
+`SiegelGainVanishing.eqOn_zero_of_family_siegel_gain` for a compact complex torus.

@@ -3887,3 +3887,20 @@ Theorems B, C and D of that card remain.
   `score_le_of_norm_sub_le` (a bound at a cube centre survives on the whole cube).  Theorem B's
   remaining input is `(26)`, the completed-phase incidence bound, which the card declares as a
   parent input.
+
+### Theorem A of the prime-torsion card
+
+- `HTGeometry/PrimeTorsionHardPolygon.lean` -- the hard cyclic polygon.  Two deliberate
+  generalizations keep the proof honest and reusable: the counting core
+  (`card_hardPoints_add_ge`, `exists_hardPoint`) is stated for an arbitrary finite family of
+  injections and knows nothing about power maps or target dictionaries, and the bijectivity of the
+  power map (`bijective_zsmul_of_isCoprime`) is stated for an arbitrary abelian group of exponent
+  dividing `k`, where a Bézout coefficient supplies the two-sided inverse -- no `ZMod k`-module
+  structure and no primality at that step.  Primality enters only via `isCoprime_of_lt_prime`.
+  On top: `(14)` `exists_hard_torsion_point`, `(14a)` `card_hard_torsion_add_ge` with its fractional
+  form, the anchored model `torsionModel k D = Fin (D-1) → ZMod k` with `card_torsionModel`, and
+  `(14b)` `card_hard_subgroups_ge` (via `Finset.card_le_mul_card_image` and
+  `addOrderOf_eq_of_prime_exponent`).
+  What links these to the card is Lemma A, already formal: substituting its bound on `|E|` turns the
+  counting hypothesis into the card's `(13)`.  Theorem B remains, as does tying the anchored model
+  to the concrete quotient `μ_k^D/μ_k^diag`.

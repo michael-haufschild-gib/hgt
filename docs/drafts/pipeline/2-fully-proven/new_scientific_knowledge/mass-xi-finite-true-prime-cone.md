@@ -8531,3 +8531,134 @@ Accounting notes.
     source rectangles and the moving cutoff; the surviving open core is still the sign of the real
     part of one absolutely convergent integral, and the card's two recorded failures (large-mass pair
     positivity, termwise von-Mangoldt positivity) remain the reason no shortcut is available.
+
+## Stage-3 audit and the caustic symbol (2026-08-17)
+
+### What actually blocks stage 3
+
+Auditing the status labels against the Lean log:
+
+| Label | State |
+|---|---|
+| Main equivalence, prime-square cone tail, true-prime Dirichlet face, prime-log quadrature defect, coboundary bridge, moving annulus cancellation, closed strip-limited cone, sharp Bessel cone and endpoint tail, subthreshold divergence, `PNTPlus` subcaustic reduction, asymptotically caustic type-zero criterion, harmonic-floor transform, graded phase diagram | formal |
+| Timelike identity wall (C42-U) | formal — `RHTower/XiMassTimelikeIdentityWall.eq_zero_of_vanishes_on_timelikeSaddles` |
+| Jordan-floor spectral-resolution no-go (C43-B) | formal — `RHTower/JordanFloorSymbolLaw.jetSymbol_vanishing_of_analyticOrder`; its `(24.6)` is an *absence the card itself records*, not a `[PROVED HERE]` claim |
+| **Caustic-null polynomial jet hierarchy (C42-T), `(22.7)`--`(22.11)`** | **the one open item** |
+
+The two `[LEAN PENDING]` labels in "Status labels" are therefore stale by one: only the *jet
+hierarchy* half of the first is open, and the second is closed.  `(21.4)` is a sharpness remark
+inside the C42-P proof-or-failure loop, not a labelled statement, and does not gate stage 3.
+
+### `(22.7)` reduced to a symbol estimate
+
+The card's proof of `(22.7)` invokes a uniform stationary Laplace expansion to arbitrary order.
+That is avoidable.  `RHTower/XiMassCausticNullJet.xiMassCausticJet_dispersion` already proves that
+along the dispersion relation the jet is the *real* polynomial
+
+```text
+P_N(ω(x)) = (x² + 4a⁴)^{2N},
+```
+
+so under the height Fourier transform it is the constant-coefficient differential operator
+
+```text
+F_{u,N} = (4a⁴ − ∂_h²)^{2N} F_u ,
+```
+
+and `F_u` is already known in closed Bessel form
+(`RHTower/XiMassFourierBesselIdentity.stripFourier_xiMass_eq_bessel`,
+`F_u(h) = 2aτ·K₁(az)/z`, `z² = τ² + h²`).  On the exterior carrier `e^{-az}` the operator has
+symbol `4a⁴ − a²h²/z²`, since `∂_h(-az) = -a h/z`; and the pair `(K₁(az)/z, ∂_z[K₁(az)/z])` is
+closed under `∂_h`, so `(4a⁴ − ∂_h²)^{2N}F_u` is a *rational* combination of that pair with
+coefficients given by an explicit two-term recursion.  The whole `u^{-N}` gain is then the
+vanishing of the symbol at the caustic, iterated.
+
+**Landed: `RHTower/XiMassCausticSymbolDefect.lean`** (unconditional, wired, axiom-clean).
+
+    xiMassSpacelikeSharpSlope_sq              κ_B² = 4a²/(4a²−1)
+    xiMassSpacelikeSharpSlope_sq_sub_one      κ_B² − 1 = 1/(4a²−1)
+    xiMassCausticSymbol                       4a⁴ − a²h²/(τ²+h²)
+    xiMassCausticSymbol_residue               **the exact cancellation**:
+                                              4a²(τ²+h²) − h² = 4a²σ² + 8ia²σu
+                                                              + (4a²−1)(2κ_B u s + s²)
+                                              at h = κ_B u + s — the `u²` terms cancel identically
+    exists_norm_xiMassCausticSymbol_le        **`‖symbol‖ ≤ C/√u` on `|s| ≤ √u`**
+
+The residue identity is the analytic heart of C42-T and it is *exact*: at the balance slope the
+`u²` coefficient of `4a²z² − h²` is `(4a²−1)κ_B² − 4a² = 0`.  Everything that survives is the
+damping `σ` and the window displacement `s`, both `O(u^{3/2})` against `|z²| ≍ u²`.
+
+### Remaining for C42-T
+
+1. The Bessel ODE for `besselK1C`: `ζ²K'' + ζK' − (ζ²+1)K = 0`, from the Schläfli integral.  The
+   corpus has `besselK1CDeriv` and its derivative rule but not the second-order relation.
+2. The closed `(w, w')` system in the height, `∂_h w = (h/z)w'`,
+   `∂_h w' = (h/z)(a²w − 3w'/z)`, and the induced recursion for the coefficient pair of
+   `(4a⁴ − ∂_h²)^k F_u`.
+3. Iterating the symbol estimate through that recursion to get `(22.7)`, then `(22.8)`--`(22.11)`
+   by re-running §21 with `β = N + 1/2`.
+
+### C42-T: the jet recursion is built (2026-08-17)
+
+Items 1 and 2 of the previous list are done, and item 3's algebraic half with them.  The route
+avoids the second-order Bessel equation entirely: the pair `(K₀, K₁)` is closed under `∂` with
+*rational* coefficients, so nothing beyond one integration by parts is needed.
+
+    HTGeometry/BesselK1DerivRecurrence.lean
+      besselK0C                                 the order-zero Schläfli integral
+      integrable_coshPow_mul_exp_neg_cosh        one Gaussian majorant for every order up to two
+      tendsto_sinh_mul_exp_neg_cosh              the Schläfli boundary term vanishes at infinity
+      hasDerivAt_sinh_mul_exp_neg_cosh
+      besselK1CDeriv_eq_neg                     **`K₁′(z) = −(K₀(z) + K₁(z)/z)`**, by integrating
+                                                `∂_t(sinh t·e^{-z cosh t})` over the half line
+      hasDerivAt_besselK0C                      `K₀′(z) = −K₁(z)`
+      hasDerivAt_besselK1C_pair                 the closed first-order pair
+
+    RHTower/XiMassBesselHeightSystem.lean
+      xiMassHeightRadius, xiMassHeightK0, xiMassHeightK1
+      hasDerivAt_xiMassHeightRadius             `Z′(w) = w/Z`
+      hasDerivAt_xiMassHeightK0,
+        hasDerivAt_xiMassHeightK1               `∂_w K₀(aZ) = −a(w/Z)K₁(aZ)`,
+                                                `∂_w K₁(aZ) = −a(w/Z)K₀(aZ) − (w/Z²)K₁(aZ)`
+
+    RHTower/XiMassBesselStateClosure.lean
+      xiMassBesselState                         `A(w)K₀(aZ) + B(w)K₁(aZ)`
+      hasDerivAt_xiMassBesselState              states are closed under `∂_w`
+      xiMassBesselHeightSide_eq_state           the mass profile is the state `(0, 2aτ/Z)`
+
+    RHTower/XiMassHeightCoeffRing.lean
+      xiMassRadiusPoly, xiHeightCoeff            the ring `(P(w) + Q(w)Z)/R(w)^j`, `R = τ²+w²`
+      xiHeightCoeffDerivFst, xiHeightCoeffDerivSnd
+      hasDerivAt_xiHeightCoeff                  **the ring is closed under `∂_w`**, by the
+                                                polynomial map
+                                                `(P,Q,j) ↦ (P′R − 2jwP, Q′R + (1−2j)wQ, j+1)`
+
+    RHTower/XiMassJetRecursion.lean
+      xiJetStepPA, xiJetStepQA, xiJetStepPB, xiJetStepQB
+      xiJetStep_fst, xiJetStep_snd
+      hasDerivAt_xiJetState                     one height step of a jet state, entirely inside the
+                                                coefficient ring
+
+    RHTower/XiMassJetProfile.lean
+      xiJetData, xiJetProfile
+      hasDerivAt_xiJetProfile                   **the recursion differentiates the profile**
+      xiJetProfile_zero                         its base is the mass profile
+
+So for every `k` the `k`-th height derivative of `2aτ·K₁(aZ)/Z` is *exactly*
+
+```text
+( P_A^{(k)}(w) + Q_A^{(k)}(w)Z )/R^{k+1} · K₀(aZ)  +  ( P_B^{(k)}(w) + Q_B^{(k)}(w)Z )/R^{k+1} · K₁(aZ),
+```
+
+with the quadruple produced by a fixed polynomial recursion, valid on the whole region
+`Re(τ² + w²) > 0`.  No asymptotic expansion and no stationary-phase argument appears.
+
+### Remaining for C42-T
+
+1. **Coefficient growth.**  Degree and coefficient-size bounds for `xiJetData` by induction on the
+   recursion — the only estimate left, and it is a polynomial one.
+2. **The cancellation.**  Combine those bounds with
+   `XiMassCausticSymbolDefect.exists_norm_xiMassCausticSymbol_le` (the caustic symbol is
+   `O(u^{-1/2})` on `|s| ≤ √u`) to get `(22.7)` for the operator `(4a⁴ − ∂_h²)^{2N}`, whose iterates
+   are two jet steps each.
+3. `(22.8)`--`(22.11)`: re-run §21 with `β = N + 1/2`.

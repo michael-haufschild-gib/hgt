@@ -623,6 +623,37 @@ the target and using Pythagoras and Cauchy--Schwarz gives `1-2δ²` directly, wh
 card's `c_δ = sqrt(1-4δ²)`.  Composed with `card_classes_le_of_cover` this is the complete chain
 `(8) → (9) → (10) → (11) → (7)`.
 
+### Theorem A -- the hard cyclic orbit is closed
+
+`formal/GaloisForLFunctions/HTGeometry/PrimeTorsionHardPolygon.lean` (new, umbrella-wired,
+axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| the hard set: the classes all of whose listed images avoid the easy set | `hardPoints` |
+| **`(16)`**, the counting core: removing the preimages under `m` injections costs at most `m\|E\|` | `card_hardPoints_add_ge` |
+| a hard point exists once `(k-1)\|E\| < \|Q\|` | `exists_hardPoint` |
+| **`(15)`**: the power map is bijective at every exponent coprime to the group's exponent | `bijective_zsmul_of_isCoprime` |
+| every `1 <= j <= k-1` is coprime to a prime `k` | `isCoprime_of_lt_prime` |
+| **`(14)`**: a class with every nonidentity power hard | `exists_hard_torsion_point` |
+| **`(14a)`**: at least `\|Q\| - (k-1)\|E\|` such classes, and its fractional form | `card_hard_torsion_add_ge`, `card_hard_torsion_ge_of_frac` |
+| the anchored model `Q_{D,k}` with `\|Q_{D,k}\| = k^{D-1}` of `(2)`--`(3)` | `torsionModel`, `card_torsionModel`, `zsmul_torsionModel_eq_zero` |
+| `(14)` and `(14a)` on that model | `exists_hard_torsionModel_point`, `card_hard_torsionModel_add_ge` |
+| a nonzero class of a prime-exponent group has exact order `k` | `addOrderOf_eq_of_prime_exponent` |
+| **`(14b)`**: the hard classes generate at least `\|hard \ {0}\|/(k-1)` distinct order-`k` subgroups | `card_hard_subgroups_ge` |
+
+Two deliberate generalizations.  `(15)`'s bijectivity is proved for an arbitrary abelian group of
+exponent dividing `k` -- a Bézout coefficient supplies the two-sided inverse, so no `ZMod k`-module
+structure and no primality is needed at that step; primality enters only through
+`isCoprime_of_lt_prime`.  And `(16)` is proved for an arbitrary finite family of injections, so it
+does not know that the injections are power maps or that `E` came from a target dictionary.
+
+What links these to the card is Lemma A: taking `E = E_{Y,delta}^{(k)}` and
+`\|E\| <= 4N e^{-gamma_delta D} k^{D-1}` from `(7)` turns the hypothesis `(k-1)\|E\| < \|Q\|` into
+exactly the card's `(13)`.
+
 ### What remains
 
-Theorem A's hard cyclic orbit and Theorem B.
+Theorem B, and the identification of `Q_{D,k}` as the concrete quotient `mu_k^D/mu_k^diag` acting on
+the phase rays of `(1)` -- the modules above use the anchored model `Fin (D-1) -> ZMod k`, which has
+the right cardinality and exponent but is not yet tied to `Phi`.

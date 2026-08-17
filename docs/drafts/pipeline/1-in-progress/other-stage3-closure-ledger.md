@@ -3563,3 +3563,35 @@ fixed_isConst :  no nonconstant fixed element of jet order one, no shift at leve
 
 For the two quadratics the three inputs are the absence of an invariant rational differential, of a
 rational affine connection and of a rational projective structure — all already Lean-proved.
+
+## Pass 57 — coprimality of analytic germs is an open condition
+
+Card `noncompact-period-quotient-facet-escape-law` named one missing ingredient: the propagation of
+coprimality of analytic germs to nearby points.  It is now Lean-proved, unconditionally, in every
+dimension, axioms `[propext, Classical.choice, Quot.sound]`, umbrella-wired, lint-clean.
+
+```text
+GaloisForLFunctions.HTGeometry.eventually_isRelPrime_germ :
+  IsRelPrime (germ_p f) (germ_p g)  ==>  eventually in q near p,  IsRelPrime (germ_q f) (germ_q g).
+```
+
+Five new modules:
+
+* `MonicBezoutConstant` — over a UFD, two monic polynomials with no common monic factor of positive
+  degree admit `alpha*F + beta*G = C c` with `c != 0`.  Gauss' lemma in the integrally closed form
+  (`IsIntegrallyClosed.eq_map_mul_C_of_dvd`, `Monic.dvd_of_fraction_map_dvd_fraction_map`) plus
+  `IsLocalization.integerNormalization` to clear denominators.
+* `GermZeroProjection` — the zero set of a vanishing regular germ meets every nearby parameter
+  fibre, inside any prescribed neighbourhood.  Proof: the slice root count is locally constant in
+  the parameters, at least one at the base parameter, and the roots stay inside the circle.
+* `GermSliceNonvanishing` — regularity spreads over the preparation polydisc: the Weierstrass factor
+  is monic, hence nonzero, so no slice vanishes identically anywhere on the disc.
+* `GermCoprimeOpen` — the assembly, plus the invariance of relative primality of germs under an
+  analytic change of coordinates.  Contradiction mechanism: a common non-unit divisor at a nearby
+  point is regular in the same coordinate, its zeros give common zeros of `f` and `g` over every
+  nearby parameter, so the Bézout constant vanishes on an open set of parameters and hence
+  identically.
+* `GermReducedTransition` — the consequence the Siegel count consumes: two presentations reduced at
+  their own centres have boundedly comparable denominators near every point of the overlap.
+
+No dimension theory of analytic sets is used anywhere; the Bézout constant replaces it.

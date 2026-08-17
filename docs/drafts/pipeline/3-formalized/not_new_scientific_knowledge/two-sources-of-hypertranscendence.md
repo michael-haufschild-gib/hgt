@@ -111,7 +111,11 @@ orbit-balancing of the archimedean lane.
 - [x] 1 → 2  fully-proven: the **complete** CC-invariant (per-σ-orbit degree-0 balance) proved (both
   directions, decidable); degree-∞ recovered as its shadow; `Λ`'s unique Source-A place localized to orbit
   `ℤ`; `q`-orbit analog; weld localized as `{one non-CC}×{CC}`. **Grade BRIDGE.**
-- [ ] 2 → 3  formalized: Lean anchor **DONE** for the finite augmentation-kernel core:
+- [x] 2 → 3  formalized (2026-08-17) — the complete criterion is now
+  `OrbitBalanceComplete.isCC_iff_orbitDegree_eq_zero` in
+  `HTGeometry/OrbitBalanceRationalComplete.lean`; see the Lean formalization section at the end of
+  this card.  Earlier partial-anchor note kept for provenance: Lean anchors were present for the
+  finite augmentation-kernel core:
   `orbitDegree_zero`, `orbitDegree_single`, `orbitDegree_add`, and `orbitDegree_sub` provide the finite
   orbit-degree algebra; `orbitDegree_single_sub_single` proves balanced point-masses have orbit degree zero;
   `eq_sum_single_sub_base_of_orbitDegree_zero` proves that any integer-valued finitely supported orbit
@@ -181,3 +185,80 @@ paper-proof defect. This is a **paper-proven BRIDGE theorem** whose proof legiti
 those imports are to be carried as hypotheses/axioms (or formalized separately) at the Lean stage — not a reason to
 reject the paper proof. The card's stated theorem is proved at its 1→2 gate; any co-located open conjecture
 (C5★ / ω=0 / Schanuel / apex) is explicitly a SEPARATE open core, not part of this theorem. Re-banked for Lean re-attempt.
+
+## Lean formalization — 2026-08-17
+
+Module: `formal/GaloisForLFunctions/HTGeometry/OrbitBalanceRationalComplete.lean`
+(wired into the `GaloisForLFunctions.HTGeometry` umbrella).
+
+Every item listed as "Remaining Lean targets" in the 2→3 gate — rational-function divisor/orbit
+infrastructure, assembling arbitrary integer-orbit degree-zero divisors into consecutive shifts, the
+CC equivalence for `ℂ(z)^×`, and the `q`-orbit analog — is now an unconditional Lean theorem.
+
+**The capstone.**
+
+```
+isCC_iff_orbitDegree_eq_zero {a : RatFunc ℂ} (ha : a ≠ 0) :
+  IsCC a ↔ ∀ β : ℂ, orbitDegree a β = 0
+```
+
+with `IsCC a ↔ ∃ c ≠ 0, ∃ g ≠ 0, a = C c · (g(z+1)/g(z))` and
+`orbitDegree a β = ∑ᶠ k : ℤ, ord_{β+k}(a)`.  The `q`-analog is
+
+```
+isCCq_iff_qOrbitDegree_eq_zero (hq : q ≠ 0) (hqroot : ∀ k ≠ 0, q^k ≠ 1) (ha : a ≠ 0) :
+  IsCCq q hq a ↔ (ord_0(a) = 0 ∧ ∀ β : ℂˣ, ∑ᶠ k : ℤ, ord_{β·q^k}(a) = 0)
+```
+
+| Card step | Lean name |
+|---|---|
+| the shift-difference map `Δ[γ] = [γ−1] − [γ]` on divisors | `shiftDiff`, `IsShiftCoboundary` |
+| `Δ(single (sh δ) 1) = [δ] − [sh δ]` (the unit step) | `shiftDiff_single_shift` |
+| any two points of one orbit differ by a coboundary | `isShiftCoboundary_pair` |
+| the orbit degree is well defined (finite sum) | `hasFiniteSupport_orbit`, `orbitSum` |
+| **(⟹)** `im(Δ) ⊆ ker(deg)` — telescoping over `ℤ` | `orbitSum_shiftDiff` |
+| **(⟸)** `ker(deg) ⊆ im(Δ)` — every balanced divisor telescopes | `isShiftCoboundary_of_orbitSum_eq_zero` |
+| the two together, as a divisor-level iff | `isShiftCoboundary_iff_orbitSum_eq_zero` |
+| the shift substitution `z ↦ z+1` on `ℂ(z)` | `shiftPoly`, `shiftHom`, `shiftHom_ne_zero` |
+| `ord_a(Q(z+1)) = ord_{a+1}(Q)` | `ratOrder_shiftHom` |
+| the divisor of a rational function | `ratDivisor`, `ratDivisor_apply` |
+| `g = ∏(z−γ)^{n_γ}` realizes any prescribed divisor | `divisorRat`, `ratOrder_divisorRat`, `ratDivisor_divisorRat` |
+| `div(σ(g)/g) = Δ(div g)` | `ratDivisor_shiftQuotient` |
+| trivial divisor ⟹ nonzero constant (over `ℂ`) | `eq_C_of_ratOrder_eq_zero` |
+| **Theorem (σ-orbit-balance = the complete CC-invariant)** | `isCC_iff_orbitDegree_eq_zero` |
+| Consequence 1: the degree-at-∞ test is the summed shadow | `total_degree_eq_zero_of_isCC` |
+| Consequence 2: `Λ`'s unique Source-A place, `deg_ℤ(z) = +1 ≠ 0` | `orbitDegree_ratFuncX_zero`, `not_isCC_ratFuncX` |
+| Consequence 2: every prime lane (constant multiplier) is CC | `isCC_ratFuncC` |
+| Consequence 3: the `q`-orbit analog | `qHom`, `ratOrder_qHom`, `qShift`, `isFreeShift_qShift`, `isCCq_iff_qOrbitDegree_eq_zero` |
+
+**Route note.**  The `(⟸)` direction is proved by induction on the size of the divisor's support,
+not by choosing orbit representatives: given a balanced divisor `D ≠ 0`, pick `γ₀ ∈ supp D`; balance
+forces a second point `(sh^k) γ₀ ∈ supp D` with `k ≠ 0`; subtracting
+`D(γ₀)·([γ₀] − [(sh^k)γ₀])` — a coboundary by `isShiftCoboundary_pair` — kills `γ₀` and strictly
+shrinks the support.  This avoids any choice of orbit base points and works verbatim for any free
+`ℤ`-action, which is why the same core serves both the additive shift on `ℂ` and the multiplicative
+`q`-dilation on `ℂˣ`.
+
+**The `q`-case and the fixed orbit.**  The dilation `x ↦ qx` fixes `0`, so its `ℤ`-action on `ℂ` is
+not free.  The formal statement therefore runs the free core on `ℂˣ` (`unitDivisor`, `qDivisorRat`)
+and states the fixed orbit `{0}` separately as `ord_0(a) = 0`, which is exactly the orbit-degree
+condition at that orbit.  Both directions are proved.
+
+**Not formalized, and explicitly an IMPORT of this card** (see its "What is proved here vs imported"
+section): the implication *non-CC ⟹ hypertranscendental* (Hölder 1887 for `Γ`, Hardouin–Singer /
+ADH in general).  This card proves and formalizes the *criterion*; the hypertranscendence transfer
+is credited to the companion card and the classical literature, and is not part of the statement
+proved here.  Also not formalized, and not mathematical propositions: the "weld localization"
+paragraph and the Door passport, which are framing statements about where a future C5 theorem can
+live.
+
+Verification: `lake build GaloisForLFunctions.HTGeometry.OrbitBalanceRationalComplete` — PASS;
+`#print axioms` on all seventeen named results reports only
+`[propext, Classical.choice, Quot.sound]`.
+
+## Log
+
+- 2026-08-17 — Formalized unconditionally in Lean 4 and promoted to stage 3.  The complete
+  σ-orbit-balance criterion for `ℂ(z)^×` (both directions), the degree-at-∞ shadow, the localization
+  of the Γ-multiplier's imbalance to the orbit `ℤ`, the CC-ness of every constant multiplier, and the
+  `q`-orbit analog are all unconditional Lean theorems.

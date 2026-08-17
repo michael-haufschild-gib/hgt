@@ -180,7 +180,9 @@ the missing single Frobenius with the missing non-CC place.
 - [x] 1 → 2  fully-proven: case (I) gauge-trivialization proved; case (II) degree-at-∞ obstruction proved;
   Source-A/B corollary + `F_q` shadow established; hard converse (III) attributed import (Hölder + ADH).
   **Grade BRIDGE.**
-- [ ] 2 → 3  formalized: Lean anchors **DONE** for (I)'s gauge multiplier identity and local DA-ODE:
+- [x] 2 → 3  formalized (2026-08-17) — see the Lean formalization section at the end of this card.
+  Earlier partial-anchor note kept for provenance: Lean anchors were present for (I)'s gauge
+  multiplier identity and local DA-ODE:
   `ccGaugeMultiplier_eq_const` in `formal/GaloisForLFunctions/HTGeometry/MultiplierDichotomy.lean` proves
   `a·σ(1/g)/(1/g)=c` when `a=c·σ(g)/g`, and `hasDerivAt_mul_exp_const_ode` proves the local derivative
   identity for `f(z)=g(z) exp(z*lam)`, i.e. `f'=(g'/g+lam)f` where `g z ≠ 0`. The global shift equation
@@ -236,3 +238,66 @@ paper-proof defect. This is a **paper-proven BRIDGE theorem** whose proof legiti
 those imports are to be carried as hypotheses/axioms (or formalized separately) at the Lean stage — not a reason to
 reject the paper proof. The card's stated theorem is proved at its 1→2 gate; any co-located open conjecture
 (C5★ / ω=0 / Schanuel / apex) is explicitly a SEPARATE open core, not part of this theorem. Re-banked for Lean re-attempt.
+
+## Lean formalization — 2026-08-17
+
+Modules: `formal/GaloisForLFunctions/HTGeometry/MultiplierDichotomyDegreeObstruction.lean` (new) on
+top of `formal/GaloisForLFunctions/HTGeometry/OrbitBalanceRationalComplete.lean` (built for the
+companion card `two-sources-of-hypertranscendence`) and the earlier
+`formal/GaloisForLFunctions/HTGeometry/MultiplierDichotomy.lean`.  Both new modules are wired into
+the `GaloisForLFunctions.HTGeometry` umbrella.
+
+| Card step | Lean name |
+|---|---|
+| **(I)(1)** gauge-trivialization `a·σ(1/g)/(1/g) = c` | `ccGaugeMultiplier_eq_const` (pre-existing) |
+| **(I)(3)** the shift equation `σf = a·f` for `f = g·c^z` | `ccShiftSolution_eq` (pre-existing) |
+| **(I)(3)** the ODE `f' = (g'/g + λ)f` | `hasDerivAt_mul_exp_const_ode` (pre-existing) |
+| **(I)(3)** `f = p(z)e^{λz}` is *differentially algebraic* | `differentiallyAlgebraic_polynomial_mul_exp` |
+| **(II)** the shift preserves the degree at infinity | `intDegree_shiftHom` (with `natDegree_comp_shiftPoly`, `shiftHom_algebraMap`) |
+| **(II)** `CC ⟹ deg_∞ = 0` | `intDegree_eq_zero_of_isCC` |
+| **(II)** `deg_∞(a) ≠ 0 ⟹ a` is not CC | `not_isCC_of_intDegree_ne_zero` |
+| **(II)** every non-constant polynomial multiplier is not CC | `not_isCC_polynomial` |
+| **(II)** the `Γ` multiplier `a(z) = z` is not CC | `not_isCC_ratFuncX'` (and independently `not_isCC_ratFuncX` via the orbit degree) |
+| Source-B: constant multipliers are CC | `isCC_ratFuncC`, `isCCq_ratFuncC` |
+| Source-B: the Euler-factor multiplier `(1−x)/(1−qx)` is a pure `q`-coboundary | `isCCq_eulerMultiplier` |
+| the `F_q` shadow: all-constant multipliers ⟹ all CC, no Source-A place | `fq_shadow_all_isCC` |
+| the Source-A/B divide, assembled | `multiplierDichotomy_sourceDivide` |
+| the **complete** CC criterion this card's (II) is the shadow of | `OrbitBalanceComplete.isCC_iff_orbitDegree_eq_zero` |
+
+**Route note on (II).**  The card proves the obstruction analytically (`g(z+1)/g(z) → 1` as
+`z → ∞`).  The Lean proof replaces the limit by the equivalent algebraic statement: the substitution
+`z ↦ z+1` preserves `RatFunc.intDegree` (because `natDegree (p ∘ (X+1)) = natDegree p`), hence
+`intDegree (c·σ(g)/g) = 0`.  `deg_∞(a) = −intDegree a`, so this is exactly the card's conclusion,
+with no asymptotics.
+
+**Not formalized.**
+
+1. **(I)(2), the Picard–Vessiot statement** "the difference-Galois group is `⊂ 𝔾_m`, abelian,
+   `dim ≤ 1`".  This is the van der Put–Singer rank-one classification, which the card's own proof
+   cites as a named parent.  Formalizing it needs a difference Picard–Vessiot theory (Galois theory
+   of difference equations), which neither mathlib nor this tree has; it is a separate foundational
+   project, not a step of this card's own argument.  The mathematical substance of case (I) — that
+   the gauge carries the module to the *constant* module with multiplier `c`, and that the resulting
+   solution is differentially algebraic — is formalized (`ccGaugeMultiplier_eq_const`,
+   `differentiallyAlgebraic_polynomial_mul_exp`); once the module is constant of rank one, "the
+   Galois group is a subgroup of `GL₁ = 𝔾_m`, hence abelian of dimension `≤ 1`" is immediate from
+   the definition of the Galois group of a rank-one module.
+2. **(III) not-CC ⟹ hypertranscendental** is marked `[IMPORT]` by the card itself (Hölder 1887 for
+   `a = z`; Adamczewski–Dreyfus–Hardouin / Hardouin–Singer in general) and is explicitly excluded
+   from its "PROVED HERE" list.  It is therefore not an obligation of this gate.  (The corpus does
+   own Hölder's theorem separately, as `hypertranscendental_gamma`.)
+3. The Door passport and the "where C5 lives" corollary are framing statements about the project's
+   search space, not mathematical propositions.
+
+Verification: `lake build GaloisForLFunctions.HTGeometry.MultiplierDichotomyDegreeObstruction` —
+PASS; `#print axioms` on all ten named results reports only
+`[propext, Classical.choice, Quot.sound]`.
+
+## Log
+
+- 2026-08-17 — Formalized unconditionally in Lean 4 and promoted to stage 3.  Case (I)'s gauge
+  trivialization and differential algebraicity, case (II)'s degree-at-infinity obstruction in its
+  algebraic form, the Source-A/B divide with both prime-lane instances, and the `F_q` shadow are
+  unconditional Lean theorems; (I)(2)'s Picard–Vessiot classification and (III)'s hypertranscendence
+  converse are documented above as, respectively, an absent foundational framework and the card's own
+  declared import.

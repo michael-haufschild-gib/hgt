@@ -83,14 +83,19 @@ theorem nestedMatchingEdges_subset_path (L : ℕ) :
     nestedMatchingEdges L ⊆ (nestedQubitPathGraph L).edgeFinset := by
   intro e he
   rcases (mem_nestedMatchingEdges e).mp he with ⟨j, rfl⟩
-  rw [SimpleGraph.mem_edgeFinset, SimpleGraph.mem_edgeSet]
+  rw [SimpleGraph.mem_edgeFinset]
+  change s((j, false), (j, true)) ∈ (nestedQubitPathGraph L).edgeSet
+  rw [SimpleGraph.mem_edgeSet]
   exact nestedQubitPathGraph_adj_pair j
 
 theorem nestedBridgeEdges_subset_path (L : ℕ) :
     nestedBridgeEdges L ⊆ (nestedQubitPathGraph L).edgeFinset := by
   intro e he
   rcases (mem_nestedBridgeEdges e).mp he with ⟨j, rfl⟩
-  rw [SimpleGraph.mem_edgeFinset, SimpleGraph.mem_edgeSet]
+  rw [SimpleGraph.mem_edgeFinset]
+  change s((nestedBridgeLeft j, true), (nestedBridgeRight j, false)) ∈
+    (nestedQubitPathGraph L).edgeSet
+  rw [SimpleGraph.mem_edgeSet]
   exact nestedQubitPathGraph_adj_bridge j
 
 /-- The path edge set is exactly the disjoint union of matching and bridge bonds. -/
@@ -106,7 +111,9 @@ theorem nestedPath_edgeFinset_eq_union {L : ℕ} (hL : 0 < L) :
       simp
       omega
     have hcardPath := (nestedQubitPathGraph_isTree hL).card_edgeFinset
-    have hcardVertices : Fintype.card (PairQubit L) = 2 * L := by simp [PairQubit]
+    have hcardVertices : Fintype.card (PairQubit L) = 2 * L := by
+      simp [PairQubit]
+      omega
     rw [hcardVertices] at hcardPath
     have hcards : (nestedQubitPathGraph L).edgeFinset.card =
         (nestedMatchingEdges L ∪ nestedBridgeEdges L).card := by omega
