@@ -8909,3 +8909,134 @@ part `O(u^{-1/2})`.  That is exactly the card's own phrasing, "the modified exac
 2. **The split and the endpoint.**  Cut the tail at `κ_B u`, apply
    `sum_norm_xiMassJetPrimeAtom_subset_le` twice — window envelope at moving slope `H/u`, far
    envelope at `κ_B` — and set `q = q_N`.  That is `(22.8)`/`(22.10)`/`(22.11)`.
+
+### C42-T: the endpoint retreat, and `(22.5)` as a weighted rigidity theorem (2026-08-17)
+
+Two independent pieces landed.
+
+**1. The endpoint of the logarithmic retreat.**  The action data of a logarithmic retreat, proved
+inline inside `exists_norm_logRetreatTail_le` but never exposed, is now a standalone statement, and
+the jet-modified exterior prime tail is cut at the balance ray and summed on both sides.
+
+    RHTower/XiMassJetLogRetreat.lean
+      exists_logRetreat_data                    past an explicit height, `κ_B u − q log u` lies in
+                                                the fixed inner cone `((1+κ_B)/2)u` and costs the
+                                                action at most `m_B q log u + 1`
+
+    RHTower/XiMassJetRetreatEndpoint.lean
+      xiMassJetRetreatCoeff, _pos, _mul         `q_n = (n+1)/(2 m_B)`, the coefficient at which the
+                                                jet gain and the retreat cost cancel exactly
+      exists_bound_xiMassJetPrimeTail_endpoint  **(22.8)/(22.10)/(22.11), tail half**: for every jet
+                                                order `n` the whole exterior prime tail past
+                                                `κ_B u − q_n log u` is bounded by a constant,
+                                                uniformly in the height and in the truncation
+
+The split is at the balance ray.  Inside the retreat interval the window envelope
+`exists_norm_xiMassJetIterate_window_le'` gives `B = C u^{-(n+1)/2}` and the cone exponent at the
+moving slope `H/u` contributes `e^{g_u(H)} ≤ e·u^{m_B q}`; at `q = q_n` the two powers cancel.  Past
+the balance ray the far envelope `exists_norm_xiMassJetIterate_far_le` gives `B = C_far` and the cone
+exponent is `xiMassBesselConeExponent a κ_B = 0`, so that half is bounded with no gain at all.  With
+`n = 2N` the coefficient is `q_{2N} = (2N+1)/(2m_B) = (N+1/2)/m_B`, which is exactly `(22.10)`.
+
+**2. `(22.5)` is a weighted spectral rigidity theorem.**  The card's "weighted shell argument rather
+than a literal invocation of the unit-weight abstract theorem" is now the abstract theorem itself,
+carried through an arbitrary nowhere-vanishing subexponential weight.  Neither mechanism of the
+unweighted proof is coefficient-sensitive: shell homogeneity still factors the common height out of
+the bottom shell, and `HTGeometry.le_zero_of_expSum_norm_le` only needs the regrouped coefficients to
+have positive moduli that do not depend on the vertical variable.
+
+    HTGeometry/AbstractSpectralWeighted.lean
+      SpectralWeight                            nowhere vanishing on `Re z > 0`, subexponential at
+                                                every rate on the admissible strip
+      termW, traceWAbs, traceWC                 the weighted multiplier, majorant and trace
+      summable_weightedWeight                   a subexponential weight is absorbed by half of the
+                                                real-time exponential
+      norm_traceWC_le, norm_traceWC_le_of_abs_im_le,
+        traceWAbs_antitone, exp_bottomHeight_mul_traceWAbs_le
+      differentiableAt_traceWC                  the weighted trace is analytic on `Re t > 0`
+
+    HTGeometry/AbstractSpectralWeightedDecay.lean
+      norm_traceWC_le_of_line_bound             Phragmén--Lindelöf: one bounded vertical line gives
+                                                least-height decay on the whole half plane
+
+    HTGeometry/AbstractSpectralWeightedRigidity.lean
+      bottomShellSumW_eq, bottomShellW_regroup  weighted shell homogeneity and regrouping by
+                                                displacement; the fibre coefficient is
+                                                `card · w(g + iJ) · e^{-σiJ}`
+      im_eq_zero_of_weightedLine_bound          the weighted bottom shell is real
+      im_eq_zero_of_weightedLine_bound_all      the lift propagates it to every height
+      im_eq_zero_iff_exists_weightedLine_bound  **weighted spectral rigidity, both directions**
+
+    HTGeometry/PolynomialSpectralWeight.lean
+      pow_le_factorial_mul_exp, one_add_pow_le_exp
+      SpectralWeight.ofPolyBound                every polynomially bounded function without a zero
+                                                in the open right half plane is a spectral weight
+
+    RHTower/XiMassCausticJetTraceCriterion.lean
+      xiMassCausticJetWeight                    `P_N` as a spectral weight, degree `4N`
+      riemannHypothesis_iff_exists_xiMassCausticJetTrace_line_bound
+                                                **(22.5)** RH is equivalent to boundedness of the
+                                                jet-weighted mass-shifted trace on one vertical line
+
+All declarations are unconditional and axiom-clean (`propext`, `Classical.choice`, `Quot.sound`).
+
+### Remaining for C42-T
+
+`(22.6)` and the prime-side transfer: the jet-modified source reduction, i.e. the chain from the
+jet-weighted trace criterion down to the jet-modified prime quadrature defect, re-run with
+`xiMassJetIterate a τ (2N)` in place of `stripFourier (xiMassAnalyticTest a τ)`.  The two ends are
+now built — `(22.5)` above and the exterior tail `(22.8)` — and what is missing is the middle: the
+jet analogue of the integer-face, true-prime-cone and quadrature-defect steps.
+
+### C42-T: the jet-modified source side (2026-08-17)
+
+The receiver of `(22.4)` and its arithmetic shadow are now objects of the Lean corpus, with the
+uniform bounds that every step of the source-side reduction consumes.
+
+    RHTower/XiMassJetAnalyticTest.lean
+      xiMassJetAnalyticTest                     `g_{N,τ}(z) = P_N(ω(z))·e^{-τω(z)}`
+      xiMassJetAnalyticTest_ofReal              **(22.4)** on the real axis the jet collapses to the
+                                                real polynomial `(x²+4a⁴)^{2N}`
+      xiMassJetMajorant, xiMassJetAbsorbConstant,
+        xiMassJetMajorant_le                    a polynomial jet is absorbed by half of the strip
+                                                exponential, with an explicit constant
+      integrable_xiMassJetMajorant
+      xiMassJetVerticalBound
+      norm_stripFourier_xiMassJetAnalyticTest_vertical_le
+                                                the modified strip Fourier transform is uniformly
+                                                bounded on every positive vertical line
+
+    RHTower/XiMassJetSourceSide.lean
+      xiMassJetAnalyticTest_spectralPoint_eq    the modified test at a spectral point is the
+                                                jet-weighted multiplier of the mass family
+      tsum_xiMassJetAnalyticTest_spectralPoint_eq_traceWC
+                                                **(22.5), spectral side**: the spectral sum of the
+                                                modified test is the weighted trace
+      xiMassJetCenteredPrimeAtom,
+        xiMassJetGrowingFourierProfile,
+        xiMassJetDampedFourierProfile,
+        xiMassJetPrefixQuadratureDefect         the modified arithmetic objects
+      norm_xiMassJetCenteredPrimeAtom_le_verticalBound,
+        norm_xiMassJetGrowingFourierProfile_le,
+        norm_xiMassJetDampedFourierProfile_le,
+        xiMassJetGrowingFourierProfile_eq       their uniform bounds and the damped/growing relation
+
+### Remaining for C42-T — the source-side reduction
+
+What is left is the middle of the ladder: the jet analogue of the Euler-contour source identity and
+of the four criterion transfers above it.  The two ends are proved — `(22.5)` on the spectral side
+and `(22.8)`/`(22.10)`/`(22.11)` on the exterior-tail side — and every analytic input the middle
+needs about the modified receiver is now available (`(22.4)` plus the uniform vertical bound).  The
+modules to mirror, in order:
+
+1. `XiMassBottomEdge` + `XiMassVerticalResolvent` + `XiMassEulerContourSourceIdentity`:
+   `2πi·traceWC = 2∫ jet source integrand`.  The residue argument is unchanged in kind — the jet is
+   analytic on `xiMassStrip a` and the vertical-edge decay is exponential, so a fixed polynomial
+   factor is harmless — and the residues pick up `P_N(p_ρ)`, which is exactly the weighted trace.
+2. `XiMassPrimeOpenCore`: the jet prime-line criterion, from 1 and `(22.5)`.
+3. `XiMassBottomPrimeAtomization` + `XiMassCriticalIntegerFace`: the jet prime-atom cone.
+4. `XiMassCriticalTruePrimeCone`: the jet true-prime cone and its quadrature defect.
+5. `XiMassBesselConeTail` + `XiMassBesselConeQuadratureDefect` + `XiMassSubcausticCriterion` +
+   `XiMassLogSubcausticWindow` + `XiMassMovingQuadratureCriterion`: the jet moving criterion, whose
+   annulus bound is the window half of `(22.7)` and whose tail is
+   `exists_bound_xiMassJetPrimeTail_endpoint`, giving `(22.11)` with `m_B q ≤ N + 1/2`.

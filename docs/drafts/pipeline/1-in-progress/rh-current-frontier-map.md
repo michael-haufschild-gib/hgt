@@ -6,7 +6,7 @@ This document is a state map of the `HTGeometry`, `HilbertMetric`, and `RHTower`
 It records current proof architectures, theorem chains, first open source statements, terminal
 mechanisms, and structural conclusions shared across routes. It is not a chronology or build log.
 
-**Corpus cutoff:** 17 August 2026, commit `16927218e406267bdc0ea7c417cd67727f27312d`, plus declaration-level working-tree review. Unconditional theorems remain distinct from supplied interfaces.
+**Corpus cutoff:** 17 August 2026, commit `6b784eef274a5f86b164861214dd6f975afd7931`, plus declaration-level working-tree review. Unconditional theorems remain distinct from supplied interfaces.
 
 RH and its negation remain unproved. Current live architecture count is:
 
@@ -42,7 +42,7 @@ route under corpus source-isogenies.
 | D2 | safe-line Euler deficit → analytically continued prime–Gamma trace → finite high-frequency ceiling → RH | Continue literal positive deficit through Euler wall and prove any finite uniform ceiling above frequency four. |
 | E | squarefree central Wold shell → explicit parity-coalesced/whole-anchor opposite-sign relation → physical Carleson and co-moving flux → Mertens cancellation → RH | Upgrade fixed-relation near-Hall and polylog/subpower incoming bounds to unit interval Carleson load and normalized moving-seam flux. Exact log-window transfer is closed. The required upstream short-window rate is Menon's `(log log L)^2/(log L)^2`, not Matomäki--Radziwiłł's weaker logarithmic power; all-interval `E_3` is separately needed. Neither import proves unit capacity. |
 | G | Suzuki/CCM source → restricted-Weil Morse floor or one-sided Euler--Gamma/Carleman wall → aperture-dressed FE light completion → Hermite–Biehler orientation → RH | Floor: aperture-Morse exhaustion/boundary-rough exclusion. Coalescing high-assisted branch is now exactly source-cyclic: prove literal low-source cyclic singular mass above `1/113` is `o(r/log^2(1/r))`, or construct the opposite lower-bound family already forced by Lean. Low-only schedules retain their aperture ceiling. Wall: compare prime-minus-regular-screw Ward mass with dressed negative light and holonomy. |
-| L | arithmetic Poisson/Green complex → source Green closure and harmonic complement → faithful cup-isometric Meyer comparison → positive Hodge block → critical line → RH | Construct the source-derived arithmetic Calderón intermediate extension and its closed Lagrangian boundary relation at the critical `x^(1/2)` scale. The reciprocal-weight Gamma-six/Wold--Jordan two-port descent is now terminal: it factors through one free scalar and is false away from scalar zero, so same-fibre fixed-star or `1/p` Hessian descent is a receiver, not the producer. |
+| L | arithmetic Poisson/Green complex → source Green closure and harmonic complement → faithful cup-isometric Meyer comparison → positive Hodge block → critical line → RH | Construct the source-derived arithmetic Calderón intermediate extension and its closed Lagrangian boundary relation at the critical `x^(1/2)` scale. Descent through the existing completed one-leg singular graph is completely classified: a prime-labelled scalar profile descends continuously iff it is constant on the canonical prime enumeration. Thus reciprocal-weight Gamma-six/Wold--Jordan, same-fibre fixed-star, `1/p` Hessian, and every other nonconstant scalar relabelling of that graph are terminal receivers. |
 | O | restricted-Weil operator → exact compact Birman--Schwinger/Gamma--Slepian decomposition → finite dangerous block → nonnegative cofinal floor → RH | Indexed prolate structure and Fourier-even coordinates are closed. Lean now proves canonical upper leakage at every index, ground included. Finish the literal common-clock envelope, then prove source-relative finite-block lower bound; only the latter is RH-bearing. |
 | P | primitive Euler/Burnol budget → Julia--Krein completion → spectrum-moving prime--Gamma transport or non-spectral contraction → RH | Literal prime-log `det₂` carrier exists, but its forced zero at `1` while `XiC(1) != 0` rules out direct identification and every pointwise scalar correction. Construct a source-derived operator coupling that changes the source divisor coefficient- and multiplicity-faithfully, or prove the non-spectral conormal contraction. |
 | Q | theta–Cassini source → separated finite prime–Gamma packet sign → transverse charge zero → RH | Produce nonnegative energy cofinally toward orientation vector. Null boundaries have hidden mixed incidence `-E/2`; diagonal budgets and adaptive complex phases cannot repair fusion. Alternative UQ-QC asks for finite pre-divisor quadratic-concentration budget. |
@@ -1021,6 +1021,21 @@ singular graph, one-leg trace, Gamma and Green--Stokes naturality remain defined
 descent is false. The two-port secondary source character and every naturality-only repair in this
 data class are therefore terminal; global RH equivalence is a pullback receiver.
 
+The scoped retirement is now exact for arbitrary prime-labelled coefficients, not only the
+reciprocal profile. For every `c : Nat.Primes -> R`, Lean proves
+
+```text
+PrimeLabelledActualSourceDescends c
+  <-> exists z : R, forall a : N, c(nthPrimeSubtype(a)) = z.
+```
+
+Continuity forces every genuine normalized fixed-left row, all converging to the same singular
+vector, to have the same reading. Conversely `z` times the continuous one-leg graph trace realizes
+every constant profile. This is the sharp positive survivor: constants are exactly the descending
+profiles. It eliminates every repair that merely changes the prime-dependent scalar coefficient
+while retaining this completed carrier. It does **not** exclude a critical-scale finite-core map
+that changes the carrier before completion or retains additional non-scalar incidence.
+
 The Beurling sensitivity theorem explains the wall: this branch consumes reciprocal-scale `1/p`,
 `1/(pq)`, or `Lambda(n)/n` data. Positive generalized-prime perturbations preserve such data
 arbitrarily closely while creating an off-line zero once their abscissa exceeds `1/2`. A surviving
@@ -1032,7 +1047,8 @@ completion: prove its total arithmetic Cauchy relation is closed Lagrangian, its
 complement realizes the nuclear quotient faithfully, and its Hodge comparison is cup-isometric
 and strict on every multiplicity jet. Prime-periodic packets, archimedean conormal jets, and the
 critical-scale source current must remain distinct. Same-fibre fixed-star, Wold--Jordan singular
-descent, and summable `1/p` Gamma-Hessian alternatives are terminal receivers, not open producers.
+descent, summable `1/p` Gamma-Hessian alternatives, and arbitrary nonconstant prime-labelled scalar
+descent on the existing one-leg graph are terminal receivers, not open producers.
 
 **Principal Lean evidence.** Completed-Green/Calderón--Witt/Burnol comparison modules;
 Big-Witt Frobenius/Calkin/singular-graph descent modules; Gamma-six Wold--Jordan/Meyer--Tate
@@ -2328,6 +2344,14 @@ Additional interfaces are terminally classified without receiving route letters:
   kernel, so its injectivity is RH rather than a localization theorem;
 - naive Hilbert closure of finite coefficient summation is maximally multivalued and nonclosable.
   Cofinal source summation requires graph norm/boundary coordinate, not bare `ell2` closure.
+- the resulting one-leg singular graph does not restore arbitrary prime dependence. Its actual
+  source-descent predicate is completely classified: a continuous reporter agrees with a
+  prime-labelled scalar profile on every genuine normalized fixed-left row iff that profile is
+  constant on `nthPrimeSubtype`. Constants descend through scalar multiples of one-leg trace;
+  reciprocal, prime-log, inverse-Gamma, and every other nonconstant scalar relabelling do not.
+  This closes the existing graph mechanism, not carrier-changing finite-core maps. Evidence:
+  `XiGammaSixWoldJordanParametricVacuity.lean`, theorem
+  `primeLabelledActualSourceDescends_iff`;
 - positive even-frequency seam germs do not form a Stieltjes repair: shifted moments alternate,
   and half-turn parity correction still has negative first shifted determinant. Full reciprocal
   seam has infinite zeroth mass although every positive moment converges. Its raw unshifted form
@@ -2396,6 +2420,13 @@ do not constitute independent evidence. A viable merged mechanism needs source-g
 mixing before divisor specialization, preserving prime/depth/divisor/multiplicity and both
 reflections. Rank-one, holomorphic, compact, or fitted contractible repairs only re-present or erase
 obstruction.
+
+The completed one-leg graph can no longer be that mixing mechanism when its only new datum is a
+prime-labelled scalar. `primeLabelledActualSourceDescends_iff` proves continuity collapses every
+such profile to one constant, and every constant already comes from the ordinary graph trace.
+Therefore any surviving L/R/CCM/P Frankenstein must act before this completion, change the carrier,
+or retain a genuinely non-scalar critical-scale incidence. Reweighting the same graph cannot
+advance the frontier.
 
 The Faddeev--Popov/shared-ghost reinterpretation is now classified exactly.  An inverse-oriented
 positive ghost can repair one prime-local Gamma rotation at every centered rate, but positivity
@@ -3992,8 +4023,10 @@ degree reverse Bessel remains an unlettered disproof opening.
 
 Latest corpus narrows five frontiers. E needs Menon-strength Möbius rate, not bare MR rate, before
 its still-harder unit-capacity/flux theorem. G high assistance is forced into quantified
-source-cyclic mass above `1/113`. L's reciprocal Wold--Jordan/fixed-star producer is closed
-negatively; only critical-scale arithmetic Green/Hodge construction survives. O now has canonical
+source-cyclic mass above `1/113`. L's completed one-leg singular-graph producer is now fully
+classified: exactly constant prime-labelled scalar profiles descend, so every nonconstant
+Wold--Jordan/fixed-star reweighting is closed negatively; only carrier-changing critical-scale
+arithmetic Green/Hodge construction survives. O now has canonical
 all-index upper leakage, ground included; common-clock assembly is backlog, whole-ground finite-block
 sign RH-bearing. T has window/far-field jets and conditional prime-tail summation; moving-retreat
 splice, signed sub-`3/2`, type-zero assembly, and growing-Xi chirp remain. New generic adapters and

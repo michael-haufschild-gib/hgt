@@ -3984,3 +3984,30 @@ conjecture loop and the open effective-onset question are not theorems of the ca
   What remains on that card is only Theorem C's *existence* step (Castillo--Dietmann quantitative
   Hilbert irreducibility, plus the `generic-two-local-spectral-monodromy` parent) and Theorem D,
   which reuses it.
+
+### Gaussian half-line moments and Watson's lemma (mass-Bessel card, item 1)
+
+- `HTGeometry/GaussianHalfLineMoment.lean` -- `∫_0^∞ v^{2k} e^{-wv²} dv` for **complex** `w` with
+  `Re w > 0`.  Mathlib has only the `k = 0` case (`integral_gaussian_complex_Ioi`) and the corpus's
+  `RHTower.integral_cpow_mul_exp_neg_mul_sq_Ioi` needs a real parameter, which the card's
+  `t_X = σ + i(log X)^4` rules out.  No analytic continuation is used: the recursion
+  `M_{k+1} = ((2k+1)/2w)M_k` is `∫_0^∞ d/dv[v^{2k+1}e^{-wv²}]dv = 0`, both endpoint values vanishing,
+  via `MeasureTheory.integral_Ioi_of_hasDerivAt_of_tendsto`.
+- `HTGeometry/WatsonGaussianRemainder.lean` -- Watson's lemma with an explicit remainder on the
+  Gaussian half line.  The majorant depends on the parameter only through `Re w`, so the estimate is
+  uniform along every ray; that is exactly what a fixed-order Poincaré remainder needs.
+  Both are general-purpose: any `∫_0^∞ f(v)e^{-wv²}dv` with a polynomial-in-`v²` model is covered.
+
+### The all-orders `K_1` asymptotic (mass-Bessel card, item 1)
+
+- `HTGeometry/HalfShiftedBinomialRemainder.lean` -- Taylor remainders of `(1+s/2)^α` with **no
+  radius-of-convergence restriction**: for `α ≤ 0` the `m`-th derivative is bounded on the whole half
+  line, so a single induction (differentiate, integrate back with the FTC, lower the exponent by one)
+  gives `|remainder| ≤ (∏_{j<m}|α-j|/(2^m m!)) s^m` for every `s ≥ 0`.  At `α = -1/2` the falling
+  factorial is at most `m!`, giving the clean bound `(s/2)^m`.  Specialized to the Schläfli profile
+  `(1+v²)/√(2+v²) = 2^{-1/2}(1+v²)(1+v²/2)^{-1/2}` this is item 1's profile input.
+- `HTGeometry/BesselK1AllOrderAsymptotic.lean` + `BesselK1PoincareForm.lean` -- the all-orders
+  sectorial expansion of `K_1` with a fixed-order remainder, in Watson form and then in the classical
+  Poincaré form `e^{-w}(π/w)^{1/2}∑_k q_k w^{-k}`.  The remainder sees the argument only through its
+  real part, hence is uniform along every ray -- the card's "fixed closed subsector".
+  The corpus's `norm_besselK1C_sub_leading_le_norm` is the `m = 0` case.

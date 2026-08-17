@@ -20,7 +20,7 @@ two-base weld problem.
 
 - [x] 0 → 1 in-progress: well-posed, source-pure, attack idea, passport sketch
 - [x] 1 → 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3 formalized: Lean theorem, narrow build green, lint green
+- [x] 2 → 3 formalized: Lean theorem, narrow build green, lint green
 - [ ] 3 → 4 publication-ready: standalone theorem, proof, Lean certificate, literature verdict
 
 ## Exact setting
@@ -142,7 +142,74 @@ Primary-source audit is in progress across Bohr holomorphic almost-periodic func
 Fourier–Borel/exponential-series theory, analytic continuation of absolutely convergent Dirichlet
 series, and normal-family theory.  No scientific-novelty claim is made before that audit closes.
 
+
+## Lean formalization — 2026-08-17
+
+Module: `formal/GaloisForLFunctions/RHTower/LeafReflectionBohrProjection.lean`
+(namespace `GaloisForLFunctions.LeafReflectionProjection`, wired into the
+`GaloisForLFunctions.RHTower` umbrella).
+
+The card's own Lean target listed four items; all four are delivered, including item 4 (the full
+nonnormality statement), which is obtained from the in-tree Vitali theorem rather than from a
+bare ball-level Montel.
+
+| Card's Lean target | Lean name |
+|---|---|
+| **1.** finite geometric Cesàro character limits for irrational `β/α` | `cesaro`, `norm_cesaro_le`, `tendsto_cesaro_one`, `tendsto_cesaro_of_ne_one`, `exp_int_rot_ne_one`, `chi_ne_one` |
+| **2.** lower-flank `r`-slice extraction | `proj_eq_tsum_lower`, `tendsto_proj_lower` |
+| **2.** upper-flank annihilation | `proj_eq_tsum_upper`, `tendsto_proj_upper` |
+| **3.** projection-compatibility no-go under an explicit analytic-limit hypothesis | `flank_limits_incompatible` |
+| **4.** the full nonnormality statement | `leaf_reflection_bohr_projection_catastrophe` |
+
+| Paper step | Lean name |
+|---|---|
+| the exact-period projector `P_{r,N}G(z) = N⁻¹ Σ_{k<N} e^{ikrθ} G(z+kT_α)` | `proj`, `proj_eq_character_form` |
+| the flank hypothesis `Σ |b_{m,n}| e^{-w(mα+nβ)} < ∞` and its domination | `flankBound`, `norm_modeTerm_le`, `summable_modeTerm`, `norm_modeTerm_mul_le` |
+| a period shift multiplies the `(m,n)` mode by `e^{∓ i k n θ}` | `modeTerm_add_period`, `modeTerm_sub_period` |
+| termwise Cesàro averaging on the lower flank | `proj_eq_tsum_lower` |
+| `θ/2π = β/α` irrational ⟹ the mean tends to `[n=r]` | `tendsto_cesaro_of_ne_one`, `chi_ne_one` |
+| dominated convergence ⟹ `P_{r,N}G → B_r` on `Im z < -w` | `tendsto_proj_lower` |
+| evenness reflects `z+kT_α` into the lower flank | `proj_eq_tsum_upper` (uses `hev : ∀ y, G (-y) = G y`) |
+| for `r ≥ 1, n ≥ 0` every mean tends to `0` ⟹ `P_{r,N}G → 0` on `Im z > w` | `tendsto_proj_upper` |
+| the slice `B_r` is holomorphic on the open lower flank | `differentiableOn_slice` |
+| normality (Montel) on a connected `U`: locally bounded + convergence on one ball ⟹ convergence on all of `U` with holomorphic limit | `convNbhd`, `isOpen_convNbhd`, `convNbhd_closed`, `exists_limit_of_locallyBounded` |
+| identity theorem: a limit equal to `B_r` below and `0` above forces `B_r ≡ 0` | `flank_limits_incompatible` |
+| **the theorem candidate** | `leaf_reflection_bohr_projection_catastrophe` |
+| `B_r(z) = Σ_m b_{m,r} e^{-iz(mα+rβ)}` in displayed form | `slice_eq_tsum_row` |
+| "the slice is nonzero whenever some `b_{m,r}` is nonzero" | `slice_ne_zero_of_coeff_ne_zero` |
+| **the theorem in coefficient form** | `leaf_reflection_catastrophe_of_coeff` |
+
+Two points where the Lean proof is sharper than the sketch.
+
+* **Pointwise suffices.**  The sketch invokes locally uniform convergence on each flank.  The Lean
+  proof only needs *pointwise* convergence there: the Montel/Vitali step already supplies a
+  locally uniform limit on `U`, and pointwise identification of that limit on the two flank pieces
+  is enough for the identity theorem.  This removes the locally-uniform-convergence layer entirely.
+* **The last sentence of the proof is proved, not cited.**  "By uniqueness of absolutely
+  convergent generalized Dirichlet coefficients" is discharged by
+  `slice_ne_zero_of_coeff_ne_zero`, which runs the *same* Cesàro extraction in the second base
+  (period `2π/β`, character `2πα/β`, irrational because `(β/α)⁻¹ = α/β`) on the row family
+  `rowFamily`, and reads off `b_{m₀,r}` as the limit — so no external uniqueness theorem for
+  generalized Dirichlet series is imported.  Supporting lemmas:
+  `flankBound_rowFamily_le`, `summable_flankBound_rowFamily`, `slice_eq_carrier_rowFamily`,
+  `slice_rowFamily_eq`.
+
+Consequence 3 of the card ("the qualitative obstruction uses only irrationality; continued-fraction
+rates do not enter") is now literally visible in the statement: the only Diophantine hypothesis in
+`leaf_reflection_bohr_projection_catastrophe` is `Irrational (β / α)`.
+
+**Not formalized (and not an obligation of this card).**  Consequence 1 quotes the in-tree
+periodic-spectrum rigidity theorem for the `αℕ` spectrum case; consequence 4 is explicitly marked
+`[CONJECTURE]` on the card (the closed connected seam wall needs a planar-separation argument that
+the card itself flags as unproved); and the `[OPEN CORE]` — existence or nonexistence of an even
+entire two-base weld — is the open problem the card is diagnosing, not a claim of it.
+
+Verification: `lake build GaloisForLFunctions.RHTower.LeafReflectionBohrProjection` — PASS;
+`#print axioms` on all 24 named results reports only `[propext, Classical.choice, Quot.sound]`.
+
 ## Log
 
 - 2026-07-11 — card created; exact projector mismatch and paper proof isolated; continued-fraction
   guess downgraded; full leaf-rigidity core remains open.
+- 2026-08-17 — formalized in Lean: all four items of the card's Lean target delivered,
+  including the full nonnormality statement and the coefficient criterion; card moved to stage 3.

@@ -2930,3 +2930,224 @@ so with `c·s → 4n+1` the upper bound is `O(c^{(1+ε)(4n+1)/2 + 1})·e^{−2c}
 `Ω(c^{(4n+1)/2 − 1})·e^{−2c}`.  For consecutive *Fourier-even* indices the corpus index jumps by two,
 so `μ` jumps by `8` and the exponents separate with room to spare; the ground index still needs its
 own upper bound, since `4 ≤ c·s` fails there.
+
+## `(8)` IS CLOSED — the leakage ladder separates, ground index included
+
+Five new modules (all wired, built, axioms `[propext, Classical.choice, Quot.sound]`).
+
+### 1. The ladder interface, extracted
+
+`RHTower/ConstrainedProlateClockEnvelope.lean` (edited).
+
+```
+structure LadderEnvelope (D : ℝ → ℕ → ℝ) : Prop
+    nonneg              0 ≤ D lam j
+    mono                ∀ᶠ lam, ∀ i ≤ j, D lam i ≤ D lam j
+    lt_succ             ∀ᶠ lam, D lam j < D lam (j+1)
+    ratio_tendsto_zero  D lam j / D lam (j+1) → 0
+    tail_tendsto_zero   lam · D lam (j+1) / (D lam (j+2) − D lam (j+1)) → 0
+ClockEnvelope.toLadderEnvelope
+```
+
+`ClockEnvelope` demands the SAME power `lam^{2 e j + 1}` on both sides of every index.  The true
+prolate leakages are not known to that precision: the explicit two-sided estimate leaves a window of
+width three in the bandwidth exponent (`c^{+1}` above from the exterior-mass constant, `c^{−2}` below
+from the separation prefactor).  Since one Fourier-even step moves the exponent by four, the window
+is harmless — but only for an interface that never compares the two sides at the same index.  Those
+are exactly the five facts above, and every constrained transfer downstream (depth vector
+coordinates, limit, tail, exact eigenpair, raw defects, capstone) consumes nothing else; all thirteen
+of those theorems are now stated over `LadderEnvelope`.
+
+### 2. The ground index: a lifted Riccati barrier
+
+`RHTower/ProlateGroundBarrier.lean`, `RHTower/ProlateGroundLeakageUpper.lean`.
+
+```
+prolateShiftedBarrier c s y := prolateRadialBarrier c s y + 2 sqrt c
+prolateShiftedBarrier_subsolution   (hc : 0 < c) (hs0 : 0 ≤ s) (hs1 : s ≤ 1)  ** NO c·s hypothesis **
+prolateLogDeriv_le_shiftedBarrier / _of_endpoint_normalized
+abs_prolateLogDeriv_le_shiftedBand, prolateFlux_sq_le_shiftedBand
+one_sub_sq_mul_shiftedBand_barrier_le   (1−t²)(B_shift + 6/(1−t)) ≤ c b + 12 + 2 sqrt c
+prolate_window_mass_lower_of_fluxConst  generic in the flux constant
+prolate_aperture_mass_lower_shifted
+prolate_leakage_le_shifted              the explicit upper leakage bound, at EVERY separation
+prolateLeakageUpperShift, prolateLeakageUpperShift_le  ≤ e · prolateLeakageUpper   (c ≥ 64)
+eventually_signedLeakage_upper (n)      ** every index, ground included **
+```
+
+The exclusion of the ground index was never about the exponent: it was one hypothesis, `4 ≤ c·s`,
+inherited from `prolateRadialBarrier_subsolution`.  That hypothesis is sharp for the elementary
+barrier — the Riccati requirement at `y` is
+
+```text
+c sqrt(1−s) · (1 − 2y²) / (1 − y²)^{3/2}  ≤  c² s ,
+```
+
+whose left side is maximal at `y = 0` with value `c sqrt(1−s)`, so the barrier is a subsolution iff
+`sqrt(1−s) ≲ c·s`, exactly marginal when `c·s → 1`.  Adding the constant `K = 2 sqrt c` adds `K² = 4c`
+to the Riccati slack while leaving the derivative unchanged, and `4c` dominates
+`c sqrt(1−s)/(1−y²)^{3/2} ≤ 2 sqrt 2 · c` on `y² ≤ 1/2`, while for `y² ≥ 1/2` the transport term
+`2y B/(1−y²)` already carries the derivative.  So the lift is a subsolution on all of `(0,1)` with no
+hypothesis on `c·s` whatever.
+
+The lift costs one additive `2 sqrt c` in the transport constant, hence the factor
+`exp(4/(sqrt c (1−b²)))` in the window-mass bound.  At the cut `b = 2 sqrt s + 1/c` that is at most
+`e` once `c ≥ 64`, so the ground leakage obeys the excited bound up to a single factor `e`.
+
+### 3. Both bounds as powers of the bandwidth
+
+`RHTower/ProlateLeakageRatioBounds.lean` (completed), `RHTower/ProlateLeakageLadderRatio.lean`.
+
+```
+phaseTail K T   the bandwidth-free part of the upper action, a function of T = c·s alone
+exp_neg_two_mul_phase_le
+    exp(−2c·Xi_s(2√s)) ≤ exp(−2c)·exp(phaseTail K (c s))·exp((c s/(2√(1−K⁻²)))·log c)
+exp_lower_action_eq
+    exp(−(2c(1+(s/4)log s) + 10 c s)) = exp(−2c)·exp(−10cs−(cs/2)log(cs))·exp((cs/2)·log c)
+
+eventually_signedLeakage_le_pow (m) (hK : 2 ≤ K)
+    d_m(a) ≤ C_U · c · e^{−2c} · exp(phaseTail K (c s_m)) · c^{c s_m/(2√(1−K⁻²))}
+eventually_signedLeakage_ge_pow (n) (hn : 1 ≤ n)
+    d_n(a) ≥ C_L(n) · c^{−2} · e^{−2c} · exp(−10 c s_n − (c s_n/2)log(c s_n)) · c^{c s_n/2}
+```
+
+Both remaining factors converge, because `phaseTail K` and `T ↦ −10T − (T/2)log T` are continuous at
+the positive limits `c·s_k → 4k+1`.  The whole ratio is therefore a convergent factor times a single
+power of the bandwidth:
+
+```
+tendsto_signedLeakage_ratio_pow (m n : ℕ) (hn : 1 ≤ n) (p K : ℝ) (hK : 2 ≤ K)
+    (hgap : p + 3 + (4m+1)/(2√(1−K⁻²)) − (4n+1)/2 < 0) :
+      c^p · d_m / d_n  →  0
+```
+
+### 4. The ladder, and `(8)` itself
+
+`RHTower/ProlateSignedLadderEnvelope.lean`.
+
+```
+tendsto_evenProlateSignedLeakage_step_ratio (j)   d_{2j} / d_{2j+2} → 0
+tendsto_evenProlateSignedLeakage_step_tail  (j)   a·d_{2j+2}/(d_{2j+4} − d_{2j+2}) → 0
+ladderEnvelope_evenProlateSignedLeakage           LadderEnvelope (fun a j => d_{2j}(a))
+constrainedProlateEven_exactEigenpair_and_allRawDefects (k)   ** NO HYPOTHESIS **
+constrainedProlateEven_depth_ratio_tendsto (k)                ** NO HYPOTHESIS **
+    depthSecularRoot (d_{2·}) (‖ell_{2·}‖) k / d_{2(k+1)}  →  theta_k
+```
+
+The gap arithmetic: with `Q := 8j+3` (ratio) resp. `Q := 8j+10` (tail),
+
+```text
+(Q − 1) / sqrt(1 − 1/Q²) < Q      ⟺      (Q−1)² < Q² − 1      ⟺      2Q > 2 ,
+```
+
+which is exactly the statement that the phase split at height `K = Q` loses less than the
+Fourier-even step gains.  For the ratio the step gains `4` and the two prefactors cost `1 + 2 = 3`;
+for the tail the aperture weight costs a further `1/2`, still inside the remaining `1`.
+
+The last line is equation `(8)`: `mu_k(lambda)/d_{k+1}(lambda) → theta_k = Q_k/Q_{k+1}` for the true
+signed prolate spectrum and the true constraint coordinates, unconditionally.
+
+## The positive-sector card theorem is now unconditional end to end
+
+`RHTower/ProlateSignedLadderEnvelope.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`).
+
+```
+constrainedProlateEven_depth_ratio_tendsto (k)          (8)   mu_k/d_(k+1) -> theta_k
+constrainedProlateEven_exactEigenpair_and_allRawDefects (k)
+        existence + uniqueness in the bracket, exact annihilation of the full constraint,
+        nonvanishing, and collapse of every preceding normalized raw defect
+constrainedProlateEven_adjacent_ratio_tendsto (k)       (9)   (mu_(k+1)/mu_k)(d_(k+1)/d_(k+2))
+                                                              -> theta_(k+1)/theta_k
+                                                                = Q_(k+1)^2/(Q_k Q_(k+2))
+constrainedProlateEven_normalized_eigenvector_tendsto (k)  (10)-(11)  the oriented normalized
+        exact eigenvector converges in ell^2 to the canonical Hermite contrast unit
+constrainedProlateEven_ground_ratio_tendsto             (13)  mu_0/d_1 -> 8/11
+constrainedProlateEven_first_ratio_tendsto              (13)  mu_1/d_2 -> 176/211
+constrainedProlateEven_adjacent_ground_ratio_tendsto    (13)  mu_1/mu_0 · d_1/d_2 -> 242/211
+```
+
+Every one of these is about the TRUE objects: `d_j(lambda) = 1 - chi_(4j)(lambda)^2` is the actual
+signed prolate leakage, `ell_j(lambda) = ‖evenProlateConstraintCoord lambda (2j)‖` the actual
+constraint coordinate, `mu_k` the actual depth-`k` constrained eigenvalue.  No `ClockEnvelope`, no
+`FuchsEnvelope`, no coordinate hypothesis, no Bessel hypothesis, no sharp Fuchs constant `A_n`, and
+no added axiom.
+
+The three inputs the threading table listed are all theorems now:
+
+```text
+(3)   ell_j -> a_j                    tendsto_norm_evenProlateConstraintCoord_atTop
+(beta) d_j/d_(j+1) -> 0               tendsto_evenProlateSignedLeakage_step_ratio
+      bounded tail + growing slack    tsum_evenProlateConstraintCoord_comp_sq_le +
+                                      tendsto_evenProlateSignedLeakage_step_tail
+```
+
+## BOTH FOURIER SECTORS ARE NOW UNCONDITIONAL
+
+`RHTower/ProlateNegativeSectorLadder.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`).
+
+The even prolate index splits into `2j` (Hermite limits `h_(4j)`, positive Fourier sector) and
+`2j+1` (Hermite limits `h_(4j+2)`, negative sector).  Everything the positive sector consumed is
+index-generic:
+
+```
+tendsto_norm_sq_evenProlateConstraintCoord_index (n)
+    ‖ell_n(lambda)‖² -> hermiteShapeRatio (2n) / sqrt(2 pi)          ** any index **
+constrainedProlateNegativeWeight j = binom(4j+2, 2j+1)/4^(2j+1)
+constrainedProlateNegativeCoordinate j = sqrt(sqrt 2 · that)
+hermiteShapeRatio_negativeSector, tendsto_norm_evenProlateConstraintCoord_negative_atTop
+constrainedProlateNegativeCoordinate_zero = 2^(-1/4)
+constrainedProlateNegativeCoordinate_one  = sqrt 5 / 2^(7/4)
+constrainedProlateHermiteCoordinate_zero_eq = 2^(1/4)
+constrainedProlateHermiteCoordinate_one_eq  = sqrt 3 / 2^(5/4)
+```
+
+The Hermite shape ratio of the doubled index is `2 sqrt(pi)·binom(2k,k)/4^k` in closed form, so the
+negative sublattice `k = 2j+1` gives exactly the CCM negative-sector weights.  One step of the
+negative sublattice again moves the corpus index by two, so the same two-sided estimate separates
+it:
+
+```
+tendsto_evenProlateSignedLeakage_negative_step_ratio / _tail
+ladderEnvelope_evenProlateSignedLeakage_negative
+```
+
+Hence, for the TRUE prolate family and with no hypothesis at all:
+
+```
+constrainedProlatePositive_ground_ratio_tendsto      mu_+/d_1^+ -> 8/11
+constrainedProlatePositive_gap_ratio_tendsto        (d_1^+ - mu_+)/d_1^+ -> 3/11
+constrainedProlateNegative_ground_ratio_tendsto      mu_-/d_1^- -> 8/13
+constrainedProlateNegative_gap_ratio_tendsto        (d_1^- - mu_-)/d_1^- -> 5/13
+constrainedProlateParity_normalized_ratio_tendsto   (mu_+/d_1^+)/(mu_-/d_1^-) -> 13/11
+```
+
+### What the raw `lambda^(-4)` parity form still owes
+
+The leakage-normalized parity collapse above is unconditional.  The *raw* form
+`mu_+/mu_- ~ C lambda^(-4)` needs in addition the ONE-STEP leakage ratio
+`d^+_1/d^-_1 = d_2/d_3 -> 0`, and that is out of reach of the present two-sided estimate: one corpus
+step moves the separation constant by `4`, hence the bandwidth exponent by `2`, while the explicit
+two-sided window has width `3` (`c^(+1)` above from the exterior-mass constant, `c^(-2)` below from
+the turning-layer factor `3s/(alpha²−s)` and the density prefactor `1/c`).  A Fourier-even step
+moves the exponent by `4` and therefore clears the window — which is exactly why every theorem above
+is stated on a single parity sublattice.
+
+Narrowing the window below `2` is the only missing analytic input.  Two concrete improvements are
+visible: taking the cut width `w = c^(-1/2)` instead of `c^(-1)` (the transport loss
+`exp(2(cb+12)w/(1−b²))` stays bounded because `c·b ≈ 2 sqrt(mu c)`, while `1/w` improves from `c` to
+`sqrt c`, so the upper loss drops from `c^(+1)` to `c^(+1/2)`), and replacing the turning-layer
+factor `3s/(alpha²−s)` in the lower bound by a sharper turning-layer mass.  Together those would
+bring the window to `< 2` and give the raw parity form.
+
+### The quantified gap, unconditionally
+
+```
+constrainedProlatePositive_spectralGap_eventually (hc : cst < 3/11)
+    ∀ᶠ lambda, ∀ mu' with infiniteSecular (d) (ell) mu' = 0 and mu' ≠ mu_0 :
+        cst · d_1 ≤ mu' − mu_0
+```
+
+This is `(7)` of the two-mode card and `(10)` of the parity card's positive half, for the true
+prolate operator with no hypothesis.

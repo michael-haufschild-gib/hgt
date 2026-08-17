@@ -3662,3 +3662,103 @@ card's law `(5)`.
 All unconditional, axiom-clean, umbrella-wired.  Next on this card: the facet theorem `(13)`–`(18)`
 — turn an `HTRealizableDim` datum into a `PeriodEscapeSeparation` by the Stanley--Reisner
 facet-prime computation, giving `peDim <= htDim`.
+
+## Pass 60 — the facet theorem: `peDim <= htDim`
+
+```text
+GaloisForLFunctions.HTGeometry.peDim_le_htDim
+GaloisForLFunctions.HTGeometry.exists_periodEscapeSeparation_of_htRealizableDim
+```
+
+Two modules: `FacetSeparatorMonomial` (the separating monomial of a facet and its three
+Stanley--Reisner membership facts) and `FacetPeriodEscape` (the carrier package, the abstract
+hypertranscendence-from-matroid lemma, and the assembly).
+
+Performance note worth keeping: the two elaboration blow-ups in this build were both *higher-order
+unification* caused by leaving the reindexing map implicit — `AlgebraicIndependent.comp h _ hinj`
+and `(differentialFamilyMatroid_indep_iff _ _).mp`.  Supplying the map and the family explicitly
+removes the blow-up entirely; no `maxHeartbeats` increase is needed anywhere in these modules.  The
+second lesson is to state the hypertranscendence lemma over an abstract differential field, so the
+`FractionRing`/`OreLocalization` tower is never unfolded during unification.
+
+## Card closed: `noncompact-period-quotient-facet-escape-law` moves to stage 3
+
+Every mathematical claim of the card is now an unconditional Lean theorem:
+
+* `(1)`–`(3)` the invariant `peDim` — already owned;
+* `(4)`–`(5)` the noncompact period-quotient law, **in every dimension** — pass 59, on top of
+  Siegel's bound for compact complex tori (pass 58) and the openness of coprimality of analytic
+  germs (pass 57);
+* `(13)`–`(18)` the facet theorem, hence `peDim <= htDim` — pass 60;
+* `(19)`–`(20)` the hierarchy: `peDim <= ppDim` and `htDim <= ppDim` were already owned, so the
+  chain `peDim <= htDim <= ppDim` is complete;
+* `(21)`–`(22)` the exact wedge values — already owned
+  (`boundaryWedge_htDim_eq_ppDim_lt_ffsDim`, `boundaryWedge_peDim_eq_two`).
+
+The only unchecked gate left is the external "independent specialist proof and novelty audit",
+which is the standing convention for stage-3 cards in this tree.
+
+20 non-`ccm` cards remain in stage 2.
+
+## Work queue for the 20 remaining non-`ccm` stage-2 cards
+
+Recorded so the effort is directed rather than rediscovered.  For each card, the *mathematics* that
+has to be built before a Lean formalization is anything but theatre.
+
+**Closest to closure**
+
+1. `gauss-component-quasi-inner-residue-hierarchy` — one named open core: the **relative `m`-fold
+   telescope**.  The absolute telescope (`tendsto_gaussIterate`, `tendsto_gaussIterateInner`) and
+   both brackets of the relative one-step error are proved
+   (`tendsto_norm_gaussShiftedBlockDiag_expPiecewise_defect_zero`,
+   `tendsto_norm_gaussShiftedBlockDiag_sub_rotationInv_family`).  The obstruction is that the
+   normalized step operator has norm `≍ n^(1/m)`, so the induction must carry a *rate*: the
+   `theta`-exponent bookkeeping of passes 36–40 with `log_div_le_rpow_div`.  Pattern to copy: the
+   `m = 1` proof in `RHTower/GaussDiagonalLogResidue.lean`, whose relative bound is
+   `norm_inner_gaussQuasiInnerG_sub_amplitude_le` (`‖err‖ ≤ |sigma_i| F(i)`, `F → 0`) combined with
+   `exists_norm_gaussSampleValue_sq_mul_succ_le` (`|sigma_i| (i+1) ≤ C`).
+2. `universal-first-order-entire-cascade-unit-cost` — an active long programme; the frontier is the
+   algebraic model's tame-exponent/ideal-order dictionary (card log, parts 11–13).
+
+**Blocked on one named classical theorem**
+
+3. `prime-modulated-weyl-idealizer-collapse-on-xi-sampling` — Selberg's positive-proportion theorem
+   (`N_0(T) >> T log T`; Hardy–Littlewood's `>> T` is provably not enough, by the card's own lattice
+   counterexample) and Bochner–Schwartz for positive-definite tempered distributions.
+4. `bessel-order-intensity-hypertranscendence` — Dreyfus's DA-to-periodic-exponential classification.
+5. `abelian-multiplication-tail-manin-horizon`, `embedded-manin-horizon-isogeny-reconstruction`,
+   `isogeny-tail-maurer-cartan-holography`, `jet-horizon-translation-gauge-classification` —
+   differential algebraic groups, Kolchin topology and Manin kernels; none present in mathlib.
+6. `differential-variational-building-balance-law` — Ore localization plus affine buildings.
+
+**Blocked on a shared foundation: covering dimension + Pontryagin dimension**
+
+7. `almost-periodic-autonomous-ade-finite-frequency-law`,
+   `almost-periodic-implicit-ade-relative-frequency-law`,
+   `archimedean-relative-prime-cocycle-curvature` (through the finite real shifted-Gamma projective
+   boundary law) — all three reduce to: covering dimension of a compact metrizable space, the
+   finite closed-sum theorem, and `dim X = rank_Q (dual X)` for a compact connected abelian group.
+   **Correction to those cards:** the tree does *not* lack Bohr theory — there are 79 modules
+   (`BohrAlmostPeriodic`, `BohrSpectrum`, `BohrParseval`, `BohrBochnerEquivalence`,
+   `BohrBochnerFejerApprox`, `AlmostPeriodicHull`, `KroneckerWeylDensity`, …).  What is missing is
+   the dimension theory, not the almost periodicity.
+
+**Blocked on special functions / one unaudited parent**
+
+8. `all-depth-pair-face-signature-completeness`, `all-depth-compatible-pair-face-differential-matroid`
+   — meromorphic principal parts on elliptic curves and the depth-two triptic DA-completeness
+   theorem; the gluing engine and the localized rank law are already owned.
+9. `finite-archimedean-gamma-product-boundary-law`, `irrational-triptic-source-effectivity-character`,
+   `torusless-quasi-abelian-fixed-factor-all-order-jet-ampleness`,
+   `active-quasi-abelian-palette-exact-ht-dimension-classification` — Abe's growth class and the
+   analytic Poincaré-series induction on quasi-Abelian groups.
+10. `prime-valuation-dyadic-fermion-normal-cone-law`, `prime-wold-accelerated-type-modular-drift-law`
+    — RH-facing; each still has open mathematics of its own on the card.
+
+## Pass 61 — the spike estimates for the Gauss relative telescope
+
+`RHTower/GaussSpikeMass.lean`: `sum_rpow_neg_head_le`, `spike_mass_le`, `sum_kernel_mul_spike_le`.
+Unconditional, axiom-clean, umbrella-wired.  These are step 1 of the three-step plan the Gauss card
+records for its single open core.  The point of the pair is that the moving spike has mass `≍ n`,
+not `≍ n^(1+c)`, so a harmonic kernel — which sees it only from distance `≍ n` — transfers it into
+the bulk with a bounded factor.

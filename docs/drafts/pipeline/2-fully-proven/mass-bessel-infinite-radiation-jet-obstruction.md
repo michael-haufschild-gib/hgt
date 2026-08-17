@@ -174,3 +174,84 @@ and the coefficient polynomials `Q_{j,a}` with `deg Q_{j,a} = j` and
 `RHTower.norm_besselK1C_sub_leading_le_norm` (error in `|w|`, not `Re w`) and the integration-by-
 parts engine `HTGeometry.BesselOrderAbsoluteAsymptotic` that produced it; the all-orders statement
 is the same integration by parts iterated, with the coefficient bookkeeping of section 2.
+
+## Lean progress -- the Watson layer of item 1
+
+Two new modules (umbrella-wired, axiom-clean) supply the exact evaluation and the exact remainder
+that the all-orders Schläfli expansion of `K_1` consumes.  The corpus already writes
+`K_1(w) = 2e^{-w} ∫_0^∞ e^{-wv²} P(v) dv` with `P(v) = (1+v²)/√(2+v²)`
+(`BesselOrderLaplaceAsymptotic.besselK1C_sub_leading`), so the all-orders expansion is Watson's
+lemma applied to that profile.
+
+`formal/GaloisForLFunctions/HTGeometry/GaussianHalfLineMoment.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the even half-line Gaussian moment with a *complex* parameter | `gaussianHalfMoment` |
+| its integrability on the half line at every order | `integrableOn_pow_mul_cexp_neg_mul_sq` |
+| a power times a Gaussian tends to zero | `tendsto_pow_mul_exp_neg_mul_sq`, `tendsto_pow_mul_cexp_neg_mul_sq` |
+| the base case, from the complex Gaussian integral | `gaussianHalfMoment_zero` |
+| **the recursion `M_{k+1} = ((2k+1)/2w) M_k`**, by one integration by parts | `gaussianHalfMoment_succ` |
+| **the closed form**: every even moment is an explicit rational multiple of `(π/w)^{1/2}` | `gaussianHalfMoment_eq` |
+
+Mathlib has the complex Gaussian integral (`integral_gaussian_complex_Ioi`) but not its moments, and
+the corpus's `RHTower.integral_cpow_mul_exp_neg_mul_sq_Ioi` is restricted to a *real* parameter,
+which the card's `t_X = σ + i(log X)^4` rules out.  The recursion avoids analytic continuation
+entirely: `∫_0^∞ d/dv[v^{2k+1}e^{-wv²}] dv = 0` because both endpoint values vanish, and expanding
+the derivative is the recursion.
+
+`formal/GaloisForLFunctions/HTGeometry/WatsonGaussianRemainder.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the real Gaussian majorant at the real part of the parameter | `realGaussianHalfMoment`, `realGaussianHalfMoment_nonneg` |
+| the polynomial part of a Watson expansion and its Gaussian transform | `watsonPoly`, `integral_watsonPoly_gauss` |
+| **Watson's lemma with an explicit remainder**: a profile agreeing with `∑_{k<m} c_k v^{2k}` to within `C v^{2m}` has Gaussian transform agreeing with `∑_{k<m} c_k M_k(w)` to within `C · (m-th real moment at `Re w`)` | `norm_integral_sub_watson_le` |
+
+The bound depends on the parameter only through its real part, so it is uniform along every ray in
+the open right half plane -- which is what the card's fixed-order remainder needs at
+`t_X = σ + i(log X)^4`.
+
+## Lean progress -- the all-orders `K_1` asymptotic is closed
+
+`formal/GaloisForLFunctions/HTGeometry/HalfShiftedBinomialRemainder.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the generalized binomial coefficient of `(1+s/2)^α`, and its absolute majorant | `binomCoeff`, `binomAbsCoeff`, `binomCoeff_succ`, `binomAbsCoeff_succ` |
+| the Taylor remainder, its vanishing at the origin, and its derivative recursion | `binomRem`, `binomRem_zero_arg`, `hasDerivAt_binomRem` |
+| **the remainder bound on the whole half line**, for every nonpositive exponent | `abs_binomRem_le` |
+| at exponent `-1/2` the falling factorial is at most `m!`, so the bound is `(s/2)^m` | `binomAbsCoeff_neg_half_le`, `abs_binomRem_neg_half_le` |
+| **the Schläfli profile in the squared variable**, and its Taylor coefficients | `besselLaplaceProfile_eq_shifted`, `schlafliCoeff`, `watsonPoly_schlafliCoeff` |
+| **item 1's profile input**: `\|P(v) - ∑_{k<m+1} p_k v^{2k}\| ≤ 3·2^{-1/2}·2^{-(m+1)}·v^{2(m+1)}` | `abs_besselLaplaceProfile_sub_watsonPoly_le` |
+
+There is no radius-of-convergence restriction anywhere.  The `m`-th derivative of `(1+u/2)^α` is
+`(∏_{j<m}(α-j)/2^m)(1+u/2)^{α-m}`, and for nonpositive exponents that last factor is at most one on
+the whole half line, so one induction -- differentiate, integrate back, lower the exponent by one --
+gives the remainder bound globally.  At `α = -1/2` the falling factorial `∏_{j<m}(1/2+j)` is at most
+`m!`, which is exactly the constant that cancels the `1/m!`.
+
+`formal/GaloisForLFunctions/HTGeometry/BesselK1AllOrderAsymptotic.lean` and
+`formal/GaloisForLFunctions/HTGeometry/BesselK1PoincareForm.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the Schläfli integral as an exact Gaussian transform of the profile | `besselK1C_eq_gauss` |
+| **the all-orders sectorial expansion with a fixed-order remainder** | `norm_besselK1C_sub_watson_le` |
+| every even Gaussian moment is a rational multiple of `w^{-k}` times `(π/w)^{1/2}` | `gaussianMomentFactor`, `gaussianHalfMoment_eq_pow` |
+| **the classical Poincaré form**: `K_1(w) = e^{-w}(π/w)^{1/2}∑_{k<m+1} q_k w^{-k} + O(...)` | `besselK1Coeff`, `norm_besselK1C_sub_poincare_le` |
+
+The remainder is `2e^{-Re w}·(3·2^{-1/2}/2^{m+1})·(the (m+1)-st real Gaussian moment at `Re w`)`, so
+it depends on the argument only through its real part and is uniform along every ray in the open
+right half plane -- which is the card's "fixed closed subsector" clause.
+
+### What remains
+
+Item 2's coefficient bookkeeping for `Q_{j,a}` and the composition with `w = a√(t²+x²)`, followed by
+the dyadic assembly of item 4.  The composition is where the remaining work sits: writing
+`z = t(1+x²/t²)^{1/2}`, the carrier is `√(2πa)e^{-at}t^{-1/2}` times
+`(t/z)^{3/2} e^{-a(z-t)} ∑_k q_k (az)^{-k}`, and every factor is a function of the *complex* variable
+`u = x²/t²`, so the half-line binomial remainder above has to be repeated for complex argument along
+the segment `[0,u]`.  The corpus already owns the order-zero case of exactly this composition
+(`HTGeometry.massBesselCarrier`, `massBesselCarrier_eq`, `norm_massBesselCarrier_sub_leading_le`,
+`norm_massBesselRoot_sub_le`), so the all-orders version is that estimate repeated at every order.

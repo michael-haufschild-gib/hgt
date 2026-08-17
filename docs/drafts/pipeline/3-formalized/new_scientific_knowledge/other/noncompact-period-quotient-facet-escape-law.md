@@ -1,7 +1,7 @@
 # Every HT relation facet requires a noncompact period quotient
 
 - **ID:** `noncompact-period-quotient-facet-escape-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / NECESSARY HT CONSTRAINT-DIMENSION GEOMETRY
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** In every meromorphic full Stanley--Reisner HT system, each facet is separated from
@@ -409,10 +409,10 @@ facet-prime computation on top of it.
   germ in one complex variable
 - [x] several-variable meromorphic period groups formalized: closed, with complex-linear identity
   component, in every dimension
-- [ ] Siegel bound for compact complex tori formalized, giving `(5)` for `d>=2` and hence
+- [x] Siegel bound for compact complex tori formalized, giving `(5)` for `d>=2` and hence
   `peDim<=htDim`
+- [x] complete unconditional Lean formalization
 - [ ] independent specialist proof and novelty audit
-- [ ] complete unconditional Lean formalization before stage 3
 
 ### Progress on the Siegel gate
 
@@ -838,3 +838,51 @@ turns an `HTRealizableDim` datum into a `PeriodEscapeSeparation`, giving `peDim 
 end points are already defined in the tree (`PencilHTDimension.htDim`,
 `PeriodEscapeDimension.PeriodEscapeSeparation`), and the analytic input of that computation is the
 law above.
+
+## The facet theorem `(13)`–`(18)` is now a theorem: `peDim <= htDim`
+
+```text
+GaloisForLFunctions.HTGeometry.peDim_le_htDim :
+  facets an antichain,  0 < htDim facets
+    ==>  peDim (fun A : facets => A) <= htDim facets
+
+GaloisForLFunctions.HTGeometry.exists_periodEscapeSeparation_of_htRealizableDim :
+  an intrinsic hypertranscendental realization in dimension n+1
+    ==>  a period-escape separation in dimension n+1.
+```
+
+Unconditional, umbrella-wired, lint-clean, no raised heartbeat anywhere.
+
+`HTGeometry/FacetSeparatorMonomial.lean` — the combinatorial half.  For a facet `A` pick a vertex of
+`A` outside every other facet and multiply those variables:
+
+```text
+facetSepMonomial facets A = prod over B != A of X (facetSepVertex A B)
+facetSepMonomial_notMem_stanleyReisnerIdeal    -- support inside A, so a face
+X_mul_facetSepMonomial_mem     (v not in A)   -- the extra vertex kills A, the separators kill the rest
+X_mul_facetSepMonomial_notMem  (v in A)       -- still supported inside A
+```
+
+`HTGeometry/FacetPeriodEscape.lean` — the analytic half and the assembly.
+
+* `mem_meroPeriodSubgroupGen_entireGerm_iff` — a translation is a period of an entire germ exactly
+  when it is a period of the function.
+* `periodEscapeSeparationOfCarriers` — a facet family of hypertranscendental entire carriers whose
+  translation invariance recovers incidence *is* a period-escape separation; the escape clause is
+  the law `(5)` above.
+* `linearIndependent_singleton_of_notMem_stanleyReisnerIdeal` — a class outside the ideal is an
+  independent singleton over `C[delta]`: multiplying a polynomial by a nonzero constant does not
+  change its support, so the quotient class is not torsion.
+* `hypertranscendentalOver_of_matroid_eq` — stated over an *abstract* differential field, so that no
+  localisation is unfolded: if the differential family matroid of a one-element family equals the
+  localized Stanley--Reisner matroid of a class outside the ideal, the element is
+  hypertranscendental.
+* `exists_periodEscapeSeparation_of_htRealizableDim` — the assembly.  `G_A = q_A(T) F` is entire;
+  `x_v q_A` lies in the annihilator exactly for `v` outside `A`, which is `(15)`–`(16)`; and the
+  realization's matroid clause at the singleton family `q_A` gives `(11)`, hence hypertranscendence.
+* `peDim_le_htDim` — `(18)`, and with `peDim <= ppDim` already owned this is the middle inequality
+  of the hierarchy `(20)`.
+
+### Gate
+
+- [x] facet period-escape theorem `(13)`–`(18)` formalized, giving `peDim <= htDim`

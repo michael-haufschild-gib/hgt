@@ -2264,3 +2264,33 @@ bracket of the `m`-fold telescope now has its one-step estimate.
 
 All unconditional and axiom-clean; the only remaining obligation on this card is the relative
 `m`-fold telescope of pass 30.
+
+## Pass 46 — the spike estimates the invariant class needs
+
+Step 1 of the three-step plan recorded after pass 44 ("the only new estimate needed is how a
+harmonic convolution maps the spike part into the uniform part") is now built, unconditionally and
+axiom-clean, in `RHTower/GaussSpikeMass.lean`.
+
+```text
+sum_rpow_neg_head_le  :  0 < c < 1  ->  Σ_(r=1)^N r^(-c) ≤ 1 + N^(1-c)/(1-c)
+spike_mass_le         :  0 < c < 1,  N ≤ n
+                          ->  Σ_(r=1)^N (n/r)^c ≤ n^c + n/(1-c)
+sum_kernel_mul_spike_le :
+   |kappa l| ≤ K/(1+|l|),   supp s at distance ≥ D from 0,   Σ|s| ≤ S,   |j| ≤ D/2
+     ->  Σ_l |kappa (j-l)| |s l| ≤ K/(1 + D/2) · S
+```
+
+The first is the integral comparison on `[1, N]` (`AntitoneOn.sum_le_integral` plus
+`integral_rpow`).  The second is the total mass of a moving spike: it is `n^c` times that head sum,
+hence comparable to `n` and **not** to `n^(1+c)` — which is exactly what makes the third estimate
+useful.  The third is the separation bound: the spike sits at distance `≍ n` from the frequencies
+that are read, so every kernel value used is `O(1/n)`, and the spike passes into the bulk with the
+factor `mass/n = O(1)`.  With the spike carried as `A·n^(-theta)·(n/|n+j|)^c` — the shape it acquires
+when the Fourier multiplier `rho_j = ‖d_(n+j)‖/‖d_n‖` acts on a uniform harmonic bound — the
+transferred mass is `O(A n^(-theta))`, which is the gain the iteration needs.
+
+Remaining on this card: steps 2 and 3 of that plan — the one-step estimate `‖(R̃_n − a_δ) u‖ → 0`
+for `u` in the two-piece class, and the telescope
+`‖X^r v − Y^r v‖ ≤ Σ_i ‖Y‖^(r-1-i) ‖(X−Y)(X^i v)‖` with `X = R̃_n`, `Y = a_(δ_n)`, `‖Y‖ ≤ 1` —
+the direction that applies the growing operator only to `v`, so that no unbounded operator norm
+enters the telescope at all.

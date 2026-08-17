@@ -631,7 +631,7 @@ construction; explicit-formula lanes with `Λ(n) n^(−1/2)` weights are not.
 
 ## C33 — Complete classification of prime-labelled singular-graph descent
 
-`[PAPER-PROVED] [BRIDGE] [NOT RH]`
+`[PAPER-PROVED] [LEAN-PROVED] [BRIDGE] [NOT RH]`
 
 For an arbitrary real coefficient function `c` on ordinary primes, define
 `PrimeLabelledActualSourceDescends c` to mean that one continuous linear
@@ -671,3 +671,9 @@ nonconstant reciprocal, inverse-Gamma, prime-log, or other left-prime profile
 is excluded on this graph. This closes the scoped singular-graph retirement;
 it does not address critical-scale finite-core maps that change the carrier
 before completion.
+
+**Lean status.** Formalized unconditionally as
+`RHTower.HedenmalmThetaSource.primeLabelledActualSourceDescends_iff` in
+`GaloisForLFunctions.RHTower.XiGammaSixWoldJordanParametricVacuity`. Direct
+source check and exact leaf build pass. `#print axioms` reports only
+`propext`, `Classical.choice`, and `Quot.sound`. No umbrella build was run.
