@@ -34,8 +34,8 @@ where mathematical knowledge is missing use the /hgtl7 skill to create it.
 /goal
 
 formalize UNCONDITIONALLY in lean any proven theorem from all of the cards in these folders: 
-- docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/ccm
-
+- /Users/michael/Documents/code/hgt/docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/other
+  
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
 Lean rules:
@@ -56,16 +56,19 @@ Non-negotiable working mode rules:
 
 LEAN PROOFS MUST BE UNCONDTIONAL!!! ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WHAT THE PROJECT LEAN CODE ALREADY CONTAINS AS PROOF OR BUILDING BLOCK YOU SO YOU DO NOT DUPLICATE WORK. 
 
-where mathematical knowledge is missing use the /hgtl7 skill to create it.+
+where mathematical knowledge is missing use the /hgtl7 skill to create it.
 
 GOAL IS MET WHEN ALL CARDS ARE FULLY FORMALIZED AND CAN BE MOVED TO STEP 3 OF THE PIPELINE. NO SHORTCUTS OR FAKING IT!
 
-do not add hypotheses. always check first what the lean corpus already contains, to not duplicate existing work.
+do not add hypotheses. always use our custom search tool check first what the lean corpus already contains, to not duplicate existing work.
 
 do not run full builds. check in scratch, build only oleans that are needed, wire finished modules into their umbrella but do not run full umbrella builds.
 
 optimize lean code. only build what is necessary. you can yourself only start 1 build procress at a time. be mindful that you are not the only agent working on the lean codebase right now.
 
+
+check the corpus using our search tool for leads. our research is in several places ahead of literature, let the corpus guide you.
+use heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...
 
 ## formalize gpt
 
@@ -193,13 +196,7 @@ goal is met when paper is written and passes a hostile review that confirms that
 
 ## research Route
 
-use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge about all Connes / CCM releated rotues from docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md
-- Route O
-- CCM-UR
-- CCM-FU
-- CCM-HG
-- CCM-GS
-- CCM-EP
+use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to create novel and significant new knowledge about the "SP-E — prime--Gamma signed-permutation Eulerian limit" route from docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md
 
 collect enough novel and significant knowledge to overcome the obstacles. do not get married to a specific route. our research corpus is ahead of your training data and literature, never assume how the solution must look like but let our research corpus guide you. 
 
