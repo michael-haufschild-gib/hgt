@@ -182,7 +182,7 @@ The route consequence is useful and quantitative, but it does not clear the rout
   bridge status even though the exact prime-source wording was absent.
 - [x] Determine that the quantitative route consequence is stronger than the qualitative
   differential-translation orbit freeness.
-- [ ] Formalize only if the complete analytic statement, not merely a finite combinatorial shadow,
+- [x] Formalize only if the complete analytic statement, not merely a finite combinatorial shadow,
   can be represented unconditionally in Lean.
 
 ## Primary parents
@@ -200,3 +200,88 @@ The route consequence is useful and quantitative, but it does not clear the rout
   and an arbitrary-complex `O(log x)` cancellation law.
 - 2026-07-11 -- Parent audit failed novelty: the two regimes are direct extended-Chebyshev and
   Jensen/PNT consequences.  Filed the complete theorem as a stage-2 quantitative bridge.
+
+## Lean formalization — 2026-08-17
+
+`formal/GaloisForLFunctions/RHTower/PrimeSourceCancellationBudget.lean`, with three supporting
+modules, all unconditional (`#print axioms` = `[propext, Classical.choice, Quot.sound]` for every
+theorem below):
+
+- `formal/GaloisForLFunctions/HTGeometry/ExponentialPolynomialZeroBound.lean` (real and
+  complex-coefficient extended-Chebyshev zero bound),
+- `formal/GaloisForLFunctions/HTGeometry/ComplexExponentialPolynomial.lean` (entire exponential
+  polynomials: nonvanishing, exponential type, Jensen zero count),
+- `formal/GaloisForLFunctions/HTGeometry/PrimeValuationLeadingEchelonInfinite.lean`
+  (infinite-support leading-echelon law).
+
+| Paper step | Lean name |
+|---|---|
+| coefficient transform `L F(s) = ∑ b_n E_L(log n) n^{-s}`, eq. (1) | `PrimeCancellation.filterAction` |
+| the symbol `E_L(x) = ∑ P_j(-x) e^{-h_j x}` | `PrimeCancellation.filterSymbol` |
+| summability of the filtered coefficients on the common half-plane | `PrimeCancellation.lseriesSummable_filterSymbol` |
+| zero-budget lemma (extended Chebyshev system, real coefficients) | `HTGeometry.ExpZeroBound.card_lt_of_expPoly_eq_zero` |
+| the same with vanishing blocks allowed | `HTGeometry.ExpZeroBound.card_lt_of_expPoly_eq_zero'` |
+| the same for complex polynomial blocks and real frequencies | `HTGeometry.ExpZeroBound.card_lt_of_cexpPoly_eq_zero` |
+| `E_L` has at most `N(L) − 1` distinct real zeros | `PrimeCancellation.card_lt_of_filterSymbol_real` |
+| real-shift budget (2), Finset form | `PrimeCancellation.card_cancelledPrimes_lt` |
+| the cancelled prime set is finite | `PrimeCancellation.cancelledPrimes_finite` |
+| real-shift budget (2)/(3), cardinal form | `PrimeCancellation.cancelledPrimes_ncard_lt` |
+| distinct frequencies make `E_L` not identically zero | `HTGeometry.CExpPoly.eq_zero_of_cexpFn_eq_zero`, `HTGeometry.CExpPoly.exists_cexpFn_ne_zero` |
+| `E_L` has finite exponential type | `HTGeometry.CExpPoly.exists_exponentialType_bound` |
+| Jensen: `#{zeros in a disc of radius r} = O(r)` | `HTGeometry.CExpPoly.exists_zeroCount_linear` |
+| complex-shift law (4), `#{cancelled p ≤ x} = O_L(log x)` | `PrimeCancellation.exists_cancelledPrimes_count_le_log` |
+| cofinite prime logarithms are still a uniqueness set | `PrimeCancellation.eq_zero_of_exponentialType_of_cofinite_primeLog_zeros` |
+| every nonzero filter leaves infinitely many exposed primes | `PrimeCancellation.infinite_survivingPrimes` |
+| the leading-echelon law with only infinitely many nonzero private coefficients | `HTGeometry.primeValuationLeadingEchelon_differentialIndependent_of_infinitePrimeDependent` |
+| HT consequence: `L F` is differentially independent over `C` | `PrimeCancellation.filteredSource_differentialIndependent` |
+| xi specialization, the filtered defect is a Dirichlet series | `RHTower.xiFilteredAction` |
+| xi specialization claim 1 (HT for arbitrary complex shifts) | `RHTower.xiFilteredUpperEndCarrier_hypertranscendentalOver` |
+| xi specialization claims 2 and 3 | `card_cancelledPrimes_lt` and `exists_cancelledPrimes_count_le_log` applied to `filteredVonMangoldtCoeff`, whose prime values are nonzero by the corpus theorem `RHTower.filteredVonMangoldtCoeff_prime_ne_zero` |
+
+Four notes on the formal route.
+
+1. **Rolle instead of the Chebyshev-system vocabulary.**  The real budget is proved exactly as the
+   card describes: an iterated Rolle chain (`exists_deriv_zeros`, `exists_iteratedDeriv_zeros`)
+   combined with the polynomial-level operator `shiftD c P = c·P + P'`, whose iterate preserves
+   degree when `c ≠ 0` (`natDegree_shiftD_iterate`) and annihilates the last block when `c = 0`
+   (`Polynomial.iterate_derivative_eq_zero`).  Complex polynomial coefficients are handled by
+   splitting into `rePoly`/`imPoly` and applying the real bound to whichever part survives.
+2. **Nonvanishing of `E_L` is proved, not assumed.**  For complex frequencies Rolle is unavailable,
+   so `eq_zero_of_cexpFn_eq_zero` runs the same block-killing induction purely algebraically:
+   multiply by `e^{-h_last z}`, differentiate `deg P_last + 1` times, and use that the surviving
+   blocks keep their degree because the leading coefficient is scaled by `(h_j − h_last)^{d+1}`.
+3. **The `O(log x)` law is a genuine counting statement.**  The corpus Jensen bound
+   `RHTower.exponentialType_zeroCount_le` bounds an analytic divisor sum; the distinct cancelled
+   primes below `x` are transported into that sum by
+   `RHTower.card_le_sum_divisor_of_finite_zeros` through the injection `p ↦ log p`, giving an
+   explicit constant `C` with `#{cancelled p ≤ x} ≤ C log x` for all `x ≥ 2`.
+4. **The HT step uses the corpus echelon law, not a literature citation.**  The card cites
+   Ostrowski–Reich class `D`.  The corpus's own hypertranscendence engine (the prime-valuation
+   leading-echelon law) required a *nonzero* private prime coefficient at every prime, which a
+   filter can destroy.  `PrimeValuationLeadingEchelonInfinite` weakens that to "infinitely many
+   primes carry a nonzero private coefficient", which is exactly what `infinite_survivingPrimes`
+   supplies; tail coefficient independence is a statement modulo finite support, and the unweighted
+   jet block is a polynomial family in the injective rotated prime clock, so a weight that is
+   nonzero infinitely often suffices.  The HT conclusion is therefore proved for sources supported
+   on positive prime powers — the class-`D` setting, and exactly the setting of the xi
+   specialization.
+
+Not formalized, and explicitly not an obligation of this card: the completed-carrier transfer
+paragraph in its abstract form (a general meromorphic `u` with an unspecified exposing operator
+`A` and an unspecified DA field `r`), which is a restatement of the HT consequence once the
+exposure identity is given; the concrete instance it exists to serve — `u = xi'/xi`, `A = T_2 − 1`
+with the explicit rational `r` — is formalized as `RHTower.xiShiftTwoDefect`,
+`RHTower.xiFilteredAction` and `RHTower.xiFilteredUpperEndCarrier_hypertranscendentalOver`.  The
+"relative density one" phrasing of the complex law is the arithmetic reading of the formalized
+`O(log x)` count against `π(x)`; the count itself is what carries the mathematics, and the same
+Chebyshev domination is what `infinite_survivingPrimes` uses through
+`RHTower.exists_chebyshev_primeLog_count_gt_linear`.
+
+## Log
+
+- 2026-08-17 Formalized in Lean 4 and promoted to stage 3.  All four `[PROVED HERE]` blocks are
+  unconditional Lean theorems: the coefficient transform, the real-shift `N − 1` budget, the
+  complex-shift `O(log x)` law, and the hypertranscendence consequence with its xi specialization.
+  Three reusable modules were added: the complex-coefficient extended-Chebyshev zero bound, the
+  entire exponential-polynomial layer (nonvanishing, exponential type, Jensen zero count), and the
+  infinite-support prime-valuation leading-echelon law.

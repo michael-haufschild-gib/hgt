@@ -55,6 +55,17 @@ theorem reflectionDirichlet_eq {w : ι → ℝ} {R : ι → H → H}
   congr 1
   rw [← Finset.sum_mul, ← Finset.mul_sum]
 
+/-- **`(270)`: a normalized negative-edge witness bounds the reflection Dirichlet budget.**  The
+budget is the total weight minus twice the reflection form, so a lower bound for the reflection
+form is an upper bound for the budget. -/
+theorem reflectionDirichlet_le_of_edgeWitness {w : ι → ℝ} {R : ι → H → H}
+    (hiso : ∀ i x, ‖R i x‖ = ‖x‖) (f : H) {W Harch Ccom b : ℝ}
+    (hWsum : W = ∑ i, w i)
+    (hwitness : Harch + b * Ccom ≤ reflectionForm w R f) :
+    reflectionDirichlet w R f ≤ 2 * (W * ‖f‖ ^ 2 - Harch - b * Ccom) := by
+  rw [reflectionDirichlet_eq hiso f, hWsum]
+  linarith
+
 omit [InnerProductSpace ℝ H] in
 /-- **`(271)`: the composite reflection defect is controlled by the two single defects.** -/
 theorem norm_sub_comp_sq_le {Rm Rn : H → H}

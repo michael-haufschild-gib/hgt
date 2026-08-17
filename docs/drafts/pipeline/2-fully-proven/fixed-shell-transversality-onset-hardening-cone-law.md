@@ -846,14 +846,29 @@ signed form, `(s : Z) - S < C`, because truncated natural subtraction would weak
    `delta`), and `volume_sublevel_le` (so its Lebesgue measure is at most `2 d delta`, with
    `delta = (eps/a)^{1/d}` for a degree-`d` product with leading coefficient `a`).  This is the
    root-factorisation route to a power-law sublevel bound: no stratification, no Lojasiewicz
-   exponent, just the roots.  What remains is the passage from one dimension to the sphere -- a
-   slicing argument along great circles, or the Carbery--Wright inequality -- and the identification
-   of the discriminant and the gradient functions as such products.  Corollary `(18a)`--`(18c)`
-   needs: a nonzero polynomial on a compact Nash manifold satisfies
-   `Disc >= c dist(., Z)^N`, and a proper semialgebraic set of codimension at least one has
-   `u`-tube volume at most a constant times a positive power of `u`.  Neither is in mathlib; the
-   corpus has stratification and tube-volume modules (`RegularLevelSetStratification`,
-   `ObserverKernelTubeVolume`) but not the semialgebraic Lojasiewicz step.
+   exponent, just the roots.
+
+   **The blocker is closed.**  Three new modules carry the one-dimensional bound to the sphere,
+   all umbrella-wired and axiom-clean.
+
+   | Card item | Declaration | Module |
+   |---|---|---|
+   | the complex roots of a real polynomial as a tuple, and `\|q(t)\| = \|a\| prod \|t - z_i\|` | `exists_roots_tuple` | `HTGeometry/PolynomialLineSlice` |
+   | **the one-variable sublevel law** `\|{\|q\| <= eps}\| <= 2 d (eps/\|a\|)^{1/d}` | `volume_polynomial_sublevel_le` | same |
+   | the restriction of a polynomial to a line | `lineSlice`, `lineSlice_eval` | same |
+   | **its top coefficient is the top form at the direction**, independent of the base point | `coeff_lineSlice` | same |
+   | the degree and leading coefficient of a slice in a nondegenerate direction | `natDegree_lineSlice_eq`, `leadingCoeff_lineSlice` | `HTGeometry/PolynomialSublevelSlicing` |
+   | a direction with nonvanishing top form and nonzero first coordinate exists | `exists_direction` | same |
+   | **the sliced sublevel bound** (Fubini over the transverse coordinates) | `volume_prod_sublevel_le` | same |
+   | the shear parametrisation pushes the product measure to `\|v_0\|` times Lebesgue | `volume_shear_preimage` | same |
+   | homogeneous scaling `P(r x) = r^d P(x)` | `eval_smul_of_isHomogeneous` | `HTGeometry/PolynomialSublevelSphere` |
+   | **the ambient sublevel bound** on a box | `volume_sublevel_le_of_direction` | same |
+   | **`(18)`-type shell bound**: `mu_S{\|P\| <= eps} <= C eps^{1/d}` for a nonzero homogeneous `P` | `exists_toSphere_sublevel_le` | same |
+
+   The route replaces the semialgebraic Lojasiewicz step by the top-form slicing: no Nash manifold,
+   no stratification, no Carbery--Wright.  What the corollary still needs from the geometry is the
+   identification of the discriminant as a nonzero homogeneous polynomial of an explicit degree in
+   the shell coordinates.
 
 With those two in place, `(17)`, `(18c)`, `(22)`--`(25)` and Corollary D are assembly over the
 already-formal pieces above.

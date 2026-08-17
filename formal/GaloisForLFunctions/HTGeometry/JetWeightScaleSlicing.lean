@@ -43,6 +43,20 @@ theorem IsWeightZero.inv {a : JetField C Unit} (ha : IsWeightZero a) : IsWeightZ
   show weightScale _ a⁻¹ = a⁻¹
   rw [map_inv₀, ha]
 
+theorem IsWeightZero.add {a b : JetField C Unit} (ha : IsWeightZero a) (hb : IsWeightZero b) :
+    IsWeightZero (a + b) := by
+  show weightScale _ (a + b) = a + b
+  rw [map_add, ha, hb]
+
+theorem IsWeightZero.neg {a : JetField C Unit} (ha : IsWeightZero a) : IsWeightZero (-a) := by
+  show weightScale _ (-a) = -a
+  rw [map_neg, ha]
+
+theorem isWeightZero_algebraMap (e : C) :
+    IsWeightZero (algebraMap C (JetField C Unit) e) := by
+  show weightScale _ (algebraMap C (JetField C Unit) e) = algebraMap C (JetField C Unit) e
+  rw [AlgEquiv.commutes]
+
 /-- The weighted action restricted to a prefix field. -/
 def weightScalePrefixHom {lam : C} (h : lam ≠ 0) (k : ℕ) :
     ↥(jetPrefixField C k) →ₐ[C] ↥(jetPrefixField C k) where

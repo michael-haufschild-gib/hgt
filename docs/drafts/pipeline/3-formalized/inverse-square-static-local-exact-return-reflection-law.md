@@ -1,8 +1,8 @@
 # Inverse-square static-local exact return and operator-complexity reflection
 
 - **ID:** inverse-square-static-local-exact-return-reflection
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `inverse-square-static-local-laboratory-complexity-growth-law.md`
 - **Statement:** One explicit connected static nearest-neighbour chain has an exact factorial-cube return period; its operator-norm two-qubit-gate complexity is exactly reflection-symmetric about that return, and the existing laboratory-time linear bounds therefore occur at both reflected times.
 
@@ -141,7 +141,9 @@ strict error below `ε`).  Thus `a≤C_L^op(t,ε)≤b`.  Exact reflection transf
 - [x] 0 → 1 in-progress: exact statement frozen; internal reflection and ramp corpus audited;
   factorial-cube period closes denominator obstruction.
 - [x] 1 → 2 fully-proven: dependency-closed proof above; `[PAPER-PROVED] [BRIDGE]`.
-- [ ] 2 → 3 formalized: exact Lean capstone, targeted builds, lint, axiom audit.
+- [x] 2 → 3 formalized: exact Lean capstone; direct and target builds pass; axiom audit reports
+  only `propext`, `Classical.choice`, and `Quot.sound`. Project lint reaches this module and retains
+  only three unrelated pre-existing umbrella-reachability failures.
 - [ ] 3 → 4 publication-ready: integrate into standalone recurrence manuscript after literature
   positioning audit.
 
@@ -153,4 +155,6 @@ then apply the existing floor/ceiling theorem at one side of the exact return.
 
 ## Log
 
-- 2026-08-17 — `[PAPER-PROVED] [BRIDGE] [NOVELTY UNVERIFIED]`; ready for Lean formalization.
+- 2026-08-17 — `[LEAN-PROVED] [BRIDGE] [NOVELTY UNVERIFIED]`; certificate
+  `inverseSquareChain_growth_exactReturn_reflection` composes exact factorial-cube return, exact
+  operator-complexity reflection, and existing laboratory-window floor/ceiling bounds.

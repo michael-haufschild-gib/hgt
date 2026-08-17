@@ -4128,3 +4128,26 @@ Two bricks have landed, both unconditional and axiom-clean:
 `Sieve/LogWindowPlancherel.lean` (the exact Plancherel identity for a logarithmic window sum,
 replacing the corpus's lossy Gallagher inequality) and `Sieve/LogWindowDiscreteTransfer.lean`
 (the passage from a discrete family of starting points to the mean square over the line).
+
+### Correction to the Vinogradov--Korobov note (same day)
+
+The claim just above -- that the corpus's zero-free region is too weak and that Vinogradov--Korobov
+must be built from scratch -- is **wrong**, and the programme card now records the corrected
+analysis.  The abscissa `1 - c/(16 (log K)^9)` belongs to the corpus's *classical* Möbius contour
+(`Sieve/MoebiusContourBound.leftAbscissa`).  The Route-T tower carries a genuinely
+Vinogradov-type region:
+
+```text
+zeta(beta + i gamma) != 0   for   beta > 1 - c/((log gamma)^{9/10} (log log gamma)^2) ,
+```
+
+`Sieve/RouteTZetaZeroFreeAbs.exists_routeT_zero_free_region_abs` together with the explicit
+envelope `Sieve/RouteTZetaAsymptotics.routeTZeroFreeDelta_polylog_lower`.  Exponent `9/10` is
+enough for every milestone of the programme: the large-prime range to which the twisted-sum bound
+is applied may be placed anywhere in `[exp((log X)^alpha), exp((log X)^beta)]` with
+`9/10 < alpha < beta < 1`, and its harmonic mass still grows like `(beta-alpha) log log X`.
+
+The Möbius half of that twisted-sum bound is already proved at the Route-T abscissa
+(`Sieve/RouteTMoebiusPowerSaving.exists_norm_LSeries_truncatedMoebius_dyadic_le_routeTPower`);
+the remaining half is the prime sum `sum_{p<=x} p^{it}`, whose edge input --
+`zeta'/zeta` on that abscissa -- is now `Sieve/ZetaLogDerivWidthBound.lean`.

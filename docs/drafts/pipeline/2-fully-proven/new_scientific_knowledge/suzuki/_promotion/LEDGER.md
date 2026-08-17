@@ -12912,3 +12912,518 @@ odd form kernel, and a ground mode outside it has strictly positive defect — w
 statement that avoiding the pole-driven collapse requires `ker(A_e − α) ⊆ ker(A_o − α)`.
 
 All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AFE. Theorem Z — the microlocal seam has vanishing normalized strength
+
+```text
+RHTower/SuzukiPrimeSeamMicrolocalStrength.lean
+  buffer_bracket_identity     (s+d)(η−s+d)η² − (η+2d)²s(η−s) = d(η+d)(η−2s)²
+  buffer_product_ge           the buffer product is at least the squared aspect ratio
+  log_buffer_bracket_ge       (262), pointwise core
+  tendsto_buffer_log_atTop    the denominator diverges as the packet narrows
+  tendsto_seamStrength_zero   (264)
+  reflection_symmetrize, reflection_antisymmetrize
+  neg_reflection_quadForm_symmetrize_nonpos      (267), even half
+  neg_reflection_quadForm_antisymmetrize_nonneg  (267), odd half
+```
+
+Three parts of Theorem Z are exact and now carry Lean proofs.
+
+The minimization behind `(262)` is not an inequality to be estimated but an algebraic identity: the
+difference between the buffer product and the squared aspect ratio, cleared of denominators, is
+`d(η+d)(η−2s)²`.  It is therefore nonnegative for every position of the packet inside its own
+interval, with equality exactly at the midpoint — which is the card's claim that the symmetric
+bracket has minimum `2 log(1 + 2d/η)`.
+
+`(264)` is the conjunction of a bounded numerator and a divergent denominator.  The divergence is
+proved through `η⁻¹ → ∞` on `𝓝[>] 0` and monotonicity of the logarithm, so no rate is assumed.
+
+`(267)` is exact: an involution acts as `+1` on the symmetrized vector and `−1` on the
+antisymmetrized one, so a nonpositive multiple of the reflection has the two opposite signs on the
+two reflected directions.  This is the reason the seam packets used to prove two-sided infinite
+inertia accumulate at the centre of the relative contraction rather than at either edge.
+
+The measure-theoretic step `(266)` reuses `HTGeometry.l1Norm_sq_le_l2NormSq`.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AFF. Theorem AA — `(270)`, the reserve bound
+
+```text
+RHTower/SuzukiPrimeReflectionDirichletBudget.lean  (extended)
+  reflectionDirichlet_le_of_edgeWitness    (270)
+```
+
+`(269)`, `(271)`, `(272)` and `(273)` were already Lean-proved in that module.  The one equation of
+Theorem AA that had no declaration is `(270)`, the insertion of the edge witness into the budget
+identity: since the budget is `2W‖f‖² − 2P(f,f)`, a lower bound for the prime form is an upper
+bound for the budget.  This is the step that turns the Xi-required normalized prime surplus into a
+finite reserve for the physical reflection Dirichlet energy, and it now has a declaration.
+
+Audits to `[propext, Classical.choice, Quot.sound]`.
+
+## AFG. Theorem AB — `(278)` the revival lower bound and `(279)` its limiting amplitude
+
+```text
+RHTower/SuzukiEndpointRevivalOperatorNorm.lean
+  le_opNorm_of_asymptotic_image   an asymptotic image of unit vectors bounds the operator norm below
+  le_opNorm_sub_of_split          (278)
+  windowMassLimit                 the limiting window mass
+  integral_windowDensity          ∫_x^{x+L} e^{−u/2} du = 2(1−e^{−L/2})e^{−x/2}
+  integral_windowMassLimit_sq     its squared L²(0,L) norm
+  sqrt_integral_windowMassLimit_sq_div  ‖M‖/√L in closed form
+  windowRevivalAmplitude_pos      (279): the amplitude is strictly positive
+```
+
+`(278)` needs nothing about the two operators beyond boundedness.  If a sequence of vectors of norm
+at most one has `B g_k` approaching vectors of constant length `c` while `A g_k` vanishes, then
+`‖B − A‖ ≥ c` — the two convergences combine by the triangle inequality and the bound passes to the
+limit.  The card's revival construction supplies the sequence (its almost-periodic core is
+`exists_large_atomicSymbol_revival`), and compactness of the archimedean kernel operator supplies
+the vanishing.
+
+`(279)` is then an exact exponential computation: the limiting window mass is
+`2(1−e^{−L/2})e^{−x/2}`, its squared `L²(0,L)` norm is `4(1−e^{−L/2})²(1−e^{−L})`, and dividing by
+`√L` gives `2(1−e^{−L/2})√((1−e^{−L})/L)`, which is strictly positive for every positive window.
+So the centred discrepancy is bounded away from zero in operator norm at every aperture, which is
+the card's "strong but never uniform".
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AFH. Theorem AB — `(280)`, the endpoint rescaling of the regular kernel
+
+```text
+RHTower/SuzukiEndpointRegularKernelAsymptotic.lean
+  exp_neg_mul_screwRegularKernel               (280) exactly
+  abs_screwEndpointCorrection_le               the correction is uniformly exponentially small
+  abs_exp_neg_mul_screwRegularKernel_sub_le    the uniform endpoint error bound
+```
+
+`(280)` needed no new kernel: the corpus already owns `screwRegularKernel t = e^{t/2} −
+e^{−5t/2}/(1 − e^{−2t})` from Suzuki's equation `(6)`.  Substituting `t = 2a − u` and multiplying
+by `e^{−a}` gives the card's display verbatim, since `−a + (2a−u)/2 = −u/2` and
+`−a − 5(2a−u)/2 = −6a + 5u/2` and `−2(2a−u) = −4a + 2u`.
+
+The two error lemmas are what the card uses the identity for: on a fixed window `0 ≤ u ≤ 2L` and
+apertures with `2a − u ≥ T > 0`, the correction is at most `e^{−6a+5L}/(1 − e^{−2T})`, so the
+rescaled kernel approaches the Laplace density `e^{−u/2}` uniformly at an exponential rate.  A
+uniform bound on a fixed rectangle is exactly the Hilbert–Schmidt input for the norm convergence in
+`(277)`, which is why the archimedean side converges in norm while the prime side does not.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AFI. `(281)` — the normalized sources and their Laplace limit
+
+```text
+RHTower/SuzukiNormalizedSourceLimit.lean
+  tendsto_exp_neg_const_mul
+  normalizedEvenSource, normalizedOddSource, laplaceSource
+  normalizedEvenSource_sub, normalizedOddSource_sub   the exact pointwise errors
+  normalizedEvenSource_eq_zero, normalizedOddSource_eq_zero
+  integral_innerError, integral_tailError
+  sourceError_eq                (281): total squared error = (2e^{−2a} − e^{−4a})/8
+  tendsto_sourceError_zero      the convergence
+  integral_laplaceSource_sq     ‖s‖² = 1/8
+```
+
+`(281)` is exact rather than asymptotic.  Reflecting to the endpoint and rescaling gives
+`e^{−a}cosh(a−z) = (e^{−z} + e^{−2a+z})/2` and `e^{−a}sinh(a−z) = (e^{−z} − e^{−2a+z})/2`, so both
+normalized sources differ from the fixed Laplace profile by the same term `±e^{−2a+z}/2` inside the
+aperture and by the profile itself beyond it.  The two error integrals are
+`(e^{−2a} − e^{−4a})/8` and `e^{−2a}/8`, so the total squared error is `(2e^{−2a} − e^{−4a})/8` —
+an explicit exponential, not merely a null sequence.  The limit profile has squared norm `1/8`,
+which is the card's normalization.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AFJ. Theorem O — the movable-anchor impedance and the sharp hard edge
+
+```text
+RHTower/SuzukiMovableAnchorImpedance.lean
+  movableWeight, movableWeight_pos, movableWeight_one, one_le_movableWeight
+  movableWeight_strictAnti           the weight strictly decreases in the anchor scale
+  impedance, impedance_one           (180): Z(1) = 1
+  integrable_movableWeight_of_lt
+  impedance_lt_of_lt                 (180): Z is strictly decreasing
+  tendsto_mixtureReweighted          (179)
+  mixtureReweighted_zero             vanishing amplification realises the target
+  tendsto_mixtureReweighted_atTop    unbounded amplification gives the point mass at the origin
+```
+
+The impedance facts are exactly the card's `(180)`.  `Z(1) = 1` because the weight is identically
+one at the fixed anchor on the nonnegative half line, and strict monotonicity comes from strict
+pointwise monotonicity of `(u+1)/(u+c²)` together with the fact that the spectral law has full mass
+on `[0,∞)` — the support argument is where the probability normalization is used, since a strict
+pointwise inequality only forces a strict integral inequality on a set of positive measure.
+
+`(179)` is the sharpness statement, and in test-function form it is a limit of quotients: the
+perturbed law contributes `(1−ε_n)J_n` to the numerator and `(1−ε_n)Z_n` to the denominator, the
+atom contributes `ℓ_n f(0)` and `ℓ_n`, and the limit is `(J + ℓ f(0))/(B + ℓ)`.  Every value of `ℓ`
+in `[0,∞]` is attainable: at `ℓ = 0` the limit is the target itself, and as `ℓ → ∞` it is the point
+mass at the origin.  So fixed-anchor convergence alone does not determine the movable limit, and
+amplification alone is not a no-go — which is the card's conclusion that only the literal
+restricted-Weil source can decide `(174)`.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AFK. Theorem P — the calibrated anchor and the truncation lower bound
+
+```text
+RHTower/SuzukiSourceImpedanceCalibration.lean
+  movableWeight_strictAnti_of_pos    strict comparison down to the zero anchor
+  existsUnique_impedanceRoot         (182): existence and uniqueness of the calibrated anchor
+  tendsto_integral_truncation        bounded truncations converge to the full integral
+  eventually_ge_of_truncated_limit   (185): a converging lower bound is an eventual lower bound
+  impedance_lt_of_pos_limit          the contradiction that forces coalescence
+```
+
+Existence and uniqueness in `(182)` are exactly the intermediate value theorem plus strict
+antitonicity: `Z` is continuous on `[0,1]`, runs from `Z(0) = D` down to `Z(1) = 1`, so every value
+strictly between is attained, at exactly one point because a strictly antitone function is
+injective.
+
+`(185)` is a truncation argument rather than a semicontinuity argument.  Each bounded truncation of
+the weight is dominated by the weight itself, so dominated convergence gives convergence of the
+truncated integrals to the full integral; and a truncated integral is a lower bound for the
+zero-anchor impedance, so the limit inferior of the latter is at least the target.  The
+`min (w u) M` truncations converge pointwise because they are eventually constant at each point.
+
+The coalescence contradiction is the strict comparison again, now from the zero anchor: if the
+calibrated scales did not tend to zero, the calibrated impedance would be strictly below the
+zero-anchor impedance in the limit, contradicting the calibration equation.  The strictness needs
+the spectral law to have no mass at the edge point, which is the card's standing hypothesis that
+zero is not an eigenvalue of the canonical even extension.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AFL. Theorems Q, R, S — the escape covariance, the Laplace origin, and the fixed-anchor kernel
+
+```text
+RHTower/SuzukiLaplaceScrewOrigin.lean
+  integral_translate_mul_exp   (190): the exponential functional is translation covariant
+  eq_zero_of_exp_scaling       a bounded functional with that covariance has zero norm
+  integral_screwOrdinate       (196): the exact Laplace value of one ordinate
+  norm_screwTail_le            the discarded tail is at most 2e^{−T}/|γ|
+  fixedAnchorKernel_sub_one    (200)
+```
+
+**Theorem Q.**  The covariance `(190)` is the translation invariance of Lebesgue measure: shifting
+the test function by `t` and absorbing the shift into the exponential multiplies the functional by
+`e^{ct}`.  The contradiction is then purely scalar — translations act by isometries, so the norm of
+the Riesz vector would satisfy `N = e^{ct} N` for every `t`, and at `t = 1` this forces `N = 0`
+unless `c = 0`.  The card's `c_* = 0` branch is the separate translation-generator statement and is
+not part of this core.
+
+**Theorem R.**  `(196)` is now exact.  Merging the two exponentials into a single complex rate
+`1 + iγ` of positive real part, the corpus's `integral_Ioi_cexp_neg_mul` evaluates both pieces, and
+the algebra `−((1+iγ)^{-1} − 1)/γ = 1/(γ − i)` follows from `1 + iγ = i(γ − i)`.  The tail bound is
+the pointwise estimate `‖e^{−t}(e^{−iγt} − 1)‖ ≤ 2e^{−t}` integrated over the ray, giving
+`2e^{−T}/|γ|` — the card's exponential convergence rate.
+
+**Theorem S.**  `(200)` is the affine reciprocal identity, and the determination half of the
+theorem is already carried by `AED`'s Stieltjes determination.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AFM. Theorem AD — the Jensen sandwich and the all-scale recession bound
+
+```text
+RHTower/SuzukiNegativeRecessionJensen.lean
+  tangentLine_inv_le            the supporting line of the convex reciprocal
+  integral_inv_shift_le         (295), upper half
+  inv_shift_mean_le_integral    (295), lower half
+  recession_le                  (297)
+  tendsto_cayley_zero_of_ratio_one   (298)
+```
+
+`(295)` needs no convexity library.  The upper bound is the pointwise comparison `1/(x+r) ≤ 1/r`
+on the nonnegative spectrum.  The lower bound is the supporting line of `1/(·+r)` at the spectral
+mean, and its defect is the exact square
+
+`1/(x+r) − [1/(m+r) − (x−m)/(m+r)²] = (x−m)²/[(x+r)(m+r)²] ≥ 0`,
+
+so integrating the line against a probability law — where the linear term integrates to zero by
+definition of the mean — gives `1/(m+r) ≤ ∫ 1/(x+r)`.  That is Jensen for this particular convex
+function, proved directly.
+
+`(297)` is the rearrangement: multiplying the sandwich consequence by `N_o/N_e` isolates
+`R N_o/N_e − 1 ≤ M/r`, and dividing by the positive left side bounds `r`.  `(298)` records what
+happens when the bound is not used: if the two parity responses have ratio tending to one, the
+parity Cayley scalar `(E−O)/(E+O) = (E/O−1)/(E/O+1)` tends to zero, which is the card's statement
+that a diverging negative part destroys the response regardless of its rate.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AFN. Theorem AE — the push-through split, the two-block variational bound, and `(303)`
+
+```text
+RHTower/SuzukiExpandingFrameAnnihilation.lean
+  one_sub_resolvent_mass            (304) on the spectral side
+  two_mul_sub_sq_le                 completion of squares on one block
+  two_block_variational             (309)
+  two_block_variational_of_coercive (308)–(309) combined
+  tendsto_sourceTail_zero           (311)
+  tendsto_zero_of_not_frequently_ge (303)
+```
+
+Three elementary facts carry Theorem AE, and each is exact rather than estimated.
+
+`(304)` on the spectral side is the partial fraction `1 − r/(x+r) = x/(x+r)`: the defect of the
+resolvent mass is the mean of a bounded symbol, so the push-through identity needs no operator
+theory to state its content.
+
+`(309)` is a completion of squares.  Coercivity with constant `α` on one block and `β` on the other
+gives `2xy − αx² ≤ y²/α` blockwise, and adding the two blocks is the card's
+`‖Pu‖²/k + 2‖(1−P)u‖²/r`.  The `2` in the second term is exactly the `r/2` of `(308)`.
+
+`(311)` is a tail of a summable family and `(303)` is the elementary statement that a nonnegative
+sequence with no frequently-large values converges to zero — which is the shape of the card's
+subsequence contradiction.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AFO. Theorem AG — the odd hard-edge separation
+
+```text
+RHTower/SuzukiOddHardEdgeSeparation.lean
+  stieltjesFactor, stieltjesFactor_nonneg, stieltjesFactor_le_one
+  measureReal_Icc_le            (324)
+  measureReal_Icc_le_two_mul    (322)
+  one_le_window_annulus_tail    (323)
+```
+
+The Stieltjes factor is a probability average of numbers in `[0,1]`, hence at most one.  `(324)` is
+the observation that on `[0, Ls]` the integrand `s/(t+s)` is at least `1/(L+1)`, so the window mass
+is at most `(L+1)` times the factor — a Markov bound with the sharp constant, and `L = 1` gives the
+threshold value `s/(s+s) = 1/2` behind `(322)`.
+
+`(323)` is the mass decomposition: the nonnegative half line is covered by the window, the annulus
+and the tail, so the annulus carries at least what the other two leave.  Together with the vanishing
+tail these are exactly the card's `73/81` statement once the numerical target `R_Ξ > 81/4` is
+inserted.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AFP. Theorem AH — the capacity slack, the hazard kernel, and the sharpness model
+
+```text
+RHTower/SuzukiZeroEdgeCapacitySlack.lean
+  capacitySlack_eq         (330): the slack identity
+  capacitySlack_nonneg     (330): nonnegativity from 0 ≤ v ≤ 1
+  log_ratio_ge_of_slack, ratio_ge_of_log_le   (331)
+  hazard_kernel_identity   (333): the Jordan numerator
+  le_sup_of_integral_ge    (334): the hazard peak
+  sharpnessModel_factor    (336): the two-atom model
+```
+
+`(330)` is a subtraction under the integral sign: the logarithmic length of the probe interval is
+`∫ ds/s`, the transport is `∫ (v_o − v_e) ds/s`, and their difference has integrand
+`(1 − v_o) + v_e`, which is nonnegative precisely because both posterior hardnesses lie in `[0,1]`.
+`(331)` is then the exponentiated form of that nonnegativity.
+
+`(333)` reduces to one pointwise identity,
+`1/[(t+s)²(u+s)] − 1/[(u+s)²(t+s)] = (u−t)/[(t+s)²(u+s)²]`,
+which is why the hazard numerator is `u − t` and the Jordan split has the credit/debt orientation
+the card describes: the sign of the integrand is the sign of the difference of the two spectral
+points.
+
+`(334)` is the mean-value comparison — an integral bounded below forces its integrand's supremum
+above the average — and `(336)` is the exact two-atom realisation: with `μ_e = δ_{ηr}` and
+`μ_o = δ_{[R(1+η)−1]r}` the transported factor is exactly `R`, independently of `η` and `r`.  That
+is the card's demonstration that no generic Stieltjes transport argument can retire Suzuki.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AFQ. Theorems AI and AJ — the paired energy and the two-scale split
+
+```text
+RHTower/SuzukiSourceEnergyBifurcation.lean
+  rotated_parity_energy              (337): the exact rotated recombination
+  moment_div_shift_ge                (340)
+  min_add_posPart                    (343): t = min(t,T) + (t−T)₊
+  sq_le_of_quadratic_nonneg          the discriminant step
+  sq_setIntegral_le_measureReal_mul  (344): Cauchy–Schwarz against the constant one
+```
+
+**Theorem AI.**  The card's displayed recombination has a typographic slip — the right side is
+`(1+γ²)[(A cos θ)² + (B sin θ)²]`, not `(1+γ²)[A² + sin²θ]` — and with that reading it is an exact
+polynomial identity, the cross terms `±2γAB sin θ cos θ` cancelling.  `(340)` is then the
+rearrangement of Jensen's lower resolvent bound: `r/(r+m) ≤ x` gives `m/r ≥ 1/x − 1 ≥ R_Ξ − 1`.
+
+**Theorem AJ.**  The split is the pointwise identity `t = min(t,T) + (t−T)₊`, valid for every real
+`t` and `T`.  The divergence `(344)` is Cauchy–Schwarz against the constant one on the tail
+carrier, proved here without any `Lᵖ` machinery: the quadratic `c ↦ m c² − 2cA + B` is the integral
+of `(f − c)²` and is therefore nonnegative for every `c`, so its discriminant is nonpositive.  The
+degenerate case `m = 0` is handled separately, since there the set is null and `A` vanishes.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AFR. Theorems AK and AL — the linear-aperture band and the parity phase
+
+```text
+RHTower/SuzukiUltravioletMultiplicityClock.lean
+  band_energy_ge, band_energy_le    the two-sided energy/probability comparison
+  le_measureReal_band               (350), lower half
+  measureReal_band_le               (350), upper half
+  parityPhase                       (355)
+  parityWeights_sum                 (356): the two weights sum to one
+  parityCoefficient_sum             (354): the parity split of one ordinate
+```
+
+The `Θ(1/a)` statement is a two-sided comparison and nothing more: on a band whose points all lie
+between `a` and `b`, the energy is between `a` and `b` times the probability, so an order-one energy
+forces probability at least `c/b` and at most `C/a`.  With `b = (2M+1)a` this is exactly the card's
+"vanishing probability of order `1/a` carries an order-one energy".
+
+`(356)`'s multiplicity marginal is the Pythagorean identity: the two parity weights
+`cos²θ_γ(a)` and `sin²θ_γ(a)` sum to one at every aperture, so the parity refinement is a genuine
+label and does not disturb the multiplicity clock.  `(354)` is the same identity carried through
+the inverse-square weight.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AFS. Theorem AL — the amplitude-phase form and the Cesàro balance
+
+```text
+RHTower/SuzukiParityPhaseClock.lean
+  cos_amplitude_phase, sin_amplitude_phase   the rewriting behind (361)
+  integral_cos_sq_parityPhase                the exact aperture integral
+  tendsto_cesaro_cos_sq_parityPhase          (359): the balanced Cesàro mean
+```
+
+The rewriting is exact and needs no estimate: `arctan γ` is by definition the angle with cosine
+`1/√(1+γ²)` and sine `γ/√(1+γ²)`, so the addition formulas turn `√(1+γ²) cos(γa − arctan γ)` into
+`cos(γa) + γ sin(γa)` and `√(1+γ²) sin(γa − arctan γ)` into `sin(γa) − γ cos(γa)`.  That is where
+the card's inhomogeneous phase comes from.
+
+The Cesàro balance is proved with an explicit rate rather than by an ergodic argument.  The
+half-angle identity turns `cos²` into `1/2` plus an oscillation whose primitive is
+`sin(2γa − 2 arctan γ)/(2γ)`, so the aperture integral is `(A−1)/2` plus a term bounded by
+`1/(2|γ|)`.  Dividing by `A` gives `|mean − 1/2| ≤ (1/2 + 1/(2|γ|))/A`, which is `(359)` with a
+rate.  The recurrence half `(360)` is already carried by `AEU`'s
+`exists_large_simultaneous_almostPeriod` together with the corpus hull law.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AFT. Theorem AN — the quantitative parity floor `(370)`
+
+```text
+RHTower/SuzukiKroneckerParityFloor.lean
+  sq_jordan             Jordan's inequality in squared form
+  parity_energy_floor   (370)
+```
+
+`(370)` is two elementary inequalities in sequence.  Cauchy–Schwarz applied to the split
+`|n_γ| d_γ = (|n_γ|/√w_γ)·(√w_γ d_γ)` bounds the relation defect `Δ` by
+`(∑ n²/w)^{1/2}(∑ w d²)^{1/2}`, so the weighted squared phase distance is at least
+`Δ²/∑(n²/w)`.  Jordan's inequality `sin d ≥ 2d/π` on `[0, π/2]`, squared, converts that into the
+odd ultraviolet energy with the factor `4/π²`.  The result is aperture-independent because neither
+step sees the aperture — only the phase distances, which the relation constrains at every aperture.
+
+The equivalence half of Theorem AN is Kronecker–Pontryagin duality, whose relation-hull
+infrastructure the card itself attributes to the existing corpus theorem
+`SuzukiScrewCompactHullParityLaw`.
+
+Audits to `[propext, Classical.choice, Quot.sound]`.
+
+## AFU. Theorem AO — the Schur leverage certificate
+
+```text
+RHTower/SuzukiSchurLeverageCertificate.lean
+  isGreatest_leverage      (376): the leverage is an attained supremum
+  isLeast_tikhonov         (380): the regularized defect is the resolvent defect
+  schur_quadratic_split    (378): the block splitting
+  schur_complement_pos     positivity of the Schur complement
+```
+
+All three displays of Theorem AO are completions of squares, and each is stated here as an exact
+extremum rather than an inequality.  `(376)` says the supremum of `2dv − Sv²` is `d²/S`, attained
+at `v = d/S`; `(380)` says the infimum of `1 − 2uc + (K+r)c²` is `1 − u²/(K+r)`, attained at
+`c = u/(K+r)` — which is precisely the identification of the Tikhonov approximation defect with
+the resolvent defect, so the card's `(380)` needs no separate argument.
+
+`(378)` is the same completion in two variables: for a positive definite two-block form the inverse
+quadratic form is `u_H²/D + (u_L − Bu_H/D)²/(L − B²/D)`, an algebraic identity once the determinant
+is nonzero.  Positivity of the Schur complement follows from positivity of the determinant.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AFV. Theorem AP — the square-root active-zero floor
+
+```text
+RHTower/SuzukiSquareRootActiveZero.lean
+  norm_certificate_lt              (386)
+  sqrt_aperture_lt_of_nikolskii    (387)–(388)
+  height_floor_of_count            (384)
+```
+
+`(386)` is the triangle inequality on a unit source: a defect below `1/4` keeps the certificate's
+own norm below `5/4` and its endpoint-strip mass above `5/8`.
+
+`(388)` is the comparison of that lower bound with the Nikolskii upper bound.  Written out, the
+strip mass is at most `√(2L)·(πm/2)·‖p‖/√(2a)`, the `√2` cancels between numerator and denominator,
+and inserting `‖p‖ < 5/4` and `pB > 5/8` leaves `√a < π m √L`.  Nothing about the ordinates enters
+— the Nikolskii bound is separation-free, which is exactly why the card's conclusion is uniform
+over all zero clusters, including arbitrarily tight ones.
+
+The Nikolskii inequality `(381)` itself is Erdélyi's theorem, an imported classical input; it
+appears here as the named hypothesis `hnik`, in the corpus's standard style for imported analytic
+inputs.  `(384)` is the transfer of the floor through a counting bound, and is scalar.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AFW. Theorem AQ — the ridge defect is a strictly increasing bijection onto `(0,1)`
+
+```text
+RHTower/SuzukiRidgeDefectMonotone.lean
+  ridgeSymbol_strictMono            the symbol r ↦ r/(t+r) is strictly increasing off the edge
+  stieltjesFactor_strictMono        the ridge defect is strictly increasing
+  tendsto_ridgeSymbol_atTop, tendsto_ridgeSymbol_nhdsGT
+  tendsto_stieltjesFactor_atTop     (390), upper limit
+  tendsto_stieltjesFactor_nhdsGT    (390), lower limit
+```
+
+`(390)` and the strict monotonicity are what make the odd ridge coordinate `r_o(q)` well defined,
+so this is the analytic content of Theorem AQ's part 2.  Strict monotonicity comes from the strict
+pointwise monotonicity `r₁/(t+r₁) < r₂/(t+r₂)` for `t > 0`, upgraded to the integral through the
+support argument — the same mechanism as for the impedance, and again needing the spectral law to
+have full mass on the *open* half line.  That is exactly where the injectivity of the zero-sampling
+operator enters: it removes the atom at the origin.
+
+Both limits are dominated convergence with the constant bound one, valid because the symbols lie in
+`[0,1]` on the nonnegative spectrum.  The lower limit needs the open half line again — at an atom
+of the origin the symbol is identically one and the limit would be that atom's mass instead of
+zero.
+
+The completeness half (part 1) is Paley–Wiener uniqueness against the superlinear density `(389)`,
+which the card itself attributes to classical work.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AFX. Theorems AR and AS — the tail synthesis and its coefficient price
+
+```text
+RHTower/SuzukiTailCoefficientBarrier.lean
+  tikhonov_lt_of_small_ridge   (399)
+  inner_gt_of_small_defect     the synthesis pairs above 3/4 with the source
+  coefficient_norm_sq_gt       (401), before the tail bound
+  coefficient_price            (401), with the analysis tail bound inserted
+  ridge_cutoff_bound           (402)
+  tendsto_cube_div_log_atTop   the divergence behind (403)
+```
+
+**Theorem AR.**  Its completeness half is Paley–Wiener uniqueness against a superlinear density,
+classical and unchanged from Theorem AQ; the quantitative half is `(399)`, which is the observation
+that `r < ε²/(1+‖c‖²)` makes the ridge term smaller than `ε²` however large the coefficient norm is,
+because `‖c‖²/(1+‖c‖²) < 1`.
+
+**Theorem AS.**  The price is one Cauchy–Schwarz step made explicit.  A synthesis within `1/4` of
+the unit source pairs with it above `3/4`, and on a tail-supported vector that pairing *is* the
+pairing with the analysis tail, so `‖c‖ > 3/(4‖u_H‖)`.  Inserting `‖u_H‖² ≤ C log(T+2)/T` gives the
+coefficient price of order `T/log T`, and multiplying by the ridge mass gives `(402)`.
+
+`(403)` is then the divergence of `x³/log x`, proved by the elementary comparison `log x ≤ x`,
+which forces `x³/log x ≥ x²`.  At `T = r^{-4}` the barrier quantity is of that shape, so no
+tail-supported vector can meet the target certificate for small `r`.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.

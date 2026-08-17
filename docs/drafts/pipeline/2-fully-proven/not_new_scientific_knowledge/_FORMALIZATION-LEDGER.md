@@ -127,6 +127,7 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-17 | `completed-prime-gamma-second-moment-four-crossing-law` | `RHTower/CompletedPrimeGammaSecondMomentCenterPositive.lean`, `RHTower/CompletedPrimeGammaMomentFarRightAsymptotic.lean` (pre-existing) + new `RHTower/CompletedPrimeGammaSecondMomentFourCrossing.lean` |
 | 2026-08-17 | `universal-quadratic-root-ridge-density` | `RHTower/UniversalQuadraticRootRidgeDensity.lean` (pre-existing; verified + audited) |
 | 2026-08-17 | `corank-trdeg-realization-locus` | new `HTGeometry/CorankTrdegRealizationLocus.lean` (uses pre-existing `HTGeometry/SymmetricBlockAlgebraicIndependence.lean`, `HTGeometry/PrimeRadialRelativeJetRank.lean`, `HTGeometry/StateFieldTrdeg.lean`) |
+| 2026-08-17 | `prime-source-cancellation-budget` | new `RHTower/PrimeSourceCancellationBudget.lean`, `HTGeometry/ComplexExponentialPolynomial.lean`, `HTGeometry/PrimeValuationLeadingEchelonInfinite.lean` (+ complex layer appended to `HTGeometry/ExponentialPolynomialZeroBound.lean`; uses pre-existing `HTGeometry/ExponentialTypeZeroDensity.lean`, `RHTower/PrimeLogExponentialTypeUniqueness.lean`, `RHTower/XiShiftPrimeHypertranscendence.lean`) |
 
 ## Already carrying a stage-3 certificate (verify, then move the paper card)
 
@@ -673,3 +674,33 @@ Known heavy prerequisites still outstanding, with the cards they gate:
 - 83 cards carry no open gate box at all (status must be read from the prose).
 - 165 cards mention at least one Lean module that already exists in `formal/`.
 - 330 cards mention no Lean module at all.
+- `HTGeometry/ComplexExponentialPolynomial.lean` — **entire exponential polynomials with complex
+  frequencies** (mathlib gap).  `cexpFn c P z = ∑ⱼ Pⱼ(z) e^{cⱼ z}` is entire
+  (`differentiable_cexpFn`), has finite exponential type with an explicit constant pair
+  (`exists_exponentialType_bound`, built on the reusable `norm_eval_le` and
+  `one_add_norm_pow_le_exp`), and is not identically zero when the frequencies are distinct and the
+  blocks nonzero (`eq_zero_of_cexpFn_eq_zero`, `exists_cexpFn_ne_zero`) — proved algebraically by
+  the block-killing induction `cexpFn_shift` / `cexpFn_eq_zero_iterate` / `cshiftD_iterate_ne_zero`,
+  which replaces Rolle in the complex-frequency regime.  Combined with the corpus Jensen count this
+  gives `exists_zeroCount_linear`: the number of *distinct* zeros in a disc of radius `r` is at
+  most `K(1 + r)`.  Also `negComp` (variable reflection) with its degree and nonvanishing lemmas.
+- `HTGeometry/PrimeValuationLeadingEchelonInfinite.lean` — **the leading-echelon law with only
+  infinitely many nonzero private coefficients**
+  (`primeValuationLeadingEchelonJets_algebraicIndependent_of_infinitePrimeDependent`,
+  `primeValuationLeadingEchelon_differentialIndependent_of_infinitePrimeDependent`).  The original
+  law needs the private prime coefficient nonzero at *every* prime, which any nontrivial filter can
+  destroy.  The weakening rests on `finite_setOf_clockPoly_eq_zero`: a nonzero polynomial in the
+  injective rotated prime clock vanishes at only finitely many primes, so tail independence — a
+  statement modulo finite support — survives a weight that is merely nonzero infinitely often.
+  Reusable for every "the source survives after filtering" argument.
+- `HTGeometry/ExponentialPolynomialZeroBound.lean` (extended) — the zero bound now also covers
+  vanishing blocks (`card_lt_of_expPoly_eq_zero'`) and **complex** polynomial coefficients with real
+  frequencies (`cexpPoly`, `card_lt_of_cexpPoly_eq_zero`), via the coefficientwise real/imaginary
+  parts `rePoly`/`imPoly` and their evaluation, degree and joint-vanishing lemmas.
+- `RHTower/PrimeSourceCancellationBudget.lean` — the filter calculus itself:
+  `filterSymbol`, the filtered coefficient law `filterAction`, the summability transfer
+  `lseriesSummable_filterSymbol`, the finite-abscissa threshold `filterAbscissa` /
+  `filteredSource_finiteAbscissa`, the cofinite prime-log uniqueness theorem
+  `eq_zero_of_exponentialType_of_cofinite_primeLog_zeros`, and the source-survival theorem
+  `infinite_survivingPrimes`.  Any card about applying a finite differential-translation operator
+  to a Dirichlet source can start from these.

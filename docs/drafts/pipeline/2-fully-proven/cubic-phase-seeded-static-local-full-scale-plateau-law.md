@@ -180,6 +180,23 @@ and `8` is not a divisor of any nonzero residue in that range, every monomial of
 the same average over the cubic-phase ensemble as under continuous phases.  Theorem A supplies the
 uniformity hypothesis, so the transfer is unconditional.
 
+### Theorem B is assembled
+
+`formal/GaloisForLFunctions/HTGeometry/PhaseCollisionConcentration.lean` (new, umbrella-wired,
+axiom-clean) puts the owned pieces together at the normalization of the card.
+
+| Card item | Declaration |
+|---|---|
+| an orthonormal family has unit coordinate mass | `sum_normSq_of_orthonormal` |
+| **`(10)`**: the normalized collision is the unit-weight quartic sum over `D²` | `phaseCollision_eq_quartic_div` |
+| **the variance half of `(8)`**: `Var C <= 96\|iota\|/D⁴`, i.e. `96/D³` at family size `D` | `integral_box_variance_phaseCollision_le` |
+| the collision is bounded by the family size, hence square-integrable on the phase box | `phaseCollision_le_card`, `memLp_phaseCollision` |
+| **`(9)`**: `Pr{C > (2+kappa)/D} <= 96/(kappa² D)` | `measureReal_phaseCollision_gt_le` |
+
+The mean half of `(8)` is the corpus bound `integral_box_phaseCollision_le` at `|iota| = D`.  So
+Theorem B is complete for continuous Steinhaus phases, and the eighth-root moment transfer
+(`sum_comp_prod_charEight_eq_zero`) carries every moment used to the finite cubic-phase ensemble.
+
 ### What remains
 3. Theorem C and the Corollary are assemblies over the two parent cards
    (`stabilizer-seeded-static-local-double-exponential-plateau-law`,

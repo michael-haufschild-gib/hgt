@@ -3103,3 +3103,135 @@ torus-invariant, and the last step lands in `C(y₀)`, where the affine-connecti
 obstructions already proved for the two quadratics apply.  What remains is the bookkeeping of the
 descent itself: the affine presentation `R'^k·Φ(z_k) = R'·z_k + s_k` as a `twistComp` datum, and the
 branch analysis at each level.
+
+## Pass 48 — the weight-zero descent step, unconditional
+
+The descent step now exists in weight-zero form for **every** level, not one level at a time.
+
+`JetWeightZeroShift.lean` — the dictionary between the two forms:
+
+```text
+substitutionShiftRatio_mem_jetPrefixField : s_k lies in the prefix field of level k  (k ≥ 2)
+jetSubstitution_jetRatio_aeval            : Φ(z_k) = R'^{1−k}·z_k + s_k·R'^{−k}
+exists_zshift_of_hasNormalizingShift      : a shift at level M gives R'^M·Φ(w) = R'·w − s_M
+hasNormalizingShift_of_zshift             : and conversely
+```
+
+`JetWeightZeroDichotomy.lean` — the slicing dichotomy in `z_k`, with **arbitrary** affine data and
+coefficient, and with the torus invariance of the slice coefficients as part of the conclusion:
+
+```text
+cocycle_or_polynomial_of_zslice :
+  w torus-invariant of order ≤ k,  Φ(w) = c·w − S(z_k),  Φ(z_k) = a·z_k + b
+  ⇒ (∃ ν ≥ 1, s,  Φ̃(s) = a·s − ν·b)   or   w = u(z_k) with torus-invariant coefficients
+```
+
+`JetWeightZeroNormalization.lean` — the shift can be made torus-invariant:
+
+```text
+two_pow_sub_one_ne_zero
+exists_isWeightZero_zshift : given that fixed elements of order < M are constant, the weight-zero
+                             shift can be corrected by a constant multiple of y₁^{1−M} to be
+                             torus-invariant, without changing the relation
+```
+
+`JetWeightZeroDescent.lean` — the partials of the weight-zero coordinates and the descent step:
+
+```text
+pd_jetRatio_self / pd_jetRatio_of_ne         : ∂_j z_j = y₁^{-j},  ∂_i z_j = 0 otherwise
+pd_top_substitutionShiftRatio                : ∂_{N+1} s_{N+2} = (N+2)·R''/y₁^{N+1}
+weightZeroShiftTail_mem                      : s_M − M·R''·z_{M−1} has order ≤ M − 2
+hasNormalizingShift_pred_or_zpolynomial      : a shift at level N+3 either descends to level N+2,
+                                               or is a polynomial in z_{N+2} whose coefficients are
+                                               torus-invariant
+```
+
+**What this buys.**  Every iteration of the step keeps the coefficients torus-invariant, and
+`pd_one_eq_zero_of_isWeightZero` (pass 47) turns torus invariance at jet order one into jet order
+zero.  So the descent from level `M` now provably terminates in `C(y₀)`, where each surviving
+relation is a rational affine transport of the kind already killed for both quadratics.  Levels two,
+three and four of this scheme reproduce the affine connection, the Schwarzian, and the level-four
+alternatives.
+
+**What is left for the general level.**  Only the bookkeeping of the *inhomogeneous terms* along the
+chain: at each step the polynomial branch of degree one leaves a coefficient satisfying
+`R'^2·Φ(c) = R'·c − M·R''` — always solved by `c = −M·z₂`, so the coefficient is pinned rather than
+contradicted — and a constant term satisfying a relation of the same shape one order down.  Closing
+the induction means showing that the inhomogeneous term reaching `C(y₀)` is nonzero and polar at the
+critical point.  Every ingredient of that computation is now formal; what remains is the induction
+that tracks it.
+
+## Pass 49 — eigen-rigidity, and the degree of the slice at every level
+
+The descent now has an engine that works uniformly in the level.
+
+`JetEigenRigidity.lean`:
+
+```text
+two_zpow_eq_one                        : (2 : C)^κ = 1 ⇒ κ = 0
+pd_zpow_jet_one                        : ∂_j (y₁^κ) = 0 for j ≠ 1, any integer κ
+exponent_eq_zero_of_weightZero_eigen   : g ≠ 0 torus-invariant of order ≤ K with R'^κ·Φ(g) = g
+                                           ⇒ κ = 0
+```
+
+The proof of the last is three lines of structure: `Φ(g·y₁^κ) = g·y₁^κ`, so the product is a *fixed*
+element of the same jet order, hence a constant by the inductive hypothesis; the torus then reads off
+`2^κ = 1`, and characteristic zero finishes.  It says the weight-zero eigen-relations are *rigid*:
+there is no nonzero solution at any exponent but zero.
+
+**Consequence, uniform in the level.**  At the slicing step the leading coefficient of the polynomial
+branch satisfies a pure eigen-relation of exponent `(N + 2) − (N + 1)·d`, so rigidity forces
+`(N + 1)·d = N + 2`, which for `N ≥ 1` has no solution with `d ≥ 2`:
+
+```text
+natDegree_le_one_of_zbranch : for N ≥ 1 the sliced shift at level N + 3 is linear in z_{N+2}
+```
+
+At `N = 0` the equation reads `d = 2`, which is exactly the Schwarzian branch of level three — the
+scheme reproduces the known exceptional case and excludes it everywhere above.
+
+So the descent above level three is now: *descend one level, or a linear polynomial in `z_{N+2}`*,
+with both alternatives unconditional and the degree bound proved by rigidity rather than by a
+level-specific computation.  What remains is the analysis of the two coefficients of that linear
+polynomial, which is where the pinned value `−M·z₂` and the terminal rational transports live.
+
+## Pass 50 — the Schwarzian coordinate and the projective obstruction
+
+The bottom of the weight-zero tower is now named and its obstruction is a theorem.
+
+`JetSchwarzian.lean`:
+
+```text
+jetNabla                          := δ / y₁ , the weight-zero derivation
+jetSubstitution_jetNabla          : R'·Φ(∇v) = ∇(Φ v)
+schwarzianJet                     := z₃ − (3/2)·z₂²
+ratSchwarzian / ratFuncSchwarzian : S_R = R'''/R' − (3/2)(R''/R')²
+substitutionShiftRatio_three      : s₃ = 3·R''·z₂ + R'''
+jetSubstitution_schwarzianJet     : R'^2·Φ(𝔖) = 𝔖 + S_R
+ratFuncEval_ratFuncSchwarzian     : the two Schwarzians agree at the free generator
+```
+
+The substitution law of `𝔖` is a **pure translation** — that is the structural fact behind every
+"the constraint pins the coefficient instead of contradicting it" observation of passes 46 and 48.
+The jet-level invariants live in a `D`-tower over `𝔖`, and closing the tower means undoing the
+translation by `S_R` with a rational function, i.e. solving
+
+```text
+a(R)·(R')² = a − S_R ,
+```
+
+the classical *projective structure* equation.
+
+`QuadraticProjectiveStructure.lean`:
+
+```text
+quadOne_no_projective_structure : ∀ a : RatFunc ℂ, ¬ (a(R)(R')² = a − S_R)
+quadTwo_no_projective_structure : the same for (z − 1)²
+```
+
+For both maps `S_R = −3/(2(z − crit)²)`, a **double pole exactly at the critical point**, while the
+coefficient of the transport is the unit `1`; the critical-order obstruction of pass 41 forbids it.
+So the three classical structures — invariant differential (order 1), affine connection (order 2),
+projective structure (order 3) — are now all excluded for both quadratics, unconditionally and in
+Lean.  Together with the rigidity engine of pass 49 these are exactly the terminal objects the
+weight-zero descent produces.

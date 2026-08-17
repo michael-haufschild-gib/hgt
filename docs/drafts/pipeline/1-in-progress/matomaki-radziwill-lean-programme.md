@@ -46,7 +46,7 @@ the admissible range of `h`.  The stages are the milestones of this card.
 
 | Milestone | Range of `h` | New ingredients |
 |---|---|---|
-| A (exposé §3) | `h ≥ exp((log X)^{3/4})` | Lemmas 2.1, 2.2, 2.3, 2.4 + Turán–Kubilius |
+| A (exposé §3) | `h ≥ exp((log X)^{0.95})` | Lemmas 2.1, 2.3, 2.4 + Turán–Kubilius |
 | B (exposé §4) | `h ≥ exp(10(log log X)^{10/9})` | + Lemmas 2.5, 2.6 (large values, Halász–Montgomery) |
 | C (exposé §5) | `h > exp((log log log X)²)` | + the high-moment trick on the exceptional set |
 | D (MR 2016 §§4–7) | every `h → ∞` | the full ladder of prime ranges `P^{(0)},…,P^{(L)},Q` |
@@ -150,35 +150,93 @@ window, so
 
 and `#{a} ≍ √x = o(h²√x)` whenever `h → ∞`.  This removes one full lemma from the programme.
 
-### The Vinogradov--Korobov prerequisite
+### The Vinogradov--Korobov prerequisite -- CORRECTED 2026-08-17
 
 Lemma 2.3 is used in *every* stage of the exposé (§3 (28)--(29), §4 (38), §5, §7 (56)), always in
-the same way: the sum over a dyadic block of primes `P_j` must exhibit cancellation uniformly for
-frequencies `|y| ≤ X`.  The bound needed is
+the same way: the sum over a dyadic block of primes `P` must exhibit cancellation uniformly for
+frequencies `|y| <= X`.  The bound needed is
 
 ```text
-∑_{p ≤ P} p^{it}  ≪  π(P)/(1+|t|)  +  P·exp( - log P / (log(P + |t|))^{2/3+δ} ) ,
+sum_{p <= P} p^{it}  <<  pi(P)/(1+|t|)  +  P*exp( - log P / (log(P + |t|))^{kappa+delta} ) ,
 ```
 
-and it is useful exactly when `log P ≫ (log X)^{2/3+δ}`.  The choice `P_j ≥ exp((log h)^{9/10})`
-with `h ≥ exp((log X)^{3/4})` gives `log P_j ≥ (log X)^{27/40}`, and `27/40 > 2/3` is the whole
-reason for those exponents.
+useful exactly when `log P >> (log X)^{kappa+delta}`, where `kappa` is the exponent of the
+available zero-free region.  A first reading of the corpus suggested `kappa = 9` (the abscissa
+`leftAbscissa K = 1 - c/(16 (log K)^9)` of `Sieve/MoebiusContourBound.lean`) and hence that no
+choice of prime ranges could work.  **That reading was wrong.**  That abscissa belongs to the
+corpus's *classical* Möbius contour; the Route-T tower carries a genuinely stronger region.
 
-The corpus's zero-free region is `RHTower.Sieve.riemannZeta_ne_zero_routeT_region` /
-`exists_routeT_zero_free_region`, of classical shape `1 - c/(log γ)^κ` with a generous `κ`; the
-twisted Möbius layer (`MoebiusTwistSaving`, `MoebiusTwistSharpRate`) carries the matching saving
-`exp(-c log N / (log K)^9)` uniformly for `5 + 4|τ| ≤ K`.  With exponent `9` — or even with the
-classical de la Vallée Poussin exponent `1` — the requirement becomes `log P ≫ (log X)^9`
-(respectively `≫ log X`), which is impossible since `P ≤ h ≤ X`.  **So no reorganisation of the
-argument avoids the Vinogradov--Korobov region: an exponent strictly below `3/4` is a hard
-prerequisite for every milestone.**
+**What the corpus actually owns.**  `Sieve/RouteTZetaZeroFree.riemannZeta_ne_zero_routeT_region`
+and its absolute-height form `Sieve/RouteTZetaZeroFreeAbs.exists_routeT_zero_free_region_abs` give
 
-The corpus does own the combinatorial heart of the Vinogradov method:
-`Sieve/VinogradovMeanValueBound.vinogradov_mean_value_bound` bounds the diagonal solution count of
-the Vinogradov system with explicit constants, and `Sieve/VinogradovRouteTSaving.lean` extracts a
-power-saving exponent from it.  The missing chain is: mean value ⟹ exponential-sum bound for
-`∑_{n ≍ N} n^{it}` ⟹ growth of `ζ` in the strip ⟹ zero-free region with exponent `2/3+δ` ⟹
-Lemma 2.3 by contour shift.  This becomes **Milestone 0** of the programme, and it must be built
-before A.
+```text
+zeta(beta + i*gamma) != 0     for   beta > 1 - routeTZeroFreeWidth A |gamma| ,
+```
 
-Revised milestone order: **0 (Vinogradov--Korobov) → A → B → C → D**.
+and `Sieve/RouteTZetaAsymptotics.routeTZeroFreeDelta_polylog_lower` pins the width's shape:
+
+```text
+routeTZeroFreeDelta A gamma  >=  1 / ( K_A * Z^{9/10} * (1 + log Z)^2 ) ,
+Z = routeTLogHeightEnvelope (4 gamma) = 2 log(4 gamma + 2) + 1  ≍  log gamma .
+```
+
+So **`kappa = 9/10`**, i.e. `1 - c/((log gamma)^{9/10} (log log gamma)^2)` -- strictly better than
+de la Vallée Poussin's `kappa = 1`, and produced by the corpus's own Vinogradov chain: the mean
+value theorem `Sieve/VinogradovMeanValueBound.vinogradov_mean_value_bound`, the Weyl-sum power
+saving `Sieve/VinogradovUpperHalfSaving.norm_vinogradovUpperHalfBilinearSum_le_rpow`, its
+logarithmic-phase form `Sieve/VinogradovLogHeightWindow`, the receivers
+`Sieve/MontgomeryVaughan*LogPhaseReceiver` (endpoint:
+`norm_routeTLogArbitraryWeightedPartialSum_le_explicitQuarticSaving`), and the growth/Landau chain
+`Sieve/RouteTZetaBlock` -> `RouteTHybridZetaAssembly` -> `RouteTZetaFinalGrowth` ->
+`RouteTZetaLandauGrowth` -> `RouteTZetaZeroFree`.
+
+**`kappa = 9/10` suffices for the whole MR programme.**  Lemma 2.3 is applied to the *large* prime
+range `Q`, which the exposé places in `[exp((log X)^{4/5}), exp((log X)^{9/10})]` only because
+`4/5 > 2/3`.  Any `[exp((log X)^alpha), exp((log X)^beta)]` with `9/10 < alpha < beta < 1` serves
+equally: the requirement `log Q >> (log X)^{9/10+delta}` holds, and the harmonic mass
+`W(Q) ≍ (beta - alpha) log log X` still tends to infinity, which is all the argument uses.  The
+same reasoning applies to `P` in §4/§5, where `P_j >= (log X)^7` is the only constraint and Lemma
+2.5 handles the rest.  Only Milestone A degrades: its admissible range becomes
+`h >= exp((log X)^{0.95})` instead of `exp((log X)^{3/4})`, which is irrelevant since B--D
+supersede it.
+
+**What is still missing at Milestone 0.**  The Möbius side is done: `Sieve/RouteTMoebiusContour`
+shifts the Perron contour to the Route-T abscissa
+(`exists_norm_tsum_moebiusTwist_smoothWeight_le_routeT`) and
+`Sieve/RouteTMoebiusPowerSaving.exists_norm_LSeries_truncatedMoebius_dyadic_le_routeTPower` turns
+it into a dyadic power saving -- Lemma 2.3's *first* statement.  The *prime* statement is the gap:
+`sum_{p <= x} p^{it}`, which needs `zeta'/zeta` (not `1/zeta`) on the Route-T abscissa, then Perron,
+then partial summation.  The first of those three is now built (see "Lean progress").
+
+Revised milestone order: **0 (only the twisted prime sum remains) -> A -> B -> C -> D**.
+
+## Lean progress (continued)
+
+### `zeta'/zeta` at an arbitrary zero-free width — `Sieve/ZetaLogDerivWidthBound.lean`
+
+The corpus's `Sieve/ZetaLogDerivRegionBound.exists_logDeriv_zeta_bound_of_region` is stated for a
+region of exponent one and returns the classical `O(log^2|gamma|)`.  Its proof never uses the shape
+of the width, so it generalises verbatim.
+
+| Item | Declaration |
+|---|---|
+| every zero within `21/40` of the wide centre lies left of the width evaluated at the top of the band | `wide_zero_re_le_width` |
+| **`‖zeta'/zeta(sigma+i gamma)‖ <= C log|gamma| / w(|gamma|+1)` on `1 - w(|gamma|+1)/2 <= sigma <= 9/8`, for any positive, antitone width `w <= 1/80`** | `exists_logDeriv_zeta_bound_of_width` |
+| the height past which the Route-T region has all its side conditions | `routeTLogDerivThreshold`, `routeTBinaryHeight_ge_of_threshold` |
+| the same bound at the Route-T abscissa | `exists_logDeriv_zeta_bound_routeT` |
+| with the width replaced by its explicit envelope: `‖zeta'/zeta‖ = O(log|gamma| * (log|gamma|)^{9/10} * (log log|gamma|)^2)` | `exists_logDeriv_zeta_bound_routeT_polylog` |
+
+Evaluating the width at `|gamma|+1` rather than at `|gamma|` is what removes every comparison
+between `w` at two nearby heights: antitonicity alone suffices, and
+`Sieve/RouteTZetaZeroFreeMonotonicity.routeTZeroFreeWidth_antitone` supplies it.
+
+Unconditional, umbrella-wired, olean built, axiom-clean.
+
+### Next brick
+
+The twisted von Mangoldt sum at the Route-T abscissa: Perron for
+`sum_{n <= x} Lambda(n) n^{it}` against `-zeta'/zeta(s - it)`, with the pole at `s = 1 + it`
+producing the `pi(x)/(1+|t|)` main term, then partial summation to `sum_{p <= x} p^{it}`.  The
+contour geometry is already available (`Sieve/RouteTMoebiusContour.routeT_contour_zero_free`,
+`routeTContourShift`, `routeTContourEdgeBound`), and the edge bound it needs is now the theorem
+above rather than the reciprocal bound `norm_inv_riemannZeta_le_routeT_contour`.

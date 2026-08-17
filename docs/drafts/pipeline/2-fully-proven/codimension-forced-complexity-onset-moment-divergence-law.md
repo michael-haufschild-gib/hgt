@@ -453,7 +453,35 @@ So `(6)` and hence `(17)` are formal as an abstract machine: what a concrete ins
 the *data* -- the carrier compiler certificate `(4)`, the patch `P_n^{cut}`, and the conull
 completion set `G_n` -- which are inputs from the parent cards rather than steps of this proof.
 
+## Lean progress -- the weak-cut instance of `(17)` and `(18)`
+
+Section 2's instance is now formal end to end, on the concrete path-local Pauli shell, without the
+abstract carrier/patch interface: the ninth-power tail is produced directly from the
+codimension-nine edge block.
+
+| Card item | Declaration | Module |
+|---|---|---|
+| **`(12)`**: the coefficient dimension `12n-9` of the path-local shell | `finrank_pathShell` | `HTGeometry/PathShellEdgeTail` |
+| **`(13)`**: the nine coupling coordinates of one edge, as a coordinate block | `IsEdgeLabel`, `edgeLabelEquiv`, `finrank_edgeBlock` | same |
+| the two-sided shell law of one edge block, `Theta(x^9)` | `exists_edgeSmall_tail_bounds` | same |
+| the path-local Hamiltonian and its cut, both self-adjoint | `pathHamiltonian`, `pathHamiltonianCut`, `isSelfAdjoint_pathHamiltonian` | `HTGeometry/PathShellDelayFloor` |
+| deleting the edge changes the Hamiltonian by exactly its interaction, of norm `<= 3 rho_e` | `pathHamiltonian_sub_cut`, `norm_edgePart_le` | same |
+| the split cap survives through `L` on the whole weak-edge event | `edgeSmall_subset_delayEvent` | same |
+| **`(17)`**: the delay sector has probability at least `c L^{-9}` | `exists_delay_floor` | same |
+| **`(17)` in shell-measure form** | `exists_delay_floor_toSphere` | `HTGeometry/PathShellOnsetMoments` |
+| **`(18)` for every `p > 9`**, from the tail alone | `lintegral_onset_pow_eq_top` | same |
+| **`(18)` at the boundary `p = 9`** | `lintegral_onset_rpow_nine_eq_top` | same |
+| the delay sector has positive measure, and a finite seed family has one member serving a positive-measure part of it | `pathShellProb_delayEvent_pos`, `exists_fixed_seed_on_delay` | `HTGeometry/PathShellFixedSeed` |
+
+The onset time enters the two divergence theorems only through the interface
+`delayEvent ... L ⊆ {u | L < τ u}` -- survival of the split cap through `L` makes the onset time
+later than `L` -- together with its measurability.  Both are properties of the onset random variable
+itself, not of this proof.
+
 ### What remains
 
-The instance data for `(17)` (carrier certificate, patch, conull completion) and Theorem C.  The
-machine of Theorem A and the implication `(17) ⟹ (18)` are complete, the latter for every `p ≥ 9`.
+Theorem C (the fully coupled `10n-8` shortcut law), and, for the weak-cut instance, the parent
+inputs that identify `tau` with the first full-complexity time: the uniform split synthesis
+certificate `(16)` for the fixed product cubic seed, and the plateau height `s_n` that separates it
+from the cap.  The carrier/patch/conull route of Theorem A remains available as the abstract
+alternative; the instance above bypasses it.

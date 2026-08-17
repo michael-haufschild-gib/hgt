@@ -332,3 +332,207 @@ theorem card_lt_of_expPoly_eq_zero :
       omega
 
 end GaloisForLFunctions.HTGeometry.ExpZeroBound
+
+namespace GaloisForLFunctions.HTGeometry.ExpZeroBound
+
+open Finset Polynomial
+
+/-- Dropping the vanishing blocks of an exponential polynomial. -/
+theorem expPoly_filter {m : ℕ} (c : Fin m → ℝ) (P : Fin m → Polynomial ℝ) (x : ℝ) :
+    expPoly c P x
+      = ∑ j ∈ Finset.univ.filter (fun j => P j ≠ 0), (P j).eval x * Real.exp (c j * x) := by
+  classical
+  unfold expPoly
+  refine (Finset.sum_subset (Finset.filter_subset _ _) ?_).symm
+  intro j _ hj
+  have hzero : P j = 0 := by
+    by_contra hne
+    exact hj (Finset.mem_filter.mpr ⟨Finset.mem_univ j, hne⟩)
+  simp [hzero]
+
+/-- **Zero bound allowing vanishing blocks.**  If some block is nonzero, the number of distinct
+real zeros is still smaller than the total number of scalar coefficients. -/
+theorem card_lt_of_expPoly_eq_zero' {m : ℕ} (c : Fin m → ℝ) (P : Fin m → Polynomial ℝ)
+    (hc : Function.Injective c) (hsome : ∃ j, P j ≠ 0) (S : Finset ℝ)
+    (hS : ∀ x ∈ S, expPoly c P x = 0) :
+    S.card < ∑ j, ((P j).natDegree + 1) := by
+  classical
+  set T : Finset (Fin m) := Finset.univ.filter (fun j => P j ≠ 0) with hT
+  have hTne : T.Nonempty := by
+    obtain ⟨j, hj⟩ := hsome
+    exact ⟨j, Finset.mem_filter.mpr ⟨Finset.mem_univ j, hj⟩⟩
+  obtain ⟨k, hk⟩ : ∃ k, T.card = k + 1 := by
+    have := Finset.card_pos.mpr hTne
+    exact ⟨T.card - 1, by omega⟩
+  set g : Fin T.card → Fin m := fun i => ((T.equivFin.symm i : T) : Fin m) with hg
+  have hginj : Function.Injective g := by
+    intro i j hij
+    have h1 : (T.equivFin.symm i : T) = T.equivFin.symm j := Subtype.ext hij
+    exact T.equivFin.symm.injective h1
+  have hgmem : ∀ i, g i ∈ T := fun i => (T.equivFin.symm i).2
+  have hgP : ∀ i, P (g i) ≠ 0 := fun i => (Finset.mem_filter.mp (hgmem i)).2
+  have hsum : ∀ x : ℝ, expPoly c P x = expPoly (fun i => c (g i)) (fun i => P (g i)) x := by
+    intro x
+    rw [expPoly_filter]
+    unfold expPoly
+    rw [← Finset.sum_attach T (fun j => (P j).eval x * Real.exp (c j * x))]
+    exact (Fintype.sum_equiv T.equivFin.symm _ _ (fun i => rfl)).symm
+  have hSe : ∀ x ∈ S, expPoly (fun i => c (g i)) (fun i => P (g i)) x = 0 := by
+    intro x hx
+    rw [← hsum x]
+    exact hS x hx
+  set g' : Fin (k + 1) → Fin m := fun i => g ((finCongr hk).symm i) with hg'
+  have hg'inj : Function.Injective g' := fun i j hij =>
+    (finCongr hk).symm.injective (hginj hij)
+  have hsum' : ∀ x : ℝ, expPoly (fun i => c (g i)) (fun i => P (g i)) x
+      = expPoly (fun i => c (g' i)) (fun i => P (g' i)) x := by
+    intro x
+    unfold expPoly
+    refine Fintype.sum_equiv (finCongr hk)
+      (fun i => (P (g i)).eval x * Real.exp (c (g i) * x))
+      (fun i => (P (g' i)).eval x * Real.exp (c (g' i) * x)) (fun i => ?_)
+    simp only [hg', Equiv.symm_apply_apply]
+  have hmain := card_lt_of_expPoly_eq_zero k (fun i => c (g' i)) (fun i => P (g' i))
+    (fun i j hij => hg'inj (hc hij)) (fun i => hgP _) S
+    (fun x hx => by rw [← hsum' x]; exact hSe x hx)
+  refine lt_of_lt_of_le hmain ?_
+  have hle : ∑ i : Fin (k + 1), ((P (g' i)).natDegree + 1)
+      = ∑ j ∈ T, ((P j).natDegree + 1) := by
+    rw [← Finset.sum_attach T (fun j => (P j).natDegree + 1)]
+    refine Fintype.sum_equiv ((finCongr hk).symm.trans T.equivFin.symm) _ _ (fun i => ?_)
+    simp [hg', hg]
+  rw [hle]
+  exact Finset.sum_le_sum_of_subset (Finset.filter_subset _ _)
+
+end GaloisForLFunctions.HTGeometry.ExpZeroBound
+
+namespace GaloisForLFunctions.HTGeometry.ExpZeroBound
+
+open Finset Polynomial
+
+/-- Coefficientwise real part of a complex polynomial. -/
+noncomputable def rePoly (P : Polynomial ℂ) : Polynomial ℝ :=
+  ∑ k ∈ Finset.range (P.natDegree + 1), Polynomial.C ((P.coeff k).re) * Polynomial.X ^ k
+
+/-- Coefficientwise imaginary part of a complex polynomial. -/
+noncomputable def imPoly (P : Polynomial ℂ) : Polynomial ℝ :=
+  ∑ k ∈ Finset.range (P.natDegree + 1), Polynomial.C ((P.coeff k).im) * Polynomial.X ^ k
+
+theorem eval_rePoly (P : Polynomial ℂ) (x : ℝ) :
+    (rePoly P).eval x = (P.eval (x : ℂ)).re := by
+  rw [rePoly, Polynomial.eval_finsetSum]
+  rw [Polynomial.eval_eq_sum_range (p := P) ((x : ℝ) : ℂ)]
+  rw [Complex.re_sum]
+  refine Finset.sum_congr rfl (fun k _ => ?_)
+  simp only [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_pow, Polynomial.eval_X]
+  rw [Complex.mul_re]
+  simp [← Complex.ofReal_pow]
+
+theorem eval_imPoly (P : Polynomial ℂ) (x : ℝ) :
+    (imPoly P).eval x = (P.eval (x : ℂ)).im := by
+  rw [imPoly, Polynomial.eval_finsetSum]
+  rw [Polynomial.eval_eq_sum_range (p := P) ((x : ℝ) : ℂ)]
+  rw [Complex.im_sum]
+  refine Finset.sum_congr rfl (fun k _ => ?_)
+  simp only [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_pow, Polynomial.eval_X]
+  rw [Complex.mul_im]
+  simp [← Complex.ofReal_pow]
+
+theorem natDegree_rePoly_le (P : Polynomial ℂ) : (rePoly P).natDegree ≤ P.natDegree := by
+  refine Polynomial.natDegree_sum_le_of_forall_le _ _ (fun k hk => ?_)
+  refine le_trans (Polynomial.natDegree_C_mul_le _ _) ?_
+  simpa using Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
+
+theorem natDegree_imPoly_le (P : Polynomial ℂ) : (imPoly P).natDegree ≤ P.natDegree := by
+  refine Polynomial.natDegree_sum_le_of_forall_le _ _ (fun k hk => ?_)
+  refine le_trans (Polynomial.natDegree_C_mul_le _ _) ?_
+  simpa using Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
+
+theorem eq_zero_of_rePoly_imPoly {P : Polynomial ℂ} (hre : rePoly P = 0) (him : imPoly P = 0) :
+    P = 0 := by
+  ext k
+  by_cases hk : k ≤ P.natDegree
+  · have hre' := congrArg (fun Q : Polynomial ℝ => Q.eval (0 : ℝ)) hre
+    have hcoeffre : (P.coeff k).re = 0 := by
+      have h := congrArg (fun Q : Polynomial ℝ => Q.coeff k) hre
+      simp only [rePoly, Polynomial.finsetSum_coeff, Polynomial.coeff_C_mul,
+        Polynomial.coeff_X_pow, Polynomial.coeff_zero] at h
+      rw [Finset.sum_eq_single k] at h
+      · simpa using h
+      · intro b _ hb
+        rw [if_neg (fun hcon => hb hcon.symm), mul_zero]
+      · intro hb
+        exact absurd (Finset.mem_range.mpr (by omega)) hb
+    have hcoeffim : (P.coeff k).im = 0 := by
+      have h := congrArg (fun Q : Polynomial ℝ => Q.coeff k) him
+      simp only [imPoly, Polynomial.finsetSum_coeff, Polynomial.coeff_C_mul,
+        Polynomial.coeff_X_pow, Polynomial.coeff_zero] at h
+      rw [Finset.sum_eq_single k] at h
+      · simpa using h
+      · intro b _ hb
+        rw [if_neg (fun hcon => hb hcon.symm), mul_zero]
+      · intro hb
+        exact absurd (Finset.mem_range.mpr (by omega)) hb
+    rw [Polynomial.coeff_zero]
+    exact Complex.ext hcoeffre hcoeffim
+  · rw [Polynomial.coeff_eq_zero_of_natDegree_lt (by omega), Polynomial.coeff_zero]
+
+end GaloisForLFunctions.HTGeometry.ExpZeroBound
+
+namespace GaloisForLFunctions.HTGeometry.ExpZeroBound
+
+open Finset Polynomial
+
+/-- The complex exponential polynomial with real frequencies. -/
+noncomputable def cexpPoly {m : ℕ} (c : Fin m → ℝ) (P : Fin m → Polynomial ℂ) (x : ℝ) : ℂ :=
+  ∑ j, (P j).eval (x : ℂ) * Complex.exp ((c j : ℂ) * (x : ℂ))
+
+theorem re_cexpPoly {m : ℕ} (c : Fin m → ℝ) (P : Fin m → Polynomial ℂ) (x : ℝ) :
+    (cexpPoly c P x).re = expPoly c (fun j => rePoly (P j)) x := by
+  unfold cexpPoly expPoly
+  rw [Complex.re_sum]
+  refine Finset.sum_congr rfl (fun j _ => ?_)
+  rw [show ((c j : ℂ) * (x : ℂ)) = (((c j * x : ℝ)) : ℂ) by push_cast; ring,
+    ← Complex.ofReal_exp, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, eval_rePoly]
+  ring
+
+theorem im_cexpPoly {m : ℕ} (c : Fin m → ℝ) (P : Fin m → Polynomial ℂ) (x : ℝ) :
+    (cexpPoly c P x).im = expPoly c (fun j => imPoly (P j)) x := by
+  unfold cexpPoly expPoly
+  rw [Complex.im_sum]
+  refine Finset.sum_congr rfl (fun j _ => ?_)
+  rw [show ((c j : ℂ) * (x : ℂ)) = (((c j * x : ℝ)) : ℂ) by push_cast; ring,
+    ← Complex.ofReal_exp, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, eval_imPoly]
+  ring
+
+/-- **Zero bound for complex exponential polynomials with real frequencies.** -/
+theorem card_lt_of_cexpPoly_eq_zero {m : ℕ} (c : Fin (m + 1) → ℝ) (P : Fin (m + 1) → Polynomial ℂ)
+    (hc : Function.Injective c) (hP : ∀ j, P j ≠ 0) (S : Finset ℝ)
+    (hS : ∀ x ∈ S, cexpPoly c P x = 0) :
+    S.card < ∑ j, ((P j).natDegree + 1) := by
+  classical
+  by_cases hre : ∃ j, rePoly (P j) ≠ 0
+  · have hzero : ∀ x ∈ S, expPoly c (fun j => rePoly (P j)) x = 0 := by
+      intro x hx
+      rw [← re_cexpPoly, hS x hx]
+      simp
+    have hbound := card_lt_of_expPoly_eq_zero' c (fun j => rePoly (P j)) hc hre S hzero
+    refine lt_of_lt_of_le hbound ?_
+    exact Finset.sum_le_sum (fun j _ => by
+      have := natDegree_rePoly_le (P j)
+      omega)
+  · push Not at hre
+    by_cases him : ∃ j, imPoly (P j) ≠ 0
+    · have hzero : ∀ x ∈ S, expPoly c (fun j => imPoly (P j)) x = 0 := by
+        intro x hx
+        rw [← im_cexpPoly, hS x hx]
+        simp
+      have hbound := card_lt_of_expPoly_eq_zero' c (fun j => imPoly (P j)) hc him S hzero
+      refine lt_of_lt_of_le hbound ?_
+      exact Finset.sum_le_sum (fun j _ => by
+        have := natDegree_imPoly_le (P j)
+        omega)
+    · push Not at him
+      exact absurd (eq_zero_of_rePoly_imPoly (hre 0) (him 0)) (hP 0)
+
+end GaloisForLFunctions.HTGeometry.ExpZeroBound

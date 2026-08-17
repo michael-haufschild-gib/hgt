@@ -367,6 +367,104 @@ Lean:
 Direct `lake env lean` passes; module is wired into `RHTower.lean`. No
 umbrella build was run.
 
+### C30 — Wold--Jordan harmonic carrier / Gamma Hessian domination
+
+`[HEAVY CONJECTURE → FAIL → PIVOT → LEAN-FORMALIZED]`
+
+The first replacement conjecture was that fixed-total-grade cofinal Gamma
+transport into the fixed Sonin commutator supplies a depth-uniform operator
+norm bound for the positive boundary Hessian. It fails: the transported
+receiver is explicitly noncompact and the Wold--Jordan coface remains outside
+trace class. Equality after positive source calibration controls one finite
+two-prime operator packet, not the sum of its retained ordinary-prime Hessian
+diagonal. Banach--Steinhaus would prove the desired result only after genuine
+pointwise boundedness on a completed barrelled source; that is precisely the
+missing producer, not a consequence of algebraic density.
+
+The valid pivot uses the nondecaying source observable that C29 omitted. Let
+
+```text
+t_q = 2 Re(q)-1,
+F_q = sourceHorizontalWoldPrimeClockUniversalProfile(t_q),
+A_q = 4 F_q^2,
+X_(q,p) = thetaGammaSixWoldHorizontalCarrier(p,q),
+c_m = log(2)/m^2,
+h_(m,q) = gammaSixFilteredBoundaryHarmonicConstant(m,q).
+```
+
+This is the literal finite-shell-derived theta/Gamma Wold--Jordan carrier,
+not a fitted harmonic sequence. Existing source reconstruction proves
+
+```text
+X_(q,p)^2 = A_q / p.
+```
+
+C27 proves, for every `m >= 1`, Xi copy `q`, and ordinary prime `p`,
+
+```text
+h_(m,q)/p <= B_(m,q,p) <= c_m/p.
+```
+
+Both constants are nonnegative; `A_q=0` iff `t_q=0`, and `h_(m,q)>0`
+whenever `t_q != 0`. Multiplication by `A_q` and substitution of the exact
+carrier square give the coefficient-faithful two-sided bridge
+
+```text
+h_(m,q) X_(q,p)^2
+  <= A_q B_(m,q,p)
+  <= c_m X_(q,p)^2.                                      (C30.1)
+```
+
+This proof preserves the same prime label, Xi multiplicity copy, Gauss depth,
+and both reflection orientations. No asymptotic comparison or prime
+reindexing occurs.
+
+For a literal one-sided majorant define, using total real division,
+
+```text
+D_(m,q) = c_m / A_q,
+M_(m,q,p) = D_(m,q) X_(q,p)^2.
+```
+
+If `A_q != 0`, divide the upper half of `(C30.1)` by the positive number
+`A_q`. If `A_q=0`, source-profile rigidity gives `t_q=0`, so both the Gamma
+Hessian and carrier vanish coefficientwise. Hence unconditionally
+
+```text
+B_(m,q,p) <= M_(m,q,p)                                  (C30.2)
+```
+
+for every retained coefficient. Summing `(C30.2)` over any finite prime
+packet yields a source-natural finite-packet Hessian bound by the matching
+finite Wold--Jordan carrier energy. Reflection sends `t_q` to `-t_q` and
+`X` to `-X`; oddness of `F` makes `A`, `D`, `M`, and `B` reflection-even.
+
+Hostile interpretation is essential. `M` is not summable off line: C30
+identifies the exact positive harmonic source class instead of manufacturing
+a decaying majorant. Indeed `Summable(M_(m,q,-))`, `Summable(X_(q,-)^2)`,
+and finite C2 Gamma boundary mass are all equivalent to `t_q=0`. Thus the
+missing producer is now narrower: prove uniform finite-packet control of the
+literal regulator-null Wold--Jordan carrier energy on its genuine completed
+source, or prove that its nonlinear square descends through the source
+regulator. Ordinary Wold residual smoothness cannot do either.
+
+External hostility/novelty audit: Landau's theorem for nonnegative Dirichlet
+coefficients forbids a holomorphic continuation argument from erasing the
+real abscissa singularity; Maurizi's extension retains the same obstruction
+under limited phase cancellation (`arXiv:1009.0228`). Connes--Consani's
+scaling-Hamiltonian analysis likewise obtains positivity only after a
+trace-class hypothesis and records failure of the attempted semilocal sign
+argument (`arXiv:1910.14368`). No checked source states `(C30.1)` or identifies
+these two corpus-specific carriers. `[NOVELTY UNVERIFIED]`
+
+Lean:
+`formal/GaloisForLFunctions/RHTower/XiGammaSixWoldJordanHessianDomination.lean`.
+It proves `(C30.1)`, the literal majorant `(C30.2)`, finite-packet
+domination, reflection invariance, and the hostile summability
+classification. Direct `lake env lean` passes; module is wired into
+`RHTower.lean`; exact leaf `lake build` passes. Axiom audit reports only
+`propext`, `Classical.choice`, and `Quot.sound`. No umbrella build was run.
+
 ## External hostile comparison
 
 Paugam's unconditional symplectic zero-space pairing pairs `rho` with
