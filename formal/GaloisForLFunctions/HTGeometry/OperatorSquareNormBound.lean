@@ -16,7 +16,7 @@ namespace GaloisForLFunctions.HTGeometry
 variable {d : Type*} [Fintype d] [DecidableEq d]
 
 /-- The quadratic form of the identity is the squared length. -/
-theorem quadForm_one (v : d → ℂ) : star v ⬝ᵥ ((1 : Matrix d d ℂ) *ᵥ v)
+private theorem quadForm_one (v : d → ℂ) : star v ⬝ᵥ ((1 : Matrix d d ℂ) *ᵥ v)
     = ((∑ l, ‖v l‖ ^ 2 : ℝ) : ℂ) := by
   have h := quadForm_conjTranspose_mul_self (1 : Matrix d d ℂ) v
   rw [Matrix.conjTranspose_one, Matrix.one_mul, Matrix.one_mulVec] at h

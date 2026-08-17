@@ -22,7 +22,7 @@ namespace RHTower
 
 attribute [local instance] Measure.Subtype.measureSpace
 
-theorem volume_suzukiApertureInterval_univ (a : ℝ) :
+private theorem volume_suzukiApertureInterval_univ (a : ℝ) :
     (volume : Measure (SuzukiApertureInterval a)) Set.univ = ENNReal.ofReal (a - -a) := by
   have h : (volume : Measure (SuzukiApertureInterval a)) Set.univ
       = Measure.comap (Subtype.val) (volume : Measure ℝ) Set.univ := rfl

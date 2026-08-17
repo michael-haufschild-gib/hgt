@@ -32,7 +32,7 @@ theorem exists_support_degree_eq (p : MvPolynomial (Fin m) ℝ) (hp : p ≠ 0) :
   rw [MvPolynomial.totalDegree, heq]
   rfl
 
-theorem homogeneousComponent_totalDegree_ne_zero (p : MvPolynomial (Fin m) ℝ) (hp : p ≠ 0) :
+private theorem homogeneousComponent_totalDegree_ne_zero (p : MvPolynomial (Fin m) ℝ) (hp : p ≠ 0) :
     MvPolynomial.homogeneousComponent p.totalDegree p ≠ 0 := by
   obtain ⟨u, hu, hdeg⟩ := exists_support_degree_eq p hp
   intro h

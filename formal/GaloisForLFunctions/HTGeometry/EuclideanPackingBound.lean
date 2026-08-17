@@ -45,7 +45,7 @@ theorem euclideanBallConst_ne_top : euclideanBallConst k ≠ ⊤ := by
 
 /-- **The packing bound.**  An `ε`-separated subset of a ball of radius `B` has at most
 `(1 + 2B/ε)^k` points. -/
-theorem card_le_of_separated {B ε : ℝ} (hB : 0 ≤ B) (hε : 0 < ε)
+private theorem card_le_of_separated {B ε : ℝ} (hB : 0 ≤ B) (hε : 0 < ε)
     (s : Finset (EuclideanSpace ℝ (Fin k)))
     (hsub : ∀ x ∈ s, ‖x‖ ≤ B)
     (hsep : ∀ x ∈ s, ∀ y ∈ s, x ≠ y → ε ≤ dist x y) :

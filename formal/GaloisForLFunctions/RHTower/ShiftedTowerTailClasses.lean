@@ -64,7 +64,7 @@ theorem summable_shiftedTowerTerm_of_exp_bound
 /-! ### The three admissible weights -/
 
 /-- Harmonic weight. -/
-def harmonicWeight (n : ℕ) : ℝ := 1 / (n + 1)
+def shiftedHarmonicWeight (n : ℕ) : ℝ := 1 / (n + 1)
 
 /-- Constant weight. -/
 def constantWeight (_ : ℕ) : ℝ := 1
@@ -75,8 +75,8 @@ def stretchedWeight (n : ℕ) : ℝ := Real.exp (Real.sqrt (n + 1))
 /-- Exponential control weight, outside the shifted-finite regime. -/
 def exponentialWeight (n : ℕ) : ℝ := Real.exp (n + 1)
 
-theorem harmonicWeight_nonneg (n : ℕ) : 0 ≤ harmonicWeight n := by
-  unfold harmonicWeight
+theorem shiftedHarmonicWeight_nonneg (n : ℕ) : 0 ≤ shiftedHarmonicWeight n := by
+  unfold shiftedHarmonicWeight
   positivity
 
 theorem constantWeight_nonneg (n : ℕ) : 0 ≤ constantWeight n := zero_le_one
@@ -90,11 +90,11 @@ theorem sqrt_le_quarter_add_one (x : ℝ) (hx : 0 ≤ x) : Real.sqrt x ≤ x / 4
   nlinarith [sq_nonneg (Real.sqrt x - 2)]
 
 theorem summable_shiftedTowerTerm_harmonic {k : ℝ} (hk : 0 < k) :
-    Summable (fun n : ℕ => shiftedTowerTerm harmonicWeight k n) := by
-  refine summable_shiftedTowerTerm_of_exp_bound harmonicWeight harmonicWeight_nonneg
+    Summable (fun n : ℕ => shiftedTowerTerm shiftedHarmonicWeight k n) := by
+  refine summable_shiftedTowerTerm_of_exp_bound shiftedHarmonicWeight shiftedHarmonicWeight_nonneg
     (C := 1) (r := 0) (fun n => ?_) hk
-  have hle : harmonicWeight n ≤ 1 := by
-    unfold harmonicWeight
+  have hle : shiftedHarmonicWeight n ≤ 1 := by
+    unfold shiftedHarmonicWeight
     rw [div_le_one (by positivity)]
     have : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
     linarith
@@ -122,12 +122,12 @@ theorem summable_shiftedTowerTerm_stretched {k : ℝ} (hk : (1 : ℝ) / 4 < k) :
 
 /-! ### Every unshifted mass diverges -/
 
-theorem not_summable_harmonicWeight : ¬ Summable harmonicWeight := by
+theorem not_summable_shiftedHarmonicWeight : ¬ Summable shiftedHarmonicWeight := by
   intro h
   have : Summable (fun n : ℕ => 1 / ((n : ℝ))) := by
     refine (summable_nat_add_iff (f := fun n : ℕ => 1 / ((n : ℝ))) 1).mp ?_
     refine h.congr fun n => ?_
-    unfold harmonicWeight
+    unfold shiftedHarmonicWeight
     push_cast
     ring_nf
   exact Real.not_summable_one_div_natCast this
@@ -177,8 +177,8 @@ theorem not_summable_shiftedTowerTerm_exponential :
 /-- The harmonic partial sums are `o` of the constant-weight partial sums. -/
 theorem tendsto_harmonic_div_constant_partialSum :
     Tendsto (fun N : ℕ =>
-      (∑ n ∈ range N, harmonicWeight n) / (∑ n ∈ range N, constantWeight n)) atTop (𝓝 0) := by
-  have hterm : Tendsto harmonicWeight atTop (𝓝 0) :=
+      (∑ n ∈ range N, shiftedHarmonicWeight n) / (∑ n ∈ range N, constantWeight n)) atTop (𝓝 0) := by
+  have hterm : Tendsto shiftedHarmonicWeight atTop (𝓝 0) :=
     tendsto_one_div_add_atTop_nhds_zero_nat
   have hces := hterm.cesaro
   refine hces.congr' ?_

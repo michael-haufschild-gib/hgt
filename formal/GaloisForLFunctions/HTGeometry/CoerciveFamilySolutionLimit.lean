@@ -25,7 +25,7 @@ namespace GaloisForLFunctions.HTGeometry
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 
 /-- **Coercivity moves norms up.** -/
-theorem norm_le_of_coercive {B : H →L[ℂ] H} {δ : ℝ} (hδ : 0 < δ)
+private theorem norm_le_of_coercive {B : H →L[ℂ] H} {δ : ℝ} (hδ : 0 < δ)
     (hcoer : ∀ x : H, δ * ‖x‖ ^ 2 ≤ (inner ℂ (B x) x).re) (x : H) :
     ‖x‖ ≤ δ⁻¹ * ‖B x‖ := by
   rcases eq_or_ne x 0 with h | h

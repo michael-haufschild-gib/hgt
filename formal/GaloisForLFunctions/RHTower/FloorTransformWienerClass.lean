@@ -35,7 +35,7 @@ noncomputable section
 /-! ## The critical condition number -/
 
 /-- **(24.34)** The truncated critical condition number `‖a‖_{1/2;N} = ∑_{d ≤ N} |a d| d^{-1/2}`. -/
-def criticalNorm (a : ℕ → ℝ) (N : ℕ) : ℝ :=
+private def criticalNorm (a : ℕ → ℝ) (N : ℕ) : ℝ :=
   ∑ d ∈ Finset.Icc 1 N, |a d| * (d : ℝ) ^ (-(1 / 2 : ℝ))
 
 theorem criticalNorm_nonneg (a : ℕ → ℝ) (N : ℕ) : 0 ≤ criticalNorm a N := by

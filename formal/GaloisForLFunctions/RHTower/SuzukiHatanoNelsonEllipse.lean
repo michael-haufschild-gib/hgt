@@ -28,7 +28,7 @@ namespace RHTower
 /-! ## The single-step symbol -/
 
 /-- The Hatano–Nelson symbol of one weighted step. -/
-def hatanoNelsonSymbol (κ θ : ℝ) : ℂ :=
+private def hatanoNelsonSymbol (κ θ : ℝ) : ℂ :=
   Complex.exp ((κ : ℂ) + Complex.I * (θ : ℂ)) + Complex.exp (-(κ : ℂ) - Complex.I * (θ : ℂ))
 
 /-- **`(21)`: the symbol traces the Hatano–Nelson ellipse.** -/
@@ -60,7 +60,7 @@ theorem hatanoNelsonSymbol_eq (κ θ : ℝ) :
   ring
 
 /-- The imaginary part of the symbol. -/
-theorem hatanoNelsonSymbol_im (κ θ : ℝ) :
+private theorem hatanoNelsonSymbol_im (κ θ : ℝ) :
     (hatanoNelsonSymbol κ θ).im = 2 * Real.sinh κ * Real.sin θ := by
   rw [hatanoNelsonSymbol_eq, Complex.add_im, Complex.ofReal_im, zero_add,
     Complex.I_mul_im, Complex.ofReal_re]
@@ -73,7 +73,7 @@ theorem hatanoNelsonSymbol_quarter (κ : ℝ) :
   ring
 
 /-- A nontrivial radial weight pushes the symbol off the real axis. -/
-theorem hatanoNelsonSymbol_im_ne_zero {κ : ℝ} (hκ : 0 < κ) :
+private theorem hatanoNelsonSymbol_im_ne_zero {κ : ℝ} (hκ : 0 < κ) :
     (hatanoNelsonSymbol κ (Real.pi / 2)).im ≠ 0 := by
   rw [hatanoNelsonSymbol_im, Real.sin_pi_div_two, mul_one]
   have hsh : 0 < Real.sinh κ := by

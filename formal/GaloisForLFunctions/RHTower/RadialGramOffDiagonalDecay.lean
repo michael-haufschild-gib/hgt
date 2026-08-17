@@ -38,21 +38,21 @@ noncomputable section
 
 /-! ## The real harmonic sum -/
 
-/-- `harmonicSum n = ∑_{i < n} 1 / (i + 1)`. -/
-def harmonicSum (n : ℕ) : ℝ := ∑ i ∈ Finset.range n, 1 / ((i : ℝ) + 1)
+/-- `radialHarmonicSum n = ∑_{i < n} 1 / (i + 1)`. -/
+def radialHarmonicSum (n : ℕ) : ℝ := ∑ i ∈ Finset.range n, 1 / ((i : ℝ) + 1)
 
-@[simp] theorem harmonicSum_zero : harmonicSum 0 = 0 := by simp [harmonicSum]
+@[simp] theorem radialHarmonicSum_zero : radialHarmonicSum 0 = 0 := by simp [radialHarmonicSum]
 
-theorem harmonicSum_succ (n : ℕ) :
-    harmonicSum (n + 1) = harmonicSum n + 1 / ((n : ℝ) + 1) := by
-  simp [harmonicSum, Finset.sum_range_succ]
+theorem radialHarmonicSum_succ (n : ℕ) :
+    radialHarmonicSum (n + 1) = radialHarmonicSum n + 1 / ((n : ℝ) + 1) := by
+  simp [radialHarmonicSum, Finset.sum_range_succ]
 
-theorem harmonicSum_nonneg (n : ℕ) : 0 ≤ harmonicSum n := by
+theorem radialHarmonicSum_nonneg (n : ℕ) : 0 ≤ radialHarmonicSum n := by
   apply Finset.sum_nonneg
   intro i _
   positivity
 
-theorem harmonicSum_mono {m n : ℕ} (h : m ≤ n) : harmonicSum m ≤ harmonicSum n := by
+theorem radialHarmonicSum_mono {m n : ℕ} (h : m ≤ n) : radialHarmonicSum m ≤ radialHarmonicSum n := by
   have hsub : Finset.range m ⊆ Finset.range n := fun x hx =>
     Finset.mem_range.2 (lt_of_lt_of_le (Finset.mem_range.1 hx) h)
   apply Finset.sum_le_sum_of_subset_of_nonneg hsub
@@ -60,9 +60,9 @@ theorem harmonicSum_mono {m n : ℕ} (h : m ≤ n) : harmonicSum m ≤ harmonicS
   positivity
 
 /-- Splitting the harmonic sum: `H (m + n) = H m + ∑_{i < n} 1/(m + i + 1)`. -/
-theorem harmonicSum_add (m n : ℕ) :
-    harmonicSum (m + n) = harmonicSum m + ∑ i ∈ Finset.range n, 1 / (((m : ℝ) + (i : ℝ)) + 1) := by
-  unfold harmonicSum
+theorem radialHarmonicSum_add (m n : ℕ) :
+    radialHarmonicSum (m + n) = radialHarmonicSum m + ∑ i ∈ Finset.range n, 1 / (((m : ℝ) + (i : ℝ)) + 1) := by
+  unfold radialHarmonicSum
   rw [Finset.sum_range_add]
   congr 1
   apply Finset.sum_congr rfl
@@ -85,8 +85,8 @@ theorem one_div_succ_le_log_sub (i : ℕ) :
   linarith
 
 /-- The harmonic sum is at most `1 + log n` for `n ≥ 1`. -/
-theorem harmonicSum_le_one_add_log {n : ℕ} (hn : 1 ≤ n) :
-    harmonicSum n ≤ 1 + Real.log n := by
+theorem radialHarmonicSum_le_one_add_log {n : ℕ} (hn : 1 ≤ n) :
+    radialHarmonicSum n ≤ 1 + Real.log n := by
   obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
   have hstep : ∑ i ∈ Finset.range m, 1 / (((i : ℝ) + 1) + 1) ≤ Real.log ((m : ℝ) + 1) := by
     have hle : ∀ i ∈ Finset.range m,
@@ -102,11 +102,11 @@ theorem harmonicSum_le_one_add_log {n : ℕ} (hn : 1 ≤ n) :
             have := Finset.sum_range_sub (fun i : ℕ => Real.log ((i : ℝ) + 1)) m
             simpa using this
       _ = Real.log ((m : ℝ) + 1) := by simp
-  have hsplit : harmonicSum (m + 1) = 1 + ∑ i ∈ Finset.range m, 1 / (((i : ℝ) + 1) + 1) := by
-    have := harmonicSum_add 1 m
+  have hsplit : radialHarmonicSum (m + 1) = 1 + ∑ i ∈ Finset.range m, 1 / (((i : ℝ) + 1) + 1) := by
+    have := radialHarmonicSum_add 1 m
     rw [add_comm 1 m] at this
     rw [this]
-    have h1 : harmonicSum 1 = 1 := by simp [harmonicSum]
+    have h1 : radialHarmonicSum 1 = 1 := by simp [radialHarmonicSum]
     rw [h1]
     congr 1
     apply Finset.sum_congr rfl
@@ -141,7 +141,7 @@ theorem belowDiagTerm_eq {K i : ℕ} (hi : i + 1 < K) :
 /-- The below-diagonal row sum equals `2 * H (K - 1) / K`. -/
 theorem sum_belowDiagTerm {K : ℕ} (hK : 2 ≤ K) :
     ∑ i ∈ Finset.range (K - 1), belowDiagTerm K i
-      = 2 * harmonicSum (K - 1) / (K : ℝ) := by
+      = 2 * radialHarmonicSum (K - 1) / (K : ℝ) := by
   have hK0 : (0 : ℝ) < (K : ℝ) := by
     have : 0 < K := by omega
     exact_mod_cast this
@@ -170,7 +170,7 @@ theorem sum_belowDiagTerm {K : ℕ} (hK : 2 ≤ K) :
     rw [hcast]
     ring
   rw [hrefl]
-  have : ∑ i ∈ Finset.range (K - 1), 1 / ((i : ℝ) + 1) = harmonicSum (K - 1) := rfl
+  have : ∑ i ∈ Finset.range (K - 1), 1 / ((i : ℝ) + 1) = radialHarmonicSum (K - 1) := rfl
   rw [this]
   field_simp
   ring
@@ -199,7 +199,7 @@ theorem aboveDiagTerm_eq {K : ℕ} (hK : 1 ≤ K) (i : ℕ) :
 
 /-- Every partial sum above the diagonal is at most `H K / K`. -/
 theorem sum_range_aboveDiagTerm_le {K : ℕ} (hK : 1 ≤ K) (N : ℕ) :
-    ∑ i ∈ Finset.range N, aboveDiagTerm K i ≤ harmonicSum K / (K : ℝ) := by
+    ∑ i ∈ Finset.range N, aboveDiagTerm K i ≤ radialHarmonicSum K / (K : ℝ) := by
   have hK0 : (0 : ℝ) < (K : ℝ) := by
     have : 0 < K := by omega
     exact_mod_cast this
@@ -209,11 +209,11 @@ theorem sum_range_aboveDiagTerm_le {K : ℕ} (hK : 1 ≤ K) (N : ℕ) :
     intro i _
     exact aboveDiagTerm_eq hK i
   rw [Finset.sum_congr rfl hrewrite, ← Finset.mul_sum, Finset.sum_sub_distrib]
-  have hfirst : ∑ i ∈ Finset.range N, 1 / ((i : ℝ) + 1) = harmonicSum N := rfl
+  have hfirst : ∑ i ∈ Finset.range N, 1 / ((i : ℝ) + 1) = radialHarmonicSum N := rfl
   have hsecond :
       ∑ i ∈ Finset.range N, 1 / ((i : ℝ) + 1 + (K : ℝ))
-        = harmonicSum (K + N) - harmonicSum K := by
-    have h := harmonicSum_add K N
+        = radialHarmonicSum (K + N) - radialHarmonicSum K := by
+    have h := radialHarmonicSum_add K N
     have : ∑ i ∈ Finset.range N, 1 / (((K : ℝ) + (i : ℝ)) + 1)
         = ∑ i ∈ Finset.range N, 1 / ((i : ℝ) + 1 + (K : ℝ)) := by
       apply Finset.sum_congr rfl
@@ -223,18 +223,18 @@ theorem sum_range_aboveDiagTerm_le {K : ℕ} (hK : 1 ≤ K) (N : ℕ) :
     rw [this] at h
     linarith
   rw [hfirst, hsecond]
-  have hmono : harmonicSum N ≤ harmonicSum (K + N) := harmonicSum_mono (by omega)
-  have hbound : harmonicSum N - (harmonicSum (K + N) - harmonicSum K) ≤ harmonicSum K := by
+  have hmono : radialHarmonicSum N ≤ radialHarmonicSum (K + N) := radialHarmonicSum_mono (by omega)
+  have hbound : radialHarmonicSum N - (radialHarmonicSum (K + N) - radialHarmonicSum K) ≤ radialHarmonicSum K := by
     linarith
   calc
-    (1 / (K : ℝ)) * (harmonicSum N - (harmonicSum (K + N) - harmonicSum K))
-        ≤ (1 / (K : ℝ)) * harmonicSum K := by
+    (1 / (K : ℝ)) * (radialHarmonicSum N - (radialHarmonicSum (K + N) - radialHarmonicSum K))
+        ≤ (1 / (K : ℝ)) * radialHarmonicSum K := by
           apply mul_le_mul_of_nonneg_left hbound (by positivity)
-    _ = harmonicSum K / (K : ℝ) := by ring
+    _ = radialHarmonicSum K / (K : ℝ) := by ring
 
 /-- The above-diagonal row sum is at most `H K / K`. -/
 theorem tsum_aboveDiagTerm_le {K : ℕ} (hK : 1 ≤ K) :
-    ∑' i : ℕ, aboveDiagTerm K i ≤ harmonicSum K / (K : ℝ) :=
+    ∑' i : ℕ, aboveDiagTerm K i ≤ radialHarmonicSum K / (K : ℝ) :=
   Real.tsum_le_of_sum_range_le (fun i => aboveDiagTerm_nonneg K i)
     (fun N => sum_range_aboveDiagTerm_le hK N)
 
@@ -258,15 +258,15 @@ theorem radialRowSum_le {K : ℕ} (hK : 2 ≤ K) :
   have hK1 : (1 : ℕ) ≤ K := by omega
   have hbelow := sum_belowDiagTerm hK
   have habove := tsum_aboveDiagTerm_le hK1
-  have hH1 : harmonicSum (K - 1) ≤ 1 + Real.log K := by
-    refine le_trans (harmonicSum_mono (by omega : K - 1 ≤ K)) ?_
-    exact harmonicSum_le_one_add_log hK1
-  have hH2 : harmonicSum K ≤ 1 + Real.log K := harmonicSum_le_one_add_log hK1
+  have hH1 : radialHarmonicSum (K - 1) ≤ 1 + Real.log K := by
+    refine le_trans (radialHarmonicSum_mono (by omega : K - 1 ≤ K)) ?_
+    exact radialHarmonicSum_le_one_add_log hK1
+  have hH2 : radialHarmonicSum K ≤ 1 + Real.log K := radialHarmonicSum_le_one_add_log hK1
   unfold radialRowSum
   rw [hbelow]
-  have hstep : 2 * harmonicSum (K - 1) / (K : ℝ) + ∑' i : ℕ, aboveDiagTerm K i
+  have hstep : 2 * radialHarmonicSum (K - 1) / (K : ℝ) + ∑' i : ℕ, aboveDiagTerm K i
       ≤ 2 * (1 + Real.log K) / (K : ℝ) + (1 + Real.log K) / (K : ℝ) := by
-    have hA : 2 * harmonicSum (K - 1) / (K : ℝ) ≤ 2 * (1 + Real.log K) / (K : ℝ) := by
+    have hA : 2 * radialHarmonicSum (K - 1) / (K : ℝ) ≤ 2 * (1 + Real.log K) / (K : ℝ) := by
       gcongr
     have hB : ∑' i : ℕ, aboveDiagTerm K i ≤ (1 + Real.log K) / (K : ℝ) := by
       refine habove.trans ?_

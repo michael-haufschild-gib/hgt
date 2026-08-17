@@ -103,7 +103,7 @@ theorem constrainedProlateHermiteWeight_ge_inv {j : ℕ} (hj : 1 ≤ j) :
 
 /-- The weight sums dominate a quarter of the harmonic sum, hence diverge. -/
 theorem constrainedProlateHermiteWeightSum_ge_harmonic (k : ℕ) :
-    harmonicSum k / 4 ≤ constrainedProlateHermiteWeightSum k := by
+    radialHarmonicSum k / 4 ≤ constrainedProlateHermiteWeightSum k := by
   have hstep : ∀ i ∈ Finset.range k,
       1 / ((i : ℝ) + 1) / 4 ≤ constrainedProlateHermiteWeight (i + 1) := by
     intro i _
@@ -114,8 +114,8 @@ theorem constrainedProlateHermiteWeightSum_ge_harmonic (k : ℕ) :
       1 / ((i : ℝ) + 1) / 4 = 1 / (4 * ((i : ℝ) + 1)) := by
         field_simp
       _ ≤ constrainedProlateHermiteWeight (i + 1) := h
-  have hsum : harmonicSum k / 4 = ∑ i ∈ Finset.range k, 1 / ((i : ℝ) + 1) / 4 := by
-    unfold harmonicSum
+  have hsum : radialHarmonicSum k / 4 = ∑ i ∈ Finset.range k, 1 / ((i : ℝ) + 1) / 4 := by
+    unfold radialHarmonicSum
     rw [div_eq_mul_inv, mul_comm, Finset.mul_sum]
     exact Finset.sum_congr rfl fun i _ => by ring
   rw [hsum]
@@ -132,9 +132,9 @@ theorem constrainedProlateHermiteWeightSum_ge_harmonic (k : ℕ) :
 
 theorem tendsto_constrainedProlateHermiteWeightSum_atTop :
     Tendsto constrainedProlateHermiteWeightSum atTop atTop := by
-  have hharm : Tendsto (fun k : ℕ => harmonicSum k / 4) atTop atTop := by
+  have hharm : Tendsto (fun k : ℕ => radialHarmonicSum k / 4) atTop atTop := by
     have := Real.tendsto_sum_range_one_div_nat_succ_atTop
-    have heq : ∀ k : ℕ, harmonicSum k = ∑ i ∈ Finset.range k, 1 / ((i : ℝ) + 1) := fun _ => rfl
+    have heq : ∀ k : ℕ, radialHarmonicSum k = ∑ i ∈ Finset.range k, 1 / ((i : ℝ) + 1) := fun _ => rfl
     exact (this.congr fun k => (heq k).symm).atTop_div_const (by norm_num)
   exact tendsto_atTop_mono constrainedProlateHermiteWeightSum_ge_harmonic hharm
 

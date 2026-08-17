@@ -86,7 +86,7 @@ section Tensor
 variable {dA dB : Type*} [Fintype dA] [Fintype dB]
 
 /-- The coordinatewise product of two state vectors. -/
-def tensorVec (ψ : EuclideanSpace ℂ dA) (φ : EuclideanSpace ℂ dB) :
+private def tensorVec (ψ : EuclideanSpace ℂ dA) (φ : EuclideanSpace ℂ dB) :
     EuclideanSpace ℂ (dA × dB) :=
   WithLp.toLp 2 (fun p : dA × dB => ψ p.1 * φ p.2)
 

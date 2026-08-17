@@ -186,26 +186,30 @@ theorem smoothUnits_le_closure (N : ℕ) :
   have hmemneg : (-1 : ℚˣ) ∈ Subgroup.closure (smoothGens N) :=
     Subgroup.subset_closure (Or.inl rfl)
   -- assemble `u = ± |num| / den`
-  have hnumval : (q.num : ℚ) = (q.num.natAbs : ℚ) ∨ (q.num : ℚ) = -(q.num.natAbs : ℚ) := by
-    rcases Int.natAbs_eq q.num with h | h
-    · left; rw [h]; push_cast; ring
-    · right; rw [h]; push_cast; ring
+  have hdQ : ((q.den : ℚ)) ≠ 0 := den_cast_ne_zero q
+  have hAbs : (((q.num.natAbs : ℕ)) : ℚ) = |(q.num : ℚ)| := by
+    rw [← Int.cast_natCast, Int.natCast_natAbs, Int.cast_abs]
   have hdecomp : u = (natRatUnit hnat) * (natRatUnit hden)⁻¹ ∨
       u = (-1 : ℚˣ) * ((natRatUnit hnat) * (natRatUnit hden)⁻¹) := by
-    have hdQ : ((q.den : ℚ)) ≠ 0 := den_cast_ne_zero q
-    rcases hnumval with h | h
+    rcases abs_choice ((q.num : ℚ)) with hc | hc
     · left
       refine Units.ext ?_
-      rw [Units.val_mul, Units.val_inv_eq_inv_val, natRatUnit_val, natRatUnit_val, ← h, ← hqdef]
-      rw [eq_div_iff hdQ] at *
-      exact num_eq_mul_den q ▸ rfl
+      have hA : (((q.num.natAbs : ℕ)) : ℚ) = (q.num : ℚ) := hAbs.trans hc
+      have hkey : (((q.num.natAbs : ℕ)) : ℚ) * ((q.den : ℚ))⁻¹ = q := by
+        rw [hA]
+        field_simp
+        linarith [num_eq_mul_den q]
+      rw [Units.val_mul, Units.val_inv_eq_inv_val, natRatUnit_val, natRatUnit_val, hkey]
     · right
       refine Units.ext ?_
-      rw [Units.val_mul, Units.val_mul, Units.val_inv_eq_inv_val, natRatUnit_val, natRatUnit_val]
-      have hnq : ((q.num.natAbs : ℚ)) = -(q.num : ℚ) := by rw [h]; ring
-      have : q * (q.den : ℚ) = (q.num : ℚ) := (num_eq_mul_den q).symm
-      field_simp [hnq]
-      linarith [this]
+      have hA : (((q.num.natAbs : ℕ)) : ℚ) = -(q.num : ℚ) := hAbs.trans hc
+      have hval : (((-1 : ℚˣ)) : ℚ) = -1 := by norm_num
+      have hkey : (-1 : ℚ) * ((((q.num.natAbs : ℕ)) : ℚ) * ((q.den : ℚ))⁻¹) = q := by
+        rw [hA]
+        field_simp
+        linarith [num_eq_mul_den q]
+      rw [Units.val_mul, Units.val_mul, Units.val_inv_eq_inv_val, natRatUnit_val, natRatUnit_val,
+        hval, hkey]
   rcases hdecomp with h | h
   · rw [h]
     exact Subgroup.mul_mem _ hmemnum (Subgroup.inv_mem _ hmemden)

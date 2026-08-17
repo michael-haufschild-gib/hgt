@@ -24,7 +24,7 @@ section Lift
 variable {k : ℕ} {β : Type*} [Fintype β] [DecidableEq β]
 
 /-- Reduction of coefficients modulo two. -/
-abbrev redEight : ZMod 8 →+* ZMod 2 := ZMod.castHom (by norm_num) (ZMod 2)
+private abbrev redEight : ZMod 8 →+* ZMod 2 := ZMod.castHom (by norm_num) (ZMod 2)
 
 theorem exists_two_mul_of_red_eq_zero {x : ZMod 8} (hx : redEight x = 0) :
     ∃ y : ZMod 8, x = 2 * y := by
@@ -40,7 +40,7 @@ theorem eight_eq_zero : (8 : ZMod 8) = 0 := by decide
 
 omit [DecidableEq β] in
 /-- One modular step: a residual solvable modulo two leaves an even remainder. -/
-theorem exists_mulVec_add_two_smul (A : Matrix (Fin k) β (ZMod 8))
+private theorem exists_mulVec_add_two_smul (A : Matrix (Fin k) β (ZMod 8))
     (hmod : Function.Surjective fun c : β → ZMod 2 => (A.map redEight) *ᵥ c)
     (w : Fin k → ZMod 8) :
     ∃ (c : β → ZMod 8) (w' : Fin k → ZMod 8), ∀ i, w i = (A *ᵥ c) i + 2 * w' i := by

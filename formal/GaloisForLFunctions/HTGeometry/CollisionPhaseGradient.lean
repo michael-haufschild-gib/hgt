@@ -24,7 +24,7 @@ section Gradient
 variable {D : Type*} [Fintype D] [DecidableEq D]
 
 /-- The phase orbit of a unitary against the coordinate phases. -/
-def phaseOrbit (U : Matrix D D ℂ) (θ : D → ℝ) (j : D) : ℂ :=
+private def phaseOrbit (U : Matrix D D ℂ) (θ : D → ℝ) (j : D) : ℂ :=
   ∑ a, U j a * Complex.exp (Complex.I * (θ a : ℂ))
 
 /-- The cubic vector attached to a phase orbit. -/

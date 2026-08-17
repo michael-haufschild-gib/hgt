@@ -56,7 +56,7 @@ theorem eq_zero_of_X_pow_dvd_mul {f g : R[X]} {m n : ℕ}
 
 /-- **Euclid's lemma in syzygy form.**  A syzygy between coprime polynomials has a single
 cofactor. -/
-theorem exists_cofactor_of_syzygy {U V D E : R[X]}
+private theorem exists_cofactor_of_syzygy {U V D E : R[X]}
     (huv : IsCoprime U V) (hU : U ≠ 0) (h : D * V + E * U = 0) :
     ∃ C : R[X], D = C * U ∧ E = -(C * V) := by
   have hdvd : U ∣ D * V := ⟨-E, by linear_combination h⟩
@@ -96,7 +96,7 @@ theorem eq_zero_of_tangent_syzygy {U V D E T : R[X]} {m n : ℕ}
 
 omit [IsDomain R] in
 /-- A polynomial divisible by the horizon and of degree below it is zero. -/
-theorem eq_zero_of_X_pow_dvd_of_natDegree_lt {f : R[X]} {k : ℕ}
+private theorem eq_zero_of_X_pow_dvd_of_natDegree_lt {f : R[X]} {k : ℕ}
     (hdvd : (X : R[X]) ^ k ∣ f) (hdeg : f.natDegree < k) : f = 0 := by
   by_contra hf
   have hlead : f.coeff f.natDegree ≠ 0 := by

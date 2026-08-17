@@ -20,7 +20,7 @@ variable {K : Type*} [Field K] {m n : ℕ}
 /-! ## Dilating a polynomial -/
 
 /-- **The coefficients of a dilated polynomial.** -/
-theorem coeff_comp_C_mul_X (P : K[X]) (c : K) (i : ℕ) :
+theorem horizonScalingCoeff_comp_C_mul_X (P : K[X]) (c : K) (i : ℕ) :
     (P.comp (C c * X)).coeff i = P.coeff i * c ^ i := by
   induction P using Polynomial.induction_on' with
   | add p q hp hq =>
@@ -37,17 +37,17 @@ theorem coeff_comp_C_mul_X (P : K[X]) (c : K) (i : ℕ) :
 theorem comp_C_mul_X_comp (P : K[X]) {c : K} (hc : c ≠ 0) :
     (P.comp (C c * X)).comp (C c⁻¹ * X) = P := by
   refine Polynomial.ext fun i => ?_
-  rw [coeff_comp_C_mul_X, coeff_comp_C_mul_X, mul_assoc, ← mul_pow,
+  rw [horizonScalingCoeff_comp_C_mul_X, horizonScalingCoeff_comp_C_mul_X, mul_assoc, ← mul_pow,
     mul_inv_cancel₀ hc, one_pow, mul_one]
 
 theorem degree_comp_C_mul_X (P : K[X]) {c : K} (hc : c ≠ 0) :
     (P.comp (C c * X)).degree = P.degree := by
   refine le_antisymm ?_ ?_
   · refine Polynomial.degree_le_iff_coeff_zero _ _ |>.2 fun j hj => ?_
-    rw [coeff_comp_C_mul_X, Polynomial.coeff_eq_zero_of_degree_lt hj, zero_mul]
+    rw [horizonScalingCoeff_comp_C_mul_X, Polynomial.coeff_eq_zero_of_degree_lt hj, zero_mul]
   · conv_lhs => rw [← comp_C_mul_X_comp P hc]
     refine Polynomial.degree_le_iff_coeff_zero _ _ |>.2 fun j hj => ?_
-    rw [coeff_comp_C_mul_X, Polynomial.coeff_eq_zero_of_degree_lt hj, zero_mul]
+    rw [horizonScalingCoeff_comp_C_mul_X, Polynomial.coeff_eq_zero_of_degree_lt hj, zero_mul]
 
 theorem X_pow_dvd_comp_C_mul_X_iff {P : K[X]} {c : K} (hc : c ≠ 0) (L : ℕ) :
     (X : K[X]) ^ L ∣ P.comp (C c * X) ↔ (X : K[X]) ^ L ∣ P := by
@@ -55,12 +55,12 @@ theorem X_pow_dvd_comp_C_mul_X_iff {P : K[X]} {c : K} (hc : c ≠ 0) (L : ℕ) :
   constructor
   · intro h k hk
     have := h k hk
-    rw [coeff_comp_C_mul_X] at this
+    rw [horizonScalingCoeff_comp_C_mul_X] at this
     rcases mul_eq_zero.1 this with h0 | h0
     · exact h0
     · exact absurd h0 (pow_ne_zero k hc)
   · intro h k hk
-    rw [coeff_comp_C_mul_X, h k hk, zero_mul]
+    rw [horizonScalingCoeff_comp_C_mul_X, h k hk, zero_mul]
 
 /-! ## The fibre of the rescaled observation -/
 
@@ -96,7 +96,7 @@ noncomputable def criticalFibreScale {c : K} (hc : c ≠ 0) (m n : ℕ) (U V : K
     refine Subtype.ext ?_
     refine Prod.ext ?_ ?_ <;>
       · refine Polynomial.ext fun i => ?_
-        rw [coeff_comp_C_mul_X, coeff_comp_C_mul_X, mul_assoc, ← mul_pow,
+        rw [horizonScalingCoeff_comp_C_mul_X, horizonScalingCoeff_comp_C_mul_X, mul_assoc, ← mul_pow,
           inv_mul_cancel₀ hc, one_pow, mul_one]
 
 /-- **The fibre count is an invariant of the scaling orbit of the observation.** -/

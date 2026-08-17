@@ -40,7 +40,7 @@ theorem zetaRealTrace_ofReal (T σ : ℝ) :
 
 /-! ## The lower bound at the centre -/
 
-theorem norm_riemannZeta_sub_one_le {s : ℂ} (hs : s.re = 2) :
+private theorem norm_riemannZeta_sub_one_le {s : ℂ} (hs : s.re = 2) :
     ‖riemannZeta s - 1‖ ≤ Real.pi ^ 2 / 6 - 1 := by
   classical
   have h1 : (1 : ℝ) < s.re := by rw [hs]; norm_num

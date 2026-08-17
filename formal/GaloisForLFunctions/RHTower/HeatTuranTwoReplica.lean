@@ -34,16 +34,16 @@ variable {ι : Type*}
 /-! ## The filtered heat moments -/
 
 /-- The filtered heat moment of a finite spectral family. -/
-def heatMoment (s : Finset ι) (c w : ι → ℂ) (k : ℕ) (t : ℝ) : ℂ :=
+def turanHeatMoment (s : Finset ι) (c w : ι → ℂ) (k : ℕ) (t : ℝ) : ℂ :=
   ∑ q ∈ s, c q * w q ^ k * Complex.exp (-(t : ℂ) * w q)
 
 /-- **(24.140)** The adjacent determinant of the three filtered moments. -/
 def heatTuranDefect (s : Finset ι) (c w : ι → ℂ) (t : ℝ) : ℂ :=
-  heatMoment s c w 0 t * heatMoment s c w 2 t - heatMoment s c w 1 t ^ 2
+  turanHeatMoment s c w 0 t * turanHeatMoment s c w 2 t - turanHeatMoment s c w 1 t ^ 2
 
 /-- **(24.140)** Each filtered moment is the negative time derivative of the previous one. -/
-theorem hasDerivAt_heatMoment (s : Finset ι) (c w : ι → ℂ) (k : ℕ) (t : ℝ) :
-    HasDerivAt (fun tau : ℝ => heatMoment s c w k tau) (-heatMoment s c w (k + 1) t) t := by
+theorem hasDerivAt_turanHeatMoment (s : Finset ι) (c w : ι → ℂ) (k : ℕ) (t : ℝ) :
+    HasDerivAt (fun tau : ℝ => turanHeatMoment s c w k tau) (-turanHeatMoment s c w (k + 1) t) t := by
   have hterm : ∀ q ∈ s, HasDerivAt
       (fun tau : ℝ => c q * w q ^ k * Complex.exp (-(tau : ℂ) * w q))
       (-(c q * w q ^ (k + 1) * Complex.exp (-(t : ℂ) * w q))) t := by
@@ -59,13 +59,13 @@ theorem hasDerivAt_heatMoment (s : Finset ι) (c w : ι → ℂ) (k : ℕ) (t : 
     rw [pow_succ]
     ring
   have hsum := HasDerivAt.sum hterm
-  have hfun : (fun tau : ℝ => heatMoment s c w k tau)
+  have hfun : (fun tau : ℝ => turanHeatMoment s c w k tau)
       = ∑ q ∈ s, fun tau : ℝ => c q * w q ^ k * Complex.exp (-(tau : ℂ) * w q) := by
     funext tau
-    rw [heatMoment, Finset.sum_apply]
+    rw [turanHeatMoment, Finset.sum_apply]
   rw [hfun]
   refine hsum.congr_deriv ?_
-  rw [heatMoment, ← Finset.sum_neg_distrib]
+  rw [turanHeatMoment, ← Finset.sum_neg_distrib]
 
 /-! ## The two-replica identity -/
 
@@ -76,14 +76,14 @@ theorem two_mul_heatTuranDefect (s : Finset ι) (c w : ι → ℂ) (t : ℝ) :
           * (c q * Complex.exp (-(t : ℂ) * w q)) * (c r * Complex.exp (-(t : ℂ) * w r)) := by
   classical
   set u : ι → ℂ := fun q => c q * Complex.exp (-(t : ℂ) * w q) with hu
-  have hM0 : heatMoment s c w 0 t = ∑ q ∈ s, u q := by
-    rw [heatMoment]
+  have hM0 : turanHeatMoment s c w 0 t = ∑ q ∈ s, u q := by
+    rw [turanHeatMoment]
     exact Finset.sum_congr rfl fun q _ => by rw [hu]; ring
-  have hM1 : heatMoment s c w 1 t = ∑ q ∈ s, w q * u q := by
-    rw [heatMoment]
+  have hM1 : turanHeatMoment s c w 1 t = ∑ q ∈ s, w q * u q := by
+    rw [turanHeatMoment]
     exact Finset.sum_congr rfl fun q _ => by rw [hu]; ring
-  have hM2 : heatMoment s c w 2 t = ∑ q ∈ s, w q ^ 2 * u q := by
-    rw [heatMoment]
+  have hM2 : turanHeatMoment s c w 2 t = ∑ q ∈ s, w q ^ 2 * u q := by
+    rw [turanHeatMoment]
     exact Finset.sum_congr rfl fun q _ => by rw [hu]; ring
   have hexpand : ∀ q ∈ s, ∀ r ∈ s,
       (w q - w r) ^ 2 * u q * u r

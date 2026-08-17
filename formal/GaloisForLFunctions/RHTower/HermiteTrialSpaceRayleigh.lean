@@ -821,7 +821,7 @@ theorem comboBdry_bound (r : Fin (n + 1) → ℕ) (a : Fin (n + 1) → ℝ) (c :
 
 /-! ## The trial-space Rayleigh bound -/
 
-theorem sum_sq_pos_of_ne_zero {a : Fin (n + 1) → ℝ} (ha : a ≠ 0) : 0 < ∑ k, a k ^ 2 := by
+private theorem sum_sq_pos_of_ne_zero {a : Fin (n + 1) → ℝ} (ha : a ≠ 0) : 0 < ∑ k, a k ^ 2 := by
   rcases lt_or_eq_of_le (Finset.sum_nonneg fun k (_ : k ∈ Finset.univ) => sq_nonneg (a k))
     with h | h
   · exact h

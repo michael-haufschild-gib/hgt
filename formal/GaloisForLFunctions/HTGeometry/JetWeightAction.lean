@@ -33,7 +33,7 @@ theorem weightPolyDeriv_X (p : Unit × ℕ) :
       = MvPolynomial.X (p.1, p.2 + 1) := by
   rw [weightPolyDeriv, MvPolynomial.mkDerivation_X]
 
-theorem jetDerivation_algebraMap (a : JetPoly C Unit) :
+private theorem jetDerivation_algebraMap (a : JetPoly C Unit) :
     JetField.jetDerivation (algebraMap (JetPoly C Unit) (JetField C Unit) a)
       = algebraMap (JetPoly C Unit) (JetField C Unit) (weightPolyDeriv a) := by
   rw [JetField.jetDerivation, fractionRingDerivation_algebraMap]

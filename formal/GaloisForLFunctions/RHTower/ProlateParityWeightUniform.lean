@@ -187,7 +187,7 @@ theorem negativeProlateHermiteTheta_ge (k : ℕ) :
 /-! ## Divergence and the limit -/
 
 theorem negativeProlateHermiteWeightSum_ge_harmonic (k : ℕ) :
-    harmonicSum (k + 1) / 4 ≤ negativeProlateHermiteWeightSum k := by
+    radialHarmonicSum (k + 1) / 4 ≤ negativeProlateHermiteWeightSum k := by
   have hstep : ∀ i ∈ Finset.range (k + 1),
       1 / ((i : ℝ) + 1) / 4 ≤ negativeProlateHermiteWeight i := by
     intro i _
@@ -198,9 +198,9 @@ theorem negativeProlateHermiteWeightSum_ge_harmonic (k : ℕ) :
     have hi : (0 : ℝ) ≤ (i : ℝ) := Nat.cast_nonneg i
     rw [div_div, div_le_div_iff₀ (by positivity) (by positivity)]
     nlinarith [hi]
-  have hsum : harmonicSum (k + 1) / 4
+  have hsum : radialHarmonicSum (k + 1) / 4
       = ∑ i ∈ Finset.range (k + 1), 1 / ((i : ℝ) + 1) / 4 := by
-    unfold harmonicSum
+    unfold radialHarmonicSum
     rw [div_eq_mul_inv, mul_comm, Finset.mul_sum]
     exact Finset.sum_congr rfl fun i _ => by ring
   rw [hsum]
@@ -208,10 +208,10 @@ theorem negativeProlateHermiteWeightSum_ge_harmonic (k : ℕ) :
 
 theorem tendsto_negativeProlateHermiteWeightSum_atTop :
     Tendsto negativeProlateHermiteWeightSum atTop atTop := by
-  have hharm : Tendsto (fun k : ℕ => harmonicSum (k + 1) / 4) atTop atTop := by
-    have hbase : Tendsto (fun k : ℕ => harmonicSum k / 4) atTop atTop := by
+  have hharm : Tendsto (fun k : ℕ => radialHarmonicSum (k + 1) / 4) atTop atTop := by
+    have hbase : Tendsto (fun k : ℕ => radialHarmonicSum k / 4) atTop atTop := by
       have := Real.tendsto_sum_range_one_div_nat_succ_atTop
-      have heq : ∀ k : ℕ, harmonicSum k = ∑ i ∈ Finset.range k, 1 / ((i : ℝ) + 1) := fun _ => rfl
+      have heq : ∀ k : ℕ, radialHarmonicSum k = ∑ i ∈ Finset.range k, 1 / ((i : ℝ) + 1) := fun _ => rfl
       exact (this.congr fun k => (heq k).symm).atTop_div_const (by norm_num)
     exact hbase.comp (tendsto_add_atTop_nat 1)
   exact tendsto_atTop_mono negativeProlateHermiteWeightSum_ge_harmonic hharm

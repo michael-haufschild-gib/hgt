@@ -109,9 +109,9 @@ theorem circDist_le_two_arcsin {φ ψ c : ℝ} (hc0 : 0 ≤ c)
 /-! ## Normalizing a diagonal entry -/
 
 /-- The circle point carrying the phase of a nonzero complex number. -/
-noncomputable def phaseNormalize (a : ℂ) : ℂ := a / (‖a‖ : ℂ)
+private noncomputable def phaseNormalize (a : ℂ) : ℂ := a / (‖a‖ : ℂ)
 
-theorem norm_phaseNormalize {a : ℂ} (ha : a ≠ 0) : ‖phaseNormalize a‖ = 1 := by
+private theorem norm_phaseNormalize {a : ℂ} (ha : a ≠ 0) : ‖phaseNormalize a‖ = 1 := by
   have hne : (‖a‖ : ℝ) ≠ 0 := norm_ne_zero_iff.mpr ha
   rw [phaseNormalize, norm_div, Complex.norm_real, Real.norm_eq_abs,
     abs_of_nonneg (norm_nonneg a), div_self hne]
@@ -138,7 +138,7 @@ theorem one_sub_le_norm_of_close {a u : ℂ} (hu : ‖u‖ = 1) {ε : ℝ} (h : 
   linarith
 
 /-- **`(21)`: the normalized entry stays within `2ε` of the orbit phase.** -/
-theorem norm_phaseNormalize_sub_le {a u : ℂ} (hu : ‖u‖ = 1) (ha : a ≠ 0) {ε : ℝ}
+private theorem norm_phaseNormalize_sub_le {a u : ℂ} (hu : ‖u‖ = 1) (ha : a ≠ 0) {ε : ℝ}
     (h : ‖a - u‖ ≤ ε) : ‖phaseNormalize a - u‖ ≤ 2 * ε := by
   have hgap : |1 - ‖a‖| ≤ ε := by
     have h1 : |‖u‖ - ‖a‖| ≤ ‖u - a‖ := abs_norm_sub_norm_le u a

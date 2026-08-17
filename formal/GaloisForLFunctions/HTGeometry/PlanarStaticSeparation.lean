@@ -17,7 +17,7 @@ noncomputable section
 namespace GaloisForLFunctions.HTGeometry
 
 /-- **Equation (13).**  Removing a subspace of the centralizer leaves exactly the codimension. -/
-theorem finrank_inf_orthogonal_eq_sub {E : Type*} [NormedAddCommGroup E]
+private theorem finrank_inf_orthogonal_eq_sub {E : Type*} [NormedAddCommGroup E]
     [InnerProductSpace ℂ E] {N C : Submodule ℂ E} [FiniteDimensional ℂ C] (h : N ≤ C) :
     Module.finrank ℂ (Nᗮ ⊓ C : Submodule ℂ E) =
       Module.finrank ℂ C - Module.finrank ℂ N := by

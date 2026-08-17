@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.EuclideanSphereCoveringBound
-import GaloisForLFunctions.HTGeometry.CoveringDimension
+import GaloisForLFunctions.HTGeometry.CoveringDimensionShrinking
 
 /-!
 # Compact subsets of Euclidean space have finite covering dimension

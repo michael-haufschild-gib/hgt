@@ -31,7 +31,7 @@ noncomputable def secNum (f : CascadeField) : MvPolynomial ℕ ℂ :=
 noncomputable def secDen (f : CascadeField) : MvPolynomial ℕ ℂ :=
   ((IsLocalization.sec (nonZeroDivisors (MvPolynomial ℕ ℂ)) f).2 : MvPolynomial ℕ ℂ)
 
-theorem algebraMap_ne_zero_of_ne_zero {D : MvPolynomial ℕ ℂ} (hD : D ≠ 0) :
+theorem topDegreeAlgebraMap_ne_zero_of_ne_zero {D : MvPolynomial ℕ ℂ} (hD : D ≠ 0) :
     algebraMap (MvPolynomial ℕ ℂ) CascadeField D ≠ 0 := by
   intro h
   exact hD (IsFractionRing.injective (MvPolynomial ℕ ℂ) CascadeField (by simpa using h))
@@ -50,7 +50,7 @@ theorem secNum_ne_zero {f : CascadeField} (hf : f ≠ 0) : secNum f ≠ 0 := by
   intro h
   have := secSpec f
   rw [h, map_zero] at this
-  exact hf ((mul_eq_zero.mp this).resolve_left (algebraMap_ne_zero_of_ne_zero (secDen_ne_zero f)))
+  exact hf ((mul_eq_zero.mp this).resolve_left (topDegreeAlgebraMap_ne_zero_of_ne_zero (secDen_ne_zero f)))
 
 /-- The order at infinity in the coordinate `m`, read off the chosen representative. -/
 noncomputable def topOrdRep (m : ℕ) (f : CascadeField) : ℤ :=
@@ -71,7 +71,7 @@ theorem topOrdRep_eq {m : ℕ} {f : CascadeField} (hf : f ≠ 0) {N D : MvPolyno
   have hN : N ≠ 0 := by
     rintro rfl
     rw [map_zero] at h
-    exact hf ((mul_eq_zero.mp h).resolve_left (algebraMap_ne_zero_of_ne_zero hD))
+    exact hf ((mul_eq_zero.mp h).resolve_left (topDegreeAlgebraMap_ne_zero_of_ne_zero hD))
   have hdeg : (N * secDen f).degreeOf m = (D * secNum f).degreeOf m := by rw [hcross]
   rw [MvPolynomial.degreeOf_mul_eq hN hD₀, MvPolynomial.degreeOf_mul_eq hD hN₀] at hdeg
   rw [topOrdRep]
@@ -182,8 +182,8 @@ theorem topOrd_algebraMap (m : ℕ) {N : MvPolynomial ℕ ℂ} (hN : N ≠ 0) :
   have hone : (1 : MvPolynomial ℕ ℂ).degreeOf m = 0 := by
     rw [show (1 : MvPolynomial ℕ ℂ) = MvPolynomial.C 1 from MvPolynomial.C_1.symm,
       MvPolynomial.degreeOf_C]
-  rw [topOrd_of_ne_zero (algebraMap_ne_zero_of_ne_zero hN),
-    topOrdRep_eq (algebraMap_ne_zero_of_ne_zero hN) (one_ne_zero (α := MvPolynomial ℕ ℂ)) h1,
+  rw [topOrd_of_ne_zero (topDegreeAlgebraMap_ne_zero_of_ne_zero hN),
+    topOrdRep_eq (topDegreeAlgebraMap_ne_zero_of_ne_zero hN) (one_ne_zero (α := MvPolynomial ℕ ℂ)) h1,
     hone]
   norm_num
 
@@ -250,6 +250,6 @@ end GaloisForLFunctions.HTGeometry
 namespace GaloisForLFunctions.HTGeometry
 
 theorem fx_ne_zero (m : ℕ) : fx m ≠ 0 :=
-  algebraMap_ne_zero_of_ne_zero (MvPolynomial.X_ne_zero m)
+  topDegreeAlgebraMap_ne_zero_of_ne_zero (MvPolynomial.X_ne_zero m)
 
 end GaloisForLFunctions.HTGeometry

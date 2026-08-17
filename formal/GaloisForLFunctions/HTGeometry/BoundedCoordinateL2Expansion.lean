@@ -36,7 +36,7 @@ theorem l2Window_nonneg {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) : 0 
   Real.rpow_nonneg (by positivity) _
 
 /-- The real-to-complex inclusion of `L²`. -/
-def ofRealLp {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) : Lp ℝ 2 μ →L[ℝ] Lp ℂ 2 μ :=
+private def ofRealLp {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) : Lp ℝ 2 μ →L[ℝ] Lp ℂ 2 μ :=
   Complex.ofRealCLM.compLpL 2 μ
 
 /-- A bounded real coordinate on a measure space: the abstract aperture. -/

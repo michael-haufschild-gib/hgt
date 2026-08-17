@@ -57,7 +57,7 @@ theorem card_filter_mem_Ioc_le (s : Finset ℕ) {α β : ℝ} (hα : 0 ≤ α) (
 /-- **The window sum moves slowly.**  Two logarithmic windows of the same length differ only in the
 two end intervals, so the sums differ by at most the coefficient bound times the number of integers
 those end intervals contain. -/
-theorem norm_logWindowSum_sub_le (a : ℕ → ℂ) (s : Finset ℕ) (hs : ∀ n ∈ s, 1 ≤ n) {M : ℝ}
+private theorem norm_logWindowSum_sub_le (a : ℕ → ℂ) (s : Finset ℕ) (hs : ∀ n ∈ s, 1 ≤ n) {M : ℝ}
     (hM : ∀ n, ‖a n‖ ≤ M) {δ u u' : ℝ} (h : u ≤ u') :
     ‖logWindowSum a s δ u - logWindowSum a s δ u'‖
       ≤ M * ((Real.exp u' - Real.exp u + 1)

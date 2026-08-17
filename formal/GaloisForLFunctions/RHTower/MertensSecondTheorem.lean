@@ -1,3 +1,4 @@
+import GaloisForLFunctions.RHTower.MertensSecondPrimeRecipSum
 import GaloisForLFunctions.RHTower.ChebyshevPsiErrorInputs
 import GaloisForLFunctions.RHTower.MertensAbelAssembly
 import GaloisForLFunctions.RHTower.MertensTailConstant

@@ -581,7 +581,7 @@ theorem lSeries_degreeOneEulerPrimeFluxCoeff_eq {a : Nat.Primes → ℂ} (ha : �
 
 /-- **Equal full jets determine the germ.**  Two functions analytic at a point whose iterated
 derivatives agree in every order agree on a neighbourhood of that point. -/
-theorem eventuallyEq_of_iteratedDeriv_eq {f g : ℂ → ℂ} {x : ℂ}
+private theorem eventuallyEq_of_iteratedDeriv_eq {f g : ℂ → ℂ} {x : ℂ}
     (hf : AnalyticAt ℂ f x) (hg : AnalyticAt ℂ g x)
     (h : ∀ n : ℕ, iteratedDeriv n f x = iteratedDeriv n g x) :
     f =ᶠ[nhds x] g := by

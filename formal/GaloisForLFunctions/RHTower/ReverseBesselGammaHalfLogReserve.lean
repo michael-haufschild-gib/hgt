@@ -227,13 +227,13 @@ theorem sum_Ico_reverseBesselGammaCostTerm_le {n r : ℕ} (hr : r < n) :
 /-- Square-root cutoff: the full factorial-weighted reverse-Bessel Gamma cost consists of a
 harmonic head through `floor(sqrt n)` and a uniformly bounded tail. -/
 theorem reverseBesselGammaCost_le_sqrt_harmonic_add_two (n : ℕ) :
-    reverseBesselGammaCost n ≤ harmonicSum (Nat.sqrt n) + 2 := by
+    reverseBesselGammaCost n ≤ radialHarmonicSum (Nat.sqrt n) + 2 := by
   let r := Nat.sqrt n
-  change reverseBesselGammaCost n ≤ harmonicSum r + 2
+  change reverseBesselGammaCost n ≤ radialHarmonicSum r + 2
   have hrn : r ≤ n := Nat.sqrt_le_self n
   have hhead :
-      ∑ j ∈ Finset.range r, reverseBesselGammaCostTerm n j ≤ harmonicSum r := by
-    rw [harmonicSum]
+      ∑ j ∈ Finset.range r, reverseBesselGammaCostTerm n j ≤ radialHarmonicSum r := by
+    rw [radialHarmonicSum]
     apply Finset.sum_le_sum
     intro j hj
     exact reverseBesselGammaCostTerm_le_harmonic n j
@@ -258,8 +258,8 @@ theorem reverseBesselGammaCost_le_sqrt_harmonic_add_two (n : ℕ) :
       reverseBesselGammaCost n =
           ∑ j ∈ Finset.range n, reverseBesselGammaCostTerm n j := rfl
       _ = ∑ j ∈ Finset.range r, reverseBesselGammaCostTerm n j := by rw [hre]
-      _ ≤ harmonicSum r := hhead
-      _ ≤ harmonicSum r + 2 := by linarith
+      _ ≤ radialHarmonicSum r := hhead
+      _ ≤ radialHarmonicSum r + 2 := by linarith
 
 /-- **Half-log reserve.** At every positive degree, the factorial-weighted normalized Gamma-jet
 cost uses at most half the logarithmic degree scale, up to the absolute constant `3`. -/
@@ -272,8 +272,8 @@ theorem reverseBesselGammaCost_le_halfLogReserve (n : ℕ) :
   have hr : 1 ≤ r := by
     exact Nat.sqrt_pos.2 (by omega : 0 < N)
   have hcost := reverseBesselGammaCost_le_sqrt_harmonic_add_two N
-  change reverseBesselGammaCost N ≤ harmonicSum r + 2 at hcost
-  have hharm := harmonicSum_le_one_add_log hr
+  change reverseBesselGammaCost N ≤ radialHarmonicSum r + 2 at hcost
+  have hharm := radialHarmonicSum_le_one_add_log hr
   have hsquareNat : r ^ 2 ≤ N := by
     simpa [pow_two, r, N] using Nat.sqrt_le N
   have hsquareReal : ((r : ℝ) ^ 2) ≤ (N : ℝ) := by exact_mod_cast hsquareNat

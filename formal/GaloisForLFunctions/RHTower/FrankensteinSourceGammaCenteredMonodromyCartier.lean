@@ -34,7 +34,7 @@ noncomputable section
 /-! ## Literal complex theta source and its spin period -/
 
 /-- Entire complexification of the polynomial-Gaussian theta-cusp seed. -/
-def thetaCuspComplexSeed (z : ℂ) : ℂ :=
+private def thetaCuspComplexSeed (z : ℂ) : ℂ :=
   2 * (Real.pi : ℂ) * (2 * (Real.pi : ℂ) * z ^ 4 - 3 * z ^ 2) *
     Complex.exp (-(Real.pi : ℂ) * z ^ 2)
 
@@ -84,7 +84,7 @@ theorem thetaCuspComplexSourceTerm_add_four_pi_I
     thetaCuspComplexSourceTerm_add_two_pi_I,
     thetaCuspComplexSourceTerm_add_two_pi_I, neg_neg]
 
-theorem thetaCuspComplexSeed_ofReal (x : ℝ) :
+private theorem thetaCuspComplexSeed_ofReal (x : ℝ) :
     thetaCuspComplexSeed (x : ℂ) = (thetaCuspSeed x : ℂ) := by
   rw [thetaCuspComplexSeed, thetaCuspSeed]
   have hexponent :

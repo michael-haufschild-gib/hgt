@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.CoveringDimension
+import GaloisForLFunctions.HTGeometry.CoveringDimensionShrinking
 
 /-!
 # Covering dimension transports along a compact embedding
