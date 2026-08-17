@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.ConstrainedProlateClockExactEigenpairLaw
 
 The CCM raw-defect theorem was stated for the Gaussian Fuchs clock.  Its proof consumes only
 lower-scale collapse, positivity of the reference scale, and the universal depth-root ratio.
-Every `ClockEnvelope` supplies those inputs.  Thus every earlier raw contrast becomes
+Every `LadderEnvelope` supplies those inputs.  Thus every earlier raw contrast becomes
 asymptotically invisible for the same eventual nonzero exact eigenpair, independently of the
 clock profile.
 -/
@@ -18,10 +18,10 @@ noncomputable section
 namespace RHTower
 
 /-- Every fixed lower leakage is negligible against the depth reference scale in an arbitrary
-clock envelope. -/
-theorem ClockEnvelope.lower_ratio_tendsto_zero
-    {D : ℝ → ℕ → ℝ} {e : ℕ → ℕ} {E : ℝ → ℝ}
-    (h : ClockEnvelope D e E) {j k : ℕ} (hjk : j ≤ k) :
+ladder envelope. -/
+theorem LadderEnvelope.lower_ratio_tendsto_zero
+    {D : ℝ → ℕ → ℝ}
+    (h : LadderEnvelope D) {j k : ℕ} (hjk : j ≤ k) :
     Tendsto (fun lam => D lam j / D lam (k + 1)) atTop (nhds 0) := by
   refine squeeze_zero' (Eventually.of_forall fun lam =>
     div_nonneg (h.nonneg lam j) (h.nonneg lam (k + 1))) ?_ (h.ratio_tendsto_zero k)
@@ -31,9 +31,9 @@ theorem ClockEnvelope.lower_ratio_tendsto_zero
 
 /-- The depth-`k` raw defect collapses for every clock-enveloped CCM family, not only for the
 Gaussian Fuchs clock. -/
-theorem ClockEnvelope.ccm_tendsto_depth_raw_defect_div_zero
-    {D : ℝ → ℕ → ℝ} {e : ℕ → ℕ} {E : ℝ → ℝ}
-    (h : ClockEnvelope D e E) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
+theorem LadderEnvelope.ccm_tendsto_depth_raw_defect_div_zero
+    {D : ℝ → ℕ → ℝ}
+    (h : LadderEnvelope D) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
     (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
     (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
     (hl : ∀ j, j ≤ k + 1 → Tendsto (fun lam => ℓ lam j) atTop
@@ -74,9 +74,9 @@ theorem ClockEnvelope.ccm_tendsto_depth_raw_defect_div_zero
 /-- **Clock-universal exact-eigenpair/raw-defect law.**  The same eventual genuine constrained
 eigenpair annihilates its full constraint exactly and makes every preceding raw contrast
 asymptotically invisible. -/
-theorem ClockEnvelope.ccm_depth_exactEigenpair_and_allRawDefects
-    {D : ℝ → ℕ → ℝ} {e : ℕ → ℕ} {E : ℝ → ℝ}
-    (h : ClockEnvelope D e E) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
+theorem LadderEnvelope.ccm_depth_exactEigenpair_and_allRawDefects
+    {D : ℝ → ℕ → ℝ}
+    (h : LadderEnvelope D) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
     (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
     (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
     (hl : ∀ j, j ≤ k + 1 → Tendsto (fun lam => ℓ lam j) atTop

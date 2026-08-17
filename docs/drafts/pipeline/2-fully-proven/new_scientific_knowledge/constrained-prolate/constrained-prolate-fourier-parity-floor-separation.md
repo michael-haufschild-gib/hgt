@@ -2277,3 +2277,155 @@ means checking each of those for `signedModeRadialData lam (2j)` at all large `l
 satisfied for every `j ≥ 1` but **not** for the ground index, where `c·s → 1`: the ground leakage
 needs the separate ground estimate.  That instantiation is the remaining item of `(β)`, and with it
 the ladder card's `(8)` becomes unconditional.
+
+## `(β)` INSTANTIATED — the two-sided leakage estimate holds at the canonical indexed family
+
+`RHTower/ProlateIndexedLeakageTwoSided.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`).
+
+```
+prolateLeakageCollar := 1 − 1/2400        600·(1 − α) = 1/4 exactly
+integral_Ioi_sq_signedModeRadialData
+    the HALF-line exterior mass: ∫_{Ioi 1} R² = (∫_{−1}^{1}R²)·(leakage/2)/σ²
+prolateLeakageLower / prolateLeakageUpper  the two explicit bounds at the fixed collar and cut b = 1/2
+eventually_signedLeakage_two_sided (n) (hn : 1 ≤ n)
+    ** ∀ᶠ a in atTop,
+         prolateLeakageLower c s ≤ (1 − σ_n(a)²)/2 ≤ prolateLeakageUpper c s **
+```
+
+This is the item the card recorded as "what the card still owes … the instantiation of the two-sided
+leakage estimates at consecutive modes".  Every hypothesis of `prolate_leakage_two_sided` is
+discharged at the canonical radial datum of the `n`-th signed even mode:
+
+```text
+smoothness, evenness, R 1 = 1                      SignedModeRadialData.IsExact
+prolateSLAction R = −(s c²)R                       IsExact + s = −chi/c²
+positivity on [2√s, 1]                             prolate_pos_on_right_of_radial_turning
+                                                    (it gives [√s,1], and 2√s ≥ √s)
+the flux form of the ODE                           IsExact's ODE, one linear combination
+IntegrableOn R² (Ioi 1)                            integrable_sq_signedModeRadialData
+the mass identity                                  integral_outside_sq_..._leakage_ratio, halved
+1/2 ≤ σ² ≤ 1, leakage ≥ 0                          evenProlateSignedValue_sq_tendsto_one,
+                                                    one_sub_evenProlateSignedValue_sq_nonneg
+```
+
+and every numerical side condition is eventual because `c = 2πa² → ∞` while `c·s → 4n+1`:
+
+```text
+8 ≤ c,  1728K/floor ≤ c,  64(4n+2) ≤ c             c → ∞
+0 < s,  s ≤ 1/64 ≤ 1/8,  2√s ≤ 1/4 ≤ α            c·s bounded, c → ∞
+4 ≤ c·s                                            c·s → 4n+1 > 4    ← needs n ≥ 1
+1/2 < α < 1, 600(1−α) ≤ 1/4                        the fixed collar
+c²(1 − 2t²) ≤ −s c² on [α,1]                       2α² − 1 ≥ 1/64 ≥ s
+1 ≤ c·bandEndpointPhase s α                        sqrt_mul_arccos_le_bandEndpointPhase gives the
+                                                    aperture-free positive lower bound
+                                                    κ = √(α²−1/64)·arccos α, and c ≥ 1/κ
+2√s < b = 1/2 < 1                                  2√s ≤ 1/4
+```
+
+The one index the estimate cannot reach is the ground index, exactly as the previous section
+recorded: there `c·s → 1 < 4`.
+
+### What remains for `(8)`
+
+`tendsto_consecutive_leakage_ratio` consumes the two bounds in the shape
+`0 ≤ f(c) ≤ A c^a E(c)` and `B c^b E(c) ≤ g(c)` with `a < b` and `E(c) = e^{−2c}`.  So the remaining
+step is the *asymptotic reading* of `prolateLeakageUpper` at index `k` and `prolateLeakageLower` at
+index `k+1`: expanding `c·bandEndpointPhase s (2√s)` and `2c(1 + (s/4)log s)` as `c → ∞` with
+`c·s → 4n+1` turns both into `c^{±(4n+1)/2}·e^{−2c}` up to bounded factors, and the exponents then
+separate by `4`.  That expansion, plus the ground-index upper bound, is what `(8)` still owes.
+
+## Lean progress — the sharp turning-scale asymptotic of the band phase
+
+`RHTower/BandEndpointPhaseTurning.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`).
+
+The remaining analytic step of `(8)` is reading the exponentials of the two leakage bounds.  The
+lower bound needs nothing: its exponent is *exactly* `2c(1 + (s/4)log s) = 2c − (cs/2)log(1/s)`.  The
+upper bound's exponent is `−2c·Ξ_s(2√s)`, so what is needed is the size of `1 − Ξ_s(2√s)`.  That is
+now a theorem:
+
+```
+invSinAntideriv θ = ½(log(1+cos θ) − log(1−cos θ))     an antiderivative of −1/sin on (0,π)
+integral_inv_sin     ∫_{θ₀}^{π/2} dθ/sin θ = invSinAntideriv θ₀
+integral_inv_sin_le  ∫_{θ₀}^{π/2} dθ/sin θ ≤ log 2 − log(sin θ₀)
+sin_sub_sqrt_le      u − √(u²−s) ≤ s/(2√(1−K⁻²)·u)          whenever u ≥ K√s
+one_sub_bandEndpointPhase_turning_le
+    ** 1 − Ξ_s(2√s) ≤ 4s + K²s + (s/(2√(1−K⁻²)))·(log 2 − log(K√s)) **     (K ≥ 2, K√s ≤ 1/2)
+```
+
+The elementary integral `∫dθ/sin θ` is not in mathlib; its antiderivative is verified directly, and
+the endpoint value `log 2 − log sin θ₀` comes from `(1+cos)/(1−cos) = (1+cos)²/sin² ≤ 4/sin²`.
+
+The decomposition is the card's own: writing `1 = ∫_0^{π/2} sin θ dθ`,
+
+```text
+1 − Ξ_s(2√s) = ∫_0^{arcsin 2√s} sin θ dθ  +  ∫_{arcsin 2√s}^{π/2}(sin θ − √(sin²θ − s)) dθ ,
+```
+
+the head is `1 − √(1−4s) ≤ 4s`; the tail splits at the height `K√s`, below which the defect is at
+most `sin θ` (contributing `≤ K²s`) and above which `sin_sub_sqrt_le` applies.
+
+### Why the free parameter `K` matters
+
+With `s ≈ μ/c` and `μ = c·s → 4n+1`, the estimate reads
+
+```text
+2c(1 − Ξ_s(2√s))  ≤  (1/(2√(1−K⁻²)))·(cs)·log(1/s) + O(1)
+                   =  (1 + O(K⁻²))·(cs/2)·log c + O(1) ,
+```
+
+so the upper bound's polynomial exponent is `(1+ε_K)·μ/2 + O(1)` while the lower bound's is exactly
+`μ/2 − 1`.  Consecutive indices give `μ_{k+1} − μ_k = 4`, and the two `O(1)` losses cost `3/2`
+together, so the ratio's exponent is `−1/2 + ε_K·μ_k`: choosing `K` large enough for the fixed index
+`k` makes it negative, which is precisely what `tendsto_consecutive_leakage_ratio` consumes.  A crude
+bound with the coefficient `1/√3` or Jordan's inequality would *not* suffice — it fails from `k = 2`
+on — which is why the split at `K√s` is the right shape.
+
+## Lean progress — both leakage bounds reduced to `power × action`
+
+`RHTower/ProlateLeakageRatioBounds.lean` (wired, built, axioms
+`[propext, Classical.choice, Quot.sound]`).
+
+The explicit two-sided estimate is heavy; for the ladder only its shape matters, and both sides are
+now reduced to it:
+
+```
+prolateLeakageUpper_le   (c ≥ 8, 0 < s ≤ 1/64)
+    ** prolateLeakageUpper c s ≤ leakageUpperConst · c · exp(−2c·Ξ_s(2√s)) **
+barrierFactor_le
+    the barrier factor of the lower bound is at most 4 + 5/(1−α)
+prolateLeakageLower_ge   (c ≥ 8, 0 < s ≤ 1/64)
+    ** leakageLowerConst · (s/c) · exp(−(2c(1 + (s/4)·log s) + 10c s)) ≤ prolateLeakageLower c s **
+```
+
+Everything dropped is bounded by an explicit constant:
+
+```text
+the collar phase           bandEndpointPhase s α ≤ 2√(1−α)          (the sharp endpoint bound)
+the transport loss         2((c·b+12)(b−2√s)/(1−b²)) ≤ 5            because b − 2√s = 1/c,
+                                                                    so c·b·(1/c) = 2√s + 1/c
+the collar logarithms      exp(−12(log(1−α) − log(1−2√s))) ≤ (1−α)^{−12}
+the barrier factor         (1−α²)(barrier + 6/(1−α))²/(c²(α²−s)) ≤ 4 + 5/(1−α)
+                                                                    since barrier = c·√(1−s)·α/√(1−α²)
+the mass logarithms        exp(log((α²−s)/(3s)) + log((1−4s)/(1−α²))) ≤ 1/(3s(1−α²))
+```
+
+Choosing the cut one *inverse bandwidth* above the turning scale is what makes the transport loss
+bounded while costing only one power of `c`: with `b − 2√s = c^{−1/2}` the loss would be `e^{Θ(√c)}`,
+which no power of `c` can absorb, and with `b` fixed it would be `e^{Θ(c)}`.  The instantiation of
+the previous section was updated accordingly (`prolateLeakageCut c s = 2√s + 1/c`).
+
+### What is left of `(8)`
+
+Only the reading of the two actions as powers of the bandwidth, which is now pure algebra:
+
+```text
+lower:  2c(1 + (s/4)·log s) = 2c − (c s/2)·log(1/s)                          exact identity
+upper:  2c·Ξ_s(2√s) ≥ 2c − (1 + O(K⁻²))·(c s/2)·log(1/s) − O(1)              previous section
+```
+
+so with `c·s → 4n+1` the upper bound is `O(c^{(1+ε)(4n+1)/2 + 1})·e^{−2c}` and the lower bound is
+`Ω(c^{(4n+1)/2 − 1})·e^{−2c}`.  For consecutive *Fourier-even* indices the corpus index jumps by two,
+so `μ` jumps by `8` and the exponents separate with room to spare; the ground index still needs its
+own upper bound, since `4 ≤ c·s` fails there.

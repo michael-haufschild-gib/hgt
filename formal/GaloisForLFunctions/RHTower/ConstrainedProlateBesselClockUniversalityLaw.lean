@@ -16,13 +16,13 @@ namespace RHTower
 
 noncomputable section
 
-/-- **Constrained-Prolate Bessel/clock universality law.**  For every clock envelope, the true
+/-- **Constrained-Prolate Bessel/clock universality law.**  For every ladder envelope, the true
 signed-Prolate constraint magnitudes need only satisfy their finitely many depth-coordinate
 limits. Bessel geometry then supplies all infinite-dimensional hypotheses of the exact
 eigenpair/raw-defect theorem. -/
-theorem ClockEnvelope.constrainedProlateBessel_exactEigenpair_and_allRawDefects
-    {D : ℝ → ℕ → ℝ} {e : ℕ → ℕ} {E : ℝ → ℝ}
-    (h : ClockEnvelope D e E) (k : ℕ)
+theorem LadderEnvelope.constrainedProlateBessel_exactEigenpair_and_allRawDefects
+    {D : ℝ → ℕ → ℝ}
+    (h : LadderEnvelope D) (k : ℕ)
     (hl : ∀ j, j ≤ k + 1 →
       Tendsto (fun lam => ‖evenProlateConstraintCoord lam j‖) atTop
         (nhds (constrainedProlateHermiteCoordinate j))) :

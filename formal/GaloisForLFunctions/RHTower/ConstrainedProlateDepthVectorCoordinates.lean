@@ -49,9 +49,9 @@ theorem constrainedProlateHermiteContrast_top_div_zero (k : ℕ) :
   ring
 
 /-- Every lower head coordinate has the Hermite-contrast ratio. -/
-theorem ClockEnvelope.ccm_depth_secularVector_lower_coordinate_ratio_tendsto
-    {D : ℝ → ℕ → ℝ} {e : ℕ → ℕ} {E : ℝ → ℝ}
-    (h : ClockEnvelope D e E) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
+theorem LadderEnvelope.ccm_depth_secularVector_lower_coordinate_ratio_tendsto
+    {D : ℝ → ℕ → ℝ}
+    (h : LadderEnvelope D) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
     (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
     (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
     (hl : ∀ j, j ≤ k + 1 → Tendsto (fun lam => ℓ lam j) atTop
@@ -106,9 +106,9 @@ theorem ClockEnvelope.ccm_depth_secularVector_lower_coordinate_ratio_tendsto
   simpa only [htarget] using hratio
 
 /-- The shoulder coordinate `k + 1` has the top Hermite-contrast ratio. -/
-theorem ClockEnvelope.ccm_depth_secularVector_top_coordinate_ratio_tendsto
-    {D : ℝ → ℕ → ℝ} {e : ℕ → ℕ} {E : ℝ → ℝ}
-    (h : ClockEnvelope D e E) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
+theorem LadderEnvelope.ccm_depth_secularVector_top_coordinate_ratio_tendsto
+    {D : ℝ → ℕ → ℝ}
+    (h : LadderEnvelope D) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
     (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
     (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
     (hl : ∀ j, j ≤ k + 1 → Tendsto (fun lam => ℓ lam j) atTop
@@ -171,9 +171,9 @@ theorem ClockEnvelope.ccm_depth_secularVector_top_coordinate_ratio_tendsto
 
 /-- All coordinates in the finite depth head converge to the corresponding Hermite-contrast
 ratio. -/
-theorem ClockEnvelope.ccm_depth_secularVector_coordinate_ratio_tendsto
-    {D : ℝ → ℕ → ℝ} {e : ℕ → ℕ} {E : ℝ → ℝ}
-    (h : ClockEnvelope D e E) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
+theorem LadderEnvelope.ccm_depth_secularVector_coordinate_ratio_tendsto
+    {D : ℝ → ℕ → ℝ}
+    (h : LadderEnvelope D) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
     (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
     (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
     (hl : ∀ j, j ≤ k + 1 → Tendsto (fun lam => ℓ lam j) atTop

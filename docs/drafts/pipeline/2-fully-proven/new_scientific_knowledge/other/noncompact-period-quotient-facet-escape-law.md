@@ -741,3 +741,61 @@ happens away from it, and the two are joined by the openness of coprimality.
 Remaining on the Siegel gate: the counting assembly — feeding these local reduced presentations and
 their transition constants into `SiegelLocalCharts.exists_ne_zero_poly_eval_eq_zero_local` and
 `SiegelGainVanishing.eqOn_zero_of_family_siegel_gain` for a compact complex torus.
+
+## Siegel programme — the counting assembly, and the theorem
+
+The Siegel bound is now a theorem here, unconditionally and axiom-clean.
+
+```text
+GaloisForLFunctions.HTGeometry.exists_ne_zero_poly_of_periodic_meromorphic :
+  P <= C^(n+1) with compact quotient,  A_k, B_k entire (k in Fin (n+2)), B_k not identically 0,
+  A_k(z+p) B_k(z) = A_k(z) B_k(z+p) for every p in P
+    ==>  exists Q != 0 in C[X_0,...,X_(n+1)] with
+         Q(A_0/B_0, ..., A_(n+1)/B_(n+1)) = 0 at every point where no denominator vanishes.
+```
+
+That is `trdeg_C M(X) <= dim_C X` for a compact complex torus `X = C^(n+1)/P`, in the corpus's
+meromorphic field (fractions of entire functions).  The cleared form,
+`exists_ne_zero_siegelHomCombination_of_periodic_meromorphic`, produces a nonzero coefficient vector
+whose denominator-cleared combination vanishes at *every* point of `C^(n+1)`; that is the form a
+differential-algebra argument consumes, since it is an identity of entire functions.
+
+### What the assembly needed on top of the openness of coprimality
+
+* `HTGeometry/GermReducedPresentation.lean` — `exists_reduced_presentation_at` (every germ fraction
+  reduces, at any point), `exists_unit_factor_of_reduced_at` (two reduced presentations of the same
+  fraction differ by *one* unit factor: associated denominators give it, and cancelling the nonzero
+  denominator in the cross identity carries it to the numerators), and
+  `siegelHomCombination_of_unit_factors` — a denominator-cleared combination transforms by the
+  `m`-th power of the product of those unit factors.  This is division-free: no hypothesis on where
+  the denominators vanish, which is what makes the transition an identity rather than an estimate.
+* `HTGeometry/UniformLocalBound.lean` — `exists_uniform_bound_of_local`: a monotone property that
+  holds with some bound near every point of a compact set holds with one bound on the whole set.
+* `HTGeometry/SiegelUniformTransition.lean` — `SiegelTransitionAt`, its existence with a local bound
+  near every point of a chart (`eventually_siegelTransitionAt`), its uniformisation over the closed
+  polydisc of a chart and then over the finitely many charts (`exists_uniform_siegelTransition`),
+  and `htrans_of_uniform_siegelTransition`, the transition structure with comparison constant
+  `C^((n+2)m)` — *independent of the degree* except through that power, which is the point.
+* `HTGeometry/SiegelCountParameters.lean` — `exists_siegel_count_params`: the counting inequality
+  `card ι · N^n < (m+1)^(n+1)` and the gain inequality `D^m · (N+1)^n · q^N · S < 1` hold together
+  with `N = κ·m`, where `κ` is chosen so that `D·q^κ <= 1/2`; the counting side then needs only
+  `m >= card ι · κ^n`, because `(m+1)^(n+1) >= (m+1)·m^n`.
+* `HTGeometry/SiegelChartConstruction.lean` — `eqOn_zero_of_mul_eq_zero` (cancel a nonzero
+  holomorphic factor on a connected domain), `exists_reduced_chart`, `ChartPackage` and
+  `exists_chartPackage_at`, `exists_uniform_chartPackage` (one radius for every centre of a compact
+  set, by a Lebesgue-number argument), `chartPackage_translate` (translate a chart by a period) and
+  `exists_uniform_chartPackage_everywhere`, and `chartPackage_cross` — two charts of the same family
+  present the same fraction across a period, proved by clearing `B_k(z)·B_k(z-p)` twice.
+* `HTGeometry/SiegelTorusTranscendence.lean` — the assembly, ending with the globalisation: the
+  cleared combination of the *global* presentations is entire and vanishes on a nonempty open subset
+  of one small polydisc, hence identically.
+
+### Gate
+
+- [x] Siegel bound for compact complex tori formalized
+
+What remains on this card is the instantiation of `(5)`: the corpus's several-variable meromorphic
+field `meroFieldGen (Set.univ)` and its period group `meroPeriodSubgroupGen` must be fed to the
+theorem above, together with a constant directional derivation, to turn "the quotient is compact"
+into an algebraic differential equation for the carrier.  The analytic content is closed; the
+remaining step is the differential-field interface.

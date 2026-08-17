@@ -8662,3 +8662,163 @@ with the quadruple produced by a fixed polynomial recursion, valid on the whole 
    `O(u^{-1/2})` on `|s| ≤ √u`) to get `(22.7)` for the operator `(4a⁴ − ∂_h²)^{2N}`, whose iterates
    are two jet steps each.
 3. `(22.8)`--`(22.11)`: re-run §21 with `β = N + 1/2`.
+
+### C42-T: the caustic operator, and a correction to the route (2026-08-17)
+
+Two more modules, and one finding that changes how the last estimate must be organised.
+
+    RHTower/XiMassCausticJetOperator.lean
+      xiHeightCoeff_sub, xiHeightCoeff_const_mul,
+        xiHeightCoeff_embed                    linearity of the height ring and the exponent
+                                               embedding `(P,Q,j) = (PR^m, QR^m, j+m)`
+      xiJetTwoPA, xiJetTwoQA, xiJetTwoPB, xiJetTwoQB
+      xiCausticPA, xiCausticQA, xiCausticPB, xiCausticQB
+      xiCausticCoeff_eq, xiCaustic_state_eq    **`4a⁴·S − S″` is the state of the polynomial map**
+                                               `4a⁴R²·(P,Q) − (P,Q)⁽²⁾` at exponent `j+2`
+      hasDerivAt_xiJetState_two                two height steps
+
+    RHTower/XiMassCausticSymbolState.lean
+      xiMassCausticSymbolC, its agreement with the real symbol
+      xiMassCausticSymbolC_eq_sub_sq           the symbol is `4a⁴ − α²`, `α = a·w/Z`
+      xiCaustic_K1_coefficient                 in the `K₁` slot the caustic combination is
+                                               `symbol·B + (αA′ − B₁′ + βB₁)`
+      xiCaustic_K0_coefficient
+
+**The correction.**  Organising the *quantitative* induction in the `(K₀, K₁)` basis does not work,
+and the reason is structural rather than technical: `K₀(ζ)` and `K₁(ζ)` share their leading
+asymptotic `√(π/2ζ)e^{-ζ}` and differ only at relative order `1/ζ`.  The cancellation therefore
+lives in `A + B`, not in `B` alone, and an induction that tracks the two slots separately stalls:
+the `K₀` slot contains an undifferentiated `4a⁴A` that never decays, and feeds back into the `K₁`
+slot through `−αA`, capping the gain at `u^{-2}` however large `N` is.
+
+The conjugated carrier is the right basis, and it makes the estimate elementary:
+
+    RHTower/XiMassConjugatedCarrier.lean
+      xiMassRadiusRate, hasDerivAt_xiMassRadiusRate     `Z′ = w/Z`,  `Z″ = 1/Z − w²/Z³`
+      hasDerivAt_expNegRadius_mul                       one derivative of `e^{-aZ}·G`
+      hasDerivAt_expNegRadius_caustic                   its second derivative
+      xiCaustic_conjugated_symbol
+        **`4a⁴(e^{-aZ}G) − (e^{-aZ}G)″ = e^{-aZ}[ symbol·G + aZ″·G + 2aZ′·G′ − G″ ]`**
+
+On the balance window the symbol is `O(u^{-1/2})` (already proved), `Z″` is `O(1/u)`, `Z′` is
+bounded, and `G = 2aτ·K₁(aZ)e^{aZ}/Z` varies on the scale of the height — so Cauchy on discs of
+radius `≍ u` makes every `G`-derivative cost `1/u`.  Each application of `4a⁴ − ∂²` therefore buys
+a half power of the height, and `2N` applications give `(22.7)`.
+
+### Remaining for C42-T
+
+1. **The conjugated bound.**  `|G| ≤ C·u^{-1/2}` on a disc of radius `≍ u` about the balance
+   window, from `HTGeometry.norm_besselK1C_le` and `Re(aZ)` on that disc.
+2. **The Cauchy iteration.**  Shrinking radii `ρ_k = ρ(1 − k/K)`, giving `|L^k G| ≤ C_k u^{-k/2}·sup|G|`.
+3. `(22.8)`--`(22.11)`: re-run §21 with `β = N + 1/2`.
+
+The exact height-ring recursion (`XiMassHeightCoeffRing`, `XiMassJetRecursion`, `XiMassJetProfile`,
+`XiMassCausticJetOperator`) stays: it is the exact algebraic identity for every iterate, and it is
+what identifies the symbol as the diagonal.  Only the *estimate* moves to the conjugated basis.
+
+### C42-T: the conjugated bound and the Cauchy iteration (2026-08-17)
+
+Items 1 and 2 of the previous list are done.
+
+    RHTower/XiMassConjugatedBound.lean
+      xiMassConjugatedCarrier                   `G(w) = e^{aZ}·2aτ·K₁(aZ)/Z`
+      xiMassBesselHeightSide_eq_conjugated      the profile is `e^{-aZ}·G`
+      re_mul_xiMassHeightRadius                 `Re(aZ) = a·csqrtRe(τ²+w²)`
+      norm_xiMassConjugatedCarrier_le           **`‖G‖ ≤ 2a‖τ‖/Re Z · e^{1/(2a·Re Z)}·√(2π/(a·Re Z))`**
+                                                — the Schläfli envelope cancels the conjugating
+                                                exponential exactly, leaving `O(u^{-1/2})` on a cone
+
+    RHTower/XiMassCausticSymbolComplex.lean
+      xiMassCausticSymbolC_residue              the residue identity at a *complex* displacement
+      exists_norm_xiMassCausticSymbolC_le       **the symbol is `O(u^{-1/2})` on the complex disc
+                                                `‖s‖ ≤ √u`**, not merely on the balance ray
+
+    HTGeometry/CauchySecondOrderStep.lean
+      iteratedDeriv_two
+      norm_secondOrderOperator_le               **one Cauchy step**: `‖c₀f + c₁f′ − f″‖` at the
+                                                centre is at most `‖c₀‖M + ‖c₁‖M/R + 2M/R²`
+
+    HTGeometry/CauchySecondOrderIterate.lean
+      norm_secondOrderIterate_le                **the iteration**: on discs of radius `δ` nested in
+                                                a disc of radius `nδ`, `n` applications give
+                                                `M·(ε + γ/δ + 2/δ²)ⁿ`
+
+The complex window is what forces the radius: on a disc of radius `≍ u` the symbol is `O(1)`, so the
+Cauchy radius must be the window width `√u`.  With `δ ≍ √u/n` the three contributions
+`ε = O(u^{-1/2})`, `γ/δ = O(n/√u)`, `2/δ² = O(n²/u)` are all `O(u^{-1/2})` for fixed `n`, and `2N`
+steps buy `u^{-N}`.
+
+### Remaining for C42-T
+
+1. **Assembly.**  Instantiate `norm_secondOrderIterate_le` with `Φ k = L^k G`, `c₀ = symbol + aZ″`,
+   `c₁ = 2aZ′`, `δ = √u/(4N)`, using `xiCaustic_conjugated_symbol` for the step identity,
+   `norm_xiMassConjugatedCarrier_le` for the base bound and
+   `exists_norm_xiMassCausticSymbolC_le` for `ε`.  This gives `(22.7)`.
+2. `(22.8)`--`(22.11)`: re-run §21 with `β = N + 1/2`.
+
+### C42-T: holomorphy, the iterate family, and the window geometry (2026-08-17)
+
+    RHTower/XiMassConjugatedHolomorphy.lean
+      xiMassHeightRegion, isOpen_xiMassHeightRegion   `U(τ) = {w : Re(τ²+w²) > 0}`, open
+      differentiableOn_xiMassHeightRadius
+      differentiableAt_xiMassConjugatedCarrier,
+        differentiableOn_xiMassConjugatedCarrier      the carrier is holomorphic on `U`
+      xiCausticCoeffZero, xiCausticCoeffOne           `c₀ = symbol + a(1/Z − w²/Z³)`, `c₁ = 2a·w/Z`
+      differentiableAt_xiCausticCoeffZero,
+        differentiableAt_xiCausticCoeffOne
+
+    RHTower/XiMassCausticIterate.lean
+      xiCausticIterate                                the family `Φ_{k+1} = c₀Φ_k + c₁Φ_k′ − Φ_k″`
+      differentiableOn_xiCausticIterate               **every iterate is holomorphic on `U`**, by
+                                                      induction through `AnalyticOnNhd.deriv`
+      diffContOnCl_xiCausticIterate
+      norm_xiCausticIterate_le                        **the Cauchy iteration, instantiated**:
+                                                      `‖Φ_n(z₀)‖ ≤ M(ε + γ/δ + 2/δ²)ⁿ`
+
+    RHTower/XiMassCausticWindowRegion.lean
+      xiMassWindowThreshold
+      re_propagation_ge_of_window                     `Re(τ² + w²) ≥ (κ_B²−1)u²/2` on `‖s‖ ≤ √u`
+      window_subset_xiMassHeightRegion                **the balance window lies inside `U`**
+
+### Remaining for C42-T
+
+1. **Window estimates.**  On `‖s‖ ≤ √u`: `‖c₀‖ = O(u^{-1/2})` (symbol plus `O(1/u)`), `‖c₁‖ = O(1)`,
+   and `‖G‖ = O(u^{-1/2})` — all three follow from
+   `re_propagation_ge_of_window` together with `exists_norm_xiMassCausticSymbolC_le` and
+   `norm_xiMassConjugatedCarrier_le`.  Feeding them into `norm_xiCausticIterate_le` with
+   `δ = √u/(n+1)` gives `‖Φ_n(κ_Bu)‖ = O(u^{-1/2-n/2})`.
+2. **Transport back.**  `(4a⁴ − ∂²)ⁿ(e^{-aZ}G) = e^{-aZ}·Φ_n`, by induction on the single-step
+   identity `xiCaustic_conjugated_symbol`; with `n = 2N` this is `(22.7)`.
+3. `(22.8)`--`(22.11)`: re-run §21 with `β = N + 1/2`.
+
+### C42-T: `(22.7)` is proved (2026-08-17)
+
+    RHTower/XiMassCausticWindowBounds.lean
+      xiMassWindowRate, xiMassWindowRate_pos, xiMassWindowRate_sq
+      xiMassWindowRate_mul_le_csqrtRe          `Re Z ≥ √((κ_B²−1)/2)·u` on the window
+      norm_xiCausticCoeffOne_le_window         `‖c₁‖ ≤ 2a(κ_B+1)/rate` — bounded
+      exists_norm_xiCausticCoeffZero_le_window `‖c₀‖ = O(u^{-1/2})`: symbol plus an `O(1/u)`
+                                               curvature term
+      exists_norm_conjugatedCarrier_le_window  `‖G‖ = O(u^{-1/2})`
+
+    RHTower/XiMassCausticIterateWindow.lean
+      exists_norm_xiCausticIterate_window_le   **`‖Φ_n(κ_B u)‖ ≤ C·u^{-(n+1)/2}`**, by running the
+                                               Cauchy iteration on discs of radius `√u/(n+1)`
+
+    RHTower/XiMassJetTransport.lean
+      xiMassJetIterate                         `(4a⁴ − ∂²)` iterated on the mass profile
+      xiMassJetIterate_eqOn                    **`(4a⁴ − ∂²)ⁿ(e^{-aZ}G) = e^{-aZ}·Lⁿ G`** — the two
+                                               gauges agree on the region
+      exists_norm_xiMassJetIterate_window_le   **(22.7)**:
+                                               `‖(4a⁴ − ∂²)ⁿ F(κ_B u)‖ ≤ C·u^{-(n+1)/2}·e^{-a√(h²−u²)}`
+
+At `n = 2N` this is the card's `(22.7)` with its stated power `u^{-N-1/2}`, and the exterior Bessel
+exponential is intact.  The proof uses no stationary-phase expansion: the symbol cancellation is
+exact algebra, the derivatives are Cauchy estimates on the `√u`-window, and the transport between
+gauges is one induction.
+
+### Remaining for C42-T
+
+`(22.8)`--`(22.11)`: re-run §21 with `β = N + 1/2`.  The §21 machinery
+(`XiMassLogRetreatTail`, `XiMassCausticPenetration`) is already formal for `β = 1/2`; what changes
+is only the exponent fed to it, now supplied by `exists_norm_xiMassJetIterate_window_le`.

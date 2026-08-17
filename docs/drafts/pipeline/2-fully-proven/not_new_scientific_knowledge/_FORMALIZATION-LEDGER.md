@@ -138,6 +138,8 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-17 | `archimedean-generator-axis-mode` | new `RHTower/BohrGeneratorAxisMode.lean` (uses pre-existing `HTGeometry/BohrGenerators.lean`, `RHTower/ArchimedeanAxisMode.lean`, `HTGeometry/GammaLogDeriv.lean`) |
 | 2026-08-17 | `two-sources-of-hypertranscendence` | new `HTGeometry/OrbitBalanceRationalComplete.lean` (uses pre-existing `HTGeometry/RationalOrder.lean`, `HTGeometry/RationalOrderComposition.lean`) |
 | 2026-08-17 | `multiplier-dichotomy-theorem` | new `HTGeometry/MultiplierDichotomyDegreeObstruction.lean` (uses new `HTGeometry/OrbitBalanceRationalComplete.lean` + pre-existing `HTGeometry/MultiplierDichotomy.lean`, `HTGeometry/ExpPolynomialDA.lean`) |
+| 2026-08-17 | `finite-rg-jet-blindness-to-hypertranscendence` | new `HTGeometry/FormalGermFiniteJetShadow.lean` (new reusable formal-germ composition/inversion layer) |
+| 2026-08-17 | `nyman-finite-mellin-ht-gauge-collapse` | new `RHTower/NymanMellinGaugeCollapse.lean` (uses pre-existing `RHTower/FractionalPartZeta.lean`, `HTGeometry/ZetaHypertranscendence.lean`, `HTGeometry/ExponentialSumDA.lean`, `HTGeometry/ComplexExponentialPolynomial.lean`) |
 
 ## Already carrying a stage-3 certificate (verify, then move the paper card)
 

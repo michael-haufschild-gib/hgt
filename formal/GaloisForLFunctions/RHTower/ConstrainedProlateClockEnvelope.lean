@@ -207,8 +207,39 @@ theorem ClockEnvelope.tail_tendsto_zero (h : ClockEnvelope D e E) (j : ℕ) :
           rw [h.step (j + 1)]
           exact clockRate_tail_bound_eq hc.ne' hlam hEp.ne' (e (j + 1))
 
+/-! ## The ladder interface
+
+Every constrained transfer below consumes only five facts about the leakage family, and none of
+them mentions a clock or a power ladder: nonnegativity, monotonicity in the index, an eventual
+strict step, a vanishing consecutive ratio, and a vanishing aperture-weighted tail fraction.
+Isolating them lets a family whose two-sided bounds carry *different* powers — as the prolate
+signed leakages do — drive the same laws. -/
+
+/-- A nonnegative index-monotone family whose consecutive ratio and aperture-weighted tail
+fraction both vanish. -/
+structure LadderEnvelope (D : ℝ → ℕ → ℝ) : Prop where
+  /-- Leakages are nonnegative. -/
+  nonneg : ∀ lam j, 0 ≤ D lam j
+  /-- Leakages increase along the ladder. -/
+  mono : ∀ lam {i j : ℕ}, i ≤ j → D lam i ≤ D lam j
+  /-- Each ladder step is eventually strict. -/
+  lt_succ : ∀ j, ∀ᶠ lam in atTop, D lam j < D lam (j + 1)
+  /-- Each leakage is negligible against its successor. -/
+  ratio_tendsto_zero : ∀ j, Tendsto (fun lam => D lam j / D lam (j + 1)) atTop (nhds 0)
+  /-- The aperture-weighted leakage is negligible against the next gap. -/
+  tail_tendsto_zero : ∀ j,
+    Tendsto (fun lam => lam * D lam (j + 1) / (D lam (j + 2) - D lam (j + 1))) atTop (nhds 0)
+
+/-- A clock envelope is a ladder envelope. -/
+theorem ClockEnvelope.toLadderEnvelope (h : ClockEnvelope D e E) : LadderEnvelope D where
+  nonneg := h.nonneg
+  mono := h.mono
+  lt_succ := h.lt_succ
+  ratio_tendsto_zero := h.ratio_tendsto_zero
+  tail_tendsto_zero := h.tail_tendsto_zero
+
 /-- The first-gap structural hypothesis of the exact transfer theorems. -/
-theorem ClockEnvelope.first_struct (h : ClockEnvelope D e E) :
+theorem LadderEnvelope.first_struct (h : LadderEnvelope D) :
     ∀ᶠ lam in atTop,
       (0 ≤ D lam 0 ∧ D lam 0 < D lam 1 ∧ D lam 1 < D lam 2) ∧
         ∀ j, D lam 2 ≤ D lam (j + 2) := by
@@ -216,7 +247,7 @@ theorem ClockEnvelope.first_struct (h : ClockEnvelope D e E) :
   exact ⟨⟨h.nonneg lam 0, h1, h2⟩, fun j => h.mono lam (by omega)⟩
 
 /-- The depth-`k` structural hypothesis of the exact ladder theorems. -/
-theorem ClockEnvelope.depth_struct (h : ClockEnvelope D e E) (k : ℕ) :
+theorem LadderEnvelope.depth_struct (h : LadderEnvelope D) (k : ℕ) :
     ∀ᶠ lam in atTop,
       ((∀ j, j ≤ k → 0 ≤ D lam j ∧ D lam j ≤ D lam k) ∧
         D lam k < D lam (k + 1) ∧ D lam (k + 1) < D lam (k + 2)) ∧
@@ -230,7 +261,7 @@ theorem ClockEnvelope.depth_struct (h : ClockEnvelope D e E) (k : ℕ) :
 variable {ℓ : ℝ → ℕ → ℝ}
 
 /-- The exact constrained ground ratio for a clock-enveloped leakage family. -/
-theorem ClockEnvelope.ground_ratio_tendsto (h : ClockEnvelope D e E)
+theorem LadderEnvelope.ground_ratio_tendsto (h : LadderEnvelope D)
     {a0 a1 : ℝ} (ha0 : a0 ≠ 0) (ha1 : a1 ≠ 0)
     (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
     (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
@@ -242,7 +273,7 @@ theorem ClockEnvelope.ground_ratio_tendsto (h : ClockEnvelope D e E)
     (h.ratio_tendsto_zero 0) (h.tail_tendsto_zero 0) hl0 hl1
 
 /-- The complementary exact constrained gap ratio. -/
-theorem ClockEnvelope.gap_ratio_tendsto (h : ClockEnvelope D e E)
+theorem LadderEnvelope.gap_ratio_tendsto (h : LadderEnvelope D)
     {a0 a1 : ℝ} (ha0 : a0 ≠ 0) (ha1 : a1 ≠ 0)
     (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
     (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
@@ -254,7 +285,7 @@ theorem ClockEnvelope.gap_ratio_tendsto (h : ClockEnvelope D e E)
     (h.ratio_tendsto_zero 0) (h.tail_tendsto_zero 0) hl0 hl1
 
 /-- **The CCM `8/11` law over an arbitrary clock.** -/
-theorem ClockEnvelope.ccm_ground_ratio_tendsto (h : ClockEnvelope D e E)
+theorem LadderEnvelope.ccm_ground_ratio_tendsto (h : LadderEnvelope D)
     (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
     (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
     (hl0 : Tendsto (fun lam => ℓ lam 0) atTop (nhds ((2 : ℝ) ^ ((1 : ℝ) / 4))))
@@ -266,7 +297,7 @@ theorem ClockEnvelope.ccm_ground_ratio_tendsto (h : ClockEnvelope D e E)
     (h.ratio_tendsto_zero 0) (h.tail_tendsto_zero 0) hl0 hl1
 
 /-- **The CCM `3/11` gap law over an arbitrary clock.** -/
-theorem ClockEnvelope.ccm_gap_ratio_tendsto (h : ClockEnvelope D e E)
+theorem LadderEnvelope.ccm_gap_ratio_tendsto (h : LadderEnvelope D)
     (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
     (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
     (hl0 : Tendsto (fun lam => ℓ lam 0) atTop (nhds ((2 : ℝ) ^ ((1 : ℝ) / 4))))
@@ -278,7 +309,7 @@ theorem ClockEnvelope.ccm_gap_ratio_tendsto (h : ClockEnvelope D e E)
     (h.ratio_tendsto_zero 0) (h.tail_tendsto_zero 0) hl0 hl1
 
 /-- **The quantified CCM constrained spectral gap over an arbitrary clock.** -/
-theorem ClockEnvelope.ccm_spectralGap_eventually (h : ClockEnvelope D e E)
+theorem LadderEnvelope.ccm_spectralGap_eventually (h : LadderEnvelope D)
     (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
     (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
     (hl0 : Tendsto (fun lam => ℓ lam 0) atTop (nhds ((2 : ℝ) ^ ((1 : ℝ) / 4))))
@@ -292,7 +323,7 @@ theorem ClockEnvelope.ccm_spectralGap_eventually (h : ClockEnvelope D e E)
     (h.ratio_tendsto_zero 0) (h.tail_tendsto_zero 0) hl0 hl1 hc
 
 /-- **The negative-sector `8/13` law over an arbitrary clock.** -/
-theorem ClockEnvelope.ccm_negativeSector_ratio_tendsto (h : ClockEnvelope D e E)
+theorem LadderEnvelope.ccm_negativeSector_ratio_tendsto (h : LadderEnvelope D)
     (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
     (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
     (hl0 : Tendsto (fun lam => ℓ lam 0) atTop (nhds ((2 : ℝ) ^ (-(1 : ℝ) / 4))))
@@ -306,7 +337,7 @@ theorem ClockEnvelope.ccm_negativeSector_ratio_tendsto (h : ClockEnvelope D e E)
   rwa [ccm_negativeSector_hermite_weight_eq] at hr
 
 /-- **The negative-sector `5/13` gap law over an arbitrary clock.** -/
-theorem ClockEnvelope.ccm_negativeSector_gap_ratio_tendsto (h : ClockEnvelope D e E)
+theorem LadderEnvelope.ccm_negativeSector_gap_ratio_tendsto (h : LadderEnvelope D)
     (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
     (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
     (hl0 : Tendsto (fun lam => ℓ lam 0) atTop (nhds ((2 : ℝ) ^ (-(1 : ℝ) / 4))))
@@ -320,7 +351,7 @@ theorem ClockEnvelope.ccm_negativeSector_gap_ratio_tendsto (h : ClockEnvelope D 
   rwa [ccm_negativeSector_hermite_weight_complement_eq] at hr
 
 /-- **The exact all-depth CCM ladder over an arbitrary clock.** -/
-theorem ClockEnvelope.ccm_depth_ratio_tendsto (h : ClockEnvelope D e E) (k : ℕ)
+theorem LadderEnvelope.ccm_depth_ratio_tendsto (h : LadderEnvelope D) (k : ℕ)
     (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
     (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
     (hl : ∀ j, j ≤ k + 1 → Tendsto (fun lam => ℓ lam j) atTop

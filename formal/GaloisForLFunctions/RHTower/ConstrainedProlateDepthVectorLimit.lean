@@ -18,9 +18,9 @@ noncomputable section
 namespace RHTower
 
 /-- The exact depth secular vector is eventually square-summable. -/
-theorem ClockEnvelope.ccm_depth_summable_secularVector_sq
-    {D : ℝ → ℕ → ℝ} {e : ℕ → ℕ} {E : ℝ → ℝ}
-    (h : ClockEnvelope D e E) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
+theorem LadderEnvelope.ccm_depth_summable_secularVector_sq
+    {D : ℝ → ℕ → ℝ}
+    (h : LadderEnvelope D) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
     (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
     (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
     (hl : ∀ j, j ≤ k + 1 → Tendsto (fun lam => ℓ lam j) atTop
@@ -35,9 +35,9 @@ theorem ClockEnvelope.ccm_depth_summable_secularVector_sq
   exact (summable_nat_add_iff (k + 2)).mp htail
 
 /-- The exact depth secular vector is eventually an `ℓ²` vector. -/
-theorem ClockEnvelope.ccm_depth_memℓp
-    {D : ℝ → ℕ → ℝ} {e : ℕ → ℕ} {E : ℝ → ℝ}
-    (h : ClockEnvelope D e E) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
+theorem LadderEnvelope.ccm_depth_memℓp
+    {D : ℝ → ℕ → ℝ}
+    (h : LadderEnvelope D) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
     (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
     (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
     (hl : ∀ j, j ≤ k + 1 → Tendsto (fun lam => ℓ lam j) atTop
@@ -50,9 +50,9 @@ theorem ClockEnvelope.ccm_depth_memℓp
 /-- **Strong depth-`k` eigenvector limit.**  After rescaling its zeroth coordinate to one, the
 exact infinite-dimensional secular eigenvector converges in `ℓ²` to the similarly rescaled
 explicit Hermite contrast. -/
-theorem ClockEnvelope.ccm_depth_rescaled_secularLp_tendsto_hermiteContrast
-    {D : ℝ → ℕ → ℝ} {e : ℕ → ℕ} {E : ℝ → ℝ}
-    (h : ClockEnvelope D e E) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
+theorem LadderEnvelope.ccm_depth_rescaled_secularLp_tendsto_hermiteContrast
+    {D : ℝ → ℕ → ℝ}
+    (h : LadderEnvelope D) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
     (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
     (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
     (hl : ∀ j, j ≤ k + 1 → Tendsto (fun lam => ℓ lam j) atTop
@@ -202,9 +202,9 @@ theorem normalized_rescaled_hermiteContrast_eq_neg (k : ℕ) :
 its nonzero zeroth coordinate and normalized to unit length, converges strongly to the canonical
 Hermite contrast unit (with the forced global minus sign).  This is the metric `ℓ²` statement of
 the card's eigenvector limit. -/
-theorem ClockEnvelope.ccm_depth_normalized_rescaled_secularLp_tendsto_hermiteContrastUnit
-    {D : ℝ → ℕ → ℝ} {e : ℕ → ℕ} {E : ℝ → ℝ}
-    (h : ClockEnvelope D e E) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
+theorem LadderEnvelope.ccm_depth_normalized_rescaled_secularLp_tendsto_hermiteContrastUnit
+    {D : ℝ → ℕ → ℝ}
+    (h : LadderEnvelope D) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
     (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
     (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
     (hl : ∀ j, j ≤ k + 1 → Tendsto (fun lam => ℓ lam j) atTop

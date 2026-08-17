@@ -3904,3 +3904,30 @@ Theorems B, C and D of that card remain.
   What links these to the card is Lemma A, already formal: substituting its bound on `|E|` turns the
   counting hypothesis into the card's `(13)`.  Theorem B remains, as does tying the anchored model
   to the concrete quotient `μ_k^D/μ_k^diag`.
+
+### Theorem B of the prime-torsion card, and the concrete projective quotient
+
+- `HTGeometry/ProjectiveTorsionPhaseQuotient.lean` -- `Q_{D,k} = μ_k^D/μ_k^diag` is now the actual
+  quotient group, not just a model of the right size.  `anchorPhaseHom` (relative phases against the
+  first coordinate) is surjective with kernel exactly `diagPhaseHom`'s range, so
+  `projPhaseTorsionEquiv : projPhaseTorsion d k ≃+ (Fin d → ZMod k)` is `(2)` and
+  `card_projPhaseTorsion` is `(3)`.  What ties it to `Φ` is `torsionRay_add_diag`: a diagonal
+  translation multiplies the uniform phase ray by a unimodular scalar, so
+  `pureStateTraceDistance_torsionRay_add_diag` makes every fidelity question descend to the
+  quotient, and `pureStateTraceDistance_torsionRay_eq_anchored` says the anchored representative
+  carries all of it.  `easyAnchored` is `(6)` as a `Finset` on that representative set.
+- `HTGeometry/TorsionPolygonRecurrenceShadowing.lean` -- Theorem B, `(18)`--`(20)`, unconditional.
+  The card's proof is a minimality/limit argument; the Lean route is quantitative and needs no
+  limit.  `kronecker_approx` places the anchored phase vector within `ε/2` of the prescribed torsion
+  class at some time `t₀`; `exists_fin_simultaneous_two_pi_phase_approximation_annular_quantitative`
+  supplies an integer return time `m ≥ Q` of arbitrary size with phase error `≤ 2π/Q ≤ ε/2`; the
+  translate `t₀ + m` inherits both, and that is where "arbitrarily late" comes from -- no density or
+  minimality statement is needed anywhere.  `shadowsTorsion_nsmul` is the polygon step: the anchored
+  flow phase at `jt` is the `j`-th power of the phase at `t`, so one placement controls all `k-1`
+  interior slices and the endpoint at once, with losses `jε` and `kε`.  The strict inequalities of
+  `(14)` survive because the dictionary and exponent range are finite: `exists_margin_of_lt` turns
+  them into a uniform margin `σ > 0`, and `ε = min(σ, ρ)/(2k)` closes both conclusions.
+  Reusable beyond this card: `pureStateTraceDistance_le_norm_sub`, `norm_phaseRay_sub_le`,
+  `norm_exp_ofReal_mul_I_sub_le`, `norm_pow_sub_pow_le_of_unit`, `exists_margin_of_lt`.
+  What remains on the card: the circuit substitution `(23)`--`(25)` and the asymptotics of
+  Corollary B.1.

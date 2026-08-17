@@ -102,28 +102,28 @@ theorem exists_unit_factor_of_reduced_at {w : Fin n → ℂ} {A₁ B₁ A₂ B�
 
 /-- **The cleared combination transforms by the product of the unit factors.** -/
 theorem siegelHomCombination_of_unit_factors {N m : ℕ} {E : Type*}
-    (A₁ B₁ A₂ B₂ : Fin (N + 1) → E → ℂ) (v : Fin (N + 1) → E → ℂ)
-    (hA : ∀ k z, A₁ k z = v k z * A₂ k z) (hB : ∀ k z, B₁ k z = v k z * B₂ k z)
-    (a : (Fin (N + 1) → Fin (m + 1)) → ℂ) (z : E) :
+    (A₁ B₁ A₂ B₂ : Fin (N + 1) → E → ℂ) (v : Fin (N + 1) → ℂ) (z : E)
+    (hA : ∀ k, A₁ k z = v k * A₂ k z) (hB : ∀ k, B₁ k z = v k * B₂ k z)
+    (a : (Fin (N + 1) → Fin (m + 1)) → ℂ) :
     siegelHomCombination A₁ B₁ m a z
-      = (∏ k, (v k z) ^ m) * siegelHomCombination A₂ B₂ m a z := by
+      = (∏ k, (v k) ^ m) * siegelHomCombination A₂ B₂ m a z := by
   rw [siegelHomCombination, siegelHomCombination, Finset.mul_sum]
   refine Finset.sum_congr rfl fun β _ => ?_
   have hstep : ∀ k : Fin (N + 1),
       (A₁ k z) ^ (β k : ℕ) * (B₁ k z) ^ (m - (β k : ℕ))
-        = (v k z) ^ m * ((A₂ k z) ^ (β k : ℕ) * (B₂ k z) ^ (m - (β k : ℕ))) := by
+        = (v k) ^ m * ((A₂ k z) ^ (β k : ℕ) * (B₂ k z) ^ (m - (β k : ℕ))) := by
     intro k
     have hk : (β k : ℕ) ≤ m := Nat.lt_succ_iff.mp (β k).2
-    rw [hA k z, hB k z, mul_pow, mul_pow]
-    rw [show (v k z) ^ (β k : ℕ) * (A₂ k z) ^ (β k : ℕ)
-        * ((v k z) ^ (m - (β k : ℕ)) * (B₂ k z) ^ (m - (β k : ℕ)))
-      = ((v k z) ^ (β k : ℕ) * (v k z) ^ (m - (β k : ℕ)))
+    rw [hA k, hB k, mul_pow, mul_pow]
+    rw [show (v k) ^ (β k : ℕ) * (A₂ k z) ^ (β k : ℕ)
+        * ((v k) ^ (m - (β k : ℕ)) * (B₂ k z) ^ (m - (β k : ℕ)))
+      = ((v k) ^ (β k : ℕ) * (v k) ^ (m - (β k : ℕ)))
         * ((A₂ k z) ^ (β k : ℕ) * (B₂ k z) ^ (m - (β k : ℕ))) from by ring]
     rw [← pow_add, show (β k : ℕ) + (m - (β k : ℕ)) = m from by omega]
   calc a β * ∏ k, (A₁ k z) ^ (β k : ℕ) * (B₁ k z) ^ (m - (β k : ℕ))
-      = a β * ∏ k, (v k z) ^ m * ((A₂ k z) ^ (β k : ℕ) * (B₂ k z) ^ (m - (β k : ℕ))) := by
+      = a β * ∏ k, (v k) ^ m * ((A₂ k z) ^ (β k : ℕ) * (B₂ k z) ^ (m - (β k : ℕ))) := by
         rw [Finset.prod_congr rfl fun k _ => hstep k]
-    _ = (∏ k, (v k z) ^ m) * (a β * ∏ k, (A₂ k z) ^ (β k : ℕ) * (B₂ k z) ^ (m - (β k : ℕ))) := by
+    _ = (∏ k, (v k) ^ m) * (a β * ∏ k, (A₂ k z) ^ (β k : ℕ) * (B₂ k z) ^ (m - (β k : ℕ))) := by
         rw [Finset.prod_mul_distrib]
         ring
 

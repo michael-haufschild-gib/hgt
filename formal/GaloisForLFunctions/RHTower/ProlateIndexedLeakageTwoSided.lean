@@ -101,12 +101,18 @@ def prolateLeakageLower (c s : ℝ) : ℝ :=
             + (Real.log (1 - 4 * s) - Real.log (1 - prolateLeakageCollar ^ 2)))
           + 10 * (c * s))))
 
-/-- The upper leakage bound of the two-sided estimate at the fixed collar and cut `b = 1/2`. -/
+/-- The cut of the two-sided estimate: one inverse bandwidth above the turning scale.  The
+transport loss across `[2√s, b]` is then bounded, and the reciprocal width costs one power of the
+bandwidth. -/
+def prolateLeakageCut (c s : ℝ) : ℝ := 2 * Real.sqrt s + 1 / c
+
+/-- The upper leakage bound of the two-sided estimate at the fixed collar and the cut above. -/
 def prolateLeakageUpper (c s : ℝ) : ℝ :=
   radialProlateExteriorMassConstant / c
     * ((6 * Real.pi * Real.sqrt (c * bandEndpointPhase s prolateLeakageCollar)) ^ 2
-        * Real.exp (2 * ((c * (1 / 2) + 12) * (1 / 2 - 2 * Real.sqrt s) / (1 - (1 / 2 : ℝ) ^ 2)))
-        / (1 / 2 - 2 * Real.sqrt s))
+        * Real.exp (2 * ((c * prolateLeakageCut c s + 12)
+            * (prolateLeakageCut c s - 2 * Real.sqrt s) / (1 - prolateLeakageCut c s ^ 2)))
+        / (prolateLeakageCut c s - 2 * Real.sqrt s))
     * Real.exp (-(2 * (c * bandEndpointPhase s (2 * Real.sqrt s)
         + 6 * (Real.log (1 - prolateLeakageCollar) - Real.log (1 - 2 * Real.sqrt s)))))
 
@@ -251,9 +257,19 @@ theorem eventually_signedLeakage_two_sided (n : ℕ) (hn : 1 ≤ n) :
       exact mul_le_mul_of_nonneg_right hmono (Real.arccos_nonneg α)
     have hone : 1 ≤ c * κ := (div_le_iff₀ hκpos).mp hcκ
     nlinarith [hone, hκle, hc0]
-  have hb : 2 * Real.sqrt s < (1 : ℝ) / 2 := by linarith
+  have hcinv : 1 / c ≤ 1 / 8 := by
+    rw [div_le_div_iff₀ hc0 (by norm_num : (0:ℝ) < 8)]
+    linarith
+  have hb : 2 * Real.sqrt s < prolateLeakageCut c s := by
+    rw [prolateLeakageCut]
+    have : 0 < 1 / c := by positivity
+    linarith
+  have hb1 : prolateLeakageCut c s < 1 := by
+    rw [prolateLeakageCut]
+    have h2s : 2 * Real.sqrt s ≤ 1 / 4 := by linarith
+    linarith
   exact prolate_leakage_two_sided hc8 hs0 hs8 hcs hcK hsm heig hR1 heven h2sα hαhalf hα1
-    hαcollar hz houter hposΦ hΦd hfluxd hb (by norm_num) hR1 hΦd hDR hode hIntR hvalue hv2
+    hαcollar hz houter hposΦ hΦd hfluxd hb hb1 hR1 hΦd hDR hode hIntR hvalue hv2
     hvne hleak hmass
 
 end RHTower

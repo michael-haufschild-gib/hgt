@@ -131,13 +131,10 @@ inversion, and contact order.  It is useful field infrastructure, not new mathem
 to remove finite-jet and finite-loop theatre from the research program and to force the next move
 onto global differential-Galois geometry.
 
-## Lean boundary
+## Lean boundary — resolved 2026-08-17
 
-Mathlib already knows that power-series truncation agrees coefficientwise below the cutoff.  A Lean
-wrapper of that fact would not formalize the analytic inverse-contact lemma, algebraicity of the
-inverse germ, or beta-field agreement, and would add no substantive theorem.  Formalization should
-wait until the corpus has a genuine local-germ composition/inversion layer capable of expressing
-the complete statement `(4)`--`(9)` unconditionally.
+The local-germ composition/inversion layer this section waited for now exists, and the complete
+statement `(4)`--`(9)` is formalized unconditionally.  See the Lean formalization section below.
 
 ## Parent sources
 
@@ -152,3 +149,81 @@ the complete statement `(4)`--`(9)` unconditionally.
 - [x] Exact step and beta constraints retained by the shadow.
 - [x] Jet-agreement proof given for both the RG map and beta field.
 - [x] Scope limited to finite Taylor data rather than finite mathematical proofs in general.
+
+## Lean formalization — 2026-08-17
+
+Module: `formal/GaloisForLFunctions/HTGeometry/FormalGermFiniteJetShadow.lean`
+(wired into the `GaloisForLFunctions.HTGeometry` umbrella).
+
+The card is formalized in the formal-germ category, which is where every one of its statements
+lives: `Φ`, `κ`, `R`, `β`, `P_N`, `Q_N`, `R_N`, `β_N` are all formal power series over `ℂ`, jets are
+truncations, and "same `N`-jet" is divisibility of the difference by `X^{N+2}`.  Analytic
+convergence plays no role in any step of the card's proof, so nothing is lost.
+
+**The layer that was missing** (now built, and reusable for every Schröder/Böttcher/Abel germ card):
+
+| Lemma | Lean name |
+|---|---|
+| substitution of a positive-order germ preserves `X^M`-divisibility | `FormalGerm.X_pow_dvd_subst` |
+| congruent series have congruent substitutions (outer argument) | `FormalGerm.X_pow_dvd_subst_sub_outer` |
+| congruent germs give congruent substitutions (inner argument) | `FormalGerm.X_pow_dvd_subst_sub_inner` |
+| compositional inverse of a germ with invertible linear coefficient | `FormalGerm.tangentInv`, `subst_tangentInv`, `tangentInv_subst`, `coeff_one_tangentInv`, `constantCoeff_tangentInv` |
+| **the contact-order lemma** | `FormalGerm.X_pow_dvd_tangentInv_sub` |
+| dilation and formal derivative respect congruences | `FormalGerm.X_pow_dvd_rescale_sub`, `FormalGerm.X_pow_dvd_derivativeFun_sub` |
+
+**The card's own statements:**
+
+| Card step | Lean name |
+|---|---|
+| `(5)` the shadow constructions `R_N`, `β_N` (as the same construction applied to `P_N`) | `FiniteJetShadow.rgMap`, `FiniteJetShadow.betaField`, `FiniteJetShadow.truncGerm` |
+| `(4)` `P_N − Φ = O(z^{N+2})`, `P_N(0)=0`, `P_N'(0)=Φ'(0)` | `X_pow_dvd_truncGerm_sub`, `constantCoeff_truncGerm`, `coeff_one_truncGerm` |
+| `(7)` `Q_N − κ = O(t^{N+2})` | `X_pow_dvd_tangentInv_truncGerm_sub` |
+| `(8)` `R_N − R = O(t^{N+2})` | `X_pow_dvd_rgMap_truncGerm_sub` |
+| `(9)` `β_N − β = O(t^{N+2})` | `X_pow_dvd_betaField_truncGerm_sub` |
+| `(6)` the exact step conjugacy `R_N(P_N(z)) = P_N(λz)` | `subst_rgMap` |
+| `Q_N` algebraic over `ℂ(t)` (from `P_N(Q_N(t)) = t`) | `isAlgebraic_tangentInv_truncGerm` |
+| **the algebraic shadow theorem** | `algebraic_shadow` |
+
+`algebraic_shadow` packages everything: for every germ `g` with `g(0)=0` and invertible linear
+coefficient, every `λ`, every branch constant `L`, and every `N`, there is a *polynomial* `p` whose
+coefficients agree with `g`'s through degree `N+1`, whose compositional inverse is algebraic over
+`ℂ(t)`, which satisfies the exact conjugacy `R_p ∘ p = λ·p`, and whose RG map and beta field agree
+coefficientwise with those of `g` through degree `N+1`.
+
+**Route notes.**
+
+1. The contact-order lemma `(7)` is proved without any inverse-function analysis: from `A(U) = X`
+   and `B(V) = X`, congruence of `A` and `B` gives `A(V) ≡ A(U)`, and applying `U = A⁻¹` to both
+   sides (using associativity of substitution) gives `V ≡ U`.  Only the two congruence lemmas above
+   are needed.
+2. The card's hyperbolicity hypothesis `0 < |λ| ≠ 1` is not needed for the shadow theorem and is not
+   assumed: the construction and all four estimates hold for every `λ`.  Hyperbolicity is what makes
+   the *analytic* Poincaré germ exist; the formal statement quantifies over the germ instead, which
+   is strictly more general.
+3. `β_N − β = O(t^{N+2})` is proved by the card's own cancellation
+   `Q_Nκ' − κQ_N' = (Q_N−κ)κ' − κ(Q_N'−κ')`, with `X ∣ κ` supplying the extra order that makes the
+   second term `O(t^{N+2})` rather than only `O(t^{N+1})`.
+
+**Not formalized, and not an obligation of this card:** the beta cocycle
+`β_N(R_N(t)) = R_N'(t)β_N(t)` displayed as the second half of `(6)`.  It is a consequence of the
+conjugacy that requires a chain rule for the formal derivative under substitution, which mathlib
+does not have; the card's own claim — that the shadow retains *the exact step constraint* — is the
+first half of `(6)` and is proved (`subst_rgMap`).  Also not formalized: the analytic realization
+(that a hyperbolic analytic germ has an analytic Poincaré germ), which is the classical
+Koenigs/Poincaré linearization theorem and is an input to the setup, not a step of the theorem.
+
+Verification: `lake build GaloisForLFunctions.HTGeometry.FormalGermFiniteJetShadow` — PASS;
+`#print axioms` on all fourteen named results reports only
+`[propext, Classical.choice, Quot.sound]`.
+
+## Gates (2 → 3)
+
+- [x] Whole theorem formalized unconditionally in Lean — `FiniteJetShadow.algebraic_shadow`.
+
+## Log
+
+- 2026-08-17 — Formalized unconditionally in Lean 4 and promoted to stage 3.  Built the formal-germ
+  composition/inversion layer (substitution congruences in both arguments, compositional inverse of
+  a germ tangent to the identity, and the contact-order lemma) and used it to prove the algebraic
+  shadow theorem in full: jet agreement of the RG map and of the exact beta field, the exact step
+  conjugacy, and algebraicity of the shadow's inverse germ.

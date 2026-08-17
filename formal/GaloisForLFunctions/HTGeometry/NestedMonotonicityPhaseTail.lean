@@ -8,7 +8,9 @@ open scoped BigOperators
 
 namespace GaloisForLFunctions.HTGeometry.StaticLocalLaboratoryComplexityGrowthLaw
 
-set_option maxRecDepth 100000
+set_option maxRecDepth 1000000
+set_option maxHeartbeats 2000000
+set_option linter.constructorNameAsVariable false
 
 def counterKeptMatchingIndexEmbedding : Fin 1476 ↪ Fin 16384 where
   toFun j := ⟨j.val + 1, by omega⟩
@@ -23,17 +25,19 @@ def counterKeptBridgeIndexEmbedding : Fin 37 ↪ Fin (16384 - 1) where
     apply Fin.ext
     exact congrArg (fun x : Fin (16384 - 1) => x.val) h
 
-def counterKeptMatchingEdgeEmbedding : Fin 1476 ↪ Sym2 (PairQubit 16384) where
-  toFun j := nestedMatchingEdge (counterKeptMatchingIndexEmbedding j)
-  inj' := by
-    intro i j h
-    exact counterKeptMatchingIndexEmbedding.injective (nestedMatchingEdge_injective h)
+def counterAllMatchingEdgeEmbedding : Fin 16384 ↪ Sym2 (PairQubit 16384) where
+  toFun := nestedMatchingEdge
+  inj' := nestedMatchingEdge_injective
 
-def counterKeptBridgeEdgeEmbedding : Fin 37 ↪ Sym2 (PairQubit 16384) where
-  toFun j := nestedBridgeEdge (counterKeptBridgeIndexEmbedding j)
-  inj' := by
-    intro i j h
-    exact counterKeptBridgeIndexEmbedding.injective (nestedBridgeEdge_injective h)
+def counterAllBridgeEdgeEmbedding : Fin (16384 - 1) ↪ Sym2 (PairQubit 16384) where
+  toFun := nestedBridgeEdge
+  inj' := nestedBridgeEdge_injective
+
+def counterKeptMatchingEdgeEmbedding : Fin 1476 ↪ Sym2 (PairQubit 16384) :=
+  counterKeptMatchingIndexEmbedding.trans counterAllMatchingEdgeEmbedding
+
+def counterKeptBridgeEdgeEmbedding : Fin 37 ↪ Sym2 (PairQubit 16384) :=
+  counterKeptBridgeIndexEmbedding.trans counterAllBridgeEdgeEmbedding
 
 def counterKeptMatchingEdges : Finset (Sym2 (PairQubit 16384)) :=
   Finset.univ.map counterKeptMatchingEdgeEmbedding
@@ -41,8 +45,28 @@ def counterKeptMatchingEdges : Finset (Sym2 (PairQubit 16384)) :=
 def counterKeptBridgeEdges : Finset (Sym2 (PairQubit 16384)) :=
   Finset.univ.map counterKeptBridgeEdgeEmbedding
 
+def counterKeptEdgeEmbedding : (Fin 1476 ⊕ Fin 37) ↪ Sym2 (PairQubit 16384) where
+  toFun
+    | Sum.inl j => nestedMatchingEdge (counterKeptMatchingIndexEmbedding j)
+    | Sum.inr j => nestedBridgeEdge (counterKeptBridgeIndexEmbedding j)
+  inj' := by
+    intro i j h
+    cases i with
+    | inl i =>
+        cases j with
+        | inl j =>
+            simp only [Sum.inl.injEq]
+            exact counterKeptMatchingIndexEmbedding.injective (nestedMatchingEdge_injective h)
+        | inr j => exact (nestedMatchingEdge_ne_bridgeEdge _ _ h).elim
+    | inr i =>
+        cases j with
+        | inl j => exact (nestedMatchingEdge_ne_bridgeEdge _ _ h.symm).elim
+        | inr j =>
+            simp only [Sum.inr.injEq]
+            exact counterKeptBridgeIndexEmbedding.injective (nestedBridgeEdge_injective h)
+
 def counterKeptEdges : Finset (Sym2 (PairQubit 16384)) :=
-  counterKeptMatchingEdges ∪ counterKeptBridgeEdges
+  Finset.univ.map counterKeptEdgeEmbedding
 
 @[simp] theorem counterKeptMatchingEdges_card : counterKeptMatchingEdges.card = 1476 := by
   simp [counterKeptMatchingEdges]
@@ -52,6 +76,7 @@ def counterKeptEdges : Finset (Sym2 (PairQubit 16384)) :=
 
 theorem counterKeptMatchingEdges_disjoint_bridgeEdges :
     Disjoint counterKeptMatchingEdges counterKeptBridgeEdges := by
+  classical
   rw [Finset.disjoint_left]
   intro e heM heB
   rcases Finset.mem_map.mp heM with ⟨i, hi, rfl⟩
@@ -60,20 +85,22 @@ theorem counterKeptMatchingEdges_disjoint_bridgeEdges :
     (counterKeptMatchingIndexEmbedding i) (counterKeptBridgeIndexEmbedding j) hEq.symm
 
 @[simp] theorem counterKeptEdges_card : counterKeptEdges.card = 1513 := by
-  rw [counterKeptEdges, Finset.card_union_of_disjoint counterKeptMatchingEdges_disjoint_bridgeEdges]
-  simp
+  simp [counterKeptEdges]
 
 theorem counterKeptEdges_subset_path :
     counterKeptEdges ⊆ (nestedQubitPathGraph 16384).edgeFinset := by
+  classical
   intro e he
   rw [counterKeptEdges] at he
-  rcases Finset.mem_union.mp he with heM | heB
-  · rcases Finset.mem_map.mp heM with ⟨i, hi, rfl⟩
-    rw [SimpleGraph.mem_edgeFinset]
-    exact nestedQubitPathGraph_adj_pair _
-  · rcases Finset.mem_map.mp heB with ⟨j, hj, rfl⟩
-    rw [SimpleGraph.mem_edgeFinset]
-    exact nestedQubitPathGraph_adj_bridge _
+  rcases Finset.mem_map.mp he with ⟨j, hj, hEq⟩
+  rw [← hEq]
+  cases j with
+  | inl j =>
+      rw [SimpleGraph.mem_edgeFinset]
+      exact nestedQubitPathGraph_adj_pair _
+  | inr j =>
+      rw [SimpleGraph.mem_edgeFinset]
+      exact nestedQubitPathGraph_adj_bridge _
 
 theorem counterEarlyTime_pos : 0 < monotonicityCounterEarlyTime := by
   unfold monotonicityCounterEarlyTime monotonicityCounterDelta
@@ -101,9 +128,11 @@ theorem counterDelta_lt_threshold :
 theorem counterKeptPhaseWeight_ge_threshold
     (e : Sym2 (PairQubit 16384)) (he : e ∈ counterKeptEdges) :
     counterPhaseThreshold ≤ counterPhaseWeight e := by
+  classical
   rw [counterKeptEdges] at he
-  rcases Finset.mem_union.mp he with heM | heB
-  · rcases Finset.mem_map.mp heM with ⟨j, hj, rfl⟩
+  rcases Finset.mem_map.mp he with ⟨j, hj, rfl⟩
+  cases j with
+  | inl j =>
     change counterPhaseThreshold ≤ counterPhaseWeight
       (nestedMatchingEdge (counterKeptMatchingIndexEmbedding j))
     rw [counterPhaseWeight, nestedFoldedPhase_matching]
@@ -118,7 +147,7 @@ theorem counterKeptPhaseWeight_ge_threshold
     have hn0 : (0 : ℝ) < ((j.val + 2 : ℕ) : ℝ) := by positivity
     have hs0 := counterEarlyTime_pos.le
     gcongr
-  · rcases Finset.mem_map.mp heB with ⟨j, hj, rfl⟩
+  | inr j =>
     change counterPhaseThreshold ≤ counterPhaseWeight
       (nestedBridgeEdge (counterKeptBridgeIndexEmbedding j))
     rw [counterPhaseWeight, nestedFoldedPhase_bridge,
@@ -139,6 +168,7 @@ theorem counterOutsidePhaseWeight_le_threshold
     (e : Sym2 (PairQubit 16384))
     (he : e ∈ (nestedQubitPathGraph 16384).edgeFinset \ counterKeptEdges) :
     counterPhaseWeight e ≤ counterPhaseThreshold := by
+  classical
   rw [Finset.mem_sdiff] at he
   rcases he with ⟨hePath, heNot⟩
   rw [nestedPath_edgeFinset_eq_union (by omega)] at hePath
@@ -158,14 +188,14 @@ theorem counterOutsidePhaseWeight_le_threshold
           simp [counterKeptMatchingIndexEmbedding, i]
           omega
         apply heNot
-        rw [counterKeptEdges, Finset.mem_union]
-        left
-        exact Finset.mem_map.mpr ⟨i, Finset.mem_univ _, by rw [counterKeptMatchingEdgeEmbedding, hindex]⟩
+        rw [counterKeptEdges]
+        exact Finset.mem_map.mpr ⟨Sum.inl i, Finset.mem_univ _, by
+          simpa [counterKeptEdgeEmbedding] using congrArg nestedMatchingEdge hindex⟩
       unfold counterPhaseThreshold
       have hden : (1477 : ℝ) ^ 2 ≤ (((j.val + 1 : ℕ) : ℝ) ^ 2) := by
         gcongr
         exact_mod_cast (by omega : 1477 ≤ j.val + 1)
-      gcongr
+      exact div_le_div_of_nonneg_left counterEarlyTime_pos.le (by positivity) hden
   · rcases (mem_nestedBridgeEdges e).mp heB with ⟨j, rfl⟩
     rw [counterPhaseWeight, nestedFoldedPhase_bridge,
       abs_of_pos (div_pos counterEarlyTime_pos (by positivity))]
@@ -177,9 +207,9 @@ theorem counterOutsidePhaseWeight_le_threshold
         apply Fin.ext
         simp [counterKeptBridgeIndexEmbedding, i]
       apply heNot
-      rw [counterKeptEdges, Finset.mem_union]
-      right
-      exact Finset.mem_map.mpr ⟨i, Finset.mem_univ _, by rw [counterKeptBridgeEdgeEmbedding, hindex]⟩
+      rw [counterKeptEdges]
+      exact Finset.mem_map.mpr ⟨Sum.inr i, Finset.mem_univ _, by
+        simpa [counterKeptEdgeEmbedding] using congrArg nestedBridgeEdge hindex⟩
     unfold counterPhaseThreshold
     have hden : (1477 : ℝ) ^ 2 ≤ (((j.val + 2 : ℕ) : ℝ) ^ 4) := by
       have h39 : 39 ≤ j.val + 2 := by omega
@@ -188,7 +218,7 @@ theorem counterOutsidePhaseWeight_le_threshold
         exact_mod_cast h39
       norm_num at hpow ⊢
       linarith
-    gcongr
+    exact div_le_div_of_nonneg_left counterEarlyTime_pos.le (by positivity) hden
 
 def counterFirstMatchingEdge : Sym2 (PairQubit 16384) :=
   nestedMatchingEdge (0 : Fin 16384)
@@ -214,71 +244,97 @@ def counterTailBridgeEdges : Finset (Sym2 (PairQubit 16384)) :=
 def counterCertifiedTailEdges : Finset (Sym2 (PairQubit 16384)) :=
   {counterFirstMatchingEdge} ∪ counterTailMatchingEdges ∪ counterTailBridgeEdges
 
+theorem counterFirstMatchingEdge_mem_outside :
+    counterFirstMatchingEdge ∈
+      (nestedQubitPathGraph 16384).edgeFinset \ counterKeptEdges := by
+  classical
+  apply Finset.mem_sdiff.mpr
+  constructor
+  · rw [counterFirstMatchingEdge, SimpleGraph.mem_edgeFinset]
+    exact nestedQubitPathGraph_adj_pair _
+  · rw [counterKeptEdges]
+    intro hK
+    rcases Finset.mem_map.mp hK with ⟨j, hj, hEq⟩
+    cases j with
+    | inl j =>
+        have hidx := nestedMatchingEdge_injective (by
+          simpa [counterFirstMatchingEdge, counterKeptEdgeEmbedding] using hEq.symm)
+        have hv := congrArg Fin.val hidx
+        simp [counterKeptMatchingIndexEmbedding] at hv
+    | inr j =>
+        apply nestedMatchingEdge_ne_bridgeEdge (0 : Fin 16384)
+          (counterKeptBridgeIndexEmbedding j)
+        simpa [counterFirstMatchingEdge, counterKeptEdgeEmbedding] using hEq.symm
+
+theorem counterTailMatchingEdges_subset_outside :
+    counterTailMatchingEdges ⊆
+      (nestedQubitPathGraph 16384).edgeFinset \ counterKeptEdges := by
+  classical
+  intro e he
+  rw [counterTailMatchingEdges] at he
+  rcases Finset.mem_image.mp he with ⟨j, hj, hEq⟩
+  rw [← hEq]
+  apply Finset.mem_sdiff.mpr
+  constructor
+  · rw [SimpleGraph.mem_edgeFinset]
+    exact nestedQubitPathGraph_adj_pair _
+  · rw [counterKeptEdges]
+    intro hK
+    rcases Finset.mem_map.mp hK with ⟨i, hi, hEq⟩
+    cases i with
+    | inl i =>
+        have hidx := nestedMatchingEdge_injective (by
+          simpa [counterKeptEdgeEmbedding] using hEq)
+        have hv := congrArg Fin.val hidx
+        simp [counterKeptMatchingIndexEmbedding, counterTailMatchingIndexEmbedding] at hv
+        omega
+    | inr i =>
+        exact nestedMatchingEdge_ne_bridgeEdge _ _ (by
+          simpa [counterKeptEdgeEmbedding] using hEq.symm)
+
+theorem counterTailBridgeEdges_subset_outside :
+    counterTailBridgeEdges ⊆
+      (nestedQubitPathGraph 16384).edgeFinset \ counterKeptEdges := by
+  classical
+  intro e he
+  rw [counterTailBridgeEdges] at he
+  rcases Finset.mem_image.mp he with ⟨j, hj, hEq⟩
+  rw [← hEq]
+  apply Finset.mem_sdiff.mpr
+  constructor
+  · rw [SimpleGraph.mem_edgeFinset]
+    exact nestedQubitPathGraph_adj_bridge _
+  · rw [counterKeptEdges]
+    intro hK
+    rcases Finset.mem_map.mp hK with ⟨i, hi, hEq⟩
+    cases i with
+    | inl i =>
+        exact nestedMatchingEdge_ne_bridgeEdge _ _ (by
+          simpa [counterKeptEdgeEmbedding] using hEq)
+    | inr i =>
+        have hidx := nestedBridgeEdge_injective (by
+          simpa [counterKeptEdgeEmbedding] using hEq)
+        have hv := congrArg Fin.val hidx
+        simp [counterKeptBridgeIndexEmbedding, counterTailBridgeIndexEmbedding] at hv
+        omega
+
 theorem counterCertifiedTailEdges_subset_outside :
     counterCertifiedTailEdges ⊆
       (nestedQubitPathGraph 16384).edgeFinset \ counterKeptEdges := by
-  intro e he
-  simp only [counterCertifiedTailEdges, Finset.mem_union, Finset.mem_singleton] at he
-  rcases he with (heFirst | heM) | heB
-  · apply Finset.mem_sdiff.mpr
-    constructor
-    · rw [heFirst]
-      rw [SimpleGraph.mem_edgeFinset]
-      exact nestedQubitPathGraph_adj_pair _
-    · intro hkeep
-      rw [counterKeptEdges] at hkeep
-      rcases Finset.mem_union.mp hkeep with hM | hB
-      · rcases Finset.mem_map.mp hM with ⟨j, hj, hEq⟩
-        have hEq' : counterFirstMatchingEdge =
-            nestedMatchingEdge (counterKeptMatchingIndexEmbedding j) := by
-          simpa [counterKeptMatchingEdgeEmbedding] using heFirst.symm.trans hEq
-        have := nestedMatchingEdge_injective (by
-          simpa [counterFirstMatchingEdge] using hEq')
-        have hv := congrArg Fin.val this
-        simp [counterFirstMatchingEdge, counterKeptMatchingEdgeEmbedding,
-          counterKeptMatchingIndexEmbedding] at hv
-      · rcases Finset.mem_map.mp hB with ⟨j, hj, hEq⟩
-        apply nestedMatchingEdge_ne_bridgeEdge (0 : Fin 16384)
-          (counterKeptBridgeIndexEmbedding j)
-        simpa [counterFirstMatchingEdge, counterKeptBridgeEdgeEmbedding] using heFirst.symm.trans hEq
-  · rcases Finset.mem_image.mp heM with ⟨j, hj, rfl⟩
-    apply Finset.mem_sdiff.mpr
-    constructor
-    · rw [SimpleGraph.mem_edgeFinset]
-      exact nestedQubitPathGraph_adj_pair _
-    · intro hkeep
-      rw [counterKeptEdges] at hkeep
-      rcases Finset.mem_union.mp hkeep with hM | hB
-      · rcases Finset.mem_map.mp hM with ⟨i, hi, hEq⟩
-        have hidx := nestedMatchingEdge_injective hEq
-        have hv := congrArg Fin.val hidx
-        simp [counterKeptMatchingEdgeEmbedding, counterKeptMatchingIndexEmbedding,
-          counterTailMatchingIndexEmbedding] at hv
-        omega
-      · rcases Finset.mem_map.mp hB with ⟨i, hi, hEq⟩
-        exact nestedMatchingEdge_ne_bridgeEdge _ _ hEq
-  · rcases Finset.mem_image.mp heB with ⟨j, hj, rfl⟩
-    apply Finset.mem_sdiff.mpr
-    constructor
-    · rw [SimpleGraph.mem_edgeFinset]
-      exact nestedQubitPathGraph_adj_bridge _
-    · intro hkeep
-      rw [counterKeptEdges] at hkeep
-      rcases Finset.mem_union.mp hkeep with hM | hB
-      · rcases Finset.mem_map.mp hM with ⟨i, hi, hEq⟩
-        exact nestedMatchingEdge_ne_bridgeEdge _ _ hEq
-      · rcases Finset.mem_map.mp hB with ⟨i, hi, hEq⟩
-        have hidx := nestedBridgeEdge_injective hEq
-        have hv := congrArg Fin.val hidx
-        simp [counterKeptBridgeEdgeEmbedding, counterKeptBridgeIndexEmbedding,
-          counterTailBridgeIndexEmbedding] at hv
-        omega
+  classical
+  rw [counterCertifiedTailEdges]
+  apply Finset.union_subset
+  · apply Finset.union_subset
+    · simpa using counterFirstMatchingEdge_mem_outside
+    · exact counterTailMatchingEdges_subset_outside
+  · exact counterTailBridgeEdges_subset_outside
 
 theorem counterCertifiedTailEdges_pairwise_disjoint :
     Disjoint ({counterFirstMatchingEdge} : Finset (Sym2 (PairQubit 16384)))
       counterTailMatchingEdges ∧
     Disjoint (({counterFirstMatchingEdge} : Finset (Sym2 (PairQubit 16384))) ∪
       counterTailMatchingEdges) counterTailBridgeEdges := by
+  classical
   constructor
   · rw [Finset.disjoint_left]
     intro e heFirst heTail
@@ -303,6 +359,7 @@ theorem sum_counterTailMatchingEdges :
     ∑ e ∈ counterTailMatchingEdges, counterPhaseWeight e =
       monotonicityCounterEarlyTime *
         ∑ n ∈ Finset.Ioc (1477 : ℕ) 16384, (1 : ℝ) / (n : ℝ) ^ 2 := by
+  classical
   rw [counterTailMatchingEdges, Finset.sum_image]
   · rw [Finset.mul_sum]
     refine Finset.sum_bij (fun j _ => (j.val + 1478 : ℕ)) ?_ ?_ ?_ ?_
@@ -329,6 +386,7 @@ theorem sum_counterTailBridgeEdges :
     ∑ e ∈ counterTailBridgeEdges, counterPhaseWeight e =
       monotonicityCounterEarlyTime *
         ∑ n ∈ Finset.Ioc (38 : ℕ) 16384, (1 : ℝ) / (n : ℝ) ^ 4 := by
+  classical
   rw [counterTailBridgeEdges, Finset.sum_image]
   · rw [Finset.mul_sum]
     refine Finset.sum_bij (fun j _ => (j.val + 39 : ℕ)) ?_ ?_ ?_ ?_
@@ -353,6 +411,7 @@ theorem counterCertifiedTail_sum :
     ∑ e ∈ counterCertifiedTailEdges, counterPhaseWeight e =
       monotonicityCounterDelta +
         monotonicityCounterEarlyTime * monotonicityCounterTail := by
+  classical
   obtain ⟨hfirst, hbridge⟩ := counterCertifiedTailEdges_pairwise_disjoint
   rw [counterCertifiedTailEdges, Finset.sum_union hbridge, Finset.sum_union hfirst,
     Finset.sum_singleton, sum_counterTailMatchingEdges, sum_counterTailBridgeEdges]
@@ -367,6 +426,7 @@ theorem counterKeptTail_lower :
         monotonicityCounterEarlyTime * monotonicityCounterTail ≤
       ∑ e ∈ (nestedQubitPathGraph 16384).edgeFinset \ counterKeptEdges,
         counterPhaseWeight e := by
+  classical
   rw [← counterCertifiedTail_sum]
   exact Finset.sum_le_sum_of_subset_of_nonneg counterCertifiedTailEdges_subset_outside
     (fun e he hnot => counterPhaseWeight_nonneg e)
@@ -380,12 +440,68 @@ theorem counterEveryDeletion_tail_lower
         monotonicityCounterEarlyTime * monotonicityCounterTail ≤
       ∑ e ∈ (nestedQubitPathGraph 16384).edgeFinset \ N,
         counterPhaseWeight e := by
+  classical
   have hmajor := tail_sum_le_of_global_threshold
     (nestedQubitPathGraph 16384).edgeFinset counterKeptEdges N
     counterPhaseWeight counterPhaseThreshold counterPhaseWeight_nonneg
     counterKeptEdges_subset_path hN (by simpa using hcard)
     counterOutsidePhaseWeight_le_threshold counterKeptPhaseWeight_ge_threshold
   exact counterKeptTail_lower.trans hmajor
+
+theorem counterFullPhaseWeight_sum :
+    ∑ e ∈ (nestedQubitPathGraph 16384).edgeFinset, counterPhaseWeight e =
+      monotonicityCounterDelta +
+        monotonicityCounterEarlyTime * monotonicityCounterTotalNonfirstMass := by
+  classical
+  rw [nestedPath_edgeFinset_eq_union (by omega),
+    Finset.sum_union (nestedMatchingEdges_disjoint_bridgeEdges 16384)]
+  rw [nestedMatchingEdges, nestedBridgeEdges, Finset.sum_image, Finset.sum_image]
+  · simp_rw [counterPhaseWeight, nestedFoldedPhase_matching]
+    simp_rw [nestedFoldedPhase_bridge]
+    have hmatch :
+        ∑ j : Fin 16384,
+            |if j.val = 0 then -monotonicityCounterDelta
+              else monotonicityCounterEarlyTime / (((j.val + 1 : ℕ) : ℝ) ^ 2)| =
+          monotonicityCounterDelta + monotonicityCounterEarlyTime *
+            ∑ n ∈ Finset.Ioc (1 : ℕ) 16384, (1 : ℝ) / (n : ℝ) ^ 2 := by
+      rw [Fin.sum_univ_succ]
+      simp only [Fin.val_zero, if_true, abs_neg, abs_of_pos counterDelta_pos]
+      rw [Finset.mul_sum]
+      refine congrArg (monotonicityCounterDelta + ·) ?_
+      refine Finset.sum_bij (fun j _ => (j.val + 2 : ℕ)) ?_ ?_ ?_ ?_
+      · intro j hj; simp; omega
+      · intro i hi j hj hij; exact Fin.ext (Nat.add_right_cancel hij)
+      · intro n hn
+        have hn' := Finset.mem_Ioc.mp hn
+        let j : Fin 16383 := ⟨n - 2, by omega⟩
+        exact ⟨j, Finset.mem_univ _, by simp [j]; omega⟩
+      · intro j hj
+        rw [if_neg (by simp)]
+        rw [abs_of_pos (div_pos counterEarlyTime_pos (by positivity))]
+        simp
+        ring
+    have hbridge :
+        ∑ j : Fin (16384 - 1),
+            |monotonicityCounterEarlyTime / (((j.val + 2 : ℕ) : ℝ) ^ 4)| =
+          monotonicityCounterEarlyTime *
+            ∑ n ∈ Finset.Ioc (1 : ℕ) 16384, (1 : ℝ) / (n : ℝ) ^ 4 := by
+      rw [Finset.mul_sum]
+      refine Finset.sum_bij (fun j _ => (j.val + 2 : ℕ)) ?_ ?_ ?_ ?_
+      · intro j hj; simp; omega
+      · intro i hi j hj hij; exact Fin.ext (Nat.add_right_cancel hij)
+      · intro n hn
+        have hn' := Finset.mem_Ioc.mp hn
+        let j : Fin (16384 - 1) := ⟨n - 2, by omega⟩
+        exact ⟨j, Finset.mem_univ _, by simp [j]; omega⟩
+      · intro j hj
+        rw [abs_of_pos (div_pos counterEarlyTime_pos (by positivity))]
+        simp only [Nat.cast_add, Nat.cast_ofNat]
+        ring
+    rw [hmatch, hbridge]
+    unfold monotonicityCounterTotalNonfirstMass monotonicityCounterLength
+    ring
+  · exact fun _ _ _ _ h => nestedBridgeEdge_injective h
+  · exact fun _ _ _ _ h => nestedMatchingEdge_injective h
 
 /-- Every allowed deletion leaves a unit-circle chord strictly above `4ε`. -/
 theorem counterEveryDeletion_chord
@@ -397,6 +513,7 @@ theorem counterEveryDeletion_chord
         ((∑ e ∈ (nestedQubitPathGraph 16384).edgeFinset \ N,
           |nestedFoldedPhase 16384 monotonicityCounterEarlyTime
             monotonicityCounterDelta e| : ℝ) : ℂ))) - 1‖ := by
+  classical
   let phi : ℝ := ∑ e ∈ (nestedQubitPathGraph 16384).edgeFinset \ N,
     counterPhaseWeight e
   let tau : ℝ := monotonicityCounterDelta +
@@ -410,53 +527,8 @@ theorem counterEveryDeletion_chord
         (nestedQubitPathGraph 16384).edgeFinset := Finset.sdiff_subset
     have hsum := Finset.sum_le_sum_of_subset_of_nonneg hsub
       (fun e he hnot => counterPhaseWeight_nonneg e)
-    -- The full edge mass is exactly the first folded phase plus every nonfirst bond.
-    rw [nestedPath_edgeFinset_eq_union (by omega),
-      Finset.sum_union (nestedMatchingEdges_disjoint_bridgeEdges 16384)] at hsum
-    rw [nestedMatchingEdges, nestedBridgeEdges, Finset.sum_image, Finset.sum_image] at hsum
-    · simp_rw [counterPhaseWeight, nestedFoldedPhase_matching]
-      simp_rw [counterPhaseWeight, nestedFoldedPhase_bridge]
-      have hmatch :
-          ∑ j : Fin 16384,
-              |if j.val = 0 then -monotonicityCounterDelta
-                else monotonicityCounterEarlyTime / (((j.val + 1 : ℕ) : ℝ) ^ 2)| =
-            monotonicityCounterDelta + monotonicityCounterEarlyTime *
-              ∑ n ∈ Finset.Ioc 1 16384, (1 : ℝ) / (n : ℝ) ^ 2 := by
-        rw [Fin.sum_univ_succ]
-        simp only [Fin.val_zero, if_true, abs_neg, abs_of_pos counterDelta_pos]
-        rw [Finset.mul_sum]
-        refine congrArg (monotonicityCounterDelta + ·) ?_
-        refine Finset.sum_bij (fun j _ => j.val + 2) ?_ ?_ ?_ ?_
-        · intro j hj; simp; omega
-        · intro i hi j hj hij; exact Fin.ext (Nat.add_right_cancel hij)
-        · intro n hn
-          let j : Fin 16383 := ⟨n - 2, by have := Finset.mem_Ioc.mp hn; omega⟩
-          exact ⟨j, Finset.mem_univ _, by simp [j]; omega⟩
-        · intro j hj
-          rw [if_neg (by simp)]
-          rw [abs_of_pos (div_pos counterEarlyTime_pos (by positivity))]
-          simp
-          ring
-      have hbridge :
-          ∑ j : Fin (16384 - 1),
-              |monotonicityCounterEarlyTime / (((j.val + 2 : ℕ) : ℝ) ^ 4)| =
-            monotonicityCounterEarlyTime *
-              ∑ n ∈ Finset.Ioc 1 16384, (1 : ℝ) / (n : ℝ) ^ 4 := by
-        rw [Finset.mul_sum]
-        refine Finset.sum_bij (fun j _ => j.val + 2) ?_ ?_ ?_ ?_
-        · intro j hj; simp; omega
-        · intro i hi j hj hij; exact Fin.ext (Nat.add_right_cancel hij)
-        · intro n hn
-          let j : Fin (16384 - 1) := ⟨n - 2, by have := Finset.mem_Ioc.mp hn; omega⟩
-          exact ⟨j, Finset.mem_univ _, by simp [j]; omega⟩
-        · intro j hj
-          rw [abs_of_pos (div_pos counterEarlyTime_pos (by positivity))]
-          ring
-      rw [hmatch, hbridge] at hsum
-      simpa [phi, monotonicityCounterTotalNonfirstMass,
-        monotonicityCounterLength, add_assoc, mul_add] using hsum
-    · exact fun _ _ _ _ h => nestedBridgeEdge_injective h
-    · exact fun _ _ _ _ h => nestedMatchingEdge_injective h
+    rw [counterFullPhaseWeight_sum] at hsum
+    simpa [phi] using hsum
   apply phase_chord_gt_four_mul_of_tail_interval htau0 htauphi
     (lt_of_le_of_lt hphiTotal monotonicityCounterTotalPhase_lt_threePiOverTwo)
     monotonicityCounterEarlyTail_sub_cube_gt monotonicityCounterSmallError

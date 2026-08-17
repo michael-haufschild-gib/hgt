@@ -101,19 +101,29 @@ theorem sum_pole_ge_sum_zero_of_nonneg {P Z : ℕ} (p : Fin P → ℝ) (z : Fin 
         have h := ((hasDerivAt_id (0 : ℝ)).const_mul (p i)).exp
         simpa using h
       have hsum := HasDerivAt.sum (fun i (_ : i ∈ (Finset.univ : Finset (Fin P))) => hi i)
-      simpa [Finset.sum_apply] using hsum
+      have heq : (fun t : ℝ => ∑ i, Real.exp (p i * t)) =
+          ∑ i, (fun t : ℝ => Real.exp (p i * t)) := by
+        funext t
+        simp [Finset.sum_apply]
+      rw [heq]
+      exact hsum
     have h2 : HasDerivAt (fun t : ℝ => ∑ j, Real.exp (z j * t)) (∑ j, z j) 0 := by
       have hj : ∀ j : Fin Z, HasDerivAt (fun t : ℝ => Real.exp (z j * t)) (z j) 0 := by
         intro j
         have h := ((hasDerivAt_id (0 : ℝ)).const_mul (z j)).exp
         simpa using h
       have hsum := HasDerivAt.sum (fun j (_ : j ∈ (Finset.univ : Finset (Fin Z))) => hj j)
-      simpa [Finset.sum_apply] using hsum
+      have heq : (fun t : ℝ => ∑ j, Real.exp (z j * t)) =
+          ∑ j, (fun t : ℝ => Real.exp (z j * t)) := by
+        funext t
+        simp [Finset.sum_apply]
+      rw [heq]
+      exact hsum
     exact h1.sub h2
   have hzero : factorNumerator p z 0 = 0 := by
     rw [factorNumerator_zero, hbal, sub_self]
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   -- the derivative is negative, so the numerator is negative just to the right of `0`
   set d : ℝ := (∑ i, p i) - ∑ j, z j with hd
   have hdneg : d < 0 := by rw [hd]; linarith

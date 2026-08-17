@@ -21,9 +21,9 @@ namespace RHTower
 family has both the universal Hermite ratio and, eventually, a genuine nonzero secular vector in
 the constrained hyperplane.  Root existence is not an extra assumption: positivity of the
 universal ratio rules out the junk branch of `depthSecularRoot`. -/
-theorem ClockEnvelope.ccm_depth_ratio_and_exactEigenpair_eventually
-    {D : ℝ → ℕ → ℝ} {e : ℕ → ℕ} {E : ℝ → ℝ}
-    (h : ClockEnvelope D e E) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
+theorem LadderEnvelope.ccm_depth_ratio_and_exactEigenpair_eventually
+    {D : ℝ → ℕ → ℝ}
+    (h : LadderEnvelope D) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
     (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
     (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
     (hl : ∀ j, j ≤ k + 1 → Tendsto (fun lam => ℓ lam j) atTop

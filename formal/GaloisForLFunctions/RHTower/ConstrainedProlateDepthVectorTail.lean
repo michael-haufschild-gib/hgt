@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.ConstrainedProlateSecularVector
 
 The ground-vector tail estimate starts at coordinate `2`.  A depth-`k` eigenvector instead has a
 finite head through coordinate `k + 1`, so its tail starts at `k + 2`.  This module proves the
-offset estimate and composes it with the exact root supplied by a `ClockEnvelope`.
+offset estimate and composes it with the exact root supplied by a `LadderEnvelope`.
 
 No root-existence or tail hypothesis is added: the clock law supplies the genuine root in the
 `k`-th gap, its next-gap separation, and the rate that drives the squared tail to zero.
@@ -50,12 +50,12 @@ theorem secularVector_sq_offset_tail_le
 /-- **Every fixed-depth exact secular eigenvector is asymptotically supported on its first
 `k + 2` coordinates.**  The tail is measured relative to the nonzero zeroth coordinate.
 
-All infinite-dimensional inputs are discharged by the clock envelope and Bessel hypotheses.  The
+All infinite-dimensional inputs are discharged by the ladder envelope and Bessel hypotheses.  The
 finite coordinate limits are the same named prolate-to-Hermite input consumed by the exact depth
 root law. -/
-theorem ClockEnvelope.ccm_depth_secularVector_tail_fraction_tendsto_zero
-    {D : ℝ → ℕ → ℝ} {e : ℕ → ℕ} {E : ℝ → ℝ}
-    (h : ClockEnvelope D e E) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
+theorem LadderEnvelope.ccm_depth_secularVector_tail_fraction_tendsto_zero
+    {D : ℝ → ℕ → ℝ}
+    (h : LadderEnvelope D) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
     (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
     (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
     (hl : ∀ j, j ≤ k + 1 → Tendsto (fun lam => ℓ lam j) atTop

@@ -26,9 +26,9 @@ theorem injective_two_mul : Function.Injective (fun j : ℕ => 2 * j) := by
 /-- **The constrained-prolate clock law, with the coordinate limits discharged.**  Every clock
 envelope yields, for the Fourier-even constraint coordinates, an eventual exact eigenpair at each
 depth and the collapse of all preceding normalized raw defects — unconditionally. -/
-theorem ClockEnvelope.constrainedProlateEven_exactEigenpair_and_allRawDefects
-    {D : ℝ → ℕ → ℝ} {e : ℕ → ℕ} {E : ℝ → ℝ}
-    (h : ClockEnvelope D e E) (k : ℕ) :
+theorem LadderEnvelope.constrainedProlateEven_exactEigenpair_and_allRawDefects
+    {D : ℝ → ℕ → ℝ}
+    (h : LadderEnvelope D) (k : ℕ) :
     let ℓ : ℝ → ℕ → ℝ := fun lam j => ‖evenProlateConstraintCoord lam (2 * j)‖
     (∀ᶠ lam in atTop,
       depthSecularRoot (D lam) (ℓ lam) k ∈ Ioo (D lam k) (D lam (k + 1)) ∧

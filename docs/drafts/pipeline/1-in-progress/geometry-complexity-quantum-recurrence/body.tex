@@ -497,9 +497,31 @@ be infimum of number of arbitrary two-qubit gates in support-certified
 one- and two-qubit circuits $W$ satisfying
 $\|W-U_L(t)\|_{2\to2}\le\varepsilon$; one-qubit gates are free.
 
+Lower-bound mechanism is not special to inverse powers.  Let $P$ be any
+finite qubit path, assign real phase $\beta_e$ to each edge, and put
+\[
+ V_\beta=\exp\!\left(-\ii\sum_{e=\{u,v\}\in E(P)}
+   \beta_e |11\rangle\!\langle11|_{uv}\right).
+\]
+
+\begin{theorem}[Path phase-tail obstruction]
+\label{thm:phasetail}
+Fix $G\in\N$ and $\varepsilon\ge0$.  Suppose that for every deleted set
+$N\subseteq E(P)$ with $|N|\le G$,
+\begin{equation}
+ 4\varepsilon<
+ \left|\exp\!\left(-\ii\sum_{e\in E(P)\setminus N}|\beta_e|\right)-1\right|.
+ \label{eq:phasetail}
+\end{equation}
+Then every support-certified circuit approximating $V_\beta$ within
+operator-norm error $\varepsilon$ uses more than $G$ two-qubit gates.  The
+approximating gates may be non-diagonal and may couple arbitrary qubit pairs;
+path restriction applies only to target Hamiltonian.
+\end{theorem}
+
 \begin{theorem}[Nested static-local ramp--return law]
 \label{thm:nestedramp}
-The family \eqref{eq:nestedH} has the following five properties.
+The family \eqref{eq:nestedH} has the following six properties.
 \begin{enumerate}[leftmargin=1.7em]
 \item For every infinite Boolean configuration $x$, infinite diagonal energy
 \begin{equation}
@@ -544,14 +566,31 @@ full return cycle.  Moreover, if $s$ and $t$ both obey
  C^{\rm op}_{L,\varepsilon}(s)
  \le C^{\rm op}_{L,\varepsilon}(t).                \label{eq:nestedcoarsemono}
 \end{equation}
+\item Literal all-pairs monotonicity nevertheless fails inside same window.
+For
+\begin{equation}
+ L=16384,\qquad \varepsilon=2^{-10},\qquad
+ s=2\pi-10^{-6},\qquad t=2\pi,                    \label{eq:nestedcountertimes}
+\end{equation}
+one has
+\begin{equation}
+ 1024\pi\varepsilon\le s<t\le\frac{\varepsilon L}{2},
+ \qquad
+ C^{\rm op}_{L,\varepsilon}(s)\ge1514,
+ \qquad
+ C^{\rm op}_{L,\varepsilon}(t)\le1513.            \label{eq:nestedcounter}
+\end{equation}
+In particular $C^{\rm op}_{L,\varepsilon}(t)<
+C^{\rm op}_{L,\varepsilon}(s)$ although $s<t$.
 \end{enumerate}
 \end{theorem}
 
 This is finite-time circuit hardness for one explicit static bounded-degree
 Hamiltonian, not a generic or worst-case ensemble statement.  Ramp means
 matching linear envelopes over window \eqref{eq:nestedwindow}.  Equation
-\eqref{eq:nestedcoarsemono} excludes scale-separated backtracking but does
-not compare every pair $s\le t$.  Couplings decay with position, so theorem
+\eqref{eq:nestedcoarsemono} excludes scale-separated backtracking, whereas
+\eqref{eq:nestedcounter} proves nearby backtracking caused by folded local
+phase return.  Couplings decay with position, so theorem
 does not claim translation invariance, uniform transport or a complexity
 plateau.
 
@@ -645,7 +684,9 @@ statements:
       permanent operational separation from Haar randomness.
 \item one explicit nested static nearest-neighbour qubit path with bounded
       infinite-chain energy, a robust finite-time linear circuit-complexity
-      envelope, exact return and exact reflected descent.
+      envelope, exact return and exact reflected descent, together with a
+      path phase-tail obstruction and a certified failure of all-pairs
+      monotonicity inside the ramp window.
 \end{enumerate}
 
 Complexity result is complementary to saturation theorems for random circuits
@@ -657,6 +698,14 @@ random \cite{CuiEtAl2025}.  A static geometrically local SFF ramp has recently
 been proved by a clock embedding \cite{Ippoliti2026}; our completed-time rank
 and collision laws address a different regime and do not assert a finite-time
 random-matrix ramp.
+
+Unlike random-Hamiltonian jump results, \eqref{eq:nestedcounter} concerns one
+explicit deterministic, static, commuting, geometrically nearest-neighbour
+Hamiltonian.  It certifies a strict decrease between two specified nearby
+times by integer-separated upper and lower bounds.  Thus proposed
+``second-law'' behavior of complexity \cite{BrownSusskind2018} cannot be read
+as deterministic pointwise monotonicity, even within a window that has
+two-sided linear growth envelopes.
 
 Hamiltonian-simulation lower bounds provide important comparison points.
 Worst-case one-dimensional piecewise local dynamics require nearly linear
@@ -690,11 +739,11 @@ uniform-transport model.  Its thermodynamic statement concerns bounded
 static energy and uniform finite-volume truncation, not infinite-system
 circuit complexity.
 
-Principal open boundary is stronger dynamical shape: all-pairs pointwise
-monotonicity inside the laboratory window, a parametrically longer growth
-regime, and a saturation plateau for one uniform-strength noncommuting
-bounded-degree Hamiltonian are not
-proved.  Completed occupation does not determine first onset, and inverse
+Principal open boundary is stronger dynamical shape: a classification of
+all local complexity drops, a sharp phase-return exchange law, a
+parametrically longer growth regime, and a saturation plateau for one
+uniform-strength noncommuting bounded-degree Hamiltonian are not proved.
+Completed occupation does not determine first onset, and inverse
 completed density is not asserted to be a first-return time.  Infinite-volume
 quasi-local orbit recurrence remains outside present scope.
 

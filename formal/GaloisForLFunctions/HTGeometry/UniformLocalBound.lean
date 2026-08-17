@@ -25,29 +25,29 @@ theorem exists_uniform_bound_of_local {X : Type*} [TopologicalSpace X] {K : Set 
   have hcover : K ⊆ ⋃ x ∈ K, interior (U x) := by
     intro z hz
     exact Set.mem_biUnion hz (mem_interior_iff_mem_nhds.mpr (hU z hz))
-  obtain ⟨b, -, hbfin, hbcov⟩ :=
+  obtain ⟨b, hbsub, hbfin, hbcov⟩ :=
     hK.elim_finite_subcover_image (b := K) (c := fun x => interior (U x))
       (fun x _ => isOpen_interior) hcover
   set s : Finset X := hbfin.toFinset with hs
-  have hmemb : ∀ z ∈ K, ∃ x ∈ s, z ∈ interior (U x) := by
+  have hmemb : ∀ z ∈ K, ∃ x ∈ s, x ∈ K ∧ z ∈ interior (U x) := by
     intro z hz
     obtain ⟨x, hx, hzx⟩ : ∃ x ∈ b, z ∈ interior (U x) := by
       have := hbcov hz
       simpa using this
-    exact ⟨x, by rwa [hs, Set.Finite.mem_toFinset], hzx⟩
+    exact ⟨x, by rwa [hs, Set.Finite.mem_toFinset], hbsub hx, hzx⟩
   rcases Finset.eq_empty_or_nonempty s with hse | hsne
   · refine ⟨0, le_rfl, ?_⟩
     intro z hz
-    obtain ⟨x, hx, -⟩ := hmemb z hz
+    obtain ⟨x, hx, -, -⟩ := hmemb z hz
     rw [hse] at hx
     exact absurd hx (Finset.notMem_empty x)
   refine ⟨s.sup' hsne (fun x => max 0 (C x)), ?_, ?_⟩
   · obtain ⟨x, hx⟩ := hsne
     exact le_trans (le_max_left 0 (C x)) (Finset.le_sup' (fun x => max 0 (C x)) hx)
   · intro z hz
-    obtain ⟨x, hx, hzx⟩ := hmemb z hz
+    obtain ⟨x, hx, hxK, hzx⟩ := hmemb z hz
     refine hmono (C x) (s.sup' hsne (fun x => max 0 (C x))) z ?_
-      (hCspec x (interior_subset hzx))
+      (hCspec x hxK z (interior_subset hzx))
     exact le_trans (le_max_right 0 (C x)) (Finset.le_sup' (fun x => max 0 (C x)) hx)
 
 end GaloisForLFunctions.HTGeometry

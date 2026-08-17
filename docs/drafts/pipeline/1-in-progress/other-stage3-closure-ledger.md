@@ -3595,3 +3595,46 @@ Five new modules:
   their own centres have boundedly comparable denominators near every point of the overlap.
 
 No dimension theory of analytic sets is used anywhere; the Bézout constant replaces it.
+
+## Pass 58 — Siegel's theorem for compact complex tori is formalized
+
+```text
+GaloisForLFunctions.HTGeometry.exists_ne_zero_poly_of_periodic_meromorphic :
+  P a subgroup of C^(n+1) with compact quotient,
+  A_k, B_k entire (k in Fin (n+2)),  B_k not identically zero,
+  A_k/B_k invariant under P  (cross-multiplied: A_k(z+p) B_k(z) = A_k(z) B_k(z+p))
+    ==>  there is a nonzero Q in C[X_0,...,X_(n+1)] with
+         Q(A_0/B_0, ..., A_(n+1)/B_(n+1)) = 0  wherever the denominators do not vanish.
+```
+
+Equivalently `trdeg_C M(X) <= dim_C X` for a compact complex torus `X`, in the corpus's meromorphic
+field (fractions of entire functions).  Unconditional, axioms `[propext, Classical.choice,
+Quot.sound]`, umbrella-wired, lint-clean.  The cleared form
+`exists_ne_zero_siegelHomCombination_of_periodic_meromorphic` gives a nonzero coefficient vector
+whose denominator-cleared combination vanishes at *every* point, which is what an ambient
+differential-algebra argument consumes.
+
+New modules on top of pass 57:
+
+* `GermReducedPresentation` — every germ fraction reduces at every point
+  (`exists_reduced_presentation_at`); two reduced presentations differ by *one* unit factor, the
+  same for numerator and denominator (`exists_unit_factor_of_reduced_at`); a cleared combination
+  transforms by the `m`-th power of the product of those factors
+  (`siegelHomCombination_of_unit_factors`) — division-free, with no hypothesis on the zero divisors.
+* `UniformLocalBound` — a locally bounded monotone property on a compact set has one uniform bound.
+* `SiegelUniformTransition` — the transition datum at a point (`SiegelTransitionAt`), its existence
+  with a local bound near every point of a chart, its uniformisation over the closed polydisc and
+  then over the finitely many charts, and the resulting `htrans` with comparison constant `C^m`.
+* `SiegelCountParameters` — `exists_siegel_count_params`: with `N` proportional to `m` the two
+  opposing inequalities hold simultaneously; the factor `κ` is chosen so that `D·q^κ <= 1/2`, and
+  the counting side needs only `m >= card ι · κ^n` because `(m+1)^(n+1) >= (m+1)·m^n`.
+* `SiegelChartConstruction` — cancelling a nonzero holomorphic factor on a connected domain
+  (`eqOn_zero_of_mul_eq_zero`), the reduced chart of a globally presented meromorphic function
+  (`exists_reduced_chart`), the chart package of a whole family, one radius for every centre of a
+  compact set, the translate of a chart by a period, and the cross identity of two charts across a
+  period (`chartPackage_cross`).
+* `SiegelTorusTranscendence` — the assembly.
+
+The point where the argument used to fail is exactly where pass 57 applies: the chart comparison
+happens on the overlap, away from either centre, and reducedness is a condition at the centre.  The
+openness of coprimality closes that gap; everything else was already owned.

@@ -512,7 +512,8 @@ two-query separator can remain nonzero at every slice and every time.
 - [x] ordinary static-local and permanent non-Haar composition on paper
 - [x] hostile and preliminary external audit
 - [x] exact finite-grid moment, translated-cap, and prime all-power avoidance Lean core
-- [ ] Lean composition through arbitrary rays, recurrence shadowing, and circuit asymptotics
+- [x] Lean composition through arbitrary rays and recurrence shadowing
+- [ ] Lean circuit-capacity substitution and asymptotics
 - [ ] effective first polygon time / Brown onset
 
 ## 10. Lean core advance -- 2026-08-14
@@ -652,8 +653,60 @@ What links these to the card is Lemma A: taking `E = E_{Y,delta}^{(k)}` and
 `\|E\| <= 4N e^{-gamma_delta D} k^{D-1}` from `(7)` turns the hypothesis `(k-1)\|E\| < \|Q\|` into
 exactly the card's `(13)`.
 
+### The projective quotient and Theorem B are closed
+
+Two new modules, both umbrella-wired and axiom-clean.
+
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveTorsionPhaseQuotient.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the diagonal subgroup `mu_k^diag` and the anchoring map | `diagPhaseHom`, `anchorPhaseHom` |
+| anchoring is onto, with kernel exactly the diagonal | `anchorPhaseHom_surjective`, `ker_anchorPhaseHom` |
+| **`(2)`**: the quotient `Q_{D,k} = mu_k^D/mu_k^diag`, identified with the anchored model | `projPhaseTorsion`, `projPhaseTorsionEquiv` |
+| **`(3)`**: `\|Q_{D,k}\| = k^{D-1}` | `card_projPhaseTorsion` |
+| **`(1)`** at a torsion phase: the ray of a `k`-torsion phase vector, and its unit norm | `torsionPhaseVec`, `torsionRay`, `norm_torsionRay` |
+| a diagonal translation multiplies the ray by a unimodular scalar | `torsionRay_add_diag` |
+| hence trace distance descends to the quotient | `pureStateTraceDistance_torsionRay_add_diag` |
+| every phase vector has the trace distances of its anchored representative | `pureStateTraceDistance_torsionRay_eq_anchored` |
+| **`(6)`**: the easy classes of a target dictionary | `easyAnchored`, `mem_easyAnchored` |
+| a hard class exceeds `delta` against every target | `lt_pureStateTraceDistance_of_not_mem_easyAnchored` |
+
+This closes the identification the previous entry left open.  `Phi` is now literally evaluated on the
+quotient `(2)`: `torsionRay` is constant on diagonal cosets up to a global phase, `anchoredRay` picks
+the representative whose first coordinate is `0`, and `projPhaseTorsionEquiv` is the isomorphism
+between that set of representatives and `mu_k^D/mu_k^diag`.
+
+`formal/GaloisForLFunctions/HTGeometry/TorsionPolygonRecurrenceShadowing.lean`:
+
+| Card item | Declaration |
+|---|---|
+| trace distance is dominated by norm distance | `pureStateTraceDistance_le_norm_sub` |
+| a uniform coordinate bound bounds the ray distance | `norm_phaseRay_sub_le` |
+| `\|e^{ix} - e^{iy}\| <= \|x-y\|`, and conjugation invariance | `norm_exp_ofReal_mul_I_sub_le`, `norm_exp_neg_ofReal_mul_I_sub` |
+| unimodular powers separate at most linearly | `norm_pow_sub_pow_le_of_unit` |
+| a strict inequality over a finite index set has a uniform margin | `exists_margin_of_lt` |
+| **`(17)`**: the autonomous trajectory as a ray, and its unit norm | `flowPhaseVec`, `flowRay`, `norm_flowRay` |
+| its global phase is invisible, and it starts at the zero class | `pureStateTraceDistance_flowRay_eq`, `flowRay_zero` |
+| **`(21)`**: shadowing propagates to every power with a linear loss | `ShadowsTorsion`, `shadowsTorsion_nsmul` |
+| a shadowed time is trace-close to the anchored torsion ray | `pureStateTraceDistance_flowRay_anchoredRay_le` |
+| arbitrarily late shadowing times exist | `exists_late_shadowing` |
+| **Theorem B, `(18)` and `(19)`** | `exists_late_recurrence_hard_polygon` |
+| **`(20)`**, the recurrence-time parametrization | `exists_late_recurrence_rational_slices` |
+
+The Lean route to `(21)`--`(22)` is quantitative rather than a limit.  Minimality is replaced by two
+explicit steps: `kronecker_approx` places the phase vector within `eps/2` of the prescribed torsion
+class at some time `t_0`, and the annular Dirichlet recurrence
+`exists_fin_simultaneous_two_pi_phase_approximation_annular_quantitative` supplies an integer return
+time `m >= Q` of arbitrary size with phase error at most `2 pi / Q <= eps/2`; the translate `t_0 + m`
+inherits both, which is where arbitrary lateness comes from.  Because the anchored flow phase at time
+`jt` is the `j`-th power of the phase at time `t`, one placement controls the whole polygon at once:
+slice `j` is within `j eps` of the torsion vertex `q_*^j`, and the endpoint `kt` is within `k eps` of
+the start, since `q_*^k = 1`.  The strict inequalities of `(14)` survive because the dictionary and
+the exponent range are finite: `exists_margin_of_lt` converts them into a uniform margin `sigma > 0`,
+and it then suffices to take `eps = min(sigma, rho)/(2k)`.
+
 ### What remains
 
-Theorem B, and the identification of `Q_{D,k}` as the concrete quotient `mu_k^D/mu_k^diag` acting on
-the phase rays of `(1)` -- the modules above use the anchored model `Fin (D-1) -> ZMod k`, which has
-the right cardinality and exponent but is not yet tied to `Phi`.
+The circuit specialization of section 5 and Corollary B.1: the substitution of the heap-capacity
+bound `(23)` into `(13)` to obtain `(24)`--`(25)`, and the asymptotics `(26)`--`(31)`.
