@@ -12820,3 +12820,95 @@ carrier, a reflection under which the common channel is invariant and the carrie
 exponential source relation.
 
 All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AFB. The literal-instantiation layer — fourth course: `(229)` on the literal sources
+
+```text
+RHTower/SuzukiExponentialSourceCayley.lean
+  coshSource, sinhSource, coshSource_eq, sinhSource_eq
+  b_expand                                bilinear expansion of a scaled sum
+  parityGap_eq_cross     E₀ − O₀ = b(u,v)
+  paritySum_eq_avg       E₀ + O₀ = (b(u,u) + b(v,v))/2
+  abs_parityCayley_le_sech                (229) for any symmetric psd reflection-invariant form
+  abs_parityCayley_diffBilinForm_le_sech  the same on the literal Toeplitz channel
+```
+
+Theorem W's abstract core is stated for two vectors `u`, `v` linked by a reflection.  The card's
+sources are `cosh` and `sinh` on the half interval, so the identification has to be made:
+`cosh` and `sinh` are the half-sum and half-difference of `e^x` and `e^{-x}`, and bilinearity turns
+their energies into the cross term and the average energy of the two exponentials,
+
+`E₀ − O₀ = b(u,v)`,  `E₀ + O₀ = (b(u,u) + b(v,v))/2`,
+
+so `κ₀ = 2b(u,v)/(b(u,u)+b(v,v))` is literally the Cayley scalar of the abstract core.  The two
+reflection inputs then give `b(u,u) = e^{2a} b(v,v)` and `|b(u,v)| ≤ e^a b(v,v)`, whose ratio is
+`sech a` — the denominator being `e^a cosh(a) b(v,v)` after the exponentials are collected.
+
+The second theorem removes the reflection hypothesis altogether on the Toeplitz channel: evenness of
+the kernel supplies it through `diffBilinForm_midpointReflect`.  What remains as hypothesis there —
+positive semidefiniteness and a nonvanishing decay energy — is the card's admissibility, not an
+analytic gap.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AFC. Theorem X — the integral half of the slack law
+
+```text
+RHTower/SuzukiSourceAlignmentDeficitIntegral.lean
+  evenResolvent, oddResolvent, evenEdgeWeight, oddEdgeWeight
+  integrable_id_of_edgeSupport, integrable_evenResolvent
+  evenDeficit_eq, oddDeficit_eq                     (245) both halves
+  integrable_evenEdgeWeight, integrable_oddEdgeWeight
+  edgeIntegral_le_evenDeficit, edgeIntegral_le_oddDeficit   (248) both halves
+  neg_rayleigh_ge_of_deficit                        (250)
+  ae_eq_edge_of_evenDeficit_eq_zero                 (251) even
+  ae_eq_edge_of_oddDeficit_eq_zero                  (251) odd
+```
+
+`SuzukiSourceAlignmentSlack.lean` already carried the scalar half of Theorem X — the slack law
+`(246)`, the sharp threshold `(242)`, the four pointwise weight comparisons and the Markov step
+`(247)`.  What was missing is the passage of those pointwise statements through the integral, which
+is what `(245)`, `(248)`, `(250)` and `(251)` actually assert.
+
+`(245)` is where the probability normalization is used: the deficit is a difference of a constant
+and an integral, and only because the measure has unit mass may the constant be absorbed under the
+integral sign.  Integrability on the even side is not assumed — the resolvent weight is bounded by
+`1/(1-r)` on a spectrum contained in `[-r, 1]`, so it follows from the support hypothesis.  On the
+odd side the resolvent is unbounded at `t = 1`, and its integrability is exactly finiteness of the
+odd energy, which the card assumes throughout.
+
+`(251)` is the degeneracy statement.  A nonnegative integrand with vanishing integral is a.e. zero,
+and the edge weight vanishes only at `t = -r`, so both spectral measures collapse to the point mass
+at the edge — which is the assertion that the two source directions become bottom-edge
+eigenvectors, and hence that the edge has multiplicity at least two.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.
+
+## AFD. Theorem Y — `(257)` strict-floor collapse and `(258)` rigid incidence
+
+```text
+RHTower/SuzukiRelativeEdgeFloorRigidity.lean
+  groundDefect_ge_floorGap            the odd variational floor bounds the defect below
+  edgeBound_mono                      the edge bound is monotone in the defect
+  tendsto_edgeFloorBound              (257): the bound rises to 1 at the floor
+  edge_ge_floorGap                    (257) combined
+  psd_form_kernel_of_diag_eq_zero     zero energy annihilates a psd form
+  groundDefect_pos_of_not_formKernel  (258)
+  formKernel_of_groundDefect_eq_zero  (258), contrapositive form
+```
+
+`SuzukiRelativeEdgeParityFloor.lean` already carried `(255)`, `(256)` and `(259)`.  The two
+remaining halves of Theorem Y are the strict-floor limit and the tied-floor rigidity.
+
+For `(257)` there are three steps: the odd variational floor makes the ground defect at least the
+floor gap; the edge bound `η/(2d+η)` is increasing in `η`, so the gap may be substituted for the
+defect; and the resulting expression tends to `1` as the shift rises to the even floor.  The limit
+is taken within `𝓝[<] α_e`, which is the card's `λ → α_e⁻`.
+
+For `(258)` the point is that vanishing of the ground defect is not merely vanishing of a quadratic
+value.  Cauchy–Schwarz for a positive semidefinite form forces `b(x,y)² ≤ b(x,x) b(y,y)`, so a
+vector of zero energy is annihilated by the whole form.  Hence the defect vanishes exactly on the
+odd form kernel, and a ground mode outside it has strictly positive defect — which is precisely the
+statement that avoiding the pole-driven collapse requires `ker(A_e − α) ⊆ ker(A_o − α)`.
+
+All declarations audit to `[propext, Classical.choice, Quot.sound]`.

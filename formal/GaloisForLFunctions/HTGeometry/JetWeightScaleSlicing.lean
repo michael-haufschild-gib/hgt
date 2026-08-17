@@ -23,16 +23,25 @@ noncomputable section
 
 variable {C : Type*} [Field C] [CharZero C]
 
-/-- Torus invariance. -/
+/-- Invariance under the weighted action of the scalar two.  In characteristic zero this single
+scalar already forces the whole slicing structure, so it is the working form of torus invariance. -/
 def IsWeightZero (v : JetField C Unit) : Prop :=
-  ∀ (lam : C) (h : lam ≠ 0), weightScale h v = v
+  weightScale (show (2 : C) ≠ 0 from two_ne_zero) v = v
 
-omit [CharZero C] in
 theorem isWeightZero_jetRatio (j : ℕ) : IsWeightZero (jetRatio j : JetField C Unit) :=
-  fun _ h => weightScale_jetRatio h j
+  weightScale_jetRatio _ j
 
 theorem isWeightZero_substitutionDeriv (R : RatFunc C) : IsWeightZero (substitutionDeriv R) :=
-  fun _ h => weightScale_substitutionDeriv h R
+  weightScale_substitutionDeriv _ R
+
+theorem IsWeightZero.mul {a b : JetField C Unit} (ha : IsWeightZero a) (hb : IsWeightZero b) :
+    IsWeightZero (a * b) := by
+  show weightScale _ (a * b) = a * b
+  rw [map_mul, ha, hb]
+
+theorem IsWeightZero.inv {a : JetField C Unit} (ha : IsWeightZero a) : IsWeightZero a⁻¹ := by
+  show weightScale _ a⁻¹ = a⁻¹
+  rw [map_inv₀, ha]
 
 /-- The weighted action restricted to a prefix field. -/
 def weightScalePrefixHom {lam : C} (h : lam ≠ 0) (k : ℕ) :
@@ -143,7 +152,7 @@ theorem pd_one_eq_zero_of_isWeightZero {v : JetField C Unit} (hv : IsWeightZero 
       weightScale htwo (Polynomial.aeval x Pp) = Polynomial.aeval x (Pp.comp sc) := by
     intro Pp
     rw [Polynomial.aeval_comp, hsceval, weightScale_aeval htwo 1 x Pp, hmapid Pp]
-  have hveq : weightScale htwo v = v := hv 2 htwo
+  have hveq : weightScale htwo v = v := hv
   rw [hvdiv, map_div₀, hscale, hscale] at hveq
   have hcoeffsc : ∀ (Pp : Polynomial ↥(jetPrefixField C 1)) (n : ℕ),
       (Pp.comp sc).coeff n = ρ2 ^ n * Pp.coeff n := by

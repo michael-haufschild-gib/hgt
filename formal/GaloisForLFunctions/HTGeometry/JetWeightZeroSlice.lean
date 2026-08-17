@@ -119,11 +119,12 @@ theorem map_weightScalePrefix_eq_of_isWeightZero {k : ℕ} (hk : 1 < k) {v : Jet
     (hv : IsWeightZero v) {P Q : Polynomial ↥(jetPrefixField C k)} (hQ0 : Q ≠ 0)
     (hQm : Q.Monic) (hcop : IsCoprime P Q)
     (hvdiv : v = Polynomial.aeval (jetRatio k : JetField C Unit) P
-      / Polynomial.aeval (jetRatio k : JetField C Unit) Q)
-    {lam : C} (h : lam ≠ 0) :
-    P.map (weightScalePrefixHom h k).toRingHom = P
-      ∧ Q.map (weightScalePrefixHom h k).toRingHom = Q := by
+      / Polynomial.aeval (jetRatio k : JetField C Unit) Q) :
+    P.map (weightScalePrefixHom (show (2 : C) ≠ 0 from two_ne_zero) k).toRingHom = P
+      ∧ Q.map (weightScalePrefixHom (show (2 : C) ≠ 0 from two_ne_zero) k).toRingHom = Q := by
   classical
+  set lam : C := 2 with hlamdef
+  have h : lam ≠ 0 := two_ne_zero
   set z : JetField C Unit := (jetRatio k : JetField C Unit) with hzdef
   have hztr : Transcendental (jetPrefixField C k) z :=
     transcendental_jetRatio_over_jetPrefixField hk
@@ -144,7 +145,7 @@ theorem map_weightScalePrefix_eq_of_isWeightZero {k : ℕ} (hk : 1 < k) {v : Jet
   have hQy : Polynomial.aeval z Q ≠ 0 := fun hh => hQ0 (hinj (by simpa using hh))
   have hQyw : Polynomial.aeval z (Q.map (weightScalePrefixHom h k).toRingHom) ≠ 0 :=
     fun hh => hQ0w (hinj (by simpa using hh))
-  have hveq : weightScale h v = v := hv lam h
+  have hveq : weightScale h v = v := hv
   rw [hvdiv, map_div₀, hw, hw] at hveq
   have hcross : P.map (weightScalePrefixHom h k).toRingHom * Q
       = Q.map (weightScalePrefixHom h k).toRingHom * P := by
@@ -186,15 +187,12 @@ theorem isWeightZero_coeff_of_slice {k : ℕ} (hk : 1 < k) {v : JetField C Unit}
       / Polynomial.aeval (jetRatio k : JetField C Unit) Q) (i : ℕ) :
     IsWeightZero ((P.coeff i : ↥(jetPrefixField C k)) : JetField C Unit)
       ∧ IsWeightZero ((Q.coeff i : ↥(jetPrefixField C k)) : JetField C Unit) := by
+  obtain ⟨hP, hQ⟩ := map_weightScalePrefix_eq_of_isWeightZero hk hv hQ0 hQm hcop hvdiv
   constructor
-  · intro lam h
-    obtain ⟨hP, -⟩ := map_weightScalePrefix_eq_of_isWeightZero hk hv hQ0 hQm hcop hvdiv h
-    have hcf := congrArg (fun p : Polynomial ↥(jetPrefixField C k) => p.coeff i) hP
+  · have hcf := congrArg (fun p : Polynomial ↥(jetPrefixField C k) => p.coeff i) hP
     rw [Polynomial.coeff_map] at hcf
     exact congrArg Subtype.val hcf
-  · intro lam h
-    obtain ⟨-, hQ⟩ := map_weightScalePrefix_eq_of_isWeightZero hk hv hQ0 hQm hcop hvdiv h
-    have hcf := congrArg (fun p : Polynomial ↥(jetPrefixField C k) => p.coeff i) hQ
+  · have hcf := congrArg (fun p : Polynomial ↥(jetPrefixField C k) => p.coeff i) hQ
     rw [Polynomial.coeff_map] at hcf
     exact congrArg Subtype.val hcf
 

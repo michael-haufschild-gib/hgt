@@ -1542,3 +1542,37 @@ at the *bottom* of the reconstruction, not at the top.  This is a structural fin
 says the level-`M` problem is a level-three problem with a different inhomogeneous term, and the
 slicing of an arbitrary inhomogeneous relation (`hasNormalizingShift_or_polynomial_of_relation`,
 `exists_prefix_affineTransport_of_order_one` with a scaling exponent) is now available for it.
+
+## Pass 10 — jet level four, and the tower that reaches the bottom
+
+**Level four is a theorem.**  `quadOne_not_hasNormalizingShift_four` and
+`quadTwo_not_hasNormalizingShift_four`: for both postcritically finite quadratics every fixed element
+of the substitution endomorphism of jet order at most **four** is constant.
+
+The level-four descent produces exactly four alternatives from a normalizing shift at that level: a
+shift at level three, a shift at level two, a *scaled affine connection*
+`α(R)·(R')² = R'·α − γ·R''` with `γ ≠ 0`, or the transport
+`α(R)·(R')³ = R'·α − (2R''' − 3(R'')²/R')`.  For both maps the first two are already excluded, the
+third has a nonzero constant inhomogeneous term where the substitution ramifies, and the fourth a
+simple pole exactly where `R'` vanishes.  The new ingredients are `substitutionShift_four`, the
+coefficient relations of a twisted affine relation of degree at most three, the pure-scaling reading
+`Φ(w)·(R')^j = w ⇒ w·y₁^j` constant, and the cocycle with an arbitrary degree bound.
+
+**Why the `y`-coordinates stop here, and the fix.**  At level `M ≥ 5` the same reduction lands on
+`R'^3·Φ(η) = R'·η − (R''' − (3/2)(R'')²/R')`, which the Schwarzian always solves; the constraint
+determines the coefficient instead of contradicting it.  The obstruction has to be read at the bottom
+of the descent, and the `y`-coordinates never reach a bottom because the coefficients keep having
+positive jet order.
+
+In the weight-zero coordinates they do.  The point — now formal — is that no new field is needed:
+`z_k = y_k/y₁^k` generates the *same* extension of `jetPrefixField C k` as `y_k`, is transcendental
+over it, and is fixed by the weighted torus.  So slicing in `z_k` keeps every coefficient
+torus-invariant (`isWeightZero_coeff_of_slice`), and
+
+```text
+pd_one_eq_zero_of_isWeightZero : torus-invariant of jet order ≤ 1 ⇒ jet order 0 ,
+```
+
+so the descent bottoms out in `C(y₀)`, where the affine-connection and affine-transport obstructions
+already proved for both maps apply.  Levels two and three of that scheme reproduce exactly the
+affine-connection and Schwarzian obstructions, which is the consistency check.

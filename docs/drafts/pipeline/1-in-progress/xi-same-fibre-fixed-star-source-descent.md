@@ -265,9 +265,10 @@ phase oscillation cannot prove boundary control.
 `[LEAN-FORMALIZED]` The unconditional theorem is
 
 ```text
+uniformly bounded finite Euler-subset Hessians <-> Summable (B_(m,q,-)),
 Summable (B_(m,q,-)) <-> t_q = 0,
-Summable (B_(m,q,-)) -> Summable (K_m(q,-)),
-and globally (forall q, Summable (B_(m,q,-))) <-> RH.
+finite source boundary control -> Summable (K_m(q,-)),
+and globally finite source boundary control <-> RH.
 ```
 
 This isolates the producer without disguising it: an unconditional
@@ -281,10 +282,90 @@ Lean:
 The module proves the exact positive factorization, an explicit uniform
 harmonic-prime lower bound, pointwise nonnegativity, the sharp summability
 classification, the requested implication from boundary control to raw
-curvature summability, and universal equivalence with RH. Direct `lake env
-lean` and exact leaf `lake build` pass; the module is wired into
+curvature summability, and universal equivalence with RH. It also proves the
+strongest unconditional positive survivor: boundary value and first boundary
+jet are summable on every Xi fibre, whereas the second jet is summable exactly
+at neutral grade. Thus missing producer is precisely one full prime-log graph
+derivative, not generic analytic continuation. Direct `lake env lean` and
+exact leaf `lake build` pass; the module is wired into
 `RHTower.lean`. Axiom audit reports only `propext`, `Classical.choice`, and
 `Quot.sound`. No umbrella build was run.
+
+### C28 — literal translated-primitive derivative weld
+
+`[CONJECTURE → LEAN PROOF]` The C27 coefficient was audited against the
+actual canonical primitive rather than accepted as a fitted logarithmic
+weight. Define
+
+```text
+F_(m,p,t)(z) = W_m(p)[P_p(z-t)+P_p(z+t)-2P_p(z)].
+```
+
+Lean proves the exact source translation and literal complex Hessian laws
+
+```text
+F_(m,p,t)(z) = exp(-(log p)z) F_(m,p,t)(0),
+F_(m,p,t)''(z) = (log p)^2 exp(-(log p)z) F_(m,p,t)(0),
+F_(m,p,t_q)''(sigma_(m,q)) = B_(m,q,p).
+```
+
+Thus C27 boundary current is intrinsic: same twice-Mellin primitive, same
+central two-orientation difference, same Gauss/Fisher coefficient, literal
+second derivative, and Xi-selected real abscissa. No independent curvature
+observable was inserted.
+
+C27 boundary control was also strengthened. It is now defined only through
+finite source packets:
+
+```text
+exists C, forall finite F of primes, sum_(p in F) B_(m,q,p) <= C.
+```
+
+Nonnegativity proves this finite-level statement equivalent to summability.
+Off neutral grade, every proposed `C` is exceeded by some finite ordinary-
+prime subset. More generally, a coefficientwise summable source majorant for
+`B_(m,q,p)` exists iff `t_q=0`. This is the exact contract any cross-route
+boundary estimate must satisfy.
+
+Lean: additional declarations in
+`formal/GaloisForLFunctions/RHTower/XiGammaSixFilteredBoundaryControl.lean`.
+Direct `lake env lean` and exact leaf build pass. No umbrella build was run.
+
+### C29 — Heat--Cassini/Wold graph-smoothness cross-route test
+
+`[HEAVY CONJECTURE → FAIL → POSITIVE CLASSIFICATION]` The Heat--Cassini Wold
+route proves all finite prime-log graph moments of the genuine activation-
+Fisher residual summable. This looked capable of supplying the missing C2
+domain. Direct coefficient audit rejects that conjecture: the Wold residual
+decays like `exp(-c sqrt(log p))`, while for `t_q != 0` the normalized Gamma
+gap tends to a nonzero constant and `B_(m,q,p) >> 1/p`. Shared Fisher density
+does not identify the source amplitudes.
+
+The strongest exact cross-corpus survivor is now formalized. For every graph
+order `k`, let
+
+```text
+W_k(p) = (log p)^(2k) Fisher(p) WoldResidual(p)^2.
+```
+
+Then
+
+```text
+(forall p, B_(m,q,p) <= W_k(p)) <-> t_q = 0,
+(forall q p, B_(m,q,p) <= W_k(p)) <-> RH.
+```
+
+Quantitatively, off neutral grade and for every reserve `C`, some finite
+prime subset has Gamma boundary mass greater than its total Wold mass plus
+`C`. Therefore Wold log smoothness cannot be transplanted by analogy. A
+genuine source-natural domination theorem would be a valid Frankenstein
+producer and would close RH, but it must annihilate horizontal grade rather
+than merely reuse activation--Fisher weights.
+
+Lean:
+`formal/GaloisForLFunctions/RHTower/XiGammaSixWoldBoundaryDomination.lean`.
+Direct `lake env lean` passes; module is wired into `RHTower.lean`. No
+umbrella build was run.
 
 ## External hostile comparison
 

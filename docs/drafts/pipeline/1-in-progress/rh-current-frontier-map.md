@@ -7,8 +7,9 @@ It records current proof architectures, theorem chains, first open source statem
 mechanisms, and structural conclusions shared across routes. It is not a chronology or build log.
 
 **Corpus cutoff:** 17 August 2026, committed snapshot
-`2fefc515815623fb1c469de6e2070835e224d78f`. Statements below distinguish unconditional source
-theorems from RH-equivalent receivers and interfaces whose analytic hypotheses are merely supplied.
+`64e71a34b2554e6c8d9d06304accf3a2c7f3de9d`, plus declaration-level review of current working
+tree. Statements below distinguish unconditional source theorems from RH-equivalent receivers and
+interfaces whose analytic hypotheses are merely supplied.
 
 RH and its negation remain unproved. Current live architecture count is:
 
@@ -42,13 +43,13 @@ route under corpus source-isogenies.
 | CCM-FU | literal completed Guinand–Weil source → centered cubic Loewner incidence → Xi-screw Green reporter → second-Abel/Cesàro continuation → RH | Prove linear growth of one Cesàro primitive of the literal third-grade prime-minus-polar cumulative source. This strictly includes oscillatory cases excluded by every fixed pointwise subcubic envelope. |
 | C1 | theta source inverse → entire Fredholm determinant/Weil form → real spectrum or positive closure → RH | Prove a source-derived real-spectrum/positive-closure theorem for fixed theta inverse, or a genuinely pre-divisor centered covariance controlling deviation energy. Raw critical-feature lattice budgets are impossible; corrected budgets are RH-equivalent off-line energy. |
 | D2 | safe-line Euler deficit → analytically continued prime–Gamma trace → finite high-frequency ceiling → RH | Continue literal positive deficit through Euler wall and prove any finite uniform ceiling above frequency four. |
-| E | squarefree central Wold shell → explicit parity-coalesced/whole-anchor opposite-sign relation → physical Carleson and co-moving flux → Mertens cancellation → RH | Upgrade proved fixed-relation near-Hall and polylog/subpower incoming bounds to unit interval Carleson load and normalized moving-seam flux. Current structured short-interval token supply is quantitatively too thin. |
-| G | Suzuki/CCM source → restricted-Weil Morse floor or one-sided Euler--Gamma/Carleman wall → aperture-dressed FE light completion → Hermite–Biehler orientation → RH | Floor: aperture-Morse exhaustion/boundary-rough exclusion. Coalescing: construct source-aligned normalized-Hankel edge past the sharp Xi rapidity wall; only then prove paired spectral-shift/Herglotz convergence. Wall: compare prime-minus-regular-screw Ward mass with dressed negative light and holonomy after source compensation. |
-| L | completed Xi Green/BV source → logarithmic Gamma-six Wold coface → singular graph or half-density `L2` comparison → fixed physical reader/source image → critical line → RH | Construct a bilateral coefficient-faithful positive-star/source-natural landing whose state agrees with physical Gamma character on one canonical Hermitian square. This is equivalent to Meyer-character unitarity and fixed-source untwisting; covariant flatness, adjoint killing, and one-sided gas GNS do not supply it. |
+| E | squarefree central Wold shell → explicit parity-coalesced/whole-anchor opposite-sign relation → physical Carleson and co-moving flux → Mertens cancellation → RH | Upgrade fixed-relation near-Hall and polylog/subpower incoming bounds to unit interval Carleson load and normalized moving-seam flux. Exact log-window Plancherel and discrete-family transfer remove former analytic interface losses; published Matomäki--Radziwiłł mean-square and Matomäki--Teräväinen all-interval `E_3` inputs remain unformalized, and even their import is upstream of final unit capacity. |
+| G | Suzuki/CCM source → restricted-Weil Morse floor or one-sided Euler--Gamma/Carleman wall → aperture-dressed FE light completion → Hermite–Biehler orientation → RH | Floor: aperture-Morse exhaustion/boundary-rough exclusion. Coalescing: construct source-aligned normalized-Hankel edge past sharp Xi rapidity wall; parity/sech, deficit-integral edge rigidity, and finite gap moments are formal, but actual source edge and cofinal occupancy/Herglotz convergence are not. Wall: compare prime-minus-regular-screw Ward mass with dressed negative light and holonomy. |
+| L | completed Xi Green/BV source → logarithmic Gamma-six Wold coface → singular graph or half-density `L2` comparison → fixed physical reader/source image → critical line → RH | Construct same-fibre fixed-star descent for genuine Meyer character, equivalently bilateral coefficient-faithful positive reception. Arbitrary diagonal masses do not weaken this gate. Alternative producer is a source--Green estimate making literal second-derivative Gamma-six boundary Hessian summable; value and first jet are always summable, second jet iff critical. |
 | O | restricted-Weil operator → exact compact Birman--Schwinger/Gamma--Slepian decomposition → finite dangerous block → nonnegative cofinal floor → RH | Indexed prolate simplicity, global cross-spectral order, all-rung small-aperture identification, oscillator index locking, and canonical ground selection are closed. Prove a source-relative lower bound excluding below-minus-one scalar--polar--prime remainder spectrum on finite peripheral block, equivalently above-one dangerous subspace vanishes cofinally. |
 | P | primitive Euler/Burnol budget → Julia--Krein completion → spectrum-moving prime--Gamma transport or non-spectral contraction → RH | Literal prime-log `det₂` carrier exists, but its forced zero at `1` while `XiC(1) != 0` rules out direct identification and every pointwise scalar correction. Construct a source-derived operator coupling that changes the source divisor coefficient- and multiplicity-faithfully, or prove the non-spectral conormal contraction. |
 | Q | theta–Cassini source → separated finite prime–Gamma packet sign → transverse charge zero → RH | Produce nonnegative energy cofinally toward orientation vector. Null boundaries have hidden mixed incidence `-E/2`; diagonal budgets and adaptive complex phases cannot repair fusion. Alternative UQ-QC asks for finite pre-divisor quadratic-concentration budget. |
-| T | centered prime--Gamma source → detector/Mellin packet, Wold residual ODE, true-prime Bessel cone, or sub-square-root massive chirp → RH | Exact reciprocal-sawtooth algebra has reduced the floor lane to one coupled signed `(N,D,m)` correlation; finite chirp packets separate off-line orbits. Prove half-height residual variation and gap-square exponent below `3/2`, Bessel type-zero cancellation, or a full-growing-Xi chirp projector with literal prime-side control. |
+| T | centered prime--Gamma source → detector/Mellin packet, Wold residual ODE, true-prime Bessel cone, or sub-square-root massive chirp → RH | One fixed `71/100` theorem now supplies a prime in every upper physical window with one uniform threshold; unsigned supply is closed. Prove half-height residual variation and signed gap-square exponent below `3/2`, Bessel type-zero cancellation, or full-growing-Xi chirp projector with literal prime-side control. |
 | U | shifted-Xi Hankel first crossing → boundary-rough completed null ground → restricted-Weil positivity → RH | Lean proves `RH ∨ CCMFirstContactBoundaryRoughness`: off RH the least zero aperture has a genuine null ground absent from every strict smooth interior source. Exclude this completed-boundary state by a trace/quotient or whole-ground theorem. |
 
 ## Live architectures
@@ -396,6 +397,18 @@ Finite phase randomization is exact at relevant low degrees and gives collision 
 the singular return graph is below the generic Sobolev trace threshold. It can support relation
 admissibility; it does not prove physical capacity.
 
+The analytic import interface is now exact rather than Gallagher-lossy. For every finite
+logarithmic window Lean proves
+`integral |S(u)|^2 du = integral |K_delta(w)|^2 |A(w)|^2 dw`, with
+`|K_delta(w)|^2<=min(delta^2,(pi w)^(-2))` and no supremum remainder. Route E's product fibres
+already have one common multiplicative width, so the additive-window conversion is unnecessary.
+Lean also transfers this line mean square to every separated finite family of starting windows,
+with an explicit endpoint-oscillation cost controlled by coefficient size and interval counts.
+This closes both continuous and discrete analytic interfaces and removes the artificial
+square-root-window barrier. It does not prove Möbius frequency cancellation. Formal import starts
+with Vinogradov--Korobov twisted sums/zero-free input, then large values and Halász--Montgomery;
+the separate all-interval `E_3` input remains external too.
+
 **Open core.** On one of the now-fixed relations, prove the subpower/polylog-to-unit upgrade:
 
 - unit physical incoming Carleson load uniformly on every ordinary interval and central Wold layer;
@@ -407,6 +420,10 @@ law stronger than current structured `E_3` input, with parity synchronized befor
 chosen. Natural-density rough `P_5` alone fails because observed token breadth changes the defining
 interval. For the coalesced cube it is the same analytic problem in higher-dimensional form:
 upgrade near-Hall cardinality to unit weighted interval capacity without losing forced seam flux.
+
+Formalizing published Matomäki--Radziwiłł Möbius short-window mean square and
+Matomäki--Teräväinen all-interval `E_3` would close five existing paper-proved supply/transport
+cards, but would not by itself prove the final weighted-Hall/Carleson rate above.
 
 Multi-node and slot-sequence separation preserve squarefree jet multiplicity, but do not create
 capacity. Additional scalar moments, Gaussian approximations, patch estimates, or complete-
@@ -423,7 +440,8 @@ bipartite flows are dead work.
 `HTGeometry/MultilinearEvaluationUniformity.lean`,
 `HTGeometry/FinitePhaseCharacterTransfer.lean`, `HTGeometry/FinitePhaseTrigProduct.lean`,
 `HTGeometry/CubicPhaseCollisionMoments.lean`, and
-`HTGeometry/CubicPhaseCollisionConcentration.lean`.
+`HTGeometry/CubicPhaseCollisionConcentration.lean`; `Sieve/LogWindowPlancherel.lean` and
+`Sieve/LogWindowDiscreteTransfer.lean`.
 
 ### Route G — Suzuki two-angle meromorphic source
 
@@ -520,6 +538,16 @@ perturbative after normalization. Explicit atomic marginal models satisfy hard-e
 UV first-moment constraints simultaneously, so marginals do not close gate; off-diagonal common
 Gram is essential. Live first theorem is delocalized source-aligned relative-Hankel mode crossing
 wall. Only then can paired occupancy/all-trace convergence or Herglotz limit matter.
+
+Lean now certifies the literal algebra behind that gate: midpoint reflection exchanges `exp(x)`
+and `exp(-x)`, preserves the Toeplitz difference form, reflects rather than preserves the Hankel
+kernel, and gives the `sech(a)` Cayley bound under positive-form hypotheses. Even/odd positivity
+implies absolute Hankel domination by their common channel. Independently, every finite paired
+extension trace difference is exactly `2(j+1)` times the compactified gap-occupancy `j`-moment
+minus the forced odd origin atom. The two bottom-edge deficits are now exact integrals of
+nonnegative resolvent weights; each dominates the shifted Rayleigh quotient, and zero deficit
+forces its probability law to the edge atom. These are exact rigidity interfaces, not actual
+source-edge production or cofinal all-moment convergence.
 
 Boundary-layer schedules still sweep from literal-ground to reduced-resolvent coefficients, and
 low-only/high-assisted schedules are exhaustive. Aligning negative light at apertures `8n` leaves
@@ -766,6 +794,8 @@ symbol bounds do not advance exterior branch.
 `CCMWeierstrassStabilizedEvans.lean`, `StripPropagatorCancellation.lean`,
 `SuzukiToeplitzSechWall.lean`, `SuzukiSourceAlignmentSlack.lean`,
 `SuzukiRelativeEdgeParityFloor.lean`, `SuzukiPrimeSeamHankelStrength.lean`,
+`SuzukiParityFormCoercivity.lean`, `SuzukiMidpointReflectionInstantiation.lean`,
+`SuzukiExponentialSourceCayley.lean`, `HTGeometry/GapOccupancyTraceMoment.lean`,
 `HTGeometry/LpSingleExtension.lean`, `ScatteringChargeNecessity.lean`, and flat-flux block modules.
 
 ### Route L — Deninger/Green/Hodge source descent
@@ -1026,11 +1056,26 @@ imbalance. Canonical Abelian-zeta-gas GNS does not untwist it: its Toeplitz gene
 isometry, positive temperature detects the nontrivial range projection, and no Laurent ring
 landing can send generator and inverse to that one-sided pair.
 
-**Open core.** Construct a genuine bilateral positive-star/source-natural receiver for literal
-cyclic/integral Laurent source whose state agrees with physical Gamma character on canonical
-Hermitian square and retains prime, depth, divisor, multiplicity, and leading Xi jet. Equivalently,
-prove selected arithmetic Stokes admission for Green-weighted cofinal chain or strong Meyer image
-preservation under one inverse prime coordinate in a way that forces this one-square positivity.
+Fixed-star descent is now minimal and cross-route exact. For `chi=chi_p(rho)`, positivity of any
+matrix with literal off-diagonals `chi,chi^(-1)` forces `star chi=chi^(-1)` regardless of both
+diagonal masses; this is equivalent to canonical unit-diagonal positivity, integral Gamma
+reporter, critical placement, and unit self-pairing of the same Xi coordinate in CCM/Weil form.
+The unconditional modular receiver instead changes inverse coefficient by unique source-derived
+weight `Delta=|chi|^2`; it is always positive and therefore cannot supply fixed-star descent.
+
+Gamma-six provides a second exact formulation of same wall. At true source-selected abscissa its
+filtered boundary value and first jet are nonnegative and absolutely summable on every Xi fibre.
+Second boundary jet factors into positive Gauss/Fisher terms, is comparable to `1/p` off neutral
+grade, and is summable exactly at neutral grade. It is now literally the second complex derivative
+of the coefficient-faithful translated Gamma-six source primitive at Xi-selected boundary, so no
+independently fitted current remains. Universal second-jet control is RH. Missing regularity is
+one prime-log graph derivative, not meromorphic continuation or coefficientwise `C^1` control.
+
+**Open core.** Construct same-fibre arithmetic fixed-star descent for genuine Meyer character,
+retaining prime, depth, divisor, multiplicity, and leading Xi jet. Equivalent realizations are a
+bilateral positive receiver with literal inverse coefficient, selected Stokes admission for the
+Green-weighted chain, strong Meyer-image preservation under one inverse prime coordinate, or a
+source--Green estimate making the literal positive Gamma-six boundary Hessian summable.
 Generic mapping cones, covariant flatness, `1/Xi`, ambient `L2` invertibility, universal continuous
 readers, adjoint/relative killing, one-sided gas GNS, scalar singular traces, and trace-class repair
 erase or relocate same coefficient and are formally ruled out.
@@ -1041,7 +1086,9 @@ transport modules; `FrankensteinMeyerHalfDensityL2KoszulDescent.lean`;
 `FrankensteinXiGreenStokesQuadraticGhostNormalForm.lean`;
 `SourceHorizontalGammaSixCovariantStokesFlat.lean`;
 `SourceHorizontalGammaSixPositiveStarUntwisting.lean`; and
-`SourceHorizontalGammaSixMeyerModularUntwisting.lean`.
+`SourceHorizontalGammaSixMeyerModularUntwisting.lean`;
+`XiSelectedBilateralPositiveSourceReceiver.lean`; `XiFixedStarWeilAtomDescent.lean`;
+`XiGammaSixCurvaturePrimeTraceWeld.lean`; and `XiGammaSixFilteredBoundaryControl.lean`.
 
 ### Route O — Connes restricted-Weil/prolate ground space
 
@@ -1744,17 +1791,18 @@ no longer lacks density-to-zero summation, contour selection, horizontals, or le
 The exact arithmetic weld makes literal von Mangoldt edge minus pole continuum plus complete zero
 packet equal three synchronized error edges. Normalized physical von Mangoldt mass tends to one,
 proper-prime-power leakage tends to zero, and prime theta mass eventually exceeds one quarter of
-window width. Lean consequently proves a prime in every sufficiently large base window
-`(z,z+z^0.71]`, hence every late consecutive prime gap is at most `p^0.71`. Its exact gap-square
-moment consequence has exponent `1.71`, strictly above the Wold receiver's critical `3/2` threshold.
-The detector is therefore a completed unconditional prime producer, but not an RH producer.
+window width. Lean proves one threshold `X_0`, independent of upper-phase height exponent `mu`,
+such that every Route-T window `(x,x+x^(1-1/mu)]` beyond it contains a prime: fixed exponent
+`71/100` lies between density threshold `2/3` and every physical width. Consecutive gaps are at
+most `p^0.71`, giving gap-square exponent `1.71`, still above Wold threshold `3/2`. Detector is a
+completed unconditional unsigned prime producer, not RH producer.
 
 The Maynard physical-slice branch is also coefficient-faithful. Finite-support Perron inversion
 recuts each observed aggregate to the literal von Mangoldt slice before cell extraction, preserving
 the normalized target-minus-reference sign. Local `Lambda(n)/n` energy retains additive interval
 length and closes the lower physical phase; proper prime powers are negligible throughout the full
-range. The remaining upper seam reduces to a signed true-prime boundary mode. The new `0.71`
-Hoheisel supply covers unsigned existence. More strongly, every sufficiently late polynomial-width
+range. Uniform `0.71` Hoheisel supply deletes upper-window existence as an independent problem;
+signed cancellation remains. More strongly, every sufficiently late polynomial-width
 prime-free target below the physical reference now forces a literal signed defect on one adjacent
 dyadic rung, with fixed positive margin divided by ladder length. This closes the inverse-log
 adjacent-defect producer under the exact prime-free premise, but not the sub-`3/2` gap moment.
@@ -1874,7 +1922,7 @@ negative-half contour, Hoheisel prime-supply, ordered-gap, and Maynard physical-
 `XiMassSubcausticCriterion.lean`; `XiMassTypeZeroCore.lean`; `XiMassTypeZeroDefect.lean`;
 `XiMassLogRetreatTail.lean`; `ReciprocalSawtoothGate.lean`;
 `HarmonicPrimitiveScaleAudit.lean`; `ExponentialSumMeanSquareLower.lean`; and
-`FinitePacketChirpSeparation.lean`.
+`FinitePacketChirpSeparation.lean`; `Sieve/RouteTFixedShortIntervalPrimeSupply.lean`.
 
 ### Route U — shifted-Xi null-face Krein–Lorentz flow
 
@@ -2437,13 +2485,14 @@ reduced-resolvent, and Mellin evaluation bounds.
 L and P have source carriers and target readers on both sides, and both now reach singular boundary
 with coefficient fidelity. Missing theorem is orientation/annihilation there:
 
-- L: distinguished non-universal Stokes annihilation of source-derived vertical Xi Green class;
+- L: same-fibre fixed-star descent, equivalently selected Stokes annihilation or positive
+  Gamma-six boundary-Hessian control for source-derived vertical Xi Green class;
 - P: completed source construction and budget domination of explicit positive
   fundamental-symmetry correction.
 
 CCM–P–L does more than identify a shared coefficient: two-sheet singular graph preserves centered
 orientation while killing mass trace and lands exactly in CCM cubic jet and fixed Sonin detector.
-Remaining wall is cofinal source assembly plus selected Stokes annihilation/budget control; local
+Remaining wall is cofinal source assembly plus selected fixed-star/Stokes/budget control; local
 carrier no longer causes scalar blindness.
 
 ### 5. Arithmetic routes need non-scalar all-prime control
@@ -2451,7 +2500,7 @@ carrier no longer causes scalar blindness.
 D2, E, T, and U have exact finite/safe-side/one-prime source identities. D2 now has divergent
 safe-line deficit on every polynomial horizon, and T now has complete detector zero-density chain.
 Remaining statements are continuation through Euler wall, fixed-relation interval incidence,
-short-interval prime supply, or signed von-Mangoldt cross control. Modulus-only bounds,
+structured short-window cancellation, or signed von-Mangoldt cross control. Modulus-only bounds,
 coefficient-free positivity, fixed finite prime bands, and post hoc scalar renormalization are
 formally insufficient.
 
@@ -3918,55 +3967,6 @@ technical adapters:
 - exact phase-seed collision moments/covariance and regularized spectral-collision functionals;
   capped regularization is continuous in matrix, bounds true collision, and converges to it
   at simple spectrum, while singular return graph remains invisible to subcritical Sobolev control;
-- weighted bounded-body Pauli Gaussian ensembles have absolutely continuous traceless-coordinate
-  law and almost surely simple spectrum/eigenbasis when every retained weight and variance is
-  nonzero. Active-tree binary symplectic algebra also proves nondegeneracy of Pauli commutation,
-  form preservation by transvections, and transitivity on all nonzero labels: one or two
-  transvections carry any nonzero label to any other. Double-counting maximal commuting subgroups
-  then gives exact uniform incidence: every nonzero `n`-qubit label occurs in one Lagrangian out of
-  `2^n+1`. Hence a bare form-invariant Pauli label has no distinguished nonzero direction; this
-  closes generic quenched-collision/symmetry bookkeeping, not arithmetic source law. Evidence is
-  `HTGeometry/PauliSymplecticTransitivity.lean` and
-  `HTGeometry/LagrangianVectorFrequency.lean`. Exact Pauli--Parseval also identifies total squared
-  trace response with `2^n` times Frobenius square, so no coefficient energy is hidden by the Pauli
-  dictionary; sitewise Pauli multiplication is exactly a Klein-four label product with accumulated
-  fourth-root phase. Evidence is `HTGeometry/PauliParseval.lean` and
-  `HTGeometry/PauliProductLaw.lean`;
-- arbitrary linearly trapped moving divisors now have exact finite actual-jet Frechet derivative,
-  and every finite jet probe is surjective. Dense residual parameters avoid every finite translated
-  differential relation; the symmetric even carrier has a differentially algebraically independent
-  full complex translation family. More strongly, every stationary ergodic positive mean-one gap
-  law occurs as positive zeros of an even real entire exact-order-one function while this maximal
-  translation freeness persists generically. Carrier freeness now upgrades off real axis to
-  relation-freeness of translated symmetric canonical products and all positive powers. Therefore
-  differential-algebraic freeness, even with actual entire products and arbitrary prescribed gap
-  process, cannot select Xi divisor or imply RH. Principal new evidence is
-  `HTGeometry/MovingDivisorEntireFreeness.lean`;
-- every finite nonzero jet prescription is locally realizable by a logarithmic-derivative pair
-  `E'=H E`, and induced full solution-jet substitution is injective. Thus generic
-  logarithmic-derivative equations impose no hidden finite differential-algebraic divisor selector;
-  if base full jets are independent, solution full jets inherit differential independence.
-  Coordinatewise multiplication by arbitrary nonzero coefficient-field scalars now provably leaves
-  the generated differential field unchanged, because every jet remains in the derivation-closed
-  field and inverse scalars lie in the base. Amplitude normalization cannot repair this blindness.
-  Arithmetic source incidence must enter separately. Principal evidence is
-  `HTGeometry/LogDerivFamilyRealization.lean`, `HTGeometry/LogDerivFullJetGauge.lean`,
-  `HTGeometry/LogDerivFullIndependence.lean`, `HTGeometry/LogDerivFamilyFreeness.lean`, and
-  `HTGeometry/DifferentialAdjoinBaseScaling.lean`;
-- shifted moment law differentiates every polynomial moment functional through exact dual
-  operator `g -> X*(X*g)'`; individual Gauss-node velocity, total reciprocal-residue growth, and
-  the full one-monomial moving-centre resolvent law are now exact. Generic positivity still cannot
-  anchor Route U's absolute boundary;
-- completed-time capture density for rationally independent or maximally projective finite spectra
-  is bounded by Haar phase-box capture, with diagonal-phase reduction and finite-target collision
-  budgets. This closes generic recurrence counting, not arithmetic spectrum selection or a source
-  law;
-- finite-dimensional Weierstrass division, divided-difference polynomial algebra, and preservation
-  of holomorphy under local-uniform multivariable limits; normal-family extraction and Xi source
-  application remain separate;
-- exact quotient-rule recursion for every iterated derivative of a rational gauge
-  (`HTGeometry/RationalJetShift.lean`); this closes denominator bookkeeping, not arithmetic
-  divisor selection;
 - approximate-ground stability and one-dimensional compression under a supplied spectral gap,
   plus whole-line Wronskian integration by parts; neither supplies source-relative gap;
 - nonvanishing of real-ray Riemann Xi on every positive input.
@@ -3974,8 +3974,9 @@ technical adapters:
 These remove interface excuses. None supplies missing Xi-typed source selection, boundary
 restriction, arithmetic incidence, or annihilation theorem.
 
-Latest Newton/Turán floor, FID zeta-Hankel positivity, reciprocal-Li kernel, HD3 gauge, critical
-Hermite, and Schanuel modules are guardrails, not RH producers: no fixed Xi source law.
+Latest Newton/Turán, FID Hankel, reciprocal-Li/HD3, critical-Hermite, equivariant-causalizer,
+Schanuel Grassmannian/Kummer, jet-weight slicing, multiple-elliptic-Gamma, and static-local
+complexity modules are auxiliary closures or guardrails: none supplies fixed Xi source law.
 
 ## Final state
 
@@ -3985,16 +3986,15 @@ cubic source budget, Route L's strict Green/BV descent, and CCM-FU's source-fait
 incidence. Novelty of architecture does not imply completion: every live route stops at a precise
 source theorem not presently supplied by corpus or external literature.
 
-No additional live independent route follows. CCM-HG, CCM-GS, CCM-UR, CCM-RF, CCM-EP, and new
-CCM-BS remain source-isogenous CCM candidates; SP-E, TC-HS, UQ-QC, HA-SW, HJ-GR, PH-TC, and new
-MC-CS remain non-CCM candidates. CCM-BS is exact finite-peripheral form of Route O/G-floor/U
-whole-ground wall, not new source. MC-CS is Route-T-isogenous finite-packet receiver lacking growing
-Xi/prime handoff. Moving-degree reverse-Bessel pulse capital remains unlettered disproof opening.
+No additional live route follows. CCM-HG/GS/UR/RF/EP/BS remain source-isogenous CCM candidates;
+SP-E, TC-HS, UQ-QC, HA-SW, HJ-GR, PH-TC, and MC-CS remain non-CCM candidates. CCM-BS is the
+O/G-floor/U finite-peripheral wall; MC-CS is T-isogenous. Reverse-Bessel remains unlettered.
 
-Latest corpus closes global indexed prolate order and reduces restricted-Weil sign to finite
-dangerous sector; isolates Route L's one-square positive-star gate; and puts Route G behind sharp
-normalized-Hankel source-alignment wall. None proves required source sign. Causal-Pick,
-diagonal-Fock, scalar HG domination, and finite chirp packages are receivers or reductions, not
-producers. No live route closes RH; no formal disproof route exists. Frontier moves only when named
-open core is proved or falsified with positive survivor, not through another equivalent criterion,
-seed asymptotic, generic compactness theorem, or renamed receiver.
+Latest corpus changes four frontiers without changing route count. Route E has exact log-window
+Plancherel and discrete-family transfer; published short-window arithmetic, not window mechanics,
+is next import. Route G's parity/sech laws, deficit-integral rigidity, and finite gap moments are
+formal, but actual source edge/cofinal occupancy remain open. Route L eliminates diagonal repair,
+identifies CCM fixed-star descent, and welds `C^1`/`C^2` threshold to literal Gamma-six second
+derivative; same-fibre descent remains. Route T has uniform upper-window supply but no signed
+sub-`3/2` cancellation. None supplies source sign. No route closes RH or supplies formal disproof.
+Equivalent criteria, generic compactness, and renamed receivers do not move frontier.

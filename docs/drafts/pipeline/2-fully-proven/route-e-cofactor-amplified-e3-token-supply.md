@@ -274,3 +274,23 @@ targets, rather than merely comparing global cardinalities.
 Conditional global exceptional capacity and strict-half exponent both close, with the stronger
 \(U/\log U\) physical union.  Local Hall anti-concentration remains open, and the parent card
 separately retains the ordinary-window defect current.
+
+## The remaining input is tracked on a dedicated programme card (2026-08-17)
+
+The only thing between this card and stage 3 is Matomäki--Teräväinen's all-interval \(E_3\) theorem
+(arXiv:2207.05038, Theorem 1.2) together with the mean-value and two-dimensional sieve estimates it
+rests on.  That formalisation is now tracked on
+`docs/drafts/pipeline/1-in-progress/matomaki-radziwill-lean-programme.md`, shared with the three
+`route-e-*` cards in `new_scientific_knowledge` (which need Matomäki--Radziwiłł instead): both
+theorems are built out of the same Dirichlet-polynomial toolkit — Plancherel, the mean value
+theorem, large values, Halász--Montgomery — and the same Vinogradov--Korobov prerequisite.
+
+Two shared bricks have landed there, both unconditional and axiom-clean:
+`Sieve/LogWindowPlancherel.lean` (the exact Plancherel identity for a logarithmic short-interval
+sum, replacing the corpus's lossy Gallagher inequality, whose sup term forces windows of length
+`≫ √X`) and `Sieve/LogWindowDiscreteTransfer.lean` (the passage from a discrete family of starting
+points to the mean square over the whole line).
+
+The card's own remaining elementary debt is separate and smaller: the unsigned squarefree harmonic
+estimates quoted in `(7)` and `(9)` (respectively `(FS7)`'s sieve input), which do not depend on the
+deep theorem and can be built independently.

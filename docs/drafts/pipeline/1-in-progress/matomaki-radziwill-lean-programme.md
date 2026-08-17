@@ -61,11 +61,10 @@ corpus's current unconditional range and are worth banking separately.
 - **Lemma 2.2 (multiplicative → additive windows).**  For `a` supported on `[c₁X, c₂X]` and
   `1 ≤ h ≤ c₁X/10`,
   `∫_0^∞|∑_{x<n≤x+h}a(n)|²dx ≪ (c₂²/c₁)X∫|A(y)|² min(h²/(c₁²X²), 1/y²) dy`.
-  Open.  Proof: average the additive window over a shift `ν ∈ [2h,3h]`, substitute `ν = δx`, and
-  feed the result into Lemma 2.1 at `T = 2/log(1+δ)`.
+  **NOT NEEDED for these cards** — see "Lemma 2.2 is bypassed" below.
 - **Lemma 2.3 (Vinogradov–Korobov twisted sums).** `∑_{n≤x}λ(n)n^{it} ≪ x exp(-log x/(log(x+|t|))^{2/3+δ})`
-  and the prime analogue.  The corpus owns a zero-free strip and a twisted Möbius contour layer
-  (`MoebiusTwist*.lean`); the exact uniformity in `t` needs an audit.
+  and the prime analogue.  **This is a hard prerequisite, and the corpus does not have it** — see
+  "The Vinogradov–Korobov prerequisite" below.
 - **Lemma 2.4 (mean value theorem).** `∫_{-T}^{T}|∑_{n≤N}a(n)n^{it}|²dt ≪ (T+N)∑|a(n)|²`.
   **CORPUS** — `Sieve/DirichletIntegralBound.integral_normSq_dirPoly_le` and the symmetric form
   `Sieve/LogPolyDirPoly.integral_Icc_normSq_dirPoly_symm_le`.
@@ -105,7 +104,81 @@ new module replaces the inequality by the exact identity, and the sup term disap
 Unconditional, umbrella-wired, olean built; `#print axioms` on all capstones gives
 `propext`, `Classical.choice`, `Quot.sound` only.
 
+### The discrete interface landed — `Sieve/LogWindowDiscreteTransfer.lean`
+
+Plancherel controls `∫_ℝ|S(u)|²du`; the cards consume a *finite sum* over starting points.  This
+module is the bridge, and it is what makes "Lemma 2.2 is bypassed" (below) effective.
+
+| Item | Declaration |
+|---|---|
+| the integers of a finite set in a real interval number at most its length plus one | `card_filter_mem_Ioc_le` |
+| two windows of equal length differ only in their two end intervals, so `‖S(u) - S(u')‖ ≤ M·((e^{u'}-e^{u}+1) + (e^{u'+δ}-e^{u+δ}+1))` | `norm_logWindowSum_sub_le` |
+| **the transfer**: for starting points whose intervals `[u_i, u_i+λ)` are pairwise disjoint and on which `S` oscillates by at most `C`, `λ∑_i‖S(u_i)‖² ≤ 2∫_ℝ‖S‖² + 2λC²·#{i}` | `sum_normSq_logWindowSum_le_integral` |
+
+Unconditional, umbrella-wired, olean built, axiom-clean.  Note that `norm_logWindowSum_sub_le`
+needs no hypothesis on `δ` or on the sign of `u`: the count bound is uniform.
+
 ## Log
 
 - 2026-08-17 — card opened; Lemma 2.1 formalised as an exact identity, replacing the corpus's lossy
-  Gallagher inequality.  Next brick: Lemma 2.2, the multiplicative-to-additive window transfer.
+  Gallagher inequality.  Two structural findings recorded below: Lemma 2.2 is unnecessary for these
+  cards, and the Vinogradov--Korobov zero-free region is a hard prerequisite for every milestone.
+
+## Two structural findings (2026-08-17)
+
+### Lemma 2.2 is bypassed
+
+The exposé needs the Saffari--Vaughan device because Theorem 1.1 is stated for *additive* windows
+`[x, x+h]`, while Plancherel is natural for *multiplicative* windows `[xe^{-1/T}, xe^{1/T}]`.  The
+three `route-e-*` cards do not need it: the corpus has already reduced them to
+`RHTower.Sieve.AveragedMeanSquare`, whose inner sum is
+
+```text
+innerFibre x h a  =  { b : x/a ≤ b ≤ (x + h√x)/a }  =  ( y, y(1 + h/√x) ] ,   y = x/a,
+```
+
+a multiplicative window whose *ratio* `1 + h/√x` does not depend on the outer variable `a`.  So
+Lemma 2.1 applies to the card's own object with `δ = log(1 + h/√x)`, and the only interface still
+needed is the passage from the discrete sum over `a ∈ (√x, 2√x]` to the integral over starting
+points.  That passage is elementary: the points `u_a = log(x/a)` are separated by `≍ 1/√x`, and on
+an interval of length `1/(4√x)` around `u_a` at most one integer enters or leaves each end of the
+window, so
+
+```text
+∑_a S(u_a)²  ≤  8√x ∫_ℝ S(u)² du  +  8·#{a} ,
+```
+
+and `#{a} ≍ √x = o(h²√x)` whenever `h → ∞`.  This removes one full lemma from the programme.
+
+### The Vinogradov--Korobov prerequisite
+
+Lemma 2.3 is used in *every* stage of the exposé (§3 (28)--(29), §4 (38), §5, §7 (56)), always in
+the same way: the sum over a dyadic block of primes `P_j` must exhibit cancellation uniformly for
+frequencies `|y| ≤ X`.  The bound needed is
+
+```text
+∑_{p ≤ P} p^{it}  ≪  π(P)/(1+|t|)  +  P·exp( - log P / (log(P + |t|))^{2/3+δ} ) ,
+```
+
+and it is useful exactly when `log P ≫ (log X)^{2/3+δ}`.  The choice `P_j ≥ exp((log h)^{9/10})`
+with `h ≥ exp((log X)^{3/4})` gives `log P_j ≥ (log X)^{27/40}`, and `27/40 > 2/3` is the whole
+reason for those exponents.
+
+The corpus's zero-free region is `RHTower.Sieve.riemannZeta_ne_zero_routeT_region` /
+`exists_routeT_zero_free_region`, of classical shape `1 - c/(log γ)^κ` with a generous `κ`; the
+twisted Möbius layer (`MoebiusTwistSaving`, `MoebiusTwistSharpRate`) carries the matching saving
+`exp(-c log N / (log K)^9)` uniformly for `5 + 4|τ| ≤ K`.  With exponent `9` — or even with the
+classical de la Vallée Poussin exponent `1` — the requirement becomes `log P ≫ (log X)^9`
+(respectively `≫ log X`), which is impossible since `P ≤ h ≤ X`.  **So no reorganisation of the
+argument avoids the Vinogradov--Korobov region: an exponent strictly below `3/4` is a hard
+prerequisite for every milestone.**
+
+The corpus does own the combinatorial heart of the Vinogradov method:
+`Sieve/VinogradovMeanValueBound.vinogradov_mean_value_bound` bounds the diagonal solution count of
+the Vinogradov system with explicit constants, and `Sieve/VinogradovRouteTSaving.lean` extracts a
+power-saving exponent from it.  The missing chain is: mean value ⟹ exponential-sum bound for
+`∑_{n ≍ N} n^{it}` ⟹ growth of `ζ` in the strip ⟹ zero-free region with exponent `2/3+δ` ⟹
+Lemma 2.3 by contour shift.  This becomes **Milestone 0** of the programme, and it must be built
+before A.
+
+Revised milestone order: **0 (Vinogradov--Korobov) → A → B → C → D**.

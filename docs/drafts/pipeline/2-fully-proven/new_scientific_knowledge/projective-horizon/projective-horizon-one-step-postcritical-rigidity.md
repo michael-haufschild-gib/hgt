@@ -1331,3 +1331,70 @@ hEM : E ⊔ M = ⊤                                       by construction of the
 the splitting field over `O` of a separable polynomial: the same polynomial splits in `N ⊆ L` and its
 roots generate `L` over `M`.  After that the assembly is: transport the coatom property of
 `Gal(N/J)` through the restriction isomorphism and read the Galois correspondence for `L/M`.
+
+## Lean progress — the base-change bridge is CLOSED as general field theory
+
+`HTGeometry/TranscendentalBaseChangeLattice.lean` (wired, axiom-clean).
+
+```
+mem_fixedField_map_compositumRestrict_iff
+      the fixed field of a restricted subgroup is the trace of the fixed field
+eq_bot_or_eq_adjoin_of_primitive_base_change
+      ** N/F finite Galois, t transcendental over N, N ⊔ F(t) = ⊤, J ≤ N, and no field strictly
+         between F and J   ==>   no field strictly between F(t) and J(t) **
+```
+
+Together with the previous sections the whole bridge is now general theory in this tree:
+
+```text
+[E(t) : F(t)] = [E : F]                      finrank_adjoin_eq_of_transcendental
+F(t) relatively algebraically closed over F  mem_bot_of_mem_adjoin_simple_of_isAlgebraic
+N ⊓ F(t) = ⊥                                 inf_adjoin_simple_eq_bot_of_isAlgebraic
+[FiniteDimensional F(t) Ω]                   finiteDimensional_of_sup_eq_top
+[IsGalois F(t) Ω]                            isGalois_of_sup_eq_top   (mathlib's IsGalois.sup_right)
+primitivity transfers                        eq_bot_or_eq_adjoin_of_primitive_base_change
+```
+
+The proof of the last one is the Galois correspondence used twice.  Restriction identifies
+`Gal(Ω/F(t))` with `Gal(N/F)` (natural irrationalities, already in the tree, whose two hypotheses are
+the middle two lines above).  Under it, the fixing subgroup of `J(t)` corresponds to the fixing
+subgroup of `J`: an automorphism fixing `J` fixes the field it generates over `F(t)`, and conversely.
+So the trace `M ∩ N` of an intermediate field `M` of `J(t)/F(t)` is the fixed field of the restricted
+subgroup, hence lies in `J`; primitivity over `F` then leaves two cases, and each is immediate — if
+the trace is `J` then `M` contains `J` hence `J(t)`, and if the trace is `F` then the restricted
+subgroup is everything, so `M` is `F(t)`.
+
+### What is left on `(4)`
+
+Only the instantiation at the critical tower: choosing the ambient so that
+`criticalNormalClosure ⊔ O(x_L) = ⊤`, checking `x_L` is transcendental over the normal closure
+(it is transcendental over the source, and the normal closure is algebraic over it), and applying the
+theorem with `J` the embedded source field.  No general field theory is missing any more.
+
+## Lean progress — base-change primitivity in the rational-function model
+
+`HTGeometry/FracXTranscendental.lean` (wired, axiom-clean).
+
+```
+aeval_fracX                                evaluation at the free parameter is the fraction embedding
+transcendental_fracX                       ** the free parameter is transcendental over E **
+fracCoeffField F E                         the copy of E inside the rational functions
+fracCoeffField_sup_adjoin_fracX_eq_top     ** E and T generate the rational functions **
+fracCoeffFieldEquiv, and the transported FiniteDimensional / IsGalois instances
+transcendental_fracX_over_fracCoeffField
+transcendental_fracX_over_base
+eq_bot_or_eq_adjoin_fracX_of_primitive
+      ** E/F finite Galois, J ≤ E, no field strictly between F and J
+         ==> no field strictly between F(T) and J(T) **
+```
+
+This is the base-change bridge in the *model the tree already uses* for a free parameter: the
+rational functions `FractionRing (Polynomial E)`, with `fracX` the parameter and `fracSub` the
+constants, exactly as in `FreeParameterBaseChange`.  The capstone consumes the general lattice
+theorem of the previous section and supplies its three hypotheses from the model: the parameter is
+transcendental over the coefficient field (the evaluation map is the fraction embedding, which is
+injective), the same over the base, and the compositum is everything (`eq_top_of_mem_of_mem`, already
+in the tree).
+
+So `(4)` now needs only the tower-specific data: the critical normal closure as the `E` of this
+model, the embedded source field as `J`, and the corpus's full-monodromy primitivity as `hprim`.

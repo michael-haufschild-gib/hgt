@@ -108,39 +108,53 @@ theorem paritySum_eq_avg :
 
 include hadd hsmul hsymm in
 /-- **`(229)`: the parity Cayley scalar of the literal exponential sources is at most `sech a`.** -/
-theorem abs_parityCayley_le_sech {J : ℝ → ℝ → ℝ → ℝ} {a : ℝ}
+theorem abs_parityCayley_le_sech {Jr : (ℝ → ℝ) → (ℝ → ℝ)} {a : ℝ}
     (hpsd : ∀ x, 0 ≤ b x x)
-    (hJ : ∀ x y, b (J a x) (J a y) = b x y)
-    (hrefl : expRise = Real.exp a • J a expDecay)
+    (hJ : ∀ x y, b (Jr x) (Jr y) = b x y)
+    (hrefl : expRise = Real.exp a • Jr expDecay)
     (hB : 0 < b expDecay expDecay) :
     |(b coshSource coshSource - b sinhSource sinhSource)
         / (b coshSource coshSource + b sinhSource sinhSource)| ≤ 1 / Real.cosh a := by
   have hgap := parityGap_eq_cross hadd hsmul hsymm (b := b)
   have hsum := paritySum_eq_avg hadd hsmul hsymm (b := b)
   have hA : b expRise expRise = Real.exp (2 * a) * b expDecay expDecay :=
-    RHTower.energy_of_reflected (b := b) (J := J a) hsmul hsymm hJ hrefl
+    RHTower.energy_of_reflected (b := b) (J := Jr) hsmul hsymm hJ hrefl
   have hD : |b expRise expDecay| ≤ Real.exp a * b expDecay expDecay :=
-    RHTower.abs_cross_le_exp_mul (b := b) (J := J a) hsymm hadd hsmul hpsd hJ hrefl
+    RHTower.abs_cross_le_exp_mul (b := b) (J := Jr) hsymm hadd hsmul hpsd hJ hrefl
   rw [hgap, hsum, hA]
   have hcosh : 0 < Real.cosh a := Real.cosh_pos a
   have hexp : 0 < Real.exp a := Real.exp_pos a
+  have h2a : Real.exp (2 * a) = Real.exp a * Real.exp a := by
+    rw [← Real.exp_add]
+    ring_nf
+  have hna : Real.exp a * Real.exp (-a) = 1 := by
+    rw [← Real.exp_add]
+    simp
   have hden : (Real.exp (2 * a) * b expDecay expDecay + b expDecay expDecay) / 2
       = Real.exp a * Real.cosh a * b expDecay expDecay := by
-    rw [Real.cosh_eq]
-    have h2a : Real.exp (2 * a) = Real.exp a * Real.exp a := by
-      rw [← Real.exp_add]
-      ring_nf
-    have hna : Real.exp a * Real.exp (-a) = 1 := by
-      rw [← Real.exp_add]
-      simp
+    rw [Real.cosh_eq, h2a]
     field_simp
-    nlinarith [h2a, hna]
-  rw [hden]
-  rw [abs_div, abs_of_pos (by positivity : (0 : ℝ) < Real.exp a * Real.cosh a * b expDecay expDecay)]
-  rw [div_le_div_iff₀ (by positivity) hcosh]
+    nlinarith [hna]
+  rw [hden, abs_div,
+    abs_of_pos (by positivity : (0 : ℝ) < Real.exp a * Real.cosh a * b expDecay expDecay),
+    div_le_div_iff₀ (by positivity) hcosh]
   calc |b expRise expDecay| * Real.cosh a
       ≤ (Real.exp a * b expDecay expDecay) * Real.cosh a :=
         mul_le_mul_of_nonneg_right hD hcosh.le
     _ = 1 * (Real.exp a * Real.cosh a * b expDecay expDecay) := by ring
+
+include hadd hsmul hsymm in
+/-- **`(229)` on the literal Toeplitz channel**: reflection invariance is no longer a hypothesis,
+being supplied by `diffBilinForm_midpointReflect` from evenness of the kernel. -/
+theorem abs_parityCayley_diffBilinForm_le_sech {K : ℝ → ℝ} {a : ℝ}
+    (hb : b = diffBilinForm K) (hK : ∀ t, K (-t) = K t)
+    (hpsd : ∀ x, 0 ≤ b x x) (hB : 0 < b expDecay expDecay) :
+    |(b coshSource coshSource - b sinhSource sinhSource)
+        / (b coshSource coshSource + b sinhSource sinhSource)| ≤ 1 / Real.cosh a := by
+  refine abs_parityCayley_le_sech hadd hsmul hsymm (Jr := midpointReflect a) hpsd ?_ ?_ hB
+  · intro x y
+    subst hb
+    exact diffBilinForm_midpointReflect a K x y hK
+  · exact expRise_eq_exp_smul_midpointReflect a
 
 end GaloisForLFunctions.RHTower

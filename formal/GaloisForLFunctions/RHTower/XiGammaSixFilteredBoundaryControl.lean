@@ -39,6 +39,107 @@ def gammaSixFilteredBoundarySecondJet
     (p : ℝ) ^ (-gammaSixFilteredBoundaryAbscissa m q) *
       gammaSixSuspensionDeterminantPrimeCurrent m q p
 
+/-- Literal source translation of the filtered canonical second Mellin primitive. At translation
+parameter zero this is the coefficient-faithful Gamma-six central difference. -/
+def gammaSixFilteredPrimeTraceTranslatedSecondPrimitive
+    (m : ℕ) (p : Nat.Primes) (t : ℝ) (z : ℂ) : ℂ :=
+  (gammaSixPrimeTraceHadamardWeight m p : ℂ) *
+    (xiValuationOneSecondMellinPrimitiveAtom p (z - t) +
+      xiValuationOneSecondMellinPrimitiveAtom p (z + t) -
+      2 * xiValuationOneSecondMellinPrimitiveAtom p z)
+
+private theorem xiValuationOneSecondMellinPrimitiveAtom_translate
+    (p : Nat.Primes) (z s : ℂ) :
+    xiValuationOneSecondMellinPrimitiveAtom p (z + s) =
+      Complex.exp (-((Real.log (p : ℝ) : ℂ) * z)) *
+        xiValuationOneSecondMellinPrimitiveAtom p s := by
+  rw [xiValuationOneSecondMellinPrimitiveAtom,
+    xiValuationOneSecondMellinPrimitiveAtom]
+  have hexp :
+      Complex.exp (-((Real.log (p : ℝ) : ℂ) * (z + s))) =
+        Complex.exp (-((Real.log (p : ℝ) : ℂ) * z)) *
+          Complex.exp (-((Real.log (p : ℝ) : ℂ) * s)) := by
+    rw [← Complex.exp_add]
+    congr 1
+    ring
+  rw [hexp]
+  ring
+
+/-- Source translation factors through the exact coefficient-faithful Gamma-six central
+difference. This prevents the boundary jet below from being an independently fitted current. -/
+theorem gammaSixFilteredPrimeTraceTranslatedSecondPrimitive_eq_exp_mul
+    (m : ℕ) (p : Nat.Primes) (t : ℝ) (z : ℂ) :
+    gammaSixFilteredPrimeTraceTranslatedSecondPrimitive m p t z =
+      Complex.exp (-((Real.log (p : ℝ) : ℂ) * z)) *
+        gammaSixFilteredPrimeTraceSecondDifference m p t := by
+  rw [gammaSixFilteredPrimeTraceTranslatedSecondPrimitive,
+    gammaSixFilteredPrimeTraceSecondDifference]
+  rw [show z - (t : ℂ) = z + (-(t : ℂ)) by ring]
+  have hzero := xiValuationOneSecondMellinPrimitiveAtom_translate p z 0
+  simp only [add_zero] at hzero
+  rw [xiValuationOneSecondMellinPrimitiveAtom_translate,
+    xiValuationOneSecondMellinPrimitiveAtom_translate, hzero]
+  ring
+
+/-- The literal second complex derivative of the source-translated primitive is the prime-log
+Hessian of the same Gamma-six central-difference coefficient. -/
+theorem secondDeriv_gammaSixFilteredPrimeTraceTranslatedSecondPrimitive
+    (m : ℕ) (p : Nat.Primes) (t : ℝ) (z : ℂ) :
+    deriv (fun w : ℂ => deriv
+      (gammaSixFilteredPrimeTraceTranslatedSecondPrimitive m p t) w) z =
+      (Real.log (p : ℝ) : ℂ) ^ 2 *
+        Complex.exp (-((Real.log (p : ℝ) : ℂ) * z)) *
+          gammaSixFilteredPrimeTraceSecondDifference m p t := by
+  let a : ℂ := -(Real.log (p : ℝ) : ℂ)
+  let C : ℂ := gammaSixFilteredPrimeTraceSecondDifference m p t
+  have hfun : gammaSixFilteredPrimeTraceTranslatedSecondPrimitive m p t =
+      fun w : ℂ => Complex.exp (a * w) * C := by
+    funext w
+    rw [gammaSixFilteredPrimeTraceTranslatedSecondPrimitive_eq_exp_mul]
+    dsimp only [a, C]
+    congr 2
+    ring
+  rw [hfun]
+  have hfirst :
+      (fun w : ℂ => deriv (fun v : ℂ => Complex.exp (a * v) * C) w) =
+        fun w : ℂ => Complex.exp (a * w) * a * C := by
+    funext w
+    have hlin : HasDerivAt (fun v : ℂ => a * v) a w := by
+      simpa only [id_eq, mul_one] using (hasDerivAt_id w).const_mul a
+    exact (hlin.cexp.mul_const C).deriv
+  rw [hfirst]
+  have hlin : HasDerivAt (fun w : ℂ => a * w) a z := by
+    simpa only [id_eq, mul_one] using (hasDerivAt_id z).const_mul a
+  have hsecond := ((hlin.cexp.mul_const a).mul_const C).deriv
+  change deriv (fun w : ℂ => Complex.exp (a * w) * a * C) z = _
+  rw [hsecond]
+  dsimp only [a, C]
+  ring
+
+/-- **Literal boundary weld.** The nonnegative real second jet is exactly the second complex
+derivative of the coefficient-faithful source-translated primitive at its Xi-selected abscissa. -/
+theorem secondDeriv_gammaSixFilteredPrimeTraceTranslatedSecondPrimitive_at_boundary
+    (m : ℕ) (q : XiZeroCopy) (p : Nat.Primes) :
+    deriv (fun w : ℂ => deriv
+      (gammaSixFilteredPrimeTraceTranslatedSecondPrimitive m p
+        (primeDepthBVWoldXiCenteredRate q.1)) w)
+        (gammaSixFilteredBoundaryAbscissa m q : ℂ) =
+      (gammaSixFilteredBoundarySecondJet m q p : ℂ) := by
+  have hP : (0 : ℝ) < (p : ℝ) := by exact_mod_cast p.2.pos
+  have hexp :
+      Complex.exp (-((Real.log (p : ℝ) : ℂ) *
+        (gammaSixFilteredBoundaryAbscissa m q : ℂ))) =
+      (((p : ℝ) ^ (-gammaSixFilteredBoundaryAbscissa m q) : ℝ) : ℂ) := by
+    rw [Real.rpow_def_of_pos hP, Complex.ofReal_exp]
+    push_cast
+    congr 1
+    ring
+  rw [secondDeriv_gammaSixFilteredPrimeTraceTranslatedSecondPrimitive, hexp,
+    ← gammaSixSuspensionDeterminantPrimeCurrent_eq_filteredPrimeTrace]
+  rw [gammaSixFilteredBoundarySecondJet]
+  push_cast
+  ring
+
 private theorem gammaSixSuspensionDeterminantPrimeCurrent_eq_rpow_formula
     {m : ℕ} (hm : 1 ≤ m) (q : XiZeroCopy) (p : Nat.Primes) :
     gammaSixSuspensionDeterminantPrimeCurrent m q p =
@@ -313,9 +414,28 @@ theorem gammaSixFilteredBoundarySecondJet_nonneg
   have hF := (primeActivationOccupancyFisherDensity_pos' p).le
   positivity
 
-/-- Finite positive mass of the literal second jet at the true source-selected real abscissa. -/
+/-- **Finite-level source boundary control.** Every finite Euler-subset Hessian is bounded by one
+constant. This formulation only mentions finite source packets; it does not assume an infinite
+sum or hide the desired Tauberian conclusion in the definition. -/
 def XiGammaSixFilteredBoundaryControlled (m : ℕ) (q : XiZeroCopy) : Prop :=
-  Summable (gammaSixFilteredBoundarySecondJet m q)
+  ∃ C : ℝ, ∀ F : Finset Nat.Primes,
+    ∑ p ∈ F, gammaSixFilteredBoundarySecondJet m q p ≤ C
+
+/-- For the nonnegative literal Hessian, uniform control of every finite source packet is exactly
+absolute summability. This is the compactness/Tauberian passage missing from continuation alone. -/
+theorem sourceNaturalBoundaryControl_iff_summable
+    {m : ℕ} (hm : 1 ≤ m) (q : XiZeroCopy) :
+    XiGammaSixFilteredBoundaryControlled m q ↔
+      Summable (gammaSixFilteredBoundarySecondJet m q) := by
+  constructor
+  · rintro ⟨C, hC⟩
+    exact summable_of_sum_le (c := C)
+      (gammaSixFilteredBoundarySecondJet_nonneg hm q) hC
+  · intro hsum
+    refine ⟨∑' p, gammaSixFilteredBoundarySecondJet m q p, ?_⟩
+    intro F
+    exact hsum.sum_le_tsum F
+      (fun p _ => gammaSixFilteredBoundarySecondJet_nonneg hm q p)
 
 /-- Sharp Tauberian wall: the nonnegative second boundary jet is summable exactly at neutral
 horizontal grade. -/
@@ -352,7 +472,43 @@ theorem sourceNaturalBoundaryControl_forces_gammaSixCurvatureSummability
   apply (summable_gammaSixSuspensionDeterminantPrimeCurrent_iff_centeredRate_eq_zero
     hm q).2
   exact (summable_gammaSixFilteredBoundarySecondJet_iff_centeredRate_eq_zero
-    hm q).1 hcontrol
+    hm q).1 ((sourceNaturalBoundaryControl_iff_summable hm q).1 hcontrol)
+
+/-- Every proposed finite-packet Hessian bound is violated off neutral grade. This is the
+quantitative obstruction that any source-natural C² producer must overcome. -/
+theorem exists_finset_gammaSixFilteredBoundarySecondJet_sum_gt
+    {m : ℕ} (hm : 1 ≤ m) (q : XiZeroCopy)
+    (hq : primeDepthBVWoldXiCenteredRate q.1 ≠ 0) (C : ℝ) :
+    ∃ F : Finset Nat.Primes,
+      C < ∑ p ∈ F, gammaSixFilteredBoundarySecondJet m q p := by
+  by_contra hbound
+  push Not at hbound
+  have hcontrol : XiGammaSixFilteredBoundaryControlled m q := ⟨C, hbound⟩
+  exact hq ((summable_gammaSixFilteredBoundarySecondJet_iff_centeredRate_eq_zero
+    hm q).1 ((sourceNaturalBoundaryControl_iff_summable hm q).1 hcontrol))
+
+/-- **Summable-majorant classification.** A coefficientwise summable source observable can control
+the exact boundary Hessian precisely on the neutral fibre. Thus importing a summable Wold,
+Stokes, or Route-P tail is useful only after a coefficient-faithful domination theorem; such a
+domination is itself already a genuine line-forcing producer. -/
+theorem exists_summable_majorant_gammaSixFilteredBoundarySecondJet_iff
+    {m : ℕ} (hm : 1 ≤ m) (q : XiZeroCopy) :
+    (∃ M : Nat.Primes → ℝ,
+      Summable M ∧
+        ∀ p, gammaSixFilteredBoundarySecondJet m q p ≤ M p) ↔
+      primeDepthBVWoldXiCenteredRate q.1 = 0 := by
+  constructor
+  · rintro ⟨M, hM, hmajor⟩
+    have hsum : Summable (gammaSixFilteredBoundarySecondJet m q) :=
+      Summable.of_nonneg_of_le
+        (gammaSixFilteredBoundarySecondJet_nonneg hm q) hmajor hM
+    exact (summable_gammaSixFilteredBoundarySecondJet_iff_centeredRate_eq_zero
+      hm q).1 hsum
+  · intro hrate
+    let J : Nat.Primes → ℝ := gammaSixFilteredBoundarySecondJet m q
+    refine ⟨J, ?_, fun _ => le_rfl⟩
+    exact (summable_gammaSixFilteredBoundarySecondJet_iff_centeredRate_eq_zero
+      hm q).2 hrate
 
 /-- Universal source boundary control is exactly RH. -/
 theorem forall_sourceNaturalBoundaryControl_iff_riemannHypothesis
@@ -364,9 +520,10 @@ theorem forall_sourceNaturalBoundaryControl_iff_riemannHypothesis
   · intro h q
     exact sourceNaturalBoundaryControl_forces_gammaSixCurvatureSummability hm q (h q)
   · intro h q
+    apply (sourceNaturalBoundaryControl_iff_summable hm q).2
     apply (summable_gammaSixFilteredBoundarySecondJet_iff_centeredRate_eq_zero hm q).2
-    exact (summable_gammaSixSuspensionDeterminantPrimeCurrent_iff_centeredRate_eq_zero
-      hm q).1 (h q)
+    exact (summable_gammaSixSuspensionDeterminantPrimeCurrent_iff_centeredRate_eq_zero hm q).1
+      (h q)
 
 /-! ## Sharp lower-order boundary regularity -/
 

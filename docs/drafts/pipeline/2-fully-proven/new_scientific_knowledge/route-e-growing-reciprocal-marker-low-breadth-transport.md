@@ -5617,3 +5617,29 @@ the choice of factorization ranges and the Halász input on the exceptional freq
 The remaining work is arithmetic, not structural: choosing the ranges (`RamareFactorization` supplies
 the decomposition) and supplying the Halász bound at the exceptional frequency
 (`HalaszDichotomy`/`HalaszWindow`, whose distance side is already closed).
+
+## The remaining input is tracked on a dedicated programme card (2026-08-17)
+
+The single thing between this card and stage 3 is Matomäki--Radziwiłł's theorem for the Möbius
+function.  That formalisation is now a card of its own,
+`docs/drafts/pipeline/1-in-progress/matomaki-radziwill-lean-programme.md`, shared with the two
+`route-e-*-e3-*` cards (which need Matomäki--Teräväinen instead).  It holds the milestone table, the
+lemma-by-lemma inventory of what this corpus already owns, and the progress log.  Read it before
+attacking the input again from here.
+
+Two findings recorded there change the plan and are worth repeating:
+
+- **The exposé's multiplicative-to-additive transfer (Saffari--Vaughan) is not needed.**  This
+  card's own object, `RHTower.Sieve.innerFibre`, is already a multiplicative window
+  `(x/a, (x/a)(1 + h/√x)]` whose ratio does not depend on the outer variable `a`, so the Plancherel
+  identity applies directly with `δ = log(1 + h/√x)`.
+- **The Vinogradov--Korobov zero-free region is a hard prerequisite.**  Every stage of the argument
+  needs cancellation in `∑_{p ≍ P} p^{iy}` uniformly for `|y| ≤ X`, which is useful only when
+  `log P ≫ (log X)^{2/3+δ}`.  The corpus's zero-free region and its twisted Möbius layer carry the
+  classical shape `exp(-c log N/(log K)^9)`; even the de la Vallée Poussin exponent `1` would need
+  `log P ≫ log X`, impossible for `P ≤ h ≤ X`.  So the Vinogradov--Korobov region is Milestone 0.
+
+Two bricks have landed, both unconditional and axiom-clean:
+`Sieve/LogWindowPlancherel.lean` (the exact Plancherel identity for a logarithmic window sum,
+replacing the corpus's lossy Gallagher inequality) and `Sieve/LogWindowDiscreteTransfer.lean`
+(the passage from a discrete family of starting points to the mean square over the line).

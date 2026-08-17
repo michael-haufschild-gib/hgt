@@ -265,6 +265,16 @@ directly.  None of these is blocked by open mathematics.
 
 ## New reusable infrastructure added by this sweep
 
+- `HTGeometry/ExponentialPolynomialZeroBound.lean` — **the extended-Chebyshev zero bound**
+  (mathlib gap): a real exponential polynomial `∑ⱼ Pⱼ(x) e^{cⱼ x}` with distinct exponents and
+  nonzero polynomial coefficients has strictly fewer distinct real zeros than its number of scalar
+  coefficients (`card_lt_of_expPoly_eq_zero`).  Built from a reusable Rolle chain for arbitrary
+  differentiable real functions (`exists_deriv_zeros`, `exists_iteratedDeriv_zeros`) and the
+  polynomial calculus `P ↦ cP + P'` for derivatives of `P(x)e^{cx}` (`shiftD`, `deriv_polyExp`,
+  `iteratedDeriv_expPoly`, `natDegree_shiftD_iterate`).  This is the real-shift half of
+  `prime-source-cancellation-budget` and is cited by four further cards
+  (`completed-logderiv-full-translation-orbit-freeness`, `nyman-finite-mellin-ht-gauge-collapse`,
+  `prime-power-dirichlet-complex-jet-independence`, `quadratic-subtype-canonical-divisor-equivalence`).
 - `HTGeometry/UnitaryConjugationMatrixUnits.lean` and `HTGeometry/TwoBlockUnitaryAlgebra.lean` —
   the coordinate toolkit for **conjugation-equivariant linear maps on matrices**: conjugation of a
   matrix unit by a diagonal unitary (`diagonal_conj_single`) or a permutation matrix

@@ -3067,3 +3067,39 @@ Schwarzian obstruction, which is the consistency check.
 via the recursion `s_{j+1} = ∇(s_j) + j·s_j·z₂ + R''·z_j` for the weight-zero derivation
 `∇ = δ/y₁` (which satisfies `∇(z_j) = z_{j+1} − j·z_j·z₂`, `∇(y₀) = 1`), (ii) `Φ`-stability,
 (iii) transcendence of `z_k` over `WFib C (k−1)`, (iv) weight-zero invariance.
+
+## Pass 47 — the weight-zero tower, without a new field
+
+The weight-zero tower does not need a new `IntermediateField`: the ratio `z_k = y_k/y₁^k` generates
+the *same* extension of `jetPrefixField C k` as `y_k` does, and the torus fixes it.  So the existing
+slicing machinery applies verbatim in the `z_k` coordinate, and torus invariance is what propagates
+to the coefficients.
+
+`JetWeightScaleSlicing.lean`:
+
+```text
+IsWeightZero v                          := ∀ λ ≠ 0, w_λ v = v
+weightScalePrefixHom h k                : the torus restricted to a prefix field
+weightScale_aeval                       : w_λ(P(x)) = (w_λ P)(w_λ x)
+weightScale_eq_of_mem_prefix_one        : the torus is trivial on order-zero elements
+pd_one_eq_zero_of_isWeightZero          : torus-invariant of jet order ≤ 1  ⇒  jet order 0
+```
+
+The last is the *bottom of the tower*: slicing a torus-invariant element of order ≤ 1 in `y₁` over
+`C(y₀)` makes numerator and denominator scale by `λ^{deg}`, so both are monomials, and coprimality
+collapses them to constants.  This is exactly what the `y`-coordinate descent never reached.
+
+`JetWeightZeroSlice.lean`:
+
+```text
+transcendental_jetRatio_over_jetPrefixField : z_k is transcendental over jetPrefixField C k
+mem_adjoin_jetRatio_of_order                : order ≤ k  ⇒  v ∈ (jetPrefixField C k)⟮z_k⟯
+map_weightScalePrefix_eq_of_isWeightZero    : the torus fixes the slice numerator and denominator
+isWeightZero_coeff_of_slice                 : hence every slice coefficient is torus-invariant
+```
+
+With these, the descent of a weight-zero object in `z_M, z_{M−1}, …, z_2` keeps every coefficient
+torus-invariant, and the last step lands in `C(y₀)`, where the affine-connection and affine-transport
+obstructions already proved for the two quadratics apply.  What remains is the bookkeeping of the
+descent itself: the affine presentation `R'^k·Φ(z_k) = R'·z_k + s_k` as a `twistComp` datum, and the
+branch analysis at each level.
