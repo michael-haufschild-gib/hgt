@@ -407,3 +407,49 @@ be carried with its constant, not merely as `o(1)`**, and the final assembly mus
 `(log L)^{-2+o(1)}` rather than `o(1)`.
 
 This has been recorded on all three `route-e-*` cards.
+
+### Lemma 2.3: the parameter split and the prime transfer (2026-08-17)
+
+Two of the three items on the "Remaining for Lemma 2.3" list above are now Lean theorems.
+
+    HTGeometry/DiscreteAbelRing.lean
+      sum_mul_eq_partial_mul_diff_ring          the `Icc 1 N` summation by parts over any
+                                                commutative ring (the complex-valued form the
+                                                arithmetic weights need)
+
+    RHTower/Sieve/PrimeTwistAbel.lean
+      primeTwist                                the prime-indicator twist `p ↦ p^{-iτ}`
+      vonMangoldtPrimeTwist_mul_invLog          `Λ_prime-twist · (1/log) = prime twist`
+      sum_primeTwist_eq_abel                    summation by parts against `1/log`
+      sum_Icc_invLog_diff_le                    the total variation of `1/log` past `2` is `1/log 2`
+      norm_sum_primeTwist_le_of_partialSum_bound
+                                                **item 3**: any majorant for the partial sums of the
+                                                log-weighted twist transfers to the prime-indicator
+                                                twist
+      norm_sum_primeTwist_le_of_monotone_bound  the monotone form: `‖∑_{p≤K} p^{-iτ}‖ ≤ E(K)·
+                                                (1/log 2 + 1/log(K+1))`, i.e. Lemma 2.3's prime
+                                                statement has the same order as its Chebyshev
+                                                statement
+
+    RHTower/Sieve/VonMangoldtTwistScaledWidth.lean
+      exists_norm_partialSum_vonMangoldtTwist_routeT_scaled
+                                                **item 1, first half**: the capstone with the
+                                                smoothing width written as `K/D`, exposing the only
+                                                trade-off — smoothing loss `D²`, desmoothing loss
+                                                `K log(2K)/D`
+      exists_norm_partialSum_vonMangoldtTwist_routeT_balancedWidth
+                                                **item 1, second half**: at `D = (3K)^{w/3}` the
+                                                estimate splits into a part carrying the full contour
+                                                saving `(3K)^{-w/3}` and a part carrying only the
+                                                height decay in `τ`
+
+All five declarations are unconditional and axiom-clean.
+
+### Remaining for Lemma 2.3
+
+Only the height regime is left: the `(3K)^{2w/3}` group of `..._balancedWidth` decays only when
+`|τ|` is large compared with `(3K)^{2w/3}(log K)²`, which is the pure-error regime the two-regime
+split of `ChebyshevTwistNoPoleShift` already separates.  The small-`|τ|` regime is the untwisted
+Chebyshev estimate with the Route-T zero-free region, which the corpus owns.  Assembling the two
+into one statement uniform in `τ` closes Lemma 2.3, and `norm_sum_primeTwist_le_of_monotone_bound`
+then gives its prime form at once.

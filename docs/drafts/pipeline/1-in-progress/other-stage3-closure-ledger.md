@@ -3775,3 +3775,58 @@ anywhere a growing operator is compared with a contraction model.
 constants, which is what the one-step estimate of step 2 consumes.
 
 Both unconditional, axiom-clean, umbrella-wired, no raised heartbeats.
+
+## Pass 63 — the Lebesgue dimension foundation (unblocks the three dimension-blocked cards)
+
+The named blocker of `almost-periodic-autonomous-ade-finite-frequency-law`,
+`almost-periodic-implicit-ade-relative-frequency-law` and
+`archimedean-relative-prime-cocycle-curvature` was "covering dimension + Pontryagin dimension, absent
+from mathlib".  Both halves are now Lean-proved, unconditional and axiom-clean, from the corpus's own
+Brouwer fixed point theorem (`HTGeometry.BrouwerFixedPoint.exists_fixedPoint_of_retraction`).
+
+**Restructured route.**  The cards' proofs go through `dim X_f ≤ 2n` (finite closed sum theorem) and
+`rank_Q dual(X_f) = dim X_f` (Pontryagin).  Neither is needed in that form.  The whole argument
+compresses to a single statement about the cube:
+
+```text
+k < m  ==>  there is no continuous injection of [0,1]^m into R^k.
+```
+
+and its group-theoretic companion
+
+```text
+Gamma abelian with m Z-independent elements
+  ==>  the character space of Gamma contains a topological m-cube
+  ==>  no continuous map into R^k with k < m separates that cube.
+```
+
+A hull that is locally embedded in a `2n`-manifold therefore cannot have `2n+1` independent
+frequencies: Baire gives a sub-cube inside one regular chart, and the chart embeds it in `R^{2n}`.
+The finite closed-sum theorem and the inductive-dimension characterisation are bypassed entirely.
+
+**Modules (all wired into `GaloisForLFunctions.HTGeometry`, `formal lint passed`,
+`[propext, Classical.choice, Quot.sound]`).**
+
+| Module | Contents |
+|---|---|
+| `CoveringDimension` | order of a family, `HasCoveringDimLE`, monotonicity, closed-subspace and homeomorphism invariance |
+| `CubeSeparation` | **Poincare--Miranda** (`exists_forall_eq_zero_of_boundary_signs`) and the **cube separation theorem** (`exists_mem_iInter_of_separators`), from Brouwer; `unitCube` basics, compactness |
+| `BrickCover` | the `k+1` shifted families of open boxes: pairwise disjoint inside a family, covering, order `k+1`, mesh `sqrt(k)·delta` |
+| `BrickCoverCompact` | the finite enumerated brick cover of a compact set |
+| `GeneralPosition` | a nonempty open set escapes finitely many proper subspaces; points in prescribed open sets with no one in the span of `r` earlier ones; positive combinations of `r+1` of them are nonzero |
+| `SeparatorMap` | `exists_separating_map`: the nonvanishing sign-prescribed map `K -> R^m` for compact `K ⊆ R^k`, `k < m` |
+| `CubeNoEmbedding` | **`not_injOn_unitCube`**: no continuous injection `[0,1]^m -> R^k` for `k < m` |
+| `CircleCoordinateCube` | `eq_of_exp_pi_mul_I_eq`, `not_separating_of_circle_coordinates` |
+| `DivisibleExtension` | `exists_addMonoidHom_apply_eq_single`: a `Z`-independent family extends to real coordinates (`R^m` is an injective `Z`-module) |
+| `IndependentCharacterCube` | `exists_character_cube`, `injOn_of_character_cube`, **`not_injOn_of_independent_family`** |
+
+**The mechanism of `not_injOn_unitCube`.**  Given an injection `h` of the cube into `R^k`, the `m`
+pairs of opposite faces map to uniformly separated compact sets.  A brick cover of the image of mesh
+below that separation has order `k+1`; its partition of unity, weighted by vectors chosen in the sign
+box each brick prescribes and in general position, gives a map `u` to `R^m` that never vanishes —
+because a positive combination of at most `k+1 <= m` vectors in general position is nonzero.  The
+coordinate zero sets of `u ∘ h` are then `m` separators of the opposite faces of the cube with empty
+intersection, contradicting the cube separation theorem.
+
+The general-position step is where `k < m` is used, and it is the reason the argument needs a
+finite-dimensional Baire-type fact rather than the inductive dimension theory.

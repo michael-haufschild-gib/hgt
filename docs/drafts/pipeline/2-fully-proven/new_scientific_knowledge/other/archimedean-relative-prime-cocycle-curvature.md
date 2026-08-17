@@ -378,3 +378,48 @@ additionally requires a zero-sensitive or positive relation.
   Equations 412 (2024), 797--807, DOI `10.1016/j.jde.2024.08.068`.
 - F. Lue, *A further study on Markus's conjecture*, Bull. London Math. Soc. 57 (2025), 3586--3596,
   DOI `10.1112/blms.70171`.
+
+## Lean progress — the dimension-theoretic core is proved
+
+The Lean tree now owns, unconditionally and axiom-clean
+(`[propext, Classical.choice, Quot.sound]`), the two dimension inputs this card named as missing.
+
+**1. The Lebesgue dimension of Euclidean space, in the sharp form.**
+
+```text
+HTGeometry.not_injOn_unitCube :
+  k < m  ->  h continuous on the cube  ->  not (InjOn h ([0,1]^m))
+```
+
+that is: `[0,1]^m` admits no topological embedding into `R^k` when `k < m`.  Chain:
+`BrouwerFixedPoint` (owned) -> Poincare--Miranda (`exists_forall_eq_zero_of_boundary_signs`) ->
+the cube separation theorem (`exists_mem_iInter_of_separators`) -> the brick cover of `R^k` of order
+`k+1` and arbitrarily small mesh (`BrickCover`, `BrickCoverCompact`) -> the general-position choice of
+sign vectors (`GeneralPosition`) -> the nonvanishing separating map (`SeparatorMap`).
+
+**2. The lower bound of Pontryagin's dimension theorem, in the form the card consumes.**
+
+```text
+HTGeometry.exists_character_cube :
+  lam : Fin m -> Gamma  Z-independent
+    ==>  a continuous m-parameter family Theta of unitary characters of Gamma with
+         Theta v (lam j) = exp(pi i v_j)
+HTGeometry.not_injOn_of_independent_family :
+  k < m  ==>  no continuous map (Gamma -> C) -> R^k is injective on Theta([0,1]^m)
+```
+
+The algebraic input is that `R^m` is a divisible, hence injective, `Z`-module
+(`DivisibleExtension.exists_addMonoidHom_apply_eq_single`): the assignment `lam_j |-> e_j` extends
+from the free group the family generates to all of `Gamma`.  No cross-section theorem for compact
+groups and no inductive dimension theory are used.
+
+**Consequence for this card.**  The step "`dim X_f <= 2n` by the finite closed sum theorem, then
+`rank_Q dual(X_f) = dim X_f` by Pontryagin" is replaced by a single contradiction: if the frequency
+group had `2n+1` rationally independent elements the hull would contain a topological
+`(2n+1)`-cube, Baire would place a sub-cube inside one regular chart `F_j`, and the chart embeds it
+into the `2n`-real-dimensional jet manifold `M_P` — contradicting `not_injOn_unitCube`.
+
+What remains for full formalization of this card is therefore only the *analytic* half: the Bohr
+hull with its compact group structure and its identification of characters with frequencies, the
+minimal annihilating differential polynomial and its separant, and the analytic implicit function
+theorem on the regular jet locus.

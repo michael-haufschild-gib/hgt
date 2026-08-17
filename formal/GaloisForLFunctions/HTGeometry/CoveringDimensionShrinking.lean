@@ -184,3 +184,51 @@ theorem HasCoverDimLE.sum {Y : Type*} [TopologicalSpace Y] {n : ℕ}
         simp only [Set.mem_setOf_eq, Set.mem_union, Set.mem_image, Sum.inr.injEq,
           reduceCtorEq, and_false, exists_false, false_or, exists_eq_right]
       rw [hset]; exact hVYord y
+
+/-- **Covering dimension passes to closed subspaces.**  A cover of the subspace extends to a cover
+of the ambient space by adding the complement of its (closed) image; a shrinking of the extended
+cover restricts to a shrinking of the original one, and restriction cannot raise the order. -/
+theorem HasCoverDimLE.of_isClosedEmbedding {Y : Type*} [TopologicalSpace Y] {f : Y → X}
+    (hf : Topology.IsClosedEmbedding f) {n : ℕ} (h : HasCoverDimLE X n) : HasCoverDimLE Y n := by
+  classical
+  intro ι _ U hU hcov
+  choose W hWo hWpre using fun i => (hf.isInducing.isOpen_iff).mp (hU i)
+  set W' : Option ι → Set X := fun o => o.elim (Set.range f)ᶜ W with hW'
+  have hW'o : ∀ o, IsOpen (W' o) := by
+    intro o
+    cases o with
+    | none => exact hf.isClosed_range.isOpen_compl
+    | some i => exact hWo i
+  have hW'c : ⋃ o, W' o = Set.univ := by
+    rw [Set.eq_univ_iff_forall]
+    intro x
+    by_cases hx : x ∈ Set.range f
+    · obtain ⟨y, rfl⟩ := hx
+      have hy : y ∈ ⋃ i, U i := by rw [hcov]; exact Set.mem_univ y
+      obtain ⟨i, hi⟩ := Set.mem_iUnion.mp hy
+      refine Set.mem_iUnion.mpr ⟨some i, ?_⟩
+      have : y ∈ f ⁻¹' W i := by rw [hWpre i]; exact hi
+      exact this
+    · exact Set.mem_iUnion.mpr ⟨none, hx⟩
+  obtain ⟨V, hVo, hVs, hVc, hVord⟩ := h W' hW'o hW'c
+  refine ⟨fun i => f ⁻¹' V (some i), fun i => (hVo (some i)).preimage hf.continuous, ?_, ?_, ?_⟩
+  · intro i y hy
+    have : f y ∈ W i := hVs (some i) hy
+    have : y ∈ f ⁻¹' W i := this
+    rwa [hWpre i] at this
+  · rw [Set.eq_univ_iff_forall]
+    intro y
+    have hy : f y ∈ ⋃ o, V o := by rw [hVc]; exact Set.mem_univ _
+    obtain ⟨o, ho⟩ := Set.mem_iUnion.mp hy
+    cases o with
+    | none => exact absurd (Set.mem_range_self y) (hVs none ho)
+    | some i => exact Set.mem_iUnion.mpr ⟨i, ho⟩
+  · intro y
+    have himg : (fun i => some i) '' {i : ι | f y ∈ V (some i)} ⊆ {o : Option ι | f y ∈ V o} := by
+      rintro _ ⟨i, hi, rfl⟩
+      exact hi
+    calc {i : ι | y ∈ f ⁻¹' V (some i)}.ncard
+        = ((fun i => some i) '' {i : ι | f y ∈ V (some i)}).ncard :=
+          (Set.ncard_image_of_injective _ (Option.some_injective ι)).symm
+      _ ≤ {o : Option ι | f y ∈ V o}.ncard := Set.ncard_le_ncard himg (Set.toFinite _)
+      _ ≤ n + 1 := hVord (f y)

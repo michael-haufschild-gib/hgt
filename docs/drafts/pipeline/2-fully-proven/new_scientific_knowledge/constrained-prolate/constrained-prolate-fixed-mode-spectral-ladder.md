@@ -6041,3 +6041,88 @@ So both Fourier sectors now have: the exact infinite-dimensional constrained roo
 (`8/11` resp. `8/13`), its gap floor (`3/11` resp. `5/13`), the quantified gap, and the `ell²`
 convergence of the exact eigenvector to the two-mode seed — all for the TRUE prolate operator with
 no hypothesis.
+
+## The remaining gap, decomposed: everything reduces to ONE object
+
+An audit of what the corpus already proves shows that the two open rate claims do not need a new
+global analysis — they need exactly one two-sided estimate, and every other ingredient is already a
+theorem.
+
+### The exact reduction
+
+The mass identity `integral_Ioi_sq_signedModeRadialData` gives, with `R` the endpoint-normalized
+radial datum (`R 1 = 1`) and `sigma_n` the signed value,
+
+```text
+d_n = 2 sigma_n² · (∫_{y>1} R²) / (∫_{-1}^{1} R²) .
+```
+
+Three of the four factors are already controlled two-sided:
+
+```text
+sigma_n² → 1                              evenProlateSignedValue_sq_tendsto_one
+sqrt(c)·(∫_{-1}^{1} R²)/R(0)² → L_n > 0   tendsto_indexedRung_totalMass  (the rung machinery)
+∫_{y>1} R²  ≍  1/c                        radialProlateExteriorMassConstant (upper),
+                                          besselEnergyFloor (lower)
+```
+
+Hence
+
+```text
+d_n  ≍  c^(-1/2) / R_n(0)²                two-sided, with constants depending only on n,
+```
+
+and for the ratio at a fixed aperture
+
+```text
+d_m/d_n  ≍  R_n(0)² / R_m(0)² .
+```
+
+So the entire remaining content — the one-step ratio, the parity `lambda^(-4)` form, the `(9)`
+`~ C_k lambda^8` rate, and the `O(lambda^(-7))` eigenvector rate — is the single object
+
+```text
+** R_s(0)² = (Phi_s(0)/Phi_s(1))² ,  two-sided with MATCHING powers of c. **
+```
+
+The corpus's WKB stack bounds it above and below, but with prefactors `c^(+1)` and `c^(-2)`; the
+ratio of two such bounds carries `c^(+3)`, while one corpus index step only supplies `c^(-2)`.  That
+is the whole discrepancy.  (Note the reduction also shows the converse: sharp `R(0)` and sharp `d_n`
+are the *same* statement, so no rearrangement of the existing bounds can produce it.)
+
+### Why the regime is parabolic-cylinder, not Airy
+
+At a fixed mode, `c·s → 4n+1`, so `s ≍ 1/c` and the classically allowed region `|y| < sqrt s` has
+width `≍ c^(-1/2)`.  The Airy layer at the turning point `y = sqrt s` has width
+`(c² sqrt s)^(-1/3) ≍ c^(-1/2)` — the *same* scale.  The turning point is therefore not separated
+from the oscillatory region, and the correct connection is the parabolic-cylinder (harmonic
+oscillator) one, which is exactly the rescaling `y = xi/sqrt c` the corpus already uses
+(`prolateSLAction_sqrtScale`, `tendsto_indexedRung_profileLimit`).  This is why the sharpening is
+reachable from the machinery already here rather than requiring an Airy theory.
+
+### The programme
+
+```text
+P1  interior mass, two-sided                       DONE (tendsto_indexedRung_totalMass)
+P2  exterior mass, two-sided ≍ 1/c                  the two constants exist; assemble the ratio
+P3  transport on [K sqrt s, alpha]: two-sided WKB with a multiplicative error 1 + O(1/c)
+      — a Riccati comparison against the barrier ABOVE and a second one BELOW, whose actions
+        differ by O(1); the corpus has the upper comparison
+        (prolateLogDeriv_le_radialBarrier, prolateLogDeriv_le_shiftedBarrier)
+P4  the endpoint layer [alpha, 1]: the corpus already has both directions
+      (prolate_leakage_le_exp_action's collar factor, prolateBand_barrier_ratio_two_sided)
+P5  the matching at the turning scale: on |y| ≤ K sqrt s use the rescaled profile limit to compare
+      Phi(K sqrt s)/Phi(0) with the Hermite value H_{2n}(K)/H_{2n}(0) up to 1 + o(1)
+      — this is the step that replaces the crude factor `y_0² − s = 3s`
+P6  assemble: R(0)² = (Phi(0)/Phi(K sqrt s))·(Phi(K sqrt s)/Phi(alpha))·(Phi(alpha)/Phi(1)),
+      each factor two-sided with matching powers
+```
+
+`P5` is the only genuinely new mathematics, and it is a *finite-window* statement about the rescaled
+profile — precisely the object the rung machinery already controls (`tendsto_indexedRung_windowMass`,
+`tendsto_prolateProfile_hermiteRung_eventually`, `tendsto_indexedRung_windowDist`).  What it needs in
+addition is a two-sided pointwise comparison on a fixed window `|xi| ≤ K`, rather than the `L²`
+window statements now available.
+
+The cut-width improvement recorded above (`w = c^(-1/2)` instead of `c^(-1)`, giving `c^(+1/2)`
+instead of `c^(+1)` in the upper bound) is `P2`'s share and can be done independently.
