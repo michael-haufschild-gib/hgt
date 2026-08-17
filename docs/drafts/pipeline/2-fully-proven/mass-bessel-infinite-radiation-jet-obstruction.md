@@ -307,12 +307,52 @@ root defect by `w` is exact on the polynomial side (`Polynomial.divX`, legitimat
 polynomial has no odd coefficients and constant term one), so the defect expansion has order one less
 and vanishes at the origin -- which is precisely the hypothesis `HasPolyExpansion.cexp` consumes.
 
+## Lean progress -- the branch identities and the exact carrier identity at every order
+
+Three more modules (umbrella-wired, axiom-clean).
+
+`formal/GaloisForLFunctions/HTGeometry/MassShellRootFactorization.lean`:
+
+| Card item | Declaration |
+|---|---|
+| off the negative real axis the principal root is the unique square root with positive real part | `csqrt_eq_of_sq_of_re_pos_of_im_ne_zero` |
+| **the shell root factors through the spectral parameter**: `√(t²+x²) = t·√(1+x²/t²)` | `massBesselRoot_eq_mul_csqrt` |
+
+The card's spectral parameter `t_X = σ + i(log X)^4` makes `(t²+x²).re` very *negative*, so the
+corpus's `csqrt_eq_of_sq_of_re_pos` does not apply; the uniqueness has to be run off the imaginary
+part instead.  The side condition is `x² < t.re·‖t‖`, which is exactly what makes the second factor
+close enough to one for the product to stay in the right half plane -- the principal root is
+one-Lipschitz at the unit, so no argument bookkeeping is needed.
+
+`formal/GaloisForLFunctions/HTGeometry/PrincipalRootMultiplicative.lean`:
+
+| Card item | Declaration |
+|---|---|
+| on the right half plane the principal root's modulus is at most `√2` times its real part | `norm_csqrt_le_sqrt_two_mul_re` |
+| **multiplicativity of the principal root at a factor near one** | `csqrt_mul_of_near_one` |
+
+`norm_csqrt_le_sqrt_two_mul_re` is what replaces an argument estimate: squaring turns the difference
+of the squared coordinates into the real part of the argument, so the imaginary part of the root is
+strictly below its real part, and the whole quadrant condition becomes the single inequality
+`√2·‖s-1‖ < 1`.
+
+`formal/GaloisForLFunctions/HTGeometry/MassCarrierRatioIdentity.lean`:
+
+| Card item | Declaration |
+|---|---|
+| the Poincaré polynomial and remainder of `K_1` at the shell argument | `shellPoincareSum`, `shellPoincareRemainder` |
+| the distortion of the carrier against its deep-time profile, at order `n` | `carrierDistortion` |
+| **the carrier at every order**, exactly | `massBesselCarrier_eq_distortion` |
+
+This is the all-orders replacement for the corpus's order-zero `massBesselCarrier_eq`: the carrier is
+its deep-time profile times `√2·(t/z)·(√t/√z)·e^{-a(z-t)}` times the Poincaré polynomial, plus the
+carrier weight of the Poincaré remainder.  The identity is exact; only the last term is an error.
+
 ### What remains
 
-Item 2's coefficient bookkeeping for `Q_{j,a}` and the assembly of the four shell factors
-`(1+u)^{-1/2}`, `(1+u)^{-1/4}`, `e^{-a·shellDefect}` and `∑_k q_k(az)^{-k}` into the carrier ratio,
-including the principal-branch identity `csqrt(t²(1+u)) = t·(1+u)^{1/2}` on the first quadrant;
-followed by the dyadic assembly of item 4.  The composition is where the remaining work sits: writing
+Item 2's coefficient bookkeeping for `Q_{j,a}`, the expansion of `carrierDistortion` in `w = 1/t`
+(each of its four factors now has its own expansion lemma and the branch identities that rewrite them
+in `w` are in place), and the dyadic assembly of item 4.  The composition is where the remaining work sits: writing
 `z = t(1+x²/t²)^{1/2}`, the carrier is `√(2πa)e^{-at}t^{-1/2}` times
 `(t/z)^{3/2} e^{-a(z-t)} ∑_k q_k (az)^{-k}`, and every factor is a function of the *complex* variable
 `u = x²/t²`, so the half-line binomial remainder above has to be repeated for complex argument along

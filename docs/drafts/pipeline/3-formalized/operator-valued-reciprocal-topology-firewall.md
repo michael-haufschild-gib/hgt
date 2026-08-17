@@ -1,8 +1,8 @@
 # Operator-valued reciprocal-topology firewall
 
 - **ID:** operator-valued-reciprocal-topology-firewall
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** cross-corpus L/R/CCM/P retirement audit
 - **Statement:** If Hilbert--Schmidt kernels `K_n` converge to `K_0` in Hilbert--Schmidt norm, then their canonical entire Hilbert--Carleman determinants `entireDet2 K_n` converge to `entireDet2 K_0` at every fixed spectral coordinate; hence a fixed selected zero cannot persist along the approximants when the limiting determinant is nonzero there.
 
@@ -21,7 +21,7 @@ proved for any proposed producer.
 
 - [x] 0 → 1  in-progress: well-posed fixed-coordinate operator claim; source application scoped
 - [x] 1 → 2  fully-proven: complete paper proof below, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem `tendsto_entireDet2_of_hsNorm_sub_tendsto_zero`, leaf build green, axiom audit PASS
+- [x] 2 → 3  formalized: determinant-continuity and Beurling-firewall leaf builds green; lint and axiom audit PASS
 - [ ] 3 → 4  publication-ready: standalone paper
 
 ## Status and novelty
@@ -92,3 +92,5 @@ producer must identify and prove the exact discontinuous source invariant.
 - 2026-08-17 — statement frozen after rejecting the vacuous disc-local `fredholmDet` formulation:
   that local exponential never vanishes. Correct target is canonical entire continuation `entireDet2`.
 - 2026-08-17 — paper proof closed by local Lipschitz + Cauchy coefficients + global Carleman domination.
+- 2026-08-17 — formalized in `EntireDet2HilbertSchmidtContinuity.lean` and
+  `BeurlingReciprocalOperatorFirewall.lean`; exact leaf builds, formal lint, and axiom audit PASS.

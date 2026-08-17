@@ -4038,3 +4038,18 @@ conjecture loop and the open effective-onset question are not theorems of the ca
   order `2m+1` vanishing at the origin.  Division by `w` is exact on the polynomial side via
   `Polynomial.divX`, legitimate because the shell polynomial has only even coefficients and constant
   term one (`coeff_odd_shellBinomPoly`).
+
+### The branch identities and the exact all-orders carrier identity (mass-Bessel card)
+
+- `HTGeometry/MassShellRootFactorization.lean` -- `√(t²+x²) = t·√(1+x²/t²)`.  The corpus's
+  `csqrt_eq_of_sq_of_re_pos` cannot be used: at the card's `t_X = σ + i(log X)^4` the shell argument
+  has very negative real part.  Uniqueness has to run off the *imaginary* part instead
+  (`csqrt_eq_of_sq_of_re_pos_of_im_ne_zero`), and the side condition `x² < t.re·‖t‖` is exactly what
+  keeps the product in the right half plane, using only that the principal root is one-Lipschitz at
+  the unit.
+- `HTGeometry/PrincipalRootMultiplicative.lean` -- `√(ts) = √t·√s` for `s` near one.  The quadrant
+  bookkeeping collapses to one inequality because squaring gives `Re² - Im² = Re t > 0`, hence
+  `‖√t‖ ≤ √2·Re(√t)`; no argument or `Complex.arg` reasoning appears anywhere.
+- `HTGeometry/MassCarrierRatioIdentity.lean` -- the all-orders replacement for the corpus's
+  order-zero `massBesselCarrier_eq`: carrier = deep-time profile × `√2(t/z)(√t/√z)e^{-a(z-t)}` ×
+  Poincaré polynomial + carrier weight of the Poincaré remainder, exactly, at every order.

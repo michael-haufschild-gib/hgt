@@ -1,8 +1,8 @@
 # Route P two-prime source-state Ward budget obstruction
 
 - **ID:** route-p-two-prime-source-state-ward-budget-obstruction
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM / scoped no-go with positive survivor
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) / scoped no-go with positive survivor
 - **Source:** Route P literal primitive co-source + Gamma--Julia prime-log transport + rank-one Ward law
 - **Status:** `[PROVED HERE]`; bounded literature audit `[NOVELTY UNVERIFIED]`
 
@@ -18,7 +18,7 @@ the normalized literal reciprocal-promotion co-source.
 
 - [x] 0 → 1 in-progress: frozen two-prime, depth-zero, coefficient-faithful statement
 - [x] 1 → 2 fully-proven: complete paper proof below
-- [ ] 2 → 3 formalized: Lean leaf, exact build, lint, and axiom audit
+- [x] 2 → 3 formalized: exact Lean leaf build, lint, and axiom audit PASS
 - [ ] 3 → 4 publication-ready: standalone exposition
 
 ## Frozen statement
@@ -99,3 +99,5 @@ the corpus completed Möbius budget. Novelty remains unverified until a broader 
 
 - 2026-08-17 — resolved-channel conjecture failed against the exact diagonal prime-log source law.
 - 2026-08-17 — pivoted to source-state Ward energy and proved fixed two-prime overspend near `u=0`.
+- 2026-08-17 — formalized in `RoutePPrimitiveGammaJuliaTwoPrimeWardBudgetNoGo.lean`; exact leaf
+  build, formal lint, and axiom audit PASS.
