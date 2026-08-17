@@ -26,6 +26,8 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
+instance factPrimeSubtype (i : {q : ℕ // q.Prime}) : Fact i.1.Prime := ⟨i.2⟩
+
 section Euclid
 
 variable {p : ℕ} [Fact p.Prime]
@@ -45,6 +47,10 @@ theorem ratRes_natRatUnit {m : ℕ} (hm : m ≠ 0) :
     ratRes p ((natRatUnit hm : ℚˣ) : ℚ) = (m : ZMod p) := by
   rw [natRatUnit_val]
   exact ratRes_natCast m
+
+theorem ratTameHom_milnorSym2 (a b : ℚˣ) :
+    ratTameHom p (milnorSym2 ℚ a b) = Additive.ofMul ((ratTameData p).tame a b) :=
+  ratTameHom_symbol a b
 
 /-! ## The Euclidean relation -/
 
@@ -361,7 +367,7 @@ theorem ratTameHom_eq_zero_of_mem_smoothK2_pred (hp : p.Prime) {y : MilnorKDeg �
     refine (AddSubgroup.closure_le _).2 ?_
     rintro z ⟨a, ha, b, hb, rfl⟩
     show ratTameHom p (milnorSym2 ℚ a b) = 0
-    rw [ratTameHom_symbol,
+    rw [ratTameHom_milnorSym2,
       (ratTameData p).tame_eq_one_of_mem_ker (mem_val_ker_of_mem_smoothUnits_pred hp ha)
         (mem_val_ker_of_mem_smoothUnits_pred hp hb)]
     rfl
@@ -372,7 +378,7 @@ theorem ratRes_eq_one_of_tame_symbol_eq_zero (hp : p.Prime) {u : ℚˣ}
     (h : ratTameHom p (milnorSym2 ℚ u (primeRatUnit hp)) = 0) :
     ratRes p ((u : ℚˣ) : ℚ) = 1 := by
   have hker := mem_val_ker_of_mem_smoothUnits_pred hp hu
-  rw [ratTameHom_symbol] at h
+  rw [ratTameHom_milnorSym2] at h
   have hv : (ratTameData p).v (primeRatUnit hp) = 1 := by
     show padicValRat p ((primeRatUnit hp : ℚˣ) : ℚ) = 1
     rw [primeRatUnit_val]
@@ -412,15 +418,13 @@ end Euclid
 
 section TateMain
 
-instance factPrimeSubtype (i : {q : ℕ // q.Prime}) : Fact i.1.Prime := ⟨i.2⟩
-
 /-- The tame data of `ℚ` at all primes, with residue fields `ZMod p`. -/
 def ratTameFamily : ∀ i : {q : ℕ // q.Prime}, TameData ℚ (ZMod i.1) :=
   fun i => ratTameData i.1
 
 /-- **A class with vanishing tame symbols descends to the bottom of the filtration.** -/
 theorem mem_smoothK2_one_of_tame_vanishing {x : MilnorKDeg ℚ 2}
-    (htame : ∀ (q : ℕ) (hq : q.Prime), ratTameHom q x = 0) :
+    (htame : ∀ i : {q : ℕ // q.Prime}, ratTameHom i.1 x = 0) :
     ∀ N : ℕ, x ∈ smoothK2 N → x ∈ smoothK2 1 := by
   intro N
   induction N with
@@ -430,7 +434,7 @@ theorem mem_smoothK2_one_of_tame_vanishing {x : MilnorKDeg ℚ 2}
     by_cases hpr : (M + 1).Prime
     · haveI : Fact (M + 1).Prime := ⟨hpr⟩
       have h' : x ∈ smoothK2 ((M + 1) - 1) :=
-        smoothK2_descent_prime hpr h (htame (M + 1) hpr)
+        smoothK2_descent_prime hpr h (htame ⟨M + 1, hpr⟩)
       have hidx : (M + 1) - 1 = M := rfl
       rw [hidx] at h'
       exact ih h'
@@ -441,11 +445,9 @@ theorem mem_smoothK2_one_of_tame_vanishing {x : MilnorKDeg ℚ 2}
 theorem two_zsmul_eq_zero_of_mem_ratTameKernel {y : MilnorKDeg ℚ 2}
     (hy : y ∈ tameKernel ratTameFamily) : (2 : ℤ) • y = 0 := by
   obtain ⟨N, hN⟩ := exists_mem_smoothK2 y
-  have htame : ∀ (q : ℕ) (hq : q.Prime), ratTameHom q y = 0 := by
-    intro q hq
-    haveI : Fact q.Prime := ⟨hq⟩
-    have h := (mem_tameKernel_iff ratTameFamily y).1 hy ⟨q, hq⟩
-    exact h
+  have htame : ∀ i : {q : ℕ // q.Prime}, ratTameHom i.1 y = 0 := by
+    intro i
+    exact (mem_tameKernel_iff ratTameFamily y).1 hy i
   exact two_zsmul_eq_zero_of_mem_smoothK2_one (mem_smoothK2_one_of_tame_vanishing htame N hN)
 
 theorem ratTameKernel_torsion (y : MilnorKDeg ℚ 2) (hy : y ∈ tameKernel ratTameFamily) :

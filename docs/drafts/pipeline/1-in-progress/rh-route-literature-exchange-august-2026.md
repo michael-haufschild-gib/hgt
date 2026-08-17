@@ -9,7 +9,7 @@ exact results located externally, and what external work contributes that is bot
 and capable of narrowing the route's first open source premise.
 
 Local committed cutoff is
-`16927218e406267bdc0ea7c417cd67727f27312d` on 17 August, plus declaration-level review of current working tree. Historical `Active-tree Lean` wording records former provenance; current
+`a736029b50b12daec027e0f2837e0ed8fb292487` on 17 August, plus declaration-level review of current working tree. Historical `Active-tree Lean` wording records former provenance; current
 scientific verdict follows declaration content and synopsis below rather than former cutoff labels.
 Scientific
 comparison follows declaration content rather than module placement.
@@ -28,11 +28,11 @@ comparison and theorem provenance, not chronological status.
 | D2 | On every fixed polynomial frequency horizon, safe-line zeta bound is O_B(log x/log log x) and deficit is at least log log log x minus O_B(1); quarter deficit transfers to every real unit-disc twist. | Pretentious and zero-free-region literature supplies safe-line inputs, not continuation of positive source through Euler wall to finite completed high-frequency ceiling. |
 | E | Exact logarithmic-window transfer and a sharp log-weighted twisted-prime contour bound are formal. | Upstream cards require Menon's `(log log L)^2/(log L)^2` Möbius rate, obtained by carrying quantitative Halász distance through the MR ladder; MR's published `(log L)^(-c)`, `c<1`, is insufficient. Matomäki--Teräväinen `E_3` is separate. Neither supplies final unit Carleson/co-moving flux. |
 | G | High assistance is formally source-cyclic: every survivor has low-source singular mass `mu((1/113,1]) > r/(128 C_T) >> r/log^2(1/r)`; direct-tail amplification, generic ultranull packets, and single prime seams are excluded. | No located theorem proves the opposite source-specific upper bound or constructs an actual family meeting the lower bound. Aperture-Morse exhaustion and completed wall Schur comparison remain separate. |
-| L | Literal Wold--Jordan descent on genuine Big-Witt rows factors through one free scalar `A` and holds iff `A=0`; Beurling sensitivity proves reciprocal-scale continuity cannot be RH-bearing. | Same-fibre fixed-star and `1/p` Hessian descent are terminal receivers. Surviving route requires a critical-scale arithmetic Calderón Green intermediate extension and faithful cup-isometric Hodge comparison; no located theorem supplies it. |
-| O | Indexed prolate coordinates and conditional clock capstone are formal. Lifted Riccati barrier now yields explicit canonical upper leakage at every index, ground included, with at most one factor `e` loss. Restricted-Weil positivity still reduces to finite peripheral Birman--Schwinger block. | External PSWF theory may help assemble the remaining common-clock envelope, but no longer needs to supply ground upper leakage; it cannot prove source-relative finite-block sign under growing dimension/conditioning. |
-| P | Prime-log Hilbert--Schmidt `det₂` carrier exists, but its forced zero at `1` while `XiC(1) != 0` rules out direct Xi identification and every pointwise scalar correction. | No located theorem constructs the required spectrum-moving prime--Gamma operator coupling; non-spectral conormal contraction remains alternative. |
+| L | Scalar descent on completed one-leg graph is exactly constant-profile descent. Reciprocal-mass-continuous Hilbert--Schmidt divisor encoding is impossible at fixed normalized coordinate. | Surviving route must prove a critical-scale arithmetic discontinuity, change carrier/ideal, or leave Hilbert--Schmidt class while constructing Calderón Green extension and cup-isometric Hodge comparison. |
+| O | True signed prolate leakages form unconditional ladder envelopes in both parity sectors. Every accuracy selects a finite Gamma--Slepian source head and coercive exterior; a nonpositive direction forces accuracy-sharp literal prime overcompensation on that head. | External PSWF asymptotics no longer supply the missing theorem. Need cofinal arithmetic reverse inequality excluding finite-head von-Mangoldt overcompensation against identity, scalar Gamma, and polar terms. |
+| P | Prime-log `det₂` carrier cannot be Xi, and literal two-prime source-state Ward energy exceeds the completed eight-unit budget near zero. | Any survivor must short/couple nonlocally before finite prime-cell compression, or prove non-spectral conormal contraction; compression-monotone Ward comparison is dead. |
 | Q | Null-boundary diagonal energies vanish while mixed incidence tends `-E/2`; complex scalar phases cannot repair target-aligned fusion. Off-line conjugate pair has zero signed mass but divergent quadratic concentration at transverse wall. | Produce cofinal nonnegative source recurrence, or construct finite pre-divisor quadratic-energy budget dominating Q and U boundary profiles. Classical moment/phase/diagonal theory supplies neither. |
-| T | `71/100` supply, sharp twisted-prime bound, full-window `(22.7)`, lossless far-field jets, and exterior prime-tail summation from a supplied cone envelope are formal. | Need moving-retreat splice giving `(22.8)` and signed Bessel type-zero cancellation; alternatively signed residual/sub-`3/2` gap energy or growing-Xi chirp separation. |
+| T | Weighted spectral rigidity, polynomial-filtered Euler-line RH criterion, and endpoint-retreated exterior jet tail are formal in addition to `71/100` supply and `(22.7)`. | Transfer filtered receiver through integer-face/true-prime-cone quadrature and prove signed interior/type-zero cancellation; alternatives remain signed residual/sub-`3/2` gap energy or growing-Xi chirp separation. |
 | U | Exact onto `2*pi` scaling identifies full CCM form; even and odd prime walls are invisible. Lean proves `RH ∨ CCMFirstContactBoundaryRoughness`: false-RH least null ground is outside every strict smooth interior source. | Exclude completed-boundary rough first contact through trace/quotient or whole-ground coercivity. Literature offers no such source-relative boundary theorem. |
 
 No newly audited module instantiates an eleventh lettered route. Six CCM openings are now
@@ -43,10 +43,11 @@ CCM-UR is now Lean-welded to positive two-exponential smoothing of the common co
 integer-log resolvent continuation and resolvent-to-RH endpoint are closed, so it asks only for its
 signed source lower/contractivity law. CCM-RF asks for an eventual lower floor for one
 fixed adjacent critical-Mellin block imbalance; CCM-EP asks for dephased completed log-derivative transfer
-across exact half-strip boundary into complete Euler Pick cone. New CCM-BS reduces literal
-restricted-Weil positivity to vanishing of finite-dimensional above-one peripheral sector and gives
-exact all-mode Gamma--Slepian prime--polar balance. It is a new mechanism inside Route O/G-floor/U,
-not independent source. Their Lean theorems do not yet form completed source-to-RH
+across exact half-strip boundary into complete Euler Pick cone. CCM-BS now goes further than a
+spectral finite block: for every accuracy it selects a finite physical Gamma--Slepian source head,
+gives a coercive exterior and arbitrarily accurate whole-to-head lower bound, and turns every
+hypothetical nonpositive direction into literal finite-prime overcompensation on that head. It is a
+mechanism inside Route O/G-floor/U, not an independent source. Their Lean theorems do not yet form completed source-to-RH
 chains, except that CCM-RF already has a direct Lean endpoint once its lower floor is supplied.
 CCM-UR and CCM-RF share CCM-FU's literal source, so neither is an independent route. The full
 normalized one-channel use of four-unit pole slack is now closed negatively: its available slack is
@@ -2572,6 +2573,20 @@ the prime port has finite zero-jet but divergent first prime-log jet. No theorem
 generic port with the fixed Burnol/Deninger physical specialization, so it remains receiver
 infrastructure rather than the Route-L source comparison.
 
+Two later Lean classifications remove remaining escape hatches. First,
+`primeLabelledActualSourceDescends_iff` proves continuous scalar readout on the completed one-leg
+graph exists exactly for profiles constant on the canonical prime enumeration; reciprocal,
+prime-log, inverse-Gamma, and every other nonconstant relabelling are terminal on this carrier.
+Second, Hilbert--Schmidt continuity of canonical `entireDet2`, combined with the explicit Beurling
+perturbation sequence, rules out every reciprocal-mass-continuous fixed-coordinate Hilbert--Schmidt
+divisor encoder whose base determinant is nonzero. A viable operator producer must prove a genuine
+arithmetic discontinuity, change carrier/target ideal, or leave Hilbert--Schmidt class.
+
+Working-tree rational Milnor `K_2` now has a monotone exhaustive Tate filtration by largest prime,
+bottom two-torsion, and a one-symbol decomposition of each prime step. This sharpens the adjacent
+arithmetic carrier but has no Xi-selected physical landing or Hodge sign, so route frontier does
+not move.
+
 No exact external collision was located for this source-specific relative-curvature,
 top-boundary, and non-erasure classification.
 
@@ -2861,8 +2876,13 @@ Separately, literal restricted-Weil form has exact compact self-adjoint Birman--
 At zero energy it decomposes into coercive reducing exterior plus finite-dimensional peripheral
 block, with zero mixed form. Whole positivity is equivalent to positivity on that block and to
 vanishing of its above-one dangerous subspace. Complete Gamma--Slepian eigenspace sum gives exact
-all-mode scalar/polar/finite-prime balance. First open theorem is source-relative sign control of
-this finite block uniformly/cofinally, not prolate order or generic whole-space compactness.
+all-mode scalar/polar/finite-prime balance. Exact physical-source factorization now strengthens
+this: for every `delta>0`, Lean selects a finite peripheral Gamma--Slepian head and coercive
+exterior, bounds the whole form below by head compression minus `delta||h||^2`, and proves every
+nonzero nonpositive direction has nonzero head projection forcing
+`(1-delta)||h||^2+scalarGamma(h)+polar(h)<=finitePrime(h)`. Source alignment, conditioning escape,
+and fixed approximation loss are closed. First open theorem is the cofinal reverse arithmetic
+inequality excluding this finite-head overcompensation.
 
 A provisional Stage-2 paper theorem now closes seed choice inside the **full constrained prolate
 leakage problem**. The lowest zero-integral positive-even prolate leakage eigenvector converges to
@@ -3137,15 +3157,12 @@ selector, compact/exterior radial primitive, and polar-charge seed law are forma
 frontier has moved past one-sided endpoint control: Lean now proves same-action two-sided barrier
 ratios, sharp aperture-mass upper and interior/exterior lower laws, positive Bessel energy floor,
 sharp leakage lower and upper bounds, oscillator-ladder derivative transfer, and fixed-rung Hermite
-window limits. New indexed modules prove every Fourier-even coordinate limit. Consequently every
-literal leakage `LadderEnvelope` yields eventual exact constrained eigenpairs at each fixed depth,
-strong depth-vector convergence, and collapse of all preceding normalized raw defects. The lifted
-Riccati barrier removes `c*s>=4`; `ProlateGroundLeakageUpper` instantiates it on canonical indexed
-modes, proving eventual explicit upper leakage at every index, ground included, within one factor
-`e` of positive-mode bound. Remaining local task is common-clock/action-envelope assembly. External
-PSWF asymptotics may help there, but cannot supply restricted-Weil ground selection. RH-bearing frontier
-remains source-relative nonnegativity of exact finite exceptional Birman--Schwinger form, with
-intact polar--prime cross terms and uniform control as block grows.
+window limits. True signed leakages now instantiate `LadderEnvelope` unconditionally in both parity
+sectors. Lean obtains exact constrained eigenpairs, raw-defect collapse, depth-vector convergence,
+parity floors `8/11` and `8/13`, gap floors `3/11` and `5/13`, and leakage-normalized parity collapse.
+Common-clock/action-envelope assembly is closed. External PSWF asymptotics therefore no longer
+touch first open theorem: exclude accuracy-sharp finite-head prime overcompensation with intact
+polar terms, cofinally as source head grows.
 
 ### Route P — completed-seam Thorin/Markov carrier [OPEN]
 
@@ -3195,6 +3212,13 @@ genus-one `det₂` carrier. Its forced source zero at `1` while `XiC(1)` is nonz
 direct identification with Xi or normalized Xi and every pointwise scalar multiplier. Viable
 successor must move the source spectrum through a non-pointwise operator coupling, or use a non-
 spectral conormal trace contraction.
+
+The literal source-state Ward budget is now closed negatively before divisor landing. On the
+normalized depth-zero two-prime co-source at `2,3`, the exact diagonal Gamma--Julia Hamiltonian has
+rank-one Ward energy `2 w_2(u)w_3(u)(E_2-E_3)^2`, positive at `u=0`, while completed budget
+`8(1-exp(-u))` tends to zero. Hence every coefficient-faithful comparison hereditary or
+nonexpansive under this finite source compression fails near zero. A survivor must perform
+nonlocal cancellation/shorting before prime-cell compression and be visibly nonmonotone under it.
 
 **Current formal frontier.** The older compact-measure endpoint now has two sharper source-budget
 realizations. In the completed-seam lane, curvature normalization removes the quadratic
@@ -3555,8 +3579,8 @@ be imported as source positivity. Classical GGC/Thorin theory supplies the gener
 **Lean action.** No additional generic Thorin, unitary-dilation, Douglas-factorization, or Loewner
 import advances route. Raw finite nonnegativity is already RH-equivalent and must not be treated as
 an intermediate lemma. Physical wall convergence and genus-one reconstruction are closed; direct
-Xi and scalar-weld identification is dead. Present work is a source-derived spectrum-moving
-operator coupling or a non-spectral trace contraction. Earlier
+Xi/scalar welding and compression-monotone completed Ward budgets are dead. Present work is a
+pre-compression nonlocal spectrum-moving coupling/shorting or a non-spectral trace contraction. Earlier
 W-H208/P-G205 correction language records provenance of
 the forced Julia--Krein block, not the current frontier. Scalar contractivity, same-leg collapse,
 universal matrix-complete restriction, and post-divisor passivity are formally insufficient or
@@ -4037,10 +4061,16 @@ generic “density-to-prime” gap.
    card's `(22.7)` uniformly across the square-root balance window:
    `||(4a^4-partial_h^2)^n XiMass|| <= C u^(-(n+1)/2) exp(-a sqrt(h^2-u^2))`.
    `XiMassCausticFarField` proves the complementary bound for all `h>=kappa_B u` with no polynomial
-   height loss. `XiMassJetPrimeTail` defines the literal jet atom and proves exterior summation from
-   any supplied cone envelope. Remaining analytic statement is the moving-retreat splice producing
-   `(22.8)`; `(22.10)`--`(22.11)` then follow. Signed annular/type-zero
-   cancellation remains arithmetic. Literature on Bessel asymptotics no longer addresses first gap.
+   height loss. At `H=kappa_B u-q_n log u`, `q_n=(n+1)/(2(2a^2-1/2))`, Lean now performs the
+   window/far-field split and proves the full exterior prime tail uniformly bounded in height and
+   truncation. This is the corrected endpoint form of `(22.8)`--`(22.11)`.
+
+   The jet is exactly polynomial filtering. Weighted spectral rigidity makes bounded jet trace an
+   RH criterion; polynomial archimedean contour shift is uniformly bounded; and the resulting
+   absolutely convergent von-Mangoldt-minus-archimedean Euler-line integral is bounded on one
+   positive vertical line iff RH. Missing formal middle is filtered integer-face atomization,
+   true-prime-cone reduction, and moving quadrature. Missing arithmetic theorem remains signed
+   interior/type-zero cancellation. Literature on Bessel asymptotics no longer addresses first gap.
 
 These lanes share a single obstruction: available absolute estimates control mass, but RH requires
 signed source coherence across prime mesh, Mellin boundary, or Bessel interior. Ingham/Hoheisel

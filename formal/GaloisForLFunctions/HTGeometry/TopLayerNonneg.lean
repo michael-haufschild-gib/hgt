@@ -39,10 +39,6 @@ theorem bohrLayer_shift {n : ℕ} (mm : Fin n → ℂ) (uu : Fin n → ℝ) (t�
   push_cast
   ring
 
-theorem bohrLayer_zero_eq {n : ℕ} (mm : Fin n → ℂ) (uu : Fin n → ℝ) :
-    (∑ j, mm j * Complex.exp (Complex.I * ((t₀ : ℂ) * ((uu j : ℝ) : ℂ)))).re
-      = bohrLayer mm uu t₀ := rfl
-
 /-- **Recurrence of the layer.**  A value of a layer recurs, to any tolerance, at arbitrarily large
 times. -/
 theorem exists_large_bohrLayer_near {n : ℕ} (mm : Fin n → ℂ) (uu : Fin n → ℝ) (t₀ : ℝ)
@@ -63,17 +59,13 @@ theorem exists_large_bohrLayer_near {n : ℕ} (mm : Fin n → ℂ) (uu : Fin n �
   have hre : |((∑ j, mm' j * Complex.exp (Complex.I * ((ξ : ℂ) * ((uu j : ℝ) : ℂ)))) - ∑ j, mm' j).re|
       ≤ ‖(∑ j, mm' j * Complex.exp (Complex.I * ((ξ : ℂ) * ((uu j : ℝ) : ℂ)))) - ∑ j, mm' j‖ :=
     Complex.abs_re_le_norm _
-  have h1 : ((∑ j, mm' j * Complex.exp (Complex.I * ((ξ : ℂ) * ((uu j : ℝ) : ℂ)))) - ∑ j, mm' j).re
-      = bohrLayer mm uu (t₀ + ξ) - bohrLayer mm uu t₀ := by
-    rw [Complex.sub_re]
-    congr 1
-    · rw [← bohrLayer_shift mm uu t₀ ξ, bohrLayer, hmm']
-    · rw [bohrLayer]
-      congr 1
-      refine Finset.sum_congr rfl (fun j _ => ?_)
-      rw [hmm']
+  have hA : (∑ j, mm' j * Complex.exp (Complex.I * ((ξ : ℂ) * ((uu j : ℝ) : ℂ)))).re
+      = bohrLayer mm uu (t₀ + ξ) := by
+    rw [← bohrLayer_shift mm uu t₀ ξ]
+    rfl
+  have hB : (∑ j, mm' j).re = bohrLayer mm uu t₀ := rfl
   have hsum : (∑ j, ‖mm' j‖) = ∑ j, ‖mm j‖ := Finset.sum_congr rfl (fun j _ => hnorm j)
-  rw [h1] at hre
+  rw [Complex.sub_re, hA, hB] at hre
   rw [hsum] at hbound
   linarith
 
@@ -96,8 +88,8 @@ theorem bohrLayer_nonneg_of_nonneg {n : ℕ} (mm : Fin n → ℂ) (uu : Fin n �
   set ε : ℝ := cc / (2 * (Msum + 1)) with hε
   have hεpos : 0 < ε := by rw [hε]; positivity
   have hsmall : Msum * ε < cc / 2 := by
-    rw [hε]
-    rw [div_lt_div_iff₀ (by positivity) (by norm_num)] at *
+    have hden : (0 : ℝ) < 2 * (Msum + 1) := by linarith
+    rw [hε, ← mul_div_assoc, div_lt_div_iff₀ hden (by norm_num : (0:ℝ) < 2)]
     nlinarith [hccpos, hMnn]
   set Kp : ℝ := K + 1 with hKp
   have hKppos : 0 < Kp := by rw [hKp]; linarith
@@ -106,10 +98,10 @@ theorem bohrLayer_nonneg_of_nonneg {n : ℕ} (mm : Fin n → ℂ) (uu : Fin n �
   have hsS : S₀ < s := by linarith
   -- the layer is still strictly negative at the large time `s`
   have hlayer : bohrLayer mm uu s < -(cc / 2) := by
-    have := abs_le.mp hnear
-    have h2 : bohrLayer mm uu s - bohrLayer mm uu t₀ ≤ Msum * ε := this.2
-    rw [hcc] at *
-    linarith
+    have h2 : bohrLayer mm uu s - bohrLayer mm uu t₀ ≤ Msum * ε := (abs_le.mp hnear).2
+    have h3 : bohrLayer mm uu t₀ = -cc := by rw [hcc]; ring
+    rw [h3] at h2
+    linarith [hsmall]
   -- the remainder is too small to repair it
   have hexp : Kp * Real.exp (-(delta * s)) < cc / 2 := by
     have hlog : Real.log (2 * Kp / cc) < delta * s := by
@@ -118,22 +110,27 @@ theorem bohrLayer_nonneg_of_nonneg {n : ℕ} (mm : Fin n → ℂ) (uu : Fin n �
     have hpos : (0 : ℝ) < 2 * Kp / cc := by positivity
     have := Real.exp_lt_exp.mpr hlog
     rw [Real.exp_log hpos] at this
+    have hE : (0 : ℝ) < Real.exp (delta * s) := Real.exp_pos _
     have hgt : Real.exp (-(delta * s)) < cc / (2 * Kp) := by
-      rw [Real.exp_neg, inv_lt_comm₀ (Real.exp_pos _) (by positivity)]
-      calc 2 * Kp / cc < Real.exp (delta * s) := this
-        _ = (cc / (2 * Kp))⁻¹ * (cc / (2 * Kp)) * Real.exp (delta * s) := by
-            field_simp
-      -- fallback handled below
+      rw [lt_div_iff₀ (by positivity : (0:ℝ) < 2 * Kp), Real.exp_neg, inv_mul_eq_div,
+        div_lt_iff₀ hE]
+      have hmul := (div_lt_iff₀ hccpos).mp this
+      linarith
     calc Kp * Real.exp (-(delta * s)) < Kp * (cc / (2 * Kp)) :=
           mul_lt_mul_of_pos_left hgt hKppos
-      _ = cc / 2 := by field_simp; ring
+      _ = cc / 2 := by field_simp
   have hGs : G s ≤ Kp * Real.exp (bM * s) * Real.exp (-(delta * s)) := by
     have h1 := (abs_le.mp (hG s)).2
     have h2 : K * Real.exp ((bM - delta) * s)
         ≤ Kp * Real.exp (bM * s) * Real.exp (-(delta * s)) := by
-      rw [← Real.exp_add, show bM * s + -(delta * s) = (bM - delta) * s from by ring]
-      have : K ≤ Kp := by rw [hKp]; linarith
-      exact mul_le_mul_of_nonneg_right this (Real.exp_pos _).le
+      have hrw : Kp * Real.exp (bM * s) * Real.exp (-(delta * s))
+          = Kp * Real.exp ((bM - delta) * s) := by
+        rw [mul_assoc, ← Real.exp_add]
+        congr 2
+        ring
+      rw [hrw]
+      have hKle : K ≤ Kp := by rw [hKp]; linarith
+      exact mul_le_mul_of_nonneg_right hKle (Real.exp_pos _).le
     linarith
   have hFneg : F s < 0 := by
     rw [hF s]
@@ -142,8 +139,8 @@ theorem bohrLayer_nonneg_of_nonneg {n : ℕ} (mm : Fin n → ℂ) (uu : Fin n �
       mul_lt_mul_of_pos_left hlayer hpos
     have h2 : Kp * Real.exp (bM * s) * Real.exp (-(delta * s))
         < Real.exp (bM * s) * (cc / 2) := by
-      have := mul_lt_mul_of_pos_left hexp hpos
-      nlinarith [this]
+      have hml := mul_lt_mul_of_pos_left hexp hpos
+      linarith [hml]
     linarith
   exact absurd (hnn s) (not_le.mpr hFneg)
 

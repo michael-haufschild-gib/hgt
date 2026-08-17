@@ -258,4 +258,26 @@ theorem brick_card_le {k : ℕ} {δ : ℝ} (hδ : 0 < δ) (x : EuclideanSpace �
     _ ≤ Fintype.card (Fin (k + 1)) := Finset.card_le_univ _
     _ = k + 1 := by simp
 
+theorem brickHalf_lt_one (k : ℕ) : brickHalf k < 1 := by
+  have h1 := half_sub_brickHalf k
+  have h2 := brickShift_pos k
+  linarith
+
+/-- A brick is a bounded box, so in positive dimension its complement is nonempty. -/
+theorem compl_brick_nonempty {k : ℕ} (hk : 0 < k) {δ : ℝ} (hδ : 0 < δ) (s : Fin (k + 1))
+    (z : Fin k → ℤ) : (brick k δ s z)ᶜ.Nonempty := by
+  refine ⟨(EuclideanSpace.equiv (Fin k) ℝ).symm
+    fun i => δ * ((z i : ℝ) + (s : ℕ) * brickShift k) + δ, ?_⟩
+  intro hmem
+  have h := hmem ⟨0, hk⟩
+  have hval : ((EuclideanSpace.equiv (Fin k) ℝ).symm
+      fun i => δ * ((z i : ℝ) + (s : ℕ) * brickShift k) + δ) ⟨0, hk⟩
+      = δ * ((z ⟨0, hk⟩ : ℝ) + (s : ℕ) * brickShift k) + δ := rfl
+  rw [hval] at h
+  have hsimp : δ * ((z ⟨0, hk⟩ : ℝ) + (s : ℕ) * brickShift k) + δ
+      - δ * ((z ⟨0, hk⟩ : ℝ) + (s : ℕ) * brickShift k) = δ := by ring
+  rw [hsimp, abs_of_pos hδ] at h
+  have := brickHalf_lt_one k
+  nlinarith
+
 end GaloisForLFunctions.HTGeometry

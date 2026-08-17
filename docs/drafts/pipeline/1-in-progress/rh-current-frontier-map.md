@@ -3986,13 +3986,13 @@ lettered routes plus CCM-FU remain live; Route R is terminalized. No new Lean cl
 an eleventh route. CCM candidates and non-CCM openings listed in scope remain incomplete; moving-
 degree reverse Bessel remains an unlettered disproof opening.
 
-Latest corpus narrows five frontiers. E needs Menon-strength Möbius rate, not bare MR rate, before
+Latest corpus narrows multiple frontiers. E needs Menon-strength Möbius rate, not bare MR rate, before
 its still-harder unit-capacity/flux theorem. G high assistance is forced into quantified
 source-cyclic mass above `1/113`. L's completed one-leg singular-graph producer is now fully
 classified: exactly constant prime-labelled scalar profiles descend, so every nonconstant
 Wold--Jordan/fixed-star reweighting is closed negatively; only carrier-changing critical-scale
-arithmetic Green/Hodge construction survives. O now has canonical
-all-index upper leakage, ground included; common-clock assembly is backlog, whole-ground finite-block
-sign RH-bearing. T has window/far-field jets and conditional prime-tail summation; moving-retreat
-splice, signed sub-`3/2`, type-zero assembly, and growing-Xi chirp remain. New generic adapters and
-Beurling firewalls create no route. No route proves or disproves RH.
+arithmetic Green/Hodge construction survives. O now has unconditional signed parity clocks and
+arbitrary-accuracy source-aligned finite reduction; excluding finite-head prime overcompensation is
+RH-bearing. T now has endpoint-retreated jet tail and exact polynomial-filtered Euler-line receiver;
+true-prime quadrature transfer, signed sub-`3/2`, interior/type-zero assembly, and growing-Xi chirp
+remain. New generic adapters and Beurling firewalls create no route. No route proves or disproves RH.
