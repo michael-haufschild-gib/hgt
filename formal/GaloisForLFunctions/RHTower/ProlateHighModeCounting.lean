@@ -32,38 +32,6 @@ def IsHighModeClass (c K : ℝ) (w : GaloisForLFunctions.RHTower.RealIntervalL2 
     (∀ x : ℝ, prolateSLAction c Phi x = eta * Phi x) ∧
     -K < eta ∧ GaloisForLFunctions.RHTower.bandClass Phi hPhic = w
 
-/-- The band class of a finite linear combination. -/
-theorem bandClass_finsetSum {ι : Type*} (s : Finset ι) (F : ι → ℝ → ℝ)
-    (hF : ∀ i, Continuous (F i)) (a : ι → ℝ)
-    (hsum : Continuous fun x => ∑ i ∈ s, a i * F i x) :
-    GaloisForLFunctions.RHTower.bandClass (fun x => ∑ i ∈ s, a i * F i x) hsum
-      = ∑ i ∈ s, a i • GaloisForLFunctions.RHTower.bandClass (F i) (hF i) := by
-  classical
-  induction s using Finset.induction with
-  | empty =>
-      simp only [Finset.sum_empty]
-      exact GaloisForLFunctions.RHTower.bandClass_zero _
-  | insert j s hj ih =>
-      have hcont : Continuous fun x => ∑ i ∈ s, a i * F i x :=
-        continuous_finsetSum s fun i _ => continuous_const.mul (hF i)
-      have hjc : Continuous fun x => a j * F j x := continuous_const.mul (hF j)
-      have hstep : (fun x => ∑ i ∈ insert j s, a i * F i x)
-          = fun x => a j * F j x + ∑ i ∈ s, a i * F i x := by
-        funext x
-        rw [Finset.sum_insert hj]
-      have hsum2 : Continuous fun x => a j * F j x + ∑ i ∈ s, a i * F i x := hjc.add hcont
-      rw [Finset.sum_insert hj]
-      calc GaloisForLFunctions.RHTower.bandClass (fun x => ∑ i ∈ insert j s, a i * F i x) hsum
-          = GaloisForLFunctions.RHTower.bandClass
-              (fun x => a j * F j x + ∑ i ∈ s, a i * F i x) hsum2 :=
-            GaloisForLFunctions.RHTower.bandClass_congr _ _ hstep
-        _ = GaloisForLFunctions.RHTower.bandClass (fun x => a j * F j x) hjc
-              + GaloisForLFunctions.RHTower.bandClass (fun x => ∑ i ∈ s, a i * F i x) hcont :=
-            GaloisForLFunctions.RHTower.bandClass_add hjc hcont hsum2
-        _ = a j • GaloisForLFunctions.RHTower.bandClass (F j) (hF j)
-              + ∑ i ∈ s, a i • GaloisForLFunctions.RHTower.bandClass (F i) (hF i) := by
-            rw [GaloisForLFunctions.RHTower.bandClass_smul (hF j) (a j) hjc, ih hcont]
-
 /-- **The counting theorem.**  An `(n+1)`-dimensional trial space above the threshold produces
 `n+1` linearly independent modes above the threshold. -/
 theorem exists_linearIndependent_highModeClasses {c K : ℝ} (hc0 : 0 < c) (n : ℕ)
@@ -118,7 +86,8 @@ theorem exists_linearIndependent_highModeClasses {c K : ℝ} (hc0 : 0 < c) (n : 
           exact Finset.sum_congr rfl fun i _ => by rw [hGeven i x]
         have hgclass : GaloisForLFunctions.RHTower.bandClass g hgsm.continuous = comb a := by
           rw [hcomb, Fintype.linearCombination_apply]
-          exact bandClass_finsetSum Finset.univ G (fun i => (hGsm i).continuous) a hgsm.continuous
+          exact GaloisForLFunctions.RHTower.bandClass_finsetSum Finset.univ a G
+            (fun i => (hGsm i).continuous) hgsm.continuous
         -- orthogonality to the span of the modes found so far
         set W : Submodule ℝ (GaloisForLFunctions.RHTower.RealIntervalL2 (-1 : ℝ) 1) :=
           Submodule.span ℝ (Set.range w) with hW

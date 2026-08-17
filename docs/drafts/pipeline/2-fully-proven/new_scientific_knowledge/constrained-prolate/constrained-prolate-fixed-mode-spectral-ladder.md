@@ -5160,3 +5160,97 @@ Two inputs, both now sharply delimited.
    into "`mu_n <= 2n+1 + o(1)`" requires enumerating the separation constants, and the matching
    lower bound `mu_n >= 2n+1 - o(1)` requires the reverse count — for which the natural route is
    the same machine applied to the oscillator comparison.
+
+## Lean progress — the trial-space estimate, sharply
+
+`RHTower/HermiteTrialSpaceRayleigh.lean` (new; wired into `RHTower.lean`; built; axiom-clean).
+
+The previous section left two items.  The first is now a theorem, and at the **sharp** threshold —
+no `ε`, and for a completely arbitrary family of rungs:
+
+```
+eventually_hermiteTrial_combination_rayleigh_gt
+    r : Fin (n+1) → ℕ  injective,   ν  an index with  r i ≤ r ν  for all i
+  ⟹  ∀ᶠ c in atTop, ∀ a ≠ 0,
+        -((2·r ν + 1)·c) · ∫_{-1}^{1} f_a²  <  ∫_{-1}^{1} (L_c f_a)·f_a ,
+        f_a = ∑ᵢ aᵢ · hermiteTrial c (r i).
+```
+
+That is exactly the `hray` hypothesis of `exists_linearIndependent_highModeClasses`, so the two
+compose immediately:
+
+```
+eventually_exists_highModeClasses_hermiteRungs
+    the same data, all rungs even
+  ⟹  ∀ᶠ c in atTop, there are n+1 LINEARLY INDEPENDENT even joint band/prolate modes with
+      separation constant strictly below 2·r ν + 1.
+```
+
+### The mechanism, and why no cross-defect estimate is needed
+
+The previous section proposed "truncated Hermite orthogonality together with a uniform bound on the
+cross defects".  The cross defects need no bound at all, because the defect terms of *different*
+rungs are the same operator applied to the same function.  Rescaling to `ξ = √c·x`,
+`prolateSLAction_sqrtScale` splits the action of any profile `ψ` as
+
+```text
+L_c[ψ(√c·)](ξ/√c) = c·(ψ″ − ξ²ψ) − (ξ²ψ′)′ ,
+```
+
+so the whole `c`-independent remainder is the single Sturm–Liouville operator `Δψ = −(ξ²ψ′)′`
+applied to the **combination**, not a sum of rung-by-rung defects.  Pairing it with `ψ` and
+integrating by parts once (`integral_comboDefect`) turns it into a square,
+`∫ξ²(ψ′)² − [ξ²ψψ′]`.  The exact identity that results is `integral_comboExcess`:
+
+```text
+√c · ( ∫ (L_c f_a)·f_a + (2N+1)c ∫ f_a² )
+  =  c·∑ᵢ∑ⱼ aᵢaⱼ·2(N − rᵢ)·∫_{-√c}^{√c} φ_{rᵢ}φ_{rⱼ}
+     + ∫_{-√c}^{√c} ξ²(ψ′)²  −  [ξ²ψψ′]_{-√c}^{√c} .
+```
+
+Three facts finish it.
+
+1. **The bandwidth cannot rescue the off-diagonal overlap.**
+   `tendsto_mul_integral_hermiteFun_mul`: for `m ≠ k`, `c·∫_{-√c}^{√c} φ_mφ_k → 0`.  This is where
+   the exact truncated orthogonality is used, in its Wronskian form
+   (`integral_hermiteFun_mul_eq`): the truncation error is a Wronskian increment, i.e. a polynomial
+   times a Gaussian, so multiplying by `c = (√c)²` still gives zero.  Same for the boundary term
+   (`tendsto_comboBdryBound`).
+
+2. **A fixed positive-definite form survives.**  Fix a window `R₀` large enough that
+   `∫_{-R₀}^{R₀} ξ²(φ_{r ν}′)² > 0` — that positivity is the corpus's own
+   `exists_pos_window_integral`.  Since `c ≥ 1` and the rung gaps `2(N − rᵢ)` are nonnegative, the
+   diagonal and the square are bounded below by the `c`-free form
+
+   ```text
+   comboLower a = ∑ᵢ aᵢ²·2(N − rᵢ)·∫_{-R₀}^{R₀}φ_{rᵢ}²  +  ∫_{-R₀}^{R₀} ξ²(ψ_a′)² .
+   ```
+
+3. **That form is coercive.**  `comboLower_pos` is a two-case argument with no analysis in it: if
+   some coefficient below the top rung is nonzero, its rung gap is positive and the first sum is
+   positive; otherwise the combination is a multiple of the top rung alone and the second term is
+   `aν²` times the window square.  Compactness of the coefficient sphere
+   (`exists_comboLower_bound`) turns that into `κ·|a|² ≤ comboLower a` with a single `κ > 0`, and
+   the two errors of 1 are eventually below `κ`.
+
+The `ε`-free threshold is what distinguishes this from the corpus's earlier route
+`eventually_rank_highProlateSpan_ge`, which delivers the rank statement only below `(Λ+ε)c` and
+under a `HasOrthogonalProjection` side condition.  Here the modes are produced literally, as `n+1`
+independent `IsHighModeClass c ((2·r ν + 1)·c)` witnesses.
+
+### Repair: the `RHTower` umbrella had a name collision
+
+`bandClass_finsetSum` was declared twice — in `ProlateHighModeCounting.lean` and in
+`ProlateTrialSpaceTransport.lean` — with the same fully qualified name `RHTower.bandClass_finsetSum`
+and different argument orders.  Both are imported by `GaloisForLFunctions/RHTower.lean`, so the
+umbrella did not elaborate.  The duplicate is removed: the lemma now lives once, in
+`ProlateJointEigenExistence.lean` beside `bandClass_add`, `bandClass_smul`, `bandClass_congr` and
+`bandClass_zero`, as `GaloisForLFunctions.RHTower.bandClass_finsetSum`, and both call sites use it.
+
+### What remains for the rung-`n` separation constant
+
+Only the **ordering** step of the previous section.  The counting theorem now delivers `n+1`
+independent modes below `2·r ν + 1`; converting that into `μ_n(c) ≤ 2n+1 + o(1)` needs the
+enumeration of the separation constants, and the matching lower bound `μ_n ≥ 2n+1 − o(1)` needs the
+reverse count.  The corpus's indexed-mode layer (`ProlateCanonicalOscillatorLower`,
+`ProlateIndexedSeparationOrder`) is where that enumeration lives.

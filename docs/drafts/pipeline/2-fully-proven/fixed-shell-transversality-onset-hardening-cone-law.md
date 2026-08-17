@@ -866,9 +866,11 @@ signed form, `(s : Z) - S < C`, because truncated natural subtraction would weak
    | **`(18)`-type shell bound**: `mu_S{\|P\| <= eps} <= C eps^{1/d}` for a nonzero homogeneous `P` | `exists_toSphere_sublevel_le` | same |
 
    The route replaces the semialgebraic Lojasiewicz step by the top-form slicing: no Nash manifold,
-   no stratification, no Carbery--Wright.  What the corollary still needs from the geometry is the
-   identification of the discriminant as a nonzero homogeneous polynomial of an explicit degree in
-   the shell coordinates.
+   no stratification, no Carbery--Wright.  Letting the level tend to zero also gives the
+   degeneracy-locus statement the card uses in `(12)`: **the zero set of a nonzero homogeneous
+   polynomial has spherical measure zero** (`toSphere_zeroSet_eq_zero`).  What the corollary still
+   needs from the geometry is the identification of the discriminant as a nonzero homogeneous
+   polynomial of an explicit degree in the shell coordinates.
 
 With those two in place, `(17)`, `(18c)`, `(22)`--`(25)` and Corollary D are assembly over the
 already-formal pieces above.

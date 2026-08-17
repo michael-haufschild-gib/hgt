@@ -590,3 +590,41 @@ Each item immediately gives `star chi_p(rho)=chi_p(rho)^(-1)`.  Existing
 theorems prove each abstract existence statement equivalent to the desired
 critical-line conclusion; missing work is an unconditional arithmetic
 construction, not another receiver equivalence.
+
+## C32 — Verdict on the open core: the two-port secondary source character does not exist
+
+`[HEAVY CONJECTURE → FALSE → NEW STRUCTURAL THEOREM]`
+
+The open core asked for a canonical source 2-cell `H_(p,r,N)` with
+`∂H = P_(p,N) − P_(r,N) + exact` and a quadratic Stokes law forcing
+`A_q(1/p − 1/r) = 0`.  Two unconditional theorems close it.
+
+**1. Parametric vacuity.**  `XiGammaSixWoldJordanParametricVacuity` proves that
+the descent predicate depends on the Xi copy `q` only through the single real
+scalar `A_q`, and that the same predicate for a *free* real parameter `A` holds
+iff `A = 0`.  Every ingredient the proposed construction would use — genuine
+Big-Witt rows, one-leg trace, ambient and graph admission, the common singular
+vector, the prime-labelled quadratic energy — is defined verbatim for every
+value of `A`.  A construction of `H` from Big-Witt/Gamma/Green–Stokes
+naturality alone would therefore prove the parametric statement at `A = 1`,
+which is false.  The RH-equivalence `(C31.2)` is the pullback of the
+arithmetic-free condition `A = 0` along `q ↦ A_q = 4 F(2 Re q − 1)^2`.
+
+**2. Why no repair inside the same data class can work.**  The only arithmetic
+input consumed anywhere in C27–C31 is `¬ Summable (fun p => 1/p)`.  That is a
+statement at the `σ = 1` scale of the prime measure.  The new card
+`../3-formalized/rh-sensitivity-threshold-of-the-prime-measure.md` proves that
+adjoining to the rational primes a positive generalized-prime measure of
+*arbitrarily small* reciprocal and Mertens mass can place a zeta zero on any
+line `Re s = β` with `1/2 < β < 1`, while no adjoined measure with abscissa at
+most `1/2` moves any zero.  The enlarged system still has `∑ 1/p = ∞`, is still
+Mertens-normal, and RH is false for it; so every step of the chain survives the
+enlargement and cannot be RH-bearing.
+
+**Verdict: `FALSE`.**  The L/R/CCM/P Frankenstein descent cluster is retired,
+not repackaged.  The positive residue is the design rule of §6 of that card:
+an RH criterion must be *discontinuous* in the reciprocal-mass topology on
+prime systems — it must control `ψ(x) − x` at the power scale `x^(1/2)`.
+Reciprocal-weight lanes (`1/p`, `Λ(n)/n`, Big-Witt `1/(pq)`, Mertens-window
+Grams, Wold–Jordan carriers) are on the wrong side of that line by
+construction; explicit-formula lanes with `Λ(n) n^(−1/2)` weights are not.

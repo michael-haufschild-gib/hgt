@@ -295,6 +295,34 @@ theorem bandClass_zero (h : Continuous fun _ : ℝ => (0 : ℝ)) :
   rw [bandClass_congr _ h hfun] at h0
   simpa using h0
 
+/-- The band class is linear over a finite combination of continuous functions. -/
+theorem bandClass_finsetSum {ι : Type*} (s : Finset ι) (a : ι → ℝ) (F : ι → ℝ → ℝ)
+    (hF : ∀ i, Continuous (F i)) :
+    ∀ h : Continuous fun x => ∑ i ∈ s, a i * F i x,
+      bandClass (fun x => ∑ i ∈ s, a i * F i x) h = ∑ i ∈ s, a i • bandClass (F i) (hF i) := by
+  classical
+  induction s using Finset.induction with
+  | empty =>
+      intro h
+      have hrhs : (∑ i ∈ (∅ : Finset ι), a i • bandClass (F i) (hF i)) = 0 := Finset.sum_empty
+      rw [hrhs]
+      refine (bandClass_congr h continuous_const ?_).trans (bandClass_zero _)
+      funext x
+      simp
+  | insert i t hi ih =>
+      intro h
+      have hcont_t : Continuous fun x => ∑ k ∈ t, a k * F k x :=
+        continuous_finsetSum t fun k _ => continuous_const.mul (hF k)
+      have hcont_i : Continuous fun x => a i * F i x := continuous_const.mul (hF i)
+      have hcont_sum : Continuous fun x => a i * F i x + ∑ k ∈ t, a k * F k x :=
+        hcont_i.add hcont_t
+      have hstep : (fun x => ∑ k ∈ insert i t, a k * F k x)
+          = fun x => a i * F i x + ∑ k ∈ t, a k * F k x := by
+        funext x
+        rw [Finset.sum_insert hi]
+      rw [Finset.sum_insert hi, bandClass_congr h hcont_sum hstep,
+        bandClass_add hcont_i hcont_t hcont_sum, bandClass_smul (hF i) (a i) hcont_i, ih hcont_t]
+
 /-- The smooth representative of a band eigenvector. -/
 def eigenRep (c lam : ℝ) (f : bandEigenspace c lam) : ℝ → ℝ :=
   eigenExtension c lam (f : RealIntervalL2 (-1 : ℝ) 1)

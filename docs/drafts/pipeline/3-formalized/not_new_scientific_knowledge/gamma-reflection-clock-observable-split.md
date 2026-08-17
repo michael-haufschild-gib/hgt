@@ -99,4 +99,50 @@ gate and is not promoted as new scientific knowledge.
 - [x] hypertranscendence of the ratio proved from Hölder
 - [x] no artificial carrier introduced
 - [x] novelty rejected
-- [ ] Lean formalization only if a downstream theorem needs this exact ratio surface
+- [x] Lean formalization of the whole split (see below)
+
+## Lean formalization — 2026-08-17
+
+`formal/GaloisForLFunctions/HTGeometry/GammaReflectionClockObservables.lean`, unconditional
+(`#print axioms` = `[propext, Classical.choice, Quot.sound]` for every theorem below).
+
+| Paper step | Lean name |
+|---|---|
+| the invariant reading `P = Γ(z)Γ(1−z)` | `gammaClockInvariantMero` |
+| the anti-invariant reading `R = Γ(z)/Γ(1−z)` | `gammaClockAntiInvariantMero` |
+| `(1)` `P(Jz) = P(z)` | `complexReflectionMeroEquiv_gammaClockInvariantMero` |
+| `(1)` `R(Jz) = R(z)⁻¹` | `complexReflectionMeroEquiv_gammaClockAntiInvariantMero` |
+| the involution exchanges the two readings | `complexReflectionMeroEquiv_gammaShiftMero_zero`, `complexReflectionMeroEquiv_gammaNegativeShiftMero_one` |
+| `(2)` Euler reflection `P = π/sin(πz)` | `gammaClockInvariantMero_eq_gauge` |
+| `P` is differentially algebraic | `differentialAlgebraicOver_gammaClockInvariantMero` |
+| `R = Γ²/P` | `gammaClockAntiInvariantMero_eq` |
+| `R` is hypertranscendental | `hypertranscendentalOver_gammaClockAntiInvariantMero` |
+| `(3)` `Γ(z)² = P·R` | `gammaShiftMero_sq_eq_product_mul_quotient` |
+| `(3)` `Γ(1−z)² = P/R` | `gammaNegativeShiftMero_sq_eq_product_div_quotient` |
+
+Three notes on the formal route.
+
+1. **Ambient field.**  Everything lives in the corpus's genuine global meromorphic differential
+   field `meroField Set.univ` over the rational coordinate field `ℂ(X)`, with `Γ(z)` and `Γ(1−z)`
+   the corpus elements `gammaShiftMero 0` and `gammaNegativeShiftMero 1`.  Euler reflection is the
+   corpus theorem `gammaNegativeShiftMero_reflection`, and the sine gauge's differential
+   algebraicity is `differentialAlgebraicOver_gammaReflectionGaugeMero`, proved there from the
+   explicit second-order equation of `sin(πz)/π`.
+2. **Hölder enters through the signed-product form.**  The card argues that `R` DA would make
+   `Γ` algebraic over a DA field.  In Lean the shorter equivalent route is used: `R·P = Γ²`, so
+   `R` DA would make `Γ²` DA, and `Γ² = gammaOrbitProductMero ![0] ![2]` is hypertranscendental by
+   the corpus's finite signed-Gamma-product theorem, whose one-orbit case is exactly Hölder.
+3. **The involution is the genuine precomposition.**  `complexReflectionMeroEquiv 1` is the corpus
+   automorphism `z ↦ 1 − z` of the meromorphic field; the two exchange lemmas are proved at the
+   level of analytic germs, so `(1)` is an identity of field elements rather than of formulas.
+
+The digamma reformulation `(log R)' = ψ(z) + ψ(1−z)` with `ψ(1−z) − ψ(z) = π cot(πz)` is the same
+statement after logarithmic differentiation of `(2)` and `(3)`; it is commentary on the formalized
+identities and is not formalized separately.
+
+## Log
+
+- 2026-08-17 Formalized in Lean 4 and promoted to stage 3.  Both reflection symmetries, Euler
+  reflection for the invariant reading, its differential algebraicity, the hypertranscendence of
+  the anti-invariant reading, and the two square recovery identities are unconditional Lean
+  theorems.

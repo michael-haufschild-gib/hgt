@@ -175,3 +175,37 @@ Split certificate: `../3-formalized/susceptibility-mirror-frequency-balance.md`.
 The parent ticket remains in `2-fully-proven`: the implicit-function/Puiseux
 zero-splitting, zeta functional-equation leading-coefficient match, and
 curvature-hierarchy identification still require additional Lean infrastructure.
+
+## Lean status — 2026-08-17
+
+`formal/GaloisForLFunctions/RHTower/PrimeZeroSusceptibility.lean`, unconditional
+(`#print axioms` = `[propext, Classical.choice, Quot.sound]` for every theorem below).
+
+| Card step | Lean name |
+|---|---|
+| the perturbed family `ζ_ε(s) = ζ(s) + ε·n^{-s}` | `perturbedZeta` |
+| its two partial derivatives | `hasDerivAt_perturbedZeta_fst`, `hasDerivAt_perturbedZeta_snd` |
+| §1 the analytic zero branch and `dρ/dε = −n^{-ρ}/ζ'(ρ)` | `exists_zeroBranch_hasDerivAt` |
+| §1b the Puiseux splitting law `(s − ρ)^m/ε → −h(ρ)/c` | `tendsto_multiplicitySplit` |
+| §2 frequency independence of the mirror ratio ⟺ `β = ½` | `rpow_frequency_independent_iff` |
+| §3 the probe factorizes as a pure frequency in the section variable | `cpow_section_factor` |
+| §3 every section-Taylor order is nonzero (all-orders transverse) | `transverse_coefficient_ne_zero` |
+
+Notes on the formal route.
+
+1. **§1 is the genuine implicit function theorem**, not a formal differentiation.  Mathlib's curried
+   bivariate implicit function theorem `implicitFunctionOfBivariate` is applied to
+   `(ε, s) ↦ ζ(s) + ε·n^{-s}`; invertibility of the second partial at `(0, ρ)` is exactly
+   `ζ'(ρ) ≠ 0`, supplied through `isInvertible_smulRight`, and joint continuity of the partials uses
+   `continuousAt_deriv_riemannZeta`, proved from analyticity of `ζ` off `1`.  The response value is
+   then obtained by differentiating the identity `ζ_ε(r ε) = 0` and using uniqueness of derivatives,
+   which avoids computing the inverse operator.
+2. **§1b needs no simplicity hypothesis.**  The statement formalized is the limit law: for any
+   sequence of zeros of `f + ε·h` approaching `ρ`, `(s − ρ)^m/ε → −h(ρ)/G(ρ)`.  This is the content
+   the card uses (the response scale `|ε|^{1/m}`); the accompanying existence claim that the zero
+   actually splits into `m` simple zeros is a Rouché statement and is not formalized here.
+3. **§2 is formalized as the exponent characterization.**  The `n`-dependence of the mirror ratio is
+   exactly `n^{1−2β}`; `rpow_frequency_independent_iff` proves that this is independent of the probe
+   frequency exactly when `β = ½`.  The remaining factor `|χ_FE(ρ)|^{-1/m}` is manifestly
+   `n`-independent; the functional-equation identity `c_ρ = (−1)^m χ_FE(ρ)·c_{1−ρ}` behind it is not
+   yet formalized, and the card therefore stays at stage 2 pending that step.

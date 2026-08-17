@@ -1626,3 +1626,34 @@ extracted at stage `t` has exponent `t+2` and leading coefficient
 `c_t = −y₁^{N+2}·∂_{t+2}∂_{N−t}w` (so `c_0 = N+1`, `c_1 = ½N(N+1)`, and `c_t = c_{N−2−t}` because
 partials commute).  The chain can continue only while `t + 2 ≤ N − t − 1`; the order crossing at
 `t ≈ N/2` is where a normalizing shift at a general level must fail.
+
+## Pass 12 — the shift tower is binomial, and the descent chain is level-free
+
+Define the universal sequence `T_1 = R''(y₀)`, `T_{r+1} = ∇T_r + r·z₂·T_r`.  It is the base
+derivative of the shift, `T_r = ∂_0 s_r + R''(y₀)·z_r`, and the whole shift tower expands in it:
+
+`(M+1)·s_{M+1} = ∑_{i<M} (i+1)·binom(M+1,i+1)·z_{i+1}·T_{M−i}`.
+
+This is a weight-zero Faà di Bruno formula: the differential content of the substitution shift sits
+entirely in one level-free sequence, and the level enters only through binomial coefficients.  Its
+descent form is sharper still — for every `K ≥ 2` and every `m`,
+
+`y₁^K·∂_K(s_m) = binom(m,K)·T_{m−K}`,
+
+with no side conditions.  So every partial of the shift, at every level and in every coordinate, is
+a single binomial multiple of the universal tower.
+
+The consequence for the orbifold tail is that the descent chain of a normalizing shift becomes
+level-free.  Stripping the pinned coefficients one coordinate at a time from `z_N` downwards, and
+writing `P_t` for the coefficient extracted at stage `t` and `E_t` for the corresponding descent of
+the inhomogeneous term, the subdiagonal law plus the subset-of-a-subset identity
+`binom(N−u,N−t)·binom(N+1,u+1) = binom(N+1,t+1)·binom(t+1,u+1)` give
+
+`P_t = −binom(N+1,t+1)·P̂_t`,   `E_t = binom(N+1,t+1)·Ê_t`,
+`Ê_t = T_{t+1} − ∑_{u<t} binom(t+1,u+1)·T_{t−u}·(P̂_u + Ê_u/R')`,
+
+where `P̂_t` solves `R'^{t+2}Φ(P̂_t) = R'P̂_t + Ê_t` and **is independent of the level**:
+`P̂_0 = z₂`, `P̂_1 = z₃ − 2z₂²`, and generally `P̂_t` has jet order `t+2`.  The coefficient extracted
+at stage `t` therefore has jet order `t+2` while the extraction operator can only produce jet order
+at most `N−t`: the chain cannot survive past `t+2 > N−t`, which is the obstruction to a normalizing
+shift at a general level.

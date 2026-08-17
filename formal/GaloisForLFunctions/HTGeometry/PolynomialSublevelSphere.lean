@@ -236,6 +236,54 @@ theorem exists_toSphere_sublevel_le {d : ℕ} (hd : 0 < d) (P : MvPolynomial (Fi
         rw [hsplit]
         ring
 
+
+/-- **The zero set of a nonzero homogeneous polynomial is shell-null.**  Letting the level tend to
+zero in the sublevel bound leaves no mass. -/
+theorem toSphere_zeroSet_eq_zero {d : ℕ} (hd : 0 < d) (P : MvPolynomial (Fin (m + 1)) ℝ)
+    (hP : P.IsHomogeneous d) (hP0 : P ≠ 0) :
+    volume.toSphere {ω : sphere (0 : EuclideanSpace ℝ (Fin (m + 1))) 1 |
+        MvPolynomial.eval (WithLp.ofLp (ω : EuclideanSpace ℝ (Fin (m + 1)))) P = 0} = 0 := by
+  classical
+  obtain ⟨C, hCtop, hbound⟩ := exists_toSphere_sublevel_le hd P hP hP0
+  set Z : Set (sphere (0 : EuclideanSpace ℝ (Fin (m + 1))) 1) :=
+    {ω | MvPolynomial.eval (WithLp.ofLp (ω : EuclideanSpace ℝ (Fin (m + 1)))) P = 0} with hZ
+  have hsub : ∀ ε : ℝ, 0 ≤ ε →
+      Z ⊆ {ω : sphere (0 : EuclideanSpace ℝ (Fin (m + 1))) 1 |
+          |MvPolynomial.eval (WithLp.ofLp (ω : EuclideanSpace ℝ (Fin (m + 1)))) P| ≤ ε} := by
+    intro ε hε ω hω
+    show |MvPolynomial.eval (WithLp.ofLp (ω : EuclideanSpace ℝ (Fin (m + 1)))) P| ≤ ε
+    have : MvPolynomial.eval (WithLp.ofLp (ω : EuclideanSpace ℝ (Fin (m + 1)))) P = 0 := hω
+    rw [this, abs_zero]
+    exact hε
+  have hseq : ∀ n : ℕ,
+      volume.toSphere Z ≤ C * ENNReal.ofReal ((((n : ℝ) + 1)⁻¹) ^ ((1 : ℝ) / d)) := by
+    intro n
+    have hpos : (0 : ℝ) ≤ ((n : ℝ) + 1)⁻¹ := by positivity
+    exact le_trans (measure_mono (hsub _ hpos)) (hbound _ hpos)
+  have hzero : Filter.Tendsto (fun n : ℕ => (((n : ℝ) + 1)⁻¹) ^ ((1 : ℝ) / d))
+      Filter.atTop (nhds 0) := by
+    have hbase : Filter.Tendsto (fun n : ℕ => ((n : ℝ) + 1)⁻¹) Filter.atTop (nhds 0) :=
+      tendsto_one_div_add_atTop_nhds_zero_nat.congr fun n => by rw [one_div]
+    have hd' : (0 : ℝ) < 1 / d := by
+      have : (0 : ℝ) < (d : ℝ) := by exact_mod_cast hd
+      positivity
+    have hcont := (Real.continuousAt_rpow_const 0 ((1 : ℝ) / d) (Or.inr (le_of_lt hd'))).tendsto
+    have hzero0 : (0 : ℝ) ^ ((1 : ℝ) / d) = 0 := Real.zero_rpow (ne_of_gt hd')
+    rw [hzero0] at hcont
+    exact hcont.comp hbase
+  have htend : Filter.Tendsto
+      (fun n : ℕ => C * ENNReal.ofReal ((((n : ℝ) + 1)⁻¹) ^ ((1 : ℝ) / d)))
+      Filter.atTop (nhds 0) := by
+    have hofReal : Filter.Tendsto
+        (fun n : ℕ => ENNReal.ofReal ((((n : ℝ) + 1)⁻¹) ^ ((1 : ℝ) / d)))
+        Filter.atTop (nhds 0) := by
+      rw [show (0 : ℝ≥0∞) = ENNReal.ofReal 0 by simp]
+      exact (ENNReal.continuous_ofReal.tendsto 0).comp hzero
+    have := ENNReal.Tendsto.const_mul hofReal (Or.inr hCtop)
+    simpa using this
+  refine le_antisymm (ge_of_tendsto htend (Filter.Eventually.of_forall hseq)) (by simp)
+
+
 end
 
 end GaloisForLFunctions.HTGeometry

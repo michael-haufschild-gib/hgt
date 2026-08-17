@@ -130,6 +130,7 @@ Folder size at sweep start (2026-08-16): **496** top-level cards, no subfolders.
 | 2026-08-17 | `prime-source-cancellation-budget` | new `RHTower/PrimeSourceCancellationBudget.lean`, `HTGeometry/ComplexExponentialPolynomial.lean`, `HTGeometry/PrimeValuationLeadingEchelonInfinite.lean` (+ complex layer appended to `HTGeometry/ExponentialPolynomialZeroBound.lean`; uses pre-existing `HTGeometry/ExponentialTypeZeroDensity.lean`, `RHTower/PrimeLogExponentialTypeUniqueness.lean`, `RHTower/XiShiftPrimeHypertranscendence.lean`) |
 | 2026-08-17 | `completed-logderiv-full-translation-orbit-freeness` | new `RHTower/XiTranslationOrbitFreeness.lean` (uses the three modules added for `prime-source-cancellation-budget`, plus pre-existing `RHTower/XiUpperEndHypertranscendence.lean`, `HTGeometry/UpperEndRationalCoordinateDifferentialAdjoin.lean`, `HTGeometry/FiniteAbscissaDirichletUpperEnd.lean`) |
 | 2026-08-17 | `entire-multiplier-translation-defect-universality` | new `HTGeometry/EntireMultiplierDefectUniversality.lean` (uses pre-existing `HTGeometry/EntireBezout.lean`) |
+| 2026-08-17 | `gamma-reflection-clock-observable-split` | new `HTGeometry/GammaReflectionClockObservables.lean` (uses pre-existing `HTGeometry/MeromorphicGammaReflection.lean`, `HTGeometry/MeromorphicGammaOrbit.lean`, `HTGeometry/MeromorphicReflection.lean`) |
 
 ## Already carrying a stage-3 certificate (verify, then move the paper card)
 
@@ -665,11 +666,13 @@ Known heavy prerequisites still outstanding, with the cards they gate:
   it carries exactly the corpus envelope `XiC_order`; the whole family is now stage 3.
 - ~~Newton's inequalities for elementary symmetric functions~~ — **built 2026-08-16**
   (`HTGeometry/NewtonInequalities.lean`); `pa9-turan-newton-floor` is closed at stage 3.
-- Hölder + a reflection-stable meromorphic carrier — `gamma-reflection-clock-observable-split`
-  (the corpus has `hypertranscendentalOver_ratFunc_gammaUpperMero` and
-  `hypertranscendentalOver_ratFunc_digammaMero`, but `upperEndMeroField` is a germ field at the
-  upper end and is not stable under `z ↦ 1 - z`; the log-derivative route
-  `R'/R = 2ψ + π cot` avoids the algebraic-extension step).
+- ~~Hölder + a reflection-stable meromorphic carrier — `gamma-reflection-clock-observable-split`.~~
+  **Resolved 2026-08-17**: the right carrier is the *global* meromorphic field `meroField Set.univ`,
+  which the corpus already equips with the reflection automorphism `complexReflectionMeroEquiv`,
+  with Euler reflection (`gammaNegativeShiftMero_reflection`) and with the signed-Gamma-product
+  form of Hölder (`hypertranscendentalOver_gammaOrbitProductMero`).  No algebraic-extension step
+  and no log-derivative detour are needed: `R·P = Γ²` reduces the whole card to the one-orbit case
+  of that product theorem.  The card is stage 3.
 
 ## Triage snapshot
 
@@ -772,6 +775,63 @@ and the xi instance.
   together with the divisor decomposition `log ‖f‖ = ∑ᶠ u, divisor f u · log ‖· − u‖ + log ‖g‖`
   that produced it.  Also `continuousOn_re_herglotzRieszKernel`.
 
-Remaining for the logarithmic-derivative lemma: the complex (Schwarz) form of Poisson–Jensen, its
-differentiation in `w`, the circle estimate for `log⁺(1/‖Re^{iθ} − a‖)`, and the exceptional-set
-removal through `HTGeometry.BorelGrowthLemma.borel_growth`.
+- `HTGeometry/HerglotzTransformKernel.lean` — the Herglotz transform `herglotzTransform c R v w`
+  (the analytic completion of the Poisson integral of a boundary function), the differentiated
+  kernel `herglotzDerivKernel c w z = 2(z − c)/(z − w)²` with
+  `hasDerivAt_herglotzRieszKernel`, the modulus bound `norm_herglotzDerivKernel_le`
+  (`≤ 2R/δ²` once the circle keeps distance `δ` from `w`), and the uniform geometry
+  `le_norm_circleMap_sub` / `circleMap_ne_of_mem_ball` on a small ball around an interior point.
+  These are exactly the hypotheses needed to differentiate the transform under the integral sign.
+
+  Now also carries the analytic half of the estimate:
+  `hasDerivAt_herglotzTransform` (differentiation under the integral, via mathlib's
+  `intervalIntegral.hasDerivAt_integral_of_dominated_loc_of_deriv_le` with the bound above),
+  `re_herglotzTransform` (the real part is the Poisson integral),
+  `deriv_eq_zero_of_re_eq_zero` (open-mapping rigidity),
+  `exists_analytic_log` (a zero-free analytic function on a ball is `exp` of an analytic function
+  whose derivative is its logarithmic derivative — built from Morera's theorem for a disc), and the
+  capstone
+
+  `logDeriv_eq_circleAverage_of_ne_zero` :
+    for `g` analytic and zero-free on the closed disc and `w` interior,
+    `g'(w)/g(w) = circleAverage (2(z − c)/(z − w)² · log ‖g z‖) c R`.
+
+  This is the boundary-integral representation of the logarithmic derivative that Nevanlinna's
+  estimate rests on: combined with `norm_herglotzDerivKernel_le` it already gives the classical
+  pointwise bound `|g'/g| ≤ 2R/(R − r)² · circleAverage |log ‖g‖|`.
+
+  The divisor half of the transport is now proved as well:
+  `hasDerivAt_innerLogKernel`, `logDeriv_innerLogKernel`, and
+
+  `circleAverage_herglotzDerivKernel_log_norm_sub` :
+    for an interior divisor point `u`,
+    `circleAverage (2(z − c)/(z − w)² · log ‖z − u‖) c R
+       = −conj(u − c)/(R² − conj(u − c)(w − c))`.
+
+  The proof reuses the capstone: on the boundary circle `log ‖z − u‖` *is* `log ‖innerLogKernel‖`,
+  and for interior `u` that kernel is analytic and zero-free on the whole closed disc, so its
+  logarithmic derivative is exactly the Blaschke term.
+
+Remaining for the logarithmic-derivative lemma: assemble the two halves over the finite divisor
+(the same finsum-to-Finset linearity already used in `poissonJensen`), extend the divisor-term
+computation to points on the boundary circle, the circle estimate for `log⁺(1/‖Re^{iθ} − a‖)`, and
+the exceptional-set removal through `HTGeometry.BorelGrowthLemma.borel_growth`.
+
+Note: rechecking the eight cards showed only three genuinely need Nagoshi's field —
+`prime-power-dirichlet-complex-jet-independence`, `atomic-increment-full-orbit-codimension-law`
+and `da-gauge-ht-divisor-blindness` (the ξ specialization in the last).  In
+`exact-rational-rg-generation-dichotomy` and `prime-poisson-superselection-screen` the symbol
+`F_s` denotes something else entirely, and the remaining three need Nevanlinna *estimates*
+(Steinmetz reduction, Pólya growth-depth, product inequalities) rather than the small-growth
+field.
+
+### In-flight: `prime-zero-susceptibility-transverse`
+
+`RHTower/PrimeZeroSusceptibility.lean` (installed, wired, axiom-clean) now carries §1 (the implicit
+function theorem branch and the response `dρ/dε = −n^{-ρ}/ζ'(ρ)`), §1b (the Puiseux limit law for a
+zero of multiplicity `m`), §2's exponent characterization (`n^{1−2β}` is frequency-independent iff
+`β = ½`) and §3 (the section factorization of the probe and nonvanishing of every section-Taylor
+order).  Outstanding for promotion: the functional-equation mirror identity
+`c_ρ = (−1)^m χ_FE(ρ)·c_{1−ρ}`, which mathlib supports through `riemannZeta_one_sub`, and the Rouché
+existence half of the `m`-fold splitting.
+

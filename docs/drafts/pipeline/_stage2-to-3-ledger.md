@@ -3740,3 +3740,78 @@ axiom-clean) supplies:
 - **`kaehlerPairDefect_intTransform`** -- the field-level form of the all-dimensional integral
   transformation law, usable wherever logarithmic defect pairs are transformed by an integer matrix.
 - **`defectMap`** -- the linear-combination map with its kernel API, for any module.
+
+## Progress sweep, 2026-08-17 -- eleven top-level stage-2 cards advanced
+
+One promotion (`schanuel-defect-grassmannian-kummer-core`, entry above) and named blockers closed on
+ten more cards.  Every module below is new, umbrella-wired, and axiom-clean
+(`propext, Classical.choice, Quot.sound`).
+
+### Reusable infrastructure this sweep added
+
+**Shell/sphere measure geometry**
+- `HTGeometry/SphereBlockTail.lean` -- the block tail law of the unit shell: the set where a
+  `dim U`-dimensional coordinate block has norm at most `x` has shell probability between two
+  positive constant multiples of `x^{dim U}` (`shellProb_blockSmall_le/ge`), transported along any
+  orthogonal splitting (`exists_blockTail_bounds`).  The cone identity is `Measure.toSphere_apply'`;
+  the two-sided estimate squeezes the cone between products of balls.
+- `HTGeometry/PolynomialLineSlice.lean`, `PolynomialSublevelSlicing.lean`,
+  `PolynomialSublevelSphere.lean` -- **polynomial sublevel sets**: the one-variable law
+  `|{|q| <= eps}| <= 2d(eps/|a|)^{1/d}`, the line-slice top coefficient
+  (`coeff_lineSlice`: it is the top form at the direction, independent of the base point), the
+  Fubini slicing bound, the shear measure identity, and the shell bound
+  `mu_S{|P| <= eps} <= C eps^{1/d}` for a nonzero homogeneous `P`, with the corollary that the zero
+  set is shell-null (`toSphere_zeroSet_eq_zero`).  This replaces semialgebraic Lojasiewicz for every
+  card that needs a near-degeneracy tube estimate.
+
+**Pauli and shell Hamiltonians**
+- `HTGeometry/PauliEdgeBlockNorms.lean` -- `‖V_e‖_HS² = 4ρ²`, `ρ <= ‖V_e‖_op <= 3ρ`, every Pauli
+  string has operator norm one, and the general `sqrt(N)` Cauchy--Schwarz bound for a Pauli
+  combination.
+- `HTGeometry/PathShellEdgeTail.lean`, `PathShellDelayFloor.lean`, `PathShellFixedSeed.lean`,
+  `PathShellOnsetMoments.lean` -- the path-local coefficient shell (`12n-9` dimensions), its
+  nine-dimensional edge blocks, the conductance profile and its two-sided `Theta(x^9)` law, the
+  Duhamel delay floor `Pr{T > L} >= c L^{-9}`, positivity of the delay sector, finite-seed
+  selection, and divergence of every onset moment of order `>= 9`.
+
+**Concentration and counting**
+- `HTGeometry/ComplexSumConcentration.lean`, `TorsionCapCount.lean`, `PhaseTargetProximity.lean` --
+  complex Hoeffding `4exp(-eps²/4D)`, the uniform torsion law and its counting form, the `k`-to-one
+  projective quotient, and the elementary "two states close to one target are close to each other"
+  bound.
+- `HTGeometry/GaussianBoxMass.lean` -- a standard Gaussian is subgaussian with proxy one; with
+  `B² >= 2log(8m)` a Gaussian coefficient vector lies in `[-B,B]^m` with probability `>= 1/2`.
+- `HTGeometry/PhaseCollisionConcentration.lean` -- the normalized phase-seed collision has variance
+  `<= 96|iota|/D⁴` and obeys Chebyshev against the upper mean.
+- `HTGeometry/BipartiteSeedSelection.lean` -- one product phase seed at or below the mean collision.
+
+**Algebra and information**
+- `HTGeometry/SymmetricProjectionPurityBarrier.lean` -- HS Cauchy--Schwarz, the purity bound
+  `Tr(M²) >= 1/q` through a support projection, and `‖M - Omega‖²_HS = Tr(M²) - 1/h`.
+- `HTGeometry/LayerSplitPhysicalRealization.lean` -- the abstract layer split is a physical leaf
+  Hamiltonian (`H_old ⊗ 1 + 1 ⊗ diag(field) + M ⊗ X`), Hermitian and traceless when the old spectrum
+  is.
+- `HTGeometry/DiscreteMutualInformation.lean` -- conditional entropy, mutual information and the
+  exact chain rule `H(W) = H(W|X) + I(X;W)` for a finite request variable and a discrete word
+  variable.
+- `HTGeometry/DiscountedHittingPotential.lean` -- the discounted first-entrance potential of a
+  finite chain as a Banach fixed point, with the charge properties a capacitary estimate consumes.
+- `HTGeometry/AlgebraicIntegerSeparation.lean`, `WindowMeanSeparatedModes.lean` -- Liouville
+  separation from bounded conjugates, and the moving-window mean of a separated trigonometric
+  packet.
+- `RHTower/SchanuelDefectGrassmannianDescent.lean` -- kernel descent through flat base change and
+  the Plücker field of definition (the promotion above).
+
+### Where each card now stands
+
+`weak-cut` (A,B,D,E closed; C awaits plateau/recurrence/locality parents),
+`codimension-forced` ((17),(18) instantiated on the concrete shell; Theorem C open),
+`cubic-phase` (Theorem B assembled; Theorem C awaits its two parents),
+`fixed-shell-transversality` (both named infrastructure blockers closed; Theorems B,C,D remain
+assemblies), `fixed-shell-angular-dephasing` (Lemma A1's physical realisation closed),
+`centralizer-centered` (Theorem C's core closed; the symmetric-projection data remain),
+`prime-torsion` (Lemma A complete end to end; Theorems A,B remain),
+`circuit-complexity-selection-synthesis` ((4),(6) closed; Theorem B's measurable selection remains),
+`capacitary-observer-sector-excision` (the potential layer closed; Theorems B,C,J remain),
+`arithmetic-static-local-hardness-window` (step 1's number theory and `(17)`--`(18)` closed; the
+Fejér packet remains), `computable-static-local` (the Gaussian box closed).

@@ -1560,3 +1560,53 @@ instantiation that names the four data — source field, normal closure, sheet e
 threads these lemmas together; the mathematical content of that step is nil, and the only reason it
 is not yet written is the elaboration cost recorded two sections above, which forces every such
 step to be phrased abstractly first and applied afterwards.
+
+## Lean progress — the tower-level instantiation, done
+
+`HTGeometry/CriticalOneStepRigidity.lean` (new; wired into `HTGeometry.lean`; built; axioms
+`[propext, Classical.choice, Quot.sound]` on both endpoints).
+
+Two theorems.  The first is `(4)` in abstract form, with no reference to the jet tower:
+
+```text
+adjoin_pair_eq_top_of_primitive_of_notMem
+  F ⊆ A ⊆ B,  B/F finite Galois,  A a primitive step (no field strictly between F and φ(A)),
+  t transcendental over A,  y ∈ A(t) \ F(t)
+  ⟹  F⟮t, y⟯ = ⊤   inside A(t).
+```
+
+Its proof is the whole bridge, run once: push `F⟮t,y⟯` forward along `adjoinToFrac φ ht`, use
+`adjoin_eq_map_of_primitive_of_notMem` (base-changed one-step rigidity — new in
+`CriticalFreeParameterPrimitivity.lean`) to see that the image already contains all of
+`F(T)(φ(A))`, hence every `adjoinToFrac φ ht a`; then reflect back through injectivity.
+
+The second is that theorem instantiated on the actual critical tower, which is what the card asked
+for:
+
+```text
+criticalObservation_sup_postcritical_eq_criticalSourceFieldSup
+  0 < m, 0 < n,  criticalGeometricMonodromy K m n = ⊤
+  ⟹  O(m,n;L-1) ⊔ K⟮x_L⟯ ⊔ K⟮y_L⟯  =  criticalSourceFieldSup K m n  ( = J_(L-1)(x_L) ).
+```
+
+The four data are `O = criticalObservationField`, `A = criticalSourceField`,
+`N = criticalNormalClosure`, `φ = criticalSourceNormalClosureEmbedding`, `t = x_L =
+postcriticalRawFieldElement`, `y = y_L = postcriticalReciprocalFieldElement`; the three inputs are
+`postcriticalRawFieldElement_transcendental_criticalSourceField` (transcendence),
+`postcriticalReciprocalFieldElement_mem_criticalSourceFieldSup` (`(8)`), and
+`postcriticalReciprocalFieldElement_notMem_criticalObservation_sup_raw` (`(15)`), the last two
+converted between "compositum" and "adjoin over the subfield" by the new pair
+`mem_adjoin_of_mem_sup` / `mem_sup_of_mem_adjoin`.
+
+Three supporting abstractions were needed only to keep elaboration finite, and are stated over
+abstract fields for that reason: `mem_bot_iff_mem`, `mem_adjoin_image_of_mem_adjoin_subtype`,
+`mem_adjoin_union_of_mem_adjoin_intermediate`.  Attempting the same steps directly on the tower
+types times out at 4M heartbeats in `isDefEq`; this is the recorded rule of this lane.
+
+**Remaining premise.**  The theorem still carries `hfull : criticalGeometricMonodromy K m n = ⊤`,
+which is exactly statement `(2)` of the parent card
+`projective-horizon-full-symmetric-monodromy`.  The primitivity input `hprim` is derived from it by
+`eq_bot_or_eq_criticalSourceNormalClosureFieldRange_of_full_monodromy`.  So this card is now
+*entirely* reduced to that one: when full symmetric monodromy is discharged there,
+`criticalObservation_sup_postcritical_eq_criticalSourceFieldSup` becomes unconditional with no
+further work here.

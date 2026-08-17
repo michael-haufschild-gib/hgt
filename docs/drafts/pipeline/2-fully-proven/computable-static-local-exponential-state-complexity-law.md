@@ -385,6 +385,41 @@ separation, not a complete priority proof.
 
 ## Lean status
 
-Per explicit instruction during corpus refactoring, no Lean source was created, modified, or
-built.  Future formalization depends only on the deferred input theorem plus standard finite
-measure, continuity, rational-density, and computable-search layers.
+The refactor-time instruction is superseded.  The Gaussian box `(4)`--`(5)` of Theorem A is formal:
+`formal/GaloisForLFunctions/HTGeometry/GaussianBoxMass.lean` (new, umbrella-wired, axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| a standard Gaussian is subgaussian with proxy one | `hasSubgaussianMGF_of_standardGaussian` |
+| its two-sided tail at level `B` is at most `2exp(-B²/2)` | `measureReal_abs_ge_le_of_standardGaussian` |
+| **`(4)`--`(5)`**: with `B² >= 2 log(8m)` the coefficient vector lies in `[-B,B]^m` with probability at least `1/2` | `half_le_measureReal_box` |
+
+No independence between coefficients is used -- only subadditivity -- so the same box works for the
+support-weighted ensembles the card allows.
+
+The quenched-to-fixed-time transfer `(15)`--`(16)`, i.e. the whole passage from `(6)` to `(8)` and
+`(9)`, is formal as well:
+`formal/GaloisForLFunctions/HTGeometry/QuenchedFixedTimeTransfer.lean` (new, umbrella-wired,
+axiom-clean).  The event is an arbitrary jointly measurable `S ⊆ Ω × ℝ`; here `Ω` carries the
+Gaussian coefficient measure and `S` is the hard set `{(J,t) : C_{2ε}(e^{-itH_n(J)}Ω) > s_n}`.
+
+| Card item | Declaration |
+|---|---|
+| `(15)`, the window time fraction `f_T(J)` | `quenchedTimeFraction` |
+| `(7)`, the fixed-time probability `g_n(t)` | `quenchedFixedTimeProb` |
+| the window average `(1/T)∫_0^T g_n` | `quenchedWindowAverage` |
+| Tonelli: `∫ f_T dγ = (1/T)∫_0^T g_n` | `lintegral_quenchedTimeFraction_eq` |
+| `(6)` in complement form gives `liminf_T f_T(J) >= 1-η_n` | `le_liminf_quenchedTimeFraction_of_limsup_compl_le` |
+| Fatou: `liminf_T (1/T)∫_0^T g_n >= c·γ(G_n)` | `le_liminf_quenchedWindowAverage` |
+| **`(8)`**: `liminf_T (1/T)∫_0^T g_n >= (1-η_n)/2` from `γ(G_n) >= 1/2` | `half_mul_one_sub_le_liminf_quenchedWindowAverage` |
+| **`(9)`**: `limsup_t g_n(t) >= (1-η_n)/2` | `le_limsup_quenchedFixedTimeProb` |
+| the unbounded sequence of common deterministic times | `frequently_lt_quenchedFixedTimeProb` |
+
+Fatou's lemma is applied in `ℝ≥0∞` along the filter `atTop` on `ℝ` directly -- no sequence
+extraction and no integrability side conditions -- and the split `(8a)` is the same theorem applied
+to `S ∩ (G_n × ℝ)`.
+
+What the rest of Theorem A still needs is the deferred input theorem `(6)` itself, i.e. the
+completed-phase circuit bound at capture threshold `1-(2ε)²` together with the one-sided
+Kronecker--Weyl step and the counting inequality `(14)`.  Theorem B's rational-density and
+computable-search layers are untouched.

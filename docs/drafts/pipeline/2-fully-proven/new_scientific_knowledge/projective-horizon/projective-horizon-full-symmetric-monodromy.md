@@ -964,3 +964,60 @@ What remains of the bridge is the identification of the corank-one kernel vector
 coefficient vector of `U` — a statement about the corpus's own Schur matrix, not a new piece of
 algebra — and, separately from the bridge, the two `(4)` inputs recorded above: the inclusion of the
 root action in the geometric monodromy, and nontrivial simple inertia at the Schur collision.
+
+## Correction — audit item 1 is not an independent input
+
+The "Corpus audit" section above lists as input 1
+
+> `criticalOccupationRootAction K m n` has range inside `criticalGeometricMonodromy K m n`
+
+and treats it as an ordinary geometric statement waiting to be proved.  It is not: on the locus
+where it is visible it is **false**, and everywhere else it is equivalent to `(4)` itself.
+
+The reason is a forced identity.  A state has the subset labelling only when the two factors have
+their exact degrees, i.e. when the raw tail is `x_m ≠ 0, x_(m+1) = … = x_(L-1) = 0` **and** the
+reciprocal tail is `y_n ≠ 0, y_(n+1) = … = y_(L-1) = 0`.  Then `deg X = m`, `deg Y = n`, so `X Y` is
+of degree exactly `L`, and `X Y ≡ 1 mod t^L` leaves only the top coefficient free:
+
+```text
+X Y = 1 + c t^L,        c = x_m y_n.
+```
+
+So the pure locus is two-dimensional and its fibres are the `m`-subsets of the roots of `1 + c t^L`
+— *never* of a general degree-`L` polynomial.  The roots are `ζ^j ρ`, `ρ^L = -1/c`, so continuation
+in the only free parameter `c` realizes exactly the cyclic shift of the `L` roots.  The monodromy
+of the pure sub-family is therefore `Z/L`, not `S_L`, and the subgroup of `Perm(states)` it produces
+is the image of one `L`-cycle acting on `m`-subsets — which is not even transitive on them (for
+`L = 4, m = 2` it has orbits of sizes `4` and `2`).
+
+Off the pure locus there is no subset labelling to permute, so the only way `criticalOccupationRootAction`
+can land in `criticalGeometricMonodromy` is for the monodromy to be all of `S_D` already.  Hence
+input 1 cannot be used to prove `(4)`; it is a consequence of it.
+
+**What this means for the card.**  `criticalMonodromy_eq_top_of_rootAction_of_isSwap` is still a
+correct theorem, but its `hroot` hypothesis has no independent proof, so the route
+"root action + one transposition" is closed.  The only surviving route to `(4)` is step 4 as
+originally written: transitivity (already formal), one transposition (input 2, still open but
+reduced to a degree count), and **primitivity**, which by the Galois correspondence is exactly
+
+```text
+no field strictly between  O(m,n;L-1)  and  J_(L-1).
+```
+
+Step 4 proves that by classifying the finite étale covers of the chart `(𝔾ₘ)² × 𝔸^(L-2)`.  Every
+downstream piece of that classification is now formal — `UfdPowerDescent`,
+`LocalizationTwoPrimeUnits`, `TorusKummerExponents` — and the one missing step is the reduction of
+an arbitrary connected finite étale cover of that chart to a cyclic one.  That is
+`π₁^ét((𝔾ₘ)² × 𝔸^(L-2)) = Ẑ(1)²` in characteristic zero, i.e. simple connectedness of affine space,
+whose only known proofs are Riemann existence (over `ℂ`) plus Lefschetz descent, or a
+Bertini/Riemann–Hurwitz reduction to curves.  mathlib has no étale fundamental group, no Bertini,
+and no Riemann–Hurwitz, so this is an infrastructure gap of a different order from the rest of the
+card, not a missing lemma.
+
+Restricting the intermediate cover to a general line inside `{p_m = q_n = 1} ≅ 𝔸^(L-2)` reduces the
+statement to "a connected finite étale cover of `𝔸¹` in characteristic zero is trivial", which
+Riemann–Hurwitz proves in three lines (`2g-2 = -2D + Σ(e-1) ≤ -D-1` forces `D ≤ 1`).  The step that
+is *not* elementary is the Bertini/Lefschetz input that the restriction to a general line stays
+connected.  That is the precise shape of the remaining gap, and it is the same gap for both
+projective-horizon cards, since `projective-horizon-one-step-postcritical-rigidity` consumes
+primitivity through `(7)`.

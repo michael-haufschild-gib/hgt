@@ -3360,3 +3360,112 @@ checked by hand at `r = 1, 2, 3` against `topDescent_M s_{M+1} = (M+1)R''`,
 binomial scalars are exactly the `c_t = binom(N+1,t+1)` of pass 51, and with the subdiagonal law the
 stage recursion `P_t`, `D^{(t)}` becomes explicit with all level dependence in the binomials — the
 remaining step to the order-crossing contradiction.
+
+## Pass 53 — the tower expansion and the subdiagonal law
+
+Two closed formulas that make the whole descent chain explicit.
+
+**The universal tower.**  `T_1 = R''(y₀)`, `T_{r+1} = ∇T_r + r·z₂·T_r` (`shiftTower`).  It is not a
+new object: `T_r = ∂_0 s_r + R''(y₀)·z_r` (`shiftTower_eq`), proved by induction from the covariant
+shift recursion using `[∂_0, δ] = 0`.
+
+**The tower expansion of the shift** (`substitutionShiftRatio_eq_shiftTower_sum`):
+
+`(M+1)·s_{M+1} = ∑_{i<M} (i+1)·binom(M+1, i+1)·z_{i+1}·T_{M−i}`.
+
+This is the weight-zero Faà di Bruno formula: the level enters only through binomial coefficients,
+the differential content sits entirely in the universal tower.  The proof differentiates the
+inductive expansion covariantly; the two `z₂` contributions cancel term by term because
+`(i+1) + (M−i) = M+1`, the two resulting sums are the two halves of Pascal's rule
+`(M+2)[i·binom(M+1,i) + (i+1)·binom(M+1,i+1)] = (M+1)·(i+1)·binom(M+2,i+1)`, and the coordinate term
+`R''(y₀)·z_{M+1}` cancels exactly the boundary term of the reindexing.
+
+**The subdiagonal law** (`topDescent_substitutionShiftRatio_choose`): for every `K ≥ 2` and every `m`,
+
+`topDescent_K(s_m) = binom(m, K)·T_{m−K}`,
+
+with no side conditions (`T_0 = 0` and `binom(m,K) = 0` absorb the degenerate ranges).  Strong
+induction on `m`: descending the tower expansion in `z_K` gives a diagonal term, a term where the
+tower entry is exactly `T_K`, and terms where the descent falls on a lower tower entry; the last are
+again descents of a shift at a smaller level because `T_r = ∂_0 s_r + R''z_r` and `∂_0` commutes with
+`topDescent_K`, and the subset-of-a-subset identity
+`binom(M+1,i+1)·binom(M−i,K) = binom(M+1,K)·binom(M+1−K,i+1)` matches them against the tower
+expansion at level `M+1−K`.
+
+**What this unlocks.**  Running `strip_step` from `K = N` with exponent `κ = N+1`, write
+`P_t = topDescent_{K_t} v^{(t)}` and `E_t = topDescent_{K_t} D^{(t)}`, `K_t = N−t`.  In the range
+where the chain runs, `P_t` and `E_t` have jet order below `K_{t+1}`, so their descents drop out and
+the subdiagonal law gives the closed recursion
+
+`E_t = binom(N+1, N−t)·T_{t+1} + ∑_{u<t} binom(N−u, N−t)·T_{t−u}·(P_u − E_u/R')`.
+
+Because `binom(N+1,N−t) = binom(N+1,t+1)` and
+`binom(N−u,N−t)·binom(N+1,u+1) = binom(N+1,t+1)·binom(t+1,u+1)` (again subset-of-a-subset), the
+whole level dependence factors out:
+
+`E_t = binom(N+1,t+1)·Ê_t`,  `P_t = −binom(N+1,t+1)·P̂_t`,
+`Ê_t = T_{t+1} − ∑_{u<t} binom(t+1,u+1)·T_{t−u}·(P̂_u + Ê_u/R')`,
+
+with `P̂_t` the unique solution of `R'^{t+2}·Φ(P̂_t) = R'·P̂_t + Ê_t` — **all independent of the
+level `N`**.  Checked against the computed cases: `Ê_0 = R''`, `P̂_0 = z₂`;
+`Ê_1 = R''' − R''z₂ − 2(R'')²/R'`, `P̂_1 = z₃ − 2z₂²`.
+
+**The one remaining mathematical unknown.**  The chain breaks at the first `t` with `t+2 > N−t`,
+because `topDescent_{N−t}` cannot produce jet order above `N−t` while `P̂_t` has jet order `t+2`.
+That needs `γ_t := topDescent_{t+2}(P̂_t) ≠ 0`; `γ_0 = γ_1 = 1`, and `γ_t = 1` is equivalent to
+`Ê_t − s_{t+2}` being solvable at jet order at most `t+1`, since
+`R'^{t+2}Φ(z_{t+2}) = R'z_{t+2} + s_{t+2}`.  Everything else in the chain — the operator, the tower,
+the expansion, the subdiagonal law, the strip step, the affineness criterion, the two pinned
+coefficients — is Lean-proved and level-independent.
+
+New modules: `JetEulerDerivation` (the weight generator `Eu(y_j) = j y_j`, `⁅Eu,δ⁆ = δ`,
+`Eu(s_M) = 0`, `Eu` as a finite sum of partials), `JetShiftTower`, `JetShiftSubdiagonal`.  All
+axiom-clean and lint-clean.
+
+## Pass 54 — the level-free tower is an iterated derivative of `1/y₁`
+
+The sequence `P̂_t` that pass 53 could only characterise implicitly has a closed form:
+
+`V_t := −δ^{t+1}(1/y₁)/y₁^t`   (`invTower`).
+
+Everything about it is now Lean-proved (`JetInverseTower.lean`).
+
+* **It solves the level-free relation.**  `Φ` is a differential endomorphism and `Φ(y₁) = R'y₁`, so
+  `Φ(δ^k(1/y₁)) = δ^k(1/(R'·y₁))` and
+
+  `R'^{t+2}·Φ(V_t) = R'·V_t + Ê_t`,  `Ê_t = (R'·δ^{t+1}(1/y₁) − R'^2·δ^{t+1}(1/(y₁R')))/y₁^t`
+
+  (`jetSubstitution_invTower`, `invTowerDefect`).
+* **Its leading coefficient is one** — the statement pass 53 left open.  For `f` of jet order at
+  most one, `∂_{k+1}(δ^k f) = ∂_1 f` and `δ^kf` has jet order at most `k+1`
+  (`pd_deltaIter_of_order_one`); with `f = 1/y₁` this gives
+  `∂_{t+2}(δ^{t+1}(1/y₁)) = −1/y₁²`, hence
+
+  `topDescent_{t+2}(V_t) = 1`   (`topDescent_invTower`),
+
+  so `γ_t = 1` for every `t` and the jet order of `V_t` is exactly `t + 2`.
+* **It is torus invariant** (`isWeightZero_invTower`), and its defect has jet order at most `t + 1`
+  (`pd_invTowerDefect_of_gt`) — the two `∂_{t+2}` contributions cancel exactly, because
+  `∂_1(1/(y₁R')) = −R'/(y₁R')²`.
+* **The shift tower is the same construction for the derivative factor**:
+  `T_r·y₁^r = δ^r(R'(y₀))` (`shiftTower_mul_pow`).
+* **The defect recursion is the Leibniz rule.**  With the iterated Leibniz rule
+  `δ^n(ab) = ∑ binom(n,i)·δ^i a·δ^{n−i}b` (`deltaIter_leibniz`) applied to
+  `1/y₁ = R'·(1/(y₁R'))`, the two extreme terms split off (`deltaIter_inv_split`) and give
+
+  `Ê_t = T_{t+1} − ∑_{j<t} binom(t+1, j+1)·T_{j+1}·(V_{t−1−j} + Ê_{t−1−j}/R')`
+
+  (`invTowerDefect_eq`) — exactly the recursion pass 53 derived from the descent chain, now proved
+  as an identity between explicit objects.
+
+So the level-free half of the descent is complete: the sequence exists, is explicit, has jet order
+exactly `t + 2` with unit leading coefficient, and satisfies both the substitution relation and the
+convolution recursion that the chain produces.
+
+**Remaining for the orbifold cards.**  Assemble the chain: `v^{(t)} := w + ∑_{u<t}
+binom(N+1,u+1)·V_u·z_{N−u}`, show by induction that it has jet order at most `N−t` and that
+`topDescent_{N−t}(v^{(t)}) = −binom(N+1,t+1)·V_t` — the inductive step is `strip_step` together with
+the subdiagonal law of pass 53, the subset-of-a-subset identity, and `invTowerDefect_eq` — and then
+read off the contradiction at the first `t` with `t + 2 > N − t`, since `topDescent_{N−t}` cannot
+produce jet order above `N−t` while `V_t` has jet order exactly `t + 2`.  One extra quadratic step is
+needed when `N` is even, where the resonance `κ = 2K_t − 1` falls at `t = (N−2)/2`.

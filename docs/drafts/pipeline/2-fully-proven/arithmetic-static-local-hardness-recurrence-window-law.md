@@ -140,20 +140,83 @@ axiom-clean) proves the two quantitative cores of Theorem A's proof.
 separation.  `(17)` is exact: the antiderivative has modulus `1/|beta|` at every point, so the
 window integral is at most `2/|beta|` regardless of where the window sits.
 
+##### Step 1's number theory is closed
+
+`formal/GaloisForLFunctions/HTGeometry/AlgebraicIntegerSeparation.lean` (new, umbrella-wired,
+axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| the field norm of a nonzero algebraic integer is a nonzero rational integer, so the product of all embedding moduli is at least one | `one_le_prod_norm_embeddings` |
+| **`(9)`**: all embeddings but one below `B` force the remaining one above `B^{-(n-1)}` | `inv_pow_le_norm_embedding` |
+
+The proof is `Algebra.norm_eq_prod_embeddings` for the product over complex embeddings,
+`Algebra.norm_ne_zero_iff` for nonvanishing and `Algebra.coe_norm_int` for integrality; the
+separation is then the erase-one-factor estimate.  What step 1 still supplies from the card's own
+setting is the conjugate bound `(8)` itself -- that Galois conjugates of the eigenvalues stay below
+`2dNR` -- which is a statement about the spectral form, not about number fields.
+
+##### `(17)`--`(18)` are assembled
+
+`formal/GaloisForLFunctions/HTGeometry/WindowMeanSeparatedModes.lean` (new, umbrella-wired,
+axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| **`(17)` aggregated**: a packet of separated nonzero modes has window mean at most `\|K\| c 2/(T beta)` | `norm_window_mean_le` |
+| **`(18)`**: hence a packet with constant coefficient `mu` has window mean at least `mu` minus that error | `window_mean_ge` |
+
+Both hold uniformly in the window position `u`, which is what "every shifted time window" asks for.
+The separation `beta` is exactly the arithmetic input `(9)`, now supplied by
+`inv_pow_le_norm_embedding`.
+
+##### Step 2 is closed in one dimension
+
+`formal/GaloisForLFunctions/HTGeometry/TorusFejerDisplacement.lean` (new, umbrella-wired,
+axiom-clean).
+
+| Card item | Declaration |
+|---|---|
+| the Fejér kernel `F_N = \|D_N\|²/(N+1)` and its nonnegativity | `torusFejer`, `torusFejer_nonneg` |
+| its cosine expansion, and the vanishing of every off-diagonal mode | `norm_dirichletSum_sq`, `integral_cos_mode` |
+| the kernel has Haar mean one | `integral_torusFejer` |
+| **`(15)`**: the quadratic tail `F_N(x) <= pi²/((N+1)x²)` | `torusFejer_le` |
+| its two inputs: `\|D_N(x)\| <= 1/\|sin(x/2)\|` and Jordan's inequality | `norm_dirichletSum_le`, `abs_div_pi_le_abs_sin_half` |
+| **`(14)`**: the mean displacement `(1/2pi)int \|x\| F_N <= 2pi/sqrt(N+1)` | `integral_abs_mul_torusFejer_le` |
+| the Fejér mean `P = f * F_N` of `f` | `fejerConv` |
+| **`(16)`**: an `L`-Lipschitz `f` obeys `\|\|P - f\|\|_infty <= 2 pi L/sqrt(N+1)` | `abs_fejerConv_sub_le` |
+| **`(10)`**: the tent `q_rho`, its positivity cube, and its `1/rho`-Lipschitz constant | `torusTent`, `torusTent_pos_iff`, `abs_torusTent_sub_le` |
+| **`(11)`**: the tent has Haar mean `rho/2pi` | `integral_torusTent` |
+| `(16)` for the tent itself | `abs_fejerConv_torusTent_sub_le` |
+| the Fejér mean of a `[0,1]`-valued function stays in `[0,1]` | `fejerConv_nonneg`, `fejerConv_le_one` |
+| the telescoping bound `\|prod a - prod b\| <= sum \|a-b\|` on the unit ball | `abs_prod_sub_prod_le` |
+| **`(16)` in `d` dimensions**: `\|\|P - f\|\|_infty <= 2 pi d/(rho sqrt(N+1))` | `abs_productFejerTent_sub_le` |
+
+The proof of `(14)` is exactly the card's: split at `delta = pi/sqrt(N+1)`, bound the inner
+contribution by `delta` times the total mass and the outer contribution by `pi` times the tail
+integral `int_delta^pi pi²/((N+1)x²)dx <= pi²/((N+1)delta)`; the two halves are equal at that
+`delta`.  The reciprocal-square integral is evaluated by the antiderivative `-x^{-1}`
+(`integral_inv_sq`), so no improper-integral theory is used.
+
+The `d`-dimensional packet is carried by the Fubini factorization: convolving the product tent
+against `F_N^{otimes d}` is the product of the one-dimensional Fejér means (`productFejerTent`), so
+`(16)` in `d` dimensions is the telescoping bound applied to the one-dimensional displacement.
+
 ##### What remains in Theorem A
 
-Step 1's number-theoretic packaging (that the field norm of a nonzero algebraic integer is a
-nonzero rational integer, and that Galois conjugates of the eigenvalues stay bounded by the
-operator norm), and step 2's Fejér packet.  Mathlib has no Fejér kernel, but **the corpus already owns one**, in
+The conjugate bound `(8)` for the spectral form, and the Fourier bookkeeping `(12)`--`(13)`: that
+`P` has Fourier support `||k||_infty <= N`, constant coefficient `mu_rho`, and
+`|hat P(k)| <= mu_rho`.  That last step is the only remaining analytic gap; it needs the periodic
+(torus) structure, which the modules above deliberately avoid.  Everything else in `(10)`--`(11)`
+and `(14)`--`(18)` is formal.
+For the multi-dimensional kernel the corpus also owns a Bohr-side stack, in
 the Bohr almost-periodic setting that this card's moving-window mean lives in:
 `HTGeometry/BohrFejerKernel.lean` (`fejerKernel`, `fejerKernel_nonneg`, `fejerKernel_eq_sum`,
 `continuous_fejerKernel`, **`bohrMean_fejerKernel`** -- mean one),
 `HTGeometry/BohrFejerConvergence.lean` (**`norm_bohrMean_fejer_sub_le`** -- quantitative Fejér
 convergence with an explicit tail term `4‖f‖/((N+1)c)` governed by the frequency separation `c`),
 and `HTGeometry/BohrMultiFejerMean.lean` (`bohrMean_multiFejerKernel` -- the multi-dimensional
-kernel has mean one).  The separation `c` is exactly what `(9)` supplies, so step 2 should be a
-reuse of that stack -- with the tent function of `(10)` as the test function -- rather than a
-rebuild of the torus kernel.
+kernel has mean one).  The separation `c` there is exactly what `(9)` supplies.
 
 #### 2. A finite Fejer packet detects a phase cube
 

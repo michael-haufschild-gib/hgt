@@ -59,46 +59,14 @@ theorem even_hermiteTrialVector {ν : Fin (j + 1) → ℕ} (hν : ∀ i, Even (�
 theorem continuous_hermiteTrialVector (ν : Fin (j + 1) → ℕ) (a : Fin (j + 1) → ℝ) (c : ℝ) :
     Continuous (hermiteTrialVector ν a c) := (contDiff_hermiteTrialVector ν a c).continuous
 
-/-- The band class is linear over a finite combination of continuous functions. -/
-theorem bandClass_finsetSum {ι : Type*} (s : Finset ι) (a : ι → ℝ) (F : ι → ℝ → ℝ)
-    (hF : ∀ i, Continuous (F i)) :
-    ∀ h : Continuous fun x => ∑ i ∈ s, a i * F i x,
-      GaloisForLFunctions.RHTower.bandClass (fun x => ∑ i ∈ s, a i * F i x) h
-        = ∑ i ∈ s, a i • GaloisForLFunctions.RHTower.bandClass (F i) (hF i) := by
-  classical
-  induction s using Finset.induction with
-  | empty =>
-      intro h
-      have hrhs : (∑ i ∈ (∅ : Finset ι), a i •
-          GaloisForLFunctions.RHTower.bandClass (F i) (hF i)) = 0 := Finset.sum_empty
-      rw [hrhs]
-      refine (GaloisForLFunctions.RHTower.bandClass_congr h continuous_const ?_).trans
-        (GaloisForLFunctions.RHTower.bandClass_zero _)
-      funext x
-      simp
-  | insert i t hi ih =>
-      intro h
-      have hcont_t : Continuous fun x => ∑ k ∈ t, a k * F k x :=
-        continuous_finsetSum t fun k _ => continuous_const.mul (hF k)
-      have hcont_i : Continuous fun x => a i * F i x := continuous_const.mul (hF i)
-      have hcont_sum : Continuous fun x => a i * F i x + ∑ k ∈ t, a k * F k x :=
-        hcont_i.add hcont_t
-      have hstep : (fun x => ∑ k ∈ insert i t, a k * F k x)
-          = fun x => a i * F i x + ∑ k ∈ t, a k * F k x := by
-        funext x
-        rw [Finset.sum_insert hi]
-      rw [Finset.sum_insert hi,
-        GaloisForLFunctions.RHTower.bandClass_congr h hcont_sum hstep,
-        GaloisForLFunctions.RHTower.bandClass_add hcont_i hcont_t hcont_sum,
-        GaloisForLFunctions.RHTower.bandClass_smul (hF i) (a i) hcont_i, ih hcont_t]
-
 /-- The band class of a trial vector is the corresponding combination of the basis band classes. -/
 theorem bandClass_hermiteTrialVector (ν : Fin (j + 1) → ℕ) (a : Fin (j + 1) → ℝ) (c : ℝ) :
     GaloisForLFunctions.RHTower.bandClass (hermiteTrialVector ν a c)
         (continuous_hermiteTrialVector ν a c)
       = ∑ i, a i • GaloisForLFunctions.RHTower.bandClass (prolateHermiteTrial c (ν i))
           (continuous_prolateHermiteTrial c (ν i)) :=
-  bandClass_finsetSum Finset.univ a (fun i => prolateHermiteTrial c (ν i))
+  GaloisForLFunctions.RHTower.bandClass_finsetSum Finset.univ a
+    (fun i => prolateHermiteTrial c (ν i))
     (fun i => continuous_prolateHermiteTrial c (ν i)) _
 
 /-- The band-class span of the rescaled Hermite trial family. -/
