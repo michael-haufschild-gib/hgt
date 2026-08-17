@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.ShortExactRankConservation
-import GaloisForLFunctions.HTGeometry.CoveringDimension
+import GaloisForLFunctions.HTGeometry.CoveringDimensionShrinking
 import GaloisForLFunctions.HTGeometry.GammaProjectivePrimeTorusCarrier
 import GaloisForLFunctions.HTGeometry.GaussPairedChannelSchattenDepth
 

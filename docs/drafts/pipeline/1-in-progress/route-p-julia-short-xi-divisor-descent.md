@@ -36,24 +36,51 @@ rectangular Gamma/polar completion. Target must retain:
 2. **Direct genus-one determinant/scalar weld. — `[FALSIFIED]`.**
    The source `det2` has a forced zero at `1`, while `XiC(1) != 0`; even an arbitrary pointwise
    scalar multiplier cannot repair it.
-3. **Transport the rank-one Schur functor before spectral scalarization. — active.**
-   Split the completed raw residue `2 m(q) a_L(q)` over the canonical `m(q)`-copy support fibre.
-   Each copy receives `2 a_L(q)`. Apply the same Hermitian environment block
-   `B(c)=[[|c|^2,c],[conj(c),1]]` used by P-G206. Then every copy has zero Schur short and the
-   aggregate source corner is exactly `m(q)|2a_L(q)|^2`.
+3. **Split a scalar residue and wrap each copy in a rank-one block. — `[FALSIFIED]`.**
+   Although this preserves the target coefficient and linear multiplicity, it is target fitting:
+   no pre-divisor object has the wrapped matrix as its residue. In particular it never transports
+   P-G206's pairwise Julia exterior coupling.
+4. **Polarize before residues and retain the environment pivot. — active.**
+   Put `B(a,b)=[[ab,a],[b,1]]`. P-G206 is the real diagonal specialization `a=b=C_x` because
+   `C_x^2=W_x`. Tensor the literal Julia coupling `C_x` into the two actual completed
+   Gamma/polar source columns `R(z,r)` and `F(w,r)`. Before either divisor limit, gauge the two
+   pole legs separately:
+
+       a_rho(z)=C_x (z-p_rho) R(z,r),
+       b_tau(w)=C_x (w-p_tau) F(w,r).
+
+   The matrix `B(a_rho(z),b_tau(w))` is rank one and has pivot `1` and Schur short `0` for every
+   punctured source pair. Its upper-left entry is literally the two-sided pole gauge of the
+   pre-divisor quadratic source current, multiplied by P-G206's exact Julia coefficient squared.
+   Existing residue theorems give
+
+       a_rho -> C_x m_rho R_rho,   b_tau -> C_x m_tau F_tau.
+
+   Thus the iterated matrix residue retains the exact coefficient and the full multiplicity
+   product. Dividing each leg by its own analytic multiplicity before the limit gives the canonical
+   copy block `B(C_x R_rho,C_x F_rho)` on every member of the actual multiplicity fibre; its
+   codiagonal recovers each raw residue leg and its corner energy is linear in multiplicity.
 
 ## Frozen conjecture candidate
 
-`[CONJECTURE]` For every positive rectangular width, admissible completed tail, detected right-Xi
-divisor copy `q`, and member of its canonical support fibre, the completed Gamma/polar residue
-admits a cutoff-independent copy coordinate `c_q=2a_L(q)`. The P-G206 source block and every
-completed copy block are instances of one Hermitian rank-one Schur functor; hence shorting commutes
-with this coefficient transport, while direct-sum corner energy preserves analytic multiplicity
-linearly.
+`[CONJECTURE]` For every P-G206 Julia aperture pair, every retained Xi divisor support, every radial
+coordinate, and every member of its analytic-multiplicity fibre, the two-sided residue-gauged
+completed Gamma/polar quadratic source block converges entrywise to the coefficient-faithful Xi
+environment block. The raw landing retains the analytic multiplicity product; canonical
+leg-by-leg splitting retains one exact coefficient on each divisor copy. Both source and divisor
+blocks are literal specializations of `B(a,b)`, so the environment pivot remains `1` and Schur
+shorting commutes with descent.
 
-`[OPEN CORE]` Complete hostile literature audit, then prove that every coordinate is derived from
-the actual meromorphic residue (not fitted from the target coefficient), prove codiagonal residue
-conservation and aggregate energy, and prove the source-block identification with P-G206 literally.
+`[NOVELTY UNVERIFIED]` Anderson--Trapp shorting is classical; completed zeta spectral realizations
+and reflection pairings are classical. Bounded literature audit found no construction combining a
+Gamma-sewn Julia prime coupling, a two-variable completed Xi source current, two-sided residue
+gauges that leave the pivot unscaled, and canonical multiplicity-copy splitting. This is not proof
+of novelty.
+
+`[OPEN CORE]` Prove the matrix-valued one-leg and iterated residue limits, the literal P-G206
+source-block specialization, the same-support Hermitian/PSD landing, and codiagonal plus aggregate
+energy conservation. Hostile check must then determine whether this is only a kinematic transport
+or supplies an RH-bearing inequality.
 
 ## Honest boundary
 

@@ -3830,3 +3830,26 @@ intersection, contradicting the cube separation theorem.
 
 The general-position step is where `k < m` is used, and it is the reason the argument needs a
 finite-dimensional Baire-type fact rather than the inductive dimension theory.
+
+### Pass 63 addendum — deduplication against the covering-dimension lane
+
+Two collisions with work already in the tree were found and removed:
+
+- `HTGeometry/CoveringDimension.lean` (the shrinking-form `HasCoverDimLE` and its invariants) already
+  existed; its content now lives in `HTGeometry/CoveringDimensionShrinking.lean`, together with
+  `EuclideanCompactCoveringDimension.hasCoverDimLE_of_isCompact` (bound `5^m - 1`),
+  `CoveringDimensionEmbedding.hasCoverDimLE_of_continuous_injective`, `BohrHullDimension` and
+  `HullFiniteCoveringDimension`.  The refinement-form duplicate written in pass 63 was deleted; its
+  one new theorem, closed-subspace monotonicity, was added to the canonical file as
+  `HasCoverDimLE.of_isClosedEmbedding`.
+- `HTGeometry/PoincareMiranda.lean` already proves `GaloisForLFunctions.poincare_miranda` (in the
+  sharper `ContinuousOn` form) and defines `GaloisForLFunctions.unitCube`.  `CubeSeparation` now
+  imports it and contains only the separation theorem and the cube vertices.
+
+**The lanes are complementary, not overlapping.**  The existing modules give *upper* bounds on the
+covering dimension of the Bohr hull; passes 63 gives the *lower* bound — `not_injOn_unitCube` and
+`not_injOn_of_independent_family` — which is what the frequency-rank conclusion actually needs and
+which no earlier module provides.
+
+A sharper statement worth having later: the brick cover of `BrickCover` upgrades
+`hasCoverDimLE_of_isCompact` from `5^m - 1` to the exact `m`.
